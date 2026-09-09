@@ -1,0 +1,633 @@
+{
+  "id": "rune_lion",
+  "name": "Runemane",
+  "lore": "A guardian left running after its temple fell. The cyan runes still burn with orders no one can rescind.",
+  "source": {
+    "kind": "character",
+    "pixellab_id": "5cdfe0e4-cf79-4c3f-b95e-7cfc00b67ccb",
+    "url": "https://www.pixellab.ai/create-character/5cdfe0e4-cf79-4c3f-b95e-7cfc00b67ccb",
+    "prompt": "Ancient stone lion construct with massive paws and chest, cracked stone-block body, glowing cyan runes, magical eyes and floating stone fragments around its shoulders.",
+    "view": "low top-down",
+    "tags": [
+      "MONSTER"
+    ]
+  },
+  "size": {
+    "width": 176,
+    "height": 176
+  },
+  "native_size": {
+    "width": 176,
+    "height": 176
+  },
+  "pad": {
+    "x": 0,
+    "y": 0
+  },
+  "sprite": "rune_lion/sprite.webp",
+  "directions": [
+    "east",
+    "north",
+    "north-east",
+    "north-west",
+    "south",
+    "south-east",
+    "south-west",
+    "west"
+  ],
+  "rotations": {
+    "south": "rune_lion/rotations/south.webp",
+    "west": "rune_lion/rotations/west.webp",
+    "east": "rune_lion/rotations/east.webp",
+    "north": "rune_lion/rotations/north.webp",
+    "south-east": "rune_lion/rotations/south-east.webp",
+    "north-east": "rune_lion/rotations/north-east.webp",
+    "north-west": "rune_lion/rotations/north-west.webp",
+    "south-west": "rune_lion/rotations/south-west.webp"
+  },
+  "animations": {
+    "idle": {
+      "group_id": "99cdba6a-bf3a-4a3a-8754-62027fb0a7fe",
+      "source_name": "custom-Calm still idle, breathing",
+      "directions": {
+        "east": {
+          "frames": 5,
+          "strip": "rune_lion/animations/idle__east.webp",
+          "frame_paths": [
+            "rune_lion/animations/idle/east/00.webp",
+            "rune_lion/animations/idle/east/01.webp",
+            "rune_lion/animations/idle/east/02.webp",
+            "rune_lion/animations/idle/east/03.webp",
+            "rune_lion/animations/idle/east/04.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:07:19 GMT",
+          "src_frames": 5,
+          "sub": "54e4cb48-8133-4755-b870-52dad42265c2"
+        },
+        "north": {
+          "frames": 5,
+          "strip": "rune_lion/animations/idle__north.webp",
+          "frame_paths": [
+            "rune_lion/animations/idle/north/00.webp",
+            "rune_lion/animations/idle/north/01.webp",
+            "rune_lion/animations/idle/north/02.webp",
+            "rune_lion/animations/idle/north/03.webp",
+            "rune_lion/animations/idle/north/04.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:07:21 GMT",
+          "src_frames": 5,
+          "sub": "8d781502-7aa5-4fdc-aedb-773bbe9a8991"
+        },
+        "north-east": {
+          "frames": 5,
+          "strip": "rune_lion/animations/idle__north-east.webp",
+          "frame_paths": [
+            "rune_lion/animations/idle/north-east/00.webp",
+            "rune_lion/animations/idle/north-east/01.webp",
+            "rune_lion/animations/idle/north-east/02.webp",
+            "rune_lion/animations/idle/north-east/03.webp",
+            "rune_lion/animations/idle/north-east/04.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:07:22 GMT",
+          "src_frames": 5,
+          "sub": "5367decd-027a-4584-a659-a43b34e3d66e"
+        },
+        "north-west": {
+          "frames": 5,
+          "strip": "rune_lion/animations/idle__north-west.webp",
+          "frame_paths": [
+            "rune_lion/animations/idle/north-west/00.webp",
+            "rune_lion/animations/idle/north-west/01.webp",
+            "rune_lion/animations/idle/north-west/02.webp",
+            "rune_lion/animations/idle/north-west/03.webp",
+            "rune_lion/animations/idle/north-west/04.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:07:25 GMT",
+          "src_frames": 5,
+          "sub": "1f6190b9-5890-4f6c-b6ba-cd15c6c0da40"
+        },
+        "south": {
+          "frames": 5,
+          "strip": "rune_lion/animations/idle__south.webp",
+          "frame_paths": [
+            "rune_lion/animations/idle/south/00.webp",
+            "rune_lion/animations/idle/south/01.webp",
+            "rune_lion/animations/idle/south/02.webp",
+            "rune_lion/animations/idle/south/03.webp",
+            "rune_lion/animations/idle/south/04.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:07:26 GMT",
+          "src_frames": 5,
+          "sub": "bc348010-147b-4774-9e05-6b99c5ee8fdf"
+        },
+        "south-east": {
+          "frames": 5,
+          "strip": "rune_lion/animations/idle__south-east.webp",
+          "frame_paths": [
+            "rune_lion/animations/idle/south-east/00.webp",
+            "rune_lion/animations/idle/south-east/01.webp",
+            "rune_lion/animations/idle/south-east/02.webp",
+            "rune_lion/animations/idle/south-east/03.webp",
+            "rune_lion/animations/idle/south-east/04.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:07:27 GMT",
+          "src_frames": 5,
+          "sub": "06d207c6-32f0-41fe-8667-d8b258be3298"
+        },
+        "south-west": {
+          "frames": 5,
+          "strip": "rune_lion/animations/idle__south-west.webp",
+          "frame_paths": [
+            "rune_lion/animations/idle/south-west/00.webp",
+            "rune_lion/animations/idle/south-west/01.webp",
+            "rune_lion/animations/idle/south-west/02.webp",
+            "rune_lion/animations/idle/south-west/03.webp",
+            "rune_lion/animations/idle/south-west/04.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:07:29 GMT",
+          "src_frames": 5,
+          "sub": "5299b669-f9cc-49b3-9390-85c24f2b4027"
+        },
+        "west": {
+          "frames": 5,
+          "strip": "rune_lion/animations/idle__west.webp",
+          "frame_paths": [
+            "rune_lion/animations/idle/west/00.webp",
+            "rune_lion/animations/idle/west/01.webp",
+            "rune_lion/animations/idle/west/02.webp",
+            "rune_lion/animations/idle/west/03.webp",
+            "rune_lion/animations/idle/west/04.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:07:30 GMT",
+          "src_frames": 5,
+          "sub": "429ba1c0-bc49-48fb-ab19-caf8f734e087"
+        }
+      }
+    },
+    "attack": {
+      "group_id": "5da87b63-91e7-4153-b55e-f77fd3a274c9",
+      "source_name": "custom-Slams the two front feets on the ground so stones ",
+      "directions": {
+        "east": {
+          "frames": 4,
+          "strip": "rune_lion/animations/attack__east.webp",
+          "frame_paths": [
+            "rune_lion/animations/attack/east/00.webp",
+            "rune_lion/animations/attack/east/01.webp",
+            "rune_lion/animations/attack/east/02.webp",
+            "rune_lion/animations/attack/east/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:07:31 GMT",
+          "src_frames": 4,
+          "sub": "f6b58210-da26-4d55-8939-9bb2cfad3c1b"
+        },
+        "north": {
+          "frames": 4,
+          "strip": "rune_lion/animations/attack__north.webp",
+          "frame_paths": [
+            "rune_lion/animations/attack/north/00.webp",
+            "rune_lion/animations/attack/north/01.webp",
+            "rune_lion/animations/attack/north/02.webp",
+            "rune_lion/animations/attack/north/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:07:33 GMT",
+          "src_frames": 4,
+          "sub": "f84dec72-9758-4817-bb4d-5122c0031048"
+        },
+        "north-east": {
+          "frames": 4,
+          "strip": "rune_lion/animations/attack__north-east.webp",
+          "frame_paths": [
+            "rune_lion/animations/attack/north-east/00.webp",
+            "rune_lion/animations/attack/north-east/01.webp",
+            "rune_lion/animations/attack/north-east/02.webp",
+            "rune_lion/animations/attack/north-east/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:07:34 GMT",
+          "src_frames": 4,
+          "sub": "fd4e8e0c-efe0-4287-b9ce-b79fa23f0963"
+        },
+        "north-west": {
+          "frames": 4,
+          "strip": "rune_lion/animations/attack__north-west.webp",
+          "frame_paths": [
+            "rune_lion/animations/attack/north-west/00.webp",
+            "rune_lion/animations/attack/north-west/01.webp",
+            "rune_lion/animations/attack/north-west/02.webp",
+            "rune_lion/animations/attack/north-west/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:07:35 GMT",
+          "src_frames": 4,
+          "sub": "3b0e9796-65d1-4dc7-a21a-a7a66d854e70"
+        },
+        "south": {
+          "frames": 4,
+          "strip": "rune_lion/animations/attack__south.webp",
+          "frame_paths": [
+            "rune_lion/animations/attack/south/00.webp",
+            "rune_lion/animations/attack/south/01.webp",
+            "rune_lion/animations/attack/south/02.webp",
+            "rune_lion/animations/attack/south/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:07:36 GMT",
+          "src_frames": 4,
+          "sub": "960ca536-a154-4ca8-8f5a-beef57ab3f0a"
+        },
+        "south-east": {
+          "frames": 4,
+          "strip": "rune_lion/animations/attack__south-east.webp",
+          "frame_paths": [
+            "rune_lion/animations/attack/south-east/00.webp",
+            "rune_lion/animations/attack/south-east/01.webp",
+            "rune_lion/animations/attack/south-east/02.webp",
+            "rune_lion/animations/attack/south-east/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:07:38 GMT",
+          "src_frames": 4,
+          "sub": "db2747fe-a1a8-4f4f-aba9-08f5a1ff0129"
+        },
+        "south-west": {
+          "frames": 4,
+          "strip": "rune_lion/animations/attack__south-west.webp",
+          "frame_paths": [
+            "rune_lion/animations/attack/south-west/00.webp",
+            "rune_lion/animations/attack/south-west/01.webp",
+            "rune_lion/animations/attack/south-west/02.webp",
+            "rune_lion/animations/attack/south-west/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:07:39 GMT",
+          "src_frames": 4,
+          "sub": "43a13fe0-8d29-4d40-adce-d4cf81c328a4"
+        },
+        "west": {
+          "frames": 4,
+          "strip": "rune_lion/animations/attack__west.webp",
+          "frame_paths": [
+            "rune_lion/animations/attack/west/00.webp",
+            "rune_lion/animations/attack/west/01.webp",
+            "rune_lion/animations/attack/west/02.webp",
+            "rune_lion/animations/attack/west/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:07:40 GMT",
+          "src_frames": 4,
+          "sub": "680b1ef7-8ce1-4095-99d3-2f0331e5486b"
+        }
+      }
+    },
+    "angry": {
+      "group_id": "06e8452d-0cc0-4112-aa80-2b635cefd227",
+      "source_name": "custom-angry combat idle, frustrated",
+      "directions": {
+        "east": {
+          "frames": 4,
+          "strip": "rune_lion/animations/angry__east.webp",
+          "frame_paths": [
+            "rune_lion/animations/angry/east/00.webp",
+            "rune_lion/animations/angry/east/01.webp",
+            "rune_lion/animations/angry/east/02.webp",
+            "rune_lion/animations/angry/east/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:07:41 GMT",
+          "src_frames": 4,
+          "sub": "5d4426ae-da3e-4dbb-a945-1044d75d83d6"
+        },
+        "north": {
+          "frames": 4,
+          "strip": "rune_lion/animations/angry__north.webp",
+          "frame_paths": [
+            "rune_lion/animations/angry/north/00.webp",
+            "rune_lion/animations/angry/north/01.webp",
+            "rune_lion/animations/angry/north/02.webp",
+            "rune_lion/animations/angry/north/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:07:42 GMT",
+          "src_frames": 4,
+          "sub": "0586ed26-af48-4fea-b91f-932dfe96f76c"
+        },
+        "north-east": {
+          "frames": 4,
+          "strip": "rune_lion/animations/angry__north-east.webp",
+          "frame_paths": [
+            "rune_lion/animations/angry/north-east/00.webp",
+            "rune_lion/animations/angry/north-east/01.webp",
+            "rune_lion/animations/angry/north-east/02.webp",
+            "rune_lion/animations/angry/north-east/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:07:44 GMT",
+          "src_frames": 4,
+          "sub": "23242c4e-a752-4226-8d89-65e13c68ed52"
+        },
+        "north-west": {
+          "frames": 4,
+          "strip": "rune_lion/animations/angry__north-west.webp",
+          "frame_paths": [
+            "rune_lion/animations/angry/north-west/00.webp",
+            "rune_lion/animations/angry/north-west/01.webp",
+            "rune_lion/animations/angry/north-west/02.webp",
+            "rune_lion/animations/angry/north-west/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:07:45 GMT",
+          "src_frames": 4,
+          "sub": "f6eb9038-6db8-4f02-8d08-ba2576c75811"
+        },
+        "south": {
+          "frames": 4,
+          "strip": "rune_lion/animations/angry__south.webp",
+          "frame_paths": [
+            "rune_lion/animations/angry/south/00.webp",
+            "rune_lion/animations/angry/south/01.webp",
+            "rune_lion/animations/angry/south/02.webp",
+            "rune_lion/animations/angry/south/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:07:46 GMT",
+          "src_frames": 4,
+          "sub": "52f04864-bf49-41ef-b711-c88716b6aee5"
+        },
+        "south-east": {
+          "frames": 4,
+          "strip": "rune_lion/animations/angry__south-east.webp",
+          "frame_paths": [
+            "rune_lion/animations/angry/south-east/00.webp",
+            "rune_lion/animations/angry/south-east/01.webp",
+            "rune_lion/animations/angry/south-east/02.webp",
+            "rune_lion/animations/angry/south-east/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:07:48 GMT",
+          "src_frames": 4,
+          "sub": "47724e8a-41d8-4217-a2cb-fafe37970342"
+        },
+        "south-west": {
+          "frames": 4,
+          "strip": "rune_lion/animations/angry__south-west.webp",
+          "frame_paths": [
+            "rune_lion/animations/angry/south-west/00.webp",
+            "rune_lion/animations/angry/south-west/01.webp",
+            "rune_lion/animations/angry/south-west/02.webp",
+            "rune_lion/animations/angry/south-west/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:07:50 GMT",
+          "src_frames": 4,
+          "sub": "e9c0d9b5-815c-4224-ab35-feda31dfa34c"
+        },
+        "west": {
+          "frames": 4,
+          "strip": "rune_lion/animations/angry__west.webp",
+          "frame_paths": [
+            "rune_lion/animations/angry/west/00.webp",
+            "rune_lion/animations/angry/west/01.webp",
+            "rune_lion/animations/angry/west/02.webp",
+            "rune_lion/animations/angry/west/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:07:52 GMT",
+          "src_frames": 4,
+          "sub": "a7533918-8ecf-41d0-8744-4c6dfc4217cc"
+        }
+      }
+    },
+    "die": {
+      "group_id": "1f8b45e1-6f13-4563-888a-24f9609f7639",
+      "source_name": "custom-faints and fades away",
+      "directions": {
+        "east": {
+          "frames": 4,
+          "strip": "rune_lion/animations/die__east.webp",
+          "frame_paths": [
+            "rune_lion/animations/die/east/00.webp",
+            "rune_lion/animations/die/east/01.webp",
+            "rune_lion/animations/die/east/02.webp",
+            "rune_lion/animations/die/east/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:07:53 GMT",
+          "src_frames": 4,
+          "sub": "bfc3be11-aee6-4e42-bd43-3ee229376c8b"
+        },
+        "north": {
+          "frames": 4,
+          "strip": "rune_lion/animations/die__north.webp",
+          "frame_paths": [
+            "rune_lion/animations/die/north/00.webp",
+            "rune_lion/animations/die/north/01.webp",
+            "rune_lion/animations/die/north/02.webp",
+            "rune_lion/animations/die/north/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:07:55 GMT",
+          "src_frames": 4,
+          "sub": "2cc1806b-49c8-495d-9cff-726835294c1a"
+        },
+        "north-east": {
+          "frames": 4,
+          "strip": "rune_lion/animations/die__north-east.webp",
+          "frame_paths": [
+            "rune_lion/animations/die/north-east/00.webp",
+            "rune_lion/animations/die/north-east/01.webp",
+            "rune_lion/animations/die/north-east/02.webp",
+            "rune_lion/animations/die/north-east/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:07:56 GMT",
+          "src_frames": 4,
+          "sub": "e188e263-9565-4899-abad-4018fe72e725"
+        },
+        "north-west": {
+          "frames": 4,
+          "strip": "rune_lion/animations/die__north-west.webp",
+          "frame_paths": [
+            "rune_lion/animations/die/north-west/00.webp",
+            "rune_lion/animations/die/north-west/01.webp",
+            "rune_lion/animations/die/north-west/02.webp",
+            "rune_lion/animations/die/north-west/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:07:58 GMT",
+          "src_frames": 4,
+          "sub": "58135706-579e-4baf-9a7b-666ec124b217"
+        },
+        "south": {
+          "frames": 4,
+          "strip": "rune_lion/animations/die__south.webp",
+          "frame_paths": [
+            "rune_lion/animations/die/south/00.webp",
+            "rune_lion/animations/die/south/01.webp",
+            "rune_lion/animations/die/south/02.webp",
+            "rune_lion/animations/die/south/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:07:59 GMT",
+          "src_frames": 4,
+          "sub": "095633ae-446a-4e12-b22f-3ed0708be0f1"
+        },
+        "south-east": {
+          "frames": 4,
+          "strip": "rune_lion/animations/die__south-east.webp",
+          "frame_paths": [
+            "rune_lion/animations/die/south-east/00.webp",
+            "rune_lion/animations/die/south-east/01.webp",
+            "rune_lion/animations/die/south-east/02.webp",
+            "rune_lion/animations/die/south-east/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:08:01 GMT",
+          "src_frames": 4,
+          "sub": "d453e850-53e4-43fc-9d1d-cafd1490260a"
+        },
+        "south-west": {
+          "frames": 4,
+          "strip": "rune_lion/animations/die__south-west.webp",
+          "frame_paths": [
+            "rune_lion/animations/die/south-west/00.webp",
+            "rune_lion/animations/die/south-west/01.webp",
+            "rune_lion/animations/die/south-west/02.webp",
+            "rune_lion/animations/die/south-west/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:08:02 GMT",
+          "src_frames": 4,
+          "sub": "064630d2-5d84-46ef-b0f6-82237a4310f3"
+        },
+        "west": {
+          "frames": 4,
+          "strip": "rune_lion/animations/die__west.webp",
+          "frame_paths": [
+            "rune_lion/animations/die/west/00.webp",
+            "rune_lion/animations/die/west/01.webp",
+            "rune_lion/animations/die/west/02.webp",
+            "rune_lion/animations/die/west/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:08:03 GMT",
+          "src_frames": 4,
+          "sub": "a80b111f-75e0-4445-bc01-b857565b6f87"
+        }
+      }
+    },
+    "walk": {
+      "group_id": "f38d71ba-4fea-4a78-a24f-c3aeec855d69",
+      "source_name": "custom-walk loop. full walk cycle. sh",
+      "directions": {
+        "east": {
+          "frames": 6,
+          "strip": "rune_lion/animations/walk__east.webp",
+          "frame_paths": [
+            "rune_lion/animations/walk/east/00.webp",
+            "rune_lion/animations/walk/east/01.webp",
+            "rune_lion/animations/walk/east/02.webp",
+            "rune_lion/animations/walk/east/03.webp",
+            "rune_lion/animations/walk/east/04.webp",
+            "rune_lion/animations/walk/east/05.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:08:05 GMT",
+          "src_frames": 6,
+          "sub": "c273c1f3-45bd-4b73-82d4-ae930ef692db"
+        },
+        "north": {
+          "frames": 6,
+          "strip": "rune_lion/animations/walk__north.webp",
+          "frame_paths": [
+            "rune_lion/animations/walk/north/00.webp",
+            "rune_lion/animations/walk/north/01.webp",
+            "rune_lion/animations/walk/north/02.webp",
+            "rune_lion/animations/walk/north/03.webp",
+            "rune_lion/animations/walk/north/04.webp",
+            "rune_lion/animations/walk/north/05.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:08:06 GMT",
+          "src_frames": 6,
+          "sub": "6759cfb2-023a-4224-8236-79fed2e91aeb"
+        },
+        "north-east": {
+          "frames": 6,
+          "strip": "rune_lion/animations/walk__north-east.webp",
+          "frame_paths": [
+            "rune_lion/animations/walk/north-east/00.webp",
+            "rune_lion/animations/walk/north-east/01.webp",
+            "rune_lion/animations/walk/north-east/02.webp",
+            "rune_lion/animations/walk/north-east/03.webp",
+            "rune_lion/animations/walk/north-east/04.webp",
+            "rune_lion/animations/walk/north-east/05.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:08:08 GMT",
+          "src_frames": 6,
+          "sub": "fe54815c-8b4e-4470-a18b-e6ea1261ad0b"
+        },
+        "north-west": {
+          "frames": 6,
+          "strip": "rune_lion/animations/walk__north-west.webp",
+          "frame_paths": [
+            "rune_lion/animations/walk/north-west/00.webp",
+            "rune_lion/animations/walk/north-west/01.webp",
+            "rune_lion/animations/walk/north-west/02.webp",
+            "rune_lion/animations/walk/north-west/03.webp",
+            "rune_lion/animations/walk/north-west/04.webp",
+            "rune_lion/animations/walk/north-west/05.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:08:09 GMT",
+          "src_frames": 6,
+          "sub": "2e263f60-1591-440a-bc39-c08036d569c3"
+        },
+        "south": {
+          "frames": 6,
+          "strip": "rune_lion/animations/walk__south.webp",
+          "frame_paths": [
+            "rune_lion/animations/walk/south/00.webp",
+            "rune_lion/animations/walk/south/01.webp",
+            "rune_lion/animations/walk/south/02.webp",
+            "rune_lion/animations/walk/south/03.webp",
+            "rune_lion/animations/walk/south/04.webp",
+            "rune_lion/animations/walk/south/05.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:08:11 GMT",
+          "src_frames": 6,
+          "sub": "c7d806f1-4b6f-47b0-bbb5-a6038379a863"
+        },
+        "south-east": {
+          "frames": 6,
+          "strip": "rune_lion/animations/walk__south-east.webp",
+          "frame_paths": [
+            "rune_lion/animations/walk/south-east/00.webp",
+            "rune_lion/animations/walk/south-east/01.webp",
+            "rune_lion/animations/walk/south-east/02.webp",
+            "rune_lion/animations/walk/south-east/03.webp",
+            "rune_lion/animations/walk/south-east/04.webp",
+            "rune_lion/animations/walk/south-east/05.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:08:13 GMT",
+          "src_frames": 6,
+          "sub": "b0f5f259-e07a-465e-a1e3-e23e7934e408"
+        },
+        "south-west": {
+          "frames": 6,
+          "strip": "rune_lion/animations/walk__south-west.webp",
+          "frame_paths": [
+            "rune_lion/animations/walk/south-west/00.webp",
+            "rune_lion/animations/walk/south-west/01.webp",
+            "rune_lion/animations/walk/south-west/02.webp",
+            "rune_lion/animations/walk/south-west/03.webp",
+            "rune_lion/animations/walk/south-west/04.webp",
+            "rune_lion/animations/walk/south-west/05.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:08:14 GMT",
+          "src_frames": 6,
+          "sub": "75a7b4e9-ddf6-4c22-b42e-45ebc2ec4820"
+        },
+        "west": {
+          "frames": 6,
+          "strip": "rune_lion/animations/walk__west.webp",
+          "frame_paths": [
+            "rune_lion/animations/walk/west/00.webp",
+            "rune_lion/animations/walk/west/01.webp",
+            "rune_lion/animations/walk/west/02.webp",
+            "rune_lion/animations/walk/west/03.webp",
+            "rune_lion/animations/walk/west/04.webp",
+            "rune_lion/animations/walk/west/05.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:08:16 GMT",
+          "src_frames": 6,
+          "sub": "88593280-dacc-4aea-b7a0-da4c3c4091e3"
+        }
+      }
+    }
+  },
+  "states": {
+    "idle": "idle",
+    "walk": "walk",
+    "angry": "angry",
+    "attack": "attack",
+    "die": "die"
+  },
+  "unresolved_takes": [],
+  "synced_from_pixellab": true
+}

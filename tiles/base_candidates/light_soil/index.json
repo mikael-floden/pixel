@@ -1,0 +1,530 @@
+{
+ "ground": "light_soil",
+ "candidates": [
+  {
+   "id": "brown_paving_stone__to__light_soil__a00_s3",
+   "file": "tiles/base_candidates/light_soil/brown_paving_stone__to__light_soil__a00_s3.webp",
+   "source_set": "tiles/transitions/brown_paving_stone__to__light_soil/a00_s3"
+  },
+  {
+   "id": "brown_paving_stone__to__light_soil__a00_s5",
+   "file": "tiles/base_candidates/light_soil/brown_paving_stone__to__light_soil__a00_s5.webp",
+   "source_set": "tiles/transitions/brown_paving_stone__to__light_soil/a00_s5"
+  },
+  {
+   "id": "brown_paving_stone__to__light_soil__a03_s5",
+   "file": "tiles/base_candidates/light_soil/brown_paving_stone__to__light_soil__a03_s5.webp",
+   "source_set": "tiles/transitions/brown_paving_stone__to__light_soil/a03_s5"
+  },
+  {
+   "id": "brown_paving_stone__to__light_soil__a12_s4",
+   "file": "tiles/base_candidates/light_soil/brown_paving_stone__to__light_soil__a12_s4.webp",
+   "source_set": "tiles/transitions/brown_paving_stone__to__light_soil/a12_s4"
+  },
+  {
+   "id": "brown_paving_stone__to__light_soil__a14_s5",
+   "file": "tiles/base_candidates/light_soil/brown_paving_stone__to__light_soil__a14_s5.webp",
+   "source_set": "tiles/transitions/brown_paving_stone__to__light_soil/a14_s5"
+  },
+  {
+   "id": "brown_paving_stone__to__light_soil__a15_s2",
+   "file": "tiles/base_candidates/light_soil/brown_paving_stone__to__light_soil__a15_s2.webp",
+   "source_set": "tiles/transitions/brown_paving_stone__to__light_soil/a15_s2"
+  },
+  {
+   "id": "brown_paving_stone__to__light_soil__a15_s6",
+   "file": "tiles/base_candidates/light_soil/brown_paving_stone__to__light_soil__a15_s6.webp",
+   "source_set": "tiles/transitions/brown_paving_stone__to__light_soil/a15_s6"
+  },
+  {
+   "id": "brown_paving_stone__to__light_soil__a18_s4",
+   "file": "tiles/base_candidates/light_soil/brown_paving_stone__to__light_soil__a18_s4.webp",
+   "source_set": "tiles/transitions/brown_paving_stone__to__light_soil/a18_s4"
+  },
+  {
+   "id": "brown_paving_stone__to__light_soil__a18_s6",
+   "file": "tiles/base_candidates/light_soil/brown_paving_stone__to__light_soil__a18_s6.webp",
+   "source_set": "tiles/transitions/brown_paving_stone__to__light_soil/a18_s6"
+  },
+  {
+   "id": "brown_paving_stone__to__light_soil__a21_s2",
+   "file": "tiles/base_candidates/light_soil/brown_paving_stone__to__light_soil__a21_s2.webp",
+   "source_set": "tiles/transitions/brown_paving_stone__to__light_soil/a21_s2"
+  },
+  {
+   "id": "brown_paving_stone__to__light_soil__a21_s4",
+   "file": "tiles/base_candidates/light_soil/brown_paving_stone__to__light_soil__a21_s4.webp",
+   "source_set": "tiles/transitions/brown_paving_stone__to__light_soil/a21_s4"
+  },
+  {
+   "id": "brown_paving_stone__to__light_soil__a21_s5",
+   "file": "tiles/base_candidates/light_soil/brown_paving_stone__to__light_soil__a21_s5.webp",
+   "source_set": "tiles/transitions/brown_paving_stone__to__light_soil/a21_s5"
+  },
+  {
+   "id": "brown_paving_stone__to__light_soil__a23_s4",
+   "file": "tiles/base_candidates/light_soil/brown_paving_stone__to__light_soil__a23_s4.webp",
+   "source_set": "tiles/transitions/brown_paving_stone__to__light_soil/a23_s4"
+  },
+  {
+   "id": "brown_paving_stone__to__light_soil__a24_s6",
+   "file": "tiles/base_candidates/light_soil/brown_paving_stone__to__light_soil__a24_s6.webp",
+   "source_set": "tiles/transitions/brown_paving_stone__to__light_soil/a24_s6"
+  },
+  {
+   "id": "brown_paving_stone__to__light_soil__a30_s1",
+   "file": "tiles/base_candidates/light_soil/brown_paving_stone__to__light_soil__a30_s1.webp",
+   "source_set": "tiles/transitions/brown_paving_stone__to__light_soil/a30_s1"
+  },
+  {
+   "id": "dark_mud__to__light_soil__a00_s3",
+   "file": "tiles/base_candidates/light_soil/dark_mud__to__light_soil__a00_s3.webp",
+   "source_set": "tiles/transitions/dark_mud__to__light_soil/a00_s3"
+  },
+  {
+   "id": "dark_mud__to__light_soil__a00_s5",
+   "file": "tiles/base_candidates/light_soil/dark_mud__to__light_soil__a00_s5.webp",
+   "source_set": "tiles/transitions/dark_mud__to__light_soil/a00_s5"
+  },
+  {
+   "id": "dark_mud__to__light_soil__a03_s5",
+   "file": "tiles/base_candidates/light_soil/dark_mud__to__light_soil__a03_s5.webp",
+   "source_set": "tiles/transitions/dark_mud__to__light_soil/a03_s5"
+  },
+  {
+   "id": "dark_mud__to__light_soil__a12_s4",
+   "file": "tiles/base_candidates/light_soil/dark_mud__to__light_soil__a12_s4.webp",
+   "source_set": "tiles/transitions/dark_mud__to__light_soil/a12_s4"
+  },
+  {
+   "id": "dark_mud__to__light_soil__a14_s5",
+   "file": "tiles/base_candidates/light_soil/dark_mud__to__light_soil__a14_s5.webp",
+   "source_set": "tiles/transitions/dark_mud__to__light_soil/a14_s5"
+  },
+  {
+   "id": "dark_mud__to__light_soil__a15_s2",
+   "file": "tiles/base_candidates/light_soil/dark_mud__to__light_soil__a15_s2.webp",
+   "source_set": "tiles/transitions/dark_mud__to__light_soil/a15_s2"
+  },
+  {
+   "id": "dark_mud__to__light_soil__a15_s6",
+   "file": "tiles/base_candidates/light_soil/dark_mud__to__light_soil__a15_s6.webp",
+   "source_set": "tiles/transitions/dark_mud__to__light_soil/a15_s6"
+  },
+  {
+   "id": "dark_mud__to__light_soil__a18_s4",
+   "file": "tiles/base_candidates/light_soil/dark_mud__to__light_soil__a18_s4.webp",
+   "source_set": "tiles/transitions/dark_mud__to__light_soil/a18_s4"
+  },
+  {
+   "id": "dark_mud__to__light_soil__a18_s6",
+   "file": "tiles/base_candidates/light_soil/dark_mud__to__light_soil__a18_s6.webp",
+   "source_set": "tiles/transitions/dark_mud__to__light_soil/a18_s6"
+  },
+  {
+   "id": "dark_mud__to__light_soil__a21_s2",
+   "file": "tiles/base_candidates/light_soil/dark_mud__to__light_soil__a21_s2.webp",
+   "source_set": "tiles/transitions/dark_mud__to__light_soil/a21_s2"
+  },
+  {
+   "id": "dark_mud__to__light_soil__a21_s4",
+   "file": "tiles/base_candidates/light_soil/dark_mud__to__light_soil__a21_s4.webp",
+   "source_set": "tiles/transitions/dark_mud__to__light_soil/a21_s4"
+  },
+  {
+   "id": "dark_mud__to__light_soil__a21_s5",
+   "file": "tiles/base_candidates/light_soil/dark_mud__to__light_soil__a21_s5.webp",
+   "source_set": "tiles/transitions/dark_mud__to__light_soil/a21_s5"
+  },
+  {
+   "id": "dark_mud__to__light_soil__a23_s4",
+   "file": "tiles/base_candidates/light_soil/dark_mud__to__light_soil__a23_s4.webp",
+   "source_set": "tiles/transitions/dark_mud__to__light_soil/a23_s4"
+  },
+  {
+   "id": "dark_mud__to__light_soil__a24_s6",
+   "file": "tiles/base_candidates/light_soil/dark_mud__to__light_soil__a24_s6.webp",
+   "source_set": "tiles/transitions/dark_mud__to__light_soil/a24_s6"
+  },
+  {
+   "id": "dark_mud__to__light_soil__a30_s1",
+   "file": "tiles/base_candidates/light_soil/dark_mud__to__light_soil__a30_s1.webp",
+   "source_set": "tiles/transitions/dark_mud__to__light_soil/a30_s1"
+  },
+  {
+   "id": "deep_water__to__light_soil__a00_s3",
+   "file": "tiles/base_candidates/light_soil/deep_water__to__light_soil__a00_s3.webp",
+   "source_set": "tiles/transitions/deep_water__to__light_soil/a00_s3"
+  },
+  {
+   "id": "deep_water__to__light_soil__a00_s5",
+   "file": "tiles/base_candidates/light_soil/deep_water__to__light_soil__a00_s5.webp",
+   "source_set": "tiles/transitions/deep_water__to__light_soil/a00_s5"
+  },
+  {
+   "id": "deep_water__to__light_soil__a03_s5",
+   "file": "tiles/base_candidates/light_soil/deep_water__to__light_soil__a03_s5.webp",
+   "source_set": "tiles/transitions/deep_water__to__light_soil/a03_s5"
+  },
+  {
+   "id": "deep_water__to__light_soil__a12_s4",
+   "file": "tiles/base_candidates/light_soil/deep_water__to__light_soil__a12_s4.webp",
+   "source_set": "tiles/transitions/deep_water__to__light_soil/a12_s4"
+  },
+  {
+   "id": "deep_water__to__light_soil__a14_s5",
+   "file": "tiles/base_candidates/light_soil/deep_water__to__light_soil__a14_s5.webp",
+   "source_set": "tiles/transitions/deep_water__to__light_soil/a14_s5"
+  },
+  {
+   "id": "deep_water__to__light_soil__a15_s2",
+   "file": "tiles/base_candidates/light_soil/deep_water__to__light_soil__a15_s2.webp",
+   "source_set": "tiles/transitions/deep_water__to__light_soil/a15_s2"
+  },
+  {
+   "id": "deep_water__to__light_soil__a15_s6",
+   "file": "tiles/base_candidates/light_soil/deep_water__to__light_soil__a15_s6.webp",
+   "source_set": "tiles/transitions/deep_water__to__light_soil/a15_s6"
+  },
+  {
+   "id": "deep_water__to__light_soil__a18_s4",
+   "file": "tiles/base_candidates/light_soil/deep_water__to__light_soil__a18_s4.webp",
+   "source_set": "tiles/transitions/deep_water__to__light_soil/a18_s4"
+  },
+  {
+   "id": "deep_water__to__light_soil__a18_s6",
+   "file": "tiles/base_candidates/light_soil/deep_water__to__light_soil__a18_s6.webp",
+   "source_set": "tiles/transitions/deep_water__to__light_soil/a18_s6"
+  },
+  {
+   "id": "deep_water__to__light_soil__a21_s2",
+   "file": "tiles/base_candidates/light_soil/deep_water__to__light_soil__a21_s2.webp",
+   "source_set": "tiles/transitions/deep_water__to__light_soil/a21_s2"
+  },
+  {
+   "id": "deep_water__to__light_soil__a21_s4",
+   "file": "tiles/base_candidates/light_soil/deep_water__to__light_soil__a21_s4.webp",
+   "source_set": "tiles/transitions/deep_water__to__light_soil/a21_s4"
+  },
+  {
+   "id": "deep_water__to__light_soil__a21_s5",
+   "file": "tiles/base_candidates/light_soil/deep_water__to__light_soil__a21_s5.webp",
+   "source_set": "tiles/transitions/deep_water__to__light_soil/a21_s5"
+  },
+  {
+   "id": "deep_water__to__light_soil__a23_s4",
+   "file": "tiles/base_candidates/light_soil/deep_water__to__light_soil__a23_s4.webp",
+   "source_set": "tiles/transitions/deep_water__to__light_soil/a23_s4"
+  },
+  {
+   "id": "deep_water__to__light_soil__a24_s6",
+   "file": "tiles/base_candidates/light_soil/deep_water__to__light_soil__a24_s6.webp",
+   "source_set": "tiles/transitions/deep_water__to__light_soil/a24_s6"
+  },
+  {
+   "id": "deep_water__to__light_soil__a30_s1",
+   "file": "tiles/base_candidates/light_soil/deep_water__to__light_soil__a30_s1.webp",
+   "source_set": "tiles/transitions/deep_water__to__light_soil/a30_s1"
+  },
+  {
+   "id": "grey_stone__to__light_soil__a00_s3",
+   "file": "tiles/base_candidates/light_soil/grey_stone__to__light_soil__a00_s3.webp",
+   "source_set": "tiles/transitions/grey_stone__to__light_soil/a00_s3"
+  },
+  {
+   "id": "grey_stone__to__light_soil__a00_s5",
+   "file": "tiles/base_candidates/light_soil/grey_stone__to__light_soil__a00_s5.webp",
+   "source_set": "tiles/transitions/grey_stone__to__light_soil/a00_s5"
+  },
+  {
+   "id": "grey_stone__to__light_soil__a03_s5",
+   "file": "tiles/base_candidates/light_soil/grey_stone__to__light_soil__a03_s5.webp",
+   "source_set": "tiles/transitions/grey_stone__to__light_soil/a03_s5"
+  },
+  {
+   "id": "grey_stone__to__light_soil__a12_s4",
+   "file": "tiles/base_candidates/light_soil/grey_stone__to__light_soil__a12_s4.webp",
+   "source_set": "tiles/transitions/grey_stone__to__light_soil/a12_s4"
+  },
+  {
+   "id": "grey_stone__to__light_soil__a14_s5",
+   "file": "tiles/base_candidates/light_soil/grey_stone__to__light_soil__a14_s5.webp",
+   "source_set": "tiles/transitions/grey_stone__to__light_soil/a14_s5"
+  },
+  {
+   "id": "grey_stone__to__light_soil__a15_s2",
+   "file": "tiles/base_candidates/light_soil/grey_stone__to__light_soil__a15_s2.webp",
+   "source_set": "tiles/transitions/grey_stone__to__light_soil/a15_s2"
+  },
+  {
+   "id": "grey_stone__to__light_soil__a15_s6",
+   "file": "tiles/base_candidates/light_soil/grey_stone__to__light_soil__a15_s6.webp",
+   "source_set": "tiles/transitions/grey_stone__to__light_soil/a15_s6"
+  },
+  {
+   "id": "grey_stone__to__light_soil__a18_s4",
+   "file": "tiles/base_candidates/light_soil/grey_stone__to__light_soil__a18_s4.webp",
+   "source_set": "tiles/transitions/grey_stone__to__light_soil/a18_s4"
+  },
+  {
+   "id": "grey_stone__to__light_soil__a18_s6",
+   "file": "tiles/base_candidates/light_soil/grey_stone__to__light_soil__a18_s6.webp",
+   "source_set": "tiles/transitions/grey_stone__to__light_soil/a18_s6"
+  },
+  {
+   "id": "grey_stone__to__light_soil__a21_s2",
+   "file": "tiles/base_candidates/light_soil/grey_stone__to__light_soil__a21_s2.webp",
+   "source_set": "tiles/transitions/grey_stone__to__light_soil/a21_s2"
+  },
+  {
+   "id": "grey_stone__to__light_soil__a21_s4",
+   "file": "tiles/base_candidates/light_soil/grey_stone__to__light_soil__a21_s4.webp",
+   "source_set": "tiles/transitions/grey_stone__to__light_soil/a21_s4"
+  },
+  {
+   "id": "grey_stone__to__light_soil__a21_s5",
+   "file": "tiles/base_candidates/light_soil/grey_stone__to__light_soil__a21_s5.webp",
+   "source_set": "tiles/transitions/grey_stone__to__light_soil/a21_s5"
+  },
+  {
+   "id": "grey_stone__to__light_soil__a23_s4",
+   "file": "tiles/base_candidates/light_soil/grey_stone__to__light_soil__a23_s4.webp",
+   "source_set": "tiles/transitions/grey_stone__to__light_soil/a23_s4"
+  },
+  {
+   "id": "grey_stone__to__light_soil__a24_s6",
+   "file": "tiles/base_candidates/light_soil/grey_stone__to__light_soil__a24_s6.webp",
+   "source_set": "tiles/transitions/grey_stone__to__light_soil/a24_s6"
+  },
+  {
+   "id": "grey_stone__to__light_soil__a30_s1",
+   "file": "tiles/base_candidates/light_soil/grey_stone__to__light_soil__a30_s1.webp",
+   "source_set": "tiles/transitions/grey_stone__to__light_soil/a30_s1"
+  },
+  {
+   "id": "light_beach__to__light_soil__a00_s3",
+   "file": "tiles/base_candidates/light_soil/light_beach__to__light_soil__a00_s3.webp",
+   "source_set": "tiles/transitions/light_beach__to__light_soil/a00_s3"
+  },
+  {
+   "id": "light_beach__to__light_soil__a00_s5",
+   "file": "tiles/base_candidates/light_soil/light_beach__to__light_soil__a00_s5.webp",
+   "source_set": "tiles/transitions/light_beach__to__light_soil/a00_s5"
+  },
+  {
+   "id": "light_beach__to__light_soil__a03_s5",
+   "file": "tiles/base_candidates/light_soil/light_beach__to__light_soil__a03_s5.webp",
+   "source_set": "tiles/transitions/light_beach__to__light_soil/a03_s5"
+  },
+  {
+   "id": "light_beach__to__light_soil__a12_s4",
+   "file": "tiles/base_candidates/light_soil/light_beach__to__light_soil__a12_s4.webp",
+   "source_set": "tiles/transitions/light_beach__to__light_soil/a12_s4"
+  },
+  {
+   "id": "light_beach__to__light_soil__a14_s5",
+   "file": "tiles/base_candidates/light_soil/light_beach__to__light_soil__a14_s5.webp",
+   "source_set": "tiles/transitions/light_beach__to__light_soil/a14_s5"
+  },
+  {
+   "id": "light_beach__to__light_soil__a15_s2",
+   "file": "tiles/base_candidates/light_soil/light_beach__to__light_soil__a15_s2.webp",
+   "source_set": "tiles/transitions/light_beach__to__light_soil/a15_s2"
+  },
+  {
+   "id": "light_beach__to__light_soil__a15_s6",
+   "file": "tiles/base_candidates/light_soil/light_beach__to__light_soil__a15_s6.webp",
+   "source_set": "tiles/transitions/light_beach__to__light_soil/a15_s6"
+  },
+  {
+   "id": "light_beach__to__light_soil__a18_s4",
+   "file": "tiles/base_candidates/light_soil/light_beach__to__light_soil__a18_s4.webp",
+   "source_set": "tiles/transitions/light_beach__to__light_soil/a18_s4"
+  },
+  {
+   "id": "light_beach__to__light_soil__a18_s6",
+   "file": "tiles/base_candidates/light_soil/light_beach__to__light_soil__a18_s6.webp",
+   "source_set": "tiles/transitions/light_beach__to__light_soil/a18_s6"
+  },
+  {
+   "id": "light_beach__to__light_soil__a21_s2",
+   "file": "tiles/base_candidates/light_soil/light_beach__to__light_soil__a21_s2.webp",
+   "source_set": "tiles/transitions/light_beach__to__light_soil/a21_s2"
+  },
+  {
+   "id": "light_beach__to__light_soil__a21_s4",
+   "file": "tiles/base_candidates/light_soil/light_beach__to__light_soil__a21_s4.webp",
+   "source_set": "tiles/transitions/light_beach__to__light_soil/a21_s4"
+  },
+  {
+   "id": "light_beach__to__light_soil__a21_s5",
+   "file": "tiles/base_candidates/light_soil/light_beach__to__light_soil__a21_s5.webp",
+   "source_set": "tiles/transitions/light_beach__to__light_soil/a21_s5"
+  },
+  {
+   "id": "light_beach__to__light_soil__a23_s4",
+   "file": "tiles/base_candidates/light_soil/light_beach__to__light_soil__a23_s4.webp",
+   "source_set": "tiles/transitions/light_beach__to__light_soil/a23_s4"
+  },
+  {
+   "id": "light_beach__to__light_soil__a24_s6",
+   "file": "tiles/base_candidates/light_soil/light_beach__to__light_soil__a24_s6.webp",
+   "source_set": "tiles/transitions/light_beach__to__light_soil/a24_s6"
+  },
+  {
+   "id": "light_beach__to__light_soil__a30_s1",
+   "file": "tiles/base_candidates/light_soil/light_beach__to__light_soil__a30_s1.webp",
+   "source_set": "tiles/transitions/light_beach__to__light_soil/a30_s1"
+  },
+  {
+   "id": "light_soil__to__snow__a00_s3",
+   "file": "tiles/base_candidates/light_soil/light_soil__to__snow__a00_s3.webp",
+   "source_set": "tiles/transitions/light_soil__to__snow/a00_s3"
+  },
+  {
+   "id": "light_soil__to__snow__a00_s5",
+   "file": "tiles/base_candidates/light_soil/light_soil__to__snow__a00_s5.webp",
+   "source_set": "tiles/transitions/light_soil__to__snow/a00_s5"
+  },
+  {
+   "id": "light_soil__to__snow__a03_s5",
+   "file": "tiles/base_candidates/light_soil/light_soil__to__snow__a03_s5.webp",
+   "source_set": "tiles/transitions/light_soil__to__snow/a03_s5"
+  },
+  {
+   "id": "light_soil__to__snow__a12_s4",
+   "file": "tiles/base_candidates/light_soil/light_soil__to__snow__a12_s4.webp",
+   "source_set": "tiles/transitions/light_soil__to__snow/a12_s4"
+  },
+  {
+   "id": "light_soil__to__snow__a14_s5",
+   "file": "tiles/base_candidates/light_soil/light_soil__to__snow__a14_s5.webp",
+   "source_set": "tiles/transitions/light_soil__to__snow/a14_s5"
+  },
+  {
+   "id": "light_soil__to__snow__a15_s2",
+   "file": "tiles/base_candidates/light_soil/light_soil__to__snow__a15_s2.webp",
+   "source_set": "tiles/transitions/light_soil__to__snow/a15_s2"
+  },
+  {
+   "id": "light_soil__to__snow__a15_s6",
+   "file": "tiles/base_candidates/light_soil/light_soil__to__snow__a15_s6.webp",
+   "source_set": "tiles/transitions/light_soil__to__snow/a15_s6"
+  },
+  {
+   "id": "light_soil__to__snow__a18_s4",
+   "file": "tiles/base_candidates/light_soil/light_soil__to__snow__a18_s4.webp",
+   "source_set": "tiles/transitions/light_soil__to__snow/a18_s4"
+  },
+  {
+   "id": "light_soil__to__snow__a18_s6",
+   "file": "tiles/base_candidates/light_soil/light_soil__to__snow__a18_s6.webp",
+   "source_set": "tiles/transitions/light_soil__to__snow/a18_s6"
+  },
+  {
+   "id": "light_soil__to__snow__a21_s2",
+   "file": "tiles/base_candidates/light_soil/light_soil__to__snow__a21_s2.webp",
+   "source_set": "tiles/transitions/light_soil__to__snow/a21_s2"
+  },
+  {
+   "id": "light_soil__to__snow__a21_s4",
+   "file": "tiles/base_candidates/light_soil/light_soil__to__snow__a21_s4.webp",
+   "source_set": "tiles/transitions/light_soil__to__snow/a21_s4"
+  },
+  {
+   "id": "light_soil__to__snow__a21_s5",
+   "file": "tiles/base_candidates/light_soil/light_soil__to__snow__a21_s5.webp",
+   "source_set": "tiles/transitions/light_soil__to__snow/a21_s5"
+  },
+  {
+   "id": "light_soil__to__snow__a23_s4",
+   "file": "tiles/base_candidates/light_soil/light_soil__to__snow__a23_s4.webp",
+   "source_set": "tiles/transitions/light_soil__to__snow/a23_s4"
+  },
+  {
+   "id": "light_soil__to__snow__a24_s6",
+   "file": "tiles/base_candidates/light_soil/light_soil__to__snow__a24_s6.webp",
+   "source_set": "tiles/transitions/light_soil__to__snow/a24_s6"
+  },
+  {
+   "id": "light_soil__to__snow__a30_s1",
+   "file": "tiles/base_candidates/light_soil/light_soil__to__snow__a30_s1.webp",
+   "source_set": "tiles/transitions/light_soil__to__snow/a30_s1"
+  },
+  {
+   "id": "light_soil__to__water__a00_s3",
+   "file": "tiles/base_candidates/light_soil/light_soil__to__water__a00_s3.webp",
+   "source_set": "tiles/transitions/light_soil__to__water/a00_s3"
+  },
+  {
+   "id": "light_soil__to__water__a00_s5",
+   "file": "tiles/base_candidates/light_soil/light_soil__to__water__a00_s5.webp",
+   "source_set": "tiles/transitions/light_soil__to__water/a00_s5"
+  },
+  {
+   "id": "light_soil__to__water__a03_s5",
+   "file": "tiles/base_candidates/light_soil/light_soil__to__water__a03_s5.webp",
+   "source_set": "tiles/transitions/light_soil__to__water/a03_s5"
+  },
+  {
+   "id": "light_soil__to__water__a12_s4",
+   "file": "tiles/base_candidates/light_soil/light_soil__to__water__a12_s4.webp",
+   "source_set": "tiles/transitions/light_soil__to__water/a12_s4"
+  },
+  {
+   "id": "light_soil__to__water__a14_s5",
+   "file": "tiles/base_candidates/light_soil/light_soil__to__water__a14_s5.webp",
+   "source_set": "tiles/transitions/light_soil__to__water/a14_s5"
+  },
+  {
+   "id": "light_soil__to__water__a15_s2",
+   "file": "tiles/base_candidates/light_soil/light_soil__to__water__a15_s2.webp",
+   "source_set": "tiles/transitions/light_soil__to__water/a15_s2"
+  },
+  {
+   "id": "light_soil__to__water__a15_s6",
+   "file": "tiles/base_candidates/light_soil/light_soil__to__water__a15_s6.webp",
+   "source_set": "tiles/transitions/light_soil__to__water/a15_s6"
+  },
+  {
+   "id": "light_soil__to__water__a18_s4",
+   "file": "tiles/base_candidates/light_soil/light_soil__to__water__a18_s4.webp",
+   "source_set": "tiles/transitions/light_soil__to__water/a18_s4"
+  },
+  {
+   "id": "light_soil__to__water__a18_s6",
+   "file": "tiles/base_candidates/light_soil/light_soil__to__water__a18_s6.webp",
+   "source_set": "tiles/transitions/light_soil__to__water/a18_s6"
+  },
+  {
+   "id": "light_soil__to__water__a21_s2",
+   "file": "tiles/base_candidates/light_soil/light_soil__to__water__a21_s2.webp",
+   "source_set": "tiles/transitions/light_soil__to__water/a21_s2"
+  },
+  {
+   "id": "light_soil__to__water__a21_s4",
+   "file": "tiles/base_candidates/light_soil/light_soil__to__water__a21_s4.webp",
+   "source_set": "tiles/transitions/light_soil__to__water/a21_s4"
+  },
+  {
+   "id": "light_soil__to__water__a21_s5",
+   "file": "tiles/base_candidates/light_soil/light_soil__to__water__a21_s5.webp",
+   "source_set": "tiles/transitions/light_soil__to__water/a21_s5"
+  },
+  {
+   "id": "light_soil__to__water__a23_s4",
+   "file": "tiles/base_candidates/light_soil/light_soil__to__water__a23_s4.webp",
+   "source_set": "tiles/transitions/light_soil__to__water/a23_s4"
+  },
+  {
+   "id": "light_soil__to__water__a24_s6",
+   "file": "tiles/base_candidates/light_soil/light_soil__to__water__a24_s6.webp",
+   "source_set": "tiles/transitions/light_soil__to__water/a24_s6"
+  },
+  {
+   "id": "light_soil__to__water__a30_s1",
+   "file": "tiles/base_candidates/light_soil/light_soil__to__water__a30_s1.webp",
+   "source_set": "tiles/transitions/light_soil__to__water/a30_s1"
+  }
+ ]
+}

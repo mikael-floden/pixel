@@ -1,0 +1,282 @@
+{
+  "format": "scenery-piece@2",
+  "id": "beacon_008",
+  "group": "beacons",
+  "rank": 46,
+  "index": 8,
+  "name": "Moss-footed forgotten beacon 008",
+  "lights": null,
+  "variety": "moss-footed forgotten beacon",
+  "glow_concept": "pillar of pale soul-light rising skyward",
+  "prompt": "a tall tarred timber mast with climbing rungs and an iron fire cage mounted at its top, moss-footed forgotten beacon, tall, about three times human height, self-emissive at night, softly radiating light: pillar of pale soul-light rising skyward",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 192,
+  "sprite": "beacons/beacon_008/sprite.webp",
+  "placement": {
+    "world_height_m": 3.42,
+    "world_px_height": 175,
+    "character_height_px": 87,
+    "character_height_m": 1.7,
+    "note": "ONE SCENERY PIXEL IS ONE PLAYER PIXEL. world_px_height IS the art's own alpha bbox height, so scenery is placed into the world at 1:1 exactly as the avatar is (setScale(1)) and the two share one pixel grid. The CAMERA still zooms the whole scene \u2014 that is uniform and correct; what must never happen is scenery being resampled on its own, against the player. world_height_m is what the art reads as beside a 87px character; declared_height_m is what it was once declared to be, and a gap between them means the ART is the wrong size.",
+    "declared_height_m": 3.28,
+    "content_box": [
+      57,
+      10,
+      135,
+      185
+    ],
+    "content_px_height": 175,
+    "canvas_render_px": 192
+  },
+  "pixellab_object_id": "576e2114-e90b-454d-aa04-c507a15c8a6b",
+  "pixellab_directions": 1,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-1-direction-object (single, S-only)",
+  "must_be_imbplemented_with_random_hflip": true,
+  "generated_at": "2026-08-13T21:45:25+00:00",
+  "states": {
+    "LIT_1": {
+      "sprite": "beacons/beacon_008/sprite.webp",
+      "pixellab_object_id": "576e2114-e90b-454d-aa04-c507a15c8a6b",
+      "generated_at": "2026-08-13T21:45:25+00:00"
+    },
+    "LIT_2": {
+      "sprite": "beacons/beacon_008/lit_2/sprite.webp",
+      "pixellab_object_id": "d8d733dc-a779-4851-8a79-ca912fc65918",
+      "generated_at": "2026-08-15T19:54:24+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.5262,
+      "glow_score": 0.1233,
+      "animations": {
+        "motion": {
+          "group_id": "6a240bdf-cd22-4d13-9b4c-fbe27fa1b575",
+          "description": "This is the same picture in every frame. ONLY the cyan flame inside the cage flickers. Everything else in the picture is copied from the first frame exactly, pixel for pixel, unchanged in shape, size, position and colour. No outline anywhere is redrawn. The last frame matches the first frame exactly, so the loop joins. Nothing anywhere becomes darker, lighter or a different colour except the one thing named above.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "beacons/beacon_008/lit_2/animations/motion/00.webp",
+            "beacons/beacon_008/lit_2/animations/motion/01.webp",
+            "beacons/beacon_008/lit_2/animations/motion/02.webp",
+            "beacons/beacon_008/lit_2/animations/motion/03.webp",
+            "beacons/beacon_008/lit_2/animations/motion/04.webp"
+          ],
+          "strip": "beacons/beacon_008/lit_2/animations/motion__strip.webp",
+          "directions": null,
+          "generated_at": "2026-08-29T16:15:41+00:00",
+          "brief": "Y10",
+          "review": "ANIMATION_PROBABLY_GOOD",
+          "review_metrics": {
+            "class": "fire",
+            "base": 0.0545,
+            "still": 0.825
+          },
+          "light_frames": [
+            {
+              "intensity": 0.992,
+              "dx": -0.2,
+              "dy": -53.1
+            },
+            {
+              "intensity": 1.005,
+              "dx": -0.5,
+              "dy": -53.8
+            },
+            {
+              "intensity": 1.2,
+              "dx": -1.4,
+              "dy": -51.4
+            },
+            {
+              "intensity": 0.937,
+              "dx": -1.1,
+              "dy": -49.8
+            },
+            {
+              "intensity": 0.866,
+              "dx": -0.1,
+              "dy": -48.9
+            }
+          ]
+        }
+      }
+    },
+    "LIT_3": {
+      "sprite": "beacons/beacon_008/lit_3/sprite.webp",
+      "pixellab_object_id": "37dfa728-e014-45ea-96da-2fc19789cf04",
+      "generated_at": "2026-08-15T19:54:25+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.6242,
+      "glow_score": 0.1345,
+      "animations": {
+        "motion": {
+          "group_id": "aac448b7-d238-4e82-a65a-d06aa702d101",
+          "description": "This is the same picture in every frame. ONLY the pale green flame inside the cage flickers. It is lit and clearly visible in every single frame, including the first. Everything else in the picture is copied from the first frame exactly, pixel for pixel, unchanged in shape, size, position and colour. No outline anywhere is redrawn. The last frame matches the first frame exactly, so the loop joins.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "beacons/beacon_008/lit_3/animations/motion/00.webp",
+            "beacons/beacon_008/lit_3/animations/motion/01.webp",
+            "beacons/beacon_008/lit_3/animations/motion/02.webp",
+            "beacons/beacon_008/lit_3/animations/motion/03.webp",
+            "beacons/beacon_008/lit_3/animations/motion/04.webp"
+          ],
+          "strip": "beacons/beacon_008/lit_3/animations/motion__strip.webp",
+          "directions": null,
+          "generated_at": "2026-08-29T16:55:08+00:00",
+          "brief": "Z4",
+          "review": "ANIMATION_PROBABLY_GOOD",
+          "review_metrics": {
+            "base_outline": 0.0
+          },
+          "light_frames": [
+            {
+              "intensity": 0.5,
+              "dx": -2.6,
+              "dy": -69.9
+            },
+            {
+              "intensity": 1.0,
+              "dx": -3.6,
+              "dy": -70.0
+            },
+            {
+              "intensity": 1.5,
+              "dx": -2.1,
+              "dy": -72.9
+            },
+            {
+              "intensity": 0.875,
+              "dx": -2.3,
+              "dy": -75.3
+            },
+            {
+              "intensity": 1.25,
+              "dx": -2.5,
+              "dy": -61.4
+            }
+          ]
+        }
+      }
+    },
+    "LIT_4": {
+      "sprite": "beacons/beacon_008/lit_4/sprite.webp",
+      "pixellab_object_id": "2f9b832d-7ac8-4ae4-83a0-492663cb487f",
+      "generated_at": "2026-08-15T19:54:14+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.5629,
+      "glow_score": 0.0995,
+      "animations": {
+        "motion": {
+          "group_id": "40c62e28-f8a1-4b45-823c-a860abcffc1c",
+          "description": "This is the same picture in every frame. ONLY the cyan flame at the top flickers. It is lit and clearly visible in every frame, including the first. It stays exactly the same size and shape in every frame: it never grows and never spreads, only its brightness shifts. Nothing is added or removed anywhere: every object appears in every frame, the same number of them, in the same places, at the same size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour, no outline redrawn. The last frame matches the first exactly.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "beacons/beacon_008/lit_4/animations/motion/00.webp",
+            "beacons/beacon_008/lit_4/animations/motion/01.webp",
+            "beacons/beacon_008/lit_4/animations/motion/02.webp",
+            "beacons/beacon_008/lit_4/animations/motion/03.webp",
+            "beacons/beacon_008/lit_4/animations/motion/04.webp"
+          ],
+          "strip": "beacons/beacon_008/lit_4/animations/motion__strip.webp",
+          "directions": null,
+          "generated_at": "2026-08-30T08:16:16+00:00",
+          "brief": "G1",
+          "review": "ANIMATION_PROBABLY_GOOD",
+          "review_metrics": {
+            "class": "fire",
+            "base": 0.0427,
+            "still": 0.706
+          },
+          "light_frames": [
+            {
+              "intensity": 1.031,
+              "dx": -1.7,
+              "dy": -70.1
+            },
+            {
+              "intensity": 1.329,
+              "dx": -1.6,
+              "dy": -68.1
+            },
+            {
+              "intensity": 1.451,
+              "dx": -2.1,
+              "dy": -65.9
+            },
+            {
+              "intensity": 0.542,
+              "dx": -0.1,
+              "dy": -69.6
+            },
+            {
+              "intensity": 0.647,
+              "dx": -3.4,
+              "dy": -67.8
+            }
+          ]
+        }
+      }
+    },
+    "NOT_LIT_1": {
+      "sprite": "beacons/beacon_008/not_lit_1/sprite.webp",
+      "pixellab_object_id": "18eda246-27bd-426b-a93b-5d874607c955",
+      "generated_at": "2026-08-15T19:54:26+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.5914,
+      "glow_score": 0.0
+    },
+    "NOT_LIT_2": {
+      "sprite": "beacons/beacon_008/not_lit_2/sprite.webp",
+      "pixellab_object_id": "5dd78a46-c02d-4d07-a2f9-4f22a1bb8284",
+      "generated_at": "2026-08-15T19:54:27+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.2852,
+      "glow_score": 0.0
+    }
+  },
+  "collision": true,
+  "hitbox_shape": "ellipse",
+  "light": {
+    "strength": 0.9,
+    "color": "#eefffa",
+    "radius": 16,
+    "reference": "the spawn bonfire is 1.0 (radius 7); strength 0 is no light",
+    "states": {
+      "LIT_1": {
+        "strength": 1.0,
+        "color": "#eefffa",
+        "radius": 18
+      },
+      "LIT_2": {
+        "strength": 1.0,
+        "color": "#daffee",
+        "radius": 18
+      },
+      "LIT_3": {
+        "strength": 1.0,
+        "color": "#dcffee",
+        "radius": 18
+      },
+      "LIT_4": {
+        "strength": 0.9,
+        "color": "#e7fff6",
+        "radius": 16
+      }
+    },
+    "kind": "fire/open",
+    "flame": true,
+    "embers": true
+  }
+}

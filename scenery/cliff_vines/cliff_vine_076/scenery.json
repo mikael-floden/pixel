@@ -1,0 +1,88 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-14T05:00:14+00:00",
+  "id": "cliff_vine_076",
+  "group": "cliff_vines",
+  "rank": 101,
+  "index": 76,
+  "name": "Yellow honeysuckle fall 076",
+  "lights": null,
+  "variety": "yellow honeysuckle fall",
+  "modifier": "gathering low, sparse above",
+  "glow_concept": "pale blue soul-flowers dotted down the fall",
+  "prompt": "beautiful lush climbing ivy growing wild across an old ruin wall, deep green leaves in loose overlapping clusters with long trailing tendrils between them, lush fantasy RPG nature art, rich and beautiful, uneven natural growth that is thick and leafy in a few places and bare stone-empty elsewhere, drifting off one side, no straight edges, no border, nothing it hangs from and no line across the top, fading away into a few last leaves at the edges, transparent background, no rock or wall behind it, yellow honeysuckle fall, gathering low, sparse above, towering, many times human height, self-emissive at night, softly radiating light: pale blue soul-flowers dotted down the fall",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 256,
+  "sprite": "cliff_vines/cliff_vine_076/sprite.webp",
+  "placement": {
+    "world_height_m": 4.455,
+    "world_px_height": 228,
+    "character_height_px": 87,
+    "character_height_m": 1.7,
+    "note": "ONE SCENERY PIXEL IS ONE PLAYER PIXEL. world_px_height IS the art's own alpha bbox height, so scenery is placed into the world at 1:1 exactly as the avatar is (setScale(1)) and the two share one pixel grid. The CAMERA still zooms the whole scene \u2014 that is uniform and correct; what must never happen is scenery being resampled on its own, against the player. world_height_m is what the art reads as beside a 87px character; declared_height_m is what it was once declared to be, and a gap between them means the ART is the wrong size.",
+    "declared_height_m": 7.04,
+    "content_box": [
+      18,
+      18,
+      243,
+      246
+    ],
+    "content_px_height": 228,
+    "canvas_render_px": 256
+  },
+  "pixellab_object_id": "7e2eb4e9-b6ef-4368-8318-265de17be365",
+  "pixellab_directions": 1,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-1-direction-object (single, S-only)",
+  "must_be_imbplemented_with_random_hflip": true,
+  "states": {
+    "NOT_LIT_1": {
+      "sprite": "cliff_vines/cliff_vine_076/not_lit_1/sprite.webp",
+      "pixellab_object_id": "4d428e6f-34fe-4d21-be8b-c45182e46fe2",
+      "generated_at": "2026-08-16T10:48:06+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.3509,
+      "glow_score": 0.0252
+    },
+    "NOT_LIT_3": {
+      "sprite": "cliff_vines/cliff_vine_076/sprite.webp",
+      "pixellab_object_id": "7e2eb4e9-b6ef-4368-8318-265de17be365",
+      "generated_at": "2026-08-14T05:00:14+00:00",
+      "relit_from": "LIT_1"
+    },
+    "NOT_LIT_4": {
+      "sprite": "cliff_vines/cliff_vine_076/not_lit_4/sprite.webp",
+      "pixellab_object_id": "29240c86-c56e-426a-9234-ef61960a8059",
+      "generated_at": "2026-08-16T10:47:24+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.3454,
+      "glow_score": 0.0681,
+      "relit_from": "LIT_2"
+    },
+    "NOT_LIT_5": {
+      "sprite": "cliff_vines/cliff_vine_076/not_lit_5/sprite.webp",
+      "pixellab_object_id": "4a5a3a33-9425-4179-b63d-4fd6378db0dd",
+      "generated_at": "2026-08-16T10:47:55+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.3702,
+      "glow_score": 0.0486,
+      "relit_from": "LIT_3"
+    },
+    "NOT_LIT_6": {
+      "sprite": "cliff_vines/cliff_vine_076/not_lit_6/sprite.webp",
+      "pixellab_object_id": "73b5f3e5-97a7-4d83-907b-a2804b62ab07",
+      "generated_at": "2026-08-16T10:48:50+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.2578,
+      "glow_score": 0.0737,
+      "relit_from": "LIT_4"
+    }
+  },
+  "collision": true,
+  "hitbox_shape": "ellipse"
+}

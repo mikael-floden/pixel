@@ -1,6 +1,6 @@
 {
   "format": "pixel-wiki-tuning-monsters@1",
-  "updated_at": "2026-08-05T05:16:05.758Z",
+  "updated_at": "2026-08-24T17:59:10.487Z",
   "defaults": {
     "level": 1,
     "max_hp": 20,
@@ -13,6 +13,276 @@
     "loot": []
   },
   "monsters": {
+    "armor_tusker": {
+      "max_hp": 125,
+      "damage": 20,
+      "speed_wu": 35,
+      "aggro_radius_wu": 0,
+      "attack_cooldown_ms": 1500,
+      "xp": 204,
+      "scale": 1,
+      "loot": [
+        {
+          "item": "blue_plate_stone",
+          "chance": 0.02
+        },
+        {
+          "item": "blunt_ivory_tooth",
+          "chance": 0.128
+        },
+        {
+          "item": "broken_boar_tusk",
+          "chance": 0.128
+        },
+        {
+          "item": "dark_iron_quills",
+          "chance": 0.128
+        },
+        {
+          "item": "great_curved_fang",
+          "chance": 0.128
+        },
+        {
+          "item": "worn_tan_tusk",
+          "chance": 0.128
+        },
+        {
+          "item": "raw_red_meat_slab",
+          "chance": 0.256
+        }
+      ],
+      "level": 11,
+      "shadow": {
+        "rx": 34,
+        "ry": 16.25,
+        "offsets": {
+          "idle#east": {
+            "ax": -3.51,
+            "ay": 23.53
+          },
+          "idle#south": {
+            "ax": -0.35,
+            "ay": 23.84
+          },
+          "idle#south-east": {
+            "ax": -1.21,
+            "ay": 24.4
+          },
+          "idle#north-east": {
+            "ax": 1.07,
+            "ay": 23.03
+          },
+          "idle#north": {
+            "ax": -0.44,
+            "ay": 25.17
+          },
+          "idle#north-west": {
+            "ax": 0.41,
+            "ay": 25.02
+          },
+          "idle#west": {
+            "ax": 2.41,
+            "ay": 24.24
+          },
+          "idle#south-west": {
+            "ax": 2.98,
+            "ay": 23.15
+          }
+        }
+      }
+    },
+    "black_horse": {
+      "max_hp": 155,
+      "damage": 24,
+      "speed_wu": 35,
+      "aggro_radius_wu": 0,
+      "attack_cooldown_ms": 1500,
+      "xp": 282,
+      "scale": 1,
+      "loot": [
+        {
+          "item": "starless_night_stone",
+          "chance": 0.008
+        },
+        {
+          "item": "matted_black_pelt",
+          "chance": 0.128
+        },
+        {
+          "item": "pair_of_molars",
+          "chance": 0.256
+        }
+      ],
+      "level": 14,
+      "shadow": {
+        "rx": 17,
+        "ry": 12.75,
+        "offsets": {
+          "idle#east": {
+            "ax": -5.48,
+            "ay": 23.5
+          },
+          "idle#south": {
+            "ax": -0.1,
+            "ay": 19.97
+          },
+          "idle#south-east": {
+            "ax": 0.55,
+            "ay": 20.11
+          },
+          "idle#north-east": {
+            "ax": -0.56,
+            "ay": 21.19
+          },
+          "idle#north": {
+            "ax": 1.48,
+            "ay": 22.38
+          },
+          "idle#north-west": {
+            "ax": -0.2,
+            "ay": 21.17
+          },
+          "idle#west": {
+            "ax": 4.73,
+            "ay": 23.22
+          },
+          "idle#south-west": {
+            "ax": -0.04,
+            "ay": 20.04
+          },
+          "walk#north-west": {
+            "ax": 0.56,
+            "ay": 22.67
+          },
+          "attack#south": {
+            "ax": -0.32,
+            "ay": 24.2
+          },
+          "attack#south-east": {
+            "ax": -4.25,
+            "ay": 26.64
+          },
+          "attack#east": {
+            "ax": -3.93,
+            "ay": 31.9
+          },
+          "attack#north-east": {
+            "ax": -0.33,
+            "ay": 26.88
+          },
+          "attack#north-west": {
+            "ax": -2.33,
+            "ay": 30.35
+          },
+          "attack#west": {
+            "ax": 2.87,
+            "ay": 33.75
+          },
+          "attack#south-west": {
+            "ax": 0.47,
+            "ay": 25.2
+          }
+        }
+      }
+    },
+    "blight_elk": {
+      "max_hp": 165,
+      "damage": 26,
+      "speed_wu": 35,
+      "aggro_radius_wu": 0,
+      "attack_cooldown_ms": 1500,
+      "xp": 310,
+      "scale": 1,
+      "loot": [
+        {
+          "item": "spore_heart_stone",
+          "chance": 0.008
+        },
+        {
+          "item": "spotted_purple_mushroom",
+          "chance": 0.128
+        },
+        {
+          "item": "violet_mushroom_cluster",
+          "chance": 0.128
+        },
+        {
+          "item": "dead_red_leaf",
+          "chance": 0.256
+        },
+        {
+          "item": "grey_sage_leaves",
+          "chance": 0.256
+        },
+        {
+          "item": "layered_fern_fronds",
+          "chance": 0.256
+        }
+      ],
+      "level": 15,
+      "shadow": {
+        "rx": 18.25,
+        "ry": 10.25,
+        "offsets": {
+          "idle#east": {
+            "ax": -5.43,
+            "ay": 25.34
+          },
+          "idle#south": {
+            "ax": -0.07,
+            "ay": 23.37
+          },
+          "idle#south-east": {
+            "ax": -1.28,
+            "ay": 22.94
+          },
+          "idle#north-east": {
+            "ax": -1.75,
+            "ay": 22.21
+          },
+          "idle#north": {
+            "ax": 2.58,
+            "ay": 23.95
+          },
+          "idle#north-west": {
+            "ax": 2.58,
+            "ay": 21.52
+          },
+          "idle#south-west": {
+            "ax": 1.84,
+            "ay": 22.45
+          },
+          "walk#south-east": {
+            "ax": -0.85,
+            "ay": 25.97
+          },
+          "walk#north-east": {
+            "ax": -3.77,
+            "ay": 22.1
+          },
+          "walk#north-west": {
+            "ax": 3.43,
+            "ay": 22.5
+          },
+          "walk#west": {
+            "ax": 2.94,
+            "ay": 26.82
+          },
+          "idle#west": {
+            "ax": 5.22,
+            "ay": 24.8
+          },
+          "walk#south-west": {
+            "ax": 0.86,
+            "ay": 25.82
+          },
+          "walk#north": {
+            "ax": 0.73,
+            "ay": 26.21
+          }
+        }
+      }
+    },
     "butterfly_dragon": {
       "level": 12,
       "max_hp": 135,
@@ -31,7 +301,405 @@
           "item": "purple_flower_petals",
           "chance": 0.128
         }
-      ]
+      ],
+      "shadow": {
+        "rx": 18,
+        "ry": 7,
+        "offsets": {
+          "idle#east": {
+            "ax": 2.3,
+            "ay": 24.11
+          },
+          "idle#south": {
+            "ax": 1.02,
+            "ay": 20.46
+          },
+          "idle#south-east": {
+            "ax": 2.16,
+            "ay": 21.15
+          },
+          "idle#north-east": {
+            "ax": -0.61,
+            "ay": 17.81
+          },
+          "idle#north": {
+            "ax": -0.24,
+            "ay": 18.91
+          },
+          "idle#north-west": {
+            "ax": -1.15,
+            "ay": 17.58
+          },
+          "idle#south-west": {
+            "ax": -2.3,
+            "ay": 20.19
+          },
+          "idle#west": {
+            "ax": -2.34,
+            "ay": 24.04
+          }
+        }
+      }
+    },
+    "chestnut_horse": {
+      "max_hp": 95,
+      "damage": 15,
+      "speed_wu": 35,
+      "aggro_radius_wu": 0,
+      "attack_cooldown_ms": 1500,
+      "xp": 133,
+      "scale": 1,
+      "loot": [
+        {
+          "item": "cream_gold_star_stone",
+          "chance": 0.02
+        },
+        {
+          "item": "coiled_lasso_rope",
+          "chance": 0.128
+        },
+        {
+          "item": "burlap_grain_sack",
+          "chance": 0.32
+        },
+        {
+          "item": "coiled_hemp_rope",
+          "chance": 0.256
+        },
+        {
+          "item": "dried_grass_bundle",
+          "chance": 0.32
+        },
+        {
+          "item": "pair_of_molars",
+          "chance": 0.256
+        },
+        {
+          "item": "wheat_sheaf",
+          "chance": 0.32
+        }
+      ],
+      "level": 8,
+      "shadow": {
+        "rx": 14,
+        "ry": 10.75,
+        "offsets": {
+          "idle#east": {
+            "ax": -1.79,
+            "ay": 22.96
+          },
+          "idle#south": {
+            "ax": -0.75,
+            "ay": 20.75
+          },
+          "idle#south-east": {
+            "ax": -1.73,
+            "ay": 20.5
+          },
+          "idle#north-east": {
+            "ax": -3.32,
+            "ay": 21.2
+          },
+          "idle#north": {
+            "ax": 1.23,
+            "ay": 22.3
+          },
+          "idle#north-west": {
+            "ax": 2.2,
+            "ay": 21.39
+          },
+          "idle#west": {
+            "ax": 3.6,
+            "ay": 23.4
+          },
+          "idle#south-west": {
+            "ax": 0.9,
+            "ay": 20.74
+          }
+        }
+      }
+    },
+    "corrupt_stag": {
+      "max_hp": 155,
+      "damage": 24,
+      "speed_wu": 35,
+      "aggro_radius_wu": 0,
+      "attack_cooldown_ms": 1500,
+      "xp": 282,
+      "scale": 1,
+      "loot": [
+        {
+          "item": "thorn_vein_stone",
+          "chance": 0.008
+        },
+        {
+          "item": "black_tipped_horns",
+          "chance": 0.128
+        },
+        {
+          "item": "gnarled_mandrake_root",
+          "chance": 0.128
+        },
+        {
+          "item": "purple_flower_petals",
+          "chance": 0.128
+        },
+        {
+          "item": "dead_red_leaf",
+          "chance": 0.256
+        }
+      ],
+      "level": 14,
+      "shadow": {
+        "rx": 19.5,
+        "ry": 13,
+        "offsets": {
+          "idle#east": {
+            "ax": -6.78,
+            "ay": 39.32
+          },
+          "idle#south": {
+            "ax": 0.16,
+            "ay": 36.57
+          },
+          "idle#south-east": {
+            "ax": -4.46,
+            "ay": 35.05
+          },
+          "idle#north-east": {
+            "ax": -5.02,
+            "ay": 36.52
+          },
+          "idle#north": {
+            "ax": 0.88,
+            "ay": 37.12
+          },
+          "idle#north-west": {
+            "ax": 5.66,
+            "ay": 36.71
+          },
+          "idle#west": {
+            "ax": 6.17,
+            "ay": 38.51
+          },
+          "idle#south-west": {
+            "ax": 5.14,
+            "ay": 36.07
+          }
+        }
+      }
+    },
+    "crystal_horn": {
+      "max_hp": 145,
+      "damage": 23,
+      "speed_wu": 35,
+      "aggro_radius_wu": 0,
+      "attack_cooldown_ms": 1500,
+      "xp": 255,
+      "scale": 1,
+      "loot": [
+        {
+          "item": "molten_gold_vein_stone",
+          "chance": 0.006
+        },
+        {
+          "item": "blue_veined_rift_geode",
+          "chance": 0.011
+        },
+        {
+          "item": "cut_white_diamond",
+          "chance": 0.011
+        },
+        {
+          "item": "amethyst_point",
+          "chance": 0.055
+        },
+        {
+          "item": "gold_veined_ore",
+          "chance": 0.044
+        },
+        {
+          "item": "pink_crystal_spikes",
+          "chance": 0.055
+        },
+        {
+          "item": "violet_crystal_shard",
+          "chance": 0.055
+        },
+        {
+          "item": "clear_quartz_cluster",
+          "chance": 0.128
+        }
+      ],
+      "level": 13,
+      "shadow": {
+        "rx": 25.5,
+        "ry": 14.5,
+        "offsets": {
+          "idle#east": {
+            "ax": -5.84,
+            "ay": 24
+          },
+          "idle#south": {
+            "ax": 1.17,
+            "ay": 26.69
+          },
+          "idle#south-east": {
+            "ax": -4.87,
+            "ay": 21.77
+          },
+          "idle#north-east": {
+            "ax": -1.98,
+            "ay": 22.75
+          },
+          "idle#north": {
+            "ax": -0.16,
+            "ay": 27.2
+          },
+          "idle#north-west": {
+            "ax": 1.5,
+            "ay": 24.13
+          },
+          "idle#west": {
+            "ax": 5.24,
+            "ay": 24.13
+          },
+          "idle#south-west": {
+            "ax": 3.58,
+            "ay": 21.29
+          },
+          "walk#south-west": {
+            "ax": 1.93,
+            "ay": 22.59
+          },
+          "walk#south-east": {
+            "ax": -5.19,
+            "ay": 23.29
+          },
+          "walk#north-east": {
+            "ax": -2.26,
+            "ay": 27.61
+          },
+          "angry#east": {
+            "ax": -6.01,
+            "ay": 25.87
+          },
+          "angry#west": {
+            "ax": 3.24,
+            "ay": 26.68
+          },
+          "angry#south-west": {
+            "ax": 3.28,
+            "ay": 24.49
+          },
+          "attack#east": {
+            "ax": -6.57,
+            "ay": 24.47
+          },
+          "attack#north-east": {
+            "ax": -2.89,
+            "ay": 26.06
+          },
+          "attack#north": {
+            "ax": -0.46,
+            "ay": 30.31
+          },
+          "attack#north-west": {
+            "ax": 1.26,
+            "ay": 25.96
+          },
+          "attack#south-west": {
+            "ax": 6.03,
+            "ay": 22.99
+          },
+          "die#south-west": {
+            "ax": 2.53,
+            "ay": 22.96
+          }
+        }
+      }
+    },
+    "crystal_lynx": {
+      "max_hp": 105,
+      "damage": 16,
+      "speed_wu": 35,
+      "aggro_radius_wu": 0,
+      "attack_cooldown_ms": 1500,
+      "xp": 155,
+      "scale": 1,
+      "loot": [
+        {
+          "item": "iridescent_prism_stone",
+          "chance": 0.02
+        },
+        {
+          "item": "pale_blue_crystal_cluster",
+          "chance": 0.044
+        },
+        {
+          "item": "green_crystal_shard",
+          "chance": 0.128
+        },
+        {
+          "item": "curved_ivory_fang",
+          "chance": 0.256
+        }
+      ],
+      "level": 9,
+      "shadow": {
+        "rx": 17.75,
+        "ry": 10.25,
+        "offsets": {
+          "idle#east": {
+            "ax": -2.49,
+            "ay": 22.65
+          },
+          "idle#south": {
+            "ax": -0.38,
+            "ay": 21.77
+          },
+          "idle#south-east": {
+            "ax": -1.02,
+            "ay": 19.81
+          },
+          "idle#north-east": {
+            "ax": 1.08,
+            "ay": 20.83
+          },
+          "idle#north": {
+            "ax": 0.54,
+            "ay": 21.63
+          },
+          "idle#north-west": {
+            "ax": -1.05,
+            "ay": 21.59
+          },
+          "idle#west": {
+            "ax": 1.81,
+            "ay": 22.38
+          },
+          "idle#south-west": {
+            "ax": 0.54,
+            "ay": 19.48
+          },
+          "walk#north-east": {
+            "ax": -2.43,
+            "ay": 21.22
+          },
+          "walk#north-west": {
+            "ax": 1.76,
+            "ay": 20.4
+          },
+          "angry#north-west": {
+            "ax": 0.6,
+            "ay": 20.35
+          },
+          "angry#north-east": {
+            "ax": -1.56,
+            "ay": 20.51
+          }
+        }
+      }
     },
     "dark_donkey": {
       "level": 11,
@@ -52,8 +720,16 @@
           "chance": 0.16
         },
         {
+          "item": "coiled_lasso_rope",
+          "chance": 0.128
+        },
+        {
+          "item": "dented_metal_flask",
+          "chance": 0.128
+        },
+        {
           "item": "coiled_hemp_rope",
-          "chance": 0.32
+          "chance": 0.256
         },
         {
           "item": "heavy_iron_links",
@@ -73,9 +749,109 @@
         },
         {
           "item": "yellowed_beast_molar",
-          "chance": 0.32
+          "chance": 0.256
         }
-      ]
+      ],
+      "shadow": {
+        "rx": 17.25,
+        "ry": 8.75,
+        "offsets": {
+          "idle#east": {
+            "ax": -3.5,
+            "ay": 23.1
+          },
+          "idle#south": {
+            "ax": 0.1,
+            "ay": 20.06
+          },
+          "idle#south-east": {
+            "ax": -0.47,
+            "ay": 19.3
+          },
+          "idle#north-east": {
+            "ax": -3.17,
+            "ay": 22.24
+          },
+          "idle#north": {
+            "ax": 2.02,
+            "ay": 23.26
+          },
+          "idle#north-west": {
+            "ax": 3.47,
+            "ay": 21.98
+          },
+          "idle#west": {
+            "ax": 4.89,
+            "ay": 22.53
+          },
+          "idle#south-west": {
+            "ax": 1.5,
+            "ay": 20.11
+          }
+        }
+      }
+    },
+    "desert_cat": {
+      "max_hp": 115,
+      "damage": 18,
+      "speed_wu": 35,
+      "aggro_radius_wu": 0,
+      "attack_cooldown_ms": 1500,
+      "xp": 179,
+      "scale": 1,
+      "loot": [
+        {
+          "item": "tan_sunlit_stone",
+          "chance": 0.02
+        },
+        {
+          "item": "golden_broad_fang",
+          "chance": 0.128
+        },
+        {
+          "item": "severed_scaled_paw",
+          "chance": 0.128
+        }
+      ],
+      "level": 10,
+      "shadow": {
+        "rx": 17.25,
+        "ry": 11.5,
+        "offsets": {
+          "idle#east": {
+            "ax": -0.69,
+            "ay": 22.36
+          },
+          "idle#south": {
+            "ax": 0.79,
+            "ay": 21.69
+          },
+          "idle#south-east": {
+            "ax": -0.57,
+            "ay": 21.36
+          },
+          "idle#north-east": {
+            "ax": -2.24,
+            "ay": 21.77
+          },
+          "idle#north": {
+            "ax": 0.57,
+            "ay": 23.48
+          },
+          "idle#north-west": {
+            "ax": 2.24,
+            "ay": 21.97
+          },
+          "idle#west": {
+            "ax": 0.57,
+            "ay": 22.18
+          },
+          "idle#south-west": {
+            "ax": 1.2,
+            "ay": 20.14
+          }
+        }
+      }
     },
     "diablo": {
       "level": 13,
@@ -97,7 +873,7 @@
         },
         {
           "item": "purple_venom_claw",
-          "chance": 0.055
+          "chance": 0.044
         },
         {
           "item": "curved_bone_talon",
@@ -107,7 +883,57 @@
           "item": "plucked_beast_eyeball",
           "chance": 0.128
         }
-      ]
+      ],
+      "shadow": {
+        "rx": 13.75,
+        "ry": 6,
+        "offsets": {
+          "idle#south": {
+            "ax": 0.24,
+            "ay": 30.08
+          },
+          "idle#south-east": {
+            "ax": 0.69,
+            "ay": 29.73
+          },
+          "idle#east": {
+            "ax": -0.9,
+            "ay": 29.6
+          },
+          "idle#north-east": {
+            "ax": -2.86,
+            "ay": 28.13
+          },
+          "idle#north": {
+            "ax": 0.51,
+            "ay": 28.72
+          },
+          "idle#north-west": {
+            "ax": 1.51,
+            "ay": 26.67
+          },
+          "idle#south-west": {
+            "ax": -1.26,
+            "ay": 29.75
+          },
+          "die#south": {
+            "ax": -2.52,
+            "ay": 25.35
+          },
+          "die#south-east": {
+            "ax": 0.41,
+            "ay": 27.55
+          },
+          "die#east": {
+            "ax": -4.46,
+            "ay": 25.91
+          },
+          "die#north-east": {
+            "ax": -2.97,
+            "ay": 25.05
+          }
+        }
+      }
     },
     "diablo_2": {
       "level": 18,
@@ -125,7 +951,11 @@
         },
         {
           "item": "flame_veined_shard",
-          "chance": 0.055
+          "chance": 0.044
+        },
+        {
+          "item": "purple_void_flesh",
+          "chance": 0.044
         },
         {
           "item": "pale_ridged_horns",
@@ -135,7 +965,285 @@
           "item": "plucked_beast_eyeball",
           "chance": 0.128
         }
-      ]
+      ],
+      "shadow": {
+        "rx": 27.25,
+        "ry": 12.5,
+        "offsets": {
+          "idle#south": {
+            "ax": -0.52,
+            "ay": 51.65
+          },
+          "idle#south-east": {
+            "ax": 4.19,
+            "ay": 58.97
+          },
+          "idle#east": {
+            "ax": -2.46,
+            "ay": 57.2
+          },
+          "idle#north-east": {
+            "ax": -2.5,
+            "ay": 53.69
+          },
+          "idle#north": {
+            "ax": -0.02,
+            "ay": 55.05
+          },
+          "idle#north-west": {
+            "ax": 0.11,
+            "ay": 52.84
+          },
+          "idle#west": {
+            "ax": -1.54,
+            "ay": 57.99
+          },
+          "idle#south-west": {
+            "ax": -2.9,
+            "ay": 54.16
+          },
+          "attack#south": {
+            "ax": -0.22,
+            "ay": 52.38
+          },
+          "attack#south-east": {
+            "ax": 1.39,
+            "ay": 51.78
+          },
+          "attack#east": {
+            "ax": -0.65,
+            "ay": 51.06
+          },
+          "attack#north-east": {
+            "ax": -3,
+            "ay": 47.45
+          },
+          "attack#north-west": {
+            "ax": -0.5,
+            "ay": 50.17
+          },
+          "attack#west": {
+            "ax": -0.86,
+            "ay": 49.32
+          },
+          "attack#south-west": {
+            "ax": -2.91,
+            "ay": 50.5
+          },
+          "attack#north": {
+            "ax": -0.93,
+            "ay": 51.16
+          },
+          "die#south": {
+            "ax": -0.61,
+            "ay": 49.33
+          },
+          "die#south-east": {
+            "ax": 1.21,
+            "ay": 49.37
+          },
+          "die#east": {
+            "ax": -0.8,
+            "ay": 52.29
+          },
+          "die#north-east": {
+            "ax": -2.26,
+            "ay": 48.81
+          },
+          "die#north": {
+            "ax": -0.61,
+            "ay": 49.82
+          },
+          "die#north-west": {
+            "ax": -0.44,
+            "ay": 48.03
+          },
+          "die#west": {
+            "ax": -2.19,
+            "ay": 49.64
+          },
+          "die#south-west": {
+            "ax": -2.28,
+            "ay": 49.91
+          }
+        }
+      }
+    },
+    "dune_digger": {
+      "max_hp": 145,
+      "damage": 23,
+      "speed_wu": 35,
+      "aggro_radius_wu": 0,
+      "attack_cooldown_ms": 1500,
+      "xp": 255,
+      "scale": 1,
+      "loot": [
+        {
+          "item": "olive_buried_gold_stone",
+          "chance": 0.02
+        },
+        {
+          "item": "abalone_shell_half",
+          "chance": 0.055
+        },
+        {
+          "item": "iridescent_nacre_shard",
+          "chance": 0.055
+        },
+        {
+          "item": "opal_shell_flake",
+          "chance": 0.055
+        },
+        {
+          "item": "fossil_oyster_shell",
+          "chance": 0.16
+        },
+        {
+          "item": "scaly_clawed_foot",
+          "chance": 0.128
+        },
+        {
+          "item": "segmented_carapace",
+          "chance": 0.128
+        },
+        {
+          "item": "bleached_sea_shells",
+          "chance": 0.32
+        }
+      ],
+      "level": 13,
+      "shadow": {
+        "rx": 33.5,
+        "ry": 15.25,
+        "offsets": {
+          "idle#east": {
+            "ax": -2.79,
+            "ay": 13.89
+          },
+          "idle#south": {
+            "ax": -0.11,
+            "ay": 17.29
+          },
+          "idle#south-east": {
+            "ax": 1.66,
+            "ay": 13.94
+          },
+          "idle#north-east": {
+            "ax": 2.16,
+            "ay": 17.2
+          },
+          "idle#north": {
+            "ax": 0.24,
+            "ay": 18.7
+          },
+          "idle#north-west": {
+            "ax": -1.78,
+            "ay": 16.3
+          },
+          "idle#west": {
+            "ax": 0.36,
+            "ay": 13.31
+          },
+          "idle#south-west": {
+            "ax": -1.45,
+            "ay": 15.2
+          },
+          "walk#south": {
+            "ax": -0.72,
+            "ay": 20.51
+          }
+        }
+      }
+    },
+    "eldritch_maw": {
+      "max_hp": 205,
+      "damage": 32,
+      "speed_wu": 35,
+      "aggro_radius_wu": 0,
+      "attack_cooldown_ms": 1500,
+      "xp": 426,
+      "scale": 1,
+      "loot": [
+        {
+          "item": "violet_hunger_stone",
+          "chance": 0.008
+        },
+        {
+          "item": "purple_void_flesh",
+          "chance": 0.044
+        },
+        {
+          "item": "red_flesh_gills",
+          "chance": 0.055
+        },
+        {
+          "item": "tentacled_watcher_eye",
+          "chance": 0.055
+        },
+        {
+          "item": "coiled_purple_tentacle",
+          "chance": 0.16
+        },
+        {
+          "item": "pale_grey_brain",
+          "chance": 0.128
+        },
+        {
+          "item": "toothed_jaw_slab",
+          "chance": 0.128
+        },
+        {
+          "item": "loose_beast_teeth",
+          "chance": 0.256
+        }
+      ],
+      "level": 19,
+      "shadow": {
+        "rx": 31,
+        "ry": 20.75,
+        "offsets": {
+          "idle#east": {
+            "ax": -6.28,
+            "ay": 40.49
+          },
+          "idle#south": {
+            "ax": 0.67,
+            "ay": 38.71
+          },
+          "idle#south-east": {
+            "ax": -2.72,
+            "ay": 33.78
+          },
+          "idle#north-east": {
+            "ax": -5.72,
+            "ay": 39.87
+          },
+          "idle#north": {
+            "ax": 1.73,
+            "ay": 42.74
+          },
+          "idle#north-west": {
+            "ax": 7.16,
+            "ay": 41.13
+          },
+          "idle#west": {
+            "ax": 6.66,
+            "ay": 39.49
+          },
+          "idle#south-west": {
+            "ax": 2.87,
+            "ay": 34.37
+          },
+          "walk#south-east": {
+            "ax": -2.92,
+            "ay": 36.44
+          },
+          "walk#south-west": {
+            "ax": 2.14,
+            "ay": 36.19
+          }
+        }
+      }
     },
     "forest_poring": {
       "level": 3,
@@ -152,18 +1260,88 @@
           "chance": 0.025
         },
         {
+          "item": "clear_dew_drop",
+          "chance": 0.128
+        },
+        {
           "item": "purple_flower_petals",
           "chance": 0.128
         },
         {
           "item": "grey_sage_leaves",
-          "chance": 0.32
+          "chance": 0.256
+        },
+        {
+          "item": "layered_fern_fronds",
+          "chance": 0.256
         },
         {
           "item": "mint_slime_globule",
           "chance": 0.256
+        },
+        {
+          "item": "moss_green_slime",
+          "chance": 0.256
         }
-      ]
+      ],
+      "shadow": {
+        "rx": 16.25,
+        "ry": 7.75,
+        "offsets": {
+          "idle#south": {
+            "ax": 0.63,
+            "ay": 14.89
+          },
+          "attack#east": {
+            "ax": -1.98,
+            "ay": 13.89
+          },
+          "attack#south-east": {
+            "ax": 0.31,
+            "ay": 13.49
+          },
+          "attack#west": {
+            "ax": 0.9,
+            "ay": 14.32
+          },
+          "attack#south-west": {
+            "ax": -0.28,
+            "ay": 14.49
+          },
+          "die#south": {
+            "ax": 0.45,
+            "ay": 9.96
+          },
+          "die#south-east": {
+            "ax": -3.17,
+            "ay": 10.41
+          },
+          "die#east": {
+            "ax": -1.81,
+            "ay": 11.14
+          },
+          "die#north-east": {
+            "ax": -1.16,
+            "ay": 10.07
+          },
+          "die#north": {
+            "ax": 0.24,
+            "ay": 9.32
+          },
+          "die#north-west": {
+            "ax": 0.69,
+            "ay": 8.62
+          },
+          "die#west": {
+            "ax": 0.21,
+            "ay": 10.31
+          },
+          "die#south-west": {
+            "ax": 2.18,
+            "ay": 10.93
+          }
+        }
+      }
     },
     "forest_poring_2": {
       "level": 3,
@@ -186,8 +1364,300 @@
         {
           "item": "green_slime_glob",
           "chance": 0.256
+        },
+        {
+          "item": "moss_green_slime",
+          "chance": 0.256
         }
-      ]
+      ],
+      "shadow": {
+        "rx": 18.5,
+        "ry": 8.25,
+        "offsets": {
+          "idle#east": {
+            "ax": -1.12,
+            "ay": 11.66
+          },
+          "idle#south": {
+            "ax": 1.03,
+            "ay": 12.15
+          },
+          "idle#south-east": {
+            "ax": 0.74,
+            "ay": 12.25
+          },
+          "idle#north-east": {
+            "ax": -2.02,
+            "ay": 12.6
+          },
+          "idle#north": {
+            "ax": 0.83,
+            "ay": 12.51
+          },
+          "idle#north-west": {
+            "ax": 0.96,
+            "ay": 13.44
+          },
+          "idle#west": {
+            "ax": 1.11,
+            "ay": 12.91
+          },
+          "idle#south-west": {
+            "ax": 1.69,
+            "ay": 13.23
+          },
+          "walk#west": {
+            "ax": 0.74,
+            "ay": 11.99
+          }
+        }
+      }
+    },
+    "granite_bear": {
+      "max_hp": 205,
+      "damage": 32,
+      "speed_wu": 35,
+      "aggro_radius_wu": 0,
+      "attack_cooldown_ms": 1500,
+      "xp": 426,
+      "scale": 1,
+      "loot": [
+        {
+          "item": "mossy_granite_stone",
+          "chance": 0.008
+        },
+        {
+          "item": "gold_veined_ore",
+          "chance": 0.044
+        },
+        {
+          "item": "green_emerald_cluster",
+          "chance": 0.044
+        },
+        {
+          "item": "furred_dark_claw",
+          "chance": 0.128
+        },
+        {
+          "item": "grey_rock_pile",
+          "chance": 0.256
+        },
+        {
+          "item": "lichen_crusted_rock",
+          "chance": 0.256
+        },
+        {
+          "item": "rough_brown_boulder",
+          "chance": 0.256
+        }
+      ],
+      "level": 19,
+      "shadow": {
+        "rx": 45.75,
+        "ry": 21.25,
+        "offsets": {
+          "idle#south": {
+            "ax": -1.46,
+            "ay": 40.31
+          },
+          "idle#east": {
+            "ax": -11.31,
+            "ay": 35.93
+          },
+          "idle#south-east": {
+            "ax": -1.1,
+            "ay": 35.63
+          },
+          "idle#north-east": {
+            "ax": -3.83,
+            "ay": 39.9
+          },
+          "idle#north": {
+            "ax": 1.33,
+            "ay": 38.08
+          },
+          "idle#north-west": {
+            "ax": 1.69,
+            "ay": 39.45
+          },
+          "idle#west": {
+            "ax": 10.75,
+            "ay": 37.37
+          },
+          "idle#south-west": {
+            "ax": 1.33,
+            "ay": 35.85
+          },
+          "angry#south": {
+            "ax": 3.32,
+            "ay": 39.82
+          },
+          "angry#east": {
+            "ax": -7.86,
+            "ay": 37.88
+          },
+          "angry#west": {
+            "ax": 7.58,
+            "ay": 38.81
+          }
+        }
+      }
+    },
+    "gray_brute": {
+      "max_hp": 85,
+      "damage": 13,
+      "speed_wu": 35,
+      "aggro_radius_wu": 0,
+      "attack_cooldown_ms": 1200,
+      "xp": 111,
+      "scale": 1,
+      "loot": [
+        {
+          "item": "grey_grindstone",
+          "chance": 0.03
+        },
+        {
+          "item": "broken_boar_tusk",
+          "chance": 0.128
+        },
+        {
+          "item": "worn_tan_tusk",
+          "chance": 0.128
+        },
+        {
+          "item": "grey_rock_pile",
+          "chance": 0.256
+        },
+        {
+          "item": "pair_of_molars",
+          "chance": 0.256
+        },
+        {
+          "item": "rough_brown_boulder",
+          "chance": 0.256
+        },
+        {
+          "item": "small_horn_spur",
+          "chance": 0.32
+        }
+      ],
+      "level": 7,
+      "shadow": {
+        "rx": 24.5,
+        "ry": 13,
+        "offsets": {
+          "idle#east": {
+            "ax": 0.87,
+            "ay": 22.97
+          },
+          "idle#south": {
+            "ax": 0.57,
+            "ay": 25.03
+          },
+          "idle#south-east": {
+            "ax": -0.28,
+            "ay": 20.64
+          },
+          "idle#north-east": {
+            "ax": 0.58,
+            "ay": 22.23
+          },
+          "idle#north": {
+            "ax": 0.98,
+            "ay": 22.17
+          },
+          "idle#north-west": {
+            "ax": -0.13,
+            "ay": 22.31
+          },
+          "idle#west": {
+            "ax": -0.39,
+            "ay": 21.98
+          },
+          "idle#south-west": {
+            "ax": 2.8,
+            "ay": 19.5
+          }
+        }
+      }
+    },
+    "gray_brute_2": {
+      "max_hp": 195,
+      "damage": 31,
+      "speed_wu": 35,
+      "aggro_radius_wu": 0,
+      "attack_cooldown_ms": 1500,
+      "xp": 396,
+      "scale": 1,
+      "loot": [
+        {
+          "item": "rough_bull_hide_stone",
+          "chance": 0.008
+        },
+        {
+          "item": "blunt_ivory_tooth",
+          "chance": 0.128
+        },
+        {
+          "item": "broken_boar_tusk",
+          "chance": 0.128
+        },
+        {
+          "item": "dark_iron_quills",
+          "chance": 0.128
+        },
+        {
+          "item": "great_curved_fang",
+          "chance": 0.128
+        },
+        {
+          "item": "raw_red_meat_slab",
+          "chance": 0.256
+        },
+        {
+          "item": "stained_marrow_bone",
+          "chance": 0.256
+        }
+      ],
+      "level": 18,
+      "shadow": {
+        "rx": 53.5,
+        "ry": 25.25,
+        "offsets": {
+          "idle#east": {
+            "ax": -5.47,
+            "ay": 39.9
+          },
+          "idle#south": {
+            "ax": -0.32,
+            "ay": 46.36
+          },
+          "idle#south-east": {
+            "ax": -4.49,
+            "ay": 36.91
+          },
+          "idle#north-east": {
+            "ax": 1.11,
+            "ay": 39.39
+          },
+          "idle#north": {
+            "ax": 2.04,
+            "ay": 41.3
+          },
+          "idle#north-west": {
+            "ax": -0.7,
+            "ay": 39.66
+          },
+          "idle#west": {
+            "ax": 5.58,
+            "ay": 39.45
+          },
+          "idle#south-west": {
+            "ax": 0.8,
+            "ay": 40.13
+          }
+        }
+      }
     },
     "hedgehog": {
       "level": 4,
@@ -210,8 +1680,144 @@
         {
           "item": "glossy_brown_seeds",
           "chance": 0.256
+        },
+        {
+          "item": "scattered_small_teeth",
+          "chance": 0.256
+        },
+        {
+          "item": "small_milk_tooth",
+          "chance": 0.256
+        },
+        {
+          "item": "straw_nest_tuft",
+          "chance": 0.256
         }
-      ]
+      ],
+      "shadow": {
+        "rx": 11.75,
+        "ry": 5.75,
+        "offsets": {
+          "idle#east": {
+            "ax": -1.51,
+            "ay": 10.74
+          }
+        }
+      }
+    },
+    "hellhound": {
+      "max_hp": 125,
+      "damage": 20,
+      "speed_wu": 35,
+      "aggro_radius_wu": 0,
+      "attack_cooldown_ms": 1500,
+      "xp": 204,
+      "scale": 1,
+      "loot": [
+        {
+          "item": "ember_starburst_stone",
+          "chance": 0.02
+        },
+        {
+          "item": "cracked_magma_stone",
+          "chance": 0.044
+        },
+        {
+          "item": "flame_veined_shard",
+          "chance": 0.044
+        },
+        {
+          "item": "glowing_ember_dust",
+          "chance": 0.128
+        },
+        {
+          "item": "loose_beast_teeth",
+          "chance": 0.256
+        }
+      ],
+      "level": 11,
+      "shadow": {
+        "rx": 16.5,
+        "ry": 11.75,
+        "offsets": {
+          "idle#south": {
+            "ax": -0.52,
+            "ay": 20.07
+          },
+          "idle#east": {
+            "ax": -3.35,
+            "ay": 23.46
+          },
+          "idle#south-east": {
+            "ax": -3.4,
+            "ay": 19.33
+          },
+          "idle#north-east": {
+            "ax": -1.38,
+            "ay": 22.06
+          },
+          "idle#north": {
+            "ax": 0.77,
+            "ay": 22.42
+          },
+          "idle#west": {
+            "ax": 3.44,
+            "ay": 22.99
+          },
+          "idle#south-west": {
+            "ax": 2.63,
+            "ay": 20.36
+          },
+          "walk#north-west": {
+            "ax": 1.53,
+            "ay": 23.05
+          },
+          "angry#north-west": {
+            "ax": -0.82,
+            "ay": 22.66
+          },
+          "attack#south": {
+            "ax": -2.53,
+            "ay": 23.25
+          },
+          "attack#south-east": {
+            "ax": -3.39,
+            "ay": 22.92
+          },
+          "attack#north-east": {
+            "ax": -4.22,
+            "ay": 22.76
+          },
+          "attack#north-west": {
+            "ax": 1.75,
+            "ay": 24.17
+          },
+          "attack#west": {
+            "ax": 5.81,
+            "ay": 23.74
+          },
+          "attack#south-west": {
+            "ax": 2.35,
+            "ay": 22.91
+          },
+          "die#north-east": {
+            "ax": -1.14,
+            "ay": 21.37
+          },
+          "die#north": {
+            "ax": -0.18,
+            "ay": 19.76
+          },
+          "die#north-west": {
+            "ax": -0.97,
+            "ay": 19.39
+          },
+          "die#west": {
+            "ax": -0.36,
+            "ay": 21.67
+          }
+        }
+      }
     },
     "ice_crystal_golem": {
       "level": 19,
@@ -232,6 +1838,14 @@
           "chance": 0.011
         },
         {
+          "item": "clustered_ice_crystals",
+          "chance": 0.044
+        },
+        {
+          "item": "frost_star_crystal",
+          "chance": 0.044
+        },
+        {
           "item": "pale_blue_crystal_cluster",
           "chance": 0.044
         },
@@ -243,7 +1857,45 @@
           "item": "clear_quartz_cluster",
           "chance": 0.128
         }
-      ]
+      ],
+      "shadow": {
+        "rx": 34.75,
+        "ry": 13,
+        "offsets": {
+          "idle#south": {
+            "ax": 0.67,
+            "ay": 48.58
+          },
+          "idle#east": {
+            "ax": 0.19,
+            "ay": 47.28
+          },
+          "idle#south-east": {
+            "ax": 0.89,
+            "ay": 45.1
+          },
+          "idle#north-east": {
+            "ax": 0.84,
+            "ay": 44.42
+          },
+          "idle#north": {
+            "ax": -0.22,
+            "ay": 47.04
+          },
+          "idle#north-west": {
+            "ax": -0.75,
+            "ay": 44.44
+          },
+          "idle#west": {
+            "ax": -0.37,
+            "ay": 46.04
+          },
+          "idle#south-west": {
+            "ax": 0.35,
+            "ay": 46.19
+          }
+        }
+      }
     },
     "ice_poring": {
       "level": 15,
@@ -260,14 +1912,154 @@
           "chance": 0.02
         },
         {
+          "item": "clustered_ice_crystals",
+          "chance": 0.044
+        },
+        {
           "item": "pale_blue_crystal_cluster",
           "chance": 0.044
         },
         {
           "item": "pale_blue_hailstones",
-          "chance": 0.16
+          "chance": 0.128
         }
-      ]
+      ],
+      "shadow": {
+        "rx": 21.75,
+        "ry": 8.75,
+        "offsets": {
+          "idle#south": {
+            "ax": 0.96,
+            "ay": 13.18
+          },
+          "idle#south-east": {
+            "ax": 0.38,
+            "ay": 13.72
+          },
+          "idle#east": {
+            "ax": -0.46,
+            "ay": 13.61
+          },
+          "idle#north-east": {
+            "ax": -1.33,
+            "ay": 13.57
+          },
+          "idle#north": {
+            "ax": 1.31,
+            "ay": 12.96
+          },
+          "idle#north-west": {
+            "ax": 1.81,
+            "ay": 12.57
+          },
+          "idle#west": {
+            "ax": 0.11,
+            "ay": 13.44
+          },
+          "idle#south-west": {
+            "ax": -0.81,
+            "ay": 13.08
+          }
+        }
+      }
+    },
+    "ice_wolf": {
+      "max_hp": 175,
+      "damage": 28,
+      "speed_wu": 35,
+      "aggro_radius_wu": 0,
+      "attack_cooldown_ms": 1500,
+      "xp": 338,
+      "scale": 1,
+      "loot": [
+        {
+          "item": "blue_slate_ice_egg",
+          "chance": 0.02
+        },
+        {
+          "item": "frost_star_crystal",
+          "chance": 0.044
+        },
+        {
+          "item": "frost_rimed_claw",
+          "chance": 0.128
+        },
+        {
+          "item": "pale_blue_hailstones",
+          "chance": 0.128
+        },
+        {
+          "item": "spiky_white_tuft",
+          "chance": 0.128
+        },
+        {
+          "item": "curved_ivory_fang",
+          "chance": 0.256
+        }
+      ],
+      "level": 16,
+      "shadow": {
+        "rx": 24,
+        "ry": 14,
+        "offsets": {
+          "idle#east": {
+            "ax": -3.16,
+            "ay": 29.9
+          },
+          "idle#south": {
+            "ax": -0.07,
+            "ay": 29.18
+          },
+          "idle#south-east": {
+            "ax": -2.06,
+            "ay": 27.47
+          },
+          "idle#north-east": {
+            "ax": -1.19,
+            "ay": 28.29
+          },
+          "idle#north": {
+            "ax": 0.01,
+            "ay": 28.33
+          },
+          "idle#north-west": {
+            "ax": 1.91,
+            "ay": 27.69
+          },
+          "idle#west": {
+            "ax": 3.64,
+            "ay": 28.36
+          },
+          "idle#south-west": {
+            "ax": 1.79,
+            "ay": 26.62
+          },
+          "angry#north-east": {
+            "ax": 2.84,
+            "ay": 26.67
+          },
+          "angry#north-west": {
+            "ax": -1.3,
+            "ay": 28.09
+          },
+          "attack#south-east": {
+            "ax": -1.54,
+            "ay": 30.47
+          },
+          "attack#east": {
+            "ax": -6.14,
+            "ay": 32.04
+          },
+          "attack#west": {
+            "ax": 6.12,
+            "ay": 32.61
+          },
+          "attack#south-west": {
+            "ax": 0.09,
+            "ay": 30.33
+          }
+        }
+      }
     },
     "lava_poring": {
       "level": 9,
@@ -289,9 +2081,83 @@
         },
         {
           "item": "black_glass_lump",
-          "chance": 0.16
+          "chance": 0.128
+        },
+        {
+          "item": "glowing_ember_dust",
+          "chance": 0.128
         }
-      ]
+      ],
+      "shadow": {
+        "rx": 19.5,
+        "ry": 8.75,
+        "offsets": {
+          "idle#east": {
+            "ax": -2.26,
+            "ay": 12.29
+          },
+          "idle#south": {
+            "ax": 1.64,
+            "ay": 13.01
+          },
+          "idle#south-east": {
+            "ax": -1.19,
+            "ay": 12.1
+          },
+          "idle#north-east": {
+            "ax": -1.61,
+            "ay": 14.16
+          },
+          "idle#north": {
+            "ax": 1.52,
+            "ay": 12.96
+          },
+          "idle#north-west": {
+            "ax": 2.41,
+            "ay": 12.79
+          },
+          "idle#west": {
+            "ax": 1.91,
+            "ay": 12.56
+          },
+          "idle#south-west": {
+            "ax": 1.81,
+            "ay": 11.61
+          },
+          "walk#west": {
+            "ax": -0.64,
+            "ay": 11.46
+          },
+          "walk#south-west": {
+            "ax": 0.44,
+            "ay": 11.34
+          },
+          "walk#north-east": {
+            "ax": -1.56,
+            "ay": 13.19
+          },
+          "walk#east": {
+            "ax": -2.09,
+            "ay": 12.97
+          },
+          "attack#west": {
+            "ax": 0.46,
+            "ay": 11.17
+          },
+          "die#west": {
+            "ax": 0.07,
+            "ay": 12.46
+          },
+          "die#south-west": {
+            "ax": 0.46,
+            "ay": 12.14
+          },
+          "die#east": {
+            "ax": -1.33,
+            "ay": 13.33
+          }
+        }
+      }
     },
     "lava_salamander": {
       "level": 7,
@@ -309,17 +2175,63 @@
         },
         {
           "item": "golden_broad_fang",
+          "chance": 0.128
+        },
+        {
+          "item": "red_scaled_hide",
           "chance": 0.16
         },
         {
           "item": "scaly_clawed_foot",
-          "chance": 0.16
+          "chance": 0.128
+        },
+        {
+          "item": "yellow_slit_eye",
+          "chance": 0.128
         },
         {
           "item": "loose_beast_teeth",
           "chance": 0.256
         }
-      ]
+      ],
+      "shadow": {
+        "rx": 15.75,
+        "ry": 11.25,
+        "offsets": {
+          "idle#east": {
+            "ax": -3.06,
+            "ay": 7.67
+          },
+          "idle#south": {
+            "ax": 0.61,
+            "ay": 6.75
+          },
+          "idle#south-east": {
+            "ax": 0.14,
+            "ay": 8.83
+          },
+          "idle#north-east": {
+            "ax": 0.51,
+            "ay": 9.54
+          },
+          "idle#north": {
+            "ax": 0.46,
+            "ay": 6.48
+          },
+          "idle#north-west": {
+            "ax": -0.19,
+            "ay": 8.67
+          },
+          "idle#west": {
+            "ax": 1.5,
+            "ay": 8.76
+          },
+          "idle#south-west": {
+            "ax": 0.45,
+            "ay": 7.56
+          }
+        }
+      }
     },
     "lava_salamander_2": {
       "level": 6,
@@ -341,15 +2253,23 @@
         },
         {
           "item": "severed_scaled_paw",
-          "chance": 0.16
+          "chance": 0.128
         },
         {
           "item": "toothed_jaw_slab",
-          "chance": 0.16
+          "chance": 0.128
+        },
+        {
+          "item": "yellow_slit_eye",
+          "chance": 0.128
         },
         {
           "item": "curved_ivory_fang",
           "chance": 0.256
+        },
+        {
+          "item": "green_scale_cluster",
+          "chance": 0.32
         },
         {
           "item": "loose_beast_teeth",
@@ -359,7 +2279,237 @@
           "item": "stained_marrow_bone",
           "chance": 0.256
         }
-      ]
+      ],
+      "shadow": {
+        "rx": 14.75,
+        "ry": 12,
+        "offsets": {
+          "idle#south": {
+            "ax": 0.72,
+            "ay": 8.96
+          },
+          "idle#east": {
+            "ax": -1.48,
+            "ay": 9.51
+          },
+          "idle#south-east": {
+            "ax": 0.38,
+            "ay": 8.43
+          },
+          "idle#north-east": {
+            "ax": -1.85,
+            "ay": 11
+          },
+          "idle#north": {
+            "ax": 1.11,
+            "ay": 7.5
+          },
+          "idle#north-west": {
+            "ax": 1.32,
+            "ay": 10.43
+          },
+          "idle#west": {
+            "ax": 2.44,
+            "ay": 9.28
+          },
+          "idle#south-west": {
+            "ax": 0.44,
+            "ay": 9.2
+          }
+        }
+      }
+    },
+    "magma_wolf": {
+      "max_hp": 125,
+      "damage": 20,
+      "speed_wu": 35,
+      "aggro_radius_wu": 0,
+      "attack_cooldown_ms": 1500,
+      "xp": 204,
+      "scale": 1,
+      "loot": [
+        {
+          "item": "lava_vein_stone",
+          "chance": 0.02
+        },
+        {
+          "item": "cracked_magma_stone",
+          "chance": 0.044
+        },
+        {
+          "item": "matted_black_pelt",
+          "chance": 0.128
+        },
+        {
+          "item": "toothed_jaw_slab",
+          "chance": 0.128
+        }
+      ],
+      "level": 11,
+      "shadow": {
+        "rx": 18.5,
+        "ry": 10.5,
+        "offsets": {
+          "idle#east": {
+            "ax": -3.05,
+            "ay": 23.64
+          },
+          "idle#south": {
+            "ax": 0.28,
+            "ay": 21.88
+          },
+          "idle#south-east": {
+            "ax": -2.49,
+            "ay": 21.32
+          },
+          "idle#north-east": {
+            "ax": -1.46,
+            "ay": 21.55
+          },
+          "idle#north": {
+            "ax": 0.82,
+            "ay": 21.72
+          },
+          "idle#north-west": {
+            "ax": 2.25,
+            "ay": 21.01
+          },
+          "idle#west": {
+            "ax": 3.27,
+            "ay": 21.8
+          },
+          "idle#south-west": {
+            "ax": 1.67,
+            "ay": 20.33
+          }
+        }
+      }
+    },
+    "magma_wolf_2": {
+      "max_hp": 175,
+      "damage": 28,
+      "speed_wu": 35,
+      "aggro_radius_wu": 0,
+      "attack_cooldown_ms": 1500,
+      "xp": 338,
+      "scale": 1,
+      "loot": [
+        {
+          "item": "black_lava_flow_stone",
+          "chance": 0.008
+        },
+        {
+          "item": "black_glass_lump",
+          "chance": 0.128
+        },
+        {
+          "item": "raw_red_meat_slab",
+          "chance": 0.256
+        },
+        {
+          "item": "stained_marrow_bone",
+          "chance": 0.256
+        }
+      ],
+      "level": 16,
+      "shadow": {
+        "rx": 17.5,
+        "ry": 12.25,
+        "offsets": {
+          "idle#east": {
+            "ax": -3.34,
+            "ay": 23.56
+          },
+          "idle#south": {
+            "ax": -0.48,
+            "ay": 23.4
+          },
+          "idle#south-east": {
+            "ax": -1.04,
+            "ay": 21.08
+          },
+          "idle#north-east": {
+            "ax": -2.35,
+            "ay": 23.05
+          },
+          "idle#north": {
+            "ax": 0.63,
+            "ay": 22.2
+          },
+          "idle#north-west": {
+            "ax": 0.37,
+            "ay": 22.82
+          },
+          "idle#west": {
+            "ax": 1.98,
+            "ay": 23.09
+          },
+          "idle#south-west": {
+            "ax": -0.34,
+            "ay": 20.21
+          },
+          "walk#east": {
+            "ax": -2.07,
+            "ay": 23.69
+          },
+          "angry#south": {
+            "ax": 0.36,
+            "ay": 23.02
+          },
+          "angry#east": {
+            "ax": -2.74,
+            "ay": 23.57
+          },
+          "attack#south-west": {
+            "ax": 10.68,
+            "ay": 32.32
+          },
+          "attack#east": {
+            "ax": -9.01,
+            "ay": 28.99
+          },
+          "attack#north": {
+            "ax": -1.96,
+            "ay": 32.54
+          },
+          "attack#north-west": {
+            "ax": 3.48,
+            "ay": 28.06
+          },
+          "attack#west": {
+            "ax": 10.9,
+            "ay": 29.24
+          },
+          "attack#north-east": {
+            "ax": -6.41,
+            "ay": 31.23
+          },
+          "attack#south-east": {
+            "ax": -10.27,
+            "ay": 31.59
+          },
+          "attack#south": {
+            "ax": -3.46,
+            "ay": 28.54
+          },
+          "die#south": {
+            "ax": 1.55,
+            "ay": 26.08
+          },
+          "die#south-east": {
+            "ax": -0.04,
+            "ay": 23.63
+          },
+          "die#east": {
+            "ax": 1.14,
+            "ay": 25.49
+          },
+          "die#north": {
+            "ax": 1.48,
+            "ay": 22.19
+          }
+        }
+      }
     },
     "malformed_creature": {
       "level": 14,
@@ -376,11 +2526,19 @@
           "chance": 0.01
         },
         {
-          "item": "engraved_bronze_locket",
+          "item": "brass_pocket_compass",
           "chance": 0.055
         },
         {
-          "item": "bleached_rib_cage",
+          "item": "engraved_bronze_locket",
+          "chance": 0.044
+        },
+        {
+          "item": "corked_glass_vial",
+          "chance": 0.16
+        },
+        {
+          "item": "pale_grey_brain",
           "chance": 0.128
         },
         {
@@ -392,18 +2550,48 @@
           "chance": 0.256
         },
         {
-          "item": "heavy_iron_links",
-          "chance": 0.256
-        },
-        {
           "item": "linen_thread_spool",
           "chance": 0.32
+        },
+        {
+          "item": "rotten_stitched_hide",
+          "chance": 0.256
         },
         {
           "item": "tied_bone_bundle",
           "chance": 0.32
         }
-      ]
+      ],
+      "shadow": {
+        "rx": 16,
+        "ry": 7.25,
+        "offsets": {
+          "idle#east": {
+            "ax": 0.17,
+            "ay": 23.87
+          },
+          "idle#north-east": {
+            "ax": -0.41,
+            "ay": 22.74
+          },
+          "idle#north": {
+            "ax": -0.08,
+            "ay": 23.88
+          },
+          "idle#north-west": {
+            "ax": 0.87,
+            "ay": 22.94
+          },
+          "idle#west": {
+            "ax": 0.29,
+            "ay": 23.67
+          },
+          "idle#south-west": {
+            "ax": -0.2,
+            "ay": 25.79
+          }
+        }
+      }
     },
     "mammoth": {
       "level": 20,
@@ -425,7 +2613,7 @@
         },
         {
           "item": "broken_boar_tusk",
-          "chance": 0.16
+          "chance": 0.128
         },
         {
           "item": "pair_of_molars",
@@ -435,7 +2623,53 @@
           "item": "raw_red_meat_slab",
           "chance": 0.256
         }
-      ]
+      ],
+      "shadow": {
+        "rx": 41.75,
+        "ry": 27.5,
+        "offsets": {
+          "idle#east": {
+            "ax": -14.51,
+            "ay": 49.72
+          },
+          "idle#south": {
+            "ax": -1.17,
+            "ay": 43.07
+          },
+          "idle#south-east": {
+            "ax": -18.47,
+            "ay": 40.51
+          },
+          "idle#north-east": {
+            "ax": -15.83,
+            "ay": 50.73
+          },
+          "idle#north": {
+            "ax": -1.35,
+            "ay": 49.18
+          },
+          "idle#north-west": {
+            "ax": 15.2,
+            "ay": 48.34
+          },
+          "idle#west": {
+            "ax": 11.4,
+            "ay": 51.19
+          },
+          "idle#south-west": {
+            "ax": 15.04,
+            "ay": 42.98
+          },
+          "walk#south-east": {
+            "ax": -12.66,
+            "ay": 41.98
+          },
+          "walk#north-west": {
+            "ax": 12.94,
+            "ay": 49.16
+          }
+        }
+      }
     },
     "masked_shadow_creature": {
       "level": 8,
@@ -456,10 +2690,110 @@
           "chance": 0.055
         },
         {
+          "item": "pale_grey_eyeball",
+          "chance": 0.128
+        },
+        {
+          "item": "worn_wooden_band",
+          "chance": 0.16
+        },
+        {
           "item": "bone_flecked_grave_soil",
           "chance": 0.256
         }
-      ]
+      ],
+      "shadow": {
+        "rx": 12.5,
+        "ry": 5.75,
+        "offsets": {
+          "idle#east": {
+            "ax": 0.5,
+            "ay": 23.35
+          },
+          "idle#south-east": {
+            "ax": -1.04,
+            "ay": 24.47
+          },
+          "idle#north-east": {
+            "ax": -1.62,
+            "ay": 23.01
+          },
+          "idle#north-west": {
+            "ax": 1.17,
+            "ay": 22.98
+          },
+          "idle#west": {
+            "ax": -1.29,
+            "ay": 23.26
+          },
+          "idle#south-west": {
+            "ax": -0.18,
+            "ay": 24.62
+          }
+        }
+      }
+    },
+    "moon_wolf": {
+      "max_hp": 135,
+      "damage": 21,
+      "speed_wu": 35,
+      "aggro_radius_wu": 0,
+      "attack_cooldown_ms": 1500,
+      "xp": 229,
+      "scale": 1,
+      "loot": [
+        {
+          "item": "opal_moon_stone",
+          "chance": 0.02
+        },
+        {
+          "item": "spiky_white_tuft",
+          "chance": 0.128
+        },
+        {
+          "item": "loose_beast_teeth",
+          "chance": 0.256
+        },
+        {
+          "item": "stained_marrow_bone",
+          "chance": 0.256
+        }
+      ],
+      "level": 12,
+      "shadow": {
+        "rx": 16,
+        "ry": 10.25,
+        "offsets": {
+          "idle#east": {
+            "ax": -3.39,
+            "ay": 22.13
+          },
+          "idle#south-east": {
+            "ax": -1.22,
+            "ay": 19.06
+          },
+          "idle#north-east": {
+            "ax": -1.09,
+            "ay": 21.33
+          },
+          "idle#north": {
+            "ax": 0.27,
+            "ay": 20.32
+          },
+          "idle#north-west": {
+            "ax": -0.07,
+            "ay": 20.75
+          },
+          "idle#west": {
+            "ax": 2.16,
+            "ay": 21.52
+          },
+          "idle#south-west": {
+            "ax": 0.42,
+            "ay": 19.58
+          }
+        }
+      }
     },
     "mystical_frog": {
       "level": 1,
@@ -476,6 +2810,22 @@
           "chance": 0.03
         },
         {
+          "item": "green_slit_eyeball",
+          "chance": 0.128
+        },
+        {
+          "item": "bog_slime_blob",
+          "chance": 0.256
+        },
+        {
+          "item": "coiled_bog_worm",
+          "chance": 0.256
+        },
+        {
+          "item": "green_ooze_glob",
+          "chance": 0.256
+        },
+        {
           "item": "green_slime_glob",
           "chance": 0.256
         },
@@ -483,7 +2833,45 @@
           "item": "smooth_river_stone",
           "chance": 0.256
         }
-      ]
+      ],
+      "shadow": {
+        "rx": 14.75,
+        "ry": 7,
+        "offsets": {
+          "idle#east": {
+            "ax": -0.05,
+            "ay": 9.95
+          },
+          "idle#south": {
+            "ax": -0.15,
+            "ay": 8.37
+          },
+          "idle#south-east": {
+            "ax": -0.51,
+            "ay": 8.88
+          },
+          "idle#north-east": {
+            "ax": -0.58,
+            "ay": 9.07
+          },
+          "idle#north": {
+            "ax": -0.25,
+            "ay": 9.04
+          },
+          "idle#north-west": {
+            "ax": 0.8,
+            "ay": 9.31
+          },
+          "idle#west": {
+            "ax": 0.11,
+            "ay": 9.23
+          },
+          "idle#south-west": {
+            "ax": 1.06,
+            "ay": 9.17
+          }
+        }
+      }
     },
     "night_beast": {
       "level": 16,
@@ -512,10 +2900,514 @@
           "chance": 0.128
         },
         {
+          "item": "heavy_long_bone",
+          "chance": 0.256
+        },
+        {
+          "item": "loose_vertebrae",
+          "chance": 0.256
+        },
+        {
           "item": "stained_marrow_bone",
           "chance": 0.256
         }
-      ]
+      ],
+      "shadow": {
+        "rx": 24,
+        "ry": 12,
+        "offsets": {
+          "idle#east": {
+            "ax": -2.11,
+            "ay": 23.2
+          },
+          "idle#south": {
+            "ax": 1.23,
+            "ay": 23.6
+          },
+          "idle#south-east": {
+            "ax": -0.29,
+            "ay": 19.27
+          },
+          "idle#north-east": {
+            "ax": -0.3,
+            "ay": 18.93
+          },
+          "idle#north": {
+            "ax": 1.04,
+            "ay": 20.32
+          },
+          "idle#north-west": {
+            "ax": 0.75,
+            "ay": 19.99
+          },
+          "idle#west": {
+            "ax": 0.75,
+            "ay": 23.41
+          },
+          "idle#south-west": {
+            "ax": 0.33,
+            "ay": 18.25
+          }
+        }
+      }
+    },
+    "obsidian_lion": {
+      "max_hp": 195,
+      "damage": 31,
+      "speed_wu": 35,
+      "aggro_radius_wu": 0,
+      "attack_cooldown_ms": 1500,
+      "xp": 396,
+      "scale": 1,
+      "loot": [
+        {
+          "item": "molten_lava_soulstone",
+          "chance": 0.006
+        },
+        {
+          "item": "flame_veined_shard",
+          "chance": 0.044
+        },
+        {
+          "item": "black_glass_slab",
+          "chance": 0.128
+        },
+        {
+          "item": "curved_ivory_fang",
+          "chance": 0.256
+        }
+      ],
+      "level": 18,
+      "shadow": {
+        "rx": 42.75,
+        "ry": 23,
+        "offsets": {
+          "idle#east": {
+            "ax": -0.4,
+            "ay": 42.04
+          },
+          "idle#south": {
+            "ax": -0.35,
+            "ay": 40
+          },
+          "idle#south-east": {
+            "ax": -1.91,
+            "ay": 36.81
+          },
+          "idle#north-east": {
+            "ax": -3.8,
+            "ay": 39.36
+          },
+          "idle#north": {
+            "ax": 1.95,
+            "ay": 40.2
+          },
+          "idle#north-west": {
+            "ax": 1.78,
+            "ay": 38.55
+          },
+          "idle#west": {
+            "ax": -0.33,
+            "ay": 38.78
+          },
+          "idle#south-west": {
+            "ax": 0.76,
+            "ay": 35.29
+          },
+          "walk#south": {
+            "ax": -0.84,
+            "ay": 35.78
+          },
+          "walk#south-east": {
+            "ax": 0.71,
+            "ay": 33.95
+          },
+          "walk#north": {
+            "ax": 1.69,
+            "ay": 36.87
+          },
+          "attack#south": {
+            "ax": -0.28,
+            "ay": 36.95
+          }
+        }
+      }
+    },
+    "plague_hound": {
+      "max_hp": 75,
+      "damage": 12,
+      "speed_wu": 35,
+      "aggro_radius_wu": 0,
+      "attack_cooldown_ms": 1200,
+      "xp": 90,
+      "scale": 1,
+      "loot": [
+        {
+          "item": "mint_serpent_stone",
+          "chance": 0.03
+        },
+        {
+          "item": "purple_venom_claw",
+          "chance": 0.044
+        },
+        {
+          "item": "loose_beast_teeth",
+          "chance": 0.256
+        },
+        {
+          "item": "rotten_stitched_hide",
+          "chance": 0.256
+        },
+        {
+          "item": "stained_marrow_bone",
+          "chance": 0.256
+        },
+        {
+          "item": "yellowed_curved_fang",
+          "chance": 0.256
+        }
+      ],
+      "level": 6,
+      "shadow": {
+        "rx": 16.25,
+        "ry": 8,
+        "offsets": {
+          "idle#east": {
+            "ax": -2.11,
+            "ay": 17.46
+          },
+          "idle#south": {
+            "ax": -0.42,
+            "ay": 15.83
+          },
+          "idle#south-east": {
+            "ax": -0.28,
+            "ay": 16.06
+          },
+          "idle#north-east": {
+            "ax": -0.8,
+            "ay": 16.63
+          },
+          "idle#north": {
+            "ax": 0.19,
+            "ay": 16.91
+          },
+          "idle#north-west": {
+            "ax": 0.07,
+            "ay": 16.45
+          },
+          "idle#west": {
+            "ax": 1.88,
+            "ay": 17.51
+          },
+          "idle#south-west": {
+            "ax": 1.11,
+            "ay": 15.12
+          },
+          "walk#south-west": {
+            "ax": 0.29,
+            "ay": 16.46
+          },
+          "walk#south": {
+            "ax": -0.3,
+            "ay": 14.23
+          },
+          "walk#east": {
+            "ax": -2.89,
+            "ay": 17.18
+          },
+          "angry#south": {
+            "ax": -0.2,
+            "ay": 16.24
+          }
+        }
+      }
+    },
+    "polar_bear": {
+      "max_hp": 145,
+      "damage": 23,
+      "speed_wu": 35,
+      "aggro_radius_wu": 0,
+      "attack_cooldown_ms": 1500,
+      "xp": 255,
+      "scale": 1,
+      "loot": [
+        {
+          "item": "pale_snowflake_stone",
+          "chance": 0.02
+        },
+        {
+          "item": "clustered_ice_crystals",
+          "chance": 0.044
+        },
+        {
+          "item": "pale_blue_crystal_cluster",
+          "chance": 0.044
+        },
+        {
+          "item": "broken_boar_tusk",
+          "chance": 0.128
+        },
+        {
+          "item": "frost_rimed_claw",
+          "chance": 0.128
+        },
+        {
+          "item": "pale_hooked_claw",
+          "chance": 0.16
+        },
+        {
+          "item": "spiky_white_tuft",
+          "chance": 0.128
+        },
+        {
+          "item": "raw_red_meat_slab",
+          "chance": 0.256
+        }
+      ],
+      "level": 13,
+      "shadow": {
+        "rx": 26.5,
+        "ry": 18.75,
+        "offsets": {
+          "idle#east": {
+            "ax": -7.23,
+            "ay": 27.4
+          },
+          "idle#south": {
+            "ax": -1.99,
+            "ay": 25.33
+          },
+          "idle#south-east": {
+            "ax": -1.27,
+            "ay": 26.31
+          },
+          "idle#north-east": {
+            "ax": -1.62,
+            "ay": 26.11
+          },
+          "idle#north": {
+            "ax": -0.59,
+            "ay": 26.16
+          },
+          "idle#north-west": {
+            "ax": -0.01,
+            "ay": 22.72
+          },
+          "idle#west": {
+            "ax": 5.74,
+            "ay": 27.04
+          },
+          "idle#south-west": {
+            "ax": 2.6,
+            "ay": 27.44
+          },
+          "walk#south": {
+            "ax": -0.52,
+            "ay": 38.79
+          }
+        }
+      }
+    },
+    "root_bear": {
+      "max_hp": 165,
+      "damage": 26,
+      "speed_wu": 35,
+      "aggro_radius_wu": 0,
+      "attack_cooldown_ms": 1500,
+      "xp": 310,
+      "scale": 1,
+      "loot": [
+        {
+          "item": "root_web_stone",
+          "chance": 0.008
+        },
+        {
+          "item": "amber_glazed_root",
+          "chance": 0.128
+        },
+        {
+          "item": "blue_glow_caps",
+          "chance": 0.128
+        },
+        {
+          "item": "gnarled_mandrake_root",
+          "chance": 0.128
+        },
+        {
+          "item": "crooked_twig",
+          "chance": 0.256
+        },
+        {
+          "item": "dark_hardwood_plank",
+          "chance": 0.256
+        },
+        {
+          "item": "mossy_driftwood_bundle",
+          "chance": 0.256
+        }
+      ],
+      "level": 15,
+      "shadow": {
+        "rx": 26.5,
+        "ry": 14,
+        "offsets": {
+          "idle#east": {
+            "ax": -7.96,
+            "ay": 25.53
+          },
+          "idle#south-east": {
+            "ax": -2.78,
+            "ay": 21.37
+          },
+          "idle#north-east": {
+            "ax": -2.02,
+            "ay": 24.46
+          },
+          "attack#north-east": {
+            "ax": -10.15,
+            "ay": 25.77
+          },
+          "attack#north": {
+            "ax": -0.6,
+            "ay": 26.63
+          },
+          "attack#north-west": {
+            "ax": 7.63,
+            "ay": 25.97
+          },
+          "attack#west": {
+            "ax": 6.14,
+            "ay": 28.94
+          },
+          "attack#south-west": {
+            "ax": 3.74,
+            "ay": 32.69
+          },
+          "die#south": {
+            "ax": 4.13,
+            "ay": 29.23
+          },
+          "die#south-east": {
+            "ax": -1.42,
+            "ay": 23.18
+          },
+          "die#east": {
+            "ax": -4.95,
+            "ay": 26.79
+          },
+          "die#north-east": {
+            "ax": -5.36,
+            "ay": 27.17
+          },
+          "die#north": {
+            "ax": 0.53,
+            "ay": 27.12
+          },
+          "die#west": {
+            "ax": -3.15,
+            "ay": 33.58
+          },
+          "die#south-west": {
+            "ax": -3.46,
+            "ay": 28.74
+          }
+        }
+      }
+    },
+    "rune_lion": {
+      "max_hp": 185,
+      "damage": 29,
+      "speed_wu": 35,
+      "aggro_radius_wu": 0,
+      "attack_cooldown_ms": 1500,
+      "xp": 367,
+      "scale": 1,
+      "loot": [
+        {
+          "item": "gold_sunburst_rune_stone",
+          "chance": 0.008
+        },
+        {
+          "item": "carved_wood_idol",
+          "chance": 0.055
+        },
+        {
+          "item": "engraved_bronze_locket",
+          "chance": 0.044
+        },
+        {
+          "item": "gilded_curved_fang",
+          "chance": 0.044
+        },
+        {
+          "item": "jade_temple_amulet",
+          "chance": 0.055
+        },
+        {
+          "item": "bronze_temple_cog",
+          "chance": 0.16
+        },
+        {
+          "item": "clear_quartz_cluster",
+          "chance": 0.128
+        }
+      ],
+      "level": 17,
+      "shadow": {
+        "rx": 28.5,
+        "ry": 16.75,
+        "offsets": {
+          "idle#east": {
+            "ax": -0.71,
+            "ay": 26.47
+          },
+          "idle#south-east": {
+            "ax": -3.35,
+            "ay": 24.92
+          },
+          "idle#north-east": {
+            "ax": 0.68,
+            "ay": 23.69
+          },
+          "idle#north": {
+            "ax": 0.06,
+            "ay": 23.59
+          },
+          "idle#north-west": {
+            "ax": 0.32,
+            "ay": 23.91
+          },
+          "idle#west": {
+            "ax": 0.88,
+            "ay": 24.3
+          },
+          "idle#south-west": {
+            "ax": 2.49,
+            "ay": 23.19
+          },
+          "walk#south": {
+            "ax": 0.52,
+            "ay": 19.95
+          },
+          "idle#south": {
+            "ax": 0.26,
+            "ay": 22.41
+          },
+          "attack#north": {
+            "ax": 0.35,
+            "ay": 26.26
+          },
+          "attack#north-west": {
+            "ax": 1.89,
+            "ay": 25.35
+          },
+          "attack#west": {
+            "ax": 8.54,
+            "ay": 28.83
+          }
+        }
+      }
     },
     "saber_toothed_tiger": {
       "level": 8,
@@ -533,7 +3425,7 @@
         },
         {
           "item": "gilded_curved_fang",
-          "chance": 0.055
+          "chance": 0.044
         },
         {
           "item": "paired_black_claws",
@@ -551,7 +3443,107 @@
           "item": "raw_red_meat_slab",
           "chance": 0.256
         }
-      ]
+      ],
+      "shadow": {
+        "rx": 15.5,
+        "ry": 9,
+        "offsets": {
+          "idle#east": {
+            "ax": -2.97,
+            "ay": 16.76
+          },
+          "idle#south": {
+            "ax": -0.43,
+            "ay": 15.93
+          },
+          "idle#south-east": {
+            "ax": -2.04,
+            "ay": 15.28
+          },
+          "idle#north-east": {
+            "ax": -1.57,
+            "ay": 17.32
+          },
+          "attack#north": {
+            "ax": -0.69,
+            "ay": 15.58
+          },
+          "attack#north-west": {
+            "ax": 1.2,
+            "ay": 15.93
+          },
+          "attack#west": {
+            "ax": -1.9,
+            "ay": 17.4
+          },
+          "attack#south-west": {
+            "ax": 2.6,
+            "ay": 16.88
+          },
+          "die#south": {
+            "ax": -1,
+            "ay": 13.93
+          },
+          "die#south-east": {
+            "ax": -2.87,
+            "ay": 13.17
+          },
+          "die#north": {
+            "ax": 0.69,
+            "ay": 18.58
+          },
+          "die#north-west": {
+            "ax": 0.3,
+            "ay": 19.59
+          },
+          "die#west": {
+            "ax": 0.58,
+            "ay": 15.75
+          },
+          "die#south-west": {
+            "ax": 1.57,
+            "ay": 16.22
+          }
+        }
+      }
+    },
+    "shadow_panther": {
+      "max_hp": 135,
+      "damage": 21,
+      "speed_wu": 35,
+      "aggro_radius_wu": 0,
+      "attack_cooldown_ms": 1500,
+      "xp": 229,
+      "scale": 1,
+      "loot": [
+        {
+          "item": "violet_eye_stone",
+          "chance": 0.02
+        },
+        {
+          "item": "paired_black_claws",
+          "chance": 0.044
+        },
+        {
+          "item": "matted_black_pelt",
+          "chance": 0.128
+        },
+        {
+          "item": "plucked_beast_eyeball",
+          "chance": 0.128
+        }
+      ],
+      "level": 12,
+      "shadow": {
+        "rx": 19.5,
+        "ry": 10.5,
+        "offsets": {
+          "idle#east": {
+            "ax": 0.53,
+            "ay": 16.93
+          }
+        }
+      }
     },
     "snow_demon": {
       "level": 17,
@@ -575,7 +3567,103 @@
           "item": "pale_ridged_horns",
           "chance": 0.128
         }
-      ]
+      ],
+      "shadow": {
+        "rx": 25.5,
+        "ry": 8.75,
+        "offsets": {
+          "idle#east": {
+            "ax": 1.62,
+            "ay": 26.63
+          },
+          "idle#south": {
+            "ax": -0.62,
+            "ay": 27.79
+          },
+          "idle#south-east": {
+            "ax": -1.02,
+            "ay": 26.69
+          },
+          "idle#north-east": {
+            "ax": 0.38,
+            "ay": 26.34
+          },
+          "idle#north": {
+            "ax": -1.07,
+            "ay": 26.84
+          },
+          "idle#north-west": {
+            "ax": 0.7,
+            "ay": 26.72
+          },
+          "idle#west": {
+            "ax": -1.5,
+            "ay": 26.03
+          },
+          "idle#south-west": {
+            "ax": -0.1,
+            "ay": 27.17
+          }
+        }
+      }
+    },
+    "spectral_horse": {
+      "max_hp": 185,
+      "damage": 29,
+      "speed_wu": 35,
+      "aggro_radius_wu": 0,
+      "attack_cooldown_ms": 1500,
+      "xp": 367,
+      "scale": 1,
+      "loot": [
+        {
+          "item": "pale_mist_swirl_stone",
+          "chance": 0.008
+        }
+      ],
+      "level": 17,
+      "shadow": {
+        "rx": 20.25,
+        "ry": 11.25,
+        "offsets": {
+          "idle#east": {
+            "ax": -3.03,
+            "ay": 22.76
+          },
+          "idle#south": {
+            "ax": -0.06,
+            "ay": 21.12
+          },
+          "idle#south-east": {
+            "ax": -0.78,
+            "ay": 20.42
+          },
+          "idle#north-east": {
+            "ax": -3.89,
+            "ay": 20.67
+          },
+          "idle#north": {
+            "ax": 1.93,
+            "ay": 22.38
+          },
+          "idle#north-west": {
+            "ax": 4.37,
+            "ay": 20.62
+          },
+          "idle#west": {
+            "ax": 3.56,
+            "ay": 22.07
+          },
+          "idle#south-west": {
+            "ax": 1.71,
+            "ay": 19.62
+          },
+          "walk#south": {
+            "ax": -0.74,
+            "ay": 21.88
+          }
+        }
+      }
     },
     "stone_golem": {
       "level": 18,
@@ -596,8 +3684,16 @@
           "chance": 0.011
         },
         {
+          "item": "cut_white_diamond",
+          "chance": 0.011
+        },
+        {
           "item": "gold_veined_ore",
-          "chance": 0.055
+          "chance": 0.044
+        },
+        {
+          "item": "green_emerald_cluster",
+          "chance": 0.044
         },
         {
           "item": "clear_quartz_cluster",
@@ -605,17 +3701,55 @@
         },
         {
           "item": "green_crystal_shard",
-          "chance": 0.16
+          "chance": 0.128
         },
         {
           "item": "grey_rock_pile",
-          "chance": 0.32
+          "chance": 0.256
+        },
+        {
+          "item": "lichen_crusted_rock",
+          "chance": 0.256
         },
         {
           "item": "rough_brown_boulder",
-          "chance": 0.32
+          "chance": 0.256
         }
-      ]
+      ],
+      "shadow": {
+        "rx": 37.25,
+        "ry": 15,
+        "offsets": {
+          "idle#east": {
+            "ax": 1.15,
+            "ay": 37.29
+          },
+          "idle#south-east": {
+            "ax": -0.18,
+            "ay": 41.57
+          },
+          "idle#north-east": {
+            "ax": -0.19,
+            "ay": 38.99
+          },
+          "idle#north": {
+            "ax": -0.14,
+            "ay": 40.81
+          },
+          "idle#north-west": {
+            "ax": -1.16,
+            "ay": 38.62
+          },
+          "idle#west": {
+            "ax": -0.09,
+            "ay": 39.33
+          },
+          "idle#south-west": {
+            "ax": -0.08,
+            "ay": 38.86
+          }
+        }
+      }
     },
     "stone_turtle": {
       "level": 13,
@@ -637,13 +3771,473 @@
         },
         {
           "item": "black_glass_slab",
-          "chance": 0.16
+          "chance": 0.128
         },
         {
           "item": "cobbled_stone_egg",
-          "chance": 0.16
+          "chance": 0.128
         }
-      ]
+      ],
+      "shadow": {
+        "rx": 28,
+        "ry": 13,
+        "offsets": {
+          "idle#east": {
+            "ax": -4.6,
+            "ay": 14.03
+          },
+          "idle#south": {
+            "ax": 0.03,
+            "ay": 15.56
+          },
+          "idle#south-east": {
+            "ax": -1.46,
+            "ay": 15.71
+          },
+          "idle#north-east": {
+            "ax": -0.01,
+            "ay": 14.94
+          },
+          "idle#north": {
+            "ax": -0.63,
+            "ay": 15.46
+          },
+          "idle#north-west": {
+            "ax": -0.08,
+            "ay": 13.49
+          },
+          "idle#south-west": {
+            "ax": 1.41,
+            "ay": 15.31
+          },
+          "walk#south": {
+            "ax": -0.43,
+            "ay": 13.52
+          },
+          "walk#south-east": {
+            "ax": -1.78,
+            "ay": 11.73
+          },
+          "walk#west": {
+            "ax": 2.72,
+            "ay": 13.79
+          },
+          "walk#south-west": {
+            "ax": 2.1,
+            "ay": 11.06
+          },
+          "angry#west": {
+            "ax": 0.76,
+            "ay": 17.1
+          },
+          "attack#west": {
+            "ax": 2.86,
+            "ay": 16.98
+          }
+        }
+      }
+    },
+    "storm_shellback": {
+      "max_hp": 215,
+      "damage": 34,
+      "speed_wu": 35,
+      "aggro_radius_wu": 0,
+      "attack_cooldown_ms": 1500,
+      "xp": 457,
+      "scale": 1,
+      "loot": [
+        {
+          "item": "cyan_storm_crystal_stone",
+          "chance": 0.008
+        },
+        {
+          "item": "blue_veined_rift_geode",
+          "chance": 0.011
+        },
+        {
+          "item": "pale_blue_crystal_cluster",
+          "chance": 0.044
+        },
+        {
+          "item": "cobbled_stone_egg",
+          "chance": 0.128
+        },
+        {
+          "item": "segmented_carapace",
+          "chance": 0.128
+        }
+      ],
+      "level": 20,
+      "shadow": {
+        "rx": 66.5,
+        "ry": 30.5,
+        "offsets": {
+          "idle#east": {
+            "ax": -7.07,
+            "ay": 47.57
+          },
+          "idle#south": {
+            "ax": 0.49,
+            "ay": 54.56
+          },
+          "idle#south-east": {
+            "ax": 1.66,
+            "ay": 43.06
+          },
+          "idle#north-east": {
+            "ax": 3.32,
+            "ay": 47.79
+          },
+          "idle#north": {
+            "ax": 1.42,
+            "ay": 40.56
+          },
+          "idle#north-west": {
+            "ax": 0.05,
+            "ay": 46.79
+          },
+          "idle#west": {
+            "ax": 5.7,
+            "ay": 46.61
+          },
+          "idle#south-west": {
+            "ax": -0.94,
+            "ay": 45.19
+          }
+        }
+      }
+    },
+    "storm_stag": {
+      "max_hp": 205,
+      "damage": 32,
+      "speed_wu": 35,
+      "aggro_radius_wu": 0,
+      "attack_cooldown_ms": 1500,
+      "xp": 426,
+      "scale": 1,
+      "loot": [
+        {
+          "item": "violet_lightning_stone",
+          "chance": 0.008
+        },
+        {
+          "item": "black_tipped_horns",
+          "chance": 0.128
+        },
+        {
+          "item": "clear_quartz_cluster",
+          "chance": 0.128
+        }
+      ],
+      "level": 19,
+      "shadow": {
+        "rx": 40,
+        "ry": 22,
+        "offsets": {
+          "idle#east": {
+            "ax": -8.82,
+            "ay": 44.4
+          },
+          "idle#south": {
+            "ax": 1.07,
+            "ay": 43.54
+          },
+          "idle#south-east": {
+            "ax": -5.87,
+            "ay": 39.88
+          },
+          "idle#north-east": {
+            "ax": -3.88,
+            "ay": 38.31
+          },
+          "idle#north": {
+            "ax": 2.45,
+            "ay": 45.23
+          },
+          "idle#north-west": {
+            "ax": 7.07,
+            "ay": 40.27
+          },
+          "idle#west": {
+            "ax": 8.42,
+            "ay": 44.52
+          },
+          "idle#south-west": {
+            "ax": 6.32,
+            "ay": 40.69
+          },
+          "walk#south-east": {
+            "ax": -7.26,
+            "ay": 43.34
+          },
+          "walk#north-east": {
+            "ax": -5.97,
+            "ay": 42.64
+          },
+          "walk#north-west": {
+            "ax": 7.04,
+            "ay": 42.84
+          },
+          "walk#south-west": {
+            "ax": 6.28,
+            "ay": 43.29
+          }
+        }
+      }
+    },
+    "swamp_bear": {
+      "max_hp": 185,
+      "damage": 29,
+      "speed_wu": 35,
+      "aggro_radius_wu": 0,
+      "attack_cooldown_ms": 1500,
+      "xp": 367,
+      "scale": 1,
+      "loot": [
+        {
+          "item": "fen_bloom_stone",
+          "chance": 0.008
+        },
+        {
+          "item": "blue_glow_caps",
+          "chance": 0.128
+        },
+        {
+          "item": "blunt_ivory_tooth",
+          "chance": 0.128
+        },
+        {
+          "item": "furred_dark_claw",
+          "chance": 0.128
+        },
+        {
+          "item": "mire_stained_claw",
+          "chance": 0.128
+        },
+        {
+          "item": "spotted_purple_mushroom",
+          "chance": 0.128
+        },
+        {
+          "item": "violet_mushroom_cluster",
+          "chance": 0.128
+        },
+        {
+          "item": "raw_red_meat_slab",
+          "chance": 0.256
+        }
+      ],
+      "level": 17,
+      "shadow": {
+        "rx": 34.25,
+        "ry": 17.75,
+        "offsets": {
+          "idle#east": {
+            "ax": -4.51,
+            "ay": 24
+          },
+          "idle#south": {
+            "ax": -0.84,
+            "ay": 24.54
+          },
+          "idle#south-east": {
+            "ax": -1.56,
+            "ay": 24.74
+          },
+          "idle#north-east": {
+            "ax": -0.92,
+            "ay": 25.03
+          },
+          "idle#north": {
+            "ax": 0.65,
+            "ay": 24.7
+          },
+          "idle#north-west": {
+            "ax": 0.07,
+            "ay": 24.21
+          },
+          "idle#south-west": {
+            "ax": 1.62,
+            "ay": 24.52
+          },
+          "walk#west": {
+            "ax": 2.24,
+            "ay": 25.65
+          },
+          "idle#west": {
+            "ax": 2.76,
+            "ay": 25.34
+          },
+          "attack#north": {
+            "ax": 0.76,
+            "ay": 27.5
+          },
+          "die#south-west": {
+            "ax": 1.37,
+            "ay": 21.11
+          },
+          "die#north-east": {
+            "ax": -2.78,
+            "ay": 22.54
+          },
+          "die#west": {
+            "ax": 2.76,
+            "ay": 25.34
+          }
+        }
+      }
+    },
+    "swamp_cat": {
+      "max_hp": 95,
+      "damage": 15,
+      "speed_wu": 35,
+      "aggro_radius_wu": 0,
+      "attack_cooldown_ms": 1500,
+      "xp": 133,
+      "scale": 1,
+      "loot": [
+        {
+          "item": "cobbled_mist_stone",
+          "chance": 0.03
+        },
+        {
+          "item": "bog_slime_blob",
+          "chance": 0.256
+        },
+        {
+          "item": "coiled_bog_worm",
+          "chance": 0.256
+        },
+        {
+          "item": "curved_ivory_fang",
+          "chance": 0.256
+        },
+        {
+          "item": "green_ooze_glob",
+          "chance": 0.256
+        },
+        {
+          "item": "green_slime_glob",
+          "chance": 0.256
+        },
+        {
+          "item": "smooth_river_stone",
+          "chance": 0.256
+        }
+      ],
+      "level": 8,
+      "shadow": {
+        "rx": 19.5,
+        "ry": 11.75,
+        "offsets": {
+          "idle#east": {
+            "ax": -0.59,
+            "ay": 23.15
+          },
+          "idle#south": {
+            "ax": -0.38,
+            "ay": 20.99
+          },
+          "idle#south-east": {
+            "ax": 0.51,
+            "ay": 19.49
+          },
+          "idle#north-east": {
+            "ax": -0.82,
+            "ay": 21.64
+          },
+          "idle#north": {
+            "ax": 0.28,
+            "ay": 20.73
+          },
+          "idle#north-west": {
+            "ax": 0.4,
+            "ay": 20.66
+          },
+          "idle#west": {
+            "ax": 1.09,
+            "ay": 20.97
+          },
+          "idle#south-west": {
+            "ax": -0.86,
+            "ay": 19.26
+          }
+        }
+      }
+    },
+    "swamp_cat_2": {
+      "max_hp": 115,
+      "damage": 18,
+      "speed_wu": 35,
+      "aggro_radius_wu": 0,
+      "attack_cooldown_ms": 1500,
+      "xp": 179,
+      "scale": 1,
+      "loot": [
+        {
+          "item": "dark_green_gaze_stone",
+          "chance": 0.02
+        },
+        {
+          "item": "paired_black_claws",
+          "chance": 0.044
+        },
+        {
+          "item": "green_slit_eyeball",
+          "chance": 0.128
+        },
+        {
+          "item": "mire_stained_claw",
+          "chance": 0.128
+        },
+        {
+          "item": "plucked_beast_eyeball",
+          "chance": 0.128
+        },
+        {
+          "item": "raw_red_meat_slab",
+          "chance": 0.256
+        }
+      ],
+      "level": 10,
+      "shadow": {
+        "rx": 16,
+        "ry": 10,
+        "offsets": {
+          "idle#east": {
+            "ax": 0.42,
+            "ay": 18.29
+          },
+          "idle#south": {
+            "ax": -0.63,
+            "ay": 16.31
+          },
+          "idle#south-east": {
+            "ax": 0.39,
+            "ay": 16.94
+          },
+          "idle#north-east": {
+            "ax": -0.49,
+            "ay": 16.59
+          },
+          "idle#north": {
+            "ax": 0.82,
+            "ay": 17.87
+          },
+          "idle#north-west": {
+            "ax": 0.18,
+            "ay": 16.05
+          },
+          "idle#west": {
+            "ax": -0.57,
+            "ay": 16.62
+          },
+          "idle#south-west": {
+            "ax": -1.17,
+            "ay": 16.55
+          }
+        }
+      }
     },
     "tree_stump": {
       "level": 10,
@@ -661,11 +4255,15 @@
         },
         {
           "item": "amber_glazed_root",
-          "chance": 0.16
+          "chance": 0.128
+        },
+        {
+          "item": "blue_glow_caps",
+          "chance": 0.128
         },
         {
           "item": "gnarled_mandrake_root",
-          "chance": 0.16
+          "chance": 0.128
         },
         {
           "item": "papery_hornet_nest",
@@ -673,7 +4271,11 @@
         },
         {
           "item": "spotted_purple_mushroom",
-          "chance": 0.16
+          "chance": 0.128
+        },
+        {
+          "item": "crooked_twig",
+          "chance": 0.256
         },
         {
           "item": "dark_hardwood_plank",
@@ -681,9 +4283,219 @@
         },
         {
           "item": "mossy_driftwood_bundle",
-          "chance": 0.32
+          "chance": 0.256
         }
-      ]
+      ],
+      "shadow": {
+        "rx": 20.5,
+        "ry": 10,
+        "offsets": {
+          "idle#east": {
+            "ax": -0.44,
+            "ay": 12.75
+          },
+          "idle#south": {
+            "ax": 1.62,
+            "ay": 12.32
+          },
+          "idle#south-east": {
+            "ax": 0.79,
+            "ay": 11.9
+          },
+          "idle#north-east": {
+            "ax": -0.5,
+            "ay": 13.12
+          },
+          "idle#north": {
+            "ax": 1.15,
+            "ay": 10.8
+          },
+          "idle#north-west": {
+            "ax": 0.85,
+            "ay": 13.46
+          },
+          "idle#west": {
+            "ax": 0.86,
+            "ay": 14.36
+          },
+          "idle#south-west": {
+            "ax": 0.13,
+            "ay": 12.49
+          }
+        }
+      }
+    },
+    "undead_charger": {
+      "max_hp": 135,
+      "damage": 21,
+      "speed_wu": 35,
+      "aggro_radius_wu": 0,
+      "attack_cooldown_ms": 1500,
+      "xp": 229,
+      "scale": 1,
+      "loot": [
+        {
+          "item": "grey_violet_charge_stone",
+          "chance": 0.02
+        },
+        {
+          "item": "bleached_rib_cage",
+          "chance": 0.128
+        },
+        {
+          "item": "pale_curved_horn",
+          "chance": 0.16
+        },
+        {
+          "item": "pale_ridged_horns",
+          "chance": 0.128
+        },
+        {
+          "item": "white_rib_cage",
+          "chance": 0.128
+        },
+        {
+          "item": "bone_flecked_grave_soil",
+          "chance": 0.256
+        },
+        {
+          "item": "heavy_iron_links",
+          "chance": 0.256
+        },
+        {
+          "item": "heavy_long_bone",
+          "chance": 0.256
+        },
+        {
+          "item": "loose_vertebrae",
+          "chance": 0.256
+        }
+      ],
+      "level": 12,
+      "shadow": {
+        "rx": 24.75,
+        "ry": 17,
+        "offsets": {
+          "idle#east": {
+            "ax": -2.87,
+            "ay": 29.73
+          },
+          "idle#south": {
+            "ax": 0.1,
+            "ay": 30.18
+          },
+          "idle#south-east": {
+            "ax": -1.21,
+            "ay": 28
+          },
+          "idle#north-east": {
+            "ax": -3.15,
+            "ay": 25.5
+          },
+          "idle#north": {
+            "ax": 0.45,
+            "ay": 26.89
+          },
+          "idle#north-west": {
+            "ax": 3.55,
+            "ay": 25.43
+          },
+          "idle#west": {
+            "ax": 3.96,
+            "ay": 30.31
+          },
+          "idle#south-west": {
+            "ax": 3.01,
+            "ay": 26.45
+          },
+          "walk#south": {
+            "ax": 0.26,
+            "ay": 26.28
+          }
+        }
+      }
+    },
+    "undead_hound": {
+      "max_hp": 65,
+      "damage": 10,
+      "speed_wu": 35,
+      "aggro_radius_wu": 0,
+      "attack_cooldown_ms": 1200,
+      "xp": 70,
+      "scale": 1,
+      "loot": [
+        {
+          "item": "dark_red_star_stone",
+          "chance": 0.03
+        },
+        {
+          "item": "bone_flecked_grave_soil",
+          "chance": 0.256
+        },
+        {
+          "item": "loose_beast_teeth",
+          "chance": 0.256
+        },
+        {
+          "item": "loose_vertebrae",
+          "chance": 0.256
+        },
+        {
+          "item": "rotten_stitched_hide",
+          "chance": 0.256
+        },
+        {
+          "item": "split_bone_pile",
+          "chance": 0.256
+        },
+        {
+          "item": "stained_marrow_bone",
+          "chance": 0.256
+        },
+        {
+          "item": "yellowed_curved_fang",
+          "chance": 0.256
+        }
+      ],
+      "level": 5,
+      "shadow": {
+        "rx": 12.5,
+        "ry": 7.75,
+        "offsets": {
+          "idle#east": {
+            "ax": -2.72,
+            "ay": 17.19
+          },
+          "idle#south": {
+            "ax": -0.96,
+            "ay": 15.2
+          },
+          "idle#south-east": {
+            "ax": -2.24,
+            "ay": 14.67
+          },
+          "idle#north-east": {
+            "ax": -1.45,
+            "ay": 15.69
+          },
+          "idle#north": {
+            "ax": 0.21,
+            "ay": 17.75
+          },
+          "idle#north-west": {
+            "ax": 2.33,
+            "ay": 16.25
+          },
+          "idle#west": {
+            "ax": 3.51,
+            "ay": 16.01
+          },
+          "idle#south-west": {
+            "ax": 2.12,
+            "ay": 15.34
+          }
+        }
+      }
     },
     "water_poring": {
       "level": 2,
@@ -700,6 +4512,10 @@
           "chance": 0.03
         },
         {
+          "item": "clear_dew_drop",
+          "chance": 0.128
+        },
+        {
           "item": "mint_slime_globule",
           "chance": 0.256
         },
@@ -707,7 +4523,123 @@
           "item": "smooth_river_stone",
           "chance": 0.256
         }
-      ]
+      ],
+      "shadow": {
+        "rx": 18.25,
+        "ry": 9,
+        "offsets": {
+          "idle#south": {
+            "ax": 0.64,
+            "ay": 8.26
+          },
+          "idle#east": {
+            "ax": -0.48,
+            "ay": 11.23
+          },
+          "idle#south-east": {
+            "ax": 0.29,
+            "ay": 8.54
+          },
+          "idle#north-east": {
+            "ax": 0.2,
+            "ay": 9.62
+          },
+          "idle#north": {
+            "ax": 0.36,
+            "ay": 8.69
+          },
+          "idle#north-west": {
+            "ax": 0.68,
+            "ay": 9.83
+          },
+          "idle#west": {
+            "ax": -0.12,
+            "ay": 10.08
+          },
+          "idle#south-west": {
+            "ax": -0.05,
+            "ay": 8.73
+          }
+        }
+      }
+    },
+    "white_horse": {
+      "max_hp": 105,
+      "damage": 16,
+      "speed_wu": 35,
+      "aggro_radius_wu": 0,
+      "attack_cooldown_ms": 1500,
+      "xp": 155,
+      "scale": 1,
+      "loot": [
+        {
+          "item": "white_pebbled_snow_stone",
+          "chance": 0.02
+        },
+        {
+          "item": "spiky_white_tuft",
+          "chance": 0.128
+        },
+        {
+          "item": "yellowed_beast_molar",
+          "chance": 0.256
+        }
+      ],
+      "level": 9,
+      "shadow": {
+        "rx": 17.5,
+        "ry": 12.25,
+        "offsets": {
+          "idle#east": {
+            "ax": -3.39,
+            "ay": 23.29
+          },
+          "idle#south": {
+            "ax": -0.07,
+            "ay": 20.01
+          },
+          "idle#south-east": {
+            "ax": -1.8,
+            "ay": 19.64
+          },
+          "idle#north-east": {
+            "ax": -1.98,
+            "ay": 21.81
+          },
+          "idle#north": {
+            "ax": 1.29,
+            "ay": 24.43
+          },
+          "idle#north-west": {
+            "ax": 2.62,
+            "ay": 22.25
+          },
+          "idle#west": {
+            "ax": 5.46,
+            "ay": 23.65
+          },
+          "idle#south-west": {
+            "ax": 1.04,
+            "ay": 19.97
+          },
+          "walk#south-west": {
+            "ax": 0.9,
+            "ay": 22.09
+          },
+          "walk#west": {
+            "ax": 3.66,
+            "ay": 23.37
+          },
+          "walk#east": {
+            "ax": -1.87,
+            "ay": 23.65
+          },
+          "walk#south-east": {
+            "ax": -1.37,
+            "ay": 22.18
+          }
+        }
+      }
     },
     "white_rabbit": {
       "level": 5,
@@ -725,13 +4657,63 @@
         },
         {
           "item": "spiky_white_tuft",
-          "chance": 0.16
+          "chance": 0.128
         },
         {
           "item": "glossy_brown_seeds",
           "chance": 0.256
+        },
+        {
+          "item": "scattered_small_teeth",
+          "chance": 0.256
+        },
+        {
+          "item": "small_milk_tooth",
+          "chance": 0.256
+        },
+        {
+          "item": "straw_nest_tuft",
+          "chance": 0.256
         }
-      ]
+      ],
+      "shadow": {
+        "rx": 15.25,
+        "ry": 7,
+        "offsets": {
+          "idle#east": {
+            "ax": -0.69,
+            "ay": 12.77
+          },
+          "idle#south": {
+            "ax": 0.92,
+            "ay": 14.93
+          },
+          "idle#north-east": {
+            "ax": -4,
+            "ay": 12.86
+          },
+          "idle#north": {
+            "ax": 1.13,
+            "ay": 14.06
+          },
+          "idle#north-west": {
+            "ax": 2.92,
+            "ay": 12.95
+          },
+          "idle#west": {
+            "ax": 0.93,
+            "ay": 11.47
+          },
+          "idle#south-west": {
+            "ax": 1.51,
+            "ay": 13.03
+          },
+          "walk#south-east": {
+            "ax": -2.49,
+            "ay": 14.12
+          }
+        }
+      }
     }
   }
 }

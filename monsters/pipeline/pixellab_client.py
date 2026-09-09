@@ -8,9 +8,12 @@ by tag — see `tagged_monsters()`.
   - **objects** (`v2/objects`, create-object UI): animations carry a
     `description` and per-direction frames under `storage_urls.frames`.
   - **characters** (`v2/characters`, create-character UI): animations carry an
-    `animation_type` and per-direction frames directly under `frames`; while a
-    regeneration is in flight the API can transiently return DUPLICATE entries
-    for one direction (old + new copy) — the newest by Last-Modified wins.
+    `animation_type` and per-direction frames directly under `frames`.
+
+  Either store can hold several TAKES of one direction (regenerating in the UI
+  keeps the old take in the record, invisibly — no timestamp, no current-flag).
+  The UI renders the LAST take in the response, so that is what gets mirrored;
+  roster direction_picks can pin an older one.
 
 `normalized_animations()` folds both shapes into one:
   [{name, group_id, directions: {direction: [frame_urls]}}]
@@ -29,7 +32,6 @@ import os
 import threading
 import time
 from concurrent.futures import ThreadPoolExecutor
-from email.utils import parsedate_to_datetime
 
 import requests
 from PIL import Image
@@ -247,10 +249,8 @@ class PixelLabClient:
         """Fold both stores' animation shapes into one:
         [{name, group_id, display_name, directions: {direction: [urls]}}].
 
-        Objects: merge duplicate groups per description, keeping the most
-        frames per direction. Characters: `animation_type` names the animation;
-        duplicate direction entries (transient, during in-place regeneration)
-        resolve to the newest by Last-Modified of frame 0."""
+        Duplicate takes of one direction resolve to the LAST one in the
+        response — that is the take the PixelLab UI renders, see below."""
         merged = {}
         for a in detail.get("animations") or []:
             name = (a.get("animation_type") if kind == "character" else None) \
@@ -277,21 +277,25 @@ class PixelLabClient:
                     dirs[d] = cands[0]
                     subs[d] = self.sub_id(cands[0][0])
                     continue
-                # PixelLab keeps EVERY take of a direction and the API marks
-                # none of them current, so a duplicate is a real choice, not a
-                # transient. An explicit pin (roster: direction_picks) decides
-                # it; otherwise fall back to newest-by-Last-Modified and report
-                # the direction as ambiguous so sync can flag it for review.
+                # PixelLab keeps EVERY take of a direction; the record carries
+                # no per-take timestamp and marks none current (checked
+                # 2026-08-13: direction entries hold only direction /
+                # frame_count / frames). The UI keys takes by (animation,
+                # direction) as it walks this same array, so the LAST duplicate
+                # is the one the UI renders — the only take the maintainer ever
+                # sees. Mirror exactly that. An explicit pin (roster:
+                # direction_picks) still wins for the rare case the OLDER take
+                # is wanted.
+                #
+                # Do not resurrect a Last-Modified/HEAD tiebreak here: measured
+                # against the UI over 19 real duplicates it agreed only ~half
+                # the time (CDN upload time is not authoring order), and the
+                # mismatch cost the maintainer finished animations, deleted
+                # while chasing takes the UI never showed.
                 pinned = want.get(d)
                 chosen = next((c for c in cands if self.sub_id(c[0]) == pinned), None)
                 if chosen is None:
-                    stamped = [(self._lm_datetime(c[0]), c) for c in cands]
-                    dated = [t for t in stamped if t[0] is not None]
-                    pool = cands
-                    if dated:
-                        newest = max(t[0] for t in dated)
-                        pool = [c for dt, c in dated if dt == newest]
-                    chosen = max(pool, key=len)
+                    chosen = cands[-1]
                     ambiguous[d] = [self.sub_id(c[0]) for c in cands]
                 dirs[d] = chosen
                 subs[d] = self.sub_id(chosen[0])
@@ -300,15 +304,6 @@ class PixelLabClient:
             g["ambiguous"] = ambiguous
             out.append(g)
         return out
-
-    def _lm_datetime(self, url):
-        lm = self.last_modified(url)
-        if not lm:
-            return None
-        try:
-            return parsedate_to_datetime(lm)
-        except (TypeError, ValueError):
-            return None
 
     # -- balance / budget ----------------------------------------------------
 

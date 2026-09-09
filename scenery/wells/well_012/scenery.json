@@ -1,0 +1,130 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-14T00:45:06+00:00",
+  "id": "well_012",
+  "group": "wells",
+  "rank": 11,
+  "index": 12,
+  "name": "Snow-capped winter well 012",
+  "lights": null,
+  "variety": "snow-capped winter well",
+  "modifier": "moss-capped",
+  "glow_concept": "soulstone vein glinting through cracked stonework",
+  "prompt": "a round fieldstone well with thick stone walls and a heavy peaked wooden roof on two stout posts, a chunky windlass, snow-capped winter well, moss-capped, large, twice human height, self-emissive at night, softly radiating light: soulstone vein glinting through cracked stonework",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 128,
+  "sprite": "wells/well_012/sprite.webp",
+  "placement": {
+    "world_height_m": 1.993,
+    "world_px_height": 102,
+    "character_height_px": 87,
+    "character_height_m": 1.7,
+    "note": "ONE SCENERY PIXEL IS ONE PLAYER PIXEL. world_px_height IS the art's own alpha bbox height, so scenery is placed into the world at 1:1 exactly as the avatar is (setScale(1)) and the two share one pixel grid. The CAMERA still zooms the whole scene \u2014 that is uniform and correct; what must never happen is scenery being resampled on its own, against the player. world_height_m is what the art reads as beside a 87px character; declared_height_m is what it was once declared to be, and a gap between them means the ART is the wrong size.",
+    "declared_height_m": 2.24,
+    "content_box": [
+      26,
+      14,
+      112,
+      116
+    ],
+    "content_px_height": 102,
+    "canvas_render_px": 128
+  },
+  "pixellab_object_id": "047d690f-371e-452d-873b-f28f96f665df",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)",
+  "must_be_imbplemented_with_random_hflip": true,
+  "states": {
+    "NOT_LIT_3": {
+      "sprite": "wells/well_012/sprite.webp",
+      "pixellab_object_id": "047d690f-371e-452d-873b-f28f96f665df",
+      "generated_at": "2026-08-14T00:45:06+00:00",
+      "relit_from": "LIT_1",
+      "rotations": {
+        "south-east": "wells/well_012/rotations/south-east.webp",
+        "south-west": "wells/well_012/rotations/south-west.webp",
+        "south": "wells/well_012/sprite.webp"
+      }
+    },
+    "NOT_LIT_4": {
+      "sprite": "wells/well_012/not_lit_4/sprite.webp",
+      "pixellab_object_id": "9fa5d7a4-c151-4e65-859c-51293fd14d7f",
+      "generated_at": "2026-08-17T12:58:24+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.6371,
+      "glow_score": 0.0676,
+      "relit_from": "LIT_2",
+      "rotations": {
+        "south-east": "wells/well_012/not_lit_4/rotations/south-east.webp",
+        "south-west": "wells/well_012/not_lit_4/rotations/south-west.webp",
+        "south": "wells/well_012/not_lit_4/sprite.webp"
+      },
+      "animations": {
+        "motion": {
+          "group_id": "f55e858b-ddd2-4de2-ae10-67ad8916eab7",
+          "description": "This is the same picture in every frame. ONLY the bucket hanging on the rope swings. Everything else in the picture is copied from the first frame exactly, pixel for pixel, unchanged in shape, size, position and colour. No outline anywhere is redrawn. The last frame matches the first frame exactly, so the loop joins. Nothing anywhere becomes darker, lighter or a different colour except the one thing named above.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "wells/well_012/not_lit_4/animations/motion/00.webp",
+            "wells/well_012/not_lit_4/animations/motion/01.webp",
+            "wells/well_012/not_lit_4/animations/motion/02.webp",
+            "wells/well_012/not_lit_4/animations/motion/03.webp",
+            "wells/well_012/not_lit_4/animations/motion/04.webp"
+          ],
+          "strip": "wells/well_012/not_lit_4/animations/motion__strip.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-08-29T16:05:54+00:00",
+          "brief": "X18",
+          "review": "ANIMATION_PROBABLY_BAD",
+          "review_metrics": {
+            "class": "water",
+            "base": 0.8474,
+            "still": 0.403
+          }
+        }
+      }
+    },
+    "NOT_LIT_5": {
+      "sprite": "wells/well_012/not_lit_5/sprite.webp",
+      "pixellab_object_id": "63ca6ed9-88f7-4b4d-a8e2-f1c69be2d2f0",
+      "generated_at": "2026-08-17T12:58:24+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.5268,
+      "glow_score": 0.078,
+      "relit_from": "LIT_3",
+      "rotations": {
+        "south-east": "wells/well_012/not_lit_5/rotations/south-east.webp",
+        "south-west": "wells/well_012/not_lit_5/rotations/south-west.webp",
+        "south": "wells/well_012/not_lit_5/sprite.webp"
+      }
+    },
+    "NOT_LIT_6": {
+      "sprite": "wells/well_012/not_lit_6/sprite.webp",
+      "pixellab_object_id": "047a55bf-3883-4c90-a08b-b6ec8aca4994",
+      "generated_at": "2026-08-17T12:58:25+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.5437,
+      "glow_score": 0.0524,
+      "relit_from": "LIT_4",
+      "rotations": {
+        "south-east": "wells/well_012/not_lit_6/rotations/south-east.webp",
+        "south-west": "wells/well_012/not_lit_6/rotations/south-west.webp",
+        "south": "wells/well_012/not_lit_6/sprite.webp"
+      },
+      "animations": {}
+    }
+  },
+  "collision": true,
+  "hitbox_shape": "ellipse"
+}

@@ -1,0 +1,1337 @@
+{
+ "schema": "tiles3/member-resolve@1",
+ "_comment": [
+  "HOW TO TURN A base_tile_sets.json MEMBER STRING INTO ART, as data.",
+  "Look the member up in `members` and draw `art`. Do not parse the string:",
+  "it has two legal forms, and re-implementing the choice is what made 104 of",
+  "340 members fall back to clean in the map renderer while the wiki drew them",
+  "correctly (the plate rule applied to a literal path yields '...webp.webp').",
+  "A member absent from `members` means THIS FILE IS STALE, not that the member",
+  "is invalid - fall back to `forms`, and it is worth saying so out loud.",
+  "Every `art` here was verified to exist on disk when this file was written."
+ ],
+ "forms": {
+  "conform": {
+   "match": "^tiles/([^/]+)/([0-9a-f]{8})$",
+   "resolve": "the review manifest candidate's `textured` art for that key",
+   "why": "render3 draws the TEXTURED art for a review-key member; this file used to send it to the flattened plate and was stale against the renderer for all 236 of them (game agent, 2026-08-29). A resolver that disagrees with the renderer is a second answer that looks authoritative.",
+   "fallback": "tiles/plates/<ground>/<key8>.webp when the candidate has no textured art"
+  },
+  "file": {
+   "match": "\\.webp$",
+   "resolve": "the string itself, verbatim - it is already a path",
+   "covers": "tiles/tops/**/post art and tiles/base_candidates ballot files"
+  }
+ },
+ "n_members": 325,
+ "n_referenced": 340,
+ "n_shared_members": 15,
+ "by_kind": {
+  "plate": 0,
+  "conform": 223,
+  "file": 102
+ },
+ "unresolved": [],
+ "members": {
+  "tiles/base_candidates/grass/grass__to__grey_paving_stone__a14_s5.webp": {
+   "kind": "file",
+   "art": "tiles/base_candidates/grass/grass__to__grey_paving_stone__a14_s5.webp"
+  },
+  "tiles/base_candidates/grass/grass__to__grey_stone__a30_s1.webp": {
+   "kind": "file",
+   "art": "tiles/base_candidates/grass/grass__to__grey_stone__a30_s1.webp"
+  },
+  "tiles/base_candidates/grass/grass__to__ice__a18_s4.webp": {
+   "kind": "file",
+   "art": "tiles/base_candidates/grass/grass__to__ice__a18_s4.webp"
+  },
+  "tiles/base_candidates/grass/grass__to__lava__a05_s1.webp": {
+   "kind": "file",
+   "art": "tiles/base_candidates/grass/grass__to__lava__a05_s1.webp"
+  },
+  "tiles/base_candidates/grass/grass__to__lava__a14_s1.webp": {
+   "kind": "file",
+   "art": "tiles/base_candidates/grass/grass__to__lava__a14_s1.webp"
+  },
+  "tiles/base_candidates/grass/grass__to__lava__a24_s6.webp": {
+   "kind": "file",
+   "art": "tiles/base_candidates/grass/grass__to__lava__a24_s6.webp"
+  },
+  "tiles/base_candidates/grass/grass__to__parquet_floor__a12_s4.webp": {
+   "kind": "file",
+   "art": "tiles/base_candidates/grass/grass__to__parquet_floor__a12_s4.webp"
+  },
+  "tiles/base_candidates/grass/grass__to__slime__a23_s1.webp": {
+   "kind": "file",
+   "art": "tiles/base_candidates/grass/grass__to__slime__a23_s1.webp"
+  },
+  "tiles/base_candidates/grass/grass__to__slime__a23_s4.webp": {
+   "kind": "file",
+   "art": "tiles/base_candidates/grass/grass__to__slime__a23_s4.webp"
+  },
+  "tiles/base_candidates/grass/grass__to__slime__a24_s6.webp": {
+   "kind": "file",
+   "art": "tiles/base_candidates/grass/grass__to__slime__a24_s6.webp"
+  },
+  "tiles/base_candidates/grass/grass__to__snow__a03_s5.webp": {
+   "kind": "file",
+   "art": "tiles/base_candidates/grass/grass__to__snow__a03_s5.webp"
+  },
+  "tiles/base_candidates/grass/grass__to__snow__a14_s5.webp": {
+   "kind": "file",
+   "art": "tiles/base_candidates/grass/grass__to__snow__a14_s5.webp"
+  },
+  "tiles/base_candidates/grass/grass__to__water__a24_s6.webp": {
+   "kind": "file",
+   "art": "tiles/base_candidates/grass/grass__to__water__a24_s6.webp"
+  },
+  "tiles/base_candidates/ice/grass__to__ice__a03_s5.webp": {
+   "kind": "file",
+   "art": "tiles/base_candidates/ice/grass__to__ice__a03_s5.webp"
+  },
+  "tiles/base_candidates/ice/grass__to__ice__a05_s1.webp": {
+   "kind": "file",
+   "art": "tiles/base_candidates/ice/grass__to__ice__a05_s1.webp"
+  },
+  "tiles/base_candidates/ice/grass__to__ice__a12_s4.webp": {
+   "kind": "file",
+   "art": "tiles/base_candidates/ice/grass__to__ice__a12_s4.webp"
+  },
+  "tiles/base_candidates/ice/grass__to__ice__a14_s1.webp": {
+   "kind": "file",
+   "art": "tiles/base_candidates/ice/grass__to__ice__a14_s1.webp"
+  },
+  "tiles/base_candidates/ice/grass__to__ice__a15_s2.webp": {
+   "kind": "file",
+   "art": "tiles/base_candidates/ice/grass__to__ice__a15_s2.webp"
+  },
+  "tiles/base_candidates/ice/grass__to__ice__a21_s2.webp": {
+   "kind": "file",
+   "art": "tiles/base_candidates/ice/grass__to__ice__a21_s2.webp"
+  },
+  "tiles/base_candidates/ice/grass__to__ice__a23_s4.webp": {
+   "kind": "file",
+   "art": "tiles/base_candidates/ice/grass__to__ice__a23_s4.webp"
+  },
+  "tiles/base_candidates/ice/grass__to__ice__a24_s6.webp": {
+   "kind": "file",
+   "art": "tiles/base_candidates/ice/grass__to__ice__a24_s6.webp"
+  },
+  "tiles/base_candidates/ice/grass__to__ice__a30_s1.webp": {
+   "kind": "file",
+   "art": "tiles/base_candidates/ice/grass__to__ice__a30_s1.webp"
+  },
+  "tiles/base_candidates/light_soil/brown_paving_stone__to__light_soil__a15_s2.webp": {
+   "kind": "file",
+   "art": "tiles/base_candidates/light_soil/brown_paving_stone__to__light_soil__a15_s2.webp"
+  },
+  "tiles/base_candidates/light_soil/brown_paving_stone__to__light_soil__a21_s4.webp": {
+   "kind": "file",
+   "art": "tiles/base_candidates/light_soil/brown_paving_stone__to__light_soil__a21_s4.webp"
+  },
+  "tiles/base_candidates/light_soil/brown_paving_stone__to__light_soil__a21_s5.webp": {
+   "kind": "file",
+   "art": "tiles/base_candidates/light_soil/brown_paving_stone__to__light_soil__a21_s5.webp"
+  },
+  "tiles/base_candidates/light_soil/dark_mud__to__light_soil__a00_s5.webp": {
+   "kind": "file",
+   "art": "tiles/base_candidates/light_soil/dark_mud__to__light_soil__a00_s5.webp"
+  },
+  "tiles/base_candidates/light_soil/dark_mud__to__light_soil__a21_s2.webp": {
+   "kind": "file",
+   "art": "tiles/base_candidates/light_soil/dark_mud__to__light_soil__a21_s2.webp"
+  },
+  "tiles/base_candidates/light_soil/grey_stone__to__light_soil__a18_s6.webp": {
+   "kind": "file",
+   "art": "tiles/base_candidates/light_soil/grey_stone__to__light_soil__a18_s6.webp"
+  },
+  "tiles/base_candidates/light_soil/light_soil__to__snow__a18_s4.webp": {
+   "kind": "file",
+   "art": "tiles/base_candidates/light_soil/light_soil__to__snow__a18_s4.webp"
+  },
+  "tiles/base_candidates/light_soil/light_soil__to__snow__a21_s5.webp": {
+   "kind": "file",
+   "art": "tiles/base_candidates/light_soil/light_soil__to__snow__a21_s5.webp"
+  },
+  "tiles/base_candidates/light_soil/light_soil__to__water__a00_s3.webp": {
+   "kind": "file",
+   "art": "tiles/base_candidates/light_soil/light_soil__to__water__a00_s3.webp"
+  },
+  "tiles/base_candidates/snow/light_soil__to__snow__a24_s6.webp": {
+   "kind": "file",
+   "art": "tiles/base_candidates/snow/light_soil__to__snow__a24_s6.webp"
+  },
+  "tiles/black_rock__over__black_rock/1f0977ec": {
+   "kind": "conform",
+   "art": "tiles/review/black_rock__over__black_rock/26_textured.2fef791b.webp"
+  },
+  "tiles/black_rock__over__black_rock/80252263": {
+   "kind": "conform",
+   "art": "tiles/review/black_rock__over__black_rock/29_textured.88110eb6.webp"
+  },
+  "tiles/black_rock__over__dark_mud/eab63e38": {
+   "kind": "conform",
+   "art": "tiles/review/black_rock__over__dark_mud/14_textured.4e19b583.webp"
+  },
+  "tiles/black_rock__over__deep_water/42595f95": {
+   "kind": "conform",
+   "art": "tiles/review/black_rock__over__deep_water/18_textured.fa98c7fb.webp"
+  },
+  "tiles/black_rock__over__deep_water/f2ac692a": {
+   "kind": "conform",
+   "art": "tiles/review/black_rock__over__deep_water/15_textured.429cd808.webp"
+  },
+  "tiles/black_rock__over__grey_stone/3367ecc5": {
+   "kind": "conform",
+   "art": "tiles/review/black_rock__over__grey_stone/26_textured.235ab50f.webp"
+  },
+  "tiles/black_rock__over__grey_stone/3aa2ad39": {
+   "kind": "conform",
+   "art": "tiles/review/black_rock__over__grey_stone/7_textured.64d6790f.webp"
+  },
+  "tiles/black_rock__over__grey_stone/41f494b1": {
+   "kind": "conform",
+   "art": "tiles/review/black_rock__over__grey_stone/20_textured.2b1fb1db.webp"
+  },
+  "tiles/black_rock__over__grey_stone/6683b4ae": {
+   "kind": "conform",
+   "art": "tiles/review/black_rock__over__grey_stone/19_textured.29fa4732.webp"
+  },
+  "tiles/black_rock__over__grey_stone/737963dd": {
+   "kind": "conform",
+   "art": "tiles/review/black_rock__over__grey_stone/5_textured.10060544.webp"
+  },
+  "tiles/black_rock__over__grey_stone/8aea997b": {
+   "kind": "conform",
+   "art": "tiles/review/black_rock__over__grey_stone/23_textured.40777af3.webp"
+  },
+  "tiles/black_rock__over__grey_stone/ac1f8e7b": {
+   "kind": "conform",
+   "art": "tiles/review/black_rock__over__grey_stone/14_textured.d4eb26b6.webp"
+  },
+  "tiles/black_rock__over__ice/da81461b": {
+   "kind": "conform",
+   "art": "tiles/review/black_rock__over__ice/3_textured.b8a4aa17.webp"
+  },
+  "tiles/black_rock__over__ice/f6310449": {
+   "kind": "conform",
+   "art": "tiles/review/black_rock__over__ice/2_textured.dd4e125b.webp"
+  },
+  "tiles/black_rock__over__lava/4d39233f": {
+   "kind": "conform",
+   "art": "tiles/review/black_rock__over__lava/6_textured.bfabd5df.webp"
+  },
+  "tiles/black_rock__over__lava/82cca49d": {
+   "kind": "conform",
+   "art": "tiles/review/black_rock__over__lava/4_textured.b111e13c.webp"
+  },
+  "tiles/black_rock__over__light_beach/15a42aca": {
+   "kind": "conform",
+   "art": "tiles/review/black_rock__over__light_beach/14_textured.5e2bf194.webp"
+  },
+  "tiles/black_rock__over__light_beach/53afa117": {
+   "kind": "conform",
+   "art": "tiles/review/black_rock__over__light_beach/0_textured.7325ead4.webp"
+  },
+  "tiles/black_rock__over__light_beach/b8e87572": {
+   "kind": "conform",
+   "art": "tiles/review/black_rock__over__light_beach/25_textured.7c1cb478.webp"
+  },
+  "tiles/black_rock__over__light_beach/f9d36b7a": {
+   "kind": "conform",
+   "art": "tiles/review/black_rock__over__light_beach/1_textured.3aec28ac.webp"
+  },
+  "tiles/black_rock__over__light_soil/0f4ada16": {
+   "kind": "conform",
+   "art": "tiles/review/black_rock__over__light_soil/7_textured.d47fc597.webp"
+  },
+  "tiles/black_rock__over__light_soil/2568d91b": {
+   "kind": "conform",
+   "art": "tiles/review/black_rock__over__light_soil/1_textured.67d2aa19.webp"
+  },
+  "tiles/black_rock__over__light_soil/3aff11ff": {
+   "kind": "conform",
+   "art": "tiles/review/black_rock__over__light_soil/17_textured.be973565.webp"
+  },
+  "tiles/black_rock__over__light_soil/672aeefe": {
+   "kind": "conform",
+   "art": "tiles/review/black_rock__over__light_soil/3_textured.6709ebfd.webp"
+  },
+  "tiles/black_rock__over__light_soil/8a1e4960": {
+   "kind": "conform",
+   "art": "tiles/review/black_rock__over__light_soil/8_textured.d4fa35b8.webp"
+  },
+  "tiles/black_rock__over__parquet_floor/02aa9c38": {
+   "kind": "conform",
+   "art": "tiles/review/black_rock__over__parquet_floor/41_textured.bfa02355.webp"
+  },
+  "tiles/black_rock__over__parquet_floor/1e9599ce": {
+   "kind": "conform",
+   "art": "tiles/review/black_rock__over__parquet_floor/33_textured.49be3aa8.webp"
+  },
+  "tiles/black_rock__over__parquet_floor/444f6f79": {
+   "kind": "conform",
+   "art": "tiles/review/black_rock__over__parquet_floor/43_textured.a33abf8f.webp"
+  },
+  "tiles/black_rock__over__parquet_floor/4a9f2898": {
+   "kind": "conform",
+   "art": "tiles/review/black_rock__over__parquet_floor/36_textured.5e1c1658.webp"
+  },
+  "tiles/black_rock__over__parquet_floor/7129860b": {
+   "kind": "conform",
+   "art": "tiles/review/black_rock__over__parquet_floor/27_textured.adaf5d37.webp"
+  },
+  "tiles/black_rock__over__parquet_floor/74d0a524": {
+   "kind": "conform",
+   "art": "tiles/review/black_rock__over__parquet_floor/9_textured.13188159.webp"
+  },
+  "tiles/black_rock__over__parquet_floor/83ea63da": {
+   "kind": "conform",
+   "art": "tiles/review/black_rock__over__parquet_floor/21_textured.0cf6722b.webp"
+  },
+  "tiles/black_rock__over__parquet_floor/c0b3caf7": {
+   "kind": "conform",
+   "art": "tiles/review/black_rock__over__parquet_floor/12_textured.a2b1f179.webp"
+  },
+  "tiles/black_rock__over__parquet_floor/ea68dd6a": {
+   "kind": "conform",
+   "art": "tiles/review/black_rock__over__parquet_floor/24_textured.f3dd3c80.webp"
+  },
+  "tiles/black_rock__over__snow/107d54e4": {
+   "kind": "conform",
+   "art": "tiles/review/black_rock__over__snow/3_textured.b7f402c8.webp"
+  },
+  "tiles/black_rock__over__snow/b7bb8617": {
+   "kind": "conform",
+   "art": "tiles/review/black_rock__over__snow/5_textured.19c48dc3.webp"
+  },
+  "tiles/black_rock__over__water/33193dcc": {
+   "kind": "conform",
+   "art": "tiles/review/black_rock__over__water/7_textured.57bf02be.webp"
+  },
+  "tiles/brown_paving_stone__over__deep_water/b783fcd7": {
+   "kind": "conform",
+   "art": "tiles/review/brown_paving_stone__over__deep_water/1_textured.5d80f213.webp"
+  },
+  "tiles/brown_paving_stone__over__deep_water/ce7e2aab": {
+   "kind": "conform",
+   "art": "tiles/review/brown_paving_stone__over__deep_water/2_textured.e3350e8f.webp"
+  },
+  "tiles/brown_paving_stone__over__grass/25b85d82": {
+   "kind": "conform",
+   "art": "tiles/review/brown_paving_stone__over__grass/4_textured.4bf8fae3.webp"
+  },
+  "tiles/brown_paving_stone__over__grass/53d54774": {
+   "kind": "conform",
+   "art": "tiles/review/brown_paving_stone__over__grass/0_textured.777cbef9.webp"
+  },
+  "tiles/brown_paving_stone__over__grass/c0570fe6": {
+   "kind": "conform",
+   "art": "tiles/review/brown_paving_stone__over__grass/15_textured.d8c78902.webp"
+  },
+  "tiles/brown_paving_stone__over__grass/effec18e": {
+   "kind": "conform",
+   "art": "tiles/review/brown_paving_stone__over__grass/6_textured.40980ac5.webp"
+  },
+  "tiles/brown_paving_stone__over__grey_stone/0f64ba68": {
+   "kind": "conform",
+   "art": "tiles/review/brown_paving_stone__over__grey_stone/26_textured.454e95fe.webp"
+  },
+  "tiles/brown_paving_stone__over__grey_stone/6f958287": {
+   "kind": "conform",
+   "art": "tiles/review/brown_paving_stone__over__grey_stone/38_textured.58ec7724.webp"
+  },
+  "tiles/brown_paving_stone__over__grey_stone/acff38a4": {
+   "kind": "conform",
+   "art": "tiles/review/brown_paving_stone__over__grey_stone/20_textured.977e7df3.webp"
+  },
+  "tiles/brown_paving_stone__over__grey_stone/b5b9ccb9": {
+   "kind": "conform",
+   "art": "tiles/review/brown_paving_stone__over__grey_stone/33_textured.6ea952b2.webp"
+  },
+  "tiles/brown_paving_stone__over__ice/5142e4b2": {
+   "kind": "conform",
+   "art": "tiles/review/brown_paving_stone__over__ice/17_textured.acbff74a.webp"
+  },
+  "tiles/brown_paving_stone__over__lava/0bc3171e": {
+   "kind": "conform",
+   "art": "tiles/review/brown_paving_stone__over__lava/2_textured.e4123821.webp"
+  },
+  "tiles/brown_paving_stone__over__lava/67b7d402": {
+   "kind": "conform",
+   "art": "tiles/review/brown_paving_stone__over__lava/6_textured.210ae4f3.webp"
+  },
+  "tiles/brown_paving_stone__over__lava/832ecaf0": {
+   "kind": "conform",
+   "art": "tiles/review/brown_paving_stone__over__lava/12_textured.c29c1f7f.webp"
+  },
+  "tiles/brown_paving_stone__over__lava/bc531fba": {
+   "kind": "conform",
+   "art": "tiles/review/brown_paving_stone__over__lava/10_textured.95a31403.webp"
+  },
+  "tiles/brown_paving_stone__over__light_beach/2f0a71c6": {
+   "kind": "conform",
+   "art": "tiles/review/brown_paving_stone__over__light_beach/5_textured.1389c867.webp"
+  },
+  "tiles/brown_paving_stone__over__light_beach/3b4a6c5d": {
+   "kind": "conform",
+   "art": "tiles/review/brown_paving_stone__over__light_beach/3_textured.7e34cd76.webp"
+  },
+  "tiles/brown_paving_stone__over__light_soil/07035aff": {
+   "kind": "conform",
+   "art": "tiles/review/brown_paving_stone__over__light_soil/18_textured.359c161f.webp"
+  },
+  "tiles/brown_paving_stone__over__parquet_floor/7f4c6d83": {
+   "kind": "conform",
+   "art": "tiles/review/brown_paving_stone__over__parquet_floor/19_textured.c13f6da2.webp"
+  },
+  "tiles/brown_paving_stone__over__water/3ca1ff1a": {
+   "kind": "conform",
+   "art": "tiles/review/brown_paving_stone__over__water/6_textured.13dc40f6.webp"
+  },
+  "tiles/brown_paving_stone__over__water/d283cb9f": {
+   "kind": "conform",
+   "art": "tiles/review/brown_paving_stone__over__water/3_textured.3600d06a.webp"
+  },
+  "tiles/brown_paving_stone__over__water/d327742b": {
+   "kind": "conform",
+   "art": "tiles/review/brown_paving_stone__over__water/2_textured.3cb8763e.webp"
+  },
+  "tiles/dark_mud__over__black_rock/0ce9376f": {
+   "kind": "conform",
+   "art": "tiles/review/dark_mud__over__black_rock/5_textured.41a19283.webp"
+  },
+  "tiles/dark_mud__over__black_rock/1a8d00c1": {
+   "kind": "conform",
+   "art": "tiles/review/dark_mud__over__black_rock/11_textured.5337bbba.webp"
+  },
+  "tiles/dark_mud__over__black_rock/2c2c77ae": {
+   "kind": "conform",
+   "art": "tiles/review/dark_mud__over__black_rock/8_textured.5c8d24e5.webp"
+  },
+  "tiles/dark_mud__over__black_rock/f9e52b1e": {
+   "kind": "conform",
+   "art": "tiles/review/dark_mud__over__black_rock/12_textured.73254a15.webp"
+  },
+  "tiles/dark_mud__over__dark_mud/24775ad5": {
+   "kind": "conform",
+   "art": "tiles/review/dark_mud__over__dark_mud/8_textured.8b1c3c0e.webp"
+  },
+  "tiles/dark_mud__over__dark_mud/350fb069": {
+   "kind": "conform",
+   "art": "tiles/review/dark_mud__over__dark_mud/40_textured.17559d54.webp"
+  },
+  "tiles/dark_mud__over__dark_mud/684a8f83": {
+   "kind": "conform",
+   "art": "tiles/review/dark_mud__over__dark_mud/24_textured.80188d90.webp"
+  },
+  "tiles/dark_mud__over__dark_mud/7ab43073": {
+   "kind": "conform",
+   "art": "tiles/review/dark_mud__over__dark_mud/7_textured.81f814d9.webp"
+  },
+  "tiles/dark_mud__over__dark_mud/8ab05341": {
+   "kind": "conform",
+   "art": "tiles/review/dark_mud__over__dark_mud/4_textured.8508b388.webp"
+  },
+  "tiles/dark_mud__over__dark_mud/8ea65088": {
+   "kind": "conform",
+   "art": "tiles/review/dark_mud__over__dark_mud/34_textured.b6b74795.webp"
+  },
+  "tiles/dark_mud__over__dark_mud/985608cb": {
+   "kind": "conform",
+   "art": "tiles/review/dark_mud__over__dark_mud/3_textured.056c8429.webp"
+  },
+  "tiles/dark_mud__over__dark_mud/a37e7ce5": {
+   "kind": "conform",
+   "art": "tiles/review/dark_mud__over__dark_mud/31_textured.993d43ab.webp"
+  },
+  "tiles/dark_mud__over__dark_mud/ad6144bf": {
+   "kind": "conform",
+   "art": "tiles/review/dark_mud__over__dark_mud/41_textured.6a6c7ac2.webp"
+  },
+  "tiles/dark_mud__over__dark_mud/ce7a9e75": {
+   "kind": "conform",
+   "art": "tiles/review/dark_mud__over__dark_mud/39_textured.ac36a596.webp"
+  },
+  "tiles/dark_mud__over__dark_mud/f409eb74": {
+   "kind": "conform",
+   "art": "tiles/review/dark_mud__over__dark_mud/5_textured.2a3da21a.webp"
+  },
+  "tiles/dark_mud__over__dark_mud/f927588d": {
+   "kind": "conform",
+   "art": "tiles/review/dark_mud__over__dark_mud/19_textured.ae21c373.webp"
+  },
+  "tiles/dark_mud__over__grey_paving_stone/1da6fffd": {
+   "kind": "conform",
+   "art": "tiles/review/dark_mud__over__grey_paving_stone/9_textured.8c9d5120.webp"
+  },
+  "tiles/dark_mud__over__grey_stone/70bd19df": {
+   "kind": "conform",
+   "art": "tiles/review/dark_mud__over__grey_stone/13_textured.3c20a964.webp"
+  },
+  "tiles/dark_mud__over__ice/984d6ad5": {
+   "kind": "conform",
+   "art": "tiles/review/dark_mud__over__ice/22_textured.a04b21ea.webp"
+  },
+  "tiles/dark_mud__over__snow/3bce5308": {
+   "kind": "conform",
+   "art": "tiles/review/dark_mud__over__snow/11_textured.cce3eddf.webp"
+  },
+  "tiles/grey_paving_stone__over__brown_paving_stone/0a8e9085": {
+   "kind": "conform",
+   "art": "tiles/review/grey_paving_stone__over__brown_paving_stone/5_textured.a7ea6ac1.webp"
+  },
+  "tiles/grey_paving_stone__over__brown_paving_stone/d6404111": {
+   "kind": "conform",
+   "art": "tiles/review/grey_paving_stone__over__brown_paving_stone/1_textured.40a177ad.webp"
+  },
+  "tiles/grey_paving_stone__over__deep_water/16e692cd": {
+   "kind": "conform",
+   "art": "tiles/review/grey_paving_stone__over__deep_water/5_textured.88bfcb94.webp"
+  },
+  "tiles/grey_paving_stone__over__deep_water/ce7e2aab": {
+   "kind": "conform",
+   "art": "tiles/review/grey_paving_stone__over__deep_water/2_textured.edefe6af.webp"
+  },
+  "tiles/grey_paving_stone__over__grass/25b85d82": {
+   "kind": "conform",
+   "art": "tiles/review/grey_paving_stone__over__grass/4_textured.d7ed2b2e.webp"
+  },
+  "tiles/grey_paving_stone__over__grass/26a88fbf": {
+   "kind": "conform",
+   "art": "tiles/review/grey_paving_stone__over__grass/2_textured.b7345e71.webp"
+  },
+  "tiles/grey_paving_stone__over__grass/39f82763": {
+   "kind": "conform",
+   "art": "tiles/review/grey_paving_stone__over__grass/5_textured.8b82e39b.webp"
+  },
+  "tiles/grey_paving_stone__over__grass/4b6eb7e5": {
+   "kind": "conform",
+   "art": "tiles/review/grey_paving_stone__over__grass/13_textured.5dd5d94d.webp"
+  },
+  "tiles/grey_paving_stone__over__grass/53d54774": {
+   "kind": "conform",
+   "art": "tiles/review/grey_paving_stone__over__grass/0_textured.304c7c9b.webp"
+  },
+  "tiles/grey_paving_stone__over__grass/ef10735e": {
+   "kind": "conform",
+   "art": "tiles/review/grey_paving_stone__over__grass/3_textured.95864d91.webp"
+  },
+  "tiles/grey_paving_stone__over__grass/f7ab174c": {
+   "kind": "conform",
+   "art": "tiles/review/grey_paving_stone__over__grass/1_textured.1c5deedf.webp"
+  },
+  "tiles/grey_paving_stone__over__ice/86845cc7": {
+   "kind": "conform",
+   "art": "tiles/review/grey_paving_stone__over__ice/4_textured.d15f2570.webp"
+  },
+  "tiles/grey_paving_stone__over__ice/d7e4c10f": {
+   "kind": "conform",
+   "art": "tiles/review/grey_paving_stone__over__ice/16_textured.fdf133c3.webp"
+  },
+  "tiles/grey_paving_stone__over__lava/131fca10": {
+   "kind": "conform",
+   "art": "tiles/review/grey_paving_stone__over__lava/4_textured.0ab33d32.webp"
+  },
+  "tiles/grey_paving_stone__over__lava/2a0e1436": {
+   "kind": "conform",
+   "art": "tiles/review/grey_paving_stone__over__lava/1_textured.544aa36a.webp"
+  },
+  "tiles/grey_paving_stone__over__lava/bc531fba": {
+   "kind": "conform",
+   "art": "tiles/review/grey_paving_stone__over__lava/10_textured.3918ddd2.webp"
+  },
+  "tiles/grey_paving_stone__over__parquet_floor/017a6bf3": {
+   "kind": "conform",
+   "art": "tiles/review/grey_paving_stone__over__parquet_floor/10_textured.ea36cd89.webp"
+  },
+  "tiles/grey_stone__over__brown_paving_stone/180fcb2c": {
+   "kind": "conform",
+   "art": "tiles/review/grey_stone__over__brown_paving_stone/15_textured.f46511a1.webp"
+  },
+  "tiles/grey_stone__over__brown_paving_stone/1d3bfc82": {
+   "kind": "conform",
+   "art": "tiles/review/grey_stone__over__brown_paving_stone/6_textured.6a9b5165.webp"
+  },
+  "tiles/grey_stone__over__brown_paving_stone/1e95e202": {
+   "kind": "conform",
+   "art": "tiles/review/grey_stone__over__brown_paving_stone/4_textured.7085fdd1.webp"
+  },
+  "tiles/grey_stone__over__brown_paving_stone/1ee69582": {
+   "kind": "conform",
+   "art": "tiles/review/grey_stone__over__brown_paving_stone/2_textured.826c66b4.webp"
+  },
+  "tiles/grey_stone__over__brown_paving_stone/2c5605ea": {
+   "kind": "conform",
+   "art": "tiles/review/grey_stone__over__brown_paving_stone/7_textured.0d76cc6f.webp"
+  },
+  "tiles/grey_stone__over__brown_paving_stone/438bdb69": {
+   "kind": "conform",
+   "art": "tiles/review/grey_stone__over__brown_paving_stone/10_textured.a75af344.webp"
+  },
+  "tiles/grey_stone__over__brown_paving_stone/4f395de3": {
+   "kind": "conform",
+   "art": "tiles/review/grey_stone__over__brown_paving_stone/3_textured.03729fb4.webp"
+  },
+  "tiles/grey_stone__over__brown_paving_stone/6f10e076": {
+   "kind": "conform",
+   "art": "tiles/review/grey_stone__over__brown_paving_stone/13_textured.9800ea9c.webp"
+  },
+  "tiles/grey_stone__over__brown_paving_stone/c5567391": {
+   "kind": "conform",
+   "art": "tiles/review/grey_stone__over__brown_paving_stone/9_textured.117d60a4.webp"
+  },
+  "tiles/grey_stone__over__brown_paving_stone/ce3a4b04": {
+   "kind": "conform",
+   "art": "tiles/review/grey_stone__over__brown_paving_stone/12_textured.8631d189.webp"
+  },
+  "tiles/grey_stone__over__brown_paving_stone/e0dbc557": {
+   "kind": "conform",
+   "art": "tiles/review/grey_stone__over__brown_paving_stone/11_textured.c9f80461.webp"
+  },
+  "tiles/grey_stone__over__grey_stone/0dfea6f7": {
+   "kind": "conform",
+   "art": "tiles/review/grey_stone__over__grey_stone/5_textured.eae6cc9e.webp"
+  },
+  "tiles/grey_stone__over__grey_stone/240d6c60": {
+   "kind": "conform",
+   "art": "tiles/review/grey_stone__over__grey_stone/13_textured.88008416.webp"
+  },
+  "tiles/grey_stone__over__grey_stone/76892932": {
+   "kind": "conform",
+   "art": "tiles/review/grey_stone__over__grey_stone/17_textured.074023d8.webp"
+  },
+  "tiles/grey_stone__over__grey_stone/c672fd45": {
+   "kind": "conform",
+   "art": "tiles/review/grey_stone__over__grey_stone/58_textured.8e4bd238.webp"
+  },
+  "tiles/grey_stone__over__lava/fcc813fc": {
+   "kind": "conform",
+   "art": "tiles/review/grey_stone__over__lava/2_textured.81db960f.webp"
+  },
+  "tiles/grey_stone__over__light_beach/083312a3": {
+   "kind": "conform",
+   "art": "tiles/review/grey_stone__over__light_beach/7_textured.139ccbcc.webp"
+  },
+  "tiles/grey_stone__over__light_beach/54716e94": {
+   "kind": "conform",
+   "art": "tiles/review/grey_stone__over__light_beach/0_textured.e6802cee.webp"
+  },
+  "tiles/grey_stone__over__light_beach/e9cdb04a": {
+   "kind": "conform",
+   "art": "tiles/review/grey_stone__over__light_beach/5_textured.8340c480.webp"
+  },
+  "tiles/ice__over__black_rock/708f240a": {
+   "kind": "conform",
+   "art": "tiles/review/ice__over__black_rock/1_textured.0243559c.webp"
+  },
+  "tiles/ice__over__black_rock/bd8235cc": {
+   "kind": "conform",
+   "art": "tiles/review/ice__over__black_rock/13_textured.ece60074.webp"
+  },
+  "tiles/ice__over__black_rock/e55c554b": {
+   "kind": "conform",
+   "art": "tiles/review/ice__over__black_rock/5_textured.9a442978.webp"
+  },
+  "tiles/ice__over__dark_mud/09e36499": {
+   "kind": "conform",
+   "art": "tiles/review/ice__over__dark_mud/17_textured.6a9c05e6.webp"
+  },
+  "tiles/ice__over__dark_mud/62698477": {
+   "kind": "conform",
+   "art": "tiles/review/ice__over__dark_mud/49_textured.bb10191c.webp"
+  },
+  "tiles/ice__over__dark_mud/d46debf7": {
+   "kind": "conform",
+   "art": "tiles/review/ice__over__dark_mud/26_textured.20a42f0b.webp"
+  },
+  "tiles/ice__over__dark_mud/fc0e50cf": {
+   "kind": "conform",
+   "art": "tiles/review/ice__over__dark_mud/21_textured.f5b4751e.webp"
+  },
+  "tiles/ice__over__deep_water/07940ebc": {
+   "kind": "conform",
+   "art": "tiles/review/ice__over__deep_water/5_textured.dd2b580b.webp"
+  },
+  "tiles/ice__over__deep_water/24580b09": {
+   "kind": "conform",
+   "art": "tiles/review/ice__over__deep_water/59_textured.e3046f7f.webp"
+  },
+  "tiles/ice__over__deep_water/2eef499a": {
+   "kind": "conform",
+   "art": "tiles/review/ice__over__deep_water/28_textured.4d5396f4.webp"
+  },
+  "tiles/ice__over__deep_water/6a4537b9": {
+   "kind": "conform",
+   "art": "tiles/review/ice__over__deep_water/15_textured.310ac73c.webp"
+  },
+  "tiles/ice__over__deep_water/7fd7b6ba": {
+   "kind": "conform",
+   "art": "tiles/review/ice__over__deep_water/52_textured.a02d2f83.webp"
+  },
+  "tiles/ice__over__deep_water/a943ee96": {
+   "kind": "conform",
+   "art": "tiles/review/ice__over__deep_water/12_textured.61d86296.webp"
+  },
+  "tiles/ice__over__deep_water/d79e1bf5": {
+   "kind": "conform",
+   "art": "tiles/review/ice__over__deep_water/25_textured.2c2897eb.webp"
+  },
+  "tiles/ice__over__deep_water/da6ab2eb": {
+   "kind": "conform",
+   "art": "tiles/review/ice__over__deep_water/7_textured.06c196c1.webp"
+  },
+  "tiles/ice__over__ice/0f27267a": {
+   "kind": "conform",
+   "art": "tiles/review/ice__over__ice/19_textured.5fb13456.webp"
+  },
+  "tiles/ice__over__ice/221a91ff": {
+   "kind": "conform",
+   "art": "tiles/review/ice__over__ice/18_textured.04513573.webp"
+  },
+  "tiles/ice__over__parquet_floor/225b36b0": {
+   "kind": "conform",
+   "art": "tiles/review/ice__over__parquet_floor/6_textured.06bf3e6b.webp"
+  },
+  "tiles/ice__over__parquet_floor/2f6b883a": {
+   "kind": "conform",
+   "art": "tiles/review/ice__over__parquet_floor/51_textured.8cb0a7aa.webp"
+  },
+  "tiles/ice__over__parquet_floor/3bb25d40": {
+   "kind": "conform",
+   "art": "tiles/review/ice__over__parquet_floor/80_textured.c417c9a6.webp"
+  },
+  "tiles/ice__over__parquet_floor/41557ff5": {
+   "kind": "conform",
+   "art": "tiles/review/ice__over__parquet_floor/28_textured.3bd256e7.webp"
+  },
+  "tiles/ice__over__parquet_floor/41928a39": {
+   "kind": "conform",
+   "art": "tiles/review/ice__over__parquet_floor/52_textured.ac35ee6f.webp"
+  },
+  "tiles/ice__over__parquet_floor/4230ffbb": {
+   "kind": "conform",
+   "art": "tiles/review/ice__over__parquet_floor/29_textured.1ad8e9bc.webp"
+  },
+  "tiles/ice__over__parquet_floor/4984046c": {
+   "kind": "conform",
+   "art": "tiles/review/ice__over__parquet_floor/23_textured.13a39481.webp"
+  },
+  "tiles/ice__over__parquet_floor/f19cc8f8": {
+   "kind": "conform",
+   "art": "tiles/review/ice__over__parquet_floor/34_textured.ace5a24e.webp"
+  },
+  "tiles/light_beach__over__black_rock/518c7ad3": {
+   "kind": "conform",
+   "art": "tiles/review/light_beach__over__black_rock/59_textured.c1cffe50.webp"
+  },
+  "tiles/light_beach__over__dark_mud/187ce242": {
+   "kind": "conform",
+   "art": "tiles/review/light_beach__over__dark_mud/4_textured.23e4aa50.webp"
+  },
+  "tiles/light_beach__over__light_beach/3c4829eb": {
+   "kind": "conform",
+   "art": "tiles/review/light_beach__over__light_beach/25_textured.927d7ffb.webp"
+  },
+  "tiles/light_beach__over__parquet_floor/57a39967": {
+   "kind": "conform",
+   "art": "tiles/review/light_beach__over__parquet_floor/0_textured.e00f63f1.webp"
+  },
+  "tiles/light_beach__over__snow/761459c2": {
+   "kind": "conform",
+   "art": "tiles/review/light_beach__over__snow/3_textured.fb62989c.webp"
+  },
+  "tiles/light_soil__over__brown_paving_stone/b6e5527b": {
+   "kind": "conform",
+   "art": "tiles/review/light_soil__over__brown_paving_stone/23_textured.48dc8401.webp"
+  },
+  "tiles/light_soil__over__dark_mud/01a51c4e": {
+   "kind": "conform",
+   "art": "tiles/review/light_soil__over__dark_mud/30_textured.37ab5d4e.webp"
+  },
+  "tiles/light_soil__over__dark_mud/bab407c9": {
+   "kind": "conform",
+   "art": "tiles/review/light_soil__over__dark_mud/29_textured.27387ef1.webp"
+  },
+  "tiles/light_soil__over__lava/c799d325": {
+   "kind": "conform",
+   "art": "tiles/review/light_soil__over__lava/0_textured.659c44a1.webp"
+  },
+  "tiles/light_soil__over__lava/ca803557": {
+   "kind": "conform",
+   "art": "tiles/review/light_soil__over__lava/13_textured.52771801.webp"
+  },
+  "tiles/light_soil__over__lava/e0643375": {
+   "kind": "conform",
+   "art": "tiles/review/light_soil__over__lava/3_textured.53429ec9.webp"
+  },
+  "tiles/light_soil__over__lava/f970e2b1": {
+   "kind": "conform",
+   "art": "tiles/review/light_soil__over__lava/4_textured.274f188b.webp"
+  },
+  "tiles/light_soil__over__light_beach/61b9eeb4": {
+   "kind": "conform",
+   "art": "tiles/review/light_soil__over__light_beach/23_textured.626c0442.webp"
+  },
+  "tiles/light_soil__over__light_beach/f168a348": {
+   "kind": "conform",
+   "art": "tiles/review/light_soil__over__light_beach/32_textured.a5c0ead1.webp"
+  },
+  "tiles/light_soil__over__water/285316e9": {
+   "kind": "conform",
+   "art": "tiles/review/light_soil__over__water/8_textured.c693076d.webp"
+  },
+  "tiles/light_soil__over__water/77fa2b9e": {
+   "kind": "conform",
+   "art": "tiles/review/light_soil__over__water/7_textured.52f8de0b.webp"
+  },
+  "tiles/light_soil__over__water/9118a674": {
+   "kind": "conform",
+   "art": "tiles/review/light_soil__over__water/2_textured.d553818a.webp"
+  },
+  "tiles/parquet_floor__over__brown_paving_stone/29441cb2": {
+   "kind": "conform",
+   "art": "tiles/review/parquet_floor__over__brown_paving_stone/22_textured.58845592.webp"
+  },
+  "tiles/parquet_floor__over__deep_water/8c9a859b": {
+   "kind": "conform",
+   "art": "tiles/review/parquet_floor__over__deep_water/13_textured.fcb63145.webp"
+  },
+  "tiles/parquet_floor__over__deep_water/9bd17aed": {
+   "kind": "conform",
+   "art": "tiles/review/parquet_floor__over__deep_water/3_textured.b6c4016d.webp"
+  },
+  "tiles/parquet_floor__over__grey_stone/8e655b56": {
+   "kind": "conform",
+   "art": "tiles/review/parquet_floor__over__grey_stone/6_textured.2bd2226f.webp"
+  },
+  "tiles/parquet_floor__over__ice/5c025eb6": {
+   "kind": "conform",
+   "art": "tiles/review/parquet_floor__over__ice/14_textured.b24974f4.webp"
+  },
+  "tiles/parquet_floor__over__light_beach/e86527a6": {
+   "kind": "conform",
+   "art": "tiles/review/parquet_floor__over__light_beach/7_textured.17266f2d.webp"
+  },
+  "tiles/parquet_floor__over__light_soil/9effa0aa": {
+   "kind": "conform",
+   "art": "tiles/review/parquet_floor__over__light_soil/5_textured.77b2dc24.webp"
+  },
+  "tiles/parquet_floor__over__parquet_floor/362be2e1": {
+   "kind": "conform",
+   "art": "tiles/review/parquet_floor__over__parquet_floor/11_textured.6771d2ba.webp"
+  },
+  "tiles/parquet_floor__over__parquet_floor/463e86ab": {
+   "kind": "conform",
+   "art": "tiles/review/parquet_floor__over__parquet_floor/10_textured.4777f71f.webp"
+  },
+  "tiles/parquet_floor__over__parquet_floor/81ce862b": {
+   "kind": "conform",
+   "art": "tiles/review/parquet_floor__over__parquet_floor/8_textured.01f0a232.webp"
+  },
+  "tiles/parquet_floor__over__parquet_floor/f63edc1c": {
+   "kind": "conform",
+   "art": "tiles/review/parquet_floor__over__parquet_floor/0_textured.bd476bfc.webp"
+  },
+  "tiles/parquet_floor__over__slime/8b069607": {
+   "kind": "conform",
+   "art": "tiles/review/parquet_floor__over__slime/0_textured.187e6780.webp"
+  },
+  "tiles/parquet_floor__over__snow/1e102008": {
+   "kind": "conform",
+   "art": "tiles/review/parquet_floor__over__snow/12_textured.538dba42.webp"
+  },
+  "tiles/parquet_floor__over__snow/8d3d27ee": {
+   "kind": "conform",
+   "art": "tiles/review/parquet_floor__over__snow/8_textured.24ae66b9.webp"
+  },
+  "tiles/slime__over__black_rock/09f2ba3a": {
+   "kind": "conform",
+   "art": "tiles/review/slime__over__black_rock/2_textured.20e13445.webp"
+  },
+  "tiles/slime__over__black_rock/24b6bd8b": {
+   "kind": "conform",
+   "art": "tiles/review/slime__over__black_rock/5_textured.d5736ef1.webp"
+  },
+  "tiles/slime__over__black_rock/33c6314c": {
+   "kind": "conform",
+   "art": "tiles/review/slime__over__black_rock/3_textured.fd653f42.webp"
+  },
+  "tiles/slime__over__black_rock/57f9eedd": {
+   "kind": "conform",
+   "art": "tiles/review/slime__over__black_rock/14_textured.2c76293a.webp"
+  },
+  "tiles/slime__over__black_rock/6884e45b": {
+   "kind": "conform",
+   "art": "tiles/review/slime__over__black_rock/10_textured.cfaefd1e.webp"
+  },
+  "tiles/slime__over__black_rock/7e7c7606": {
+   "kind": "conform",
+   "art": "tiles/review/slime__over__black_rock/15_textured.dd7716e3.webp"
+  },
+  "tiles/slime__over__black_rock/8316c17d": {
+   "kind": "conform",
+   "art": "tiles/review/slime__over__black_rock/16_textured.a992d851.webp"
+  },
+  "tiles/slime__over__black_rock/8846643f": {
+   "kind": "conform",
+   "art": "tiles/review/slime__over__black_rock/11_textured.146c51cb.webp"
+  },
+  "tiles/slime__over__black_rock/939614f7": {
+   "kind": "conform",
+   "art": "tiles/review/slime__over__black_rock/0_textured.e614b60a.webp"
+  },
+  "tiles/slime__over__black_rock/a60ef340": {
+   "kind": "conform",
+   "art": "tiles/review/slime__over__black_rock/7_textured.0e4bae98.webp"
+  },
+  "tiles/slime__over__black_rock/b6f30cff": {
+   "kind": "conform",
+   "art": "tiles/review/slime__over__black_rock/9_textured.1ae30a7b.webp"
+  },
+  "tiles/slime__over__black_rock/bc695ac6": {
+   "kind": "conform",
+   "art": "tiles/review/slime__over__black_rock/1_textured.596855d4.webp"
+  },
+  "tiles/slime__over__black_rock/c3847a78": {
+   "kind": "conform",
+   "art": "tiles/review/slime__over__black_rock/8_textured.8192df31.webp"
+  },
+  "tiles/slime__over__black_rock/d842fce1": {
+   "kind": "conform",
+   "art": "tiles/review/slime__over__black_rock/6_textured.c26ddf91.webp"
+  },
+  "tiles/slime__over__black_rock/dc9687a1": {
+   "kind": "conform",
+   "art": "tiles/review/slime__over__black_rock/4_textured.1e236919.webp"
+  },
+  "tiles/slime__over__black_rock/ed3f67a2": {
+   "kind": "conform",
+   "art": "tiles/review/slime__over__black_rock/13_textured.02c9a093.webp"
+  },
+  "tiles/slime__over__brown_paving_stone/02e6f3f4": {
+   "kind": "conform",
+   "art": "tiles/review/slime__over__brown_paving_stone/2_textured.ec43e676.webp"
+  },
+  "tiles/slime__over__brown_paving_stone/d3b8c193": {
+   "kind": "conform",
+   "art": "tiles/review/slime__over__brown_paving_stone/1_textured.90920677.webp"
+  },
+  "tiles/slime__over__brown_paving_stone/d522eeda": {
+   "kind": "conform",
+   "art": "tiles/review/slime__over__brown_paving_stone/3_textured.78fe3f14.webp"
+  },
+  "tiles/slime__over__brown_paving_stone/e2edd071": {
+   "kind": "conform",
+   "art": "tiles/review/slime__over__brown_paving_stone/5_textured.379d0b71.webp"
+  },
+  "tiles/slime__over__grey_stone/0bbe0cc8": {
+   "kind": "conform",
+   "art": "tiles/review/slime__over__grey_stone/7_textured.ba0ab14c.webp"
+  },
+  "tiles/slime__over__grey_stone/4b474eb9": {
+   "kind": "conform",
+   "art": "tiles/review/slime__over__grey_stone/16_textured.12bcfc05.webp"
+  },
+  "tiles/slime__over__light_beach/cfa5d5b3": {
+   "kind": "conform",
+   "art": "tiles/review/slime__over__light_beach/1_textured.e3648ff2.webp"
+  },
+  "tiles/slime__over__light_soil/480079e1": {
+   "kind": "conform",
+   "art": "tiles/review/slime__over__light_soil/15_textured.3dd25b25.webp"
+  },
+  "tiles/slime__over__parquet_floor/767921e1": {
+   "kind": "conform",
+   "art": "tiles/review/slime__over__parquet_floor/37_textured.a3fca8ed.webp"
+  },
+  "tiles/slime__over__parquet_floor/76f22137": {
+   "kind": "conform",
+   "art": "tiles/review/slime__over__parquet_floor/40_textured.13f1a39e.webp"
+  },
+  "tiles/slime__over__parquet_floor/79637f5b": {
+   "kind": "conform",
+   "art": "tiles/review/slime__over__parquet_floor/32_textured.931fcab0.webp"
+  },
+  "tiles/slime__over__parquet_floor/79d34f43": {
+   "kind": "conform",
+   "art": "tiles/review/slime__over__parquet_floor/6_textured.831b9c0a.webp"
+  },
+  "tiles/slime__over__parquet_floor/7afab2e4": {
+   "kind": "conform",
+   "art": "tiles/review/slime__over__parquet_floor/2_textured.678bf4aa.webp"
+  },
+  "tiles/slime__over__snow/2a0abb5d": {
+   "kind": "conform",
+   "art": "tiles/review/slime__over__snow/18_textured.d9f51fef.webp"
+  },
+  "tiles/slime__over__snow/8104ec8d": {
+   "kind": "conform",
+   "art": "tiles/review/slime__over__snow/20_textured.393c4282.webp"
+  },
+  "tiles/slime__over__snow/a27706be": {
+   "kind": "conform",
+   "art": "tiles/review/slime__over__snow/3_textured.395ba845.webp"
+  },
+  "tiles/snow__over__black_rock/52c71e6a": {
+   "kind": "conform",
+   "art": "tiles/review/snow__over__black_rock/34_textured.6c9ac2a5.webp"
+  },
+  "tiles/snow__over__black_rock/e52434f5": {
+   "kind": "conform",
+   "art": "tiles/review/snow__over__black_rock/10_textured.aa34da1d.webp"
+  },
+  "tiles/snow__over__deep_water/37bb52da": {
+   "kind": "conform",
+   "art": "tiles/review/snow__over__deep_water/66_textured.9c8b75a4.webp"
+  },
+  "tiles/snow__over__deep_water/bd8247ed": {
+   "kind": "conform",
+   "art": "tiles/review/snow__over__deep_water/42_textured.628480a4.webp"
+  },
+  "tiles/tops/black_rock/sheet_00_subtle_12334/post/tile_05.d4c1d5e2.webp": {
+   "kind": "file",
+   "art": "tiles/tops/black_rock/sheet_00_subtle_12334/post/tile_05.d4c1d5e2.webp"
+  },
+  "tiles/tops/black_rock/sheet_00_subtle_12334/post/tile_06.042183f1.webp": {
+   "kind": "file",
+   "art": "tiles/tops/black_rock/sheet_00_subtle_12334/post/tile_06.042183f1.webp"
+  },
+  "tiles/tops/brown_paving_stone/sheet_04_detail_54925/post/tile_05.35a5853e.webp": {
+   "kind": "file",
+   "art": "tiles/tops/brown_paving_stone/sheet_04_detail_54925/post/tile_05.35a5853e.webp"
+  },
+  "tiles/tops/brown_paving_stone/sheet_05_detail_28659/post/tile_15.3a0fd720.webp": {
+   "kind": "file",
+   "art": "tiles/tops/brown_paving_stone/sheet_05_detail_28659/post/tile_15.3a0fd720.webp"
+  },
+  "tiles/tops/dark_mud/sheet_00_subtle_10237/post/tile_02.3f1b7f30.webp": {
+   "kind": "file",
+   "art": "tiles/tops/dark_mud/sheet_00_subtle_10237/post/tile_02.3f1b7f30.webp"
+  },
+  "tiles/tops/dark_mud/sheet_00_subtle_10237/post/tile_03.995c7187.webp": {
+   "kind": "file",
+   "art": "tiles/tops/dark_mud/sheet_00_subtle_10237/post/tile_03.995c7187.webp"
+  },
+  "tiles/tops/dark_mud/sheet_02_subtle_20485/post/tile_01.c5823413.webp": {
+   "kind": "file",
+   "art": "tiles/tops/dark_mud/sheet_02_subtle_20485/post/tile_01.c5823413.webp"
+  },
+  "tiles/tops/dark_mud/sheet_02_subtle_20485/post/tile_05.976baf2f.webp": {
+   "kind": "file",
+   "art": "tiles/tops/dark_mud/sheet_02_subtle_20485/post/tile_05.976baf2f.webp"
+  },
+  "tiles/tops/dark_mud/sheet_02_subtle_20485/post/tile_10.1345c257.webp": {
+   "kind": "file",
+   "art": "tiles/tops/dark_mud/sheet_02_subtle_20485/post/tile_10.1345c257.webp"
+  },
+  "tiles/tops/grey_paving_stone/sheet_01_subtle_97167/post/tile_00.e67e8fcf.webp": {
+   "kind": "file",
+   "art": "tiles/tops/grey_paving_stone/sheet_01_subtle_97167/post/tile_00.e67e8fcf.webp"
+  },
+  "tiles/tops/grey_paving_stone/sheet_01_subtle_97167/post/tile_02.f4b13a9f.webp": {
+   "kind": "file",
+   "art": "tiles/tops/grey_paving_stone/sheet_01_subtle_97167/post/tile_02.f4b13a9f.webp"
+  },
+  "tiles/tops/grey_paving_stone/sheet_01_subtle_97167/post/tile_03.c6929ccf.webp": {
+   "kind": "file",
+   "art": "tiles/tops/grey_paving_stone/sheet_01_subtle_97167/post/tile_03.c6929ccf.webp"
+  },
+  "tiles/tops/grey_paving_stone/sheet_01_subtle_97167/post/tile_04.6ab721a4.webp": {
+   "kind": "file",
+   "art": "tiles/tops/grey_paving_stone/sheet_01_subtle_97167/post/tile_04.6ab721a4.webp"
+  },
+  "tiles/tops/grey_paving_stone/sheet_01_subtle_97167/post/tile_08.2823add8.webp": {
+   "kind": "file",
+   "art": "tiles/tops/grey_paving_stone/sheet_01_subtle_97167/post/tile_08.2823add8.webp"
+  },
+  "tiles/tops/grey_paving_stone/sheet_01_subtle_97167/post/tile_14.3cfc5b8d.webp": {
+   "kind": "file",
+   "art": "tiles/tops/grey_paving_stone/sheet_01_subtle_97167/post/tile_14.3cfc5b8d.webp"
+  },
+  "tiles/tops/grey_paving_stone/sheet_04_detail_82570/post/tile_01.de795928.webp": {
+   "kind": "file",
+   "art": "tiles/tops/grey_paving_stone/sheet_04_detail_82570/post/tile_01.de795928.webp"
+  },
+  "tiles/tops/grey_paving_stone/sheet_04_detail_82570/post/tile_04.8cf3e048.webp": {
+   "kind": "file",
+   "art": "tiles/tops/grey_paving_stone/sheet_04_detail_82570/post/tile_04.8cf3e048.webp"
+  },
+  "tiles/tops/grey_paving_stone/sheet_04_detail_82570/post/tile_06.bcda2472.webp": {
+   "kind": "file",
+   "art": "tiles/tops/grey_paving_stone/sheet_04_detail_82570/post/tile_06.bcda2472.webp"
+  },
+  "tiles/tops/grey_paving_stone/sheet_04_detail_82570/post/tile_07.47bd8739.webp": {
+   "kind": "file",
+   "art": "tiles/tops/grey_paving_stone/sheet_04_detail_82570/post/tile_07.47bd8739.webp"
+  },
+  "tiles/tops/grey_paving_stone/sheet_04_detail_82570/post/tile_08.06f97cf0.webp": {
+   "kind": "file",
+   "art": "tiles/tops/grey_paving_stone/sheet_04_detail_82570/post/tile_08.06f97cf0.webp"
+  },
+  "tiles/tops/grey_paving_stone/sheet_04_detail_82570/post/tile_09.e10b9e6c.webp": {
+   "kind": "file",
+   "art": "tiles/tops/grey_paving_stone/sheet_04_detail_82570/post/tile_09.e10b9e6c.webp"
+  },
+  "tiles/tops/grey_paving_stone/sheet_04_detail_82570/post/tile_10.3aa28243.webp": {
+   "kind": "file",
+   "art": "tiles/tops/grey_paving_stone/sheet_04_detail_82570/post/tile_10.3aa28243.webp"
+  },
+  "tiles/tops/grey_paving_stone/sheet_05_detail_67911/post/tile_01.331e0a04.webp": {
+   "kind": "file",
+   "art": "tiles/tops/grey_paving_stone/sheet_05_detail_67911/post/tile_01.331e0a04.webp"
+  },
+  "tiles/tops/grey_stone/sheet_00_subtle_11961/post/tile_01.32efce9a.webp": {
+   "kind": "file",
+   "art": "tiles/tops/grey_stone/sheet_00_subtle_11961/post/tile_01.32efce9a.webp"
+  },
+  "tiles/tops/grey_stone/sheet_00_subtle_11961/post/tile_06.daf6be4a.webp": {
+   "kind": "file",
+   "art": "tiles/tops/grey_stone/sheet_00_subtle_11961/post/tile_06.daf6be4a.webp"
+  },
+  "tiles/tops/grey_stone/sheet_01_subtle_27653/post/tile_00.93c8e759.webp": {
+   "kind": "file",
+   "art": "tiles/tops/grey_stone/sheet_01_subtle_27653/post/tile_00.93c8e759.webp"
+  },
+  "tiles/tops/grey_stone/sheet_01_subtle_27653/post/tile_01.87c9b1e3.webp": {
+   "kind": "file",
+   "art": "tiles/tops/grey_stone/sheet_01_subtle_27653/post/tile_01.87c9b1e3.webp"
+  },
+  "tiles/tops/lava/sheet_00_subtle_91565/post/tile_01.7edf62df.webp": {
+   "kind": "file",
+   "art": "tiles/tops/lava/sheet_00_subtle_91565/post/tile_01.7edf62df.webp"
+  },
+  "tiles/tops/lava/sheet_00_subtle_91565/post/tile_02.3ad0c679.webp": {
+   "kind": "file",
+   "art": "tiles/tops/lava/sheet_00_subtle_91565/post/tile_02.3ad0c679.webp"
+  },
+  "tiles/tops/lava/sheet_00_subtle_91565/post/tile_03.28e13b4e.webp": {
+   "kind": "file",
+   "art": "tiles/tops/lava/sheet_00_subtle_91565/post/tile_03.28e13b4e.webp"
+  },
+  "tiles/tops/lava/sheet_00_subtle_91565/post/tile_06.5219108d.webp": {
+   "kind": "file",
+   "art": "tiles/tops/lava/sheet_00_subtle_91565/post/tile_06.5219108d.webp"
+  },
+  "tiles/tops/lava/sheet_00_subtle_91565/post/tile_07.cc580ed5.webp": {
+   "kind": "file",
+   "art": "tiles/tops/lava/sheet_00_subtle_91565/post/tile_07.cc580ed5.webp"
+  },
+  "tiles/tops/lava/sheet_00_subtle_91565/post/tile_08.737de89d.webp": {
+   "kind": "file",
+   "art": "tiles/tops/lava/sheet_00_subtle_91565/post/tile_08.737de89d.webp"
+  },
+  "tiles/tops/lava/sheet_00_subtle_91565/post/tile_09.5bd3df45.webp": {
+   "kind": "file",
+   "art": "tiles/tops/lava/sheet_00_subtle_91565/post/tile_09.5bd3df45.webp"
+  },
+  "tiles/tops/lava/sheet_00_subtle_91565/post/tile_11.1198a3d3.webp": {
+   "kind": "file",
+   "art": "tiles/tops/lava/sheet_00_subtle_91565/post/tile_11.1198a3d3.webp"
+  },
+  "tiles/tops/lava/sheet_01_subtle_87577/post/tile_14.69898f97.webp": {
+   "kind": "file",
+   "art": "tiles/tops/lava/sheet_01_subtle_87577/post/tile_14.69898f97.webp"
+  },
+  "tiles/tops/light_beach/sheet_00_subtle_69153/post/tile_12.5bac577b.webp": {
+   "kind": "file",
+   "art": "tiles/tops/light_beach/sheet_00_subtle_69153/post/tile_12.5bac577b.webp"
+  },
+  "tiles/tops/light_beach/sheet_01_subtle_91060/post/tile_01.6190f6cd.webp": {
+   "kind": "file",
+   "art": "tiles/tops/light_beach/sheet_01_subtle_91060/post/tile_01.6190f6cd.webp"
+  },
+  "tiles/tops/light_beach/sheet_01_subtle_91060/post/tile_05.27ffe8a2.webp": {
+   "kind": "file",
+   "art": "tiles/tops/light_beach/sheet_01_subtle_91060/post/tile_05.27ffe8a2.webp"
+  },
+  "tiles/tops/light_beach/sheet_01_subtle_91060/post/tile_08.0b91d290.webp": {
+   "kind": "file",
+   "art": "tiles/tops/light_beach/sheet_01_subtle_91060/post/tile_08.0b91d290.webp"
+  },
+  "tiles/tops/light_beach/sheet_02_subtle_32520/post/tile_09.1941c744.webp": {
+   "kind": "file",
+   "art": "tiles/tops/light_beach/sheet_02_subtle_32520/post/tile_09.1941c744.webp"
+  },
+  "tiles/tops/light_beach/sheet_02_subtle_32520/post/tile_10.527461a9.webp": {
+   "kind": "file",
+   "art": "tiles/tops/light_beach/sheet_02_subtle_32520/post/tile_10.527461a9.webp"
+  },
+  "tiles/tops/light_beach/sheet_02_subtle_32520/post/tile_11.128394ae.webp": {
+   "kind": "file",
+   "art": "tiles/tops/light_beach/sheet_02_subtle_32520/post/tile_11.128394ae.webp"
+  },
+  "tiles/tops/light_beach/sheet_02_subtle_32520/post/tile_14.125f62d2.webp": {
+   "kind": "file",
+   "art": "tiles/tops/light_beach/sheet_02_subtle_32520/post/tile_14.125f62d2.webp"
+  },
+  "tiles/tops/light_soil/sheet_00_subtle_30072/post/tile_08.baeef302.webp": {
+   "kind": "file",
+   "art": "tiles/tops/light_soil/sheet_00_subtle_30072/post/tile_08.baeef302.webp"
+  },
+  "tiles/tops/light_soil/sheet_01_subtle_48370/post/tile_03.45b26d9b.webp": {
+   "kind": "file",
+   "art": "tiles/tops/light_soil/sheet_01_subtle_48370/post/tile_03.45b26d9b.webp"
+  },
+  "tiles/tops/light_soil/sheet_01_subtle_48370/post/tile_04.fb64d441.webp": {
+   "kind": "file",
+   "art": "tiles/tops/light_soil/sheet_01_subtle_48370/post/tile_04.fb64d441.webp"
+  },
+  "tiles/tops/light_soil/sheet_01_subtle_48370/post/tile_05.03ea54d5.webp": {
+   "kind": "file",
+   "art": "tiles/tops/light_soil/sheet_01_subtle_48370/post/tile_05.03ea54d5.webp"
+  },
+  "tiles/tops/light_soil/sheet_01_subtle_48370/post/tile_06.2efffd31.webp": {
+   "kind": "file",
+   "art": "tiles/tops/light_soil/sheet_01_subtle_48370/post/tile_06.2efffd31.webp"
+  },
+  "tiles/tops/light_soil/sheet_01_subtle_48370/post/tile_10.d2b588db.webp": {
+   "kind": "file",
+   "art": "tiles/tops/light_soil/sheet_01_subtle_48370/post/tile_10.d2b588db.webp"
+  },
+  "tiles/tops/parquet_floor/sheet_00_subtle_80398/post/tile_05.65a0ec0b.webp": {
+   "kind": "file",
+   "art": "tiles/tops/parquet_floor/sheet_00_subtle_80398/post/tile_05.65a0ec0b.webp"
+  },
+  "tiles/tops/parquet_floor/sheet_02_subtle_76267/post/tile_00.317106f6.webp": {
+   "kind": "file",
+   "art": "tiles/tops/parquet_floor/sheet_02_subtle_76267/post/tile_00.317106f6.webp"
+  },
+  "tiles/tops/parquet_floor/sheet_02_subtle_76267/post/tile_01.8e8886a6.webp": {
+   "kind": "file",
+   "art": "tiles/tops/parquet_floor/sheet_02_subtle_76267/post/tile_01.8e8886a6.webp"
+  },
+  "tiles/tops/parquet_floor/sheet_02_subtle_76267/post/tile_06.d7cf16fb.webp": {
+   "kind": "file",
+   "art": "tiles/tops/parquet_floor/sheet_02_subtle_76267/post/tile_06.d7cf16fb.webp"
+  },
+  "tiles/tops/parquet_floor/sheet_02_subtle_76267/post/tile_07.5cd1f419.webp": {
+   "kind": "file",
+   "art": "tiles/tops/parquet_floor/sheet_02_subtle_76267/post/tile_07.5cd1f419.webp"
+  },
+  "tiles/tops/parquet_floor/sheet_02_subtle_76267/post/tile_08.5b626834.webp": {
+   "kind": "file",
+   "art": "tiles/tops/parquet_floor/sheet_02_subtle_76267/post/tile_08.5b626834.webp"
+  },
+  "tiles/tops/parquet_floor/sheet_02_subtle_76267/post/tile_09.4ba87040.webp": {
+   "kind": "file",
+   "art": "tiles/tops/parquet_floor/sheet_02_subtle_76267/post/tile_09.4ba87040.webp"
+  },
+  "tiles/tops/parquet_floor/sheet_02_subtle_76267/post/tile_10.987c8e65.webp": {
+   "kind": "file",
+   "art": "tiles/tops/parquet_floor/sheet_02_subtle_76267/post/tile_10.987c8e65.webp"
+  },
+  "tiles/tops/parquet_floor/sheet_02_subtle_76267/post/tile_11.7f453ed9.webp": {
+   "kind": "file",
+   "art": "tiles/tops/parquet_floor/sheet_02_subtle_76267/post/tile_11.7f453ed9.webp"
+  },
+  "tiles/tops/parquet_floor/sheet_02_subtle_76267/post/tile_12.6fe9fdba.webp": {
+   "kind": "file",
+   "art": "tiles/tops/parquet_floor/sheet_02_subtle_76267/post/tile_12.6fe9fdba.webp"
+  },
+  "tiles/tops/parquet_floor/sheet_02_subtle_76267/post/tile_13.e3c8f939.webp": {
+   "kind": "file",
+   "art": "tiles/tops/parquet_floor/sheet_02_subtle_76267/post/tile_13.e3c8f939.webp"
+  },
+  "tiles/tops/slime/sheet_00_subtle_22942/post/tile_00.fab2d647.webp": {
+   "kind": "file",
+   "art": "tiles/tops/slime/sheet_00_subtle_22942/post/tile_00.fab2d647.webp"
+  },
+  "tiles/tops/slime/sheet_00_subtle_22942/post/tile_07.2ed3c5fa.webp": {
+   "kind": "file",
+   "art": "tiles/tops/slime/sheet_00_subtle_22942/post/tile_07.2ed3c5fa.webp"
+  },
+  "tiles/tops/slime/sheet_00_subtle_22942/post/tile_08.2c145646.webp": {
+   "kind": "file",
+   "art": "tiles/tops/slime/sheet_00_subtle_22942/post/tile_08.2c145646.webp"
+  },
+  "tiles/tops/snow/sheet_01_subtle_98258/post/tile_12.5ccd1495.webp": {
+   "kind": "file",
+   "art": "tiles/tops/snow/sheet_01_subtle_98258/post/tile_12.5ccd1495.webp"
+  },
+  "tiles/tops/snow/sheet_01_subtle_98258/post/tile_13.af7d65e2.webp": {
+   "kind": "file",
+   "art": "tiles/tops/snow/sheet_01_subtle_98258/post/tile_13.af7d65e2.webp"
+  },
+  "tiles/tops/snow/sheet_02_subtle_44656/post/tile_03.ee3f3b9a.webp": {
+   "kind": "file",
+   "art": "tiles/tops/snow/sheet_02_subtle_44656/post/tile_03.ee3f3b9a.webp"
+  },
+  "tiles/tops/snow/sheet_03_detail_25767/post/tile_03.5ec22ee1.webp": {
+   "kind": "file",
+   "art": "tiles/tops/snow/sheet_03_detail_25767/post/tile_03.5ec22ee1.webp"
+  },
+  "tiles/tops/snow/sheet_03_detail_25767/post/tile_10.00f3476e.webp": {
+   "kind": "file",
+   "art": "tiles/tops/snow/sheet_03_detail_25767/post/tile_10.00f3476e.webp"
+  },
+  "tiles/tops/snow/sheet_05_detail_41912/post/tile_02.d814eda0.webp": {
+   "kind": "file",
+   "art": "tiles/tops/snow/sheet_05_detail_41912/post/tile_02.d814eda0.webp"
+  },
+  "tiles/water__over__black_rock/5d55ad2d": {
+   "kind": "conform",
+   "art": "tiles/review/water__over__black_rock/2_textured.b95f952f.webp"
+  },
+  "tiles/water__over__black_rock/e453c50b": {
+   "kind": "conform",
+   "art": "tiles/review/water__over__black_rock/8_textured.d434cb8a.webp"
+  },
+  "tiles/water__over__grey_stone/3c0aeddc": {
+   "kind": "conform",
+   "art": "tiles/review/water__over__grey_stone/7_textured.8245cea8.webp"
+  },
+  "tiles/water__over__grey_stone/775b3c7c": {
+   "kind": "conform",
+   "art": "tiles/review/water__over__grey_stone/14_textured.7bb31fb5.webp"
+  },
+  "tiles/water__over__grey_stone/a774baca": {
+   "kind": "conform",
+   "art": "tiles/review/water__over__grey_stone/0_textured.bed1f6c7.webp"
+  },
+  "tiles/water__over__grey_stone/b90126c9": {
+   "kind": "conform",
+   "art": "tiles/review/water__over__grey_stone/2_textured.29ab0e1b.webp"
+  },
+  "tiles/water__over__grey_stone/ccf68cd7": {
+   "kind": "conform",
+   "art": "tiles/review/water__over__grey_stone/3_textured.038cd0da.webp"
+  },
+  "tiles/water__over__light_beach/4b2608c8": {
+   "kind": "conform",
+   "art": "tiles/review/water__over__light_beach/3_textured.28778c76.webp"
+  },
+  "tiles/water__over__light_beach/aa3287b9": {
+   "kind": "conform",
+   "art": "tiles/review/water__over__light_beach/0_textured.8683a35b.webp"
+  },
+  "tiles/water__over__light_soil/20228e4e": {
+   "kind": "conform",
+   "art": "tiles/review/water__over__light_soil/13_textured.b85d8734.webp"
+  },
+  "tiles/water__over__light_soil/60141780": {
+   "kind": "conform",
+   "art": "tiles/review/water__over__light_soil/22_textured.a268341b.webp"
+  },
+  "tiles/water__over__light_soil/688cb16f": {
+   "kind": "conform",
+   "art": "tiles/review/water__over__light_soil/14_textured.1dfef2e2.webp"
+  },
+  "tiles/water__over__light_soil/7b8be427": {
+   "kind": "conform",
+   "art": "tiles/review/water__over__light_soil/4_textured.b46d3308.webp"
+  },
+  "tiles/water__over__light_soil/cf10cb1f": {
+   "kind": "conform",
+   "art": "tiles/review/water__over__light_soil/15_textured.a4df821b.webp"
+  },
+  "tiles/water__over__slime/f1e42f16": {
+   "kind": "conform",
+   "art": "tiles/review/water__over__slime/5_textured.2afa4c70.webp"
+  },
+  "tiles/water__over__snow/fff46f2e": {
+   "kind": "conform",
+   "art": "tiles/review/water__over__snow/2_textured.f23a27f8.webp"
+  }
+ }
+}

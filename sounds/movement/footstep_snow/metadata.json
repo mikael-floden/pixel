@@ -37,8 +37,8 @@
     "note": "repeating sound \u2014 round-robin + jitter every play"
   },
   "quality": "aaa",
-  "file": "movement/footstep_snow/footstep_snow__take01.wav",
-  "format": "wav",
+  "file": "movement/footstep_snow/footstep_snow__take01.ogg",
+  "format": "ogg",
   "audio": {
     "samples": 23875,
     "duration_seconds": 0.497,
@@ -51,17 +51,6 @@
   },
   "delivery": {
     "formats": {
-      "wav": {
-        "file": "movement/footstep_snow/footstep_snow__take01.wav",
-        "bytes": 47794,
-        "codec": "pcm_s16le",
-        "role": "master"
-      },
-      "m4a": {
-        "file": "movement/footstep_snow/footstep_snow__take01.m4a",
-        "bytes": 8657,
-        "codec": "aac"
-      },
       "ogg": {
         "file": "movement/footstep_snow/footstep_snow__take01.ogg",
         "bytes": 11412,
@@ -69,16 +58,15 @@
       }
     },
     "web_source_order": [
-      "m4a",
       "ogg"
     ]
   },
   "takes": [
-    "movement/footstep_snow/footstep_snow__take01.wav",
-    "movement/footstep_snow/footstep_snow__take02.wav",
-    "movement/footstep_snow/footstep_snow__take03.wav",
-    "movement/footstep_snow/footstep_snow__take04.wav",
-    "movement/footstep_snow/footstep_snow__take05.wav"
+    "movement/footstep_snow/footstep_snow__take01.ogg",
+    "movement/footstep_snow/footstep_snow__take02.ogg",
+    "movement/footstep_snow/footstep_snow__take03.ogg",
+    "movement/footstep_snow/footstep_snow__take04.ogg",
+    "movement/footstep_snow/footstep_snow__take05.ogg"
   ],
   "ai": {
     "provider": "elevenlabs",

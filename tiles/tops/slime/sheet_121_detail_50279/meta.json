@@ -1,0 +1,132 @@
+{
+  "schema": "tiles3/tops@1",
+  "kind": "top_only",
+  "wall_is_meaningless": true,
+  "not_a_candidate_for": "x over y",
+  "ground": "slime",
+  "flavour": "detail",
+  "index": 121,
+  "seed": 50279,
+  "prompt": "slime, a trapped beetle in the middle, slime all around the edge",
+  "palette_top": "#31bd75",
+  "tile_id": "279b41f2-3f49-4ca3-9bf7-74628073189b",
+  "n_tiles": 16,
+  "tiles": [
+    "tile_00.webp",
+    "tile_01.webp",
+    "tile_02.webp",
+    "tile_03.webp",
+    "tile_04.webp",
+    "tile_05.webp",
+    "tile_06.webp",
+    "tile_07.webp",
+    "tile_08.webp",
+    "tile_09.webp",
+    "tile_10.webp",
+    "tile_11.webp",
+    "tile_12.webp",
+    "tile_13.webp",
+    "tile_14.webp",
+    "tile_15.webp"
+  ],
+  "settings": {
+    "tile_size": 64,
+    "tile_view": "high top-down",
+    "view_angle": 28.0,
+    "depth_ratio": 0.5,
+    "tile_type": "isometric",
+    "flat_top_px": 2,
+    "outline_mode": "segmentation"
+  },
+  "usd": 0.096,
+  "created": "2026-09-03T04:31:19+00:00",
+  "top_face": {
+    "per_tile": [
+      {
+        "colours": 25,
+        "dominant_share": 0.6215,
+        "px": 922
+      },
+      {
+        "colours": 23,
+        "dominant_share": 0.6215,
+        "px": 922
+      },
+      {
+        "colours": 25,
+        "dominant_share": 0.5217,
+        "px": 922
+      },
+      {
+        "colours": 26,
+        "dominant_share": 0.5369,
+        "px": 922
+      },
+      {
+        "colours": 24,
+        "dominant_share": 0.381,
+        "px": 924
+      },
+      {
+        "colours": 25,
+        "dominant_share": 0.2457,
+        "px": 924
+      },
+      {
+        "colours": 26,
+        "dominant_share": 0.289,
+        "px": 924
+      },
+      {
+        "colours": 24,
+        "dominant_share": 0.4015,
+        "px": 924
+      },
+      {
+        "colours": 27,
+        "dominant_share": 0.4167,
+        "px": 924
+      },
+      {
+        "colours": 25,
+        "dominant_share": 0.2695,
+        "px": 924
+      },
+      {
+        "colours": 26,
+        "dominant_share": 0.2706,
+        "px": 924
+      },
+      {
+        "colours": 24,
+        "dominant_share": 0.4805,
+        "px": 924
+      },
+      {
+        "colours": 27,
+        "dominant_share": 0.4329,
+        "px": 924
+      },
+      {
+        "colours": 23,
+        "dominant_share": 0.234,
+        "px": 923
+      },
+      {
+        "colours": 25,
+        "dominant_share": 0.4659,
+        "px": 923
+      },
+      {
+        "colours": 25,
+        "dominant_share": 0.3369,
+        "px": 923
+      }
+    ],
+    "mean_colours": 25.0,
+    "mean_dominant_share": 0.4079
+  },
+  "motif": "a trapped beetle",
+  "motif_source": "tiles/config/details.json",
+  "walkable": true
+}

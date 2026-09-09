@@ -1,0 +1,209 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-14T01:48:20+00:00",
+  "id": "beacon_015",
+  "group": "beacons",
+  "rank": 46,
+  "index": 15,
+  "name": "Basket-topped tripod beacon 015",
+  "lights": null,
+  "variety": "basket-topped tripod beacon",
+  "modifier": "weathered silver-grey",
+  "glow_concept": null,
+  "prompt": "a tall tarred timber mast with climbing rungs and an iron fire cage mounted at its top, basket-topped tripod beacon, weathered silver-grey, tall, about three times human height, completely unlit, no glow, no light sources, no self-emission",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 192,
+  "sprite": "beacons/beacon_015/sprite.webp",
+  "placement": {
+    "world_height_m": 3.459,
+    "world_px_height": 177,
+    "character_height_px": 87,
+    "character_height_m": 1.7,
+    "note": "ONE SCENERY PIXEL IS ONE PLAYER PIXEL. world_px_height IS the art's own alpha bbox height, so scenery is placed into the world at 1:1 exactly as the avatar is (setScale(1)) and the two share one pixel grid. The CAMERA still zooms the whole scene \u2014 that is uniform and correct; what must never happen is scenery being resampled on its own, against the player. world_height_m is what the art reads as beside a 87px character; declared_height_m is what it was once declared to be, and a gap between them means the ART is the wrong size.",
+    "declared_height_m": 4.29,
+    "content_box": [
+      68,
+      7,
+      124,
+      184
+    ],
+    "content_px_height": 177,
+    "canvas_render_px": 192
+  },
+  "pixellab_object_id": "23a64dcc-92a1-47fd-9095-8f384b67ef44",
+  "pixellab_directions": 1,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-1-direction-object (single, S-only)",
+  "must_be_imbplemented_with_random_hflip": true,
+  "states": {
+    "LIT_1": {
+      "sprite": "beacons/beacon_015/lit_1/sprite.webp",
+      "pixellab_object_id": "0c483394-8ae8-4532-ad32-f6c2b2b49b1c",
+      "generated_at": "2026-08-15T19:58:24+00:00",
+      "glow_concept": "great orange signal blaze in the cage",
+      "difference_from_source": 0.8001,
+      "glow_score": 0.1222,
+      "animations": {
+        "flame": {
+          "group_id": "05ad2d6a-a538-477a-b812-a3ba7c9021bf",
+          "description": "Animate the flame only",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "beacons/beacon_015/lit_1/animations/flame/00.webp",
+            "beacons/beacon_015/lit_1/animations/flame/01.webp",
+            "beacons/beacon_015/lit_1/animations/flame/02.webp",
+            "beacons/beacon_015/lit_1/animations/flame/03.webp",
+            "beacons/beacon_015/lit_1/animations/flame/04.webp"
+          ],
+          "strip": "beacons/beacon_015/lit_1/animations/flame__strip.webp",
+          "directions": null,
+          "generated_at": "2026-08-29T06:54:29+00:00",
+          "review": "ANIMATION_PROBABLY_GOOD",
+          "review_metrics": {
+            "base_outline": 0.0085
+          },
+          "light_frames": [
+            {
+              "intensity": 1.099,
+              "dx": -1.4,
+              "dy": -65.8
+            },
+            {
+              "intensity": 0.994,
+              "dx": -1.9,
+              "dy": -62.9
+            },
+            {
+              "intensity": 0.967,
+              "dx": -1.8,
+              "dy": -61.5
+            },
+            {
+              "intensity": 1.003,
+              "dx": -1.7,
+              "dy": -62.5
+            },
+            {
+              "intensity": 0.937,
+              "dx": -1.6,
+              "dy": -60.7
+            }
+          ]
+        }
+      }
+    },
+    "LIT_3": {
+      "sprite": "beacons/beacon_015/lit_3/sprite.webp",
+      "pixellab_object_id": "b90331ec-aa8c-4735-8062-7a579b3492da",
+      "generated_at": "2026-08-15T19:57:52+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.3378,
+      "glow_score": 0.0364,
+      "relit_from": "NOT_LIT_2",
+      "animations": {
+        "motion": {
+          "group_id": "dadba26c-944b-4fb3-89e2-1a75f3f18b43",
+          "description": "This is the same picture in every frame. ONLY the fire in the bowl at the top flickers. It is lit and clearly visible in every single frame, including the first. Everything else in the picture is copied from the first frame exactly, pixel for pixel, unchanged in shape, size, position and colour. No outline anywhere is redrawn. The last frame matches the first frame exactly, so the loop joins.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "beacons/beacon_015/lit_3/animations/motion/00.webp",
+            "beacons/beacon_015/lit_3/animations/motion/01.webp",
+            "beacons/beacon_015/lit_3/animations/motion/02.webp",
+            "beacons/beacon_015/lit_3/animations/motion/03.webp",
+            "beacons/beacon_015/lit_3/animations/motion/04.webp"
+          ],
+          "strip": "beacons/beacon_015/lit_3/animations/motion__strip.webp",
+          "directions": null,
+          "generated_at": "2026-08-29T16:55:16+00:00",
+          "brief": "Z8",
+          "review": "ANIMATION_PROBABLY_GOOD",
+          "review_metrics": {
+            "base_outline": 0.0
+          },
+          "light_frames": [
+            {
+              "intensity": 1.024,
+              "dx": -0.5,
+              "dy": -71.9
+            },
+            {
+              "intensity": 1.054,
+              "dx": -0.7,
+              "dy": -73.1
+            },
+            {
+              "intensity": 0.971,
+              "dx": -1.1,
+              "dy": -72.8
+            },
+            {
+              "intensity": 1.022,
+              "dx": -0.7,
+              "dy": -72.7
+            },
+            {
+              "intensity": 0.929,
+              "dx": -0.7,
+              "dy": -72.5
+            }
+          ]
+        }
+      }
+    },
+    "NOT_LIT_1": {
+      "sprite": "beacons/beacon_015/sprite.webp",
+      "pixellab_object_id": "23a64dcc-92a1-47fd-9095-8f384b67ef44",
+      "generated_at": "2026-08-14T01:48:20+00:00"
+    },
+    "NOT_LIT_3": {
+      "sprite": "beacons/beacon_015/not_lit_3/sprite.webp",
+      "pixellab_object_id": "9e338885-e1b6-4d09-ad75-a593bd0e142a",
+      "generated_at": "2026-08-15T19:58:03+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.5906,
+      "glow_score": 0.002
+    },
+    "NOT_LIT_4": {
+      "sprite": "beacons/beacon_015/not_lit_4/sprite.webp",
+      "pixellab_object_id": "99522aca-621c-4be2-88eb-82fd1dce25cb",
+      "generated_at": "2026-08-15T19:58:04+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.6237,
+      "glow_score": 0.0033
+    }
+  },
+  "collision": true,
+  "hitbox_shape": "ellipse",
+  "light": {
+    "strength": 0.9,
+    "color": "#ffd375",
+    "radius": 16,
+    "reference": "the spawn bonfire is 1.0 (radius 7); strength 0 is no light",
+    "states": {
+      "LIT_1": {
+        "strength": 0.9,
+        "color": "#ffd375",
+        "radius": 16
+      },
+      "LIT_3": {
+        "strength": 0.9,
+        "color": "#ffd777",
+        "radius": 16
+      }
+    },
+    "kind": "fire/open",
+    "flame": true,
+    "embers": true
+  }
+}

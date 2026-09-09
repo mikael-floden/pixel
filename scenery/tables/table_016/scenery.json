@@ -1,0 +1,295 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-14T01:46:17+00:00",
+  "id": "table_016",
+  "group": "tables",
+  "rank": 103,
+  "index": 16,
+  "name": "Map table with rolled charts 016",
+  "lights": null,
+  "variety": "map table with rolled charts",
+  "modifier": "with carved decorative trim",
+  "glow_concept": "a small glass-hooded oil lamp glowing at its center",
+  "prompt": "a stout wooden household table with thick legs and a heavy top, set for daily life, standing solidly on the floor, map table with rolled charts, with carved decorative trim, waist-high, self-emissive at night, softly radiating light: a small glass-hooded oil lamp glowing at its center",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 64,
+  "sprite": "tables/table_016/sprite.webp",
+  "placement": {
+    "world_height_m": 0.938,
+    "world_px_height": 48,
+    "character_height_px": 87,
+    "character_height_m": 1.7,
+    "note": "ONE SCENERY PIXEL IS ONE PLAYER PIXEL. world_px_height IS the art's own alpha bbox height, so scenery is placed into the world at 1:1 exactly as the avatar is (setScale(1)) and the two share one pixel grid. The CAMERA still zooms the whole scene \u2014 that is uniform and correct; what must never happen is scenery being resampled on its own, against the player. world_height_m is what the art reads as beside a 87px character; declared_height_m is what it was once declared to be, and a gap between them means the ART is the wrong size.",
+    "declared_height_m": 0.89,
+    "content_box": [
+      4,
+      10,
+      61,
+      58
+    ],
+    "content_px_height": 48,
+    "canvas_render_px": 64
+  },
+  "pixellab_object_id": "6a4baef3-d249-4a66-ae81-2ce9391d357a",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)",
+  "must_be_imbplemented_with_random_hflip": true,
+  "states": {
+    "LIT_1": {
+      "sprite": "tables/table_016/sprite.webp",
+      "pixellab_object_id": "6a4baef3-d249-4a66-ae81-2ce9391d357a",
+      "generated_at": "2026-08-14T01:46:17+00:00",
+      "rotations": {
+        "south-east": "tables/table_016/rotations/south-east.webp",
+        "south-west": "tables/table_016/rotations/south-west.webp",
+        "south": "tables/table_016/sprite.webp"
+      }
+    },
+    "LIT_2": {
+      "sprite": "tables/table_016/lit_2/sprite.webp",
+      "pixellab_object_id": "8858d39a-c5df-41d1-9eca-28f95d16b792",
+      "generated_at": "2026-08-16T23:02:37+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.5484,
+      "glow_score": 0.1003,
+      "rotations": {
+        "south-east": "tables/table_016/lit_2/rotations/south-east.webp",
+        "south-west": "tables/table_016/lit_2/rotations/south-west.webp",
+        "south": "tables/table_016/lit_2/sprite.webp"
+      },
+      "animations": {
+        "motion": {
+          "group_id": "6b341872-c42a-4105-b0d0-11cfb1acea34",
+          "description": "This is the same picture in every frame. ONLY the three candle flames flicker. It is lit and clearly visible in every frame, including the first. It stays exactly the same size and shape in every frame: it never grows and never spreads, only its inner detail shifts. Nothing is added or removed anywhere: every object appears in every frame, the same number of them, in the same places, at the same size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour, no outline redrawn. The last frame matches the first exactly.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "tables/table_016/lit_2/animations/motion/00.webp",
+            "tables/table_016/lit_2/animations/motion/01.webp",
+            "tables/table_016/lit_2/animations/motion/02.webp",
+            "tables/table_016/lit_2/animations/motion/03.webp",
+            "tables/table_016/lit_2/animations/motion/04.webp"
+          ],
+          "strip": "tables/table_016/lit_2/animations/motion__strip.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-08-29T19:14:36+00:00",
+          "brief": "D2",
+          "review": "ANIMATION_PROBABLY_GOOD",
+          "review_metrics": {
+            "class": "fire",
+            "base": 0.02,
+            "still": 0.796
+          },
+          "light_frames": [
+            {
+              "intensity": 0.986,
+              "dx": -3.7,
+              "dy": -9.4
+            },
+            {
+              "intensity": 1.014,
+              "dx": -3.7,
+              "dy": -9.3
+            },
+            {
+              "intensity": 0.99,
+              "dx": -3.7,
+              "dy": -8.9
+            },
+            {
+              "intensity": 1.002,
+              "dx": -3.7,
+              "dy": -9.0
+            },
+            {
+              "intensity": 1.009,
+              "dx": -3.6,
+              "dy": -8.7
+            }
+          ]
+        }
+      }
+    },
+    "LIT_3": {
+      "sprite": "tables/table_016/lit_3/sprite.webp",
+      "pixellab_object_id": "196dda3f-99d1-4350-9356-7fc9f0684da1",
+      "generated_at": "2026-08-16T23:03:06+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.5355,
+      "glow_score": 0.2278,
+      "rotations": {
+        "south-east": "tables/table_016/lit_3/rotations/south-east.webp",
+        "south-west": "tables/table_016/lit_3/rotations/south-west.webp",
+        "south": "tables/table_016/lit_3/sprite.webp"
+      },
+      "animations": {
+        "motion": {
+          "group_id": "4bdd4f46-71be-44c0-a415-b67a09b15569",
+          "description": "This is the same picture in every frame. ONLY the lamp flame on the desk flickers. It is lit and clearly visible in every frame, including the first. It stays exactly the same size and shape in every frame: it never grows and never spreads, only its brightness shifts. Nothing is added or removed anywhere: every object appears in every frame, the same number of them, in the same places, at the same size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour, no outline redrawn. The last frame matches the first exactly.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "tables/table_016/lit_3/animations/motion/00.webp",
+            "tables/table_016/lit_3/animations/motion/01.webp",
+            "tables/table_016/lit_3/animations/motion/02.webp",
+            "tables/table_016/lit_3/animations/motion/03.webp",
+            "tables/table_016/lit_3/animations/motion/04.webp"
+          ],
+          "strip": "tables/table_016/lit_3/animations/motion__strip.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-08-30T09:34:07+00:00",
+          "brief": "H2",
+          "review": "ANIMATION_PROBABLY_GOOD",
+          "review_metrics": {
+            "class": "fire",
+            "base": 0.0,
+            "still": 0.698
+          },
+          "light_frames": [
+            {
+              "intensity": 1.108,
+              "dx": 0.7,
+              "dy": -7.6
+            },
+            {
+              "intensity": 1.068,
+              "dx": -1.0,
+              "dy": -6.7
+            },
+            {
+              "intensity": 1.029,
+              "dx": -1.6,
+              "dy": -6.4
+            },
+            {
+              "intensity": 0.942,
+              "dx": -2.5,
+              "dy": -6.0
+            },
+            {
+              "intensity": 0.854,
+              "dx": -3.8,
+              "dy": -6.1
+            }
+          ]
+        }
+      }
+    },
+    "LIT_4": {
+      "sprite": "tables/table_016/lit_4/sprite.webp",
+      "pixellab_object_id": "3bc4e0a3-f87e-48c5-b55e-2b084eb2b5c8",
+      "generated_at": "2026-08-16T23:03:25+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.6068,
+      "glow_score": 0.1941,
+      "rotations": {
+        "south-east": "tables/table_016/lit_4/rotations/south-east.webp",
+        "south-west": "tables/table_016/lit_4/rotations/south-west.webp",
+        "south": "tables/table_016/lit_4/sprite.webp"
+      },
+      "animations": {
+        "motion": {
+          "group_id": "df21daa3-5fa6-488b-abee-d3cbc8955c13",
+          "description": "This is the same picture in every frame. ONLY the candle flame at the end of the desk flickers. It is lit and clearly visible in every frame, including the first. It stays exactly the same size and shape in every frame: it never grows and never spreads, only its inner detail shifts. Nothing is added or removed anywhere: every object appears in every frame, the same number of them, in the same places, at the same size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour, no outline redrawn. The last frame matches the first exactly.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "tables/table_016/lit_4/animations/motion/00.webp",
+            "tables/table_016/lit_4/animations/motion/01.webp",
+            "tables/table_016/lit_4/animations/motion/02.webp",
+            "tables/table_016/lit_4/animations/motion/03.webp",
+            "tables/table_016/lit_4/animations/motion/04.webp"
+          ],
+          "strip": "tables/table_016/lit_4/animations/motion__strip.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-08-30T09:26:09+00:00",
+          "brief": "G7",
+          "review": "ANIMATION_PROBABLY_GOOD",
+          "review_metrics": {
+            "class": "fire",
+            "base": 0.0,
+            "still": 0.754
+          },
+          "light_frames": [
+            {
+              "intensity": 1.032,
+              "dx": -2.0,
+              "dy": -5.2
+            },
+            {
+              "intensity": 0.997,
+              "dx": -2.5,
+              "dy": -5.0
+            },
+            {
+              "intensity": 0.977,
+              "dx": -2.7,
+              "dy": -4.9
+            },
+            {
+              "intensity": 0.994,
+              "dx": -2.6,
+              "dy": -4.9
+            },
+            {
+              "intensity": 1.0,
+              "dx": -2.5,
+              "dy": -4.9
+            }
+          ]
+        }
+      }
+    }
+  },
+  "collision": true,
+  "hitbox_shape": "rect",
+  "light": {
+    "strength": 0.1,
+    "color": "#ffb45c",
+    "radius": 2,
+    "reference": "the spawn bonfire is 1.0 (radius 7); strength 0 is no light",
+    "states": {
+      "LIT_1": {
+        "strength": 0.08,
+        "color": "#ffb45c",
+        "radius": 2
+      },
+      "LIT_2": {
+        "strength": 0.08,
+        "color": "#ffb45c",
+        "radius": 2
+      },
+      "LIT_3": {
+        "strength": 0.12,
+        "color": "#fed394",
+        "radius": 2
+      },
+      "LIT_4": {
+        "strength": 0.12,
+        "color": "#ffd396",
+        "radius": 2
+      }
+    },
+    "kind": "fire/enclosed",
+    "flame": true,
+    "embers": false
+  }
+}

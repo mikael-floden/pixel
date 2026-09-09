@@ -1,4 +1,16 @@
-import { Room, Client } from "@colyseus/core";
+import { Room, Client, ClientState } from "@colyseus/core";
+import { Encoder, StateView, MapSchema } from "@colyseus/schema";
+import { randomBytes } from "crypto";
+import { bus } from "../bus.js";
+
+// THE ENCODER BUFFER IS SIZED HERE, WHERE THE ROOM IS, not in index.ts: every
+// room's encoder is allocated at setState from this static, and a test that
+// builds its own Server never ran index.ts — so its rooms encoded into the 8 KB
+// default, and the first patch after a join, which now carries the whole view
+// (140 monsters for an unlimited test client), overflowed silently: fields
+// arrived undefined on the client (kind agrees across clients — 2026-09-09).
+// 64 KB clears every world with an order of magnitude of headroom.
+Encoder.BUFFER_SIZE = 64 * 1024;
 import {
   InputMessage,
   JoinOptions,
@@ -10,11 +22,27 @@ import {
   WORLD_HEIGHT,
   CELL_WU,
   TICK_RATE,
+  INTEREST_WU,
+  INTEREST_LEAVE_WU,
+  INTEREST_TICKS,
+  INTEREST_BUCKET_WU,
+  WHOLE_WORLD,
+  zoneGrid,
+  zoneAt,
+  zoneRect,
+  zoneNeighbours,
+  distToRect,
+  nearEdge,
   MAX_INPUT_DT,
   INPUT_TIME_SLACK,
   stepMovement,
   TerrainGrid,
   buildTerrainGrid,
+  deepCurrentAt,
+  warmDeepCurrent,
+  stampSceneryCollision,
+  ISO_GEOMETRY_MAPS3,
+  type SceneryBboxDoc,
   parseWorld,
   makeBlockedElev,
   resolveElevAt,
@@ -22,6 +50,9 @@ import {
   makeSideBlocked,
   unstickFromSolids,
   surfaceAtWorld,
+  surfaceAtWorldElev,
+  FALL_DMG_MIN_LEVELS,
+  fallDamageFrac,
   isStandableAtWorld,
   findSpawn,
   WALK_CLIMB,
@@ -78,6 +109,7 @@ import {
   MONSTER_DIE_MS,
   MONSTER_RESPAWN_MS,
   PLAYER_RESPAWN_MS,
+  PLAYER_DEATH_MAX_MS,
   REGEN_DELAY_MS,
   HP_REGEN_FRAC_PER_S,
   EP_REGEN_FRAC_PER_S,
@@ -89,9 +121,11 @@ import {
   INV_MAX_SLOTS,
 } from "@nangijala/shared";
 import { WorldState, Player, Monster, MonsterArea, GroundItem } from "../schema/WorldState.js";
-import { monsterStatsFor, MonsterStats } from "../tuning.js";
-import { onLiveChange, liveTuning } from "../live.js";
-import { JsonPlayerStore, PlayerStore, progressStore } from "../store.js";
+import { ChessManager, chessBoardsFor, ChessBoardCfg } from "../chess.js";
+import { monsterStatsFor, monsterRadiusFor, MonsterStats } from "../tuning.js";
+import { onLiveChange, liveTuning, sceneryHitboxOverrides } from "../live.js";
+import { AccountRecord, AccountStore, accountStore, resolveAccount } from "../account/store.js";
+import type { ZoneGrid, Rect, ZoneCfg } from "@nangijala/shared";
 import { existsSync, readFileSync } from "fs";
 import { dirname, join } from "path";
 import { fileURLToPath } from "url";
@@ -110,12 +144,25 @@ interface WorldClock {
   weather: number;
   aurora: boolean;
   nextPhaseAt: number | null;
+  origin?: string; // the room that wrote it (a room skips its own publish)
 }
-const worldClocks = new Map<string, WorldClock>();
+/** The clock lives on the BUS (`clock:<world>`, spec/ZONES.md): every zone
+ *  room of a world derives phaseT from the same deadline, and a change
+ *  publishes the document to all of them. In one process with the fake bus
+ *  this is exactly the per-process registry it replaces. */
+const clockKey = (world: string) => `clock:${world}`;
+const clockWorlds = new Set<string>();
+
+/** HOW LONG A DROPPED SEAT IS HELD. Long enough to ride out a tunnel, short
+ *  enough that a genuine disconnect frees the body before anyone wonders why it
+ *  is standing there. The client gives up and reloads after six backoff retries
+ *  (~30 s), so this covers the whole of its own recovery. */
+const RECONNECT_GRACE_S = 45;
 
 /** Tests share one process per file; clock persistence must not leak between them. */
 export function resetWorldClocks() {
-  worldClocks.clear();
+  for (const w of clockWorlds) void bus().del(clockKey(w));
+  clockWorlds.clear();
 }
 
 /**
@@ -123,16 +170,147 @@ export function resetWorldClocks() {
  * they all see each other. The server is authoritative: clients send input, the
  * server integrates positions on a fixed tick and syncs state to everyone.
  */
+/** games2/config/scenery-bbox.json, read once. Built by
+ *  scripts/build-scenery-bbox.py; the server cannot measure art itself and a
+ *  scenery hitbox is in FRAME pixels, so the alpha bbox is what turns one into
+ *  world cells. Missing file = no scenery collision, never a crash. */
+let sceneryBboxCache: SceneryBboxDoc | null | undefined;
+export function sceneryBbox(): SceneryBboxDoc | null {
+  if (sceneryBboxCache !== undefined) return sceneryBboxCache;
+  try {
+    // ESM: no __dirname. Same resolution `assetsRoot` uses, one level in —
+    // games2/config, which the image carries and the dev tree has in place.
+    const gameRoot = join(dirname(fileURLToPath(import.meta.url)), "..", "..", "..");
+    sceneryBboxCache = JSON.parse(
+      readFileSync(join(gameRoot, "config", "scenery-bbox.json"), "utf8"),
+    ) as SceneryBboxDoc;
+  } catch {
+    sceneryBboxCache = null;
+    console.warn("[scenery] config/scenery-bbox.json missing — scenery blocks nothing");
+  }
+  return sceneryBboxCache;
+}
+
+// ZONES (spec/ZONES.md) — the wire shapes between zone rooms.
+/** Ghosts reach GHOST_BAND_WU across a border: the interest rim, so a client
+ *  standing on the line sees exactly as far into the neighbour as into home. */
+const GHOST_BAND_WU = INTEREST_LEAVE_WU;
+const EDGE_TICKS = 2; // edge snapshots at 10 Hz
+const GHOST_TTL_MS = 1000; // a ghost outlives its owner's last snapshot this long
+const HANDOFF_TTL_S = 10; // the hot state waits on the bus this long for the receiving join
+const HANDOFF_TIMEOUT_MS = 10_000; // then the sending room forgets the attempt and keeps the body
+const handoffKey = (world: string, pid: string) => `handoff:${world}:${pid}`;
+
+interface HotState {
+  key: string;
+  pid: string;
+  from: number;
+  name: string;
+  character: string;
+  accountId: string;
+  rec: AccountRecord | null;
+  mintedSecret?: string;
+  x: number;
+  y: number;
+  elev: number;
+  dir: string;
+  level: number;
+  xp: number;
+  hp: number;
+  ep: number;
+  inv: { item: string; n: number }[];
+  seq: number;
+  torch: boolean;
+  noAggro: boolean;
+  lastHitAt: number;
+  lastCombatAt: number;
+  dirty: boolean;
+}
+interface MonsterXfer {
+  kind: string; x: number; y: number; dir: string; moving: boolean; elev: number;
+  hp: number; hpMax: number; mstate: string; actionSeq: number; level: number; aggro: number;
+  areaId: string; home: number; orbitSign: number; provoked: boolean; returning: boolean;
+  targetSid: string; chaseOx: number; chaseOy: number;
+}
+type CtlMessage =
+  | { type: "handoff:done"; pid: string }
+  | { type: "monster:xfer"; id: string; m: MonsterXfer }
+  | { type: "monster:respawn"; areaId: string }
+  | { type: "kick"; pid: string };
+interface EdgeSnapshot {
+  from: number;
+  t: number;
+  players: Array<{
+    id: string; name: string; character: string; x: number; y: number; dir: string; moving: boolean;
+    running: boolean; elev: number; jumping: boolean; swimming: boolean; torch: boolean; level: number;
+    hp: number; hpMax: number; dead: boolean; slow: number; action: string; actionSeq: number; hitSeq: number;
+  }>;
+  monsters: Array<{
+    id: string; kind: string; x: number; y: number; dir: string; moving: boolean; elev: number; hp: number;
+    hpMax: number; mstate: string; actionSeq: number; level: number; aggro: number; tsid: string;
+  }>;
+  drops: Array<{ id: string; item: string; x: number; y: number; elev: number }>;
+}
+
+/** games2/config/zones.json: the zone grid per world, read once. A world
+ *  without an entry runs as one room. */
+let zonesConfig: Record<string, ZoneCfg> | null = null;
+export function zonesConfigFor(world: string): ZoneCfg | null {
+  if (!zonesConfig) {
+    try {
+      const root = join(dirname(fileURLToPath(import.meta.url)), "..", "..", "..");
+      const raw = JSON.parse(readFileSync(join(root, "config", "zones.json"), "utf8")) as Record<string, unknown>;
+      zonesConfig = {};
+      for (const [k, v] of Object.entries(raw)) {
+        const c = v as ZoneCfg;
+        if (c && typeof c === "object" && Number.isInteger(c.cols) && Number.isInteger(c.rows) && c.cols >= 1 && c.rows >= 1)
+          zonesConfig[k] = c;
+      }
+    } catch {
+      zonesConfig = {};
+    }
+  }
+  return zonesConfig[world] ?? null;
+}
+/** Tests: forget the cached file. */
+export function resetZonesConfig(): void {
+  zonesConfig = null;
+}
+
 export class WorldRoom extends Room<WorldState> {
   // A generous cap; a real deployment can shard once this fills.
   maxClients = 200;
 
-  // Persistence: swap JsonPlayerStore for a DB-backed store later.
-  private store: PlayerStore = new JsonPlayerStore(join(process.cwd(), ".data", "players.json"));
+  // The account of record. ONE store for the whole process, not one file per
+  // world: progression is world-agnostic (your character IS the level) and
+  // position is a field keyed by world inside the same document.
+  private store: AccountStore = accountStore();
 
   // Per-room world state (NOT module-level — the server hosts many rooms, one
   // per selected world, and they can be different sizes / have different spawns).
   private terrain: TerrainGrid | null = null;
+  /** Fingerprint of the scenery hitbox doc this room's collision was stamped
+   *  from, so a live edit can be noticed — see restampSceneryFromLive. */
+  private sceneryHbStamp = "";
+
+  /** A HITBOX EDITED IN THE WIKI REACHES A ROOM THAT IS ALREADY RUNNING.
+   *  Live docs refresh on push, so `sceneryHitboxOverrides()` goes current
+   *  within seconds — but the collision grid is stamped ONCE when the room is
+   *  built and never again, so the authority kept the old footprints while the
+   *  client, which fetches the documents fresh, got the new ones. Two bodies
+   *  disagreeing about where a tree stands is the divergence the single
+   *  collision endpoint exists to prevent, so the room restamps and tells
+   *  everyone to do the same. Cheap: only when the BOXES actually changed. */
+  private async restampSceneryFromLive(): Promise<void> {
+    const stamp = hitboxStamp();
+    if (!stamp || stamp === this.sceneryHbStamp || !this.worldName) return;
+    this.sceneryHbStamp = stamp;
+    const w = await loadWorldGrid(this.worldName);
+    if (!w.terrain) return; // open world, or the reload failed — keep what works
+    this.terrain = w.terrain;
+    console.log(`[scenery] hitboxes changed — restamped "${this.worldName}" collision`);
+    this.broadcast("scenery:collision", { stamp });
+  }
   private worldSpawn: { x: number; y: number } | null = null;
   private worldW = WORLD_WIDTH; // world extent (grid×CELL_WU) for movement bounds
   private worldH = WORLD_HEIGHT;
@@ -182,7 +360,9 @@ export class WorldRoom extends Room<WorldState> {
     // The 8-25s interval is sized against night's own length (50s, a third
     // of the cycle) so a night still sees the same ~2-3 wild stars.
     this.starTimer = setTimeout(() => {
-      if (this.state.timeIdx === 0) this.broadcast("star", {});
+      // One room per world rolls the wild stars (zone 0, or the whole-world
+      // room); every room broadcasts them.
+      if (this.state.timeIdx === 0 && this.zoneId <= 0) this.publishEvent("star", {});
       this.scheduleWildStar();
     }, (8 + Math.random() * 17) * 1000);
   }
@@ -230,7 +410,7 @@ export class WorldRoom extends Room<WorldState> {
   /** Mirror the clock into the per-world registry so the NEXT room for this
    * world (rooms recycle constantly) resumes instead of resetting. */
   private saveClock() {
-    worldClocks.set(this.worldName, {
+    const doc: WorldClock = {
       timeIdx: this.state.timeIdx,
       phaseT: this.state.phaseT,
       frozen: this.state.frozen,
@@ -238,45 +418,109 @@ export class WorldRoom extends Room<WorldState> {
       weather: this.state.weather,
       aurora: this.state.aurora,
       nextPhaseAt: this.nextPhaseAt,
-    });
+      origin: this.roomId,
+    };
+    clockWorlds.add(this.worldName);
+    const key = clockKey(this.worldName);
+    void bus().set(key, JSON.stringify(doc));
+    void bus().publish(key, doc);
   }
 
-  onCreate(options?: {
+  /** Another room of this world moved the clock: adopt its document. Our own
+   *  publish is skipped — applying a document one tick old would step phaseT
+   *  backwards by a tick. */
+  private applyClock(doc: WorldClock) {
+    if (!doc || doc.origin === this.roomId) return;
+    this.state.timeIdx = doc.timeIdx;
+    this.state.phaseT = doc.phaseT;
+    this.state.frozen = doc.frozen;
+    this.state.timeSpeed = doc.timeSpeed ?? (doc.frozen ? 0 : 1);
+    this.state.weather = doc.weather;
+    this.state.aurora = doc.aurora;
+    this.nextPhaseAt = doc.nextPhaseAt;
+  }
+
+  async onCreate(options?: {
     world?: string;
     phaseSeconds?: number[];
     auroraChance?: number;
     monsterCount?: number; // per-area monster cap override (default: each area's own `max`)
     monsterSeed?: number; // seed a deterministic PRNG for spawns/roam (tests)
     lootChance?: number; // TEST override: force every loot entry to this chance (1 = always drop)
+    chessBoards?: ChessBoardCfg[]; // TEST override: boards for this room
+    chessClockMs?: number; // TEST override: per-player bank (default 10 min)
+    interestRadius?: number; // wu; 0 = the whole room (tests/QA only — never a client option)
+    zone?: number; // the zone this room owns (spec/ZONES.md); absent = the whole world
+    zonesCfg?: ZoneCfg; // TEST override: the zone grid for this world
   }) {
+    if (typeof options?.interestRadius === "number" && isFinite(options.interestRadius)) {
+      const r = Math.max(0, options.interestRadius);
+      this.interestR = r === 0 ? Infinity : r;
+      this.interestLeave = r === 0 ? Infinity : r * (INTEREST_LEAVE_WU / INTEREST_WU);
+    }
     if (typeof options?.auroraChance === "number") this.auroraChance = options.auroraChance;
     if (typeof options?.monsterCount === "number")
       this.monsterCount = Math.max(0, Math.floor(options.monsterCount));
     if (typeof options?.monsterSeed === "number") this.monsterRng = mulberry32(options.monsterSeed);
     if (typeof options?.lootChance === "number") this.lootChance = clamp(options.lootChance, 0, 1);
     {
-      // Load the maps2 world the client asked for (default ring_test). Rooms are
+      // Load the maps2 world the client asked for (default the_game). Rooms are
       // matched by this name (filterBy in index.ts), so everyone who picks the
       // same world shares one room; different worlds get separate rooms.
       const world = (options?.world || DEFAULT_WORLD).replace(/[^a-z0-9_-]/gi, "");
-      const w = loadWorldGrid(world);
+      const w = await loadWorldGrid(world);
       this.terrain = w.terrain;
       this.worldSpawn = w.spawn;
       this.worldW = w.worldW;
       this.worldH = w.worldH;
-      this.setMetadata({ world });
       this.worldName = world;
-      this.store = new JsonPlayerStore(join(process.cwd(), ".data", `players-${world}.json`));
+      // ZONES: a world with a grid and a zone option becomes ONE zone room;
+      // everything else (no config, no option, tests) is the whole-world room.
+      const cfg = options?.zonesCfg ?? zonesConfigFor(world);
+      const zone = typeof options?.zone === "number" && Number.isInteger(options.zone) ? options.zone : WHOLE_WORLD;
+      if (cfg && this.terrain && zone >= 0 && zone < cfg.cols * cfg.rows) {
+        this.grid = zoneGrid(cfg, this.terrain.width, this.terrain.height, CELL_WU);
+        this.zoneId = zone;
+        this.rect = zoneRect(this.grid, zone);
+        this.idPrefix = `z${zone}:`;
+      }
+      this.setMetadata({ world, zone: this.zoneId });
       // The maps2 spawn zones for THIS world (sidecar next to world.json),
       // resolved against the grid: which cells are truly standable/swimmable
       // at each zone's elev band. No grid (open world) → no monsters.
-      this.zones = this.terrain ? loadSpawnZones(world, this.terrain) : [];
+      this.zones = this.terrain ? await loadSpawnZones(world, this.terrain) : [];
+      // A world absent from disk was STAGED (fetched from the repo) — say so,
+      // with the two facts that decide whether the join is playable.
+      if (!WORLD_ROOTS.some((r) => existsSync(join(assetsRoot(), r, world))))
+        console.log(`[staging] world "${world}": terrain=${!!this.terrain} zones=${this.zones.length}`);
     }
     this.setState(new WorldState());
+    this.chan = {
+      events: `world:${this.worldName}:events`,
+      presence: `presence:${this.worldName}`,
+      edge: (z: number) => `zone:${this.worldName}:${z}:edge`,
+      ctl: (z: number) => `zone:${this.worldName}:${z}:ctl`,
+    };
+    // World-wide events (chat, the arrival star, level-ups) reach every room
+    // of the world over the bus and each room broadcasts them to its clients.
+    this.unsubs.push(
+      bus().subscribe(this.chan.events, (m: { type: string; data: unknown }) => {
+        if (m && typeof m.type === "string") this.broadcast(m.type, m.data);
+      }),
+    );
+    if (this.zoneId !== WHOLE_WORLD && this.grid) {
+      for (const n of zoneNeighbours(this.grid, this.zoneId))
+        this.unsubs.push(bus().subscribe(this.chan.edge(n), (m: EdgeSnapshot) => this.onEdgeSnapshot(m)));
+      this.unsubs.push(bus().subscribe(this.chan.ctl(this.zoneId), (m: CtlMessage) => this.onCtl(m)));
+    }
     // Live tuning (live/tuning/* on GitHub main, held by the live store):
     // push every change to all clients over the room's own WebSocket, and
     // hand joiners the current state (see live.ts / live/README.md).
-    this.offLive = onLiveChange((tuning) => this.broadcast("live:update", tuning));
+    this.offLive = onLiveChange((tuning) => {
+      this.broadcast("live:update", tuning);
+      void this.restampSceneryFromLive();
+    });
+    this.sceneryHbStamp = hitboxStamp();
     // Publish each zone's bounding box so clients can draw the debug overlay
     // (the true shape is a polygon; the bbox is plenty for a debug rect).
     for (const z of this.zones) {
@@ -292,7 +536,7 @@ export class WorldRoom extends Room<WorldState> {
     }
 
     this.onMessage("input", (client, message: InputMessage) => {
-      const player = this.state.players.get(client.sessionId);
+      const player = this.playerOf(client);
       if (!player) return;
       // A corpse doesn't move, but its in-flight inputs MUST still be acked:
       // un-acked seqs stay in the client's pending replay buffer and render
@@ -327,8 +571,18 @@ export class WorldRoom extends Room<WorldState> {
 
     // Torch is PLAYER state: everyone sees whose torch is lit.
     this.onMessage("torch", (client, message: { on?: boolean }) => {
-      const player = this.state.players.get(client.sessionId);
+      const player = this.playerOf(client);
       if (player) player.torch = !!message?.on;
+    });
+
+    /** "Did you just give me an account?" Asked by every client right after it
+     *  registers its handlers; answered only for a join that actually minted
+     *  one, and once — the pair is dropped from memory as it goes out. */
+    this.onMessage("account:want", (client) => {
+      const p = this.playerOf(client);
+      if (!p?.mintedSecret) return;
+      client.send("account", { id: p.accountId, secret: p.mintedSecret });
+      p.mintedSecret = "";
     });
 
     // DISABLE AGGRO — a per-player testing switch (maintainer 2026-08-07: "I
@@ -348,12 +602,13 @@ export class WorldRoom extends Room<WorldState> {
     // switch could help, which is the whole situation it exists for.
     this.onMessage("noaggro", (client, message: { on?: boolean }) => {
       const on = !!message?.on;
-      if (on) this.noAggro.add(client.sessionId);
-      else this.noAggro.delete(client.sessionId);
+      const pid = this.pidOf(client);
+      if (on) this.noAggro.add(pid);
+      else this.noAggro.delete(pid);
       if (!on) return;
       const now = Date.now();
       this.state.monsters.forEach((m) => {
-        if (m.targetSid !== client.sessionId || m.provoked || m.mstate === "die") return;
+        if (m.targetSid !== pid || m.provoked || m.mstate === "die") return;
         // The SAME exit every other ended chase takes — it also clears the
         // victim's flee slow and walks the monster home if the hunt carried it
         // off its zone. Hand-clearing targetSid here would leave strays.
@@ -366,14 +621,36 @@ export class WorldRoom extends Room<WorldState> {
     // stuck recovery). Clear queued movement + any jump so they don't drift off
     // spawn; the client snaps to the teleport (its >2-cell jump threshold).
     this.onMessage("respawn", (client) => {
-      const player = this.state.players.get(client.sessionId);
-      // Dead players ride the death->respawn cycle instead: teleporting the
-      // corpse mid-die-clip would strand a walking body at spawn.
-      if (!player || player.dead) return;
+      const player = this.playerOf(client);
+      if (!player) return;
+      // DEAD PLAYERS COME BACK WHEN THEY ASK TO. The death sequence (fade,
+      // desaturate, slow zoom onto the body, "press to continue") runs on the
+      // client and ends in this message — the server only insists the die clip
+      // has finished, so a stray early press cannot strand a walking body at
+      // spawn mid-animation. Before this, respawn was on a 2.6s timer and the
+      // message ignored the dead entirely.
+      if (player.dead) {
+        if (Date.now() < player.respawnAt) return;
+        this.revivePlayer(player);
+        return;
+      }
       this.placeAtSpawn(player);
       player.inputQueue.length = 0;
       player.timeCredit = 0;
       player.jumpUntil = 0;
+    });
+
+    // DEBUG ONLY, same standing as `teleport`: drop my own hp to zero so the
+    // death sequence can be driven from a gate. It runs the REAL death path
+    // (hurtPlayer's kill branch), so what a probe sees is what a monster does
+    // — a test that fakes the state would not have caught the respawn timer
+    // still firing underneath the new press-to-continue.
+    this.onMessage("dbgkill", (client) => {
+      const player = this.playerOf(client);
+      if (!player || player.dead) return;
+      // Full hp of damage through the REAL path, so every field death sets
+      // (respawnAt, deadUntil, the die clip, the chat line) is set the same way.
+      this.hurtPlayer(player, player.hpMax + 1, Date.now());
     });
 
     // ENGAGE a monster (RO: click a monster to fight it). The client walks
@@ -381,7 +658,7 @@ export class WorldRoom extends Room<WorldState> {
     // while the target stays alive, in range and the player stands still.
     // {id: null} disengages (any movement input also does).
     this.onMessage("engage", (client, message: { id?: string | null }) => {
-      const player = this.state.players.get(client.sessionId);
+      const player = this.playerOf(client);
       if (!player || player.dead) return;
       const id = typeof message?.id === "string" ? message.id : "";
       if (!id) {
@@ -396,7 +673,7 @@ export class WorldRoom extends Room<WorldState> {
     // PICK UP a ground item. Range-validated server-side; the pickup clip is
     // signalled through action/actionSeq so every client sees the crouch.
     this.onMessage("pickup", (client, message: { id?: string }) => {
-      const player = this.state.players.get(client.sessionId);
+      const player = this.playerOf(client);
       const id = typeof message?.id === "string" ? message.id : "";
       const drop = this.state.drops.get(id);
       if (!player || player.dead || !drop) return;
@@ -425,7 +702,7 @@ export class WorldRoom extends Room<WorldState> {
     // 2026-08-05), spaced off items already lying there — the release point
     // only expresses "onto the ground", never a throw.
     this.onMessage("drop", (client, message: { slot?: number; item?: string; n?: number; wx?: number; wy?: number }) => {
-      const player = this.state.players.get(client.sessionId);
+      const player = this.playerOf(client);
       if (!player || player.dead) return;
       const now = Date.now();
       if (now < player.nextItemMsgAt) return;
@@ -455,6 +732,7 @@ export class WorldRoom extends Room<WorldState> {
       player.nextItemMsgAt += 20 * (want - 1);
       entry.n -= want;
       if (entry.n <= 0) player.inv.splice(slot, 1);
+      player.dirty = true;
       for (let i = 0; i < want; i++) this.spawnDrop(item, player.x, player.y, player.elev);
       client.send("inv", { items: player.inv });
     });
@@ -464,8 +742,20 @@ export class WorldRoom extends Room<WorldState> {
     // standable spawn; it places precisely where asked (clamped to world bounds)
     // so a reported bug at a known (x,y) can be re-observed. Clears queued
     // movement + jump so they hold the mark; client snaps via its jump threshold.
+    // DEBUG: move a monster (same standing as "teleport"; the zone gates use
+    // it to walk a monster over a border without waiting for its roam).
+    this.onMessage("dbgmonster", (client, message: { id?: string; x?: number; y?: number }) => {
+      const m = typeof message?.id === "string" ? this.state.monsters.get(message.id) : undefined;
+      if (!m || m.mstate === "die") return;
+      if (typeof message.x === "number" && isFinite(message.x)) m.x = message.x;
+      if (typeof message.y === "number" && isFinite(message.y)) m.y = message.y;
+      m.trip = null;
+      m.tripActive = false;
+      m.nextMoveAt = Date.now() + 500;
+    });
+
     this.onMessage("teleport", (client, message: { x?: number; y?: number }) => {
-      const player = this.state.players.get(client.sessionId);
+      const player = this.playerOf(client);
       if (!player || player.dead) return;
       const w = this.terrain ? this.terrain.width * CELL_WU : this.worldW;
       const h = this.terrain ? this.terrain.height * CELL_WU : this.worldH;
@@ -517,7 +807,9 @@ export class WorldRoom extends Room<WorldState> {
     // Resume this world's clock if the process has seen it before (rooms are
     // disposable, the world's time is not), fast-forwarding any phases that
     // elapsed while no room was open so time flows even with nobody online.
-    const saved = worldClocks.get(this.worldName);
+    const savedRaw = await bus().get(clockKey(this.worldName));
+    const saved: WorldClock | null = savedRaw ? (JSON.parse(savedRaw) as WorldClock) : null;
+    this.unsubs.push(bus().subscribe(clockKey(this.worldName), (doc: WorldClock) => this.applyClock(doc)));
     if (saved) {
       this.state.timeIdx = saved.timeIdx;
       this.state.phaseT = saved.phaseT;
@@ -554,15 +846,15 @@ export class WorldRoom extends Room<WorldState> {
     });
 
     this.onMessage("chat", (client, message: ChatInput) => {
-      const player = this.state.players.get(client.sessionId);
+      const player = this.playerOf(client);
       if (!player) return;
       const text = sanitizeChat(message?.text);
       if (!text) return;
       const now = Date.now();
       if (now - player.lastChatAt < CHAT_MIN_INTERVAL_MS) return; // rate limit
       player.lastChatAt = now;
-      const out: ChatBroadcast = { id: client.sessionId, name: player.name, text };
-      this.broadcast("chat", out);
+      const out: ChatBroadcast = { id: this.pidOf(client), name: player.name, text };
+      this.publishEvent("chat", out);
     });
 
     // Seed the roaming monsters from the maps2 spawn zones. Only meaningful
@@ -571,6 +863,29 @@ export class WorldRoom extends Room<WorldState> {
 
     const dtMs = 1000 / TICK_RATE;
     this.setSimulationInterval((delta) => this.update(delta / 1000), dtMs);
+
+    // CHESS boards for this world (config, live-overridable; tests inject).
+    this.chess = new ChessManager(
+      this.state,
+      options?.chessClockMs ?? 10 * 60 * 1000,
+      () => Date.now(),
+      (fn, ms) => this.clock.setTimeout(fn, ms),
+    );
+    this.chess.addBoards(chessBoardsFor(this.worldName, options?.chessBoards));
+    this.onMessage("chess.sit", (client) => this.chess.sit(this.pidOf(client)));
+    this.onMessage("chess.dice", (client, msg: { m?: string }) => {
+      if (typeof msg?.m === "string") this.chess.throwDice(msg.m, this.pidOf(client));
+    });
+    this.onMessage("chess.move", (client, msg: { m?: string; mv?: string }) => {
+      if (typeof msg?.m === "string" && typeof msg?.mv === "string")
+        this.chess.move(msg.m, this.pidOf(client), msg.mv);
+    });
+    this.onMessage("chess.resign", (client, msg: { m?: string }) => {
+      if (typeof msg?.m === "string") this.chess.resign(msg.m, this.pidOf(client));
+    });
+    this.onMessage("chess.close", (client, msg: { m?: string }) => {
+      if (typeof msg?.m === "string") this.chess.dismiss(msg.m, this.pidOf(client));
+    });
   }
 
   /** Populate this.state.monsters from the maps2 zones: `num` monsters per
@@ -583,8 +898,9 @@ export class WorldRoom extends Room<WorldState> {
     const now = Date.now();
     const radii = monsterRadii();
     for (const z of this.zones) {
-      const count = Math.min(this.monsterCount ?? z.zone.num, z.cells.length);
-      const r = radii.get(z.zone.monster) ?? DEFAULT_MONSTER_RADIUS;
+      const cells = this.ownCells(z);
+      const count = Math.min(this.zoneShare(z, this.monsterCount ?? z.zone.num), cells.length);
+      const r = monsterRadiusFor(z.zone.monster, radii.get(z.zone.monster), DEFAULT_MONSTER_RADIUS);
       const placed: Array<{ x: number; y: number }> = [];
       for (let n = 0; n < count; n++) {
         const m = new Monster();
@@ -594,10 +910,10 @@ export class WorldRoom extends Room<WorldState> {
         // the zone-mates already placed — a pair must not START stacked (the
         // maintainer's screenshot was two mammoths seeded onto one spot).
         // Small/crowded zones fall back to the most-spaced attempt.
-        let cell = z.cells[Math.floor(this.monsterRng() * z.cells.length)];
+        let cell = cells[Math.floor(this.monsterRng() * cells.length)];
         let bestD = -Infinity;
         for (let t = 0; t < 10; t++) {
-          const cand = z.cells[Math.floor(this.monsterRng() * z.cells.length)];
+          const cand = cells[Math.floor(this.monsterRng() * cells.length)];
           const cx = (cand.c + 0.5) * CELL_WU;
           const cy = (cand.r + 0.5) * CELL_WU;
           const d = placed.length
@@ -621,7 +937,8 @@ export class WorldRoom extends Room<WorldState> {
         m.hp = m.hpMax = stats.max_hp;
         m.level = stats.level;
         m.aggro = stats.aggro_radius_wu;
-        const mid = `${z.zone.id}#${n}`;
+        const mid = `${this.idPrefix}${z.zone.id}#${n}`;
+        m.home = this.zoneId;
         m.orbitSign = idSalt(mid) & 1 ? 1 : -1; // circling handedness varies per monster
         this.state.monsters.set(mid, m);
       }
@@ -645,102 +962,287 @@ export class WorldRoom extends Room<WorldState> {
     player.elev = this.terrain ? levelAtWorld(this.terrain, player.x, player.y) : 0;
   }
 
-  onJoin(client: Client, options: JoinOptions = {}) {
+  /** Sessions this room ejected on purpose (the one-token-one-session rule).
+   *  They leave for good; only a DROPPED link gets its seat held. */
+  private kicked = new Set<string>();
+
+  /** INTEREST MANAGEMENT (spec/ZONES.md). Every client owns a StateView and
+   *  receives only the players, monsters and drops within `interestR` of its
+   *  own player; `interestLeave` is the hysteresis rim; `seen` is what each
+   *  view holds right now (the view's own sets are WeakSets, not iterable).
+   *  Infinity = the whole room (tests, QA). */
+  private interestR = INTEREST_WU;
+  private interestLeave = INTEREST_LEAVE_WU;
+  private interestTick = 0;
+  private seen = new Map<string, Set<object>>();
+
+  /** Give a joiner its view with its own player in it — BEFORE the join
+   *  snapshot is encoded (Colyseus sends the full state after onJoin resolves),
+   *  so "me" is in the first patch and the client never waits a pass for it. */
+  private attachView(client: Client, player: Player) {
+    const view = new StateView();
+    client.view = view;
+    view.add(player);
+    this.seen.set(client.sessionId, new Set([player]));
+  }
+
+  /** Recompute every client's view from distance. Entities are bucketed once
+   *  (O(E)), each client queries the buckets its rim can reach (49 at most),
+   *  so a room of 200 players and 300 monsters costs ~10k distance tests per
+   *  pass at INTEREST_TICKS — never E x C per tick. An entity that left the
+   *  state (death, pickup, leave) was already DELETEd to every view that held
+   *  it by the encoder; it is dropped from `seen` without a view call. */
+  private stepInterest() {
+    type Ent = { e: object; x: number; y: number };
+    const all: Ent[] = [];
+    this.state.players.forEach((p) => all.push({ e: p, x: p.x, y: p.y }));
+    this.state.monsters.forEach((m) => all.push({ e: m, x: m.x, y: m.y }));
+    this.state.drops.forEach((g) => all.push({ e: g, x: g.x, y: g.y }));
+    this.state.ghosts.forEach((p) => all.push({ e: p, x: p.x, y: p.y }));
+    this.state.ghostMonsters.forEach((m) => all.push({ e: m, x: m.x, y: m.y }));
+    this.state.ghostDrops.forEach((g) => all.push({ e: g, x: g.x, y: g.y }));
+    const live = new Set<object>(all.map((a) => a.e));
+    const R = this.interestR;
+    const L = this.interestLeave;
+    const unlimited = !isFinite(R);
+    const B = INTEREST_BUCKET_WU;
+    const buckets = new Map<number, Ent[]>();
+    const key = (bx: number, by: number) => bx * 1_000_003 + by;
+    if (!unlimited) {
+      for (const a of all) {
+        const k = key(Math.floor(a.x / B), Math.floor(a.y / B));
+        const b = buckets.get(k);
+        if (b) b.push(a);
+        else buckets.set(k, [a]);
+      }
+    }
+    const reach = Math.ceil(L / B);
+    for (const client of this.clients) {
+      const view = client.view;
+      const me = this.playerOf(client);
+      if (!view || !me) continue;
+      const had = this.seen.get(client.sessionId) ?? new Set<object>();
+      const keep = new Set<object>([me]);
+      const consider = (a: Ent) => {
+        if (a.e === me) return;
+        const d = Math.max(Math.abs(a.x - me.x), Math.abs(a.y - me.y));
+        if (had.has(a.e) ? d <= L : d <= R) keep.add(a.e);
+      };
+      if (unlimited) for (const a of all) consider(a);
+      else {
+        const bx0 = Math.floor(me.x / B);
+        const by0 = Math.floor(me.y / B);
+        for (let bx = bx0 - reach; bx <= bx0 + reach; bx++)
+          for (let by = by0 - reach; by <= by0 + reach; by++) {
+            const b = buckets.get(key(bx, by));
+            if (b) for (const a of b) consider(a);
+          }
+      }
+      for (const e of had) if (!keep.has(e) && live.has(e)) view.remove(e as any);
+      for (const e of keep) if (!had.has(e)) view.add(e as any);
+      this.seen.set(client.sessionId, keep);
+    }
+  }
+
+  async onJoin(client: Client, options: JoinOptions = {}) {
     // Current live tuning straight to the joiner (updates arrive as broadcasts).
     client.send("live:update", liveTuning());
+    // A HAND-OFF from another zone room (spec/ZONES.md): the hot state comes
+    // off the bus, not the database, and the body keeps its stable id.
+    const hot = await this.takeHandoff(options);
+    if (hot) return this.joinHandedOff(client, hot);
     const player = new Player();
-    player.token = (options.token || "").slice(0, 64);
     player.name = (options.name || `wanderer-${client.sessionId.slice(0, 4)}`).slice(0, 24);
     player.character = options.character || "";
 
-    // ONE live session per token (RO kicks the older login): a second tab on
-    // the same browser shares the localStorage token, and two live sessions on
-    // one store record dup/eat items on last-writer-wins saves. The newcomer
-    // takes over the LIVE progression (fresher than the store) and the old
-    // session is disconnected.
-    if (player.token) {
-      let oldSid = "";
-      this.state.players.forEach((p: Player, sid: string) => {
-        if (!oldSid && p.token === player.token && sid !== client.sessionId) oldSid = sid;
+    // THE ACCOUNT. A first-time player presents nothing and is GIVEN one right
+    // here, on the join call the client already makes — no screen, no extra
+    // tap, no step added to the one that gets someone into the world.
+    const acc = await resolveAccount(this.store, options.account, player.name, player.character);
+    player.accountId = acc.id;
+    player.rec = acc.rec;
+    // NOT pushed here — see Player.mintedSecret. The client asks once it is
+    // listening, which is the only ordering that cannot drop the pair.
+    player.mintedSecret = acc.secret ?? "";
+
+    // ONE live session per account (RO kicks the older login): a second tab on
+    // the same browser shares the localStorage pair, and two live sessions on
+    // one account document dup/eat items on last-writer-wins saves. The
+    // newcomer takes over the LIVE progression (fresher than the store) and
+    // the old session is disconnected.
+    if (player.accountId) {
+      // In this room first (no bus round trip, and the presence hash may be
+      // a tick behind), then world-wide through presence.
+      let oldPid = "";
+      this.state.players.forEach((p: Player, pid: string) => {
+        if (!oldPid && p.accountId === player.accountId && pid !== client.sessionId) oldPid = pid;
       });
-      if (oldSid) {
-        const oldPlayer = this.state.players.get(oldSid);
-        if (oldPlayer) this.savePlayer(oldPlayer); // flush the live state the newcomer restores
-        this.clients.find((c) => c.sessionId === oldSid)?.leave(4001); // its onLeave re-saves the same values
-      }
+      if (oldPid) this.kickPid(oldPid);
+      await this.kickOtherSession(player.accountId, client.sessionId);
     }
 
-    // Returning player? Restore their last position (server-authoritative),
-    // but rescue anyone whose saved spot is now blocked (terrain can change).
-    const saved = player.token ? this.store.load(player.token) : undefined;
-    if (saved && !(this.terrain && !isStandableAtWorld(this.terrain, saved.x, saved.y))) {
-      // Returning player: restore their last position on the base ground there.
-      player.x = saved.x;
-      player.y = saved.y;
-      player.elev = this.terrain ? levelAtWorld(this.terrain, player.x, player.y) : 0;
+    // Returning player? Restore where they stood IN THIS WORLD
+    // (server-authoritative), but rescue anyone whose saved spot is now
+    // blocked (terrain can change).
+    const spot = acc.rec.pos?.[this.worldName];
+    /* A saved spot on a DECK is a legal spot: the base under a cave lid is the
+     * cave floor and under a bridge the water, so "standable at the base"
+     * alone sent a lid-walker to the spawn or, worse, restored him INTO the
+     * cave (maintainer 2026-09-09: "if I log out and back in again I get
+     * teleported to inside the cave"). */
+    const deckUnderSpot = (s: { x: number; y: number }): boolean => {
+      const t = this.terrain;
+      if (!t) return false;
+      const c = Math.floor(s.x / CELL_WU);
+      const r = Math.floor(s.y / CELL_WU);
+      return c >= 0 && r >= 0 && c < t.width && r < t.height && t.deck[r * t.width + c] >= 0;
+    };
+    if (spot && (!this.terrain || isStandableAtWorld(this.terrain, spot.x, spot.y) || deckUnderSpot(spot))) {
+      // Returning player: restore their last position ON THE SURFACE THEY LEFT
+      // FROM — the saved elev, resolved against today's terrain (a spot that
+      // lost its deck falls back to the base; one without a saved elev too).
+      player.x = spot.x;
+      player.y = spot.y;
+      player.elev = this.terrain
+        ? resolveElevAt(
+            this.terrain,
+            spot.elev ?? levelAtWorld(this.terrain, player.x, player.y),
+            player.x,
+            player.y,
+            { maxClimb: WALK_CLIMB, canSwim: true },
+          )
+        : 0;
     } else {
       this.placeAtSpawn(player);
     }
     // Progression survives relogs (RO: your character IS the level) and is
-    // WORLD-AGNOSTIC — it lives in the shared progress store, not the
-    // per-world position file, so switching worlds never forks the character.
-    // Migration: tokens whose progression still rides an old per-world record
-    // (or none at all — pre-combat records) seed from `saved` once.
-    const prog = player.token ? progressStore().load(player.token) : undefined;
-    player.level = Math.min(LEVEL_CAP, Math.max(1, prog?.level ?? saved?.level ?? 1));
-    player.xp = Math.max(0, prog?.xp ?? saved?.xp ?? 0);
+    // WORLD-AGNOSTIC — one account document, with position the only field
+    // keyed by world, so switching worlds can never fork the character.
+    player.level = Math.min(LEVEL_CAP, Math.max(1, acc.rec.level || 1));
+    player.xp = Math.max(0, acc.rec.xp || 0);
     player.hpMax = hpMaxFor(player.level);
     player.epMax = epMaxFor(player.level);
     // Never restore a corpse: a save written at 0 hp comes back at 1 (limping,
-    // not dead — dying logs you out at the spawn next tick otherwise).
-    player.hp = Math.min(player.hpMax, Math.max(1, prog?.hp ?? saved?.hp ?? player.hpMax));
-    player.ep = Math.min(player.epMax, Math.max(0, prog?.ep ?? saved?.ep ?? player.epMax));
-    const invSrc = prog?.inv ?? saved?.inv;
-    player.inv = Array.isArray(invSrc)
-      ? invSrc
+    // not dead — dying logs you out at the spawn next tick otherwise). A
+    // brand-new account stores 0 and takes full pools from the level curve.
+    player.hp = acc.rec.hp > 0 ? Math.min(player.hpMax, Math.max(1, acc.rec.hp)) : player.hpMax;
+    player.ep = acc.rec.ep > 0 ? Math.min(player.epMax, Math.max(0, acc.rec.ep)) : player.epMax;
+    player.inv = Array.isArray(acc.rec.inv)
+      ? acc.rec.inv
           .filter((s) => s && typeof s.item === "string" && typeof s.n === "number" && s.n > 0)
           .map((s) => ({ item: s.item, n: Math.min(INV_MAX_STACK, Math.floor(s.n)) }))
           .slice(0, INV_MAX_SLOTS)
       : [];
-    this.state.players.set(client.sessionId, player);
+    // onJoin AWAITS A DATABASE READ NOW, and a phone can drop the link inside
+    // that window. onLeave would then find no player, delete nothing, and this
+    // line would add a body no client owns and nothing ever removes — a ghost
+    // that walks nowhere and never leaves. Cheap to check, impossible to spot
+    // in production if we do not.
+    if (client.state === ClientState.LEAVING || client.state === ClientState.CLOSED) {
+      this.savePlayer(player); // they still earned whatever the account arrived with
+      return;
+    }
+    this.adoptPlayer(client, client.sessionId, player);
     // The backpack is PRIVATE — targeted message, never schema-synced.
     client.send("inv", { items: player.inv });
     // Every arrival in Nangijala is announced by a shooting star crossing
     // the sky — the same streak for every player in the world.
-    this.broadcast("star", { name: player.name });
+    this.publishEvent("star", { name: player.name });
   }
 
-  onLeave(client: Client) {
-    const player = this.state.players.get(client.sessionId);
+  /** A DROPPED LINK IS NOT A DEPARTURE — the seat is held open (2026-09-04,
+   *  the maintainer on a train: "the player was flying around like I don't know
+   *  what... the network connection goes up/down all the time").
+   *
+   *  Without this, every blip destroyed the player entity. The server's x/y
+   *  freeze at the last ACKED input the moment the socket dies, the client keeps
+   *  predicting and you keep walking on screen, and the rejoin then built a
+   *  BRAND NEW player anchored back at the frozen position while the client
+   *  threw away every unacked input. So each blip snapped him back to wherever
+   *  the link died — and on a train that is every few seconds, which is the
+   *  flying. His eight screenshots are all places he had just been.
+   *
+   *  Holding the seat means the reconnecting client reclaims the SAME session:
+   *  the entity, its position, its inventory and its unacked inputs all
+   *  survive, and nothing is restored from the store at all. A CONSENTED leave
+   *  (the player really left) is unaffected and cleans up at once. */
+  async onLeave(client: Client, consented?: boolean) {
+    const pid = this.pidOf(client);
+    if (this.handed.delete(client.sessionId)) {
+      // Handed to another zone: that room owns the body now — nothing to
+      // save, no seat to hold.
+      this.sidPid.delete(client.sessionId);
+      this.pidSid.delete(pid);
+      this.seen.delete(client.sessionId);
+      return;
+    }
+    const player = this.playerOf(client);
+    // Flush first: if the grace expires we must not have lost the session.
     if (player) this.savePlayer(player);
-    this.state.players.delete(client.sessionId);
+    const wasKicked = this.kicked.delete(client.sessionId);
+    if (!consented && !wasKicked && player) {
+      try {
+        await this.allowReconnection(client, RECONNECT_GRACE_S);
+        return; // reclaimed — the body never moved and nothing was rebuilt
+      } catch {
+        /* the grace ran out, or the room is shutting down: fall through */
+      }
+    }
+    this.state.players.delete(pid);
+    this.seen.delete(client.sessionId);
+    this.sidPid.delete(client.sessionId);
+    this.pidSid.delete(pid);
+    if (player?.accountId) {
+      // Only MY presence: a newcomer on the same account has overwritten it.
+      const acc = player.accountId;
+      void bus()
+        .hget(this.chan.presence, acc)
+        .then((raw) => {
+          if (raw && (JSON.parse(raw) as { pid?: string }).pid === pid) return bus().hdel(this.chan.presence, acc);
+        })
+        .catch(() => {});
+    }
     // Session ids are not reused, so a stale entry would leak for the room's
     // lifetime and silently pacify whoever inherited the id.
-    this.noAggro.delete(client.sessionId);
+    this.noAggro.delete(pid);
+    this.chess?.onPlayerLeave(pid);
   }
 
-  /** Persist one player: position to the per-world store, progression to the
-   * shared world-agnostic store. Called on leave, death, level-up and the
-   * periodic flush — onLeave-only persistence meant a crash ate every
-   * connected player's session gains. */
+  /** Persist one player into their account document. Called on leave, death,
+   * level-up and the periodic flush of DIRTY players — onLeave-only
+   * persistence meant a crash ate every connected player's session gains.
+   *
+   * FIRE AND FORGET, on purpose: a durable write must never be awaited inside
+   * the 20Hz loop. The store this replaces was worse than slow — it was
+   * `writeFileSync(JSON.stringify(every player ever seen))`, once per player,
+   * synchronously, which stalled the tick outright.
+   *
+   * It REWRITES the held document rather than building a fresh one: the room
+   * has no idea what secretHash, createdAt or another world's position are,
+   * and a rebuild would silently drop all three. */
   private savePlayer(player: Player) {
-    if (!player.token) return;
-    this.store.save(player.token, {
-      character: player.character,
-      name: player.name,
-      x: player.x,
-      y: player.y,
-    });
-    progressStore().save(player.token, {
-      level: player.level,
-      xp: player.xp,
-      hp: player.hp,
-      ep: player.ep,
-      inv: player.inv,
-    });
+    const rec = player.rec;
+    if (!player.accountId || !rec) return;
+    player.dirty = false;
+    rec.name = player.name;
+    rec.character = player.character;
+    rec.level = player.level;
+    rec.xp = player.xp;
+    rec.hp = player.hp;
+    rec.ep = player.ep;
+    // COPY, never alias: a live Player.inv sharing the stored array is the bug
+    // that silently corrupted saves in the store this replaces.
+    rec.inv = player.inv.map((s) => ({ item: s.item, n: s.n }));
+    if (this.worldName) rec.pos[this.worldName] = { x: player.x, y: player.y, elev: player.elev };
+    void this.store
+      .save(player.accountId, rec)
+      .catch((e) => console.error(`[account] save failed for ${player.accountId}:`, e));
   }
 
   private update(dt: number) {
+    // Chess seating scan at ~4Hz (20Hz sim / 5) — distance math over a
+    // handful of boards; the manager is quiet when nothing is happening.
+    if (this.chess && ++this.chessTick >= 5) { this.chessTick = 0; this.chess.tick(); }
     // World clock: phase deadline checked here (see nextPhaseAt note); the
     // synced phaseT sweeps continuously between rollovers.
     if (this.nextPhaseAt !== null) {
@@ -796,12 +1298,18 @@ export class WorldRoom extends Room<WorldState> {
         if (terrain) {
           // Free a body overlapping a solid's margin BEFORE integrating (the
           // client prediction runs the identical call — lockstep).
-          const u = unstickFromSolids(terrain, player.x, player.y, 80 * eff);
+          const u = unstickFromSolids(terrain, player.x, player.y, 80 * eff, undefined, player.elev);
           player.x = u.x;
           player.y = u.y;
           // Surface under the feet drives walk speed; a jump raises how high
           // you can step (crossing a 1-level ledge) but slows ground travel.
-          const surf = surfaceAtWorld(terrain, player.x, player.y);
+          // ELEVATION-AWARE: on a DECK the feet are on the deck's own material,
+          // not on the water or chasm it spans. Reading the base made every
+          // bridge crossing a swim (maintainer 2026-08-09: "I don't want
+          // players to run slower over bridges"). The client's prediction calls
+          // the identical function — they must, or the two disagree about speed
+          // and the body rubber-bands the length of the bridge.
+          const surf = surfaceAtWorldElev(terrain, player.x, player.y, player.elev);
           const ctx = { maxClimb: jumping ? JUMP_CLIMB : WALK_CLIMB, canSwim: true };
           r = stepMovement(
             player.x,
@@ -819,17 +1327,54 @@ export class WorldRoom extends Room<WorldState> {
             true, // iso world → input is screen-relative (Up walks up on screen)
             this.worldW,
             this.worldH,
-            makeSideBlocked(terrain, ctx), // corner probes: solids only (no ledge-wedging)
+            makeSideBlocked(terrain, ctx, () => player.elev), // corner probes: solids only (no ledge-wedging)
           );
         } else {
           r = stepMovement(player.x, player.y, inp.ax, inp.ay, inp.running, eff);
+        }
+        /* THE DEEP-SEA CURRENT. Integrated as a SECOND ordinary move rather
+         * than added to the position, so terrain still collides and the sea can
+         * never push a body through a wall or onto a cliff. `speed` here is a
+         * scale on WALK_SPEED, which is how stepMovement takes it. The client
+         * predicts with the identical call — a current only one side applied
+         * would rubber-band every swimmer. */
+        if (terrain) {
+          const cur = deepCurrentAt(terrain, r.x, r.y);
+          if (cur) {
+            const ctxC = { maxClimb: jumping ? JUMP_CLIMB : WALK_CLIMB, canSwim: true };
+            r = stepMovement(
+              r.x, r.y, cur.dx, cur.dy, false, eff,
+              makeBlockedElev(terrain, ctxC, () => player.elev),
+              cur.speed / WALK_SPEED,
+              false, // already a WORLD-space direction, not screen-relative
+              this.worldW, this.worldH,
+              makeSideBlocked(terrain, ctxC, () => player.elev),
+            );
+          }
         }
         player.x = r.x;
         player.y = r.y;
         // Update the surface elevation the player now stands on (deck vs base).
         if (terrain) {
           const ctx2 = { maxClimb: jumping ? JUMP_CLIMB : WALK_CLIMB, canSwim: true };
+          const elevBefore = player.elev;
           player.elev = resolveElevAt(terrain, player.elev, player.x, player.y, ctx2);
+          // FALL DAMAGE (maintainer 2026-08-12): a drop of FALL_DMG_MIN_LEVELS+
+          // costs fallDamageFrac of MAX hp — the house roof 10%, the_island2's
+          // summit 95%, higher is death from full health. Landing in swimmable
+          // WATER is a dive, not a fall. This sits on the INPUT integration
+          // only, so teleport/respawn/join (which assign elev directly) can
+          // never bill their elevation change as a fall. Routed navigation
+          // refuses these drops outright (stepReach) — a damaging fall can
+          // only be the player's own input walking off the edge.
+          const drop = elevBefore - player.elev;
+          if (drop >= FALL_DMG_MIN_LEVELS && !player.dead) {
+            const landing = surfaceAtWorldElev(terrain, player.x, player.y, player.elev);
+            if (!landing.swimmable) {
+              const dmg = Math.round(fallDamageFrac(drop) * player.hpMax);
+              if (dmg > 0) this.hurtPlayer(player, dmg, now);
+            }
+          }
         }
         moving = r.moving;
         running = r.moving && inp.running;
@@ -849,6 +1394,15 @@ export class WorldRoom extends Room<WorldState> {
       if (terrain) {
         const surf = surfaceAtWorld(terrain, player.x, player.y);
         player.swimming = surf.swimmable && player.elev <= levelAtWorld(terrain, player.x, player.y) + 0.5;
+        // A HARMFUL liquid (lava) drains `harm` HP per second while you swim
+        // in it — accumulated and landed whole through hurtPlayer once a
+        // second, so it flinches, slows and kills like any hit.
+        if (player.swimming && surf.harm && !player.dead) {
+          const acc = (this.harmAcc.get(id) ?? 0) + surf.harm * dt;
+          const dmg = Math.floor(acc);
+          this.harmAcc.set(id, acc - dmg);
+          if (dmg > 0) this.hurtPlayer(player, dmg, now);
+        } else if (this.harmAcc.has(id)) this.harmAcc.delete(id);
       }
     });
 
@@ -857,6 +1411,11 @@ export class WorldRoom extends Room<WorldState> {
     // player movement.
     this.stepMonsters(dt, now);
     this.stepCombat(dt, now);
+    if (this.zoneId !== WHOLE_WORLD) this.stepZones(now);
+    if (++this.interestTick >= INTEREST_TICKS) {
+      this.interestTick = 0;
+      this.stepInterest();
+    }
   }
 
   /** Advance every roaming monster one tick. Each monster belongs to a maps2
@@ -890,11 +1449,23 @@ export class WorldRoom extends Room<WorldState> {
     const mons: Array<{ id: string; m: Monster }> = [];
     this.state.monsters.forEach((m: Monster, id: string) => mons.push({ id, m }));
     const bodies: Array<{ id: string; x: number; y: number; r: number }> = mons.map(
-      ({ id, m }) => ({ id, x: m.x, y: m.y, r: radii.get(m.kind) ?? DEFAULT_MONSTER_RADIUS }),
+      // The tuned shadow IS the hit box when the Game Master has placed one
+      // (wiki shadow editor); the art-measured manifest radius otherwise.
+      ({ id, m }) => ({ id, x: m.x, y: m.y, r: monsterRadiusFor(m.kind, radii.get(m.kind), DEFAULT_MONSTER_RADIUS) }),
     );
     this.state.players.forEach((p: Player, sid: string) =>
       bodies.push({ id: `p:${sid}`, x: p.x, y: p.y, r: PLAYER_BODY_RADIUS }),
     );
+    // ONE POSITION DEFINITION. (m.x, m.y) is the monster's position, and where
+    // the Game Master has tuned a shadow that point IS the shadow centre — the
+    // client draws the ellipse there and hangs the sprite off it by the facet
+    // offset. Zone membership, the snap-back target, elevation, surface speed,
+    // the loot drop and every distance in this file read that same point;
+    // nothing in the sim uses an art-derived feet anchor. Membership stays
+    // CENTRE-only: making it radius-aware would shrink every zone polygon by
+    // each monster's body radius (edge cells would stop being spawnable/
+    // walkable), which is a world-wide change nobody asked for — a wide body's
+    // shadow may overhang the rim.
     // A push/dodge must never shove a monster off its zone polygon into the
     // snap-back teleport — validate zone membership alongside terrain.
     const inZone = (zone: ZoneRuntime, x: number, y: number) =>
@@ -1078,7 +1649,7 @@ export class WorldRoom extends Room<WorldState> {
             true,
             this.worldW,
             this.worldH,
-            makeSideBlocked(grid, ctx),
+            makeSideBlocked(grid, ctx, () => m.elev),
           );
           if (contained(r2.x, r2.y)) {
             m.x = r2.x;
@@ -1233,7 +1804,7 @@ export class WorldRoom extends Room<WorldState> {
         true, // iso world → screen-relative input (matches players/autopilot)
         this.worldW,
         this.worldH,
-        makeSideBlocked(grid, ctx),
+        makeSideBlocked(grid, ctx, () => m.elev),
       );
       m.x = r.x;
       m.y = r.y;
@@ -1243,7 +1814,9 @@ export class WorldRoom extends Room<WorldState> {
 
       // Safety net: never let a monster leave its zone polygon. Cheap O(1)
       // membership check; the nearest-cell scan only runs for the rare
-      // offender (a body-radius slide past an edge cell).
+      // offender (a body-radius slide past an edge cell). Same position
+      // definition as everything else (see ONE POSITION DEFINITION above): the
+      // cell tested and the cell centre snapped to are both the shadow centre.
       const mc = Math.floor(m.x / CELL_WU);
       const mr = Math.floor(m.y / CELL_WU);
       if (!m.returning && !zone.cellSet.has(mc + mr * grid.width)) {
@@ -1272,6 +1845,8 @@ export class WorldRoom extends Room<WorldState> {
   // --- COMBAT -----------------------------------------------------------
 
   private lootChance: number | null = null; // test knob — see onCreate
+  private chess!: ChessManager; // the boards + matches for this world (chess.ts)
+  private chessTick = 0;
   private respawnQueue: Array<{ areaId: string; at: number }> = [];
   private respawnCounter = 0;
   private dropCounter = 0;
@@ -1334,6 +1909,9 @@ export class WorldRoom extends Room<WorldState> {
 
   /** Damage LANDING on a player: hp, the hurt flinch, the hit-slow window —
    * and death when it empties (die clip holds until the respawn snap). */
+  /** Fractional HP owed by a harmful liquid (lava), per session — landed
+   *  whole through hurtPlayer as it accrues. */
+  private harmAcc = new Map<string, number>();
   private hurtPlayer(player: Player, dmg: number, now: number) {
     player.hp = Math.max(0, player.hp - dmg);
     player.hitSeq++;
@@ -1351,14 +1929,33 @@ export class WorldRoom extends Room<WorldState> {
       player.actionSeq++;
       player.slow = 1;
       player.target = "";
-      player.respawnAt = now + PLAYER_RESPAWN_MS;
+      player.respawnAt = now + PLAYER_RESPAWN_MS; // earliest the press may land
+      player.deadUntil = now + PLAYER_DEATH_MAX_MS; // backstop if it never does
       for (const q of player.inputQueue) if (typeof q.seq === "number") player.seq = q.seq;
       player.inputQueue.length = 0;
       player.moving = false;
       player.running = false;
-      this.broadcast("chat", { name: "—", text: `${player.name} was slain.` });
+      this.publishEvent("chat", { name: "—", text: `${player.name} was slain.` });
       this.savePlayer(player); // a crash between here and respawn loses nothing
     }
+  }
+
+  /** Bring a dead player back: fresh spawn, full bars, queues cleared. ONE
+   * implementation for both the press and the backstop — two copies of a
+   * revive is how a field gets cleared on one path and not the other. */
+  private revivePlayer(player: Player) {
+    this.placeAtSpawn(player);
+    player.hp = player.hpMax;
+    player.ep = player.epMax;
+    player.dead = false;
+    player.action = "";
+    player.slow = 1;
+    player.lastHitAt = -100000;
+    player.regenAccHp = 0;
+    player.regenAccEp = 0;
+    for (const q of player.inputQueue) if (typeof q.seq === "number") player.seq = q.seq;
+    player.inputQueue.length = 0;
+    player.timeCredit = 0;
   }
 
   /** A monster dies: start the die clip (the schema entry lingers so every
@@ -1375,6 +1972,7 @@ export class WorldRoom extends Room<WorldState> {
     // At the cap xp has nowhere to go (RO shows a frozen bar) — don't let it
     // accumulate into a meaningless ever-growing number in the save file.
     if (killer.level < LEVEL_CAP) killer.xp += stats.xp;
+    killer.dirty = true; // xp is EARNED — hp/ep are not, they regenerate
     let leveled = false;
     while (killer.level < LEVEL_CAP && killer.xp >= xpToNext(killer.level)) {
       killer.xp -= xpToNext(killer.level);
@@ -1388,7 +1986,7 @@ export class WorldRoom extends Room<WorldState> {
     }
     if (killer.level >= LEVEL_CAP) killer.xp = Math.min(killer.xp, xpToNext(LEVEL_CAP) - 1);
     if (leveled) {
-      this.broadcast("levelup", { name: killer.name, level: killer.level });
+      this.publishEvent("levelup", { name: killer.name, level: killer.level });
       this.savePlayer(killer); // the worst thing a crash could eat is a ding
     }
   }
@@ -1466,18 +2064,20 @@ export class WorldRoom extends Room<WorldState> {
     g.y = gy;
     g.elev = terr ? resolveElevAt(terr, srcElev, gx, gy, ctx) : 0;
     g.bornAt = Date.now();
-    this.state.drops.set(`d${this.dropCounter++}`, g);
+    this.state.drops.set(`${this.idPrefix}d${this.dropCounter++}`, g);
   }
 
   /** One replacement monster in a zone, MONSTER_RESPAWN_MS after a death —
    * the zone's `num` stays the concurrent cap (RO-style repop). */
   private respawnMonster(areaId: string, now: number) {
     const z = this.zones.find((zz) => zz.zone.id === areaId);
-    if (!z || !z.cells.length) return;
+    const cells = z ? this.ownCells(z) : [];
+    if (!z || !cells.length) return;
     const m = new Monster();
     m.kind = z.zone.monster;
     m.areaId = areaId;
-    const cell = z.cells[Math.floor(this.monsterRng() * z.cells.length)];
+    m.home = this.zoneId;
+    const cell = cells[Math.floor(this.monsterRng() * cells.length)];
     m.x = (cell.c + 0.5) * CELL_WU;
     m.y = (cell.r + 0.5) * CELL_WU;
     m.elev = cell.lvl;
@@ -1488,7 +2088,7 @@ export class WorldRoom extends Room<WorldState> {
     m.hp = m.hpMax = stats.max_hp;
     m.level = stats.level;
     m.aggro = stats.aggro_radius_wu;
-    const id = `${areaId}#r${this.respawnCounter++}`;
+    const id = `${this.idPrefix}${areaId}#r${this.respawnCounter++}`;
     m.orbitSign = idSalt(id) & 1 ? 1 : -1;
     this.state.monsters.set(id, m);
   }
@@ -1498,10 +2098,12 @@ export class WorldRoom extends Room<WorldState> {
     const slot = player.inv.find((s) => s.item === item && s.n < INV_MAX_STACK);
     if (slot) {
       slot.n++;
+      player.dirty = true;
       return true;
     }
     if (player.inv.length >= INV_MAX_SLOTS) return false;
     player.inv.push({ item, n: 1 });
+    player.dirty = true;
     return true;
   }
 
@@ -1521,7 +2123,7 @@ export class WorldRoom extends Room<WorldState> {
         this.lootChance === null ? stats.loot : stats.loot.map((l) => ({ ...l, chance: this.lootChance! }));
       for (const item of rollDrops(loot, idSalt(id), m.diedAt | 0)) this.spawnDrop(item, m.x, m.y, m.elev);
       this.state.monsters.delete(id);
-      this.respawnQueue.push({ areaId: m.areaId, at: now + MONSTER_RESPAWN_MS });
+      this.queueRespawn(m.areaId, m.home, now);
     }
     if (this.respawnQueue.length && this.respawnQueue.some((r) => now >= r.at)) {
       const due = this.respawnQueue.filter((r) => now >= r.at);
@@ -1532,7 +2134,13 @@ export class WorldRoom extends Room<WorldState> {
     // death and level-up flush eagerly on top of this).
     if (now >= this.storeFlushAt) {
       this.storeFlushAt = now + 30_000;
-      this.state.players.forEach((p: Player) => this.savePlayer(p));
+      // ONLY THE DIRTY. Write on meaning, not on a timer: a player who earned
+      // nothing this window is not written at all, so an idle world costs zero
+      // writes. (Measured at the 20k-concurrent target: an unconditional 30s
+      // flush is ~$1,550/month of mostly-unchanged documents.)
+      this.state.players.forEach((p: Player) => {
+        if (p.dirty) this.savePlayer(p);
+      });
     }
     // Ground items despawn (1s sweep granularity is plenty for a 90s TTL).
     if (now >= this.dropSweepAt) {
@@ -1547,20 +2155,10 @@ export class WorldRoom extends Room<WorldState> {
     const radii = monsterRadii();
     this.state.players.forEach((player: Player, sid: string) => {
       if (player.dead) {
-        if (now >= player.respawnAt) {
-          this.placeAtSpawn(player);
-          player.hp = player.hpMax;
-          player.ep = player.epMax;
-          player.dead = false;
-          player.action = "";
-          player.slow = 1;
-          player.lastHitAt = -100000;
-          player.regenAccHp = 0;
-          player.regenAccEp = 0;
-          for (const q of player.inputQueue) if (typeof q.seq === "number") player.seq = q.seq;
-          player.inputQueue.length = 0;
-          player.timeCredit = 0;
-        }
+        // The BACKSTOP only — the press is what normally revives (see the
+        // "respawn" message). Without it a closed tab leaves a corpse in the
+        // world forever.
+        if (now >= player.deadUntil) this.revivePlayer(player);
         return;
       }
       if (now - player.lastCombatAt > REGEN_DELAY_MS) {
@@ -1596,7 +2194,7 @@ export class WorldRoom extends Room<WorldState> {
       // No fighting FROM the water either — sanctuary cuts both ways, or a
       // swimmer could snipe shore monsters that can never reach back.
       if (player.swimming) return;
-      const rm = radii.get(m.kind) ?? DEFAULT_MONSTER_RADIUS;
+      const rm = monsterRadiusFor(m.kind, radii.get(m.kind), DEFAULT_MONSTER_RADIUS);
       const range = attackRange(PLAYER_BODY_RADIUS, rm);
       // A grace band past swing range: the circling must not flicker the
       // engagement off every time the pair drifts a few wu apart.
@@ -1675,7 +2273,7 @@ export class WorldRoom extends Room<WorldState> {
     const avoid: Array<{ x: number; y: number; r: number }> = [];
     this.state.monsters.forEach((o: Monster, oid: string) => {
       if (oid === selfId || o.areaId !== zone.zone.id) return;
-      const r = radii.get(o.kind) ?? DEFAULT_MONSTER_RADIUS;
+      const r = monsterRadiusFor(o.kind, radii.get(o.kind), DEFAULT_MONSTER_RADIUS);
       avoid.push({ x: o.x, y: o.y, r });
       if (o.tripActive) avoid.push({ x: o.targetX, y: o.targetY, r });
     });
@@ -1701,9 +2299,425 @@ export class WorldRoom extends Room<WorldState> {
     return best ?? { x: fromX, y: fromY };
   }
 
+
+  // ------------------------------------------------------------------ ZONES
+  // spec/ZONES.md. Everything below is inert in the whole-world room except
+  // the pid keying, the presence hash and the event bus, which are the same
+  // code path in both modes on purpose.
+  private zoneId = WHOLE_WORLD;
+  private grid: ZoneGrid | null = null;
+  private rect: Rect | null = null;
+  private idPrefix = ""; // monsters and drops of a zone room carry `z<zone>:` so ids are world-unique
+  private chan = {
+    events: "",
+    presence: "",
+    edge: (_z: number) => "",
+    ctl: (_z: number) => "",
+  };
+  private unsubs: Array<() => void> = [];
+  /** session id → stable player id (the map key) and back. */
+  private sidPid = new Map<string, string>();
+  private pidSid = new Map<string, string>();
+  /** Sessions whose body was handed to another zone: their leave saves nothing. */
+  private handed = new Set<string>();
+  private ghostOwner = new Map<string, number>(); // ghost id → the zone that owns the body
+  private edgeTick = 0;
+  private ownCellsCache = new Map<string, ZoneRuntime["cells"]>();
+
+  private pidOf(client: Client): string {
+    return this.sidPid.get(client.sessionId) ?? client.sessionId;
+  }
+  private playerOf(client: Client): Player | undefined {
+    return this.state.players.get(this.pidOf(client));
+  }
+  private publishEvent(type: string, data: unknown) {
+    void bus().publish(this.chan.events, { type, data });
+  }
+
+  /** A body enters this room under its stable id: the map key, the session
+   *  link, its view, its private backpack and the world presence. */
+  private adoptPlayer(client: Client, pid: string, player: Player) {
+    player.pid = pid;
+    player.sid = client.sessionId;
+    this.sidPid.set(client.sessionId, pid);
+    this.pidSid.set(pid, client.sessionId);
+    this.state.ghosts.delete(pid); // it may have been a neighbour's ghost a moment ago
+    this.state.players.set(pid, player);
+    this.attachView(client, player);
+    // The backpack is PRIVATE — targeted message, never schema-synced.
+    client.send("inv", { items: player.inv });
+    // PRESENCE is keyed by ACCOUNT (a person), never by pid (a session):
+    // it is what "one live session per account" is enforced on, world-wide.
+    if (player.accountId)
+      void bus().hset(this.chan.presence, player.accountId, JSON.stringify({ pid, zone: this.zoneId, name: player.name }));
+  }
+
+  /** ONE LIVE SESSION PER ACCOUNT, WORLD-WIDE (the account agent's contract,
+   *  2026-09-09): the newcomer looks the account up in the presence hash and
+   *  kicks the session it names, in this room directly or through the zone's
+   *  `ctl` channel. The kicked room saves and drops that session as the
+   *  in-room kick always did; the newcomer's adopt then overwrites presence. */
+  private async kickOtherSession(accountId: string, myPid: string): Promise<void> {
+    if (!accountId) return;
+    const raw = await bus().hget(this.chan.presence, accountId);
+    if (!raw) return;
+    let prev: { pid?: string; zone?: number };
+    try {
+      prev = JSON.parse(raw);
+    } catch {
+      return;
+    }
+    if (!prev.pid || prev.pid === myPid) return;
+    if (prev.zone === this.zoneId) this.kickPid(prev.pid);
+    else if (typeof prev.zone === "number")
+      void bus().publish(this.chan.ctl(prev.zone), { type: "kick", pid: prev.pid } satisfies CtlMessage);
+  }
+
+  private kickPid(pid: string) {
+    const oldSid = this.pidSid.get(pid);
+    const oldPlayer = this.state.players.get(pid);
+    if (!oldSid || !oldPlayer) return;
+    this.savePlayer(oldPlayer); // flush the live state the newcomer restores
+    /* A KICK IS NOT A DROPPED LINK. `onLeave` holds a seat open for a
+     * reconnect, and a kicked session must not hold one — the whole point
+     * is that ONE token means one live session, and a reclaimable ghost
+     * would leave two. Marked before the leave, read inside it. */
+    this.kicked.add(oldSid);
+    this.clients.find((c) => c.sessionId === oldSid)?.leave(4001); // its onLeave re-saves the same values
+  }
+
+  /** The spawn cells of a maps2 zone that lie inside THIS room's rectangle
+   *  (all of them in the whole-world room). Seeding and respawning draw from
+   *  these; roaming keeps the whole polygon and a monster that walks out is
+   *  transferred. */
+  private ownCells(z: ZoneRuntime): ZoneRuntime["cells"] {
+    if (!this.rect) return z.cells;
+    let own = this.ownCellsCache.get(z.zone.id);
+    if (!own) {
+      const r = this.rect;
+      own = z.cells.filter((c) => {
+        const x = (c.c + 0.5) * CELL_WU;
+        const y = (c.r + 0.5) * CELL_WU;
+        return x >= r.x0 && x < r.x1 && y >= r.y0 && y < r.y1;
+      });
+      this.ownCellsCache.set(z.zone.id, own);
+    }
+    return own;
+  }
+
+  /** This room's share of a zone's `num`: proportional to the cells it owns,
+   *  rounded, so a polygon straddling a border seeds its count once. */
+  private zoneShare(z: ZoneRuntime, num: number): number {
+    if (!this.rect || !z.cells.length) return num;
+    return Math.round((num * this.ownCells(z).length) / z.cells.length);
+  }
+
+  /** A respawn goes back to the room that seeded the monster (its cells are
+   *  there); the same room queues it locally. */
+  private queueRespawn(areaId: string, home: number, now: number) {
+    if (home === this.zoneId) this.respawnQueue.push({ areaId, at: now + MONSTER_RESPAWN_MS });
+    else void bus().publish(this.chan.ctl(home), { type: "monster:respawn", areaId } satisfies CtlMessage);
+  }
+
+  private stepZones(now: number) {
+    const grid = this.grid!;
+    // 1. Players that crossed into another zone are handed over; a hand-off
+    //    nobody completed is dropped after HANDOFF_TIMEOUT_MS so a failed hop
+    //    never strands a body.
+    this.state.players.forEach((p, pid) => {
+      if (p.handoff) {
+        if (now - p.handoff.at > HANDOFF_TIMEOUT_MS) p.handoff = null;
+        return;
+      }
+      if (p.dead) return;
+      const z = zoneAt(grid, p.x, p.y);
+      if (z !== this.zoneId) this.startHandoff(p, pid, z, now);
+    });
+    // 2. Monsters that walked out are transferred with their brain.
+    const xfer: Array<[string, number]> = [];
+    this.state.monsters.forEach((m, id) => {
+      if (m.mstate === "die") return;
+      const z = zoneAt(grid, m.x, m.y);
+      if (z !== this.zoneId) xfer.push([id, z]);
+    });
+    for (const [id, z] of xfer) this.transferMonster(id, z);
+    // 3. The border band goes out as ghosts, EDGE_TICKS apart.
+    if (++this.edgeTick >= EDGE_TICKS) {
+      this.edgeTick = 0;
+      this.publishEdge(now);
+    }
+    // 4. Ghosts whose owner went quiet expire.
+    const gone: Array<[MapSchema<any>, string]> = [];
+    this.state.ghosts.forEach((p, id) => {
+      if (now - p.lastSeen > GHOST_TTL_MS) gone.push([this.state.ghosts, id]);
+    });
+    this.state.ghostMonsters.forEach((m, id) => {
+      if (now - m.lastSeen > GHOST_TTL_MS) gone.push([this.state.ghostMonsters, id]);
+    });
+    this.state.ghostDrops.forEach((g, id) => {
+      if (now - g.lastSeen > GHOST_TTL_MS) gone.push([this.state.ghostDrops, id]);
+    });
+    for (const [map, id] of gone) {
+      map.delete(id);
+      this.ghostOwner.delete(id);
+    }
+  }
+
+  /** HAND-OFF, the sending side: the hot state goes to the bus under a
+   *  one-shot key, the client is told where to go, and this room keeps
+   *  stepping the body until the receiving room says it has it. */
+  private startHandoff(p: Player, pid: string, to: number, now: number) {
+    const sid = this.pidSid.get(pid);
+    const client = sid ? this.clients.find((c) => c.sessionId === sid) : undefined;
+    if (!client) return;
+    const key = randomBytes(16).toString("hex"); // 128 bits: the capability for ONE join
+    p.handoff = { to, key, at: now };
+    const hot: HotState = {
+      key,
+      pid,
+      from: this.zoneId,
+      name: p.name,
+      character: p.character,
+      accountId: p.accountId,
+      rec: p.rec,
+      mintedSecret: p.mintedSecret,
+      x: p.x,
+      y: p.y,
+      elev: p.elev,
+      dir: p.dir,
+      level: p.level,
+      xp: p.xp,
+      hp: p.hp,
+      ep: p.ep,
+      inv: p.inv.map((s) => ({ item: s.item, n: s.n })),
+      seq: p.seq,
+      torch: p.torch,
+      noAggro: this.noAggro.has(pid),
+      lastHitAt: p.lastHitAt,
+      lastCombatAt: p.lastCombatAt,
+      dirty: p.dirty,
+    };
+    void bus()
+      .set(handoffKey(this.worldName, pid), JSON.stringify(hot), HANDOFF_TTL_S)
+      .then(() => client.send("zone:go", { zone: to, pid, key }))
+      .catch((e) => {
+        console.error("[zones] hand-off write failed:", e);
+        p.handoff = null;
+      });
+  }
+
+  /** HAND-OFF, the receiving side: only a pid + key pair that matches the
+   *  bus document is honoured, and the document is consumed. */
+  private async takeHandoff(options: JoinOptions): Promise<HotState | null> {
+    if (typeof options.pid !== "string" || typeof options.handoff !== "string") return null;
+    if (!/^[A-Za-z0-9_-]{1,32}$/.test(options.pid) || !/^[0-9a-f]{32}$/.test(options.handoff)) return null;
+    const key = handoffKey(this.worldName, options.pid);
+    const raw = await bus().get(key);
+    if (!raw) return null;
+    let hot: HotState;
+    try {
+      hot = JSON.parse(raw) as HotState;
+    } catch {
+      return null;
+    }
+    if (hot.key !== options.handoff || hot.pid !== options.pid) return null;
+    await bus().del(key);
+    return hot;
+  }
+
+  private joinHandedOff(client: Client, hot: HotState) {
+    const player = new Player();
+    player.name = hot.name;
+    player.character = hot.character;
+    player.accountId = hot.accountId;
+    player.rec = hot.rec;
+    player.mintedSecret = hot.mintedSecret ?? "";
+    player.x = hot.x;
+    player.y = hot.y;
+    player.elev = hot.elev;
+    player.dir = hot.dir;
+    player.level = hot.level;
+    player.xp = hot.xp;
+    player.hpMax = hpMaxFor(player.level);
+    player.epMax = epMaxFor(player.level);
+    player.hp = Math.min(player.hpMax, Math.max(1, hot.hp));
+    player.ep = Math.min(player.epMax, Math.max(0, hot.ep));
+    player.inv = hot.inv.map((s) => ({ item: s.item, n: s.n }));
+    player.seq = hot.seq;
+    player.torch = hot.torch;
+    player.lastHitAt = hot.lastHitAt;
+    player.lastCombatAt = hot.lastCombatAt;
+    player.dirty = hot.dirty;
+    if (hot.noAggro) this.noAggro.add(hot.pid);
+    if (client.state === ClientState.LEAVING || client.state === ClientState.CLOSED) {
+      this.savePlayer(player);
+      return;
+    }
+    this.adoptPlayer(client, hot.pid, player);
+    void bus().publish(this.chan.ctl(hot.from), { type: "handoff:done", pid: hot.pid } satisfies CtlMessage);
+  }
+
+  private onCtl(m: CtlMessage) {
+    if (!m || typeof m.type !== "string") return;
+    const now = Date.now();
+    if (m.type === "handoff:done") {
+      const p = this.state.players.get(m.pid);
+      if (!p?.handoff) return;
+      const sid = this.pidSid.get(m.pid);
+      this.state.players.delete(m.pid);
+      if (sid) {
+        this.handed.add(sid);
+        this.seen.delete(sid);
+      }
+      this.noAggro.delete(m.pid);
+      this.chess?.onPlayerLeave(m.pid);
+      // The client leaves this room itself once it is bound to the new one;
+      // its onLeave finds `handed` and touches nothing.
+    } else if (m.type === "monster:xfer") {
+      if (this.state.monsters.has(m.id)) return;
+      const d = m.m;
+      const mon = new Monster();
+      mon.kind = d.kind;
+      mon.x = d.x;
+      mon.y = d.y;
+      mon.dir = d.dir;
+      mon.moving = d.moving;
+      mon.elev = d.elev;
+      mon.hp = d.hp;
+      mon.hpMax = d.hpMax;
+      mon.actionSeq = d.actionSeq;
+      mon.level = d.level;
+      mon.aggro = d.aggro;
+      mon.areaId = d.areaId;
+      mon.home = d.home;
+      mon.orbitSign = d.orbitSign;
+      mon.chaseOx = d.chaseOx;
+      mon.chaseOy = d.chaseOy;
+      // The hunt survives the border only if the victim is here too.
+      const victim = d.targetSid && this.state.players.has(d.targetSid) ? d.targetSid : "";
+      mon.targetSid = victim;
+      mon.provoked = victim ? d.provoked : false;
+      mon.mstate = victim && (d.mstate === "chase" || d.mstate === "combat") ? d.mstate : "roam";
+      mon.tsid = mon.mstate === "roam" ? "" : victim;
+      mon.returning = !victim && d.returning;
+      mon.nextMoveAt = now + 200;
+      this.state.ghostMonsters.delete(m.id);
+      this.ghostOwner.delete(m.id);
+      this.state.monsters.set(m.id, mon);
+    } else if (m.type === "monster:respawn") {
+      this.respawnQueue.push({ areaId: m.areaId, at: now + MONSTER_RESPAWN_MS });
+    } else if (m.type === "kick") {
+      this.kickPid(m.pid);
+    }
+  }
+
+  private transferMonster(id: string, to: number) {
+    const m = this.state.monsters.get(id);
+    if (!m) return;
+    const data: MonsterXfer = {
+      kind: m.kind, x: m.x, y: m.y, dir: m.dir, moving: m.moving, elev: m.elev,
+      hp: m.hp, hpMax: m.hpMax, mstate: m.mstate, actionSeq: m.actionSeq, level: m.level, aggro: m.aggro,
+      areaId: m.areaId, home: m.home, orbitSign: m.orbitSign, provoked: m.provoked, returning: m.returning,
+      targetSid: m.targetSid, chaseOx: m.chaseOx, chaseOy: m.chaseOy,
+    };
+    void bus().publish(this.chan.ctl(to), { type: "monster:xfer", id, m: data } satisfies CtlMessage);
+    this.state.monsters.delete(id);
+    this.monsterDodgeStates.delete(id);
+  }
+
+  /** The border band, complete, to every neighbour: what is inside this rect
+   *  within GHOST_BAND_WU of an edge, plus anything of ours standing outside
+   *  it (a body mid-hand-off). A receiver keeps what lies within the band of
+   *  ITS rect. */
+  private publishEdge(now: number) {
+    const rect = this.rect!;
+    const grid = this.grid!;
+    const inBand = (x: number, y: number) => nearEdge(rect, grid, x, y, GHOST_BAND_WU) || distToRect(rect, x, y) > 0;
+    const msg: EdgeSnapshot = { from: this.zoneId, t: now, players: [], monsters: [], drops: [] };
+    this.state.players.forEach((p, pid) => {
+      if (!inBand(p.x, p.y)) return;
+      msg.players.push({
+        id: pid, name: p.name, character: p.character, x: p.x, y: p.y, dir: p.dir, moving: p.moving,
+        running: p.running, elev: p.elev, jumping: p.jumping, swimming: p.swimming, torch: p.torch,
+        level: p.level, hp: p.hp, hpMax: p.hpMax, dead: p.dead, slow: p.slow, action: p.action,
+        actionSeq: p.actionSeq, hitSeq: p.hitSeq,
+      });
+    });
+    this.state.monsters.forEach((m, id) => {
+      if (!inBand(m.x, m.y)) return;
+      msg.monsters.push({
+        id, kind: m.kind, x: m.x, y: m.y, dir: m.dir, moving: m.moving, elev: m.elev, hp: m.hp, hpMax: m.hpMax,
+        mstate: m.mstate, actionSeq: m.actionSeq, level: m.level, aggro: m.aggro, tsid: m.tsid,
+      });
+    });
+    this.state.drops.forEach((g, id) => {
+      if (!inBand(g.x, g.y)) return;
+      msg.drops.push({ id, item: g.item, x: g.x, y: g.y, elev: g.elev });
+    });
+    if (msg.players.length || msg.monsters.length || msg.drops.length || this.edgeSent) {
+      this.edgeSent = msg.players.length + msg.monsters.length + msg.drops.length > 0;
+      void bus().publish(this.chan.edge(this.zoneId), msg);
+    }
+  }
+  private edgeSent = false;
+
+  private onEdgeSnapshot(m: EdgeSnapshot) {
+    if (!m || typeof m.from !== "number" || !this.rect) return;
+    const now = Date.now();
+    const rect = this.rect;
+    const keep = new Set<string>();
+    const near = (x: number, y: number) => distToRect(rect, x, y) <= GHOST_BAND_WU;
+    for (const p of m.players ?? []) {
+      if (!near(p.x, p.y) || this.state.players.has(p.id)) continue;
+      keep.add(p.id);
+      let g = this.state.ghosts.get(p.id);
+      const fresh = !g;
+      if (!g) g = new Player();
+      g.name = p.name; g.character = p.character; g.x = p.x; g.y = p.y; g.dir = p.dir; g.moving = p.moving;
+      g.running = p.running; g.elev = p.elev; g.jumping = p.jumping; g.swimming = p.swimming; g.torch = p.torch;
+      g.level = p.level; g.hp = p.hp; g.hpMax = p.hpMax; g.dead = p.dead; g.slow = p.slow; g.action = p.action;
+      g.actionSeq = p.actionSeq; g.hitSeq = p.hitSeq; g.sid = ""; g.pid = p.id; g.lastSeen = now;
+      if (fresh) this.state.ghosts.set(p.id, g);
+      this.ghostOwner.set(p.id, m.from);
+    }
+    for (const d of m.monsters ?? []) {
+      if (!near(d.x, d.y) || this.state.monsters.has(d.id)) continue;
+      keep.add(d.id);
+      let g = this.state.ghostMonsters.get(d.id);
+      const fresh = !g;
+      if (!g) g = new Monster();
+      g.kind = d.kind; g.x = d.x; g.y = d.y; g.dir = d.dir; g.moving = d.moving; g.elev = d.elev; g.hp = d.hp;
+      g.hpMax = d.hpMax; g.mstate = d.mstate; g.actionSeq = d.actionSeq; g.level = d.level; g.aggro = d.aggro;
+      g.tsid = d.tsid; g.lastSeen = now;
+      if (fresh) this.state.ghostMonsters.set(d.id, g);
+      this.ghostOwner.set(d.id, m.from);
+    }
+    for (const d of m.drops ?? []) {
+      if (!near(d.x, d.y) || this.state.drops.has(d.id)) continue;
+      keep.add(d.id);
+      let g = this.state.ghostDrops.get(d.id);
+      const fresh = !g;
+      if (!g) g = new GroundItem();
+      g.item = d.item; g.x = d.x; g.y = d.y; g.elev = d.elev; g.lastSeen = now;
+      if (fresh) this.state.ghostDrops.set(d.id, g);
+      this.ghostOwner.set(d.id, m.from);
+    }
+    // A snapshot is that zone's whole band: what it no longer carries is gone.
+    const gone: string[] = [];
+    for (const [id, owner] of this.ghostOwner) if (owner === m.from && !keep.has(id)) gone.push(id);
+    for (const id of gone) {
+      this.state.ghosts.delete(id);
+      this.state.ghostMonsters.delete(id);
+      this.state.ghostDrops.delete(id);
+      this.ghostOwner.delete(id);
+    }
+  }
+
   onDispose() {
     if (this.starTimer) clearTimeout(this.starTimer);
     this.offLive?.();
+    for (const off of this.unsubs) off();
+    this.unsubs = [];
   }
 }
 
@@ -1737,8 +2751,8 @@ interface LoadedWorld {
   worldH: number;
 }
 
-/** Default world when the client sends none. */
-export const DEFAULT_WORLD = "ring_test";
+/** Default world when the client sends none: THE game (the only world). */
+export const DEFAULT_WORLD = "the_game";
 
 function assetsRoot(): string {
   const srcDir = dirname(fileURLToPath(import.meta.url)); // server/src/rooms
@@ -1746,17 +2760,157 @@ function assetsRoot(): string {
   return process.env.ASSETS_ROOT || join(gameRoot, ".."); // repo root
 }
 
-/** Load a named maps2 world (maps2/worlds/<name>/world.json) into a collision
- * grid + spawn + extent, or an open world if it isn't present/parseable. */
-function loadWorldGrid(name: string): LoadedWorld {
+// ---------------------------------------------------------------- staging ----
+// A world that is NOT in this image (config/publish.json ships only
+// `userWorlds` since 2026-08-15) can still be joined by an admin: its
+// world.json/spawns.json are fetched from the repo. DISK FIRST, ALWAYS — a
+// shipped world never touches the network, so the ordinary player join path
+// is byte-identical to before this existed. The fetch half only runs for
+// names the image does not carry, i.e. dev maps.
+//
+// STAGING_WORLD_BASE overrides the GitHub base — that is how the gate
+// (verify-stagingworld.mjs) points this at a local fixture, since asserting
+// against live GitHub from CI would test their uptime, not our code.
+//
+// Cached in memory: positive 5 min (a room create per world per process is
+// the real frequency), negative 60 s so a typo'd join cannot hammer GitHub.
+const STAGING_BASE =
+  process.env.STAGING_WORLD_BASE || "https://raw.githubusercontent.com/mikael-floden/pixel/main";
+const stagingCache = new Map<string, { doc: unknown | null; at: number }>();
+async function fetchStagingJson(rel: string): Promise<unknown | null> {
+  const hit = stagingCache.get(rel);
+  if (hit && Date.now() - hit.at < (hit.doc ? 300_000 : 60_000)) return hit.doc;
+  let doc: unknown | null = null;
+  try {
+    const res = await fetch(`${STAGING_BASE}/${rel}`, { signal: AbortSignal.timeout(8000) });
+    if (res.ok) doc = await res.json();
+    else console.warn(`[staging] ${rel}: ${res.status} from ${STAGING_BASE}`);
+  } catch (e) {
+    console.warn(`[staging] ${rel}: ${(e as Error).message}`);
+  }
+  stagingCache.set(rel, { doc, at: Date.now() });
+  return doc;
+}
+
+// THE WORLD TREE: `maps2/worlds3` holds pixel-maps3/world@1 (semantics only,
+// art resolved at draw time). A list, not a string, so a second tree can be
+// probed again without touching the callers. (`maps2/worlds` — world@1/@2
+// with baked tile paths — was retired 2026-09-09 with tiles2.)
+const WORLD_ROOTS = ["maps2/worlds3"] as const;
+
+/** Which tree holds `name`, resolved ONCE per world and cached for the process.
+ *
+ * DISK FIRST, ACROSS BOTH TREES, BEFORE ANY NETWORK — the shipped-world rule is
+ * unchanged: a world the image carries never touches GitHub. Only a name absent
+ * from both trees on disk falls through to the staging fetch, and the world.json
+ * it fetches lands in `stagingCache`, so the readWorldDoc call right behind it
+ * is served from memory rather than issuing a second request.
+ *
+ * Unresolvable names return the FIRST root, which reproduces the old
+ * "missing world" path exactly (loadWorldGrid gets null and opens a plain). */
+const worldRootCache = new Map<string, string>();
+export async function worldRootFor(name: string): Promise<string> {
+  const hit = worldRootCache.get(name);
+  if (hit) return hit;
+  let root: string | null = null;
+  for (const r of WORLD_ROOTS) {
+    if (existsSync(join(assetsRoot(), ...r.split("/"), name, "world.json"))) {
+      root = r;
+      break;
+    }
+  }
+  if (!root)
+    for (const r of WORLD_ROOTS) {
+      if (await fetchStagingJson(`${r}/${name}/world.json`)) {
+        root = r;
+        break;
+      }
+    }
+  root ??= WORLD_ROOTS[0];
+  worldRootCache.set(name, root);
+  return root;
+}
+
+/** The raw world.json/spawns.json for a name: disk (the shipped image / dev
+ * working tree) first, staging fetch second. Null = the world truly does not
+ * exist. Every file of one world is read from the SAME tree (resolving the
+ * root per file would cost one pointless probe per sidecar). */
+export async function readWorldDoc(name: string, file: string): Promise<unknown | null> {
+  const root = await worldRootFor(name);
+  try {
+    const path = join(assetsRoot(), ...root.split("/"), name, file);
+    if (existsSync(path)) return JSON.parse(readFileSync(path, "utf8"));
+  } catch {
+    return null; // a CORRUPT local file is not rescued by GitHub — surface it as missing
+  }
+  return fetchStagingJson(`${root}/${name}/${file}`);
+}
+
+/** Test seam: the world-root and staging caches are process-lifetime by design
+ * (a room create per world per process is the real frequency). A gate that
+ * asserts the RESOLUTION itself has to start from cold.
+ *
+ * worldRootFor/readWorldDoc/loadWorldGrid are exported for the same reason —
+ * server/test/worldserve.test.ts proves the REAL server path, not a copy. */
+export function resetWorldSourceCaches(): void {
+  worldRootCache.clear();
+  stagingCache.clear();
+}
+
+/** A cheap fingerprint of the scenery hitbox doc. Only the BOXES matter to
+ *  collision — `updated_at` churns on every wiki save without changing where a
+ *  body may stand, and restamping the world for that would be pure waste. */
+function hitboxStamp(): string {
+  const doc = sceneryHitboxOverrides();
+  if (!doc) return "";
+  let h = 0x811c9dc5;
+  for (const k of Object.keys(doc).sort()) {
+    const boxes = (doc[k] as { boxes?: unknown })?.boxes;
+    const s = k + JSON.stringify(boxes ?? null);
+    for (let i = 0; i < s.length; i++) {
+      h ^= s.charCodeAt(i);
+      h = Math.imul(h, 0x01000193);
+    }
+  }
+  return (h >>> 0).toString(36);
+}
+
+/** Load a named world (maps2/worlds3 — see WORLD_ROOTS) into a collision
+ * grid + spawn + extent, or an open world if it isn't present/parseable.
+ * `parseWorld` dispatches on the doc's own schema.
+ * Async since the staging path (2026-08-15): a world absent from disk may
+ * stream from the repo — see readWorldDoc. */
+export async function loadWorldGrid(name: string): Promise<LoadedWorld> {
   const open: LoadedWorld = { terrain: null, spawn: null, worldW: WORLD_WIDTH, worldH: WORLD_HEIGHT };
   try {
-    const path = join(assetsRoot(), "maps2", "worlds", name, "world.json");
-    if (!existsSync(path)) return open;
-    const world = parseWorld(JSON.parse(readFileSync(path, "utf8")));
+    const doc = await readWorldDoc(name, "world.json");
+    if (!doc) return open;
+    const world = parseWorld(doc);
     if (!world) return open;
+    const terrain = buildTerrainGrid(world.width, world.height, world.rows, world.props, world.decks);
+    // The deep-sea current's fields, built here rather than by the first
+    // swimmer to reach open water (see warmDeepCurrent).
+    warmDeepCurrent(terrain);
+    /* SCENERY BLOCKS THE GROUND IT STANDS ON. world3.ts held this back — "no
+     * canonical field ships today" — and scenery now publishes one, so the
+     * precondition is met (maintainer 2026-08-29: "WE WANT THE DEFAULT HITBOX
+     * WITH COLLISION"). Default (auto) boxes count: measured on the_game, all
+     * 1,406 placements resolve and block 5,066 cells, 1.93% of the map.
+     * Server-authoritative; the client stamps the same grid with the same
+     * function so prediction cannot disagree. */
+    if (world.scenery?.length) {
+      const n = stampSceneryCollision(
+        terrain,
+        world.scenery,
+        sceneryBbox(),
+        sceneryHitboxOverrides(),
+        // Scenery is a maps3 thing, and maps3 draws on dy=14, not the default 15.
+        ISO_GEOMETRY_MAPS3,
+      );
+      if (n) console.log(`[scenery] ${world.scenery.length} pieces block ${n} cells`);
+    }
     return {
-      terrain: buildTerrainGrid(world.width, world.height, world.rows, world.props, world.decks),
+      terrain,
       spawn: world.spawn
         ? { x: world.spawn[0] * CELL_WU, y: world.spawn[1] * CELL_WU }
         : { x: (world.width * CELL_WU) / 2, y: (world.height * CELL_WU) / 2 },
@@ -1813,11 +2967,11 @@ function tieBreakAngle(id: string): number {
  * file → no monsters (maps2 owns placement; nothing to invent here). Zones
  * with no valid cell at their claimed elevation are skipped with a warning —
  * that's map data disagreeing with itself, worth surfacing. */
-function loadSpawnZones(name: string, grid: TerrainGrid): ZoneRuntime[] {
+async function loadSpawnZones(name: string, grid: TerrainGrid): Promise<ZoneRuntime[]> {
   try {
-    const path = join(assetsRoot(), "maps2", "worlds", name, "spawns.json");
-    if (!existsSync(path)) return [];
-    const zones = parseSpawns(JSON.parse(readFileSync(path, "utf8")));
+    const doc = await readWorldDoc(name, "spawns.json");
+    if (!doc) return [];
+    const zones = parseSpawns(doc);
     const runtimes = buildZoneRuntimes(grid, zones);
     if (runtimes.length < zones.length) {
       const kept = new Set(runtimes.map((r) => r.zone.id));

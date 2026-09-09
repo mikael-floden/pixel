@@ -1,0 +1,6 @@
+{
+  "format": "pixel-wiki-base-tiles@1",
+  "_comment": "The Game Master's base-tile designations, per ground type. A base tile is the tile the world agent paints FIRST and repeats indefinitely - 'the base tile is in the background and does everything but noone notice' (maintainer 2026-08-21). One entry per tile key (the review manifest's own key): { type: <ground type id>, promoted_at }. Deleting the entry revokes the title. A type may have one, several, or none - with none, the ground paints as its flat colour (palette.json top). Written by the wiki's ground-type pages; consumed by the tiles agent and the maps/world agent.",
+  "updated_at": "",
+  "overrides": {}
+}

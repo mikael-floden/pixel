@@ -1,0 +1,132 @@
+{
+  "schema": "tiles3/tops@1",
+  "kind": "top_only",
+  "wall_is_meaningless": true,
+  "not_a_candidate_for": "x over y",
+  "ground": "parquet_floor",
+  "flavour": "detail",
+  "index": 101,
+  "seed": 60655,
+  "prompt": "parquet floor, a worn patch in the middle, parquet floor all around the edge",
+  "palette_top": "#a7754b",
+  "tile_id": "f816e370-5d4b-40cd-805d-a5140de92f5f",
+  "n_tiles": 16,
+  "tiles": [
+    "tile_00.webp",
+    "tile_01.webp",
+    "tile_02.webp",
+    "tile_03.webp",
+    "tile_04.webp",
+    "tile_05.webp",
+    "tile_06.webp",
+    "tile_07.webp",
+    "tile_08.webp",
+    "tile_09.webp",
+    "tile_10.webp",
+    "tile_11.webp",
+    "tile_12.webp",
+    "tile_13.webp",
+    "tile_14.webp",
+    "tile_15.webp"
+  ],
+  "settings": {
+    "tile_size": 64,
+    "tile_view": "high top-down",
+    "view_angle": 28.0,
+    "depth_ratio": 0.5,
+    "tile_type": "isometric",
+    "flat_top_px": 2,
+    "outline_mode": "segmentation"
+  },
+  "usd": 0.096,
+  "created": "2026-09-03T06:59:46+00:00",
+  "top_face": {
+    "per_tile": [
+      {
+        "colours": 14,
+        "dominant_share": 0.2612,
+        "px": 915
+      },
+      {
+        "colours": 15,
+        "dominant_share": 0.2478,
+        "px": 916
+      },
+      {
+        "colours": 15,
+        "dominant_share": 0.2586,
+        "px": 928
+      },
+      {
+        "colours": 17,
+        "dominant_share": 0.2775,
+        "px": 919
+      },
+      {
+        "colours": 17,
+        "dominant_share": 0.1621,
+        "px": 919
+      },
+      {
+        "colours": 17,
+        "dominant_share": 0.2,
+        "px": 905
+      },
+      {
+        "colours": 17,
+        "dominant_share": 0.1509,
+        "px": 921
+      },
+      {
+        "colours": 15,
+        "dominant_share": 0.2052,
+        "px": 921
+      },
+      {
+        "colours": 17,
+        "dominant_share": 0.2249,
+        "px": 916
+      },
+      {
+        "colours": 17,
+        "dominant_share": 0.1797,
+        "px": 918
+      },
+      {
+        "colours": 16,
+        "dominant_share": 0.2473,
+        "px": 926
+      },
+      {
+        "colours": 16,
+        "dominant_share": 0.2388,
+        "px": 917
+      },
+      {
+        "colours": 14,
+        "dominant_share": 0.2533,
+        "px": 912
+      },
+      {
+        "colours": 17,
+        "dominant_share": 0.2265,
+        "px": 905
+      },
+      {
+        "colours": 16,
+        "dominant_share": 0.1742,
+        "px": 924
+      },
+      {
+        "colours": 13,
+        "dominant_share": 0.1932,
+        "px": 911
+      }
+    ],
+    "mean_colours": 15.81,
+    "mean_dominant_share": 0.2188
+  },
+  "motif": "a worn patch",
+  "motif_source": "tiles/config/details.json",
+  "walkable": true
+}

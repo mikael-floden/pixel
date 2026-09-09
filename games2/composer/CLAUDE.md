@@ -33,6 +33,36 @@ look it up, which is why he keeps asking. If a generator bot's commit carries
 the actual output (`composer: regenerate foley sets`), name that SHA too — the
 one he cares about is the one holding the files.
 
+## THREE DOMAINS, ONE AGENT — AND THE FILES ARE SPLIT SO THAT CAN CHANGE
+
+I currently work three domains, and each one is SELF-CONTAINED so a dedicated
+agent can be hired into it without a single file moving (maintainer 2026-09-02,
+the restructure that made this true: *"I was thinking this was how you did it.
+You took the role as 3 agents, but seperated the work so a dedicated sound or
+music agent could come in later on and have all it's responsibility in a single
+folder."*)
+
+| directory | what it owns | who could own it |
+|---|---|---|
+| `sounds/` | every sound EFFECT: the 44-sound catalog, the 422-set foley library (`sounds/foley/`), both generators (`sounds/pipeline/`), `bindings.json` | a sound agent |
+| `music/` | every piece of MUSIC: the domain tracks, the score beds (`music/beds/`), the archive (`music/beds/pool/`), the briefs, both pipelines (`music/pipeline/`), `tracks.json`, `MUSIC_DESIGN.md` | a music agent |
+| `games2/composer/` | BINDING ONLY: the engine, the viewers, `assignments.json`, `ambience.json`. Consumes the other two and generates nothing | the games-audio agent |
+
+**NOTHING GENERATED LIVES IN `games2/composer/` ANY MORE, and the reason it
+did is worth remembering: the engine resolved every take with
+`import.meta.glob`, and Vite's workspace root is `games2` — so a build-time
+glob could only see files inside it. The BUNDLER was choosing the repo layout.
+Both manifests publish a `root` field now and every consumer JOINS it, so where
+the files live is data.** If a build-time import of an asset ever creeps back
+in, the split silently re-forms around it.
+
+The engine reads three fetched documents and no bundled audio at all:
+`/assets/sounds/foley/index.json`, `/assets/music/tracks.json`, and the
+catalog's own `viewer_data.json`. All three are served from the domains that
+own them, which also means they are content-hashed and immutable like every
+other asset — the composer's old `/assets/composer/...` mounts were 404 in
+production and are deleted.
+
 ## HE MAPS SOUNDS TO EVENTS, NOT YOU
 
 - A sound plays ONLY where he assigned it. An approval, a star, or a keep-list

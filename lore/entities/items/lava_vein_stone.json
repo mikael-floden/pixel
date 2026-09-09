@@ -1,0 +1,24 @@
+{
+  "domain": "items",
+  "id": "lava_vein_stone",
+  "name_seen": "Soulstone",
+  "law": "V",
+  "description": "Black stone flooded with slow orange veins, quenched out of a Slagfang. Still too warm to pocket.",
+  "lore": [
+    "You cannot pocket one. Every new collector tries it once and buys a tin the same afternoon, and every bag that has worked the burnt country has a scorch inside where somebody learned. It does not cool. Held bare it sits at the limit of what a hand will agree to, and the trade's word for that is the honest one: quenched, not burning. Nothing runs out of it and nothing gets in.",
+    "It does the same for a fighter. Wounds shut as fast as they open; you do not bleed with one on you. A wolf that went into a caldera and came out with the seams standing open in its hide lost nothing through them either, and that flat fact is the whole of what reached the bottom.",
+    "Every one of these ever brought in came down out of the east. Not most — every one, off a country [[characters/6bb1eb5a|Solveig]] has never walked and does not intend to. She has met nine of them at the other end of it, in the grass, when they are still only wet animals that cannot stand, and every one of them left her going the same way.",
+    "So she buys. Anyone coming down out of the burnt country with a stone gets the asking price without haggling, and inside the week she sells it on for exactly that, losing nothing, gaining nothing. What she keeps is the few days between: a warm thing in a cloth by her fire that has been where they were going. [[monsters/magma_wolf|The wolf]] need not be one of hers. She knows that. She holds it anyway."
+  ],
+  "related": [
+    {
+      "domain": "monsters",
+      "id": "magma_wolf"
+    },
+    {
+      "domain": "lore",
+      "id": "the_hard_pieces"
+    }
+  ],
+  "gm_notes": "Solveig's wolf-wakings are referred to, never re-staged; the new material is what she does with the stones afterwards. The buy-and-resell is the cheapest possible dignity and costs her nothing but the handling, which is the point. Pairs with black_lava_flow_stone (Osric's) as the pack half of the same country."
+}

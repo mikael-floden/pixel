@@ -1,0 +1,618 @@
+{
+  "format": "pixel-wiki-shadow-notes@1",
+  "updated_at": "2026-08-20T07:25:19.380Z",
+  "overrides": {
+    "monsters/crystal_horn#idle#south": {
+      "dx": -0.23,
+      "dy": -8.23,
+      "w": 51,
+      "h": 35.5,
+      "was": {
+        "w": 51,
+        "h": 20,
+        "cx": 88,
+        "cy": 120.96
+      },
+      "frame": {
+        "w": 176,
+        "h": 176
+      },
+      "updated_at": "2026-08-16T11:57:54.946Z"
+    },
+    "monsters/crystal_horn#idle#south-east": {
+      "dx": -4.78,
+      "dy": -10.76,
+      "w": 64,
+      "h": 31.5,
+      "was": {
+        "w": 51,
+        "h": 20,
+        "cx": 90.5,
+        "cy": 120.96
+      },
+      "frame": {
+        "w": 176,
+        "h": 176
+      },
+      "updated_at": "2026-08-16T11:58:06.963Z"
+    },
+    "monsters/crystal_horn#idle#east": {
+      "dx": -12.5,
+      "dy": -9.46,
+      "w": 62,
+      "h": 26,
+      "was": {
+        "w": 51,
+        "h": 20,
+        "cx": 93,
+        "cy": 120.96
+      },
+      "frame": {
+        "w": 176,
+        "h": 176
+      },
+      "updated_at": "2026-08-20T07:25:03.999Z"
+    },
+    "monsters/crystal_horn#idle#north-east": {
+      "dx": -3.07,
+      "dy": -11.27,
+      "w": 53.56,
+      "h": 28.53,
+      "was": {
+        "w": 51,
+        "h": 20,
+        "cx": 91,
+        "cy": 120.96
+      },
+      "frame": {
+        "w": 176,
+        "h": 176
+      },
+      "updated_at": "2026-08-16T11:19:50.342Z"
+    },
+    "monsters/crystal_horn#idle#north": {
+      "dx": -1.62,
+      "dy": -8.97,
+      "w": 47.67,
+      "h": 41.8,
+      "was": {
+        "w": 51,
+        "h": 20,
+        "cx": 88.5,
+        "cy": 120.96
+      },
+      "frame": {
+        "w": 176,
+        "h": 176
+      },
+      "updated_at": "2026-08-16T11:20:18.379Z"
+    },
+    "monsters/crystal_horn#idle#north-west": {
+      "dx": 4.92,
+      "dy": -12.09,
+      "w": 55.95,
+      "h": 34.65,
+      "was": {
+        "w": 51,
+        "h": 20,
+        "cx": 85,
+        "cy": 120.96
+      },
+      "frame": {
+        "w": 176,
+        "h": 176
+      },
+      "updated_at": "2026-08-16T11:20:51.176Z"
+    },
+    "monsters/crystal_horn#idle#west": {
+      "dx": 11.3,
+      "dy": -9.21,
+      "w": 54.77,
+      "h": 20,
+      "was": {
+        "w": 51,
+        "h": 20,
+        "cx": 83,
+        "cy": 120.96
+      },
+      "frame": {
+        "w": 176,
+        "h": 176
+      },
+      "updated_at": "2026-08-16T11:21:06.801Z"
+    },
+    "monsters/crystal_horn#idle#south-west": {
+      "dx": 5.82,
+      "dy": -15.69,
+      "w": 55.77,
+      "h": 41,
+      "was": {
+        "w": 51,
+        "h": 20,
+        "cx": 85.5,
+        "cy": 120.96
+      },
+      "frame": {
+        "w": 176,
+        "h": 176
+      },
+      "updated_at": "2026-08-20T07:25:15.560Z"
+    },
+    "monsters/crystal_lynx#idle#south": {
+      "dx": 0.49,
+      "dy": -4.93,
+      "w": 32.74,
+      "h": 28.28,
+      "was": {
+        "w": 33,
+        "h": 13,
+        "cx": 60,
+        "cy": 84.35
+      },
+      "frame": {
+        "w": 120,
+        "h": 120
+      },
+      "updated_at": "2026-08-16T11:22:57.799Z"
+    },
+    "monsters/crystal_lynx#idle#south-east": {
+      "dx": 4.47,
+      "dy": -4.81,
+      "w": 44.86,
+      "h": 21.99,
+      "was": {
+        "w": 33,
+        "h": 13,
+        "cx": 56.5,
+        "cy": 84.35
+      },
+      "frame": {
+        "w": 120,
+        "h": 120
+      },
+      "updated_at": "2026-08-16T11:23:45.192Z"
+    },
+    "monsters/crystal_lynx#idle#east": {
+      "dx": -4.45,
+      "dy": -1.44,
+      "w": 49.45,
+      "h": 13,
+      "was": {
+        "w": 33,
+        "h": 13,
+        "cx": 61,
+        "cy": 84.35
+      },
+      "frame": {
+        "w": 120,
+        "h": 120
+      },
+      "updated_at": "2026-08-16T11:23:55.075Z"
+    },
+    "monsters/crystal_lynx#idle#north-east": {
+      "dx": 3.66,
+      "dy": -6.11,
+      "w": 41.99,
+      "h": 21.54,
+      "was": {
+        "w": 33,
+        "h": 13,
+        "cx": 57.5,
+        "cy": 84.35
+      },
+      "frame": {
+        "w": 120,
+        "h": 120
+      },
+      "updated_at": "2026-08-16T11:24:09.957Z"
+    },
+    "monsters/crystal_lynx#idle#north": {
+      "dx": -0.63,
+      "dy": -5.98,
+      "w": 33,
+      "h": 22.84,
+      "was": {
+        "w": 33,
+        "h": 13,
+        "cx": 61,
+        "cy": 84.35
+      },
+      "frame": {
+        "w": 120,
+        "h": 120
+      },
+      "updated_at": "2026-08-16T11:24:19.540Z"
+    },
+    "monsters/crystal_lynx#idle#north-west": {
+      "dx": -3.15,
+      "dy": -7.39,
+      "w": 41.49,
+      "h": 23.65,
+      "was": {
+        "w": 33,
+        "h": 13,
+        "cx": 62.5,
+        "cy": 84.35
+      },
+      "frame": {
+        "w": 120,
+        "h": 120
+      },
+      "updated_at": "2026-08-16T11:24:54.918Z"
+    },
+    "monsters/crystal_lynx#idle#west": {
+      "dx": 2.96,
+      "dy": -3.08,
+      "w": 44.77,
+      "h": 20.15,
+      "was": {
+        "w": 33,
+        "h": 13,
+        "cx": 59,
+        "cy": 84.35
+      },
+      "frame": {
+        "w": 120,
+        "h": 120
+      },
+      "updated_at": "2026-08-16T11:25:30.402Z"
+    },
+    "monsters/crystal_lynx#idle#south-west": {
+      "dx": -1.95,
+      "dy": -3.97,
+      "w": 47.47,
+      "h": 24.28,
+      "was": {
+        "w": 33,
+        "h": 13,
+        "cx": 63.5,
+        "cy": 84.35
+      },
+      "frame": {
+        "w": 120,
+        "h": 120
+      },
+      "updated_at": "2026-08-16T11:25:58.887Z"
+    },
+    "monsters/dark_donkey#idle#south": {
+      "dx": 1.54,
+      "dy": -6.34,
+      "w": 30.98,
+      "h": 27.71,
+      "was": {
+        "w": 25,
+        "h": 10,
+        "cx": 60.5,
+        "cy": 89.3
+      },
+      "frame": {
+        "w": 124,
+        "h": 124
+      },
+      "updated_at": "2026-08-16T11:58:29.378Z"
+    },
+    "monsters/dark_donkey#idle#south-east": {
+      "dx": -2.86,
+      "dy": -8.63,
+      "w": 36.1,
+      "h": 20.61,
+      "was": {
+        "w": 25,
+        "h": 10,
+        "cx": 63.5,
+        "cy": 89.3
+      },
+      "frame": {
+        "w": 124,
+        "h": 124
+      },
+      "updated_at": "2026-08-16T11:26:46.357Z"
+    },
+    "monsters/dark_donkey#idle#east": {
+      "dx": -2.38,
+      "dy": -3.82,
+      "w": 38.08,
+      "h": 14.4,
+      "was": {
+        "w": 25,
+        "h": 10,
+        "cx": 63.5,
+        "cy": 89.3
+      },
+      "frame": {
+        "w": 124,
+        "h": 124
+      },
+      "updated_at": "2026-08-16T11:58:37.223Z"
+    },
+    "monsters/dark_donkey#idle#north-east": {
+      "dx": -1.04,
+      "dy": -6.63,
+      "w": 39.43,
+      "h": 23,
+      "was": {
+        "w": 25,
+        "h": 10,
+        "cx": 59,
+        "cy": 89.3
+      },
+      "frame": {
+        "w": 124,
+        "h": 124
+      },
+      "updated_at": "2026-08-16T11:58:49.312Z"
+    },
+    "monsters/dark_donkey#idle#north": {
+      "dx": -2.5,
+      "dy": -4.61,
+      "w": 30.98,
+      "h": 24.25,
+      "was": {
+        "w": 25,
+        "h": 10,
+        "cx": 66,
+        "cy": 89.3
+      },
+      "frame": {
+        "w": 124,
+        "h": 124
+      },
+      "updated_at": "2026-08-16T11:27:46.164Z"
+    },
+    "monsters/dark_donkey#idle#north-west": {
+      "dx": 0.61,
+      "dy": -8.67,
+      "w": 33.99,
+      "h": 22.99,
+      "was": {
+        "w": 25,
+        "h": 10,
+        "cx": 65,
+        "cy": 89.3
+      },
+      "frame": {
+        "w": 124,
+        "h": 124
+      },
+      "updated_at": "2026-08-16T11:28:11.081Z"
+    },
+    "monsters/dark_donkey#idle#west": {
+      "dx": 5.44,
+      "dy": -5.63,
+      "w": 34,
+      "h": 21.5,
+      "was": {
+        "w": 25,
+        "h": 10,
+        "cx": 60.5,
+        "cy": 89.3
+      },
+      "frame": {
+        "w": 124,
+        "h": 124
+      },
+      "updated_at": "2026-08-16T11:59:14.806Z"
+    },
+    "monsters/dark_donkey#idle#south-west": {
+      "dx": 2.18,
+      "dy": -7.13,
+      "w": 33.67,
+      "h": 18.94,
+      "was": {
+        "w": 25,
+        "h": 10,
+        "cx": 60.5,
+        "cy": 89.3
+      },
+      "frame": {
+        "w": 124,
+        "h": 124
+      },
+      "updated_at": "2026-08-16T11:28:34.771Z"
+    },
+    "monsters/desert_cat#idle#south": {
+      "dx": 0.17,
+      "dy": -3.61,
+      "w": 32,
+      "h": 27.06,
+      "was": {
+        "w": 32,
+        "h": 12,
+        "cx": 62,
+        "cy": 87.75
+      },
+      "frame": {
+        "w": 124,
+        "h": 124
+      },
+      "updated_at": "2026-08-16T11:29:19.301Z"
+    },
+    "monsters/desert_cat#idle#south-east": {
+      "dx": 4.5,
+      "dy": -5.66,
+      "w": 43,
+      "h": 20,
+      "was": {
+        "w": 32,
+        "h": 12,
+        "cx": 57,
+        "cy": 87.75
+      },
+      "frame": {
+        "w": 124,
+        "h": 124
+      },
+      "updated_at": "2026-08-16T11:59:40.899Z"
+    },
+    "monsters/desert_cat#idle#east": {
+      "dx": -0.32,
+      "dy": -1.97,
+      "w": 46,
+      "h": 20.5,
+      "was": {
+        "w": 32,
+        "h": 12,
+        "cx": 60.5,
+        "cy": 87.75
+      },
+      "frame": {
+        "w": 124,
+        "h": 124
+      },
+      "updated_at": "2026-08-16T12:00:45.206Z"
+    },
+    "monsters/crystal_horn#walk#south-west": {
+      "dx": 3.33,
+      "dy": -10.69,
+      "w": 60,
+      "h": 35.5,
+      "was": {
+        "w": 51,
+        "h": 20,
+        "cx": 85.5,
+        "cy": 120.96
+      },
+      "frame": {
+        "w": 176,
+        "h": 176
+      },
+      "updated_at": "2026-08-20T07:23:47.453Z"
+    },
+    "monsters/crystal_horn#walk#south": {
+      "dx": -0.35,
+      "dy": -7.88,
+      "w": 51.5,
+      "h": 36.5,
+      "was": {
+        "w": 51,
+        "h": 20,
+        "cx": 88,
+        "cy": 120.96
+      },
+      "frame": {
+        "w": 176,
+        "h": 176
+      },
+      "updated_at": "2026-08-20T07:22:23.160Z"
+    },
+    "monsters/crystal_horn#walk#south-east": {
+      "dx": -6.47,
+      "dy": -9.63,
+      "w": 56.5,
+      "h": 27.5,
+      "was": {
+        "w": 51,
+        "h": 20,
+        "cx": 90.5,
+        "cy": 120.96
+      },
+      "frame": {
+        "w": 176,
+        "h": 176
+      },
+      "updated_at": "2026-08-20T07:21:51.608Z"
+    },
+    "monsters/crystal_horn#walk#east": {
+      "dx": -9.2,
+      "dy": -7.03,
+      "w": 65,
+      "h": 18.5,
+      "was": {
+        "w": 51,
+        "h": 20,
+        "cx": 92.5,
+        "cy": 120.96
+      },
+      "frame": {
+        "w": 176,
+        "h": 176
+      },
+      "updated_at": "2026-08-20T07:22:45.803Z"
+    },
+    "monsters/crystal_horn#walk#north-east": {
+      "dx": -1.93,
+      "dy": -4.12,
+      "w": 59.5,
+      "h": 32,
+      "was": {
+        "w": 51,
+        "h": 20,
+        "cx": 86,
+        "cy": 120.96
+      },
+      "frame": {
+        "w": 176,
+        "h": 176
+      },
+      "updated_at": "2026-08-20T07:23:04.690Z"
+    },
+    "monsters/crystal_horn#walk#north": {
+      "dx": -0.52,
+      "dy": -3.68,
+      "w": 57,
+      "h": 35.5,
+      "was": {
+        "w": 51,
+        "h": 20,
+        "cx": 87.5,
+        "cy": 120.96
+      },
+      "frame": {
+        "w": 176,
+        "h": 176
+      },
+      "updated_at": "2026-08-20T07:23:14.934Z"
+    },
+    "monsters/crystal_horn#walk#north-west": {
+      "dx": 0.28,
+      "dy": -2.53,
+      "w": 60.5,
+      "h": 23,
+      "was": {
+        "w": 51,
+        "h": 20,
+        "cx": 90,
+        "cy": 120.96
+      },
+      "frame": {
+        "w": 176,
+        "h": 176
+      },
+      "updated_at": "2026-08-20T07:23:28.099Z"
+    },
+    "monsters/crystal_horn#walk#west": {
+      "dx": 6.19,
+      "dy": -5.27,
+      "w": 66,
+      "h": 23.5,
+      "was": {
+        "w": 51,
+        "h": 20,
+        "cx": 83.5,
+        "cy": 120.96
+      },
+      "frame": {
+        "w": 176,
+        "h": 176
+      },
+      "updated_at": "2026-08-20T07:23:42.820Z"
+    },
+    "monsters/crystal_horn#angry#south-west": {
+      "dx": 4.66,
+      "dy": -7.3,
+      "w": 63,
+      "h": 32,
+      "was": {
+        "w": 51,
+        "h": 20,
+        "cx": 84.5,
+        "cy": 120.96
+      },
+      "frame": {
+        "w": 176,
+        "h": 176
+      },
+      "updated_at": "2026-08-20T07:24:19.309Z"
+    }
+  }
+}

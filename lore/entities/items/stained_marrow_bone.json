@@ -1,0 +1,23 @@
+{
+  "domain": "items",
+  "id": "stained_marrow_bone",
+  "name_seen": "Marrow Bone",
+  "law": "II",
+  "description": "Knobbed at both ends and stained where beige should not be. A Palemaw was busy with it before you were.",
+  "lore": [
+    "Six gold. The cheapest thing on the counter and the most bought, and it does not go into anybody's work — it goes in a pot.",
+    "Every fire has one on the boil most evenings. Marrow, an onion if the ground has been generous, whatever the day turned up, and it sits at the edge of the coals doing nothing urgent while the talk goes on over the top of it. Nobody at a fire has ever gone hungry, and it has never been established whether that is because of the pot.",
+    "The stained ones — knobbed, gouged, brown where beige belongs — come off ground a [[monsters/lava_salamander_2|Palemaw]] is working, and the crackers who bring them in scrub them and sell them and say nothing, because a bone out of that mouth boils like any other, and a stall that explains where its stock has been is a stall that stops selling."
+  ],
+  "related": [
+    {
+      "domain": "lore",
+      "id": "the_age_of_fires"
+    },
+    {
+      "domain": "monsters",
+      "id": "lava_salamander_2"
+    }
+  ],
+  "gm_notes": "The Keeping seen from the cooking side: the pot is not about food and everybody keeps one anyway. Leave the hunger question open — it is funnier and truer unanswered."
+}

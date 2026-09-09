@@ -1,0 +1,98 @@
+{
+  "format": "scenery-piece@2",
+  "id": "beehive_004",
+  "group": "beehives",
+  "rank": 30,
+  "index": 4,
+  "name": "Tall four-coil skep 004",
+  "lights": null,
+  "variety": "tall four-coil skep",
+  "glow_concept": "shining amber honey seeping down the coils",
+  "prompt": "a domed coiled-straw bee skep on a low wooden stand with a small arched entrance hole, tall four-coil skep, waist-high to an adult person, self-emissive at night, softly radiating light: shining amber honey seeping down the coils",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 64,
+  "sprite": "beehives/beehive_004/sprite.webp",
+  "placement": {
+    "world_height_m": 1.016,
+    "world_px_height": 52,
+    "character_height_px": 87,
+    "character_height_m": 1.7,
+    "note": "ONE SCENERY PIXEL IS ONE PLAYER PIXEL. world_px_height IS the art's own alpha bbox height, so scenery is placed into the world at 1:1 exactly as the avatar is (setScale(1)) and the two share one pixel grid. The CAMERA still zooms the whole scene \u2014 that is uniform and correct; what must never happen is scenery being resampled on its own, against the player. world_height_m is what the art reads as beside a 87px character; declared_height_m is what it was once declared to be, and a gap between them means the ART is the wrong size.",
+    "declared_height_m": 1.02,
+    "content_box": [
+      8,
+      8,
+      56,
+      60
+    ],
+    "content_px_height": 52,
+    "canvas_render_px": 64
+  },
+  "pixellab_object_id": "56bbc68d-4f77-4ce7-b9a7-329e98a532f1",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)",
+  "must_be_imbplemented_with_random_hflip": true,
+  "generated_at": "2026-08-13T09:16:45+00:00",
+  "states": {
+    "NOT_LIT_2": {
+      "sprite": "beehives/beehive_004/not_lit_2/sprite.webp",
+      "pixellab_object_id": "1fb65044-c03f-42c2-b2dc-265753335dfa",
+      "generated_at": "2026-08-15T20:18:06+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.4392,
+      "glow_score": 0.2504,
+      "rotations": {
+        "south-east": "beehives/beehive_004/not_lit_2/rotations/south-east.webp",
+        "south-west": "beehives/beehive_004/not_lit_2/rotations/south-west.webp",
+        "south": "beehives/beehive_004/not_lit_2/sprite.webp"
+      }
+    },
+    "NOT_LIT_3": {
+      "sprite": "beehives/beehive_004/sprite.webp",
+      "pixellab_object_id": "56bbc68d-4f77-4ce7-b9a7-329e98a532f1",
+      "generated_at": "2026-08-13T09:16:45+00:00",
+      "relit_from": "LIT_1",
+      "rotations": {
+        "south-east": "beehives/beehive_004/rotations/south-east.webp",
+        "south-west": "beehives/beehive_004/rotations/south-west.webp",
+        "south": "beehives/beehive_004/sprite.webp"
+      }
+    },
+    "NOT_LIT_4": {
+      "sprite": "beehives/beehive_004/not_lit_4/sprite.webp",
+      "pixellab_object_id": "983cba1b-2d13-4ca6-b92a-363047d18f27",
+      "generated_at": "2026-08-15T20:17:24+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.2892,
+      "glow_score": 0.275,
+      "relit_from": "LIT_2",
+      "rotations": {
+        "south-east": "beehives/beehive_004/not_lit_4/rotations/south-east.webp",
+        "south-west": "beehives/beehive_004/not_lit_4/rotations/south-west.webp",
+        "south": "beehives/beehive_004/not_lit_4/sprite.webp"
+      }
+    },
+    "NOT_LIT_5": {
+      "sprite": "beehives/beehive_004/not_lit_5/sprite.webp",
+      "pixellab_object_id": "d1332baa-e812-40ad-9a5a-043722918872",
+      "generated_at": "2026-08-15T20:16:55+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.4597,
+      "glow_score": 0.3665,
+      "relit_from": "LIT_3",
+      "rotations": {
+        "south-east": "beehives/beehive_004/not_lit_5/rotations/south-east.webp",
+        "south-west": "beehives/beehive_004/not_lit_5/rotations/south-west.webp",
+        "south": "beehives/beehive_004/not_lit_5/sprite.webp"
+      }
+    }
+  },
+  "collision": true,
+  "hitbox_shape": "ellipse"
+}

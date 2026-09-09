@@ -1,0 +1,71 @@
+{
+  "format": "scenery-piece@2",
+  "id": "signpost_009",
+  "group": "signposts",
+  "rank": 8,
+  "index": 9,
+  "name": "Rope-and-plank trail sign 009",
+  "lights": null,
+  "variety": "rope-and-plank trail sign",
+  "glow_concept": null,
+  "prompt": "a stout wooden fingerpost with thick heavy blank arrow boards of bare weathered wood, set in a solid base, rope-and-plank trail sign, large, well above head height of a person, completely unlit, no glow, no light sources, no self-emission",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 128,
+  "sprite": "signposts/signpost_009/sprite.webp",
+  "placement": {
+    "world_height_m": 2.149,
+    "world_px_height": 110,
+    "character_height_px": 87,
+    "character_height_m": 1.7,
+    "note": "ONE SCENERY PIXEL IS ONE PLAYER PIXEL. world_px_height IS the art's own alpha bbox height, so scenery is placed into the world at 1:1 exactly as the avatar is (setScale(1)) and the two share one pixel grid. The CAMERA still zooms the whole scene \u2014 that is uniform and correct; what must never happen is scenery being resampled on its own, against the player. world_height_m is what the art reads as beside a 87px character; declared_height_m is what it was once declared to be, and a gap between them means the ART is the wrong size.",
+    "declared_height_m": 2.26,
+    "content_box": [
+      34,
+      11,
+      99,
+      121
+    ],
+    "content_px_height": 110,
+    "canvas_render_px": 128
+  },
+  "pixellab_object_id": "8dc6888f-5d37-4d11-9777-e02e0e17941a",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)",
+  "renamed_from": "signpost_001",
+  "renamed_why": "the original id was retired with the piece the maintainer rejected; fresh art gets a fresh id so his verdict keeps pointing at what he judged and this lands in his unreviewed queue",
+  "must_be_imbplemented_with_random_hflip": true,
+  "generated_at": "2026-08-13T19:23:23+00:00",
+  "states": {
+    "NOT_LIT_1": {
+      "sprite": "signposts/signpost_009/sprite.webp",
+      "pixellab_object_id": "8dc6888f-5d37-4d11-9777-e02e0e17941a",
+      "generated_at": "2026-08-13T19:23:23+00:00",
+      "rotations": {
+        "south-east": "signposts/signpost_009/rotations/south-east.webp",
+        "south-west": "signposts/signpost_009/rotations/south-west.webp",
+        "south": "signposts/signpost_009/sprite.webp"
+      }
+    },
+    "NOT_LIT_3": {
+      "sprite": "signposts/signpost_009/not_lit_3/sprite.webp",
+      "pixellab_object_id": "ed81a94f-8f51-458f-b8e2-73cd36ef8b7f",
+      "generated_at": "2026-08-16T20:51:05+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.6477,
+      "glow_score": 0.0,
+      "rotations": {
+        "south-east": "signposts/signpost_009/not_lit_3/rotations/south-east.webp",
+        "south-west": "signposts/signpost_009/not_lit_3/rotations/south-west.webp",
+        "south": "signposts/signpost_009/not_lit_3/sprite.webp"
+      }
+    }
+  },
+  "collision": true,
+  "hitbox_shape": "ellipse"
+}

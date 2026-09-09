@@ -1,0 +1,166 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-14T05:02:52+00:00",
+  "id": "cliff_shrub_017",
+  "group": "cliff_shrubs",
+  "rank": 157,
+  "index": 17,
+  "name": "Autumn-red rowan sapling 017",
+  "lights": null,
+  "variety": "autumn-red rowan sapling",
+  "modifier": "hanging almost upside down",
+  "glow_concept": null,
+  "prompt": "a tough windbent shrub whose trunk kinks hard sideways then turns up, its bare gripping roots clenched around a single small stone at its base, an organic RAGGED IRREGULAR silhouette with leaves and strands trailing off unevenly at the edges and a torn uneven bottom \u2014 never a rectangle, never a straight edge, never a filled panel or square sheet, no hard border of any kind \u2014 ONLY the plant itself, isolated on a fully transparent background, NO rock, NO cliff, NO stone wall, NO mountain, NO ground, nothing behind it, autumn-red rowan sapling, hanging almost upside down, large, twice human height, completely unlit, no glow, no light sources, no self-emission",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 192,
+  "sprite": "cliff_shrubs/cliff_shrub_017/sprite.webp",
+  "placement": {
+    "world_height_m": 2.97,
+    "world_px_height": 152,
+    "character_height_px": 87,
+    "character_height_m": 1.7,
+    "note": "ONE SCENERY PIXEL IS ONE PLAYER PIXEL. world_px_height IS the art's own alpha bbox height, so scenery is placed into the world at 1:1 exactly as the avatar is (setScale(1)) and the two share one pixel grid. The CAMERA still zooms the whole scene \u2014 that is uniform and correct; what must never happen is scenery being resampled on its own, against the player. world_height_m is what the art reads as beside a 87px character; declared_height_m is what it was once declared to be, and a gap between them means the ART is the wrong size.",
+    "declared_height_m": 2.03,
+    "content_box": [
+      42,
+      23,
+      165,
+      175
+    ],
+    "content_px_height": 152,
+    "canvas_render_px": 192
+  },
+  "pixellab_object_id": "5750f173-355a-4ab5-b332-a8c984e2b710",
+  "pixellab_directions": 1,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-1-direction-object (single, S-only)",
+  "must_be_imbplemented_with_random_hflip": true,
+  "states": {
+    "LIT_1": {
+      "sprite": "cliff_shrubs/cliff_shrub_017/lit_1/sprite.webp",
+      "pixellab_object_id": "ffa58da3-9048-4904-91f5-5f87c6ed9dc4",
+      "generated_at": "2026-08-16T10:01:55+00:00",
+      "glow_concept": "blossoms glowing along the branches",
+      "difference_from_source": 0.5841,
+      "glow_score": 0.1644
+    },
+    "LIT_2": {
+      "sprite": "cliff_shrubs/cliff_shrub_017/lit_2/sprite.webp",
+      "pixellab_object_id": "ccfee0f1-98ca-4b81-97d0-c3e9d5f02ff2",
+      "generated_at": "2026-08-16T10:01:32+00:00",
+      "glow_concept": "light in the crack at its root",
+      "difference_from_source": 0.1873,
+      "glow_score": 0.0512,
+      "animations": {
+        "motion": {
+          "group_id": "04d06fe1-c2e4-4f96-baec-a981d30782d7",
+          "description": "This is an almost completely still picture. ONLY the very tip of the small fire at the foot of the tree shifts, by one pixel. The body of the flame keeps exactly the shape, size and position it has in the first frame and stays amber the whole time -- never pale, never white. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "cliff_shrubs/cliff_shrub_017/lit_2/animations/motion/00.webp",
+            "cliff_shrubs/cliff_shrub_017/lit_2/animations/motion/01.webp",
+            "cliff_shrubs/cliff_shrub_017/lit_2/animations/motion/02.webp",
+            "cliff_shrubs/cliff_shrub_017/lit_2/animations/motion/03.webp",
+            "cliff_shrubs/cliff_shrub_017/lit_2/animations/motion/04.webp"
+          ],
+          "strip": "cliff_shrubs/cliff_shrub_017/lit_2/animations/motion__strip.webp",
+          "directions": null,
+          "generated_at": "2026-08-30T11:17:29+00:00",
+          "brief": "M43",
+          "review": "ANIMATION_PROBABLY_GOOD",
+          "review_metrics": {
+            "base_outline": 0.0
+          },
+          "light_frames": [
+            {
+              "intensity": 1.047,
+              "dx": -9.1,
+              "dy": 38.6
+            },
+            {
+              "intensity": 0.945,
+              "dx": -8.9,
+              "dy": 39.8
+            },
+            {
+              "intensity": 0.958,
+              "dx": -8.8,
+              "dy": 39.6
+            },
+            {
+              "intensity": 0.975,
+              "dx": -8.0,
+              "dy": 40.5
+            },
+            {
+              "intensity": 1.075,
+              "dx": -7.9,
+              "dy": 41.2
+            }
+          ]
+        }
+      }
+    },
+    "NOT_LIT_1": {
+      "sprite": "cliff_shrubs/cliff_shrub_017/sprite.webp",
+      "pixellab_object_id": "5750f173-355a-4ab5-b332-a8c984e2b710",
+      "generated_at": "2026-08-14T05:02:52+00:00"
+    },
+    "NOT_LIT_2": {
+      "sprite": "cliff_shrubs/cliff_shrub_017/not_lit_2/sprite.webp",
+      "pixellab_object_id": "ef81028a-7b06-4315-bde3-767c5ea232b5",
+      "generated_at": "2026-08-16T10:01:10+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.8344,
+      "glow_score": 0.0
+    },
+    "NOT_LIT_3": {
+      "sprite": "cliff_shrubs/cliff_shrub_017/not_lit_3/sprite.webp",
+      "pixellab_object_id": "70debd06-df7c-4f99-bf38-d0a9718e6ccd",
+      "generated_at": "2026-08-16T10:00:56+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.9168,
+      "glow_score": 0.003
+    },
+    "NOT_LIT_4": {
+      "sprite": "cliff_shrubs/cliff_shrub_017/not_lit_4/sprite.webp",
+      "pixellab_object_id": "99d32e26-e67c-4f0f-b121-1dbef3df0942",
+      "generated_at": "2026-08-16T10:00:57+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.6718,
+      "glow_score": 0.0
+    }
+  },
+  "collision": true,
+  "hitbox_shape": "ellipse",
+  "type": "NATURE",
+  "light": {
+    "strength": 0.08,
+    "color": "#ffa461",
+    "radius": 1,
+    "reference": "the spawn bonfire is 1.0 (radius 7); strength 0 is no light",
+    "states": {
+      "LIT_1": {
+        "strength": 0.1,
+        "color": "#ffa461",
+        "radius": 1
+      },
+      "LIT_2": {
+        "strength": 0.1,
+        "color": "#ffbe58",
+        "radius": 1
+      }
+    },
+    "kind": "glow/bio",
+    "flame": false,
+    "embers": false
+  }
+}

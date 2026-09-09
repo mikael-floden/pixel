@@ -1,0 +1,658 @@
+/* TILES 3.0 RUNTIME — the STREAMING half of the resolver: one cell in, drawable
+ * blits out, with nothing whole-world about it except the two things that must
+ * be.
+ *
+ * `tiles3.ts` proves the resolution and publishes `resolveWindow`, a sweep that
+ * allocates per cell and costs ~420ms over the_game — right for a gate, wrong
+ * for a frame. This module is the same decisions taken ONE CELL AT A TIME out
+ * of the resolver's own public primitives (`plateAt`, `flatTile`, `overTile`,
+ * `storeyTile`, `fadePool`, `detailPool`, `sideRoles`, `maskFrame`,
+ * `columnX/columnY`), so a camera window resolves in the microseconds a redraw
+ * has. `server/test/tiles3runtime.test.ts` asserts cell for cell, boundary for
+ * boundary and deck for deck that it returns EXACTLY what `resolveWindow`
+ * returns — that equality is the whole licence for this file to exist.
+ *
+ * TWO THINGS STAY WHOLE-WORLD, and both are correctness, not performance:
+ *
+ *   REGIONS. The set that paints a ground is picked per REGION, and a region id
+ *   is `<ground>@<x/24>,<y/24>` — a CHUNK, so it is a pure function of the
+ *   coordinates and a camera window can never change it. `Regions` is still
+ *   built over the whole doc because a consumer wants the LIST of ids; the
+ *   lookup itself needs no table.
+ *
+ *   THE GROUND LOOKUP. render3 renders the whole map, so its `g()` is clamped
+ *   to the whole map. Clamping to a camera window would cut regions, fade bands
+ *   and boundaries at the screen edge — art that changes when you scroll. The
+ *   bounds are therefore the world's, and the streaming is done by the CALLER
+ *   asking about the cells it needs.
+ *
+ * NO PHASER IMPORT, NO DOM TYPES. What it needs from the host — a texture
+ * manager, a loader, a canvas — is declared structurally (tiles3draw already
+ * declares the first and third), so the whole module is provable under node.
+ */
+
+import {
+  Tiles3,
+  computeRegions,
+  type BaseTileSetsDoc,
+  type Bounds,
+  type Deck3,
+  type FadesDoc,
+  type Frame,
+  type GroundType,
+  type MemberResolveDoc,
+  type PatternsDoc,
+  type Regions,
+  type ReviewManifest,
+  type SlopesDoc,
+  type TileArt,
+  type Tiles3Boundary,
+  type Tiles3Cell,
+  type Tiles3Data,
+  type Tiles3DeckCell,
+  type World3View,
+} from "./tiles3";
+import {
+  artKey,
+  assetPath,
+  patternSheetPaths,
+  plateKey,
+  type PatternSheets,
+  type TextureManagerLike,
+  type Tiles3Blit,
+  type Tiles3Textures,
+  type UrlRoute,
+} from "./tiles3draw";
+/* THE WALL SIGNATURES ARE BUNDLED, not fetched. They are generated from the
+ * review art by games2/scripts/wall-signatures.py, they are ~92 KB, and a
+ * bundled import is content-hashed by the build — so a cached page can never
+ * hold a signature table that disagrees with the code that reads it. A fetched
+ * doc would be one more request per world load and one more staleness axis. */
+import wallSetsDoc from "./wallsets.json";
+
+/* -- the world, as the resolver reads it ------------------------------------ */
+
+/** The shape `viewFromParsed` needs — `ParsedWorld` structurally, so this module
+ *  never imports the engine's own types (and a raw doc's arrays would not
+ *  satisfy it: the client parses before it renders). */
+export interface ParsedLike {
+  width: number;
+  height: number;
+  rows: { t: string; l: number }[][];
+  liquids?: string[];
+  wallSides?: Record<number, string>;
+  decks?: { kind?: string; mat?: string; side?: string; level: number; thickness: number; cells: { col: number; row: number }[] }[];
+  rooms?: { ground: string; cells: { col: number; row: number }[] }[];
+}
+
+/** A `World3View` over the ALREADY-PARSED world, not over the raw document.
+ *  `parseWorld3` is lossless for everything the resolver reads (ground name in
+ *  `t`, level in `l`, liquids, wallSides, decks), so re-fetching world.json to
+ *  hand `viewFromDoc` a second copy would cost a 3.6 MB download to learn what
+ *  the client already holds. */
+export function viewFromParsed(w: ParsedLike, bounds?: Partial<Bounds>): World3View {
+  const liquids = new Set<string>(w.liquids ?? []);
+  let maxLevel = 0;
+  for (const row of w.rows) for (const c of row) if (c.l > maxLevel) maxLevel = c.l;
+  const decks: Deck3[] = (w.decks ?? []).map((d) => ({
+    kind: d.kind,
+    ground: d.mat,
+    side: d.side,
+    level: d.level,
+    thickness: d.thickness,
+    cells: d.cells.map((c) => ({ x: c.col, y: c.row })),
+  }));
+  const rooms = (w.rooms ?? []).map((r) => ({
+    ground: r.ground,
+    cells: r.cells.map((c) => ({ x: c.col, y: c.row })),
+  }));
+  return {
+    x0: bounds?.x0 ?? 0,
+    y0: bounds?.y0 ?? 0,
+    x1: bounds?.x1 ?? w.width,
+    y1: bounds?.y1 ?? w.height,
+    width: w.width,
+    height: w.height,
+    maxLevel,
+    groundAt(x, y) {
+      if (x < 0 || x >= w.width || y < 0 || y >= w.height) return null;
+      const t = w.rows[y]?.[x]?.t;
+      return t ? t : null;
+    },
+    levelAt(x, y) {
+      return x >= 0 && x < w.width && y >= 0 && y < w.height ? w.rows[y]?.[x]?.l ?? 0 : 0;
+    },
+    isLiquid: (g) => liquids.has(g),
+    wallSideAt: (x, y) => w.wallSides?.[y * w.width + x] || null,
+    decks,
+    rooms: rooms.length ? rooms : undefined,
+  };
+}
+
+/* -- per-cell resolution ---------------------------------------------------- */
+
+/** The resolver's decisions for ONE cell, ONE lattice corner or ONE deck cell.
+ *  Every method here is a line-for-line port of the matching arm of
+ *  `Tiles3.resolveWindow`, and the gate proves the two agree. */
+export class Tiles3World {
+  readonly view: World3View;
+  readonly tiles: Tiles3;
+  readonly frame: Frame;
+  /** THE WHOLE-WORLD REGION SCAN, AND NOTHING IN THE GAME READS IT.
+   *
+   *  `computeRegions` walks every cell of the world — 155,236 on the_game,
+   *  23-46 ms — and the only readers of the result are `server/test/`, which
+   *  compare it against the proven sweep. What the RENDERER uses is `regionAt`,
+   *  and that has been pure chunk arithmetic (`ground@floor(x/24),floor(y/24)`,
+   *  REGION_CHUNK = 24) for a while now; it never touches this list.
+   *
+   *  It became worth fixing when the resolve worker landed, because that builds
+   *  a second `Tiles3World` and so paid the scan TWICE per session — and again
+   *  on both threads every time a live-tuning document lands mid-session and
+   *  `initTiles3` rebuilds. Lazy: the tests get the same value on first read,
+   *  the game never asks. */
+  private regionsMemo: Regions | null = null;
+  get regions(): Regions {
+    if (!this.regionsMemo) this.regionsMemo = computeRegions(this.bounds, (x, y) => this.g(x, y));
+    return this.regionsMemo;
+  }
+  readonly bounds: Bounds;
+  /** The patterns index, for the boundary's `pattern` id. Passed rather than
+   *  read back off `Tiles3` — the resolver keeps its data private, and the one
+   *  field wanted here is the same object the caller already handed it. */
+  private readonly patterns: PatternsDoc;
+  /** Deck cells by `y * width + x`, so a draw pass does not rescan 979 cells. */
+  private deckAt = new Map<number, number[]>();
+
+  constructor(o: { view: World3View; tiles: Tiles3; frame: Frame; patterns: PatternsDoc; bounds?: Bounds }) {
+    this.view = o.view;
+    this.tiles = o.tiles;
+    this.frame = o.frame;
+    this.patterns = o.patterns;
+    this.bounds = o.bounds ?? { x0: o.view.x0, y0: o.view.y0, x1: o.view.x1, y1: o.view.y1 };
+    this.view.decks.forEach((dk, di) => {
+      for (const c of dk.cells) {
+        const k = c.y * this.view.width + c.x;
+        const list = this.deckAt.get(k);
+        if (list) list.push(di);
+        else this.deckAt.set(k, [di]);
+      }
+    });
+  }
+
+  /** render3's `g()`: null outside the bounds. Bound once — the resolver takes
+   *  it as a callback and a fresh arrow per cell would allocate per frame. */
+  readonly gf = (x: number, y: number): string | null => {
+    const b = this.bounds;
+    return x >= b.x0 && x < b.x1 && y >= b.y0 && y < b.y1 ? this.view.groundAt(x, y) : null;
+  };
+
+  /** render3's `L()`: NOT bounds-clamped — a cliff at the edge still knows how
+   *  far it drops. */
+  readonly Lf = (x: number, y: number): number => this.view.levelAt(x, y);
+
+  g(x: number, y: number): string | null {
+    return this.gf(x, y);
+  }
+
+  L(x: number, y: number): number {
+    return this.Lf(x, y);
+  }
+
+  /** Everything one cell draws. Null for void / out of bounds.
+   *
+   *  DELEGATED, not re-implemented: `Tiles3.resolveCell` IS the arm of
+   *  `resolveWindow` that resolves a cell, so the streaming path and the sweep
+   *  cannot drift by construction. The window this file resolves against is the
+   *  WHOLE world (see the header), so `g` is clamped to `bounds` and never to a
+   *  camera. */
+  cell(x: number, y: number): Tiles3Cell | null {
+    return this.tiles.resolveCell(this.view, this.frame, this.gf, this.Lf, x, y);
+  }
+
+  /** THE COMPOSED BOUNDARY this cell wears, for a draw pass that composes it in
+   *  its own layer. Same call `resolveCell` makes. */
+  boundary(x: number, y: number): Tiles3Boundary | null {
+    const b = this.bounds;
+    if (x < b.x0 || y < b.y0 || x >= b.x1 || y >= b.y1) return null;
+    return this.tiles.boundaryAt(this.view, this.frame, this.gf, this.Lf, x, y)?.boundary ?? null;
+  }
+
+  /** The deck cells standing on one world cell, resolved. A world cell can carry
+   *  more than one deck, and the order is the document's. */
+  decks(x: number, y: number): Tiles3DeckCell[] {
+    const dis = this.deckAt.get(y * this.view.width + x);
+    if (!dis) return [];
+    const b = this.bounds;
+    if (x < b.x0 || x >= b.x1 || y < b.y0 || y >= b.y1) return [];
+    return dis.map((di) => this.tiles.deckCell(this.view, this.frame, this.view.decks[di], di, x, y));
+  }
+}
+
+/* -- the host: loading art on demand ---------------------------------------- */
+
+/** Structurally satisfied by `Phaser.Loader.LoaderPlugin`. */
+export interface LoaderLike {
+  image(key: string, url: string): unknown;
+  isLoading(): boolean;
+  start(): void;
+  once(event: string, cb: () => void): unknown;
+  /** EVERY file as it finishes — success or error — with its key. Without it
+   *  `pending` can only settle when a whole batch lands, which makes the
+   *  loading bar a staircase: measured on the_game, the 140-file terrain batch
+   *  held the bar at 54% for 8 s and then jumped it to 100% (maintainer
+   *  2026-09-02: "it loads 55% and the last 45% goes super fast"). Optional —
+   *  a caller that does not offer it still settles per batch, exactly as
+   *  before. */
+  onFile?(cb: (key: string) => void): unknown;
+}
+
+/** THE STREAMING ART CACHE. A draw pass asks for the files a window needs; this
+ *  queues the ones that are not resident, starts the loader at most once per
+ *  pass, and calls `onBatch(paths)` when a batch lands so the caller can repaint
+ *  what those files were wanted for.
+ *
+ *  A PATH IS REQUESTED ONCE, EVER. A 404 (a stale index, an unpublished tile)
+ *  would otherwise re-fire on every redraw the cell is on screen — the requested
+ *  set is the tombstone, exactly as `SceneryPieces` does for manifests. */
+export class Tiles3Loader {
+  /** `done` counts FILES, so `requested - done` is honest progress mid-batch;
+   *  `pending` is kept as its mirror because the loading hold and the probes
+   *  read it. */
+  readonly stats = { requested: 0, batches: 0, pending: 0, done: 0 };
+  /** Keys this loader asked for and has not seen finish. The scene shares its
+   *  Phaser loader with the SCENERY art, so a file event has to be matched
+   *  against what THIS loader queued or terrain progress counts someone else's
+   *  files. */
+  private inflight = new Set<string>();
+  private asked = new Set<string>();
+  private queued: string[] = [];
+
+  constructor(
+    private o: {
+      loader: LoaderLike;
+      textures: TextureManagerLike;
+      route?: UrlRoute;
+      onBatch: (paths: string[]) => void;
+    },
+  ) {
+    this.o.loader.onFile?.((key) => {
+      if (!this.inflight.delete(key)) return; // scenery art, or a stray
+      this.stats.done = Math.min(this.stats.requested, this.stats.done + 1);
+      this.stats.pending = Math.max(0, this.stats.requested - this.stats.done);
+    });
+  }
+
+  /** Queue one repo-relative art file if it is neither resident nor asked for.
+   *  Returns true when the texture is ALREADY drawable. */
+  need(path: string | null | undefined): boolean {
+    if (!path) return false;
+    const key = artKey(path);
+    if (this.o.textures.exists(key)) return true;
+    if (!this.asked.has(path)) {
+      this.asked.add(path);
+      this.queued.push(path);
+    }
+    return false;
+  }
+
+  /** Is this path still coming — queued or in flight? False for a resident
+   *  texture and for a tombstoned (404) path, which will never land. */
+  wanted(path: string): boolean {
+    return this.inflight.has(artKey(path)) || this.queued.includes(path);
+  }
+
+  /** Files asked for and not yet started (`flush()` starts them). */
+  get queuedCount(): number {
+    return this.queued.length;
+  }
+
+  /** NOTHING QUEUED AND NOTHING IN FLIGHT — every path `need()` has been shown
+   *  is resident, or tombstoned by a 404 that will not be asked for again.
+   *  `stats.pending` alone is not this: `need()` only queues, and the queue does
+   *  not become pending until `flush()`, so pending is 0 in the window between a
+   *  pass and its flush with art still owed. */
+  get idle(): boolean {
+    return this.queued.length === 0 && this.stats.pending === 0;
+  }
+
+  /** Files finished of files asked for, 0..1 — the loading bar's terrain half. */
+  get progress(): number {
+    return this.stats.requested ? this.stats.done / this.stats.requested : 1;
+  }
+
+  /** Start the queued batch, if any. Safe to call every pass. */
+  flush(): void {
+    if (!this.queued.length) return;
+    const batch = this.queued;
+    this.queued = [];
+    this.stats.requested += batch.length;
+    this.stats.pending = Math.max(0, this.stats.requested - this.stats.done);
+    for (const path of batch) {
+      const key = artKey(path);
+      this.inflight.add(key);
+      this.o.loader.image(key, routeUrl(path, this.o.route));
+    }
+    /* THE BATCH RECONCILES what the per-file events did not. Every file of this
+     * batch is finished by now, so `done` may be pulled up to the count at
+     * flush time — which also makes the whole thing self-healing when a caller
+     * offers no `onFile` at all (then this IS the accounting, as before). */
+    const upTo = this.stats.requested;
+    this.o.loader.once("complete", () => {
+      this.stats.batches++;
+      for (const path of batch) this.inflight.delete(artKey(path));
+      this.stats.done = Math.max(this.stats.done, Math.min(upTo, this.stats.requested));
+      this.stats.pending = Math.max(0, this.stats.requested - this.stats.done);
+      this.o.onBatch(batch);
+    });
+    if (!this.o.loader.isLoading()) this.o.loader.start();
+  }
+}
+
+const routeUrl = (path: string, r?: UrlRoute): string => {
+  const g = r?.gameUrl ?? ((u: string) => u);
+  const v = r?.withV ?? ((u: string) => u);
+  return v(g(assetPath(path)));
+};
+
+/* -- the documents the resolver reads --------------------------------------- */
+
+/** Every file `Tiles3Data` is built from, as repo-relative paths. They are
+ *  fetched as JSON, not imported: `live/tuning/base_tile_sets.json` and
+ *  `live/feedback/tiles.json` are the LIVE channel — the maintainer edits them
+ *  from the wiki and the world must follow without a redeploy. */
+export const TILES3_DOCS = {
+  resolve: "tiles/resolve.json",
+  groundTypes: "tiles/ground_types.json",
+  patterns: "tiles/patterns/index.json",
+  review: "tiles/review/manifest.json",
+  fades: "tiles/fades/index.json",
+  slopes: "tiles/slopes/index.json",
+  baseTileSets: "live/tuning/base_tile_sets.json",
+  basePromotions: "live/tuning/base_tiles.json",
+  tileWalls: "live/tuning/tile_walls.json",
+  topWalls: "live/tuning/top_walls.json",
+  tileTops: "live/tuning/tile_tops.json",
+  feedback: "live/feedback/tiles.json",
+} as const;
+
+export type Tiles3DocKey = keyof typeof TILES3_DOCS;
+
+/** Repo-relative -> the URL to fetch, staged and version-pinned. */
+export function docUrl(path: string, route?: UrlRoute): string {
+  return routeUrl(path, route);
+}
+
+/** The three pattern sheets a composed boundary needs, from the patterns index.
+ *  World-independent — they load once at boot. */
+export function sheetPaths(patterns: PatternsDoc): string[] {
+  const p = patternSheetPaths(patterns);
+  return [p.silhouette, p.masks, p.border];
+}
+
+/** Assemble `Tiles3Data` from the fetched documents. A missing document is not
+ *  fatal for any of them individually — the resolver degrades to clean art and
+ *  says so — but `patterns` and `groundTypes` decide geometry and colour, so
+ *  they are required and a null return means "do not render this world as
+ *  maps3". */
+export function tiles3DataFrom(
+  docs: Partial<Record<Tiles3DocKey, any>>,
+  storeyPitch: number,
+  warn?: (m: string) => void,
+): Tiles3Data | null {
+  const groundTypes = docs.groundTypes?.grounds as Record<string, GroundType> | undefined;
+  const patterns = docs.patterns as PatternsDoc | undefined;
+  if (!groundTypes || !patterns) return null;
+  return {
+    baseTileSets: (docs.baseTileSets ?? {}) as BaseTileSetsDoc,
+    memberResolve: (docs.resolve ?? {}) as MemberResolveDoc,
+    groundTypes,
+    patterns,
+    storeyPitch,
+    review: docs.review as ReviewManifest | undefined,
+    feedback: docs.feedback?.entries,
+    wallOverrides: docs.tileWalls?.overrides,
+    wallSets: (wallSetsDoc as unknown as { pools?: Record<string, { cost: number; tiles: string[] }[]> }).pools,
+    basePromotions: docs.basePromotions?.overrides,
+    fades: docs.fades as FadesDoc | undefined,
+    slopes: docs.slopes as SlopesDoc | undefined,
+    topWallOverrides: docs.topWalls?.overrides,
+    topOverrides: docs.tileTops?.overrides,
+    /* NO live/tuning/tile_details.json: the wiki has never published it, and a
+     * document in TILES3_DOCS is fetched on every world load — a permanent 404
+     * per boot to read a rate that does not exist. `Tiles3Data.detailRates` is
+     * wired and every ground uses DETAIL_FREQ until the file appears; add the
+     * path above on the day it does (render3 reads `.rate`). */
+    /* NO FADE GUARD IN THE GAME, and it is a known, measured difference. The
+     * guard is a PIXEL test over each candidate fade tile's own top diamond
+     * (80th percentile distance to the nearer palette top, rejected above 78),
+     * so running it needs the art decoded — and the pool has to be built to know
+     * which art to fetch. Measured on the parity fixture: 2 of 10 pools keep a
+     * tile render3 drops. That is a wrong tile inside a 1-cell fade band, never
+     * a hole, and `Tiles3.stats.unguardedFadePools` counts it. */
+    warn,
+  };
+}
+
+/* -- draw ops --------------------------------------------------------------- */
+
+/** THE ORDER RENDER3 PAINTS IN, per cell: the surface (a plate, a composed
+ *  boundary, a fade, a liquid diamond) and then, for a level change, the
+ *  x-over-y wall stack — whole tiles, one per storey, lowest exposed first.
+ *
+ *  `cut` truncates the column at a level (indoor mode's cut-away). The tile at
+ *  the top of a TRUNCATED stack is a FACE, never the cap: the cap carries the
+ *  cell's own top diamond and reads as a lid on a wall stump (the rule the
+ *  cut-away has carried since it shipped). */
+export function cellBlits(
+  t3: Tiles3Textures,
+  tex: TextureManagerLike,
+  cell: Tiles3Cell,
+  cut?: number,
+): Tiles3Blit[] {
+  if (cut === undefined) return t3.opsForCell(cell);
+  /* A FIELD CELL ABOVE THE CUT DRAWS NOTHING. A field is a cell with no exposed
+   * face — level 0, a liquid, OR THE INTERIOR OF A PLATEAU: the snow cap in
+   * front of the cave is `field snow L28`, and its only op is its surface,
+   * pasted 28 storeys up the screen. This arm used to say "a field cell is
+   * level 0, so a cut cannot shorten it" and draw it whole — so with the cut
+   * clamping that column to level 1, its clean snow plate still landed 420 px
+   * up-screen, on the cave floor of the chamber BEHIND it, as a plain white
+   * band under the maintainer's feet (2026-09-09, 267.9,157.8: "What is this
+   * plain white ground I'm standing on that doesn't use the ground base
+   * set?"). Its cap is roof volume the cut removes; the occluder pass
+   * re-issues the stump's cap at the cut level, as for every raised cell. */
+  if (cell.kind === "field") return cell.level > cut ? [] : t3.opsForCell(cell);
+  const w = cell.wall;
+  if (!w) return [];
+  const hi = Math.min(cell.level, cut);
+  if (hi < 0) return [];
+  /* A column the cut does not shorten is drawn WHOLE — its set surface, its
+   * fade and its foot band included. Only a truncated column is the stack
+   * alone with `mid` as its lid; this arm used to strip every raised cap in
+   * the window of its surface the moment the indoor mask went up. */
+  if (hi === cell.level) return t3.opsForCell(cell);
+  const out: Tiles3Blit[] = [];
+  for (const s of w.stack) {
+    if (s.storey > hi) continue;
+    const tile: TileArt = s.storey === hi && hi < cell.level ? w.mid : s.tile;
+    const key = tile.path ? artKey(tile.path) : null;
+    if (!key || !tex.exists(key)) continue;
+    out.push({ key, x: cell.sx, y: s.y, sx: 0, sy: 0, sw: tile.w, sh: tile.h, role: "wall" });
+  }
+  return out;
+}
+
+/** Every repo-relative art file one resolved cell can draw — what the loader is
+ *  asked for BEFORE the blits are taken, so the next redraw has it. */
+export function cellArtPaths(cell: Tiles3Cell, out: (p: string) => void): void {
+  /* THE SURFACE IS NAMED WHATEVER THE CELL'S KIND IS. A WALL cell wears the
+   * maintainer's set on its cap — `resolveCell` dresses it and `cellOps` blits
+   * it over the courses — so its file has to be named HERE or nothing ever asks
+   * for it. This one function feeds both consumers that decide whether a file
+   * can be drawn at all: the streaming loader (`Tiles3Loader`; art that is not
+   * resident has its op DROPPED on purpose, and nothing is in flight to repair
+   * the hole) and `scripts/ship-tiles3.ts`, which copies exactly these paths
+   * into the image, so a path missing here is a 404 at `/assets/tiles/…` in
+   * production and only in production. Measured on the_game: 3,670 wall cells,
+   * every one of them dressed, and 288 of their caps wear a FADE — 13.5% of
+   * every fade the resolver places, none of which could ever have drawn.
+   *
+   * `dressed` is the maintainer's `own_top`: false means the x-over-y tile keeps
+   * its own top and no surface is painted over it, so there is nothing to name.
+   * A liquid never reaches this arm (it is always a field cell) and paints its
+   * diamond from a colour, not a file. */
+  if (cell.art && cell.art.kind !== "liquid" && (cell.kind === "field" || cell.dressed))
+    out(cell.art.path);
+  /* AND THE FADE'S OWN FILE. A fade is an OVERLAY now, not the cell's art, so
+   * nothing else names it — and this one function feeds both the streaming
+   * loader and scripts/tiles3closure.ts, which decides what enters the image.
+   * Miss it and every fade 404s in production and only in production. */
+  if (cell.fade) out(cell.fade.file);
+  if (cell.kind !== "field" && cell.wall)
+    for (const s of cell.wall.stack) if (s.tile.path) out(s.tile.path);
+}
+
+export function boundaryArtPaths(b: Tiles3Boundary, out: (p: string) => void): void {
+  out(b.plateA.path);
+  out(b.plateB.path);
+}
+
+export function deckArtPaths(d: Tiles3DeckCell, out: (p: string) => void): void {
+  for (const s of d.stack) if (s.tile.path) out(s.tile.path);
+  /* THE SURFACE TOO. This names what the loader fetches AND what ship-tiles3
+   * bakes into the image (`scripts/tiles3closure.ts`); without it the slab's
+   * base-set plate is neither requested in dev nor present in prod, and
+   * `opsForDeck` drops the op as "still streaming" forever. */
+  if (d.surface?.path) out(d.surface.path);
+  // ...and its transition's two plates (Tiles3DeckCell.boundary), same reason.
+  if (d.boundary) {
+    out(d.boundary.plateA.path);
+    out(d.boundary.plateB.path);
+  }
+}
+
+/** The drawable texture key for a cell's SURFACE — what an occluder copy of
+ *  that cell must draw. Null while the art is still loading. */
+export function surfaceKey(t3: Tiles3Textures, tex: TextureManagerLike, cell: Tiles3Cell): string | null {
+  /* A WALL'S CAP IS ITS STACK'S CAP TILE, full stop.
+   *
+   * This briefly returned the SURFACE for a dressed wall, to stop the occluder
+   * covering the maintainer's tile set with the plain x-over-y review tile.
+   * That was wrong twice over and he caught it in one look: the cap course IS
+   * the wall's masonry, so replacing it took the stone top off every wall ring,
+   * and a surface is pasted ten rows lower than a course, so what was left
+   * floated up-screen — "Why is the entire roof shifted top-left? The tree wall
+   * no longer have a stone wall!!"
+   *
+   * The ground pass draws BOTH on a dressed wall — the stack, then the surface
+   * over its cap — so an occluder copy that wants parity needs two images, not
+   * one substituted for the other: this one, then `dressKey` over it. */
+  if (cell.kind === "wall") {
+    const cap = cell.wall?.stack[cell.wall.stack.length - 1]?.tile;
+    if (!cap?.path) return null;
+    const k = artKey(cap.path);
+    return tex.exists(k) ? k : null;
+  }
+  const art = cell.art;
+  if (!art) return null;
+  if (art.kind === "liquid") return t3.liquid(art.topRGB);
+  /* `topOnly` too: an occluder copy that drew the unmasked tile would put the
+   * wall band back on the water this pass exists to keep clean. */
+  if (art.kind === "conform" || art.topOnly) return t3.plate(art, cell.ground);
+  const k = plateKey(art, cell.ground);
+  return tex.exists(k) ? k : null;
+}
+
+/** THE MAINTAINER'S SET ON A WALL'S CAP — the second image the occluder copy
+ *  of a dressed wall needs, drawn OVER `surfaceKey`'s cap course at the surface
+ *  anchor (`pasteY`, the same point `cellOps` pastes it at on the ground).
+ *
+ *  A review course's top face is ONE FLAT COLOUR (measured: every `_after`
+ *  tile of black_rock, grey_stone and dark_mud over their walls carries one
+ *  distinct top colour against 16-17 on a `_textured` one), and `own_top` is
+ *  set on exactly one tile of the library, so the resolver dresses every other
+ *  wall cell with its set's textured surface and the ground pass paints it.
+ *  The occluder pass then re-issued the cap course alone, and that sprite
+ *  covered the surface one frame after the texture drew it — every plateau
+ *  rim, every terrace edge, every raised cell at all wore the flat colour
+ *  while the cells one step in wore the set (maintainer 2026-09-09, on the
+ *  grey-stone plateau at 227,221: "Why are they all the solid color top? Don't
+ *  we have lots of 'x over y/x' tiles with very very nice tops?"). Level 0
+ *  emits no occluder, which is why the flat top is a raised-ground defect.
+ *
+ *  Not a substitute for the cap: the cap course is also the top storey's FACE
+ *  (908751d2e1 — replacing it took the masonry off every wall ring). Null
+ *  while the surface's source art streams, exactly as the ground pass then
+ *  draws no surface either; an undressed wall (`own_top`) keeps its cap's own
+ *  top and answers null. Top-face only by the resolver's own flag, so it can
+ *  never paint a wall band over the cap's art. */
+export function dressKey(t3: Tiles3Textures, cell: Tiles3Cell): { key: string; x: number; y: number } | null {
+  if (cell.kind !== "wall" || !cell.dressed) return null;
+  const art = cell.art;
+  if (!art || art.kind === "liquid") return null;
+  const key = t3.plate(art, cell.ground);
+  return key ? { key, x: cell.sx, y: cell.pasteY ?? cell.sy } : null;
+}
+
+/** WHERE `surfaceKey`'S RASTER IS PASTED, and the reason this function exists.
+ *
+ *  The two art formats in this game do not share an anchor. A wall course is
+ *  64x64 REVIEW art whose diamond starts ten rows down, so the resolver pastes
+ *  it at `columnY(...) - TOP_Y`; a surface is a 64x46 PLATE whose diamond
+ *  starts at row 0, so it is pasted at the cell's own `sy`. The occluder pass
+ *  computed one y for both (`by - level * lh`) and so drew every SURFACE ten
+ *  pixels above its own copy in the ground texture — a diamond poking out past
+ *  the top of a roof, which is what the maintainer circled: "a roof tile that
+ *  is rendered outside the roof". It shows wherever a raised cell's cap is a
+ *  surface rather than a wall course, which on a building is the one corner
+ *  cell that has no exposed face.
+ *
+ *  Null when the cap is a wall course, which the caller then anchors its own
+ *  way — that IS the column's top. */
+export function surfaceY(cell: Tiles3Cell): number | null {
+  if (cell.kind === "wall") return null;
+  return cell.pasteY ?? cell.sy;
+}
+
+/** The column's REPRESENTATIVE course — the streaming guard and the fallback,
+ *  never the thing a band is drawn from. `faceKeyAt` is what draws. */
+export function faceKey(tex: TextureManagerLike, cell: Tiles3Cell): string | null {
+  const p = cell.wall?.mid.path;
+  if (!p) return null;
+  const k = artKey(p);
+  return tex.exists(k) ? k : null;
+}
+
+/** THE FACE AN OCCLUDER STACKS AT ONE STOREY — that storey's own tile.
+ *
+ *  THE OCCLUDER PASS USED TO STACK `faceKey` FOR THE WHOLE COLUMN, one tile
+ *  from the lowest exposed face to the cap, and that is what the maintainer
+ *  photographed: "my photo was from the game with code that used the same tile
+ *  the entire vertical strip" (2026-09-08). The bug hid behind a true statement
+ *  — the resolver DOES vary the tile per storey, and the ground texture is
+ *  painted from `wall.stack`, correctly — because the occluder copies are
+ *  sprites drawn OVER that texture, so the varied ground was there and covered.
+ *  Any check that reads the resolver, or the ground RT, sees variety; only the
+ *  screen shows the repeat. Reproduce a wall report from the SCREEN.
+ *
+ *  `wall.stack` is contiguous from its first storey, so this indexes rather
+ *  than searching: it runs per storey per wall cell on every occluder rebuild,
+ *  which is thousands of columns up to forty storeys tall.
+ *
+ *  Falls back to the representative course when this storey's own art has not
+ *  landed — a band with a hole in it is a body drawn through a mountain. */
+export function faceKeyAt(
+  tex: TextureManagerLike,
+  cell: Tiles3Cell,
+  storey: number,
+): string | null {
+  const w = cell.wall;
+  if (!w) return null;
+  const s = w.stack.length ? w.stack[storey - w.stack[0].storey] : undefined;
+  if (s && s.storey === storey && s.tile.path) {
+    const k = artKey(s.tile.path);
+    if (tex.exists(k)) return k;
+  }
+  return faceKey(tex, cell);
+}

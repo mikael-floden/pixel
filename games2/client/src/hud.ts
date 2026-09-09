@@ -17,11 +17,40 @@
 
 import { mountGamepadStick } from "./gamepad";
 import { mountBars } from "./bars";
+import { mountWikiButton } from "./wikibtn";
+import { mountWikiNearButton } from "./wikinear";
 import { mountTheme, toggleTheme, currentTheme } from "./theme";
 import { getHand, toggleHand, handLabel } from "./controls";
-import { indoorLight, setIndoorLight } from "./indoorlight";
+import { indoorLight, indoorLightLit, setIndoorLight, setIndoorLightLit } from "./indoorlight";
+import { hiddenRing, setHiddenRing } from "./hiddenring";
+import {
+  fadeTune,
+  setFadeTune,
+  reachFromSlider,
+  sliderFromReach,
+  amountFromSlider,
+  sliderFromAmount,
+  falloffFromSlider,
+  sliderFromFalloff,
+} from "./fadetune";
+import {
+  SCENERY_ANIM_CLASSES,
+  SCENERY_ANIM_LABEL,
+  SCENERY_SLEEP_MAX,
+  sceneryAnimTune,
+  setSceneryAnimTune,
+} from "./sceneryanim";
+import { lightAnimTune, setLightAnimTune, ratioFromSlider, sliderFromRatio } from "./lightanim";
+import {
+  lightScale,
+  setLightScale,
+  lightScaleLabel,
+  lightScaleFromSlider,
+  sliderFromLightScale,
+} from "./lightscale";
 import { indoorWall, setIndoorWall, INDOOR_WALL_MIN, INDOOR_WALL_MAX } from "./indoorwall";
 import { withV } from "./assetver";
+import { minimapDotPct, mapImageUrls, loadMinimapMeta, type MinimapFeed, type MinimapMeta } from "./maps";
 import { gameAudio } from "../../composer/index";
 import { MAX_CHAT_LEN } from "@nangijala/shared";
 
@@ -78,9 +107,9 @@ function setCheck(box: HTMLElement, on: boolean) {
 // replaces it instead of leaking a second timer.
 let ambPoll: ReturnType<typeof setInterval> | null = null;
 
-/** Which extension each world's minimap actually answers to (see updateMap).
+/** Which map-image URL each world actually answered to (see updateMap).
  * Module-level so a HUD rebuild on rejoin doesn't re-probe. */
-const minimapExt = new Map<string, string>();
+const mapImgUrl = new Map<string, string>();
 
 /** A REAL touch device (a finger keyboard/thumbs are coming). Shared by the
  * chat keyboard lift and the landscape layout — under Chrome's "Request
@@ -147,6 +176,8 @@ type TabId = (typeof TABS)[number]["id"];
 export function mountPageFrame() {
   injectStyles();
   mountBars(); // HP/EP/XP + gold + level, over the top of the game view
+  mountWikiButton(); // the wiki drawer's opener, stacked with the clock pill
+  mountWikiNearButton(); // 🔍 what am I standing next to — left of the Wiki button
   document.getElementById("ml-pageframe")?.remove(); // ancient overlay, if any
   // In the WORLD now: landscape becomes a real layout instead of the
   // "rotate your phone" prompt (index.html hides #ml-rotate under this
@@ -333,38 +364,6 @@ function applyLayout() {
   window.dispatchEvent(new Event("ml-layout"));
 }
 
-/** The live feed the Map tab reads from window.__ml.minimap() (WorldScene). */
-interface MinimapFeed {
-  world: string; // maps2 world id -> /assets/maps2/worlds/<id>/minimap.{webp,png}
-  w: number; // grid width in cells
-  h: number; // grid height in cells
-  maxL: number; // world's tallest terrain level (the iso render's origin lifts by this)
-  col: number; // local player's fractional cell (fx / CELL_WU)
-  row: number; // local player's fractional cell (fy / CELL_WU)
-  level: number; // terrain level at the player's cell (the iso dot lifts with it)
-}
-
-// maps2 ISOMETRIC minimap projection — a REPLICA of maps2/pipeline/render2.py
-// (render_overview / _origin), so the "you are here" dot lands on the player's
-// cell on the iso minimap.png. The minimaps are transparent iso renders (not
-// top-down), verified to share this transform across every world incl.
-// the_island2's custom builder. DX/DY/LEVEL_PX match shared ISO_DX/ISO_DY/
-// LEVEL_PX; MARGIN + the 40/64/80 canvas pads are render2.py's. Percentages are
-// scale-invariant, so the 0.5 render scale + 2000px save cap drop out.
-const MM_DX = 32, MM_DY = 15, MM_LEVEL_PX = 16, MM_MARGIN = 12;
-/** Player cell (col,row) at terrain `level` -> [x%, y%] on the iso minimap. */
-function minimapDotPct(m: MinimapFeed): [number, number] {
-  const ox = (m.h - 1) * MM_DX + MM_MARGIN;
-  const oy = m.maxL * MM_LEVEL_PX + 40 + MM_MARGIN;
-  const fullW = (m.w + m.h) * MM_DX + MM_MARGIN * 2;
-  const fullH = (m.w + m.h) * MM_DY + 64 + m.maxL * MM_LEVEL_PX + 80;
-  // +MM_DX/+MM_DY: centre of the cell's 64-wide, 30-tall top diamond.
-  const x = ox + (m.col - m.row) * MM_DX + MM_DX;
-  const y = oy + (m.col + m.row) * MM_DY - m.level * MM_LEVEL_PX + MM_DY;
-  const clamp = (v: number) => Math.max(0, Math.min(1, v));
-  return [clamp(x / fullW) * 100, clamp(y / fullH) * 100];
-}
-
 export class HudBar {
   private pages = new Map<TabId, HTMLElement>();
   private invGrid: HTMLElement | null = null;
@@ -387,7 +386,14 @@ export class HudBar {
     wrap: HTMLElement; frame: HTMLElement; img: HTMLImageElement; dot: HTMLElement; empty: HTMLElement;
   } | null = null;
   private mapRaf: number | null = null;
-  private mapSrcWorld = ""; // which world's minimap.png is currently loaded
+  private mapSrcWorld = ""; // which world's minimap image is currently loaded
+  /** The render's OWN projection for that world (maps2 `minimap.json`), or
+   *  null while it is in flight / the world ships none. The map render is
+   *  CROPPED to the island now, so a fraction of the full iso canvas is wrong
+   *  by construction — this doc is the only thing that knows where it was
+   *  cut. Until it lands the dot uses the old replica, which is off on a
+   *  cropped render for at most the one frame the fetch takes. */
+  private mapMeta: MinimapMeta | null = null;
   // Chat tab: a persistent history of the last CHAT_HISTORY_MAX log lines (the
   // SAME stream as the bottom-left log — system events + player chat, fed via
   // pushChat). Each carries its RECEIVE time so the page can print HH:MM and
@@ -475,10 +481,10 @@ export class HudBar {
   }
 
   // ── Map tab ────────────────────────────────────────────────────────────
-  /** Build the Map page: a fitted minimap <img> plus a red "you are here" dot
-   * positioned by PERCENT via the iso projection (so it stays correct at any
-   * display size), over a fallback message for worlds that ship no minimap.png.
-   * The dot + image are driven by startMapLoop(). */
+  /** Build the Map page: a fitted map <img> plus a red "you are here" dot
+   * positioned by PERCENT via the world's own iso projection (so it stays
+   * correct at any display size), over a fallback message for worlds that ship
+   * no map image. The dot + image are driven by startMapLoop(). */
   private buildMap() {
     const page = this.pages.get("map")!;
     const wrap = mk("div", "ml-map");
@@ -569,34 +575,38 @@ export class HudBar {
     const ml = (window as unknown as { __ml?: { minimap?: () => MinimapFeed } }).__ml;
     const m = ml && typeof ml.minimap === "function" ? ml.minimap() : null;
     if (!m || !m.w || !m.h) return;
-    // Load the world's minimap once (and again if the world changed on rejoin).
-    // FORMAT-AGNOSTIC (2026-07-31): this is the one place the HUD reaches into
-    // ANOTHER domain's tree by filename, and maps2 is mid-migration to WebP —
-    // hardcoding either extension means the Map tab goes blank the day they
-    // convert (or the day they don't). So: ask for .webp, fall back to .png on
-    // error, and remember which one this world answered to so it costs at most
-    // one miss per world per session. maps2 needs no handshake with us.
+    // Load the world's map image once (and again if the world changed on
+    // rejoin). WHICH FILE IS maps.ts's CALL, not the HUD's: `mapImageUrls` is
+    // the one place that resolves the map renderer's file name (minimap.webp
+    // beside the world). The HUD only walks the candidates in order and
+    // remembers which one this world answered to, so a miss costs at most one
+    // request per world per session. No art domain needs a handshake with us.
     if (m.world && m.world !== this.mapSrcWorld) {
       this.mapSrcWorld = m.world;
+      // The projection travels with the image; both are per world, fetched once.
+      this.mapMeta = null;
+      const forWorld = m.world;
+      void loadMinimapMeta(forWorld).then((doc) => {
+        if (this.mapSrcWorld === forWorld) this.mapMeta = doc;
+      });
       els.frame.hidden = false;
       els.empty.hidden = true;
-      const base = `/assets/maps2/worlds/${m.world}/minimap`;
-      const known = minimapExt.get(m.world);
       const img = els.img;
-      img.onerror = null;
-      if (!known) {
-        img.onerror = () => {
-          img.onerror = null;
-          minimapExt.set(m.world, ".png");
-          img.src = `${base}.png`;
-        };
-        img.onload = () => minimapExt.set(m.world, ".webp");
-      }
-      img.src = `${base}${known ?? ".webp"}`;
+      const known = mapImgUrl.get(m.world);
+      const tries = known ? [known] : mapImageUrls(m);
+      let i = 0;
+      const attempt = () => {
+        // The LAST candidate leaves onerror null so buildMap's own error
+        // listener shows the "no minimap" fallback.
+        img.onerror = i + 1 < tries.length ? () => { i += 1; attempt(); } : null;
+        img.onload = () => mapImgUrl.set(m.world, tries[i]);
+        img.src = tries[i];
+      };
+      attempt();
     }
     // Dot at the player's cell, projected onto the ISO minimap. Percent of the
     // frame == percent of the image (the frame is fit to the image by fitMap).
-    const [left, top] = minimapDotPct(m);
+    const [left, top] = minimapDotPct(m, this.mapMeta);
     els.dot.style.left = `${left.toFixed(3)}%`;
     els.dot.style.top = `${top.toFixed(3)}%`;
   }
@@ -819,7 +829,123 @@ export class HudBar {
     // and is built lazily from its registry. indoorlight.ts owns the value and
     // its persistence; the scene listens for "ml-indoor-light".
     wrap.appendChild(
-      pctSlider("Indoor light", () => indoorLight(), (v) => setIndoorLight(v)),
+      pctSlider("Indoor light (dark room)", () => indoorLight(), (v) => setIndoorLight(v)),
+    );
+    /* TWO DIALS, ONE FOR EACH KIND OF ROOM (maintainer 2026-09-07, on walking
+     * into a house with a lit fireplace: "the old indoor ambient light at 40%
+     * is too much if we have lights inside the house"). The first is the base
+     * a room with NO light of its own needs to read as stone; the second is
+     * what a room that lights itself gets, where the base only has to keep the
+     * far corners off black. Both live so he can tune each by eye in-game. */
+    wrap.appendChild(
+      pctSlider("Indoor light (lit room)", () => indoorLightLit(), (v) => setIndoorLightLit(v)),
+    );
+    /* HIDDEN OUTLINE: how loud the wall-hack silhouette is. The line draws
+     * above the darkness overlay, so at full opacity a body behind a wall is
+     * the most legible thing on screen — being hidden reads as an advantage.
+     * hiddenring.ts owns the value and its persistence. */
+    wrap.appendChild(
+      pctSlider("Hidden outline", () => hiddenRing(), (v) => setHiddenRing(v)),
+    );
+
+    /* THE THREE FADE DIALS (games agent, at the maintainer's request 2026-09-09
+     * — "I kinda feel I need 3 sliders in order to nail this"): how far from
+     * the other ground the warm-up starts, how many fade tiles are placed
+     * (linear), and how fast the tiles' coverage drops with distance from
+     * the transition (falloff).
+     * fadetune.ts owns the values; the scene re-resolves the world on
+     * "ml-fade-tune" once the thumb rests. The fourth control, whether a fade
+     * may sit on a transition tile, is a button in the scene's Settings list. */
+    wrap.appendChild(
+      pctSlider(
+        "Fade reach",
+        () => sliderFromReach(fadeTune().reach),
+        (p) => setFadeTune({ reach: reachFromSlider(p) }),
+        {
+          snap: (p) => sliderFromReach(reachFromSlider(p)),
+          format: (p) => `${reachFromSlider(p)} cells`,
+        },
+      ),
+    );
+    wrap.appendChild(
+      pctSlider(
+        "Fade amount",
+        () => sliderFromAmount(fadeTune().amount),
+        (p) => setFadeTune({ amount: amountFromSlider(p) }),
+        { format: (p) => `${amountFromSlider(p).toFixed(2)}x` },
+      ),
+    );
+    wrap.appendChild(
+      pctSlider(
+        "Fade falloff",
+        () => sliderFromFalloff(fadeTune().falloff),
+        (p) => setFadeTune({ falloff: falloffFromSlider(p) }),
+        { format: (p) => `exp ${falloffFromSlider(p).toFixed(2)}` },
+      ),
+    );
+
+    /* SCENERY ANIMATION SLEEP (maintainer 2026-09-09): a piece with a GOOD or
+     * APPROVED clip plays it once, then rests a random time drawn from this
+     * range before playing again — one range per animation class, because a
+     * fire on repeat is fine and a tree on repeat is not. sceneryanim.ts owns
+     * the values; the scene reads the range at each sleep it schedules. */
+    for (const cls of SCENERY_ANIM_CLASSES) {
+      wrap.appendChild(
+        rangeSlider(
+          `${SCENERY_ANIM_LABEL[cls]} sleep`,
+          () => {
+            const [lo, hi] = sceneryAnimTune()[cls];
+            return [lo / SCENERY_SLEEP_MAX, hi / SCENERY_SLEEP_MAX];
+          },
+          ([lo, hi]) => setSceneryAnimTune(cls, [Math.round(lo * SCENERY_SLEEP_MAX), Math.round(hi * SCENERY_SLEEP_MAX)]),
+          { format: ([lo, hi]) => `${Math.round(lo * SCENERY_SLEEP_MAX)}–${Math.round(hi * SCENERY_SLEEP_MAX)} s` },
+        ),
+      );
+    }
+
+    /* LIGHT ANIMATION (maintainer 2026-09-09): a LIT clip's per-frame light —
+     * the intensity swing and the centre offset the scenery domain publishes
+     * (`light_frames`) — each scaled by a RATIO: "0.5 means half the effect
+     * and 2.0 means twice the effect ... 0.05 to 20x. This is for me to test
+     * what looks best." Log dials; lightanim.ts owns the values; the scene
+     * reads them every frame. */
+    wrap.appendChild(
+      pctSlider(
+        "Light intensity swing",
+        () => sliderFromRatio(lightAnimTune().intensity),
+        (p) => setLightAnimTune({ intensity: ratioFromSlider(p) }),
+        { format: (p) => `${ratioFromSlider(p).toFixed(2)}x` },
+      ),
+    );
+    wrap.appendChild(
+      pctSlider(
+        "Light centre swing",
+        () => sliderFromRatio(lightAnimTune().position),
+        (p) => setLightAnimTune({ position: ratioFromSlider(p) }),
+        { format: (p) => `${ratioFromSlider(p).toFixed(2)}x` },
+      ),
+    );
+
+    /* LIGHT RESOLUTION: the fraction of the canvas the three full-screen
+     * passes (light, mist, depth fog) render at before a LINEAR upsample.
+     * A DEV MEASUREMENT, not a player setting — it is the decisive experiment
+     * for whether the phone is GPU-bound, and it exists as a slider because an
+     * installed PWA has no URL bar to put `?light=` in (maintainer 2026-09-07:
+     * "I can't use ?light=0.5. I need a button on the settings page").
+     * STEPPED, because the readout has to name the fragment count: cost is the
+     * SQUARE of the dial, so 50% is a quarter of the work and reads like half.
+     * lightscale.ts owns the value; nightlight.ts rebuilds all three render
+     * targets on "ml-light-scale", so it takes effect without a reload. */
+    wrap.appendChild(
+      pctSlider(
+        "Light resolution",
+        () => sliderFromLightScale(lightScale()),
+        (p) => setLightScale(lightScaleFromSlider(p)),
+        {
+          snap: (p) => sliderFromLightScale(lightScaleFromSlider(p)),
+          format: (p) => lightScaleLabel(lightScaleFromSlider(p)),
+        },
+      ),
     );
 
     // INDOOR WALL HEIGHT: how tall the walls stand while you are inside, in
@@ -1381,6 +1507,96 @@ function pctSlider(
   return wrap;
 }
 
+/** A MIN-MAX RANGE SLIDER: the percent slider's track with TWO knobs and the
+ *  fill between them. A touch takes the nearer knob and drags it; the knobs
+ *  can meet but never cross. `get` returns [lo, hi] in 0..1, `set` receives the
+ *  same, and `format` writes the readout in the setting's own units. */
+function rangeSlider(
+  labelText: string,
+  get: () => [number, number],
+  set: (v: [number, number]) => void,
+  opts: { format?: (v: [number, number]) => string } = {},
+): HTMLElement {
+  const clamp01 = (p: number) => Math.max(0, Math.min(1, p));
+  const format = opts.format ?? (([lo, hi]: [number, number]) => `${Math.round(lo * 100)}–${Math.round(hi * 100)}%`);
+  const wrap = mk("div", "ml-amb-slider");
+  const head = mk("div", "ml-amb-slider-head");
+  const label = mk("span", "ml-amb-slider-label");
+  label.textContent = labelText;
+  const valEl = mk("span", "ml-amb-slider-val");
+  head.append(label, valEl);
+  const track = mk("div", "ml-slider ml-range");
+  const fill = mk("div", "ml-slider-fill");
+  const knobLo = mk("div", "ml-slider-knob lo");
+  const knobHi = mk("div", "ml-slider-knob hi");
+  track.append(fill, knobLo, knobHi);
+  wrap.append(head, track);
+
+  let cur: [number, number] = get().map(clamp01) as [number, number];
+  if (cur[0] > cur[1]) cur = [cur[1], cur[0]];
+  const place = (knob: HTMLElement, p: number) => {
+    const trackW = track.clientWidth;
+    const kw = knob.offsetWidth || 22;
+    knob.style.left = `${Math.round(Math.max(0, Math.min(trackW - kw, p * trackW - kw / 2)))}px`;
+  };
+  const render = (v: [number, number]) => {
+    cur = v;
+    fill.style.left = `${(v[0] * 100).toFixed(2)}%`;
+    fill.style.width = `${((v[1] - v[0]) * 100).toFixed(2)}%`;
+    place(knobLo, v[0]);
+    place(knobHi, v[1]);
+    valEl.textContent = format(v);
+  };
+  new ResizeObserver(() => render(cur)).observe(track);
+
+  const clientToP = (clientX: number) => {
+    const rect = track.getBoundingClientRect();
+    return rect.width > 0 ? clamp01((clientX - rect.left) / rect.width) : cur[0];
+  };
+  let dragging: 0 | 1 | null = null;
+  const applyP = (raw: number) => {
+    if (dragging === null) return;
+    const v: [number, number] = [...cur] as [number, number];
+    v[dragging] = dragging === 0 ? Math.min(raw, cur[1]) : Math.max(raw, cur[0]);
+    render(v);
+    set(v);
+  };
+  track.addEventListener("pointerdown", (e) => {
+    const p = clientToP(e.clientX);
+    // The nearer knob takes the drag; a tie (both knobs together) goes to the
+    // side the finger is on, so a collapsed range can be pulled open either way.
+    const dLo = Math.abs(p - cur[0]);
+    const dHi = Math.abs(p - cur[1]);
+    dragging = dLo < dHi ? 0 : dHi < dLo ? 1 : p < cur[0] ? 0 : 1;
+    (dragging === 0 ? knobLo : knobHi).classList.add("grabbing");
+    try {
+      track.setPointerCapture(e.pointerId);
+    } catch {
+      /* capture unsupported — moves still work via the track listener */
+    }
+    applyP(p);
+    e.preventDefault();
+  });
+  track.addEventListener("pointermove", (e) => {
+    if (dragging !== null) applyP(clientToP(e.clientX));
+  });
+  for (const ev of ["pointerup", "pointercancel"] as const)
+    track.addEventListener(ev, (e) => {
+      if (dragging === null) return;
+      dragging = null;
+      knobLo.classList.remove("grabbing");
+      knobHi.classList.remove("grabbing");
+      try {
+        track.releasePointerCapture(e.pointerId);
+      } catch {
+        /* nothing captured */
+      }
+    });
+
+  render(cur);
+  return wrap;
+}
+
 /** Momentary pressed-plate feedback via pointer events: CSS :active is
  * hover-only (mobile Chrome keeps it sticky on the last tap), so touch needs
  * its own press state — added on finger-down, gone the instant the finger
@@ -1663,7 +1879,7 @@ function injectStyles() {
      fades. Handedness changes keep the plain anchor transitions — nothing
      else moves during a hand switch. !important — these transitions live
      in four different injected sheets. */
-  :root.ml-noanim .ml-bars,:root.ml-noanim .ml-clock,
+  :root.ml-noanim .ml-bars,:root.ml-noanim .ml-clock,:root.ml-noanim .ml-wikibtn,:root.ml-noanim .ml-wikinear,
   :root.ml-noanim .ml-chatlog,:root.ml-noanim .ml-chatinput{transition:none!important}
   /* the rotation veil: theme surface over the game view while the canvas
      re-fits (beginFlip). Fades on the compositor once the world is ready. */
@@ -1846,11 +2062,40 @@ function injectStyles() {
   .ml-amb-check.on::after{content:"";position:absolute;left:5px;top:1px;width:5px;height:10px;
     border:solid #fff;border-width:0 2px 2px 0;transform:rotate(45deg)}
   /* ── bird-density slider ── */
+  /* EVERY SLIDER ROW LEAVES A SCROLL GUTTER DOWN THE RIGHT (maintainer
+     2026-09-08, with the strip circled on a screenshot: "when scrolling in
+     settings it's hard to not by mistake edit a slider … this is because the
+     sliders spawn 100% width. I want [this area] free from sliders").
+     A track takes the value on POINTERDOWN — a tap anywhere on it jumps
+     there, which is deliberate — so the first touch of a scroll that happens
+     to land on a track has already changed the setting before it moved a
+     pixel. This gutter is a place his thumb can always start a drag safely.
+     WHY NOT touch-action:pan-y on the track instead: the browser only
+     decides a gesture is a vertical pan AFTER some movement, and pointerdown
+     has applied the value by then — the setting would change and the page
+     would scroll away from it, which is worse than today.
+     BUTTONS KEEP THE FULL WIDTH: dragging one does nothing, so there is
+     nothing to protect (his words: "buttons can still take up 100% … because
+     settings won't change if I drag the screen").
+     THE GUTTER IS ON THE TRACK, NOT THE ROW. Insetting the whole row put the
+     value readout on the track's right edge, which reads more deliberately —
+     but it also narrows the LABEL LINE, and at 100px "Light resolution ·
+     50% · 25% of the pixels" wrapped onto two centred lines and looked
+     broken. Only the track is draggable, so only the track has to move: the
+     label and its readout keep the full width and stay on one line. */
+  /* HIS THUMB, MEASURED BY HIM, NOT A TOUCH-TARGET GUIDELINE: 80px was the
+     strip he circled and it worked but ran close ("my thumb is just a little
+     bit bigger than what you simulated"). FIXED PX ON PURPOSE — a thumb is
+     the same size on every screen, so this must not be a fraction of the
+     viewport. At his 393px width it leaves the track 259px, which is still
+     ample for a percentage. */
+  :root{--ml-slider-gutter:100px}
   .ml-amb-slider{display:flex;flex-direction:column;gap:6px;width:100%;padding:0 2px 6px}
   .ml-amb-slider-head{display:flex;justify-content:space-between;align-items:baseline;
     font:600 13px/1.2 var(--sans);color:var(--ink)}
   .ml-amb-slider-val{color:var(--muted);font-variant-numeric:tabular-nums;font-family:var(--mono);font-size:12px}
-  .ml-slider{position:relative;height:26px;touch-action:none;cursor:pointer}
+  .ml-slider{position:relative;height:26px;touch-action:none;cursor:pointer;
+    margin-right:var(--ml-slider-gutter)}
   .ml-slider::before{content:"";position:absolute;left:0;right:0;top:50%;height:8px;
     transform:translateY(-50%);background:var(--surface-2);
     border:1px solid var(--border);border-radius:999px}
@@ -1860,6 +2105,7 @@ function injectStyles() {
     border-radius:50%;background:var(--surface);border:1px solid var(--border-strong);
     box-shadow:var(--shadow);pointer-events:none}
   .ml-slider-knob.grabbing{background:var(--accent-soft);border-color:var(--accent)}
+  .ml-range .ml-slider-knob.hi{z-index:1}
   /* ── chat page: log panel + input ── */
   .ml-chat{flex:1 1 auto;min-height:0;width:100%;max-width:640px;
     display:flex;flex-direction:column;gap:10px}
@@ -1909,8 +2155,18 @@ function injectStyles() {
      land on the same line — the log's max-width already reserves the pill's
      lane. :root outranks their own bottom rules whatever order the
      stylesheets were injected in. */
-  :root.ml-kb-up .ml-chatlog,
-  :root.ml-kb-up .ml-clock{bottom:calc(var(--ml-inputlift) + 56px)}
+  /* THE CHAT TEXT KEEPS THE LINE DIRECTLY ABOVE THE INPUT (maintainer
+     2026-09-03: "why can't the text appear over the input field when the
+     keyboard is opened? It appears correctly already when the keyboard is
+     not opened"). It shares that line with the Wiki/🔍 row, whose lane the
+     log's --ml-chatw reserves; the PILL steps up over both by the same
+     --ml-stack-step it uses at rest, so the stack never reorders. An earlier
+     cut lifted the log with the pill to preserve a "log and pill on one
+     line" reading — that rule was only ever about the pill being the thing
+     on the log's line, and honouring it pushed his chat a step off the
+     input for nothing. */
+  :root.ml-kb-up .ml-chatlog{bottom:calc(var(--ml-inputlift) + 56px)}
+  :root.ml-kb-up .ml-clock{bottom:calc(var(--ml-inputlift) + 56px + var(--ml-stack-step, 44px))}
   /* ── compact fits (icons stay at their authored 1x grid at every size) ── */
   @media (max-width:480px){
     .ml-btnrow{gap:6px}

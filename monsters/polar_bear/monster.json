@@ -1,0 +1,633 @@
+{
+  "id": "polar_bear",
+  "name": "Bergclaw",
+  "lore": "Carved by the glacier and jealous of it. Its frozen tusks crack shields the way spring cracks river ice.",
+  "source": {
+    "kind": "character",
+    "pixellab_id": "1b7d7ddd-d90f-4360-a716-43b09bef2926",
+    "url": "https://www.pixellab.ai/create-character/1b7d7ddd-d90f-4360-a716-43b09bef2926",
+    "prompt": "Massive polar bear-like fantasy beast with thick dirty-white fur, huge shoulders, dark blue skin visible around its face, enormous claws, frozen tusks protruding beside its mouth and chunks of ice attached to its back.",
+    "view": "low top-down",
+    "tags": [
+      "MONSTER"
+    ]
+  },
+  "size": {
+    "width": 176,
+    "height": 176
+  },
+  "native_size": {
+    "width": 176,
+    "height": 176
+  },
+  "pad": {
+    "x": 0,
+    "y": 0
+  },
+  "sprite": "polar_bear/sprite.webp",
+  "directions": [
+    "east",
+    "north",
+    "north-east",
+    "north-west",
+    "south",
+    "south-east",
+    "south-west",
+    "west"
+  ],
+  "rotations": {
+    "south": "polar_bear/rotations/south.webp",
+    "west": "polar_bear/rotations/west.webp",
+    "east": "polar_bear/rotations/east.webp",
+    "north": "polar_bear/rotations/north.webp",
+    "south-east": "polar_bear/rotations/south-east.webp",
+    "north-east": "polar_bear/rotations/north-east.webp",
+    "north-west": "polar_bear/rotations/north-west.webp",
+    "south-west": "polar_bear/rotations/south-west.webp"
+  },
+  "animations": {
+    "idle": {
+      "group_id": "1d89b274-f0e0-40b3-a715-915431068d13",
+      "source_name": "custom-Calm still idle, breathing",
+      "directions": {
+        "east": {
+          "frames": 5,
+          "strip": "polar_bear/animations/idle__east.webp",
+          "frame_paths": [
+            "polar_bear/animations/idle/east/00.webp",
+            "polar_bear/animations/idle/east/01.webp",
+            "polar_bear/animations/idle/east/02.webp",
+            "polar_bear/animations/idle/east/03.webp",
+            "polar_bear/animations/idle/east/04.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:52:20 GMT",
+          "src_frames": 5,
+          "sub": "2fc8d8e4-8a04-42d5-accd-71fbf74f31b0"
+        },
+        "north": {
+          "frames": 5,
+          "strip": "polar_bear/animations/idle__north.webp",
+          "frame_paths": [
+            "polar_bear/animations/idle/north/00.webp",
+            "polar_bear/animations/idle/north/01.webp",
+            "polar_bear/animations/idle/north/02.webp",
+            "polar_bear/animations/idle/north/03.webp",
+            "polar_bear/animations/idle/north/04.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:52:21 GMT",
+          "src_frames": 5,
+          "sub": "11673bdb-19f6-4385-b344-178b94db6ff9"
+        },
+        "north-east": {
+          "frames": 5,
+          "strip": "polar_bear/animations/idle__north-east.webp",
+          "frame_paths": [
+            "polar_bear/animations/idle/north-east/00.webp",
+            "polar_bear/animations/idle/north-east/01.webp",
+            "polar_bear/animations/idle/north-east/02.webp",
+            "polar_bear/animations/idle/north-east/03.webp",
+            "polar_bear/animations/idle/north-east/04.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:52:22 GMT",
+          "src_frames": 5,
+          "sub": "10b3781b-7f9f-4982-b824-206e24875f45"
+        },
+        "north-west": {
+          "frames": 5,
+          "strip": "polar_bear/animations/idle__north-west.webp",
+          "frame_paths": [
+            "polar_bear/animations/idle/north-west/00.webp",
+            "polar_bear/animations/idle/north-west/01.webp",
+            "polar_bear/animations/idle/north-west/02.webp",
+            "polar_bear/animations/idle/north-west/03.webp",
+            "polar_bear/animations/idle/north-west/04.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:52:24 GMT",
+          "src_frames": 5,
+          "sub": "83765dd7-a504-436d-8d92-49181d79b552"
+        },
+        "south": {
+          "frames": 5,
+          "strip": "polar_bear/animations/idle__south.webp",
+          "frame_paths": [
+            "polar_bear/animations/idle/south/00.webp",
+            "polar_bear/animations/idle/south/01.webp",
+            "polar_bear/animations/idle/south/02.webp",
+            "polar_bear/animations/idle/south/03.webp",
+            "polar_bear/animations/idle/south/04.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:52:25 GMT",
+          "src_frames": 5,
+          "sub": "f36398fa-675c-4864-acad-8bdf3708a71d"
+        },
+        "south-east": {
+          "frames": 5,
+          "strip": "polar_bear/animations/idle__south-east.webp",
+          "frame_paths": [
+            "polar_bear/animations/idle/south-east/00.webp",
+            "polar_bear/animations/idle/south-east/01.webp",
+            "polar_bear/animations/idle/south-east/02.webp",
+            "polar_bear/animations/idle/south-east/03.webp",
+            "polar_bear/animations/idle/south-east/04.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:52:26 GMT",
+          "src_frames": 5,
+          "sub": "cf0f4567-8d4b-47a8-a120-15229271c793"
+        },
+        "south-west": {
+          "frames": 5,
+          "strip": "polar_bear/animations/idle__south-west.webp",
+          "frame_paths": [
+            "polar_bear/animations/idle/south-west/00.webp",
+            "polar_bear/animations/idle/south-west/01.webp",
+            "polar_bear/animations/idle/south-west/02.webp",
+            "polar_bear/animations/idle/south-west/03.webp",
+            "polar_bear/animations/idle/south-west/04.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:52:27 GMT",
+          "src_frames": 5,
+          "sub": "05c0f0ba-96fd-467f-a3b8-50eff94de105"
+        },
+        "west": {
+          "frames": 5,
+          "strip": "polar_bear/animations/idle__west.webp",
+          "frame_paths": [
+            "polar_bear/animations/idle/west/00.webp",
+            "polar_bear/animations/idle/west/01.webp",
+            "polar_bear/animations/idle/west/02.webp",
+            "polar_bear/animations/idle/west/03.webp",
+            "polar_bear/animations/idle/west/04.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:52:28 GMT",
+          "src_frames": 5,
+          "sub": "5e63df4b-162c-4787-944f-a81a384a4a18"
+        }
+      }
+    },
+    "attack": {
+      "group_id": "408f9f76-ad6d-46e9-af75-20873b4762e9",
+      "source_name": "custom-Stomp - Raises one front leg and forcefully stomps",
+      "directions": {
+        "east": {
+          "frames": 4,
+          "strip": "polar_bear/animations/attack__east.webp",
+          "frame_paths": [
+            "polar_bear/animations/attack/east/00.webp",
+            "polar_bear/animations/attack/east/01.webp",
+            "polar_bear/animations/attack/east/02.webp",
+            "polar_bear/animations/attack/east/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:52:30 GMT",
+          "src_frames": 4,
+          "sub": "814cc37c-d7c3-4363-8aec-67be62063dce"
+        },
+        "north": {
+          "frames": 4,
+          "strip": "polar_bear/animations/attack__north.webp",
+          "frame_paths": [
+            "polar_bear/animations/attack/north/00.webp",
+            "polar_bear/animations/attack/north/01.webp",
+            "polar_bear/animations/attack/north/02.webp",
+            "polar_bear/animations/attack/north/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:52:31 GMT",
+          "src_frames": 4,
+          "sub": "8f92237b-66ee-40bf-9ca1-575c4feb7afb"
+        },
+        "north-east": {
+          "frames": 4,
+          "strip": "polar_bear/animations/attack__north-east.webp",
+          "frame_paths": [
+            "polar_bear/animations/attack/north-east/00.webp",
+            "polar_bear/animations/attack/north-east/01.webp",
+            "polar_bear/animations/attack/north-east/02.webp",
+            "polar_bear/animations/attack/north-east/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:52:32 GMT",
+          "src_frames": 4,
+          "sub": "ed090967-5757-4aef-aec0-15e68400be8c"
+        },
+        "north-west": {
+          "frames": 4,
+          "strip": "polar_bear/animations/attack__north-west.webp",
+          "frame_paths": [
+            "polar_bear/animations/attack/north-west/00.webp",
+            "polar_bear/animations/attack/north-west/01.webp",
+            "polar_bear/animations/attack/north-west/02.webp",
+            "polar_bear/animations/attack/north-west/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:52:35 GMT",
+          "src_frames": 4,
+          "sub": "3c9589e5-3c13-4e68-9016-495c6c0ba988"
+        },
+        "south": {
+          "frames": 4,
+          "strip": "polar_bear/animations/attack__south.webp",
+          "frame_paths": [
+            "polar_bear/animations/attack/south/00.webp",
+            "polar_bear/animations/attack/south/01.webp",
+            "polar_bear/animations/attack/south/02.webp",
+            "polar_bear/animations/attack/south/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:52:36 GMT",
+          "src_frames": 4,
+          "sub": "30d7f090-3f93-4af5-a18e-b4d724a351cd"
+        },
+        "south-east": {
+          "frames": 4,
+          "strip": "polar_bear/animations/attack__south-east.webp",
+          "frame_paths": [
+            "polar_bear/animations/attack/south-east/00.webp",
+            "polar_bear/animations/attack/south-east/01.webp",
+            "polar_bear/animations/attack/south-east/02.webp",
+            "polar_bear/animations/attack/south-east/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:52:37 GMT",
+          "src_frames": 4,
+          "sub": "617be63f-6289-4495-916a-a34b57b018e0"
+        },
+        "south-west": {
+          "frames": 4,
+          "strip": "polar_bear/animations/attack__south-west.webp",
+          "frame_paths": [
+            "polar_bear/animations/attack/south-west/00.webp",
+            "polar_bear/animations/attack/south-west/01.webp",
+            "polar_bear/animations/attack/south-west/02.webp",
+            "polar_bear/animations/attack/south-west/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:52:38 GMT",
+          "src_frames": 4,
+          "sub": "d453a06d-7eb7-4bce-adee-b75a3ed6fcfd"
+        },
+        "west": {
+          "frames": 4,
+          "strip": "polar_bear/animations/attack__west.webp",
+          "frame_paths": [
+            "polar_bear/animations/attack/west/00.webp",
+            "polar_bear/animations/attack/west/01.webp",
+            "polar_bear/animations/attack/west/02.webp",
+            "polar_bear/animations/attack/west/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:52:40 GMT",
+          "src_frames": 4,
+          "sub": "81e3ecad-96e1-4a8f-8385-90ed737c727e"
+        }
+      }
+    },
+    "angry": {
+      "group_id": "a244b47d-75a3-4424-b26a-7d751305b9fa",
+      "source_name": "custom-angry combat idle, frustrated",
+      "directions": {
+        "east": {
+          "frames": 4,
+          "strip": "polar_bear/animations/angry__east.webp",
+          "frame_paths": [
+            "polar_bear/animations/angry/east/00.webp",
+            "polar_bear/animations/angry/east/01.webp",
+            "polar_bear/animations/angry/east/02.webp",
+            "polar_bear/animations/angry/east/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:52:41 GMT",
+          "src_frames": 4,
+          "sub": "722b4877-73fd-48ae-9271-92553a27fed1"
+        },
+        "north": {
+          "frames": 4,
+          "strip": "polar_bear/animations/angry__north.webp",
+          "frame_paths": [
+            "polar_bear/animations/angry/north/00.webp",
+            "polar_bear/animations/angry/north/01.webp",
+            "polar_bear/animations/angry/north/02.webp",
+            "polar_bear/animations/angry/north/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:52:42 GMT",
+          "src_frames": 4,
+          "sub": "85cde8f5-0a60-4356-bb32-9e962af747ad"
+        },
+        "north-east": {
+          "frames": 4,
+          "strip": "polar_bear/animations/angry__north-east.webp",
+          "frame_paths": [
+            "polar_bear/animations/angry/north-east/00.webp",
+            "polar_bear/animations/angry/north-east/01.webp",
+            "polar_bear/animations/angry/north-east/02.webp",
+            "polar_bear/animations/angry/north-east/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:52:43 GMT",
+          "src_frames": 4,
+          "sub": "4dc40c46-2368-41c0-8cb3-a76b4076e462"
+        },
+        "north-west": {
+          "frames": 4,
+          "strip": "polar_bear/animations/angry__north-west.webp",
+          "frame_paths": [
+            "polar_bear/animations/angry/north-west/00.webp",
+            "polar_bear/animations/angry/north-west/01.webp",
+            "polar_bear/animations/angry/north-west/02.webp",
+            "polar_bear/animations/angry/north-west/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:52:45 GMT",
+          "src_frames": 4,
+          "sub": "c6dbeaca-5db0-4eb3-8171-a28880db765f"
+        },
+        "south": {
+          "frames": 4,
+          "strip": "polar_bear/animations/angry__south.webp",
+          "frame_paths": [
+            "polar_bear/animations/angry/south/00.webp",
+            "polar_bear/animations/angry/south/01.webp",
+            "polar_bear/animations/angry/south/02.webp",
+            "polar_bear/animations/angry/south/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:52:46 GMT",
+          "src_frames": 4,
+          "sub": "7459b17d-da8d-46cf-b9ce-bdc4decbbb16"
+        },
+        "south-east": {
+          "frames": 4,
+          "strip": "polar_bear/animations/angry__south-east.webp",
+          "frame_paths": [
+            "polar_bear/animations/angry/south-east/00.webp",
+            "polar_bear/animations/angry/south-east/01.webp",
+            "polar_bear/animations/angry/south-east/02.webp",
+            "polar_bear/animations/angry/south-east/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:52:47 GMT",
+          "src_frames": 4,
+          "sub": "d31461e8-1294-452b-bf93-ddeddc7c20a8"
+        },
+        "south-west": {
+          "frames": 4,
+          "strip": "polar_bear/animations/angry__south-west.webp",
+          "frame_paths": [
+            "polar_bear/animations/angry/south-west/00.webp",
+            "polar_bear/animations/angry/south-west/01.webp",
+            "polar_bear/animations/angry/south-west/02.webp",
+            "polar_bear/animations/angry/south-west/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:52:48 GMT",
+          "src_frames": 4,
+          "sub": "c901bf0e-ac31-41d0-b426-1209afcd8cb8"
+        },
+        "west": {
+          "frames": 4,
+          "strip": "polar_bear/animations/angry__west.webp",
+          "frame_paths": [
+            "polar_bear/animations/angry/west/00.webp",
+            "polar_bear/animations/angry/west/01.webp",
+            "polar_bear/animations/angry/west/02.webp",
+            "polar_bear/animations/angry/west/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:52:52 GMT",
+          "src_frames": 4,
+          "sub": "37463851-7a06-4c1d-b073-3f88bb98731e"
+        }
+      }
+    },
+    "die": {
+      "group_id": "117e2568-d215-4d2d-91c5-aab6b57f1ff7",
+      "source_name": "custom-faints and fades away",
+      "directions": {
+        "east": {
+          "frames": 4,
+          "strip": "polar_bear/animations/die__east.webp",
+          "frame_paths": [
+            "polar_bear/animations/die/east/00.webp",
+            "polar_bear/animations/die/east/01.webp",
+            "polar_bear/animations/die/east/02.webp",
+            "polar_bear/animations/die/east/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:52:54 GMT",
+          "src_frames": 4,
+          "sub": "b939b7ad-db21-403c-9b6e-e4005327d38c"
+        },
+        "north": {
+          "frames": 4,
+          "strip": "polar_bear/animations/die__north.webp",
+          "frame_paths": [
+            "polar_bear/animations/die/north/00.webp",
+            "polar_bear/animations/die/north/01.webp",
+            "polar_bear/animations/die/north/02.webp",
+            "polar_bear/animations/die/north/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:52:55 GMT",
+          "src_frames": 4,
+          "sub": "e4840766-73b7-42a7-b93b-669c9b8fe374"
+        },
+        "north-east": {
+          "frames": 4,
+          "strip": "polar_bear/animations/die__north-east.webp",
+          "frame_paths": [
+            "polar_bear/animations/die/north-east/00.webp",
+            "polar_bear/animations/die/north-east/01.webp",
+            "polar_bear/animations/die/north-east/02.webp",
+            "polar_bear/animations/die/north-east/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:52:56 GMT",
+          "src_frames": 4,
+          "sub": "08a7bae3-e89a-4977-aa85-c6dc30414625"
+        },
+        "north-west": {
+          "frames": 4,
+          "strip": "polar_bear/animations/die__north-west.webp",
+          "frame_paths": [
+            "polar_bear/animations/die/north-west/00.webp",
+            "polar_bear/animations/die/north-west/01.webp",
+            "polar_bear/animations/die/north-west/02.webp",
+            "polar_bear/animations/die/north-west/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:52:57 GMT",
+          "src_frames": 4,
+          "sub": "7dc2522e-8537-486d-a272-4f1e770d96a1"
+        },
+        "south": {
+          "frames": 4,
+          "strip": "polar_bear/animations/die__south.webp",
+          "frame_paths": [
+            "polar_bear/animations/die/south/00.webp",
+            "polar_bear/animations/die/south/01.webp",
+            "polar_bear/animations/die/south/02.webp",
+            "polar_bear/animations/die/south/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:52:58 GMT",
+          "src_frames": 4,
+          "sub": "5a0f50d7-58b4-4339-a9a9-0488152a5715"
+        },
+        "south-east": {
+          "frames": 4,
+          "strip": "polar_bear/animations/die__south-east.webp",
+          "frame_paths": [
+            "polar_bear/animations/die/south-east/00.webp",
+            "polar_bear/animations/die/south-east/01.webp",
+            "polar_bear/animations/die/south-east/02.webp",
+            "polar_bear/animations/die/south-east/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:53:00 GMT",
+          "src_frames": 4,
+          "sub": "605d3053-89b4-46be-ae85-6c4253773f8d"
+        },
+        "south-west": {
+          "frames": 4,
+          "strip": "polar_bear/animations/die__south-west.webp",
+          "frame_paths": [
+            "polar_bear/animations/die/south-west/00.webp",
+            "polar_bear/animations/die/south-west/01.webp",
+            "polar_bear/animations/die/south-west/02.webp",
+            "polar_bear/animations/die/south-west/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:53:01 GMT",
+          "src_frames": 4,
+          "sub": "0c67596d-b4be-47d1-8ff3-e983ad257411"
+        },
+        "west": {
+          "frames": 4,
+          "strip": "polar_bear/animations/die__west.webp",
+          "frame_paths": [
+            "polar_bear/animations/die/west/00.webp",
+            "polar_bear/animations/die/west/01.webp",
+            "polar_bear/animations/die/west/02.webp",
+            "polar_bear/animations/die/west/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:53:03 GMT",
+          "src_frames": 4,
+          "sub": "785c4ea4-9d62-45fb-ab72-fa7883e24074"
+        }
+      }
+    },
+    "walk": {
+      "group_id": "80c5b0c0-173f-47c1-b365-602acedfb196",
+      "source_name": "custom-walk loop. full walk cycle. sh",
+      "directions": {
+        "east": {
+          "frames": 6,
+          "strip": "polar_bear/animations/walk__east.webp",
+          "frame_paths": [
+            "polar_bear/animations/walk/east/00.webp",
+            "polar_bear/animations/walk/east/01.webp",
+            "polar_bear/animations/walk/east/02.webp",
+            "polar_bear/animations/walk/east/03.webp",
+            "polar_bear/animations/walk/east/04.webp",
+            "polar_bear/animations/walk/east/05.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:53:04 GMT",
+          "src_frames": 6,
+          "sub": "d9cc96b6-b2a1-4cd7-9816-9b81cf5d6f47"
+        },
+        "north": {
+          "frames": 6,
+          "strip": "polar_bear/animations/walk__north.webp",
+          "frame_paths": [
+            "polar_bear/animations/walk/north/00.webp",
+            "polar_bear/animations/walk/north/01.webp",
+            "polar_bear/animations/walk/north/02.webp",
+            "polar_bear/animations/walk/north/03.webp",
+            "polar_bear/animations/walk/north/04.webp",
+            "polar_bear/animations/walk/north/05.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:53:05 GMT",
+          "src_frames": 6,
+          "sub": "fad33fe0-cc50-4995-a73b-711f31185130"
+        },
+        "north-east": {
+          "frames": 6,
+          "strip": "polar_bear/animations/walk__north-east.webp",
+          "frame_paths": [
+            "polar_bear/animations/walk/north-east/00.webp",
+            "polar_bear/animations/walk/north-east/01.webp",
+            "polar_bear/animations/walk/north-east/02.webp",
+            "polar_bear/animations/walk/north-east/03.webp",
+            "polar_bear/animations/walk/north-east/04.webp",
+            "polar_bear/animations/walk/north-east/05.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:53:07 GMT",
+          "src_frames": 6,
+          "sub": "4df9ce81-78d8-4b9a-a6a4-e20669d1efd2"
+        },
+        "north-west": {
+          "frames": 6,
+          "strip": "polar_bear/animations/walk__north-west.webp",
+          "frame_paths": [
+            "polar_bear/animations/walk/north-west/00.webp",
+            "polar_bear/animations/walk/north-west/01.webp",
+            "polar_bear/animations/walk/north-west/02.webp",
+            "polar_bear/animations/walk/north-west/03.webp",
+            "polar_bear/animations/walk/north-west/04.webp",
+            "polar_bear/animations/walk/north-west/05.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:53:09 GMT",
+          "src_frames": 6,
+          "sub": "149e3d4a-f3d6-482f-9944-2505d6dda116"
+        },
+        "south": {
+          "frames": 6,
+          "strip": "polar_bear/animations/walk__south.webp",
+          "frame_paths": [
+            "polar_bear/animations/walk/south/00.webp",
+            "polar_bear/animations/walk/south/01.webp",
+            "polar_bear/animations/walk/south/02.webp",
+            "polar_bear/animations/walk/south/03.webp",
+            "polar_bear/animations/walk/south/04.webp",
+            "polar_bear/animations/walk/south/05.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:53:11 GMT",
+          "src_frames": 6,
+          "sub": "3b29c887-6049-428c-9e63-ad06eb7e73b0"
+        },
+        "south-east": {
+          "frames": 6,
+          "strip": "polar_bear/animations/walk__south-east.webp",
+          "frame_paths": [
+            "polar_bear/animations/walk/south-east/00.webp",
+            "polar_bear/animations/walk/south-east/01.webp",
+            "polar_bear/animations/walk/south-east/02.webp",
+            "polar_bear/animations/walk/south-east/03.webp",
+            "polar_bear/animations/walk/south-east/04.webp",
+            "polar_bear/animations/walk/south-east/05.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:53:12 GMT",
+          "src_frames": 6,
+          "sub": "80ef8976-bffd-4a21-b03b-ff94dbfa7924"
+        },
+        "south-west": {
+          "frames": 6,
+          "strip": "polar_bear/animations/walk__south-west.webp",
+          "frame_paths": [
+            "polar_bear/animations/walk/south-west/00.webp",
+            "polar_bear/animations/walk/south-west/01.webp",
+            "polar_bear/animations/walk/south-west/02.webp",
+            "polar_bear/animations/walk/south-west/03.webp",
+            "polar_bear/animations/walk/south-west/04.webp",
+            "polar_bear/animations/walk/south-west/05.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:53:13 GMT",
+          "src_frames": 6,
+          "sub": "a90503bc-18e6-4edc-97e4-82f984ee967e"
+        },
+        "west": {
+          "frames": 6,
+          "strip": "polar_bear/animations/walk__west.webp",
+          "frame_paths": [
+            "polar_bear/animations/walk/west/00.webp",
+            "polar_bear/animations/walk/west/01.webp",
+            "polar_bear/animations/walk/west/02.webp",
+            "polar_bear/animations/walk/west/03.webp",
+            "polar_bear/animations/walk/west/04.webp",
+            "polar_bear/animations/walk/west/05.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:53:15 GMT",
+          "src_frames": 6,
+          "sub": "cfcf02a4-1e14-4a16-a126-417753b1d7d8"
+        }
+      }
+    }
+  },
+  "states": {
+    "idle": "idle",
+    "walk": "walk",
+    "angry": "angry",
+    "attack": "attack",
+    "die": "die"
+  },
+  "unresolved_takes": [],
+  "synced_from_pixellab": true
+}

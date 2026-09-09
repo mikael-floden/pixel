@@ -1,0 +1,12 @@
+{
+ "lower": "light_soil",
+ "upper": "grey_stone",
+ "boundary_amplitude": 0.3,
+ "boundary_seed": 1,
+ "n_tiles": 16,
+ "size": [
+  64,
+  46
+ ],
+ "note": "Wang corner set: index = 8*NW + 4*NE + 2*SW + 1*SE, a set bit meaning grey_stone. INDEX 0 IS light_soil - the endpoint's convention is that index 0 holds the material named SECOND in the generation description, index 15 the first."
+}

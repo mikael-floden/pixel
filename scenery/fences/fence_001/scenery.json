@@ -1,0 +1,226 @@
+{
+  "format": "scenery-piece@2",
+  "id": "fence_001",
+  "group": "fences",
+  "rank": 10,
+  "index": 1,
+  "name": "Lichen-spotted spruce rails 001",
+  "lights": null,
+  "variety": "lichen-spotted spruce rails",
+  "glow_concept": null,
+  "prompt": "a short freestanding run of rough wooden fence, two or three posts with split rails between them, lichen-spotted spruce rails, completely unlit, no glow, no light sources, no self-emission",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 128,
+  "sprite": "fences/fence_001/sprite.webp",
+  "placement": {
+    "world_height_m": 1.368,
+    "world_px_height": 70,
+    "character_height_px": 87,
+    "character_height_m": 1.7,
+    "note": "ONE SCENERY PIXEL IS ONE PLAYER PIXEL. world_px_height IS the art's own alpha bbox height, so scenery is placed into the world at 1:1 exactly as the avatar is (setScale(1)) and the two share one pixel grid. The CAMERA still zooms the whole scene \u2014 that is uniform and correct; what must never happen is scenery being resampled on its own, against the player. world_height_m is what the art reads as beside a 87px character; declared_height_m is what it was once declared to be, and a gap between them means the ART is the wrong size.",
+    "declared_height_m": 0.78,
+    "content_box": [
+      4,
+      30,
+      126,
+      100
+    ],
+    "content_px_height": 70,
+    "canvas_render_px": 128
+  },
+  "pixellab_object_id": "6dbd0a38-80d9-47e1-b981-e125d7ebfc7d",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)",
+  "must_be_imbplemented_with_random_hflip": true,
+  "generated_at": "2026-08-12T23:56:00+00:00",
+  "states": {
+    "LIT_1": {
+      "sprite": "fences/fence_001/lit_1/sprite.webp",
+      "pixellab_object_id": "26f7e285-8572-4a79-b477-47292d1fded0",
+      "generated_at": "2026-08-16T11:57:44+00:00",
+      "glow_concept": "glowworms dotted along the lower rail",
+      "difference_from_source": 0.8754,
+      "glow_score": 0.0118,
+      "rotations": {
+        "south-east": "fences/fence_001/lit_1/rotations/south-east.webp",
+        "south-west": "fences/fence_001/lit_1/rotations/south-west.webp",
+        "south": "fences/fence_001/lit_1/sprite.webp"
+      },
+      "animations": {
+        "motion": {
+          "group_id": "96995aba-6dd9-4826-bc8a-e79089e72936",
+          "description": "This is the same picture in every frame. ONLY the small green lights along the rail move, drifting slowly and blinking. Everything else is frozen and pixel-for-pixel identical in every frame. Do not redraw anything else, and do not add or remove anything.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "fences/fence_001/lit_1/animations/motion/00.webp",
+            "fences/fence_001/lit_1/animations/motion/01.webp",
+            "fences/fence_001/lit_1/animations/motion/02.webp",
+            "fences/fence_001/lit_1/animations/motion/03.webp",
+            "fences/fence_001/lit_1/animations/motion/04.webp"
+          ],
+          "strip": "fences/fence_001/lit_1/animations/motion__strip.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-08-29T12:41:39+00:00",
+          "brief": "R17",
+          "review": "ANIMATION_PROBABLY_GOOD",
+          "review_metrics": {
+            "class": "fire",
+            "base": 0.0288,
+            "still": 0.74
+          },
+          "light_frames": [
+            {
+              "intensity": 1.5,
+              "dx": -0.3,
+              "dy": 14.0
+            },
+            {
+              "intensity": 0.577,
+              "dx": -1.7,
+              "dy": 14.1
+            },
+            {
+              "intensity": 0.5,
+              "dx": 16.5,
+              "dy": 13.5
+            },
+            {
+              "intensity": 0.5,
+              "dx": 5.0,
+              "dy": 1.3
+            },
+            {
+              "intensity": 1.5,
+              "dx": 0.6,
+              "dy": 10.1
+            }
+          ]
+        }
+      }
+    },
+    "LIT_2": {
+      "sprite": "fences/fence_001/lit_2/sprite.webp",
+      "pixellab_object_id": "08496bf1-b041-434f-90c2-632ff63ea3d8",
+      "generated_at": "2026-08-16T11:57:55+00:00",
+      "glow_concept": "pale soulstone cap stones on the posts",
+      "difference_from_source": 0.7581,
+      "glow_score": 0.0437,
+      "rotations": {
+        "south-east": "fences/fence_001/lit_2/rotations/south-east.webp",
+        "south-west": "fences/fence_001/lit_2/rotations/south-west.webp",
+        "south": "fences/fence_001/lit_2/sprite.webp"
+      },
+      "animations": {
+        "motion": {
+          "group_id": "66f4f3df-65c4-4775-9f5b-8df3a0f3dbce",
+          "description": "This is the same picture in every frame. ONLY the light of the two pale post caps brightens a little and returns. Nothing in the picture may change size, shape or position. The last frame must return to exactly how the first frame looks, so the loop joins. Nothing may become darker than it is in the first frame. Everything else is frozen and pixel-for-pixel identical. Do not redraw anything else, and do not add or remove anything.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "fences/fence_001/lit_2/animations/motion/00.webp",
+            "fences/fence_001/lit_2/animations/motion/01.webp",
+            "fences/fence_001/lit_2/animations/motion/02.webp",
+            "fences/fence_001/lit_2/animations/motion/03.webp",
+            "fences/fence_001/lit_2/animations/motion/04.webp"
+          ],
+          "strip": "fences/fence_001/lit_2/animations/motion__strip.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-08-29T14:25:32+00:00",
+          "brief": "U5",
+          "review": "ANIMATION_PROBABLY_GOOD",
+          "review_metrics": {
+            "base_outline": 0.0107
+          },
+          "light_frames": [
+            {
+              "intensity": 0.5,
+              "dx": -10.1,
+              "dy": -31.2
+            },
+            {
+              "intensity": 0.5,
+              "dx": 48.0,
+              "dy": -30.0
+            },
+            {
+              "intensity": 1.0,
+              "dx": -43.0,
+              "dy": -30.5
+            },
+            {
+              "intensity": 1.5,
+              "dx": 2.7,
+              "dy": -31.5
+            },
+            {
+              "intensity": 0.5,
+              "dx": -48.0,
+              "dy": -33.0
+            }
+          ]
+        }
+      }
+    },
+    "NOT_LIT_1": {
+      "sprite": "fences/fence_001/sprite.webp",
+      "pixellab_object_id": "6dbd0a38-80d9-47e1-b981-e125d7ebfc7d",
+      "generated_at": "2026-08-12T23:56:00+00:00",
+      "rotations": {
+        "south-east": "fences/fence_001/rotations/south-east.webp",
+        "south-west": "fences/fence_001/rotations/south-west.webp",
+        "south": "fences/fence_001/sprite.webp"
+      }
+    },
+    "NOT_LIT_2": {
+      "sprite": "fences/fence_001/not_lit_2/sprite.webp",
+      "pixellab_object_id": "c57620bf-645b-41d3-9f58-a113c8f9cf46",
+      "generated_at": "2026-08-16T11:56:51+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.6735,
+      "glow_score": 0.0,
+      "rotations": {
+        "south-east": "fences/fence_001/not_lit_2/rotations/south-east.webp",
+        "south-west": "fences/fence_001/not_lit_2/rotations/south-west.webp",
+        "south": "fences/fence_001/not_lit_2/sprite.webp"
+      }
+    }
+  },
+  "collision": true,
+  "hitbox_shape": "rect",
+  "light": {
+    "strength": 0.05,
+    "color": "#d9ff57",
+    "radius": 1,
+    "reference": "the spawn bonfire is 1.0 (radius 7); strength 0 is no light",
+    "states": {
+      "LIT_1": {
+        "strength": 0.06,
+        "color": "#d9ff57",
+        "radius": 1
+      },
+      "LIT_2": {
+        "strength": 0.06,
+        "color": "#ebfaff",
+        "radius": 1
+      }
+    },
+    "kind": "glow/bio",
+    "flame": false,
+    "embers": false
+  }
+}

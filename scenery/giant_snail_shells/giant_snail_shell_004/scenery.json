@@ -1,0 +1,80 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-14T04:35:48+00:00",
+  "id": "giant_snail_shell_004",
+  "group": "giant_snail_shells",
+  "rank": 116,
+  "index": 4,
+  "name": "Chalk-white shell 004",
+  "lights": null,
+  "variety": "chalk-white shell",
+  "modifier": "home to nesting birds",
+  "glow_concept": "glow-snails clustered on the rim",
+  "prompt": "an enormous empty spiral snail shell resting on its side in the grass, weathered and mossy, big enough to shelter in, chalk-white shell, home to nesting birds, roughly six feet tall, human height, self-emissive at night, softly radiating light: glow-snails clustered on the rim",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 64,
+  "sprite": "giant_snail_shells/giant_snail_shell_004/sprite.webp",
+  "placement": {
+    "world_height_m": 1.055,
+    "world_px_height": 54,
+    "character_height_px": 87,
+    "character_height_m": 1.7,
+    "note": "ONE SCENERY PIXEL IS ONE PLAYER PIXEL. world_px_height IS the art's own alpha bbox height, so scenery is placed into the world at 1:1 exactly as the avatar is (setScale(1)) and the two share one pixel grid. The CAMERA still zooms the whole scene \u2014 that is uniform and correct; what must never happen is scenery being resampled on its own, against the player. world_height_m is what the art reads as beside a 87px character; declared_height_m is what it was once declared to be, and a gap between them means the ART is the wrong size.",
+    "declared_height_m": 1.22,
+    "content_box": [
+      5,
+      8,
+      62,
+      62
+    ],
+    "content_px_height": 54,
+    "canvas_render_px": 64
+  },
+  "pixellab_object_id": "cc6abfc6-6981-49f1-8c5d-1a9bd7911d2d",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)",
+  "must_be_imbplemented_with_random_hflip": true,
+  "states": {
+    "NOT_LIT_3": {
+      "sprite": "giant_snail_shells/giant_snail_shell_004/sprite.webp",
+      "pixellab_object_id": "cc6abfc6-6981-49f1-8c5d-1a9bd7911d2d",
+      "generated_at": "2026-08-14T04:35:48+00:00",
+      "relit_from": "LIT_1"
+    },
+    "NOT_LIT_4": {
+      "sprite": "giant_snail_shells/giant_snail_shell_004/not_lit_4/sprite.webp",
+      "pixellab_object_id": "736b3d43-3078-4554-bcfb-cd4979f3641a",
+      "generated_at": "2026-08-16T14:32:41+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.8106,
+      "glow_score": 0.021,
+      "relit_from": "LIT_2"
+    },
+    "NOT_LIT_5": {
+      "sprite": "giant_snail_shells/giant_snail_shell_004/not_lit_5/sprite.webp",
+      "pixellab_object_id": "12273450-61ce-4f0b-8a68-e52b142659d7",
+      "generated_at": "2026-08-16T14:32:27+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.7699,
+      "glow_score": 0.1425,
+      "relit_from": "LIT_3"
+    },
+    "NOT_LIT_6": {
+      "sprite": "giant_snail_shells/giant_snail_shell_004/not_lit_6/sprite.webp",
+      "pixellab_object_id": "26a3994b-0eb5-4e7f-8a43-c1a801d55d19",
+      "generated_at": "2026-08-16T14:32:52+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.4046,
+      "glow_score": 0.1109,
+      "relit_from": "LIT_4"
+    }
+  },
+  "collision": true,
+  "hitbox_shape": "ellipse"
+}

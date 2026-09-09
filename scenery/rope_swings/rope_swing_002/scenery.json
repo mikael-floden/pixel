@@ -1,0 +1,182 @@
+{
+  "format": "scenery-piece@2",
+  "id": "rope_swing_002",
+  "group": "rope_swings",
+  "rank": 90,
+  "index": 2,
+  "name": "Plank seat, hemp ropes 002",
+  "lights": null,
+  "variety": "plank seat, hemp ropes",
+  "glow_concept": "the empty seat glowing softly as if just left",
+  "prompt": "a wooden swing hanging by two ropes from a stout timber frame, its plank seat swaying above a patch of worn bare ground, plank seat, hemp ropes, large, well above head height of a person, self-emissive at night, softly radiating light: the empty seat glowing softly as if just left",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 128,
+  "sprite": "rope_swings/rope_swing_002/sprite.webp",
+  "placement": {
+    "world_height_m": 1.876,
+    "world_px_height": 96,
+    "character_height_px": 87,
+    "character_height_m": 1.7,
+    "note": "ONE SCENERY PIXEL IS ONE PLAYER PIXEL. world_px_height IS the art's own alpha bbox height, so scenery is placed into the world at 1:1 exactly as the avatar is (setScale(1)) and the two share one pixel grid. The CAMERA still zooms the whole scene \u2014 that is uniform and correct; what must never happen is scenery being resampled on its own, against the player. world_height_m is what the art reads as beside a 87px character; declared_height_m is what it was once declared to be, and a gap between them means the ART is the wrong size.",
+    "declared_height_m": 2.13,
+    "content_box": [
+      10,
+      17,
+      119,
+      113
+    ],
+    "content_px_height": 96,
+    "canvas_render_px": 128
+  },
+  "pixellab_object_id": "16e67abf-8d56-4081-a32c-4796218f5a9d",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)",
+  "must_be_imbplemented_with_random_hflip": true,
+  "generated_at": "2026-08-13T05:54:23+00:00",
+  "states": {
+    "NOT_LIT_3": {
+      "sprite": "rope_swings/rope_swing_002/sprite.webp",
+      "pixellab_object_id": "16e67abf-8d56-4081-a32c-4796218f5a9d",
+      "generated_at": "2026-08-13T05:54:23+00:00",
+      "relit_from": "LIT_1",
+      "rotations": {
+        "south-east": "rope_swings/rope_swing_002/rotations/south-east.webp",
+        "south-west": "rope_swings/rope_swing_002/rotations/south-west.webp",
+        "south": "rope_swings/rope_swing_002/sprite.webp"
+      }
+    },
+    "NOT_LIT_4": {
+      "sprite": "rope_swings/rope_swing_002/not_lit_4/sprite.webp",
+      "pixellab_object_id": "af21e19a-c295-49ca-94c6-7b3bda33107b",
+      "generated_at": "2026-08-16T20:17:41+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.8121,
+      "glow_score": 0.1305,
+      "relit_from": "LIT_2",
+      "rotations": {
+        "south-east": "rope_swings/rope_swing_002/not_lit_4/rotations/south-east.webp",
+        "south-west": "rope_swings/rope_swing_002/not_lit_4/rotations/south-west.webp",
+        "south": "rope_swings/rope_swing_002/not_lit_4/sprite.webp"
+      },
+      "animations": {
+        "motion": {
+          "group_id": "5a4616c0-070b-41e8-85c2-0f97e75a6cca",
+          "description": "This is the same picture in every frame. ONLY the hanging bench moves, swinging. Nothing else moves, bends or leans, and nothing changes size, shape or position. The last frame must return to exactly how the first frame looks, so the loop joins. Nothing may become darker than it is in the first frame. Do not redraw anything else, and do not add or remove anything.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "rope_swings/rope_swing_002/not_lit_4/animations/motion/00.webp",
+            "rope_swings/rope_swing_002/not_lit_4/animations/motion/01.webp",
+            "rope_swings/rope_swing_002/not_lit_4/animations/motion/02.webp",
+            "rope_swings/rope_swing_002/not_lit_4/animations/motion/03.webp",
+            "rope_swings/rope_swing_002/not_lit_4/animations/motion/04.webp"
+          ],
+          "strip": "rope_swings/rope_swing_002/not_lit_4/animations/motion__strip.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-08-29T15:37:02+00:00",
+          "brief": "X21",
+          "review": "ANIMATION_PROBABLY_BAD",
+          "review_metrics": {
+            "class": "rigid",
+            "base": 0.17,
+            "still": 0.517
+          }
+        }
+      }
+    },
+    "NOT_LIT_5": {
+      "sprite": "rope_swings/rope_swing_002/not_lit_5/sprite.webp",
+      "pixellab_object_id": "4769dfe9-9511-4d66-8b42-7b61aee52dcb",
+      "generated_at": "2026-08-16T20:17:22+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.6097,
+      "glow_score": 0.0783,
+      "relit_from": "LIT_3",
+      "rotations": {
+        "south-east": "rope_swings/rope_swing_002/not_lit_5/rotations/south-east.webp",
+        "south-west": "rope_swings/rope_swing_002/not_lit_5/rotations/south-west.webp",
+        "south": "rope_swings/rope_swing_002/not_lit_5/sprite.webp"
+      },
+      "animations": {
+        "motion": {
+          "group_id": "1d566457-e58c-4671-a280-686f6f8c0f31",
+          "description": "This is the same picture in every frame. ONLY the hanging bench swings a little to one side and back. It moves as one solid piece and keeps exactly the same shape, size and colours the whole time it moves. It is never redrawn, never reshaped and never changes its outline. Everything else in the picture is copied from the first frame exactly, pixel for pixel, unchanged in shape, size, position and colour. No outline anywhere is redrawn. The last frame matches the first frame exactly, so the loop joins.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "rope_swings/rope_swing_002/not_lit_5/animations/motion/00.webp",
+            "rope_swings/rope_swing_002/not_lit_5/animations/motion/01.webp",
+            "rope_swings/rope_swing_002/not_lit_5/animations/motion/02.webp",
+            "rope_swings/rope_swing_002/not_lit_5/animations/motion/03.webp",
+            "rope_swings/rope_swing_002/not_lit_5/animations/motion/04.webp"
+          ],
+          "strip": "rope_swings/rope_swing_002/not_lit_5/animations/motion__strip.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-08-29T16:47:12+00:00",
+          "brief": "Y22",
+          "review": "ANIMATION_PROBABLY_GOOD",
+          "review_metrics": {
+            "base_outline": 0.0
+          }
+        }
+      }
+    },
+    "NOT_LIT_6": {
+      "sprite": "rope_swings/rope_swing_002/not_lit_6/sprite.webp",
+      "pixellab_object_id": "6b92cbe5-a223-4efe-8417-06bd2086779c",
+      "generated_at": "2026-08-16T20:17:23+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.5387,
+      "glow_score": 0.0815,
+      "relit_from": "LIT_4",
+      "rotations": {
+        "south-east": "rope_swings/rope_swing_002/not_lit_6/rotations/south-east.webp",
+        "south-west": "rope_swings/rope_swing_002/not_lit_6/rotations/south-west.webp",
+        "south": "rope_swings/rope_swing_002/not_lit_6/sprite.webp"
+      },
+      "animations": {
+        "motion": {
+          "group_id": "82a6664b-ecaa-4d2d-a49d-abbf5d835300",
+          "description": "This is the same picture in every frame. ONLY the hanging seat swings. It moves as one solid piece and keeps exactly the same shape, size and colours the whole time it moves. It is never redrawn, never reshaped and never changes its outline. Everything else in the picture is copied from the first frame exactly, pixel for pixel, unchanged in shape, size, position and colour. No outline anywhere is redrawn. The last frame matches the first frame exactly, so the loop joins.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "rope_swings/rope_swing_002/not_lit_6/animations/motion/00.webp",
+            "rope_swings/rope_swing_002/not_lit_6/animations/motion/01.webp",
+            "rope_swings/rope_swing_002/not_lit_6/animations/motion/02.webp",
+            "rope_swings/rope_swing_002/not_lit_6/animations/motion/03.webp",
+            "rope_swings/rope_swing_002/not_lit_6/animations/motion/04.webp"
+          ],
+          "strip": "rope_swings/rope_swing_002/not_lit_6/animations/motion__strip.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-08-29T16:56:48+00:00",
+          "brief": "Z22",
+          "review": "ANIMATION_PROBABLY_GOOD",
+          "review_metrics": {
+            "base_outline": 0.0
+          }
+        }
+      }
+    }
+  },
+  "collision": true,
+  "hitbox_shape": "rect"
+}

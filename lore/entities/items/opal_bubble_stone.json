@@ -1,0 +1,23 @@
+{
+  "domain": "items",
+  "id": "opal_bubble_stone",
+  "name_seen": "Soulstone",
+  "law": "V",
+  "description": "An opal shell of soap-bubble colours. Beautiful, valuable, and belonging to nothing anyone has met.",
+  "lore": [
+    "Two hundred and sixty-five gold on a good day, and the honest sellers will tell you the number is invented. A price in this trade is a story about a creature: how hard it is to find, how hard it is to break the shape, how many crackers walked home. Take the creature out and the floor goes with it. [[lore/the_gold_agreement|Gold]] is the one substance in the country that never drifts, which is precisely why the drift shows here — the same stone has changed hands at forty and at four hundred inside one season, and both sellers went home pleased.",
+    "It earns some of that. An opal shell in soap-bubble colours, cells of pink and cyan and gold shut in by fine dark seams, the whole surface moving as your hand turns without one of those colours actually being in it. Worn, the first blow of a fight glances off, and after that you are simply hard to lay a hand on.",
+    "[[characters/ef25b1f0|Bettany]] keeps a page for it that is nothing but a column of dates. Fourteen sales she can confirm across eleven years, and every one goes back exactly one hand and stops — a buyer who had it from a seller who had it from a man he can describe and cannot name. She gave up for a while, because every seller answers and every answer is true. Then she took it up again. The missing creature does not trouble her much; the rule everyone learns first says there is one, and she can be patient. What troubles her is the supply. They arrive in ones, out of different directions, and they keep arriving."
+  ],
+  "related": [
+    {
+      "domain": "lore",
+      "id": "the_gold_agreement"
+    },
+    {
+      "domain": "lore",
+      "id": "the_hard_pieces"
+    }
+  ],
+  "gm_notes": "Unbound stone number one, handled as an economic anomaly: with no creature there is no price floor, so this is where the one substance that never drifts visibly drifts. The creature is never asserted and never denied. Bettany's column is a live hook — fourteen dated sales, every provenance one hand deep — and the cold end of it is deliberately the supply rather than the source. No answer exists yet; do not invent one to close it."
+}

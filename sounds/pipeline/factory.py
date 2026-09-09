@@ -92,6 +92,62 @@ def has_sound(spec: dict) -> bool:
     return _audio_exists(spec, man)
 
 
+SHIPPING_EXT = ".ogg"
+
+
+def reconcile_formats(spec: dict) -> bool:
+    """Point a manifest at the file that ACTUALLY SHIPS, and describe only what
+    is on disk. Returns True if it changed anything.
+
+    WHY THIS EXISTS (measured 2026-09-09): every catalog manifest named its WAV
+    MASTER in `file` and `takes`, the two fields the engine and the wiki both
+    read — so the game streamed 13.58 MB of uncompressed PCM where 2.48 MB of
+    already-committed ogg would do, 82% more bytes, and 0.89 MB of that on the
+    boot warm path of every single join. birds_day was 1,153,714 bytes in
+    production beside its own 158,662-byte ogg. The delivery block had listed
+    the ogg the whole time; nothing read it.
+
+    That is the repo's own law — "manifests carry the REAL extension; the game
+    reads it and never guesses" — broken in the one domain that streams the
+    most bytes per player. It is fixed HERE, in the generator, rather than by
+    editing JSON, so a regenerated sound cannot reintroduce it.
+    """
+    man = read_manifest(spec)
+    if not man:
+        return False
+    before = json.dumps(man, sort_keys=True)
+
+    def shipped(rel: str) -> str:
+        alt = os.path.splitext(rel)[0] + SHIPPING_EXT
+        return alt if os.path.exists(os.path.join(ROOT, alt)) else rel
+
+    takes = [shipped(t) for t in (man.get("takes") or [])]
+    if takes:
+        man["takes"] = takes
+    if man.get("file"):
+        man["file"] = shipped(man["file"])
+        man["format"] = os.path.splitext(man["file"])[1].lstrip(".")
+    # Describe what exists, nothing else: a format block naming a deleted file
+    # is the same lie in a different field.
+    fmts = ((man.get("delivery") or {}).get("formats") or {})
+    keep = {}
+    for name, info in fmts.items():
+        rel = info.get("file")
+        if rel and os.path.exists(os.path.join(ROOT, rel)):
+            keep[name] = {**info, "bytes": os.path.getsize(os.path.join(ROOT, rel))}
+            keep[name].pop("role", None)
+    if keep:
+        man["delivery"] = {"formats": keep,
+                           "web_source_order": [f for f in encode.WEB_SOURCE_ORDER if f in keep]}
+    elif "delivery" in man:
+        del man["delivery"]
+    if json.dumps(man, sort_keys=True) == before:
+        return False
+    with open(manifest_path(spec), "w") as f:
+        json.dump(man, f, indent=2)
+    return True
+
+
 def ensure_delivery(cfg: dict, spec: dict) -> bool:
     """Idempotent backfill: make sure every WAV take has .m4a/.ogg siblings and the
     manifest carries a `delivery` block. Returns True if it changed anything. No-op

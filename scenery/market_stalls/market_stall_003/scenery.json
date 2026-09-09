@@ -1,0 +1,100 @@
+{
+  "format": "scenery-piece@2",
+  "id": "market_stall_003",
+  "group": "market_stalls",
+  "rank": 49,
+  "index": 3,
+  "name": "Shuttered stall, boarded counter 003",
+  "lights": null,
+  "variety": "shuttered stall, boarded counter",
+  "glow_concept": null,
+  "prompt": "a wooden market stall with a cloth canopy on poles and a plank counter stacked with goods, shuttered stall, boarded counter, large, well above head height of a person, completely unlit, no glow, no light sources, no self-emission",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 128,
+  "sprite": "market_stalls/market_stall_003/sprite.webp",
+  "placement": {
+    "world_height_m": 2.169,
+    "world_px_height": 111,
+    "character_height_px": 87,
+    "character_height_m": 1.7,
+    "note": "ONE SCENERY PIXEL IS ONE PLAYER PIXEL. world_px_height IS the art's own alpha bbox height, so scenery is placed into the world at 1:1 exactly as the avatar is (setScale(1)) and the two share one pixel grid. The CAMERA still zooms the whole scene \u2014 that is uniform and correct; what must never happen is scenery being resampled on its own, against the player. world_height_m is what the art reads as beside a 87px character; declared_height_m is what it was once declared to be, and a gap between them means the ART is the wrong size.",
+    "declared_height_m": 2.35,
+    "content_box": [
+      12,
+      10,
+      118,
+      121
+    ],
+    "content_px_height": 111,
+    "canvas_render_px": 128
+  },
+  "pixellab_object_id": "c2897ff7-443b-487e-ac0a-5264c78d4b50",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)",
+  "must_be_imbplemented_with_random_hflip": true,
+  "generated_at": "2026-08-13T08:45:01+00:00",
+  "states": {
+    "NOT_LIT_3": {
+      "sprite": "market_stalls/market_stall_003/not_lit_3/sprite.webp",
+      "pixellab_object_id": "404482a7-73f9-4eaf-8929-51e27353ba89",
+      "generated_at": "2026-08-16T17:50:09+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.514,
+      "glow_score": 0.0031,
+      "rotations": {
+        "south-east": "market_stalls/market_stall_003/not_lit_3/rotations/south-east.webp",
+        "south-west": "market_stalls/market_stall_003/not_lit_3/rotations/south-west.webp",
+        "south": "market_stalls/market_stall_003/not_lit_3/sprite.webp"
+      },
+      "animations": {
+        "motion": {
+          "group_id": "29c48ee8-8cb0-4537-9dad-d176e7575223",
+          "description": "This is the same picture in every frame. ONLY the herb bundles hanging at the side swing. Everything else in the picture is copied from the first frame exactly, pixel for pixel, unchanged in shape, size, position and colour. No outline anywhere is redrawn. The last frame matches the first frame exactly, so the loop joins. Nothing anywhere becomes darker, lighter or a different colour except the one thing named above.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "market_stalls/market_stall_003/not_lit_3/animations/motion/00.webp",
+            "market_stalls/market_stall_003/not_lit_3/animations/motion/01.webp",
+            "market_stalls/market_stall_003/not_lit_3/animations/motion/02.webp",
+            "market_stalls/market_stall_003/not_lit_3/animations/motion/03.webp",
+            "market_stalls/market_stall_003/not_lit_3/animations/motion/04.webp"
+          ],
+          "strip": "market_stalls/market_stall_003/not_lit_3/animations/motion__strip.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-08-29T16:05:56+00:00",
+          "brief": "X24",
+          "review": "ANIMATION_PROBABLY_GOOD",
+          "review_metrics": {
+            "base_outline": 0.028
+          }
+        }
+      }
+    },
+    "NOT_LIT_4": {
+      "sprite": "market_stalls/market_stall_003/sprite.webp",
+      "pixellab_object_id": "c2897ff7-443b-487e-ac0a-5264c78d4b50",
+      "generated_at": "2026-08-16T17:54:50+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.3861,
+      "glow_score": 0.0068,
+      "replaced_anchor": "NOT_LIT_1",
+      "rotations": {
+        "south-east": "market_stalls/market_stall_003/rotations/south-east.webp",
+        "south-west": "market_stalls/market_stall_003/rotations/south-west.webp",
+        "south": "market_stalls/market_stall_003/sprite.webp"
+      }
+    }
+  },
+  "collision": true,
+  "hitbox_shape": "rect"
+}

@@ -1,0 +1,17 @@
+{
+  "domain": "items",
+  "id": "severed_scaled_paw",
+  "name_seen": "Scaled Paw",
+  "law": "V",
+  "description": "Mottled grey-green hide and three pale curled claws. A Palemaw leaves them, and never in matching pairs.",
+  "lore": [
+    "This is what a new cracker learns on. The hide is almost exactly the thickness of everything they will ever have to open, the joint sits where joints sit, and at thirty gold you can ruin a dozen learning where the blade goes. Three passes. You have done it right when the claws come away still hooked to one another.",
+    "[[characters/646b922c|Sigrun]] keeps a crate by the forge door and charges nothing for what comes out of it. She will not stand over anybody while they cut, either. What she does is ask one question, some days after their first real one, and it is not how it went and it is not what it fetched: she asks which of the two words they used about it afterwards. Everyone she has asked remembers being asked, years on, and not one of them can say precisely why it stayed."
+  ],
+  "related": [
+    { "domain": "characters", "id": "646b922c" },
+    { "domain": "monsters", "id": "lava_salamander_2" },
+    { "domain": "lore", "id": "the_hard_pieces" }
+  ],
+  "gm_notes": "Sigrun teaching without teaching: the practice cut is free, the question a week later is the lesson. Ties every new cracker in the valley to the releasing/cracking distinction without her ever having to explain it."
+}

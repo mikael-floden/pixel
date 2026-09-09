@@ -1,0 +1,132 @@
+{
+  "schema": "tiles3/tops@1",
+  "kind": "top_only",
+  "wall_is_meaningless": true,
+  "not_a_candidate_for": "x over y",
+  "ground": "grey_paving_stone",
+  "flavour": "detail",
+  "index": 118,
+  "seed": 54449,
+  "prompt": "grey paving stone, a small drain slot in the middle, grey paving stone all around the edge",
+  "palette_top": "#a8a8a8",
+  "tile_id": "c65046a1-e7d9-4022-a1ce-01e405cd0785",
+  "n_tiles": 16,
+  "tiles": [
+    "tile_00.webp",
+    "tile_01.webp",
+    "tile_02.webp",
+    "tile_03.webp",
+    "tile_04.webp",
+    "tile_05.webp",
+    "tile_06.webp",
+    "tile_07.webp",
+    "tile_08.webp",
+    "tile_09.webp",
+    "tile_10.webp",
+    "tile_11.webp",
+    "tile_12.webp",
+    "tile_13.webp",
+    "tile_14.webp",
+    "tile_15.webp"
+  ],
+  "settings": {
+    "tile_size": 64,
+    "tile_view": "high top-down",
+    "view_angle": 28.0,
+    "depth_ratio": 0.5,
+    "tile_type": "isometric",
+    "flat_top_px": 2,
+    "outline_mode": "segmentation"
+  },
+  "usd": 0.096,
+  "created": "2026-09-03T05:30:07+00:00",
+  "top_face": {
+    "per_tile": [
+      {
+        "colours": 15,
+        "dominant_share": 0.5315,
+        "px": 922
+      },
+      {
+        "colours": 14,
+        "dominant_share": 0.5456,
+        "px": 922
+      },
+      {
+        "colours": 19,
+        "dominant_share": 0.4007,
+        "px": 921
+      },
+      {
+        "colours": 16,
+        "dominant_share": 0.3861,
+        "px": 922
+      },
+      {
+        "colours": 20,
+        "dominant_share": 0.4444,
+        "px": 918
+      },
+      {
+        "colours": 17,
+        "dominant_share": 0.5542,
+        "px": 922
+      },
+      {
+        "colours": 17,
+        "dominant_share": 0.3035,
+        "px": 916
+      },
+      {
+        "colours": 18,
+        "dominant_share": 0.3768,
+        "px": 921
+      },
+      {
+        "colours": 19,
+        "dominant_share": 0.4664,
+        "px": 922
+      },
+      {
+        "colours": 15,
+        "dominant_share": 0.3561,
+        "px": 924
+      },
+      {
+        "colours": 17,
+        "dominant_share": 0.4376,
+        "px": 921
+      },
+      {
+        "colours": 18,
+        "dominant_share": 0.4913,
+        "px": 922
+      },
+      {
+        "colours": 17,
+        "dominant_share": 0.2573,
+        "px": 921
+      },
+      {
+        "colours": 17,
+        "dominant_share": 0.2481,
+        "px": 923
+      },
+      {
+        "colours": 15,
+        "dominant_share": 0.3991,
+        "px": 922
+      },
+      {
+        "colours": 17,
+        "dominant_share": 0.4143,
+        "px": 922
+      }
+    ],
+    "mean_colours": 16.94,
+    "mean_dominant_share": 0.4133
+  },
+  "motif": "a small drain slot",
+  "motif_source": "tiles/config/details.json",
+  "walkable": true
+}

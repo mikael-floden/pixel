@@ -1,0 +1,789 @@
+{
+  "format": "scenery-piece@2",
+  "id": "hearth_002",
+  "group": "hearths",
+  "rank": 107,
+  "index": 2,
+  "name": "Small cottage hearth with a kettle 002",
+  "lights": null,
+  "variety": "small cottage hearth with a kettle",
+  "glow_concept": "fire burning warm in the hearth mouth",
+  "prompt": "a heavy stone fireplace hearth with a thick mantel and a fire space, solid masonry built to stand against a house wall, small cottage hearth with a kettle, waist-high, self-emissive at night, softly radiating light: fire burning warm in the hearth mouth",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 128,
+  "sprite": "hearths/hearth_002/sprite.webp",
+  "placement": {
+    "world_height_m": 2.286,
+    "world_px_height": 117,
+    "character_height_px": 87,
+    "character_height_m": 1.7,
+    "note": "ONE SCENERY PIXEL IS ONE PLAYER PIXEL. world_px_height IS the art's own alpha bbox height, so scenery is placed into the world at 1:1 exactly as the avatar is (setScale(1)) and the two share one pixel grid. The CAMERA still zooms the whole scene \u2014 that is uniform and correct; what must never happen is scenery being resampled on its own, against the player. world_height_m is what the art reads as beside a 87px character; declared_height_m is what it was once declared to be, and a gap between them means the ART is the wrong size.",
+    "declared_height_m": 1.17,
+    "content_box": [
+      12,
+      4,
+      118,
+      121
+    ],
+    "content_px_height": 117,
+    "canvas_render_px": 128
+  },
+  "pixellab_object_id": "cc58b604-4cf5-470e-becf-663a1e809186",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)",
+  "must_be_imbplemented_with_random_hflip": true,
+  "generated_at": "2026-08-13T19:54:37+00:00",
+  "states": {
+    "LIT_1": {
+      "sprite": "hearths/hearth_002/sprite.webp",
+      "pixellab_object_id": "cc58b604-4cf5-470e-becf-663a1e809186",
+      "generated_at": "2026-08-13T19:54:37+00:00",
+      "animations": {
+        "flame": {
+          "group_id": "013f32ba-7e76-4912-ba69-6e8761e9e981",
+          "description": "Animate the flame only",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "directions": {
+            "south": {
+              "frames": 5,
+              "frame_paths": [
+                "hearths/hearth_002/animations/flame/south/00.webp",
+                "hearths/hearth_002/animations/flame/south/01.webp",
+                "hearths/hearth_002/animations/flame/south/02.webp",
+                "hearths/hearth_002/animations/flame/south/03.webp",
+                "hearths/hearth_002/animations/flame/south/04.webp"
+              ],
+              "light_frames": [
+                {
+                  "intensity": 1.207,
+                  "dx": -0.8,
+                  "dy": 34.5
+                },
+                {
+                  "intensity": 1.219,
+                  "dx": -0.8,
+                  "dy": 34.6
+                },
+                {
+                  "intensity": 1.184,
+                  "dx": -0.6,
+                  "dy": 34.4
+                },
+                {
+                  "intensity": 0.695,
+                  "dx": 0.7,
+                  "dy": 30.0
+                },
+                {
+                  "intensity": 0.696,
+                  "dx": 0.9,
+                  "dy": 30.0
+                }
+              ]
+            },
+            "south-east": {
+              "frames": 5,
+              "frame_paths": [
+                "hearths/hearth_002/animations/flame/south-east/00.webp",
+                "hearths/hearth_002/animations/flame/south-east/01.webp",
+                "hearths/hearth_002/animations/flame/south-east/02.webp",
+                "hearths/hearth_002/animations/flame/south-east/03.webp",
+                "hearths/hearth_002/animations/flame/south-east/04.webp"
+              ],
+              "light_frames": [
+                {
+                  "intensity": 1.5,
+                  "dx": 8.8,
+                  "dy": 26.6
+                },
+                {
+                  "intensity": 0.846,
+                  "dx": 5.7,
+                  "dy": 26.4
+                },
+                {
+                  "intensity": 0.5,
+                  "dx": 0.9,
+                  "dy": 17.5
+                },
+                {
+                  "intensity": 0.562,
+                  "dx": 2.7,
+                  "dy": 23.6
+                },
+                {
+                  "intensity": 1.5,
+                  "dx": 9.1,
+                  "dy": 25.7
+                }
+              ]
+            },
+            "south-west": {
+              "frames": 5,
+              "frame_paths": [
+                "hearths/hearth_002/animations/flame/south-west/00.webp",
+                "hearths/hearth_002/animations/flame/south-west/01.webp",
+                "hearths/hearth_002/animations/flame/south-west/02.webp",
+                "hearths/hearth_002/animations/flame/south-west/03.webp",
+                "hearths/hearth_002/animations/flame/south-west/04.webp"
+              ],
+              "light_frames": [
+                {
+                  "intensity": 1.084,
+                  "dx": -8.8,
+                  "dy": 26.4
+                },
+                {
+                  "intensity": 0.995,
+                  "dx": -9.1,
+                  "dy": 27.5
+                },
+                {
+                  "intensity": 0.971,
+                  "dx": -9.2,
+                  "dy": 27.7
+                },
+                {
+                  "intensity": 0.973,
+                  "dx": -9.2,
+                  "dy": 27.2
+                },
+                {
+                  "intensity": 0.977,
+                  "dx": -9.1,
+                  "dy": 27.1
+                }
+              ]
+            }
+          },
+          "generated_at": "2026-08-29T08:17:59+00:00",
+          "review": "ANIMATION_PROBABLY_GOOD",
+          "review_metrics": {
+            "base_outline": 0.0225
+          },
+          "frame_paths": [
+            "hearths/hearth_002/animations/flame/south/00.webp",
+            "hearths/hearth_002/animations/flame/south/01.webp",
+            "hearths/hearth_002/animations/flame/south/02.webp",
+            "hearths/hearth_002/animations/flame/south/03.webp",
+            "hearths/hearth_002/animations/flame/south/04.webp"
+          ],
+          "strip": "hearths/hearth_002/animations/flame__south.webp",
+          "light_frames": [
+            {
+              "intensity": 1.207,
+              "dx": -0.8,
+              "dy": 34.5
+            },
+            {
+              "intensity": 1.219,
+              "dx": -0.8,
+              "dy": 34.6
+            },
+            {
+              "intensity": 1.184,
+              "dx": -0.6,
+              "dy": 34.4
+            },
+            {
+              "intensity": 0.695,
+              "dx": 0.7,
+              "dy": 30.0
+            },
+            {
+              "intensity": 0.696,
+              "dx": 0.9,
+              "dy": 30.0
+            }
+          ]
+        }
+      },
+      "rotations": {
+        "south-east": "hearths/hearth_002/rotations/south-east.webp",
+        "south-west": "hearths/hearth_002/rotations/south-west.webp",
+        "south": "hearths/hearth_002/sprite.webp"
+      }
+    },
+    "LIT_2": {
+      "sprite": "hearths/hearth_002/lit_2/sprite.webp",
+      "pixellab_object_id": "b0cb80c6-8566-4b72-af82-3dd978d734c7",
+      "generated_at": "2026-08-16T15:13:44+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.4376,
+      "glow_score": 0.0826,
+      "animations": {
+        "flame": {
+          "group_id": "2e5bdc9e-457e-42bc-b650-3cd5307704a5",
+          "description": "Animate the flame only",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "directions": {
+            "south": {
+              "frames": 5,
+              "frame_paths": [
+                "hearths/hearth_002/lit_2/animations/flame/south/00.webp",
+                "hearths/hearth_002/lit_2/animations/flame/south/01.webp",
+                "hearths/hearth_002/lit_2/animations/flame/south/02.webp",
+                "hearths/hearth_002/lit_2/animations/flame/south/03.webp",
+                "hearths/hearth_002/lit_2/animations/flame/south/04.webp"
+              ],
+              "strip": "hearths/hearth_002/lit_2/animations/flame__south.webp",
+              "light_frames": [
+                {
+                  "intensity": 1.147,
+                  "dx": 0.4,
+                  "dy": 30.0
+                },
+                {
+                  "intensity": 1.024,
+                  "dx": 0.2,
+                  "dy": 29.4
+                },
+                {
+                  "intensity": 1.239,
+                  "dx": 0.4,
+                  "dy": 30.6
+                },
+                {
+                  "intensity": 1.003,
+                  "dx": 0.4,
+                  "dy": 29.2
+                },
+                {
+                  "intensity": 0.588,
+                  "dx": -0.6,
+                  "dy": 29.5
+                }
+              ]
+            },
+            "south-east": {
+              "frames": 5,
+              "frame_paths": [
+                "hearths/hearth_002/lit_2/animations/flame/south-east/00.webp",
+                "hearths/hearth_002/lit_2/animations/flame/south-east/01.webp",
+                "hearths/hearth_002/lit_2/animations/flame/south-east/02.webp",
+                "hearths/hearth_002/lit_2/animations/flame/south-east/03.webp",
+                "hearths/hearth_002/lit_2/animations/flame/south-east/04.webp"
+              ],
+              "strip": "hearths/hearth_002/lit_2/animations/flame__south-east.webp",
+              "light_frames": [
+                {
+                  "intensity": 1.011,
+                  "dx": 7.8,
+                  "dy": 24.3
+                },
+                {
+                  "intensity": 1.02,
+                  "dx": 8.0,
+                  "dy": 24.2
+                },
+                {
+                  "intensity": 0.992,
+                  "dx": 8.0,
+                  "dy": 24.5
+                },
+                {
+                  "intensity": 0.991,
+                  "dx": 8.0,
+                  "dy": 24.5
+                },
+                {
+                  "intensity": 0.986,
+                  "dx": 8.0,
+                  "dy": 24.7
+                }
+              ]
+            },
+            "south-west": {
+              "frames": 5,
+              "frame_paths": [
+                "hearths/hearth_002/lit_2/animations/flame/south-west/00.webp",
+                "hearths/hearth_002/lit_2/animations/flame/south-west/01.webp",
+                "hearths/hearth_002/lit_2/animations/flame/south-west/02.webp",
+                "hearths/hearth_002/lit_2/animations/flame/south-west/03.webp",
+                "hearths/hearth_002/lit_2/animations/flame/south-west/04.webp"
+              ],
+              "strip": "hearths/hearth_002/lit_2/animations/flame__south-west.webp",
+              "light_frames": [
+                {
+                  "intensity": 1.056,
+                  "dx": -7.1,
+                  "dy": 25.0
+                },
+                {
+                  "intensity": 0.941,
+                  "dx": -7.5,
+                  "dy": 25.1
+                },
+                {
+                  "intensity": 1.02,
+                  "dx": -7.8,
+                  "dy": 25.1
+                },
+                {
+                  "intensity": 1.004,
+                  "dx": -7.4,
+                  "dy": 25.2
+                },
+                {
+                  "intensity": 0.979,
+                  "dx": -7.3,
+                  "dy": 24.8
+                }
+              ]
+            }
+          },
+          "generated_at": "2026-08-29T08:18:10+00:00",
+          "review": "ANIMATION_PROBABLY_GOOD",
+          "review_metrics": {
+            "base_outline": 0.0264
+          },
+          "frame_paths": [
+            "hearths/hearth_002/lit_2/animations/flame/south/00.webp",
+            "hearths/hearth_002/lit_2/animations/flame/south/01.webp",
+            "hearths/hearth_002/lit_2/animations/flame/south/02.webp",
+            "hearths/hearth_002/lit_2/animations/flame/south/03.webp",
+            "hearths/hearth_002/lit_2/animations/flame/south/04.webp"
+          ],
+          "strip": "hearths/hearth_002/lit_2/animations/flame__south.webp",
+          "light_frames": [
+            {
+              "intensity": 1.147,
+              "dx": 0.4,
+              "dy": 30.0
+            },
+            {
+              "intensity": 1.024,
+              "dx": 0.2,
+              "dy": 29.4
+            },
+            {
+              "intensity": 1.239,
+              "dx": 0.4,
+              "dy": 30.6
+            },
+            {
+              "intensity": 1.003,
+              "dx": 0.4,
+              "dy": 29.2
+            },
+            {
+              "intensity": 0.588,
+              "dx": -0.6,
+              "dy": 29.5
+            }
+          ]
+        }
+      },
+      "rotations": {
+        "south-east": "hearths/hearth_002/lit_2/rotations/south-east.webp",
+        "south-west": "hearths/hearth_002/lit_2/rotations/south-west.webp",
+        "south": "hearths/hearth_002/lit_2/sprite.webp"
+      }
+    },
+    "LIT_3": {
+      "sprite": "hearths/hearth_002/lit_3/sprite.webp",
+      "pixellab_object_id": "a7a31edb-f459-496a-8268-3da8fae36e8c",
+      "generated_at": "2026-08-16T15:13:55+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.6661,
+      "glow_score": 0.07,
+      "animations": {
+        "flame": {
+          "group_id": "c8e1807a-1bdd-409b-83ea-cecd14e68ae1",
+          "description": "Animate the flame only",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "directions": {
+            "south": {
+              "frames": 5,
+              "frame_paths": [
+                "hearths/hearth_002/lit_3/animations/flame/south/00.webp",
+                "hearths/hearth_002/lit_3/animations/flame/south/01.webp",
+                "hearths/hearth_002/lit_3/animations/flame/south/02.webp",
+                "hearths/hearth_002/lit_3/animations/flame/south/03.webp",
+                "hearths/hearth_002/lit_3/animations/flame/south/04.webp"
+              ],
+              "strip": "hearths/hearth_002/lit_3/animations/flame__south.webp",
+              "light_frames": [
+                {
+                  "intensity": 1.407,
+                  "dx": 4.1,
+                  "dy": 29.2
+                },
+                {
+                  "intensity": 1.332,
+                  "dx": 4.5,
+                  "dy": 29.6
+                },
+                {
+                  "intensity": 1.357,
+                  "dx": 4.3,
+                  "dy": 29.4
+                },
+                {
+                  "intensity": 0.5,
+                  "dx": -0.0,
+                  "dy": 22.8
+                },
+                {
+                  "intensity": 0.5,
+                  "dx": -0.3,
+                  "dy": 22.9
+                }
+              ]
+            },
+            "south-east": {
+              "frames": 5,
+              "frame_paths": [
+                "hearths/hearth_002/lit_3/animations/flame/south-east/00.webp",
+                "hearths/hearth_002/lit_3/animations/flame/south-east/01.webp",
+                "hearths/hearth_002/lit_3/animations/flame/south-east/02.webp",
+                "hearths/hearth_002/lit_3/animations/flame/south-east/03.webp",
+                "hearths/hearth_002/lit_3/animations/flame/south-east/04.webp"
+              ],
+              "strip": "hearths/hearth_002/lit_3/animations/flame__south-east.webp",
+              "light_frames": [
+                {
+                  "intensity": 0.922,
+                  "dx": 11.5,
+                  "dy": 22.0
+                },
+                {
+                  "intensity": 0.5,
+                  "dx": 5.2,
+                  "dy": 15.5
+                },
+                {
+                  "intensity": 0.972,
+                  "dx": 12.7,
+                  "dy": 23.0
+                },
+                {
+                  "intensity": 1.39,
+                  "dx": 12.3,
+                  "dy": 19.6
+                },
+                {
+                  "intensity": 1.416,
+                  "dx": 12.1,
+                  "dy": 20.2
+                }
+              ]
+            },
+            "south-west": {
+              "frames": 5,
+              "frame_paths": [
+                "hearths/hearth_002/lit_3/animations/flame/south-west/00.webp",
+                "hearths/hearth_002/lit_3/animations/flame/south-west/01.webp",
+                "hearths/hearth_002/lit_3/animations/flame/south-west/02.webp",
+                "hearths/hearth_002/lit_3/animations/flame/south-west/03.webp",
+                "hearths/hearth_002/lit_3/animations/flame/south-west/04.webp"
+              ],
+              "strip": "hearths/hearth_002/lit_3/animations/flame__south-west.webp",
+              "light_frames": [
+                {
+                  "intensity": 1.034,
+                  "dx": -6.6,
+                  "dy": 21.2
+                },
+                {
+                  "intensity": 1.0,
+                  "dx": -6.7,
+                  "dy": 21.8
+                },
+                {
+                  "intensity": 1.017,
+                  "dx": -6.9,
+                  "dy": 21.5
+                },
+                {
+                  "intensity": 0.961,
+                  "dx": -8.6,
+                  "dy": 22.1
+                },
+                {
+                  "intensity": 0.987,
+                  "dx": -7.3,
+                  "dy": 21.4
+                }
+              ]
+            }
+          },
+          "generated_at": "2026-08-29T08:18:13+00:00",
+          "review": "ANIMATION_PROBABLY_BAD",
+          "review_metrics": {
+            "class": "fire",
+            "base": 0.5125,
+            "still": 0.467
+          },
+          "frame_paths": [
+            "hearths/hearth_002/lit_3/animations/flame/south/00.webp",
+            "hearths/hearth_002/lit_3/animations/flame/south/01.webp",
+            "hearths/hearth_002/lit_3/animations/flame/south/02.webp",
+            "hearths/hearth_002/lit_3/animations/flame/south/03.webp",
+            "hearths/hearth_002/lit_3/animations/flame/south/04.webp"
+          ],
+          "strip": "hearths/hearth_002/lit_3/animations/flame__south.webp",
+          "light_frames": [
+            {
+              "intensity": 1.407,
+              "dx": 4.1,
+              "dy": 29.2
+            },
+            {
+              "intensity": 1.332,
+              "dx": 4.5,
+              "dy": 29.6
+            },
+            {
+              "intensity": 1.357,
+              "dx": 4.3,
+              "dy": 29.4
+            },
+            {
+              "intensity": 0.5,
+              "dx": -0.0,
+              "dy": 22.8
+            },
+            {
+              "intensity": 0.5,
+              "dx": -0.3,
+              "dy": 22.9
+            }
+          ]
+        }
+      },
+      "rotations": {
+        "south-east": "hearths/hearth_002/lit_3/rotations/south-east.webp",
+        "south-west": "hearths/hearth_002/lit_3/rotations/south-west.webp",
+        "south": "hearths/hearth_002/lit_3/sprite.webp"
+      }
+    },
+    "LIT_4": {
+      "sprite": "hearths/hearth_002/lit_4/sprite.webp",
+      "pixellab_object_id": "f2cea7ac-2b42-4a14-b980-6b34e8fb32a8",
+      "generated_at": "2026-08-16T15:14:54+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.7493,
+      "glow_score": 0.064,
+      "animations": {
+        "flame": {
+          "group_id": "e8cdf3ef-b8c6-441a-8932-628683557fc4",
+          "description": "Animate the flame only",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "directions": {
+            "south": {
+              "frames": 5,
+              "frame_paths": [
+                "hearths/hearth_002/lit_4/animations/flame/south/00.webp",
+                "hearths/hearth_002/lit_4/animations/flame/south/01.webp",
+                "hearths/hearth_002/lit_4/animations/flame/south/02.webp",
+                "hearths/hearth_002/lit_4/animations/flame/south/03.webp",
+                "hearths/hearth_002/lit_4/animations/flame/south/04.webp"
+              ],
+              "strip": "hearths/hearth_002/lit_4/animations/flame__south.webp",
+              "light_frames": [
+                {
+                  "intensity": 1.402,
+                  "dx": 1.7,
+                  "dy": 30.4
+                },
+                {
+                  "intensity": 1.385,
+                  "dx": 1.2,
+                  "dy": 30.6
+                },
+                {
+                  "intensity": 1.404,
+                  "dx": 1.6,
+                  "dy": 30.9
+                },
+                {
+                  "intensity": 0.5,
+                  "dx": 2.5,
+                  "dy": 21.3
+                },
+                {
+                  "intensity": 0.5,
+                  "dx": 4.0,
+                  "dy": 21.1
+                }
+              ]
+            },
+            "south-east": {
+              "frames": 5,
+              "frame_paths": [
+                "hearths/hearth_002/lit_4/animations/flame/south-east/00.webp",
+                "hearths/hearth_002/lit_4/animations/flame/south-east/01.webp",
+                "hearths/hearth_002/lit_4/animations/flame/south-east/02.webp",
+                "hearths/hearth_002/lit_4/animations/flame/south-east/03.webp",
+                "hearths/hearth_002/lit_4/animations/flame/south-east/04.webp"
+              ],
+              "strip": "hearths/hearth_002/lit_4/animations/flame__south-east.webp",
+              "light_frames": [
+                {
+                  "intensity": 0.825,
+                  "dx": 7.0,
+                  "dy": 26.3
+                },
+                {
+                  "intensity": 1.073,
+                  "dx": 9.4,
+                  "dy": 25.8
+                },
+                {
+                  "intensity": 1.041,
+                  "dx": 9.9,
+                  "dy": 26.2
+                },
+                {
+                  "intensity": 1.026,
+                  "dx": 10.1,
+                  "dy": 26.4
+                },
+                {
+                  "intensity": 1.034,
+                  "dx": 10.2,
+                  "dy": 26.3
+                }
+              ]
+            },
+            "south-west": {
+              "frames": 5,
+              "frame_paths": [
+                "hearths/hearth_002/lit_4/animations/flame/south-west/00.webp",
+                "hearths/hearth_002/lit_4/animations/flame/south-west/01.webp",
+                "hearths/hearth_002/lit_4/animations/flame/south-west/02.webp",
+                "hearths/hearth_002/lit_4/animations/flame/south-west/03.webp",
+                "hearths/hearth_002/lit_4/animations/flame/south-west/04.webp"
+              ],
+              "strip": "hearths/hearth_002/lit_4/animations/flame__south-west.webp",
+              "light_frames": [
+                {
+                  "intensity": 1.094,
+                  "dx": -7.3,
+                  "dy": 24.2
+                },
+                {
+                  "intensity": 0.75,
+                  "dx": -5.5,
+                  "dy": 24.8
+                },
+                {
+                  "intensity": 1.261,
+                  "dx": -9.1,
+                  "dy": 23.9
+                },
+                {
+                  "intensity": 1.205,
+                  "dx": -9.0,
+                  "dy": 24.1
+                },
+                {
+                  "intensity": 0.689,
+                  "dx": -5.7,
+                  "dy": 25.3
+                }
+              ]
+            }
+          },
+          "generated_at": "2026-08-29T08:18:50+00:00",
+          "review": "ANIMATION_PROBABLY_GOOD",
+          "review_metrics": {
+            "base_outline": 0.0017
+          },
+          "frame_paths": [
+            "hearths/hearth_002/lit_4/animations/flame/south/00.webp",
+            "hearths/hearth_002/lit_4/animations/flame/south/01.webp",
+            "hearths/hearth_002/lit_4/animations/flame/south/02.webp",
+            "hearths/hearth_002/lit_4/animations/flame/south/03.webp",
+            "hearths/hearth_002/lit_4/animations/flame/south/04.webp"
+          ],
+          "strip": "hearths/hearth_002/lit_4/animations/flame__south.webp",
+          "light_frames": [
+            {
+              "intensity": 1.402,
+              "dx": 1.7,
+              "dy": 30.4
+            },
+            {
+              "intensity": 1.385,
+              "dx": 1.2,
+              "dy": 30.6
+            },
+            {
+              "intensity": 1.404,
+              "dx": 1.6,
+              "dy": 30.9
+            },
+            {
+              "intensity": 0.5,
+              "dx": 2.5,
+              "dy": 21.3
+            },
+            {
+              "intensity": 0.5,
+              "dx": 4.0,
+              "dy": 21.1
+            }
+          ]
+        }
+      },
+      "rotations": {
+        "south-east": "hearths/hearth_002/lit_4/rotations/south-east.webp",
+        "south-west": "hearths/hearth_002/lit_4/rotations/south-west.webp",
+        "south": "hearths/hearth_002/lit_4/sprite.webp"
+      }
+    }
+  },
+  "collision": true,
+  "hitbox_shape": "rect",
+  "light": {
+    "strength": 0.7,
+    "color": "#ffb45c",
+    "radius": 13,
+    "reference": "the spawn bonfire is 1.0 (radius 7); strength 0 is no light",
+    "states": {
+      "LIT_1": {
+        "strength": 0.56,
+        "color": "#ffb45c",
+        "radius": 10
+      },
+      "LIT_2": {
+        "strength": 0.56,
+        "color": "#ffb45c",
+        "radius": 10
+      },
+      "LIT_3": {
+        "strength": 0.56,
+        "color": "#ffb45c",
+        "radius": 10
+      },
+      "LIT_4": {
+        "strength": 0.56,
+        "color": "#ffb45c",
+        "radius": 10
+      }
+    },
+    "kind": "fire/open",
+    "flame": true,
+    "embers": true
+  }
+}

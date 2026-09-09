@@ -1,0 +1,633 @@
+{
+  "id": "moon_wolf",
+  "name": "Moonpelt",
+  "lore": "A wolf the moon keeps. Its silver fur holds the crescent's mark, and its paws never quite touch the frost.",
+  "source": {
+    "kind": "character",
+    "pixellab_id": "623dd33c-d5f5-41e4-80eb-6d10a5686db6",
+    "url": "https://www.pixellab.ai/create-character/623dd33c-d5f5-41e4-80eb-6d10a5686db6",
+    "prompt": "Elegant magical wolf with silver-white fur, long flowing tail, glowing blue body markings, crescent marking on forehead and magical particles surrounding its paws.",
+    "view": "low top-down",
+    "tags": [
+      "MONSTER"
+    ]
+  },
+  "size": {
+    "width": 124,
+    "height": 124
+  },
+  "native_size": {
+    "width": 124,
+    "height": 124
+  },
+  "pad": {
+    "x": 0,
+    "y": 0
+  },
+  "sprite": "moon_wolf/sprite.webp",
+  "directions": [
+    "east",
+    "north",
+    "north-east",
+    "north-west",
+    "south",
+    "south-east",
+    "south-west",
+    "west"
+  ],
+  "rotations": {
+    "south": "moon_wolf/rotations/south.webp",
+    "west": "moon_wolf/rotations/west.webp",
+    "east": "moon_wolf/rotations/east.webp",
+    "north": "moon_wolf/rotations/north.webp",
+    "south-east": "moon_wolf/rotations/south-east.webp",
+    "north-east": "moon_wolf/rotations/north-east.webp",
+    "north-west": "moon_wolf/rotations/north-west.webp",
+    "south-west": "moon_wolf/rotations/south-west.webp"
+  },
+  "animations": {
+    "idle": {
+      "group_id": "3847cc7d-03c3-45ef-9fca-3b555419e145",
+      "source_name": "custom-Calm still idle, breathing",
+      "directions": {
+        "east": {
+          "frames": 5,
+          "strip": "moon_wolf/animations/idle__east.webp",
+          "frame_paths": [
+            "moon_wolf/animations/idle/east/00.webp",
+            "moon_wolf/animations/idle/east/01.webp",
+            "moon_wolf/animations/idle/east/02.webp",
+            "moon_wolf/animations/idle/east/03.webp",
+            "moon_wolf/animations/idle/east/04.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:04:42 GMT",
+          "src_frames": 5,
+          "sub": "e5df4544-99d3-4154-adbc-9795f279076e"
+        },
+        "north": {
+          "frames": 5,
+          "strip": "moon_wolf/animations/idle__north.webp",
+          "frame_paths": [
+            "moon_wolf/animations/idle/north/00.webp",
+            "moon_wolf/animations/idle/north/01.webp",
+            "moon_wolf/animations/idle/north/02.webp",
+            "moon_wolf/animations/idle/north/03.webp",
+            "moon_wolf/animations/idle/north/04.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:04:44 GMT",
+          "src_frames": 5,
+          "sub": "330793f6-cc96-4659-a351-836cb2f24a90"
+        },
+        "north-east": {
+          "frames": 5,
+          "strip": "moon_wolf/animations/idle__north-east.webp",
+          "frame_paths": [
+            "moon_wolf/animations/idle/north-east/00.webp",
+            "moon_wolf/animations/idle/north-east/01.webp",
+            "moon_wolf/animations/idle/north-east/02.webp",
+            "moon_wolf/animations/idle/north-east/03.webp",
+            "moon_wolf/animations/idle/north-east/04.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:04:45 GMT",
+          "src_frames": 5,
+          "sub": "e67a8d3c-ba0b-4440-9b3f-2a766336c46c"
+        },
+        "north-west": {
+          "frames": 5,
+          "strip": "moon_wolf/animations/idle__north-west.webp",
+          "frame_paths": [
+            "moon_wolf/animations/idle/north-west/00.webp",
+            "moon_wolf/animations/idle/north-west/01.webp",
+            "moon_wolf/animations/idle/north-west/02.webp",
+            "moon_wolf/animations/idle/north-west/03.webp",
+            "moon_wolf/animations/idle/north-west/04.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:04:47 GMT",
+          "src_frames": 5,
+          "sub": "559bb6a6-14fa-4a62-8384-5a2e54b29e23"
+        },
+        "south": {
+          "frames": 5,
+          "strip": "moon_wolf/animations/idle__south.webp",
+          "frame_paths": [
+            "moon_wolf/animations/idle/south/00.webp",
+            "moon_wolf/animations/idle/south/01.webp",
+            "moon_wolf/animations/idle/south/02.webp",
+            "moon_wolf/animations/idle/south/03.webp",
+            "moon_wolf/animations/idle/south/04.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:04:48 GMT",
+          "src_frames": 5,
+          "sub": "41a3eebf-0be5-4270-bcf5-1d7a94e409bf"
+        },
+        "south-east": {
+          "frames": 5,
+          "strip": "moon_wolf/animations/idle__south-east.webp",
+          "frame_paths": [
+            "moon_wolf/animations/idle/south-east/00.webp",
+            "moon_wolf/animations/idle/south-east/01.webp",
+            "moon_wolf/animations/idle/south-east/02.webp",
+            "moon_wolf/animations/idle/south-east/03.webp",
+            "moon_wolf/animations/idle/south-east/04.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:04:49 GMT",
+          "src_frames": 5,
+          "sub": "9f2acdc8-89f4-45ba-b993-266719ce5519"
+        },
+        "south-west": {
+          "frames": 5,
+          "strip": "moon_wolf/animations/idle__south-west.webp",
+          "frame_paths": [
+            "moon_wolf/animations/idle/south-west/00.webp",
+            "moon_wolf/animations/idle/south-west/01.webp",
+            "moon_wolf/animations/idle/south-west/02.webp",
+            "moon_wolf/animations/idle/south-west/03.webp",
+            "moon_wolf/animations/idle/south-west/04.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:04:51 GMT",
+          "src_frames": 5,
+          "sub": "375e1d23-ed24-4d5b-95ad-98d012b6b3a0"
+        },
+        "west": {
+          "frames": 5,
+          "strip": "moon_wolf/animations/idle__west.webp",
+          "frame_paths": [
+            "moon_wolf/animations/idle/west/00.webp",
+            "moon_wolf/animations/idle/west/01.webp",
+            "moon_wolf/animations/idle/west/02.webp",
+            "moon_wolf/animations/idle/west/03.webp",
+            "moon_wolf/animations/idle/west/04.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:04:56 GMT",
+          "src_frames": 5,
+          "sub": "b9cdecca-fb75-43e8-82a0-1366a4d09992"
+        }
+      }
+    },
+    "attack": {
+      "group_id": "dacca3b4-6cbd-41f1-a2df-7f8c4ad1a943",
+      "source_name": "custom-Wold claw attack",
+      "directions": {
+        "east": {
+          "frames": 4,
+          "strip": "moon_wolf/animations/attack__east.webp",
+          "frame_paths": [
+            "moon_wolf/animations/attack/east/00.webp",
+            "moon_wolf/animations/attack/east/01.webp",
+            "moon_wolf/animations/attack/east/02.webp",
+            "moon_wolf/animations/attack/east/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:04:58 GMT",
+          "src_frames": 4,
+          "sub": "d6d44103-06ed-4d03-afff-37b546ae2523"
+        },
+        "north": {
+          "frames": 4,
+          "strip": "moon_wolf/animations/attack__north.webp",
+          "frame_paths": [
+            "moon_wolf/animations/attack/north/00.webp",
+            "moon_wolf/animations/attack/north/01.webp",
+            "moon_wolf/animations/attack/north/02.webp",
+            "moon_wolf/animations/attack/north/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:04:59 GMT",
+          "src_frames": 4,
+          "sub": "f05a29c1-a4dd-4c22-b8a1-af9a3ed178e1"
+        },
+        "north-east": {
+          "frames": 4,
+          "strip": "moon_wolf/animations/attack__north-east.webp",
+          "frame_paths": [
+            "moon_wolf/animations/attack/north-east/00.webp",
+            "moon_wolf/animations/attack/north-east/01.webp",
+            "moon_wolf/animations/attack/north-east/02.webp",
+            "moon_wolf/animations/attack/north-east/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:05:00 GMT",
+          "src_frames": 4,
+          "sub": "a7de1a05-1f16-425b-9559-fea1a1656ca7"
+        },
+        "north-west": {
+          "frames": 4,
+          "strip": "moon_wolf/animations/attack__north-west.webp",
+          "frame_paths": [
+            "moon_wolf/animations/attack/north-west/00.webp",
+            "moon_wolf/animations/attack/north-west/01.webp",
+            "moon_wolf/animations/attack/north-west/02.webp",
+            "moon_wolf/animations/attack/north-west/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:05:01 GMT",
+          "src_frames": 4,
+          "sub": "8bad1b35-d95a-47f4-8af1-48a0b3b3e496"
+        },
+        "south": {
+          "frames": 4,
+          "strip": "moon_wolf/animations/attack__south.webp",
+          "frame_paths": [
+            "moon_wolf/animations/attack/south/00.webp",
+            "moon_wolf/animations/attack/south/01.webp",
+            "moon_wolf/animations/attack/south/02.webp",
+            "moon_wolf/animations/attack/south/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:05:02 GMT",
+          "src_frames": 4,
+          "sub": "f26ec554-7e92-45e7-bd41-ff81aa0dbfb6"
+        },
+        "south-east": {
+          "frames": 4,
+          "strip": "moon_wolf/animations/attack__south-east.webp",
+          "frame_paths": [
+            "moon_wolf/animations/attack/south-east/00.webp",
+            "moon_wolf/animations/attack/south-east/01.webp",
+            "moon_wolf/animations/attack/south-east/02.webp",
+            "moon_wolf/animations/attack/south-east/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:05:04 GMT",
+          "src_frames": 4,
+          "sub": "4b4f77bd-fcaf-406c-8cee-350facd6693e"
+        },
+        "south-west": {
+          "frames": 4,
+          "strip": "moon_wolf/animations/attack__south-west.webp",
+          "frame_paths": [
+            "moon_wolf/animations/attack/south-west/00.webp",
+            "moon_wolf/animations/attack/south-west/01.webp",
+            "moon_wolf/animations/attack/south-west/02.webp",
+            "moon_wolf/animations/attack/south-west/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:05:05 GMT",
+          "src_frames": 4,
+          "sub": "5e546f27-c844-4816-9ef6-9dc87796ef0c"
+        },
+        "west": {
+          "frames": 4,
+          "strip": "moon_wolf/animations/attack__west.webp",
+          "frame_paths": [
+            "moon_wolf/animations/attack/west/00.webp",
+            "moon_wolf/animations/attack/west/01.webp",
+            "moon_wolf/animations/attack/west/02.webp",
+            "moon_wolf/animations/attack/west/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:05:06 GMT",
+          "src_frames": 4,
+          "sub": "fd5bbee2-a5ec-4735-bce7-178319f31f86"
+        }
+      }
+    },
+    "angry": {
+      "group_id": "1242a9c4-b09d-4220-8875-06e0ac815140",
+      "source_name": "custom-angry combat idle, frustrated",
+      "directions": {
+        "east": {
+          "frames": 4,
+          "strip": "moon_wolf/animations/angry__east.webp",
+          "frame_paths": [
+            "moon_wolf/animations/angry/east/00.webp",
+            "moon_wolf/animations/angry/east/01.webp",
+            "moon_wolf/animations/angry/east/02.webp",
+            "moon_wolf/animations/angry/east/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:05:08 GMT",
+          "src_frames": 4,
+          "sub": "61de3f33-d2ab-47e6-b7bf-44fde80aa886"
+        },
+        "north": {
+          "frames": 4,
+          "strip": "moon_wolf/animations/angry__north.webp",
+          "frame_paths": [
+            "moon_wolf/animations/angry/north/00.webp",
+            "moon_wolf/animations/angry/north/01.webp",
+            "moon_wolf/animations/angry/north/02.webp",
+            "moon_wolf/animations/angry/north/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:05:14 GMT",
+          "src_frames": 4,
+          "sub": "122f1f5c-6a26-4dc3-a314-326951034497"
+        },
+        "north-east": {
+          "frames": 4,
+          "strip": "moon_wolf/animations/angry__north-east.webp",
+          "frame_paths": [
+            "moon_wolf/animations/angry/north-east/00.webp",
+            "moon_wolf/animations/angry/north-east/01.webp",
+            "moon_wolf/animations/angry/north-east/02.webp",
+            "moon_wolf/animations/angry/north-east/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:05:15 GMT",
+          "src_frames": 4,
+          "sub": "25c4ecbc-db6b-4272-a736-452c5aa712a0"
+        },
+        "north-west": {
+          "frames": 4,
+          "strip": "moon_wolf/animations/angry__north-west.webp",
+          "frame_paths": [
+            "moon_wolf/animations/angry/north-west/00.webp",
+            "moon_wolf/animations/angry/north-west/01.webp",
+            "moon_wolf/animations/angry/north-west/02.webp",
+            "moon_wolf/animations/angry/north-west/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:05:16 GMT",
+          "src_frames": 4,
+          "sub": "e951c848-610f-4a39-ba22-5116b84f9313"
+        },
+        "south": {
+          "frames": 4,
+          "strip": "moon_wolf/animations/angry__south.webp",
+          "frame_paths": [
+            "moon_wolf/animations/angry/south/00.webp",
+            "moon_wolf/animations/angry/south/01.webp",
+            "moon_wolf/animations/angry/south/02.webp",
+            "moon_wolf/animations/angry/south/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:05:17 GMT",
+          "src_frames": 4,
+          "sub": "5ae1f689-c67f-4b72-86f5-0b596fd1538f"
+        },
+        "south-east": {
+          "frames": 4,
+          "strip": "moon_wolf/animations/angry__south-east.webp",
+          "frame_paths": [
+            "moon_wolf/animations/angry/south-east/00.webp",
+            "moon_wolf/animations/angry/south-east/01.webp",
+            "moon_wolf/animations/angry/south-east/02.webp",
+            "moon_wolf/animations/angry/south-east/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:05:19 GMT",
+          "src_frames": 4,
+          "sub": "c4ebf2b1-9ba5-41a3-9cec-0b9e98e961b6"
+        },
+        "south-west": {
+          "frames": 4,
+          "strip": "moon_wolf/animations/angry__south-west.webp",
+          "frame_paths": [
+            "moon_wolf/animations/angry/south-west/00.webp",
+            "moon_wolf/animations/angry/south-west/01.webp",
+            "moon_wolf/animations/angry/south-west/02.webp",
+            "moon_wolf/animations/angry/south-west/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:05:20 GMT",
+          "src_frames": 4,
+          "sub": "a48abb93-6a1a-4d8e-8cdb-a21672d867aa"
+        },
+        "west": {
+          "frames": 4,
+          "strip": "moon_wolf/animations/angry__west.webp",
+          "frame_paths": [
+            "moon_wolf/animations/angry/west/00.webp",
+            "moon_wolf/animations/angry/west/01.webp",
+            "moon_wolf/animations/angry/west/02.webp",
+            "moon_wolf/animations/angry/west/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:05:21 GMT",
+          "src_frames": 4,
+          "sub": "2834e7f7-9cca-4fa7-9af7-06eab5fa03d0"
+        }
+      }
+    },
+    "die": {
+      "group_id": "5126a8f1-2998-4f50-830a-c774e6a5bb12",
+      "source_name": "custom-faints and fades away",
+      "directions": {
+        "east": {
+          "frames": 4,
+          "strip": "moon_wolf/animations/die__east.webp",
+          "frame_paths": [
+            "moon_wolf/animations/die/east/00.webp",
+            "moon_wolf/animations/die/east/01.webp",
+            "moon_wolf/animations/die/east/02.webp",
+            "moon_wolf/animations/die/east/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:05:23 GMT",
+          "src_frames": 4,
+          "sub": "0386388e-34c4-45f4-b2a7-5f110f6e6f1f"
+        },
+        "north": {
+          "frames": 4,
+          "strip": "moon_wolf/animations/die__north.webp",
+          "frame_paths": [
+            "moon_wolf/animations/die/north/00.webp",
+            "moon_wolf/animations/die/north/01.webp",
+            "moon_wolf/animations/die/north/02.webp",
+            "moon_wolf/animations/die/north/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:05:25 GMT",
+          "src_frames": 4,
+          "sub": "581c3cea-54c5-4c4d-bdf4-1d2d58c266e2"
+        },
+        "north-east": {
+          "frames": 4,
+          "strip": "moon_wolf/animations/die__north-east.webp",
+          "frame_paths": [
+            "moon_wolf/animations/die/north-east/00.webp",
+            "moon_wolf/animations/die/north-east/01.webp",
+            "moon_wolf/animations/die/north-east/02.webp",
+            "moon_wolf/animations/die/north-east/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:05:26 GMT",
+          "src_frames": 4,
+          "sub": "93707ac4-3a84-4e1c-ba50-11d0d9239c99"
+        },
+        "north-west": {
+          "frames": 4,
+          "strip": "moon_wolf/animations/die__north-west.webp",
+          "frame_paths": [
+            "moon_wolf/animations/die/north-west/00.webp",
+            "moon_wolf/animations/die/north-west/01.webp",
+            "moon_wolf/animations/die/north-west/02.webp",
+            "moon_wolf/animations/die/north-west/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:05:27 GMT",
+          "src_frames": 4,
+          "sub": "4ad419a9-432d-4bda-ad4a-92a78af25b6a"
+        },
+        "south": {
+          "frames": 4,
+          "strip": "moon_wolf/animations/die__south.webp",
+          "frame_paths": [
+            "moon_wolf/animations/die/south/00.webp",
+            "moon_wolf/animations/die/south/01.webp",
+            "moon_wolf/animations/die/south/02.webp",
+            "moon_wolf/animations/die/south/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:05:29 GMT",
+          "src_frames": 4,
+          "sub": "4468c127-e3f8-47fd-926d-cbb97ca7aaa9"
+        },
+        "south-east": {
+          "frames": 4,
+          "strip": "moon_wolf/animations/die__south-east.webp",
+          "frame_paths": [
+            "moon_wolf/animations/die/south-east/00.webp",
+            "moon_wolf/animations/die/south-east/01.webp",
+            "moon_wolf/animations/die/south-east/02.webp",
+            "moon_wolf/animations/die/south-east/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:05:30 GMT",
+          "src_frames": 4,
+          "sub": "7cc911ac-a7eb-47bd-8cb0-4dc3020497e7"
+        },
+        "south-west": {
+          "frames": 4,
+          "strip": "moon_wolf/animations/die__south-west.webp",
+          "frame_paths": [
+            "moon_wolf/animations/die/south-west/00.webp",
+            "moon_wolf/animations/die/south-west/01.webp",
+            "moon_wolf/animations/die/south-west/02.webp",
+            "moon_wolf/animations/die/south-west/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:05:31 GMT",
+          "src_frames": 4,
+          "sub": "30edac14-b46c-4b58-bf1a-f7a70cc2c22d"
+        },
+        "west": {
+          "frames": 4,
+          "strip": "moon_wolf/animations/die__west.webp",
+          "frame_paths": [
+            "moon_wolf/animations/die/west/00.webp",
+            "moon_wolf/animations/die/west/01.webp",
+            "moon_wolf/animations/die/west/02.webp",
+            "moon_wolf/animations/die/west/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:05:32 GMT",
+          "src_frames": 4,
+          "sub": "be5d886f-1f78-4e94-9b68-021c611d39ff"
+        }
+      }
+    },
+    "walk": {
+      "group_id": "f9384c82-b909-47f4-84b6-cf705ce38cab",
+      "source_name": "custom-walk loop. full walk cycle. sh",
+      "directions": {
+        "east": {
+          "frames": 6,
+          "strip": "moon_wolf/animations/walk__east.webp",
+          "frame_paths": [
+            "moon_wolf/animations/walk/east/00.webp",
+            "moon_wolf/animations/walk/east/01.webp",
+            "moon_wolf/animations/walk/east/02.webp",
+            "moon_wolf/animations/walk/east/03.webp",
+            "moon_wolf/animations/walk/east/04.webp",
+            "moon_wolf/animations/walk/east/05.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:05:34 GMT",
+          "src_frames": 6,
+          "sub": "a013af55-3c4e-4f1c-83ca-fb7ae362e581"
+        },
+        "north": {
+          "frames": 6,
+          "strip": "moon_wolf/animations/walk__north.webp",
+          "frame_paths": [
+            "moon_wolf/animations/walk/north/00.webp",
+            "moon_wolf/animations/walk/north/01.webp",
+            "moon_wolf/animations/walk/north/02.webp",
+            "moon_wolf/animations/walk/north/03.webp",
+            "moon_wolf/animations/walk/north/04.webp",
+            "moon_wolf/animations/walk/north/05.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:05:35 GMT",
+          "src_frames": 6,
+          "sub": "4adef353-0cbe-4472-958a-65eece9ce34b"
+        },
+        "north-east": {
+          "frames": 6,
+          "strip": "moon_wolf/animations/walk__north-east.webp",
+          "frame_paths": [
+            "moon_wolf/animations/walk/north-east/00.webp",
+            "moon_wolf/animations/walk/north-east/01.webp",
+            "moon_wolf/animations/walk/north-east/02.webp",
+            "moon_wolf/animations/walk/north-east/03.webp",
+            "moon_wolf/animations/walk/north-east/04.webp",
+            "moon_wolf/animations/walk/north-east/05.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:05:39 GMT",
+          "src_frames": 6,
+          "sub": "d9c87ceb-b43f-41df-9683-cbf4563e49e6"
+        },
+        "north-west": {
+          "frames": 6,
+          "strip": "moon_wolf/animations/walk__north-west.webp",
+          "frame_paths": [
+            "moon_wolf/animations/walk/north-west/00.webp",
+            "moon_wolf/animations/walk/north-west/01.webp",
+            "moon_wolf/animations/walk/north-west/02.webp",
+            "moon_wolf/animations/walk/north-west/03.webp",
+            "moon_wolf/animations/walk/north-west/04.webp",
+            "moon_wolf/animations/walk/north-west/05.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:05:41 GMT",
+          "src_frames": 6,
+          "sub": "365dfb61-4b40-4c2b-bd4e-59b8765e6c03"
+        },
+        "south": {
+          "frames": 6,
+          "strip": "moon_wolf/animations/walk__south.webp",
+          "frame_paths": [
+            "moon_wolf/animations/walk/south/00.webp",
+            "moon_wolf/animations/walk/south/01.webp",
+            "moon_wolf/animations/walk/south/02.webp",
+            "moon_wolf/animations/walk/south/03.webp",
+            "moon_wolf/animations/walk/south/04.webp",
+            "moon_wolf/animations/walk/south/05.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:05:44 GMT",
+          "src_frames": 6,
+          "sub": "44bf0add-9965-4f22-8eba-f4ee95888cfa"
+        },
+        "south-east": {
+          "frames": 6,
+          "strip": "moon_wolf/animations/walk__south-east.webp",
+          "frame_paths": [
+            "moon_wolf/animations/walk/south-east/00.webp",
+            "moon_wolf/animations/walk/south-east/01.webp",
+            "moon_wolf/animations/walk/south-east/02.webp",
+            "moon_wolf/animations/walk/south-east/03.webp",
+            "moon_wolf/animations/walk/south-east/04.webp",
+            "moon_wolf/animations/walk/south-east/05.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:05:45 GMT",
+          "src_frames": 6,
+          "sub": "ccc13fda-2f3f-4741-9580-8233aa0a94c3"
+        },
+        "south-west": {
+          "frames": 6,
+          "strip": "moon_wolf/animations/walk__south-west.webp",
+          "frame_paths": [
+            "moon_wolf/animations/walk/south-west/00.webp",
+            "moon_wolf/animations/walk/south-west/01.webp",
+            "moon_wolf/animations/walk/south-west/02.webp",
+            "moon_wolf/animations/walk/south-west/03.webp",
+            "moon_wolf/animations/walk/south-west/04.webp",
+            "moon_wolf/animations/walk/south-west/05.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:05:46 GMT",
+          "src_frames": 6,
+          "sub": "bd56ecee-4f4b-4d83-82bb-2ba4d4f3ca80"
+        },
+        "west": {
+          "frames": 6,
+          "strip": "moon_wolf/animations/walk__west.webp",
+          "frame_paths": [
+            "moon_wolf/animations/walk/west/00.webp",
+            "moon_wolf/animations/walk/west/01.webp",
+            "moon_wolf/animations/walk/west/02.webp",
+            "moon_wolf/animations/walk/west/03.webp",
+            "moon_wolf/animations/walk/west/04.webp",
+            "moon_wolf/animations/walk/west/05.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:05:48 GMT",
+          "src_frames": 6,
+          "sub": "82b5c86e-b6be-433c-822b-eaa9f2b763b2"
+        }
+      }
+    }
+  },
+  "states": {
+    "idle": "idle",
+    "walk": "walk",
+    "angry": "angry",
+    "attack": "attack",
+    "die": "die"
+  },
+  "unresolved_takes": [],
+  "synced_from_pixellab": true
+}

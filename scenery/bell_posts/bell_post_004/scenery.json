@@ -1,0 +1,316 @@
+{
+  "format": "scenery-piece@2",
+  "id": "bell_post_004",
+  "group": "bell_posts",
+  "rank": 14,
+  "index": 4,
+  "name": "Stone pillar, bell arm 004",
+  "lights": null,
+  "variety": "stone pillar, bell arm",
+  "glow_concept": "small oil lamp hung beside the bell",
+  "prompt": "a tall wooden post with a crossarm, a bronze bell hanging from it with a pull rope and tassel, stone pillar, bell arm, large, well above head height of a person, self-emissive at night, softly radiating light: small oil lamp hung beside the bell",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 128,
+  "sprite": "bell_posts/bell_post_004/sprite.webp",
+  "placement": {
+    "world_height_m": 2.169,
+    "world_px_height": 111,
+    "character_height_px": 87,
+    "character_height_m": 1.7,
+    "note": "ONE SCENERY PIXEL IS ONE PLAYER PIXEL. world_px_height IS the art's own alpha bbox height, so scenery is placed into the world at 1:1 exactly as the avatar is (setScale(1)) and the two share one pixel grid. The CAMERA still zooms the whole scene \u2014 that is uniform and correct; what must never happen is scenery being resampled on its own, against the player. world_height_m is what the art reads as beside a 87px character; declared_height_m is what it was once declared to be, and a gap between them means the ART is the wrong size.",
+    "declared_height_m": 2.99,
+    "content_box": [
+      33,
+      8,
+      94,
+      119
+    ],
+    "content_px_height": 111,
+    "canvas_render_px": 128
+  },
+  "pixellab_object_id": "56164d96-27b5-4cab-bf3e-8bab784ba9a5",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)",
+  "must_be_imbplemented_with_random_hflip": true,
+  "generated_at": "2026-08-13T08:45:02+00:00",
+  "states": {
+    "LIT_1": {
+      "sprite": "bell_posts/bell_post_004/sprite.webp",
+      "pixellab_object_id": "56164d96-27b5-4cab-bf3e-8bab784ba9a5",
+      "generated_at": "2026-08-13T08:45:02+00:00",
+      "rotations": {
+        "south-east": "bell_posts/bell_post_004/rotations/south-east.webp",
+        "south-west": "bell_posts/bell_post_004/rotations/south-west.webp",
+        "south": "bell_posts/bell_post_004/sprite.webp"
+      },
+      "animations": {
+        "motion": {
+          "group_id": "a991dcd3-b090-4c74-bba5-ae065070ba33",
+          "description": "Animate the bell only, rocking slowly. Nothing else moves.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "bell_posts/bell_post_004/animations/motion/00.webp",
+            "bell_posts/bell_post_004/animations/motion/01.webp",
+            "bell_posts/bell_post_004/animations/motion/02.webp",
+            "bell_posts/bell_post_004/animations/motion/03.webp",
+            "bell_posts/bell_post_004/animations/motion/04.webp"
+          ],
+          "strip": "bell_posts/bell_post_004/animations/motion__strip.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-08-29T08:36:25+00:00",
+          "brief": "C7",
+          "review": "ANIMATION_PROBABLY_GOOD",
+          "review_metrics": {
+            "class": "fire",
+            "base": 0.0024,
+            "still": 0.772
+          },
+          "light_frames": [
+            {
+              "intensity": 0.971,
+              "dx": 11.7,
+              "dy": -19.0
+            },
+            {
+              "intensity": 0.975,
+              "dx": 13.6,
+              "dy": -18.5
+            },
+            {
+              "intensity": 1.002,
+              "dx": 14.0,
+              "dy": -18.2
+            },
+            {
+              "intensity": 1.037,
+              "dx": 9.8,
+              "dy": -18.2
+            },
+            {
+              "intensity": 1.015,
+              "dx": 10.3,
+              "dy": -18.8
+            }
+          ]
+        }
+      }
+    },
+    "LIT_2": {
+      "sprite": "bell_posts/bell_post_004/lit_2/sprite.webp",
+      "pixellab_object_id": "1b6dcaa3-3027-4d47-9acd-eece21f4b9a2",
+      "generated_at": "2026-08-15T20:24:21+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.7114,
+      "glow_score": 0.0113,
+      "rotations": {
+        "south-east": "bell_posts/bell_post_004/lit_2/rotations/south-east.webp",
+        "south-west": "bell_posts/bell_post_004/lit_2/rotations/south-west.webp",
+        "south": "bell_posts/bell_post_004/lit_2/sprite.webp"
+      },
+      "animations": {
+        "motion": {
+          "group_id": "02bd36e2-738f-4f6f-9c10-f0d0bc0567b9",
+          "description": "This is the same picture in every frame. ONLY the hanging board and the two lanterns tilt, together, on their bracket. The movement must be so small it is barely visible \u2014 one or two pixels at most. The last frame must return to exactly how the first frame looks, so the loop joins. Nothing may become darker than it is in the first frame. Everything else is frozen and pixel-for-pixel identical. Do not redraw anything else, and do not add or remove anything.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "bell_posts/bell_post_004/lit_2/animations/motion/00.webp",
+            "bell_posts/bell_post_004/lit_2/animations/motion/01.webp",
+            "bell_posts/bell_post_004/lit_2/animations/motion/02.webp",
+            "bell_posts/bell_post_004/lit_2/animations/motion/03.webp",
+            "bell_posts/bell_post_004/lit_2/animations/motion/04.webp"
+          ],
+          "strip": "bell_posts/bell_post_004/lit_2/animations/motion__strip.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-08-29T13:41:40+00:00",
+          "brief": "S1",
+          "review": "ANIMATION_PROBABLY_GOOD",
+          "review_metrics": {
+            "base_outline": 0.0
+          },
+          "light_frames": [
+            {
+              "intensity": 1.101,
+              "dx": 13.0,
+              "dy": -10.1
+            },
+            {
+              "intensity": 1.045,
+              "dx": 13.8,
+              "dy": -9.9
+            },
+            {
+              "intensity": 0.807,
+              "dx": 14.7,
+              "dy": -9.8
+            },
+            {
+              "intensity": 1.023,
+              "dx": 14.1,
+              "dy": -9.8
+            },
+            {
+              "intensity": 1.024,
+              "dx": 14.3,
+              "dy": -9.5
+            }
+          ]
+        }
+      }
+    },
+    "LIT_4": {
+      "sprite": "bell_posts/bell_post_004/lit_4/sprite.webp",
+      "pixellab_object_id": "1ce626f8-ff13-4fb5-a542-10193d117e5e",
+      "generated_at": "2026-08-15T20:23:18+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.6174,
+      "glow_score": 0.0239,
+      "rotations": {
+        "south-east": "bell_posts/bell_post_004/lit_4/rotations/south-east.webp",
+        "south-west": "bell_posts/bell_post_004/lit_4/rotations/south-west.webp",
+        "south": "bell_posts/bell_post_004/lit_4/sprite.webp"
+      },
+      "animations": {
+        "motion": {
+          "group_id": "17fc23d9-98eb-48f1-8ef4-0df7c2236bc4",
+          "description": "This is the same picture in every frame. ONLY the hanging bell and the hanging lantern move, swinging. Everything else in the picture is copied from the first frame exactly, pixel for pixel, unchanged in shape, size, position and colour. No outline anywhere is redrawn. The last frame matches the first frame exactly, so the loop joins. Nothing anywhere becomes darker, lighter or a different colour except the one thing named above.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "bell_posts/bell_post_004/lit_4/animations/motion/00.webp",
+            "bell_posts/bell_post_004/lit_4/animations/motion/01.webp",
+            "bell_posts/bell_post_004/lit_4/animations/motion/02.webp",
+            "bell_posts/bell_post_004/lit_4/animations/motion/03.webp",
+            "bell_posts/bell_post_004/lit_4/animations/motion/04.webp"
+          ],
+          "strip": "bell_posts/bell_post_004/lit_4/animations/motion__strip.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-08-29T16:17:06+00:00",
+          "brief": "Y23",
+          "review": "ANIMATION_PROBABLY_GOOD",
+          "review_metrics": {
+            "class": "fire",
+            "base": 0.0069,
+            "still": 0.774
+          },
+          "light_frames": [
+            {
+              "intensity": 1.08,
+              "dx": 26.4,
+              "dy": -4.5
+            },
+            {
+              "intensity": 1.019,
+              "dx": 26.6,
+              "dy": -5.1
+            },
+            {
+              "intensity": 0.988,
+              "dx": 26.4,
+              "dy": -5.1
+            },
+            {
+              "intensity": 0.957,
+              "dx": 25.4,
+              "dy": -5.2
+            },
+            {
+              "intensity": 0.957,
+              "dx": 24.5,
+              "dy": -5.0
+            }
+          ]
+        }
+      }
+    },
+    "NOT_LIT_1": {
+      "sprite": "bell_posts/bell_post_004/not_lit_1/sprite.webp",
+      "pixellab_object_id": "a1523d43-d71d-41e5-9bd1-d93f9ae3a167",
+      "generated_at": "2026-08-15T20:23:47+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.3302,
+      "glow_score": 0.0108,
+      "rotations": {
+        "south-east": "bell_posts/bell_post_004/not_lit_1/rotations/south-east.webp",
+        "south-west": "bell_posts/bell_post_004/not_lit_1/rotations/south-west.webp",
+        "south": "bell_posts/bell_post_004/not_lit_1/sprite.webp"
+      },
+      "animations": {
+        "motion": {
+          "group_id": "1fed67db-0905-420e-b6b0-f2b3906a61ff",
+          "description": "This is the same picture in every frame. ONLY the hanging bell and the hanging lantern swing. It moves as one solid piece and keeps exactly the same shape, size and colours the whole time it moves. It is never redrawn, never reshaped and never changes its outline. Everything else in the picture is copied from the first frame exactly, pixel for pixel, unchanged in shape, size, position and colour. No outline anywhere is redrawn. The last frame matches the first frame exactly, so the loop joins.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "bell_posts/bell_post_004/not_lit_1/animations/motion/00.webp",
+            "bell_posts/bell_post_004/not_lit_1/animations/motion/01.webp",
+            "bell_posts/bell_post_004/not_lit_1/animations/motion/02.webp",
+            "bell_posts/bell_post_004/not_lit_1/animations/motion/03.webp",
+            "bell_posts/bell_post_004/not_lit_1/animations/motion/04.webp"
+          ],
+          "strip": "bell_posts/bell_post_004/not_lit_1/animations/motion__strip.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-08-29T16:57:16+00:00",
+          "brief": "Z26",
+          "review": "ANIMATION_PROBABLY_GOOD",
+          "review_metrics": {
+            "class": "fire",
+            "base": 0.0048,
+            "still": 0.613
+          }
+        }
+      }
+    }
+  },
+  "collision": true,
+  "hitbox_shape": "ellipse",
+  "light": {
+    "strength": 0.15,
+    "color": "#ffc69a",
+    "radius": 3,
+    "reference": "the spawn bonfire is 1.0 (radius 7); strength 0 is no light",
+    "states": {
+      "LIT_1": {
+        "strength": 0.18,
+        "color": "#ffc69a",
+        "radius": 4
+      },
+      "LIT_2": {
+        "strength": 0.12,
+        "color": "#ffb45c",
+        "radius": 2
+      },
+      "LIT_4": {
+        "strength": 0.15,
+        "color": "#fee8d1",
+        "radius": 3
+      }
+    },
+    "kind": "fire/enclosed",
+    "flame": true,
+    "embers": false
+  }
+}

@@ -3,7 +3,8 @@
 // Colyseus, no Phaser.
 //
 // SPAWN ZONES ARE MAP DATA (maintainer 2026-07-29): the maps2 agent owns them.
-// Every world ships `maps2/worlds/<name>/spawns.json` — `pixel-maps2/spawns@1`
+// Every world ships a `spawns.json` beside its world.json — `pixel-maps2/
+// spawns@1` under maps2/worlds, `pixel-maps3/spawns@1` under maps2/worlds3
 // (spec: maps2/spec/SPAWNS.md) — polygon zones {id, monster, area, elev, num}.
 // This module holds the PURE geometry/parsing half (schema types, even-odd
 // point-in-polygon, polygon→cells); the terrain-aware half (which cells are
@@ -30,12 +31,22 @@ export interface SpawnZone {
   num: number;
 }
 
+// The spawn schemas this parser reads. maps3 worlds carry the SAME zone
+// document under a maps3 name — verified field by field against the two live
+// files: identical top-level keys, identical zone keys in identical order
+// (id, monster, area, elev, num), identical value types, and the_game's 70
+// ported zones are the_island2's translated by (+240,+244) with monster/elev/
+// num untouched. The version rides with the WORLD schema, not the zone shape,
+// so one shape is read under both names. (An unlisted schema is still [] —
+// the guard is what stops a world.json or a places.json being read as zones.)
+const SPAWN_SCHEMAS = new Set(["pixel-maps2/spawns@1", "pixel-maps3/spawns@1"]);
+
 /** Parse a spawns.json payload. Returns [] for anything that isn't a
- * well-formed pixel-maps2/spawns@1 document; malformed zones are skipped
- * individually so one bad entry can't drop a whole world's monsters. */
+ * well-formed spawns@1 document (see SPAWN_SCHEMAS); malformed zones are
+ * skipped individually so one bad entry can't drop a whole world's monsters. */
 export function parseSpawns(json: unknown): SpawnZone[] {
   const doc = json as { schema?: string; zones?: unknown[] } | null;
-  if (!doc || doc.schema !== "pixel-maps2/spawns@1" || !Array.isArray(doc.zones)) return [];
+  if (!doc || !SPAWN_SCHEMAS.has(doc.schema as string) || !Array.isArray(doc.zones)) return [];
   const out: SpawnZone[] = [];
   for (const z of doc.zones as Array<Record<string, unknown>>) {
     if (!z || typeof z.id !== "string" || typeof z.monster !== "string") continue;
@@ -64,18 +75,28 @@ export function pointInZone(zone: SpawnZone, px: number, py: number): boolean {
 }
 
 /** All grid cells whose CENTRE lies inside the zone polygon (clipped to the
- * world). Pure geometry — elevation/standability filtering happens against the
- * terrain grid in buildZoneRuntimes. */
+ * world), row-major. Pure geometry — elevation/standability filtering happens
+ * against the terrain grid in buildZoneRuntimes.
+ *
+ * SCANLINE, and byte-identical to testing every cell with `pointInZone`: each
+ * row's edge crossings are computed ONCE with the exact expression and
+ * half-open rule pointInZone uses, then a cell is inside when an odd number of
+ * crossings lie strictly right of its centre — the same parity the per-cell
+ * toggle loop arrives at, without re-walking every edge per cell. (Per-cell
+ * over the bbox cost 3.1 s of server CPU per room creation on the_game AND
+ * the_island2 — 82 zones × bbox × edges, blocking the sim for everyone
+ * already in the world; 8 ms now. Pinned by server/test/zonefill.test.ts.) */
 export function zonePolygonCells(
   zone: SpawnZone,
   wCells: number,
   hCells: number,
 ): Array<{ c: number; r: number }> {
+  const poly = zone.area;
   let minC = Infinity;
   let minR = Infinity;
   let maxC = -Infinity;
   let maxR = -Infinity;
-  for (const [x, y] of zone.area) {
+  for (const [x, y] of poly) {
     minC = Math.min(minC, x);
     maxC = Math.max(maxC, x);
     minR = Math.min(minR, y);
@@ -86,8 +107,73 @@ export function zonePolygonCells(
   const c1 = Math.min(wCells - 1, Math.ceil(maxC) - 1);
   const r0 = Math.max(0, Math.floor(minR));
   const r1 = Math.min(hCells - 1, Math.ceil(maxR) - 1);
-  for (let r = r0; r <= r1; r++)
-    for (let c = c0; c <= c1; c++) if (pointInZone(zone, c + 0.5, r + 0.5)) out.push({ c, r });
+  const xs: number[] = [];
+  for (let r = r0; r <= r1; r++) {
+    const py = r + 0.5;
+    xs.length = 0;
+    for (let i = 0, j = poly.length - 1; i < poly.length; j = i++) {
+      const [xi, yi] = poly[i];
+      const [xj, yj] = poly[j];
+      if (yi > py !== yj > py) xs.push(((xj - xi) * (py - yi)) / (yj - yi) + xi);
+    }
+    if (!xs.length) continue;
+    xs.sort((a, b) => a - b);
+    // Centres sweep left to right; k = crossings NOT strictly right of px, so
+    // xs.length - k is exactly the count pointInZone's toggle loop would make.
+    let k = 0;
+    for (let c = c0; c <= c1; c++) {
+      const px = c + 0.5;
+      while (k < xs.length && !(px < xs[k])) k++;
+      if ((xs.length - k) & 1) out.push({ c, r });
+    }
+  }
+  return out;
+}
+
+/** Chebyshev distance, in CELLS, from a cell to a zone polygon's bounding box
+ * — 0 when the cell is inside the box. The box, not the polygon: this ranks
+ * zones by how soon a walker could meet them, and a box is never smaller than
+ * its polygon, so it can only err toward "near". */
+export function zoneDistanceCells(zone: SpawnZone, col: number, row: number): number {
+  let minC = Infinity;
+  let minR = Infinity;
+  let maxC = -Infinity;
+  let maxR = -Infinity;
+  for (const [x, y] of zone.area) {
+    minC = Math.min(minC, x);
+    maxC = Math.max(maxC, x);
+    minR = Math.min(minR, y);
+    maxR = Math.max(maxR, y);
+  }
+  const dc = Math.max(minC - col, 0, col - maxC);
+  const dr = Math.max(minR - row, 0, row - maxR);
+  return Math.max(dc, dr);
+}
+
+/** How far, in cells, a spawn zone may be from where the player will stand
+ * for its monsters' walk/idle art to ride the BOOT batch. Beyond it the art
+ * rides the deferred batch and the monster stays culled until it lands.
+ * (32 = several phone screens: a monster roams only inside its own zone and
+ * chases at most ESCAPE_RADIUS_WU ≈ 12 cells past it, and the deferred batch
+ * lands within seconds of the join. Measured on the_game and the_island2:
+ * 20 of 57 kinds within 32 cells of the spawn — 592 strips / 3.4 MB off a
+ * 1,884-request boot.) */
+export const MONSTER_BOOT_RADIUS_CELLS = 32;
+
+/** The monster kinds whose art the boot batch carries: every kind with a zone
+ * within `radiusCells` of ANY centre — the world's declared spawn and the
+ * player's last known spot in this world (a returning player lands on their
+ * saved spot, not the spawn). No centres → every kind, the pre-split
+ * behaviour: when in doubt, include. */
+export function monsterBootKinds(
+  zones: SpawnZone[],
+  centres: ReadonlyArray<readonly [number, number]>,
+  radiusCells: number = MONSTER_BOOT_RADIUS_CELLS,
+): Set<string> {
+  const out = new Set<string>();
+  for (const z of zones) {
+    if (!centres.length || centres.some(([c, r]) => zoneDistanceCells(z, c, r) <= radiusCells)) out.add(z.monster);
+  }
   return out;
 }
 
@@ -159,7 +245,50 @@ export const PLAYER_BODY_RADIUS = 9; // wu — the player's own footprint half-w
 export const MONSTER_SEP_MARGIN = 4; // wu — breathing room beyond touching radii
 export const MONSTER_SEP_RELAX_SPEED = 90; // wu/s — cap on the positional push (no teleporting)
 export const MONSTER_DODGE_MARGIN = 6; // wu — dodge clearance beyond the radii sum
+/** HOW MUCH OF THAT CLEARANCE THE DODGE ACTUALLY KEEPS (maintainer 2026-09-05,
+ *  with the collision overlay on: "the OUTER hitbox radius on monsters and NPCs
+ *  are a bit too big and should be maybe in between what it is now and the
+ *  inner hitbox circle"). The dodge used to turn you a whole body plus a margin
+ *  out from the art — r + 9 + 6 — which drew a ring a body and a half wide and
+ *  felt like being pushed aside by nothing. Half of that clearance puts the ring
+ *  exactly midway between the body itself (r) and where it used to sit
+ *  (r + 15), which is what he asked for; bodies are SOFT collision, so brushing
+ *  one is free and the only cost is how early you are steered. */
+export const MONSTER_DODGE_TIGHTEN = 0.85;
+
+/** THE HOLD CORRIDOR IS DELIBERATELY *NOT* TIGHTENED. Engage and release are
+ *  two different thresholds on purpose — "widening only the HOLD is what makes
+ *  this hysteresis rather than a bigger trigger" — so the corridor that keeps a
+ *  committed dodge alive is the FULL radii sum, 1.35x, whatever
+ *  MONSTER_DODGE_TIGHTEN does to the trigger. Tightening both together weakened
+ *  the hysteresis and the walker let go the moment it had stepped aside, which
+ *  is the 2026-08-08 weave ("runs back-and-forth-back-and-forth until the
+ *  player finally walks around the NPC") — caught by the dodge gate, not by
+ *  reasoning. Turning LATER is what was asked for; letting go sooner was not. */
+export const MONSTER_DODGE_HOLD_WIDEN = 1.35;
+export function dodgeHold(r: number | undefined, selfR: number): number {
+  return ((r ?? DEFAULT_MONSTER_RADIUS) + selfR + MONSTER_DODGE_MARGIN) * MONSTER_DODGE_HOLD_WIDEN;
+}
+
+/** THE ONE DEFINITION of how far from a body the dodge turns you — the radii
+ *  sum tightened by MONSTER_DODGE_TIGHTEN. `bodyStandoff` and `monsterDodge`
+ *  MUST agree here: the autopilot steers at a waypoint the dodge refuses to
+ *  enter, and if the two disagree the walker orbits the body forever (the
+ *  standoff rule). The collision overlay draws THIS, so the ring on screen
+ *  cannot drift from the rule. */
+export function dodgePersonal(r: number | undefined, selfR: number): number {
+  return (r ?? DEFAULT_MONSTER_RADIUS) + (selfR + MONSTER_DODGE_MARGIN) * MONSTER_DODGE_TIGHTEN;
+}
 export const MONSTER_DODGE_LOOKAHEAD = 26; // wu — MINIMUM dodge lookahead (scales with radius)
+// THE PASS — the player's "special move" past a body blocking the ONLY lane
+// (maintainer 2026-08-13: "this should not result in the player switching
+// direction back and forth in panic... run straight past the blocker", the
+// basketball crossover). Bodies are input-deflection only, so passing through
+// is physically free; these tune when the dodge gives up negotiating.
+export const DODGE_PASS_STALL_MS = 450; // dodging this long without real progress → pass
+export const DODGE_PASS_STALL_WU = 8; // "real progress" = moving this far resets the clock
+export const DODGE_PASS_MAX_MS = 1600; // a pass that outlives this re-arms the normal dodge
+export const DODGE_PASS_JINK_MS = 160; // the crossover feint: one quick diagonal step first
 
 /** One tick of positional separation for `bodies[self]` against every other
  * body. Overlap = (rA + rB + MONSTER_SEP_MARGIN) - distance; each overlapping

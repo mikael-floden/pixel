@@ -38,11 +38,13 @@ function walk(dir, out = []) {
 const hash = (p) => createHash("md5").update(readFileSync(p)).digest("hex");
 
 // ---- what the wiki lists -------------------------------------------------
-// Composer paths are `composer/foley/<set>/<file>`; catalog takes carry a
+// Foley paths are `sounds/foley/<set>/<file>`; catalog takes carry a
 // per-format file map. Both resolve to a real path under the repo root.
 const listed = new Set();
 for (const cs of Object.values(D.sfx.composerSets)) {
-  for (const t of [...cs.takes, ...(cs.alts ?? [])]) listed.add(join(ROOT, "games2", t.file));
+  // REPO-ROOT-RELATIVE since the library moved to sounds/ (2026-09-02); the
+  // manifest publishes its own `root` and build.mjs joins it.
+  for (const t of [...cs.takes, ...(cs.alts ?? [])]) listed.add(join(ROOT, t.file));
 }
 for (const s of D.domains.sounds) {
   for (const t of s.takes) for (const f of Object.values(t.files ?? {})) listed.add(join(ROOT, f.replace(/^\/?assets\//, "")));
@@ -52,7 +54,7 @@ for (const p of listed) { try { listedHashes.add(hash(p)); } catch { /* reported
 
 // ---- what is on disk -----------------------------------------------------
 const SOURCES = [
-  ["composer foley", join(ROOT, "games2/composer/foley")],
+  ["composer foley", join(ROOT, "sounds/foley")],
   ["sound catalog", join(ROOT, "sounds")],
 ];
 let total = 0;

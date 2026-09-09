@@ -1,0 +1,341 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-15T17:54:39+00:00",
+  "id": "fallen_log_014",
+  "group": "fallen_logs",
+  "type": "NATURE",
+  "rank": 20,
+  "index": 14,
+  "name": "Fresh-fallen birch trunk 014",
+  "lights": null,
+  "variety": "fresh-fallen birch trunk",
+  "modifier": "with fallen leaves collected at its base",
+  "glow_concept": "blue foxfire glowing in the bark cracks",
+  "prompt": "a fallen tree trunk lying on its side with broken branch stubs, torn bark, moss and fungi along its length, fresh-fallen birch trunk, with fallen leaves collected at its base, waist-high, self-emissive at night, softly radiating light: blue foxfire glowing in the bark cracks",
+  "view": "low top-down",
+  "direction": "south",
+  "directions": [
+    "south"
+  ],
+  "must_be_imbplemented_with_random_hflip": true,
+  "rotations": null,
+  "size": 128,
+  "sprite": "fallen_logs/fallen_log_014/sprite.webp",
+  "placement": {
+    "world_height_m": 1.974,
+    "world_px_height": 101,
+    "character_height_px": 87,
+    "character_height_m": 1.7,
+    "note": "ONE SCENERY PIXEL IS ONE PLAYER PIXEL. world_px_height IS the art's own alpha bbox height, so scenery is placed into the world at 1:1 exactly as the avatar is (setScale(1)) and the two share one pixel grid. The CAMERA still zooms the whole scene \u2014 that is uniform and correct; what must never happen is scenery being resampled on its own, against the player. world_height_m is what the art reads as beside a 87px character; declared_height_m is what it was once declared to be, and a gap between them means the ART is the wrong size.",
+    "content_box": [
+      3,
+      19,
+      126,
+      120
+    ],
+    "content_px_height": 101,
+    "canvas_render_px": 128,
+    "declared_height_m": 0.99
+  },
+  "pixellab_object_id": "ffdc95c0-13a3-469c-ac2f-16d25b4de55a",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)",
+  "states": {
+    "LIT_2": {
+      "sprite": "fallen_logs/fallen_log_014/lit_2/sprite.webp",
+      "pixellab_object_id": "4db1b7f4-3328-497e-b6d2-5a981c3cffb6",
+      "generated_at": "2026-08-15T19:32:47+00:00",
+      "glow_concept": "ember-orange glow inside the hollow end",
+      "difference_from_source": 0.5315,
+      "glow_score": 0.286,
+      "animations": {
+        "flame": {
+          "group_id": "d78671d4-90c7-44e1-a341-270cb1f8fd9c",
+          "description": "Animate the flame only",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "fallen_logs/fallen_log_014/lit_2/animations/flame/00.webp",
+            "fallen_logs/fallen_log_014/lit_2/animations/flame/01.webp",
+            "fallen_logs/fallen_log_014/lit_2/animations/flame/02.webp",
+            "fallen_logs/fallen_log_014/lit_2/animations/flame/03.webp",
+            "fallen_logs/fallen_log_014/lit_2/animations/flame/04.webp"
+          ],
+          "strip": "fallen_logs/fallen_log_014/lit_2/animations/flame__strip.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-08-29T06:58:16+00:00",
+          "review": "ANIMATION_PROBABLY_GOOD",
+          "review_metrics": {
+            "base_outline": 0.0063
+          },
+          "light_frames": [
+            {
+              "intensity": 0.951,
+              "dx": 4.5,
+              "dy": 20.6
+            },
+            {
+              "intensity": 1.002,
+              "dx": 4.5,
+              "dy": 20.7
+            },
+            {
+              "intensity": 1.015,
+              "dx": 4.4,
+              "dy": 20.1
+            },
+            {
+              "intensity": 1.014,
+              "dx": 4.3,
+              "dy": 20.6
+            },
+            {
+              "intensity": 1.02,
+              "dx": 4.3,
+              "dy": 21.1
+            }
+          ]
+        }
+      }
+    },
+    "LIT_3": {
+      "sprite": "fallen_logs/fallen_log_014/lit_3/sprite.webp",
+      "pixellab_object_id": "12ab45bc-3af0-45ad-9de1-345740646c8e",
+      "generated_at": "2026-08-15T19:32:22+00:00",
+      "glow_concept": "soulstone crystals erupting from a split",
+      "difference_from_source": 0.9478,
+      "glow_score": 0.4317,
+      "animations": {
+        "motion": {
+          "group_id": "82f43c05-c1c9-4152-97db-1ffd1f0c25bb",
+          "description": "This is the same picture in every frame. ONLY the blue crystals in the log brighten a little and return. It is lit and clearly visible in every single frame, including the first. It only ever gets SLIGHTLY brighter: never white, never washed out, and it keeps its own colour at every single moment. It is at its brightest in the middle and back to exactly its first-frame brightness and colour at the end, never dimmer at the end than at the start. Everything else in the picture is copied from the first frame exactly, pixel for pixel, unchanged in shape, size, position and colour. No outline anywhere is redrawn. The last frame matches the first frame exactly, so the loop joins.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "fallen_logs/fallen_log_014/lit_3/animations/motion/00.webp",
+            "fallen_logs/fallen_log_014/lit_3/animations/motion/01.webp",
+            "fallen_logs/fallen_log_014/lit_3/animations/motion/02.webp",
+            "fallen_logs/fallen_log_014/lit_3/animations/motion/03.webp",
+            "fallen_logs/fallen_log_014/lit_3/animations/motion/04.webp"
+          ],
+          "strip": "fallen_logs/fallen_log_014/lit_3/animations/motion__strip.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-08-29T18:33:59+00:00",
+          "brief": "B35",
+          "review": "ANIMATION_PROBABLY_GOOD",
+          "review_metrics": {
+            "base_outline": 0.0
+          },
+          "light_frames": [
+            {
+              "intensity": 0.928,
+              "dx": 0.3,
+              "dy": -3.4
+            },
+            {
+              "intensity": 1.089,
+              "dx": 0.2,
+              "dy": -3.0
+            },
+            {
+              "intensity": 1.07,
+              "dx": 0.7,
+              "dy": -4.0
+            },
+            {
+              "intensity": 0.996,
+              "dx": 0.5,
+              "dy": -1.9
+            },
+            {
+              "intensity": 0.917,
+              "dx": 0.2,
+              "dy": -3.0
+            }
+          ]
+        }
+      }
+    },
+    "LIT_4": {
+      "sprite": "fallen_logs/fallen_log_014/lit_4/sprite.webp",
+      "pixellab_object_id": "8855ae7a-2b0e-4f04-8b66-bb0904d30a2b",
+      "generated_at": "2026-08-17T14:30:06+00:00",
+      "glow_concept": "a lit traveler's lantern resting on top",
+      "difference_from_source": 0.7271,
+      "glow_score": 0.1999,
+      "animations": {
+        "motion": {
+          "group_id": "191fed9f-74c3-4bc2-84a1-8e9b17775cf4",
+          "description": "This is the same picture in every frame. ONLY the flame inside the lantern flickers. It is lit and clearly visible in every frame, including the first. It stays exactly the same size and shape in every frame: it never grows and never spreads, only its inner detail shifts. Nothing is added or removed anywhere: every object appears in every frame, the same number of them, in the same places, at the same size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour, no outline redrawn. The last frame matches the first exactly.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "fallen_logs/fallen_log_014/lit_4/animations/motion/00.webp",
+            "fallen_logs/fallen_log_014/lit_4/animations/motion/01.webp",
+            "fallen_logs/fallen_log_014/lit_4/animations/motion/02.webp",
+            "fallen_logs/fallen_log_014/lit_4/animations/motion/03.webp",
+            "fallen_logs/fallen_log_014/lit_4/animations/motion/04.webp"
+          ],
+          "strip": "fallen_logs/fallen_log_014/lit_4/animations/motion__strip.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-08-29T19:02:18+00:00",
+          "brief": "C3",
+          "review": "ANIMATION_PROBABLY_GOOD",
+          "review_metrics": {
+            "base_outline": 0.0245
+          },
+          "light_frames": [
+            {
+              "intensity": 1.466,
+              "dx": 2.7,
+              "dy": -8.4
+            },
+            {
+              "intensity": 1.455,
+              "dx": 2.6,
+              "dy": -8.2
+            },
+            {
+              "intensity": 1.448,
+              "dx": 2.4,
+              "dy": -8.1
+            },
+            {
+              "intensity": 0.5,
+              "dx": -0.7,
+              "dy": -16.9
+            },
+            {
+              "intensity": 0.5,
+              "dx": 0.1,
+              "dy": -22.6
+            }
+          ]
+        }
+      }
+    },
+    "NOT_LIT_1": {
+      "sprite": "fallen_logs/fallen_log_014/not_lit_1/sprite.webp",
+      "pixellab_object_id": "374e59eb-658f-4b94-8c68-37a77b822fef",
+      "generated_at": "2026-08-15T19:27:41+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.4669,
+      "glow_score": 0.172
+    },
+    "NOT_LIT_10": {
+      "sprite": "fallen_logs/fallen_log_014/not_lit_10/sprite.webp",
+      "pixellab_object_id": "979df4d2-f129-4747-9466-1e7b7f8d9f64",
+      "generated_at": "2026-08-17T14:31:07+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.4336,
+      "glow_score": 0.1639
+    },
+    "NOT_LIT_11": {
+      "sprite": "fallen_logs/fallen_log_014/sprite.webp",
+      "pixellab_object_id": "ffdc95c0-13a3-469c-ac2f-16d25b4de55a",
+      "glow_score": 0.1816,
+      "relit_from": "LIT_1"
+    },
+    "NOT_LIT_2": {
+      "sprite": "fallen_logs/fallen_log_014/not_lit_2/sprite.webp",
+      "pixellab_object_id": "4bf554e3-40e6-4a54-8a01-5496579ccd95",
+      "generated_at": "2026-08-17T14:30:46+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.6141,
+      "glow_score": 0.1875
+    },
+    "NOT_LIT_3": {
+      "sprite": "fallen_logs/fallen_log_014/not_lit_3/sprite.webp",
+      "pixellab_object_id": "374d83b3-15c6-48d7-ae4c-62750b65ed9c",
+      "generated_at": "2026-08-15T19:32:09+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.3301,
+      "glow_score": 0.1927
+    },
+    "NOT_LIT_4": {
+      "sprite": "fallen_logs/fallen_log_014/not_lit_4/sprite.webp",
+      "pixellab_object_id": "f25cf68f-2e58-49b8-9bd2-9c63e0151056",
+      "generated_at": "2026-08-15T19:31:56+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.3177,
+      "glow_score": 0.1604
+    },
+    "NOT_LIT_5": {
+      "sprite": "fallen_logs/fallen_log_014/not_lit_5/sprite.webp",
+      "pixellab_object_id": "5e0a90c8-994e-4719-973a-4fa1051b5a65",
+      "generated_at": "2026-08-15T19:29:42+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.52,
+      "glow_score": 0.1937
+    },
+    "NOT_LIT_7": {
+      "sprite": "fallen_logs/fallen_log_014/not_lit_7/sprite.webp",
+      "pixellab_object_id": "54021b3c-a352-4734-9301-654903cb7891",
+      "generated_at": "2026-08-15T19:29:57+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.3173,
+      "glow_score": 0.2012
+    },
+    "NOT_LIT_8": {
+      "sprite": "fallen_logs/fallen_log_014/not_lit_8/sprite.webp",
+      "pixellab_object_id": "60f8a353-af02-4773-8d6a-3d833e2c6cf2",
+      "generated_at": "2026-08-15T19:29:58+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.5491,
+      "glow_score": 0.1615
+    },
+    "NOT_LIT_9": {
+      "sprite": "fallen_logs/fallen_log_014/not_lit_9/sprite.webp",
+      "pixellab_object_id": "e9efab56-f993-4a31-b1c7-818f1e13de55",
+      "generated_at": "2026-08-16T14:13:26+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.5685,
+      "glow_score": 0.1969
+    }
+  },
+  "collision": true,
+  "hitbox_shape": "ellipse",
+  "light": {
+    "strength": 0.1,
+    "color": "#ffd8af",
+    "radius": 2,
+    "reference": "the spawn bonfire is 1.0 (radius 7); strength 0 is no light",
+    "states": {
+      "LIT_2": {
+        "strength": 0.1,
+        "color": "#ffd8af",
+        "radius": 2
+      },
+      "LIT_3": {
+        "strength": 0.12,
+        "color": "#93edff",
+        "radius": 2
+      },
+      "LIT_4": {
+        "strength": 0.08,
+        "color": "#fff0a0",
+        "radius": 2
+      }
+    },
+    "kind": "glow/bio",
+    "flame": false,
+    "embers": false
+  }
+}

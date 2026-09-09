@@ -1,0 +1,151 @@
+{
+  "format": "scenery-piece@2",
+  "id": "giant_mushroom_001",
+  "group": "giant_mushrooms",
+  "rank": 79,
+  "index": 1,
+  "name": "Leaning crooked giant 001",
+  "lights": null,
+  "variety": "leaning crooked giant",
+  "glow_concept": null,
+  "prompt": "a huge tree-sized mushroom with a thick fibrous stalk and a broad domed cap, leaning crooked giant, tall, about two people high, completely unlit, no glow, no light sources, no self-emission",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 192,
+  "sprite": "giant_mushrooms/giant_mushroom_001/sprite.webp",
+  "placement": {
+    "world_height_m": 3.205,
+    "world_px_height": 164,
+    "character_height_px": 87,
+    "character_height_m": 1.7,
+    "note": "ONE SCENERY PIXEL IS ONE PLAYER PIXEL. world_px_height IS the art's own alpha bbox height, so scenery is placed into the world at 1:1 exactly as the avatar is (setScale(1)) and the two share one pixel grid. The CAMERA still zooms the whole scene \u2014 that is uniform and correct; what must never happen is scenery being resampled on its own, against the player. world_height_m is what the art reads as beside a 87px character; declared_height_m is what it was once declared to be, and a gap between them means the ART is the wrong size.",
+    "declared_height_m": 4.49,
+    "content_box": [
+      33,
+      14,
+      157,
+      178
+    ],
+    "content_px_height": 164,
+    "canvas_render_px": 192
+  },
+  "pixellab_object_id": "dd56fe56-5fcb-4186-b9f9-4e5f1e381b45",
+  "pixellab_directions": 1,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-1-direction-object (single, S-only)",
+  "must_be_imbplemented_with_random_hflip": true,
+  "generated_at": "2026-08-13T02:17:01+00:00",
+  "states": {
+    "LIT_1": {
+      "sprite": "giant_mushrooms/giant_mushroom_001/lit_1/sprite.webp",
+      "pixellab_object_id": "474d910a-7988-40ac-bfcb-4cba58ae9ec2",
+      "generated_at": "2026-08-16T14:26:41+00:00",
+      "glow_concept": "glowing sap veins climbing the thick stalk",
+      "difference_from_source": 0.8381,
+      "glow_score": 0.0603,
+      "animations": {
+        "motion": {
+          "group_id": "d28deeb8-903f-409a-9ac4-f8faeb553658",
+          "description": "This is the same picture in every frame. ONLY the glowing sap in the stalk brightens and dims, moving slowly upward. Everything else is frozen and pixel-for-pixel identical in every frame. Do not redraw anything else, and do not add or remove anything.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "giant_mushrooms/giant_mushroom_001/lit_1/animations/motion/00.webp",
+            "giant_mushrooms/giant_mushroom_001/lit_1/animations/motion/01.webp",
+            "giant_mushrooms/giant_mushroom_001/lit_1/animations/motion/02.webp",
+            "giant_mushrooms/giant_mushroom_001/lit_1/animations/motion/03.webp",
+            "giant_mushrooms/giant_mushroom_001/lit_1/animations/motion/04.webp"
+          ],
+          "strip": "giant_mushrooms/giant_mushroom_001/lit_1/animations/motion__strip.webp",
+          "directions": null,
+          "generated_at": "2026-08-29T12:40:48+00:00",
+          "brief": "R42",
+          "review": "ANIMATION_PROBABLY_GOOD",
+          "review_metrics": {
+            "base_outline": 0.0021
+          },
+          "light_frames": [
+            {
+              "intensity": 0.978,
+              "dx": -2.2,
+              "dy": -8.4
+            },
+            {
+              "intensity": 1.036,
+              "dx": -2.1,
+              "dy": -7.1
+            },
+            {
+              "intensity": 1.06,
+              "dx": -1.8,
+              "dy": -9.4
+            },
+            {
+              "intensity": 0.839,
+              "dx": -1.0,
+              "dy": -4.6
+            },
+            {
+              "intensity": 1.087,
+              "dx": -1.5,
+              "dy": -10.4
+            }
+          ]
+        }
+      }
+    },
+    "NOT_LIT_1": {
+      "sprite": "giant_mushrooms/giant_mushroom_001/sprite.webp",
+      "pixellab_object_id": "dd56fe56-5fcb-4186-b9f9-4e5f1e381b45",
+      "generated_at": "2026-08-13T02:17:01+00:00"
+    },
+    "NOT_LIT_2": {
+      "sprite": "giant_mushrooms/giant_mushroom_001/not_lit_2/sprite.webp",
+      "pixellab_object_id": "51815839-9c71-492e-b7a1-2ddd4fefa3aa",
+      "generated_at": "2026-08-16T14:25:34+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.7274,
+      "glow_score": 0.0
+    },
+    "NOT_LIT_3": {
+      "sprite": "giant_mushrooms/giant_mushroom_001/not_lit_3/sprite.webp",
+      "pixellab_object_id": "baedfb78-b89f-4266-9401-aa073e1aa6e8",
+      "generated_at": "2026-08-16T14:27:00+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.2575,
+      "glow_score": 0.0
+    },
+    "NOT_LIT_4": {
+      "sprite": "giant_mushrooms/giant_mushroom_001/not_lit_4/sprite.webp",
+      "pixellab_object_id": "d2f257c5-f045-42dc-9503-c47dcf09acfe",
+      "generated_at": "2026-08-16T14:26:10+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.2597,
+      "glow_score": 0.0
+    }
+  },
+  "collision": true,
+  "hitbox_shape": "ellipse",
+  "light": {
+    "strength": 0.3,
+    "color": "#ffb065",
+    "radius": 5,
+    "reference": "the spawn bonfire is 1.0 (radius 7); strength 0 is no light",
+    "states": {
+      "LIT_1": {
+        "strength": 0.36,
+        "color": "#ffb065",
+        "radius": 6
+      }
+    },
+    "kind": "glow/bio",
+    "flame": false,
+    "embers": false
+  }
+}

@@ -1,0 +1,143 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-14T01:42:49+00:00",
+  "id": "stone_026",
+  "group": "stones",
+  "rank": 2,
+  "index": 26,
+  "name": "Stacked pair of stones 026",
+  "lights": null,
+  "variety": "stacked pair of stones",
+  "modifier": "grown around a half-buried stone",
+  "glow_concept": "patches of luminous blue-green moss",
+  "prompt": "a single natural fieldstone boulder resting on the ground, rounded and weathered, with subtle cracks, pits and patches of moss, stacked pair of stones, grown around a half-buried stone, waist-high, self-emissive at night, softly radiating light: patches of luminous blue-green moss",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 64,
+  "sprite": "stones/stone_026/sprite.webp",
+  "placement": {
+    "world_height_m": 0.899,
+    "world_px_height": 46,
+    "character_height_px": 87,
+    "character_height_m": 1.7,
+    "note": "ONE SCENERY PIXEL IS ONE PLAYER PIXEL. world_px_height IS the art's own alpha bbox height, so scenery is placed into the world at 1:1 exactly as the avatar is (setScale(1)) and the two share one pixel grid. The CAMERA still zooms the whole scene \u2014 that is uniform and correct; what must never happen is scenery being resampled on its own, against the player. world_height_m is what the art reads as beside a 87px character; declared_height_m is what it was once declared to be, and a gap between them means the ART is the wrong size.",
+    "declared_height_m": 1.07,
+    "content_box": [
+      10,
+      10,
+      55,
+      56
+    ],
+    "content_px_height": 46,
+    "canvas_render_px": 64
+  },
+  "pixellab_object_id": "d609b1ce-40dc-4e8f-982b-31130ce95a05",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)",
+  "must_be_imbplemented_with_random_hflip": true,
+  "states": {
+    "LIT_1": {
+      "sprite": "stones/stone_026/sprite.webp",
+      "pixellab_object_id": "d609b1ce-40dc-4e8f-982b-31130ce95a05",
+      "generated_at": "2026-08-14T01:42:49+00:00"
+    },
+    "LIT_4": {
+      "sprite": "stones/stone_026/lit_4/sprite.webp",
+      "pixellab_object_id": "0eac961c-4a2e-4401-a195-7958df4637d6",
+      "generated_at": "2026-08-16T21:56:47+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.8005,
+      "glow_score": 0.0203,
+      "animations": {
+        "motion": {
+          "group_id": "ce661124-0808-421e-ba68-6b3f5ed2199e",
+          "description": "This is an almost completely still picture. ONLY the cyan gems in the stones change. Their brightness lifts very slightly and comes straight back: no more than a few pixels change anywhere in the whole picture. At their brightest they are still exactly the same cyan as in the first frame -- never pale, never white, never any other colour. They never fade, never vanish, never spread and never change shape. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "stones/stone_026/lit_4/animations/motion/00.webp",
+            "stones/stone_026/lit_4/animations/motion/01.webp",
+            "stones/stone_026/lit_4/animations/motion/02.webp",
+            "stones/stone_026/lit_4/animations/motion/03.webp",
+            "stones/stone_026/lit_4/animations/motion/04.webp"
+          ],
+          "strip": "stones/stone_026/lit_4/animations/motion__strip.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-08-30T10:05:55+00:00",
+          "brief": "J4",
+          "review": "ANIMATION_PROBABLY_GOOD",
+          "review_metrics": {
+            "base_outline": 0.0142
+          },
+          "light_frames": [
+            {
+              "intensity": 1.5,
+              "dx": -1.2,
+              "dy": -7.2
+            },
+            {
+              "intensity": 1.158,
+              "dx": -5.2,
+              "dy": -7.2
+            },
+            {
+              "intensity": 0.5,
+              "dx": -3.2,
+              "dy": -7.2
+            },
+            {
+              "intensity": 0.5,
+              "dx": -3.2,
+              "dy": -7.2
+            },
+            {
+              "intensity": 0.5,
+              "dx": -3.2,
+              "dy": -7.2
+            }
+          ]
+        }
+      }
+    },
+    "NOT_LIT_1": {
+      "sprite": "stones/stone_026/not_lit_1/sprite.webp",
+      "pixellab_object_id": "6586ee76-e9d1-4762-ab65-f9de08d50ddb",
+      "generated_at": "2026-08-16T21:57:32+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.8053,
+      "glow_score": 0.0
+    }
+  },
+  "collision": true,
+  "hitbox_shape": "ellipse",
+  "light": {
+    "strength": 0.08,
+    "color": "#7effc3",
+    "radius": 1,
+    "reference": "the spawn bonfire is 1.0 (radius 7); strength 0 is no light",
+    "states": {
+      "LIT_1": {
+        "strength": 0.06,
+        "color": "#7effc3",
+        "radius": 1
+      },
+      "LIT_4": {
+        "strength": 0.06,
+        "color": "#85ffcf",
+        "radius": 1
+      }
+    },
+    "kind": "glow/mineral",
+    "flame": false,
+    "embers": false
+  }
+}

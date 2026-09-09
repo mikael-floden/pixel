@@ -1,0 +1,69 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-14T04:37:13+00:00",
+  "id": "sky_stair_001",
+  "group": "sky_stairs",
+  "rank": 165,
+  "index": 1,
+  "name": "Ancient sky stair 001",
+  "lights": null,
+  "variety": "ancient sky stair",
+  "modifier": "seven steps and gone",
+  "glow_concept": null,
+  "prompt": "a flight of worn stone steps rising out of the grass and simply ending in mid-air, mossy treads, no rail and nothing above, ancient sky stair, seven steps and gone, tall, about three times human height, completely unlit, no glow, no light sources, no self-emission",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 192,
+  "sprite": "sky_stairs/sky_stair_001/sprite.webp",
+  "placement": {
+    "world_height_m": 2.951,
+    "world_px_height": 151,
+    "character_height_px": 87,
+    "character_height_m": 1.7,
+    "note": "ONE SCENERY PIXEL IS ONE PLAYER PIXEL. world_px_height IS the art's own alpha bbox height, so scenery is placed into the world at 1:1 exactly as the avatar is (setScale(1)) and the two share one pixel grid. The CAMERA still zooms the whole scene \u2014 that is uniform and correct; what must never happen is scenery being resampled on its own, against the player. world_height_m is what the art reads as beside a 87px character; declared_height_m is what it was once declared to be, and a gap between them means the ART is the wrong size.",
+    "declared_height_m": 4.36,
+    "content_box": [
+      22,
+      31,
+      166,
+      182
+    ],
+    "content_px_height": 151,
+    "canvas_render_px": 192
+  },
+  "pixellab_object_id": "01f0fe53-214b-43ef-b5dc-d96e6040ab1b",
+  "pixellab_directions": 1,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-1-direction-object (single, S-only)",
+  "must_be_imbplemented_with_random_hflip": true,
+  "states": {
+    "NOT_LIT_1": {
+      "sprite": "sky_stairs/sky_stair_001/sprite.webp",
+      "pixellab_object_id": "01f0fe53-214b-43ef-b5dc-d96e6040ab1b",
+      "generated_at": "2026-08-14T04:37:13+00:00"
+    },
+    "NOT_LIT_2": {
+      "sprite": "sky_stairs/sky_stair_001/not_lit_2/sprite.webp",
+      "pixellab_object_id": "cd45f4d1-45c3-4e29-8065-cc03956e0c88",
+      "generated_at": "2026-08-16T20:55:12+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.2815,
+      "glow_score": 0.0125
+    },
+    "NOT_LIT_4": {
+      "sprite": "sky_stairs/sky_stair_001/not_lit_4/sprite.webp",
+      "pixellab_object_id": "242052af-23e0-4095-9f03-7326162302a5",
+      "generated_at": "2026-08-16T20:56:07+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.4367,
+      "glow_score": 0.0
+    }
+  },
+  "collision": true,
+  "hitbox_shape": "ellipse",
+  "type": "NATURE"
+}

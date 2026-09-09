@@ -1,0 +1,27 @@
+{
+  "domain": "items",
+  "id": "olive_buried_gold_stone",
+  "name_seen": "Soulstone",
+  "law": "V",
+  "description": "Olive-grey and speckled, with a fleck of gold buried dead centre that nobody has got out. Off a Dunedelver.",
+  "lore": [
+    "Hold it up and the gold is right there — a few grains of it, a finger's depth inside speckled olive rock with no seam and no crack to reach it by. Every owner tries once. [[lore/the_gold_agreement|Gold]] is the one substance here that does not drift, remembered identically by everyone who ever handled any, and there is not one account anywhere of a grain of it coming out of one of these.",
+    "[[characters/54bead23|Osric]] tried properly, being a smith and being new enough to take a thing like this for a problem rather than a fact. He gave it a full working day. The stone came up to heat and stayed a stone, the gold in the middle of it stayed precisely where it was, and at the end he had a warm stone and a shop full of people who had come round to watch. It is still on his bench. He says it holds paper down.",
+    "What it does in the field is what the animal does. Sand is the one ground in this country that keeps nothing: put a thing under a dune and the dune hands it back, upright and clean, a season later. The stone works the same way on a fight — you take what there is, you finish, you turn away, and now and then the ground gives up one more piece behind you off a thing you were done with. There is no explaining why it should. [[monsters/dune_digger|The delver]] is not looking for anything either."
+  ],
+  "related": [
+    {
+      "domain": "monsters",
+      "id": "dune_digger"
+    },
+    {
+      "domain": "lore",
+      "id": "the_gold_agreement"
+    },
+    {
+      "domain": "lore",
+      "id": "the_hard_pieces"
+    }
+  ],
+  "gm_notes": "Jehanne's bell belongs to the creature record and is left there. Osric's failed melt is his second losing round against the same animal and connects to his existing running joke without repeating it. The gold-in-the-stone is a quiet oddity — the one non-drifting substance sitting at the bottom of a creature — left unexplained on purpose."
+}

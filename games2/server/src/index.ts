@@ -1,5 +1,5 @@
 import { createServer } from "http";
-import { existsSync } from "fs";
+import { existsSync, readFileSync } from "fs";
 import { dirname, join } from "path";
 import { fileURLToPath } from "url";
 import express from "express";
@@ -7,16 +7,14 @@ import compression from "compression";
 import { constants as zlibConstants } from "zlib";
 import { Server } from "@colyseus/core";
 import { WebSocketTransport } from "@colyseus/ws-transport";
-import { Encoder } from "@colyseus/schema";
 import { ROOM_NAME } from "@nangijala/shared";
-import { WorldRoom } from "./rooms/WorldRoom.js";
-import { initLive, registerLiveRoutes } from "./live.js";
+import { WorldRoom, sceneryBbox, zonesConfigFor } from "./rooms/WorldRoom.js";
+import { initLive, registerLiveRoutes, sceneryHitboxOverrides } from "./live.js";
+import { cacheControlFor } from "./cachepolicy.js";
+import { assetHash } from "./assethash.js";
 
-// The combat schema (11 new Player fields, 4 new Monster fields, drops) put
-// the_island2's FULL-STATE join snapshot past the encoder's 8KB default —
-// the overflow stalls the first patch and a joiner sits on mount-default HUD
-// bars. 64KB clears every world with an order of magnitude of headroom.
-Encoder.BUFFER_SIZE = 64 * 1024;
+// Encoder.BUFFER_SIZE is set in rooms/WorldRoom.ts (the room module), so a
+// test's own Server gets the same 64 KB as this one.
 
 const PORT = Number(process.env.PORT || 2567);
 // server/src/index.ts → GAME_ROOT is pixel/games2; the art domains are
@@ -25,7 +23,7 @@ const SRC_DIR = dirname(fileURLToPath(import.meta.url));
 const GAME_ROOT = join(SRC_DIR, "..", "..");
 const ASSETS_ROOT = process.env.ASSETS_ROOT || join(GAME_ROOT, "..");
 const ASSET_DOMAINS = [
-  "characters", "tiles", "maps", "objects", "characters2", "tiles2", "maps2",
+  "characters", "tiles", "maps", "scenery", "characters2", "maps2",
   "sounds", "music", "monsters", "items", "lore", "wiki", "live",
 ];
 
@@ -85,6 +83,32 @@ registerLiveRoutes(app);
 void initLive(ASSETS_ROOT);
 // Deployed build id — clients poll this to detect a newer deploy and prompt a
 // refresh (see client/src/main.ts).
+/* THE COLLISION DOCUMENTS, SERVED BY THE AUTHORITY THAT STAMPS WITH THEM.
+ * Scenery footprints are turned into blocked cells from two files, and the
+ * client's prediction has to reach the SAME cells the server does or the body
+ * fights the correction every frame. Neither file was reachable the way the
+ * client asked for it: `/assets/games2/config/scenery-bbox.json` 404s (games2
+ * is not an ASSET_DOMAIN and never was), so the client stamped NOTHING and
+ * routed straight through every tree, and `/assets/live/tuning/...` is the
+ * IMAGE's baked copy while the server stamps from the LIVE one off GitHub —
+ * so a hitbox tuned in the wiki moved the server's trees and not the client's.
+ * Both are answered here from the objects the room itself holds, which is the
+ * only arrangement in which they cannot drift. ~96 KB gzipped, both together.
+ * `no-cache` (not no-store): the live half changes without a redeploy, so a
+ * cached copy must be REVALIDATED, and express's ETag then makes the usual
+ * answer a 304. */
+app.get("/api/scenery-collision", (_req, res) =>
+  res.setHeader("Cache-Control", "no-cache").json({
+    bbox: sceneryBbox(),
+    hitbox: sceneryHitboxOverrides(),
+  }),
+);
+// THE ZONE GRID of a world (games2/config/zones.json), for the client to pick
+// the room of the world's spawn and the path a zone is served on. `null` =
+// one room for the whole map.
+app.get("/api/zones/:world", (req, res) =>
+  res.setHeader("Cache-Control", "no-cache").json(zonesConfigFor(String(req.params.world).replace(/[^a-z0-9_-]/gi, ""))),
+);
 app.get("/version", (_req, res) =>
   res.setHeader("Cache-Control", "no-store").json({ sha: process.env.GIT_SHA || "dev" }),
 );
@@ -99,10 +123,17 @@ const serveClient = process.env.SERVE_CLIENT === "1" || existsSync(clientDist);
 //   characters.json / world.json) → no-cache: the browser revalidates on every
 //   load and gets fresh content the moment a deploy changes it (cheap 304s
 //   otherwise);
-// - Vite's content-hashed bundles → immutable, cache for a year;
+// - Vite's content-hashed bundles → immutable, cache for a year. That is
+//   EVERY file rollup emits into client/dist/assets, not just js/css: the 503
+//   .ogg foley takes, the music .m4a/.mp3 beds and the bundled .webp are all
+//   named `<name>-<contenthash>.<ext>` by the same mechanism. Until 2026-08-15
+//   the rule only matched js|css, so 532 of the 535 hashed files revalidated
+//   on every repeat visit — 532 pointless round trips per returning player.
+//   The grant is scoped BY DIRECTORY, not by filename shape; see cachepolicy.ts
+//   for why that distinction is what keeps in-place art edits safe;
 // - art (tiles/characters PNGs) → no-cache BY DEFAULT. The path LOOKS
 //   content-hashed (…/base_x_2_161302781/…), but the art agents routinely edit
-//   a tile IN-PLACE (same path, new pixels — e.g. tiles2 softening edges), so a
+//   a tile IN-PLACE (same path, new pixels — an art agent softening edges), so a
 //   long cache once served the OLD art for up to an hour after a deploy.
 // - EXCEPT: art requested with ?v=<GIT_SHA> → immutable. The client stamps its
 //   own build sha (VITE_GIT_SHA, baked with the art into the SAME image) onto
@@ -115,29 +146,38 @@ const serveClient = process.env.SERVE_CLIENT === "1" || existsSync(clientDist);
 //   Repeat visits then load the world with ~zero art requests instead of ~600
 //   revalidation round-trips (the maintainer's "loading for so long").
 const GIT_SHA = (process.env.GIT_SHA || "").trim();
+// Vite's output directory. Nothing but rollup emits can land here — client/
+// public has no `assets/` folder — which is what lets the grant be safe.
+const BUNDLE_DIR = join(clientDist, "assets");
 function setCacheHeaders(res: express.Response, path: string) {
-  if (/-[A-Za-z0-9_-]{8,}\.(js|css)$/.test(path)) {
-    res.setHeader("Cache-Control", "public, max-age=31536000, immutable");
-  } else if (GIT_SHA && GIT_SHA !== "dev" && res.req?.query?.v === GIT_SHA) {
-    res.setHeader("Cache-Control", "public, max-age=31536000, immutable");
-  } else {
-    res.setHeader("Cache-Control", "no-cache");
-  }
+  res.setHeader(
+    "Cache-Control",
+    cacheControlFor({
+      filePath: path,
+      bundleDir: BUNDLE_DIR,
+      gitSha: GIT_SHA,
+      queryV: res.req?.query?.v,
+      queryH: res.req?.query?.h,
+      fileHash: () => assetHash(path), // the bytes about to be served, never the index
+    }),
+  );
 }
 
+// THE ASSET INDEX — one `no-cache` document naming the current content hash
+// of every file under ASSETS_ROOT (scripts/build-asset-index.mjs, run in the
+// image build after the curated root is complete). The client stamps art with
+// `?h=<hash>` from it (client/src/assetver.ts) so an unchanged file keeps its
+// URL across deploys; express's ETag turns the per-boot revalidation into a
+// 304 until a deploy changes some art. Absent (dev, an old image) → 404 and
+// the client stamps `?v=<sha>` exactly as before.
+const ASSET_INDEX = process.env.ASSET_INDEX || join(ASSETS_ROOT, "asset-index.json");
+const assetIndexJson: string | null = existsSync(ASSET_INDEX) ? readFileSync(ASSET_INDEX, "utf8") : null;
+app.get("/asset-index.json", (_req, res) => {
+  if (assetIndexJson === null) return res.status(404).setHeader("Cache-Control", "no-store").end();
+  res.setHeader("Cache-Control", "no-cache").type("application/json").send(assetIndexJson);
+});
+
 if (serveClient) {
-  // The composer's own foley takes and music beds, for the wiki's sound and
-  // music pages. Only those two folders are exposed — the engine sources stay
-  // private. In the image the Dockerfile copies them under /assets/composer/;
-  // a repo checkout serves them straight from games2/composer (second mount =
-  // dev fallback).
-  for (const sub of ["foley", "music"]) {
-    app.use(
-      `/assets/composer/${sub}`,
-      express.static(join(ASSETS_ROOT, "composer", sub), { maxAge: "1h", setHeaders: setCacheHeaders }),
-      express.static(join(GAME_ROOT, "composer", sub), { maxAge: "1h", setHeaders: setCacheHeaders }),
-    );
-  }
   for (const domain of ASSET_DOMAINS) {
     app.use(
       `/assets/${domain}`,
@@ -159,10 +199,10 @@ const gameServer = new Server({
   transport: new WebSocketTransport({ server: createServer(app) }),
 });
 
-// One WorldRoom per maps2 world: filterBy 'world' so joinOrCreate matches
-// players who picked the SAME world into one shared room, and spins up a
-// separate room (with that world's own grid) for each different selection.
-gameServer.define(ROOM_NAME, WorldRoom).filterBy(["world"]);
+// One WorldRoom per (world, zone): filterBy so joinOrCreate matches players
+// who picked the SAME world and zone into one room and spins up a separate
+// room for each other pair (spec/ZONES.md; no zone = the whole-world room).
+gameServer.define(ROOM_NAME, WorldRoom).filterBy(["world", "zone"]);
 
 gameServer
   .listen(PORT)

@@ -1,0 +1,341 @@
+{
+  "format": "scenery-piece@2",
+  "id": "streetlight_007",
+  "group": "streetlights",
+  "rank": 15,
+  "index": 7,
+  "name": "Ivy-overgrown leaning lamp 007",
+  "lights": null,
+  "variety": "ivy-overgrown leaning lamp",
+  "glow_concept": null,
+  "prompt": "a tall lamppost with a slender fluted column, a glass-paned lantern head on top, and a widened base plate at the ground, ivy-overgrown leaning lamp, tall, about two people high, completely unlit, no glow, no light sources, no self-emission",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 160,
+  "sprite": "streetlights/streetlight_007/sprite.webp",
+  "placement": {
+    "world_height_m": 2.775,
+    "world_px_height": 142,
+    "character_height_px": 87,
+    "character_height_m": 1.7,
+    "note": "ONE SCENERY PIXEL IS ONE PLAYER PIXEL. world_px_height IS the art's own alpha bbox height, so scenery is placed into the world at 1:1 exactly as the avatar is (setScale(1)) and the two share one pixel grid. The CAMERA still zooms the whole scene \u2014 that is uniform and correct; what must never happen is scenery being resampled on its own, against the player. world_height_m is what the art reads as beside a 87px character; declared_height_m is what it was once declared to be, and a gap between them means the ART is the wrong size.",
+    "declared_height_m": 3.0,
+    "content_box": [
+      58,
+      13,
+      100,
+      155
+    ],
+    "content_px_height": 142,
+    "canvas_render_px": 160
+  },
+  "pixellab_object_id": "93d9d572-0430-45af-a468-c8c855724c4c",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)",
+  "must_be_imbplemented_with_random_hflip": true,
+  "generated_at": "2026-08-13T13:56:24+00:00",
+  "states": {
+    "LIT_1": {
+      "sprite": "streetlights/streetlight_007/lit_1/sprite.webp",
+      "pixellab_object_id": "d782a3e1-e227-4bfc-a166-0bd482183f5e",
+      "generated_at": "2026-08-16T22:37:47+00:00",
+      "glow_concept": "blue soul-flame instead of fire",
+      "difference_from_source": 0.5994,
+      "glow_score": 0.101,
+      "animations": {
+        "flame": {
+          "group_id": "47937ed0-e25e-44ba-8c9c-8f7c59f1f25e",
+          "description": "Animate the flame only",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "directions": {
+            "south": {
+              "frames": 5,
+              "frame_paths": [
+                "streetlights/streetlight_007/lit_1/animations/flame/south/00.webp",
+                "streetlights/streetlight_007/lit_1/animations/flame/south/01.webp",
+                "streetlights/streetlight_007/lit_1/animations/flame/south/02.webp",
+                "streetlights/streetlight_007/lit_1/animations/flame/south/03.webp",
+                "streetlights/streetlight_007/lit_1/animations/flame/south/04.webp"
+              ],
+              "strip": "streetlights/streetlight_007/lit_1/animations/flame__south.webp",
+              "light_frames": [
+                {
+                  "intensity": 1.047,
+                  "dx": 0.2,
+                  "dy": -36.7
+                },
+                {
+                  "intensity": 0.956,
+                  "dx": 0.2,
+                  "dy": -38.1
+                },
+                {
+                  "intensity": 0.998,
+                  "dx": 0.1,
+                  "dy": -38.8
+                },
+                {
+                  "intensity": 0.999,
+                  "dx": 0.1,
+                  "dy": -38.8
+                },
+                {
+                  "intensity": 1.0,
+                  "dx": 0.1,
+                  "dy": -38.9
+                }
+              ]
+            },
+            "south-east": {
+              "frames": 5,
+              "frame_paths": [
+                "streetlights/streetlight_007/lit_1/animations/flame/south-east/00.webp",
+                "streetlights/streetlight_007/lit_1/animations/flame/south-east/01.webp",
+                "streetlights/streetlight_007/lit_1/animations/flame/south-east/02.webp",
+                "streetlights/streetlight_007/lit_1/animations/flame/south-east/03.webp",
+                "streetlights/streetlight_007/lit_1/animations/flame/south-east/04.webp"
+              ],
+              "strip": "streetlights/streetlight_007/lit_1/animations/flame__south-east.webp",
+              "light_frames": [
+                {
+                  "intensity": 0.507,
+                  "dx": 3.3,
+                  "dy": -36.4
+                },
+                {
+                  "intensity": 0.5,
+                  "dx": 3.5,
+                  "dy": -36.8
+                },
+                {
+                  "intensity": 1.5,
+                  "dx": 3.5,
+                  "dy": -46.1
+                },
+                {
+                  "intensity": 1.193,
+                  "dx": 3.1,
+                  "dy": -47.1
+                },
+                {
+                  "intensity": 0.624,
+                  "dx": 4.5,
+                  "dy": -49.2
+                }
+              ]
+            },
+            "south-west": {
+              "frames": 5,
+              "frame_paths": [
+                "streetlights/streetlight_007/lit_1/animations/flame/south-west/00.webp",
+                "streetlights/streetlight_007/lit_1/animations/flame/south-west/01.webp",
+                "streetlights/streetlight_007/lit_1/animations/flame/south-west/02.webp",
+                "streetlights/streetlight_007/lit_1/animations/flame/south-west/03.webp",
+                "streetlights/streetlight_007/lit_1/animations/flame/south-west/04.webp"
+              ],
+              "strip": "streetlights/streetlight_007/lit_1/animations/flame__south-west.webp",
+              "light_frames": [
+                {
+                  "intensity": 0.5,
+                  "dx": -6.0,
+                  "dy": -37.0
+                },
+                {
+                  "intensity": 1.253,
+                  "dx": -5.4,
+                  "dy": -39.0
+                },
+                {
+                  "intensity": 1.5,
+                  "dx": -8.1,
+                  "dy": -39.8
+                },
+                {
+                  "intensity": 1.5,
+                  "dx": -8.3,
+                  "dy": -39.0
+                },
+                {
+                  "intensity": 0.5,
+                  "dx": -8.6,
+                  "dy": -35.0
+                }
+              ]
+            }
+          },
+          "generated_at": "2026-08-29T08:27:23+00:00",
+          "review": "ANIMATION_PROBABLY_BAD",
+          "review_metrics": {
+            "class": "fire",
+            "base": 0.7152,
+            "still": 0.146
+          },
+          "frame_paths": [
+            "streetlights/streetlight_007/lit_1/animations/flame/south/00.webp",
+            "streetlights/streetlight_007/lit_1/animations/flame/south/01.webp",
+            "streetlights/streetlight_007/lit_1/animations/flame/south/02.webp",
+            "streetlights/streetlight_007/lit_1/animations/flame/south/03.webp",
+            "streetlights/streetlight_007/lit_1/animations/flame/south/04.webp"
+          ],
+          "strip": "streetlights/streetlight_007/lit_1/animations/flame__south.webp",
+          "light_frames": [
+            {
+              "intensity": 1.047,
+              "dx": 0.2,
+              "dy": -36.7
+            },
+            {
+              "intensity": 0.956,
+              "dx": 0.2,
+              "dy": -38.1
+            },
+            {
+              "intensity": 0.998,
+              "dx": 0.1,
+              "dy": -38.8
+            },
+            {
+              "intensity": 0.999,
+              "dx": 0.1,
+              "dy": -38.8
+            },
+            {
+              "intensity": 1.0,
+              "dx": 0.1,
+              "dy": -38.9
+            }
+          ]
+        }
+      },
+      "rotations": {
+        "south-east": "streetlights/streetlight_007/lit_1/rotations/south-east.webp",
+        "south-west": "streetlights/streetlight_007/lit_1/rotations/south-west.webp",
+        "south": "streetlights/streetlight_007/lit_1/sprite.webp"
+      }
+    },
+    "LIT_2": {
+      "sprite": "streetlights/streetlight_007/lit_2/sprite.webp",
+      "pixellab_object_id": "d7434619-532b-4039-805e-11a21d154434",
+      "generated_at": "2026-08-16T22:39:16+00:00",
+      "glow_concept": "fireflies glowing in the jar",
+      "difference_from_source": 0.9119,
+      "glow_score": 0.069,
+      "rotations": {
+        "south-east": "streetlights/streetlight_007/lit_2/rotations/south-east.webp",
+        "south-west": "streetlights/streetlight_007/lit_2/rotations/south-west.webp",
+        "south": "streetlights/streetlight_007/lit_2/sprite.webp"
+      },
+      "animations": {
+        "motion": {
+          "group_id": "67acd089-bcca-4074-85b3-c0a81ee8e1c2",
+          "description": "This is the same picture in every frame. ONLY the small points of light inside the jar move, drifting slowly and blinking. Everything else is frozen and pixel-for-pixel identical in every frame. Do not redraw anything else, and do not add or remove anything.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "streetlights/streetlight_007/lit_2/animations/motion/00.webp",
+            "streetlights/streetlight_007/lit_2/animations/motion/01.webp",
+            "streetlights/streetlight_007/lit_2/animations/motion/02.webp",
+            "streetlights/streetlight_007/lit_2/animations/motion/03.webp",
+            "streetlights/streetlight_007/lit_2/animations/motion/04.webp"
+          ],
+          "strip": "streetlights/streetlight_007/lit_2/animations/motion__strip.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-08-29T13:29:53+00:00",
+          "brief": "S3",
+          "review": "ANIMATION_PROBABLY_GOOD",
+          "review_metrics": {
+            "class": "fire",
+            "base": 0.0408,
+            "still": 0.679
+          },
+          "light_frames": [
+            {
+              "intensity": 1.074,
+              "dx": 1.5,
+              "dy": -29.8
+            },
+            {
+              "intensity": 0.863,
+              "dx": 1.2,
+              "dy": -29.3
+            },
+            {
+              "intensity": 1.01,
+              "dx": 1.2,
+              "dy": -31.2
+            },
+            {
+              "intensity": 1.069,
+              "dx": 1.1,
+              "dy": -30.7
+            },
+            {
+              "intensity": 0.984,
+              "dx": 1.1,
+              "dy": -31.5
+            }
+          ]
+        }
+      }
+    },
+    "NOT_LIT_1": {
+      "sprite": "streetlights/streetlight_007/sprite.webp",
+      "pixellab_object_id": "93d9d572-0430-45af-a468-c8c855724c4c",
+      "generated_at": "2026-08-13T13:56:24+00:00",
+      "rotations": {
+        "south-east": "streetlights/streetlight_007/rotations/south-east.webp",
+        "south-west": "streetlights/streetlight_007/rotations/south-west.webp",
+        "south": "streetlights/streetlight_007/sprite.webp"
+      },
+      "animations": {}
+    },
+    "NOT_LIT_2": {
+      "sprite": "streetlights/streetlight_007/not_lit_2/sprite.webp",
+      "pixellab_object_id": "9093a242-46a8-4759-aac9-369493e11228",
+      "generated_at": "2026-08-16T22:37:58+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.8778,
+      "glow_score": 0.0,
+      "rotations": {
+        "south-east": "streetlights/streetlight_007/not_lit_2/rotations/south-east.webp",
+        "south-west": "streetlights/streetlight_007/not_lit_2/rotations/south-west.webp",
+        "south": "streetlights/streetlight_007/not_lit_2/sprite.webp"
+      }
+    }
+  },
+  "collision": true,
+  "hitbox_shape": "ellipse",
+  "light": {
+    "strength": 0.5,
+    "color": "#95eaff",
+    "radius": 9,
+    "reference": "the spawn bonfire is 1.0 (radius 7); strength 0 is no light",
+    "states": {
+      "LIT_1": {
+        "strength": 0.5,
+        "color": "#95eaff",
+        "radius": 9
+      },
+      "LIT_2": {
+        "strength": 0.6,
+        "color": "#faff8d",
+        "radius": 11
+      }
+    },
+    "kind": "fire/enclosed",
+    "flame": true,
+    "embers": false
+  }
+}

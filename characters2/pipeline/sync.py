@@ -48,6 +48,7 @@ from collections import Counter
 
 from PIL import Image
 
+from retouch import apply_retouch, frame_key, load_spec
 from pixellab_client import DIRECTIONS_8, PixelLabClient
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))   # characters2/
@@ -85,7 +86,9 @@ def save_image(img, path):
     faster — measured over 120 sprites)."""
     img = img.convert("RGBA")
     if path.lower().endswith(".webp"):
-        img.save(path, "WEBP", lossless=True, quality=100, method=4)
+        # exact=True keeps the RGB under fully-transparent pixels (libwebp
+        # otherwise rewrites it) — both flags are the repo's WebP law.
+        img.save(path, "WEBP", lossless=True, quality=100, method=4, exact=True)
     else:
         img.save(path)
 
@@ -168,7 +171,10 @@ def sync_character(client, name, cid, force=False, dest=None, states_for=None):
     rotation_urls = {d: u for d, u in (detail.get("rotation_urls") or {}).items() if u}
     api_anims = detail.get("animations") or []
 
-    stats = {"rot_new": 0, "rot_skip": 0, "anim_new": 0, "anim_skip": 0, "frames": 0}
+    stats = {"rot_new": 0, "rot_skip": 0, "anim_new": 0, "anim_skip": 0, "frames": 0,
+             "retouched": 0, "retouch_stale": 0}
+    tree = "npcs" if dest == NPCS else "humans"
+    retouch_spec = load_spec()
 
     # -- base rotations ------------------------------------------------------
     base_dir = os.path.join(root, "base")
@@ -257,6 +263,15 @@ def sync_character(client, name, cid, force=False, dest=None, states_for=None):
                 img = client.download_image(url)
                 if img is None:
                     continue
+                # Declared pixel patches (retouch.json) ride on top of the mirror,
+                # pinned to the source frame's sha — see retouch.py.
+                img, state = apply_retouch(frame_key(tree, name, slug, dd, i), img, retouch_spec)
+                if state == "applied":
+                    stats["retouched"] += 1
+                elif state == "stale":
+                    stats["retouch_stale"] += 1
+                    print(f"    ! RETOUCH STALE {tree}/{name}/{slug}/{dd}/{i}: PixelLab frame changed "
+                          f"since the patch was authored — RAW frame written; re-run retouch_author.py")
                 save_image(img, dst)
                 stats["frames"] += 1
             # trim stray frames beyond current frame_count (any art format)
@@ -582,7 +597,9 @@ def main():
         print(f"+ syncing {name} <- {cid}{' (FORCE)' if args.force else ''}")
         s = sync_character(client, name, cid, force=args.force)
         print(f"  {name}: rotations +{s['rot_new']}/skip {s['rot_skip']} | "
-              f"animations +{s['anim_new']}/skip {s['anim_skip']} | {s['frames']} frames downloaded")
+              f"animations +{s['anim_new']}/skip {s['anim_skip']} | {s['frames']} frames downloaded"
+              + (f" | {s['retouched']} retouched" if s["retouched"] else "")
+              + (f" | {s['retouch_stale']} RETOUCH STALE" if s["retouch_stale"] else ""))
         commit_push(f"characters2: sync {name} from PixelLab "
                     f"(+{s['anim_new']} anims, +{s['frames']} frames)", push=not args.no_push)
 

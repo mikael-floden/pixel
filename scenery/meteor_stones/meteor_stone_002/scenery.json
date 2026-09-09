@@ -1,0 +1,435 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-14T01:10:26+00:00",
+  "id": "meteor_stone_002",
+  "group": "meteor_stones",
+  "rank": 112,
+  "index": 2,
+  "name": "Iron-dark star-stone 002",
+  "lights": null,
+  "variety": "iron-dark star-stone",
+  "modifier": "surrounded by curious mushrooms",
+  "glow_concept": "embers that never cool in the crater",
+  "prompt": "a fallen star-stone resting in a small scorched crater, dark dense rock unlike anything around it, iron-dark star-stone, surrounded by curious mushrooms, roughly six feet tall, human height, self-emissive at night, softly radiating light: embers that never cool in the crater",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 64,
+  "sprite": "meteor_stones/meteor_stone_002/sprite.webp",
+  "placement": {
+    "world_height_m": 0.938,
+    "world_px_height": 48,
+    "character_height_px": 87,
+    "character_height_m": 1.7,
+    "note": "ONE SCENERY PIXEL IS ONE PLAYER PIXEL. world_px_height IS the art's own alpha bbox height, so scenery is placed into the world at 1:1 exactly as the avatar is (setScale(1)) and the two share one pixel grid. The CAMERA still zooms the whole scene \u2014 that is uniform and correct; what must never happen is scenery being resampled on its own, against the player. world_height_m is what the art reads as beside a 87px character; declared_height_m is what it was once declared to be, and a gap between them means the ART is the wrong size.",
+    "declared_height_m": 1.38,
+    "content_box": [
+      4,
+      10,
+      61,
+      58
+    ],
+    "content_px_height": 48,
+    "canvas_render_px": 64
+  },
+  "pixellab_object_id": "85531ce9-3515-4606-ada1-d8a4a62811b7",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)",
+  "must_be_imbplemented_with_random_hflip": true,
+  "states": {
+    "LIT_1": {
+      "sprite": "meteor_stones/meteor_stone_002/sprite.webp",
+      "pixellab_object_id": "85531ce9-3515-4606-ada1-d8a4a62811b7",
+      "generated_at": "2026-08-14T01:10:26+00:00",
+      "animations": {
+        "flame": {
+          "group_id": "0a9019e4-0e21-471c-b47f-047f0f120586",
+          "description": "Animate the flame only",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "meteor_stones/meteor_stone_002/animations/flame/00.webp",
+            "meteor_stones/meteor_stone_002/animations/flame/01.webp",
+            "meteor_stones/meteor_stone_002/animations/flame/02.webp",
+            "meteor_stones/meteor_stone_002/animations/flame/03.webp",
+            "meteor_stones/meteor_stone_002/animations/flame/04.webp"
+          ],
+          "strip": "meteor_stones/meteor_stone_002/animations/flame__strip.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-08-29T07:06:20+00:00",
+          "review": "ANIMATION_PROBABLY_GOOD",
+          "review_metrics": {
+            "base_outline": 0.0
+          },
+          "light_frames": [
+            {
+              "intensity": 1.069,
+              "dx": 0.1,
+              "dy": 14.1
+            },
+            {
+              "intensity": 1.192,
+              "dx": 0.2,
+              "dy": 12.8
+            },
+            {
+              "intensity": 0.912,
+              "dx": 0.3,
+              "dy": 13.8
+            },
+            {
+              "intensity": 1.005,
+              "dx": 0.5,
+              "dy": 13.3
+            },
+            {
+              "intensity": 0.822,
+              "dx": -1.3,
+              "dy": 14.7
+            }
+          ]
+        },
+        "motion": {
+          "group_id": "b01e7e8e-7e79-4978-b3c7-b33c77835420",
+          "description": "Animate the ember glow in the cracks only, pulsing slowly. Nothing else moves.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "meteor_stones/meteor_stone_002/animations/motion/00.webp",
+            "meteor_stones/meteor_stone_002/animations/motion/01.webp",
+            "meteor_stones/meteor_stone_002/animations/motion/02.webp",
+            "meteor_stones/meteor_stone_002/animations/motion/03.webp",
+            "meteor_stones/meteor_stone_002/animations/motion/04.webp"
+          ],
+          "strip": "meteor_stones/meteor_stone_002/animations/motion__strip.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-08-29T08:38:22+00:00",
+          "brief": "L7",
+          "review": "ANIMATION_PROBABLY_GOOD",
+          "review_metrics": {
+            "base_outline": 0.0041
+          },
+          "light_frames": [
+            {
+              "intensity": 0.5,
+              "dx": 0.1,
+              "dy": 14.1
+            },
+            {
+              "intensity": 0.779,
+              "dx": 0.4,
+              "dy": 11.8
+            },
+            {
+              "intensity": 1.087,
+              "dx": -0.0,
+              "dy": 10.7
+            },
+            {
+              "intensity": 1.274,
+              "dx": 0.1,
+              "dy": 9.2
+            },
+            {
+              "intensity": 1.5,
+              "dx": 0.2,
+              "dy": 12.4
+            }
+          ]
+        }
+      }
+    },
+    "LIT_2": {
+      "sprite": "meteor_stones/meteor_stone_002/lit_2/sprite.webp",
+      "pixellab_object_id": "1ff6b4a7-2cf6-4636-a62e-e87117c13f31",
+      "generated_at": "2026-08-16T17:56:56+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.5822,
+      "glow_score": 0.0155,
+      "animations": {
+        "flame": {
+          "group_id": "69149001-2dc0-4b38-a904-19c3b90b2ba4",
+          "description": "Animate the flame only",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "meteor_stones/meteor_stone_002/lit_2/animations/flame/00.webp",
+            "meteor_stones/meteor_stone_002/lit_2/animations/flame/01.webp",
+            "meteor_stones/meteor_stone_002/lit_2/animations/flame/02.webp",
+            "meteor_stones/meteor_stone_002/lit_2/animations/flame/03.webp",
+            "meteor_stones/meteor_stone_002/lit_2/animations/flame/04.webp"
+          ],
+          "strip": "meteor_stones/meteor_stone_002/lit_2/animations/flame__strip.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-08-29T07:06:08+00:00",
+          "review": "ANIMATION_PROBABLY_GOOD",
+          "review_metrics": {
+            "class": "rigid",
+            "base": 0.0104,
+            "still": 0.89
+          },
+          "light_frames": [
+            {
+              "intensity": 0.975,
+              "dx": 1.9,
+              "dy": 12.9
+            },
+            {
+              "intensity": 0.942,
+              "dx": 1.2,
+              "dy": 14.1
+            },
+            {
+              "intensity": 0.974,
+              "dx": 1.2,
+              "dy": 13.3
+            },
+            {
+              "intensity": 1.007,
+              "dx": 1.1,
+              "dy": 14.1
+            },
+            {
+              "intensity": 1.103,
+              "dx": 1.4,
+              "dy": 13.6
+            }
+          ]
+        },
+        "motion": {
+          "group_id": "9f8416ee-7276-4003-af11-555f373450e5",
+          "description": "This is the same picture in every frame. ONLY the orange light at the base of the stones brightens and dims, very slowly. Everything else is frozen and pixel-for-pixel identical in every frame. Do not redraw anything else, and do not add or remove anything.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "meteor_stones/meteor_stone_002/lit_2/animations/motion/00.webp",
+            "meteor_stones/meteor_stone_002/lit_2/animations/motion/01.webp",
+            "meteor_stones/meteor_stone_002/lit_2/animations/motion/02.webp",
+            "meteor_stones/meteor_stone_002/lit_2/animations/motion/03.webp",
+            "meteor_stones/meteor_stone_002/lit_2/animations/motion/04.webp"
+          ],
+          "strip": "meteor_stones/meteor_stone_002/lit_2/animations/motion__strip.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-08-29T12:40:26+00:00",
+          "brief": "R33",
+          "review": "ANIMATION_PROBABLY_GOOD",
+          "review_metrics": {
+            "base_outline": 0.0
+          },
+          "light_frames": [
+            {
+              "intensity": 0.5,
+              "dx": 1.9,
+              "dy": 12.9
+            },
+            {
+              "intensity": 1.36,
+              "dx": 0.6,
+              "dy": 13.8
+            },
+            {
+              "intensity": 1.5,
+              "dx": 0.4,
+              "dy": 13.9
+            },
+            {
+              "intensity": 1.5,
+              "dx": 0.4,
+              "dy": 14.1
+            },
+            {
+              "intensity": 0.5,
+              "dx": 1.4,
+              "dy": 14.1
+            }
+          ]
+        }
+      }
+    },
+    "LIT_3": {
+      "sprite": "meteor_stones/meteor_stone_002/lit_3/sprite.webp",
+      "pixellab_object_id": "e6418975-3254-4b7a-b7af-95591d38fcf0",
+      "generated_at": "2026-08-16T17:56:43+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.4622,
+      "glow_score": 0.0054,
+      "animations": {
+        "flame": {
+          "group_id": "5c26f486-be42-4254-88cb-2a831ca8ea7a",
+          "description": "Animate the flame only",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "meteor_stones/meteor_stone_002/lit_3/animations/flame/00.webp",
+            "meteor_stones/meteor_stone_002/lit_3/animations/flame/01.webp",
+            "meteor_stones/meteor_stone_002/lit_3/animations/flame/02.webp",
+            "meteor_stones/meteor_stone_002/lit_3/animations/flame/03.webp",
+            "meteor_stones/meteor_stone_002/lit_3/animations/flame/04.webp"
+          ],
+          "strip": "meteor_stones/meteor_stone_002/lit_3/animations/flame__strip.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-08-29T07:06:42+00:00",
+          "review": "ANIMATION_PROBABLY_GOOD",
+          "review_metrics": {
+            "class": "rigid",
+            "base": 0.0035,
+            "still": 0.924
+          },
+          "light_frames": [
+            {
+              "intensity": 1.046,
+              "dx": -1.6,
+              "dy": 7.4
+            },
+            {
+              "intensity": 0.878,
+              "dx": -5.1,
+              "dy": 6.7
+            },
+            {
+              "intensity": 0.873,
+              "dx": 2.4,
+              "dy": 5.2
+            },
+            {
+              "intensity": 1.156,
+              "dx": 1.2,
+              "dy": 5.2
+            },
+            {
+              "intensity": 1.046,
+              "dx": -1.0,
+              "dy": 6.2
+            }
+          ]
+        }
+      }
+    },
+    "LIT_4": {
+      "sprite": "meteor_stones/meteor_stone_002/lit_4/sprite.webp",
+      "pixellab_object_id": "d8d6d56b-3133-46b7-907b-03bc0ee5780b",
+      "generated_at": "2026-08-16T17:57:35+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.4814,
+      "glow_score": 0.0121,
+      "animations": {
+        "flame": {
+          "group_id": "0aaeed39-6ded-4aad-a892-853cac5aeed8",
+          "description": "Animate the flame only",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "meteor_stones/meteor_stone_002/lit_4/animations/flame/00.webp",
+            "meteor_stones/meteor_stone_002/lit_4/animations/flame/01.webp",
+            "meteor_stones/meteor_stone_002/lit_4/animations/flame/02.webp",
+            "meteor_stones/meteor_stone_002/lit_4/animations/flame/03.webp",
+            "meteor_stones/meteor_stone_002/lit_4/animations/flame/04.webp"
+          ],
+          "strip": "meteor_stones/meteor_stone_002/lit_4/animations/flame__strip.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-08-29T07:06:53+00:00",
+          "review": "ANIMATION_PROBABLY_GOOD",
+          "review_metrics": {
+            "base_outline": 0.0
+          },
+          "light_frames": [
+            {
+              "intensity": 0.793,
+              "dx": 2.4,
+              "dy": 12.3
+            },
+            {
+              "intensity": 0.926,
+              "dx": 2.4,
+              "dy": 12.1
+            },
+            {
+              "intensity": 0.968,
+              "dx": 4.6,
+              "dy": 12.7
+            },
+            {
+              "intensity": 1.124,
+              "dx": 5.1,
+              "dy": 12.8
+            },
+            {
+              "intensity": 1.19,
+              "dx": 3.6,
+              "dy": 12.5
+            }
+          ]
+        }
+      }
+    },
+    "NOT_LIT_1": {
+      "sprite": "meteor_stones/meteor_stone_002/not_lit_1/sprite.webp",
+      "pixellab_object_id": "3d08c446-ddfb-41d8-96b3-8ef1eab00f1f",
+      "generated_at": "2026-08-16T17:57:45+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.6245,
+      "glow_score": 0.0016
+    }
+  },
+  "collision": true,
+  "hitbox_shape": "ellipse",
+  "light": {
+    "strength": 0.25,
+    "color": "#ffb45c",
+    "radius": 4,
+    "reference": "the spawn bonfire is 1.0 (radius 7); strength 0 is no light",
+    "states": {
+      "LIT_1": {
+        "strength": 0.25,
+        "color": "#ffb45c",
+        "radius": 4
+      },
+      "LIT_2": {
+        "strength": 0.2,
+        "color": "#ffb45c",
+        "radius": 3
+      },
+      "LIT_3": {
+        "strength": 0.2,
+        "color": "#ffb45c",
+        "radius": 3
+      },
+      "LIT_4": {
+        "strength": 0.3,
+        "color": "#ff9453",
+        "radius": 5
+      }
+    },
+    "kind": "glow/mineral",
+    "flame": false,
+    "embers": false
+  }
+}

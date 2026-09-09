@@ -1,0 +1,125 @@
+{
+  "format": "scenery-piece@2",
+  "id": "cupboard_002",
+  "group": "cupboards_and_shelves",
+  "rank": 106,
+  "index": 2,
+  "name": "Painted folk-art cupboard 002",
+  "lights": null,
+  "variety": "painted folk-art cupboard",
+  "glow_concept": "jars of glowing preserves on the shelves",
+  "prompt": "a heavy floor-standing piece of wooden storage furniture: a cupboard, dresser or laden shelf unit with thick boards, made to stand against a wall, painted folk-art cupboard, large, twice human height, self-emissive at night, softly radiating light: jars of glowing preserves on the shelves",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 128,
+  "sprite": "cupboards_and_shelves/cupboard_002/sprite.webp",
+  "placement": {
+    "world_height_m": 2.149,
+    "world_px_height": 110,
+    "character_height_px": 87,
+    "character_height_m": 1.7,
+    "note": "ONE SCENERY PIXEL IS ONE PLAYER PIXEL. world_px_height IS the art's own alpha bbox height, so scenery is placed into the world at 1:1 exactly as the avatar is (setScale(1)) and the two share one pixel grid. The CAMERA still zooms the whole scene \u2014 that is uniform and correct; what must never happen is scenery being resampled on its own, against the player. world_height_m is what the art reads as beside a 87px character; declared_height_m is what it was once declared to be, and a gap between them means the ART is the wrong size.",
+    "declared_height_m": 2.15,
+    "content_box": [
+      24,
+      9,
+      106,
+      119
+    ],
+    "content_px_height": 110,
+    "canvas_render_px": 128
+  },
+  "pixellab_object_id": "16132f0f-b737-4e4c-90ca-00a639454660",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)",
+  "must_be_imbplemented_with_random_hflip": true,
+  "generated_at": "2026-08-13T19:54:37+00:00",
+  "states": {
+    "NOT_LIT_1": {
+      "sprite": "cupboards_and_shelves/cupboard_002/not_lit_1/sprite.webp",
+      "pixellab_object_id": "24a1d651-fa6a-461a-ace7-a3ea1a5e9d5d",
+      "generated_at": "2026-08-16T11:27:11+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.9359,
+      "glow_score": 0.0,
+      "rotations": {
+        "south-east": "cupboards_and_shelves/cupboard_002/not_lit_1/rotations/south-east.webp",
+        "south-west": "cupboards_and_shelves/cupboard_002/not_lit_1/rotations/south-west.2e1a82e86a.webp",
+        "south": "cupboards_and_shelves/cupboard_002/not_lit_1/sprite.webp"
+      }
+    },
+    "NOT_LIT_2": {
+      "sprite": "cupboards_and_shelves/cupboard_002/not_lit_2/sprite.webp",
+      "pixellab_object_id": "405afae6-77d8-4e00-a419-04cd38c1cd11",
+      "generated_at": "2026-08-16T11:27:12+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.8727,
+      "glow_score": 0.0,
+      "rotations": {
+        "south-east": "cupboards_and_shelves/cupboard_002/not_lit_2/rotations/south-east.webp",
+        "south-west": "cupboards_and_shelves/cupboard_002/not_lit_2/rotations/south-west.ad0430d7bd.webp",
+        "south": "cupboards_and_shelves/cupboard_002/not_lit_2/sprite.webp"
+      }
+    },
+    "NOT_LIT_3": {
+      "sprite": "cupboards_and_shelves/cupboard_002/sprite.webp",
+      "pixellab_object_id": "16132f0f-b737-4e4c-90ca-00a639454660",
+      "generated_at": "2026-08-13T19:54:37+00:00",
+      "relit_from": "LIT_1",
+      "rotations": {
+        "south-east": "cupboards_and_shelves/cupboard_002/rotations/south-east.webp",
+        "south-west": "cupboards_and_shelves/cupboard_002/rotations/south-west.89141de30a.webp",
+        "south": "cupboards_and_shelves/cupboard_002/sprite.webp"
+      }
+    },
+    "NOT_LIT_4": {
+      "sprite": "cupboards_and_shelves/cupboard_002/not_lit_4/sprite.webp",
+      "pixellab_object_id": "06e198e7-2f6a-4af9-adb2-b3b77053915d",
+      "generated_at": "2026-08-16T11:25:29+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.6432,
+      "glow_score": 0.0225,
+      "relit_from": "LIT_2",
+      "rotations": {
+        "south-east": "cupboards_and_shelves/cupboard_002/not_lit_4/rotations/south-east.webp",
+        "south-west": "cupboards_and_shelves/cupboard_002/not_lit_4/rotations/south-west.9e469e4c81.webp",
+        "south": "cupboards_and_shelves/cupboard_002/not_lit_4/sprite.webp"
+      }
+    },
+    "NOT_LIT_5": {
+      "sprite": "cupboards_and_shelves/cupboard_002/not_lit_5/sprite.webp",
+      "pixellab_object_id": "33c809ba-bbcd-43c9-a8e3-ec18551351aa",
+      "generated_at": "2026-08-16T11:26:48+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.8643,
+      "glow_score": 0.2402,
+      "relit_from": "LIT_3",
+      "rotations": {
+        "south-east": "cupboards_and_shelves/cupboard_002/not_lit_5/rotations/south-east.webp",
+        "south-west": "cupboards_and_shelves/cupboard_002/not_lit_5/rotations/south-west.83175d2f41.webp",
+        "south": "cupboards_and_shelves/cupboard_002/not_lit_5/sprite.webp"
+      }
+    },
+    "NOT_LIT_6": {
+      "sprite": "cupboards_and_shelves/cupboard_002/not_lit_6/sprite.webp",
+      "pixellab_object_id": "27a47eba-f92b-4b82-a44c-627d6350acf6",
+      "generated_at": "2026-08-16T11:26:50+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.7467,
+      "glow_score": 0.0385,
+      "relit_from": "LIT_4",
+      "rotations": {
+        "south-east": "cupboards_and_shelves/cupboard_002/not_lit_6/rotations/south-east.webp",
+        "south-west": "cupboards_and_shelves/cupboard_002/not_lit_6/rotations/south-west.7fddb78cd2.webp",
+        "south": "cupboards_and_shelves/cupboard_002/not_lit_6/sprite.webp"
+      }
+    }
+  },
+  "collision": true,
+  "hitbox_shape": "rect"
+}

@@ -1,0 +1,22 @@
+{
+  "domain": "items",
+  "id": "mossy_driftwood_bundle",
+  "name_seen": "Driftwood",
+  "law": "V",
+  "description": "Grey, water-worn branches still furred with moss. Break a Stumpling and this is most of what is left.",
+  "lore": [
+    "The dealers sort by the ends. Water breaks a branch ragged; a blade does not. A bundle with clean ends came off a [[monsters/tree_stump|Stumpling]] that was walking that morning, and it is the same wood, and it burns the same, and it goes for less anyway — six gold, against eight for the honest sort, and it is the cheapest heat there is either way.",
+    "One shore fire took a load of the cut sort in a wet season and it burned green for the better part of an hour. Nobody said anything about it. The talk went thin and then stopped, and people found reasons to turn in early, and in the morning the fire was banked and swept and somebody had been out to the woodpile in the dark and sorted the whole of it into two heaps."
+  ],
+  "related": [
+    {
+      "domain": "monsters",
+      "id": "tree_stump"
+    },
+    {
+      "domain": "lore",
+      "id": "the_hard_pieces"
+    }
+  ],
+  "gm_notes": "The cheapest fuel in the world and the one question about it nobody wants answered at their own hearth. Whoever sorted the woodpile is not named and should stay unnamed."
+}

@@ -1,0 +1,80 @@
+{
+  "format": "scenery-piece@2",
+  "id": "cliff_fragment_002",
+  "group": "cliff_fragments",
+  "rank": 82,
+  "index": 2,
+  "name": "Overhanging tilted fragment 002",
+  "lights": null,
+  "variety": "overhanging tilted fragment",
+  "glow_concept": "warm light from a sheltered hollow beneath",
+  "prompt": "a massive sharp-edged chunk of broken cliff rock lying where it fell, one face freshly fractured and pale, overhanging tilted fragment, tall, about two people high, self-emissive at night, softly radiating light: warm light from a sheltered hollow beneath",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 128,
+  "sprite": "cliff_fragments/cliff_fragment_002/sprite.webp",
+  "placement": {
+    "world_height_m": 1.798,
+    "world_px_height": 92,
+    "character_height_px": 87,
+    "character_height_m": 1.7,
+    "note": "ONE SCENERY PIXEL IS ONE PLAYER PIXEL. world_px_height IS the art's own alpha bbox height, so scenery is placed into the world at 1:1 exactly as the avatar is (setScale(1)) and the two share one pixel grid. The CAMERA still zooms the whole scene \u2014 that is uniform and correct; what must never happen is scenery being resampled on its own, against the player. world_height_m is what the art reads as beside a 87px character; declared_height_m is what it was once declared to be, and a gap between them means the ART is the wrong size.",
+    "declared_height_m": 3.04,
+    "content_box": [
+      14,
+      19,
+      116,
+      111
+    ],
+    "content_px_height": 92,
+    "canvas_render_px": 128
+  },
+  "pixellab_object_id": "c6908fd1-403b-47ad-b74f-9def501a1b65",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)",
+  "must_be_imbplemented_with_random_hflip": true,
+  "generated_at": "2026-08-13T05:37:08+00:00",
+  "states": {
+    "NOT_LIT_3": {
+      "sprite": "cliff_fragments/cliff_fragment_002/sprite.webp",
+      "pixellab_object_id": "c6908fd1-403b-47ad-b74f-9def501a1b65",
+      "generated_at": "2026-08-13T05:37:08+00:00",
+      "relit_from": "LIT_1"
+    },
+    "NOT_LIT_4": {
+      "sprite": "cliff_fragments/cliff_fragment_002/not_lit_4/sprite.webp",
+      "pixellab_object_id": "0a94f54d-c193-43bd-984a-ba8c436dff38",
+      "generated_at": "2026-08-16T09:29:44+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.5499,
+      "glow_score": 0.2364,
+      "relit_from": "LIT_2"
+    },
+    "NOT_LIT_5": {
+      "sprite": "cliff_fragments/cliff_fragment_002/not_lit_5/sprite.webp",
+      "pixellab_object_id": "892bdf72-2278-4517-83fc-49fbff0c9131",
+      "generated_at": "2026-08-16T09:30:05+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.665,
+      "glow_score": 0.1943,
+      "relit_from": "LIT_3"
+    },
+    "NOT_LIT_6": {
+      "sprite": "cliff_fragments/cliff_fragment_002/not_lit_6/sprite.webp",
+      "pixellab_object_id": "0e4b6efb-81f8-4b6f-86b0-b609c60498f9",
+      "generated_at": "2026-08-16T09:33:23+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.8726,
+      "glow_score": 0.0063,
+      "relit_from": "LIT_4"
+    }
+  },
+  "collision": true,
+  "hitbox_shape": "ellipse",
+  "type": "NATURE"
+}

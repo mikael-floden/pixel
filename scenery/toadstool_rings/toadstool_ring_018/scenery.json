@@ -1,0 +1,80 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-14T01:42:10+00:00",
+  "id": "toadstool_ring_018",
+  "group": "toadstool_rings",
+  "rank": 39,
+  "index": 18,
+  "name": "Half-broken crescent ring 018",
+  "lights": null,
+  "variety": "half-broken crescent ring",
+  "modifier": "one side die-back, the other thriving",
+  "glow_concept": "alternating caps glowing in a dotted circle",
+  "prompt": "a circle of toadstools growing as a fairy ring on bare trodden forest soil, half-broken crescent ring, one side die-back, the other thriving, small, knee-high, self-emissive at night, softly radiating light: alternating caps glowing in a dotted circle",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 64,
+  "sprite": "toadstool_rings/toadstool_ring_018/sprite.webp",
+  "placement": {
+    "world_height_m": 0.918,
+    "world_px_height": 47,
+    "character_height_px": 87,
+    "character_height_m": 1.7,
+    "note": "ONE SCENERY PIXEL IS ONE PLAYER PIXEL. world_px_height IS the art's own alpha bbox height, so scenery is placed into the world at 1:1 exactly as the avatar is (setScale(1)) and the two share one pixel grid. The CAMERA still zooms the whole scene \u2014 that is uniform and correct; what must never happen is scenery being resampled on its own, against the player. world_height_m is what the art reads as beside a 87px character; declared_height_m is what it was once declared to be, and a gap between them means the ART is the wrong size.",
+    "declared_height_m": 0.38,
+    "content_box": [
+      2,
+      8,
+      62,
+      55
+    ],
+    "content_px_height": 47,
+    "canvas_render_px": 64
+  },
+  "pixellab_object_id": "2e5af1bc-dba5-4a4b-9037-46cd881a9f28",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)",
+  "must_be_imbplemented_with_random_hflip": true,
+  "states": {
+    "NOT_LIT_3": {
+      "sprite": "toadstool_rings/toadstool_ring_018/sprite.webp",
+      "pixellab_object_id": "2e5af1bc-dba5-4a4b-9037-46cd881a9f28",
+      "generated_at": "2026-08-14T01:42:10+00:00",
+      "relit_from": "LIT_1"
+    },
+    "NOT_LIT_4": {
+      "sprite": "toadstool_rings/toadstool_ring_018/not_lit_4/sprite.webp",
+      "pixellab_object_id": "048fe2bc-7ebb-4731-b150-76914d0f37a3",
+      "generated_at": "2026-08-17T11:10:58+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.7232,
+      "glow_score": 0.1751,
+      "relit_from": "LIT_2"
+    },
+    "NOT_LIT_5": {
+      "sprite": "toadstool_rings/toadstool_ring_018/not_lit_5/sprite.webp",
+      "pixellab_object_id": "0aa45c4d-e26c-45dc-880d-0e52895c8478",
+      "generated_at": "2026-08-17T11:12:42+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.573,
+      "glow_score": 0.1967,
+      "relit_from": "LIT_3"
+    },
+    "NOT_LIT_6": {
+      "sprite": "toadstool_rings/toadstool_ring_018/not_lit_6/sprite.webp",
+      "pixellab_object_id": "7a9232c8-cf66-437b-ba9f-0ae579ca03d7",
+      "generated_at": "2026-08-17T11:12:24+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.3819,
+      "glow_score": 0.201,
+      "relit_from": "LIT_4"
+    }
+  },
+  "collision": true,
+  "hitbox_shape": "ellipse"
+}

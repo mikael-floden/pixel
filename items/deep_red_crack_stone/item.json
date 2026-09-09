@@ -1,0 +1,38 @@
+{
+  "id": "deep_red_crack_stone",
+  "name": "Soulstone",
+  "type": "SOUL",
+  "type_label": "Soul Stone",
+  "category": "blood",
+  "rarity": "rare",
+  "value": 100,
+  "stackable": true,
+  "max_stack": 20,
+  "equip_slot": null,
+  "sellable": true,
+  "description": "Deep red, cracked like drying blood. Whatever it came out of has not been brought down yet.",
+  "sprite": "items/deep_red_crack_stone/sprite.webp",
+  "size": [
+    48,
+    48
+  ],
+  "source": {
+    "store": "objects",
+    "pixellab_id": "803bda3b-97eb-43df-805d-c81cbf36d75b",
+    "tags": [
+      "SOUL"
+    ],
+    "prompt": "This is a soul stone. I need lots of different variations of it. Different stone/soul/crack variants in different colors.",
+    "created_at": "2026-08-24T17:23:29.287201+00:00",
+    "last_modified": "Mon, 24 Aug 2026 17:41:55 GMT"
+  },
+  "synced_at": "2026-08-24T17:57:32+00:00",
+  "soul": {
+    "element": "blood",
+    "power": "+12 damage against wounded targets, and heals 5% of it back",
+    "merge_into": [
+      "weapon",
+      "armor"
+    ]
+  }
+}

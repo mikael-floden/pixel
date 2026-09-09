@@ -1,0 +1,132 @@
+{
+  "schema": "tiles3/tops@1",
+  "kind": "top_only",
+  "wall_is_meaningless": true,
+  "not_a_candidate_for": "x over y",
+  "ground": "snow",
+  "flavour": "detail",
+  "index": 102,
+  "seed": 44964,
+  "prompt": "snow, rabbit tracks in the middle, snow all around the edge",
+  "palette_top": "#ebf4f6",
+  "tile_id": "2b6cc3fb-3f6d-4698-b980-8006f4e3f56c",
+  "n_tiles": 16,
+  "tiles": [
+    "tile_00.webp",
+    "tile_01.webp",
+    "tile_02.webp",
+    "tile_03.webp",
+    "tile_04.webp",
+    "tile_05.webp",
+    "tile_06.webp",
+    "tile_07.webp",
+    "tile_08.webp",
+    "tile_09.webp",
+    "tile_10.webp",
+    "tile_11.webp",
+    "tile_12.webp",
+    "tile_13.webp",
+    "tile_14.webp",
+    "tile_15.webp"
+  ],
+  "settings": {
+    "tile_size": 64,
+    "tile_view": "high top-down",
+    "view_angle": 28.0,
+    "depth_ratio": 0.5,
+    "tile_type": "isometric",
+    "flat_top_px": 2,
+    "outline_mode": "segmentation"
+  },
+  "usd": 0.096,
+  "created": "2026-09-03T04:57:39+00:00",
+  "top_face": {
+    "per_tile": [
+      {
+        "colours": 8,
+        "dominant_share": 0.7758,
+        "px": 919
+      },
+      {
+        "colours": 8,
+        "dominant_share": 0.741,
+        "px": 919
+      },
+      {
+        "colours": 8,
+        "dominant_share": 0.7522,
+        "px": 920
+      },
+      {
+        "colours": 8,
+        "dominant_share": 0.7399,
+        "px": 919
+      },
+      {
+        "colours": 8,
+        "dominant_share": 0.7737,
+        "px": 919
+      },
+      {
+        "colours": 9,
+        "dominant_share": 0.7628,
+        "px": 919
+      },
+      {
+        "colours": 8,
+        "dominant_share": 0.7062,
+        "px": 919
+      },
+      {
+        "colours": 7,
+        "dominant_share": 0.7778,
+        "px": 918
+      },
+      {
+        "colours": 9,
+        "dominant_share": 0.8072,
+        "px": 918
+      },
+      {
+        "colours": 10,
+        "dominant_share": 0.805,
+        "px": 918
+      },
+      {
+        "colours": 10,
+        "dominant_share": 0.7963,
+        "px": 918
+      },
+      {
+        "colours": 8,
+        "dominant_share": 0.695,
+        "px": 918
+      },
+      {
+        "colours": 9,
+        "dominant_share": 0.7876,
+        "px": 918
+      },
+      {
+        "colours": 9,
+        "dominant_share": 0.7919,
+        "px": 918
+      },
+      {
+        "colours": 9,
+        "dominant_share": 0.7876,
+        "px": 918
+      },
+      {
+        "colours": 7,
+        "dominant_share": 0.7277,
+        "px": 918
+      }
+    ],
+    "mean_colours": 8.44,
+    "mean_dominant_share": 0.7642
+  },
+  "motif": "rabbit tracks",
+  "motif_source": "tiles/config/details.json",
+  "walkable": true
+}

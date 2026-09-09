@@ -1,0 +1,131 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-13T23:18:52+00:00",
+  "id": "soulstone_outcrop_017",
+  "group": "soulstone_outcrops",
+  "rank": 23,
+  "index": 17,
+  "name": "Soulstone fused to granite base 017",
+  "lights": null,
+  "variety": "soulstone fused to granite base",
+  "glow_concept": null,
+  "prompt": "a rough natural boulder outcrop breaking out of the ground with smooth glassy blue-white soulstone veins running through the rock, the stone mass dominant, not a freestanding crystal cluster and not a carved slab, soulstone fused to granite base, waist-high, completely unlit, no glow, no light sources, no self-emission",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 64,
+  "sprite": "soulstone_outcrops/soulstone_outcrop_017/sprite.webp",
+  "placement": {
+    "world_height_m": 0.997,
+    "world_px_height": 51,
+    "character_height_px": 87,
+    "character_height_m": 1.7,
+    "note": "ONE SCENERY PIXEL IS ONE PLAYER PIXEL. world_px_height IS the art's own alpha bbox height, so scenery is placed into the world at 1:1 exactly as the avatar is (setScale(1)) and the two share one pixel grid. The CAMERA still zooms the whole scene \u2014 that is uniform and correct; what must never happen is scenery being resampled on its own, against the player. world_height_m is what the art reads as beside a 87px character; declared_height_m is what it was once declared to be, and a gap between them means the ART is the wrong size.",
+    "declared_height_m": 1.12,
+    "content_box": [
+      7,
+      8,
+      58,
+      59
+    ],
+    "content_px_height": 51,
+    "canvas_render_px": 64
+  },
+  "pixellab_object_id": "0d6e326e-d79a-450f-b36b-0048f804e15c",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)",
+  "must_be_imbplemented_with_random_hflip": true,
+  "states": {
+    "NOT_LIT_1": {
+      "sprite": "soulstone_outcrops/soulstone_outcrop_017/sprite.webp",
+      "pixellab_object_id": "0d6e326e-d79a-450f-b36b-0048f804e15c",
+      "generated_at": "2026-08-13T23:18:52+00:00"
+    },
+    "NOT_LIT_2": {
+      "sprite": "soulstone_outcrops/soulstone_outcrop_017/not_lit_2/sprite.webp",
+      "pixellab_object_id": "fca83c69-bcd8-4575-bb5f-24f1b0163380",
+      "generated_at": "2026-08-16T21:07:09+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.6538,
+      "glow_score": 0.0462,
+      "animations": {
+        "motion": {
+          "group_id": "ec7c3544-7983-4fff-8ae9-fad117228046",
+          "description": "This is the same picture in every frame. ONLY the bright veins across the boulder brighten a little and return. It is lit and clearly visible in every frame, including the first. It gets only SLIGHTLY brighter -- never white, never washed out -- and keeps its own colour throughout: brightest in the middle, back to its first-frame brightness at the end, never dimmer at the end than the start. Nothing is added or removed anywhere: every object appears in every frame, the same number of them, in the same places, at the same size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour, no outline redrawn. The last frame matches the first exactly.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "soulstone_outcrops/soulstone_outcrop_017/not_lit_2/animations/motion/00.webp",
+            "soulstone_outcrops/soulstone_outcrop_017/not_lit_2/animations/motion/01.webp",
+            "soulstone_outcrops/soulstone_outcrop_017/not_lit_2/animations/motion/02.webp",
+            "soulstone_outcrops/soulstone_outcrop_017/not_lit_2/animations/motion/03.webp",
+            "soulstone_outcrops/soulstone_outcrop_017/not_lit_2/animations/motion/04.webp"
+          ],
+          "strip": "soulstone_outcrops/soulstone_outcrop_017/not_lit_2/animations/motion__strip.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-08-29T19:02:49+00:00",
+          "brief": "C23",
+          "review": "ANIMATION_PROBABLY_GOOD",
+          "review_metrics": {
+            "base_outline": 0.006
+          }
+        }
+      }
+    },
+    "NOT_LIT_3": {
+      "sprite": "soulstone_outcrops/soulstone_outcrop_017/not_lit_3/sprite.webp",
+      "pixellab_object_id": "8da7668b-225e-4414-9196-cff97196b879",
+      "generated_at": "2026-08-16T21:07:09+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.7448,
+      "glow_score": 0.0345,
+      "animations": {
+        "motion": {
+          "group_id": "c5dcc45a-08df-4e53-8137-bec30664a289",
+          "description": "This is the same picture in every frame. ONLY the bright veins across the boulder brighten a little and return. It is lit and clearly visible in every frame, including the first. It gets only SLIGHTLY brighter -- never white, never washed out -- and keeps its own colour throughout: brightest in the middle, back to its first-frame brightness at the end, never dimmer at the end than the start. Nothing is added or removed anywhere: every object appears in every frame, the same number of them, in the same places, at the same size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour, no outline redrawn. The last frame matches the first exactly.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "soulstone_outcrops/soulstone_outcrop_017/not_lit_3/animations/motion/00.webp",
+            "soulstone_outcrops/soulstone_outcrop_017/not_lit_3/animations/motion/01.webp",
+            "soulstone_outcrops/soulstone_outcrop_017/not_lit_3/animations/motion/02.webp",
+            "soulstone_outcrops/soulstone_outcrop_017/not_lit_3/animations/motion/03.webp",
+            "soulstone_outcrops/soulstone_outcrop_017/not_lit_3/animations/motion/04.webp"
+          ],
+          "strip": "soulstone_outcrops/soulstone_outcrop_017/not_lit_3/animations/motion__strip.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-08-29T19:14:35+00:00",
+          "brief": "D14",
+          "review": "ANIMATION_PROBABLY_BAD",
+          "review_metrics": {
+            "class": "rigid",
+            "base": 0.6272,
+            "still": 0.541
+          }
+        }
+      }
+    },
+    "NOT_LIT_4": {
+      "sprite": "soulstone_outcrops/soulstone_outcrop_017/not_lit_4/sprite.webp",
+      "pixellab_object_id": "ca6089db-0c7b-40f1-86c9-04e6fc165d81",
+      "generated_at": "2026-08-16T21:07:28+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.8256,
+      "glow_score": 0.0534
+    }
+  },
+  "collision": true,
+  "hitbox_shape": "ellipse"
+}

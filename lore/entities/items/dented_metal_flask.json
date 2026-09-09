@@ -1,0 +1,22 @@
+{
+  "domain": "items",
+  "id": "dented_metal_flask",
+  "name_seen": "Dented Flask",
+  "law": "II",
+  "description": "A traveller's flask, dented flat on one side. Empty, but it still smells faintly of something strong.",
+  "lore": [
+    "Everything else that comes down off a [[monsters/dark_donkey|Nightmule]] is work — rope, harness links, canvas, a knife for rations. The flask is the only thing in that load that was not about getting somewhere. It is dented flat down one whole side and the cap still seats, so it took the blow while it was full and did not lose a drop, which is a good flask, and the man who owned it knew that about it.",
+    "[[characters/7a779de1|Wendell]] is clear on what the object is for. Nobody carries a flask to drink by himself, he says. You carry it so that at the end of a wet day you have something to hand across, and the handing is the point and the drink is only the excuse. He says this at a fire, in exchange for company, which is a man describing his own method and trusting you not to notice. Twenty-five gold, and he has never once been asked for a demonstration."
+  ],
+  "related": [
+    {
+      "domain": "monsters",
+      "id": "dark_donkey"
+    },
+    {
+      "domain": "lore",
+      "id": "the_hard_pieces"
+    }
+  ],
+  "gm_notes": "Wendell trades memory for company and knows it. Anyone who lets him finish this speech without buying it from him gets a better version of the east road out of him later."
+}

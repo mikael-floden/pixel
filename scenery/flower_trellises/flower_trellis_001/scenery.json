@@ -1,0 +1,164 @@
+{
+  "format": "scenery-piece@2",
+  "id": "flower_trellis_001",
+  "group": "flower_trellises",
+  "rank": 64,
+  "index": 1,
+  "name": "Mixed pastel sweet peas 001",
+  "lights": null,
+  "variety": "mixed pastel sweet peas",
+  "glow_concept": null,
+  "prompt": "a freestanding wooden lattice trellis on stout legs, covered in climbing flowering vines, mixed pastel sweet peas, large, well above head height of a person, completely unlit, no glow, no light sources, no self-emission",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 128,
+  "sprite": "flower_trellises/flower_trellis_001/sprite.webp",
+  "placement": {
+    "world_height_m": 1.934,
+    "world_px_height": 99,
+    "character_height_px": 87,
+    "character_height_m": 1.7,
+    "note": "ONE SCENERY PIXEL IS ONE PLAYER PIXEL. world_px_height IS the art's own alpha bbox height, so scenery is placed into the world at 1:1 exactly as the avatar is (setScale(1)) and the two share one pixel grid. The CAMERA still zooms the whole scene \u2014 that is uniform and correct; what must never happen is scenery being resampled on its own, against the player. world_height_m is what the art reads as beside a 87px character; declared_height_m is what it was once declared to be, and a gap between them means the ART is the wrong size.",
+    "declared_height_m": 1.98,
+    "content_box": [
+      14,
+      16,
+      116,
+      115
+    ],
+    "content_px_height": 99,
+    "canvas_render_px": 128
+  },
+  "pixellab_object_id": "1d1228b2-e320-44b5-9035-46b9c4e30b75",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)",
+  "must_be_imbplemented_with_random_hflip": true,
+  "generated_at": "2026-08-13T01:48:01+00:00",
+  "states": {
+    "NOT_LIT_1": {
+      "sprite": "flower_trellises/flower_trellis_001/sprite.webp",
+      "pixellab_object_id": "1d1228b2-e320-44b5-9035-46b9c4e30b75",
+      "generated_at": "2026-08-13T01:48:01+00:00",
+      "rotations": {
+        "south-west": "flower_trellises/flower_trellis_001/rotations/south-west.webp",
+        "south": "flower_trellises/flower_trellis_001/sprite.webp"
+      }
+    },
+    "NOT_LIT_2": {
+      "sprite": "flower_trellises/flower_trellis_001/not_lit_2/sprite.webp",
+      "pixellab_object_id": "6e5e1393-1f07-4c04-be77-8e8ef653051b",
+      "generated_at": "2026-08-16T14:15:20+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.7028,
+      "glow_score": 0.0616,
+      "rotations": {
+        "south-east": "flower_trellises/flower_trellis_001/not_lit_2/rotations/south-east.webp",
+        "south-west": "flower_trellises/flower_trellis_001/not_lit_2/rotations/south-west.webp",
+        "south": "flower_trellises/flower_trellis_001/not_lit_2/sprite.webp"
+      },
+      "animations": {
+        "motion": {
+          "group_id": "26ab9da2-f1fb-43cf-b455-7ce3818292ec",
+          "description": "This is the same picture in every frame. ONLY the white blossoms move, each nodding by a single pixel. Nothing else moves, bends or leans, and nothing changes size, shape or position. The last frame must return to exactly how the first frame looks, so the loop joins. Nothing may become darker than it is in the first frame. Do not redraw anything else, and do not add or remove anything.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "flower_trellises/flower_trellis_001/not_lit_2/animations/motion/00.webp",
+            "flower_trellises/flower_trellis_001/not_lit_2/animations/motion/01.webp",
+            "flower_trellises/flower_trellis_001/not_lit_2/animations/motion/02.webp",
+            "flower_trellises/flower_trellis_001/not_lit_2/animations/motion/03.webp",
+            "flower_trellises/flower_trellis_001/not_lit_2/animations/motion/04.webp"
+          ],
+          "strip": "flower_trellises/flower_trellis_001/not_lit_2/animations/motion__strip.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-08-29T15:41:48+00:00",
+          "brief": "X61",
+          "review": "ANIMATION_PROBABLY_GOOD",
+          "review_metrics": {
+            "class": "foliage",
+            "base": 0.0198,
+            "still": 0.605
+          }
+        }
+      }
+    },
+    "NOT_LIT_3": {
+      "sprite": "flower_trellises/flower_trellis_001/not_lit_3/sprite.webp",
+      "pixellab_object_id": "203587cf-259a-44cd-bb8f-47735ada98da",
+      "generated_at": "2026-08-16T14:16:24+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.6597,
+      "glow_score": 0.0496,
+      "rotations": {
+        "south-east": "flower_trellises/flower_trellis_001/not_lit_3/rotations/south-east.webp",
+        "south-west": "flower_trellises/flower_trellis_001/not_lit_3/rotations/south-west.webp",
+        "south": "flower_trellises/flower_trellis_001/not_lit_3/sprite.webp"
+      },
+      "animations": {
+        "motion": {
+          "group_id": "da4222ef-ca88-4def-b8bc-2c28d53cdf76",
+          "description": "This is the same picture in every frame. ONLY the flowers on the trellis move, each nodding by a single pixel. Everything else in the picture is copied from the first frame exactly, pixel for pixel, unchanged in shape, size, position and colour. No outline anywhere is redrawn. The last frame matches the first frame exactly, so the loop joins. Nothing anywhere becomes darker, lighter or a different colour except the one thing named above.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "flower_trellises/flower_trellis_001/not_lit_3/animations/motion/00.webp",
+            "flower_trellises/flower_trellis_001/not_lit_3/animations/motion/01.webp",
+            "flower_trellises/flower_trellis_001/not_lit_3/animations/motion/02.webp",
+            "flower_trellises/flower_trellis_001/not_lit_3/animations/motion/03.webp",
+            "flower_trellises/flower_trellis_001/not_lit_3/animations/motion/04.webp"
+          ],
+          "strip": "flower_trellises/flower_trellis_001/not_lit_3/animations/motion__strip.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-08-29T16:18:33+00:00",
+          "brief": "Y43",
+          "review": "ANIMATION_PROBABLY_GOOD",
+          "review_metrics": {
+            "base_outline": 0.0981
+          }
+        }
+      }
+    },
+    "NOT_LIT_4": {
+      "sprite": "flower_trellises/flower_trellis_001/not_lit_4/sprite.webp",
+      "pixellab_object_id": "15744488-41bf-4fa8-af7c-12b65495bdab",
+      "generated_at": "2026-08-16T14:17:04+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.7963,
+      "glow_score": 0.0329,
+      "rotations": {
+        "south-east": "flower_trellises/flower_trellis_001/not_lit_4/rotations/south-east.webp",
+        "south-west": "flower_trellises/flower_trellis_001/not_lit_4/rotations/south-west.webp",
+        "south": "flower_trellises/flower_trellis_001/not_lit_4/sprite.webp"
+      }
+    },
+    "NOT_LIT_5": {
+      "sprite": "flower_trellises/flower_trellis_001/not_lit_5/sprite.webp",
+      "pixellab_object_id": "d3745ae5-20a0-4721-9b93-72afb8187152",
+      "generated_at": "2026-08-16T14:15:53+00:00",
+      "glow_concept": "pollen sifting down as glowing dust",
+      "difference_from_source": 0.6318,
+      "glow_score": 0.1263,
+      "relit_from": "LIT_1",
+      "rotations": {
+        "south-east": "flower_trellises/flower_trellis_001/not_lit_5/rotations/south-east.webp",
+        "south-west": "flower_trellises/flower_trellis_001/not_lit_5/rotations/south-west.webp",
+        "south": "flower_trellises/flower_trellis_001/not_lit_5/sprite.webp"
+      }
+    }
+  },
+  "collision": true,
+  "hitbox_shape": "rect"
+}

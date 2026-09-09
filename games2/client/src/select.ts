@@ -3,10 +3,141 @@ import { WorldInfo, DEFAULT_WORLD } from "./maps";
 import { showLoading } from "./loading";
 import { mountTheme, toggleTheme } from "./theme";
 import { openWikiPanel } from "./wikipanel";
+import { listenWikiNear } from "./wikinear";
 import { gameAudio } from "../../composer/index";
 import { withV } from "./assetver";
+import { drawPixelText, measurePixelText } from "./pixeltext";
 
 const NAMES = ["Ari", "Bex", "Cyl", "Dax", "Eir", "Fen", "Gio", "Hana", "Ivo", "Juno", "Kira", "Lio"];
+
+/**
+ * THE TAGLINE POOL. The logo used to carry "A THOUSAND PATHS. ONE LIFE."
+ * baked into the artwork; the letters were painted out of `logo.webp` (the
+ * banner, its gold and rose rules and both flourishes are untouched) and the
+ * line is drawn over the empty plate instead, so it costs nothing to change
+ * and never needs the art regenerated — which is the whole point, since every
+ * regeneration of that art loses quality.
+ *
+ * The maintainer chose these eleven from a page of thirty-five: the land as
+ * something older and awake, no arrival imagery, no daylight, no cheer.
+ * ONE IS PICKED PER TITLE-SCREEN LOAD ("rotate between the survivors, not in
+ * realtime, but every time the screen is loaded"), never the same one twice
+ * running.
+ *
+ * ADDING A LINE: keep it inside the plate. The limit is NOT the banner's
+ * width — it is the gap between the two FLOURISH ARMS that reach in over the
+ * cap rows, measured at x 379..671 in the art, i.e. 293px of clear space.
+ * Three of the chosen lines had to be tightened because of it (they read fine
+ * in a list and collide with the gold arms on the plate).
+ * `scripts/verify-tagline.mjs` measures every entry against that span and
+ * fails on one that would not fit, so this list cannot quietly overflow.
+ */
+export const TAGLINES = [
+  "THE LAND ON THE OTHER SIDE.",
+  "WANDER FAR. HOME BY DARK.",
+  "SOMETHING OUT THERE WAKES.",
+  "THE WILDS REMEMBER YOU.",
+  "EVERY FIRE HAS A STORY.",
+  "THE DARK IS NOT EMPTY.",
+  "THE LAND WAS HERE FIRST.",
+  "SOME PATHS DO NOT RETURN.",
+  "THE NIGHT KNOWS YOUR NAME.",
+  "NO MAP SHOWS EVERYTHING.",
+  "WHERE OLD ROADS STILL EXIST.",
+];
+
+/**
+ * Where the line sits, in the LOGO ART's own pixels (the file is 1091x634).
+ * The cap box is the 14 rows the baked tagline occupied, centred on the gold
+ * rule's span (x 349..700) rather than on the image — the banner is not
+ * centred in the artwork, and centring on the image put the words 21px off.
+ */
+const PLATE = {
+  imgW: 1091,
+  imgH: 634,
+  centreX: (349 + 700) / 2,
+  capTop: 557,
+  capRows: 14,
+  // What actually bounds the words: the flourish arms reach IN over the cap
+  // rows and leave this much clear, well inside the gold rule's 349..700.
+  clearL: 379,
+  clearR: 671,
+  // The margin the ARTWORK itself kept: the baked line was 274px in this
+  // 292px gap, i.e. 9px of air each side. Matching it is what stops a long
+  // line reading cramped even when it technically clears the gold
+  // (maintainer: "I like when there is some spacing").
+  air: 9,
+};
+
+/** Widest the line may draw, in art pixels. */
+const MAX_PX = PLATE.clearR - PLATE.clearL - PLATE.air * 2;
+
+/**
+ * How far a line may be SHRUNK to fit the plate before the pool starts looking
+ * ragged. mountTagline scales an over-long line down uniformly rather than
+ * letting it run under the flourishes, which is what makes a new line safe to
+ * add; this is the limit on how much of that is acceptable, and the gate fails
+ * a pool entry that needs more.
+ */
+export const TAGLINE_MIN_FIT = 0.94;
+
+/** The line for THIS load: random, but never a repeat of the last one. */
+export function pickTagline(pool: readonly string[] = TAGLINES): string {
+  let last = "";
+  try {
+    last = localStorage.getItem("ml-tagline") || "";
+  } catch {}
+  const fresh = pool.filter((t) => t !== last);
+  const pick = (fresh.length ? fresh : pool)[Math.floor(Math.random() * (fresh.length || pool.length))];
+  try {
+    localStorage.setItem("ml-tagline", pick);
+  } catch {}
+  return pick;
+}
+
+/**
+ * Draw one line onto the logo's empty banner. The canvas is laid out in
+ * PERCENT of the logo box, so it tracks the art at every width with no resize
+ * listener, and its backing store is the artwork's own 2px-per-cell grid —
+ * the browser then scales it down exactly as it scales the logo beside it.
+ */
+export function mountTagline(cv: HTMLCanvasElement, text = pickTagline()): string {
+  const art = drawPixelText(text, { scale: 2 });
+  const ctx = cv.getContext("2d");
+  cv.width = art.width;
+  cv.height = art.height;
+  if (ctx) ctx.drawImage(art, 0, 0);
+  // FIT TO THE PLATE. The canvas is already being scaled down ~3.5x on a
+  // phone, so trimming a long line by a few percent costs nothing visible and
+  // is far better than letting it run under the gold arms. Uniform, so the
+  // letters keep their proportions; most lines are under the limit and draw
+  // at exactly 1.
+  const fit = Math.min(1, MAX_PX / art.width);
+  const w = art.width * fit;
+  const h = art.height * fit;
+  const pct = (v: number, of: number) => `${(v / of) * 100}%`;
+  cv.style.left = pct(PLATE.centreX - w / 2, PLATE.imgW);
+  // Centre the cap on the rows the baked letters used (drawPixelText pads 1px
+  // for the shoulder ring, and a fitted line is shorter than the cap band).
+  cv.style.top = pct(PLATE.capTop + PLATE.capRows / 2 - h / 2, PLATE.imgH);
+  cv.style.width = pct(w, PLATE.imgW);
+  cv.style.height = pct(h, PLATE.imgH);
+  return text;
+}
+
+/** QA: the pool with the shrink each line needs, and the line on screen. */
+export function taglineInfo() {
+  const cv = document.querySelector<HTMLCanvasElement>(".ml-tagline");
+  return {
+    pool: TAGLINES.map((t) => {
+      const cells = measurePixelText(t);
+      return { text: t, cells, fit: Math.min(1, MAX_PX / (cells * 2 + 2)) };
+    }),
+    minFit: TAGLINE_MIN_FIT,
+    maxPx: MAX_PX,
+    shown: cv ? { w: cv.width, h: cv.height, css: cv.getBoundingClientRect() } : null,
+  };
+}
 
 export interface JoinChoice {
   world: string;
@@ -15,7 +146,7 @@ export interface JoinChoice {
 }
 
 /**
- * Show a pre-join screen: pick a WORLD (any playable maps2 world) + a character
+ * Show a pre-join screen: pick a WORLD (any playable world) + a character
  * + a name. `worlds` empty ⇒ no world picker (demo mode fixes the world);
  * resolves once the player commits, then the caller starts the game.
  *
@@ -27,7 +158,13 @@ export interface JoinChoice {
 export function chooseCharacter(manifest: Manifest, worlds: WorldInfo[] = []): Promise<JoinChoice> {
   return new Promise((resolve) => {
     const chars = manifest.characters;
-    const showWorlds = worlds.length > 0;
+    // THE PICKER ONLY EXISTS WHEN THERE IS A CHOICE (maintainer 2026-08-14:
+    // "hiding everything but The Island2 has been on the todo for a long time —
+    // the entire dropdown should be removed"). An end user is offered exactly
+    // one world, so the control is not filtered down to a single row, it is not
+    // rendered at all. A signed-in admin gets the full list back and with it
+    // the dropdown. `worlds` empty still means demo mode (DEFAULT_WORLD).
+    const showWorlds = worlds.length > 1;
 
     // PRESELECT the player's last map + character (localStorage ml-last-choice,
     // written on every commit, read by the dead-connection rejoin in main.ts).
@@ -52,7 +189,10 @@ export function chooseCharacter(manifest: Manifest, worlds: WorldInfo[] = []): P
     const overlay = el("div", "ml-overlay");
     overlay.innerHTML = `
       <div class="ml-panel">
-        <img class="ml-logo" src="${withV("/logo.webp")}" alt="Nangijala Online — a browser MMORPG" />
+        <div class="ml-logowrap">
+          <img class="ml-logo" src="${withV("/logo.webp")}" alt="Nangijala Online — a browser MMORPG" />
+          <canvas class="ml-tagline" aria-hidden="true"></canvas>
+        </div>
         <div class="ml-card">
           ${showWorlds ? `
           <div class="ml-dd" id="ml-worlds">
@@ -71,11 +211,11 @@ export function chooseCharacter(manifest: Manifest, worlds: WorldInfo[] = []): P
       <button id="ml-install" class="ml-corner ml-install" hidden type="button"
         title="Install game" aria-label="Install game">⤓ Install</button>
       <button id="ml-wiki" class="ml-corner ml-wiki" type="button"
-         title="Game wiki — all monsters, characters, tiles, sounds &amp; tuning"><span
-         class="ml-cicon">&#128214;</span>Wiki</button>
+         title="Game wiki — all monsters, characters, tiles, sounds &amp; tuning"><img
+         class="ml-cicon ml-cicon-img" alt="" draggable="false">Wiki</button>
       <button id="ml-theme-btn" class="ml-corner ml-theme" type="button"
-         title="Switch light/dark — one theme for the game and the wiki"><span
-         class="ml-cicon">&#127767;</span>Theme</button>`;
+         title="Switch light/dark — one theme for the game and the wiki"><img
+         class="ml-cicon ml-cicon-img" alt="" draggable="false">Theme</button>`;
     document.body.appendChild(overlay);
     // Arm the title theme the moment the screen mounts — NOT only on a button
     // press (maintainer 2026-07-19). Browser autoplay still needs one gesture,
@@ -102,7 +242,11 @@ export function chooseCharacter(manifest: Manifest, worlds: WorldInfo[] = []): P
     const veil = el("div", "ml-title-veil");
     overlay.appendChild(veil);
     const logoImg = overlay.querySelector<HTMLImageElement>(".ml-logo")!;
-    logoImg.style.opacity = "0";
+    // The title beat moves the LOGO GROUP — the art and the tagline drawn over
+    // it — so the words can never slide off the banner mid-animation.
+    const logo = overlay.querySelector<HTMLElement>(".ml-logowrap")!;
+    logo.style.opacity = "0";
+    mountTagline(overlay.querySelector<HTMLCanvasElement>(".ml-tagline")!);
     const bgImg = new Image();
     bgImg.src = withV("/ui2/select-bg.webp");
     const decode = (im?: HTMLImageElement) => (im ? im.decode().catch(() => {}) : Promise.resolve());
@@ -117,9 +261,9 @@ export function chooseCharacter(manifest: Manifest, worlds: WorldInfo[] = []): P
       veil.style.pointerEvents = "none";
       Promise.race([decode(bgImg), delay(450)]).then(() =>
         twoFrames(() => {
-          logoImg.style.transition = "transform .8s cubic-bezier(.22,.61,.36,1), opacity .6s ease";
-          logoImg.style.transform = "translateY(0)";
-          logoImg.style.opacity = "1";
+          logo.style.transition = "transform .8s cubic-bezier(.22,.61,.36,1), opacity .6s ease";
+          logo.style.transform = "translateY(0)";
+          logo.style.opacity = "1";
           veil.style.opacity = "0";
           setTimeout(() => veil.remove(), 800);
         }),
@@ -131,16 +275,16 @@ export function chooseCharacter(manifest: Manifest, worlds: WorldInfo[] = []): P
       decode(logoImg).then(() => delay(150).then(reveal));
     } else {
       decode(logoImg).then(() => {
-        const r = logoImg.getBoundingClientRect();
+        const r = logo.getBoundingClientRect();
         const shift = Math.round(0.45 * window.innerHeight - (r.top + r.height / 2));
         if (r.height >= 10 && shift > 8) {
-          logoImg.style.transition = "none";
-          logoImg.style.transform = `translateY(${shift}px)`;
-          logoImg.getBoundingClientRect(); // commit the balanced start position
+          logo.style.transition = "none";
+          logo.style.transform = `translateY(${shift}px)`;
+          logo.getBoundingClientRect(); // commit the balanced start position
         }
         twoFrames(() => {
-          logoImg.style.transition = "opacity .5s ease";
-          logoImg.style.opacity = "1"; // the logo emerges alone on black
+          logo.style.transition = "opacity .5s ease";
+          logo.style.opacity = "1"; // the logo emerges alone on black
           delay(1000).then(reveal); // auto-advance after a short title hold
         });
       });
@@ -230,7 +374,10 @@ export function chooseCharacter(manifest: Manifest, worlds: WorldInfo[] = []): P
 
     function commit() {
       const name = (nameInput.value.trim() || NAMES[selected % NAMES.length]).slice(0, 24);
-      const world = showWorlds ? worlds[selectedWorld].name : DEFAULT_WORLD;
+      // NOT gated on showWorlds: with exactly one world the dropdown is
+      // hidden but that world is still the one to join, so read the list
+      // whenever it has anything in it.
+      const world = worlds.length ? worlds[selectedWorld].name : DEFAULT_WORLD;
       // Remember the choice so a dead-connection rejoin (main.ts) can skip
       // this screen and go straight back into the world.
       try {
@@ -239,6 +386,20 @@ export function chooseCharacter(manifest: Manifest, worlds: WorldInfo[] = []): P
           JSON.stringify({ world, characterUid: chars[selected].uid, name }),
         );
       } catch {}
+      /* STOP THE PREVIEW SPINNING BEFORE LEAVING. `setSpin` drives the
+       * rotation by reassigning `img.src` on a setInterval, and the only thing
+       * that ever cleared it was `setSpin(false)` — which runs when a DIFFERENT
+       * character is selected. Committing removed the overlay and left the
+       * SELECTED character's timer firing for the rest of the session,
+       * re-fetching and re-decoding eight 112x112 rotations on a detached <img>
+       * nobody can see. Measured in a browser before this line existed: 27
+       * requests per rotation URL and 334 character-art requests during a 45 s
+       * walk, every one for art already loaded. The decodes land on the main
+       * thread outside every profiler span, i.e. in the beacon's `gapBusy`,
+       * which is where its worst windows differ most from its best.
+       * (Found hunting the maintainer's stutter by trapping the
+       * HTMLImageElement `src` setter and reading the stacks.) */
+      spins.forEach((s) => s(false));
       // The loading overlay's black FADES IN over this screen — keep the
       // select mounted beneath it until the black is opaque, then drop it.
       showLoading();
@@ -280,13 +441,21 @@ export function chooseCharacter(manifest: Manifest, worlds: WorldInfo[] = []): P
     // The in-game wiki (wiki agent): opens the LEFT DRAWER over this screen —
     // never a browser tab (maintainer 2026-07-30).
     const wikiBtn = overlay.querySelector("#ml-wiki") as HTMLButtonElement;
+    // The book is set HERE, not in the markup above: the URL has to go through
+    // withV() (cache stamping), which the template string cannot call.
+    const wikiIcon = wikiBtn.querySelector(".ml-cicon-img") as HTMLImageElement;
+    wikiIcon.src = withV("/ui2/icon-wiki.webp");
     pressFx(wikiBtn);
     wikiBtn.addEventListener("click", () => openWikiPanel());
+    // The wiki's #/near page asks the game what is around the player; from
+    // here there is no world yet, and the answer must say so (spec/WIKI_NEAR.md).
+    listenWikiNear();
 
     // Dark/light directly from the select screen (maintainer 2026-07-30) —
     // the SAME shared theme the game HUD and the wiki read (theme.ts), so
     // one press restyles all three, including an open wiki drawer.
     const themeBtn = overlay.querySelector("#ml-theme-btn") as HTMLButtonElement;
+    (themeBtn.querySelector(".ml-cicon-img") as HTMLImageElement).src = withV("/ui2/icon-theme.webp");
     pressFx(themeBtn);
     themeBtn.addEventListener("click", () => toggleTheme());
 
@@ -297,9 +466,13 @@ export function chooseCharacter(manifest: Manifest, worlds: WorldInfo[] = []): P
       selected: () => selected,
       worlds: () => worlds.map((w) => w.name),
       pickWorld: (i: number) => worldRows[i]?.click(),
-      selectedWorld: () => (showWorlds ? worlds[selectedWorld].name : DEFAULT_WORLD),
+      selectedWorld: () => (worlds.length ? worlds[selectedWorld].name : DEFAULT_WORLD),
       installVisible: () => !installBtn.hidden,
       wikiHref: () => wikiBtn.getAttribute("href"),
+      tagline: taglineInfo,
+      /** QA: force a specific line onto the plate (no argument = re-pick). */
+      setTagline: (t?: string) =>
+        mountTagline(overlay.querySelector<HTMLCanvasElement>(".ml-tagline")!, t ?? pickTagline()),
       commit,
     };
   });
@@ -438,11 +611,19 @@ function injectStyles() {
     background-size:auto,cover;background-position:center;background-repeat:repeat,no-repeat;image-rendering:pixelated}
   .ml-panel{width:var(--selw);margin:auto;padding:12px 0 132px;text-align:center;
     display:flex;flex-direction:column;align-items:center;gap:14px}
-  /* the maintainer's logo with its black silhouette glow — brand art, kept */
-  .ml-logo{display:block;width:min(360px,92%);margin:0 auto;user-select:none;-webkit-user-drag:none;
-    position:relative;z-index:101;will-change:transform,opacity;pointer-events:none;
+  /* the maintainer's logo with its black silhouette glow — brand art, kept.
+     The WRAPPER owns the size, the stacking and the title animation so the
+     tagline canvas over the banner travels with the art. */
+  .ml-logowrap{position:relative;display:block;width:min(360px,92%);margin:0 auto;
+    z-index:101;will-change:transform,opacity;pointer-events:none;
     filter:drop-shadow(0 0 8px rgba(0,0,0,.65)) drop-shadow(0 0 22px rgba(0,0,0,.6))
       drop-shadow(0 0 48px rgba(0,0,0,.5))}
+  .ml-logo{display:block;width:100%;user-select:none;-webkit-user-drag:none}
+  /* The tagline. Placed in PERCENT of the logo box, so it tracks the art at
+     every width, and left SMOOTH on purpose (image-rendering:auto): it is
+     drawn at the artwork's own 2px-per-cell grid and scaled DOWN with it —
+     pixelated here would drop rows out of a 7-row cap. See pixeltext.ts. */
+  .ml-tagline{position:absolute;pointer-events:none;image-rendering:auto}
   /* TITLE veil: a solid-black cover; only the logo (z 101) pokes through. */
   .ml-title-veil{position:absolute;inset:0;z-index:100;background:#05070d;opacity:1;
     transition:opacity .7s ease;touch-action:manipulation;-webkit-tap-highlight-color:transparent}
@@ -522,13 +703,27 @@ function injectStyles() {
      in a column, a matched pair reads deliberate. */
   .ml-wiki,.ml-theme{left:12px;padding:10px 16px;font-size:15px;border-radius:11px;
     min-width:118px;display:flex;align-items:center;justify-content:flex-start;gap:8px}
-  /* Both leading glyphs are EMOJI in a fixed box, so the pair can't differ in
+  /* The two leading glyphs share ONE FIXED BOX, so the pair can't differ in
      size or baseline (maintainer 2026-07-30: "the icon has different size and
      is not aligned") — the old ◐ was a thin TEXT glyph next to a colour emoji,
-     which no font pairing renders alike. */
-  .ml-cicon{flex:none;width:19px;height:19px;font-size:16px;line-height:19px;
+     which no font pairing renders alike. BOTH are the maintainer's own pixel
+     art now (2026-09-03), so the box is the art's authored 24px GRID rather
+     than the 19 that would squeeze and resample it. Changing the SHARED box
+     is what keeps the pair matched; sizing one of them alone is the bug he
+     reported. The theme disc's export framed its ink flush to two canvas
+     edges while the book's sits centred — side by side that is 2px of exactly
+     the misalignment this box exists to prevent, so the bake centres it (a
+     pure integer translation; the untouched export is the source of record in
+     client/ui-src). */
+  .ml-cicon{flex:none;width:24px;height:24px;font-size:16px;line-height:24px;
     text-align:center;font-family:"Apple Color Emoji","Segoe UI Emoji","Noto Color Emoji",sans-serif}
-  .ml-theme{top:62px}
+  .ml-cicon-img{image-rendering:pixelated;-webkit-user-drag:none}
+  /* Wiki's bottom + the 9px the pair has always been spaced by. It is an
+     absolute offset, so it does NOT follow the Wiki button when that grows:
+     the 24px icon box below made these two 5px taller and silently closed the
+     gap to 4px. If .ml-cicon or the button padding changes again, re-measure
+     this with it — #ml-wiki's bottom edge is 12 + its height. */
+  .ml-theme{top:67px}
   .ml-install{right:12px}
   .ml-install[hidden]{display:none}`;
   const s = document.createElement("style");

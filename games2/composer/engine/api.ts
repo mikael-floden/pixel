@@ -14,9 +14,9 @@ import { AudioGraph, BufferCache, BusName } from "./context";
 import { AmbienceMixer } from "./ambience";
 import { MusicDirector } from "./music";
 import { MusicalContext, OneShotPlayer, PlayOpts } from "./oneshot";
-import { composerFoley, composerFoleySurfaces, composerFoleyTake } from "./foley";
+import { composerFoley, composerFoleySurfaces, composerFoleyTake, loadComposerFoley } from "./foley";
 import { nightMusicUrl, titleThemeUrl } from "./titleTheme";
-import { ContextMusic, hasBed } from "./contextMusic";
+import { ContextMusic, hasBed, loadMusicIndex } from "./contextMusic";
 import { BED_MIN_HOLD_S, BED_NAMES, BED_OFF, BED_ON, BedName, desiredBed, resolveBed } from "./bedSelect";
 
 /** Per-avatar, per-frame movement sample — the scene reports what the body
@@ -361,7 +361,7 @@ const THUNDER_GAIN_DB = 14;
 // A NAMED PLACE PLAYS ITS OWN SCORE (maintainer 2026-08-08, after picking
 // cave4: "Can you play the music cave4 inside that cave regardless if it's day
 // or night?"). Keyed by the maps agent's place id from
-// maps2/worlds/<world>/places.json — `the_cave` on the_island2 — so adding a
+// maps2/worlds3/<world>/places.json — so adding a
 // room's music is a line here plus a track, with no geometry in the audio code.
 // Deliberately keyed on the ID and not the `kind`: two caves can want different
 // music, and "every cave sounds the same" should be a choice, not a default.
@@ -385,6 +385,10 @@ const BATTLE_TAIL_S = 4;
 
 const PLACE_BEDS: Record<string, BedName> = {
   the_cave: "cave4",
+  // The maps agent names a summit `mountain_top` on every world that has one,
+  // so one entry covers them all — the payoff of keying on the place ID rather
+  // than the world.
+  mountain_top: "summit_triumph",
 };
 // Walk plays softer than run by this penalty (default −3 dB ≈ 70%). Snow's
 // walk penalty is ZERO: at −3 on top of its deep trim the maintainer heard
@@ -428,6 +432,27 @@ export class GameAudio {
     sun: 1, cloud: 0, mist: 0, rain: 0, storm: false, snow: false, windy: false,
   };
   private fieldSampler: (() => FieldSample | null) | null = null;
+  // THE HEARD LEDGER (maintainer 2026-09-02, for the wiki's #/near: "the
+  // music playing right now and the sound effects triggered the last 30 s,
+  // filtered on how recently they were played"). One row per event the game
+  // ASKED for — with the sound that actually started, or null when the event
+  // is unassigned and played nothing (that null is the point: it is what the
+  // Game Master would want to assign a sound to) — plus rows for sounds the
+  // composer started on its own (footsteps, flourishes; event null). Newest
+  // last in storage, served newest first by heard(). Bounded; read by
+  // games-ui's wikinear.ts through heard() and by __ml.audio().
+  private heardLog: { event: string | null; sound: string | null; at: number }[] = [];
+  // PRUNED BY AGE, NOT BY COUNT. The contract is "the last 30 seconds", and a
+  // fixed ring cannot keep that promise: FOOTSTEPS go through this ledger too
+  // (event null — a sound the composer starts itself), and a walking player
+  // fires them several times a second, so a 64-entry ring evicted a real
+  // combat event within a few seconds of walking away from it. Measured: a
+  // snapshot listed 4 sound rows and the one taken moments later had 3, with
+  // nothing older than 4s. The cap that remains is a memory bound, not a
+  // policy — at ~10 sounds/second of continuous foley it is never reached
+  // inside the window.
+  private static readonly HEARD_WINDOW_MS = 60_000;
+  private static readonly HEARD_MAX = 512;
   private tick: ReturnType<typeof setInterval> | null = null;
   private musicWanted = false;
   private underwater = false;
@@ -510,10 +535,22 @@ export class GameAudio {
         this.beds?.activeBed() ? this.beds.nextBeatIn(maxWaitS) : this.music.nextBeatIn(maxWaitS),
     };
     this.oneShots = new OneShotPlayer(this.graph, this.buffers, musical);
+    this.oneShots.onStart = (id, o) => {
+      // Asked for by an event: fill that event's row (it rode along in the
+      // opts — every start is async, see PlayOpts.heard). Otherwise a sound
+      // of the composer's own making: a row with no event.
+      if (o.heard) o.heard.sound = id;
+      else this.heardPush({ event: null, sound: id, at: performance.now() });
+    };
     this.oneShots.pure = this.pureOn;
     this.applySfxMute();
 
-    void loadCatalog().then((cat) => {
+    // The foley index loads ALONGSIDE the catalog, not before or after: the
+    // composer's sets OVERRIDE the catalog's, so if one landed first the
+    // override would be observable half-applied — a footstep could take the
+    // catalog sound for a frame and the composer's the next. Same tick, or
+    // neither.
+    void Promise.all([loadCatalog(), loadComposerFoley(), loadMusicIndex()]).then(([cat]) => {
       this.catalog = cat;
       this.ambience = new AmbienceMixer(this.graph!, this.buffers, cat.sounds);
       this.indexBindings(cat.bindings);
@@ -745,6 +782,55 @@ export class GameAudio {
    * "player.jump", ...). Unknown events are silent no-ops. */
   event(name: string, opts: PlayOpts = {}): void {
     if (!this.ready()) return;
+    // Ledger first, then the routing: the row rides in the opts (every branch
+    // below spreads them into its play), and whichever one starts a sound
+    // fills it through oneShots.onStart — a silent branch leaves null.
+    const row = { event: name, sound: null as string | null, at: performance.now() };
+    this.heardPush(row);
+    this.eventRoute(name, { ...opts, heard: row });
+  }
+
+  private heardPush(row: { event: string | null; sound: string | null; at: number }): void {
+    this.heardLog.push(row);
+    const cutoff = row.at - GameAudio.HEARD_WINDOW_MS;
+    let drop = 0;
+    while (drop < this.heardLog.length && this.heardLog[drop].at < cutoff) drop++;
+    // …and the memory bound, if a pathological second ever fills it.
+    if (this.heardLog.length - drop > GameAudio.HEARD_MAX) drop = this.heardLog.length - GameAudio.HEARD_MAX;
+    if (drop) this.heardLog.splice(0, drop);
+  }
+
+  /** What the player is hearing: the score playing now and every sound event
+   * of the last `windowMs`, newest first — games2/spec/WIKI_NEAR.md "heard". */
+  heard(windowMs = 30_000): {
+    music: { id: string; kind: "track" | "bed" | "title"; section: string | null; position: number } | null;
+    sfx: { event: string | null; sound: string | null; ago: number; at: number }[];
+  } {
+    const now = performance.now();
+    const sfx = this.heardLog
+      .filter((r) => now - r.at <= windowMs)
+      .map((r) => ({ event: r.event, sound: r.sound, ago: Math.round((now - r.at) / 100) / 10, at: r.at }))
+      .reverse()
+      .slice(0, 40);
+    let music: ReturnType<GameAudio["heard"]>["music"] = null;
+    if (this.graph && this.musicOn) {
+      const bed = this.beds?.activeBed() ?? null;
+      if (bed) {
+        const c = this.beds!.clock();
+        music = { id: bed, kind: "bed", section: c.section ?? null, position: Math.round(c.position * 10) / 10 };
+      } else {
+        const d = this.music.debug() as { track: string | null; playing: boolean; position: number; clock: { section: string | null } };
+        if (d.track && d.playing) music = { id: d.track, kind: "track", section: d.clock?.section ?? null, position: d.position };
+        else if (this.titleSrc && this.titleWanted) {
+          const url = titleThemeUrl() ?? "";
+          music = { id: url.split("/").pop()?.replace(/\.[a-z0-9]+$/i, "") || "title_theme", kind: "title", section: null, position: 0 };
+        }
+      }
+    }
+    return { music, sfx };
+  }
+
+  private eventRoute(name: string, opts: PlayOpts): void {
     // The Game Master's wiki assignment outranks every built-in route.
     // A PER-CHARACTER assignment wins over the shared one: the wiki already
     // scopes an event to a hero as `player.jump@<uid>`, so the same spelling
@@ -1518,6 +1604,7 @@ export class GameAudio {
       buffers: this.graph ? this.buffers.loadedCount() : 0,
       played: this.graph ? this.oneShots.played : 0,
       recent: this.graph ? [...this.oneShots.recent] : [],
+      heard: this.heard(),
       sound: this.soundOn,
       musicOn: this.musicOn,
       pure: this.pureOn,

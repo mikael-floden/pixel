@@ -1,0 +1,331 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-14T01:38:25+00:00",
+  "id": "beacon_014",
+  "group": "beacons",
+  "rank": 46,
+  "index": 14,
+  "name": "Hilltop signal beacon 014",
+  "lights": null,
+  "variety": "hilltop signal beacon",
+  "modifier": "half-repainted",
+  "glow_concept": "cold green marsh-fire flame",
+  "prompt": "a tall tarred timber mast with climbing rungs and an iron fire cage mounted at its top, hilltop signal beacon, half-repainted, tall, about three times human height, self-emissive at night, softly radiating light: cold green marsh-fire flame",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 192,
+  "sprite": "beacons/beacon_014/sprite.webp",
+  "placement": {
+    "world_height_m": 3.498,
+    "world_px_height": 179,
+    "character_height_px": 87,
+    "character_height_m": 1.7,
+    "note": "ONE SCENERY PIXEL IS ONE PLAYER PIXEL. world_px_height IS the art's own alpha bbox height, so scenery is placed into the world at 1:1 exactly as the avatar is (setScale(1)) and the two share one pixel grid. The CAMERA still zooms the whole scene \u2014 that is uniform and correct; what must never happen is scenery being resampled on its own, against the player. world_height_m is what the art reads as beside a 87px character; declared_height_m is what it was once declared to be, and a gap between them means the ART is the wrong size.",
+    "declared_height_m": 3.63,
+    "content_box": [
+      72,
+      9,
+      120,
+      188
+    ],
+    "content_px_height": 179,
+    "canvas_render_px": 192
+  },
+  "pixellab_object_id": "e7ae656b-389f-4608-8a39-1eeec2b4d8e1",
+  "pixellab_directions": 1,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-1-direction-object (single, S-only)",
+  "must_be_imbplemented_with_random_hflip": true,
+  "states": {
+    "LIT_1": {
+      "sprite": "beacons/beacon_014/sprite.webp",
+      "pixellab_object_id": "e7ae656b-389f-4608-8a39-1eeec2b4d8e1",
+      "generated_at": "2026-08-14T01:38:25+00:00",
+      "animations": {
+        "flame": {
+          "group_id": "ec62c5e0-3ebc-44d6-aaba-4381e86a8341",
+          "description": "Animate the flame only",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "beacons/beacon_014/animations/flame/00.webp",
+            "beacons/beacon_014/animations/flame/01.webp",
+            "beacons/beacon_014/animations/flame/02.webp",
+            "beacons/beacon_014/animations/flame/03.webp",
+            "beacons/beacon_014/animations/flame/04.webp"
+          ],
+          "strip": "beacons/beacon_014/animations/flame__strip.webp",
+          "directions": null,
+          "generated_at": "2026-08-29T06:55:19+00:00",
+          "review": "ANIMATION_PROBABLY_GOOD",
+          "review_metrics": {
+            "base_outline": 0.0
+          },
+          "light_frames": [
+            {
+              "intensity": 1.026,
+              "dx": -0.6,
+              "dy": -68.9
+            },
+            {
+              "intensity": 0.989,
+              "dx": -0.7,
+              "dy": -68.4
+            },
+            {
+              "intensity": 0.981,
+              "dx": -0.7,
+              "dy": -68.5
+            },
+            {
+              "intensity": 1.002,
+              "dx": -0.5,
+              "dy": -67.9
+            },
+            {
+              "intensity": 1.001,
+              "dx": -0.5,
+              "dy": -68.0
+            }
+          ]
+        }
+      }
+    },
+    "LIT_2": {
+      "sprite": "beacons/beacon_014/lit_2/sprite.webp",
+      "pixellab_object_id": "0a542000-e97b-4890-8839-6f98549fb4d2",
+      "generated_at": "2026-08-15T19:56:47+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.8103,
+      "glow_score": 0.0528,
+      "animations": {
+        "flame": {
+          "group_id": "ca7a33c4-7957-4c16-a1f2-7f7803948e64",
+          "description": "Animate the flame only",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "beacons/beacon_014/lit_2/animations/flame/00.webp",
+            "beacons/beacon_014/lit_2/animations/flame/01.webp",
+            "beacons/beacon_014/lit_2/animations/flame/02.webp",
+            "beacons/beacon_014/lit_2/animations/flame/03.webp",
+            "beacons/beacon_014/lit_2/animations/flame/04.webp"
+          ],
+          "strip": "beacons/beacon_014/lit_2/animations/flame__strip.webp",
+          "directions": null,
+          "generated_at": "2026-08-29T06:54:45+00:00",
+          "review": "ANIMATION_PROBABLY_GOOD",
+          "review_metrics": {
+            "base_outline": 0.0007
+          },
+          "light_frames": [
+            {
+              "intensity": 1.163,
+              "dx": -0.8,
+              "dy": -68.5
+            },
+            {
+              "intensity": 0.926,
+              "dx": -1.2,
+              "dy": -66.1
+            },
+            {
+              "intensity": 0.889,
+              "dx": -1.6,
+              "dy": -66.0
+            },
+            {
+              "intensity": 0.945,
+              "dx": -3.2,
+              "dy": -67.2
+            },
+            {
+              "intensity": 1.076,
+              "dx": -3.1,
+              "dy": -68.8
+            }
+          ]
+        }
+      }
+    },
+    "LIT_3": {
+      "sprite": "beacons/beacon_014/lit_3/sprite.webp",
+      "pixellab_object_id": "6bddc4c7-9e39-4f9c-a25d-85ab0da9f992",
+      "generated_at": "2026-08-15T19:56:59+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.8047,
+      "glow_score": 0.0558,
+      "animations": {
+        "flame": {
+          "group_id": "65b7994b-a68f-4275-819e-a4a51a47b4d9",
+          "description": "Animate the flame only",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "beacons/beacon_014/lit_3/animations/flame/00.webp",
+            "beacons/beacon_014/lit_3/animations/flame/01.webp",
+            "beacons/beacon_014/lit_3/animations/flame/02.webp",
+            "beacons/beacon_014/lit_3/animations/flame/03.webp",
+            "beacons/beacon_014/lit_3/animations/flame/04.webp"
+          ],
+          "strip": "beacons/beacon_014/lit_3/animations/flame__strip.webp",
+          "directions": null,
+          "generated_at": "2026-08-29T06:55:50+00:00",
+          "review": "ANIMATION_PROBABLY_GOOD",
+          "review_metrics": {
+            "class": "fire",
+            "base": 0.0649,
+            "still": 0.807
+          },
+          "light_frames": [
+            {
+              "intensity": 1.116,
+              "dx": -0.3,
+              "dy": -70.6
+            },
+            {
+              "intensity": 0.938,
+              "dx": -0.7,
+              "dy": -70.6
+            },
+            {
+              "intensity": 0.954,
+              "dx": -0.8,
+              "dy": -70.5
+            },
+            {
+              "intensity": 0.893,
+              "dx": -0.6,
+              "dy": -70.1
+            },
+            {
+              "intensity": 1.1,
+              "dx": -0.3,
+              "dy": -70.5
+            }
+          ]
+        }
+      }
+    },
+    "LIT_4": {
+      "sprite": "beacons/beacon_014/lit_4/sprite.webp",
+      "pixellab_object_id": "877d92f1-31d7-45a8-8d55-23a05b61f436",
+      "generated_at": "2026-08-15T19:57:19+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.8116,
+      "glow_score": 0.0366,
+      "animations": {
+        "flame": {
+          "group_id": "a05b3962-6318-4904-877e-72d287b6657b",
+          "description": "Animate the flame only",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "beacons/beacon_014/lit_4/animations/flame/00.webp",
+            "beacons/beacon_014/lit_4/animations/flame/01.webp",
+            "beacons/beacon_014/lit_4/animations/flame/02.webp",
+            "beacons/beacon_014/lit_4/animations/flame/03.webp",
+            "beacons/beacon_014/lit_4/animations/flame/04.webp"
+          ],
+          "strip": "beacons/beacon_014/lit_4/animations/flame__strip.webp",
+          "directions": null,
+          "generated_at": "2026-08-29T06:54:45+00:00",
+          "review": "ANIMATION_PROBABLY_GOOD",
+          "review_metrics": {
+            "class": "fire",
+            "base": 0.0669,
+            "still": 0.823
+          },
+          "light_frames": [
+            {
+              "intensity": 0.889,
+              "dx": -0.6,
+              "dy": -65.6
+            },
+            {
+              "intensity": 0.925,
+              "dx": -0.5,
+              "dy": -66.4
+            },
+            {
+              "intensity": 0.906,
+              "dx": -0.4,
+              "dy": -66.0
+            },
+            {
+              "intensity": 0.988,
+              "dx": -0.5,
+              "dy": -66.7
+            },
+            {
+              "intensity": 1.292,
+              "dx": -0.4,
+              "dy": -68.5
+            }
+          ]
+        }
+      }
+    },
+    "NOT_LIT_1": {
+      "sprite": "beacons/beacon_014/not_lit_1/sprite.webp",
+      "pixellab_object_id": "495174c7-57f8-4289-b408-7ead368b7d97",
+      "generated_at": "2026-08-15T19:57:29+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.3684,
+      "glow_score": 0.0
+    },
+    "NOT_LIT_2": {
+      "sprite": "beacons/beacon_014/not_lit_2/sprite.webp",
+      "pixellab_object_id": "c1d4422f-53c1-44a3-82f7-7e31732998ad",
+      "generated_at": "2026-08-15T19:57:40+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.2127,
+      "glow_score": 0.0
+    }
+  },
+  "collision": true,
+  "hitbox_shape": "ellipse",
+  "light": {
+    "strength": 0.9,
+    "color": "#a7ffb7",
+    "radius": 16,
+    "reference": "the spawn bonfire is 1.0 (radius 7); strength 0 is no light",
+    "states": {
+      "LIT_1": {
+        "strength": 0.9,
+        "color": "#a7ffb7",
+        "radius": 16
+      },
+      "LIT_2": {
+        "strength": 0.9,
+        "color": "#96ffb9",
+        "radius": 16
+      },
+      "LIT_3": {
+        "strength": 0.9,
+        "color": "#8bffb8",
+        "radius": 16
+      },
+      "LIT_4": {
+        "strength": 0.9,
+        "color": "#95ffb7",
+        "radius": 16
+      }
+    },
+    "kind": "fire/open",
+    "flame": true,
+    "embers": true
+  }
+}

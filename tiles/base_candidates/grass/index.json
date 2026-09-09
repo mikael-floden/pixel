@@ -1,0 +1,810 @@
+{
+ "ground": "grass",
+ "candidates": [
+  {
+   "id": "dark_mud__to__grass__a00_s3",
+   "file": "tiles/base_candidates/grass/dark_mud__to__grass__a00_s3.webp",
+   "source_set": "tiles/transitions/dark_mud__to__grass/a00_s3"
+  },
+  {
+   "id": "dark_mud__to__grass__a00_s5",
+   "file": "tiles/base_candidates/grass/dark_mud__to__grass__a00_s5.webp",
+   "source_set": "tiles/transitions/dark_mud__to__grass/a00_s5"
+  },
+  {
+   "id": "dark_mud__to__grass__a03_s5",
+   "file": "tiles/base_candidates/grass/dark_mud__to__grass__a03_s5.webp",
+   "source_set": "tiles/transitions/dark_mud__to__grass/a03_s5"
+  },
+  {
+   "id": "dark_mud__to__grass__a12_s4",
+   "file": "tiles/base_candidates/grass/dark_mud__to__grass__a12_s4.webp",
+   "source_set": "tiles/transitions/dark_mud__to__grass/a12_s4"
+  },
+  {
+   "id": "dark_mud__to__grass__a14_s5",
+   "file": "tiles/base_candidates/grass/dark_mud__to__grass__a14_s5.webp",
+   "source_set": "tiles/transitions/dark_mud__to__grass/a14_s5"
+  },
+  {
+   "id": "dark_mud__to__grass__a15_s2",
+   "file": "tiles/base_candidates/grass/dark_mud__to__grass__a15_s2.webp",
+   "source_set": "tiles/transitions/dark_mud__to__grass/a15_s2"
+  },
+  {
+   "id": "dark_mud__to__grass__a15_s6",
+   "file": "tiles/base_candidates/grass/dark_mud__to__grass__a15_s6.webp",
+   "source_set": "tiles/transitions/dark_mud__to__grass/a15_s6"
+  },
+  {
+   "id": "dark_mud__to__grass__a18_s4",
+   "file": "tiles/base_candidates/grass/dark_mud__to__grass__a18_s4.webp",
+   "source_set": "tiles/transitions/dark_mud__to__grass/a18_s4"
+  },
+  {
+   "id": "dark_mud__to__grass__a18_s6",
+   "file": "tiles/base_candidates/grass/dark_mud__to__grass__a18_s6.webp",
+   "source_set": "tiles/transitions/dark_mud__to__grass/a18_s6"
+  },
+  {
+   "id": "dark_mud__to__grass__a21_s2",
+   "file": "tiles/base_candidates/grass/dark_mud__to__grass__a21_s2.webp",
+   "source_set": "tiles/transitions/dark_mud__to__grass/a21_s2"
+  },
+  {
+   "id": "dark_mud__to__grass__a21_s4",
+   "file": "tiles/base_candidates/grass/dark_mud__to__grass__a21_s4.webp",
+   "source_set": "tiles/transitions/dark_mud__to__grass/a21_s4"
+  },
+  {
+   "id": "dark_mud__to__grass__a21_s5",
+   "file": "tiles/base_candidates/grass/dark_mud__to__grass__a21_s5.webp",
+   "source_set": "tiles/transitions/dark_mud__to__grass/a21_s5"
+  },
+  {
+   "id": "dark_mud__to__grass__a23_s4",
+   "file": "tiles/base_candidates/grass/dark_mud__to__grass__a23_s4.webp",
+   "source_set": "tiles/transitions/dark_mud__to__grass/a23_s4"
+  },
+  {
+   "id": "dark_mud__to__grass__a24_s6",
+   "file": "tiles/base_candidates/grass/dark_mud__to__grass__a24_s6.webp",
+   "source_set": "tiles/transitions/dark_mud__to__grass/a24_s6"
+  },
+  {
+   "id": "dark_mud__to__grass__a30_s1",
+   "file": "tiles/base_candidates/grass/dark_mud__to__grass__a30_s1.webp",
+   "source_set": "tiles/transitions/dark_mud__to__grass/a30_s1"
+  },
+  {
+   "id": "grass__to__grey_paving_stone__a00_s3",
+   "file": "tiles/base_candidates/grass/grass__to__grey_paving_stone__a00_s3.webp",
+   "source_set": "tiles/transitions/grass__to__grey_paving_stone/a00_s3"
+  },
+  {
+   "id": "grass__to__grey_paving_stone__a00_s5",
+   "file": "tiles/base_candidates/grass/grass__to__grey_paving_stone__a00_s5.webp",
+   "source_set": "tiles/transitions/grass__to__grey_paving_stone/a00_s5"
+  },
+  {
+   "id": "grass__to__grey_paving_stone__a03_s5",
+   "file": "tiles/base_candidates/grass/grass__to__grey_paving_stone__a03_s5.webp",
+   "source_set": "tiles/transitions/grass__to__grey_paving_stone/a03_s5"
+  },
+  {
+   "id": "grass__to__grey_paving_stone__a12_s4",
+   "file": "tiles/base_candidates/grass/grass__to__grey_paving_stone__a12_s4.webp",
+   "source_set": "tiles/transitions/grass__to__grey_paving_stone/a12_s4"
+  },
+  {
+   "id": "grass__to__grey_paving_stone__a14_s5",
+   "file": "tiles/base_candidates/grass/grass__to__grey_paving_stone__a14_s5.webp",
+   "source_set": "tiles/transitions/grass__to__grey_paving_stone/a14_s5"
+  },
+  {
+   "id": "grass__to__grey_paving_stone__a15_s2",
+   "file": "tiles/base_candidates/grass/grass__to__grey_paving_stone__a15_s2.webp",
+   "source_set": "tiles/transitions/grass__to__grey_paving_stone/a15_s2"
+  },
+  {
+   "id": "grass__to__grey_paving_stone__a15_s6",
+   "file": "tiles/base_candidates/grass/grass__to__grey_paving_stone__a15_s6.webp",
+   "source_set": "tiles/transitions/grass__to__grey_paving_stone/a15_s6"
+  },
+  {
+   "id": "grass__to__grey_paving_stone__a18_s4",
+   "file": "tiles/base_candidates/grass/grass__to__grey_paving_stone__a18_s4.webp",
+   "source_set": "tiles/transitions/grass__to__grey_paving_stone/a18_s4"
+  },
+  {
+   "id": "grass__to__grey_paving_stone__a18_s6",
+   "file": "tiles/base_candidates/grass/grass__to__grey_paving_stone__a18_s6.webp",
+   "source_set": "tiles/transitions/grass__to__grey_paving_stone/a18_s6"
+  },
+  {
+   "id": "grass__to__grey_paving_stone__a21_s2",
+   "file": "tiles/base_candidates/grass/grass__to__grey_paving_stone__a21_s2.webp",
+   "source_set": "tiles/transitions/grass__to__grey_paving_stone/a21_s2"
+  },
+  {
+   "id": "grass__to__grey_paving_stone__a21_s4",
+   "file": "tiles/base_candidates/grass/grass__to__grey_paving_stone__a21_s4.webp",
+   "source_set": "tiles/transitions/grass__to__grey_paving_stone/a21_s4"
+  },
+  {
+   "id": "grass__to__grey_paving_stone__a21_s5",
+   "file": "tiles/base_candidates/grass/grass__to__grey_paving_stone__a21_s5.webp",
+   "source_set": "tiles/transitions/grass__to__grey_paving_stone/a21_s5"
+  },
+  {
+   "id": "grass__to__grey_paving_stone__a23_s4",
+   "file": "tiles/base_candidates/grass/grass__to__grey_paving_stone__a23_s4.webp",
+   "source_set": "tiles/transitions/grass__to__grey_paving_stone/a23_s4"
+  },
+  {
+   "id": "grass__to__grey_paving_stone__a24_s6",
+   "file": "tiles/base_candidates/grass/grass__to__grey_paving_stone__a24_s6.webp",
+   "source_set": "tiles/transitions/grass__to__grey_paving_stone/a24_s6"
+  },
+  {
+   "id": "grass__to__grey_paving_stone__a30_s1",
+   "file": "tiles/base_candidates/grass/grass__to__grey_paving_stone__a30_s1.webp",
+   "source_set": "tiles/transitions/grass__to__grey_paving_stone/a30_s1"
+  },
+  {
+   "id": "grass__to__grey_stone__a00_s3",
+   "file": "tiles/base_candidates/grass/grass__to__grey_stone__a00_s3.webp",
+   "source_set": "tiles/transitions/grass__to__grey_stone/a00_s3"
+  },
+  {
+   "id": "grass__to__grey_stone__a00_s5",
+   "file": "tiles/base_candidates/grass/grass__to__grey_stone__a00_s5.webp",
+   "source_set": "tiles/transitions/grass__to__grey_stone/a00_s5"
+  },
+  {
+   "id": "grass__to__grey_stone__a03_s5",
+   "file": "tiles/base_candidates/grass/grass__to__grey_stone__a03_s5.webp",
+   "source_set": "tiles/transitions/grass__to__grey_stone/a03_s5"
+  },
+  {
+   "id": "grass__to__grey_stone__a12_s4",
+   "file": "tiles/base_candidates/grass/grass__to__grey_stone__a12_s4.webp",
+   "source_set": "tiles/transitions/grass__to__grey_stone/a12_s4"
+  },
+  {
+   "id": "grass__to__grey_stone__a14_s5",
+   "file": "tiles/base_candidates/grass/grass__to__grey_stone__a14_s5.webp",
+   "source_set": "tiles/transitions/grass__to__grey_stone/a14_s5"
+  },
+  {
+   "id": "grass__to__grey_stone__a15_s2",
+   "file": "tiles/base_candidates/grass/grass__to__grey_stone__a15_s2.webp",
+   "source_set": "tiles/transitions/grass__to__grey_stone/a15_s2"
+  },
+  {
+   "id": "grass__to__grey_stone__a15_s6",
+   "file": "tiles/base_candidates/grass/grass__to__grey_stone__a15_s6.webp",
+   "source_set": "tiles/transitions/grass__to__grey_stone/a15_s6"
+  },
+  {
+   "id": "grass__to__grey_stone__a18_s4",
+   "file": "tiles/base_candidates/grass/grass__to__grey_stone__a18_s4.webp",
+   "source_set": "tiles/transitions/grass__to__grey_stone/a18_s4"
+  },
+  {
+   "id": "grass__to__grey_stone__a18_s6",
+   "file": "tiles/base_candidates/grass/grass__to__grey_stone__a18_s6.webp",
+   "source_set": "tiles/transitions/grass__to__grey_stone/a18_s6"
+  },
+  {
+   "id": "grass__to__grey_stone__a21_s2",
+   "file": "tiles/base_candidates/grass/grass__to__grey_stone__a21_s2.webp",
+   "source_set": "tiles/transitions/grass__to__grey_stone/a21_s2"
+  },
+  {
+   "id": "grass__to__grey_stone__a21_s4",
+   "file": "tiles/base_candidates/grass/grass__to__grey_stone__a21_s4.webp",
+   "source_set": "tiles/transitions/grass__to__grey_stone/a21_s4"
+  },
+  {
+   "id": "grass__to__grey_stone__a21_s5",
+   "file": "tiles/base_candidates/grass/grass__to__grey_stone__a21_s5.webp",
+   "source_set": "tiles/transitions/grass__to__grey_stone/a21_s5"
+  },
+  {
+   "id": "grass__to__grey_stone__a23_s4",
+   "file": "tiles/base_candidates/grass/grass__to__grey_stone__a23_s4.webp",
+   "source_set": "tiles/transitions/grass__to__grey_stone/a23_s4"
+  },
+  {
+   "id": "grass__to__grey_stone__a24_s6",
+   "file": "tiles/base_candidates/grass/grass__to__grey_stone__a24_s6.webp",
+   "source_set": "tiles/transitions/grass__to__grey_stone/a24_s6"
+  },
+  {
+   "id": "grass__to__grey_stone__a30_s1",
+   "file": "tiles/base_candidates/grass/grass__to__grey_stone__a30_s1.webp",
+   "source_set": "tiles/transitions/grass__to__grey_stone/a30_s1"
+  },
+  {
+   "id": "grass__to__ice__a00_s3",
+   "file": "tiles/base_candidates/grass/grass__to__ice__a00_s3.webp",
+   "source_set": "tiles/transitions/grass__to__ice/a00_s3"
+  },
+  {
+   "id": "grass__to__ice__a00_s5",
+   "file": "tiles/base_candidates/grass/grass__to__ice__a00_s5.webp",
+   "source_set": "tiles/transitions/grass__to__ice/a00_s5"
+  },
+  {
+   "id": "grass__to__ice__a03_s5",
+   "file": "tiles/base_candidates/grass/grass__to__ice__a03_s5.webp",
+   "source_set": "tiles/transitions/grass__to__ice/a03_s5"
+  },
+  {
+   "id": "grass__to__ice__a05_s1",
+   "file": "tiles/base_candidates/grass/grass__to__ice__a05_s1.webp",
+   "source_set": "tiles/transitions/grass__to__ice/a05_s1"
+  },
+  {
+   "id": "grass__to__ice__a12_s4",
+   "file": "tiles/base_candidates/grass/grass__to__ice__a12_s4.webp",
+   "source_set": "tiles/transitions/grass__to__ice/a12_s4"
+  },
+  {
+   "id": "grass__to__ice__a14_s1",
+   "file": "tiles/base_candidates/grass/grass__to__ice__a14_s1.webp",
+   "source_set": "tiles/transitions/grass__to__ice/a14_s1"
+  },
+  {
+   "id": "grass__to__ice__a14_s5",
+   "file": "tiles/base_candidates/grass/grass__to__ice__a14_s5.webp",
+   "source_set": "tiles/transitions/grass__to__ice/a14_s5"
+  },
+  {
+   "id": "grass__to__ice__a15_s2",
+   "file": "tiles/base_candidates/grass/grass__to__ice__a15_s2.webp",
+   "source_set": "tiles/transitions/grass__to__ice/a15_s2"
+  },
+  {
+   "id": "grass__to__ice__a15_s6",
+   "file": "tiles/base_candidates/grass/grass__to__ice__a15_s6.webp",
+   "source_set": "tiles/transitions/grass__to__ice/a15_s6"
+  },
+  {
+   "id": "grass__to__ice__a18_s4",
+   "file": "tiles/base_candidates/grass/grass__to__ice__a18_s4.webp",
+   "source_set": "tiles/transitions/grass__to__ice/a18_s4"
+  },
+  {
+   "id": "grass__to__ice__a18_s6",
+   "file": "tiles/base_candidates/grass/grass__to__ice__a18_s6.webp",
+   "source_set": "tiles/transitions/grass__to__ice/a18_s6"
+  },
+  {
+   "id": "grass__to__ice__a21_s2",
+   "file": "tiles/base_candidates/grass/grass__to__ice__a21_s2.webp",
+   "source_set": "tiles/transitions/grass__to__ice/a21_s2"
+  },
+  {
+   "id": "grass__to__ice__a21_s4",
+   "file": "tiles/base_candidates/grass/grass__to__ice__a21_s4.webp",
+   "source_set": "tiles/transitions/grass__to__ice/a21_s4"
+  },
+  {
+   "id": "grass__to__ice__a21_s5",
+   "file": "tiles/base_candidates/grass/grass__to__ice__a21_s5.webp",
+   "source_set": "tiles/transitions/grass__to__ice/a21_s5"
+  },
+  {
+   "id": "grass__to__ice__a23_s1",
+   "file": "tiles/base_candidates/grass/grass__to__ice__a23_s1.webp",
+   "source_set": "tiles/transitions/grass__to__ice/a23_s1"
+  },
+  {
+   "id": "grass__to__ice__a23_s4",
+   "file": "tiles/base_candidates/grass/grass__to__ice__a23_s4.webp",
+   "source_set": "tiles/transitions/grass__to__ice/a23_s4"
+  },
+  {
+   "id": "grass__to__ice__a24_s6",
+   "file": "tiles/base_candidates/grass/grass__to__ice__a24_s6.webp",
+   "source_set": "tiles/transitions/grass__to__ice/a24_s6"
+  },
+  {
+   "id": "grass__to__ice__a30_s1",
+   "file": "tiles/base_candidates/grass/grass__to__ice__a30_s1.webp",
+   "source_set": "tiles/transitions/grass__to__ice/a30_s1"
+  },
+  {
+   "id": "grass__to__lava__a00_s3",
+   "file": "tiles/base_candidates/grass/grass__to__lava__a00_s3.webp",
+   "source_set": "tiles/transitions/grass__to__lava/a00_s3"
+  },
+  {
+   "id": "grass__to__lava__a00_s5",
+   "file": "tiles/base_candidates/grass/grass__to__lava__a00_s5.webp",
+   "source_set": "tiles/transitions/grass__to__lava/a00_s5"
+  },
+  {
+   "id": "grass__to__lava__a03_s5",
+   "file": "tiles/base_candidates/grass/grass__to__lava__a03_s5.webp",
+   "source_set": "tiles/transitions/grass__to__lava/a03_s5"
+  },
+  {
+   "id": "grass__to__lava__a05_s1",
+   "file": "tiles/base_candidates/grass/grass__to__lava__a05_s1.webp",
+   "source_set": "tiles/transitions/grass__to__lava/a05_s1"
+  },
+  {
+   "id": "grass__to__lava__a12_s4",
+   "file": "tiles/base_candidates/grass/grass__to__lava__a12_s4.webp",
+   "source_set": "tiles/transitions/grass__to__lava/a12_s4"
+  },
+  {
+   "id": "grass__to__lava__a14_s1",
+   "file": "tiles/base_candidates/grass/grass__to__lava__a14_s1.webp",
+   "source_set": "tiles/transitions/grass__to__lava/a14_s1"
+  },
+  {
+   "id": "grass__to__lava__a14_s5",
+   "file": "tiles/base_candidates/grass/grass__to__lava__a14_s5.webp",
+   "source_set": "tiles/transitions/grass__to__lava/a14_s5"
+  },
+  {
+   "id": "grass__to__lava__a15_s2",
+   "file": "tiles/base_candidates/grass/grass__to__lava__a15_s2.webp",
+   "source_set": "tiles/transitions/grass__to__lava/a15_s2"
+  },
+  {
+   "id": "grass__to__lava__a15_s6",
+   "file": "tiles/base_candidates/grass/grass__to__lava__a15_s6.webp",
+   "source_set": "tiles/transitions/grass__to__lava/a15_s6"
+  },
+  {
+   "id": "grass__to__lava__a18_s4",
+   "file": "tiles/base_candidates/grass/grass__to__lava__a18_s4.webp",
+   "source_set": "tiles/transitions/grass__to__lava/a18_s4"
+  },
+  {
+   "id": "grass__to__lava__a18_s6",
+   "file": "tiles/base_candidates/grass/grass__to__lava__a18_s6.webp",
+   "source_set": "tiles/transitions/grass__to__lava/a18_s6"
+  },
+  {
+   "id": "grass__to__lava__a21_s2",
+   "file": "tiles/base_candidates/grass/grass__to__lava__a21_s2.webp",
+   "source_set": "tiles/transitions/grass__to__lava/a21_s2"
+  },
+  {
+   "id": "grass__to__lava__a21_s4",
+   "file": "tiles/base_candidates/grass/grass__to__lava__a21_s4.webp",
+   "source_set": "tiles/transitions/grass__to__lava/a21_s4"
+  },
+  {
+   "id": "grass__to__lava__a21_s5",
+   "file": "tiles/base_candidates/grass/grass__to__lava__a21_s5.webp",
+   "source_set": "tiles/transitions/grass__to__lava/a21_s5"
+  },
+  {
+   "id": "grass__to__lava__a23_s1",
+   "file": "tiles/base_candidates/grass/grass__to__lava__a23_s1.webp",
+   "source_set": "tiles/transitions/grass__to__lava/a23_s1"
+  },
+  {
+   "id": "grass__to__lava__a23_s4",
+   "file": "tiles/base_candidates/grass/grass__to__lava__a23_s4.webp",
+   "source_set": "tiles/transitions/grass__to__lava/a23_s4"
+  },
+  {
+   "id": "grass__to__lava__a24_s6",
+   "file": "tiles/base_candidates/grass/grass__to__lava__a24_s6.webp",
+   "source_set": "tiles/transitions/grass__to__lava/a24_s6"
+  },
+  {
+   "id": "grass__to__lava__a30_s1",
+   "file": "tiles/base_candidates/grass/grass__to__lava__a30_s1.webp",
+   "source_set": "tiles/transitions/grass__to__lava/a30_s1"
+  },
+  {
+   "id": "grass__to__light_beach__a00_s3",
+   "file": "tiles/base_candidates/grass/grass__to__light_beach__a00_s3.webp",
+   "source_set": "tiles/transitions/grass__to__light_beach/a00_s3"
+  },
+  {
+   "id": "grass__to__light_beach__a00_s5",
+   "file": "tiles/base_candidates/grass/grass__to__light_beach__a00_s5.webp",
+   "source_set": "tiles/transitions/grass__to__light_beach/a00_s5"
+  },
+  {
+   "id": "grass__to__light_beach__a03_s5",
+   "file": "tiles/base_candidates/grass/grass__to__light_beach__a03_s5.webp",
+   "source_set": "tiles/transitions/grass__to__light_beach/a03_s5"
+  },
+  {
+   "id": "grass__to__light_beach__a05_s1",
+   "file": "tiles/base_candidates/grass/grass__to__light_beach__a05_s1.webp",
+   "source_set": "tiles/transitions/grass__to__light_beach/a05_s1"
+  },
+  {
+   "id": "grass__to__light_beach__a12_s4",
+   "file": "tiles/base_candidates/grass/grass__to__light_beach__a12_s4.webp",
+   "source_set": "tiles/transitions/grass__to__light_beach/a12_s4"
+  },
+  {
+   "id": "grass__to__light_beach__a14_s1",
+   "file": "tiles/base_candidates/grass/grass__to__light_beach__a14_s1.webp",
+   "source_set": "tiles/transitions/grass__to__light_beach/a14_s1"
+  },
+  {
+   "id": "grass__to__light_beach__a14_s5",
+   "file": "tiles/base_candidates/grass/grass__to__light_beach__a14_s5.webp",
+   "source_set": "tiles/transitions/grass__to__light_beach/a14_s5"
+  },
+  {
+   "id": "grass__to__light_beach__a15_s2",
+   "file": "tiles/base_candidates/grass/grass__to__light_beach__a15_s2.webp",
+   "source_set": "tiles/transitions/grass__to__light_beach/a15_s2"
+  },
+  {
+   "id": "grass__to__light_beach__a15_s6",
+   "file": "tiles/base_candidates/grass/grass__to__light_beach__a15_s6.webp",
+   "source_set": "tiles/transitions/grass__to__light_beach/a15_s6"
+  },
+  {
+   "id": "grass__to__light_beach__a18_s4",
+   "file": "tiles/base_candidates/grass/grass__to__light_beach__a18_s4.webp",
+   "source_set": "tiles/transitions/grass__to__light_beach/a18_s4"
+  },
+  {
+   "id": "grass__to__light_beach__a18_s6",
+   "file": "tiles/base_candidates/grass/grass__to__light_beach__a18_s6.webp",
+   "source_set": "tiles/transitions/grass__to__light_beach/a18_s6"
+  },
+  {
+   "id": "grass__to__light_beach__a21_s2",
+   "file": "tiles/base_candidates/grass/grass__to__light_beach__a21_s2.webp",
+   "source_set": "tiles/transitions/grass__to__light_beach/a21_s2"
+  },
+  {
+   "id": "grass__to__light_beach__a21_s4",
+   "file": "tiles/base_candidates/grass/grass__to__light_beach__a21_s4.webp",
+   "source_set": "tiles/transitions/grass__to__light_beach/a21_s4"
+  },
+  {
+   "id": "grass__to__light_beach__a21_s5",
+   "file": "tiles/base_candidates/grass/grass__to__light_beach__a21_s5.webp",
+   "source_set": "tiles/transitions/grass__to__light_beach/a21_s5"
+  },
+  {
+   "id": "grass__to__light_beach__a23_s1",
+   "file": "tiles/base_candidates/grass/grass__to__light_beach__a23_s1.webp",
+   "source_set": "tiles/transitions/grass__to__light_beach/a23_s1"
+  },
+  {
+   "id": "grass__to__light_beach__a23_s4",
+   "file": "tiles/base_candidates/grass/grass__to__light_beach__a23_s4.webp",
+   "source_set": "tiles/transitions/grass__to__light_beach/a23_s4"
+  },
+  {
+   "id": "grass__to__light_beach__a24_s6",
+   "file": "tiles/base_candidates/grass/grass__to__light_beach__a24_s6.webp",
+   "source_set": "tiles/transitions/grass__to__light_beach/a24_s6"
+  },
+  {
+   "id": "grass__to__light_beach__a30_s1",
+   "file": "tiles/base_candidates/grass/grass__to__light_beach__a30_s1.webp",
+   "source_set": "tiles/transitions/grass__to__light_beach/a30_s1"
+  },
+  {
+   "id": "grass__to__parquet_floor__a00_s3",
+   "file": "tiles/base_candidates/grass/grass__to__parquet_floor__a00_s3.webp",
+   "source_set": "tiles/transitions/grass__to__parquet_floor/a00_s3"
+  },
+  {
+   "id": "grass__to__parquet_floor__a00_s5",
+   "file": "tiles/base_candidates/grass/grass__to__parquet_floor__a00_s5.webp",
+   "source_set": "tiles/transitions/grass__to__parquet_floor/a00_s5"
+  },
+  {
+   "id": "grass__to__parquet_floor__a03_s5",
+   "file": "tiles/base_candidates/grass/grass__to__parquet_floor__a03_s5.webp",
+   "source_set": "tiles/transitions/grass__to__parquet_floor/a03_s5"
+  },
+  {
+   "id": "grass__to__parquet_floor__a12_s4",
+   "file": "tiles/base_candidates/grass/grass__to__parquet_floor__a12_s4.webp",
+   "source_set": "tiles/transitions/grass__to__parquet_floor/a12_s4"
+  },
+  {
+   "id": "grass__to__parquet_floor__a14_s5",
+   "file": "tiles/base_candidates/grass/grass__to__parquet_floor__a14_s5.webp",
+   "source_set": "tiles/transitions/grass__to__parquet_floor/a14_s5"
+  },
+  {
+   "id": "grass__to__parquet_floor__a15_s2",
+   "file": "tiles/base_candidates/grass/grass__to__parquet_floor__a15_s2.webp",
+   "source_set": "tiles/transitions/grass__to__parquet_floor/a15_s2"
+  },
+  {
+   "id": "grass__to__parquet_floor__a15_s6",
+   "file": "tiles/base_candidates/grass/grass__to__parquet_floor__a15_s6.webp",
+   "source_set": "tiles/transitions/grass__to__parquet_floor/a15_s6"
+  },
+  {
+   "id": "grass__to__parquet_floor__a18_s4",
+   "file": "tiles/base_candidates/grass/grass__to__parquet_floor__a18_s4.webp",
+   "source_set": "tiles/transitions/grass__to__parquet_floor/a18_s4"
+  },
+  {
+   "id": "grass__to__parquet_floor__a18_s6",
+   "file": "tiles/base_candidates/grass/grass__to__parquet_floor__a18_s6.webp",
+   "source_set": "tiles/transitions/grass__to__parquet_floor/a18_s6"
+  },
+  {
+   "id": "grass__to__parquet_floor__a21_s2",
+   "file": "tiles/base_candidates/grass/grass__to__parquet_floor__a21_s2.webp",
+   "source_set": "tiles/transitions/grass__to__parquet_floor/a21_s2"
+  },
+  {
+   "id": "grass__to__parquet_floor__a21_s4",
+   "file": "tiles/base_candidates/grass/grass__to__parquet_floor__a21_s4.webp",
+   "source_set": "tiles/transitions/grass__to__parquet_floor/a21_s4"
+  },
+  {
+   "id": "grass__to__parquet_floor__a21_s5",
+   "file": "tiles/base_candidates/grass/grass__to__parquet_floor__a21_s5.webp",
+   "source_set": "tiles/transitions/grass__to__parquet_floor/a21_s5"
+  },
+  {
+   "id": "grass__to__parquet_floor__a23_s4",
+   "file": "tiles/base_candidates/grass/grass__to__parquet_floor__a23_s4.webp",
+   "source_set": "tiles/transitions/grass__to__parquet_floor/a23_s4"
+  },
+  {
+   "id": "grass__to__parquet_floor__a24_s6",
+   "file": "tiles/base_candidates/grass/grass__to__parquet_floor__a24_s6.webp",
+   "source_set": "tiles/transitions/grass__to__parquet_floor/a24_s6"
+  },
+  {
+   "id": "grass__to__parquet_floor__a30_s1",
+   "file": "tiles/base_candidates/grass/grass__to__parquet_floor__a30_s1.webp",
+   "source_set": "tiles/transitions/grass__to__parquet_floor/a30_s1"
+  },
+  {
+   "id": "grass__to__slime__a00_s3",
+   "file": "tiles/base_candidates/grass/grass__to__slime__a00_s3.webp",
+   "source_set": "tiles/transitions/grass__to__slime/a00_s3"
+  },
+  {
+   "id": "grass__to__slime__a00_s5",
+   "file": "tiles/base_candidates/grass/grass__to__slime__a00_s5.webp",
+   "source_set": "tiles/transitions/grass__to__slime/a00_s5"
+  },
+  {
+   "id": "grass__to__slime__a03_s5",
+   "file": "tiles/base_candidates/grass/grass__to__slime__a03_s5.webp",
+   "source_set": "tiles/transitions/grass__to__slime/a03_s5"
+  },
+  {
+   "id": "grass__to__slime__a12_s4",
+   "file": "tiles/base_candidates/grass/grass__to__slime__a12_s4.webp",
+   "source_set": "tiles/transitions/grass__to__slime/a12_s4"
+  },
+  {
+   "id": "grass__to__slime__a14_s1",
+   "file": "tiles/base_candidates/grass/grass__to__slime__a14_s1.webp",
+   "source_set": "tiles/transitions/grass__to__slime/a14_s1"
+  },
+  {
+   "id": "grass__to__slime__a14_s5",
+   "file": "tiles/base_candidates/grass/grass__to__slime__a14_s5.webp",
+   "source_set": "tiles/transitions/grass__to__slime/a14_s5"
+  },
+  {
+   "id": "grass__to__slime__a15_s2",
+   "file": "tiles/base_candidates/grass/grass__to__slime__a15_s2.webp",
+   "source_set": "tiles/transitions/grass__to__slime/a15_s2"
+  },
+  {
+   "id": "grass__to__slime__a15_s6",
+   "file": "tiles/base_candidates/grass/grass__to__slime__a15_s6.webp",
+   "source_set": "tiles/transitions/grass__to__slime/a15_s6"
+  },
+  {
+   "id": "grass__to__slime__a18_s4",
+   "file": "tiles/base_candidates/grass/grass__to__slime__a18_s4.webp",
+   "source_set": "tiles/transitions/grass__to__slime/a18_s4"
+  },
+  {
+   "id": "grass__to__slime__a18_s6",
+   "file": "tiles/base_candidates/grass/grass__to__slime__a18_s6.webp",
+   "source_set": "tiles/transitions/grass__to__slime/a18_s6"
+  },
+  {
+   "id": "grass__to__slime__a21_s2",
+   "file": "tiles/base_candidates/grass/grass__to__slime__a21_s2.webp",
+   "source_set": "tiles/transitions/grass__to__slime/a21_s2"
+  },
+  {
+   "id": "grass__to__slime__a21_s4",
+   "file": "tiles/base_candidates/grass/grass__to__slime__a21_s4.webp",
+   "source_set": "tiles/transitions/grass__to__slime/a21_s4"
+  },
+  {
+   "id": "grass__to__slime__a21_s5",
+   "file": "tiles/base_candidates/grass/grass__to__slime__a21_s5.webp",
+   "source_set": "tiles/transitions/grass__to__slime/a21_s5"
+  },
+  {
+   "id": "grass__to__slime__a23_s1",
+   "file": "tiles/base_candidates/grass/grass__to__slime__a23_s1.webp",
+   "source_set": "tiles/transitions/grass__to__slime/a23_s1"
+  },
+  {
+   "id": "grass__to__slime__a23_s4",
+   "file": "tiles/base_candidates/grass/grass__to__slime__a23_s4.webp",
+   "source_set": "tiles/transitions/grass__to__slime/a23_s4"
+  },
+  {
+   "id": "grass__to__slime__a24_s6",
+   "file": "tiles/base_candidates/grass/grass__to__slime__a24_s6.webp",
+   "source_set": "tiles/transitions/grass__to__slime/a24_s6"
+  },
+  {
+   "id": "grass__to__slime__a30_s1",
+   "file": "tiles/base_candidates/grass/grass__to__slime__a30_s1.webp",
+   "source_set": "tiles/transitions/grass__to__slime/a30_s1"
+  },
+  {
+   "id": "grass__to__snow__a00_s3",
+   "file": "tiles/base_candidates/grass/grass__to__snow__a00_s3.webp",
+   "source_set": "tiles/transitions/grass__to__snow/a00_s3"
+  },
+  {
+   "id": "grass__to__snow__a00_s5",
+   "file": "tiles/base_candidates/grass/grass__to__snow__a00_s5.webp",
+   "source_set": "tiles/transitions/grass__to__snow/a00_s5"
+  },
+  {
+   "id": "grass__to__snow__a03_s5",
+   "file": "tiles/base_candidates/grass/grass__to__snow__a03_s5.webp",
+   "source_set": "tiles/transitions/grass__to__snow/a03_s5"
+  },
+  {
+   "id": "grass__to__snow__a12_s4",
+   "file": "tiles/base_candidates/grass/grass__to__snow__a12_s4.webp",
+   "source_set": "tiles/transitions/grass__to__snow/a12_s4"
+  },
+  {
+   "id": "grass__to__snow__a14_s5",
+   "file": "tiles/base_candidates/grass/grass__to__snow__a14_s5.webp",
+   "source_set": "tiles/transitions/grass__to__snow/a14_s5"
+  },
+  {
+   "id": "grass__to__snow__a15_s2",
+   "file": "tiles/base_candidates/grass/grass__to__snow__a15_s2.webp",
+   "source_set": "tiles/transitions/grass__to__snow/a15_s2"
+  },
+  {
+   "id": "grass__to__snow__a15_s6",
+   "file": "tiles/base_candidates/grass/grass__to__snow__a15_s6.webp",
+   "source_set": "tiles/transitions/grass__to__snow/a15_s6"
+  },
+  {
+   "id": "grass__to__snow__a18_s4",
+   "file": "tiles/base_candidates/grass/grass__to__snow__a18_s4.webp",
+   "source_set": "tiles/transitions/grass__to__snow/a18_s4"
+  },
+  {
+   "id": "grass__to__snow__a18_s6",
+   "file": "tiles/base_candidates/grass/grass__to__snow__a18_s6.webp",
+   "source_set": "tiles/transitions/grass__to__snow/a18_s6"
+  },
+  {
+   "id": "grass__to__snow__a21_s2",
+   "file": "tiles/base_candidates/grass/grass__to__snow__a21_s2.webp",
+   "source_set": "tiles/transitions/grass__to__snow/a21_s2"
+  },
+  {
+   "id": "grass__to__snow__a21_s4",
+   "file": "tiles/base_candidates/grass/grass__to__snow__a21_s4.webp",
+   "source_set": "tiles/transitions/grass__to__snow/a21_s4"
+  },
+  {
+   "id": "grass__to__snow__a21_s5",
+   "file": "tiles/base_candidates/grass/grass__to__snow__a21_s5.webp",
+   "source_set": "tiles/transitions/grass__to__snow/a21_s5"
+  },
+  {
+   "id": "grass__to__snow__a23_s4",
+   "file": "tiles/base_candidates/grass/grass__to__snow__a23_s4.webp",
+   "source_set": "tiles/transitions/grass__to__snow/a23_s4"
+  },
+  {
+   "id": "grass__to__snow__a24_s6",
+   "file": "tiles/base_candidates/grass/grass__to__snow__a24_s6.webp",
+   "source_set": "tiles/transitions/grass__to__snow/a24_s6"
+  },
+  {
+   "id": "grass__to__snow__a30_s1",
+   "file": "tiles/base_candidates/grass/grass__to__snow__a30_s1.webp",
+   "source_set": "tiles/transitions/grass__to__snow/a30_s1"
+  },
+  {
+   "id": "grass__to__water__a00_s3",
+   "file": "tiles/base_candidates/grass/grass__to__water__a00_s3.webp",
+   "source_set": "tiles/transitions/grass__to__water/a00_s3"
+  },
+  {
+   "id": "grass__to__water__a00_s5",
+   "file": "tiles/base_candidates/grass/grass__to__water__a00_s5.webp",
+   "source_set": "tiles/transitions/grass__to__water/a00_s5"
+  },
+  {
+   "id": "grass__to__water__a03_s5",
+   "file": "tiles/base_candidates/grass/grass__to__water__a03_s5.webp",
+   "source_set": "tiles/transitions/grass__to__water/a03_s5"
+  },
+  {
+   "id": "grass__to__water__a12_s4",
+   "file": "tiles/base_candidates/grass/grass__to__water__a12_s4.webp",
+   "source_set": "tiles/transitions/grass__to__water/a12_s4"
+  },
+  {
+   "id": "grass__to__water__a14_s5",
+   "file": "tiles/base_candidates/grass/grass__to__water__a14_s5.webp",
+   "source_set": "tiles/transitions/grass__to__water/a14_s5"
+  },
+  {
+   "id": "grass__to__water__a15_s2",
+   "file": "tiles/base_candidates/grass/grass__to__water__a15_s2.webp",
+   "source_set": "tiles/transitions/grass__to__water/a15_s2"
+  },
+  {
+   "id": "grass__to__water__a15_s6",
+   "file": "tiles/base_candidates/grass/grass__to__water__a15_s6.webp",
+   "source_set": "tiles/transitions/grass__to__water/a15_s6"
+  },
+  {
+   "id": "grass__to__water__a18_s4",
+   "file": "tiles/base_candidates/grass/grass__to__water__a18_s4.webp",
+   "source_set": "tiles/transitions/grass__to__water/a18_s4"
+  },
+  {
+   "id": "grass__to__water__a18_s6",
+   "file": "tiles/base_candidates/grass/grass__to__water__a18_s6.webp",
+   "source_set": "tiles/transitions/grass__to__water/a18_s6"
+  },
+  {
+   "id": "grass__to__water__a21_s2",
+   "file": "tiles/base_candidates/grass/grass__to__water__a21_s2.webp",
+   "source_set": "tiles/transitions/grass__to__water/a21_s2"
+  },
+  {
+   "id": "grass__to__water__a21_s4",
+   "file": "tiles/base_candidates/grass/grass__to__water__a21_s4.webp",
+   "source_set": "tiles/transitions/grass__to__water/a21_s4"
+  },
+  {
+   "id": "grass__to__water__a21_s5",
+   "file": "tiles/base_candidates/grass/grass__to__water__a21_s5.webp",
+   "source_set": "tiles/transitions/grass__to__water/a21_s5"
+  },
+  {
+   "id": "grass__to__water__a23_s4",
+   "file": "tiles/base_candidates/grass/grass__to__water__a23_s4.webp",
+   "source_set": "tiles/transitions/grass__to__water/a23_s4"
+  },
+  {
+   "id": "grass__to__water__a24_s6",
+   "file": "tiles/base_candidates/grass/grass__to__water__a24_s6.webp",
+   "source_set": "tiles/transitions/grass__to__water/a24_s6"
+  },
+  {
+   "id": "grass__to__water__a30_s1",
+   "file": "tiles/base_candidates/grass/grass__to__water__a30_s1.webp",
+   "source_set": "tiles/transitions/grass__to__water/a30_s1"
+  }
+ ]
+}

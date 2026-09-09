@@ -1,0 +1,91 @@
+{
+  "format": "scenery-piece@2",
+  "id": "mushroom_005",
+  "group": "mushrooms",
+  "rank": 31,
+  "index": 5,
+  "name": "Violet amethyst deceivers 005",
+  "lights": null,
+  "variety": "violet amethyst deceivers",
+  "glow_concept": null,
+  "prompt": "a small cluster of woodland mushrooms with rounded caps and pale stems growing from leaf litter, violet amethyst deceivers, tiny, ankle-height to an adult person, completely unlit, no glow, no light sources, no self-emission",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 48,
+  "sprite": "mushrooms/mushroom_005/sprite.webp",
+  "placement": {
+    "world_height_m": 0.547,
+    "world_px_height": 28,
+    "character_height_px": 87,
+    "character_height_m": 1.7,
+    "note": "ONE SCENERY PIXEL IS ONE PLAYER PIXEL. world_px_height IS the art's own alpha bbox height, so scenery is placed into the world at 1:1 exactly as the avatar is (setScale(1)) and the two share one pixel grid. The CAMERA still zooms the whole scene \u2014 that is uniform and correct; what must never happen is scenery being resampled on its own, against the player. world_height_m is what the art reads as beside a 87px character; declared_height_m is what it was once declared to be, and a gap between them means the ART is the wrong size.",
+    "declared_height_m": 0.32,
+    "content_box": [
+      12,
+      11,
+      38,
+      39
+    ],
+    "content_px_height": 28,
+    "canvas_render_px": 48
+  },
+  "pixellab_object_id": "ed99c40c-58da-4f5b-a123-214b1d54283d",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)",
+  "must_be_imbplemented_with_random_hflip": true,
+  "generated_at": "2026-08-13T11:18:21+00:00",
+  "states": {
+    "LIT_1": {
+      "sprite": "mushrooms/mushroom_005/lit_1/sprite.webp",
+      "pixellab_object_id": "3bbc5125-83ab-4eae-b857-9d19f8421efd",
+      "generated_at": "2026-08-16T19:29:28+00:00",
+      "glow_concept": "dewdrops on the caps lit like tiny lamps",
+      "difference_from_source": 0.606,
+      "glow_score": 0.3772
+    },
+    "NOT_LIT_1": {
+      "sprite": "mushrooms/mushroom_005/sprite.webp",
+      "pixellab_object_id": "ed99c40c-58da-4f5b-a123-214b1d54283d",
+      "generated_at": "2026-08-13T11:18:21+00:00"
+    },
+    "NOT_LIT_2": {
+      "sprite": "mushrooms/mushroom_005/not_lit_2/sprite.webp",
+      "pixellab_object_id": "7340adee-8857-4d81-99d2-0da46b267acd",
+      "generated_at": "2026-08-16T19:26:19+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.3282,
+      "glow_score": 0.0
+    },
+    "NOT_LIT_4": {
+      "sprite": "mushrooms/mushroom_005/not_lit_4/sprite.webp",
+      "pixellab_object_id": "d9770ef6-8f15-438e-a24a-9299fd95891f",
+      "generated_at": "2026-08-16T19:27:52+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.442,
+      "glow_score": 0.0
+    }
+  },
+  "collision": true,
+  "hitbox_shape": "ellipse",
+  "light": {
+    "strength": 0.15,
+    "color": "#ffcbfb",
+    "radius": 3,
+    "reference": "the spawn bonfire is 1.0 (radius 7); strength 0 is no light",
+    "states": {
+      "LIT_1": {
+        "strength": 0.18,
+        "color": "#ffcbfb",
+        "radius": 4
+      }
+    },
+    "kind": "glow/bio",
+    "flame": false,
+    "embers": false
+  }
+}

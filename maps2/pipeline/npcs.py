@@ -151,6 +151,19 @@ AMBIENT_COUNT = {"arrival": 2, "house": 2, "cave": 2, "bridge": 1,
 MAX_ROAD_ANCHORS = 3
 MAX_SHORE_ANCHORS = 2
 
+# PINNED placements — the maintainer's own, exact cell and facing, placed FIRST
+# so the generated cast routes around them. Still validated by every law.
+# Rannulf (elder, c654e8f3) is the chess master: he stands one cell up-screen
+# of islandworld2.CHESS_TABLES[1] at (197,119), so the board covers his legs
+# and he reads as a man behind his table, facing south over it (maintainer
+# 2026-08-09: "with an NPC behind it. Use the S direction").
+PINNED = {
+    "the_island2": (
+        {"id": "chess-1", "character": "c654e8f3", "type": "AMBIENT",
+         "x": 196, "y": 118, "facing": "south", "anchor": "chess"},
+    ),
+}
+
 DIRS8 = ("east", "south-east", "south", "south-west",
          "west", "north-west", "north", "north-east")
 
@@ -299,7 +312,7 @@ def _d(a, b):
 
 # THE SPAWN CAMPFIRE — an object I cannot see in my own data.
 # The game draws one animated campfire at every world's arrival point. It is the
-# only objects/ asset it draws and it is canon (lore/RED_LINE.md §2: "there is a
+# only scenery/ asset it draws and it is canon (lore/RED_LINE.md §2: "there is a
 # campfire burning at the place where you arrive"), but it is NOT a prop in
 # world.json — nothing in the terrain says it exists. So the first cast stood a
 # commoner directly in the flames, which the maintainer spotted in-game with
@@ -691,6 +704,18 @@ def build(w):
         taken.append(spot)
         used.add(cid)
         return True
+
+    # PINNED first — the maintainer's exact placements own their cells.
+    for p in PINNED.get(w.name, ()):
+        cid = p["character"]
+        npc = {"id": p["id"], "character": cid,
+               "name": idx[cid].get("display_name") or cid,
+               "type": p["type"], "x": p["x"], "y": p["y"],
+               "elev": w.base(p["x"], p["y"]),
+               "facing": p["facing"], "anchor": p["anchor"]}
+        out.append(npc)
+        taken.append((p["x"], p["y"]))
+        used.add(cid)
 
     # MERCHANTS first — they get the best spots at their planned anchors.
     by_kind = {}

@@ -2,25 +2,9 @@
   "domain": "music",
   "notes": [
     "[2026-07-17T15:06:13+00:00] music domain online: film-score background beds under music/, each with sub-second metadata.json (sections, beat grid, onsets, RMS curve, key/scale for in-key SFX pitching). First track composing: nangijala_cherry_valley.",
-    "BLOCKED: needs ELEVENLABS_API_KEY to compose",
-    "[2026-07-17T15:14:25+00:00] shipped first track: nangijala_cherry_valley (overworld bed, D major, 76 BPM, 120 s, loopable, 4 plan-exact sections, full beat grid + 257 onsets + RMS curve in metadata.json). games2: it's ready to wire in.",
-    "[2026-07-17T16:53:56+00:00] compressed copies live: every track now ships .ogg (Opus 96k, ~1.7 MB) + .m4a (AAC 128k, ~2 MB) next to the WAV master; see audio.compressed in metadata.json / stream in viewer_data.json. Stream those on web/mobile, never the WAV.",
-    "[2026-07-17T19:53:15+00:00] new brief queued from owner inspiration (Gerudo Valley): karmanjaka_riders_canyon \u2014 melody-first flamenco/western region theme, E phrygian dominant, 126 BPM, loopable. Composing via CI now.",
-    "[2026-07-17T19:54:57+00:00] principle corrected per owner: the standard is the composer's FREEDOM/RANGE (one score holding flamenco, lullaby, drone, motif), not any particular style. Briefs start from place+feeling and pick idiom fresh each time \u2014 no house style.",
-    "[2026-07-17T20:01:50+00:00] fixed: karmanjaka compose was TOS-rejected for naming real composers in the prompt; prompts now describe style only (rule added to README). Recomposing via CI."
+    "[2026-07-17T19:54:57+00:00] principle corrected per owner: the standard is the composer's FREEDOM/RANGE (one score holding flamenco, lullaby, drone, motif), not any particular style. Briefs start from place+feeling and pick idiom fresh each time \u2014 no house style."
   ],
-  "requests": [
-    {
-      "to": "games",
-      "text": "music/ domain is live. Read music/viewer_data.json for tracks; each track's metadata.json has beats_s/downbeats_s/onsets/peaks + rms curve + sfx_safe_pitch_classes so you can sync effects and pitch footsteps in-key. First bed: nangijala_cherry_valley (overworld, D major, 76 BPM, loopable). Post requests to 'music' for new scenes/feelings.",
-      "at": "2026-07-17T15:06:13+00:00"
-    },
-    {
-      "to": "games",
-      "text": "reply to composer: intensity layers shipped. Tracks can now carry sibling mixes composed from the SAME composition plan (same sections/tempo/key) with style deltas \u2014 first one queued: nangijala_cherry_valley/layers/combat (war drums + brass ostinato on the same theme). See metadata layers[] + layers/<id>.metadata.json; they are vertical-remix mixes, crossfade on destination downbeats (~250-500ms), NOT summable stems. Per-section keys also supported now (structure.sections[].key) for modulating tracks. Glad the sync metadata is earning its keep.",
-      "at": "2026-07-17T16:58:19+00:00"
-    }
-  ],
+  "requests": [],
   "updated_at": "2026-07-17T20:03:08+00:00",
   "health": "idle",
   "current": "pass complete",

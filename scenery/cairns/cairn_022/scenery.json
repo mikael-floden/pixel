@@ -1,0 +1,113 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-14T01:36:11+00:00",
+  "id": "cairn_022",
+  "group": "cairns",
+  "rank": 9,
+  "index": 22,
+  "name": "Waist-high dome cairn 022",
+  "lights": null,
+  "variety": "waist-high dome cairn",
+  "modifier": "wrapped in thin creeper vines",
+  "glow_concept": "cold blue soul-light seeping from under the base",
+  "prompt": "a broad sturdy pile of large stacked rocks built as a trail marker, wide at the base, made of heavy weathered stones, waist-high dome cairn, wrapped in thin creeper vines, small, knee-high, self-emissive at night, softly radiating light: cold blue soul-light seeping from under the base",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 64,
+  "sprite": "cairns/cairn_022/sprite.webp",
+  "placement": {
+    "world_height_m": 0.918,
+    "world_px_height": 47,
+    "character_height_px": 87,
+    "character_height_m": 1.7,
+    "note": "ONE SCENERY PIXEL IS ONE PLAYER PIXEL. world_px_height IS the art's own alpha bbox height, so scenery is placed into the world at 1:1 exactly as the avatar is (setScale(1)) and the two share one pixel grid. The CAMERA still zooms the whole scene \u2014 that is uniform and correct; what must never happen is scenery being resampled on its own, against the player. world_height_m is what the art reads as beside a 87px character; declared_height_m is what it was once declared to be, and a gap between them means the ART is the wrong size.",
+    "declared_height_m": 0.64,
+    "content_box": [
+      8,
+      9,
+      57,
+      56
+    ],
+    "content_px_height": 47,
+    "canvas_render_px": 64
+  },
+  "pixellab_object_id": "6db390f7-7240-49a3-aa34-afb53ac6c4b7",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)",
+  "must_be_imbplemented_with_random_hflip": true,
+  "states": {
+    "NOT_LIT_2": {
+      "sprite": "cairns/cairn_022/not_lit_2/sprite.webp",
+      "pixellab_object_id": "ce65504a-0fd4-48a6-8437-5007b662215b",
+      "generated_at": "2026-08-15T21:36:59+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.9217,
+      "glow_score": 0.0,
+      "rotations": {
+        "south-east": "cairns/cairn_022/not_lit_2/rotations/south-east.webp",
+        "south-west": "cairns/cairn_022/not_lit_2/rotations/south-west.webp",
+        "south": "cairns/cairn_022/not_lit_2/sprite.webp"
+      }
+    },
+    "NOT_LIT_3": {
+      "sprite": "cairns/cairn_022/sprite.webp",
+      "pixellab_object_id": "6db390f7-7240-49a3-aa34-afb53ac6c4b7",
+      "generated_at": "2026-08-14T01:36:11+00:00",
+      "relit_from": "LIT_1",
+      "rotations": {
+        "south-east": "cairns/cairn_022/rotations/south-east.webp",
+        "south-west": "cairns/cairn_022/rotations/south-west.webp",
+        "south": "cairns/cairn_022/sprite.webp"
+      }
+    },
+    "NOT_LIT_4": {
+      "sprite": "cairns/cairn_022/not_lit_4/sprite.webp",
+      "pixellab_object_id": "69c064a1-dc25-46b6-9ae1-6e68ea1ee69a",
+      "generated_at": "2026-08-15T21:35:57+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.6926,
+      "glow_score": 0.0,
+      "relit_from": "LIT_2",
+      "rotations": {
+        "south-east": "cairns/cairn_022/not_lit_4/rotations/south-east.webp",
+        "south-west": "cairns/cairn_022/not_lit_4/rotations/south-west.webp",
+        "south": "cairns/cairn_022/not_lit_4/sprite.webp"
+      }
+    },
+    "NOT_LIT_5": {
+      "sprite": "cairns/cairn_022/not_lit_5/sprite.webp",
+      "pixellab_object_id": "fb42617b-dd0c-4bd4-b83f-31b1a1447c03",
+      "generated_at": "2026-08-15T21:35:37+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.7792,
+      "glow_score": 0.0,
+      "relit_from": "LIT_3",
+      "rotations": {
+        "south-east": "cairns/cairn_022/not_lit_5/rotations/south-east.webp",
+        "south-west": "cairns/cairn_022/not_lit_5/rotations/south-west.webp",
+        "south": "cairns/cairn_022/not_lit_5/sprite.webp"
+      }
+    },
+    "NOT_LIT_6": {
+      "sprite": "cairns/cairn_022/not_lit_6/sprite.webp",
+      "pixellab_object_id": "a01da071-0c5b-4766-8300-3260a22d64d6",
+      "generated_at": "2026-08-15T21:36:07+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.6884,
+      "glow_score": 0.0,
+      "relit_from": "LIT_4",
+      "rotations": {
+        "south-east": "cairns/cairn_022/not_lit_6/rotations/south-east.webp",
+        "south-west": "cairns/cairn_022/not_lit_6/rotations/south-west.webp",
+        "south": "cairns/cairn_022/not_lit_6/sprite.webp"
+      }
+    }
+  },
+  "collision": true,
+  "hitbox_shape": "ellipse"
+}

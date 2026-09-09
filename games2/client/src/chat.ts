@@ -115,6 +115,14 @@ function injectStyles() {
      bottom-left corner in every orientation. */
   .ml-chatlog,.ml-chatinput{
     --ml-chatw:calc(100vw - var(--gv-left,0px) - var(--gv-right,0px) - 112px)}
+  /* …and while the phone keyboard is up the log shares its line with the
+     Wiki/🔍 ROW rather than the pill (hud.ts, 2026-09-03). That row is one
+     --ml-stack-step wider than the pill — it is the pill's width plus the 🔍
+     and its gap — so the reserved lane grows by exactly that, and a long
+     message stops the same 10px short of it as it always did. Without this
+     the log runs under the 🔍, which draws above it (z 8 vs 5). */
+  :root.ml-kb-up .ml-chatlog{
+    --ml-chatw:calc(100vw - var(--gv-left,0px) - var(--gv-right,0px) - 112px - var(--ml-stack-step, 44px))}
   .ml-chatlog{position:fixed;left:calc(var(--gv-left,0px) + 10px);
     bottom:calc(var(--hud-h, 38.2dvh) + 10px);z-index:5;
     max-width:min(78vw,460px,var(--ml-chatw));display:flex;flex-direction:column;align-items:flex-start;gap:3px;

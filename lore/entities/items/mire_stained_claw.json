@@ -1,0 +1,15 @@
+{
+  "domain": "items",
+  "id": "mire_stained_claw",
+  "name_seen": "Mire Claw",
+  "law": "V",
+  "description": "A green-grey claw with fen mud dried in the cracks. Mireglare keeps four sets and uses them all.",
+  "lore": [
+    "Never buy a clean one. Fen mud sets into the cracks like grout and it is half the goods: it tells you which bank, which season, and whether the claw has been out of the water as long as the seller says it has. People working [[monsters/swamp_cat_2|Mireglare]] country grade the mud before they so much as look at the point — which is exactly why the fen road has a small trade in mud. There is a man on it who sells the stuff by the thumbful, correct colour, correct bank, and everybody knows, and the grading goes on regardless, because the alternative is saying out loud that the only thing anyone can truly check about a piece of junk is what colour it is."
+  ],
+  "related": [
+    { "domain": "monsters", "id": "swamp_cat_2" },
+    { "domain": "lore", "id": "the_hard_pieces" }
+  ],
+  "gm_notes": "The trade's provenance system and its counterfeit in one breath. Junk cannot be verified; everyone involved knows, and the grading continues because the trade needs it to."
+}

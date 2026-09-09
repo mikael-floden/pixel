@@ -1,122 +1,133 @@
-// QA: HUD Map tab — the world's ISOMETRIC minimap (maps2 render_overview) with a
-// live red "you are here" dot placed by the iso projection. ring_test: the image
-// loads, the dot sits at the iso-projected player cell, and it tracks a teleport.
-// The dot % is recomputed here from the same transform and compared to the DOM.
-// A forced 404 shows the graceful fallback. Device-width mobile geometry.
+// THE MAP TAB — the image it loads, and whether the dot lands on the player.
+//
+// THE RENDER IS CROPPED TO THE ISLAND (maps2 d8a399b1a6): deep water is drawn
+// as nothing and the transparent border cut away, so a fraction of the full
+// iso canvas — which is how the client placed the dot for a year — is wrong by
+// construction. maps2 publishes the arithmetic beside the image as
+// `minimap.json` (pixel-maps3/minimap@1), and the client uses it verbatim.
+//
+// GROUND TRUTH HERE IS THAT DOC'S OWN WORKED SAMPLES, not a second evaluation
+// of its formula: maps2 lists real land cells with the pixel each one lands
+// on, asserted at build time against the alpha of the file itself. Teleport to
+// each, and the dot must be there. A gate that re-ran the formula would agree
+// with the client about a shared misreading of it — including the one thing
+// worth being suspicious of, whether `col` means the same thing on both sides.
+//
+// Also pinned: the file NAME (overview.webp is deleted — asking for it only
+// 404s), a ceiling on its size (it was once the 16300x7576 / 15 MB review
+// render, fetched on a phone into a ~360px frame), and that the doc is not
+// STALE — its `world` must be the grid the game actually loaded, or every
+// sample below is describing a different island.
 import { chromium } from "playwright-core";
+
 const EXE = "/opt/pw-browsers/chromium-1194/chrome-linux/chrome";
 const BASE = process.env.BASE || "http://localhost:5173";
+const MAX_MAP_W = 2400;
+const TOL = 0.015; // 1.5% of the frame
+
 const browser = await chromium.launch({ executablePath: EXE, args: ["--no-sandbox"] });
 let bad = false;
 const fail = (m) => { console.log("FAIL:", m); bad = true; };
 const ok = (m) => console.log("ok:", m);
-const near = (a, b, eps = 0.5) => Math.abs(a - b) <= eps;
-const pct = (s) => parseFloat(s);
 
-// mirror of hud.ts minimapDotPct / maps2 render2.py render_overview
-const MM = { DX: 32, DY: 15, LP: 16, MG: 12 };
-function dotPct(m) {
-  const ox = (m.h - 1) * MM.DX + MM.MG, oy = m.maxL * MM.LP + 40 + MM.MG;
-  const fW = (m.w + m.h) * MM.DX + MM.MG * 2, fH = (m.w + m.h) * MM.DY + 64 + m.maxL * MM.LP + 80;
-  const x = ox + (m.col - m.row) * MM.DX + MM.DX, y = oy + (m.col + m.row) * MM.DY - m.level * MM.LP + MM.DY;
-  const cl = (v) => Math.max(0, Math.min(1, v));
-  return [cl(x / fW) * 100, cl(y / fH) * 100];
-}
-
-async function enter(page, world) {
-  await page.goto(`${BASE}/`, { waitUntil: "load" });
-  await page.waitForFunction(() => window.__mlSelect, { timeout: 25000 });
-  await page.evaluate((w) => {
-    const i = window.__mlSelect.worlds().indexOf(w);
-    if (i >= 0) window.__mlSelect.pickWorld(i);
-  }, world);
-  await page.waitForTimeout(150);
-  await page.evaluate(() => window.__mlSelect.commit());
-  await page.waitForSelector(".ml-tabrow .ml-tab", { timeout: 30000 });
-  // the __ml debug object appears once the local player has joined
-  await page.waitForFunction(() => window.__ml && typeof window.__ml.minimap === "function", { timeout: 30000 });
-  // The full-screen #ml-loading cinema fade covers the HUD until the world has
-  // real frames on screen — its teardown counts rAF frames, so under headless
-  // software-GL it lingers well past the join. Real taps can't reach the tabs
-  // through it; wait it out instead of clicking blind (same as verify-chatpage).
-  await page.waitForSelector("#ml-loading", { state: "detached", timeout: 120000 });
-  await page.click('.ml-tab[data-tab="map"]', { timeout: 60000 });
-  await page.waitForTimeout(1000);
-}
-const readDot = (page) => page.evaluate(() => {
-  const img = document.querySelector(".ml-map-img");
-  const frame = document.querySelector(".ml-map-frame");
-  const empty = document.querySelector(".ml-map-empty");
-  const dot = document.querySelector(".ml-map-dot");
-  return {
-    mm: window.__ml.minimap(), src: img?.getAttribute("src"),
-    nat: img ? [img.naturalWidth, img.naturalHeight] : null,
-    frameHidden: !!frame?.hidden, emptyHidden: !!empty?.hidden,
-    dot: { l: dot?.style.left, t: dot?.style.top },
-  };
-});
+const ctx = await browser.newContext({ viewport: { width: 393, height: 851 }, isMobile: true, hasTouch: true, deviceScaleFactor: 1 });
+const page = await ctx.newPage();
+const errors = [];
+page.on("pageerror", (e) => errors.push(e.message));
 
 try {
-  const ctx = await browser.newContext({
-    // DEVICE-WIDTH mobile geometry (393×851) — the wiki-style remake's QA
-    // standard: the new UI is plain responsive CSS with no zoom compensation,
-    // so the layout viewport IS the device width. (The old 980×2123 scaled-
-    // layout viewport predates the remake, and its huge software-GL canvas
-    // starved rAF so badly tab clicks hung on the scroll/stability checks.)
-    viewport: { width: 393, height: 851 }, screen: { width: 393, height: 851 },
-    isMobile: true, hasTouch: true, deviceScaleFactor: 2,
+  await page.goto(`${BASE}/`, { waitUntil: "load" });
+  await page.waitForFunction(() => window.__mlSelect, null, { timeout: 25000 });
+  await page.evaluate(() => window.__mlSelect.commit());
+  await page.waitForFunction(() => window.__ml && window.__ml.players() >= 1, null, { timeout: 90000 });
+  await page.waitForFunction(() => !document.querySelector("#ml-loading"), null, { timeout: 60000 });
+  await page.waitForTimeout(1200);
+  await page.click('.ml-tab[data-tab="map"]');
+  await page.waitForFunction(() => {
+    const i = document.querySelector(".ml-map-frame img");
+    return i && i.naturalWidth > 0;
+  }, null, { timeout: 20000 });
+
+  const feed = await page.evaluate(() => window.__ml.minimap());
+  const img = await page.evaluate(() => {
+    const i = document.querySelector(".ml-map-frame img");
+    return { src: i.getAttribute("src"), nat: [i.naturalWidth, i.naturalHeight] };
   });
-  const page = await ctx.newPage();
+  // The doc, fetched the same way the client does.
+  const meta = await page.evaluate(async (src) => {
+    const res = await fetch(src.replace(/minimap\.(webp|png)$/, "minimap.json"));
+    return res.ok ? res.json() : null;
+  }, img.src);
 
-  // ── ring_test: iso minimap + a dot at the iso-projected player cell ──
-  await enter(page, "ring_test");
-  const s = await readDot(page);
-  s.mm && s.mm.world === "ring_test" && s.mm.w === 160 && s.mm.h === 160 && typeof s.mm.maxL === "number" && typeof s.mm.level === "number"
-    ? ok(`feed ${JSON.stringify(s.mm)}`) : fail(`feed ${JSON.stringify(s.mm)}`);
-  s.src === "/assets/maps2/worlds/ring_test/minimap.png" ? ok("img src = ring_test minimap") : fail(`img src ${s.src}`);
-  s.nat && s.nat[0] > 100 && s.nat[1] > 100 ? ok(`minimap image loaded (${s.nat})`) : fail(`image not loaded ${JSON.stringify(s.nat)}`);
-  !s.frameHidden && s.emptyHidden ? ok("minimap shown, fallback hidden") : fail(`frameHidden=${s.frameHidden} emptyHidden=${s.emptyHidden}`);
-  {
-    const [el, et] = dotPct(s.mm);
-    near(pct(s.dot.l), el) && near(pct(s.dot.t), et)
-      ? ok(`dot at iso-projected cell (${s.dot.l}, ${s.dot.t})`) : fail(`dot ${JSON.stringify(s.dot)} vs iso [${el.toFixed(3)}, ${et.toFixed(3)}]`);
+  // ── 1. the file ────────────────────────────────────────────────────────
+  /minimap\.(webp|png)(\?|$)/.test(img.src)
+    ? ok(`the Map tab asks for the only name there is (${img.src})`)
+    : fail(`Map tab loaded "${img.src}" — overview.webp is deleted; minimap is the name`);
+  img.nat[0] <= MAX_MAP_W
+    ? ok(`…and it is the map render, not the review render (${img.nat.join("x")})`)
+    : fail(`the map image is ${img.nat.join("x")} — over ${MAX_MAP_W}px wide is a QA render being scaled into a ~360px frame on a phone`);
+
+  if (!meta) {
+    fail("no minimap.json beside the image — a CROPPED render cannot be placed on without it");
+  } else {
+    // ── 2. the doc describes THIS world and THIS image ───────────────────
+    meta.schema === "pixel-maps3/minimap@1"
+      ? ok(`minimap.json is ${meta.schema}`)
+      : fail(`minimap.json schema is "${meta.schema}"`);
+    meta.size?.w === img.nat[0] && meta.size?.h === img.nat[1]
+      ? ok(`…and its size is the image's own (${meta.size.w}x${meta.size.h})`)
+      : fail(`doc says ${meta.size?.w}x${meta.size?.h}, image is ${img.nat.join("x")} — the two were not generated together`);
+    !meta.world || (meta.world.w === feed.w && meta.world.h === feed.h)
+      ? ok(`…for the grid the game loaded (${feed.w}x${feed.h})`)
+      : fail(`doc is for a ${meta.world.w}x${meta.world.h} world, the game loaded ${feed.w}x${feed.h} — STALE, every sample describes a different island`);
+
+    // ── 3. the dot, against maps2's own worked samples ───────────────────
+    const dotAt = async (col, row) => {
+      await page.evaluate(([c, r]) => window.__ml.teleport(c, r), [col, row]);
+      // Settle on the DOT: the map loop paints it from the avatar's render
+      // position, which trails the teleport by frames — a fixed wait reads
+      // the PREVIOUS sample on this harness.
+      let prev = "", cur = "";
+      for (let i = 0; i < 40; i++) {
+        await page.waitForTimeout(150);
+        cur = await page.evaluate(() => {
+          const d = document.querySelector(".ml-map-dot");
+          return d ? `${d.style.left}|${d.style.top}` : "";
+        });
+        if (cur && cur === prev) break;
+        prev = cur;
+      }
+      return page.evaluate(() => {
+        const d = document.querySelector(".ml-map-dot");
+        const f = document.querySelector(".ml-map-frame").getBoundingClientRect();
+        const r = d.getBoundingClientRect();
+        const me = window.__ml.me();
+        return { fx: (r.left + r.width / 2 - f.left) / f.width, fy: (r.top + r.height / 2 - f.top) / f.height,
+                 col: +(me.x / 32).toFixed(1), row: +(me.y / 32).toFixed(1) };
+      });
+    };
+    const samples = Array.isArray(meta.samples) ? meta.samples : [];
+    samples.length >= 3 ? ok(`${samples.length} worked samples to check against`) : fail(`minimap.json ships ${samples.length} samples`);
+    for (const s of samples) {
+      const [cx, cy] = s.cell;
+      const want = [s.px[0] / meta.size.w, s.px[1] / meta.size.h];
+      const got = await dotAt(cx, cy);
+      // The teleport has to have LANDED, or the dot is honestly reporting a
+      // place the player is not (deep water is clamped to the world rim).
+      if (Math.abs(got.col - cx) > 1.5 || Math.abs(got.row - cy) > 1.5) {
+        fail(`"${s.what}": asked for cell (${cx},${cy}), the player is at (${got.col},${got.row}) — cannot judge the dot`);
+        continue;
+      }
+      const dx = Math.abs(got.fx - want[0]), dy = Math.abs(got.fy - want[1]);
+      dx <= TOL && dy <= TOL
+        ? ok(`"${s.what}" (${cx},${cy}) → dot at ${got.fx.toFixed(3)},${got.fy.toFixed(3)} vs published ${want[0].toFixed(3)},${want[1].toFixed(3)}`)
+        : fail(`"${s.what}" (${cx},${cy}): dot at ${got.fx.toFixed(3)},${got.fy.toFixed(3)}, maps2 says ${want[0].toFixed(3)},${want[1].toFixed(3)} — off by ${(dx * 100).toFixed(1)}%/${(dy * 100).toFixed(1)}% of the frame`);
+    }
   }
 
-  // teleport → the dot tracks the player (retry: teleport is a flaky round-trip)
-  let moved = false;
-  for (let i = 0; i < 4 && !moved; i++) {
-    await page.evaluate(() => window.__ml.teleport(40, 120));
-    moved = await page.waitForFunction(() => { const m = window.__ml.minimap(); return Math.abs(m.col - 40) < 1 && Math.abs(m.row - 120) < 1; }, { timeout: 3000 }).then(() => true).catch(() => false);
-  }
-  await page.waitForTimeout(200);
-  const t = await readDot(page);
-  near(t.mm.col, 40) && near(t.mm.row, 120, 1) ? ok(`teleport moved player to ${t.mm.col.toFixed(1)},${t.mm.row.toFixed(1)}`) : fail(`teleport feed ${JSON.stringify(t.mm)}`);
-  {
-    const [el, et] = dotPct(t.mm);
-    near(pct(t.dot.l), el) && near(pct(t.dot.t), et)
-      ? ok(`dot tracked teleport to iso cell (${t.dot.l}, ${t.dot.t})`) : fail(`dot ${JSON.stringify(t.dot)} vs iso [${el.toFixed(3)}, ${et.toFixed(3)}]`);
-  }
-
-  // ── the_island2 (the default world, a DIFFERENT builder-made minimap): the
-  //    same iso transform must still place the dot on the map, not letterbox ──
-  await enter(page, "the_island2");
-  const is2 = await readDot(page);
-  is2.mm.world === "the_island2" && is2.nat && is2.nat[0] > 100 && !is2.frameHidden ? ok(`the_island2 minimap loaded (${is2.nat})`) : fail(`the_island2 ${JSON.stringify(is2)}`);
-  {
-    const [el, et] = dotPct(is2.mm);
-    near(pct(is2.dot.l), el) && near(pct(is2.dot.t), et) ? ok(`the_island2 dot at iso cell (${is2.dot.l}, ${is2.dot.t})`) : fail(`the_island2 dot ${JSON.stringify(is2.dot)} vs [${el.toFixed(3)}, ${et.toFixed(3)}]`);
-  }
-
-  // ── fallback wiring: a failed minimap image shows the placeholder (in prod a
-  //    missing minimap.png 404s -> error; here we fire it directly, dev-server-
-  //    independent — Vite SPA-200s a missing asset) ──
-  await page.evaluate(() => document.querySelector(".ml-map-img").dispatchEvent(new Event("error")));
-  await page.waitForTimeout(250);
-  const f = await page.evaluate(() => {
-    const frame = document.querySelector(".ml-map-frame"); const empty = document.querySelector(".ml-map-empty");
-    return { frameHidden: !!frame?.hidden, emptyHidden: !!empty?.hidden, emptyText: empty?.textContent };
-  });
-  f.frameHidden && !f.emptyHidden ? ok(`failed minimap falls back ("${f.emptyText}")`) : fail(`fallback state ${JSON.stringify(f)}`);
-} finally { await browser.close(); }
-console.log(bad ? "\n=== FAIL ===" : "\n=== PASS ===");
+  errors.length === 0 ? ok("no page errors") : fail(`page errors: ${errors.join(" | ")}`);
+} finally {
+  await browser.close();
+}
+console.log(bad ? "\nMAP: FAIL" : "\nMAP: PASS");
 process.exit(bad ? 1 : 0);

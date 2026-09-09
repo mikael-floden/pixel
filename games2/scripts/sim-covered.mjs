@@ -1,7 +1,10 @@
 // Numeric replica of WorldScene's per-frame "covered" decision (the test that
-// hides the lit top-copy). Scans shoreline cells near spawn and reports, for a
-// character standing at each cell centre, whether covered flips true and WHICH
-// occluder triggers it. Pure data — no browser, no screenshots.
+// hides the lit top-copy). Scans shoreline cells near the world's spawn and
+// reports, for a character standing at each cell centre, whether covered flips
+// true and WHICH occluder triggers it. Pure data — no browser, no screenshots.
+// Runs on maps2/worlds3/the_game (pixel-maps3) — WORLD=<name> for another
+// worlds3 entry; the projection comes from the parsed world (isoOf), never from
+// hand-typed constants.
 import { readFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
@@ -9,14 +12,16 @@ import { dirname, join } from "node:path";
 const here = dirname(fileURLToPath(import.meta.url));
 const root = join(here, "../..");
 const shared = await import(join(here, "../shared/src/index.ts"));
-const { parseWorld, surfaceFor } = shared;
+const { parseWorld, surfaceFor, isoOf } = shared;
 
-const WORLD_NAME = process.env.WORLD || "ring_test"; // any maps2 world
-const world = parseWorld(JSON.parse(readFileSync(join(root, "maps2/worlds", WORLD_NAME, "world.json"), "utf8")));
+const WORLD_NAME = process.env.WORLD || "the_game"; // any maps2/worlds3 world
+const world = parseWorld(JSON.parse(readFileSync(join(root, "maps2/worlds3", WORLD_NAME, "world.json"), "utf8")));
 if (!world) throw new Error("world parse failed");
 const { rows, width: W, height: H } = world;
 
-const dx = 32, dy = 13, lh = 19, tile = 64;
+// the_game draws on ISO_GEOMETRY_MAPS3 (32/14/15); a v2 world would answer 32/15/16.
+const { dx, dy, lh } = isoOf(world);
+const tile = 64;
 const ox = 0, oy = 0;
 const DISP_W = 128, DISP_H = 128; // avatar frame at scale 1
 
@@ -92,8 +97,10 @@ function distToWater(c, r, max = 6) {
   return Infinity;
 }
 
-// Scan around spawn (campfire ~259,225) out to the nearest sea.
-const SC = 259, SR = 225, R = 70;
+// Scan around the world's own spawn cell (world.json `spawn`; the_game: the
+// town square at 333,237) out to the nearest sea.
+const [SC, SR] = world.spawn ?? [W >> 1, H >> 1];
+const R = 70;
 const byDist = new Map(); // waterDist -> {covered, total, examples}
 for (let r = Math.max(0, SR - R); r <= Math.min(H - 1, SR + R); r++) {
   for (let c = Math.max(0, SC - R); c <= Math.min(W - 1, SC + R); c++) {

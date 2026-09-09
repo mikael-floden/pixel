@@ -1,0 +1,180 @@
+{
+  "format": "scenery-piece@2",
+  "id": "story_post_011",
+  "group": "story_posts",
+  "rank": 21,
+  "index": 11,
+  "name": "Stacked carved faces post 011",
+  "lights": null,
+  "variety": "stacked carved faces post",
+  "glow_concept": null,
+  "prompt": "a thick carved wooden totem post, heavy rounded relief carvings of figures and animals covering its broad width, planted solidly in the ground, stacked carved faces post, large, twice human height, completely unlit, no glow, no light sources, no self-emission",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 64,
+  "sprite": "story_posts/story_post_011/sprite.webp",
+  "placement": {
+    "world_height_m": 1.075,
+    "world_px_height": 55,
+    "character_height_px": 87,
+    "character_height_m": 1.7,
+    "note": "ONE SCENERY PIXEL IS ONE PLAYER PIXEL. world_px_height IS the art's own alpha bbox height, so scenery is placed into the world at 1:1 exactly as the avatar is (setScale(1)) and the two share one pixel grid. The CAMERA still zooms the whole scene \u2014 that is uniform and correct; what must never happen is scenery being resampled on its own, against the player. world_height_m is what the art reads as beside a 87px character; declared_height_m is what it was once declared to be, and a gap between them means the ART is the wrong size.",
+    "declared_height_m": 2.02,
+    "content_box": [
+      18,
+      5,
+      46,
+      60
+    ],
+    "content_px_height": 55,
+    "canvas_render_px": 64
+  },
+  "pixellab_object_id": "8e2c919f-0a1f-445b-99c0-daa8fe48f2bb",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)",
+  "must_be_imbplemented_with_random_hflip": true,
+  "generated_at": "2026-08-13T22:07:50+00:00",
+  "states": {
+    "LIT_1": {
+      "sprite": "story_posts/story_post_011/lit_1/sprite.webp",
+      "pixellab_object_id": "da3af729-940a-46b3-a05c-b152932af970",
+      "generated_at": "2026-08-16T22:30:55+00:00",
+      "glow_concept": "oil lantern hooked below the finial",
+      "difference_from_source": 0.8631,
+      "glow_score": 0.0512,
+      "rotations": {
+        "south-east": "story_posts/story_post_011/lit_1/rotations/south-east.webp",
+        "south-west": "story_posts/story_post_011/lit_1/rotations/south-west.webp",
+        "south": "story_posts/story_post_011/lit_1/sprite.webp"
+      },
+      "animations": {
+        "motion": {
+          "group_id": "e7ac4e4d-930f-4628-b262-1736637e5fd7",
+          "description": "This is the same picture in every frame. ONLY the flame inside the lantern flickers. Everything else in the picture is copied from the first frame exactly, pixel for pixel, unchanged in shape, size, position and colour. No outline anywhere is redrawn. The last frame matches the first frame exactly, so the loop joins. Nothing anywhere becomes darker, lighter or a different colour except the one thing named above.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "story_posts/story_post_011/lit_1/animations/motion/00.webp",
+            "story_posts/story_post_011/lit_1/animations/motion/01.webp",
+            "story_posts/story_post_011/lit_1/animations/motion/02.webp",
+            "story_posts/story_post_011/lit_1/animations/motion/03.webp",
+            "story_posts/story_post_011/lit_1/animations/motion/04.webp"
+          ],
+          "strip": "story_posts/story_post_011/lit_1/animations/motion__strip.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-08-29T16:15:00+00:00",
+          "brief": "Y6",
+          "review": "ANIMATION_PROBABLY_BAD",
+          "review_metrics": {
+            "class": "fire",
+            "base": 0.89,
+            "still": 0.205
+          },
+          "light_frames": [
+            {
+              "intensity": 1.38,
+              "dx": -0.6,
+              "dy": 16.7
+            },
+            {
+              "intensity": 1.264,
+              "dx": -0.7,
+              "dy": 16.5
+            },
+            {
+              "intensity": 1.25,
+              "dx": -0.5,
+              "dy": 16.1
+            },
+            {
+              "intensity": 0.557,
+              "dx": -0.6,
+              "dy": 4.9
+            },
+            {
+              "intensity": 0.548,
+              "dx": -0.7,
+              "dy": 4.6
+            }
+          ]
+        }
+      }
+    },
+    "NOT_LIT_1": {
+      "sprite": "story_posts/story_post_011/sprite.webp",
+      "pixellab_object_id": "8e2c919f-0a1f-445b-99c0-daa8fe48f2bb",
+      "generated_at": "2026-08-13T22:07:50+00:00",
+      "rotations": {
+        "south-east": "story_posts/story_post_011/rotations/south-east.webp",
+        "south-west": "story_posts/story_post_011/rotations/south-west.webp",
+        "south": "story_posts/story_post_011/sprite.webp"
+      }
+    },
+    "NOT_LIT_2": {
+      "sprite": "story_posts/story_post_011/not_lit_2/sprite.webp",
+      "pixellab_object_id": "76a11351-c71a-458d-b957-250cee1a183d",
+      "generated_at": "2026-08-16T22:29:14+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.5247,
+      "glow_score": 0.0,
+      "rotations": {
+        "south-east": "story_posts/story_post_011/not_lit_2/rotations/south-east.webp",
+        "south-west": "story_posts/story_post_011/not_lit_2/rotations/south-west.webp",
+        "south": "story_posts/story_post_011/not_lit_2/sprite.webp"
+      }
+    },
+    "NOT_LIT_3": {
+      "sprite": "story_posts/story_post_011/not_lit_3/sprite.webp",
+      "pixellab_object_id": "4fe0d0ce-8f5f-438e-bc87-b9e8729baf56",
+      "generated_at": "2026-08-16T22:29:25+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.7611,
+      "glow_score": 0.0,
+      "rotations": {
+        "south-east": "story_posts/story_post_011/not_lit_3/rotations/south-east.webp",
+        "south-west": "story_posts/story_post_011/not_lit_3/rotations/south-west.webp",
+        "south": "story_posts/story_post_011/not_lit_3/sprite.webp"
+      }
+    },
+    "NOT_LIT_4": {
+      "sprite": "story_posts/story_post_011/not_lit_4/sprite.webp",
+      "pixellab_object_id": "c00edb33-bc43-49a7-bc09-73d41b21d903",
+      "generated_at": "2026-08-16T22:29:45+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.4927,
+      "glow_score": 0.0039,
+      "rotations": {
+        "south-east": "story_posts/story_post_011/not_lit_4/rotations/south-east.webp",
+        "south-west": "story_posts/story_post_011/not_lit_4/rotations/south-west.webp",
+        "south": "story_posts/story_post_011/not_lit_4/sprite.webp"
+      }
+    }
+  },
+  "collision": true,
+  "hitbox_shape": "ellipse",
+  "light": {
+    "strength": 0.2,
+    "color": "#ffc24e",
+    "radius": 4,
+    "reference": "the spawn bonfire is 1.0 (radius 7); strength 0 is no light",
+    "states": {
+      "LIT_1": {
+        "strength": 0.24,
+        "color": "#ffc24e",
+        "radius": 5
+      }
+    },
+    "kind": "fire/enclosed",
+    "flame": true,
+    "embers": false
+  }
+}

@@ -1,0 +1,132 @@
+{
+  "schema": "tiles3/tops@1",
+  "kind": "top_only",
+  "wall_is_meaningless": true,
+  "not_a_candidate_for": "x over y",
+  "ground": "slime",
+  "flavour": "detail",
+  "index": 127,
+  "seed": 70279,
+  "prompt": "slime, a droplet about to fall in the middle, slime all around the edge",
+  "palette_top": "#31bd75",
+  "tile_id": "7eb72b71-33d5-4009-b564-6b9f1e2e7d8b",
+  "n_tiles": 16,
+  "tiles": [
+    "tile_00.webp",
+    "tile_01.webp",
+    "tile_02.webp",
+    "tile_03.webp",
+    "tile_04.webp",
+    "tile_05.webp",
+    "tile_06.webp",
+    "tile_07.webp",
+    "tile_08.webp",
+    "tile_09.webp",
+    "tile_10.webp",
+    "tile_11.webp",
+    "tile_12.webp",
+    "tile_13.webp",
+    "tile_14.webp",
+    "tile_15.webp"
+  ],
+  "settings": {
+    "tile_size": 64,
+    "tile_view": "high top-down",
+    "view_angle": 28.0,
+    "depth_ratio": 0.5,
+    "tile_type": "isometric",
+    "flat_top_px": 2,
+    "outline_mode": "segmentation"
+  },
+  "usd": 0.096,
+  "created": "2026-09-03T04:41:48+00:00",
+  "top_face": {
+    "per_tile": [
+      {
+        "colours": 20,
+        "dominant_share": 0.2762,
+        "px": 927
+      },
+      {
+        "colours": 18,
+        "dominant_share": 0.243,
+        "px": 926
+      },
+      {
+        "colours": 21,
+        "dominant_share": 0.2168,
+        "px": 927
+      },
+      {
+        "colours": 18,
+        "dominant_share": 0.3467,
+        "px": 926
+      },
+      {
+        "colours": 18,
+        "dominant_share": 0.2229,
+        "px": 924
+      },
+      {
+        "colours": 18,
+        "dominant_share": 0.2727,
+        "px": 924
+      },
+      {
+        "colours": 20,
+        "dominant_share": 0.1439,
+        "px": 924
+      },
+      {
+        "colours": 19,
+        "dominant_share": 0.2829,
+        "px": 926
+      },
+      {
+        "colours": 22,
+        "dominant_share": 0.2199,
+        "px": 923
+      },
+      {
+        "colours": 21,
+        "dominant_share": 0.1918,
+        "px": 923
+      },
+      {
+        "colours": 21,
+        "dominant_share": 0.2262,
+        "px": 924
+      },
+      {
+        "colours": 23,
+        "dominant_share": 0.2381,
+        "px": 924
+      },
+      {
+        "colours": 19,
+        "dominant_share": 0.2489,
+        "px": 924
+      },
+      {
+        "colours": 20,
+        "dominant_share": 0.2327,
+        "px": 924
+      },
+      {
+        "colours": 22,
+        "dominant_share": 0.213,
+        "px": 925
+      },
+      {
+        "colours": 22,
+        "dominant_share": 0.203,
+        "px": 926
+      }
+    ],
+    "mean_colours": 20.12,
+    "mean_dominant_share": 0.2362
+  },
+  "motif": "a droplet about to fall",
+  "motif_source": "tiles/config/details.json",
+  "walkable": true
+}

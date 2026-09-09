@@ -18,11 +18,15 @@ export type BusName = "music" | "sfx" | "ui" | "ambience";
 const BACKGROUND_DUCK = 0.5;
 
 const DEFAULT_BUS_DB: Record<BusName, number> = {
-  // Sound-side recommendation (bindings.json) tuned by ear: music is a bed,
-  // ambience sits far back, one-shots read clearly over both.
+  // Sound-side recommendation (bindings.json) tuned by ear: ambience sits far
+  // back, one-shots read clearly over it. MUSIC IS LEVEL WITH SFX since
+  // 2026-08-08 ("the music is to low VS the sound effects") — it was -20, a
+  // 6 dB deficit against sfx, i.e. half the amplitude. NOTE bindings.json
+  // carries the same numbers and OVERRIDES these, so the two must move
+  // together; changing only this one has no effect at runtime.
   ui: -12,
   sfx: -14,
-  music: -20,
+  music: -14,
   ambience: -24,
 };
 

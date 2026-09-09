@@ -1,0 +1,81 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-15T18:12:27+00:00",
+  "id": "soulstone_outcrop_021",
+  "group": "soulstone_outcrops",
+  "type": "NATURE",
+  "rank": 23,
+  "index": 21,
+  "name": "Pearl-grey rounded soulstone 021",
+  "lights": null,
+  "variety": "pearl-grey rounded soulstone",
+  "modifier": "lightly snow-dusted",
+  "glow_concept": null,
+  "prompt": "a rough natural boulder outcrop breaking out of the ground with smooth glassy blue-white soulstone veins running through the rock, the stone mass dominant, not a freestanding crystal cluster and not a carved slab, pearl-grey rounded soulstone, lightly snow-dusted, small, knee-high, completely unlit, no glow, no light sources, no self-emission",
+  "view": "low top-down",
+  "direction": "south",
+  "directions": [
+    "south"
+  ],
+  "must_be_imbplemented_with_random_hflip": true,
+  "rotations": null,
+  "size": 64,
+  "sprite": "soulstone_outcrops/soulstone_outcrop_021/sprite.webp",
+  "placement": {
+    "world_height_m": 0.86,
+    "world_px_height": 44,
+    "character_height_px": 87,
+    "character_height_m": 1.7,
+    "note": "ONE SCENERY PIXEL IS ONE PLAYER PIXEL. world_px_height IS the art's own alpha bbox height, so scenery is placed into the world at 1:1 exactly as the avatar is (setScale(1)) and the two share one pixel grid. The CAMERA still zooms the whole scene \u2014 that is uniform and correct; what must never happen is scenery being resampled on its own, against the player. world_height_m is what the art reads as beside a 87px character; declared_height_m is what it was once declared to be, and a gap between them means the ART is the wrong size.",
+    "content_box": [
+      7,
+      10,
+      57,
+      54
+    ],
+    "content_px_height": 44,
+    "canvas_render_px": 64,
+    "declared_height_m": 0.6
+  },
+  "pixellab_object_id": "bf373a20-6165-48ea-bcd3-7fddef46fb18",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)",
+  "states": {
+    "NOT_LIT_1": {
+      "sprite": "soulstone_outcrops/soulstone_outcrop_021/sprite.webp",
+      "pixellab_object_id": "bf373a20-6165-48ea-bcd3-7fddef46fb18",
+      "generated_at": "2026-08-15T18:12:27+00:00"
+    },
+    "NOT_LIT_2": {
+      "sprite": "soulstone_outcrops/soulstone_outcrop_021/not_lit_2/sprite.webp",
+      "pixellab_object_id": "5a551bf6-3cfc-4d7b-b096-59b571e5577c",
+      "generated_at": "2026-08-16T21:08:50+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.8074,
+      "glow_score": 0.2513
+    },
+    "NOT_LIT_3": {
+      "sprite": "soulstone_outcrops/soulstone_outcrop_021/not_lit_3/sprite.webp",
+      "pixellab_object_id": "e4026fd6-28f1-43a1-826d-cab00d6d76b8",
+      "generated_at": "2026-08-16T21:10:31+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.8249,
+      "glow_score": 0.2598
+    },
+    "NOT_LIT_4": {
+      "sprite": "soulstone_outcrops/soulstone_outcrop_021/not_lit_4/sprite.webp",
+      "pixellab_object_id": "0aeb923d-3361-4c31-a8f9-23d27ad79cc4",
+      "generated_at": "2026-08-16T21:09:39+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.789,
+      "glow_score": 0.0242
+    }
+  },
+  "collision": true,
+  "hitbox_shape": "ellipse"
+}

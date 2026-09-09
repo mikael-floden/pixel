@@ -1,141 +1,216 @@
-# CLAUDE.md — working notes
+# CLAUDE.md — the law of the repo
 
-## What this is
+## Mission
 
-An automated loop that generates modular *Grave Seasons*-style pixel characters
-via the PixelLab API. The repo tries many **skeletons** (generation-parameter
-profiles) before picking a winner. Read `README.md` and
-`characters/spec/FACTORY_SPEC.md`.
+This repo IS **Nangijala** — a browser multiplayer pixel-art RPG live at
+`nangijala.online` — plus every graphic, sound, and word that goes into it,
+built almost entirely by autonomous AI agents. We are creating the best game
+ever made, by utilizing AI to the fullest.
 
-## Repository layout (multi-domain, one repo for ALL game graphics)
+- The game is not only a game: it is a **communication channel** between the
+  maintainer and the agents — one ambitious conversation. The wiki is the
+  clearest example: he reviews, verdicts, and tunes from inside it (`wiki/` +
+  `live/`), and agents act on those verdicts.
+- Each agent owns **one top-level domain** with full control and full
+  responsibility inside it. Agents talk over the coordination boards
+  (`coordination/<domain>.json`), push straight to `main`, and the pace is
+  fast on purpose.
+- **No human keeps a clone.** The maintainer works from a PHONE and tests in
+  production. Any ops step that needs a laptop will not happen — make setup a
+  Cloud-Shell one-liner or derive the value in the workflow.
+- Docs are **LAW for tomorrow**, not chronicles of yesterday — see "Doc law".
 
-Each art domain is a **self-contained top-level directory** and is owned by its
-own agent/loop/Routine. Keep everything for a domain **inside its directory** —
-do not add domain-specific files to the repo root.
+**Read `coordination/PROTOCOL.md` before touching anything**, and skim the
+other agents' board files at the start of each run.
 
-- `characters2/` — character art, 2nd generation (its own agent).
-- `tiles2/` — tile/material library, 2nd generation (its own agent).
-- `maps2/` — worlds, 2nd generation (its own agent; `worlds/<name>/world.json`).
-- `objects/` — animated props / map objects (a separate agent).
-- `games2/` — the Nangijala game (consumer of the art domains; see
-  `games2/CLAUDE.md`).
-- `items/` — game items via PixelLab (its own agent; the item TYPE tags on
-  PixelLab's objects store — `MISC`, `SOUL`, `CONSUMABLE`, `SWORD`, `BOW`,
-  `WAND`, `ARMOR` — are the ground truth; one folder per item holding
-  `item.json` + `sprite.webp` (lossless WebP, 67% under PNG and pixel-identical),
-  rolled up into `items/viewer_data.json`; sync only, no generation loop). See
-  `items/README.md`.
-- `lore/` — the game's story (its own agent; no generation, no API). Owns the
-  **red line** (`lore/RED_LINE.md`, the GM-facing backbone everything hangs
-  off), player-facing **chapters**, and per-entity lore for every other
-  domain's entities. Writes only `lore/**`; publishes `lore/lore.json`, where
-  the owning domain's own text always wins and lore fills the gaps. Its build
-  refuses to run when a cross-reference has gone stale. See `lore/README.md`.
-- `monsters/` — pixel-art monsters via PixelLab (its own agent; the MONSTER
-  tag on PixelLab — objects AND characters stores — is the ground truth;
-  one folder per monster with canonical idle/walk/angry/attack/die states in
-  `monsters/animation_map.json`; no loop yet — runs on demand). See
-  `monsters/README.md`.
-- RETIRED 2026-07-14: `characters/`, `maps/`, `games/`, `tiles/` (first-
-  generation domains + game, incl. the #emission demo built from the old
-  tiles registry) were deleted when the project committed to the 2nd
-  generation. Their history lives in git.
-- Repo root holds only shared/repo-level files: `README.md`, `CLAUDE.md`,
-  `requirements.txt`, `.gitignore`, `.env` (gitignored), `.dockerignore`.
+## Repo map
 
-**LOSSLESS WEBP IS THE IMAGE FORMAT FOR ALL GAME ART.** Project default since
-2026-07-31; every domain the game loads has migrated (characters2, monsters,
-tiles2, maps2, objects, items, wiki — zero PNGs between them). **Ship new art as
-WebP.** VP8L is mathematically lossless, so this is not a quality trade: it is
-the same pixels at ~33% of the bytes.
+Every domain is a self-contained top-level directory: its own agent, docs,
+config, pipeline, generated assets, viewer. Keep everything for a domain
+inside its directory. The root holds only `README.md`, `CLAUDE.md`,
+`requirements.txt`, `.gitignore`, `.dockerignore`, `.env` (gitignored), and
+`coordination/`.
 
-- Convert with the shared, verified script: `python3 games2/scripts/to-webp.py
-  --write --replace <path>`. It re-decodes every file and refuses to replace one
-  that does not round-trip exactly.
-- **`lossless=True` and `exact=True` are BOTH non-default in Pillow.** Without
-  the first you silently get lossy VP8 and ringing on every hard pixel-art edge
-  — and lossy WILL move the foot anchors, shoulder waterlines and monster
-  contact points the game renders with. Without the second, libwebp rewrites
-  the RGB underneath fully-transparent pixels. If you write your own encoder
-  call, pass both.
-- A FULLY TRANSPARENT frame is a valid **28-byte** file (common at the end of
-  die/fade animations). Never write a "smaller than N bytes means corrupt"
-  guard — it is simply false for WebP.
-- If your domain ships a manifest, put the REAL extension in it; the game reads
-  it and never guesses. `games2/scripts/imagelib.mjs` reads both formats, so a
-  stale `.png` path in your JSON keeps working while you convert.
-- The deliberate PNG exceptions are PWA icons, hand-drawn build-source art,
-  the WebP gate's test fixtures, and docs images — see `games2/CLAUDE.md`.
+Each domain's own `README.md` (games2: `CLAUDE.md`) is the authority on how it
+works. This map answers one question only — whose directory is that.
 
-**`.dockerignore` decides what reaches the DEPLOYED GAME.** It is an allowlist:
-a new top-level domain is invisible to the game image until it is added there,
-and a subtree can be excluded from the image while staying in the repo. If an
-asset 404s at `/assets/...` in the deployed game but exists on GitHub, THIS
-FILE IS THE FIRST PLACE TO LOOK — it is the only thing that can produce that
-symptom. Currently excluded from the image while remaining in the repo:
-`tiles2/*/raw` (the tiles2 generator's pre-postprocess sheets, 4,648 files /
-34 MB, served by nothing — see the comment there and the board messages to
-tiles2/maps2/wiki, 2026-07-31).
+- `characters2/` — the two locked heroes + the tag-driven `NPC` mirror.
+- `tiles/` — Tiles 3.0, THE tile library the game renders.
+- `maps2/` — the world the game loads (`maps2/worlds3/the_game/world.json`,
+  pixel-maps3: a ground NAME per cell, tiles3 resolves the art), and **the
+  maps2 agent is who places scenery** in it.
+- `scenery/` — freely placeable, optionally animated set dressing: off the tile
+  grid, and it can animate (tiles can't).
+- `sounds/` — every sound EFFECT: the catalog, the 422-set foley library
+  (`sounds/foley/`) and both generators (`sounds/pipeline/`).
+- `music/` — every piece of MUSIC: the domain tracks, the score beds
+  (`music/beds/`), the kept archive (`music/beds/pool/`), the suite briefs and
+  both pipelines (`music/pipeline/`). Both via ElevenLabs
+  (`ELEVENLABS_API_KEY`).
+- Those two and `games2/composer/` (BINDING only — engine, viewers,
+  `assignments.json`; it generates nothing) are one agent's today and are laid
+  out so a dedicated sound or music agent can be hired into either **without
+  moving a file** (maintainer 2026-09-02). Each manifest publishes a `root`
+  saying where its own audio lives; consumers JOIN it rather than hardcoding a
+  path, which is what made the split possible and is what keeps it.
+- `items/` — everything carrying an item TYPE tag on PixelLab's objects store.
+- `monsters/` — everything tagged `MONSTER` (objects AND characters stores).
+- `lore/` — the story; no generation, no API. Writes only `lore/**`, publishes
+  `lore/lore.json` where **the owning domain's own text always wins** and lore
+  only fills gaps.
+- `games2/` — the game itself: consumer of every art domain and **read-only
+  toward them**. The ONE domain shared by TWO agents (maintainer decision) —
+  the game agent and the games-ui agent; split in `games2/UI_AGENT.md`.
+- `wiki/` — browses everything the agents produce; the maintainer rates,
+  approves/rejects and tunes from inside it.
+- `live/` — the LIVE-UPDATE channel: read by the running game server **straight
+  from GitHub `main`, no redeploy**. Tuning overrides + the maintainer's
+  per-domain feedback files, which agents must read each run.
+- `coordination/` — `PROTOCOL.md` (the inter-agent contract) + one board file
+  per agent (`board.py` to use them).
+- RETIRED 2026-07-14: the first generation (`characters/`, `maps/`, `games/`,
+  the old tiles registry + #emission demo) — history in git. The `tiles/` name
+  was reused for Tiles 3.0; `scenery/` was `objects/` until 2026-08-12.
+- RETIRED 2026-09-09: `tiles2/` (Tiles 2.0) and every world@1/@2 world under
+  `maps2/worlds/` (the_island2, the demos, the test beds) — history in git.
+  Maintainer: "We will commit 100% to the new tiles3 system and the new map
+  from here on. We will never go back to the tile2 system again." The game
+  has ONE world, `the_game`, and ONE tile system, `tiles/`.
 
-The pipelines touch **disjoint paths**, so concurrent pushes to `main` rebase
-cleanly. The only real cross-domain hazard is editing a *shared* file at once;
-each domain currently keeps its own copy of `pixellab_client.py` (full
-isolation) — if that's ever centralized, treat it as a deliberately shared lib.
-All paths below are relative to `characters/`.
+## Shared laws (every agent)
 
-## Mental model
+**LOSSLESS WEBP IS THE IMAGE FORMAT FOR ALL GAME ART.** Every domain the game
+loads ships WebP (zero PNGs). VP8L is mathematically lossless: same pixels at
+~33% of the bytes.
 
-- A **skeleton** = a parameter profile (`config/factory.json:skeleton_variations`):
-  view (`side` / `low top-down` / …), `width`×`height`, `animation_directions`
-  (4 or 8, low/high top-down), resolution (32-256), outline/shading/detail, template.
-- A **character** = one `create-character-v3` call → 8 rotations (~3 generations).
-  The base is **undressed** (neutral body in plain underclothes).
-- An **animation** = one `animate-character` call per direction (~1 gen each);
-  frames return as raw `rgba_bytes` base64.
-- An **outfit** ("dress") = one `create-character-state` call ("wearing X") → a
-  sibling character stored on PixelLab (shared `group_id`), with its own
-  regenerated animations. One outfit at a time; **no per-slot gear/layering**
-  (PixelLab doesn't support it). PixelLab is the source of truth; `sync.py`
-  mirrors characters + outfits into the repo (zero generations).
+- Convert with the shared, verified script:
+  `python3 games2/scripts/to-webp.py --write --replace <path>` — it re-decodes
+  every file and refuses to replace one that does not round-trip exactly.
+- **`lossless=True` AND `exact=True` — both non-default in Pillow.** Without
+  the first you silently get lossy VP8 and ringing on every hard pixel-art
+  edge (lossy WILL move the foot anchors, shoulder waterlines, and monster
+  contact points the game renders with). Without the second, libwebp rewrites
+  the RGB under fully-transparent pixels. Any hand-written encoder call passes
+  both.
+- A fully transparent frame is a valid **28-byte** file (normal at the end of
+  die/fade animations). Never write a "smaller than N bytes = corrupt" guard.
+- Manifests carry the REAL extension; the game reads it and never guesses
+  (`games2/scripts/imagelib.mjs` reads both formats, so a stale `.png` path
+  keeps working during a conversion).
+- Deliberate PNG exceptions: PWA icons, hand-drawn build-source art, the WebP
+  gate's test fixtures, docs images — see `games2/docs/shipping.md`.
 
-## The loop (pipeline/loop.py)
+**CACHE SAFETY IS ABSOLUTE (maintainer law, 2026-08-27).** "You must NEVER EVER EVER
+introduce a cache bug again. The next time I see a cache bug I delete the entire
+project." Cache bugs killed his last two projects; this is not hyperbole. The rule
+that makes them structurally impossible: **a published, regenerable asset is never
+rewritten under a stable name** - a regenerated file gets a NEW filename carrying its
+content hash, the index points at the current name, and consumers read names from the
+index rather than constructing them. A stale cache then shows a coherent old version -
+never a mix of generations. The PREVIOUS generation is retained (current + one back):
+a hashed name is content-addressed, so keeping it can only serve identical bytes, while
+deleting it 404s every page already open - measured, that put holes through a live
+audition. Mutable names are the thing that must never exist; old hashed names are
+harmless and are what keep an open page rendering.
+`tiles/pipeline/check_immutable.py` gates every tiles publish (0 mutable names, 0
+dangling references, every content hash re-verified); any domain that serves or
+caches assets follows the same rule. Write-once assets (raw generator output) may
+keep stable names - the law binds anything a pipeline can regenerate.
 
-Each **unit** is one PixelLab op. `next_action`/`fill_next` read the filesystem
-(resumable). Caps per skeleton: 5 characters, 5 animations (start idle+walk), 5
-dresses. Invariant: every character has every animation undressed, and every
-dress has every animation. Phase A bootstraps 5 skeletons (5 chars × idle+walk);
-Phase B appends animations/dresses/characters to existing skeletons, fanning out.
-After every unit: rebuild `viewer_data.json`, commit, **push to `main`**. Bounded
-by `--max-minutes` / `--max-units` / budget.
+**Never commit secrets.** `PIXELLAB_API_KEY` / `ELEVENLABS_API_KEY` live in
+the gitignored `.env` (locally) and Actions secrets (CI). Don't call the APIs
+without the key set.
 
-## Conventions
-
-- **Never commit secrets.** `PIXELLAB_API_KEY` is read from the environment /
-  gitignored `.env`.
-- All generated art is **committed** under `skeletons/` and pushed to `main`.
-- PixelLab calls are async; `pixellab_client.py` polls background jobs and returns
-  decoded Pillow images so callers are effectively synchronous.
-- Keep code deterministic where possible: seeds are derived (`factory._seed`) from
-  skeleton id + indices so re-runs are reproducible.
-- CDN rotation URLs can briefly 404 right after a job completes — the client
-  retries downloads.
-
-## Adding a skeleton variation
-
-Append to `config/factory.json:skeleton_variations` (or rely on
-`procedural_variation` once the explicit list is exhausted). Vary `view`, size,
-`animation_directions`, detail/outline/shading, `template_id`.
-
-## Running the loop on a schedule
-
-A scheduled Routine wakes a session that runs
-`python characters/pipeline/loop.py --max-minutes 50`, which advances + pushes,
-then exits; the next firing resumes from the filesystem. The loop also runs an
-efficient sync at startup (mirrors PixelLab/UI edits in, unchanged frames skipped
-via If-Modified-Since).
-
-## Don't
-
-- Don't call PixelLab without `PIXELLAB_API_KEY` set.
+**PixelLab conventions** (every PixelLab domain):
+- Calls are async; each domain's own `pixellab_client.py` polls background
+  jobs and returns decoded Pillow images, so callers are effectively
+  synchronous. Each domain keeps its own client copy (full isolation) — if
+  that is ever centralized, treat it as a deliberately shared lib.
+- CDN URLs can briefly 404 right after a job completes — the client retries
+  downloads.
+- **PixelLab is the source of truth for art.** Domains mirror it via sync
+  (zero generations); loops create only *missing* assets, so hand edits in
+  the PixelLab UI are never overwritten. Tag-driven domains (NPC, MONSTER,
+  SCENERY, item types) treat the tag as ground truth both ways: tag brings an
+  asset in, untag removes it.
+- One outfit at a time — **no per-slot gear/layer compositing** (PixelLab
+  doesn't support it). An outfit is a character *state* ("wearing X").
 - Don't re-pose art locally — PixelLab owns rigging/animation; this repo owns
-  orchestration, packaging, QA-of-output, and the viewer.
+  orchestration, packaging, QA-of-output, and the viewers.
+- Derive seeds deterministically so re-runs reproduce; loops are
+  budget-aware (`/balance`) and stop cleanly when generations run low.
+
+**Git: push to `main`, disjoint paths.** One commit + push per unit of work;
+on rejection `git fetch && git rebase origin/main` and retry — domains touch
+disjoint paths, so rebases merge cleanly. One writer per file; the only
+cross-domain hazard is two agents editing a *shared* file at once. Loops are
+resumable: derive the next unit from the filesystem, never from memory.
+
+**`.dockerignore` decides what reaches the DEPLOYED GAME.** It is an
+allowlist of what `games2/Dockerfile` builds from: a new top-level domain is
+invisible to the game image until added there, and a subtree can be excluded
+from the image while staying in the repo. If an asset 404s at `/assets/...`
+in the deployed game but exists on GitHub, **this file is the first place to
+look** — it is the only thing that produces that symptom. Currently excluded
+while staying in the repo: `live/telemetry` (the perf beacon's log, written
+through the GitHub API and never read from the image) and `music/**/*.wav` —
+which since 2026-09-09 guards against a regression rather than filtering
+anything, because no master is left to exclude.
+
+**AUDIO SHIPS AS OGG/OPUS: ONE FORMAT, NO MASTER.** Measured 2026-09-09: the two
+audio domains were 405 MB of a 799 MB HEAD, and 244 MB of that was duplication —
+177 MB of `.m4a` twins and 67 MB of `.wav` masters that already had a compressed
+sibling. The m4a existed for Safari, which has played the Ogg container (Opus
+and Vorbis) since 18.4 — macOS 15.4 / iOS 18.4, March 2025 — while the foley
+library had been ogg-only for 580 of its 585 takes, so the twins protected the
+music on devices that already had no sound effects. Both are gone; git history
+holds every deleted master. Manifests name the file that SHIPS (the catalog
+named its wav master and the game streamed 13.58 MB of PCM where 2.55 MB of ogg
+does), and the engine plays what they name rather than choosing a format at
+runtime — `canPlayType` is advisory, and WebKit 238546 shipped versions
+answering `""` for a container `decodeAudioData` decoded fine.
+NOT `sounds/**/*.wav`: five foley takes are wav-ONLY (their audible level did
+not survive opus) and one of them is assigned to an event, so a blanket glob
+there would 404 game content.
+
+**OFF-GITHUB BACKUP** (`.github/workflows/backup-gcs.yml`): weekly (Mondays)
+`git archive HEAD` zip (~291 MB, tracked files only — a working-tree tar
+would leak `.env`) to a GCS Nearline bucket, 30-day lifecycle ≈ 4 snapshots.
+Setup + restore: `.github/BACKUP.md`. The laws it encodes:
+- **Weekly, not daily**: Nearline bills a 30-day minimum per object, so
+  daily-with-14-day-purge costs restore points and saves nothing (measured
+  europe-north1: daily/30d ~0.95 kr/mo vs weekly/30d ~0.14 kr/mo). Frequency
+  is the only lever on this bill.
+- **No secrets**: reuses the deploy's keyless Workload Identity Federation.
+  The SA holds `objectCreator`+`objectViewer`, NOT `objectAdmin` — CI can
+  write and verify but never delete, so one compromised pipeline can't lose
+  prod and backups together.
+- **Derive, don't ask**: the workflow derives the bucket name
+  (`<project>-nangijala-backups`) instead of reading a hand-set variable — a
+  hand-set variable left the backup silently backing up nothing for its
+  first three nights. Same lesson as the mission: setup steps must be
+  Cloud-Shell one-liners; anything requiring a laptop will not happen.
+
+## Doc law
+
+Docs in this repo are rewritten **in place** when behaviour changes — never
+append a new round under the old ones, never narrate the journey. A doc
+states the present-tense rule, then the reason in parentheses:
+`Z. (W measured. Not X — Y.)`
+
+**A `CLAUDE.md` is loaded into EVERY turn of its agent, so it holds the rule
+and the pointer only; the measurement, the trap's story and the rejected
+approaches live in a topic doc that is opened on demand** (maintainer
+2026-09-09: `games2/CLAUDE.md` had grown to 300 KB, ~75k tokens paid before
+every message was read — split into `games2/docs/<topic>.md`, the law file
+under 20 KB). A domain README is read when its agent works, so the same
+budget applies: the long measurements go under `<domain>/docs/`.
+
+Always keep: invariants and prohibitions; measured constants with their
+meaning; paid-for traps as one line (what breaks + why); rejected approaches
+as one-liners (they prevent re-attempts); pointers (scripts, probes, paths,
+specs); cross-domain contracts; maintainer taste verdicts. Always drop:
+process narration, superseded passages, debugging sagas. Dates stay only
+where freshness matters; "(maintainer decision)" stays where it guards
+against re-litigating taste. Creative content (lore, canon, designer prose)
+is product, not documentation — never compact it.

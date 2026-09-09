@@ -1,14 +1,20 @@
+import { zoneAt, zoneGrid, CELL_WU, WHOLE_WORLD, type ZoneCfg } from "@nangijala/shared";
+import { mountFpsBadge } from "./fpsbadge";
 import Phaser from "phaser";
 import { loadManifest } from "./manifest";
 import { loadMonsterManifest } from "./monsterManifest";
 import { loadNpcManifest, loadNpcPlacement } from "./npcManifest";
+import { loadMonsterBootKinds } from "./monsterBoot";
+import { loadAssetIndex } from "./assetver";
+import { enterStaging, mergeStagingEntries, gameUrl } from "./staging";
 import { withFallback } from "./placeholder";
 import { chooseCharacter } from "./select";
 import { WorldScene } from "./scenes/WorldScene";
-import { loadWorld, loadWorldsList } from "./maps";
+import { loadWorld, loadWorldsList, loadWorldRoots, worldRoot, DEFAULT_WORLD } from "./maps";
 import { MapPreviewScene } from "./scenes/MapPreviewScene";
 import { setLoadingProgress, showLoading } from "./loading";
 import { mountTheme } from "./theme";
+import { registerGame } from "./gamefreeze";
 import { mountAmbient } from "../../ambient/index";
 import { gameAudio } from "../../composer/index";
 
@@ -56,11 +62,21 @@ if (window.matchMedia("(display-mode: standalone), (display-mode: fullscreen)").
 
 async function bootMapPreview(): Promise<boolean> {
   if (location.hash !== "#map") return false;
-  const world = await loadWorld();
+  // WHICH world: the one you last played, else the default. `#map` previewed
+  // DEFAULT_WORLD's data under a hardcoded ring_test image before this. The
+  // roots come from the built manifest first, because a world's TREE is what
+  // every URL below is built from.
+  await loadWorldRoots();
+  let name = DEFAULT_WORLD;
+  try {
+    const saved = JSON.parse(localStorage.getItem("ml-last-choice") || "null") as { world?: string } | null;
+    if (saved?.world) name = saved.world;
+  } catch {}
+  const world = await loadWorld(name);
   if (!world) {
     document.body.innerHTML =
-      '<p style="color:#eef;font-family:monospace;padding:2rem">No map yet ' +
-      "(maps2/worlds/&lt;name&gt;/world.json not found).</p>";
+      `<p style="color:#eef;font-family:monospace;padding:2rem">No map yet ` +
+      `(${worldRoot(name)}/${name}/world.json not found).</p>`;
     return true;
   }
   const game = new Phaser.Game({
@@ -72,6 +88,7 @@ async function bootMapPreview(): Promise<boolean> {
     scene: [MapPreviewScene],
   });
   game.registry.set("world", world);
+  game.registry.set("worldName", name);
   return true;
 }
 
@@ -161,45 +178,60 @@ async function boot() {
   // any styled surface (badge, select, HUD) so nothing flashes unthemed.
   mountTheme();
   showVersion();
+  try {
+    // `?fps=1` shows the frame meter and remembers it; `?fps=0` forgets. See fpsbadge.ts.
+    // localStorage can THROW (private mode, blocked site data) — never let a meter stop the boot.
+    const q = new URLSearchParams(location.search).get("fps");
+    if (q === "1") localStorage.setItem("ml-fps", "1");
+    else if (q === "0") localStorage.removeItem("ml-fps");
+    if (localStorage.getItem("ml-fps") === "1") mountFpsBadge();
+  } catch {
+    /* no storage — no meter */
+  }
   watchForUpdates();
   // Composer's audition page (/#foley): every generated foley candidate,
   // playable on the real deploy — the maintainer's ears close the QA loop.
   if (location.hash === "#foley") {
     const { mountFoleyAudition } = await import("../../composer/audition");
-    mountFoleyAudition();
+    void mountFoleyAudition();
     return;
   }
   // Composer's SCORE audition (/#score): every generated music bed, playable
   // with its measured loop point — the maintainer decides what plays where.
+  // THE ASSET INDEX first of all (client/src/assetver.ts): every art URL
+  // stamped after it lands carries a content hash instead of the build sha,
+  // so a deploy no longer invalidates the whole browser cache. Awaited with the
+  // manifests below; it never blocks a boot on its own (404 → `?v` fallback).
+  const assetIndexReady = loadAssetIndex();
   if (location.hash === "#score") {
     const { mountScoreAudition } = await import("../../composer/scoreAudition");
     mountScoreAudition();
     return;
   }
   if (await bootMapPreview()) return;
-  const manifest = await loadManifest();
-  // Monster catalog (the poring family) — served in parallel. Optional: a
-  // missing/failed manifest just means no monsters render (never dead-end the
-  // player over debug creatures).
-  const monsterManifest = await loadMonsterManifest().catch((e) => {
-    console.warn("[nangijala] monster manifest unavailable — no monsters will render:", e);
-    return null;
-  });
-  // NPC catalog (characters2/npcs) — same contract: optional, and a failure
-  // just means the world's people do not render.
-  const npcManifest = await loadNpcManifest().catch((e) => {
-    console.warn("[nangijala] npc manifest unavailable — no NPCs will render:", e);
-    return null;
-  });
+  // The four boot catalogs and the asset index, IN PARALLEL — they are
+  // independent documents (four serial awaits here cost a round trip each).
+  // Monster and NPC catalogs are optional: a missing/failed one just means no
+  // monsters / no people render (never dead-end the player over debug
+  // creatures). The world list is what the pre-join screen offers: BOTH a
+  // world (any published world) AND a character.
+  const [manifest, monsterManifest, npcManifest, worlds] = await Promise.all([
+    loadManifest(),
+    loadMonsterManifest().catch((e) => {
+      console.warn("[nangijala] monster manifest unavailable — no monsters will render:", e);
+      return null;
+    }),
+    loadNpcManifest().catch((e) => {
+      console.warn("[nangijala] npc manifest unavailable — no NPCs will render:", e);
+      return null;
+    }),
+    loadWorldsList(),
+    assetIndexReady,
+  ]);
   // The art agents periodically reset/regenerate the roster, so it can be empty.
   // Never dead-end the player: fall back to a built-in "Wanderer" so the shared
   // world is always joinable (the world scene draws it procedurally).
   manifest.characters = withFallback(manifest.characters);
-
-  // Pre-join screen: the player chooses BOTH a world (any playable maps2
-  // world the maps agent has shipped — glow_test is the emissive showcase)
-  // AND a character.
-  const worlds = await loadWorldsList();
 
   // Audio (games2/composer, its own agent): the engine boots HERE — before the
   // select screen — so its buttons click, the AudioContext unlocks on the
@@ -222,7 +254,10 @@ async function boot() {
         name?: string;
       } | null;
       const character = manifest.characters.find((c) => c.uid === saved?.characterUid);
-      const worldOk = worlds.length === 0 || worlds.some((w) => w.name === saved?.world);
+      // A remembered world this build does not LIST may still be a staging
+      // world (dev map streamed from the repo) — let the activation below
+      // decide instead of bouncing the admin to the select screen.
+      const worldOk = worlds.length === 0 || !!saved?.world;
       if (saved?.world && character && worldOk) {
         showLoading();
         choice = { world: saved.world, character, name: saved.name || "wanderer" };
@@ -230,6 +265,35 @@ async function boot() {
     } catch {}
   }
   const { world: worldName, character, name } = choice ?? (await chooseCharacter(manifest, worlds));
+
+  // STAGING: the chosen world is not in this build (an admin's dev map, or a
+  // remembered one that left the image). Flip every subsequent art/data URL
+  // to the repo CDN (staging.ts) BEFORE anything world-shaped is fetched.
+  // If activation fails, loadWorld below returns null and the scene falls
+  // back to plain ground — same degradation as any missing world.
+  if (!worlds.some((w) => w.name === worldName && !w.staging)) {
+    // The tree comes from the picker entry we just registered (maps.ts
+    // worldRoot); an unknown world answers with the default tree, which is what
+    // this call passed before worlds3 existed.
+    const ok = await enterStaging(worldName, worldRoot(worldName));
+    if (ok && monsterManifest) {
+      // The image's manifests were built from the CURATED root, so a dev
+      // world's monsters/NPCs may be missing from them. The committed repo
+      // copies have everything; merge in what this image lacks, with their
+      // art URLs rewritten to the CDN.
+      try {
+        const full = (await (await fetch(gameUrl("/monsters.json"))).json()) as typeof monsterManifest;
+        monsterManifest.monsters = mergeStagingEntries(monsterManifest.monsters, full.monsters ?? []);
+      } catch {}
+    }
+    if (ok && npcManifest) {
+      try {
+        const full = (await (await fetch(gameUrl("/npcs.json"))).json()) as typeof npcManifest;
+        npcManifest.npcs = mergeStagingEntries(npcManifest.npcs ?? [], full?.npcs ?? []);
+      } catch {}
+    }
+    if (!ok) console.warn(`[staging] could not activate for "${worldName}" — falling back to image assets`);
+  }
 
   // select.ts showed the loading overlay on commit; the world JSON is the
   // first slow step (a few MB on mobile), then WorldScene.preload takes over
@@ -247,7 +311,23 @@ async function boot() {
   // art after the world was already on screen (the pop-in). Fetched here, the
   // placement is ready before the scene exists and the art rides the normal
   // boot progress. Tiny file, and worlds without NPCs return [] instantly.
-  const npcPlacement = await loadNpcPlacement(worldName).catch(() => []);
+  // And WHICH MONSTER ART the boot batch carries (client/src/monsterBoot.ts):
+  // the kinds with a spawn zone near where the player will stand; the rest
+  // stream in the deferred batch. Same tiny file, same boot-time reasoning.
+  // And THE ZONE GRID (spec/ZONES.md): the first room to join is the one
+  // owning the world's spawn; a returning player is handed to the zone of
+  // their saved spot by that room. No grid = one room for the whole map.
+  const [npcPlacement, monsterBootKinds, zonesCfg] = await Promise.all([
+    loadNpcPlacement(worldName).catch(() => []),
+    loadMonsterBootKinds(worldName, world?.spawn ?? null),
+    fetch(`/api/zones/${encodeURIComponent(worldName)}`, { cache: "no-cache" })
+      .then((r) => (r.ok ? (r.json() as Promise<ZoneCfg | null>) : null))
+      .catch(() => null),
+  ]);
+  const zone =
+    zonesCfg && world?.spawn
+      ? zoneAt(zoneGrid(zonesCfg, world.width, world.height, CELL_WU), (world.spawn[0] + 0.5) * CELL_WU, (world.spawn[1] + 0.5) * CELL_WU)
+      : WHOLE_WORLD;
 
   // Render at the DEVICE's real pixels, not CSS pixels. The canvas backing store
   // is RS× the CSS size; the camera zoom is RS× higher to keep the SAME view.
@@ -348,14 +428,21 @@ async function boot() {
   if (gameEl && "ResizeObserver" in window) new ResizeObserver(fitCanvas).observe(gameEl);
 
   (window as any).__mlGame = game; // debug handle (scale-manager QA)
+  // The wiki drawer freezes the loop while it is open — a second document in
+  // an iframe and a running game loop fight over the same main thread, and
+  // the wiki lost (maintainer 2026-08-13). gamefreeze.ts is the seam.
+  registerGame(game);
   game.registry.set("manifest", manifest);
   game.registry.set("monsterManifest", monsterManifest);
   game.registry.set("npcManifest", npcManifest);
   game.registry.set("npcPlacement", npcPlacement);
+  game.registry.set("monsterBootKinds", monsterBootKinds);
   game.registry.set("character", character);
   game.registry.set("name", name);
   game.registry.set("world", world);
   game.registry.set("worldName", worldName);
+  game.registry.set("zone", zone);
+  game.registry.set("zonesCfg", zonesCfg);
 
   // Ambient-life layer (games2/ambient/, its own agent): attaches to the
   // world scene from outside and only ever ADDS display objects — zero
@@ -363,4 +450,45 @@ async function boot() {
   mountAmbient(game);
 }
 
-boot();
+/**
+ * BOOT MUST NEVER DEAD-END ON A BLACK PAGE (maintainer 2026-08-15, with a
+ * screenshot of exactly that: the version badge alone, nothing else).
+ *
+ * `showVersion()` runs before the first await, so the badge is what you get
+ * when anything after it throws or hangs — and until now `boot()` was called
+ * with no catch at all, so ONE rejected fetch on the path (loadManifest,
+ * loadWorldsList) took the whole screen with it, silently, with nothing to
+ * retry. The hang half is fixed at the source (fetchSoon in staging.ts); this
+ * is the backstop for everything else, including whatever we break next.
+ *
+ * Deliberately dependency-free: inline styles, no theme tokens, no imports. If
+ * boot died, anything it was supposed to set up may be missing, so this cannot
+ * rely on any of it.
+ */
+boot().catch((err) => {
+  console.error("[nangijala] boot failed:", err);
+  try {
+    if (document.getElementById("ml-bootfail")) return;
+    const box = document.createElement("div");
+    box.id = "ml-bootfail";
+    box.setAttribute("role", "alert");
+    box.style.cssText =
+      "position:fixed;inset:0;z-index:99999;display:flex;flex-direction:column;gap:16px;" +
+      "align-items:center;justify-content:center;padding:24px;text-align:center;background:#000;" +
+      "color:#e8e6e1;font:15px/1.5 -apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif";
+    const h = document.createElement("div");
+    h.textContent = "Nangijala could not start";
+    h.style.cssText = "font-size:19px;font-weight:600";
+    const p = document.createElement("div");
+    p.textContent = "Something failed to load. Check your connection and try again.";
+    p.style.cssText = "color:#a8a49c;max-width:22rem";
+    const btn = document.createElement("button");
+    btn.textContent = "Reload";
+    btn.style.cssText =
+      "font:inherit;font-weight:600;padding:11px 26px;border-radius:9px;border:1px solid #4a4640;" +
+      "background:#d97757;color:#fff;cursor:pointer";
+    btn.onclick = () => location.reload();
+    box.append(h, p, btn);
+    document.body.appendChild(box);
+  } catch {}
+});

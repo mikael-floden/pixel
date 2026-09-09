@@ -29,6 +29,7 @@ import { createHash, createHmac, randomBytes, timingSafeEqual } from "crypto";
 import { readFileSync } from "fs";
 import { join } from "path";
 import type express from "express";
+import { perfReport } from "./perfreport.js";
 
 const REPO = process.env.WIKI_REPO || "mikael-floden/pixel";
 const BRANCH = process.env.WIKI_BRANCH || "main";
@@ -40,7 +41,10 @@ const ghToken = () => process.env.WIKI_GITHUB_TOKEN || "";
 // "bindings" is not an art domain: its ids are `<eventId>#<sound>` pairs, and
 // a rejected entry means UNBIND that sound from that event — the recording
 // itself is untouched (maintainer 2026-08-06). The composer agent consumes it.
-const FEEDBACK_DOMAINS = ["monsters", "characters", "tiles", "objects", "sounds", "music", "items", "lore", "composer", "bindings"] as const;
+// "composer-music" is the MUSIC BENCH's channel (maintainer 2026-08-22): one
+// file carrying verdicts at three levels — a whole track, one take of it, and
+// one phrase of one take — keyed composer/music/<track>, …__v03 and …__v03#5.
+const FEEDBACK_DOMAINS = ["monsters", "characters", "tiles", "objects", "sounds", "music", "items", "lore", "composer", "composer-music", "bindings"] as const;
 // repo path (under live/) -> state key
 const LIVE_FILES: Record<string, string> = {
   "tuning/monsters.json": "tuning/monsters",
@@ -48,6 +52,115 @@ const LIVE_FILES: Record<string, string> = {
   // The Game Master's "add this sound to that event" requests, written by the
   // wiki, consumed by the composer (games-audio) agent. See live/README.md.
   "tuning/sfx_requests.json": "tuning/sfx_requests",
+  // WHERE THE GAME MASTER THINKS THE NADIR SHADOW BELONGED. Not a per-monster
+  // fix: the games agent reads these as TRAINING DATA for the placement rules
+  // it derives from the art (maintainer 2026-08-15: "the game agent will use
+  // this data to improve the shadow placement on all further monsters ... it's
+  // a way to learn how the shadows should be placed"). One entry per
+  // <monster>#<state>#<direction>, each carrying what the wiki drew and what
+  // he moved it to. See live/README.md.
+  "tuning/shadow_notes.json": "tuning/shadow_notes",
+  // WHICH TILES MAY BUILD THEIR OWN WALL. Tiles 3.0 generates a tile as "A
+  // over B" — top A, walls B — and most can be stacked to make a cliff out of
+  // themselves. Some cannot, and the Game Master marks those TOP TILE ONLY, so
+  // whatever stacks under them is the pure "B over B" tile instead. Consumed
+  // by the tiles agent and, when 3.0 ships, by whatever paints the ground.
+  // See live/README.md.
+  "tuning/tile_walls.json": "tuning/tile_walls",
+  // WHICH TILES ALWAYS KEEP THEIR OWN TOP. The base-tile-set model swaps an
+  // x-over-y tile's top for the ground's configured surface (clean colour or a
+  // set member); a tile the Game Master marks own_top is exempt — its art
+  // transitions toward the wall in a way a swapped top would destroy, so it
+  // always draws the texture it was generated with. Higher priority than the
+  // set composition, per the maintainer (2026-08-27). Written by the wiki;
+  // consumed by whatever composes ground tops (the wiki today, the game when
+  // it adopts the set model). See live/README.md.
+  "tuning/tile_tops.json": "tuning/tile_tops",
+  // THE GROUND A SCENERY PIECE OCCUPIES: one or more ellipses per piece, in
+  // frame pixels from the frame centre — the same units as a monster's nadir
+  // shadow. Not a shadow and never drawn; it is the hitbox, and each ellipse's
+  // centre line decides whether the player is drawn in front of or behind that
+  // part of the piece. Absent = undecided, [] = decided-none (wall-mounted).
+  // Written by the wiki's Scenery pages. See live/README.md.
+  "tuning/scenery_hitbox.json": "tuning/scenery_hitbox",
+  // WHICH x-OVER-x TILE BUILDS THE WALL under a borrowed-wall top. The wiki
+  // picks the measured closest match automatically; an entry here is the
+  // Game Master's override for one face. Written by the wiki; consumed by
+  // whatever composes ground tops. See live/README.md.
+  "tuning/top_walls.json": "tuning/top_walls",
+  // The Game Master's corrections to WHICH pieces are wall scenery — the
+  // agent's type tag is wrong both ways sometimes. Same contract as
+  // scenery_lights: wiki writes, the scenery agent re-files and deletes.
+  "tuning/scenery_walls.json": "tuning/scenery_walls",
+  "tuning/chess.json": "tuning/chess",
+  // WHETHER A SCENERY STATE IS REALLY LIT. The generator names a state LIT_* or
+  // NOT_LIT_*, but the AI that draws it sometimes fails to put the light in —
+  // and the art is otherwise good (maintainer 2026-08-17: "I want a way to
+  // change the state from lit to unlit when doing the review. So we don't have
+  // to throw away the art just because it's lit state is wrong"). One entry per
+  // <piece path>#<state>, correcting the name. Consumed by the scenery agent.
+  // See live/README.md.
+  "tuning/scenery_lights.json": "tuning/scenery_lights",
+  // WHICH FACING IS THE OTHER ONE AGAIN. PixelLab draws the two three-quarter
+  // views separately and sometimes returns the same one twice, so a piece faces
+  // the same way from both sides (maintainer 2026-09-05: "the scenery might
+  // have generated the same direction for both SE and SW. I need a way in my
+  // review to flip/mirror a SE or a SW"). One entry per
+  // <piece path>#<state>#<direction> asking for that file to be mirrored — a
+  // correction, not a rejection, since the art itself is good. Written by the
+  // wiki; consumed by the scenery agent, which republishes the flipped file and
+  // deletes the entry. See live/README.md.
+  "tuning/scenery_flips.json": "tuning/scenery_flips",
+  // WHAT KIND OF THING A SCENERY PIECE IS. The agent tags every piece TOWN /
+  // TREE / NATURE / MOUNTAIN_WALL / INDOOR / WINDOW / OTHER and both the wiki
+  // and the world group by it, so a mis-tag is not a label — it puts the piece
+  // in the wrong review list and gets it PLACED as the wrong thing (maintainer
+  // 2026-09-05: "I can see some scenery in the group 'Mountain wall' is not
+  // mountain wall and I can't change type when doing the review. I need a
+  // change type button"). One entry per piece path carrying the type it should
+  // be. Written by the wiki; the scenery agent re-files the piece and deletes
+  // the entry. See live/README.md.
+  "tuning/scenery_types.json": "tuning/scenery_types",
+  // WHAT KIND OF LIGHT A LIT SCENERY STATE GIVES OFF. The scenery domain
+  // publishes a `light` block per piece — kind, colour, strength, radius,
+  // flame/embers — with per-state values over the piece's own; the maintainer
+  // reviews and corrects it from the wiki (2026-09-09: "I want to be able to
+  // see this and edit/change this when doing a review"). One entry per
+  // <piece path>#<state> holding only the fields he moved, with `was` beside
+  // them. Written by the wiki; the scenery agent applies it and deletes the
+  // entry. Distinct from scenery_lights, which answers whether the state is
+  // lit at all. See live/README.md.
+  "tuning/scenery_lighting.json": "tuning/scenery_lighting",
+  // WHICH SCENERY ANIMATIONS MAY PLAY. The scenery agent classifies every
+  // animation ANIMATION_PROBABLY_GOOD or ANIMATION_PROBABLY_BAD in its own
+  // manifest; this file is the maintainer's verdict on top —
+  // ANIMATION_APPROVED or ANIMATION_REDO, one entry per <piece path>#<state>
+  // (2026-09-09: "as soon as the root moves it looks wrong and the animation
+  // can't be used"). REDO means nothing animates for that state until the
+  // agent has redone it with less movement and re-classified it. His verdict
+  // outranks the classification; absent means the classification stands.
+  // Written by the wiki, read by the game and by the scenery agent.
+  // See live/README.md.
+  "tuning/scenery_animation.json": "tuning/scenery_animation",
+  // WHICH TILES ARE A GROUND TYPE'S BASE TILES. A base tile is the one the
+  // world agent paints first and repeats forever — "does everything but noone
+  // notice" (maintainer 2026-08-21). Promoted and revoked from the wiki's
+  // ground-type pages, one entry per tile key carrying the ground type it is
+  // the base OF. Consumed by the tiles agent (variant generation budget) and
+  // the maps/world agent (what to paint a field with). See live/README.md.
+  "tuning/base_tiles.json": "tuning/base_tiles",
+  // THE GROUND'S LOOK, per ground type: an ordered list of BASE TILE SETS, each
+  // a group of tiles that look good together with a weight apiece, plus a
+  // "clean" member for the flat palette colour, and a set-level weight for how
+  // likely a region picks that set. Set 0 is reserved for Clean and is switched
+  // off by weight rather than deleted, so a ground can always draw.
+  //
+  // THE BUCKET HERE IS `grounds`, NOT `overrides` — one entry per ground type,
+  // so a save is a per-ground delta. Consumed by the game's renderer, the maps
+  // agent and the tiles agent; it REPLACES the per-material transition_surface
+  // / always_own_texture / flat_top flags. Reference implementation and the
+  // deterministic pick in wiki/lib/basesets.mjs. See live/README.md.
+  "tuning/base_tile_sets.json": "tuning/base_tile_sets",
   ...Object.fromEntries(FEEDBACK_DOMAINS.map((d) => [`feedback/${d}.json`, `feedback/${d}`])),
 };
 
@@ -55,13 +168,25 @@ type Doc = Record<string, unknown> & {
   entries?: Record<string, unknown>;
   monsters?: Record<string, unknown>;
   overrides?: Record<string, unknown>;
+  grounds?: Record<string, unknown>;
   defaults?: Record<string, unknown>;
 };
 
 const emptyDoc = (key: string): Doc => {
+  if (key === "tuning/chess") return { format: "nangijala-chess-boards@1", updated_at: "", worlds: {} };
   if (key === "tuning/monsters") return { format: "pixel-wiki-tuning-monsters@1", updated_at: "", defaults: {}, monsters: {} };
   if (key === "tuning/constants") return { format: "pixel-wiki-tuning-constants@1", updated_at: "", overrides: {} };
   if (key === "tuning/sfx_requests") return { format: "pixel-wiki-sfx-requests@1", updated_at: "", requests: {} };
+  if (key === "tuning/shadow_notes") return { format: "pixel-wiki-shadow-notes@1", updated_at: "", overrides: {} };
+  if (key === "tuning/tile_walls") return { format: "pixel-wiki-tile-walls@1", updated_at: "", overrides: {} };
+  if (key === "tuning/tile_tops") return { format: "pixel-wiki-tile-tops@1", updated_at: "", overrides: {} };
+  if (key === "tuning/scenery_hitbox") return { format: "pixel-wiki-scenery-hitbox@1", updated_at: "", overrides: {} };
+  if (key === "tuning/scenery_animation") return { format: "pixel-wiki-scenery-animation@1", updated_at: "", overrides: {} };
+  if (key === "tuning/top_walls") return { format: "pixel-wiki-top-walls@1", updated_at: "", overrides: {} };
+  if (key === "tuning/scenery_walls") return { format: "pixel-wiki-scenery-walls@1", updated_at: "", overrides: {} };
+  if (key === "tuning/scenery_lights") return { format: "pixel-wiki-scenery-lights@1", updated_at: "", overrides: {} };
+  if (key === "tuning/base_tiles") return { format: "pixel-wiki-base-tiles@1", updated_at: "", overrides: {} };
+  if (key === "tuning/base_tile_sets") return { format: "pixel-wiki-base-tile-sets@1", updated_at: "", grounds: {} };
   return { format: "pixel-wiki-feedback@1", domain: key.split("/")[1], updated_at: "", entries: {} };
 };
 
@@ -74,11 +199,22 @@ let fetchedAt = "";
 let ready = false;
 const listeners = new Set<(tuning: LiveTuning) => void>();
 
-export type LiveTuning = { monsters: Doc; constants: Doc };
+export type LiveTuning = { monsters: Doc; constants: Doc; scenery_animation: Doc };
 export const liveTuning = (): LiveTuning => ({
   monsters: docs.get("tuning/monsters") ?? emptyDoc("tuning/monsters"),
   constants: docs.get("tuning/constants") ?? emptyDoc("tuning/constants"),
+  // The maintainer's animation verdicts — small (one record per judged
+  // state), and the client's scheduler needs them the moment he taps one.
+  scenery_animation: docs.get("tuning/scenery_animation") ?? emptyDoc("tuning/scenery_animation"),
 });
+
+/** live/tuning/scenery_hitbox.json `.overrides` — the ground each scenery piece
+ *  stands on. Not in the socket payload (1 MB across 3,704 records); the game
+ *  reads it as an asset, and the SERVER reads it here for collision. */
+export function sceneryHitboxOverrides(): Record<string, any> | null {
+  const d = docs.get("tuning/scenery_hitbox") as { overrides?: Record<string, any> } | undefined;
+  return d?.overrides ?? null;
+}
 
 /** Rooms subscribe here; returns an unsubscribe. */
 export function onLiveChange(cb: (tuning: LiveTuning) => void): () => void {
@@ -264,6 +400,16 @@ function isAdmin(req: express.Request): boolean {
 // silently revert the agent's commit. The blob sha from the same GET makes
 // the PUT conditional — a mid-flight racing commit 409s and we re-merge.
 let commitChain: Promise<void> = Promise.resolve();
+/** Client perf telemetry: how many reports live/telemetry/perf.json keeps, and
+ *  the floor between commits. One player on a phone, so this is about not
+ *  writing a commit per frame, not about contention. */
+const PERF_KEEP = 40;
+/* 5 s, not 20: the client only sends every 30 s by itself, so this gate is a
+ * guard against a rogue client, not a throttle on the honest one — and at 20 s
+ * it ATE the flush the client sends when the beacon is switched off, which is
+ * the most interesting window there is. */
+const PERF_MIN_GAP_MS = 5_000;
+let lastPerfCommit = 0;
 
 function ghHeaders(): Record<string, string> {
   return {
@@ -274,15 +420,34 @@ function ghHeaders(): Record<string, string> {
   };
 }
 
+/* A FILE THAT EXISTS IS NEVER READ AS EMPTY (2026-09-02, 6,890 of the Game
+ * Master's tile verdicts erased in one save). GitHub's contents API returns
+ * the blob sha but NO content for a file over 1 MB — live/feedback/tiles.json
+ * had grown to 1,058,285 bytes — and this function turned that into
+ * `doc: null`, which ghCommitDelta then treated as "no file yet": it merged a
+ * 53-entry delta onto an EMPTY document and PUT it with the valid sha.
+ * GitHub accepted. Nothing errored. Now: no content + a sha means "too big
+ * for this endpoint", so the blob is fetched through the git data API (base64
+ * up to 100 MB); if that fails too the save FAILS LOUDLY. `doc: null` is
+ * reserved for a true 404. */
 async function ghGetContents(rel: string): Promise<{ doc: Doc | null; sha?: string }> {
   const url = `${GH_API}/repos/${REPO}/contents/live/${rel}?ref=${BRANCH}`;
   const res = await fetch(url, { headers: ghHeaders(), signal: AbortSignal.timeout(10000) });
   if (res.status === 404) return { doc: null, sha: undefined };
   if (!res.ok) throw new Error(`GitHub GET live/${rel}: HTTP ${res.status}`);
-  const j = (await res.json()) as { sha?: string; content?: string };
+  const j = (await res.json()) as { sha?: string; content?: string; size?: number };
+  let text = Buffer.from((j.content ?? "").replace(/\n/g, ""), "base64").toString("utf8");
+  if (!text.trim() && j.sha) {
+    // Over the contents-API size limit: the blob endpoint serves any size.
+    const bres = await fetch(`${GH_API}/repos/${REPO}/git/blobs/${j.sha}`, { headers: ghHeaders(), signal: AbortSignal.timeout(15000) });
+    if (!bres.ok) throw new Error(`GitHub GET blob for live/${rel}: HTTP ${bres.status} (file is ${j.size ?? "?"} bytes — over the contents-API limit, and the blob fetch failed; refusing to save rather than start from empty)`);
+    const b = (await bres.json()) as { content?: string };
+    text = Buffer.from((b.content ?? "").replace(/\n/g, ""), "base64").toString("utf8");
+  }
   try {
-    return { doc: JSON.parse(Buffer.from((j.content ?? "").replace(/\n/g, ""), "base64").toString("utf8")) as Doc, sha: j.sha };
+    return { doc: JSON.parse(text) as Doc, sha: j.sha };
   } catch {
+    if (j.sha) throw new Error(`GitHub GET live/${rel}: the file exists (${j.size ?? "?"} bytes) but could not be read as JSON — refusing to save rather than start from empty`);
     return { doc: null, sha: j.sha };
   }
 }
@@ -293,7 +458,19 @@ async function ghCommitDelta(rel: string, key: string, delta: Record<string, unk
   const url = `${GH_API}/repos/${REPO}/contents/live/${rel}`;
   for (let attempt = 0; ; attempt++) {
     const { doc: base, sha } = await ghGetContents(rel);
+    // Belt and braces for the wipe above: an existing file with no readable
+    // base is a bug, never a fresh start; and a merge can only shrink a bucket
+    // by the nulls the delta actually carries.
+    if (sha && !base) throw Object.assign(new Error(`live/${rel} exists on GitHub but no base could be read — refusing to overwrite it`), { status: 502 });
     const merged = applyDelta(key, base ?? emptyDoc(key), delta);
+    const bucketOf = (d: Doc | null) => {
+      const b = key.startsWith("feedback/") ? d?.entries : key === "tuning/monsters" ? d?.monsters : key === "tuning/sfx_requests" ? (d as Record<string, unknown> | null)?.requests : key === "tuning/base_tile_sets" ? d?.grounds : d?.overrides;
+      return b && typeof b === "object" ? Object.keys(b as object).length : 0;
+    };
+    const nulls = Object.values(delta).filter((v) => v === null || v === undefined).length;
+    if (base && bucketOf(merged) < bucketOf(base) - nulls) {
+      throw Object.assign(new Error(`live/${rel}: merge would drop ${bucketOf(base) - bucketOf(merged)} entries but the delta only deletes ${nulls} — refusing`), { status: 502 });
+    }
     const body: Record<string, unknown> = {
       message: `live: admin update — ${rel}`,
       content: Buffer.from(JSON.stringify(merged, null, 2) + "\n", "utf8").toString("base64"),
@@ -314,6 +491,10 @@ function applyDelta(key: string, cur: Doc, delta: Record<string, unknown>): Doc 
   const bucket = key.startsWith("feedback/") ? "entries"
     : key === "tuning/monsters" ? "monsters"
     : key === "tuning/sfx_requests" ? "requests"
+    // Base tile sets are keyed by GROUND, not by tile: the whole point of the
+    // model is that a set can exist with no tiles in it (Clean #0), which a
+    // tile-keyed bucket cannot represent.
+    : key === "tuning/base_tile_sets" ? "grounds"
     : "overrides";
   const map = (next[bucket] ?? {}) as Record<string, unknown>;
   for (const [id, value] of Object.entries(delta)) {
@@ -338,9 +519,89 @@ export function registerLiveRoutes(app: express.Application): void {
     }
     res.json({
       fetched_at: fetchedAt,
-      tuning: { monsters: docs.get("tuning/monsters"), constants: docs.get("tuning/constants"), sfx_requests: docs.get("tuning/sfx_requests") },
+      /* EVERY TUNING DOC THE REGISTRY KNOWS, derived — never a second list.
+       * This was hand-written, so registering a file in LIVE_FILES made it
+       * SAVEABLE while the wiki could never READ it back: scenery_flips landed
+       * on 2026-09-05, the row worked, the doc came back absent on every load,
+       * and the two lists disagreeing was the whole of it. A save already
+       * validates against LIVE_FILES, so deriving the response from the same
+       * map is what makes "registered" mean one thing. */
+      tuning: Object.fromEntries(
+        Object.values(LIVE_FILES)
+          .filter((k) => k.startsWith("tuning/"))
+          .map((k) => [k.slice("tuning/".length), docs.get(k)]),
+      ),
       feedback: Object.fromEntries(FEEDBACK_DOMAINS.map((d) => [d, docs.get(`feedback/${d}`)])),
     });
+  });
+
+  /* CLIENT PERFORMANCE TELEMETRY — the maintainer's own device, measured.
+   *
+   * His phone is the only machine that reproduces the lag and the render
+   * artefacts; the headless harness runs software GL at 1-3 fps and WALKS AT
+   * ABOUT ONE CELL PER 24 SECONDS, so the code paths that only fire on fresh
+   * terrain (the cell repaint, first-sight composition) never execute there and
+   * every "cannot reproduce" from it was a test of code that never ran. His
+   * idea (2026-09-03): let the CLIENT measure and commit the numbers to live/,
+   * which agents already read straight from GitHub.
+   *
+   * OPT-IN and rate-limited: the client only posts with ?perf=1, at most one
+   * report per PERF_MIN_GAP_MS, and the file keeps the last PERF_KEEP reports.
+   * The payload is clamped here rather than trusted — it arrives from a browser
+   * and lands in a committed file. No identity is stored beyond a random
+   * per-session id the client makes up. */
+  app.post("/api/perf", async (req, res) => {
+    res.setHeader("Cache-Control", "no-store");
+    if (!ghToken()) { res.status(503).json({ error: "no token" }); return; }
+    const now = Date.now();
+    if (now - lastPerfCommit < PERF_MIN_GAP_MS) { res.status(429).json({ error: "too soon" }); return; }
+    const body = (req.body ?? {}) as Record<string, unknown>;
+    const report = perfReport(body, new Date(now).toISOString());
+    if (report.frames === null && report.sections === null) { res.status(400).json({ error: "empty report" }); return; }
+    lastPerfCommit = now;
+    const id = `${report.at.replace(/[:.]/g, "-")}-${Math.random().toString(36).slice(2, 8)}`;
+    const run = async () => {
+      const url = `${GH_API}/repos/${REPO}/contents/live/telemetry/perf.json`;
+      for (let attempt = 0; ; attempt++) {
+        const got = await fetch(`${url}?ref=${BRANCH}`, { headers: ghHeaders(), signal: AbortSignal.timeout(15000) });
+        let cur: { reports?: unknown[] } = {};
+        let sha: string | undefined;
+        if (got.ok) {
+          const j = (await got.json()) as { content?: string; sha?: string };
+          sha = j.sha;
+          try { cur = JSON.parse(Buffer.from(j.content ?? "", "base64").toString("utf8")); } catch { cur = {}; }
+        } else if (got.status !== 404) {
+          throw new Error(`GET perf.json: HTTP ${got.status}`);
+        }
+        const reports = Array.isArray(cur.reports) ? cur.reports : [];
+        reports.push({ id, ...report });
+        const doc = {
+          format: "nangijala-client-perf@1",
+          _comment:
+            "PER-DEVICE FRAME TIMINGS, posted by the game client with ?perf=1 and committed here " +
+            "by the server. The maintainer plays on a phone and tests in production; the headless " +
+            "harness walks ~1 cell per 24 s and never reaches the fresh-terrain code paths, so these " +
+            "are the only honest numbers for the paths that matter. Newest last; the file keeps the " +
+            "most recent reports only.",
+          updated_at: new Date(now).toISOString(),
+          reports: reports.slice(-PERF_KEEP),
+        };
+        const body2: Record<string, unknown> = {
+          message: "live: client perf report",
+          content: Buffer.from(JSON.stringify(doc, null, 2) + "\n", "utf8").toString("base64"),
+          branch: BRANCH,
+        };
+        if (sha) body2.sha = sha;
+        const put = await fetch(url, { method: "PUT", headers: ghHeaders(), body: JSON.stringify(body2), signal: AbortSignal.timeout(15000) });
+        if (put.ok) return;
+        if ((put.status === 409 || put.status === 422) && attempt < 2) continue;
+        throw new Error(`PUT perf.json: HTTP ${put.status}`);
+      }
+    };
+    const job = commitChain.then(run, run);
+    commitChain = job.then(() => undefined, () => undefined);
+    try { await job; res.json({ ok: true, id }); }
+    catch (e) { res.status(502).json({ error: String((e as Error).message).slice(0, 200) }); }
   });
 
   app.post("/api/live/refresh", (_req, res) => {

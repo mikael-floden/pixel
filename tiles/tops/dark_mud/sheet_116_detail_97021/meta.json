@@ -1,0 +1,132 @@
+{
+  "schema": "tiles3/tops@1",
+  "kind": "top_only",
+  "wall_is_meaningless": true,
+  "not_a_candidate_for": "x over y",
+  "ground": "dark_mud",
+  "flavour": "detail",
+  "index": 116,
+  "seed": 97021,
+  "prompt": "dark mud, a clump of dead grass in the middle, dark mud all around the edge",
+  "palette_top": "#514137",
+  "tile_id": "93ddf0c8-1bc3-40a5-9e0a-82ed83e3977b",
+  "n_tiles": 16,
+  "tiles": [
+    "tile_00.webp",
+    "tile_01.webp",
+    "tile_02.webp",
+    "tile_03.webp",
+    "tile_04.webp",
+    "tile_05.webp",
+    "tile_06.webp",
+    "tile_07.webp",
+    "tile_08.webp",
+    "tile_09.webp",
+    "tile_10.webp",
+    "tile_11.webp",
+    "tile_12.webp",
+    "tile_13.webp",
+    "tile_14.webp",
+    "tile_15.webp"
+  ],
+  "settings": {
+    "tile_size": 64,
+    "tile_view": "high top-down",
+    "view_angle": 28.0,
+    "depth_ratio": 0.5,
+    "tile_type": "isometric",
+    "flat_top_px": 2,
+    "outline_mode": "segmentation"
+  },
+  "usd": 0.096,
+  "created": "2026-09-03T06:28:53+00:00",
+  "top_face": {
+    "per_tile": [
+      {
+        "colours": 16,
+        "dominant_share": 0.2977,
+        "px": 964
+      },
+      {
+        "colours": 16,
+        "dominant_share": 0.366,
+        "px": 959
+      },
+      {
+        "colours": 18,
+        "dominant_share": 0.26,
+        "px": 973
+      },
+      {
+        "colours": 17,
+        "dominant_share": 0.3337,
+        "px": 926
+      },
+      {
+        "colours": 16,
+        "dominant_share": 0.3637,
+        "px": 943
+      },
+      {
+        "colours": 16,
+        "dominant_share": 0.3686,
+        "px": 925
+      },
+      {
+        "colours": 18,
+        "dominant_share": 0.4021,
+        "px": 960
+      },
+      {
+        "colours": 17,
+        "dominant_share": 0.2114,
+        "px": 951
+      },
+      {
+        "colours": 18,
+        "dominant_share": 0.2656,
+        "px": 960
+      },
+      {
+        "colours": 17,
+        "dominant_share": 0.3828,
+        "px": 930
+      },
+      {
+        "colours": 17,
+        "dominant_share": 0.3288,
+        "px": 955
+      },
+      {
+        "colours": 16,
+        "dominant_share": 0.1957,
+        "px": 930
+      },
+      {
+        "colours": 16,
+        "dominant_share": 0.2791,
+        "px": 935
+      },
+      {
+        "colours": 18,
+        "dominant_share": 0.1998,
+        "px": 946
+      },
+      {
+        "colours": 16,
+        "dominant_share": 0.2113,
+        "px": 956
+      },
+      {
+        "colours": 15,
+        "dominant_share": 0.3778,
+        "px": 945
+      }
+    ],
+    "mean_colours": 16.69,
+    "mean_dominant_share": 0.3028
+  },
+  "motif": "a clump of dead grass",
+  "motif_source": "tiles/config/details.json",
+  "walkable": true
+}

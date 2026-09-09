@@ -1,0 +1,218 @@
+{
+  "format": "scenery-piece@2",
+  "id": "stone_fountain_004",
+  "group": "stone_fountains",
+  "rank": 75,
+  "index": 4,
+  "name": "Fountain with carved child figure 004",
+  "lights": null,
+  "variety": "fountain with carved child figure",
+  "glow_concept": "carved memorial runes shining on the stone",
+  "prompt": "a small round village fountain of fitted grey stone, a mossy basin with a carved central spout trickling water, fountain with carved child figure, large, twice human height, self-emissive at night, softly radiating light: carved memorial runes shining on the stone",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 128,
+  "sprite": "stone_fountains/stone_fountain_004/sprite.webp",
+  "placement": {
+    "world_height_m": 2.501,
+    "world_px_height": 128,
+    "character_height_px": 87,
+    "character_height_m": 1.7,
+    "note": "ONE SCENERY PIXEL IS ONE PLAYER PIXEL. world_px_height IS the art's own alpha bbox height, so scenery is placed into the world at 1:1 exactly as the avatar is (setScale(1)) and the two share one pixel grid. The CAMERA still zooms the whole scene \u2014 that is uniform and correct; what must never happen is scenery being resampled on its own, against the player. world_height_m is what the art reads as beside a 87px character; declared_height_m is what it was once declared to be, and a gap between them means the ART is the wrong size.",
+    "declared_height_m": 2.13,
+    "content_box": [
+      21,
+      0,
+      109,
+      128
+    ],
+    "content_px_height": 128,
+    "canvas_render_px": 128
+  },
+  "pixellab_object_id": "b50f7993-eb78-48d1-815b-dae3b165ff40",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)",
+  "must_be_imbplemented_with_random_hflip": true,
+  "generated_at": "2026-08-13T20:38:02+00:00",
+  "states": {
+    "LIT_1": {
+      "sprite": "stone_fountains/stone_fountain_004/sprite.webp",
+      "pixellab_object_id": "b50f7993-eb78-48d1-815b-dae3b165ff40",
+      "generated_at": "2026-08-13T20:38:02+00:00",
+      "rotations": {
+        "south-east": "stone_fountains/stone_fountain_004/rotations/south-east.webp",
+        "south-west": "stone_fountains/stone_fountain_004/rotations/south-west.webp",
+        "south": "stone_fountains/stone_fountain_004/sprite.webp"
+      }
+    },
+    "LIT_2": {
+      "sprite": "stone_fountains/stone_fountain_004/lit_2/sprite.webp",
+      "pixellab_object_id": "45948e44-b130-4ebd-85d1-01da124cab46",
+      "generated_at": "2026-08-16T21:34:01+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.6769,
+      "glow_score": 0.0172,
+      "rotations": {
+        "south-east": "stone_fountains/stone_fountain_004/lit_2/rotations/south-east.webp",
+        "south-west": "stone_fountains/stone_fountain_004/lit_2/rotations/south-west.webp",
+        "south": "stone_fountains/stone_fountain_004/lit_2/sprite.webp"
+      },
+      "animations": {
+        "motion": {
+          "group_id": "7431b2a8-f523-4778-aac6-5a06468e4a75",
+          "description": "This is the same picture in every frame. ONLY the jet of water from the gargoyle's mouth runs downward. Nothing else moves, bends or leans, and nothing changes size, shape or position. The last frame must return to exactly how the first frame looks, so the loop joins. Nothing may become darker than it is in the first frame. Do not redraw anything else, and do not add or remove anything.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "stone_fountains/stone_fountain_004/lit_2/animations/motion/00.webp",
+            "stone_fountains/stone_fountain_004/lit_2/animations/motion/01.webp",
+            "stone_fountains/stone_fountain_004/lit_2/animations/motion/02.webp",
+            "stone_fountains/stone_fountain_004/lit_2/animations/motion/03.webp",
+            "stone_fountains/stone_fountain_004/lit_2/animations/motion/04.webp"
+          ],
+          "strip": "stone_fountains/stone_fountain_004/lit_2/animations/motion__strip.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-08-29T15:39:29+00:00",
+          "brief": "X50",
+          "review": "ANIMATION_PROBABLY_GOOD",
+          "review_metrics": {
+            "base_outline": 0.0
+          },
+          "light_frames": [
+            {
+              "intensity": 0.963,
+              "dx": -0.4,
+              "dy": 6.4
+            },
+            {
+              "intensity": 0.993,
+              "dx": -0.5,
+              "dy": 7.9
+            },
+            {
+              "intensity": 0.707,
+              "dx": -0.3,
+              "dy": 7.8
+            },
+            {
+              "intensity": 0.978,
+              "dx": -0.4,
+              "dy": 14.7
+            },
+            {
+              "intensity": 1.359,
+              "dx": 0.1,
+              "dy": 7.7
+            }
+          ]
+        }
+      }
+    },
+    "LIT_4": {
+      "sprite": "stone_fountains/stone_fountain_004/lit_4/sprite.webp",
+      "pixellab_object_id": "d3d1e21e-8e5d-4fa5-8704-da13d611387b",
+      "generated_at": "2026-08-16T21:34:21+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.4472,
+      "glow_score": 0.0188,
+      "rotations": {
+        "south-east": "stone_fountains/stone_fountain_004/lit_4/rotations/south-east.webp",
+        "south-west": "stone_fountains/stone_fountain_004/lit_4/rotations/south-west.webp",
+        "south": "stone_fountains/stone_fountain_004/lit_4/sprite.webp"
+      },
+      "animations": {
+        "motion": {
+          "group_id": "cc010f2b-bdd3-47f2-abfe-82a823222a09",
+          "description": "This is the same picture in every frame. ONLY the water pouring from the fountain runs downward. Everything else in the picture is copied from the first frame exactly, pixel for pixel, unchanged in shape, size, position and colour. No outline anywhere is redrawn. The last frame matches the first frame exactly, so the loop joins. Nothing anywhere becomes darker, lighter or a different colour except the one thing named above.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "stone_fountains/stone_fountain_004/lit_4/animations/motion/00.webp",
+            "stone_fountains/stone_fountain_004/lit_4/animations/motion/01.webp",
+            "stone_fountains/stone_fountain_004/lit_4/animations/motion/02.webp",
+            "stone_fountains/stone_fountain_004/lit_4/animations/motion/03.webp",
+            "stone_fountains/stone_fountain_004/lit_4/animations/motion/04.webp"
+          ],
+          "strip": "stone_fountains/stone_fountain_004/lit_4/animations/motion__strip.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-08-29T16:18:24+00:00",
+          "brief": "Y41",
+          "review": "ANIMATION_PROBABLY_GOOD",
+          "review_metrics": {
+            "class": "water",
+            "base": 0.0007,
+            "still": 0.894
+          },
+          "light_frames": [
+            {
+              "intensity": 0.956,
+              "dx": 0.1,
+              "dy": -34.0
+            },
+            {
+              "intensity": 1.115,
+              "dx": -0.2,
+              "dy": -26.5
+            },
+            {
+              "intensity": 1.026,
+              "dx": -0.8,
+              "dy": -29.4
+            },
+            {
+              "intensity": 1.024,
+              "dx": -0.5,
+              "dy": -27.9
+            },
+            {
+              "intensity": 0.879,
+              "dx": -0.6,
+              "dy": -31.5
+            }
+          ]
+        }
+      }
+    }
+  },
+  "collision": true,
+  "hitbox_shape": "ellipse",
+  "light": {
+    "strength": 0.2,
+    "color": "#9fe4ff",
+    "radius": 4,
+    "reference": "the spawn bonfire is 1.0 (radius 7); strength 0 is no light",
+    "states": {
+      "LIT_1": {
+        "strength": 0.16,
+        "color": "#9fe4ff",
+        "radius": 3
+      },
+      "LIT_2": {
+        "strength": 0.16,
+        "color": "#9fe4ff",
+        "radius": 3
+      },
+      "LIT_4": {
+        "strength": 0.2,
+        "color": "#ffcd9c",
+        "radius": 4
+      }
+    },
+    "kind": "glow/water",
+    "flame": false,
+    "embers": false
+  }
+}

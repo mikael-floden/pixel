@@ -1,0 +1,761 @@
+{
+ "_comment": "The maintainer's OWN prompt library, recovered from the PixelLab account. They completed the entire X-over-Y matrix once before this project started; the art is unusable (a mis-click changed the camera angle) but the WORDING is the most valuable thing we have \u2014 it is the vocabulary that actually produced clean tiles, found by hand over hundreds of attempts. Retry counts are real data: the hard pairs took 7-9 sheets before one came out clean, so budget for that rather than expecting a first-shot hit.",
+ "_stats": {
+  "distinct_prompts": 184,
+  "total_sheets": 514,
+  "median_attempts_when_retried": 4,
+  "worst_case_attempts": 9
+ },
+ "_connectors": {
+  "over": 79,
+  "to": 55,
+  "on top of": 50,
+  "_note": "all three were used interchangeably; none is obviously better from counts alone"
+ },
+ "_qualifiers": {
+  "clean": 136,
+  "single color": 92,
+  "plain": 37,
+  "solid": 26,
+  "pure": 17,
+  "_note": "NOTE these sit alongside MATERIAL nouns (snow, black rock, lava, grass, ice, dirt, water, stone, sand beach, soil) rather than replacing them. That matters: our own bake-off found a bare #hex gives the flattest, most colour-accurate TOP \u2014 but flatness is exactly what the WALLS must not have, since they build every cliff face. Naming the material is what keeps wall texture alive."
+ },
+ "prompts": [
+  {
+   "prompt": "solid single color snow on top of black rock",
+   "attempts": 9
+  },
+  {
+   "prompt": "Dark single color brown over clean bright ice",
+   "attempts": 8
+  },
+  {
+   "prompt": "dark clean dirt over single color clean lava",
+   "attempts": 7
+  },
+  {
+   "prompt": "plain clean solid color lava over green grass",
+   "attempts": 7
+  },
+  {
+   "prompt": "single color water over stone",
+   "attempts": 7
+  },
+  {
+   "prompt": "white blue ice over plain clean green",
+   "attempts": 6
+  },
+  {
+   "prompt": "light white clean sand beach to bright soil",
+   "attempts": 6
+  },
+  {
+   "prompt": "100% pure orange over black rock. the pure orange",
+   "attempts": 6
+  },
+  {
+   "prompt": "black solid rock (black/dark rock) ON TOP OF snow/",
+   "attempts": 6
+  },
+  {
+   "prompt": "single color dark brown over light blue water",
+   "attempts": 6
+  },
+  {
+   "prompt": "ice on top of single clean green color",
+   "attempts": 5
+  },
+  {
+   "prompt": "dark clean dirt over clean water",
+   "attempts": 5
+  },
+  {
+   "prompt": "dark clean dirt over bright clean soil",
+   "attempts": 5
+  },
+  {
+   "prompt": "clean dark dirt to clean water",
+   "attempts": 5
+  },
+  {
+   "prompt": "light white bright clean sand beach to clean water",
+   "attempts": 5
+  },
+  {
+   "prompt": "clean grey stone to ice",
+   "attempts": 5
+  },
+  {
+   "prompt": "light clean soil to clean dark dirt",
+   "attempts": 5
+  },
+  {
+   "prompt": "dark brown solid color on top of grey stone",
+   "attempts": 5
+  },
+  {
+   "prompt": "White solid single color white snow on top of blac",
+   "attempts": 5
+  },
+  {
+   "prompt": "dark single color clean stone on top of ice",
+   "attempts": 5
+  },
+  {
+   "prompt": "deep dark blue ocean to clean bright ocean",
+   "attempts": 4
+  },
+  {
+   "prompt": "clean white ice over single colour clean lava",
+   "attempts": 4
+  },
+  {
+   "prompt": "light white sand beach on top of light brown clean",
+   "attempts": 4
+  },
+  {
+   "prompt": "light white sand beach on top of single color clea",
+   "attempts": 4
+  },
+  {
+   "prompt": "clean gray stone on top of single color clean gree",
+   "attempts": 4
+  },
+  {
+   "prompt": "clean dark dirt to clean near-black rock",
+   "attempts": 4
+  },
+  {
+   "prompt": "clean ice to clean water",
+   "attempts": 4
+  },
+  {
+   "prompt": "clean ice to near-black clean rock",
+   "attempts": 4
+  },
+  {
+   "prompt": "clean ice to Single color clean dark dirt",
+   "attempts": 4
+  },
+  {
+   "prompt": "clean single color white snow to clean water",
+   "attempts": 4
+  },
+  {
+   "prompt": "clean single color white snow to clean near-black",
+   "attempts": 4
+  },
+  {
+   "prompt": "clean single color white snow to clean dark dirt",
+   "attempts": 4
+  },
+  {
+   "prompt": "light white bright clean sand beach to clean near-",
+   "attempts": 4
+  },
+  {
+   "prompt": "light white bright clean sand beach to clean ice",
+   "attempts": 4
+  },
+  {
+   "prompt": "light white bright clean sand beach to white clean",
+   "attempts": 4
+  },
+  {
+   "prompt": "clean grey stone to clean water",
+   "attempts": 4
+  },
+  {
+   "prompt": "clean grey stone to clean near-black rock",
+   "attempts": 4
+  },
+  {
+   "prompt": "clean grey stone to clean dark dirt",
+   "attempts": 4
+  },
+  {
+   "prompt": "clean grey stone to clean bright snow",
+   "attempts": 4
+  },
+  {
+   "prompt": "light clean soil to clean clean single color lava",
+   "attempts": 4
+  },
+  {
+   "prompt": "light clean soil to clean water",
+   "attempts": 4
+  },
+  {
+   "prompt": "light clean soil to clean near-black rock",
+   "attempts": 4
+  },
+  {
+   "prompt": "light clean soil to clean ice",
+   "attempts": 4
+  },
+  {
+   "prompt": "clean single color light soil to grey clean rock",
+   "attempts": 4
+  },
+  {
+   "prompt": "100% pure clean orange over black rock. the pure o",
+   "attempts": 4
+  },
+  {
+   "prompt": "single color plain color water over light beach",
+   "attempts": 4
+  },
+  {
+   "prompt": "single color water over green grass",
+   "attempts": 4
+  },
+  {
+   "prompt": "Black clean rock (solid single color) over dark di",
+   "attempts": 4
+  },
+  {
+   "prompt": "Dark single color brown over clean bright white",
+   "attempts": 4
+  },
+  {
+   "prompt": "clean single color ice on top of dark dirt",
+   "attempts": 4
+  },
+  {
+   "prompt": "clear single color ice over grey stone",
+   "attempts": 4
+  },
+  {
+   "prompt": "clean plain 100% white snow on top of very dark du",
+   "attempts": 4
+  },
+  {
+   "prompt": "clean plain 100% white snow on top of light blue i",
+   "attempts": 4
+  },
+  {
+   "prompt": "single color light beach on top of dark dark dirt",
+   "attempts": 4
+  },
+  {
+   "prompt": "light single color light beach on top of bright wh",
+   "attempts": 4
+  },
+  {
+   "prompt": "Clean single color bright beach on top of grey sto",
+   "attempts": 4
+  },
+  {
+   "prompt": "clean single color light grey stone on top of brow",
+   "attempts": 4
+  },
+  {
+   "prompt": "Always the same single color brown on top of snow.",
+   "attempts": 4
+  },
+  {
+   "prompt": "Single color brown on top of grey stone. Clean sin",
+   "attempts": 4
+  },
+  {
+   "prompt": "solid single color browns dirt on top of grey ston",
+   "attempts": 4
+  },
+  {
+   "prompt": "clean single color solid grass on top of rock",
+   "attempts": 4
+  },
+  {
+   "prompt": "clean white ice over clean water",
+   "attempts": 3
+  },
+  {
+   "prompt": "clean white snow over bright brown soil",
+   "attempts": 3
+  },
+  {
+   "prompt": "clean ice on top of light brown soil",
+   "attempts": 3
+  },
+  {
+   "prompt": "White clean snow over clean water",
+   "attempts": 3
+  },
+  {
+   "prompt": "clean white snow over single color clean lava",
+   "attempts": 3
+  },
+  {
+   "prompt": "clean grey single color stone over clean water",
+   "attempts": 3
+  },
+  {
+   "prompt": "clean grey stone on top of white Bright sand beach",
+   "attempts": 3
+  },
+  {
+   "prompt": "light clean soil over grey clean stone",
+   "attempts": 3
+  },
+  {
+   "prompt": "light clean soil on top of water",
+   "attempts": 3
+  },
+  {
+   "prompt": "single color clean grean on top of clean water",
+   "attempts": 3
+  },
+  {
+   "prompt": "dark clean dirt over bright white sand beach",
+   "attempts": 3
+  },
+  {
+   "prompt": "clean near-black stone over plain green",
+   "attempts": 3
+  },
+  {
+   "prompt": "clean near-black rock over light soil",
+   "attempts": 3
+  },
+  {
+   "prompt": "near-black rock on top of white bright clean sand",
+   "attempts": 3
+  },
+  {
+   "prompt": "white clean snow on to of single color clean lava",
+   "attempts": 3
+  },
+  {
+   "prompt": "clean water to single single color clean lava",
+   "attempts": 3
+  },
+  {
+   "prompt": "clean near-black rock to single color clean lava",
+   "attempts": 3
+  },
+  {
+   "prompt": "clean near-black rock to clean water",
+   "attempts": 3
+  },
+  {
+   "prompt": "clean dark dirt to single color clean lava",
+   "attempts": 3
+  },
+  {
+   "prompt": "clean ice to single color clean lava",
+   "attempts": 3
+  },
+  {
+   "prompt": "light white bright clean sand beach to single colo",
+   "attempts": 3
+  },
+  {
+   "prompt": "light white bright clean sand beach to clean dark",
+   "attempts": 3
+  },
+  {
+   "prompt": "clean grey stone to clean bright white sand beach",
+   "attempts": 3
+  },
+  {
+   "prompt": "plain single color clean green to black rock",
+   "attempts": 3
+  },
+  {
+   "prompt": "plain clean single color light beach to water",
+   "attempts": 3
+  },
+  {
+   "prompt": "plain clean single color\ngreen to plain clean sing",
+   "attempts": 3
+  },
+  {
+   "prompt": "single color plain color water over ice",
+   "attempts": 3
+  },
+  {
+   "prompt": "single color plain color water over white snow",
+   "attempts": 3
+  },
+  {
+   "prompt": "single color water over soil",
+   "attempts": 3
+  },
+  {
+   "prompt": "dark brown clean dirt on top of grey stone",
+   "attempts": 3
+  },
+  {
+   "prompt": "clean single color ice on top of black rocks",
+   "attempts": 3
+  },
+  {
+   "prompt": "100% clean ice over ice. 100% pure ice",
+   "attempts": 3
+  },
+  {
+   "prompt": "clean single color white snow on top of brown soil",
+   "attempts": 3
+  },
+  {
+   "prompt": "single color light beach on top of black rock",
+   "attempts": 3
+  },
+  {
+   "prompt": "single color light beach on top of bright light bl",
+   "attempts": 3
+  },
+  {
+   "prompt": "single color clean grey stone on top of black rock",
+   "attempts": 3
+  },
+  {
+   "prompt": "clean single color brown on top of black rock.\n\nON",
+   "attempts": 3
+  },
+  {
+   "prompt": "light single color brown on top of black rock",
+   "attempts": 3
+  },
+  {
+   "prompt": "clean white snow over clean water",
+   "attempts": 2
+  },
+  {
+   "prompt": "clean grey single color stone over single color cl",
+   "attempts": 2
+  },
+  {
+   "prompt": "light clean soil on top of single color clean lava",
+   "attempts": 2
+  },
+  {
+   "prompt": "clean light soil on top of white clean snow",
+   "attempts": 2
+  },
+  {
+   "prompt": "clean light soil on top of pure green color",
+   "attempts": 2
+  },
+  {
+   "prompt": "ice over plain clean green color",
+   "attempts": 2
+  },
+  {
+   "prompt": "clean dark dirt over bright light clean soil",
+   "attempts": 2
+  },
+  {
+   "prompt": "clean white snow on top of water",
+   "attempts": 2
+  },
+  {
+   "prompt": "single color clean lava on top of clean water",
+   "attempts": 2
+  },
+  {
+   "prompt": "clean single color white snow to single color clea",
+   "attempts": 2
+  },
+  {
+   "prompt": "clean single color white snow to ice",
+   "attempts": 2
+  },
+  {
+   "prompt": "clean grey stone to clean single color clean lava",
+   "attempts": 2
+  },
+  {
+   "prompt": "clean grey stone to clean single color lava",
+   "attempts": 2
+  },
+  {
+   "prompt": "clean single color light soil to bright send beach",
+   "attempts": 2
+  },
+  {
+   "prompt": "clean single color soil to grey clean rock",
+   "attempts": 2
+  },
+  {
+   "prompt": "plain single color clean green to grey stone",
+   "attempts": 2
+  },
+  {
+   "prompt": "plain clean single color green to light beach",
+   "attempts": 2
+  },
+  {
+   "prompt": "100% plain clean grey color on top of rock",
+   "attempts": 2
+  },
+  {
+   "prompt": "100% plain grey color on top of rock",
+   "attempts": 2
+  },
+  {
+   "prompt": "100% pure orange over light beach. the pure orange",
+   "attempts": 2
+  },
+  {
+   "prompt": "100% pure orange over green. the pure orange color",
+   "attempts": 2
+  },
+  {
+   "prompt": "100% pure orange over black rock.",
+   "attempts": 2
+  },
+  {
+   "prompt": "100% pure orange over ice",
+   "attempts": 2
+  },
+  {
+   "prompt": "single color plain color water over stone",
+   "attempts": 2
+  },
+  {
+   "prompt": "light single color brown on top of dark brown dirt",
+   "attempts": 2
+  },
+  {
+   "prompt": "clean single color grass on top of black rock",
+   "attempts": 2
+  },
+  {
+   "prompt": "clean single color solid grass on top of grey rock",
+   "attempts": 2
+  },
+  {
+   "prompt": "solid brown color over clean green",
+   "attempts": 2
+  },
+  {
+   "prompt": "single color lava over light grey stone",
+   "attempts": 2
+  },
+  {
+   "prompt": "single solid color clean orange over blue water",
+   "attempts": 2
+  },
+  {
+   "prompt": "single color brown over light blue water",
+   "attempts": 2
+  },
+  {
+   "prompt": "plain solid color dark gray over clean white",
+   "attempts": 2
+  },
+  {
+   "prompt": "plain clean solid color grass over grey stone",
+   "attempts": 2
+  },
+  {
+   "prompt": "clean ice to clean ice",
+   "attempts": 1
+  },
+  {
+   "prompt": "dark clean dirt to dark clean dirt",
+   "attempts": 1
+  },
+  {
+   "prompt": "clean grey rock to clean grey rock",
+   "attempts": 1
+  },
+  {
+   "prompt": "clean single color green grass to clean single col",
+   "attempts": 1
+  },
+  {
+   "prompt": "single color clean grean on top of single colour c",
+   "attempts": 1
+  },
+  {
+   "prompt": "light soil on top of white bright clean sand beach",
+   "attempts": 1
+  },
+  {
+   "prompt": "ice over plain single color clean green",
+   "attempts": 1
+  },
+  {
+   "prompt": "ice over plain single color clean grean",
+   "attempts": 1
+  },
+  {
+   "prompt": "dark clean dirt over single color clean water",
+   "attempts": 1
+  },
+  {
+   "prompt": "dark clean dirt over water",
+   "attempts": 1
+  },
+  {
+   "prompt": "clean dark dirt over plain green clean color",
+   "attempts": 1
+  },
+  {
+   "prompt": "clean water on top of single color clean lava",
+   "attempts": 1
+  },
+  {
+   "prompt": "clean single color saturated grass to ice",
+   "attempts": 1
+  },
+  {
+   "prompt": "plain single color clean green to clean lava",
+   "attempts": 1
+  },
+  {
+   "prompt": "plain clean single color green to clean black rock",
+   "attempts": 1
+  },
+  {
+   "prompt": "plain clean single color light sand beach to water",
+   "attempts": 1
+  },
+  {
+   "prompt": "plain clean single color\ngreen to water",
+   "attempts": 1
+  },
+  {
+   "prompt": "plain clean single color\ngrass to plain clean sing",
+   "attempts": 1
+  },
+  {
+   "prompt": "100% pure orange over stone. the pure orange color",
+   "attempts": 1
+  },
+  {
+   "prompt": "100% pure orange over dark dirt. the pure orange c",
+   "attempts": 1
+  },
+  {
+   "prompt": "100% pure orange over white. the pure orange color",
+   "attempts": 1
+  },
+  {
+   "prompt": "100% pure orange over soil",
+   "attempts": 1
+  },
+  {
+   "prompt": "100% pure orange over stone",
+   "attempts": 1
+  },
+  {
+   "prompt": "100% pure orange over pure white snow",
+   "attempts": 1
+  },
+  {
+   "prompt": "100% pure orange over pure green",
+   "attempts": 1
+  },
+  {
+   "prompt": "Single color water over ice",
+   "attempts": 1
+  },
+  {
+   "prompt": "single color plain color water over snow",
+   "attempts": 1
+  },
+  {
+   "prompt": "single color plain color water over white",
+   "attempts": 1
+  },
+  {
+   "prompt": "Black clean stone over ice",
+   "attempts": 1
+  },
+  {
+   "prompt": "clean single color ice on top of black rock",
+   "attempts": 1
+  },
+  {
+   "prompt": "100% clean ice over ice. 100% pure ice.",
+   "attempts": 1
+  },
+  {
+   "prompt": "clean single color snow on top of soil",
+   "attempts": 1
+  },
+  {
+   "prompt": "brown single color on top of ice",
+   "attempts": 1
+  },
+  {
+   "prompt": "clean single color solid green on top of black roc",
+   "attempts": 1
+  },
+  {
+   "prompt": "solid brown color over black rock",
+   "attempts": 1
+  },
+  {
+   "prompt": "solid brown path over rock",
+   "attempts": 1
+  },
+  {
+   "prompt": "single color clean water over black rock",
+   "attempts": 1
+  },
+  {
+   "prompt": "single solid color clean orange over water",
+   "attempts": 1
+  },
+  {
+   "prompt": "solid color brown over water",
+   "attempts": 1
+  },
+  {
+   "prompt": "single color red/orange over blur water",
+   "attempts": 1
+  },
+  {
+   "prompt": "single color lava over water",
+   "attempts": 1
+  },
+  {
+   "prompt": "plain solid color dark gray over pure bright white",
+   "attempts": 1
+  },
+  {
+   "prompt": "plain solid color gray over clean white snow",
+   "attempts": 1
+  },
+  {
+   "prompt": "plain solid color gray over plain white",
+   "attempts": 1
+  },
+  {
+   "prompt": "single color clean water over grey stone",
+   "attempts": 1
+  },
+  {
+   "prompt": "plain clean solid color green over solid color lav",
+   "attempts": 1
+  },
+  {
+   "prompt": "single color clean white over clean green",
+   "attempts": 1
+  },
+  {
+   "prompt": "single color clean dark brown over blue water",
+   "attempts": 1
+  },
+  {
+   "prompt": "plain clean solid color light brown over water",
+   "attempts": 1
+  },
+  {
+   "prompt": "plain clean solid color white over black rock",
+   "attempts": 1
+  },
+  {
+   "prompt": "plain clean solid color green grass over snow",
+   "attempts": 1
+  },
+  {
+   "prompt": "plain clean solid color green grass over dark rock",
+   "attempts": 1
+  }
+ ]
+}

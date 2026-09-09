@@ -1,6 +1,9 @@
 import Phaser from "phaser";
-import { ISO_DX, ISO_DY, surfaceFor } from "@nangijala/shared";
-import { World, MAP_GEOMETRY } from "./maps";
+import { surfaceFor, CHARACTER_BODY_PX } from "@nangijala/shared";
+import type { SceneryFootprints } from "@nangijala/shared";
+import { World, MAP_GEOMETRY, geometryFor } from "./maps";
+import { renderedWorldView, ViewRect } from "./camview";
+import { lightScale } from "./lightscale";
 
 /**
  * Serious night lighting: a fullscreen MULTIPLY shader that reconstructs each
@@ -70,9 +73,86 @@ export interface GlowStamp {
   // an offset and dims when you stand under it (the "brighter then darker as I
   // approach" bug). Undefined = eligible (legacy/terrain stamps, near-ground).
   litChar?: boolean;
+  // The emissive source ("col,row") this stamp belongs to. A source holding a
+  // REAL light slot has its ground POOL filtered out for the frame (the light
+  // replaces it — keeping both double-brightens the ground AND the characters,
+  // since curLights and curStamps both feed lightAt); its high halos stay, they
+  // are the art's own bloom, the campfire's flame-core equivalent.
+  srcId?: string;
 }
 
 export const MAX_SHADER_LIGHTS = 12;
+
+/** lightAt's BREAKDOWN for the scenery-lit pipeline (scenerylit.ts), which
+ *  adds the point lights per texel and needs everything else at the foot:
+ *  `base` = ambient·sun·cloud + aurora, AO'd, plus the glow stamps — the
+ *  copy's flat tint minus the point lights; `occ[i]` = light i's LOS occlusion
+ *  at the foot (1 = clear; the pipeline carries the first 8); `ao` = the
+ *  ground AO factor; `sunF` = the sun factor alone (no cloud), so the pipeline
+ *  can re-weight the sun share by the volume's Lambert. Filled in place. */
+export interface LightParts {
+  base: [number, number, number];
+  occ: Float32Array;
+  ao: number;
+  sunF: number;
+}
+
+/* SCENERY OCCLUDER SIZING — see NightLights.setSceneryOccluders. */
+/** Trunk bump ceiling, levels. The LOS ramp saturates 0.67 level over the ray,
+ *  so 2 already reads as a full shadow; 3 is headroom for a torch held a step up. */
+const SCN_TRUNK_MAX = 3;
+/** A piece's OWN shares are removed from its lit-copy tint within this radius
+ *  (cells): its trunk cell is ≤0.7 from its anchor and the bilinear skirt adds 1. */
+const SCN_EXCL_R = 1.8;
+/** The trunk CORE's radius (cells) for the own-cell directional shade: a pixel
+ *  inside a piece's share cell is shaded by its own trunk only where the ray to
+ *  the light (or the sun) passes through this core between them. */
+const SCN_CORE = 0.45;
+/** The CONTACT blob under a piece: radius (cells) and strength for the sun
+ *  patch (a `m` share) and the torch march (an occ factor). Every direction —
+ *  the ground beside and in front of a post read as bright spots against the
+ *  skirt-shaded ground around it (maintainer, 2026-09-06). */
+const SCN_CONTACT_R = 0.75;
+const SCN_CONTACT_SUN = 0.7;
+const SCN_CONTACT_TORCH = 0.5;
+/** A SCENERY PIECE SHADOWS HARD under a point light (maintainer 2026-09-07:
+ *  every light must make scenery cast shadows the way the bonfire does). A
+ *  one-cell piece intercepts one or two march samples; at the wall chain's
+ *  0.8 per sample that was a 10-16% dip behind a waystone under a
+ *  streetlight (measured) — invisible in a half-strength pool, only the
+ *  bonfire's overbright pool made it read. Samples on a scenery share take
+ *  these factors instead (grazing → deep); walls keep 0.8→0.45. */
+const SCN_SHADOW_NEAR = 0.55;
+const SCN_SHADOW_DEEP = 0.3;
+/** DON'T MARCH A SHADOW NOBODY CAN SEE — the threshold is on the light's OWN
+ *  CONTRIBUTION (att × its peak channel), not on att, because a campfire at
+ *  1.9 and a lamp at 0.5 reach this point at different distances. A shadow can
+ *  remove at most 78% of that contribution (the march's 0.22 bounce floor), so
+ *  below 0.012 the deepest possible shadow is worth 0.009 luma — under 3/255,
+ *  invisible. It matters now that the manifest publishes radius-11
+ *  streetlights (the cap came off on the maintainer's word, 2026-09-07): a
+ *  radius-11 pool is wider than the phone's viewport, so without this every
+ *  fragment on screen marches every light in it. Saves the outer 8-12% of each
+ *  radius, which is 15-21% of its area and of its marched fragments.
+ *  (NOT 0.06 on att alone — that was the first cut and it can hide 0.09 luma
+ *  of a bright light's shadow, half the night's ambient.) MEASURED at the
+ *  town's radius-11 lamp (peak 1.14, skip radius 9.87): the luma profile along
+ *  the light's ray has NO step there — its largest step, 0.627, sits at 3.0
+ *  cells and is a shadow edge. */
+const SHADOW_MARCH_MIN_LIGHT = 0.012;
+/** The glow field's resolution divisor — see where glowRT is built. */
+const GLOW_FIELD_DIV = 2;
+/** GLSL smoothstep, for the CPU twins of shader terms (e0 > e1 allowed, as in GLSL). */
+function smoothStep01(e0: number, e1: number, x: number): number {
+  const t = Math.max(0, Math.min(1, (x - e0) / (e1 - e0)));
+  return t * t * (3 - 2 * t);
+}
+/** Chebyshev radius (cells) of the sun patch's sparse gate around a share cell. */
+const SCN_GATE_R = 4;
+/** A scenery lit copy's LOS occlusion is marched for every light within its
+ *  radius grown by this (cells): the crown's near edge can be lit by a light
+ *  that is out of range at the foot, and it must carry a real occlusion. */
+const SCN_CROWN_REACH = 2.5;
 
 /** Per-channel emission animation — the "alive" waveform shared by every
  * emission layer (shader self-floor, glow stamps, lit-copy tints). Returns
@@ -156,6 +236,9 @@ uniform float uAnimTime;
 uniform vec4 uCam;        // worldView x, y, w, h (world-render px)
 uniform vec4 uIsoA;       // ox, oy, dx, dy
 uniform vec4 uIsoB;       // lh, gridW, gridH, maxLevel
+uniform sampler2D uHBlock; // BLOCK×BLOCK block-max of uHeight.r (unbound sampler = unit 0!)
+uniform vec2 uHBlockN;     // the block grid's size
+uniform float uSkip;       // 1 = uHBlock is bound and the march may skip whole blocks
 uniform float uHScale;    // levels→byte pack scale (per-world; 16 unless the world tops ~15 levels)
 uniform vec3 uAmbient;    // night grade (what unlit white becomes)
 uniform vec4 uSun;        // directional sun: cast dir (grid x,y), slope (levels/cell), strength
@@ -163,12 +246,14 @@ uniform float uCloud;     // weather: cloud cover 0..1 (world-anchored drifting 
 uniform float uAurora;    // aurora night 0..1: northern-light curtains ADD colour to the ambient
 uniform float uFlip;      // 1 = invert fragment y (GL bottom-up), 0 = direct
 uniform float uTest;      // 1 = output a raw world-y gradient (calibration)
+uniform float uShadowDbg; // 0 = normal, 1 = shadows OFF, 2 = shadows RED (settings switch)
 uniform float uNumLights;
 uniform vec4 uLightPos[${MAX_SHADER_LIGHTS}];  // col, row, z, radius(cells)
 uniform vec4 uLightCol[${MAX_SHADER_LIGHTS}];  // r, g, b, flicker
 uniform float uIndoor;   // 1 while the local player is indoors (see heightAt)
 uniform float uIndoorTop; // the cut-away's top level while indoors (see heightAt)
-uniform sampler2D uRoom;  // R: 1 where the cell is in MY room (roomAt).
+uniform sampler2D uRoom;  // R: 128+cut where the cell is in MY room, 0 outside
+                          // (roomAt tests the top half; heightAt reads the cut).
                           // G: depth from the nearest opening PLUS ONE (0 = not a room).
                           // B: the ceiling's UNDERSIDE level — the top of the opening.
 uniform float uCaveK;     // depth falloff — 0 disables the effect entirely
@@ -182,6 +267,9 @@ uniform sampler2D uEmit;    // emission palette: 2 texels/entry (colour; params)
 uniform float uEmitN;       // number of palette entries (0 = no emission)
 uniform sampler2D uGlow;    // world-anchored glow-halo field (same window as uCam)
 uniform float uGlowOn;      // 1 when the glow field is bound (unbound sampler = unit 0!)
+uniform float uHasProps;    // 0 when the world places no props: the prop-shadow loop is a no-op then
+uniform float uSceneryOn;   // 1 when scenery shares are stamped (maps3): own-cell skirt skip armed
+uniform float uPropGate;    // 1 when the ground map's G flags the sun patch's reach (sparse prop loop)
 uniform float uGlowFlip;    // render-target y orientation (calibrated numerically)
 
 // Bilinear height for the LOS march ONLY: blockers ramp in over ~a cell, so
@@ -248,6 +336,29 @@ float groundAt(vec2 cr) {
   if (cr.x < 0.0 || cr.y < 0.0 || cr.x >= uIsoB.y || cr.y >= uIsoB.z) return 99.0;
   vec2 uv = (floor(cr) + 0.5) / vec2(uIsoB.y, uIsoB.z);
   return texture2D(uHeightG, uv).r * 255.0 / uHScale;
+}
+
+// SCENERY (maps3, setSceneryOccluders): the ground map's B carries a cell's
+// SCENERY share of its column (levels, R's packing) and its G flags every
+// cell within the sun patch's reach of any share. Both 0 on a tiles2 world.
+float sceneryShareAt(vec2 cr) {
+  if (cr.x < 0.0 || cr.y < 0.0 || cr.x >= uIsoB.y || cr.y >= uIsoB.z) return 0.0;
+  vec2 uv = (floor(cr) + 0.5) / vec2(uIsoB.y, uIsoB.z);
+  return texture2D(uHeightG, uv).b * 255.0 / uHScale;
+}
+float sceneryNearAt(vec2 cr) {
+  if (cr.x < 0.0 || cr.y < 0.0 || cr.x >= uIsoB.y || cr.y >= uIsoB.z) return 0.0;
+  vec2 uv = (floor(cr) + 0.5) / vec2(uIsoB.y, uIsoB.z);
+  return texture2D(uHeightG, uv).g;
+}
+// groundAt WITHOUT the scenery share — the terrain + solid column, for the
+// cave-mouth walk: a trunk bump on a cliff-top cell must not extend that
+// column over the mouth below it (B is 0 for props: same bytes as groundAt).
+float groundTerrAt(vec2 cr) {
+  if (cr.x < 0.0 || cr.y < 0.0 || cr.x >= uIsoB.y || cr.y >= uIsoB.z) return 99.0;
+  vec2 uv = (floor(cr) + 0.5) / vec2(uIsoB.y, uIsoB.z);
+  vec3 v = texture2D(uHeightG, uv).rgb;
+  return (v.r - v.b) * 255.0 / uHScale;
 }
 
 // The SURFACE height a screen pixel resolves to.
@@ -357,7 +468,7 @@ vec2 groundCellAt(float u, float v0, float kk) {
     float vLo = max(vColB, vRowB);
     float vMid = (vHi + vLo) * 0.5;
     vec2 c2 = vec2((u + vMid) * 0.5, (vMid - u) * 0.5);
-    float H = groundAt(c2);
+    float H = groundTerrAt(c2);
     if (H < 90.0 && v0 + H * kk >= vLo - 0.0001) { hit = c2; got = true; }
     vHi = vLo;
   }
@@ -366,8 +477,27 @@ vec2 groundCellAt(float u, float v0, float kk) {
 
 float heightAt(vec2 cr) {
   if (cr.x < 0.0 || cr.y < 0.0 || cr.x >= uIsoB.y || cr.y >= uIsoB.z) return 99.0;
-  if (uIndoor > 0.5) return min(baseTerrAt(cr), uIndoorTop);
   vec2 uv = (floor(cr) + 0.5) / vec2(uIsoB.y, uIsoB.z);
+  if (uIndoor > 0.5) {
+    // With no room texture bound there is no per-cell data to read — fail to
+    // the scalar cut, the legacy behaviour (same guard family as uRoomOn in
+    // roomAt: a phone with the bind missing must not black out the room).
+    if (uRoomOn < 0.5) return min(baseTerrAt(cr), uIndoorTop);
+    // THE CONSTRAINED-SET RESOLVE (2026-08-13): the drawn world indoors is
+    // per CELL — my building at its per-wall raise, the covering cone at its
+    // cap, and EVERYTHING ELSE WHOLE, deck included (the neighbour's house
+    // keeps its roof; the up-screen mountain keeps its mass, black at zero
+    // ambient). The cut rides the room mask's R channel — 128+cut in my room,
+    // cut alone for a constrained outside cell, 127 = unconstrained (see
+    // setRoom). The resolve must follow the renderer column for column: a
+    // column clamped shorter than it is drawn hands its upper pixels to
+    // whatever lies behind, and one clamped taller lights art that is not
+    // there — both the roof-in-the-heightmap bug in a new coat.
+    float rr = texture2D(uRoom, uv).r * 255.0;
+    float low = rr - step(127.5, rr) * 128.0;
+    if (low > 126.5) return texture2D(uHeight, uv).r * 255.0 / uHScale; // whole, deck-inflated
+    return min(baseTerrAt(cr), low);
+  }
   return texture2D(uHeight, uv).r * 255.0 / uHScale;
 }
 
@@ -403,7 +533,11 @@ float roomAt(vec2 cr) {
   if (uRoomOn < 0.5) return 1.0;
   if (cr.x < 0.0 || cr.y < 0.0 || cr.x >= uIsoB.y || cr.y >= uIsoB.z) return 0.0;
   vec2 uv = (floor(cr) + 0.5) / vec2(uIsoB.y, uIsoB.z);
-  return texture2D(uRoom, uv).r;
+  // R carries the per-cell CUT beside the membership bit (128 + cut inside, 0
+  // outside — see setRoom), so membership is the top half of the byte, not the
+  // raw value: returning r itself would hand a 128/255 ambient to every room
+  // cell whose wall keeps the scalar cut.
+  return step(0.5, texture2D(uRoom, uv).r);
 }
 
 // Solid-object flag (bush, boulder, tree...): G channel of the heightmap.
@@ -467,6 +601,14 @@ float cwNoise(vec2 p) {
   vec2 u = f * f * (3.0 - 2.0 * f);
   return mix(mix(cwHash(i), cwHash(i + vec2(1.0, 0.0)), u.x),
              mix(cwHash(i + vec2(0.0, 1.0)), cwHash(i + vec2(1.0, 1.0)), u.x), u.y);
+}
+
+// The largest surface height any cell of block b can report through
+// heightAt — the same decode as heightAt, so it bounds it exactly; a block
+// outside the world answers 99 (= never skip; heightAt says 99 there too).
+float blockMaxAt(vec2 b) {
+  if (b.x < 0.0 || b.y < 0.0 || b.x >= uHBlockN.x || b.y >= uHBlockN.y) return 99.0;
+  return texture2D(uHBlock, (b + 0.5) / uHBlockN).r * 255.0 / uHScale;
 }
 
 void main() {
@@ -537,6 +679,8 @@ void main() {
   // worlds; break-on-found keeps the cost proportional to each pixel's real
   // depth (a plain continue guard would tick all 128 iterations per fragment
   // — that alone stalled the software-GL harness across 3 fullscreen passes).
+  vec2 blk = vec2(-9.0);
+  float hb = 99.0;
   for (int s = 0; s < 128; s++) {
     if (found || vHi <= v0 - 1.5) break;
     float vColB = 2.0 * floor((vHi + u) * 0.5 - 0.0001) - u;
@@ -544,6 +688,19 @@ void main() {
     float vLo = max(vColB, vRowB);
     float vMid = (vHi + vLo) * 0.5;
     vec2 cr = vec2((u + vMid) * 0.5, (vMid - u) * 0.5);
+    // THE HIERARCHICAL SKIP. This walk starts at the WORLD's max level and
+    // pays one dependent fetch per cell until the first column whose top
+    // reaches the segment — 44 per pixel per pass on level-0 ground under a
+    // 40-level world, the forest spots' whole lag (investigation 2026-09-02).
+    // A cell is hit iff v0 + H*kk >= vLo; every H in this block is <= the
+    // block's max, so when v0 + hb*kk < vLo no cell in it can be hit and the
+    // fetch is skipped. ONLY the fetch: the walk's arithmetic, vLo, vMid, cr
+    // and the hit test are untouched, so z, cell and everything downstream
+    // are bit-identical (uSkip is the A/B switch; parity is pinned on the
+    // pass's own pixels by __ml.nightHash).
+    vec2 b = floor(cr * 0.125);
+    if (uSkip > 0.5 && (b.x != blk.x || b.y != blk.y)) { blk = b; hb = blockMaxAt(b); }
+    if (uSkip > 0.5 && v0 + hb * kk < vLo - 0.0001) { vHi = vLo; continue; }
     float H = heightAt(cr);
     if (H < 90.0) {
       float vSurf = v0 + H * kk; // this column's top along the ray
@@ -660,7 +817,21 @@ void main() {
   // per cell — terrain or solid objects above the ray shade the surface
   // with the point lights' soft penumbra family; faces turned away from
   // the sun shade via a Lambert gate. Point lights still add in shadow.
+  // THE PIXEL'S OWN SCENERY SHARE (main scope: the sun patch and the torch
+  // march both read it): the share its cell carries, and that cell's centre.
+  float ownShare = uSceneryOn > 0.5 ? sceneryShareAt(cell) : 0.0;
+  /* A SHARE BELONGS TO THE FLOOR THE PIECE STANDS ON. The share is a property
+   * of the CELL, so without this a pixel on a DECK above that floor — a house
+   * roof, a bridge — reads the furniture standing under it and takes its
+   * contact shading: every object inside a house printed its own dark blob on
+   * the roof, which is a wall-hack (maintainer 2026-09-07: "you can see where
+   * scenery objects have been placed by looking at the roof"). groundTerrAt is
+   * the column WITHOUT the share, i.e. the floor itself; one level of slack
+   * covers the soft sampling. */
+  if (ownShare > 0.0 && z > groundTerrAt(cell) + 1.0) ownShare = 0.0;
+  vec2 ownC = floor(cell) + 0.5;
   float sunF = 1.0;
+  float dbgShadow = 0.0; // see the shadow debug switch below
   if (uSun.w > 0.001) {
     // Terrain marches multiplicatively (long straight ridges project as
     // TERRAIN: the original multiplicative march, byte-identical to the
@@ -702,7 +873,19 @@ void main() {
     // geometric cone can pinch, so the tip ends as a soft round fade.
     float m = 0.0;
     float dcp = 0.0;
-    for (int s = 1; s <= 8; s++) {
+    // A world with no placed props has pArr == 0 everywhere, so pr is always
+    // 0, m stays 0 and the loop's only effect (sunVis *= 1 - 0.75*m) is
+    // identity — 7 iterations and two fetches per pixel per daytime frame for
+    // nothing. Gated on the CPU-known fact, byte-identical.
+    // SPARSE ON A SCENERY WORLD: uHasProps is 1 there too (scenery shares
+    // feed this loop), but only 629 of the_game's 262,144 cells carry one, so
+    // the ground map's G flags the cells within the patch's reach of any
+    // share (setSceneryOccluders) and the 16 fetches run only there — one
+    // texel-centre fetch everywhere else. Identity by construction (proven:
+    // night hash equal gate on/off); tiles2 worlds keep uPropGate 0.
+    bool propRun = uHasProps > 0.5;
+    if (propRun && uPropGate > 0.5) propRun = sceneryNearAt(cell) > 0.5;
+    if (propRun) for (int s = 1; s <= 8; s++) {
       dcp += 0.35;
       vec2 p = pos - uSun.xy * dcp;
       if (floor(p.x) == floor(pos.x) && floor(p.y) == floor(pos.y)) continue;
@@ -715,6 +898,29 @@ void main() {
       if (pr > 0.001 && Hs < 90.0 && Hp > hRay)
         m = max(m, min((Hp - hRay) * 2.2, 1.0) * reach);
     }
+    // THE OWN TRUNK'S CORE, DIRECTIONALLY. The own-cell skip above keeps the
+    // bump's bilinear skirt off the sunny side, but the trunk still stands
+    // between the sun and a pixel on its FAR side — under a post, a cart, a
+    // stone the cell was a BRIGHT DIAMOND inside the cast shadow wherever the
+    // art does not cover it (maintainer, 2026-09-06). Shade exactly where the
+    // sunward ray from the pixel passes through the core, to the cast
+    // shadow's own depth; the sunny half of the cell stays lit. Scenery only
+    // (ownShare is 0 on a props world) — the_island2 is byte-identical.
+    if (ownShare > 0.0) {
+      // CONTACT: a soft blob under the trunk in EVERY direction, then the
+      // directional core on top of it. The strip alone left the cell beside
+      // and in front of a post lit while the skirt shaded the ground around
+      // it — bright spots (maintainer, 2026-09-06: "darker in corners").
+      float ao = smoothstep(${SCN_CONTACT_R}, ${SCN_CONTACT_R} * 0.3, distance(pos, ownC));
+      m = max(m, ${SCN_CONTACT_SUN} * ao);
+      float tt = dot(ownC - pos, -uSun.xy);
+      if (tt > 0.05) {
+        float dq = distance(pos - uSun.xy * tt, ownC);
+        float hRayC = z + tt * uSun.z + 0.15;
+        float top = z + min(ownShare * 1.8, 1.0);
+        if (top > hRayC) m = max(m, min((top - hRayC) * 2.2, 1.0) * smoothstep(${SCN_CORE}, ${SCN_CORE} * 0.55, dq));
+      }
+    }
     sunVis *= 1.0 - 0.75 * m;
     if (isFace) {
       vec2 nrm = mix(vec2(0.0, 1.0), vec2(1.0, 0.0), pickR);
@@ -723,6 +929,15 @@ void main() {
     }
     float sunShare = 0.45 * uSun.w; // the sun's slice of the phase ambient
     sunF = (1.0 - sunShare) + sunShare * clamp(sunVis, 0.0, 1.0);
+    /* THE SHADOW DEBUG SWITCH (settings: "shadows"). The maintainer's tool for
+     * telling a SHADOW from a TILE: a dotted line that survives mode 1 is
+     * painted into the ground texture, and one that turns red in mode 2 is
+     * this pass. Cheap and exact — the same term either way, only neutralised
+     * or reported. */
+    if (uShadowDbg > 0.5) {
+      dbgShadow = 1.0 - clamp(sunVis, 0.0, 1.0); // how shadowed this pixel is
+      sunF = 1.0;                                 // and never darken by it
+    }
   }
   // Cloud shadows ride between the sun and the ground: world-anchored blobs
   // drifting on the wind, shading the ambient like the sun march does. The
@@ -776,6 +991,13 @@ void main() {
     vec3 acol = mix(vec3(0.10, 0.85, 0.45), vec3(0.45, 0.25, 0.85), hue);
     light += acol * curtain * 0.18 * uAurora * (1.0 - uSun.w) * inRoom;
   }
+  // A SCENERY TRUNK NEVER SHADOWS ITS OWN CELL'S TREAD (maps3). The bump's
+  // bilinear skirt reaches one cell out and the march's own-cell + 0.75-cell
+  // near-field skips are sized for a pixel at a wall base: under a 0.5-cell
+  // trunk the skirt darkened the tread on the TORCH side by 21% (measured) —
+  // a dark ring hugging every root. For a pixel whose cell carries a scenery
+  // share, samples within one cell of that cell's centre are skipped; props
+  // carry no share in this channel, so tiles2 is byte-identical.
   for (int i = 0; i < ${MAX_SHADER_LIGHTS}; i++) {
     if (float(i) >= uNumLights) continue;
     vec3 lp = uLightPos[i].xyz;
@@ -787,6 +1009,15 @@ void main() {
     float dist = sqrt(dot(d2, d2) + pow((lp.z - z) * 0.6, 2.0));
     float att = clamp(1.0 - dist / radius, 0.0, 1.0);
     att *= att;
+    // INDOORS, A PIXEL OUTSIDE MY ROOM THAT SITS ABOVE THE LIGHT TAKES NONE OF
+    // IT. Surfaces above a light skip the LOS march below (the billboard
+    // rule), so the neighbour's roof at level 8 took the radius-16 hearth
+    // straight through my ceiling, distance-faded only — the one lit thing in
+    // a black street (maintainer 2026-09-09: "I still see the house next to
+    // me lit up"). Nothing above a light inside my room has a line to it.
+    // Eased on the same mix as the ambient; inside my room, or below the
+    // light (the street through the doorway), untouched.
+    att *= 1.0 - uIndoorMix * (1.0 - r) * step(lp.z - 0.05, z);
     if (att <= 0.001) continue;
 
     // Line of sight: march the heightmap toward the light. Occlusion scales
@@ -801,7 +1032,15 @@ void main() {
     // received from above or level (cliff bases, object shadows, faces)
     // keeps full occlusion.
     float occ = 1.0;
-    if (uLightPos[i].w > 0.0 && (z < lp.z + 0.05 || objAt(cell) > 0.5)) {
+    // A light standing INSIDE a scenery share — a campfire, a brazier: the
+    // fire IS the piece — must not be blocked by its own trunk (measured: a
+    // cave brazier's own pool fell 28% at 1.3 cells once its cell carried a
+    // share). The mirror of the pixel-side skirt skip, keyed on the light's
+    // cell; the piece still shadows every OTHER light.
+    float lShare = uSceneryOn > 0.5 ? sceneryShareAt(lp.xy) : 0.0;
+    vec2 lC = floor(lp.xy) + 0.5;
+    float peakC = max(max(uLightCol[i].r, uLightCol[i].g), uLightCol[i].b);
+    if (uLightPos[i].w > 0.0 && att * peakC > ${SHADOW_MARCH_MIN_LIGHT} && (z < lp.z + 0.05 || objAt(cell) > 0.5)) {
       for (int s = 1; s <= 12; s++) {
         float t = float(s) / 13.0;
         // March from the EXACT surface point (same as attenuation): marching
@@ -814,6 +1053,8 @@ void main() {
         // the wall cell — a false dark notch along every base line.
         vec2 dp = p - pos;
         if (dot(dp, dp) < 0.56) continue;
+        if (ownShare > 0.0 && dot(p - ownC, p - ownC) < 1.0) continue;
+        if (lShare > 0.0 && dot(p - lC, p - lC) < 1.0) continue;
         float hRay = mix(z, lp.z, t) + 0.2;
         // TWO SOLID SPANS PER COLUMN, not one height. The ground is solid
         // from 0 to hg; a deck (when H > hg) is a slab at H with OPEN AIR
@@ -825,13 +1066,45 @@ void main() {
         float H = heightAtSoft(p);
         float hg = groundAtSoft(p);
         float blocker = (H > hg + 0.01 && lp.z <= H) ? hg : H;
-        if (blocker < 90.0 && blocker > hRay)
-          occ *= mix(0.8, 0.45, clamp((blocker - hRay) * 1.5, 0.0, 1.0));
+        if (blocker < 90.0 && blocker > hRay) {
+          float pen = clamp((blocker - hRay) * 1.5, 0.0, 1.0);
+          // A scenery share shadows HARD (one or two samples per piece);
+          // terrain keeps the wall chain. One extra read, blocking samples only.
+          float sc = uSceneryOn > 0.5 ? step(0.01, sceneryShareAt(p)) : 0.0;
+          occ *= mix(mix(0.8, 0.45, pen), mix(${SCN_SHADOW_NEAR}, ${SCN_SHADOW_DEEP}, pen), sc);
+        }
       }
       // Bounce floor: firelight scatters — shadowed ground near a light keeps
       // a faint glow instead of dropping to pitch ambient. Faces still gate
       // to dark below (the Lambert gate multiplies AFTER this floor).
-      occ = max(occ, 0.22);
+      // ROOM-GATED (maintainer 2026-09-09, "why doesn't 'make outdoor dark'
+      // work in this house"): the floor is scatter off the room's OWN
+      // surfaces, so outside MY room it is 0 — eased on the same mix as the
+      // ambient. Ungated it poured 22% of a radius-16 hearth straight through
+      // the walls onto the street, the meadow and the neighbour's roof (0.03
+      // luma at 11 cells — invisible headless, plainly lit on a phone), which
+      // is exactly the light "the outside is black" has to lose. The doorway
+      // keeps its spill: light with a clear line through the opening never
+      // touched the floor. Outdoors inRoom is 1 and nothing changes.
+      // THE OWN TRUNK'S CORE, DIRECTIONALLY — the far-side half of the skirt
+      // rule above: a pixel in its piece's share cell is shaded where the ray
+      // to the light passes through the core between them (the ground at a
+      // barrel's base stayed lit inside its own cast shadow; maintainer,
+      // 2026-09-06). To the march's floor, so it meets the cast shadow.
+      if (ownShare > 0.0) {
+        float ao = smoothstep(${SCN_CONTACT_R}, ${SCN_CONTACT_R} * 0.3, distance(pos, ownC));
+        occ *= 1.0 - ${SCN_CONTACT_TORCH} * ao; // contact, every direction
+        vec2 dl = lp.xy - pos;
+        float tt = dot(ownC - pos, dl) / max(dot(dl, dl), 1e-4);
+        if (tt > 0.05 && tt < 1.0) {
+          float dq = distance(pos + dl * tt, ownC);
+          float hRayC = mix(z, lp.z, tt) + 0.2;
+          float top = z + ownShare;
+          if (top > hRayC)
+            occ *= mix(1.0, mix(0.8, 0.22, clamp((top - hRayC) * 1.5, 0.0, 1.0)), smoothstep(${SCN_CORE}, ${SCN_CORE} * 0.55, dq));
+        }
+      }
+      occ = max(occ, 0.22 * inRoom);
     }
 
     // Side-face pixels (below their column's top): a column shows TWO faces —
@@ -839,7 +1112,17 @@ void main() {
     // only catches light that stands beyond ITS OWN plane (in cells), so a
     // torch on the right lights the right face but never wraps onto the
     // left one, and a torch on top (behind both planes) lights neither.
-    if (isFace) {
+    // NEGATIVE-radius GLOW POOLS are EXEMPT (2026-08-13): a pool is ambience,
+    // not a lamp with a position a face can turn away from, so a TERRAIN face
+    // beside a glowing tile takes the pool's light like the ground does — and
+    // the CPU twin lightAt has never had a face gate, so this also removes a
+    // shader/CPU disagreement on face cells. (Note for the curious: this is
+    // NOT what darkened glow_test — its glowing cubes are prop BILLBOARDS on
+    // flat terrain, and the heightmap is terrain-only, so isFace never fired
+    // there at all; that night was the derived defaults' radius/intensity,
+    // fixed in buildEmissiveSources. Measured: 0% of glow_test's prop pixels
+    // classify as faces.)
+    if (isFace && uLightPos[i].w > 0.0) {
       float frontL = lp.y - (baseF.y + 1.0); // beyond the +row (left) face
       float frontR = lp.x - (baseF.x + 1.0); // beyond the +col (right) face
       // Lateral: how far the light sits OUTSIDE the face's own 1-cell span.
@@ -946,7 +1229,8 @@ void main() {
   // night reveals it, and the art's own contrast survives the multiply.
   // Per-cell hash phase so a lava lake shimmers instead of blinking in sync.
   float emSelf = 1.0; // tile self-pulse (1.0 for non-emitters — a no-op)
-  float eIdx = emitAt(cell) - 1.0;
+  float eIdx = -1.0;
+  if (uEmitN > 0.5) eIdx = emitAt(cell) - 1.0; // a dead fetch when there is no palette
   if (uEmitN > 0.5 && eIdx > -0.5) {
     float tw = 0.5 / uEmitN; // one palette texel
     vec3 eCol = texture2D(uEmit, vec2((eIdx * 2.0 + 0.5) * tw, 0.5)).rgb;
@@ -1008,6 +1292,12 @@ void main() {
   // sitting pinned at the saturation ceiling. No-op (1.0) for non-emitters.
   light *= emSelf;
 
+  // MODE 2 paints the shadow itself, over the unshadowed scene, so what is a
+  // shadow is unmistakable and what is a tile is untouched.
+  if (uShadowDbg > 1.5 && dbgShadow > 0.002) {
+    gl_FragColor = vec4(mix(min(light, vec3(1.25)), vec3(1.6, 0.0, 0.0), clamp(dbgShadow * 1.6, 0.0, 1.0)), 1.0);
+    return;
+  }
   gl_FragColor = vec4(min(light, vec3(1.25)), 1.0);
 }
 `;
@@ -1015,6 +1305,18 @@ void main() {
 const FIELD_KEY = "night-light-field";
 /** Per-cell ROOM MASK: R = 255 where the cell belongs to the room the local
  * player is standing in. One texel per world cell, NEAREST — see roomAt(). */
+/* THE BLOCK-MAX HEIGHT TEXTURE — see the surface-resolve march. One texel per
+ * BLOCK×BLOCK cells holding the maximum of uHeight's R over the block, in the
+ * same byte packing, so a march can prove a whole block cannot be hit and skip
+ * its fetches. Built beside the heightmaps in buildHeightmap. */
+/* THE LIGHT FIELDS' RESOLUTION lives in lightscale.ts — the Settings slider
+ * writes it, the three buildXShader calls below read it, and "ml-light-scale"
+ * rebuilds all three live. `?light=` still works but is unreachable from an
+ * installed PWA, which is why the slider is the real control. */
+
+const BLOCK = 8;
+const BLOCK_KEY = "world-heightmap-blockmax";
+
 const ROOM_KEY = "world-room-mask";
 const MIST_KEY = "mist-field";
 const DEPTHFOG_KEY = "depthfog-field";
@@ -1048,6 +1350,9 @@ uniform float uAnimTime;
 uniform vec4 uCam;        // worldView x, y, w, h (world-render px)
 uniform vec4 uIsoA;       // ox, oy, dx, dy
 uniform vec4 uIsoB;       // lh, gridW, gridH, maxLevel
+uniform sampler2D uHBlock; // BLOCK×BLOCK block-max of uHeight.r (unbound sampler = unit 0!)
+uniform vec2 uHBlockN;     // the block grid's size
+uniform float uSkip;       // 1 = uHBlock is bound and the march may skip whole blocks
 uniform float uHScale;    // levels→byte pack scale (per-world; 16 unless the world tops ~15 levels)
 uniform vec3 uAmbient;    // current grade — mist dims with the night
 uniform float uMist;      // eased cover 0..1
@@ -1075,7 +1380,25 @@ float mNoise(vec2 p) {
              mix(mHash(i + vec2(0.0, 1.0)), mHash(i + vec2(1.0, 1.0)), u2.x), u2.y);
 }
 
+// The largest surface height any cell of block b can report through
+// heightAt — the same decode as heightAt, so it bounds it exactly; a block
+// outside the world answers 99 (= never skip; heightAt says 99 there too).
+float blockMaxAt(vec2 b) {
+  if (b.x < 0.0 || b.y < 0.0 || b.x >= uHBlockN.x || b.y >= uHBlockN.y) return 99.0;
+  return texture2D(uHBlock, (b + 0.5) / uHBlockN).r * 255.0 / uHScale;
+}
+
 void main() {
+  /* THE PASS IS NEVER SKIPPED, SO IT MUST SKIP ITSELF, and this guard was 30
+   * lines too late. setVisible(false) does NOT stop a Shader that has
+   * setRenderToTexture: Shader.willRender returns true unconditionally in that
+   * case, so the mist pass ran a full canvas-sized fragment program EVERY FRAME
+   * with clear weather, and the uMist test sat AFTER the 128-iteration surface
+   * march that is the expensive part. DEPTHFOG_FRAG has always had its uFog
+   * guard on the first line of main; this is the same guard, and it is
+   * pixel-identical because the old code answered vec4(0.0) for exactly these
+   * fragments anyway. */
+  if (uMist <= 0.001) { gl_FragColor = vec4(0.0); return; }
   vec2 suv = gl_FragCoord.xy / resolution;
   float wx = uCam.x + suv.x * uCam.z;
   float wy = uCam.y + mix(suv.y, 1.0 - suv.y, uFlip) * uCam.w;
@@ -1099,6 +1422,8 @@ void main() {
   // worlds; break-on-found keeps the cost proportional to each pixel's real
   // depth (a plain continue guard would tick all 128 iterations per fragment
   // — that alone stalled the software-GL harness across 3 fullscreen passes).
+  vec2 blk = vec2(-9.0);
+  float hb = 99.0;
   for (int s = 0; s < 128; s++) {
     if (found || vHi <= v0 - 1.5) break;
     float vColB = 2.0 * floor((vHi + u) * 0.5 - 0.0001) - u;
@@ -1106,6 +1431,19 @@ void main() {
     float vLo = max(vColB, vRowB);
     float vMid = (vHi + vLo) * 0.5;
     vec2 cr = vec2((u + vMid) * 0.5, (vMid - u) * 0.5);
+    // THE HIERARCHICAL SKIP. This walk starts at the WORLD's max level and
+    // pays one dependent fetch per cell until the first column whose top
+    // reaches the segment — 44 per pixel per pass on level-0 ground under a
+    // 40-level world, the forest spots' whole lag (investigation 2026-09-02).
+    // A cell is hit iff v0 + H*kk >= vLo; every H in this block is <= the
+    // block's max, so when v0 + hb*kk < vLo no cell in it can be hit and the
+    // fetch is skipped. ONLY the fetch: the walk's arithmetic, vLo, vMid, cr
+    // and the hit test are untouched, so z, cell and everything downstream
+    // are bit-identical (uSkip is the A/B switch; parity is pinned on the
+    // pass's own pixels by __ml.nightHash).
+    vec2 b = floor(cr * 0.125);
+    if (uSkip > 0.5 && (b.x != blk.x || b.y != blk.y)) { blk = b; hb = blockMaxAt(b); }
+    if (uSkip > 0.5 && v0 + hb * kk < vLo - 0.0001) { vHi = vLo; continue; }
     float H = heightAt(cr);
     if (H < 90.0) {
       float vSurf = v0 + H * kk;
@@ -1155,6 +1493,9 @@ uniform vec2 resolution;
 uniform vec4 uCam;        // worldView x, y, w, h (world-render px)
 uniform vec4 uIsoA;       // ox, oy, dx, dy
 uniform vec4 uIsoB;       // lh, gridW, gridH, maxLevel
+uniform sampler2D uHBlock; // BLOCK×BLOCK block-max of uHeight.r (unbound sampler = unit 0!)
+uniform vec2 uHBlockN;     // the block grid's size
+uniform float uSkip;       // 1 = uHBlock is bound and the march may skip whole blocks
 uniform float uHScale;    // levels→byte pack scale (per-world; 16 unless the world tops ~15 levels)
 uniform vec3 uAmbient;    // current grade — the haze dims with the night
 uniform float uPlayerZ;   // the local player's current surface LEVEL
@@ -1163,6 +1504,10 @@ uniform float uFog;       // master strength 0..1 (0 = pass outputs nothing)
 uniform float uFlip;
 uniform sampler2D uHeight;
 uniform sampler2D uHeightL; // terrain height, LINEAR — smooth (bilinear) sampling
+uniform sampler2D uRoom;    // the room mask (membership in the 128 bit — see setRoom)
+uniform float uRoomOn;      // 1 when uRoom is bound (unbound sampler = unit 0!)
+uniform float uIndoorMix;   // the eased indoor blend — fog outside MY room fades with it
+
 
 // Tunables (named consts). CEL-SHADED DEPTH FOG whose JOB is to HIGHLIGHT CLIFF EDGES
 // (maintainer: "see the exact edge where the cliff starts / the ground ends"). TWO
@@ -1238,6 +1583,14 @@ float drape(vec2 cr) {
   return h;
 }
 
+// The largest surface height any cell of block b can report through
+// heightAt — the same decode as heightAt, so it bounds it exactly; a block
+// outside the world answers 99 (= never skip; heightAt says 99 there too).
+float blockMaxAt(vec2 b) {
+  if (b.x < 0.0 || b.y < 0.0 || b.x >= uHBlockN.x || b.y >= uHBlockN.y) return 99.0;
+  return texture2D(uHBlock, (b + 0.5) / uHBlockN).r * 255.0 / uHScale;
+}
+
 void main() {
   if (uFog <= 0.003) { gl_FragColor = vec4(0.0); return; }
   vec2 suv = gl_FragCoord.xy / resolution;
@@ -1264,6 +1617,8 @@ void main() {
   // worlds; break-on-found keeps the cost proportional to each pixel's real
   // depth (a plain continue guard would tick all 128 iterations per fragment
   // — that alone stalled the software-GL harness across 3 fullscreen passes).
+  vec2 blk = vec2(-9.0);
+  float hb = 99.0;
   for (int s = 0; s < 128; s++) {
     if (found || vHi <= v0 - 1.5) break;
     float vColB = 2.0 * floor((vHi + u) * 0.5 - 0.0001) - u;
@@ -1271,6 +1626,19 @@ void main() {
     float vLo = max(vColB, vRowB);
     float vMid = (vHi + vLo) * 0.5;
     vec2 cr = vec2((u + vMid) * 0.5, (vMid - u) * 0.5);
+    // THE HIERARCHICAL SKIP. This walk starts at the WORLD's max level and
+    // pays one dependent fetch per cell until the first column whose top
+    // reaches the segment — 44 per pixel per pass on level-0 ground under a
+    // 40-level world, the forest spots' whole lag (investigation 2026-09-02).
+    // A cell is hit iff v0 + H*kk >= vLo; every H in this block is <= the
+    // block's max, so when v0 + hb*kk < vLo no cell in it can be hit and the
+    // fetch is skipped. ONLY the fetch: the walk's arithmetic, vLo, vMid, cr
+    // and the hit test are untouched, so z, cell and everything downstream
+    // are bit-identical (uSkip is the A/B switch; parity is pinned on the
+    // pass's own pixels by __ml.nightHash).
+    vec2 b = floor(cr * 0.125);
+    if (uSkip > 0.5 && (b.x != blk.x || b.y != blk.y)) { blk = b; hb = blockMaxAt(b); }
+    if (uSkip > 0.5 && v0 + hb * kk < vLo - 0.0001) { vHi = vLo; continue; }
     float H = heightAt(cr);
     if (H < 90.0) {
       float vSurf = v0 + H * kk;
@@ -1380,6 +1748,18 @@ void main() {
   float deep = overflow > 0.0 ? (1.0 - exp(-overflow * FOG_DEEP_RATE)) : 0.0;
   float density = mix(bf * FOG_MAX, FOG_DEEP_MAX, deep); // == bf*FOG_MAX where deep==0
   float a = density * uFog * levelFade;
+  // INDOORS THE FOG BELONGS TO MY ROOM ALONE (the scoped-cut era exposed
+  // this: with the neighbourhood drawn again, the pale far bands painted a
+  // GLOWING RING over the zero-ambient blackness beyond ~11 cells — daylight
+  // haze over a world that, from in here, has no daylight). Fade fog on
+  // cells outside my room exactly as their ambient fades, on the same eased
+  // mix; fail OPEN when the mask is not bound (the pre-existing look).
+  if (uIndoorMix > 0.001 && uRoomOn > 0.5) {
+    float inR = 0.0;
+    if (cell.x >= 0.0 && cell.y >= 0.0 && cell.x < uIsoB.y && cell.y < uIsoB.z)
+      inR = step(0.5, texture2D(uRoom, (floor(cell) + 0.5) / vec2(uIsoB.y, uIsoB.z)).r);
+    a *= mix(1.0, inR, uIndoorMix);
+  }
   if (a <= 0.002) { gl_FragColor = vec4(0.0); return; }
   vec3 col = mix(FOG_NEAR, FOG_FAR, bf); // same palette both directions
   // Dim with the night, but keep a floor so the tones still read in the dark.
@@ -1409,7 +1789,10 @@ export function buildGlowStamps(
   anchorOnce = false, // demo: art is drawn ONCE at ground level — every source
   // stamps at its art position instead of repeating down a stacked column
 ): GlowStamp[] {
-  const { dx, dy, lh } = MAP_GEOMETRY;
+  // THE WORLD'S OWN PROJECTION, not the module constant — a maps3 world draws
+  // on dy=14/lh=15 and a stamp placed at 15/16 lands a level off by the far
+  // side of the map.
+  const { dx, dy, lh } = geometryFor(world);
   const ANIM: Record<string, number> = { static: 0, pulse: 1, flicker: 2 };
   const out: GlowStamp[] = [];
   const u0 = Math.floor((win.x0 - iso.ox) / dx) - 1;
@@ -1467,6 +1850,10 @@ export class NightLights {
   private scene: Phaser.Scene;
   private world: World;
   private iso: { ox: number; oy: number };
+  /** THE WORLD'S PROJECTION (maps.ts geometryFor). Every iso term in this file
+   *  reads it: the light field, the mist inverse projection and the shader's
+   *  own uIso uniforms all have to agree with what the ground RT drew. */
+  private geo = MAP_GEOMETRY;
   private maxLevel: number;
   /** Per-world level→byte pack scale for the heightmaps (set in buildHeightmap).
    *  16 for worlds ≤15 levels (byte-identical to the historical encoding), less
@@ -1474,6 +1861,8 @@ export class NightLights {
   private hScale = 16;
   private base?: Phaser.Display.BaseShader;
   private shader?: Phaser.GameObjects.Shader;
+  /** Reused by update(): the rectangle the camera renders THIS frame. */
+  private viewRect: ViewRect = { x: 0, y: 0, width: 0, height: 0 };
   private overlay?: Phaser.GameObjects.Image;
   private mistBase?: Phaser.Display.BaseShader;
   private mistShader?: Phaser.GameObjects.Shader;
@@ -1499,8 +1888,57 @@ export class NightLights {
   private posArr = new Float32Array(MAX_SHADER_LIGHTS * 4);
   private colArr = new Float32Array(MAX_SHADER_LIGHTS * 4);
   private fieldCount = 0;
+  /** Canvas ÷ render-target size — 1 at full light resolution. See buildShader. */
+  private upX = 1;
+  private upY = 1;
   private hArr!: Float32Array; // CPU occlusion heights (terrain + solid objects)
   private pArr!: Float32Array; // CPU prop share (props get their own shade patch)
+  private sArrH!: Float32Array; // CPU SCENERY share in the occlusion heights — setSceneryOccluders
+  private sArrG!: Float32Array; // CPU SCENERY share in the ground column (trunk only)
+  /** The linear and ground maps' pixels, retained so setSceneryOccluders can
+   *  rewrite a few cells and re-upload (the setRoom pattern). */
+  private imgL?: ImageData;
+  private imgG?: ImageData;
+  /** Cells the scenery layer wrote → what they held before it (R, G, groundR bytes;
+   *  hArr, gArr, pArr floats): restored before every re-apply, so the layer is
+   *  rebuilt from scratch exactly like the collision stamp. */
+  private sceneryOrig = new Map<number, [number, number, number, number, number, number]>();
+  /** Placement index → the self-exclusion radius² (cells²) its lit copy tints with. */
+  private sceneryExcl = new Map<number, number>();
+  hasSceneryShares = false; // read by the perf beacon
+  /** Cells whose ground-map G carries the sun patch's sparse-gate flag (restored before a re-apply). */
+  private sceneryDil: number[] = [];
+  /** Dev switch (__ml.sceneryShadows): false = scenery casts nothing, terrain only. */
+  sceneryShadows = true;
+  /** What the last frame uploaded — the perf beacon's light-cost fields: lights
+   *  in the shader, how many march shadows, the summed pool area in cells
+   *  (the march's per-pixel bill scales with it), the ambient luma. */
+  lightStats = { n: 0, shadowing: 0, poolCells: 0, ambient: 1 };
+  /** THE LIGHT BILL, ACCUMULATED PER UPLOADED FRAME and drained by the perf
+   *  beacon (`lightBill`). Means over the window, not the last frame: the cost
+   *  correlates with how many lights were up WHILE the frames were timed, and
+   *  the maintainer walks in and out of the town's pools during one window. */
+  private bill = { frames: 0, n: 0, shadowing: 0, poolCells: 0, nMax: 0, shadowMax: 0, ambient: 1 };
+  /** THE PASS UPDATE'S OWN MS, accumulated per update and drained with the
+   *  light bill. `lighting` was the beacon run's biggest CPU section and its
+   *  whole cost is THIS call — measured headless: 116 ms/frame of it against
+   *  under 0.7 for every other part of that section — so it is split here.
+   *  `glow` is the glow render-texture: a mid-frame framebuffer bind, which a
+   *  TILER like his Mali-G715 pays for with a tile flush; the remainder is the
+   *  73 uniform writes and the overlay bookkeeping. */
+  private updMs = 0;
+  private updGlowMs = 0;
+  /** How many stamps the pass actually DREW, accumulated per update. The bill
+   *  reported `sceneryStamps` (scenery only) and that was not the number that
+   *  drives the glow bracket: run 2 measured glowMs 4.07 ms/frame in a window
+   *  with ZERO scenery stamps, which is only possible if the pass was drawing
+   *  prop/emissive ones. Report what the loop iterates, not a subset of it. */
+  private updStamps = 0;
+  /** Dev switch (__ml.sceneryShadows(on, gate)): the sparse sun-patch gate (uPropGate). Identity when off. */
+  sunGate = true;
+  /** Measured costs, ms: the once-per-world heightmap build and the last scenery apply. */
+  buildMs = 0;
+  sceneryStats = { footprints: 0, cells: 0, gateCells: 0, ms: 0 };
   private tArr!: Float32Array; // CPU surface heights (terrain or deck slab)
   /** 1 while the local player is INDOORS: the surface resolve then ignores
    * decks, because indoor mode has culled every one of them from the render.
@@ -1514,11 +1952,15 @@ export class NightLights {
    * the SURFACE resolve clamps; the occlusion march does not (the building is
    * still solid to the sun). See heightAt(). */
   indoorTop = 0;
-  /** WorldScene.indoorMix — the eased 0..1 the indoor GRADE rides. The outside
-   * fades to black on it instead of snapping, so a doorway crossing is a fade
-   * rather than half the screen going out one frame ahead of the room. Applied
-   * to the light only, never to geometry (`indoor`/`indoorTop` stay boolean —
-   * the roof and the truncated columns flip on the same frame regardless). */
+  /** WorldScene.indoorGrade() — the LIGHT grade, 0..1: the raw eased mix at
+   * 1.5×, clamped (since 2026-08-13 every light half of the crossing rides
+   * this one ramp — a bit faster than the raw roll, deliberately slower than
+   * the debris crossfade's 3×: geometry runs hot to hide repaint seams, the
+   * darkening is meant to be seen). The outside fades to black on it instead
+   * of snapping, so a doorway crossing is a fade rather than half the screen
+   * going out one frame ahead of the room. Applied to the light only, never
+   * to geometry (`indoor`/`indoorTop` stay boolean — the roof and the
+   * truncated columns flip on the same frame regardless). */
   indoorMix = 0;
   /** The OUTDOOR grade — what the world outside my room is fading between (0
    * and this), never the interior dial. Written every frame while indoors; see
@@ -1529,12 +1971,20 @@ export class NightLights {
    * ground under it can never disagree about which side of a wall they are on.
    * Empty while outdoors, where roomAt() short-circuits to 1 anyway. */
   private roomCells = new Set<number>();
+  /** Last published per-cell cut map (the constrained set) — kept so setRoom
+   * can tell a dial turn (same cells, new cuts) from a no-op republish, and so
+   * the CPU seam twin can clamp against the same per-cell heights the shader
+   * does. Null = the legacy scalar cut. */
+  private roomCuts: Map<number, number> | null = null;
+  private roomTop = 0; // the scalar dial the last publish carried
   /** The room mask's pixel buffer, kept across calls so publishing a room is
    * one full-grid rewrite + one upload. See setRoom(). */
   private roomImg: ImageData | null = null;
   /** Did buildShader actually bind uRoom on the CURRENT shader? Re-derived on
    * every rebuild (a resize builds a new shader object). Drives uRoomOn. */
   private roomBound = false;
+  /** Same, for the depth-fog pass's own program (bound in buildDepthFogShader). */
+  private fogRoomBound = false;
   /** The mask's GREEN channel (cave depth) is world-static — written once. */
   private depthWritten = false;
   private underWritten = false;
@@ -1548,11 +1998,18 @@ export class NightLights {
   private emitList: EmissionEntry[] = []; // palette order (index = shader eIdx)
   // Glow-halo field: world-anchored RT sharing the shader's exact window.
   private glowRT?: Phaser.GameObjects.RenderTexture;
+  private glowDirty = false;
+  /** The block-max grid's size (buildHeightmap) and the skip's A/B switch. */
+  private blockN = { x: 1, y: 1 };
+  private skipOn = true;
   private glowKey = "";
   private stampImg?: Phaser.GameObjects.Image;
   // Measured (off-centre stamp probe): this stack's RT samples straight, no
   // y-flip — same family of ground truth as fieldFlip above.
   glowFlip = 0;
+  /** Switch (dev A/B): the fog silhouettes on scenery and props
+   *  (WorldScene.applyObjectLights) — off = the old crisp lit copies. */
+  sceneryFog = true;
   active = false;
   // Live calibration (debug keys): rendering-path differences between GPUs
   // showed up as flipped/scaled fields that headless verification could not
@@ -1570,6 +2027,44 @@ export class NightLights {
   // edge at night (maintainer, device screenshot).
   spanScale = 1.02;
   testPattern = 0; // 1 = world-y gradient, 2 = cell grid vs art tiles
+  /** Settings switch "shadows": 0 normal, 1 off, 2 red. Tells a SHADOW from a
+   *  TILE at a glance — the maintainer's own instrument for the dotted zigzag,
+   *  and the right one: a line that survives mode 1 is in the ground texture,
+   *  a line that turns red in mode 2 is this pass. */
+  shadowDbg = 0;
+  /** OVERLAY ISOLATION (debug switch, 0 = normal). The zigzag is provably NOT
+   *  in the ground texture — an exact unlit palette census at the maintainer's
+   *  own cell and zoom found zero wall-coloured texels — so whatever draws it
+   *  is one of the three full-screen overlays or the sampling to the display.
+   *  1 drops the depth fog, 2 also the mist, 3 also the multiply light pass.
+   *  A line that survives 3 is in the texture or the resample; one that
+   *  disappears at a step names the pass that paints it. */
+  dbgOverlays = 0;
+
+  /** THE FOG SWITCH — Settings "fog", ON by default (maintainer 2026-09-08:
+   *  "add a toggle in settings for enabling/disabling fog. That will make it
+   *  easier to take a screenshot in the game"). It kills BOTH atmospherics —
+   *  the always-on depth fog and the weather mist — because both wash a
+   *  screenshot, and leaves the multiply light pass alone so the world is
+   *  still lit and still shadowed.
+   *
+   *  NOT `dbgOverlays`: that is a four-step isolation CYCLER that hides passes
+   *  with `setVisible(false)`, which this file's own law says does not stop a
+   *  render-to-texture Shader. This zeroes the two STRENGTHS instead, so the
+   *  passes leave the display list through `setPassRunning` on the documented
+   *  cheap path — off costs nothing rather than costing everything invisibly.
+   *  The CPU twin (`fogFor`, which paints the fog silhouettes on bodies and
+   *  scenery) reads the same amount, or a body would wear a fog figure with no
+   *  fog on the ground behind it. */
+  atmoOff = false;
+
+  /** The depth fog's live strength — the master dial, the per-frame scene
+   *  scale, and the switch. ONE expression, because it feeds the shader
+   *  uniform, the pass's on/off test AND the CPU twin, and those three
+   *  disagreeing is a silhouette without a fog or a fog without a pass. */
+  private fogAmount(): number {
+    return this.atmoOff ? 0 : this.fogStrength * this.fogScale;
+  }
 
   constructor(
     scene: Phaser.Scene,
@@ -1581,45 +2076,60 @@ export class NightLights {
     this.scene = scene;
     this.world = world;
     this.iso = iso;
+    this.geo = geometryFor(world);
     this.maxLevel = maxLevel;
     this.emission = emission;
   }
 
   create() {
+    const tBuild = performance.now();
     this.buildHeightmap();
+    this.buildMs = +(performance.now() - tBuild).toFixed(1);
     // MIST overlay shader (weather 2): declared uniforms only — the uSun
     // lesson applies here too (an undeclared uniform silently never syncs
     // on real phone GPUs).
     this.mistBase = new Phaser.Display.BaseShader("mist-field", MIST_FRAG, undefined, {
       uCam: { type: "4f", value: { x: 0, y: 0, z: 1, w: 1 } },
-      uIsoA: { type: "4f", value: { x: 0, y: 0, z: ISO_DX, w: ISO_DY } },
-      uIsoB: { type: "4f", value: { x: MAP_GEOMETRY.lh, y: 1, z: 1, w: 0 } },
+      uIsoA: { type: "4f", value: { x: 0, y: 0, z: this.geo.dx, w: this.geo.dy } },
+      uIsoB: { type: "4f", value: { x: this.geo.lh, y: 1, z: 1, w: 0 } },
       uAmbient: { type: "3f", value: { x: 1, y: 1, z: 1 } },
       uMist: { type: "1f", value: 0 },
       uFlip: { type: "1f", value: 1 },
       uAnimTime: { type: "1f", value: 0 },
       uHScale: { type: "1f", value: 16 },
       uHeight: { type: "sampler2D", value: null },
+      uHBlock: { type: "sampler2D", value: null },
+      uHBlockN: { type: "2f", value: { x: 1, y: 1 } },
+      uSkip: { type: "1f", value: 0 },
+      uHasProps: { type: "1f", value: 0 },
     });
     // Elevation depth-fog shader (declared uniforms only — the uSun lesson).
     this.depthFogBase = new Phaser.Display.BaseShader("depthfog-field", DEPTHFOG_FRAG, undefined, {
       uCam: { type: "4f", value: { x: 0, y: 0, z: 1, w: 1 } },
-      uIsoA: { type: "4f", value: { x: 0, y: 0, z: ISO_DX, w: ISO_DY } },
-      uIsoB: { type: "4f", value: { x: MAP_GEOMETRY.lh, y: 1, z: 1, w: 0 } },
+      uIsoA: { type: "4f", value: { x: 0, y: 0, z: this.geo.dx, w: this.geo.dy } },
+      uIsoB: { type: "4f", value: { x: this.geo.lh, y: 1, z: 1, w: 0 } },
       uAmbient: { type: "3f", value: { x: 1, y: 1, z: 1 } },
       uPlayerZ: { type: "1f", value: 0 },
       uPlayerXY: { type: "2f", value: { x: 0, y: 0 } },
       uFog: { type: "1f", value: 0 },
       uFlip: { type: "1f", value: 1 },
       uHScale: { type: "1f", value: 16 },
+      // The room gate (the uSun lesson: DECLARED or it never reaches a phone).
+      uRoomOn: { type: "1f", value: 0 },
+      uIndoorMix: { type: "1f", value: 0 },
       uHeight: { type: "sampler2D", value: null },
+      uHBlock: { type: "sampler2D", value: null },
+      uHBlockN: { type: "2f", value: { x: 1, y: 1 } },
+      uSkip: { type: "1f", value: 0 },
+      uHasProps: { type: "1f", value: 0 },
       uHeightL: { type: "sampler2D", value: null },
       uHeightG: { type: "sampler2D", value: null },
+      uRoom: { type: "sampler2D", value: null },
     });
     this.base = new Phaser.Display.BaseShader("night-lights", FRAG, undefined, {
       uCam: { type: "4f", value: { x: 0, y: 0, z: 1, w: 1 } },
-      uIsoA: { type: "4f", value: { x: 0, y: 0, z: ISO_DX, w: ISO_DY } },
-      uIsoB: { type: "4f", value: { x: MAP_GEOMETRY.lh, y: 1, z: 1, w: 0 } },
+      uIsoA: { type: "4f", value: { x: 0, y: 0, z: this.geo.dx, w: this.geo.dy } },
+      uIsoB: { type: "4f", value: { x: this.geo.lh, y: 1, z: 1, w: 0 } },
       uAmbient: { type: "3f", value: { x: 0.16, y: 0.2, z: 0.36 } },
       // The OUTDOOR half of the same grade — see the `amb` mix in FRAG.
       uAmbientOut: { type: "3f", value: { x: 0.16, y: 0.2, z: 0.36 } },
@@ -1634,6 +2144,7 @@ export class NightLights {
       uAurora: { type: "1f", value: 0 },
       uFlip: { type: "1f", value: 1 },
       uTest: { type: "1f", value: 0 },
+      uShadowDbg: { type: "1f", value: 0 },
       // Animation clock (seconds). MUST be driven every frame from the SAME
       // clock as the JS emission layers (stamps/lit copies, scene.time.now/
       // 1000) or the shader floor/fire flicker either freezes (the long-
@@ -1688,6 +2199,13 @@ export class NightLights {
       uRoomOn: { type: "1f", value: 0 },
       uRoom: { type: "sampler2D", value: null },
       uHeight: { type: "sampler2D", value: null },
+      uHBlock: { type: "sampler2D", value: null },
+      uHBlockN: { type: "2f", value: { x: 1, y: 1 } },
+      uSkip: { type: "1f", value: 0 },
+      uHasProps: { type: "1f", value: 0 },
+      // DECLARED (the uSun lesson) — scenery-world switches, 0 on tiles2 worlds.
+      uSceneryOn: { type: "1f", value: 0 },
+      uPropGate: { type: "1f", value: 0 },
       uHeightL: { type: "sampler2D", value: null },
       uHeightG: { type: "sampler2D", value: null },
       uEmit: { type: "sampler2D", value: null },
@@ -1735,6 +2253,22 @@ export class NightLights {
       this.buildMistShader(sz.width, sz.height);
       this.buildDepthFogShader(sz.width, sz.height);
     });
+    /* THE SETTINGS SLIDER REBUILDS ALL THREE, same path as a resize — the
+     * render target does not follow a size change, so the only way to move the
+     * scale is to build new ones. Rebuilding puts a pass back ON the display
+     * list (add.shader does), including one that is currently off; the next
+     * update() takes it off again, so the cost is at most one frame of a pass
+     * writing vec4(0). Torn down with the scene so a restart doesn't stack
+     * listeners onto dead shaders. */
+    const onScale = () => {
+      this.buildShader(this.scene.scale.width, this.scene.scale.height);
+      this.buildMistShader(this.scene.scale.width, this.scene.scale.height);
+      this.buildDepthFogShader(this.scene.scale.width, this.scene.scale.height);
+    };
+    window.addEventListener("ml-light-scale", onScale);
+    this.scene.events.once(Phaser.Scenes.Events.SHUTDOWN, () =>
+      window.removeEventListener("ml-light-scale", onScale),
+    );
   }
 
   /** White radial gradient — the halo brush, tinted per stamp. */
@@ -1775,6 +2309,10 @@ export class NightLights {
    * the main field: fresh key per size, rebuilt on resize). */
   private buildMistShader(width: number, height: number) {
     if (!this.mistBase || width <= 0 || height <= 0) return;
+    const full = { width, height };
+    const ls = lightScale();
+    width = Math.max(1, Math.round(width * ls));
+    height = Math.max(1, Math.round(height * ls));
     this.mistShader?.destroy();
     const key = `${MIST_KEY}-${this.fieldCount++}`;
     const s = this.scene.add
@@ -1782,13 +2320,22 @@ export class NightLights {
       .setOrigin(0, 0)
       .setVisible(false);
     s.setSampler2D("uHeight", "world-heightmap");
+    // THE SKIP IS ARMED ONLY WITH ITS TEXTURE BOUND — an unbound sampler reads
+    // unit 0 (the full heightmap), which would make one cell's height the
+    // "block max" and skip cells that are hit.
+    if (this.scene.textures.exists(BLOCK_KEY)) {
+      s.setSampler2D("uHBlock", BLOCK_KEY, 6);
+      s.setUniform("uHBlockN.value", { x: this.blockN.x, y: this.blockN.y });
+      s.setUniform("uSkip.value", this.skipOn ? 1 : 0);
+    } else s.setUniform("uSkip.value", 0);
     s.setRenderToTexture(key);
+    if (ls !== 1) this.scene.textures.get(key).setFilter(Phaser.Textures.FilterMode.LINEAR);
     this.mistShader = s;
     const old = this.mistOverlay!.texture.key;
     this.mistOverlay!
       .setTexture(key)
-      .setPosition(width / 2, height / 2)
-      .setScale(1);
+      .setPosition(full.width / 2, full.height / 2)
+      .setScale(full.width / width, full.height / height);
     if (old.startsWith(MIST_KEY) && this.scene.textures.exists(old)) {
       this.scene.textures.remove(old);
     }
@@ -1797,6 +2344,10 @@ export class NightLights {
   /** (Re)create the depth-fog shader + render target (same lifecycle rules). */
   private buildDepthFogShader(width: number, height: number) {
     if (!this.depthFogBase || width <= 0 || height <= 0) return;
+    const full = { width, height };
+    const ls = lightScale();
+    width = Math.max(1, Math.round(width * ls));
+    height = Math.max(1, Math.round(height * ls));
     this.depthFogShader?.destroy();
     const key = `${DEPTHFOG_KEY}-${this.fieldCount++}`;
     const s = this.scene.add
@@ -1804,14 +2355,31 @@ export class NightLights {
       .setOrigin(0, 0)
       .setVisible(false);
     s.setSampler2D("uHeight", "world-heightmap");
+    // THE SKIP IS ARMED ONLY WITH ITS TEXTURE BOUND — an unbound sampler reads
+    // unit 0 (the full heightmap), which would make one cell's height the
+    // "block max" and skip cells that are hit.
+    if (this.scene.textures.exists(BLOCK_KEY)) {
+      s.setSampler2D("uHBlock", BLOCK_KEY, 6);
+      s.setUniform("uHBlockN.value", { x: this.blockN.x, y: this.blockN.y });
+      s.setUniform("uSkip.value", this.skipOn ? 1 : 0);
+    } else s.setUniform("uSkip.value", 0);
     if (this.scene.textures.exists("world-heightmap-linear"))
       s.setSampler2D("uHeightL", "world-heightmap-linear", 1);
     if (this.scene.textures.exists("world-heightmap-ground"))
       s.setSampler2D("uHeightG", "world-heightmap-ground", 5);
+    // The room mask, for the indoor gate — same eager-create-then-bind pattern
+    // as the main shader's uRoom.
+    this.ensureRoomTexture();
+    this.fogRoomBound = this.scene.textures.exists(ROOM_KEY);
+    if (this.fogRoomBound) s.setSampler2D("uRoom", ROOM_KEY, 2);
     s.setRenderToTexture(key);
+    if (ls !== 1) this.scene.textures.get(key).setFilter(Phaser.Textures.FilterMode.LINEAR);
     this.depthFogShader = s;
     const old = this.depthFogOverlay!.texture.key;
-    this.depthFogOverlay!.setTexture(key).setPosition(width / 2, height / 2).setScale(1);
+    this.depthFogOverlay!
+      .setTexture(key)
+      .setPosition(full.width / 2, full.height / 2)
+      .setScale(full.width / width, full.height / height);
     if (old.startsWith(DEPTHFOG_KEY) && this.scene.textures.exists(old)) {
       this.scene.textures.remove(old);
     }
@@ -1820,6 +2388,10 @@ export class NightLights {
   /** (Re)create the shader + its render target at the given size. */
   private buildShader(width: number, height: number) {
     if (!this.base || width <= 0 || height <= 0) return;
+    const full = { width, height };
+    const ls = lightScale();
+    width = Math.max(1, Math.round(width * ls));
+    height = Math.max(1, Math.round(height * ls));
     this.shader?.destroy();
     // A fresh texture key per size: destroying a shader doesn't unregister
     // its render target, and re-binding an existing key throws.
@@ -1829,32 +2401,67 @@ export class NightLights {
       .setOrigin(0, 0)
       .setVisible(this.active);
     s.setSampler2D("uHeight", "world-heightmap");
+    // THE SKIP IS ARMED ONLY WITH ITS TEXTURE BOUND — an unbound sampler reads
+    // unit 0 (the full heightmap), which would make one cell's height the
+    // "block max" and skip cells that are hit.
+    if (this.scene.textures.exists(BLOCK_KEY)) {
+      s.setSampler2D("uHBlock", BLOCK_KEY, 6);
+      s.setUniform("uHBlockN.value", { x: this.blockN.x, y: this.blockN.y });
+      s.setUniform("uSkip.value", this.skipOn ? 1 : 0);
+    } else s.setUniform("uSkip.value", 0);
     if (this.scene.textures.exists("world-heightmap-linear"))
       s.setSampler2D("uHeightL", "world-heightmap-linear", 1);
     if (this.scene.textures.exists("world-heightmap-ground"))
       s.setSampler2D("uHeightG", "world-heightmap-ground", 5);
     if (this.scene.textures.exists("emission-palette"))
       s.setSampler2D("uEmit", "emission-palette", 2);
-    // Glow field RT: canvas-sized. The shader samples it normalized over uCam's
-    // window, so stamps are placed by that same mapping (see gscale in update()).
+    /* Glow field RT at HALF the field, aspect preserved. The shader samples it
+     * NORMALIZED over uCam's window and the stamps are placed by that same
+     * mapping (`gscale` in update(), which is derived from rt.width), so the
+     * size is free to change and only the stamps' own resolution follows — and
+     * they are soft radial blobs, which is the one thing half resolution costs
+     * nothing on. It is cleared and redrawn EVERY frame the stamps move, so its
+     * area is paid ~3x per frame (explicit clear, capture clear, blit): at his
+     * 1079x1404 that was 1.52 Mpix a bracket, and a quarter of that now.
+     * (GLOW_FIELD_DIV 2 — measured on his Mali-G715 run of 2026-09-07, where
+     * the pass update WAS the `lighting` section.) */
     this.glowRT?.destroy();
     if (this.glowKey && this.scene.textures.exists(this.glowKey)) this.scene.textures.remove(this.glowKey);
-    this.glowRT = this.scene.make.renderTexture({ width, height }, false);
+    const gw = Math.max(1, Math.round(width / GLOW_FIELD_DIV));
+    const gh = Math.max(1, Math.round(height / GLOW_FIELD_DIV));
+    this.glowRT = this.scene.make.renderTexture({ width: gw, height: gh }, false);
     this.glowKey = `night-glow-${this.fieldCount}`;
     this.glowRT.saveTexture(this.glowKey);
     s.setSampler2D("uGlow", this.glowKey, 3);
+    s.setUniform("uHasProps.value", this.propsFlag());
+    // ON THE SHADER BEING BUILT, not `this.shader`: that is assigned below,
+    // so pushing through it here landed on the previous shader (none, on the
+    // first build) and every scenery-world switch stayed at its table value
+    // of 0 in play — the skirt skip, the sparse gate, the own-trunk rules —
+    // until some later restamp happened to re-push them. Measured: uSceneryOn
+    // 0 at join with 1,267 share cells stamped; 1 after one manual push.
+    this.setScenerySwitches(s);
     // The room mask (unit 4). Built lazily the first time the player steps
     // indoors — a world nobody ever enters a building in never pays for it.
     this.ensureRoomTexture();
     this.roomBound = this.scene.textures.exists(ROOM_KEY);
     if (this.roomBound) s.setSampler2D("uRoom", ROOM_KEY, 4);
     s.setRenderToTexture(key);
+    if (ls !== 1) this.scene.textures.get(key).setFilter(Phaser.Textures.FilterMode.LINEAR);
     this.shader = s;
     const old = this.overlay!.texture.key;
+    /* THE RT-TO-CANVAS RATIO IS REMEMBERED, because update() rewrites all
+     * three overlay scales every frame for zoom and the field window and would
+     * otherwise drop it — which is exactly what it did: at `?light=0.5` the
+     * half-size field drew at 1:1 as a lit rectangle in the middle of an
+     * unshaded screen. All three passes are built from the same canvas and the
+     * same lightScale(), so one pair of factors covers them. */
+    this.upX = full.width / width;
+    this.upY = full.height / height;
     this.overlay!
       .setTexture(key)
-      .setPosition(width / 2, height / 2)
-      .setScale(1);
+      .setPosition(full.width / 2, full.height / 2)
+      .setScale(this.upX, this.upY);
     if (old.startsWith(FIELD_KEY) && this.scene.textures.exists(old)) {
       this.scene.textures.remove(old);
     }
@@ -1898,28 +2505,60 @@ export class NightLights {
    * pushing once is O(1) in room size and lands around 0.3 ms — on a doorway
    * crossing or a turn of the cut dial, never on a frame.
    *
-   * R = 255 inside, 0 outside; A pinned at 255 everywhere because canvas
-   * uploads are PREMULTIPLIED (the same reason the heightmap pins its alpha) —
-   * an A below 255 would scale the R the shader reads.
+   * R packs MEMBERSHIP and the PER-CELL CUT into one byte, because indoors the
+   * surface resolve needs an answer for EVERY cell of the world:
+   *
+   *     128 + cut   — a cell of MY room, its column drawn to `cut`
+   *     cut (0-126) — a CONSTRAINED outside cell (the covering cone)
+   *     127         — UNCONSTRAINED: drawn whole, deck included (the
+   *                   neighbour's roof, the up-screen mountain)
+   *     0 everywhere on the outdoor publish (never read — uIndoor gates)
+   *
+   * roomAt tests the 128 bit; heightAt reads the low half (see both). With the
+   * legacy kill-switch cut (cuts null) every cell is constrained at the scalar
+   * dial, so the low half is `top` world-wide. A pinned at 255 everywhere
+   * because canvas uploads are PREMULTIPLIED (the same reason the heightmap
+   * pins its alpha) — an A below 255 would scale the R the shader reads, which
+   * is also why the cut could NOT ride the A channel.
    */
-  setRoom(cells: Iterable<number> | null, depth?: Map<number, number>, under?: Map<number, number>) {
+  setRoom(
+    cells: Iterable<number> | null,
+    depth?: Map<number, number>,
+    under?: Map<number, number>,
+    cuts?: Map<number, number> | null,
+    top = 0,
+  ) {
     this.ensureRoomTexture();
     const t = this.scene.textures.get(ROOM_KEY) as Phaser.Textures.CanvasTexture | undefined;
     const src = t?.getSourceImage() as HTMLCanvasElement | undefined;
     if (!t || !src) return;
     const next = new Set<number>(cells ?? []);
+    const nextCuts = cuts ?? null;
     // Two latches, not one: the first publish of a world carried DEPTH but no
     // ceiling map, and a single flag meant the ceiling could never be written
     // afterwards — measured as 940 cells in the scene and 0 in the texture,
     // which is exactly why the shader gate compared against zero and nothing
     // ever darkened.
     const needDepth = (depth !== undefined && !this.depthWritten) || (under !== undefined && !this.underWritten);
+    // The CUTS can change while the cell set does not — the wall-height dial
+    // moves every per-cell value without moving the room — so they get their
+    // own change test beside the set's, and the scalar top is part of it (the
+    // legacy encoding writes it into every cell).
+    const sameCuts = (() => {
+      if (top !== this.roomTop) return false;
+      const a = this.roomCuts;
+      if (!a && !nextCuts) return true;
+      if (!a || !nextCuts || a.size !== nextCuts.size) return false;
+      for (const [i, v] of nextCuts) if (a.get(i) !== v) return false;
+      return true;
+    })();
     // Nothing to do if the room did not actually change (the scene guards this
     // too, but the mask is also rebuilt for the CUT, which does not move it) —
     // unless the DEPTH channel has never been written, which happens on the
     // first publish of a world and whenever that publish is `null` (outdoors,
     // which is exactly when you are looking into someone else's cave).
-    if (!needDepth && next.size === this.roomCells.size && [...next].every((i) => this.roomCells.has(i))) return;
+    if (!needDepth && sameCuts && next.size === this.roomCells.size && [...next].every((i) => this.roomCells.has(i)))
+      return;
     const ctx = t.getContext();
     const w = this.world.width;
     const h = this.world.height;
@@ -1928,8 +2567,17 @@ export class NightLights {
       for (let p = 3; p < this.roomImg.data.length; p += 4) this.roomImg.data[p] = 255;
     }
     const d = this.roomImg.data;
-    for (const i of this.roomCells) d[i * 4] = 0;
-    for (const i of next) if (i >= 0 && i < w * h) d[i * 4] = 255;
+    const clamp7 = (v: number) => Math.max(0, Math.min(126, Math.round(v)));
+    // Full-grid R baseline: 127 (unconstrained) in the per-cell world, the
+    // scalar dial in the legacy one, 0 on the outdoor publish.
+    const base = cells === null ? 0 : nextCuts ? 127 : clamp7(top);
+    for (let i = 0; i < w * h; i++) d[i * 4] = base;
+    if (nextCuts)
+      for (const [i, cut] of nextCuts) if (i >= 0 && i < w * h) d[i * 4] = clamp7(cut);
+    for (const i of next)
+      if (i >= 0 && i < w * h) d[i * 4] = 128 + clamp7(nextCuts?.get(i) ?? top);
+    this.roomCuts = nextCuts ? new Map(nextCuts) : null;
+    this.roomTop = top;
     // GREEN = DEPTH FROM DAYLIGHT, in cells, 0 at an opening. Static for a
     // world, so it is written once: the geometry of a cave does not move.
     if (needDepth) {
@@ -1980,8 +2628,19 @@ export class NightLights {
     let maxDep = 0;
     let und = 0;
     let maxUnd = 0;
+    // The per-cell CUT rides R's low half — count my-room cells raised past
+    // the scalar dial and the outside sentinels, so a gate can tell "the
+    // raise/scope did nothing" from "it was never published", which look
+    // identical on screen when a room happens to have no raisable wall or no
+    // unconstrained neighbour.
+    let raised = 0;
+    let maxCut = 0;
+    let uncut = 0;
+    const topB = Math.max(0, Math.min(126, Math.round(this.indoorTop)));
     for (let i = 0; i < d.length; i += 4) {
       if (d[i] > 127) on++;
+      if (d[i] > 127 && d[i] - 128 > topB) { raised++; maxCut = Math.max(maxCut, d[i] - 128); }
+      if (d[i] === 127) uncut++;
       if (d[i + 1] > 0) { deep++; maxDep = Math.max(maxDep, d[i + 1]); }
       if (d[i + 2] > 0) { und++; maxUnd = Math.max(maxUnd, d[i + 2]); }
     }
@@ -1990,6 +2649,9 @@ export class NightLights {
       w: src.width,
       h: src.height,
       lit: on,
+      raisedCells: raised,
+      maxCut,
+      uncut,
       depthCells: deep,
       depthMax: maxDep,
       underCells: und,
@@ -2004,7 +2666,16 @@ export class NightLights {
   }
 
   private buildHeightmap() {
-    if (this.scene.textures.exists("world-heightmap")) return;
+    if (this.scene.textures.exists("world-heightmap")) {
+      // Textures outlive this instance (the manager is per game): keep the
+      // block grid's size honest for the bindings, or arm nothing.
+      const bt = this.scene.textures.get(BLOCK_KEY);
+      if (this.scene.textures.exists(BLOCK_KEY) && bt) {
+        const src = bt.getSourceImage() as { width: number; height: number };
+        this.blockN = { x: src.width, y: src.height };
+      } else this.skipOn = false;
+      return;
+    }
     const w = this.world.width;
     const h = this.world.height;
     // Emission palette indices: category → position in emitList (+1 in the
@@ -2033,6 +2704,11 @@ export class NightLights {
     this.gArr = new Float32Array(w * h);
     this.oArr = new Uint8Array(w * h);
     this.pArr = new Float32Array(w * h);
+    this.sArrH = new Float32Array(w * h);
+    this.sArrG = new Float32Array(w * h);
+    this.imgL = imgL;
+    this.imgG = imgG;
+    this.sceneryOrig.clear();
     // Placed props occlude EXACTLY like solid terrain categories: +1 level,
     // one shadow system for everything (maintainer — the torch LOS look).
     // Their taller art heights (2-5 levels) were tried in the map and only
@@ -2149,6 +2825,34 @@ export class NightLights {
       }
     }
     ctx.putImageData(img, 0, 0);
+    /* THE BLOCK-MAX GRID beside it: max of R over each BLOCK×BLOCK of cells,
+     * same byte packing, so the shader's decode of it bounds heightAt exactly. */
+    {
+      const bw = Math.ceil(w / BLOCK);
+      const bh = Math.ceil(h / BLOCK);
+      if (this.scene.textures.exists(BLOCK_KEY)) this.scene.textures.remove(BLOCK_KEY);
+      const btex = this.scene.textures.createCanvas(BLOCK_KEY, bw, bh)!;
+      const bctx = btex.getContext();
+      const bimg = bctx.createImageData(bw, bh);
+      for (let by = 0; by < bh; by++)
+        for (let bx = 0; bx < bw; bx++) {
+          let m = 0;
+          const r1 = Math.min(h, (by + 1) * BLOCK);
+          const c1 = Math.min(w, (bx + 1) * BLOCK);
+          for (let r = by * BLOCK; r < r1; r++)
+            for (let c = bx * BLOCK; c < c1; c++) {
+              const v = img.data[(r * w + c) * 4];
+              if (v > m) m = v;
+            }
+          const j = (by * bw + bx) * 4;
+          bimg.data[j] = m;
+          bimg.data[j + 3] = 255;
+        }
+      bctx.putImageData(bimg, 0, 0);
+      btex.setFilter(Phaser.Textures.FilterMode.NEAREST);
+      btex.refresh();
+      this.blockN = { x: bw, y: bh };
+    }
     tex!.refresh();
     const texL = this.scene.textures.createCanvas("world-heightmap-linear", w, h);
     if (texL) {
@@ -2186,6 +2890,215 @@ export class NightLights {
         ptex.setFilter(Phaser.Textures.FilterMode.NEAREST);
       }
     }
+  }
+
+  /** 1 when the sun's prop patch has anything to read: placed props, or scenery shares. */
+  private propsFlag(): number {
+    return (this.world.props?.length ?? 0) > 0 || this.hasSceneryShares ? 1 : 0;
+  }
+
+  /** The scenery-world switches on the night pass: the own-cell skirt skip and
+   *  the sparse sun-patch gate — both 0 unless scenery shares are stamped. */
+  private setScenerySwitches(sh: Phaser.GameObjects.Shader | undefined = this.shader): void {
+    sh?.setUniform("uSceneryOn.value", this.hasSceneryShares ? 1 : 0);
+    sh?.setUniform("uPropGate.value", this.hasSceneryShares && this.sunGate ? 1 : 0);
+  }
+
+  /** The lit-copy self-exclusion radius² for a scenery placement (0 = none stamped). */
+  sceneryExclR2(place: number): number {
+    return this.sceneryExcl.get(place) ?? 0;
+  }
+
+  /** SCENERY OCCLUDES LIKE A PROP: a maps3 piece enters the SAME two maps a
+   *  tiles2 prop does — the linear map's R plus an EQUAL G share, and the ground
+   *  map's R — so the torch's LOS march and the sun's prop patch shade it with no
+   *  shader change: one shadow system for everything (the props' approved torch
+   *  look). Re-applied whenever the footprints change (the docs land after the
+   *  heightmap is built; the wiki edits hitboxes live) and rebuilt from scratch
+   *  each time, like the collision stamp. Bytes are ADDED over the cell's own
+   *  terrain byte and the same bytes go into G, so R−G — the locked cliff march
+   *  and the depth fog — stays bit-identical (verified: fog hash unchanged).
+   *  - THE TRUNK is the collision footprint: the cell holding its centre plus
+   *    every cell whose centre the ellipse/rect covers — one cell for a tree, a
+   *    row for a log or a stall. Its height is round(art over the hitbox / a
+   *    body's 88 px) levels, clamped 1..3: a stone or bush is a prop's +1 (occ
+   *    0.67 per sample), a tree's 2 saturates the ramp (0.45). Only 1-vs-≥2 is
+   *    visible to the torch, and the sun patch flattens any share to +1 itself
+   *    (min(pr·1.8, 1)) — the props' "levels made spikes" cannot recur.
+   *    REJECTED: coverage-weighted shares — a 0.5-cell trunk straddling a corner
+   *    spread to 4 × 0.19 level (under the ray's +0.2) and cast NOTHING; and a
+   *    dilated footprint, which darkened the ground on the TORCH side of the
+   *    trunk (the march's 0.75-cell near field is sized for one-cell bumps).
+   *  - NO CANOPY (rejected, measured): a tree's crown as a disc of share cells
+   *    at its true top (a slab in the two-span rule — the torch passed under it
+   *    correctly, the sun shaded beneath it) drew a DIAMOND LATTICE under every
+   *    tree by day: the sun patch skips a pixel's OWN cell, so inside a block of
+   *    share cells each cell shades from its first up-sun sample — m runs 1 → 0.58
+   *    across every cell (Hp − hRay falls with dcp) and the block reads as tiled
+   *    diamonds, not a blob (scratch p4-day-on-crop). A smooth canopy needs the
+   *    patch itself changed, and that patch IS the_island2's approved prop look —
+   *    a maintainer verdict, not a stamp choice. So a tree casts as a prop does:
+   *    its trunk cell, and the compact soft pool the patch makes of one cell.
+   *  - SKIPPED: cells capped by a deck (surface > terrain): furniture under a
+   *    roof, anything under a bridge — a G share there would DENT the deck for
+   *    the cliff march and the fog, and a bed must not cast on the street. Flat
+   *    pieces (`collision: false`) never reach the footprint table.
+   *  - THE PIECE'S OWN LIT COPY is tinted with its own shares removed within
+   *    `sceneryExclR2(place)` (1.8 cells): the tint is read at
+   *    the anchor, which is not always the trunk's cell, so without this every
+   *    tree stood in its own shadow from every side ("a prop OCCLUDES ITS OWN
+   *    CELL" — the bonfire trap). Cost, measured headless: 2-19 ms for the_game's
+   *    649 footprints INCLUDING the two 1 MB re-uploads; the heightmap build
+   *    itself (153-184 ms there) is untouched. */
+  setSceneryOccluders(fp: SceneryFootprints | undefined): void {
+    if (!this.hArr || !this.imgL || !this.imgG) return;
+    const t0 = performance.now();
+    const W = this.world.width;
+    const Hh = this.world.height;
+    const dL = this.imgL.data;
+    const dG = this.imgG.data;
+    for (const [i, o] of this.sceneryOrig) {
+      dL[i * 4] = o[0];
+      dL[i * 4 + 1] = o[1];
+      dG[i * 4] = o[2];
+      dG[i * 4 + 2] = 0;
+      this.hArr[i] = o[3];
+      this.gArr[i] = o[4];
+      this.pArr[i] = o[5];
+      this.sArrH[i] = 0;
+      this.sArrG[i] = 0;
+    }
+    for (const i of this.sceneryDil) dG[i * 4 + 1] = 0;
+    this.sceneryDil = [];
+    const had = this.sceneryOrig.size > 0;
+    this.sceneryOrig.clear();
+    this.sceneryExcl.clear();
+    const stats = { footprints: 0, cells: 0, gateCells: 0, ms: 0 };
+    const hs = this.hScale;
+    const trunk = new Map<number, number>(); // cell → bump bytes over its OWN terrain byte
+    if (fp && this.sceneryShadows) {
+      for (let j = 0; j < fp.n; j++) {
+        const cx = fp.cx[j];
+        const cy = fp.cy[j];
+        const cc = Math.floor(cx);
+        const cr = Math.floor(cy);
+        if (cc < 0 || cr < 0 || cc >= W || cr >= Hh) continue;
+        const artH = fp.artH[j];
+        const tb = Math.round(Math.max(1, Math.min(SCN_TRUNK_MAX, Math.round(artH / CHARACTER_BODY_PX))) * hs);
+        const p = fp.p[j];
+        const q = fp.q[j];
+        const isRect = fp.rect[j] === 1;
+        const bump = (c: number, r: number) => {
+          if (c < 0 || r < 0 || c >= W || r >= Hh) return;
+          const i = r * W + c;
+          if ((trunk.get(i) ?? 0) < tb) trunk.set(i, tb);
+        };
+        bump(cc, cr);
+        // Every cell whose CENTRE the shape covers — the footprint's own inside
+        // test (footprintPenetration's frame: X/Y along the map diagonals).
+        const reach = isRect ? (fp.supX[j] + fp.supY[j]) / Math.SQRT2 : Math.sqrt((p * p + q * q) / 2);
+        const c0 = Math.floor(cx - reach);
+        const c1 = Math.floor(cx + reach);
+        const r0 = Math.floor(cy - reach);
+        const r1 = Math.floor(cy + reach);
+        for (let r = r0; r <= r1; r++)
+          for (let c = c0; c <= c1; c++) {
+            const ox = c + 0.5 - cx;
+            const oy = r + 0.5 - cy;
+            const X = (ox - oy) / Math.SQRT2;
+            const Y = (ox + oy) / Math.SQRT2;
+            let inside: boolean;
+            if (isRect) {
+              const U = X * fp.rcos[j] + Y * fp.rsin[j];
+              const V = fp.rcos[j] * Y - fp.rsin[j] * X;
+              inside = Math.abs(U) <= p && Math.abs(V) <= q;
+            } else inside = (X * X) / (p * p) + (Y * Y) / (q * q) <= 1;
+            if (inside) bump(c, r);
+          }
+        this.sceneryExcl.set(fp.place[j], SCN_EXCL_R * SCN_EXCL_R);
+        stats.footprints++;
+      }
+    }
+    for (const i of trunk.keys()) {
+      const i4 = i * 4;
+      const Rb0 = dL[i4];
+      const Gb0 = dL[i4 + 1];
+      const Bb = dL[i4 + 2]; // the cell's terrain byte — same packing as R
+      const Grb0 = dG[i4];
+      const eT = trunk.get(i) ?? 0;
+      const newGr = Math.max(Grb0, Math.min(255, Bb + eT));
+      // UNDER A CAP — a room under its roof, a cave under its ceiling, ground
+      // under a span — the linear column IS the cap: growing it would raise
+      // the roof, and the sun (linear G) must not shade inside. The ground
+      // share is the whole story there: the point-light march already falls
+      // back to the GROUND map for a light under a cap (`lp.z <= H → hg`, in
+      // the shader and the CPU twin alike), so a torch indoors shadows the
+      // piece off exactly this byte. Skipping capped cells outright was the
+      // first cut — measured as a barrel beside the player casting nothing,
+      // behind/beside 1.00 (maintainer's house and cave, 2026-09-06).
+      const capped = this.tArr[i] > this.bArr[i] + 1e-3;
+      const newR = capped ? Rb0 : Math.max(Rb0, Math.min(255, Bb + eT));
+      if (newR === Rb0 && newGr === Grb0) continue;
+      const newG = Math.min(255, Gb0 + (newR - Rb0)); // R−G unchanged, byte-exact
+      this.sceneryOrig.set(i, [Rb0, Gb0, Grb0, this.hArr[i], this.gArr[i], this.pArr[i]]);
+      dL[i4] = newR;
+      dL[i4 + 1] = newG;
+      dG[i4] = newGr;
+      // The share alone (B): what groundTerrAt subtracts and the own-cell skirt
+      // skip keys on — the SAME bytes the column grew by, so R − B is exact.
+      dG[i4 + 2] = newGr - Grb0;
+      const dh = (newR - Rb0) / hs;
+      const dg = (newGr - Grb0) / hs;
+      this.hArr[i] += dh;
+      this.gArr[i] += dg;
+      this.pArr[i] += (newG - Gb0) / hs;
+      this.sArrH[i] = dh;
+      this.sArrG[i] = dg;
+      stats.cells++;
+    }
+    // THE SPARSE GATE (G of the ground map): every cell within SCN_GATE_R of a
+    // cell carrying ANY prop share. The sun patch samples up to 2.45 cells
+    // from the pixel, its bilinear read spreads one more, and the pixel sits
+    // up to 0.5 from its cell's centre: a share can influence a pixel at most
+    // 3.95 cells away per axis, so a Chebyshev radius of 4 is complete.
+    if (this.sceneryOrig.size > 0) {
+      const dil = new Uint8Array(W * Hh);
+      for (let i = 0; i < W * Hh; i++) {
+        if (this.pArr[i] <= 0) continue;
+        const c = i % W;
+        const r = (i - c) / W;
+        const r0 = Math.max(0, r - SCN_GATE_R);
+        const r1 = Math.min(Hh - 1, r + SCN_GATE_R);
+        const c0 = Math.max(0, c - SCN_GATE_R);
+        const c1 = Math.min(W - 1, c + SCN_GATE_R);
+        for (let rr = r0; rr <= r1; rr++) for (let cc = c0; cc <= c1; cc++) dil[rr * W + cc] = 1;
+      }
+      for (let i = 0; i < W * Hh; i++)
+        if (dil[i]) {
+          dG[i * 4 + 1] = 255;
+          this.sceneryDil.push(i);
+        }
+    }
+    if (had || this.sceneryOrig.size > 0) {
+      const maps: [string, ImageData][] = [
+        ["world-heightmap-linear", this.imgL],
+        ["world-heightmap-ground", this.imgG],
+      ];
+      for (const [key, img] of maps) {
+        if (!this.scene.textures.exists(key)) continue;
+        const t = this.scene.textures.get(key) as Phaser.Textures.CanvasTexture;
+        t.getContext().putImageData(img, 0, 0);
+        t.refresh();
+        // refresh() re-applies the source's scale mode (see setRoom) — re-assert.
+        t.setFilter(Phaser.Textures.FilterMode.LINEAR);
+      }
+    }
+    this.hasSceneryShares = this.sceneryOrig.size > 0;
+    this.shader?.setUniform("uHasProps.value", this.propsFlag());
+    this.setScenerySwitches();
+    stats.gateCells = this.sceneryDil.length;
+    stats.ms = +(performance.now() - t0).toFixed(2);
+    this.sceneryStats = stats;
   }
 
   /** CPU twin of the shader's lighting for a surface at (col,row,z): used to
@@ -2273,7 +3186,14 @@ export class NightLights {
   /** CPU twin of the shader's directional-sun shade for a surface (1 = fully
    * lit, ~0.62 = deepest shade). Drives lit-copy tints and the headless
    * verify probe. */
-  sunFactorAt(col: number, row: number, z: number, sun: [number, number, number, number] = this.curSun): number {
+  sunFactorAt(
+    col: number,
+    row: number,
+    z: number,
+    sun: [number, number, number, number] = this.curSun,
+    selfR2 = 0,
+    groundContact = false,
+  ): number {
     if (sun[3] <= 0.001) return 1;
     // z < 0 = "use the cell's own terrain height" (headless probe sugar).
     if (z < 0) {
@@ -2325,18 +3245,48 @@ export class NightLights {
       const reach = sstep(2.7, 1.3, dcp);
       if (reach <= 0) break;
       const hRay = z + dcp * sun[2] + 0.15;
-      const pr = pAtSoft(px, py);
-      const hh = hAtSoft(px, py);
+      let pr = pAtSoft(px, py);
+      let hh = hAtSoft(px, py);
+      if (selfR2 > 0 && dcp * dcp < selfR2) {
+        // A piece's OWN shares do not shade its own copy — setSceneryOccluders.
+        const sc = this.shareAtSoft(this.sArrH, px, py);
+        pr -= sc;
+        hh -= sc;
+      }
       const hp = hh - pr + Math.min(1, pr * 1.8);
       if (pr > 0.001 && hh < 90 && hp > hRay)
         m = Math.max(m, Math.min(1, (hp - hRay) * 2.2) * reach);
+    }
+    // THE OWN TRUNK'S CORE, DIRECTIONALLY — the shader's rule; a lit copy
+    // (selfR2 > 0) excludes its own shares and takes none of it.
+    if (selfR2 <= 0 && this.hasSceneryShares) {
+      const oc = Math.floor(col);
+      const orow = Math.floor(row);
+      const Wc = this.world.width;
+      const Hc = this.world.height;
+      const oi = orow * Wc + oc;
+      const ownShareRaw = oc >= 0 && orow >= 0 && oc < Wc && orow < Hc ? this.sArrG[oi] : 0;
+      // The shader's rule: a deck pixel does not read the floor's furniture.
+      const ownShare = ownShareRaw > 0 && z > this.gArr[oi] - this.sArrG[oi] + 1 ? 0 : ownShareRaw;
+      if (ownShare > 0) {
+        const ocx = oc + 0.5;
+        const ocy = orow + 0.5;
+        if (groundContact) m = Math.max(m, SCN_CONTACT_SUN * smoothStep01(SCN_CONTACT_R, SCN_CONTACT_R * 0.3, Math.hypot(col - ocx, row - ocy)));
+        const tt = (ocx - col) * -sun[0] + (ocy - row) * -sun[1];
+        if (tt > 0.05) {
+          const dq = Math.hypot(col - sun[0] * tt - ocx, row - sun[1] * tt - ocy);
+          const hRayC = z + tt * sun[2] + 0.15;
+          const top = z + Math.min(1, ownShare * 1.8);
+          if (top > hRayC) m = Math.max(m, Math.min(1, (top - hRayC) * 2.2) * smoothStep01(SCN_CORE, SCN_CORE * 0.55, dq));
+        }
+      }
     }
     sunVis *= 1 - 0.75 * m;
     const sunShare = 0.45 * sun[3];
     return 1 - sunShare + sunShare * Math.max(0, Math.min(1, sunVis));
   }
 
-  lightAt(col: number, row: number, z: number, isObj: boolean): [number, number, number] {
+  lightAt(col: number, row: number, z: number, isObj: boolean, selfR2 = 0, parts?: LightParts, groundContact = false): [number, number, number] {
     const W = this.world.width;
     const H = this.world.height;
     const hAt = (c: number, r: number) => {
@@ -2357,12 +3307,26 @@ export class NightLights {
     const hAtSoft = soft2(this.hArr);
     // Twin of groundAtSoft: the ground column alone, deck excluded.
     const gAtSoft = soft2(this.gArr);
-    const t = this.scene.game.loop.getDuration();
+    // Same clock as uAnimTime (scene.time.now): the shader's flicker and the
+    // scenery-lit pipeline's are on it, and a copy beside a shaded piece must
+    // breathe in phase with it (game.loop.getDuration lags by the boot).
+    const t = this.scene.time.now / 1000;
+    // The own-cell skirt skip, twin of the shader's (see FRAG): the pixel's
+    // cell carries a scenery share → samples within a cell of its centre skip.
+    const oc = Math.floor(col);
+    const orow = Math.floor(row);
+    const oidx = orow * W + oc;
+    const ownShareRaw = this.hasSceneryShares && oc >= 0 && orow >= 0 && oc < W && orow < H ? this.sArrG[oidx] : 0;
+    // The shader's rule: a deck pixel does not read the floor's furniture.
+    const ownShare = ownShareRaw > 0 && z > this.gArr[oidx] - this.sArrG[oidx] + 1 ? 0 : ownShareRaw;
+    const ocx = oc + 0.5;
+    const ocy = orow + 0.5;
     // Directional-sun + cloud twins (see the shader): shade the ambient term.
-    const geo = MAP_GEOMETRY;
+    const geo = this.geo;
     const wxT = this.iso.ox + (col - row) * geo.dx + geo.dx;
     const wyT = this.iso.oy + (col + row) * geo.dy + geo.dy - z * geo.lh;
-    const sunF = this.sunFactorAt(col, row, z) * this.cloudFactorAt(wxT, wyT);
+    const sunOnly = this.sunFactorAt(col, row, z, this.curSun, selfR2, groundContact);
+    const sunF = sunOnly * this.cloudFactorAt(wxT, wyT);
     const aur = this.auroraAt(wxT, wyT);
     // EXACT TWIN of the fragment's `inRoom` (roomAt): indoors, a cell outside
     // MY room gets no ambient and no sky glow — only the point lights below.
@@ -2387,6 +3351,14 @@ export class NightLights {
       amb(1) * sunF + aur[1] * inRoom,
       amb(2) * sunF + aur[2] * inRoom,
     ];
+    if (parts) {
+      parts.base[0] = out[0];
+      parts.base[1] = out[1];
+      parts.base[2] = out[2];
+      parts.sunF = sunOnly;
+      parts.ao = 1;
+      parts.occ.fill(1);
+    }
     for (let i = 0; i < this.curLights.length && i < MAX_SHADER_LIGHTS; i++) {
       const L = this.curLights[i];
       const dx = L.col - col;
@@ -2395,26 +3367,67 @@ export class NightLights {
       const dist = Math.sqrt(dx * dx + dy * dy + Math.pow((L.z - z) * 0.6, 2));
       let att = Math.max(0, 1 - dist / radius);
       att *= att;
-      if (att <= 0.001) continue;
+      // Twin of the shader's above-the-light rule outside my room (see FRAG).
+      att *= 1 - this.indoorMix * (1 - hit) * (z >= L.z - 0.05 ? 1 : 0);
+      // A lit copy's crown reaches nearer the light than its axis: its
+      // occlusion is marched whenever the light is within reach of the volume.
+      const wantOcc = parts !== undefined && dist < radius + SCN_CROWN_REACH;
+      if (att <= 0.001 && !wantOcc) continue;
       let occ = 1;
-      if (L.radius > 0 && (z < L.z + 0.05 || isObj)) {
+      const lc = Math.floor(L.col);
+      const lr = Math.floor(L.row);
+      const lShare = this.hasSceneryShares && lc >= 0 && lr >= 0 && lc < W && lr < H ? this.sArrG[lr * W + lc] : 0;
+      const lcx = lc + 0.5;
+      const lcy = lr + 0.5;
+      if (L.radius > 0 && (att * Math.max(L.color[0], L.color[1], L.color[2]) > SHADOW_MARCH_MIN_LIGHT || wantOcc) && (z < L.z + 0.05 || isObj)) {
         for (let sN = 1; sN <= 12; sN++) {
           const tt = sN / 13;
           const px = col + dx * tt;
           const py = row + dy * tt;
           if (Math.floor(px) === Math.floor(col) && Math.floor(py) === Math.floor(row)) continue;
           if ((px - col) * (px - col) + (py - row) * (py - row) < 0.56) continue; // near-field
+          if (ownShare > 0 && (px - ocx) * (px - ocx) + (py - ocy) * (py - ocy) < 1.0) continue; // own trunk's skirt
+          if (lShare > 0 && (px - lcx) * (px - lcx) + (py - lcy) * (py - lcy) < 1.0) continue; // the LIGHT's own trunk (a fire IS its piece)
           const hRay = z + (L.z - z) * tt + 0.2;
           // EXACT twin of the shader's two-span test: a deck is a floating
           // slab, so it only blocks a ray whose light is on its far side.
-          const hh = hAtSoft(px, py);
-          const hg = gAtSoft(px, py);
+          let hh = hAtSoft(px, py);
+          let hg = gAtSoft(px, py);
+          if (selfR2 > 0 && (px - col) * (px - col) + (py - row) * (py - row) < selfR2) {
+            // The piece's OWN shares (0 off-grid) — subtracted inside its
+            // exclusion radius so its lit copy is never shadowed by itself.
+            hh -= this.shareAtSoft(this.sArrH, px, py);
+            hg -= this.shareAtSoft(this.sArrG, px, py);
+          }
           const blocker = hh > hg + 0.01 && L.z <= hh ? hg : hh;
-          if (blocker < 90 && blocker > hRay)
-            occ *= 0.8 + (0.45 - 0.8) * Math.min(1, (blocker - hRay) * 1.5);
+          if (blocker < 90 && blocker > hRay) {
+            const pen = Math.min(1, (blocker - hRay) * 1.5);
+            const pc = Math.floor(px);
+            const pr = Math.floor(py);
+            const inSelf = selfR2 > 0 && (px - col) * (px - col) + (py - row) * (py - row) < selfR2;
+            const sc = !inSelf && this.hasSceneryShares && pc >= 0 && pr >= 0 && pc < W && pr < H && this.sArrG[pr * W + pc] > 0.01;
+            occ *= sc ? SCN_SHADOW_NEAR + (SCN_SHADOW_DEEP - SCN_SHADOW_NEAR) * pen : 0.8 + (0.45 - 0.8) * pen;
+          }
         }
-        occ = Math.max(occ, 0.22); // bounce floor — same as the shader
+        // THE OWN TRUNK'S CORE, DIRECTIONALLY — the shader's rule.
+        if (ownShare > 0 && selfR2 <= 0) {
+          if (groundContact) occ *= 1 - SCN_CONTACT_TORCH * smoothStep01(SCN_CONTACT_R, SCN_CONTACT_R * 0.3, Math.hypot(col - ocx, row - ocy));
+          const dd = Math.max(dx * dx + dy * dy, 1e-4);
+          const tt = ((ocx - col) * dx + (ocy - row) * dy) / dd;
+          if (tt > 0.05 && tt < 1) {
+            const dq = Math.hypot(col + dx * tt - ocx, row + dy * tt - ocy);
+            const hRayC = z + (L.z - z) * tt + 0.2;
+            const top = z + ownShare;
+            if (top > hRayC) {
+              const k = 0.8 + (0.22 - 0.8) * Math.min(1, (top - hRayC) * 1.5);
+              occ *= 1 + (k - 1) * smoothStep01(SCN_CORE, SCN_CORE * 0.55, dq);
+            }
+          }
+        }
+        occ = Math.max(occ, 0.22 * inRoom); // bounce floor — same as the shader, room-gated
       }
+      if (parts && i < parts.occ.length) parts.occ[i] = occ;
+      if (att <= 0.001) continue;
       const fl = L.flicker;
       const flick = 1 - fl * 0.1 * (0.5 + 0.5 * Math.sin(t * 2.9 + i * 5.3)) - fl * 0.05 * Math.sin(t * 7.1 + i * 11.1);
       const d01 = Math.min(1, dist / radius);
@@ -2436,11 +3449,17 @@ export class NightLights {
       const H2 = this.world.height;
       // Clamped to the cut-away indoors, for the same reason heightAt is: the
       // seam is between a body and the wall AS DRAWN, and a wall truncated to
-      // level 3 must not cast a level-6 wall's shading onto the floor beside it.
+      // level 3 must not cast a level-6 wall's shading onto the floor beside
+      // it. Per CELL like the shader — an unconstrained column (no entry) is
+      // drawn whole and seams at its real height; the legacy cut (roomCuts
+      // null) clamps everything at the scalar dial.
       const tAt = (ci: number, ri: number) => {
         if (ci < 0 || ri < 0 || ci >= W2 || ri >= H2) return 99;
         const b = this.bArr[ri * W2 + ci];
-        return this.indoor ? Math.min(b, this.indoorTop) : b;
+        if (!this.indoor) return b;
+        if (!this.roomCuts) return Math.min(b, this.indoorTop);
+        const e = this.roomCuts.get(ri * W2 + ci);
+        return e === undefined ? b : Math.min(b, e);
       };
       const ci = Math.floor(col);
       const ri = Math.floor(row);
@@ -2452,13 +3471,17 @@ export class NightLights {
         const t2 = Math.min(1, dBase / 6);
         const ao = 0.72 + 0.28 * (t2 * t2 * (3 - 2 * t2));
         for (let ch = 0; ch < 3; ch++) out[ch] *= ao;
+        if (parts) {
+          parts.ao = ao;
+          for (let ch = 0; ch < 3; ch++) parts.base[ch] *= ao;
+        }
       }
     }
     // Glow-halo twin (added after AO, like the shader): a character standing
     // in a mushroom/crystal halo must carry its glow — the field lights the
     // ground but the lit copy is tinted by THIS function only.
     if (this.curStamps.length) {
-      const { dx, dy, lh } = MAP_GEOMETRY;
+      const { dx, dy, lh } = this.geo;
       const wx = this.iso.ox + (col - row) * dx + dx;
       const wy = this.iso.oy + (col + row) * dy + dy - z * lh;
       for (const g of this.curStamps) {
@@ -2467,14 +3490,61 @@ export class NightLights {
         if (d >= 1) continue;
         const f = (1 - d) * (1 - d); // ≈ the stamp texture's falloff
         for (let ch = 0; ch < 3; ch++) out[ch] += g.color[ch] * g.alpha * f;
+        if (parts) for (let ch = 0; ch < 3; ch++) parts.base[ch] += g.color[ch] * g.alpha * f;
       }
     }
     return out;
   }
 
+  /** THE FRAME'S LIGHTS AS THE NIGHT PASS UPLOADS THEM — col,row,z,±radius /
+   *  r,g,b,flicker, the sun and the animation clock — for the scenery-lit
+   *  pipeline, so a piece is lit by the SAME lights, phase and flicker as the
+   *  ground it stands on (one ledger, no second light list). Live views. */
+  lightUniforms(): { pos: Float32Array; col: Float32Array; n: number; sun: [number, number, number, number]; time: number } {
+    const u = this.lightU;
+    u.pos = this.posArr;
+    u.col = this.colArr;
+    u.n = Math.min(this.curLights.length, MAX_SHADER_LIGHTS);
+    u.sun = this.curSun;
+    u.time = this.scene.time.now / 1000;
+    return u;
+  }
+  /** One object, mutated per call — the pipeline reads it every frame. */
+  private lightU: { pos: Float32Array; col: Float32Array; n: number; sun: [number, number, number, number]; time: number } = {
+    pos: new Float32Array(0),
+    col: new Float32Array(0),
+    n: 0,
+    sun: [0, 0, 1, 0],
+    time: 0,
+  };
+
+  /** The sun's current strength (uSun.w) — no object per read. */
+  get sunStrength(): number {
+    return this.curSun[3];
+  }
+
+  /** Bilinear read of a scenery-share array at (c, r) — 0 off-grid. Twin of
+   *  the map's LINEAR filter for the share alone; no closure per call. */
+  private shareAtSoft(arr: Float32Array, c: number, r: number): number {
+    const cf = c - 0.5;
+    const rf = r - 0.5;
+    const c0 = Math.floor(cf);
+    const r0 = Math.floor(rf);
+    const fx = cf - c0;
+    const fy = rf - r0;
+    return (
+      (this.shareCell(arr, c0, r0) * (1 - fx) + this.shareCell(arr, c0 + 1, r0) * fx) * (1 - fy) +
+      (this.shareCell(arr, c0, r0 + 1) * (1 - fx) + this.shareCell(arr, c0 + 1, r0 + 1) * fx) * fy
+    );
+  }
+  private shareCell(arr: Float32Array, ci: number, ri: number): number {
+    const W = this.world.width;
+    return ci < 0 || ri < 0 || ci >= W || ri >= this.world.height ? 0 : arr[ri * W + ci];
+  }
+
   /** lightAt packed as a Phaser tint (multiplier clamped to 1). */
-  tintAt(col: number, row: number, z: number, isObj: boolean): number {
-    const l = this.lightAt(col, row, z, isObj);
+  tintAt(col: number, row: number, z: number, isObj: boolean, selfR2 = 0): number {
+    const l = this.lightAt(col, row, z, isObj, selfR2);
     const r = Math.min(255, Math.round(Math.min(1, l[0]) * 255));
     const g = Math.min(255, Math.round(Math.min(1, l[1]) * 255));
     const b = Math.min(255, Math.round(Math.min(1, l[2]) * 255));
@@ -2494,6 +3564,40 @@ export class NightLights {
   }
 
   /** Headless-debug: real dimensions of the render target vs the screen. */
+  /** What the night pass cost this beacon window, and the geometry it cost it
+   *  over: lights uploaded (mean + peak), how many of them MARCH SHADOWS (the
+   *  12-sample loop — the actual per-fragment bill), the summed pool area in
+   *  cells, and the FIELD the shader runs at. Resolution is the biggest lever
+   *  there is (`?light=` scales it) and was invisible to the beacon until now,
+   *  so a slow run could not be told apart from a large one. Drains on read. */
+  lightBill(): Record<string, number | string> {
+    const f = Math.max(1, this.bill.frames);
+    const w = Math.round(this.shader?.width ?? 0);
+    const h = Math.round(this.shader?.height ?? 0);
+    const out = {
+      frames: this.bill.frames,
+      n: +(this.bill.n / f).toFixed(2),
+      shadowing: +(this.bill.shadowing / f).toFixed(2),
+      nMax: this.bill.nMax,
+      shadowMax: this.bill.shadowMax,
+      poolCells: Math.round(this.bill.poolCells / f),
+      ambient: this.bill.ambient,
+      field: `${w}x${h}`,
+      ls: lightScale(),
+      fragPerPass: w * h,
+      // What the pass UPDATE cost, ms per frame: the glow render-texture, and
+      // the rest (uniform writes + overlay bookkeeping) as updMs - glowMs.
+      updMs: +(this.updMs / f).toFixed(3),
+      glowMs: +(this.updGlowMs / f).toFixed(3),
+      stampsDrawn: +(this.updStamps / f).toFixed(2),
+    };
+    this.bill = { frames: 0, n: 0, shadowing: 0, poolCells: 0, nMax: 0, shadowMax: 0, ambient: this.bill.ambient };
+    this.updMs = 0;
+    this.updGlowMs = 0;
+    this.updStamps = 0;
+    return out;
+  }
+
   debugInfo() {
     const key = this.overlay?.texture.key ?? "?";
     const tex = this.scene.textures.get(key);
@@ -2515,6 +3619,267 @@ export class NightLights {
     };
   }
 
+  /** A/B: arm or disarm the hierarchical skip on every pass (dev probe). */
+  setSkip(on: boolean): boolean {
+    this.skipOn = on;
+    for (const sh of [this.shader, this.mistShader, this.depthFogShader])
+      sh?.setUniform("uSkip.value", on && this.scene.textures.exists(BLOCK_KEY) ? 1 : 0);
+    return on;
+  }
+
+  /** THE RAW PIXELS of a pass's own framebuffer, hashed — read with
+   *  gl.readPixels while its framebuffer is bound, so it is exact for ANY
+   *  alpha (the depth-fog pass writes fractional alpha, which a 2D-canvas
+   *  round trip would premultiply and quantise — review, 2026-09-02) and
+   *  synchronous. */
+  private hashPass(sh: Phaser.GameObjects.Shader): string {
+    const buf = this.readPass(sh);
+    let h = 0x811c9dc5;
+    for (let i = 0; i < buf.length; i++) h = Math.imul(h ^ buf[i], 0x01000193) >>> 0;
+    return h.toString(16).padStart(8, "0");
+  }
+
+  /** The raw RGBA of a pass's framebuffer (what hashPass hashes). */
+  private readPass(sh: Phaser.GameObjects.Shader): Uint8Array {
+    const r = this.scene.game.renderer as Phaser.Renderer.WebGL.WebGLRenderer;
+    const gl = r.gl;
+    const fb = (sh as unknown as { framebuffer?: unknown }).framebuffer;
+    if (!fb) throw new Error("pass has no framebuffer");
+    (r as unknown as { setFramebuffer: (f: unknown, s?: boolean) => void }).setFramebuffer(fb, true);
+    const buf = new Uint8Array(sh.width * sh.height * 4);
+    gl.readPixels(0, 0, sh.width, sh.height, gl.RGBA, gl.UNSIGNED_BYTE, buf);
+    (r as unknown as { setFramebuffer: (f: unknown, s?: boolean) => void }).setFramebuffer(null, true);
+    return buf;
+  }
+
+  private passSnaps = new Map<string, Uint8Array>();
+
+  /** DIAGNOSTIC: keep a pass's raw pixels under a label, for diffPass. */
+  snapPass(which: "night" | "fog", label: string): number {
+    const sh = which === "night" ? this.shader : this.depthFogShader;
+    if (!sh) throw new Error(`no ${which} pass`);
+    const buf = this.readPass(sh);
+    this.passSnaps.set(label, buf);
+    return buf.length;
+  }
+
+  /** DIAGNOSTIC: how two snapshots differ — a hash says "not equal", this says
+   *  by how much (max |Δ| per byte, how many bytes, where). */
+  diffPass(
+    a: string,
+    b: string,
+  ): { bytes: number; differing: number; maxAbs: number; meanAbs: number; box: number[] | null; w: number; samples: number[][] } | null {
+    const A = this.passSnaps.get(a);
+    const B = this.passSnaps.get(b);
+    if (!A || !B || A.length !== B.length) return null;
+    const w = this.shader?.width ?? 0;
+    let differing = 0;
+    let maxAbs = 0;
+    let sum = 0;
+    let x0 = Infinity, y0 = Infinity, x1 = -1, y1 = -1;
+    const samples: number[][] = []; // [px, py, Ar,Ag,Ab,Aa, Br,Bg,Bb,Ba] at a few differing pixels
+    for (let i = 0; i < A.length; i++) {
+      const d = Math.abs(A[i] - B[i]);
+      if (d) {
+        differing++;
+        sum += d;
+        if (d > maxAbs) maxAbs = d;
+        if (w) {
+          const px = (i >> 2) % w, py = Math.floor((i >> 2) / w);
+          if (px < x0) x0 = px;
+          if (px > x1) x1 = px;
+          if (py < y0) y0 = py;
+          if (py > y1) y1 = py;
+          if (samples.length < 6 && differing % 4000 === 1) {
+            const k = (i >> 2) * 4;
+            samples.push([px, py, A[k], A[k + 1], A[k + 2], A[k + 3], B[k], B[k + 1], B[k + 2], B[k + 3]]);
+          }
+        }
+      }
+    }
+    // box = [x0, y0, x1, y1] in pass texels (readPixels rows are bottom-up).
+    return { bytes: A.length, differing, maxAbs, meanAbs: differing ? +(sum / differing).toFixed(3) : 0, box: differing ? [x0, y0, x1, y1] : null, w, samples };
+  }
+
+  /** DIAGNOSTIC: the bytes the two LINEAR maps hold for a cell range — from the
+   *  retained ImageData AND read back from the live canvas (must agree), plus the
+   *  CPU twins — so a GPU reading that disagrees can be attributed. */
+  heightmapBytes(c0: number, r0: number, c1: number, r1: number): Record<string, number[]> {
+    const out: Record<string, number[]> = {};
+    const W = this.world.width;
+    const tL = this.scene.textures.exists("world-heightmap-linear") ? (this.scene.textures.get("world-heightmap-linear") as Phaser.Textures.CanvasTexture) : null;
+    const tG = this.scene.textures.exists("world-heightmap-ground") ? (this.scene.textures.get("world-heightmap-ground") as Phaser.Textures.CanvasTexture) : null;
+    const cL = tL ? tL.getContext().getImageData(c0, r0, c1 - c0 + 1, r1 - r0 + 1).data : null;
+    const cG = tG ? tG.getContext().getImageData(c0, r0, c1 - c0 + 1, r1 - r0 + 1).data : null;
+    const cw = c1 - c0 + 1;
+    for (let r = r0; r <= r1; r++)
+      for (let c = c0; c <= c1; c++) {
+        const i = r * W + c;
+        const k = ((r - r0) * cw + (c - c0)) * 4;
+        out[`${c},${r}`] = [
+          this.imgL?.data[i * 4] ?? -1, this.imgL?.data[i * 4 + 1] ?? -1, this.imgL?.data[i * 4 + 2] ?? -1, this.imgG?.data[i * 4] ?? -1,
+          cL ? cL[k] : -1, cL ? cL[k + 1] : -1, cL ? cL[k + 2] : -1, cG ? cG[k] : -1,
+          +(this.hArr[i] ?? -1).toFixed(2), +(this.pArr[i] ?? -1).toFixed(2), +(this.gArr[i] ?? -1).toFixed(2), this.tArr[i] ?? -1,
+        ];
+      }
+    return out;
+  }
+
+  /** DIAGNOSTIC: the sampler uniforms of the night pass in their sync order and the texture key each holds. */
+  samplerLayout(): string[] {
+    const sh = this.shader as unknown as { uniforms?: Record<string, { type?: string; value?: unknown; textureKey?: string }> } | undefined;
+    const out: string[] = [];
+    if (!sh?.uniforms) return out;
+    let n = 0;
+    for (const [k, u] of Object.entries(sh.uniforms)) {
+      if (u.value === null || u.value === undefined) continue;
+      if (u.type === "sampler2D") out.push(`unit${n++}:${k}=${u.textureKey ?? "?"}`);
+    }
+    return out;
+  }
+
+  /** DIAGNOSTIC: the GL filters the height maps carry NOW (9729 = LINEAR, 9728 =
+   *  NEAREST). A CanvasTexture refresh() re-uploads with the renderer's default
+   *  (NEAREST under pixelArt), so setSceneryOccluders must re-assert LINEAR on
+   *  the two bilinear maps — this is the proof that it did. */
+  heightmapFilters(): Record<string, number | null> {
+    const f = (key: string): [number | null, number | null] => {
+      if (!this.scene.textures.exists(key)) return [null, null];
+      const g = this.scene.textures.get(key).source[0]?.glTexture as unknown as { minFilter?: number; magFilter?: number } | null;
+      return [g?.minFilter ?? null, g?.magFilter ?? null];
+    };
+    const [linMin, linMag] = f("world-heightmap-linear");
+    const [gndMin, gndMag] = f("world-heightmap-ground");
+    const [surfMin, surfMag] = f("world-heightmap");
+    return { linMin, linMag, gndMin, gndMag, surfMin, surfMag };
+  }
+
+  /** DIAGNOSTIC: the fog PASS's own pixel over a cell's tread centre (its
+   *  premultiplied output, unpremultiplied here) beside the JS twin's answer
+   *  for that cell — the two must agree for the fog silhouettes to match the
+   *  ground. `wx/wy` are the world point sampled, `px/py` the pass texel. */
+  fogProbe(col: number, row: number): Record<string, unknown> {
+    const lvl = this.tArr?.[Math.floor(row) * this.world.width + Math.floor(col)] ?? 0;
+    const wx = this.iso.ox + (col - row) * this.geo.dx + this.geo.dx;
+    const wy = this.iso.oy + 8 + (col + row) * this.geo.dy + this.geo.dy - lvl * this.geo.lh;
+    return { ...this.fogProbeAt(wx, wy), cell: [col, row, lvl] };
+  }
+
+  /** DIAGNOSTIC: the fog PASS's pixel at a world point beside the foot-point twin there. */
+  fogProbeAt(wx: number, wy: number): Record<string, unknown> {
+    const sh = this.depthFogShader;
+    if (!sh || !this.tArr) throw new Error("no fog pass");
+    const sd = this.screenFogDist(wx, wy);
+    const lvl = this.tArr[Math.floor(sd.srow) * this.world.width + Math.floor(sd.scol)] ?? 0;
+    const cam = (sh as unknown as { uniforms: Record<string, { value: { x: number; y: number; z: number; w: number } | number }> }).uniforms;
+    const uCam = cam.uCam.value as { x: number; y: number; z: number; w: number };
+    const flip = cam.uFlip.value as number;
+    const sx = (wx - uCam.x) / uCam.z;
+    let sy = (wy - uCam.y) / uCam.w;
+    sy = flip > 0.5 ? 1 - sy : sy;
+    const px = Math.floor(sx * sh.width);
+    const py = Math.floor(sy * sh.height);
+    const r = this.scene.game.renderer as Phaser.Renderer.WebGL.WebGLRenderer;
+    const gl = r.gl;
+    const fb = (sh as unknown as { framebuffer?: unknown }).framebuffer;
+    if (!fb) throw new Error("pass has no framebuffer");
+    (r as unknown as { setFramebuffer: (f: unknown, s?: boolean) => void }).setFramebuffer(fb, true);
+    const buf = new Uint8Array(4);
+    gl.readPixels(px, py, 1, 1, gl.RGBA, gl.UNSIGNED_BYTE, buf);
+    (r as unknown as { setFramebuffer: (f: unknown, s?: boolean) => void }).setFramebuffer(null, true);
+    const a = buf[3] / 255;
+    const un = (v: number) => (a > 0 ? +(v / 255 / a).toFixed(3) : 0);
+    const foot = this.depthFogAtFoot(wx, wy, lvl, sd.scol, sd.srow);
+    const twin0 = this.depthFogAt(sd.scol, sd.srow, lvl, true);
+    return {
+      wx, wy, px, py, inView: sx >= 0 && sx < 1 && sy >= 0 && sy < 1, field: { scol: +sd.scol.toFixed(2), srow: +sd.srow.toFixed(2), distH: +sd.distH.toFixed(2), lvl },
+      pass: { a: +a.toFixed(3), r: un(buf[0]), g: un(buf[1]), b: un(buf[2]) },
+      twin: { a: +foot.a.toFixed(3), r: +foot.r.toFixed(3), g: +foot.g.toFixed(3), b: +foot.b.toFixed(3) },
+      twinSnap: { a: +twin0.a.toFixed(3), r: +twin0.r.toFixed(3), g: +twin0.g.toFixed(3), b: +twin0.b.toFixed(3) },
+      player: { xy: this.curPlayerXY, z: this.curPlayerZ }, ambient: this.curAmbient,
+    };
+  }
+
+  /** PARITY: a hash of a pass's OWN pixels as last rendered (dev probe). */
+  passHash(which: "night" | "fog"): Promise<{ hash: string; w: number; h: number }> {
+    const sh = which === "night" ? this.shader : this.depthFogShader;
+    if (!sh) return Promise.reject(new Error(`no ${which} pass`));
+    try {
+      return Promise.resolve({ hash: this.hashPass(sh), w: sh.width, h: sh.height });
+    } catch (e) {
+      return Promise.reject(e);
+    }
+  }
+
+  /** PARITY, SAME TURN: render a pass with the skip OFF and read its pixels,
+   *  then with the skip ON and read again — nothing else changes in between
+   *  (no frame passes: uAnimTime, the eased ambient and every light are the
+   *  same uniforms for both), so the two hashes differ only by the skip. The
+   *  renderer draws a render-to-texture shader with exactly load() + flush()
+   *  (ShaderWebGLRenderer). Raw readPixels, so exact for both passes. */
+  parityHash(which: "night" | "fog", toggle: "skip" | "gate" = "skip"): Promise<{ full: string; skip: string; w: number; h: number }> {
+    const sh = which === "night" ? this.shader : this.depthFogShader;
+    if (!sh) return Promise.reject(new Error(`no ${which} pass`));
+    const draw = sh as unknown as { load: () => void; flush: () => void };
+    const armed = this.scene.textures.exists(BLOCK_KEY);
+    if (toggle === "gate") {
+      // THE SPARSE SUN-PATCH GATE, same turn: the pass with the prop loop run
+      // for every pixel, then gated by the ground map's G flag — nothing else
+      // changing. `full` = ungated, `skip` = gated; equal = the gate is identity.
+      const gated = this.hasSceneryShares && this.sunGate ? 1 : 0;
+      try {
+        sh.setUniform("uPropGate.value", 0);
+        draw.load();
+        draw.flush();
+        const full = this.hashPass(sh);
+        sh.setUniform("uPropGate.value", this.hasSceneryShares ? 1 : 0);
+        draw.load();
+        draw.flush();
+        const skip = this.hashPass(sh);
+        sh.setUniform("uPropGate.value", gated);
+        return Promise.resolve({ full, skip, w: sh.width, h: sh.height });
+      } catch (e) {
+        sh.setUniform("uPropGate.value", gated);
+        return Promise.reject(e);
+      }
+    }
+    try {
+      sh.setUniform("uSkip.value", 0);
+      draw.load();
+      draw.flush();
+      const full = this.hashPass(sh);
+      sh.setUniform("uSkip.value", armed ? 1 : 0);
+      draw.load();
+      draw.flush();
+      const skip = this.hashPass(sh);
+      sh.setUniform("uSkip.value", this.skipOn && armed ? 1 : 0);
+      return Promise.resolve({ full, skip, w: sh.width, h: sh.height });
+    } catch (e) {
+      sh.setUniform("uSkip.value", this.skipOn && armed ? 1 : 0);
+      return Promise.reject(e);
+    }
+  }
+
+  /** RUN OR DON'T RUN A PASS. `setVisible(false)` does NOT stop a
+   *  render-to-texture Shader — Phaser's `willRender` returns true for one
+   *  unconditionally (gameobjects/shader/Shader.js) — so a pass that is "off"
+   *  still dispatches a full-canvas fragment program every frame, and each
+   *  dispatch also breaks the batch (the renderer clears and rebinds the
+   *  pipeline around it). Weather was Clear sky in all ten windows of both
+   *  beacon runs, so the mist pass ran 9,534 times to write vec4(0). Only
+   *  leaving the display list actually stops it. Writing the strength uniform
+   *  unconditionally (see uMist) stays as the belt to this braces: if a pass is
+   *  ever on the list with stale strength, its own first line still returns.
+   *  Coming back on, the shader may sit after the overlay in the list, so the
+   *  overlay can sample one frame of stale field — mist and fog both ramp from
+   *  zero over seconds, so that frame is zero either way. */
+  private setPassRunning(sh: Phaser.GameObjects.Shader | undefined, on: boolean): void {
+    if (!sh) return;
+    const inList = !!(sh as unknown as { displayList?: unknown }).displayList;
+    if (on && !inList) sh.addToDisplayList();
+    else if (!on && inList) sh.removeFromDisplayList();
+  }
+
   update(
     cam: Phaser.Cameras.Scene2D.Camera,
     lights: ShaderLight[],
@@ -2534,10 +3899,12 @@ export class NightLights {
     this.curSun = sun;
     this.curCloud = cloud;
     this.curAurora = aurora;
+    if (this.atmoOff) mist = 0;
     this.curMist = mist;
     this.curPlayerZ = this.fogTestZ ?? playerZ;
     this.curPlayerXY = this.fogTestXY ?? [playerCol, playerRow];
     if (!this.shader || !this.active) return;
+    const tUpd0 = performance.now();
     const s = this.shader;
     // The overlay Images are setScrollFactor(0) but Phaser STILL scales them by the
     // camera zoom. Counter that here: scale each overlay by 1/zoom so its on-screen
@@ -2558,10 +3925,13 @@ export class NightLights {
     // patterns ≥3, the glow-seams scan) treat canvas pixels as field texels
     // 1:1, and the 2% stretch resamples rows into phantom straight seams.
     const k = this.testPattern >= 3 ? 1 : this.spanScale;
-    this.overlay?.setScale(invZoom * k);
-    this.mistOverlay?.setScale(invZoom * k);
-    this.depthFogOverlay?.setScale(invZoom * k);
-    const wv = cam.worldView;
+    this.overlay?.setScale(invZoom * k * this.upX, invZoom * k * this.upY);
+    this.mistOverlay?.setScale(invZoom * k * this.upX, invZoom * k * this.upY);
+    this.depthFogOverlay?.setScale(invZoom * k * this.upX, invZoom * k * this.upY);
+    // NOT cam.worldView: inside update() that is LAST frame's rectangle, and
+    // every night-pass pixel then trails the sprites by one frame of camera
+    // motion (measured: lit ground between a running block and its shadow).
+    const wv = renderedWorldView(cam, this.viewRect);
     const camX = wv.x - (wv.width * (k - 1)) / 2;
     const camY = wv.y - (wv.height * (k - 1)) / 2;
     // Drive the shader animation clock from the SAME source as the JS
@@ -2574,6 +3944,7 @@ export class NightLights {
     s.setUniform("uCam.value.w", wv.height * k);
     // Redraw the glow-halo field for this frame's window: one tinted radial
     // stamp per visible emission source, animated by per-source phase.
+    const tGlow0 = performance.now();
     if (this.glowRT && this.stampImg) {
       const rt = this.glowRT;
       // World px -> glow-RT texel. The shader samples uGlow normalized over
@@ -2585,7 +3956,12 @@ export class NightLights {
       // zoom/k — without it the glow slid off its source by 1/zoom when the
       // camera zoomed out while running (maintainer 2026-07-25).
       const gscale = rt.width / (wv.width * k);
-      rt.clear();
+      // A clear of an already-empty field is a whole extra render pass on a
+      // tile-based GPU (~6 MB of writes at dpr 2.75): clear only when there
+      // is something to draw or something to erase.
+      this.updStamps += stamps.length;
+      if (stamps.length || this.glowDirty) rt.clear();
+      this.glowDirty = stamps.length > 0;
       if (stamps.length) {
         const t = this.scene.time.now / 1000;
         const img = this.stampImg;
@@ -2614,16 +3990,19 @@ export class NightLights {
         }
         rt.endDraw();
       }
-      s.setUniform("uGlowOn.value", 1);
+      // An empty field adds vec3(0): skip its dependent fetch per pixel.
+      s.setUniform("uGlowOn.value", stamps.length ? 1 : 0);
       s.setUniform("uGlowFlip.value", this.glowFlip);
     } else {
       s.setUniform("uGlowOn.value", 0);
     }
+    this.updGlowMs += performance.now() - tGlow0;
     s.setUniform("uFlip.value", this.fieldFlip);
     // Pattern 5 (probe-only): NORMAL lighting maths but composited opaque
     // (blend rule below keys off >= 3) — a screenshot then reads the RAW
     // light field, free of the art underneath.
     s.setUniform("uTest.value", this.testPattern === 5 ? 0 : this.testPattern);
+    s.setUniform("uShadowDbg.value", this.shadowDbg);
     this.overlay?.setFlipY(this.overlayFlip);
     // Raw-readback test mode draws opaque (multiply would mix in the art).
     this.overlay?.setBlendMode(
@@ -2660,8 +4039,12 @@ export class NightLights {
     s.setUniform("uAmbientOut.value.y", ao[1]);
     s.setUniform("uAmbientOut.value.z", ao[2]);
     const n = Math.min(lights.length, MAX_SHADER_LIGHTS);
+    let shadowing = 0;
+    let poolCells = 0;
     for (let i = 0; i < n; i++) {
       const l = lights[i];
+      if (l.radius > 0) shadowing++;
+      poolCells += Math.PI * l.radius * l.radius;
       this.posArr[i * 4] = l.col;
       this.posArr[i * 4 + 1] = l.row;
       this.posArr[i * 4 + 2] = l.z;
@@ -2672,16 +4055,43 @@ export class NightLights {
       this.colArr[i * 4 + 3] = l.flicker;
     }
     s.setUniform("uNumLights.value", n);
+    this.lightStats.n = n;
+    this.lightStats.shadowing = shadowing;
+    this.lightStats.poolCells = Math.round(poolCells);
+    this.lightStats.ambient = +(0.2126 * ambient[0] + 0.7152 * ambient[1] + 0.0722 * ambient[2]).toFixed(3);
+    this.bill.frames++;
+    this.bill.n += n;
+    this.bill.shadowing += shadowing;
+    this.bill.poolCells += poolCells;
+    this.bill.nMax = Math.max(this.bill.nMax, n);
+    this.bill.shadowMax = Math.max(this.bill.shadowMax, shadowing);
+    this.bill.ambient = this.lightStats.ambient;
     s.setUniform("uLightPos.value", this.posArr);
     s.setUniform("uLightCol.value", this.colArr);
     s.setUniform("uEmitN.value", this.emitList.length);
 
     // MIST overlay — same world window/clock as the light field, its own
-    // shader (NORMAL blend can't share the multiply pass). Skipped entirely
-    // while clear so the extra pass costs nothing.
+    // shader (NORMAL blend can't share the multiply pass). SETTING IT INVISIBLE
+    // DOES NOT SKIP IT: `Shader.willRender` returns true unconditionally once
+    // `setRenderToTexture` is set, so the pass runs whatever this says. What
+    // makes it cheap while clear is the `uMist` guard on the first line of
+    // MIST_FRAG's main, not this call.
     const showMist = mist > 0.003;
     this.mistShader?.setVisible(showMist);
     this.mistOverlay?.setVisible(showMist);
+    this.setPassRunning(this.mistShader, showMist);
+    /* uMist IS WRITTEN EVEN WHEN THE PASS IS "OFF", or it LATCHES ON.
+     * `setVisible(false)` does not stop a render-to-texture Shader — Phaser's
+     * willRender returns true for one unconditionally, as this file's own note
+     * at the pass list says — so all three passes execute every frame no matter
+     * what. The ONLY thing that makes mist cheap when it is off is the shader's
+     * first line, `if (uMist <= 0.001) return`. Writing uMist only inside the
+     * show branch meant that once mist had ever been on, the last value written
+     * was > 0.001 and never written again: the full 128-iteration surface march
+     * ran over every fragment, every frame, forever, painting into a texture
+     * nobody composites. Costs nothing to write; the picture is identical
+     * because the shader already returns vec4(0) for exactly these fragments. */
+    this.mistShader?.setUniform("uMist.value", mist);
     if (showMist && this.mistShader) {
       const m = this.mistShader;
       m.setUniform("uAnimTime.value", this.scene.time.now / 1000);
@@ -2704,9 +4114,12 @@ export class NightLights {
 
     // ELEVATION DEPTH-FOG overlay — same world window as the light field. Only
     // drawn when the master strength is on (0 = disabled, costs nothing).
-    const showFog = this.fogStrength * this.fogScale > 0.003;
+    const showFog = this.fogAmount() > 0.003;
+    // ...and the same for the depth-fog pass, for the same reason (see uMist).
+    this.depthFogShader?.setUniform("uFog.value", this.fogAmount());
     this.depthFogShader?.setVisible(showFog);
     this.depthFogOverlay?.setVisible(showFog);
+    this.setPassRunning(this.depthFogShader, showFog);
     if (showFog && this.depthFogShader) {
       const f = this.depthFogShader;
       f.setUniform("uCam.value.x", camX);
@@ -2723,11 +4136,29 @@ export class NightLights {
       f.setUniform("uPlayerZ.value", this.curPlayerZ);
       f.setUniform("uPlayerXY.value.x", this.curPlayerXY[0]);
       f.setUniform("uPlayerXY.value.y", this.curPlayerXY[1]);
-      f.setUniform("uFog.value", this.fogStrength * this.fogScale);
+      f.setUniform("uFog.value", this.fogAmount());
       f.setUniform("uAmbient.value.x", ambient[0]);
       f.setUniform("uAmbient.value.y", ambient[1]);
       f.setUniform("uAmbient.value.z", ambient[2]);
+      f.setUniform("uRoomOn.value", this.fogRoomBound ? 1 : 0);
+      f.setUniform("uIndoorMix.value", this.indoorMix);
     }
+
+    /* The isolation switch is applied LAST, over whatever the passes above
+     * decided, so no future visibility rule can slip past it. */
+    if (this.dbgOverlays >= 1) {
+      this.depthFogShader?.setVisible(false);
+      this.depthFogOverlay?.setVisible(false);
+    }
+    if (this.dbgOverlays >= 2) {
+      this.mistShader?.setVisible(false);
+      this.mistOverlay?.setVisible(false);
+    }
+    if (this.dbgOverlays >= 3) {
+      this.shader?.setVisible(false);
+      this.overlay?.setVisible(false);
+    }
+    this.updMs += performance.now() - tUpd0;
   }
 
   /** EXACT JS twin of the shader's mist density at a WORLD point (probes +
@@ -2736,8 +4167,8 @@ export class NightLights {
   mistAt(wx: number, wy: number, mist = this.curMist): number {
     if (mist <= 0.001 || !this.tArr) return 0;
     // ground-plane inverse projection (level-0 cell; probes sample flats)
-    const u = (wx - this.iso.ox) / ISO_DX - 1;
-    const v = (wy - (this.iso.oy + 8)) / ISO_DY;
+    const u = (wx - this.iso.ox) / this.geo.dx - 1;
+    const v = (wy - (this.iso.oy + 8)) / this.geo.dy;
     const col = Math.floor((u + v) / 2);
     const row = Math.floor((v - u) / 2);
     if (col < 0 || row < 0 || col >= this.world.width || row >= this.world.height) return 0;
@@ -2785,18 +4216,103 @@ export class NightLights {
    * strobe — so both channels stay smooth; and faceMix is irrelevant (a point
    * has no cliff-face compression). Everything else mirrors DEPTHFOG_FRAG and
    * MUST be kept in sync with the GLSL consts atop it. */
-  depthFogAt(col: number, row: number, z: number): { a: number; r: number; g: number; b: number } {
-    const uFog = this.fogStrength * this.fogScale;
+  /** THE FOG PASS's OWN HORIZONTAL DISTANCE for a screen point — its smooth
+   *  field, not the true cell distance. DEPTHFOG_FRAG seeds the surface height
+   *  at the PLAYER's level and drapes it three times through the blurred
+   *  terrain (`drape`), then inverts the iso projection: a plateau 8 levels up
+   *  drawn just below the player reads as NEAR ground, not as the 16 cells its
+   *  cell index says (measured: pass 0.04 vs a true-distance twin's 0.48 on
+   *  one tree — the maintainer's "this tree pops"). Same maths, same CPU
+   *  heights (hArr − pArr bilinear = the linear heightmap's R−G), so a JS
+   *  consumer at a screen point lands where the pass does. */
+  screenFogDist(wx: number, wy: number): { scol: number; srow: number; distH: number } {
+    const { dx, dy, lh } = this.geo;
+    const u = (wx - this.iso.ox) / dx - 1;
+    const v0 = (wy - (this.iso.oy + 8)) / dy;
+    const kk = lh / dy;
+    let sz = this.curPlayerZ;
+    for (let i = 0; i < 3; i++) {
+      const svi = v0 + sz * kk;
+      sz = this.drapeJS((u + svi) * 0.5, (svi - u) * 0.5);
+    }
+    const sv = v0 + sz * kk;
+    const scol = (u + sv) * 0.5;
+    const srow = (sv - u) * 0.5;
+    return { scol, srow, distH: Math.hypot(scol - this.curPlayerXY[0], srow - this.curPlayerXY[1]) };
+  }
+
+  /** `terrH` of the fragment: the LINEAR heightmap's (R − G), i.e. occlusion
+   *  height minus the prop share, bilinear at texel centres, in levels. */
+  private terrHJS(cx: number, cy: number): number {
+    const w = this.world.width;
+    const h = this.world.height;
+    if (!this.hArr || !this.pArr) return 0;
+    const x = Math.min(Math.max(cx, 0.5), w - 0.5) - 0.5;
+    const y = Math.min(Math.max(cy, 0.5), h - 0.5) - 0.5;
+    const x0 = Math.floor(x);
+    const y0 = Math.floor(y);
+    const x1 = Math.min(w - 1, x0 + 1);
+    const y1 = Math.min(h - 1, y0 + 1);
+    const fx = x - x0;
+    const fy = y - y0;
+    const v =
+      (this.terrByte(y0 * w + x0) * (1 - fx) + this.terrByte(y0 * w + x1) * fx) * (1 - fy) +
+      (this.terrByte(y1 * w + x0) * (1 - fx) + this.terrByte(y1 * w + x1) * fx) * fy;
+    return v / this.hScale;
+  }
+
+  /** One texel of the linear heightmap's R − G, in bytes (what the GPU holds). */
+  private terrByte(i: number): number {
+    const hs = this.hScale;
+    return Math.round(Math.min(255, this.hArr[i] * hs)) - Math.round(Math.min(255, this.pArr[i] * hs));
+  }
+
+  /** `drape` of the fragment: the anisotropic 5-tap blur along col+row. */
+  private drapeJS(cx: number, cy: number): number {
+    const R = 2.5; // DRAPE_RS
+    return (
+      0.24 * this.terrHJS(cx, cy) +
+      0.22 * this.terrHJS(cx + 0.25 * R, cy + 0.25 * R) +
+      0.22 * this.terrHJS(cx - 0.25 * R, cy - 0.25 * R) +
+      0.16 * this.terrHJS(cx + 0.5 * R, cy + 0.5 * R) +
+      0.16 * this.terrHJS(cx - 0.5 * R, cy - 0.5 * R)
+    );
+  }
+
+  /** THE FOG A STANDING THING WEARS, from its FOOT POINT on screen (world px)
+   *  and the level of the tread under it: the pass's own distance field
+   *  (screenFogDist) with the band CENTRED between the tread's snapped steps
+   *  (distCont − ½, unsnapped) — gradual with distance, never more than half a
+   *  band from the ground it stands on (maintainer 2026-09-03: "fade more
+   *  gradually with distance, but as close as possible to the fog on the
+   *  ground the scenery is standing on"). Used by scenery, props and bodies. */
+  depthFogAtFoot(wx: number, wy: number, z: number, col: number, row: number): { a: number; r: number; g: number; b: number } {
+    return this.fogFor(this.screenFogDist(wx, wy).distH - 0.5 * 1.2, z, false, col, row);
+  }
+
+  depthFogAt(col: number, row: number, z: number, snap = false): { a: number; r: number; g: number; b: number } {
+    const px = this.curPlayerXY[0], py = this.curPlayerXY[1];
+    return this.fogFor(Math.hypot(col - px, row - py), z, snap, col, row);
+  }
+
+  /** The fog formula proper for a horizontal distance (cells), a surface level
+   *  and the cell the room test reads (the fragment's mix(1, roomAt, uIndoorMix)). */
+  private fogFor(distH: number, z: number, snap: boolean, col: number, row: number): { a: number; r: number; g: number; b: number } {
+    const uFog = this.fogAmount();
     const NONE = { a: 0, r: 0, g: 0, b: 0 };
     if (uFog <= 0.003) return NONE;
     // MUST MATCH the GLSL consts atop DEPTHFOG_FRAG.
     const BANDS = 6, FOG_D0 = 11, FOG_DW = 1.2, FOG_MAX = 0.78, FOG_DEEP_MAX = 1.0, FOG_DEEP_RATE = 0.5;
     const ELEV_D0 = 7, ELEV_STEP = 0.5, SAME_LEVEL_FOG = 0.1, LEVEL_FADE_SPAN = 15;
     const NEAR = [0.3, 0.52, 0.5], FAR = [0.72, 0.88, 0.9];
-    const px = this.curPlayerXY[0], py = this.curPlayerXY[1], pz = this.curPlayerZ;
-    // (1) SMOOTH horizontal distance from the player (2D cells) — no cel-snap.
-    const distH = Math.hypot(col - px, row - py);
-    const distBand = Math.max(0, Math.min((distH - FOG_D0) / FOG_DW + 1, BANDS - 1));
+    const pz = this.curPlayerZ;
+    // `snap`: the fragment CEL-SNAPS the distance band on a flat tread
+    // (faceMix 0 → floor(distCont)); a STATIC piece standing on that tread must
+    // take the snapped band or it wears more fog than the ground under it
+    // (measured: 0.216 vs the pass's 0.129 one band in). Bodies stay smooth —
+    // a walker's band would step visibly under a snap.
+    const distCont = (distH - FOG_D0) / FOG_DW + 1;
+    const distBand = Math.max(0, Math.min(snap ? Math.floor(distCont) : distCont, BANDS - 1));
     // (2) HARD elevation edge — |Δlevel| from the player past the ELEV_D0 dead-zone.
     const dLev = Math.abs(pz - z);
     const elevBand = Math.max(0, dLev - ELEV_D0) * ELEV_STEP;
@@ -2807,7 +4323,14 @@ export class NightLights {
     const overflow = Math.max(0, rawBand - (BANDS - 1));
     const deep = overflow > 0 ? 1 - Math.exp(-overflow * FOG_DEEP_RATE) : 0;
     const density = bf * FOG_MAX * (1 - deep) + FOG_DEEP_MAX * deep;
-    const a = density * uFog * levelFade;
+    let a = density * uFog * levelFade;
+    // THE ROOM FADE, as the fragment: outside my room the fog eases out with
+    // the indoor mix (a silhouette would otherwise paint fog on a body the
+    // pass paints none on — a pale teal figure in the zero-ambient dark).
+    if (this.fogRoomBound && this.indoorMix > 0) {
+      const hit = this.roomCells.has(Math.floor(row) * this.world.width + Math.floor(col)) ? 1 : 0;
+      a *= 1 + (hit - 1) * this.indoorMix;
+    }
     if (a <= 0.002) return NONE;
     // Dim the fog tone with the ambient, same floor as the fragment.
     const amb = this.curAmbient;

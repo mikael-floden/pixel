@@ -1,0 +1,21 @@
+{
+  "domain": "items",
+  "id": "barred_hawk_quill",
+  "name_seen": "Hawk Quill",
+  "law": "V",
+  "description": "A stiff barred quill, blue at the base. Fletchers would pay if anyone could say what it came off.",
+  "lore": [
+    "A fletcher wants three off one wing: same curve, same stiffness, same hand of twist, or the arrow walks. These come up singly, out of sacks, off different somethings, and no two of them match — which is why a quill good enough for war is worth eight gold and a matched three would be worth forty. [[characters/646b922c|Sigrun]] will fletch to order and will not buy singles, and says so before you have the bag open. The carts take them anyway, by weight, unmatched, at the same price they pay for twigs."
+  ],
+  "related": [
+    {
+      "domain": "characters",
+      "id": "646b922c"
+    },
+    {
+      "domain": "lore",
+      "id": "the_hard_pieces"
+    }
+  ],
+  "gm_notes": "The economics of a thing that never arrives in threes. The last line points at the buyer who takes everything by weight without opening him."
+}

@@ -1,0 +1,265 @@
+{
+  "format": "scenery-piece@2",
+  "id": "market_stall_001",
+  "group": "market_stalls",
+  "rank": 49,
+  "index": 1,
+  "name": "Honey and candle stall 001",
+  "lights": null,
+  "variety": "honey and candle stall",
+  "glow_concept": null,
+  "prompt": "a wooden market stall with a cloth canopy on poles and a plank counter stacked with goods, honey and candle stall, large, well above head height of a person, completely unlit, no glow, no light sources, no self-emission",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 128,
+  "sprite": "market_stalls/market_stall_001/sprite.webp",
+  "placement": {
+    "world_height_m": 1.817,
+    "world_px_height": 93,
+    "character_height_px": 87,
+    "character_height_m": 1.7,
+    "note": "ONE SCENERY PIXEL IS ONE PLAYER PIXEL. world_px_height IS the art's own alpha bbox height, so scenery is placed into the world at 1:1 exactly as the avatar is (setScale(1)) and the two share one pixel grid. The CAMERA still zooms the whole scene \u2014 that is uniform and correct; what must never happen is scenery being resampled on its own, against the player. world_height_m is what the art reads as beside a 87px character; declared_height_m is what it was once declared to be, and a gap between them means the ART is the wrong size.",
+    "declared_height_m": 2.18,
+    "content_box": [
+      22,
+      19,
+      108,
+      112
+    ],
+    "content_px_height": 93,
+    "canvas_render_px": 128
+  },
+  "pixellab_object_id": "26c591b9-4e5f-41c2-8bb5-48786e839c02",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)",
+  "must_be_imbplemented_with_random_hflip": true,
+  "generated_at": "2026-08-13T01:20:58+00:00",
+  "states": {
+    "LIT_2": {
+      "sprite": "market_stalls/market_stall_001/lit_2/sprite.webp",
+      "pixellab_object_id": "0fdf9bf0-8ce9-46dd-87b7-bce089bae926",
+      "generated_at": "2026-08-16T17:49:07+00:00",
+      "glow_concept": "soulstone merchant scales shining on the counter",
+      "difference_from_source": 0.3057,
+      "glow_score": 0.3457,
+      "rotations": {
+        "south-east": "market_stalls/market_stall_001/lit_2/rotations/south-east.webp",
+        "south-west": "market_stalls/market_stall_001/lit_2/rotations/south-west.webp",
+        "south": "market_stalls/market_stall_001/lit_2/sprite.webp"
+      },
+      "animations": {
+        "motion": {
+          "group_id": "fe61bcb0-f320-4ac0-9817-58e5afb3b0c9",
+          "description": "This is the same picture in every frame. ONLY the glowing crystals on the counter brighten a little and return. Everything else in the picture is copied from the first frame exactly, pixel for pixel, unchanged in shape, size, position and colour. No outline anywhere is redrawn. The last frame matches the first frame exactly, so the loop joins. Nothing anywhere becomes darker, lighter or a different colour except the one thing named above.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "market_stalls/market_stall_001/lit_2/animations/motion/00.webp",
+            "market_stalls/market_stall_001/lit_2/animations/motion/01.webp",
+            "market_stalls/market_stall_001/lit_2/animations/motion/02.webp",
+            "market_stalls/market_stall_001/lit_2/animations/motion/03.webp",
+            "market_stalls/market_stall_001/lit_2/animations/motion/04.webp"
+          ],
+          "strip": "market_stalls/market_stall_001/lit_2/animations/motion__strip.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-08-29T16:17:16+00:00",
+          "brief": "Y29",
+          "review": "ANIMATION_PROBABLY_GOOD",
+          "review_metrics": {
+            "class": "fire",
+            "base": 0.0711,
+            "still": 0.684
+          },
+          "light_frames": [
+            {
+              "intensity": 1.062,
+              "dx": 0.8,
+              "dy": -16.5
+            },
+            {
+              "intensity": 1.099,
+              "dx": 1.2,
+              "dy": -15.8
+            },
+            {
+              "intensity": 0.997,
+              "dx": 2.7,
+              "dy": -19.8
+            },
+            {
+              "intensity": 0.889,
+              "dx": 1.2,
+              "dy": -24.1
+            },
+            {
+              "intensity": 0.952,
+              "dx": 2.1,
+              "dy": -21.7
+            }
+          ]
+        }
+      }
+    },
+    "NOT_LIT_1": {
+      "sprite": "market_stalls/market_stall_001/sprite.webp",
+      "pixellab_object_id": "26c591b9-4e5f-41c2-8bb5-48786e839c02",
+      "generated_at": "2026-08-13T01:20:58+00:00",
+      "rotations": {
+        "south-east": "market_stalls/market_stall_001/rotations/south-east.webp",
+        "south-west": "market_stalls/market_stall_001/rotations/south-west.webp",
+        "south": "market_stalls/market_stall_001/sprite.webp"
+      },
+      "animations": {
+        "motion": {
+          "group_id": "4ded9f96-f1dc-4399-b972-96e26a6e0f6e",
+          "description": "This is the same picture in every frame. ONLY the cloth roof moves, sagging and lifting a few pixels as if in a faint draught. Do not redraw anything else, and do not add or remove anything.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "market_stalls/market_stall_001/animations/motion/00.webp",
+            "market_stalls/market_stall_001/animations/motion/01.webp",
+            "market_stalls/market_stall_001/animations/motion/02.webp",
+            "market_stalls/market_stall_001/animations/motion/03.webp",
+            "market_stalls/market_stall_001/animations/motion/04.webp"
+          ],
+          "strip": "market_stalls/market_stall_001/animations/motion__strip.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-08-29T10:33:46+00:00",
+          "brief": "C2",
+          "review": "ANIMATION_PROBABLY_GOOD",
+          "review_metrics": {
+            "class": "fire",
+            "base": 0.0,
+            "still": 0.871
+          }
+        }
+      }
+    },
+    "NOT_LIT_2": {
+      "sprite": "market_stalls/market_stall_001/not_lit_2/sprite.webp",
+      "pixellab_object_id": "64a7ceb3-fed2-4037-9c15-ad3fd98d73a8",
+      "generated_at": "2026-08-16T17:55:13+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.3316,
+      "glow_score": 0.2321,
+      "rotations": {
+        "south-east": "market_stalls/market_stall_001/not_lit_2/rotations/south-east.webp",
+        "south-west": "market_stalls/market_stall_001/not_lit_2/rotations/south-west.webp",
+        "south": "market_stalls/market_stall_001/not_lit_2/sprite.webp"
+      },
+      "animations": {
+        "motion": {
+          "group_id": "941fe59e-b854-4f39-badf-f35631eec4dd",
+          "description": "This is the same picture in every frame. ONLY the cloth roof at the very top moves: a clearly visible ripple travels along it from one side to the other, so its lower edge lifts and falls. The movement is easy to see. Everything below the cloth roof is copied from the first frame exactly, pixel for pixel, unchanged in shape, size, position and colour. No outline anywhere is redrawn. The last frame matches the first frame exactly, so the loop joins.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "market_stalls/market_stall_001/not_lit_2/animations/motion/00.webp",
+            "market_stalls/market_stall_001/not_lit_2/animations/motion/01.webp",
+            "market_stalls/market_stall_001/not_lit_2/animations/motion/02.webp",
+            "market_stalls/market_stall_001/not_lit_2/animations/motion/03.webp",
+            "market_stalls/market_stall_001/not_lit_2/animations/motion/04.webp"
+          ],
+          "strip": "market_stalls/market_stall_001/not_lit_2/animations/motion__strip.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-08-29T17:17:23+00:00",
+          "brief": "Z45",
+          "review": "ANIMATION_PROBABLY_GOOD",
+          "review_metrics": {
+            "class": "fire",
+            "base": 0.0294,
+            "still": 0.875
+          }
+        }
+      }
+    },
+    "NOT_LIT_3": {
+      "sprite": "market_stalls/market_stall_001/not_lit_3/sprite.webp",
+      "pixellab_object_id": "9be25acd-2816-4e67-bda9-33898f6027da",
+      "generated_at": "2026-08-16T17:53:58+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.8904,
+      "glow_score": 0.1658,
+      "rotations": {
+        "south-east": "market_stalls/market_stall_001/not_lit_3/rotations/south-east.webp",
+        "south-west": "market_stalls/market_stall_001/not_lit_3/rotations/south-west.webp",
+        "south": "market_stalls/market_stall_001/not_lit_3/sprite.webp"
+      },
+      "animations": {
+        "motion": {
+          "group_id": "7782439c-f6fc-4836-a37b-0d7f6bd12122",
+          "description": "This is the same picture in every frame. ONLY the striped cloth roof at the very top moves: a clearly visible ripple travels along it, so its lower edge lifts and falls. Everything else in the picture is copied from the first frame exactly, pixel for pixel, unchanged in shape, size, position and colour. No outline anywhere is redrawn. The last frame matches the first frame exactly, so the loop joins.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "market_stalls/market_stall_001/not_lit_3/animations/motion/00.webp",
+            "market_stalls/market_stall_001/not_lit_3/animations/motion/01.webp",
+            "market_stalls/market_stall_001/not_lit_3/animations/motion/02.webp",
+            "market_stalls/market_stall_001/not_lit_3/animations/motion/03.webp",
+            "market_stalls/market_stall_001/not_lit_3/animations/motion/04.webp"
+          ],
+          "strip": "market_stalls/market_stall_001/not_lit_3/animations/motion__strip.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-08-29T17:57:36+00:00",
+          "brief": "A48",
+          "review": "ANIMATION_PROBABLY_GOOD",
+          "review_metrics": {
+            "base_outline": 0.0
+          }
+        }
+      }
+    },
+    "NOT_LIT_4": {
+      "sprite": "market_stalls/market_stall_001/not_lit_4/sprite.webp",
+      "pixellab_object_id": "250a80c6-b9cd-4e53-8778-77863f27912a",
+      "generated_at": "2026-08-16T17:46:11+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.4896,
+      "glow_score": 0.3709,
+      "rotations": {
+        "south-east": "market_stalls/market_stall_001/not_lit_4/rotations/south-east.webp",
+        "south-west": "market_stalls/market_stall_001/not_lit_4/rotations/south-west.webp",
+        "south": "market_stalls/market_stall_001/not_lit_4/sprite.webp"
+      }
+    }
+  },
+  "collision": true,
+  "hitbox_shape": "rect",
+  "light": {
+    "strength": 0.15,
+    "color": "#9beffe",
+    "radius": 3,
+    "reference": "the spawn bonfire is 1.0 (radius 7); strength 0 is no light",
+    "states": {
+      "LIT_2": {
+        "strength": 0.15,
+        "color": "#9beffe",
+        "radius": 3
+      }
+    },
+    "kind": "glow/mineral",
+    "flame": false,
+    "embers": false
+  }
+}

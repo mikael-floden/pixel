@@ -1,0 +1,96 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-14T03:13:33+00:00",
+  "id": "cliff_shrub_006",
+  "group": "cliff_shrubs",
+  "rank": 157,
+  "index": 6,
+  "name": "Dark holly bush 006",
+  "lights": null,
+  "variety": "dark holly bush",
+  "modifier": "two shrubs from one crack",
+  "glow_concept": "blossoms glowing along the branches",
+  "prompt": "a tough shrub growing sideways out of a vertical rock face, its trunk bent hard outward then up, roots clamped into a crack, dark holly bush, two shrubs from one crack, roughly six feet tall, human height, self-emissive at night, softly radiating light: blossoms glowing along the branches",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 192,
+  "sprite": "cliff_shrubs/cliff_shrub_006/sprite.webp",
+  "placement": {
+    "world_height_m": 2.872,
+    "world_px_height": 147,
+    "character_height_px": 87,
+    "character_height_m": 1.7,
+    "note": "ONE SCENERY PIXEL IS ONE PLAYER PIXEL. world_px_height IS the art's own alpha bbox height, so scenery is placed into the world at 1:1 exactly as the avatar is (setScale(1)) and the two share one pixel grid. The CAMERA still zooms the whole scene \u2014 that is uniform and correct; what must never happen is scenery being resampled on its own, against the player. world_height_m is what the art reads as beside a 87px character; declared_height_m is what it was once declared to be, and a gap between them means the ART is the wrong size.",
+    "declared_height_m": 1.77,
+    "content_box": [
+      29,
+      22,
+      154,
+      169
+    ],
+    "content_px_height": 147,
+    "canvas_render_px": 192
+  },
+  "pixellab_object_id": "d8bc9b5a-93a0-405b-995c-3b7b7877d22b",
+  "pixellab_directions": 1,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-1-direction-object (single, S-only)",
+  "must_be_imbplemented_with_random_hflip": true,
+  "states": {
+    "NOT_LIT_1": {
+      "sprite": "cliff_shrubs/cliff_shrub_006/not_lit_1/sprite.webp",
+      "pixellab_object_id": "b8687c05-1a2c-49d1-93dd-e19ede1b1097",
+      "generated_at": "2026-08-16T09:52:40+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.4531,
+      "glow_score": 0.0
+    },
+    "NOT_LIT_2": {
+      "sprite": "cliff_shrubs/cliff_shrub_006/not_lit_2/sprite.webp",
+      "pixellab_object_id": "7b70c929-3844-43e5-bf64-4c179a13b6a5",
+      "generated_at": "2026-08-16T09:53:01+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.5799,
+      "glow_score": 0.0
+    },
+    "NOT_LIT_3": {
+      "sprite": "cliff_shrubs/cliff_shrub_006/sprite.webp",
+      "pixellab_object_id": "d8bc9b5a-93a0-405b-995c-3b7b7877d22b",
+      "generated_at": "2026-08-14T03:13:33+00:00",
+      "relit_from": "LIT_1"
+    },
+    "NOT_LIT_4": {
+      "sprite": "cliff_shrubs/cliff_shrub_006/not_lit_4/sprite.webp",
+      "pixellab_object_id": "1a07277f-6ef2-4969-bcf9-b64779dc259e",
+      "generated_at": "2026-08-16T09:51:40+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.4967,
+      "glow_score": 0.007,
+      "relit_from": "LIT_2"
+    },
+    "NOT_LIT_5": {
+      "sprite": "cliff_shrubs/cliff_shrub_006/not_lit_5/sprite.webp",
+      "pixellab_object_id": "287feb5c-e8a3-4654-98ee-b2aec51b58c1",
+      "generated_at": "2026-08-16T09:51:52+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.532,
+      "glow_score": 0.0055,
+      "relit_from": "LIT_3"
+    },
+    "NOT_LIT_6": {
+      "sprite": "cliff_shrubs/cliff_shrub_006/not_lit_6/sprite.webp",
+      "pixellab_object_id": "b838751e-bf72-46f8-9274-51b7a662752a",
+      "generated_at": "2026-08-16T09:51:53+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.7818,
+      "glow_score": 0.0055,
+      "relit_from": "LIT_4"
+    }
+  },
+  "collision": true,
+  "hitbox_shape": "ellipse"
+}

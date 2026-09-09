@@ -1,0 +1,104 @@
+{
+  "format": "scenery-piece@2",
+  "id": "story_post_014",
+  "group": "story_posts",
+  "rank": 21,
+  "index": 14,
+  "name": "Ancient split banded post 014",
+  "lights": null,
+  "variety": "ancient split banded post",
+  "glow_concept": "carved bird topper glowing softly",
+  "prompt": "a thick carved wooden totem post, heavy rounded relief carvings of figures and animals covering its broad width, planted solidly in the ground, ancient split banded post, large, twice human height, self-emissive at night, softly radiating light: carved bird topper glowing softly",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 64,
+  "sprite": "story_posts/story_post_014/sprite.webp",
+  "placement": {
+    "world_height_m": 1.114,
+    "world_px_height": 57,
+    "character_height_px": 87,
+    "character_height_m": 1.7,
+    "note": "ONE SCENERY PIXEL IS ONE PLAYER PIXEL. world_px_height IS the art's own alpha bbox height, so scenery is placed into the world at 1:1 exactly as the avatar is (setScale(1)) and the two share one pixel grid. The CAMERA still zooms the whole scene \u2014 that is uniform and correct; what must never happen is scenery being resampled on its own, against the player. world_height_m is what the art reads as beside a 87px character; declared_height_m is what it was once declared to be, and a gap between them means the ART is the wrong size.",
+    "declared_height_m": 1.9,
+    "content_box": [
+      21,
+      4,
+      44,
+      61
+    ],
+    "content_px_height": 57,
+    "canvas_render_px": 64
+  },
+  "pixellab_object_id": "0fb01acb-a77e-41f3-928c-6ecd8d3ca4bb",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)",
+  "must_be_imbplemented_with_random_hflip": true,
+  "generated_at": "2026-08-13T21:54:06+00:00",
+  "states": {
+    "LIT_4": {
+      "sprite": "story_posts/story_post_014/sprite.webp",
+      "pixellab_object_id": "0fb01acb-a77e-41f3-928c-6ecd8d3ca4bb",
+      "generated_at": "2026-08-16T22:32:33+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.7521,
+      "glow_score": 0.1436,
+      "replaced_anchor": "LIT_1",
+      "rotations": {
+        "south-east": "story_posts/story_post_014/rotations/south-east.webp",
+        "south-west": "story_posts/story_post_014/rotations/south-west.webp",
+        "south": "story_posts/story_post_014/sprite.webp"
+      }
+    },
+    "NOT_LIT_3": {
+      "sprite": "story_posts/story_post_014/not_lit_3/sprite.webp",
+      "pixellab_object_id": "b10022b6-ec75-4283-9e31-ef127142397d",
+      "generated_at": "2026-08-16T22:31:27+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.7419,
+      "glow_score": 0.0655,
+      "relit_from": "LIT_2",
+      "rotations": {
+        "south-east": "story_posts/story_post_014/not_lit_3/rotations/south-east.webp",
+        "south-west": "story_posts/story_post_014/not_lit_3/rotations/south-west.webp",
+        "south": "story_posts/story_post_014/not_lit_3/sprite.webp"
+      }
+    },
+    "NOT_LIT_4": {
+      "sprite": "story_posts/story_post_014/not_lit_4/sprite.webp",
+      "pixellab_object_id": "d71c8930-6af7-4a45-8ed8-c8b30226ffed",
+      "generated_at": "2026-08-16T22:32:32+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.7953,
+      "glow_score": 0.1655,
+      "relit_from": "LIT_3",
+      "rotations": {
+        "south-east": "story_posts/story_post_014/not_lit_4/rotations/south-east.webp",
+        "south-west": "story_posts/story_post_014/not_lit_4/rotations/south-west.webp",
+        "south": "story_posts/story_post_014/not_lit_4/sprite.webp"
+      }
+    }
+  },
+  "collision": true,
+  "hitbox_shape": "ellipse",
+  "light": {
+    "strength": 0.2,
+    "color": "#ffcf9d",
+    "radius": 4,
+    "reference": "the spawn bonfire is 1.0 (radius 7); strength 0 is no light",
+    "states": {
+      "LIT_4": {
+        "strength": 0.2,
+        "color": "#ffcf9d",
+        "radius": 4
+      }
+    },
+    "kind": "glow/magic",
+    "flame": false,
+    "embers": false
+  }
+}

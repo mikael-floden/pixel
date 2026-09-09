@@ -1,0 +1,176 @@
+{
+  "format": "scenery-piece@2",
+  "id": "well_008",
+  "group": "wells",
+  "rank": 11,
+  "index": 8,
+  "name": "Rune-carved rim stones 008",
+  "lights": null,
+  "variety": "rune-carved rim stones",
+  "glow_concept": "raised bucket brimming with luminous water",
+  "prompt": "a round fieldstone well with thick stone walls and a heavy peaked wooden roof on two stout posts, a chunky windlass, rune-carved rim stones, large, twice human height, self-emissive at night, softly radiating light: raised bucket brimming with luminous water",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 128,
+  "sprite": "wells/well_008/sprite.webp",
+  "placement": {
+    "world_height_m": 2.384,
+    "world_px_height": 122,
+    "character_height_px": 87,
+    "character_height_m": 1.7,
+    "note": "ONE SCENERY PIXEL IS ONE PLAYER PIXEL. world_px_height IS the art's own alpha bbox height, so scenery is placed into the world at 1:1 exactly as the avatar is (setScale(1)) and the two share one pixel grid. The CAMERA still zooms the whole scene \u2014 that is uniform and correct; what must never happen is scenery being resampled on its own, against the player. world_height_m is what the art reads as beside a 87px character; declared_height_m is what it was once declared to be, and a gap between them means the ART is the wrong size.",
+    "declared_height_m": 2.51,
+    "content_box": [
+      17,
+      4,
+      119,
+      126
+    ],
+    "content_px_height": 122,
+    "canvas_render_px": 128
+  },
+  "pixellab_object_id": "4bbe8cc3-3b70-4ac4-9acf-35c91d1ba062",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)",
+  "must_be_imbplemented_with_random_hflip": true,
+  "generated_at": "2026-08-13T21:53:55+00:00",
+  "states": {
+    "LIT_1": {
+      "sprite": "wells/well_008/sprite.webp",
+      "pixellab_object_id": "4bbe8cc3-3b70-4ac4-9acf-35c91d1ba062",
+      "generated_at": "2026-08-13T21:53:55+00:00",
+      "rotations": {
+        "south-east": "wells/well_008/rotations/south-east.webp",
+        "south-west": "wells/well_008/rotations/south-west.webp",
+        "south": "wells/well_008/sprite.webp"
+      }
+    },
+    "LIT_2": {
+      "sprite": "wells/well_008/lit_2/sprite.webp",
+      "pixellab_object_id": "1f080b2e-02e8-45e0-b849-debc57213b8c",
+      "generated_at": "2026-08-17T12:49:35+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.5462,
+      "glow_score": 0.0486,
+      "rotations": {
+        "south-east": "wells/well_008/lit_2/rotations/south-east.webp",
+        "south-west": "wells/well_008/lit_2/rotations/south-west.webp",
+        "south": "wells/well_008/lit_2/sprite.webp"
+      },
+      "animations": {}
+    },
+    "LIT_4": {
+      "sprite": "wells/well_008/lit_4/sprite.webp",
+      "pixellab_object_id": "de2beb26-fe0d-4c19-93d9-c48dbec7c52a",
+      "generated_at": "2026-08-17T12:50:05+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.7337,
+      "glow_score": 0.044,
+      "rotations": {
+        "south-east": "wells/well_008/lit_4/rotations/south-east.webp",
+        "south-west": "wells/well_008/lit_4/rotations/south-west.webp",
+        "south": "wells/well_008/lit_4/sprite.webp"
+      },
+      "animations": {
+        "motion": {
+          "group_id": "7b9eca8d-6fea-44f1-ba5e-028309461816",
+          "description": "This is an almost completely still picture. ONLY the outermost edge of the pale water in the well changes: a few pixels along that edge shift very slightly in brightness and shift straight back. The pale water in the well is fully visible and exactly as easy to read in every single frame, including the last -- it never fades, never dims, never vanishes and is never swallowed by glare. Its inside stays exactly the pale blue it is in the first frame and never washes out into a plain bright blur. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "wells/well_008/lit_4/animations/motion/00.webp",
+            "wells/well_008/lit_4/animations/motion/01.webp",
+            "wells/well_008/lit_4/animations/motion/02.webp",
+            "wells/well_008/lit_4/animations/motion/03.webp",
+            "wells/well_008/lit_4/animations/motion/04.webp"
+          ],
+          "strip": "wells/well_008/lit_4/animations/motion__strip.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-08-30T10:30:25+00:00",
+          "brief": "J48",
+          "review": "ANIMATION_PROBABLY_GOOD",
+          "review_metrics": {
+            "base_outline": 0.0047
+          },
+          "light_frames": [
+            {
+              "intensity": 0.936,
+              "dx": 0.6,
+              "dy": 12.8
+            },
+            {
+              "intensity": 1.113,
+              "dx": 1.0,
+              "dy": 13.4
+            },
+            {
+              "intensity": 1.086,
+              "dx": 0.8,
+              "dy": 13.4
+            },
+            {
+              "intensity": 1.037,
+              "dx": 0.9,
+              "dy": 14.2
+            },
+            {
+              "intensity": 0.828,
+              "dx": 0.6,
+              "dy": 14.9
+            }
+          ]
+        }
+      }
+    },
+    "NOT_LIT_1": {
+      "sprite": "wells/well_008/not_lit_1/sprite.webp",
+      "pixellab_object_id": "16ef0931-b086-4183-ae9c-ebc9b05f5f90",
+      "generated_at": "2026-08-17T12:52:41+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.7956,
+      "glow_score": 0.0,
+      "rotations": {
+        "south-east": "wells/well_008/not_lit_1/rotations/south-east.webp",
+        "south-west": "wells/well_008/not_lit_1/rotations/south-west.webp",
+        "south": "wells/well_008/not_lit_1/sprite.webp"
+      }
+    }
+  },
+  "collision": true,
+  "hitbox_shape": "ellipse",
+  "light": {
+    "strength": 0.15,
+    "color": "#cdffe9",
+    "radius": 3,
+    "reference": "the spawn bonfire is 1.0 (radius 7); strength 0 is no light",
+    "states": {
+      "LIT_1": {
+        "strength": 0.18,
+        "color": "#cdffe9",
+        "radius": 4
+      },
+      "LIT_2": {
+        "strength": 0.18,
+        "color": "#d5ffe9",
+        "radius": 4
+      },
+      "LIT_4": {
+        "strength": 0.18,
+        "color": "#e8fff3",
+        "radius": 4
+      }
+    },
+    "kind": "glow/water",
+    "flame": false,
+    "embers": false
+  }
+}

@@ -42,13 +42,18 @@ const card = await p.evaluate(() => {
 console.log("event card:", JSON.stringify(card));
 ok(card.binds === card.layers && card.binds > 0, `one verdict row per BOUND SOUND (${card.binds} for ${card.layers} layer(s), ${card.takes} takes)`);
 ok(/these sounds, for this event/.test(card.label ?? ""), `the row says what it judges ("${card.label}")`);
-ok(card.reject[1] === "✕ unbind all", `and on a multi-take binding it unbinds ALL (${card.reject.join(" ")})`);
+/* EVERY REJECT BUTTON IS CALLED REMOVE (maintainer 2026-09-03: "All other
+ * review pages should only have the red 'remove' button and it should be
+ * called 'remove' and nothing else"). The old "unbind" wording is gone; what
+ * this row must still SAY is that it removes every take at once, and the
+ * tooltip below still promises the recordings survive. */
+ok(card.reject[1] === "✕ remove all", `and on a multi-take binding it removes ALL (${card.reject.join(" ")})`);
 ok(/stays in the library/.test(card.rejectTitle) || /they stay in the library/.test(card.rejectTitle),
   "its tooltip promises the recordings survive");
 // THE PER-RECORDING UNBIND (maintainer 2026-08-06: "I wanted to unbind
 // coin_pickup__take02.wav … but the unbind is not on the sound itself").
 ok(card.takeUnbinds === card.takes, `every take carries its OWN ✕ unbind (${card.takeUnbinds}/${card.takes})`);
-ok(card.takeUnbindLabels.every((x) => x === "✕ unbind"), `each reading "✕ unbind" (${[...new Set(card.takeUnbindLabels)].join(", ")})`);
+ok(card.takeUnbindLabels.every((x) => x === "✕ remove"), `each reading "✕ remove", like every other reject button (${[...new Set(card.takeUnbindLabels)].join(", ")})`);
 ok(card.takeStars === 0, "and nothing else — the rating/approval of the binding stays one row up");
 ok(/Remove ONLY /.test(card.takeUnbindTitle ?? "") && /stays in the library/.test(card.takeUnbindTitle ?? ""),
   `whose tooltip scopes it to the one recording ("${(card.takeUnbindTitle ?? "").slice(0, 60)}…")`);

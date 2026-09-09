@@ -1,0 +1,2855 @@
+{
+ "schema": "tiles3/transition-legacy@1",
+ "domain": "tiles",
+ "generated_at": "2026-08-25T00:00:00Z",
+ "generator": "tiles/pipeline/transition_patterns.py",
+ "_comment": "MEASURED per set by transition_post.orientation(), NOT read from meta.json. meta.json's 'INDEX 0 IS <lower>' note contradicts the art on 39 of 284 sets; 29 more fall under the AMBIGUOUS=40.0 margin and must be shown as unknown, never guessed. Dies with tiles/transitions/.",
+ "sets": {
+  "brown_paving_stone__to__light_soil/a00_s3": {
+   "index0": "light_soil",
+   "index15": "brown_paving_stone",
+   "margin": 63.0,
+   "ambiguous": false,
+   "meta_says": "light_soil",
+   "meta_agrees": true,
+   "post": true,
+   "n_tiles": 16
+  },
+  "brown_paving_stone__to__light_soil/a00_s5": {
+   "index0": "light_soil",
+   "index15": "brown_paving_stone",
+   "margin": 72.0,
+   "ambiguous": false,
+   "meta_says": "light_soil",
+   "meta_agrees": true,
+   "post": true,
+   "n_tiles": 16
+  },
+  "brown_paving_stone__to__light_soil/a03_s5": {
+   "index0": "light_soil",
+   "index15": "brown_paving_stone",
+   "margin": 114.0,
+   "ambiguous": false,
+   "meta_says": "light_soil",
+   "meta_agrees": true,
+   "post": true,
+   "n_tiles": 16
+  },
+  "brown_paving_stone__to__light_soil/a12_s4": {
+   "index0": "light_soil",
+   "index15": "brown_paving_stone",
+   "margin": 68.0,
+   "ambiguous": false,
+   "meta_says": "light_soil",
+   "meta_agrees": true,
+   "post": true,
+   "n_tiles": 16
+  },
+  "brown_paving_stone__to__light_soil/a14_s5": {
+   "index0": "light_soil",
+   "index15": "brown_paving_stone",
+   "margin": 84.0,
+   "ambiguous": false,
+   "meta_says": "light_soil",
+   "meta_agrees": true,
+   "post": true,
+   "n_tiles": 16
+  },
+  "brown_paving_stone__to__light_soil/a15_s2": {
+   "index0": "light_soil",
+   "index15": "brown_paving_stone",
+   "margin": 120.0,
+   "ambiguous": false,
+   "meta_says": "light_soil",
+   "meta_agrees": true,
+   "post": true,
+   "n_tiles": 16
+  },
+  "brown_paving_stone__to__light_soil/a15_s6": {
+   "index0": "light_soil",
+   "index15": "brown_paving_stone",
+   "margin": 76.0,
+   "ambiguous": false,
+   "meta_says": "light_soil",
+   "meta_agrees": true,
+   "post": true,
+   "n_tiles": 16
+  },
+  "brown_paving_stone__to__light_soil/a18_s4": {
+   "index0": "light_soil",
+   "index15": "brown_paving_stone",
+   "margin": 79.0,
+   "ambiguous": false,
+   "meta_says": "light_soil",
+   "meta_agrees": true,
+   "post": true,
+   "n_tiles": 16
+  },
+  "brown_paving_stone__to__light_soil/a18_s6": {
+   "index0": "light_soil",
+   "index15": "brown_paving_stone",
+   "margin": 98.0,
+   "ambiguous": false,
+   "meta_says": "light_soil",
+   "meta_agrees": true,
+   "post": true,
+   "n_tiles": 16
+  },
+  "brown_paving_stone__to__light_soil/a21_s2": {
+   "index0": "light_soil",
+   "index15": "brown_paving_stone",
+   "margin": 86.0,
+   "ambiguous": false,
+   "meta_says": "light_soil",
+   "meta_agrees": true,
+   "post": true,
+   "n_tiles": 16
+  },
+  "brown_paving_stone__to__light_soil/a21_s4": {
+   "index0": "light_soil",
+   "index15": "brown_paving_stone",
+   "margin": 138.0,
+   "ambiguous": false,
+   "meta_says": "light_soil",
+   "meta_agrees": true,
+   "post": true,
+   "n_tiles": 16
+  },
+  "brown_paving_stone__to__light_soil/a21_s5": {
+   "index0": "light_soil",
+   "index15": "brown_paving_stone",
+   "margin": 101.0,
+   "ambiguous": false,
+   "meta_says": "light_soil",
+   "meta_agrees": true,
+   "post": true,
+   "n_tiles": 16
+  },
+  "brown_paving_stone__to__light_soil/a23_s4": {
+   "index0": "light_soil",
+   "index15": "brown_paving_stone",
+   "margin": 81.0,
+   "ambiguous": false,
+   "meta_says": "light_soil",
+   "meta_agrees": true,
+   "post": true,
+   "n_tiles": 16
+  },
+  "brown_paving_stone__to__light_soil/a24_s6": {
+   "index0": "light_soil",
+   "index15": "brown_paving_stone",
+   "margin": 78.0,
+   "ambiguous": false,
+   "meta_says": "light_soil",
+   "meta_agrees": true,
+   "post": true,
+   "n_tiles": 16
+  },
+  "brown_paving_stone__to__light_soil/a30_s1": {
+   "index0": "light_soil",
+   "index15": "brown_paving_stone",
+   "margin": 114.0,
+   "ambiguous": false,
+   "meta_says": "light_soil",
+   "meta_agrees": true,
+   "post": true,
+   "n_tiles": 16
+  },
+  "dark_mud__to__grass/a00_s3": {
+   "index0": "dark_mud",
+   "index15": "grass",
+   "margin": 137.0,
+   "ambiguous": false,
+   "meta_says": "grass",
+   "meta_agrees": false,
+   "post": true,
+   "n_tiles": 16
+  },
+  "dark_mud__to__grass/a00_s5": {
+   "index0": "dark_mud",
+   "index15": "grass",
+   "margin": 161.0,
+   "ambiguous": false,
+   "meta_says": "grass",
+   "meta_agrees": false,
+   "post": true,
+   "n_tiles": 16
+  },
+  "dark_mud__to__grass/a03_s5": {
+   "index0": "grass",
+   "index15": "dark_mud",
+   "margin": 145.0,
+   "ambiguous": false,
+   "meta_says": "grass",
+   "meta_agrees": true,
+   "post": true,
+   "n_tiles": 16
+  },
+  "dark_mud__to__grass/a12_s4": {
+   "index0": "grass",
+   "index15": "dark_mud",
+   "margin": 153.0,
+   "ambiguous": false,
+   "meta_says": "grass",
+   "meta_agrees": true,
+   "post": true,
+   "n_tiles": 16
+  },
+  "dark_mud__to__grass/a14_s5": {
+   "index0": "grass",
+   "index15": "dark_mud",
+   "margin": 149.0,
+   "ambiguous": false,
+   "meta_says": "grass",
+   "meta_agrees": true,
+   "post": true,
+   "n_tiles": 16
+  },
+  "dark_mud__to__grass/a15_s2": {
+   "index0": "dark_mud",
+   "index15": "grass",
+   "margin": 143.0,
+   "ambiguous": false,
+   "meta_says": "grass",
+   "meta_agrees": false,
+   "post": true,
+   "n_tiles": 16
+  },
+  "dark_mud__to__grass/a15_s6": {
+   "index0": "grass",
+   "index15": "dark_mud",
+   "margin": 143.0,
+   "ambiguous": false,
+   "meta_says": "grass",
+   "meta_agrees": true,
+   "post": true,
+   "n_tiles": 16
+  },
+  "dark_mud__to__grass/a18_s4": {
+   "index0": "dark_mud",
+   "index15": "grass",
+   "margin": 179.0,
+   "ambiguous": false,
+   "meta_says": "grass",
+   "meta_agrees": false,
+   "post": true,
+   "n_tiles": 16
+  },
+  "dark_mud__to__grass/a18_s6": {
+   "index0": "dark_mud",
+   "index15": "grass",
+   "margin": 175.0,
+   "ambiguous": false,
+   "meta_says": "grass",
+   "meta_agrees": false,
+   "post": true,
+   "n_tiles": 16
+  },
+  "dark_mud__to__grass/a21_s2": {
+   "index0": "grass",
+   "index15": "dark_mud",
+   "margin": 167.0,
+   "ambiguous": false,
+   "meta_says": "grass",
+   "meta_agrees": true,
+   "post": true,
+   "n_tiles": 16
+  },
+  "dark_mud__to__grass/a21_s4": {
+   "index0": "grass",
+   "index15": "dark_mud",
+   "margin": 177.0,
+   "ambiguous": false,
+   "meta_says": "grass",
+   "meta_agrees": true,
+   "post": true,
+   "n_tiles": 16
+  },
+  "dark_mud__to__grass/a21_s5": {
+   "index0": "grass",
+   "index15": "dark_mud",
+   "margin": 169.0,
+   "ambiguous": false,
+   "meta_says": "grass",
+   "meta_agrees": true,
+   "post": true,
+   "n_tiles": 16
+  },
+  "dark_mud__to__grass/a23_s4": {
+   "index0": "grass",
+   "index15": "dark_mud",
+   "margin": 129.0,
+   "ambiguous": false,
+   "meta_says": "grass",
+   "meta_agrees": true,
+   "post": true,
+   "n_tiles": 16
+  },
+  "dark_mud__to__grass/a24_s6": {
+   "index0": "grass",
+   "index15": "dark_mud",
+   "margin": 0.0,
+   "ambiguous": true,
+   "meta_says": "grass",
+   "meta_agrees": true,
+   "post": true,
+   "n_tiles": 16
+  },
+  "dark_mud__to__grass/a30_s1": {
+   "index0": "dark_mud",
+   "index15": "grass",
+   "margin": 131.0,
+   "ambiguous": false,
+   "meta_says": "grass",
+   "meta_agrees": false,
+   "post": true,
+   "n_tiles": 16
+  },
+  "dark_mud__to__light_soil/a00_s3": {
+   "index0": "light_soil",
+   "index15": "dark_mud",
+   "margin": 185.0,
+   "ambiguous": false,
+   "meta_says": "light_soil",
+   "meta_agrees": true,
+   "post": true,
+   "n_tiles": 16
+  },
+  "dark_mud__to__light_soil/a00_s5": {
+   "index0": "light_soil",
+   "index15": "dark_mud",
+   "margin": 194.0,
+   "ambiguous": false,
+   "meta_says": "light_soil",
+   "meta_agrees": true,
+   "post": true,
+   "n_tiles": 16
+  },
+  "dark_mud__to__light_soil/a03_s5": {
+   "index0": "light_soil",
+   "index15": "dark_mud",
+   "margin": 217.0,
+   "ambiguous": false,
+   "meta_says": "light_soil",
+   "meta_agrees": true,
+   "post": true,
+   "n_tiles": 16
+  },
+  "dark_mud__to__light_soil/a12_s4": {
+   "index0": "light_soil",
+   "index15": "dark_mud",
+   "margin": 153.0,
+   "ambiguous": false,
+   "meta_says": "light_soil",
+   "meta_agrees": true,
+   "post": true,
+   "n_tiles": 16
+  },
+  "dark_mud__to__light_soil/a14_s5": {
+   "index0": "light_soil",
+   "index15": "dark_mud",
+   "margin": 192.0,
+   "ambiguous": false,
+   "meta_says": "light_soil",
+   "meta_agrees": true,
+   "post": true,
+   "n_tiles": 16
+  },
+  "dark_mud__to__light_soil/a15_s2": {
+   "index0": "light_soil",
+   "index15": "dark_mud",
+   "margin": 154.0,
+   "ambiguous": false,
+   "meta_says": "light_soil",
+   "meta_agrees": true,
+   "post": true,
+   "n_tiles": 16
+  },
+  "dark_mud__to__light_soil/a15_s6": {
+   "index0": "light_soil",
+   "index15": "dark_mud",
+   "margin": 135.0,
+   "ambiguous": false,
+   "meta_says": "light_soil",
+   "meta_agrees": true,
+   "post": true,
+   "n_tiles": 16
+  },
+  "dark_mud__to__light_soil/a18_s4": {
+   "index0": "light_soil",
+   "index15": "dark_mud",
+   "margin": 148.0,
+   "ambiguous": false,
+   "meta_says": "light_soil",
+   "meta_agrees": true,
+   "post": true,
+   "n_tiles": 16
+  },
+  "dark_mud__to__light_soil/a18_s6": {
+   "index0": "light_soil",
+   "index15": "dark_mud",
+   "margin": 182.0,
+   "ambiguous": false,
+   "meta_says": "light_soil",
+   "meta_agrees": true,
+   "post": true,
+   "n_tiles": 16
+  },
+  "dark_mud__to__light_soil/a21_s2": {
+   "index0": "light_soil",
+   "index15": "dark_mud",
+   "margin": 208.0,
+   "ambiguous": false,
+   "meta_says": "light_soil",
+   "meta_agrees": true,
+   "post": true,
+   "n_tiles": 16
+  },
+  "dark_mud__to__light_soil/a21_s4": {
+   "index0": "light_soil",
+   "index15": "dark_mud",
+   "margin": 204.0,
+   "ambiguous": false,
+   "meta_says": "light_soil",
+   "meta_agrees": true,
+   "post": true,
+   "n_tiles": 16
+  },
+  "dark_mud__to__light_soil/a21_s5": {
+   "index0": "light_soil",
+   "index15": "dark_mud",
+   "margin": 207.0,
+   "ambiguous": false,
+   "meta_says": "light_soil",
+   "meta_agrees": true,
+   "post": true,
+   "n_tiles": 16
+  },
+  "dark_mud__to__light_soil/a23_s4": {
+   "index0": "light_soil",
+   "index15": "dark_mud",
+   "margin": 196.0,
+   "ambiguous": false,
+   "meta_says": "light_soil",
+   "meta_agrees": true,
+   "post": true,
+   "n_tiles": 16
+  },
+  "dark_mud__to__light_soil/a24_s6": {
+   "index0": "light_soil",
+   "index15": "dark_mud",
+   "margin": 164.0,
+   "ambiguous": false,
+   "meta_says": "light_soil",
+   "meta_agrees": true,
+   "post": true,
+   "n_tiles": 16
+  },
+  "dark_mud__to__light_soil/a30_s1": {
+   "index0": "light_soil",
+   "index15": "dark_mud",
+   "margin": 214.0,
+   "ambiguous": false,
+   "meta_says": "light_soil",
+   "meta_agrees": true,
+   "post": true,
+   "n_tiles": 16
+  },
+  "dark_mud__to__slime/a05_s1": {
+   "index0": "slime",
+   "index15": "dark_mud",
+   "margin": 446.0,
+   "ambiguous": false,
+   "meta_says": "dark_mud",
+   "meta_agrees": false,
+   "post": true,
+   "n_tiles": 16
+  },
+  "dark_mud__to__slime/a14_s1": {
+   "index0": "slime",
+   "index15": "dark_mud",
+   "margin": 285.0,
+   "ambiguous": false,
+   "meta_says": "dark_mud",
+   "meta_agrees": false,
+   "post": true,
+   "n_tiles": 16
+  },
+  "dark_mud__to__slime/a23_s1": {
+   "index0": "slime",
+   "index15": "dark_mud",
+   "margin": 267.0,
+   "ambiguous": false,
+   "meta_says": "dark_mud",
+   "meta_agrees": false,
+   "post": true,
+   "n_tiles": 16
+  },
+  "deep_water__to__light_soil/a00_s3": {
+   "index0": "light_soil",
+   "index15": "deep_water",
+   "margin": 335.0,
+   "ambiguous": false,
+   "meta_says": "light_soil",
+   "meta_agrees": true,
+   "post": true,
+   "n_tiles": 16
+  },
+  "deep_water__to__light_soil/a00_s5": {
+   "index0": "light_soil",
+   "index15": "deep_water",
+   "margin": 370.0,
+   "ambiguous": false,
+   "meta_says": "light_soil",
+   "meta_agrees": true,
+   "post": true,
+   "n_tiles": 16
+  },
+  "deep_water__to__light_soil/a03_s5": {
+   "index0": "light_soil",
+   "index15": "deep_water",
+   "margin": 311.0,
+   "ambiguous": false,
+   "meta_says": "light_soil",
+   "meta_agrees": true,
+   "post": true,
+   "n_tiles": 16
+  },
+  "deep_water__to__light_soil/a12_s4": {
+   "index0": "light_soil",
+   "index15": "deep_water",
+   "margin": 347.0,
+   "ambiguous": false,
+   "meta_says": "light_soil",
+   "meta_agrees": true,
+   "post": true,
+   "n_tiles": 16
+  },
+  "deep_water__to__light_soil/a14_s5": {
+   "index0": "light_soil",
+   "index15": "deep_water",
+   "margin": 335.0,
+   "ambiguous": false,
+   "meta_says": "light_soil",
+   "meta_agrees": true,
+   "post": true,
+   "n_tiles": 16
+  },
+  "deep_water__to__light_soil/a15_s2": {
+   "index0": "light_soil",
+   "index15": "deep_water",
+   "margin": 287.0,
+   "ambiguous": false,
+   "meta_says": "light_soil",
+   "meta_agrees": true,
+   "post": true,
+   "n_tiles": 16
+  },
+  "deep_water__to__light_soil/a15_s6": {
+   "index0": "light_soil",
+   "index15": "deep_water",
+   "margin": 340.0,
+   "ambiguous": false,
+   "meta_says": "light_soil",
+   "meta_agrees": true,
+   "post": true,
+   "n_tiles": 16
+  },
+  "deep_water__to__light_soil/a18_s4": {
+   "index0": "light_soil",
+   "index15": "deep_water",
+   "margin": 306.0,
+   "ambiguous": false,
+   "meta_says": "light_soil",
+   "meta_agrees": true,
+   "post": true,
+   "n_tiles": 16
+  },
+  "deep_water__to__light_soil/a18_s6": {
+   "index0": "light_soil",
+   "index15": "deep_water",
+   "margin": 336.0,
+   "ambiguous": false,
+   "meta_says": "light_soil",
+   "meta_agrees": true,
+   "post": true,
+   "n_tiles": 16
+  },
+  "deep_water__to__light_soil/a21_s2": {
+   "index0": "light_soil",
+   "index15": "deep_water",
+   "margin": 250.0,
+   "ambiguous": false,
+   "meta_says": "light_soil",
+   "meta_agrees": true,
+   "post": true,
+   "n_tiles": 16
+  },
+  "deep_water__to__light_soil/a21_s4": {
+   "index0": "light_soil",
+   "index15": "deep_water",
+   "margin": 372.0,
+   "ambiguous": false,
+   "meta_says": "light_soil",
+   "meta_agrees": true,
+   "post": true,
+   "n_tiles": 16
+  },
+  "deep_water__to__light_soil/a21_s5": {
+   "index0": "light_soil",
+   "index15": "deep_water",
+   "margin": 339.0,
+   "ambiguous": false,
+   "meta_says": "light_soil",
+   "meta_agrees": true,
+   "post": true,
+   "n_tiles": 16
+  },
+  "deep_water__to__light_soil/a23_s4": {
+   "index0": "light_soil",
+   "index15": "deep_water",
+   "margin": 346.0,
+   "ambiguous": false,
+   "meta_says": "light_soil",
+   "meta_agrees": true,
+   "post": true,
+   "n_tiles": 16
+  },
+  "deep_water__to__light_soil/a24_s6": {
+   "index0": "light_soil",
+   "index15": "deep_water",
+   "margin": 337.0,
+   "ambiguous": false,
+   "meta_says": "light_soil",
+   "meta_agrees": true,
+   "post": true,
+   "n_tiles": 16
+  },
+  "deep_water__to__light_soil/a30_s1": {
+   "index0": "light_soil",
+   "index15": "deep_water",
+   "margin": 328.0,
+   "ambiguous": false,
+   "meta_says": "light_soil",
+   "meta_agrees": true,
+   "post": true,
+   "n_tiles": 16
+  },
+  "grass__to__grey_paving_stone/a00_s3": {
+   "index0": "grey_paving_stone",
+   "index15": "grass",
+   "margin": 96.0,
+   "ambiguous": false,
+   "meta_says": "grey_paving_stone",
+   "meta_agrees": true,
+   "post": true,
+   "n_tiles": 16
+  },
+  "grass__to__grey_paving_stone/a00_s5": {
+   "index0": "grey_paving_stone",
+   "index15": "grass",
+   "margin": 124.0,
+   "ambiguous": false,
+   "meta_says": "grey_paving_stone",
+   "meta_agrees": true,
+   "post": true,
+   "n_tiles": 16
+  },
+  "grass__to__grey_paving_stone/a03_s5": {
+   "index0": "grey_paving_stone",
+   "index15": "grass",
+   "margin": 145.0,
+   "ambiguous": false,
+   "meta_says": "grey_paving_stone",
+   "meta_agrees": true,
+   "post": true,
+   "n_tiles": 16
+  },
+  "grass__to__grey_paving_stone/a12_s4": {
+   "index0": "grey_paving_stone",
+   "index15": "grass",
+   "margin": 117.0,
+   "ambiguous": false,
+   "meta_says": "grey_paving_stone",
+   "meta_agrees": true,
+   "post": true,
+   "n_tiles": 16
+  },
+  "grass__to__grey_paving_stone/a14_s5": {
+   "index0": "grey_paving_stone",
+   "index15": "grass",
+   "margin": 139.0,
+   "ambiguous": false,
+   "meta_says": "grey_paving_stone",
+   "meta_agrees": true,
+   "post": true,
+   "n_tiles": 16
+  },
+  "grass__to__grey_paving_stone/a15_s2": {
+   "index0": "grey_paving_stone",
+   "index15": "grass",
+   "margin": 144.0,
+   "ambiguous": false,
+   "meta_says": "grey_paving_stone",
+   "meta_agrees": true,
+   "post": true,
+   "n_tiles": 16
+  },
+  "grass__to__grey_paving_stone/a15_s6": {
+   "index0": "grey_paving_stone",
+   "index15": "grass",
+   "margin": 161.0,
+   "ambiguous": false,
+   "meta_says": "grey_paving_stone",
+   "meta_agrees": true,
+   "post": true,
+   "n_tiles": 16
+  },
+  "grass__to__grey_paving_stone/a18_s4": {
+   "index0": "grey_paving_stone",
+   "index15": "grass",
+   "margin": 156.0,
+   "ambiguous": false,
+   "meta_says": "grey_paving_stone",
+   "meta_agrees": true,
+   "post": true,
+   "n_tiles": 16
+  },
+  "grass__to__grey_paving_stone/a18_s6": {
+   "index0": "grey_paving_stone",
+   "index15": "grass",
+   "margin": 128.0,
+   "ambiguous": false,
+   "meta_says": "grey_paving_stone",
+   "meta_agrees": true,
+   "post": true,
+   "n_tiles": 16
+  },
+  "grass__to__grey_paving_stone/a21_s2": {
+   "index0": "grey_paving_stone",
+   "index15": "grass",
+   "margin": 125.0,
+   "ambiguous": false,
+   "meta_says": "grey_paving_stone",
+   "meta_agrees": true,
+   "post": true,
+   "n_tiles": 16
+  },
+  "grass__to__grey_paving_stone/a21_s4": {
+   "index0": "grey_paving_stone",
+   "index15": "grass",
+   "margin": 148.0,
+   "ambiguous": false,
+   "meta_says": "grey_paving_stone",
+   "meta_agrees": true,
+   "post": true,
+   "n_tiles": 16
+  },
+  "grass__to__grey_paving_stone/a21_s5": {
+   "index0": "grey_paving_stone",
+   "index15": "grass",
+   "margin": 129.0,
+   "ambiguous": false,
+   "meta_says": "grey_paving_stone",
+   "meta_agrees": true,
+   "post": true,
+   "n_tiles": 16
+  },
+  "grass__to__grey_paving_stone/a23_s4": {
+   "index0": "grey_paving_stone",
+   "index15": "grass",
+   "margin": 137.0,
+   "ambiguous": false,
+   "meta_says": "grey_paving_stone",
+   "meta_agrees": true,
+   "post": true,
+   "n_tiles": 16
+  },
+  "grass__to__grey_paving_stone/a24_s6": {
+   "index0": "grey_paving_stone",
+   "index15": "grass",
+   "margin": 181.0,
+   "ambiguous": false,
+   "meta_says": "grey_paving_stone",
+   "meta_agrees": true,
+   "post": true,
+   "n_tiles": 16
+  },
+  "grass__to__grey_paving_stone/a30_s1": {
+   "index0": "grey_paving_stone",
+   "index15": "grass",
+   "margin": 144.0,
+   "ambiguous": false,
+   "meta_says": "grey_paving_stone",
+   "meta_agrees": true,
+   "post": true,
+   "n_tiles": 16
+  },
+  "grass__to__grey_stone/a00_s3": {
+   "index0": "grey_stone",
+   "index15": "grass",
+   "margin": 168.0,
+   "ambiguous": false,
+   "meta_says": "grey_stone",
+   "meta_agrees": true,
+   "post": true,
+   "n_tiles": 16
+  },
+  "grass__to__grey_stone/a00_s5": {
+   "index0": "grey_stone",
+   "index15": "grass",
+   "margin": 156.0,
+   "ambiguous": false,
+   "meta_says": "grey_stone",
+   "meta_agrees": true,
+   "post": true,
+   "n_tiles": 16
+  },
+  "grass__to__grey_stone/a03_s5": {
+   "index0": "grey_stone",
+   "index15": "grass",
+   "margin": 149.0,
+   "ambiguous": false,
+   "meta_says": "grey_stone",
+   "meta_agrees": true,
+   "post": true,
+   "n_tiles": 16
+  },
+  "grass__to__grey_stone/a12_s4": {
+   "index0": "grey_stone",
+   "index15": "grass",
+   "margin": 122.0,
+   "ambiguous": false,
+   "meta_says": "grey_stone",
+   "meta_agrees": true,
+   "post": true,
+   "n_tiles": 16
+  },
+  "grass__to__grey_stone/a14_s5": {
+   "index0": "grey_stone",
+   "index15": "grass",
+   "margin": 126.0,
+   "ambiguous": false,
+   "meta_says": "grey_stone",
+   "meta_agrees": true,
+   "post": true,
+   "n_tiles": 16
+  },
+  "grass__to__grey_stone/a15_s2": {
+   "index0": "grey_stone",
+   "index15": "grass",
+   "margin": 130.0,
+   "ambiguous": false,
+   "meta_says": "grey_stone",
+   "meta_agrees": true,
+   "post": true,
+   "n_tiles": 16
+  },
+  "grass__to__grey_stone/a15_s6": {
+   "index0": "grey_stone",
+   "index15": "grass",
+   "margin": 160.0,
+   "ambiguous": false,
+   "meta_says": "grey_stone",
+   "meta_agrees": true,
+   "post": true,
+   "n_tiles": 16
+  },
+  "grass__to__grey_stone/a18_s4": {
+   "index0": "grey_stone",
+   "index15": "grass",
+   "margin": 107.0,
+   "ambiguous": false,
+   "meta_says": "grey_stone",
+   "meta_agrees": true,
+   "post": true,
+   "n_tiles": 16
+  },
+  "grass__to__grey_stone/a18_s6": {
+   "index0": "grey_stone",
+   "index15": "grass",
+   "margin": 110.0,
+   "ambiguous": false,
+   "meta_says": "grey_stone",
+   "meta_agrees": true,
+   "post": true,
+   "n_tiles": 16
+  },
+  "grass__to__grey_stone/a21_s2": {
+   "index0": "grey_stone",
+   "index15": "grass",
+   "margin": 96.0,
+   "ambiguous": false,
+   "meta_says": "grey_stone",
+   "meta_agrees": true,
+   "post": true,
+   "n_tiles": 16
+  },
+  "grass__to__grey_stone/a21_s4": {
+   "index0": "grey_stone",
+   "index15": "grass",
+   "margin": 128.0,
+   "ambiguous": false,
+   "meta_says": "grey_stone",
+   "meta_agrees": true,
+   "post": true,
+   "n_tiles": 16
+  },
+  "grass__to__grey_stone/a21_s5": {
+   "index0": "grey_stone",
+   "index15": "grass",
+   "margin": 172.0,
+   "ambiguous": false,
+   "meta_says": "grey_stone",
+   "meta_agrees": true,
+   "post": true,
+   "n_tiles": 16
+  },
+  "grass__to__grey_stone/a23_s4": {
+   "index0": "grey_stone",
+   "index15": "grass",
+   "margin": 148.0,
+   "ambiguous": false,
+   "meta_says": "grey_stone",
+   "meta_agrees": true,
+   "post": true,
+   "n_tiles": 16
+  },
+  "grass__to__grey_stone/a24_s6": {
+   "index0": "grey_stone",
+   "index15": "grass",
+   "margin": 156.0,
+   "ambiguous": false,
+   "meta_says": "grey_stone",
+   "meta_agrees": true,
+   "post": true,
+   "n_tiles": 16
+  },
+  "grass__to__grey_stone/a30_s1": {
+   "index0": "grey_stone",
+   "index15": "grass",
+   "margin": 109.0,
+   "ambiguous": false,
+   "meta_says": "grey_stone",
+   "meta_agrees": true,
+   "post": true,
+   "n_tiles": 16
+  },
+  "grass__to__ice/a00_s3": {
+   "index0": "ice",
+   "index15": "grass",
+   "margin": 69.0,
+   "ambiguous": false,
+   "meta_says": "ice",
+   "meta_agrees": true,
+   "post": true,
+   "n_tiles": 16
+  },
+  "grass__to__ice/a00_s5": {
+   "index0": "ice",
+   "index15": "grass",
+   "margin": 70.0,
+   "ambiguous": false,
+   "meta_says": "ice",
+   "meta_agrees": true,
+   "post": true,
+   "n_tiles": 16
+  },
+  "grass__to__ice/a03_s5": {
+   "index0": "ice",
+   "index15": "grass",
+   "margin": 121.0,
+   "ambiguous": false,
+   "meta_says": "ice",
+   "meta_agrees": true,
+   "post": true,
+   "n_tiles": 16
+  },
+  "grass__to__ice/a05_s1": {
+   "index0": "ice",
+   "index15": "grass",
+   "margin": 107.0,
+   "ambiguous": false,
+   "meta_says": "grass",
+   "meta_agrees": false,
+   "post": true,
+   "n_tiles": 16
+  },
+  "grass__to__ice/a12_s4": {
+   "index0": "ice",
+   "index15": "grass",
+   "margin": 101.0,
+   "ambiguous": false,
+   "meta_says": "ice",
+   "meta_agrees": true,
+   "post": true,
+   "n_tiles": 16
+  },
+  "grass__to__ice/a14_s1": {
+   "index0": "ice",
+   "index15": "grass",
+   "margin": 70.0,
+   "ambiguous": false,
+   "meta_says": "grass",
+   "meta_agrees": false,
+   "post": true,
+   "n_tiles": 16
+  },
+  "grass__to__ice/a14_s5": {
+   "index0": "ice",
+   "index15": "grass",
+   "margin": 96.0,
+   "ambiguous": false,
+   "meta_says": "ice",
+   "meta_agrees": true,
+   "post": true,
+   "n_tiles": 16
+  },
+  "grass__to__ice/a15_s2": {
+   "index0": "ice",
+   "index15": "grass",
+   "margin": 107.0,
+   "ambiguous": false,
+   "meta_says": "ice",
+   "meta_agrees": true,
+   "post": true,
+   "n_tiles": 16
+  },
+  "grass__to__ice/a15_s6": {
+   "index0": "ice",
+   "index15": "grass",
+   "margin": 73.0,
+   "ambiguous": false,
+   "meta_says": "ice",
+   "meta_agrees": true,
+   "post": true,
+   "n_tiles": 16
+  },
+  "grass__to__ice/a18_s4": {
+   "index0": "ice",
+   "index15": "grass",
+   "margin": 74.0,
+   "ambiguous": false,
+   "meta_says": "ice",
+   "meta_agrees": true,
+   "post": true,
+   "n_tiles": 16
+  },
+  "grass__to__ice/a18_s6": {
+   "index0": "ice",
+   "index15": "grass",
+   "margin": 83.0,
+   "ambiguous": false,
+   "meta_says": "ice",
+   "meta_agrees": true,
+   "post": true,
+   "n_tiles": 16
+  },
+  "grass__to__ice/a21_s2": {
+   "index0": "ice",
+   "index15": "grass",
+   "margin": 116.0,
+   "ambiguous": false,
+   "meta_says": "ice",
+   "meta_agrees": true,
+   "post": true,
+   "n_tiles": 16
+  },
+  "grass__to__ice/a21_s4": {
+   "index0": "ice",
+   "index15": "grass",
+   "margin": 78.0,
+   "ambiguous": false,
+   "meta_says": "ice",
+   "meta_agrees": true,
+   "post": true,
+   "n_tiles": 16
+  },
+  "grass__to__ice/a21_s5": {
+   "index0": "ice",
+   "index15": "grass",
+   "margin": 89.0,
+   "ambiguous": false,
+   "meta_says": "ice",
+   "meta_agrees": true,
+   "post": true,
+   "n_tiles": 16
+  },
+  "grass__to__ice/a23_s1": {
+   "index0": "ice",
+   "index15": "grass",
+   "margin": 124.0,
+   "ambiguous": false,
+   "meta_says": "grass",
+   "meta_agrees": false,
+   "post": true,
+   "n_tiles": 16
+  },
+  "grass__to__ice/a23_s4": {
+   "index0": "ice",
+   "index15": "grass",
+   "margin": 124.0,
+   "ambiguous": false,
+   "meta_says": "ice",
+   "meta_agrees": true,
+   "post": true,
+   "n_tiles": 16
+  },
+  "grass__to__ice/a24_s6": {
+   "index0": "ice",
+   "index15": "grass",
+   "margin": 121.0,
+   "ambiguous": false,
+   "meta_says": "ice",
+   "meta_agrees": true,
+   "post": true,
+   "n_tiles": 16
+  },
+  "grass__to__ice/a30_s1": {
+   "index0": "ice",
+   "index15": "grass",
+   "margin": 83.0,
+   "ambiguous": false,
+   "meta_says": "ice",
+   "meta_agrees": true,
+   "post": true,
+   "n_tiles": 16
+  },
+  "grass__to__lava/a00_s3": {
+   "index0": "lava",
+   "index15": "grass",
+   "margin": 507.0,
+   "ambiguous": false,
+   "meta_says": "lava",
+   "meta_agrees": true,
+   "post": true,
+   "n_tiles": 16
+  },
+  "grass__to__lava/a00_s5": {
+   "index0": "lava",
+   "index15": "grass",
+   "margin": 511.0,
+   "ambiguous": false,
+   "meta_says": "lava",
+   "meta_agrees": true,
+   "post": true,
+   "n_tiles": 16
+  },
+  "grass__to__lava/a03_s5": {
+   "index0": "lava",
+   "index15": "grass",
+   "margin": 509.0,
+   "ambiguous": false,
+   "meta_says": "lava",
+   "meta_agrees": true,
+   "post": true,
+   "n_tiles": 16
+  },
+  "grass__to__lava/a05_s1": {
+   "index0": "lava",
+   "index15": "grass",
+   "margin": 445.0,
+   "ambiguous": false,
+   "meta_says": "grass",
+   "meta_agrees": false,
+   "post": true,
+   "n_tiles": 16
+  },
+  "grass__to__lava/a12_s4": {
+   "index0": "lava",
+   "index15": "grass",
+   "margin": 0.0,
+   "ambiguous": true,
+   "meta_says": "lava",
+   "meta_agrees": true,
+   "post": true,
+   "n_tiles": 16
+  },
+  "grass__to__lava/a14_s1": {
+   "index0": "lava",
+   "index15": "grass",
+   "margin": 546.0,
+   "ambiguous": false,
+   "meta_says": "grass",
+   "meta_agrees": false,
+   "post": true,
+   "n_tiles": 16
+  },
+  "grass__to__lava/a14_s5": {
+   "index0": "lava",
+   "index15": "grass",
+   "margin": 476.0,
+   "ambiguous": false,
+   "meta_says": "lava",
+   "meta_agrees": true,
+   "post": true,
+   "n_tiles": 16
+  },
+  "grass__to__lava/a15_s2": {
+   "index0": "lava",
+   "index15": "grass",
+   "margin": 375.0,
+   "ambiguous": false,
+   "meta_says": "lava",
+   "meta_agrees": true,
+   "post": true,
+   "n_tiles": 16
+  },
+  "grass__to__lava/a15_s6": {
+   "index0": "lava",
+   "index15": "grass",
+   "margin": 0.0,
+   "ambiguous": true,
+   "meta_says": "lava",
+   "meta_agrees": true,
+   "post": true,
+   "n_tiles": 16
+  },
+  "grass__to__lava/a18_s4": {
+   "index0": "lava",
+   "index15": "grass",
+   "margin": 497.0,
+   "ambiguous": false,
+   "meta_says": "lava",
+   "meta_agrees": true,
+   "post": true,
+   "n_tiles": 16
+  },
+  "grass__to__lava/a18_s6": {
+   "index0": "lava",
+   "index15": "grass",
+   "margin": 436.0,
+   "ambiguous": false,
+   "meta_says": "lava",
+   "meta_agrees": true,
+   "post": true,
+   "n_tiles": 16
+  },
+  "grass__to__lava/a21_s2": {
+   "index0": "lava",
+   "index15": "grass",
+   "margin": 440.0,
+   "ambiguous": false,
+   "meta_says": "lava",
+   "meta_agrees": true,
+   "post": true,
+   "n_tiles": 16
+  },
+  "grass__to__lava/a21_s4": {
+   "index0": "lava",
+   "index15": "grass",
+   "margin": 103.0,
+   "ambiguous": false,
+   "meta_says": "lava",
+   "meta_agrees": true,
+   "post": true,
+   "n_tiles": 16
+  },
+  "grass__to__lava/a21_s5": {
+   "index0": "lava",
+   "index15": "grass",
+   "margin": 506.0,
+   "ambiguous": false,
+   "meta_says": "lava",
+   "meta_agrees": true,
+   "post": true,
+   "n_tiles": 16
+  },
+  "grass__to__lava/a23_s1": {
+   "index0": "lava",
+   "index15": "grass",
+   "margin": 489.0,
+   "ambiguous": false,
+   "meta_says": "grass",
+   "meta_agrees": false,
+   "post": true,
+   "n_tiles": 16
+  },
+  "grass__to__lava/a23_s4": {
+   "index0": "lava",
+   "index15": "grass",
+   "margin": 450.0,
+   "ambiguous": false,
+   "meta_says": "lava",
+   "meta_agrees": true,
+   "post": true,
+   "n_tiles": 16
+  },
+  "grass__to__lava/a24_s6": {
+   "index0": "lava",
+   "index15": "grass",
+   "margin": 515.0,
+   "ambiguous": false,
+   "meta_says": "lava",
+   "meta_agrees": true,
+   "post": true,
+   "n_tiles": 16
+  },
+  "grass__to__lava/a30_s1": {
+   "index0": "lava",
+   "index15": "grass",
+   "margin": 467.0,
+   "ambiguous": false,
+   "meta_says": "lava",
+   "meta_agrees": true,
+   "post": true,
+   "n_tiles": 16
+  },
+  "grass__to__light_beach/a00_s3": {
+   "index0": "light_beach",
+   "index15": "grass",
+   "margin": 208.0,
+   "ambiguous": false,
+   "meta_says": "light_beach",
+   "meta_agrees": true,
+   "post": true,
+   "n_tiles": 16
+  },
+  "grass__to__light_beach/a00_s5": {
+   "index0": "light_beach",
+   "index15": "grass",
+   "margin": 198.0,
+   "ambiguous": false,
+   "meta_says": "light_beach",
+   "meta_agrees": true,
+   "post": true,
+   "n_tiles": 16
+  },
+  "grass__to__light_beach/a03_s5": {
+   "index0": "light_beach",
+   "index15": "grass",
+   "margin": 240.0,
+   "ambiguous": false,
+   "meta_says": "light_beach",
+   "meta_agrees": true,
+   "post": true,
+   "n_tiles": 16
+  },
+  "grass__to__light_beach/a05_s1": {
+   "index0": "light_beach",
+   "index15": "grass",
+   "margin": 206.0,
+   "ambiguous": false,
+   "meta_says": "grass",
+   "meta_agrees": false,
+   "post": true,
+   "n_tiles": 16
+  },
+  "grass__to__light_beach/a12_s4": {
+   "index0": "light_beach",
+   "index15": "grass",
+   "margin": 248.0,
+   "ambiguous": false,
+   "meta_says": "light_beach",
+   "meta_agrees": true,
+   "post": true,
+   "n_tiles": 16
+  },
+  "grass__to__light_beach/a14_s1": {
+   "index0": "light_beach",
+   "index15": "grass",
+   "margin": 218.0,
+   "ambiguous": false,
+   "meta_says": "grass",
+   "meta_agrees": false,
+   "post": true,
+   "n_tiles": 16
+  },
+  "grass__to__light_beach/a14_s5": {
+   "index0": "light_beach",
+   "index15": "grass",
+   "margin": 204.0,
+   "ambiguous": false,
+   "meta_says": "light_beach",
+   "meta_agrees": true,
+   "post": true,
+   "n_tiles": 16
+  },
+  "grass__to__light_beach/a15_s2": {
+   "index0": "light_beach",
+   "index15": "grass",
+   "margin": 236.0,
+   "ambiguous": false,
+   "meta_says": "light_beach",
+   "meta_agrees": true,
+   "post": true,
+   "n_tiles": 16
+  },
+  "grass__to__light_beach/a15_s6": {
+   "index0": "light_beach",
+   "index15": "grass",
+   "margin": 229.0,
+   "ambiguous": false,
+   "meta_says": "light_beach",
+   "meta_agrees": true,
+   "post": true,
+   "n_tiles": 16
+  },
+  "grass__to__light_beach/a18_s4": {
+   "index0": "light_beach",
+   "index15": "grass",
+   "margin": 224.0,
+   "ambiguous": false,
+   "meta_says": "light_beach",
+   "meta_agrees": true,
+   "post": true,
+   "n_tiles": 16
+  },
+  "grass__to__light_beach/a18_s6": {
+   "index0": "light_beach",
+   "index15": "grass",
+   "margin": 173.0,
+   "ambiguous": false,
+   "meta_says": "light_beach",
+   "meta_agrees": true,
+   "post": true,
+   "n_tiles": 16
+  },
+  "grass__to__light_beach/a21_s2": {
+   "index0": "light_beach",
+   "index15": "grass",
+   "margin": 192.0,
+   "ambiguous": false,
+   "meta_says": "light_beach",
+   "meta_agrees": true,
+   "post": true,
+   "n_tiles": 16
+  },
+  "grass__to__light_beach/a21_s4": {
+   "index0": "light_beach",
+   "index15": "grass",
+   "margin": 218.0,
+   "ambiguous": false,
+   "meta_says": "light_beach",
+   "meta_agrees": true,
+   "post": true,
+   "n_tiles": 16
+  },
+  "grass__to__light_beach/a21_s5": {
+   "index0": "light_beach",
+   "index15": "grass",
+   "margin": 152.0,
+   "ambiguous": false,
+   "meta_says": "light_beach",
+   "meta_agrees": true,
+   "post": true,
+   "n_tiles": 16
+  },
+  "grass__to__light_beach/a23_s1": {
+   "index0": "light_beach",
+   "index15": "grass",
+   "margin": 237.0,
+   "ambiguous": false,
+   "meta_says": "grass",
+   "meta_agrees": false,
+   "post": true,
+   "n_tiles": 16
+  },
+  "grass__to__light_beach/a23_s4": {
+   "index0": "light_beach",
+   "index15": "grass",
+   "margin": 226.0,
+   "ambiguous": false,
+   "meta_says": "light_beach",
+   "meta_agrees": true,
+   "post": true,
+   "n_tiles": 16
+  },
+  "grass__to__light_beach/a24_s6": {
+   "index0": "light_beach",
+   "index15": "grass",
+   "margin": 184.0,
+   "ambiguous": false,
+   "meta_says": "light_beach",
+   "meta_agrees": true,
+   "post": true,
+   "n_tiles": 16
+  },
+  "grass__to__light_beach/a30_s1": {
+   "index0": "light_beach",
+   "index15": "grass",
+   "margin": 249.0,
+   "ambiguous": false,
+   "meta_says": "light_beach",
+   "meta_agrees": true,
+   "post": true,
+   "n_tiles": 16
+  },
+  "grass__to__parquet_floor/a00_s3": {
+   "index0": "parquet_floor",
+   "index15": "grass",
+   "margin": 222.0,
+   "ambiguous": false,
+   "meta_says": "parquet_floor",
+   "meta_agrees": true,
+   "post": true,
+   "n_tiles": 16
+  },
+  "grass__to__parquet_floor/a00_s5": {
+   "index0": "parquet_floor",
+   "index15": "grass",
+   "margin": 224.0,
+   "ambiguous": false,
+   "meta_says": "parquet_floor",
+   "meta_agrees": true,
+   "post": true,
+   "n_tiles": 16
+  },
+  "grass__to__parquet_floor/a03_s5": {
+   "index0": "parquet_floor",
+   "index15": "grass",
+   "margin": 242.0,
+   "ambiguous": false,
+   "meta_says": "parquet_floor",
+   "meta_agrees": true,
+   "post": true,
+   "n_tiles": 16
+  },
+  "grass__to__parquet_floor/a12_s4": {
+   "index0": "parquet_floor",
+   "index15": "grass",
+   "margin": 223.0,
+   "ambiguous": false,
+   "meta_says": "parquet_floor",
+   "meta_agrees": true,
+   "post": true,
+   "n_tiles": 16
+  },
+  "grass__to__parquet_floor/a14_s5": {
+   "index0": "parquet_floor",
+   "index15": "grass",
+   "margin": 232.0,
+   "ambiguous": false,
+   "meta_says": "parquet_floor",
+   "meta_agrees": true,
+   "post": true,
+   "n_tiles": 16
+  },
+  "grass__to__parquet_floor/a15_s2": {
+   "index0": "parquet_floor",
+   "index15": "grass",
+   "margin": 224.0,
+   "ambiguous": false,
+   "meta_says": "parquet_floor",
+   "meta_agrees": true,
+   "post": true,
+   "n_tiles": 16
+  },
+  "grass__to__parquet_floor/a15_s6": {
+   "index0": "parquet_floor",
+   "index15": "grass",
+   "margin": 168.0,
+   "ambiguous": false,
+   "meta_says": "parquet_floor",
+   "meta_agrees": true,
+   "post": true,
+   "n_tiles": 16
+  },
+  "grass__to__parquet_floor/a18_s4": {
+   "index0": "parquet_floor",
+   "index15": "grass",
+   "margin": 235.0,
+   "ambiguous": false,
+   "meta_says": "parquet_floor",
+   "meta_agrees": true,
+   "post": true,
+   "n_tiles": 16
+  },
+  "grass__to__parquet_floor/a18_s6": {
+   "index0": "parquet_floor",
+   "index15": "grass",
+   "margin": 220.0,
+   "ambiguous": false,
+   "meta_says": "parquet_floor",
+   "meta_agrees": true,
+   "post": true,
+   "n_tiles": 16
+  },
+  "grass__to__parquet_floor/a21_s2": {
+   "index0": "parquet_floor",
+   "index15": "grass",
+   "margin": 206.0,
+   "ambiguous": false,
+   "meta_says": "parquet_floor",
+   "meta_agrees": true,
+   "post": true,
+   "n_tiles": 16
+  },
+  "grass__to__parquet_floor/a21_s4": {
+   "index0": "parquet_floor",
+   "index15": "grass",
+   "margin": 218.0,
+   "ambiguous": false,
+   "meta_says": "parquet_floor",
+   "meta_agrees": true,
+   "post": true,
+   "n_tiles": 16
+  },
+  "grass__to__parquet_floor/a21_s5": {
+   "index0": "parquet_floor",
+   "index15": "grass",
+   "margin": 224.0,
+   "ambiguous": false,
+   "meta_says": "parquet_floor",
+   "meta_agrees": true,
+   "post": true,
+   "n_tiles": 16
+  },
+  "grass__to__parquet_floor/a23_s4": {
+   "index0": "parquet_floor",
+   "index15": "grass",
+   "margin": 224.0,
+   "ambiguous": false,
+   "meta_says": "parquet_floor",
+   "meta_agrees": true,
+   "post": true,
+   "n_tiles": 16
+  },
+  "grass__to__parquet_floor/a24_s6": {
+   "index0": "parquet_floor",
+   "index15": "grass",
+   "margin": 221.0,
+   "ambiguous": false,
+   "meta_says": "parquet_floor",
+   "meta_agrees": true,
+   "post": true,
+   "n_tiles": 16
+  },
+  "grass__to__parquet_floor/a30_s1": {
+   "index0": "parquet_floor",
+   "index15": "grass",
+   "margin": 213.0,
+   "ambiguous": false,
+   "meta_says": "parquet_floor",
+   "meta_agrees": true,
+   "post": true,
+   "n_tiles": 16
+  },
+  "grass__to__slime/a00_s3": {
+   "index0": "grass",
+   "index15": "slime",
+   "margin": 29.0,
+   "ambiguous": true,
+   "meta_says": "slime",
+   "meta_agrees": false,
+   "post": true,
+   "n_tiles": 16
+  },
+  "grass__to__slime/a00_s5": {
+   "index0": "slime",
+   "index15": "grass",
+   "margin": 44.0,
+   "ambiguous": false,
+   "meta_says": "slime",
+   "meta_agrees": true,
+   "post": true,
+   "n_tiles": 16
+  },
+  "grass__to__slime/a03_s5": {
+   "index0": "slime",
+   "index15": "grass",
+   "margin": 30.0,
+   "ambiguous": true,
+   "meta_says": "slime",
+   "meta_agrees": true,
+   "post": true,
+   "n_tiles": 16
+  },
+  "grass__to__slime/a12_s4": {
+   "index0": "grass",
+   "index15": "slime",
+   "margin": 51.0,
+   "ambiguous": false,
+   "meta_says": "slime",
+   "meta_agrees": false,
+   "post": true,
+   "n_tiles": 16
+  },
+  "grass__to__slime/a14_s1": {
+   "index0": "slime",
+   "index15": "grass",
+   "margin": 23.0,
+   "ambiguous": true,
+   "meta_says": "grass",
+   "meta_agrees": false,
+   "post": true,
+   "n_tiles": 16
+  },
+  "grass__to__slime/a14_s5": {
+   "index0": "grass",
+   "index15": "slime",
+   "margin": 67.0,
+   "ambiguous": false,
+   "meta_says": "slime",
+   "meta_agrees": false,
+   "post": true,
+   "n_tiles": 16
+  },
+  "grass__to__slime/a15_s2": {
+   "index0": "grass",
+   "index15": "slime",
+   "margin": 166.0,
+   "ambiguous": false,
+   "meta_says": "slime",
+   "meta_agrees": false,
+   "post": true,
+   "n_tiles": 16
+  },
+  "grass__to__slime/a15_s6": {
+   "index0": "slime",
+   "index15": "grass",
+   "margin": 17.0,
+   "ambiguous": true,
+   "meta_says": "slime",
+   "meta_agrees": true,
+   "post": true,
+   "n_tiles": 16
+  },
+  "grass__to__slime/a18_s4": {
+   "index0": "slime",
+   "index15": "grass",
+   "margin": 43.0,
+   "ambiguous": false,
+   "meta_says": "slime",
+   "meta_agrees": true,
+   "post": true,
+   "n_tiles": 16
+  },
+  "grass__to__slime/a18_s6": {
+   "index0": "grass",
+   "index15": "slime",
+   "margin": 7.0,
+   "ambiguous": true,
+   "meta_says": "slime",
+   "meta_agrees": false,
+   "post": true,
+   "n_tiles": 16
+  },
+  "grass__to__slime/a21_s2": {
+   "index0": "slime",
+   "index15": "grass",
+   "margin": 27.0,
+   "ambiguous": true,
+   "meta_says": "slime",
+   "meta_agrees": true,
+   "post": true,
+   "n_tiles": 16
+  },
+  "grass__to__slime/a21_s4": {
+   "index0": "slime",
+   "index15": "grass",
+   "margin": 12.0,
+   "ambiguous": true,
+   "meta_says": "slime",
+   "meta_agrees": true,
+   "post": true,
+   "n_tiles": 16
+  },
+  "grass__to__slime/a21_s5": {
+   "index0": "slime",
+   "index15": "grass",
+   "margin": 18.0,
+   "ambiguous": true,
+   "meta_says": "slime",
+   "meta_agrees": true,
+   "post": true,
+   "n_tiles": 16
+  },
+  "grass__to__slime/a23_s1": {
+   "index0": "grass",
+   "index15": "slime",
+   "margin": 141.0,
+   "ambiguous": false,
+   "meta_says": "grass",
+   "meta_agrees": true,
+   "post": false,
+   "n_tiles": 14
+  },
+  "grass__to__slime/a23_s4": {
+   "index0": "slime",
+   "index15": "grass",
+   "margin": 69.0,
+   "ambiguous": false,
+   "meta_says": "slime",
+   "meta_agrees": true,
+   "post": true,
+   "n_tiles": 16
+  },
+  "grass__to__slime/a24_s6": {
+   "index0": "slime",
+   "index15": "grass",
+   "margin": 15.0,
+   "ambiguous": true,
+   "meta_says": "slime",
+   "meta_agrees": true,
+   "post": true,
+   "n_tiles": 16
+  },
+  "grass__to__slime/a30_s1": {
+   "index0": "slime",
+   "index15": "grass",
+   "margin": 79.0,
+   "ambiguous": false,
+   "meta_says": "slime",
+   "meta_agrees": true,
+   "post": true,
+   "n_tiles": 16
+  },
+  "grass__to__snow/a00_s3": {
+   "index0": "snow",
+   "index15": "grass",
+   "margin": 246.0,
+   "ambiguous": false,
+   "meta_says": "snow",
+   "meta_agrees": true,
+   "post": true,
+   "n_tiles": 16
+  },
+  "grass__to__snow/a00_s5": {
+   "index0": "snow",
+   "index15": "grass",
+   "margin": 225.0,
+   "ambiguous": false,
+   "meta_says": "snow",
+   "meta_agrees": true,
+   "post": true,
+   "n_tiles": 16
+  },
+  "grass__to__snow/a03_s5": {
+   "index0": "snow",
+   "index15": "grass",
+   "margin": 273.0,
+   "ambiguous": false,
+   "meta_says": "snow",
+   "meta_agrees": true,
+   "post": true,
+   "n_tiles": 16
+  },
+  "grass__to__snow/a12_s4": {
+   "index0": "snow",
+   "index15": "grass",
+   "margin": 262.0,
+   "ambiguous": false,
+   "meta_says": "snow",
+   "meta_agrees": true,
+   "post": true,
+   "n_tiles": 16
+  },
+  "grass__to__snow/a14_s5": {
+   "index0": "snow",
+   "index15": "grass",
+   "margin": 232.0,
+   "ambiguous": false,
+   "meta_says": "snow",
+   "meta_agrees": true,
+   "post": true,
+   "n_tiles": 16
+  },
+  "grass__to__snow/a15_s2": {
+   "index0": "snow",
+   "index15": "grass",
+   "margin": 237.0,
+   "ambiguous": false,
+   "meta_says": "snow",
+   "meta_agrees": true,
+   "post": true,
+   "n_tiles": 16
+  },
+  "grass__to__snow/a15_s6": {
+   "index0": "snow",
+   "index15": "grass",
+   "margin": 246.0,
+   "ambiguous": false,
+   "meta_says": "snow",
+   "meta_agrees": true,
+   "post": true,
+   "n_tiles": 16
+  },
+  "grass__to__snow/a18_s4": {
+   "index0": "snow",
+   "index15": "grass",
+   "margin": 207.0,
+   "ambiguous": false,
+   "meta_says": "snow",
+   "meta_agrees": true,
+   "post": true,
+   "n_tiles": 16
+  },
+  "grass__to__snow/a18_s6": {
+   "index0": "snow",
+   "index15": "grass",
+   "margin": 226.0,
+   "ambiguous": false,
+   "meta_says": "snow",
+   "meta_agrees": true,
+   "post": true,
+   "n_tiles": 16
+  },
+  "grass__to__snow/a21_s2": {
+   "index0": "snow",
+   "index15": "grass",
+   "margin": 218.0,
+   "ambiguous": false,
+   "meta_says": "snow",
+   "meta_agrees": true,
+   "post": true,
+   "n_tiles": 16
+  },
+  "grass__to__snow/a21_s4": {
+   "index0": "snow",
+   "index15": "grass",
+   "margin": 234.0,
+   "ambiguous": false,
+   "meta_says": "snow",
+   "meta_agrees": true,
+   "post": true,
+   "n_tiles": 16
+  },
+  "grass__to__snow/a21_s5": {
+   "index0": "snow",
+   "index15": "grass",
+   "margin": 220.0,
+   "ambiguous": false,
+   "meta_says": "snow",
+   "meta_agrees": true,
+   "post": true,
+   "n_tiles": 16
+  },
+  "grass__to__snow/a23_s4": {
+   "index0": "snow",
+   "index15": "grass",
+   "margin": 235.0,
+   "ambiguous": false,
+   "meta_says": "snow",
+   "meta_agrees": true,
+   "post": true,
+   "n_tiles": 16
+  },
+  "grass__to__snow/a24_s6": {
+   "index0": "snow",
+   "index15": "grass",
+   "margin": 209.0,
+   "ambiguous": false,
+   "meta_says": "snow",
+   "meta_agrees": true,
+   "post": true,
+   "n_tiles": 16
+  },
+  "grass__to__snow/a30_s1": {
+   "index0": "snow",
+   "index15": "grass",
+   "margin": 257.0,
+   "ambiguous": false,
+   "meta_says": "snow",
+   "meta_agrees": true,
+   "post": true,
+   "n_tiles": 16
+  },
+  "grass__to__water/a00_s3": {
+   "index0": "water",
+   "index15": "grass",
+   "margin": 135.0,
+   "ambiguous": false,
+   "meta_says": "water",
+   "meta_agrees": true,
+   "post": true,
+   "n_tiles": 16
+  },
+  "grass__to__water/a00_s5": {
+   "index0": "water",
+   "index15": "grass",
+   "margin": 136.0,
+   "ambiguous": false,
+   "meta_says": "water",
+   "meta_agrees": true,
+   "post": true,
+   "n_tiles": 16
+  },
+  "grass__to__water/a03_s5": {
+   "index0": "water",
+   "index15": "grass",
+   "margin": 139.0,
+   "ambiguous": false,
+   "meta_says": "water",
+   "meta_agrees": true,
+   "post": true,
+   "n_tiles": 16
+  },
+  "grass__to__water/a12_s4": {
+   "index0": "water",
+   "index15": "grass",
+   "margin": 0.0,
+   "ambiguous": true,
+   "meta_says": "water",
+   "meta_agrees": true,
+   "post": true,
+   "n_tiles": 16
+  },
+  "grass__to__water/a14_s5": {
+   "index0": "water",
+   "index15": "grass",
+   "margin": 140.0,
+   "ambiguous": false,
+   "meta_says": "water",
+   "meta_agrees": true,
+   "post": true,
+   "n_tiles": 16
+  },
+  "grass__to__water/a15_s2": {
+   "index0": "water",
+   "index15": "grass",
+   "margin": 105.0,
+   "ambiguous": false,
+   "meta_says": "water",
+   "meta_agrees": true,
+   "post": true,
+   "n_tiles": 16
+  },
+  "grass__to__water/a15_s6": {
+   "index0": "water",
+   "index15": "grass",
+   "margin": 117.0,
+   "ambiguous": false,
+   "meta_says": "water",
+   "meta_agrees": true,
+   "post": true,
+   "n_tiles": 16
+  },
+  "grass__to__water/a18_s4": {
+   "index0": "water",
+   "index15": "grass",
+   "margin": 121.0,
+   "ambiguous": false,
+   "meta_says": "water",
+   "meta_agrees": true,
+   "post": true,
+   "n_tiles": 16
+  },
+  "grass__to__water/a18_s6": {
+   "index0": "water",
+   "index15": "grass",
+   "margin": 91.0,
+   "ambiguous": false,
+   "meta_says": "water",
+   "meta_agrees": true,
+   "post": true,
+   "n_tiles": 16
+  },
+  "grass__to__water/a21_s2": {
+   "index0": "water",
+   "index15": "grass",
+   "margin": 84.0,
+   "ambiguous": false,
+   "meta_says": "water",
+   "meta_agrees": true,
+   "post": true,
+   "n_tiles": 16
+  },
+  "grass__to__water/a21_s4": {
+   "index0": "water",
+   "index15": "grass",
+   "margin": 125.0,
+   "ambiguous": false,
+   "meta_says": "water",
+   "meta_agrees": true,
+   "post": true,
+   "n_tiles": 16
+  },
+  "grass__to__water/a21_s5": {
+   "index0": "water",
+   "index15": "grass",
+   "margin": 131.0,
+   "ambiguous": false,
+   "meta_says": "water",
+   "meta_agrees": true,
+   "post": true,
+   "n_tiles": 16
+  },
+  "grass__to__water/a23_s4": {
+   "index0": "water",
+   "index15": "grass",
+   "margin": 100.0,
+   "ambiguous": false,
+   "meta_says": "water",
+   "meta_agrees": true,
+   "post": true,
+   "n_tiles": 16
+  },
+  "grass__to__water/a24_s6": {
+   "index0": "water",
+   "index15": "grass",
+   "margin": 118.0,
+   "ambiguous": false,
+   "meta_says": "water",
+   "meta_agrees": true,
+   "post": true,
+   "n_tiles": 16
+  },
+  "grass__to__water/a30_s1": {
+   "index0": "water",
+   "index15": "grass",
+   "margin": 112.0,
+   "ambiguous": false,
+   "meta_says": "water",
+   "meta_agrees": true,
+   "post": true,
+   "n_tiles": 16
+  },
+  "grey_paving_stone__to__slime/a05_s1": {
+   "index0": "slime",
+   "index15": "grey_paving_stone",
+   "margin": 401.0,
+   "ambiguous": false,
+   "meta_says": "grey_paving_stone",
+   "meta_agrees": false,
+   "post": true,
+   "n_tiles": 16
+  },
+  "grey_paving_stone__to__slime/a14_s1": {
+   "index0": "slime",
+   "index15": "grey_paving_stone",
+   "margin": 345.0,
+   "ambiguous": false,
+   "meta_says": "grey_paving_stone",
+   "meta_agrees": false,
+   "post": true,
+   "n_tiles": 16
+  },
+  "grey_paving_stone__to__slime/a23_s1": {
+   "index0": "slime",
+   "index15": "grey_paving_stone",
+   "margin": 0.0,
+   "ambiguous": true,
+   "meta_says": "grey_paving_stone",
+   "meta_agrees": false,
+   "post": true,
+   "n_tiles": 16
+  },
+  "grey_paving_stone__to__snow/a05_s1": {
+   "index0": "snow",
+   "index15": "grey_paving_stone",
+   "margin": 80.0,
+   "ambiguous": false,
+   "meta_says": "grey_paving_stone",
+   "meta_agrees": false,
+   "post": true,
+   "n_tiles": 16
+  },
+  "grey_paving_stone__to__snow/a14_s1": {
+   "index0": "snow",
+   "index15": "grey_paving_stone",
+   "margin": 78.0,
+   "ambiguous": false,
+   "meta_says": "grey_paving_stone",
+   "meta_agrees": false,
+   "post": true,
+   "n_tiles": 16
+  },
+  "grey_paving_stone__to__snow/a23_s1": {
+   "index0": "snow",
+   "index15": "grey_paving_stone",
+   "margin": 84.0,
+   "ambiguous": false,
+   "meta_says": "grey_paving_stone",
+   "meta_agrees": false,
+   "post": true,
+   "n_tiles": 16
+  },
+  "grey_stone__to__light_beach/a05_s1": {
+   "index0": "light_beach",
+   "index15": "grey_stone",
+   "margin": 230.0,
+   "ambiguous": false,
+   "meta_says": "grey_stone",
+   "meta_agrees": false,
+   "post": true,
+   "n_tiles": 16
+  },
+  "grey_stone__to__light_beach/a14_s1": {
+   "index0": "light_beach",
+   "index15": "grey_stone",
+   "margin": 216.0,
+   "ambiguous": false,
+   "meta_says": "grey_stone",
+   "meta_agrees": false,
+   "post": true,
+   "n_tiles": 16
+  },
+  "grey_stone__to__light_beach/a23_s1": {
+   "index0": "light_beach",
+   "index15": "grey_stone",
+   "margin": 239.0,
+   "ambiguous": false,
+   "meta_says": "grey_stone",
+   "meta_agrees": false,
+   "post": true,
+   "n_tiles": 16
+  },
+  "grey_stone__to__light_soil/a00_s3": {
+   "index0": "light_soil",
+   "index15": "grey_stone",
+   "margin": 207.0,
+   "ambiguous": false,
+   "meta_says": "light_soil",
+   "meta_agrees": true,
+   "post": true,
+   "n_tiles": 16
+  },
+  "grey_stone__to__light_soil/a00_s5": {
+   "index0": "light_soil",
+   "index15": "grey_stone",
+   "margin": 182.0,
+   "ambiguous": false,
+   "meta_says": "light_soil",
+   "meta_agrees": true,
+   "post": true,
+   "n_tiles": 16
+  },
+  "grey_stone__to__light_soil/a03_s5": {
+   "index0": "light_soil",
+   "index15": "grey_stone",
+   "margin": 167.0,
+   "ambiguous": false,
+   "meta_says": "light_soil",
+   "meta_agrees": true,
+   "post": true,
+   "n_tiles": 16
+  },
+  "grey_stone__to__light_soil/a12_s4": {
+   "index0": "light_soil",
+   "index15": "grey_stone",
+   "margin": 211.0,
+   "ambiguous": false,
+   "meta_says": "light_soil",
+   "meta_agrees": true,
+   "post": true,
+   "n_tiles": 16
+  },
+  "grey_stone__to__light_soil/a14_s5": {
+   "index0": "light_soil",
+   "index15": "grey_stone",
+   "margin": 214.0,
+   "ambiguous": false,
+   "meta_says": "light_soil",
+   "meta_agrees": true,
+   "post": true,
+   "n_tiles": 16
+  },
+  "grey_stone__to__light_soil/a15_s2": {
+   "index0": "light_soil",
+   "index15": "grey_stone",
+   "margin": 192.0,
+   "ambiguous": false,
+   "meta_says": "light_soil",
+   "meta_agrees": true,
+   "post": true,
+   "n_tiles": 16
+  },
+  "grey_stone__to__light_soil/a15_s6": {
+   "index0": "light_soil",
+   "index15": "grey_stone",
+   "margin": 195.0,
+   "ambiguous": false,
+   "meta_says": "light_soil",
+   "meta_agrees": true,
+   "post": true,
+   "n_tiles": 16
+  },
+  "grey_stone__to__light_soil/a18_s4": {
+   "index0": "light_soil",
+   "index15": "grey_stone",
+   "margin": 201.0,
+   "ambiguous": false,
+   "meta_says": "light_soil",
+   "meta_agrees": true,
+   "post": true,
+   "n_tiles": 16
+  },
+  "grey_stone__to__light_soil/a18_s6": {
+   "index0": "light_soil",
+   "index15": "grey_stone",
+   "margin": 208.0,
+   "ambiguous": false,
+   "meta_says": "light_soil",
+   "meta_agrees": true,
+   "post": true,
+   "n_tiles": 16
+  },
+  "grey_stone__to__light_soil/a21_s2": {
+   "index0": "light_soil",
+   "index15": "grey_stone",
+   "margin": 210.0,
+   "ambiguous": false,
+   "meta_says": "light_soil",
+   "meta_agrees": true,
+   "post": true,
+   "n_tiles": 16
+  },
+  "grey_stone__to__light_soil/a21_s4": {
+   "index0": "light_soil",
+   "index15": "grey_stone",
+   "margin": 213.0,
+   "ambiguous": false,
+   "meta_says": "light_soil",
+   "meta_agrees": true,
+   "post": true,
+   "n_tiles": 16
+  },
+  "grey_stone__to__light_soil/a21_s5": {
+   "index0": "light_soil",
+   "index15": "grey_stone",
+   "margin": 213.0,
+   "ambiguous": false,
+   "meta_says": "light_soil",
+   "meta_agrees": true,
+   "post": true,
+   "n_tiles": 16
+  },
+  "grey_stone__to__light_soil/a23_s4": {
+   "index0": "light_soil",
+   "index15": "grey_stone",
+   "margin": 216.0,
+   "ambiguous": false,
+   "meta_says": "light_soil",
+   "meta_agrees": true,
+   "post": true,
+   "n_tiles": 16
+  },
+  "grey_stone__to__light_soil/a24_s6": {
+   "index0": "light_soil",
+   "index15": "grey_stone",
+   "margin": 167.0,
+   "ambiguous": false,
+   "meta_says": "light_soil",
+   "meta_agrees": true,
+   "post": true,
+   "n_tiles": 16
+  },
+  "grey_stone__to__light_soil/a30_s1": {
+   "index0": "light_soil",
+   "index15": "grey_stone",
+   "margin": 185.0,
+   "ambiguous": false,
+   "meta_says": "light_soil",
+   "meta_agrees": true,
+   "post": true,
+   "n_tiles": 16
+  },
+  "grey_stone__to__slime/a05_s1": {
+   "index0": "slime",
+   "index15": "grey_stone",
+   "margin": 317.0,
+   "ambiguous": false,
+   "meta_says": "grey_stone",
+   "meta_agrees": false,
+   "post": true,
+   "n_tiles": 16
+  },
+  "grey_stone__to__slime/a14_s1": {
+   "index0": "slime",
+   "index15": "grey_stone",
+   "margin": 319.0,
+   "ambiguous": false,
+   "meta_says": "grey_stone",
+   "meta_agrees": false,
+   "post": true,
+   "n_tiles": 16
+  },
+  "grey_stone__to__slime/a23_s1": {
+   "index0": "slime",
+   "index15": "grey_stone",
+   "margin": 308.0,
+   "ambiguous": false,
+   "meta_says": "grey_stone",
+   "meta_agrees": false,
+   "post": true,
+   "n_tiles": 16
+  },
+  "grey_stone__to__snow/a05_s1": {
+   "index0": "snow",
+   "index15": "grey_stone",
+   "margin": 91.0,
+   "ambiguous": false,
+   "meta_says": "grey_stone",
+   "meta_agrees": false,
+   "post": true,
+   "n_tiles": 16
+  },
+  "grey_stone__to__snow/a14_s1": {
+   "index0": "snow",
+   "index15": "grey_stone",
+   "margin": 112.0,
+   "ambiguous": false,
+   "meta_says": "grey_stone",
+   "meta_agrees": false,
+   "post": true,
+   "n_tiles": 16
+  },
+  "grey_stone__to__snow/a23_s1": {
+   "index0": "snow",
+   "index15": "grey_stone",
+   "margin": 100.0,
+   "ambiguous": false,
+   "meta_says": "grey_stone",
+   "meta_agrees": false,
+   "post": true,
+   "n_tiles": 16
+  },
+  "light_beach__to__light_soil/a00_s3": {
+   "index0": "light_soil",
+   "index15": "light_beach",
+   "margin": 31.0,
+   "ambiguous": true,
+   "meta_says": "light_soil",
+   "meta_agrees": true,
+   "post": true,
+   "n_tiles": 16
+  },
+  "light_beach__to__light_soil/a00_s5": {
+   "index0": "light_soil",
+   "index15": "light_beach",
+   "margin": 25.0,
+   "ambiguous": true,
+   "meta_says": "light_soil",
+   "meta_agrees": true,
+   "post": true,
+   "n_tiles": 16
+  },
+  "light_beach__to__light_soil/a03_s5": {
+   "index0": "light_soil",
+   "index15": "light_beach",
+   "margin": 27.0,
+   "ambiguous": true,
+   "meta_says": "light_soil",
+   "meta_agrees": true,
+   "post": true,
+   "n_tiles": 16
+  },
+  "light_beach__to__light_soil/a12_s4": {
+   "index0": "light_soil",
+   "index15": "light_beach",
+   "margin": 23.0,
+   "ambiguous": true,
+   "meta_says": "light_soil",
+   "meta_agrees": true,
+   "post": true,
+   "n_tiles": 16
+  },
+  "light_beach__to__light_soil/a14_s5": {
+   "index0": "light_soil",
+   "index15": "light_beach",
+   "margin": 23.0,
+   "ambiguous": true,
+   "meta_says": "light_soil",
+   "meta_agrees": true,
+   "post": true,
+   "n_tiles": 16
+  },
+  "light_beach__to__light_soil/a15_s2": {
+   "index0": "light_soil",
+   "index15": "light_beach",
+   "margin": 22.0,
+   "ambiguous": true,
+   "meta_says": "light_soil",
+   "meta_agrees": true,
+   "post": true,
+   "n_tiles": 16
+  },
+  "light_beach__to__light_soil/a15_s6": {
+   "index0": "light_soil",
+   "index15": "light_beach",
+   "margin": 27.0,
+   "ambiguous": true,
+   "meta_says": "light_soil",
+   "meta_agrees": true,
+   "post": true,
+   "n_tiles": 16
+  },
+  "light_beach__to__light_soil/a18_s4": {
+   "index0": "light_soil",
+   "index15": "light_beach",
+   "margin": 21.0,
+   "ambiguous": true,
+   "meta_says": "light_soil",
+   "meta_agrees": true,
+   "post": true,
+   "n_tiles": 16
+  },
+  "light_beach__to__light_soil/a18_s6": {
+   "index0": "light_soil",
+   "index15": "light_beach",
+   "margin": 22.0,
+   "ambiguous": true,
+   "meta_says": "light_soil",
+   "meta_agrees": true,
+   "post": true,
+   "n_tiles": 16
+  },
+  "light_beach__to__light_soil/a21_s2": {
+   "index0": "light_soil",
+   "index15": "light_beach",
+   "margin": 16.0,
+   "ambiguous": true,
+   "meta_says": "light_soil",
+   "meta_agrees": true,
+   "post": true,
+   "n_tiles": 16
+  },
+  "light_beach__to__light_soil/a21_s4": {
+   "index0": "light_soil",
+   "index15": "light_beach",
+   "margin": 31.0,
+   "ambiguous": true,
+   "meta_says": "light_soil",
+   "meta_agrees": true,
+   "post": true,
+   "n_tiles": 16
+  },
+  "light_beach__to__light_soil/a21_s5": {
+   "index0": "light_soil",
+   "index15": "light_beach",
+   "margin": 31.0,
+   "ambiguous": true,
+   "meta_says": "light_soil",
+   "meta_agrees": true,
+   "post": true,
+   "n_tiles": 16
+  },
+  "light_beach__to__light_soil/a23_s4": {
+   "index0": "light_soil",
+   "index15": "light_beach",
+   "margin": 31.0,
+   "ambiguous": true,
+   "meta_says": "light_soil",
+   "meta_agrees": true,
+   "post": true,
+   "n_tiles": 16
+  },
+  "light_beach__to__light_soil/a24_s6": {
+   "index0": "light_soil",
+   "index15": "light_beach",
+   "margin": 23.0,
+   "ambiguous": true,
+   "meta_says": "light_soil",
+   "meta_agrees": true,
+   "post": true,
+   "n_tiles": 16
+  },
+  "light_beach__to__light_soil/a30_s1": {
+   "index0": "light_soil",
+   "index15": "light_beach",
+   "margin": 31.0,
+   "ambiguous": true,
+   "meta_says": "light_soil",
+   "meta_agrees": true,
+   "post": true,
+   "n_tiles": 16
+  },
+  "light_soil__to__snow/a00_s3": {
+   "index0": "snow",
+   "index15": "light_soil",
+   "margin": 208.0,
+   "ambiguous": false,
+   "meta_says": "snow",
+   "meta_agrees": true,
+   "post": true,
+   "n_tiles": 16
+  },
+  "light_soil__to__snow/a00_s5": {
+   "index0": "snow",
+   "index15": "light_soil",
+   "margin": 189.0,
+   "ambiguous": false,
+   "meta_says": "snow",
+   "meta_agrees": true,
+   "post": true,
+   "n_tiles": 16
+  },
+  "light_soil__to__snow/a03_s5": {
+   "index0": "snow",
+   "index15": "light_soil",
+   "margin": 178.0,
+   "ambiguous": false,
+   "meta_says": "snow",
+   "meta_agrees": true,
+   "post": true,
+   "n_tiles": 16
+  },
+  "light_soil__to__snow/a12_s4": {
+   "index0": "snow",
+   "index15": "light_soil",
+   "margin": 217.0,
+   "ambiguous": false,
+   "meta_says": "snow",
+   "meta_agrees": true,
+   "post": true,
+   "n_tiles": 16
+  },
+  "light_soil__to__snow/a14_s5": {
+   "index0": "snow",
+   "index15": "light_soil",
+   "margin": 201.0,
+   "ambiguous": false,
+   "meta_says": "snow",
+   "meta_agrees": true,
+   "post": true,
+   "n_tiles": 16
+  },
+  "light_soil__to__snow/a15_s2": {
+   "index0": "snow",
+   "index15": "light_soil",
+   "margin": 207.0,
+   "ambiguous": false,
+   "meta_says": "snow",
+   "meta_agrees": true,
+   "post": true,
+   "n_tiles": 16
+  },
+  "light_soil__to__snow/a15_s6": {
+   "index0": "snow",
+   "index15": "light_soil",
+   "margin": 183.0,
+   "ambiguous": false,
+   "meta_says": "snow",
+   "meta_agrees": true,
+   "post": true,
+   "n_tiles": 16
+  },
+  "light_soil__to__snow/a18_s4": {
+   "index0": "snow",
+   "index15": "light_soil",
+   "margin": 202.0,
+   "ambiguous": false,
+   "meta_says": "snow",
+   "meta_agrees": true,
+   "post": true,
+   "n_tiles": 16
+  },
+  "light_soil__to__snow/a18_s6": {
+   "index0": "snow",
+   "index15": "light_soil",
+   "margin": 217.0,
+   "ambiguous": false,
+   "meta_says": "snow",
+   "meta_agrees": true,
+   "post": true,
+   "n_tiles": 16
+  },
+  "light_soil__to__snow/a21_s2": {
+   "index0": "snow",
+   "index15": "light_soil",
+   "margin": 197.0,
+   "ambiguous": false,
+   "meta_says": "snow",
+   "meta_agrees": true,
+   "post": true,
+   "n_tiles": 16
+  },
+  "light_soil__to__snow/a21_s4": {
+   "index0": "snow",
+   "index15": "light_soil",
+   "margin": 205.0,
+   "ambiguous": false,
+   "meta_says": "snow",
+   "meta_agrees": true,
+   "post": true,
+   "n_tiles": 16
+  },
+  "light_soil__to__snow/a21_s5": {
+   "index0": "snow",
+   "index15": "light_soil",
+   "margin": 215.0,
+   "ambiguous": false,
+   "meta_says": "snow",
+   "meta_agrees": true,
+   "post": true,
+   "n_tiles": 16
+  },
+  "light_soil__to__snow/a23_s4": {
+   "index0": "snow",
+   "index15": "light_soil",
+   "margin": 203.0,
+   "ambiguous": false,
+   "meta_says": "snow",
+   "meta_agrees": true,
+   "post": true,
+   "n_tiles": 16
+  },
+  "light_soil__to__snow/a24_s6": {
+   "index0": "snow",
+   "index15": "light_soil",
+   "margin": 195.0,
+   "ambiguous": false,
+   "meta_says": "snow",
+   "meta_agrees": true,
+   "post": true,
+   "n_tiles": 16
+  },
+  "light_soil__to__snow/a30_s1": {
+   "index0": "snow",
+   "index15": "light_soil",
+   "margin": 200.0,
+   "ambiguous": false,
+   "meta_says": "snow",
+   "meta_agrees": true,
+   "post": true,
+   "n_tiles": 16
+  },
+  "light_soil__to__water/a00_s3": {
+   "index0": "water",
+   "index15": "light_soil",
+   "margin": 296.0,
+   "ambiguous": false,
+   "meta_says": "water",
+   "meta_agrees": true,
+   "post": true,
+   "n_tiles": 16
+  },
+  "light_soil__to__water/a00_s5": {
+   "index0": "water",
+   "index15": "light_soil",
+   "margin": 292.0,
+   "ambiguous": false,
+   "meta_says": "water",
+   "meta_agrees": true,
+   "post": true,
+   "n_tiles": 16
+  },
+  "light_soil__to__water/a03_s5": {
+   "index0": "water",
+   "index15": "light_soil",
+   "margin": 296.0,
+   "ambiguous": false,
+   "meta_says": "water",
+   "meta_agrees": true,
+   "post": true,
+   "n_tiles": 16
+  },
+  "light_soil__to__water/a12_s4": {
+   "index0": "water",
+   "index15": "light_soil",
+   "margin": 296.0,
+   "ambiguous": false,
+   "meta_says": "water",
+   "meta_agrees": true,
+   "post": true,
+   "n_tiles": 16
+  },
+  "light_soil__to__water/a14_s5": {
+   "index0": "water",
+   "index15": "light_soil",
+   "margin": 296.0,
+   "ambiguous": false,
+   "meta_says": "water",
+   "meta_agrees": true,
+   "post": true,
+   "n_tiles": 16
+  },
+  "light_soil__to__water/a15_s2": {
+   "index0": "water",
+   "index15": "light_soil",
+   "margin": 290.0,
+   "ambiguous": false,
+   "meta_says": "water",
+   "meta_agrees": true,
+   "post": true,
+   "n_tiles": 16
+  },
+  "light_soil__to__water/a15_s6": {
+   "index0": "water",
+   "index15": "light_soil",
+   "margin": 282.0,
+   "ambiguous": false,
+   "meta_says": "water",
+   "meta_agrees": true,
+   "post": true,
+   "n_tiles": 16
+  },
+  "light_soil__to__water/a18_s4": {
+   "index0": "water",
+   "index15": "light_soil",
+   "margin": 292.0,
+   "ambiguous": false,
+   "meta_says": "water",
+   "meta_agrees": true,
+   "post": true,
+   "n_tiles": 16
+  },
+  "light_soil__to__water/a18_s6": {
+   "index0": "water",
+   "index15": "light_soil",
+   "margin": 292.0,
+   "ambiguous": false,
+   "meta_says": "water",
+   "meta_agrees": true,
+   "post": true,
+   "n_tiles": 16
+  },
+  "light_soil__to__water/a21_s2": {
+   "index0": "water",
+   "index15": "light_soil",
+   "margin": 294.0,
+   "ambiguous": false,
+   "meta_says": "water",
+   "meta_agrees": true,
+   "post": true,
+   "n_tiles": 16
+  },
+  "light_soil__to__water/a21_s4": {
+   "index0": "water",
+   "index15": "light_soil",
+   "margin": 296.0,
+   "ambiguous": false,
+   "meta_says": "water",
+   "meta_agrees": true,
+   "post": true,
+   "n_tiles": 16
+  },
+  "light_soil__to__water/a21_s5": {
+   "index0": "water",
+   "index15": "light_soil",
+   "margin": 276.0,
+   "ambiguous": false,
+   "meta_says": "water",
+   "meta_agrees": true,
+   "post": true,
+   "n_tiles": 16
+  },
+  "light_soil__to__water/a23_s4": {
+   "index0": "water",
+   "index15": "light_soil",
+   "margin": 292.0,
+   "ambiguous": false,
+   "meta_says": "water",
+   "meta_agrees": true,
+   "post": true,
+   "n_tiles": 16
+  },
+  "light_soil__to__water/a24_s6": {
+   "index0": "water",
+   "index15": "light_soil",
+   "margin": 296.0,
+   "ambiguous": false,
+   "meta_says": "water",
+   "meta_agrees": true,
+   "post": true,
+   "n_tiles": 16
+  },
+  "light_soil__to__water/a30_s1": {
+   "index0": "water",
+   "index15": "light_soil",
+   "margin": 272.0,
+   "ambiguous": false,
+   "meta_says": "water",
+   "meta_agrees": true,
+   "post": true,
+   "n_tiles": 16
+  }
+ },
+ "summary": {
+  "sets": 284,
+  "meta_contradicted": 39,
+  "ambiguous": 29,
+  "post": 283
+ }
+}

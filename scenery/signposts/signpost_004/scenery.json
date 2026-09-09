@@ -1,0 +1,99 @@
+{
+  "format": "scenery-piece@2",
+  "id": "signpost_004",
+  "group": "signposts",
+  "rank": 8,
+  "index": 4,
+  "name": "Cast-iron city signpost 004",
+  "lights": null,
+  "variety": "cast-iron city signpost",
+  "glow_concept": "painted place-names glowing like embers",
+  "prompt": "a wooden fingerpost with several arrow-shaped direction boards pointing different ways at different heights, cast-iron city signpost, large, well above head height of a person, self-emissive at night, softly radiating light: painted place-names glowing like embers",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 128,
+  "sprite": "signposts/signpost_004/sprite.webp",
+  "placement": {
+    "world_height_m": 2.169,
+    "world_px_height": 111,
+    "character_height_px": 87,
+    "character_height_m": 1.7,
+    "note": "ONE SCENERY PIXEL IS ONE PLAYER PIXEL. world_px_height IS the art's own alpha bbox height, so scenery is placed into the world at 1:1 exactly as the avatar is (setScale(1)) and the two share one pixel grid. The CAMERA still zooms the whole scene \u2014 that is uniform and correct; what must never happen is scenery being resampled on its own, against the player. world_height_m is what the art reads as beside a 87px character; declared_height_m is what it was once declared to be, and a gap between them means the ART is the wrong size.",
+    "declared_height_m": 2.16,
+    "content_box": [
+      17,
+      12,
+      113,
+      123
+    ],
+    "content_px_height": 111,
+    "canvas_render_px": 128
+  },
+  "pixellab_object_id": "d4f281a0-0d95-4dfc-8344-bc9384ef7e99",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)",
+  "must_be_imbplemented_with_random_hflip": true,
+  "generated_at": "2026-08-13T08:45:01+00:00",
+  "states": {
+    "NOT_LIT_3": {
+      "sprite": "signposts/signpost_004/sprite.webp",
+      "pixellab_object_id": "d4f281a0-0d95-4dfc-8344-bc9384ef7e99",
+      "generated_at": "2026-08-13T08:45:01+00:00",
+      "relit_from": "LIT_1",
+      "rotations": {
+        "south-east": "signposts/signpost_004/rotations/south-east.webp",
+        "south-west": "signposts/signpost_004/rotations/south-west.webp",
+        "south": "signposts/signpost_004/sprite.webp"
+      }
+    },
+    "NOT_LIT_4": {
+      "sprite": "signposts/signpost_004/not_lit_4/sprite.webp",
+      "pixellab_object_id": "b77d255e-1870-45bc-ac12-66ca2f4c8f20",
+      "generated_at": "2026-08-16T20:46:35+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.633,
+      "glow_score": 0.1197,
+      "relit_from": "LIT_2",
+      "rotations": {
+        "south-east": "signposts/signpost_004/not_lit_4/rotations/south-east.webp",
+        "south-west": "signposts/signpost_004/not_lit_4/rotations/south-west.webp",
+        "south": "signposts/signpost_004/not_lit_4/sprite.webp"
+      }
+    },
+    "NOT_LIT_5": {
+      "sprite": "signposts/signpost_004/not_lit_5/sprite.webp",
+      "pixellab_object_id": "4d26f494-9d6b-48ce-adfe-f27bed79c3ee",
+      "generated_at": "2026-08-16T20:47:17+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.1834,
+      "glow_score": 0.074,
+      "relit_from": "LIT_3",
+      "rotations": {
+        "south-east": "signposts/signpost_004/not_lit_5/rotations/south-east.webp",
+        "south-west": "signposts/signpost_004/not_lit_5/rotations/south-west.webp",
+        "south": "signposts/signpost_004/not_lit_5/sprite.webp"
+      }
+    },
+    "NOT_LIT_6": {
+      "sprite": "signposts/signpost_004/not_lit_6/sprite.webp",
+      "pixellab_object_id": "b1b03495-6c4a-464a-9856-424ab27f6bf6",
+      "generated_at": "2026-08-16T20:47:49+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.819,
+      "glow_score": 0.0973,
+      "relit_from": "LIT_4",
+      "rotations": {
+        "south-east": "signposts/signpost_004/not_lit_6/rotations/south-east.webp",
+        "south-west": "signposts/signpost_004/not_lit_6/rotations/south-west.webp",
+        "south": "signposts/signpost_004/not_lit_6/sprite.webp"
+      }
+    }
+  },
+  "collision": true,
+  "hitbox_shape": "ellipse"
+}

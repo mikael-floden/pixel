@@ -1,0 +1,218 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-14T01:38:16+00:00",
+  "id": "stone_024",
+  "group": "stones",
+  "rank": 2,
+  "index": 24,
+  "name": "Smooth river-worn boulder 024",
+  "lights": null,
+  "variety": "smooth river-worn boulder",
+  "modifier": "split into a double form",
+  "glow_concept": "molten orange soulstone veins in deep cracks",
+  "prompt": "a single natural fieldstone boulder resting on the ground, rounded and weathered, with subtle cracks, pits and patches of moss, smooth river-worn boulder, split into a double form, waist-high, self-emissive at night, softly radiating light: molten orange soulstone veins in deep cracks",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 64,
+  "sprite": "stones/stone_024/sprite.webp",
+  "placement": {
+    "world_height_m": 0.918,
+    "world_px_height": 47,
+    "character_height_px": 87,
+    "character_height_m": 1.7,
+    "note": "ONE SCENERY PIXEL IS ONE PLAYER PIXEL. world_px_height IS the art's own alpha bbox height, so scenery is placed into the world at 1:1 exactly as the avatar is (setScale(1)) and the two share one pixel grid. The CAMERA still zooms the whole scene \u2014 that is uniform and correct; what must never happen is scenery being resampled on its own, against the player. world_height_m is what the art reads as beside a 87px character; declared_height_m is what it was once declared to be, and a gap between them means the ART is the wrong size.",
+    "declared_height_m": 0.77,
+    "content_box": [
+      3,
+      10,
+      61,
+      57
+    ],
+    "content_px_height": 47,
+    "canvas_render_px": 64
+  },
+  "pixellab_object_id": "02ebf299-da89-4d24-abd6-ec1a9e06d40e",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)",
+  "must_be_imbplemented_with_random_hflip": true,
+  "states": {
+    "LIT_1": {
+      "sprite": "stones/stone_024/sprite.webp",
+      "pixellab_object_id": "02ebf299-da89-4d24-abd6-ec1a9e06d40e",
+      "generated_at": "2026-08-14T01:38:16+00:00"
+    },
+    "LIT_3": {
+      "sprite": "stones/stone_024/lit_3/sprite.webp",
+      "pixellab_object_id": "b6f83f3a-1b77-435a-8f81-966d0ef86306",
+      "generated_at": "2026-08-16T21:54:26+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.6171,
+      "glow_score": 0.0572,
+      "animations": {
+        "motion": {
+          "group_id": "15e1c277-af1b-4dea-b24d-2c597686ce7c",
+          "description": "This is an almost completely still picture. ONLY the orange spiral in the gap changes. Its brightness lifts very slightly and comes straight back: no more than a few pixels change anywhere in the whole picture. At its brightest it is still exactly the same orange as in the first frame -- never pale, never white, never any other colour. It never fades, never vanishes, never spreads and never changes shape. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "stones/stone_024/lit_3/animations/motion/00.webp",
+            "stones/stone_024/lit_3/animations/motion/01.webp",
+            "stones/stone_024/lit_3/animations/motion/02.webp",
+            "stones/stone_024/lit_3/animations/motion/03.webp",
+            "stones/stone_024/lit_3/animations/motion/04.webp"
+          ],
+          "strip": "stones/stone_024/lit_3/animations/motion__strip.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-08-30T10:05:12+00:00",
+          "brief": "J1",
+          "review": "ANIMATION_PROBABLY_GOOD",
+          "review_metrics": {
+            "base_outline": 0.0293
+          },
+          "light_frames": [
+            {
+              "intensity": 1.069,
+              "dx": 0.7,
+              "dy": 2.9
+            },
+            {
+              "intensity": 1.372,
+              "dx": 0.0,
+              "dy": -1.2
+            },
+            {
+              "intensity": 0.5,
+              "dx": -0.4,
+              "dy": 1.7
+            },
+            {
+              "intensity": 1.5,
+              "dx": -0.1,
+              "dy": -1.1
+            },
+            {
+              "intensity": 0.799,
+              "dx": 0.4,
+              "dy": 2.8
+            }
+          ]
+        }
+      }
+    },
+    "LIT_4": {
+      "sprite": "stones/stone_024/lit_4/sprite.webp",
+      "pixellab_object_id": "4b38f1dd-8197-4153-bbe2-6247478240a5",
+      "generated_at": "2026-08-16T21:54:36+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.6955,
+      "glow_score": 0.0922,
+      "animations": {
+        "motion": {
+          "group_id": "a7431fb0-67ef-46a2-b566-ca195363a651",
+          "description": "This is an almost completely still picture. ONLY the orange seam through the boulder changes. Its brightness lifts very slightly and comes straight back: no more than a few pixels change anywhere in the whole picture. At its brightest it is still exactly the same orange as in the first frame -- never pale, never white, never any other colour. It never fades, never vanishes, never spreads and never changes shape. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "stones/stone_024/lit_4/animations/motion/00.webp",
+            "stones/stone_024/lit_4/animations/motion/01.webp",
+            "stones/stone_024/lit_4/animations/motion/02.webp",
+            "stones/stone_024/lit_4/animations/motion/03.webp",
+            "stones/stone_024/lit_4/animations/motion/04.webp"
+          ],
+          "strip": "stones/stone_024/lit_4/animations/motion__strip.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-08-30T10:06:10+00:00",
+          "brief": "J2",
+          "review": "ANIMATION_PROBABLY_GOOD",
+          "review_metrics": {
+            "base_outline": 0.0506
+          },
+          "light_frames": [
+            {
+              "intensity": 1.5,
+              "dx": 1.0,
+              "dy": 2.0
+            },
+            {
+              "intensity": 0.5,
+              "dx": 1.0,
+              "dy": 0.9
+            },
+            {
+              "intensity": 1.208,
+              "dx": 0.7,
+              "dy": 1.1
+            },
+            {
+              "intensity": 1.5,
+              "dx": 0.7,
+              "dy": 1.8
+            },
+            {
+              "intensity": 0.5,
+              "dx": 0.9,
+              "dy": 1.4
+            }
+          ]
+        }
+      }
+    },
+    "NOT_LIT_1": {
+      "sprite": "stones/stone_024/not_lit_1/sprite.webp",
+      "pixellab_object_id": "7cc03ca9-06b9-4284-8653-284d8c034237",
+      "generated_at": "2026-08-16T21:54:57+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.9019,
+      "glow_score": 0.0
+    },
+    "NOT_LIT_2": {
+      "sprite": "stones/stone_024/not_lit_2/sprite.webp",
+      "pixellab_object_id": "6172717b-c004-4301-8351-bd762b848c50",
+      "generated_at": "2026-08-16T21:54:37+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.8463,
+      "glow_score": 0.0
+    }
+  },
+  "collision": true,
+  "hitbox_shape": "ellipse",
+  "light": {
+    "strength": 0.08,
+    "color": "#9fe4ff",
+    "radius": 1,
+    "reference": "the spawn bonfire is 1.0 (radius 7); strength 0 is no light",
+    "states": {
+      "LIT_1": {
+        "strength": 0.06,
+        "color": "#9fe4ff",
+        "radius": 1
+      },
+      "LIT_3": {
+        "strength": 0.06,
+        "color": "#ffbd5a",
+        "radius": 1
+      },
+      "LIT_4": {
+        "strength": 0.1,
+        "color": "#ffa42f",
+        "radius": 1
+      }
+    },
+    "kind": "glow/magic",
+    "flame": false,
+    "embers": false
+  }
+}

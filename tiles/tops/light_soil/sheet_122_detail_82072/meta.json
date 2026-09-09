@@ -1,0 +1,132 @@
+{
+  "schema": "tiles3/tops@1",
+  "kind": "top_only",
+  "wall_is_meaningless": true,
+  "not_a_candidate_for": "x over y",
+  "ground": "light_soil",
+  "flavour": "detail",
+  "index": 122,
+  "seed": 82072,
+  "prompt": "light soil, a root breaking the surface in the middle, light soil all around the edge",
+  "palette_top": "#c9ab7e",
+  "tile_id": "310f06f7-1fca-4cd8-8a8f-1cf92c191474",
+  "n_tiles": 16,
+  "tiles": [
+    "tile_00.webp",
+    "tile_01.webp",
+    "tile_02.webp",
+    "tile_03.webp",
+    "tile_04.webp",
+    "tile_05.webp",
+    "tile_06.webp",
+    "tile_07.webp",
+    "tile_08.webp",
+    "tile_09.webp",
+    "tile_10.webp",
+    "tile_11.webp",
+    "tile_12.webp",
+    "tile_13.webp",
+    "tile_14.webp",
+    "tile_15.webp"
+  ],
+  "settings": {
+    "tile_size": 64,
+    "tile_view": "high top-down",
+    "view_angle": 28.0,
+    "depth_ratio": 0.5,
+    "tile_type": "isometric",
+    "flat_top_px": 2,
+    "outline_mode": "segmentation"
+  },
+  "usd": 0.096,
+  "created": "2026-09-03T06:37:00+00:00",
+  "top_face": {
+    "per_tile": [
+      {
+        "colours": 19,
+        "dominant_share": 0.251,
+        "px": 1024
+      },
+      {
+        "colours": 18,
+        "dominant_share": 0.2619,
+        "px": 985
+      },
+      {
+        "colours": 19,
+        "dominant_share": 0.2804,
+        "px": 988
+      },
+      {
+        "colours": 17,
+        "dominant_share": 0.2834,
+        "px": 967
+      },
+      {
+        "colours": 20,
+        "dominant_share": 0.2758,
+        "px": 997
+      },
+      {
+        "colours": 17,
+        "dominant_share": 0.2946,
+        "px": 998
+      },
+      {
+        "colours": 22,
+        "dominant_share": 0.2493,
+        "px": 1011
+      },
+      {
+        "colours": 19,
+        "dominant_share": 0.2568,
+        "px": 989
+      },
+      {
+        "colours": 22,
+        "dominant_share": 0.3148,
+        "px": 991
+      },
+      {
+        "colours": 19,
+        "dominant_share": 0.2609,
+        "px": 985
+      },
+      {
+        "colours": 22,
+        "dominant_share": 0.2845,
+        "px": 970
+      },
+      {
+        "colours": 20,
+        "dominant_share": 0.2995,
+        "px": 1005
+      },
+      {
+        "colours": 20,
+        "dominant_share": 0.3178,
+        "px": 966
+      },
+      {
+        "colours": 18,
+        "dominant_share": 0.2923,
+        "px": 975
+      },
+      {
+        "colours": 21,
+        "dominant_share": 0.2487,
+        "px": 997
+      },
+      {
+        "colours": 20,
+        "dominant_share": 0.2909,
+        "px": 973
+      }
+    ],
+    "mean_colours": 19.56,
+    "mean_dominant_share": 0.2789
+  },
+  "motif": "a root breaking the surface",
+  "motif_source": "tiles/config/details.json",
+  "walkable": true
+}

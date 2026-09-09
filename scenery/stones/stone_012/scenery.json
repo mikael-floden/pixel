@@ -1,0 +1,78 @@
+{
+  "format": "scenery-piece@2",
+  "id": "stone_012",
+  "group": "stones",
+  "rank": 2,
+  "index": 12,
+  "name": "Snow-dusted winter stone 012",
+  "lights": null,
+  "variety": "snow-dusted winter stone",
+  "glow_concept": "patches of luminous blue-green moss",
+  "prompt": "a single natural fieldstone boulder resting on the ground, rounded and weathered, with subtle cracks, pits and patches of moss, snow-dusted winter stone, self-emissive at night, softly radiating light: patches of luminous blue-green moss",
+  "view": "top-down",
+  "direction": "south",
+  "size": 64,
+  "sprite": "stones/stone_012/sprite.webp",
+  "placement": {
+    "world_height_m": 0.977,
+    "world_px_height": 50,
+    "character_height_px": 87,
+    "character_height_m": 1.7,
+    "note": "ONE SCENERY PIXEL IS ONE PLAYER PIXEL. world_px_height IS the art's own alpha bbox height, so scenery is placed into the world at 1:1 exactly as the avatar is (setScale(1)) and the two share one pixel grid. The CAMERA still zooms the whole scene \u2014 that is uniform and correct; what must never happen is scenery being resampled on its own, against the player. world_height_m is what the art reads as beside a 87px character; declared_height_m is what it was once declared to be, and a gap between them means the ART is the wrong size.",
+    "declared_height_m": 1.31,
+    "content_box": [
+      4,
+      7,
+      60,
+      57
+    ],
+    "content_px_height": 50,
+    "canvas_render_px": 64
+  },
+  "pixellab_object_id": "af98029f-3025-4612-9ff2-c78181a98534",
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-1-direction-object (batched, S-only)",
+  "must_be_imbplemented_with_random_hflip": true,
+  "generated_at": "2026-08-12T23:22:20+00:00",
+  "states": {
+    "NOT_LIT_3": {
+      "sprite": "stones/stone_012/sprite.webp",
+      "pixellab_object_id": "af98029f-3025-4612-9ff2-c78181a98534",
+      "generated_at": "2026-08-12T23:22:20+00:00",
+      "relit_from": "LIT_1"
+    },
+    "NOT_LIT_4": {
+      "sprite": "stones/stone_012/not_lit_4/sprite.webp",
+      "pixellab_object_id": "70805e82-908c-4970-84b3-382eb0559b02",
+      "generated_at": "2026-08-16T21:43:42+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.7006,
+      "glow_score": 0.2908,
+      "relit_from": "LIT_2"
+    },
+    "NOT_LIT_5": {
+      "sprite": "stones/stone_012/not_lit_5/sprite.webp",
+      "pixellab_object_id": "f658bc88-c549-4a11-8e21-fd7e2917d0ec",
+      "generated_at": "2026-08-16T21:44:20+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.7036,
+      "glow_score": 0.2115,
+      "relit_from": "LIT_3"
+    },
+    "NOT_LIT_6": {
+      "sprite": "stones/stone_012/not_lit_6/sprite.webp",
+      "pixellab_object_id": "4fa46517-c52a-4bce-8a3f-bd92242cbcd1",
+      "generated_at": "2026-08-16T21:44:20+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.6027,
+      "glow_score": 0.3628,
+      "relit_from": "LIT_4"
+    }
+  },
+  "collision": true,
+  "hitbox_shape": "ellipse"
+}

@@ -1,0 +1,269 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-14T02:04:43+00:00",
+  "id": "frost_flower_002",
+  "group": "frost_flowers",
+  "rank": 136,
+  "index": 2,
+  "name": "Rose-form 002",
+  "lights": null,
+  "variety": "rose-form",
+  "modifier": "twin blooms sharing a stem",
+  "glow_concept": "moonlight caught in the petals",
+  "prompt": "a giant flower made entirely of ice and frost, petals like blown glass, growing impossibly from green grass, rose-form, twin blooms sharing a stem, small, knee-high, self-emissive at night, softly radiating light: moonlight caught in the petals",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 64,
+  "sprite": "frost_flowers/frost_flower_002/sprite.webp",
+  "placement": {
+    "world_height_m": 0.977,
+    "world_px_height": 50,
+    "character_height_px": 87,
+    "character_height_m": 1.7,
+    "note": "ONE SCENERY PIXEL IS ONE PLAYER PIXEL. world_px_height IS the art's own alpha bbox height, so scenery is placed into the world at 1:1 exactly as the avatar is (setScale(1)) and the two share one pixel grid. The CAMERA still zooms the whole scene \u2014 that is uniform and correct; what must never happen is scenery being resampled on its own, against the player. world_height_m is what the art reads as beside a 87px character; declared_height_m is what it was once declared to be, and a gap between them means the ART is the wrong size.",
+    "declared_height_m": 0.71,
+    "content_box": [
+      10,
+      8,
+      55,
+      58
+    ],
+    "content_px_height": 50,
+    "canvas_render_px": 64
+  },
+  "pixellab_object_id": "13b6f8f1-7f47-48cb-9d15-ee610e9557af",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)",
+  "must_be_imbplemented_with_random_hflip": true,
+  "states": {
+    "LIT_1": {
+      "sprite": "frost_flowers/frost_flower_002/sprite.webp",
+      "pixellab_object_id": "13b6f8f1-7f47-48cb-9d15-ee610e9557af",
+      "generated_at": "2026-08-14T02:04:43+00:00",
+      "animations": {
+        "motion": {
+          "group_id": "dca0ac97-ae25-437f-adaa-9d871a1a93cc",
+          "description": "This is the same picture in every frame. ONLY the light of the two ice roses brightens a little and returns. The change must be so slight it is barely visible. The last frame must return to exactly how the first frame looks, so the loop joins. Nothing may become darker than it is in the first frame. Everything else is frozen and pixel-for-pixel identical. Do not redraw anything else, and do not add or remove anything.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "frost_flowers/frost_flower_002/animations/motion/00.webp",
+            "frost_flowers/frost_flower_002/animations/motion/01.webp",
+            "frost_flowers/frost_flower_002/animations/motion/02.webp",
+            "frost_flowers/frost_flower_002/animations/motion/03.webp",
+            "frost_flowers/frost_flower_002/animations/motion/04.webp"
+          ],
+          "strip": "frost_flowers/frost_flower_002/animations/motion__strip.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-08-29T13:46:28+00:00",
+          "brief": "T8",
+          "review": "ANIMATION_PROBABLY_GOOD",
+          "review_metrics": {
+            "base_outline": 0.0
+          },
+          "light_frames": [
+            {
+              "intensity": 0.967,
+              "dx": 1.4,
+              "dy": -2.8
+            },
+            {
+              "intensity": 1.228,
+              "dx": -0.5,
+              "dy": -2.7
+            },
+            {
+              "intensity": 1.217,
+              "dx": 0.0,
+              "dy": -3.4
+            },
+            {
+              "intensity": 1.045,
+              "dx": -0.8,
+              "dy": -4.6
+            },
+            {
+              "intensity": 0.543,
+              "dx": 0.9,
+              "dy": -6.3
+            }
+          ]
+        }
+      }
+    },
+    "LIT_2": {
+      "sprite": "frost_flowers/frost_flower_002/lit_2/sprite.webp",
+      "pixellab_object_id": "cbd9b07a-57cb-48a8-838a-e6b659992c18",
+      "generated_at": "2026-08-16T14:20:13+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.6955,
+      "glow_score": 0.3808,
+      "animations": {
+        "motion": {
+          "group_id": "3ee2b7a0-c5c3-4db8-946b-dfd37eeee36d",
+          "description": "This is the same picture in every frame. ONLY the pale glow on the two ice roses brightens a little and returns. Everything else in the picture is copied from the first frame exactly, pixel for pixel, unchanged in shape, size, position and colour. No outline anywhere is redrawn. The last frame matches the first frame exactly, so the loop joins. Nothing anywhere becomes darker, lighter or a different colour except the one thing named above.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "frost_flowers/frost_flower_002/lit_2/animations/motion/00.webp",
+            "frost_flowers/frost_flower_002/lit_2/animations/motion/01.webp",
+            "frost_flowers/frost_flower_002/lit_2/animations/motion/02.webp",
+            "frost_flowers/frost_flower_002/lit_2/animations/motion/03.webp",
+            "frost_flowers/frost_flower_002/lit_2/animations/motion/04.webp"
+          ],
+          "strip": "frost_flowers/frost_flower_002/lit_2/animations/motion__strip.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-08-29T16:06:18+00:00",
+          "brief": "X39",
+          "review": "ANIMATION_PROBABLY_GOOD",
+          "review_metrics": {
+            "class": "foliage",
+            "base": 0.0788,
+            "still": 0.184
+          },
+          "light_frames": [
+            {
+              "intensity": 0.5,
+              "dx": 0.0,
+              "dy": 0.0
+            },
+            {
+              "intensity": 0.5,
+              "dx": 0.0,
+              "dy": 0.0
+            },
+            {
+              "intensity": 0.5,
+              "dx": 0.0,
+              "dy": 0.0
+            },
+            {
+              "intensity": 0.5,
+              "dx": 0.0,
+              "dy": 0.0
+            },
+            {
+              "intensity": 0.5,
+              "dx": 0.0,
+              "dy": 0.0
+            }
+          ]
+        }
+      }
+    },
+    "LIT_4": {
+      "sprite": "frost_flowers/frost_flower_002/lit_4/sprite.webp",
+      "pixellab_object_id": "083af356-a366-4d90-b6dc-3221a648b248",
+      "generated_at": "2026-08-16T14:22:02+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.8661,
+      "glow_score": 0.3923,
+      "animations": {
+        "motion": {
+          "group_id": "7a73c176-3b9c-404e-a06e-836a8d5ca9f7",
+          "description": "This is the same picture in every frame. ONLY the pale glow on the ice rose brightens a little and returns. It is lit and clearly visible in every frame, including the first. It gets only SLIGHTLY brighter -- never white, never washed out -- and keeps its own colour throughout: brightest in the middle, back to its first-frame brightness at the end. It stays exactly the same size and shape in every frame: it never grows and never spreads, only its brightness shifts. Every object stays the same kind of thing it is in the first frame and keeps its own colour: nothing turns into anything else. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour, no outline redrawn. The last frame matches the first exactly.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "frost_flowers/frost_flower_002/lit_4/animations/motion/00.webp",
+            "frost_flowers/frost_flower_002/lit_4/animations/motion/01.webp",
+            "frost_flowers/frost_flower_002/lit_4/animations/motion/02.webp",
+            "frost_flowers/frost_flower_002/lit_4/animations/motion/03.webp",
+            "frost_flowers/frost_flower_002/lit_4/animations/motion/04.webp"
+          ],
+          "strip": "frost_flowers/frost_flower_002/lit_4/animations/motion__strip.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-08-30T08:16:23+00:00",
+          "brief": "G20",
+          "review": "ANIMATION_PROBABLY_GOOD",
+          "review_metrics": {
+            "class": "foliage",
+            "base": 0.0843,
+            "still": 0.194
+          },
+          "light_frames": [
+            {
+              "intensity": 0.509,
+              "dx": -1.1,
+              "dy": -6.9
+            },
+            {
+              "intensity": 0.5,
+              "dx": -0.3,
+              "dy": -7.9
+            },
+            {
+              "intensity": 0.5,
+              "dx": -2.2,
+              "dy": -7.9
+            },
+            {
+              "intensity": 1.064,
+              "dx": -0.8,
+              "dy": -10.6
+            },
+            {
+              "intensity": 1.5,
+              "dx": -0.4,
+              "dy": -8.6
+            }
+          ]
+        }
+      }
+    },
+    "NOT_LIT_2": {
+      "sprite": "frost_flowers/frost_flower_002/not_lit_2/sprite.webp",
+      "pixellab_object_id": "77912871-d4db-460c-ad70-70c29ac316d9",
+      "generated_at": "2026-08-16T14:22:31+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.8667,
+      "glow_score": 0.0
+    }
+  },
+  "collision": true,
+  "hitbox_shape": "ellipse",
+  "light": {
+    "strength": 0.15,
+    "color": "#f9fffc",
+    "radius": 3,
+    "reference": "the spawn bonfire is 1.0 (radius 7); strength 0 is no light",
+    "states": {
+      "LIT_1": {
+        "strength": 0.15,
+        "color": "#f9fffc",
+        "radius": 3
+      },
+      "LIT_2": {
+        "strength": 0.15,
+        "color": "#eefffc",
+        "radius": 3
+      },
+      "LIT_4": {
+        "strength": 0.15,
+        "color": "#e9fcff",
+        "radius": 3
+      }
+    },
+    "kind": "glow/bio",
+    "flame": false,
+    "embers": false
+  },
+  "type": "NATURE"
+}

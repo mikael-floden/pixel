@@ -1,12 +1,24 @@
 // The Creatures overview: sortable, and "will it come for me" at a glance
 // (maintainer 2026-08-06 — sort on level and/or aggressive, and replace the
-// habitat text with a red "aggressive" / green "calm" pill).
+// habitat text with a red "aggressive" pill).
 //
 // AGGRESSION IS LIVE DATA, not a build-time snapshot: a monster attacks on
 // sight only when its aggro radius is above zero, the tuning default is 0, and
 // the wiki can edit that radius at runtime. So the pill is derived from the
 // same live doc the page reads, and this gate derives its expectation from
 // live/tuning/monsters.json rather than from a list someone typed here.
+//
+// THE SHOWCASE REDESIGN (2026-08-18) MOVED BOTH THINGS THIS GATE READS, and a
+// stale selector is how a gate goes quiet without going red: `.thumb-chip` had
+// stopped existing, so every card's level read 0 and "by level is hardest
+// first" was comparing 0 ≥ 0 fifty-seven times. Level now rides the art as
+// `.showcase-level` and the marks stack in `.showcase-marks`. Both reads below
+// assert they found something before they judge it.
+//
+// AND ONLY THE AGGRESSIVE ONES ARE MARKED NOW: a green "calm" on 48 of 57
+// cards answered the question by shouting at everybody, so absence is the calm
+// and the WORD moved to the creature's own page — which this gate follows it
+// to, or the green half of "red and green at a glance" would go unchecked.
 import { createRequire } from "node:module";
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
@@ -34,40 +46,82 @@ await p.waitForTimeout(2400);
 
 const read = () => p.evaluate(() => ({
   buttons: [...document.querySelectorAll(".sortbar-btn")].map((x) => ({ id: x.dataset.sort, sel: x.classList.contains("sel") })),
-  cards: [...document.querySelectorAll(".card")].map((c) => ({
-    name: c.querySelector(".card-name")?.textContent,
-    level: Number((c.querySelector(".thumb-chip")?.textContent ?? "").replace(/\D+/g, "")),
-    pill: c.querySelector(".card-pills .pill")?.textContent,
-    cls: c.querySelector(".card-pills .pill")?.className,
-    text: c.textContent,
-  })),
+  cards: [...document.querySelectorAll(".card")].map((c) => {
+    const lvl = c.querySelector(".showcase-level");
+    const marks = [...c.querySelectorAll(".showcase-marks .pill")];
+    const agg = marks.find((x) => x.textContent === "aggressive");
+    return {
+      name: c.querySelector(".card-name")?.textContent,
+      // null, NOT 0, when the chip is missing — a missing level must fail the
+      // sort check rather than sort perfectly among other missing levels.
+      level: lvl ? Number((lvl.textContent ?? "").replace(/\D+/g, "")) : null,
+      marks: marks.map((x) => x.textContent),
+      aggressive: !!agg,
+      aggCls: agg?.className ?? null,
+      text: c.textContent,
+    };
+  }),
 }));
 
-// ---- the pill ------------------------------------------------------------
+// ---- the mark ------------------------------------------------------------
 let v = await read();
 ok(v.cards.length === roster.length, `every creature is carded (${v.cards.length}/${roster.length})`);
 const nameToId = new Map(roster.map((m) => [m.name, m.id]));
+// BOTH DIRECTIONS. A card must carry the mark when its live radius is above
+// zero and must NOT carry it otherwise — "absence is the calm" is only true if
+// the absence is checked as hard as the presence.
 const bad = v.cards.filter((c) => {
   const id = nameToId.get(c.name); if (!id) return true;
-  const want = aggro(id) ? "aggressive" : "calm";
-  const wantCls = aggro(id) ? "err" : "ok";
-  return c.pill !== want || !c.cls.includes(wantCls);
+  if (c.aggressive !== aggro(id)) return true;
+  return c.aggressive && !(c.aggCls ?? "").includes("err");
 });
-ok(bad.length === 0, `every card's pill matches its live aggro radius${bad.length ? ` — ${bad.slice(0, 4).map((c) => `${c.name}=${c.pill}`).join(", ")}` : ""}`);
-ok(v.cards.filter((c) => c.pill === "aggressive").length === expectAggro,
-  `${expectAggro} aggressive, the rest calm (${v.cards.filter((c) => c.pill === "calm").length})`);
-// RED and GREEN, not just two words — the whole point is seeing it at a glance.
-const colours = await p.evaluate(() => {
-  const pick = (t) => [...document.querySelectorAll(".card-pills .pill")].find((x) => x.textContent === t);
-  const rgb = (el) => el && getComputedStyle(el).color;
-  return { aggressive: rgb(pick("aggressive")), calm: rgb(pick("calm")) };
+ok(bad.length === 0, `every card's mark matches its live aggro radius${bad.length ? ` — ${bad.slice(0, 4).map((c) => `${c.name}=${c.aggressive ? "aggressive" : "unmarked"}`).join(", ")}` : ""}`);
+const marked = v.cards.filter((c) => c.aggressive).length;
+ok(marked === expectAggro, `${expectAggro} marked aggressive, the other ${roster.length - expectAggro} left unmarked (${marked})`);
+ok(!v.cards.some((c) => c.marks.includes("calm")),
+  "and nothing on the overview says \"calm\" — the quiet ones are quiet");
+// The one mark that survived beside it: a creature in no world at all is a
+// different fact from a calm one, and it is derived from the SAME place the
+// page reads it (data.json's world roll-up), both directions again.
+const spawned = (id) => !!D.world?.monsters?.[id];
+const wrongSpawn = v.cards.filter((c) => {
+  const id = nameToId.get(c.name); if (!id) return true;
+  return c.marks.includes("not spawned") === spawned(id);
+});
+const unplaced = roster.filter((m) => !spawned(m.id)).length;
+ok(wrongSpawn.length === 0,
+  `"not spawned" marks exactly the ${unplaced} creatures no world places${wrongSpawn.length ? ` — off on ${wrongSpawn.slice(0, 3).map((c) => c.name).join(", ")}` : ""}`);
+// RED — and GREEN where the word went, or half the claim would go unchecked.
+const aggColour = await p.evaluate(() => {
+  const el = [...document.querySelectorAll(".showcase-marks .pill")].find((x) => x.textContent === "aggressive");
+  return el && getComputedStyle(el).color;
 });
 const chan = (s) => (s ?? "").match(/\d+/g)?.map(Number) ?? [0, 0, 0];
-ok(chan(colours.aggressive)[0] > chan(colours.aggressive)[1], `"aggressive" is red-dominant (${colours.aggressive})`);
-ok(chan(colours.calm)[1] > chan(colours.calm)[0], `"calm" is green-dominant (${colours.calm})`);
+ok(chan(aggColour)[0] > chan(aggColour)[1], `"aggressive" is red-dominant (${aggColour})`);
 // The habitat text it replaced must be gone from the card.
 ok(!v.cards.some((c) => /habitat|roaming/.test(c.text)),
   "the habitat/roaming line is off the overview card");
+
+// ---- and "calm" is spelled out on the creature's own page -----------------
+const calmId = roster.map((m) => m.id).find((id) => !aggro(id));
+await p.goto(`${W}#/monsters/${calmId}`, { waitUntil: "load" });
+await p.waitForTimeout(1800);
+const calm = await p.evaluate(() => {
+  const el = [...document.querySelectorAll(".spawn-line .pill")].find((x) => x.textContent === "calm");
+  return el ? { found: true, colour: getComputedStyle(el).color, title: el.title } : { found: false };
+});
+ok(calm.found, `a calm creature says so in words on its own page (${calmId})`);
+ok(chan(calm.colour)[1] > chan(calm.colour)[0], `and "calm" is green-dominant there (${calm.colour})`);
+ok(/fights back/.test(calm.title ?? ""), "with the rule in its tooltip, not just a colour");
+const aggId = roster.map((m) => m.id).find((id) => aggro(id));
+await p.goto(`${W}#/monsters/${aggId}`, { waitUntil: "load" });
+await p.waitForTimeout(1800);
+const hunts = await p.evaluate(() =>
+  [...document.querySelectorAll(".spawn-line .pill")].some((x) => x.textContent === "aggressive"));
+ok(hunts, `and an aggressive one says so on its page too (${aggId})`);
+await p.goto(`${W}#/monsters`, { waitUntil: "load" });
+await p.waitForTimeout(2000);
+v = await read();
 
 // ---- the sorts -----------------------------------------------------------
 const names = (x) => x.cards.map((c) => c.name);
@@ -79,15 +133,23 @@ await p.evaluate(() => document.querySelector("[data-sort=level]").click());
 await p.waitForTimeout(500);
 v = await read();
 const lv = v.cards.map((c) => c.level);
+// READ THE LEVEL BEFORE TRUSTING THE ORDER. This is the check that went
+// vacuous: every card reported 0 through a dead selector, and 0 ≥ 0 holds
+// however badly the page is sorted.
+ok(lv.every((n) => Number.isFinite(n)) && new Set(lv).size > 1,
+  `the level really is on the card (${new Set(lv).size} distinct levels, e.g. ${lv.slice(0, 5).join(", ")})`);
 ok(lv.every((n, i) => i === 0 || lv[i - 1] >= n), `by level is hardest first (${lv.slice(0, 5).join(" ≥ ")}…)`);
+// …and it is the LIVE level, not a build-time copy.
+const wrongLv = v.cards.filter((c) => nameToId.get(c.name) && c.level !== lvl(nameToId.get(c.name)));
+ok(wrongLv.length === 0, `and each level is the tuned one${wrongLv.length ? ` — ${wrongLv.slice(0, 3).map((c) => `${c.name}=${c.level}`).join(", ")}` : ""}`);
 
 await p.evaluate(() => document.querySelector("[data-sort=threat]").click());
 await p.waitForTimeout(500);
 v = await read();
-const flags = v.cards.map((c) => c.pill === "aggressive");
+const flags = v.cards.map((c) => c.aggressive);
 ok(flags.lastIndexOf(true) < flags.indexOf(false) || !flags.includes(false),
   `aggressive first puts all ${expectAggro} before the calm ones`);
-const aggLv = v.cards.filter((c) => c.pill === "aggressive").map((c) => c.level);
+const aggLv = v.cards.filter((c) => c.aggressive).map((c) => c.level);
 ok(aggLv.every((n, i) => i === 0 || aggLv[i - 1] >= n), `and orders them hardest first (${aggLv.join(" ≥ ")})`);
 
 // ---- the choice sticks ---------------------------------------------------
@@ -95,6 +157,86 @@ await p.reload({ waitUntil: "load" });
 await p.waitForTimeout(2200);
 v = await read();
 ok(v.buttons.find((x) => x.id === "threat")?.sel, "the chosen sort survives a reload");
+
+// ---- THE SHADOW QUEUE (maintainer 2026-08-22: "If I login with admin the
+// monster page should make it possible to filter by 'no shadow set'. This is
+// to be able to know what I have already fixed.")
+//
+// ITS OWN ADMIN CONTEXT. Everything above this line runs as a PLAYER — that is
+// what makes those checks meaningful — and the shadow filter is admin-only, so
+// borrowing that page would only ever prove the bar is absent.
+//
+// The expectation is DERIVED from live/tuning/monsters.json, not typed here: a
+// shadow is set when the monster carries its own rx/ry, so the counts move on
+// their own as he works and this gate never needs editing.
+const setIds = (D.domains.monsters ?? []).filter((m) => {
+  const sh = T.monsters?.[m.id]?.shadow;
+  return sh && sh.rx > 0 && sh.ry > 0;
+}).map((m) => m.id);
+const total = (D.domains.monsters ?? []).length;
+const expNone = total - setIds.length;
+ok(setIds.length > 0 && expNone > 0,
+  `the roster has both kinds, so the filter is actually distinguishable (${setIds.length} tuned, ${expNone} not)`);
+const actx = await b.newContext({ viewport: { width: 393, height: 851 }, isMobile: true, hasTouch: true });
+const pa = await actx.newPage();
+const aerrs = []; pa.on("pageerror", (e) => aerrs.push(String(e)));
+await pa.route("**/api/wiki/me", (r) => r.fulfill({ status: 200, contentType: "application/json", body: '{"admin":true}' }));
+await pa.addInitScript(() => {
+  localStorage.setItem("wiki-admin-token", "gate");
+  localStorage.setItem("ml-staging-base", `${location.origin}/assets/`);
+  localStorage.removeItem("wiki-monster-shadow");
+});
+await pa.goto(`${W}#/monsters`, { waitUntil: "load" });
+await pa.waitForSelector('[data-bar="wiki-monster-shadow"] button', { timeout: 15000 }).catch(() => {});
+await pa.waitForTimeout(1200);
+const shadowBar = () => pa.evaluate(() => {
+  const btns = [...document.querySelectorAll('[data-bar="wiki-monster-shadow"] button')];
+  return {
+    chips: btns.map((x) => x.textContent.trim()),
+    sel: btns.find((x) => x.classList.contains("sel"))?.textContent.trim() ?? "",
+    cards: document.querySelectorAll(".showcase-card").length,
+  };
+});
+let sv = await shadowBar();
+ok(sv.chips.length === 3 && /^all /.test(sv.chips[0]) && /^no shadow /.test(sv.chips[1]) && /^shadow set /.test(sv.chips[2]),
+  `the admin gets a shadow filter — all / no shadow / shadow set (${sv.chips.join(" | ") || "no bar"})`);
+ok(sv.chips[1] === `no shadow ${expNone}` && sv.chips[2] === `shadow set ${setIds.length}`,
+  `and the counts come from the LIVE tuning doc, not a snapshot (${expNone} unset, ${setIds.length} set)`);
+ok(sv.sel.startsWith("all") && sv.cards === total, `it opens unfiltered (${sv.cards} of ${total}, on "${sv.sel}")`);
+await pa.evaluate(() => [...document.querySelectorAll('[data-bar="wiki-monster-shadow"] button')].find((x) => /no shadow/.test(x.textContent))?.click());
+await pa.waitForTimeout(1600);
+sv = await shadowBar();
+ok(sv.cards === expNone, `"no shadow" keeps exactly the ones still on the default (${sv.cards} of ${total})`);
+const shownIds = await pa.evaluate(() => [...document.querySelectorAll(".showcase-card")].map((a) => a.getAttribute("href").split("/").pop()));
+ok(shownIds.length > 0 && !shownIds.some((id) => setIds.includes(id)),
+  `and no creature he has already tuned is among them (${shownIds.filter((id) => setIds.includes(id)).join(", ") || "none"})`);
+// THE FILTER HAS TO SURVIVE THE CLICK-THROUGH, or it is the dead end he hit on
+// tiles: "I use your code to filter on NOT reviewed. I then click on that tile
+// set, but can't navigate further to find the review."
+await pa.goto(`${W}#/monsters/${shownIds[0]}`, { waitUntil: "load" });
+await pa.waitForTimeout(2200);
+const pager = await pa.evaluate(() => document.querySelector(".detail-count")?.textContent ?? "");
+ok(pager.endsWith(`/ ${expNone}`), `and ‹ › on a creature page walks only the queue (${pager})`);
+ok(aerrs.length === 0, `no page errors in the admin pass${aerrs.length ? `: ${aerrs[0]}` : ""}`);
+await actx.close();
+// A PLAYER IS NEVER FILTERED BY A CONTROL THEY CANNOT SEE — including one left
+// behind in their storage by an admin session in the same browser.
+const ctx2 = await b.newContext({ viewport: { width: 393, height: 851 } });
+const p2 = await ctx2.newPage();
+await p2.route("**/api/wiki/me", (r) => r.fulfill({ status: 200, contentType: "application/json", body: '{"admin":false}' }));
+await p2.addInitScript(() => {
+  localStorage.setItem("ml-staging-base", `${location.origin}/assets/`);
+  localStorage.setItem("wiki-monster-shadow", "set");
+});
+await p2.goto(`${W}#/monsters`, { waitUntil: "load" });
+await p2.waitForTimeout(2400);
+const pv = await p2.evaluate(() => ({
+  bar: document.querySelectorAll('[data-bar="wiki-monster-shadow"]').length,
+  cards: document.querySelectorAll(".showcase-card").length,
+}));
+ok(pv.bar === 0 && pv.cards === total,
+  `a player gets no filter and every creature, even with a stale admin preference stored (${pv.cards} of ${total}, ${pv.bar} bars)`);
+await ctx2.close();
 
 ok(errs.length === 0, `no page errors${errs.length ? `: ${errs[0]}` : ""}`);
 await b.close();

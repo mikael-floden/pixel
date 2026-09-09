@@ -1,0 +1,132 @@
+{
+  "schema": "tiles3/tops@1",
+  "kind": "top_only",
+  "wall_is_meaningless": true,
+  "not_a_candidate_for": "x over y",
+  "ground": "light_beach",
+  "flavour": "detail",
+  "index": 128,
+  "seed": 80190,
+  "prompt": "light beach, a sunken bottle cap in the middle, light beach all around the edge",
+  "palette_top": "#e4c495",
+  "tile_id": "197e734d-98f1-4959-9574-b2bfc44c806a",
+  "n_tiles": 16,
+  "tiles": [
+    "tile_00.webp",
+    "tile_01.webp",
+    "tile_02.webp",
+    "tile_03.webp",
+    "tile_04.webp",
+    "tile_05.webp",
+    "tile_06.webp",
+    "tile_07.webp",
+    "tile_08.webp",
+    "tile_09.webp",
+    "tile_10.webp",
+    "tile_11.webp",
+    "tile_12.webp",
+    "tile_13.webp",
+    "tile_14.webp",
+    "tile_15.webp"
+  ],
+  "settings": {
+    "tile_size": 64,
+    "tile_view": "high top-down",
+    "view_angle": 28.0,
+    "depth_ratio": 0.5,
+    "tile_type": "isometric",
+    "flat_top_px": 2,
+    "outline_mode": "segmentation"
+  },
+  "usd": 0.096,
+  "created": "2026-09-03T05:44:33+00:00",
+  "top_face": {
+    "per_tile": [
+      {
+        "colours": 25,
+        "dominant_share": 0.731,
+        "px": 922
+      },
+      {
+        "colours": 25,
+        "dominant_share": 0.3579,
+        "px": 922
+      },
+      {
+        "colours": 23,
+        "dominant_share": 0.4046,
+        "px": 922
+      },
+      {
+        "colours": 27,
+        "dominant_share": 0.2736,
+        "px": 921
+      },
+      {
+        "colours": 28,
+        "dominant_share": 0.6156,
+        "px": 921
+      },
+      {
+        "colours": 28,
+        "dominant_share": 0.5581,
+        "px": 921
+      },
+      {
+        "colours": 27,
+        "dominant_share": 0.253,
+        "px": 921
+      },
+      {
+        "colours": 26,
+        "dominant_share": 0.2302,
+        "px": 921
+      },
+      {
+        "colours": 24,
+        "dominant_share": 0.4745,
+        "px": 921
+      },
+      {
+        "colours": 24,
+        "dominant_share": 0.2139,
+        "px": 921
+      },
+      {
+        "colours": 25,
+        "dominant_share": 0.3855,
+        "px": 921
+      },
+      {
+        "colours": 26,
+        "dominant_share": 0.2628,
+        "px": 921
+      },
+      {
+        "colours": 29,
+        "dominant_share": 0.5663,
+        "px": 920
+      },
+      {
+        "colours": 24,
+        "dominant_share": 0.5913,
+        "px": 920
+      },
+      {
+        "colours": 23,
+        "dominant_share": 0.1965,
+        "px": 921
+      },
+      {
+        "colours": 22,
+        "dominant_share": 0.2326,
+        "px": 920
+      }
+    ],
+    "mean_colours": 25.38,
+    "mean_dominant_share": 0.3967
+  },
+  "motif": "a sunken bottle cap",
+  "motif_source": "tiles/config/details.json",
+  "walkable": true
+}

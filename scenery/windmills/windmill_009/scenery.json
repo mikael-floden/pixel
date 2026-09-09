@@ -1,0 +1,100 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-13T23:24:43+00:00",
+  "id": "windmill_009",
+  "group": "windmills",
+  "rank": 47,
+  "index": 9,
+  "name": "Whitewashed smock mill 009",
+  "lights": null,
+  "variety": "whitewashed smock mill",
+  "glow_concept": null,
+  "prompt": "a small stout field windmill with a solid timber tower and four broad heavy sails on thick wooden frames, shingled cap, whitewashed smock mill, tall, about three times human height, completely unlit, no glow, no light sources, no self-emission",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 192,
+  "sprite": "windmills/windmill_009/sprite.webp",
+  "placement": {
+    "world_height_m": 3.459,
+    "world_px_height": 177,
+    "character_height_px": 87,
+    "character_height_m": 1.7,
+    "note": "ONE SCENERY PIXEL IS ONE PLAYER PIXEL. world_px_height IS the art's own alpha bbox height, so scenery is placed into the world at 1:1 exactly as the avatar is (setScale(1)) and the two share one pixel grid. The CAMERA still zooms the whole scene \u2014 that is uniform and correct; what must never happen is scenery being resampled on its own, against the player. world_height_m is what the art reads as beside a 87px character; declared_height_m is what it was once declared to be, and a gap between them means the ART is the wrong size.",
+    "declared_height_m": 4.13,
+    "content_box": [
+      28,
+      8,
+      161,
+      185
+    ],
+    "content_px_height": 177,
+    "canvas_render_px": 192
+  },
+  "pixellab_object_id": "c802f85a-f39c-42e0-8309-ab4fb48ecc7e",
+  "pixellab_directions": 1,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-1-direction-object (single, S-only)",
+  "must_be_imbplemented_with_random_hflip": true,
+  "states": {
+    "NOT_LIT_1": {
+      "sprite": "windmills/windmill_009/sprite.webp",
+      "pixellab_object_id": "c802f85a-f39c-42e0-8309-ab4fb48ecc7e",
+      "generated_at": "2026-08-13T23:24:43+00:00",
+      "animations": {
+        "motion": {
+          "group_id": "65ae7726-359f-4383-ade0-13c6337549d4",
+          "description": "Animate the sails only, turning slowly. Nothing else moves.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "windmills/windmill_009/animations/motion/00.webp",
+            "windmills/windmill_009/animations/motion/01.webp",
+            "windmills/windmill_009/animations/motion/02.webp",
+            "windmills/windmill_009/animations/motion/03.webp",
+            "windmills/windmill_009/animations/motion/04.webp"
+          ],
+          "strip": "windmills/windmill_009/animations/motion__strip.webp",
+          "directions": null,
+          "generated_at": "2026-08-29T08:39:22+00:00",
+          "brief": "M1",
+          "review": "ANIMATION_PROBABLY_GOOD",
+          "review_metrics": {
+            "base_outline": 0.0016
+          }
+        }
+      }
+    },
+    "NOT_LIT_2": {
+      "sprite": "windmills/windmill_009/not_lit_2/sprite.webp",
+      "pixellab_object_id": "6dd81177-15aa-4754-8469-ea467d0cf998",
+      "generated_at": "2026-08-17T13:12:52+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.521,
+      "glow_score": 0.0023
+    },
+    "NOT_LIT_3": {
+      "sprite": "windmills/windmill_009/not_lit_3/sprite.webp",
+      "pixellab_object_id": "0cf27c2a-acac-4ea2-9a6c-3ab560001255",
+      "generated_at": "2026-08-17T13:13:02+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.7281,
+      "glow_score": 0.0578
+    },
+    "NOT_LIT_4": {
+      "sprite": "windmills/windmill_009/not_lit_4/sprite.webp",
+      "pixellab_object_id": "cb89a177-c533-4051-b723-4ad35d6946fc",
+      "generated_at": "2026-08-17T13:13:03+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.2179,
+      "glow_score": 0.1007
+    }
+  },
+  "collision": true,
+  "hitbox_shape": "rect"
+}

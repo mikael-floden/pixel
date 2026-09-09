@@ -1,0 +1,186 @@
+"""Publish the TEXTURED pass for every review candidate: `<n>_textured.webp`.
+
+The audition gap this closes, in the maintainer's words: "only the first tile had the
+texture visible (in raw). All the other tiles had the plain single color... It's more
+likely you have a bug and show the clean single color instead of their real texture."
+
+There was no bug and no clean generation - the AFTER tiles are clean BY LAW (the
+clean-top default: interior exactly one colour, plus the 0.75 boundary row), and the
+wiki's audition falls back to them when it cannot synthesize a textured top
+(wiki.js:4987 "cb(null) = cannot synthesize"). black_rock is the worst case: it appears
+in ZERO transition pairs, so it has no ballots in tiles/base_candidates/ either, and
+287 of its candidates audition as flat colour. The texture was never missing from the
+art - every candidate's raw generation is committed as `<n>_before.webp` - it was
+missing a published, colour-corrected file.
+
+A textured tile is the AFTER tile with its top face replaced by substitute() of the RAW
+top against the ground's top hex: palette hue and saturation, the art's own relief -
+the wall treatment the maintainer loves, applied to the top. The wall is the after
+tile's wall, untouched. Top and wall are never substituted together (that bug recentred
+the top +5 points bright; fixed in transition_render the same day).
+
+Derivable entirely from the committed review tree, which matters: tiles/matrix/ is
+container-local and currently empty, so publish.py cannot rebuild the manifest - but
+this pass needs only before + after, which are both in git.
+"""
+
+from __future__ import annotations
+
+import glob
+import hashlib
+import io
+import json
+import os
+import sys
+
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+
+import numpy as np
+from PIL import Image
+
+import palette_snap as PS
+
+ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+REPO = os.path.dirname(ROOT)
+PALETTE = json.load(open(os.path.join(ROOT, "config", "palette.json")))["types"]
+
+
+def _extras_of(top_hex, top_name=None):
+    """The `top_extras` for this top. BY NAME when the caller has one - a hex is NOT
+    a key: brown_paving_stone shares #7d7265 with its legacy matrix-source entry
+    `paving_stone` (generated_as twin), and the reverse lookup hit the twin first and
+    silently dropped brown's extra colour (caught because its republish churned zero
+    files). The hex path stays only for nameless direct callers, preferring an entry
+    that carries extras."""
+    if top_name:
+        v = PALETTE.get(top_name) or {}
+        return v.get("top_extras") or []
+    hits = [v for v in PALETTE.values()
+            if isinstance(v, dict) and v.get("top") == top_hex]
+    for v in sorted(hits, key=lambda v: not v.get("top_extras")):
+        return v.get("top_extras") or []
+    return []
+
+
+def textured_of(before_path, after_path, top_hex, top_name=None):
+    """The after tile, its top face carrying the raw art's texture, colour-corrected."""
+    bef = PS.canonicalise(Image.open(before_path).convert("RGBA"))
+    aft = PS.canonicalise(Image.open(after_path).convert("RGBA"))
+    ab = np.array(bef, int).astype(float)
+    aa = np.array(aft, int).astype(float)
+    reg = PS._regions(aa)
+    if reg is None:
+        return None
+    # The after's top mask, restricted to where the raw art has pixels (the clean top
+    # trims blades above the diamond; the raw art still has them, the reverse is rare).
+    m = reg["top"] & (ab[..., 3] > 0)
+    if not m.any():
+        return None
+    # MULTI-ANCHOR SUBSTITUTION (maintainer verdict 2026-08-28, Palette Headroom page):
+    # a ground may carry `top_extras` beside `top`, and each top pixel snaps to the
+    # NEAREST anchor instead of always the one - which is what stops a lava glow or a
+    # stone shadow collapsing into the single palette colour. Assignment happens in the
+    # BACKGROUND-ALIGNED frame (raw shifted so its background sits on the clean colour)
+    # because that is the frame the pixels will be judged in after the shift below; each
+    # group then gets the house substitution toward its own anchor. With no extras this
+    # reduces byte-for-byte to the old single call, so the five unchanged grounds
+    # ("good as is") rehash to their existing filenames.
+    extras = _extras_of(top_hex, top_name)
+    out = aa.copy()
+    if not extras:
+        px = PS.substitute(ab, m, top_hex)
+        if px is not None:
+            out[..., :3][m] = px
+        else:
+            out[..., :3][m] = ab[..., :3][m]
+    else:
+        import puddle_gate as PG
+        import tops_post as _tp0
+        clean = PS._hex(top_hex)
+        rgbr = ab[..., :3].astype(float)
+        delta = clean - _tp0.background_of(rgbr, m)
+        al = np.clip(rgbr + delta, 0, 255)
+        anchors = [clean] + [PS._hex(e) for e in extras]
+        A = PG.srgb_to_lab(np.array(anchors, float))
+        Pl = PG.srgb_to_lab(al[m])
+        assign = np.linalg.norm(Pl[:, None, :] - A[None, :, :], axis=2).argmin(1)
+        for k, anc in enumerate(anchors):
+            gm = np.zeros_like(m)
+            gm[m] = assign == k
+            if not gm.any():
+                continue
+            px = PS.substitute(ab, gm, "%02x%02x%02x" % tuple(int(round(v)) for v in anc))
+            if px is not None:
+                out[..., :3][gm] = px
+            else:
+                out[..., :3][gm] = ab[..., :3][gm]
+    # THE BACKGROUND LANDS ON THE CLEAN COLOUR EXACTLY, not merely the mean.
+    # substitute() recentres the MEAN, and bright speckle drags a mean: measured on the
+    # tile the maintainer flagged (black_rock over dark_mud 6c7f2c5a), the mean sat 0.1
+    # from clean while the BACKGROUND - the thing the eye reads as the tile's colour -
+    # sat at (29,28,29) against (30,29,30). One unit per channel on near-black is a
+    # visible patch in a set field. The same integer-exact shift the tops pass uses
+    # closes it; the wall is not touched (it belongs to the cell's side material).
+    import tops_post as _tp
+    rgbf = out[..., :3].astype(float)
+    _tp.shift_mask_to_clean(rgbf, m, _tp._hex(top_hex))
+    # The same rim suppression as the tops pass: the raw art draws each tile as an
+    # object with a bevel along the top face's edge, and a field of them shows a
+    # lattice. Audition-only file; the after/before x-over-y art is untouched.
+    _tp.rim_suppress(rgbf, m, _tp._hex(top_hex))
+    out[..., :3] = np.clip(np.rint(rgbf), 0, 255).astype(int)
+    return Image.fromarray(np.clip(out, 0, 255).astype(np.uint8), "RGBA")
+
+
+def write_textured(manifest_path=None, only_missing=False):
+    """Write `<n>_textured.webp` beside every after tile and record it in the manifest.
+
+    Also run from publish.py's tail so a future publish keeps the pass current.
+    """
+    mp = manifest_path or os.path.join(ROOT, "review", "manifest.json")
+    man = json.load(open(mp))
+    wrote = skipped = failed = 0
+    for cell, c in man["cells"].items():
+        top = c["top"]
+        hexv = (PALETTE.get(top) or {}).get("top")
+        for e in c["candidates"]:
+            after = os.path.join(REPO, e["after"])
+            before = os.path.join(REPO, e["before"])
+            if only_missing and e.get("textured") and \
+                    os.path.isfile(os.path.join(REPO, e["textured"])):
+                skipped += 1
+                continue
+            if not (os.path.isfile(after) and os.path.isfile(before)) or not hexv:
+                failed += 1
+                continue
+            im = textured_of(before, after, hexv, top_name=top)
+            if im is None:
+                failed += 1
+                continue
+            # IMMUTABLE, content-hashed name - see tops_post. The manifest's `textured`
+            # field is the ONLY valid address; constructing the path by convention is
+            # how a consumer ends up mixing cache generations.
+            buf = io.BytesIO()
+            im.save(buf, "WEBP", lossless=True, exact=True)
+            data = buf.getvalue()
+            h8 = hashlib.sha1(data).hexdigest()[:8]
+            hashed = after.replace("_after.webp", f"_textured.{h8}.webp")
+            with open(hashed, "wb") as fh:
+                fh.write(data)
+            # Keep current + one previous generation - see tops_post. Deleting the
+            # previous hashed name 404s pages already open; retaining it is safe because
+            # a hashed name can only ever serve identical bytes.
+            gens = sorted(glob.glob(after.replace("_after.webp", "_textured.*.webp")),
+                          key=os.path.getmtime, reverse=True)
+            for old_f in gens[2:]:
+                os.remove(old_f)
+            e["textured"] = os.path.relpath(hashed, REPO)
+            wrote += 1
+    with open(mp, "w") as f:
+        json.dump(man, f, indent=2)
+    print(f"textured pass: wrote {wrote}, kept {skipped}, failed {failed}")
+    return wrote, skipped, failed
+
+
+if __name__ == "__main__":
+    write_textured(only_missing="--missing-only" in sys.argv)

@@ -1,0 +1,208 @@
+{
+  "format": "scenery-piece@2",
+  "id": "bed_006",
+  "group": "beds",
+  "rank": 105,
+  "index": 6,
+  "name": "Canopy bed with heavy curtains 006",
+  "lights": null,
+  "variety": "canopy bed with heavy curtains",
+  "glow_concept": "a little nightlight lantern beside the pillow",
+  "prompt": "a solid wooden box bed with a thick quilted cover and a plump pillow, heavy frame standing on the floor, canopy bed with heavy curtains, waist-high, self-emissive at night, softly radiating light: a little nightlight lantern beside the pillow",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 128,
+  "sprite": "beds/bed_006/sprite.webp",
+  "placement": {
+    "world_height_m": 2.286,
+    "world_px_height": 117,
+    "character_height_px": 87,
+    "character_height_m": 1.7,
+    "note": "ONE SCENERY PIXEL IS ONE PLAYER PIXEL. world_px_height IS the art's own alpha bbox height, so scenery is placed into the world at 1:1 exactly as the avatar is (setScale(1)) and the two share one pixel grid. The CAMERA still zooms the whole scene \u2014 that is uniform and correct; what must never happen is scenery being resampled on its own, against the player. world_height_m is what the art reads as beside a 87px character; declared_height_m is what it was once declared to be, and a gap between them means the ART is the wrong size.",
+    "declared_height_m": 1.16,
+    "content_box": [
+      26,
+      6,
+      104,
+      123
+    ],
+    "content_px_height": 117,
+    "canvas_render_px": 128
+  },
+  "pixellab_object_id": "75fa5c25-a2d8-4847-a435-05f82907ec8c",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)",
+  "must_be_imbplemented_with_random_hflip": true,
+  "generated_at": "2026-08-13T22:02:03+00:00",
+  "states": {
+    "LIT_1": {
+      "sprite": "beds/bed_006/sprite.webp",
+      "pixellab_object_id": "75fa5c25-a2d8-4847-a435-05f82907ec8c",
+      "generated_at": "2026-08-13T22:02:03+00:00",
+      "rotations": {
+        "south-east": "beds/bed_006/rotations/south-east.webp",
+        "south-west": "beds/bed_006/rotations/south-west.webp",
+        "south": "beds/bed_006/sprite.webp"
+      }
+    },
+    "LIT_2": {
+      "sprite": "beds/bed_006/lit_2/sprite.webp",
+      "pixellab_object_id": "118280a7-0cd5-4024-84d8-5c5c535b8586",
+      "generated_at": "2026-08-15T20:12:24+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.4183,
+      "glow_score": 0.0577,
+      "rotations": {
+        "south-east": "beds/bed_006/lit_2/rotations/south-east.webp",
+        "south-west": "beds/bed_006/lit_2/rotations/south-west.webp",
+        "south": "beds/bed_006/lit_2/sprite.webp"
+      }
+    },
+    "LIT_3": {
+      "sprite": "beds/bed_006/lit_3/sprite.webp",
+      "pixellab_object_id": "16f5ddfd-20e9-4319-9fd1-3f9c0fbf1a7d",
+      "generated_at": "2026-08-15T20:11:44+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.7032,
+      "glow_score": 0.0915,
+      "rotations": {
+        "south-east": "beds/bed_006/lit_3/rotations/south-east.webp",
+        "south-west": "beds/bed_006/lit_3/rotations/south-west.webp",
+        "south": "beds/bed_006/lit_3/sprite.webp"
+      },
+      "animations": {
+        "motion": {
+          "group_id": "a9d01dfb-88aa-493c-90df-3a317e1206c1",
+          "description": "This is an almost completely still picture. ONLY the very tips of the two small lamp flames on the bedposts shift, by one or two pixels. The flames keep exactly the shape, size and position they have in the first frame and stay amber the whole time -- never pale, never white. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "beds/bed_006/lit_3/animations/motion/00.webp",
+            "beds/bed_006/lit_3/animations/motion/01.webp",
+            "beds/bed_006/lit_3/animations/motion/02.webp",
+            "beds/bed_006/lit_3/animations/motion/03.webp",
+            "beds/bed_006/lit_3/animations/motion/04.webp"
+          ],
+          "strip": "beds/bed_006/lit_3/animations/motion__strip.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-08-30T09:57:24+00:00",
+          "brief": "H14",
+          "review": "ANIMATION_PROBABLY_GOOD",
+          "review_metrics": {
+            "class": "fire",
+            "base": 0.0067,
+            "still": 0.942
+          },
+          "light_frames": [
+            {
+              "intensity": 1.013,
+              "dx": 0.7,
+              "dy": -1.8
+            },
+            {
+              "intensity": 1.009,
+              "dx": 0.8,
+              "dy": -1.8
+            },
+            {
+              "intensity": 0.991,
+              "dx": 0.9,
+              "dy": -1.4
+            },
+            {
+              "intensity": 0.988,
+              "dx": 0.8,
+              "dy": -1.1
+            },
+            {
+              "intensity": 0.999,
+              "dx": 0.6,
+              "dy": -1.3
+            }
+          ]
+        }
+      }
+    },
+    "LIT_4": {
+      "sprite": "beds/bed_006/lit_4/sprite.webp",
+      "pixellab_object_id": "a527df59-a00d-4202-ba68-fd5613326016",
+      "generated_at": "2026-08-15T20:12:13+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.7066,
+      "glow_score": 0.0467,
+      "rotations": {
+        "south-east": "beds/bed_006/lit_4/rotations/south-east.webp",
+        "south-west": "beds/bed_006/lit_4/rotations/south-west.webp",
+        "south": "beds/bed_006/lit_4/sprite.webp"
+      }
+    },
+    "NOT_LIT_1": {
+      "sprite": "beds/bed_006/not_lit_1/sprite.webp",
+      "pixellab_object_id": "8b365104-ad52-4427-9db3-724032896678",
+      "generated_at": "2026-08-15T20:13:16+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.7712,
+      "glow_score": 0.0,
+      "rotations": {
+        "south-east": "beds/bed_006/not_lit_1/rotations/south-east.webp",
+        "south-west": "beds/bed_006/not_lit_1/rotations/south-west.webp",
+        "south": "beds/bed_006/not_lit_1/sprite.webp"
+      }
+    },
+    "NOT_LIT_2": {
+      "sprite": "beds/bed_006/not_lit_2/sprite.webp",
+      "pixellab_object_id": "556a5407-4908-44b2-a63d-f24a2b7c30b3",
+      "generated_at": "2026-08-15T20:14:16+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.6092,
+      "glow_score": 0.0,
+      "rotations": {
+        "south-east": "beds/bed_006/not_lit_2/rotations/south-east.webp",
+        "south-west": "beds/bed_006/not_lit_2/rotations/south-west.webp",
+        "south": "beds/bed_006/not_lit_2/sprite.webp"
+      }
+    }
+  },
+  "collision": true,
+  "hitbox_shape": "rect",
+  "light": {
+    "strength": 0.08,
+    "color": "#fed6a5",
+    "radius": 1,
+    "reference": "the spawn bonfire is 1.0 (radius 7); strength 0 is no light",
+    "states": {
+      "LIT_1": {
+        "strength": 0.1,
+        "color": "#fed6a5",
+        "radius": 1
+      },
+      "LIT_2": {
+        "strength": 0.06,
+        "color": "#ffb45c",
+        "radius": 1
+      },
+      "LIT_3": {
+        "strength": 0.06,
+        "color": "#ffe4ad",
+        "radius": 1
+      },
+      "LIT_4": {
+        "strength": 0.06,
+        "color": "#ffb45c",
+        "radius": 1
+      }
+    },
+    "kind": "fire/open",
+    "flame": true,
+    "embers": true
+  }
+}

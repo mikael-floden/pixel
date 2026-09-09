@@ -1,0 +1,101 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-14T01:10:35+00:00",
+  "id": "giant_fallen_bell_002",
+  "group": "giant_fallen_bells",
+  "rank": 111,
+  "index": 2,
+  "name": "Verdigris ship's bell 002",
+  "lights": null,
+  "variety": "verdigris ship's bell",
+  "modifier": "split down one side",
+  "glow_concept": "a soft hum of light inside the crack",
+  "prompt": "a huge bronze temple bell lying toppled in the grass, cracked and green with age, half sunk into the ground, verdigris ship's bell, split down one side, roughly six feet tall, human height, self-emissive at night, softly radiating light: a soft hum of light inside the crack",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 64,
+  "sprite": "giant_fallen_bells/giant_fallen_bell_002/sprite.webp",
+  "placement": {
+    "world_height_m": 0.879,
+    "world_px_height": 45,
+    "character_height_px": 87,
+    "character_height_m": 1.7,
+    "note": "ONE SCENERY PIXEL IS ONE PLAYER PIXEL. world_px_height IS the art's own alpha bbox height, so scenery is placed into the world at 1:1 exactly as the avatar is (setScale(1)) and the two share one pixel grid. The CAMERA still zooms the whole scene \u2014 that is uniform and correct; what must never happen is scenery being resampled on its own, against the player. world_height_m is what the art reads as beside a 87px character; declared_height_m is what it was once declared to be, and a gap between them means the ART is the wrong size.",
+    "declared_height_m": 1.42,
+    "content_box": [
+      5,
+      12,
+      60,
+      57
+    ],
+    "content_px_height": 45,
+    "canvas_render_px": 64
+  },
+  "pixellab_object_id": "714c2112-1200-40bc-86d9-cea7d00824af",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)",
+  "must_be_imbplemented_with_random_hflip": true,
+  "states": {
+    "NOT_LIT_3": {
+      "sprite": "giant_fallen_bells/giant_fallen_bell_002/sprite.webp",
+      "pixellab_object_id": "714c2112-1200-40bc-86d9-cea7d00824af",
+      "generated_at": "2026-08-14T01:10:35+00:00",
+      "relit_from": "LIT_1",
+      "rotations": {
+        "south-east": "giant_fallen_bells/giant_fallen_bell_002/rotations/south-east.webp",
+        "south-west": "giant_fallen_bells/giant_fallen_bell_002/rotations/south-west.webp",
+        "south": "giant_fallen_bells/giant_fallen_bell_002/sprite.webp"
+      },
+      "animations": {}
+    },
+    "NOT_LIT_4": {
+      "sprite": "giant_fallen_bells/giant_fallen_bell_002/not_lit_4/sprite.webp",
+      "pixellab_object_id": "c19e7722-0505-4e7b-8c9e-1880f6b065cb",
+      "generated_at": "2026-08-16T14:25:02+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.8883,
+      "glow_score": 0.0128,
+      "relit_from": "LIT_2",
+      "rotations": {
+        "south-east": "giant_fallen_bells/giant_fallen_bell_002/not_lit_4/rotations/south-east.webp",
+        "south-west": "giant_fallen_bells/giant_fallen_bell_002/not_lit_4/rotations/south-west.webp",
+        "south": "giant_fallen_bells/giant_fallen_bell_002/not_lit_4/sprite.webp"
+      }
+    },
+    "NOT_LIT_5": {
+      "sprite": "giant_fallen_bells/giant_fallen_bell_002/not_lit_5/sprite.webp",
+      "pixellab_object_id": "ff278beb-5d80-40fd-9657-43b0912e9fd4",
+      "generated_at": "2026-08-16T14:25:43+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.8262,
+      "glow_score": 0.0212,
+      "relit_from": "LIT_3",
+      "rotations": {
+        "south-east": "giant_fallen_bells/giant_fallen_bell_002/not_lit_5/rotations/south-east.webp",
+        "south-west": "giant_fallen_bells/giant_fallen_bell_002/not_lit_5/rotations/south-west.webp",
+        "south": "giant_fallen_bells/giant_fallen_bell_002/not_lit_5/sprite.webp"
+      }
+    },
+    "NOT_LIT_6": {
+      "sprite": "giant_fallen_bells/giant_fallen_bell_002/not_lit_6/sprite.webp",
+      "pixellab_object_id": "1aff8050-e57b-4385-9d57-f550c6ad57ba",
+      "generated_at": "2026-08-16T14:25:54+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.8803,
+      "glow_score": 0.0366,
+      "relit_from": "LIT_4",
+      "rotations": {
+        "south-east": "giant_fallen_bells/giant_fallen_bell_002/not_lit_6/rotations/south-east.webp",
+        "south-west": "giant_fallen_bells/giant_fallen_bell_002/not_lit_6/rotations/south-west.webp",
+        "south": "giant_fallen_bells/giant_fallen_bell_002/not_lit_6/sprite.webp"
+      }
+    }
+  },
+  "collision": true,
+  "hitbox_shape": "ellipse"
+}

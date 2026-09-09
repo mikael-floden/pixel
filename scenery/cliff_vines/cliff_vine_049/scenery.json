@@ -1,0 +1,407 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-14T04:52:51+00:00",
+  "id": "cliff_vine_049",
+  "group": "cliff_vines",
+  "rank": 101,
+  "index": 49,
+  "name": "Frost-silvered winter fall 049",
+  "lights": null,
+  "variety": "frost-silvered winter fall",
+  "modifier": "dense in the middle, ragged at both ends",
+  "glow_concept": null,
+  "prompt": "beautiful lush climbing ivy growing wild across an old ruin wall, deep green leaves in loose overlapping clusters with long trailing tendrils between them, lush fantasy RPG nature art, rich and beautiful, uneven natural growth that is thick and leafy in a few places and bare stone-empty elsewhere, drifting off one side, no straight edges, no border, nothing it hangs from and no line across the top, fading away into a few last leaves at the edges, transparent background, no rock or wall behind it, frost-silvered winter fall, dense in the middle, ragged at both ends, towering, many times human height, completely unlit, no glow, no light sources, no self-emission",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 256,
+  "sprite": "cliff_vines/cliff_vine_049/sprite.webp",
+  "placement": {
+    "world_height_m": 4.709,
+    "world_px_height": 241,
+    "character_height_px": 87,
+    "character_height_m": 1.7,
+    "note": "ONE SCENERY PIXEL IS ONE PLAYER PIXEL. world_px_height IS the art's own alpha bbox height, so scenery is placed into the world at 1:1 exactly as the avatar is (setScale(1)) and the two share one pixel grid. The CAMERA still zooms the whole scene \u2014 that is uniform and correct; what must never happen is scenery being resampled on its own, against the player. world_height_m is what the art reads as beside a 87px character; declared_height_m is what it was once declared to be, and a gap between them means the ART is the wrong size.",
+    "declared_height_m": 6.69,
+    "content_box": [
+      8,
+      5,
+      247,
+      246
+    ],
+    "content_px_height": 241,
+    "canvas_render_px": 256
+  },
+  "pixellab_object_id": "b99ce23a-5130-4930-b055-dcb0ca072039",
+  "pixellab_directions": 1,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-1-direction-object (single, S-only)",
+  "must_be_imbplemented_with_random_hflip": true,
+  "states": {
+    "LIT_1": {
+      "sprite": "cliff_vines/cliff_vine_049/lit_1/sprite.webp",
+      "pixellab_object_id": "7a1ff64c-4d9d-4776-9b25-dd16a8271169",
+      "generated_at": "2026-08-16T10:32:07+00:00",
+      "glow_concept": "moonlit silver shimmer across the leaves",
+      "difference_from_source": 0.3572,
+      "glow_score": 0.0642,
+      "animations": {
+        "motion": {
+          "group_id": "58c05c73-c733-47b7-a6a0-846bed024c51",
+          "description": "This is an almost completely still picture. ONLY the outermost edge of glowing white droplets hanging from the vine tips changes, and barely: a few pixels along that edge lift very slightly in brightness and drop straight back. They stay exactly the white they are in the first frame and are equally visible in every frame. Every leaf, every stem and every branch is copied from the first frame exactly: not one of them moves, bends, shifts, grows or changes shape or colour at any point. Frames 1, 2 and 5 are identical to each other. Only frames 3 and 4 differ at all, and only by a handful of pixels. Everything else is copied from the first frame exactly, pixel for pixel. The last frame matches the first exactly.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "cliff_vines/cliff_vine_049/lit_1/animations/motion/00.webp",
+            "cliff_vines/cliff_vine_049/lit_1/animations/motion/01.webp",
+            "cliff_vines/cliff_vine_049/lit_1/animations/motion/02.webp",
+            "cliff_vines/cliff_vine_049/lit_1/animations/motion/03.webp",
+            "cliff_vines/cliff_vine_049/lit_1/animations/motion/04.webp"
+          ],
+          "strip": "cliff_vines/cliff_vine_049/lit_1/animations/motion__strip.webp",
+          "directions": null,
+          "generated_at": "2026-08-30T10:50:39+00:00",
+          "brief": "K1",
+          "review": "ANIMATION_PROBABLY_BAD",
+          "review_metrics": {
+            "class": "foliage",
+            "base": 0.9703,
+            "still": 0.048
+          },
+          "light_frames": [
+            {
+              "intensity": 1.5,
+              "dx": -20.3,
+              "dy": -78.3
+            },
+            {
+              "intensity": 0.652,
+              "dx": -63.2,
+              "dy": -29.3
+            },
+            {
+              "intensity": 0.5,
+              "dx": -28.0,
+              "dy": -37.5
+            },
+            {
+              "intensity": 0.5,
+              "dx": -44.0,
+              "dy": -90.5
+            },
+            {
+              "intensity": 0.652,
+              "dx": -33.8,
+              "dy": -96.8
+            }
+          ]
+        }
+      }
+    },
+    "LIT_2": {
+      "sprite": "cliff_vines/cliff_vine_049/lit_2/sprite.webp",
+      "pixellab_object_id": "53b6ba1a-1aaf-4b6a-a374-dc3aa595623f",
+      "generated_at": "2026-08-16T10:25:11+00:00",
+      "glow_concept": "luminous sap veins glowing through the leaves",
+      "difference_from_source": 0.3754,
+      "glow_score": 0.0969,
+      "animations": {
+        "motion": {
+          "group_id": "eb2c10d6-ec9b-4480-bbbb-367e1dd22af4",
+          "description": "This is an almost completely still picture. ONLY the outermost edge of glowing white droplets hanging from the vine tips changes, and barely: a few pixels along that edge lift very slightly in brightness and drop straight back. They stay exactly the white they are in the first frame and are equally visible in every frame. Every leaf, every stem and every branch is copied from the first frame exactly: not one of them moves, bends, shifts, grows or changes shape or colour at any point. Frames 1, 2 and 5 are identical to each other. Only frames 3 and 4 differ at all, and only by a handful of pixels. Everything else is copied from the first frame exactly, pixel for pixel. The last frame matches the first exactly.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "cliff_vines/cliff_vine_049/lit_2/animations/motion/00.webp",
+            "cliff_vines/cliff_vine_049/lit_2/animations/motion/01.webp",
+            "cliff_vines/cliff_vine_049/lit_2/animations/motion/02.webp",
+            "cliff_vines/cliff_vine_049/lit_2/animations/motion/03.webp",
+            "cliff_vines/cliff_vine_049/lit_2/animations/motion/04.webp"
+          ],
+          "strip": "cliff_vines/cliff_vine_049/lit_2/animations/motion__strip.webp",
+          "directions": null,
+          "generated_at": "2026-08-30T10:49:59+00:00",
+          "brief": "K2",
+          "review": "ANIMATION_PROBABLY_BAD",
+          "review_metrics": {
+            "class": "foliage",
+            "base": 0.9992,
+            "still": 0.068
+          },
+          "light_frames": [
+            {
+              "intensity": 1.5,
+              "dx": -9.2,
+              "dy": -0.4
+            },
+            {
+              "intensity": 0.749,
+              "dx": -12.1,
+              "dy": -11.7
+            },
+            {
+              "intensity": 0.599,
+              "dx": -6.0,
+              "dy": -6.3
+            },
+            {
+              "intensity": 0.707,
+              "dx": -6.7,
+              "dy": -6.2
+            },
+            {
+              "intensity": 0.763,
+              "dx": -6.5,
+              "dy": -5.0
+            }
+          ]
+        }
+      }
+    },
+    "LIT_3": {
+      "sprite": "cliff_vines/cliff_vine_049/sprite.webp",
+      "pixellab_object_id": "b99ce23a-5130-4930-b055-dcb0ca072039",
+      "generated_at": "2026-08-14T04:52:51+00:00",
+      "relit_from": "NOT_LIT_1"
+    },
+    "LIT_4": {
+      "sprite": "cliff_vines/cliff_vine_049/lit_4/sprite.webp",
+      "pixellab_object_id": "0330c54b-a342-4f0e-b368-60c5081f90cc",
+      "generated_at": "2026-08-16T10:22:19+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.6062,
+      "glow_score": 0.1761,
+      "relit_from": "NOT_LIT_2",
+      "animations": {
+        "motion": {
+          "group_id": "d41d0ab3-bb4f-4055-9740-deaab265acb4",
+          "description": "This is an almost completely still picture. ONLY glowing white droplets hanging from the vine tips change. Their brightness lifts very slightly and comes straight back: no more than a few pixels change anywhere in the whole picture. At their brightest they are still exactly the same white as in the first frame -- never pale, never white, never any other colour. They never fade, never vanish, never spread and never change shape. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "cliff_vines/cliff_vine_049/lit_4/animations/motion/00.webp",
+            "cliff_vines/cliff_vine_049/lit_4/animations/motion/01.webp",
+            "cliff_vines/cliff_vine_049/lit_4/animations/motion/02.webp",
+            "cliff_vines/cliff_vine_049/lit_4/animations/motion/03.webp",
+            "cliff_vines/cliff_vine_049/lit_4/animations/motion/04.webp"
+          ],
+          "strip": "cliff_vines/cliff_vine_049/lit_4/animations/motion__strip.webp",
+          "directions": null,
+          "generated_at": "2026-08-30T10:32:56+00:00",
+          "brief": "K3",
+          "review": "ANIMATION_PROBABLY_BAD",
+          "review_metrics": {
+            "class": "foliage",
+            "base": 0.8826,
+            "still": 0.166
+          },
+          "light_frames": [
+            {
+              "intensity": 1.112,
+              "dx": 88.1,
+              "dy": 33.8
+            },
+            {
+              "intensity": 0.872,
+              "dx": 88.3,
+              "dy": 34.5
+            },
+            {
+              "intensity": 0.896,
+              "dx": 86.7,
+              "dy": 34.4
+            },
+            {
+              "intensity": 1.044,
+              "dx": 87.5,
+              "dy": 35.7
+            },
+            {
+              "intensity": 1.076,
+              "dx": 87.3,
+              "dy": 35.3
+            }
+          ]
+        }
+      }
+    },
+    "LIT_5": {
+      "sprite": "cliff_vines/cliff_vine_049/lit_5/sprite.webp",
+      "pixellab_object_id": "4585e2bb-1a7a-4efe-8a3e-b55fc83a38d8",
+      "generated_at": "2026-08-16T10:22:50+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.3656,
+      "glow_score": 0.0611,
+      "relit_from": "NOT_LIT_3",
+      "animations": {
+        "motion": {
+          "group_id": "23b0bc07-5f8e-4fe6-8577-ef24361495d1",
+          "description": "This is an almost completely still picture. ONLY the outermost edge of glowing white droplets hanging from the vine tips changes, and barely: a few pixels along that edge lift very slightly in brightness and drop straight back. They stay exactly the white they are in the first frame and are equally visible in every frame. Every leaf, every stem and every branch is copied from the first frame exactly: not one of them moves, bends, shifts, grows or changes shape or colour at any point. Frames 1, 2 and 5 are identical to each other. Only frames 3 and 4 differ at all, and only by a handful of pixels. Everything else is copied from the first frame exactly, pixel for pixel. The last frame matches the first exactly.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "cliff_vines/cliff_vine_049/lit_5/animations/motion/00.webp",
+            "cliff_vines/cliff_vine_049/lit_5/animations/motion/01.webp",
+            "cliff_vines/cliff_vine_049/lit_5/animations/motion/02.webp",
+            "cliff_vines/cliff_vine_049/lit_5/animations/motion/03.webp",
+            "cliff_vines/cliff_vine_049/lit_5/animations/motion/04.webp"
+          ],
+          "strip": "cliff_vines/cliff_vine_049/lit_5/animations/motion__strip.webp",
+          "directions": null,
+          "generated_at": "2026-08-30T10:50:39+00:00",
+          "brief": "K4",
+          "review": "ANIMATION_PROBABLY_BAD",
+          "review_metrics": {
+            "class": "foliage",
+            "base": 0.9939,
+            "still": 0.127
+          },
+          "light_frames": [
+            {
+              "intensity": 0.5,
+              "dx": 0.0,
+              "dy": 0.0
+            },
+            {
+              "intensity": 0.5,
+              "dx": 0.0,
+              "dy": 0.0
+            },
+            {
+              "intensity": 0.5,
+              "dx": 0.0,
+              "dy": 0.0
+            },
+            {
+              "intensity": 0.5,
+              "dx": 0.0,
+              "dy": 0.0
+            },
+            {
+              "intensity": 0.5,
+              "dx": 0.0,
+              "dy": 0.0
+            }
+          ]
+        }
+      }
+    },
+    "LIT_6": {
+      "sprite": "cliff_vines/cliff_vine_049/lit_6/sprite.webp",
+      "pixellab_object_id": "fb891347-085b-4f3f-ac6a-9de9a3eac16d",
+      "generated_at": "2026-08-16T10:23:24+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.4003,
+      "glow_score": 0.0601,
+      "relit_from": "NOT_LIT_4",
+      "animations": {
+        "motion": {
+          "group_id": "449841c3-a546-479c-954e-cd21148c70e5",
+          "description": "This is an almost completely still picture. ONLY glowing white droplets hanging from the vine tips change. Their brightness lifts very slightly and comes straight back: no more than a few pixels change anywhere in the whole picture. At their brightest they are still exactly the same white as in the first frame -- never pale, never white, never any other colour. They never fade, never vanish, never spread and never change shape. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "cliff_vines/cliff_vine_049/lit_6/animations/motion/00.webp",
+            "cliff_vines/cliff_vine_049/lit_6/animations/motion/01.webp",
+            "cliff_vines/cliff_vine_049/lit_6/animations/motion/02.webp",
+            "cliff_vines/cliff_vine_049/lit_6/animations/motion/03.webp",
+            "cliff_vines/cliff_vine_049/lit_6/animations/motion/04.webp"
+          ],
+          "strip": "cliff_vines/cliff_vine_049/lit_6/animations/motion__strip.webp",
+          "directions": null,
+          "generated_at": "2026-08-30T10:32:54+00:00",
+          "brief": "K5",
+          "review": "ANIMATION_PROBABLY_BAD",
+          "review_metrics": {
+            "class": "foliage",
+            "base": 0.9808,
+            "still": 0.038
+          },
+          "light_frames": [
+            {
+              "intensity": 0.5,
+              "dx": 0.0,
+              "dy": 0.0
+            },
+            {
+              "intensity": 0.5,
+              "dx": 0.0,
+              "dy": 0.0
+            },
+            {
+              "intensity": 0.5,
+              "dx": 0.0,
+              "dy": 0.0
+            },
+            {
+              "intensity": 0.5,
+              "dx": 0.0,
+              "dy": 0.0
+            },
+            {
+              "intensity": 0.5,
+              "dx": 0.0,
+              "dy": 0.0
+            }
+          ]
+        }
+      }
+    }
+  },
+  "collision": true,
+  "hitbox_shape": "ellipse",
+  "light": {
+    "strength": 0.1,
+    "color": "#eafff7",
+    "radius": 2,
+    "reference": "the spawn bonfire is 1.0 (radius 7); strength 0 is no light",
+    "states": {
+      "LIT_1": {
+        "strength": 0.1,
+        "color": "#eafff7",
+        "radius": 2
+      },
+      "LIT_2": {
+        "strength": 0.12,
+        "color": "#e0ffee",
+        "radius": 2
+      },
+      "LIT_3": {
+        "strength": 0.08,
+        "color": "#fff0a0",
+        "radius": 2
+      },
+      "LIT_4": {
+        "strength": 0.12,
+        "color": "#edfff7",
+        "radius": 2
+      },
+      "LIT_5": {
+        "strength": 0.1,
+        "color": "#f2fffd",
+        "radius": 2
+      },
+      "LIT_6": {
+        "strength": 0.1,
+        "color": "#f1fffb",
+        "radius": 2
+      }
+    },
+    "kind": "glow/bio",
+    "flame": false,
+    "embers": false
+  }
+}

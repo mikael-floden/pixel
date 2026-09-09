@@ -1,0 +1,27 @@
+{
+  "domain": "items",
+  "id": "root_web_stone",
+  "name_seen": "Soulstone",
+  "law": "V",
+  "description": "Brown stone threaded with living roots, taken from a Gnarloak. Leave it on soil and it takes hold.",
+  "lore": [
+    "It travels on a plate. Every dealer who carries one keeps a plate for it, or a board, or a square of slate, and every apprentice is told the reason and finds it out anyway: set it down on bare soil at dusk and by morning it has taken. The stone comes up unharmed — it cannot be harmed — but you have spent an afternoon with a spade and lost a flagstone, and the man who sold it to you will not be sympathetic about either.",
+    "So there are places where somebody put one down and never came back for it. A soulstone cannot be forgotten and does not decay, so it is still there, rooted, and will still be there when the road that used to pass it has gone somewhere else. People build to those. A fire ring on the west road is laid around one, and the keepers' argument — whether the ground under it holds because of the stone or because of fifty years of people coming back to sit at it — will not be settled, and both sides keep coming back to sit at it.",
+    "In a fight it takes a thing's feet for a moment, and that is the joke, and the trade tells it badly and often. [[monsters/root_bear|The creature]] was assembled out of everyone's memory of a tree going over, and its last hard piece hands the axeman the one still moment he wants. [[characters/54bead23|Osric]] will set one for anybody who asks, at the ordinary rate, same as a buckle. He does not keep one in his own tools, and if you ask him why he will talk to you about hafts until you stop asking."
+  ],
+  "related": [
+    {
+      "domain": "monsters",
+      "id": "root_bear"
+    },
+    {
+      "domain": "characters",
+      "id": "54bead23"
+    },
+    {
+      "domain": "lore",
+      "id": "the_hard_pieces"
+    }
+  ],
+  "gm_notes": "Osric's lost afternoon in the north wood is the creature record's scene and is not retold; what is added is what he does now with the stones, and the deflection is in character for a man still counting in living years. The rooted stones are written as a thing people build to, with the anchoring left as a keepers' argument rather than a ruling on Law IV — do not harden it into physics."
+}

@@ -1,0 +1,140 @@
+{
+  "format": "scenery-piece@2",
+  "id": "hanging_basket_005",
+  "group": "hanging_baskets",
+  "rank": 74,
+  "index": 5,
+  "name": "Trailing red geraniums 005",
+  "lights": null,
+  "variety": "trailing red geraniums",
+  "glow_concept": null,
+  "prompt": "a wide woven basket packed with flowers spilling thick trailing blooms over its sides, resting on a stout low wooden stand on the ground, trailing red geraniums, large, twice human height, completely unlit, no glow, no light sources, no self-emission",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 96,
+  "sprite": "hanging_baskets/hanging_basket_005/sprite.webp",
+  "placement": {
+    "world_height_m": 1.075,
+    "world_px_height": 55,
+    "character_height_px": 87,
+    "character_height_m": 1.7,
+    "note": "ONE SCENERY PIXEL IS ONE PLAYER PIXEL. world_px_height IS the art's own alpha bbox height, so scenery is placed into the world at 1:1 exactly as the avatar is (setScale(1)) and the two share one pixel grid. The CAMERA still zooms the whole scene \u2014 that is uniform and correct; what must never happen is scenery being resampled on its own, against the player. world_height_m is what the art reads as beside a 87px character; declared_height_m is what it was once declared to be, and a gap between them means the ART is the wrong size.",
+    "declared_height_m": 2.21,
+    "content_box": [
+      18,
+      21,
+      77,
+      76
+    ],
+    "content_px_height": 55,
+    "canvas_render_px": 96
+  },
+  "pixellab_object_id": "ea347752-bcbe-441b-9020-aa111d8a234d",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)",
+  "must_be_imbplemented_with_random_hflip": true,
+  "generated_at": "2026-08-13T20:36:23+00:00",
+  "states": {
+    "NOT_LIT_1": {
+      "sprite": "hanging_baskets/hanging_basket_005/sprite.webp",
+      "pixellab_object_id": "ea347752-bcbe-441b-9020-aa111d8a234d",
+      "generated_at": "2026-08-13T20:36:23+00:00",
+      "rotations": {
+        "south-east": "hanging_baskets/hanging_basket_005/rotations/south-east.webp",
+        "south-west": "hanging_baskets/hanging_basket_005/rotations/south-west.webp",
+        "south": "hanging_baskets/hanging_basket_005/sprite.webp"
+      },
+      "animations": {
+        "motion": {
+          "group_id": "c79671f3-6584-4d78-aeed-fb0d36b90124",
+          "description": "Animate the trailing flowers only, swaying gently. Nothing else moves.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "hanging_baskets/hanging_basket_005/animations/motion/00.webp",
+            "hanging_baskets/hanging_basket_005/animations/motion/01.webp",
+            "hanging_baskets/hanging_basket_005/animations/motion/02.webp",
+            "hanging_baskets/hanging_basket_005/animations/motion/03.webp",
+            "hanging_baskets/hanging_basket_005/animations/motion/04.webp"
+          ],
+          "strip": "hanging_baskets/hanging_basket_005/animations/motion__strip.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-08-29T08:37:07+00:00",
+          "brief": "C9",
+          "review": "ANIMATION_PROBABLY_BAD",
+          "review_metrics": {
+            "class": "foliage",
+            "base": 0.25,
+            "still": 0.445
+          }
+        }
+      }
+    },
+    "NOT_LIT_2": {
+      "sprite": "hanging_baskets/hanging_basket_005/not_lit_2/sprite.webp",
+      "pixellab_object_id": "28672fa9-e3d6-4de0-966d-25ebb0633d04",
+      "generated_at": "2026-08-16T14:57:43+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.7023,
+      "glow_score": 0.0,
+      "rotations": {
+        "south-east": "hanging_baskets/hanging_basket_005/not_lit_2/rotations/south-east.webp",
+        "south-west": "hanging_baskets/hanging_basket_005/not_lit_2/rotations/south-west.webp",
+        "south": "hanging_baskets/hanging_basket_005/not_lit_2/sprite.webp"
+      },
+      "animations": {
+        "motion": {
+          "group_id": "01287f76-e4b1-4358-b87e-c0989f49dc8a",
+          "description": "This is the same picture in every frame. ONLY the red flower heads move, each nodding by a single pixel. Nothing else moves, bends or leans, and nothing changes size, shape or position. The last frame must return to exactly how the first frame looks, so the loop joins. Nothing may become darker than it is in the first frame. Do not redraw anything else, and do not add or remove anything.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "hanging_baskets/hanging_basket_005/not_lit_2/animations/motion/00.webp",
+            "hanging_baskets/hanging_basket_005/not_lit_2/animations/motion/01.webp",
+            "hanging_baskets/hanging_basket_005/not_lit_2/animations/motion/02.webp",
+            "hanging_baskets/hanging_basket_005/not_lit_2/animations/motion/03.webp",
+            "hanging_baskets/hanging_basket_005/not_lit_2/animations/motion/04.webp"
+          ],
+          "strip": "hanging_baskets/hanging_basket_005/not_lit_2/animations/motion__strip.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-08-29T15:41:05+00:00",
+          "brief": "X63",
+          "review": "ANIMATION_PROBABLY_GOOD",
+          "review_metrics": {
+            "class": "foliage",
+            "base": 0.0,
+            "still": 0.596
+          }
+        }
+      }
+    },
+    "NOT_LIT_3": {
+      "sprite": "hanging_baskets/hanging_basket_005/not_lit_3/sprite.webp",
+      "pixellab_object_id": "8cfcc087-6b32-41ed-987b-cf461ada6a56",
+      "generated_at": "2026-08-16T14:59:15+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.6816,
+      "glow_score": 0.0037,
+      "rotations": {
+        "south-east": "hanging_baskets/hanging_basket_005/not_lit_3/rotations/south-east.webp",
+        "south-west": "hanging_baskets/hanging_basket_005/not_lit_3/rotations/south-west.webp",
+        "south": "hanging_baskets/hanging_basket_005/not_lit_3/sprite.webp"
+      }
+    }
+  },
+  "collision": true,
+  "hitbox_shape": "ellipse"
+}

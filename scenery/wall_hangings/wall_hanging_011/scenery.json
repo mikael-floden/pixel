@@ -1,0 +1,95 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-13T23:07:33+00:00",
+  "id": "wall_hanging_011",
+  "group": "wall_hangings",
+  "rank": 110,
+  "index": 11,
+  "name": "Braided garlic strings 011",
+  "lights": null,
+  "variety": "braided garlic strings",
+  "glow_concept": null,
+  "prompt": "a solid decorative piece made to hang flat on an interior wall, seen straight on, chunky and clearly readable at a glance, braided garlic strings, waist-high, completely unlit, no glow, no light sources, no self-emission",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 64,
+  "sprite": "wall_hangings/wall_hanging_011/sprite.webp",
+  "placement": {
+    "world_height_m": 1.075,
+    "world_px_height": 55,
+    "character_height_px": 87,
+    "character_height_m": 1.7,
+    "note": "ONE SCENERY PIXEL IS ONE PLAYER PIXEL. world_px_height IS the art's own alpha bbox height, so scenery is placed into the world at 1:1 exactly as the avatar is (setScale(1)) and the two share one pixel grid. The CAMERA still zooms the whole scene \u2014 that is uniform and correct; what must never happen is scenery being resampled on its own, against the player. world_height_m is what the art reads as beside a 87px character; declared_height_m is what it was once declared to be, and a gap between them means the ART is the wrong size.",
+    "declared_height_m": 0.78,
+    "content_box": [
+      20,
+      5,
+      45,
+      60
+    ],
+    "content_px_height": 55,
+    "canvas_render_px": 64
+  },
+  "pixellab_object_id": "52a3adef-93a5-4795-9409-65d61dbacb37",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)",
+  "must_be_imbplemented_with_random_hflip": true,
+  "states": {
+    "NOT_LIT_1": {
+      "sprite": "wall_hangings/wall_hanging_011/sprite.webp",
+      "pixellab_object_id": "52a3adef-93a5-4795-9409-65d61dbacb37",
+      "generated_at": "2026-08-13T23:07:33+00:00",
+      "rotations": {
+        "south-east": "wall_hangings/wall_hanging_011/rotations/south-east.webp",
+        "south-west": "wall_hangings/wall_hanging_011/rotations/south-west.webp",
+        "south": "wall_hangings/wall_hanging_011/sprite.webp"
+      }
+    },
+    "NOT_LIT_2": {
+      "sprite": "wall_hangings/wall_hanging_011/not_lit_2/sprite.webp",
+      "pixellab_object_id": "80d06196-a3e4-495c-b553-36533d601cf9",
+      "generated_at": "2026-08-17T11:39:46+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.7405,
+      "glow_score": 0.3745,
+      "rotations": {
+        "south-east": "wall_hangings/wall_hanging_011/not_lit_2/rotations/south-east.webp",
+        "south-west": "wall_hangings/wall_hanging_011/not_lit_2/rotations/south-west.webp",
+        "south": "wall_hangings/wall_hanging_011/not_lit_2/sprite.webp"
+      }
+    },
+    "NOT_LIT_3": {
+      "sprite": "wall_hangings/wall_hanging_011/not_lit_3/sprite.webp",
+      "pixellab_object_id": "79bcf757-e555-4886-8da4-685592124834",
+      "generated_at": "2026-08-17T11:45:50+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.85,
+      "glow_score": 0.1521,
+      "rotations": {
+        "south-east": "wall_hangings/wall_hanging_011/not_lit_3/rotations/south-east.webp",
+        "south-west": "wall_hangings/wall_hanging_011/not_lit_3/rotations/south-west.webp",
+        "south": "wall_hangings/wall_hanging_011/not_lit_3/sprite.webp"
+      }
+    },
+    "NOT_LIT_4": {
+      "sprite": "wall_hangings/wall_hanging_011/not_lit_4/sprite.webp",
+      "pixellab_object_id": "5d56a390-2edd-4b2d-83a8-8e33162d5d5d",
+      "generated_at": "2026-08-17T11:39:58+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.8868,
+      "glow_score": 0.2792,
+      "rotations": {
+        "south-east": "wall_hangings/wall_hanging_011/not_lit_4/rotations/south-east.webp",
+        "south-west": "wall_hangings/wall_hanging_011/not_lit_4/rotations/south-west.webp",
+        "south": "wall_hangings/wall_hanging_011/not_lit_4/sprite.webp"
+      }
+    }
+  },
+  "collision": true,
+  "hitbox_shape": "rect"
+}

@@ -1,0 +1,132 @@
+{
+  "schema": "tiles3/tops@1",
+  "kind": "top_only",
+  "wall_is_meaningless": true,
+  "not_a_candidate_for": "x over y",
+  "ground": "black_rock",
+  "flavour": "detail",
+  "index": 101,
+  "seed": 38329,
+  "prompt": "black rock, pale lichen in the middle, black rock all around the edge",
+  "palette_top": "#1e1d1e",
+  "tile_id": "ad6b8f39-93b5-415a-9c3b-64d7fb86110d",
+  "n_tiles": 16,
+  "tiles": [
+    "tile_00.webp",
+    "tile_01.webp",
+    "tile_02.webp",
+    "tile_03.webp",
+    "tile_04.webp",
+    "tile_05.webp",
+    "tile_06.webp",
+    "tile_07.webp",
+    "tile_08.webp",
+    "tile_09.webp",
+    "tile_10.webp",
+    "tile_11.webp",
+    "tile_12.webp",
+    "tile_13.webp",
+    "tile_14.webp",
+    "tile_15.webp"
+  ],
+  "settings": {
+    "tile_size": 64,
+    "tile_view": "high top-down",
+    "view_angle": 28.0,
+    "depth_ratio": 0.5,
+    "tile_type": "isometric",
+    "flat_top_px": 2,
+    "outline_mode": "segmentation"
+  },
+  "usd": 0.096,
+  "created": "2026-09-03T03:57:45+00:00",
+  "top_face": {
+    "per_tile": [
+      {
+        "colours": 19,
+        "dominant_share": 0.7299,
+        "px": 922
+      },
+      {
+        "colours": 18,
+        "dominant_share": 0.6551,
+        "px": 922
+      },
+      {
+        "colours": 17,
+        "dominant_share": 0.5998,
+        "px": 922
+      },
+      {
+        "colours": 16,
+        "dominant_share": 0.6161,
+        "px": 922
+      },
+      {
+        "colours": 17,
+        "dominant_share": 0.5952,
+        "px": 924
+      },
+      {
+        "colours": 21,
+        "dominant_share": 0.1948,
+        "px": 924
+      },
+      {
+        "colours": 18,
+        "dominant_share": 0.5898,
+        "px": 924
+      },
+      {
+        "colours": 18,
+        "dominant_share": 0.3874,
+        "px": 924
+      },
+      {
+        "colours": 16,
+        "dominant_share": 0.3842,
+        "px": 924
+      },
+      {
+        "colours": 11,
+        "dominant_share": 0.5043,
+        "px": 924
+      },
+      {
+        "colours": 20,
+        "dominant_share": 0.3063,
+        "px": 924
+      },
+      {
+        "colours": 11,
+        "dominant_share": 0.3268,
+        "px": 924
+      },
+      {
+        "colours": 19,
+        "dominant_share": 0.3312,
+        "px": 924
+      },
+      {
+        "colours": 18,
+        "dominant_share": 0.3561,
+        "px": 924
+      },
+      {
+        "colours": 22,
+        "dominant_share": 0.3301,
+        "px": 924
+      },
+      {
+        "colours": 21,
+        "dominant_share": 0.2446,
+        "px": 924
+      }
+    ],
+    "mean_colours": 17.62,
+    "mean_dominant_share": 0.447
+  },
+  "motif": "pale lichen",
+  "motif_source": "tiles/config/details.json",
+  "walkable": true
+}

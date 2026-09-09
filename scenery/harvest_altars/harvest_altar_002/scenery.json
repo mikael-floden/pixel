@@ -1,0 +1,100 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-14T01:12:49+00:00",
+  "id": "harvest_altar_002",
+  "group": "harvest_altars",
+  "rank": 124,
+  "index": 2,
+  "name": "Gourd-and-candle altar 002",
+  "lights": null,
+  "variety": "gourd-and-candle altar",
+  "modifier": "snow settling on the gourds",
+  "glow_concept": "the offerings glowing with kept memory",
+  "prompt": "a low stone altar slab piled with harvest offerings, pumpkins, sheaves and apples, at the edge of the fields, gourd-and-candle altar, snow settling on the gourds, waist-high, self-emissive at night, softly radiating light: the offerings glowing with kept memory",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 64,
+  "sprite": "harvest_altars/harvest_altar_002/sprite.webp",
+  "placement": {
+    "world_height_m": 0.977,
+    "world_px_height": 50,
+    "character_height_px": 87,
+    "character_height_m": 1.7,
+    "note": "ONE SCENERY PIXEL IS ONE PLAYER PIXEL. world_px_height IS the art's own alpha bbox height, so scenery is placed into the world at 1:1 exactly as the avatar is (setScale(1)) and the two share one pixel grid. The CAMERA still zooms the whole scene \u2014 that is uniform and correct; what must never happen is scenery being resampled on its own, against the player. world_height_m is what the art reads as beside a 87px character; declared_height_m is what it was once declared to be, and a gap between them means the ART is the wrong size.",
+    "declared_height_m": 0.98,
+    "content_box": [
+      6,
+      7,
+      59,
+      57
+    ],
+    "content_px_height": 50,
+    "canvas_render_px": 64
+  },
+  "pixellab_object_id": "0bc1c3b8-1505-4373-84ae-ee609cb8050c",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)",
+  "must_be_imbplemented_with_random_hflip": true,
+  "states": {
+    "NOT_LIT_3": {
+      "sprite": "harvest_altars/harvest_altar_002/sprite.webp",
+      "pixellab_object_id": "0bc1c3b8-1505-4373-84ae-ee609cb8050c",
+      "generated_at": "2026-08-14T01:12:49+00:00",
+      "relit_from": "LIT_1",
+      "rotations": {
+        "south-east": "harvest_altars/harvest_altar_002/rotations/south-east.webp",
+        "south-west": "harvest_altars/harvest_altar_002/rotations/south-west.webp",
+        "south": "harvest_altars/harvest_altar_002/sprite.webp"
+      }
+    },
+    "NOT_LIT_4": {
+      "sprite": "harvest_altars/harvest_altar_002/not_lit_4/sprite.webp",
+      "pixellab_object_id": "73ccc3d7-2239-4a4c-a2ef-059f6bc1da3a",
+      "generated_at": "2026-08-16T14:59:53+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.3823,
+      "glow_score": 0.1712,
+      "relit_from": "LIT_2",
+      "rotations": {
+        "south-east": "harvest_altars/harvest_altar_002/not_lit_4/rotations/south-east.webp",
+        "south-west": "harvest_altars/harvest_altar_002/not_lit_4/rotations/south-west.webp",
+        "south": "harvest_altars/harvest_altar_002/not_lit_4/sprite.webp"
+      }
+    },
+    "NOT_LIT_5": {
+      "sprite": "harvest_altars/harvest_altar_002/not_lit_5/sprite.webp",
+      "pixellab_object_id": "62ebffdb-95da-459c-b521-09d2a18404b9",
+      "generated_at": "2026-08-16T15:01:00+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.4168,
+      "glow_score": 0.165,
+      "relit_from": "LIT_3",
+      "rotations": {
+        "south-east": "harvest_altars/harvest_altar_002/not_lit_5/rotations/south-east.webp",
+        "south-west": "harvest_altars/harvest_altar_002/not_lit_5/rotations/south-west.webp",
+        "south": "harvest_altars/harvest_altar_002/not_lit_5/sprite.webp"
+      }
+    },
+    "NOT_LIT_6": {
+      "sprite": "harvest_altars/harvest_altar_002/not_lit_6/sprite.webp",
+      "pixellab_object_id": "f5d34689-7207-4d4d-97d5-15ebf00652a6",
+      "generated_at": "2026-08-16T15:01:11+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.5304,
+      "glow_score": 0.2159,
+      "relit_from": "LIT_4",
+      "rotations": {
+        "south-east": "harvest_altars/harvest_altar_002/not_lit_6/rotations/south-east.webp",
+        "south-west": "harvest_altars/harvest_altar_002/not_lit_6/rotations/south-west.webp",
+        "south": "harvest_altars/harvest_altar_002/not_lit_6/sprite.webp"
+      }
+    }
+  },
+  "collision": true,
+  "hitbox_shape": "rect"
+}

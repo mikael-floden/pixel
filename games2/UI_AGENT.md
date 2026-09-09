@@ -42,12 +42,27 @@ wiki-style remake (the frame and sprite clock no longer exist at runtime).
   the same speed and sharing the sky at dawn and dusk, so it needs no
   hand-off animation and the server needs no time freeze. Driven only by
   `setClockTime(timeIdx + phaseT)` + `clockStar()`. See the CLOCK PILL
-  section of `games2/CLAUDE.md` before changing the art, the motion, or
+  section of `games2/docs/lighting.md` before changing the art, the motion, or
   TIME_PHASE_SECONDS (day and night must stay equal).
 - `client/src/controls.ts` — handedness (right/left, default right): which
   side the analog stick lives on, and in landscape which side the whole menu
   column takes. localStorage `ml-hand` + the "ml-hand" event; consumed by
   hud.ts (applyLayout + the Settings "controls" button) and gamepad.ts.
+- `client/src/gamefreeze.ts` — puts the Phaser loop to sleep while a
+  full-screen reader is over the world (today: the wiki drawer). The seam
+  between `wikipanel.ts`, which asks, and `main.ts`, which registers the
+  game — neither has to know about the other. Probe `__mlFreeze`.
+- `client/src/wikinear.ts` — the 🔍 "what am I standing next to?" button
+  (its face is the maintainer's own PixelLab antique magnifying glass,
+  MIRRORED — `/ui2/icon-search.webp`, an exact 2x of the flipped 24x24 export
+  kept at `client/ui-src/icon-search-src.png`),
+  a pill-high square one gap left of the Wiki button, and the game's half of
+  `spec/WIKI_NEAR.md`: it opens the drawer on `#/near` and hands the wiki a
+  nearest-first snapshot keyed by the wiki's own ids (from WorldScene's
+  `__ml.nearby()`), answering `wiki:wantNear` for as long as a drawer is up.
+- `client/src/wikibtn.ts` — the in-game Wiki button; its face is the
+  maintainer's own PixelLab open old book (`/ui2/icon-wiki.webp`), the same
+  one the select screen's Wiki button wears.
 - `client/src/select.ts` — character/world select screen.
 - `client/src/loading.ts` — loading overlay.
 - `client/src/roster.ts` — player roster overlay (currently unmounted).
@@ -76,7 +91,14 @@ wiki-style remake (the frame and sprite clock no longer exist at runtime).
   `scripts/verify-dropqty.mjs` (backpack ×N badges + the drop dialog, both
   orientations; the SERVER's count clamp is unit-tested in
   `server/test/combat.review.test.ts` instead),
-  `scripts/verify-levelup.mjs` (the XP bar's level-up).
+  `scripts/verify-levelup.mjs` (the XP bar's level-up),
+  `scripts/verify-tagline.mjs` (the logo's tagline pool + the erased art),
+  `scripts/verify-map.mjs` (the Map tab: the file it fetches, a ceiling on
+  its size, that its minimap.json is not stale, and the dot against maps2's
+  own worked samples),
+  `scripts/verify-wikibtn.mjs` (the in-game Wiki button, the wiki's
+  remembered reading spot, the game-loop freeze while it is open, the
+  🔍 button + its `wiki:near` contract, and that the 🔍 icon really decoded).
 - This file.
 
 **The games agent owns everything else**, notably: `client/src/scenes/`,
@@ -172,6 +194,164 @@ from the games agent), #18 (title/landing screen).
 - Suppress `contextmenu` on roots containing `<img>` (Android long-press).
 - Movement-timing e2e stays on small viewports (headless-GL starvation);
   UI screenshots use the real phone geometry — the two never mix.
+- **THE WIKI BUTTON LIVES WITH THE CLOCK PILL** (`wikibtn.ts`, maintainer
+  2026-08-13, placements from his three red-circled shots): pill-sized
+  (80x32+border), same right edge, and one 10px gap BELOW the pill in EVERY
+  placement (maintainer 2026-09-03, on a screenshot: "I think it looks better
+  if the wiki+search is under the time-of-day pill — they should swap y
+  position"). At rest the Wiki row takes the corner anchor and the PILL steps
+  up over it by `--ml-stack-step`; in right-handed landscape the pill is
+  top-anchored under the XP chip and the row hangs one step under it, which
+  already read that way. ONE order everywhere, including over the phone
+  keyboard — chrome that reorders when the keys come up reads as a bug.
+  THE STEP IS PUBLISHED, NOT COPIED: `--ml-stack-step` is declared once by
+  wikibtn.ts (it is that button's own outer height + the gap) and read by
+  clock.ts, wikinear.ts and hud.ts's keyboard lift. It was three hardcoded
+  44s before the swap, which is exactly the shape that desyncs. And the chat
+  log moves WITH the pill over the keyboard: "the log and the pill on one
+  line" is an approved 2026-07-31 arrangement that verify-chatpage pins. Every
+  rule mirrors `.ml-clock` plus one step, including the `:root.ml-kb-up`
+  keyboard lift, so the two always move as a stack; change the pill's
+  anchoring and this file changes in the same commit. It is in hud's
+  `ml-noanim` list (rotation snaps). The drawer it opens REMEMBERS the
+  reading spot (`wikipanel.ts`, the wiki agent's module, edited on the
+  maintainer's ask + board note): {hash, scroll} in `ml-wiki-spot`, saved on
+  close and pagehide, applied on the next open — the hash rides the iframe
+  src, the scroll waits for the page to be tall enough (the wiki fetches
+  data.json before it renders).
+- **THE MAP RENDER IS CROPPED, SO THE DOT COMES FROM `minimap.json`.** maps2
+  d8a399b1a6 draws deep water as nothing and cuts the transparent border away,
+  so the file is only the island — and a fraction of the FULL iso canvas,
+  which is how the client placed the dot for a year, is then wrong by
+  construction. The crop is not re-derivable client-side (it depends on where
+  the land happens to reach), so maps2 publishes the arithmetic beside the
+  image (`pixel-maps3/minimap@1`): `px = kx*(x-y) + x0`,
+  `py = ky*(x+y) - kz*level + y0`, the centre of that cell's top face.
+  `loadMinimapMeta` fetches it once per world and it OUTRANKS both projection
+  replicas; a world without the doc still falls back to them, which stays
+  right for an uncropped render. Validate every field before using it — a
+  half-written doc must fall back, not put the dot at NaN%.
+  ITS OWN WORKED SAMPLES ARE THE GATE'S GROUND TRUTH: maps2 lists real land
+  cells with the pixel each lands on, asserted at build time against the
+  file's own alpha. Re-evaluating their formula in the gate would only agree
+  with the client about a shared misreading of it — including the one thing
+  worth doubting, whether `col` means the same on both sides. And pin that the
+  doc is not STALE (its `world` must be the grid the game loaded), or every
+  sample is describing a different island.
+- **THE MAP TAB FETCHES `minimap.webp`, AND THE DOT IS CHECKED AGAINST THE
+  PICTURE.** Every tree publishes that name now (maps2 47e08659d1); `overview`
+  survives only as an iso fallback, and it is the QA render's name — for
+  the_game it WAS render3's 16300x7576 / 15.2 MB review render, fetched on a
+  phone and scaled into a ~360px frame, which is what made verify-landscape
+  report a 16300px map frame. Hence the size ceiling in `verify-map`: a
+  map-tab image over 2400px wide is a review render, not a map.
+  (`overview.webp` is deleted now, so it is not even a fallback — asking for
+  it only 404s on the way to one.) The apex check this gate used to make —
+  the four corner CELLS are the four apexes of an uncropped iso diamond —
+  was right for exactly one day: it is the check that CAUGHT the crop
+  landing, and the samples above replaced it because a cropped render has no
+  such relationship to the grid.
+- **SLIDER ROWS LEAVE A SCROLL GUTTER; BUTTONS DO NOT** (`--ml-slider-gutter`,
+  80px, maintainer 2026-09-08 with the strip circled on a screenshot: "when
+  scrolling in settings it's hard to not by mistake edit a slider … this is
+  because the sliders spawn 100% width"). A track takes its value on
+  POINTERDOWN — a tap anywhere on it jumps there, which is deliberate — so the
+  first touch of a scroll that lands on a track has already changed the
+  setting before it moved a pixel. The gutter is a strip his thumb can always
+  start a drag in. NOT `touch-action:pan-y` on the track: the browser only
+  rules a gesture a vertical pan after some movement, by which time pointerdown
+  has applied the value, so the setting would change AND the page scroll away
+  from it. BUTTONS KEEP THE FULL WIDTH on his instruction — dragging one does
+  nothing, so there is nothing to protect — and the gate asserts BOTH
+  directions, or "fix" it by narrowing the whole page and it still passes.
+  THE GUTTER IS ON THE TRACK, NOT THE ROW, and that was learned the second
+  time: insetting the whole row right-aligns the readout with the track and
+  reads more deliberately, but it narrows the LABEL LINE too, and at 100px
+  "Light resolution · 50% · 25% of the pixels" wrapped onto two centred lines.
+  Only the track is draggable, so only the track moves.
+  THE WIDTH IS HIS THUMB, MEASURED BY HIM — 80px was the strip he circled and
+  he came back with "my thumb is just a little bit bigger", so it is 100px
+  (118px clear of the screen edge at his 393px width). FIXED PX on purpose: a
+  thumb is the same size on every screen, so this must never become a
+  fraction of the viewport. The gate's floor is that number rather than the
+  44px generic touch target, so shrinking it back toward a guideline fails.
+- **A UI ICON IS THE MAINTAINER'S ART AT ITS AUTHORED GRID, NEVER AN EMOJI.**
+  The 🔍 button shipped with the `&#128269;` glyph and he replaced it with his
+  own PixelLab piece (2026-09-03) — an emoji is whatever the phone's font
+  vendor drew that year, and it cannot be pixel art. The 📖 and 🌗 on the Wiki
+  and Theme buttons went the same way the next day. The recipe, same as every
+  `/ui2` icon: keep the untouched export as the PIXEL SOURCE in
+  `client/ui-src/`, bake an EXACT 2x nearest-neighbour upscale to
+  `/ui2/<name>.webp` through `scripts/to-webp.py` (which verifies the
+  round-trip), and let the runtime size it to `naturalWidth / 2` — that lands
+  it on its authored grid on every screen, and it is ONE rule shared with
+  hud.ts rather than a hardcoded box per icon. Stamp the URL with `withV()`.
+  A transform is worth asserting in the bake script itself: a mirror must be a
+  pure mirror, a 2x must reproduce the source in every 2x2 block, and a
+  re-centring must move the same pixels it started with — or you have
+  resampled pixel art without noticing.
+  WHEN AN ICON SHARES A BOX, GROW THE BOX — never squeeze the art. The select
+  screen's Wiki and Theme glyphs sit in one fixed `.ml-cicon` exactly so the
+  pair cannot differ in size or baseline (his 2026-07-30 report), so it went
+  19px -> the art's authored 24px and BOTH kept their alignment; sizing one of
+  a matched pair alone re-creates the very bug the box exists for. Then check
+  what the growth PUSHED: 5px of extra button height silently closed the 9px
+  gap to the Theme button below, because `.ml-theme{top}` is an absolute
+  offset that does not follow a taller neighbour. And mind the FRAMING of
+  what you are given — the theme disc's export sat flush to two canvas edges
+  while the book beside it was centred, which reads as 2px of misalignment in
+  a shared box; the bake centres the ink (pure integer translation, export
+  kept as the source of record).
+- **A MISSING `/ui2` FILE IS AN EMPTY BOX, NOT AN ERROR.** Nothing throws, the
+  button keeps its shape, and a screenshot at a glance looks like a design
+  choice. The only honest gate is the DECODED bitmap — `naturalWidth` is 0 for
+  a 404 and the bake's real width when it arrived. Assert cache stamping
+  RELATIVE to an icon that already has it (both bare, or both `?v=`/`?h=`):
+  `withV()` is a deliberate no-op in dev, so "does the URL end in ?v=" tests
+  the environment, not the code.
+- **THE 🔍 BUTTON IS THE WIKI'S SEARCH, SORTED BY DISTANCE** (`wikinear.ts`
+  + `spec/WIKI_NEAR.md`, maintainer 2026-09-02: "a square search icon to the
+  left of the Wiki button … directly to the search with the results sorted by
+  how far away they are from the player — a way to fast find what you stand
+  next to"). Two agents, one contract file; change it in the same commit as
+  either side. THE IDS ARE THE WIKI'S OWN, and they come from two id spaces
+  that look alike: a Tiles 2.0 material is a `tiles` page, but a Tiles 3.0
+  ground TYPE (`the_game`, every maps3 world — `grass`, `brown_paving_stone`)
+  is a `world` page (`#/world/<type>`), and the wiki keys scenery by the bare
+  piece id while a placement names `category/piece`. The first cut sent
+  `tiles/grass` and `objects/streetlights/streetlight_007` and 7 of 29 rows
+  routed; the gate now fetches the wiki's shipped `data.json` and requires
+  the ground under the feet to route. A stale wiki BUILD can still leave a
+  fresh roster entry unresolved — that is reported, never failed. The
+  snapshot is taken AFTER the freeze, so it cannot go stale while the player
+  reads; `#/near` is a page like any other to the spot store (the Wiki button
+  returns to it), the 🔍 always starts a fresh one. THE EAR (maintainer, same day:
+  "does #/near also contain the music playing right now and the sound effects
+  triggered the last 30 s?"): the snapshot carries `heard` — the composer's
+  ledger (`gameAudio.heard()`: score now + every sound EVENT of the last 30 s,
+  newest first, `sound: null` when the event is unassigned and played nothing,
+  which is the row the Game Master wants). The ledger lives in the composer
+  (games-audio's module, edited additively + announced); we only relay it.
+  Probe `__mlNear.snapshot()`.
+- **A FULL-SCREEN READER OVER THE WORLD PUTS THE LOOP TO SLEEP** — and waking
+  it is NOT `TimeStep.resume()` (`gamefreeze.ts`, maintainer 2026-08-13: "the
+  wiki lags a bit when opened on top of the game — can you freeze or pause the
+  game rendering when the wiki is open?"). The wiki drawer is a second document
+  painted on the same main thread, so `loop.sleep()` cancels the rAF outright
+  for as long as it is up. Nothing that has to keep working is on that loop:
+  the socket is event-driven, WebAudio schedules itself, the HUD is DOM. What
+  DOES stop is input, which is the behaviour you want — the server integrates
+  only what it receives, so a frozen client stands still instead of coasting.
+  THE TRAP is the wake: `resume()` is the obvious partner and it arms Phaser's
+  BACKGROUNDED-TAB recovery, `_coolDown = panicMax` (120), which clamps every
+  delta to the 16.7ms target for the next 120 FRAMES. Measured: 16.7ms of game
+  time per 167ms of real time, and a thawed player walked 20wu where an
+  unfrozen one walked 151 — visible slow motion on anything under 60fps. Move
+  `lastTime` to now instead and the first frame back is a ~0ms frame with no
+  cooldown behind it. (Phaser arms the SAME cooldown from its own window-focus
+  handler, so tapping inside the iframe and back out already does this with or
+  without the freeze — verified against the unfrozen baseline. Do not
+  re-diagnose that one as a freeze bug.)
 - **To TIME a DOM animation on this harness, drop the WebGL context first.**
   The software GL renders the world at ~5fps (measured at every viewport and
   on the lightest worlds), and WAAPI clocks run on the document timeline — at
@@ -183,6 +363,34 @@ from the games agent), #18 (title/landing screen).
   Everything DOM keeps working — the socket, the synced state, the HUD. It
   BLANKS the canvas, so it is useless for a screenshot of anything over the
   world, and useless for anything Phaser draws.
+- **THE LOGO'S TAGLINE IS TEXT NOW, NOT ART** (maintainer 2026-08-06). It was
+  baked into `logo.webp`, which is generated — "each time Gemini regenerates
+  the graphics the quality is reduced" — so the words could never change
+  without redrawing the whole logo. The letters are painted out of the art and
+  drawn over the empty banner from a pool in `select.ts` (`pixeltext.ts` is the
+  font). Four things that cost a round each:
+  - **MATCH BY MEASUREMENT, NOT BY EYE.** The baked line is a 5x7 font at 2
+    art-px per cell; transcribing the glyphs off the art gave a byte-for-byte
+    metric match (274x14 for the same sentence). Anything less exact shows,
+    because the new words sit beside the art they are imitating.
+  - **PIXEL-ART INK IS NEVER ONE COLOUR.** The maintainer's read was "a little
+    whiter and not as gold … work on the bold and texture". It is SEVEN golds,
+    one per cell row, plus a warm brown shoulder ring on the plate. A flat fill
+    reads cheap and cold.
+  - **A BLUR IS NOT A SOFT UPSCALE.** Imitating the art's shoulder with a
+    bilinear blur covered MORE pixels than the art while carrying 20% LESS
+    light — wide and washed out where the art is tight and bright. A hard 1px
+    dilation under a crisp core matched it to 1.5%.
+  - **THE PLATE'S LIMIT IS THE FLOURISHES, NOT THE BANNER.** The gold arms
+    reach in over the cap rows and leave 293px clear, not the rule's 352 — the
+    first limit passed a line whose S and full stop sat on top of the gold.
+    A long line is now SCALED DOWN to the arms rather than rejected (the
+    canvas is already downscaled ~3.5x on a phone, so a few percent costs
+    nothing visible), and the word space is 2 cells rather than the art's 3 —
+    one art pixel per gap, which buys 4-6 cells on every line.
+  When ERASING baked text from art, inpaint by diffusion (blur, restore the
+  known pixels, repeat) so any glow behind the letters survives, and keep the
+  box off the ornaments: the first pass smeared a flourish into a brown blur.
 - **Film DOM animations with a MutationObserver, not a sampler.** It fires per
   mutation BATCH, so every paint is one ordered snapshot however slow the page
   is, and reading `getComputedStyle` inside the callback flushes style — which
@@ -190,11 +398,3 @@ from the games agent), #18 (title/landing screen).
   the impact frame, exactly. For "did these start together", read the browser's
   own `Animation.startTime` instead of any pixel: grab the objects when their
   effect appears and read them at the end (a finished animation keeps it).
-
-## Don't
-
-- Don't edit the games agent's files (above) without a board round trip.
-- Don't touch the art domains (`characters2/`, `tiles2/`, `maps2/`,
-  `objects/`, `sounds/`) — read-only, same as ever.
-- Don't write any `coordination/*.json` except `games-ui.json`.
-- Don't push red — `npm test` + `npm run typecheck` first.

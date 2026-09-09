@@ -1,0 +1,817 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-13T23:02:36+00:00",
+  "id": "flame_niche_900",
+  "group": "flame_niches",
+  "rank": 16,
+  "index": 900,
+  "name": "Brick niche, iron grate 900",
+  "lights": null,
+  "variety": "brick niche, iron grate",
+  "glow_concept": "small orange flame on a stone dish",
+  "prompt": "a small freestanding stone niche with an arched opening sheltering a little flame burning on a dish, brick niche, iron grate, roughly six feet tall, human height, self-emissive at night, softly radiating light: small orange flame on a stone dish",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 64,
+  "sprite": "flame_niches/flame_niche_900/sprite.webp",
+  "placement": {
+    "world_height_m": 1.036,
+    "world_px_height": 53,
+    "character_height_px": 87,
+    "character_height_m": 1.7,
+    "note": "ONE SCENERY PIXEL IS ONE PLAYER PIXEL. world_px_height IS the art's own alpha bbox height, so scenery is placed into the world at 1:1 exactly as the avatar is (setScale(1)) and the two share one pixel grid. The CAMERA still zooms the whole scene \u2014 that is uniform and correct; what must never happen is scenery being resampled on its own, against the player. world_height_m is what the art reads as beside a 87px character; declared_height_m is what it was once declared to be, and a gap between them means the ART is the wrong size.",
+    "declared_height_m": 1.25,
+    "content_box": [
+      13,
+      6,
+      52,
+      59
+    ],
+    "content_px_height": 53,
+    "canvas_render_px": 64
+  },
+  "pixellab_object_id": "3fa021ad-35b6-4be4-a5ea-74f02f78d5c3",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)",
+  "renamed_from": "flame_niche_008",
+  "renamed_why": "crash-window re-roll squatted a judged id; fresh id so old verdicts point at nothing and this enters the review queue as the new piece it is",
+  "must_be_imbplemented_with_random_hflip": true,
+  "states": {
+    "LIT_1": {
+      "sprite": "flame_niches/flame_niche_900/sprite.webp",
+      "pixellab_object_id": "3fa021ad-35b6-4be4-a5ea-74f02f78d5c3",
+      "generated_at": "2026-08-13T23:02:36+00:00",
+      "animations": {
+        "flame": {
+          "group_id": "24e6065b-29f7-4707-ba69-a698bef0f3c8",
+          "description": "Animate the flame only",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "directions": {
+            "south": {
+              "frames": 5,
+              "frame_paths": [
+                "flame_niches/flame_niche_900/animations/flame/south/00.webp",
+                "flame_niches/flame_niche_900/animations/flame/south/01.webp",
+                "flame_niches/flame_niche_900/animations/flame/south/02.webp",
+                "flame_niches/flame_niche_900/animations/flame/south/03.webp",
+                "flame_niches/flame_niche_900/animations/flame/south/04.webp"
+              ],
+              "light_frames": [
+                {
+                  "intensity": 1.116,
+                  "dx": -0.2,
+                  "dy": 8.7
+                },
+                {
+                  "intensity": 1.29,
+                  "dx": -0.1,
+                  "dy": 8.2
+                },
+                {
+                  "intensity": 0.986,
+                  "dx": 0.1,
+                  "dy": 10.0
+                },
+                {
+                  "intensity": 0.808,
+                  "dx": -0.0,
+                  "dy": 10.3
+                },
+                {
+                  "intensity": 0.801,
+                  "dx": -0.0,
+                  "dy": 10.2
+                }
+              ]
+            },
+            "south-east": {
+              "frames": 5,
+              "frame_paths": [
+                "flame_niches/flame_niche_900/animations/flame/south-east/00.webp",
+                "flame_niches/flame_niche_900/animations/flame/south-east/01.webp",
+                "flame_niches/flame_niche_900/animations/flame/south-east/02.webp",
+                "flame_niches/flame_niche_900/animations/flame/south-east/03.webp",
+                "flame_niches/flame_niche_900/animations/flame/south-east/04.webp"
+              ],
+              "light_frames": [
+                {
+                  "intensity": 1.035,
+                  "dx": 2.5,
+                  "dy": 7.7
+                },
+                {
+                  "intensity": 1.092,
+                  "dx": 2.4,
+                  "dy": 7.8
+                },
+                {
+                  "intensity": 0.914,
+                  "dx": 2.5,
+                  "dy": 8.3
+                },
+                {
+                  "intensity": 0.918,
+                  "dx": 2.5,
+                  "dy": 8.3
+                },
+                {
+                  "intensity": 1.041,
+                  "dx": 2.4,
+                  "dy": 8.0
+                }
+              ]
+            },
+            "south-west": {
+              "frames": 5,
+              "frame_paths": [
+                "flame_niches/flame_niche_900/animations/flame/south-west/00.webp",
+                "flame_niches/flame_niche_900/animations/flame/south-west/01.webp",
+                "flame_niches/flame_niche_900/animations/flame/south-west/02.webp",
+                "flame_niches/flame_niche_900/animations/flame/south-west/03.webp",
+                "flame_niches/flame_niche_900/animations/flame/south-west/04.webp"
+              ],
+              "light_frames": [
+                {
+                  "intensity": 0.757,
+                  "dx": -3.7,
+                  "dy": 6.9
+                },
+                {
+                  "intensity": 0.879,
+                  "dx": -3.7,
+                  "dy": 6.7
+                },
+                {
+                  "intensity": 0.947,
+                  "dx": -2.8,
+                  "dy": 2.4
+                },
+                {
+                  "intensity": 1.106,
+                  "dx": -1.7,
+                  "dy": -1.9
+                },
+                {
+                  "intensity": 1.311,
+                  "dx": -1.2,
+                  "dy": -4.5
+                }
+              ]
+            }
+          },
+          "generated_at": "2026-08-29T08:16:19+00:00",
+          "review": "ANIMATION_PROBABLY_GOOD",
+          "review_metrics": {
+            "base_outline": 0.0
+          },
+          "frame_paths": [
+            "flame_niches/flame_niche_900/animations/flame/south/00.webp",
+            "flame_niches/flame_niche_900/animations/flame/south/01.webp",
+            "flame_niches/flame_niche_900/animations/flame/south/02.webp",
+            "flame_niches/flame_niche_900/animations/flame/south/03.webp",
+            "flame_niches/flame_niche_900/animations/flame/south/04.webp"
+          ],
+          "strip": "flame_niches/flame_niche_900/animations/flame__south.webp",
+          "light_frames": [
+            {
+              "intensity": 1.116,
+              "dx": -0.2,
+              "dy": 8.7
+            },
+            {
+              "intensity": 1.29,
+              "dx": -0.1,
+              "dy": 8.2
+            },
+            {
+              "intensity": 0.986,
+              "dx": 0.1,
+              "dy": 10.0
+            },
+            {
+              "intensity": 0.808,
+              "dx": -0.0,
+              "dy": 10.3
+            },
+            {
+              "intensity": 0.801,
+              "dx": -0.0,
+              "dy": 10.2
+            }
+          ]
+        }
+      },
+      "rotations": {
+        "south-east": "flame_niches/flame_niche_900/rotations/south-east.webp",
+        "south-west": "flame_niches/flame_niche_900/rotations/south-west.webp",
+        "south": "flame_niches/flame_niche_900/sprite.webp"
+      }
+    },
+    "LIT_2": {
+      "sprite": "flame_niches/flame_niche_900/lit_2/sprite.webp",
+      "pixellab_object_id": "792af0bd-125b-44d0-8445-6f991877a439",
+      "generated_at": "2026-08-16T14:03:21+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.7765,
+      "glow_score": 0.0142,
+      "animations": {
+        "flame": {
+          "group_id": "960fcf7d-4c2c-4e79-afd5-9a87264b206a",
+          "description": "Animate the flame only",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "directions": {
+            "south": {
+              "frames": 5,
+              "frame_paths": [
+                "flame_niches/flame_niche_900/lit_2/animations/flame/south/00.webp",
+                "flame_niches/flame_niche_900/lit_2/animations/flame/south/01.webp",
+                "flame_niches/flame_niche_900/lit_2/animations/flame/south/02.webp",
+                "flame_niches/flame_niche_900/lit_2/animations/flame/south/03.webp",
+                "flame_niches/flame_niche_900/lit_2/animations/flame/south/04.webp"
+              ],
+              "strip": "flame_niches/flame_niche_900/lit_2/animations/flame__south.webp",
+              "light_frames": [
+                {
+                  "intensity": 0.775,
+                  "dx": -0.4,
+                  "dy": 7.4
+                },
+                {
+                  "intensity": 0.948,
+                  "dx": -0.6,
+                  "dy": 5.1
+                },
+                {
+                  "intensity": 1.5,
+                  "dx": -0.5,
+                  "dy": 4.9
+                },
+                {
+                  "intensity": 0.899,
+                  "dx": -0.4,
+                  "dy": 7.7
+                },
+                {
+                  "intensity": 0.747,
+                  "dx": -0.5,
+                  "dy": 8.2
+                }
+              ]
+            },
+            "south-east": {
+              "frames": 5,
+              "frame_paths": [
+                "flame_niches/flame_niche_900/lit_2/animations/flame/south-east/00.webp",
+                "flame_niches/flame_niche_900/lit_2/animations/flame/south-east/01.webp",
+                "flame_niches/flame_niche_900/lit_2/animations/flame/south-east/02.webp",
+                "flame_niches/flame_niche_900/lit_2/animations/flame/south-east/03.webp",
+                "flame_niches/flame_niche_900/lit_2/animations/flame/south-east/04.webp"
+              ],
+              "strip": "flame_niches/flame_niche_900/lit_2/animations/flame__south-east.webp",
+              "light_frames": [
+                {
+                  "intensity": 1.232,
+                  "dx": 2.1,
+                  "dy": 6.8
+                },
+                {
+                  "intensity": 1.42,
+                  "dx": 2.1,
+                  "dy": 6.3
+                },
+                {
+                  "intensity": 1.128,
+                  "dx": 1.8,
+                  "dy": 6.8
+                },
+                {
+                  "intensity": 0.719,
+                  "dx": 1.5,
+                  "dy": 7.0
+                },
+                {
+                  "intensity": 0.502,
+                  "dx": 1.9,
+                  "dy": 7.9
+                }
+              ]
+            },
+            "south-west": {
+              "frames": 5,
+              "frame_paths": [
+                "flame_niches/flame_niche_900/lit_2/animations/flame/south-west/00.webp",
+                "flame_niches/flame_niche_900/lit_2/animations/flame/south-west/01.webp",
+                "flame_niches/flame_niche_900/lit_2/animations/flame/south-west/02.webp",
+                "flame_niches/flame_niche_900/lit_2/animations/flame/south-west/03.webp",
+                "flame_niches/flame_niche_900/lit_2/animations/flame/south-west/04.webp"
+              ],
+              "strip": "flame_niches/flame_niche_900/lit_2/animations/flame__south-west.webp",
+              "light_frames": [
+                {
+                  "intensity": 1.146,
+                  "dx": -3.2,
+                  "dy": 6.7
+                },
+                {
+                  "intensity": 1.158,
+                  "dx": -2.8,
+                  "dy": 5.8
+                },
+                {
+                  "intensity": 1.081,
+                  "dx": -3.2,
+                  "dy": 5.5
+                },
+                {
+                  "intensity": 0.636,
+                  "dx": -3.2,
+                  "dy": 7.2
+                },
+                {
+                  "intensity": 0.979,
+                  "dx": -3.2,
+                  "dy": 7.2
+                }
+              ]
+            }
+          },
+          "generated_at": "2026-08-29T08:16:39+00:00",
+          "review": "ANIMATION_PROBABLY_GOOD",
+          "review_metrics": {
+            "base_outline": 0.0432
+          },
+          "frame_paths": [
+            "flame_niches/flame_niche_900/lit_2/animations/flame/south/00.webp",
+            "flame_niches/flame_niche_900/lit_2/animations/flame/south/01.webp",
+            "flame_niches/flame_niche_900/lit_2/animations/flame/south/02.webp",
+            "flame_niches/flame_niche_900/lit_2/animations/flame/south/03.webp",
+            "flame_niches/flame_niche_900/lit_2/animations/flame/south/04.webp"
+          ],
+          "strip": "flame_niches/flame_niche_900/lit_2/animations/flame__south.webp",
+          "light_frames": [
+            {
+              "intensity": 0.775,
+              "dx": -0.4,
+              "dy": 7.4
+            },
+            {
+              "intensity": 0.948,
+              "dx": -0.6,
+              "dy": 5.1
+            },
+            {
+              "intensity": 1.5,
+              "dx": -0.5,
+              "dy": 4.9
+            },
+            {
+              "intensity": 0.899,
+              "dx": -0.4,
+              "dy": 7.7
+            },
+            {
+              "intensity": 0.747,
+              "dx": -0.5,
+              "dy": 8.2
+            }
+          ]
+        }
+      },
+      "rotations": {
+        "south-east": "flame_niches/flame_niche_900/lit_2/rotations/south-east.webp",
+        "south-west": "flame_niches/flame_niche_900/lit_2/rotations/south-west.webp",
+        "south": "flame_niches/flame_niche_900/lit_2/sprite.webp"
+      }
+    },
+    "LIT_3": {
+      "sprite": "flame_niches/flame_niche_900/lit_3/sprite.webp",
+      "pixellab_object_id": "40281060-1850-4f63-8db0-5b54262a94f0",
+      "generated_at": "2026-08-16T14:03:01+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.8556,
+      "glow_score": 0.0239,
+      "animations": {
+        "flame": {
+          "group_id": "424f66c3-ff29-44f8-9f0a-bab748541865",
+          "description": "Animate the flame only",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "directions": {
+            "south": {
+              "frames": 5,
+              "frame_paths": [
+                "flame_niches/flame_niche_900/lit_3/animations/flame/south/00.webp",
+                "flame_niches/flame_niche_900/lit_3/animations/flame/south/01.webp",
+                "flame_niches/flame_niche_900/lit_3/animations/flame/south/02.webp",
+                "flame_niches/flame_niche_900/lit_3/animations/flame/south/03.webp",
+                "flame_niches/flame_niche_900/lit_3/animations/flame/south/04.webp"
+              ],
+              "strip": "flame_niches/flame_niche_900/lit_3/animations/flame__south.webp",
+              "light_frames": [
+                {
+                  "intensity": 1.053,
+                  "dx": -0.4,
+                  "dy": 6.1
+                },
+                {
+                  "intensity": 0.968,
+                  "dx": -0.8,
+                  "dy": 6.0
+                },
+                {
+                  "intensity": 1.05,
+                  "dx": -0.7,
+                  "dy": 6.0
+                },
+                {
+                  "intensity": 1.027,
+                  "dx": -0.0,
+                  "dy": 6.2
+                },
+                {
+                  "intensity": 0.903,
+                  "dx": -0.3,
+                  "dy": 6.5
+                }
+              ]
+            },
+            "south-east": {
+              "frames": 5,
+              "frame_paths": [
+                "flame_niches/flame_niche_900/lit_3/animations/flame/south-east/00.webp",
+                "flame_niches/flame_niche_900/lit_3/animations/flame/south-east/01.webp",
+                "flame_niches/flame_niche_900/lit_3/animations/flame/south-east/02.webp",
+                "flame_niches/flame_niche_900/lit_3/animations/flame/south-east/03.webp",
+                "flame_niches/flame_niche_900/lit_3/animations/flame/south-east/04.webp"
+              ],
+              "strip": "flame_niches/flame_niche_900/lit_3/animations/flame__south-east.webp",
+              "light_frames": [
+                {
+                  "intensity": 1.242,
+                  "dx": -0.1,
+                  "dy": 5.3
+                },
+                {
+                  "intensity": 1.016,
+                  "dx": 0.1,
+                  "dy": 4.1
+                },
+                {
+                  "intensity": 0.971,
+                  "dx": -0.4,
+                  "dy": 4.8
+                },
+                {
+                  "intensity": 0.934,
+                  "dx": -0.3,
+                  "dy": 5.8
+                },
+                {
+                  "intensity": 0.836,
+                  "dx": -0.1,
+                  "dy": 5.6
+                }
+              ]
+            },
+            "south-west": {
+              "frames": 5,
+              "frame_paths": [
+                "flame_niches/flame_niche_900/lit_3/animations/flame/south-west/00.webp",
+                "flame_niches/flame_niche_900/lit_3/animations/flame/south-west/01.webp",
+                "flame_niches/flame_niche_900/lit_3/animations/flame/south-west/02.webp",
+                "flame_niches/flame_niche_900/lit_3/animations/flame/south-west/03.webp",
+                "flame_niches/flame_niche_900/lit_3/animations/flame/south-west/04.webp"
+              ],
+              "strip": "flame_niches/flame_niche_900/lit_3/animations/flame__south-west.webp",
+              "light_frames": [
+                {
+                  "intensity": 1.092,
+                  "dx": -0.9,
+                  "dy": 5.4
+                },
+                {
+                  "intensity": 0.952,
+                  "dx": -1.3,
+                  "dy": 5.4
+                },
+                {
+                  "intensity": 1.019,
+                  "dx": -1.1,
+                  "dy": 5.2
+                },
+                {
+                  "intensity": 1.01,
+                  "dx": -1.1,
+                  "dy": 5.1
+                },
+                {
+                  "intensity": 0.928,
+                  "dx": -0.8,
+                  "dy": 5.2
+                }
+              ]
+            }
+          },
+          "generated_at": "2026-08-29T08:17:38+00:00",
+          "review": "ANIMATION_PROBABLY_GOOD",
+          "review_metrics": {
+            "base_outline": 0.0045
+          },
+          "frame_paths": [
+            "flame_niches/flame_niche_900/lit_3/animations/flame/south/00.webp",
+            "flame_niches/flame_niche_900/lit_3/animations/flame/south/01.webp",
+            "flame_niches/flame_niche_900/lit_3/animations/flame/south/02.webp",
+            "flame_niches/flame_niche_900/lit_3/animations/flame/south/03.webp",
+            "flame_niches/flame_niche_900/lit_3/animations/flame/south/04.webp"
+          ],
+          "strip": "flame_niches/flame_niche_900/lit_3/animations/flame__south.webp",
+          "light_frames": [
+            {
+              "intensity": 1.053,
+              "dx": -0.4,
+              "dy": 6.1
+            },
+            {
+              "intensity": 0.968,
+              "dx": -0.8,
+              "dy": 6.0
+            },
+            {
+              "intensity": 1.05,
+              "dx": -0.7,
+              "dy": 6.0
+            },
+            {
+              "intensity": 1.027,
+              "dx": -0.0,
+              "dy": 6.2
+            },
+            {
+              "intensity": 0.903,
+              "dx": -0.3,
+              "dy": 6.5
+            }
+          ]
+        }
+      },
+      "rotations": {
+        "south-east": "flame_niches/flame_niche_900/lit_3/rotations/south-east.webp",
+        "south-west": "flame_niches/flame_niche_900/lit_3/rotations/south-west.webp",
+        "south": "flame_niches/flame_niche_900/lit_3/sprite.webp"
+      }
+    },
+    "LIT_4": {
+      "sprite": "flame_niches/flame_niche_900/lit_4/sprite.webp",
+      "pixellab_object_id": "156820ee-923d-40ec-ba7b-431c6cb390eb",
+      "generated_at": "2026-08-16T14:03:22+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.8601,
+      "glow_score": 0.0218,
+      "animations": {
+        "flame": {
+          "group_id": "afed278e-ec15-45e6-9ce1-e0398ba7f405",
+          "description": "Animate the flame only",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "directions": {
+            "south": {
+              "frames": 5,
+              "frame_paths": [
+                "flame_niches/flame_niche_900/lit_4/animations/flame/south/00.webp",
+                "flame_niches/flame_niche_900/lit_4/animations/flame/south/01.webp",
+                "flame_niches/flame_niche_900/lit_4/animations/flame/south/02.webp",
+                "flame_niches/flame_niche_900/lit_4/animations/flame/south/03.webp",
+                "flame_niches/flame_niche_900/lit_4/animations/flame/south/04.webp"
+              ],
+              "strip": "flame_niches/flame_niche_900/lit_4/animations/flame__south.webp",
+              "light_frames": [
+                {
+                  "intensity": 1.069,
+                  "dx": -0.7,
+                  "dy": 12.9
+                },
+                {
+                  "intensity": 1.01,
+                  "dx": -0.6,
+                  "dy": 13.7
+                },
+                {
+                  "intensity": 1.013,
+                  "dx": -0.5,
+                  "dy": 12.9
+                },
+                {
+                  "intensity": 0.83,
+                  "dx": -0.5,
+                  "dy": 14.0
+                },
+                {
+                  "intensity": 1.078,
+                  "dx": -0.5,
+                  "dy": 13.1
+                }
+              ]
+            },
+            "south-east": {
+              "frames": 5,
+              "frame_paths": [
+                "flame_niches/flame_niche_900/lit_4/animations/flame/south-east/00.webp",
+                "flame_niches/flame_niche_900/lit_4/animations/flame/south-east/01.webp",
+                "flame_niches/flame_niche_900/lit_4/animations/flame/south-east/02.webp",
+                "flame_niches/flame_niche_900/lit_4/animations/flame/south-east/03.webp",
+                "flame_niches/flame_niche_900/lit_4/animations/flame/south-east/04.webp"
+              ],
+              "strip": "flame_niches/flame_niche_900/lit_4/animations/flame__south-east.webp",
+              "light_frames": [
+                {
+                  "intensity": 1.434,
+                  "dx": 1.3,
+                  "dy": 8.7
+                },
+                {
+                  "intensity": 1.192,
+                  "dx": 1.3,
+                  "dy": 8.8
+                },
+                {
+                  "intensity": 0.964,
+                  "dx": 0.8,
+                  "dy": 10.1
+                },
+                {
+                  "intensity": 0.846,
+                  "dx": 1.3,
+                  "dy": 10.6
+                },
+                {
+                  "intensity": 0.563,
+                  "dx": 1.2,
+                  "dy": 10.2
+                }
+              ]
+            },
+            "south-west": {
+              "frames": 5,
+              "frame_paths": [
+                "flame_niches/flame_niche_900/lit_4/animations/flame/south-west/00.webp",
+                "flame_niches/flame_niche_900/lit_4/animations/flame/south-west/01.webp",
+                "flame_niches/flame_niche_900/lit_4/animations/flame/south-west/02.webp",
+                "flame_niches/flame_niche_900/lit_4/animations/flame/south-west/03.webp",
+                "flame_niches/flame_niche_900/lit_4/animations/flame/south-west/04.webp"
+              ],
+              "strip": "flame_niches/flame_niche_900/lit_4/animations/flame__south-west.webp",
+              "light_frames": [
+                {
+                  "intensity": 1.112,
+                  "dx": -3.2,
+                  "dy": 9.9
+                },
+                {
+                  "intensity": 0.871,
+                  "dx": -2.3,
+                  "dy": 8.5
+                },
+                {
+                  "intensity": 1.178,
+                  "dx": -2.8,
+                  "dy": 7.0
+                },
+                {
+                  "intensity": 1.083,
+                  "dx": -2.3,
+                  "dy": 8.4
+                },
+                {
+                  "intensity": 0.756,
+                  "dx": -1.9,
+                  "dy": 9.6
+                }
+              ]
+            }
+          },
+          "generated_at": "2026-08-29T08:16:12+00:00",
+          "review": "ANIMATION_PROBABLY_GOOD",
+          "review_metrics": {
+            "class": "fire",
+            "base": 0.0761,
+            "still": 0.878
+          },
+          "frame_paths": [
+            "flame_niches/flame_niche_900/lit_4/animations/flame/south/00.webp",
+            "flame_niches/flame_niche_900/lit_4/animations/flame/south/01.webp",
+            "flame_niches/flame_niche_900/lit_4/animations/flame/south/02.webp",
+            "flame_niches/flame_niche_900/lit_4/animations/flame/south/03.webp",
+            "flame_niches/flame_niche_900/lit_4/animations/flame/south/04.webp"
+          ],
+          "strip": "flame_niches/flame_niche_900/lit_4/animations/flame__south.webp",
+          "light_frames": [
+            {
+              "intensity": 1.069,
+              "dx": -0.7,
+              "dy": 12.9
+            },
+            {
+              "intensity": 1.01,
+              "dx": -0.6,
+              "dy": 13.7
+            },
+            {
+              "intensity": 1.013,
+              "dx": -0.5,
+              "dy": 12.9
+            },
+            {
+              "intensity": 0.83,
+              "dx": -0.5,
+              "dy": 14.0
+            },
+            {
+              "intensity": 1.078,
+              "dx": -0.5,
+              "dy": 13.1
+            }
+          ]
+        }
+      },
+      "rotations": {
+        "south-east": "flame_niches/flame_niche_900/lit_4/rotations/south-east.webp",
+        "south-west": "flame_niches/flame_niche_900/lit_4/rotations/south-west.webp",
+        "south": "flame_niches/flame_niche_900/lit_4/sprite.webp"
+      }
+    },
+    "NOT_LIT_1": {
+      "sprite": "flame_niches/flame_niche_900/not_lit_1/sprite.webp",
+      "pixellab_object_id": "f3ae8d34-6e00-4ad4-bb59-99a4d8f3b800",
+      "generated_at": "2026-08-16T14:03:52+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.2557,
+      "glow_score": 0.0,
+      "rotations": {
+        "south-east": "flame_niches/flame_niche_900/not_lit_1/rotations/south-east.webp",
+        "south-west": "flame_niches/flame_niche_900/not_lit_1/rotations/south-west.webp",
+        "south": "flame_niches/flame_niche_900/not_lit_1/sprite.webp"
+      }
+    },
+    "NOT_LIT_2": {
+      "sprite": "flame_niches/flame_niche_900/not_lit_2/sprite.webp",
+      "pixellab_object_id": "f355b896-79c6-4a7a-94bb-1af41626b77f",
+      "generated_at": "2026-08-16T14:03:53+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.2822,
+      "glow_score": 0.0,
+      "rotations": {
+        "south-east": "flame_niches/flame_niche_900/not_lit_2/rotations/south-east.webp",
+        "south-west": "flame_niches/flame_niche_900/not_lit_2/rotations/south-west.webp",
+        "south": "flame_niches/flame_niche_900/not_lit_2/sprite.webp"
+      }
+    }
+  },
+  "collision": true,
+  "hitbox_shape": "rect",
+  "light": {
+    "strength": 0.3,
+    "color": "#fea652",
+    "radius": 5,
+    "reference": "the spawn bonfire is 1.0 (radius 7); strength 0 is no light",
+    "states": {
+      "LIT_1": {
+        "strength": 0.3,
+        "color": "#fea652",
+        "radius": 5
+      },
+      "LIT_2": {
+        "strength": 0.24,
+        "color": "#ffcd7d",
+        "radius": 4
+      },
+      "LIT_3": {
+        "strength": 0.3,
+        "color": "#ffbe65",
+        "radius": 5
+      },
+      "LIT_4": {
+        "strength": 0.3,
+        "color": "#ffcf81",
+        "radius": 5
+      }
+    },
+    "kind": "fire/open",
+    "flame": true,
+    "embers": true
+  }
+}

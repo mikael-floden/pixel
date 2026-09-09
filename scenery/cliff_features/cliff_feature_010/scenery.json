@@ -1,0 +1,202 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-13T23:43:24+00:00",
+  "id": "cliff_feature_010",
+  "group": "cliff_features",
+  "rank": 102,
+  "index": 10,
+  "name": "Deep cracked seam with ferns growing out 010",
+  "lights": null,
+  "variety": "deep cracked seam with ferns growing out",
+  "glow_concept": "soulstone seam glowing inside the crack",
+  "prompt": "a chunky rock-face feature made to sit over a cliff wall: a jutting mossy ledge, a thick protruding root knot, or a deep cracked seam in the stone, heavy and solid, deep cracked seam with ferns growing out, large, twice human height, self-emissive at night, softly radiating light: soulstone seam glowing inside the crack",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 128,
+  "sprite": "cliff_features/cliff_feature_010/sprite.webp",
+  "placement": {
+    "world_height_m": 2.052,
+    "world_px_height": 105,
+    "character_height_px": 87,
+    "character_height_m": 1.7,
+    "note": "ONE SCENERY PIXEL IS ONE PLAYER PIXEL. world_px_height IS the art's own alpha bbox height, so scenery is placed into the world at 1:1 exactly as the avatar is (setScale(1)) and the two share one pixel grid. The CAMERA still zooms the whole scene \u2014 that is uniform and correct; what must never happen is scenery being resampled on its own, against the player. world_height_m is what the art reads as beside a 87px character; declared_height_m is what it was once declared to be, and a gap between them means the ART is the wrong size.",
+    "declared_height_m": 2.37,
+    "content_box": [
+      9,
+      15,
+      123,
+      120
+    ],
+    "content_px_height": 105,
+    "canvas_render_px": 128
+  },
+  "pixellab_object_id": "39aedc60-a864-4cda-b4c8-afc3abcac9a2",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)",
+  "must_be_imbplemented_with_random_hflip": true,
+  "states": {
+    "LIT_1": {
+      "sprite": "cliff_features/cliff_feature_010/sprite.webp",
+      "pixellab_object_id": "39aedc60-a864-4cda-b4c8-afc3abcac9a2",
+      "generated_at": "2026-08-13T23:43:24+00:00"
+    },
+    "LIT_2": {
+      "sprite": "cliff_features/cliff_feature_010/lit_2/sprite.webp",
+      "pixellab_object_id": "65aecccf-4bd9-4b5e-b435-44c2295a39d5",
+      "generated_at": "2026-08-16T09:20:57+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.2682,
+      "glow_score": 0.0539,
+      "animations": {
+        "motion": {
+          "group_id": "071660dc-5a02-4428-8b01-987f8c0b9ea8",
+          "description": "This is the same picture in every frame. ONLY the gold ore in the rock brightens a little and returns. It is lit and clearly visible in every single frame, including the first. It only ever gets SLIGHTLY brighter: never white, never washed out, and it keeps its own colour at every single moment. It is at its brightest in the middle and back to exactly its first-frame brightness and colour at the end, never dimmer at the end than at the start. Everything else in the picture is copied from the first frame exactly, pixel for pixel, unchanged in shape, size, position and colour. No outline anywhere is redrawn. The last frame matches the first frame exactly, so the loop joins.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "cliff_features/cliff_feature_010/lit_2/animations/motion/00.webp",
+            "cliff_features/cliff_feature_010/lit_2/animations/motion/01.webp",
+            "cliff_features/cliff_feature_010/lit_2/animations/motion/02.webp",
+            "cliff_features/cliff_feature_010/lit_2/animations/motion/03.webp",
+            "cliff_features/cliff_feature_010/lit_2/animations/motion/04.webp"
+          ],
+          "strip": "cliff_features/cliff_feature_010/lit_2/animations/motion__strip.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-08-29T18:34:24+00:00",
+          "brief": "B41",
+          "review": "ANIMATION_PROBABLY_GOOD",
+          "review_metrics": {
+            "base_outline": 0.0
+          },
+          "light_frames": [
+            {
+              "intensity": 0.714,
+              "dx": 10.7,
+              "dy": 6.2
+            },
+            {
+              "intensity": 0.958,
+              "dx": 11.5,
+              "dy": 7.2
+            },
+            {
+              "intensity": 1.125,
+              "dx": 12.0,
+              "dy": 8.3
+            },
+            {
+              "intensity": 1.104,
+              "dx": 12.2,
+              "dy": 9.7
+            },
+            {
+              "intensity": 1.099,
+              "dx": 12.2,
+              "dy": 10.6
+            }
+          ]
+        }
+      }
+    },
+    "LIT_3": {
+      "sprite": "cliff_features/cliff_feature_010/lit_3/sprite.webp",
+      "pixellab_object_id": "c92c6c02-7dee-4376-8666-5290a99fabed",
+      "generated_at": "2026-08-16T09:21:09+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.3903,
+      "glow_score": 0.0457,
+      "animations": {
+        "motion": {
+          "group_id": "8c8bffc8-af75-4e43-9fd5-60f666b266bd",
+          "description": "This is the same picture in every frame. ONLY the orange seam through the rock brightens a little and returns. It is lit and clearly visible in every frame, including the first. It gets only SLIGHTLY brighter -- never white, never washed out -- and keeps its own colour throughout: brightest in the middle, back to its first-frame brightness at the end, never dimmer at the end than the start. Nothing is added or removed anywhere: every object appears in every frame, the same number of them, in the same places, at the same size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour, no outline redrawn. The last frame matches the first exactly.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "cliff_features/cliff_feature_010/lit_3/animations/motion/00.webp",
+            "cliff_features/cliff_feature_010/lit_3/animations/motion/01.webp",
+            "cliff_features/cliff_feature_010/lit_3/animations/motion/02.webp",
+            "cliff_features/cliff_feature_010/lit_3/animations/motion/03.webp",
+            "cliff_features/cliff_feature_010/lit_3/animations/motion/04.webp"
+          ],
+          "strip": "cliff_features/cliff_feature_010/lit_3/animations/motion__strip.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-08-29T19:16:49+00:00",
+          "brief": "D23",
+          "review": "ANIMATION_PROBABLY_GOOD",
+          "review_metrics": {
+            "base_outline": 0.0085
+          },
+          "light_frames": [
+            {
+              "intensity": 1.403,
+              "dx": 15.3,
+              "dy": 6.5
+            },
+            {
+              "intensity": 0.649,
+              "dx": 12.3,
+              "dy": 6.5
+            },
+            {
+              "intensity": 0.664,
+              "dx": 12.8,
+              "dy": 6.7
+            },
+            {
+              "intensity": 1.143,
+              "dx": 15.0,
+              "dy": 6.5
+            },
+            {
+              "intensity": 1.142,
+              "dx": 15.0,
+              "dy": 6.5
+            }
+          ]
+        }
+      }
+    }
+  },
+  "collision": true,
+  "hitbox_shape": "ellipse",
+  "light": {
+    "strength": 0.1,
+    "color": "#9fe4ff",
+    "radius": 2,
+    "reference": "the spawn bonfire is 1.0 (radius 7); strength 0 is no light",
+    "states": {
+      "LIT_1": {
+        "strength": 0.08,
+        "color": "#9fe4ff",
+        "radius": 2
+      },
+      "LIT_2": {
+        "strength": 0.1,
+        "color": "#ffe18f",
+        "radius": 2
+      },
+      "LIT_3": {
+        "strength": 0.08,
+        "color": "#9fe4ff",
+        "radius": 2
+      }
+    },
+    "kind": "fire/ember",
+    "flame": true,
+    "embers": true
+  },
+  "type": "NATURE"
+}

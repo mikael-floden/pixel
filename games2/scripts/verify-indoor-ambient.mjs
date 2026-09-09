@@ -28,7 +28,7 @@ function chromePath() {
 }
 
 const URL = process.env.GAME_URL || "http://localhost:5173/";
-const WORLD = process.env.WORLD || "house_demo";
+const WORLD = process.env.WORLD || "the_game"; // maps2/worlds3
 let failed = false;
 const fail = (m) => {
   console.error("FAIL:", m);
@@ -85,12 +85,12 @@ const home = await page.evaluate(() => {
 if (!Number.isFinite(home.col) || !Number.isFinite(home.row)) fail(`bad outdoor home cell: ${JSON.stringify(home)}`);
 
 // ---- Walk inside. Go straight to a house instead of sweeping the map: the
-// world data says where the roofs are (world@2 decks, kind "roof"), so a few
+// world data says where the roofs are (pixel-maps3 decks, kind "roof"), so a few
 // candidates under one beat thousands of teleports — a per-cell sweep here
 // timed out entirely under headless GL. The GAME still decides indoor/out;
 // the deck data only picks where to stand.
 const spot = await page.evaluate(async (world) => {
-  const res = await fetch(`/assets/maps2/worlds/${world}/world.json`);
+  const res = await fetch(`/assets/maps2/worlds3/${world}/world.json`);
   if (!res.ok) return { error: `world.json ${res.status}` };
   const w = await res.json();
   const roofs = (w.decks ?? []).filter((d) => d.kind === "roof" && d.cells?.length);
@@ -119,9 +119,17 @@ if (!spot || spot.error) {
   fail(`could not find an indoor cell in ${WORLD} — the game reported no indoor space anywhere nearby`);
 } else {
   console.log(`indoors at (${spot.col}, ${spot.row}) roofLevel=${spot.info.roofLevel} depth=${spot.info.depth}`);
-  // Let a few frames run so every feature has ticked at the new verdict.
+  // The gain FADES (ambient/runtime/outdoor.ts, OUTDOOR_FADE_MS — the
+  // maintainer asked for the fade, the snap is gone): wait for it to land
+  // rather than counting frames, then assert the landed state.
   const inside = await page.evaluate(async () => {
-    for (let i = 0; i < 12; i++) await new Promise((r) => requestAnimationFrame(r));
+    const t0 = performance.now();
+    const maxAlpha = () => Math.max(0, ...window.__mlAmbient.list().map((n) => Math.max(0, ...((window.__mlAmbient.debug(n)?.all ?? []).map((x) => x.a ?? 0)))));
+    // ...and for every effect's own sprites to follow it down (each fades on
+    // its own clock behind the gain).
+    while ((window.__mlAmbient.outdoor().gain !== 0 || maxAlpha() > 0) && performance.now() - t0 < 8000)
+      await new Promise((r) => requestAnimationFrame(r));
+    for (let i = 0; i < 4; i++) await new Promise((r) => requestAnimationFrame(r));
     const o = window.__mlAmbient.outdoor();
     const names = window.__mlAmbient.list();
     const alphas = {};
@@ -134,7 +142,7 @@ if (!spot || spot.error) {
   });
   console.log(`indoors: indoor=${inside.o.indoor} gain=${inside.o.gain} fadeMs=${inside.o.fadeMs}`);
   if (!inside.o.indoor) fail("the game says outdoors at a cell it just called indoors");
-  if (inside.o.gain !== 0) fail(`outdoor gain should SNAP to 0 indoors, got ${inside.o.gain}`);
+  if (inside.o.gain !== 0) fail(`outdoor gain never landed on 0 indoors (${inside.o.fadeMs} ms fade), got ${inside.o.gain}`);
   for (const [n, a] of Object.entries(inside.alphas)) {
     console.log(`  ${n}: maxAlpha ${a}`);
     if (a > 0) fail(`${n} is still drawing indoors (alpha ${a})`);

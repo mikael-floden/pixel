@@ -1,0 +1,132 @@
+{
+  "schema": "tiles3/tops@1",
+  "kind": "top_only",
+  "wall_is_meaningless": true,
+  "not_a_candidate_for": "x over y",
+  "ground": "dark_mud",
+  "flavour": "detail",
+  "index": 109,
+  "seed": 71133,
+  "prompt": "dark mud, a swirl of ooze in the middle, dark mud all around the edge",
+  "palette_top": "#514137",
+  "tile_id": "cce9ceeb-3f98-4e99-8a45-3b10f46ca609",
+  "n_tiles": 16,
+  "tiles": [
+    "tile_00.webp",
+    "tile_01.webp",
+    "tile_02.webp",
+    "tile_03.webp",
+    "tile_04.webp",
+    "tile_05.webp",
+    "tile_06.webp",
+    "tile_07.webp",
+    "tile_08.webp",
+    "tile_09.webp",
+    "tile_10.webp",
+    "tile_11.webp",
+    "tile_12.webp",
+    "tile_13.webp",
+    "tile_14.webp",
+    "tile_15.webp"
+  ],
+  "settings": {
+    "tile_size": 64,
+    "tile_view": "high top-down",
+    "view_angle": 28.0,
+    "depth_ratio": 0.5,
+    "tile_type": "isometric",
+    "flat_top_px": 2,
+    "outline_mode": "segmentation"
+  },
+  "usd": 0.096,
+  "created": "2026-09-03T06:18:51+00:00",
+  "top_face": {
+    "per_tile": [
+      {
+        "colours": 21,
+        "dominant_share": 0.2709,
+        "px": 923
+      },
+      {
+        "colours": 27,
+        "dominant_share": 0.1291,
+        "px": 937
+      },
+      {
+        "colours": 20,
+        "dominant_share": 0.2893,
+        "px": 923
+      },
+      {
+        "colours": 21,
+        "dominant_share": 0.3138,
+        "px": 921
+      },
+      {
+        "colours": 23,
+        "dominant_share": 0.2709,
+        "px": 923
+      },
+      {
+        "colours": 28,
+        "dominant_share": 0.1488,
+        "px": 954
+      },
+      {
+        "colours": 25,
+        "dominant_share": 0.1196,
+        "px": 928
+      },
+      {
+        "colours": 25,
+        "dominant_share": 0.1376,
+        "px": 923
+      },
+      {
+        "colours": 14,
+        "dominant_share": 0.2716,
+        "px": 924
+      },
+      {
+        "colours": 19,
+        "dominant_share": 0.2175,
+        "px": 924
+      },
+      {
+        "colours": 26,
+        "dominant_share": 0.2338,
+        "px": 924
+      },
+      {
+        "colours": 25,
+        "dominant_share": 0.1526,
+        "px": 924
+      },
+      {
+        "colours": 24,
+        "dominant_share": 0.2024,
+        "px": 924
+      },
+      {
+        "colours": 25,
+        "dominant_share": 0.1926,
+        "px": 924
+      },
+      {
+        "colours": 25,
+        "dominant_share": 0.1288,
+        "px": 924
+      },
+      {
+        "colours": 25,
+        "dominant_share": 0.1342,
+        "px": 924
+      }
+    ],
+    "mean_colours": 23.31,
+    "mean_dominant_share": 0.2008
+  },
+  "motif": "a swirl of ooze",
+  "motif_source": "tiles/config/details.json",
+  "walkable": true
+}

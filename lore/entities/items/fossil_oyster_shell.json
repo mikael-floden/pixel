@@ -1,0 +1,16 @@
+{
+  "domain": "items",
+  "id": "fossil_oyster_shell",
+  "name_seen": "Oyster Shell",
+  "law": "V",
+  "description": "One half of a fossil bivalve, chalk on the outside, pearly within. The dunes are full of dead seas.",
+  "lore": [
+    "They come up as halves. A woman on the south dune camps spent two years looking for the other half of hers — not a similar one, the one, hinge-notch and all — and she went at it properly: every shell and flake that came in off a [[monsters/dune_digger|delver]]'s wake laid against her own on a folded cloth, a tally kept, a small fee paid for the privilege of looking.",
+    "She found one that fitted. It was not the mate; the chalk was wrong and the size a shade under. It closed anyway, and sat closed in her hand, and she stopped that evening and has not started again. She still buys shells off anyone coming in off the sand. She does not lay them against anything now. She says she likes the noise they make in the bag."
+  ],
+  "related": [
+    { "domain": "monsters", "id": "dune_digger" },
+    { "domain": "lore", "id": "the_hard_pieces" }
+  ],
+  "gm_notes": "A long search answered by the wrong object, well enough to stop. She is a ready-made dune-camp NPC: buys shells at any price, keeps a folded cloth, will not explain the tally to anybody who asks straight out."
+}

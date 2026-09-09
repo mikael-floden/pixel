@@ -1,0 +1,483 @@
+// A STATIC SCENERY PIECE STILL GETS THE ANIMATION VIEWER.
+//
+// Maintainer, 2026-08-13: "The scenery says 'No animations' on all new
+// objects. That is correct, but a lot of scenery will not have any animation —
+// or you can think of the image itself as a 'still' animation with only 1
+// frame. Why do I want still to be seen as an animation? Because the animation
+// viewer shows the object in its true scale and is a good tool for me to look
+// at the object. We only need this if no real animation exist."
+//
+// 368 of the 371 pieces are static, so the viewer — the only place the wiki
+// draws scenery cropped free of padding at a known scale, with a zoom control —
+// was reachable on three of them. The builder now gives a static piece a
+// one-frame `still` clip. What this file guards is the "only if no real
+// animation exists" half, and that a still does not quietly become an
+// animation everywhere else in the UI.
+import { readFileSync } from "node:fs";
+import { createHash } from "node:crypto";
+import { createRequire } from "node:module";
+const { chromium } = createRequire(process.env.PLAYWRIGHT_FROM ?? new URL("../../games2/package.json", import.meta.url))("playwright-core");
+const D = JSON.parse(readFileSync(new URL("../site/data.json", import.meta.url), "utf8"));
+const fails = []; const ok = (c, m) => { console.log((c ? "  ok: " : "  FAIL: ") + m); if (!c) fails.push(m); };
+const objs = D.domains.objects ?? [];
+
+// ---------------------------------------------------------------- the data
+const still = objs.filter((o) => o.stillOnly);
+const real = objs.filter((o) => !o.stillOnly);
+console.log(`data: ${objs.length} scenery — ${still.length} still, ${real.length} animated`);
+ok(objs.every((o) => Object.keys(o.animations ?? {}).length > 0),
+  `every piece now has something to show (${objs.filter((o) => !Object.keys(o.animations ?? {}).length).length} with nothing)`);
+// A static piece's clips are STATES, not frames: the lone `still` when the
+// scenery domain gives it nothing else, or one per entry of its `states` map
+// (LIGHTS_ON / LIGHTS_OFF, 2026-08-14). Helpers so the rest reads either shape.
+const clips = (o) => Object.values(o.animations ?? {}).flatMap((a) => Object.values(a.dirs ?? {}));
+const dirCount = (o) => Math.max(0, ...Object.values(o.animations ?? {}).map((a) => Object.keys(a.dirs ?? {}).length));
+const baseClip = (o) => Object.values(o.animations ?? {})[0]?.dirs?.south;
+// The "only if no real animation exists" rule, in both directions.
+ok(still.every((o) => clips(o).every((c) => c.frames === 1)),
+  "a still piece is one frame per clip, however many states it has");
+ok(real.every((o) => !o.animations.still),
+  `a piece with real animation is untouched (${real.map((o) => `${o.id}: ${Object.keys(o.animations).join("+")}`).join(", ")})`);
+ok(real.length === 3, `the three generated pieces are still the only animated ones (${real.length})`);
+// The FIRST state must BE the sprite the rest of the wiki shows — the card
+// thumbnail, the story art and the review queue all use `preview`, so if the
+// viewer opened on some other state you would be judging a different picture
+// than the one you clicked.
+// Compared by CONTENT: some pieces point a state at the piece's own
+// sprite.webp, some write an identical copy under the state's folder, and four
+// carry an original that is none of their states (it leads as "Base"). What
+// matters is that the picture is the same one the card showed.
+const md5 = (rel) => { try { return createHash("md5").update(readFileSync(new URL(`../../${rel}`, import.meta.url))).digest("hex"); } catch { return null; } };
+const bad = still.filter((o) => { const c = baseClip(o); return !c || md5(c.strip) !== md5(o.preview); });
+ok(bad.length === 0, `each still opens on the picture the list showed you${bad.length ? ` — ${bad.slice(0, 3).map((o) => `${o.id}: ${baseClip(o)?.strip}`).join(", ")}` : ` (${still.length})`}`);
+ok(still.every((o) => clips(o).every((c) => c.bb)),
+  "and every clip is measured, so it draws cropped at true scale rather than padded");
+
+// STATES. The scenery domain ships `states` (LIGHTS_ON / LIGHTS_OFF), each with
+// its own sprite AND its own rotations (maintainer 2026-08-14: "different
+// scenerys can have different states … I want to see different states in the
+// previewer"). Same ground-truth rule as rotations: publish what exists.
+const withStates = still.filter((o) => Object.keys(o.animations).length > 1);
+console.log(`states: ${withStates.length} stills carry more than one state (${[...new Set(withStates.flatMap((o) => Object.keys(o.animations)))].join(", ")})`);
+ok(withStates.length > 0, "the pieces with states reach the wiki at all");
+ok(withStates.every((o) => new Set(clips(o).map((c) => c.strip)).size === clips(o).length),
+  "every state × direction is its OWN file — no state is another one relabelled");
+
+// ROTATIONS. Since 2026-08-14 the scenery domain ships a `rotations` map beside
+// the sprite (maintainer: "the scenery may now have a SE, S and SW direction —
+// the animation preview should make it possible to review the directions the
+// Scenery has"), so a still is no longer one-sided by definition. The ground
+// truth is scenery.json on disk: what the builder publishes must be exactly
+// what the scenery agent generated, or the maintainer reviews art that isn't
+// there — or, worse, never sees art that is.
+const SCEN = new URL("../../scenery/", import.meta.url);
+const onDisk = new Map();
+for (const o of objs) {
+  const rel = o.path.replace(/^scenery\//, "");
+  let j = null;
+  try { j = JSON.parse(readFileSync(new URL(`${rel}/scenery.json`, SCEN), "utf8")); } catch { /* legacy layout */ }
+  if (j) onDisk.set(o.id, Object.keys(j.rotations ?? {}));
+}
+const rot = still.filter((o) => dirCount(o) > 1);
+const diskRot = still.filter((o) => (onDisk.get(o.id) ?? []).length > 1).length;
+console.log(`rotations: ${rot.length} of ${still.length} stills face more than one way; disk says ${diskRot}`
+  + ` (the legacy animated pieces carry rotations too, and rightly get no still)`);
+ok(rot.length > 0, "the pieces with rotations reach the wiki at all");
+const missed = still.filter((o) => (onDisk.get(o.id) ?? []).length > 1
+  && dirCount(o) !== (onDisk.get(o.id) ?? []).length);
+ok(missed.length === 0, `every direction on disk is published${missed.length ? ` — short on: ${missed.slice(0, 3).map((o) => o.id).join(", ")}` : ` (${rot.length} pieces)`}`);
+ok(rot.every((o) => new Set(clips(o).map((c) => c.strip)).size === clips(o).length),
+  "each direction points at its OWN file — not one sprite relabelled three times");
+ok(still.every((o) => (onDisk.get(o.id) ?? []).length > 1 || dirCount(o) === 1),
+  "and a piece with no rotations map is still a lone south — nothing invented");
+// Whole-frame vs measured: the padding really is being cropped, or the viewer
+// is no better than the thumbnail it was added to improve on.
+const cropped = still.filter((o) => { const s = baseClip(o);
+  return s && (s.bb[2] - s.bb[0] < s.fw || s.bb[3] - s.bb[1] < s.fh); });
+ok(cropped.length > still.length / 2, `most stills genuinely crop padding away (${cropped.length}/${still.length})`);
+
+// ------------------------------------------------------------------ the page
+const b = await chromium.launch({ executablePath: process.env.CHROMIUM_PATH ?? "/opt/pw-browsers/chromium-1194/chrome-linux/chrome" });
+const p = await (await b.newContext({ viewport: { width: 393, height: 851 }, isMobile: true, hasTouch: true, deviceScaleFactor: 2 })).newPage();
+const errs = []; p.on("pageerror", (e) => errs.push(String(e)));
+const W = `${process.env.WIKI_URL ?? "http://127.0.0.1:8902"}/assets/wiki/site/index.html`;
+const look = async (id) => {
+  await p.goto(`${W}#/objects/${id}`, { waitUntil: "load" });
+  await p.waitForTimeout(1700);
+  return p.evaluate(() => {
+    const st = document.querySelector(".player-stage"), cv = st?.querySelector("canvas");
+    let painted = 0;
+    if (cv) { const d = cv.getContext("2d").getImageData(0, 0, cv.width, cv.height).data;
+      for (let i = 3; i < d.length; i += 4) if (d[i] > 8) painted++; }
+    const txt = document.body.textContent;
+    return { title: [...document.querySelectorAll(".panel-title")].map((x) => x.textContent),
+      hasStage: !!st, w: cv?.width ?? 0, h: cv?.height ?? 0, painted,
+      stage: st && `${st.clientWidth}x${st.clientHeight}`,
+      zoom: [...document.querySelectorAll(".player-controls button")].map((x) => x.textContent).filter((t) => /^(same|1×|2×|4×)$/.test(t)),
+      transport: [...document.querySelectorAll(".player-controls button")].map((x) => x.textContent).filter((t) => ["⏸", "▶", "⏮", "⏭"].includes(t)),
+      dirpad: document.querySelectorAll(".dirpad button").length,
+      states: document.querySelectorAll(".seg-states button").length,
+      noAnims: /No animations\./.test(txt), assign: /Assign a sound/.test(txt),
+      noteText: /no animation —/i.test(txt),
+      states1: [...document.querySelectorAll(".seg-states button")].map((x) => x.textContent),
+      // What the maintainer actually watches: where the art sits inside its
+      // own panel. The page scroll differs per piece, so measure the offset.
+      stageOffset: (() => { const st = document.querySelector(".player-stage");
+        const pan = [...document.querySelectorAll(".panel")].find((x) => x.querySelector(".player-stage"));
+        return st && pan ? Math.round(st.getBoundingClientRect().top - pan.getBoundingClientRect().top) : -1; })() };
+  });
+};
+const tiny = await look("mushroom_005");
+const big = await look("ancient_tree_002");
+const anim = await look("campfire");
+console.log("still (small):", JSON.stringify(tiny));
+console.log("still (giant):", JSON.stringify(big));
+console.log("animated:     ", JSON.stringify(anim));
+ok(!tiny.noAnims && !big.noAnims, "the dead-end “No animations.” line is gone");
+ok(tiny.title.includes("Preview") && big.title.includes("Preview"),
+  `a lone static piece is headed Preview, with no pill to add (${tiny.title.join(", ")})`);
+ok(!objs.some((o) => o.stillOnly) || !tiny.title.some((t) => /Still/.test(t)), "and never “Still” anywhere on the card");
+// The pill rides along on animated pieces too, so match the word, not the
+// whole node text ("Animations" + "8 directions").
+ok(anim.title.some((t) => /^Animations/.test(t)), `a generated piece is still headed Animations (${anim.title[0]})`);
+ok(tiny.painted > 100 && big.painted > 5000, `both actually draw (${tiny.painted}px, ${big.painted}px)`);
+// The controls a one-frame clip cannot use are not offered; the one it exists
+// for is.
+ok(tiny.transport.length === 0 && big.transport.length === 0, `no play/step buttons on a single frame (${tiny.transport.join("")})`);
+// EVERY PIECE SHOWS BOTH ROWS (maintainer 2026-08-14: "always render a state
+// even if the state only has Static … otherwise the preview will jump up and
+// down when I press next next next"). A row that comes and goes with the
+// piece's shape moves the art, and he pages through hundreds in a row.
+ok(tiny.states === 1 && tiny.dirpad === 1, `a lone still still gets both rows, one button each (${tiny.states} state, ${tiny.dirpad} dir)`);
+ok(!tiny.noteText && !big.noteText, "and no 'this piece has no animation' line — it was one more thing to lay out");
+ok(tiny.zoom.length === 4 && big.zoom.length === 4, `zoom survives — it is the reason the viewer is here (${tiny.zoom.join(" ")})`);
+ok(anim.transport.length >= 3 && anim.states >= 1 && anim.dirpad === 8,
+  `the animated piece keeps everything (${anim.transport.length} transport, ${anim.states} states, ${anim.dirpad} dirs)`);
+// A still is not an action: nothing fires objects.<id>.still, so it must not be
+// offered as something to hang a sound on.
+ok(!tiny.assign, "a still is never offered as a sound event to assign");
+// The fixed stage: paging scenery must not move the layout.
+ok(tiny.stage === big.stage && big.stage === anim.stage, `one stage for the whole domain (${tiny.stage})`);
+
+// ------------------------------------------------- reviewing the DIRECTIONS
+// A rotated still gets a pad and nothing else: still nothing to play, still no
+// state to choose. And the pad must not push the art down — it rides BELOW the
+// stage with the zoom buttons, so a 3-view piece and a 1-view piece put the
+// viewer in the same place while paging ‹ › (maintainer 2026-08-13).
+const rotId = rot.find((o) => Object.keys(o.animations).length === 1)?.id ?? rot[0].id;
+const many = await look(rotId);
+console.log(`still (${rotId}):`, JSON.stringify(many));
+ok(many.dirpad === dirCount(objs.find((o) => o.id === rotId)),
+  `a rotated still offers one button per direction it has (${many.dirpad})`);
+ok(many.transport.length === 0, `and still offers nothing to play (${many.transport.length} transport)`);
+// THE ART SITS AT THE SAME HEIGHT WHATEVER THE PIECE HAS. This is the whole
+// reason both rows are unconditional — 1 state/1 dir, 1 state/3 dirs, 2
+// states/3 dirs and a real animation must all land on the same offset.
+const offsets = [tiny.stageOffset, big.stageOffset, many.stageOffset, anim.stageOffset];
+console.log("stage offset inside the panel:", JSON.stringify(offsets));
+ok(new Set(offsets).size === 1 && offsets[0] > 0,
+  `the preview sits at one height across every shape of piece (${offsets.join(", ")})`);
+ok(tiny.states1[0] === "Static", `a piece with nothing else reads "Static" (${JSON.stringify(tiny.states1)})`);
+ok(/Preview\d+ (states|directions)/.test(many.title.join(" ")), `headed like a monster, with a pill counting the views (${many.title.join(", ")})`);
+ok(many.stage === tiny.stage, "the stage is unchanged — rotations do not resize the viewer");
+// THE PAD LOOKS AND SITS THE SAME EVERYWHERE (maintainer 2026-08-14: "on
+// monsters and players the direction is OVER the preview … please make it
+// similar looking"). Over the stage, in its own control row, same buttons.
+const padPos = await p.evaluate(() => {
+  const st = document.querySelector(".player-stage").getBoundingClientRect();
+  const pad = document.querySelector(".dirpad");
+  const b = pad.getBoundingClientRect();
+  const btn = pad.querySelector("button").getBoundingClientRect();
+  return { padBottom: Math.round(b.bottom), stageTop: Math.round(st.top),
+    ownRow: pad.parentElement.classList.contains("player-controls"),
+    btnH: Math.round(btn.height), btnW: Math.round(btn.width) };
+});
+await p.goto(`${W}#/monsters/mammoth`, { waitUntil: "load" });
+await p.waitForTimeout(1700);
+const monPad = await p.evaluate(() => {
+  const st = document.querySelector(".player-stage").getBoundingClientRect();
+  const pad = document.querySelector(".dirpad");
+  const btn = pad.querySelector("button").getBoundingClientRect();
+  return { padBottom: Math.round(pad.getBoundingClientRect().bottom), stageTop: Math.round(st.top),
+    ownRow: pad.parentElement.classList.contains("player-controls"),
+    btnH: Math.round(btn.height), btnW: Math.round(btn.width) };
+});
+console.log("pad — scenery:", JSON.stringify(padPos), "monster:", JSON.stringify(monPad));
+ok(padPos.padBottom <= padPos.stageTop + 2, "the pad sits OVER the preview, like it does on a monster");
+ok(monPad.padBottom <= monPad.stageTop + 2, "and the monster's still does too — one layout, not two");
+ok(padPos.ownRow && monPad.ownRow, "in its own control row on both");
+ok(padPos.btnH === monPad.btnH, `with buttons the same size as a monster's (${padPos.btnH}px vs ${monPad.btnH}px)`);
+await p.goto(`${W}#/objects/${rotId}`, { waitUntil: "load" });
+await p.waitForTimeout(1600);
+// THE BUTTONS MUST ACTUALLY SHOW DIFFERENT ART. Three views that all draw the
+// same pixels would be worse than none: it would read as confirmation.
+const views = await p.evaluate(async () => {
+  const out = [];
+  // Re-query on every pass: pressing a direction re-renders the whole pad, so
+  // a node captured before the click is a detached copy of the old one.
+  const dirs = [...document.querySelectorAll(".dirpad button")].map((x) => x.title);
+  for (const dir of dirs) {
+    const btn = () => [...document.querySelectorAll(".dirpad button")].find((x) => x.title === dir);
+    btn().click();
+    await new Promise((r) => setTimeout(r, 500));
+    const b = btn();
+    const cv = document.querySelector(".player-stage canvas");
+    const d = cv.getContext("2d").getImageData(0, 0, cv.width, cv.height).data;
+    let sum = 0, painted = 0;
+    for (let i = 0; i < d.length; i += 4) if (d[i + 3] > 8) { painted++; sum += d[i] + d[i + 1] * 3 + d[i + 2] * 7; }
+    out.push({ dir: b.title, label: b.textContent, on: b.classList.contains("on"), w: cv.width, painted, sum });
+  }
+  return out;
+});
+console.log("views:", JSON.stringify(views));
+ok(views.every((v) => v.painted > 50), `every direction actually draws (${views.map((v) => v.painted).join(", ")})`);
+ok(new Set(views.map((v) => v.sum)).size === views.length, "and each one draws DIFFERENT pixels — three real views, not one repeated");
+ok(views.every((v) => v.on), "the pressed direction is the highlighted one");
+ok(views.map((v) => v.label).join(" ") === views.map((v) => v.dir).map((d) => ({ south: "S", "south-east": "SE", "south-west": "SW", east: "E", west: "W", north: "N", "north-east": "NE", "north-west": "NW" })[d]).join(" "),
+  `labelled by compass point (${views.map((v) => v.label).join(" ")})`);
+// Zoom really re-scales — otherwise "true scale" is a claim, not a feature.
+await p.goto(`${W}#/objects/mushroom_005`, { waitUntil: "load" });
+await p.waitForTimeout(1500);
+const zoomed = await p.evaluate(async () => {
+  const cv = () => document.querySelector(".player-stage canvas");
+  const before = cv().width;
+  [...document.querySelectorAll(".player-controls button")].find((x) => x.textContent === "4×").click();
+  await new Promise((r) => setTimeout(r, 400));
+  const after = cv().width;
+  const st = document.querySelector(".player-stage");
+  return { before, after, stage: `${st.clientWidth}x${st.clientHeight}` };
+});
+console.log("zoom:", JSON.stringify(zoomed));
+ok(zoomed.after === zoomed.before * 2, `4× doubles the 2× default (${zoomed.before} → ${zoomed.after})`);
+
+// ---------------------------------------------------- reviewing the STATES
+// A piece with LIGHTS_ON/LIGHTS_OFF gets a state row in the same place a
+// monster's is, reading in words rather than in the scenery domain's CAPS
+// ("Lights On", not "LIGHTS_ON" — maintainer 2026-08-14), and the row must
+// really swap the art.
+const stId = withStates[0].id;
+await p.goto(`${W}#/objects/${stId}`, { waitUntil: "load" });
+await p.waitForTimeout(1700);
+const stInfo = await p.evaluate(async () => {
+  const stage = document.querySelector(".player-stage").getBoundingClientRect();
+  const seg = document.querySelector(".seg-states")?.getBoundingClientRect();
+  const pad = document.querySelector(".dirpad")?.getBoundingClientRect();
+  const paint = () => { const cv = document.querySelector(".player-stage canvas");
+    const d = cv.getContext("2d").getImageData(0, 0, cv.width, cv.height).data;
+    let s = 0; for (let i = 0; i < d.length; i += 4) if (d[i + 3] > 8) s += d[i] + d[i + 1] * 3 + d[i + 2] * 7;
+    return s; };
+  const labels = [...document.querySelectorAll(".seg-states button")].map((x) => x.textContent);
+  const tips = [...document.querySelectorAll(".seg-states button")].map((x) => x.title);
+  const before = paint();
+  [...document.querySelectorAll(".seg-states button")].find((x) => !x.classList.contains("on"))?.click();
+  await new Promise((r) => setTimeout(r, 500));
+  return { labels, tips, before, after: paint(),
+    pill: document.querySelector(".panel-title .pill")?.textContent ?? null,
+    aboveStage: !!(seg && seg.bottom <= stage.top + 2),
+    aboveDirs: !!(seg && pad && seg.bottom <= pad.top + 2),
+    transport: [...document.querySelectorAll(".player-controls button")].filter((x) => ["⏸", "▶", "⏮", "⏭"].includes(x.textContent)).length };
+});
+console.log(`states (${stId}):`, JSON.stringify(stInfo));
+ok(stInfo.labels.length === Object.keys(withStates[0].animations).length,
+  `every state is a button (${stInfo.labels.join(", ")})`);
+// Words and numbers, never the raw key: LIGHTS_ON -> "Lights On",
+// NOT_LIT_3 -> "Not Lit 3".
+// A VARIANT IS A NUMBER AND A LAMP (maintainer 2026-08-14: "show 'not lit' as
+// #1, #2, #3 and the lit version 💡#1, 💡#2 ... more clean and visual, and
+// more compact", then "even more compact — can you remove the # character"). Anything
+// that is not a lit/unlit variant is still spelled out in words.
+// NB the /u flag: 💡 is a surrogate pair, so "💡?" without it makes only the
+// LOW half optional and "#1" fails to match.
+ok(stInfo.labels.every((l) => /^(?:(?:💡)?\d+|[A-Z][a-z]*(?: [A-Za-z0-9]+)*)$/u.test(l) && !/_/.test(l)),
+  `every chip is a variant number or a word, never a CAPS key (${stInfo.labels.join(", ")})`);
+ok(stInfo.labels.some((l) => /^\d+$/.test(l)), `with the unlit ones a bare number (${stInfo.labels.slice(0, 4).join(", ")})`);
+// UNLIT FIRST, ASCENDING, THEN LIT — the manifest order interleaved them.
+const nums = (re) => stInfo.labels.filter((l) => re.test(l)).map((l) => Number(l.replace(/\D/g, "")));
+const sorted = (a) => a.every((n, i) => !i || n >= a[i - 1]);
+const firstLit = stInfo.labels.findIndex((l) => l.startsWith("💡"));
+ok(sorted(nums(/^\d+$/)) && sorted(nums(/^💡\d+$/u)), `each run ascends (${stInfo.labels.join(" ")})`);
+ok(firstLit === -1 || !stInfo.labels.slice(firstLit).some((l) => /^\d+$/.test(l)),
+  "and every unlit chip comes before every lit one — no jumping back and forth");
+// The words survive on hover, for anyone who wants them.
+ok(stInfo.tips.every((t) => /\w/.test(t ?? "")), `the spelled-out name is still there on hover (${JSON.stringify(stInfo.tips.slice(0, 3))})`);
+ok(stInfo.aboveStage && stInfo.aboveDirs, "the state row sits over the preview and above the direction pad, like a monster's");
+// "2 states × 3 directions" when it has both, "7 states" when it faces one
+// way — it counts what is there, and says nothing about what is not.
+ok(/^\d+ states( × \d+ directions)?$/.test(stInfo.pill ?? ""), `the pill counts what there is, like a monster's (${stInfo.pill})`);
+ok(stInfo.transport === 0, `still nothing to play — states are not frames (${stInfo.transport} transport buttons)`);
+ok(stInfo.after !== stInfo.before, `switching state really changes the art (${stInfo.before} → ${stInfo.after})`);
+
+// The list must keep calling these static — it is where you scan for movement.
+await p.goto(`${W}#/objects`, { waitUntil: "load" });
+await p.waitForTimeout(1800);
+const list = await p.evaluate(() => {
+  const subs = [...document.querySelectorAll(".card-sub")].map((x) => x.textContent);
+  return { n: subs.length, static: subs.filter((s) => /^static/.test(s)).length, still: subs.filter((s) => /still/i.test(s)).length,
+    views: subs.filter((s) => /^static · \d+ views$/.test(s)).length,
+    states: subs.filter((s) => /^static · \d+ states/.test(s)).length,
+    other: [...new Set(subs.filter((s) => !/^static/.test(s)))] };
+});
+console.log("list:", JSON.stringify(list));
+// GROUP HEADINGS ARE FOR READERS, NOT FOR MACHINES (maintainer 2026-08-14:
+// "the sub titles on the Scenery overview page is a bit technical with _ …
+// 'ancient_trees' should be 'Ancient Trees'"). The slug survives as the
+// heading's tooltip, so nothing is lost for whoever needs the real id.
+const heads = await p.evaluate(() => [...document.querySelectorAll("h2")]
+  .map((x) => ({ text: x.textContent, slug: x.getAttribute("title") })));
+const rawHeads = heads.filter((h2) => /_/.test(h2.text));
+console.log(`headings: ${heads.length}, e.g. ${heads.slice(1, 4).map((h2) => `${h2.slug} → ${h2.text}`).join(", ")}`);
+ok(heads.length > 20, `the overview really is grouped (${heads.length} headings)`);
+ok(rawHeads.length === 0, `no heading shows a raw slug${rawHeads.length ? ` — ${rawHeads.slice(0, 3).map((h2) => h2.text).join(", ")}` : ""}`);
+ok(heads.every((h2) => h2.slug && !/_/.test(h2.text)), "and each keeps its id in the tooltip");
+ok(heads.some((h2) => /\band\b/.test(h2.text)) === heads.some((h2) => /_and_/.test(h2.slug ?? "")),
+  "joining words stay lowercase — “Chairs and Benches”, not “Chairs And Benches”");
+ok(list.still === 0, "no card claims a “still” animation");
+ok(list.static === still.length, `all ${still.length} static pieces still read “static” (${list.static})`);
+// Static and multi-view are not opposites — the card says both, so you know a
+// piece has more to look at before you open it.
+// A card says what a piece has: extra views, extra states, or both.
+const richer = still.filter((o) => dirCount(o) > 1 || Object.keys(o.animations).length > 1).length;
+ok(list.views + list.states === richer, `every piece with more than one of anything says so (${list.views} by views, ${list.states} by states, ${richer} expected)`);
+ok(list.states === withStates.length, `including the ${withStates.length} with states (${list.states})`);
+ok(list.other.length > 0 && list.other.every((s) => !/still/i.test(s)), `and the animated ones name their real states (${list.other.join(", ")})`);
+
+// PAGING ‹ › MUST NOT MOVE THE VIEWER (maintainer 2026-08-13: "The scenery
+// title and text is so big the animation viewer is pushed down differently
+// when I press next next next"). The name's suffixes are pills, the title is
+// a fixed two-line box, and the prompt hides behind "Read more…" — collapsed
+// again on every page change, so expansion is always the reader's own act.
+// The walk starts a few pieces before the campfire so it crosses stills AND
+// an animated legacy piece, long names and short.
+const objIds = D.domains.objects.map((o) => o.id);
+const start = Math.max(0, objIds.indexOf("campfire") - 4);
+await p.goto(`${W}#/objects/${objIds[start]}`, { waitUntil: "load" });
+await p.waitForTimeout(1700);
+const pmeasure = () => p.evaluate(() => {
+  const pan = [...document.querySelectorAll(".panel")].find((x) => x.querySelector(".player-stage"));
+  const t = document.querySelector(".obj-title"), s = document.querySelector(".obj-sub");
+  return { top: pan ? Math.round(pan.getBoundingClientRect().top) : -1,
+    titleH: Math.round(t?.getBoundingClientRect().height ?? -1),
+    subH: Math.round(s?.getBoundingClientRect().height ?? -1),
+    open: !!document.querySelector(".obj-desc.open"),
+    title: t?.textContent ?? "", full: t?.getAttribute("title") ?? "" };
+});
+const pwalk = [await pmeasure()];
+for (let i = 0; i < 11; i++) {
+  await p.evaluate(() => [...document.querySelectorAll("button,a")].find((x) => x.textContent.trim() === "›")?.click());
+  await p.waitForTimeout(380);
+  pwalk.push(await pmeasure());
+}
+const ptops = [...new Set(pwalk.map((r) => r.top))];
+console.log("paging:", JSON.stringify({ ptops, titleHs: [...new Set(pwalk.map((r) => r.titleH))], first: pwalk[0].title }));
+ok(ptops.length === 1 && ptops[0] > 0, `the viewer panel never moves while paging ‹ › (tops: ${ptops.join(", ")})`);
+ok(new Set(pwalk.map((r) => r.titleH)).size === 1, `the title box is one fixed height whatever the name (${pwalk[0].titleH}px)`);
+ok(new Set(pwalk.map((r) => r.subH)).size === 1, `and so is the pill/Read-more row (${pwalk[0].subH}px)`);
+ok(pwalk.every((r) => !r.open), "every page arrives with the description collapsed");
+ok(pwalk.every((r) => !/ · /.test(r.title)), "no title still carries a “ · ” suffix — those are pills now");
+ok(pwalk.some((r) => r.full.includes(" · ")), "and the full name survives in the title tooltip");
+// Read more: expands below the row, relabels, pushes the viewer only while
+// open — and the panel returns to its exact spot on collapse.
+const toggled = await p.evaluate(async () => {
+  const pan = () => [...document.querySelectorAll(".panel")].find((x) => x.querySelector(".player-stage"));
+  const btn = document.querySelector(".obj-more");
+  const before = Math.round(pan().getBoundingClientRect().top);
+  btn.click(); await new Promise((r) => setTimeout(r, 150));
+  const openTop = Math.round(pan().getBoundingClientRect().top);
+  const openText = document.querySelector(".obj-desc.open")?.textContent?.length ?? 0;
+  const label = btn.textContent;
+  btn.click(); await new Promise((r) => setTimeout(r, 150));
+  return { before, openTop, openText, label, after: Math.round(pan().getBoundingClientRect().top), closedLabel: btn.textContent };
+});
+console.log("readmore:", JSON.stringify(toggled));
+ok(toggled.openText > 40, `Read more really shows the description (${toggled.openText} chars)`);
+ok(toggled.openTop > toggled.before, "expanding pushes the viewer down — the reader asked for that");
+ok(toggled.after === toggled.before, `collapsing puts it back to the pixel (${toggled.before} → ${toggled.after})`);
+ok(toggled.label === "Read less" && toggled.closedLabel === "Read more…", "the button relabels both ways");
+
+// ADMIN SIZE REFERENCE (maintainer 2026-08-13: "render the human male side by
+// side with the scenery so I see how big it is in comparison … If I toggle
+// this mode on I like it to keep being on if I change to next scenery").
+// The Man draws at the viewer's OWN shared scale — the whole point of the
+// one-scale system is that this comparison needs no other math — feet on the
+// piece's baseline, hugging the stage's left edge, scenery untouched.
+ok(!(await p.evaluate(() => !!document.querySelector(".human-toggle"))), "the toggle is invisible to the public");
+const boy = D.domains.characters.find((c) => c.id === "default_boy");
+const boyBB = boy.animations.idle.dirs.south.bb;
+const artScale = D.artScale || 2;
+const boyW = (boyBB[2] - boyBB[0]) * artScale, boyH = (boyBB[3] - boyBB[1]) * artScale;
+const actx = await b.newContext({ viewport: { width: 393, height: 851 }, isMobile: true, hasTouch: true, deviceScaleFactor: 2 });
+const pa = await actx.newPage();
+const aerrs = []; pa.on("pageerror", (e) => aerrs.push(String(e)));
+await pa.route("**/api/wiki/me", (r) => r.fulfill({ status: 200, contentType: "application/json", body: '{"admin":true}' }));
+await pa.addInitScript(() => {
+  localStorage.setItem("wiki-admin-token", "gate");
+  // An admin reads the REPO, not the image (wiki.js useStagingRoot, 2026-08-14).
+  // The sandbox blocks browser egress, so point the staging base at this same
+  // server's /assets — the identical code path, resolvable offline.
+  localStorage.setItem("ml-staging-base", `${location.origin}/assets/`);
+});
+const hinfo = () => pa.evaluate(() => {
+  const st = document.querySelector(".player-stage"), cv = st?.querySelector("canvas"), hu = st?.querySelector(".human-ref");
+  const r = (x) => { const q = x.getBoundingClientRect(); return { l: Math.round(q.left), b: Math.round(q.bottom), w: Math.round(q.width), h: Math.round(q.height) }; };
+  const sb = st.getBoundingClientRect();
+  const hb = hu && getComputedStyle(hu).display !== "none" ? hu.getBoundingClientRect() : null;
+  return { on: !!document.querySelector(".human-toggle")?.classList.contains("on"),
+    visible: !!hb, canvas: cv ? r(cv) : null, human: hb ? r(hu) : null,
+    stageL: Math.round(sb.left),
+    // Position INSIDE the stage — the page's own scroll differs per piece, so
+    // viewport coordinates cannot answer "did he move?".
+    inStage: hb ? Math.round(hb.top - sb.top) : null };
+});
+await pa.goto(`${W}#/objects/mushroom_005`, { waitUntil: "load" });
+await pa.waitForTimeout(1700);
+const h0 = await hinfo();
+ok(!h0.on && !h0.visible, "admin sees the toggle off and no Man by default");
+await pa.evaluate(() => document.querySelector(".human-toggle").click());
+await pa.waitForTimeout(300);
+const h1 = await hinfo();
+console.log("human on:", JSON.stringify(h1), `expect ${boyW}x${boyH}`);
+ok(h1.visible && h1.human.w === boyW && h1.human.h === boyH,
+  `the Man draws at the shared scale, content-cropped (${h1.human?.w}x${h1.human?.h} = ${boyW}x${boyH})`);
+ok(JSON.stringify(h0.canvas) === JSON.stringify(h1.canvas), "the scenery's own canvas is untouched by the toggle");
+ok(Math.abs((h1.human.b - h1.human.h / 2) - (h1.canvas.b - h1.canvas.h / 2)) <= 1,
+  "he is centred vertically, exactly like the canvas beside him");
+ok(h1.human.l - h1.stageL <= 3, `and he hugs the stage's left edge (${h1.human.l - h1.stageL}px in)`);
+// STICKY, AND STILL. He must survive ‹ › (the original request) and must not
+// move a pixel while doing it — pinned to each piece's baseline he "jump[ed] a
+// lot up and down when switching page", because a centred canvas cropped to
+// its content puts that baseline somewhere different on every piece. The walk
+// deliberately crosses wildly different sizes.
+const hwalk = [h1];
+for (let i = 0; i < 8; i++) {
+  await pa.evaluate(() => [...document.querySelectorAll("button,a")].find((x) => x.textContent.trim() === "›")?.click());
+  await pa.waitForTimeout(430);
+  hwalk.push(await hinfo());
+}
+const spots = [...new Set(hwalk.map((r) => r.inStage))];
+const pieceHs = [...new Set(hwalk.map((r) => r.canvas.h))];
+console.log("human walk:", JSON.stringify({ spots, pieceHs }));
+ok(hwalk.every((r) => r.on && r.visible), "he survives eight pages of ‹ ›");
+ok(pieceHs.length > 2, `and those pages really are different sizes (${pieceHs.join(", ")}px) — otherwise this proves nothing`);
+ok(spots.length === 1, `yet he never moves: one position on every page (${spots.join(", ")}px from the stage top)`);
+const h2 = hwalk[hwalk.length - 1];
+// Zoom must scale BOTH bodies — 2x of him beside 4x of a mushroom is a lie.
+await pa.evaluate(() => [...document.querySelectorAll(".player-controls button")].find((x) => x.textContent === "4×")?.click());
+await pa.waitForTimeout(350);
+const h4 = await hinfo();
+ok(h4.human.h === (boyBB[3] - boyBB[1]) * 4, `zoom scales the Man with the piece (4x → ${h4.human?.h}px)`);
+// And a reload keeps the choice — localStorage, not component state.
+await pa.reload({ waitUntil: "load" });
+await pa.waitForTimeout(1700);
+const hr = await hinfo();
+ok(hr.on && hr.visible, "the choice survives a reload");
+await pa.evaluate(() => document.querySelector(".human-toggle").click());
+await pa.waitForTimeout(250);
+ok(!(await hinfo()).visible, "toggling off hides him again");
+ok(aerrs.length === 0, `no admin page errors${aerrs.length ? ` — ${aerrs[0]}` : ""}`);
+await actx.close();
+
+console.log("page errors:", errs.length ? errs : "none");
+if (errs.length) fails.push("errors");
+await b.close();
+console.log(fails.length ? `\n${fails.length} FAILURES` : "\nALL STILL CHECKS PASSED");
+process.exit(fails.length ? 1 : 0);

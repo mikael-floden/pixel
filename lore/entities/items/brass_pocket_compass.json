@@ -1,0 +1,22 @@
+{
+  "domain": "items",
+  "id": "brass_pocket_compass",
+  "name_seen": "Old Compass",
+  "law": "IV",
+  "description": "Brass, scratched, and still pointing true. In a country that rearranges itself, that is less useful than it sounds.",
+  "lore": [
+    "It came off the black rock, prised out of a [[monsters/malformed_creature|Palehusk]]'s fingers, needle still swinging clean, which is more than can be said for whatever it was doing out there. The country it was bought for is somewhere else now. The needle does not care. It swings, settles, points north — and north here is the one direction with an opinion already attached, being where the winter sky goes green. What a person makes of that is their own business. The compass makes nothing of it.",
+    "[[characters/a6d7323d|Gunnar]] pays sixty-five gold, over the odds, and he is not buying a way to find anything. Two fixed marks and a good needle will tell you how far a piece of ground has turned since the last time you stood on it. He has a drawer of compasses and a book of figures, and he will gladly show you the compasses. There is a page in the book with the meadow on it. He has shown that page to nobody."
+  ],
+  "related": [
+    {
+      "domain": "monsters",
+      "id": "malformed_creature"
+    },
+    {
+      "domain": "lore",
+      "id": "the_hard_pieces"
+    }
+  ],
+  "gm_notes": "Gunnar's Drift measurements, from the instrument end. The unshown page is the soft ground moving toward the meadow; he has the numbers and will not put them at a fire. A player who earns the page earns a deadline."
+}

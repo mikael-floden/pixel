@@ -1,0 +1,132 @@
+{
+  "schema": "tiles3/tops@1",
+  "kind": "top_only",
+  "wall_is_meaningless": true,
+  "not_a_candidate_for": "x over y",
+  "ground": "grass",
+  "flavour": "detail",
+  "index": 131,
+  "seed": 33696,
+  "prompt": "grass, dry wheat stalks in the middle, grass all around the edge",
+  "palette_top": "#14523b",
+  "tile_id": "942a730d-5303-4a46-9896-3bf481f30a77",
+  "n_tiles": 16,
+  "tiles": [
+    "tile_00.webp",
+    "tile_01.webp",
+    "tile_02.webp",
+    "tile_03.webp",
+    "tile_04.webp",
+    "tile_05.webp",
+    "tile_06.webp",
+    "tile_07.webp",
+    "tile_08.webp",
+    "tile_09.webp",
+    "tile_10.webp",
+    "tile_11.webp",
+    "tile_12.webp",
+    "tile_13.webp",
+    "tile_14.webp",
+    "tile_15.webp"
+  ],
+  "settings": {
+    "tile_size": 64,
+    "tile_view": "high top-down",
+    "view_angle": 28.0,
+    "depth_ratio": 0.5,
+    "tile_type": "isometric",
+    "flat_top_px": 2,
+    "outline_mode": "segmentation"
+  },
+  "usd": 0.096,
+  "created": "2026-09-03T04:47:19+00:00",
+  "top_face": {
+    "per_tile": [
+      {
+        "colours": 20,
+        "dominant_share": 0.2783,
+        "px": 945
+      },
+      {
+        "colours": 21,
+        "dominant_share": 0.2826,
+        "px": 952
+      },
+      {
+        "colours": 25,
+        "dominant_share": 0.2172,
+        "px": 976
+      },
+      {
+        "colours": 25,
+        "dominant_share": 0.1687,
+        "px": 1002
+      },
+      {
+        "colours": 25,
+        "dominant_share": 0.2646,
+        "px": 956
+      },
+      {
+        "colours": 27,
+        "dominant_share": 0.1565,
+        "px": 971
+      },
+      {
+        "colours": 26,
+        "dominant_share": 0.2044,
+        "px": 993
+      },
+      {
+        "colours": 26,
+        "dominant_share": 0.2329,
+        "px": 1026
+      },
+      {
+        "colours": 26,
+        "dominant_share": 0.1407,
+        "px": 988
+      },
+      {
+        "colours": 25,
+        "dominant_share": 0.2341,
+        "px": 961
+      },
+      {
+        "colours": 25,
+        "dominant_share": 0.1895,
+        "px": 992
+      },
+      {
+        "colours": 25,
+        "dominant_share": 0.1876,
+        "px": 954
+      },
+      {
+        "colours": 24,
+        "dominant_share": 0.1876,
+        "px": 949
+      },
+      {
+        "colours": 26,
+        "dominant_share": 0.1484,
+        "px": 984
+      },
+      {
+        "colours": 27,
+        "dominant_share": 0.1604,
+        "px": 985
+      },
+      {
+        "colours": 26,
+        "dominant_share": 0.1675,
+        "px": 997
+      }
+    ],
+    "mean_colours": 24.94,
+    "mean_dominant_share": 0.2013
+  },
+  "motif": "dry wheat stalks",
+  "motif_source": "tiles/config/details.json",
+  "walkable": true
+}

@@ -1,0 +1,150 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-14T04:55:57+00:00",
+  "id": "cliff_vine_057",
+  "group": "cliff_vines",
+  "rank": 101,
+  "index": 57,
+  "name": "Old thick-stemmed ancient fall 057",
+  "lights": null,
+  "variety": "old thick-stemmed ancient fall",
+  "modifier": "one thick tendril reaching far out alone",
+  "glow_concept": null,
+  "prompt": "beautiful lush climbing ivy growing wild across an old ruin wall, deep green leaves in loose overlapping clusters with long trailing tendrils between them, lush fantasy RPG nature art, rich and beautiful, uneven natural growth that is thick and leafy in a few places and bare stone-empty elsewhere, drifting off one side, no straight edges, no border, nothing it hangs from and no line across the top, fading away into a few last leaves at the edges, transparent background, no rock or wall behind it, old thick-stemmed ancient fall, one thick tendril reaching far out alone, towering, many times human height, completely unlit, no glow, no light sources, no self-emission",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 256,
+  "sprite": "cliff_vines/cliff_vine_057/sprite.webp",
+  "placement": {
+    "world_height_m": 4.631,
+    "world_px_height": 237,
+    "character_height_px": 87,
+    "character_height_m": 1.7,
+    "note": "ONE SCENERY PIXEL IS ONE PLAYER PIXEL. world_px_height IS the art's own alpha bbox height, so scenery is placed into the world at 1:1 exactly as the avatar is (setScale(1)) and the two share one pixel grid. The CAMERA still zooms the whole scene \u2014 that is uniform and correct; what must never happen is scenery being resampled on its own, against the player. world_height_m is what the art reads as beside a 87px character; declared_height_m is what it was once declared to be, and a gap between them means the ART is the wrong size.",
+    "declared_height_m": 10.27,
+    "content_box": [
+      12,
+      10,
+      246,
+      247
+    ],
+    "content_px_height": 237,
+    "canvas_render_px": 256
+  },
+  "pixellab_object_id": "47b8a45f-c7e8-466b-bea6-c9844d6035fc",
+  "pixellab_directions": 1,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-1-direction-object (single, S-only)",
+  "must_be_imbplemented_with_random_hflip": true,
+  "states": {
+    "LIT_2": {
+      "sprite": "cliff_vines/cliff_vine_057/lit_2/sprite.webp",
+      "pixellab_object_id": "30ce9328-06fe-4148-80e4-91db44a2d305",
+      "generated_at": "2026-08-16T10:29:37+00:00",
+      "glow_concept": "glowworm colonies strung in the foliage",
+      "difference_from_source": 0.2664,
+      "glow_score": 0.0402,
+      "animations": {
+        "motion": {
+          "group_id": "56c05526-edac-43ec-9510-217c55358feb",
+          "description": "This is an almost completely still picture. ONLY the outermost edge of the pale gold pods hanging from the vine changes, and barely: a few pixels along that edge lift very slightly in brightness and drop straight back. They stay exactly the pale gold they are in the first frame and are equally visible in every frame. Every leaf, every stem and every branch is copied from the first frame exactly: not one of them moves, bends, shifts, grows or changes shape or colour at any point. Frames 1, 2 and 5 are identical to each other. Only frames 3 and 4 differ at all, and only by a handful of pixels. Everything else is copied from the first frame exactly, pixel for pixel. The last frame matches the first exactly.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "cliff_vines/cliff_vine_057/lit_2/animations/motion/00.webp",
+            "cliff_vines/cliff_vine_057/lit_2/animations/motion/01.webp",
+            "cliff_vines/cliff_vine_057/lit_2/animations/motion/02.webp",
+            "cliff_vines/cliff_vine_057/lit_2/animations/motion/03.webp",
+            "cliff_vines/cliff_vine_057/lit_2/animations/motion/04.webp"
+          ],
+          "strip": "cliff_vines/cliff_vine_057/lit_2/animations/motion__strip.webp",
+          "directions": null,
+          "generated_at": "2026-08-30T10:53:27+00:00",
+          "brief": "K39",
+          "review": "ANIMATION_PROBABLY_BAD",
+          "review_metrics": {
+            "class": "foliage",
+            "base": 0.7188,
+            "still": 0.235
+          },
+          "light_frames": [
+            {
+              "intensity": 1.211,
+              "dx": 4.2,
+              "dy": -6.2
+            },
+            {
+              "intensity": 0.962,
+              "dx": 3.1,
+              "dy": -8.2
+            },
+            {
+              "intensity": 1.068,
+              "dx": 2.3,
+              "dy": -7.9
+            },
+            {
+              "intensity": 1.092,
+              "dx": 3.2,
+              "dy": -6.0
+            },
+            {
+              "intensity": 0.667,
+              "dx": 1.6,
+              "dy": -5.7
+            }
+          ]
+        }
+      }
+    },
+    "NOT_LIT_2": {
+      "sprite": "cliff_vines/cliff_vine_057/not_lit_2/sprite.webp",
+      "pixellab_object_id": "711385fd-abfc-4c1c-bad2-8bbd0196c58f",
+      "generated_at": "2026-08-16T10:31:23+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.2357,
+      "glow_score": 0.0006
+    },
+    "NOT_LIT_3": {
+      "sprite": "cliff_vines/cliff_vine_057/not_lit_3/sprite.webp",
+      "pixellab_object_id": "776b97e8-67ae-424c-b2ef-39651e9dacac",
+      "generated_at": "2026-08-16T10:36:20+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.2727,
+      "glow_score": 0.0006
+    },
+    "NOT_LIT_4": {
+      "sprite": "cliff_vines/cliff_vine_057/sprite.webp",
+      "pixellab_object_id": "47b8a45f-c7e8-466b-bea6-c9844d6035fc",
+      "generated_at": "2026-08-16T10:28:21+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.5752,
+      "glow_score": 0.0008,
+      "replaced_anchor": "NOT_LIT_1"
+    }
+  },
+  "collision": true,
+  "hitbox_shape": "ellipse",
+  "light": {
+    "strength": 0.1,
+    "color": "#fffecc",
+    "radius": 2,
+    "reference": "the spawn bonfire is 1.0 (radius 7); strength 0 is no light",
+    "states": {
+      "LIT_2": {
+        "strength": 0.12,
+        "color": "#fffecc",
+        "radius": 2
+      }
+    },
+    "kind": "glow/bio",
+    "flame": false,
+    "embers": false
+  }
+}

@@ -1,0 +1,154 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-14T05:40:13+00:00",
+  "id": "stone_025",
+  "group": "stones",
+  "rank": 2,
+  "index": 25,
+  "name": "Frost-cracked angular rock 025",
+  "lights": null,
+  "variety": "frost-cracked angular rock",
+  "modifier": "with thick exposed roots",
+  "glow_concept": null,
+  "prompt": "a single natural fieldstone boulder resting on the ground, rounded and weathered, with subtle cracks, pits and patches of moss, frost-cracked angular rock, with thick exposed roots, waist-high, completely unlit, no glow, no light sources, no self-emission",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 64,
+  "sprite": "stones/stone_025/sprite.webp",
+  "placement": {
+    "world_height_m": 0.938,
+    "world_px_height": 48,
+    "character_height_px": 87,
+    "character_height_m": 1.7,
+    "note": "ONE SCENERY PIXEL IS ONE PLAYER PIXEL. world_px_height IS the art's own alpha bbox height, so scenery is placed into the world at 1:1 exactly as the avatar is (setScale(1)) and the two share one pixel grid. The CAMERA still zooms the whole scene \u2014 that is uniform and correct; what must never happen is scenery being resampled on its own, against the player. world_height_m is what the art reads as beside a 87px character; declared_height_m is what it was once declared to be, and a gap between them means the ART is the wrong size.",
+    "declared_height_m": 0.85,
+    "content_box": [
+      8,
+      9,
+      58,
+      57
+    ],
+    "content_px_height": 48,
+    "canvas_render_px": 64
+  },
+  "pixellab_object_id": "2ff82e63-8bda-43de-93d8-e9705c569f9e",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)",
+  "must_be_imbplemented_with_random_hflip": true,
+  "states": {
+    "LIT_2": {
+      "sprite": "stones/stone_025/lit_2/sprite.webp",
+      "pixellab_object_id": "56b5b923-1cb2-46c0-b09c-8be63cbdba35",
+      "generated_at": "2026-08-16T21:56:23+00:00",
+      "glow_concept": "tiny golden memory motes drifting above it",
+      "difference_from_source": 0.3348,
+      "glow_score": 0.0778,
+      "animations": {
+        "motion": {
+          "group_id": "c1a442f0-1155-48a2-9645-8adc9dd58cff",
+          "description": "This is an almost completely still picture. ONLY the gold cracks across the boulder change. Their brightness lifts very slightly and comes straight back: no more than a few pixels change anywhere in the whole picture. At their brightest they are still exactly the same gold as in the first frame -- never pale, never white, never any other colour. They never fade, never vanish, never spread and never change shape. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "stones/stone_025/lit_2/animations/motion/00.webp",
+            "stones/stone_025/lit_2/animations/motion/01.webp",
+            "stones/stone_025/lit_2/animations/motion/02.webp",
+            "stones/stone_025/lit_2/animations/motion/03.webp",
+            "stones/stone_025/lit_2/animations/motion/04.webp"
+          ],
+          "strip": "stones/stone_025/lit_2/animations/motion__strip.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-08-30T10:06:18+00:00",
+          "brief": "J3",
+          "review": "ANIMATION_PROBABLY_GOOD",
+          "review_metrics": {
+            "base_outline": 0.0236
+          },
+          "light_frames": [
+            {
+              "intensity": 0.608,
+              "dx": -2.2,
+              "dy": -1.9
+            },
+            {
+              "intensity": 1.5,
+              "dx": 0.1,
+              "dy": -1.4
+            },
+            {
+              "intensity": 1.5,
+              "dx": 0.5,
+              "dy": -2.2
+            },
+            {
+              "intensity": 0.5,
+              "dx": 1.7,
+              "dy": -5.7
+            },
+            {
+              "intensity": 0.5,
+              "dx": 1.1,
+              "dy": -8.4
+            }
+          ]
+        }
+      }
+    },
+    "NOT_LIT_1": {
+      "sprite": "stones/stone_025/sprite.webp",
+      "pixellab_object_id": "2ff82e63-8bda-43de-93d8-e9705c569f9e",
+      "generated_at": "2026-08-14T05:40:13+00:00"
+    },
+    "NOT_LIT_2": {
+      "sprite": "stones/stone_025/not_lit_2/sprite.webp",
+      "pixellab_object_id": "33d20895-058c-476e-a0d7-431559159cf5",
+      "generated_at": "2026-08-16T21:55:08+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.8103,
+      "glow_score": 0.0
+    },
+    "NOT_LIT_3": {
+      "sprite": "stones/stone_025/not_lit_3/sprite.webp",
+      "pixellab_object_id": "2f77b64d-1b36-4439-8f5c-f192d41f8abe",
+      "generated_at": "2026-08-16T21:55:54+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.8749,
+      "glow_score": 0.0009
+    },
+    "NOT_LIT_4": {
+      "sprite": "stones/stone_025/not_lit_4/sprite.webp",
+      "pixellab_object_id": "4a1e848e-ef6d-4a4f-a51a-0c245be32415",
+      "generated_at": "2026-08-16T21:55:55+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.7087,
+      "glow_score": 0.0
+    }
+  },
+  "collision": true,
+  "hitbox_shape": "ellipse",
+  "light": {
+    "strength": 0.08,
+    "color": "#ffd98e",
+    "radius": 1,
+    "reference": "the spawn bonfire is 1.0 (radius 7); strength 0 is no light",
+    "states": {
+      "LIT_2": {
+        "strength": 0.1,
+        "color": "#ffd98e",
+        "radius": 1
+      }
+    },
+    "kind": "glow/magic",
+    "flame": false,
+    "embers": false
+  }
+}

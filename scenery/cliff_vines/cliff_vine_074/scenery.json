@@ -1,0 +1,88 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-14T04:59:03+00:00",
+  "id": "cliff_vine_074",
+  "group": "cliff_vines",
+  "rank": 101,
+  "index": 74,
+  "name": "White-flowering bindweed fall 074",
+  "lights": null,
+  "variety": "white-flowering bindweed fall",
+  "modifier": "an old thick growth with young shoots around it",
+  "glow_concept": "amber memory-light dripping from the tips",
+  "prompt": "beautiful lush climbing ivy growing wild across an old ruin wall, deep green leaves in loose overlapping clusters with long trailing tendrils between them, lush fantasy RPG nature art, rich and beautiful, uneven natural growth that is thick and leafy in a few places and bare stone-empty elsewhere, drifting off one side, no straight edges, no border, nothing it hangs from and no line across the top, fading away into a few last leaves at the edges, transparent background, no rock or wall behind it, white-flowering bindweed fall, an old thick growth with young shoots around it, towering, many times human height, self-emissive at night, softly radiating light: amber memory-light dripping from the tips",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 256,
+  "sprite": "cliff_vines/cliff_vine_074/sprite.webp",
+  "placement": {
+    "world_height_m": 4.436,
+    "world_px_height": 227,
+    "character_height_px": 87,
+    "character_height_m": 1.7,
+    "note": "ONE SCENERY PIXEL IS ONE PLAYER PIXEL. world_px_height IS the art's own alpha bbox height, so scenery is placed into the world at 1:1 exactly as the avatar is (setScale(1)) and the two share one pixel grid. The CAMERA still zooms the whole scene \u2014 that is uniform and correct; what must never happen is scenery being resampled on its own, against the player. world_height_m is what the art reads as beside a 87px character; declared_height_m is what it was once declared to be, and a gap between them means the ART is the wrong size.",
+    "declared_height_m": 9.12,
+    "content_box": [
+      14,
+      17,
+      243,
+      244
+    ],
+    "content_px_height": 227,
+    "canvas_render_px": 256
+  },
+  "pixellab_object_id": "0662abef-59d3-46ec-9716-dce79a970610",
+  "pixellab_directions": 1,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-1-direction-object (single, S-only)",
+  "must_be_imbplemented_with_random_hflip": true,
+  "states": {
+    "NOT_LIT_2": {
+      "sprite": "cliff_vines/cliff_vine_074/not_lit_2/sprite.webp",
+      "pixellab_object_id": "569cc3d5-9db0-4d14-a6fb-b0059dc5193a",
+      "generated_at": "2026-08-16T10:47:22+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.5887,
+      "glow_score": 0.0046
+    },
+    "NOT_LIT_3": {
+      "sprite": "cliff_vines/cliff_vine_074/sprite.webp",
+      "pixellab_object_id": "0662abef-59d3-46ec-9716-dce79a970610",
+      "generated_at": "2026-08-14T04:59:03+00:00",
+      "relit_from": "LIT_1"
+    },
+    "NOT_LIT_4": {
+      "sprite": "cliff_vines/cliff_vine_074/not_lit_4/sprite.webp",
+      "pixellab_object_id": "d9671d5d-bfaa-4a06-b9a4-0fede144efc4",
+      "generated_at": "2026-08-16T10:46:03+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.2419,
+      "glow_score": 0.0492,
+      "relit_from": "LIT_2"
+    },
+    "NOT_LIT_5": {
+      "sprite": "cliff_vines/cliff_vine_074/not_lit_5/sprite.webp",
+      "pixellab_object_id": "7096f8f5-097c-4668-a5a3-38cf596e863b",
+      "generated_at": "2026-08-16T10:46:26+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.7008,
+      "glow_score": 0.0586,
+      "relit_from": "LIT_3"
+    },
+    "NOT_LIT_6": {
+      "sprite": "cliff_vines/cliff_vine_074/not_lit_6/sprite.webp",
+      "pixellab_object_id": "fb214870-8c39-446e-80ae-79fd9bf55614",
+      "generated_at": "2026-08-16T10:48:17+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.4082,
+      "glow_score": 0.1226,
+      "relit_from": "LIT_4"
+    }
+  },
+  "collision": true,
+  "hitbox_shape": "ellipse"
+}

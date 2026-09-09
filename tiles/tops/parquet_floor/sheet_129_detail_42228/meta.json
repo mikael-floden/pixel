@@ -1,0 +1,132 @@
+{
+  "schema": "tiles3/tops@1",
+  "kind": "top_only",
+  "wall_is_meaningless": true,
+  "not_a_candidate_for": "x over y",
+  "ground": "parquet_floor",
+  "flavour": "detail",
+  "index": 129,
+  "seed": 42228,
+  "prompt": "parquet floor, a knot ring in the middle, parquet floor all around the edge",
+  "palette_top": "#a7754b",
+  "tile_id": "9ea0b275-0cfc-4d21-bdf4-821a7f6d774e",
+  "n_tiles": 16,
+  "tiles": [
+    "tile_00.webp",
+    "tile_01.webp",
+    "tile_02.webp",
+    "tile_03.webp",
+    "tile_04.webp",
+    "tile_05.webp",
+    "tile_06.webp",
+    "tile_07.webp",
+    "tile_08.webp",
+    "tile_09.webp",
+    "tile_10.webp",
+    "tile_11.webp",
+    "tile_12.webp",
+    "tile_13.webp",
+    "tile_14.webp",
+    "tile_15.webp"
+  ],
+  "settings": {
+    "tile_size": 64,
+    "tile_view": "high top-down",
+    "view_angle": 28.0,
+    "depth_ratio": 0.5,
+    "tile_type": "isometric",
+    "flat_top_px": 2,
+    "outline_mode": "segmentation"
+  },
+  "usd": 0.096,
+  "created": "2026-09-03T07:55:30+00:00",
+  "top_face": {
+    "per_tile": [
+      {
+        "colours": 14,
+        "dominant_share": 0.3688,
+        "px": 922
+      },
+      {
+        "colours": 15,
+        "dominant_share": 0.3123,
+        "px": 919
+      },
+      {
+        "colours": 14,
+        "dominant_share": 0.2801,
+        "px": 921
+      },
+      {
+        "colours": 17,
+        "dominant_share": 0.405,
+        "px": 921
+      },
+      {
+        "colours": 13,
+        "dominant_share": 0.2451,
+        "px": 922
+      },
+      {
+        "colours": 21,
+        "dominant_share": 0.2321,
+        "px": 922
+      },
+      {
+        "colours": 16,
+        "dominant_share": 0.3099,
+        "px": 923
+      },
+      {
+        "colours": 15,
+        "dominant_share": 0.2831,
+        "px": 922
+      },
+      {
+        "colours": 14,
+        "dominant_share": 0.3575,
+        "px": 923
+      },
+      {
+        "colours": 13,
+        "dominant_share": 0.3633,
+        "px": 922
+      },
+      {
+        "colours": 18,
+        "dominant_share": 0.2777,
+        "px": 922
+      },
+      {
+        "colours": 11,
+        "dominant_share": 0.402,
+        "px": 923
+      },
+      {
+        "colours": 14,
+        "dominant_share": 0.3229,
+        "px": 923
+      },
+      {
+        "colours": 18,
+        "dominant_share": 0.1625,
+        "px": 923
+      },
+      {
+        "colours": 16,
+        "dominant_share": 0.2286,
+        "px": 923
+      },
+      {
+        "colours": 17,
+        "dominant_share": 0.2543,
+        "px": 924
+      }
+    ],
+    "mean_colours": 15.38,
+    "mean_dominant_share": 0.3003
+  },
+  "motif": "a knot ring",
+  "motif_source": "tiles/config/details.json",
+  "walkable": true
+}

@@ -1,0 +1,70 @@
+{
+  "format": "scenery-piece@2",
+  "id": "telegraph_pole_006",
+  "group": "telegraph_poles",
+  "rank": 43,
+  "index": 6,
+  "name": "Moss-footed rotting pole 006",
+  "lights": null,
+  "variety": "moss-footed rotting pole",
+  "glow_concept": "pulses of light traveling along the sagging wire",
+  "prompt": "a tall weathered wooden telegraph pole with a crossarm, ceramic insulators, and a sagging cut wire, moss-footed rotting pole, towering, several times the height of a person, self-emissive at night, softly radiating light: pulses of light traveling along the sagging wire",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 256,
+  "sprite": "telegraph_poles/telegraph_pole_006/sprite.webp",
+  "placement": {
+    "world_height_m": 4.377,
+    "world_px_height": 224,
+    "character_height_px": 87,
+    "character_height_m": 1.7,
+    "note": "ONE SCENERY PIXEL IS ONE PLAYER PIXEL. world_px_height IS the art's own alpha bbox height, so scenery is placed into the world at 1:1 exactly as the avatar is (setScale(1)) and the two share one pixel grid. The CAMERA still zooms the whole scene \u2014 that is uniform and correct; what must never happen is scenery being resampled on its own, against the player. world_height_m is what the art reads as beside a 87px character; declared_height_m is what it was once declared to be, and a gap between them means the ART is the wrong size.",
+    "declared_height_m": 4.68,
+    "content_box": [
+      76,
+      16,
+      173,
+      240
+    ],
+    "content_px_height": 224,
+    "canvas_render_px": 256
+  },
+  "pixellab_object_id": "e851b351-c526-46b1-8dae-7aab8996f8b3",
+  "pixellab_directions": 1,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-1-direction-object (single, S-only)",
+  "must_be_imbplemented_with_random_hflip": true,
+  "generated_at": "2026-08-13T13:18:31+00:00",
+  "states": {
+    "NOT_LIT_3": {
+      "sprite": "telegraph_poles/telegraph_pole_006/sprite.webp",
+      "pixellab_object_id": "e851b351-c526-46b1-8dae-7aab8996f8b3",
+      "generated_at": "2026-08-13T13:18:31+00:00",
+      "relit_from": "LIT_1"
+    },
+    "NOT_LIT_4": {
+      "sprite": "telegraph_poles/telegraph_pole_006/not_lit_4/sprite.webp",
+      "pixellab_object_id": "8f872cab-5c00-403f-8a13-1982be82f824",
+      "generated_at": "2026-08-16T23:06:04+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.4666,
+      "glow_score": 0.0139,
+      "relit_from": "LIT_3"
+    },
+    "NOT_LIT_5": {
+      "sprite": "telegraph_poles/telegraph_pole_006/not_lit_5/sprite.webp",
+      "pixellab_object_id": "a26c97b1-f39f-4de9-88e7-833ae989974c",
+      "generated_at": "2026-08-16T23:06:04+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.5791,
+      "glow_score": 0.0204,
+      "relit_from": "LIT_4"
+    }
+  },
+  "collision": true,
+  "hitbox_shape": "ellipse"
+}

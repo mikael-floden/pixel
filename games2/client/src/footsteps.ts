@@ -64,14 +64,14 @@ export class Footsteps {
    * with lighter ones override it so the step still reads (maintainer). Grass is
    * dark, so the step shows the DIRT pressed through the blades (dirt tile ≈
    * #a3865c). Ordinary `stone` reads fine as a dark scuff and keeps it; only
-   * `black_mountain` (near-black stone) overrides to lighter STONE dust. Sand/
+   * `black_rock` (near-black stone) overrides to lighter STONE dust. Sand/
    * snow/ice sit on light ground, so a darker/cool press reads there. Marks draw
    * below the night overlay, so they dim with the ground and contrast holds at
    * night. Alphas are the peak (held ~2s, then eased out). */
   private styleFor(sound: string, material?: string): { key: string; tint: number; alpha: number } | null {
     // Material overrides: same sound as a lighter sibling, but too dark for the
     // sound's default mark.
-    if (material === "black_mountain") return { key: "fs-dot", tint: 0x9a9aa0, alpha: 0.58 }; // light stone dust
+    if (material === "black_rock") return { key: "fs-dot", tint: 0x9a9aa0, alpha: 0.58 }; // light stone dust
     switch (sound) {
       case "grass":
         return { key: "fs-pair", tint: 0x9c7d4f, alpha: 0.72 }; // dirt through crushed blades

@@ -1,0 +1,132 @@
+{
+  "schema": "tiles3/tops@1",
+  "kind": "top_only",
+  "wall_is_meaningless": true,
+  "not_a_candidate_for": "x over y",
+  "ground": "snow",
+  "flavour": "detail",
+  "index": 106,
+  "seed": 31004,
+  "prompt": "snow, a snowball in the middle, snow all around the edge",
+  "palette_top": "#ebf4f6",
+  "tile_id": "bb7da587-ebf8-4afd-96ef-7f50b6a1f1f0",
+  "n_tiles": 16,
+  "tiles": [
+    "tile_00.webp",
+    "tile_01.webp",
+    "tile_02.webp",
+    "tile_03.webp",
+    "tile_04.webp",
+    "tile_05.webp",
+    "tile_06.webp",
+    "tile_07.webp",
+    "tile_08.webp",
+    "tile_09.webp",
+    "tile_10.webp",
+    "tile_11.webp",
+    "tile_12.webp",
+    "tile_13.webp",
+    "tile_14.webp",
+    "tile_15.webp"
+  ],
+  "settings": {
+    "tile_size": 64,
+    "tile_view": "high top-down",
+    "view_angle": 28.0,
+    "depth_ratio": 0.5,
+    "tile_type": "isometric",
+    "flat_top_px": 2,
+    "outline_mode": "segmentation"
+  },
+  "usd": 0.096,
+  "created": "2026-09-03T05:07:27+00:00",
+  "top_face": {
+    "per_tile": [
+      {
+        "colours": 10,
+        "dominant_share": 0.4374,
+        "px": 958
+      },
+      {
+        "colours": 11,
+        "dominant_share": 0.6417,
+        "px": 988
+      },
+      {
+        "colours": 13,
+        "dominant_share": 0.4552,
+        "px": 960
+      },
+      {
+        "colours": 11,
+        "dominant_share": 0.5734,
+        "px": 919
+      },
+      {
+        "colours": 12,
+        "dominant_share": 0.5637,
+        "px": 926
+      },
+      {
+        "colours": 9,
+        "dominant_share": 0.7465,
+        "px": 923
+      },
+      {
+        "colours": 13,
+        "dominant_share": 0.594,
+        "px": 931
+      },
+      {
+        "colours": 9,
+        "dominant_share": 0.4936,
+        "px": 932
+      },
+      {
+        "colours": 17,
+        "dominant_share": 0.5705,
+        "px": 929
+      },
+      {
+        "colours": 9,
+        "dominant_share": 0.6418,
+        "px": 924
+      },
+      {
+        "colours": 11,
+        "dominant_share": 0.4708,
+        "px": 924
+      },
+      {
+        "colours": 13,
+        "dominant_share": 0.6663,
+        "px": 938
+      },
+      {
+        "colours": 17,
+        "dominant_share": 0.6063,
+        "px": 922
+      },
+      {
+        "colours": 16,
+        "dominant_share": 0.253,
+        "px": 921
+      },
+      {
+        "colours": 11,
+        "dominant_share": 0.6269,
+        "px": 922
+      },
+      {
+        "colours": 12,
+        "dominant_share": 0.5537,
+        "px": 941
+      }
+    ],
+    "mean_colours": 12.12,
+    "mean_dominant_share": 0.5559
+  },
+  "motif": "a snowball",
+  "motif_source": "tiles/config/details.json",
+  "walkable": true
+}

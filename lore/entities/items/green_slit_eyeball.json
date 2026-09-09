@@ -1,0 +1,22 @@
+{
+  "domain": "items",
+  "id": "green_slit_eyeball",
+  "name_seen": "Green Eye",
+  "law": "V",
+  "description": "A green eye with a black slit, still bright. Mireglare's stare stays in it about an hour, then goes out.",
+  "lore": [
+    "It is the one thing on the stall you can price by looking at it. Bright, twenty-eight. Dull, eight. The hour in between is the entire difference, so sellers come off the crossing at a trot with the bag held level and quote you the time they cut it.",
+    "A walker out of the low ford keeps one long past its hour, flat and grey now, in a pouch he does not sell out of. [[monsters/swamp_cat_2|The cat that comes into firelight]] looked him over one night — the whole way, chin up, as you are supposed to let it — and then moved on to the next face and out into the dark. He has had a good many years to decide whether being passed over is the good outcome and has not managed it. He keeps the eye because he would like to be able to ask it."
+  ],
+  "related": [
+    {
+      "domain": "monsters",
+      "id": "swamp_cat_2"
+    },
+    {
+      "domain": "monsters",
+      "id": "mystical_frog"
+    }
+  ],
+  "gm_notes": "Freshness as price, and the fen's private question: the cat is looking for somebody, and everyone it finishes with is somebody it did not want. Leave the question open — it is better unanswered than answered."
+}

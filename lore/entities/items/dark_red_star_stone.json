@@ -1,0 +1,23 @@
+{
+  "domain": "items",
+  "id": "dark_red_star_stone",
+  "name_seen": "Soulstone",
+  "law": "V",
+  "description": "Near-black, veined dark red around a red star at the core, out of a Rotjaw. It will not let you go down either.",
+  "lore": [
+    "Forty-two gold: the cheapest useful stone in the country, for the one service no seller has ever managed to price honestly. The arithmetic behind the discount is not pretty. [[monsters/undead_hound|The animal]] stands where the hill tracks begin to climb, it does not run, and it will still be standing there next season. Common is the whole of the reason. Every bag-carrier on the hill roads has one and most of them have never found out whether it works.",
+    "It is near-black, veined dark red under the surface like something that has not gone out, with a small red star at the middle brighter than any part of a stone should be. It fires once. A blow that was going to put you down does not, and you are on your feet with nothing left but the standing, and the beat you have been handed is short and yours to do something with. People it has happened to report the same odd thing afterwards, never the one you expect. Not that they survived. That the end arrived and then declined to become the next moment.",
+    "[[characters/cfe826c1|Jehanne]] keeps a bowl of them inside her door and puts one into the hand of anyone leaving her fire for a road, and takes nothing for it. She does not promise them it works. She does not tell them it will not. She has been carrying out a practice she stopped believing in for longer than most of them have been in the world, and the only defence of the bowl she has ever offered is that a forty-gold stone is at least a thing you can put in somebody's hand."
+  ],
+  "related": [
+    {
+      "domain": "monsters",
+      "id": "undead_hound"
+    },
+    {
+      "domain": "lore",
+      "id": "the_hard_pieces"
+    }
+  ],
+  "gm_notes": "Shipped line said 'refuses to stay dead too' — replaced, nobody dies here. The Rotjaw record owns the joke and the two seconds; this one never mentions them, and instead derives the save from the same fact seen from the stone's side: what settled to the bottom was a moment refusing to become the next one. Jehanne's bowl is her whole character in one prop and is meant to be findable."
+}

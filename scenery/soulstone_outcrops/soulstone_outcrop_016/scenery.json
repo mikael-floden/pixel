@@ -1,0 +1,283 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-13T23:34:02+00:00",
+  "id": "soulstone_outcrop_016",
+  "group": "soulstone_outcrops",
+  "rank": 23,
+  "index": 16,
+  "name": "Deep violet crystalline outcrop 016",
+  "lights": null,
+  "variety": "deep violet crystalline outcrop",
+  "glow_concept": "deep violet heart-light pulsing slowly",
+  "prompt": "a rough natural boulder outcrop breaking out of the ground with smooth glassy blue-white soulstone veins running through the rock, the stone mass dominant, not a freestanding crystal cluster and not a carved slab, deep violet crystalline outcrop, waist-high, self-emissive at night, softly radiating light: deep violet heart-light pulsing slowly",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 64,
+  "sprite": "soulstone_outcrops/soulstone_outcrop_016/sprite.webp",
+  "placement": {
+    "world_height_m": 0.938,
+    "world_px_height": 48,
+    "character_height_px": 87,
+    "character_height_m": 1.7,
+    "note": "ONE SCENERY PIXEL IS ONE PLAYER PIXEL. world_px_height IS the art's own alpha bbox height, so scenery is placed into the world at 1:1 exactly as the avatar is (setScale(1)) and the two share one pixel grid. The CAMERA still zooms the whole scene \u2014 that is uniform and correct; what must never happen is scenery being resampled on its own, against the player. world_height_m is what the art reads as beside a 87px character; declared_height_m is what it was once declared to be, and a gap between them means the ART is the wrong size.",
+    "declared_height_m": 0.95,
+    "content_box": [
+      8,
+      9,
+      57,
+      57
+    ],
+    "content_px_height": 48,
+    "canvas_render_px": 64
+  },
+  "pixellab_object_id": "75312e49-aa40-4d79-a1dc-8a9f35945f52",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)",
+  "must_be_imbplemented_with_random_hflip": true,
+  "states": {
+    "LIT_1": {
+      "sprite": "soulstone_outcrops/soulstone_outcrop_016/sprite.webp",
+      "pixellab_object_id": "75312e49-aa40-4d79-a1dc-8a9f35945f52",
+      "generated_at": "2026-08-13T23:34:02+00:00"
+    },
+    "LIT_2": {
+      "sprite": "soulstone_outcrops/soulstone_outcrop_016/lit_2/sprite.webp",
+      "pixellab_object_id": "e26b9fb4-609f-4371-bc15-efb00d6d3998",
+      "generated_at": "2026-08-16T21:05:59+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.667,
+      "glow_score": 0.0681,
+      "animations": {
+        "motion": {
+          "group_id": "e564fbd0-f477-4995-babc-fc472e753303",
+          "description": "This is the same picture in every frame. ONLY the bright veins across the rock brighten a little and return. It is lit and clearly visible in every single frame, including the first. Everything else in the picture is copied from the first frame exactly, pixel for pixel, unchanged in shape, size, position and colour. No outline anywhere is redrawn. The last frame matches the first frame exactly, so the loop joins.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "soulstone_outcrops/soulstone_outcrop_016/lit_2/animations/motion/00.webp",
+            "soulstone_outcrops/soulstone_outcrop_016/lit_2/animations/motion/01.webp",
+            "soulstone_outcrops/soulstone_outcrop_016/lit_2/animations/motion/02.webp",
+            "soulstone_outcrops/soulstone_outcrop_016/lit_2/animations/motion/03.webp",
+            "soulstone_outcrops/soulstone_outcrop_016/lit_2/animations/motion/04.webp"
+          ],
+          "strip": "soulstone_outcrops/soulstone_outcrop_016/lit_2/animations/motion__strip.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-08-29T16:57:07+00:00",
+          "brief": "Z28",
+          "review": "ANIMATION_PROBABLY_GOOD",
+          "review_metrics": {
+            "base_outline": 0.0159
+          },
+          "light_frames": [
+            {
+              "intensity": 1.327,
+              "dx": 0.8,
+              "dy": -3.4
+            },
+            {
+              "intensity": 0.5,
+              "dx": 8.4,
+              "dy": -4.4
+            },
+            {
+              "intensity": 1.5,
+              "dx": 0.6,
+              "dy": 2.9
+            },
+            {
+              "intensity": 0.5,
+              "dx": -6.0,
+              "dy": 3.0
+            },
+            {
+              "intensity": 1.325,
+              "dx": 1.2,
+              "dy": -3.1
+            }
+          ]
+        }
+      }
+    },
+    "LIT_3": {
+      "sprite": "soulstone_outcrops/soulstone_outcrop_016/lit_3/sprite.webp",
+      "pixellab_object_id": "091f3144-3913-4d76-a825-36a11baaf9fc",
+      "generated_at": "2026-08-16T21:06:40+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.4769,
+      "glow_score": 0.0567,
+      "animations": {}
+    },
+    "LIT_4": {
+      "sprite": "soulstone_outcrops/soulstone_outcrop_016/lit_4/sprite.webp",
+      "pixellab_object_id": "d9b7d5f0-e639-48d9-99ba-c5bf53a76fe3",
+      "generated_at": "2026-08-16T21:06:41+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.6485,
+      "glow_score": 0.0203,
+      "animations": {
+        "motion": {
+          "group_id": "db703bf3-82e2-445f-a2c5-d792afec4943",
+          "description": "This is an almost completely still picture. ONLY the two purple gems in the rock change. Their brightness lifts very slightly and comes straight back: no more than a few pixels change anywhere in the whole picture. At their brightest they are still exactly the same purple as in the first frame -- never pale, never white, never any other colour. They never fade, never vanish, never spread and never change shape. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "soulstone_outcrops/soulstone_outcrop_016/lit_4/animations/motion/00.webp",
+            "soulstone_outcrops/soulstone_outcrop_016/lit_4/animations/motion/01.webp",
+            "soulstone_outcrops/soulstone_outcrop_016/lit_4/animations/motion/02.webp",
+            "soulstone_outcrops/soulstone_outcrop_016/lit_4/animations/motion/03.webp",
+            "soulstone_outcrops/soulstone_outcrop_016/lit_4/animations/motion/04.webp"
+          ],
+          "strip": "soulstone_outcrops/soulstone_outcrop_016/lit_4/animations/motion__strip.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-08-30T10:21:58+00:00",
+          "brief": "H24",
+          "review": "ANIMATION_PROBABLY_GOOD",
+          "review_metrics": {
+            "base_outline": 0.0076
+          },
+          "light_frames": [
+            {
+              "intensity": 0.716,
+              "dx": -0.5,
+              "dy": 1.6
+            },
+            {
+              "intensity": 1.284,
+              "dx": 6.8,
+              "dy": -6.7
+            },
+            {
+              "intensity": 1.05,
+              "dx": 1.0,
+              "dy": 1.7
+            },
+            {
+              "intensity": 0.887,
+              "dx": -0.3,
+              "dy": 1.7
+            },
+            {
+              "intensity": 1.063,
+              "dx": 8.7,
+              "dy": -7.8
+            }
+          ]
+        }
+      }
+    },
+    "LIT_5": {
+      "sprite": "soulstone_outcrops/soulstone_outcrop_016/lit_5/sprite.webp",
+      "pixellab_object_id": "38046c44-9970-4d90-8ff2-06800eb6c3ee",
+      "generated_at": "2026-08-16T21:06:59+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.7531,
+      "glow_score": 0.0291,
+      "relit_from": "NOT_LIT_2",
+      "animations": {
+        "motion": {
+          "group_id": "ab8440bb-5509-42b0-9fb9-2028b738577f",
+          "description": "This is the same picture in every frame. ONLY the white vein across the rock brightens a little and returns. It is lit and clearly visible in every frame, including the first. It gets only SLIGHTLY brighter -- never white, never washed out -- and keeps its own colour throughout: brightest in the middle, back to its first-frame brightness at the end. It stays exactly the same size and shape in every frame: it never grows and never spreads, only its brightness shifts. Every object stays the same kind of thing it is in the first frame and keeps its own colour: nothing turns into anything else. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour, no outline redrawn. The last frame matches the first exactly.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "soulstone_outcrops/soulstone_outcrop_016/lit_5/animations/motion/00.webp",
+            "soulstone_outcrops/soulstone_outcrop_016/lit_5/animations/motion/01.webp",
+            "soulstone_outcrops/soulstone_outcrop_016/lit_5/animations/motion/02.webp",
+            "soulstone_outcrops/soulstone_outcrop_016/lit_5/animations/motion/03.webp",
+            "soulstone_outcrops/soulstone_outcrop_016/lit_5/animations/motion/04.webp"
+          ],
+          "strip": "soulstone_outcrops/soulstone_outcrop_016/lit_5/animations/motion__strip.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-08-30T08:16:41+00:00",
+          "brief": "G25",
+          "review": "ANIMATION_PROBABLY_GOOD",
+          "review_metrics": {
+            "base_outline": 0.0
+          },
+          "light_frames": [
+            {
+              "intensity": 0.5,
+              "dx": 11.1,
+              "dy": -14.4
+            },
+            {
+              "intensity": 1.5,
+              "dx": 9.0,
+              "dy": -15.4
+            },
+            {
+              "intensity": 1.102,
+              "dx": 13.4,
+              "dy": -14.0
+            },
+            {
+              "intensity": 1.207,
+              "dx": 10.6,
+              "dy": -15.0
+            },
+            {
+              "intensity": 0.523,
+              "dx": 11.2,
+              "dy": -14.3
+            }
+          ]
+        }
+      }
+    }
+  },
+  "collision": true,
+  "hitbox_shape": "ellipse",
+  "light": {
+    "strength": 0.35,
+    "color": "#c090ff",
+    "radius": 6,
+    "reference": "the spawn bonfire is 1.0 (radius 7); strength 0 is no light",
+    "states": {
+      "LIT_1": {
+        "strength": 0.35,
+        "color": "#c090ff",
+        "radius": 6
+      },
+      "LIT_2": {
+        "strength": 0.35,
+        "color": "#c090ff",
+        "radius": 6
+      },
+      "LIT_3": {
+        "strength": 0.35,
+        "color": "#c090ff",
+        "radius": 6
+      },
+      "LIT_4": {
+        "strength": 0.35,
+        "color": "#c090ff",
+        "radius": 6
+      },
+      "LIT_5": {
+        "strength": 0.35,
+        "color": "#c090ff",
+        "radius": 6
+      }
+    },
+    "kind": "glow/mineral",
+    "flame": false,
+    "embers": false
+  }
+}

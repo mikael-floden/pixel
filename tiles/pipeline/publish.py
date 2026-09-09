@@ -1,0 +1,916 @@
+"""Publish the best candidates per cell into tiles/review/ so they can be reviewed.
+
+Nothing can be approved or rejected that the maintainer cannot see. The raw matrix is
+gitignored — 16 tiles per sheet, several sheets per cell, thousands of files, almost
+all of them rejects — so it stays local. This promotes only the top candidates of each
+cell into a committed, reviewable folder, alongside a manifest the wiki can index.
+
+Ranked on WALL quality, because the walls are what the tiles are for: they become every
+cliff and mountain face, and postprocess cannot invent structure that was not
+generated, whereas a flat top is free.
+
+The manifest keys each candidate by a stable path (`tiles/<top>__over__<side>/<n>`) so
+a wiki verdict maps straight back onto the sheet's tile_id — that is what lets a
+rejection actually delete the generation from PixelLab instead of leaving it to rot.
+
+  python tiles/pipeline/publish.py --top 3
+"""
+
+from __future__ import annotations
+
+import argparse
+import glob
+import hashlib
+import json
+import os
+import shutil
+import sys
+
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+
+import flatness
+import no_invention
+import palette_snap
+import fix_left_wall
+import tombstones
+import vertical
+
+from PIL import Image
+
+# config/palette.json is the GAME's palette, carried over from tiles2 so 3.0 reads as
+# the same world. measured_palette.json is only what the generator happens to produce —
+# useful evidence, never the target: taking it as one is what made 3.0 grass a bright
+# yellow-green against 2.0's deep pine.
+_CFG = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "config")
+PAIR_TWEAKS = {k: v for k, v in json.load(open(os.path.join(
+    os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "config",
+    "palette.json"))).get("pair_tweaks", {}).items() if not k.startswith("_")}
+
+# ONE GENERATED MATERIAL, SEVERAL PUBLISHED TYPES. The maintainer, on paving:
+# "Let's generate both brown and grey paving_stone ... The same paving_stone will
+# generate both a brown and a grey version" — and the wiki and the other agents
+# (the map agent above all) must see them as two separate tile types. A type with
+# "generated_as": "<matrix name>" is published FROM that matrix material's art but
+# AS itself: its own palette, its own cells, its own review sections. The matrix
+# name itself is never published once something expands from it. The cross pairs
+# fall out for free: paving__over__paving art publishes as brown-over-grey and
+# grey-over-brown by painting the two faces with the two palettes.
+_EXPAND = {}
+GENERATED_AS = {}
+for _m, _v in json.load(open(os.path.join(_CFG, "palette.json")))["types"].items():
+    if _v.get("generated_as"):
+        _EXPAND.setdefault(_v["generated_as"], []).append(_m)
+        GENERATED_AS[_m] = _v["generated_as"]
+
+# EVERY key a type declares is carried through, not a hand-listed subset. The subset
+# version silently dropped any flag added later: ramp_top_only (added so slime's ramp
+# would stop repainting reviewed walls) and the type-level claim_lip (parquet's
+# moulding) were both dead on arrival - written in palette.json, read by nothing. The
+# code looked right, the config looked right, and the art never changed. Defaults for
+# the flags that need one are applied below so callers can read them unconditionally.
+_DEFAULTS = {"force_align_wall": False, "ramp_abs": False, "kill_highlight": False,
+             "flat_top": True, "ramp_top_only": False, "ramp": None, "claim_lip": None,
+             "wall": None}
+PALETTE = {k: {**_DEFAULTS, **v} for k, v in
+           json.load(open(os.path.join(_CFG, "palette.json")))["types"].items()}
+
+
+
+
+def _rejected_keys():
+    """The keys the maintainer rejected, from their own file.
+
+    THE ONLY RECORD THAT CANNOT BE LOST. Deferral is written against the MATRIX PATH,
+    which is not an identity: brown and grey paving publish from ONE matrix tile, so
+    rejecting the brown deferred the shared source and deleted the approved grey with
+    it - 18 tiles carry an approval in one cell and a rejection in the other, and every
+    single collision is a paving pair. The bookkeeping is also derived state: it can be
+    reverted, rebuilt, or lost, and when it was, 51 rejected tiles came back
+    ("It feel like I once again see a lot of crap I have already removed").
+
+    live/feedback/tiles.json is neither - it is what the maintainer actually said, and a
+    key is `tiles/<cell>/sha1(src)`, which names one piece of art in one cell forever.
+    Filtering on it makes a rejected tile structurally unable to return no matter what
+    state the tombstones are in.
+    """
+    try:
+        entries = json.load(open(os.path.join(REPO, "live", "feedback", "tiles.json")))["entries"]
+    except Exception:
+        return set()
+    return {k.strip("/") for k, v in entries.items() if v.get("status") == "rejected"}
+
+
+def _approved_sources():
+    """Cell -> matrix paths carrying a live approval, found WITHOUT the manifest.
+
+    The self-heal could not use resolve(): that maps a verdict through the CURRENT
+    review set, and the tiles this exists to rescue are the ones already missing from
+    it. Asking the manifest about art the manifest has lost answers nothing - measured,
+    it released 0 of the 11 approved tiles still disappearing every run.
+
+    A key is `tiles/<cell>/sha1(<matrix path>)[:8]`, so the mapping can be rebuilt from
+    the matrix itself by walking the cell's source directory and hashing each path.
+    That works whether or not the tile is currently published, which is the whole
+    point. Expanded types (brown/grey paving) are walked under the matrix material they
+    were generated from.
+    """
+    try:
+        entries = json.load(open(os.path.join(REPO, "live", "feedback", "tiles.json")))["entries"]
+    except Exception:
+        return set()
+    want = {}
+    for k, v in entries.items():
+        if v.get("status") != "approved":
+            continue
+        parts = k.strip("/").split("/")
+        if len(parts) != 3 or "__over__" not in parts[1]:
+            continue
+        want.setdefault(parts[1], set()).add(parts[2])
+    out = {}
+    for cell, shas in want.items():
+        top, side = cell.split("__over__", 1)
+        mcell = f"{GENERATED_AS.get(top, top)}__over__{GENERATED_AS.get(side, side)}"
+        for p in glob.glob(os.path.join(MATRIX, mcell, "sheet_*", "tile_*.png")):
+            rel = os.path.relpath(p, REPO)
+            if hashlib.sha1(rel.encode()).hexdigest()[:8] in shas:
+                out.setdefault(cell, set()).add(rel)
+    return out
+
+
+def _rejected_still_published(manifest):
+    """Keys the maintainer rejected in the wiki that are STILL in the set being written."""
+    fb = os.path.join(REPO, "live", "feedback", "tiles.json")
+    try:
+        entries = json.load(open(fb))["entries"]
+    except Exception:
+        return []
+    inset = {e["key"] for c in manifest["cells"].values() for e in c["candidates"]}
+    return [k for k, v in entries.items()
+            if v.get("status") == "rejected" and k in inset]
+
+
+def _apply_verdicts():
+    """Record any wiki verdict the maintainer has cast since the last publish.
+
+    Returns how many tiles were newly deferred. Safe to call repeatedly: defer_tiles()
+    only counts tiles it had not already recorded.
+    """
+    import review
+    hits, _misses, _shifted = review.resolve()
+    # NOTE: the release below runs on EVERY publish, not only when a verdict is new.
+    # The damage it undoes was recorded in past runs and re-applies itself each time.
+    srcs = [e["src"] for k, v, e in hits
+            if v.get("status") == "rejected" and e.get("src")]
+    # A DEFERRAL KILLS THE MATRIX TILE, AND TWO CELLS CAN SHARE ONE. Deferring a source
+    # that another cell's verdict APPROVED deletes work the maintainer kept: measured, 18
+    # paving tiles are approved as one colour and rejected as the other. The rejected one
+    # still disappears - _rejected_keys() drops it from its own cell by key - so nothing
+    # is lost by declining to defer the shared source here.
+    keep = {e["src"] for k, v, e in hits
+            if v.get("status") == "approved" and e.get("src")}
+    spared = sorted(set(srcs) & keep)
+    if spared:
+        print(f"not deferring {len(spared)} source(s) approved in another cell "
+              f"(shared paving art); their rejected sibling is dropped by key")
+    srcs = [p for p in srcs if p not in keep]
+    # AND RELEASE THE ONES ALREADY HELD. The guard above stops new collisions; these
+    # were recorded before it existed and delete approved work on every run until
+    # undone. Only sources with a LIVE approval are released, and their rejected
+    # sibling still goes - by key, in its own cell.
+    freed = tombstones.undefer_tiles(sorted(
+        set(keep) | {p for v in _approved_sources().values() for p in v}))
+    if freed:
+        print(f"released {freed} approved source(s) wrongly deferred by a sibling cell's rejection")
+    n = tombstones.defer_tiles(srcs) if srcs else 0
+    # A VERDICT ON A LOCKED CELL MUST ALSO SHRINK THE LOCK. The lock pins a reviewed
+    # cell's exact tile list so nothing sneaks in, and candidates() honours it over
+    # everything else — including the deferral this function just recorded. Found the
+    # hard way: the maintainer rejected 11 tiles in black_rock__over__dark_mud after
+    # that section was locked, defer_tiles() dutifully recorded them, and the next
+    # publish put all 11 straight back because the lock still named them. Removing
+    # entries is the only edit ever made here, so the locks-only-shrink invariant
+    # holds by construction. The in-memory LOCK is the copy this run publishes from,
+    # so it shrinks too, not just the file.
+    if srcs:
+        drop, shrunk = set(srcs), 0
+        for cell, allowed in LOCK.items():
+            kept = [s for s in allowed if s not in drop]
+            if len(kept) != len(allowed):
+                shrunk += len(allowed) - len(kept)
+                LOCK[cell] = kept
+        if shrunk:
+            path = os.path.join(ROOT, "review_lock.json")
+            data = json.load(open(path))
+            data["cells"] = LOCK
+            with open(path, "w") as fh:
+                json.dump(data, fh, indent=2)
+            print(f"lock shrunk by {shrunk} rejected tile(s)")
+    return n
+
+
+def _save(im, path):
+    """Lossless WebP. BOTH flags are non-default in Pillow and both matter: without
+    `lossless` you silently get lossy VP8 and ringing on every hard pixel-art edge,
+    without `exact` libwebp rewrites the RGB under fully-transparent pixels."""
+    im.convert("RGBA").save(path, "WEBP", lossless=True, exact=True)
+
+# Same number chase.py defaults --min-wall to; the two components must not disagree.
+#
+# LOWERED FROM 2.0, because it was not earning its cost. The gate exists for a real
+# reason — gating on spill alone once shipped a cell at wall 0.00, a dead flat cardboard
+# cliff — but 2.0 was a guess, and measured against the maintainer's own 309 verdicts the
+# wall score does not predict their judgement AT ALL: tiles they rejected score a median
+# 3.92, tiles they kept 4.26, point-biserial r = -0.058. It was rejecting HALF of every
+# sheet on a number unrelated to whether the tile is any good, and it left 15 of 16 stuck
+# cells unable to reach three candidates.
+#
+# At 1.0 six of those sixteen fill up with art already on disk. The maintainer's own
+# framing settles where to land: "It's ok you pass through some error to me. Your filter
+# just have to be good enough to not give me obvious crap." A dead flat wall is obvious
+# crap; a wall scoring 1.4 is a judgement call, and the judgement is theirs.
+#
+# Wall score remains the RANKING term, which is where a metric with no threshold belongs.
+MIN_WALL = 1.0
+
+REJECTED_KEYS = set()
+APPROVED_SRC = {}
+
+ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+MATRIX = os.path.join(ROOT, "matrix")
+REVIEW = os.path.join(ROOT, "review")
+REPO = os.path.dirname(ROOT)
+
+
+def _load_lock():
+    """Cells the maintainer has FINISHED reviewing — see candidates(). Missing file, or a
+    cell absent from it, means no lock: the default is the old behaviour."""
+    try:
+        return json.load(open(os.path.join(ROOT, "review_lock.json")))["cells"]
+    except Exception:
+        return {}
+
+
+LOCK = _load_lock()
+
+
+def candidates(cell_dir, side_hex=None, same=False, rejected=(), top_hex_c=None,
+               cell=None, rejected_keys=(),
+               approved=(), lock=None, pinned=()):
+    """Every tile in a cell, scored on its wall, best first.
+
+    WALL MATERIAL is a gate here, not a score. "X over Y" is a request for two materials
+    and the generator answers it with whatever pairing it finds plausible: asked for
+    black rock over grass it returned small black stones over grass over LIGHT GREY
+    STONE — a three-layer tile whose wall is stone, not the grass that was asked for.
+
+    That is the whole reason wall alignment kept inventing colours. The transform was
+    being handed a grey wall and a green target and told to make them agree, so it had
+    to manufacture green that was nowhere in the image. No postprocess can fix this
+    one: the material simply is not in the art. It is a SELECTION problem, and a cell
+    with no correct-material candidate needs re-rolling, not tinting.
+    """
+    out = []
+    for sheet in sorted(glob.glob(os.path.join(cell_dir, "sheet_*"))):
+        mp = os.path.join(sheet, "meta.json")
+        meta = json.load(open(mp)) if os.path.isfile(mp) else {}
+        for p in sorted(glob.glob(os.path.join(sheet, "tile_*.png"))):
+            # A tile the maintainer has already rejected never comes back. Publishing
+            # it again asks for the same verdict twice, and their review time is the
+            # scarcest thing in this pipeline.
+            rel = os.path.relpath(p, REPO)
+            if rel in rejected:
+                continue
+            # BY KEY, WHICH IS PER CELL - see _rejected_keys(). The path test above is
+            # blind to which cell asked, so on shared paving art it either spares both
+            # or kills both; this one names exactly the tile the maintainer rejected.
+            if cell and rejected_keys and (
+                    f"tiles/{cell}/"
+                    f"{hashlib.sha1(rel.encode()).hexdigest()[:8]}") in rejected_keys:
+                continue
+            # THE MAINTAINER OVERRULED THE FILTER ON THIS TILE. It publishes whatever the
+            # gates think, and it sorts first, because they picked it out by hand from
+            # the reject pile.
+            forced = rel in approved
+            q = flatness.wall_quality(p)
+            if not q:
+                continue
+            f = flatness.faces(p)
+            if not f or not f["top"]:
+                continue
+            # Gate on whether the SHIPPED tile tiles cleanly, not on whether the
+            # generator happened to draw a flat top. palette_snap overwrites the top
+            # regardless, so a raw-flatness gate only throws away good art — measured,
+            # 182 of the 238 tiles it rejected were already seamless after postprocess,
+            # several of them with the best edge spill in the whole set.
+            # Against the palette colour, not the tile's own median — see clears_bar.
+            # AND AN APPROVAL OUTRANKS THIS GATE TOO. seam_px is measured on the tile as
+            # it will ship, so changing the postprocess moves it - the clean top pushed
+            # one approved tile from passing to 240 against a tolerance of 8. A gate
+            # exists to spare the maintainer obvious crap; it has no business overruling
+            # a tile he has already looked at and kept.
+            if (not forced and os.path.relpath(p, REPO) not in pinned
+                    and flatness.seam_px(p, top_hex_c) > flatness.SEAM_TOL):
+                continue
+            out.append({
+                "path": p, "wall": q, "forced": forced,
+                "top_share": round(f["top"]["share"], 4) if f and f["top"] else None,
+                "overhang": round(flatness.overhang(p), 3),
+                "wall_err": round(flatness.wall_material_err(p, side_hex), 1)
+                            if side_hex else None,
+                "clarity": round(flatness.fringe_clarity(p), 3),
+                # Positive = the top reads as the SIDE material, i.e. backwards.
+                "swapped": round(flatness.swapped_err(p, top_hex_c, side_hex), 1)
+                           if (top_hex_c and side_hex) else None,
+                "top_err": round(flatness.top_material_err(p, top_hex_c), 1)
+                           if top_hex_c else None,
+                "contamination": round(flatness.top_contamination(
+                    p, top_hex_c, side_hex), 3) if (top_hex_c and side_hex) else None,
+                # The band that appears when this tile is stacked on itself. Lower
+                # is better; it is what decides a same-over-same tile.
+                "band": (lambda b: round(b, 2) if b is not None else None)(
+                    vertical.band(p)),
+                "tile_id": meta.get("tile_id"), "style": meta.get("style"),
+                "prompt": meta.get("prompt"),
+            })
+    # The maintainer's spill threshold is a GATE, not a ranking term — they went
+    # through every grass cell and circled the ones whose transition was not good
+    # enough, and a tile without it is the wrong tile however good its cliff. Within
+    # the tiles that have it, the wall decides, because the wall builds the game.
+    # ONE BAR, not two. chase.py rolls a cell until three tiles clear
+    # wall>=2.0 / spill / clarity / seam, and publish then shipped whatever ranked
+    # highest whether or not it cleared any of them — so check_gates found published
+    # tiles at wall 0.00 and 0.06 in cells whose chase had been told 2.0 was the
+    # minimum. Two components disagreeing about what "good" means is how a cell gets
+    # declared done while shipping something the generator was still being paid to
+    # replace. The tiers below degrade in the maintainer's own priority order, and a
+    # cell that lands on a lower tier is FLAGGED rather than quietly shipped.
+    #
+    # X-over-X waives the spill requirement entirely, because on those cells it is the
+    # maintainer's stated ANTI-goal — "it's best if 'same over same' doesn't have that
+    # spill-over-effect, becouse it's that effect that make the tile hard to repeat
+    # vertically" — and because flatness.overhang is degenerate there anyway (it hunts
+    # the top material in the wall by hue, and on same-over-same there is no hue
+    # difference to find: exactly 1.000 for every grass/ice/light_soil tile, 0.000 for
+    # most grey_stone/black_rock, on saturation alone).
+    # OVERRIDES ARE ADDED, NOT SUBSTITUTED. Making a forced tile satisfy each tier looked
+    # equivalent and was not: the chain takes the FIRST NON-EMPTY tier, so a single
+    # override made the strictest tier non-empty and the cell shipped that one tile
+    # instead of falling through to a laxer tier holding three. Cells with three
+    # candidates fell 173 -> 166 the moment the maintainer's picks were honoured, which
+    # is the opposite of what an override is for.
+    forced = [c for c in out if c.get("forced")]
+    out = [c for c in out if not c.get("forced")]
+    # A TILE THE MAINTAINER APPROVED NEVER FALLS OUT OF A TIER. `keep` has been a no-op
+    # hook since it was written; this is what it is for. The tiers below take the first
+    # non-empty one, so a candidate that dips under a bar is dropped outright the moment
+    # any other candidate clears it - and the bars are computed from the POSTPROCESSED
+    # tile, so changing the postprocess moves them. Measured when the clean top landed:
+    # 142 approved tiles vanished this way, passing every gate, tombstone and lock, and
+    # failing only a clarity threshold that had shifted underneath them.
+    #
+    # This is narrower than the `approved` override above, deliberately. An override
+    # bypasses the gates AND the cap (measured: the set went 3990 -> 4432, and cells
+    # failing the wall-material check 5 -> 22). Pinning only exempts a tile from being
+    # ranked out of its own cell, which is the thing his verdict actually means.
+    keep = lambda c: os.path.relpath(c["path"], REPO) in pinned
+    spill_ok = (lambda c: True) if (same or flatness.indistinguishable(top_hex_c, side_hex)) \
+        else (lambda c: c["overhang"] >= flatness.MIN_OVERHANG or keep(c))
+    full = [c for c in out if keep(c) or (spill_ok(c)
+            and c["wall"]["score"] >= MIN_WALL
+            and c["clarity"] >= flatness.MIN_CLARITY)]
+    withspill = full or [c for c in out if spill_ok(c)]
+    out = withspill or out
+    # X-over-X is exempt: the wall IS the top's material by construction, so the only
+    # thing this could measure there is SHADE — and snap()'s same-material rule moves the
+    # whole face onto the palette anyway. Left in, it called snow-over-snow's correctly
+    # generated snow wall "the wrong material" because the generator shaded it bluer than
+    # the palette's near-white.
+    right = [c for c in out if keep(c) or (c["wall_err"] is not None
+             and c["wall_err"] <= flatness.MAX_WALL_ERR)]
+    if not same:
+        out = right or out
+        # And the tile must not be BACKWARDS. Same tier discipline as the wall material:
+        # a cell with a correctly-oriented candidate never ships a reversed one, and a
+        # cell with nothing but reversed ones is flagged rather than quietly shipped.
+        fwd = [c for c in out if keep(c) or (c["swapped"] is not None
+               and c["swapped"] <= flatness.MAX_SWAP)]
+        out = fwd or out
+        # And the surface should actually BE the material, not mostly it. "not enough
+        # lava on the ground" was 14 of the 24 verdicts in one review pass.
+        clean = [c for c in out if keep(c) or (c["contamination"] is not None
+                 and c["contamination"] <= flatness.MAX_CONTAMINATION)]
+        out = clean or out
+    # The maintainer's own picks go back in at the front, whatever the tiers concluded.
+    seen = {id(c) for c in out}
+    out = forced + [c for c in out if id(c) not in {id(f) for f in forced}]
+    # Least-banded first on X-over-X: those tiles exist to be stacked into a cliff
+    # under a "top only" tile, so the one that stacks without a stripe is the best
+    # one however good another tile's wall score.
+    if same:
+        out.sort(key=lambda c: (c["band"] if c["band"] is not None else 1e9,
+                                -c["wall"]["score"]))
+    else:
+        out.sort(key=lambda c: (not c.get("forced", False), -c["wall"]["score"]))
+
+    # A FINISHED CELL MAY ONLY SHRINK. See review_lock.json — once the maintainer has
+    # rated every tile in a cell, publish is not allowed to put anything new in front of
+    # them, whatever a later gate fix decides is now acceptable.
+    #
+    # This is not caution, it is arithmetic. A recovered tile costs one rating; a
+    # recovered tile in a cell they have FINISHED costs a re-scan of the whole cell,
+    # because they have no way to tell which one is new. That happened four times in one
+    # evening — black_rock, dark_mud, light_beach, light_soil — for a total of 37 tiles
+    # against roughly 200 re-examined: "Had to remove things you sneaked in. Will take a
+    # long time until x over x is done when I need to go back on tiles I have already
+    # finished."
+    #
+    # Anything the gates recover for a locked cell is still on disk and still in
+    # generated.json; it waits for the maintainer to unlock the cell, which is a decision
+    # they make when they have the time, not one a republish makes for them.
+    if lock is not None:
+        allowed = set(lock)
+        out = [c for c in out if os.path.relpath(c["path"], REPO) in allowed]
+
+    return out, bool(withspill), same or bool(right), bool(full)
+
+
+def main():
+    ap = argparse.ArgumentParser()
+    # NO CAP BY DEFAULT. 3 was a leftover from when the problem was "cells have
+    # nothing", and it quietly became a ceiling on what the maintainer is allowed to
+    # see: "Feels like you are sitting on a lot of gold you prevent me from seeing
+    # becouse you think 3 or 4 is a max on each tile set. I have no max if it's already
+    # generated. I just didn't want to pay for more if we already have enough."
+    #
+    # It never saved anything either — the review folder is 664 bytes per tile, 1.9 MB
+    # for 563 candidates, so showing everything that clears the bar costs a few MB of a
+    # repo that already holds the game's art.
+    #
+    # It also protects their triage. A 1-star mark ("looked at, not a complete failure")
+    # attaches to a tile's key; if that tile later drops out of an arbitrary top-N, the
+    # mark is orphaned and the work is wasted. Publishing everything means a tile they
+    # have judged never silently disappears.
+    ap.add_argument("--top", type=int, default=0,
+                    help="max candidates published per cell; 0 = every tile that clears "
+                         "the bar (the default)")
+    ap.add_argument("--clean", action="store_true", help="rebuild the review folder")
+    ap.add_argument("--no-apply", action="store_true",
+                    help="do NOT apply the maintainer's pending wiki verdicts first "
+                         "(they are applied by default — see _apply_verdicts)")
+    ap.add_argument("--cells", default="",
+                    help="comma-separated cells (or substrings) to republish; every other "
+                         "cell is carried over from the existing manifest untouched. A "
+                         "full run is ~6 minutes and most fixes touch a handful of cells.")
+    args = ap.parse_args()
+
+    # PARTIAL REPUBLISH. Every publish rebuilt all 196 cells, so a fix affecting fifteen
+    # of them still cost six minutes before the maintainer could look at it — and with a
+    # push and a deploy behind that, one wrong guess cost the best part of half an hour:
+    # "In this tempo it will take forever. What if I don't like your fix?"
+    #
+    # The cells not named are not re-rendered and not re-measured; their manifest entries
+    # and their webp files are carried across exactly as they were. That makes the cost of
+    # a targeted fix proportional to the fix.
+    only = [c.strip() for c in args.cells.split(",") if c.strip()]
+    carried = {}
+    if only:
+        if args.clean:
+            ap.error("--cells and --clean are contradictory: --clean deletes the very "
+                     "files a partial run carries over")
+        try:
+            carried = json.load(open(os.path.join(REVIEW, "manifest.json")))["cells"]
+        except Exception:
+            ap.error("--cells needs an existing manifest to carry the other cells over "
+                     "from; run a full publish first")
+    # ALWAYS CHECK FOR A REVIEW FIRST. A rejection in the wiki records a verdict; it does
+    # not remove the tile. That takes review.py --apply and then this. Ship a publish
+    # without the apply and the maintainer gets a fresh build that still contains work
+    # they deleted — which happened, and was baffling from their side because the build
+    # WAS new: "Why do I see something I have removed if you have just built a new
+    # version. I understand absolutely nothing now."
+    #
+    # It happened because the apply lived in whichever shell script happened to call
+    # publish, so forgetting it was always one script away. Their instruction — "never
+    # not do that again. You should always check if I have made a review. That is very
+    # important" — is a mechanism, not a promise, so it lives at the choke point every
+    # path goes through. --no-apply exists for a dry rebuild and says so in the log.
+    #
+    # BEFORE the rmtree below, deliberately: resolve() reads the existing manifest to
+    # turn a wiki key into an art path, and --clean deletes it. Running it after cost
+    # nine of the maintainer's rejections once already.
+    # THE NOTES ARE NOT AUTOMATABLE, so this only makes them impossible to miss. A
+    # verdict is a fact about a file and applying it is mechanical; a note is a person
+    # telling me how to fix the generator, and the hazard of automating the first is that
+    # the tile quietly disappears and the sentence attached to it is never read.
+    # "It's meant that you read them. I might have a comment to you." See notes.py.
+    try:
+        import notes as _notes
+        _unread = _notes.unread()
+    except Exception:
+        _unread = []
+    if _unread:
+        print(f"\n*** {len(_unread)} UNREAD NOTE(S) FROM THE MAINTAINER ***")
+        for k, note, v in _unread[:10]:
+            print(f"   {k}: {note}")
+        if len(_unread) > 10:
+            print(f"   ... and {len(_unread) - 10} more")
+        print("   READ THEM — they are instructions, not data. This publish still runs;\n"
+              "   the tiles are handled, the sentences are not.\n"
+              "   python tiles/pipeline/notes.py   then   --ack\n")
+
+    if not args.no_apply:
+        try:
+            n_applied = _apply_verdicts()
+            print(f"applied {n_applied} new maintainer verdict(s)" if n_applied
+                  else "no unapplied maintainer verdicts")
+        except Exception as exc:
+            raise SystemExit(f"could not read the maintainer's verdicts ({exc}). "
+                             f"Refusing to publish: a run that silently skips a review "
+                             f"republishes tiles they deleted. Pass --no-apply to "
+                             f"override deliberately.")
+    if args.clean and os.path.isdir(REVIEW):
+        shutil.rmtree(REVIEW)
+    os.makedirs(REVIEW, exist_ok=True)
+    global REJECTED_KEYS, APPROVED_SRC
+    REJECTED_KEYS = _rejected_keys()
+    APPROVED_SRC = _approved_sources()
+    if APPROVED_SRC:
+        print(f"pinning {sum(len(v) for v in APPROVED_SRC.values())} approved tile(s) "
+              f"against the ranking tiers")
+    if REJECTED_KEYS:
+        print(f"filtering {len(REJECTED_KEYS)} rejected tile key(s) from the maintainer's verdicts")
+    dead = tombstones.load().get("cells", {})
+    rejected = tombstones.rejected_tiles()
+    approved = tombstones.approved_tiles()
+    # AN APPROVAL PINS, IT DOES NOT FORCE. Feeding wiki approvals into the override set
+    # instead was measured and reverted: an override bypasses the cap AND the gates, so
+    # the review set went 3990 -> 4432 and the cells failing the wall-material check
+    # went 5 -> 22. The maintainer approving a tile means "keep showing me this one",
+    # not "publish it past every filter". The lock is the mechanism that already means
+    # exactly that, so a lost approval is repaired there.
+    for _cell, _srcs in _approved_sources().items():
+        if _cell in LOCK:
+            _miss = [p for p in sorted(_srcs) if p not in LOCK[_cell]]
+            if _miss:
+                LOCK[_cell] = list(LOCK[_cell]) + _miss
+                print(f"re-pinned {len(_miss)} approved tile(s) into the {_cell} lock")
+    if approved:
+        print(f"honouring {len(approved)} maintainer override(s)")
+    if rejected:
+        print(f"skipping {len(rejected)} individually rejected tile(s)")
+
+    manifest = {"schema": "tiles3/review@2", "domain": "tiles",
+                # the wiki draws with these instead of hand-copying tiles/docs/GEOMETRY.md;
+                # dy=14 is the largest pitch at which the 64x28 diamond closes, wall 17 rows.
+                # level_px deliberately absent - stacked-level step is the game's constant.
+                "iso": {"tile_px": 64, "dx": 32, "dy": 14, "wall_px": 17},
+                "_comment": ("Candidates awaiting the maintainer's verdict. Each carries "
+                             "BEFORE (raw generator output) and AFTER (what ships) so the "
+                             "wiki can show the postprocess itself, not just its result. "
+                             "Ranked on WALL "
+                             "quality — tiling, discretion, structure. `tile_id` is the "
+                             "PixelLab generation a rejection should delete; `cell` is the "
+                             "X-over-Y pair. A DELETED cell is tombstoned and never "
+                             "regenerated, unlike a rejected one."),
+                "cells": {}}
+    n_pub = 0
+    reclaimed = 0
+    invented = []
+    jobs = []
+    for d in sorted(glob.glob(os.path.join(MATRIX, "*__over__*"))):
+        mcell = os.path.basename(d)
+        mtop, mside = mcell.split("__over__")
+        for _t in _EXPAND.get(mtop, [mtop]):
+            for _s in _EXPAND.get(mside, [mside]):
+                jobs.append((d, f"{_t}__over__{_s}", _t, _s))
+    # REFUSE TO PUBLISH FROM A MISSING SOURCE. Every cell - including the ones a
+    # partial run only means to CARRY OVER - is reached by iterating tiles/matrix/
+    # below, so an absent matrix makes `jobs` empty, writes a manifest with ZERO
+    # cells, and exits 0. Measured 2026-09-03: the raw matrix art is not in every
+    # clone (it is generator input, not published output), and one
+    # `publish.py --cells ...` there emptied the 225-cell manifest and then took
+    # 3,685 plates with it, because transition_plates found no approved keys and
+    # deleted them. Restored from git; nothing reached main. A run with nothing to
+    # publish must be an ERROR, never a silent wipe.
+    if not jobs:
+        ap.error(f"no source cells found under {MATRIX} - refusing to write a manifest "
+                 f"with 0 cells. The raw matrix art is generator input and is absent "
+                 f"from this clone, so nothing can be published or carried over here. "
+                 f"To repaint published art toward a changed palette use "
+                 f"textured_pass.write_textured(manifest), which works off the review "
+                 f"art already on disk.")
+
+    for d, cell, top, side in jobs:
+        if os.path.basename(d).replace("__over__", "_over_") in dead:
+            continue
+        if only and not any(o in cell for o in only):
+            if cell in carried:
+                manifest["cells"][cell] = carried[cell]
+                n_pub += len(carried[cell].get("candidates", []))
+            continue
+        # top_hex_c and `rejected` were BOTH being dropped here. Without top_hex_c the
+        # swapped/contamination/top_err fields are None for every tile, which makes the
+        # `fwd or out` and `clean or out` tiers unreachable — the swapped-material gate
+        # built from the maintainer's own 22 "this looks like Y over X" verdicts, and the
+        # contamination tier built from their 14 "not enough lava on the ground", had
+        # never once fired. Both were reported as working on the strength of a manifest
+        # field that was silently null.
+        # A VIRTUAL TYPE GATES AGAINST ITS SOURCE MATERIAL, NOT ITS RECOLOUR. The
+        # material gates ask "is the drawn wall really this material" — and for a
+        # type published FROM paving art the answer is always paving, whatever
+        # colour family the sheet happened to draw. Gating each twin against its
+        # own palette dropped warm-drawn art from the grey cells and grey-drawn
+        # art from the brown ones (parquet over grey paving fell to ONE tile of
+        # 45; water over brown to 4 of 26), splitting what the maintainer asked
+        # to be duplicated: 'Can't we replicate so Parquet Floor over brown
+        # paving stone also can build on top of grey paving?' Painting still uses
+        # the type's own palette.
+        gate_top = GENERATED_AS.get(top, top)
+        gate_side = GENERATED_AS.get(side, side)
+        cands, has_spill, right_wall, all_gates = candidates(
+            d, (PALETTE.get(gate_side) or {}).get("top"), same=(gate_top == gate_side),
+            rejected=rejected, top_hex_c=(PALETTE.get(gate_top) or {}).get("top"),
+            approved=approved, lock=LOCK.get(cell),
+            cell=cell, rejected_keys=REJECTED_KEYS,
+            pinned=APPROVED_SRC.get(cell, ()))
+        # EVERY OVERRIDE PUBLISHES. --top caps how many the ranking contributes, but the
+        # maintainer picked these out of the reject pile by hand and truncating their
+        # choices is not the cap's job — four approvals landed in grey_stone-over-lava
+        # and the fourth was silently dropped.
+        picks = [c for c in cands if c.get("forced")]
+        rest = [c for c in cands if not c.get("forced")]
+        cands = picks + (rest if args.top <= 0
+                         else rest[:max(0, args.top - len(picks))])
+        if not cands:
+            continue
+        cd = os.path.join(REVIEW, cell)
+        os.makedirs(cd, exist_ok=True)
+        entries = []
+        top_hex = PALETTE.get(top, {}).get("top")
+        side_hex = PALETTE.get(side, {}).get("top")
+        for i, c in enumerate(cands):
+            # BOTH states ship, because the maintainer judges the postprocess as well
+            # as the art and cannot do that from one image. `before` is the generator's
+            # output untouched; `after` is what the game gets — top snapped to the
+            # shared palette colour, outline spikes clipped, WALL NOT TOUCHED.
+            raw = Image.open(c["path"]).convert("RGBA")
+            before = os.path.join(cd, f"{i}_before.webp")
+            after = os.path.join(cd, f"{i}_after.webp")
+            _save(raw, before)
+            # WALL ALIGNMENT IS OFF. It is the right idea — the maintainer is correct
+            # that grass under an ice tile should match grass under a grass tile — and
+            # every implementation of it so far has invented colours that were not in
+            # the art: a hue read off a grey drew a MAGENTA line along the grass edge,
+            # a proportional saturation fix turned dull walls vivid (1413 magenta px),
+            # and the version after that made ice-over-light_soil's wall RED, which is
+            # what the maintainer saw. Shipping the wall exactly as generated is
+            # inconsistent between cells but never wrong, and that is the better of the
+            # two failures. side_hex stays measured in the palette, ready for an
+            # implementation that converges dull and vivid onto one target without
+            # amplifying either.
+            wall_hex = (PALETTE.get(side) or {}).get("wall")
+            # ALIGN THE SIDE WALL ONLY WHEN IT IS REALLY THAT MATERIAL. The maintainer
+            # put grass-over-grass under ice-over-grass with the wiki's "top only"
+            # control and asked why the two grasses do not match: because only the
+            # same-over-same wall was ever substituted onto the palette, and the grass
+            # under ice kept whatever green the generator drew.
+            #
+            # The gate is what makes this safe rather than a fourth attempt at the bug
+            # that produced magenta, vivid and red walls. Those all tried to align a
+            # wall that was NOT the requested material — a three-layer tile's grey
+            # stone toward green — so the transform had to manufacture colour. A cell
+            # over MAX_WALL_ERR is left exactly as generated and flagged instead.
+            # force_align: a per-pair override for cells whose wall the maintainer has
+            # CONFIRMED by review but whose drawn material sits far from the palette,
+            # so wall_err fails every tile and the wall ships raw looking like the
+            # wrong material ("the water here is different and doesn't look like deep
+            # water"). A blanket rule — align every reviewed cell — was tried first and
+            # flattened mud-over-paving's good raw stones into bright grey, so it is
+            # opt-in per pair, exactly as the maintainer sanctioned.
+            aligned = ((c["wall_err"] is not None
+                        and c["wall_err"] <= flatness.MAX_WALL_ERR)
+                       or PAIR_TWEAKS.get(cell, {}).get("force_align", False)
+                       # a type published FROM generated paving art (generated_as)
+                       # cannot have the wrong wall material — only the other
+                       # colour family, which is what the type exists to convert
+                       or bool(PALETTE.get(side, {}).get("force_align_wall")))
+            # NOT EVERY MATERIAL WANTS A FLAT TOP. The flat fill is the default because a
+            # featureless surface shows no repeat across a large field, but the maintainer
+            # asked for parquet_floor to keep its planks: "parquet_floor is not expected to
+            # be clean ... should always maintain it's unclean top texture (but the color
+            # palette should still align)". palette.json says which.
+            proc = (palette_snap.snap(raw, top_hex, same_material=(top == side),
+                                      wall_hex=wall_hex,
+                                      side_hex=wall_hex, align_side=aligned,
+                                      flat_top=PALETTE.get(top, {}).get("flat_top", True),
+                                      top_ramp=PALETTE.get(top, {}).get("ramp"),
+                                      # ramp_top_only: slime's ramp was nominated for its TOP
+                                      # mid-review, but nearly every *__over__slime wall is
+                                      # painted and already reviewed — the ramp must not
+                                      # repaint what the maintainer has signed off.
+                                      side_ramp=(None
+                                                 if PALETTE.get(side, {}).get("ramp_top_only")
+                                                 else PALETTE.get(side, {}).get("ramp")),
+                                      claim_depth=PAIR_TWEAKS.get(cell, {}).get("claim_depth"),
+                                      deep_claim=PAIR_TWEAKS.get(cell, {}).get("deep_claim"),
+                                      relight_faces=bool(PAIR_TWEAKS.get(cell, {})
+                                                         .get("relight_faces")),
+                                      drape_lit=bool(PAIR_TWEAKS.get(cell, {})
+                                                     .get("drape_lit")),
+                                      # drip_match is PER TILE, never per cell: six
+                                      # cell-wide versions of the drape fill each
+                                      # fixed one tile and damaged another that was
+                                      # working ("You destroy other working tiles
+                                      # with your code right now!"). A tile is named
+                                      # in drip_tiles by the tail of its src path;
+                                      # every unnamed tile provably ships byte-
+                                      # identical, because with drip_match=None the
+                                      # classifier's drip code never runs.
+                                      drip_match=(PAIR_TWEAKS.get(cell, {}).get("drip_match")
+                                                  if ("drip_tiles" not in PAIR_TWEAKS.get(cell, {})
+                                                      or "/".join(c["src"].split("/")[-2:])
+                                                      in PAIR_TWEAKS.get(cell, {}).get("drip_tiles", ()))
+                                                  else None),
+                                      edge_dim=PAIR_TWEAKS.get(cell, {}).get("edge_dim", False),
+                                      kill_highlight=PALETTE.get(top, {}).get("kill_highlight", False),
+                                      claim_floor=PAIR_TWEAKS.get(cell, {}).get("claim_floor"),
+                                      no_claims=PAIR_TWEAKS.get(cell, {}).get("no_claims", False),
+                                      # a TYPE may demand a lip everywhere it is the top:
+                                      # "Parquet Floor should have a overhang looking like a
+                                      # list/border." A floor ends in a moulding, whatever it
+                                      # is laid over, so this belongs to the material and not
+                                      # to one pair. A pair_tweak still overrides it.
+                                      claim_lip=PAIR_TWEAKS.get(cell, {}).get(
+                                          "claim_lip", PALETTE.get(top, {}).get("claim_lip")),
+                                      # a pair may opt out of the side material's ramp_abs:
+                                      # absolute stops stabilise light walls, but a DARK source
+                                      # wall lands inside one stop's basin and ships flat
+                                      # ("makes the grey paving stone texture disappear").
+                                      side_ramp_abs=PAIR_TWEAKS.get(cell, {}).get(
+                                          "side_ramp_abs",
+                                          PALETTE.get(side, {}).get("ramp_abs", False)),
+                                      side_band=PAIR_TWEAKS.get(cell, {}).get("side_band"),
+                                      # raw_wall: the wall is the material at its best as
+                                      # drawn and every recolour made it worse — classify
+                                      # strictly, paint nothing on the wall itself.
+                                      paint_side=not PAIR_TWEAKS.get(cell, {}).get("raw_wall", False))
+                    if top_hex else raw)
+            # THE GUARD. Every three attempts at wall alignment put a colour into the
+            # art that was in neither the art nor the palette, and every one was caught
+            # by the maintainer by eye, in the wiki — which spends the review budget on
+            # my bugs and makes starting a review conditional on the postprocess already
+            # being right. So the invariant is enforced here instead: a tile whose
+            # postprocess invented a visible patch of colour ships RAW and says so, and
+            # the review never contains one. See no_invention.py.
+            _ramps = tuple((PALETTE.get(top, {}).get("ramp") or [])
+                           + (PALETTE.get(side, {}).get("ramp") or []))
+            inv = (no_invention.check(raw, proc, top_hex,
+                                      extra_hex=((wall_hex,) if wall_hex else ()) + _ramps)
+                   if top_hex else {})
+            if inv.get("blob", 0) > no_invention.MAX_BLOB:
+                invented.append((f"tiles/{cell}/{i}", inv))
+                proc = raw
+            # ONE CELL, ONE FIX, AND IT RUNS AFTER THE GUARD. dark_mud over slime
+            # hands its darker-lit LEFT wall face to the mud - 98.3% of it, against 26%
+            # on the healthy grey_stone over slime.
+            #
+            # Not a pair_tweak: claim_depth and claim_lip both re-run the wall split,
+            # which re-centres substitute() across the whole side region and repaints
+            # every slime pixel (measured on a sibling: vivid mint 42,160,114 -> olive
+            # 90,132,44, 751 of 776 px). Slime is PROTECTED in palette.json.
+            #
+            # After the guard, because no_invention compares against the RAW art and
+            # reads these pixels as new colour even though they are copied from this
+            # same tile - it shipped all four raw when this ran earlier. Running last is
+            # safe precisely because the fix cannot invent: every colour it writes is
+            # already present in the tile it is writing to.
+            if PAIR_TWEAKS.get(cell, {}).get("reclaim_left_wall") and top_hex:
+                proc, _n = fix_left_wall.reclaim_left_wall(
+                    proc, top_hex, wall_hex or top_hex)
+                reclaimed += _n
+            _save(proc, after)
+            entries.append({
+                "wall_aligned": bool(aligned),
+                "postprocess": "raw (guard: invented colour)" if inv.get(
+                    "blob", 0) > no_invention.MAX_BLOB else "palette",
+                # STABLE PER TILE, not per rank. The key used to be the candidate's
+                # POSITION — tiles/<cell>/0 — and a position is not an identity. When a
+                # rejected tile was un-published the next tile slid into slot 0 and
+                # inherited the maintainer's rejection and their comment: 126 rejected
+                # keys were still present in the manifest, attached to art they had
+                # never seen. "I don't want old dangling tiles in the wiki I have
+                # removed" — they were not dangling, they were being re-pointed.
+                #
+                # The same defect had already corrupted two verdicts at apply time,
+                # because a republish mid-review re-ranked a cell and moved the tile a
+                # verdict named. Deriving the key from the SOURCE TILE fixes both ends:
+                # a verdict names one specific piece of art forever, and when that art
+                # is removed its key disappears rather than being reassigned.
+                "key": f"tiles/{cell}/{hashlib.sha1(os.path.relpath(c['path'], REPO).encode()).hexdigest()[:8]}",
+                # Kept so anything that wants display order still has it.
+                "rank": i,
+                # The RAW tile this candidate came from. Without it a wiki verdict can
+                # only be resolved to a cell, and resolving a per-tile rejection to a
+                # cell is how a single "no" would have marked every generation in that
+                # cell rejected — including sheets holding good art the GC would then
+                # have deleted from PixelLab.
+                "src": os.path.relpath(c["path"], REPO),
+                # REPO-relative, matching how the wiki addresses every other
+                # domain's art (tiles2/<type>/base/...). Tiles-relative paths would
+                # resolve only for code that already knows this domain's root.
+                "before": os.path.relpath(before, REPO),
+                "after": os.path.relpath(after, REPO),
+                # `file` kept pointing at `after` so anything written against
+                # tiles3/review@1 keeps resolving to the shipped image.
+                "file": os.path.relpath(after, REPO),
+                "palette_top": top_hex,
+                "wall_score": c["wall"]["score"],
+                "wall": {k: c["wall"][k] for k in
+                         ("tiling", "discretion", "structure", "contrast", "edges")},
+                "top_share": c["top_share"], "overhang": c["overhang"],
+                "wall_err": c["wall_err"], "clarity": c["clarity"],
+                "band": c["band"],
+                # These three were computed and used for tiering but never written out,
+                # so the manifest reported None and the gates looked dead when they were
+                # merely invisible. A metric the reviewer cannot see is a metric they
+                # cannot disagree with.
+                "swapped": c["swapped"], "contamination": c["contamination"],
+                "top_err": c["top_err"], "maintainer_pick": c.get("forced", False),
+                "tile_id": c["tile_id"], "style": c["style"], "prompt": c["prompt"],
+            })
+            n_pub += 1
+        manifest["cells"][cell] = {"top": top, "side": side, "candidates": entries,
+                                   "needs_regeneration": not has_spill,
+                                   # The wall is not the material this cell asked for —
+                                   # broken ART, not broken postprocess. Flagged so a
+                                   # review can skip it rather than diagnose it.
+                                   "wrong_wall_material": not right_wall,
+                                   # No candidate clears every gate chase was told
+                                   # to hit. The cell ships its best available and
+                                   # stays on the worklist.
+                                   "below_bar": not all_gates}
+
+    # THE SELF-CHECK. Applying the verdicts up front is the fix; this is the proof it
+    # worked, and it is here rather than in a shell script for the same reason. If a tile
+    # the maintainer deleted is still in the set that just got written, say so loudly —
+    # a silent republish of deleted work is what made a new build indistinguishable from
+    # a broken one.
+    still = _rejected_still_published(manifest)
+    if still:
+        print(f"\n*** {len(still)} REJECTED TILE(S) ARE STILL IN THIS SET ***")
+        for k in still[:10]:
+            print(f"   {k}")
+        print("   the maintainer deleted these; they must not ship. Investigate before "
+              "pushing — do NOT deploy this build.")
+
+    with open(os.path.join(REVIEW, "manifest.json"), "w") as f:
+        json.dump(manifest, f, indent=2)
+    # THE TEXTURED PASS RIDES EVERY PUBLISH. The audition pool reads it; without it a
+    # clean-top ground auditions as flat colour and the maintainer reads that as a bug
+    # ("It's more likely you have a bug and show the clean single color instead of
+    # their real texture"). Derived from before+after on disk, so it needs no matrix.
+    import textured_pass
+    textured_pass.write_textured(os.path.join(REVIEW, "manifest.json"))
+
+    # FOLD THE WIKI'S PER-TILE REVIEW STATE INTO THE TILE (game agent, 2026-08-28):
+    # top_only / own_top / borrow_wall arrive as live/tuning documents keyed by this
+    # manifest's own key, and a consumer should read one source - the tile - rather than
+    # re-deriving the wiki's logic. One-way, exactly like rejections: the wiki keeps
+    # writing his verdicts to live/, this folds them in on every publish. Runs AFTER the
+    # textured pass because the wall matcher measures textured tops.
+    import tile_states
+    tile_states.build()
+    # THE CACHE-SAFETY GATE rides every publish. "The next time I see a cache bug I
+    # delete the entire project." - a violation must never ride a green build.
+    import check_immutable
+    if check_immutable.main() != 0:
+        raise SystemExit("cache-safety gate failed - see above. Do not push this build.")
+    print(f"published {n_pub} candidates across {len(manifest['cells'])} cells "
+          f"-> {os.path.relpath(REVIEW, os.path.dirname(ROOT))}/")
+    for cell, c in manifest["cells"].items():
+        best = c["candidates"][0]
+        flag = "  NEEDS REGEN (no transition in this cell)" if c["needs_regeneration"] else ""
+        if c["below_bar"]:
+            flag += "  BELOW BAR"
+        if c["wrong_wall_material"]:
+            flag += f"  WRONG WALL MATERIAL (off by {best['wall_err']:.0f})"
+        print(f"  {cell:32s} wall={best['wall_score']:5.2f} spill={best['overhang']:.2f}"
+              f" [{best['style']}]{flag}")
+    wrong = [k for k, c in manifest["cells"].items() if c["wrong_wall_material"]]
+    if wrong:
+        print(f"\n{len(wrong)} cell(s) have no candidate whose wall is the material "
+              f"asked for — these need re-rolling, not postprocessing:")
+        for k in wrong:
+            print(f"   {k:40s} off by {manifest['cells'][k]['candidates'][0]['wall_err']:.0f}")
+    if invented:
+        print(f"\nGUARD: {len(invented)} tile(s) shipped RAW — postprocess invented a colour")
+        for key, inv in invented[:10]:
+            s = inv.get("sample") or {}
+            print(f"   {key:40s} blob {inv['blob']:5d} px  {s.get('from')} -> {s.get('to')}")
+    else:
+        print("\nGUARD: no invented colours — every published tile is the art's own "
+              "colours plus the palette's.")
+
+
+if __name__ == "__main__":
+    main()

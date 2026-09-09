@@ -1,0 +1,282 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-14T00:50:07+00:00",
+  "id": "well_019",
+  "group": "wells",
+  "rank": 11,
+  "index": 19,
+  "name": "Autumn leaves drifted on roof 019",
+  "lights": null,
+  "variety": "autumn leaves drifted on roof",
+  "modifier": "reinforced with iron bands",
+  "glow_concept": null,
+  "prompt": "a round fieldstone well with thick stone walls and a heavy peaked wooden roof on two stout posts, a chunky windlass, autumn leaves drifted on roof, reinforced with iron bands, large, twice human height, completely unlit, no glow, no light sources, no self-emission",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 128,
+  "sprite": "wells/well_019/sprite.webp",
+  "placement": {
+    "world_height_m": 2.032,
+    "world_px_height": 104,
+    "character_height_px": 87,
+    "character_height_m": 1.7,
+    "note": "ONE SCENERY PIXEL IS ONE PLAYER PIXEL. world_px_height IS the art's own alpha bbox height, so scenery is placed into the world at 1:1 exactly as the avatar is (setScale(1)) and the two share one pixel grid. The CAMERA still zooms the whole scene \u2014 that is uniform and correct; what must never happen is scenery being resampled on its own, against the player. world_height_m is what the art reads as beside a 87px character; declared_height_m is what it was once declared to be, and a gap between them means the ART is the wrong size.",
+    "declared_height_m": 2.13,
+    "content_box": [
+      28,
+      15,
+      110,
+      119
+    ],
+    "content_px_height": 104,
+    "canvas_render_px": 128
+  },
+  "pixellab_object_id": "7065b2fd-0311-4bf0-9178-cc0d987e023a",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)",
+  "must_be_imbplemented_with_random_hflip": true,
+  "states": {
+    "LIT_1": {
+      "sprite": "wells/well_019/lit_1/sprite.webp",
+      "pixellab_object_id": "35f0622a-a751-4eda-a04a-bfc0d07ab1a8",
+      "generated_at": "2026-08-17T13:10:14+00:00",
+      "glow_concept": "soft blue soul-light rising from the water below",
+      "difference_from_source": 0.815,
+      "glow_score": 0.07,
+      "rotations": {
+        "south-east": "wells/well_019/lit_1/rotations/south-east.webp",
+        "south-west": "wells/well_019/lit_1/rotations/south-west.webp",
+        "south": "wells/well_019/lit_1/sprite.webp"
+      },
+      "animations": {
+        "motion": {
+          "group_id": "7990498b-8a02-4101-ad9e-c2251fabd3a8",
+          "description": "This is the same picture in every frame. ONLY the glowing water inside the well brightens a little and returns. Nothing else moves, bends or leans, and nothing changes size, shape or position. The last frame must return to exactly how the first frame looks, so the loop joins. Nothing may become darker than it is in the first frame. Do not redraw anything else, and do not add or remove anything.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "wells/well_019/lit_1/animations/motion/00.webp",
+            "wells/well_019/lit_1/animations/motion/01.webp",
+            "wells/well_019/lit_1/animations/motion/02.webp",
+            "wells/well_019/lit_1/animations/motion/03.webp",
+            "wells/well_019/lit_1/animations/motion/04.webp"
+          ],
+          "strip": "wells/well_019/lit_1/animations/motion__strip.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-08-29T15:36:54+00:00",
+          "brief": "X30",
+          "review": "ANIMATION_PROBABLY_GOOD",
+          "review_metrics": {
+            "class": "water",
+            "base": 0.0563,
+            "still": 0.52
+          },
+          "light_frames": [
+            {
+              "intensity": 1.038,
+              "dx": 0.4,
+              "dy": 5.7
+            },
+            {
+              "intensity": 1.004,
+              "dx": -0.2,
+              "dy": 4.8
+            },
+            {
+              "intensity": 1.027,
+              "dx": -0.6,
+              "dy": 5.2
+            },
+            {
+              "intensity": 1.006,
+              "dx": -0.2,
+              "dy": 5.7
+            },
+            {
+              "intensity": 0.925,
+              "dx": -0.4,
+              "dy": 6.6
+            }
+          ]
+        }
+      }
+    },
+    "LIT_2": {
+      "sprite": "wells/well_019/lit_2/sprite.webp",
+      "pixellab_object_id": "2c2b7bac-ff0b-46c1-9f4f-e7cef80a5ecc",
+      "generated_at": "2026-08-17T13:14:30+00:00",
+      "glow_concept": "hanging tin lantern lit under the roof peak",
+      "difference_from_source": 0.2839,
+      "glow_score": 0.0565,
+      "rotations": {
+        "south-east": "wells/well_019/lit_2/rotations/south-east.webp",
+        "south-west": "wells/well_019/lit_2/rotations/south-west.webp",
+        "south": "wells/well_019/lit_2/sprite.webp"
+      },
+      "animations": {
+        "motion": {
+          "group_id": "6b17f15f-57e1-492c-b654-f4e096d4dac2",
+          "description": "This is the same picture in every frame. ONLY the flame inside the lantern flickers. It is lit and clearly visible in every single frame, including the first. It stays exactly the same size and the same shape in every frame -- it never grows, never spreads and never spills past where it already is; only its inner detail shifts. Nothing anywhere is added and nothing anywhere is removed: every object in the picture is present in every frame, the same number of them, in the same places, at the same size. Everything else in the picture is copied from the first frame exactly, pixel for pixel, unchanged in shape, size, position and colour. No outline anywhere is redrawn. The last frame matches the first frame exactly, so the loop joins.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "wells/well_019/lit_2/animations/motion/00.webp",
+            "wells/well_019/lit_2/animations/motion/01.webp",
+            "wells/well_019/lit_2/animations/motion/02.webp",
+            "wells/well_019/lit_2/animations/motion/03.webp",
+            "wells/well_019/lit_2/animations/motion/04.webp"
+          ],
+          "strip": "wells/well_019/lit_2/animations/motion__strip.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-08-29T18:48:59+00:00",
+          "brief": "B1",
+          "review": "ANIMATION_PROBABLY_GOOD",
+          "review_metrics": {
+            "base_outline": 0.0052
+          },
+          "light_frames": [
+            {
+              "intensity": 0.96,
+              "dx": -1.2,
+              "dy": -9.5
+            },
+            {
+              "intensity": 1.053,
+              "dx": -1.9,
+              "dy": -6.7
+            },
+            {
+              "intensity": 1.041,
+              "dx": -1.9,
+              "dy": -7.0
+            },
+            {
+              "intensity": 0.984,
+              "dx": -1.8,
+              "dy": -7.1
+            },
+            {
+              "intensity": 0.962,
+              "dx": -1.8,
+              "dy": -6.8
+            }
+          ]
+        }
+      }
+    },
+    "NOT_LIT_1": {
+      "sprite": "wells/well_019/sprite.webp",
+      "pixellab_object_id": "7065b2fd-0311-4bf0-9178-cc0d987e023a",
+      "generated_at": "2026-08-14T00:50:07+00:00",
+      "rotations": {
+        "south-east": "wells/well_019/rotations/south-east.webp",
+        "south-west": "wells/well_019/rotations/south-west.webp",
+        "south": "wells/well_019/sprite.webp"
+      }
+    },
+    "NOT_LIT_2": {
+      "sprite": "wells/well_019/not_lit_2/sprite.webp",
+      "pixellab_object_id": "113c1949-60ee-44b9-aa6a-ec49a60c92fa",
+      "generated_at": "2026-08-17T13:08:00+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.4044,
+      "glow_score": 0.0066,
+      "rotations": {
+        "south-east": "wells/well_019/not_lit_2/rotations/south-east.webp",
+        "south-west": "wells/well_019/not_lit_2/rotations/south-west.webp",
+        "south": "wells/well_019/not_lit_2/sprite.webp"
+      }
+    },
+    "NOT_LIT_3": {
+      "sprite": "wells/well_019/not_lit_3/sprite.webp",
+      "pixellab_object_id": "232f46c1-6016-4a18-bb56-f52b51aadc69",
+      "generated_at": "2026-08-17T13:08:29+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.4873,
+      "glow_score": 0.0147,
+      "rotations": {
+        "south-east": "wells/well_019/not_lit_3/rotations/south-east.webp",
+        "south-west": "wells/well_019/not_lit_3/rotations/south-west.webp",
+        "south": "wells/well_019/not_lit_3/sprite.webp"
+      }
+    },
+    "NOT_LIT_4": {
+      "sprite": "wells/well_019/not_lit_4/sprite.webp",
+      "pixellab_object_id": "4f4aa456-9932-4f2e-b60a-0a1471e99cc5",
+      "generated_at": "2026-08-17T13:11:44+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.5661,
+      "glow_score": 0.0023,
+      "rotations": {
+        "south-east": "wells/well_019/not_lit_4/rotations/south-east.webp",
+        "south-west": "wells/well_019/not_lit_4/rotations/south-west.webp",
+        "south": "wells/well_019/not_lit_4/sprite.webp"
+      },
+      "animations": {
+        "motion": {
+          "group_id": "6e41c858-08a5-4f51-8328-4ea8c8a890e8",
+          "description": "This is an almost completely still picture. ONLY the bucket hanging over the shaft moves: it turns very slightly where it hangs, by a single pixel, and turns straight back. It is clearly visible in every single frame and never disappears. It is only MOVED, never redrawn: every line, edge and colour of it is copied from the first frame exactly, and it is displaced as one solid piece. Nothing in the picture lights up or begins to glow at any point: there is no light source here and none appears. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "wells/well_019/not_lit_4/animations/motion/00.webp",
+            "wells/well_019/not_lit_4/animations/motion/01.webp",
+            "wells/well_019/not_lit_4/animations/motion/02.webp",
+            "wells/well_019/not_lit_4/animations/motion/03.webp",
+            "wells/well_019/not_lit_4/animations/motion/04.webp"
+          ],
+          "strip": "wells/well_019/not_lit_4/animations/motion__strip.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-08-30T11:17:04+00:00",
+          "brief": "M11",
+          "review": "ANIMATION_PROBABLY_GOOD",
+          "review_metrics": {
+            "class": "water",
+            "base": 0.0367,
+            "still": 0.887
+          }
+        }
+      }
+    }
+  },
+  "collision": true,
+  "hitbox_shape": "ellipse",
+  "light": {
+    "strength": 0.15,
+    "color": "#9afdff",
+    "radius": 3,
+    "reference": "the spawn bonfire is 1.0 (radius 7); strength 0 is no light",
+    "states": {
+      "LIT_1": {
+        "strength": 0.18,
+        "color": "#9afdff",
+        "radius": 4
+      },
+      "LIT_2": {
+        "strength": 0.18,
+        "color": "#ffbe6f",
+        "radius": 4
+      }
+    },
+    "kind": "glow/water",
+    "flame": false,
+    "embers": false
+  }
+}

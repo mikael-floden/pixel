@@ -1,0 +1,626 @@
+{
+  "format": "scenery-piece@2",
+  "id": "market_stall_004",
+  "group": "market_stalls",
+  "rank": 49,
+  "index": 4,
+  "name": "Baker's stall, stacked loaves 004",
+  "lights": null,
+  "variety": "baker's stall, stacked loaves",
+  "glow_concept": "counter of glowing honey jars and lit candles",
+  "prompt": "a wooden market stall with a cloth canopy on poles and a plank counter stacked with goods, baker's stall, stacked loaves, large, well above head height of a person, self-emissive at night, softly radiating light: counter of glowing honey jars and lit candles",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 128,
+  "sprite": "market_stalls/market_stall_004/sprite.webp",
+  "placement": {
+    "world_height_m": 2.169,
+    "world_px_height": 111,
+    "character_height_px": 87,
+    "character_height_m": 1.7,
+    "note": "ONE SCENERY PIXEL IS ONE PLAYER PIXEL. world_px_height IS the art's own alpha bbox height, so scenery is placed into the world at 1:1 exactly as the avatar is (setScale(1)) and the two share one pixel grid. The CAMERA still zooms the whole scene \u2014 that is uniform and correct; what must never happen is scenery being resampled on its own, against the player. world_height_m is what the art reads as beside a 87px character; declared_height_m is what it was once declared to be, and a gap between them means the ART is the wrong size.",
+    "declared_height_m": 2.4,
+    "content_box": [
+      10,
+      8,
+      119,
+      119
+    ],
+    "content_px_height": 111,
+    "canvas_render_px": 128
+  },
+  "pixellab_object_id": "d464941a-d025-45b2-a98a-8155229e8ffd",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)",
+  "must_be_imbplemented_with_random_hflip": true,
+  "generated_at": "2026-08-13T09:52:51+00:00",
+  "states": {
+    "LIT_2": {
+      "sprite": "market_stalls/market_stall_004/lit_2/sprite.webp",
+      "pixellab_object_id": "f0225f29-839d-48d6-b7a8-d99660865f8f",
+      "generated_at": "2026-08-16T17:53:19+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.3031,
+      "glow_score": 0.0327,
+      "animations": {
+        "flame": {
+          "group_id": "133d1a23-0421-4e0d-88fe-f27094adc87e",
+          "description": "Animate the flame only",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "directions": {
+            "south": {
+              "frames": 5,
+              "frame_paths": [
+                "market_stalls/market_stall_004/lit_2/animations/flame/south/00.webp",
+                "market_stalls/market_stall_004/lit_2/animations/flame/south/01.webp",
+                "market_stalls/market_stall_004/lit_2/animations/flame/south/02.webp",
+                "market_stalls/market_stall_004/lit_2/animations/flame/south/03.webp",
+                "market_stalls/market_stall_004/lit_2/animations/flame/south/04.webp"
+              ],
+              "strip": "market_stalls/market_stall_004/lit_2/animations/flame__south.webp",
+              "light_frames": [
+                {
+                  "intensity": 1.152,
+                  "dx": -20.7,
+                  "dy": 17.0
+                },
+                {
+                  "intensity": 1.025,
+                  "dx": -26.7,
+                  "dy": 20.5
+                },
+                {
+                  "intensity": 0.93,
+                  "dx": -22.7,
+                  "dy": 20.7
+                },
+                {
+                  "intensity": 1.048,
+                  "dx": -18.6,
+                  "dy": 19.6
+                },
+                {
+                  "intensity": 0.846,
+                  "dx": -18.1,
+                  "dy": 19.5
+                }
+              ]
+            },
+            "south-east": {
+              "frames": 5,
+              "frame_paths": [
+                "market_stalls/market_stall_004/lit_2/animations/flame/south-east/00.webp",
+                "market_stalls/market_stall_004/lit_2/animations/flame/south-east/01.webp",
+                "market_stalls/market_stall_004/lit_2/animations/flame/south-east/02.webp",
+                "market_stalls/market_stall_004/lit_2/animations/flame/south-east/03.webp",
+                "market_stalls/market_stall_004/lit_2/animations/flame/south-east/04.webp"
+              ],
+              "strip": "market_stalls/market_stall_004/lit_2/animations/flame__south-east.webp",
+              "light_frames": [
+                {
+                  "intensity": 0.903,
+                  "dx": -4.9,
+                  "dy": 16.6
+                },
+                {
+                  "intensity": 0.956,
+                  "dx": -4.1,
+                  "dy": 15.0
+                },
+                {
+                  "intensity": 1.034,
+                  "dx": -2.9,
+                  "dy": 14.1
+                },
+                {
+                  "intensity": 1.066,
+                  "dx": -3.0,
+                  "dy": 12.7
+                },
+                {
+                  "intensity": 1.041,
+                  "dx": -3.5,
+                  "dy": 13.0
+                }
+              ]
+            },
+            "south-west": {
+              "frames": 5,
+              "frame_paths": [
+                "market_stalls/market_stall_004/lit_2/animations/flame/south-west/00.webp",
+                "market_stalls/market_stall_004/lit_2/animations/flame/south-west/01.webp",
+                "market_stalls/market_stall_004/lit_2/animations/flame/south-west/02.webp",
+                "market_stalls/market_stall_004/lit_2/animations/flame/south-west/03.webp",
+                "market_stalls/market_stall_004/lit_2/animations/flame/south-west/04.webp"
+              ],
+              "strip": "market_stalls/market_stall_004/lit_2/animations/flame__south-west.webp",
+              "light_frames": [
+                {
+                  "intensity": 1.173,
+                  "dx": -29.1,
+                  "dy": 2.7
+                },
+                {
+                  "intensity": 1.117,
+                  "dx": -27.8,
+                  "dy": 3.1
+                },
+                {
+                  "intensity": 0.921,
+                  "dx": -26.4,
+                  "dy": 3.2
+                },
+                {
+                  "intensity": 0.879,
+                  "dx": -31.5,
+                  "dy": 1.3
+                },
+                {
+                  "intensity": 0.909,
+                  "dx": -32.6,
+                  "dy": 1.7
+                }
+              ]
+            }
+          },
+          "generated_at": "2026-08-29T08:24:57+00:00",
+          "review": "ANIMATION_PROBABLY_BAD",
+          "review_metrics": {
+            "class": "fire",
+            "base": 0.3799,
+            "still": 0.539
+          },
+          "frame_paths": [
+            "market_stalls/market_stall_004/lit_2/animations/flame/south/00.webp",
+            "market_stalls/market_stall_004/lit_2/animations/flame/south/01.webp",
+            "market_stalls/market_stall_004/lit_2/animations/flame/south/02.webp",
+            "market_stalls/market_stall_004/lit_2/animations/flame/south/03.webp",
+            "market_stalls/market_stall_004/lit_2/animations/flame/south/04.webp"
+          ],
+          "strip": "market_stalls/market_stall_004/lit_2/animations/flame__south.webp",
+          "light_frames": [
+            {
+              "intensity": 1.152,
+              "dx": -20.7,
+              "dy": 17.0
+            },
+            {
+              "intensity": 1.025,
+              "dx": -26.7,
+              "dy": 20.5
+            },
+            {
+              "intensity": 0.93,
+              "dx": -22.7,
+              "dy": 20.7
+            },
+            {
+              "intensity": 1.048,
+              "dx": -18.6,
+              "dy": 19.6
+            },
+            {
+              "intensity": 0.846,
+              "dx": -18.1,
+              "dy": 19.5
+            }
+          ]
+        }
+      },
+      "rotations": {
+        "south-east": "market_stalls/market_stall_004/lit_2/rotations/south-east.webp",
+        "south-west": "market_stalls/market_stall_004/lit_2/rotations/south-west.webp",
+        "south": "market_stalls/market_stall_004/lit_2/sprite.webp"
+      }
+    },
+    "LIT_3": {
+      "sprite": "market_stalls/market_stall_004/lit_3/sprite.webp",
+      "pixellab_object_id": "3bc7ba83-6564-4c14-9df4-77c82588cc24",
+      "generated_at": "2026-08-16T17:52:39+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.2432,
+      "glow_score": 0.0279,
+      "animations": {
+        "flame": {
+          "group_id": "2371b60b-fafd-43cc-bc02-9d29bcc35997",
+          "description": "Animate the flame only",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "directions": {
+            "south": {
+              "frames": 5,
+              "frame_paths": [
+                "market_stalls/market_stall_004/lit_3/animations/flame/south/00.webp",
+                "market_stalls/market_stall_004/lit_3/animations/flame/south/01.webp",
+                "market_stalls/market_stall_004/lit_3/animations/flame/south/02.webp",
+                "market_stalls/market_stall_004/lit_3/animations/flame/south/03.webp",
+                "market_stalls/market_stall_004/lit_3/animations/flame/south/04.webp"
+              ],
+              "strip": "market_stalls/market_stall_004/lit_3/animations/flame__south.webp",
+              "light_frames": [
+                {
+                  "intensity": 0.851,
+                  "dx": -9.8,
+                  "dy": 9.0
+                },
+                {
+                  "intensity": 1.003,
+                  "dx": -8.1,
+                  "dy": 7.8
+                },
+                {
+                  "intensity": 0.993,
+                  "dx": -8.7,
+                  "dy": 8.2
+                },
+                {
+                  "intensity": 1.019,
+                  "dx": -11.3,
+                  "dy": 9.0
+                },
+                {
+                  "intensity": 1.134,
+                  "dx": -13.1,
+                  "dy": 9.6
+                }
+              ]
+            },
+            "south-east": {
+              "frames": 5,
+              "frame_paths": [
+                "market_stalls/market_stall_004/lit_3/animations/flame/south-east/00.webp",
+                "market_stalls/market_stall_004/lit_3/animations/flame/south-east/01.webp",
+                "market_stalls/market_stall_004/lit_3/animations/flame/south-east/02.webp",
+                "market_stalls/market_stall_004/lit_3/animations/flame/south-east/03.webp",
+                "market_stalls/market_stall_004/lit_3/animations/flame/south-east/04.webp"
+              ],
+              "strip": "market_stalls/market_stall_004/lit_3/animations/flame__south-east.webp",
+              "light_frames": [
+                {
+                  "intensity": 1.103,
+                  "dx": -5.9,
+                  "dy": 9.1
+                },
+                {
+                  "intensity": 0.914,
+                  "dx": -5.9,
+                  "dy": 9.9
+                },
+                {
+                  "intensity": 1.015,
+                  "dx": -6.1,
+                  "dy": 9.5
+                },
+                {
+                  "intensity": 0.984,
+                  "dx": -6.4,
+                  "dy": 9.5
+                },
+                {
+                  "intensity": 0.984,
+                  "dx": -4.9,
+                  "dy": 8.8
+                }
+              ]
+            },
+            "south-west": {
+              "frames": 5,
+              "frame_paths": [
+                "market_stalls/market_stall_004/lit_3/animations/flame/south-west/00.webp",
+                "market_stalls/market_stall_004/lit_3/animations/flame/south-west/01.webp",
+                "market_stalls/market_stall_004/lit_3/animations/flame/south-west/02.webp",
+                "market_stalls/market_stall_004/lit_3/animations/flame/south-west/03.webp",
+                "market_stalls/market_stall_004/lit_3/animations/flame/south-west/04.webp"
+              ],
+              "strip": "market_stalls/market_stall_004/lit_3/animations/flame__south-west.webp",
+              "light_frames": [
+                {
+                  "intensity": 0.835,
+                  "dx": -14.0,
+                  "dy": 3.4
+                },
+                {
+                  "intensity": 1.006,
+                  "dx": -12.4,
+                  "dy": 3.7
+                },
+                {
+                  "intensity": 0.998,
+                  "dx": -12.3,
+                  "dy": 3.8
+                },
+                {
+                  "intensity": 1.014,
+                  "dx": -10.9,
+                  "dy": 3.4
+                },
+                {
+                  "intensity": 1.147,
+                  "dx": -10.6,
+                  "dy": 2.6
+                }
+              ]
+            }
+          },
+          "generated_at": "2026-08-29T08:24:51+00:00",
+          "review": "ANIMATION_PROBABLY_BAD",
+          "review_metrics": {
+            "class": "fire",
+            "base": 0.2083,
+            "still": 0.588
+          },
+          "frame_paths": [
+            "market_stalls/market_stall_004/lit_3/animations/flame/south/00.webp",
+            "market_stalls/market_stall_004/lit_3/animations/flame/south/01.webp",
+            "market_stalls/market_stall_004/lit_3/animations/flame/south/02.webp",
+            "market_stalls/market_stall_004/lit_3/animations/flame/south/03.webp",
+            "market_stalls/market_stall_004/lit_3/animations/flame/south/04.webp"
+          ],
+          "strip": "market_stalls/market_stall_004/lit_3/animations/flame__south.webp",
+          "light_frames": [
+            {
+              "intensity": 0.851,
+              "dx": -9.8,
+              "dy": 9.0
+            },
+            {
+              "intensity": 1.003,
+              "dx": -8.1,
+              "dy": 7.8
+            },
+            {
+              "intensity": 0.993,
+              "dx": -8.7,
+              "dy": 8.2
+            },
+            {
+              "intensity": 1.019,
+              "dx": -11.3,
+              "dy": 9.0
+            },
+            {
+              "intensity": 1.134,
+              "dx": -13.1,
+              "dy": 9.6
+            }
+          ]
+        }
+      },
+      "rotations": {
+        "south-east": "market_stalls/market_stall_004/lit_3/rotations/south-east.webp",
+        "south-west": "market_stalls/market_stall_004/lit_3/rotations/south-west.webp",
+        "south": "market_stalls/market_stall_004/lit_3/sprite.webp"
+      }
+    },
+    "LIT_4": {
+      "sprite": "market_stalls/market_stall_004/lit_4/sprite.webp",
+      "pixellab_object_id": "2655dbab-4fef-440d-b484-c1b8bb32a203",
+      "generated_at": "2026-08-16T17:53:48+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.2767,
+      "glow_score": 0.0242,
+      "animations": {
+        "flame": {
+          "group_id": "21e40159-ded6-4316-a195-892620b7103d",
+          "description": "Animate the flame only",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "directions": {
+            "south": {
+              "frames": 5,
+              "frame_paths": [
+                "market_stalls/market_stall_004/lit_4/animations/flame/south/00.webp",
+                "market_stalls/market_stall_004/lit_4/animations/flame/south/01.webp",
+                "market_stalls/market_stall_004/lit_4/animations/flame/south/02.webp",
+                "market_stalls/market_stall_004/lit_4/animations/flame/south/03.webp",
+                "market_stalls/market_stall_004/lit_4/animations/flame/south/04.webp"
+              ],
+              "strip": "market_stalls/market_stall_004/lit_4/animations/flame__south.webp",
+              "light_frames": [
+                {
+                  "intensity": 1.002,
+                  "dx": -18.0,
+                  "dy": 18.5
+                },
+                {
+                  "intensity": 0.998,
+                  "dx": -18.0,
+                  "dy": 18.5
+                },
+                {
+                  "intensity": 0.999,
+                  "dx": -18.1,
+                  "dy": 18.6
+                },
+                {
+                  "intensity": 0.999,
+                  "dx": -18.1,
+                  "dy": 18.6
+                },
+                {
+                  "intensity": 1.003,
+                  "dx": -18.1,
+                  "dy": 18.6
+                }
+              ]
+            },
+            "south-east": {
+              "frames": 5,
+              "frame_paths": [
+                "market_stalls/market_stall_004/lit_4/animations/flame/south-east/00.webp",
+                "market_stalls/market_stall_004/lit_4/animations/flame/south-east/01.webp",
+                "market_stalls/market_stall_004/lit_4/animations/flame/south-east/02.webp",
+                "market_stalls/market_stall_004/lit_4/animations/flame/south-east/03.webp",
+                "market_stalls/market_stall_004/lit_4/animations/flame/south-east/04.webp"
+              ],
+              "strip": "market_stalls/market_stall_004/lit_4/animations/flame__south-east.webp",
+              "light_frames": [
+                {
+                  "intensity": 1.075,
+                  "dx": -2.4,
+                  "dy": 19.4
+                },
+                {
+                  "intensity": 0.942,
+                  "dx": -2.8,
+                  "dy": 20.5
+                },
+                {
+                  "intensity": 0.954,
+                  "dx": -2.9,
+                  "dy": 20.6
+                },
+                {
+                  "intensity": 1.009,
+                  "dx": -1.4,
+                  "dy": 18.9
+                },
+                {
+                  "intensity": 1.02,
+                  "dx": -1.3,
+                  "dy": 18.3
+                }
+              ]
+            },
+            "south-west": {
+              "frames": 5,
+              "frame_paths": [
+                "market_stalls/market_stall_004/lit_4/animations/flame/south-west/00.webp",
+                "market_stalls/market_stall_004/lit_4/animations/flame/south-west/01.webp",
+                "market_stalls/market_stall_004/lit_4/animations/flame/south-west/02.webp",
+                "market_stalls/market_stall_004/lit_4/animations/flame/south-west/03.webp",
+                "market_stalls/market_stall_004/lit_4/animations/flame/south-west/04.webp"
+              ],
+              "strip": "market_stalls/market_stall_004/lit_4/animations/flame__south-west.webp",
+              "light_frames": [
+                {
+                  "intensity": 1.007,
+                  "dx": -24.0,
+                  "dy": 7.2
+                },
+                {
+                  "intensity": 1.037,
+                  "dx": -24.6,
+                  "dy": 7.2
+                },
+                {
+                  "intensity": 1.035,
+                  "dx": -24.6,
+                  "dy": 7.3
+                },
+                {
+                  "intensity": 0.944,
+                  "dx": -24.6,
+                  "dy": 7.2
+                },
+                {
+                  "intensity": 0.977,
+                  "dx": -24.3,
+                  "dy": 7.6
+                }
+              ]
+            }
+          },
+          "generated_at": "2026-08-29T08:25:08+00:00",
+          "review": "ANIMATION_PROBABLY_BAD",
+          "review_metrics": {
+            "class": "fire",
+            "base": 0.3042,
+            "still": 0.566
+          },
+          "frame_paths": [
+            "market_stalls/market_stall_004/lit_4/animations/flame/south/00.webp",
+            "market_stalls/market_stall_004/lit_4/animations/flame/south/01.webp",
+            "market_stalls/market_stall_004/lit_4/animations/flame/south/02.webp",
+            "market_stalls/market_stall_004/lit_4/animations/flame/south/03.webp",
+            "market_stalls/market_stall_004/lit_4/animations/flame/south/04.webp"
+          ],
+          "strip": "market_stalls/market_stall_004/lit_4/animations/flame__south.webp",
+          "light_frames": [
+            {
+              "intensity": 1.002,
+              "dx": -18.0,
+              "dy": 18.5
+            },
+            {
+              "intensity": 0.998,
+              "dx": -18.0,
+              "dy": 18.5
+            },
+            {
+              "intensity": 0.999,
+              "dx": -18.1,
+              "dy": 18.6
+            },
+            {
+              "intensity": 0.999,
+              "dx": -18.1,
+              "dy": 18.6
+            },
+            {
+              "intensity": 1.003,
+              "dx": -18.1,
+              "dy": 18.6
+            }
+          ]
+        }
+      },
+      "rotations": {
+        "south-east": "market_stalls/market_stall_004/lit_4/rotations/south-east.webp",
+        "south-west": "market_stalls/market_stall_004/lit_4/rotations/south-west.webp",
+        "south": "market_stalls/market_stall_004/lit_4/sprite.webp"
+      }
+    },
+    "NOT_LIT_3": {
+      "sprite": "market_stalls/market_stall_004/sprite.webp",
+      "pixellab_object_id": "d464941a-d025-45b2-a98a-8155229e8ffd",
+      "generated_at": "2026-08-13T09:52:51+00:00",
+      "relit_from": "LIT_1",
+      "rotations": {
+        "south-east": "market_stalls/market_stall_004/rotations/south-east.webp",
+        "south-west": "market_stalls/market_stall_004/rotations/south-west.webp",
+        "south": "market_stalls/market_stall_004/sprite.webp"
+      }
+    }
+  },
+  "collision": true,
+  "hitbox_shape": "rect",
+  "light": {
+    "strength": 0.15,
+    "color": "#ffb45c",
+    "radius": 3,
+    "reference": "the spawn bonfire is 1.0 (radius 7); strength 0 is no light",
+    "states": {
+      "LIT_2": {
+        "strength": 0.15,
+        "color": "#ffb45c",
+        "radius": 3
+      },
+      "LIT_3": {
+        "strength": 0.15,
+        "color": "#ffb45c",
+        "radius": 3
+      },
+      "LIT_4": {
+        "strength": 0.15,
+        "color": "#ffb45c",
+        "radius": 3
+      }
+    },
+    "kind": "glow/magic",
+    "flame": false,
+    "embers": false
+  }
+}

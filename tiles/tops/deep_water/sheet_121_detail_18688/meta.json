@@ -1,0 +1,132 @@
+{
+  "schema": "tiles3/tops@1",
+  "kind": "top_only",
+  "wall_is_meaningless": true,
+  "not_a_candidate_for": "x over y",
+  "ground": "deep_water",
+  "flavour": "detail",
+  "index": 121,
+  "seed": 18688,
+  "prompt": "deep water, a ripple crossing in the middle, deep water all around the edge",
+  "palette_top": "#162843",
+  "tile_id": "56ca0439-647e-41de-805a-82bd774fcc36",
+  "n_tiles": 16,
+  "tiles": [
+    "tile_00.webp",
+    "tile_01.webp",
+    "tile_02.webp",
+    "tile_03.webp",
+    "tile_04.webp",
+    "tile_05.webp",
+    "tile_06.webp",
+    "tile_07.webp",
+    "tile_08.webp",
+    "tile_09.webp",
+    "tile_10.webp",
+    "tile_11.webp",
+    "tile_12.webp",
+    "tile_13.webp",
+    "tile_14.webp",
+    "tile_15.webp"
+  ],
+  "settings": {
+    "tile_size": 64,
+    "tile_view": "high top-down",
+    "view_angle": 28.0,
+    "depth_ratio": 0.5,
+    "tile_type": "isometric",
+    "flat_top_px": 2,
+    "outline_mode": "segmentation"
+  },
+  "usd": 0.096,
+  "created": "2026-09-03T07:43:59+00:00",
+  "top_face": {
+    "per_tile": [
+      {
+        "colours": 13,
+        "dominant_share": 0.5276,
+        "px": 923
+      },
+      {
+        "colours": 13,
+        "dominant_share": 0.658,
+        "px": 924
+      },
+      {
+        "colours": 11,
+        "dominant_share": 0.6623,
+        "px": 924
+      },
+      {
+        "colours": 12,
+        "dominant_share": 0.3203,
+        "px": 924
+      },
+      {
+        "colours": 13,
+        "dominant_share": 0.5942,
+        "px": 924
+      },
+      {
+        "colours": 14,
+        "dominant_share": 0.5476,
+        "px": 924
+      },
+      {
+        "colours": 15,
+        "dominant_share": 0.5281,
+        "px": 924
+      },
+      {
+        "colours": 14,
+        "dominant_share": 0.6786,
+        "px": 924
+      },
+      {
+        "colours": 13,
+        "dominant_share": 0.5043,
+        "px": 924
+      },
+      {
+        "colours": 12,
+        "dominant_share": 0.6418,
+        "px": 924
+      },
+      {
+        "colours": 14,
+        "dominant_share": 0.5238,
+        "px": 924
+      },
+      {
+        "colours": 14,
+        "dominant_share": 0.4881,
+        "px": 924
+      },
+      {
+        "colours": 14,
+        "dominant_share": 0.5152,
+        "px": 924
+      },
+      {
+        "colours": 11,
+        "dominant_share": 0.4437,
+        "px": 924
+      },
+      {
+        "colours": 15,
+        "dominant_share": 0.5173,
+        "px": 924
+      },
+      {
+        "colours": 13,
+        "dominant_share": 0.5963,
+        "px": 924
+      }
+    ],
+    "mean_colours": 13.19,
+    "mean_dominant_share": 0.5467
+  },
+  "motif": "a ripple crossing",
+  "motif_source": "tiles/config/details.json",
+  "walkable": true
+}

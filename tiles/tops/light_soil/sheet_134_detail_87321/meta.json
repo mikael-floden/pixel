@@ -1,0 +1,132 @@
+{
+  "schema": "tiles3/tops@1",
+  "kind": "top_only",
+  "wall_is_meaningless": true,
+  "not_a_candidate_for": "x over y",
+  "ground": "light_soil",
+  "flavour": "detail",
+  "index": 134,
+  "seed": 87321,
+  "prompt": "light soil, a crumb of compost in the middle, light soil all around the edge",
+  "palette_top": "#c9ab7e",
+  "tile_id": "9df6582d-f7d3-45a1-809c-15a16b519888",
+  "n_tiles": 16,
+  "tiles": [
+    "tile_00.webp",
+    "tile_01.webp",
+    "tile_02.webp",
+    "tile_03.webp",
+    "tile_04.webp",
+    "tile_05.webp",
+    "tile_06.webp",
+    "tile_07.webp",
+    "tile_08.webp",
+    "tile_09.webp",
+    "tile_10.webp",
+    "tile_11.webp",
+    "tile_12.webp",
+    "tile_13.webp",
+    "tile_14.webp",
+    "tile_15.webp"
+  ],
+  "settings": {
+    "tile_size": 64,
+    "tile_view": "high top-down",
+    "view_angle": 28.0,
+    "depth_ratio": 0.5,
+    "tile_type": "isometric",
+    "flat_top_px": 2,
+    "outline_mode": "segmentation"
+  },
+  "usd": 0.096,
+  "created": "2026-09-03T06:56:54+00:00",
+  "top_face": {
+    "per_tile": [
+      {
+        "colours": 16,
+        "dominant_share": 0.7253,
+        "px": 921
+      },
+      {
+        "colours": 14,
+        "dominant_share": 0.7603,
+        "px": 922
+      },
+      {
+        "colours": 16,
+        "dominant_share": 0.6898,
+        "px": 922
+      },
+      {
+        "colours": 16,
+        "dominant_share": 0.6699,
+        "px": 921
+      },
+      {
+        "colours": 16,
+        "dominant_share": 0.7086,
+        "px": 923
+      },
+      {
+        "colours": 18,
+        "dominant_share": 0.7013,
+        "px": 924
+      },
+      {
+        "colours": 16,
+        "dominant_share": 0.7468,
+        "px": 924
+      },
+      {
+        "colours": 17,
+        "dominant_share": 0.5617,
+        "px": 924
+      },
+      {
+        "colours": 15,
+        "dominant_share": 0.6361,
+        "px": 926
+      },
+      {
+        "colours": 17,
+        "dominant_share": 0.5606,
+        "px": 924
+      },
+      {
+        "colours": 22,
+        "dominant_share": 0.6162,
+        "px": 925
+      },
+      {
+        "colours": 16,
+        "dominant_share": 0.5547,
+        "px": 932
+      },
+      {
+        "colours": 17,
+        "dominant_share": 0.4873,
+        "px": 948
+      },
+      {
+        "colours": 18,
+        "dominant_share": 0.2792,
+        "px": 924
+      },
+      {
+        "colours": 17,
+        "dominant_share": 0.7175,
+        "px": 924
+      },
+      {
+        "colours": 17,
+        "dominant_share": 0.5322,
+        "px": 932
+      }
+    ],
+    "mean_colours": 16.75,
+    "mean_dominant_share": 0.6217
+  },
+  "motif": "a crumb of compost",
+  "motif_source": "tiles/config/details.json",
+  "walkable": true
+}

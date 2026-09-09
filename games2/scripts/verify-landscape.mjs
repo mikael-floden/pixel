@@ -130,6 +130,7 @@ try {
         barsL: r(".ml-bars-l"),
         barsR: r(".ml-bars-r"),
         clock: r(".ml-clock"),
+        wikibtn: r(".ml-wikibtn"),
         chatlog: r(".ml-chatlog"),
         stick: r(".ml-pad-stick"),
         jump: r(".ml-pad-jump"),
@@ -451,9 +452,14 @@ try {
     ? ok(`stick in the bottom-LEFT corner (x=${g.stick.l}, b=${g.stick.b})`)
     : fail(`stick ${JSON.stringify(g.stick)}`);
   Math.abs(g.barsL.l - 10) <= 2 ? ok("HP chip back at screen-left (game view's corner)") : fail(`left chip ${JSON.stringify(g.barsL)}`);
-  Math.abs(851 - menuW - 10 - g.clock.r) <= 2 && Math.abs(g.vh - 10 - g.clock.b) <= 2
-    ? ok(`left-handed: pill back in the game view's bottom-right corner (${g.clock.r},${g.clock.b})`)
-    : fail(`clock ${JSON.stringify(g.clock)} want r=${851 - menuW - 10}, b=${g.vh - 10}`);
+  // THE CORNER IS THE WIKI ROW'S, and the pill rides one step above it
+  // (maintainer 2026-09-03: "the wiki+search is under the time-of-day pill —
+  // they should swap y position"). Asserted as the corner + the RELATIVE
+  // stack, so the step lives in one place (wikibtn.ts's --ml-stack-step) and
+  // this gate cannot hold a stale copy of it.
+  Math.abs(851 - menuW - 10 - g.clock.r) <= 2 && Math.abs(g.vh - 10 - g.wikibtn.b) <= 2 && g.clock.b < g.wikibtn.t
+    ? ok(`left-handed: Wiki row back in the game view's bottom-right corner (b=${g.wikibtn.b}), pill above it (b=${g.clock.b})`)
+    : fail(`clock ${JSON.stringify(g.clock)} / wikibtn ${JSON.stringify(g.wikibtn)} want the row at b=${g.vh - 10}, r=${851 - menuW - 10}, pill above`);
   Math.abs(g.chatlog.l - 10) <= 2 ? ok("chat log at the game view's bottom-left") : fail(`chatlog ${JSON.stringify(g.chatlog)}`);
   await page.screenshot({ path: `${OUT}/landscape-lh.png` });
 
@@ -471,9 +477,9 @@ try {
   g.padBlurCss && g.padBlurCss.display === "none"
     ? ok("blur disc hidden in portrait (the stick sits on the opaque HUD page)")
     : fail(`blur disc still shown in portrait: ${JSON.stringify(g.padBlurCss)}`);
-  Math.abs(g.vh - g.hudH - 10 - g.clock.b) <= 2
-    ? ok(`portrait pill back above the HUD rail (b=${g.clock.b})`)
-    : fail(`portrait clock ${JSON.stringify(g.clock)}`);
+  Math.abs(g.vh - g.hudH - 10 - g.wikibtn.b) <= 2 && g.clock.b < g.wikibtn.t
+    ? ok(`portrait Wiki row back above the HUD rail (b=${g.wikibtn.b}), pill stacked over it (b=${g.clock.b})`)
+    : fail(`portrait clock ${JSON.stringify(g.clock)} / wikibtn ${JSON.stringify(g.wikibtn)}`);
   g = await geom();
   g.stickPos !== "fixed" && g.stick.l < 393 * 0.5
     ? ok(`left-handed portrait: stick on the page's LEFT (x ${g.stick.l}..${g.stick.r})`)

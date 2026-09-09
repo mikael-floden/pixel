@@ -1,0 +1,76 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-14T01:40:02+00:00",
+  "id": "toadstool_ring_013",
+  "group": "toadstool_rings",
+  "rank": 39,
+  "index": 13,
+  "name": "Ring in flowering meadow grass 013",
+  "lights": null,
+  "variety": "ring in flowering meadow grass",
+  "modifier": "rain-dark and glistening",
+  "glow_concept": null,
+  "prompt": "a circle of toadstools growing as a fairy ring on bare trodden forest soil, ring in flowering meadow grass, rain-dark and glistening, small, knee-high, completely unlit, no glow, no light sources, no self-emission",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 64,
+  "sprite": "toadstool_rings/toadstool_ring_013/sprite.webp",
+  "placement": {
+    "world_height_m": 0.879,
+    "world_px_height": 45,
+    "character_height_px": 87,
+    "character_height_m": 1.7,
+    "note": "ONE SCENERY PIXEL IS ONE PLAYER PIXEL. world_px_height IS the art's own alpha bbox height, so scenery is placed into the world at 1:1 exactly as the avatar is (setScale(1)) and the two share one pixel grid. The CAMERA still zooms the whole scene \u2014 that is uniform and correct; what must never happen is scenery being resampled on its own, against the player. world_height_m is what the art reads as beside a 87px character; declared_height_m is what it was once declared to be, and a gap between them means the ART is the wrong size.",
+    "declared_height_m": 0.36,
+    "content_box": [
+      3,
+      12,
+      62,
+      57
+    ],
+    "content_px_height": 45,
+    "canvas_render_px": 64
+  },
+  "pixellab_object_id": "5afad5a6-3456-47c5-8a4b-d3e3f2d9e9de",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)",
+  "must_be_imbplemented_with_random_hflip": true,
+  "states": {
+    "NOT_LIT_1": {
+      "sprite": "toadstool_rings/toadstool_ring_013/sprite.webp",
+      "pixellab_object_id": "5afad5a6-3456-47c5-8a4b-d3e3f2d9e9de",
+      "generated_at": "2026-08-14T01:40:02+00:00"
+    },
+    "NOT_LIT_2": {
+      "sprite": "toadstool_rings/toadstool_ring_013/not_lit_2/sprite.webp",
+      "pixellab_object_id": "e8d49b29-2ac0-4fff-b1f0-4729f2e5cd1f",
+      "generated_at": "2026-08-17T11:05:02+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.5537,
+      "glow_score": 0.0514
+    },
+    "NOT_LIT_3": {
+      "sprite": "toadstool_rings/toadstool_ring_013/not_lit_3/sprite.webp",
+      "pixellab_object_id": "ccae78f4-a565-4e00-b5ff-fe705ec942d7",
+      "generated_at": "2026-08-17T11:04:53+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.4952,
+      "glow_score": 0.0764
+    },
+    "NOT_LIT_4": {
+      "sprite": "toadstool_rings/toadstool_ring_013/not_lit_4/sprite.webp",
+      "pixellab_object_id": "f1a3c38a-25ab-4692-b791-dc7371b52711",
+      "generated_at": "2026-08-17T11:05:30+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.513,
+      "glow_score": 0.0549
+    }
+  },
+  "collision": true,
+  "hitbox_shape": "ellipse"
+}

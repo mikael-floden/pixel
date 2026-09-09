@@ -1,0 +1,132 @@
+{
+  "schema": "tiles3/tops@1",
+  "kind": "top_only",
+  "wall_is_meaningless": true,
+  "not_a_candidate_for": "x over y",
+  "ground": "lava",
+  "flavour": "detail",
+  "index": 129,
+  "seed": 29438,
+  "prompt": "lava, a jagged black shard in the middle, lava all around the edge",
+  "palette_top": "#fd5a02",
+  "tile_id": "e3e21ddc-e282-4b44-8761-6ebafe6bafad",
+  "n_tiles": 16,
+  "tiles": [
+    "tile_00.webp",
+    "tile_01.webp",
+    "tile_02.webp",
+    "tile_03.webp",
+    "tile_04.webp",
+    "tile_05.webp",
+    "tile_06.webp",
+    "tile_07.webp",
+    "tile_08.webp",
+    "tile_09.webp",
+    "tile_10.webp",
+    "tile_11.webp",
+    "tile_12.webp",
+    "tile_13.webp",
+    "tile_14.webp",
+    "tile_15.webp"
+  ],
+  "settings": {
+    "tile_size": 64,
+    "tile_view": "high top-down",
+    "view_angle": 28.0,
+    "depth_ratio": 0.5,
+    "tile_type": "isometric",
+    "flat_top_px": 2,
+    "outline_mode": "segmentation"
+  },
+  "usd": 0.096,
+  "created": "2026-09-03T04:47:56+00:00",
+  "top_face": {
+    "per_tile": [
+      {
+        "colours": 30,
+        "dominant_share": 0.1207,
+        "px": 936
+      },
+      {
+        "colours": 31,
+        "dominant_share": 0.107,
+        "px": 935
+      },
+      {
+        "colours": 27,
+        "dominant_share": 0.1263,
+        "px": 934
+      },
+      {
+        "colours": 29,
+        "dominant_share": 0.1397,
+        "px": 938
+      },
+      {
+        "colours": 28,
+        "dominant_share": 0.1526,
+        "px": 937
+      },
+      {
+        "colours": 30,
+        "dominant_share": 0.1062,
+        "px": 932
+      },
+      {
+        "colours": 30,
+        "dominant_share": 0.1008,
+        "px": 942
+      },
+      {
+        "colours": 29,
+        "dominant_share": 0.0856,
+        "px": 923
+      },
+      {
+        "colours": 28,
+        "dominant_share": 0.0833,
+        "px": 924
+      },
+      {
+        "colours": 30,
+        "dominant_share": 0.0834,
+        "px": 935
+      },
+      {
+        "colours": 27,
+        "dominant_share": 0.11,
+        "px": 936
+      },
+      {
+        "colours": 28,
+        "dominant_share": 0.0803,
+        "px": 946
+      },
+      {
+        "colours": 27,
+        "dominant_share": 0.0859,
+        "px": 931
+      },
+      {
+        "colours": 28,
+        "dominant_share": 0.1289,
+        "px": 923
+      },
+      {
+        "colours": 29,
+        "dominant_share": 0.0913,
+        "px": 942
+      },
+      {
+        "colours": 27,
+        "dominant_share": 0.0772,
+        "px": 946
+      }
+    ],
+    "mean_colours": 28.62,
+    "mean_dominant_share": 0.105
+  },
+  "motif": "a jagged black shard",
+  "motif_source": "tiles/config/details.json",
+  "walkable": true
+}

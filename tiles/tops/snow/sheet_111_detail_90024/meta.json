@@ -1,0 +1,132 @@
+{
+  "schema": "tiles3/tops@1",
+  "kind": "top_only",
+  "wall_is_meaningless": true,
+  "not_a_candidate_for": "x over y",
+  "ground": "snow",
+  "flavour": "detail",
+  "index": 111,
+  "seed": 90024,
+  "prompt": "snow, fallen pine needles in the middle, snow all around the edge",
+  "palette_top": "#ebf4f6",
+  "tile_id": "da9796a2-ce14-404b-b865-b88f2944f3d7",
+  "n_tiles": 16,
+  "tiles": [
+    "tile_00.webp",
+    "tile_01.webp",
+    "tile_02.webp",
+    "tile_03.webp",
+    "tile_04.webp",
+    "tile_05.webp",
+    "tile_06.webp",
+    "tile_07.webp",
+    "tile_08.webp",
+    "tile_09.webp",
+    "tile_10.webp",
+    "tile_11.webp",
+    "tile_12.webp",
+    "tile_13.webp",
+    "tile_14.webp",
+    "tile_15.webp"
+  ],
+  "settings": {
+    "tile_size": 64,
+    "tile_view": "high top-down",
+    "view_angle": 28.0,
+    "depth_ratio": 0.5,
+    "tile_type": "isometric",
+    "flat_top_px": 2,
+    "outline_mode": "segmentation"
+  },
+  "usd": 0.096,
+  "created": "2026-09-03T05:16:00+00:00",
+  "top_face": {
+    "per_tile": [
+      {
+        "colours": 20,
+        "dominant_share": 0.395,
+        "px": 919
+      },
+      {
+        "colours": 19,
+        "dominant_share": 0.5282,
+        "px": 922
+      },
+      {
+        "colours": 20,
+        "dominant_share": 0.547,
+        "px": 914
+      },
+      {
+        "colours": 18,
+        "dominant_share": 0.3976,
+        "px": 918
+      },
+      {
+        "colours": 23,
+        "dominant_share": 0.3824,
+        "px": 918
+      },
+      {
+        "colours": 20,
+        "dominant_share": 0.5016,
+        "px": 919
+      },
+      {
+        "colours": 21,
+        "dominant_share": 0.5229,
+        "px": 918
+      },
+      {
+        "colours": 23,
+        "dominant_share": 0.3609,
+        "px": 920
+      },
+      {
+        "colours": 20,
+        "dominant_share": 0.5587,
+        "px": 920
+      },
+      {
+        "colours": 23,
+        "dominant_share": 0.4664,
+        "px": 922
+      },
+      {
+        "colours": 25,
+        "dominant_share": 0.5212,
+        "px": 921
+      },
+      {
+        "colours": 25,
+        "dominant_share": 0.4723,
+        "px": 921
+      },
+      {
+        "colours": 25,
+        "dominant_share": 0.5216,
+        "px": 924
+      },
+      {
+        "colours": 25,
+        "dominant_share": 0.5076,
+        "px": 924
+      },
+      {
+        "colours": 20,
+        "dominant_share": 0.4784,
+        "px": 924
+      },
+      {
+        "colours": 24,
+        "dominant_share": 0.5016,
+        "px": 923
+      }
+    ],
+    "mean_colours": 21.94,
+    "mean_dominant_share": 0.479
+  },
+  "motif": "fallen pine needles",
+  "motif_source": "tiles/config/details.json",
+  "walkable": true
+}

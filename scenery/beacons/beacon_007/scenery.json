@@ -1,0 +1,207 @@
+{
+  "format": "scenery-piece@2",
+  "id": "beacon_007",
+  "group": "beacons",
+  "rank": 46,
+  "index": 7,
+  "name": "Double-cage war beacon 007",
+  "lights": null,
+  "variety": "double-cage war beacon",
+  "glow_concept": null,
+  "prompt": "a tall tarred timber mast with climbing rungs and an iron fire cage mounted at its top, double-cage war beacon, tall, about three times human height, completely unlit, no glow, no light sources, no self-emission",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 192,
+  "sprite": "beacons/beacon_007/sprite.webp",
+  "placement": {
+    "world_height_m": 3.537,
+    "world_px_height": 181,
+    "character_height_px": 87,
+    "character_height_m": 1.7,
+    "note": "ONE SCENERY PIXEL IS ONE PLAYER PIXEL. world_px_height IS the art's own alpha bbox height, so scenery is placed into the world at 1:1 exactly as the avatar is (setScale(1)) and the two share one pixel grid. The CAMERA still zooms the whole scene \u2014 that is uniform and correct; what must never happen is scenery being resampled on its own, against the player. world_height_m is what the art reads as beside a 87px character; declared_height_m is what it was once declared to be, and a gap between them means the ART is the wrong size.",
+    "declared_height_m": 3.04,
+    "content_box": [
+      72,
+      8,
+      119,
+      189
+    ],
+    "content_px_height": 181,
+    "canvas_render_px": 192
+  },
+  "pixellab_object_id": "3291e242-7ab1-4d98-8d33-1b0affd650fb",
+  "pixellab_directions": 1,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-1-direction-object (single, S-only)",
+  "must_be_imbplemented_with_random_hflip": true,
+  "generated_at": "2026-08-13T22:14:43+00:00",
+  "states": {
+    "LIT_1": {
+      "sprite": "beacons/beacon_007/lit_1/sprite.webp",
+      "pixellab_object_id": "65dabf98-f5c3-4cce-8e4d-8a1a14e92701",
+      "generated_at": "2026-08-15T19:52:45+00:00",
+      "glow_concept": "pillar of pale soul-light rising skyward",
+      "difference_from_source": 0.627,
+      "glow_score": 0.0954,
+      "animations": {
+        "motion": {
+          "group_id": "7d3e4270-d4bf-4c1e-b429-118ab45f27c8",
+          "description": "This is the same picture in every frame. ONLY the green light inside the lantern glass brightens a little and returns. Nothing else moves, bends or leans, and nothing changes size, shape or position. The last frame must return to exactly how the first frame looks, so the loop joins. Nothing may become darker than it is in the first frame. Do not redraw anything else, and do not add or remove anything.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "beacons/beacon_007/lit_1/animations/motion/00.webp",
+            "beacons/beacon_007/lit_1/animations/motion/01.webp",
+            "beacons/beacon_007/lit_1/animations/motion/02.webp",
+            "beacons/beacon_007/lit_1/animations/motion/03.webp",
+            "beacons/beacon_007/lit_1/animations/motion/04.webp"
+          ],
+          "strip": "beacons/beacon_007/lit_1/animations/motion__strip.webp",
+          "directions": null,
+          "generated_at": "2026-08-29T15:38:43+00:00",
+          "brief": "X42",
+          "review": "ANIMATION_PROBABLY_GOOD",
+          "review_metrics": {
+            "base_outline": 0.0
+          },
+          "light_frames": [
+            {
+              "intensity": 1.441,
+              "dx": -0.5,
+              "dy": -56.8
+            },
+            {
+              "intensity": 0.678,
+              "dx": -0.0,
+              "dy": -57.2
+            },
+            {
+              "intensity": 0.5,
+              "dx": -0.2,
+              "dy": -54.8
+            },
+            {
+              "intensity": 0.701,
+              "dx": -2.2,
+              "dy": -49.6
+            },
+            {
+              "intensity": 1.5,
+              "dx": -1.3,
+              "dy": -51.3
+            }
+          ]
+        }
+      }
+    },
+    "LIT_2": {
+      "sprite": "beacons/beacon_007/lit_2/sprite.webp",
+      "pixellab_object_id": "f52d7471-6d7d-42e3-9b50-6611da2a16b1",
+      "generated_at": "2026-08-15T19:52:56+00:00",
+      "glow_concept": "slow red ember eye pulsing in the cage",
+      "difference_from_source": 0.3373,
+      "glow_score": 0.0042,
+      "animations": {
+        "flame": {
+          "group_id": "91a013f4-f0db-4509-acae-92bd5aaf2f62",
+          "description": "Animate the flame only",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "beacons/beacon_007/lit_2/animations/flame/00.webp",
+            "beacons/beacon_007/lit_2/animations/flame/01.webp",
+            "beacons/beacon_007/lit_2/animations/flame/02.webp",
+            "beacons/beacon_007/lit_2/animations/flame/03.webp",
+            "beacons/beacon_007/lit_2/animations/flame/04.webp"
+          ],
+          "strip": "beacons/beacon_007/lit_2/animations/flame__strip.webp",
+          "directions": null,
+          "generated_at": "2026-08-29T06:48:38+00:00",
+          "review": "ANIMATION_PROBABLY_GOOD",
+          "review_metrics": {
+            "base_outline": 0.0
+          },
+          "light_frames": [
+            {
+              "intensity": 0.768,
+              "dx": -0.4,
+              "dy": -53.5
+            },
+            {
+              "intensity": 1.016,
+              "dx": -1.3,
+              "dy": -55.0
+            },
+            {
+              "intensity": 0.956,
+              "dx": -1.8,
+              "dy": -56.0
+            },
+            {
+              "intensity": 1.077,
+              "dx": -1.6,
+              "dy": -57.6
+            },
+            {
+              "intensity": 1.183,
+              "dx": -1.7,
+              "dy": -58.5
+            }
+          ]
+        }
+      }
+    },
+    "NOT_LIT_1": {
+      "sprite": "beacons/beacon_007/sprite.webp",
+      "pixellab_object_id": "3291e242-7ab1-4d98-8d33-1b0affd650fb",
+      "generated_at": "2026-08-13T22:14:43+00:00"
+    },
+    "NOT_LIT_3": {
+      "sprite": "beacons/beacon_007/not_lit_3/sprite.webp",
+      "pixellab_object_id": "f82dc4b8-83e0-4763-b2f9-179fcc1cacf7",
+      "generated_at": "2026-08-15T19:52:44+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.6813,
+      "glow_score": 0.0
+    },
+    "NOT_LIT_4": {
+      "sprite": "beacons/beacon_007/not_lit_4/sprite.webp",
+      "pixellab_object_id": "19f19004-8cd5-4ee6-847c-97a983a68035",
+      "generated_at": "2026-08-15T19:52:45+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.6784,
+      "glow_score": 0.0
+    }
+  },
+  "collision": true,
+  "hitbox_shape": "ellipse",
+  "light": {
+    "strength": 0.9,
+    "color": "#ccffea",
+    "radius": 16,
+    "reference": "the spawn bonfire is 1.0 (radius 7); strength 0 is no light",
+    "states": {
+      "LIT_1": {
+        "strength": 1.0,
+        "color": "#ccffea",
+        "radius": 18
+      },
+      "LIT_2": {
+        "strength": 0.72,
+        "color": "#ffb45c",
+        "radius": 13
+      }
+    },
+    "kind": "fire/enclosed",
+    "flame": true,
+    "embers": false
+  }
+}

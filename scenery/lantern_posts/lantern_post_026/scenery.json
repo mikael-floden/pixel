@@ -1,0 +1,306 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-14T02:46:36+00:00",
+  "id": "lantern_post_026",
+  "group": "lantern_posts",
+  "rank": 5,
+  "index": 26,
+  "name": "Rope-lashed twin post 026",
+  "lights": null,
+  "variety": "rope-lashed twin post",
+  "modifier": "weathered silver-grey",
+  "glow_concept": "raw glowing amber soulstone chunk",
+  "prompt": "a shoulder-height wooden post with a small metal-framed glass lantern fixed on its flat top, rope-lashed twin post, weathered silver-grey, large, twice human height, self-emissive at night, softly radiating light: raw glowing amber soulstone chunk",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 64,
+  "sprite": "lantern_posts/lantern_post_026/sprite.webp",
+  "placement": {
+    "world_height_m": 0.957,
+    "world_px_height": 49,
+    "character_height_px": 87,
+    "character_height_m": 1.7,
+    "note": "ONE SCENERY PIXEL IS ONE PLAYER PIXEL. world_px_height IS the art's own alpha bbox height, so scenery is placed into the world at 1:1 exactly as the avatar is (setScale(1)) and the two share one pixel grid. The CAMERA still zooms the whole scene \u2014 that is uniform and correct; what must never happen is scenery being resampled on its own, against the player. world_height_m is what the art reads as beside a 87px character; declared_height_m is what it was once declared to be, and a gap between them means the ART is the wrong size.",
+    "declared_height_m": 2.08,
+    "content_box": [
+      19,
+      8,
+      46,
+      57
+    ],
+    "content_px_height": 49,
+    "canvas_render_px": 64
+  },
+  "pixellab_object_id": "a9c8acee-bc08-4965-927c-02a1349ab021",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)",
+  "must_be_imbplemented_with_random_hflip": true,
+  "states": {
+    "LIT_1": {
+      "sprite": "lantern_posts/lantern_post_026/sprite.webp",
+      "pixellab_object_id": "a9c8acee-bc08-4965-927c-02a1349ab021",
+      "generated_at": "2026-08-14T02:46:36+00:00",
+      "rotations": {
+        "south-east": "lantern_posts/lantern_post_026/rotations/south-east.webp",
+        "south-west": "lantern_posts/lantern_post_026/rotations/south-west.webp",
+        "south": "lantern_posts/lantern_post_026/sprite.webp"
+      }
+    },
+    "LIT_2": {
+      "sprite": "lantern_posts/lantern_post_026/lit_2/sprite.webp",
+      "pixellab_object_id": "eb8fcbd3-51eb-4b7f-b958-655770b20144",
+      "generated_at": "2026-08-16T17:26:45+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.9058,
+      "glow_score": 0.0375,
+      "rotations": {
+        "south-east": "lantern_posts/lantern_post_026/lit_2/rotations/south-east.webp",
+        "south-west": "lantern_posts/lantern_post_026/lit_2/rotations/south-west.webp",
+        "south": "lantern_posts/lantern_post_026/lit_2/sprite.webp"
+      },
+      "animations": {
+        "motion": {
+          "group_id": "ad353835-b6e9-4d7e-9b19-fcc8f4051606",
+          "description": "This is the same picture in every frame. ONLY the light behind the panel flickers. It is lit and clearly visible in every frame, including the first. It stays exactly the same size and shape in every frame: it never grows and never spreads, only its inner detail shifts. Nothing is added or removed anywhere: every object appears in every frame, the same number of them, in the same places, at the same size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour, no outline redrawn. The last frame matches the first exactly.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "lantern_posts/lantern_post_026/lit_2/animations/motion/00.webp",
+            "lantern_posts/lantern_post_026/lit_2/animations/motion/01.webp",
+            "lantern_posts/lantern_post_026/lit_2/animations/motion/02.webp",
+            "lantern_posts/lantern_post_026/lit_2/animations/motion/03.webp",
+            "lantern_posts/lantern_post_026/lit_2/animations/motion/04.webp"
+          ],
+          "strip": "lantern_posts/lantern_post_026/lit_2/animations/motion__strip.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-08-29T19:14:52+00:00",
+          "brief": "D4",
+          "review": "ANIMATION_PROBABLY_GOOD",
+          "review_metrics": {
+            "class": "fire",
+            "base": 0.0,
+            "still": 0.743
+          },
+          "light_frames": [
+            {
+              "intensity": 1.5,
+              "dx": 0.3,
+              "dy": -5.5
+            },
+            {
+              "intensity": 0.824,
+              "dx": 0.3,
+              "dy": -4.2
+            },
+            {
+              "intensity": 0.5,
+              "dx": 1.2,
+              "dy": -0.4
+            },
+            {
+              "intensity": 0.5,
+              "dx": -0.1,
+              "dy": -2.5
+            },
+            {
+              "intensity": 1.5,
+              "dx": -0.2,
+              "dy": -4.2
+            }
+          ]
+        }
+      }
+    },
+    "LIT_3": {
+      "sprite": "lantern_posts/lantern_post_026/lit_3/sprite.webp",
+      "pixellab_object_id": "dca620fa-d1c8-4957-a5b2-3d1f7442d090",
+      "generated_at": "2026-08-16T17:26:30+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.4048,
+      "glow_score": 0.0472,
+      "rotations": {
+        "south-east": "lantern_posts/lantern_post_026/lit_3/rotations/south-east.webp",
+        "south-west": "lantern_posts/lantern_post_026/lit_3/rotations/south-west.webp",
+        "south": "lantern_posts/lantern_post_026/lit_3/sprite.webp"
+      },
+      "animations": {
+        "motion": {
+          "group_id": "51905697-890f-4c65-b996-c24de4ba465b",
+          "description": "This is the same picture in every frame. ONLY the flame inside the lantern flickers. It is lit and clearly visible in every frame, including the first. It stays exactly the same size and shape in every frame: it never grows and never spreads, only its brightness shifts. Nothing is added or removed anywhere: every object appears in every frame, the same number of them, in the same places, at the same size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour, no outline redrawn. The last frame matches the first exactly.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "lantern_posts/lantern_post_026/lit_3/animations/motion/00.webp",
+            "lantern_posts/lantern_post_026/lit_3/animations/motion/01.webp",
+            "lantern_posts/lantern_post_026/lit_3/animations/motion/02.webp",
+            "lantern_posts/lantern_post_026/lit_3/animations/motion/03.webp",
+            "lantern_posts/lantern_post_026/lit_3/animations/motion/04.webp"
+          ],
+          "strip": "lantern_posts/lantern_post_026/lit_3/animations/motion__strip.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-08-30T09:35:42+00:00",
+          "brief": "H18",
+          "review": "ANIMATION_PROBABLY_GOOD",
+          "review_metrics": {
+            "class": "fire",
+            "base": 0.012,
+            "still": 0.665
+          },
+          "light_frames": [
+            {
+              "intensity": 1.261,
+              "dx": 0.5,
+              "dy": -8.6
+            },
+            {
+              "intensity": 1.265,
+              "dx": 0.5,
+              "dy": -7.5
+            },
+            {
+              "intensity": 0.838,
+              "dx": 0.0,
+              "dy": -8.0
+            },
+            {
+              "intensity": 1.304,
+              "dx": 0.3,
+              "dy": -7.7
+            },
+            {
+              "intensity": 0.5,
+              "dx": 0.0,
+              "dy": -6.7
+            }
+          ]
+        }
+      }
+    },
+    "LIT_4": {
+      "sprite": "lantern_posts/lantern_post_026/lit_4/sprite.webp",
+      "pixellab_object_id": "0e728296-89c5-4b2a-b101-c43b1568cee8",
+      "generated_at": "2026-08-16T17:27:47+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.9344,
+      "glow_score": 0.0494,
+      "rotations": {
+        "south-east": "lantern_posts/lantern_post_026/lit_4/rotations/south-east.webp",
+        "south-west": "lantern_posts/lantern_post_026/lit_4/rotations/south-west.webp",
+        "south": "lantern_posts/lantern_post_026/lit_4/sprite.webp"
+      },
+      "animations": {
+        "motion": {
+          "group_id": "89c02bf5-3618-4d8e-8dca-3a70815c7684",
+          "description": "This is the same picture in every frame. ONLY the flame inside the lantern flickers. It is lit and clearly visible in every frame, including the first. It stays exactly the same size and shape in every frame: it never grows and never spreads, only its brightness shifts. Nothing is added or removed anywhere: every object appears in every frame, the same number of them, in the same places, at the same size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour, no outline redrawn. The last frame matches the first exactly.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "lantern_posts/lantern_post_026/lit_4/animations/motion/00.webp",
+            "lantern_posts/lantern_post_026/lit_4/animations/motion/01.webp",
+            "lantern_posts/lantern_post_026/lit_4/animations/motion/02.webp",
+            "lantern_posts/lantern_post_026/lit_4/animations/motion/03.webp",
+            "lantern_posts/lantern_post_026/lit_4/animations/motion/04.webp"
+          ],
+          "strip": "lantern_posts/lantern_post_026/lit_4/animations/motion__strip.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-08-30T08:15:22+00:00",
+          "brief": "G3",
+          "review": "ANIMATION_PROBABLY_GOOD",
+          "review_metrics": {
+            "base_outline": 0.0
+          },
+          "light_frames": [
+            {
+              "intensity": 0.714,
+              "dx": 0.0,
+              "dy": -3.3
+            },
+            {
+              "intensity": 1.5,
+              "dx": -0.7,
+              "dy": -4.4
+            },
+            {
+              "intensity": 1.5,
+              "dx": -0.7,
+              "dy": -4.7
+            },
+            {
+              "intensity": 0.5,
+              "dx": -0.2,
+              "dy": -9.5
+            },
+            {
+              "intensity": 0.583,
+              "dx": -0.3,
+              "dy": -6.6
+            }
+          ]
+        }
+      }
+    },
+    "NOT_LIT_2": {
+      "sprite": "lantern_posts/lantern_post_026/not_lit_2/sprite.webp",
+      "pixellab_object_id": "8075a842-a7b3-43d6-88f0-67e246feb275",
+      "generated_at": "2026-08-16T17:28:00+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.7451,
+      "glow_score": 0.0115,
+      "rotations": {
+        "south-east": "lantern_posts/lantern_post_026/not_lit_2/rotations/south-east.webp",
+        "south-west": "lantern_posts/lantern_post_026/not_lit_2/rotations/south-west.webp",
+        "south": "lantern_posts/lantern_post_026/not_lit_2/sprite.webp"
+      }
+    }
+  },
+  "collision": true,
+  "hitbox_shape": "ellipse",
+  "light": {
+    "strength": 0.35,
+    "color": "#ffd996",
+    "radius": 6,
+    "reference": "the spawn bonfire is 1.0 (radius 7); strength 0 is no light",
+    "states": {
+      "LIT_1": {
+        "strength": 0.35,
+        "color": "#ffd996",
+        "radius": 6
+      },
+      "LIT_2": {
+        "strength": 0.35,
+        "color": "#ffd995",
+        "radius": 6
+      },
+      "LIT_3": {
+        "strength": 0.35,
+        "color": "#fed99c",
+        "radius": 6
+      },
+      "LIT_4": {
+        "strength": 0.35,
+        "color": "#ffd38c",
+        "radius": 6
+      }
+    },
+    "kind": "fire/enclosed",
+    "flame": true,
+    "embers": false
+  }
+}

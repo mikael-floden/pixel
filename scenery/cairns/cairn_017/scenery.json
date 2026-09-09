@@ -1,0 +1,251 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-14T01:28:18+00:00",
+  "id": "cairn_017",
+  "group": "cairns",
+  "rank": 9,
+  "index": 17,
+  "name": "Stacked slate slab cairn 017",
+  "lights": null,
+  "variety": "stacked slate slab cairn",
+  "modifier": "grown around a half-buried stone",
+  "glow_concept": null,
+  "prompt": "a broad sturdy pile of large stacked rocks built as a trail marker, wide at the base, made of heavy weathered stones, stacked slate slab cairn, grown around a half-buried stone, roughly six feet tall, human height, completely unlit, no glow, no light sources, no self-emission",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 64,
+  "sprite": "cairns/cairn_017/sprite.webp",
+  "placement": {
+    "world_height_m": 1.036,
+    "world_px_height": 53,
+    "character_height_px": 87,
+    "character_height_m": 1.7,
+    "note": "ONE SCENERY PIXEL IS ONE PLAYER PIXEL. world_px_height IS the art's own alpha bbox height, so scenery is placed into the world at 1:1 exactly as the avatar is (setScale(1)) and the two share one pixel grid. The CAMERA still zooms the whole scene \u2014 that is uniform and correct; what must never happen is scenery being resampled on its own, against the player. world_height_m is what the art reads as beside a 87px character; declared_height_m is what it was once declared to be, and a gap between them means the ART is the wrong size.",
+    "declared_height_m": 1.37,
+    "content_box": [
+      5,
+      7,
+      60,
+      60
+    ],
+    "content_px_height": 53,
+    "canvas_render_px": 64
+  },
+  "pixellab_object_id": "1db5890a-0b3e-43a2-9009-ac81c0a9d76e",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)",
+  "must_be_imbplemented_with_random_hflip": true,
+  "states": {
+    "LIT_1": {
+      "sprite": "cairns/cairn_017/lit_1/sprite.webp",
+      "pixellab_object_id": "35c702e9-6142-4df0-8c4c-4ff1dc6cee6e",
+      "generated_at": "2026-08-15T21:31:24+00:00",
+      "glow_concept": "topmost stone glowing like a lantern",
+      "difference_from_source": 0.8251,
+      "glow_score": 0.0496,
+      "rotations": {
+        "south-east": "cairns/cairn_017/lit_1/rotations/south-east.webp",
+        "south-west": "cairns/cairn_017/lit_1/rotations/south-west.webp",
+        "south": "cairns/cairn_017/lit_1/sprite.webp"
+      },
+      "animations": {
+        "motion": {
+          "group_id": "4820ff14-05be-4e32-8d9c-27eb99f2910a",
+          "description": "This is the same picture in every frame. ONLY the gold lamp on top of the cairn flickers. It is lit and clearly visible in every single frame, including the first. Everything else in the picture is copied from the first frame exactly, pixel for pixel, unchanged in shape, size, position and colour. No outline anywhere is redrawn. The last frame matches the first frame exactly, so the loop joins.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "cairns/cairn_017/lit_1/animations/motion/00.webp",
+            "cairns/cairn_017/lit_1/animations/motion/01.webp",
+            "cairns/cairn_017/lit_1/animations/motion/02.webp",
+            "cairns/cairn_017/lit_1/animations/motion/03.webp",
+            "cairns/cairn_017/lit_1/animations/motion/04.webp"
+          ],
+          "strip": "cairns/cairn_017/lit_1/animations/motion__strip.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-08-29T18:32:08+00:00",
+          "brief": "B12",
+          "review": "ANIMATION_PROBABLY_GOOD",
+          "review_metrics": {
+            "base_outline": 0.0
+          },
+          "light_frames": [
+            {
+              "intensity": 1.033,
+              "dx": -0.7,
+              "dy": -21.5
+            },
+            {
+              "intensity": 1.095,
+              "dx": -0.5,
+              "dy": -21.5
+            },
+            {
+              "intensity": 0.984,
+              "dx": -0.2,
+              "dy": -22.2
+            },
+            {
+              "intensity": 1.146,
+              "dx": -0.6,
+              "dy": -21.3
+            },
+            {
+              "intensity": 0.741,
+              "dx": -0.9,
+              "dy": -22.0
+            }
+          ]
+        }
+      }
+    },
+    "LIT_2": {
+      "sprite": "cairns/cairn_017/lit_2/sprite.webp",
+      "pixellab_object_id": "5fc9de6f-5fbc-4ae1-823b-a8f525285e34",
+      "generated_at": "2026-08-15T21:32:42+00:00",
+      "glow_concept": "warm light spilling from gaps between stones",
+      "difference_from_source": 0.7792,
+      "glow_score": 0.1134,
+      "rotations": {
+        "south-east": "cairns/cairn_017/lit_2/rotations/south-east.webp",
+        "south-west": "cairns/cairn_017/lit_2/rotations/south-west.webp",
+        "south": "cairns/cairn_017/lit_2/sprite.webp"
+      },
+      "animations": {
+        "motion": {
+          "group_id": "26655e89-8b35-4ce3-bac9-616c85b7f5ff",
+          "description": "This is the same picture in every frame. ONLY the gold light in the seams between the stones brightens a little and returns. It is lit and clearly visible in every frame, including the first. It gets only SLIGHTLY brighter -- never white, never washed out -- and keeps its own colour throughout: brightest in the middle, back to its first-frame brightness at the end, never dimmer at the end than the start. Nothing is added or removed anywhere: every object appears in every frame, the same number of them, in the same places, at the same size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour, no outline redrawn. The last frame matches the first exactly.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "cairns/cairn_017/lit_2/animations/motion/00.webp",
+            "cairns/cairn_017/lit_2/animations/motion/01.webp",
+            "cairns/cairn_017/lit_2/animations/motion/02.webp",
+            "cairns/cairn_017/lit_2/animations/motion/03.webp",
+            "cairns/cairn_017/lit_2/animations/motion/04.webp"
+          ],
+          "strip": "cairns/cairn_017/lit_2/animations/motion__strip.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-08-29T19:06:11+00:00",
+          "brief": "C47",
+          "review": "ANIMATION_PROBABLY_GOOD",
+          "review_metrics": {
+            "base_outline": 0.0186
+          },
+          "light_frames": [
+            {
+              "intensity": 1.188,
+              "dx": -0.9,
+              "dy": 8.2
+            },
+            {
+              "intensity": 0.754,
+              "dx": 0.8,
+              "dy": 6.8
+            },
+            {
+              "intensity": 0.643,
+              "dx": 2.2,
+              "dy": 7.8
+            },
+            {
+              "intensity": 1.5,
+              "dx": -1.2,
+              "dy": 4.2
+            },
+            {
+              "intensity": 0.646,
+              "dx": -2.3,
+              "dy": 2.5
+            }
+          ]
+        }
+      }
+    },
+    "NOT_LIT_1": {
+      "sprite": "cairns/cairn_017/sprite.webp",
+      "pixellab_object_id": "1db5890a-0b3e-43a2-9009-ac81c0a9d76e",
+      "generated_at": "2026-08-14T01:28:18+00:00",
+      "rotations": {
+        "south-east": "cairns/cairn_017/rotations/south-east.webp",
+        "south-west": "cairns/cairn_017/rotations/south-west.webp",
+        "south": "cairns/cairn_017/sprite.webp"
+      }
+    },
+    "NOT_LIT_2": {
+      "sprite": "cairns/cairn_017/not_lit_2/sprite.webp",
+      "pixellab_object_id": "a6cd8874-3f23-4c9e-90f9-c22b53d3fea1",
+      "generated_at": "2026-08-15T21:33:41+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.5692,
+      "glow_score": 0.0,
+      "rotations": {
+        "south-east": "cairns/cairn_017/not_lit_2/rotations/south-east.webp",
+        "south-west": "cairns/cairn_017/not_lit_2/rotations/south-west.webp",
+        "south": "cairns/cairn_017/not_lit_2/sprite.webp"
+      }
+    },
+    "NOT_LIT_3": {
+      "sprite": "cairns/cairn_017/not_lit_3/sprite.webp",
+      "pixellab_object_id": "a3e15e01-eadd-4519-8fc7-bf5b4203d682",
+      "generated_at": "2026-08-15T21:30:44+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.6315,
+      "glow_score": 0.0,
+      "rotations": {
+        "south-east": "cairns/cairn_017/not_lit_3/rotations/south-east.webp",
+        "south-west": "cairns/cairn_017/not_lit_3/rotations/south-west.webp",
+        "south": "cairns/cairn_017/not_lit_3/sprite.webp"
+      }
+    },
+    "NOT_LIT_4": {
+      "sprite": "cairns/cairn_017/not_lit_4/sprite.webp",
+      "pixellab_object_id": "221077d3-9cdd-40ea-9999-4807d71a7e86",
+      "generated_at": "2026-08-15T21:30:34+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.5837,
+      "glow_score": 0.0,
+      "rotations": {
+        "south-east": "cairns/cairn_017/not_lit_4/rotations/south-east.webp",
+        "south-west": "cairns/cairn_017/not_lit_4/rotations/south-west.webp",
+        "south": "cairns/cairn_017/not_lit_4/sprite.webp"
+      }
+    }
+  },
+  "collision": true,
+  "hitbox_shape": "ellipse",
+  "light": {
+    "strength": 0.12,
+    "color": "#ffc62d",
+    "radius": 2,
+    "reference": "the spawn bonfire is 1.0 (radius 7); strength 0 is no light",
+    "states": {
+      "LIT_1": {
+        "strength": 0.12,
+        "color": "#ffc62d",
+        "radius": 2
+      },
+      "LIT_2": {
+        "strength": 0.14,
+        "color": "#ffd573",
+        "radius": 2
+      }
+    },
+    "kind": "fire/enclosed",
+    "flame": true,
+    "embers": false
+  }
+}

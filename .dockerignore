@@ -3,33 +3,64 @@
 # critical path) until the Dockerfile actually bakes them in.
 *
 !games2
+# The maintainer's hand-drawn SOURCE art (5.6 MB): build INPUTS for the bake
+# scripts, which are run offline and commit their output — the Dockerfile
+# never invokes them and nothing serves ui-src, so every image carried it for
+# nothing. The bakes it produces (client/public/ui2) ship as they always did.
+# — games-ui 2026-09-03
+games2/client/ui-src
 games2/node_modules
 games2/client/dist
 games2/**/*.tsbuildinfo
 games2/.data
-!objects
+!scenery
 !characters2
-!tiles2
-# ...but NOT the tiles2 generator's source sheets. tiles2/<terrain>/raw/ is the
-# pre-postprocess output the tiles2 agent keeps so it can re-tune and re-run
-# (tiles2/config/tiles2.json: "Raw is always kept"). The GAME never reaches it:
-# zero references in any maps2 world.json, in games2 source, or in the wiki's
-# build/data. 4,648 files / 34 MB baked into every image for nothing.
-tiles2/*/raw
 !maps2
+# ...but NOT the authored BASE the_game is built from (maps2/source/): the
+# pipeline's input, 850 KB, read by no consumer at runtime and listed as no
+# world. It lives here because the world@1/@2 retirement deleted it and took
+# the ability to rebuild the_game with it.
+maps2/source
+# ...nor the QA render. render3 writes TWO pictures of the_game: the map
+# the game shows (minimap.webp / overview.webp, 1200 px, 164 KB) and
+# overview_full.webp, the 16300x7576 / 15 MB render this domain reviews the
+# world in. The HUD's map tab used to fetch the big one and scale it into a
+# frame a few hundred px wide, on a phone (maintainer 2026-09-06).
+maps2/worlds3/*/overview_full.webp
 !sounds
 !music
-# The music WAV masters (~61 MB) are the music domain's analysis source-of-truth,
-# never fetched by the game: the engine streams ogg/m4a (musicStreamUrl) and the
-# /#music viewer streams too. Keep them OUT of the deploy image so every roll is
-# ~61 MB lighter. Sounds stay wav (SFX are wav-only in the catalog). Revert this
-# line if a music consumer ever needs the master at runtime. — games-audio 2026-07-25
+# AUDIO IS OGG/OPUS ONLY (2026-09-09) — no second format, and no master left
+# to exclude. Kept as a standing guard: if the music pipeline ever writes a wav
+# beside its ogg again, it must not reach players.
+#
+# sounds/ IS STILL DELIBERATELY NOT LISTED, for a better reason than before.
+# The five takes that used to be wav-only are ogg now: they were not damaged,
+# they carried a DC OFFSET (hit_taken_melon rode at +0.5018) and the gate had
+# no lower band edge, so it read opus stripping inaudible DC as a 13 dB loss.
+# With the band floored at 20 Hz all five encode transparently. The library is
+# 100% ogg — so a wav appearing here again means a conversion genuinely FAILED
+# and the master is the only copy, which is exactly the case that must still
+# reach players. Excluding it would turn a failure into silence.
 music/**/*.wav
 !monsters
 !items
+# Tiles 3.0 (/tiles) — THE tile system (tiles2 retired 2026-09-09). The image
+# carries only the published world's resolver closure, baked by
+# games2/scripts/ship-tiles3.ts in the Dockerfile's build stage; the raw
+# candidate sheets in tiles/matrix are gitignored and never enter the context.
+!tiles
 !lore
 !wiki
 !live
+# ...but NOT the perf telemetry. The client beacon appends to
+# live/telemetry/perf.json every 30 s of play (99 commits in one day) and the
+# server WRITES it through the GitHub API and never reads it from disk; the
+# baked live/ copy exists only as the boot fallback for tuning/ and feedback/.
+# Yet it sat in the build context, so EVERY deploy found the curate stage's
+# inputs changed and re-ran shipset (49 s), re-copied the repo into /full
+# (19 s) and rebuilt the wiki registry (7 s) — 75 s of cache misses per deploy
+# for a file nothing in the image uses. Measured on run 3274, 2026-09-09.
+live/telemetry
 **/__pycache__
 **/.venv
 *.log

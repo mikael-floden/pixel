@@ -1,0 +1,112 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-13T23:22:06+00:00",
+  "id": "dock_piling_008",
+  "group": "dock_pilings",
+  "rank": 35,
+  "index": 8,
+  "name": "White gull-stained pilings 008",
+  "lights": null,
+  "variety": "white gull-stained pilings",
+  "glow_concept": "rope wraps smoldering with faint ember light",
+  "prompt": "a cluster of weathered wooden dock pilings bound with tarred rope, the broken remnant of a pier standing at the shoreline, white gull-stained pilings, roughly six feet tall, human height, self-emissive at night, softly radiating light: rope wraps smoldering with faint ember light",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 64,
+  "sprite": "dock_pilings/dock_piling_008/sprite.webp",
+  "placement": {
+    "world_height_m": 0.957,
+    "world_px_height": 49,
+    "character_height_px": 87,
+    "character_height_m": 1.7,
+    "note": "ONE SCENERY PIXEL IS ONE PLAYER PIXEL. world_px_height IS the art's own alpha bbox height, so scenery is placed into the world at 1:1 exactly as the avatar is (setScale(1)) and the two share one pixel grid. The CAMERA still zooms the whole scene \u2014 that is uniform and correct; what must never happen is scenery being resampled on its own, against the player. world_height_m is what the art reads as beside a 87px character; declared_height_m is what it was once declared to be, and a gap between them means the ART is the wrong size.",
+    "declared_height_m": 1.6,
+    "content_box": [
+      13,
+      8,
+      51,
+      57
+    ],
+    "content_px_height": 49,
+    "canvas_render_px": 64
+  },
+  "pixellab_object_id": "4a0685a9-b04f-4761-aeff-7c2482286408",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)",
+  "must_be_imbplemented_with_random_hflip": true,
+  "states": {
+    "NOT_LIT_2": {
+      "sprite": "dock_pilings/dock_piling_008/not_lit_2/sprite.webp",
+      "pixellab_object_id": "e3763b52-92ba-4024-9dee-114d4dfe685f",
+      "generated_at": "2026-08-16T11:43:34+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.3683,
+      "glow_score": 0.0,
+      "rotations": {
+        "south-east": "dock_pilings/dock_piling_008/not_lit_2/rotations/south-east.webp",
+        "south-west": "dock_pilings/dock_piling_008/not_lit_2/rotations/south-west.webp",
+        "south": "dock_pilings/dock_piling_008/not_lit_2/sprite.webp"
+      }
+    },
+    "NOT_LIT_3": {
+      "sprite": "dock_pilings/dock_piling_008/sprite.webp",
+      "pixellab_object_id": "4a0685a9-b04f-4761-aeff-7c2482286408",
+      "generated_at": "2026-08-13T23:22:06+00:00",
+      "relit_from": "LIT_1",
+      "rotations": {
+        "south-east": "dock_pilings/dock_piling_008/rotations/south-east.webp",
+        "south-west": "dock_pilings/dock_piling_008/rotations/south-west.webp",
+        "south": "dock_pilings/dock_piling_008/sprite.webp"
+      }
+    },
+    "NOT_LIT_4": {
+      "sprite": "dock_pilings/dock_piling_008/not_lit_4/sprite.webp",
+      "pixellab_object_id": "4e3be793-dad6-4fae-a4ec-51781f1d6b4f",
+      "generated_at": "2026-08-16T11:42:53+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.782,
+      "glow_score": 0.09,
+      "relit_from": "LIT_2",
+      "rotations": {
+        "south-east": "dock_pilings/dock_piling_008/not_lit_4/rotations/south-east.webp",
+        "south-west": "dock_pilings/dock_piling_008/not_lit_4/rotations/south-west.webp",
+        "south": "dock_pilings/dock_piling_008/not_lit_4/sprite.webp"
+      }
+    },
+    "NOT_LIT_5": {
+      "sprite": "dock_pilings/dock_piling_008/not_lit_5/sprite.webp",
+      "pixellab_object_id": "4e16cd78-359a-4756-bc86-3cfcf00befee",
+      "generated_at": "2026-08-16T11:43:13+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.8044,
+      "glow_score": 0.0046,
+      "relit_from": "LIT_3",
+      "rotations": {
+        "south-east": "dock_pilings/dock_piling_008/not_lit_5/rotations/south-east.webp",
+        "south-west": "dock_pilings/dock_piling_008/not_lit_5/rotations/south-west.webp",
+        "south": "dock_pilings/dock_piling_008/not_lit_5/sprite.webp"
+      }
+    },
+    "NOT_LIT_6": {
+      "sprite": "dock_pilings/dock_piling_008/not_lit_6/sprite.webp",
+      "pixellab_object_id": "e43db28d-0ce3-41d6-bd14-77739277c9a0",
+      "generated_at": "2026-08-16T11:43:23+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.9157,
+      "glow_score": 0.0906,
+      "relit_from": "LIT_4",
+      "rotations": {
+        "south-east": "dock_pilings/dock_piling_008/not_lit_6/rotations/south-east.webp",
+        "south-west": "dock_pilings/dock_piling_008/not_lit_6/rotations/south-west.webp",
+        "south": "dock_pilings/dock_piling_008/not_lit_6/sprite.webp"
+      }
+    }
+  },
+  "collision": true,
+  "hitbox_shape": "ellipse"
+}

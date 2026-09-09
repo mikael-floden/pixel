@@ -1,0 +1,132 @@
+{
+  "schema": "tiles3/tops@1",
+  "kind": "top_only",
+  "wall_is_meaningless": true,
+  "not_a_candidate_for": "x over y",
+  "ground": "ice",
+  "flavour": "detail",
+  "index": 132,
+  "seed": 16928,
+  "prompt": "ice, a trapped feather in the middle, ice all around the edge",
+  "palette_top": "#99ced1",
+  "tile_id": "eb14fa99-c8a2-4986-bca4-45014ce3370d",
+  "n_tiles": 16,
+  "tiles": [
+    "tile_00.webp",
+    "tile_01.webp",
+    "tile_02.webp",
+    "tile_03.webp",
+    "tile_04.webp",
+    "tile_05.webp",
+    "tile_06.webp",
+    "tile_07.webp",
+    "tile_08.webp",
+    "tile_09.webp",
+    "tile_10.webp",
+    "tile_11.webp",
+    "tile_12.webp",
+    "tile_13.webp",
+    "tile_14.webp",
+    "tile_15.webp"
+  ],
+  "settings": {
+    "tile_size": 64,
+    "tile_view": "high top-down",
+    "view_angle": 28.0,
+    "depth_ratio": 0.5,
+    "tile_type": "isometric",
+    "flat_top_px": 2,
+    "outline_mode": "segmentation"
+  },
+  "usd": 0.096,
+  "created": "2026-09-03T08:02:37+00:00",
+  "top_face": {
+    "per_tile": [
+      {
+        "colours": 13,
+        "dominant_share": 0.759,
+        "px": 921
+      },
+      {
+        "colours": 10,
+        "dominant_share": 0.8013,
+        "px": 921
+      },
+      {
+        "colours": 11,
+        "dominant_share": 0.7939,
+        "px": 922
+      },
+      {
+        "colours": 10,
+        "dominant_share": 0.7671,
+        "px": 923
+      },
+      {
+        "colours": 11,
+        "dominant_share": 0.821,
+        "px": 922
+      },
+      {
+        "colours": 11,
+        "dominant_share": 0.7394,
+        "px": 921
+      },
+      {
+        "colours": 11,
+        "dominant_share": 0.7915,
+        "px": 921
+      },
+      {
+        "colours": 11,
+        "dominant_share": 0.6059,
+        "px": 921
+      },
+      {
+        "colours": 11,
+        "dominant_share": 0.7839,
+        "px": 921
+      },
+      {
+        "colours": 10,
+        "dominant_share": 0.7711,
+        "px": 922
+      },
+      {
+        "colours": 11,
+        "dominant_share": 0.7993,
+        "px": 922
+      },
+      {
+        "colours": 11,
+        "dominant_share": 0.7495,
+        "px": 922
+      },
+      {
+        "colours": 11,
+        "dominant_share": 0.7915,
+        "px": 921
+      },
+      {
+        "colours": 12,
+        "dominant_share": 0.7818,
+        "px": 921
+      },
+      {
+        "colours": 12,
+        "dominant_share": 0.6901,
+        "px": 923
+      },
+      {
+        "colours": 13,
+        "dominant_share": 0.4832,
+        "px": 925
+      }
+    ],
+    "mean_colours": 11.19,
+    "mean_dominant_share": 0.7456
+  },
+  "motif": "a trapped feather",
+  "motif_source": "tiles/config/details.json",
+  "walkable": true
+}

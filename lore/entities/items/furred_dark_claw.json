@@ -1,0 +1,17 @@
+{
+  "domain": "items",
+  "id": "furred_dark_claw",
+  "name_seen": "Beast Claw",
+  "law": "V",
+  "description": "One dark claw with the fur still on the knuckle. It came off a paw the size of a dinner plate.",
+  "lore": [
+    "Two things in the west leave a claw this size, and only one of them ever grew hair. Scrape the knuckle: coarse brown, flattened all one way, skin still on underneath. That is [[monsters/swamp_bear|Mireback]], which was an ordinary bear on ordinary ground before the water came up over its round. The other kind leaves grit and green crumbs and no hair at all, because [[monsters/granite_bear|Cragback]] was never an animal — it is a hill a hundred valleys agreed on, and hills do not grow coats.",
+    "Buyers on the west road pay double for hair. It is not a better claw — same socket, same edge. What the extra gold buys is the certainty that the paw had a bear inside it once, which matters enormously to some people and not at all to others, and both sorts drink at the same fire and gave up arguing about it years ago."
+  ],
+  "related": [
+    { "domain": "monsters", "id": "swamp_bear" },
+    { "domain": "monsters", "id": "granite_bear" },
+    { "domain": "lore", "id": "the_hard_pieces" }
+  ],
+  "gm_notes": "The fur is the tell between the Come and the Made: an animal that lived somewhere once, versus a story that stood up. The price gap is the trade quietly paying extra for a life, and refusing to say so."
+}

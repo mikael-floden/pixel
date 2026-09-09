@@ -1,0 +1,21 @@
+{
+  "domain": "items",
+  "id": "coiled_bog_worm",
+  "name_seen": "Bog Worm",
+  "law": "IV",
+  "description": "A fat pink worm, still coiling slowly. Mirewart eats them by the dozen and leaves the tough ones.",
+  "lore": [
+    "It is the only thing on a junk stall that moves, so it is kept in a tin and sold the same day. Bait, mostly. But the fen-walkers buy them for the reading: what [[monsters/mystical_frog|the frog]] passes over is what has been in that water longest, so a fat tough one out of a shallow means the shallow has been a shallow for years and will still be there when you come back. A crossing full of thin new worms is a crossing that was somewhere else last season. Cross it early, and cross it once."
+  ],
+  "related": [
+    {
+      "domain": "monsters",
+      "id": "mystical_frog"
+    },
+    {
+      "domain": "monsters",
+      "id": "swamp_cat"
+    }
+  ],
+  "gm_notes": "The Drift read off the bottom of a fen. Usable at the table as a crossing check: fat worms mean old ground, thin ones mean the water is new here."
+}

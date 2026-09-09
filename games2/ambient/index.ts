@@ -3,6 +3,14 @@ import { mountAmbient as mount } from "./runtime/mount";
 import { firefliesFeature } from "./fireflies/fireflies";
 import { pollenFeature } from "./pollen/pollen";
 import { waterFeature } from "./water/water";
+import { deepWaterFeature } from "./deepwater/deepwater";
+import { antsFeature } from "./ants/ants";
+import { spidersFeature } from "./spiders/spiders";
+import { mothsFeature } from "./moths/moths";
+import { gnatsFeature } from "./gnats/gnats";
+import { crabsFeature } from "./crabs/crabs";
+import { bubblesFeature } from "./bubbles/bubbles";
+import { embersFeature } from "./embers/embers";
 import { batsFeature } from "./bats/bats";
 import { birdsFeature } from "./birds/birds";
 import { thunderFeature } from "./thunder/thunder";
@@ -27,6 +35,14 @@ export function mountAmbient(game: Phaser.Game) {
     firefliesFeature(),
     pollenFeature(),
     waterFeature(),
+    deepWaterFeature(),
+    antsFeature(),
+    spidersFeature(),
+    mothsFeature(),
+    gnatsFeature(),
+    crabsFeature(),
+    bubblesFeature(),
+    embersFeature(),
     batsFeature(),
     birdsFeature(),
     thunderFeature(),

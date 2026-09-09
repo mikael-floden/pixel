@@ -1,0 +1,116 @@
+{
+  "format": "scenery-piece@2",
+  "id": "flower_trellis_004",
+  "group": "flower_trellises",
+  "rank": 64,
+  "index": 4,
+  "name": "White-painted trellis, clematis 004",
+  "lights": null,
+  "variety": "white-painted trellis, clematis",
+  "glow_concept": "fireflies weaving through the lattice squares",
+  "prompt": "a freestanding wooden lattice trellis on stout legs, covered in climbing flowering vines, white-painted trellis, clematis, large, twice human height, self-emissive at night, softly radiating light: fireflies weaving through the lattice squares",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 128,
+  "sprite": "flower_trellises/flower_trellis_004/sprite.webp",
+  "placement": {
+    "world_height_m": 2.189,
+    "world_px_height": 112,
+    "character_height_px": 87,
+    "character_height_m": 1.7,
+    "note": "ONE SCENERY PIXEL IS ONE PLAYER PIXEL. world_px_height IS the art's own alpha bbox height, so scenery is placed into the world at 1:1 exactly as the avatar is (setScale(1)) and the two share one pixel grid. The CAMERA still zooms the whole scene \u2014 that is uniform and correct; what must never happen is scenery being resampled on its own, against the player. world_height_m is what the art reads as beside a 87px character; declared_height_m is what it was once declared to be, and a gap between them means the ART is the wrong size.",
+    "declared_height_m": 2.48,
+    "content_box": [
+      12,
+      7,
+      116,
+      119
+    ],
+    "content_px_height": 112,
+    "canvas_render_px": 128
+  },
+  "pixellab_object_id": "bcaf48bc-c862-4a92-b35c-c8e38ac3da8b",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)",
+  "must_be_imbplemented_with_random_hflip": true,
+  "generated_at": "2026-08-13T21:24:45+00:00",
+  "states": {
+    "LIT_2": {
+      "sprite": "flower_trellises/flower_trellis_004/sprite.webp",
+      "pixellab_object_id": "bcaf48bc-c862-4a92-b35c-c8e38ac3da8b",
+      "generated_at": "2026-08-16T14:18:43+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.9429,
+      "glow_score": 0.0076,
+      "replaced_anchor": "LIT_1",
+      "rotations": {
+        "south-east": "flower_trellises/flower_trellis_004/rotations/south-east.webp",
+        "south-west": "flower_trellises/flower_trellis_004/rotations/south-west.webp",
+        "south": "flower_trellises/flower_trellis_004/sprite.webp"
+      }
+    },
+    "NOT_LIT_2": {
+      "sprite": "flower_trellises/flower_trellis_004/not_lit_2/sprite.webp",
+      "pixellab_object_id": "85934480-4ee5-4714-ab1d-52a62d33e117",
+      "generated_at": "2026-08-16T14:20:11+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.9892,
+      "glow_score": 0.0129,
+      "rotations": {
+        "south-east": "flower_trellises/flower_trellis_004/not_lit_2/rotations/south-east.webp",
+        "south-west": "flower_trellises/flower_trellis_004/not_lit_2/rotations/south-west.webp",
+        "south": "flower_trellises/flower_trellis_004/not_lit_2/sprite.webp"
+      },
+      "animations": {
+        "motion": {
+          "group_id": "a9ab1730-6dc6-4728-a7ee-133398743b99",
+          "description": "This is the same picture in every frame. ONLY the purple flowers move, each nodding by a single pixel. Nothing else moves, bends or leans, and nothing changes size, shape or position. The last frame must return to exactly how the first frame looks, so the loop joins. Nothing may become darker than it is in the first frame. Do not redraw anything else, and do not add or remove anything.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "flower_trellises/flower_trellis_004/not_lit_2/animations/motion/00.webp",
+            "flower_trellises/flower_trellis_004/not_lit_2/animations/motion/01.webp",
+            "flower_trellises/flower_trellis_004/not_lit_2/animations/motion/02.webp",
+            "flower_trellises/flower_trellis_004/not_lit_2/animations/motion/03.webp",
+            "flower_trellises/flower_trellis_004/not_lit_2/animations/motion/04.webp"
+          ],
+          "strip": "flower_trellises/flower_trellis_004/not_lit_2/animations/motion__strip.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-08-29T15:41:06+00:00",
+          "brief": "X62",
+          "review": "ANIMATION_PROBABLY_GOOD",
+          "review_metrics": {
+            "base_outline": 0.058
+          }
+        }
+      }
+    }
+  },
+  "collision": true,
+  "hitbox_shape": "rect",
+  "light": {
+    "strength": 0.0,
+    "color": "#fff0a0",
+    "radius": 0,
+    "reference": "the spawn bonfire is 1.0 (radius 7); strength 0 is no light",
+    "states": {
+      "LIT_2": {
+        "strength": 0.0,
+        "color": "#fff0a0",
+        "radius": 0
+      }
+    },
+    "kind": "glow/bio",
+    "flame": false,
+    "embers": false
+  }
+}

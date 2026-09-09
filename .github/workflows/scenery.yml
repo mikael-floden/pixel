@@ -1,0 +1,76 @@
+name: Scenery factory loop
+
+# Autonomous DAILY generation for the scenery/ domain (v2, 2026-08-12): the
+# loop plans deterministically from the filesystem (catalog.py), generates up
+# to ~100 pieces per day in batched 1-direction PixelLab calls, tags every
+# created object SCENERY, commits + pushes per batch, and exits cleanly when
+# the budget floor is reached (it then simply tries again the next day — the
+# maintainer's "always know what to do based on what has been generated").
+# Manage from a phone: the PIXELLAB_API_KEY repo secret powers it; trigger or
+# disable from the Actions tab.
+
+on:
+  # SCHEDULE DISABLED 2026-08-14 (maintainer): "you can cancel the scheduler
+  # now already. We will do this together until we hit 1000 scenery objects."
+  # The catalog has a finite goal now, so generation is driven by hand — he
+  # tops up credits, the agent runs a bounded pass, he reviews it. Re-enable
+  # by restoring the cron line if autonomous daily generation is ever wanted
+  # again (it also skipped three days running, so it needs a fallback line).
+  #  schedule:
+  #    - cron: "30 2 * * *"
+  workflow_dispatch:
+    inputs:
+      max_pieces:
+        description: "Pieces to generate this pass"
+        default: "100"
+      max_minutes:
+        description: "Minutes to run this pass"
+        default: "300"
+
+# Allow the job (and the loop's git push) to write to the repo.
+permissions:
+  contents: write
+
+# Never let two scenery passes run at once (scheduled + manual).
+concurrency:
+  group: scenery-loop
+  cancel-in-progress: false
+
+jobs:
+  loop:
+    runs-on: ubuntu-latest
+    # Headroom over the loop's --max-minutes clean exit: the last batch must be
+    # able to finish, download and COMMIT before the job is killed.
+    timeout-minutes: 350
+    steps:
+      - name: Checkout main
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          # depth 1: the pack is >1 GiB of binary-art history — the loop only
+          # needs the tip to commit+push (rebase-on-reject fetches what it
+          # needs).
+          fetch-depth: 1
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Run the scenery loop
+        env:
+          PIXELLAB_API_KEY: ${{ secrets.PIXELLAB_API_KEY }}
+        run: |
+          if [ -z "$PIXELLAB_API_KEY" ]; then
+            echo "::warning::PIXELLAB_API_KEY secret is not set."
+            echo "Add it in repo Settings -> Secrets and variables -> Actions -> New repository secret. Skipping this run."
+            exit 0
+          fi
+          git config user.name "pixel-scenery-bot"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          python scenery/pipeline/loop.py \
+            --max-pieces "${{ github.event.inputs.max_pieces || '100' }}" \
+            --max-minutes "${{ github.event.inputs.max_minutes || '300' }}"

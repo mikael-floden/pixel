@@ -1,0 +1,23 @@
+{
+  "domain": "items",
+  "id": "blue_plate_stone",
+  "name_seen": "Soulstone",
+  "law": "V",
+  "description": "Blue-grey and plated like something forged, taken off an Ironhide. Spears skate off it exactly the same.",
+  "lore": [
+    "It has no flat face. That is the first thing any setter says about it: blue-grey plates laid over one another with a pale seam at every join, so that wherever you put the tool you are putting it on a lid. The answer is a cup rather than a bezel, four claws and a bed, seated by feel. It never shifts afterwards. The plates take the pressure sideways and hand it round the stone, which is more or less what they do to a spear.",
+    "In armour it pays out against points. A thrust that should have opened a seam arrives instead as a shove, the arm goes numb to the elbow, and the day continues. Every wearer describes it the same way and none of them calls it strength: they say they were pushed rather than reached.",
+    "[[monsters/armor_tusker|The animal]] will not hold still to be looked at. You can stand off a hundred paces and watch it breathe all afternoon and still not know whether those bands were grown or worn. Break the shape and the argument ends in the grass: what falls out is plated too, all the way to the bottom, seams and all, with no buckle-gap anywhere a harness would have to leave. It was not wearing anything. [[characters/646b922c|Sigrun]] keeps one on the shelf above her bench, unset, the only stone in that forge she has never taken a hammer to. It is not stock. It is the answer, and she has not finished reading it."
+  ],
+  "related": [
+    {
+      "domain": "monsters",
+      "id": "armor_tusker"
+    },
+    {
+      "domain": "lore",
+      "id": "the_hard_pieces"
+    }
+  ],
+  "gm_notes": "Written off the stone, not the beast: the Ironhide record is Sigrun's shoulder essay, so this one takes the craft (no flat face, cup not bezel) and the evidence (plated to the bottom, therefore grown) and gives Sigrun two sentences she does not have there. The unset stone on the shelf is available as a scene: she will talk about it, at length, to anyone who asks about shoulders."
+}

@@ -1,0 +1,23 @@
+{
+  "domain": "items",
+  "id": "cobbled_mist_stone",
+  "name_seen": "Soulstone",
+  "law": "V",
+  "description": "Packed grey-green cobbles, unlit as fen water. A Bogstalker's own — blows slide past you, worse in the mist.",
+  "lore": [
+    "It is the one stone in the trade where a shine counts against it. Grade it in a dark room with a single candle at arm's length: a good one gives the candle back nothing at all, packed grey-green cobbles with a dark seam at every join and no face anywhere for light to sit on. A poor one has a highlight somewhere, and a highlight can be aimed at. Those go for half, and they go quickly, because they are still beautiful and beauty sells to people who have not crossed anything.",
+    "Fen-walkers already own the other half of this trick, rolled up on the end of a pole. What thinned out of [[monsters/swamp_cat|the cat]] was not hunger; the last thing to go was the moment of committing, the certainty that the outline in the water is the one. Carry a piece of somebody else's certainty and everything aimed at you comes in slightly wrong. You are not hidden. You are only not quite the shape the blow was meant for, and in mist, where nothing has an edge, it was not really meant for anyone in particular.",
+    "There is a rule about buying one and it is nowhere in writing. You do not buy your own. A walker gets his from another walker at the end of a good season, handed over on the bank without ceremony, and a man who buys his own has told the whole ford something about his plans. They will take his gold. They will also stop working the far side with him."
+  ],
+  "related": [
+    {
+      "domain": "monsters",
+      "id": "swamp_cat"
+    },
+    {
+      "domain": "lore",
+      "id": "the_hard_pieces"
+    }
+  ],
+  "gm_notes": "The Bogstalker record owns the coat-on-a-pole and the woman who fed the ford; this one uses the coat as one clause and spends itself on grading (shine is a defect) and the walkers' gift custom. The derivation of the dodge power is the point: the stone is a piece of a decision, so decisions aimed at its carrier come out wrong. The custom is a ready-made social scene at any crossing."
+}

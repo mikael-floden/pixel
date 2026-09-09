@@ -1,0 +1,141 @@
+{
+  "format": "scenery-piece@2",
+  "id": "wayside_shrine_010",
+  "group": "wayside_shrines",
+  "rank": 19,
+  "index": 10,
+  "name": "Red-painted shrine box 010",
+  "lights": null,
+  "variety": "red-painted shrine box",
+  "glow_concept": "wisps sheltering under the roof",
+  "prompt": "a small sturdy stone shrine standing directly on the ground on a broad base, thick walls, a shallow arched alcove sheltering a candle, heavy slab roof, red-painted shrine box, roughly six feet tall, human height, self-emissive at night, softly radiating light: wisps sheltering under the roof",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 64,
+  "sprite": "wayside_shrines/wayside_shrine_010/sprite.webp",
+  "placement": {
+    "world_height_m": 0.977,
+    "world_px_height": 50,
+    "character_height_px": 87,
+    "character_height_m": 1.7,
+    "note": "ONE SCENERY PIXEL IS ONE PLAYER PIXEL. world_px_height IS the art's own alpha bbox height, so scenery is placed into the world at 1:1 exactly as the avatar is (setScale(1)) and the two share one pixel grid. The CAMERA still zooms the whole scene \u2014 that is uniform and correct; what must never happen is scenery being resampled on its own, against the player. world_height_m is what the art reads as beside a 87px character; declared_height_m is what it was once declared to be, and a gap between them means the ART is the wrong size.",
+    "declared_height_m": 1.53,
+    "content_box": [
+      13,
+      7,
+      52,
+      57
+    ],
+    "content_px_height": 50,
+    "canvas_render_px": 64
+  },
+  "pixellab_object_id": "fdf0cb2b-d62a-424a-b58c-cc6d52ff26c7",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)",
+  "must_be_imbplemented_with_random_hflip": true,
+  "generated_at": "2026-08-13T21:20:53+00:00",
+  "states": {
+    "LIT_1": {
+      "sprite": "wayside_shrines/wayside_shrine_010/sprite.webp",
+      "pixellab_object_id": "fdf0cb2b-d62a-424a-b58c-cc6d52ff26c7",
+      "generated_at": "2026-08-13T21:20:53+00:00",
+      "rotations": {
+        "south-east": "wayside_shrines/wayside_shrine_010/rotations/south-east.webp",
+        "south-west": "wayside_shrines/wayside_shrine_010/rotations/south-west.webp",
+        "south": "wayside_shrines/wayside_shrine_010/sprite.webp"
+      },
+      "animations": {
+        "motion": {
+          "group_id": "a1fe409f-1ce0-44f1-a758-d5cc56a26838",
+          "description": "This is the same picture in every frame. ONLY the small candle flame inside the shrine flickers, very gently. Everything else is frozen and pixel-for-pixel identical in every frame. Do not redraw anything else, and do not add or remove anything.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "wayside_shrines/wayside_shrine_010/animations/motion/00.webp",
+            "wayside_shrines/wayside_shrine_010/animations/motion/01.webp",
+            "wayside_shrines/wayside_shrine_010/animations/motion/02.webp",
+            "wayside_shrines/wayside_shrine_010/animations/motion/03.webp",
+            "wayside_shrines/wayside_shrine_010/animations/motion/04.webp"
+          ],
+          "strip": "wayside_shrines/wayside_shrine_010/animations/motion__strip.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-08-29T12:41:26+00:00",
+          "brief": "R23",
+          "review": "ANIMATION_PROBABLY_GOOD",
+          "review_metrics": {
+            "class": "fire",
+            "base": 0.0065,
+            "still": 0.963
+          },
+          "light_frames": [
+            {
+              "intensity": 1.038,
+              "dx": -0.5,
+              "dy": 2.4
+            },
+            {
+              "intensity": 1.043,
+              "dx": -0.5,
+              "dy": 2.4
+            },
+            {
+              "intensity": 0.948,
+              "dx": -0.5,
+              "dy": 2.8
+            },
+            {
+              "intensity": 1.028,
+              "dx": -0.5,
+              "dy": 2.4
+            },
+            {
+              "intensity": 0.944,
+              "dx": -0.5,
+              "dy": 2.9
+            }
+          ]
+        }
+      }
+    },
+    "NOT_LIT_2": {
+      "sprite": "wayside_shrines/wayside_shrine_010/not_lit_2/sprite.webp",
+      "pixellab_object_id": "74b1f4cf-c90c-4a00-9150-7de70edbbce5",
+      "generated_at": "2026-08-17T12:19:35+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.2606,
+      "glow_score": 0.0038,
+      "rotations": {
+        "south-east": "wayside_shrines/wayside_shrine_010/not_lit_2/rotations/south-east.webp",
+        "south-west": "wayside_shrines/wayside_shrine_010/not_lit_2/rotations/south-west.webp",
+        "south": "wayside_shrines/wayside_shrine_010/not_lit_2/sprite.webp"
+      }
+    }
+  },
+  "collision": true,
+  "hitbox_shape": "ellipse",
+  "light": {
+    "strength": 0.25,
+    "color": "#ffb45c",
+    "radius": 4,
+    "reference": "the spawn bonfire is 1.0 (radius 7); strength 0 is no light",
+    "states": {
+      "LIT_1": {
+        "strength": 0.25,
+        "color": "#ffb45c",
+        "radius": 4
+      }
+    },
+    "kind": "fire/open",
+    "flame": true,
+    "embers": true
+  }
+}

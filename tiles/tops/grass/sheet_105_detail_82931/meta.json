@@ -1,0 +1,132 @@
+{
+  "schema": "tiles3/tops@1",
+  "kind": "top_only",
+  "wall_is_meaningless": true,
+  "not_a_candidate_for": "x over y",
+  "ground": "grass",
+  "flavour": "detail",
+  "index": 105,
+  "seed": 82931,
+  "prompt": "grass, a ring of tiny toadstools in the middle, grass all around the edge",
+  "palette_top": "#14523b",
+  "tile_id": "3ad5c403-9126-4c99-ab53-fb962e5ca2ab",
+  "n_tiles": 16,
+  "tiles": [
+    "tile_00.webp",
+    "tile_01.webp",
+    "tile_02.webp",
+    "tile_03.webp",
+    "tile_04.webp",
+    "tile_05.webp",
+    "tile_06.webp",
+    "tile_07.webp",
+    "tile_08.webp",
+    "tile_09.webp",
+    "tile_10.webp",
+    "tile_11.webp",
+    "tile_12.webp",
+    "tile_13.webp",
+    "tile_14.webp",
+    "tile_15.webp"
+  ],
+  "settings": {
+    "tile_size": 64,
+    "tile_view": "high top-down",
+    "view_angle": 28.0,
+    "depth_ratio": 0.5,
+    "tile_type": "isometric",
+    "flat_top_px": 2,
+    "outline_mode": "segmentation"
+  },
+  "usd": 0.096,
+  "created": "2026-09-03T04:02:41+00:00",
+  "top_face": {
+    "per_tile": [
+      {
+        "colours": 24,
+        "dominant_share": 0.4679,
+        "px": 949
+      },
+      {
+        "colours": 25,
+        "dominant_share": 0.4963,
+        "px": 947
+      },
+      {
+        "colours": 27,
+        "dominant_share": 0.4477,
+        "px": 956
+      },
+      {
+        "colours": 25,
+        "dominant_share": 0.2848,
+        "px": 955
+      },
+      {
+        "colours": 25,
+        "dominant_share": 0.2754,
+        "px": 955
+      },
+      {
+        "colours": 27,
+        "dominant_share": 0.2802,
+        "px": 960
+      },
+      {
+        "colours": 28,
+        "dominant_share": 0.2212,
+        "px": 954
+      },
+      {
+        "colours": 27,
+        "dominant_share": 0.2243,
+        "px": 954
+      },
+      {
+        "colours": 27,
+        "dominant_share": 0.2652,
+        "px": 954
+      },
+      {
+        "colours": 25,
+        "dominant_share": 0.3526,
+        "px": 953
+      },
+      {
+        "colours": 27,
+        "dominant_share": 0.245,
+        "px": 951
+      },
+      {
+        "colours": 25,
+        "dominant_share": 0.2162,
+        "px": 953
+      },
+      {
+        "colours": 28,
+        "dominant_share": 0.3103,
+        "px": 957
+      },
+      {
+        "colours": 26,
+        "dominant_share": 0.21,
+        "px": 957
+      },
+      {
+        "colours": 27,
+        "dominant_share": 0.2088,
+        "px": 958
+      },
+      {
+        "colours": 27,
+        "dominant_share": 0.2542,
+        "px": 960
+      }
+    ],
+    "mean_colours": 26.25,
+    "mean_dominant_share": 0.2975
+  },
+  "motif": "a ring of tiny toadstools",
+  "motif_source": "tiles/config/details.json",
+  "walkable": true
+}

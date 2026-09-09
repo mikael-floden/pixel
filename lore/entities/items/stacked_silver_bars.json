@@ -1,0 +1,22 @@
+{
+  "domain": "items",
+  "id": "stacked_silver_bars",
+  "name_seen": "Silver Bars",
+  "law": "IV",
+  "description": "Three cast bars, stamped and stacked. Somebody smelted these, and somebody else never delivered them.",
+  "lore": [
+    "[[characters/2f7f1de9|Halvard]] will weigh them, quote you low, and not move. He does not doubt the metal. It is that [[lore/the_gold_agreement|gold]] is the one substance everybody out of every century remembers identically, and silver is not on that list. Silver arrives arguing. His buyers came out of lives a thousand years apart and every one of them knows exactly what silver is worth, and no two of the numbers agree, and a pedlar who prices in coin and keeps walking can afford one argument a day at the outside.",
+    "So a hundred and eighty gold in bars is a fortune that has to be re-agreed at every counter on the road, which is what makes the stamp worth reading. It is a house mark, not a man's name, and the house is not anywhere now. Somebody at the far end waited on a delivery that never came, and it is worth being exact about why: the bars were not lost. They are right here, three of them, stacked as they were poured. It was the road that went."
+  ],
+  "related": [
+    {
+      "domain": "lore",
+      "id": "the_gold_agreement"
+    },
+    {
+      "domain": "lore",
+      "id": "the_hard_pieces"
+    }
+  ],
+  "gm_notes": "Establishes the negative space around gold: everything that is not gold has to be re-priced by whoever is at the counter, which is why Halvard's book is in coin. Also a Drift hook — cargo intact, route gone."
+}

@@ -17,8 +17,8 @@
   "license": "CC0-1.0",
   "status": "complete",
   "quality": "aaa",
-  "file": "combat/hit_hurt/hit_hurt__take01.wav",
-  "format": "wav",
+  "file": "combat/hit_hurt/hit_hurt__take01.ogg",
+  "format": "ogg",
   "audio": {
     "samples": 19230,
     "duration_seconds": 0.401,
@@ -30,8 +30,8 @@
     "delivered": "mp3"
   },
   "takes": [
-    "combat/hit_hurt/hit_hurt__take01.wav",
-    "combat/hit_hurt/hit_hurt__take02.wav"
+    "combat/hit_hurt/hit_hurt__take01.ogg",
+    "combat/hit_hurt/hit_hurt__take02.ogg"
   ],
   "ai": {
     "provider": "elevenlabs",
@@ -95,17 +95,6 @@
   ],
   "delivery": {
     "formats": {
-      "wav": {
-        "file": "combat/hit_hurt/hit_hurt__take01.wav",
-        "bytes": 38504,
-        "codec": "pcm_s16le",
-        "role": "master"
-      },
-      "m4a": {
-        "file": "combat/hit_hurt/hit_hurt__take01.m4a",
-        "bytes": 7492,
-        "codec": "aac"
-      },
       "ogg": {
         "file": "combat/hit_hurt/hit_hurt__take01.ogg",
         "bytes": 8829,
@@ -113,7 +102,6 @@
       }
     },
     "web_source_order": [
-      "m4a",
       "ogg"
     ]
   }

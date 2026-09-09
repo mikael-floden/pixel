@@ -1,0 +1,99 @@
+{
+  "format": "scenery-piece@2",
+  "id": "broken_column_002",
+  "group": "broken_columns",
+  "rank": 61,
+  "index": 2,
+  "name": "Weathered sandstone column 002",
+  "lights": null,
+  "variety": "weathered sandstone column",
+  "glow_concept": "bioluminescent ivy spiraling up the stump",
+  "prompt": "the broken stump of an ancient fluted stone column standing on a square base, its top snapped at an angle, weathered sandstone column, about as tall as an adult person, self-emissive at night, softly radiating light: bioluminescent ivy spiraling up the stump",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 128,
+  "sprite": "broken_columns/broken_column_002/sprite.webp",
+  "placement": {
+    "world_height_m": 1.934,
+    "world_px_height": 99,
+    "character_height_px": 87,
+    "character_height_m": 1.7,
+    "note": "ONE SCENERY PIXEL IS ONE PLAYER PIXEL. world_px_height IS the art's own alpha bbox height, so scenery is placed into the world at 1:1 exactly as the avatar is (setScale(1)) and the two share one pixel grid. The CAMERA still zooms the whole scene \u2014 that is uniform and correct; what must never happen is scenery being resampled on its own, against the player. world_height_m is what the art reads as beside a 87px character; declared_height_m is what it was once declared to be, and a gap between them means the ART is the wrong size.",
+    "declared_height_m": 1.87,
+    "content_box": [
+      35,
+      18,
+      95,
+      117
+    ],
+    "content_px_height": 99,
+    "canvas_render_px": 128
+  },
+  "pixellab_object_id": "093a44c8-7422-4a1c-9e84-26d6eda69721",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)",
+  "must_be_imbplemented_with_random_hflip": true,
+  "generated_at": "2026-08-13T04:54:47+00:00",
+  "states": {
+    "NOT_LIT_3": {
+      "sprite": "broken_columns/broken_column_002/sprite.webp",
+      "pixellab_object_id": "093a44c8-7422-4a1c-9e84-26d6eda69721",
+      "generated_at": "2026-08-13T04:54:47+00:00",
+      "relit_from": "LIT_1",
+      "rotations": {
+        "south-east": "broken_columns/broken_column_002/rotations/south-east.webp",
+        "south-west": "broken_columns/broken_column_002/rotations/south-west.webp",
+        "south": "broken_columns/broken_column_002/sprite.webp"
+      }
+    },
+    "NOT_LIT_4": {
+      "sprite": "broken_columns/broken_column_002/not_lit_4/sprite.webp",
+      "pixellab_object_id": "fc2ceb6f-419e-466c-99cd-56d69f0cf042",
+      "generated_at": "2026-08-15T21:03:01+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.703,
+      "glow_score": 0.3212,
+      "relit_from": "LIT_2",
+      "rotations": {
+        "south-east": "broken_columns/broken_column_002/not_lit_4/rotations/south-east.webp",
+        "south-west": "broken_columns/broken_column_002/not_lit_4/rotations/south-west.webp",
+        "south": "broken_columns/broken_column_002/not_lit_4/sprite.webp"
+      }
+    },
+    "NOT_LIT_5": {
+      "sprite": "broken_columns/broken_column_002/not_lit_5/sprite.webp",
+      "pixellab_object_id": "235d952f-a856-4fec-951b-916b5a44e741",
+      "generated_at": "2026-08-15T21:04:19+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.779,
+      "glow_score": 0.3033,
+      "relit_from": "LIT_3",
+      "rotations": {
+        "south-east": "broken_columns/broken_column_002/not_lit_5/rotations/south-east.webp",
+        "south-west": "broken_columns/broken_column_002/not_lit_5/rotations/south-west.webp",
+        "south": "broken_columns/broken_column_002/not_lit_5/sprite.webp"
+      }
+    },
+    "NOT_LIT_6": {
+      "sprite": "broken_columns/broken_column_002/not_lit_6/sprite.webp",
+      "pixellab_object_id": "63acde23-110a-4953-9dca-4041577b3890",
+      "generated_at": "2026-08-15T21:04:20+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.4027,
+      "glow_score": 0.2415,
+      "relit_from": "LIT_4",
+      "rotations": {
+        "south-east": "broken_columns/broken_column_002/not_lit_6/rotations/south-east.webp",
+        "south-west": "broken_columns/broken_column_002/not_lit_6/rotations/south-west.webp",
+        "south": "broken_columns/broken_column_002/not_lit_6/sprite.webp"
+      }
+    }
+  },
+  "collision": true,
+  "hitbox_shape": "ellipse"
+}

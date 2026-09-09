@@ -1,0 +1,272 @@
+{
+  "format": "scenery-piece@2",
+  "id": "soulstone_outcrop_010",
+  "group": "soulstone_outcrops",
+  "rank": 23,
+  "index": 10,
+  "name": "Soulstone half-swallowed by turf 010",
+  "lights": null,
+  "variety": "soulstone half-swallowed by turf",
+  "glow_concept": "tips glowing like small candle flames",
+  "prompt": "a rough natural boulder outcrop breaking out of the ground with smooth glassy blue-white soulstone veins running through the rock, the stone mass dominant, not a freestanding crystal cluster and not a carved slab, soulstone half-swallowed by turf, waist-high, self-emissive at night, softly radiating light: tips glowing like small candle flames",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 96,
+  "sprite": "soulstone_outcrops/soulstone_outcrop_010/sprite.webp",
+  "placement": {
+    "world_height_m": 1.114,
+    "world_px_height": 57,
+    "character_height_px": 87,
+    "character_height_m": 1.7,
+    "note": "ONE SCENERY PIXEL IS ONE PLAYER PIXEL. world_px_height IS the art's own alpha bbox height, so scenery is placed into the world at 1:1 exactly as the avatar is (setScale(1)) and the two share one pixel grid. The CAMERA still zooms the whole scene \u2014 that is uniform and correct; what must never happen is scenery being resampled on its own, against the player. world_height_m is what the art reads as beside a 87px character; declared_height_m is what it was once declared to be, and a gap between them means the ART is the wrong size.",
+    "declared_height_m": 1.13,
+    "content_box": [
+      18,
+      21,
+      80,
+      78
+    ],
+    "content_px_height": 57,
+    "canvas_render_px": 96
+  },
+  "pixellab_object_id": "2ddd4727-230c-45e5-b0f5-04f852a37c45",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)",
+  "must_be_imbplemented_with_random_hflip": true,
+  "generated_at": "2026-08-13T21:32:59+00:00",
+  "states": {
+    "LIT_2": {
+      "sprite": "soulstone_outcrops/soulstone_outcrop_010/lit_2/sprite.webp",
+      "pixellab_object_id": "30abee58-2235-4952-a13e-895df118da44",
+      "generated_at": "2026-08-16T21:01:49+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.925,
+      "glow_score": 0.0165,
+      "animations": {
+        "flame": {
+          "group_id": "88bdb31c-344b-4e95-819a-abd8084923d1",
+          "description": "Animate the flame only",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "soulstone_outcrops/soulstone_outcrop_010/lit_2/animations/flame/00.webp",
+            "soulstone_outcrops/soulstone_outcrop_010/lit_2/animations/flame/01.webp",
+            "soulstone_outcrops/soulstone_outcrop_010/lit_2/animations/flame/02.webp",
+            "soulstone_outcrops/soulstone_outcrop_010/lit_2/animations/flame/03.webp",
+            "soulstone_outcrops/soulstone_outcrop_010/lit_2/animations/flame/04.webp"
+          ],
+          "strip": "soulstone_outcrops/soulstone_outcrop_010/lit_2/animations/flame__strip.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-08-29T07:08:16+00:00",
+          "review": "ANIMATION_PROBABLY_GOOD",
+          "review_metrics": {
+            "base_outline": 0.0
+          },
+          "light_frames": [
+            {
+              "intensity": 0.5,
+              "dx": 0.0,
+              "dy": 0.0
+            },
+            {
+              "intensity": 0.5,
+              "dx": 0.0,
+              "dy": 0.0
+            },
+            {
+              "intensity": 0.5,
+              "dx": 0.0,
+              "dy": 0.0
+            },
+            {
+              "intensity": 0.5,
+              "dx": 0.0,
+              "dy": 0.0
+            },
+            {
+              "intensity": 0.5,
+              "dx": 0.0,
+              "dy": 0.0
+            }
+          ]
+        }
+      }
+    },
+    "LIT_3": {
+      "sprite": "soulstone_outcrops/soulstone_outcrop_010/sprite.webp",
+      "pixellab_object_id": "2ddd4727-230c-45e5-b0f5-04f852a37c45",
+      "generated_at": "2026-08-16T21:02:45+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.8884,
+      "glow_score": 0.0528,
+      "replaced_anchor": "LIT_1",
+      "animations": {
+        "flame": {
+          "group_id": "a860a445-6f2a-443e-81fc-c71dddb93c14",
+          "description": "Animate the flame only",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "soulstone_outcrops/soulstone_outcrop_010/animations/flame/00.webp",
+            "soulstone_outcrops/soulstone_outcrop_010/animations/flame/01.webp",
+            "soulstone_outcrops/soulstone_outcrop_010/animations/flame/02.webp",
+            "soulstone_outcrops/soulstone_outcrop_010/animations/flame/03.webp",
+            "soulstone_outcrops/soulstone_outcrop_010/animations/flame/04.webp"
+          ],
+          "strip": "soulstone_outcrops/soulstone_outcrop_010/animations/flame__strip.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-08-29T07:08:25+00:00",
+          "review": "ANIMATION_PROBABLY_GOOD",
+          "review_metrics": {
+            "base_outline": 0.0
+          },
+          "light_frames": [
+            {
+              "intensity": 0.957,
+              "dx": 6.1,
+              "dy": -6.6
+            },
+            {
+              "intensity": 1.009,
+              "dx": 6.4,
+              "dy": -5.5
+            },
+            {
+              "intensity": 0.988,
+              "dx": 6.0,
+              "dy": -7.5
+            },
+            {
+              "intensity": 1.022,
+              "dx": 6.4,
+              "dy": -8.7
+            },
+            {
+              "intensity": 1.024,
+              "dx": 6.4,
+              "dy": -8.7
+            }
+          ]
+        }
+      }
+    },
+    "LIT_4": {
+      "sprite": "soulstone_outcrops/soulstone_outcrop_010/lit_4/sprite.webp",
+      "pixellab_object_id": "6141321c-985f-4cfc-898e-d01fb892bcb2",
+      "generated_at": "2026-08-16T21:03:52+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.8488,
+      "glow_score": 0.1147,
+      "animations": {
+        "flame": {
+          "group_id": "66fc2d0d-a752-42d6-8c9f-690e740f1415",
+          "description": "Animate the flame only",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "soulstone_outcrops/soulstone_outcrop_010/lit_4/animations/flame/00.webp",
+            "soulstone_outcrops/soulstone_outcrop_010/lit_4/animations/flame/01.webp",
+            "soulstone_outcrops/soulstone_outcrop_010/lit_4/animations/flame/02.webp",
+            "soulstone_outcrops/soulstone_outcrop_010/lit_4/animations/flame/03.webp",
+            "soulstone_outcrops/soulstone_outcrop_010/lit_4/animations/flame/04.webp"
+          ],
+          "strip": "soulstone_outcrops/soulstone_outcrop_010/lit_4/animations/flame__strip.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-08-29T07:08:46+00:00",
+          "review": "ANIMATION_PROBABLY_GOOD",
+          "review_metrics": {
+            "base_outline": 0.0
+          },
+          "light_frames": [
+            {
+              "intensity": 0.741,
+              "dx": -1.3,
+              "dy": 6.5
+            },
+            {
+              "intensity": 1.295,
+              "dx": 1.6,
+              "dy": 5.5
+            },
+            {
+              "intensity": 0.955,
+              "dx": 1.4,
+              "dy": 3.5
+            },
+            {
+              "intensity": 1.09,
+              "dx": 1.2,
+              "dy": 4.1
+            },
+            {
+              "intensity": 0.92,
+              "dx": -1.4,
+              "dy": 3.0
+            }
+          ]
+        }
+      }
+    },
+    "NOT_LIT_1": {
+      "sprite": "soulstone_outcrops/soulstone_outcrop_010/not_lit_1/sprite.webp",
+      "pixellab_object_id": "6668cb21-9aed-4f37-8239-921b21ca8dd5",
+      "generated_at": "2026-08-16T21:03:05+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.6922,
+      "glow_score": 0.0872
+    },
+    "NOT_LIT_2": {
+      "sprite": "soulstone_outcrops/soulstone_outcrop_010/not_lit_2/sprite.webp",
+      "pixellab_object_id": "7ed96c26-7f28-42a6-872a-fe0c207cba83",
+      "generated_at": "2026-08-16T21:03:15+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.9461,
+      "glow_score": 0.0412
+    }
+  },
+  "collision": true,
+  "hitbox_shape": "ellipse",
+  "light": {
+    "strength": 0.35,
+    "color": "#c090ff",
+    "radius": 6,
+    "reference": "the spawn bonfire is 1.0 (radius 7); strength 0 is no light",
+    "states": {
+      "LIT_2": {
+        "strength": 0.35,
+        "color": "#c090ff",
+        "radius": 6
+      },
+      "LIT_3": {
+        "strength": 0.35,
+        "color": "#c090ff",
+        "radius": 6
+      },
+      "LIT_4": {
+        "strength": 0.35,
+        "color": "#fffdf1",
+        "radius": 6
+      }
+    },
+    "kind": "glow/magic",
+    "flame": false,
+    "embers": false
+  }
+}

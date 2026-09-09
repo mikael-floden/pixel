@@ -1,0 +1,132 @@
+{
+  "schema": "tiles3/tops@1",
+  "kind": "top_only",
+  "wall_is_meaningless": true,
+  "not_a_candidate_for": "x over y",
+  "ground": "grass",
+  "flavour": "detail",
+  "index": 134,
+  "seed": 31009,
+  "prompt": "grass, a sprouting fern in the middle, grass all around the edge",
+  "palette_top": "#14523b",
+  "tile_id": "e606baef-a9dc-487b-8ff9-4d4616e5d2d7",
+  "n_tiles": 16,
+  "tiles": [
+    "tile_00.webp",
+    "tile_01.webp",
+    "tile_02.webp",
+    "tile_03.webp",
+    "tile_04.webp",
+    "tile_05.webp",
+    "tile_06.webp",
+    "tile_07.webp",
+    "tile_08.webp",
+    "tile_09.webp",
+    "tile_10.webp",
+    "tile_11.webp",
+    "tile_12.webp",
+    "tile_13.webp",
+    "tile_14.webp",
+    "tile_15.webp"
+  ],
+  "settings": {
+    "tile_size": 64,
+    "tile_view": "high top-down",
+    "view_angle": 28.0,
+    "depth_ratio": 0.5,
+    "tile_type": "isometric",
+    "flat_top_px": 2,
+    "outline_mode": "segmentation"
+  },
+  "usd": 0.096,
+  "created": "2026-09-03T04:52:13+00:00",
+  "top_face": {
+    "per_tile": [
+      {
+        "colours": 19,
+        "dominant_share": 0.2774,
+        "px": 930
+      },
+      {
+        "colours": 21,
+        "dominant_share": 0.3019,
+        "px": 997
+      },
+      {
+        "colours": 23,
+        "dominant_share": 0.2195,
+        "px": 984
+      },
+      {
+        "colours": 21,
+        "dominant_share": 0.2525,
+        "px": 1006
+      },
+      {
+        "colours": 23,
+        "dominant_share": 0.2758,
+        "px": 968
+      },
+      {
+        "colours": 21,
+        "dominant_share": 0.2718,
+        "px": 1008
+      },
+      {
+        "colours": 26,
+        "dominant_share": 0.1567,
+        "px": 989
+      },
+      {
+        "colours": 19,
+        "dominant_share": 0.3907,
+        "px": 947
+      },
+      {
+        "colours": 27,
+        "dominant_share": 0.2693,
+        "px": 947
+      },
+      {
+        "colours": 21,
+        "dominant_share": 0.2178,
+        "px": 964
+      },
+      {
+        "colours": 22,
+        "dominant_share": 0.2074,
+        "px": 998
+      },
+      {
+        "colours": 22,
+        "dominant_share": 0.2845,
+        "px": 956
+      },
+      {
+        "colours": 24,
+        "dominant_share": 0.24,
+        "px": 950
+      },
+      {
+        "colours": 21,
+        "dominant_share": 0.4659,
+        "px": 938
+      },
+      {
+        "colours": 22,
+        "dominant_share": 0.1412,
+        "px": 1055
+      },
+      {
+        "colours": 19,
+        "dominant_share": 0.4278,
+        "px": 956
+      }
+    ],
+    "mean_colours": 21.94,
+    "mean_dominant_share": 0.275
+  },
+  "motif": "a sprouting fern",
+  "motif_source": "tiles/config/details.json",
+  "walkable": true
+}

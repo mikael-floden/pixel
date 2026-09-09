@@ -1,0 +1,79 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-13T23:54:30+00:00",
+  "id": "mushroom_010",
+  "group": "mushrooms",
+  "rank": 31,
+  "index": 10,
+  "name": "Rosy russula pair 010",
+  "lights": null,
+  "variety": "rosy russula pair",
+  "glow_concept": "dewdrops on the caps lit like tiny lamps",
+  "prompt": "a small cluster of woodland mushrooms with rounded caps and pale stems growing from leaf litter, rosy russula pair, tiny, only ankle-high, self-emissive at night, softly radiating light: dewdrops on the caps lit like tiny lamps",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 48,
+  "sprite": "mushrooms/mushroom_010/sprite.webp",
+  "placement": {
+    "world_height_m": 0.664,
+    "world_px_height": 34,
+    "character_height_px": 87,
+    "character_height_m": 1.7,
+    "note": "ONE SCENERY PIXEL IS ONE PLAYER PIXEL. world_px_height IS the art's own alpha bbox height, so scenery is placed into the world at 1:1 exactly as the avatar is (setScale(1)) and the two share one pixel grid. The CAMERA still zooms the whole scene \u2014 that is uniform and correct; what must never happen is scenery being resampled on its own, against the player. world_height_m is what the art reads as beside a 87px character; declared_height_m is what it was once declared to be, and a gap between them means the ART is the wrong size.",
+    "declared_height_m": 0.3,
+    "content_box": [
+      8,
+      8,
+      41,
+      42
+    ],
+    "content_px_height": 34,
+    "canvas_render_px": 48
+  },
+  "pixellab_object_id": "dd3e2257-1d79-4068-8df2-2d039ecae494",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)",
+  "must_be_imbplemented_with_random_hflip": true,
+  "states": {
+    "NOT_LIT_3": {
+      "sprite": "mushrooms/mushroom_010/sprite.webp",
+      "pixellab_object_id": "dd3e2257-1d79-4068-8df2-2d039ecae494",
+      "generated_at": "2026-08-13T23:54:30+00:00",
+      "relit_from": "LIT_1"
+    },
+    "NOT_LIT_4": {
+      "sprite": "mushrooms/mushroom_010/not_lit_4/sprite.webp",
+      "pixellab_object_id": "8597c0a7-66c1-45a3-8c82-1b09fc093f07",
+      "generated_at": "2026-08-16T19:34:59+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.6749,
+      "glow_score": 0.07,
+      "relit_from": "LIT_2"
+    },
+    "NOT_LIT_5": {
+      "sprite": "mushrooms/mushroom_010/not_lit_5/sprite.webp",
+      "pixellab_object_id": "fb395439-4fe7-44c3-a093-553a89b8b22d",
+      "generated_at": "2026-08-16T19:37:35+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.5956,
+      "glow_score": 0.2711,
+      "relit_from": "LIT_3"
+    },
+    "NOT_LIT_6": {
+      "sprite": "mushrooms/mushroom_010/not_lit_6/sprite.webp",
+      "pixellab_object_id": "ba318bb5-d853-409e-99fd-3eafe6314bc9",
+      "generated_at": "2026-08-16T19:34:49+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.5755,
+      "glow_score": 0.1244,
+      "relit_from": "LIT_4"
+    }
+  },
+  "collision": true,
+  "hitbox_shape": "ellipse"
+}

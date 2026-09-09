@@ -1,0 +1,17 @@
+{
+  "domain": "items",
+  "id": "curved_bone_talon",
+  "name_seen": "Bone Talon",
+  "law": "V",
+  "description": "Hooked grey bone, thick and cracked at the base. Fiends and the glowing dead shed them, and the point stays keen.",
+  "lore": [
+    "Everything else in a bag can be assigned. This cannot. A grey talon like this comes off an [[monsters/diablo|Ashfiend]], and an Ashfiend's parts are mostly not an Ashfiend's — it wears what it has taken — so the hook in your hand may have grown on something else entirely, one owner ago or four, and there is no test that will settle it.",
+    "[[characters/8c41be1e|Hearn]] sorts for people coming off the east country, and he works with two bags. One is the animals: this jaw, that hide, named and priced and gone by evening. The other is the pieces with no address. It is not priced and it does not go on the table, and he has never said what becomes of it. He is the last man on that road anybody would press for an answer. The points stay keen in there for years. He mentioned that once."
+  ],
+  "related": [
+    { "domain": "characters", "id": "8c41be1e" },
+    { "domain": "monsters", "id": "diablo" },
+    { "domain": "lore", "id": "the_hard_pieces" }
+  ],
+  "gm_notes": "Hollowed junk has no provenance, and that is the quiet horror of it: the piece on the counter grew on something, and the something is not what was broken. Hearn's second bag is deliberately unexplained. Do not resolve it cheaply, and never let him explain it himself."
+}

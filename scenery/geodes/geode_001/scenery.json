@@ -1,0 +1,173 @@
+{
+  "format": "scenery-piece@2",
+  "id": "geode_001",
+  "group": "geodes",
+  "rank": 85,
+  "index": 1,
+  "name": "Large hollow half geode 001",
+  "lights": null,
+  "variety": "large hollow half geode",
+  "glow_concept": null,
+  "prompt": "a round rough stone cracked open to reveal a hollow interior lined with pointed crystals, large hollow half geode, small, knee-high to an adult person, completely unlit, no glow, no light sources, no self-emission",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 64,
+  "sprite": "geodes/geode_001/sprite.webp",
+  "placement": {
+    "world_height_m": 0.938,
+    "world_px_height": 48,
+    "character_height_px": 87,
+    "character_height_m": 1.7,
+    "note": "ONE SCENERY PIXEL IS ONE PLAYER PIXEL. world_px_height IS the art's own alpha bbox height, so scenery is placed into the world at 1:1 exactly as the avatar is (setScale(1)) and the two share one pixel grid. The CAMERA still zooms the whole scene \u2014 that is uniform and correct; what must never happen is scenery being resampled on its own, against the player. world_height_m is what the art reads as beside a 87px character; declared_height_m is what it was once declared to be, and a gap between them means the ART is the wrong size.",
+    "declared_height_m": 0.65,
+    "content_box": [
+      8,
+      9,
+      57,
+      57
+    ],
+    "content_px_height": 48,
+    "canvas_render_px": 64
+  },
+  "pixellab_object_id": "9520af74-40c5-415a-8c9f-6ecc95189e17",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)",
+  "must_be_imbplemented_with_random_hflip": true,
+  "generated_at": "2026-08-13T02:29:57+00:00",
+  "states": {
+    "LIT_3": {
+      "sprite": "geodes/geode_001/sprite.webp",
+      "pixellab_object_id": "9520af74-40c5-415a-8c9f-6ecc95189e17",
+      "generated_at": "2026-08-13T02:29:57+00:00",
+      "relit_from": "NOT_LIT_1",
+      "animations": {
+        "motion": {
+          "group_id": "d4fbc80c-1ec7-431d-8cce-2b47a31fe173",
+          "description": "Animate the glint inside the geode only. Nothing else moves.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "geodes/geode_001/animations/motion/00.webp",
+            "geodes/geode_001/animations/motion/01.webp",
+            "geodes/geode_001/animations/motion/02.webp",
+            "geodes/geode_001/animations/motion/03.webp",
+            "geodes/geode_001/animations/motion/04.webp"
+          ],
+          "strip": "geodes/geode_001/animations/motion__strip.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-08-29T08:38:56+00:00",
+          "brief": "L8",
+          "review": "ANIMATION_PROBABLY_GOOD",
+          "review_metrics": {
+            "base_outline": 0.0
+          },
+          "light_frames": [
+            {
+              "intensity": 1.02,
+              "dx": -1.7,
+              "dy": -4.8
+            },
+            {
+              "intensity": 1.157,
+              "dx": -0.5,
+              "dy": -3.0
+            },
+            {
+              "intensity": 0.943,
+              "dx": -0.8,
+              "dy": -4.8
+            },
+            {
+              "intensity": 0.987,
+              "dx": -0.9,
+              "dy": -5.3
+            },
+            {
+              "intensity": 0.893,
+              "dx": -1.8,
+              "dy": -5.1
+            }
+          ]
+        }
+      }
+    },
+    "NOT_LIT_2": {
+      "sprite": "geodes/geode_001/not_lit_2/sprite.webp",
+      "pixellab_object_id": "dabbb3c7-a232-4784-b88a-c7e69e989774",
+      "generated_at": "2026-08-16T14:24:01+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.7593,
+      "glow_score": 0.1731
+    },
+    "NOT_LIT_3": {
+      "sprite": "geodes/geode_001/not_lit_3/sprite.webp",
+      "pixellab_object_id": "a0162d2c-bf84-4d79-ac24-b104f3dc35fe",
+      "generated_at": "2026-08-16T14:23:43+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.7079,
+      "glow_score": 0.1736,
+      "animations": {
+        "motion": {
+          "group_id": "abf2b3ba-a693-4c37-9aca-bcfc9080279a",
+          "description": "This is the same picture in every frame. ONLY one small highlight moves, sliding slowly across the crystals inside. Nothing in the picture may change size, shape or position. The last frame must return to exactly how the first frame looks, so the loop joins. Nothing may become darker than it is in the first frame. Everything else is frozen and pixel-for-pixel identical. Do not redraw anything else, and do not add or remove anything.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "geodes/geode_001/not_lit_3/animations/motion/00.webp",
+            "geodes/geode_001/not_lit_3/animations/motion/01.webp",
+            "geodes/geode_001/not_lit_3/animations/motion/02.webp",
+            "geodes/geode_001/not_lit_3/animations/motion/03.webp",
+            "geodes/geode_001/not_lit_3/animations/motion/04.webp"
+          ],
+          "strip": "geodes/geode_001/not_lit_3/animations/motion__strip.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-08-29T14:25:17+00:00",
+          "brief": "U15",
+          "review": "ANIMATION_PROBABLY_GOOD",
+          "review_metrics": {
+            "base_outline": 0.0
+          }
+        }
+      }
+    },
+    "NOT_LIT_4": {
+      "sprite": "geodes/geode_001/not_lit_4/sprite.webp",
+      "pixellab_object_id": "5c4189b4-e8ba-441c-90d3-20700ece07b0",
+      "generated_at": "2026-08-16T14:24:31+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.7738,
+      "glow_score": 0.1439
+    }
+  },
+  "collision": true,
+  "hitbox_shape": "ellipse",
+  "light": {
+    "strength": 0.15,
+    "color": "#ffdab7",
+    "radius": 3,
+    "reference": "the spawn bonfire is 1.0 (radius 7); strength 0 is no light",
+    "states": {
+      "LIT_3": {
+        "strength": 0.15,
+        "color": "#ffdab7",
+        "radius": 3
+      }
+    },
+    "kind": "glow/mineral",
+    "flame": false,
+    "embers": false
+  }
+}

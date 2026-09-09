@@ -87,7 +87,9 @@ console.log(assigned.length
 // NOT checked — it has no set today by the maintainer's verdict, and its
 // lookup is documented as the way a regenerated set comes back.)
 const foleySets = new Set(
-  readdirSync(join(ROOT, "composer", "foley"), { withFileTypes: true })
+  // The library lives in sounds/foley since 2026-09-02 — one directory a
+  // dedicated sound agent owns, served at /assets/sounds/foley.
+  readdirSync(join(ROOT, "..", "sounds", "foley"), { withFileTypes: true })
     .filter((d) => d.isDirectory() && d.name !== "pipeline")
     .map((d) => d.name),
 );
@@ -101,7 +103,7 @@ const routedSets = [
 ];
 for (const [label, set] of routedSets) {
   if (!set) { fail(`cannot read a set name out of ${label} — gate is blind, fix the regex`); continue; }
-  if (!foleySets.has(set)) fail(`${label} routes to foley set "${set}" but composer/foley/${set} does not exist`);
+  if (!foleySets.has(set)) fail(`${label} routes to foley set "${set}" but sounds/foley/${set} does not exist`);
 }
 console.log(`  routed foley sets all present: ${[...new Set(routedSets.map(([, s]) => s))].join(", ")}`);
 

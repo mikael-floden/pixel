@@ -5,7 +5,7 @@
 // This is the ONE games2 file the ART agents may edit. When a maps2 world uses
 // a tile category with NO entry here, the `check-surfaces` gate FAILS and the
 // deploy is BLOCKED (prod stays on the previous revision). Rather than wait for
-// the game agent, the tiles2 and maps2 agents are AUTHORISED to add the missing
+// the game agent, the tiles and maps2 agents are AUTHORISED to add the missing
 // entry themselves — full runbook: games2/SURFACES.md. In short:
 //
 //   1. Add ONE line per category to the SURFACES object below. The failing
@@ -31,6 +31,7 @@ export interface Surface {
   standable: boolean; // solid ground you can walk/stand on
   swimmable: boolean; // water you can swim across (costs stamina — see stepStamina)
   speed: number; // walk-speed multiplier on this surface
+  harm?: number; // HP per second while swimming in it (lava); absent = harmless
   sound: string; // footstep sound id (for the future audio system, #9)
   stairs?: boolean; // transition tile: crossing it lets you walk a full 1-level step
 }
@@ -50,7 +51,12 @@ const solid: Surface = { standable: false, swimmable: false, speed: 1, sound: ""
 export const SURFACES: Record<string, Surface> = {
   // liquids / hazards
   water: { standable: false, swimmable: true, speed: 0.55, sound: "water" },
-  lava: solid, // deadly later; impassable for now
+  // LAVA SWIMS LIKE WATER AND BURNS (maintainer, 2026-09-06: "works the same
+  // way as water, but it drains your life slowly when swimming in it"). The
+  // drain is `harm` HP per second, landed by the server's tick through
+  // hurtPlayer, so it flinches, slows and can kill. "Impassable for now" was
+  // the placeholder from the day the table was split; the cave has lava now.
+  lava: { standable: false, swimmable: true, speed: 0.4, sound: "water", harm: 4 },
   // ground by feel
   grass: ground(1.0, "grass"),
   meadow: ground(1.0, "grass"),
@@ -81,6 +87,12 @@ export const SURFACES: Record<string, Surface> = {
   crystal_ground: ground(1.0, "stone"),
   bog: ground(0.55, "swamp"),
   swamp: ground(0.5, "swamp"),
+  /* SLIME — walkable and sticky, the swamp family's speed. Classified 2026-09-07
+   * because maps3 put 4 cells of it in the_game and the surfaces gate failed on
+   * it (that is the gate's whole job). It does NOT harm: lava is the deliberate
+   * harmful liquid, and making a second one is a gameplay call for the
+   * maintainer, one field away (`harm: n` HP/s) if he wants it. */
+  slime: ground(0.5, "swamp"),
   // transitions
   stairs: { ...ground(0.9, "stone"), stairs: true },
   // solid structures (trees, monuments, towers) — you walk around them
@@ -109,17 +121,19 @@ export const SURFACES: Record<string, Surface> = {
   obelisk_v2: solid,
   watchtower: solid,
   cactus: solid,
-  // tiles2 materials (maps2 worlds) — terrain the player stands on (elevation
-  // drives walls, not solidity); clear_water is swimmable like `water`.
-  clear_water: { standable: false, swimmable: true, speed: 0.55, sound: "water" },
-  saturated_grass: ground(1.0, "grass"),
-  regular_snow: ground(0.8, "snow"),
-  light_sand: ground(0.8, "sand"),
-  lightdark_dirt: ground(0.95, "dirt"),
-  stone_mountain: ground(1.0, "stone"),
-  black_mountain: ground(1.0, "stone"),
-  crystal_ice: ground(1.05, "ice"),
-  wooden_balcony: ground(1.0, "wood"),
+  // tiles3 grounds (maps2/worlds3 — the_game). Eight of these were tiles2
+  // materials RENAMED by the v2→v3 translation (maps2/spec/WORLD3.md) and keep
+  // that classification exactly; tiles2 itself was retired 2026-09-09.
+  black_rock: ground(1.0, "stone"), // was black_mountain — TERRAIN, not a solid prop
+  grey_stone: ground(1.0, "stone"), // was stone_mountain — dito (elevation makes the cliff)
+  light_beach: ground(0.8, "sand"), // was light_sand
+  light_soil: ground(0.95, "dirt"), // was lightdark_dirt; the island's road ground
+  // New in v3, no v2 ancestor:
+  deep_water: { standable: false, swimmable: true, speed: 0.55, sound: "water" }, // open sea; swims like water
+  dark_mud: ground(0.85, "dirt"), // riverbank strip — heavier going than dirt, not a bog
+  parquet_floor: ground(1.0, "wood"), // house interior floor
+  brown_paving_stone: ground(1.1, "stone"), // laid stone yard — quicker than raw ground, like mosaic_floor
+  grey_paving_stone: ground(1.1, "stone"), // dito; also the roof-deck slab you can stand on
 };
 export const DEFAULT_SURFACE: Surface = ground(1.0, "grass");
 const ROAD_SURFACE: Surface = ground(1.2, "stone");

@@ -1,0 +1,89 @@
+{
+ "schema": "pixel-maps3/minimap@1",
+ "image": "minimap.webp",
+ "size": {
+  "w": 1200,
+  "h": 478
+ },
+ "world": {
+  "w": 394,
+  "h": 394
+ },
+ "note": "deep_water is drawn as nothing and the transparent border is cropped away, so this file is only the island. Place a dot with `dot`; the world's own grid is unchanged.",
+ "dot": {
+  "kx": 2.246139,
+  "x0": 579.7847,
+  "ky": 0.982686,
+  "kz": 1.052878,
+  "y0": -197.3795,
+  "formula": "px = kx*(cell_x - cell_y) + x0 ; py = ky*(cell_x + cell_y) - kz*level + y0 . Pixels of this image, origin top-left; cell_x/cell_y may be fractional (the player stands between cells); level is world.json level[cell_y][cell_x]. The point is the CENTRE of that cell's top face, which is where a body stands."
+ },
+ "samples": [
+  {
+   "what": "spawn",
+   "cell": [
+    333,
+    237
+   ],
+   "level": 0,
+   "px": [
+    795.41,
+    362.75
+   ]
+  },
+  {
+   "what": "west corner of the land",
+   "cell": [
+    46,
+    303
+   ],
+   "level": 0,
+   "px": [
+    2.53,
+    145.58
+   ]
+  },
+  {
+   "what": "east corner of the land",
+   "cell": [
+    316,
+    41
+   ],
+   "level": 0,
+   "px": [
+    1197.47,
+    153.44
+   ]
+  },
+  {
+   "what": "north corner of the land",
+   "cell": [
+    81,
+    122
+   ],
+   "level": 0,
+   "px": [
+    487.69,
+    2.11
+   ]
+  },
+  {
+   "what": "south corner of the land",
+   "cell": [
+    349,
+    338
+   ],
+   "level": 0,
+   "px": [
+    604.49,
+    477.73
+   ]
+  }
+ ],
+ "land_cells": {
+  "x0": 20,
+  "y0": 29,
+  "x1": 373,
+  "y1": 363
+ }
+}

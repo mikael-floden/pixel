@@ -1,0 +1,165 @@
+{
+  "format": "scenery-piece@2",
+  "id": "well_013",
+  "group": "wells",
+  "rank": 11,
+  "index": 13,
+  "name": "Timber-clad shaft, turf roof 013",
+  "lights": null,
+  "variety": "timber-clad shaft, turf roof",
+  "glow_concept": null,
+  "prompt": "a round fieldstone well with thick stone walls and a heavy peaked wooden roof on two stout posts, a chunky windlass, timber-clad shaft, turf roof, roughly six feet tall, human height, completely unlit, no glow, no light sources, no self-emission",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 128,
+  "sprite": "wells/well_013/sprite.webp",
+  "placement": {
+    "world_height_m": 2.071,
+    "world_px_height": 106,
+    "character_height_px": 87,
+    "character_height_m": 1.7,
+    "note": "ONE SCENERY PIXEL IS ONE PLAYER PIXEL. world_px_height IS the art's own alpha bbox height, so scenery is placed into the world at 1:1 exactly as the avatar is (setScale(1)) and the two share one pixel grid. The CAMERA still zooms the whole scene \u2014 that is uniform and correct; what must never happen is scenery being resampled on its own, against the player. world_height_m is what the art reads as beside a 87px character; declared_height_m is what it was once declared to be, and a gap between them means the ART is the wrong size.",
+    "declared_height_m": 1.84,
+    "content_box": [
+      24,
+      13,
+      111,
+      119
+    ],
+    "content_px_height": 106,
+    "canvas_render_px": 128
+  },
+  "pixellab_object_id": "ced55b48-3641-4866-b1a8-3e9a01553a74",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)",
+  "must_be_imbplemented_with_random_hflip": true,
+  "generated_at": "2026-08-13T22:05:57+00:00",
+  "states": {
+    "LIT_1": {
+      "sprite": "wells/well_013/lit_1/sprite.webp",
+      "pixellab_object_id": "109b150e-59fb-4d1e-8a14-1aa0a10062cb",
+      "generated_at": "2026-08-17T13:01:25+00:00",
+      "glow_concept": "glowing runes carved around the stone rim",
+      "difference_from_source": 0.9098,
+      "glow_score": 0.0302,
+      "rotations": {
+        "south-east": "wells/well_013/lit_1/rotations/south-east.webp",
+        "south-west": "wells/well_013/lit_1/rotations/south-west.webp",
+        "south": "wells/well_013/lit_1/sprite.webp"
+      },
+      "animations": {
+        "motion": {
+          "group_id": "5821dbf5-a9f0-402c-b87a-0f9c6bffb3ef",
+          "description": "This is the same picture in every frame. ONLY the glowing water inside the well brightens a little and returns. Everything else in the picture is copied from the first frame exactly, pixel for pixel, unchanged in shape, size, position and colour. No outline anywhere is redrawn. The last frame matches the first frame exactly, so the loop joins. Nothing anywhere becomes darker, lighter or a different colour except the one thing named above.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "wells/well_013/lit_1/animations/motion/00.webp",
+            "wells/well_013/lit_1/animations/motion/01.webp",
+            "wells/well_013/lit_1/animations/motion/02.webp",
+            "wells/well_013/lit_1/animations/motion/03.webp",
+            "wells/well_013/lit_1/animations/motion/04.webp"
+          ],
+          "strip": "wells/well_013/lit_1/animations/motion__strip.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-08-29T16:19:13+00:00",
+          "brief": "Y37",
+          "review": "ANIMATION_PROBABLY_GOOD",
+          "review_metrics": {
+            "base_outline": 0.0356
+          },
+          "light_frames": [
+            {
+              "intensity": 0.681,
+              "dx": 1.1,
+              "dy": 18.5
+            },
+            {
+              "intensity": 0.649,
+              "dx": 0.7,
+              "dy": 18.8
+            },
+            {
+              "intensity": 0.628,
+              "dx": 1.5,
+              "dy": 18.8
+            },
+            {
+              "intensity": 1.5,
+              "dx": 0.5,
+              "dy": 14.4
+            },
+            {
+              "intensity": 1.179,
+              "dx": 0.5,
+              "dy": 13.1
+            }
+          ]
+        }
+      }
+    },
+    "NOT_LIT_1": {
+      "sprite": "wells/well_013/sprite.webp",
+      "pixellab_object_id": "ced55b48-3641-4866-b1a8-3e9a01553a74",
+      "generated_at": "2026-08-13T22:05:57+00:00",
+      "rotations": {
+        "south-east": "wells/well_013/rotations/south-east.webp",
+        "south-west": "wells/well_013/rotations/south-west.webp",
+        "south": "wells/well_013/sprite.webp"
+      }
+    },
+    "NOT_LIT_2": {
+      "sprite": "wells/well_013/not_lit_2/sprite.webp",
+      "pixellab_object_id": "e8845982-2502-4bfd-bed5-689b1095b594",
+      "generated_at": "2026-08-17T13:00:20+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.6246,
+      "glow_score": 0.0,
+      "rotations": {
+        "south-east": "wells/well_013/not_lit_2/rotations/south-east.webp",
+        "south-west": "wells/well_013/not_lit_2/rotations/south-west.webp",
+        "south": "wells/well_013/not_lit_2/sprite.webp"
+      }
+    },
+    "NOT_LIT_4": {
+      "sprite": "wells/well_013/not_lit_4/sprite.webp",
+      "pixellab_object_id": "c71e0197-655d-44cc-bc47-f31bd9ab3b6f",
+      "generated_at": "2026-08-17T13:03:39+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.5679,
+      "glow_score": 0.0,
+      "rotations": {
+        "south-east": "wells/well_013/not_lit_4/rotations/south-east.webp",
+        "south-west": "wells/well_013/not_lit_4/rotations/south-west.webp",
+        "south": "wells/well_013/not_lit_4/sprite.webp"
+      }
+    }
+  },
+  "collision": true,
+  "hitbox_shape": "ellipse",
+  "light": {
+    "strength": 0.15,
+    "color": "#81f9ff",
+    "radius": 3,
+    "reference": "the spawn bonfire is 1.0 (radius 7); strength 0 is no light",
+    "states": {
+      "LIT_1": {
+        "strength": 0.18,
+        "color": "#81f9ff",
+        "radius": 4
+      }
+    },
+    "kind": "glow/water",
+    "flame": false,
+    "embers": false
+  }
+}

@@ -1,0 +1,132 @@
+{
+  "schema": "tiles3/tops@1",
+  "kind": "top_only",
+  "wall_is_meaningless": true,
+  "not_a_candidate_for": "x over y",
+  "ground": "grass",
+  "flavour": "detail",
+  "index": 130,
+  "seed": 78294,
+  "prompt": "grass, scattered straw in the middle, grass all around the edge",
+  "palette_top": "#14523b",
+  "tile_id": "eb603b88-0556-4d73-a515-7647dcc0c535",
+  "n_tiles": 16,
+  "tiles": [
+    "tile_00.webp",
+    "tile_01.webp",
+    "tile_02.webp",
+    "tile_03.webp",
+    "tile_04.webp",
+    "tile_05.webp",
+    "tile_06.webp",
+    "tile_07.webp",
+    "tile_08.webp",
+    "tile_09.webp",
+    "tile_10.webp",
+    "tile_11.webp",
+    "tile_12.webp",
+    "tile_13.webp",
+    "tile_14.webp",
+    "tile_15.webp"
+  ],
+  "settings": {
+    "tile_size": 64,
+    "tile_view": "high top-down",
+    "view_angle": 28.0,
+    "depth_ratio": 0.5,
+    "tile_type": "isometric",
+    "flat_top_px": 2,
+    "outline_mode": "segmentation"
+  },
+  "usd": 0.096,
+  "created": "2026-09-03T04:45:51+00:00",
+  "top_face": {
+    "per_tile": [
+      {
+        "colours": 20,
+        "dominant_share": 0.162,
+        "px": 963
+      },
+      {
+        "colours": 21,
+        "dominant_share": 0.1323,
+        "px": 960
+      },
+      {
+        "colours": 24,
+        "dominant_share": 0.1794,
+        "px": 953
+      },
+      {
+        "colours": 24,
+        "dominant_share": 0.1242,
+        "px": 950
+      },
+      {
+        "colours": 23,
+        "dominant_share": 0.1453,
+        "px": 950
+      },
+      {
+        "colours": 24,
+        "dominant_share": 0.1178,
+        "px": 934
+      },
+      {
+        "colours": 25,
+        "dominant_share": 0.1225,
+        "px": 939
+      },
+      {
+        "colours": 25,
+        "dominant_share": 0.1343,
+        "px": 938
+      },
+      {
+        "colours": 19,
+        "dominant_share": 0.1532,
+        "px": 940
+      },
+      {
+        "colours": 23,
+        "dominant_share": 0.133,
+        "px": 932
+      },
+      {
+        "colours": 24,
+        "dominant_share": 0.1041,
+        "px": 932
+      },
+      {
+        "colours": 24,
+        "dominant_share": 0.1218,
+        "px": 936
+      },
+      {
+        "colours": 24,
+        "dominant_share": 0.1305,
+        "px": 935
+      },
+      {
+        "colours": 22,
+        "dominant_share": 0.0944,
+        "px": 932
+      },
+      {
+        "colours": 22,
+        "dominant_share": 0.1581,
+        "px": 930
+      },
+      {
+        "colours": 14,
+        "dominant_share": 0.257,
+        "px": 926
+      }
+    ],
+    "mean_colours": 22.38,
+    "mean_dominant_share": 0.1419
+  },
+  "motif": "scattered straw",
+  "motif_source": "tiles/config/details.json",
+  "walkable": true
+}

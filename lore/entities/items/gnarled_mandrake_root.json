@@ -1,0 +1,22 @@
+{
+  "domain": "items",
+  "id": "gnarled_mandrake_root",
+  "name_seen": "Mandrake",
+  "law": "V",
+  "description": "A knobbly root with legs of its own and a wilted crown. The Stumpling was carrying it, or it was family.",
+  "lore": [
+    "Forty gold for a root off a [[monsters/tree_stump|Stumpling]]'s foot, and every coin of it is the shape. The stalls grade them the way a fishmonger grades fish. Two legs is a root. Two legs and arms is a good root. A head — a knob with a fold in it, the light doing the rest — is a price you have to ask about, quietly, and the seller takes his time answering.",
+    "It sells as a joke. They hang it by the crown with a scrap of coat on it and do the voice, and the crowd obliges. It is bought in earnest far more often than the stalls admit, by people careful to be laughing while they pay. There is a right way to sell a man a root shaped like a small person: take his gold, make the joke, wrap it well, and do not watch him leave."
+  ],
+  "related": [
+    {
+      "domain": "monsters",
+      "id": "tree_stump"
+    },
+    {
+      "domain": "lore",
+      "id": "the_hard_pieces"
+    }
+  ],
+  "gm_notes": "Funny for two lines, then not. The buyers are the bereaved and everyone on the stall knows it; the courtesy is the whole record. Never explain what they do with them."
+}

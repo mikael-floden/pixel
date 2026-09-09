@@ -1,0 +1,229 @@
+{
+  "format": "scenery-piece@2",
+  "id": "ruined_arch_001",
+  "group": "ruined_arches",
+  "rank": 51,
+  "index": 1,
+  "name": "Post-and-lintel dolmen arch 001",
+  "lights": null,
+  "variety": "post-and-lintel dolmen arch",
+  "glow_concept": null,
+  "prompt": "a freestanding ruined stone archway with crumbling voussoirs, a worn threshold, and rubble at its feet, post-and-lintel dolmen arch, large, well above head height of a person, completely unlit, no glow, no light sources, no self-emission",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 160,
+  "sprite": "ruined_arches/ruined_arch_001/sprite.webp",
+  "placement": {
+    "world_height_m": 2.853,
+    "world_px_height": 146,
+    "character_height_px": 87,
+    "character_height_m": 1.7,
+    "note": "ONE SCENERY PIXEL IS ONE PLAYER PIXEL. world_px_height IS the art's own alpha bbox height, so scenery is placed into the world at 1:1 exactly as the avatar is (setScale(1)) and the two share one pixel grid. The CAMERA still zooms the whole scene \u2014 that is uniform and correct; what must never happen is scenery being resampled on its own, against the player. world_height_m is what the art reads as beside a 87px character; declared_height_m is what it was once declared to be, and a gap between them means the ART is the wrong size.",
+    "declared_height_m": 2.98,
+    "content_box": [
+      4,
+      14,
+      158,
+      160
+    ],
+    "content_px_height": 146,
+    "canvas_render_px": 160
+  },
+  "pixellab_object_id": "c7d4f263-5e9b-4c9e-915b-7b7401ac097e",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)",
+  "must_be_imbplemented_with_random_hflip": true,
+  "generated_at": "2026-08-13T01:26:13+00:00",
+  "states": {
+    "LIT_1": {
+      "sprite": "ruined_arches/ruined_arch_001/lit_1/sprite.webp",
+      "pixellab_object_id": "c496a7d6-a768-410d-8cbf-a07c34347f9d",
+      "generated_at": "2026-08-16T20:33:37+00:00",
+      "glow_concept": "pinpoints of light in the crumbled mortar joints",
+      "difference_from_source": 0.3562,
+      "glow_score": 0.0372,
+      "rotations": {
+        "south-east": "ruined_arches/ruined_arch_001/lit_1/rotations/south-east.webp",
+        "south-west": "ruined_arches/ruined_arch_001/lit_1/rotations/south-west.webp",
+        "south": "ruined_arches/ruined_arch_001/lit_1/sprite.webp"
+      },
+      "animations": {
+        "motion": {
+          "group_id": "9d6495f4-48e4-4a41-8622-93981b06314b",
+          "description": "This is an almost completely still picture. ONLY the white light in the mortar of the arch changes: it brightens by the smallest amount that is still visible, then returns. At their brightest it must still look exactly the same white as in the first frame -- never pale, never white, never any other colour. It stays exactly the same size and shape; it never grows and never spreads. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "ruined_arches/ruined_arch_001/lit_1/animations/motion/00.webp",
+            "ruined_arches/ruined_arch_001/lit_1/animations/motion/01.webp",
+            "ruined_arches/ruined_arch_001/lit_1/animations/motion/02.webp",
+            "ruined_arches/ruined_arch_001/lit_1/animations/motion/03.webp",
+            "ruined_arches/ruined_arch_001/lit_1/animations/motion/04.webp"
+          ],
+          "strip": "ruined_arches/ruined_arch_001/lit_1/animations/motion__strip.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-08-30T09:57:50+00:00",
+          "brief": "H32",
+          "review": "ANIMATION_PROBABLY_GOOD",
+          "review_metrics": {
+            "base_outline": 0.0062
+          },
+          "light_frames": [
+            {
+              "intensity": 0.5,
+              "dx": 5.8,
+              "dy": 17.2
+            },
+            {
+              "intensity": 0.5,
+              "dx": -2.5,
+              "dy": 32.3
+            },
+            {
+              "intensity": 1.5,
+              "dx": 1.9,
+              "dy": 31.6
+            },
+            {
+              "intensity": 0.599,
+              "dx": 5.4,
+              "dy": 22.2
+            },
+            {
+              "intensity": 0.5,
+              "dx": 8.2,
+              "dy": 21.9
+            }
+          ]
+        }
+      }
+    },
+    "LIT_2": {
+      "sprite": "ruined_arches/ruined_arch_001/lit_2/sprite.webp",
+      "pixellab_object_id": "970a0b6f-0a28-4d16-951d-32e2dcef0840",
+      "generated_at": "2026-08-16T20:28:44+00:00",
+      "glow_concept": "cold aurora shimmer hanging under the arch",
+      "difference_from_source": 0.5743,
+      "glow_score": 0.1535,
+      "rotations": {
+        "south-east": "ruined_arches/ruined_arch_001/lit_2/rotations/south-east.webp",
+        "south-west": "ruined_arches/ruined_arch_001/lit_2/rotations/south-west.webp",
+        "south": "ruined_arches/ruined_arch_001/lit_2/sprite.webp"
+      },
+      "animations": {
+        "motion": {
+          "group_id": "412c8490-9599-44d6-9f44-c6dcd7219eed",
+          "description": "This is an almost completely still picture. ONLY the green-cyan surface inside the arch changes: it brightens by the smallest amount that is still visible, then returns. At their brightest it must still look exactly the same green-cyan as in the first frame -- never pale, never white, never any other colour. It stays exactly the same size and shape; it never grows and never spreads. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "ruined_arches/ruined_arch_001/lit_2/animations/motion/00.webp",
+            "ruined_arches/ruined_arch_001/lit_2/animations/motion/01.webp",
+            "ruined_arches/ruined_arch_001/lit_2/animations/motion/02.webp",
+            "ruined_arches/ruined_arch_001/lit_2/animations/motion/03.webp",
+            "ruined_arches/ruined_arch_001/lit_2/animations/motion/04.webp"
+          ],
+          "strip": "ruined_arches/ruined_arch_001/lit_2/animations/motion__strip.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-08-30T09:58:25+00:00",
+          "brief": "H33",
+          "review": "ANIMATION_PROBABLY_GOOD",
+          "review_metrics": {
+            "base_outline": 0.0212
+          },
+          "light_frames": [
+            {
+              "intensity": 1.414,
+              "dx": 0.3,
+              "dy": 21.6
+            },
+            {
+              "intensity": 0.842,
+              "dx": 2.0,
+              "dy": 21.0
+            },
+            {
+              "intensity": 1.5,
+              "dx": 0.1,
+              "dy": 17.3
+            },
+            {
+              "intensity": 0.5,
+              "dx": -3.0,
+              "dy": 33.6
+            },
+            {
+              "intensity": 0.667,
+              "dx": -0.0,
+              "dy": 25.8
+            }
+          ]
+        }
+      }
+    },
+    "NOT_LIT_3": {
+      "sprite": "ruined_arches/ruined_arch_001/sprite.webp",
+      "pixellab_object_id": "c7d4f263-5e9b-4c9e-915b-7b7401ac097e",
+      "generated_at": "2026-08-16T20:27:22+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.37,
+      "glow_score": 0.0011,
+      "replaced_anchor": "NOT_LIT_1",
+      "rotations": {
+        "south-east": "ruined_arches/ruined_arch_001/rotations/south-east.webp",
+        "south-west": "ruined_arches/ruined_arch_001/rotations/south-west.webp",
+        "south": "ruined_arches/ruined_arch_001/sprite.webp"
+      },
+      "animations": {}
+    },
+    "NOT_LIT_4": {
+      "sprite": "ruined_arches/ruined_arch_001/not_lit_4/sprite.webp",
+      "pixellab_object_id": "8ad6a990-e767-484c-945d-4dbfd518ed81",
+      "generated_at": "2026-08-16T20:28:23+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.4385,
+      "glow_score": 0.0058,
+      "rotations": {
+        "south-east": "ruined_arches/ruined_arch_001/not_lit_4/rotations/south-east.webp",
+        "south-west": "ruined_arches/ruined_arch_001/not_lit_4/rotations/south-west.webp",
+        "south": "ruined_arches/ruined_arch_001/not_lit_4/sprite.webp"
+      }
+    }
+  },
+  "collision": true,
+  "hitbox_shape": "rect",
+  "light": {
+    "strength": 0.2,
+    "color": "#ffdcb9",
+    "radius": 4,
+    "reference": "the spawn bonfire is 1.0 (radius 7); strength 0 is no light",
+    "states": {
+      "LIT_1": {
+        "strength": 0.24,
+        "color": "#ffdcb9",
+        "radius": 5
+      },
+      "LIT_2": {
+        "strength": 0.2,
+        "color": "#bcffe5",
+        "radius": 4
+      }
+    },
+    "kind": "glow/magic",
+    "flame": false,
+    "embers": false
+  }
+}

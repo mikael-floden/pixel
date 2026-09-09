@@ -1,0 +1,187 @@
+{
+  "format": "scenery-piece@2",
+  "id": "offering_table_002",
+  "group": "offering_tables",
+  "rank": 22,
+  "index": 2,
+  "name": "Rough plank table, bread 002",
+  "lights": null,
+  "variety": "rough plank table, bread",
+  "glow_concept": "small wisps gathered over the food",
+  "prompt": "a low wooden offering table set with bowls of food, cut flowers and small keepsakes left for the dead, rough plank table, bread, waist-high to an adult person, self-emissive at night, softly radiating light: small wisps gathered over the food",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 64,
+  "sprite": "offering_tables/offering_table_002/sprite.webp",
+  "placement": {
+    "world_height_m": 1.055,
+    "world_px_height": 54,
+    "character_height_px": 87,
+    "character_height_m": 1.7,
+    "note": "ONE SCENERY PIXEL IS ONE PLAYER PIXEL. world_px_height IS the art's own alpha bbox height, so scenery is placed into the world at 1:1 exactly as the avatar is (setScale(1)) and the two share one pixel grid. The CAMERA still zooms the whole scene \u2014 that is uniform and correct; what must never happen is scenery being resampled on its own, against the player. world_height_m is what the art reads as beside a 87px character; declared_height_m is what it was once declared to be, and a gap between them means the ART is the wrong size.",
+    "declared_height_m": 0.91,
+    "content_box": [
+      2,
+      1,
+      62,
+      55
+    ],
+    "content_px_height": 54,
+    "canvas_render_px": 64
+  },
+  "pixellab_object_id": "20a8ae58-befb-426d-8019-83e08c843da9",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)",
+  "must_be_imbplemented_with_random_hflip": true,
+  "generated_at": "2026-08-13T03:46:49+00:00",
+  "states": {
+    "LIT_3": {
+      "sprite": "offering_tables/offering_table_002/lit_3/sprite.webp",
+      "pixellab_object_id": "e0fa6be8-0de7-4b58-8ad8-6b2cf17e8da6",
+      "generated_at": "2026-08-16T19:43:35+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.5542,
+      "glow_score": 0.0902,
+      "rotations": {
+        "south-east": "offering_tables/offering_table_002/lit_3/rotations/south-east.webp",
+        "south-west": "offering_tables/offering_table_002/lit_3/rotations/south-west.webp",
+        "south": "offering_tables/offering_table_002/lit_3/sprite.webp"
+      },
+      "animations": {
+        "motion": {
+          "group_id": "5f61cff0-4df2-48f3-8188-9b3b0c3e24f0",
+          "description": "This is the same picture in every frame. ONLY the thread of steam above the pot rises and curls. Everything else in the picture is copied from the first frame exactly, pixel for pixel, unchanged in shape, size, position and colour. No outline anywhere is redrawn. The last frame matches the first frame exactly, so the loop joins.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "offering_tables/offering_table_002/lit_3/animations/motion/00.webp",
+            "offering_tables/offering_table_002/lit_3/animations/motion/01.webp",
+            "offering_tables/offering_table_002/lit_3/animations/motion/02.webp",
+            "offering_tables/offering_table_002/lit_3/animations/motion/03.webp",
+            "offering_tables/offering_table_002/lit_3/animations/motion/04.webp"
+          ],
+          "strip": "offering_tables/offering_table_002/lit_3/animations/motion__strip.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-08-29T18:35:24+00:00",
+          "brief": "B50",
+          "review": "ANIMATION_PROBABLY_GOOD",
+          "review_metrics": {
+            "class": "fire",
+            "base": 0.0,
+            "still": 0.883
+          },
+          "light_frames": [
+            {
+              "intensity": 0.944,
+              "dx": 10.8,
+              "dy": -14.3
+            },
+            {
+              "intensity": 0.935,
+              "dx": 10.8,
+              "dy": -14.1
+            },
+            {
+              "intensity": 1.072,
+              "dx": 8.8,
+              "dy": -13.7
+            },
+            {
+              "intensity": 1.018,
+              "dx": 9.2,
+              "dy": -13.8
+            },
+            {
+              "intensity": 1.031,
+              "dx": 9.4,
+              "dy": -13.7
+            }
+          ]
+        }
+      }
+    },
+    "LIT_4": {
+      "sprite": "offering_tables/offering_table_002/lit_4/sprite.webp",
+      "pixellab_object_id": "57eca046-8eee-4d0b-bd8a-801cc6e89a3f",
+      "generated_at": "2026-08-16T19:44:02+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.5886,
+      "glow_score": 0.0403,
+      "rotations": {
+        "south-east": "offering_tables/offering_table_002/lit_4/rotations/south-east.webp",
+        "south-west": "offering_tables/offering_table_002/lit_4/rotations/south-west.webp",
+        "south": "offering_tables/offering_table_002/lit_4/sprite.webp"
+      }
+    },
+    "NOT_LIT_1": {
+      "sprite": "offering_tables/offering_table_002/not_lit_1/sprite.webp",
+      "pixellab_object_id": "7279df88-63a4-43d8-969c-698b539c42bd",
+      "generated_at": "2026-08-16T19:44:12+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.26,
+      "glow_score": 0.008,
+      "rotations": {
+        "south-east": "offering_tables/offering_table_002/not_lit_1/rotations/south-east.webp",
+        "south-west": "offering_tables/offering_table_002/not_lit_1/rotations/south-west.webp",
+        "south": "offering_tables/offering_table_002/not_lit_1/sprite.webp"
+      }
+    },
+    "NOT_LIT_3": {
+      "sprite": "offering_tables/offering_table_002/sprite.webp",
+      "pixellab_object_id": "20a8ae58-befb-426d-8019-83e08c843da9",
+      "generated_at": "2026-08-13T03:46:49+00:00",
+      "relit_from": "LIT_1",
+      "rotations": {
+        "south-east": "offering_tables/offering_table_002/rotations/south-east.webp",
+        "south-west": "offering_tables/offering_table_002/rotations/south-west.webp",
+        "south": "offering_tables/offering_table_002/sprite.webp"
+      }
+    },
+    "NOT_LIT_4": {
+      "sprite": "offering_tables/offering_table_002/not_lit_4/sprite.webp",
+      "pixellab_object_id": "33e7cb81-667d-4556-a0db-30a94748fb3c",
+      "generated_at": "2026-08-16T19:43:23+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.6973,
+      "glow_score": 0.0798,
+      "relit_from": "LIT_2",
+      "rotations": {
+        "south-east": "offering_tables/offering_table_002/not_lit_4/rotations/south-east.webp",
+        "south-west": "offering_tables/offering_table_002/not_lit_4/rotations/south-west.webp",
+        "south": "offering_tables/offering_table_002/not_lit_4/sprite.webp"
+      }
+    }
+  },
+  "collision": true,
+  "hitbox_shape": "rect",
+  "light": {
+    "strength": 0.2,
+    "color": "#ffb45c",
+    "radius": 4,
+    "reference": "the spawn bonfire is 1.0 (radius 7); strength 0 is no light",
+    "states": {
+      "LIT_3": {
+        "strength": 0.2,
+        "color": "#ffb45c",
+        "radius": 4
+      },
+      "LIT_4": {
+        "strength": 0.2,
+        "color": "#ffb45c",
+        "radius": 4
+      }
+    },
+    "kind": "glow/magic",
+    "flame": false,
+    "embers": false
+  }
+}

@@ -1,0 +1,22 @@
+{
+  "domain": "items",
+  "id": "violet_hunger_stone",
+  "name_seen": "Soulstone",
+  "law": "V",
+  "description": "Violet and grey, a live burn of colour at the core, cut out of a Voidmaw. Set it down and the light near it goes first.",
+  "lore": [
+    "The handlers who work the eastern ground know two stones that ought to be the same stone and are not. [[items/hollow_black_soulstone|The cave's]] comes out cracked edge to edge with nothing in the cracks, because there was nothing left in that shape to settle. This one comes out whole: violet and grey, rough as slag, dense, heavy, with a live burn of colour at the middle that no part of a stone has any business having. That is the entire body of evidence, and it is worse than the guides' tidy answer. Something reached the bottom of [[monsters/eldritch_maw|the thing]], which means there was something in there to reach the bottom of. Whatever opens that mouth is not an emptiness walking around inside a body. It is a somebody, at some level, with an appetite and no face to hang it on, and the people who take stones off that ground say so without hedging while the guide-writers go on filing it where it has always been filed.",
+    "Somebody put one in a pouch with a [[items/banded_solar_stone|banded solar stone]], as somebody was always going to. Neither stone was any different afterwards — they cannot be, that is the one thing everyone is sure of about them — but the hand's width of air between the two went out and stayed out for as long as they travelled together. Carried into a fight it takes, and hands back a tenth of what it takes, which is more than any other stone hands back to the person holding it. Nobody has ever called that generous."
+  ],
+  "related": [
+    {
+      "domain": "monsters",
+      "id": "eldritch_maw"
+    },
+    {
+      "domain": "lore",
+      "id": "the_hard_pieces"
+    }
+  ],
+  "gm_notes": "Shipped line said 'a dark mouth of a core'; the sprite's core is the brightest thing on it, so the look was corrected and the light beat kept. The Voidmaw record argues taxonomy from outside and gives Hearn one sentence; this argues it from the stone, which is physical and points the same way without him. The whole-vs-cracked comparison quietly corroborates 'not the mountain's work' and keeps B6/B7 untouched. The pouch experiment is a repeatable prop, not an effect."
+}

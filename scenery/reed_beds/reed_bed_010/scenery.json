@@ -1,0 +1,108 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-13T23:20:37+00:00",
+  "id": "reed_bed_010",
+  "group": "reed_beds",
+  "rank": 32,
+  "index": 10,
+  "name": "Thick bulrush clump 010",
+  "lights": null,
+  "variety": "thick bulrush clump",
+  "glow_concept": "foxfire glow on rotted stems at the waterline",
+  "prompt": "a dense clump of tall slender freshwater reeds with feathery seed plumes, rising from a small mound of wet mud and marsh grass, thick bulrush clump, roughly six feet tall, human height, self-emissive at night, softly radiating light: foxfire glow on rotted stems at the waterline",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 64,
+  "sprite": "reed_beds/reed_bed_010/sprite.webp",
+  "placement": {
+    "world_height_m": 1.114,
+    "world_px_height": 57,
+    "character_height_px": 87,
+    "character_height_m": 1.7,
+    "note": "ONE SCENERY PIXEL IS ONE PLAYER PIXEL. world_px_height IS the art's own alpha bbox height, so scenery is placed into the world at 1:1 exactly as the avatar is (setScale(1)) and the two share one pixel grid. The CAMERA still zooms the whole scene \u2014 that is uniform and correct; what must never happen is scenery being resampled on its own, against the player. world_height_m is what the art reads as beside a 87px character; declared_height_m is what it was once declared to be, and a gap between them means the ART is the wrong size.",
+    "declared_height_m": 1.89,
+    "content_box": [
+      9,
+      3,
+      57,
+      60
+    ],
+    "content_px_height": 57,
+    "canvas_render_px": 64
+  },
+  "pixellab_object_id": "bab37b2c-e173-42f0-9cde-66e136cfa7ed",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)",
+  "must_be_imbplemented_with_random_hflip": true,
+  "states": {
+    "NOT_LIT_3": {
+      "sprite": "reed_beds/reed_bed_010/sprite.webp",
+      "pixellab_object_id": "bab37b2c-e173-42f0-9cde-66e136cfa7ed",
+      "generated_at": "2026-08-13T23:20:37+00:00",
+      "relit_from": "LIT_1"
+    },
+    "NOT_LIT_4": {
+      "sprite": "reed_beds/reed_bed_010/not_lit_4/sprite.webp",
+      "pixellab_object_id": "712b0780-3b9c-487a-b421-ed581db49a70",
+      "generated_at": "2026-08-16T20:10:15+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.7057,
+      "glow_score": 0.0,
+      "relit_from": "LIT_2",
+      "animations": {
+        "motion": {
+          "group_id": "852ec0df-d64d-4c30-b6f7-b9fff3e2df99",
+          "description": "This is the same picture in every frame. ONLY the cattail heads move, each leaning by a single pixel. Nothing else moves, bends or leans, and nothing changes size, shape or position. The last frame must return to exactly how the first frame looks, so the loop joins. Nothing may become darker than it is in the first frame. Do not redraw anything else, and do not add or remove anything.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "reed_beds/reed_bed_010/not_lit_4/animations/motion/00.webp",
+            "reed_beds/reed_bed_010/not_lit_4/animations/motion/01.webp",
+            "reed_beds/reed_bed_010/not_lit_4/animations/motion/02.webp",
+            "reed_beds/reed_bed_010/not_lit_4/animations/motion/03.webp",
+            "reed_beds/reed_bed_010/not_lit_4/animations/motion/04.webp"
+          ],
+          "strip": "reed_beds/reed_bed_010/not_lit_4/animations/motion__strip.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-08-29T15:41:13+00:00",
+          "brief": "X59",
+          "review": "ANIMATION_PROBABLY_GOOD",
+          "review_metrics": {
+            "class": "foliage",
+            "base": 0.0,
+            "still": 0.641
+          }
+        }
+      }
+    },
+    "NOT_LIT_5": {
+      "sprite": "reed_beds/reed_bed_010/not_lit_5/sprite.webp",
+      "pixellab_object_id": "c2f10d5f-9b8d-4739-8642-576907e0794d",
+      "generated_at": "2026-08-16T20:10:34+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.4915,
+      "glow_score": 0.0312,
+      "relit_from": "LIT_3"
+    },
+    "NOT_LIT_6": {
+      "sprite": "reed_beds/reed_bed_010/not_lit_6/sprite.webp",
+      "pixellab_object_id": "92669525-20f9-4913-9652-adb080e31ae0",
+      "generated_at": "2026-08-16T20:11:14+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.5539,
+      "glow_score": 0.0006,
+      "relit_from": "LIT_4"
+    }
+  },
+  "collision": true,
+  "hitbox_shape": "ellipse"
+}

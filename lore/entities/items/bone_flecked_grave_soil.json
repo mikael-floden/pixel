@@ -1,0 +1,16 @@
+{
+  "domain": "items",
+  "id": "bone_flecked_grave_soil",
+  "name_seen": "Grave Dirt",
+  "law": "V",
+  "description": "Crumbly dark earth studded with bone chips, out of a Palehusk's creases. Field soil — and nothing is farmed up there.",
+  "lore": [
+    "Five gold the bag, the cheapest thing anyone carries down off the black rock, and it sells at all because of one woman at the sorting sheds. She farmed, in life. She can put a district to a handful of dirt the way other people put a face to a name — rubs it, smells it, gives you a valley — and the carters have checked her twice against ground they knew, and she was right twice.",
+    "Everything she has been handed out of [[monsters/malformed_creature|the pale ones]] is field soil. Ploughed loam, with the bone chips of somebody's stock crushed through it. Nothing is farmed on the black rock and nothing ever was, so the things came up from somewhere on foot, carrying a farm in their creases the whole way. The sheds keep the bags by district now and send the list down to [[lore/the_chronicle|the Chronicle]] each season. She has named nineteen valleys. Not one of them has been hers."
+  ],
+  "related": [
+    { "domain": "monsters", "id": "malformed_creature" },
+    { "domain": "lore", "id": "the_chronicle" }
+  ],
+  "gm_notes": "Evidence only, no explanation: the Hollowed on the black rock did not start there, and the soil says where each one started. Supports B7 dread without advancing it — nothing here names a keeper or a route, and the sheds' district list is deliberately a map that stops at the mountain. The soil-reader is the other half: a woman whose whole surviving skill is placing other people's ground, waiting for her own to come up the hill in a five-gold bag."
+}

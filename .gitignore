@@ -10,3 +10,11 @@ venv/
 # elevation per-run re-roll counter (transient; lives on disk during a run)
 tiles2/elevation_state.json
 maps2/config/tiles2_analysis.json
+scenery/.stop
+
+# tiles 3.0 prompt bake-off output — experiment artefacts, not shipped art
+tiles/probes/
+
+# tiles 3.0 generated sheets — curated in the wiki, winners promoted out of here
+tiles/matrix/
+.claude/settings.local.json

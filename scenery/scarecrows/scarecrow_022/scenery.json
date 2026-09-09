@@ -1,0 +1,131 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-13T23:35:00+00:00",
+  "id": "scarecrow_022",
+  "group": "scarecrows",
+  "rank": 26,
+  "index": 22,
+  "name": "Sack-head, patched brown coat 022",
+  "lights": null,
+  "variety": "sack-head, patched brown coat",
+  "glow_concept": "carved turnip head lit from inside",
+  "prompt": "a scarecrow with a plump stuffed sack head and thick bulky patched clothes packed fat with straw, on a stout timber post, sack-head, patched brown coat, large, twice human height, self-emissive at night, softly radiating light: carved turnip head lit from inside",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 64,
+  "sprite": "scarecrows/scarecrow_022/sprite.webp",
+  "placement": {
+    "world_height_m": 1.055,
+    "world_px_height": 54,
+    "character_height_px": 87,
+    "character_height_m": 1.7,
+    "note": "ONE SCENERY PIXEL IS ONE PLAYER PIXEL. world_px_height IS the art's own alpha bbox height, so scenery is placed into the world at 1:1 exactly as the avatar is (setScale(1)) and the two share one pixel grid. The CAMERA still zooms the whole scene \u2014 that is uniform and correct; what must never happen is scenery being resampled on its own, against the player. world_height_m is what the art reads as beside a 87px character; declared_height_m is what it was once declared to be, and a gap between them means the ART is the wrong size.",
+    "declared_height_m": 2.23,
+    "content_box": [
+      12,
+      6,
+      53,
+      60
+    ],
+    "content_px_height": 54,
+    "canvas_render_px": 64
+  },
+  "pixellab_object_id": "b505bfd1-464e-46df-bee4-a2a3a02fca3d",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)",
+  "must_be_imbplemented_with_random_hflip": true,
+  "states": {
+    "LIT_1": {
+      "sprite": "scarecrows/scarecrow_022/sprite.webp",
+      "pixellab_object_id": "b505bfd1-464e-46df-bee4-a2a3a02fca3d",
+      "generated_at": "2026-08-13T23:35:00+00:00",
+      "rotations": {
+        "south-east": "scarecrows/scarecrow_022/rotations/south-east.webp",
+        "south-west": "scarecrows/scarecrow_022/rotations/south-west.webp",
+        "south": "scarecrows/scarecrow_022/sprite.webp"
+      }
+    },
+    "LIT_4": {
+      "sprite": "scarecrows/scarecrow_022/lit_4/sprite.webp",
+      "pixellab_object_id": "0230fbb5-269f-4979-bd3d-78f7428c8fe5",
+      "generated_at": "2026-08-16T20:40:07+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.6676,
+      "glow_score": 0.0217,
+      "rotations": {
+        "south-east": "scarecrows/scarecrow_022/lit_4/rotations/south-east.webp",
+        "south-west": "scarecrows/scarecrow_022/lit_4/rotations/south-west.webp",
+        "south": "scarecrows/scarecrow_022/lit_4/sprite.webp"
+      }
+    },
+    "NOT_LIT_2": {
+      "sprite": "scarecrows/scarecrow_022/not_lit_2/sprite.webp",
+      "pixellab_object_id": "1b05b2b2-272c-4f16-a2fe-4defd3bb3b45",
+      "generated_at": "2026-08-16T20:40:25+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.3454,
+      "glow_score": 0.0,
+      "rotations": {
+        "south-east": "scarecrows/scarecrow_022/not_lit_2/rotations/south-east.webp",
+        "south-west": "scarecrows/scarecrow_022/not_lit_2/rotations/south-west.webp",
+        "south": "scarecrows/scarecrow_022/not_lit_2/sprite.webp"
+      }
+    },
+    "NOT_LIT_3": {
+      "sprite": "scarecrows/scarecrow_022/not_lit_3/sprite.webp",
+      "pixellab_object_id": "1316b5e9-bf9c-4fe7-8e2b-8ddc39b6ac7a",
+      "generated_at": "2026-08-16T20:39:45+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.5703,
+      "glow_score": 0.081,
+      "relit_from": "LIT_2",
+      "rotations": {
+        "south-east": "scarecrows/scarecrow_022/not_lit_3/rotations/south-east.webp",
+        "south-west": "scarecrows/scarecrow_022/not_lit_3/rotations/south-west.webp",
+        "south": "scarecrows/scarecrow_022/not_lit_3/sprite.webp"
+      }
+    },
+    "NOT_LIT_4": {
+      "sprite": "scarecrows/scarecrow_022/not_lit_4/sprite.webp",
+      "pixellab_object_id": "5a5ee691-ffb4-4fed-a098-c29a7fc911a1",
+      "generated_at": "2026-08-16T20:39:55+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.6453,
+      "glow_score": 0.014,
+      "relit_from": "LIT_3",
+      "rotations": {
+        "south-east": "scarecrows/scarecrow_022/not_lit_4/rotations/south-east.webp",
+        "south-west": "scarecrows/scarecrow_022/not_lit_4/rotations/south-west.webp",
+        "south": "scarecrows/scarecrow_022/not_lit_4/sprite.webp"
+      }
+    }
+  },
+  "collision": true,
+  "hitbox_shape": "ellipse",
+  "light": {
+    "strength": 0.08,
+    "color": "#ffbe7b",
+    "radius": 1,
+    "reference": "the spawn bonfire is 1.0 (radius 7); strength 0 is no light",
+    "states": {
+      "LIT_1": {
+        "strength": 0.1,
+        "color": "#ffbe7b",
+        "radius": 1
+      },
+      "LIT_4": {
+        "strength": 0.1,
+        "color": "#ffc07c",
+        "radius": 1
+      }
+    },
+    "kind": "fire/enclosed",
+    "flame": true,
+    "embers": false
+  }
+}

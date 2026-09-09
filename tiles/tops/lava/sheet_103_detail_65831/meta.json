@@ -1,0 +1,132 @@
+{
+  "schema": "tiles3/tops@1",
+  "kind": "top_only",
+  "wall_is_meaningless": true,
+  "not_a_candidate_for": "x over y",
+  "ground": "lava",
+  "flavour": "detail",
+  "index": 103,
+  "seed": 65831,
+  "prompt": "lava, an obsidian shard in the middle, lava all around the edge",
+  "palette_top": "#fd5a02",
+  "tile_id": "fdf1c7d5-5ddb-4004-acac-c987f89cfb24",
+  "n_tiles": 16,
+  "tiles": [
+    "tile_00.webp",
+    "tile_01.webp",
+    "tile_02.webp",
+    "tile_03.webp",
+    "tile_04.webp",
+    "tile_05.webp",
+    "tile_06.webp",
+    "tile_07.webp",
+    "tile_08.webp",
+    "tile_09.webp",
+    "tile_10.webp",
+    "tile_11.webp",
+    "tile_12.webp",
+    "tile_13.webp",
+    "tile_14.webp",
+    "tile_15.webp"
+  ],
+  "settings": {
+    "tile_size": 64,
+    "tile_view": "high top-down",
+    "view_angle": 28.0,
+    "depth_ratio": 0.5,
+    "tile_type": "isometric",
+    "flat_top_px": 2,
+    "outline_mode": "segmentation"
+  },
+  "usd": 0.096,
+  "created": "2026-09-03T04:01:05+00:00",
+  "top_face": {
+    "per_tile": [
+      {
+        "colours": 29,
+        "dominant_share": 0.1574,
+        "px": 921
+      },
+      {
+        "colours": 28,
+        "dominant_share": 0.1021,
+        "px": 921
+      },
+      {
+        "colours": 28,
+        "dominant_share": 0.1466,
+        "px": 921
+      },
+      {
+        "colours": 26,
+        "dominant_share": 0.1292,
+        "px": 921
+      },
+      {
+        "colours": 29,
+        "dominant_share": 0.0997,
+        "px": 923
+      },
+      {
+        "colours": 26,
+        "dominant_share": 0.2004,
+        "px": 923
+      },
+      {
+        "colours": 29,
+        "dominant_share": 0.0986,
+        "px": 923
+      },
+      {
+        "colours": 27,
+        "dominant_share": 0.1857,
+        "px": 921
+      },
+      {
+        "colours": 28,
+        "dominant_share": 0.1227,
+        "px": 921
+      },
+      {
+        "colours": 29,
+        "dominant_share": 0.0781,
+        "px": 922
+      },
+      {
+        "colours": 27,
+        "dominant_share": 0.1939,
+        "px": 923
+      },
+      {
+        "colours": 29,
+        "dominant_share": 0.0945,
+        "px": 921
+      },
+      {
+        "colours": 27,
+        "dominant_share": 0.1182,
+        "px": 922
+      },
+      {
+        "colours": 31,
+        "dominant_share": 0.1181,
+        "px": 923
+      },
+      {
+        "colours": 27,
+        "dominant_share": 0.1053,
+        "px": 921
+      },
+      {
+        "colours": 27,
+        "dominant_share": 0.177,
+        "px": 921
+      }
+    ],
+    "mean_colours": 27.94,
+    "mean_dominant_share": 0.133
+  },
+  "motif": "an obsidian shard",
+  "motif_source": "tiles/config/details.json",
+  "walkable": true
+}

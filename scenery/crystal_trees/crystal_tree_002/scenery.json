@@ -1,0 +1,776 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-14T02:01:43+00:00",
+  "id": "crystal_tree_002",
+  "group": "crystal_trees",
+  "rank": 131,
+  "index": 2,
+  "name": "Black-barked 002",
+  "lights": null,
+  "variety": "black-barked",
+  "modifier": "half leaves half crystal",
+  "glow_concept": "the crystals glowing from within",
+  "prompt": "a small tree whose branches have grown translucent crystal shards instead of leaves, bark silvered, black-barked, half leaves half crystal, roughly six feet tall, human height, self-emissive at night, softly radiating light: the crystals glowing from within",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 64,
+  "sprite": "crystal_trees/crystal_tree_002/sprite.webp",
+  "placement": {
+    "world_height_m": 1.153,
+    "world_px_height": 59,
+    "character_height_px": 87,
+    "character_height_m": 1.7,
+    "note": "ONE SCENERY PIXEL IS ONE PLAYER PIXEL. world_px_height IS the art's own alpha bbox height, so scenery is placed into the world at 1:1 exactly as the avatar is (setScale(1)) and the two share one pixel grid. The CAMERA still zooms the whole scene \u2014 that is uniform and correct; what must never happen is scenery being resampled on its own, against the player. world_height_m is what the art reads as beside a 87px character; declared_height_m is what it was once declared to be, and a gap between them means the ART is the wrong size.",
+    "declared_height_m": 1.79,
+    "content_box": [
+      9,
+      3,
+      56,
+      62
+    ],
+    "content_px_height": 59,
+    "canvas_render_px": 64
+  },
+  "pixellab_object_id": "855e253b-d4ae-463c-a647-bd8567d6dbfc",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY",
+    "TREE"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)",
+  "must_be_imbplemented_with_random_hflip": true,
+  "states": {
+    "LIT_1": {
+      "sprite": "crystal_trees/crystal_tree_002/sprite.webp",
+      "pixellab_object_id": "855e253b-d4ae-463c-a647-bd8567d6dbfc",
+      "glow_score": 0.117,
+      "generated_at": "2026-08-14T02:04:02+00:00",
+      "animations": {
+        "wind": {
+          "group_id": "b2f9f265-a5ea-45c3-b219-344ac352fbe4",
+          "description": "Very very gentle wind. The tree is swinging back and forth with very very subtile movements. The leaves also feel very gentle movements.\n\nYou need to redraw the branches each frame in order to visualize the wind. You also need to redraw all leaves each frame to visualize that the leaves are moving.\n\nDon't just bounce the existing graphics up and down.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "crystal_trees/crystal_tree_002/animations/wind/00.webp",
+            "crystal_trees/crystal_tree_002/animations/wind/01.webp",
+            "crystal_trees/crystal_tree_002/animations/wind/02.webp",
+            "crystal_trees/crystal_tree_002/animations/wind/03.webp",
+            "crystal_trees/crystal_tree_002/animations/wind/04.webp"
+          ],
+          "strip": "crystal_trees/crystal_tree_002/animations/wind__strip.webp",
+          "generated_at": "2026-08-28T11:45:58+00:00",
+          "review": "ANIMATION_PROBABLY_GOOD",
+          "review_metrics": {
+            "base_outline": 0.0
+          },
+          "light_frames": [
+            {
+              "intensity": 1.142,
+              "dx": -0.4,
+              "dy": -12.4
+            },
+            {
+              "intensity": 1.048,
+              "dx": -0.1,
+              "dy": -12.0
+            },
+            {
+              "intensity": 0.852,
+              "dx": -1.1,
+              "dy": -11.7
+            },
+            {
+              "intensity": 0.985,
+              "dx": -1.3,
+              "dy": -12.3
+            },
+            {
+              "intensity": 0.973,
+              "dx": -0.1,
+              "dy": -11.7
+            }
+          ]
+        },
+        "motion": {
+          "group_id": "a5e8b9b3-2cce-4ce4-b7cb-425eace60e18",
+          "description": "This is the same picture in every frame. ONLY small highlights move across the crystal shards, like light catching them. Do not redraw anything else, and do not add or remove anything.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "crystal_trees/crystal_tree_002/animations/motion/00.webp",
+            "crystal_trees/crystal_tree_002/animations/motion/01.webp",
+            "crystal_trees/crystal_tree_002/animations/motion/02.webp",
+            "crystal_trees/crystal_tree_002/animations/motion/03.webp",
+            "crystal_trees/crystal_tree_002/animations/motion/04.webp"
+          ],
+          "strip": "crystal_trees/crystal_tree_002/animations/motion__strip.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-08-29T11:08:24+00:00",
+          "brief": "N15",
+          "review": "ANIMATION_PROBABLY_GOOD",
+          "review_metrics": {
+            "base_outline": 0.0
+          },
+          "light_frames": [
+            {
+              "intensity": 0.928,
+              "dx": 1.2,
+              "dy": -11.2
+            },
+            {
+              "intensity": 1.009,
+              "dx": 0.1,
+              "dy": -10.1
+            },
+            {
+              "intensity": 1.014,
+              "dx": 0.2,
+              "dy": -9.5
+            },
+            {
+              "intensity": 0.954,
+              "dx": 0.4,
+              "dy": -9.4
+            },
+            {
+              "intensity": 1.096,
+              "dx": 0.3,
+              "dy": -9.4
+            }
+          ]
+        }
+      }
+    },
+    "LIT_2": {
+      "sprite": "crystal_trees/crystal_tree_002/lit_2/sprite.webp",
+      "pixellab_object_id": "bbcd134e-a428-4ddb-8613-41a1ad3e33b4",
+      "generated_at": "2026-08-15T18:21:17+00:00",
+      "glow_concept": "light refracting in slow colors",
+      "difference_from_source": 0.8184,
+      "glow_score": 0.0672,
+      "animations": {
+        "wind": {
+          "group_id": "c82ec669-6d87-4d08-ad51-811f597afdd4",
+          "description": "Very very gentle wind. The tree is swinging back and forth with very very subtile movements. The leaves also feel very gentle movements.\n\nYou need to redraw the branches each frame in order to visualize the wind. You also need to redraw all leaves each frame to visualize that the leaves are moving.\n\nDon't just bounce the existing graphics up and down.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "crystal_trees/crystal_tree_002/lit_2/animations/wind/00.webp",
+            "crystal_trees/crystal_tree_002/lit_2/animations/wind/01.webp",
+            "crystal_trees/crystal_tree_002/lit_2/animations/wind/02.webp",
+            "crystal_trees/crystal_tree_002/lit_2/animations/wind/03.webp",
+            "crystal_trees/crystal_tree_002/lit_2/animations/wind/04.webp"
+          ],
+          "strip": "crystal_trees/crystal_tree_002/lit_2/animations/wind__strip.webp",
+          "generated_at": "2026-08-28T11:45:34+00:00",
+          "review": "ANIMATION_PROBABLY_GOOD",
+          "review_metrics": {
+            "base_outline": 0.0
+          },
+          "light_frames": [
+            {
+              "intensity": 0.935,
+              "dx": -0.4,
+              "dy": -23.1
+            },
+            {
+              "intensity": 1.042,
+              "dx": -2.9,
+              "dy": -22.5
+            },
+            {
+              "intensity": 1.045,
+              "dx": 0.3,
+              "dy": -21.7
+            },
+            {
+              "intensity": 1.1,
+              "dx": 0.3,
+              "dy": -22.2
+            },
+            {
+              "intensity": 0.879,
+              "dx": -5.1,
+              "dy": -22.6
+            }
+          ]
+        },
+        "motion": {
+          "group_id": "507f66ea-af3d-4f55-837d-50d51998036f",
+          "description": "This is the same picture in every frame. ONLY one small bright glint moves, sliding slowly from one shard to another. Everything else is frozen and pixel-for-pixel identical in every frame. Do not redraw anything else, and do not add or remove anything.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "crystal_trees/crystal_tree_002/lit_2/animations/motion/00.webp",
+            "crystal_trees/crystal_tree_002/lit_2/animations/motion/01.webp",
+            "crystal_trees/crystal_tree_002/lit_2/animations/motion/02.webp",
+            "crystal_trees/crystal_tree_002/lit_2/animations/motion/03.webp",
+            "crystal_trees/crystal_tree_002/lit_2/animations/motion/04.webp"
+          ],
+          "strip": "crystal_trees/crystal_tree_002/lit_2/animations/motion__strip.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-08-29T12:40:21+00:00",
+          "brief": "R21",
+          "review": "ANIMATION_PROBABLY_GOOD",
+          "review_metrics": {
+            "base_outline": 0.0
+          },
+          "light_frames": [
+            {
+              "intensity": 0.904,
+              "dx": -0.4,
+              "dy": -23.1
+            },
+            {
+              "intensity": 1.117,
+              "dx": -1.4,
+              "dy": -22.5
+            },
+            {
+              "intensity": 1.17,
+              "dx": -2.1,
+              "dy": -22.2
+            },
+            {
+              "intensity": 0.851,
+              "dx": -5.1,
+              "dy": -22.1
+            },
+            {
+              "intensity": 0.957,
+              "dx": -1.9,
+              "dy": -22.4
+            }
+          ]
+        }
+      }
+    },
+    "LIT_3": {
+      "sprite": "crystal_trees/crystal_tree_002/lit_3/sprite.webp",
+      "pixellab_object_id": "7ab55bd8-b9c4-4883-ba09-5412091d3d3a",
+      "generated_at": "2026-08-15T20:35:11+00:00",
+      "glow_concept": "one shard blazing like a star",
+      "difference_from_source": 0.6076,
+      "glow_score": 0.2582,
+      "animations": {
+        "wind": {
+          "group_id": "8cc9e1fa-5241-4759-bb85-efe44dc0d84f",
+          "description": "Very very gentle wind. The tree is swinging back and forth with very very subtile movements. The leaves also feel very gentle movements.\n\nYou need to redraw the branches each frame in order to visualize the wind. You also need to redraw all leaves each frame to visualize that the leaves are moving.\n\nDon't just bounce the existing graphics up and down.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "crystal_trees/crystal_tree_002/lit_3/animations/wind/00.webp",
+            "crystal_trees/crystal_tree_002/lit_3/animations/wind/01.webp",
+            "crystal_trees/crystal_tree_002/lit_3/animations/wind/02.webp",
+            "crystal_trees/crystal_tree_002/lit_3/animations/wind/03.webp",
+            "crystal_trees/crystal_tree_002/lit_3/animations/wind/04.webp"
+          ],
+          "strip": "crystal_trees/crystal_tree_002/lit_3/animations/wind__strip.webp",
+          "generated_at": "2026-08-28T11:45:58+00:00",
+          "review": "ANIMATION_PROBABLY_GOOD",
+          "review_metrics": {
+            "base_outline": 0.0
+          },
+          "light_frames": [
+            {
+              "intensity": 1.5,
+              "dx": -0.9,
+              "dy": -8.0
+            },
+            {
+              "intensity": 0.651,
+              "dx": -0.6,
+              "dy": -8.5
+            },
+            {
+              "intensity": 0.649,
+              "dx": -0.1,
+              "dy": -14.2
+            },
+            {
+              "intensity": 1.019,
+              "dx": -1.6,
+              "dy": -11.6
+            },
+            {
+              "intensity": 0.942,
+              "dx": -1.4,
+              "dy": -12.3
+            }
+          ]
+        },
+        "motion": {
+          "group_id": "4c88960a-8943-4849-b70e-554413d1c485",
+          "description": "This is the same picture in every frame. ONLY the light of the single blazing shard brightens and dims, very slowly. Everything else is frozen and pixel-for-pixel identical in every frame. Do not redraw anything else, and do not add or remove anything.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "crystal_trees/crystal_tree_002/lit_3/animations/motion/00.webp",
+            "crystal_trees/crystal_tree_002/lit_3/animations/motion/01.webp",
+            "crystal_trees/crystal_tree_002/lit_3/animations/motion/02.webp",
+            "crystal_trees/crystal_tree_002/lit_3/animations/motion/03.webp",
+            "crystal_trees/crystal_tree_002/lit_3/animations/motion/04.webp"
+          ],
+          "strip": "crystal_trees/crystal_tree_002/lit_3/animations/motion__strip.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-08-29T12:39:24+00:00",
+          "brief": "R20",
+          "review": "ANIMATION_PROBABLY_GOOD",
+          "review_metrics": {
+            "base_outline": 0.0
+          },
+          "light_frames": [
+            {
+              "intensity": 1.5,
+              "dx": -0.9,
+              "dy": -8.0
+            },
+            {
+              "intensity": 1.232,
+              "dx": -0.1,
+              "dy": -8.5
+            },
+            {
+              "intensity": 0.716,
+              "dx": -0.1,
+              "dy": -9.6
+            },
+            {
+              "intensity": 1.147,
+              "dx": -0.9,
+              "dy": -7.9
+            },
+            {
+              "intensity": 0.5,
+              "dx": -0.5,
+              "dy": -8.5
+            }
+          ]
+        }
+      }
+    },
+    "LIT_4": {
+      "sprite": "crystal_trees/crystal_tree_002/lit_4/sprite.webp",
+      "pixellab_object_id": "ab4a8509-50dd-44ba-bc96-3cd2d3b6f1ab",
+      "generated_at": "2026-08-15T18:20:50+00:00",
+      "glow_concept": "light refracting in slow colors",
+      "difference_from_source": 0.8431,
+      "glow_score": 0.2071,
+      "animations": {
+        "wind": {
+          "group_id": "2f48df77-d67f-4e04-9b09-8a92c08ba3e1",
+          "description": "Very very gentle wind. The tree is swinging back and forth with very very subtile movements. The leaves also feel very gentle movements.\n\nYou need to redraw the branches each frame in order to visualize the wind. You also need to redraw all leaves each frame to visualize that the leaves are moving.\n\nDon't just bounce the existing graphics up and down.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "crystal_trees/crystal_tree_002/lit_4/animations/wind/00.webp",
+            "crystal_trees/crystal_tree_002/lit_4/animations/wind/01.webp",
+            "crystal_trees/crystal_tree_002/lit_4/animations/wind/02.webp",
+            "crystal_trees/crystal_tree_002/lit_4/animations/wind/03.webp",
+            "crystal_trees/crystal_tree_002/lit_4/animations/wind/04.webp"
+          ],
+          "strip": "crystal_trees/crystal_tree_002/lit_4/animations/wind__strip.webp",
+          "generated_at": "2026-08-28T11:46:07+00:00",
+          "review": "ANIMATION_PROBABLY_GOOD",
+          "review_metrics": {
+            "base_outline": 0.0
+          },
+          "light_frames": [
+            {
+              "intensity": 1.472,
+              "dx": -5.2,
+              "dy": -19.0
+            },
+            {
+              "intensity": 1.5,
+              "dx": -3.3,
+              "dy": -19.0
+            },
+            {
+              "intensity": 1.5,
+              "dx": -3.3,
+              "dy": -19.0
+            },
+            {
+              "intensity": 0.5,
+              "dx": -0.0,
+              "dy": -21.3
+            },
+            {
+              "intensity": 0.5,
+              "dx": -2.9,
+              "dy": -19.5
+            }
+          ]
+        }
+      }
+    },
+    "NOT_LIT_1": {
+      "sprite": "crystal_trees/crystal_tree_002/not_lit_1/sprite.webp",
+      "pixellab_object_id": "14d9016b-183c-41c7-a9f0-10911224c50e",
+      "glow_concept": null,
+      "difference_from_source": 0.7677,
+      "glow_score": 0.111,
+      "generated_at": "2026-08-15T14:47:58+00:00",
+      "animations": {
+        "wind": {
+          "group_id": "603df4f6-c9c7-4b9f-805c-0d00c40d26c4",
+          "description": "Very very gentle wind. The tree is swinging back and forth with very very subtile movements. The leaves also feel very gentle movements.\n\nYou need to redraw the branches each frame in order to visualize the wind. You also need to redraw all leaves each frame to visualize that the leaves are moving.\n\nDon't just bounce the existing graphics up and down.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "crystal_trees/crystal_tree_002/not_lit_1/animations/wind/00.webp",
+            "crystal_trees/crystal_tree_002/not_lit_1/animations/wind/01.webp",
+            "crystal_trees/crystal_tree_002/not_lit_1/animations/wind/02.webp",
+            "crystal_trees/crystal_tree_002/not_lit_1/animations/wind/03.webp",
+            "crystal_trees/crystal_tree_002/not_lit_1/animations/wind/04.webp"
+          ],
+          "strip": "crystal_trees/crystal_tree_002/not_lit_1/animations/wind__strip.webp",
+          "generated_at": "2026-08-28T11:46:02+00:00",
+          "review": "ANIMATION_PROBABLY_GOOD",
+          "review_metrics": {
+            "base_outline": 0.0
+          }
+        }
+      }
+    },
+    "NOT_LIT_10": {
+      "sprite": "crystal_trees/crystal_tree_002/not_lit_10/sprite.webp",
+      "pixellab_object_id": "d0a087f1-8aba-4256-a3cd-79f0187a0d35",
+      "glow_concept": null,
+      "difference_from_source": 0.9409,
+      "glow_score": 0.0683,
+      "generated_at": "2026-08-15T14:47:58+00:00",
+      "animations": {
+        "wind": {
+          "group_id": "c55a32c3-46dc-4e60-a1af-5cd76118290b",
+          "description": "Very very gentle wind. The tree is swinging back and forth with very very subtile movements. The leaves also feel very gentle movements.\n\nYou need to redraw the branches each frame in order to visualize the wind. You also need to redraw all leaves each frame to visualize that the leaves are moving.\n\nDon't just bounce the existing graphics up and down.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "crystal_trees/crystal_tree_002/not_lit_10/animations/wind/00.webp",
+            "crystal_trees/crystal_tree_002/not_lit_10/animations/wind/01.webp",
+            "crystal_trees/crystal_tree_002/not_lit_10/animations/wind/02.webp",
+            "crystal_trees/crystal_tree_002/not_lit_10/animations/wind/03.webp",
+            "crystal_trees/crystal_tree_002/not_lit_10/animations/wind/04.webp"
+          ],
+          "strip": "crystal_trees/crystal_tree_002/not_lit_10/animations/wind__strip.webp",
+          "generated_at": "2026-08-28T11:45:42+00:00",
+          "review": "ANIMATION_PROBABLY_GOOD",
+          "review_metrics": {
+            "base_outline": 0.0
+          }
+        }
+      }
+    },
+    "NOT_LIT_2": {
+      "sprite": "crystal_trees/crystal_tree_002/not_lit_2/sprite.webp",
+      "pixellab_object_id": "0ffb8ecb-9e3d-4d4c-af61-1f4631163e61",
+      "glow_concept": null,
+      "difference_from_source": 0.7008,
+      "glow_score": 0.0151,
+      "generated_at": "2026-08-15T14:47:58+00:00",
+      "animations": {
+        "wind": {
+          "group_id": "40acfb25-4cfc-4cc4-8d8b-c9122d4dc18c",
+          "description": "Very very gentle wind. The tree is swinging back and forth with very very subtile movements. The leaves also feel very gentle movements.\n\nYou need to redraw the branches each frame in order to visualize the wind. You also need to redraw all leaves each frame to visualize that the leaves are moving.\n\nDon't just bounce the existing graphics up and down.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "crystal_trees/crystal_tree_002/not_lit_2/animations/wind/00.webp",
+            "crystal_trees/crystal_tree_002/not_lit_2/animations/wind/01.webp",
+            "crystal_trees/crystal_tree_002/not_lit_2/animations/wind/02.webp",
+            "crystal_trees/crystal_tree_002/not_lit_2/animations/wind/03.webp",
+            "crystal_trees/crystal_tree_002/not_lit_2/animations/wind/04.webp"
+          ],
+          "strip": "crystal_trees/crystal_tree_002/not_lit_2/animations/wind__strip.webp",
+          "generated_at": "2026-08-28T11:45:42+00:00",
+          "review": "ANIMATION_PROBABLY_GOOD",
+          "review_metrics": {
+            "base_outline": 0.0551
+          }
+        }
+      }
+    },
+    "NOT_LIT_3": {
+      "sprite": "crystal_trees/crystal_tree_002/not_lit_3/sprite.webp",
+      "pixellab_object_id": "badfc200-45ab-42b8-ab27-d11be206113a",
+      "glow_concept": null,
+      "difference_from_source": 0.8251,
+      "glow_score": 0.0147,
+      "generated_at": "2026-08-15T14:47:58+00:00",
+      "animations": {
+        "wind": {
+          "group_id": "9c9750b1-a2dd-45b4-883f-9b44436fd955",
+          "description": "Very very gentle wind. The tree is swinging back and forth with very very subtile movements. The leaves also feel very gentle movements.\n\nYou need to redraw the branches each frame in order to visualize the wind. You also need to redraw all leaves each frame to visualize that the leaves are moving.\n\nDon't just bounce the existing graphics up and down.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "crystal_trees/crystal_tree_002/not_lit_3/animations/wind/00.webp",
+            "crystal_trees/crystal_tree_002/not_lit_3/animations/wind/01.webp",
+            "crystal_trees/crystal_tree_002/not_lit_3/animations/wind/02.webp",
+            "crystal_trees/crystal_tree_002/not_lit_3/animations/wind/03.webp",
+            "crystal_trees/crystal_tree_002/not_lit_3/animations/wind/04.webp"
+          ],
+          "strip": "crystal_trees/crystal_tree_002/not_lit_3/animations/wind__strip.webp",
+          "generated_at": "2026-08-28T11:46:23+00:00",
+          "review": "ANIMATION_PROBABLY_GOOD",
+          "review_metrics": {
+            "base_outline": 0.0
+          }
+        }
+      }
+    },
+    "NOT_LIT_4": {
+      "sprite": "crystal_trees/crystal_tree_002/not_lit_4/sprite.webp",
+      "pixellab_object_id": "b7b1e135-e84b-47bd-b483-270d3956dfbc",
+      "glow_concept": null,
+      "difference_from_source": 0.8811,
+      "glow_score": 0.0,
+      "generated_at": "2026-08-15T14:47:58+00:00",
+      "animations": {
+        "wind": {
+          "group_id": "0a53ce0f-0a4b-4e54-9668-f8caca15f753",
+          "description": "Very very gentle wind. The tree is swinging back and forth with very very subtile movements. The leaves also feel very gentle movements.\n\nYou need to redraw the branches each frame in order to visualize the wind. You also need to redraw all leaves each frame to visualize that the leaves are moving.\n\nDon't just bounce the existing graphics up and down.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "crystal_trees/crystal_tree_002/not_lit_4/animations/wind/00.webp",
+            "crystal_trees/crystal_tree_002/not_lit_4/animations/wind/01.webp",
+            "crystal_trees/crystal_tree_002/not_lit_4/animations/wind/02.webp",
+            "crystal_trees/crystal_tree_002/not_lit_4/animations/wind/03.webp",
+            "crystal_trees/crystal_tree_002/not_lit_4/animations/wind/04.webp"
+          ],
+          "strip": "crystal_trees/crystal_tree_002/not_lit_4/animations/wind__strip.webp",
+          "generated_at": "2026-08-28T11:45:50+00:00",
+          "review": "ANIMATION_PROBABLY_GOOD",
+          "review_metrics": {
+            "base_outline": 0.0
+          }
+        }
+      }
+    },
+    "NOT_LIT_5": {
+      "sprite": "crystal_trees/crystal_tree_002/not_lit_5/sprite.webp",
+      "pixellab_object_id": "179b33de-f858-4b0f-b421-5ef153a467be",
+      "glow_concept": null,
+      "difference_from_source": 0.5741,
+      "glow_score": 0.0062,
+      "generated_at": "2026-08-15T14:47:58+00:00",
+      "animations": {
+        "wind": {
+          "group_id": "9a90573a-03e8-4fb1-a935-d52ec8f3d453",
+          "description": "Very very gentle wind. The tree is swinging back and forth with very very subtile movements. The leaves also feel very gentle movements.\n\nYou need to redraw the branches each frame in order to visualize the wind. You also need to redraw all leaves each frame to visualize that the leaves are moving.\n\nDon't just bounce the existing graphics up and down.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "crystal_trees/crystal_tree_002/not_lit_5/animations/wind/00.webp",
+            "crystal_trees/crystal_tree_002/not_lit_5/animations/wind/01.webp",
+            "crystal_trees/crystal_tree_002/not_lit_5/animations/wind/02.webp",
+            "crystal_trees/crystal_tree_002/not_lit_5/animations/wind/03.webp",
+            "crystal_trees/crystal_tree_002/not_lit_5/animations/wind/04.webp"
+          ],
+          "strip": "crystal_trees/crystal_tree_002/not_lit_5/animations/wind__strip.webp",
+          "generated_at": "2026-08-28T11:46:15+00:00",
+          "review": "ANIMATION_PROBABLY_GOOD",
+          "review_metrics": {
+            "base_outline": 0.0
+          }
+        }
+      }
+    },
+    "NOT_LIT_6": {
+      "sprite": "crystal_trees/crystal_tree_002/not_lit_6/sprite.webp",
+      "pixellab_object_id": "5a1158b4-d2c5-4d8c-b732-a0d34c577364",
+      "glow_concept": null,
+      "difference_from_source": 0.6814,
+      "glow_score": 0.0147,
+      "generated_at": "2026-08-15T14:47:58+00:00",
+      "animations": {
+        "wind": {
+          "group_id": "ddebab78-936b-4688-b4c1-7fc058da8ccc",
+          "description": "Very very gentle wind. The tree is swinging back and forth with very very subtile movements. The leaves also feel very gentle movements.\n\nYou need to redraw the branches each frame in order to visualize the wind. You also need to redraw all leaves each frame to visualize that the leaves are moving.\n\nDon't just bounce the existing graphics up and down.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "crystal_trees/crystal_tree_002/not_lit_6/animations/wind/00.webp",
+            "crystal_trees/crystal_tree_002/not_lit_6/animations/wind/01.webp",
+            "crystal_trees/crystal_tree_002/not_lit_6/animations/wind/02.webp",
+            "crystal_trees/crystal_tree_002/not_lit_6/animations/wind/03.webp",
+            "crystal_trees/crystal_tree_002/not_lit_6/animations/wind/04.webp"
+          ],
+          "strip": "crystal_trees/crystal_tree_002/not_lit_6/animations/wind__strip.webp",
+          "generated_at": "2026-08-28T11:45:34+00:00",
+          "review": "ANIMATION_PROBABLY_GOOD",
+          "review_metrics": {
+            "base_outline": 0.0087
+          }
+        }
+      }
+    },
+    "NOT_LIT_7": {
+      "sprite": "crystal_trees/crystal_tree_002/not_lit_7/sprite.webp",
+      "pixellab_object_id": "5d67ea80-b6ee-4315-91a5-3e1ac18701d6",
+      "glow_concept": null,
+      "difference_from_source": 0.8505,
+      "glow_score": 0.0,
+      "generated_at": "2026-08-15T14:47:58+00:00",
+      "animations": {
+        "wind": {
+          "group_id": "45af089d-5788-4136-923f-be5415e7bb95",
+          "description": "Very very gentle wind. The tree is swinging back and forth with very very subtile movements. The leaves also feel very gentle movements.\n\nYou need to redraw the branches each frame in order to visualize the wind. You also need to redraw all leaves each frame to visualize that the leaves are moving.\n\nDon't just bounce the existing graphics up and down.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "crystal_trees/crystal_tree_002/not_lit_7/animations/wind/00.webp",
+            "crystal_trees/crystal_tree_002/not_lit_7/animations/wind/01.webp",
+            "crystal_trees/crystal_tree_002/not_lit_7/animations/wind/02.webp",
+            "crystal_trees/crystal_tree_002/not_lit_7/animations/wind/03.webp",
+            "crystal_trees/crystal_tree_002/not_lit_7/animations/wind/04.webp"
+          ],
+          "strip": "crystal_trees/crystal_tree_002/not_lit_7/animations/wind__strip.webp",
+          "generated_at": "2026-08-28T11:46:07+00:00",
+          "review": "ANIMATION_PROBABLY_GOOD",
+          "review_metrics": {
+            "base_outline": 0.0
+          }
+        }
+      }
+    },
+    "NOT_LIT_8": {
+      "sprite": "crystal_trees/crystal_tree_002/not_lit_8/sprite.webp",
+      "pixellab_object_id": "54b9871b-6041-4c5c-ae1c-e9125e1e7954",
+      "glow_concept": null,
+      "difference_from_source": 0.8988,
+      "glow_score": 0.0051,
+      "generated_at": "2026-08-15T14:47:58+00:00",
+      "animations": {
+        "wind": {
+          "group_id": "e815c183-ed4f-4997-bc66-a114f736e517",
+          "description": "Very very gentle wind. The tree is swinging back and forth with very very subtile movements. The leaves also feel very gentle movements.\n\nYou need to redraw the branches each frame in order to visualize the wind. You also need to redraw all leaves each frame to visualize that the leaves are moving.\n\nDon't just bounce the existing graphics up and down.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "crystal_trees/crystal_tree_002/not_lit_8/animations/wind/00.webp",
+            "crystal_trees/crystal_tree_002/not_lit_8/animations/wind/01.webp",
+            "crystal_trees/crystal_tree_002/not_lit_8/animations/wind/02.webp",
+            "crystal_trees/crystal_tree_002/not_lit_8/animations/wind/03.webp",
+            "crystal_trees/crystal_tree_002/not_lit_8/animations/wind/04.webp"
+          ],
+          "strip": "crystal_trees/crystal_tree_002/not_lit_8/animations/wind__strip.webp",
+          "generated_at": "2026-08-28T15:59:59+00:00",
+          "review": "ANIMATION_PROBABLY_GOOD",
+          "review_metrics": {
+            "base_outline": 0.0
+          }
+        }
+      }
+    },
+    "NOT_LIT_9": {
+      "sprite": "crystal_trees/crystal_tree_002/not_lit_9/sprite.webp",
+      "pixellab_object_id": "888a2c33-512b-4577-8a9f-bba398b3282d",
+      "glow_concept": null,
+      "difference_from_source": 0.8578,
+      "glow_score": 0.0888,
+      "generated_at": "2026-08-15T14:47:58+00:00",
+      "animations": {
+        "wind": {
+          "group_id": "9cde866d-2395-497a-b9f1-e83927ee5f55",
+          "description": "Very very gentle wind. The tree is swinging back and forth with very very subtile movements. The leaves also feel very gentle movements.\n\nYou need to redraw the branches each frame in order to visualize the wind. You also need to redraw all leaves each frame to visualize that the leaves are moving.\n\nDon't just bounce the existing graphics up and down.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "crystal_trees/crystal_tree_002/not_lit_9/animations/wind/00.webp",
+            "crystal_trees/crystal_tree_002/not_lit_9/animations/wind/01.webp",
+            "crystal_trees/crystal_tree_002/not_lit_9/animations/wind/02.webp",
+            "crystal_trees/crystal_tree_002/not_lit_9/animations/wind/03.webp",
+            "crystal_trees/crystal_tree_002/not_lit_9/animations/wind/04.webp"
+          ],
+          "strip": "crystal_trees/crystal_tree_002/not_lit_9/animations/wind__strip.webp",
+          "generated_at": "2026-08-28T15:59:59+00:00",
+          "review": "ANIMATION_PROBABLY_GOOD",
+          "review_metrics": {
+            "base_outline": 0.0
+          }
+        }
+      }
+    }
+  },
+  "collision": true,
+  "hitbox_shape": "ellipse",
+  "light": {
+    "strength": 0.35,
+    "color": "#ffede6",
+    "radius": 6,
+    "reference": "the spawn bonfire is 1.0 (radius 7); strength 0 is no light",
+    "states": {
+      "LIT_1": {
+        "strength": 0.28,
+        "color": "#ffede6",
+        "radius": 5
+      },
+      "LIT_2": {
+        "strength": 0.28,
+        "color": "#ffeddf",
+        "radius": 5
+      },
+      "LIT_3": {
+        "strength": 0.35,
+        "color": "#ffe9f5",
+        "radius": 6
+      },
+      "LIT_4": {
+        "strength": 0.35,
+        "color": "#f6ffeb",
+        "radius": 6
+      }
+    },
+    "kind": "glow/mineral",
+    "flame": false,
+    "embers": false
+  },
+  "type": "NATURE"
+}

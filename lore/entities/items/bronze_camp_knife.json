@@ -1,0 +1,22 @@
+{
+  "domain": "items",
+  "id": "bronze_camp_knife",
+  "name_seen": "Bronze Knife",
+  "law": "II",
+  "description": "Camp bronze on a ribbed wooden grip, made for rope and rations. It comes off a mule that is carrying nothing.",
+  "lore": [
+    "It is sold as a trophy and it is a bread knife. Soft bronze, the edge honed back three fingers' worth over years, a guard on it because guards were the fashion where it was made and not because anything was ever coming the other way. [[characters/646b922c|Sigrun]] has had a dozen of them across her bench and says the same thing about every one: this has never been fought with. It cut rope. It cut rations. It went back in the roll clean.",
+    "Buyers hear that and pay the thirty-two gold anyway, because a knife that came down off [[monsters/dark_donkey|an animal still walking the old east road]] is a story and a bread knife is not. Sigrun does not argue them out of it. Her view is that they have the better story and have picked the wrong reason for wanting it — somebody packed this for a journey, with cheese and a length of rope, and the journey is still going."
+  ],
+  "related": [
+    {
+      "domain": "monsters",
+      "id": "dark_donkey"
+    },
+    {
+      "domain": "lore",
+      "id": "the_hard_pieces"
+    }
+  ],
+  "gm_notes": "Sigrun as a reader of edges rather than a widow — use her professionally as often as possible so the one time she is not lands. Trophy pricing is sentiment; she prices the hand that held it."
+}

@@ -1,0 +1,97 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-14T03:59:39+00:00",
+  "id": "cliff_shrub_016",
+  "group": "cliff_shrubs",
+  "rank": 157,
+  "index": 16,
+  "name": "Grey-leaved sea buckthorn 016",
+  "lights": null,
+  "variety": "grey-leaved sea buckthorn",
+  "modifier": "perched on a tiny ledge",
+  "glow_concept": "the leaves shining faintly",
+  "prompt": "a tough windbent shrub whose trunk kinks hard sideways then turns up, its bare gripping roots clenched around a single small stone at its base, an organic RAGGED IRREGULAR silhouette with leaves and strands trailing off unevenly at the edges and a torn uneven bottom \u2014 never a rectangle, never a straight edge, never a filled panel or square sheet, no hard border of any kind \u2014 ONLY the plant itself, isolated on a fully transparent background, NO rock, NO cliff, NO stone wall, NO mountain, NO ground, nothing behind it, grey-leaved sea buckthorn, perched on a tiny ledge, tall, about three times human height, self-emissive at night, softly radiating light: the leaves shining faintly",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 192,
+  "sprite": "cliff_shrubs/cliff_shrub_016/sprite.webp",
+  "placement": {
+    "world_height_m": 3.341,
+    "world_px_height": 171,
+    "character_height_px": 87,
+    "character_height_m": 1.7,
+    "note": "ONE SCENERY PIXEL IS ONE PLAYER PIXEL. world_px_height IS the art's own alpha bbox height, so scenery is placed into the world at 1:1 exactly as the avatar is (setScale(1)) and the two share one pixel grid. The CAMERA still zooms the whole scene \u2014 that is uniform and correct; what must never happen is scenery being resampled on its own, against the player. world_height_m is what the art reads as beside a 87px character; declared_height_m is what it was once declared to be, and a gap between them means the ART is the wrong size.",
+    "declared_height_m": 3.61,
+    "content_box": [
+      36,
+      12,
+      156,
+      183
+    ],
+    "content_px_height": 171,
+    "canvas_render_px": 192
+  },
+  "pixellab_object_id": "2ff5dcf8-7d44-4a4f-a105-7a1b9ffa8499",
+  "pixellab_directions": 1,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-1-direction-object (single, S-only)",
+  "must_be_imbplemented_with_random_hflip": true,
+  "states": {
+    "NOT_LIT_1": {
+      "sprite": "cliff_shrubs/cliff_shrub_016/not_lit_1/sprite.webp",
+      "pixellab_object_id": "11d75d0a-3b9b-47f4-9c8c-0252957eef6b",
+      "generated_at": "2026-08-16T10:00:16+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.53,
+      "glow_score": 0.055
+    },
+    "NOT_LIT_2": {
+      "sprite": "cliff_shrubs/cliff_shrub_016/not_lit_2/sprite.webp",
+      "pixellab_object_id": "d75a25c1-a60a-40f2-9754-8f2836211c40",
+      "generated_at": "2026-08-16T10:00:55+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.7864,
+      "glow_score": 0.0
+    },
+    "NOT_LIT_3": {
+      "sprite": "cliff_shrubs/cliff_shrub_016/sprite.webp",
+      "pixellab_object_id": "2ff5dcf8-7d44-4a4f-a105-7a1b9ffa8499",
+      "generated_at": "2026-08-14T03:59:39+00:00",
+      "relit_from": "LIT_1"
+    },
+    "NOT_LIT_4": {
+      "sprite": "cliff_shrubs/cliff_shrub_016/not_lit_4/sprite.webp",
+      "pixellab_object_id": "3dda49bc-d3b3-43d0-a0d4-1eaadf60c3e0",
+      "generated_at": "2026-08-16T09:59:41+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.6328,
+      "glow_score": 0.082,
+      "relit_from": "LIT_2"
+    },
+    "NOT_LIT_5": {
+      "sprite": "cliff_shrubs/cliff_shrub_016/not_lit_5/sprite.webp",
+      "pixellab_object_id": "d5ac804f-fa78-436f-b435-14f1b92163e4",
+      "generated_at": "2026-08-16T10:00:15+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.565,
+      "glow_score": 0.1106,
+      "relit_from": "LIT_3"
+    },
+    "NOT_LIT_6": {
+      "sprite": "cliff_shrubs/cliff_shrub_016/not_lit_6/sprite.webp",
+      "pixellab_object_id": "8327cfc8-8b55-44ee-8f74-e5263783cab4",
+      "generated_at": "2026-08-16T10:00:04+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.9162,
+      "glow_score": 0.0627,
+      "relit_from": "LIT_4"
+    }
+  },
+  "collision": true,
+  "hitbox_shape": "ellipse",
+  "type": "NATURE"
+}

@@ -1,0 +1,282 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-15T18:11:51+00:00",
+  "id": "stone_054",
+  "group": "stones",
+  "type": "NATURE",
+  "rank": 2,
+  "index": 54,
+  "name": "Split rock with sharp cleft 054",
+  "lights": null,
+  "variety": "split rock with sharp cleft",
+  "modifier": "unusually broad and squat",
+  "glow_concept": "patches of luminous blue-green moss",
+  "prompt": "a single natural fieldstone boulder resting on the ground, rounded and weathered, with subtle cracks, pits and patches of moss, split rock with sharp cleft, unusually broad and squat, roughly six feet tall, human height, self-emissive at night, softly radiating light: patches of luminous blue-green moss",
+  "view": "low top-down",
+  "direction": "south",
+  "directions": [
+    "south"
+  ],
+  "must_be_imbplemented_with_random_hflip": true,
+  "rotations": null,
+  "size": 64,
+  "sprite": "stones/stone_054/sprite.webp",
+  "placement": {
+    "world_height_m": 0.899,
+    "world_px_height": 46,
+    "character_height_px": 87,
+    "character_height_m": 1.7,
+    "note": "ONE SCENERY PIXEL IS ONE PLAYER PIXEL. world_px_height IS the art's own alpha bbox height, so scenery is placed into the world at 1:1 exactly as the avatar is (setScale(1)) and the two share one pixel grid. The CAMERA still zooms the whole scene \u2014 that is uniform and correct; what must never happen is scenery being resampled on its own, against the player. world_height_m is what the art reads as beside a 87px character; declared_height_m is what it was once declared to be, and a gap between them means the ART is the wrong size.",
+    "content_box": [
+      5,
+      9,
+      60,
+      55
+    ],
+    "content_px_height": 46,
+    "canvas_render_px": 64,
+    "declared_height_m": 1.33
+  },
+  "pixellab_object_id": "1500007a-17ac-42f6-8553-430f5341d8ae",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)",
+  "states": {
+    "LIT_1": {
+      "sprite": "stones/stone_054/sprite.webp",
+      "pixellab_object_id": "1500007a-17ac-42f6-8553-430f5341d8ae",
+      "generated_at": "2026-08-15T18:11:51+00:00"
+    },
+    "LIT_2": {
+      "sprite": "stones/stone_054/lit_2/sprite.webp",
+      "pixellab_object_id": "814ad4bf-4915-433a-b794-eb5873482a12",
+      "generated_at": "2026-08-16T22:23:33+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.8243,
+      "glow_score": 0.0307,
+      "animations": {
+        "motion": {
+          "group_id": "95d545ce-f97d-42c5-9a99-98b555dc4664",
+          "description": "This is an almost completely still picture. ONLY the cyan gems in the rocks change. Their brightness lifts very slightly and comes straight back: no more than a few pixels change anywhere in the whole picture. At their brightest they are still exactly the same cyan as in the first frame -- never pale, never white, never any other colour. They never fade, never vanish, never spread and never change shape. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "stones/stone_054/lit_2/animations/motion/00.webp",
+            "stones/stone_054/lit_2/animations/motion/01.webp",
+            "stones/stone_054/lit_2/animations/motion/02.webp",
+            "stones/stone_054/lit_2/animations/motion/03.webp",
+            "stones/stone_054/lit_2/animations/motion/04.webp"
+          ],
+          "strip": "stones/stone_054/lit_2/animations/motion__strip.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-08-30T10:08:03+00:00",
+          "brief": "J31",
+          "review": "ANIMATION_PROBABLY_GOOD",
+          "review_metrics": {
+            "base_outline": 0.0
+          },
+          "light_frames": [
+            {
+              "intensity": 1.5,
+              "dx": -0.5,
+              "dy": 6.8
+            },
+            {
+              "intensity": 0.5,
+              "dx": -6.4,
+              "dy": -12.4
+            },
+            {
+              "intensity": 1.051,
+              "dx": 0.7,
+              "dy": 9.4
+            },
+            {
+              "intensity": 1.5,
+              "dx": -3.1,
+              "dy": 3.2
+            },
+            {
+              "intensity": 0.5,
+              "dx": -0.4,
+              "dy": 10.5
+            }
+          ]
+        }
+      }
+    },
+    "LIT_3": {
+      "sprite": "stones/stone_054/lit_3/sprite.webp",
+      "pixellab_object_id": "009538ce-604f-4d0a-a713-14f4ca92acab",
+      "generated_at": "2026-08-16T22:23:34+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.6193,
+      "glow_score": 0.0123,
+      "animations": {
+        "motion": {
+          "group_id": "376f3c9a-e398-47a9-a989-20c831f9cb74",
+          "description": "This is an almost completely still picture. ONLY the cyan gems in the rocks change. Their brightness lifts very slightly and comes straight back: no more than a few pixels change anywhere in the whole picture. At their brightest they are still exactly the same cyan as in the first frame -- never pale, never white, never any other colour. They never fade, never vanish, never spread and never change shape. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "stones/stone_054/lit_3/animations/motion/00.webp",
+            "stones/stone_054/lit_3/animations/motion/01.webp",
+            "stones/stone_054/lit_3/animations/motion/02.webp",
+            "stones/stone_054/lit_3/animations/motion/03.webp",
+            "stones/stone_054/lit_3/animations/motion/04.webp"
+          ],
+          "strip": "stones/stone_054/lit_3/animations/motion__strip.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-08-30T10:08:18+00:00",
+          "brief": "J32",
+          "review": "ANIMATION_PROBABLY_GOOD",
+          "review_metrics": {
+            "base_outline": 0.0
+          },
+          "light_frames": [
+            {
+              "intensity": 0.5,
+              "dx": -4.8,
+              "dy": 10.6
+            },
+            {
+              "intensity": 1.246,
+              "dx": -1.8,
+              "dy": 1.9
+            },
+            {
+              "intensity": 1.254,
+              "dx": -3.2,
+              "dy": 1.3
+            },
+            {
+              "intensity": 1.009,
+              "dx": -2.6,
+              "dy": 0.9
+            },
+            {
+              "intensity": 1.11,
+              "dx": -3.6,
+              "dy": 2.1
+            }
+          ]
+        }
+      }
+    },
+    "LIT_4": {
+      "sprite": "stones/stone_054/lit_4/sprite.webp",
+      "pixellab_object_id": "76e1486c-d4c3-400f-87fa-5b9fd550c7e0",
+      "generated_at": "2026-08-16T22:24:11+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.8265,
+      "glow_score": 0.0066,
+      "animations": {
+        "motion": {
+          "group_id": "28be2b07-d7a9-4226-a14d-99256bac6efb",
+          "description": "This is an almost completely still picture. ONLY the outermost edge of the cyan gems in the opening changes: a few pixels along that edge shift very slightly in brightness and shift straight back. The cyan gems in the opening is fully visible and exactly as easy to read in every single frame, including the last -- it never fades, never dims, never vanishes and is never swallowed by glare. Its inside stays exactly the cyan it is in the first frame and never turns pale or white. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "stones/stone_054/lit_4/animations/motion/00.webp",
+            "stones/stone_054/lit_4/animations/motion/01.webp",
+            "stones/stone_054/lit_4/animations/motion/02.webp",
+            "stones/stone_054/lit_4/animations/motion/03.webp",
+            "stones/stone_054/lit_4/animations/motion/04.webp"
+          ],
+          "strip": "stones/stone_054/lit_4/animations/motion__strip.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-08-30T10:29:17+00:00",
+          "brief": "J33",
+          "review": "ANIMATION_PROBABLY_GOOD",
+          "review_metrics": {
+            "base_outline": 0.0504
+          },
+          "light_frames": [
+            {
+              "intensity": 0.5,
+              "dx": -7.2,
+              "dy": 2.9
+            },
+            {
+              "intensity": 1.33,
+              "dx": 1.2,
+              "dy": 7.9
+            },
+            {
+              "intensity": 1.5,
+              "dx": 4.4,
+              "dy": 9.7
+            },
+            {
+              "intensity": 1.051,
+              "dx": 2.6,
+              "dy": 8.6
+            },
+            {
+              "intensity": 0.5,
+              "dx": -13.2,
+              "dy": 0.5
+            }
+          ]
+        }
+      }
+    },
+    "NOT_LIT_2": {
+      "sprite": "stones/stone_054/not_lit_2/sprite.webp",
+      "pixellab_object_id": "f1a32dd8-b9bd-48a7-b929-007a69879f43",
+      "generated_at": "2026-08-16T22:24:21+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.1721,
+      "glow_score": 0.0
+    }
+  },
+  "collision": true,
+  "hitbox_shape": "ellipse",
+  "light": {
+    "strength": 0.08,
+    "color": "#90ffb5",
+    "radius": 1,
+    "reference": "the spawn bonfire is 1.0 (radius 7); strength 0 is no light",
+    "states": {
+      "LIT_1": {
+        "strength": 0.06,
+        "color": "#90ffb5",
+        "radius": 1
+      },
+      "LIT_2": {
+        "strength": 0.08,
+        "color": "#abffa3",
+        "radius": 1
+      },
+      "LIT_3": {
+        "strength": 0.06,
+        "color": "#9fe4ff",
+        "radius": 1
+      },
+      "LIT_4": {
+        "strength": 0.08,
+        "color": "#b3ff9d",
+        "radius": 1
+      }
+    },
+    "kind": "glow/mineral",
+    "flame": false,
+    "embers": false
+  }
+}

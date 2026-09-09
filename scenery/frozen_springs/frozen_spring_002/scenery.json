@@ -1,0 +1,194 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-14T01:11:58+00:00",
+  "id": "frozen_spring_002",
+  "group": "frozen_springs",
+  "rank": 120,
+  "index": 2,
+  "name": "White rimed spring 002",
+  "lights": null,
+  "variety": "white rimed spring",
+  "modifier": "icicles fringing the lip",
+  "glow_concept": "a cold blue glow in the ice heart",
+  "prompt": "a small spring frozen mid-flow, ice caught in smooth rounded spills over its stones, frost ferns on every surface, white rimed spring, icicles fringing the lip, waist-high, self-emissive at night, softly radiating light: a cold blue glow in the ice heart",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 64,
+  "sprite": "frozen_springs/frozen_spring_002/sprite.webp",
+  "placement": {
+    "world_height_m": 0.918,
+    "world_px_height": 47,
+    "character_height_px": 87,
+    "character_height_m": 1.7,
+    "note": "ONE SCENERY PIXEL IS ONE PLAYER PIXEL. world_px_height IS the art's own alpha bbox height, so scenery is placed into the world at 1:1 exactly as the avatar is (setScale(1)) and the two share one pixel grid. The CAMERA still zooms the whole scene \u2014 that is uniform and correct; what must never happen is scenery being resampled on its own, against the player. world_height_m is what the art reads as beside a 87px character; declared_height_m is what it was once declared to be, and a gap between them means the ART is the wrong size.",
+    "declared_height_m": 1.12,
+    "content_box": [
+      12,
+      8,
+      53,
+      55
+    ],
+    "content_px_height": 47,
+    "canvas_render_px": 64
+  },
+  "pixellab_object_id": "a004e9bd-083b-49c4-b2a2-15ba6d13ee15",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)",
+  "must_be_imbplemented_with_random_hflip": true,
+  "states": {
+    "NOT_LIT_3": {
+      "sprite": "frozen_springs/frozen_spring_002/sprite.webp",
+      "pixellab_object_id": "a004e9bd-083b-49c4-b2a2-15ba6d13ee15",
+      "generated_at": "2026-08-14T01:11:58+00:00",
+      "relit_from": "LIT_1",
+      "animations": {
+        "motion": {
+          "group_id": "a0ecb4fc-9347-4450-8499-bcd2f8c78138",
+          "description": "This is the same picture in every frame. ONLY one small bright point of light moves, sliding slowly across the frozen surface. Do not redraw anything else, and do not add or remove anything.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "frozen_springs/frozen_spring_002/animations/motion/00.webp",
+            "frozen_springs/frozen_spring_002/animations/motion/01.webp",
+            "frozen_springs/frozen_spring_002/animations/motion/02.webp",
+            "frozen_springs/frozen_spring_002/animations/motion/03.webp",
+            "frozen_springs/frozen_spring_002/animations/motion/04.webp"
+          ],
+          "strip": "frozen_springs/frozen_spring_002/animations/motion__strip.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-08-29T11:16:53+00:00",
+          "brief": "N9",
+          "review": "ANIMATION_PROBABLY_GOOD",
+          "review_metrics": {
+            "class": "water",
+            "base": 0.0195,
+            "still": 0.577
+          }
+        }
+      }
+    },
+    "NOT_LIT_4": {
+      "sprite": "frozen_springs/frozen_spring_002/not_lit_4/sprite.webp",
+      "pixellab_object_id": "1495200c-bd79-4ae8-b879-bcf6cfd5f414",
+      "generated_at": "2026-08-16T14:23:03+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.9592,
+      "glow_score": 0.1937,
+      "relit_from": "LIT_2",
+      "animations": {
+        "motion": {
+          "group_id": "9b18ff10-872e-431f-8f00-4e3fd4055290",
+          "description": "This is the same picture in every frame. ONLY the surface of the water in the basin moves, rippling very slightly. Everything else is frozen and pixel-for-pixel identical in every frame. Do not redraw anything else, and do not add or remove anything.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "frozen_springs/frozen_spring_002/not_lit_4/animations/motion/00.webp",
+            "frozen_springs/frozen_spring_002/not_lit_4/animations/motion/01.webp",
+            "frozen_springs/frozen_spring_002/not_lit_4/animations/motion/02.webp",
+            "frozen_springs/frozen_spring_002/not_lit_4/animations/motion/03.webp",
+            "frozen_springs/frozen_spring_002/not_lit_4/animations/motion/04.webp"
+          ],
+          "strip": "frozen_springs/frozen_spring_002/not_lit_4/animations/motion__strip.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-08-29T12:39:32+00:00",
+          "brief": "R3",
+          "review": "ANIMATION_PROBABLY_GOOD",
+          "review_metrics": {
+            "base_outline": 0.0073
+          }
+        }
+      }
+    },
+    "NOT_LIT_5": {
+      "sprite": "frozen_springs/frozen_spring_002/not_lit_5/sprite.webp",
+      "pixellab_object_id": "f93a5804-171c-4f14-a372-7a27dba02080",
+      "generated_at": "2026-08-16T14:22:32+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.7729,
+      "glow_score": 0.17,
+      "relit_from": "LIT_3",
+      "animations": {
+        "motion": {
+          "group_id": "29a77b6e-5844-4744-94fc-5117ab086738",
+          "description": "This is the same picture in every frame. ONLY the falling water from the spout moves, pouring downward continuously. Everything else is frozen and pixel-for-pixel identical in every frame. Do not redraw anything else, and do not add or remove anything.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "frozen_springs/frozen_spring_002/not_lit_5/animations/motion/00.webp",
+            "frozen_springs/frozen_spring_002/not_lit_5/animations/motion/01.webp",
+            "frozen_springs/frozen_spring_002/not_lit_5/animations/motion/02.webp",
+            "frozen_springs/frozen_spring_002/not_lit_5/animations/motion/03.webp",
+            "frozen_springs/frozen_spring_002/not_lit_5/animations/motion/04.webp"
+          ],
+          "strip": "frozen_springs/frozen_spring_002/not_lit_5/animations/motion__strip.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-08-29T13:30:45+00:00",
+          "brief": "S17",
+          "review": "ANIMATION_PROBABLY_GOOD",
+          "review_metrics": {
+            "class": "water",
+            "base": 0.0,
+            "still": 0.872
+          }
+        }
+      }
+    },
+    "NOT_LIT_6": {
+      "sprite": "frozen_springs/frozen_spring_002/not_lit_6/sprite.webp",
+      "pixellab_object_id": "f891eeb2-1f19-4417-a2c3-d706f9ed3306",
+      "generated_at": "2026-08-16T14:24:29+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.9769,
+      "glow_score": 0.6597,
+      "relit_from": "LIT_4",
+      "animations": {
+        "motion": {
+          "group_id": "cc0b0222-c19b-4cf4-99ab-9ddb31313952",
+          "description": "This is the same picture in every frame. ONLY the small frost sparkles glint on and off. Everything else in the picture is copied from the first frame exactly, pixel for pixel, unchanged in shape, size, position and colour. No outline anywhere is redrawn. The last frame matches the first frame exactly, so the loop joins. Nothing anywhere becomes darker, lighter or a different colour except the one thing named above.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "frozen_springs/frozen_spring_002/not_lit_6/animations/motion/00.webp",
+            "frozen_springs/frozen_spring_002/not_lit_6/animations/motion/01.webp",
+            "frozen_springs/frozen_spring_002/not_lit_6/animations/motion/02.webp",
+            "frozen_springs/frozen_spring_002/not_lit_6/animations/motion/03.webp",
+            "frozen_springs/frozen_spring_002/not_lit_6/animations/motion/04.webp"
+          ],
+          "strip": "frozen_springs/frozen_spring_002/not_lit_6/animations/motion__strip.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-08-29T16:06:10+00:00",
+          "brief": "X46",
+          "review": "ANIMATION_PROBABLY_BAD",
+          "review_metrics": {
+            "class": "water",
+            "base": 0.8122,
+            "still": 0.269
+          }
+        }
+      }
+    }
+  },
+  "collision": true,
+  "hitbox_shape": "ellipse"
+}

@@ -1,0 +1,85 @@
+{
+  "format": "scenery-piece@2",
+  "id": "chair_006",
+  "group": "chairs_and_benches",
+  "rank": 104,
+  "index": 6,
+  "name": "Rocking chair with thick rockers 006",
+  "lights": null,
+  "variety": "rocking chair with thick rockers",
+  "glow_concept": "a knitted blanket glowing faintly with kept warmth",
+  "prompt": "a sturdy wooden seat for a house: a chunky chair, stool or short bench with thick legs, standing solidly on the floor, rocking chair with thick rockers, small, knee-high, self-emissive at night, softly radiating light: a knitted blanket glowing faintly with kept warmth",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 64,
+  "sprite": "chairs_and_benches/chair_006/sprite.webp",
+  "placement": {
+    "world_height_m": 0.997,
+    "world_px_height": 51,
+    "character_height_px": 87,
+    "character_height_m": 1.7,
+    "note": "ONE SCENERY PIXEL IS ONE PLAYER PIXEL. world_px_height IS the art's own alpha bbox height, so scenery is placed into the world at 1:1 exactly as the avatar is (setScale(1)) and the two share one pixel grid. The CAMERA still zooms the whole scene \u2014 that is uniform and correct; what must never happen is scenery being resampled on its own, against the player. world_height_m is what the art reads as beside a 87px character; declared_height_m is what it was once declared to be, and a gap between them means the ART is the wrong size.",
+    "declared_height_m": 0.62,
+    "content_box": [
+      16,
+      7,
+      49,
+      58
+    ],
+    "content_px_height": 51,
+    "canvas_render_px": 64
+  },
+  "pixellab_object_id": "f9b2a458-3d42-4eaf-8444-6dd227633ebc",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)",
+  "must_be_imbplemented_with_random_hflip": true,
+  "generated_at": "2026-08-13T21:01:51+00:00",
+  "states": {
+    "NOT_LIT_3": {
+      "sprite": "chairs_and_benches/chair_006/sprite.webp",
+      "pixellab_object_id": "f9b2a458-3d42-4eaf-8444-6dd227633ebc",
+      "generated_at": "2026-08-13T21:01:51+00:00",
+      "relit_from": "LIT_1",
+      "rotations": {
+        "south-east": "chairs_and_benches/chair_006/rotations/south-east.webp",
+        "south-west": "chairs_and_benches/chair_006/rotations/south-west.webp",
+        "south": "chairs_and_benches/chair_006/sprite.webp"
+      }
+    },
+    "NOT_LIT_4": {
+      "sprite": "chairs_and_benches/chair_006/not_lit_4/sprite.webp",
+      "pixellab_object_id": "7cc59502-8997-4469-9daf-4b3de98dbad0",
+      "generated_at": "2026-08-16T09:01:59+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.7613,
+      "glow_score": 0.135,
+      "relit_from": "LIT_2",
+      "rotations": {
+        "south-east": "chairs_and_benches/chair_006/not_lit_4/rotations/south-east.webp",
+        "south-west": "chairs_and_benches/chair_006/not_lit_4/rotations/south-west.webp",
+        "south": "chairs_and_benches/chair_006/not_lit_4/sprite.webp"
+      }
+    },
+    "NOT_LIT_5": {
+      "sprite": "chairs_and_benches/chair_006/not_lit_5/sprite.webp",
+      "pixellab_object_id": "07ffa48f-7bb5-4576-96be-1d0d96872788",
+      "generated_at": "2026-08-16T09:02:52+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.9385,
+      "glow_score": 0.0867,
+      "relit_from": "LIT_4",
+      "rotations": {
+        "south-east": "chairs_and_benches/chair_006/not_lit_5/rotations/south-east.webp",
+        "south-west": "chairs_and_benches/chair_006/not_lit_5/rotations/south-west.webp",
+        "south": "chairs_and_benches/chair_006/not_lit_5/sprite.webp"
+      }
+    }
+  },
+  "collision": true,
+  "hitbox_shape": "rect"
+}

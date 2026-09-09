@@ -1,0 +1,132 @@
+{
+  "schema": "tiles3/tops@1",
+  "kind": "top_only",
+  "wall_is_meaningless": true,
+  "not_a_candidate_for": "x over y",
+  "ground": "grass",
+  "flavour": "detail",
+  "index": 132,
+  "seed": 35665,
+  "prompt": "grass, a tiny fossil in the middle, grass all around the edge",
+  "palette_top": "#14523b",
+  "tile_id": "5929669b-5170-4ac6-95e8-a5cac80cd133",
+  "n_tiles": 16,
+  "tiles": [
+    "tile_00.webp",
+    "tile_01.webp",
+    "tile_02.webp",
+    "tile_03.webp",
+    "tile_04.webp",
+    "tile_05.webp",
+    "tile_06.webp",
+    "tile_07.webp",
+    "tile_08.webp",
+    "tile_09.webp",
+    "tile_10.webp",
+    "tile_11.webp",
+    "tile_12.webp",
+    "tile_13.webp",
+    "tile_14.webp",
+    "tile_15.webp"
+  ],
+  "settings": {
+    "tile_size": 64,
+    "tile_view": "high top-down",
+    "view_angle": 28.0,
+    "depth_ratio": 0.5,
+    "tile_type": "isometric",
+    "flat_top_px": 2,
+    "outline_mode": "segmentation"
+  },
+  "usd": 0.096,
+  "created": "2026-09-03T04:48:47+00:00",
+  "top_face": {
+    "per_tile": [
+      {
+        "colours": 23,
+        "dominant_share": 0.3032,
+        "px": 963
+      },
+      {
+        "colours": 17,
+        "dominant_share": 0.2788,
+        "px": 965
+      },
+      {
+        "colours": 20,
+        "dominant_share": 0.2673,
+        "px": 969
+      },
+      {
+        "colours": 23,
+        "dominant_share": 0.1781,
+        "px": 1005
+      },
+      {
+        "colours": 24,
+        "dominant_share": 0.2318,
+        "px": 962
+      },
+      {
+        "colours": 15,
+        "dominant_share": 0.214,
+        "px": 986
+      },
+      {
+        "colours": 24,
+        "dominant_share": 0.3454,
+        "px": 964
+      },
+      {
+        "colours": 23,
+        "dominant_share": 0.1747,
+        "px": 990
+      },
+      {
+        "colours": 28,
+        "dominant_share": 0.1847,
+        "px": 991
+      },
+      {
+        "colours": 23,
+        "dominant_share": 0.1839,
+        "px": 979
+      },
+      {
+        "colours": 23,
+        "dominant_share": 0.3971,
+        "px": 957
+      },
+      {
+        "colours": 24,
+        "dominant_share": 0.4937,
+        "px": 952
+      },
+      {
+        "colours": 24,
+        "dominant_share": 0.1842,
+        "px": 977
+      },
+      {
+        "colours": 23,
+        "dominant_share": 0.3763,
+        "px": 954
+      },
+      {
+        "colours": 28,
+        "dominant_share": 0.1827,
+        "px": 958
+      },
+      {
+        "colours": 21,
+        "dominant_share": 0.2908,
+        "px": 963
+      }
+    ],
+    "mean_colours": 22.69,
+    "mean_dominant_share": 0.2679
+  },
+  "motif": "a tiny fossil",
+  "motif_source": "tiles/config/details.json",
+  "walkable": true
+}

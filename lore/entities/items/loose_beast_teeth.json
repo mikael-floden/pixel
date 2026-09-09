@@ -1,0 +1,22 @@
+{
+  "domain": "items",
+  "id": "loose_beast_teeth",
+  "name_seen": "Loose Teeth",
+  "law": "III",
+  "description": "Molars, curved fangs and small incisors, no two from the same jaw. Palemaws and Emberjaws shed them constantly.",
+  "lore": [
+    "Eight gold the mixed lot, and the mixing is the trade's teaching tool. Somebody tips a bag out on a cloth at a fire, the new ones go round the ring naming each tooth to its animal, whoever gets one wrong stands the next drink. It is a good evening. Everybody has had it.",
+    "There is a hard edge under the game and the old hands put it there deliberately. Two teeth in every bag are dog. One is off a [[monsters/undead_hound|Rotjaw]], which will stand at the head of a farm track for a hundred years and never come at you. The other is off a [[monsters/plague_hound|Blightcur]], which will lie down twenty paces off and not come at you either. A cracker who cannot tell those two apart on a cloth, in good light, with all the time in the world, will one day sit down and rest in the wrong company."
+  ],
+  "related": [
+    {
+      "domain": "monsters",
+      "id": "plague_hound"
+    },
+    {
+      "domain": "lore",
+      "id": "the_hard_pieces"
+    }
+  ],
+  "gm_notes": "The apprenticeship of the junk trade, taught as a drinking game because that is the only way anybody learns it. The lesson is that neither dog attacks and one of them is still ruinous."
+}

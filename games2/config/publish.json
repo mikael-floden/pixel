@@ -1,0 +1,109 @@
+{
+  "$comment": [
+    "THE PUBLICATION POLICY — what is IN THE GAME (maintainer 2026-08-14).",
+    "",
+    "This file is the ONLY hand-maintained part of the split. Everything else is",
+    "derived by scripts/shipset.mjs, which closes over these roots: a published",
+    "world drags in its own tiles, its NPCs' character art and its spawn zones'",
+    "monsters automatically. Add an NPC to a shipped world and its art ships with",
+    "no edit here.",
+    "",
+    "Anything NOT reachable from these roots is STAGING content: it stays in git,",
+    "stays reviewable in the wiki for a signed-in admin (fetched from GitHub), and",
+    "never enters the deployed image.",
+    "",
+    "Editing this file changes what production serves. The shipset digest changes",
+    "with it, which is what makes the image rebuild."
+  ],
+  "userWorlds": [
+    "the_game"
+  ],
+  "$comment_userWorlds": [
+    "THE GAME. What an end user may select, and the ONLY world the image carries:",
+    "the ship-set closure walks this list, nothing else. A product gate, not a",
+    "security boundary (the repo is public); the point is the game never OFFERS",
+    "anything else. the_game (maps2/worlds3, pixel-maps3) is the only world since",
+    "2026-09-09 (maintainer: \"We will commit 100% to the new tiles3 system and the",
+    "new map from here on\"); the world@1/@2 worlds and tiles2 are deleted, history",
+    "in git. A worlds3 world ships its own docs, its NPC/monster closure and its",
+    "placed scenery pieces from here, and its TERRAIN ART as the tiles3 resolver's",
+    "exact closure, computed in the Dockerfile's build stage by",
+    "scripts/ship-tiles3.ts (measured on the_game: 508 files / 0.3 MB of the 400 MB",
+    "tiles/ domain)."
+  ],
+  "devWorlds3": [],
+  "$comment_devWorlds3": [
+    "STAGING worlds in the world tree, maps2/worlds3/<name>/world.json",
+    "(pixel-maps3/world@1 — a ground NAME per cell, no baked tile art; tiles3",
+    "resolves what draws at draw time). None since 2026-09-09. A staging world",
+    "costs the image zero bytes: an admin joins it from the repo (client:",
+    "staging.ts via jsDelivr; server: WorldRoom's disk-first GitHub fallback).",
+    "",
+    "Joining one also streams the tiles3 ART TREES (tiles/plates, tiles/patterns,",
+    "tiles/tops, tiles/fades, tiles/base_candidates, tiles/review + the index",
+    "JSONs) from the CDN through the same gameUrl chokepoint: they are served at",
+    "/assets/tiles/... and the image ships only the closure of its PUBLISHED",
+    "worlds3 worlds (userWorlds above), never the 400 MB domain."
+  ],
+  "playableCharacters": [
+    "humans/default_boy",
+    "humans/default_girl"
+  ],
+  "monsters": [],
+  "$comment_monsters": [
+    "Monsters reachable from a published world's spawns.json are found",
+    "automatically. This list is only for monsters the ENGINE names directly",
+    "with no spawn zone — leave empty unless something 404s."
+  ],
+  "scenery": [
+    "campfire",
+    "grave_cross",
+    "blood_spatter"
+  ],
+  "$comment_scenery": [
+    "The three pieces WorldScene loads by hardcoded path. The v2 factory's other",
+    "~2,640 pieces are staging content until the maps2 agent places them."
+  ],
+  "entityDomains": [
+    "characters2",
+    "monsters",
+    "scenery"
+  ],
+  "$comment_entityDomains": [
+    "Domains where individual entities are selected by closure. Their ROOT-level",
+    "files and config/ trees ship wholesale regardless — those are descriptors the",
+    "manifest builders read (monsters/config/roster.json,",
+    "characters2/animation_map.json). Omitting one does not",
+    "404 a sprite, it silently empties a manifest: the first curated root built a",
+    "game with ZERO monsters for exactly this reason."
+  ],
+  "alwaysShip": [
+    "items",
+    "lore",
+    "live",
+    "wiki",
+    "sounds",
+    "music"
+  ],
+  "$comment_alwaysShip": [
+    "Domains where per-entity closure buys little: items and lore are small and",
+    "wholly in-game, live/ is runtime tuning state, wiki/ is the wiki itself.",
+    "sounds/ and music/ are catalog-driven at runtime rather than referenced by",
+    "the worlds, so they ship whole minus the excludes below — tightening those",
+    "two to a real catalog closure is a follow-up, not a guess to make here."
+  ],
+  "exclude": [
+    "^music/.*\\.wav$",
+    "^music/beds/pool/",
+    "^characters2/_experiments/",
+    "^wiki/tools/",
+    "^maps2/(pipeline|spec)/",
+    "^[^/]+/pipeline/",
+    "^[^/]+/README\\.md$"
+  ],
+  "$comment_exclude": [
+    "Applied last, so these carve out of the wholesale alwaysShip includes.",
+    "The music masters are also excluded by .dockerignore — kept here so ONE file",
+    "is the source of truth for what ships."
+  ]
+}

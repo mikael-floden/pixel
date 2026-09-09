@@ -1,4 +1,5 @@
 import Phaser from "phaser";
+import { resolveDepthRule } from "../depthrule";
 import { Room, getStateCallbacks } from "colyseus.js";
 import {
   WORLD_WIDTH,
@@ -9,9 +10,19 @@ import {
   InputMessage,
   ChatBroadcast,
   stepMovement,
+  deepCurrentAt,
+  warmDeepCurrent,
   vectorToDirection,
   TerrainGrid,
   buildTerrainGrid,
+  stampSceneryCollision,
+  FOOTPRINT_LEVEL_SLACK,
+  sceneryDrawnPx,
+  rectGroundRot,
+  footprintsInCells,
+  MIN_FOOTPRINT_SEMI,
+  ISO_GEOMETRY_MAPS3,
+  type SceneryBboxDoc,
   makeBlocked,
   makeBlockedElev,
   resolveElevAt,
@@ -22,7 +33,15 @@ import {
   monsterDodge,
   type MonsterDodgeState,
   DEFAULT_MONSTER_RADIUS,
+  MonsterShadow,
+  shadowScreenEllipse,
+  shadowBodyRadius,
+  shadowAnchorOf,
   startTrip,
+  walkHeading,
+  bodyStalled,
+  slideAlong,
+  type SlideMemo,
   stepAutopilot,
   bodyStandoff,
   startBestTrip,
@@ -34,6 +53,7 @@ import {
   INDOOR_WALL_RATIO,
   MIN_ROOM_CELLS,
   surfaceAtWorld,
+  surfaceAtWorldElev,
   levelAtWorld,
   integrateFall,
   isStandableAtWorld,
@@ -44,6 +64,7 @@ import {
   screenToWorldVector,
   PLAYER_RADIUS,
   WALK_CLIMB,
+  canEnterElev,
   JUMP_CLIMB,
   JUMP_SPEED_FACTOR,
   JUMP_MS,
@@ -63,15 +84,25 @@ import {
   PICKUP_RADIUS_WU,
   attackRange,
   PLAYER_BODY_RADIUS,
+  dodgePersonal,
   PROVOKE_RADIUS_WU,
   DROP_TTL_MS,
-  DROP_FLASH_MS,
-} from "@nangijala/shared";
+  DROP_FLASH_MS, zoneRoute, WHOLE_WORLD, type ZoneCfg } from "@nangijala/shared";
 import { CharacterDef, Manifest, frameUrl, frameKey, BOOT_ANIM_STATES } from "../manifest";
-import { indoorAmbient, indoorLight, setIndoorLight } from "../indoorlight";
+import { indoorAmbient, indoorLight, indoorLightLit, setIndoorLight, setIndoorLightLit } from "../indoorlight";
+import { hiddenRing, setHiddenRing } from "../hiddenring";
 import { indoorWall, setIndoorWall, INDOOR_WALL_MIN, INDOOR_WALL_MAX } from "../indoorwall";
-import { withV } from "../assetver";
+import { withV, assetIndexInfo } from "../assetver";
+import { netPerfStart, netPerfTake } from "../netperf";
+import { installTexUploadProbe, texUploadTake } from "../texupload";
+import { installCaptureProbe, installCapturePool, captureTake } from "../capturepool";
+import { installGlFrameProbe, glFrameTake, glWindowTake, glFrameEmpty, type GlFrame } from "../glframe";
+import { fadeTune, setFadeTune } from "../fadetune";
+import { extraTransitions, setExtraTransitions } from "../transitions";
+import { ChessDialog, ChessMatchView } from "../chessui";
+import { gameUrl } from "../staging";
 import { MonsterManifest, MonsterDef, monsterWalkKey, resolveMonsterAnim } from "../monsterManifest";
+import { writeLastPos } from "../monsterBoot";
 import { NpcManifest, NpcDef, NpcPlacement, loadNpcPlacement } from "../npcManifest";
 import { colorForName } from "../placeholder";
 import { setBar, setLevel } from "../bars";
@@ -88,9 +119,14 @@ import {
   EmissionSource,
   GlowStamp,
   buildGlowStamps,
+  type LightParts,
 } from "../nightlight";
+import { SceneryLitPipeline, SCENERY_LIT_PIPELINE, SCENERY_LIT_OCC, type SceneryLitShape } from "../scenerylit";
+import { ShapeMapBuilder, shapeMapKey, decodeShape, type ShapeHitbox, type ShapeScale } from "../scenerylight";
+import { reservedLights, WORLD_LIGHT_SLOTS, RESERVED_LIGHT_SLOTS } from "../lightslots";
+import { deriveEmissive, lightKindOf, lightParams, lightFromBlock, type SceneryLightParams } from "../scenerylights";
 import { joinWorld } from "../net";
-import { bindLiveTuning, liveTuningSnapshot } from "../live";
+import { bindLiveTuning, liveTuningSnapshot, monsterShadow, onLiveTuning } from "../live";
 import { ChatUI } from "../chat";
 import { WeatherFX } from "../weatherfx";
 import { Footsteps } from "../footsteps";
@@ -98,30 +134,100 @@ import { setClockTime, clockStar } from "../clock";
 import { HudBar, mountPageFrame } from "../hud";
 import { getHand, setHand } from "../controls";
 import { setLoadingProgress, hideLoading } from "../loading";
+import { cameraZoom } from "../camzoom";
 import { fadeToBlack } from "../fade";
 import { applyUiZoom } from "../uiscale";
 import {
   World,
   MAP_GEOMETRY,
-  tileKey,
-  tileUrl,
-  distinctTiles,
-  distinctTilePaths,
-  distinctPropPaths,
-  pathTileKey,
-  assetUrl,
-  faceKeyFor,
-  topKeyFor,
-  isMaps2World,
-  drawOrder,
+  geometryFor,
+  isMaps3World,
   canvasSize,
-  TileBases,
-  artLift,
   DEFAULT_WORLD,
   Deck,
   loadPlaces,
+  worldFileUrl,
 } from "../maps";
-import type { PlaceLookup } from "../maps";
+import type { MapGeometry, PlaceLookup } from "../maps";
+import { renderedWorldView, type ViewRect } from "../camview";
+import { ResolveWorker, resolveWorkerEnabled, setResolveWorkerEnabled, type ResolvedCell } from "../resolveworker";
+// ---- TILES 3.0 (maps3 worlds) -------------------------------------------
+// The resolver (what draws on this cell), the draw layer (the two pixel ops +
+// the texture factory), the streaming per-cell runtime, and scenery. All four
+// are pure and Phaser-free; this scene is the only thing that knows about both
+// them and Phaser.
+import {
+  Tiles3,
+  DX as T3_DX,
+  TOP_Y as T3_TOP_Y,
+  TILE as T3_TILE,
+  PLATE_H as T3_PLATE_H,
+  columnX as t3columnX,
+  columnY as t3columnY,
+  measureStoreyPitch,
+  type Frame as T3Frame,
+  type PatternsDoc,
+  type Tiles3Boundary,
+  type Tiles3Cell,
+  type Tiles3DeckCell,
+} from "../tiles3";
+import {
+  Tiles3Textures,
+  patternSheets,
+  patternSheetPaths,
+  artKey as t3ArtKey,
+  type PatternSheets,
+  type Pixels as T3Pixels,
+  type TextureManagerLike,
+  type UrlRoute,
+  assetPath,
+} from "../tiles3draw";
+import {
+  Tiles3Loader,
+  Tiles3World,
+  TILES3_DOCS,
+  cellArtPaths,
+  cellBlits,
+  boundaryArtPaths,
+  deckArtPaths,
+  docUrl,
+  faceKey as t3FaceKey,
+  faceKeyAt as t3FaceKeyAt,
+  dressKey as t3DressKey,
+  sheetPaths,
+  surfaceKey as t3SurfaceKey,
+  surfaceY as t3SurfaceY,
+  tiles3DataFrom,
+  viewFromParsed,
+  type Tiles3DocKey,
+} from "../tiles3runtime";
+import {
+  SceneryIndex,
+  type SceneryPlacement,
+  SceneryPieces,
+  buildPlacements,
+  fitSprite,
+  alphaBBox,
+  artKey as sceneryArtKey,
+  artUrl as sceneryArtUrl,
+  roofedCells,
+  facedSprite,
+  stateFor,
+  sceneryHitboxFor,
+  type SceneryHitboxRec,
+  type SceneryHitbox,
+  type SceneryFit,
+  anchorX,
+  anchorY,
+  lightBlockFor as sceneryLightBlockFor,
+  type SceneryLight,
+  type SceneryPiece,
+  type SceneryState,
+  type SceneryAnim,
+} from "../scenery3";
+import { sceneryAnimClass, scenerySleepMs, SCENERY_ANIM_FPS, type SceneryAnimClass } from "../sceneryanim";
+import { lightAnimTune } from "../lightanim";
+import { sceneryAnimVerdict } from "../live";
 
 // Fallback loop rates when a state has no measured gaitFps. The jump clip is
 // NOT here: it plays once and its rate is derived per character in
@@ -140,7 +246,7 @@ const ANIM_FPS: Record<string, number> = {
   pickup: 9,
   die: 8,
 };
-// The blood spatter's 8 direction variants (objects/blood_spatter, trimmed to
+// The blood spatter's 8 direction variants (scenery/blood_spatter, trimmed to
 // burst->dispersal) — one is picked at random per landed hit, played forward
 // or reversed at random.
 const BLOOD_DIRS = ["east", "north", "north-east", "north-west", "south", "south-east", "south-west", "west"];
@@ -244,6 +350,41 @@ const NPC_BODY_RADIUS = 9; // same personal space as a player body (fake collisi
 // ALMOST TOUCHING, deliberately: the look is a reaction to someone brushing
 // past you, not a 5-cell stare. A player body is ~9wu and a cell is 32, so
 // this fires roughly when the two bodies overlap.
+// THE DEATH SEQUENCE (maintainer 2026-08-09: "make it a little bit more
+// dramatic... fade very dark and if possible even monochrome, the music should
+// become silent and the camera should slowly slowly zoom into the player").
+// Nothing here is on a timer that revives you — the press is (see the server's
+// "respawn" message); these only pace the picture.
+// The drain rides the ZOOM's own curve, not a clock of its own (maintainer
+// 2026-08-09: "monochrome and darkness should fade in together with the zoom
+// in") — one easing, so the picture cannot arrive before the push does.
+// What the game can actually make the local player do within seconds of a
+// spawn, most urgent first. These lead the deferred batch; my remaining states
+// (the weapon/spell clips, which nothing can trigger yet — there are no weapons
+// and every swing resolves to kick or punch) queue behind the NPCs. Ordering
+// only, never a filter: everything still loads.
+const PLAYER_URGENT_STATES = ["hurt", "die", "kick", "punch", "pickup"];
+// The revive ask is retried on this cadence and starts admitting trouble after
+// REVIVE_QUIET_MS — the server's own backstop is PLAYER_DEATH_MAX_MS (3 min),
+// far too long to sit in front of a prompt that looks broken.
+const REVIVE_RETRY_MS = 600;
+const REVIVE_QUIET_MS = 4_000;
+const DEATH_ZOOM_MS = 10_000; // the SLOW push onto the body — the whole mood
+const DEATH_ZOOM = 3; // x the normal integer zoom, as asked
+// THE VEIL IS A VIGNETTE, NOT A FLAT WASH. A flat one crushes the torch pool
+// exactly as hard as everything else — and at 3x zoom the body sits well INSIDE
+// the torch's 6-cell radius, so there is no falloff left on screen to read as a
+// pool either. Both together are why the shipped fade read as "very dark only"
+// with no torch at all (maintainer 2026-08-12, with a shot). So the veil keeps
+// most of the light ON the body and takes nearly all of it at the edges: the
+// gradient MANUFACTURES the pool the zoom flattened, and what shows through it
+// is the torch's own warm light.
+const DEATH_DARK = 0.05; // brightness left at the screen EDGE
+const DEATH_DARK_CORE = 0.62; // brightness left ON the body — the torch's pool
+const DEATH_FOCUS_Y = 0.46; // where the body lands in the view (see DEATH_AIM_FRAC)
+const DEATH_TORCH_BOOST = 1.6; // x my torch while dead — overbright widens the hot plateau
+const DEATH_AIM_FRAC = 0.12; // how far above the foot anchor the push aims — a lying body
+const DEATH_PROMPT_MS = 450; // the card's own CSS fade — see the .45s transition
 const NPC_LOOK_WU = 26;
 const NPC_LOOK_LINGER_MS = 900; // keep watching a moment after they step away
 // ONE COMPASS NOTCH AT A TIME, so a turn SWEEPS instead of snapping — even a
@@ -265,16 +406,37 @@ const frameIndexOf = (key?: string): number => {
 const DROP_TAP_HALF = 26; // was 16 — items are ~29px art on the ground
 const MONSTER_TAP_MIN_HALF_W = 26; // was 18, and the art factor grew 0.4→0.5+6
 const MONSTER_TAP_MIN_H = 48; // minimum box height — sprigling-class bodies
-// Spawn campfire (objects/campfire, burn/south): 96px frames; per its
+// Spawn campfire (scenery/campfire, burn/south): 96px frames; per its
 // placement metadata the fire is 0.6m ≈ 23px tall vs a 64px character, and
 // the drawn logs span rows 15..83 of the frame → scale + base anchor below.
+/** How often the "does my room light itself" test re-runs (ms). */
+const ROOM_LIT_MS = 400;
+/** A WINDOW'S GLOW (stepSceneryWalls / windowGlow): the room's own light,
+ *  summed at the cell inside the wall, is 0 at WINDOW_GLOW_LO and full at
+ *  WINDOW_GLOW_HI (peak channel x squared falloff; one hearth 1-2 cells in
+ *  reads ~1.0-1.5); re-read every WINDOW_GLOW_MS, like roomHasLight. */
+const WINDOW_GLOW_LO = 0.1;
+const WINDOW_GLOW_HI = 0.7;
+const WINDOW_GLOW_MS = 400;
+
 const CAMPFIRE_KEY = "campfire-burn";
 // The ONE art asset the game names directly instead of reading it from a
-// manifest — objects/ ships none, and that whole domain is now this single
-// file. If objects/ ever gains a manifest, read the url from it instead of
+// manifest — scenery/ ships none the game reads, and that whole domain is now
+// this single file. If scenery/ ever gains a manifest, read the url from it instead of
 // hardcoding the extension here.
-const CAMPFIRE_URL = "/assets/objects/campfire/animations/burn__south.webp";
+const CAMPFIRE_URL = "/assets/scenery/campfire/animations/burn__south.webp";
 const CAMPFIRE_FRAME = 96;
+/* THE GRAVE CROSS RIDES THE BOOT LOAD, NOT THE FIRST KILL (maintainer,
+ * 2026-09-07: "often when I join the game and kill a monster it takes a long
+ * time for the wooden cross to appear... this being loaded and fast has with
+ * gameplay to do"). It used to fetch on the first death, so the first cross of
+ * every session waited on a round trip — and the dropped item's own texture
+ * queued BEHIND it on the same loader, which is how a slow cross turns into
+ * being ninjalooted. 16 frames of 34px: it costs nothing to carry from boot.
+ * `spawnGraveCross` keeps its lazy path as the fallback for a failed preload. */
+const GRAVE_CROSS_KEY = "grave-cross-appear";
+const GRAVE_CROSS_URL = "/assets/scenery/grave_cross/animations/appear__south.webp";
+const GRAVE_CROSS_FRAME = 34;
 const CAMPFIRE_FRAMES = 17;
 const CAMPFIRE_SCALE = 42 / 68;
 const CAMPFIRE_BASE = 83 / 96;
@@ -295,12 +457,45 @@ const OVERLAYS = [
 const INPUT_HZ = 20;
 const BUBBLE_MS = 5000;
 const PLACEHOLDER_TEX = "placeholder:wanderer";
+/** THE PINK MOCK (maintainer 2026-09-08, driving the bisection himself): one
+ *  already-resident 64x64 magenta texture that EVERY monster and EVERY scenery
+ *  piece is drawn with in "mock" mode. The bodies, sprites, shadows, lit copies,
+ *  fog silhouettes, cover surfaces, occluders, depth sort and per-frame loops
+ *  all still run; the ONLY thing removed is fetching, decoding and uploading
+ *  each thing's own unique texture. If the lag goes with it, the cost is in
+ *  that path and nowhere else; if it stays, it is not. */
+const MOCK_TEX = "mock:pink";
+type SubMode = "on" | "off" | "mock";
+const subModeOf = (v: string | null): SubMode => (v === "0" ? "off" : v === "mock" ? "mock" : "on");
 const SHADOW_TEX = "avatar:shadow";
 // Monsters use a softer, more diffuse variant (see ensureMonsterShadowTexture):
 // a light core with a long penumbra tail, spread MONSTER_SHADOW_SPREAD beyond
 // the measured footprint so the visible core still matches the contact patch.
 const MONSTER_SHADOW_TEX = "monster:shadow";
 const MONSTER_SHADOW_SPREAD = 1.35;
+/** Set a sprite's origin to a tuned monster's shadow centre for one facet —
+ * the shared inheritance chain, with the art-derived default (measured foot
+ * line + hover, the untuned game's own anchor) as the final fallback. */
+function applyTunedOrigin(
+  sprite: Phaser.GameObjects.Sprite,
+  rec: MonsterShadow,
+  state: string,
+  dir: string,
+  artBottom?: number,
+  hoverPx?: number,
+): "facet" | "idle" | "base" | "default" {
+  const off = shadowAnchorOf(rec, state, dir);
+  if (off) {
+    sprite.setOrigin(0.5 + off.ax / sprite.width, 0.5 + off.ay / sprite.height);
+    return rec.offsets?.[`${state}#${dir}`]
+      ? "facet"
+      : rec.offsets?.[`idle#${dir}`]
+        ? "idle"
+        : "base";
+  }
+  sprite.setOrigin(0.5, (artBottom ?? 0.85) + (hoverPx ?? 0) / sprite.height);
+  return "default";
+}
 // CAMERA GATE for the monster body pipeline. A world ships ~160 monsters
 // (the_island2) and EVERY one of them used to run the full shared body
 // pipeline each frame — stableDir + anim play, per-frame origin/shift,
@@ -315,23 +510,72 @@ const MONSTER_SHADOW_SPREAD = 1.35;
 // re-enter the view already in the right place, never sliding in from a stale
 // spot. See `__ml.monsterGate()`.
 const MONSTER_CULL_SLACK = 64;
-// Tile self-emission is data-driven: tiles/emission.json (owned by the tiles
-// agent — every category has an entry, null = does not glow). Each glowing
-// category gets (a) a self-glow FLOOR on its own pixels (shader, nightlight.ts)
-// and (b) a small SHADOW-FREE glow pool around it. Pools are clustered per
-// EMISSION_BUCKET-cell bucket (a whole lava lake becomes a few soft pools)
-// and rendered as big elliptical stamps in the additive glow field — NOT as
-// shader light slots. Slots are capped at 12 and were handed to the nearest
-// pools only, so walking a few steps re-ranked the winners and pools popped
-// on/off deep inside the viewport (playtester). The stamp field has no slot
-// limit, and EMISSION_PAD keeps every pool whose light could reach the view
-// inside the rebuild window: culling only ever drops light that is entirely
-// off-screen.
+// Glow pools are big elliptical STAMPS in the additive glow field, never
+// shader light slots (slots are capped at 12; handing them to the nearest
+// pools re-ranked the winners as you walked and pools popped on/off deep
+// inside the viewport). Today every stamp comes from scenery lights
+// (`sceneryStamps`); the tile-emission registries that used to feed it
+// (first-gen tiles/emission.json, tiles2/emission.json) are retired.
 const MAX_EMISSIVE = 48; // atmosphere blooms per view (canvas fallback, perf)
-const EMISSION_BUCKET = 3; // cells per cluster bucket side
-// Pool reach ≈ radius(≤3.5 cells) × cluster growth(≤2) × 45.3 px/cell ≈ 316px,
-// plus the 96px camera drift allowed between occluder rebuilds.
-const EMISSION_PAD = 448;
+
+// THE LIGHT SLOT LEDGER — see lightslots.ts for the layout. World lights are
+// picked closest-to-camera-first among candidates whose POOL can touch the
+// view; a source holding a slot keeps it until a competitor is meaningfully
+// closer (hysteresis), so walking a boundary can't strobe a light on and off.
+// A newly acquired light ramps in over this long, its pool stamp crossfading
+// out underneath — a mid-view acquisition is a fade, never a pop. Retirement
+// dissolves at the same speed, in reverse.
+const LIGHT_RAMP_MS = 450;
+// A waiting candidate must be this much CLOSER to the camera than a settled
+// holder to start its retirement (hysteresis — the pair can never ping-pong),
+// and at most this many dissolves run at once (pressure reads as fires
+// breathing one by one, never a wave).
+const LIGHT_STEAL_MARGIN = 200;
+const LIGHT_RETIRE_MAX = 2;
+// Exit margin past the pool's own reach before a HELD light is released — a
+// pool sitting exactly on the view boundary must not flicker candidacy.
+const LIGHT_EXIT_PX = 96;
+// A world light candidate resolved from an emissive prop + emission.json.
+interface EmissiveSource {
+  id: string; // "col,row" — matches the pool stamp's srcId
+  col: number;
+  row: number;
+  z: number;
+  radius: number; // cells
+  color: [number, number, number];
+  flicker: number;
+  shadows: boolean; // false → negative radius = the shader's shadow-free glow pool
+  sx: number; // projected screen anchor (elevation-lifted) for view culling
+  sy: number;
+  /* WHERE THE LIGHT IS ACTUALLY DRAWN — the middle of the glowing pixels, in
+   * screen space, NOT clamped. `z` above is the LIGHTING height and is capped
+   * at 1.5 levels on purpose (a head four levels up leaves the ground under a
+   * streetlight near the pool's edge — measured), so it is the wrong number for
+   * anything that has to DRAW at the flame: a lamp whose lantern sits three
+   * levels up reports 1.5 and everything placed there lands on the post. Kept
+   * beside it rather than instead of it, because both are right for their own
+   * job. */
+  hx: number;
+  hy: number;
+  /** The placement's piece, "group/id" — a scenery light only. Neutral data:
+   *  the game itself never classifies a source beyond flame-vs-glow for its
+   *  BRIGHTNESS (lightKindOf lumps lamp, lantern and fire together), so anything
+   *  that needs to know WHAT a light is has to read the piece. Empty for an
+   *  emissive tile. */
+  piece: string;
+  /** Does this source throw EMBERS? Published per piece by the scenery domain
+   *  and never derived here — see SceneryLight.kind. False for an emissive
+   *  tile, which has no manifest to say. */
+  embers: boolean;
+  /** Its published kind, for anything that wants the finer split. */
+  kind: string;
+  // The source stands inside a SEALED ROOM (the indoor verdict's own rule — a
+  // bridge or arch is not a room). Such a light is INDOOR-ONLY: lit exactly to
+  // the degree I am in its room, never from outside. Probed via the cell's
+  // 4-neighbours because a prop BLOCKS its own cell — the room flood can never
+  // contain it (the same trap the stamp gate fell into).
+  sealed: boolean;
+}
 // Time-of-day cycle ([1] cycles, ~2.5s smooth interpolation between phases).
 // Each phase is ONLY an ambient grade (what unlit art is multiplied by) —
 // point lights are never phase-tuned (a light is a light; daylight drowns
@@ -462,6 +706,10 @@ const TIME_TRANSITION_S = 1.25;
 // themselves — a character in front of the fire must cover the fire's lit copy
 // too. Base depths are screen-y scalars (< ~20k px), compressed into the band.
 const litDepth = (baseDepth: number) => 900_001 + baseDepth * 1e-5;
+/** Rows of a shape map built between budget checks (~0.3 ms on a 256-wide sprite). */
+const SHAPE_ROWS_PER_STEP = 8;
+/** A light channel (0..1+) packed as a tint byte, clamped at 1. */
+const tint8 = (v: number): number => Math.min(255, Math.round(Math.min(1, v) * 255));
 const JUMP_HEIGHT = 28; // px peak of the jump hop (a tall, floaty arc)
 // A 1-level STEP (up or down) plays a QUICK little hop — the jump animation + jump
 // sound — while the player keeps FULL walk/run speed (this is purely cosmetic: the
@@ -493,17 +741,30 @@ const CAVE_FALLOFF = 3.0;
 /** The draw-time floor tint is OFF: the shader covers the same pixels. */
 const CAVE_TINT_TILES = false;
 const GROUND_MARGIN = 512; // extra ground drawn beyond the screen (px per side)
+/** Texels the exposed band overlaps back into the kept picture (see
+ *  scrollTiles3Ground). 1 is what the measured artefact needed; it is a
+ *  repaint of pixels that are already right, so it is safe to raise. */
+const GROUND_SEAM = 1;
 // Occluder rebuild cadence, and the slack every occluder cull margin is
 // derived FROM. The set is only re-evaluated once the camera centre has
 // drifted this far, so anything culled must stay invisible for a whole
 // OCC_STEP of camera travel — every cull box below is grown by at least this
 // much (plus a tile) or geometry would wink in at the leading screen edge.
 const OCC_STEP = 96;
+/** How long a perf-beacon window is (see perfBeaconTick). Long enough that a
+ *  report covers several ground latches, short enough that a run into fresh
+ *  terrain is not averaged away. */
+const PERF_BEACON_MS = 30_000;
 // Extra cull margin beyond OCC_STEP: one tile of art, plus room for the
 // biggest body art box that resolveBodyDepth can test against a column
 // (a mammoth spans ~190px) — a column that could still sort against an
 // on-screen body must keep its images, not just the ones that draw.
 const OCC_CULL_PAD = OCC_STEP + 64 + 200;
+/** Slack on the per-frame SUBMIT cull, in world px. Small on purpose: the cull
+ *  tests the rect the RENDERER will use, so this covers only rounding, not a
+ *  frame of camera travel. See cullOccluderSubmits. */
+const CULL_EDGE_PX = 4;
+
 // Living camera (maintainer): the camera CHASES the player instead of pinning
 // them dead-centre — exponential ease toward the sprite with the trail capped,
 // plus a small speed-coupled ZOOM-OUT so the player still sees a bit further
@@ -524,6 +785,187 @@ const THREAT_NEAR_WU = 220;
 const CAM_TAU = 0.3; // s — position smoothing (run trail ≈ 175px/s × τ ≈ 52px)
 const CAM_TRAIL_MAX = 70; // scene px — the player never outruns the frame
 const CAM_SNAP_DIST = 600; // teleports (respawn/lookAt) snap instead of crawl
+/** THE PREFETCH RING: how far beyond the ground texture art is asked for ahead
+ *  of the camera (world px; the texture already reaches GROUND_MARGIN past the
+ *  view), and how many ring cells one frame resolves — see t3prefetchStep. */
+/** FLAT SCENERY (a piece published `collision: false` — the rugs) draws in its
+ *  own band UNDER every body, every other piece and every terrain occluder, and
+ *  above the ground texture at -1,000,000: it lies ON the floor, so nothing it
+ *  is drawn beside can ever be behind it (maintainer 2026-09-03: "everything
+ *  marked as no collision should always be drawn under the
+ *  player/monsters/npcs/other scenery"). Its own painter line is kept as a
+ *  small offset so two overlapping rugs still sort against each other. */
+const SCENERY_FLAT_DEPTH = -500_000;
+/** `?ground=legacy` (remembered) selects the pre-rework ground path — see the
+ *  `groundScroll` field. Returns TRUE for the current path. */
+/** `?perf=1` arms the client perf beacon (remembered; `?perf=0` clears it).
+ *  OFF for everyone else: it turns on the per-section timers and posts a
+ *  report every PERF_BEACON_MS to /api/perf. See perfBeaconTick. */
+function perfBeaconArmed(): boolean {
+  try {
+    const q = new URLSearchParams(location.search).get("perf");
+    if (q === "1" || q === "0") localStorage.setItem("ml-perf-beacon", q);
+    return (localStorage.getItem("ml-perf-beacon") ?? "0") === "1";
+  } catch {
+    return false;
+  }
+}
+
+/** THE STREAMING GROUND PATH IS THE DEFAULT AGAIN (2026-09-04). The 2026-09-03
+ *  sledgehammer — LEGACY, a full texture repaint per camera latch — was a
+ *  DIAGNOSTIC, taken on his instruction ("try something crazy that will for
+ *  sure fix it and then step back to the minimum fix needed afterwards"), and
+ *  its own note said to bisect it back once the artefact was gone. It is: all
+ *  four causes of the zigzag were in RASTER CONSTRUCTION, none in this
+ *  machinery — conformPlate leaving silhouette texels unpainted, level-0 plates
+ *  drawing their own wall band, the transition seam, and a transition tile
+ *  covering 924 texels where the plate it replaces covers 2012. The legacy
+ *  default cleared none of them, which is exactly the evidence that this path
+ *  was never the cause.
+ *
+ *  It costs 18-78 ms per latch measured here and worse on his phone, against a
+ *  16.7 ms frame, so leaving it on is a frame-rate bug of its own — and he is
+ *  now reporting lag. `?ground=legacy` still pins the full repaint for anyone
+ *  bisecting, and the choice is remembered in `ml-ground-path`. */
+function groundPathFast(): boolean {
+  try {
+    const q = new URLSearchParams(location.search).get("ground");
+    if (q === "legacy" || q === "fast") localStorage.setItem("ml-ground-path", q);
+    return localStorage.getItem("ml-ground-path") !== "legacy";
+  } catch {
+    return true; // storage or location blocked: the fast path, which is the default
+  }
+}
+/** How far AHEAD the prefetch reaches when the direction of travel is not yet
+ *  known (the first paint after a join or a teleport) — see t3armRing. */
+const GROUND_RING = 512;
+const GROUND_RING_STEP = 80;
+/** HOW FAR AHEAD THE WORKER IS SENT, in cells — much further than the main
+ *  thread's own 80, because the whole point is that its work is not on the
+ *  frame. The ring queues the strip the NEXT band will paint (~2,000-6,000
+ *  cells); sending it in chunks this size keeps the worker busy without
+ *  building a message backlog the generation counter would then have to throw
+ *  away after a rebuild. Cells already in flight are never re-sent. */
+const GROUND_RING_WORKER = 600;
+/** THE BAND IS PAINTED IN SLICES, one per frame — see t3paintSliceStep. Slice
+ *  depth in texture px along the band's long axis. The texture reaches
+ *  GROUND_MARGIN (512 px) beyond the view and a step exposes at most 256 px, so
+ *  a freshly exposed band is entirely OFF SCREEN for ~2.9 s at run speed
+ *  (512/175). SIZED AGAINST THE GPU, not just the JS: every beginDraw/endDraw
+ *  bracket costs a full capture-target clear AND a full-texture blit whatever
+ *  it draws (Phaser 3.90 DynamicTexture.beginDraw -> RenderTarget.bind, and
+ *  endDraw -> blitFrame), so slices trade a spread-out JS cost for MORE
+ *  brackets. 384 px gives ~4-8 slices: the JS of a latch lands in 4-8 pieces
+ *  while the whole-texture GPU work stays within ~2x the unsliced scroll. */
+const GROUND_SLICE_PX = 384;
+/** What ONE painted slice should cost, and the range the slice size may take to
+ *  hit it. Same lesson as GROUND_RING_MS, same source: `groundSlice` measured
+ *  6.48 ms per frame on the maintainer's phone against ~1.7 ms here, because a
+ *  384 px slice is a SIZE budget and size does not predict cost across devices.
+ *  The size is now steered by the measured milliseconds of the slices actually
+ *  painted, so the same code lands near the target on both machines. */
+/** THE DRAIN'S PER-FRAME BUDGET, in measured milliseconds of PAINTING.
+ *
+ *  SET SO THE DRAIN PAINTS ONE RECT PER FRAME — the topology this file had
+ *  before the merge — because THE BRACKET IS NOT THE COST. That claim ("~20 ms
+ *  per beginDraw/endDraw on a 1510x1656 target, so merge them") was asserted,
+ *  believed and shipped without being measured, and it is wrong. Measured on
+ *  the real ground RT with gl.finish() forcing GPU completion: an empty bracket
+ *  is 0.015 ms, nine brackets with one blit each are 0.137 ms, one bracket with
+ *  nine blits is 0.125 ms — a marginal cost per extra bracket of ~0.00 ms.
+ *  The shipped run agrees independently: with the merge live, the
+ *  `scroll:groundSlice` bucket went 47.6 -> 50.8 ms mean. Collapsing 9 brackets
+ *  into 2 moved nothing, because there was nothing there to collapse.
+ *
+ *  So the 22-25 ms that bucket costs is the PAINT, and the merge machinery is
+ *  kept only for its dev switch (`__ml.groundBandMs`) and its bracket-ownership
+ *  guard, both of which are harmless. Raising this budget would put a whole
+ *  band's paint into one frame — ~200 ms — which is strictly worse.
+ *
+ *  DO NOT OPTIMISE A COST MODEL THAT HAS NOT BEEN MEASURED ON THE PATH IT
+ *  DESCRIBES. That is the whole lesson of this constant. */
+/*  MEASURED ON HIS PHONE AND REJECTED, 2026-09-08. Merging the band under one
+ *  bracket was tried as a Settings A/B on the real device, same route, one
+ *  session: long-frame time per window came to 5,019 ms with the merge OFF and
+ *  9,722 ms with it ON — about TWICE AS BAD, not neutral. So the reasoning that
+ *  reached for it is also wrong: a bracket does resize Phaser's shared capture
+ *  target (deleteTexture + deleteFramebuffer + allocate, 1510x1656 for the
+ *  ground against the cover atlases' 1024x512), and that is a real cost that is
+ *  really paid — but it is not what makes this bucket expensive, and putting a
+ *  whole band's paint in one frame costs more than it saves. Finding a real
+ *  inefficiency is not the same as finding the cause. DO NOT RE-MERGE. */
+const GROUND_BAND_MS = 0.0001;
+/** UNUSED SINCE THE SIZE RATCHET WENT (see t3paintSliceStep): the rects stay at
+ *  GROUND_SLICE_PX, because the bracket and not the rect area is the cost. */
+const GROUND_SLICE_MS = 2;
+const GROUND_SLICE_MAX = 768;
+/** Composed boundary/plate textures the PREFETCH RING may build per frame. */
+const GROUND_RING_COMPOSE = 3;
+/** THE PREFETCH'S REAL BUDGET: MILLISECONDS, not counts.
+ *
+ *  Measured on the maintainer's own phone (live/telemetry/perf.json, the client
+ *  beacon, 2026-09-03): `prefetch` cost **15.65 ms per frame** in his worst
+ *  window and 5.96 in the next — on a 16.7 ms budget, the prefetch ALONE could
+ *  exceed the whole frame. The same section measures ~1.7 ms here, so the
+ *  count-based budget above is roughly NINE TIMES too large on the device that
+ *  matters, which is exactly what a count tuned on a dev box does.
+ *
+ *  A time budget adapts by construction: a phone gets fewer cells and one
+ *  composition, this machine still gets its eighty. The counts stay as upper
+ *  bounds so a pathologically cheap frame cannot run away. */
+const GROUND_RING_MS = 2;
+/** THE GROUND PASS'S COMPOSE ALLOWANCE PER FRAME, in ms (see the compose budget
+ *  in tiles3draw). Deliberately smaller than ONE composition on his phone
+ *  (measured 6.0-9.6 ms), so spending it starts exactly one there and about a
+ *  dozen on a desktop where a composition is ~0.45 ms — the budget reads the
+ *  device instead of assuming one. Same shape and same number as the ring's
+ *  GROUND_RING_MS, which bounds the same work from the other side. */
+/** An occluder image carries the cell it came from as plain properties — see
+ *  `tagOccluder`. Read only by `__ml.occAudit()` and `__ml.occDump()`. */
+type OccTagged = Phaser.GameObjects.Image & { ocCol?: number; ocRow?: number; ocBase?: number };
+
+const GROUND_COMPOSE_MS = 2;
+/** How often a boundary repair may force an occluder rebuild, in ms. A RAISED
+ *  transition is worn by the occluder cap, not by the ground texture under it
+ *  (the cap is re-issued over the ground so bodies interleave by depth), so a
+ *  boundary the budget deferred is invisible until the occluder set is built
+ *  again — and that set is latched to 96 px of camera drift, which never comes
+ *  while he stands still. Measured on the_game, 118-217 of a window's 169-287
+ *  boundaries are raised, so this is the common case, not the corner.
+ *  Rebuilding on every repaired cell would cost a rebuild per frame for
+ *  hundreds of frames; this makes the repairs land in waves a few times a
+ *  second, at ~3 ms each, and stops by itself when the owed set drains. */
+const T3_OCC_REPAIR_MS = 400;
+/** ONE COMPOSITION IS AN ATOM, AND ON HIS PHONE IT IS ~13 ms.
+ *
+ *  Measured: with GROUND_RING_MS already in force, `prefetch` still cost 15.64
+ *  ms/frame, because the budget is tested BEFORE a composition and cannot stop
+ *  one halfway — a canvas blend plus a GPU upload either happens or does not.
+ *  So the budget has to be spent across FRAMES instead: track what a
+ *  composition actually costs here and let the ring attempt one only every
+ *  ceil(cost / GROUND_RING_MS) frames. On this machine that is every frame; on
+ *  his it is one every seven, which is what holds the average at the budget
+ *  instead of the atom. */
+const GROUND_RING_COMPOSE_EMA = 0.25;
+/** Cells inspected per frame by `t3retryBoundaries` — a Set walk and a texture
+ *  lookup each, so this is cheap; the repaint it triggers is the real cost and
+ *  is bounded by how many of them actually became ready. */
+const T3_BOUNDARY_RETRY = 32;
+/** How many times a too-wide cell repaint may be halved before it gives up and
+ *  paints in full — at most 2^N rects. */
+const T3_REPAINT_SPLITS = 2;
+/** Files in flight for the DEFERRED animation batch — see loadDeferredAnims.
+ *  Dev A/B: localStorage `ml-deferred-parallel` overrides (0 = the loader's own). */
+const DEFERRED_PARALLEL = 2;
+function deferredParallel(): number {
+  try {
+    const n = Number(localStorage.getItem("ml-deferred-parallel"));
+    if (Number.isFinite(n) && n >= 0 && localStorage.getItem("ml-deferred-parallel") !== null) return n;
+  } catch {
+    /* storage blocked: the constant */
+  }
+  return DEFERRED_PARALLEL;
+}
 const CAM_ZOOM_OUT = 0.32; // fraction of base zoom shed at full run speed (maintainer: "stronger", twice)
 const CAM_ZOOM_REF_WU = 124; // ≈ run world-speed (175 px/s side-view · √½)
 const CAM_ZOOM_TAU_OUT = 0.45; // s — ease toward zoomed-out while speeding up
@@ -552,6 +994,7 @@ interface Avatar {
   fx: number;
   fy: number;
   lit?: Phaser.GameObjects.Sprite; // lit copy above the night overlay
+  fog?: Phaser.GameObjects.Image; // the fog silhouette over the lit copy (syncLitCopy)
   hidden?: Phaser.GameObjects.Image; // white outline over the covered part (syncCoverOutline)
   // Screen y of the highest wall top drawn over the sprite this frame, or
   // undefined when nothing covers it — the lit copy is cropped BELOW this line.
@@ -623,6 +1066,49 @@ const DIR_STICK_MS = 160;
 // rides visibly above every pad it traces (maintainer screenshot 2026-07-30 —
 // the residual previously misread as edge-alpha inset).
 const TILE_DIAMOND_TOP = 5;
+
+/* EVERY IMAGE A REBUILD PLACES GETS A UNIQUE DEPTH: its base painter depth plus
+ * its creation index times this. Phaser's depth sort is STABLE, so images that
+ * share a depth draw in INSERTION order — and a column's wall faces and cap all
+ * share one depth (oDepth = by + dy) and stack correctly only because they were
+ * inserted bottom-up, cap last. Once images are REUSED across rebuilds (the
+ * occluder pool, below) insertion order is history, so the order is written
+ * into the depth instead: creation index × 1e-6 reproduces "insertion order
+ * among equals" exactly, and tops out at ~0.006 over a 6,000-image rebuild —
+ * far inside the ≥0.3 every body and light keeps from a column's depth
+ * (resolveBodyDepth: +0.5 / above+0.6 / below−0.3; lights +0.1/+0.2).
+ *
+ * A BASE-BAND QUANTITY ONLY. `litDepth` compresses painter depth into the lit
+ * band by ×1e-5, where the same 0.3 of body margin is 3e-6 — so 1e-6 per index
+ * there is 0.1 world px of painter depth, and 5,000 indices put a tree's lit
+ * copy 500 px in front of a body standing before it (caught in review,
+ * 2026-09-02). Nothing that goes through litDepth takes the epsilon: lit copies
+ * are never pooled, are recreated in creation order every rebuild, and the
+ * stable sort resolves their ties exactly as it always did. */
+const OCC_DEPTH_EPS = 1e-6;
+
+/* THE LOADING BAR'S BANDS — a stage gets the share of the BAR that matches its
+ * share of the TIME, measured, so the bar moves at roughly one speed the whole
+ * way (maintainer 2026-09-02: "it loads 55% and the last 45% goes super fast").
+ *
+ * Measured on a cold the_game boot before this: 3.0 s of boot, 5.4 s of art
+ * batch, 2.7 s standing still at "Connecting…", 15.5 s streaming — and the bar
+ * showed 0-60% for all of it, then jumped 54 -> 100 when the one big terrain
+ * batch landed. Bands 60-99% were never displayed at all.
+ *
+ * BOOT ends at 0.08 (bundle, manifests, world.json — no fine progress to be
+ * had before the scene exists). ART is the Phaser boot batch, which reports per
+ * file. CONNECT has nothing to count — matchmake, the join, the first state —
+ * so it CREEPS asymptotically across its band and never reaches the end of it.
+ * STREAM is terrain + scenery, also per file now, and it is the long pole. */
+const BAR_ART0 = 0.08;
+const BAR_ART1 = 0.3;
+const BAR_CONNECT1 = 0.4;
+/** Time constant of the connect creep. Its band is ~2.7 s of a ~27 s boot, so a
+ *  2 s constant spends most of the band without ever claiming it. */
+const BAR_CONNECT_TAU_MS = 2000;
+const STREAM_BAR0 = 0.4;
+const STREAM_BAR1 = 0.98;
 
 // ===========================================================================
 // INDOORS — the renderer half of shared/src/indoor.ts
@@ -720,6 +1206,15 @@ const IN_WALL = 2; // the building itself: any solid cell of the enclosure
  * way in 1s — an eye adapting, and finished before you have walked one cell in.
  * The weather roll's 4s is far too slow for a doorway. */
 const INDOOR_TAU = 0.35;
+// The transition's two speeds, as multiples of the eased indoor mix. The
+// GEOMETRY crossfade (debris) runs hot — hiding the repaint seams is its whole
+// job, and they hide better the less time they get (maintainer: 2× was not
+// enough, 3×). The LIGHT grade (darkening, light gains, fog) is "a bit
+// faster" than the raw roll and deliberately NOT roof-fast (maintainer
+// 2026-08-13: a first cut that ran everything at 3× read as one big snap —
+// "the roof fade is intended to be faster to hide bugs").
+const INDOOR_DEBRIS_RATE = 3;
+const INDOOR_GRADE_RATE = 1.5;
 
 /** Minimum wall-clock between APPLIED indoor transitions. Layers 1 and 2 of the
  * hysteresis (the relaxed leave bar and the space identity, see
@@ -752,6 +1247,7 @@ interface MonsterAvatar {
   fx: number;
   fy: number;
   lit?: Phaser.GameObjects.Sprite; // lit copy above the night overlay (shared pipeline)
+  fog?: Phaser.GameObjects.Image; // the fog silhouette over the lit copy (syncLitCopy)
   hidden?: Phaser.GameObjects.Image; // white outline over the covered part (syncCoverOutline)
   coverY?: number; // wall-top line covering the sprite (lit copy cropped below it)
   // The pixel-exact cover surfaces (see BodyVisual / registerCoverSlot).
@@ -760,6 +1256,27 @@ interface MonsterAvatar {
   surfLevel?: number; // surface level in LEVELS (occluder + light sampling basis)
   shadowW: number; // resting nadir-shadow ellipse, measured from the walk ART
   shadowH: number; // (footprint blended toward body width; see addMonster)
+  // THE GAME MASTER'S ONE TUNED SHADOW (wiki shadow editor, live/tuning/
+  // monsters `shadow` field). When set it replaces the whole legacy ground
+  // contract for this monster: the sprite anchors on the shadow's centre (one
+  // origin for every direction and animation, so the art rotates around it),
+  // the ellipse rotates with the facing, and the body radius derives from its
+  // size. undefined = legacy per-direction measured anchors, unchanged.
+  tuned?: MonsterShadow;
+  // The CANONICAL facet state the tuned anchor is resolved against — one of
+  // idle/walk/attack/angry/die, the names the wiki's editor writes as
+  // `offsets["<state>#<dir>"]`. NEVER the manifest-resolved clip alias
+  // (monsterWalkKey can answer "jump"): the wiki keys by the canonical state,
+  // so looking up by the alias would silently fall through to idle#<dir>.
+  // playMonsterAnim records it; the per-frame re-anchor and the live-tuning
+  // handler read it back so both re-resolve the SAME facet.
+  shState?: string;
+  // Which link of the chain supplied the anchor in force: the facet's own
+  // offset, the direction's idle offset, the v1 base ax/ay, or the art
+  // default. QA only (__ml.monsterInfo) — a gate that cannot see WHY an
+  // anchor was chosen cannot tell "tuned" from "fell back".
+  shSrc?: "facet" | "idle" | "base" | "default";
+  artBottom?: number; // manifest foot line — the untuned default anchor fraction
   radius: number; // physical body radius (wu) — the player's input-dodge clearance
   hoverPx: number; // intentional levitation (winged flyers) above the ground anchor
   pendDir?: string; // stableDir hysteresis state (same contract as Avatar)
@@ -794,6 +1311,10 @@ interface MonsterAvatar {
   // CAMERA GATE (see MONSTER_CULL_SLACK): true while the body's art cannot
   // touch the view, so its render pipeline is parked. Positions keep syncing.
   culled?: boolean;
+  // ART PENDING: this kind's walk/idle strips ride the deferred batch and
+  // have not landed. Parked exactly like a culled body — never the placeholder
+  // wanderer, never a checkerboard — and released by onMonsterArtLanded.
+  artPending?: boolean;
   // COMBAT mirrors (server mstate/actionSeq drive the clips).
   mstate?: string;
   lastActionSeq?: number;
@@ -843,6 +1364,7 @@ interface NpcAvatar {
   fx: number; // flat world position (fixed — they never walk)
   fy: number;
   lit?: Phaser.GameObjects.Sprite;
+  fog?: Phaser.GameObjects.Image; // the fog silhouette over the lit copy (syncLitCopy)
   hidden?: Phaser.GameObjects.Image; // white outline over the covered part (syncCoverOutline)
   coverY?: number;
   surfLevel?: number;
@@ -872,6 +1394,47 @@ interface NpcAvatar {
  * battle-tested code path as players (maintainer 2026-07-29: monsters drew
  * behind terrace tiles with detached shadows and took no lighting — their
  * first cut had a naive painter depth and no lit copy). */
+/** One placement's animation clock (see `sceneryAnimRuns`). */
+interface SceneryAnimRun {
+  clip: SceneryAnim;
+  cls: SceneryAnimClass;
+  /** Texture keys of the frames, in order — frame 0 is the still. */
+  keys: string[];
+  /** −1 while sleeping, else the frame currently shown. */
+  frame: number;
+  /** time.now the current play started. */
+  t0: number;
+  /** time.now the sleep ends. */
+  next: number;
+}
+
+/** This rebuild's images of one animated placement (see `sceneryAnimLive`). */
+interface SceneryAnimLive {
+  place: number;
+  img: Phaser.GameObjects.Image;
+  lo: { img: Phaser.GameObjects.Image; fog?: Phaser.GameObjects.Image } | null;
+  stillKey: string;
+  frameName: string;
+  crop: [number, number, number, number];
+  /** Frame px -> screen px, for the per-frame light centre. */
+  kx: number;
+  ky: number;
+  /** THE PLACEMENT'S LIGHT while its clip plays (`light_frames`): the source
+   *  the ledger reads every frame, its at-rest values, and the still's own
+   *  emissive centroid in canvas px (the frames' `dx`/`dy` are measured from
+   *  the frame centre; the still's centroid is where the light stands at
+   *  rest, so the per-frame offset is the difference). Resolved lazily on the
+   *  first played frame; `false` once looked up and absent (an unlit piece). */
+  light?: {
+    src: EmissiveSource;
+    base: { col: number; row: number; color: [number, number, number]; hx: number; hy: number };
+    stillDx: number;
+    stillDy: number;
+  } | false;
+  /** What the last step applied, for the probe. */
+  lightNow?: { i: number; dcol: number; drow: number };
+}
+
 interface BodyVisual {
   sprite: Phaser.GameObjects.Sprite;
   shadow: Phaser.GameObjects.Image;
@@ -882,6 +1445,7 @@ interface BodyVisual {
   fx: number;
   fy: number;
   lit?: Phaser.GameObjects.Sprite;
+  fog?: Phaser.GameObjects.Image; // the fog silhouette over the lit copy (syncLitCopy)
   hidden?: Phaser.GameObjects.Image; // white outline over the covered part (syncCoverOutline)
   coverY?: number;
   // The body's slot in the three cover atlases, held while it lives, and the
@@ -911,14 +1475,35 @@ interface CoverSlot {
   owner?: BodyVisual;
 }
 
+/** At most one manifest-landed scenery rebuild per this many ms. The timer
+ *  arms on the FIRST landing of a burst and is not pushed back by the rest,
+ *  so a trickle of ~200 manifests costs a bounded number of rebuilds and the
+ *  first art request is never more than this late. */
+const SCENERY_MANIFEST_SETTLE_MS = 120;
+
+/** A frame this slow is one the maintainer can feel: 40 ms is 25 fps, well
+ *  under the ~20 ms a normal frame costs on his phone, and comfortably below
+ *  the 60-124 ms band the recurring stutter actually lives in — so the census
+ *  catches the population and its shoulder without counting ordinary frames. */
+const HITCH_LONG_MS = 40;
+
 export class WorldScene extends Phaser.Scene {
   private manifest!: Manifest;
   private myCharacter!: CharacterDef;
   private myName!: string;
   private room?: Room;
+  /** MY STABLE ID (spec/ZONES.md): the key of my entry in `state.players` —
+   *  the session id of my FIRST room, kept across every zone hand-off. Found
+   *  by `player.sid === room.sessionId` on each bind, never by map key. */
+  private myId = "";
+  private zone = WHOLE_WORLD;
+  private zonesCfg: ZoneCfg | null = null;
+  private zoneSwapping = false;
+  private swapQueue: InputMessage[] = [];
   private avatars = new Map<string, Avatar>();
   // Roaming monsters (server-authoritative, all clients see the same ones).
   private monsters = new Map<string, MonsterAvatar>();
+  private liveShadowUnsub?: () => void;
   // Rolling one-second window for the monster-SFX budget (see monsterSfx).
   private monSfxWindowAt = 0;
   private monSfxInWindow = 0;
@@ -926,6 +1511,13 @@ export class WorldScene extends Phaser.Scene {
   private monstersActive = 0;
   // Monster catalog (null when /monsters.json was unavailable → no monsters).
   private monsterManifest: MonsterManifest | null = null;
+  /** Kinds whose walk/idle art rides the BOOT batch (client/src/monsterBoot.ts);
+   *  null = every kind, the pre-split behaviour. */
+  private monsterBootKinds: Set<string> | null = null;
+  /** Kinds the boot batch left out: queued in the deferred batch, and their
+   *  bodies stay parked (artPending) until THEIR strips land. */
+  private monsterDeferredKinds = new Set<string>();
+  private lastPosSavedAt = 0;
   private npcManifest: NpcManifest | null = null;
   /** Placed NPCs, rendered through the SAME body pipeline as players and
    * monsters (depth, nadir shadow, lit copy). Client-only decor: they have no
@@ -941,6 +1533,35 @@ export class WorldScene extends Phaser.Scene {
   // other switches (maintainer 2026-07-30 — the zones are map data, not part
   // of the played world).
   private spawnAreasOn = localStorage.getItem("ml-spawn-areas") === "1";
+  /* THE TWO SUBTRACTION SWITCHES (maintainer 2026-09-08: "place the disable at
+   * a smart location so we completely get rid of that feature and not only in
+   * the draw call"). They exist to answer one question each — does the game
+   * still stutter with no monsters, and with no scenery — so each one is cut at
+   * the point where the WHOLE pipeline hangs off it, not at its blit:
+   *   monsters  -> `addMonster` never builds an avatar, so there is no sprite,
+   *                shadow, lit copy, fog silhouette, target ring, hp bar or
+   *                depth resolve to run, the per-frame monster loop iterates an
+   *                empty map, and the boot batch queues none of the 912 strips.
+   *   scenery   -> `initScenery` never builds the placement index, so
+   *                `rebuildScenery` returns at its own guard and there are no
+   *                sprites, lit copies, shape maps, light sources or
+   *                occluderMeta; `setSceneryOccluders` is fed nothing, so the
+   *                night pass stops shading scenery shadows too.
+   * COLLISION IS DELIBERATELY KEPT on both. `restampScenery` reads
+   * `world.scenery` and not the render index, and the server is authoritative
+   * for bodies either way — an A/B that also changed where you can walk would
+   * compare two different games. Monster DODGE does change (its near-list is
+   * empty), which is stated rather than worked around: there are no monsters. */
+  private monstersMode: SubMode = subModeOf(localStorage.getItem("ml-monsters"));
+  private monstersOn = this.monstersMode !== "off";
+  private monstersMock = this.monstersMode === "mock";
+  private sceneryMode: SubMode = subModeOf(localStorage.getItem("ml-scenery"));
+  private sceneryOn = this.sceneryMode !== "off";
+  private sceneryMock = this.sceneryMode === "mock";
+  /** Settings "fog" — the two atmospherics (depth fog + weather mist), ON by
+   *  default and remembered. A SCREENSHOT instrument: both wash the picture,
+   *  and the maintainer photographs walls to review the art on them. */
+  private fogOn = localStorage.getItem("ml-fog") !== "0";
   private spawnZones: SpawnZone[] | null = null; // lazily fetched when first shown
   private spawnZonesLoading = false;
   private keys!: Record<string, Phaser.Input.Keyboard.Key>;
@@ -969,6 +1590,17 @@ export class WorldScene extends Phaser.Scene {
   // stepAutopilot (headless-testable, see server/test/navigation.sim.test.ts);
   // the scene owns only the glue (tap picking, marker, keyboard-cancels).
   private trip: AutopilotTrip | null = null;
+  /** The short route round whatever the HELD STICK is jammed against, and the
+   *  stick direction that asked for it — see startStickDetour. Distinct from
+   *  `trip`, which is the player's own tap destination: this one is disposable,
+   *  never draws a marker, and dies the moment the stick moves or the way ahead
+   *  opens up. */
+  private stickTrip: AutopilotTrip | null = null;
+  private stickDir = { ax: 0, ay: 0 };
+  /** Which way the body is currently sliding along something — see slideAlong. */
+  private walkHold: SlideMemo = { ax: 0, ay: 0 };
+  /** The tap autopilot's own slide commitment — never shared with walkHold. */
+  private tapSlide: SlideMemo = { ax: 0, ay: 0 };
   // Autopilot decision trace (debug hook __ml.navLog; ring buffer, dev cost ~0).
   private navLog: Record<string, unknown>[] = [];
   // Hold-to-move: the one pointer allowed to steer (first touch down), the
@@ -986,6 +1618,14 @@ export class WorldScene extends Phaser.Scene {
    * scene and armed a walk-to trip THROUGH the dialog (maintainer 2026-08-05:
    * cancelling a drop ran the player to where he tapped). */
   private uiLocked = false;
+  // ---- chess at the board (chessui.ts; server chess.ts) ----
+  private chessDialog: ChessDialog | null = null;
+  /** Non-null while standing at a joinable seat: what the jump button offers.
+   * "start" = free board, "join" = someone (or the resident NPC) waits. */
+  private chessPrompt: { mode: "start" | "join" } | null = null;
+  private chessPromptAt = 0;
+  private chessDecor = new Map<string, Phaser.GameObjects.Image>();
+  private chessWaitB = new Map<string, Phaser.GameObjects.Text>();
   /** …and the tap that CLOSES a modal must not become a trip either: the
    * close handler runs on the element, Phaser's window listener runs after it
    * in the same dispatch, so the lock is lifted a beat later than it is
@@ -1008,8 +1648,1203 @@ export class WorldScene extends Phaser.Scene {
   private worldName: string = DEFAULT_WORLD; // which maps2 world (room + assets)
   private worldW = WORLD_WIDTH; // this world's extent in world units (grid×CELL_WU)
   private worldH = WORLD_HEIGHT;
-  private maps2 = false; // true when the world uses maps2 explicit tile paths
+  // MAPS3 (pixel-maps3/world@1): cells name a ground TYPE and no art at all —
+  // tiles3 resolves what draws, per cell, at draw time. The only world kind
+  // since tiles2 and the world@1/@2 worlds were retired (2026-09-09); false
+  // only for a hand-built `rows` literal, which draws a plain ground.
+  private maps3 = false;
+  // THE PROJECTION IS PER WORLD. `MAP_GEOMETRY` is the default (32/15/16,
+  // what a bare `rows` literal gets); a maps3 world draws on 32/14/15 (shared
+  // ISO_GEOMETRY_MAPS3, the second number MEASURED off the wall art). Every
+  // projection in this scene reads THIS, never the module constant.
+  private geom: MapGeometry = MAP_GEOMETRY;
   private iso = { ox: 0, oy: 0, w: WORLD_WIDTH, h: WORLD_HEIGHT };
+  // ---- TILES 3.0 RUNTIME (maps3 only; every field stays null otherwise) ----
+  private t3: Tiles3World | null = null; // per-cell resolution over the whole doc
+  private t3tex: Tiles3Textures | null = null; // the composed-texture factory
+  private t3load: Tiles3Loader | null = null; // streaming art, one request per path
+  private t3sheets: PatternSheets | null = null; // silhouette + masks + borders
+  private t3route: UrlRoute = {}; // staging + version pin, injected into both modules
+  private t3tm: TextureManagerLike = this.t3TextureManager(); // see t3TextureManager
+  /** Can this renderer take a composition as raw bytes? Resolved on first use
+   *  (the adapter above is built before `this.game` exists). */
+  private t3raw: boolean | null = null;
+  /** `__ml.groundRaw(false)` — force new compositions back onto the canvas. */
+  private t3rawOff = false;
+  private t3loader: Phaser.Loader.LoaderPlugin | null = null; // see tiles3Loader
+  // What the last ground pass resolved and drew, plus how long it took. The
+  // pass runs on the ground RT's own latch (every GROUND_MARGIN/2 of camera
+  // drift), never per frame — `ms` is what makes that budget checkable.
+  /** `underlays` counts the FALLBACK diamonds actually drawn — one per cell
+   *  whose surface op did not draw. It used to be one per flat cell; if this
+   *  climbs back toward `cells`, art is not landing and the pass is paying for
+   *  the insurance again. */
+  private t3stats = { cells: 0, blits: 0, boundaries: 0, decks: 0, scenery: 0, ms: 0, culled: 0, composed: 0, composeMs: 0, underlays: 0 };
+  /** The ground has drawn SOMETHING this world — sticky, because after a
+   *  scroll t3stats counts only the exposed bands (which can be all void). */
+  private groundPainted = false;
+  /* THE GROUND CULL — see t3Blit. `groundCull` is the A/B switch for
+   * `__ml.groundRedraw`; nothing in play reads it. */
+  private groundCull = true;
+  private groundCulled = 0;
+  /* THE PER-CELL RESOLUTION CACHE — see t3resolve. A/B switch for
+   * `__ml.groundRedraw`; nothing in play reads it. */
+  private groundCacheOn = true;
+  /** The 1-texel transition seam (`border.tone` 0.82). ON — it is what makes a
+   *  composed transition read as a blend rather than a hard cut. Switchable
+   *  because he has called it both the fix and the bug, on different builds. */
+  private seamOn = true;
+  /** `clear: pink` — fill the ground texture with magenta instead of the page
+   *  dark, so an unpainted texel is unmistakable. Diagnostic, default off. */
+  private groundClearPink = false;
+  /** `transitions` — skip the composed transition tile and let each cell draw
+   *  its own plate instead. The draw loop takes ONE of the two, never both, so
+   *  this is the A/B for "the zigzag is the transition tile you make with the
+   *  mask". Diagnostic, default off (transitions on). */
+  private noTransitions = false;
+  /** Cells painted while their composed transition was not yet built — see the
+   *  ground pass and `t3retryBoundaries`. Bounded by the texture's own cell
+   *  count; a cell leaves the moment it draws its boundary. */
+  private t3boundaryOwed = new Set<number>();
+  /** Cells painted without one of their DECK transitions (`Tiles3DeckCell
+   *  .boundary`) — idx -> how many of them had composed at the last repaint,
+   *  so a cell is repainted only when another one lands and never loops on a
+   *  cached one while a sibling streams. Same retry as the cells' set. */
+  private t3deckOwed = new Map<number, number>();
+  private t3cells = new Map<number, { cell?: Tiles3Cell | null; boundary?: Tiles3Boundary | null; decks?: Tiles3DeckCell[] }>();
+  /** THE RESOLVER ON ANOTHER CORE — see resolveworker.ts. It fills `t3cells`
+   *  ahead of the band that needs them; every answer is optional. */
+  private t3worker = new ResolveWorker();
+  /** Boot options for `t3worker`, applied on first use — see initTiles3. */
+  private t3workerOpts: Parameters<ResolveWorker["init"]>[0] | null = null;
+  private t3workerBooted = false;
+  /** The worker's own cursor into `t3ringQueue` — see t3workerStep. */
+  private t3workerAt = 0;
+  private t3pitchChecked = false;
+  private t3regionMs = 0;
+  private t3Failed = new Set<string>(); // see t3Try — one line per distinct resolver failure
+  private scenery: SceneryIndex | null = null; // placements bucketed by screen anchor
+  private sceneryPieces: SceneryPieces | null = null; // lazy per-piece manifests
+  private sceneryImgs: Phaser.GameObjects.Image[] = [];
+  private sceneryFit = new Map<string, SceneryFit | null>(); // per piece+state, measured once
+  private sceneryAsked = new Set<string>();
+  private sceneryQueue: [string, string][] = [];
+  private sceneryRebuilds = 0; // the boot hold waits for the first one
+  /** Scenery ART files (not manifests) queued and finished — the loading bar's
+   *  last stage counts them beside the terrain's. */
+  private sceneryArt = { requested: 0, done: 0 };
+  /* THE FRAME BUDGET, on demand (`__ml.perf(true)`). Off by default and gated
+   * at every call site, so a normal frame pays one boolean per section. The
+   * question it answers is the only one that matters for a stutter: WHICH
+   * section of update() owned the long frames, and how many objects it was
+   * walking when it did. Sections nest (rebuildOccluders contains
+   * rebuildScenery), hence the stack. */
+  private perfOn = perfBeaconArmed();
+  /* THE PERF BEACON — the maintainer's own device, reporting to live/.
+   *
+   * His idea (2026-09-03), and it is the right instrument: the headless
+   * harness runs software GL at 1-3 fps and WALKS ABOUT ONE CELL PER 24
+   * SECONDS, so the paths that only fire on fresh terrain — the cell repaint,
+   * first-sight plate/boundary composition — never execute in it. Every
+   * "cannot reproduce" measured there was a test of code that never ran. He
+   * plays on a phone and tests in production, so the numbers that matter can
+   * only be taken there. `?perf=1` (remembered; `?perf=0` clears) arms the
+   * section profiler and posts a summary to /api/perf, which commits it to
+   * live/telemetry/perf.json — the channel agents already read from GitHub.
+   * Reports only go out after the player has actually MOVED, so a phone left
+   * idle on a bench does not fill the file with nothing. */
+  private perfBeacon = perfBeaconArmed();
+  private perfBeaconAt = 0;
+  private perfBeaconFrom: { x: number; y: number } | null = null;
+  private perfHideHooked = false;
+  private perfStack: { t0: number; child: number }[] = [];
+  private perfAcc: Record<string, { n: number; ms: number; max: number }> = {};
+  private perfFrames: number[] = [];
+  private perfLast = 0;
+  /* THE HITCH RECORDER — the instrument the whole optimisation day lacked.
+   * Per FRAME (update-start to update-start, so it includes render), it keeps
+   * the profiled sections' own ms, the counters that say what happened that
+   * frame, and — the discriminator — `other` = frame total minus every section,
+   * which is render + GPU + unprofiled JS. Worst frames are kept, so a run
+   * ends with "the 20 longest frames and what was in them". */
+  private hitchOn = false;
+  private hitchSec: Record<string, number> = {};
+  private hitchC = { tex: 0, files: 0, built: 0, buildMs: 0, blits: 0, objs: 0 };
+  private hitchWorst: Record<string, unknown>[] = [];
+  /** The previous frame's GL work (glframe.ts) — a long frame is read against
+   *  what the frame BEFORE it queued, because that is where a driver pays. */
+  private hitchGlPrev: GlFrame | null = null;
+  /** Consecutive frames over HITCH_LONG_MS including this one: the burst the player feels. */
+  private hitchBurst = 0;
+  /** `<ground mode>:<dominant section>` -> how many frames over HITCH_LONG_MS
+   *  fell in that bucket, their total ms, the dominant section's share, and how
+   *  much of it was idle. See the census note in closeHitchFrame. */
+  private hitchBy: Record<string, { n: number; ms: number; top: number; idle: number }> = {};
+  private hitchN = 0;
+  private hitchSum = 0;
+  private hitchPrevBuilt = 0;
+  private hitchPrevBuildMs = 0;
+  private hitchPrevBuiltB = 0;
+  private hitchPrevDeferred = 0;
+  private perfTexAdded = 0;
+  private perfTexFam: Record<string, number> = {};
+  private perfTexFrame = 0;
+  private perfTexFrameMax = 0;
+  private perfTexHooked = false;
+  /** One frame's record — called at the TOP of update() for the frame that
+   *  just ended, so `total` spans render as well. */
+  private closeHitchFrame(total: number): void {
+    const tex = this.t3tex;
+    const built = (tex?.stats.built ?? 0) - this.hitchPrevBuilt;
+    const buildMs = (tex?.stats.buildMs ?? 0) - this.hitchPrevBuildMs;
+    // `deferred` is what the compose budget refused THIS frame — the number
+    // that says whether the budget is doing anything, and how far behind the
+    // repair is running. `bnd` splits the builds: measured offline, a fresh
+    // window needs 128-287 boundary compositions and 5-9 plate ones, so a
+    // build that is not a boundary is not what the budget is aimed at.
+    const bnd = (tex?.stats.builtBoundary ?? 0) - this.hitchPrevBuiltB;
+    const defer = (tex?.stats.deferred ?? 0) - this.hitchPrevDeferred;
+    this.hitchPrevBuilt = tex?.stats.built ?? 0;
+    this.hitchPrevBuildMs = tex?.stats.buildMs ?? 0;
+    this.hitchPrevBuiltB = tex?.stats.builtBoundary ?? 0;
+    this.hitchPrevDeferred = tex?.stats.deferred ?? 0;
+    let secMs = 0;
+    for (const k in this.hitchSec) secMs += this.hitchSec[k];
+    this.hitchN++;
+    this.hitchSum += total;
+    const gl = glFrameTake();
+    const glPrev = this.hitchGlPrev;
+    this.hitchGlPrev = gl;
+    this.hitchBurst = total >= HITCH_LONG_MS ? this.hitchBurst + 1 : 0;
+    const rec: Record<string, unknown> = {
+      f: this.hitchN,
+      total: +total.toFixed(1),
+      other: +(total - secMs).toFixed(1), // render + GPU + unprofiled JS
+      sec: Object.fromEntries(Object.entries(this.hitchSec).filter(([, v]) => v > 0.2).map(([k, v]) => [k, +v.toFixed(1)])),
+      mode: this.groundLastMode,
+      composed: built,
+      composeMs: +buildMs.toFixed(1),
+      bnd,
+      defer,
+      owed: this.t3boundaryOwed.size,
+      tex: this.hitchC.tex,
+      files: this.hitchC.files,
+      objs: this.hitchC.objs,
+      ring: this.t3ringQueue.length - this.t3ringAt,
+      /* THE GPU SIDE OF THE FRAME (glframe.ts): brackets per DynamicTexture
+       * with begin/end ms, allocations, bytes uploaded, capture-size switches;
+       * `glPrev` the same for the frame before (queued there, paid here);
+       * `burst` how many long frames in a row this makes; `q` the slices still
+       * owed; `dl`/`occ` what the scene held. */
+      gl,
+      glPrev: glPrev && !glFrameEmpty(glPrev) ? glPrev : undefined,
+      burst: this.hitchBurst,
+      q: this.groundSliceQ.length,
+      dl: this.children.length,
+      occ: this.occluders.length,
+    };
+    /* A CENSUS OF THE BAD FRAMES, not a top-N of them. The worst-24 list is
+     * biased to the extremes by construction, and the extremes are NOT what is
+     * felt (maintainer 2026-09-07: "not the best case and not the worst case.
+     * The bad case that happens over and over again" — one frame every 0.8-3.8 s
+     * at 60-124 ms). This counts EVERY frame over the threshold and buckets it
+     * by ground mode and by what dominated it, so one run says which population
+     * to attack instead of which single frame was unluckiest.
+     *
+     * gapIdle and gapBusy are EXCLUDED from the argmax because the frame
+     * accounting overlaps: a measured frame had gapIdle 109.5 inside a 116.5 ms
+     * total that also carried repaintCells 86.5, which cannot both be true.
+     * Idle is summed on the side instead, where it answers a different question
+     * — how much of the stutter is the main thread WAITING (for the GPU, a
+     * texture upload, vsync) rather than working. Until that overlap is fixed,
+     * an argmax including it would just report "idle" for everything. */
+    if (total >= HITCH_LONG_MS) {
+      let cause = "";
+      let best = 0;
+      for (const k in this.hitchSec) {
+        if (k === "gapIdle" || k === "gapBusy") continue;
+        if (this.hitchSec[k] > best) {
+          best = this.hitchSec[k];
+          cause = k;
+        }
+      }
+      // Nothing owns a quarter of the frame: the time is somewhere we do not
+      // time at all, which is itself the finding.
+      if (best < total * 0.25) cause = "unattributed";
+      const b = (this.hitchBy[`${this.groundLastMode}:${cause}`] ??= { n: 0, ms: 0, top: 0, idle: 0 });
+      b.n++;
+      b.ms += total;
+      b.top += best;
+      b.idle += this.hitchSec.gapIdle ?? 0;
+    }
+    if (this.hitchWorst.length < 24) this.hitchWorst.push(rec);
+    else {
+      let wi = 0;
+      for (let i = 1; i < this.hitchWorst.length; i++)
+        if ((this.hitchWorst[i].total as number) < (this.hitchWorst[wi].total as number)) wi = i;
+      if (total > (this.hitchWorst[wi].total as number)) this.hitchWorst[wi] = rec;
+    }
+    this.hitchSec = {};
+    this.hitchC = { tex: 0, files: 0, built: 0, buildMs: 0, blits: 0, objs: 0 };
+  }
+
+  private ps(): void {
+    if (this.perfOn) this.perfStack.push({ t0: performance.now(), child: 0 });
+  }
+  /** Arm or disarm the perf beacon from the settings panel, and remember it —
+   *  the installed app cannot be given a query parameter. Arming also turns on
+   *  the section timers the report is built from; disarming turns them off so
+   *  nobody pays for measurement they are not sending. */
+  private gpuStr: string | null = null;
+  /** The GPU the browser names (WEBGL_debug_renderer_info), once; "?" when withheld. */
+  private gpuString(): string {
+    if (this.gpuStr !== null) return this.gpuStr;
+    try {
+      const gl = (this.game.renderer as unknown as { gl?: WebGLRenderingContext }).gl;
+      const ext = gl?.getExtension("WEBGL_debug_renderer_info") as { UNMASKED_RENDERER_WEBGL: number } | null | undefined;
+      this.gpuStr = gl && ext ? String(gl.getParameter(ext.UNMASKED_RENDERER_WEBGL)) : "?";
+    } catch {
+      this.gpuStr = "?";
+    }
+    return this.gpuStr;
+  }
+
+  private togglePerfBeacon(): void {
+    // TURNING OFF: send what has accumulated first, or the last window — the
+    // one he just finished reproducing something in — is thrown away.
+    if (this.perfBeacon) this.perfBeaconSend(performance.now(), true);
+    this.perfBeacon = !this.perfBeacon;
+    this.perfOn = this.perfBeacon;
+    /* THE WORST-FRAME RECORDER RIDES WITH THE BEACON. It defaulted off and was
+     * armed only by `__ml.hitch(true)`, which nothing on a phone can call — so
+     * `closeHitchFrame` never ran, `hitchWorst` stayed empty and EVERY report
+     * he has ever sent carried `worst: []`. His p99 is 108-359 ms and his max
+     * is 1,037 ms, and the one instrument built to say what those frames were
+     * doing was switched off. */
+    this.hitchOn = this.perfBeacon;
+    if (this.perfBeacon) {
+      this.perfHookRender();
+      this.perfArmBaselines();
+    }
+    this.perfBeaconAt = 0;
+    this.perfBeaconFrom = null;
+    this.perfAcc = {};
+    this.perfFrames = [];
+    this.perfStack = [];
+    this.perfLast = 0;
+    try {
+      localStorage.setItem("ml-perf-beacon", this.perfBeacon ? "1" : "0");
+    } catch {
+      /* storage blocked: the toggle still holds for this session */
+    }
+    this.chat.addLog("—", this.perfBeacon ? "perf beacon ON — run around for a minute" : "perf beacon off");
+  }
+
+  /** One beacon tick: every PERF_BEACON_MS, if the player has moved, post the
+   *  window's numbers and start a new one. Everything it reports is what
+   *  `__ml.perf()` already computes, so the beacon adds no measurement cost of
+   *  its own — only the section timers `?perf=1` already turned on. */
+  private perfBeaconTick(now: number): void {
+    if (!this.perfBeaconAt) {
+      this.perfBeaconAt = now;
+      this.perfBeaconFrom = this.mePos();
+      if (!this.perfHideHooked) {
+        this.perfHideHooked = true;
+        /* BACKGROUNDING IS A FLUSH TOO. He plays from an installed app and
+         * leaves by swiping it away, which fires visibilitychange and nothing
+         * else — `pagehide`/`unload` are unreliable on mobile. The POST already
+         * carries keepalive, which is what lets it outlive the hidden page. */
+        document.addEventListener("visibilitychange", () => {
+          if (document.visibilityState === "hidden" && this.perfBeacon) {
+            this.perfBeaconSend(performance.now(), true);
+          }
+        });
+      }
+      return;
+    }
+    if (now - this.perfBeaconAt < PERF_BEACON_MS) return;
+    this.perfBeaconSend(now, false);
+  }
+
+  /** Send the window that has accumulated so far, and start a new one.
+   *
+   *  `final` is the flush: switching the beacon OFF, or the app going to the
+   *  background, would otherwise DISCARD the window in progress — and that is
+   *  routinely the interesting one, because he turns the beacon off right after
+   *  reproducing whatever he was chasing (his point, 2026-09-03). A final flush
+   *  drops the "have you moved" gate: at that moment even a short or stationary
+   *  window is the last thing he saw, and `keepalive` is what lets it survive
+   *  the page being hidden or torn down. */
+  private perfBeaconSend(now: number, final: boolean): void {
+    const from = this.perfBeaconFrom;
+    const at = this.mePos();
+    const secs = (now - this.perfBeaconAt) / 1000;
+    this.perfBeaconAt = now;
+    this.perfBeaconFrom = at;
+    if (secs < 1) return; // nothing has accumulated worth a commit
+    // MOVED? A stationary window says nothing about the lag he reports while
+    // running, and would evict a useful report from the file's tail. A FINAL
+    // flush is exempt — see above.
+    if (!final && (!from || !at || Math.hypot(at.x - from.x, at.y - from.y) < 2)) return;
+    let snap: Record<string, unknown> | null = null;
+    try {
+      snap = (window as unknown as { __ml?: { perf?: () => Record<string, unknown> } }).__ml?.perf?.() ?? null;
+    } catch {
+      snap = null;
+    }
+    if (!snap) return;
+    /* THE WINDOW IS CLOSED HERE, not at the early returns above — taking the
+     * snapshot is what resets `perfAcc` and `perfFrames`, so the delta
+     * baselines must advance in step with it or a skipped window (too short,
+     * or the player never moved) would be double-counted into the next one. */
+    const prevFull = this.perfPrevFullPaints;
+    const prevDrain = this.perfPrevDrains;
+    const prevDefer = this.perfPrevDeferred;
+    const prevCtx = this.perfPrevCtxRestores;
+    this.perfPrevCtxRestores = this.ctxRestores;
+    this.perfPrevFullPaints = this.groundFullRuns;
+    this.perfPrevDrains = this.repaintStats.drains;
+    this.perfPrevDeferred = this.repaintStats.drainsDeferred;
+    const sec = snap.sections as Record<string, { totalMs?: number }> | undefined;
+    const perFrame: Record<string, number> = {};
+    const frames = (snap.frames as { n?: number } | undefined)?.n || 1;
+    for (const [k, v] of Object.entries(sec ?? {})) perFrame[k] = +(((v?.totalMs ?? 0) / frames)).toFixed(3);
+    const cam = this.cameras.main;
+    /* The two rates the index is built from, in NANOSECONDS per unit of work,
+     * taken from the per-frame means above against the end-of-window counts. */
+    const cnt = (snap.counts ?? {}) as Record<string, number>;
+    const cn = this.perfCountN || 1;
+    const occN = this.perfCountN ? this.perfOccSum / cn : (cnt.occluders ?? 0);
+    const dlN = this.perfCountN ? this.perfDlSum / cn : (cnt.displayList ?? 0);
+    const zoomMean = this.perfCountN ? this.perfZoomSum / cn : cam.zoom;
+    const longN = this.perfLongN;
+    const longMs = this.perfLongMs;
+    this.perfLongN = 0;
+    this.perfLongMs = 0;
+    this.perfOccSum = 0;
+    this.perfDlSum = 0;
+    this.perfZoomSum = 0;
+    this.perfCountN = 0;
+    const cpuIndex = {
+      cpuOccCull: +(occN > 0 ? ((perFrame["occCull"] ?? 0) / occN) * 1e6 : 0).toFixed(1),
+      cpuSort: +(dlN > 1 ? ((perFrame["depthSort"] ?? 0) / (dlN * Math.log2(dlN))) * 1e6 : 0).toFixed(2),
+      // The means the index actually divided by, so the ratio is auditable and
+      // the gap between these and `counts.*` shows how atypical the snapshot was.
+      longN, // main-thread tasks over 50 ms the browser named, this window
+      longMs: +longMs.toFixed(0),
+      occMean: Math.round(occN),
+      dlMean: Math.round(dlN),
+    };
+    const netTake = netPerfTake();
+    const texUp = texUploadTake(secs);
+    const cap = captureTake();
+    const gb = this.groundBatchStats;
+    this.groundBatchStats = { brackets: 0, subBatches: 0, binds: 0, maxSub: 0 };
+    const body = {
+      build: assetIndexInfo().buildSha,
+      where: at ? `${at.x.toFixed(1)},${at.y.toFixed(1)}` : "unknown",
+      tod: TIME_PHASES[this.timeIdx].name,
+      zoom: cam.zoom, // INSTANTANEOUS — see zoomMean; the snapshot instant is atypical
+      zoomMean: +zoomMean.toFixed(2),
+      dpr: window.devicePixelRatio || 1,
+      /* HOW MANY CORES THE PHONE HAS — and how many the game uses, which is
+       * ONE. Every line of this client runs on the main thread: the resolver,
+       * the ground slice, the occluder rebuild, the lighting twins and the
+       * render commands, so a 25 ms slice does not run BESIDE a frame, it runs
+       * INSTEAD of one (maintainer 2026-09-08: "doesn't my phone have several
+       * cores?"). This is the number that decides how many workers are worth
+       * starting, and nothing has ever reported it. */
+      cores: navigator.hardwareConcurrency || 0,
+      view: `${this.scale.width}x${this.scale.height}`,
+      secs: +secs.toFixed(1),
+      final,
+      frames: snap.frames,
+      sections: perFrame,
+      counts: {
+        ...(snap.counts as Record<string, number>),
+        texturesAdded: snap.texturesAdded as number,
+        // Objects the RENDERER actually drew last frame, against the display
+        // list we built — the gap is what the cull is worth.
+        flushes: this.perfDrawCount, // batch flushes in the last rendered frame
+        occSkipped: this.occCulledSubmits, // occluder submits the cull removed
+        // THE COVER SURFACES' own bill — the suspect for `lighting`: it scales
+        // with covered bodies x occluders, not with lights, and re-rasterises
+        // three atlases whenever anything it draws has MOVED (see coverSig).
+        coverFlush: this.coverStat.flushes,
+        coverSkip: this.coverStat.skips,
+        coverQuads: this.coverStat.quads,
+        coverCands: this.coverStat.cands,
+        coverSlots: this.coverStat.slots,
+        texGen: this.t3texGen, // every texture the game added — a diagnostic
+        /* WHAT THE DRAIN NOW GATES ON: terrain batches landed. Reported beside
+         * texGen so a run says which of the two moved. `drains` with texGen
+         * climbing and terrainGen flat is the bug this pair was added for. */
+        terrainGen: this.t3terrainGen,
+        /* WHICH ARM THIS WINDOW IS. Without these a report from a
+         * monsters-off run is indistinguishable from one where nothing
+         * happened to be on screen, and the whole point of the switches is
+         * comparing two reports. Numbers, because `counts` is flattened. */
+        monstersOn: this.monstersMock ? 2 : this.monstersOn ? 1 : 0, // 2 = pink mock
+        sceneryOn: this.sceneryMock ? 2 : this.sceneryOn ? 1 : 0,
+        // Capture-target size switches this window = re-allocations stock Phaser
+        // would do (does, with the pool off), and the distinct sizes seen.
+        capSwitch: cap.switches,
+        capSizes: cap.sizes,
+        // GL allocations and bytes this window (glframe.ts): textures and
+        // framebuffers created / deleted, MB handed to texImage2D/texSubImage2D.
+        ...glWindowTake(),
+        // WHOLE-WORLD REPAINTS AND WHAT CAUSED THEM. A full ground paint costs
+        // 52.9-271.6 ms on his phone plus 7.6-252.2 ms of occluder rebuild, and
+        // every "full" frame in the last beacon was a `repaintWorld` — so these
+        // two say directly whether the drain's rising-edge guard held.
+        /* A MACHINE-SPEED INDEX, so "this run is worse" becomes falsifiable.
+         *
+         * Two loops in this scene are purely proportional to an object count
+         * and do nothing else: `occCull` is four compares and a store per
+         * occluder, `depthSort` is a comparison sort of the display list. Their
+         * cost PER UNIT OF WORK is therefore a measurement of the device, not
+         * of the game — and across his last beacon those two independent rates
+         * agreed that one window ran 3.2x slower than the others (occCull index
+         * 3.39, depthSort index 3.46, render per object 2.69). That window was
+         * the fourth consecutive 30 s recording, and it is why its sections
+         * summed HIGHER than the previous window's while its display list was
+         * 3.7x SMALLER — which no amount of per-object reasoning can produce,
+         * and which I had started to investigate as a code regression.
+         *
+         * Shipping the two rates means the next report says whether a slow
+         * window is a slow device before anyone goes looking for a slow code
+         * path. Thermal throttling across back-to-back windows is the expected
+         * cause; recording one window at a time is the way to avoid it. */
+        ...cpuIndex,
+        beaconSelfMs: this.beaconSelfMs, // what the PREVIOUS report cost to build
+        /* PER WINDOW, NOT SINCE PAGE LOAD — and reading them as per-window when
+         * they were cumulative cost a round of analysis. Four consecutive
+         * reports read fullPaints 25/33/36/38 and drains 21/29/29/29, which I
+         * reported as "about one whole-world repaint per second"; the real
+         * deltas are 25/8/3/2 and 21/8/0/0, i.e. front-loaded into the fresh
+         * world's streaming boot and ZERO for the last 50 seconds. Every other
+         * number in this report is already per window (`sections` divides by
+         * the frame count, `perfAcc` is reset each send); these two were the
+         * exception and are not any more. */
+        /* WAS THE GROUND TEXTURE LOST? A backgrounded GPU can discard a
+         * framebuffer's contents, which empties the ground RT while every
+         * ordinary sprite re-uploads and survives — the "light blue with only
+         * scenery visible" photograph. Nothing in this client observed it:
+         * Phaser only console.warns a context loss and no report carried
+         * renderer state, so the diagnosis was an inference. This counts the
+         * restores that forced a repaint, per window, so the next beacon says
+         * whether it happens on his phone at all. */
+        ctxRestores: this.ctxRestores - prevCtx,
+        fullPaints: this.groundFullRuns - prevFull,
+        drains: this.repaintStats.drains - prevDrain,
+        drainsDeferred: this.repaintStats.drainsDeferred - prevDefer,
+      },
+      /* THE TEXTURE ADDS, BY KEY FAMILY — see perfreport's `texFam`. A texture
+       * add is a decode and a GPU upload on the main thread, which lands in
+       * `gapBusy`; knowing whether 2,000 of them are the deferred animation
+       * batch, composed ground rasters or cover surfaces decides whether that
+       * cost is a one-off boot tail or something a run keeps paying. */
+      texFam: snap.texFamilies as Record<string, number>,
+      /* WHAT WE ASKED THE NETWORK AND THE DISK FOR, PER FAMILY (netperf.ts).
+       * `cached` vs `net` answers "are we re-requesting art we already have"
+       * directly — the browser reports zero bytes transferred only when it
+       * served the file itself. `p90`/`max` with `net` at zero is the DISK READ
+       * AND DECODE, which is what a scenery piece (5x a tile's pixels at the
+       * median, 45x at the max) is suspected of spending on the main thread. */
+      /* WHAT THE GPU UPLOADS COST THE FRAME THREAD (texupload.ts). The
+       * maintainer's theory is that big art — scenery, big monsters — is what
+       * lags a run into a new area, and NOTHING here measured it: netperf times
+       * the fetch, texFam counts the adds, and neither touches the decode or
+       * the upload. `msPerSec` against 1000 is the share of the budget this
+       * costs; `texUpWorst` names the biggest single uploads with their size,
+       * because the claim is specifically about SIZE. */
+      texUp: texUp.stats,
+      texUpWorst: texUp.worst,
+      net: netTake.fams,
+      /* THE SLOWEST INDIVIDUAL LOADS, NAMED. A percentile cannot tell a 40 ms
+       * scenery piece from forty 1 ms tiles, and the whole question is which
+       * of those we are paying. Each row says cache or NET, its decoded size
+       * and its path. */
+      netWorst: netTake.worst,
+      /* THE WORKER'S BILL. `workerMs` is resolve time that did NOT happen on the
+       * frame thread; `applyMs` is the only cost it ADDS to it. If applyMs is
+       * not far below workerMs the feature is not paying for itself, and
+       * `state` says whether it ran at all on his device. */
+      worker: { ...this.t3worker.stats, cores: navigator.hardwareConcurrency || 0 },
+      // Every jump of the AUTHORITATIVE body over 2 cells in one frame, with
+      // the unacked-input depth at the time — a rejoin restore, a respawn, an
+      // unstick and a reconciliation blow-up all land here and are told apart
+      // by `pending` and `seq`.
+      jumps: this.posJumps.slice(0, 40),
+      /* THE HEAP OVER THIS WINDOW. `grewMb` is how much was allocated (rises
+       * only), `drops` how many times it fell — a collection each. Together
+       * they are the allocation RATE, which is what decides whether GC explains
+       * `gapBusy`. */
+      heap: this.perfHeapN
+        ? {
+            meanMb: +(this.perfHeapSum / this.perfHeapN).toFixed(1),
+            maxMb: +this.perfHeapMax.toFixed(1),
+            limitMb: Math.round(this.perfHeapLimit),
+            grewMb: +this.perfHeapGrew.toFixed(1),
+            grewMbPerSec: +(this.perfHeapGrew / Math.max(1, secs)).toFixed(1),
+            drops: this.perfHeapDrops,
+          }
+        : null,
+      /* THE LIGHT BILL (maintainer 2026-09-07: every light shadows scenery; his
+       * run decides whether the phone pays for it) — what the night pass
+       * uploaded, plus what could feed it. */
+      lights: {
+        ...(this.night?.lightBill() ?? {}),
+        sceneryShares: !!this.night?.hasSceneryShares,
+        sceneryShadows: !!this.night?.sceneryShadows,
+        sceneryLight: this.sceneryLightOn,
+        scenerySources: this.sceneryLightSources.length,
+        sceneryStamps: this.sceneryStamps.length,
+        emissive: this.emissiveSources.length,
+        torch: this.torchOn,
+        weather: WEATHER_NAMES[this.weatherIdx % WEATHER_NAMES.length] ?? null,
+        gpu: this.gpuString(),
+        backing: `${this.game.renderer.width}x${this.game.renderer.height}`,
+      },
+      /* WHAT THE GROUND PASS ACTUALLY DREW, from his device (2026-09-04). He
+       * reports "we have no transition here" on a grass/soil border while the
+       * resolver, measured offline, composes one on 36 cells of the block he
+       * is standing in — and every measurement in this hunt so far has been of
+       * the RESOLVER, which cannot see whether the raster reached the screen.
+       *
+       * The tell is in `composed` vs `boundaries`: `boundary()` returns null
+       * when either source plate has not decoded yet, and the caller then
+       * "draws no boundary there and the flats meet hard", which is exactly a
+       * diamond staircase and exactly what he photographs. `dropped` and
+       * `underlays` say the same thing for cell art. If boundaries is ~0 while
+       * the resolver says otherwise, the composition is failing on his device
+       * and nothing offline will ever show me that. */
+      groundDrew: {
+        cells: this.t3stats.cells,
+        blits: this.t3stats.blits,
+        /* FLUSHES IN THAT SAME PAINT. Read as `flushes / blits`: ~1 means every
+         * blit is its own draw call and an atlas is the fix; ~0 means they batch
+         * and the cost is fill or JS, and an atlas would buy nothing. This is
+         * the question the resolve worker's null result left standing. */
+        flushes: this.t3paintFlushes,
+        boundaries: this.t3stats.boundaries,
+        underlays: this.t3stats.underlays,
+        composed: this.t3stats.composed,
+        composeMs: +this.t3stats.composeMs.toFixed(1),
+        dropped: this.t3tex?.droppedOps ?? -1,
+        built: this.t3tex?.stats.built ?? -1,
+        reused: this.t3tex?.stats.reused ?? -1,
+        seam: this.seamOn,
+        transitionsOn: !this.noTransitions,
+        /* THE SUB-BATCHES (see t3countBatches). `subPerBracket` is the number
+         * of drawArrays one slice really costs; `flushes` above is what it
+         * looked like. `maxTex` is the device's unit count — 16 on a Mali,
+         * so a slice touching 200 distinct textures is 13+ sub-batches at
+         * the very best and far more in painter order. */
+        subBatches: gb.subBatches,
+        subBrackets: gb.brackets,
+        subPerBracket: gb.brackets ? +(gb.subBatches / gb.brackets).toFixed(1) : 0,
+        subMax: gb.maxSub,
+        texBinds: gb.binds,
+        maxTex: (this.game.renderer as unknown as { maxTextures?: number }).maxTextures ?? -1,
+        pipe: String((this.groundRT?.texture as unknown as { pipeline?: { name?: string } } | undefined)?.pipeline?.name ?? ""),
+      },
+      ground: this.groundTexelReport(final),
+      /* THE DISCRIMINATOR. On a flush, sample the texture, then FORCE a full
+       * repaint and sample it again. The zigzag is in the ground texture (his
+       * crop shows it), but nothing offline reproduces it: clean tiles tile
+       * with zero holes, and so do clean mixed with conform. So either the
+       * SCROLL/band/cell-repaint machinery puts the gaps there — in which case
+       * a full repaint wipes them — or the base painting does, and they
+       * survive. Two numbers, one answer, and no more of my theories. */
+      groundFull: final ? this.groundAfterFullPaint() : null,
+      /* WHAT THE BAD FRAMES ARE, as a population. `worst` is the top 24 and is
+       * biased to the extremes; this counts every frame over HITCH_LONG_MS and
+       * buckets it by ground mode and dominant section. One run answers "which
+       * of these happens over and over", which is the only question that
+       * matters here. Emitted longest-total-first so a truncating reader keeps
+       * the buckets that matter. */
+      longBy: Object.fromEntries(
+        Object.entries(this.hitchBy)
+          .sort((a, b) => b[1].ms - a[1].ms)
+          .slice(0, 24)
+          .map(([k, v]) => [
+            k,
+            { n: v.n, ms: +v.ms.toFixed(0), avg: +(v.ms / v.n).toFixed(1), top: +(v.top / v.n).toFixed(1), idle: +(v.idle / v.n).toFixed(1) },
+          ]),
+      ),
+      worst: (() => {
+        try {
+          const h = (window as unknown as { __ml?: { hitch?: () => { worst?: unknown[] } } }).__ml?.hitch?.();
+          /* ALL OF THEM, NOT FIVE. The recorder already keeps 24 worst frames
+           * and the report threw 19 away — and that cost real analysis time:
+           * proving the depthSort spikes were a mis-billed stall rather than a
+           * slow sort needed the frames AROUND them, and answering "what was
+           * this frame doing" is exactly what the tail is for. Twenty-four
+           * records is a few KB against a report that already carries a PNG on
+           * its final flush. */
+          return h?.worst ?? null;
+        } catch {
+          return null;
+        }
+      })(),
+    };
+    // Fire and forget: a failed report must never disturb the frame it rode on.
+    void fetch("/api/perf", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(body),
+      keepalive: true,
+    }).catch(() => {});
+  }
+
+  /** THE GROUND TEXTURE, SAMPLED ON HIS DEVICE — the render half of the beacon.
+   *
+   *  The zigzag is a lattice of dark texels on the tile grid that the harness
+   *  has never once reproduced, because the harness walks ~1 cell per 24 s and
+   *  so never runs the paths that only fire on fresh terrain. His phone runs
+   *  them constantly. This reads a bounded block straight off the ground render
+   *  target with gl.readPixels — NOT through DynamicTexture.snapshot, whose
+   *  framebuffer branch returns the image unflipped and cost a wrong diagnosis
+   *  today — classifies each texel, and reports WHERE the dark ones sit modulo
+   *  the 64x28 tile lattice. A lattice shows up as a few (dx,dy) bins holding
+   *  nearly all the hits; scattered art detail does not.
+   *
+   *  Bounded on purpose: one 256x192 block, once per beacon window, is ~49k
+   *  texels — a readback he will not feel, against a full-texture snapshot he
+   *  would. */
+  private groundTexelReport(wantPng: boolean): Record<string, unknown> | null {
+    const rt = this.groundRT;
+    const r = this.game.renderer as unknown as {
+      gl?: WebGLRenderingContext;
+      pushFramebuffer?: (fb: WebGLFramebuffer, u?: boolean, s?: boolean) => void;
+      popFramebuffer?: () => void;
+    };
+    /* THE FRAMEBUFFER LIVES ON THE DYNAMIC TEXTURE, not on the game object.
+     * `groundRT` is a RenderTexture (an Image); its DynamicTexture is
+     * `rt.texture`, and that is what owns `renderTarget`. Reaching for
+     * `rt.renderTarget` silently returned undefined and the whole sample came
+     * back null — his first run carried no ground data at all because of it. */
+    const fb = rt
+      ? (rt.texture as unknown as { renderTarget?: { framebuffer?: WebGLFramebuffer } })?.renderTarget?.framebuffer
+      : undefined;
+    if (!rt || !r?.gl || !fb || !r.pushFramebuffer || !r.popFramebuffer) {
+      return { unavailable: `rt=${!!rt} gl=${!!r?.gl} fb=${!!fb} push=${!!r?.pushFramebuffer}` };
+    }
+    const gl = r.gl;
+    const W = Math.min(256, rt.width);
+    const H = Math.min(192, rt.height);
+    const x0 = Math.max(0, Math.floor((rt.width - W) / 2));
+    const y0 = Math.max(0, Math.floor((rt.height - H) / 2));
+    const px = new Uint8Array(W * H * 4);
+    try {
+      r.pushFramebuffer(fb, false, false);
+      gl.readPixels(x0, y0, W, H, gl.RGBA, gl.UNSIGNED_BYTE, px);
+      r.popFramebuffer();
+    } catch {
+      try { r.popFramebuffer(); } catch { /* already popped */ }
+      return null;
+    }
+    // The fill this texture is painted over, and "much darker than the local
+    // median" — the dots read as one or the other depending on the ground.
+    let fill = 0;
+    let dark = 0;
+    let clear = 0;
+    const bins: Record<string, number> = {};
+    const sums = new Int32Array(W * H);
+    for (let i = 0, j = 0; i < px.length; i += 4, j++) sums[j] = px[i] + px[i + 1] + px[i + 2];
+    /* THE MEDIAN WITHOUT SORTING 49,152 NUMBERS. Each entry is three bytes
+     * added, so it is an integer in [0,765] and a 766-bucket histogram gives
+     * the SAME value in one pass with no copy — verified against the sort over
+     * 2,000 random arrays, zero mismatches. The sort was a copy plus an
+     * O(n log n) of 49,152 elements inside a probe that runs on one frame every
+     * 30 s, and that frame lands in this report's own worst-frames list. */
+    const hist = new Int32Array(766);
+    for (let j = 0; j < sums.length; j++) hist[sums[j]]++;
+    let med = 0;
+    for (let seen = 0, half = sums.length >> 1; med < 766; med++) {
+      seen += hist[med];
+      if (seen > half) break;
+    }
+    for (let y = 1; y < H - 1; y++) {
+      for (let x = 1; x < W - 1; x++) {
+        const j = y * W + x;
+        const i = j * 4;
+        if (px[i + 3] === 0) { clear++; continue; }
+        const isFill = px[i] === 0x18 && px[i + 1] === 0x1c && px[i + 2] === 0x28;
+        const isDark = sums[j] < med - 150;
+        if (!isFill && !isDark) continue;
+        if (isFill) fill++;
+        if (isDark) dark++;
+        // gl.readPixels is bottom-up, so give the bin in TEXTURE space.
+        const tx = (x0 + x) % 64;
+        const ty = (rt.height - 1 - (y0 + y)) % 28;
+        const k = `${tx},${ty}`;
+        bins[k] = (bins[k] ?? 0) + 1;
+      }
+    }
+    const top = Object.entries(bins).sort((a, b) => b[1] - a[1]).slice(0, 10);
+    /* AND, ON A FINAL FLUSH, A PICTURE OF IT.
+     *
+     * Counts located the artefact — fill-coloured texels at the tile diamond's
+     * tips — but they cannot show its SHAPE, and every shape I have inferred
+     * from a phone screenshot today has been wrong, because a screenshot is the
+     * texture after zoom, lighting and whatever the panel drew. A 128x112 crop
+     * of the texture ITSELF is four tiles across and four down: enough to see
+     * whether the tips are missing, and small enough (a few KB of PNG) to ride
+     * in a JSON commit. Only on the flush, never per window. */
+    let png: string | null = null;
+    if (wantPng) {
+      try {
+        const cw = Math.min(128, W);
+        const ch = Math.min(112, H);
+        const cv = document.createElement("canvas");
+        cv.width = cw;
+        cv.height = ch;
+        const g2 = cv.getContext("2d");
+        if (g2) {
+          const id = g2.createImageData(cw, ch);
+          for (let y = 0; y < ch; y++) {
+            // readPixels is bottom-up; flip so the crop reads like the texture.
+            const src = (H - 1 - y) * W * 4;
+            const dst = y * cw * 4;
+            for (let x = 0; x < cw * 4; x++) id.data[dst + x] = px[src + x];
+          }
+          g2.putImageData(id, 0, 0);
+          png = cv.toDataURL("image/png");
+          if (png.length > 24000) png = null; // never bloat the committed file
+        }
+      } catch {
+        png = null;
+      }
+    }
+    return {
+      png,
+      rt: `${rt.width}x${rt.height}`,
+      block: `${W}x${H}@${x0},${y0}`,
+      anchor: `${Math.round(rt.x)},${Math.round(rt.y)}`,
+      mode: this.groundLastMode,
+      cellRuns: this.groundCellStats.runs,
+      medianSum: med,
+      /* PLACEMENT INTEGRITY — the maintainer's hypothesis, under test. How many
+       * ground ops were placed on a FRACTIONAL texel, and whether the texture's
+       * own anchor and position are whole. A tile diamond meets its neighbours
+       * along a 2:1 staircase with ONE texel of overlap, so half a texel of
+       * placement error opens a gap on some rows and not others — his "rounding
+       * error that sometimes creates an extra gap". Zero on this machine; his
+       * device is the only one that can say otherwise, which is the whole point
+       * of reporting it rather than shipping another silent guess. */
+      nonInt: this.groundNonInt,
+      /* THE TOP-FACE TEXTURE HIS DEVICE ACTUALLY BUILT. A liquid draws
+       * top-face-only: 924 opaque px over 29 rows, the wall stripped. If HIS
+       * build carries more rows, the wall is in the texture and every correct
+       * placement in the world cannot help — which would explain the 146 px of
+       * water WALL colour (76,138,152) his last sample carried along the tile
+       * edges. Mine measures 924/29; this is the one thing about his that I
+       * have never measured. */
+      topFace: (() => {
+        try {
+          const k = Object.keys(this.textures.list).find((n) => n.startsWith("t3f:"));
+          if (!k) return "none";
+          const src = this.textures.get(k).getSourceImage() as CanvasImageSource & { width: number; height: number };
+          const cv = document.createElement("canvas");
+          cv.width = src.width;
+          cv.height = src.height;
+          const g2 = cv.getContext("2d");
+          if (!g2) return "no-ctx";
+          g2.clearRect(0, 0, cv.width, cv.height);
+          g2.drawImage(src, 0, 0);
+          const dd = g2.getImageData(0, 0, cv.width, cv.height).data;
+          let opaque = 0;
+          let rows = 0;
+          let last = -1;
+          for (let y = 0; y < cv.height; y++) {
+            let n = 0;
+            for (let x = 0; x < cv.width; x++) if (dd[(y * cv.width + x) * 4 + 3] > 0) n++;
+            if (n) {
+              rows++;
+              last = y;
+              opaque += n;
+            }
+          }
+          return `${cv.width}x${cv.height} opaque=${opaque} rows=${rows} lastRow=${last} (expect 924/29/28)`;
+        } catch {
+          return "err";
+        }
+      })(),
+      anchorFrac: this.groundAnchor
+        ? +(Math.abs(this.groundAnchor.ax % 1) + Math.abs(this.groundAnchor.ay % 1)).toFixed(3)
+        : -1,
+      rtPosFrac: +(Math.abs((this.groundRT?.x ?? 0) % 1) + Math.abs((this.groundRT?.y ?? 0) % 1)).toFixed(3),
+      fill,
+      dark,
+      clear,
+      topBins: top.map(([k, n]) => `${k}:${n}`),
+    };
+  }
+
+  /** Force a full ground repaint and re-sample the texture — see groundFull.
+   *  Costs one paint, on a flush only, on a device that is about to stop
+   *  reporting anyway. */
+  private groundAfterFullPaint(): Record<string, unknown> | null {
+    try {
+      this.t3flushSlices();
+      this.lastGround = { x: NaN, y: NaN }; // poison the latch: the next pass is FULL
+      this.withoutComposeBudget(() => this.redrawGround());
+      return this.groundTexelReport(true);
+    } catch {
+      return null;
+    }
+  }
+
+  /* A FORCED FULL PAINT IS A MEASUREMENT, AND IT COMPOSES WITHOUT LIMIT.
+   *
+   * `__ml.groundHash()`/`groundSnap()` and the beacon's `groundFull` compare a
+   * streamed picture against a forced full one and call any difference a bug —
+   * that comparison is what proved the scroll, the cell repaints and the draw
+   * cull pixel-identical. Under the frame budget the forced paint composes ONE
+   * boundary and draws plain plates for the rest, so it would report a mismatch
+   * that is not a defect, and the beacon's final flush would LEAVE the ground
+   * plate-only. The instrument gets the whole allowance; the restore is in a
+   * finally so a throw inside the pass cannot leave it armed. */
+  private withoutComposeBudget<T>(run: () => T): T {
+    const prev = this.composeMsOverride;
+    this.composeMsOverride = Infinity;
+    this.t3tex?.armCompose(Infinity);
+    try {
+      return run();
+    } finally {
+      this.composeMsOverride = prev;
+      this.t3tex?.armCompose(prev ?? GROUND_COMPOSE_MS);
+    }
+  }
+
+  /** The local player's cell, or null before the join lands. */
+  private mePos(): { x: number; y: number } | null {
+    const m = this.avatars.get(this.myId);
+    if (!m) return null;
+    /* CELLS MEAN `fx/fy`, NOT `sprite.x/y` — and this was reporting the wrong
+     * place in every beacon. `sprite.x` is `av.lx`, the ISO-PROJECTED screen x
+     * (`projectFlat(...).x` = `ox + (col-row)*DX`); dividing it by CELL_WU is
+     * not a cell coordinate at all. The tell was sitting in the reports: the
+     * world is 512x512 and `where` read 526, 588, 564. Every other caller in
+     * this file that wants a cell already reads `fx / CELL_WU` (the fog probe,
+     * the near-list, the spawn gates).
+     *
+     * Two things were wrong because of it. The `where` field named a place that
+     * does not exist, so any offline measurement taken "at his position" — the
+     * findPath benchmark I ran against these coordinates, for one — was
+     * sampling somewhere else entirely. And the "have you moved 2 cells" gate
+     * that decides whether a window is worth sending was comparing projected
+     * distance, which is up to 2.13x the world distance depending on heading:
+     * a north-south walk passed the gate on 0.94 cells of real movement. */
+    return { x: m.fx / CELL_WU, y: m.fy / CELL_WU };
+  }
+
+  private pe(key: string): void {
+    if (!this.perfOn) return;
+    const f = this.perfStack.pop();
+    if (f === undefined) return;
+    const d = performance.now() - f.t0;
+    // SECTIONS ARE SELF TIME, SO THEY SUM TO THE FRAME. `rebuildScenery` is
+    // called from inside `rebuildOccluders`, so an inclusive timer billed the
+    // same milliseconds twice and `other` — the frame minus every section, the
+    // one number that says how much is still unmeasured — went NEGATIVE: his
+    // worst-frame record read `rebuildScenery` 91.7 + `rebuildOccluders` 125.3
+    // inside a 168.9 ms frame, other -84.9. A span hands its whole duration up
+    // to its parent, which subtracts it, so a parent reports only its own work
+    // and nesting can never double-count. (`pAdd` callers that are not stack
+    // pairs — the renderer, which brackets on game events outside `update` —
+    // are unaffected: the stack is empty there.)
+    const parent = this.perfStack[this.perfStack.length - 1];
+    if (parent) parent.child += d;
+    this.pAdd(key, d - f.child);
+  }
+  /** One measured span into the beacon's accumulators. Split out of `pe` so a
+   *  span that is NOT a stack pair — the renderer, which starts and ends on
+   *  game events rather than inside `update` — reports through the same path
+   *  and lands in the same `sections` table. */
+  private pAdd(key: string, d: number): void {
+    const a = (this.perfAcc[key] ??= { n: 0, ms: 0, max: 0 });
+    a.n++;
+    a.ms += d;
+    if (d > a.max) a.max = d;
+    if (this.hitchOn) this.hitchSec[key] = (this.hitchSec[key] ?? 0) + d;
+  }
+
+  /* THE RENDERER, WHICH IS MOST OF THE FRAME AND WAS NONE OF THE REPORT.
+   *
+   * Every section the beacon timed lives inside `update()`, and on his phone
+   * they add up to 4-24 ms of a 30-55 ms frame: 55-87% of every frame was
+   * unaccounted for. `update()` is not the frame. Phaser then sorts a display
+   * list of 2,726-5,680 objects by depth and draws them into a 2406x3131
+   * backing store, and none of that was visible.
+   *
+   * PRE_RENDER/POST_RENDER bracket exactly that step, so `render` splits the
+   * missing time in one run: large means the display list and the fill rate,
+   * small means the cost is elsewhere and the hunt moves on. `sortMs`/`sorts`
+   * separate the depth sort from the drawing, and `drawCount` says how many
+   * objects actually reached the GPU versus how many we built. */
+  /** Snapshot the since-load counters the report sends as WINDOW deltas. Called
+   *  wherever the beacon or a dev `perf(true)` arms, so the first window is a
+   *  window and not "everything since page load". */
+  private perfArmBaselines(): void {
+    /* The resource observer starts WITH the beacon, not at boot: `buffered:
+     * true` replays what the browser already holds, so arming late still sees
+     * the recent history, and an unarmed session accumulates nothing. */
+    netPerfStart();
+    installTexUploadProbe(this.renderer);
+    installCaptureProbe(this.renderer);
+    installGlFrameProbe(this.renderer, { ps: () => this.ps(), pe: (k) => this.pe(k) });
+    this.perfPrevFullPaints = this.groundFullRuns;
+    this.perfPrevDrains = this.repaintStats.drains;
+    this.perfPrevDeferred = this.repaintStats.drainsDeferred;
+    this.perfPrevCtxRestores = this.ctxRestores;
+  }
+
+  private perfHookRender(): void {
+    if (this.perfRenderHooked) return;
+    this.perfRenderHooked = true;
+    const ev = this.game.events;
+    let t0 = 0;
+    let sort0 = 0;
+    ev.on(Phaser.Core.Events.PRE_RENDER, () => {
+      if (!this.perfOn) return;
+      t0 = performance.now();
+      sort0 = this.perfAcc["depthSort"]?.ms ?? 0;
+    });
+    ev.on(Phaser.Core.Events.POST_RENDER, () => {
+      if (!this.perfOn || !t0) return;
+      /* RENDER REPORTS SELF TIME TOO, because `depthSort` is INSIDE it.
+       * Phaser calls `displayList.depthSort()` from `Systems.render`, i.e.
+       * between PRE_RENDER and POST_RENDER, and these two spans go through
+       * `pAdd` rather than the ps/pe stack — so the stack's self-time rule
+       * could not reach them and `render` billed the sort a second time,
+       * understating the report's `other` by the whole depthSort figure
+       * (0.57-1.71 ms/frame on his phone). Subtract exactly what the sort
+       * accumulated inside this bracket. */
+      const sortMs = (this.perfAcc["depthSort"]?.ms ?? 0) - sort0;
+      this.pAdd("render", performance.now() - t0 - sortMs);
+      t0 = 0;
+      this.perfDrawCount = this.perfFlushes;
+      this.perfFlushes = 0;
+      /* THE HEAP, ONCE PER FRAME — because GC is the last suspect standing and
+       * nothing here has ever looked at it.
+       *
+       * His bisection (2026-09-08) put the stutter on SCENERY, and then ruled
+       * out the drawing of it: "the game is perfectly smooth if I just run
+       * around in a small circle", where exactly the same scenery is drawn every
+       * frame. So it is work that happens when the world MOVES. Texture arrivals
+       * do not explain it either — his two smoothest windows added the MOST
+       * textures (2,131 and 2,766, at 6.0% and 6.7% long-frame time) and his
+       * worst added few. What does track, across all fourteen windows, is
+       * `gapBusy` (1.9-2.1 ms/frame in the best, 4.9-6.7 in the worst) and the
+       * long-frame time no section owns (0-133 ms against 2,071-3,851). Both are
+       * where a garbage collection lands: it is not our frame and it is inside
+       * no span.
+       *
+       * A sawtooth here — heap climbing fast while he runs, then dropping — is
+       * GC, and the fix is to stop allocating per rebuild. A flat heap says the
+       * thread is being held by something else and this line of enquiry is
+       * wrong, which is worth just as much. Chrome-only and non-standard, so it
+       * is read defensively and simply absent elsewhere. */
+      const mem = (performance as unknown as { memory?: { usedJSHeapSize: number; jsHeapSizeLimit: number } }).memory;
+      if (mem && this.perfOn) {
+        const mb = mem.usedJSHeapSize / 1048576;
+        if (this.perfHeapLast > 0) {
+          const d = mb - this.perfHeapLast;
+          // Growth is summed only where it RISES: the drops are the collections
+          // themselves, and averaging them in would report a heap that never
+          // grows on a thread that is collecting constantly.
+          if (d > 0) this.perfHeapGrew += d;
+          else this.perfHeapDrops++;
+        }
+        this.perfHeapLast = mb;
+        this.perfHeapSum += mb;
+        this.perfHeapN++;
+        if (mb > this.perfHeapMax) this.perfHeapMax = mb;
+        this.perfHeapLimit = mem.jsHeapSizeLimit / 1048576;
+      }
+      /* THE GAP, AND WHETHER THE PHONE IS WORKING OR WAITING.
+       *
+       * `total` is marker-to-marker between two `update()` calls, so it is the
+       * whole event-loop turn: everything after POST_RENDER — the wait for the
+       * compositor, plus any task that is not ours — lands in `other` with no
+       * way to tell idle from work. That residual has been 16-27% of every
+       * report and up to 25 ms/frame, and it is the one number that decides
+       * whether this device could run at 60 at all or whether a rock-steady 30
+       * is the honest target. No arithmetic on the existing report can split it.
+       *
+       * A macrotask can. Posting a MessageChannel message at POST_RENDER puts a
+       * callback at the BACK of the task queue: it runs the moment the main
+       * thread has nothing else to do. So the timestamp when it runs cuts the
+       * gap in two — `gapBusy` is the thread being held by something that is
+       * not our frame (a Colyseus patch, a texture upload, GC, a touch handler),
+       * and `gapIdle` is the thread free and simply waiting for the next vsync.
+       * Idle time is not a problem to fix; busy time is. */
+      this.perfPostAt = performance.now();
+      this.perfMsgAt = 0;
+      this.perfPort?.postMessage(0);
+    });
+    try {
+      const mc = new MessageChannel();
+      mc.port1.onmessage = () => {
+        if (this.perfOn && this.perfPostAt) this.perfMsgAt = performance.now();
+      };
+      mc.port1.start();
+      this.perfPort = mc.port2;
+    } catch {
+      /* no MessageChannel — the gap stays one number, as before */
+    }
+    /* AND WHAT STOLE IT, WHERE THE BROWSER WILL SAY. A longtask entry names any
+     * task over 50 ms on the main thread; it cannot attribute inside our own
+     * frame, but a long task that lands in the GAP is exactly the thing
+     * `gapBusy` counts and this says how many and how long. */
+    try {
+      const po = new PerformanceObserver((list) => {
+        if (!this.perfOn) return;
+        for (const e of list.getEntries()) {
+          this.perfLongN++;
+          this.perfLongMs += e.duration;
+        }
+      });
+      po.observe({ entryTypes: ["longtask"] });
+    } catch {
+      /* not supported (Safari) — gapBusy still works */
+    }
+    /* BATCH FLUSHES PER FRAME — and the first cut of this metric read
+     * `renderer.drawCount`, which came back 0 in all four runs of his beacon
+     * because it is a CANVAS-renderer property; Phaser 3.90's WebGLRenderer has
+     * no such counter at all. The real signal is the pipeline's own
+     * BEFORE_FLUSH, which `WebGLPipeline.flush` emits only when `vertexCount >
+     * 0`, i.e. only on a flush that actually draws.
+     *
+     * It is the number that decides whether `render` (3.5-13.3 ms/frame, the
+     * largest steady section) is the batcher thrashing: every composed boundary
+     * is its own canvas texture, there are 7,867 of them and climbing, and the
+     * batcher must flush whenever a draw needs a texture it is not holding. A
+     * flush count near the display-list size (4,329-7,640) means the ground is
+     * being drawn one object per draw call; a count in the dozens means the
+     * cost is elsewhere and atlasing would buy nothing. */
+    const pm = (this.game.renderer as unknown as {
+      pipelines?: { pipelines?: { each(fn: (k: string, p: { on(e: string, cb: () => void): void }) => void): void } };
+    }).pipelines;
+    pm?.pipelines?.each((_k, pipe) => {
+      pipe.on(Phaser.Renderer.WebGL.Pipelines.Events.BEFORE_FLUSH, () => {
+        if (this.perfOn) this.perfFlushes++;
+      });
+    });
+    /* THE DEPTH SORT, timed where it happens. Phaser re-sorts the whole list
+     * whenever anything changed depth, which for this scene is every frame that
+     * a body moves — i.e. every frame. n log n over ~5,000 objects. */
+    const list = this.children as unknown as { depthSort?: () => void };
+    const orig = list.depthSort;
+    if (typeof orig === "function") {
+      list.depthSort = () => {
+        if (!this.perfOn) return orig.call(list);
+        const t = performance.now();
+        const r = orig.call(list);
+        this.pAdd("depthSort", performance.now() - t);
+        return r;
+      };
+    }
+  }
+  private perfRenderHooked = false;
+  /** Batch flushes in the last rendered frame — see perfHookRender. */
+  private perfDrawCount = 0;
+  private perfFlushes = 0;
+  /* The heap sampler's window accumulators — see the POST_RENDER hook. */
+  private perfHeapLast = 0;
+  private perfHeapGrew = 0;
+  private perfHeapDrops = 0;
+  private perfHeapSum = 0;
+  private perfHeapN = 0;
+  private perfHeapMax = 0;
+  private perfHeapLimit = 0;
+  /** What building the last report cost — see the beacon tick. */
+  private beaconSelfMs = 0;
+  private perfPostAt = 0;
+  private perfMsgAt = 0;
+  private perfPort: MessagePort | null = null;
+  private perfLongN = 0;
+  private perfLongMs = 0;
+  private perfOccSum = 0;
+  private perfDlSum = 0;
+  private perfZoomSum = 0;
+  private perfCountN = 0;
+  private perfPrevFullPaints = 0;
+  private perfPrevCtxRestores = 0;
+  /** Ground repaints forced by a context restore or a tab-in — see
+   *  hookContextRestore. Reported per window by the beacon. */
+  private ctxRestores = 0;
+  /* THE DELTA BASELINES ARE SNAPSHOTTED WHEN THE BEACON ARMS, not left at zero.
+   * They only advanced when a report was SENT, so the FIRST window of every run
+   * reported every full paint and drain since page LOAD — boot included — while
+   * `texturesAdded` (which resets on read) reported the window honestly. His
+   * 2026-09-08 run read "fullPaints 27, drains 24, texturesAdded 0", which is
+   * an impossible combination and cost an hour: the honest windows were the
+   * second and third, at 9 and 5. A metric that is per-window in one field and
+   * since-load in the next is worse than no metric. */
+  private perfPrevDrains = 0;
+  private perfPrevDeferred = 0;
+  /** Server-side position jumps for the local body — see the recorder in the
+   *  avatar loop. Bounded at 40 so a runaway cannot grow the report. */
+  private posJumps: Record<string, unknown>[] = [];
+  private jumpLastX: number | null = null;
+  private jumpLastY: number | null = null;
+  /** The "Connecting…" creep — see the bar bands. */
+  private connectCreep: Phaser.Time.TimerEvent | null = null;
+  private sceneryArtCounting = false;
+  private sceneryRoofedDrawn = 0; // roofed pieces the last rebuild actually drew
+  /** The INDOOR FURNITURE drawn this rebuild — the pieces whose roof is cut
+   *  away. Held apart from `sceneryImgs` so the cut-away crossfade can fade
+   *  them with it (see roofedFade); rebuilt with the scenery. */
+  private sceneryRoofedImgs: Phaser.GameObjects.Image[] = [];
+  /** SCENERY ON A WALL (maps2 `z`: windows, hangings) — one record per drawn
+   *  placement, stepped every frame: the base image and the lit copy take the
+   *  wall column's cut fade, and a window's LIGHTS_ON art crossfades in over
+   *  its LIGHTS_OFF base by how lit the room behind it is (`windowGlow`). */
+  private sceneryWalls: {
+    place: number;
+    piece: string;
+    img: Phaser.GameObjects.Image;
+    lo: WorldScene["litOccluders"][number] | null;
+    /** The LIGHTS_ON overlay, above the darkness overlay, or null. */
+    on: Phaser.GameObjects.Image | null;
+    /** The wall column: its level + the piece's storeys, and its centre. */
+    z: number;
+    fx: number;
+    fy: number;
+    /** The room cell just inside the wall, for the glow. */
+    inner: { col: number; row: number };
+    glow: number;
+    glowAt: number;
+  }[] = [];
+  /** cell index -> published room index (world.rooms), built once per world. */
+  private roomOfCellMap: Map<number, number> | null = null;
+  /** room index -> the LIT placements standing in it (world.scenery, raw), for
+   *  a window's glow — read off the DOCUMENT, never the drawn set: a hearth
+   *  under a roof is not drawn from outside, and the drawn set's light
+   *  sources are exactly what a window seen from the street must not need. */
+  private roomLitMap: Map<number, { col: number; row: number; piece: string; state?: string }[]> | null = null;
+  /** SCENERY ANIMATION — the clips the game plays (maintainer 2026-09-09: a
+   *  GOOD or APPROVED clip plays ONCE, then the piece sleeps a random time from
+   *  its class's range in Settings, then plays again; REDO plays nothing).
+   *  `sceneryAnimRuns` is the SCHEDULE, per placement index, and outlives the
+   *  scroll rebuilds — a tree keeps its clock while the images around it are
+   *  torn down and re-pooled every band. `sceneryAnimLive` is this rebuild's
+   *  set of animated images, re-bound each time: the base image, its lit copy
+   *  and fog silhouette all swap frames together, so the copy above the
+   *  darkness overlay never shows a different pose than the piece under it.
+   *  Frames are the state still's own canvas, so the still's crop rectangle
+   *  is registered on every frame texture and the geometry never moves. */
+  private sceneryAnimRuns = new Map<number, SceneryAnimRun>();
+  private sceneryAnimLive: SceneryAnimLive[] = [];
+  private sceneryManifestTimer: Phaser.Time.TimerEvent | null = null; // a manifest-landed rebuild is pending
+  /** games2/config/scenery-bbox.json, or null until it lands. */
+  private sceneryBboxDoc: SceneryBboxDoc | null = null;
+  /** live/tuning/scenery_hitbox.json `.overrides`, or null until it lands. */
+  private sceneryHitboxDoc: Record<string, SceneryHitboxRec> | null = null;
   // Terrain (elevation + surface) — same grid the server uses, so prediction matches.
   private terrain: TerrainGrid | null = null;
   // ---- INDOOR MODE (see the constants block above) ------------------------
@@ -1078,6 +2913,41 @@ export class WorldScene extends Phaser.Scene {
    * decides what counts as being IN the room, while THIS decides what is
    * painted. */
   private indoorTop = 0;
+  /** THE PER-WALL RAISE (maintainer 2026-08-13: "make the current wall height
+   * a MINIMUM setting... draw the walls all the way to the roof on sides where
+   * it's possible; some walls might be able to be drawn higher, but not all
+   * the way, and that's ok too — as tall as they can be before they intersect
+   * with another floor"). cell → the level that cell's column draws to, for
+   * exactly the cells of MY building that may rise PAST the scalar `indoorTop`
+   * — a wall rises until one more level would start covering a protected
+   * floor (any verdict-passing room's floor or entrance, my own included) that
+   * lies up-screen of it. Near walls stay at the dial (their own room's floor
+   * is right behind them — the dial is the minimum, never reduced); far and
+   * side walls rise to the ceiling clamp. null = no raise anywhere (the flat
+   * scalar cut — also the QA kill switch's state). Every consumer of
+   * `indoorTop` goes through `cutAt`. */
+  private indoorCut: Map<number, number> | null = null;
+  /** QA kill switch (`__ml.indoorRaise(false)`) — flat scalar cut everywhere,
+   * so a gate can diff raise-on/raise-off frames. Not persisted: the raise is
+   * the design, not a preference. */
+  private indoorRaiseOn = true;
+  /** QA pin for the indoor light blend (see easeIndoorMix) — null = live. */
+  private indoorMixPinV: number | null = null;
+  /** THE TRANSITION DEBRIS (maintainer 2026-08-13, hard task #1: the roof
+   * "pops on a single frame... I want this to feel more fade in/fade out").
+   * The art the cut REMOVES — my roof slab, the wall bands above each cell's
+   * cut, the covering cone's tops — re-issued as world-anchored images at the
+   * occluder depths, alpha = debrisAlpha() (3× curves). Entering: the world
+   * repaints to the cut state on the flip frame, but the debris is OPAQUE on
+   * that frame, so the picture is unchanged — then it dissolves by mix ⅓,
+   * while the light grade keeps rolling to ⅔. Leaving: the world KEEPS
+   * drawing the cut state, the debris fades back IN over it, and the real
+   * repaint happens when the light GRADE lands (mix ⅓) — the debris has been
+   * opaque since mix ⅔, so the swap is invisible. Per-image depths keep bodies sorting correctly through the
+   * whole fade (a body under the returning roof is covered by it, exactly as
+   * outdoors). Null between transitions; never built for the kill-switch's
+   * legacy scalar cut (QA wants instant frames). */
+  private indoorDebris: Phaser.GameObjects.Image[] | null = null;
   private indoorAtCol = NaN; // the (cell, surface elev) the cached space is for
   private indoorAtRow = NaN;
   private indoorAtElev = NaN;
@@ -1086,20 +2956,148 @@ export class WorldScene extends Phaser.Scene {
   private indoorComputes = 0; // QA: findIndoorSpace calls (never per frame)
   // Streaming ground renderer state.
   private groundRT?: Phaser.GameObjects.RenderTexture;
+  /* THE GROUND SCROLL — see scrollTiles3Ground. A second texture to scroll
+   * into (the two swap roles every scrolled redraw), the anchor + indoor state
+   * of the picture the visible one holds (null = nothing valid: a full paint is
+   * due), the band a scrolled pass clips its ops to, and the A/B switch. */
+  private groundScratch?: Phaser.GameObjects.RenderTexture;
+  private groundAnchor: { ax: number; ay: number; mask: Map<number, number> | null; top: number } | null = null;
+  private groundClip: { x0: number; y0: number; x1: number; y1: number } | null = null;
+  /** Ground ops whose placement was NOT a whole texel — see t3Blit. Zero on
+   *  this machine; the maintainer's device is the one that can say otherwise. */
+  private groundNonInt = 0;
+  /** The slice size in force, steered toward GROUND_SLICE_MS by what slices
+   *  actually cost on THIS device (see t3paintSliceStep). */
+  private groundSlicePx = GROUND_SLICE_PX;
+  /** What one prefetch composition costs on THIS device (ms, EMA), and how many
+   *  frames have passed since the last one — see GROUND_RING_COMPOSE_EMA. */
+  private ringComposeMs = 0;
+  private ringSinceCompose = 0;
+  /* THE GROUND PATH, SWITCHABLE FROM THE PHONE. `?ground=legacy` turns the
+   * whole 2026-09-02/03 ground rework off — no scroll, no sliced band, no
+   * landing repaints, no prefetch: every camera latch paints the texture in
+   * full, exactly as it did before that work. It is a BISECT the maintainer can
+   * run in one page load: if an artefact survives `?ground=legacy` it is not
+   * from the rework, and if it vanishes it is. Remembered in localStorage
+   * (`ml-ground-path`) so it survives the reload; `?ground=fast` restores. */
+  private groundScroll = groundPathFast();
+  private groundLastMode: "full" | "scroll" | "cells" = "full";
+  /* THE LANDING REPAINT + THE PREFETCH RING — see onTerrainBatch, repaintTiles3Cells,
+   * t3prefetchStep. Which window cells wanted which missing file (rebuilt by every
+   * full paint, extended by band paints); the cells a landed batch made drawable;
+   * the ring of cells beyond the texture whose art is asked for ahead of time. */
+  private t3missing = new Map<string, Set<number>>();
+  /** A paint DROPPED at least one op (its texture was not registered) and the
+   *  loader has not gone idle since. THE GUESS, shipped at the maintainer's
+   *  explicit request ("PLEASE PUSH YOUR GUESS! we might be able to save time
+   *  if it works"): a dropped op leaves the render texture's background showing
+   *  and nothing is guaranteed to come back for it — t3missing only remembers
+   *  ops whose FILE is still coming, so a drop for any other reason (a
+   *  tombstoned 404, a composition that returned null, a resolution cached as
+   *  empty) is permanent, through every full paint, which is exactly what he
+   *  photographs while standing still. When the loader finally goes idle, repaint
+   *  once. Bounded by construction: it fires at most once per idle transition. */
+  private groundDropsPending = false;
+  /** TEXTURE RESIDENCY GENERATION — bumped on every texture ADD. A dropped
+   *  ground op drops because the art it wanted is not resident, so a repaint
+   *  can only change the picture if something has LANDED since. Measured in
+   *  the maintainer's 2026-09-07 run: window 1 did 20 drains with
+   *  texturesAdded 0 — every one of those full repaints was futile by
+   *  construction, and a full paint costs 52.9-271.6 ms of redrawGround on his
+   *  phone. That is where 2 of his 3.3 seconds of >50 ms tasks went. */
+  private t3texGen = 0;
+  /** Terrain BATCHES landed — the drain's real residency signal (see
+   *  onTerrainBatch). Distinct from t3texGen, which counts every texture in the
+   *  game and is a diagnostic, not a gate. */
+  private t3terrainGen = 0;
+  /** The generation at the last drain — see groundDropsPending's setter. */
+  private t3drainGen = -1;
+  private t3sheetPaths = new Set<string>();
+  private groundDirtyCells: number[] = [];
+  private repaintGroundPartial = false;
+  /** THE DROP DRAIN'S REPAINT — ON, after a measured revert. Turning it OFF
+   *  did remove every one of the 32 `full:redrawGround` frames per 90 s (1,914
+   *  ms), and it cost MORE than that back: the drain's repaint re-anchors the
+   *  ground mid-latch and so absorbs about half of each 256 px latch step, and
+   *  without it those latches return as SCROLLS. Measured across two runs of the
+   *  census, `scroll:groundSlice` went 76 -> 175 frames and the ground's total
+   *  went 62.9 -> 94.5 ms per second of wall clock. Do not turn it off again
+   *  without first making a band drain cheap — the slice path is what pays.
+   *
+   *  Every drop the drain can see is still already
+   *  owned by the landing path (t3missing, recorded by the ground pass's `need`
+   *  closure and repaired by onTerrainBatch -> repaintTiles3Cells), or it is a
+   *  path whose batch completed with no texture — a 404 tombstone no repaint
+   *  can ever fix, so the repaint has nothing to FIX. It is kept for what it
+   *  does by accident: it re-anchors, and re-anchoring is cheaper than the
+   *  scrolls it prevents. See t3drainDrops.
+   *  `__ml.groundDrain(true)` puts it back for an A/B. */
+  private groundDrainRepaint = true; // `__ml.groundDrain(false)` for a dev A/B; the Settings switch is gone (no felt change)
+  private groundPartial = groundPathFast();
+  private groundPrefetch = groundPathFast();
+  private t3ringQueue: [number, number][] = [];
+  private t3ringAt = 0;
+  /** The grown window's cell INDICES, for the prune — see t3armRing. */
+  private t3keepIdx: Set<number> | null = null;
+  /* THE SLICED BAND — see t3paintSliceStep. */
+  /** THE RENDER TARGET A DRAW BRACKET IS ALREADY OPEN ON, or null.
+   *
+   *  Keyed on the TEXTURE, not a depth counter: `repaintTiles3Cells` calls
+   *  drawTiles3Ground against its own `scratch`, and a counter would let that
+   *  draw be swallowed by a bracket open on the ground RT if the two ever met.
+   *  Two invariants this rests on, both silent if broken — (i) nothing between
+   *  beginDraw and endDraw may touch the target except `batchDrawFrame` (t3Blit
+   *  is the only path today); a `draw`/`fill`/`clear` there closes the bracket
+   *  through its own internal endDraw and every later rect paints onto whatever
+   *  framebuffer is then bound. (ii) No ground op may use ERASE or a non-NORMAL
+   *  blend, because merging brackets rests on Porter-Duff `over` being
+   *  associative. */
+  private groundBatchRT: Phaser.GameObjects.RenderTexture | null = null;
+  /** Did a slice drain run this frame? The ring and the boundary retry stand
+   *  down for it — see t3drainSlices. */
+  private groundDrainedThisFrame = false;
+  private groundSliceQ: { x0: number; y0: number; x1: number; y1: number }[] = [];
+  private groundSliceCtx: { ax: number; ay: number; mask: Map<number, number> | null; cuts: Map<number, number> | null; top: number } | null = null;
+  private groundSliceStats = { runs: 0, slices: 0, ms: 0, flushes: 0, drains: 0 };
+  /** The drain's per-frame budget in force. A dev A/B sets it to ~0 to get the
+   *  OLD topology back — one rect per bracket per frame — so the merge can be
+   *  proved pixel-identical against the behaviour it replaced. */
+  private groundBandMs = GROUND_BAND_MS;
+  /** THE GROUND RT DRAWS THROUGH THE MULTI PIPELINE, NOT PHASER'S SINGLE ONE.
+   *  See the "ground multi" switch and makeGroundRT. Default ON; "0" is off. */
+
+  /** The last anchor shift — the direction the world is travelling, which is
+   *  the only direction worth prefetching (t3armRing). */
+  private groundLastShift = { x: 0, y: 0 };
+  private groundSliced = groundPathFast();
+  private groundRedrewThisFrame = false;
+  /** Full ground paints, so a frame can tell one happened — see below. */
+  private groundFullRuns = 0;
+  private worldUp = false;
+  /** When the boot hold's readiness condition first became true — see
+   *  hideLoadingWhenTerrainIsUp. 0 while not ready. */
+  private holdReadySince = 0;
+  private groundCellStats = { runs: 0, full: 0, cells: 0, ms: 0, split: 0 };
+  /** DEV: the last landing repaint's stamp rect and grown clip rect. */
+  private groundLastRect: unknown = null;
+  /** DIAGNOSTIC ring: the last scrolls' (prevAx, prevAy, ax, ay, sx, sy). */
+  private groundScrollLog: number[][] = [];
   // Chase-cam state: eased world centre + eased zoom; detached while a debug
   // lookAt holds the camera elsewhere.
   private camChase = { x: 0, y: 0, zoom: 0, init: false };
   private camDetached = false;
   private lastGround = { x: NaN, y: NaN };
   private maxLevel = 0;
+  // The TERRAIN maximum alone. `maxLevel` above is lifted by deck slabs so the
+  // streamed window and the shader ray cover them; the map-image origin is not
+  // — BOTH map renderers take their headroom from the level grid only
+  // (render2 `_origin`, render3 `render`), so the Map tab's dot reads this.
+  private terrainMaxLevel = 0;
   // world@2 decks (elevated walkable slabs): cell key (row*width+col) → slab.
   private deckIndex = new Map<number, { deck: Deck; cell: Deck["cells"][number] }>();
   // Occlusion: raised/solid tiles near the camera drawn as depth-sorted images
   // so they cover characters standing BEHIND them (the ground RT is flat).
   private occluders: Phaser.GameObjects.Image[] = [];
-  // Placed decorations (maps2 world@1 props): depth-sorted so characters pass
-  // in front of / behind them; rebuilt with the occluders as the camera moves.
-  private propImgs: Phaser.GameObjects.Image[] = [];
   // Lit copies of TALL NON-EMISSIVE solid structures: billboard art samples
   // the light field of the terrain BEHIND it, so a shore tree's canopy was
   // multiplied by the level-0 ocean's night — pitch black above the horizon
@@ -1113,19 +3111,108 @@ export class WorldScene extends Phaser.Scene {
     z: number;
     emission?: EmissionEntry; // emissive variant: tint gets the self-glow floor
     phase?: number;
+    /** THE FOG SILHOUETTE — see applyObjectLights. Lazily made, same crop/flip/box. */
+    fog?: Phaser.GameObjects.Image;
+    /** The FOOT POINT on screen (world px) the fog is read at — nightlight.depthFogAtFoot. */
+    bx: number;
+    by: number;
+    /** Its own painter depth (the base image's), for the cover test. */
+    pd: number;
+    /** THE COVER LINE the SHARED rule returned for this piece (resolveDrawDepth,
+     *  the same call bodies make). Infinity = uncovered; set once per rebuild. */
+    cover?: number;
+    /** Scenery: INDOOR FURNITURE — a piece under a roof/cave deck. It is drawn
+     *  only while that roof is cut away, and it FADES with the cut-away's own
+     *  crossfade rather than popping at the flip (see roofedFade). */
+    roofed?: boolean;
+    /** Scenery: the placement's index into world.scenery — keys the piece's own
+     *  occluder shares out of its tint (nightlight.sceneryExclR2). */
+    place?: number;
+    /** Scenery: the VOLUME the scenery-lit pipeline shades this copy with
+     *  (scenerylit.ts) — the copy's `pipelineData`, by reference. */
+    shape?: SceneryLitShape;
+    /** Scenery ON A WALL: the opacity its wall's cut gives it this frame
+     *  (`stepSceneryWalls`) — multiplied into the copy and its fog like the
+     *  roofed factor, or the copy would stay solid over a truncated wall. */
+    fade?: number;
   }[] = [];
+  /* SCENERY LIGHT — per-pixel lighting of scenery lit copies (scenerylit.ts +
+   * scenerylight.ts). Default ON; `__ml.sceneryLight(false)` returns every
+   * copy to the flat tint for an A/B. */
+  private sceneryLightOn = true;
+  private sceneryLitPipe: SceneryLitPipeline | null = null;
+  /** Shape maps by their content key: the GL texture, or null = could not be built. */
+  private shapeMaps = new Map<string, { tex: Phaser.Renderer.WebGL.Wrappers.WebGLTextureWrapper; w: number; h: number; opaque: number; ms: number } | null>();
+  /** Maps still to build (the art landed this rebuild) and the copies waiting on each. */
+  private shapeJobs = new Map<string, { artKey: string; hb: ShapeHitbox; sc: ShapeScale; waiters: SceneryLitShape[]; fallback: boolean; builder?: ShapeMapBuilder; t0?: number }>();
+  /** Shape-map keys built from the tile-radius FALLBACK hitbox (the docs had
+   *  not landed): dropped once the published hitboxes stamp, so a sprite does
+   *  not keep two resident maps for the life of the page. */
+  private shapeFallbackKeys = new Set<string>();
+  private shapeStats = { built: 0, failed: 0, texels: 0, ms: 0, maxMs: 0 };
+  private sceneryLitParts: LightParts = { base: [0, 0, 0], occ: new Float32Array(MAX_SHADER_LIGHTS), ao: 1, sunF: 1 };
+  /** Per-frame JS cost of the feature (applyObjectLights' shaded branch + the
+   *  job trickle): an EMA in ms and the last frame's piece count. */
+  private sceneryLightStat = { emaMs: 0, lastMs: 0, pieces: 0, jobMs: 0 };
   private occluderMeta: {
     col: number;
     row: number;
     top: number; // column's top level
     solid: boolean; // impassable structure — its tall art is a billboard
+    /** POINT-ANCHORED (scenery): `depth` is the published hitbox centre's own
+     *  painter line, so "is it in front of me" is that against the body's nadir
+     *  line — exact, and not the grid diagonal with its cell-sized slack. */
+    point?: boolean;
     depth: number;
+    /** Where the thing is actually DRAWN, when that differs from its anchor
+     *  line: a scenery piece is LIFTED over the tiles it overlaps (the shared
+     *  rule's `above`), and a body that must pass in front of it has to clear
+     *  what is drawn, not the anchor. Terrain draws at its anchor and leaves
+     *  this undefined. NEVER fold this into `depth` — `depth` answers "is it
+     *  in front of me", and a lifted value there reads a body standing in
+     *  FRONT of a tree as standing behind it (maintainer 2026-09-03: "when I
+     *  stand under this tree the player's head is not visible"). */
+    drawDepth?: number;
+    /** STANDABLE AT WHICH LEVEL (tiles3 columns only): a ground cell its
+     *  level, a deck plate its level, a wall −1. The lift rule needs to tell
+     *  a room's floor (a piece stands on it — lift, always) from a wall it
+     *  stands behind (lift only when camera-forward of it): both report the
+     *  ROOF as `top` under a cap, which is what hid furniture under its own
+     *  floor when the gate keyed on `top` alone (2026-09-06). maps2 metas
+     *  leave it unset and keep the unconditional lift. */
+    stand?: number;
     x0: number;
     x1: number;
     y0: number;
     y1: number;
   }[] = [];
   private lastOccl = { x: NaN, y: NaN };
+  /** Dev switch for A/B measurement of destroyBatch's two paths (`__ml.occRebuild`);
+   *  nothing in play reads it. */
+  private occFastDestroy = true;
+  /** Pure-JS cost of the last rebuild's destroy pass(es), for the probe. */
+  private occDestroyMs = 0;
+  /* THE OCCLUDER POOL — see occImage. `occNext` holds the CURRENT set keyed by
+   * CELL; a rebuild moves it to `occPool`,
+   * takes what it can back out, and destroys the rest. Dev switch `occPoolOn`
+   * exists only for the A/B in `__ml.occRebuild`. */
+  private occPool = new Map<number, Phaser.GameObjects.Image[]>();
+  private occNext = new Map<number, Phaser.GameObjects.Image[]>();
+  /** Row stride for the pool's cell key — the world's width, so `row*stride+col`
+   *  is unique per cell. Set at the top of every rebuild. */
+  private occStride = 1;
+  private occPoolOn = true;
+  /* THE SCENERY POOL — the same two maps for the same reason; see `scnImage`.
+   * ART ONLY: the lit copies and their fog silhouettes are deliberately outside
+   * it, exactly as rebuildOccluders' destroy says. */
+  private scnPool = new Map<string, Phaser.GameObjects.Image[]>();
+  private scnNext = new Map<string, Phaser.GameObjects.Image[]>();
+  private scnPoolOn = true;
+  private scnReused = 0;
+  private scnCreated = 0;
+  private occSeq = 0;
+  private occReused = 0;
+  private occCreated = 0;
   // ── THE COVER SURFACES ────────────────────────────────────────────────────
   // "Covered" is not modelled, it is RASTERISED: the very occluder Images that
   // hide a body are drawn into that body's own frame grid, so a diagonal wall
@@ -1166,6 +3253,21 @@ export class WorldScene extends Phaser.Scene {
   private jumpQueued = false;
   private deferredAnimsKicked = false; // action-state frames background-load once, after join
   private selfDead = false; // mirror of my own Player.dead (freezes input sending)
+  /** Deferred-batch bookkeeping for MY OWN character's clips — see animReady. */
+  private myAnimDebug: { queued: number; left: number; at: number | null } | null = null;
+  /** The death sequence, while it runs. `armed` = the push has landed and the
+   * prompt is up, so a press now asks the server to revive. */
+  private death: {
+    at: number;
+    armed: boolean;
+    askAt?: number;   // when the player FIRST asked to come back
+    nextAsk?: number; // when to re-send the ask (0 = now)
+    veil?: HTMLDivElement;
+    el?: HTMLDivElement; // the "Press to continue..." card (DOM, screen space)
+    /** The camera pose the push starts from — see startDeath. */
+    from: { x: number; y: number; zoom: number };
+    mode: string;
+  } | null = null;
   private engagedId: string | null = null; // monster I tapped to fight (client intent)
   private pendingPickupId: string | null = null; // walk-to-item, grab on arrival
   private pickupIntentUntil = 0; // give up on a pickup intent after this
@@ -1179,6 +3281,19 @@ export class WorldScene extends Phaser.Scene {
   private itemRingImg?: Phaser.GameObjects.Image; // blue outline on the item being fetched
   private aggroGfx?: Phaser.GameObjects.Graphics; // aggro-radius debug rings
   private aggroRadiusOn = localStorage.getItem("ml-aggro-radius") === "1";
+  /** COLLISION DEBUG: paint what the body is actually held by. Asked for
+   *  because the footprints are invisible and their faults are not (maintainer
+   *  2026-08-30: "add a debug setting under settings so I can see the
+   *  collisions, so hard for me to understand what's going on right now"), and
+   *  then asked to show BOTH halves of it, because collision and navigation are
+   *  no longer the same shape: "the show hitbox button should show both what
+   *  the nav navigates around and the real ellipse hitbox". See
+   *  drawCollisionDebug for each mark and what it means — including the bodies,
+   *  which own no cell and no footprint and so are invisible to every other
+   *  layer here (maintainer 2026-09-02: "should show the collision for NPCs and
+   *  monsters as well"). */
+  private collisionOn = localStorage.getItem("ml-collision") === "1";
+  private collisionGfx?: Phaser.GameObjects.Graphics;
   /** Settings "disable aggro" — persisted here, ENFORCED on the server (the
    * proximity scan is server-side). Re-sent on every join. */
   private noAggroOn = localStorage.getItem("ml-no-aggro") === "1";
@@ -1202,7 +3317,7 @@ export class WorldScene extends Phaser.Scene {
     }
   >();
   private roomBoundAt = 0; // when the current room's state flood began (join vs witnessed)
-  // Grave crosses (objects/grave_cross): appear where a monster died, hold on
+  // Grave crosses (scenery/grave_cross): appear where a monster died, hold on
   // the last frame, then REVERSE back into the ground and vanish.
   private graveCrosses: { sprite: Phaser.GameObjects.Sprite; bornAt: number; reversing: boolean }[] = [];
   private pendingCrosses: { lx: number; lyFlat: number; elevPx: number }[] = []; // kills before the strip landed
@@ -1214,21 +3329,48 @@ export class WorldScene extends Phaser.Scene {
   private atmo!: Atmosphere;
   private night?: NightLights;
 
-  // tiles/emission.json categories (empty when the registry failed to load).
+  // Per-category tile emission (NightLights' self-glow floor). Always empty:
+  // the registries that filled it (first-gen tiles/emission.json, then
+  // tiles2/emission.json) are retired; scenery lights carry every light now.
   private emission: EmissionMap = {};
-  // tiles2/emission.json (maps2 worlds): per-material glow params (keyed by
-  // material name = a maps2 cell/prop's `t`) + per-tile-path glow sources.
-  private tiles2Mat: EmissionMap = {};
-  private tiles2Src: Record<string, EmissionSource[]> = {};
-  // Glow halos emitted by emissive PROPS this frame — merged into glowStamps.
-  private propStamps: GlowStamp[] = [];
-  // Bottom-anchor offset for tall (64x128 cliff/tall profile) tile art: drawn
-  // with the same top-left anchor as 64px tiles it sinks 64px into the ground
-  // (only the crystal tip peeked out — playtester report). Lift comes from the
-  // variant's measured art base (tile-bases.json), see artYOff.
-  private artOffCache = new Map<string, number>();
-  private tileBases: TileBases | null = null;
-  // /#emission: this SAME scene on the generated station world (demo room).
+  // Every emissive prop in the WORLD, resolved once per world into real-light
+  // candidates. World-level on purpose: a light reaches the screen before its
+  // source does, so the per-frame pick below cannot start from the visible-prop
+  // set the way the stamps do.
+  private emissiveSources: EmissiveSource[] = [];
+  // Which world-slot holders are lit THIS frame (emissive ids + "campfire").
+  // Read by the stamp filter (a slotted source's ground POOL is replaced by
+  // its real light) and by the __ml.lightSlots probe.
+  private slotLit = new Set<string>();
+  // TENURE: who holds a world slot and how far their fade-in has come. A
+  // holder keeps its slot until its pool stops touching the view — see
+  // pickWorldLights.
+  // ramp 0..1 (smoothstepped into the light's brightness), dir +1 fading in /
+  // -1 retiring (dissolving out under slot pressure).
+  private slotTenure = new Map<string, { ramp: number; dir: 1 | -1 }>();
+  // Each holder's measured px-past-view edge this frame (negative = the pool
+  // touches the screen). QA only: the churn gate proves releases happen at the
+  // boundary, never mid-view, and it can only do that from the same numbers
+  // the release rule reads.
+  private slotEdges: Record<string, number> = {};
+  private lastTenureStats: { waitingBest: number | null; worstSettled: number | null; retiring: string[] } = {
+    waitingBest: null,
+    worstSettled: null,
+    retiring: [],
+  };
+  private lightOverflow = 0; // in-view candidates that did NOT fit the budget
+  private lastSlotInfo = { torch: false, reserved: 0, total: 0 };
+  // Cells of emissive props standing inside a sealed room (indoor-only light).
+  private sealedEmissiveCells = new Set<number>();
+  /* SCENERY LIGHTS — every `lit` placement drawn in a LIT_* state is an
+   * emissive source derived from its art (scenerylights.ts), rebuilt with the
+   * scenery pass. They compete for the 8 world slots exactly like the props'
+   * sources; the unslotted ones keep their ground pool as a glow stamp. */
+  private sceneryLightSources: EmissiveSource[] = [];
+  private sceneryStamps: GlowStamp[] = [];
+  /** Per LIT texture key: the derived emissive (canvas px) + params, or null
+   *  when the art has nothing bright — derived once, the art never changes. */
+  private sceneryLightCache = new Map<string, { cx: number; cy: number; params: SceneryLightParams } | null>();
   // Per-pixel glow halos for the visible window (rebuilt with the occluders).
   private glowStamps: GlowStamp[] = [];
   // The spawn campfire: an animated world object with its own fire light.
@@ -1283,13 +3425,19 @@ export class WorldScene extends Phaser.Scene {
   init() {
     this.manifest = this.registry.get("manifest") as Manifest;
     this.monsterManifest = (this.registry.get("monsterManifest") as MonsterManifest | null) ?? null;
+    this.monsterBootKinds = (this.registry.get("monsterBootKinds") as Set<string> | null | undefined) ?? null;
     this.npcManifest = (this.registry.get("npcManifest") as NpcManifest | null) ?? null;
     this.npcPlacement = (this.registry.get("npcPlacement") as NpcPlacement[] | null) ?? [];
     this.myCharacter = this.registry.get("character") as CharacterDef;
     this.myName = this.registry.get("name") as string;
     this.world = (this.registry.get("world") as World | null) ?? null;
+    this.roomOfCellMap = null; // world.rooms — rebuilt lazily by roomOf
+    this.roomLitMap = null;
     this.worldName = (this.registry.get("worldName") as string | undefined) ?? DEFAULT_WORLD;
-    this.maps2 = !!this.world && isMaps2World(this.world);
+    this.zone = (this.registry.get("zone") as number | undefined) ?? WHOLE_WORLD;
+    this.zonesCfg = (this.registry.get("zonesCfg") as ZoneCfg | null | undefined) ?? null;
+    this.maps3 = !!this.world && isMaps3World(this.world);
+    this.geom = geometryFor(this.world);
     // The maps agent's named interiors, fetched alongside the world. Async and
     // deliberately un-awaited: a world with no places.json is normal, and the
     // music must not wait on a file that may never arrive. Until it lands,
@@ -1299,13 +3447,22 @@ export class WorldScene extends Phaser.Scene {
       this.places = p;
       this.indoorDirty = true; // re-answer "where am I" on the next frame
     });
-    this.tileBases = (this.registry.get("tileBases") as TileBases | null) ?? null;
     if (this.world) {
       // The world's extent in world units (grid×CELL_WU) — per-world, so any
       // size renders/collides right (see shared: WORLD_WIDTH is only a default).
       this.worldW = this.world.width * CELL_WU;
       this.worldH = this.world.height * CELL_WU;
       this.terrain = buildTerrainGrid(this.world.width, this.world.height, this.world.rows, this.world.props, this.world.decks);
+      // The deep-sea current's fields, built here rather than by the first
+      // swimmer to reach open water (see warmDeepCurrent) — the prediction
+      // calls the same shared function the server integrates.
+      warmDeepCurrent(this.terrain);
+      /* THE SAME SCENERY FOOTPRINTS THE SERVER STAMPS, from the same function
+       * and the same two documents. Prediction that disagreed with authority
+       * would rubber-band the player off every tree, so this is not a second
+       * implementation — it is the same one. The docs arrive asynchronously;
+       * `restampScenery` re-runs it when they land. */
+      this.restampScenery();
       // New grid ⇒ every cached indoor verdict is about a world that no longer
       // exists. Start outdoors and force the first recompute.
       this.indoorSpace = null;
@@ -1313,6 +3470,8 @@ export class WorldScene extends Phaser.Scene {
       this.roomMask = null; // no fade to finish — this world is gone
       this.roomCellMemo.clear();
       this.caveDepth = null;
+      this.indoorCut = null;
+      this.destroyIndoorDebris();
       this.indoorMaskSig = "";
       this.indoorInside = false;
       this.indoorPending = false;
@@ -1337,8 +3496,18 @@ export class WorldScene extends Phaser.Scene {
   preload() {
     // Drive the post-"Enter world" loading overlay with real asset progress
     // (characters + tiles are hundreds of small PNGs — slow on mobile).
+    /* THE BAR MUST SPEND ITS LENGTH WHERE THE TIME GOES. For a tiles2 world
+     * that is this batch — hundreds of small images out of the deployed image —
+     * so it keeps 0.05..0.90. A maps3 world's terrain and scenery are NOT in the
+     * image at all and stream from the CDN afterwards, which is much the longer
+     * half; giving this batch the whole bar is what parked it at "100%" while
+     * the real work had not started (maintainer 2026-08-29: "the loading freezes
+     * on 100% for a long time"). It gets a third, and the streaming stage owns
+     * the rest. */
+    const art0 = this.maps3 ? BAR_ART0 : 0.05;
+    const artSpan = this.maps3 ? BAR_ART1 - BAR_ART0 : 0.85;
     this.load.on("progress", (f: number) => {
-      if (!this.deferredAnimsKicked) setLoadingProgress(0.05 + f * 0.85, "Loading art…");
+      if (!this.deferredAnimsKicked) setLoadingProgress(art0 + f * artSpan, "Loading art…");
     });
     // The world's NPCs stand there from the first frame: their standing art
     // joins THIS batch (one small image per distinct character) instead of
@@ -1349,7 +3518,10 @@ export class WorldScene extends Phaser.Scene {
     // movement states (BOOT_ANIM_STATES); the 9 action states (~800 PNGs the
     // 2026-07-29 overhaul added, nothing triggers them yet) background-load
     // AFTER the avatar is in (loadDeferredAnims) so joining stays fast.
-    for (const def of this.manifest.characters) {
+    // MY OWN CHARACTER LEADS THE QUEUE (charsMeFirst) — the loader is FIFO, so
+    // otherwise whether my art is first or last is decided by where I happen to
+    // sit in characters.json.
+    for (const def of this.charsMeFirst()) {
       for (const [state, dirs] of Object.entries(def.animations)) {
         if (!BOOT_ANIM_STATES.includes(state)) continue;
         for (const [dir, count] of Object.entries(dirs)) {
@@ -1362,63 +3534,92 @@ export class WorldScene extends Phaser.Scene {
     // Monster art: 48x48 HORIZONTAL strips, loaded as spritesheets (campfire
     // pattern). WALK/ROAM only this round — load just the resolved walk (jump)
     // strip per (kind, direction); attack/die are deferred.
-    for (const def of this.monsterManifest?.monsters ?? []) {
-      // WALK + IDLE (maintainer 2026-07-30: stopped monsters must PLAY their
-      // idle, not freeze on a walk frame); attack/die stay deferred.
-      const states = [monsterWalkKey(def)];
-      if (def.idleAnim && !states.includes(def.idleAnim)) states.push(def.idleAnim);
-      for (const anim of states) {
-        const dirStrips = def.strips?.[anim] ?? {};
-        for (const [dir, url] of Object.entries(dirStrips)) {
-          if (!url) continue; // guard a missing strip
-          // Slice with the STRIP'S OWN measured frame size — art repairs
-          // resize strips in place, so the monster-level size can be stale
-          // (frame bleed).
-          const dims = def.stripDims?.[anim]?.[dir];
-          this.load.spritesheet(monsterSheetKey(def.id, anim, dir), withV(url), {
-            frameWidth: dims?.w ?? def.frameW,
-            frameHeight: dims?.h ?? def.frameH,
-          });
-        }
+    // NEAR KINDS ONLY (client/src/monsterBoot.ts): a world can name every kind
+    // there is (the_game: 57 — 912 strips, 5.3 MB, half of a cold boot's
+    // requests), but only the kinds with a zone near where the player will
+    // stand ride the boot batch. The rest queue in the deferred batch and
+    // their bodies stay parked until their own strips land.
+    for (const def of this.monstersOn && !this.monstersMock ? (this.monsterManifest?.monsters ?? []) : []) {
+      if (this.monsterBootKinds && !this.monsterBootKinds.has(def.id)) {
+        this.monsterDeferredKinds.add(def.id);
+        continue;
       }
+      this.queueMonsterBodyStrips(def);
     }
     // Isometric ground tiles.
     if (this.world) {
-      if (this.maps2) {
-        // maps2 world bakes an explicit tile PNG per cell + per-material face
-        // tiles + placed props — load that unique set.
-        for (const path of distinctTilePaths(this.world)) {
-          this.load.image(pathTileKey(path), withV(assetUrl(path)));
-        }
-        for (const path of distinctPropPaths(this.world)) {
-          this.load.image(pathTileKey(path), withV(assetUrl(path)));
-        }
-      } else {
-        for (const { t, v } of distinctTiles(this.world)) {
-          this.load.image(tileKey(t, v), withV(tileUrl(t, v)));
-        }
+      if (this.maps3) {
+        // MAPS3 SHIPS NO TILE ART IN THE WORLD, so there is no per-cell load
+        // list to queue here — only the DOCUMENTS the resolver reads, and the
+        // three pattern sheets every composed boundary blends through. The art
+        // itself streams per camera window (Tiles3Loader), because the whole
+        // library is 240 MB and a window needs a few hundred files of it.
+        //
+        // ~8 MB of JSON, of which tiles/review/manifest.json is 5.6 MB: it is
+        // the x-over-y matrix and it is the ONLY source of wall art, so a maps3
+        // world cannot draw a cliff without it. Acceptable because maps3 is a
+        // dev world streamed from the CDN; if it ever ships, the matrix wants a
+        // published subset keyed by the grounds a world actually uses.
+        this.t3route = { gameUrl, withV };
+        for (const [k, path] of Object.entries(TILES3_DOCS))
+          this.load.json(`t3doc:${k}`, docUrl(path, this.t3route));
+        // The three sheets ride the dedicated loader for the same reason the
+        // plates do — and because their pixels are READ BACK, so they need the
+        // crossOrigin attribute a staging join depends on.
+        const l = this.tiles3Loader();
+        for (const path of sheetPaths({} as PatternsDoc)) l.image(t3ArtKey(path), docUrl(path, this.t3route));
+        l.once("complete", () => this.requestRepaint("terrain"));
+        l.start();
       }
-      // maps2 worlds get their glow from tiles2/emission.json
-      // (per-MATERIAL params + per-TILE-PATH sources — see loadTiles2Emission).
-      if (this.maps2) this.load.json("tiles2-emission", withV("/assets/tiles2/emission.json"));
       // placeCampfire guards on textures.exists, so a miss means no bonfire
       // rather than a broken scene.
       this.load.spritesheet(CAMPFIRE_KEY, withV(CAMPFIRE_URL), {
         frameWidth: CAMPFIRE_FRAME,
         frameHeight: CAMPFIRE_FRAME,
       });
+      this.load.spritesheet(GRAVE_CROSS_KEY, withV(GRAVE_CROSS_URL), {
+        frameWidth: GRAVE_CROSS_FRAME,
+        frameHeight: GRAVE_CROSS_FRAME,
+      });
     }
   }
 
   async create() {
+    // The "enforce unmodified audio" switch is gone (maintainer 2026-09-08);
+    // a remembered pure mode would otherwise be unreachable, so it is released.
+    if (gameAudio.pureEnabled) gameAudio.togglePure();
+    /* Before the first DynamicTexture bracket (cover surfaces, ground RT):
+     * one capture texture per size — see capturepool.ts. */
+    if (this.game.renderer.type === Phaser.WEBGL) installCapturePool(this.renderer);
+    /* A BEACON ARMED AT BOOT (`?perf=1`, or remembered) gets the same
+     * instruments the settings toggle installs. Without this the two arming
+     * paths measure different things, and the boot path is the one he uses. */
+    if (this.perfBeacon) {
+      this.hitchOn = true;
+      this.perfHookRender();
+      // The probes too (net, texture upload, capture, GL frame): a remembered
+      // beacon otherwise carried no GL data for its first window.
+      this.perfArmBaselines();
+    }
+    /* The residency counter the ground drain gates on (t3texGen). Always on
+     * and one increment per texture — the perf hook is armed only with the
+     * beacon, and this decides real work. */
+    this.textures.on(Phaser.Textures.Events.ADD, () => {
+      this.t3texGen++;
+    });
     this.ensurePlaceholderTexture();
     this.ensureShadowTexture();
     this.ensureMonsterShadowTexture();
     this.initCoverSurfaces();
     this.buildAnimations();
     this.buildMonsterAnimations();
-    if (this.world) this.setupStreamingGround();
-    else this.drawGround();
+    if (this.world) {
+      this.setupStreamingGround();
+      // MAPS3 resolves its art at draw time, so the runtime has to exist before
+      // the first redrawGround — and after setupStreamingGround, whose `iso` is
+      // what the resolver's frame is built on.
+      if (this.maps3) this.initTiles3();
+    } else this.drawGround();
     this.placeCampfire();
     // The world's people (maps2 npcs.json). AFTER the world/projection exist —
     // projectFlat is meaningless in init(), and the registry's "world" key is
@@ -1428,25 +3629,14 @@ export class WorldScene extends Phaser.Scene {
     this.atmo = new Atmosphere(this);
     this.atmo.create();
     this.atmo.setPreset("night");
-    // Shader night needs WebGL; on canvas renderers the multiply grade
-    // remains the night fallback.
-    // maps2 self-emission (tiles2/emission.json): per-material glow params +
-    // per-tile-path glow sources. In every maps2 world the emissive tiles are
-    // PROPS (geodes, lava rocks, glowing mushrooms — base_x_N object tiles), so
-    // the glow is stamped from prop positions in rebuildProps; nothing on the
-    // flat terrain glows, so this stays out of the per-cell shader floor.
-    if (this.maps2) {
-      const t2 = this.cache.json.get("tiles2-emission") as
-        | { materials?: EmissionMap; sources?: Record<string, EmissionSource[]> }
-        | undefined;
-      this.tiles2Mat = t2?.materials ?? {};
-      this.tiles2Src = t2?.sources ?? {};
-      if (!t2) console.warn("[nangijala] tiles2/emission.json missing — prop glow disabled");
-    }
     if (this.world && this.game.renderer.type === Phaser.WEBGL) {
       try {
         this.night = new NightLights(this, this.world, this.iso, this.maxLevel, this.emission);
         this.night.create();
+        this.night.atmoOff = !this.fogOn;
+        // Footprints stamped before the night existed (the boot restamp, or docs
+        // that landed first) become occluders now; later stamps re-apply themselves.
+        this.night.setSceneryOccluders(this.terrain?.footprints);
       } catch (err) {
         console.warn("[nangijala] shader night unavailable:", err);
         this.night = undefined;
@@ -1457,6 +3647,7 @@ export class WorldScene extends Phaser.Scene {
       if (this.night) {
         this.lastGround = { x: NaN, y: NaN };
         this.lastOccl = { x: NaN, y: NaN };
+        this.ensureSceneryLitPipeline();
       }
     }
 
@@ -1487,6 +3678,22 @@ export class WorldScene extends Phaser.Scene {
     // stops retargeting — the trip finishes at the last touched point.
     this.input.addPointer(2); // second touch (e.g. resting thumb) must not steer
     this.input.on("pointerdown", (p: Phaser.Input.Pointer) => {
+      // DEAD: the only thing a press does is ask to come back, and only once
+      // the push has landed and the prompt is up. Before that a press is
+      // swallowed — a stray tap during the fade must not skip the sequence,
+      // and the server refuses it anyway until the die clip has finished.
+      //
+      // THIS IS CHECKED BEFORE THE UI LOCK, DELIBERATELY. The lock is there so
+      // an open dialog does not also walk the player around, but it used to
+      // sit in front of this branch — so ANY stale lock (a dialog torn down
+      // without its onClosed, a drop cancelled through a racing gesture) left
+      // "Press to continue..." on screen with every tap silently dropped until
+      // the server's own PLAYER_DEATH_MAX_MS backstop three minutes later.
+      // Being dead outranks every dialog: the revive press always goes through.
+      if (this.selfDead) {
+        if (this.death?.armed) this.askRevive();
+        return;
+      }
       // A HUD modal is up (or just closed under this very gesture): the world
       // takes no input at all — no trip, no engage, no fetch.
       if (this.uiLocked || performance.now() < this.uiLockLiftAt) return;
@@ -1502,7 +3709,7 @@ export class WorldScene extends Phaser.Scene {
           this.pickupIntentUntil = this.time.now + 6000;
           this.engagedId = null;
           const d = this.drops.get(tgt.id)!;
-          const meNow = this.avatars.get(this.room!.sessionId);
+          const meNow = this.avatars.get(this.myId);
           if (meNow) this.walkToGrab(meNow, d.wx, d.wy);
           else this.setMoveTarget(d.wx, d.wy, true, false, undefined, false);
         } else {
@@ -1577,6 +3784,12 @@ export class WorldScene extends Phaser.Scene {
       window.removeEventListener("touchend", touchAllUp, { capture: true } as any);
       window.removeEventListener("touchcancel", touchAllUp, { capture: true } as any);
       window.removeEventListener("touchstart", touchFresh, { capture: true } as any);
+      /* A WORKER OUTLIVES ITS SCENE UNLESS TERMINATED. This one holds a second
+       * copy of the resolver documents (13.5 MB of JSON, more once parsed), so
+       * a world change or a reconnect that left it running would stack another
+       * one on a phone. */
+      this.t3worker.stop();
+      this.t3workerBooted = false;
     });
 
     // Chat: Enter opens the input; while typing, Phaser keyboard is disabled so
@@ -1592,7 +3805,17 @@ export class WorldScene extends Phaser.Scene {
       }
     });
     // Jump (Space): edge-triggered, lets you cross a 1-level ledge if timed.
-    this.input.keyboard!.on("keydown-SPACE", () => this.tryJump());
+    this.input.keyboard!.on("keydown-SPACE", () => {
+      // Dead: the jump button is the one control a thumb is already resting on
+      // (it synthesizes this key), so it asks to come back too.
+      if (this.selfDead) { if (this.death?.armed) this.askRevive(); return; }
+      // Standing at a chess seat, the jump affordance IS the chess offer
+      // (maintainer: the button reads "START/JOIN CHESSGAME"). Auto-jump
+      // (maybeAutoJump) bypasses this on purpose — walking into a ledge
+      // beside a board must still hop.
+      if (this.chessPrompt) return void this.room?.send("chess.sit", {});
+      this.tryJump();
+    });
     // Feature/debug toggles: TOP-ROW digits on keyboard AND buttons in the
     // HUD's Settings tab (mobile has no keys; maintainer moved them there —
     // the old chat welcome overlay listing the keys is gone).
@@ -1671,16 +3894,8 @@ export class WorldScene extends Phaser.Scene {
         // Audio (composer agent): master sound + music, persisted switches.
         { label: "sound", act: () => gameAudio.toggleSound(), get: () => gameAudio.soundEnabled },
         { label: "music", act: () => gameAudio.toggleMusic(), get: () => gameAudio.musicEnabled },
-        // Maintainer's A/B test switch: raw audio files, zero composer
-        // processing — pins a bad sound on the asset or on the composer.
-        {
-          label: "enforce unmodified audio",
-          act: () => gameAudio.togglePure(),
-          get: () => gameAudio.pureEnabled,
-        },
         { label: "respawn", act: () => this.room?.send("respawn") },
         { label: "torch", act: () => this.toggleTorch(), get: () => this.torchOn },
-        { label: "bonfire", act: () => this.toggleBonfire(), get: () => this.fireOn },
         // Monster spawn zones (maps2 spawns@1) — a DEBUG overlay, off by
         // default (maintainer 2026-07-30: "not visible by default").
         { label: "spawn areas", act: () => this.toggleSpawnAreas(), get: () => this.spawnAreasOn },
@@ -1688,6 +3903,222 @@ export class WorldScene extends Phaser.Scene {
         // a predator's proximity radius, gold = the provoke radius on the
         // sword-marked target.
         { label: "aggro radius", act: () => this.toggleAggroRadius(), get: () => this.aggroRadiusOn },
+        /* THE COLLISION OVERLAY — the maintainer's "show hitbox button". Both
+         * layers at once: the cells the nav plans around AND the real footprint
+         * ellipses the body collides with (see drawCollisionDebug). */
+        { label: "collision (hitbox)", act: () => this.toggleCollision(), get: () => this.collisionOn },
+        /* SHADOWS: on / off / RED — the maintainer's instrument for telling a
+         * SHADOW from a TILE (2026-09-03, on the dotted zigzag: "make a
+         * settings button that switches between shadows enabled, disabled, red
+         * shadows. This will make it easy to see what is a shadow and what is
+         * a tile"). A line that SURVIVES "off" is painted into the ground
+         * texture; a line that turns RED is the light pass. It settles in one
+         * tap what I spent a day inferring from screenshots. */
+        {
+          label: "shadows",
+          act: () => {
+            const n = this.night;
+            if (!n) return;
+            n.shadowDbg = (n.shadowDbg + 1) % 3;
+            this.chat.addLog("—", `shadows: ${["on", "OFF", "RED"][n.shadowDbg]}`);
+          },
+          get: () => !!this.night && this.night.shadowDbg !== 0,
+          state: () => ["on", "off", "red"][this.night?.shadowDbg ?? 0],
+        },
+        /* OVERLAYS — the same idea as the shadows switch, for the three
+         * full-screen passes. The zigzag is NOT in the ground texture (exact
+         * unlit palette census at his cell and zoom: zero wall-coloured
+         * texels), so it is painted downstream. Each tap removes one pass:
+         * all -> no depth-fog -> no mist -> no light. The step where the line
+         * disappears names the pass; a line that survives "none" is the
+         * texture reaching the display, not the lighting. Four taps instead of
+         * four deploys. */
+        {
+          label: "overlays",
+          act: () => {
+            const n = this.night;
+            if (!n) return;
+            n.dbgOverlays = (n.dbgOverlays + 1) % 4;
+            this.chat.addLog("—", `overlays: ${["all", "no depth-fog", "no mist", "NONE"][n.dbgOverlays]}`);
+          },
+          get: () => !!this.night && this.night.dbgOverlays !== 0,
+          state: () => ["all", "no fog", "no mist", "none"][this.night?.dbgOverlays ?? 0],
+        },
+        /* FOG: both atmospherics off in one tap — the always-on depth fog and
+         * the weather mist (maintainer 2026-09-08: "a toggle in settings for
+         * enabling/disabling fog. That will make it easier to take a screenshot
+         * in the game"). Distinct from the "overlays" cycler beside it, which
+         * isolates ONE pass at a time for debugging and is not remembered: this
+         * is a persisted two-state switch for looking at the world. The light
+         * pass stays on, so the scene is still lit and still shadowed. */
+        {
+          label: "fog",
+          act: () => {
+            this.setFog(!this.fogOn);
+            this.chat.addLog("—", `fog: ${this.fogOn ? "on" : "off"}`);
+          },
+          get: () => this.fogOn,
+          state: () => (this.fogOn ? "on" : "off"),
+        },
+        /* THE TWO SUBTRACTION SWITCHES — "does it still stutter without X?".
+         * Turning one OFF takes effect immediately, because that is the arm
+         * being measured: the bodies are destroyed and the index dropped here
+         * and now. Turning one back ON needs a rejoin, because the things it
+         * removed are built from server state and world load, and half-rebuilding
+         * them from a settings tap is a second construction path — the one thing
+         * this scene has been burned by most. Both say so in the log. */
+        {
+          label: "monsters",
+          act: () => {
+            // on → off → mock → on. Mock: every monster drawn with the one pink
+            // texture, nothing of its own loaded, everything else still runs.
+            this.monstersMode = this.monstersMode === "on" ? "off" : this.monstersMode === "off" ? "mock" : "on";
+            this.monstersOn = this.monstersMode !== "off";
+            this.monstersMock = this.monstersMode === "mock";
+            localStorage.setItem("ml-monsters", this.monstersMode === "on" ? "1" : this.monstersMode === "off" ? "0" : "mock");
+            if (!this.monstersOn) {
+              for (const id of [...this.monsters.keys()]) this.removeMonster(id);
+              this.monsters.clear();
+            }
+            this.chat.addLog("—", `monsters: ${this.monstersMode === "on" ? "on — rejoin to bring them back" : this.monstersMode === "off" ? "OFF (rendering, art and per-frame loop)" : "MOCK — rejoin: all monsters drawn with one pink texture, nothing loaded"}`);
+          },
+          get: () => this.monstersOn,
+          state: () => (this.monstersMode === "on" ? `on (${this.monsters.size})` : this.monstersMode),
+        },
+        {
+          label: "scenery",
+          act: () => {
+            this.sceneryMode = this.sceneryMode === "on" ? "off" : this.sceneryMode === "off" ? "mock" : "on";
+            this.sceneryOn = this.sceneryMode !== "off";
+            this.sceneryMock = this.sceneryMode === "mock";
+            localStorage.setItem("ml-scenery", this.sceneryMode === "on" ? "1" : this.sceneryMode === "off" ? "0" : "mock");
+            if (this.sceneryOn) {
+              // on↔mock: the keys changed under every piece, so rebuild now.
+              this.sceneryFit.clear();
+              this.rebuildScenery(this.cameras.main);
+              this.requestRepaint("scenery");
+            }
+            if (!this.sceneryOn) {
+              this.scenery = null;
+              this.rebuildScenery(this.cameras.main); // drains the pool at its own guard
+              this.sceneryLightSources = [];
+              this.sceneryStamps = [];
+              this.night?.setSceneryOccluders(undefined); // and its shadows
+            }
+            this.chat.addLog("—", `scenery: ${this.sceneryMode === "on" ? "on — rejoin to bring it back" : this.sceneryMode === "off" ? "OFF (sprites, lights, shadows and shape maps)" : "MOCK — every piece drawn with one pink texture, nothing loaded"}`);
+          },
+          get: () => this.sceneryOn,
+          state: () => this.sceneryMode,
+        },
+        {
+          label: "clear: pink",
+          act: () => {
+            this.groundClearPink = !this.groundClearPink;
+            this.chat.addLog("—", `ground clear: ${this.groundClearPink ? "MAGENTA" : "normal"} — magenta means NOTHING painted there`);
+            this.repaintWorld();
+          },
+          get: () => this.groundClearPink,
+          state: () => (this.groundClearPink ? "pink" : "off"),
+        },
+        {
+          label: "transitions",
+          act: () => {
+            this.noTransitions = !this.noTransitions;
+            this.chat.addLog("—", `transition tiles: ${this.noTransitions ? "OFF — cells draw their own plates" : "on"}`);
+            this.repaintWorld();
+          },
+          get: () => !this.noTransitions,
+          state: () => (this.noTransitions ? "off" : "on"),
+        },
+        /* FADE ON TRANSITION — the maintainer's fourth fade control (the three
+         * dials sit on the sliders below): may a fade tile land ON a composed
+         * transition tile? "A transition tile that is 50% sand and 50% grass
+         * can in fact end up being 75% grass and 25% sand if a fade tile with
+         * lots of grass happened to be placed there." Re-resolves the world. */
+        {
+          label: "fade on transition",
+          act: () => {
+            const on = !fadeTune().onBoundary;
+            setFadeTune({ onBoundary: on });
+            this.chat.addLog("—", `fade on transition: ${on ? "on — a transition tile may wear a fade" : "off"}`);
+          },
+          get: () => fadeTune().onBoundary,
+          state: () => (fadeTune().onBoundary ? "on" : "off"),
+        },
+        /* SCENERY ANIMATION REPORT — a phone-side probe (maintainer 2026-09-09,
+         * a cave brazier whose clip plays headless and not on his phone: the
+         * only instrument he has is this list). Logs what `__ml.sceneryAnims()`
+         * knows: how many animated placements are in reach, how many are
+         * playing, how many have every frame resident, and the next sleeps. */
+        {
+          label: "scenery anim report",
+          act: () => {
+            const runs = this.sceneryAnimLive.map((l) => ({ l, run: this.sceneryAnimRuns.get(l.place)! }));
+            const resident = runs.filter((r) => r.run.keys.every((k) => this.textures.exists(k))).length;
+            const playing = runs.filter((r) => r.run.frame >= 0).length;
+            const missing = runs.flatMap((r) => r.run.keys.filter((k) => !this.textures.exists(k))).length;
+            const next = runs.filter((r) => r.run.frame < 0).map((r) => Math.round((r.run.next - this.time.now) / 100) / 10).sort((a, b) => a - b).slice(0, 5);
+            const near = runs.slice(0, 4).map((r) => `${r.run.clip.name}@${r.l.place}:${r.run.frame >= 0 ? `f${r.run.frame}` : "sleep"}`);
+            this.chat.addLog("—", `scenery anims: ${runs.length} live, ${playing} playing, ${resident} with all frames, ${missing} frames missing; next sleeps ${next.join("/")} s; ${near.join(" ")}`);
+          },
+          get: () => false,
+          state: () => `${this.sceneryAnimLive.filter((l) => (this.sceneryAnimRuns.get(l.place)?.frame ?? -1) >= 0).length} playing`,
+        },
+        /* INDOOR REPORT — the phone-side twin of __ml.indoor() + lightSlots()
+         * (maintainer 2026-09-09, a cave room "different lit up depending on
+         * where I stand" that no headless position reproduces): the verdict,
+         * its ease, the room key and mask size, the dials, and which world
+         * lights hold a slot right now, in one chat line. */
+        {
+          label: "indoor report",
+          act: () => {
+            const me = this.room ? this.avatars.get(this.myId) : undefined;
+            const cell = me ? [Math.floor(me.fx / CELL_WU), Math.floor(me.fy / CELL_WU)] : null;
+            const grade = this.indoorGrade();
+            const lit = this.roomHasLight();
+            const slots = [...this.slotLit].map((id) => {
+              const src = this.sceneryLightSources.find((x) => x.id === id);
+              return src ? `${id}=${src.piece.split("/").pop()}@${Math.round(src.col)},${Math.round(src.row)}r${src.radius}${src.sealed ? "S" : ""}` : id;
+            });
+            const w = this.world;
+            const idx = cell && w ? cell[1] * w.width + cell[0] : -1;
+            const dep = idx >= 0 ? this.caveDepth?.get(idx) : undefined;
+            const rt = this.night?.roomDebug() as { bound?: boolean; lit?: number; roomOn?: number } | null;
+            const twin = cell ? this.night?.lightAt(cell[0] + 0.5, cell[1] + 0.5, 0.02, false, 0, undefined, true) : null;
+            const twinS = twin ? twin.map((v) => v.toFixed(2)).join("/") : "-";
+            this.chat.addLog(
+              "—",
+              `indoor: ${this.indoorInside ? "IN" : "out"} (verdict ${this.indoorPending ? "in" : "out"}) grade ${grade.toFixed(2)} mix ${this.indoorMix.toFixed(2)} at ${cell?.join(",") ?? "?"} elev ${me?.surfLevel ?? "?"} key ${this.indoorKey}; room ${this.indoorSpace ? `${this.indoorSpace.roof.size} cells, wall ${this.indoorSpace.wallRatio.toFixed(2)}, depth ${this.indoorSpace.depth}` : "none"}; mask ${this.roomMask ? `up ${this.roomMask.size}` : "down"} tex ${rt ? `${rt.bound ? "bound" : "UNBOUND"} lit ${rt.lit} on ${rt.roomOn}` : "none"}; my depth ${dep ?? "-"}; ambient ${lit ? "lit-room" : "dark-room"} dial; torch ${this.torchOn ? "on" : "off"} f ${this.curTorchF.toFixed(2)}; twin ${twinS}; slots [${slots.join(" ")}]`,
+            );
+          },
+          get: () => false,
+          state: () => (this.indoorInside ? `IN ${this.indoorGrade().toFixed(2)}` : "out"),
+        },
+        /* CLIFF-FOOT AND LID TRANSITIONS (transitions.ts): a nature wall's
+         * foot and a deck slab compose boundary tiles like any two grounds.
+         * Off is the resolver's parity picture. Re-resolves the world. */
+        {
+          label: "cliff-foot & lid transitions",
+          act: () => {
+            const on = !extraTransitions();
+            setExtraTransitions(on);
+            this.chat.addLog("—", `cliff-foot & lid transitions: ${on ? "on" : "off"}`);
+          },
+          get: () => extraTransitions(),
+          state: () => (extraTransitions() ? "on" : "off"),
+        },
+        /* THE PERF BEACON, as a BUTTON — because the maintainer plays from an
+         * INSTALLED HOME-SCREEN APP, which has no address bar, so `?perf=1`
+         * cannot be typed there at all (his question, 2026-09-03). Same law as
+         * the repo's ops rule: a step that needs a URL he cannot enter will not
+         * happen. The switch is the same localStorage key the query param sets,
+         * so either route works and the app remembers it across launches. */
+        {
+          label: "perf beacon",
+          act: () => this.togglePerfBeacon(),
+          get: () => this.perfBeacon,
+          state: () => (this.perfBeacon ? "reporting" : "off"),
+        },
         // Disable aggro (maintainer 2026-08-07: "I will use this feature to
         // test walk around in the cave without dying"). Server-side and per
         // player — see the "noaggro" handler in WorldRoom.
@@ -1716,11 +4147,34 @@ export class WorldScene extends Phaser.Scene {
     cam.setZoom(this.zoomFor());
     cam.setBackgroundColor(this.world ? "#181c28" : "#1b3327");
 
-    setLoadingProgress(0.95, "Connecting…");
+    setLoadingProgress(this.maps3 ? BAR_ART1 : 0.95, "Connecting…");
+    /* A BAR THAT STANDS STILL READS AS A HANG. This stage — matchmake, the
+     * join, the first state — publishes nothing to count, and it is ~10% of a
+     * maps3 boot. So the bar creeps across its own band on an exponential that
+     * approaches BAR_CONNECT1 without arriving: it can never overtake the
+     * streaming stage that follows (which starts exactly there), and it cannot
+     * promise a finish it does not know about. Cleared when the world starts
+     * streaming, and by shutdown. */
+    if (this.maps3) {
+      const t0 = performance.now();
+      this.connectCreep?.remove();
+      this.connectCreep = this.time.addEvent({
+        delay: 100,
+        loop: true,
+        callback: () => {
+          const f = 1 - Math.exp(-(performance.now() - t0) / BAR_CONNECT_TAU_MS);
+          setLoadingProgress(BAR_ART1 + (BAR_CONNECT1 - BAR_ART1) * f, "Connecting…");
+        },
+      });
+      this.events.once("shutdown", () => { this.connectCreep?.remove(); this.connectCreep = null; });
+    }
     try {
       this.bindRoom(
         await joinWorld(
-          { name: this.myName, character: this.myCharacter.uid, world: this.worldName },
+          { name: this.myName, character: this.myCharacter.uid, world: this.worldName, zone: this.zone },
+          undefined,
+          undefined,
+          { route: zoneRoute(this.zonesCfg, this.zone) },
         ),
       );
       // The world is live: bring in the score + let the composer sample the
@@ -1744,11 +4198,28 @@ export class WorldScene extends Phaser.Scene {
       this.indoorMaskSig = "";
       if (this.refreshIndoorMask()) this.repaintWorld();
     });
+    /* THE FADE DIALS (fadetune.ts) change how the RESOLVER places fades, so
+     * the world is re-resolved and repainted — the whole picture, as the
+     * worker switch did. Debounced: a slider drag fires per pixel of travel
+     * and a re-resolve is ~40 ms plus a full paint, so the rebuild waits for
+     * the thumb to rest. */
+    let fadeTuneTimer: ReturnType<typeof setTimeout> | null = null;
+    const reResolve = () => {
+      if (fadeTuneTimer) clearTimeout(fadeTuneTimer);
+      fadeTuneTimer = setTimeout(() => {
+        fadeTuneTimer = null;
+        if (!this.world || this.unloading) return;
+        this.initTiles3();
+        this.repaintWorld();
+      }, 400);
+    };
+    window.addEventListener("ml-fade-tune", reResolve);
+    window.addEventListener("ml-extra-transitions", reResolve); // transitions.ts — same rebuild
 
     // Debug hooks for headless end-to-end verification.
     (window as any).__ml = {
       players: () => this.avatars.size,
-      myId: () => this.room?.sessionId,
+      myId: () => this.myId,
       liveTuning: () => liveTuningSnapshot(),
       // Live feed for the HUD Map tab (hud.ts polls per rAF): the current world
       // id + grid size (cells) and the LOCAL player's SMOOTH predicted cell —
@@ -1756,24 +4227,26 @@ export class WorldScene extends Phaser.Scene {
       // use, so the minimap dot tracks the avatar (using me()/server 20Hz state
       // instead would stutter). col=fx/CELL_WU, row=fy/CELL_WU.
       minimap: () => {
-        const av = this.avatars.get(this.room?.sessionId ?? "");
+        const av = this.avatars.get(this.myId);
         const w = this.world;
         const col = av ? av.fx / CELL_WU : 0;
         const row = av ? av.fy / CELL_WU : 0;
-        // The minimaps are ISO renders (maps2 render_overview), so hud.ts needs
-        // maxL (the render origin lifts by the world's tallest level) and the
-        // player's own cell level (the iso dot lifts with the terrain it stands
-        // on). Clamp the cell index — fx/fy can ease a hair past the rim.
+        // The map images are ISO renders, so hud.ts needs maxL (both renderers
+        // lift the canvas origin by the world's tallest level) and the player's
+        // own cell level (the dot lifts with the terrain it stands on). `iso`
+        // says WHICH renderer drew it — maps.ts branches the projection and the
+        // filename on it. Clamp the cell index — fx/fy can ease past the rim.
         const ci = w ? Math.max(0, Math.min(w.width - 1, Math.floor(col))) : 0;
         const ri = w ? Math.max(0, Math.min(w.height - 1, Math.floor(row))) : 0;
         return {
           world: this.worldName,
           w: w?.width ?? 0,
           h: w?.height ?? 0,
-          maxL: this.maxLevel,
+          maxL: this.terrainMaxLevel,
           col,
           row,
           level: w?.rows[ri]?.[ci]?.l ?? 0,
+          iso: w?.iso,
         };
       },
       /** INDOOR MODE — the whole verdict, for gate assertions.
@@ -1794,9 +4267,29 @@ export class WorldScene extends Phaser.Scene {
       // The Settings "Indoor light" dial (indoorlight.ts). No arg reads it;
       // a number 0..1 drives it, so a gate can walk both ends without a
       // pointer drag. Returns the dial AND the ambient triple it resolves to.
-      indoorLight: (v?: number) => {
-        if (typeof v === "number") setIndoorLight(v);
-        return { dial: indoorLight(), ambient: indoorAmbient().map((x) => +x.toFixed(4)) };
+      // The Settings "Hidden outline" dial (hiddenring.ts): the wall-hack
+      // silhouette's opacity. No arg reads it; a number sets it.
+      hiddenRing: (v?: number) => {
+        if (typeof v === "number") setHiddenRing(v);
+        return { dial: hiddenRing() };
+      },
+      indoorLight: (v?: number, which: "dark" | "lit" = "dark") => {
+        if (typeof v === "number") (which === "lit" ? setIndoorLightLit : setIndoorLight)(v);
+        const lit = this.roomHasLight();
+        return {
+          dial: indoorLight(),
+          dialLit: indoorLightLit(),
+          roomHasLight: lit,
+          ambient: indoorAmbient(lit).map((x) => +x.toFixed(4)),
+          // Every DRAWN scenery light with the room test's own verdict on it —
+          // which of them is making the room count as lit.
+          lights: this.sceneryLightSources.map((s) => ({
+            id: s.id,
+            piece: s.piece,
+            at: [+s.col.toFixed(1), +s.row.toFixed(1), +s.z.toFixed(2)],
+            inRoom: !this.indoorOutside(s.col * CELL_WU, s.row * CELL_WU, s.z),
+          })),
+        };
       },
       // The Settings "Indoor wall height" dial (indoorwall.ts). No arg reads it; a
       // number sets it, so a gate can walk every level without a pointer drag.
@@ -1813,6 +4306,100 @@ export class WorldScene extends Phaser.Scene {
           top: this.indoorTop,
         };
       },
+      // THE PER-WALL RAISE's QA switch + live state. No arg reads; a boolean
+      // flips it (false = the flat scalar cut everywhere, the pre-raise
+      // picture) and rebuilds the mask the way the wall dial does, so a gate
+      // can diff the two renderings of the same room from the same camera.
+      // `cuts` maps "col,row" → the level that column draws to (raised cells
+      // only — everything else is at `top`).
+      indoorRaise: (on?: boolean) => {
+        if (typeof on === "boolean" && on !== this.indoorRaiseOn) {
+          this.indoorRaiseOn = on;
+          this.destroyIndoorDebris(); // QA toggles are instant — no stale fade layer
+          if (this.indoorInside) {
+            this.indoorMaskSig = "";
+            if (this.refreshIndoorMask()) this.repaintWorld();
+          }
+        }
+        const w = this.world;
+        const cuts: Record<string, number> = {};
+        let raised = 0;
+        let cone = 0;
+        let maxWallCut = 0;
+        if (w && this.indoorCut)
+          for (const [ci, cut] of this.indoorCut) {
+            cuts[`${ci % w.width},${(ci - (ci % w.width)) / w.width}`] = cut;
+            if (this.indoorMask?.has(ci)) {
+              if (cut > this.indoorTop) raised++;
+              if (cut > maxWallCut) maxWallCut = cut;
+            } else cone++;
+          }
+        return {
+          on: this.indoorRaiseOn,
+          // `raised` counts MY WALLS above the dial; `cone` is the covering
+          // slice in front of the room (also constrained); everything else in
+          // the world is unconstrained and draws whole — `constrained` is the
+          // full set the cuts map (and the room texture) carries.
+          raised,
+          cone,
+          constrained: this.indoorCut?.size ?? 0,
+          maxWallCut,
+          top: this.indoorTop,
+          ceiling: this.indoorCeil,
+          protectedFloors: this.indoorSpace ? this.indoorSpace.roof.size + this.indoorSpace.entrances.size : 0,
+          cuts,
+        };
+      },
+      // THE TRANSITION FADE's live state — the debris layer that carries the
+      // roof/wall crossfade (hard task #1). `alpha` is 1 − indoorMix, the
+      // opacity every debris image wears this frame; `exiting` marks the
+      // outward half (verdict outdoors, cut world still drawn).
+      indoorFade: () => ({
+        debris: this.indoorDebris?.length ?? 0,
+        alpha: +this.debrisAlpha().toFixed(3),
+        exiting: !this.indoorInside && !!this.indoorMask,
+        mix: +this.indoorMix.toFixed(3),
+        inside: this.indoorInside,
+        // The furniture under the roof: how many are drawn and the opacity
+        // they wear this frame — the complement of `alpha`, so the two cross.
+        roofed: this.sceneryRoofedImgs.length,
+        roofedAlpha: +this.roofedFade().toFixed(3),
+        roofedDrawn: this.sceneryRoofedImgs.length
+          ? +(this.sceneryRoofedImgs.reduce((a, i) => a + i.alpha, 0) / this.sceneryRoofedImgs.length).toFixed(3)
+          : null,
+      }),
+      // How this world's tile art arrived: sheets sliced from the committed
+      // atlas vs individual fallback requests (verify-atlas's instrument).
+      chess: () => ({
+        boards: this.room ? [...this.room.state.chessBoards.entries()].map(([id, b]: [string, any]) => ({
+          id, col: b.col, row: b.row, npc: b.npc, waiting: b.waitingSid, matchId: b.matchId,
+        })) : [],
+        dialog: this.chessDialog?.probe() ?? null,
+        waitBubbles: this.chessWaitB.size,
+        prompt: this.chessPrompt?.mode ?? null,
+      }),
+      chessTap: (sq: number) => this.chessDialog?.tapSquare(sq),
+      // The debris pieces standing on ONE cell, as (level, textureKey) pairs —
+      // the instrument behind the lap-rule gate: a cell must never carry two
+      // pieces at the same level (the deck stamped over its own equal-height
+      // column was exactly that — the island hall's "roof suddenly changes
+      // look", 2026-08-13).
+      debrisAt: (c: number, r: number) => {
+        if (!this.indoorDebris || !this.world) return null;
+        const { dx, dy, lh } = this.geom;
+        const bx = this.iso.ox + (c - r) * dx;
+        const by = this.iso.oy + (c + r) * dy;
+        return this.indoorDebris
+          .filter((img) => img.x === bx && img.y <= by && (by - img.y) % lh === 0)
+          .map((img) => ({ lvl: (by - img.y) / lh, key: img.texture.key }));
+      },
+      // Park the indoor blend anywhere in (0,1) — a number pins it, no arg /
+      // null releases it. The instrument that lets a starved headless gate
+      // photograph the 3× crossfade mid-blend (see easeIndoorMix).
+      indoorMixPin: (v?: number | null) => {
+        this.indoorMixPinV = typeof v === "number" ? Math.max(0.001, Math.min(0.999, v)) : null;
+        return this.indoorMixPinV;
+      },
       // Is the room mask really reaching the shader? The one failure this
       // feature has that is INVISIBLE on the headless harness and fatal on a
       // phone: an unbound uRoom sampler reads texture unit 0 (the heightmap)
@@ -1826,7 +4413,7 @@ export class WorldScene extends Phaser.Scene {
       toggleTorch: () => this.toggleTorch(),
       indoor: () => {
         const s = this.indoorSpace;
-        const av = this.avatars.get(this.room?.sessionId ?? "");
+        const av = this.avatars.get(this.myId);
         return {
           indoor: this.indoorInside,
           roofLevel: s?.roofLevel ?? null,
@@ -1848,7 +4435,7 @@ export class WorldScene extends Phaser.Scene {
           fringe: s?.fringe.size ?? 0,
           cell: [this.indoorAtCol, this.indoorAtRow],
           elev: this.indoorAtElev,
-          renderedLvl: av ? +(av.elev / MAP_GEOMETRY.lh).toFixed(2) : null,
+          renderedLvl: av ? +(av.elev / this.geom.lh).toFixed(2) : null,
           swimming: av?.swimming ?? null,
           flips: this.indoorFlips,
           computes: this.indoorComputes,
@@ -1856,38 +4443,119 @@ export class WorldScene extends Phaser.Scene {
           torchF: +this.curTorchF.toFixed(3),
         };
       },
+      // MAPS3: what the tiles3 pipeline actually resolved and drew this frame.
+      // A gate cannot tell a black screen from a correct one by pixels alone —
+      // an unlit outdoors is black too — so the counters are the instrument.
+      tiles3: () => ({
+        on: this.maps3,
+        ready: !!this.t3,
+        sheets: !!this.t3sheets,
+        textures: !!this.t3tex,
+        geom: { dx: this.geom.dx, dy: this.geom.dy, lh: this.geom.lh },
+        drew: { ...this.t3stats },
+        regionMs: this.t3regionMs,
+        art: this.t3load ? { ...this.t3load.stats } : null,
+        composed: this.t3tex ? { ...this.t3tex.stats } : null,
+        resolver: this.t3 ? { ...this.t3.tiles.stats } : null,
+        failures: [...this.t3Failed],
+        placements: this.scenery?.placements.length ?? 0,
+        pieces: this.sceneryPieces ? { ...this.sceneryPieces.stats } : null,
+        occluders: this.occluders.length,
+        // THE BOOT HOLD'S OWN INPUTS, raw — which of them is still false is
+        // the only way to tell why a loading screen ran to its deadline.
+        hold: {
+            repaintPending: this.repaintGroundPending || this.repaintOccPending,
+          rebuilds: this.sceneryRebuilds,
+          queued: this.sceneryQueue.length,
+          piecesIdle: !this.sceneryPieces || this.sceneryPieces.idle,
+          artIdle: !this.t3load || this.t3load.idle,
+          loaderBusy: this.tiles3Loader().isLoading(),
+          manifestTimer: !!this.sceneryManifestTimer,
+        },
+      }),
+      /** MAPS3, ONE CELL: what tiles3 resolves at (col,row) and what it can
+       *  actually blit there right now.
+       *
+       *  The aggregate counters above cannot separate "this cell resolved to
+       *  nothing" from "the window is empty", and a screenshot cannot separate
+       *  "the fade tile drew" from "the plate under it drew" — the two are the
+       *  same ground in nearly the same colour. So the per-cell verdict is
+       *  published raw, and `verify-tiles3.mjs` pins it at coordinates derived
+       *  from the world doc's own geometry.
+       *
+       *  READ-ONLY in the only sense that matters: everything here is taken
+       *  through the SAME resolver and the SAME texture factory the ground pass
+       *  uses, so a cell whose art has not streamed in yet reads as zero blits
+       *  rather than as a resolution failure — and nothing is composed that the
+       *  next redraw would not compose anyway. */
+      t3at: (col: number, row: number) => {
+        const t3 = this.t3;
+        if (!t3 || !this.world) return null;
+        const tex = this.ensureTiles3Textures();
+        const cell = this.t3Try(`probe cell ${col},${row}`, () => t3.cell(col, row), null);
+        const b = this.t3Try(`probe boundary ${col},${row}`, () => t3.boundary(col, row), null);
+        const bop = b && tex ? tex.opsForBoundary(b) : null;
+        return {
+          cell: cell && {
+            ground: cell.ground,
+            level: cell.level,
+            region: cell.region,
+            kind: cell.kind,
+            // `path` is absent on a liquid's art (it is a colour, not a file).
+            art: cell.art
+              ? { kind: cell.art.kind, path: (cell.art as { path?: string }).path ?? null }
+              : null,
+            fade: cell.fade
+              ? { other: cell.fade.other, dist: cell.fade.dist, file: cell.fade.file }
+              : null,
+            wall: cell.wall
+              ? {
+                  side: cell.wall.side,
+                  frontLow: cell.wall.frontLow,
+                  capped: cell.wall.capped,
+                  storeys: cell.wall.stack.length,
+                }
+              : null,
+            sx: cell.sx,
+            sy: cell.sy,
+          },
+          blits: cell && tex ? cellBlits(tex, this.t3tm, cell).map((o) => ({ role: o.role, key: o.key })) : [],
+          boundary: b && {
+            index: b.index,
+            a: b.a,
+            b: b.b,
+            maskFrame: b.maskFrame,
+            topOnly: !!b.topOnly,
+            drawn: !!bop,
+            key: bop?.key ?? null,
+          },
+          /* Every slab on this cell, with the SURFACE it resolved to and the ops
+           * the factory hands the RT right now — so a roof cell that resolved a
+           * base-set member but draws only its cap tile reads as `ops` without
+           * a `deck`-role `t3f:` key, not as a resolution failure. */
+          decks: this.t3decksOf(t3, col, row).map((d) => ({
+            kind: d.kind,
+            level: d.level,
+            set: d.surfaceSet,
+            member: d.surfaceMember,
+            surface: d.surface?.path ?? null,
+            ops: tex ? tex.opsForDeck(d).map((o) => ({ role: o.role, key: o.key })) : [],
+            boundary: d.boundary ? { a: d.boundary.a, b: d.boundary.b, index: d.boundary.index } : null,
+          })),
+        };
+      },
       // world@2 decks: parsed summary + cells indexed for the ground/occluder loop.
       deckInfo: () => ({
         decks: (this.world?.decks ?? []).map((d) => ({ kind: d.kind, mat: d.mat, level: d.level, thickness: d.thickness, cells: d.cells.length })),
         indexed: this.deckIndex.size,
       }),
-      // Per-deck render diagnosis: how many cells have a VOID base (deck skipped
-      // by the void `continue`), a missing deck-top texture, or render OK.
-      deckDiag: () => {
-        const w = this.world;
-        if (!w) return null;
-        return (w.decks ?? []).map((d) => {
-          let voidBase = 0, deckTopMissing = 0, ok = 0;
-          for (const c of d.cells) {
-            const base = w.rows[c.row]?.[c.col];
-            const bk = base ? topKeyFor(base) : null;
-            const baseVoid = !bk || !this.textures.exists(bk);
-            const dt = c.path ? pathTileKey(c.path) : null;
-            const dtMissing = !dt || !this.textures.exists(dt);
-            if (baseVoid) voidBase++;
-            if (dtMissing) deckTopMissing++;
-            if (!baseVoid && !dtMissing) ok++;
-          }
-          return { kind: d.kind, level: d.level, cells: d.cells.length, voidBase, deckTopMissing, ok };
-        });
-      },
       myX: () => {
-        const id = this.room?.sessionId;
+        const id = this.myId;
         const av = id ? this.avatars.get(id) : undefined;
         return av ? av.sprite.x : null;
       },
       myCharacter: () => {
-        const id = this.room?.sessionId;
+        const id = this.myId;
         const av = id ? this.avatars.get(id) : undefined;
         return av ? av.character : null;
       },
@@ -1899,7 +4567,6 @@ export class WorldScene extends Phaser.Scene {
         this.hud?.pushChat(name, text, tMs != null ? new Date(tMs) : undefined),
       // Debug: occluder build state (maps2 z-order verification).
       occCount: () => ({
-        maps2: this.maps2,
         occluders: this.occluders.length,
         meta: this.occluderMeta.length,
         culled: this.occCulled,
@@ -1927,8 +4594,8 @@ export class WorldScene extends Phaser.Scene {
         // Which cells actually got at least one image this rebuild?
         const drawn = new Set<number>();
         for (const o of this.occluders) {
-          const c = o.getData("oc") as number | undefined;
-          const r = o.getData("or") as number | undefined;
+          const c = (o as OccTagged).ocCol;
+          const r = (o as OccTagged).ocRow;
           if (c !== undefined && r !== undefined) drawn.add(r * 100000 + c);
         }
         let metaWithoutArt = 0;
@@ -1936,9 +4603,9 @@ export class WorldScene extends Phaser.Scene {
         const offenders: Array<Record<string, number>> = [];
         for (const m of this.occluderMeta) {
           if (m.x1 < v.x || m.x0 > v.right || m.y1 < v.y || m.y0 > v.bottom) continue;
-          // PROPS (solid) live in `propImgs`, never in `occluders`, and are
-          // not touched by the cull — their meta legitimately has no occluder
-          // image, so they are not offenders.
+          // SOLID meta (scenery footprints) is never an occluder image and is
+          // not touched by the cull — legitimately without art, so not an
+          // offender.
           if (m.solid) {
             propMeta++;
             continue;
@@ -1959,7 +4626,7 @@ export class WorldScene extends Phaser.Scene {
         };
       },
       bubbles: () => [...this.avatars.values()].filter((a) => a.bubble).map((a) => a.bubble!.text),
-      jump: () => this.tryJump(),
+      jump: () => (this.chessPrompt ? this.room?.send("chess.sit", {}) : this.tryJump()),
       // Tap-to-move probes: set/inspect the autopilot target directly, and
       // run the same screen-point picking a real tap uses. A tap on a world cell
       // that carries a deck (bridge/roof) targets the DECK — same as a real
@@ -2027,6 +4694,25 @@ export class WorldScene extends Phaser.Scene {
         }
         return { c0, r0, rows };
       },
+      /* THE COLLISION / HITBOX OVERLAY, and the two layers it paints. `on`
+       * flips the same switch the settings row does (so a headless screenshot
+       * needs no menu), and the counts make "is the client holding the same
+       * scenery the server stamped" answerable without looking at pixels: the
+       * server logs the same two numbers at world load. Measured equal on
+       * the_game — 1,747 footprints, 2,568 nav cells — through the JSON the
+       * /api/scenery-collision endpoint serves. */
+      collision: (on?: boolean) => {
+        if (on !== undefined) this.toggleCollision(on);
+        const g = this.terrain;
+        let nav = 0;
+        let props = 0;
+        if (g)
+          for (let i = 0; i < g.blocked.length; i++) {
+            if (g.blocked[i]) nav++;
+            if (g.propBlocked[i]) props++;
+          }
+        return { on: this.collisionOn, footprints: g?.footprints?.n ?? 0, navCells: nav, propCells: props };
+      },
       pickAt: (wx: number, wy: number) => this.pickGround(wx, wy),
       caveDbg: () => ({
         depth: this.caveDepth ? this.caveDepth.size : -1,
@@ -2066,6 +4752,22 @@ export class WorldScene extends Phaser.Scene {
       waterAtScreen: (wx: number, wy: number) => this.isWaterAtScreen(wx, wy),
       // Is it walkable dry TOP ground (not a cliff face / water)? (ambient bird landing)
       landableAtScreen: (wx: number, wy: number) => this.landableAtScreen(wx, wy),
+      /* THE DEEP-SEA CURRENT at a DRAWN point — the ambient layer's seam for
+       * the open-sea effect. `water` and `deep_water` carry IDENTICAL Surface
+       * records (both `swimmable, speed 0.55, sound water`), so waterAtScreen
+       * and surfaceAt cannot tell a lake from the end of the world and the
+       * ambient water effect was painting the same lake chop on both.
+       *
+       * Screen coords in, like waterAtScreen/landableAtScreen; out is exactly
+       * what the movement step integrates (shared `deepCurrentAt`) — a FLAT
+       * world-space unit direction toward the map centre plus wu/s, or null on
+       * land, on a lake, and in the free shallows. Flat, not projected: the
+       * drawing side owns its own projection. */
+      deepCurrentAtScreen: (wx: number, wy: number) => {
+        if (!this.terrain) return null;
+        const p = this.pickGround(wx, wy);
+        return p ? deepCurrentAt(this.terrain, p.x, p.y) : null;
+      },
       // Camera world-view rect (QA: sample effects across the visible world).
       camView: () => {
         const w = this.cameras.main.worldView;
@@ -2076,7 +4778,7 @@ export class WorldScene extends Phaser.Scene {
       footprintsList: () => this.footsteps?.list() ?? [],
       // My avatar's on-screen position (CSS px) — anchors QA screenshot crops.
       myScreen: () => {
-        const av = this.avatars.get(this.room?.sessionId ?? "");
+        const av = this.avatars.get(this.myId);
         if (!av) return null;
         const cam = this.cameras.main;
         return {
@@ -2109,12 +4811,19 @@ export class WorldScene extends Phaser.Scene {
         if (this.night && testZ !== undefined) this.night.fogTestZ = testZ === -1 ? null : testZ;
         if (this.night && testCol !== undefined && testRow !== undefined)
           this.night.fogTestXY = testCol === -1 ? null : [testCol, testRow];
-        const av = this.avatars.get(this.room?.sessionId ?? "");
+        const av = this.avatars.get(this.myId);
         return {
           strength: this.night?.fogStrength ?? 0,
+          /* THE SWITCH, BESIDE THE DIAL. A probe that reports `strength` alone
+           * says "fog is on" while the Settings switch has it off — an
+           * instrument that cannot see the control is how a wall bug survived
+           * five rounds here today. `fogOn` is the switch, `mist` the other
+           * atmospheric it also kills. */
+          fogOn: this.fogOn,
+          mist: this.fogOn ? this.curMist : 0,
           testZ: this.night?.fogTestZ ?? null,
           testXY: this.night?.fogTestXY ?? null,
-          playerZ: av ? +Math.max(0, av.elev / MAP_GEOMETRY.lh).toFixed(2) : 0,
+          playerZ: av ? +Math.max(0, av.elev / this.geom.lh).toFixed(2) : 0,
         };
       },
       // Local avatar's lit-copy light sample. `l` is what SHIPS: the light at
@@ -2122,9 +4831,9 @@ export class WorldScene extends Phaser.Scene {
       // (roof/bridge) is lit. `lBase` is the OLD base-terrain sample — dark under
       // a roof. QA for the "character shaded on the roof in daylight" deck bug.
       litInfo: () => {
-        const av = this.avatars.get(this.room?.sessionId ?? "");
+        const av = this.avatars.get(this.myId);
         if (!av || !this.night) return null;
-        const rendLvl = Math.max(0, av.elev / MAP_GEOMETRY.lh); // sunk while swimming
+        const rendLvl = Math.max(0, av.elev / this.geom.lh); // sunk while swimming
         const litLvl = this.litLevelOf(av); // where lighting SHIPS (surface when swimming)
         const baseLvl = this.terrain ? levelAtWorld(this.terrain, av.fx, av.fy) : 0;
         return {
@@ -2146,12 +4855,12 @@ export class WorldScene extends Phaser.Scene {
       // cull must not break: standing UNDER a deck (cave slab, bridge) or
       // behind a cliff must still report a cover line.
       myCover: () => {
-        const av = this.avatars.get(this.room?.sessionId ?? "");
+        const av = this.avatars.get(this.myId);
         if (!av) return null;
         return {
           coverY: av.coverY ?? null,
           depth: +av.sprite.depth.toFixed(1),
-          elev: +(av.elev / MAP_GEOMETRY.lh).toFixed(2),
+          elev: +(av.elev / this.geom.lh).toFixed(2),
           litVisible: av.lit ? av.lit.visible : null,
           litCropped: av.lit ? !!av.lit.isCropped : null,
           // The WHITE OCCLUSION OUTLINE over the covered part (syncCoverOutline).
@@ -2185,7 +4894,7 @@ export class WorldScene extends Phaser.Scene {
       // disagree with what is drawn. ASYNC and dev-only: it is a GPU readback.
       coverStats: (which?: string) => {
         const b: BodyVisual | undefined = !which || which === "me"
-          ? this.avatars.get(this.room?.sessionId ?? "")
+          ? this.avatars.get(this.myId)
           : this.monsters.get(which);
         const slot = b ? this.coverSlotOf(b) : undefined;
         if (!b || !slot || !this.coverC || !this.coverE) return Promise.resolve(null);
@@ -2226,7 +4935,7 @@ export class WorldScene extends Phaser.Scene {
       // Chase-cam probe: eased zoom vs base, and how far the camera trails
       // the avatar (scene px).
       camInfo: () => {
-        const id = this.room?.sessionId;
+        const id = this.myId;
         const av = id ? this.avatars.get(id) : undefined;
         const cam = this.cameras.main;
         const cx = cam.worldView.centerX; // zoom-correct world centre
@@ -2236,6 +4945,180 @@ export class WorldScene extends Phaser.Scene {
           base: this.zoomFor(),
           trail: av ? Math.hypot(av.sprite.x - cx, av.sprite.y - cy) : null,
           detached: this.camDetached,
+        };
+      },
+      // The death sequence's live state (fade/zoom progress, whether the press
+      // is armed) — a gate cannot see a mood from the outside.
+      deathInfo: () => {
+        const d = this.death;
+        if (!d) return null;
+        const t = this.time.now - d.at;
+        return {
+          armed: d.armed,
+          asked: !!d.askAt,
+          ms: Math.round(t),
+          zoomP: +Math.min(1, t / DEATH_ZOOM_MS).toFixed(3),
+          ease: +(1 - Math.pow(1 - Math.min(1, t / DEATH_ZOOM_MS), 3)).toFixed(3),
+          veil: +(d.veil?.style.opacity || 0),
+          prompt: d.el ? +(d.el.style.opacity || 0) : 0,
+          // The MEASURED light on my own corpse — the death torch's whole
+          // point. `on` is the switch, which the death light deliberately
+          // ignores; `l` is what actually reaches the body, so a gate asserts
+          // the effect and not the intent.
+          torch: (() => {
+            const id = this.myId;
+            const a = id ? this.avatars.get(id) : undefined;
+            if (!a || !this.night) return null;
+            const l = this.night.lightAt(a.fx / CELL_WU, a.fy / CELL_WU, this.litLevelOf(a), false);
+            return { on: this.torchOn, l: l.map((v) => +v.toFixed(3)) };
+          })(),
+        };
+      },
+      // THE LIGHT SLOT LEDGER, live: which sources hold a real slot, what
+      // overflowed to the stamp fallback, whether the reserved slots are in
+      // use. A budget that only fails by LOOKING dim needs this to be
+      // assertable ("the channel is empty" and "the effect does nothing" are
+      // identical on screen — the cave lesson).
+      // The CPU light twin at an exact cell — the same sample the lit copies
+      // tint by (point lights + room gating + sun/cloud), so a gate can assert
+      // "this ground is fire-lit" numerically instead of decoding screenshots.
+      lightAt: (col: number, row: number, z?: number) => {
+        if (!this.night || !this.world) return null;
+        const zz = z ?? (this.world.rows[Math.floor(row)]?.[Math.floor(col)]?.l ?? 0);
+        // A GROUND sample (the probe's use): it takes the contact blob a body's tint does not.
+        return this.night.lightAt(col, row, zz, false, 0, undefined, true).map((v) => +v.toFixed(4));
+      },
+      // Torch switch for gates: measuring a fire's OWN pool needs my torch
+      // dark, and the settings button is not reachable headlessly.
+      torch: (on?: boolean) => {
+        if (on !== undefined && on !== this.torchOn) this.toggleTorch();
+        return this.torchOn;
+      },
+      /* LAMPS IN VIEW at their DRAWN positions — the ambient layer's seam for
+       * anything that gathers at a light (moths first). The layer can already
+       * ask what the light is WORTH at a cell (`lightAt`) and how many slots
+       * are held (`lightSlots`), but neither says WHERE a lamp is, and a moth
+       * has to circle the lamp itself. Both kinds are the same record: the
+       * emissive TILES (`emissiveSources`) and the scenery lamps
+       * (`sceneryLightSources`), each carrying its own projected anchor.
+       *
+       * Read-only, and called on a throttle by the ambient side (a few times a
+       * second, never per frame per moth). `sealed` marks a light inside a room
+       * — the caller decides what to do with it; an outdoor effect skips them.
+       * Padded cull box, so `worldView` is the right rectangle to use. */
+      /* Every light the camera can see, at the point it actually SHINES FROM.
+       *
+       * `y` IS THE HEAD, NOT THE FOOT, and that is the whole reason this
+       * returns a computed point rather than the record's own anchor. `sx/sy`
+       * is the source's ANCHOR — a lamp post's base on the ground — while `z`
+       * carries the source's height in ABSOLUTE levels: the cell's own level
+       * plus the emissive centroid's lift above it (0.3-1.5 levels for a
+       * scenery lamp, measured off the lit art; 0.5 for an emissive tile).
+       * A consumer that draws at `sy` draws at the bottom of the post, which is
+       * exactly what the first moths did (maintainer 2026-09-07, with the lamp
+       * head and the post's foot circled: "the moths should gather around the
+       * light and not around the tile"). The anchor is already
+       * elevation-lifted, so only the head's OWN lift is added back.
+       * `footY` keeps the anchor for anything that wants the ground contact,
+       * and `z` is the lift in levels so a caller can size against it. */
+      lightsInView: (pad = 96) => {
+        const v = this.cameras.main.worldView;
+        const lh = this.geom.lh;
+        const out: {
+          id: string; x: number; y: number; footY: number; z: number;
+          piece: string; kind: string; embers: boolean;
+          r: number; color: [number, number, number]; flicker: number; sealed: boolean;
+          litDepth: number | null;
+        }[] = [];
+        /* WHERE THE SOURCE'S OWN ART IS DRAWN, so a mark attached to a light can
+         * sort against the thing it comes out of. A scenery piece draws BELOW
+         * the darkness overlay and again as a LIT COPY at litDepth (~900_001+),
+         * while every ambient mark sat just over the overlay at ~900_000.0x —
+         * so the copy covered the sparks and the moths outright (maintainer
+         * 2026-09-09, at his hearth: "you render the sparks and also the moths
+         * behind the Scenery object so it's hard to see"; measured there, spark
+         * 900_000.084 under a hearth copy at 900_001.045).
+         * It is the RESOLVED depth read off the drawn sprite, not `hbDepth`:
+         * the shared depth rule lifts a piece over the flat tile in front of it
+         * and can clamp it under a wall, and only the second pass knows which.
+         * Null when there is no copy to sort against (no night shader, or the
+         * piece's art has not landed yet) — the caller then has nothing to be
+         * in front OF and should fall back to a fixed band. */
+        const litAt = new Map<number, number>();
+        for (const lo of this.litOccluders) if (lo.place !== undefined) litAt.set(lo.place, lo.img.depth);
+        const take = (s: EmissiveSource) => {
+          // `hx`/`hy` is where the glow is DRAWN — the middle of the lit pixels
+          // — and is the whole point of this probe. Deriving it from `z`
+          // instead reads the LIGHTING height, which is clamped to 1.5 levels,
+          // and a three-level lamp then reports its flame down on the post.
+          if (s.hx < v.x - pad || s.hx > v.right + pad || s.hy < v.y - pad || s.hy > v.bottom + pad) return;
+          out.push({
+            id: s.id, x: s.hx, y: s.hy, footY: s.sy,
+            z: +((s.sy - s.hy) / lh).toFixed(3), // the TRUE lift, in levels
+            // IS IT A FIRE? A flame-like source flickers and a steady lamp does
+            // not — the game already decides this from the piece's own kind or
+            // its manifest, so anything that belongs over a FIRE (embers) can
+            // ask here instead of guessing from an id.
+            r: s.radius, color: s.color, flicker: s.flicker,
+            piece: s.piece, kind: s.kind, embers: s.embers, sealed: !!s.sealed,
+            // `s3:<placement index>` is the id a scenery light is pushed under.
+            // An emissive TILE has no lit copy of its own to name (and no
+            // shipped world has one: tile emission is a maps2/tiles2 path and
+            // tiles2 retired 2026-09-09), so it reports null.
+            litDepth: (s.id.startsWith("s3:") ? litAt.get(+s.id.slice(3)) : undefined) ?? null,
+          });
+        };
+        for (const s of this.emissiveSources) take(s);
+        for (const s of this.sceneryLightSources) take(s);
+        return out;
+      },
+      lightSlots: () => ({
+        max: MAX_SHADER_LIGHTS,
+        reserved: RESERVED_LIGHT_SLOTS,
+        worldSlots: WORLD_LIGHT_SLOTS,
+        torch: this.lastSlotInfo.torch,
+        reservedInUse: this.lastSlotInfo.reserved,
+        total: this.lastSlotInfo.total,
+        slotted: [...this.slotLit],
+        // Tenure ramps (0..1): a value under 1 means that light is still
+        // fading in over its crossfading pool stamp.
+        ramps: Object.fromEntries([...this.slotTenure].map(([k, t]) => [k, +t.ramp.toFixed(3)])),
+        edges: this.slotEdges,
+        ...this.lastTenureStats,
+        overflow: this.lightOverflow,
+        sources: this.emissiveSources.length,
+        probe: !!this.probeLight,
+      }),
+      // WHICH OF MY OWN CHARACTER'S CLIPS ARE REGISTERED. "The player is
+      // loaded" means clips, not textures: a frame in the texture manager that
+      // no clip points at is exactly the state this probe exists to catch.
+      animReady: () => {
+        const def = this.myCharacter;
+        if (!def) return null;
+        const states: Record<string, string> = {};
+        let ready = 0;
+        let total = 0;
+        for (const [state, dirs] of Object.entries(def.animations)) {
+          let n = 0;
+          const dirCount = Object.keys(dirs).length;
+          for (const dir of Object.keys(dirs)) {
+            if (this.anims.exists(animKey(def.uid, state, dir))) n++;
+          }
+          states[state] = `${n}/${dirCount}`;
+          ready += n;
+          total += dirCount;
+        }
+        return {
+          uid: def.uid,
+          ready,
+          total,
+          states,
+          kicked: this.deferredAnimsKicked,
+          // The early-registration path: how many of MY frames the deferred
+          // batch queued, how many are still outstanding, and when my clips
+          // actually became playable. `left` stuck above 0 with `at` null after
+          // the batch is the tell that the fast path silently did nothing.
+          mine: this.myAnimDebug,
         };
       },
       // Playback rate of a built animation (anti-moonwalk verification).
@@ -2249,15 +5132,15 @@ export class WorldScene extends Phaser.Scene {
         this.setOverlay(typeof on === "number" ? on : on ? 1 : 0),
       // Live gait-sync probes: my avatar's playback timeScale (rate ∝ speed)
       // and the EMA'd WORLD-units ground speed it derives from (wu/s).
-      timeScale: () => this.avatars.get(this.room?.sessionId ?? "")?.sprite.anims.timeScale ?? null,
-      worldSpeed: () => this.avatars.get(this.room?.sessionId ?? "")?.spdWu ?? null,
+      timeScale: () => this.avatars.get(this.myId)?.sprite.anims.timeScale ?? null,
+      worldSpeed: () => this.avatars.get(this.myId)?.spdWu ?? null,
       // One-call sample for the gait-sync probe (verify-gaitsync): the EASED
       // sprite ground position (scene px at zoom 1 — what the eye sees), the
       // flat WORLD position, the playing clip and its 0-based frame index.
       // Sampled per rAF; offline it gates world-ground-per-cycle and measures
       // planted-foot slip against the art offsets ("moonwalk meter").
       gaitSample: () => {
-        const av = this.avatars.get(this.room?.sessionId ?? "");
+        const av = this.avatars.get(this.myId);
         if (!av) return null;
         return {
           sx: av.lx,
@@ -2278,7 +5161,7 @@ export class WorldScene extends Phaser.Scene {
       worldInfo: () => {
         let maxL = 0;
         if (this.world) for (const r of this.world.rows) for (const c of r) if (c.l > maxL) maxL = c.l;
-        return { name: this.worldName, maps2: this.maps2, w: this.world?.width, h: this.world?.height, maxL };
+        return { name: this.worldName, w: this.world?.width, h: this.world?.height, maxL };
       },
       // Would auto-jump fire from world (x,y) moving in screen dir (ax,ay)?
       // Headless probe for the auto-hop rule against real map geometry.
@@ -2290,17 +5173,17 @@ export class WorldScene extends Phaser.Scene {
       // Current animation key of the local avatar's sprite — headless probe for
       // verifying state selection (jump vs gaits).
       anim: () => {
-        const id = this.room?.sessionId;
+        const id = this.myId;
         const av = id ? this.avatars.get(id) : undefined;
         return av ? av.sprite.anims.getName() : null;
       },
       // Local avatar fall state — headless probe for the cliff-fall animation.
       fall: () => {
-        const id = this.room?.sessionId;
+        const id = this.myId;
         const av = id ? this.avatars.get(id) : undefined;
         return av ? { falling: av.falling, elev: av.elev, fallV: av.fallV } : null;
       },
-      me: () => this.room?.state.players.get(this.room!.sessionId),
+      me: () => this.room?.state.players.get(this.myId),
       // Composer probes: engine state, the musical clock (beat/scale — what
       // beat-reactive visuals read), and a manual event trigger for QA.
       audio: () => gameAudio.debug(),
@@ -2324,9 +5207,9 @@ export class WorldScene extends Phaser.Scene {
       // Fire the thunder rumble on demand (storms are rare episodes — this
       // lets QA/the maintainer hear it without waiting for the weather).
       audioThunder: (strength = 1) => gameAudio.thunder(strength),
-      swimming: () => !!this.room?.state.players.get(this.room!.sessionId)?.swimming,
-      myDispDir: () => this.avatars.get(this.room?.sessionId ?? "")?.dispDir ?? null,
-      swimT: () => this.avatars.get(this.room?.sessionId ?? "")?.swimT ?? 0,
+      swimming: () => !!this.room?.state.players.get(this.myId)?.swimming,
+      myDispDir: () => this.avatars.get(this.myId)?.dispDir ?? null,
+      swimT: () => this.avatars.get(this.myId)?.swimT ?? 0,
       // Hold-gesture/trip state — QA for the wedged-hold self-heal (a swallowed
       // pointerup must not leave holdPointerId armed forever).
       holdInfo: () => ({
@@ -2345,7 +5228,7 @@ export class WorldScene extends Phaser.Scene {
         this.holdRepathAt = 0;
       },
       swimDebug: () => {
-        const av = this.avatars.get(this.room?.sessionId ?? "");
+        const av = this.avatars.get(this.myId);
         if (!av) return null;
         const sp = av.sprite;
         const dir = av.dispDir ?? DEFAULT_DIRECTION;
@@ -2375,7 +5258,6 @@ export class WorldScene extends Phaser.Scene {
       },
       surfaceAt: (x: number, y: number) => (this.terrain ? surfaceAtWorld(this.terrain, x, y) : null),
       blockedAt: (x: number, y: number) => (this.terrain ? isBlockedAtWorld(this.terrain, x, y) : null),
-      propCount: () => this.propImgs.length,
       // Sample the CPU light (what a character's lit copy is tinted by) at a
       // grid cell — headless probe for emission monotonicity/colour.
       lightAtCell: (col: number, row: number, z = 0) =>
@@ -2435,7 +5317,7 @@ export class WorldScene extends Phaser.Scene {
       // + camera zoom — lets probes locate baked-lip rows in screenshots.
       cellScreen: (col: number, row: number) => {
         if (!this.world) return null;
-        const { dx, dy, lh } = MAP_GEOMETRY;
+        const { dx, dy, lh } = this.geom;
         const cam = this.cameras.main;
         const cell = this.world.rows[row]?.[col];
         if (!cell) return null;
@@ -2457,7 +5339,7 @@ export class WorldScene extends Phaser.Scene {
       // Draw-order probe: base + lit-copy depths for me and the campfire, so
       // the lit layer's ordering can be asserted numerically (no screenshots).
       litOrder: () => {
-        const id = this.room?.sessionId;
+        const id = this.myId;
         const av = id ? this.avatars.get(id) : undefined;
         return {
           me: av ? { base: av.sprite.depth, lit: av.lit?.visible ? av.lit.depth : null } : null,
@@ -2489,7 +5371,7 @@ export class WorldScene extends Phaser.Scene {
           return null;
         }
         this.camDetached = true;
-        const { dx, dy, lh } = MAP_GEOMETRY;
+        const { dx, dy, lh } = this.geom;
         const cell = this.world?.rows[row]?.[col];
         const wx = this.iso.ox + (col - row) * dx + dx;
         const wy = this.iso.oy + (col + row) * dy + dy - (cell?.l ?? 0) * lh;
@@ -2516,7 +5398,7 @@ export class WorldScene extends Phaser.Scene {
       // the apex), spanning 2*dy — gate on the real diamond rows, not the image
       // box, or padding rows read as phantom cover. Sorted front-most first.
       shadowCover: (gx: number, gy: number) => {
-        const dy = MAP_GEOMETRY.dy;
+        const dy = this.geom.dy;
         return this.occluderMeta
           .filter((o) => gx >= o.x0 && gx <= o.x1 && gy >= o.y0 + dy - 2 && gy <= o.y0 + dy * 3 + 2)
           .map((o) => ({ col: o.col, row: o.row, top: o.top, depth: Math.round(o.depth), y0: Math.round(o.y0) }))
@@ -2524,7 +5406,7 @@ export class WorldScene extends Phaser.Scene {
       },
       // My sprite depth vs every occluder column near it — z-order probes.
       depthProbe: () => {
-        const id = this.room?.sessionId;
+        const id = this.myId;
         const av = id ? this.avatars.get(id) : undefined;
         if (!av) return null;
         const s = av.sprite;
@@ -2571,6 +5453,1132 @@ export class WorldScene extends Phaser.Scene {
       lastInput: () => this.lastInput,
       // Monster render-state probe (shared body pipeline QA): per monster the
       // resolved depth, cover line, shadow anchor and lit-copy state.
+      /** MICRO-BENCH: force one full ground redraw right now — the latch
+       *  poisoned as repaintWorld does — and report its pure-JS cost with the
+       *  pass's counters. `cull` flips the off-texture cull for an A/B. */
+      /** The ground scroll's switch (A/B) and what the last redraw did. */
+      groundScroll: (on?: boolean) => {
+        if (typeof on === "boolean") {
+          this.groundScroll = on;
+          this.groundAnchor = null; // the next redraw paints in full either way
+        }
+        const log = this.groundScrollLog;
+        this.groundScrollLog = [];
+        return { on: this.groundScroll, lastMode: this.groundLastMode, anchor: this.groundAnchor ? { ax: this.groundAnchor.ax, ay: this.groundAnchor.ay } : null, log, cells: { ...this.groundCellStats }, ring: { queued: this.t3ringQueue.length - this.t3ringAt, missing: this.t3missing.size } };
+      },
+      /** THE LANDING REPAINT's switch (off = a landed batch paints in full) and
+       *  THE PREFETCH RING's (off = art is asked for only by the window). */
+      groundPartial: (on?: boolean) => {
+        if (typeof on === "boolean") this.groundPartial = on;
+        return this.groundPartial;
+      },
+      /** THE DROP DRAIN'S REPAINT, for an A/B against the census. Off by
+       *  default — see `groundDrainRepaint`. `drains` still counts the idle
+       *  edges either way, so a run with it on and a run with it off differ in
+       *  `longBy["full:redrawGround"]` and nowhere else. */
+      /** The drain's per-frame budget, ms. ~0 restores one rect per bracket per
+       *  frame, which is what the merge replaced — the two must hash alike. */
+      groundBandMs: (v?: number) => {
+        if (typeof v === "number") this.groundBandMs = v;
+        return { budgetMs: this.groundBandMs, ...this.groundSliceStats };
+      },
+      groundDrain: (on?: boolean) => {
+        if (typeof on === "boolean") this.groundDrainRepaint = on;
+        return {
+          on: this.groundDrainRepaint,
+          drains: this.repaintStats.drains,
+          deferred: this.repaintStats.drainsDeferred,
+          pending: this.groundDropsPending,
+        };
+      },
+      groundPrefetch: (on?: boolean) => {
+        if (typeof on === "boolean") {
+          this.groundPrefetch = on;
+          if (!on) this.t3ringQueue = [];
+        }
+        return this.groundPrefetch;
+      },
+      /** THE SHADOW DEBUG MODE (0 on, 1 off, 2 RED), as a hook. The chat menu
+       *  has had this for a while and it is the single best discriminator this
+       *  game owns — the maintainer killed the whole shadow theory with one tap
+       *  of it. A headless run needs it for the same reason: a dark shape on
+       *  the ground is either art or a shadow, and turning the shadows red
+       *  answers that in one frame instead of an afternoon. */
+      shadows: (mode?: number) => {
+        const n = this.night;
+        if (!n) return null;
+        if (typeof mode === "number") n.shadowDbg = ((mode % 3) + 3) % 3;
+        return ["on", "off", "red"][n.shadowDbg];
+      },
+      /** THE TWO TRANSITION SWITCHES, as hooks rather than chat-menu entries
+       *  (the menu keeps its own copies). A headless run needs to A/B the
+       *  composed boundary against the plates it replaces WITHOUT a human
+       *  opening a menu — "why don't you confirm on your own if you have fixed
+       *  this?" is not answerable through a screenshot alone, because a
+       *  transition and a hard edge are the same two grounds in the same two
+       *  colours and only the A/B separates them. */
+      transitions: (on?: boolean) => {
+        if (typeof on === "boolean" && on === this.noTransitions) {
+          this.noTransitions = !on;
+          this.repaintWorld();
+        }
+        return !this.noTransitions;
+      },
+      seam: (on?: boolean) => {
+        if (typeof on === "boolean" && on !== this.seamOn) {
+          this.seamOn = on;
+          this.t3tex = null; // the seam is part of the composed key's identity
+          this.repaintWorld();
+        }
+        return this.seamOn;
+      },
+      /** ONE COMPOSED TEXTURE, as pixels. `t3at` can say a boundary resolved,
+       *  has a mask frame and "drew", and the picture can still be a hard
+       *  diamond — those are not the same claim, and only the raster settles
+       *  which. Returns the texture's own source scaled 1:1 as a PNG data URL
+       *  plus a two-tone histogram, so a headless run can SEE the transition
+       *  rather than infer it from counters. */
+      t3png: (key: string) => {
+        const tx = this.textures.exists(key) ? this.textures.get(key) : null;
+        // A composed texture is raw bytes under WebGL — see rawTexPixels.
+        const rawPx = this.rawTexPixels(key);
+        const src = rawPx ? null : (tx?.getSourceImage() as HTMLCanvasElement | HTMLImageElement | undefined);
+        if (!rawPx && !src) return null;
+        const w = rawPx ? rawPx.w : (src as HTMLCanvasElement).width;
+        const h = rawPx ? rawPx.h : (src as HTMLCanvasElement).height;
+        const cv = document.createElement("canvas");
+        cv.width = w;
+        cv.height = h;
+        const ctx = cv.getContext("2d");
+        if (!ctx) return null;
+        if (rawPx) {
+          const id = ctx.createImageData(w, h);
+          id.data.set(rawPx.data);
+          ctx.putImageData(id, 0, 0);
+        } else {
+          ctx.drawImage(src as CanvasImageSource, 0, 0);
+        }
+        const d = ctx.getImageData(0, 0, w, h).data;
+        let opaque = 0;
+        const hist = new Map<string, number>();
+        for (let i = 0; i < d.length; i += 4) {
+          if (d[i + 3] < 128) continue;
+          opaque++;
+          const k = `${d[i] >> 4},${d[i + 1] >> 4},${d[i + 2] >> 4}`;
+          hist.set(k, (hist.get(k) ?? 0) + 1);
+        }
+        const top = [...hist.entries()].sort((a, b) => b[1] - a[1]).slice(0, 6);
+        return { key, w, h, opaque, top, url: cv.toDataURL("image/png") };
+      },
+      /** The resolution cache's switch, for the occluder-pass parity check. */
+      groundCache: (on: boolean) => {
+        this.groundCacheOn = on;
+        if (!on) this.t3cells.clear();
+        return on;
+      },
+      /** THE SLICED BAND's counters and its A/B switch (off = the whole band in
+       *  the scroll's own frame, the pre-slicing behaviour). */
+      groundSlices: (on?: boolean) => {
+        if (typeof on === "boolean") {
+          this.groundSliced = on;
+          this.t3flushSlices();
+        }
+        return { on: this.groundSliced, pending: this.groundSliceQ.length, ...this.groundSliceStats, ms: +this.groundSliceStats.ms.toFixed(1), shift: this.groundLastShift, ring: this.t3ringQueue.length - this.t3ringAt };
+      },
+      /** THE COMPOSE BUDGET, live. `Infinity` restores the pre-budget behaviour
+       *  (every boundary composed in the frame that wants it — the 1,276 ms
+       *  freeze); no argument reports what is in force. Remembered, so an A/B
+       *  survives the reload a phone needs. */
+      /** THE BISECT FOR THE RAW-BYTES REGISTRATION. `false` sends every NEW
+       *  composition back through the <canvas> path, so a picture defect can be
+       *  attributed to or cleared of it in one call — the same standing as
+       *  `?ground=legacy`. Only new compositions move; ones already registered
+       *  keep the path they were built on, which is what makes it safe to flip
+       *  live. */
+      groundRaw: (on?: boolean) => {
+        if (typeof on === "boolean") this.t3rawOff = !on;
+        return { raw: this.t3raw === true && !this.t3rawOff, forcedOff: this.t3rawOff };
+      },
+      /** THE BISECT FOR THE OCCLUDER SUBMIT CULL. `false` goes back to
+       *  submitting every occluder whether or not it can be seen, and clears the
+       *  filters it had set. Reports what the last frame actually skipped. */
+      occCull: (on?: boolean) => {
+        if (typeof on === "boolean") {
+          this.occCullOn = on;
+          if (!on) for (const l of this.cullLists) for (const im of l) im.cameraFilter = 0;
+        }
+        /* AUDITED AGAINST PHASER'S OWN BOUNDS, never against the cull's own
+         * arithmetic — the same rule `__ml.occAudit` and `__ml.monsterGate`
+         * already follow here, because a wrong formula cannot disagree with
+         * itself. `wrongCulled` is the only number that matters: an image whose
+         * real `getBounds()` DOES touch the camera while its submit is being
+         * skipped is a hole in the world. It must be 0. `wastedSubmits` is the
+         * harmless direction — on-screen by our generous box, off-screen by
+         * Phaser's exact one. */
+        const cam = this.cameras.main;
+        const v = cam.worldView;
+        let wrongCulled = 0;
+        let wastedSubmits = 0;
+        for (const im of this.occluders) {
+          const bb = im.getBounds();
+          const touches = bb.right > v.x && bb.x < v.right && bb.bottom > v.y && bb.y < v.bottom;
+          const culled = im.cameraFilter !== 0;
+          if (culled && touches) wrongCulled++;
+          else if (!culled && !touches) wastedSubmits++;
+        }
+        return {
+          on: this.occCullOn,
+          occluders: this.occluders.length,
+          skipped: this.occCulledSubmits,
+          wrongCulled,
+          wastedSubmits,
+        };
+      },
+      groundCompose: (ms?: number) => {
+        if (typeof ms === "number") {
+          this.composeMsOverride = ms;
+          try {
+            localStorage.setItem("ml-ground-compose", String(ms));
+          } catch {
+            /* private mode — the switch is still live for this session */
+          }
+        }
+        const t = this.t3tex;
+        return {
+          budgetMs: this.composeMsOverride ?? GROUND_COMPOSE_MS,
+          overridden: this.composeMsOverride !== null,
+          built: t?.stats.built ?? 0,
+          builtBoundary: t?.stats.builtBoundary ?? 0,
+          deferred: t?.stats.deferred ?? 0,
+          buildMs: +(t?.stats.buildMs ?? 0).toFixed(1),
+          owed: this.t3boundaryOwed.size,
+        };
+      },
+      groundRedraw: (cull?: boolean, cache?: boolean) => {
+        // The switches are applied for THIS forced redraw only and restored
+        // after, so an A/B never leaves the game running with either off.
+        const prevCull = this.groundCull;
+        const prevCache = this.groundCacheOn;
+        if (typeof cull === "boolean") this.groundCull = cull;
+        if (typeof cache === "boolean") this.groundCacheOn = cache;
+        this.lastGround = { x: NaN, y: NaN };
+        const t0 = performance.now();
+        this.withoutComposeBudget(() => {
+          this.redrawGround();
+          this.t3flushSlices(); // a forced redraw settles the picture before it is read
+        });
+        // The pass's own counters (incl. its `ms`) plus the whole redraw's wall clock.
+        const out = {
+          ...this.t3stats,
+          flushes: this.t3paintFlushes, // see drawTiles3Ground: binds or fill
+          cull: this.groundCull,
+          cache: this.groundCacheOn,
+          cached: this.t3cells.size,
+          mode: this.groundLastMode,
+          totalMs: +(performance.now() - t0).toFixed(1),
+        };
+        this.groundCull = prevCull;
+        this.groundCacheOn = prevCache;
+        return out;
+      },
+      /** DIAGNOSTIC: every lit piece within `radius` cells of the player, with
+       *  the cell it fogs by and the twin's answers (snapped / smooth) beside
+       *  the pass's pixel over that cell. */
+      fogPieces: (radius = 8) => {
+        const me = this.avatars.get(this.myId);
+        const px = me ? me.fx / CELL_WU : 0;
+        const py = me ? me.fy / CELL_WU : 0;
+        const out: Record<string, unknown>[] = [];
+        for (const lo of this.litOccluders) {
+          if (Math.hypot(lo.col - px, lo.row - py) > radius) continue;
+          const foot = this.night!.depthFogAtFoot(lo.bx, lo.by, Math.floor(lo.z), lo.col, lo.row);
+          const cellTwin = this.night!.depthFogAt(lo.col, lo.row, Math.floor(lo.z), true);
+          let pass: unknown = null;
+          try {
+            pass = (this.night!.fogProbeAt(lo.bx, lo.by) as { pass: unknown }).pass;
+          } catch {
+            pass = null;
+          }
+          out.push({ key: lo.img.texture.key.slice(0, 40), col: +lo.col.toFixed(2), row: +lo.row.toFixed(2), z: lo.z, worldL: this.world?.rows[Math.floor(lo.row)]?.[Math.floor(lo.col)]?.l ?? null, x: Math.round(lo.img.x), y: Math.round(lo.img.y), h: Math.round(lo.img.displayHeight), footA: +foot.a.toFixed(3), footRGB: [+foot.r.toFixed(2), +foot.g.toFixed(2), +foot.b.toFixed(2)], cellA: +cellTwin.a.toFixed(3), pass });
+        }
+        return { player: [+px.toFixed(2), +py.toFixed(2)], pieces: out };
+      },
+      /** THE SAME QUESTION FOR BODIES, WHICH HAD NO PROBE AT ALL.
+       *
+       * `fogPieces` answers "is this scenery piece fogged like the ground under
+       * it" and there has never been an equivalent for monsters, NPCs or remote
+       * players — which is exactly the asymmetry the maintainer reported
+       * (2026-09-05: "monsters and NPCs not being affected by the fog the way
+       * scenery is"). Reports, per body: the foot point the twin is read at,
+       * the twin's answer there, the fog the PASS actually paints at that
+       * point, the alpha the silhouette is currently drawn with, and whether
+       * there is a silhouette and a lit copy at all — because a body whose lit
+       * copy is hidden gets no silhouette by construction, and that is a
+       * different bug from a silhouette drawn at the wrong strength. */
+      /** SNAPSHOT THE FRAME AND COMPARE IT TO THE LAST ONE. Colour-free, so it
+       *  cannot be confounded by guessing what the fog tint currently is:
+       *  `snapDiff(true)` stores a frame, `snapDiff(false)` reports how many
+       *  pixels differ from it. Toggle one thing between the two calls and the
+       *  answer is exactly the area that thing paints. */
+      snapDiff: (store = false, tol = 12) =>
+        new Promise((res) => {
+          const r = this.game.renderer as Phaser.Renderer.WebGL.WebGLRenderer;
+          r.snapshot((img) => {
+            const im = img as HTMLImageElement;
+            const cv = document.createElement("canvas");
+            cv.width = im.width;
+            cv.height = im.height;
+            const cx = cv.getContext("2d", { willReadFrequently: true });
+            if (!cx) return res({ err: "no 2d" });
+            cx.drawImage(im, 0, 0);
+            const d = cx.getImageData(0, 0, cv.width, cv.height).data;
+            const w = window as unknown as { __SNAP?: Uint8ClampedArray };
+            if (store) {
+              w.__SNAP = new Uint8ClampedArray(d);
+              return res({ stored: (d.length / 4) | 0, w: cv.width, h: cv.height });
+            }
+            const prev = w.__SNAP;
+            if (!prev || prev.length !== d.length) return res({ err: "no stored frame" });
+            let n = 0;
+            for (let i = 0; i < d.length; i += 4)
+              if (
+                Math.abs(d[i] - prev[i]) + Math.abs(d[i + 1] - prev[i + 1]) + Math.abs(d[i + 2] - prev[i + 2]) >
+                tol
+              )
+                n++;
+            res({ changed: n, total: (d.length / 4) | 0, w: cv.width, h: cv.height });
+          });
+        }),
+      /** COUNT PIXELS OF A COLOUR IN THE WHOLE RENDERED FRAME. One readback,
+       *  and it answers the only question a property dump cannot: did this
+       *  object's fragments reach the framebuffer at all? (Sampling a point on
+       *  a body is unreliable — the point lands on fogged ground as often as on
+       *  the art.) */
+      countPixels: (hex: string, tol = 24) =>
+        new Promise((res) => {
+          const want = parseInt(hex.replace("#", ""), 16);
+          const wr = (want >> 16) & 0xff;
+          const wg = (want >> 8) & 0xff;
+          const wb = want & 0xff;
+          const r = this.game.renderer as Phaser.Renderer.WebGL.WebGLRenderer;
+          r.snapshot((img) => {
+            const im = img as HTMLImageElement;
+            const cv = document.createElement("canvas");
+            cv.width = im.width;
+            cv.height = im.height;
+            const cx = cv.getContext("2d", { willReadFrequently: true });
+            if (!cx) return res({ err: "no 2d" });
+            cx.drawImage(im, 0, 0);
+            const d = cx.getImageData(0, 0, cv.width, cv.height).data;
+            let n = 0;
+            for (let i = 0; i < d.length; i += 4)
+              if (Math.abs(d[i] - wr) + Math.abs(d[i + 1] - wg) + Math.abs(d[i + 2] - wb) <= tol) n++;
+            res({ hit: n, total: (d.length / 4) | 0, w: cv.width, h: cv.height });
+          });
+        }),
+      /** THE RENDERED PIXEL OVER EACH BODY, and the screen point it was read
+       *  at. `fogBodies` proves the silhouette is CONFIGURED (visible, alpha,
+       *  tintFill, colour, depth, on the display list); only a readback proves
+       *  it REACHED THE FRAMEBUFFER. Async: snapshotPixel schedules its
+       *  readPixels for after the next render. */
+      bodyPixels: async () => {
+        const cam = this.cameras.main;
+        const r = this.game.renderer as Phaser.Renderer.WebGL.WebGLRenderer;
+        if (!r.snapshotPixel) return null;
+        const out: Record<string, unknown>[] = [];
+        const list: [string, BodyVisual][] = [];
+        for (const [, m] of this.monsters) list.push(["monster", m as unknown as BodyVisual]);
+        for (const [, n] of this.npcs) list.push(["npc", n as unknown as BodyVisual]);
+        const me = this.avatars.get(this.myId);
+        if (me) list.push(["me", me]);
+        for (const [kind, b] of list) {
+          if ((b as unknown as { culled?: boolean }).culled) continue;
+          const sp = b.sprite;
+          // A point well INSIDE the art: a third of the way up from the feet.
+          const wx = sp.x;
+          const wy = sp.y - sp.displayHeight * 0.35;
+          const sx = Math.round((wx - cam.worldView.x) * cam.zoom);
+          const sy = Math.round((wy - cam.worldView.y) * cam.zoom);
+          if (sx < 0 || sy < 0 || sx >= this.scale.width || sy >= this.scale.height) continue;
+          const col = await new Promise<{ r: number; g: number; b: number }>((res) =>
+            r.snapshotPixel(sx, sy, (c) => {
+              const p = c as Phaser.Display.Color;
+              res({ r: p.red, g: p.green, b: p.blue });
+            }),
+          );
+          out.push({
+            kind,
+            sx,
+            sy,
+            pixel: "#" + [col.r, col.g, col.b].map((v) => v.toString(16).padStart(2, "0")).join(""),
+            fogVisible: !!b.fog?.visible,
+            fogAlpha: b.fog ? +b.fog.alpha.toFixed(3) : null,
+            fogTint: b.fog ? "#" + (b.fog.tintTopLeft >>> 0).toString(16).padStart(6, "0") : null,
+          });
+          if (out.length >= 5) break;
+        }
+        return out;
+      },
+      fogBodies: (radius = 12) => {
+        const me = this.avatars.get(this.myId);
+        const px = me ? me.fx / CELL_WU : 0;
+        const py = me ? me.fy / CELL_WU : 0;
+        const out: Record<string, unknown>[] = [];
+        const cv = this.cameras.main.worldView;
+        const add = (kind: string, name: string, b: BodyVisual) => {
+          const col = b.fx / CELL_WU;
+          const row = b.fy / CELL_WU;
+          if (Math.hypot(col - px, row - py) > radius) return;
+          const lvl = this.litLevelOf(b);
+          const sp = b.sprite;
+          const foot = this.night!.depthFogAtFoot(sp.x, sp.y, Math.floor(lvl), col, row);
+          const cellTwin = this.night!.depthFogAt(Math.floor(col), Math.floor(row), Math.floor(lvl), true);
+          let pass: unknown = null;
+          try {
+            pass = (this.night!.fogProbeAt(sp.x, sp.y) as { pass: unknown }).pass;
+          } catch {
+            pass = null;
+          }
+          out.push({
+            kind,
+            name,
+            col: +col.toFixed(2),
+            row: +row.toFixed(2),
+            lvl: +lvl.toFixed(2),
+            footA: +foot.a.toFixed(3),
+            cellA: +cellTwin.a.toFixed(3),
+            pass,
+            litVisible: !!b.lit?.visible,
+            hasLit: !!b.lit,
+            hasFog: !!b.fog,
+            fogVisible: !!b.fog?.visible,
+            fogAlpha: b.fog ? +b.fog.alpha.toFixed(3) : null,
+            spriteVisible: !!sp.visible,
+            culled: !!(b as unknown as { culled?: boolean }).culled,
+            fogInList: b.fog ? this.children.list.indexOf(b.fog) >= 0 : null,
+            litInList: b.lit ? this.children.list.indexOf(b.lit) >= 0 : null,
+            fogDepth: b.fog?.depth ?? null,
+            litDepthV: b.lit?.depth ?? null,
+            spriteDepth: sp.depth,
+            fogTintFill: b.fog ? (b.fog as unknown as { tintFill: boolean }).tintFill : null,
+            fogTint: b.fog ? "#" + (b.fog.tintTopLeft >>> 0).toString(16).padStart(6, "0") : null,
+            fogCamFilter: b.fog?.cameraFilter ?? null,
+            fogAlphaLive: b.fog?.alpha ?? null,
+            fogXY: b.fog ? [Math.round(b.fog.x), Math.round(b.fog.y)] : null,
+            fogScale: b.fog ? [b.fog.scaleX, b.fog.scaleY] : null,
+            fogTexKey: b.fog?.texture?.key ?? null,
+            onScreen:
+              sp.x >= cv.x - 64 && sp.x <= cv.right + 64 && sp.y >= cv.y - 64 && sp.y <= cv.bottom + 96,
+            coverY: (b as unknown as { coverY?: number }).coverY ?? null,
+          });
+        };
+        for (const [id, a] of this.avatars) add(id === this.myId ? "me" : "player", id.slice(0, 6), a);
+        for (const [, m] of this.monsters) add("monster", m.label ?? m.kind ?? "?", m as unknown as BodyVisual);
+        for (const [, n] of this.npcs) add("npc", (n as unknown as { uid?: string }).uid ?? "?", n as unknown as BodyVisual);
+        return {
+          player: [+px.toFixed(2), +py.toFixed(2)],
+          sceneryFogOn: this.night?.sceneryFog !== false,
+          /** The applyObjectLights gate: false means NO body gets a lit copy or
+           *  a fog silhouette, whatever its fog reads. */
+          litGate: !!this.night && this.night.active && this.night.testPattern < 3,
+          playerZ: this.night ? (this.night as unknown as { curPlayerZ: number }).curPlayerZ : null,
+          playerXY: this.night ? (this.night as unknown as { curPlayerXY: [number, number] }).curPlayerXY : null,
+          bodies: out,
+        };
+      },
+      /** THE HITCH RECORDER: `hitch(true)` arms it (perf must be on too),
+       *  `hitch()` reads the worst frames of the run and clears them. */
+      hitch: (on?: boolean) => {
+        if (typeof on === "boolean") {
+          this.hitchOn = on;
+          this.hitchWorst = [];
+          this.hitchBy = {};
+          this.hitchSec = {};
+          this.hitchN = 0;
+          this.hitchSum = 0;
+          this.hitchC = { tex: 0, files: 0, built: 0, buildMs: 0, blits: 0, objs: 0 };
+          this.hitchPrevBuilt = this.t3tex?.stats.built ?? 0;
+          this.hitchPrevBuildMs = this.t3tex?.stats.buildMs ?? 0;
+          if (on) this.perfOn = true;
+        }
+        const worst = [...this.hitchWorst].sort((a, b) => (b.total as number) - (a.total as number));
+        this.hitchWorst = [];
+        this.hitchBy = {};
+        return { on: this.hitchOn, frames: this.hitchN, avgMs: +(this.hitchSum / Math.max(1, this.hitchN)).toFixed(1), worst };
+      },
+      /** DIAGNOSTIC: every visible image/sprite whose box meets a world rect. */
+      objectsIn: (x0: number, y0: number, x1: number, y1: number) => {
+        const out: Record<string, unknown>[] = [];
+        for (const o of this.children.list) {
+          const im = o as unknown as Phaser.GameObjects.Image;
+          if (!(o instanceof Phaser.GameObjects.Image || o instanceof Phaser.GameObjects.Sprite) || !im.visible) continue;
+          const b = im.getBounds();
+          if (b.right < x0 || b.left > x1 || b.bottom < y0 || b.top > y1) continue;
+          out.push({ key: im.texture.key.slice(0, 44), frame: String(im.frame.name).slice(0, 24), depth: +im.depth.toFixed(3), alpha: +im.alpha.toFixed(2), tint: im.isTinted ? im.tintTopLeft.toString(16) : "-", fill: im.tintFill, x: Math.round(b.left), y: Math.round(b.top), w: Math.round(b.width), h: Math.round(b.height), scroll: im.scrollFactorX });
+        }
+        return out.sort((a, b) => (a.depth as number) - (b.depth as number));
+      },
+      /** DIAGNOSTIC: the fog pass's pixel over a cell vs the JS twin. */
+      fogProbe: (col: number, row: number) => this.night?.fogProbe(col, row) ?? null,
+      /** THE DEPTH FOG ON SCENERY AND PROPS: on = each piece wears a fog
+       *  silhouette at the fog of the cell under its feet; off = crisp copies. */
+      sceneryFog: (on?: boolean) => {
+        if (!this.night) return null;
+        if (typeof on === "boolean") this.night.sceneryFog = on;
+        return this.night.sceneryFog;
+      },
+      /** SCENERY SHADOWS A/B: on = pieces occlude the torch and the sun through
+       *  the heightmaps (the props' path, nightlight.setSceneryOccluders); off =
+       *  terrain only. Re-applies the layer and reports its cost + the build's. */
+      sceneryShadows: (on?: boolean, gate?: boolean) => {
+        if (!this.night) return null;
+        if (typeof gate === "boolean") this.night.sunGate = gate;
+        if (typeof on === "boolean" || typeof gate === "boolean") this.setSceneryShadows(on ?? this.night.sceneryShadows);
+        return {
+          on: this.night.sceneryShadows,
+          gate: this.night.sunGate,
+          ...this.night.sceneryStats,
+          buildMs: this.night.buildMs,
+          footprintsStamped: this.terrain?.footprints?.n ?? 0,
+          filters: this.night.heightmapFilters(),
+          view: (() => {
+            const c = this.cameras.main;
+            const v = c.worldView;
+            return { zoom: +c.zoom.toFixed(3), x: Math.round(v.x), y: Math.round(v.y), w: Math.round(v.width), h: Math.round(v.height) };
+          })(),
+        };
+      },
+      /** SCENERY LIGHT A/B: on = scenery lit copies are shaded per pixel by the
+       *  scenery-lit pipeline (torch, world lights and the sun against the
+       *  piece's volume); off = today's one flat tint. opts tune the pipeline:
+       *  {shade: 0|1 (0 = Multi.frag's own maths for parity), debug: 0..3,
+       *  wrap, sunLam, gain}. Returns sceneryLightInfo(). */
+      sceneryLight: (on?: boolean, opts?: { shade?: number; debug?: number; wrap?: number; sunLam?: number; gain?: number }) => {
+        if (typeof on === "boolean") this.setSceneryLight(on);
+        const p = this.sceneryLitPipe;
+        if (p && opts) {
+          if (opts.shade !== undefined) p.shade = opts.shade;
+          if (opts.debug !== undefined) p.debug = opts.debug;
+          if (opts.wrap !== undefined) p.wrap = opts.wrap;
+          if (opts.sunLam !== undefined) p.sunLam = opts.sunLam;
+          if (opts.gain !== undefined) p.gain = opts.gain;
+        }
+        return this.sceneryLightInfo();
+      },
+      /** SCENERY LIGHT REPORT: pipeline state, lights fed, shape maps built /
+       *  pending, per-frame CPU, and the first shaped pieces. */
+      sceneryLightInfo: () => this.sceneryLightInfo(),
+      /** SCENERY LIGHT GATE: luma thirds/bands of a named piece's lit copy,
+       *  read back from the framebuffer after the next render. */
+      sceneryLightBox: (needle: string) => this.sceneryLightBox(needle),
+      /** SCENERY LIGHT SHAPE: the normal/depth the pipeline reads at texel
+       *  (x, y) of a shaped piece's map (its own mirror when the piece is flipped). */
+      sceneryLightShape: (needle: string, x: number, y: number) => {
+        const lo = this.litOccluders.find((l) => l.img.texture.key.includes(needle) && l.shape?.tex);
+        if (!lo) return null;
+        const key = [...this.shapeMaps.entries()].find(([, r]) => r && r.tex === lo.shape!.tex)?.[0];
+        const px = key ? this.rawTexPixels(key) : null;
+        if (!px) return { key, err: "no raw pixels" };
+        return { key, ...decodeShape({ w: px.w, h: px.h, data: new Uint8Array(px.data.buffer, px.data.byteOffset, px.data.byteLength) }, x, y, lo.shape!.flip < 0) };
+      },
+      /** PASS SNAPSHOT + DIFF: keep a pass's raw pixels under a label, then measure how
+       *  two labels differ (max/mean byte delta, count) — a hash only says "not equal". */
+      nightSnap: (label: string, which: "night" | "fog" = "night") => this.night?.snapPass(which, label) ?? null,
+      nightDiff: (a: string, b: string) => this.night?.diffPass(a, b) ?? null,
+      heightmapBytes: (c0: number, r0: number, c1: number, r1: number) => this.night?.heightmapBytes(c0, r0, c1, r1) ?? null,
+      samplerLayout: () => this.night?.samplerLayout() ?? null,
+      /** THE LIGHTING PASSES' A/B: arm/disarm the surface-march block skip. */
+      nightSkip: (on: boolean) => this.night?.setSkip(on) ?? null,
+      /** PARITY, same turn: the night or fog pass rendered with the skip off and on
+       *  back to back, nothing else changing — {full, skip} hashes of its pixels. */
+      nightParity: (which: "night" | "fog" = "night", toggle: "skip" | "gate" = "skip") =>
+        this.night ? this.night.parityHash(which, toggle) : Promise.reject(new Error("no night lighting")),
+      /** PARITY for the lighting passes: hash of the night or fog pass's own pixels. */
+      nightHash: (which: "night" | "fog" = "night") =>
+        this.night ? this.night.passHash(which) : Promise.reject(new Error("no night lighting")),
+      /** PARITY: a hash of the ground render texture's ACTUAL PIXELS (read
+       *  back through Phaser's snapshot), so two modes can be proven to draw
+       *  the same picture rather than argued to. Exact because the RT is
+       *  OPAQUE (redrawGround fills alpha 1 before drawing): the canvas
+       *  round-trip would quantise alpha<255 pixels. Carries the RT's world
+       *  anchor, so a mismatch between two redraws can be told apart from the
+       *  camera having moved between them. */
+      groundHash: () =>
+        new Promise<{ hash: string; w: number; h: number; anchor: { x: number; y: number } }>((resolve, reject) => {
+          this.t3flushSlices();
+          const rt = this.groundRT;
+          if (!rt) return reject(new Error("no ground RT"));
+          rt.snapshot((img) => {
+            try {
+              const el = img as HTMLImageElement;
+              const c = document.createElement("canvas");
+              c.width = el.width;
+              c.height = el.height;
+              const g = c.getContext("2d")!;
+              g.drawImage(el, 0, 0);
+              const d = g.getImageData(0, 0, c.width, c.height).data;
+              let h = 0x811c9dc5;
+              for (let i = 0; i < d.length; i++) h = Math.imul(h ^ d[i], 0x01000193) >>> 0;
+              resolve({ hash: h.toString(16).padStart(8, "0"), w: c.width, h: c.height, anchor: { x: rt.x, y: rt.y } });
+            } catch (e) {
+              reject(e);
+            }
+          });
+        }),
+      /** THE GROUND TEXTURE ITSELF, as a PNG data URL. `groundHash` can say the
+       *  streaming picture and a full paint DISAGREE; only the pixels say
+       *  where. Reading the screen instead cannot answer it — the day/night
+       *  grade moves between two frames and swamps a one-texel difference. */
+      groundSnapshot: () =>
+        new Promise<{ w: number; h: number; url: string } | null>((resolve, reject) => {
+          this.t3flushSlices();
+          const rt = this.groundRT;
+          if (!rt) return reject(new Error("no ground RT"));
+          rt.snapshot((img) => {
+            try {
+              const el = img as HTMLImageElement;
+              const c = document.createElement("canvas");
+              c.width = el.width;
+              c.height = el.height;
+              c.getContext("2d")!.drawImage(el, 0, 0);
+              resolve({ w: c.width, h: c.height, url: c.toDataURL("image/png") });
+            } catch (e) {
+              reject(e);
+            }
+          });
+        }),
+      /** PARITY for the landing repaint: repaint these cells (col,row pairs)
+       *  of the current window through repaintTiles3Cells — over a fresh full
+       *  paint this must leave every pixel as it was (__ml.groundHash before
+       *  and after). Returns what it did. */
+      groundCellsRepaint: (cells: [number, number][]) => {
+        const world = this.world;
+        if (!world) return null;
+        const before = { ...this.groundCellStats };
+        this.repaintTiles3Cells(cells.map(([c, r]) => r * world.width + c));
+        return { ...this.t3stats, flushes: this.t3paintFlushes, mode: this.groundLastMode, runs: this.groundCellStats.runs - before.runs, full: this.groundCellStats.full - before.full, totalMs: +(this.groundCellStats.ms - before.ms).toFixed(1) };
+      },
+      /** LENS: STAMP EXACTNESS. Clears the ground RT to opaque black straight
+       *  on its framebuffer, lays ONE `rt.stamp` of a 1x1 white texture over
+       *  the given texture-space rect exactly as repaintTiles3Cells lays its
+       *  background, then reads the framebuffer back and reports which texels
+       *  it actually covered. DEV ONLY — it destroys the ground picture; call
+       *  __ml.groundRedraw() after. */
+      stampProbe: (x0: number, y0: number, x1: number, y1: number, margin?: number) => {
+        const rt = this.groundRT;
+        const r = this.game.renderer as unknown as {
+          gl?: WebGLRenderingContext;
+          flush?: () => void;
+          pushFramebuffer?: (fb: WebGLFramebuffer, u?: boolean, s?: boolean) => void;
+          popFramebuffer?: () => void;
+        };
+        const fb = rt
+          ? (rt.texture as unknown as { renderTarget?: { framebuffer?: WebGLFramebuffer } })?.renderTarget?.framebuffer
+          : undefined;
+        if (!rt || !r?.gl || !fb || !r.pushFramebuffer || !r.popFramebuffer) return { err: "unavailable" };
+        const gl = r.gl;
+        const raw = (fb as unknown as { webGLFramebuffer?: WebGLFramebuffer }).webGLFramebuffer ?? (fb as unknown as WebGLFramebuffer);
+        const bindFb = () => gl.bindFramebuffer(gl.FRAMEBUFFER, raw);
+        const unbindFb = () => gl.bindFramebuffer(gl.FRAMEBUFFER, null);
+        const W = rt.width;
+        const H = rt.height;
+        const key = "probe-white";
+        if (!this.textures.exists(key)) {
+          const cv = document.createElement("canvas");
+          cv.width = 1;
+          cv.height = 1;
+          const g = cv.getContext("2d")!;
+          g.fillStyle = "#ffffff";
+          g.fillRect(0, 0, 1, 1);
+          this.textures.addCanvas(key, cv)?.setFilter(Phaser.Textures.FilterMode.NEAREST);
+        }
+        r.flush?.();
+        bindFb();
+        gl.disable(gl.SCISSOR_TEST);
+        gl.clearColor(0, 0, 0, 1);
+        gl.clear(gl.COLOR_BUFFER_BIT);
+        unbindFb();
+        rt.stamp(key, undefined, x0, y0, { originX: 0, originY: 0, scaleX: x1 - x0, scaleY: y1 - y0, alpha: 1 });
+        r.flush?.();
+        const m = margin ?? 4;
+        const tx0 = Math.max(0, x0 - m);
+        const ty0 = Math.max(0, y0 - m);
+        const tx1 = Math.min(W, x1 + m);
+        const ty1 = Math.min(H, y1 + m);
+        const w = tx1 - tx0;
+        const h = ty1 - ty0;
+        const px = new Uint8Array(w * h * 4);
+        bindFb();
+        gl.readPixels(tx0, H - ty1, w, h, gl.RGBA, gl.UNSIGNED_BYTE, px);
+        unbindFb();
+        let lo = 255;
+        let hi = 0;
+        for (let i = 0; i < px.length; i += 4) { if (px[i] < lo) lo = px[i]; if (px[i] > hi) hi = px[i]; }
+        const cx = Math.floor((x0 + x1) / 2) - tx0;
+        const cyTex = Math.floor((y0 + y1) / 2);
+        const cy = ty1 - 1 - cyTex;
+        const centre = cx >= 0 && cx < w && cy >= 0 && cy < h ? Array.from(px.slice((cy * w + cx) * 4, (cy * w + cx) * 4 + 4)) : null;
+        // Map the bottom-up read back into TEXTURE space and classify.
+        let minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity;
+        let full = 0, partial = 0, none = 0;
+        const partVals: Record<string, number> = {};
+        const rowFull: Record<number, number> = {};
+        const colFull: Record<number, number> = {};
+        for (let ry = 0; ry < h; ry++) {
+          const ty = ty1 - 1 - ry; // texture-space row
+          for (let x = 0; x < w; x++) {
+            const v = px[(ry * w + x) * 4];
+            const txx = tx0 + x;
+            if (v === 0) { none++; continue; }
+            if (v === 255) {
+              full++;
+              rowFull[ty] = (rowFull[ty] ?? 0) + 1;
+              colFull[txx] = (colFull[txx] ?? 0) + 1;
+            } else {
+              partial++;
+              const k = String(v);
+              partVals[k] = (partVals[k] ?? 0) + 1;
+            }
+            if (txx < minX) minX = txx;
+            if (txx > maxX) maxX = txx;
+            if (ty < minY) minY = ty;
+            if (ty > maxY) maxY = ty;
+          }
+        }
+        return {
+          lo,
+          hi,
+          centre,
+          fbKind: (fb as unknown as { webGLFramebuffer?: unknown }).webGLFramebuffer ? "wrapped" : "raw",
+          asked: { x0, y0, x1, y1, w: x1 - x0, h: y1 - y0 },
+          covered: full ? { x0: minX, y0: minY, x1: maxX + 1, y1: maxY + 1 } : null,
+          full,
+          partial,
+          none,
+          expectFull: (x1 - x0) * (y1 - y0),
+          partVals,
+          rowSpans: Object.keys(rowFull).map(Number).sort((a, b) => a - b).map((k) => `${k}:${rowFull[k]}`),
+          colSpans: Object.keys(colFull).map(Number).sort((a, b) => a - b).map((k) => `${k}:${colFull[k]}`),
+        };
+      },
+      /** LENS: full-framebuffer scan after one stamp — no coordinate mapping
+       *  assumptions at all. Returns the bounding box of every non-black texel
+       *  in FRAMEBUFFER (bottom-up) rows and in texture (top-down) rows. */
+      stampScan: (x0: number, y0: number, x1: number, y1: number) => {
+        const rt = this.groundRT;
+        const r = this.game.renderer as unknown as { gl?: WebGLRenderingContext; flush?: () => void };
+        const fb = rt
+          ? (rt.texture as unknown as { renderTarget?: { framebuffer?: { webGLFramebuffer?: WebGLFramebuffer } | WebGLFramebuffer } })?.renderTarget?.framebuffer
+          : undefined;
+        if (!rt || !r?.gl || !fb) return { err: "unavailable" };
+        const gl = r.gl;
+        const raw = (fb as { webGLFramebuffer?: WebGLFramebuffer }).webGLFramebuffer ?? (fb as WebGLFramebuffer);
+        const tex = (rt.texture as unknown as { renderTarget?: { width: number; height: number } }).renderTarget!;
+        const W = tex.width;
+        const H = tex.height;
+        const key = "probe-white";
+        if (!this.textures.exists(key)) {
+          const cv = document.createElement("canvas");
+          cv.width = 1;
+          cv.height = 1;
+          const g = cv.getContext("2d")!;
+          g.fillStyle = "#ffffff";
+          g.fillRect(0, 0, 1, 1);
+          this.textures.addCanvas(key, cv)?.setFilter(Phaser.Textures.FilterMode.NEAREST);
+        }
+        r.flush?.();
+        gl.bindFramebuffer(gl.FRAMEBUFFER, raw);
+        gl.disable(gl.SCISSOR_TEST);
+        gl.clearColor(0, 0, 0, 1);
+        gl.clear(gl.COLOR_BUFFER_BIT);
+        gl.bindFramebuffer(gl.FRAMEBUFFER, null);
+        rt.stamp(key, undefined, x0, y0, { originX: 0, originY: 0, scaleX: x1 - x0, scaleY: y1 - y0, alpha: 1 });
+        r.flush?.();
+        const px = new Uint8Array(W * H * 4);
+        gl.bindFramebuffer(gl.FRAMEBUFFER, raw);
+        gl.readPixels(0, 0, W, H, gl.RGBA, gl.UNSIGNED_BYTE, px);
+        gl.bindFramebuffer(gl.FRAMEBUFFER, null);
+        let minX = Infinity;
+        let maxX = -Infinity;
+        let minR = Infinity;
+        let maxR = -Infinity;
+        let full = 0;
+        let partial = 0;
+        const partVals: Record<string, number> = {};
+        for (let row = 0; row < H; row++) {
+          for (let x = 0; x < W; x++) {
+            const v = px[(row * W + x) * 4];
+            if (v === 0) continue;
+            if (v === 255) full++;
+            else { partial++; partVals[String(v)] = (partVals[String(v)] ?? 0) + 1; }
+            if (x < minX) minX = x;
+            if (x > maxX) maxX = x;
+            if (row < minR) minR = row;
+            if (row > maxR) maxR = row;
+          }
+        }
+        return {
+          rtSize: `${rt.width}x${rt.height}`,
+          fbSize: `${W}x${H}`,
+          asked: { x0, y0, x1, y1 },
+          full,
+          partial,
+          partVals,
+          expect: (x1 - x0) * (y1 - y0),
+          fbBox: full + partial ? { x0: minX, x1: maxX + 1, row0: minR, row1: maxR + 1 } : null,
+          // the same box expressed in TEXTURE rows (top-down), assuming row = H-1-texY
+          texBox: full + partial ? { x0: minX, x1: maxX + 1, y0: H - 1 - maxR, y1: H - minR } : null,
+        };
+      },
+      /** The stamp rect and clip rect of the last landing repaint. */
+      lastRepaintRect: () => this.groundLastRect,
+      /** DIAGNOSTIC: the ground render texture's pixels as a PNG data URL (with
+       *  its world anchor), so two redraws can be diffed pixel by pixel. */
+      groundSnap: () =>
+        new Promise<{ png: string; w: number; h: number; anchor: { x: number; y: number } }>((resolve, reject) => {
+          this.t3flushSlices();
+          const rt = this.groundRT;
+          if (!rt) return reject(new Error("no ground RT"));
+          rt.snapshot((img) => {
+            try {
+              const el = img as HTMLImageElement;
+              const c = document.createElement("canvas");
+              c.width = el.width;
+              c.height = el.height;
+              c.getContext("2d")!.drawImage(el, 0, 0);
+              resolve({ png: c.toDataURL("image/png"), w: c.width, h: c.height, anchor: { x: rt.x, y: rt.y } });
+            } catch (e) {
+              reject(e);
+            }
+          });
+        }),
+      /** THE GROUND RESOLVER ON ANOTHER CORE (resolveworker.ts). No argument
+       *  reports; a boolean flips the switch and rebuilds, so an A/B needs no
+       *  reload. `applyMs` against `workerMs` is the whole verdict: workerMs is
+       *  time that did not happen on this thread, applyMs is what the feature
+       *  costs the frame. */
+      resolveWorker: (on?: boolean) => {
+        if (typeof on === "boolean") {
+          setResolveWorkerEnabled(on);
+          if (!on) this.t3worker.stop();
+          this.initTiles3();
+          this.repaintWorld();
+        }
+        return { enabled: resolveWorkerEnabled(), cores: navigator.hardwareConcurrency || 0, ...this.t3worker.stats };
+      },
+      /** DOES THE OTHER CORE AGREE? Resolves `n` cells of the drawn window on
+       *  BOTH sides and deep-compares. The worker runs the same modules over
+       *  the same documents so it must agree exactly; this is what turns "must"
+       *  into a number, and it is the check to run before believing any picture
+       *  drawn with the worker on. */
+      workerParity: async (n = 200) => {
+        const t3 = this.t3;
+        const w = this.world;
+        if (!t3 || !w) return { error: "no resolver" };
+        const cells: number[] = [];
+        const win = this.t3keepIdx;
+        if (win) for (const i of win) { if (cells.length >= n) break; cells.push(i); }
+        if (!cells.length) return { error: "no drawn window yet — walk first" };
+        const mine = cells.map((i) => {
+          const col = i % w.width;
+          const row = (i - col) / w.width;
+          return JSON.stringify({
+            cell: this.t3Try(`p ${col},${row}`, () => t3.cell(col, row), null),
+            boundary: this.t3Try(`pb ${col},${row}`, () => t3.boundary(col, row), null),
+            decks: this.t3Try(`pd ${col},${row}`, () => t3.decks(col, row), []),
+          });
+        });
+        return await new Promise((done) => {
+          const probe = new ResolveWorker();
+          const docUrls: Partial<Record<Tiles3DocKey, string>> = {};
+          for (const k of Object.keys(TILES3_DOCS) as Tiles3DocKey[]) docUrls[k] = docUrl(TILES3_DOCS[k], this.t3route);
+          const timer = setTimeout(() => { probe.stop(); done({ error: "worker did not answer in 30s" }); }, 30000);
+          probe.onResolved((got) => {
+            clearTimeout(timer);
+            let same = 0;
+            const diff: number[] = [];
+            for (const r of got) {
+              const at = cells.indexOf(r.i);
+              if (at < 0) continue;
+              if (JSON.stringify({ cell: r.cell, boundary: r.boundary, decks: r.decks }) === mine[at]) same++;
+              else diff.push(r.i);
+            }
+            probe.stop();
+            done({ compared: got.length, identical: same, differing: diff.length, firstDiffs: diff.slice(0, 8) });
+          });
+          probe.init({ docUrls, worldUrl: gameUrl(worldFileUrl(this.worldName, "world.json")), frame: this.tiles3Frame(), pitch: this.geom.lh });
+          const wait = setInterval(() => { if (probe.isReady) { clearInterval(wait); probe.request(cells); } }, 100);
+        });
+      },
+      /** THE STREAMING REPAINTS: how many landings asked, how many passes ran.
+       *  `coalesce` flips the A/B switch (legacy = every landing repaints
+       *  synchronously). Counters reset on read. */
+      repaints: (coalesce?: boolean) => {
+        if (typeof coalesce === "boolean") this.repaintCoalesce = coalesce;
+        const out = { coalesce: this.repaintCoalesce, ...this.repaintStats };
+        this.repaintStats = { terrain: 0, scenery: 0, manifest: 0, groundRuns: 0, occRuns: 0, drains: 0, drainsDeferred: 0 };
+        return out;
+      },
+      /** MICRO-BENCH: force one full occluder rebuild right now — the latch
+       *  poisoned exactly as repaintWorld does — and report its pure-JS cost,
+       *  split into the destroy pass and the rest. `fast` flips destroyBatch's
+       *  O(n) path off/on for an A/B in one session. */
+      /** THE SET AS DRAWN, for parity checks: every occluder in display-list
+       *  painter order (depth, then list position), with its base depth. */
+      occDump: () => {
+        const list = this.children.list;
+        const pos = new Map<Phaser.GameObjects.GameObject, number>();
+        list.forEach((o, i) => pos.set(o, i));
+        const order = (ims: readonly Phaser.GameObjects.Image[]) =>
+          ims
+            .map((im) => ({ im, i: pos.get(im) ?? -1 }))
+            .sort((a, b) => a.im.depth - b.im.depth || a.i - b.i)
+            .map(({ im }) => [im.texture.key, im.x, im.y, Math.round(im.depth * 10) / 10, (im as OccTagged).ocCol, (im as OccTagged).ocRow]);
+        // Three bands, each in its own painter order: the terrain occluders
+        // (pooled), the scenery base images, and the LIT copies (never pooled,
+        // and where review found the epsilon must not go — so parity covers it).
+        return { occluders: order(this.occluders), scenery: order(this.sceneryImgs), lit: order(this.litOccluders.map((lo) => lo.img)) };
+      },
+      /** THE ROW PROFILE OF A BUILT TEXTURE — how many opaque px per row.
+       *  For the terrain rasters the game COMPOSES (t3f: top-face-only,
+       *  t3c: conformed), which is the only way to see whether what was built
+       *  matches what the mask says it should be. A top face must be 29 rows
+       *  and 924 px; anything less is a hole the tiling cannot close. */
+      texRows: (key: string) => {
+        if (!this.textures.exists(key)) {
+          return { key, missing: true, like: Object.keys(this.textures.list).filter((k) => k.startsWith(key.slice(0, 6))).slice(0, 8) };
+        }
+        const src = this.textures.get(key).getSourceImage() as CanvasImageSource & { width: number; height: number };
+        const c = document.createElement("canvas");
+        c.width = src.width;
+        c.height = src.height;
+        const g = c.getContext("2d");
+        if (!g) return { key, err: "no 2d context" };
+        g.clearRect(0, 0, c.width, c.height);
+        g.drawImage(src, 0, 0);
+        const d = g.getImageData(0, 0, c.width, c.height).data;
+        const rows: string[] = [];
+        let opaque = 0;
+        for (let y = 0; y < c.height; y++) {
+          let n = 0;
+          for (let x = 0; x < c.width; x++) if (d[(y * c.width + x) * 4 + 3] > 0) n++;
+          if (n) rows.push(`${y}:${n}`);
+          opaque += n;
+        }
+        return { key, size: `${c.width}x${c.height}`, opaque, rowCount: rows.length, rows };
+      },
+      /** Every composed terrain texture the factory has built, by prefix. */
+      texKeys: (prefix: string) => Object.keys(this.textures.list).filter((k) => k.startsWith(prefix)).slice(0, 20),
+      occRebuild: (mode?: "legacy" | "bulk" | "pool") => {
+        if (mode === "legacy") {
+          this.occFastDestroy = false;
+          this.occPoolOn = false;
+          this.scnPoolOn = false;
+        } else if (mode === "bulk") {
+          this.occFastDestroy = true;
+          this.occPoolOn = false;
+          this.scnPoolOn = false;
+        } else if (mode === "pool") {
+          this.occFastDestroy = true;
+          this.occPoolOn = true;
+          this.scnPoolOn = true;
+        }
+        const before = this.occluders.length + this.litOccluders.length + this.sceneryImgs.length;
+        this.lastOccl = { x: NaN, y: NaN };
+        const t0 = performance.now();
+        this.rebuildOccluders();
+        const ms = performance.now() - t0;
+        return {
+          mode: this.occPoolOn ? "pool" : this.occFastDestroy ? "bulk" : "legacy",
+          reused: this.occReused,
+          created: this.occCreated,
+          scnReused: this.scnReused,
+          scnCreated: this.scnCreated,
+          destroyed: before,
+          built: this.occluders.length + this.litOccluders.length + this.sceneryImgs.length,
+          ms: +ms.toFixed(1),
+          destroyMs: +this.occDestroyMs.toFixed(1),
+          buildMs: +(ms - this.occDestroyMs).toFixed(1),
+          displayList: this.children.length,
+        };
+      },
+      /** THE FRAME BUDGET at this spot — `perf(true)` arms it, `perf()` reads
+       *  and RESETS. Sections are wall-clock inside update(); `counts` is what
+       *  the scene was carrying when they ran. Frame deltas are the scene's own
+       *  update cadence, so they include Phaser's render. */
+      perf: (on?: boolean) => {
+        if (!this.perfTexHooked) {
+          this.perfTexHooked = true;
+          this.textures.on(Phaser.Textures.Events.ADD, (key: string) => {
+            this.perfTexAdded++;
+            this.perfTexFrame++;
+            this.hitchC.tex++;
+            // WHAT is being added, by key family (the first path-ish segment).
+            const fam = String(key).replace(/^([a-z0-9_-]+[:/]).*$/i, "$1").slice(0, 16);
+            this.perfTexFam[fam] = (this.perfTexFam[fam] ?? 0) + 1;
+          });
+        }
+        if (on !== undefined) {
+          this.perfTexAdded = 0;
+          this.perfTexFam = {};
+          this.perfTexFrame = 0;
+          this.perfTexFrameMax = 0;
+          this.perfOn = on;
+          // The render/depthSort/gap spans live on game events, installed once.
+          // Arming perf from the console must install them too, or a dev A/B
+          // silently measures a section table with the three biggest entries
+          // missing — which is exactly what it did.
+          if (on) {
+            this.perfHookRender();
+            this.perfArmBaselines();
+          }
+          this.perfAcc = {};
+          this.perfFrames = [];
+          this.perfStack = [];
+          this.perfLast = 0;
+          return { armed: on };
+        }
+        const f = [...this.perfFrames].sort((a, b) => a - b);
+        const pick = (q: number) => (f.length ? +f[Math.min(f.length - 1, Math.floor(f.length * q))].toFixed(1) : 0);
+        const sections = Object.fromEntries(
+          Object.entries(this.perfAcc)
+            .sort((a, b) => b[1].ms - a[1].ms)
+            .map(([k, v]) => [k, { n: v.n, totalMs: +v.ms.toFixed(1), avgMs: +(v.ms / Math.max(1, v.n)).toFixed(2), maxMs: +v.max.toFixed(1) }]),
+        );
+        const r = this.game.renderer as unknown as { drawCount?: number; batches?: number };
+        const out = {
+          frames: { n: f.length, p50: pick(0.5), p90: pick(0.9), p99: pick(0.99), max: f.length ? +f[f.length - 1].toFixed(1) : 0 },
+          sections,
+          counts: {
+            occluders: this.occluders.length,
+            litOccluders: this.litOccluders.length,
+            occluderMeta: this.occluderMeta.length,
+            sceneryImgs: this.sceneryImgs.length,
+            monsters: this.monsters.size,
+            monstersActive: this.monstersActive,
+            avatars: this.avatars.size,
+            npcs: this.npcs.size,
+            displayList: this.children.length,
+            textures: Object.keys(this.textures.list).length,
+            drawCount: r?.drawCount ?? null,
+          },
+          window: { ms: +this.perfFrames.reduce((a, b) => a + b, 0).toFixed(0) },
+          texturesAdded: this.perfTexAdded,
+          texFamilies: this.perfTexFam,
+          texFrameMax: this.perfTexFrameMax,
+          groundLast: { composed: this.t3stats.composed, composeMs: this.t3stats.composeMs, ms: this.t3stats.ms },
+        };
+        this.perfTexAdded = 0;
+        this.perfTexFam = {};
+        this.perfTexFrameMax = 0;
+        this.perfAcc = {};
+        this.perfFrames = [];
+        return out;
+      },
+      /** THE TWO PLANES a world point can be drawn on, for one cell — the
+       *  question every overlay/anchor argument reduces to. `flat` is
+       *  projectFlat (the BODY's feet convention: +tile/2, +dy); `art` is the
+       *  tiles3 frame's anchor for the same point, which is where the terrain
+       *  and the scenery sprites are actually drawn. */
+      planes: (col: number, row: number) => {
+        const pf = this.projectFlat((col + 0.5) * CELL_WU, (row + 0.5) * CELL_WU);
+        const f = this.t3?.frame;
+        const art = f ? { x: anchorX(f, col + 0.5, row + 0.5), y: anchorY(f, col + 0.5, row + 0.5, 0) } : null;
+        // What the OVERLAYS draw a cell through — must equal `art`, or the
+        // marks and the world they describe are on two planes.
+        const cn = this.projectCellCorner(col + 0.5, row + 0.5, 0);
+        return {
+          flat: { x: +pf.x.toFixed(3), y: +pf.y.toFixed(3), lvl: pf.lvl },
+          art: art ? { x: +art.x.toFixed(3), y: +art.y.toFixed(3) } : null,
+          corner: { x: +cn.x.toFixed(3), y: +cn.y.toFixed(3) },
+          delta: art ? { x: +(pf.x - art.x).toFixed(3), y: +(pf.y - art.y).toFixed(3) } : null,
+          cornerVsArt: art ? { x: +(cn.x - art.x).toFixed(3), y: +(cn.y - art.y).toFixed(3) } : null,
+          geom: { dx: this.geom.dx, dy: this.geom.dy, lh: this.geom.lh, tile: this.geom.tile },
+        };
+      },
+      /** INDOOR SCENERY: what the index holds under roofs, and how much of it
+       *  the cut is letting through right now. */
+      // The animation scheduler: how many placed pieces carry a playable clip
+      // right now, how many are mid-play, and the next few starts.
+      sceneryAnims: () => {
+        const now = this.time.now;
+        const runs = this.sceneryAnimLive.map((l) => ({ place: l.place, run: this.sceneryAnimRuns.get(l.place)! }));
+        return {
+          live: runs.length,
+          playing: runs.filter((r) => r.run.frame >= 0).length,
+          byClass: runs.reduce<Record<string, number>>((acc, r) => ((acc[r.run.cls] = (acc[r.run.cls] ?? 0) + 1), acc), {}),
+          nextMs: runs.filter((r) => r.run.frame < 0).map((r) => Math.round(r.run.next - now)).sort((a, b) => a - b).slice(0, 8),
+          resident: runs.filter((r) => r.run.keys.every((k) => this.textures.exists(k))).length,
+          // The per-frame light (scenery light_frames x the lightanim.ts dials).
+          lit: this.sceneryAnimLive.filter((l) => !!l.light).map((l) => {
+            const L = l.light as Exclude<SceneryAnimLive["light"], false | undefined>;
+            return { place: l.place, frame: this.sceneryAnimRuns.get(l.place)?.frame ?? -1, frames: this.sceneryAnimRuns.get(l.place)?.clip.lightFrames?.length ?? 0,
+              now: l.lightNow ?? null, base: { col: +L.base.col.toFixed(2), row: +L.base.row.toFixed(2), peak: +Math.max(...L.base.color).toFixed(2) },
+              src: { col: +L.src.col.toFixed(3), row: +L.src.row.toFixed(3), peak: +Math.max(...L.src.color).toFixed(3) } };
+          }),
+          tune: lightAnimTune(),
+          // Geometry through a swap: the box must not move between still and frame.
+          boxes: this.sceneryAnimLive.slice(0, 6).map((l) => ({ place: l.place, tex: l.img.texture.key.slice(-28), lit: l.lo ? l.lo.img.texture.key.slice(-28) : null, litFrame: l.lo ? l.lo.img.frame.name : null, litVisible: l.lo ? l.lo.img.visible : null, litAlpha: l.lo ? +l.lo.img.alpha.toFixed(2) : null, frame: this.sceneryAnimRuns.get(l.place)?.frame ?? -1, w: +l.img.displayWidth.toFixed(1), h: +l.img.displayHeight.toFixed(1), x: Math.round(l.img.x), y: Math.round(l.img.y) })),
+        };
+      },
+      /** SCENERY ON A WALL — every drawn window/hanging with its wall column,
+       *  its cut fade and, for a window, its room glow and ON-overlay alpha. */
+      sceneryWalls: () =>
+        this.sceneryWalls.map((w) => ({
+          place: w.place, piece: w.piece, z: +w.z.toFixed(2),
+          wall: [Math.floor(w.fx / CELL_WU), Math.floor(w.fy / CELL_WU)], inner: [w.inner.col, w.inner.row],
+          room: this.roomOf(w.inner.col, w.inner.row),
+          alpha: +w.img.alpha.toFixed(3), glow: +w.glow.toFixed(3), on: w.on ? +w.on.alpha.toFixed(3) : null,
+          depth: +w.img.depth.toFixed(2),
+          ...(w.on
+            ? { onKey: w.on.texture.key, onFrame: w.on.frame.name, onDepth: +w.on.depth.toFixed(2), onVisible: w.on.visible,
+                onBox: [Math.round(w.on.x), Math.round(w.on.y), Math.round(w.on.displayWidth), Math.round(w.on.displayHeight)],
+                box: [Math.round(w.img.x), Math.round(w.img.y), Math.round(w.img.displayWidth), Math.round(w.img.displayHeight)],
+                onTint: w.on.tintTopLeft, onPipeline: w.on.pipeline?.name ?? null }
+            : {}),
+        })),
+      /** Why a window glows what it glows: its room, the room's own sources
+       *  as the glow sums them, and the night factor. */
+      windowGlowDebug: (place: number) => {
+        const w = this.sceneryWalls.find((x) => x.place === place);
+        if (!w) return null;
+        const room = this.roomOf(w.inner.col, w.inner.row);
+        const srcs = this.roomLit(room).map((s) => {
+          const pc = this.sceneryPieces?.get(s.piece);
+          const lb = pc ? sceneryLightBlockFor(pc, s.state ?? "") : null;
+          return { piece: s.piece, col: +s.col.toFixed(1), row: +s.row.toFixed(1), loaded: !!pc, radius: lb?.radius ?? null, strength: lb?.strength ?? null,
+            d: +Math.hypot(s.col - (w.inner.col + 0.5), s.row - (w.inner.row + 0.5)).toFixed(2) };
+        });
+        return { room, inner: w.inner, torchF: +this.curTorchF.toFixed(3), inRoom: srcs, glow: +this.windowGlow(w.inner).toFixed(3) };
+      },
+      sceneryIndoor: () => {
+        const ps = this.scenery?.placements ?? [];
+        const roofed = ps.filter((p) => p.roofed);
+        return {
+          placements: ps.length,
+          roofed: roofed.length,
+          cutAway: roofed.filter((p) => this.roofCutAwayAt(p.cx, p.cy, p.level)).length,
+          drawn: this.t3stats.scenery,
+          drawnRoofed: this.sceneryRoofedDrawn,
+          indoor: this.indoorInside,
+          // The DRAWN cut state, which is what the rule actually reads: the mask
+          // outlives the verdict for the length of the exit fade.
+          maskUp: !!this.indoorMask,
+          grade: +this.indoorGrade().toFixed(3),
+          pieces: [...new Set(roofed.map((p) => p.piece))].length,
+        };
+      },
+      /** The boot/deferred split of monster art and what is still parked. */
+      monsterBoot: () => ({
+        boot: this.monsterBootKinds ? [...this.monsterBootKinds].sort() : null,
+        deferred: [...this.monsterDeferredKinds].sort(),
+        pending: [...this.monsters.values()].filter((mv) => mv.artPending).map((mv) => mv.kind),
+        // kinds whose south walk clip is registered — the deferred ones join
+        // this list one kind at a time as their strips land
+        clipKinds: (this.monsterManifest?.monsters ?? [])
+          .filter((d) => this.anims.exists(monsterAnimKey(d.id, monsterWalkKey(d), DEFAULT_DIRECTION)))
+          .map((d) => d.id).length,
+      }),
       monsterInfo: () =>
         [...this.monsters.entries()].map(([id, mv]) => ({
           id,
@@ -2584,9 +6592,29 @@ export class WorldScene extends Phaser.Scene {
             x: Math.round(mv.shadow.x),
             y: Math.round(mv.shadow.y),
             depth: +mv.shadow.depth.toFixed(1),
+            // w/h are the CULL extents (for a tuned monster, the worst case
+            // over all 8 facings) — NOT what is drawn. dw/dh/rot below are.
             w: mv.shadowW,
             h: mv.shadowH,
+            dw: +mv.shadow.displayWidth.toFixed(3),
+            dh: +mv.shadow.displayHeight.toFixed(3),
+            rot: +mv.shadow.rotation.toFixed(6),
+            alpha: +mv.shadow.alpha.toFixed(3),
           },
+          // THE TUNED SHADOW IN FORCE (wiki editor → live/tuning/monsters).
+          // null = this kind is on the legacy art-measured contract. `state`
+          // is the canonical facet the anchor was resolved for and `src` which
+          // link of the chain supplied it — without these a gate can only see
+          // THAT an origin moved, never whether the tuned record governed it.
+          tuned: mv.tuned
+            ? {
+                rx: mv.tuned.rx,
+                ry: mv.tuned.ry,
+                state: mv.shState ?? null,
+                src: mv.shSrc ?? null,
+                offsets: mv.tuned.offsets ? Object.keys(mv.tuned.offsets).length : 0,
+              }
+            : null,
           originX: +mv.sprite.originX.toFixed(3),
           originY: +mv.sprite.originY.toFixed(3),
           // The measured ground contract for the CURRENT facing (per-dir feet
@@ -2635,6 +6663,9 @@ export class WorldScene extends Phaser.Scene {
           // Camera-gated (off-screen): its pipeline is parked this frame, so
           // `playing`/`depth`/`lit` are deliberately stale — QA must skip it.
           culled: !!mv.culled,
+          artPending: !!mv.artPending,
+          spriteVisible: mv.sprite.visible,
+          alpha: +mv.sprite.alpha.toFixed(3), // cutFade: a body above the cut mid-crossfade
           // Combat mirrors (verify-combat drives fights through these).
           x: mv.fx,
           y: mv.fy,
@@ -2771,7 +6802,7 @@ export class WorldScene extends Phaser.Scene {
       // gesture to land on a given drop, how far off it currently is, and the
       // live state of a drop being held for its grab frame.
       grabInfo: (dropId?: string) => {
-        const me = this.room ? this.avatars.get(this.room.sessionId) : undefined;
+        const me = this.room ? this.avatars.get(this.myId) : undefined;
         if (!me) return null;
         const id = dropId ?? this.pendingPickupId ?? [...this.drops.keys()][0];
         const rec = id ? this.drops.get(id) : undefined;
@@ -2823,6 +6854,7 @@ export class WorldScene extends Phaser.Scene {
           // deadlines resolved against the clock, so a gate never has to guess
           // which source is currently winning.
           home: n.home,
+          noTurn: !!n.def.noTurn,
           looking: n.lookUntil > this.time.now ? n.lookDir : null,
           glancing: n.glanceUntil > this.time.now ? n.glanceDir : null,
           glanceMsLeft: Math.max(0, Math.round(n.glanceUntil - this.time.now)),
@@ -2837,7 +6869,8 @@ export class WorldScene extends Phaser.Scene {
       toggleAggroRadius: (on?: boolean) => this.toggleAggroRadius(on),
       // Settings "disable aggro" — read with no argument, set with one.
       noAggro: (on?: boolean) => (on === undefined ? this.noAggroOn : this.toggleNoAggro(on)),
-      mySid: () => this.room?.sessionId ?? "",
+      mySid: () => this.myId,
+      zone: () => ({ zone: this.zone, hops: this.zoneHops, swapping: this.zoneSwapping, room: this.room?.roomId ?? null, ghosts: (this.room?.state as any)?.ghosts?.size ?? 0, ghostMonsters: (this.room?.state as any)?.ghostMonsters?.size ?? 0 }),
       bloodFx: () => this.bloodSeen,
       graveCrosses: () =>
         this.graveCrosses.map((gc) => ({
@@ -2877,6 +6910,7 @@ export class WorldScene extends Phaser.Scene {
         let animatingCulled = 0;
         let wrongCulled = 0;
         let wastedActive = 0;
+        let parkedInView = 0;
         this.monsters.forEach((mv) => {
           const b = mv.sprite.getBounds();
           const sw = mv.shadow.displayWidth;
@@ -2890,7 +6924,9 @@ export class WorldScene extends Phaser.Scene {
             culled++;
             if (mv.sprite.visible || mv.lit?.visible || mv.shadow.visible) visibleCulled++;
             if (mv.sprite.anims.isPlaying) animatingCulled++;
-            if (hits) wrongCulled++;
+            // A body parked for art it does not have yet is culled ON PURPOSE
+            // wherever it stands — counted apart, never as a wrong cull.
+            if (hits) mv.artPending ? parkedInView++ : wrongCulled++;
           } else if (!hits) wastedActive++;
         });
         return {
@@ -2900,6 +6936,7 @@ export class WorldScene extends Phaser.Scene {
           visibleCulled,
           animatingCulled,
           wrongCulled,
+          parkedInView,
           wastedActive,
           slack: MONSTER_CULL_SLACK,
         };
@@ -2907,6 +6944,7 @@ export class WorldScene extends Phaser.Scene {
       monstersDump: () => {
         const st = (this.room?.state as any)?.monsters;
         const out: Record<string, unknown>[] = [];
+        this.ps();
         this.monsters.forEach((mv, id) => {
           const m = st?.get(id);
           out.push({
@@ -2919,6 +6957,7 @@ export class WorldScene extends Phaser.Scene {
             elev: m?.elev ?? 0,
           });
         });
+        this.pe("monsterLoop");
         return out;
       },
       monsterAt: (x: number, y: number) => {
@@ -2949,7 +6988,7 @@ export class WorldScene extends Phaser.Scene {
         return this.engagedId;
       },
       combat: () => {
-        const p = this.room ? (this.room.state as any).players.get(this.room.sessionId) : null;
+        const p = this.room ? (this.room.state as any).players.get(this.myId) : null;
         return {
           engaged: this.engagedId,
           pendingPickup: this.pendingPickupId,
@@ -2976,6 +7015,71 @@ export class WorldScene extends Phaser.Scene {
         );
         return out;
       },
+      // WHAT IS AROUND ME, by wiki id (games-ui's 🔍 button — spec/WIKI_NEAR.md,
+      // maintainer 2026-09-02: "a way to fast find what you stand next to").
+      // One row per (domain, id) at the NEAREST instance, `n` = how many are
+      // within the radius, sorted nearest first. The ids are the domains' own
+      // — roster id, characters2 folder key, item id, scenery piece, material
+      // — so the wiki's route is `#/<domain>/<id>` with nothing invented here.
+      // Other players are not rows: they have no wiki page. Terrain samples a
+      // tighter ring than bodies (the ground is everywhere; "what am I standing
+      // on / next to" is the question), and the tile drawn under the nearest
+      // cell rides along so the wiki can deep-link the instance.
+      nearby: (radius = 12, groundRadius = 4) => {
+        const me = this.room?.state.players.get(this.myId);
+        if (!me || !this.world) return { world: this.worldName, at: null, radius, items: [] };
+        const mx = me.x, my = me.y;
+        type Row = { domain: string; id: string; dist: number; n: number; path?: string };
+        const best = new Map<string, Row>();
+        const add = (domain: string, id: string, wx: number, wy: number, path?: string) => {
+          const dist = Math.hypot(wx - mx, wy - my) / CELL_WU;
+          const key = `${domain}/${id}`;
+          const cur = best.get(key);
+          if (!cur) best.set(key, { domain, id, dist, n: 1, ...(path ? { path } : {}) });
+          else {
+            cur.n++;
+            if (dist < cur.dist) { cur.dist = dist; if (path) cur.path = path; }
+          }
+        };
+        const within = (wx: number, wy: number, r: number) => Math.hypot(wx - mx, wy - my) <= r * CELL_WU;
+        for (const mv of this.monsters.values()) if (within(mv.fx, mv.fy, radius)) add("monsters", mv.kind, mv.fx, mv.fy);
+        for (const n of this.npcs.values()) if (within(n.fx, n.fy, radius)) add("characters", n.charId, n.fx, n.fy);
+        for (const d of this.drops.values()) if (within(d.wx, d.wy, radius)) add("items", d.item, d.wx, d.wy);
+        for (const sc of this.world.scenery ?? []) {
+          const wx = sc.x * CELL_WU, wy = sc.y * CELL_WU;
+          // A placement names `category/piece`; the wiki keys objects by the
+          // bare piece id (unique across categories — verified on the index).
+          if (within(wx, wy, radius)) add("objects", sc.piece.split("/").pop() ?? sc.piece, wx, wy);
+        }
+        // GROUND: a Tiles 3.0 ground TYPE is a page in the wiki's `world`
+        // domain (`#/world/<type>` — viewWorldType). (The `tiles` domain
+        // was Tiles 2.0's and is retired.)
+        const groundDomain = "world";
+        // Terrain: the cell centres in a ring around the feet.
+        const c0 = Math.floor(mx / CELL_WU), r0 = Math.floor(my / CELL_WU);
+        const rows = this.world.rows;
+        for (let rr = r0 - groundRadius; rr <= r0 + groundRadius; rr++) {
+          for (let cc = c0 - groundRadius; cc <= c0 + groundRadius; cc++) {
+            const cell = rows[rr]?.[cc];
+            if (!cell || !cell.t) continue;
+            const wx = (cc + 0.5) * CELL_WU, wy = (rr + 0.5) * CELL_WU;
+            if (!within(wx, wy, groundRadius)) continue;
+            // The cell UNDER the feet is "0 cells away" whatever its centre is.
+            const under = cc === c0 && rr === r0;
+            add(groundDomain, cell.t, under ? mx : wx, under ? my : wy);
+          }
+        }
+        const items = [...best.values()]
+          .map((r) => ({ ...r, dist: +r.dist.toFixed(2) }))
+          .sort((a, b) => a.dist - b.dist)
+          .slice(0, 80);
+        return {
+          world: this.worldName,
+          at: { col: +(mx / CELL_WU).toFixed(2), row: +(my / CELL_WU).toFixed(2) },
+          radius,
+          items,
+        };
+      },
       pickupNearest: () => this.pickupNearest(),
       inv: () => this.hud?.invSnapshot?.() ?? [],
       // QA (local only, like __ml.weather): paint a backpack WITHOUT farming
@@ -2987,8 +7091,17 @@ export class WorldScene extends Phaser.Scene {
        * drop-quantity modal both freeze Phaser's keyboard — the stick
        * synthesizes into it too, so this covers every input path.) */
       canWalk: () => !!this.input.keyboard?.enabled,
+      // DEBUG ONLY, same standing as `teleport`/`dbgkill`: force the UI lock a
+      // dialog would set, so a gate can prove the revive press survives a STALE
+      // one (the class of bug that left the maintainer pressing a dead prompt
+      // until the server's 3-minute backstop).
+      uiLock: (on: boolean) => {
+        this.uiLocked = !!on;
+        if (!on) this.uiLockLiftAt = performance.now() + 150;
+        return this.uiLocked;
+      },
       myAnim: () => {
-        const av = this.room ? this.avatars.get(this.room.sessionId) : null;
+        const av = this.room ? this.avatars.get(this.myId) : null;
         return av?.sprite.anims.getName() ?? "";
       },
       monsterAnimReady: (kind: string) => {
@@ -3007,7 +7120,7 @@ export class WorldScene extends Phaser.Scene {
   /** Wire a (re)joined room into the scene: state callbacks, messages, and
    * the dead-connection recovery. Called for the initial join and for every
    * in-place rejoin. */
-  private bindRoom(room: Room) {
+  private bindRoom(room: Room, swap = false) {
     // The state flood right after (re)bind replays every EXISTING ground drop
     // through drops.onAdd — inherited loot is scenery, not a drop happening,
     // so item.drop only fires for drops witnessed after this window.
@@ -3049,7 +7162,7 @@ export class WorldScene extends Phaser.Scene {
       // A reconnect can land in a FRESH room where the clock is back to its
       // frozen default — say so on join, or flowing time silently "stops"
       // again (maintainer hit exactly this).
-      else if (v === 0) this.chat.addLog("—", "Time is frozen (Settings → time speed).");
+      else if (v === 0 && !swap) this.chat.addLog("—", "Time is frozen (Settings → time speed).");
       firstSpeedSync = false;
     });
     let firstAuroraSync = true;
@@ -3074,7 +7187,9 @@ export class WorldScene extends Phaser.Scene {
     });
     $(room.state).players.onAdd((player: any, id: string) => {
       this.addAvatar(id, player);
-      if (id === room.sessionId) {
+      if (player.sid === room.sessionId) {
+        this.myId = id;
+        if (swap) return; // a zone hand-off: the body, its torch and its settings came with it
         this.camDetached = false;
         this.camChase.init = false; // chase-cam snaps onto the new avatar
         // Re-assert my torch to the fresh player entry (rejoins reset it).
@@ -3083,32 +7198,166 @@ export class WorldScene extends Phaser.Scene {
         // rejoin is a new session — without this the setting looks on in
         // Settings while everything in the cave hunts you again.
         if (this.noAggroOn) room.send("noaggro", { on: true });
-        hideLoading(); // my avatar is in and the camera is on it — world's up
+        this.hideLoadingWhenTerrainIsUp(); // v3 streams its art — see the method
         this.loadDeferredAnims(); // action states stream in behind the live world
       }
       this.refreshRoster();
     });
     $(room.state).players.onRemove((_player: any, id: string) => {
-      this.removeAvatar(id);
+      // The same id may live on as a neighbour zone's GHOST (spec/ZONES.md):
+      // a body that crossed the border is still drawn, from the other map.
+      if (!room.state.ghosts?.has(id)) this.removeAvatar(id);
       this.refreshRoster();
+    });
+    // GHOSTS: the neighbouring zones' border bands, drawn exactly like the
+    // real maps; an id moving between the two maps keeps its sprite.
+    $(room.state).ghosts.onAdd((p: any, id: string) => this.addAvatar(id, p));
+    $(room.state).ghosts.onRemove((_p: any, id: string) => {
+      if (!room.state.players.has(id)) this.removeAvatar(id);
     });
     // Roaming monsters — server-authoritative, so every client renders the same
     // ones at the same positions. Poll state.monsters.get(id) each frame and
     // ease like a remote player (see the monster loop in update()).
     $(room.state).monsters.onAdd((m: any, id: string) => this.addMonster(id, m));
-    $(room.state).monsters.onRemove((_m: any, id: string) => this.removeMonster(id));
+    $(room.state).monsters.onRemove((_m: any, id: string) => {
+      if (!room.state.ghostMonsters?.has(id)) this.removeMonster(id);
+    });
+    $(room.state).ghostMonsters.onAdd((m: any, id: string) => this.addMonster(id, m));
+    $(room.state).ghostMonsters.onRemove((_m: any, id: string) => {
+      if (!room.state.monsters.has(id)) this.removeMonster(id);
+    });
+    $(room.state).ghostDrops.onAdd((g: any, id: string) => this.addDrop(id, g));
+    $(room.state).ghostDrops.onRemove((_g: any, id: string) => {
+      if (!room.state.drops.has(id)) this.removeDrop(id);
+    });
+    // A ZONE HAND-OFF: the room owning my body says the next zone holds my
+    // hot state under a one-shot key.
+    room.onMessage("zone:go", (msg: { zone?: number; pid?: string; key?: string }) => void this.zoneGo(room, msg));
     $(room.state).drops.onAdd((g: any, id: string) => this.addDrop(id, g));
-    $(room.state).drops.onRemove((_g: any, id: string) => this.removeDrop(id));
+
+    // ---------------- CHESS: boards in the world + my matches -------------
+    $(room.state).chessBoards.onAdd((b: any, id: string) => {
+      this.placeChessBoard(id, b);
+      $(b).onChange(() => this.syncChessWait(id, b));
+      this.syncChessWait(id, b);
+    });
+    $(room.state).chessBoards.onRemove((_b: any, id: string) => {
+      this.chessDecor.get(id)?.destroy(); this.chessDecor.delete(id);
+      this.chessWaitB.get(id)?.destroy(); this.chessWaitB.delete(id);
+    });
+    $(room.state).chessMatches.onAdd((m: any, id: string) => {
+      const mine = m.aSid === this.myId || m.bSid === this.myId;
+      if (!mine) return;
+      const open = () => {
+        if (this.chessDialog) return;
+        const board = room.state.chessBoards.get(m.boardId);
+        const oppSid = m.aSid === this.myId ? m.bSid : m.aSid;
+        const oppName = oppSid === "npc"
+          ? board?.npc || "Opponent"
+          : room.state.players.get(oppSid)?.name || "Opponent";
+        this.setChessLock(true);
+        this.chessDialog = new ChessDialog(m as ChessMatchView, {
+          mySid: this.myId,
+          oppName,
+          send: (t, msg) => this.room?.send(t, msg),
+          onClosed: () => { this.chessDialog = null; this.setChessLock(false); },
+        });
+        $(m).onChange(() => this.chessDialog?.update());
+        $(m).moves.onAdd(() => this.chessDialog?.update());
+      };
+      open();
+    });
+    $(room.state).chessMatches.onRemove((m: any) => {
+      // Swept server-side (both closed, or the 60s broom). If my dialog is
+      // still up past "over", let it be — it closes itself; but a live match
+      // vanishing (opponent left before dice) must not strand a locked UI.
+      if (this.chessDialog && m.phase !== "over" &&
+          (m.aSid === this.myId || m.bSid === this.myId)) this.chessDialog.close();
+    });
+    $(room.state).drops.onRemove((_g: any, id: string) => {
+      if (!room.state.ghostDrops?.has(id)) this.removeDrop(id);
+    });
     // Spawn areas are server-computed per world and synced once — redraw the
     // debug overlay as they arrive (they land after the first iso build).
     $(room.state).spawnAreas.onAdd(() => this.drawSpawnAreas());
     // Live tuning pushes (monster stats + constant overrides edited in the
     // wiki) — sent on join and broadcast on every admin save / live/** push.
     bindLiveTuning(room);
+    // …and the SHADOW half of that tuning re-applies to monsters already on
+    // screen: committing a shadow in the wiki re-anchors the live world the
+    // same second, no rejoin. (Registered per room bind; the previous room's
+    // listener is dropped with it.)
+    this.liveShadowUnsub?.();
+    this.liveShadowUnsub = onLiveTuning(() => {
+      this.monsters.forEach((mv) => {
+        const t = monsterShadow(mv.kind) ?? undefined;
+        const K = this.geom.dy / this.geom.dx;
+        const def = this.monsterManifest?.monsters.find((d) => d.id === mv.kind);
+        mv.tuned = t;
+        if (t) {
+          // Re-anchor the facet the monster is ACTUALLY playing, not a
+          // hardcoded "idle" — a monster mid-swing would otherwise sit on the
+          // wrong offset until its next clip change (and a CULLED one until
+          // it re-enters the view).
+          this.applyTunedOriginFor(mv, mv.shState ?? "idle", mv.dispDir);
+          mv.shadowW = Math.ceil(2 * Math.max(t.rx, t.ry / K));
+          mv.shadowH = Math.ceil(2 * Math.max(t.ry, t.rx * K));
+          mv.radius = shadowBodyRadius(t.rx, t.ry);
+          // …and the DRAWN ellipse right now. The per-frame draw only runs for
+          // ACTIVE monsters, so without this a culled body keeps its old
+          // ellipse — invisible, but every probe and gate reads it as truth.
+          const e = shadowScreenEllipse(t.rx, t.ry, mv.dispDir);
+          mv.shadow.setDisplaySize(
+            e.p * 2 * MONSTER_SHADOW_SPREAD,
+            e.q * 2 * MONSTER_SHADOW_SPREAD,
+          );
+          mv.shadow.setRotation(e.theta);
+        } else {
+          // Tuning dropped: back to the legacy measured contract, rotation off.
+          mv.shState = undefined;
+          mv.shSrc = undefined;
+          const g = mv.ground?.[mv.dispDir];
+          if (g) mv.sprite.setOrigin(g.cx, g.f);
+          mv.shadow.setRotation(0);
+          mv.shadowW = def?.shadowW ?? Math.round((def?.frameW ?? 48) * 0.54);
+          mv.shadowH = def?.shadowH ?? Math.max(6, Math.round(mv.shadowW * 0.385));
+          mv.radius = def?.radius ?? DEFAULT_MONSTER_RADIUS;
+          mv.shadow.setDisplaySize(
+            mv.shadowW * MONSTER_SHADOW_SPREAD,
+            mv.shadowH * MONSTER_SHADOW_SPREAD,
+          );
+        }
+      });
+    });
+    /* A HITBOX EDITED IN THE WIKI, WITHOUT A REDEPLOY OR A REJOIN. The server
+     * restamps its own collision when the live doc changes and says so; the
+     * prediction has to follow in the same breath, because a client and an
+     * authority holding different footprints is precisely the divergence the
+     * single collision endpoint exists to rule out. Refetch rather than trust a
+     * payload: the endpoint is the authority's own copy. */
+    room.onMessage("scenery:collision", () => {
+      void fetch("/api/scenery-collision")
+        .then((r) => (r.ok ? r.json() : null))
+        .then((d) => {
+          if (!d) return;
+          this.sceneryBboxDoc = (d.bbox as SceneryBboxDoc) ?? null;
+          this.sceneryHitboxDoc = (d.hitbox as Record<string, SceneryHitboxRec>) ?? null;
+          // Straight back through the stamp — no grid rebuild. It used to be
+          // rebuilt here because stamping only ever ADDED blocked cells, so a
+          // retired hitbox stayed solid forever; the stamp now resets the
+          // derived layer to `propBlocked` and rebuilds the ellipse table from
+          // scratch, and keeping the SAME grid object means nothing that has a
+          // reference to it (the overlay's bare-terrain view, a trip in flight)
+          // is left pointing at a grid the game no longer moves on.
+          this.restampScenery();
+          this.repaintWorld();
+        })
+        .catch(() => {});
+    });
     room.onMessage("chat", (msg: ChatBroadcast) => {
       this.chat.addLog(msg.name, msg.text);
       this.showBubble(msg.id, msg.text);
-      if (msg.id !== room.sessionId) gameAudio.event("ui.notify", { gainDb: -9 });
+      if (msg.id !== this.myId) gameAudio.event("ui.notify", { gainDb: -9 });
     });
     // Every arrival in Nangijala is a shooting star everyone sees at the
     // same moment; the night sky also throws wild ones (no name).
@@ -3145,6 +7394,7 @@ export class WorldScene extends Phaser.Scene {
     if (!av) return;
     av.sprite.destroy();
     av.lit?.destroy();
+    av.fog?.destroy();
     // BEFORE av.waterMask is destroyed below — the outline holds that mask now.
     this.releaseCoverSlot(av);
     av.hidden?.destroy();
@@ -3162,22 +7412,77 @@ export class WorldScene extends Phaser.Scene {
    * project the authoritative flat (x,y) onto the iso ground (feet lifted by
    * the cell/surface elevation), a squashed drop shadow, and the south walk
    * frame as the initial texture. No label/torch/footstep machinery. */
+  /** Anchor a tuned monster's sprite on its shadow centre FOR THIS FACET.
+   * v2: the offset is per <state>#<direction> (maintainer 2026-08-20: "The
+   * shadow offset is per animation and direction" — PixelLab frames each
+   * direction's strip independently, so one offset cannot fit them all).
+   * Chain: facet → same direction's idle → v1 base → the art-derived default
+   * (the measured foot line, the same fallback an untuned monster uses). */
+  private applyTunedOriginFor(mv: MonsterAvatar, state: string, dir: string) {
+    mv.shState = state;
+    if (!mv.tuned || mv.sprite.width <= 0) return;
+    // No manifest scan here: this runs per monster PER FRAME (the re-anchor
+    // after playMonsterAnim), and a 57-entry find × 160 monsters × 60fps is
+    // real cost. The two fields it needs are mirrored onto the avatar.
+    mv.shSrc = applyTunedOrigin(mv.sprite, mv.tuned, state, dir, mv.artBottom, mv.hoverPx);
+  }
+
+  /** The tuned ellipse for a facing, drawn: ONE size for the whole monster,
+   *  turned on the GROUND with the facing, centred on the monster's position.
+   *  (Maintainer 2026-08-20: one shadow size, rotated by direction. So it must
+   *  NOT breathe with the animation's `air[]` the way a legacy nadir shadow
+   *  does — a tuned ellipse is a decision, not a measurement.) */
+  private placeTunedShadow(mv: MonsterAvatar, targetElev: number) {
+    const e = shadowScreenEllipse(mv.tuned!.rx, mv.tuned!.ry, mv.dispDir);
+    this.placeBodyShadow(
+      mv, targetElev, 0,
+      e.p * 2 * MONSTER_SHADOW_SPREAD, e.q * 2 * MONSTER_SHADOW_SPREAD,
+    );
+    mv.shadow.setRotation(e.theta);
+  }
+
+  /** The pink mock texture, made on first use (Graphics → generateTexture works
+   *  on both renderers). Idempotent. */
+  private ensureMockTex(): string {
+    if (!this.textures.exists(MOCK_TEX)) {
+      const g = this.add.graphics();
+      g.fillStyle(0xff00ff, 1).fillRect(0, 0, 64, 64);
+      g.generateTexture(MOCK_TEX, 64, 64);
+      g.destroy();
+    }
+    return MOCK_TEX;
+  }
+  /** Every scenery texture key goes through here: in mock mode all of them are
+   *  the one pink texture, so `needScenery` finds it resident and never queues
+   *  a file, and every consumer (fit, image, lit copy, fog silhouette, occluder)
+   *  agrees because they all ask this. */
+  private sKey(spritePath: string): string {
+    return this.sceneryMock ? this.ensureMockTex() : sceneryArtKey(spritePath);
+  }
+
   private addMonster(id: string, m: any) {
+    if (!this.monstersOn) return; // Settings "monsters" — see monstersOn
+    if (this.monsters.has(id)) return; // a zone swap re-adds what is already drawn
     const def = this.monsterManifest?.monsters.find((d) => d.id === m.kind);
     // The roster's own display name ("Dewling" for forest_poring) — resolved
     // HERE, once, because updateMonsterHpBar runs per monster per frame and a
     // manifest scan there would be 24 finds × 160 monsters × 60fps.
     const label = def?.name || m.kind;
     const f0 = this.projectFlat(m.x, m.y);
-    const elev0 = (m.elev ?? f0.lvl) * MAP_GEOMETRY.lh;
+    const elev0 = (m.elev ?? f0.lvl) * this.geom.lh;
     const p0 = { x: f0.x, y: f0.y - elev0 };
     const walk = def ? monsterWalkKey(def) : "jump";
-    const initKey = monsterSheetKey(m.kind, walk, DEFAULT_DIRECTION);
+    const initKey = this.monstersMock ? this.ensureMockTex() : monsterSheetKey(m.kind, walk, DEFAULT_DIRECTION);
     const hasArt = this.textures.exists(initKey);
     // 48px art, drawn at scale 1 (the camera zoom already scales the world);
     // origin near the feet so it y-sorts and lifts like a player. Fall back to
     // the wanderer placeholder if a monster's strip failed to load.
     const sprite = this.add.sprite(p0.x, p0.y, hasArt ? initKey : PLACEHOLDER_TEX);
+    // A kind whose strips are still in the deferred batch starts PARKED —
+    // hidden like a culled body — and onMonsterArtLanded releases it. A kind
+    // whose art is simply missing keeps today's placeholder.
+    const artPending = !hasArt && this.monsterDeferredKinds.has(m.kind);
+    if (artPending) sprite.setVisible(false);
     // Feet origin = the PER-DIRECTION measured ground contract (feet line +
     // foot centre of the south strip to start; playMonsterAnim re-anchors on
     // every facing change). One pooled anchor floated whole directions by up
@@ -3185,22 +7490,47 @@ export class WorldScene extends Phaser.Scene {
     // the shadow beside the body (maintainer 2026-07-30, round 2). The parked
     // frame is the direction's planted CONTACT frame, never an airborne f0.
     const g0 = def?.ground?.[DEFAULT_DIRECTION];
-    if (hasArt) sprite.setFrame(g0?.contact ?? 0);
+    if (hasArt && !this.monstersMock) sprite.setFrame(g0?.contact ?? 0);
     sprite.setOrigin(g0?.cx ?? 0.5, g0?.f ?? def?.artBottom ?? 0.85).setScale(1);
+    // THE TUNED SHADOW WINS. When the Game Master has placed this monster's
+    // one shadow in the wiki, its centre IS the monster's position: the sprite
+    // anchors there (one origin for every facing — the art rotates around the
+    // shadow, exactly as the wiki previewed it), the ellipse turns with the
+    // facing, and the body radius comes from its size. No record → the legacy
+    // measured pipeline below, untouched.
+    const tuned = monsterShadow(m.kind) ?? undefined;
+    if (tuned && sprite.width > 0) {
+      applyTunedOrigin(sprite, tuned, "idle", DEFAULT_DIRECTION, def?.artBottom, def?.hoverPx);
+    }
     // Nadir shadow sized from the ART, not the frame (manifest-emitted:
     // ground-contact footprint blended toward body width — frame-scaled
     // shadows ran huge on padded frames and tiny on slim bodies, RED/GREEN).
-    const shadowW = def?.shadowW ?? Math.round((def?.frameW ?? 48) * 0.54);
-    const shadowH = def?.shadowH ?? Math.max(6, Math.round(shadowW * 0.385));
+    // For a TUNED monster shadowW/H hold the ellipse's worst-case extents over
+    // all facings — they feed the off-screen cull margin, which must not
+    // shrink when the monster turns its long side on.
+    const shadowW = tuned
+      ? Math.ceil(2 * Math.max(tuned.rx, tuned.ry / (this.geom.dy / this.geom.dx)))
+      : (def?.shadowW ?? Math.round((def?.frameW ?? 48) * 0.54));
+    const shadowH = tuned
+      ? Math.ceil(2 * Math.max(tuned.ry, tuned.rx * (this.geom.dy / this.geom.dx)))
+      : (def?.shadowH ?? Math.max(6, Math.round(shadowW * 0.385)));
+    const e0 = tuned ? shadowScreenEllipse(tuned.rx, tuned.ry, DEFAULT_DIRECTION) : null;
     const shadow = this.add
       .image(p0.x, p0.y, MONSTER_SHADOW_TEX)
       .setOrigin(0.5, 0.5)
-      .setDisplaySize(shadowW * MONSTER_SHADOW_SPREAD, shadowH * MONSTER_SHADOW_SPREAD);
+      .setDisplaySize(
+        (e0 ? e0.p * 2 : shadowW) * MONSTER_SHADOW_SPREAD,
+        (e0 ? e0.q * 2 : shadowH) * MONSTER_SHADOW_SPREAD,
+      );
+    if (e0) shadow.setRotation(e0.theta);
+    if (artPending) shadow.setVisible(false);
     const mv: MonsterAvatar = {
       sprite,
       shadow,
       kind: m.kind,
       label,
+      artPending,
+      culled: artPending,
       lx: p0.x,
       ly: p0.y,
       lyFlat: f0.y,
@@ -3212,8 +7542,16 @@ export class WorldScene extends Phaser.Scene {
       fy: m.y,
       shadowW,
       shadowH,
-      radius: def?.radius ?? DEFAULT_MONSTER_RADIUS,
+      tuned,
+      // "The size will be the monsters hit box" — the tuned ellipse decides
+      // the body radius the input-dodge slips around, same formula the server
+      // fights with (shared shadowBodyRadius).
+      radius: tuned ? shadowBodyRadius(tuned.rx, tuned.ry) : (def?.radius ?? DEFAULT_MONSTER_RADIUS),
       hoverPx: def?.hoverPx ?? 0,
+      // Mirrored off the manifest so applyTunedOriginFor can run per frame
+      // without a 57-entry scan (see MonsterAvatar.shState).
+      artBottom: def?.artBottom,
+      shState: tuned ? "idle" : undefined,
       walkKey: walk,
       attackKey: def ? resolveMonsterAnim(def, "attack") : undefined,
       angryKey: def ? resolveMonsterAnim(def, "angry") : undefined,
@@ -3236,7 +7574,10 @@ export class WorldScene extends Phaser.Scene {
           })()
         : undefined,
     };
-    sprite.y = p0.y - mv.hoverPx;
+    // A tuned anchor already contains the hover gap — ay is tuned against the
+    // art with the creature floating where it floats — so only legacy monsters
+    // get the extra lift here.
+    sprite.y = p0.y - (mv.tuned ? 0 : mv.hoverPx);
     // Joining mid-fight must not replay a stale swing: start from the synced seq.
     mv.lastActionSeq = m.actionSeq ?? 0;
     mv.lastHp = m.hp;
@@ -3249,8 +7590,9 @@ export class WorldScene extends Phaser.Scene {
    * all 105 items), so no manifest fetch is needed — textures lazy-load per
    * KIND the first time one drops. */
   private addDrop(id: string, g: any) {
+    if (this.drops.has(id)) return; // a zone swap re-adds what is already drawn
     const p = this.projectFlat(g.x, g.y);
-    const y = p.y - Math.max(g.elev ?? 0, p.lvl) * MAP_GEOMETRY.lh;
+    const y = p.y - Math.max(g.elev ?? 0, p.lvl) * this.geom.lh;
     if (this.time.now > this.joinQuietUntil) {
       const spG = this.worldSpatial(p.x, y);
       gameAudio.event("item.drop", { pan: spG.pan, dist: spG.dist });
@@ -3304,7 +7646,7 @@ export class WorldScene extends Phaser.Scene {
     // let stepGroundDecor retire it on the measured grab frame. Everyone
     // else's pickups, TTL despawns and my own un-animated grabs are unchanged.
     if (id === this.pendingPickupId && !rec.grabbedAt) {
-      const me = this.room ? this.avatars.get(this.room.sessionId) : undefined;
+      const me = this.room ? this.avatars.get(this.myId) : undefined;
       const g = me && this.grabFrameFor(me);
       if (me && g) {
         rec.grabbedAt = this.time.now;
@@ -3368,9 +7710,34 @@ export class WorldScene extends Phaser.Scene {
     for (const [id, mv] of this.monsters) {
       if (mv.culled || mv.mstate === "die") continue;
       const sp = mv.sprite;
-      const halfW = Math.max(MONSTER_TAP_MIN_HALF_W, sp.displayWidth * 0.5 + 6);
+      let halfW = Math.max(MONSTER_TAP_MIN_HALF_W, sp.displayWidth * 0.5 + 6);
       let top = sp.y - sp.displayHeight * sp.originY - 8;
-      const bottom = sp.y + 10;
+      let bottom = sp.y + 10;
+      if (mv.tuned) {
+        // THE TAP BOX FOLLOWS THE TUNED SHADOW. Two things change under a
+        // tuned anchor: the shadow he sized IS the hit box, and the art now
+        // hangs BELOW the anchor (the legacy +10 assumed feet). Both are
+        // UNIONED into the box — never subtracted: the finger-sized pads
+        // (MONSTER_TAP_MIN_*) still win wherever they are bigger, because
+        // missing small monsters is the complaint this box exists for.
+        const p = mv.shadow.displayWidth * 0.5;
+        const q = mv.shadow.displayHeight * 0.5;
+        const cosT = Math.cos(mv.shadow.rotation), sinT = Math.sin(mv.shadow.rotation);
+        // Axis-aligned half-extents of the ROTATED ellipse (exact, not a
+        // bounding rect of the unrotated one — a turned mammoth is wider).
+        const ex = Math.hypot(p * cosT, q * sinT);
+        const ey = Math.hypot(p * sinT, q * cosT);
+        halfW = Math.max(halfW, Math.abs(mv.shadow.x - mv.lx) + ex);
+        top = Math.min(top, mv.shadow.y - ey);
+        // THE ART'S BOTTOM, NOT THE FRAME'S. The frame is mostly transparent
+        // padding on the big kinds, and reaching to it turns empty ground into
+        // a monster tap: measured, mammoth gained 56px of pad (~3.7 cells of
+        // ground south of it engaging instead of walking), diablo_2 11px.
+        // artBounds is already cached by the scene for exactly this reason.
+        const ab = this.artBounds(sp);
+        const artLow = sp.y + (ab.y1 - sp.height * sp.originY) * (sp.displayHeight / sp.height);
+        bottom = Math.max(bottom, mv.shadow.y + ey, artLow);
+      }
       // A sprigling-sized body still gets a full fingertip of height.
       if (bottom - top < MONSTER_TAP_MIN_H) top = bottom - MONSTER_TAP_MIN_H;
       if (wx < mv.lx - halfW || wx > mv.lx + halfW || wy < top || wy > bottom) continue;
@@ -3385,7 +7752,7 @@ export class WorldScene extends Phaser.Scene {
    * The SERVER owns everything that happens after the messages land. */
   private driveCombatIntent() {
     if (this.selfDead || !this.room) return;
-    const me = this.avatars.get(this.room.sessionId);
+    const me = this.avatars.get(this.myId);
     if (!me) return;
     if (this.pendingPickupId) {
       const d = this.drops.get(this.pendingPickupId);
@@ -3753,7 +8120,9 @@ export class WorldScene extends Phaser.Scene {
         }
     };
     for (const im of this.occluders) add(im);
-    for (const im of this.propImgs) add(im);
+    /* SCENERY TOO. A tree is a prop that happens to sit off the grid, and a
+     * body walking behind one must be covered by it exactly as by a boulder. */
+    for (const im of this.sceneryImgs) add(im);
   }
 
   /** Everything drawn IN FRONT of this body that overlaps its padded frame box.
@@ -4068,7 +8437,12 @@ export class WorldScene extends Phaser.Scene {
       .setScale(sp.scaleX, sp.scaleY)
       .setFlipX(slot ? false : sp.flipX)
       .setPosition(sp.x, sp.y)
-      .setAlpha(1)
+      // HOW LOUD THE LINE IS — the Settings dial (hiddenring.ts). The ring is
+      // drawn above the darkness overlay, so at full opacity a hidden body is
+      // the most legible thing on screen and being behind a wall reads as an
+      // ADVANTAGE (maintainer 2026-09-07: "see the objects behind the wall,
+      // not see them way better when behind the wall").
+      .setAlpha(hiddenRing())
       .setTint(ringTint)
       .setDepth(900_001.43)
       .setVisible(true);
@@ -4121,7 +8495,7 @@ export class WorldScene extends Phaser.Scene {
     // and every lit copy at FULL alpha, whatever the hour — the mark is UI,
     // and lighting/shadow/fog never touch it (round 10). An outline has no
     // interior, so nothing bleeds through the body it surrounds.
-    const mySid = this.room?.sessionId;
+    const mySid = this.myId;
     for (const [id, mv2] of this.monsters) {
       const sm = state?.monsters?.get(id);
       const hunting =
@@ -4180,6 +8554,7 @@ export class WorldScene extends Phaser.Scene {
     for (const av of this.avatars.values()) this.syncCoverOutline(av);
     for (const mv2 of this.monsters.values()) this.syncCoverOutline(mv2);
     for (const nv of this.npcs.values()) this.syncCoverOutline(nv);
+    this.updateChessPrompt();
 
     // Rings for monsters that left the room entirely.
     for (const [id, ring] of this.monsterRings) {
@@ -4223,6 +8598,7 @@ export class WorldScene extends Phaser.Scene {
     }
     if (!itemRingOn) this.itemRingImg?.setVisible(false);
 
+    this.drawCollisionDebug();
     // (2) Aggro-radius debug rings.
     if (!this.aggroGfx && this.aggroRadiusOn) this.aggroGfx = this.add.graphics().setDepth(-799_999);
     if (this.aggroGfx) {
@@ -4235,7 +8611,7 @@ export class WorldScene extends Phaser.Scene {
           if (r <= 0) return;
           // A world-space circle projected point by point — correct in iso
           // (an ellipse on screen) and following the ground under it.
-          const lift = (sm.elev ?? 0) * MAP_GEOMETRY.lh;
+          const lift = (sm.elev ?? 0) * this.geom.lh;
           const pts: { x: number; y: number }[] = [];
           for (let i = 0; i < 28; i++) {
             const a = (i / 28) * Math.PI * 2;
@@ -4247,6 +8623,328 @@ export class WorldScene extends Phaser.Scene {
         });
       }
     }
+  }
+
+  /** Paint what really holds the body — BOTH layers, because they are not the
+   *  same shape and telling them apart is the whole point (maintainer
+   *  2026-08-30: "the show hitbox button should show both what the nav
+   *  navigates around and the real ellipse hitbox").
+   *
+   *  Four marks, each answering a different question:
+   *
+   *   RED diamond    TERRAIN — ground `canEnterElev` refuses FROM THE SURFACE
+   *                  YOU ARE ON: a wall, a cliff step, deep water, a maps2
+   *                  prop. Asked on a view of the grid with the SCENERY TAKEN
+   *                  OUT (`bareTerrain`), so a tree leaning against a house
+   *                  still reads as house, and through the same predicate the
+   *                  body moves by, so the climb, stairs, swim and DECK rules
+   *                  stay the engine's own instead of being re-derived here to
+   *                  drift. It must stay the elevation-carrying one: the
+   *                  terrain-only `canEnter` cannot represent standing on a
+   *                  deck and paints the shelf under your feet as a wall.
+   *   AMBER diamond  NAV — a cell the scenery closes completely: no body centre
+   *                  fits anywhere inside it, so findPath routes around it.
+   *                  DERIVED from the ellipses and deliberately SMALLER than
+   *                  they are — 2,568 cells on the_game against the 3,185 the
+   *                  old raster claimed. A piece the body can slide past closes
+   *                  no cell at all and shows only as its outline, which is the
+   *                  maintainer's rule: "that object might be invisible for the
+   *                  nav system because the player will be able to run by that
+   *                  object by sliding around the object".
+   *   TEAL ellipse   THE FOOTPRINT ITSELF — the collision truth, the shape the
+   *                  body actually stops against. Stroked straight in SCREEN px
+   *                  at the piece's own screen position, which is the space the
+   *                  wiki drew it in, so nothing on the way here can distort it.
+   *                  VIOLET when a semi-axis sits at MIN_FOOTPRINT_SEMI: that
+   *                  piece collides WIDER than drawn, because under 4.5wu the
+   *                  six movement probes step clean over it (50 of the_game's
+   *                  1,747 — the waystone with "no hitbox at all").
+   *   WHITE ellipse  MY OWN BODY at PLAYER_RADIUS (12wu), on the ground under
+   *                  me — so "does it stop exactly at the edge" is something to
+   *                  LOOK at rather than something to believe. Its skin should
+   *                  kiss a teal outline and never cross it; the axis probes
+   *                  reach 0.75R sideways as well, so a corner can hold you
+   *                  hypot(12,9) = 15wu out.
+   *
+   *  Only near the player: the grid is 512x512 and this is a debug aid, not a
+   *  render path. */
+  private drawCollisionDebug(): void {
+    if (!this.collisionGfx && this.collisionOn) {
+      /* AN X-RAY, ABOVE THE ART. Under the world it is invisible exactly where
+       * it matters: a wall cell's marker sits on the GROUND, and the wall's own
+       * art stands over that spot and hides it — so the overlay showed every
+       * footprint on open grass and nothing at all on the building he could not
+       * walk into. Over the top, it reads as the floor plan it is meant to be. */
+      this.collisionGfx = this.add.graphics().setDepth(900_002.5);
+    }
+    const gfx = this.collisionGfx;
+    if (!gfx) return;
+    gfx.clear();
+    const t = this.terrain;
+    if (!this.collisionOn || !t) return;
+    const me = this.room ? this.avatars.get(this.myId) : undefined;
+    if (!me) return;
+    const RANGE = 16; // cells each way — a screen's worth on a phone
+    const c0 = Math.floor(me.fx / CELL_WU);
+    const r0 = Math.floor(me.fy / CELL_WU);
+    /* ONE PROJECTION FOR EVERY MARK — the ground's (projectCellCorner). Mixing
+     * that with `projectFlat`, which answers where a BODY's feet are drawn, is
+     * what put the footprint ellipses 4 px above the cells they block.
+     *
+     * THE LEVEL IS PER MARK, and deliberately so — see the `lvl` note in the
+     * cell loop. A TERRAIN refusal is a floor plan of MY storey; a SCENERY
+     * footprint belongs on the ground the piece stands on, beside its own
+     * ellipse. (This block used to say "one plane, the player's, diamonds and
+     * ellipses alike"; the ellipses moved to the placement's own anchor on
+     * 2026-09-02 and the note was not corrected, which is how the two came to
+     * disagree at every elevation but the piece's own.) */
+    const meLevel = me.surfLevel ?? 0;
+    const bare = this.bareTerrain(t);
+    for (let r = r0 - RANGE; r <= r0 + RANGE; r++) {
+      if (r < 0 || r >= t.height) continue;
+      for (let c = c0 - RANGE; c <= c0 + RANGE; c++) {
+        if (c < 0 || c >= t.width) continue;
+        const i = r * t.width + c;
+        /* WALLS ARE ELEVATION, NOT `blocked`. The first cut drew only the
+         * blocked array and so showed footprints while leaving the house he
+         * could not walk into completely unmarked — the one thing he was
+         * looking at. What a player means by "can I go there" is canEnter from
+         * where he stands, which folds in the climb, water and deck rules too,
+         * so ask exactly that — of the terrain alone. */
+        /* canEnterElev, NOT canEnter — the overlay was asking a question the
+         * movement does not ask. `canEnter` infers your elevation from the
+         * from-cell's BASE TERRAIN level; the body actually carries `elev` and
+         * moves through `canEnterElev`/`makeBlockedElev`, which is what lets a
+         * deck (a bridge span, a roof, the cave lid) be a second surface.
+         *
+         * So standing ON a deck, the overlay measured every neighbour's climb
+         * from the ground UNDER the deck — the cave floor, the water, the
+         * chasm — and a plateau at your own feet's level came out as a
+         * twenty-storey climb: the whole same-level shelf painted red while you
+         * walked across it freely (maintainer 2026-09-05, three shots: red
+         * everywhere on the cave lid, gone one step off it, and a bridge whose
+         * far bank "has the same level as the bridge top" drawn as a wall).
+         * `meLevel` is the same `surfLevel` findPath already feeds
+         * makeBlockedElev, so the overlay and the pathfinder now agree. */
+        const terrain = !canEnterElev(bare, meLevel, me.fx, me.fy, (c + 0.5) * CELL_WU, (r + 0.5) * CELL_WU, {
+          maxClimb: WALK_CLIMB,
+          canSwim: true,
+        }).ok;
+        // Terrain wins the colour where both hold: a wall with a tree against
+        // it is a wall, and painting it amber is how the house he could not
+        // enter would go back to looking like set dressing.
+        const nav = !terrain && t.sceneryBlocked?.[i] === true;
+        if (!terrain && !nav) continue;
+        /* THE RED CELL SITS ON MY PLANE, THE AMBER ONE ON ITS OWN GROUND — and
+         * that is not an inconsistency, it is what the two marks MEAN.
+         *
+         * RED answers "may I walk there FROM HERE", a floor plan of my own
+         * storey: lifting it to each cell's own surface puts a wall's marker up
+         * on the roof, six levels above the ground it actually stops me on, and
+         * a building reads as colour floating over its own tiles.
+         *
+         * AMBER is a SCENERY FOOTPRINT's cell, and the teal ellipse beside it
+         * is drawn from the placement's own anchor with the piece's level baked
+         * in. Drawing the two on different planes made them separate the moment
+         * I stood anywhere but the piece's own storey (maintainer 2026-09-05,
+         * on a plateau above a beached boat: "the navigation hitbox is not
+         * aligned with the scenery hitbox ... I jump down and now they are
+         * aligned"). The cell's own surface is where the piece stands, so
+         * ellipse and diamond land together at any elevation.
+         * KNOWN LIMIT: a piece standing on a DECK takes the base terrain here,
+         * because `sceneryBlocked` is one boolean per cell and does not name
+         * the placement that closed it. */
+        const lvl = terrain ? meLevel : t.level[i] ?? meLevel;
+        const pts = [
+          [c, r],
+          [c + 1, r],
+          [c + 1, r + 1],
+          [c, r + 1],
+        ].map(([cx, cy]) => this.projectCellCorner(cx, cy, lvl));
+        gfx.fillStyle(terrain ? 0xf25d5d : 0xffa94d, 0.3);
+        gfx.fillPoints(pts, true);
+        gfx.lineStyle(1, terrain ? 0xff8787 : 0xffc078, 0.85);
+        gfx.strokePoints(pts, true);
+      }
+    }
+    /* THE REAL HITBOX, LAST, SO IT LIES OVER THE CELLS IT PRODUCED. A footprint
+     * is published as an iso ellipse in SCREEN px about a centre in CELLS, and
+     * projectFlat's own formula turns that centre into the same screen point
+     * the art is drawn at — after which rx/ry need no arithmetic whatsoever,
+     * because the projection is exactly what they were measured through. The
+     * clamp inside projectFlat is deliberately not used: it exists to keep a
+     * BODY on the map, and dragging a footprint centre inward would draw the
+     * outline somewhere its owner is not. */
+    const { dx, dy } = this.geom;
+    const floorRx = (MIN_FOOTPRINT_SEMI / CELL_WU) * dx * Math.SQRT2;
+    const floorRy = (MIN_FOOTPRINT_SEMI / CELL_WU) * dy * Math.SQRT2;
+    /* THE OUTLINE HANGS OFF THE ART'S OWN ANCHOR, not off projectFlat.
+     *
+     * projectFlat answers where a BODY's feet go, and that convention is +DX
+     * right and +DY below a cell's anchor and carries no elevation at all — it
+     * returns the level rather than applying it. Drawing footprints through it
+     * therefore put every outline 32px right and 14px low of the piece it
+     * belongs to (maintainer 2026-09-02: "all hitboxes are a bit lowered
+     * compared to the wiki"), and pinned them to the PLAYER's plane, so a piece
+     * standing on any other level was wrong by a whole storey as well ("when I
+     * look at objects at a different elevation I feel as if the hitbox can be
+     * very wrong"). Both were mine, and both are the same mistake: re-deriving a
+     * projection beside the one the art already uses.
+     *
+     * A placement carries `ax`/`ay` — anchorX/anchorY, the exact screen point
+     * the sprite is drawn from, with that piece's own level already in it. The
+     * ellipse centre is a world offset from the anchor, so it is that same
+     * offset projected: sx = (ox-oy)*dx, sy = (ox+oy)*dy, which is precisely the
+     * mapping stampSceneryCollision inverted to place the centre. Outline and
+     * art now share one anchor and cannot drift again. */
+    const byIndex = this.footprintAnchors();
+    for (const f of footprintsInCells(t, c0 - RANGE, r0 - RANGE, c0 + RANGE, r0 + RANGE)) {
+      const pl = byIndex.get(f.place);
+      if (!pl) continue; // off-window: the art is not placed, so nothing to mark
+      const ox = f.cx - pl.x;
+      const oy = f.cy - pl.y;
+      const ex = pl.ax + (ox - oy) * dx;
+      const ey = pl.ay + (ox + oy) * dy;
+      const widened = f.rx <= floorRx + 1e-6 || f.ry <= floorRy + 1e-6;
+      gfx.lineStyle(1, widened ? 0xb197fc : 0x3bc9db, 0.95);
+      /* A RECT IS A GROUND RECTANGLE DRAWN IN PERSPECTIVE — the wiki's own
+       * `rectCorners`, not a screen-aligned box. Its edges follow the two
+       * GROUND axes, so a turned piece projects to a PARALLELOGRAM and the box
+       * hugs the furniture's contour (maintainer 2026-09-05, beside the wiki:
+       * "In the wiki it follows the bed very nicely and you just drew a box at
+       * the bottom bed corner"). Ground half-extents are rx and ry/k with
+       * k = dy/dx; the corners turn on the ground and project by (x, k*y) —
+       * and the turn is the one the STAMP applied, carried on the footprint as
+       * cos/sin, so the outline cannot drift from the collision. */
+      if (f.rect) {
+        const k = dy / dx;
+        const gx = f.rx;
+        const gy = f.ry / k;
+        const pts = ([[-gx, -gy], [gx, -gy], [gx, gy], [-gx, gy]] as [number, number][]).map(
+          ([x, y]) => new Phaser.Geom.Point(
+            ex + (x * f.rcos - y * f.rsin),
+            ey + (x * f.rsin + y * f.rcos) * k,
+          ),
+        );
+        gfx.strokePoints(pts, true);
+      } else gfx.strokeEllipse(ex, ey, f.rx * 2, f.ry * 2, 44);
+      // A centre tick: a hitbox parked off its own art is the fault that is
+      // hardest to see from the outline alone (it just looks like the wrong
+      // size), and it is the one the wiki editor fixes.
+      gfx.lineBetween(ex - 3, ey, ex + 3, ey);
+      gfx.lineBetween(ex, ey - 3, ex, ey + 3);
+    }
+    /* AND MY OWN BODY, so the standoff can be READ off the screen: a world
+     * circle of PLAYER_RADIUS projects to the axis-aligned screen ellipse with
+     * semi-axes R*dx*SQRT2 and R*dy*SQRT2 in cells (the singular values of
+     * [[dx,-dx],[dy,dy]]) — the same identity the footprints are stored under,
+     * so the two shapes are drawn by one rule and cannot disagree. */
+    const bp = this.projectCellCorner(me.fx / CELL_WU, me.fy / CELL_WU, meLevel);
+    const brx = (PLAYER_RADIUS / CELL_WU) * dx * Math.SQRT2;
+    const bry = (PLAYER_RADIUS / CELL_WU) * dy * Math.SQRT2;
+    gfx.lineStyle(1, 0xffffff, 0.8);
+    gfx.strokeEllipse(bp.x, bp.y, brx * 2, bry * 2, 36);
+
+    /* AND THE BODIES — MONSTERS AND NPCS (maintainer 2026-09-02: "should show
+     * the collision for NPCs and monsters as well").
+     *
+     * These are the one collision on the map that owns NO CELL AND NO
+     * FOOTPRINT: they are deliberately kept out of the grid entirely (no
+     * network cost, no pathfinder cost — maintainer 2026-07-30), and the INPUT
+     * dodges a radius instead. So nothing above this line can ever draw them,
+     * and without their own mark the overlay would answer "what stops me?" with
+     * everything except the thing walking towards him.
+     *
+     * TWO RINGS, because there are two honest answers and they differ by more
+     * than half a body:
+     *   GREEN SOLID  the body itself, `radius` — for a tuned monster that is
+     *                shadowBodyRadius of the wiki's own shadow, which is why it
+     *                can differ per monster and per state.
+     *   GREEN FAINT  where the dodge actually turns him — `dodgePersonal`
+     *                ITSELF, never a re-derivation of it, so the ring on screen
+     *                is the rule the body moves by. He never touches the inner
+     *                ring, and being unable to see why was the same complaint
+     *                as the footprints.
+     * Each sits on the BODY's own elevation (already a pixel lift), not the
+     * player's plane — the aggro rings' rule. A monster up on a deck draws its
+     * circle under itself rather than on the floor below. */
+    const ring = (wx: number, wy: number, r: number, px: number, colour: number, alpha: number) => {
+      const p = this.projectCellCorner(wx / CELL_WU, wy / CELL_WU, 0);
+      gfx.lineStyle(1, colour, alpha);
+      gfx.strokeEllipse(
+        p.x,
+        p.y - px,
+        (r / CELL_WU) * dx * Math.SQRT2 * 2,
+        (r / CELL_WU) * dy * Math.SQRT2 * 2,
+        36,
+      );
+    };
+    this.monsters.forEach((mv) => {
+      if (mv.culled) return; // a parked body (off-screen, above the cut, sealed in another room) wears no ring
+      if (Math.abs(mv.fx - me.fx) > 400 || Math.abs(mv.fy - me.fy) > 400) return;
+      ring(mv.fx, mv.fy, mv.radius, mv.elev, 0x51cf66, 0.95);
+      ring(mv.fx, mv.fy, dodgePersonal(mv.radius, PLAYER_BODY_RADIUS), mv.elev, 0x51cf66, 0.35);
+    });
+    this.npcs.forEach((npc) => {
+      if (npc.culled) return;
+      if (Math.abs(npc.fx - me.fx) > 400 || Math.abs(npc.fy - me.fy) > 400) return;
+      ring(npc.fx, npc.fy, NPC_BODY_RADIUS, npc.elev, 0x51cf66, 0.95);
+      ring(npc.fx, npc.fy, dodgePersonal(NPC_BODY_RADIUS, PLAYER_BODY_RADIUS), npc.elev, 0x51cf66, 0.35);
+    });
+  }
+
+  /** Placements by their world index, for the collision overlay: the footprint
+   *  table names a placement by index and the overlay needs that placement's
+   *  own screen anchor. Cached against the index object, which is rebuilt
+   *  whenever the window moves. */
+  private anchorCache?: { of: unknown; map: Map<number, SceneryPlacement> };
+  private footprintAnchors(): Map<number, SceneryPlacement> {
+    const idx = this.scenery;
+    if (this.anchorCache?.of !== idx) {
+      const map = new Map<number, SceneryPlacement>();
+      for (const p of idx?.placements ?? []) map.set(p.i, p);
+      this.anchorCache = { of: idx, map };
+    }
+    return this.anchorCache.map;
+  }
+
+  /** The same grid with the SCENERY TAKEN OUT: no `footprints`, so the ellipse
+   *  query answers false, and `blocked` back to the terrain half it used to
+   *  mean. The overlay asks canEnter on this to decide whether a cell is
+   *  refused by the GROUND, instead of re-deriving canEnter's climb/stairs/
+   *  swim/deck rules beside it and letting the copy drift.
+   *
+   *  Cached per grid object: the terrain half is fixed once built (only the
+   *  scenery re-stamps), and a fresh spread per cell would be 1,089 objects a
+   *  frame. Read-only — `blocked` here IS `propBlocked`, not a copy of it. */
+  private bareGrid?: { of: TerrainGrid; view: TerrainGrid };
+  private bareTerrain(t: TerrainGrid): TerrainGrid {
+    if (this.bareGrid?.of !== t) {
+      this.bareGrid = {
+        of: t,
+        view: { ...t, blocked: t.propBlocked, sceneryBlocked: undefined, footprints: undefined },
+      };
+    }
+    return this.bareGrid.view;
+  }
+
+  private toggleCollision(on = !this.collisionOn) {
+    this.collisionOn = on;
+    try {
+      localStorage.setItem("ml-collision", on ? "1" : "0");
+    } catch {}
+    if (!on) this.collisionGfx?.clear();
+    this.chat.addLog("—", `Collision overlay: ${on ? "on" : "off"}`);
+    // The legend on its own line: the marks do not fit on the end of a
+    // sentence, and this overlay is unreadable without knowing which is which.
+    if (on)
+      this.chat.addLog(
+        "—",
+        "red = terrain · amber = a cell the nav routes around · teal = the REAL hitbox ellipse " +
+          "(violet = widened to the minimum) · white = your body · green = a monster or NPC body, " +
+          "faint green = where its dodge turns you",
+      );
+    return this.collisionOn;
   }
 
   private toggleAggroRadius(on = !this.aggroRadiusOn) {
@@ -4311,8 +9009,8 @@ export class WorldScene extends Phaser.Scene {
       let ox: number;
       let oy: number;
       if (this.world) {
-        const dDiff = (sx * CELL_WU) / MAP_GEOMETRY.dx; // Δ(x−y)
-        const dSum = (sy * CELL_WU) / MAP_GEOMETRY.dy; // Δ(x+y)
+        const dDiff = (sx * CELL_WU) / this.geom.dx; // Δ(x−y)
+        const dSum = (sy * CELL_WU) / this.geom.dy; // Δ(x+y)
         ox = (dSum + dDiff) / 2;
         oy = (dSum - dDiff) / 2;
       } else {
@@ -4329,7 +9027,7 @@ export class WorldScene extends Phaser.Scene {
 
   private pickupNearest() {
     if (this.selfDead || !this.room) return;
-    const me = this.avatars.get(this.room.sessionId);
+    const me = this.avatars.get(this.myId);
     if (!me) return;
     let bestId: string | null = null;
     let bestD = CELL_WU * 5; // don't sprint across the map for a mis-tap
@@ -4368,6 +9066,7 @@ export class WorldScene extends Phaser.Scene {
     const mv = this.monsters.get(id);
     if (!mv) return;
     mv.lit?.destroy();
+    mv.fog?.destroy();
     this.releaseCoverSlot(mv);
     mv.hidden?.destroy();
     mv.hpBg?.destroy();
@@ -4403,7 +9102,7 @@ export class WorldScene extends Phaser.Scene {
     this.monsters.delete(id);
   }
 
-  /** The wooden grave cross (objects/grave_cross, the maintainer's PixelLab
+  /** The wooden grave cross (scenery/grave_cross, the maintainer's PixelLab
    * object): plays its 16-frame SOUTH "appear" once at the death spot, holds
    * on the LAST frame, and after a minute plays the same clip REVERSED —
    * sinking back into the ground — and vanishes. Client-local decoration:
@@ -4411,7 +9110,7 @@ export class WorldScene extends Phaser.Scene {
    * QUEUE while the strip loads (appending to a busy loader is fine — a
    * kill during the deferred-anim batch must not silently drop its cross). */
   private spawnGraveCross(lx: number, lyFlat: number, elevPx: number) {
-    const KEY = "grave-cross-appear";
+    const KEY = GRAVE_CROSS_KEY;
     if (this.textures.exists(KEY)) {
       this.materializeCross(lx, lyFlat, elevPx);
       return;
@@ -4419,9 +9118,9 @@ export class WorldScene extends Phaser.Scene {
     this.pendingCrosses.push({ lx, lyFlat, elevPx });
     if (!this.crossLoadQueued) {
       this.crossLoadQueued = true;
-      this.load.spritesheet(KEY, withV("/assets/objects/grave_cross/animations/appear__south.webp"), {
-        frameWidth: 34,
-        frameHeight: 34,
+      this.load.spritesheet(KEY, withV(GRAVE_CROSS_URL), {
+        frameWidth: GRAVE_CROSS_FRAME,
+        frameHeight: GRAVE_CROSS_FRAME,
       });
       this.load.once(`filecomplete-spritesheet-${KEY}`, () => {
         for (const c of this.pendingCrosses.splice(0)) this.materializeCross(c.lx, c.lyFlat, c.elevPx);
@@ -4431,7 +9130,7 @@ export class WorldScene extends Phaser.Scene {
   }
 
   private materializeCross(lx: number, lyFlat: number, elevPx: number) {
-    const KEY = "grave-cross-appear";
+    const KEY = GRAVE_CROSS_KEY;
     if (!this.anims.exists(KEY)) {
       this.anims.create({
         key: KEY,
@@ -4489,7 +9188,7 @@ export class WorldScene extends Phaser.Scene {
     // a timeout instead of leaving a phantom item lying there forever.
     for (const [id, rec] of [...this.drops]) {
       if (!rec.grabbedAt) continue;
-      const me = this.room ? this.avatars.get(this.room.sessionId) : undefined;
+      const me = this.room ? this.avatars.get(this.myId) : undefined;
       const anim = me?.sprite.anims.getName() ?? "";
       // Character frames are PER-FRAME TEXTURES keyed f:<uid>:<state>:<dir>:<n>
       // (only monsters use numbered spritesheet frames), so the index comes
@@ -4551,15 +9250,16 @@ export class WorldScene extends Phaser.Scene {
             Math.floor(rec.wy / CELL_WU) * this.terrain.width + Math.floor(rec.wx / CELL_WU)
           ] ?? 0
         : 0;
-      const out = rec.img.texture.key === "__MISSING" || this.aboveCut(dropLvl);
-      rec.img.setVisible(!out);
-      rec.shadow.setVisible(!out);
+      const cutA = this.cutFade(dropLvl, rec.wx, rec.wy);
+      const out = rec.img.texture.key === "__MISSING" || cutA <= 0.004;
+      rec.img.setVisible(!out).setAlpha(cutA);
+      rec.shadow.setVisible(!out).setAlpha(0.55 * cutA);
       const left = DROP_TTL_MS - (now - rec.bornAt);
       if (left <= DROP_FLASH_MS) {
         const t = Math.max(0, 1 - left / DROP_FLASH_MS); // 0 → 1 over the final stretch
         const hz = 2 + t * 8; // 2Hz ramping to 10Hz
         const s = 0.5 + 0.5 * Math.sin((now / 1000) * hz * Math.PI * 2);
-        const a = 0.15 + 0.85 * s;
+        const a = (0.15 + 0.85 * s) * cutA;
         rec.img.setAlpha(a);
         rec.shadow.setAlpha(0.55 * a);
       }
@@ -4577,14 +9277,16 @@ export class WorldScene extends Phaser.Scene {
    * (900_002): day, night and shadow never touch it. Shown while the monster
    * is wounded, in combat, or MY engaged target. */
   private updateMonsterHpBar(mv: MonsterAvatar, m: any, id: string) {
+    // The bar, the name and the Lv/HP text sit at 900_001.5-1.7, above the
+    // darkness overlay: indoors they would be the only readable thing on a
+    // monster that is otherwise a black silhouette out on the grass. They
+    // FADE on the light grade with the body under them, never switch.
+    const outK = this.indoorOutside(mv.fx, mv.fy, mv.surfLevel) ? 1 - this.indoorGrade() : 1;
     const inFight =
       m.hpMax > 0 &&
       m.mstate !== "die" &&
       (m.hp < m.hpMax || m.mstate === "combat" || this.engagedId === id) &&
-      // The bar, the name and the Lv/HP text sit at 900_001.5-1.7, above the
-      // darkness overlay: indoors they would be the only readable thing on a
-      // monster that is otherwise a black silhouette out on the grass.
-      !this.indoorOutside(mv.fx, mv.fy, mv.surfLevel);
+      outK > 0.01;
     if (!inFight) {
       mv.hpBg?.setVisible(false);
       mv.hpFill?.setVisible(false);
@@ -4628,6 +9330,7 @@ export class WorldScene extends Phaser.Scene {
     mv.nameText!.setPosition(mv.lx - W / 2, topY - 5).setVisible(true);
     mv.lvText!.setPosition(mv.lx - W / 2, topY + 5).setVisible(true);
     mv.hpText!.setPosition(mv.lx + W / 2, topY + 5).setVisible(true);
+    for (const o of [mv.hpBg, mv.hpFill!, mv.nameText!, mv.lvText!, mv.hpText!]) o.setAlpha(outK);
   }
 
   /** A small rising damage number (world-space, above the night overlay). */
@@ -4655,7 +9358,7 @@ export class WorldScene extends Phaser.Scene {
     });
   }
 
-  /** A blood spatter on a struck body (objects/blood_spatter, the
+  /** A blood spatter on a struck body (scenery/blood_spatter, the
    * maintainer's PixelLab object trimmed to burst->dispersal): one of the 8
    * direction variants at random, played forward or REVERSED at random —
    * reversed reads as the burst converging, so no two hits look alike. */
@@ -4756,6 +9459,7 @@ export class WorldScene extends Phaser.Scene {
   }
 
   private playMonsterAnim(mv: MonsterAvatar, moving: boolean, dir: string, mstate = "roam", actionSeq = 0) {
+    if (this.monstersMock) return; // the pink mock holds one pose; nothing to play
     const want = DIRECTIONS.includes(dir as never) ? dir : DEFAULT_DIRECTION;
     // Monsters take EVERY turn (even 90-180°) through hysteresis: they are
     // remote puppets, so a 160ms facing lag is invisible — while autopilot
@@ -4782,6 +9486,10 @@ export class WorldScene extends Phaser.Scene {
       if (dieAnim && this.anims.exists(dieAnim)) {
         mv.combatClip = true;
         if (mv.sprite.anims.getName() !== dieAnim) mv.sprite.play(dieAnim);
+        // AFTER play(): the origin is a fraction of the CURRENT frame's size,
+        // and a state's strip may be framed at other dimensions. Canonical
+        // state name ("die", never mv.dieKey) — see MonsterAvatar.shState.
+        this.applyTunedOriginFor(mv, "die", d);
         return;
       }
       // No die art: freeze on the parked contact frame (better than looping).
@@ -4799,6 +9507,7 @@ export class WorldScene extends Phaser.Scene {
         if (attackAnim && this.anims.exists(attackAnim)) {
           mv.combatClip = true;
           mv.sprite.play(attackAnim); // restart even mid-clip: a new swing IS a restart
+          this.applyTunedOriginFor(mv, "attack", d);
           return;
         }
       }
@@ -4812,6 +9521,7 @@ export class WorldScene extends Phaser.Scene {
       if (angryAnim && this.anims.exists(angryAnim)) {
         mv.combatClip = true;
         if (cur !== angryAnim || !mv.sprite.anims.isPlaying) mv.sprite.play(angryAnim, true);
+        this.applyTunedOriginFor(mv, "angry", d);
         return;
       }
       // No angry art (6 kinds): fall through to the stopped walk-park below.
@@ -4823,8 +9533,16 @@ export class WorldScene extends Phaser.Scene {
     // direction: idle strips are framed independently of walk (their own
     // stripDims + anchors), and per-direction margins differ after art
     // repairs. The feet stay planted through turns AND state changes.
+    //
+    // A TUNED monster keeps ONE origin instead — the shadow's centre — for
+    // every direction and state: the whole point of the tuned model is that
+    // the art rotates around that point, so a per-facing origin would undo it.
     const g = (!moving && mv.groundIdle?.[d]) || mv.ground?.[d];
-    if (g) mv.sprite.setOrigin(g.cx, g.f);
+    if (mv.tuned) {
+      this.applyTunedOriginFor(mv, moving ? "walk" : "idle", d);
+    } else if (g) {
+      mv.sprite.setOrigin(g.cx, g.f);
+    }
     const idleKey = !moving && mv.idleKey ? monsterAnimKey(mv.kind, mv.idleKey, d) : null;
     if (moving || (idleKey && this.anims.exists(idleKey))) {
       // Walking → walk clip; stopped with idle art → the IDLE clip
@@ -4976,7 +9694,7 @@ export class WorldScene extends Phaser.Scene {
     const fx = (p.x + 0.5) * CELL_WU;
     const fy = (p.y + 0.5) * CELL_WU;
     const g = this.projectFlat(fx, fy);
-    const elev = (p.elev ?? g.lvl) * MAP_GEOMETRY.lh;
+    const elev = (p.elev ?? g.lvl) * this.geom.lh;
     const shadow = this.add
       .image(g.x, g.y - elev, SHADOW_TEX)
       .setOrigin(0.5, 0.5)
@@ -5038,6 +9756,9 @@ export class WorldScene extends Phaser.Scene {
     // someone walks past. Never the BOOT batch: NPC frames there is precisely
     // what restarted the loading bar (maintainer 2026-08-06).
     for (const d of DIRECTIONS) {
+      // A no-turn NPC will never adopt another rotation, so fetching the other
+      // seven (and their idle frames) is pure waste on someone's phone data.
+      if (def.noTurn && d !== npc.dir) continue;
       const url = def.base[d];
       const k = `npc:${def.id}:${d}`;
       if (url && !this.textures.exists(k)) this.npcIdleQueue.push({ key: k, url });
@@ -5094,7 +9815,15 @@ export class WorldScene extends Phaser.Scene {
    * exactly what the old south-only pin existed to prevent. A look is over in
    * about a second, and a person actually does still while they watch you. */
   private stepNpcFacing(npc: NpcAvatar, now: number) {
-    const me = this.avatars.get(this.room?.sessionId ?? "");
+    // SOME ART ONLY READS RIGHT FROM ONE FACING. characters2 flags those
+    // (`no_turn` on the NPC's metadata record, published through the manifest
+    // as noTurn) and they must NEVER change direction — not for a glance, not
+    // to look at the player. Thorne is the first: his armorer's breastplate
+    // stands on the GROUND BESIDE HIM in south and south-west and is absent in
+    // south-east, so any turn pops a large prop in and out of the scene. He
+    // keeps whatever facing addNpc gave him, permanently.
+    if (npc.def.noTurn) return;
+    const me = this.avatars.get(this.myId);
     if (me) {
       const dx = me.fx - npc.fx;
       const dy = me.fy - npc.fy;
@@ -5202,22 +9931,26 @@ export class WorldScene extends Phaser.Scene {
     for (const npc of this.npcs.values()) {
       const sp = npc.sprite;
       const halfW = Math.max(sp.displayWidth, 40) * 0.5;
+      const cutA = this.cutFade(npc.surfLevel ?? 0, npc.fx, npc.fy);
       const on =
+        !this.sealedAway(npc.fx, npc.fy, npc.surfLevel ?? 0) && // sealed in a room I am not in — see the monster loop
         npc.lx + halfW >= cam.x - MONSTER_CULL_SLACK &&
         npc.lx - halfW <= cam.right + MONSTER_CULL_SLACK &&
         npc.ly + 20 >= cam.y - MONSTER_CULL_SLACK &&
         npc.ly - sp.displayHeight <= cam.bottom + MONSTER_CULL_SLACK &&
-        !this.aboveCut(npc.surfLevel ?? 0);
+        cutA > 0.004;
       // The indoor test is ONLY about height (see aboveCut). A villager on the
       // street outside my room is drawn and lit like the street is — black,
       // until my torch finds them. One standing on a rooftop is not drawn at
-      // all, because the rooftop is not drawn either.
+      // all, because the rooftop is not drawn either — and fades out with the
+      // rooftop's debris rather than popping (cutFade).
       if (!on) {
         if (!npc.culled) {
           npc.culled = true;
           sp.setVisible(false);
           npc.shadow.setVisible(false);
           npc.lit?.setVisible(false);
+          npc.fog?.setVisible(false);
           sp.anims.pause();
         }
         continue;
@@ -5258,6 +9991,8 @@ export class WorldScene extends Phaser.Scene {
       }
       this.resolveBodyDepth(npc, npc.surfLevel ?? 0);
       this.placeBodyShadow(npc, npc.elev, 0, 34, 14);
+      sp.setAlpha(cutA);
+      if (cutA < 1) npc.shadow.setAlpha(npc.shadow.alpha * cutA);
     }
   }
 
@@ -5265,7 +10000,7 @@ export class WorldScene extends Phaser.Scene {
    * and distance (0 at centre, 1 at the edge of earshot) for the composer's
    * spatialized one-shots. The local player is always centred. */
   private avatarSpatial(id: string | undefined): { pan: number; dist: number } {
-    if (!id || id === this.room?.sessionId) return { pan: 0, dist: 0 };
+    if (!id || id === this.myId) return { pan: 0, dist: 0 };
     const av = id ? this.avatars.get(id) : undefined;
     if (!av) return { pan: 0, dist: 0.5 };
     return this.worldSpatial(av.sprite.x, av.sprite.y);
@@ -5292,7 +10027,7 @@ export class WorldScene extends Phaser.Scene {
   } {
     const none = { forest: 0, water: 0, town: 0, fire: 0, cave: 0, threat: 0 };
     const g = this.terrain;
-    const me = this.room ? this.avatars.get(this.room.sessionId) : undefined;
+    const me = this.room ? this.avatars.get(this.myId) : undefined;
     if (!g || !me) return none;
     const cc = Math.floor(me.fx / CELL_WU);
     const cr = Math.floor(me.fy / CELL_WU);
@@ -5305,7 +10040,7 @@ export class WorldScene extends Phaser.Scene {
     // My own surface height, in LEVELS — the same px→level basis the lit copy
     // and torch use. A deck only counts as a roof when it is above ME, so
     // walking ACROSS a bridge (deck == my own surface) is never "in a cave".
-    const myLevel = Math.max(0, me.elev / MAP_GEOMETRY.lh);
+    const myLevel = Math.max(0, me.elev / this.geom.lh);
     for (let r = cr - R; r <= cr + R; r++) {
       if (r < 0 || r >= g.height) continue;
       for (let c = cc - R; c <= cc + R; c++) {
@@ -5362,6 +10097,51 @@ export class WorldScene extends Phaser.Scene {
     };
   }
 
+  /** A ZONE HAND-OFF (spec/ZONES.md). The room owning my body wrote my hot
+   *  state to the bus under a one-shot key and named the zone: join that room
+   *  while this one stays open, bind it in SWAP mode (avatars are keyed by
+   *  stable ids and survive; only what the new view lacks is removed), replay
+   *  the inputs made meanwhile, then leave the old room. A failed hop keeps
+   *  the old room — it forgets the attempt after ten seconds and keeps the
+   *  body. */
+  private async zoneGo(from: Room, msg: { zone?: number; pid?: string; key?: string }) {
+    if (this.room !== from || this.zoneSwapping) return;
+    if (typeof msg?.zone !== "number" || typeof msg.pid !== "string" || typeof msg.key !== "string") return;
+    this.zoneSwapping = true;
+    try {
+      const next = await joinWorld(
+        { name: this.myName, character: this.myCharacter.uid, world: this.worldName, zone: msg.zone, pid: msg.pid, handoff: msg.key },
+        undefined,
+        undefined,
+        { route: zoneRoute(this.zonesCfg, msg.zone), fresh: true },
+      );
+      this.zone = msg.zone;
+      this.bindRoom(next, true);
+      const reconcile = () => {
+        const st: any = next.state;
+        for (const id of [...this.avatars.keys()])
+          if (!st.players?.has(id) && !st.ghosts?.has(id)) this.removeAvatar(id);
+        for (const id of [...this.monsters.keys()])
+          if (!st.monsters?.has(id) && !st.ghostMonsters?.has(id)) this.removeMonster(id);
+        for (const id of [...this.drops.keys()])
+          if (!st.drops?.has(id) && !st.ghostDrops?.has(id)) this.removeDrop(id);
+      };
+      if ((next.state as any)?.players?.has(msg.pid)) reconcile();
+      else next.onStateChange.once(reconcile);
+      for (const m of this.swapQueue) next.send("input", m);
+      this.swapQueue = [];
+      this.zoneSwapping = false;
+      from.leave(true);
+      this.zoneHops++;
+    } catch (e) {
+      console.warn("[zones] hand-off join failed, staying:", e);
+      this.zoneSwapping = false;
+      for (const m of this.swapQueue) from.send("input", m);
+      this.swapQueue = [];
+    }
+  }
+  private zoneHops = 0;
+
   /** The connection died: freeze input, rejoin in place (immediately when
    * visible, else the moment the tab is shown again), retry with backoff,
    * and only fall back to a full reload after repeated failures. */
@@ -5376,7 +10156,10 @@ export class WorldScene extends Phaser.Scene {
       }
       try {
         const room = await joinWorld(
-          { name: this.myName, character: this.myCharacter.uid, world: this.worldName },
+          { name: this.myName, character: this.myCharacter.uid, world: this.worldName, zone: this.zone },
+          undefined,
+          undefined,
+          { route: zoneRoute(this.zonesCfg, this.zone) },
         );
         // Clean slate: the new room's full state re-adds every player (new
         // sessionIds), so drop all old sprites + prediction/input state.
@@ -5387,7 +10170,14 @@ export class WorldScene extends Phaser.Scene {
         for (const id of [...this.drops.keys()]) this.removeDrop(id);
         this.engagedId = null;
         this.pendingPickupId = null;
+        // AND THE DEATH SEQUENCE, which is DOM and therefore outlives the room
+        // that started it. A backgrounded tab drops the connection, the server
+        // revives me on its own backstop, and the fresh room's state has me
+        // ALIVE — so the dead→alive transition that normally ends the sequence
+        // never fires here, and the veil and the prompt hung over a player
+        // running around at full health (maintainer 2026-08-12, with shots).
         this.selfDead = false;
+        this.endDeath();
         this.pending = [];
         this.inputSeq = 0;
         this.sendAccum = 0;
@@ -5510,6 +10300,142 @@ export class WorldScene extends Phaser.Scene {
     if (name) this.chat.addLog("⭐", `${name} has arrived in Nangijala — a star crosses the sky.`);
   }
 
+
+  /** Recompute the jump-button chess offer, ~7Hz. Cheap: a handful of
+   * boards, pure distance math. Fires a window event ONLY on change — the
+   * gamepad label (games-ui's file) listens for it. */
+  private updateChessPrompt() {
+    const now = this.time.now;
+    if (now - this.chessPromptAt < 150) return;
+    this.chessPromptAt = now;
+    const me = this.room ? this.avatars.get(this.myId) : undefined;
+    let next: { mode: "start" | "join" } | null = null;
+    if (me && this.room && !this.chessDialog) {
+      // The join zone is the whole ring around the TABLE (server tableDist,
+      // 1.75 cells) — the exact-seat version demanded pixel parking and two
+      // real players stood beside a dead board (maintainer screenshot).
+      const R = CELL_WU * 1.75;
+      this.room.state.chessBoards?.forEach((b: any) => {
+        if (next || b.matchId || b.waitingSid === this.myId) return;
+        const d = Math.hypot(me.fx - (b.col + 0.5) * CELL_WU, me.fy - (b.row + 0.5) * CELL_WU);
+        if (d <= R) next = { mode: b.npc || b.waitingSid ? "join" : "start" };
+      });
+    }
+    const label = next ? ((next as { mode: string }).mode === "join" ? "JOIN CHESSGAME" : "START CHESSGAME") : null;
+    const prev = this.chessPrompt ? (this.chessPrompt.mode === "join" ? "JOIN CHESSGAME" : "START CHESSGAME") : null;
+    this.chessPrompt = next;
+    if (label !== prev) window.dispatchEvent(new CustomEvent("ml-chess-prompt", { detail: { label } }));
+  }
+
+  /** The in-world chess board: a generated iso-checker decor image (replaced
+   * by real scenery art once the scenery agent's boards are placed — the
+   * texture is one swap away). Depth = painter y like any flat decor. */
+  private placeChessBoard(id: string, b: { col: number; row: number; sprite?: string }) {
+    if (this.chessDecor.has(id)) return;
+    if (b.sprite === "world") return; // the world's own PROP renders the table
+    if (b.sprite) {
+      // The scenery agent's synced board (the maintainer's PixelLab piece,
+      // world_px_height 27 -> display height 27, bottom-anchored). Campfire
+      // pattern: queue the image; a 404 falls through to the placeholder.
+      const key = `chess-board:${b.sprite}`;
+      const place = () => {
+        const p2 = this.projectFlat((b.col + 0.5) * CELL_WU, (b.row + 0.5) * CELL_WU);
+        const img = this.add.image(p2.x, p2.y - p2.lvl * this.geom.lh + this.geom.dy / 2, key)
+          .setOrigin(0.5, 1);
+        img.setScale(27 / img.height);
+        img.setDepth(p2.y + 0.4);
+        this.chessDecor.set(id, img);
+      };
+      if (this.textures.exists(key)) { place(); return; }
+      this.load.image(key, withV(b.sprite));
+      this.load.once(`filecomplete-image-${key}`, place);
+      this.load.once("loaderror", (f: Phaser.Loader.File) => {
+        if (f.key === key && !this.chessDecor.has(id)) this.placeChessBoardFallback(id, b);
+      });
+      this.load.start();
+      return;
+    }
+    this.placeChessBoardFallback(id, b);
+  }
+
+  private placeChessBoardFallback(id: string, b: { col: number; row: number }) {
+    if (this.chessDecor.has(id)) return;
+    const key = "chess-board-decor";
+    if (!this.textures.exists(key)) {
+      const W = 44, H = 22, cnv = document.createElement("canvas");
+      cnv.width = W; cnv.height = H;
+      const g = cnv.getContext("2d")!;
+      for (let r = 0; r < 8; r++) for (let f = 0; f < 8; f++) {
+        const cx = W / 2 + (f - r) * (W / 16), cy = 3 + (f + r) * (H - 6) / 16;
+        g.fillStyle = (f + r) % 2 ? "#e9dcc3" : "#7a5a3a";
+        g.beginPath();
+        g.moveTo(cx, cy); g.lineTo(cx + W / 16, cy + (H - 6) / 16);
+        g.lineTo(cx, cy + (H - 6) / 8); g.lineTo(cx - W / 16, cy + (H - 6) / 16);
+        g.closePath(); g.fill();
+      }
+      this.textures.addCanvas(key, cnv)?.setFilter(Phaser.Textures.FilterMode.NEAREST);
+    }
+    const p = this.projectFlat((b.col + 0.5) * CELL_WU, (b.row + 0.5) * CELL_WU);
+    const img = this.add.image(p.x, p.y - p.lvl * this.geom.lh, key).setDepth(p.y + 0.4);
+    this.chessDecor.set(id, img);
+  }
+
+  /** The waiting-for-an-opponent indicator over the seated player. A drawn
+   * bubble today; the maintainer's PixelLab "chess challenge" icon replaces
+   * the TEXT with an image the moment it syncs into scenery/ (one texture
+   * swap here, nothing else moves). Waiting players are standing still by
+   * definition, so a static position is honest. */
+  private syncChessWait(id: string, b: { waitingSid: string; bubble?: string }) {
+    const old = this.chessWaitB.get(id);
+    if (old) { old.destroy(); this.chessWaitB.delete(id); }
+    if (!b.waitingSid) return;
+    const av = this.avatars.get(b.waitingSid);
+    if (!av) return;
+    if (b.bubble) {
+      // The maintainer's challenge-bubble art (dots point at the head): set
+      // `bubble` in the board config the moment the piece syncs into
+      // scenery/ — no code change. Campfire pattern; drawn text below is the
+      // fallback while it loads or if it 404s.
+      const key = `chess-bubble:${b.bubble}`;
+      const placeImg = () => {
+        if (!this.room?.state.chessBoards?.get(id)?.waitingSid) return;
+        const av2 = this.avatars.get(b.waitingSid);
+        if (!av2) return;
+        this.chessWaitB.get(id)?.destroy();
+        const img = this.add.image(av2.sprite.x, av2.sprite.y - av2.sprite.displayHeight * av2.sprite.originY - 2, key)
+          .setOrigin(0.5, 1).setDepth(900_100) as unknown as Phaser.GameObjects.Text;
+        this.chessWaitB.set(id, img);
+      };
+      if (this.textures.exists(key)) { placeImg(); return; }
+      this.load.image(key, withV(b.bubble));
+      this.load.once(`filecomplete-image-${key}`, placeImg);
+      this.load.start();
+      // fall through: drawn bubble shows until the art lands
+    }
+    const t = this.add
+      .text(av.sprite.x, av.sprite.y - av.sprite.displayHeight * av.sprite.originY - 6, "♞ Chess?", {
+        fontFamily: "system-ui, sans-serif", fontSize: "13px",
+        color: "#1f1e1a", backgroundColor: "#f6e3db",
+        padding: { x: 8, y: 4 },
+      })
+      .setOrigin(0.5, 1)
+      .setDepth(900_100); // the chat-bubble band: above darkness, below floats
+    this.chessWaitB.set(id, t);
+  }
+
+  /** Freeze movement while the chess dialog is up — the same ops as the HUD's
+   * onUiLock (drop dialog): a DOM overlay does NOT keep pointerdowns from
+   * Phaser's window-level listeners, so the flag + keyboard disable are what
+   * actually stop the player being walked out of their seat mid-game. */
+  private setChessLock(locked: boolean) {
+    this.input.keyboard!.enabled = !locked && !this.chat?.open;
+    this.uiLocked = locked;
+    if (!locked) { this.uiLockLiftAt = performance.now() + 150; return; }
+    this.input.keyboard!.resetKeys();
+    this.dropHold();
+    this.clearMoveTarget();
+  }
+
   private showBubble(id: string, text: string) {
     const av = this.avatars.get(id);
     if (!av) return;
@@ -5535,10 +10461,11 @@ export class WorldScene extends Phaser.Scene {
   private refreshRoster() {}
 
   private addAvatar(id: string, player: any) {
+    if (this.avatars.has(id)) return; // a zone swap re-adds what is already drawn
     const uid: string = player.character || this.manifest.characters[0]?.uid || PLACEHOLDER_TEX;
     const key = frameKey(uid, "idle", DEFAULT_DIRECTION, 0);
     const f0 = this.projectFlat(player.x, player.y);
-    const elev0 = f0.lvl * MAP_GEOMETRY.lh;
+    const elev0 = f0.lvl * this.geom.lh;
     const p0 = { x: f0.x, y: f0.y - elev0 };
     // Fall back to the built-in wanderer whenever the character's art is absent
     // (empty roster, a deleted character, or art still loading). Tint it per
@@ -5596,11 +10523,136 @@ export class WorldScene extends Phaser.Scene {
     // run — bumping it in the flush instead would make every probe read
     // "this body has no surface" one tick too early.
     this.coverTick++;
+    /* Cleared here, set by t3drainSlices. The two stand-down guards below read
+     * `groundSliceQ.length` AFTER the drain has already shifted its rects, so
+     * the frame that EMPTIES the queue used to look idle to them — and after
+     * the merge that is exactly the frame carrying the whole band. One boolean
+     * restores what those guards were written to mean. */
+    this.groundDrainedThisFrame = false;
+    /* ARM THIS FRAME'S COMPOSE ALLOWANCE — the thing that turns a 1,276 ms
+     * freeze into a bounded cost. Until the world is up the join paint runs
+     * UNBUDGETED: it is behind the loading screen, nothing is being played
+     * through it, and releasing the hold onto a window of hard edges is
+     * exactly the pop-in the hold exists to prevent. */
+    this.t3tex?.armCompose(this.worldUp ? (this.composeMsOverride ?? GROUND_COMPOSE_MS) : Infinity);
+    // The coalesced streaming repaints — see requestRepaint / onTerrainBatch.
+    if (this.repaintGroundPending) {
+      this.repaintGroundPending = false;
+      this.repaintGroundPartial = false; // the full paint covers the landed cells
+      this.groundDirtyCells = [];
+      this.lastGround = { x: NaN, y: NaN };
+      this.repaintStats.groundRuns++;
+    } else if (this.repaintGroundPartial) {
+      this.repaintGroundPartial = false;
+      const dirty = this.groundDirtyCells;
+      this.groundDirtyCells = [];
+      this.ps();
+      this.repaintTiles3Cells(dirty);
+      this.pe("repaintCells");
+      this.repaintStats.groundRuns++;
+    }
+    if (this.repaintOccPending) {
+      this.repaintOccPending = false;
+      this.lastOccl = { x: NaN, y: NaN };
+      this.repaintStats.occRuns++;
+    }
+    if (this.perfOn) {
+      const now = performance.now();
+      if (this.perfLast) this.perfFrames.push(now - this.perfLast);
+      // Close the gap the previous frame left open — see perfHookRender.
+      if (this.perfPostAt) {
+        const msg = this.perfMsgAt || now; // never fired: treat the whole gap as busy
+        this.pAdd("gapBusy", Math.max(0, Math.min(msg, now) - this.perfPostAt));
+        this.pAdd("gapIdle", Math.max(0, now - Math.max(msg, this.perfPostAt)));
+        this.perfPostAt = 0;
+      }
+      if (this.hitchOn && this.perfLast) this.closeHitchFrame(now - this.perfLast);
+      this.perfLast = now;
+      if (this.perfTexFrame > this.perfTexFrameMax) this.perfTexFrameMax = this.perfTexFrame;
+      this.perfTexFrame = 0;
+      /* WINDOW MEANS, because the end-of-window snapshot is a systematically
+       * ATYPICAL instant. A report is built when the beacon timer fires, and
+       * across 34 of them 11 of the 12 `final` reports carry zoom >= 1.89 while
+       * 0 of 26 others do — i.e. the snapshot lands when he has STOPPED and the
+       * camera has eased back in. Zoom 1.89 against 1.36 shrinks the occluder
+       * cull box (worldView + 2*OCC_CULL_PAD) to 0.71 of its area, so the
+       * occluder count read at that instant understates the window's own mean
+       * by 1.4x or more.
+       *
+       * That matters because the device-speed index divides a section MEAN by a
+       * count: dividing a whole window's mean cost by one atypical instant's
+       * count inflates it. It made me report a 5.75x throttle where the honest
+       * figure is nearer 2x. Accumulating the two counts the index uses costs
+       * two adds a frame and makes the ratio a mean over a mean. */
+      this.perfOccSum += this.occluders.length;
+      this.perfDlSum += this.children.length;
+      this.perfZoomSum += this.cameras.main.zoom;
+      this.perfCountN++;
+      /* THE INSTRUMENT MUST NOT BILL THE GAME, AND IT WAS BILLING 125 ms.
+       *
+       * Building a window's report is expensive on purpose — a gl.readPixels of
+       * 256x192 is a full GPU sync, and it used to sort 49,152 numbers on top —
+       * but it ran AFTER `perfLast` was stamped, so its whole cost landed in the
+       * NEXT frame's measurement. That frame is f=3778 in his last beacon: the
+       * first frame of window 4, total 138.4 ms with `other` 125.0 and every
+       * section under 3.2 ms. One of the three "mystery" frames I was chasing
+       * was this probe measuring itself, and at 125 ms it was a quarter of all
+       * the unaccounted time in the tail.
+       *
+       * Re-stamping `perfLast` afterwards takes it out of the game's frame, and
+       * `beaconSelfMs` reports what it cost so the number is visible rather than
+       * merely gone. It is a real stall on his device while recording — but it
+       * is the measurement's, not the game's, and it must not be attributed to
+       * the thing it is measuring. */
+      if (this.perfBeacon) {
+        const b0 = performance.now();
+        this.perfBeaconTick(now);
+        const spent = performance.now() - b0;
+        if (spent > 1) {
+          this.beaconSelfMs = +spent.toFixed(1);
+          this.perfLast = performance.now();
+        }
+      }
+    }
+    this.ps();
+    /* A FULL PAINT COUNTS AS HAVING PAINTED, and it did not.
+     *
+     * `groundRedrewThisFrame` is what keeps the ring, the boundary retry and the
+     * band slice off a frame the player is already paying for — every one of
+     * them tests it. But it was derived from the SCROLL and CELL-REPAINT
+     * counters only, and the full branch bumps neither, so after the most
+     * expensive pass in the game (measured on his phone: redrawGround 1244,
+     * 1071, 1044 ms) the flag read false and that same frame went on to paint a
+     * band slice, compose up to GROUND_RING_COMPOSE more textures in the ring,
+     * and run a boundary repair. The one frame that most needed to be left
+     * alone was the only one nothing stood down for. */
+    const groundBefore =
+      this.groundSliceStats.runs + this.repaintStats.groundRuns + this.groundFullRuns;
     this.redrawGround();
+    this.groundRedrewThisFrame =
+      this.groundSliceStats.runs + this.repaintStats.groundRuns + this.groundFullRuns !== groundBefore;
+    this.pe("redrawGround");
+    if (!this.groundRedrewThisFrame) {
+      this.ps();
+      this.t3drainSlices(); // as much of the exposed band as one bracket affords
+      this.pe("groundSlice");
+    }
+    this.ps();
     this.rebuildOccluders();
+    this.pe("rebuildOccluders");
+    this.ps();
+    this.cullOccluderSubmits();
+    this.pe("occCull");
+    this.t3workerStep(); // a postMessage, unguarded — see t3workerStep
+    this.ps();
+    this.t3prefetchStep();
+    this.t3retryBoundaries();
+    this.pe("prefetch");
+    // ...and, once the art has settled, repair anything a paint dropped.
+    this.t3drainDrops();
     if (!this.room) return;
     const dt = delta / 1000;
-    const myId = this.room.sessionId;
+    const myId = this.myId;
     this.predictAndSend(dt);
 
     const state = this.room.state as any;
@@ -5621,9 +10673,38 @@ export class WorldScene extends Phaser.Scene {
     });
     gameAudio.setUnderwater(!!state.players.get(myId)?.swimming);
 
+    this.ps();
     this.avatars.forEach((av, id) => {
-      const player = state.players.get(id);
+      const player = state.players.get(id) ?? state.ghosts?.get(id);
       if (!player) return;
+      /* THE AUTHORITATIVE POSITION JUMPED. Recorded for the beacon because
+       * "the player was flying around like I don't know what" (maintainer
+       * 2026-09-04, eight screenshots seconds apart at 429, 427, 437, 429
+       * indoors, 437, 448, 430) is a POSITION bug and the report carried no
+       * positions at all — only one `where` per window, sampled at the end.
+       *
+       * This watches the SERVER's own x/y for the local player, so it sees a
+       * correction, an unstick, a respawn and a rejoin restore alike, and it
+       * cannot be confused by prediction: a jump here is the world telling us
+       * the body is somewhere else. Costs two subtractions a frame. */
+      if (id === myId) {
+        const jx = player.x / CELL_WU;
+        const jy = player.y / CELL_WU;
+        if (this.jumpLastX !== null && this.jumpLastY !== null) {
+          const d = Math.hypot(jx - this.jumpLastX, jy - this.jumpLastY);
+          if (d > 2 && this.posJumps.length < 40)
+            this.posJumps.push({
+              t: Math.round(this.time.now),
+              from: `${this.jumpLastX.toFixed(1)},${this.jumpLastY.toFixed(1)}`,
+              to: `${jx.toFixed(1)},${jy.toFixed(1)}`,
+              cells: +d.toFixed(1),
+              pending: this.pending.length,
+              seq: player.seq ?? -1,
+            });
+        }
+        this.jumpLastX = jx;
+        this.jumpLastY = jy;
+      }
 
       let tx: number;
       let ty: number;
@@ -5666,14 +10747,19 @@ export class WorldScene extends Phaser.Scene {
           let speed = 1;
           if (this.terrain) {
             // Mirror the server exactly: unstick before integrating.
-            const u = unstickFromSolids(this.terrain, rx, ry, 80 * sdt);
+            const u = unstickFromSolids(this.terrain, rx, ry, 80 * sdt, undefined, predElev);
             rx = u.x;
             ry = u.y;
             const ctx = { maxClimb: jumping ? JUMP_CLIMB : WALK_CLIMB, canSwim: true };
             blocked = makeBlockedElev(this.terrain, ctx, () => predElev);
-            sideBlocked = makeSideBlocked(this.terrain, ctx); // corner probes: solids only
+            sideBlocked = makeSideBlocked(this.terrain, ctx, () => predElev); // corner probes: solids only
+            // THE SAME ELEVATION-AWARE SURFACE THE SERVER USES. On a deck the
+            // feet are on the deck's material, not the water it spans — and
+            // prediction must ask the identical question or the two disagree
+            // about speed for the whole length of the bridge, which is a
+            // rubber-band, not a wrong number.
             speed =
-              surfaceAtWorld(this.terrain, rx, ry).speed *
+              surfaceAtWorldElev(this.terrain, rx, ry, predElev).speed *
               (jumping ? JUMP_SPEED_FACTOR : 1) *
               slowF;
           }
@@ -5681,6 +10767,22 @@ export class WorldScene extends Phaser.Scene {
           const r = stepMovement(rx, ry, ax, ay, running, sdt, blocked, speed, !!this.terrain, this.worldW, this.worldH, sideBlocked);
           rx = r.x;
           ry = r.y;
+          /* THE DEEP-SEA CURRENT — the SAME second move the server integrates
+           * (WorldRoom), from the same shared function. Predicting it here is
+           * what keeps a swimmer from rubber-banding: the server will apply it
+           * whether or not we do. */
+          if (this.terrain) {
+            const cur = deepCurrentAt(this.terrain, rx, ry);
+            if (cur) {
+              const d = stepMovement(
+                rx, ry, cur.dx, cur.dy, false, sdt, blocked,
+                cur.speed / WALK_SPEED,
+                false, this.worldW, this.worldH, sideBlocked,
+              );
+              rx = d.x;
+              ry = d.y;
+            }
+          }
           if (this.terrain) {
             const ctx = { maxClimb: jumping ? JUMP_CLIMB : WALK_CLIMB, canSwim: true };
             predElev = resolveElevAt(this.terrain, predElev, rx, ry, ctx);
@@ -5793,6 +10895,7 @@ export class WorldScene extends Phaser.Scene {
         running = false;
         if (id === myId && !this.selfDead) {
           this.selfDead = true;
+          this.startDeath();
           this.clearMoveTarget();
           this.dropHold();
           this.engagedId = null;
@@ -5808,6 +10911,7 @@ export class WorldScene extends Phaser.Scene {
         }
         if (id === myId && this.selfDead) {
           this.selfDead = false; // respawned: the >2-cell snap does the rest
+          this.endDeath();
         }
       }
 
@@ -5868,7 +10972,7 @@ export class WorldScene extends Phaser.Scene {
       }
       // world@2: lift by the SURFACE level (deck when standing on it, else base),
       // not the cell's base level — so a player on the roof/bridge draws up there.
-      const targetElev = surfLevel * MAP_GEOMETRY.lh - (swimming ? swimDrop : 0);
+      const targetElev = surfLevel * this.geom.lh - (swimming ? swimDrop : 0);
       // JUMP OUT of the water, don't teleport: reaching land from a swim means
       // the feet must rise ~swimDrop back to the surface. Ease that rise over a
       // short arc + a hop so it reads as leaping out instead of snapping up.
@@ -5940,7 +11044,7 @@ export class WorldScene extends Phaser.Scene {
         if (dt > 0.001) {
           const dsx = av.lx - px0; // = Δ(x−y)·dx/CELL_WU (dx == CELL_WU → 1:1)
           const dsy = av.lyFlat - py0; // = Δ(x+y)·dy/CELL_WU
-          const dSum = dsy * (CELL_WU / MAP_GEOMETRY.dy); // Δ(x+y)
+          const dSum = dsy * (CELL_WU / this.geom.dy); // Δ(x+y)
           const v = this.world
             ? Math.hypot((dsx + dSum) / 2, (dSum - dsx) / 2) / dt
             : Math.hypot(dsx, dsy) / dt;
@@ -5978,7 +11082,7 @@ export class WorldScene extends Phaser.Scene {
       // lagoon would read as instantly/never submerged), so a ledge drop
       // submerges progressively then floats.
       av.swimT = swimDrop > 0
-        ? Math.max(0, Math.min(1, (surfLevel * MAP_GEOMETRY.lh - av.elev) / swimDrop))
+        ? Math.max(0, Math.min(1, (surfLevel * this.geom.lh - av.elev) / swimDrop))
         : swimming ? 1 : 0;
 
       // Jump hop: a short parabola driven by the synced `jumping` flag —
@@ -6021,14 +11125,19 @@ export class WorldScene extends Phaser.Scene {
       // floating in the black is the one thing that would give away a body you
       // are meant to barely see, so the label and the chat bubble follow the
       // room while the body follows the light. I am never outside my own room.
-      const away = id !== myId && this.indoorOutside(av.fx, av.fy, av.surfLevel);
+      // The tag FADES on the light grade, as the body under it darkens — a
+      // name that blinks off a frame after you cross the sill is its own pop.
+      const outK = id !== myId && this.indoorOutside(av.fx, av.fy, av.surfLevel) ? 1 - this.indoorGrade() : 1;
       // ABOVE THE CUT the body goes too, not just its name tag: it would be
-      // standing on terrain that is not drawn. I am never above my own cut —
-      // the room is resolved from where I stand.
-      const overhead = id !== myId && this.aboveCut(av.surfLevel ?? 0);
-      av.sprite.setVisible(!overhead);
-      av.label.setVisible(!away && !overhead);
+      // standing on terrain that is not drawn — it fades with that terrain's
+      // debris (cutFade). I am never above my own cut — the room is resolved
+      // from where I stand.
+      const cutA = id === myId ? 1 : this.cutFade(av.surfLevel ?? 0, av.fx, av.fy);
+      const overhead = cutA <= 0.004;
+      av.sprite.setVisible(!overhead).setAlpha(cutA);
+      av.label.setVisible(outK > 0.01 && !overhead).setAlpha(outK * cutA);
       av.shadow.setVisible(!av.swimming && !overhead);
+      if (cutA < 1) av.shadow.setAlpha(av.shadow.alpha * cutA);
       // Head top (measured from the art), not the frame top — labels hug the
       // character instead of floating over transparent padding.
       const topFrac = (av.sprite.getData("topFrac") as number) ?? 0;
@@ -6053,7 +11162,7 @@ export class WorldScene extends Phaser.Scene {
           .setText(`${(av.fx / CELL_WU).toFixed(1)}, ${(av.fy / CELL_WU).toFixed(1)}\n${this.worldName}`);
       }
       if (av.bubble) {
-        av.bubble.setPosition(av.lx, topY - 18).setVisible(!away && !overhead); // goes with the body
+        av.bubble.setPosition(av.lx, topY - 18).setVisible(outK > 0.01 && !overhead).setAlpha(outK * cutA); // goes with the body
         if (this.time.now > (av.bubbleUntil ?? 0)) {
           av.bubble.destroy();
           av.bubble = undefined;
@@ -6097,6 +11206,7 @@ export class WorldScene extends Phaser.Scene {
         dist: sp.dist,
       });
     });
+    this.pe("avatarLoop");
 
     // INDOORS — run it HERE, not at the top of update(): this is the earliest
     // point at which the local player's fx/fy AND surfLevel are all fresh (the
@@ -6111,6 +11221,7 @@ export class WorldScene extends Phaser.Scene {
     // remote player (rate 12, snap on a big jump). Server owns the movement —
     // the client only interpolates + renders the hop.
     const monsterState = state.monsters;
+    this.ps();
     if (monsterState) {
       // CAMERA GATE (see MONSTER_CULL_SLACK): the view in world coords, grown
       // by the hysteresis slack. Zoom is already baked into worldView.
@@ -6121,30 +11232,53 @@ export class WorldScene extends Phaser.Scene {
       const vB = mview.bottom + MONSTER_CULL_SLACK;
       let active = 0;
       this.monsters.forEach((mv, id) => {
-        const m = monsterState.get(id);
+        const m = monsterState.get(id) ?? state.ghostMonsters?.get(id);
         if (!m) return;
         mv.fx = m.x;
         mv.fy = m.y;
         const g = this.projectFlat(m.x, m.y);
-        const targetElev = (m.elev ?? g.lvl) * MAP_GEOMETRY.lh;
+        const targetElev = (m.elev ?? g.lvl) * this.geom.lh;
         // Is any of this body's art inside the view? The anchor is at the FEET,
         // so the sprite occupies [y-h, y] and the shadow — which can be WIDER
         // than the sprite (a mammoth's ellipse spans ~190px) — straddles it.
         const sp = mv.sprite;
         const halfW =
           Math.max(sp.displayWidth, mv.shadowW * MONSTER_SHADOW_SPREAD) * 0.5;
-        const ay = g.y - targetElev - mv.hoverPx; // where it WILL be drawn
+        // A TUNED anchor is not the feet: it is the shadow centre, so the art
+        // hangs BELOW it too (crystal_horn: 61px of a 97px frame) and the
+        // sprite is NOT lifted by hoverPx (the tuned ay contains it). Untuned
+        // bodies keep the exact legacy box — `up` stays the whole frame and
+        // `down` stays shadowH, which for every shipped kind already exceeds
+        // the art below a feet anchor, so this is byte-identical for them.
+        const ay = g.y - targetElev - (mv.tuned ? 0 : mv.hoverPx); // where it WILL be drawn
+        const up = mv.tuned ? sp.displayHeight * sp.originY : sp.displayHeight;
+        const down = mv.tuned
+          ? Math.max(mv.shadowH, sp.displayHeight * (1 - sp.originY))
+          : mv.shadowH;
+        const cutA = this.cutFade(m.elev ?? g.lvl, m.x, m.y);
+        // SEALED IN A ROOM I AM NOT IN: parked like an off-screen body. Its
+        // roof or mountain covers every pixel of it, yet it animated, cast a
+        // depth ray, synced a lit copy and wore a hitbox ring through the rock
+        // (maintainer 2026-09-09, on the mountain over the cave: "I can see
+        // monster hitboxes moving as if they are not culled ... what happens
+        // under me will still be processed"). Same memoised verdict the white
+        // outline uses; an entrance cell is not sealed, so a body walking out
+        // of the cave mouth un-parks under open sky.
         const onScreen =
+          !mv.artPending && // parked until its strips land — see addMonster
+          !this.sealedAway(m.x, m.y, m.elev ?? g.lvl) &&
           g.x + halfW >= vL &&
           g.x - halfW <= vR &&
-          ay + mv.shadowH >= vT &&
-          ay - sp.displayHeight <= vB &&
-          !this.aboveCut(m.elev ?? g.lvl);
+          ay + down >= vT &&
+          ay - up <= vB &&
+          cutA > 0.004;
         // The indoor test is ONLY about height. A monster outside my room but
         // at my level is drawn and lit like the ground under it — that is the
         // whole zero-ambient design. One ABOVE the cut is different: the
-        // terrain it stands on is not drawn, so it would hang in the void.
-        // Its ABOVE-OVERLAY chrome is a third case — see indoorOutside.
+        // terrain it stands on is not drawn, so it would hang in the void —
+        // it wears the transition debris' own opacity (cutFade) and parks
+        // once that has dissolved. Its ABOVE-OVERLAY chrome is a third case —
+        // see indoorOutside.
         if (!onScreen) {
           // PARKED: no anim, no depth ray, no shadow, no lit copy, no draw.
           // The position still tracks the server exactly (snapped, not eased —
@@ -6167,6 +11301,7 @@ export class WorldScene extends Phaser.Scene {
             sp.setVisible(false);
             mv.shadow.setVisible(false);
             mv.lit?.setVisible(false);
+            mv.fog?.setVisible(false);
             mv.hpBg?.setVisible(false);
             mv.hpFill?.setVisible(false);
             mv.lvText?.setVisible(false);
@@ -6182,6 +11317,7 @@ export class WorldScene extends Phaser.Scene {
           mv.shadow.setVisible(true);
           sp.anims.resume();
         }
+        sp.setAlpha(cutA); // the lit copy and fog silhouette follow it (syncLitCopy)
         active++;
         if (Math.abs(g.x - mv.lx) > CELL_WU * 2 || Math.abs(g.y - mv.lyFlat) > CELL_WU * 2) {
           // A respawn/reslot teleport — snap, don't ease across the map.
@@ -6207,7 +11343,7 @@ export class WorldScene extends Phaser.Scene {
             const dsx = mv.lx - px0;
             const dsy = mv.lyFlat - py0;
             const scr = Math.hypot(dsx, dsy);
-            const dSum = dsy * (CELL_WU / MAP_GEOMETRY.dy);
+            const dSum = dsy * (CELL_WU / this.geom.dy);
             const v = this.world
               ? Math.hypot((dsx + dSum) / 2, (dSum - dsx) / 2) / dt
               : scr / dt;
@@ -6227,7 +11363,7 @@ export class WorldScene extends Phaser.Scene {
             { elev: mv.elev, fallV: mv.fallV, falling: mv.falling },
             targetElev,
             dt,
-            MAP_GEOMETRY.lh,
+            this.geom.lh,
           );
           mv.elev = s.elev;
           mv.fallV = s.fallV;
@@ -6240,6 +11376,14 @@ export class WorldScene extends Phaser.Scene {
         const sLvl = m.elev ?? g.lvl;
         mv.surfLevel = sLvl; // occluder + light sampling basis (LEVELS)
         this.playMonsterAnim(mv, !!m.moving, m.dir, m.mstate ?? "roam", m.actionSeq ?? 0);
+        // RE-ANCHOR AFTER the clip is resolved. The tuned origin is a fraction
+        // of the CURRENT frame's dimensions, and playMonsterAnim's combat
+        // branches can return having played a strip framed at other dims (and
+        // an attack re-anchors only on a new actionSeq, so a stale origin
+        // would ride the whole swing). Cheap: one lookup + setOrigin, no
+        // manifest scan. Untuned monsters keep their per-direction measured
+        // anchor + per-frame shift[] re-pin below, untouched.
+        if (mv.tuned) this.applyTunedOriginFor(mv, mv.shState ?? "idle", mv.dispDir);
         // …and the per-state semantic events the wiki's sound card assigns to
         // (silent until it does). AFTER playMonsterAnim, so the walk cadence
         // reads the clip that is actually running this frame.
@@ -6257,8 +11401,9 @@ export class WorldScene extends Phaser.Scene {
         mv.sprite.x = mv.lx + hx;
         // Winged flyers levitate hoverPx above the ground anchor; the nadir
         // shadow stays ON the ground (placeBodyShadow gets the hover as air
-        // height, so it shrinks/fades slightly — the bird pattern).
-        mv.sprite.y = mv.ly - mv.hoverPx + hy;
+        // height, so it shrinks/fades slightly — the bird pattern). A tuned
+        // anchor already contains the hover gap (see addMonster).
+        mv.sprite.y = mv.ly - (mv.tuned ? 0 : mv.hoverPx) + hy;
         // PER-FRAME drift compensation (the safe equivalent of the player
         // art's nadir postprocess — measured in the manifest, art untouched):
         // pin THIS frame's own body-mass origin-x so baked horizontal
@@ -6271,46 +11416,86 @@ export class WorldScene extends Phaser.Scene {
           ? undefined
           : (!m.moving && mv.groundIdle?.[mv.dispDir]) || mv.ground?.[mv.dispDir];
         const fi = parseInt(String(mv.sprite.frame.name), 10) || 0;
-        const ox = gd?.shift?.[fi];
+        // Per-frame body-mass re-pinning belongs to the LEGACY contract: a
+        // tuned monster's art moves inside its frame as the animation animates
+        // — that is real motion around the anchor, not drift to compensate.
+        const ox = mv.tuned ? undefined : gd?.shift?.[fi];
         if (ox !== undefined) mv.sprite.setOrigin(ox, gd!.f);
         const airPx = gd?.air?.[fi] ?? 0;
         // Damage float + blood + hp bar (RO: you SEE the number and the wound).
         if (mv.lastHp !== undefined && m.hp < mv.lastHp) {
           this.spawnDamageFloat(mv.lx, mv.sprite.y - mv.sprite.displayHeight * mv.sprite.originY, `${mv.lastHp - m.hp}`, 0xffe08a);
-          this.spawnBloodFx(mv.lx, mv.sprite.y - mv.sprite.displayHeight * 0.45);
+          // Origin-relative ONLY for a tuned monster, whose anchor moved to the
+          // shadow centre. An untuned monster keeps the shipped fixed −0.45·h
+          // EXACTLY: the origin-relative form is identical only at the 0.85
+          // anchor this once assumed, and real measured anchors are
+          // ground[dir].f — it moved blood by −8.7 px on saber_toothed_tiger
+          // and −16.1 px on dark_donkey, which is a visible change to shipped
+          // monsters that has nothing to do with tuned shadows.
+          this.spawnBloodFx(
+            mv.lx,
+            mv.tuned
+              ? mv.sprite.y - mv.sprite.displayHeight * (mv.sprite.originY - 0.4)
+              : mv.sprite.y - mv.sprite.displayHeight * 0.45,
+          );
         }
         mv.lastHp = m.hp;
         this.updateMonsterHpBar(mv, m, id);
         this.resolveBodyDepth(mv, sLvl);
-        // Shadow ellipse is PER DIRECTION (an east mammoth's footprint spans
-        // ~140px, its south one ~90 — one size can't fit both facings).
-        // ONE constant ellipse per monster (maintainer: no size changes on
-        // turns or walk<->idle) — soft smear comes from texture + spread.
-        const gw = mv.shadowW * MONSTER_SHADOW_SPREAD;
-        const gh = mv.shadowH * MONSTER_SHADOW_SPREAD;
-        this.placeBodyShadow(mv, targetElev, mv.hoverPx + airPx, gw, gh);
-        // The anchor is the CONTACT CENTROID (between the foot undersides);
-        // the front toes plant `sink` px below it. Lift the ellipse so its
-        // south rim kisses the toe line — but NEVER above the contact band
-        // (`up` + 3): a monolith's compact base keeps its ellipse centred on
-        // the base instead of floating half-a-height up the rock ("the big
-        // demon stone is flying", round 5).
-        mv.shadow.y -= Math.max(
-          0,
-          Math.min(gh / 2 - (gd?.sink ?? 2) - 2, (gd?.up ?? 99) + 3),
-        );
+        if (mv.tuned) {
+          // THE TUNED ELLIPSE, TURNED WITH THE FACING. Rotated on the GROUND
+          // (shared shadowScreenEllipse — same math the wiki previewed), and
+          // centred exactly on the monster's position: no toe-kiss, no contact
+          // heuristics. Where it sits IS what the Game Master placed.
+          // ONE SIZE: the animation's own `air[]` and the flyer's `hoverPx` are
+          // NOT fed to the hop shrink here. Both are baked into the tuned
+          // anchor, and a shadow that breathes with the idle cycle is not the
+          // one size he placed (measured on diablo_2: −4.6% width every idle
+          // loop, −13% on walk south; a tuned butterfly_dragon would have sat
+          // permanently 11% small and 15% faint). A real FALL still shrinks it
+          // — placeBodyShadow derives that from the drawn height itself.
+          this.placeTunedShadow(mv, targetElev);
+        } else {
+          // Shadow ellipse is PER DIRECTION (an east mammoth's footprint spans
+          // ~140px, its south one ~90 — one size can't fit both facings).
+          // ONE constant ellipse per monster (maintainer: no size changes on
+          // turns or walk<->idle) — soft smear comes from texture + spread.
+          const gw = mv.shadowW * MONSTER_SHADOW_SPREAD;
+          const gh = mv.shadowH * MONSTER_SHADOW_SPREAD;
+          this.placeBodyShadow(mv, targetElev, mv.hoverPx + airPx, gw, gh);
+          if (cutA < 1) mv.shadow.setAlpha(mv.shadow.alpha * cutA);
+          // The anchor is the CONTACT CENTROID (between the foot undersides);
+          // the front toes plant `sink` px below it. Lift the ellipse so its
+          // south rim kisses the toe line — but NEVER above the contact band
+          // (`up` + 3): a monolith's compact base keeps its ellipse centred on
+          // the base instead of floating half-a-height up the rock ("the big
+          // demon stone is flying", round 5).
+          mv.shadow.y -= Math.max(
+            0,
+            Math.min(gh / 2 - (gd?.sink ?? 2) - 2, (gd?.up ?? 99) + 3),
+          );
+        }
         // A hopping body's shadow travels WITH it — placeBodyShadow anchors on
         // the ease state (mv.lx), which is deliberately free of the surge.
         if (hx || hy) mv.shadow.setPosition(mv.shadow.x + hx, mv.shadow.y + hy);
       });
       this.monstersActive = active;
     }
+    /* THE REAL MONSTER LOOP, MEASURED AT LAST. `monsterLoop` was instrumented
+     * inside the `__ml.monsterGate` debug hook, which play never calls, so the
+     * key never appeared in a report and 146 monsters cost an unknown amount
+     * per frame. This is the loop that actually runs. */
+    this.pe("monsterLoop");
 
     // The world's people: placed by maps2, drawn through the shared body
     // pipeline, breathing on their own calm clocks.
+    this.ps();
     this.stepNpcs();
+    this.pe("stepNpcs");
+    this.stepSceneryAnims();
     // Sword marker + target frame + aggro-radius debug rings (all read the
     // freshly-updated monster sprites above).
+    this.ps();
     this.updateTargetOverlays();
     // The pickup sound, held until the hand actually reaches the ground —
     // before stepGroundDecor, so the sound and the item vanishing land on the
@@ -6319,7 +11504,14 @@ export class WorldScene extends Phaser.Scene {
     // Grave crosses (appear → hold → reverse) + the drop end-of-life flash.
     this.stepGroundDecor();
 
+    if (this.death) this.stepDeath(this.time.now);
     this.updateChaseCam(delta);
+    this.pe("overlays");
+    /* EVERYTHING FROM HERE TO THE END OF THE FRAME IS LIGHTING — the shader's
+     * light list, the room filter, applyObjectLights, flushCoverSurfaces and
+     * the atmosphere update. None of it was timed, and it is the last large
+     * unmeasured block in update(). */
+    this.ps();
 
     // The bonfire is world ART and is DRAWN wherever it stands — indoors the
     // outside is no longer a void, so nothing about the room hides it. Its
@@ -6338,7 +11530,7 @@ export class WorldScene extends Phaser.Scene {
     // copy, all of which draw ABOVE the darkness overlay.
     this.fireRoomK =
       fireLit && this.campfire && !this.inMyRoom(this.campfire.col, this.campfire.row)
-        ? 1 - this.indoorMix
+        ? 1 - this.indoorGrade()
         : 1;
 
     // Night lighting (always on): per-pixel point lights with heightmap
@@ -6347,57 +11539,72 @@ export class WorldScene extends Phaser.Scene {
     this.night?.setActive(shaderNight);
     this.atmo.suppressGrade = shaderNight;
     if (shaderNight && this.world) {
+      // THE LIGHT SLOT LEDGER (maintainer 2026-08-12) — 12 slots, laid out so
+      // no system can starve another. See lightslots.ts for the contract:
+      //   1 my own torch · 1 ambient agent · 2 future fx · 8 the world.
+      // Push order below IS the layout. The QA probe light consumes a WORLD
+      // slot when set, so the total can never exceed MAX_SHADER_LIGHTS.
       const sl: ShaderLight[] = [];
       // Debug-only probe light (set via __ml.probeLight) — lets headless
       // verification place a light at an exact grid position, since walking
       // there is dt-clamped to a crawl on slow headless clients.
       if (this.probeLight) sl.push(this.probeLight);
-      if (fireLit && this.campfire) {
-        const c = this.campfire;
-        // Overbright core: the shader clamps the multiplier at 1.25, so values
-        // >1 widen the hot plateau around the fire (ref: bright ~2 cells, then
-        // a fast falloff into the ember-red rim).
-        sl.push({ col: c.col, row: c.row, z: c.z, radius: 7, color: [1.9, 0.88, 0.3], flicker: 1 });
+      // [SLOT: MY TORCH] — and ONLY mine. Remote players' torches are no
+      // longer lights at all (maintainer 2026-08-12: "a player can only ever
+      // see its own torch") — with 8 slots handed to the world, a crowded
+      // street of torch-bearers would otherwise be the thing that starves it.
+      //
+      // MY TORCH IS ALSO THE DEATH LIGHT (2026-08-12: "the players torch will
+      // be the thing that highlights the player being dead"). It rides the
+      // SAME eased curve as the zoom and the veil, so a torch that was out —
+      // broad daylight, or switched off — kindles as the world goes dark
+      // instead of popping on at the first dead frame; one already burning is
+      // untouched, max() can only raise it.
+      const dt0 = this.death ? Math.min(1, (this.time.now - this.death.at) / DEATH_ZOOM_MS) : 0;
+      const deathTorch = dt0 > 0 ? 1 - Math.pow(1 - dt0, 3) : 0;
+      const me = myId ? this.avatars.get(myId) : undefined;
+      this.lastSlotInfo.torch = false;
+      if (me) {
+        // Day gate + doorway override, now for one body: full Day outdoors a
+        // torch has no impact; indoors the doorway fade re-enables it.
+        const base = Math.max(this.curTorchF, this.indoorContains(me.fx, me.fy) ? this.indoorGrade() : 0);
+        const tf = Math.max(this.torchOn ? base : 0, deathTorch);
+        if (tf > 0.01) {
+          this.lastSlotInfo.torch = true;
+          // Grid position from the FLAT authoritative coords (1 cell = CELL_WU
+          // world units) — the projected lx/ly live in screen space and put
+          // the torch underground, so the terrain shadowed its own light.
+          // Held low (waist height), anchored to the RENDERED elevation
+          // (litLevelOf) so a torch carried onto a deck lights the deck.
+          // While dead it goes OVERBRIGHT (the clamp widens the plateau
+          // instead of blowing out) — that is what survives the death veil.
+          const k = tf * (1 + (DEATH_TORCH_BOOST - 1) * deathTorch);
+          sl.push({
+            col: me.fx / CELL_WU,
+            row: me.fy / CELL_WU,
+            z: this.litLevelOf(me) + 0.55,
+            radius: 6,
+            color: [0.85 * k, 0.58 * k, 0.32 * k],
+            flicker: 0.35, // hand torch: gentle fire flicker
+          });
+        }
       }
-      // Torches fill the remaining slots (emission glow pools live in the
-      // additive glow field, not in light slots — they can't be crowded out).
-      // (Filtered to my own room at the end of this block while indoors.)
-      for (const [id, a] of this.avatars.entries()) {
-        // The day gate is now PER BODY: "re-enable the player's torch even if
-        // it's day outside" (maintainer) — but only for bodies sharing MY room,
-        // which is an O(1) Set lookup into the space I already have, not a
-        // second flood fill. Everyone else keeps the global fade.
-        // `continue`, NOT `break`: the old gate broke the whole loop because
-        // curTorchF was loop-INVARIANT. Per-body, one daylit outdoor avatar
-        // early in the Map's join order would silently cancel every indoor
-        // torch behind it. max() is the right combiner — it never dims a torch
-        // daylight already allows, and it is continuous in both arguments, so
-        // the day fade and the doorway fade compose without a step.
-        const tf = Math.max(this.curTorchF, this.indoorContains(a.fx, a.fy) ? this.indoorMix : 0);
-        if (tf <= 0.01) continue; // full Day, outdoors: torches have no impact
-        if (!this.torchLit(id, myId, state)) continue;
-        if (sl.length >= MAX_SHADER_LIGHTS) break;
-        // Grid position from the FLAT authoritative coords (1 cell = CELL_WU
-        // world units) — the projected lx/ly live in screen space and put the
-        // torch underground, so the terrain shadowed its own light.
-        sl.push({
-          col: a.fx / CELL_WU,
-          row: a.fy / CELL_WU,
-          // Held low (waist height): a high torch grazes over ledge lips and
-          // lights ground far below cliffs, which reads as leakage. Anchor to the
-          // avatar's RENDERED elevation (litLevelOf: a.elev px → levels, or the
-          // pool surface while swimming) so a torch carried ONTO a deck
-          // (bridge/roof) sits at the deck's height and lights the deck around it
-          // — not the base ground 4 levels below, nor the pool floor a swimmer
-          // is sunk to (its head + the torch it holds float at the surface).
-          z: this.litLevelOf(a) + 0.55,
-          radius: 6,
-          // Colour scales with the day-fade: the light's whole contribution
-          // is linear in it, so the pool melts out smoothly.
-          color: [0.85 * tf, 0.58 * tf, 0.32 * tf],
-          flicker: 0.35, // hand torch: gentle fire flicker
-        });
-      }
+      // [SLOT: AMBIENT AGENT] + [2 FX SLOTS] — reserved write-side APIs in
+      // lightslots.ts. Empty slots stay empty: the reservation is strict, a
+      // loan would mean a world light pops off when the owner shows up.
+      const rl = reservedLights();
+      this.lastSlotInfo.reserved = 0;
+      for (const l of [rl.ambient, rl.selfFx, rl.monsterFx])
+        if (l) {
+          sl.push(l);
+          this.lastSlotInfo.reserved++;
+        }
+      // [8 WORLD SLOTS] — the campfire scenery + every emissive tile/prop in
+      // range, as REAL lights at last. Overflow keeps the glow stamp.
+      this.ps();
+      this.pickWorldLights(sl, fireLit, this.game.loop.delta);
+      this.pe("litPick");
+      this.lastSlotInfo.total = sl.length;
       // LIGHT SOURCES OUTSIDE MY ROOM DO NOT REACH IT (maintainer 2026-08-07:
       // "point light from outside has to be turned off"). This became load
       // bearing the moment the outside stopped being a void: it is drawn now
@@ -6410,8 +11617,8 @@ export class WorldScene extends Phaser.Scene {
       // it" can never disagree. My torch is inside by construction, so its
       // spill through the doorway — the reveal he asked for — survives.
       //
-      // FADED on indoorMix, not switched: an outside light dies over the same
-      // 0.35s roll the outside ambient does, so nothing on screen steps.
+      // FADED on the GRADE, not switched: an outside light dies over the same
+      // quick ramp the outside ambient does, so nothing on screen steps.
       // The debug PROBE is exempt. It is the only instrument a headless gate
       // has for "the outside tiles really are drawn" — with ambient at zero a
       // drawn tile and a missing one are pixel-identical, and a light is the
@@ -6422,7 +11629,7 @@ export class WorldScene extends Phaser.Scene {
           const L = sl[i];
           if (L === this.probeLight) continue;
           if (this.inMyRoom(L.col, L.row)) continue;
-          const k = 1 - this.indoorMix;
+          const k = 1 - this.indoorGrade();
           if (k <= 0.01) sl.splice(i, 1);
           else L.color = [L.color[0] * k, L.color[1] * k, L.color[2] * k];
         }
@@ -6464,7 +11671,9 @@ export class WorldScene extends Phaser.Scene {
       this.curPrecipDim += (dimTo - this.curPrecipDim) * ca;
       if (!this.weatherFX) this.weatherFX = new WeatherFX(this);
       this.weatherFX.setWeather(this.weatherIdx);
+      this.ps();
       this.weatherFX.update(this.game.loop.delta, this.cameras.main, (wx, wy) => this.isWaterAtScreen(wx, wy));
+      this.pe("litWeather");
       // Aurora eases on the same ~4s roll (the curtains breathe in).
       const auroraTo = this.auroraOn ? 1 : 0;
       this.curAurora += (auroraTo - this.curAurora) * ca;
@@ -6477,11 +11686,11 @@ export class WorldScene extends Phaser.Scene {
       // setTimeOfDay snapshots it as `timeFromAmbient` (writing the interior
       // grade there would ease FROM it toward the next phase and pop bright)
       // and `__ml.timeOfDay()` / verify-timecycle read it.
-      const iF = this.indoorMix;
+      const iF = this.indoorGrade();
       // The interior target is READ PER FRAME from the Settings slider — it is
       // a live tuning dial, so a drag has to show while you stand in the room.
       // Cheap: three multiplies, no allocation beyond the triple itself.
-      const indoorTarget = indoorAmbient();
+      const indoorTarget = indoorAmbient(this.roomHasLight());
       // Kept SEPARATELY, because the two are for different halves of the world
       // while the crossing eases: `ambOut` is what a cell OUTSIDE my room is
       // heading for, `ambEff` is what a cell INSIDE it gets. Blending the
@@ -6530,12 +11739,29 @@ export class WorldScene extends Phaser.Scene {
         // The BOOLEAN geometry state, never indoorMix — the mask flips with the
         // verdict and the light eases behind it, so a resolve driven by the ease
         // would read half-cut geometry for a quarter-second on every doorway.
-        this.night.indoor = this.indoorInside;
+        // The shader's surface clamp follows the VERDICT on the way out, not
+        // the drawn state (maintainer 2026-08-13, the exit-fade colour snap):
+        // through the exit fade the debris IS the returning geometry, and the
+        // light it wears must be the light it will keep. Clamped, the roof
+        // pixels resolved to the shadowed interior behind them and the mix-0
+        // repaint swapped a dark slab for a sunlit one — the art never
+        // changed, its LIGHT did ("the top of the roof completely changes
+        // color"). Unclamping at the exit FLIP lights the whole fade as the
+        // real outdoor world, so the final swap has nothing left to change.
+        // The accepted cost is the mirror image, on the half you are leaving:
+        // for the first fraction of a second the still-visible interior is
+        // tinted as the surfaces returning above it — under a debris layer
+        // already fading in over it, where the roof snap was the LAST frame,
+        // in full view. Entry keeps the clamp from its own flip: the room you
+        // are entering lights as a room immediately.
+        this.night.indoor = this.indoorInside && !!this.indoorMask;
         this.night.indoorTop = this.indoorTop;
-        // The LIGHT half of the same state does ride the ease: the outside
-        // fades to black on indoorMix while the interior's own ambient rolls
-        // down on it, so the two halves of a doorway crossing move together.
-        this.night.indoorMix = this.indoorMix;
+        // The LIGHT half of the same state rides the GRADE — 1.5×, its own
+        // clip: a bit faster than the raw roll (maintainer 2026-08-13: the
+        // darkening trailed the roof by the rest of the roll), deliberately
+        // slower than the debris' 3× (same day: everything at 3× read as one
+        // big snap — "the roof fade is intended to be faster to hide bugs").
+        this.night.indoorMix = this.indoorGrade();
         // What the OUTSIDE is fading between: black and this, never the
         // interior grade. Set every frame — the outdoor phase keeps moving
         // while you stand indoors.
@@ -6544,15 +11770,35 @@ export class WorldScene extends Phaser.Scene {
       // Local player drives the cel-shaded distance fog: its rendered elevation
       // (so the fog eases as it climbs/falls) + its cell (col,row) for the
       // horizontal distance term.
-      const meAv = this.avatars.get(this.room?.sessionId ?? "");
-      const playerZ = meAv ? Math.max(0, meAv.elev / MAP_GEOMETRY.lh) : 0;
+      const meAv = this.avatars.get(this.myId);
+      const playerZ = meAv ? Math.max(0, meAv.elev / this.geom.lh) : 0;
       const playerCol = meAv ? meAv.fx / CELL_WU : 0;
       const playerRow = meAv ? meAv.fy / CELL_WU : 0;
+      // A source holding a REAL light slot hands its ground POOL stamp back —
+      // the light replaces it (keeping both double-brightens ground and
+      // characters: curLights and curStamps both feed lightAt). CROSSFADED on
+      // the tenure ramp: while the light fades in, the pool fades out under it
+      // at exactly the complementary weight, so acquiring a slot mid-view is a
+      // dissolve between the two looks, never a swap. High halos (ry unset)
+      // stay: they are the art's own bloom. The glow RT repaints from this
+      // array every frame, so this is a map, not a rebuild.
+      const allStamps = this.sceneryStamps.length ? this.glowStamps.concat(this.sceneryStamps) : this.glowStamps;
+      const stampsDrawn = this.slotTenure.size
+        ? allStamps.flatMap((g) => {
+            if (!g.srcId || g.ry === undefined) return [g];
+            const t = this.slotTenure.get(g.srcId);
+            if (!t || !this.slotLit.has(g.srcId)) return [g];
+            if (t.ramp >= 1) return [];
+            const k = t.ramp * t.ramp * (3 - 2 * t.ramp);
+            return [{ ...g, alpha: g.alpha * (1 - k) }];
+          })
+        : allStamps;
+      this.ps();
       this.night!.update(
         this.cameras.main,
         sl,
         ambEff,
-        this.glowStamps,
+        stampsDrawn,
         sunIn,
         this.curCloud * (1 - iF),
         this.curAurora * (1 - iF),
@@ -6561,6 +11807,7 @@ export class WorldScene extends Phaser.Scene {
         playerCol,
         playerRow,
       );
+      this.pe("litPass");
     }
 
     const lights: LightSource[] = [];
@@ -6587,21 +11834,40 @@ export class WorldScene extends Phaser.Scene {
         lights.push({ x: c.x, y: c.y, color: 0xff9e4a, radius: 120, ground: true, depth: c.depth + 0.1 });
     }
     if (!shaderNight) {
-      for (const [id, a] of this.avatars.entries()) {
-        // Same per-body gate as the shader path, same `continue`-not-`break`
-        // reason (the scalar is no longer loop-invariant).
-        if (Math.max(this.curTorchF, this.indoorContains(a.fx, a.fy) ? this.indoorMix : 0) <= 0.5) continue;
-        if (!this.torchLit(id, myId, this.room?.state as any)) continue;
-        lights.push({ x: a.lx, y: a.ly - 20 }); // lantern pool
+      // MY torch only — same rule as the shader path (2026-08-12: remote
+      // players' torches are never lights), same death term so the corpse is
+      // lit on the Canvas renderer too.
+      const dt0 = this.death ? Math.min(1, (this.time.now - this.death.at) / DEATH_ZOOM_MS) : 0;
+      const deathTorch = dt0 > 0 ? 1 - Math.pow(1 - dt0, 3) : 0;
+      const meAv = myId ? this.avatars.get(myId) : undefined;
+      if (meAv) {
+        const base = Math.max(this.curTorchF, this.indoorContains(meAv.fx, meAv.fy) ? this.indoorGrade() : 0);
+        const tf = Math.max(this.torchOn ? base : 0, deathTorch);
+        if (tf > 0.5) lights.push({ x: meAv.lx, y: meAv.ly - 20 }); // lantern pool
       }
       lights.push(...this.emissiveLights);
     }
+    /* SPLIT, because `lighting` was the run's biggest number and its most
+     * opaque: 2.48 ms in one window and 17.13 in another on the maintainer's
+     * Mali-G715, and it did NOT track the lit-occluder count (the worst window
+     * had the FEWEST). Self-timed spans nest (see `pe`), so the parent now
+     * reports only its own remainder and the next beacon run attributes it. */
+    this.ps();
+    if (this.shapeJobs.size) this.runShapeJobs(3);
+    this.pe("litShapeJobs");
+    this.ps();
     this.applyObjectLights();
+    this.pe("litObjects");
     // After every body has registered AND both consumers have read their slot,
     // before render: rasterise the surfaces the frame's images point at.
+    this.ps();
     this.flushCoverSurfaces();
+    this.pe("litCoverSurf");
     this.footsteps?.update(this.time.now);
+    this.ps();
     this.atmo.update(lights, this.cameras.main, dt);
+    this.pe("litAtmo");
+    this.pe("lighting");
   }
 
   /** Start easing toward a time-of-day phase FROM the grade currently on
@@ -6635,18 +11901,10 @@ export class WorldScene extends Phaser.Scene {
     this.chat.addLog("—", `My torch: ${this.torchOn ? "on" : "off"}`);
   }
 
-  /** Is a player's torch lit? Mine reads the instant local mirror; everyone
-   * else reads their synced player state (default lit). This is the PREFERENCE
-   * only and has never held a day gate — that lives at the two consumption
-   * sites, which scale by `curTorchF` (0 at full Day: torches are an
-   * evening/night/morning feature, the switch keeps the preference and the
-   * flame waits for the light to fade). Since 2026-08-06 that gate is per body
-   * and INDOORS overrides it: "it's important to re-enable the players torch
-   * even if it's day outside" (maintainer). */
-  private torchLit(id: string, myId: string, state: any): boolean {
-    if (id === myId) return this.torchOn;
-    return state?.players?.get?.(id)?.torch ?? true;
-  }
+  // (torchLit(id) is gone with the remote torch lights, 2026-08-12: only MY
+  // torch is ever a light — "a player can only ever see its own torch" — so
+  // the preference is just this.torchOn. Player.torch stays synced on the
+  // server; nothing here reads it any more.)
 
   /** Cover the game render with a flat colour (frame QA): the Settings
    * "OVERLAY" button cycles NONE -> BLACK -> WHITE -> PINK. The cover is a
@@ -6676,6 +11934,15 @@ export class WorldScene extends Phaser.Scene {
 
   /** Show/hide the maps2 monster spawn-zone outlines (debug). Persisted so a
    * QA session keeps them on across reloads; OFF for everyone by default. */
+  /** The Settings "fog" switch. Remembered, and applied to the pass if there is
+   *  one — a world joined with fog off must not come back foggy. */
+  private setFog(on: boolean) {
+    this.fogOn = on;
+    localStorage.setItem("ml-fog", on ? "1" : "0");
+    if (this.night) this.night.atmoOff = !on;
+    this.hud?.refreshSettings(); // the switch prints its own state
+  }
+
   private toggleSpawnAreas(on = !this.spawnAreasOn) {
     this.spawnAreasOn = on;
     try {
@@ -6736,10 +12003,95 @@ export class WorldScene extends Phaser.Scene {
     // lit copies drawn above the overlay would pollute the samples.
     const on = !!night && night.active && night.testPattern < 3;
     const tNow = this.time.now / 1000;
+    const fogOn = on && night!.sceneryFog;
+    let litMs = 0;
+    let litN = 0;
     for (const lo of this.litOccluders) {
       lo.img.setVisible(on);
-      if (!on) continue;
-      let tint = night!.tintAt(lo.col, lo.row, lo.z, true);
+      if (!on) {
+        lo.fog?.setVisible(false);
+        continue;
+      }
+      /* DEPTH-FOG ON SCENERY AND PROPS (maintainer 2026-09-03: fogged ground,
+       * crisp skulls, spires and tree roots "pop out"; "a tall scenery object
+       * will have the same fog at the top as at the bottom"). The lit copy sits
+       * ABOVE the fog overlay, so the wash never reached it. Fading the copy
+       * (the bodies' cross-fade) is NOT enough: the fog under it is itself
+       * weighted by a, so the piece composited to a·a fog against the ground's
+       * a — half the wash at a=0.5, the root still near-black beside grey
+       * ground. EXACT instead: a FOG SILHOUETTE — the same art, tintFill in
+       * the fog's own colour, alpha a — drawn right over the opaque copy, which
+       * composites to copy·(1-a) + fogcol·a, precisely what the pass paints on
+       * the ground under it (g·light·(1-a) + fogcol·a). ONE a and ONE colour per
+       * piece, read at ITS FOOT POINT through the pass's own distance field
+       * (depthFogAtFoot: the fragment's smooth screen-space field, NOT the true
+       * cell distance — a plateau tree drawn below the player is NEAR ground to
+       * the pass), band centred between the tread's snapped steps so it fades
+       * gradually and never more than half a band from the ground it stands
+       * on; at the tread's integer level. Fog 0 → nothing drawn. */
+      /* COVERED BY TERRAIN? The lit copy sits at litDepth — ABOVE every terrain
+       * occluder — so without this a tree behind a hill drew its whole self over
+       * the hill (maintainer 2026-09-03: "the trees around the player should be
+       * covered by the hill"). The BASE image is sorted correctly in the world
+       * layer; the copy just has to show the same part of it, which is exactly
+       * what bodies do with `coverY` in syncLitCopy. Computed ONCE per rebuild:
+       * both the piece and the terrain are static. */
+      if (lo.cover !== undefined && lo.cover !== Infinity) {
+        const im = lo.img;
+        const cropH = (lo.cover - im.y) / (im.scaleY || 1);
+        if (cropH <= 0) {
+          im.setVisible(false);
+          lo.fog?.setVisible(false);
+          continue;
+        }
+        im.setCrop(0, 0, im.frame.cutWidth, cropH);
+        lo.fog?.setCrop(0, 0, im.frame.cutWidth, cropH);
+      } else if (lo.img.isCropped) {
+        lo.img.setCrop();
+        lo.fog?.setCrop();
+      }
+      const f = night!.depthFogAtFoot(lo.bx, lo.by, Math.floor(lo.z), lo.col, lo.row);
+      const fa = fogOn ? Math.min(1, Math.max(0, f.a)) : 0;
+      /* INDOOR FURNITURE CROSSES WITH ITS ROOF (roofedFade): the copy and its
+       * fog take the same opacity the base sprite does, or the copy — which
+       * draws ABOVE the darkness overlay — would stay solid over a roof that
+       * has already faded back in. */
+      const rf = (lo.roofed ? this.roofedFade() : 1) * (lo.fade ?? 1);
+      lo.img.setAlpha(rf);
+      if (fa > 0.002) {
+        if (!lo.fog) this.makeFogSilhouette(lo);
+        const c = (v: number) => Math.max(0, Math.min(255, Math.round(v * 255)));
+        lo.fog!.setTintFill((c(f.r) << 16) | (c(f.g) << 8) | c(f.b)).setAlpha(fa * rf).setVisible(true);
+      } else lo.fog?.setVisible(false);
+      // (shade 0 = the parity switch: the copy keeps the flat tint and the
+      // pipeline runs Multi.frag's own path — the plumbing alone under test.)
+      if (lo.shape && this.sceneryLightOn && this.sceneryLitPipe!.shade > 0 && !lo.emission) {
+        /* SCENERY LIGHT: the flat tint carries only the AMBIENT side (sun, sky,
+         * AO, glow stamps — the ground's own grade, so a piece in a cave stays
+         * as dark as its floor); the point lights are added PER TEXEL by the
+         * pipeline, which reads the axis's per-light occlusion × AO and sun
+         * share off `shape` (by reference). One lightAt per piece — what the
+         * flat tint paid — read at the HITBOX CENTRE, the volume's own axis.
+         * WHILE THE SHAPE MAP IS STILL BEING BUILT the copy takes the SAME
+         * ambient-only tint: the landing map then ADDS the point lights (a
+         * piece entering the view brightens over a few frames) instead of the
+         * full flat tint dropping to the shaded one — measured −33..−53% in one
+         * frame, the maintainer's "sudden pop". */
+        const t0 = performance.now();
+        const sh = lo.shape;
+        const parts = this.sceneryLitParts;
+        night!.lightAt(sh.fc, sh.fr, sh.fz + 0.5, true, lo.place !== undefined ? night!.sceneryExclR2(lo.place) : 0, parts);
+        const ao = parts.ao;
+        for (let i = 0; i < SCENERY_LIT_OCC; i++) sh.occ[i] = parts.occ[i] * ao;
+        sh.sv = parts.sunF - 1 + 0.45 * night!.sunStrength;
+        lo.img.setTint((tint8(parts.base[0]) << 16) | (tint8(parts.base[1]) << 8) | tint8(parts.base[2]));
+        litMs += performance.now() - t0;
+        litN++;
+        continue;
+      }
+      // A scenery piece's own occluder shares are excluded from its own tint (see
+      // nightlight.setSceneryOccluders) — the ground behind it takes the shadow, the piece does not.
+      let tint = night!.tintAt(lo.col, lo.row, lo.z, true, lo.place !== undefined ? night!.sceneryExclR2(lo.place) : 0);
       if (lo.emission) {
         // Self-glow floor on the copy's tint — same semantics as the
         // shader's per-cell floor (max(light, colour*self*anim)) but applied
@@ -6770,6 +12122,12 @@ export class WorldScene extends Phaser.Scene {
       }
       lo.img.setTint(tint);
     }
+    {
+      const st = this.sceneryLightStat;
+      st.lastMs = litMs;
+      st.pieces = litN;
+      st.emaMs = st.emaMs * 0.9 + litMs * 0.1;
+    }
     for (const a of this.avatars.values()) {
       const l = this.syncLitCopy(a, on, a.baseTint);
       if (!l) {
@@ -6781,6 +12139,12 @@ export class WorldScene extends Phaser.Scene {
       // overlay (composes with the wall crop inside syncLitCopy).
       if (a.swimming && a.swimT > 0.001 && a.waterMask) a.lit!.setMask(a.waterMask);
       else if (a.lit!.mask) a.lit!.clearMask();
+      // ...and its fog silhouette, or a distant swimmer wears fog-coloured legs
+      // over the water.
+      if (a.fog) {
+        if (a.swimming && a.swimT > 0.001 && a.waterMask) a.fog.setMask(a.waterMask);
+        else if (a.fog.mask) a.fog.clearMask();
+      }
       // Foam draws ABOVE the night overlay (like the lit copy), so tint its
       // white crest by the same LOCAL light — otherwise it stays bright white
       // at full night. Light-only (the texture already carries its colours), so
@@ -6867,7 +12231,19 @@ export class WorldScene extends Phaser.Scene {
     }
   }
 
+  /** Remember the cell I stand on in this world (localStorage, every few
+   *  seconds): the next boot loads the monster art of THIS neighbourhood too,
+   *  because a returning player lands on their saved spot, not the spawn. */
+  private saveLastPos() {
+    const now = this.time.now;
+    if (now - this.lastPosSavedAt < 3000) return;
+    this.lastPosSavedAt = now;
+    const me = this.room?.state.players?.get(this.myId);
+    if (me) writeLastPos(this.worldName, me.x / CELL_WU, me.y / CELL_WU);
+  }
+
   private predictAndSend(dt: number) {
+    this.saveLastPos();
     if (this.selfDead) {
       this.sendAccum = 0;
       this.jumpQueued = false;
@@ -6902,16 +12278,36 @@ export class WorldScene extends Phaser.Scene {
       // keys); the autopilot has real findPath. Like auto-jump, the deflected
       // input is what gets predicted AND sent — the server stays untouched.
       if (this.terrain) {
-        const me = this.room ? this.avatars.get(this.room.sessionId) : undefined;
+        const me = this.room ? this.avatars.get(this.myId) : undefined;
         if (me) {
-          const assist = steerAssist(this.terrain, me.fx, me.fy, ax, ay);
-          if (assist) {
-            ax = assist.ax;
-            ay = assist.ay;
+          // The stick moved: whatever was being rounded is no longer the ask.
+          if (this.stickTrip && (ax !== this.stickDir.ax || ay !== this.stickDir.ay)) {
+            this.stickTrip = null;
+            this.walkHold.ax = 0;
+            this.walkHold.ay = 0;
           }
+          this.stickDir = { ax, ay };
+          /* ONE decision, shared and headless-tested — see walkHeading. It owns
+           * the whole order: hold a commitment, follow a planned detour, the
+           * local assist, plan round a footprint, slide rather than stand
+           * still, never retreat. The order is the part that was wrong, which
+           * is exactly why it does not live inline here any more. */
+          const r = walkHeading(this.terrain, me.fx, me.fy, ax, ay, this.walkHold, {
+            nowMs: performance.now(),
+            trip: this.stickTrip,
+            fromElev: me.surfLevel ?? undefined,
+            worldW: this.worldW,
+            worldH: this.worldH,
+          });
+          ax = r.ax;
+          ay = r.ay;
+          this.stickTrip = r.trip;
         }
       }
     } else {
+      this.stickTrip = null; // stick released
+      this.walkHold.ax = 0;
+      this.walkHold.ay = 0;
       // Held finger at rest: pointermove stops firing, so commit any
       // budget-deferred drag retarget from the frame loop instead.
       this.holdRepath(performance.now());
@@ -6925,6 +12321,24 @@ export class WorldScene extends Phaser.Scene {
         running = drive.running;
       }
     }
+    /* THE TAP PATH GETS THE SAME FLOOR. `walkHeading` covers a held direction;
+     * a tap trip can wedge against a footprint just as easily, and standing
+     * still with open ground beside you is never the right answer. Keys already
+     * went through walkHeading above, so this only ever fires for the autopilot.
+     * Its own memo: the two paths must not share a commitment. */
+    if (this.terrain && !this.keysActive && (ax !== 0 || ay !== 0)) {
+      const me = this.room ? this.avatars.get(this.myId) : undefined;
+      if (me && bodyStalled(this.terrain, me.fx, me.fy, ax, ay, me.surfLevel)) {
+        const sl = slideAlong(this.terrain, me.fx, me.fy, ax, ay, this.tapSlide, me.surfLevel);
+        if (sl) {
+          ax = sl.ax;
+          ay = sl.ay;
+        }
+      } else if (this.tapSlide.ax !== 0 || this.tapSlide.ay !== 0) {
+        this.tapSlide.ax = 0;
+        this.tapSlide.ay = 0;
+      }
+    }
     // SOFT MONSTER COLLISION (maintainer 2026-07-30): monsters are not in the
     // collision grid — no network or pathfinder cost — so the INPUT slips
     // around a monster's personal space instead, exactly like steer assist
@@ -6932,7 +12346,7 @@ export class WorldScene extends Phaser.Scene {
     // deflected vector is what gets predicted AND sent, so the server
     // integrates the same move and nothing rubber-bands.
     if ((ax !== 0 || ay !== 0) && (this.monsters.size || this.npcs.size)) {
-      const me = this.room ? this.avatars.get(this.room.sessionId) : undefined;
+      const me = this.room ? this.avatars.get(this.myId) : undefined;
       if (me) {
         // Per-monster ART radii (v2): a mammoth deflects the walker from ~4×
         // the distance a poring does, so the near-filter box must admit the
@@ -6951,13 +12365,17 @@ export class WorldScene extends Phaser.Scene {
                 me.fx, me.fy, hax, hay, false, dt,
                 makeBlockedElev(this.terrain!, walk, () => me.surfLevel ?? 0),
                 1, true, this.worldW, this.worldH,
-                makeSideBlocked(this.terrain!, walk),
+                makeSideBlocked(this.terrain!, walk, () => me.surfLevel ?? 0),
               );
               return Math.hypot(r.x - me.fx, r.y - me.fy) > WALK_SPEED * dt * 0.35;
             }
           : undefined;
+        // `now` + allowPass arm THE PASS (the "special move"): when a body
+        // blocks the only lane the dodge stops negotiating and walks straight
+        // through, with the little crossover jink when a sliver exists —
+        // instead of the back-and-forth panic (maintainer 2026-08-13).
         const dodge = near.length
-          ? monsterDodge(me.fx, me.fy, ax, ay, near, this.dodgeState, undefined, openHeading)
+          ? monsterDodge(me.fx, me.fy, ax, ay, near, this.dodgeState, undefined, openHeading, this.time.now, true)
           : null;
         if (dodge) {
           ax = dodge.ax;
@@ -7003,7 +12421,7 @@ export class WorldScene extends Phaser.Scene {
    * a lower l, reached only after the occluding face). */
   private isWaterAtScreen(wx: number, wy: number): boolean {
     if (!this.world) return false;
-    const { dx, dy, lh, tile } = MAP_GEOMETRY;
+    const { dx, dy, lh, tile } = this.geom;
     const u = (wx - this.iso.ox - tile / 2) / dx;
     for (let l = this.maxLevel; l >= 0; l--) {
       const v = (wy - this.iso.oy - dy + l * lh) / dy;
@@ -7026,7 +12444,7 @@ export class WorldScene extends Phaser.Scene {
    * through this to avoid landing on cliff walls or in the water. */
   private landableAtScreen(wx: number, wy: number): boolean {
     if (!this.world) return false;
-    const { dx, dy, lh, tile } = MAP_GEOMETRY;
+    const { dx, dy, lh, tile } = this.geom;
     const u = (wx - this.iso.ox - tile / 2) / dx;
     for (let l = this.maxLevel; l >= 0; l--) {
       const v = (wy - this.iso.oy - dy + l * lh) / dy;
@@ -7072,7 +12490,7 @@ export class WorldScene extends Phaser.Scene {
     altPx: number,
   ): { l: [number, number, number]; fog: number; fogCol: [number, number, number]; col: number; row: number; L: number; cellL: number; lift: number; shadowDepth: number; z: number } | null {
     if (!this.world || !this.night) return null;
-    const { dx, dy, lh, tile } = MAP_GEOMETRY;
+    const { dx, dy, lh, tile } = this.geom;
     const u = (gx - this.iso.ox - tile / 2) / dx;
     // Front-most drawn surface under the ground point, falling back to the
     // level-0 projection when nothing is hit (off-map / over a gap).
@@ -7167,7 +12585,7 @@ export class WorldScene extends Phaser.Scene {
       lvl,
     });
     if (!this.world) return clampW(wx, wy, 0); // plain-ground fallback: screen == flat world
-    const { dx, dy, lh, tile } = MAP_GEOMETRY;
+    const { dx, dy, lh, tile } = this.geom;
     const u = (wx - this.iso.ox - tile / 2) / dx;
     // A TAP MUST RESOLVE AGAINST WHAT IS ON SCREEN, and indoors that is the
     // CUT-AWAY: nothing above `indoorTop` is drawn and the roof slab is not
@@ -7178,8 +12596,17 @@ export class WorldScene extends Phaser.Scene {
     // (maintainer 2026-08-07: "the player walks to a spot about a full
     // character in length under the spot I actually clicked on. This makes it
     // really hard to point and click navigate indoors").
-    const cut = this.indoorInside && this.indoorMask ? this.indoorTop : -1;
-    for (let l = cut >= 0 ? cut : this.maxLevel; l >= 0; l--) {
+    // "What is drawn" is the INDOOR MASK's presence, not the verdict: the exit
+    // fade keeps the cut world painted for the length of the light roll, and a
+    // tap during it must still resolve against the picture on screen.
+    const drawn = !!this.indoorMask;
+    const cuts = drawn ? this.indoorCut : null;
+    // Legacy kill-switch cut (cuts null): the scalar world-wide truncation —
+    // nothing above the dial exists anywhere. With per-cell cuts the drawn
+    // world reaches full height wherever a column is unconstrained (the
+    // neighbour's roof is a real tappable deck again).
+    const scanTop = drawn && !cuts ? this.indoorTop : this.maxLevel;
+    for (let l = scanTop; l >= 0; l--) {
       const v = (wy - this.iso.oy - dy + l * lh) / dy;
       const col = (u + v) / 2;
       const row = (v - u) / 2;
@@ -7187,10 +12614,13 @@ export class WorldScene extends Phaser.Scene {
       const ri = Math.floor(row);
       const cell = this.world.rows[ri]?.[ci];
       if (!cell) continue;
+      const cutE = drawn ? (cuts ? cuts.get(ri * this.world.width + ci) : this.indoorTop) : undefined;
       // world@2: a deck slab drawn at level l here is the TOP surface — tapping
-      // it targets the deck (bridge/roof), not the base underneath. Skipped
-      // indoors, where the slab over your head is exactly what is NOT drawn.
-      if (cut < 0) {
+      // it targets the deck (bridge/roof), not the base underneath. Skipped for
+      // CONSTRAINED cells indoors, where the slab is exactly what is not drawn
+      // (my roof, or a lid over my floor); an unconstrained deck — the
+      // neighbour's roof, a far bridge — is painted and taps like outdoors.
+      if (cutE === undefined) {
         const deckL = this.terrain?.deck[ri * this.world.width + ci] ?? -1;
         if (deckL === l && !(ignoreAtOrAbove !== undefined && deckL >= ignoreAtOrAbove))
           return clampW(col * CELL_WU, row * CELL_WU, l);
@@ -7201,12 +12631,10 @@ export class WorldScene extends Phaser.Scene {
       // Resolving to the parapet instead put the target 2 levels (2.13 cells)
       // past the finger for every tap near a wall, which is the same bug as
       // the roof deck one level down and just as invisible from the code.
-      // A wall SHORTER than the cut is not truncated and stays tappable: its
-      // top is a real sill, and it is drawn exactly where it is.
-      // Every column in the world is truncated indoors, not just my building's
-      // (see redrawGround), so this asks about the CUT alone — a hillside stump
-      // out on the grass is exactly as unstandable as a parapet.
-      if (cut >= 0 && cell.l > cut) continue;
+      // A wall SHORTER than its cut is not truncated and stays tappable: its
+      // top is a real sill, and it is drawn exactly where it is — a raised
+      // wall drawn whole included.
+      if (cutE !== undefined && cell.l > cutE) continue;
       if (cell.l !== l) continue;
       // Re-resolve mode: this surface is the one we are looking UNDER.
       if (ignoreAtOrAbove !== undefined && l >= ignoreAtOrAbove) continue;
@@ -7236,7 +12664,7 @@ export class WorldScene extends Phaser.Scene {
   private nearestGroundTo(wx: number, wy: number): { x: number; y: number; lvl: number } | null {
     const g = this.terrain;
     if (!g || !this.world) return null;
-    const { dx, dy, lh, tile } = MAP_GEOMETRY;
+    const { dx, dy, lh, tile } = this.geom;
     const u = (wx - this.iso.ox - tile / 2) / dx;
     const v = (wy - this.iso.oy - dy) / dy; // the LEVEL-0 reading of this pixel
     const c0 = Math.floor((u + v) / 2);
@@ -7297,7 +12725,7 @@ export class WorldScene extends Phaser.Scene {
       const pr = this.projectFlat(e.x, e.y);
       // Lift the beacon onto the tapped surface — a deck target sits at its
       // deck level (projectFlat returns the lower BASE level).
-      this.tapMarker.setPosition(pr.x, pr.y - Math.max(pr.lvl, this.trip.goalLevel ?? 0) * MAP_GEOMETRY.lh);
+      this.tapMarker.setPosition(pr.x, pr.y - Math.max(pr.lvl, this.trip.goalLevel ?? 0) * this.geom.lh);
     }
     this.dropHold();
   }
@@ -7311,12 +12739,32 @@ export class WorldScene extends Phaser.Scene {
     if (!this.trip) {
       // Arrived and the finger is resting on us: standing at the finger IS
       // the goal — don't churn a new one-step trip (and beacon) every budget.
-      const me = this.room ? this.avatars.get(this.room.sessionId) : undefined;
+      const me = this.room ? this.avatars.get(this.myId) : undefined;
       if (me && Math.hypot(g.x - me.fx, g.y - me.fy) < CELL_WU * 0.75) return;
     }
+    /* THE REPATH IS TIMED NOW, AND ITS COST WAS ALREADY BEING MEASURED.
+     *
+     * `cost` has always been computed here and used only to space the next
+     * replan — the number was thrown away, and this whole call sits outside
+     * every beacon span (`predictAndSend` has no ps/pe, and the pointermove
+     * path reaches it from Phaser's InputManager on PRE_RENDER, which is
+     * registered at Game boot and so runs BEFORE the scene's own PRE_RENDER
+     * hook, outside the `render` span too). It is therefore one of the
+     * candidates for the 21.5% of worst-frame time that no timer accounts for,
+     * and 25.1 ms/frame of it in his worst run.
+     *
+     * Measured offline on the SHIPPED world (the_game, 512x512 = 262,144 cells,
+     * 400 targets 2-10 cells out): from the four positions his last beacon was
+     * recorded at, p90 is 0.23-1.09 ms and nothing exceeded 5 ms. From the
+     * SPAWN it is p99 55.19 ms, max 60.31, with 38 of 400 over 5 ms, and a
+     * target the search cannot reach costs 42-66 ms here — call it 160-280 ms
+     * on his phone. So this is a real unbounded worst case in the busiest part
+     * of the map, and until now nothing in the report could see it. */
+    this.ps();
     const t0 = performance.now();
     this.setMoveTarget(g.x, g.y, true, true, g.lvl, true, g.at);
     const cost = performance.now() - t0;
+    this.pe("repath");
     this.holdRepathAt = nowMs + Math.min(400, Math.max(50, cost * 8));
   }
 
@@ -7331,12 +12779,12 @@ export class WorldScene extends Phaser.Scene {
     // surface drawn under that same pixel — a different cell, same pixel.
     pick?: { wx: number; wy: number },
   ) {
-    const me = this.room ? this.avatars.get(this.room.sessionId) : undefined;
+    const me = this.room ? this.avatars.get(this.myId) : undefined;
     if (!me) return;
     // world@2: route from the player's live surface elevation toward the tapped
     // surface's level, so a tap on a bridge/roof climbs onto and crosses the
     // deck instead of routing under it (undefined on flat worlds → base terrain).
-    const fromElev = this.room?.state?.players?.get(this.room.sessionId)?.elev;
+    const fromElev = this.room?.state?.players?.get(this.myId)?.elev;
     // startTrip routes with the shared findPath; the trip's destination is
     // the route's END — the tapped point pushed out of any solid's collision
     // margin, or the reachable rim when the goal is walled off. Null →
@@ -7414,7 +12862,7 @@ export class WorldScene extends Phaser.Scene {
       : this.projectFlat(end.x, end.y);
     // Sit the beacon ON the tapped surface: a deck target lifts to its deck
     // level (projectFlat returns the BASE level, which is lower).
-    const my = pick ? pick.wy : p.y - Math.max(p.lvl, goalLevel ?? 0) * MAP_GEOMETRY.lh;
+    const my = pick ? pick.wy : p.y - Math.max(p.lvl, goalLevel ?? 0) * this.geom.lh;
     // Remembered so the per-frame follow below cannot drag it off that pixel
     // either — the route may be re-planned many times during one gesture.
     this.tapMarkerAt = pick ? { x: pick.wx, y: pick.wy } : null;
@@ -7469,12 +12917,20 @@ export class WorldScene extends Phaser.Scene {
    * not the old fixed 48 — a mammoth deflects from ~4× a poring's distance. */
   private nearBodies(fx: number, fy: number): Array<{ id: string; x: number; y: number; r: number }> {
     const near: Array<{ id: string; x: number; y: number; r: number }> = [];
+    /* ON MY FLOOR ONLY. Position is flat (x, y); a monster roaming the cave
+     * under the mountain I stand on shares my x/y range and used to deflect my
+     * input through the rock (maintainer 2026-09-09, on the cave lid: "as if
+     * the player is walking around things that doesn't exist"). The surface
+     * level is what tells the two floors apart — same slack as a footprint's. */
+    const mine = this.room?.state?.players?.get(this.myId)?.elev;
+    const sameFloor = (lvl: number | undefined) =>
+      mine === undefined || lvl === undefined || Math.abs(lvl - mine) <= FOOTPRINT_LEVEL_SLACK;
     this.monsters.forEach((mv, id) => {
-      if (Math.abs(mv.fx - fx) < 140 && Math.abs(mv.fy - fy) < 140)
+      if (Math.abs(mv.fx - fx) < 140 && Math.abs(mv.fy - fy) < 140 && sameFloor(mv.surfLevel))
         near.push({ id, x: mv.fx, y: mv.fy, r: mv.radius });
     });
     this.npcs.forEach((npc, id) => {
-      if (Math.abs(npc.fx - fx) < 140 && Math.abs(npc.fy - fy) < 140)
+      if (Math.abs(npc.fx - fx) < 140 && Math.abs(npc.fy - fy) < 140 && sameFloor(npc.surfLevel))
         near.push({ id: `npc:${id}`, x: npc.fx, y: npc.fy, r: NPC_BODY_RADIUS });
     });
     return near;
@@ -7486,9 +12942,9 @@ export class WorldScene extends Phaser.Scene {
    * trip (marker included) when it reports done. */
   private driveAutopilot(): { ax: number; ay: number; running: boolean } {
     const idle = { ax: 0, ay: 0, running: false };
-    const me = this.room ? this.avatars.get(this.room.sessionId) : undefined;
+    const me = this.room ? this.avatars.get(this.myId) : undefined;
     if (!me || !this.trip) return idle;
-    const myElev = this.room?.state?.players?.get(this.room.sessionId)?.elev;
+    const myElev = this.room?.state?.players?.get(this.myId)?.elev;
     // A waypoint someone is STANDING ON is unreachable — the dodge will never
     // let the walker have that spot — so it counts as arrived at from as near
     // as her personal space allows. Without this the two halves fight and the
@@ -7565,18 +13021,18 @@ export class WorldScene extends Phaser.Scene {
     if (ax === 0 && ay === 0) return;
     const now = this.time.now;
     if (now < this.jumpUntil || now < this.jumpReadyAt) return; // already airborne / cooling down
-    const me = this.room ? this.avatars.get(this.room.sessionId) : undefined;
-    if (me && this.wouldAutoJump(me.fx, me.fy, ax, ay)) this.tryJump();
+    const me = this.room ? this.avatars.get(this.myId) : undefined;
+    if (me && this.wouldAutoJump(me.fx, me.fy, ax, ay, me.surfLevel)) this.tryJump();
   }
 
   /** The terrain predicate behind auto-jump: from world (fromX,fromY), moving
    * in screen direction (ax,ay), is the terrain just past the feet a 2-level
    * ledge a jump would clear? Delegates to the shared `autoJumpWanted` (which
    * also handles the concave-corner probe geometry). Exposed via __ml.autoJumpAt. */
-  private wouldAutoJump(fromX: number, fromY: number, ax: number, ay: number): boolean {
+  private wouldAutoJump(fromX: number, fromY: number, ax: number, ay: number, elev?: number): boolean {
     if (!this.terrain) return false;
     const w = screenToWorldVector(ax, ay);
-    return autoJumpWanted(this.terrain, fromX, fromY, w.x, w.y);
+    return autoJumpWanted(this.terrain, fromX, fromY, w.x, w.y, elev);
   }
 
   /** Persist + send the accumulated input window (prediction and server get
@@ -7608,7 +13064,8 @@ export class WorldScene extends Phaser.Scene {
       msg.jump = true;
       this.jumpQueued = false;
     }
-    this.room!.send("input", msg);
+    if (this.zoneSwapping) this.swapQueue.push(msg);
+    else this.room!.send("input", msg);
     this.sendAccum = 0;
   }
 
@@ -7713,7 +13170,7 @@ export class WorldScene extends Phaser.Scene {
    * tests against the full frame hit walls tiles away from the body. */
   private artBoundsCache = new Map<string, { x0: number; y0: number; x1: number; y1: number }>();
 
-  private artBounds(sprite: Phaser.GameObjects.Sprite) {
+  private artBounds(sprite: Phaser.GameObjects.Sprite | Phaser.GameObjects.Image) {
     const frame = sprite.frame;
     const key = `${frame.texture.key}#${frame.name}`;
     let b = this.artBoundsCache.get(key);
@@ -7818,7 +13275,7 @@ export class WorldScene extends Phaser.Scene {
    * 0 = its own surface). So float swimmers sample at the pool surface `surfLevel`. */
   private litLevelOf(a: BodyVisual): number {
     if (a.swimming && a.surfLevel !== undefined) return a.surfLevel;
-    return Math.max(0, a.elev / MAP_GEOMETRY.lh);
+    return Math.max(0, a.elev / this.geom.lh);
   }
 
   /** Depth vs occluding columns for ANY body (player or monster): a single
@@ -7830,7 +13287,38 @@ export class WorldScene extends Phaser.Scene {
    * occluder. `lvl` = the SURFACE level the body stands on, in LEVELS.
    * Sets sprite depth + b.coverY (wall-top line for the lit-copy crop). */
   private resolveBodyDepth(b: BodyVisual, lvl: number) {
+    const r = this.resolveDrawDepth(b, lvl);
+    b.coverY = r.coverY;
+    b.sprite.setDepth(r.depth);
+    // The depth is final here, and `depth > sprite.depth` is what the cover
+    // surfaces filter occluders on — so the slot registers LAST, and in this
+    // one function rather than in either consumer (see registerCoverSlot).
+    this.registerCoverSlot(b);
+  }
+
+  /** THE ONE DEPTH-AND-COVER RULE, for ANYTHING drawn standing in the world —
+   *  players, monsters, NPCs and SCENERY. It answers two questions off the same
+   *  occluder scan: what painter depth puts this thing in the right place
+   *  among the terrain around it, and (if terrain covers it) the screen line
+   *  where it stops being visible.
+   *
+   *  SCENERY IS A CALLER, NOT A COPY (maintainer 2026-09-03, after grass drew
+   *  over a tree: "I told you to reuse the player/monster/npc rendering … this
+   *  is a classic 'let's implement the player's renderer again' bug"). The
+   *  piece-only version this replaced had no `above` LIFT, which is exactly
+   *  what puts a body in front of the flat tile drawn at a higher painter
+   *  depth than its own anchor — so every piece sat behind the ground in front
+   *  of it. `self` is the caller's OWN occluder record, skipped: scenery is in
+   *  `occluderMeta` (bodies are not), and without it a tree reads itself as a
+   *  solid covering itself and crops its own lit copy away. */
+  private resolveDrawDepth(
+    v: { sprite: Phaser.GameObjects.Image; lx: number; lyFlat: number; ly: number; fx: number; fy: number; cx0?: number; cx1?: number },
+    lvl: number,
+    self?: unknown,
+  ): { depth: number; coverY: number | undefined } {
+    const b = v;
     let depth = b.lyFlat + 0.5; // painter y at the flat (unlifted) ground
+    let coverOut: number | undefined;
     if (this.world) {
       const colf = b.fx / CELL_WU; // 1 cell = CELL_WU world units (any world size)
       const rowf = b.fy / CELL_WU;
@@ -7845,72 +13333,14 @@ export class WorldScene extends Phaser.Scene {
       const sx1 = aLeft + ab.x1 * b.sprite.scaleX + 4;
       const sy0 = aTop + ab.y0 * b.sprite.scaleY - 4;
       const sy1 = aTop + ab.y1 * b.sprite.scaleY + 4;
-      let above = -Infinity;
-      let below = Infinity;
-      let coverY = Infinity;
-      const feetY = b.ly;
-      for (const o of this.occluderMeta) {
-        if (o.x1 < sx0 || o.x0 > sx1 || o.y1 < sy0 || o.y0 > sy1) continue;
-        const higher = o.top > lvl;
-        // (a) Wall genuinely between the camera and the feet point.
-        const t0 = Math.max(o.col - colf, o.row - rowf);
-        const t1 = Math.min(o.col + 1 - colf, o.row + 1 - rowf);
-        const rayBlocked = higher && t1 > Math.max(t0, 0);
-        // (b) A higher column whose LIFTED TOP FACE overlaps the feet band
-        // (the sprite is a billboard — raised corners of side/front
-        // neighbours pass in front of its lower pixels even when the feet
-        // point itself is visible) and whose face is camera-closer.
-        // The upper reach must clear a DIAGONALLY adjacent ledge: a step to
-        // the E/S (same-row/col neighbour) sits one grid diagonal AND one
-        // level up, so its top lands ~lh+dy above the feet — a tighter band
-        // (the old −26) let that ledge's corner poke between the legs with
-        // the foot drawn over it (playtester, standing at a step edge).
-        const faceOverFeet =
-          higher &&
-          o.y0 <= feetY + 6 &&
-          o.y0 >= feetY - (MAP_GEOMETRY.lh + MAP_GEOMETRY.dy + 9) &&
-          o.col + o.row + 1.2 > colf + rowf;
-        // (c) A camera-closer SOLID structure whose (tall, bottom-anchored)
-        // art overlaps the sprite: billboard art covers anything behind
-        // its diagonal regardless of how far its top rises above the feet
-        // — the faceOverFeet band was tuned for 1-level ledges and never
-        // fired for a 100px pillar, so the LIT COPY floated over it.
-        // BEHIND also requires the feet anchor inside the art's x-span:
-        // standing BESIDE the pillar at a smaller diagonal is not behind
-        // it, and forcing the base below the pillar dragged it below the
-        // equal-depth grass tiles too (clipped legs, playtester report).
-        const solidArtOver =
-          higher &&
-          o.solid &&
-          o.col + o.row + 1.2 > colf + rowf &&
-          b.lx >= o.x0 - 6 &&
-          b.lx <= o.x1 + 6;
-        if (rayBlocked || faceOverFeet || solidArtOver) {
-          below = Math.min(below, o.depth);
-          coverY = Math.min(coverY, o.y0);
-        } else if (!o.solid || colf + rowf > o.col + o.row + 1) {
-          // Overlapping, not covering → lift the sprite above it. For
-          // STANDABLE terrain this must stay unconditional: the flat tile
-          // in FRONT of the feet has a higher painter depth and would
-          // otherwise draw over the drop shadow/feet (playtester report).
-          // SOLID structures are gated on the feet being camera-forward
-          // of their front corner — their bottom-anchored tall art
-          // (128px spires) overlaps characters standing well BEHIND
-          // them, and the blanket lift drew those on top of the pillar.
-          above = Math.max(above, o.depth);
-        }
-      }
-      if (above > -Infinity) depth = Math.max(depth, above + 0.6);
-      if (below < Infinity) depth = Math.min(depth, below - 0.3); // walls win conflicts
-      b.coverY = below < Infinity ? coverY : undefined;
-    } else {
-      b.coverY = undefined;
+      const r = resolveDepthRule(
+        { colf, rowf, lvl, lx: b.lx, ly: b.ly, lyFlat: b.lyFlat, sx0, sx1, sy0, sy1, lh: this.geom.lh, dy: this.geom.dy, self, cx0: b.cx0, cx1: b.cx1 },
+        this.occluderMeta,
+      );
+      depth = r.depth;
+      coverOut = r.coverY;
     }
-    b.sprite.setDepth(depth);
-    // The depth is final here, and `depth > sprite.depth` is what the cover
-    // surfaces filter occluders on — so the slot registers LAST, and in this
-    // one function rather than in either consumer (see registerCoverSlot).
-    this.registerCoverSlot(b);
+    return { depth, coverY: coverOut };
   }
 
   /** Shadow for ANY body: cast on the LANDING ground (flat − target
@@ -7951,9 +13381,13 @@ export class WorldScene extends Phaser.Scene {
   private syncLitCopy(b: BodyVisual, on: boolean, baseTint: number): number[] | null {
     if (!b.lit) {
       b.lit = this.add.sprite(b.sprite.x, b.sprite.y, b.sprite.texture.key).setDepth(900_001);
+      // Its fog silhouette, made RIGHT AFTER it so the two keep the creation
+      // order the epsilon-free lit band sorts ties by (litA, fogA, litB, fogB).
+      b.fog = this.add.image(b.sprite.x, b.sprite.y, b.sprite.texture.key).setDepth(900_001).setVisible(false);
     }
     if (!on || !b.sprite.visible) {
       b.lit.setVisible(false);
+      b.fog?.setVisible(false);
       return null;
     }
     const lvl = this.litLevelOf(b);
@@ -7965,7 +13399,24 @@ export class WorldScene extends Phaser.Scene {
     // cross-fades it into the fogged under-overlay sprite — which composites
     // to exactly a strength-f fog on the body, same colour/wash as its
     // terrain (fog 0 → unchanged crisp copy).
-    const fog = this.night!.depthFogAt(b.fx / CELL_WU, b.fy / CELL_WU, lvl);
+    // ...read at the FEET through the pass's own distance field, like scenery
+    // (depthFogAtFoot) — and worn as a FOG SILHOUETTE over the opaque copy
+    // rather than by fading the copy: a faded copy composited to a·a fog
+    // against the ground's a (see applyObjectLights).
+    const sp0 = b.sprite;
+    // UNDER A ROOF THE CUT-AWAY HAS REMOVED the copy crosses with that roof's
+    // debris exactly as the furniture does (roofedFade): it draws ABOVE the
+    // darkness overlay and is cropped only by REAL occluders, so through the
+    // exit fade it rode on top of the returning roof — and at the entry flip
+    // it appeared over a roof still opaque (maintainer 2026-09-09, leaving
+    // the rabbit house: "the rabbits look like they are on top of the house").
+    const rf = this.underCutRoof(b.fx, b.fy, lvl) ? this.roofedFade() : 1;
+    if (rf <= 0.004) {
+      b.lit.setVisible(false);
+      b.fog?.setVisible(false);
+      return null;
+    }
+    const fog = this.night!.depthFogAtFoot(sp0.x, sp0.y, Math.floor(lvl), b.fx / CELL_WU, b.fy / CELL_WU);
     const r = Math.min(255, Math.round(((baseTint >> 16) & 0xff) * Math.min(1, l[0])));
     const g = Math.min(255, Math.round(((baseTint >> 8) & 0xff) * Math.min(1, l[1])));
     const bl = Math.min(255, Math.round((baseTint & 0xff) * Math.min(1, l[2])));
@@ -7990,7 +13441,7 @@ export class WorldScene extends Phaser.Scene {
       .setFlipX(slot ? false : sp.flipX)
       .setScale(sp.scaleX, sp.scaleY)
       .setDepth(litDepth(sp.depth))
-      .setAlpha(1 - Math.min(1, Math.max(0, fog.a)))
+      .setAlpha(sp.alpha * rf) // a body fading with the cut takes its copy with it
       .setTint((r << 16) | (g << 8) | bl);
     if (slot) {
       if (b.lit.isCropped) b.lit.setCrop();
@@ -8002,6 +13453,28 @@ export class WorldScene extends Phaser.Scene {
       if (cropH <= ab.y0 + 2) b.lit.setVisible(false); // wall covers the whole figure
       else b.lit.setCrop(0, 0, fw, cropH);
     } else if (b.lit.isCropped) b.lit.setCrop();
+    // THE FOG SILHOUETTE: the lit copy's exact twin (texture, frame, origin,
+    // flip, scale, crop) filled with the fog's colour at the fog's strength,
+    // equal depth and made later, so it draws right over its own copy.
+    const fa = this.night!.sceneryFog ? Math.min(1, Math.max(0, fog.a)) : 0;
+    if (fa > 0.002 && b.lit.visible) {
+      if (!b.fog) b.fog = this.add.image(b.lit.x, b.lit.y, b.lit.texture.key).setDepth(b.lit.depth);
+      const c = (v: number) => Math.max(0, Math.min(255, Math.round(v * 255)));
+      const fg = b.fog;
+      fg.setVisible(true)
+        .setTexture(b.lit.texture.key, b.lit.frame.name)
+        .setPosition(b.lit.x, b.lit.y)
+        .setOrigin(b.lit.originX, b.lit.originY)
+        .setFlipX(b.lit.flipX)
+        .setScale(b.lit.scaleX, b.lit.scaleY)
+        .setDepth(b.lit.depth)
+        .setAlpha(fa * sp.alpha * rf)
+        .setTintFill((c(fog.r) << 16) | (c(fog.g) << 8) | c(fog.b));
+      if (b.lit.isCropped) {
+        const cc = (b.lit as unknown as { _crop: { width: number; height: number } })._crop;
+        fg.setCrop(0, 0, cc?.width ?? b.lit.frame.cutWidth, cc?.height ?? b.lit.frame.cutHeight);
+      } else if (fg.isCropped) fg.setCrop();
+    } else b.fog?.setVisible(false);
     return l;
   }
 
@@ -8241,37 +13714,82 @@ export class WorldScene extends Phaser.Scene {
     if (this.deferredAnimsKicked) return;
     this.deferredAnimsKicked = true;
     let queued = 0;
-    // NPC IDLE FRAMES GO FIRST. They ride the deferred batch (never boot — a
-    // second loader run mid-create restarted the loading bar), but queued
-    // LAST they landed 18s in, behind ~800 action-state frames and every
-    // monster combat strip, so a town stood frozen the whole time. They are
-    // ~95 tiny images: first in the queue they arrive in a second or two, and
-    // the calm idle's frame-0 hold covers even that.
+    const queueState = (def: CharacterDef, state: string): string[] => {
+      const keys: string[] = [];
+      for (const [dir, count] of Object.entries(def.animations[state] ?? {})) {
+        for (let n = 0; n < count; n++) {
+          const fk = frameKey(def.uid, state, dir, n);
+          if (this.textures.exists(fk)) continue;
+          this.load.image(fk, withV(frameUrl(def, state, dir, n)));
+          keys.push(fk);
+          queued++;
+        }
+      }
+      return keys;
+    };
+    const deferredStates = (def: CharacterDef) =>
+      Object.keys(def.animations).filter((s) => !BOOT_ANIM_STATES.includes(s));
+
+    // MY OWN URGENT STATES GO FIRST — ahead of the NPCs, who held this spot
+    // until now (maintainer 2026-08-12: "the player is the most critical
+    // graphics/animations to always have fully loaded"). hurt/die/kick/punch/
+    // pickup are ALL deferred, so in manifest order the local player's could sit
+    // behind ~315 NPC frames AND another character's 408 — many seconds on a
+    // phone, and exactly the window where you spawn, get jumped by a predator
+    // and have no die clip. The NPCs lose their head start for this and the calm
+    // idle's frame-0 hold covers it: a frozen villager is cosmetic, a player
+    // with no death animation is not.
+    //
+    // PLAYER_URGENT_STATES is what the game can actually trigger seconds after
+    // a spawn. The weapon and spell states are deliberately NOT in it and are
+    // queued dead LAST of mine — nothing in the game can play them yet (there
+    // are no weapons; every swing resolves to kick or punch), and at 128 of my
+    // 408 frames they were a third of my own set sitting in front of art that
+    // was about to be drawn.
+    const chars = this.charsMeFirst();
+    const myDef = chars[0]?.uid === this.myCharacter?.uid ? chars[0] : null;
+    const mineByState = new Map<string, string[]>();
+    let myRest: string[] = [];
+    if (myDef) {
+      const all = deferredStates(myDef);
+      const urgent = PLAYER_URGENT_STATES.filter((s) => all.includes(s));
+      myRest = all.filter((s) => !urgent.includes(s));
+      for (const s of urgent) mineByState.set(s, queueState(myDef, s));
+    }
+    // NPC idle frames next. They ride the deferred batch (never boot — a second
+    // loader run mid-create restarted the loading bar), but queued LAST they
+    // landed 18s in, behind every action-state frame and every monster combat
+    // strip, so a town stood frozen the whole time.
     for (const f of this.npcIdleQueue) {
       if (this.textures.exists(f.key)) continue;
       this.load.image(f.key, withV(f.url));
       queued++;
     }
     this.npcIdleQueue = [];
-    for (const def of this.manifest.characters) {
-      for (const [state, dirs] of Object.entries(def.animations)) {
-        if (BOOT_ANIM_STATES.includes(state)) continue;
-        for (const [dir, count] of Object.entries(dirs)) {
-          for (let n = 0; n < count; n++) {
-            const fk = frameKey(def.uid, state, dir, n);
-            if (this.textures.exists(fk)) continue;
-            this.load.image(fk, withV(frameUrl(def, state, dir, n)));
-            queued++;
-          }
-        }
-      }
+    // FAR MONSTERS' walk/idle strips — the kinds the boot batch left out.
+    // Behind my urgent clips and the NPC idles, ahead of my weapon/spell
+    // states: a body that can wander into view outranks a clip nothing can
+    // trigger yet. Each kind releases its parked bodies the moment ITS strips
+    // land (per-kind FILE_COMPLETE count below), not at the batch's end.
+    const farKeys = new Map<string, string[]>();
+    for (const def of this.monsterManifest?.monsters ?? []) {
+      if (!this.monsterDeferredKinds.has(def.id)) continue;
+      const keys = this.queueMonsterBodyStrips(def);
+      if (keys.length) farKeys.set(def.id, keys);
+      else this.onMonsterArtLanded(def.id); // already resident — nothing to wait for
+      queued += keys.length;
+    }
+    if (myDef) for (const s of myRest) mineByState.set(s, queueState(myDef, s));
+    for (const def of chars) {
+      if (def.uid === myDef?.uid) continue; // already queued, first
+      for (const s of deferredStates(def)) queueState(def, s);
     }
     // MONSTER combat strips (attack/angry/die — 525 strips, ~3.1 MB) join the
     // SAME background batch: boot stays walk+idle only (the loading-time work
     // must not regress), and the fight art streams in behind the live world.
     // Sliced with each strip's OWN measured frame size (stripDims) — the
     // monster-level size goes stale on in-place art repairs and frames bleed.
-    for (const def of this.monsterManifest?.monsters ?? []) {
+    for (const def of this.monstersMock ? [] : (this.monsterManifest?.monsters ?? [])) {
       for (const state of ["attack", "angry", "die"]) {
         const anim = resolveMonsterAnim(def, state);
         if (!anim) continue;
@@ -8289,12 +13807,12 @@ export class WorldScene extends Phaser.Scene {
         }
       }
     }
-    // The BLOOD SPATTER variants (objects/blood_spatter, trimmed) ride the
+    // The BLOOD SPATTER variants (scenery/blood_spatter, trimmed) ride the
     // same batch — tiny (8 strips, 34px frames), ready before the first hit.
     for (const dir of BLOOD_DIRS) {
       const bk = `blood:${dir}`;
       if (this.textures.exists(bk)) continue;
-      this.load.spritesheet(bk, withV(`/assets/objects/blood_spatter/animations/spatter__${dir}.webp`), {
+      this.load.spritesheet(bk, withV(`/assets/scenery/blood_spatter/animations/spatter__${dir}.webp`), {
         frameWidth: 34,
         frameHeight: 34,
       });
@@ -8303,7 +13821,95 @@ export class WorldScene extends Phaser.Scene {
     // (Neither target marker needs an asset since rounds 9-11 — both borders
     // are drawn from the marked body's own silhouette.)
     if (!queued) return;
+    // AND MY CLIPS REGISTER THE MOMENT MY ART IS IN — queueing first buys
+    // nothing on its own, because buildAnimations ran ONLY on the loader's
+    // COMPLETE, i.e. after the other character, every NPC idle, all 525 monster
+    // combat strips and the blood spatters. My frames could be sitting in the
+    // texture manager for ten seconds with no clip pointing at them. Counting
+    // MY OWN queued keys is what makes the early run safe: a clip is built from
+    // whatever frames exist and is never repaired, so it may only fire once
+    // every one of them has landed — which is exactly when `left` hits 0.
+    // ...AND EACH OF MY STATES REGISTERS THE MOMENT ITS OWN FRAMES ARE IN.
+    // Queueing first buys nothing on its own, because buildAnimations ran ONLY
+    // on the loader's COMPLETE — after the other character, every NPC idle, all
+    // 525 monster combat strips and the blood spatters. Measured: my frames sat
+    // in the texture manager with no clip pointing at them for the whole batch.
+    // PER STATE and not per character, because those are 40-88 frames rather
+    // than 408: `hurt` is playable in a fraction of the time `sword` takes, and
+    // it is the one you need. Counting the keys is also what makes an early run
+    // SAFE — a clip is built from whatever frames exist and is never repaired,
+    // so a state may only be built once every one of its frames has landed.
+    const owner = new Map<string, string>(); // frame key -> which state wants it
+    const left = new Map<string, number>(); // state -> frames outstanding
+    for (const [s, keys] of mineByState) {
+      if (!keys.length) continue;
+      left.set(s, keys.length);
+      for (const k of keys) owner.set(k, s);
+    }
+    this.myAnimDebug = { queued: owner.size, left: owner.size, at: null };
+    if (owner.size) {
+      const dbg = this.myAnimDebug;
+      const onFile = (key: string) => {
+        const s = owner.get(key);
+        if (s === undefined) return;
+        owner.delete(key);
+        dbg.left--;
+        const n = (left.get(s) ?? 1) - 1;
+        if (n > 0) return void left.set(s, n);
+        left.delete(s);
+        this.buildAnimations(myDef?.uid, s);
+        if (dbg.at === null) dbg.at = Math.round(this.time.now);
+        if (!left.size) this.load.off(Phaser.Loader.Events.FILE_COMPLETE, onFile);
+      };
+      this.load.on(Phaser.Loader.Events.FILE_COMPLETE, onFile);
+      // A file that ERRORS never fires FILE_COMPLETE, so a state could stall at
+      // 1 forever — the batch's own COMPLETE drops the listener either way.
+      this.load.once(Phaser.Loader.Events.COMPLETE, () =>
+        this.load.off(Phaser.Loader.Events.FILE_COMPLETE, onFile),
+      );
+    }
+    if (farKeys.size) {
+      const kindOf = new Map<string, string>(); // sheet key -> kind
+      const leftOf = new Map<string, number>(); // kind -> strips outstanding
+      for (const [kind, keys] of farKeys) {
+        leftOf.set(kind, keys.length);
+        for (const k of keys) kindOf.set(k, kind);
+      }
+      const onStrip = (key: string) => {
+        const kind = kindOf.get(key);
+        if (kind === undefined) return;
+        kindOf.delete(key);
+        const n = (leftOf.get(kind) ?? 1) - 1;
+        if (n > 0) return void leftOf.set(kind, n);
+        leftOf.delete(kind);
+        this.onMonsterArtLanded(kind);
+        if (!leftOf.size) this.load.off(Phaser.Loader.Events.FILE_COMPLETE, onStrip);
+      };
+      this.load.on(Phaser.Loader.Events.FILE_COMPLETE, onStrip);
+      this.load.once(Phaser.Loader.Events.COMPLETE, () => {
+        this.load.off(Phaser.Loader.Events.FILE_COMPLETE, onStrip);
+        // An ERRORED strip never fires FILE_COMPLETE: release what is left so a
+        // kind with a missing file degrades to today's placeholder, not to a
+        // body parked forever.
+        for (const kind of [...leftOf.keys()]) this.onMonsterArtLanded(kind);
+      });
+    }
+    // PACED. This batch is ~1,000 files (every character's deferred states,
+    // every NPC rotation and idle frame, 525 monster combat strips) streaming
+    // behind a LIVE world, and each landed file is a decode + a GPU upload on
+    // the main thread the moment it arrives. With the loader's default
+    // parallelism (32; 6 on Android) a warm cache lands them in bursts —
+    // measured 565 textures added in ONE step of the north run, 30-60 per step
+    // for the rest of it — which is the "something is loading" hitch while
+    // running. Two in flight bounds the arrivals to ~2 per frame (~1,000 files
+    // in ~8 s at 60 fps), and nothing here is needed in the first second: my
+    // urgent clips are queued first and a state registers the moment its own
+    // frames are in (above). Restored on COMPLETE for whatever loads next.
+    const prevParallel = this.load.maxParallelDownloads;
+    const paced = deferredParallel();
+    if (paced > 0) this.load.maxParallelDownloads = paced;
     this.load.once(Phaser.Loader.Events.COMPLETE, () => {
+      this.load.maxParallelDownloads = prevParallel;
       this.buildAnimations();
       // THE SINGLE-CALL-SITE TRAP (see CLAUDE.md): textures.exists turning
       // true does NOT register anims — without this re-run every late-loaded
@@ -8324,7 +13930,23 @@ export class WorldScene extends Phaser.Scene {
     this.load.start();
   }
 
-  private buildAnimations() {
+  /** The character list with MY OWN first. The Phaser loader is a FIFO queue,
+   * so manifest order alone decides whose art exists first — and the local
+   * player's is the one nobody can tolerate missing (maintainer 2026-08-12:
+   * "the player is the most critical graphics/animations to always have fully
+   * loaded"). `sort` is stable, so everyone else keeps manifest order. */
+  private charsMeFirst(): CharacterDef[] {
+    const uid = this.myCharacter?.uid;
+    if (!uid) return this.manifest.characters;
+    return [...this.manifest.characters].sort((a, b) => (a.uid === uid ? 0 : 1) - (b.uid === uid ? 0 : 1));
+  }
+
+  /** `onlyUid` scopes the run to one character. IT IS NOT AN OPTIMISATION —
+   * a clip is built from whatever frames EXIST and, once created, is never
+   * repaired (`anims.exists` skips it), so registering mid-load would freeze a
+   * 9-frame die clip at the 2 frames that happened to have landed. Only pass a
+   * uid whose every frame is known to be in. */
+  private buildAnimations(onlyUid?: string, onlyState?: string) {
     // Anti-moonwalk playback rates measured from the art (build-manifest
     // gaitFps): the fps at which the gait's feet track the ground at the
     // gait's BASE speed. ONE rate per gait — legs keep the same cadence in
@@ -8332,7 +13954,9 @@ export class WorldScene extends Phaser.Scene {
     // made cadence pop on turns). Movement speed itself is untouched; actual
     // speed variation scales anims.timeScale per frame (applyAnimState).
     for (const def of this.manifest.characters) {
+      if (onlyUid && def.uid !== onlyUid) continue;
       for (const [state, dirs] of Object.entries(def.animations)) {
+        if (onlyState && state !== onlyState) continue;
         for (const [dir, count] of Object.entries(dirs)) {
           const key = animKey(def.uid, state, dir);
           if (this.anims.exists(key)) continue;
@@ -8372,8 +13996,48 @@ export class WorldScene extends Phaser.Scene {
    * its strip spritesheet. Frame counts vary per (kind, dir) — read them from
    * the manifest (poring/forest = 16, ice/lava/sand/water = 6), never hardcode.
    * Slow 6-frame hops read better at ~6fps, the longer 16-frame ones at ~10. */
-  private buildMonsterAnimations() {
+  /** WALK + IDLE strips for one kind (maintainer 2026-07-30: stopped monsters
+   *  must PLAY their idle, not freeze on a walk frame); attack/angry/die are
+   *  always deferred. Returns the sheet keys it queued, so a caller can count
+   *  them landing. Sliced with the STRIP'S OWN measured frame size — art
+   *  repairs resize strips in place, so the monster-level size can be stale
+   *  (frame bleed). */
+  private queueMonsterBodyStrips(def: MonsterDef): string[] {
+    const keys: string[] = [];
+    const states = [monsterWalkKey(def)];
+    if (def.idleAnim && !states.includes(def.idleAnim)) states.push(def.idleAnim);
+    for (const anim of states) {
+      const dirStrips = def.strips?.[anim] ?? {};
+      for (const [dir, url] of Object.entries(dirStrips)) {
+        if (!url) continue; // guard a missing strip
+        const sk = monsterSheetKey(def.id, anim, dir);
+        if (this.textures.exists(sk)) continue;
+        const dims = def.stripDims?.[anim]?.[dir];
+        this.load.spritesheet(sk, withV(url), {
+          frameWidth: dims?.w ?? def.frameW,
+          frameHeight: dims?.h ?? def.frameH,
+        });
+        keys.push(sk);
+      }
+    }
+    return keys;
+  }
+
+  /** A deferred kind's strips are in: register its clips and release every
+   *  parked body of that kind. The per-frame path then un-culls it and swaps
+   *  the placeholder for the real strip (playMonsterAnim re-textures whenever
+   *  the sheet exists), so nothing here touches a sprite directly. */
+  private onMonsterArtLanded(kind: string) {
+    this.monsterDeferredKinds.delete(kind);
+    this.buildMonsterAnimations(kind);
+    this.monsters.forEach((mv) => {
+      if (mv.kind === kind) mv.artPending = false;
+    });
+  }
+
+  private buildMonsterAnimations(only?: string) {
     for (const def of this.monsterManifest?.monsters ?? []) {
+      if (only !== undefined && def.id !== only) continue;
       const walk = monsterWalkKey(def);
       // kind: loop (walk/idle/angry) vs once (attack spans ~0.7s, die spans
       // the server's MONSTER_DIE_MS corpse window so the clip and the sweep
@@ -8437,6 +14101,7 @@ export class WorldScene extends Phaser.Scene {
     const cs = canvasSize(world);
     this.iso = { ox: cs.ox, oy: cs.oy, w: cs.w, h: cs.h };
     this.maxLevel = cs.maxLevel;
+    this.terrainMaxLevel = cs.maxLevel;
     // world@2 decks: index by cell for O(1) lookup in the ground/occluder loops,
     // and lift maxLevel so the streamed window + shader ray cover raised slabs.
     this.deckIndex.clear();
@@ -8446,6 +14111,7 @@ export class WorldScene extends Phaser.Scene {
     }
     this.makeGroundRT();
     this.scale.on("resize", () => this.makeGroundRT());
+    this.hookContextRestore();
     // Fake debug spawn-area rectangles depend on the iso origin — (re)draw them
     // now that this.iso is set.
     this.drawSpawnAreas();
@@ -8493,15 +14159,49 @@ export class WorldScene extends Phaser.Scene {
    * Elevation: lift by the cell the corner belongs to (its down-right cell,
    * clamped), so a zone on a plateau traces the plateau's rim. */
   private projectZoneCorner(cornerCol: number, cornerRow: number): { x: number; y: number } {
-    const { dx, dy, lh } = MAP_GEOMETRY;
     const W = this.world?.width ?? 1;
     const H = this.world?.height ?? 1;
     const c = Math.max(0, Math.min(W - 1, cornerCol));
     const r = Math.max(0, Math.min(H - 1, cornerRow));
     const lvl = this.world?.rows[Math.floor(r)]?.[Math.floor(c)]?.l ?? 0;
+    return this.projectCellCorner(cornerCol, cornerRow, lvl);
+  }
+
+  /** THE ONE PROJECTION FOR A POINT OF THE GROUND ITSELF — corners, cell
+   *  diamonds, footprints, anything that describes the WORLD rather than a
+   *  body standing in it. NEVER projectFlat for these.
+   *
+   *  `projectFlat` answers a different question: where a BODY's feet are
+   *  DRAWN, which is the cell diamond's centre plus the character ground
+   *  anchor (+tile/2, +dy). Feeding it ground coordinates puts every outline
+   *  built from them down-screen of the art it describes, and that mistake has
+   *  now been made twice — the spawn overlay's half-cell drop (maps agent +
+   *  monster_demo screenshot, 2026-07-30) and the collision overlay's constant
+   *  vertical offset (maps agent + the maintainer's annotated screenshot,
+   *  2026-09-02: he marked the collision centre and the tile-top centre
+   *  himself and they were apart, straight down, with zero horizontal error —
+   *  the tell of an anchor term applied to one and not the other).
+   *
+   *  WHERE THE GROUND IS depends on which renderer drew it:
+   *   - maps3: the tiles3 FRAME is the art plane BY CONSTRUCTION — the same
+   *     anchorX/anchorY every plate, boundary, deck slab and scenery sprite is
+   *     placed through. Measured against projectFlat with `__ml.planes`: 0 px
+   *     in x, exactly DY − TOP_Y = 4 px in y, everywhere.
+   *   - maps2: the lattice plus TILE_DIAMOND_TOP, the measured seat of the
+   *     drawn diamond inside the 64 px art box.
+   *
+   *  `level` is the surface to lift to and belongs to the CALLER, because the
+   *  two overlays differ on purpose: the collision floor plan flattens every
+   *  mark to the player's own plane (a wall's marker must not fly up to the
+   *  roof), while a spawn zone traces the rim it actually sits on. Coordinates
+   *  are continuous CELLS, so a body's world point works too (px / CELL_WU). */
+  private projectCellCorner(col: number, row: number, level: number): { x: number; y: number } {
+    const f = this.t3?.frame;
+    if (f) return { x: anchorX(f, col, row), y: anchorY(f, col, row, level) };
+    const { dx, dy, lh, tile } = this.geom;
     return {
-      x: this.iso.ox + (cornerCol - cornerRow) * dx + MAP_GEOMETRY.tile / 2,
-      y: this.iso.oy + (cornerCol + cornerRow) * dy - lvl * lh + TILE_DIAMOND_TOP,
+      x: this.iso.ox + (col - row) * dx + tile / 2,
+      y: this.iso.oy + (col + row) * dy - level * lh + TILE_DIAMOND_TOP,
     };
   }
 
@@ -8511,7 +14211,7 @@ export class WorldScene extends Phaser.Scene {
     if (this.spawnZonesLoading) return;
     this.spawnZonesLoading = true;
     const name = this.worldName || DEFAULT_WORLD;
-    fetch(`/assets/maps2/worlds/${name.replace(/[^a-z0-9_-]/gi, "")}/spawns.json`)
+    fetch(gameUrl(worldFileUrl(name, "spawns.json")))
       .then((r) => (r.ok ? r.json() : null))
       .then((j) => {
         this.spawnZones = j ? parseSpawns(j) : [];
@@ -8522,12 +14222,6 @@ export class WorldScene extends Phaser.Scene {
       });
   }
 
-  /** Face tile key for a deck's underside/sides (the material's plain face, like
-   * a raised ground cell), falling back to the slab's own top art. */
-  private deckFaceKey(deck: Deck, topKey: string): string {
-    const fp = this.world?.faceTiles?.[deck.mat];
-    return fp && this.textures.exists(pathTileKey(fp)) ? pathTileKey(fp) : topKey;
-  }
 
   // =========================================================================
   // INDOOR STATE MACHINE
@@ -8588,9 +14282,12 @@ export class WorldScene extends Phaser.Scene {
     // exists for. Once per world; setRoom early-returns on every later call.
     if (!this.caveDepth && g && this.world) {
       this.caveDepth = this.buildCaveDepth();
+      // A draw-time input (caveTint) the kept ground picture may predate: the
+      // next redraw paints in full rather than scrolling an untinted picture.
+      this.lastGround = { x: NaN, y: NaN };
       this.night?.setRoom(this.roomMask ? this.roomMask.keys() : null, this.caveDepth, this.caveUnder);
     }
-    const av = this.avatars.get(this.room?.sessionId ?? "");
+    const av = this.avatars.get(this.myId);
     if (!g || !av || av.surfLevel === undefined) {
       // No grid / no body yet: outdoors, and forget the cache so the next real
       // frame recomputes instead of trusting a stale space.
@@ -8697,30 +14394,441 @@ export class WorldScene extends Phaser.Scene {
    * through). Only what is DRAWN changes.
    */
   private commitIndoor(inside: boolean, now: number) {
+    const wasDrawn = !!this.indoorMask;
     this.indoorInside = inside;
     this.indoorPending = inside;
     this.indoorFlipAt = now;
     this.indoorFlips++;
-    this.refreshIndoorMask();
+    if (inside) {
+      this.refreshIndoorMask();
+      this.repaintWorld();
+      // THE ENTRY FADE (maintainer 2026-08-13: "the sudden roof pop is
+      // dominating the transition"). The world above just repainted to the
+      // cut state, but the debris layer — the exact art the cut removed — is
+      // built OPAQUE on this same frame, so the flip frame shows the picture
+      // you were already looking at. It then dissolves on the transition
+      // grade (alpha = 1 − indoorGrade, applied in easeIndoorMix).
+      this.buildIndoorDebris();
+      return;
+    }
+    // THE EXIT FADE, the same crossfade run backward: keep drawing the CUT
+    // world (mask, cuts and the shader clamp all stay), let the removed art
+    // fade back IN at 3×, and do the real repaint only when the light GRADE
+    // lands (mix ⅓, ~0.39s) — by then the debris has been opaque for most of
+    // the roll, so the swap cannot be seen (easeIndoorMix's landing branch).
+    if (wasDrawn && this.indoorCut && this.world && this.terrain) {
+      this.buildIndoorDebris();
+      return;
+    }
+    // Nothing was drawn (never really committed), the world is going away, or
+    // the legacy kill-switch cut is active (no per-cell map to fade) — the
+    // old instant transition.
+    this.clearIndoorDrawState();
     this.repaintWorld();
   }
 
-  /** Throw away both terrain caches and rebuild them THIS frame.
+  /** Drop everything the cut-away DRAWS from — the mask, the per-cell cuts,
+   * the signature and any transition debris. The caller repaints. */
+  private clearIndoorDrawState() {
+    this.indoorMask = null;
+    this.indoorCut = null;
+    this.indoorMaskSig = "";
+    this.destroyIndoorDebris();
+  }
+
+  private destroyIndoorDebris() {
+    if (!this.indoorDebris) return;
+    for (const img of this.indoorDebris) img.destroy();
+    this.indoorDebris = null;
+  }
+
+  /** THE LIGHT GRADE — the eased mix at INDOOR_GRADE_RATE, clamped to [0,1].
+   * Every LIGHT half of a doorway crossing rides this single value: the
+   * shader's indoor blend (outside-to-black, room un-dim, fog gate) and every
+   * CPU light gain (torch enable, outside lights dying, sealed fires,
+   * ambEff/sunIn/fogScale). One value means those parts cannot trail each
+   * other — but it is deliberately NOT the debris' 3× (maintainer 2026-08-13:
+   * "I wanted the darkening a bit faster... the roof fade is intended to be
+   * faster to hide bugs", after a first cut that ran everything at 3× read as
+   * one big snap). At 1.5× the darkening lands at mix ⅔ entering / mix ⅓
+   * leaving — ~0.39s, half the raw roll's perceived length, ~3× the roof
+   * crossfade's — and the leaving landing is when easeIndoorMix runs the
+   * repaint swap (past it the roll's exponential tail drives nothing
+   * visible). The raw indoorMix stays the easing SUBSTRATE (and the QA pin's
+   * target); consumers take the grade. */
+  /** DOES THE ROOM I AM IN LIGHT ITSELF? Picks which indoor ambient dial
+   *  applies (indoorlight.ts): a room with a hearth in it gets its brightness
+   *  from the hearth, so its base ambient is the lower one. Any real light
+   *  whose cell is inside my room mask counts — a scenery light (a lit
+   *  fireplace, a brazier, a candle) or an emissive tile. Recomputed at most
+   *  every ROOM_LIT_MS: the answer only changes when the room binding or the
+   *  scenery around me does, and the crossfade between the two dials is the
+   *  indoor grade's own ease, so a late frame costs nothing visible. */
+  private roomLitAt = 0;
+  private roomLitVal = false;
+  private roomHasLight(): boolean {
+    if (!this.roomMask) return false;
+    const now = this.time.now;
+    if (now - this.roomLitAt < ROOM_LIT_MS) return this.roomLitVal;
+    this.roomLitAt = now;
+    const inRoom = (col: number, row: number, z: number) => !this.indoorOutside(col * CELL_WU, row * CELL_WU, z);
+    let lit = false;
+    for (const s of this.sceneryLightSources) {
+      if (inRoom(s.col, s.row, s.z)) { lit = true; break; }
+    }
+    if (!lit) {
+      for (const e of this.emissiveSources) {
+        if (inRoom(e.col, e.row, e.z)) { lit = true; break; }
+      }
+    }
+    this.roomLitVal = lit;
+    return lit;
+  }
+
+  private indoorGrade(): number {
+    const R = INDOOR_GRADE_RATE;
+    return this.indoorInside
+      ? Math.min(1, R * this.indoorMix)
+      : Math.max(0, R * this.indoorMix - (R - 1));
+  }
+
+  /** The debris layer's opacity — its own 3× curves, the speed the maintainer
+   * tuned by eye (2026-08-13: 2× was not enough, then "3×, both directions"):
+   * entering, opaque at the flip and dissolved by mix ⅓; leaving, complete by
+   * the roll's first third and then held at 1 through the swap. Runs HOTTER
+   * than the light grade on purpose — the crossfade's whole job is hiding
+   * repaint seams, and seams hide better the less time they get. */
+  private debrisAlpha(): number {
+    const D = INDOOR_DEBRIS_RATE;
+    return this.indoorInside
+      ? Math.max(0, 1 - D * this.indoorMix)
+      : Math.min(1, D * (1 - this.indoorMix));
+  }
+
+  /** INDOOR FURNITURE'S OPACITY THROUGH THE CUT-AWAY CROSSFADE — the exact
+   *  complement of the debris (the roof art returning over it), so the two
+   *  cross: as the roof fades IN the furniture fades OUT, and entering, the
+   *  furniture arrives as the roof dissolves. Before this the pieces were a
+   *  BINARY draw keyed on `roofCutAwayAt`, held all the way to the end of the
+   *  roll so the roof would not return over empty floor — so a bed drew at
+   *  full opacity ON TOP of the roof for the whole exit and then vanished
+   *  (maintainer 2026-09-07: "they don't give a shit we are currently fading
+   *  into outdoor... until the very last millisecond where they pop out of
+   *  existence"). The draw gate is unchanged; only the opacity is now shared
+   *  with the crossfade, so nothing appears a beat before its roof leaves. */
+  /** ONE WALL PIECE, registered by rebuildScenery: its cut fade every frame,
+   *  and for a window its LIGHTS_ON overlay. The overlay is the ON still in
+   *  the same facing, fitted like the base, at the copy's depth in the LIT
+   *  band (above the darkness overlay — a lit window is self-lit) and created
+   *  AFTER the copy so the stable sort draws it over it. Its alpha is the
+   *  room's glow x the wall's fade x the outside-my-room factor. */
+  private registerSceneryWall(
+    p: SceneryPlacement,
+    piece: SceneryPiece,
+    st: SceneryState,
+    img: Phaser.GameObjects.Image,
+    lo: WorldScene["litOccluders"][number] | null,
+    baseH: number | undefined,
+    rect: { x: number; y: number; w: number; h: number },
+  ): void {
+    if (!p.wall || p.z === undefined) return;
+    /* THE CENTRE DECIDES, NOT THE FEET. The cut truncates a wall to one storey
+     * above the floor; a window's sill can sit exactly there (measured at the
+     * hearth house: feet at 2.94 storeys, cut at 3) with the whole pane rising
+     * above the stub, so a feet test kept it floating over nothing. The art's
+     * vertical centre — half its drawn height, in storeys — is what the wall
+     * must still reach for the piece to stay. */
+    const z = p.level + p.z + (img.displayHeight / this.geom.lh) * 0.5;
+    const fx = (p.wall.cx + 0.5) * CELL_WU;
+    const fy = (p.wall.cy + 0.5) * CELL_WU;
+    // The room cell just inside the wall: one more step in the wall's direction.
+    const inner = { col: p.wall.cx + (p.wall.cx - p.cx), row: p.wall.cy + (p.wall.cy - p.cy) };
+    let on: Phaser.GameObjects.Image | null = null;
+    const onState = piece.states["LIGHTS_ON"];
+    if (onState && st.key !== "LIGHTS_ON") {
+      const spriteOn = facedSprite(onState, p.dir);
+      if (this.needScenery(spriteOn)) {
+        const art = this.sceneryArtFit(this.sKey(spriteOn));
+        if (art) {
+          const fit = fitSprite(art.bbox, art.canvas, sceneryDrawnPx(piece.worldPxHeight, piece.contractCharacterPx), p.ax, p.ay, p.hflip, baseH);
+          if (!(fit.x + fit.w < rect.x || fit.x > rect.x + rect.w || fit.y + fit.h < rect.y || fit.y > rect.y + rect.h)) {
+            const key = this.sKey(spriteOn);
+            const name = `s3c:${fit.sx},${fit.sy},${fit.sw},${fit.sh}`;
+            const tex = this.textures.get(key);
+            if (!tex.has(name)) tex.add(name, 0, fit.sx, fit.sy, fit.sw, fit.sh);
+            /* NOT POOLED: a pooled image keeps its old place in the display
+             * list, and at the copy's depth the list order is the draw order —
+             * a recycled overlay drew UNDER the copy created a moment before
+             * it, and only the copy's holes let the lit panes through
+             * (measured: a few yellow texels in the sill's gap). Created here,
+             * after the copy and its fog, it draws over both; destroyed with
+             * the wall records at the next rebuild. */
+            on = this.add.image(fit.x, fit.y, key, name).setOrigin(0, 0).setDisplaySize(fit.w, fit.h).setFlipX(fit.flipX)
+              .setDepth(litDepth(lo ? lo.pd : img.depth)).setAlpha(0);
+          }
+        }
+      }
+    }
+    const a = this.cutFade(z, fx, fy);
+    img.setAlpha(a);
+    if (lo) lo.fade = a;
+    this.sceneryWalls.push({ place: p.i, piece: p.piece, img, lo, on, z, fx, fy, inner, glow: 0, glowAt: -Infinity });
+  }
+
+  /** Per frame: every wall piece takes its wall column's cut fade, and a
+   *  window's ON overlay its glow. Cheap — the_game hangs 61 pieces. */
+  private stepSceneryWalls(): void {
+    if (!this.sceneryWalls.length) return;
+    const now = this.time.now;
+    for (const w of this.sceneryWalls) {
+      const a = this.cutFade(w.z, w.fx, w.fy);
+      w.img.setAlpha(a);
+      if (w.lo) w.lo.fade = a;
+      if (w.on) {
+        if (now - w.glowAt > WINDOW_GLOW_MS) {
+          w.glow = this.windowGlow(w.inner);
+          w.glowAt = now;
+        }
+        const outK = this.indoorOutside(w.fx, w.fy, w.z) ? 1 - this.indoorGrade() : 1;
+        w.on.setAlpha(a * w.glow * outK);
+      }
+    }
+  }
+
+  /** HOW LIT THE ROOM BEHIND A WINDOW IS, 0..1 (maintainer 2026-09-09: "fade
+   *  between them based on how LIT it is inside the house at that location").
+   *  The room's OWN lights, summed at the cell just inside the wall — a sealed
+   *  room's fire is indoor-only to the light field from outside, so the field
+   *  itself cannot say; the published rooms (world.rooms) say which sources are
+   *  its. Each source counts its peak channel over a squared falloff to its
+   *  radius; the sum is squashed between WINDOW_GLOW_LO and _HI and scaled by
+   *  the night factor (curTorchF: 0 at full day, 1 otherwise), so windows glow
+   *  at dusk and go dark by day. A room with no light of its own reads 0. */
+  private windowGlow(inner: { col: number; row: number }): number {
+    const room = this.roomOf(inner.col, inner.row);
+    if (room < 0) return 0;
+    let sum = 0;
+    for (const s of this.roomLit(room)) {
+      const pc = this.sceneryPieces?.get(s.piece);
+      if (pc === undefined) void this.sceneryPieces?.request(s.piece); // lands → a later read sees its block
+      const lb = pc ? sceneryLightBlockFor(pc, s.state ?? "") : null;
+      // A manifest block: strength x the campfire's peak (pushSceneryLight's
+      // rule), radius as given. No block yet, or a piece without one: a lamp.
+      const peak = lb ? lb.strength * 1.9 : 1;
+      const r = Math.max(0.5, lb ? lb.radius : 4);
+      const d = Math.hypot(s.col - (inner.col + 0.5), s.row - (inner.row + 0.5));
+      if (d >= r) continue;
+      const k = 1 - d / r;
+      sum += peak * k * k;
+    }
+    const t = Math.max(0, Math.min(1, (sum - WINDOW_GLOW_LO) / (WINDOW_GLOW_HI - WINDOW_GLOW_LO)));
+    return t * t * (3 - 2 * t) * this.curTorchF;
+  }
+
+  /** The lit placements of a published room — see roomLitMap. */
+  private roomLit(room: number): { col: number; row: number; piece: string; state?: string }[] {
+    if (!this.roomLitMap) {
+      const m = new Map<number, { col: number; row: number; piece: string; state?: string }[]>();
+      for (const s of this.world?.scenery ?? []) {
+        if (!s.lit) continue;
+        const r = this.roomOf(Math.floor(s.x), Math.floor(s.y));
+        if (r < 0) continue;
+        const l = m.get(r);
+        const st = (s as { state?: string }).state;
+        const rec = { col: s.x, row: s.y, piece: s.piece, ...(st ? { state: st } : {}) };
+        if (l) l.push(rec);
+        else m.set(r, [rec]);
+      }
+      this.roomLitMap = m;
+    }
+    return this.roomLitMap.get(room) ?? [];
+  }
+
+  /** The published room a cell lies in (index into world.rooms), or -1. */
+  private roomOf(col: number, row: number): number {
+    const w = this.world;
+    if (!w) return -1;
+    if (!this.roomOfCellMap) {
+      const m = new Map<number, number>();
+      (w.rooms ?? []).forEach((r, i) => {
+        for (const c of r.cells) m.set(c.row * w.width + c.col, i);
+      });
+      this.roomOfCellMap = m;
+    }
+    return this.roomOfCellMap.get(row * w.width + col) ?? -1;
+  }
+
+  private roofedFade(): number {
+    const f = 1 - this.debrisAlpha();
+    return f < 0 ? 0 : f > 1 ? 1 : f;
+  }
+
+  /** Build the TRANSITION DEBRIS: every piece of art the current cut removes,
+   * as ordinary world-anchored images at the same depths the occluder pass
+   * would give them — wall bands above each constrained column's cut, the
+   * column's real top diamond, and the deck slab (my roof, a covering lid).
+   * Iterates the constrained set itself (a few hundred cells), not the world.
+   * Alpha starts at the current 1 − indoorMix so a rebuild mid-fade continues
+   * the dissolve instead of restarting it. Per-image depths mean bodies keep
+   * sorting correctly through the fade — someone under the returning roof is
+   * covered by it exactly as they will be once it is real. */
+  /** THE DEBRIS FOR A MAPS3 WORLD — the same crossfade, drawn from tiles3 art.
    *
-   * Poison BOTH latches together, always. They fire on different thresholds
-   * (the ground RT on 256px of camera drift, the occluders on 96px), and
-   * flipping one without the other brings the hidden roof straight back as ~30
-   * occluder SPRITES floating over a ground RT that has already deleted it.
-   * NaN short-circuits both guards — the existing idiom (see the night shader /
-   * resize paths). Re-running them here rather than waiting for the top of the
-   * next frame costs one extra rebuild on a transition frame (a handful per
-   * session) and buys a frame with no stale roof on screen; both are
-   * self-gating no-ops the rest of the time. */
+   *  `buildIndoorDebris` used to return early on a maps3 world, so on the_game the
+   *  roof left and came back on ONE frame while the light still eased
+   *  (maintainer 2026-09-05: "the roof feels like it pops on a single frame
+   *  without any fade whatsoever ... I felt we had a solution for this that
+   *  looked ok" — he had: the_island2 is world@2 and fades). The known-gap note
+   *  said as much for a week.
+   *
+   *  Same contract as the world@2 branch: on the flip the ground and occluders
+   *  repaint to the CUT state at once, and these images are everything the cut
+   *  REMOVED, pasted exactly where the occluder pass drew them whole — the
+   *  storeys above the cut at `by - lvl*lh`, the real cap at `surfaceY`, and
+   *  every deck the constrained column hides (a deck at the column's own level
+   *  included — the roof over a wall top, see capDecks) — wearing `debrisAlpha`,
+   *  eased per frame by the caller. ONE STEP ABOVE THE OCCLUDER BAND: pooled
+   *  occluders sit at `oDepth + creationIndex × OCC_DEPTH_EPS` (≤ ~0.006), so
+   *  the debris takes `oDepth + 0.01`, over every one of them and still 0.49
+   *  under the bodies in front. Art that has not landed is skipped, as the
+   *  world@2 branch skips a missing texture: a piece of the fade is missing
+   *  rather than a wrong one drawn. */
+  private buildIndoorDebris3(cuts: Map<number, number>, world: World): void {
+    const t3 = this.t3;
+    const tex = this.ensureTiles3Textures();
+    if (!t3 || !tex) return;
+    const { dx, dy, lh, tile: tileSize } = this.geom;
+    const cam = this.cameras.main;
+    const cx0 = cam.worldView.x - OCC_CULL_PAD;
+    const cx1 = cam.worldView.right + OCC_CULL_PAD;
+    const cy0 = cam.worldView.y - OCC_CULL_PAD;
+    const cy1 = cam.worldView.bottom + OCC_CULL_PAD;
+    const shows = (ix: number, iy: number) =>
+      ix + tileSize >= cx0 && ix <= cx1 && iy + tileSize >= cy0 && iy <= cy1;
+    const a = this.debrisAlpha();
+    const out: Phaser.GameObjects.Image[] = [];
+    const push = (x: number, y: number, key: string, depth: number) => {
+      if (!this.textures.exists(key)) return;
+      out.push(this.add.image(x, y, key).setOrigin(0, 0).setDepth(depth).setAlpha(a));
+    };
+    for (const [idx, cutE] of cuts) {
+      const col = idx % world.width;
+      const row = (idx - col) / world.width;
+      const cell = this.t3cellOf(t3, col, row);
+      if (!cell) continue; // void
+      const u = col - row;
+      const v = col + row;
+      const bx = this.iso.ox + u * dx;
+      const by = this.iso.oy + v * dy;
+      const depth = by + dy + 0.01;
+      // The storeys the cut took off this column, and its real cap.
+      if (cutE < cell.level && (cell.kind === "wall" || cell.level > 0)) {
+        const topKey = t3SurfaceKey(tex, this.t3tm, cell);
+        const fk = t3FaceKey(this.t3tm, cell) ?? topKey;
+        if (topKey && fk) {
+          for (let lvl = cutE + 1; lvl < cell.level; lvl++)
+            if (shows(bx, by - lvl * lh))
+              push(bx, by - lvl * lh, t3FaceKeyAt(this.t3tm, cell, lvl) ?? fk, depth);
+          const sy = t3SurfaceY(cell);
+          const capX = sy !== null ? cell.sx : bx;
+          const capY = sy !== null ? sy : by - cell.level * lh;
+          if (shows(capX, capY)) push(capX, capY, topKey, depth);
+        }
+      }
+      // Every deck a constrained column hides — the roof itself.
+      const base = world.rows[row]?.[col]?.l ?? 0;
+      for (const d of this.t3decksOf(t3, col, row)) {
+        if (d.level < base) continue; // buried: nothing of it ever shows
+        for (const op of tex.opsForDeck(d)) if (shows(bx, op.y)) push(bx, op.y, op.key, depth);
+      }
+    }
+    this.indoorDebris = out.length ? out : null;
+  }
+
+  private buildIndoorDebris() {
+    this.destroyIndoorDebris();
+    const cuts = this.indoorCut;
+    const world = this.world;
+    if (!cuts || !world) return; // legacy cut / no world: instant
+    if (this.maps3) {
+      this.buildIndoorDebris3(cuts, world);
+      return;
+    }
+  }
+
+  /** An EXPLICIT repaint — a state change (the indoor cut, a landed hitbox
+   *  doc) whose caller may read the result on the same frame. Poisons BOTH
+   *  latches together and runs both passes NOW rather than at the top of the
+   *  next frame, which is what buys a frame with no stale roof between the
+   *  verdict and the picture. Counted in the perf sections like the latched
+   *  passes. A full explicit pass satisfies any pending request by
+   *  construction, so the streaming flags are cleared first — without that,
+   *  an art batch landing beside a state change cost a second, identical full
+   *  pass on the following frame (review, 2026-09-02). */
   private repaintWorld() {
+    this.groundSliceQ = [];
+    this.groundSliceCtx = null;
+    this.repaintGroundPending = false;
+    this.repaintOccPending = false;
+    this.repaintGroundPartial = false; // the full paint covers the landed cells
+    this.groundDirtyCells = [];
     this.lastGround = { x: NaN, y: NaN };
     this.lastOccl = { x: NaN, y: NaN };
+    this.ps();
     this.redrawGround();
+    this.pe("redrawGround");
+    this.ps();
     this.rebuildOccluders();
+    this.pe("rebuildOccluders");
+  }
+
+  /* STREAMING REPAINTS ARE COALESCED — one per frame, and only the pass the
+   * landed art actually needs.
+   *
+   * Three things fire while a window's art streams in: the terrain loader's
+   * batch landing, the scenery loader's batch landing — BOTH once("complete")
+   * handlers on the ONE Phaser loader, so one batch fired both — and the
+   * scenery manifest settle. Each ran a FULL repaint synchronously: the whole
+   * ground RT (41-52 ms of JS) plus every occluder. Measured over a 24 s walk
+   * with art landing: 8 of 11 occluder rebuilds and 8 of 8 ground redraws were
+   * this, not camera movement (investigation 2026-09-02). That is the stutter
+   * of a freshly loading area.
+   *
+   * Now a landing MARKS what it dirtied and update() poisons the matching
+   * latch at most once per frame: a terrain batch needs the ground (its
+   * plates were holes) and the occluders (its wall faces were skipped); a
+   * scenery batch or manifest needs only the occluder rebuild, because scenery
+   * rides inside it — the terrain occluders come back out of the pool, while
+   * the scenery images and every lit copy are rebuilt in full (they are not
+   * pooled: see OCC_DEPTH_EPS). The explicit repaintWorld() callers (indoor
+   * cut, hitbox docs) are unchanged: state changes whose callers may read the
+   * result immediately.
+   * `repaintCoalesce` is the A/B switch for `__ml.repaints`, nothing else
+   * reads it. */
+  private repaintGroundPending = false;
+  private repaintOccPending = false;
+  private repaintCoalesce = true;
+  private repaintStats = { terrain: 0, scenery: 0, manifest: 0, groundRuns: 0, occRuns: 0, drains: 0, drainsDeferred: 0 };
+  private requestRepaint(kind: "terrain" | "scenery" | "manifest"): void {
+    this.repaintStats[kind]++;
+    if (!this.repaintCoalesce) {
+      // LEGACY, byte-for-byte: terrain and scenery batches repainted everything
+      // synchronously; a manifest settle rebuilt the occluders.
+      if (kind === "manifest") {
+        this.lastOccl = { x: NaN, y: NaN };
+        this.ps();
+        this.rebuildOccluders();
+        this.pe("rebuildOccluders");
+        this.repaintStats.occRuns++;
+      } else {
+        this.repaintWorld();
+        this.repaintStats.groundRuns++;
+        this.repaintStats.occRuns++;
+      }
+      return;
+    }
+    if (kind === "terrain") this.repaintGroundPending = true;
+    this.repaintOccPending = true;
   }
 
   /** Is this world cell part of the room I am standing in?
@@ -8751,8 +14859,7 @@ export class WorldScene extends Phaser.Scene {
     const s = this.indoorSpace;
     if (!this.indoorInside || !s || !g) {
       const had = !!this.indoorMask;
-      this.indoorMask = null;
-      this.indoorMaskSig = "";
+      this.clearIndoorDrawState();
       // NOTE the LIGHT mask (`roomMask` / night.setRoom) is deliberately NOT
       // cleared here. Geometry snaps — the roof and every truncated column come
       // back this frame — but the light has a 0.35s roll to finish, and a room
@@ -8785,7 +14892,9 @@ export class WorldScene extends Phaser.Scene {
     // All three numbers go in the signature: turning the Settings slider must
     // rebuild the mask exactly the way walking into a different room does.
     const top = Math.max(0, Math.min(ceil, floor + indoorWall()));
-    const sig = `${this.indoorKey}:${ceil}:${floor}:${top}`;
+    // The raise flag is part of the signature: flipping the QA switch must
+    // rebuild the mask exactly the way a dial turn does.
+    const sig = `${this.indoorKey}:${ceil}:${floor}:${top}:${this.indoorRaiseOn ? "r" : "f"}`;
     if (sig === this.indoorMaskSig && this.indoorMask) return false;
     this.indoorMaskSig = sig;
     this.indoorCeil = ceil;
@@ -8800,12 +14909,123 @@ export class WorldScene extends Phaser.Scene {
     for (const ci of s.shell) m.set(ci, (m.get(ci) ?? 0) | IN_WALL);
     this.indoorMask = m;
     this.roomMask = m;
+    this.indoorCut = this.indoorRaiseOn ? this.computeIndoorCuts(m, s, ceil, top) : null;
     // Publish the room to the LIGHT. This is what makes the outside black:
     // the renderer draws it like any other terrain, and the shader gives every
     // cell outside this set zero ambient — so a point light inside can still
-    // reach it (the torch through the doorway) while the sky cannot.
-    this.night?.setRoom(m.keys(), (this.caveDepth ??= this.buildCaveDepth()), this.caveUnder);
+    // reach it (the torch through the doorway) while the sky cannot. The cuts
+    // go with it: the shader's surface resolve must truncate every column at
+    // exactly the level the renderer draws it to — and resolve every column
+    // WITHOUT an entry at its full, deck-inflated height, because that is
+    // what the renderer paints now (see nightlight heightAt / setRoom).
+    this.night?.setRoom(m.keys(), (this.caveDepth ??= this.buildCaveDepth()), this.caveUnder, this.indoorCut, top);
     return true;
+  }
+
+  /** THE CONSTRAINED SET — every column the indoor renderer must truncate,
+   * with the level it may draw to. Two kinds of entry, one geometry:
+   *
+   *   • MY BUILDING (every mask cell): the per-wall raise — from the dial
+   *     minimum up toward the room's ceiling, stopping one margin short of
+   *     covering any of MY OWN floors/entrances. Floor cells store the dial
+   *     (their columns are below it anyway); an entry is ALSO what says "draw
+   *     no deck here", which is how my own roof comes off.
+   *   • THE COVERING CONE (maintainer 2026-08-13, hard task #2): any OTHER
+   *     column whose full-height art would bury one of my floors — the
+   *     down-screen slice between the camera and my room. It cuts to the
+   *     tallest height that leaves every floor visible, never below the dial.
+   *
+   * EVERYTHING ELSE DRAWS FULL, deck included: the neighbouring house keeps
+   * its roof, the up-screen mountain keeps its mass — both at zero ambient,
+   * so what actually changes on screen is that entering house_a no longer
+   * pops house_b open ("you don't want to also see into house_b"). The
+   * mountain-in-front worry is exactly the cone: anything that would block
+   * the floor is still cut, no matter what it is. Other rooms' floors need
+   * no protection any more — a room that is not mine draws its own roof, so
+   * its floor is not visible either way; the dungeon's multi-chamber case
+   * never needed it (chambers connected by doorways are ONE space, and this
+   * space's floors are all mine).
+   *
+   * THE GEOMETRY, from the painter order this whole renderer sorts by: a
+   * column at (u = col−row, v = col+row) drawn to level L covers the cell k
+   * steps up-screen (v−k) once its art top rises past that cell's floor
+   * diamond — L ≥ (dy/lh)·k + floorLevel, the same ~0.9375·k slope the
+   * world-wide truncation note derives. Horizontally its 64px tile overlaps
+   * the SAME iso column (u, even k) fully and the two half-step neighbours
+   * (u±1, odd k) by half a tile — u±2 only touches at the edge and never
+   * covers. So the cap a floor at (k up-screen, level L') imposes is
+   * floor(0.9375·k + L' − MARGIN).
+   *
+   * MARGIN = 1 level (16px): at the cap, a column's top edge stays a level
+   * below the burial line, leaving roughly half the floor diamond visible.
+   * What falls out for free: a NEAR wall has its own room's floor one step
+   * up-screen (k=1 caps below the dial), so near walls sit exactly at the
+   * dial — the "minimum setting" — while far and side walls rise clean to
+   * the ceiling.
+   *
+   * Cost: |myFloors| × kMax ≈ 500 × 45 pushes on mask rebuilds only. */
+  private computeIndoorCuts(
+    mask: Map<number, number>,
+    s: IndoorSpace,
+    ceil: number,
+    top: number,
+  ): Map<number, number> | null {
+    const g = this.terrain;
+    const w = this.world;
+    if (!g || !w) return null;
+    const { dy, lh } = this.geom;
+    const cover = dy / lh; // levels of height per up-screen step (0.9375)
+    const MARGIN = 1; // levels a column's top stays below the burial line
+    // 126 = the room texture's encoding budget (R packs the cut beside the
+    // membership bit, 127 = the "unconstrained" sentinel).
+    const clampCut = (v: number) => Math.max(top, Math.min(v, 126));
+    // The tallest art any column can draw (terrain or a deck slab) bounds how
+    // far down-screen a floor's protection has to reach.
+    let maxCol = this.maxLevel;
+    for (const dk of this.deckIndex.values()) maxCol = Math.max(maxCol, dk.deck.level);
+    const kMax = Math.ceil((maxCol + MARGIN + 1) / cover);
+    // Sweep DOWN-screen from each of my floors/entrances: the tightest cap any
+    // of them imposes, per cell.
+    const floorCap = new Map<number, number>();
+    const sweep = (fi: number) => {
+      const fl = g.level[fi];
+      const c = fi % w.width;
+      const r = (fi - c) / w.width;
+      const u = c - r;
+      const v = c + r;
+      for (let k = 1; k <= kMax; k++) {
+        const cap = Math.floor(cover * k + fl - MARGIN);
+        if (cap >= maxCol) break; // nothing anywhere is tall enough to care
+        const vv = v + k;
+        for (const uu of (k & 1) === 1 ? [u - 1, u + 1] : [u]) {
+          const cc = (uu + vv) / 2;
+          const rr = (vv - uu) / 2;
+          if (cc < 0 || rr < 0 || cc >= w.width || rr >= w.height) continue;
+          const idx = rr * w.width + cc;
+          const prev = floorCap.get(idx);
+          if (prev === undefined || cap < prev) floorCap.set(idx, cap);
+        }
+      }
+    };
+    for (const fi of s.roof) sweep(fi);
+    for (const e of s.entrances) sweep(e);
+    const cuts = new Map<number, number>();
+    // My building: always an entry (the raise, ceiling-clamped).
+    for (const ci of mask.keys()) {
+      const cap = floorCap.get(ci);
+      let cand = Math.min(g.level[ci], ceil);
+      if (cap !== undefined && cap < cand) cand = cap;
+      cuts.set(ci, clampCut(cand));
+    }
+    // The cone: an entry only where full height would really bury a floor.
+    for (const [idx, cap] of floorCap) {
+      if (mask.has(idx)) continue;
+      const dk = this.deckIndex.get(idx);
+      const colTop = Math.max(g.level[idx], dk ? dk.deck.level : -1);
+      if (cap >= colTop) continue; // even drawn whole it cannot reach the floor
+      cuts.set(idx, clampCut(cap));
+    }
+    return cuts;
   }
 
   /** Ease the LIGHT blend toward the current geometric state. Exponential roll
@@ -8816,14 +15036,62 @@ export class WorldScene extends Phaser.Scene {
     const k = 1 - Math.exp(-(this.game.loop.delta / 1000) / INDOOR_TAU);
     this.indoorMix += (to - this.indoorMix) * k;
     if (Math.abs(this.indoorMix - to) < 0.005) this.indoorMix = to;
-    // The room's LIGHT rules outlive the geometry by exactly one roll. Until
-    // this lands on 0 the outside is still fading up from black, the lights
-    // outside it are still fading in, and the chrome above the overlay is still
-    // held back — all of it keyed on `roomMask`, which is why it is dropped
-    // HERE and not the moment the verdict flipped.
-    if (this.indoorMix === 0 && !this.indoorInside && this.roomMask) {
-      this.roomMask = null;
-      this.night?.setRoom(null, (this.caveDepth ??= this.buildCaveDepth()), this.caveUnder);
+    // QA PIN (__ml.indoorMixPin): parks the blend anywhere in (0,1) so a
+    // headless gate can photograph a mid-transition frame deterministically.
+    // At 3× the debris crosses its whole alpha range inside one or two
+    // STARVED harness frames (a single ~180ms delta carries the mix past ⅓),
+    // so no wall-clock sampling can catch the blend there — while a real
+    // 60fps device renders ~8 blended frames. NOTE a pin at mix ≤ ⅓ on the
+    // way out IS the landed light grade — the swap below fires under it.
+    if (this.indoorMixPinV !== null) this.indoorMix = this.indoorMixPinV;
+    // THE TRANSITION DEBRIS rides its own 3× curves (maintainer 2026-08-13:
+    // "the fade should go faster so no user notices any glitch" — first 2×,
+    // then "twice as fast is not enough, 3×", both directions). Entering, the
+    // debris is gone by mix ⅓; leaving, it is fully opaque by mix ⅔ — and
+    // held there while the slower light grade finishes, until the landing
+    // branch below swaps the real geometry in. Turning around mid-doorway
+    // reverses the same curve (the mix is the state; the debris has none of
+    // its own).
+    if (this.indoorDebris) {
+      const a = this.debrisAlpha();
+      if (this.indoorInside && a <= 0.004) this.destroyIndoorDebris();
+      else for (const img of this.indoorDebris) img.setAlpha(a);
+    }
+    // ...and the furniture under the roof crosses the other way. Its lit copy
+    // and fog silhouette take the same factor in applyObjectLights.
+    if (this.sceneryRoofedImgs.length) {
+      const rf = this.roofedFade();
+      for (const img of this.sceneryRoofedImgs) img.setAlpha(rf);
+    }
+    this.stepSceneryWalls();
+    // The room's LIGHT rules outlive the geometry by exactly one GRADE. The
+    // grade landing on 0 means the outside has finished fading up from black
+    // and the lights outside have finished fading in — everything keyed on
+    // `roomMask` is done, so it is dropped HERE and not the moment the
+    // verdict flipped. Landing on the grade rather than the raw mix matters
+    // for more than symmetry: the swap needs the debris' build-time view cull
+    // to still cover the camera, and while the OLD mix-0 landing sat ~1.9s of
+    // exponential tail after the flip — a walking player drags the camera a
+    // few hundred px by then, past the cull box, exposing cut-state cells
+    // that then popped at the swap (maintainer 2026-08-13: "all black/dark
+    // → grey areas at the top of the wall after the fade") — the 1.5× grade
+    // lands ~0.39s in, ≤~60px of camera drift against OCC_CULL_PAD's ~360.
+    // The swap frame itself changes nothing: cut world + opaque debris and
+    // the full repaint are pixel-identical under a locked camera (measured,
+    // exitsnap probe).
+    if (this.indoorGrade() === 0 && !this.indoorInside) {
+      if (this.roomMask) {
+        this.roomMask = null;
+        this.night?.setRoom(null, (this.caveDepth ??= this.buildCaveDepth()), this.caveUnder);
+      }
+      // THE EXIT LANDS. The debris is fully opaque, i.e. the picture already
+      // equals the real outdoor geometry — swap the real thing in underneath
+      // and drop the fade layer in the same frame. This is the repaint
+      // commitIndoor deliberately did not do at the flip.
+      if (this.indoorMask) {
+        this.clearIndoorDrawState();
+        this.repaintWorld();
+      }
     }
   }
 
@@ -8873,8 +15141,101 @@ export class WorldScene extends Phaser.Scene {
    * house door is outside the room but at my own level (drawn, and lit by a
    * torch through the doorway). The threshold is the CUT, not the ceiling: the
    * cut is what decides what is painted. */
-  private aboveCut(z: number): boolean {
-    return this.indoorInside && !!this.indoorMask && z > this.indoorTop;
+  private aboveCut(z: number, fx?: number, fy?: number): boolean {
+    // Gated on the DRAWN state, not the verdict: the exit fade keeps the cut
+    // world painted while the light rolls back, and a body must not pop onto
+    // terrain that is still not there.
+    if (!this.indoorMask) return false;
+    if (!this.indoorCut) return z > this.indoorTop; // legacy scalar (kill switch)
+    if (z <= this.indoorTop) return false;
+    // Per CELL: a body on an UNCONSTRAINED column (the neighbour's roof, the
+    // up-screen mountain) stands on ground that is fully drawn now, black
+    // under zero ambient like the street — it is DRAWN, and the torch can
+    // find it. Only bodies on truncated columns hang over nothing. Callers
+    // with no position keep the scalar answer (conservative: hide) — today
+    // every body caller passes its fx/fy.
+    if (fx === undefined || fy === undefined) return z > this.indoorTop;
+    return z > this.cutAt(fx / CELL_WU, fy / CELL_WU);
+  }
+
+  /** HOW VISIBLE IS A BODY (or a drop) STANDING ABOVE THE CUT — 1 on drawn
+   *  ground, else exactly the opacity of the terrain under it: the transition
+   *  debris' alpha while the crossfade runs, 0 once it has dissolved. Entering,
+   *  the mountain top and the monster on it dissolve together by mix ⅓;
+   *  leaving, both fade back in ahead of the swap. Before this the body was a
+   *  binary `aboveCut` test — it popped the flip frame, a beat before the
+   *  ground it stood on had even started to fade (maintainer 2026-09-09: "that
+   *  fade effect doesn't seem to fade in/out monsters. Monsters still pop").
+   *  Callers park a body at ≤0.004 exactly as they culled it before, so the
+   *  settled state — and verify-indoor section 7 — is unchanged. */
+  private cutFade(z: number, fx: number, fy: number): number {
+    if (!this.aboveCut(z, fx, fy)) return 1;
+    return this.indoorDebris ? this.debrisAlpha() : 0;
+  }
+
+  /** SHOULD THIS BODY BE PARKED FOR BEING SEALED IN A ROOM I AM NOT IN? The
+   *  verdict is `inHiddenRoom`, gated on the DRAWN state like aboveCut: the
+   *  room I am leaving stays mine while its light mask is up — until the
+   *  grade lands and the real roof is swapped in — or the bodies in it
+   *  vanished on the flip frame, under a roof still 30% in (measured on the
+   *  rabbit house the first time this park shipped, 2026-09-09). */
+  private sealedAway(fx: number, fy: number, z: number): boolean {
+    if (!this.inHiddenRoom(fx, fy, z)) return false;
+    const w = this.world;
+    if (!this.roomMask || !w) return true;
+    const c = Math.floor(fx / CELL_WU);
+    const r = Math.floor(fy / CELL_WU);
+    if (c < 0 || r < 0 || c >= w.width || r >= w.height) return true;
+    return (this.roomMask.get(r * w.width + c) ?? 0) === 0;
+  }
+
+  /** IS THIS BODY UNDER A ROOF THE CUT-AWAY HAS REMOVED — on a deck-covered
+   *  cell whose deck is not drawn this frame? The lit copy's question (see
+   *  syncLitCopy); a body on the street in the covering cone is NOT under a
+   *  roof and keeps its copy whole. */
+  private underCutRoof(fx: number, fy: number, lvl: number): boolean {
+    const w = this.world;
+    if (!w || !this.indoorMask) return false;
+    const c = Math.floor(fx / CELL_WU);
+    const r = Math.floor(fy / CELL_WU);
+    if (c < 0 || r < 0 || c >= w.width || r >= w.height) return false;
+    const dk = this.deckIndex.get(r * w.width + c);
+    if (!dk || dk.deck.level <= lvl) return false;
+    return this.roofCutAwayAt(c, r, lvl);
+  }
+
+  /** IS THE ROOF OVER THIS CELL CUT AWAY RIGHT NOW? — the one question a piece
+   *  of indoor scenery asks (`SceneryPlacement.roofed`). It stands under a roof
+   *  or cave deck, so it may be drawn exactly when that deck is not.
+   *
+   *  The answer is the cut itself, never a room test: `cutAt` returns Infinity
+   *  for a column drawn WHOLE — the street, the neighbour's house, my own
+   *  building before I step inside — and a finite level for one the cut-away
+   *  has truncated, which is precisely "the roof above it has been removed
+   *  this frame". A piece above that level is still under drawn art and stays
+   *  hidden (`level <= cut`), which is what keeps a cave's upper gallery from
+   *  showing through the floor of the one above it.
+   *
+   *  Gated on `indoorMask` for the same reason aboveCut is: the exit fade keeps
+   *  the cut world painted while the light rolls back, and the furniture must
+   *  not vanish a beat before the roof slab returns over it. */
+  private roofCutAwayAt(col: number, row: number, level: number): boolean {
+    if (!this.indoorMask) return false; // no cut drawn: every roof is whole
+    const cut = this.cutAt(col, row);
+    return Number.isFinite(cut) && level <= cut;
+  }
+
+  /** The level the column at this cell draws to while the cut is active: its
+   * entry in the constrained set, or Infinity for a column drawn whole (the
+   * per-cell world), or the scalar dial (the legacy kill-switch world).
+   * Coords in CELLS (fractions floored). */
+  private cutAt(col: number, row: number): number {
+    const w = this.world;
+    if (!this.indoorCut || !w) return this.indoorTop;
+    const c = Math.floor(col);
+    const r = Math.floor(row);
+    if (c < 0 || r < 0 || c >= w.width || r >= w.height) return this.indoorTop;
+    return this.indoorCut.get(r * w.width + c) ?? Infinity;
   }
 
   private indoorOutside(fx: number, fy: number, z = 0): boolean {
@@ -9012,12 +15373,14 @@ export class WorldScene extends Phaser.Scene {
    * a surface whose level disagrees with the terrain, say. Showing an outline
    * that could have been hidden is a cosmetic miss; hiding one that should show
    * is the feature not working. */
-  private inHiddenRoom(fx: number, fy: number, z = 0): boolean {
+  /** The STATIC half of inHiddenRoom: is this CELL part of a space the indoor
+   * verdict calls a room? (Memoised per space; knows nothing about which room
+   * is currently mine.) Split out 2026-08-12 so the light ledger can ask the
+   * same question about an emissive source once per world. */
+  private roomVerdictAt(col: number, row: number, z = 0): boolean {
     const g = this.terrain;
     const w = this.world;
     if (!g || !w) return false;
-    const col = Math.floor(fx / CELL_WU);
-    const row = Math.floor(fy / CELL_WU);
     if (col < 0 || row < 0 || col >= w.width || row >= w.height) return false;
     const idx = row * w.width + col;
     let room = this.roomCellMemo.get(idx);
@@ -9030,7 +15393,15 @@ export class WorldScene extends Phaser.Scene {
       if (space) for (const c of space.roof) this.roomCellMemo.set(c, room);
       else this.roomCellMemo.set(idx, 0);
     }
-    if (!room) return false;
+    return !!room;
+  }
+
+  private inHiddenRoom(fx: number, fy: number, z = 0): boolean {
+    const w = this.world;
+    if (!w) return false;
+    const col = Math.floor(fx / CELL_WU);
+    const row = Math.floor(fy / CELL_WU);
+    if (!this.roomVerdictAt(col, row, z)) return false;
     // It IS a room — mine or someone else's? THE TEST IS "IS THE CUT STILL
     // APPLIED", i.e. is the roof off, and NOT the fade mask.
     //
@@ -9079,16 +15450,3567 @@ export class WorldScene extends Phaser.Scene {
    * half-frame trap — `setFlipX` mirrors WITHIN the sub-frame's own 32px box,
    * landing the half mirrored AND on the wrong side — cannot be reached here.
    */
+  /* ================= TILES 3.0 — the SECOND art source ====================
+   *
+   * A maps3 world's cells name a ground TYPE and nothing else, so there is no
+   * baked path to look up: `tiles3.ts` resolves what draws, `tiles3draw.ts`
+   * composes the two rasters the resolver only names, and `tiles3runtime.ts`
+   * does both ONE CELL AT A TIME. Everything else in this scene — the
+   * streaming RenderTexture, the depth sort, the occluders, the indoor cut,
+   * collision, nav — is geometry and compositing and does not care where the
+   * picture came from, which is why the wiring below is a second branch and not
+   * a second renderer.
+   *
+   * THE COORDINATE BRIDGE, and it is the whole trick: tiles3 works in its own
+   * `Frame`, and this scene works in `iso.ox/oy + MAP geometry`. They are the
+   * same lattice with different origins, so ONE frame built here maps every
+   * resolver output straight into world space:
+   *
+   *     columnX(f,x,y)     = f.ox + (x−y)·32 − 32   ≡ iso.ox + (x−y)·dx
+   *     columnY(f,x,y,z)−10 = f.oy + (x+y)·14 − z·pitch − 10 ≡ iso.oy + (x+y)·dy − z·lh
+   *
+   * hence `f.ox = iso.ox + DX` and `f.oy = iso.oy + TOP_Y`, with dy = 14 and
+   * lh = the MEASURED storey pitch. Get either offset wrong and nothing looks
+   * broken — the whole map simply shears by a row per grid step. */
+
+  /** The resolver's frame, expressed in this scene's world-space projection. */
+  private tiles3Frame(): T3Frame {
+    const w = this.world!;
+    return {
+      x0: 0,
+      y0: 0,
+      x1: w.width,
+      y1: w.height,
+      ox: this.iso.ox + T3_DX,
+      oy: this.iso.oy + T3_TOP_Y,
+      pitch: this.geom.lh,
+      canvas: [this.iso.w, this.iso.h],
+    };
+  }
+
+  /** Build the maps3 runtime out of the documents preload fetched. Runs once,
+   *  after setupStreamingGround has set `iso`. A missing ground_types or
+   *  patterns index leaves `t3` null and the world renders as empty ground —
+   *  loudly, because a silent fall-through here is a black map. */
+  private initTiles3() {
+    const world = this.world;
+    if (!world) return;
+    const docs: Partial<Record<Tiles3DocKey, unknown>> = {};
+    const absent: string[] = [];
+    for (const k of Object.keys(TILES3_DOCS) as Tiles3DocKey[]) {
+      const doc = this.cache.json.get(`t3doc:${k}`);
+      if (doc === undefined) absent.push(TILES3_DOCS[k]);
+      docs[k] = doc;
+    }
+    if (absent.length) console.warn(`[nangijala] tiles3: documents did not load: ${absent.join(", ")}`);
+    // The pitch is the MEASURED one (shared ISO_GEOMETRY_MAPS3.lh = 15) and the
+    // frame is already built with it — `checkTiles3Pitch` re-measures off the
+    // real art once it lands and says so if the two ever disagree.
+    const data = tiles3DataFrom(docs, this.geom.lh, (m) => console.warn(m));
+    if (!data) {
+      console.warn("[nangijala] tiles3: no ground_types/patterns — this world cannot resolve any art");
+      return;
+    }
+    data.fadeTune = fadeTune(); // the Settings fade dials; "ml-fade-tune" rebuilds the resolver
+    data.footBoundary = extraTransitions(); // transitions.ts — the cliff-foot and lid transitions
+    data.deckBoundary = extraTransitions();
+    const tiles = new Tiles3(data);
+    const view = viewFromParsed(world);
+    // THE REGION FLOOD FILL RUNS HERE, ONCE, OVER THE WHOLE DOC — measured 38ms
+    // on the_game's 512x512. Per camera window it would be faster and WRONG: a
+    // region id is `<ground>@<lexicographic minimum cell>`, so a window-local
+    // component gets a different id, a different set, and different art every
+    // time the camera moves, and the ground visibly reshuffles as you walk.
+    const t0 = performance.now();
+    this.groundPainted = false;
+    this.groundSliceQ = [];
+    this.groundSliceCtx = null;
+    this.worldUp = false;
+    this.t3missing.clear();
+    this.groundDirtyCells = [];
+    this.repaintGroundPartial = false;
+    this.t3ringQueue = [];
+    this.t3keepIdx = null;
+    this.t3cells.clear(); // a new resolver: nothing cached against the old one may survive
+    this.t3 = new Tiles3World({ view, tiles, frame: this.tiles3Frame(), patterns: data.patterns });
+    this.t3regionMs = +(performance.now() - t0).toFixed(1);
+    /* AND THE SAME RESOLVER ON ANOTHER CORE. Booted from the URLs THIS thread
+     * would use, so staging's `/assets/**` -> CDN rewrite is applied once, here,
+     * and never re-derived in the worker. Rebuilt with the resolver: initTiles3
+     * runs again when the live tuning channel lands, and an answer resolved
+     * against the old documents is a wrong picture, not a slow one — the
+     * generation counter inside ResolveWorker is what discards those. */
+    const docUrls: Partial<Record<Tiles3DocKey, string>> = {};
+    for (const k of Object.keys(TILES3_DOCS) as Tiles3DocKey[])
+      docUrls[k] = docUrl(TILES3_DOCS[k], this.t3route);
+    this.t3worker.onResolved((cells, paths) => this.onWorkerResolved(cells, paths));
+    /* BOOTED HERE, WITH THE RESOLVER. Deferring it to the first prefetch step
+     * was tried and reverted: the suspicion was that the worker's own thirteen
+     * document fetches were delaying the boot hold, and the measurement says
+     * they are not — the hold released at 20 s with the eager boot and 25 s
+     * with the lazy one, i.e. the headless harness is slow either way and the
+     * worker is not the reason. Booting late only means it is still "booting"
+     * when the player has already started walking, which is exactly when the
+     * ring needs it. */
+    this.t3workerOpts = {
+      docUrls,
+      worldUrl: gameUrl(worldFileUrl(this.worldName, "world.json")),
+      frame: this.tiles3Frame(),
+      pitch: this.geom.lh,
+    };
+    this.t3worker.stop();
+    this.t3workerBooted = true;
+    this.t3worker.init(this.t3workerOpts);
+    this.t3load = new Tiles3Loader({
+      loader: this.tiles3LoaderAdapter(),
+      textures: this.t3tm,
+      route: this.t3route,
+      onBatch: (paths) => this.onTerrainBatch(paths),
+    });
+    // The index decides which sheets to fetch; preload queued the library's
+    // published names, so this is a no-op unless a republish renamed one.
+    // The pattern sheets are a dependency of EVERY composed op (ensureTiles3Textures
+    // returns null without them, and the pass then draws nothing): a batch that
+    // carries one is a full repaint, whatever cells recorded (onTerrainBatch).
+    this.t3sheetPaths = new Set(sheetPaths(data.patterns));
+    for (const path of this.t3sheetPaths) this.t3load.need(path);
+    this.t3load.flush();
+    this.initScenery(view);
+    // A LoaderPlugin constructed after the scene has booted never sees BOOT, so
+    // it never registers the SHUTDOWN hook the scene's own loader gets — it has
+    // to be torn down by hand or an in-flight batch outlives the world it was
+    // fetched for.
+    this.events.once("shutdown", () => {
+      this.t3loader?.destroy();
+      this.t3loader = null;
+    });
+  }
+
+  /** Phaser's TextureManager as `tiles3draw` declares it.
+   *
+   * THE TRAP, and it is silent: Phaser's `textures.get(key)` returns the
+   * built-in `__MISSING` texture — a 32x32 checker — for a key it does not
+   * have, NOT undefined. Handed straight to the composer, an unloaded 64x46
+   * plate therefore arrives as 32x32 pixels: `composeBoundary` throws on the
+   * geometry mismatch (which kills the frame) and `conformPlate` would happily
+   * paste a checkerboard into the world. `exists` is the only honest test, so
+   * the adapter makes `get` answer through it. */
+  private t3TextureManager(): TextureManagerLike {
+    return {
+      exists: (k) => this.textures.exists(k),
+      get: (k) => (this.textures.exists(k) ? this.textures.get(k) : undefined),
+      addCanvas: (k, src) => this.textures.addCanvas(k, src as HTMLCanvasElement),
+      /* RAW BYTES INSTEAD OF A CANVAS, under WebGL only — Phaser's
+       * `addUint8Array` is documented WebGL-only and `TextureSource.init` sends
+       * a Uint8Array down `createUint8ArrayTexture`, a path the Canvas renderer
+       * does not have. The gate is here rather than in tiles3draw so that
+       * module stays pure and its gates keep exercising both paths. */
+      addRaw: (k, data, w, h) => {
+        /* THE CHECK IS LAZY BECAUSE THIS ADAPTER IS A FIELD INITIALISER —
+         * `t3tm` is built while the Scene is being constructed, when
+         * `this.game` is still undefined, so reading the renderer here at wire
+         * time throws and takes the whole client down before it boots. Resolved
+         * once, on the first composition, by which time the game exists.
+         * Answering null falls through to the canvas path, which is exactly
+         * what a non-WebGL renderer needs. */
+        if (this.t3raw === null) {
+          const t = this.textures as unknown as { addUint8Array?: unknown };
+          this.t3raw =
+            this.game?.renderer?.type === Phaser.WEBGL && typeof t.addUint8Array === "function";
+        }
+        if (!this.t3raw || this.t3rawOff) return null;
+        return (
+          this.textures as unknown as {
+            addUint8Array(k: string, d: Uint8Array, w: number, h: number): unknown | null;
+          }
+        ).addUint8Array(k, data, w, h);
+      },
+      remove: (k) => this.textures.remove(k),
+    };
+  }
+
+  /** THE TERRAIN GETS ITS OWN LOADER, and it has to.
+   *
+   * `this.load` is a single FIFO queue, and the moment the avatar is in,
+   * `loadDeferredAnims` pushes ~1,700 action-animation frames onto it. Streamed
+   * terrain queued behind those waits minutes: measured on the_game, 95 plate
+   * files sat at position 1,719 and the ground never filled in at all — the
+   * world simply stayed empty while the counters said everything had been
+   * requested. A second `LoaderPlugin` on the same scene has its own queue and
+   * its own `complete`, writes into the SAME TextureManager, and downloads in
+   * parallel with the character art instead of behind it.
+   *
+   * `crossOrigin = "anonymous"` IS LOAD-BEARING, and having a dedicated loader
+   * is what makes it safe to set once. A composed boundary is built by reading
+   * its two plates back out of their textures (`getImageData`), and a
+   * cross-origin image loaded WITHOUT the attribute taints the canvas and makes
+   * that read throw — so on a staging join (art from jsDelivr, which answers
+   * `access-control-allow-origin: *`) every boundary in the world would
+   * silently vanish. The character/monster/NPC art stays on `this.load` with
+   * its old, forgiving behaviour, because a host that does NOT send CORS fails
+   * the load outright once the attribute is set. */
+  private tiles3Loader(): Phaser.Loader.LoaderPlugin {
+    if (!this.t3loader) {
+      this.t3loader = new Phaser.Loader.LoaderPlugin(this);
+      this.t3loader.crossOrigin = "anonymous";
+    }
+    return this.t3loader;
+  }
+
+  private tiles3LoaderAdapter() {
+    const l = this.tiles3Loader();
+    return {
+      image: (key: string, url: string) => l.image(key, url),
+      isLoading: () => l.isLoading(),
+      start: () => l.start(),
+      once: (event: string, cb: () => void) => l.once(event, cb),
+      /* EVERY FILE, SUCCESS OR ERROR — what turns the loading bar from a
+       * staircase into a line. Phaser reports the two outcomes on different
+       * events (an ERRORED file never fires FILE_COMPLETE), and a stage that
+       * only counted successes would stall the bar on a 404 for the whole
+       * batch. Registered once per loader; both the terrain loader and the
+       * scenery art ride this one Phaser queue, so the key is what tells them
+       * apart (`t2:` vs `s3:`). */
+      onFile: (cb: (key: string) => void) => {
+        l.on(Phaser.Loader.Events.FILE_COMPLETE, (key: string) => cb(key));
+        l.on(Phaser.Loader.Events.FILE_LOAD_ERROR, (file: { key?: string }) => cb(file?.key ?? ""));
+      },
+    };
+  }
+
+  /* A COMPOSITION REGISTERED FROM RAW BYTES HAS NO DRAWABLE SOURCE, and every
+   * reader in this file assumed one. Composed textures go in as a Uint8Array
+   * under WebGL (see `addRaw`), so `getSourceImage()` answers the array itself:
+   * `src.width` is undefined and a `drawImage` of it throws. That would have
+   * silently broken `__ml.t3png` — the probe that exists precisely to settle
+   * whether a composed boundary is a real transition or a hard diamond, i.e.
+   * the repo's main instrument for the artefact class this renderer keeps
+   * being asked about. The bytes are right there; hand them back. */
+  private rawTexPixels(key: string): T3Pixels | null {
+    const tx = this.textures.exists(key) ? this.textures.get(key) : null;
+    const src = tx?.getSourceImage() as unknown;
+    if (!(src instanceof Uint8Array) && !(src instanceof Uint8ClampedArray)) return null;
+    const ts = (tx as unknown as { source?: { width: number; height: number }[] })?.source?.[0];
+    const w = ts?.width ?? 0;
+    const h = ts?.height ?? 0;
+    if (!w || !h || src.length < w * h * 4) return null;
+    return { w, h, data: new Uint8ClampedArray(src.buffer, src.byteOffset, w * h * 4) };
+  }
+
+  /** Decoded RGBA behind a loaded texture. A texture whose source is already a
+   *  canvas is read from its own context; an `<img>` is drawn into a scratch
+   *  one first; raw bytes are handed straight back. Null while the art is not
+   *  resident. */
+  private texPixels(key: string): T3Pixels | null {
+    if (!this.textures.exists(key)) return null;
+    const raw = this.rawTexPixels(key);
+    if (raw) return raw;
+    const src = this.textures.get(key)?.getSourceImage() as
+      | (HTMLImageElement & HTMLCanvasElement)
+      | undefined;
+    if (!src) return null;
+    const w = src.naturalWidth || src.width;
+    const h = src.naturalHeight || src.height;
+    if (!w || !h) return null;
+    let ctx: CanvasRenderingContext2D | null =
+      typeof src.getContext === "function" ? src.getContext("2d") : null;
+    if (!ctx) {
+      const cv = document.createElement("canvas");
+      cv.width = w;
+      cv.height = h;
+      // THE SAME READBACK HINT AS `sourcePixels`, on the surviving copy of the
+      // same defect: this canvas exists only to be read straight back with
+      // getImageData, and without the flag the browser keeps it GPU-backed and
+      // the read is a synchronous GPU->CPU stall. Adding it on the composition
+      // path took a composition from 2.8-5.6 ms (with 34.7 and 150.8 ms
+      // outliers) to 0.2-0.55 ms on his phone.
+      ctx = cv.getContext("2d", { willReadFrequently: true });
+      ctx?.drawImage(src as CanvasImageSource, 0, 0);
+    }
+    try {
+      const id = ctx?.getImageData(0, 0, w, h);
+      return id ? { w, h, data: new Uint8ClampedArray(id.data) } : null;
+    } catch (e) {
+      // A TAINTED canvas — cross-origin art loaded without CORS. Say so once:
+      // every composed boundary in the world depends on this read.
+      console.warn(`[nangijala] tiles3: cannot read pixels of ${key} (${e})`);
+      return null;
+    }
+  }
+
+  /** The composed-texture factory, built the first time all three pattern
+   *  sheets are resident. Null until then, and a null factory draws no
+   *  boundaries and no conformed plates — the flats meet hard, which is the
+   *  pre-3.0 look, never a hole. */
+  private ensureTiles3Textures(): Tiles3Textures | null {
+    if (this.t3tex) return this.t3tex;
+    const t3 = this.t3;
+    if (!t3) return null;
+    const patterns = this.cache.json.get("t3doc:patterns") as PatternsDoc | undefined;
+    const groundTypes = (this.cache.json.get("t3doc:groundTypes") as { grounds?: Record<string, unknown> } | undefined)?.grounds;
+    if (!patterns || !groundTypes) return null;
+    if (!this.t3sheets) {
+      const p = patternSheetPaths(patterns);
+      const sil = this.texPixels(t3ArtKey(p.silhouette));
+      const masks = this.texPixels(t3ArtKey(p.masks));
+      const border = this.texPixels(t3ArtKey(p.border));
+      if (!sil || !masks || !border) return null;
+      this.t3sheets = patternSheets(patterns, sil, masks, border);
+    }
+    this.t3tex = new Tiles3Textures({
+      textures: this.t3tm,
+      sheets: this.t3sheets,
+      pitch: this.geom.lh, // the occluder pass's storey pitch: where a face ends, for the wall-foot band
+
+      /* THE SEAM IS BACK ON, AND TURNING IT OFF WAS A MISTAKE OF MINE
+       * (2026-09-04). A composed transition is `out.rgb = mask ? plateB :
+       * plateA` — a HARD per-pixel select between two flat plates. The seam,
+       * which darkens the 1-texel border mask to `border.tone` (0.82) of what
+       * is already there, is the only thing that makes it read as a blend at
+       * all: "a transition without it is a 0-100 hard cut, which is not what
+       * the generator drew" (his verdict, tiles/patterns/index.json,
+       * 2026-08-27), and the wiki preview he reviews from draws it.
+       *
+       * It was switched off here chasing the zigzag, on the measurement that
+       * the remaining dots were a flat 0.82 multiply — which they were. But
+       * 0.82 was the seam doing its job on top of the ACTUAL defect: a
+       * transition tile covering 924 texels where the plate it replaces covers
+       * 2012, leaving 1088 painted by nothing. His magenta ground clear proved
+       * that, and it is fixed. Removing the seam removed the transition
+       * instead, which is what he reported next: "I still see no
+       * transitions..." with 109 boundaries and 41 fades resolving in the very
+       * frame he sent.
+       *
+       * The switch below lets him settle it in a tap rather than a deploy, and
+       * `boundaryKey` carries `|noseam` so the two are different pictures under
+       * different keys and no cache can serve one for the other. */
+      seam: this.seamOn,
+      groundTypes: groundTypes as Record<string, { palette?: { wall?: string; top?: string }; base_color?: string }>,
+      // UNBOUNDED, deliberately. Eviction calls textures.remove, which pulls a
+      // texture out from under anything still holding the key; the ground RT
+      // drops its reference after the blit but the OCCLUDER pass keeps live
+      // Sprites on composed keys. Measured ceiling on the_game: 2,248 distinct
+      // compositions = 25 MB of canvas for the whole 512x512 world, and a
+      // camera window holds ~400.
+      limit: 0,
+      // THE OCCLUDER POOL HOLDS TEXTURE OBJECTS ACROSS REBUILDS (occImage), so any
+      // future eviction must also clear occPool/occNext or a pooled image renders
+      // from a destroyed texture — legacy's per-rebuild recreate no longer re-resolves the key.
+    });
+    return this.t3tex;
+  }
+
+  /** THE MEASURED STOREY PITCH, re-derived from the art the game actually
+   *  loaded and compared with the published one. render3 measures it off the
+   *  x-over-x wall tile; a pitch one row too large exposes a bright stripe of
+   *  each lower floor at every storey, so a disagreement has to be visible in
+   *  the console rather than only on screen. Runs once, when the tile lands. */
+  private checkTiles3Pitch() {
+    if (this.t3pitchChecked || !this.t3) return;
+    let path: string | undefined;
+    try {
+      path = this.t3.tiles.overTile("grey_stone", "grey_stone").path;
+    } catch {
+      this.t3pitchChecked = true;
+      return;
+    }
+    if (!path) return;
+    const px = this.texPixels(t3ArtKey(path));
+    if (!px) return;
+    this.t3pitchChecked = true;
+    const pitch = measureStoreyPitch(px.w, px.h, (x, y) => px.data[(y * px.w + x) * 4 + 3] > 128);
+    if (pitch && pitch !== this.geom.lh)
+      console.warn(
+        `[nangijala] tiles3: the wall art measures a ${pitch}px storey, the world projects at ${this.geom.lh}px ` +
+          `— every stacked column is off by ${Math.abs(pitch - this.geom.lh)}px per storey (shared ISO_GEOMETRY_MAPS3.lh)`,
+      );
+  }
+
+  /** One resolved blit onto the ground RenderTexture. `batchDraw` cannot crop,
+   *  and exactly one op needs it — a FADE tile is the top `TOP_Y + 2·DY + 2`
+   *  rows of a 64x64 file and its wall is explicitly meaningless, so drawing
+   *  the whole file grows a stray wall band on flat ground. A cropped frame is
+   *  registered on the texture once, under a name derived from the crop. */
+  private t3Blit(
+    rt: Phaser.GameObjects.RenderTexture,
+    op: { key: string; x: number; y: number; sx: number; sy: number; sw: number; sh: number },
+    ax: number,
+    ay: number,
+    tint: number,
+  ) {
+    /* A DRAW ENTIRELY OUTSIDE THE TEXTURE CONTRIBUTES NOTHING — skip it before
+     * the texture lookup. The ground pass walks every cell of a window that is
+     * padded by a tile on each side and by the world's whole level range
+     * (maxLevel × lh) below, and issues every op of every cell whether or not
+     * its rectangle reaches the render texture; measured on the_game, 31-55%
+     * of a redraw's blits landed entirely outside it (forest 1,739 of 3,892;
+     * autumn wood 6,623 of 12,067; snow cliffs 3,915 of 12,564 — the deck
+     * face stacks rise 360-480 px above their cell and are most of them). The
+     * RT clips them to nothing at the cost of a batchDraw each. This test is
+     * the same rectangle-vs-box test the occluder pass already applies; it is
+     * pixel-identical by construction and the parity probe (__ml.groundHash)
+     * checks that on the real pixels. Scale is 1 here, so the drawn size IS
+     * the crop size (op.sw × op.sh) — and the test assumes POSITIVE sw/sh
+     * (every producer passes real file dimensions; a negative-width op would
+     * rasterise a mirrored quad the four-way test misjudges, so such an op is
+     * simply never culled). Anchoring is the frame's top-left at (dx, dy) and
+     * the texture is exactly [0, rt.width) × [0, rt.height) in these units
+     * (identity camera, rt.width is the texel size) — verified in review
+     * against Phaser 3.90's MultiPipeline.batchTextureFrame. */
+    /* EVERY GROUND OP LANDS ON A WHOLE TEXEL.
+     *
+     * The maintainer's read, and the one class of cause left standing after
+     * the art, the mask, the pitch, the shaders, the crop and the streaming
+     * were each measured innocent: "a rounding error that sometimes creates an
+     * extra gap due to not working with clean integers". A tile diamond meets
+     * its neighbours along a 2:1 staircase with ONE texel of overlap, so half a
+     * texel of placement error opens a gap on some rows and not others — which
+     * is exactly the shape he photographed: the same screen Y every time, the
+     * upper edges only, on every ground, and dotted rather than solid because
+     * the staircase steps two across for one down.
+     *
+     * On paper each term is whole (columnX/columnY step by DX=32 and DY=14 off
+     * an integer frame origin, the anchor is Math.round). On his device
+     * something in that chain is not, and rounding here is free where it is
+     * already true. `nonInt` counts what needed it, so the beacon can say
+     * whether this was the cause instead of leaving another guess in the tree. */
+    if (!Number.isInteger(op.x - ax) || !Number.isInteger(op.y - ay)) this.groundNonInt++;
+    const dx = Math.round(op.x - ax);
+    const dy = Math.round(op.y - ay);
+    if (
+      this.groundCull &&
+      op.sw > 0 &&
+      op.sh > 0 &&
+      (dx + op.sw <= 0 || dy + op.sh <= 0 || dx >= rt.width || dy >= rt.height)
+    ) {
+      this.groundCulled++;
+      return;
+    }
+    const clip = this.groundClip;
+    if (clip && op.sw > 0 && op.sh > 0) {
+      /* A BAND PASS (the ground scroll, the cell repaint). THE CLIP DECIDES
+       * WHETHER TO DRAW, NEVER WHAT TO DRAW: an op with no pixels inside the
+       * band is skipped, and every other op is drawn WHOLE.
+       *
+       * It used to CROP an op that crossed the edge to an exact sub-rect. That
+       * was the zigzag, and the maintainer is who found it — his red-shadow
+       * switch killed the shadow theory in one tap (the shadow goes red, the
+       * artefact stays black), and he then saw that it is POSITIONAL: ground
+       * either side of a straight screen-space line differs, clean on one side
+       * and dotted on the other, on sand as well as water. Those lines are the
+       * BAND EDGES. Measured the same way: full-painted ground carries 0
+       * fill-coloured texels where the same ground streamed carries 131.
+       *
+       * Drawing whole is safe by construction. The band's window is already
+       * padded by a tile and the world's level range; the painter is
+       * deterministic and world-anchored; and the kept picture outside the band
+       * came from that same painter at that same anchor. So the pixels an
+       * uncropped op lays outside the band are the pixels already there — it
+       * repaints them and cannot change them. What was never safe was sub-rect
+       * arithmetic in a path with one texel of margin, which is exactly what a
+       * liquid has, and why water showed this worst and longest. */
+      if (dx + op.sw <= clip.x0 || dy + op.sh <= clip.y0 || dx >= clip.x1 || dy >= clip.y1) {
+        this.groundCulled++;
+        return;
+      }
+    }
+    const tex = this.textures.get(op.key);
+    const src = tex?.getSourceImage() as { width?: number; height?: number } | undefined;
+    const fw = src?.width ?? op.sw;
+    const fh = src?.height ?? op.sh;
+    if (op.sx === 0 && op.sy === 0 && op.sw === fw && op.sh === fh) {
+      rt.batchDrawFrame(op.key, "__BASE", dx, dy, 1, tint); // explicit: never the texture's default frame
+      return;
+    }
+    const name = `t3c:${op.sx},${op.sy},${op.sw},${op.sh}`;
+    if (!tex.has(name)) {
+      tex.add(name, 0, op.sx, op.sy, op.sw, op.sh);
+      tex.firstFrame = "__BASE"; // see the clip path: added frames must not become the default
+    }
+    rt.batchDrawFrame(op.key, name, dx, dy, 1, tint);
+  }
+
+  /** ONE CELL'S RESOLUTION, REMEMBERED — PER MEMBER, LAZILY. `t3.cell` /
+   *  `t3.boundary` / `t3.decks` are pure functions of static world data (the
+   *  view, the frame, the fills, the deck map) — nothing in a session changes
+   *  their answer — yet the ground pass and the occluder pass each re-ran them
+   *  for every cell of the window on every rebuild: ~4,267 cells per ground
+   *  redraw, ~82% of them resolved by the redraw before (a 256 px step exposes
+   *  ~18% of the texture), and the same cells again for the occluders every
+   *  96 px. Measured after the draw cull, the resolver was the larger share of
+   *  a redraw. Each member memoises on its own, so a caller that never asked
+   *  for a boundary (a void cell) or decks (a cut column) still never pays for
+   *  one — and with the cache OFF these are exactly the old calls, which is
+   *  what makes the A/B honest. The OPS built from a resolution (`cellBlits`,
+   *  `opsFor*`) are NOT cached: they depend on which art is resident and on
+   *  the indoor cut. Failures cache as the same null/[] `t3Try` answered
+   *  (warned once). BOUNDED: pruned to the last ground window after every
+   *  ground redraw (t3pruneCache — the occluder window lies inside it), so the
+   *  Map holds ~4-5k entries, a few MB, never the world; cleared when a new
+   *  resolver is built. The resolver's own stats counters now count once per
+   *  session per cell, not per redraw. */
+  private t3entry(col: number, row: number) {
+    const i = row * (this.world?.width ?? 1) + col;
+    let e = this.t3cells.get(i);
+    if (!e) this.t3cells.set(i, (e = {}));
+    return e;
+  }
+  /** AN ANSWER FROM THE OTHER CORE. Fills the resolution cache the ground pass
+   *  and the occluder pass both read, and queues the art those cells named.
+   *
+   *  IT NEVER OVERWRITES. A cell this thread has already resolved keeps its own
+   *  answer: the two are the same code over the same documents and should agree
+   *  exactly (`__ml.workerParity()` checks that on demand), but "should" is not
+   *  a reason to let a message replace a value the frame may already have drawn
+   *  with. The worker's job is the cells nobody has looked at YET. */
+  private onWorkerResolved(cells: readonly ResolvedCell[], paths: readonly string[]): void {
+    if (!this.groundCacheOn || !this.t3) return; // cache off: an answer has nowhere to live
+    for (const r of cells) {
+      let e = this.t3cells.get(r.i);
+      if (!e) this.t3cells.set(r.i, (e = {}));
+      if (e.cell === undefined) e.cell = r.cell;
+      if (e.boundary === undefined) e.boundary = r.boundary;
+      if (e.decks === undefined) e.decks = r.decks;
+    }
+    const load = this.t3load;
+    if (load) for (const p of paths) load.need(p);
+  }
+
+  private t3cellOf(t3: Tiles3World, col: number, row: number): Tiles3Cell | null {
+    if (!this.groundCacheOn) return this.t3Try(`cell ${col},${row}`, () => t3.cell(col, row), null);
+    const e = this.t3entry(col, row);
+    if (e.cell === undefined) e.cell = this.t3Try(`cell ${col},${row}`, () => t3.cell(col, row), null);
+    return e.cell;
+  }
+  private t3boundaryOf(t3: Tiles3World, col: number, row: number): Tiles3Boundary | null {
+    if (!this.groundCacheOn) return this.t3Try(`boundary ${col},${row}`, () => t3.boundary(col, row), null);
+    const e = this.t3entry(col, row);
+    if (e.boundary === undefined) e.boundary = this.t3Try(`boundary ${col},${row}`, () => t3.boundary(col, row), null);
+    return e.boundary;
+  }
+  private t3decksOf(t3: Tiles3World, col: number, row: number): Tiles3DeckCell[] {
+    if (!this.groundCacheOn) return this.t3Try(`decks ${col},${row}`, () => t3.decks(col, row), [] as Tiles3DeckCell[]);
+    const e = this.t3entry(col, row);
+    if (e.decks === undefined) e.decks = this.t3Try(`decks ${col},${row}`, () => t3.decks(col, row), [] as Tiles3DeckCell[]);
+    return e.decks;
+  }
+  /** Keep only the cells of the window just drawn (see t3cellOf). */
+  private t3pruneCache(keep: readonly [number, number][] | Set<number>) {
+    const W = this.world?.width ?? 1;
+    let live: Set<number>;
+    if (keep instanceof Set) live = keep;
+    else {
+      live = new Set<number>();
+      for (const [c, r] of keep) live.add(r * W + c);
+    }
+    for (const k of this.t3cells.keys()) if (!live.has(k)) this.t3cells.delete(k);
+  }
+
+  /** The cell window whose art can reach a rectangle of the ground texture
+   *  (RT-relative [x, x+w) × [y, y+h)): a tile on each side and the world's
+   *  whole level range BELOW, because a column's art rises above its cell.
+   *  The full-texture rule the pass always used, now also applied to a band. */
+  private t3groundWindow(ax: number, ay: number, x: number, y: number, w: number, h: number) {
+    const { dx, dy, lh, tile } = this.geom;
+    const x0 = ax + x - tile;
+    const x1 = ax + x + w + tile;
+    const y0 = ay + y - tile;
+    const y1 = ay + y + h + tile + this.maxLevel * lh;
+    return {
+      u0: Math.floor((x0 - this.iso.ox) / dx) - 1,
+      u1: Math.ceil((x1 - this.iso.ox) / dx) + 1,
+      v0: Math.max(0, Math.floor((y0 - this.iso.oy) / dy) - 1),
+      v1: Math.ceil((y1 - this.iso.oy) / dy) + 1,
+    };
+  }
+
+  /** THE GROUND SCROLL. A camera-latched redraw used to repaint the whole
+   *  ground texture — every op of ~4,267 cells — when a 256 px step exposes
+   *  ~18% of it (measured 30-75 ms of JS per step while running, after the
+   *  cull and the resolution cache; the walking hitch). The texture is
+   *  world-anchored, so the picture it holds is still right, just displaced:
+   *  the kept part is copied into the other texture shifted by the anchor
+   *  delta, only the newly exposed L-shaped band (a vertical strip, a
+   *  horizontal strip; their corner twice, which is idempotent — each band is
+   *  filled, then the whole painter sequence replayed into it) is painted, and
+   *  the two textures swap roles. EXACT, because the band pass is the same pass
+   *  clipped: every op that crosses the band edge is CROPPED to it (t3Blit,
+   *  integer texel rects at scale 1), so the band's pixels see the same painter
+   *  sequence a full paint gives them and nothing outside the band is touched.
+   *  (Not a GL scissor: endDraw flushes into a capture target and blits it
+   *  whole, so a scissor would clip the wrong stage.) Only camera latches
+   *  scroll: a poisoned latch — repaintWorld, a landed batch, a resize, any
+   *  indoor change — takes the full path, so the indoor state can never differ
+   *  between the kept picture and the band. Parity: `__ml.groundHash()` after a
+   *  scroll equals a forced full repaint at the same anchor (dev A/B:
+   *  `__ml.groundScroll(on)`). */
+  private scrollTiles3Ground(
+    ax: number,
+    ay: number,
+    sx: number,
+    sy: number,
+    mask: Map<number, number> | null,
+    cuts: Map<number, number> | null,
+    top: number,
+  ) {
+    // Anything still owed on the OLD picture is painted now — the copy below
+    // carries it forward, so a slice can never target a swapped texture.
+    this.t3flushSlices();
+    const cur = this.groundRT!;
+    const next = this.groundScratch!;
+    this.groundScrollLog.push([ax - sx, ay - sy, ax, ay, sx, sy, cur.x, cur.y]);
+    if (this.groundScrollLog.length > 16) this.groundScrollLog.shift();
+    const W = cur.width;
+    const H = cur.height;
+    const bg = this.groundFillRGB(mask);
+    next.setPosition(ax, ay);
+    next.clear();
+    // The background under everything, as the full paint lays it: a WHOLE-
+    // texture fill, the one fill that is texel-exact. (DynamicTexture.fill with
+    // a rect is NOT: it keeps the renderer's projection over the texture's
+    // viewport, scales the rect by canvas/texture and floors it — up to 1/scale
+    // texels off per edge, measured as a 3 px navy seam bleeding into the kept
+    // picture at 412/1436. So the bands get no fill of their own.)
+    this.fillGround(next, bg);
+    // The kept picture, moved: old texel (px, py) is world (prevAx + px,
+    // prevAy + py), which in the new texture is (px - sx, py - sy). Opaque, so
+    // under NORMAL blending it replaces the fill exactly.
+    next.drawFrame(cur.texture.key, "__BASE", -sx, -sy);
+    // Integer texels — see makeGroundRT. A fractional edge here is a sub-texel
+    // crop, and sub-texel crops are what left background-coloured columns.
+    const bands: { x0: number; y0: number; x1: number; y1: number }[] = [];
+    const IW = Math.ceil(W);
+    const IH = Math.ceil(H);
+    /* THE BAND OVERLAPS THE KEPT PICTURE BY `GROUND_SEAM` TEXELS.
+     *
+     * Without it every latch left ONE texel row showing the bare fill, and the
+     * maintainer photographed the result: full-width bands of exactly 0x181c28
+     * — this fill's own colour, so the row is filled and simply has no terrain
+     * on it — spaced 512 device px apart at zoom 2, which is 256 world px, the
+     * GROUND_MARGIN/2 latch step EXACTLY. One line per scroll, and they ride
+     * up the screen and accumulate because the copy carries each one forward.
+     *
+     * Repainting a texel the copy already provided is IDEMPOTENT: the band pass
+     * is the same painter sequence clipped, so the overlap row is drawn with
+     * the ops it already had, and where the terrain is void the fill under it
+     * is the same fill. So this cannot change a pixel that was right, and it
+     * closes the seam whatever the sub-texel cause — which is the point: the
+     * exactness argument for the band said no gap was possible, and a gap was
+     * there anyway. One row of ops per latch is free. */
+    const seam = GROUND_SEAM;
+    if (sx > 0) bands.push({ x0: Math.max(0, IW - sx - seam), y0: 0, x1: IW, y1: IH });
+    else if (sx < 0) bands.push({ x0: 0, y0: 0, x1: Math.min(IW, -sx + seam), y1: IH });
+    if (sy > 0) bands.push({ x0: 0, y0: Math.max(0, IH - sy - seam), x1: IW, y1: IH });
+    else if (sy < 0) bands.push({ x0: 0, y0: 0, x1: IW, y1: Math.min(IH, -sy + seam) });
+    /* THE BAND IS NOT PAINTED HERE. Painting it cost 60-98 ms of JS in ONE
+     * frame on fresh terrain (measured: ~3,000 blits plus 66-98 texture
+     * compositions) — the freeze felt every ~1.5 s while running straight
+     * (256 px / ~175 px per second). The band is background already (the
+     * whole-texture fill above, with the kept picture copied over it) and lies
+     * entirely OUTSIDE the view: the texture reaches GROUND_MARGIN past the
+     * screen and a step exposes at most half of that, so nothing in the band
+     * can be seen for ~2.9 s. It is QUEUED in slices and painted one per frame
+     * (t3paintSliceStep) — identical pixels, none of the frames long. */
+    this.groundLastShift = { x: sx, y: sy };
+    this.groundSliceCtx = { ax, ay, mask, cuts, top };
+    this.groundSliceQ = [];
+    for (const b of bands) {
+      if (!this.groundSliced) {
+        this.groundSliceQ.push(b);
+        continue;
+      }
+      /* CUT BY AREA, NOT BY THE LONG AXIS. The rule was
+       * `ceil(span / groundSlicePx)` on the LONGER side and never looked at the
+       * depth, so a band 1,724 px wide and 8 px deep — which is what a mostly
+       * sideways latch produces — became FIVE slices of 345x8. Five frames, and
+       * five times the per-slice fixed cost, for a sliver: every slice resolves
+       * a window grown by two tiles in each direction whatever its own size, so
+       * that overhead is paid per SLICE and is nearly independent of how much
+       * the slice actually paints.
+       *
+       * Area keys on the work. The same sliver is now one slice; a full 256 px
+       * band goes from five slices to three, same pixels and same order, two
+       * fewer frames carrying a paint. The partition below is unchanged, so
+       * coverage cannot change: the rects still tile the band exactly. */
+      const vertical = b.y1 - b.y0 >= b.x1 - b.x0;
+      const span = vertical ? b.y1 - b.y0 : b.x1 - b.x0;
+      const area = (b.x1 - b.x0) * (b.y1 - b.y0);
+      const target = this.groundSlicePx * this.groundSlicePx;
+      const n = Math.max(1, Math.min(Math.ceil(span / this.groundSlicePx), Math.ceil(area / target)));
+      for (let i = 0; i < n; i++) {
+        if (vertical) {
+          const lo = b.y0 + Math.round(((b.y1 - b.y0) * i) / n);
+          const hi = b.y0 + Math.round(((b.y1 - b.y0) * (i + 1)) / n);
+          if (hi > lo) this.groundSliceQ.push({ x0: b.x0, y0: lo, x1: b.x1, y1: hi });
+        } else {
+          const lo = b.x0 + Math.round(((b.x1 - b.x0) * i) / n);
+          const hi = b.x0 + Math.round(((b.x1 - b.x0) * (i + 1)) / n);
+          if (hi > lo) this.groundSliceQ.push({ x0: lo, y0: b.y0, x1: hi, y1: b.y1 });
+        }
+      }
+    }
+    this.groundSliceStats.runs++;
+    this.t3stats = { cells: 0, blits: 0, boundaries: 0, decks: 0, scenery: this.t3stats.scenery, ms: 0, culled: 0, composed: 0, composeMs: 0, underlays: 0 };
+    // The cache keeps the FULL window's cells, not the band's — the next step
+    // wants the ~82% it already knows.
+    if (this.groundCacheOn && this.t3keepIdx) this.t3pruneCache(this.t3keepIdx);
+    this.groundRT = next;
+    this.groundScratch = cur;
+    next.setVisible(true).setDepth(-1_000_000);
+    cur.setVisible(false);
+    this.groundAnchor = { ax, ay, mask, top };
+    this.groundLastMode = "scroll";
+  }
+
+  /** ONE SLICE OF THE EXPOSED BAND, painted into the live texture through the
+   *  same clipped pass the whole band used — identical pixels, a frame's worth
+   *  at a time. Runs once per frame while anything is owed. */
+  private t3paintSliceStep(): number {
+    const b = this.groundSliceQ[0];
+    const ctx = this.groundSliceCtx;
+    const rt = this.groundRT;
+    if (!b || !ctx || !rt || !this.maps3) return 0;
+    this.groundSliceQ.shift();
+    const t0 = performance.now();
+    const win = this.t3groundWindow(ctx.ax, ctx.ay, b.x0, b.y0, b.x1 - b.x0, b.y1 - b.y0);
+    this.groundClip = b;
+    try {
+      this.drawTiles3Ground(rt, ctx.ax, ctx.ay, win.u0, win.u1, win.v0, win.v1, ctx.mask, ctx.cuts, ctx.top);
+    } finally {
+      this.groundClip = null;
+    }
+    const sliceMs = performance.now() - t0;
+    this.groundSliceStats.slices++;
+    this.groundSliceStats.ms += sliceMs;
+    /* THE SIZE RATCHET IS GONE. It grew `groundSlicePx` only when a slice cost
+     * under GROUND_SLICE_MS/2 = 1 ms, and a slice on his phone costs ~20 ms
+     * because of the bracket — so the condition was unreachable and the size
+     * sat at its initial 384 px for the life of the session. It could only grow
+     * once it was already fast and it was never fast because it never grew. The
+     * bracket is the cost, so the fix is to pay it once per FRAME (see
+     * t3drainSlices) rather than to resize the rects; the cut stays 384 px, so
+     * the rect count per band is unchanged and `slices` stays comparable
+     * across the A/B. */
+    /* THE SIZE IS NOT THE LEVER, AND STEERING IT DOWNWARD BACKFIRED. Measured
+     * on his phone: shrinking slices took `groundSlice` from 6.48 ms/frame to
+     * 16.66 — two and a half times WORSE. The reason is already written down
+     * one screen up: every beginDraw/endDraw bracket costs a capture-target
+     * clear AND A FULL-TEXTURE BLIT whatever it draws, so cost is dominated by
+     * the number of BRACKETS, not by the area inside them. Smaller slices mean
+     * more brackets for the same band, and each one pays that fixed price.
+     * So the size only ever GROWS here, toward fewer brackets, and the floor is
+     * the size that was shipping. */
+    if (!this.groundSliceQ.length) this.groundSliceCtx = null;
+    return sliceMs;
+  }
+
+  /** DRAIN THE BAND UNDER ONE BRACKET, bounded by measured milliseconds.
+   *
+   *  The head rect ALWAYS paints, so this removes work rather than deferring
+   *  it: a frame that used to pay one ~20 ms bracket for one rect now pays one
+   *  bracket for as many rects as fit in GROUND_BAND_MS. Measured over three
+   *  30 s windows, `scroll:groundSlice` was 43% of all the time spent in frames
+   *  over 40 ms — 190 slices, one bracket each, draining one per frame, which
+   *  is the burst of 4-9 slow frames every 1.46 s.
+   *
+   *  The progress guard is not theoretical: t3paintSliceStep returns without
+   *  shifting when ctx/rt/maps3 is falsy, and an ms-keyed loop without it would
+   *  hang the tab rather than stall a queue. */
+  private t3drainSlices(): void {
+    const rt = this.groundRT;
+    if (!this.groundSliceQ.length || !rt || !this.maps3) return;
+    rt.beginDraw();
+    const prev = this.groundBatchRT;
+    this.groundBatchRT = rt;
+    try {
+      let spent = this.t3paintSliceStep();
+      let guard = 4096;
+      while (this.groundSliceQ.length && spent < this.groundBandMs && guard-- > 0) {
+        const n = this.groundSliceQ.length;
+        spent += this.t3paintSliceStep();
+        if (this.groundSliceQ.length === n) break; // no shift = no progress
+      }
+    } finally {
+      this.groundBatchRT = prev;
+      this.t3countBatches(rt);
+      rt.endDraw();
+    }
+    this.groundDrainedThisFrame = true;
+    this.groundSliceStats.drains++;
+  }
+
+  /** Pay off every owed slice NOW — before a scroll copies the picture forward,
+   *  and before any probe reads the texture back. */
+  private t3flushSlices(): void {
+    if (!this.groundSliceQ.length) return;
+    this.groundSliceStats.flushes++;
+    const rt = this.groundRT;
+    // Same merge as the drain: every caller is a top-level synchronous call
+    // with no bracket open, so this owns one and pays it once for the lot.
+    if (rt) rt.beginDraw();
+    const prev = this.groundBatchRT;
+    if (rt) this.groundBatchRT = rt;
+    try {
+      let guard = 4096;
+      while (this.groundSliceQ.length && guard-- > 0) this.t3paintSliceStep();
+    } finally {
+      this.groundBatchRT = prev;
+      if (rt) {
+        this.t3countBatches(rt);
+        rt.endDraw();
+      }
+    }
+  }
+
+  /** A lit piece's FOG SILHOUETTE: the copy's twin (texture, frame, origin,
+   *  scale, flip) at the copy's depth, made RIGHT AFTER it so the two keep the
+   *  creation order the epsilon-free lit band sorts ties by (litA, fogA, litB,
+   *  fogB — never fogA over litB). Hidden until its fog is non-zero. */
+  /** WHICH CLIP A PLACEMENT PLAYS, if any. The maintainer's verdict on the
+   *  state outranks the scenery agent's review: REDO → nothing, APPROVED → the
+   *  state's first clip with frames, otherwise the first clip the agent judged
+   *  PROBABLY_GOOD. Strip-only clips (no per-frame files) are skipped: the
+   *  frame size would have to be read off the sheet, and every judged clip
+   *  ships frames. */
+  private sceneryClipFor(piece: SceneryPiece, st: SceneryState): SceneryAnim | null {
+    const verdict = sceneryAnimVerdict(piece.id, st.key);
+    if (verdict === "ANIMATION_REDO") return null;
+    for (const a of Object.values(st.anims)) {
+      if (!a.frames.length) continue;
+      if (verdict === "ANIMATION_APPROVED" || a.review === "ANIMATION_PROBABLY_GOOD") return a;
+    }
+    return null;
+  }
+
+  /** Bind this rebuild's image (and lit copy) of a placement to its clip's
+   *  schedule, queue the frames, and — if the clip is mid-play — put the
+   *  current frame on the fresh image at once, so a scroll rebuild never snaps
+   *  a swaying tree back to its still. */
+  private registerSceneryAnim(
+    place: number,
+    piece: SceneryPiece,
+    st: SceneryState,
+    stillKey: string,
+    frameName: string,
+    crop: [number, number, number, number],
+    img: Phaser.GameObjects.Image,
+    lo: (typeof this.litOccluders)[number] | null,
+  ): void {
+    const clip = this.sceneryClipFor(piece, st);
+    if (!clip) return;
+    let run = this.sceneryAnimRuns.get(place);
+    if (!run || run.clip !== clip) {
+      const cls = sceneryAnimClass(clip.cls);
+      // A fresh clock starts at a random point of its sleep, so a field of
+      // one piece does not sway in unison after a load.
+      run = { clip, cls, keys: clip.frames.map((f) => this.sKey(f)), frame: -1, t0: 0, next: this.time.now + Math.random() * scenerySleepMs(cls) };
+      this.sceneryAnimRuns.set(place, run);
+    }
+    for (const f of clip.frames) this.needScenery(f);
+    const live: SceneryAnimLive = {
+      place, img, lo, stillKey, frameName, crop,
+      kx: crop[2] > 0 ? img.displayWidth / crop[2] : 1,
+      ky: crop[3] > 0 ? img.displayHeight / crop[3] : 1,
+    };
+    this.sceneryAnimLive.push(live);
+    if (run.frame >= 0) this.setSceneryFrame(live, run.keys[run.frame] ?? stillKey);
+  }
+
+  /** Swap one placement's images to a frame texture. The still's crop rect is
+   *  registered on the frame texture under the same name, so the image keeps
+   *  its box, scale and flip and only its pixels change. */
+  private setSceneryFrame(live: SceneryAnimLive, key: string): void {
+    if (!this.textures.exists(key)) return;
+    const tex = this.textures.get(key);
+    if (!tex.has(live.frameName)) tex.add(live.frameName, 0, live.crop[0], live.crop[1], live.crop[2], live.crop[3]);
+    live.img.setTexture(key, live.frameName);
+    live.lo?.img.setTexture(key, live.frameName);
+    live.lo?.fog?.setTexture(key, live.frameName);
+  }
+
+  /** THE SCHEDULER, once per frame: a sleeping clip whose sleep has run out
+   *  starts when every frame is resident (else it waits a second and asks
+   *  again); a playing one advances at SCENERY_ANIM_FPS and, at its last frame,
+   *  returns to the still and draws the next sleep from its class's range —
+   *  read fresh each time, which is how the Settings range sliders take
+   *  effect without a rebuild. Only this rebuild's images are touched. */
+  private stepSceneryAnims(): void {
+    if (!this.sceneryAnimLive.length) return;
+    const now = this.time.now;
+    for (const live of this.sceneryAnimLive) {
+      const run = this.sceneryAnimRuns.get(live.place);
+      if (!run) continue;
+      if (run.frame < 0) {
+        if (now < run.next) continue;
+        if (!run.keys.every((k) => this.textures.exists(k))) {
+          run.next = now + 1000;
+          continue;
+        }
+        run.frame = 0;
+        run.t0 = now;
+        continue; // frame 0 is the still (keep_first_frame): nothing to swap yet
+      }
+      const f = Math.floor(((now - run.t0) * SCENERY_ANIM_FPS) / 1000);
+      if (f >= run.keys.length) {
+        run.frame = -1;
+        run.next = now + scenerySleepMs(run.cls);
+        this.setSceneryFrame(live, live.stillKey);
+        this.applySceneryLightFrame(live, null);
+        continue;
+      }
+      if (f !== run.frame) {
+        run.frame = f;
+        this.setSceneryFrame(live, run.keys[f]);
+      }
+      // Every step, not only on a frame change: a rebuild mid-play re-pushes
+      // the source at rest, and the dials are read live.
+      if (run.clip.lightFrames) this.applySceneryLightFrame(live, run.clip.lightFrames[Math.min(f, run.clip.lightFrames.length - 1)] ?? null);
+    }
+  }
+
+  /** PER-FRAME LIGHT (scenery `light_frames`, dials in lightanim.ts): while a
+   *  LIT clip plays, the placement's light source — the object the ledger
+   *  reads every frame — takes the frame's intensity as a swing about the
+   *  block's strength (1 + (intensity − 1) x the intensity dial) and the
+   *  frame's emissive centre as an offset from the STILL's centre, in frame
+   *  px through the drawn scale to screen px and onto the ground plane by the
+   *  hitbox convention (the same map the footprint stamp uses), times the
+   *  position dial. `null` restores the at-rest values (the clip ended).
+   *  Maintainer 2026-09-09: "the spotlight differs a bit with the animation
+   *  and the game will feel more alive" — and the dials: "0.5 means half the
+   *  effect and 2.0 means twice the effect ... 0.05 to 20x". */
+  private applySceneryLightFrame(live: SceneryAnimLive, lf: { intensity: number; dx: number; dy: number } | null): void {
+    if (live.light === false) return;
+    if (!live.light) {
+      const id = `s3:${live.place}`;
+      const src = this.sceneryLightSources.find((s) => s.id === id);
+      if (!src) {
+        live.light = false;
+        return;
+      }
+      const rec = this.sceneryLightCache.get(live.stillKey);
+      const art = this.sceneryArtFit(live.stillKey);
+      live.light = {
+        src,
+        base: { col: src.col, row: src.row, color: [src.color[0], src.color[1], src.color[2]], hx: src.hx, hy: src.hy },
+        stillDx: rec && art ? rec.cx - art.canvas.w / 2 : 0,
+        stillDy: rec && art ? rec.cy - art.canvas.h / 2 : 0,
+      };
+    }
+    const L = live.light;
+    // The source is rebuilt with every occluder rebuild: if the object we hold
+    // is no longer in the ledger, look the new one up next time.
+    if (!this.sceneryLightSources.includes(L.src)) {
+      live.light = undefined;
+      if (lf) this.applySceneryLightFrame(live, lf);
+      return;
+    }
+    const { src, base } = L;
+    if (!lf) {
+      src.col = base.col;
+      src.row = base.row;
+      src.color = base.color;
+      src.hx = base.hx;
+      src.hy = base.hy;
+      live.lightNow = undefined;
+      return;
+    }
+    const tune = lightAnimTune();
+    const i = Math.max(0.05, 1 + (lf.intensity - 1) * tune.intensity);
+    const sx = (lf.dx - L.stillDx) * live.kx * tune.position;
+    const sy = (lf.dy - L.stillDy) * live.ky * tune.position;
+    const { dx, dy } = this.geom;
+    const dcol = (sx / dx + sy / dy) / 2;
+    const drow = (sy / dy - sx / dx) / 2;
+    src.col = base.col + dcol;
+    src.row = base.row + drow;
+    src.hx = base.hx + sx;
+    src.hy = base.hy + sy;
+    src.color = [base.color[0] * i, base.color[1] * i, base.color[2] * i];
+    live.lightNow = { i, dcol, drow };
+  }
+
+  private makeFogSilhouette(lo: (typeof this.litOccluders)[number]): void {
+    const im = lo.img;
+    lo.fog = this.add
+      .image(im.x, im.y, im.texture.key, im.frame.name)
+      .setOrigin(im.originX, im.originY)
+      .setScale(im.scaleX, im.scaleY)
+      .setFlipX(im.flipX)
+      .setDepth(im.depth)
+      .setVisible(false);
+    // THE SILHOUETTE RIDES THE COPY'S PIPELINE (no shape data → tintEffect 1,
+    // Multi.frag's exact path): a default-pipeline silhouette between two
+    // scenery-lit copies is a flush each way (measured +12.8 flushes/frame).
+    if (lo.shape && this.sceneryLitPipe && im.pipeline === (this.sceneryLitPipe as unknown as Phaser.Renderer.WebGL.WebGLPipeline))
+      lo.fog.setPipeline(this.sceneryLitPipe as unknown as Phaser.Renderer.WebGL.WebGLPipeline);
+  }
+
+  /** A TERRAIN BATCH LANDED. The files it carried were wanted by known window
+   *  cells (t3missing) or by nobody in the window (the prefetch ring, or cells
+   *  that have since scrolled out) — so the repaint is scoped to the cells that
+   *  can now draw, and a landing that changes nothing on the texture paints
+   *  nothing. The occluders rebuild either way (they draw the same art). Legacy
+   *  (coalesce off) and the switch off keep the old full repaint. */
+  private onTerrainBatch(paths: string[]): void {
+    this.repaintStats.terrain++;
+    /* THE ONLY THING THAT CAN REPAIR A DROPPED GROUND OP. See t3drainDrops:
+     * the drain's residency guard used to read `t3texGen`, which counts EVERY
+     * texture the game adds — a monster strip, an NPC frame, a scenery piece,
+     * a composed cover surface. None of those can make a dropped ground op
+     * drawable, but each one re-armed the guard and bought a FULL ground
+     * repaint. Measured on his phone: 2,099 texture adds in one 30 s window,
+     * 9 full paints out of it, each ~70 ms of ground work inside a ~117 ms
+     * frame. Terrain art landing is the real event, and this is where it
+     * lands. */
+    this.t3terrainGen++;
+    if (!this.repaintCoalesce) {
+      this.repaintWorld();
+      this.repaintStats.groundRuns++;
+      this.repaintStats.occRuns++;
+      return;
+    }
+    const cells = new Set<number>();
+    let sheets = false;
+    for (const p of paths) {
+      if (this.t3sheetPaths.has(p)) sheets = true;
+      const set = this.t3missing.get(p);
+      if (!set) continue;
+      for (const i of set) cells.add(i);
+      this.t3missing.delete(p);
+    }
+    if (!this.groundPartial || !this.groundScroll || sheets) this.repaintGroundPending = true;
+    else if (cells.size) {
+      for (const i of cells) this.groundDirtyCells.push(i);
+      this.repaintGroundPartial = true;
+    }
+    this.repaintOccPending = true;
+    // Ring paths a slice left queued while this batch was in flight go now.
+    const load = this.t3load;
+    if (load && load.stats.pending === 0 && load.queuedCount > 0) load.flush();
+  }
+
+  /** REPAINT THE CELLS A LANDING MADE DRAWABLE — their rectangle (each cell's
+   *  64-wide column from the world's highest storey down past its base, the
+   *  same reach the window rule assumes) is reset to the background through
+   *  the capture path (a 1x1 texture of the exact colour, scaled: NEAREST makes
+   *  every texel that colour — not DynamicTexture.fill, which is not
+   *  texel-exact for a rect) and repainted through the SAME clipped pass the
+   *  scroll's bands use, so it equals a full paint pixel for pixel. A landing
+   *  whose cells span more than half the texture paints in full instead, and
+   *  so does one that arrives with no valid anchor. */
+  private repaintTiles3Cells(cells: number[], depth = 0): void {
+    const rt = this.groundRT;
+    const a = this.groundAnchor;
+    const f = this.t3?.frame;
+    const world = this.world;
+    if (!cells.length) return;
+    if (!rt || !a || !f || !world || !this.maps3 || Number.isNaN(this.lastGround.x)) {
+      this.lastGround = { x: NaN, y: NaN }; // the next latch paints in full
+      return;
+    }
+    const t0 = performance.now();
+    const { lh } = this.geom;
+    const W = rt.width;
+    const H = rt.height;
+    let x0 = Infinity;
+    let y0 = Infinity;
+    let x1 = -Infinity;
+    let y1 = -Infinity;
+    const kept: number[] = [];
+    const keptX: number[] = [];
+    const keptY: number[] = [];
+    for (const idx of cells) {
+      const col = idx % world.width;
+      const row = (idx - col) / world.width;
+      const cx = t3columnX(f, col, row) - a.ax;
+      const top = t3columnY(f, col, row, this.maxLevel) - T3_TOP_Y - lh - a.ay;
+      const bot = t3columnY(f, col, row, 0) + T3_TILE + lh - a.ay;
+      // A cell that has scrolled off the texture since it asked (t3missing
+      // outlives the window until the next full paint) must not stretch the
+      // rectangle from there to the visible ones.
+      if (cx + T3_TILE <= 0 || cx >= W || bot <= 0 || top >= H) continue;
+      kept.push(idx);
+      keptX.push(cx);
+      keptY.push(top);
+      if (cx < x0) x0 = cx;
+      if (cx + T3_TILE > x1) x1 = cx + T3_TILE;
+      if (top < y0) y0 = top;
+      if (bot > y1) y1 = bot;
+    }
+    x0 = Math.max(0, Math.floor(x0));
+    y0 = Math.max(0, Math.floor(y0));
+    x1 = Math.min(W, Math.ceil(x1));
+    y1 = Math.min(H, Math.ceil(y1));
+    if (x1 <= x0 || y1 <= y0) return; // every landed cell lies off the texture
+    if ((x1 - x0) * (y1 - y0) > 0.5 * W * H) {
+      /* TOO WIDE TO REPAINT AS ONE RECT — SO CUT IT IN TWO, DO NOT GIVE UP.
+       *
+       * Giving up means poisoning the latch, and the next pass is then a FULL
+       * paint: 84-101 ms warm on his phone and 212-1244 ms cold. The bail was
+       * meant for the rare landing that dirties most of the texture, but the
+       * geometry makes it the ORDINARY case: a cell's rect spans the world's
+       * whole column height, `columnY(maxLevel) - TOP_Y - lh` to `columnY(0) +
+       * TILE + lh`, and the_game has maxLevel 40 at pitch 15, so ONE cell is
+       * already 704 texels tall — 42.5% of the 1,656-tall texture. At full
+       * height the width may then be at most half of 1,510, about 23 columns,
+       * so any cell set that is not a tight local cluster bailed. And the
+       * feeder is exactly the scattered kind: one landed plate file is wanted
+       * by cells all over the window, because `t3missing` maps a shared file to
+       * every cell that asked for it.
+       *
+       * Splitting on the longer axis gives disjoint rects that each go through
+       * the same clipped pass, so the pixels are the full paint's either way —
+       * this only changes how many brackets draw them. Bounded to
+       * T3_REPAINT_SPLITS levels (at most 4 rects, measured 0.8-8 ms each
+       * against 84-1244 for the full paint it replaces); past that, or with one
+       * cell that alone overflows, the old bail still stands. */
+      if (kept.length > 1 && depth < T3_REPAINT_SPLITS) {
+        const byX = x1 - x0 >= y1 - y0;
+        const mid = (byX ? x0 + x1 : y0 + y1) / 2;
+        const lo: number[] = [];
+        const hi: number[] = [];
+        for (let i = 0; i < kept.length; i++) ((byX ? keptX[i] : keptY[i]) < mid ? lo : hi).push(kept[i]);
+        // A degenerate split (everything on one side) would recurse without
+        // shrinking; halve the list instead so progress is guaranteed.
+        if (!lo.length || !hi.length) {
+          const h = kept.length >> 1;
+          lo.length = 0;
+          hi.length = 0;
+          lo.push(...kept.slice(0, h));
+          hi.push(...kept.slice(h));
+        }
+        this.groundCellStats.split++;
+        this.repaintTiles3Cells(lo, depth + 1);
+        this.repaintTiles3Cells(hi, depth + 1);
+        return;
+      }
+      this.groundCellStats.full++;
+      this.lastGround = { x: NaN, y: NaN };
+      return;
+    }
+    const mask = a.mask;
+    const cuts = mask ? this.indoorCut : null;
+    const bgKey = mask ? "ground-bg-black" : "ground-bg-navy";
+    if (!this.textures.exists(bgKey)) {
+      const cv = document.createElement("canvas");
+      cv.width = 1;
+      cv.height = 1;
+      const g = cv.getContext("2d")!;
+      g.fillStyle = mask ? "#000000" : "#181c28";
+      g.fillRect(0, 0, 1, 1);
+      this.textures.addCanvas(bgKey, cv)?.setFilter(Phaser.Textures.FilterMode.NEAREST);
+    }
+    /* THE CLIP IS THE STAMP GROWN BY `GROUND_SEAM`, and that is what keeps the
+     * repaint from eating a texel of its own border.
+     *
+     * The background under this rect is laid by `stamp` — a 1x1 texture scaled
+     * to the rect — because a partial `fill` is documented NOT texel-exact
+     * here. But a scaled stamp has its own rounding, and any spill lands
+     * OUTSIDE the clip, where the replay below can never paint it back: a
+     * one-texel line of bare 0x181c28 along the rect's edge, on terrain that
+     * was already correct. The rects follow cell boundaries and this pass runs
+     * wherever ART LANDS — i.e. all over ground the player is seeing for the
+     * first time — so the lines accumulate into a lattice on the tile grid,
+     * which is the maintainer's "zigzag on the water, and on the sand, and on
+     * the road" (2026-09-03; measured off his screenshot as 2-device-px runs at
+     * zoom 2 = exactly ONE TEXEL, so it is drawn at texel resolution, i.e. in
+     * this texture and not by any full-screen pass).
+     *
+     * Painting one texel MORE than was stamped is idempotent — the same painter
+     * sequence over pixels that already hold its output — so this can only
+     * repair, never change a correct pixel. Same argument, same constant, as
+     * the scroll band's seam overlap. */
+    const b = {
+      x0: Math.max(0, x0 - GROUND_SEAM),
+      y0: Math.max(0, y0 - GROUND_SEAM),
+      x1: Math.min(W, x1 + GROUND_SEAM),
+      y1: Math.min(H, y1 + GROUND_SEAM),
+    };
+    this.groundLastRect = { stamp: { x0, y0, x1, y1 }, clip: { ...b }, W, H, cells: cells.length };
+
+    /* THE PASS PAINTS INTO THE SCRATCH AND ONLY THE RECT IS COPIED BACK.
+     *
+     * `t3Blit` draws an op WHOLE whenever it touches the clip — "the clip
+     * decides whether to draw, never what to draw" — and the note above it
+     * argues the spill is harmless because "the pixels an uncropped op lays
+     * outside the band are the pixels already there". THAT IS FALSE HERE, and
+     * measured: a landing repaint over a fresh full paint at 447,371 changed
+     * 15,037 texels — 0 of them inside its own clip and every one of them
+     * outside it, spilling 63 texels left and right (a tile less one) and 36
+     * below. An op that straddles the edge is drawn whole, but out there the
+     * sequence is TRUNCATED: the ops that would have covered it are culled for
+     * not touching the clip, so a cell from BEHIND is left lying on top of a
+     * cell in front. One texel of the wrong ground along the tile lattice,
+     * around every rect this pass paints — and it runs wherever art lands, so
+     * they accumulate into exactly the lattice the maintainer photographs, and
+     * a full repaint erases them ("often gone when I tab back in again").
+     *
+     * Cropping the op is the other way and this repo has already paid for it —
+     * it takes the margin row off the ops that need it most and was the zigzag
+     * before this one. So the op still draws whole, into a buffer nobody sees,
+     * and the ground texture receives ONE rect copy: nothing outside it can be
+     * touched, whatever the ops did. The clip stays as the perf cull it always
+     * was (an op is at most a tile, so anything that could reach the rect still
+     * intersects a tile-grown clip) and no longer has to be a correctness
+     * argument.
+     *
+     * The scratch is the scroll's spare buffer, which is cleared and refilled
+     * before every use it has of its own, so borrowing it between scrolls
+     * cannot lose anything. Without one — before the first scroll — there is no
+     * confinement to be had, so the latch is poisoned and the next frame paints
+     * in full rather than laying a lattice. */
+    const scratch = this.groundScratch;
+    if (!scratch) {
+      this.groundCellStats.full++;
+      this.lastGround = { x: NaN, y: NaN };
+      return;
+    }
+    const TILE_PAD = this.geom.tile;
+    const cull = {
+      x0: Math.max(0, x0 - TILE_PAD),
+      y0: Math.max(0, y0 - TILE_PAD),
+      x1: Math.min(W, x1 + TILE_PAD),
+      y1: Math.min(H, y1 + TILE_PAD),
+    };
+    scratch.setPosition(a.ax, a.ay);
+    scratch.stamp(bgKey, undefined, x0, y0, { originX: 0, originY: 0, scaleX: x1 - x0, scaleY: y1 - y0, alpha: 1 });
+    const win = this.t3groundWindow(a.ax, a.ay, cull.x0, cull.y0, cull.x1 - cull.x0, cull.y1 - cull.y0);
+    this.groundClip = cull;
+    try {
+      this.drawTiles3Ground(scratch, a.ax, a.ay, win.u0, win.u1, win.v0, win.v1, mask, cuts, a.top);
+    } finally {
+      this.groundClip = null;
+    }
+    /* The copy back, at integer texels and scale 1 — the only sub-rect
+     * arithmetic in the pass, done once on a whole-texture blit instead of per
+     * op. The frame is rebuilt each time because the rect moves. */
+    const src = scratch.texture;
+    const FRAME = "t3cells";
+    if (src.has(FRAME)) src.remove(FRAME);
+    src.add(FRAME, 0, x0, y0, x1 - x0, y1 - y0);
+    src.firstFrame = "__BASE"; // an added frame must never become the default
+    rt.beginDraw();
+    rt.batchDrawFrame(src.key, FRAME, x0, y0, 1, 0xffffff);
+    rt.endDraw();
+    this.groundLastMode = "cells";
+    this.groundCellStats.runs++;
+    this.groundCellStats.cells += cells.length;
+    this.groundCellStats.ms += performance.now() - t0;
+  }
+
+  /** THE PREFETCH RING, armed by every ground redraw: the cells of the texture
+   *  window grown by GROUND_RING on every side, minus the window's own (the
+   *  pass asks for those itself), queued for t3prefetchStep. The grown window
+   *  is also what the resolution cache keeps, so a ring cell's resolution is
+   *  still there when the cell scrolls in. */
+  private t3armRing(ax: number, ay: number, w: number, h: number): void {
+    if (!this.groundPrefetch || !this.maps3) {
+      this.t3keepIdx = null;
+      return;
+    }
+    const win = this.t3groundWindow(ax, ay, 0, 0, w, h);
+    /* ONLY WHAT THE NEXT STEP WILL ACTUALLY NEED — the window as it will stand
+     * after ANOTHER step of the same size, minus what is drawn now. A RING
+     * around all four sides prefetched three sides nobody was walking towards:
+     * ~6,100 cells to grind at 150 a frame, which is ~41 frames — longer than
+     * the 1.46 s between latches at run speed, so the ring never stopped
+     * working and its per-frame cost (resolves plus compositions) was paid on
+     * EVERY frame of a run. Measured, that was the sustained bill the
+     * maintainer felt as "I cannot get a smooth FPS" after the spike itself was
+     * spread. The leading strip is a quarter to a half of the ring and is
+     * exactly what the next band paints. Direction unknown (first paint after a
+     * join or teleport) falls back to the symmetric ring. */
+    const dx0 = this.groundLastShift.x;
+    const dy0 = this.groundLastShift.y;
+    const ring =
+      dx0 === 0 && dy0 === 0
+        ? this.t3groundWindow(ax, ay, -GROUND_RING, -GROUND_RING, w + 2 * GROUND_RING, h + 2 * GROUND_RING)
+        : this.t3groundWindow(ax + dx0, ay + dy0, 0, 0, w, h);
+    /* ONE WALK, TWO OUTPUTS, NO INTERMEDIATE ARRAY. This ran on every ground
+     * latch (~1.5 s at run speed) and used to materialise the grown window as
+     * ~11,000 [col,row] PAIRS just to filter them — 11,000 arrays plus the
+     * queue, every latch, for the garbage collector to find later. The keep
+     * list is now a Set of cell INDICES (what the prune actually tests) and
+     * only the cells OUTSIDE the drawn window are materialised. */
+    const world = this.world;
+    if (!world) return;
+    const keep = new Set<number>();
+    const queue: [number, number][] = [];
+    for (let v = ring.v0; v <= ring.v1; v++)
+      for (let u = ring.u0; u <= ring.u1; u++) {
+        if ((u + v) & 1) continue;
+        const col = (u + v) / 2;
+        const row = (v - u) / 2;
+        if (col < 0 || row < 0 || col >= world.width || row >= world.height) continue;
+        keep.add(row * world.width + col);
+        if (u >= win.u0 && u <= win.u1 && v >= win.v0 && v <= win.v1) continue;
+        queue.push([col, row]);
+      }
+    this.t3keepIdx = keep;
+    this.t3ringQueue = queue;
+    this.t3ringAt = 0;
+    this.t3workerAt = 0;
+  }
+
+  /** A SLICE of the ring per frame: resolve (cached) and ask for the art, so it
+   *  lands BEFORE its cell enters the texture and a landing then repaints
+   *  nothing. Only once the world is up (the loading hold counts terrain
+   *  requests). FLUSHED PER SLICE AND ONLY WHILE NOTHING IS IN FLIGHT: Phaser's
+   *  loader merges files added mid-cycle into the running cycle and fires ONE
+   *  complete for all of them, so a ring flush on top of a pass-owned batch
+   *  would delay the landing the player is looking at until the ring's files
+   *  were in too. Small ring batches, one at a time, bound that merge the other
+   *  way round (a pass flush joins at most one slice's files); what a slice
+   *  could not flush stays queued for the next slice, the next pass, or the
+   *  landing (onTerrainBatch). */
+  /** THE LANDING REPAINT FOR COMPOSITIONS. A bounded slice per frame: for each
+   *  cell that was painted without its transition, ask the factory again, and
+   *  repaint the ones that can now draw it. Costs nothing while the set is
+   *  empty, which is the steady state once the ring has caught up. */
+  private t3retryBoundaries(): void {
+    if ((!this.t3boundaryOwed.size && !this.t3deckOwed.size) || !this.worldUp) return;
+    const t3 = this.t3;
+    const world = this.world;
+    if (!t3 || !world) return;
+    // Never on a frame that already scrolled or painted — those are the frames
+    // the player feels, and this is repair work with no deadline.
+    if (this.groundRedrewThisFrame || this.groundDrainedThisFrame || this.groundSliceQ.length) return;
+    const tex = this.ensureTiles3Textures();
+    if (!tex) return;
+    const ready: number[] = [];
+    let raisedRepair = false;
+    let looked = 0;
+    for (const idx of this.t3boundaryOwed) {
+      if (looked++ >= T3_BOUNDARY_RETRY) break;
+      const col = idx % world.width;
+      const row = (idx - col) / world.width;
+      const b = this.t3boundaryOf(t3, col, row);
+      if (!b) {
+        this.t3boundaryOwed.delete(idx);
+        continue;
+      }
+      /* THE TEST IS THE SOURCE ART, NOT THE COMPOSED KEY — and the first cut of
+       * this asked for the key, which made the whole retry a no-op.
+       *
+       * Nothing builds a composition for a cell that is already INSIDE the
+       * texture: the prefetch ring walks only cells outside it ("the pass asks
+       * for those itself"), and the pass that would have asked is over. So the
+       * key never appeared, the cell was never re-queued, and the hard edge
+       * stayed for good — which is exactly what he kept photographing on ground
+       * he had walked onto faster than the loader.
+       *
+       * Both plates being resident is the real readiness condition: `boundary()`
+       * returns null only while one of them has not decoded. Once they are
+       * here, repainting the cell makes the PASS compose it, on its own budget,
+       * where that work already belongs. */
+      /* THE READINESS TEST IS "CAN IT BE COMPOSED NOW", NOT "IS ITS ART HERE".
+       *
+       * Asking only whether both source plates are resident was right while the
+       * only reason to owe a cell was streaming art. Since the compose budget
+       * exists it is TRUE IMMEDIATELY for every budget-deferred cell — the
+       * budget was the only refusal — so the retry pushed up to 32 cells per
+       * frame, the repaint's pass afforded ONE, and the other 31 redrew their
+       * plain plates and landed straight back in the owed set. That is a full
+       * repaintTiles3Cells cycle (a scratch stamp, a clipped pass over the
+       * cells' whole bounding window, a rect copy, two beginDraw/endDraw
+       * brackets) every frame to deliver one composition, with 31/32 of it
+       * provably idempotent — and the band walks the owed set and starts over,
+       * so a spawn-sized backlog re-blits the ground every ~9 frames for the
+       * ~9 s it takes to drain. It put back more than the spike it replaced.
+       *
+       * So compose it HERE, on this frame's allowance, and repaint only what
+       * actually got composed. `boundary()` answers null when the art is not
+       * resident (the old condition, still enforced) or when the budget is
+       * spent — and the first refusal ends the slice, because everything after
+       * it would be refused too. The cell stays owed and is tried again next
+       * frame; nothing is deleted that was not repaired. */
+      const d0 = tex.stats.deferred;
+      if (b.topOnly) raisedRepair = true;
+      if (!tex.boundary(b)) {
+        /* WHICH `null` THIS IS DECIDES WHETHER TO STOP OR TO SKIP, and getting
+         * it wrong wedges the repair. `boundary()` answers null for three
+         * reasons: the budget refused it (then everything after it this frame
+         * is refused too — stop), a source plate has not decoded (skip it and
+         * try the next; a landing will bring it), or the pattern has no frame
+         * at all (never buildable — skip it too, and it costs one lookup a
+         * frame rather than blocking every cell behind it). Only the budget
+         * bumps `deferred`, so the counter is the discriminator. */
+        if (tex.stats.deferred !== d0) break;
+        continue;
+      }
+      ready.push(idx);
+      this.t3boundaryOwed.delete(idx);
+    }
+    /* AND THE DECK TRANSITIONS, on the same allowance and the same rule: the
+     * budget's refusal ends the slice, streaming art is skipped, and a cell is
+     * repainted only when MORE of its slab transitions compose than at its
+     * last repaint (a cached one answers every frame; counting it again would
+     * repaint the cell forever while a sibling's plate streams). */
+    for (const [idx, had] of this.t3deckOwed) {
+      if (looked++ >= T3_BOUNDARY_RETRY) break;
+      const col = idx % world.width;
+      const row = (idx - col) / world.width;
+      const dbs = this.t3decksOf(t3, col, row).map((d) => d.boundary).filter((x): x is NonNullable<typeof x> => !!x);
+      if (!dbs.length) {
+        this.t3deckOwed.delete(idx);
+        continue;
+      }
+      let composed = 0;
+      let refused = false;
+      for (const bb of dbs) {
+        const d0 = tex.stats.deferred;
+        if (tex.boundary(bb)) composed++;
+        else if (tex.stats.deferred !== d0) {
+          refused = true;
+          break;
+        }
+      }
+      if (refused) break;
+      if (composed > had) {
+        raisedRepair = true; // a slab is always raised — its occluder copy wears it
+        ready.push(idx);
+        if (composed === dbs.length) this.t3deckOwed.delete(idx);
+        else this.t3deckOwed.set(idx, composed);
+      }
+    }
+    if (!ready.length) return;
+    this.repaintTiles3Cells(ready);
+    /* ONLY A RAISED REPAIR NEEDS AN OCCLUDER REBUILD, and rebuilding for a flat
+     * one is a measured no-op: a level-0 field cell emits no occluder image and
+     * no `occluderMeta` record at all (`if (cell.kind !== "wall" && cell.level
+     * <= 0) continue`), so the set that comes back is bit-identical. Measured
+     * standing still with no landing repaints, poisoning on every repair cost
+     * 11-12 full rebuilds and 101-309 ms of JS per 12 s here — 250-770 ms on
+     * his phone — to produce exactly the same occluders, because 94-100% of the
+     * cells a repair fixes are flat. A raised cap wears its transition on the
+     * occluder rather than on the ground under it, so that case still needs
+     * one; rate-limited by T3_OCC_REPAIR_MS. */
+    if (!raisedRepair) return;
+    const now = performance.now();
+    if (now - this.t3occRepairAt >= T3_OCC_REPAIR_MS) {
+      this.t3occRepairAt = now;
+      this.lastOccl = { x: NaN, y: NaN };
+    }
+  }
+  private t3occRepairAt = 0;
+  /** Dev A/B for the compose budget — `null` is GROUND_COMPOSE_MS. Remembered
+   *  like the other ground switches so it can be flipped on the phone, where a
+   *  probe call cannot survive the reload the comparison needs. */
+  private composeMsOverride: number | null = ((): number | null => {
+    try {
+      const v = localStorage.getItem("ml-ground-compose");
+      if (v === null) return null;
+      const n = v === "Infinity" ? Infinity : Number(v);
+      return Number.isNaN(n) ? null : n;
+    } catch {
+      return null;
+    }
+  })();
+
+  /** ASK THE OTHER CORE, AHEAD OF EVERY GUARD THE RING HAS.
+   *
+   *  This was inside `t3prefetchStep` at first, and that put it behind the
+   *  ring's own stand-down — `if (groundRedrewThisFrame || groundDrainedThisFrame
+   *  || groundSliceQ.length) return`. That guard is right for the RING, whose
+   *  work is on this thread and must never stack onto a frame the player would
+   *  feel; it is exactly wrong for the worker, because `groundSliceQ` is
+   *  non-empty for most frames of a run, so the dispatch stood down precisely
+   *  when the band needed warming. Sending is a postMessage — microseconds — so
+   *  it runs on every frame, including the ones painting a slice.
+   *
+   *  ITS OWN CURSOR, not the ring's. `t3ringAt` advances as the MAIN thread
+   *  consumes the queue; the worker has to race ahead of it, and sharing one
+   *  cursor would cap it at the speed of the thing it is trying to get in front
+   *  of. Cells already resolved, and cells already in flight, are never sent. */
+  private t3workerStep(): void {
+    if (!this.t3workerBooted && this.t3workerOpts) {
+      this.t3workerBooted = true; // once per resolver, whether or not it succeeds
+      this.t3worker.init(this.t3workerOpts);
+    }
+    const w = this.world;
+    if (!w || !this.worldUp || !this.t3worker.isReady) return;
+    if (this.t3workerAt >= this.t3ringQueue.length) return;
+    const ahead: number[] = [];
+    const stop = Math.min(this.t3ringQueue.length, this.t3workerAt + GROUND_RING_WORKER);
+    for (let k = this.t3workerAt; k < stop; k++) {
+      const [c, r] = this.t3ringQueue[k];
+      const i = r * w.width + c;
+      if (!this.t3cells.get(i)?.cell) ahead.push(i); // already known: nothing to ask
+    }
+    this.t3workerAt = stop;
+    this.t3worker.request(ahead);
+  }
+
+  private t3prefetchStep(): void {
+    const load = this.t3load;
+    const t3 = this.t3;
+    if (!load || !t3 || !this.worldUp || this.t3ringAt >= this.t3ringQueue.length) return;
+    const tex = this.ensureTiles3Textures();
+    if (!tex) return; // no composer yet (the pattern sheets): nothing to ask for
+    // Never stack the ring onto the frame that scrolled or painted a slice —
+    // those are the frames the player would feel.
+    if (this.groundRedrewThisFrame || this.groundDrainedThisFrame || this.groundSliceQ.length) return;
+    const built0 = tex.stats.built;
+    const ringT0 = performance.now();
+    /* MAY THIS FRAME COMPOSE AT ALL? A composition cannot be interrupted, so
+     * the only way to hold a per-frame average below its own cost is to skip
+     * frames. Resolution work (paths, cells) still runs every frame — it is
+     * cheap and it is what feeds the loader. */
+    this.ringSinceCompose++;
+    const everyN = Math.max(1, Math.ceil(this.ringComposeMs / GROUND_RING_MS));
+    const mayCompose = this.ringSinceCompose >= everyN;
+    const end = Math.min(this.t3ringQueue.length, this.t3ringAt + GROUND_RING_STEP);
+    const need = (p: string | null | undefined) => {
+      if (p) load.need(p);
+    };
+    let i = this.t3ringAt;
+    for (; i < end; i++) {
+      const [col, row] = this.t3ringQueue[i];
+      const cell = this.t3cellOf(t3, col, row);
+      if (!cell) continue;
+      cellArtPaths(cell, need);
+      const b = this.t3boundaryOf(t3, col, row);
+      if (b) boundaryArtPaths(b, need);
+      for (const d of this.t3decksOf(t3, col, row)) deckArtPaths(d, need);
+      /* AND COMPOSE IT — the half the ring used to leave on the critical path.
+       * A boundary/plate texture is a canvas blend plus a GPU upload, and a
+       * fresh 256 px step needed 66-98 of them inside ONE frame (measured 33-44
+       * ms of the 60-98 ms spike). Built here, ahead of the camera and budgeted
+       * per frame, they are cache hits by the time the band is painted. The ops
+       * are discarded; only the textures they build are wanted. */
+      // BUDGET SPENT — resume here next frame. The MILLISECOND test is the one
+      // that binds on a phone (see GROUND_RING_MS); the compose count is an
+      // upper bound for machines fast enough never to reach it.
+      if (tex.stats.built - built0 >= GROUND_RING_COMPOSE || performance.now() - ringT0 >= GROUND_RING_MS) {
+        i++;
+        break;
+      }
+      if (!mayCompose) continue; // resolution only this frame; composing waits
+      const cT0 = performance.now();
+      const before = tex.stats.built;
+      if (b) this.t3Try(`prewarm boundary ${col},${row}`, () => tex.opsForBoundary(b), null);
+      this.t3Try(`prewarm blits ${col},${row}`, () => cellBlits(tex, this.t3tm, cell, undefined), []);
+      if (tex.stats.built > before) {
+        // LEARN WHAT IT COSTS HERE. One sample per composition, eased, so a
+        // single slow blend cannot lock the ring out for a second.
+        const ms = performance.now() - cT0;
+        this.ringComposeMs = this.ringComposeMs
+          ? this.ringComposeMs * (1 - GROUND_RING_COMPOSE_EMA) + ms * GROUND_RING_COMPOSE_EMA
+          : ms;
+        this.ringSinceCompose = 0;
+        break; // one composition is this frame's whole share
+      }
+    }
+    this.t3ringAt = i;
+    if (load.stats.pending === 0) load.flush();
+  }
+
+  /** The (col,row) list of a cell window, in the pass's own order. */
+  private t3windowCells(u0: number, u1: number, v0: number, v1: number): [number, number][] {
+    const world = this.world;
+    const cells: [number, number][] = [];
+    if (!world) return cells;
+    for (let v = v0; v <= v1; v++)
+      for (let u = u0; u <= u1; u++) {
+        if ((u + v) & 1) continue;
+        const col = (u + v) / 2;
+        const row = (v - u) / 2;
+        if (col < 0 || row < 0 || col >= world.width || row >= world.height) continue;
+        cells.push([col, row]);
+      }
+    return cells;
+  }
+
+  /** THE MAPS3 GROUND PASS, in render3's own order: every cell (painter-sorted
+   *  by the u/v sweep), then the composed boundaries on the corner lattice
+   *  above them, then the deck slabs.
+   *
+   *  THREE PASSES, NOT ONE INTERLEAVED PASS, and that is the spec's order for a
+   *  reason: a boundary tile sits on the quad (x..x+1, y..y+1), so three of the
+   *  four cells it blends are drawn AFTER it in painter order — interleaving
+   *  would let those cells' own plates paint straight back over the transition.
+   *
+   *  Art that has not streamed in yet is simply not drawn; the loader repaints
+   *  when the batch lands. A hole this frame is a hole; a substituted tile is a
+   *  wrong picture that nothing ever corrects. */
+  /** HIDE THE LOADING SCREEN WHEN THERE IS A WORLD BEHIND IT.
+   *
+   *  A tiles2 world's art is in the image and already loaded when the avatar
+   *  arrives, so hiding on "my avatar is in" was the same instant as "the world
+   *  is drawn". A maps3 world's art is NOT in the image (config/publish.json
+   *  ships userWorlds only): every plate, pattern and top streams from the CDN
+   *  after the join. The screen came down on the first frame anyway, and since
+   *  `opsForCell` DROPS an op whose texture is not resident yet — a hole this
+   *  frame is a hole, never a wrong tile — what the player got was his avatar
+   *  and a campfire standing on empty dark ground for several seconds
+   *  (maintainer 2026-08-29: "After loading the game is still rendered without
+   *  textures for a while").
+   *
+   *  So: hold until the terrain has actually painted, and show real progress
+   *  while it streams. DEADLINE-BOUNDED, because the alternative to a late
+   *  world is a screen that never lifts — a dead CDN, a 404 tombstone, or a
+   *  world whose art genuinely never arrives must all still drop the player in.
+   *  Releasing early only restores today's behaviour; it can never strand. */
+  private hideLoadingWhenTerrainIsUp(): void {
+    if (!this.maps3) {
+      hideLoading(); // image art: the avatar arriving IS the world being up
+      this.worldUp = true;
+      return;
+    }
+    /* TWO DEADLINES, because releasing onto a BLACK world is the one outcome
+     * worse than waiting. The soft one gives up on the trimmings — scenery
+     * still streaming, a manifest still in flight — and shows a world that has
+     * at least drawn its ground. The hard one is the true backstop and only it
+     * may release with NOTHING painted, which on a phone streaming a staging
+     * world from the CDN is exactly the case the soft deadline used to hit
+     * (maintainer 2026-08-29: "the game started without texture again"). */
+    /* How long "everything is loaded" must stay true before the screen lifts.
+     * 1.2 s covers several loader passes, so a flush window cannot masquerade
+     * as an idle loader.
+     *
+     * THE 5 s / 90 s / 150 s TEST VALUES ARE REVERTED (they shipped in
+     * bc6bd0bad1 to answer "does loading everything fix it?" — it did not).
+     * A RECONNECT GOES THROUGH THIS SAME HOLD, so a 90 s soft deadline left
+     * the maintainer stuck on "Reconnecting…" after tabbing back in. Raising
+     * these is not free and must not be done again without accounting for the
+     * rejoin path. */
+    const HOLD_SETTLE_MS = 1200;
+    const SOFT_DEADLINE_MS = 20000;
+    const HARD_DEADLINE_MS = 60000;
+    const t0 = performance.now();
+    /* MONOTONIC. The denominator GROWS as the window discovers art — a scenery
+     * manifest arrives and queues its sprites — so the raw fraction can fall,
+     * and a bar that walks backwards reads as a fault. It only ever advances. */
+    this.connectCreep?.remove(); // the streaming stage counts real files now
+    this.connectCreep = null;
+    let shown = STREAM_BAR0;
+    setLoadingProgress(shown, "Streaming the world…");
+    const tick = this.time.addEvent({
+      delay: 100,
+      loop: true,
+      callback: () => {
+        const waited = performance.now() - t0;
+        const load = this.t3load;
+        // PAINTED, not merely "nothing pending": a pass that drew zero blits
+        // has requested nothing yet, so pending is legitimately 0 on the very
+        // first frame and would release onto the same empty ground.
+        /* TERRAIN **AND** SCENERY. Holding for terrain alone still let the
+         * market stall and its trader appear after the player was already
+         * standing next to them (maintainer 2026-08-29: "some objects pop into
+         * existence after the game has already started"). Scenery does not ride
+         * the terrain loader's queue: placements are bucketed per screen anchor,
+         * each piece's MANIFEST is fetched lazily on the first rebuild that sees
+         * it (205 fetches for 1,388 placements), and its landing schedules the
+         * rebuild that queues its art (onSceneryManifest — before that hook the
+         * art waited for camera drift and this hold always ran to its deadline).
+         * So the wait is: the first rebuild has run, no manifest is in flight,
+         * nothing is queued, and the shared Phaser loader is quiet. */
+        const scenery =
+          this.sceneryRebuilds > 0 &&
+          this.sceneryQueue.length === 0 &&
+          (!this.sceneryPieces || this.sceneryPieces.idle) &&
+          !this.tiles3Loader().isLoading();
+        const ready =
+          this.groundPainted && (!load || load.idle) && scenery && !this.repaintGroundPending && !this.repaintOccPending;
+        /* AND IT HAS TO STAY READY (maintainer 2026-09-03: "can you try to make
+         * the loading a bit longer to make sure everything is loaded before we
+         * start the game?").
+         *
+         * `load.idle` is queued 0 AND pending 0, and `need()` only QUEUES — the
+         * queue does not become pending until `flush()`, which runs at the END
+         * of a pass. So there is a real window, every pass, where art is owed
+         * and the loader reads idle. One sample of `ready` can land in it and
+         * release the screen with files still to come; the ground then paints
+         * without them, and nothing repaints it afterwards while the player
+         * stands still, because repaints are driven by camera latches. That is
+         * the state he photographs.
+         *
+         * So require the condition CONTINUOUSLY for HOLD_SETTLE_MS. The tick is
+         * 100 ms, so this costs at most that much extra loading on a world that
+         * really is ready, and it cannot strand: both deadlines below still
+         * fire regardless. */
+        if (!ready) this.holdReadySince = 0;
+        else if (!this.holdReadySince) this.holdReadySince = performance.now();
+        const painted = ready && performance.now() - this.holdReadySince >= HOLD_SETTLE_MS;
+        // The ground has drawn SOMETHING — the only fact that makes giving up
+        // on the rest reasonable.
+        const anyGround = this.groundPainted;
+        const done = painted || this.unloading || waited >= (anyGround ? SOFT_DEADLINE_MS : HARD_DEADLINE_MS);
+        if (!done) {
+          /* REAL WORK, REAL BAR: terrain files plus scenery manifests plus the
+           * sprite queue those manifests open, counted together — this stage is
+           * most of a maps3 join and now owns most of the bar (0.40 -> 0.98). */
+          const t = load?.stats;
+          const sp = this.sceneryPieces?.stats;
+          /* THREE COUNTS, ONE BAR: terrain files, scenery manifests, and the
+           * scenery ART those manifests open — all per FILE now, so this stage
+           * moves continuously instead of standing still until a batch lands.
+           * The queue is in `want` because those files are known to be coming;
+           * it empties into sceneryArt.requested, so the denominator does not
+           * lurch when a flush happens. */
+          const want =
+            (t?.requested ?? 0) + (sp?.requested ?? 0) + this.sceneryArt.requested + this.sceneryQueue.length;
+          const have = (t?.done ?? 0) + (sp ? sp.loaded + sp.failed : 0) + this.sceneryArt.done;
+          const measured = want > 0 ? STREAM_BAR0 + (STREAM_BAR1 - STREAM_BAR0) * Math.min(1, have / want) : 0;
+          /* AND A FLOOR THAT MOVES ON ITS OWN for the opening seconds, because
+           * "requested" happens in one step and the first file lands whole
+           * round trips later: measured, the bar sat dead at the stage's start
+           * for 5.0 s while 140 terrain files were in flight and none had
+           * finished. The creep is asymptotic to a FIFTH of the stage, so it
+           * can never overtake honest progress or promise the end. */
+          const creep = STREAM_BAR0 + (STREAM_BAR1 - STREAM_BAR0) * 0.2 * (1 - Math.exp(-waited / 2500));
+          shown = Math.max(shown, measured, creep);
+          setLoadingProgress(shown, "Streaming the world…");
+          return;
+        }
+        tick.remove();
+        if (!painted && !this.unloading)
+          console.warn(
+            `[nangijala] loading released after ${Math.round(waited)}ms without a finished world` +
+              ` (blits=${this.t3stats.blits}, scenery=${scenery})`,
+          );
+        setLoadingProgress(1, "Ready");
+        hideLoading();
+        this.worldUp = true;
+      },
+    });
+  }
+
+  /** PIPELINE FLUSHES INSIDE THE LAST GROUND PAINT — see drawTiles3Ground.
+   *  The frame-scoped `flushes` counter cannot answer this: a paint happens in
+   *  update(), and the number the beacon reports is the whole frame's. */
+  private t3paintFlushes = 0;
+  /** SUB-BATCHES PER GROUND BRACKET — the number `flushes` cannot see.
+   *
+   *  Phaser 3.90's multi-texture batching starts a NEW sub-batch every time a
+   *  draw uses a texture the current batch has no unit for (pushBatch →
+   *  createBatch, once the batch holds `maxTextures` distinct textures — 16 on
+   *  a Mali, hard-clamped in checkShaderMax). Each sub-batch is its own
+   *  `drawArrays` and up to 16 `bindTexture` calls when `endDraw` flushes.
+   *  The ground pass draws hundreds of DISTINCT textures per slice in painter
+   *  order — every composed boundary is unique (55-916 per paint) — so one
+   *  `flush()` can hide a hundred draw calls, and a mobile GL driver bills
+   *  each one in CPU time INSIDE the bracket, i.e. inside `groundSlice`.
+   *
+   *  That would explain the one number nothing has moved: the slice's own
+   *  cost is a flat 22-29 ms on his phone whether scenery is on or off and
+   *  whether the light pass runs at 2% or 100% — a fixed CPU price per slice,
+   *  15x the 1.7 ms the same slice costs on a desktop driver. The atlas was
+   *  rejected on `flushes` reading 0-2 per paint; this is what it never saw.
+   *  Read right before each ground `endDraw`, while `pipeline.batch` still
+   *  holds the bracket's sub-batches. */
+  private groundBatchStats = { brackets: 0, subBatches: 0, binds: 0, maxSub: 0 };
+  private t3countBatches(rt: Phaser.GameObjects.RenderTexture): void {
+    const pipe = (rt.texture as unknown as { pipeline?: { batch?: { texture: unknown[] }[] } }).pipeline;
+    const b = pipe?.batch;
+    if (!b) return;
+    const g = this.groundBatchStats;
+    g.brackets++;
+    g.subBatches += b.length;
+    if (b.length > g.maxSub) g.maxSub = b.length;
+    for (const e of b) g.binds += e.texture.length;
+  }
+
+  private drawTiles3Ground(
+    rt: Phaser.GameObjects.RenderTexture,
+    ax: number,
+    ay: number,
+    u0: number,
+    u1: number,
+    v0: number,
+    v1: number,
+    mask: Map<number, number> | null,
+    cuts: Map<number, number> | null,
+    top: number,
+  ) {
+    const t3 = this.t3;
+    const world = this.world;
+    if (!t3 || !world) return;
+    /* IS THIS PASS BIND-BOUND OR FILL-BOUND? The hook at perfHookRender already
+     * says what to conclude: "a flush count near the display-list size means the
+     * ground is being drawn one object per draw call; a count in the dozens
+     * means the cost is elsewhere and atlasing would buy nothing." It has never
+     * been able to answer for the GROUND, because it is reset per rendered frame
+     * and a paint runs inside update() among everything else. Scoped to the
+     * pass, `flushes / blits` is the whole question: ~1 and every blit is its own
+     * draw call; ~0 and they batch and the cost is fill or JS.
+     *
+     * THIS IS WHY IT MATTERS NOW. The resolve worker moved 840-1,604 ms of
+     * resolution off his frame thread and the slice cost did not move — 30.2 ms
+     * with it on against 29.4 ms off, at the same spot at the same time of day.
+     * So the slice is its DRAWS, and there are only two ways to make draws
+     * cheaper: fewer of them, or fewer bindings between them. */
+    const flush0 = this.perfFlushes;
+    const tex = this.ensureTiles3Textures();
+    const load = this.t3load;
+    // A file the pass wanted and does not have yet is remembered AGAINST THE
+    // CELL that wanted it — a landed batch then repaints those cells' rectangle
+    // and nothing else (onTerrainBatch). Rebuilt by a full paint (the window is
+    // new), extended by a band paint.
+    if (!this.groundClip) this.t3missing.clear();
+    let needIdx = -1;
+    const need = (p: string | null | undefined) => {
+      if (!p || !load) return;
+      if (load.need(p) || needIdx < 0) return;
+      if (!load.wanted(p)) return; // tombstoned (404): it never lands, so never a repaint
+      let set = this.t3missing.get(p);
+      if (!set) this.t3missing.set(p, (set = new Set()));
+      set.add(needIdx);
+    };
+    // Published BEFORE the passes and mutated in place: a gate reads these
+    // counters to tell a correct dark frame from a black one, and an exception
+    // mid-pass must leave what actually drew visible, not last frame's numbers.
+    const stats = { cells: 0, blits: 0, boundaries: 0, decks: 0, scenery: this.t3stats.scenery, ms: 0, culled: 0, composed: 0, composeMs: 0, underlays: 0 };
+    this.groundCulled = 0;
+    const built0 = tex?.stats.built ?? 0;
+    const buildMs0 = tex?.stats.buildMs ?? 0;
+    this.t3stats = stats;
+    const drops0 = tex?.droppedOps ?? 0;
+    const t0 = performance.now();
+    const cellOf = (c: number, r: number) => this.t3cellOf(t3, c, r);
+    const boundaryOf = (c: number, r: number) => this.t3boundaryOf(t3, c, r);
+    const decksOf = (c: number, r: number) => this.t3decksOf(t3, c, r);
+
+    // The window, once — all three passes walk the same cells.
+    const cells = this.t3windowCells(u0, u1, v0, v1);
+
+    /* ONE BRACKET, POSSIBLY OWNED BY THE CALLER. Every beginDraw/endDraw pair
+     * costs a capture-target clear AND a full-texture blit whatever it draws
+     * (Phaser 3.90 DynamicTexture.beginDraw -> RenderTarget.bind, endDraw ->
+     * blitFrame), so on a 1510x1656 target the BRACKET is the cost, not the
+     * area inside it — measured ~20 ms each on his phone. A scrolled band
+     * drains as 4-9 rects and used to pay that 4-9 times, one per frame, which
+     * is the burst of slow frames he feels every 1.5 s. t3drainSlices now opens
+     * one bracket around the whole drain and this defers to it. */
+    const ownBracket = this.groundBatchRT !== rt;
+    if (ownBracket) rt.beginDraw();
+    for (const [col, row] of cells) {
+      const cell = cellOf(col, row);
+      if (!cell) continue;
+      stats.cells++;
+      needIdx = row * world.width + col;
+      cellArtPaths(cell, need);
+      // THE COMPOSED BOUNDARY — `mask ? plateB : plateA` under the published
+      // silhouette with a mandatory 1px darkened seam, which is why 18 shapes x
+      // 16 Wang masks over per-ground plates cover all 105 pairs.
+      //
+      // DRAWN WITH ITS CELL, and that is the whole point. It used to be a
+      // SECOND pass over the window, after every surface — so a transition
+      // belonging to a far cell painted on top of the nearer cliff faces in
+      // front of it, and the column of a cliff came out shuffled (maintainer
+      // 2026-08-29: "the draw order is fucked up", circling one cliff edge).
+      // render3 hit the identical bug and killed the same pass — its loop is
+      // still there, spelled `for s in []`, with the note "the boundary is
+      // drawn WITH the cell now" (render3.py:1190). In painter order a cell
+      // draws once, and everything that cell wears draws inside that slot.
+      const b = boundaryOf(col, row);
+      if (b) boundaryArtPaths(b, need);
+      if (!tex) continue;
+      const idx = row * world.width + col;
+      const cut = mask ? (cuts ? cuts.get(idx) : top) : undefined;
+      const tint = this.caveTint(idx, !!mask);
+      /* A BOUNDARY IS SKIPPED INDOORS ONLY WHERE ITS OWN COLUMN IS TRUNCATED.
+       *
+       * The raster replaces THIS cell's plate at `columnY(z0)` — the cell's own
+       * uncut level. If the cut-away draws this column SHORTER than that, the
+       * transition would float over the stump; that is the case the skip
+       * exists for, and `cell.level > cut` is exactly that case. A cell drawn at
+       * full height — every level-0 cell, and any raised one the cut does not
+       * reach — keeps its transition, whatever stands next to it.
+       *
+       * IT USED TO SKIP WHEREVER ANY CELL OF THE QUAD WAS CONSTRAINED, and the
+       * maintainer photographed the result from a doorway (2026-09-05, two
+       * frames half a second apart): the DOOR cell is a level-0 parquet floor
+       * whose quad meets the level-6 wall, so indoors its parquet<->stone
+       * transition vanished and plain parquet ran out of the door; one step out
+       * and the stone came back — "the floor changes radically at the
+       * transition". Nothing about the door was truncated. And every such cell
+       * was OWED (see below) and repainted every frame while indoors.
+       *
+       * The legacy kill switch (cuts null) still constrains every column, so no
+       * boundary draws at all — which is what that switch means. */
+      const cutSuppressed = !!mask && (!cuts || (cut !== undefined && cell.level > cut));
+      /* GUARDED, like the resolves above it. A composition throws on art that
+       * is not plate geometry, and an unguarded throw here escapes the whole
+       * pass — one bad cell would black out the entire world instead of
+       * costing its own diamond. */
+      /* THE GUARDS ARE INLINE, NOT `t3Try`. Each t3Try call built a template
+       * string AND a closure per cell per paint — three of each for every cell
+       * of every slice, all thrown away on the success path. The catch is the
+       * same once-per-message warning; only the error path allocates now. */
+      let bop: ReturnType<typeof tex.opsForBoundary> = null;
+      if (b && !cutSuppressed) {
+        try {
+          bop = tex.opsForBoundary(b);
+        } catch (e) {
+          this.t3Warn("boundary art", col, row, e);
+        }
+      }
+      // THE TILE IS THE BOUNDARY: on a flat cell the composed tile replaces the
+      // plate rather than covering it — same silhouette, so the plate under it
+      // was pure overdraw, and render3 composites exactly one tile here
+      // (`wang_surface()`). A raised cell still draws its wall column first and
+      // wears the transition on the cap, which is render3's own order.
+      /* THE GROUND'S OWN COLOUR UNDER EVERY FLAT CELL, FIRST.
+       *
+       * A hole in this texture is a texel no op painted, and the maintainer's
+       * dots are exactly that: measured off his screenshot, the ground fill
+       * 0x181c28 in ONE-TEXEL runs along tile edges — and when the fill colour
+       * was changed the dots changed with it, which is direct proof. The plate
+       * lattice is provably gapless when every op draws (0 uncovered texels),
+       * so a hole means an op did not draw; three days did not establish which
+       * op or why, and it does not reproduce on this machine at his exact
+       * geometry, screen or texture.
+       *
+       * So stop needing to know. A flat diamond of the cell's OWN top colour,
+       * drawn before its art, means whatever fails to draw above it exposes the
+       * ground's colour instead of the background: a missing tile reads as flat
+       * ground, and a one-texel gap is invisible. It cannot change a correct
+       * pixel — the art is opaque over its whole silhouette and paints straight
+       * over this.
+       *
+       * CHEAP: `liquid()` caches one flat diamond per RGB (it is how water is
+       * drawn), so this is one extra batchDrawFrame per flat cell against a
+       * pass whose draw calls measured ~20% of its cost. Skipped for liquids,
+       * which already ARE that diamond, and for raised cells, whose wall stack
+       * is drawn from its own art. */
+      /* ...AND THE UNDERLAY IS A FALLBACK NOW, NOT A FLOOR (2026-09-04).
+       *
+       * It was drawn under EVERY flat cell — one extra batchDrawFrame each,
+       * against a pass whose draw calls measured ~20% of its cost — because in
+       * the middle of the zigzag hunt a hole could appear and nothing knew
+       * why. Now it is known: a composed transition tile covered 924 texels
+       * where the plate it replaces covers 2012, and the difference was
+       * painted by nothing. That is fixed, and the maintainer's magenta ground
+       * clear is what proved it.
+       *
+       * So the insurance is kept but stops being paid on every cell: the ops
+       * are taken FIRST, and the flat diamond is drawn only when nothing in
+       * them covers the surface — a dropped op, art that has not landed yet.
+       * Order does not matter in that case, because it is then the only thing
+       * drawn on this cell. The whole point of the old draw-it-first ordering
+       * was that something might land on top of it, and something landing on
+       * top of it is exactly the case this now skips.
+       *
+       * This is only safe BECAUSE the boundary carries its wall band again: a
+       * transition tile that still covered 924 texels would leave the same
+       * 1088-texel hole with nothing beneath it. The two changes go together. */
+      const useBoundary = !!bop && cell.kind === "field" && !this.noTransitions;
+      let ops: ReturnType<typeof cellBlits> | null = null;
+      if (!useBoundary) {
+        try {
+          ops = cellBlits(tex, this.t3tm, cell, cut);
+        } catch (e) {
+          ops = [];
+          this.t3Warn("blits", col, row, e);
+        }
+      }
+      /* COVERED MEANS THE WHOLE FOOTPRINT, not merely "something drew". A
+       * TOP-FACE-ONLY raster — a raised cell's surface, a raised or liquid
+       * boundary — paints 924 of the plate's 2,012 texels, so treating it as
+       * cover left the other 1,088 uninsurable. His magenta ground clear found
+       * 144 bare texels in one frame, in runs of exactly one texel on
+       * diamond-edge slopes, which is what that gap looks like. */
+      const topFaceOnly = useBoundary ? !!b?.topOnly : !!(cell.kind === "field" && cell.art?.topOnly);
+      const covered =
+        !topFaceOnly && (useBoundary || (ops !== null && ops.some((o) => o.role === "surface")));
+      /* ...AND NOT UNDER A FIELD CELL THE CUT REMOVED. `cellBlits` returns no
+       * ops for a plateau-interior cell above the cut (its cap IS the removed
+       * volume); the insurance diamond is anchored at that cap's own height and
+       * would paint the cell's flat colour exactly where the plate used to
+       * land — the same white band, in snow's palette colour instead. */
+      const cutAbove = cut !== undefined && cell.level > cut;
+      if (!covered && !cutAbove && cell.kind === "field" && cell.art?.kind !== "liquid") {
+        let under: ReturnType<typeof tex.groundUnderlay> = null;
+        try {
+          under = tex.groundUnderlay(cell);
+        } catch (e) {
+          this.t3Warn("under", col, row, e);
+        }
+        if (under) {
+          this.t3Blit(rt, under, ax, ay, tint);
+          stats.blits++;
+          stats.underlays++;
+        }
+      }
+      /* A TRANSITION THAT WAS NOT READY IS OWED A REPAINT (2026-09-04).
+       *
+       * `boundary()` returns null while either source plate is still
+       * undecoded, and the caller then "draws no boundary there and the flats
+       * meet hard". That is a DIAMOND STAIRCASE, and it is exactly what he
+       * photographs: "I'M TALKING ABOUT THE TRANSITION FROM GRASS TO SOIL. WE
+       * HAVE NO TRANSITION HERE!" — with a picture of what one should look
+       * like, two grounds meeting along a wandering edge INSIDE the diamond.
+       *
+       * The prefetch ring builds compositions AHEAD of the camera so this
+       * should not happen — but one composition costs ~13 ms on his phone
+       * against a 2 ms/frame budget, so the ring manages one every ~7 frames
+       * while a fresh window needs ~83. He outruns it constantly, and until
+       * now NOTHING revisited a cell once its composition finally landed: the
+       * ring only walks cells OUTSIDE the texture, and the pass that painted
+       * this one is over. The hard edge was permanent.
+       *
+       * So the cell is recorded, and `t3retryBoundaries` repaints it when the
+       * composition exists. Same shape as `onTerrainBatch`'s landing repaint,
+       * which does this for ART; compositions had no equivalent. */
+      /* NEVER OWED FOR THE CUT. A boundary the cut-away suppressed is not
+       * waiting for anything a later frame can bring — only the mask coming
+       * down restores it, and that is a full repaint. Owing it made
+       * `t3retryBoundaries` find its composition ready, repaint the cell, watch
+       * this pass suppress it again, and owe it again: up to T3_BOUNDARY_RETRY
+       * cell repaints EVERY FRAME for as long as you stood indoors, each one
+       * resetting its rect and re-blitting it — the cave floor "simmering like
+       * crazy" while standing still (maintainer 2026-09-05), and a
+       * repaintTiles3Cells bill of 4-19 ms per frame under every roof. */
+      if (b && !bop && !cutSuppressed) this.t3boundaryOwed.add(idx);
+      else this.t3boundaryOwed.delete(idx);
+      if (useBoundary && bop) {
+        // `useBoundary` already implies `bop`; the `&& bop` only restores the
+        // narrowing the inlined guard took from the type checker.
+        this.t3Blit(rt, bop, ax, ay, tint);
+        stats.blits++;
+        stats.boundaries++;
+        /* ...AND WHAT THE TRANSITION TILE WEARS: its fade (the maintainer's
+         * "fade on transition" switch) and its wall-foot band — the boundary
+         * replaced the cell's own ops, so these are asked for separately. IN
+         * THIS BRANCH: it once sat in the other one, behind a `useBoundary`
+         * test that branch can never see true, so no transition tile on the
+         * ground ever wore either (maintainer 2026-09-09, the wall foot
+         * "can't be seen when water is part of a transition tile"). */
+        for (const op of tex.overlayOps(cell)) {
+          this.t3Blit(rt, op, ax, ay, tint);
+          stats.blits++;
+        }
+      } else {
+        for (const op of ops ?? []) {
+          this.t3Blit(rt, op, ax, ay, tint);
+          stats.blits++;
+        }
+        if (bop) {
+          this.t3Blit(rt, bop, ax, ay, tint);
+          stats.boundaries++;
+        }
+      }
+    }
+
+    // DECK SLABS (roofs, bridges, the cave lid) last, as render3 draws them.
+    for (const [col, row] of cells) {
+      const idx = row * world.width + col;
+      if (mask && (cuts ? cuts.get(idx) : top) !== undefined) continue; // my roof, or a lid over my floor
+      needIdx = idx;
+      let deckMissing = false;
+      for (const d of decksOf(col, row)) {
+        deckArtPaths(d, need);
+        if (!tex) continue;
+        const tint = this.caveTint(idx, !!mask);
+        const dops = tex.opsForDeck(d);
+        for (const op of dops) {
+          this.t3Blit(rt, op, ax, ay, tint);
+          stats.decks++;
+        }
+        // Its transition is the last op when it drew; owe the cell when not.
+        if (d.boundary && !dops.some((op) => op.key.startsWith("t3x:"))) deckMissing = true;
+      }
+      if (deckMissing) {
+        if (!this.t3deckOwed.has(idx)) this.t3deckOwed.set(idx, 0);
+      } else this.t3deckOwed.delete(idx);
+    }
+    if (ownBracket) {
+      this.t3countBatches(rt);
+      rt.endDraw();
+    }
+    if (this.groundCacheOn && !this.groundClip) this.t3pruneCache(cells); // a band pass prunes after (scrollTiles3Ground); the ring keeps its cells
+    stats.culled = this.groundCulled;
+    // COMPOSITIONS this redraw paid for: boundaries/plates built on the fly
+    // (pixels read, blended on a canvas, uploaded) — the streaming stall.
+    stats.composed = (tex?.stats.built ?? 0) - built0;
+    stats.composeMs = +((tex?.stats.buildMs ?? 0) - buildMs0).toFixed(1);
+    stats.ms = +(performance.now() - t0).toFixed(1);
+    this.t3paintFlushes = this.perfFlushes - flush0;
+    if (stats.blits > 0) this.groundPainted = true;
+    /* DID THIS PAINT DROP ANYTHING? See groundDropsPending — and only ARM the
+     * repaint when something has landed since the last one. Re-arming
+     * unconditionally is what made the drain a loop: the repaint drops the same
+     * permanently-undrawable ops (a 404, an unpublished pair), sets the flag
+     * again, and pays a full paint at every loader idle edge for a picture that
+     * cannot change. One repaint per drop episode is the feature; the rest was
+     * the bug. */
+    if ((tex?.droppedOps ?? 0) > drops0 && this.t3terrainGen !== this.t3drainGen) this.groundDropsPending = true;
+    load?.flush();
+    this.checkTiles3Pitch();
+  }
+
+  /** ONE REPAINT AFTER THE ART SETTLES, IF ANY OP WAS EVER DROPPED.
+   *
+   *  Called from update(). A dropped op leaves the render texture's own
+   *  background showing — the maintainer's dotted line — and the existing
+   *  repair path (t3missing -> onTerrainBatch) only covers ops whose FILE is
+   *  still in flight. Anything else that drops (a tombstoned 404, a null
+   *  composition, a resolution cached as empty) is never repainted at all, so
+   *  it survives every later paint and he sees it while standing still, which
+   *  no camera latch will ever clear.
+   *
+   *  Fires at most once per idle transition: the flag is set by a paint that
+   *  dropped and cleared the moment the repaint is issued, so a cell whose art
+   *  genuinely never arrives costs one repaint, not one per frame. */
+  private t3drainDrops(): void {
+    if (!this.maps3) return;
+    const load = this.t3load;
+    if (!load) return;
+    /* THE RISING EDGE, AND IT WAS A GUARD IN NAME ONLY.
+     *
+     * The intent is "repaint once when the loader goes idle, in case a dropped
+     * op's texture has arrived". But the flag is re-armed INSIDE the repaint it
+     * triggers: `drawTiles3Ground` ends by setting `groundDropsPending` whenever
+     * that pass dropped an op, and `repaintWorld` runs `drawTiles3Ground`. So an
+     * op that is permanently undrawable — a 404, an unpublished x-over-y pair —
+     * cleared the flag, repainted the WHOLE world and the occluders, set the
+     * flag again, and did it all over on the next frame, for as long as the
+     * loader stayed idle. Measured on his phone, a repaintWorld frame costs 52.9
+     * to 271.6 ms of redrawGround plus 7.6 to 252.2 ms of rebuildOccluders, and
+     * these frames are 47% of all the time in the beacon's twenty worst.
+     *
+     * Firing on the TRANSITION into idle bounds it to one repaint per loader
+     * cycle, which is what "once per idle transition" always meant: a repaint is
+     * only ever useful when something has LANDED since the last one, and
+     * something landing is exactly what takes the loader out of idle first. */
+    const idle = load.queuedCount === 0 && load.idle;
+    const rising = idle && !this.t3loadWasIdle;
+    this.t3loadWasIdle = idle;
+    if (!this.groundDropsPending || !rising) return;
+    /* THE LANDING PATH ALREADY OWES THESE CELLS — let it pay, it is cheaper.
+     *
+     * An op drops because its texture is not resident, and `need()` records the
+     * CELL against the file it wanted in `t3missing`; when that file lands,
+     * `onTerrainBatch` repaints exactly those cells and sets both
+     * `repaintGroundPending` and `repaintOccPending`. So for the ordinary
+     * still-streaming case the drain adds nothing at all — and worse than
+     * nothing, because `repaintWorld` CLEARS `groundDirtyCells` and
+     * `repaintGroundPartial`, throwing the targeted repaint away and doing the
+     * whole world instead. The flag stays armed, so a drop that the landing
+     * path does NOT own is still repaired at a later idle edge. */
+    if (this.repaintGroundPending || this.repaintGroundPartial || this.groundDirtyCells.length) {
+      this.repaintStats.drainsDeferred++;
+      return;
+    }
+    this.groundDropsPending = false;
+    this.t3drainGen = this.t3terrainGen; // nothing new can drop until TERRAIN art lands
+    this.repaintStats.drains++;
+    /* AND IT DOES NOT REPAINT. The drop classes above are all owned elsewhere,
+     * so this was a whole-texture paint with nothing to fix — measured 145
+     * drains of 173 full paints across 14 telemetry windows, i.e. most of the
+     * `full:redrawGround` bucket. THE COST IS WHERE IT RUNS: this is called
+     * from update() AFTER the frame has already set groundRedrewThisFrame, and
+     * after the band slice, the occluder rebuild, the cull, the prefetch ring
+     * and the boundary retry. Nothing stands down for it, so its 21-60 ms
+     * landed on a frame that had already done a frame's work. */
+    if (!this.groundDrainRepaint) return;
+    /* GROUND ONLY. A dropped GROUND op is a hole in the ground texture; it says
+     * nothing about the occluder set, which draws its own art on its own 96 px
+     * latch and is repainted by the landing path anyway (`requestRepaint`
+     * sets `repaintOccPending` for every terrain batch). Poisoning that latch
+     * here bought a full occluder rebuild — measured 4.9-35.1 ms on his phone,
+     * 198.8 ms across the beacon's worst twenty — for a texture it cannot
+     * change. This is `repaintWorld` minus the occluder half. */
+    this.groundSliceQ = [];
+    this.groundSliceCtx = null;
+    this.lastGround = { x: NaN, y: NaN };
+    this.ps();
+    this.redrawGround();
+    this.pe("redrawGround");
+  }
+  /** Was the terrain loader idle last frame? — see t3drainDrops. */
+  private t3loadWasIdle = false;
+
+  /** RESOLVE, BUT NEVER TAKE THE FRAME DOWN. `Tiles3.overTile` THROWS when the
+   *  x-over-y matrix has no entry for a pair — deliberately, because the matrix
+   *  is the only wall source and a missing entry is a hole in it, not something
+   *  to paint around. In a still render that is a fatal; in a running game the
+   *  same throw would kill the whole update loop, every frame, for one
+   *  unpublished tile. So it is reported ONCE per distinct message and the cell
+   *  is skipped: a hole in the map, loudly, rather than a black screen. */
+  /** t3Try's catch, for the inlined hot-path guards: the label is built HERE,
+   *  on the error path only. */
+  private t3Warn(what: string, col: number, row: number, e: unknown): void {
+    const m = String((e as Error)?.message ?? e);
+    if (this.t3Failed.has(m)) return;
+    this.t3Failed.add(m);
+    console.warn(`[nangijala] tiles3: ${what} ${col},${row} could not resolve — ${m}`);
+  }
+
+  private t3Try<T>(where: string, f: () => T, fallback: T): T {
+    try {
+      return f();
+    } catch (e) {
+      const m = String((e as Error)?.message ?? e);
+      if (!this.t3Failed.has(m)) {
+        this.t3Failed.add(m);
+        console.warn(`[nangijala] tiles3: ${where} could not resolve — ${m}`);
+      }
+      return fallback;
+    }
+  }
+
+  /** OCCLUDER COLUMNS for a maps3 world — the same contract as the maps2
+   *  branch: a duplicate of what the ground RT already painted, re-issued at
+   *  sprite depth so bodies interleave with terrain, plus one `occluderMeta`
+   *  record per column for `resolveBodyDepth`. Art and meta must agree in both
+   *  directions (meta without art crops a body's lit copy against terrain that
+   *  is not there; art without meta lets a body draw through a wall). */
+  private tiles3Occluders(
+    u0: number,
+    u1: number,
+    v0: number,
+    v1: number,
+    mask: Map<number, number> | null,
+    cuts: Map<number, number> | null,
+    top: number,
+    shows: (x: number, y: number) => boolean,
+    columnShows: (x: number, yTop: number, yBot: number) => boolean,
+  ): number {
+    const t3 = this.t3;
+    const world = this.world;
+    const tex = this.ensureTiles3Textures();
+    if (!t3 || !world || !tex) return 0;
+    const { dx, dy, lh, tile: tileSize } = this.geom;
+    let culled = 0;
+    for (let v = v0; v <= v1; v++) {
+      for (let u = u0; u <= u1; u++) {
+        if ((u + v) & 1) continue;
+        const col = (u + v) / 2;
+        const row = (v - u) / 2;
+        if (col < 0 || row < 0 || col >= world.width || row >= world.height) continue;
+        const bx = this.iso.ox + u * dx;
+        const by = this.iso.oy + v * dy;
+        const oDepth = by + dy;
+        const idx = row * world.width + col;
+        const occCut = mask ? (cuts ? cuts.get(idx) : top) : undefined;
+
+        // A deck slab floating ABOVE its base must occlude whoever walks under
+        // it. Same rule as world@2: skip it entirely on a constrained column.
+        /* A DECK AT THE COLUMN'S OWN LEVEL IS THE COLUMN'S TOP, and it is issued
+         * LAST. The wall ring of a house is level-6 terrain under a level-6
+         * roof deck: this loop used to skip such a deck ("the terrain occluder
+         * already covers it") and the terrain block below then pushed the
+         * WALL'S CAP TILE over the ground texture — so every wall top wore its
+         * plain cap while every room cell, whose deck floats above a level-0
+         * floor, wore the roof surface. That is the floor plan drawn on the roof
+         * in the sprite layer alone, invisible in the RT (maintainer
+         * 2026-09-05, tracing the rooms on a photo of the roof: "from a player's
+         * perspective the top of the walls is also part of the house roof").
+         * The ground pass draws decks after every cell; the copy must too, so an
+         * equal-level deck is collected here and pushed after the cap and the
+         * boundary below — creation order is draw order in this band. A deck
+         * BELOW the column's top stays skipped: nothing of it shows. */
+        const capDecks: Tiles3DeckCell[] = [];
+        if (occCut === undefined)
+          for (const d of this.t3decksOf(t3, col, row)) {
+            const base = world.rows[row]?.[col]?.l ?? 0;
+            if (d.level < base) continue; // buried under taller terrain: nothing of it shows
+            if (d.level === base) {
+              capDecks.push(d);
+              continue;
+            }
+            /* THE DECK TOP IS NEVER EXPOSURE-CULLED — world@2's rule, which this
+             * branch did not copy. The top is the walkable surface and it is
+             * the thing that hides a body walking UNDER the slab. `shows` is a
+             * TILE-sized test at the op's own y, and a roof six levels up sits
+             * ~90px above its cell, so the top fell outside the box, its image
+             * was dropped, and the meta was pushed anyway — a meta record
+             * describing terrain that draws nothing. The body then rendered
+             * straight over the roof it was standing under (maintainer
+             * 2026-08-29: "THE PLAYER STILL RENDERS OVER THE WALL WHEN BEHIND
+             * THE WALL. THIS WORKED PERFECTLY"). It did: world@2 keeps the top
+             * whenever the COLUMN reaches the cull box. Faces still cull. */
+            const dops = tex.opsForDeck(d);
+            for (let oi = 0; oi < dops.length; oi++) {
+              const op = dops[oi];
+              const isTop = oi === dops.length - 1;
+              if (!(isTop ? columnShows(bx, by - d.level * lh, by + tileSize) : shows(bx, op.y))) {
+                culled++;
+                continue;
+              }
+              this.occluders.push(this.occTint(this.occImage(op.key, bx, op.y, oDepth, col, row), "deck"));
+            }
+            this.occluderMeta.push({
+              col, row, top: d.level, solid: false, depth: oDepth, stand: d.level,
+              x0: bx, x1: bx + tileSize, y0: by - d.level * lh, y1: by + tileSize,
+            });
+          }
+
+        const cell = this.t3cellOf(t3, col, row);
+        if (!cell) continue; // void cells never occlude
+        /* ANY RAISED COLUMN OCCLUDES — world@2's rule, restored.
+         *
+         * `kind === "wall"` answers a DRAWING question: does this column show an
+         * EXPOSED face? A cell whose down-screen neighbours sit at its own level
+         * shows none, so the resolver calls it a field — and it is still six
+         * levels of terrain standing between the camera and a body behind it.
+         * Gating OCCLUSION on that test dropped the occluder and its meta for
+         * every interior cell of a plateau or a thick house wall, so a body
+         * walked in front of terrain it should have been hidden by (maintainer
+         * 2026-08-29: "the player is rendered on top of the wall. THIS WORKED IN
+         * V2"). world@2 emits one for every l>0 tile, exposed or not, and so
+         * does this now. The exposed-face rule still governs the FACE COURSES
+         * below — those are art, and drawing a band with nothing in front of it
+         * is the row of ticks that rule exists to prevent. */
+        if (cell.kind !== "wall" && cell.level <= 0) continue;
+        const topKey = t3SurfaceKey(tex, this.t3tm, cell);
+        const fk = t3FaceKey(this.t3tm, cell) ?? topKey;
+        if (!topKey || !fk) continue; // art still streaming
+        const topL = occCut !== undefined ? Math.min(cell.level, occCut) : cell.level;
+        if (topL < 0) continue;
+        const cutL = (c: number, r: number): number => {
+          const n = world.rows[r]?.[c];
+          if (!n) return -1;
+          const e = cuts ? cuts.get(r * world.width + c) : top;
+          return e === undefined ? n.l : Math.min(n.l, e);
+        };
+        // Only the EXPOSED faces, from the lowest front neighbour up — the same
+        // rule the world@2 branch has: redrawing the covered lower faces on top
+        // of the RT paints the front cell's ground back into a wall.
+        const from =
+          cell.kind !== "wall"
+            ? topL // no exposed face: the cap alone, never a band
+            : mask
+              ? Math.max(0, Math.min(topL, Math.min(cutL(col + 1, row), cutL(col, row + 1)) + 1))
+              : this.stackFrom(col, row, topL, false);
+        for (let lvl = from; lvl < topL; lvl++) {
+          if (!shows(bx, by - lvl * lh)) {
+            culled++;
+            continue;
+          }
+          /* EACH STOREY DRAWS ITS OWN TILE. Stacking one key up the column is
+           * what put a single repeated tile down the whole height of every
+           * mountain on the maintainer's screen, with the correctly varied
+           * ground texture painted underneath it and covered. */
+          const faceArt = t3FaceKeyAt(this.t3tm, cell, lvl) ?? fk;
+          this.occluders.push(this.occTint(this.occImage(faceArt, bx, by - lvl * lh, oDepth, col, row), "face"));
+        }
+        /* THE CAP IS PASTED WHERE THE GROUND PASS PASTES IT. A surface is a
+         * 64x46 plate anchored at the cell's own `sy`; a wall course is 64x64
+         * review art anchored ten rows higher (see `surfaceY`). One y for both
+         * put every surface cap ten pixels above its own copy in the ground
+         * texture. A cut column (topL < level) draws the face art, which is a
+         * course, so it keeps the column's own top. */
+        /* A FIELD cell has no course to fall back on: `fk` IS its plate, so a
+         * truncated plateau interior (the snow cap in front of the cave, cut to
+         * level 1) keeps the plate anchor too, slid down to the cut level —
+         * anchoring it as a course put the stump's cap ten rows too high. */
+        const surfY = t3SurfaceY(cell);
+        const capSurface = surfY === null ? null : surfY + (cell.level - topL) * lh;
+        const capX = capSurface !== null ? cell.sx : bx;
+        const capY = capSurface !== null ? capSurface : by - topL * lh;
+        if (columnShows(capX, capY, by + tileSize)) {
+          this.occluders.push(this.occTint(this.occImage(topL === cell.level ? topKey : fk, capX, capY, oDepth, col, row), "cap"));
+          /* AND THE SET SURFACE OVER A DRESSED WALL'S CAP — the second image
+           * the ground pass paints on such a cell (`cellOps`: stack, then the
+           * surface at its own anchor). A review course's top is one flat
+           * colour; the surface is the maintainer's textured set; this copy
+           * used to stop at the course and cover the set on every raised rim
+           * (maintainer 2026-09-09: "Why are they all the solid color top?").
+           * See `dressKey`. Full-height columns only, like everything below. */
+          if (topL === cell.level) {
+            const dk = this.t3Try(`occ dress ${col},${row}`, () => t3DressKey(tex, cell), null);
+            if (dk) this.occluders.push(this.occTint(this.occImage(dk.key, dk.x, dk.y, oDepth, col, row), "cap"));
+          }
+          /* THE CAP WEARS ITS TRANSITION HERE TOO — and not doing so is the
+           * whole of "the transition only works on level 0" (maintainer, for
+           * weeks, with photographs: "As soon as I go up on a hill or something
+           * not level 0 the transition breaks!").
+           *
+           * This pass re-issues raised terrain as SPRITES over the ground
+           * texture so bodies can interleave with it, and it built the cap from
+           * the cell's own plate alone. So the ground RT composed the boundary
+           * correctly, drew it, and then this copy landed on top of it one
+           * frame later with a hard diamond edge — every cell above level 0,
+           * every terrace, every plateau. Level 0 has no occluder (`continue`
+           * above), which is exactly why level 0 was the only place a
+           * transition ever survived, and why water — always level 0 — looked
+           * right the whole time. Nothing was wrong with the composition, the
+           * mask, the pools or the streaming: the picture was being painted
+           * over.
+           *
+           * ONLY A TOP-FACE-ONLY BOUNDARY may ride here, which is the same
+           * raised/liquid case that gives this pass a cell at all. A full
+           * silhouette (level 0) carries a 1,088-texel wall band, and pasting
+           * that as a sprite would paint a wall over the cell in front. Drawn
+           * AFTER the cap, at the same anchor and depth, exactly as the ground
+           * pass draws it after `cellBlits` — both rasters are the same 924
+           * texels, so the transition simply replaces the plain cap. */
+          const ob =
+            topL === cell.level && !this.noTransitions ? this.t3boundaryOf(t3, col, row) : null;
+          /* `topL === cell.level` above already means this column is drawn at
+           * full height — not truncated — which is the ONLY case the ground
+           * pass draws the transition indoors (see `cutSuppressed` there). The
+           * two passes must agree or the occluder copy paints over the ground. */
+          if (ob?.topOnly) {
+            const obop = this.t3Try(`occ boundary ${col},${row}`, () => tex.opsForBoundary(ob), null);
+            // `obop` carries the boundary's own absolute paste point (the same
+            // one the ground pass blits it at) — never re-derive it here.
+            if (obop) this.occluders.push(this.occTint(this.occImage(obop.key, obop.x, obop.y, oDepth, col, row), "boundary"));
+          }
+          /* AND THE CAP WEARS ITS FADE AND ITS WALL-FOOT BAND, for exactly the
+           * reason it wears its transition: the ground pass paints them into
+           * the texture and this sprite lands on top a frame later. The resolver
+           * placed fades on every raised terrace and `cellBlits` emitted them —
+           * measured at his plateau (257,236, level 4): 11 fades resolved in a
+           * 99-cell window, every one covered by the plain cap. Level 0 emits no
+           * occluder, which is why "the fade tiles only work on level 0"
+           * (maintainer 2026-09-09, two photographs). Same ops the ground pass
+           * blits after the boundary (`overlayOps`: the fade, the foot band —
+           * never the surface), at their own absolute paste points, after the
+           * cap and the boundary so they land in the same order. Only on a
+           * column drawn at full height, as the boundary above. */
+          if (topL === cell.level) {
+            const extra = this.t3Try(`occ overlay ${col},${row}`, () => tex.overlayOps(cell), null);
+            if (extra)
+              for (const op of extra)
+                this.occluders.push(this.occTint(this.occImage(op.key, op.x, op.y, oDepth, col, row), op.role));
+          }
+        } else culled++;
+        // The roof over a wall top — see capDecks above. Only on a column drawn
+        // whole: a truncated column's deck was already skipped by occCut.
+        if (topL === cell.level)
+          for (const d of capDecks)
+            for (const op of tex.opsForDeck(d)) {
+              if (!columnShows(bx, op.y, by + tileSize)) {
+                culled++;
+                continue;
+              }
+              this.occluders.push(this.occTint(this.occImage(op.key, bx, op.y, oDepth, col, row), "deck"));
+            }
+        this.occluderMeta.push({
+          col, row, top: topL, solid: false, depth: oDepth,
+          stand: cell.kind === "wall" ? -1 : cell.level,
+          x0: bx, x1: bx + tileSize, y0: by - topL * lh, y1: by + tileSize,
+        });
+      }
+    }
+    return culled;
+  }
+
+  /* -- SCENERY (maps3) -----------------------------------------------------
+   * Freely placed, off-grid set dressing at CONTINUOUS cell coordinates —
+   * 1,388 placements over 205 distinct pieces on the_game. `scenery3.ts` owns
+   * the anchor projection, the crop/scale/flip fit and the spatial index; this
+   * scene owns the sprites, and it draws them through the SAME conventions the
+   * props do (one image per visible placement, origin 0,0, depth on the
+   * unlifted painter line) so bodies interleave with a tree exactly as they
+   * interleave with a pillar. There is no second depth path here — this repo
+   * has paid for that one. */
+
+  private initScenery(view: { levelAt: (x: number, y: number) => number }) {
+    const world = this.world;
+    if (!this.sceneryOn) return; // Settings "scenery" — see sceneryOn
+    if (!world?.scenery?.length || !this.t3) return;
+    this.scenery = new SceneryIndex(
+      buildPlacements(world.scenery, {
+        frame: this.t3.frame,
+        levelAt: (x, y) => view.levelAt(x, y),
+        // A piece under a ROOF or CAVE deck is indoors and render3 skips it —
+        // drawing it put a bush on the meadow house's roof. A BRIDGE hides
+        // nothing: you walk under a bridge and the scenery below is the point.
+        roofed: roofedCells(world.decks, world.width),
+        width: world.width,
+        bounds: { x0: 0, y0: 0, x1: world.width, y1: world.height },
+      }),
+    );
+    this.sceneryPieces = new SceneryPieces({
+      fetchJson: (url) =>
+        fetch(url).then((r) => {
+          if (!r.ok) throw new Error(`HTTP ${r.status}`);
+          return r.json();
+        }),
+      route: this.t3route,
+      onLanded: () => this.onSceneryManifest(),
+    });
+    /* THE COLLISION DOCUMENTS, FROM THE AUTHORITY THAT STAMPS WITH THEM.
+     * Footprints become blocked cells from two documents, and the prediction
+     * has to reach the SAME cells the server does or the body fights the
+     * correction every frame. Fetching them as ASSETS reached neither: the
+     * bbox table is under games2/, which is not an ASSET_DOMAIN, so it 404'd
+     * and `restampScenery` bailed on every call — the client stamped NOTHING
+     * and tap-to-move routed straight through trees (maintainer 2026-08-29:
+     * "the player walks straight into the tree and doesn't navigate around",
+     * and the stuck-oscillation before it: the server held a body the client
+     * believed was in open ground). The hitbox doc DID load, from the image's
+     * baked copy, while the server stamps from the LIVE one off GitHub — so
+     * tuning a hitbox in the wiki moved the server's trees and not ours.
+     * One endpoint answers both from the objects the server itself holds,
+     * which is the only arrangement in which they cannot drift; ~96 KB
+     * gzipped. Never `docUrl`: a staging CDN pinned at this TAB's sha would
+     * put two players' trees in different places. Failure is soft — no doc
+     * means no scenery collision, exactly as before, never a crash. */
+    void fetch("/api/scenery-collision")
+      .then((r) => (r.ok ? r.json() : null))
+      .then((d) => {
+        this.sceneryBboxDoc = (d?.bbox as SceneryBboxDoc) ?? null;
+        this.sceneryHitboxDoc = (d?.hitbox as Record<string, SceneryHitboxRec>) ?? null;
+        this.restampScenery();
+        this.repaintWorld();
+      })
+      .catch(() => {});
+  }
+
+  /** The still's crop and canvas, measured ONCE per distinct art file. It is a
+   *  full alpha scan of the source, so per placement would cost the_game 1,388
+   *  scans for 205 answers — and per frame would cost that every frame. */
+  /** Re-apply the scenery footprints to the prediction grid — THE SAME
+   *  FUNCTION, the same two documents and the same projection the server stamps
+   *  with, because a client and an authority holding different ellipses is the
+   *  divergence /api/scenery-collision exists to rule out.
+   *
+   *  CALLED WITH WHATEVER HAS LANDED, INCLUDING NOTHING. The two documents
+   *  arrive asynchronously, so this runs again as each one does; the stamp is
+   *  idempotent (it resets the derived cells to `propBlocked` and rebuilds the
+   *  ellipse table from scratch) and a missing document resets and stops. That
+   *  is why the caller no longer rebuilds the whole grid first: bailing out
+   *  early instead would leave the PREVIOUS footprints in place when a live
+   *  hitbox edit retires one, and the body would keep colliding with a shape
+   *  the wiki has deleted. */
+  private restampScenery(): void {
+    if (!this.terrain) return;
+    stampSceneryCollision(
+      this.terrain,
+      this.world?.scenery ?? [],
+      this.sceneryBboxDoc,
+      this.sceneryHitboxDoc,
+      // Scenery is a maps3 thing, and maps3 draws on dy=14 — the same argument
+      // WorldRoom passes, or the client's trees would stand somewhere else.
+      ISO_GEOMETRY_MAPS3,
+    );
+    // The same footprints are the pieces' LIGHT occluders (nightlight
+    // setSceneryOccluders) — re-applied here because the footprints only exist
+    // once the docs land, after the heightmap was built, and change on wiki edits.
+    // Footprints are the pieces' LIGHT occluders as well as their collision, so
+    // the switch has to reach here or a world with no scenery drawn would still
+    // pay for every scenery shadow the night pass casts.
+    this.night?.setSceneryOccluders(this.sceneryOn ? this.terrain.footprints : undefined);
+    // The lit copies' VOLUMES are keyed on the hitbox too (attachSceneryShape):
+    // poison the occluder latch so the next frame re-attaches them under the
+    // new keys, and drop the maps built from the tile-radius fallback now that
+    // the published hitboxes exist (content-keyed; a copy still pointing at
+    // one is re-attached the same frame).
+    if (this.sceneryHitboxDoc && this.sceneryBboxDoc) {
+      this.lastOccl = { x: NaN, y: NaN };
+      for (const k of this.shapeFallbackKeys) {
+        this.shapeMaps.delete(k);
+        if (this.textures.exists(k)) this.textures.remove(k);
+      }
+      this.shapeFallbackKeys.clear();
+    }
+  }
+
+  /* ---- SCENERY LIGHT (scenerylit.ts + scenerylight.ts) ------------------- */
+
+  /** Register the scenery-lit pipeline once per game (pipelines outlive
+   *  scenes) and wire it to this scene's night ledger. A shader that fails to
+   *  compile throws here and the scenery keeps its flat tint — nothing else
+   *  depends on it. */
+  private ensureSceneryLitPipeline(): void {
+    if (this.sceneryLitPipe || this.game.renderer.type !== Phaser.WEBGL) return;
+    try {
+      const pm = (this.game.renderer as Phaser.Renderer.WebGL.WebGLRenderer).pipelines;
+      const have = (pm.has(SCENERY_LIT_PIPELINE) ? pm.get(SCENERY_LIT_PIPELINE) : null) as unknown as SceneryLitPipeline | null;
+      const pipe =
+        have ?? (pm.add(SCENERY_LIT_PIPELINE, new SceneryLitPipeline(this.game) as unknown as Phaser.Renderer.WebGL.WebGLPipeline) as unknown as SceneryLitPipeline);
+      pipe.dx = this.geom.dx;
+      pipe.lh = this.geom.lh;
+      // ONE ledger: the frame's lights exactly as the night pass uploads them,
+      // re-based on my own cell so a mediump phone GPU keeps sub-cell accuracy.
+      const frame: { pos: Float32Array; col: Float32Array; n: number; sun: [number, number, number, number]; time: number; orgX: number; orgY: number } = {
+        pos: new Float32Array(0), col: new Float32Array(0), n: 0, sun: [0, 0, 1, 0], time: 0, orgX: 0, orgY: 0,
+      };
+      pipe.source = () => {
+        const n = this.night;
+        if (!n) return null;
+        const u = n.lightUniforms();
+        frame.pos = u.pos;
+        frame.col = u.col;
+        frame.n = u.n;
+        frame.sun = u.sun;
+        frame.time = u.time;
+        const me = this.avatars.get(this.myId);
+        frame.orgX = me ? Math.floor(me.fx / CELL_WU) : 0;
+        frame.orgY = me ? Math.floor(me.fy / CELL_WU) : 0;
+        return frame;
+      };
+      this.sceneryLitPipe = pipe;
+    } catch (err) {
+      console.warn("[nangijala] scenery-lit pipeline unavailable — scenery keeps the flat tint:", err);
+      this.sceneryLitPipe = null;
+    }
+  }
+
+  /** THE VOLUME a scenery lit copy is shaded with: the hitbox (ellipse →
+   *  rounded, rect → a box turned by the facing) and the alpha silhouette
+   *  (scenerylight.buildShapeMap), built ONCE per sprite + hitbox under a
+   *  content key and shared by every placement of it; hflip reads it in a
+   *  mirror. The copy takes the pipeline at once — with the map still pending
+   *  it draws exactly as the flat tint would — and `runShapeJobs` fills the
+   *  map in within its per-frame budget. Geometry is the DRAW path's
+   *  (hbX/hbY, fit.kx/ky): the stamp scales a variation by its own bbox and
+   *  drifts up to 42% from what is drawn (measured, 160/651 placements). */
+  private attachSceneryShape(
+    lo: WorldScene["litOccluders"][number],
+    key: string,
+    art: { canvas: { w: number; h: number } },
+    fit: SceneryFit,
+    box0: SceneryHitbox | undefined,
+    hbX: number,
+    hbY: number,
+    p: SceneryPlacement,
+    lvl: number,
+    tileSize: number,
+  ): void {
+    const pipe = this.sceneryLitPipe;
+    if (!pipe || !this.sceneryLightOn) return;
+    const { dx, dy, lh } = this.geom;
+    const rect = box0?.shape === "rect";
+    const dir = p.dir || "south";
+    // The hitbox in the sprite's own UNFLIPPED frame (frame px). A rect takes
+    // the per-facing size the stamp honours and its ground turn for the
+    // unflipped placement — the mirror negates both ax and the angle.
+    const szo = rect ? box0?.size_by_dir?.[dir] : undefined;
+    const r0 = Math.min(tileSize, fit.w) / 2 / fit.kx;
+    const hb: ShapeHitbox = box0
+      ? {
+          cx: art.canvas.w / 2 + box0.ax,
+          cy: art.canvas.h / 2 + box0.ay,
+          rx: szo && Number.isFinite(szo.rx) ? szo.rx : box0.rx,
+          ry: szo && Number.isFinite(szo.ry) ? szo.ry : box0.ry,
+          rect,
+          theta: rect ? rectGroundRot(box0, dir, false) : 0,
+        }
+      : { cx: fit.sx + fit.sw / 2, cy: fit.sy + fit.sh, rx: r0, ry: (r0 * dy) / dx, rect: false, theta: 0 };
+    const sc: ShapeScale = { px2cell: fit.kx / (dx * Math.SQRT2), py2cell: fit.ky / (dy * Math.SQRT2), px2lvl: fit.ky / lh };
+    const mapKey = shapeMapKey(key, hb, sc);
+    // Hitbox centre → cells: the collision stamp's own inverse projection.
+    const sx = hbX - p.ax;
+    const sy = hbY - p.ay;
+    const shape: SceneryLitShape = {
+      hbX,
+      hbY,
+      fc: p.x + (sx / dx + sy / dy) / 2,
+      fr: p.y + (sy / dy - sx / dx) / 2,
+      fz: lvl,
+      flip: fit.flipX ? -1 : 1,
+      occ: new Float32Array(SCENERY_LIT_OCC),
+      sv: 0,
+    };
+    const rec = this.shapeMaps.get(mapKey);
+    if (rec) shape.tex = rec.tex;
+    else if (rec === undefined) {
+      const job = this.shapeJobs.get(mapKey);
+      if (job) job.waiters.push(shape);
+      else this.shapeJobs.set(mapKey, { artKey: key, hb, sc, waiters: [shape], fallback: !box0 });
+    } else return; // null: could not be built — the copy keeps the flat tint
+    lo.shape = shape;
+    lo.img.setPipeline(pipe as unknown as Phaser.Renderer.WebGL.WebGLPipeline, shape, false);
+  }
+
+  /** Build pending shape maps within a per-frame budget and hand each to the
+   *  copies waiting on it. A map is built IN ROW SLICES across frames
+   *  (`ShapeMapBuilder.step`): one 256² sprite took 18-26 ms in a single frame
+   *  when the budget was only checked before a job started — a hitch every
+   *  time a willow scrolled in. Now the clock is checked after every slice of
+   *  SHAPE_ROWS_PER_STEP rows, so a frame never overruns the budget by more
+   *  than one slice (~0.3 ms). The raster is registered under its content key
+   *  (`s3n:<path>@v<version>:<hitbox>`) and never rewritten. */
+  /** `__ml.sceneryLight(on)` — the per-pixel lit copy on scenery, always on
+   *  in the game (the Settings switch went at the maintainer's request,
+   *  2026-09-08; the lag it was an arm for was the capture-target realloc). */
+  private setSceneryLight(on: boolean): void {
+    if (on === this.sceneryLightOn) return;
+    this.sceneryLightOn = on;
+    if (on) this.ensureSceneryLitPipeline();
+    for (const lo of this.litOccluders) {
+      if (!on && lo.shape) {
+        lo.img.resetPipeline();
+        lo.fog?.resetPipeline();
+        lo.shape = undefined;
+      }
+    }
+    this.lastOccl = { x: NaN, y: NaN }; // the next occluder rebuild (re)attaches
+  }
+
+  /** Same contract for the scenery light-occluders (torch + sun shadows). */
+  private setSceneryShadows(on: boolean): void {
+    if (!this.night) return;
+    this.night.sceneryShadows = on;
+    this.night.setSceneryOccluders(this.terrain?.footprints);
+  }
+
+  /** A `lit` placement's light — derived from its LIT art once per texture
+   *  (the pixels that differ from the NOT_LIT sibling, else the bright ones),
+   *  placed at the emissive centroid's height above the anchor. Joins the
+   *  props' ledger under `s3:<place>` with its pool stamp under the same id,
+   *  so a slotted lamp's stamp is suppressed like a prop's. */
+  private pushSceneryLight(
+    p: { i: number; x: number; y: number; ax: number; ay: number; dir?: string; piece: string },
+    piece: { states: Record<string, { key: string; sprite: string; rotations: Record<string, string> }>; baseState: string; light: SceneryLight | null },
+    st: { key: string },
+    key: string,
+    fit: { x: number; y: number; sx: number; sy: number; kx: number; ky: number; ay: number },
+    scol: number,
+    srow: number,
+  ): void {
+    /* THE MANIFEST WINS (maps2/scenery ask, 2026-09-06): the state's block,
+     * else the piece's — radius as given (no cap: the campfire is one light,
+     * not the game's maximum — maintainer 2026-09-07), colour as
+     * given, intensity = strength × the campfire's. The pixels still give the
+     * HEAD HEIGHT (the derived centroid), and remain the whole light for a
+     * piece with no block. The maintainer tunes the table from the wiki;
+     * a pixel cap on the radius made his edits change nothing in-game. */
+    const block = sceneryLightBlockFor(piece, st.key);
+    let rec = this.sceneryLightCache.get(key);
+    if (rec === undefined) {
+      const pix = this.texPixels(key);
+      if (!pix) return; // art not landed yet — next rebuild
+      const unlitKey = Object.keys(piece.states).find((k) => k.startsWith("NOT_LIT")) ?? (piece.baseState.startsWith("LIT") ? null : piece.baseState);
+      let upix = null;
+      if (unlitKey && piece.states[unlitKey]) {
+        const us = piece.states[unlitKey];
+        const usprite = (p.dir ? us.rotations[p.dir] : "") || us.rotations.south || us.sprite;
+        const ukey = this.sKey(usprite);
+        upix = this.textures.exists(ukey) ? this.texPixels(ukey) : null;
+      }
+      const e = deriveEmissive(pix, upix);
+      rec = e ? { cx: e.cx, cy: e.cy, params: lightParams(e, lightKindOf(p.piece)) } : null;
+      this.sceneryLightCache.set(key, rec);
+    }
+    const fromBlock = block ? lightFromBlock(block, lightKindOf(p.piece)) : null;
+    if (block && !fromBlock) return; // the manifest says strength 0: no light
+    if (!rec && !fromBlock) return; // no block and nothing bright in the art
+    const params = fromBlock ?? rec!.params;
+    const world = this.world!;
+    const lvl = world.rows[srow]?.[scol]?.l ?? 0;
+    // The emissive centroid on screen → levels above the anchor line (a piece
+    // whose art shows nothing bright but whose manifest lights it: 1 level).
+    const headY = rec ? fit.y + (rec.cy - fit.sy) * fit.ky : fit.ay - this.geom.lh;
+    const headX = rec ? fit.x + (rec.cx - fit.sx) * fit.kx : p.ax;
+    // Capped at 1.5 levels: the pool attenuates on the 3D distance, and a
+    // head 4 levels up put the ground under a streetlight near the radius'
+    // edge (ring at 1 cell 0.56–0.77 vs 0.72 at 4.5 cells, measured). The
+    // campfire's flame sits at 0.5; a lamp's at 1.5 still lights the post.
+    const z = Math.min(1.5, Math.max(0.3, (fit.ay - headY) / this.geom.lh));
+    let sealed = false;
+    for (const [dc, dr] of [[1, 0], [-1, 0], [0, 1], [0, -1]] as const) {
+      const nl = world.rows[srow + dr]?.[scol + dc]?.l ?? lvl;
+      if (this.roomVerdictAt(scol + dc, srow + dr, nl)) { sealed = true; break; }
+    }
+    const id = `s3:${p.i}`;
+    const pr = params;
+    this.sceneryLightSources.push({
+      id, col: p.x, row: p.y, z: lvl + z, radius: pr.radius, color: pr.color, flicker: pr.flicker, shadows: pr.shadows,
+      sx: p.ax, sy: p.ay, hx: headX, hy: headY, piece: p.piece,
+      embers: piece.light?.embers === true, kind: piece.light?.kind ?? "", sealed,
+    });
+    const { dx, dy } = this.geom;
+    const peak = Math.max(pr.color[0], pr.color[1], pr.color[2], 0.001);
+    this.sceneryStamps.push({
+      x: p.ax, y: p.ay + 4,
+      radius: pr.radius * Math.SQRT2 * dx, ry: pr.radius * Math.SQRT2 * dy,
+      color: [pr.color[0] / peak, pr.color[1] / peak, pr.color[2] / peak],
+      alpha: 0.6, anim: pr.anim,
+      phase: ((((scol * 40503) ^ (srow * 12289)) >>> 0) % 628) / 100,
+      litChar: true, srcId: id,
+    });
+  }
+
+  private runShapeJobs(budgetMs: number): void {
+    const t0 = performance.now();
+    for (const [mapKey, job] of this.shapeJobs) {
+      if (performance.now() - t0 > budgetMs) break;
+      let rec: { tex: Phaser.Renderer.WebGL.Wrappers.WebGLTextureWrapper; w: number; h: number; opaque: number; ms: number } | null = null;
+      let finished = false;
+      const tj = performance.now();
+      try {
+        if (this.textures.exists(mapKey)) {
+          const src = this.textures.get(mapKey).source[0];
+          if (src?.glTexture) rec = { tex: src.glTexture, w: src.width, h: src.height, opaque: -1, ms: 0 };
+          finished = true;
+        } else {
+          if (!job.builder) {
+            const px = this.texPixels(job.artKey);
+            if (!px) finished = true; // art not resident: cannot build
+            else {
+              job.builder = new ShapeMapBuilder(px, job.hb, job.sc);
+              job.t0 = tj;
+            }
+          }
+          if (job.builder) {
+            while (!job.builder.done && performance.now() - t0 <= budgetMs) job.builder.step(SHAPE_ROWS_PER_STEP);
+            if (job.builder.done) {
+              const map = job.builder.result();
+              const tx = this.textures.addUint8Array(mapKey, map.data, map.w, map.h);
+              const gl = tx?.source[0]?.glTexture;
+              if (gl) rec = { tex: gl, w: map.w, h: map.h, opaque: map.opaque, ms: 0 };
+              finished = true;
+            }
+          }
+        }
+      } catch (err) {
+        console.warn(`[nangijala] scenery-lit: shape map ${mapKey} failed:`, err);
+        rec = null;
+        finished = true;
+      }
+      const ms = performance.now() - tj;
+      if (ms > this.shapeStats.maxMs) this.shapeStats.maxMs = ms;
+      this.shapeStats.ms += ms;
+      if (!finished) break; // out of budget mid-map: resume next frame
+      this.shapeJobs.delete(mapKey);
+      if (rec) {
+        rec.ms = +(performance.now() - (job.t0 ?? tj)).toFixed(2);
+        this.shapeStats.built++;
+        this.shapeStats.texels += rec.w * rec.h;
+        for (const w of job.waiters) w.tex = rec.tex;
+        if (job.fallback) this.shapeFallbackKeys.add(mapKey);
+      } else this.shapeStats.failed++;
+      this.shapeMaps.set(mapKey, rec);
+    }
+    this.sceneryLightStat.jobMs = performance.now() - t0;
+  }
+
+  /** The `__ml.sceneryLightInfo()` report. */
+  private sceneryLightInfo(): Record<string, unknown> {
+    const p = this.sceneryLitPipe;
+    const pipeObj = p as unknown as Phaser.Renderer.WebGL.WebGLPipeline | null;
+    const copies = this.litOccluders;
+    const onPipe = copies.filter((lo) => lo.img.pipeline === pipeObj);
+    const shaped = copies.filter((lo) => lo.shape?.tex);
+    const st = this.sceneryLightStat;
+    const ss = this.shapeStats;
+    return {
+      on: this.sceneryLightOn,
+      pipeline: p
+        ? {
+            name: p.name,
+            shade: p.shade,
+            debug: p.debug,
+            wrap: p.wrap,
+            sunLam: p.sunLam,
+            gain: p.gain,
+            quads: p.quads,
+            shapedQuads: p.shapedQuads,
+            lightsFed: p.lightsFed,
+            vertexSize: (p.currentShader as unknown as { vertexSize?: number })?.vertexSize ?? null,
+          }
+        : null,
+      copies: { total: copies.length, onPipeline: onPipe.length, shaped: shaped.length, pending: copies.filter((lo) => lo.shape && !lo.shape.tex).length },
+      shapeMaps: { built: ss.built, failed: ss.failed, pending: this.shapeJobs.size, texels: ss.texels, bytes: ss.texels * 4, totalMs: +ss.ms.toFixed(1), maxMs: +ss.maxMs.toFixed(2) },
+      cpu: { lastMs: +st.lastMs.toFixed(3), emaMs: +st.emaMs.toFixed(3), pieces: st.pieces, perPieceUs: st.pieces ? +((st.lastMs / st.pieces) * 1000).toFixed(1) : 0, jobMs: +st.jobMs.toFixed(2) },
+      lights: this.night ? this.night.lightUniforms().n : 0,
+      pieces: shaped.slice(0, 12).map((lo) => ({
+        key: lo.img.texture.key.replace(/^s3:/, ""),
+        fogPipeline: lo.fog?.pipeline?.name ?? null,
+        tint: lo.img.tintTopLeft.toString(16),
+        fc: +lo.shape!.fc.toFixed(2),
+        fr: +lo.shape!.fr.toFixed(2),
+        fz: lo.shape!.fz,
+        flip: lo.shape!.flip,
+        occ: Array.from(lo.shape!.occ).map((v) => +v.toFixed(2)),
+        sv: +lo.shape!.sv.toFixed(3),
+        box: [lo.img.x, lo.img.y, Math.round(lo.img.displayWidth), Math.round(lo.img.displayHeight)],
+      })),
+    };
+  }
+
+  /** Luma of a named piece's lit copy on screen (device px), split into
+   *  left/mid/right thirds and bottom/middle/top bands — read back from the
+   *  framebuffer after the next render. The gate the circle test uses. */
+  private sceneryLightBox(needle: string): Promise<Record<string, unknown>> {
+    return new Promise((res) => {
+      const lo = this.litOccluders.find((l) => l.img.texture.key.includes(needle) && l.img.visible);
+      if (!lo) return res({ err: "no visible lit copy for " + needle });
+      const cam = this.cameras.main;
+      const gl = (this.game.renderer as Phaser.Renderer.WebGL.WebGLRenderer).gl;
+      const bb = lo.img.getBounds();
+      const m = (cam as unknown as { matrix: Phaser.GameObjects.Components.TransformMatrix }).matrix;
+      const x0 = Math.round(m.getX(bb.left, bb.top) - cam.scrollX * cam.zoom);
+      const y0 = Math.round(m.getY(bb.left, bb.top) - cam.scrollY * cam.zoom);
+      const w = Math.round(bb.width * cam.zoom);
+      const h = Math.round(bb.height * cam.zoom);
+      // Only the ART's own device pixels count (the sprite's alpha through the
+      // copy's crop and flip): the ground behind a tree is lit by the same torch
+      // from the same side and would fake the very asymmetry being measured.
+      const fr = lo.img.frame;
+      const pix = this.texPixels(lo.img.texture.key);
+      const flip = lo.img.flipX;
+      const once = () => {
+        this.game.events.off(Phaser.Core.Events.POST_RENDER, once);
+        const buf = new Uint8Array(w * h * 4);
+        gl.readPixels(x0, this.game.canvas.height - (y0 + h), w, h, gl.RGBA, gl.UNSIGNED_BYTE, buf);
+        const L = (i: number) => 0.2126 * buf[i] + 0.7152 * buf[i + 1] + 0.0722 * buf[i + 2];
+        const opaque = (x: number, y: number) => {
+          if (!pix) return true;
+          const u = (x + 0.5) / w;
+          const v = (h - 1 - y + 0.5) / h;
+          const tx = Math.min(pix.w - 1, Math.floor(fr.cutX + (flip ? 1 - u : u) * fr.cutWidth));
+          const ty = Math.min(pix.h - 1, Math.floor(fr.cutY + v * fr.cutHeight));
+          return pix.data[(ty * pix.w + tx) * 4 + 3] > 0;
+        };
+        let opq = 0;
+        for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) if (opaque(x, y)) opq++;
+        const region = (xa: number, xb: number, ya: number, yb: number) => {
+          let sum = 0;
+          let n = 0;
+          for (let y = ya; y < yb; y++) for (let x = xa; x < xb; x++) { if (!opaque(x, y)) continue; sum += L((y * w + x) * 4); n++; }
+          return +(sum / Math.max(1, n)).toFixed(1);
+        };
+        const th = Math.floor(w / 3);
+        const hh = Math.floor(h / 3);
+        const half = Math.floor(h / 2);
+        // readPixels rows run bottom-up: rows 0..hh are the sprite's BOTTOM.
+        res({
+          key: lo.img.texture.key,
+          pipeline: lo.img.pipeline?.name,
+          shaped: !!lo.shape?.tex,
+          box: [x0, y0, w, h],
+          opaqueFrac: +(opq / (w * h)).toFixed(3),
+          tint: lo.img.tintTopLeft.toString(16),
+          left: region(0, th, 0, h), mid: region(th, 2 * th, 0, h), right: region(2 * th, w, 0, h), all: region(0, w, 0, h),
+          bottom: region(0, w, 0, hh), middle: region(0, w, hh, 2 * hh), top: region(0, w, 2 * hh, h),
+          lowerL: region(0, th, 0, half), lowerR: region(2 * th, w, 0, half),
+          upperL: region(0, th, half, h), upperR: region(2 * th, w, half, h),
+        });
+      };
+      this.game.events.on(Phaser.Core.Events.POST_RENDER, once);
+    });
+  }
+
+  private sceneryArtFit(key: string): { bbox: ReturnType<typeof alphaBBox>; canvas: { w: number; h: number } } | null {
+    const hit = this.sceneryFit.get(key);
+    if (hit !== undefined) return hit as never;
+    const px = this.texPixels(key);
+    if (!px) return null;
+    const rec = { bbox: alphaBBox(px), canvas: { w: px.w, h: px.h } };
+    this.sceneryFit.set(key, rec as never);
+    return rec;
+  }
+
+  /** Queue one scenery art file. Same one-request-per-path tombstone rule the
+   *  tiles loader uses: a 404 must not re-fire every frame the piece is on
+   *  screen. Flushed once per rebuild by `flushScenery`. */
+  private needScenery(spritePath: string): boolean {
+    const key = this.sKey(spritePath);
+    if (this.textures.exists(key)) return true;
+    if (!this.sceneryAsked.has(key)) {
+      this.sceneryAsked.add(key);
+      this.sceneryQueue.push([key, sceneryArtUrl(spritePath, this.t3route)]);
+    }
+    return false;
+  }
+
+  private flushScenery() {
+    if (!this.sceneryQueue.length) return;
+    const batch = this.sceneryQueue;
+    this.sceneryQueue = [];
+    const l = this.tiles3LoaderAdapter();
+    /* COUNTED, because the loading bar's last stage is mostly these. They ride
+     * the terrain loader's Phaser queue but are not the terrain loader's files,
+     * so they keep their own tally and the hold adds the two. */
+    this.sceneryArt.requested += batch.length;
+    if (!this.sceneryArtCounting) {
+      this.sceneryArtCounting = true;
+      l.onFile((key) => {
+        if (key.startsWith("s3:") && this.sceneryArt.done < this.sceneryArt.requested) this.sceneryArt.done++;
+      });
+    }
+    for (const [key, url] of batch) l.image(key, url);
+    l.once("complete", () => {
+      // Reconcile, the batch rule: everything queued before this landed.
+      this.sceneryArt.done = this.sceneryArt.requested;
+      this.requestRepaint("scenery");
+    });
+    if (!l.isLoading()) l.start();
+  }
+
+  /** The visible scenery for this camera window. Rebuilt on the occluder
+   *  latch, with the props, so the two terrain-adjacent layers stay atomic. */
+  /** A scenery MANIFEST landed: rebuild, so the art it names is queued NOW.
+   *  The first rebuild over a fresh window can only request manifests; only a
+   *  rebuild that SEES them queues their art. Nothing scheduled that second
+   *  rebuild except camera drift past the occluder latch, so on a maps3 join
+   *  the manifests landed onto a parked camera and their art sat unrequested
+   *  until the loading screen gave up on its deadline (the boot hold's
+   *  `scenery` condition could not come true before it). Coalesced: one
+   *  rebuild per SCENERY_MANIFEST_SETTLE_MS, the camera latch poisoned because
+   *  the window did not move — its contents did. */
+  private onSceneryManifest() {
+    if (this.sceneryManifestTimer || this.unloading || !this.world) return;
+    this.sceneryManifestTimer = this.time.delayedCall(SCENERY_MANIFEST_SETTLE_MS, () => {
+      this.sceneryManifestTimer = null;
+      if (this.unloading || !this.world) return;
+      this.requestRepaint("manifest");
+    });
+  }
+
+  /** ONE SCENERY IMAGE, REUSED WHEN NOTHING ABOUT IT CHANGED — `occImage`'s
+   *  twin, for the same measured reason. rebuildScenery rides the SAME 96 px
+   *  latch as the occluders and destroyed and recreated every drawn piece's
+   *  image on each one: standing still in a forest, that is the identical
+   *  picture torn down and rebuilt about twice a second, and while running it
+   *  is 109-230 ms per second of a phone's frame budget.
+   *
+   *  The key is everything that makes the image what it is — texture, crop
+   *  frame, placed box and flip — so an image that comes back out of the pool
+   *  needs NOTHING re-set but its depth, which the caller assigns on every
+   *  piece anyway and the second pass overwrites. A multimap because two
+   *  placements can legitimately be identical, and a pooled image the scene has
+   *  since destroyed is dropped rather than reused.
+   *
+   *  ART ONLY, and this is a correctness boundary, not an oversight: the lit
+   *  band carries NO depth epsilon and breaks ties by DISPLAY-LIST order, which
+   *  is why the copies and their fog silhouettes are destroyed and recreated in
+   *  creation order every rebuild (see OCC_DEPTH_EPS and rebuildOccluders'
+   *  destroy). A pooled image keeps its old list position, so pooling those is
+   *  precisely what would let a fog silhouette sort over the wrong lit copy.
+   *  The art has its own `occSeq` epsilon and is therefore free to move. */
+  private scnImage(
+    tex: string,
+    frame: string,
+    x: number,
+    y: number,
+    w: number,
+    h: number,
+    flip: boolean,
+  ): Phaser.GameObjects.Image {
+    const k = `${tex}|${frame}|${x},${y},${w},${h},${flip ? 1 : 0}`;
+    const have = this.scnPool.get(k);
+    let img: Phaser.GameObjects.Image | undefined;
+    while (have && have.length) {
+      const cand = have.pop()!;
+      if (cand.scene) {
+        img = cand;
+        break;
+      }
+    }
+    if (img) this.scnReused++;
+    else {
+      img = this.add
+        .image(x, y, tex, frame)
+        .setOrigin(0, 0)
+        .setDisplaySize(w, h)
+        // The mirror is about the CROP's centre, never the source canvas's:
+        // measured on the_game, 245 of 599 flipped placements shift a pixel
+        // or more the other way, tree_021 by 16. setFlipX on an origin-(0,0)
+        // image mirrors within its own displayed box, which IS the crop.
+        .setFlipX(flip);
+      this.scnCreated++;
+    }
+    let arr = this.scnNext.get(k);
+    if (!arr) this.scnNext.set(k, (arr = []));
+    arr.push(img);
+    return img;
+  }
+
+  /** Destroy every pooled scenery image this rebuild did not take back out.
+   *  Called at EVERY exit of rebuildScenery — an early return (no scenery
+   *  index yet) must still tear down the previous set, which is what the
+   *  unconditional destroy it replaced did. */
+  private scnDrain(): void {
+    if (!this.scnPool.size) return;
+    const left: Phaser.GameObjects.Image[] = [];
+    for (const arr of this.scnPool.values()) for (const im of arr) left.push(im);
+    this.scnPool.clear();
+    this.destroyBatch(left);
+  }
+
+  private rebuildScenery(cam: Phaser.Cameras.Scene2D.Camera) {
+    /* THE CURRENT SET BECOMES THE POOL (see `scnImage`). Whatever this rebuild
+     * does not take back out is destroyed by `scnDrain` at every exit. The
+     * self-heal mirrors the occluders': a throw between the swap and the drain
+     * would otherwise leave images alive, drawn and never re-sorted. */
+    if (this.scnPoolOn) {
+      this.scnDrain();
+      this.scnPool = this.scnNext;
+      this.scnNext = new Map();
+    } else {
+      this.destroyBatch(this.sceneryImgs);
+      this.scnPool.clear();
+      this.scnNext.clear();
+    }
+    this.scnReused = 0;
+    this.scnCreated = 0;
+    this.sceneryImgs = [];
+    this.sceneryRoofedImgs = [];
+    for (const w of this.sceneryWalls) w.on?.destroy(); // the ON overlays are not pooled — see registerSceneryWall
+    this.sceneryWalls = [];
+    this.sceneryAnimLive = [];
+    this.sceneryLightSources = [];
+    this.sceneryStamps = [];
+    /* COUNTED BEFORE THE GUARD: the boot hold waits for this pass to have RUN,
+     * and a world with no scenery index runs it and finds nothing. Counting
+     * after the early return would make every such join sit out the hold's full
+     * deadline instead of starting immediately. */
+    this.sceneryRebuilds++;
+    const idx = this.scenery;
+    const pieces = this.sceneryPieces;
+    const world = this.world;
+    if (!idx || !pieces || !world) {
+      this.scnDrain();
+      return;
+    }
+    const { dy, lh, tile: tileSize } = this.geom;
+    /* TWO RADII: what is DRAWN, and what is FETCHED.
+     *
+     * They used to be one 200px pad, which is barely off screen — so a piece
+     * was first ASKED for at the moment it was almost visible, and a scenery
+     * piece is two round trips deep (its manifest, then the art that manifest
+     * names). Running into new ground outpaced that and the forest assembled
+     * itself in front of the player (maintainer 2026-08-29: "scenery started to
+     * pop up on screen... we must understand what will soon come, and load it
+     * before we need it").
+     *
+     * The fetch radius is a full extra screen in every direction, so a piece is
+     * requested about a screen's worth of walking before it can be seen, while
+     * the DRAW set is unchanged — prefetching costs requests, not draw calls or
+     * sprites. */
+    const pad = 200;
+    const view = cam.worldView;
+    const rect = { x: view.x - pad, y: view.y - pad, w: view.width + pad * 2, h: view.height + pad * 2 };
+    const reach = { x: view.x - view.width, y: view.y - view.height, w: view.width * 3, h: view.height * 3 };
+    let drawn = 0;
+    let roofedDrawn = 0;
+    /* Pieces awaiting the SHARED depth/cover resolve (second pass, below). */
+    const resolve: {
+      img: Phaser.GameObjects.Image;
+      meta: WorldScene["occluderMeta"][number] | null;
+      lo: WorldScene["litOccluders"][number] | null;
+      hbX: number; hbY: number; hbDepth: number; lvl: number; fx: number; fy: number;
+    }[] = []; // indoor furniture the cut let through — see roofCutAwayAt
+    for (const p of idx.query(reach)) {
+      const piece = pieces.get(p.piece);
+      if (piece === undefined) {
+        void pieces.request(p.piece); // 205 fetches for 1,388 placements, lazily; landing → onSceneryManifest
+        continue;
+      }
+      if (piece === null) continue; // tombstoned: the manifest 404'd or is broken
+      // THE VARIATION THE MAP PLACED — without it every tree in a forest drew
+      // the piece's base still and the wood looked stamped from one tree.
+      const st = stateFor(piece, p.lit, p.state);
+      const sprite = facedSprite(st, p.dir);
+      /* THE ART IS ASKED FOR BEFORE THE ROOF DECIDES. `needScenery` only QUEUES
+       * (it draws nothing), so a piece the roof hides still gets its sprite
+       * streamed while you are outside. It used to be asked for after the
+       * roofed skip below — so on the first entry after a boot the floor drew
+       * on the flip frame and every bed, cupboard and hearth arrived one
+       * network round trip later and popped in (maintainer 2026-09-05: "the
+       * game is not ready to display what's inside"). 136 placements on
+       * the_game; their files are in the ship closure already. */
+      const resident = this.needScenery(sprite);
+      // INDOOR FURNITURE: a piece under a roof/cave deck draws only while that
+      // roof is actually cut away — see roofCutAwayAt.
+      if (p.roofed && !this.roofCutAwayAt(p.cx, p.cy, p.level)) continue;
+      if (!resident) continue;
+      /* PREFETCH ONLY beyond the draw pad: the manifest is in hand and the art
+       * is queued by `needScenery` above, which is the whole point of coming
+       * out this far. Everything below builds a sprite. */
+      if (p.ax < rect.x - 256 || p.ax > rect.x + rect.w + 256 || p.ay < rect.y - 512 || p.ay > rect.y + rect.h + 256)
+        continue;
+      const art = this.sceneryArtFit(this.sKey(sprite));
+      if (!art) continue;
+      /* Scale by the PIECE's own base sprite, never by the one being drawn — see
+       * fitSprite. The bbox DOC is the source rather than the loaded texture:
+       * the base art is often not even queued when a rotation is what shows, and
+       * this is the same table the collision stamp scales the ellipse by, so the
+       * outline and the art cannot drift apart. */
+      const baseSprite = this.sceneryBboxDoc?.pieces?.[p.piece]?.sprite ?? null;
+      const baseBox = baseSprite ? this.sceneryBboxDoc?.boxes?.[baseSprite] : undefined;
+      const baseH = baseBox ? Math.max(1, baseBox[3] - baseBox[1]) : undefined;
+      /* THE PERSON'S SCALE, NOT THE CONTRACT'S: world_px_height was derived for
+       * a 64 px character and this game's people are 88 — a bed drawn at the raw
+       * number stood at 0.54 of the man where its metres say 0.76. The stamp
+       * re-bases through the same function, so outline and art still share one
+       * scale (shared sceneryDrawnPx). */
+      const fit = fitSprite(
+        art.bbox,
+        art.canvas,
+        sceneryDrawnPx(piece.worldPxHeight, piece.contractCharacterPx),
+        p.ax,
+        p.ay,
+        p.hflip,
+        baseH,
+      );
+      if (fit.x + fit.w < rect.x || fit.x > rect.x + rect.w || fit.y + fit.h < rect.y || fit.y > rect.y + rect.h)
+        continue;
+      // INDOORS a piece outside my room still DRAWS — it renders below the
+      // multiply overlay, so zero ambient blacks it out for free and a torch
+      // through the doorway finds it. That is the props' rule, and the reason
+      // there is no mask test here.
+      /* THE PUBLISHED HITBOX — the ground this piece stands on, from the wiki
+       * (live/tuning/scenery_hitbox.json, pushed with every other live file).
+       * Its own contract says what it is for: "its centre line is what decides
+       * render order — a player above an ellipse's centre is drawn behind that
+       * part of the piece, below it in front." The ellipse is in FRAME pixels
+       * from the frame's centre, so `fit.kx/ky` (frame -> screen) and the
+       * crop's origin put it on screen; `flipX` mirrors ax with the art.
+       *
+       * A record with `boxes: []` is a DECISION — this piece needs no footprint
+       * (anything hung on a wall) — and is not the same as no record at all,
+       * which falls back to the anchor and a one-tile box. */
+      const hb = sceneryHitboxFor(this.sceneryHitboxDoc, p.piece, st.key);
+      /* CONFIRMED BOXES ONLY — the doc's own advice ("filter on !auto for
+       * confirmed ones only"), and measured: of 3,704 records 3,689 are the
+       * wiki's ALPHA-PLACED proposals and 15 are the maintainer's. The two are
+       * not alike. His sit at ay 9..13 with ry 12..20; the proposals wrap the
+       * whole visible art, so tree_075's is ay 56.25, ry 30.75 — a footprint
+       * centre 34.5px (2.5 cells) up-screen of where the tree stands and a
+       * radius half again as big. That is the CANOPY once more, this time in
+       * the data: a body 2.4 cells behind the trunk still measured as below the
+       * ellipse's centre and drew in front (maintainer 2026-08-29: "maybe the
+       * hitbox is misplaced on this exact object" — it is).
+       *
+       * An auto record therefore falls back to the one-tile default at the
+       * anchor, which is predictable. Accepting or editing a box in the wiki
+       * drops the flag, and the game picks it up on the next fetch. */
+      /* THE PUBLISHED BOX, auto or confirmed (maintainer 2026-08-29: "WE WANT
+       * THE DEFAULT HITBOX WITH COLLISION"). The wiki's alpha-placed default is
+       * the answer until he edits it, and editing one in the Scenery page
+       * rewrites the record without the flag — the game reads whatever is
+       * current, with no code change either way. */
+      const box0 = hb?.boxes[0];
+      const hbX = box0
+        ? fit.x + (art.canvas.w / 2 + (fit.flipX ? -box0.ax : box0.ax) - fit.sx) * fit.kx
+        : fit.x + fit.w / 2;
+      const hbY = box0 ? fit.y + (art.canvas.h / 2 + box0.ay - fit.sy) * fit.ky : fit.ay;
+      /* THE SORT KEY IS THE FOOTPRINT'S CENTRE, not the sprite's anchor — the
+       * maintainer's rule, and the same quantity the body sorts on (its nadir
+       * centre). IN THE BODY'S OWN PROJECTION: `projectFlat` is what a body's
+       * `lyFlat` comes from, and it carries a `+dy` that the bare
+       * `oy + (x + y) * dy` line does not — so a piece keyed on the bare line
+       * sorted one dy (half a cell diagonal) BEHIND where its hitbox centre
+       * stands, and a body 0.9 cells behind a signpost drew over it
+       * (measured: body 11619.4 vs sign 11617.6; maintainer, 2026-09-06).
+       * The offset from the drawn anchor to the drawn hitbox centre is the
+       * same in both frames (the level lift cancels), so this is that centre's
+       * flat painter line, exactly as a body standing on it would get. */
+      const hbDepth = this.projectFlat(p.x * CELL_WU, p.y * CELL_WU).y + (hbY - fit.ay);
+      /* FLAT ON THE GROUND (`collision: false`): a rug is floor, not an object.
+       * It draws in the flat band under everything, it gets NO LIT COPY (the
+       * copy exists to lift a standing object above the darkness overlay so it
+       * reads as its own silhouette — floor wants exactly the ground's own
+       * light, which is what being under the overlay gives it), and it
+       * registers NO occluder (its `top` rounded its 39-56 px art up to 3-4
+       * LEVELS, so a rug claimed to cover the player standing on it — the
+       * "wall hack border in open ground" this file already warns about). */
+      const flat = !piece.collision;
+      /* ON A WALL (`p.wall`, from maps2's `z`): drawn WITH the wall — at that
+       * column's own occluder depth, one epsilon above its face sprites (this
+       * rebuild creates scenery after the terrain occluders, so the sequence
+       * puts it over them) — never y-sorted against bodies, never a footprint,
+       * never an occluder record. A body in front of the wall sorts over both;
+       * a body behind the wall is behind the window too. Fades with the wall's
+       * cut in stepSceneryWalls (maintainer 2026-09-09: "the wall the window
+       * was placed on will not be visible so the window has to fade in/out
+       * together with the wall"). */
+      const onWall = p.wall !== undefined && p.z !== undefined;
+      const wallDepth = onWall ? this.iso.oy + (p.wall!.cx + p.wall!.cy + 1) * this.geom.dy : 0;
+      const key = this.sKey(sprite);
+      // Resolved in a SECOND PASS below, once every piece has registered — a
+      // piece must sort against its neighbours, not only against terrain.
+      const tex = this.textures.get(key);
+      const name = `s3c:${fit.sx},${fit.sy},${fit.sw},${fit.sh}`;
+      if (!tex.has(name)) tex.add(name, 0, fit.sx, fit.sy, fit.sw, fit.sh);
+      const img = this.scnImage(key, name, fit.x, fit.y, fit.w, fit.h, fit.flipX);
+      this.sceneryImgs.push(
+        img
+          /* THE UNLIFTED PAINTER LINE AT THE ANCHOR — and NO cell-front `+dy`.
+           * A terrain occluder adds it because a tile fills a whole cell and
+           * must cover a body standing in that cell. Scenery is anchored at a
+           * POINT, so the same offset let a piece BEHIND the player win by up
+           * to a full cell: measured, anvil_003 at x+y 802.1 drew over a body
+           * at 802.5, four tenths of a cell in front of it (maintainer
+           * 2026-08-29: "I'm standing under the scenery, but the scenery is
+           * still rendered on top of me"). */
+          .setDepth(
+            onWall
+              ? wallDepth + this.occSeq++ * OCC_DEPTH_EPS
+              : flat
+                ? SCENERY_FLAT_DEPTH + hbDepth * 1e-3 + this.occSeq++ * OCC_DEPTH_EPS
+                : hbDepth + this.occSeq++ * OCC_DEPTH_EPS,
+          ),
+      );
+      // INDOOR FURNITURE FADES WITH THE ROOF IT STANDS UNDER (see roofedFade):
+      // held apart here, and given the crossfade's alpha from the frame it is
+      // built so a rebuild mid-transition continues the dissolve.
+      if (p.roofed) {
+        img.setAlpha(this.roofedFade());
+        this.sceneryRoofedImgs.push(img);
+      }
+      /* AND IT OCCLUDES. Scenery drew with the right painter depth but told
+       * `resolveBodyDepth` nothing, so a body never sorted behind a tree — it
+       * only ever looked right by luck of raw painter order. This is the props'
+       * record: `solid` marks bottom-anchored BILLBOARD art, which is what
+       * makes the solidArtOver branch fire (written for "128px spires" — tall
+       * art that covers anything behind its diagonal however far its top rises
+       * above the feet). `top` is the ground plus one level, the same "a solid
+       * structure visually stands ~1 level tall" the maps2 props use.
+       *
+       * THE BOX IS THE ART's, not the piece's own footprint: nothing in
+       * scenery.json publishes one yet (it carries world_px_height but no
+       * occluder/footprint), so this is the drawn crop. That reads a tree's
+       * CANOPY where a player should be able to stand under it — asked scenery
+       * for a published box so the maintainer can tune it in the wiki. */
+      const scol = Math.floor(p.x);
+      const srow = Math.floor(p.y);
+      /* THE LIT COPY — the black-silhouette effect, which scenery never had.
+       * A piece draws BELOW the darkness overlay, so zero ambient blacks it
+       * out; the copy above the band is then tinted by the piece's OWN cell.
+       * That is what makes an NPC outdoors read as a silhouette from inside a
+       * house, and a tree must do the same (maintainer 2026-08-29: "my hope was
+       * that Scenery worked the same way in every aspect and I would be able to
+       * see a black silhouette of the tree"). Same construction as the props'
+       * copy — same crop, same flip, same displayed box, same depth band, no
+       * new ordering rules. */
+      if (this.night && !flat) {
+        this.litOccluders.push({
+          img: this.add
+            .image(fit.x, fit.y, key, name)
+            .setOrigin(0, 0)
+            .setDisplaySize(fit.w, fit.h)
+            .setFlipX(fit.flipX)
+            .setDepth(litDepth(onWall ? wallDepth : hbDepth)), // NO epsilon here — see OCC_DEPTH_EPS: this is the lit band
+          col: p.x,
+          row: p.y,
+          z: (world.rows[srow]?.[scol]?.l ?? 0) + 0.5,
+          phase: ((((scol * 73856093) ^ (srow * 19349663)) >>> 0) % 628) / 100,
+          bx: p.ax,
+          by: p.ay,
+          pd: onWall ? wallDepth : hbDepth,
+          place: p.i,
+          roofed: p.roofed,
+        });
+        if (onWall) this.litOccluders[this.litOccluders.length - 1].cover = Infinity; // the wall is BEHIND it
+        const lo = this.litOccluders[this.litOccluders.length - 1];
+        // THE VOLUME (scenery-lit): attached BEFORE the silhouette so the
+        // silhouette can take the same pipeline — see makeFogSilhouette.
+        this.attachSceneryShape(lo, key, art, fit, box0, hbX, hbY, p, world.rows[srow]?.[scol]?.l ?? 0, tileSize);
+        this.makeFogSilhouette(lo);
+      }
+      this.registerSceneryAnim(p.i, piece, st, key, name, [fit.sx, fit.sy, fit.sw, fit.sh], img, this.night && !flat ? this.litOccluders[this.litOccluders.length - 1] : null);
+      if (p.lit && st.key.startsWith("LIT")) this.pushSceneryLight(p, piece, st, key, fit, scol, srow);
+      const meta = flat || onWall ? null : {
+        col: scol,
+        row: srow,
+        /* ITS OWN HEIGHT, from the piece's published `world_px_height`. A
+         * blanket +1 made every rug, chair and table a one-level billboard, and
+         * `higher` is what gates solidArtOver — so a RUG on the floor claimed to
+         * cover the player and painted the "hidden behind terrain" outline on
+         * him in open ground (maintainer: "the player get a wall hack border
+         * even if it's obvious here that the Scenery is behind the player").
+         * A rug rounds to 0 levels and can never occlude; a tree is several. */
+        top: (world.rows[srow]?.[scol]?.l ?? 0) + Math.max(0, Math.round((piece.worldPxHeight ?? 0) / lh)),
+        solid: true,
+        point: true,
+        depth: hbDepth,
+        /* THE BOX IS A FOOTPRINT, NOT THE DRAWN ART — the props' own rule
+         * (`x0: bx, x1: bx + tileSize`), which never uses the art's width
+         * either. A tree's crop is its CANOPY: metres of leaves that a body
+         * should walk straight under, and using it made everything beneath the
+         * branches count as behind the trunk. One tile wide at the anchor, and
+         * never wider than the art itself so a lamp post does not claim a whole
+         * cell. Still a default: the moment scenery publishes a real
+         * ground-contact box, this reads it instead. */
+        /* THE ELLIPSE'S OWN EXTENT when the wiki has published one, else the
+         * props' one-tile default. `y0` stays the art's top — that is how high
+         * the thing rises, which is what the cover crop line means — while the
+         * near edge is the footprint's, not the canopy's. */
+        x0: box0 ? hbX - box0.rx * fit.kx : fit.x + fit.w / 2 - Math.min(tileSize, fit.w) / 2,
+        x1: box0 ? hbX + box0.rx * fit.kx : fit.x + fit.w / 2 + Math.min(tileSize, fit.w) / 2,
+        y0: fit.y,
+        y1: box0 ? hbY + box0.ry * fit.ky : fit.y + fit.h,
+      };
+      if (meta) this.occluderMeta.push(meta);
+      if (onWall) this.registerSceneryWall(p, piece, st, img, this.night && !flat ? this.litOccluders[this.litOccluders.length - 1] : null, baseH, rect);
+      if (!flat && !onWall)
+        resolve.push({
+          img,
+          meta,
+          lo: this.night ? this.litOccluders[this.litOccluders.length - 1] : null,
+          hbX,
+          hbY,
+          hbDepth,
+          lvl: world.rows[srow]?.[scol]?.l ?? 0,
+          fx: p.x * CELL_WU,
+          fy: p.y * CELL_WU,
+        });
+      drawn++;
+      if (p.roofed) roofedDrawn++;
+    }
+    /* SECOND PASS — THE SHARED RULE. Every piece is registered now, so each one
+     * resolves against the complete occluder set (terrain AND the other pieces)
+     * through `resolveDrawDepth`, the very function players, monsters and NPCs
+     * use. That is where the LIFT above the flat tile in front comes from — the
+     * thing the piece-only code lacked, which drew grass over a tree — and
+     * where the cover line comes from, so a piece's lit copy is cropped by the
+     * same test that crops a body's. Its own record is excluded or it would
+     * read itself as covering itself. */
+    for (const r of resolve) {
+      const d = this.resolveDrawDepth(
+        // cx0/cx1: the piece's FOOTPRINT span, not its canopy — only terrain
+        // over what it stands on may crop its lit copy (see DepthCtx.cover column).
+        { sprite: r.img, lx: r.hbX, lyFlat: r.hbDepth - 0.5, ly: r.hbY, fx: r.fx, fy: r.fy, cx0: r.meta?.x0, cx1: r.meta?.x1 },
+        r.lvl,
+        r.meta,
+      );
+      r.img.setDepth(d.depth + (r.img.depth - r.hbDepth)); // keep this rebuild's tie-breaking epsilon
+      if (r.meta) r.meta.drawDepth = d.depth; // the anchor line in `depth` stays put
+      if (r.lo) {
+        r.lo.pd = d.depth;
+        r.lo.cover = d.coverY ?? Infinity;
+        r.lo.img.setDepth(litDepth(d.depth));
+        r.lo.fog?.setDepth(litDepth(d.depth));
+      }
+    }
+    this.t3stats.scenery = drawn;
+    this.sceneryRoofedDrawn = roofedDrawn;
+    this.scnDrain();
+    this.flushScenery();
+  }
+
+  /** A BACKGROUNDED TAB COMES BACK WITH AN EMPTY GROUND TEXTURE, so both latches
+   *  are poisoned on the way in and the next pass paints in full.
+   *
+   *  `groundRT` is a framebuffer: its pixels exist only as previously-rendered
+   *  output, so a GPU that reclaims them while the app is backgrounded hands
+   *  back a blank texture. Ordinary sprites re-upload from their image source
+   *  and return intact — which is exactly the photograph: scenery, monsters and
+   *  the player drawn over an empty world.
+   *
+   *  NOTHING REPAINTED IT. `redrawGround` returns early until the camera strays
+   *  GROUND_MARGIN/2, and a tab-in moves the camera not at all. Walking then
+   *  made it WORSE, not better: the first latch crossing SCROLLS the empty
+   *  picture forward and paints only the newly exposed slice, leaving a correct
+   *  strip at the leading edge with the void dragged along behind it. (Before
+   *  the ground scroll, every latch crossing was a full paint and the damage
+   *  healed itself within 256 px of walking.)
+   *
+   *  BOTH HOOKS, because they cover different failures. `RESTORE_WEBGL` fires
+   *  only when the browser reports a real context loss; mobile discards
+   *  framebuffer contents without one. A tab-in that also changes the viewport
+   *  is already covered — `makeGroundRT` poisons the latch on every resize — so
+   *  the uncovered case is precisely the tab-in whose viewport does not move.
+   *  Poisoning is what the other latch sites do; it costs one full paint per
+   *  tab-in, the pass the player triggers 256 px later anyway. */
+  private hookContextRestore(): void {
+    if (this.ctxRestoreHooked) return;
+    this.ctxRestoreHooked = true;
+    const repaint = () => {
+      this.ctxRestores++;
+      this.lastGround = { x: NaN, y: NaN };
+      this.lastOccl = { x: NaN, y: NaN };
+    };
+    const onVisible = () => {
+      if (document.visibilityState === "visible") repaint();
+    };
+    const onPageShow = () => repaint(); // bfcache restore fires no visibilitychange
+    document.addEventListener("visibilitychange", onVisible);
+    window.addEventListener("pageshow", onPageShow);
+    // Phaser rebuilds the texture and framebuffer wrappers FIRST and emits
+    // after (WebGLRenderer.dispatchContextRestored) — never hook the canvas
+    // event directly, it runs before that.
+    const webgl = this.game.renderer.type === Phaser.WEBGL ? this.game.renderer : null;
+    webgl?.on(Phaser.Renderer.Events.RESTORE_WEBGL, repaint);
+    this.events.once("shutdown", () => {
+      document.removeEventListener("visibilitychange", onVisible);
+      window.removeEventListener("pageshow", onPageShow);
+      webgl?.off(Phaser.Renderer.Events.RESTORE_WEBGL, repaint);
+      this.ctxRestoreHooked = false;
+    });
+  }
+  private ctxRestoreHooked = false;
+
   private makeGroundRT() {
-    this.groundRT?.destroy();
+    // A SAVED texture outlives its game object (RenderTexture.preDestroy skips
+    // texture.destroy() once saveTexture ran), so drop both through the
+    // manager — that is what frees the GL render target. Every resize comes
+    // through here (a phone's URL bar alone fires it), so a leak here would be
+    // two viewport-sized textures per event.
+    for (const rt of [this.groundRT, this.groundScratch]) {
+      const key = rt?.texture?.key;
+      rt?.destroy();
+      if (key && this.textures.exists(key)) this.textures.remove(key);
+    }
+    this.groundAnchor = null;
     const rs = this.renderScale();
     // World-space texture (1 texel = 1 world px): size it in WORLD px so it
     // covers the same view regardless of the device render scale — scale.width
     // is device px (= CSS·rs), so /rs gives the CSS/world width. rs=1 → unchanged.
-    this.groundRT = this.add
-      .renderTexture(0, 0, this.scale.width / rs + GROUND_MARGIN * 2, this.scale.height / rs + GROUND_MARGIN * 2)
-      .setOrigin(0, 0)
-      .setDepth(-1_000_000);
+    /* INTEGER TEXELS, ALWAYS. `scale.width / rs` is fractional on a real phone
+     * (1080 device px at rs 2.75 = 392.727), and a fractional texture width
+     * makes every rectangle derived from it fractional too: the scroll's band
+     * (x0 = W - sx), the slice rects and the clip crops in t3Blit. A crop on a
+     * fractional edge samples a sub-texel column, and repeated over successive
+     * scrolls those columns stack into the BACKGROUND-COLOURED vertical lines
+     * the maintainer photographed (measured: 2 device px wide, exactly
+     * 0x181c28, the ground fill). The whole-texture paint never showed it —
+     * only the clipped passes do — which is why it arrived with the scroll. */
+    const w = Math.ceil(this.scale.width / rs) + GROUND_MARGIN * 2;
+    const h = Math.ceil(this.scale.height / rs) + GROUND_MARGIN * 2;
+    const make = (key: string) => {
+      const rt = this.add.renderTexture(0, 0, w, h).setOrigin(0, 0).setDepth(-1_000_000);
+      /* NEAREST, EXPLICITLY — the same trap this file already documents twice
+       * for `addCanvas` and `addDynamicTexture` ("does not inherit pixelArt's
+       * default, and LINEAR smears…"), and never applied to the one texture the
+       * whole world is drawn from.
+       *
+       * WHY THIS IS THE SUSPECT (maintainer 2026-09-03, after three days): the
+       * zigzag DISAPPEARS when he opens the app switcher, which renders the
+       * window at a different scale, and returns at full size. Combined with
+       * repeated censuses of this texture finding ZERO artefact texels — screen
+       * and texture, at his exact geometry — that says the dots are created when
+       * the texture is SAMPLED to the display, not stored in it. LINEAR sampling
+       * of a pixel-art texture at a fractional device scale does precisely that:
+       * it blends each texel with its neighbour, so a diamond edge picks up the
+       * darker wall band directly beneath it and the unpainted background beyond
+       * it — which are the two exact colours he measured, (171,146,116) and
+       * (24,28,40), one texel wide, at tile edges only.
+       *
+       * It also explains what nothing else did: why it never reproduces here
+       * (this machine's device scale is an integer, so LINEAR samples texel
+       * centres and looks identical to NEAREST), and why it is worst on his
+       * phone at dpr 2.23.
+       *
+       * COSTS NOTHING IF WRONG: if Phaser already resolved this texture to
+       * NEAREST via `pixelArt: true` — TextureSource.init does call setFilter(1)
+       * when antialias is false — then this is a no-op. */
+      rt.texture?.setFilter(Phaser.Textures.FilterMode.NEAREST);
+      // A key, so the OTHER texture can draw this one's picture (the scroll copy).
+      if (this.textures.exists(key)) this.textures.remove(key);
+      rt.saveTexture(key);
+      rt.texture?.setFilter(Phaser.Textures.FilterMode.NEAREST); // ...and after saveTexture rewires it
+      /* THE ONE-LINE BUG. Phaser 3.90's DynamicTexture picks its pipeline as
+       *   this.pipeline = renderer.pipelines.get(PIPELINES.SINGLE_PIPELINE)
+       * (DynamicTexture.js:229), and SinglePipeline sets `forceZero = true` —
+       * under which pushBatch opens a NEW sub-batch on EVERY texture change
+       * instead of every 16th. So the whole tiles3 ground pass has been
+       * single-texture batched: measured on the maintainer's phone, 500-568
+       * drawArrays per slice (2,972 in one full paint) with EXACTLY one texture
+       * bound per draw, while `flushes` read 0-2. At a mobile driver's ~50 us
+       * per draw that is the flat ~25 ms every slice frame has cost in every
+       * arm he ran — scenery on/off, monsters on/off, light at 2% and 100% —
+       * the one number nothing else moved.
+       *
+       * MultiPipeline is what SinglePipeline inherits from: same vertex math,
+       * same blend, same UVs, sixteen samplers instead of one. The device
+       * passed the 16-sampler compile check (`maxTex` 16 in the beacon).
+       * Always on (the Settings A/B moved draw calls 45x and the frame not at
+       * all, so the switch went); `groundDrew.pipe` reports which pipeline the
+       * texture really holds so a silent fallback cannot read as a null result. */
+      {
+        const multi = (this.game.renderer as unknown as { pipelines?: { get(n: string): unknown } }).pipelines?.get(
+          "MultiPipeline",
+        );
+        if (multi && rt.texture) (rt.texture as unknown as { pipeline: unknown }).pipeline = multi;
+      }
+      return rt;
+    };
+    this.groundRT = make("ground-rt-a");
+    this.groundScratch = make("ground-rt-b").setVisible(false);
     this.lastGround = { x: NaN, y: NaN };
   }
 
@@ -9111,6 +19033,32 @@ export class WorldScene extends Phaser.Scene {
     return (c << 16) | (c << 8) | c;
   }
 
+  /** THE BACKGROUND UNDER THE WHOLE GROUND TEXTURE.
+   *
+   *  A WHOLE-texture fill, which is the only fill that is texel-exact, and it
+   *  covers EVERY row — verified directly off the framebuffer with
+   *  `gl.readPixels` (400/400 opaque on the first and last row of a probe
+   *  texture), not through `DynamicTexture.snapshot`, whose framebuffer branch
+   *  returns the image unflipped and reads as a missing edge row. An earlier
+   *  round mistook that readback for a real defect and overscanned this fill to
+   *  "fix" it; the overscan was a no-op and the row it chased was the probe. */
+  private fillGround(rt: Phaser.GameObjects.RenderTexture, rgb: number): void {
+    rt.fill(rgb, 1);
+  }
+
+  /** THE GROUND TEXTURE'S CLEAR COLOUR — normally the page's own dark, and
+   *  MAGENTA while the `clear: pink` switch is on. His idea, asked for
+   *  repeatedly: "clear the screen with pink before we draw. Then we know if
+   *  the pixels are still pink it means the black border is the pink
+   *  background." It separates the only two things a dark line can be, in one
+   *  tap and with no argument: a texel NOTHING painted turns magenta, and a
+   *  texel something painted DARK stays dark. `0x181c28` is close enough to a
+   *  dark tile colour that no screenshot census has ever settled it. */
+  private groundFillRGB(mask: unknown): number {
+    if (this.groundClearPink) return 0xff00ff;
+    return mask ? 0x000000 : 0x181c28;
+  }
+
   private redrawGround() {
     if (!this.world || !this.groundRT) return;
     const cam = this.cameras.main;
@@ -9128,137 +19076,58 @@ export class WorldScene extends Phaser.Scene {
       Math.abs(ccy - this.lastGround.y) < GROUND_MARGIN / 2
     )
       return;
+    // POISONED (repaintWorld, a landed batch, a resize, the indoor cut): the
+    // picture is not to be trusted and a full paint is due. Read before the
+    // latch is overwritten.
+    const poisoned = Number.isNaN(this.lastGround.x);
     this.lastGround = { x: ccx, y: ccy };
 
     const world = this.world;
-    const { dx, dy, lh, tile } = MAP_GEOMETRY;
+    const { dx, dy, lh, tile } = this.geom;
     const rt = this.groundRT;
     // Anchor the texture in world space around the camera centre.
     const ax = Math.round(ccx - rt.width / 2);
     const ay = Math.round(ccy - rt.height / 2);
-    rt.setPosition(ax, ay);
-    rt.clear();
     const mask = this.indoorInside ? this.indoorMask : null;
     const top = this.indoorTop; // the cut: highest level any column still draws
+    const cuts = mask ? this.indoorCut : null; // per-wall raises past it
     // The colour behind everything. Outdoors the usual night-navy; INDOORS
     // BLACK, because indoors this fill is what shows through the sky band
     // above the cut-away and in genuine void cells — and navy times the indoor
     // ambient still reads as a faintly lit sky over an unlit world.
-    rt.fill(mask ? 0x000000 : 0x181c28, 1);
-
-    // Covered rect in virtual-canvas coords, padded for tile size + max lift.
-    const x0 = ax - tile;
-    const x1 = ax + rt.width + tile;
-    const y0 = ay - tile;
-    const y1 = ay + rt.height + tile + this.maxLevel * lh;
-    // u = col−row indexes screen-x; v = col+row indexes screen-y.
-    const u0 = Math.floor((x0 - this.iso.ox) / dx) - 1;
-    const u1 = Math.ceil((x1 - this.iso.ox) / dx) + 1;
-    const v0 = Math.max(0, Math.floor((y0 - this.iso.oy) / dy) - 1);
-    const v1 = Math.ceil((y1 - this.iso.oy) / dy) + 1;
-
-    rt.beginDraw();
-    for (let v = v0; v <= v1; v++) {
-      for (let u = u0; u <= u1; u++) {
-        if ((u + v) & 1) continue; // col/row must be integers
-        const col = (u + v) / 2;
-        const row = (v - u) / 2;
-        if (col < 0 || row < 0 || col >= world.width || row >= world.height) continue;
-        const cell = world.rows[row][col];
-        const bx = this.iso.ox + u * dx - ax;
-        const by = this.iso.oy + v * dy - ay;
-        if (this.maps2) {
-          // maps2: the world bakes the exact TOP tile per cell; terraces are
-          // built by stacking the material's plain FACE tile 16px per level
-          // (LEVEL_PX), with the cell's top tile last (like maps2 render2.py).
-          const topKey0 = topKeyFor(cell);
-          if (!topKey0 || !this.textures.exists(topKey0)) continue; // void cell
-          // world@1 mirror: some transition tiles are placed flipped; honour it
-          // or borders face the wrong way. RT batchDraw can't flip, so draw a
-          // lazily-mirrored texture copy for flipped cells.
-          const topKey = cell.flip ? this.flippedKey(topKey0) : topKey0;
-          const faceKey = faceKeyFor(world, cell);
-          const fk = faceKey && this.textures.exists(faceKey) ? faceKey : topKey0;
-          if (mask) {
-            // ---- THE CUT-AWAY, one rule for every cell of the WORLD ----
-            // Floor, near wall, far wall, corner, and the hillside a hundred
-            // cells away — all the same: draw this column from the ground up
-            // and STOP at `top`. Whatever stood above is not drawn, which is
-            // what takes the roof off and what shortens the walls, in a single
-            // expression.
-            //
-            // WHY THE WHOLE WORLD AND NOT JUST MY BUILDING. Painter order sorts
-            // by (col+row) ascending, so a tall column down-screen of the room
-            // draws AFTER the room and over it: a column k steps down-screen
-            // buries an interior cell once it is ≳0.94·k levels taller. Around
-            // the_island2's house that never happens (633 of the 650 cells
-            // within ±10 are level 0), which is why cutting only the building
-            // looked right there. In its CAVES the surrounding rock is terrain
-            // at level 24-40 and it hides 417 of 417 interior cells — you walk
-            // in and the room is replaced by solid mountain. One rule for every
-            // column removes that outright, and it is also what the shader's
-            // `heightAt` clamp already assumes: that clamp is global, so any
-            // column drawn taller than `top` would resolve to the wrong cell.
-            //
-            // The tile at the top of the drawn stack is a FACE, not the baked
-            // top diamond, whenever the column was cut: the baked top is the
-            // outdoor grass/rock SURFACE of that cell and reads as a lid on a
-            // wall stump. Only a column that reached its own real top gets it —
-            // which is the floor (level 0, its top IS the floor art) and any
-            // wall shorter than the cut, whose top is a genuine sill you look
-            // down on.
-            const hi = Math.min(cell.l, top);
-            if (hi >= 0) {
-              for (let lvl = 0; lvl < hi; lvl++) rt.batchDraw(fk, bx, by - lvl * lh);
-              rt.batchDraw(hi === cell.l ? topKey : fk, bx, by - hi * lh);
-            }
-            continue; // never the deck slab — that IS the roof
-          }
-          // The face stack too: an interior wall is what you actually SEE
-          // through the opening, and a floor alone still reads bright.
-          const ct = this.caveTint(row * world.width + col, !!mask);
-          for (let lvl = 0; lvl < cell.l; lvl++) rt.batchDraw(fk, bx, by - lvl * lh, 1, ct);
-          // THE CAVE SWALLOWS THE LIGHT — and it has to happen HERE, not in the
-          // light shader. Outdoors the shader resolves every pixel of a cave to
-          // max(terrain, deck), which in the_island2 is the MOUNTAIN's own 24:
-          // floor and rock become the same number, so no per-pixel test can
-          // separate them (four tried). At THIS line there is no ambiguity —
-          // this is the cell's floor tile, being drawn as a floor.
-          rt.batchDraw(topKey, bx, by - cell.l * lh, 1, ct);
-          // world@2 deck slab (roof / bridge span) at this cell, drawn right
-          // after its base in (x+y) order: `thickness` face tiles below the top
-          // with OPEN AIR beneath (so you see under it), then the top diamond.
-          const dk = this.deckIndex.get(row * world.width + col);
-          if (dk && dk.cell.path) {
-            const dTop0 = pathTileKey(dk.cell.path);
-            if (this.textures.exists(dTop0)) {
-              const dTop = dk.cell.flip ? this.flippedKey(dTop0) : dTop0;
-              const dFace = this.deckFaceKey(dk.deck, dTop0);
-              const lvl0 = Math.max(0, dk.deck.level - dk.deck.thickness);
-              const dct = this.caveTint(row * world.width + col, !!mask);
-              for (let lvl = lvl0; lvl < dk.deck.level; lvl++) rt.batchDraw(dFace, bx, by - lvl * lh, 1, dct);
-              rt.batchDraw(dTop, bx, by - dk.deck.level * lh, 1, dct);
-            }
-          }
-          continue;
-        }
-        const key = tileKey(cell.t, cell.v);
-        if (!this.textures.exists(key)) continue;
-        // Per-level stacking builds raised TERRAIN columns out of flat tiles.
-        // SOLID structures (trees, pillars, towers) are one object: stacking
-        // their tall art drew 2-3 overlapping copies ("two long tiles on top
-        // of each other" — trees on earth columns, scalloped pillar bases).
-        // They draw exactly once, grounded at their cell's level, like the
-        // maps agent's own renderer.
-        const sSolid = surfaceFor(cell.t);
-        const fromLvl = !sSolid.standable && !sSolid.swimmable
-          ? cell.l
-          : 0;
-        for (let lvl = fromLvl; lvl <= cell.l; lvl++)
-          rt.batchDraw(key, bx, by - lvl * lh - this.artYOff(key));
+    if (this.maps3) {
+      const prev = this.groundAnchor;
+      const sx = prev ? ax - prev.ax : 0;
+      const sy = prev ? ay - prev.ay : 0;
+      const canScroll =
+        this.groundScroll &&
+        !!prev &&
+        !poisoned &&
+        !!this.groundScratch &&
+        prev.mask === mask &&
+        prev.top === top &&
+        (sx !== 0 || sy !== 0) &&
+        Math.abs(sx) < rt.width &&
+        Math.abs(sy) < rt.height;
+      this.t3armRing(ax, ay, rt.width, rt.height);
+      if (canScroll) {
+        this.scrollTiles3Ground(ax, ay, sx, sy, mask, cuts, top);
+        return;
       }
+      // A full paint covers everything: whatever the band still owed is void.
+      this.groundSliceQ = [];
+      this.groundSliceCtx = null;
+      rt.setPosition(ax, ay);
+      rt.clear();
+      this.fillGround(rt, this.groundFillRGB(mask));
+      const win = this.t3groundWindow(ax, ay, 0, 0, rt.width, rt.height);
+      this.groundClip = null;
+      this.drawTiles3Ground(rt, ax, ay, win.u0, win.u1, win.v0, win.v1, mask, cuts, top);
+      this.groundAnchor = { ax, ay, mask, top };
+      this.groundLastMode = "full";
+      this.groundFullRuns++;
+      return;
     }
-    rt.endDraw();
   }
 
   /** Start a jump if grounded and off cooldown (client-side prediction; the
@@ -9270,9 +19139,224 @@ export class WorldScene extends Phaser.Scene {
    * integer zoom proportionally to the avatar's world speed so movement
    * reveals slightly more of the world. At rest it settles back onto the
    * crisp integer zoom and dead-centres the player. */
+  /** DEATH: fade dark, drain the colour, and push slowly onto the body.
+   *
+   * The camera work is here rather than in updateChaseCam because it is the
+   * opposite of a chase — it ignores the trail, the speed zoom and the
+   * settle-to-integer rule, and simply eases onto a corpse that cannot move.
+   * Nothing in it revives the player: the sequence ENDS in a prompt, and the
+   * press is what asks the server (maintainer 2026-08-09: "only when/if the
+   * player presses the screen will the player respawn").
+   *
+   * The colour drain wants a post-pipeline, which is WebGL-only — on the Canvas
+   * renderer the veil alone still carries the fade, just without the
+   * desaturation. Same shape as the cover surfaces' WEBGL gate. */
+  private startDeath() {
+    if (this.death) return;
+    const cam = this.cameras.main;
+    // WHERE THE CAMERA ACTUALLY IS, not where a chase would have put it. The
+    // chase runs a trail (up to CAM_TRAIL_MAX behind you) and a speed-coupled
+    // zoom-out, so at the moment of death the camera is centred somewhere
+    // BEHIND the body at a fractional zoom. Starting the push from the body at
+    // base zoom therefore snapped both on the first dead frame — it read as a
+    // lag spike (maintainer 2026-08-09: "the camera jumps a bit... as if we
+    // don't interpolate from where the camera actually was"). The push now
+    // eases FROM this pose, so frame one is a no-op by construction.
+    this.death = {
+      at: this.time.now,
+      armed: false,
+      mode: "hushed",
+      from: { x: cam.midPoint.x, y: cam.midPoint.y, zoom: cam.zoom },
+    };
+    // NO CAMERA POST-PIPELINE. The monochrome pass was a camera ColorMatrix,
+    // and adding one re-routes the whole scene through its own render target —
+    // which took the night/weather/shadow overlays and the bodies with it. The
+    // screen went LIGHTER at the moment it was supposed to go dark, and the
+    // corpse and its killer vanished (maintainer 2026-08-09, with shots). The
+    // darkening has to COMPOSITE ON TOP of the light the world already has, so
+    // it is a plain veil and nothing else touches the render path.
+    // A DOM VEIL OVER THE GAME VIEW. It was a Phaser Rectangle with
+    // scrollFactor 0 — screen space — positioned every frame at cam.midPoint,
+    // which is WORLD space. So it sat thousands of pixels off-screen and the
+    // darkening never appeared at all (maintainer 2026-08-09: "it doesn't feel
+    // at all like the game becomes darker, that effect feels totally
+    // missing"). In the DOM there is no scroll factor and no zoom to get
+    // wrong: it covers the game view's own box, the same --gv-*/--hud-h insets
+    // the card uses, and sits under the card and over the canvas.
+    // Sweep strays first — the same rule the landscape gamepad follows. These
+    // two nodes live on <body>, so a teardown that skipped endDeath (a scene
+    // swap, a reload race) leaves them behind, and the card is
+    // pointer-events:none and can never be dismissed by hand.
+    for (const el of document.querySelectorAll(".ml-death-veil, .ml-death-card")) el.remove();
+    const veil = document.createElement("div");
+    veil.className = "ml-death-veil";
+    veil.style.cssText = [
+      "position:fixed",
+      "left:var(--gv-left, 0px)",
+      "right:var(--gv-right, 0px)",
+      "top:0",
+      "bottom:var(--hud-h, 0px)",
+      "z-index:5",
+      "pointer-events:none",
+      // ONE static gradient, rasterised once; only `opacity` moves per frame,
+      // which the compositor animates without repainting anything.
+      `background:radial-gradient(circle at 50% ${(DEATH_FOCUS_Y * 100).toFixed(0)}%,` +
+        ` rgba(5,5,10,${(1 - DEATH_DARK_CORE).toFixed(3)}) 0%,` +
+        // The mid stop is out at 34% so the whole FIGURE stays in the bright
+        // part — at 3x zoom the body is ~200px tall and a tighter core put a
+        // gradient across it. The gradient's extent is farthest-corner.
+        ` rgba(5,5,10,${(1 - (DEATH_DARK_CORE + DEATH_DARK) / 2).toFixed(3)}) 34%,` +
+        ` rgba(5,5,10,${(1 - DEATH_DARK).toFixed(3)}) 76%)`,
+      "will-change:opacity",
+      "transform:translateZ(0)",
+      "opacity:0",
+    ].join(";");
+    document.body.appendChild(veil);
+    this.death.veil = veil;
+    // MUSIC DOWN. `hushed` is the quietest mode the audio engine publishes
+    // (0.25x); the composer agent owns that table and a true silence needs a
+    // mode from them — asked for on their board. Restored on revive.
+    gameAudio.setMode(this.death.mode);
+    this.camDetached = true; // updateChaseCam must not fight the push
+  }
+
+  /** ASK TO COME BACK, AND KEEP ASKING. The press used to be fire-and-forget:
+   * one `room.send` with no retry and no feedback, so a refusal (the server
+   * still owes the die clip), a dropped patch or a half-dead socket left the
+   * player pressing a prompt that could never answer. Now the ask is a state
+   * that stepDeath re-sends until `selfDead` actually clears — the same shape
+   * as the pickup intent, which is retried for exactly this reason. */
+  private askRevive() {
+    const d = this.death;
+    if (!d || !d.armed) return;
+    if (!d.askAt) d.askAt = this.time.now; // first ask — starts the patience clock
+    d.nextAsk = 0; // send on this frame
+  }
+
+  private stepDeath(now: number) {
+    const d = this.death;
+    if (!d) return;
+    // SELF-HEAL: the sequence may not outlive being dead. `selfDead` is cleared
+    // on the revive AND by the rejoin's clean slate, and anything else that
+    // learns I am alive gets this for free rather than having to remember to
+    // tear down a pair of DOM nodes it does not know about.
+    if (!this.selfDead) return this.endDeath();
+    const cam = this.cameras.main;
+    const id = this.myId;
+    const av = id ? this.avatars.get(id) : undefined;
+    const t = now - d.at;
+    // ONE curve for the push, the dark and the drain: ease-out, so it starts
+    // quickly enough to read as a reaction and then crawls.
+    const zp = Math.min(1, t / DEATH_ZOOM_MS);
+    const ease = 1 - Math.pow(1 - zp, 3);
+    const base = this.zoomFor();
+    cam.setZoom(d.from.zoom + (base * DEATH_ZOOM - d.from.zoom) * ease);
+    if (av) {
+      const tx = av.sprite.x;
+      // AIM AT THE CORPSE, NOT AT WHERE A STANDING BODY'S CHEST WOULD BE. The
+      // die clip lays the character out on the ground, so its mass sits at the
+      // bottom of the frame, around the foot anchor — a 0.35-frame lift centred
+      // the push on the empty air above it (maintainer 2026-08-12: "you zoom in
+      // a bit too high up. The player falls to the ground so you should zoom in
+      // a bit further down").
+      const ty = av.sprite.y - av.sprite.displayHeight * DEATH_AIM_FRAC;
+      cam.centerOn(d.from.x + (tx - d.from.x) * ease, d.from.y + (ty - d.from.y) * ease);
+    }
+    // The gradient already carries how dark each part of the screen ends up, so
+    // the ramp is the plain ease — 1 means "the vignette, fully arrived".
+    if (d.veil) d.veil.style.opacity = String(ease);
+    // THE BODY DARKENS WITH THE WORLD. A second copy of the corpse used to be
+    // drawn above the veil so it stayed brighter, and it worked — but a body
+    // drawn twice is a body outside the depth sort, so it sat over things it
+    // should have been behind (maintainer 2026-08-09: "don't draw the player
+    // again so the z-order get buggy... we can make the player lighter in a
+    // non-buggy way when we have time"). Lifting it properly means lighting,
+    // not a second draw.
+    // ARMED once the push has landed. The prompt sits UNDER the body, in world
+    // space, so it rides the zoom with it instead of floating in screen space.
+    if (zp >= 1 && !d.armed) d.armed = true;
+    if (d.armed && av) {
+      // A CARD IN THE HUD'S OWN CLOTHES, over the body — the character is
+      // lying down, so where the head used to be is empty picture and the one
+      // place a card does not cover anything (maintainer 2026-08-09).
+      // A REAL UI CARD, IN THE DOM, IN SCREEN SPACE. It was a Phaser text in
+      // WORLD space, which the 3x death zoom then magnified into a banner
+      // across the top of the screen (maintainer 2026-08-09: "way too high up
+      // and doesn't follow the UI/UX style at all"). Everything else in this
+      // game's chrome is DOM on the wiki theme, so this is too: the colours,
+      // the serif and the radii are the theme's own custom properties, which
+      // also means it follows light/dark for free and needs no JS to do it.
+      // Sits at 40% of the GAME VIEW's height — the camera centres the body
+      // just below middle, so this lands over it without covering it.
+      if (!d.el) {
+        const el = document.createElement("div");
+        el.className = "ml-death-card";
+        el.textContent = "Press to continue...";
+        el.style.cssText = [
+          "position:fixed",
+          // CENTRED ON THE GAME VIEW, not on the window. In landscape the menu
+          // is a side COLUMN, so the view is inset by --gv-left/--gv-right (in
+          // portrait both are 0 and this reduces to the middle of the screen).
+          // Same vars the chat log, the stat chips and the clock pill anchor
+          // off — anything that centres on 50vw is wrong the moment the layout
+          // turns sideways (maintainer 2026-08-09).
+          "left:calc(var(--gv-left, 0px) + (100vw - var(--gv-left, 0px) - var(--gv-right, 0px)) / 2)",
+          "top:calc((100dvh - var(--hud-h, 0px)) * 0.40)",
+          "transform:translate(-50%,-50%)",
+          "z-index:6",
+          "pointer-events:none",
+          "font-family:var(--serif)",
+          "font-size:15px",
+          "font-weight:600",
+          "color:var(--ink)",
+          "background:var(--surface)",
+          "border:1px solid var(--border)",
+          "border-radius:12px",
+          "padding:8px 16px",
+          "box-shadow:0 2px 10px rgba(0,0,0,.35)",
+          "opacity:0",
+          "transition:opacity .45s ease",
+        ].join(";");
+        document.body.appendChild(el);
+        d.el = el;
+        requestAnimationFrame(() => el && (el.style.opacity = "1"));
+      }
+      // THE ASK IS RE-SENT UNTIL IT IS ANSWERED. The only proof the press
+      // worked is `selfDead` going false (this whole sequence self-heals on
+      // it), so keep asking rather than trusting one packet. Survives a press
+      // the server still refuses, a dropped patch, and a socket that died
+      // without firing room.onLeave — the rejoin rewires `this.room` and the
+      // next retry simply lands.
+      if (d.askAt && now >= (d.nextAsk ?? 0)) {
+        this.room?.send("respawn", {});
+        d.nextAsk = now + REVIVE_RETRY_MS;
+        // ...and SAY SO if it still has not taken. Silence is what made this
+        // read as a dead button (maintainer: "pressed all over the place but
+        // nothing happened") — after a few unanswered seconds the prompt stops
+        // pretending it is waiting for him and admits it is waiting for the
+        // server.
+        if (d.el && now - d.askAt > REVIVE_QUIET_MS &&
+            d.el.textContent !== "Reconnecting…") d.el.textContent = "Reconnecting…";
+      }
+    }
+  }
+
+  /** Revived (or left the world): put everything back. */
+  private endDeath() {
+    const d = this.death;
+    if (!d) return;
+    this.death = null;
+    d.el?.remove();
+    d.veil?.remove();
+    gameAudio.setMode("overworld");
+    this.camDetached = false;
+    this.camChase.init = false; // snap back onto the living body
+    this.cameras.main.setZoom(this.zoomFor());
+  }
+
   private updateChaseCam(deltaMs: number) {
     if (this.camDetached) return;
-    const id = this.room?.sessionId;
+    const id = this.myId;
     const av = id ? this.avatars.get(id) : undefined;
     if (!av) return;
     const cam = this.cameras.main;
@@ -9316,9 +19400,10 @@ export class WorldScene extends Phaser.Scene {
   private zoomFor(): number {
     // Pick the base zoom from the CSS width (scale.width / rs), then × rs so the
     // camera renders at DEVICE pixels while the visible world extent is unchanged
-    // (1 world px still = base·rs backing px = base device px). rs=1 → byte-identical.
-    const rs = this.renderScale();
-    return Math.max(1, Math.round(this.scale.width / (520 * rs))) * rs;
+    // (1 world px still = base·rs backing px = base device px). rs=1 →
+    // byte-identical. ROUNDED to a whole backing pixel per world pixel — see
+    // `cameraZoom`, which owns the reason and the arithmetic.
+    return cameraZoom(this.scale.width, this.renderScale());
   }
 
   private tryJump() {
@@ -9392,22 +19477,6 @@ export class WorldScene extends Phaser.Scene {
     return Math.max(from, Math.min(level, cover + 1));
   }
 
-  private artYOff(key: string): number {
-    let off = this.artOffCache.get(key);
-    if (off === undefined) {
-      // Per-variant measured base (tile-bases.json) when available — "extra
-      // long" art (content to the canvas bottom) gets a deeper lift than
-      // "long" art, so nothing sinks. Solid structures anchor their bottom V
-      // to the surface diamond (footprint = collision diamond). Fallback:
-      // the old constant imgH - 64.
-      const [, t, v] = key.split(":");
-      const sf = surfaceFor(t);
-      const src = this.textures.get(key)?.getSourceImage() as { height?: number } | undefined;
-      off = artLift(this.tileBases, t, Number(v), src?.height ?? 64, !sf.standable && !sf.swimmable);
-      this.artOffCache.set(key, off);
-    }
-    return off;
-  }
 
   /** Stamp a maps2 terrain occluder image with the CELL it was built for — that
    * is all these tags carry. The ONE reader is the cull audit
@@ -9418,9 +19487,158 @@ export class WorldScene extends Phaser.Scene {
    * bounds (`top`, `col`/`row`, `solid`, `x0`/`x1`/`y0`/`y1`) from
    * `occluderMeta`. Keep this cheap — a rebuild runs it ~3,885 times at
    * the_island2's mountain. */
+  /** DESTROY A SET OF DISPLAY OBJECTS IN O(n), NOT O(n²).
+   *
+   *  Phaser's `destroy()` takes the object off the scene's display list by
+   *  SCANNING it: `exists()` is an indexOf over the whole list, then `remove()`
+   *  is a second indexOf plus a splice (Phaser 3.90:
+   *  GameObject.removeFromDisplayList → DisplayList.exists / List.remove →
+   *  ArrayUtils.Remove). Destroying the occluder set one object at a time is
+   *  therefore QUADRATIC in the list length — measured at the snow cliffs,
+   *  5,714 occluders in a ~6,000-object list cost 90-130 ms of pure JS in ONE
+   *  frame, every 96 px of camera travel: the single largest JS event at the
+   *  maintainer's laggy spots (investigation 2026-09-02).
+   *
+   *  So the whole set leaves the display list in ONE pass — the list is
+   *  filtered in place against a Set — and only then is each object destroyed;
+   *  it now finds itself absent (its `exists()` scans only the few hundred
+   *  objects that remain) and skips the removal. Everything else `destroy()`
+   *  does — texture release, event teardown, update-list removal — runs exactly
+   *  as before. What is skipped is the per-object REMOVED_FROM_SCENE emit,
+   *  whose only listeners in Phaser are Sprite (update-list removal; these are
+   *  Images) and Group/Layer (which hold none of these) — nothing observes the
+   *  difference. One depth sort is queued for the frame, as the rebuild's new
+   *  objects would have queued anyway. */
+  private destroyBatch(objs: readonly Phaser.GameObjects.GameObject[]): void {
+    if (!objs.length) return;
+    if (this.occFastDestroy) {
+      const gone = new Set<Phaser.GameObjects.GameObject>(objs);
+      const list = this.children.list;
+      let w = 0;
+      for (let r = 0; r < list.length; r++) {
+        const o = list[r];
+        if (!gone.has(o)) list[w++] = o;
+      }
+      list.length = w;
+      this.children.queueDepthSort();
+      /* AND THE DESTROY ITSELF STILL SCANNED THE WHOLE LIST, once per object.
+       *
+       * `destroy()` -> `removeFromDisplayList` -> `displayList.exists(this)` ->
+       * `list.indexOf(child)`. The filter above has ALREADY taken every one of
+       * these objects out, so that indexOf is a guaranteed MISS over the entire
+       * remaining list — and with the occluder pool the new set is in there
+       * too, so it is N x L, not N x (a few hundred) as the note below assumed.
+       * Measured shape: 2 ns per element on his phone, N up to ~6,000 against
+       * L ~4,000-7,600, i.e. tens of millions of element visits in one frame.
+       *
+       * Hiding the list behind an empty array for the destroy loop makes that
+       * lookup O(1). It is EXACTLY equivalent, not merely close: `exists`
+       * answers false either way — the objects are provably absent from the
+       * list we just filtered them out of — so `removeFromDisplayList` takes
+       * the same branch and every other part of `destroy()` is untouched. */
+      const real = this.children.list;
+      this.children.list = [];
+      try {
+        for (const o of objs) o.destroy();
+      } finally {
+        this.children.list = real;
+      }
+      return;
+    }
+    for (const o of objs) o.destroy();
+  }
+
+  /** The cell an occluder image came from — see tagOccluder. Read only by
+   *  `__ml.occAudit()` and `__ml.occDump()`. */
   private tagOccluder(img: Phaser.GameObjects.Image, col: number, row: number): Phaser.GameObjects.Image {
-    img.setData("oc", col);
-    img.setData("or", row);
+    /* PLAIN PROPERTIES, NOT `setData`. The first `setData` on a GameObject
+     * constructs a DataManager for it, and each call then goes through `set` ->
+     * `setValue` -> two `Object.defineProperty` installs plus an event emit.
+     * Measured on 1,000 live images: create + setOrigin + destroy 2.7 ms, with
+     * the two setData calls 4.4 ms, with two plain writes 2.6 ms — the tag cost
+     * 1.7 us per image, on a rebuild that creates hundreds to thousands of
+     * them, for a value only two dev probes ever read. */
+    const t = img as OccTagged;
+    t.ocCol = col;
+    t.ocRow = row;
+    return img;
+  }
+
+  /** ONE OCCLUDER IMAGE, REUSED WHEN NOTHING ABOUT IT CHANGED.
+   *
+   *  Every 96 px of camera travel the occluder set was destroyed and rebuilt
+   *  from scratch, and the investigation measured that 90-95% of the images it
+   *  recreated were bit-identical to the ones it had just destroyed (a one-latch
+   *  step at the forest: 1,489 of 1,649 the same, reproduced twice). Creating
+   *  ~5,400 Phaser images costs ~46-58 ms of JS at the snow cliffs and
+   *  destroying them ~12 ms even after the O(n) destroy — in ONE frame, roughly
+   *  twice a second while running. That stall IS the lag at the maintainer's
+   *  laggy spots.
+   *
+   *  So an image is identified by everything that makes it what it is — cell,
+   *  texture, position and base depth (col/row are in the key because two cells
+   *  at different levels CAN land on the same screen point) — and a rebuild
+   *  asks for the same key it asked for last time: the image comes back out of
+   *  the pool untouched, the ~5-10% delta is created and destroyed, and the
+   *  cover index and metadata are rebuilt in full as before (they are data).
+   *  The pool is a multimap because the old set could legitimately hold two
+   *  identical images. A pooled image that the scene has since destroyed
+   *  (`scene` gone) is dropped, never reused. Depth: see OCC_DEPTH_EPS. */
+  /** DEV: tint every occluder by WHICH PRODUCER made it — deck slab, wall
+   *  course, cap, transition — so a headless run can NAME the thing that drew a
+   *  stray diamond instead of arguing with its geometry. Set
+   *  `window.__t3occtint = 1` and force a rebuild (the pass only reruns after
+   *  ~96px of camera movement). Off by default and free: it returns the image
+   *  untouched unless one is actually tinted, and occluders are POOLED, so a
+   *  tint left on a recycled image would outlive the session that set it. */
+  private occTint(img: Phaser.GameObjects.Image, role: string): Phaser.GameObjects.Image {
+    const on = (window as unknown as { __t3occtint?: unknown }).__t3occtint;
+    if (!on) return img.isTinted ? img.clearTint() : img;
+    const c: Record<string, number> = {
+      deck: 0xff00ff, face: 0xffff00, cap: 0x00ffff, boundary: 0x00ff00, scenery: 0xff8800,
+    };
+    return img.setTint(c[role] ?? 0xffffff);
+  }
+
+  private occImage(tex: string, x: number, y: number, depth: number, col: number, row: number): Phaser.GameObjects.Image {
+    /* KEYED BY CELL, NOT BY A STRING OF EVERYTHING. The key used to be
+     * `${col},${row},${tex},${x},${y},${depth}` — six fields rendered to a
+     * string, built for EVERY occluder on EVERY rebuild, with 3,400-7,800
+     * occluders live and a rebuild running 2-5 times a second. Benched on
+     * Phaser-shaped stand-ins over 3,800 images across 2,700 cells, keying on
+     * the cell and comparing the image's own fields instead: 3.13 ms -> 0.56 ms
+     * per rebuild, with the created and leftover counts identical in both arms.
+     *
+     * SCAN BACKWARD. The swap-pop moves the tail element — already examined —
+     * into the freed slot, which `i--` then skips correctly. A forward scan
+     * would move an UNEXAMINED tail element into a slot already passed and lose
+     * it; it benched ~0.1 ms faster and is not worth the hazard. */
+    const k = row * this.occStride + col;
+    const have = this.occPool.get(k);
+    let img: OccTagged | undefined;
+    if (have)
+      for (let i = have.length - 1; i >= 0; i--) {
+        const c = have[i] as OccTagged;
+        // A pooled image the scene has destroyed is DROPPED here, exactly as
+        // the pop-loop this replaced dropped it, so it never reaches the drain.
+        const dead = !c.scene;
+        if (dead || (c.ocBase === depth && c.x === x && c.y === y && c.texture.key === tex)) {
+          if (!dead) img = c;
+          have[i] = have[have.length - 1]; // swap-pop: order in a bucket is not read
+          have.length--;
+          if (!dead) break;
+        }
+      }
+    if (img) this.occReused++;
+    else {
+      img = this.tagOccluder(this.add.image(x, y, tex).setOrigin(0, 0), col, row) as OccTagged;
+      img.ocBase = depth;
+      this.occCreated++;
+    }
+    img.setDepth(depth + this.occSeq++ * OCC_DEPTH_EPS);
+    let arr = this.occNext.get(k);
+    if (!arr) this.occNext.set(k, (arr = []));
+    arr.push(img);
     return img;
   }
 
@@ -9430,8 +19648,131 @@ export class WorldScene extends Phaser.Scene {
    * vertex y), so sprites standing behind it are covered while sprites in
    * front draw over it. The ground RT stays as the flat base underneath.
    */
+  /* PHASER SUBMITS EVERY OCCLUDER, ON SCREEN OR NOT — and most of them are not.
+   *
+   * There is no view culling anywhere in the renderer: `CameraManager.
+   * getVisibleChildren` filters on `GameObject.willRender`, which tests
+   * `renderFlags` and `cameraFilter` and NOTHING about bounds, so every image in
+   * the display list pays a full `batchSprite` — matrix build, quad, four tint
+   * computations, 42 typed-array stores — whether or not it can be seen. And the
+   * occluder set is deliberately built far outside the view: `OCC_CULL_PAD` is
+   * OCC_STEP + 64 + 200 = 360, plus a tile in `shows`/`columnShows`, so the built
+   * box is view + ~424 px on each side. At his geometry that is 3.8x the view
+   * AREA — measured off his beacon, 57.7-64.5% of a 4,153-7,640 object display
+   * list is an occluder whose own 64 px box cannot touch the camera. `render` is
+   * now the largest steady section in all four runs (4.18-6.06 ms/frame).
+   *
+   * THE PAD MUST STAY BIG AND THE CULL MUST BE PER FRAME. The pad is not slack
+   * to be trimmed — `occluderMeta` needs a record for every column that could
+   * cover an on-screen body, and the rebuild only re-runs every OCC_STEP (96 px)
+   * of camera drift, while the speed zoom-out changes `worldView` SIZE without
+   * moving its centre and so without tripping that latch at all. Deciding
+   * visibility once per rebuild would therefore need a pad nearly as large as
+   * the one it is trying to undo. Deciding it per FRAME against the live
+   * `worldView` costs ~4,000 AABB tests (measured shape: four compares and one
+   * store each) and lets the test be exact.
+   *
+   * WHY IT CANNOT CHANGE A PIXEL: an image whose rectangle misses the camera
+   * contributes zero fragments, so skipping its submit is the identity. The box
+   * is taken as +/- a full display size around the origin, which is generous in
+   * every direction and therefore origin-agnostic — the maps2 branch builds its
+   * occluders with `this.add.image` rather than through `occImage` and does not
+   * share the (0,0) origin convention.
+   *
+   * `cameraFilter`, NOT `visible`: `rebuildCoverIndex` and `coverCandidates`
+   * both skip an image with `!im.visible`, so hiding one would silently drop it
+   * from the cover index and uncrop the bodies it covers. `cameraFilter` is read
+   * only by `willRender`, and the cover pass reaches its images through
+   * `DynamicTexture.batchGameObject`, which calls `renderWebGL` directly and
+   * never consults it. `occluderMeta` is not culled at all, so `resolveBodyDepth`
+   * is untouched.
+   *
+   * WRITTEN UNCONDITIONALLY, EVERY FRAME, FOR EVERY MEMBER: `occImage` recycles
+   * images out of a pool across rebuilds, and this file already paid for that
+   * trap once with tints ("a tint left on a recycled image would outlive the
+   * session that set it"). A filter that is only ever set, never cleared, would
+   * strand a recycled image invisible for good. */
+  private cullOccluderSubmits(): void {
+    if (!this.occCullOn) {
+      this.occCulledSubmits = 0; // never report the previous window's count
+      return;
+    }
+    const cam = this.cameras.main;
+    const id = cam.id;
+    const v = cam.worldView;
+    /* THE RECT THE RENDERER WILL USE, NOT LAST FRAME'S. Inside update()
+     * `cam.worldView` is the PREVIOUS frame's rectangle — this file already
+     * knows that, which is why the night pass takes renderedWorldView — so
+     * culling against it can drop an image that is inside the rect actually
+     * drawn, one frame of camera travel later. Padding around that staleness
+     * was tried and it is self-defeating: 32 px of slack put the submit count
+     * straight back to 817 from 613, because a 32 px band around the view holds
+     * ~200 more tiles than it saves. Computing the CURRENT rect removes the
+     * problem instead of paying for it, and leaves CULL_EDGE_PX to cover only
+     * the half-pixel rounding inside renderedWorldView. */
+    const rv = renderedWorldView(cam, this.cullRect);
+    const x0 = rv.x - CULL_EDGE_PX;
+    const y0 = rv.y - CULL_EDGE_PX;
+    const x1 = rv.x + rv.width + CULL_EDGE_PX;
+    const y1 = rv.y + rv.height + CULL_EDGE_PX;
+    let off = 0;
+    /* EVERY WORLD IMAGE, NOT JUST THE OCCLUDERS. Measured live at the mountain:
+     * 814 objects were submitted, 559 were on screen and 255 were not — 31% of
+     * the submits, and 55% of them at the spawn. The occluders were already
+     * culled (1,625 of 2,287); the residue is scenery, prop and roofed-scenery
+     * art, which nothing culled at all.
+     *
+     * AND THE BOX IS THE REAL ONE NOW. It used to be `im.x +/- displayWidth`,
+     * i.e. a box of DOUBLE the sprite's size centred on its origin, chosen so
+     * the test would be right whatever the origin convention. That is a free
+     * pass to anything within a full sprite of the view, which is most of the
+     * residue. Using originX/originY makes it exact and stays origin-agnostic
+     * by construction. NO FIXED PAD: a 64 px one was tried and it made things
+     * WORSE — measured, submits went 814 -> 936 at the mountain — because for
+     * the tile art, which is most of the residue, a flat 64 px is LARGER than
+     * the per-image slack it replaced. Rotation is handled per image instead. */
+    for (const list of this.cullLists) {
+      for (let i = 0; i < list.length; i++) {
+        const im = list[i];
+        // ABS: a flip done with a negative scale gives a negative displayWidth,
+        // and a negative box tests inside-out — it would cull things that are
+        // on screen, which is a hole in the picture, not a slow frame.
+        const w = Math.abs(im.displayWidth);
+        const h = Math.abs(im.displayHeight);
+        // A rotated image's AABB is bigger than w x h; pad by the long side
+        // rather than reason about the angle. Nothing in the world art rotates
+        // today, so this is the branch that never runs and cannot bite.
+        const pad = im.rotation === 0 ? 0 : Math.max(w, h);
+        const ix = im.x - w * im.originX - pad;
+        const iy = im.y - h * im.originY - pad;
+        const bw = w + pad * 2;
+        const bh = h + pad * 2;
+        const hidden = ix + bw < x0 || ix > x1 || iy + bh < y0 || iy > y1;
+        im.cameraFilter = hidden ? id : 0;
+        if (hidden) off++;
+      }
+    }
+    this.occCulledSubmits = off;
+  }
+
+  /** The lists cullOccluderSubmits walks. Held as an array so the loop is one
+   *  pass and a new class of world art is added in one place. */
+  /** Scratch for the cull's view rect — held so the per-frame test allocates
+   *  nothing. Separate from the night pass's own rect, which it reuses too. */
+  private cullRect: ViewRect = { x: 0, y: 0, width: 0, height: 0 };
+
+  private get cullLists(): Phaser.GameObjects.Image[][] {
+    return [this.occluders, this.sceneryImgs, this.sceneryRoofedImgs];
+  }
+  /** Occluders whose submit the last frame skipped — reported by the beacon. */
+  private occCulledSubmits = 0;
+  /** Dev A/B: `__ml.occCull(false)` restores the old every-object submit. */
+  private occCullOn = true;
+
   private rebuildOccluders() {
     if (!this.world) return;
+    // The pool's cell key is row*stride+col; the stride is the world's width.
+    this.occStride = this.world.width;
     const cam = this.cameras.main;
     const ccx = cam.worldView.centerX;
     const ccy = cam.worldView.centerY;
@@ -9442,10 +19783,41 @@ export class WorldScene extends Phaser.Scene {
     )
       return;
     this.lastOccl = { x: ccx, y: ccy };
-    for (const im of this.occluders) im.destroy();
-    for (const lo of this.litOccluders) lo.img.destroy();
+    const tDestroy = performance.now();
+    this.occSeq = 0;
+    this.occReused = 0;
+    this.occCreated = 0;
+    if (this.maps3 && this.occPoolOn) {
+      /* THE CURRENT SET BECOMES THE POOL. Every maps3 occluder is created by
+       * occImage and therefore lives in occNext; what this rebuild does not
+       * take back out is destroyed at the end of the maps3 branch. LIT COPIES
+       * ARE DELIBERATELY OUTSIDE THE POOL — maps2 emissive art AND the maps3
+       * scenery silhouettes rebuildScenery pushes per drawn piece — and are
+       * destroyed and recreated in creation order every rebuild; that order is
+       * what keeps their ties right without any depth epsilon (see
+       * OCC_DEPTH_EPS). Do not drop this destroy as dead: it is one image per
+       * tree per rebuild. */
+      /* SELF-HEALING: a throw between the swap and the drain (tiles3draw's
+       * composeBoundary documents one) would leave images in occPool with no
+       * other reference — alive, drawn every frame, never re-sorted for a cut.
+       * Normally occPool is empty here and this costs nothing. */
+      if (this.occPool.size) {
+        const stray: Phaser.GameObjects.Image[] = [];
+        for (const arr of this.occPool.values()) for (const im of arr) stray.push(im);
+        this.destroyBatch(stray);
+      }
+      this.occPool = this.occNext;
+      this.occNext = new Map();
+      this.destroyBatch(this.litOccluders.flatMap((lo) => (lo.fog ? [lo.img, lo.fog] : [lo.img])));
+    } else {
+      // ONE pass for both sets — see destroyBatch.
+      this.destroyBatch(this.occluders.concat(this.litOccluders.flatMap((lo) => (lo.fog ? [lo.img, lo.fog] : [lo.img]))));
+      this.occPool.clear();
+      this.occNext.clear();
+    }
     this.litOccluders = [];
     this.occluders = [];
+    this.occDestroyMs = performance.now() - tDestroy;
     this.occluderMeta = [];
     this.emissiveLights = [];
 
@@ -9457,8 +19829,9 @@ export class WorldScene extends Phaser.Scene {
     // reason — they fire on different thresholds.)
     const mask = this.indoorInside ? this.indoorMask : null;
     const top = this.indoorTop; // the cut: highest level any column still draws
+    const cuts = mask ? this.indoorCut : null; // per-wall raises past it
 
-    const { dx, dy, lh, tile: tileSize } = MAP_GEOMETRY;
+    const { dx, dy, lh, tile: tileSize } = this.geom;
     const pad = 200;
     const x0 = cam.worldView.x - pad;
     const x1 = cam.worldView.right + pad;
@@ -9502,558 +19875,38 @@ export class WorldScene extends Phaser.Scene {
      * overlap an on-screen body's art box, so culling them whole is safe. */
     const columnShows = (ix: number, iyTop: number, iyBot: number) =>
       ix + tileSize >= cx0 && ix <= cx1 && iyBot >= cy0 && iyTop <= cy1;
-    for (let v = v0; v <= v1; v++) {
-      for (let u = u0; u <= u1; u++) {
-        if ((u + v) & 1) continue;
-        const col = (u + v) / 2;
-        const row = (v - u) / 2;
-        const cell = this.world.rows[row]?.[col];
-        if (!cell) continue;
-        const s = surfaceFor(cell.t);
-        if (this.maps2) {
-          // world@2 DECK occluder: a slab floating ABOVE its base (deck.level >
-          // base level) must occlude whoever walks/swims under it, and must draw
-          // on top of the ground RT so it's visible over the walls it roofs.
-          // Built regardless of the base cell's own level (the interior floor is
-          // l=0, which the terrain branch below skips). Where the deck coincides
-          // with its base top (deck.level == base l — a roof lapping its own
-          // walls), the terrain occluder already covers it, so skip.
-          // INDOORS NO DECK DRAWS ANYWHERE. My own ceiling is the obvious one —
-          // every cell of my room is under it by construction, and it IS the
-          // roof the cut takes off. But the ground RT stops drawing decks for
-          // the whole world indoors (one truncation rule, no slabs), so
-          // building an occluder for the neighbour's roof or a distant bridge
-          // would register meta whose art was never painted — and a meta record
-          // without art crops a body's lit copy against terrain that is not
-          // there. Art and meta agree, in both directions.
-          const dk = mask ? undefined : this.deckIndex.get(row * this.world.width + col);
-          if (dk && dk.cell.path && dk.deck.level > cell.l) {
-            const dTop0 = pathTileKey(dk.cell.path);
-            if (this.textures.exists(dTop0)) {
-              const dFace = this.deckFaceKey(dk.deck, dTop0);
-              const bx0 = this.iso.ox + u * dx;
-              const by0 = this.iso.oy + v * dy;
-              const dDepth = by0 + dy;
-              const lvl0 = Math.max(0, dk.deck.level - dk.deck.thickness);
-              // EXPOSED slab faces only — the rule the terrain branch has had
-              // since the terrace-tear fix, which the deck branch never got.
-              // A cave cell walled in by its own slab on both front sides
-              // needs nothing but its top; these decks are 16-32 thick, and
-              // this was ~65% of every occluder image in the mountain window.
-              const dFrom = this.deckCoverFrom(col, row, lvl0, dk.deck.level);
-              for (let lvl = dFrom; lvl < dk.deck.level; lvl++) {
-                if (!shows(bx0, by0 - lvl * lh)) {
-                  culled++;
-                  continue;
-                }
-                this.occluders.push(
-                  this.tagOccluder(this.add.image(bx0, by0 - lvl * lh, dFace).setOrigin(0, 0).setDepth(dDepth), col, row),
-                );
-              }
-              culled += dFrom - lvl0;
-              // The deck TOP is the walkable surface — it is what occludes a
-              // body walking UNDER the slab. Never exposure-cull it, and keep
-              // it whenever the COLUMN reaches the cull box (not merely when
-              // the top tile itself does), so a meta record can never describe
-              // terrain that draws nothing.
-              if (columnShows(bx0, by0 - dk.deck.level * lh, by0 + tileSize))
-                this.occluders.push(
-                  this.tagOccluder(
-                    this.add.image(bx0, by0 - dk.deck.level * lh, dTop0).setOrigin(0, 0).setFlipX(!!dk.cell.flip).setDepth(dDepth),
-                    col, row,
-                  ),
-                );
-              else culled++;
-              this.occluderMeta.push({
-                col, row, top: dk.deck.level, solid: false, depth: dDepth,
-                x0: bx0, x1: bx0 + tileSize, y0: by0 - dk.deck.level * lh, y1: by0 + tileSize,
-              });
-            }
-          }
-          // maps2 cells bake an explicit tile PNG path (loaded under
-          // pathTileKey), NOT the legacy tile:(t,v) key — so the legacy branch
-          // below finds no texture and builds ZERO occluders, leaving every
-          // sprite drawn ON TOP of raised terraces. Build the occluder column
-          // here instead, mirroring the ground pass's stacking (faces 0..l-1,
-          // then the baked top at l). Flat (l=0) and void cells never occlude.
-          if (cell.l <= 0) continue;
-          const topKey = topKeyFor(cell);
-          if (!topKey || !this.textures.exists(topKey)) continue;
-          const faceKey = faceKeyFor(this.world, cell);
-          const fk = faceKey && this.textures.exists(faceKey) ? faceKey : topKey;
-          const bx = this.iso.ox + u * dx;
-          const by = this.iso.oy + v * dy;
-          const oDepth = by + dy;
-          // Indoors this is EVERY cell of the building — floor, near wall, far
-          // wall, corner — truncated at the cut; outdoors it is the whole
-          // column. The occluder copy must draw exactly what the ground RT
-          // drew, or the difference comes back as a sprite at sprite depth:
-          // draw taller here and the battlement the RT no longer has reappears
-          // above the cut. `topL < cell.l` means the column was cut, and the
-          // surviving top is a FACE tile — the baked top diamond is the outdoor
-          // grass/rock surface and would read as a lid on a wall stump.
-          const topL = mask ? Math.min(cell.l, top) : cell.l;
-          if (topL < 0) continue;
-          // Draw only the EXPOSED cliff faces (from the lowest front neighbour
-          // up). The ground RT already bakes every cell's full face stack with
-          // the lower front cells drawn OVER it; redrawing the covered lower
-          // faces here — on top of the RT at a high depth — re-exposed them,
-          // painting the front cell's ground back into a wall (the "half-tile"
-          // terrace tear). stackFrom = one above the lower of the E/S fronts.
-          for (let lvl = this.stackFrom(col, row, topL, false); lvl < topL; lvl++) {
-            if (!shows(bx, by - lvl * lh)) {
-              culled++;
-              continue;
-            }
-            this.occluders.push(
-              this.tagOccluder(this.add.image(bx, by - lvl * lh, fk).setOrigin(0, 0).setDepth(oDepth), col, row),
-            );
-          }
-          // Keep the top whenever the COLUMN reaches the cull box, so every
-          // meta record in range still has drawn art behind it (see
-          // columnShows).
-          if (columnShows(bx, by - topL * lh, by + tileSize))
-            this.occluders.push(
-              // Occluder images CAN flip directly (setFlipX) — matches the RT's
-              // mirrored top so the two layers stay pixel-aligned for flipped cells.
-              this.tagOccluder(
-                this.add
-                  .image(bx, by - topL * lh, topL === cell.l ? topKey : fk)
-                  .setOrigin(0, 0)
-                  .setFlipX(topL === cell.l && !!cell.flip)
-                  .setDepth(oDepth),
-                col,
-                row,
-              ),
-            );
-          else culled++;
-          this.occluderMeta.push({
-            col,
-            row,
-            top: topL, // maps2 terrain is all standable ground: visual top = level
-            solid: false,
-            depth: oDepth,
-            x0: bx,
-            x1: bx + tileSize,
-            y0: by - topL * lh,
-            y1: by + tileSize,
-          });
-          continue;
-        }
-        // Emissive tiles (tiles/emission.json): atmosphere bloom for the
-        // canvas fallback (glow POOLS are collected in their own wider pass
-        // below). Per-VARIANT: plain variants of a glowing category stay
-        // dark (only variants with detected glow sources emit; v1 entries
-        // emit always).
-        const em = this.emission[cell.t];
-        const variantGlows = em && (!em.sources || (em.sources[String(cell.v)]?.length ?? 0) > 0);
-        if (em && variantGlows && !this.night && this.emissiveLights.length < MAX_EMISSIVE) {
-          const hex =
-            (Math.round(em.color[0] * 255) << 16) |
-            (Math.round(em.color[1] * 255) << 8) |
-            Math.round(em.color[2] * 255);
-          this.emissiveLights.push({
-            x: this.iso.ox + u * dx + dx,
-            y: this.iso.oy + v * dy + dy - cell.l * lh,
-            color: hex,
-            radius: em.radius * 32,
-            ground: true,
-            depth: this.iso.oy + v * dy + dy + 0.2, // occluded by fronting walls
-          });
-        }
-        const tall = cell.l > 0 || (!s.standable && !s.swimmable);
-        if (!tall) continue;
-        const key = tileKey(cell.t, cell.v);
-        if (!this.textures.exists(key)) continue;
-        const bx = this.iso.ox + u * dx;
-        const by = this.iso.oy + v * dy;
-        // Depth = the column's CENTRE line (by + dy); avatars refine their
-        // own depth against these per frame (see update) since a single
-        // scalar can't resolve every sprite-vs-column case exactly. SOLID
-        // structures draw ONCE (same rule as the ground RT) and get a +0.5
-        // depth bias: they STAND ON their cell, in front of every terrain
-        // copy on the same diagonal — so a sprite clamped behind a pillar
-        // (below - 0.3) still stays ABOVE the neighbouring grass copies
-        // (playtester: "my foot is drawn behind the grass to the left").
-        // Every raised terrain cell keeps its copies: the occluder layer is
-        // a complete painter re-render of the raised world, and each rim's
-        // buried stack layers are covered by the cells in front of it —
-        // culling "interior" cells re-exposed them ("tiles drawn 3 times").
-        const solidHere = !s.standable && !s.swimmable;
-        const oDepth = by + dy + (solidHere ? 0.5 : 0);
-        const aOff = this.artYOff(key);
-        const fromLvl = solidHere
-          ? cell.l
-          : 0;
-        for (let lvl = fromLvl; lvl <= cell.l; lvl++) {
-          this.occluders.push(
-            this.add.image(bx, by - lvl * lh - aOff, key).setOrigin(0, 0).setDepth(oDepth),
-          );
-        }
-        // DEMO stations: a raised EMISSIVE terrain column (flat glowing tile
-        // stacked to expose its faces) gets floor-tinted glow copies of the
-        // whole stack — the wall's lowest band falls into the diamond
-        // interlock wedge where the shader resolves pixels to the dark
-        // meadow IN FRONT, leaving an unlit "step" at the base (#64).
-        // Tall solids get a LIT COPY above the darkness overlay (see the
-        // litOccluders field note): billboard art must be lit by its OWN
-        // cell, not by whatever terrain lies behind its upper pixels.
-        // EMISSIVE variants additionally carry their emission entry — the
-        // copy's tint gets the self-glow FLOOR (max per channel), so the
-        // glow follows the ART'S OWN SHAPE instead of the shader's world
-        // geometry (which lit the flat cell diamond / an analytic box
-        // around the art — playtester, demo #28). Same depth band as every
-        // other lit copy; no new ordering rules.
-        if (this.night && solidHere && aOff > 0) {
-          this.litOccluders.push({
-            img: this.add
-              .image(bx, by - cell.l * lh - aOff, key)
-              .setOrigin(0, 0)
-              .setDepth(litDepth(oDepth)),
-            col: col + 0.5,
-            row: row + 0.5,
-            z: cell.l + 0.5,
-            emission: em && variantGlows ? em : undefined,
-            phase: ((((col * 73856093) ^ (row * 19349663)) >>> 0) % 628) / 100,
-          });
-        }
-        this.occluderMeta.push({
-          col,
-          row,
-          // Solid structures (trees, boulders…) visually stand ~1 level tall.
-          top: cell.l + (s.standable ? 0 : 1),
-          solid: solidHere,
-          depth: oDepth,
-          x0: bx,
-          x1: bx + tileSize,
-          y0: by - cell.l * lh - aOff,
-          y1: by + tileSize,
-        });
-      }
-    }
-
-    this.occCulled = culled;
-
-    // Placed props (maps2 world@1) share the occluder rebuild: they're tall
-    // billboards that also occlude characters, so building them here — under
-    // the same camera-move guard, appending to the SAME occluderMeta — keeps
-    // the two layers atomic (a separate guard could rebuild one without the
-    // other and desync the depth metadata).
-    this.rebuildProps(cam);
-
-    // Per-pixel glow halos (tile-emission@2 sources) for this window. Demo
-    // stations draw tall art ONCE at ground level, so every source anchors
-    // to the drawn art instead of repeating down a stacked column.
-    this.glowStamps = buildGlowStamps(
-      this.world,
-      this.emission,
-      this.iso,
-      { x0, y0, x1, y1 },
-      this.maxLevel,
-      undefined,
-      (t, v) => this.artYOff(tileKey(t, v)),
-      false,
-    ).concat(this.buildPoolStamps(cam)).concat(this.propStamps);
-
-    // The occluder + prop images have just been destroyed and recreated, so
-    // this is the one moment their broad-phase index (and every cover slot's
-    // "did the terrain move" signature term) can go stale.
-    this.rebuildCoverIndex();
-  }
-
-  /**
-   * Rebuild the placed-decoration set (maps2 world@1 `props`): each prop is a
-   * TALL 64×128 tile standing on its cell, drawn as a depth-sorted billboard so
-   * characters pass in front of / behind it. Called from rebuildOccluders under
-   * its camera-move guard, so it culls to the same window and appends to the
-   * same occluderMeta.
-   *
-   * ANCHOR: a prop's canvas is NOT bottom-full — the object's ground-contact row
-   * varies (a short bush ends high in the canvas, a tall tower nearly fills it).
-   * So we measure each prop's opaque BOTTOM (its base V) and plant it on the
-   * cell's grid diamond FRONT vertex (groundTop + 2·dy), so the base sits IN the
-   * grid cell. Two earlier tries were wrong: bottom-of-CANVAS (imgH−64) only
-   * matched full-height props; content-bottom-to-skirt (row 54, as propdemo.py
-   * does) dropped every prop one elevation level below the grid V (playtester).
-   */
-  private rebuildProps(cam: Phaser.Cameras.Scene2D.Camera) {
-    for (const im of this.propImgs) im.destroy();
-    this.propImgs = [];
-    this.propStamps = [];
-    if (!this.world || !this.maps2) return;
-    const props = this.world.props;
-    if (!props || !props.length) return;
-    const ANIM: Record<string, number> = { static: 0, pulse: 1, flicker: 2 };
-
-    const { dx, dy, lh, tile: tileSize } = MAP_GEOMETRY;
-    const pad = 200;
-    // A tall prop rises well above its ground box, so pad the top generously.
-    const x0 = cam.worldView.x - pad;
-    const x1 = cam.worldView.right + pad;
-    const y0 = cam.worldView.y - pad - 128;
-    const y1 = cam.worldView.bottom + pad + this.maxLevel * lh;
-    // Anchor row: the cell's grid diamond FRONT vertex — groundTop (the surface
-    // diamond's top row) + the diamond's full height (2·dy). A prop's opaque
-    // BOTTOM (its base V) is planted here so it sits IN the grid cell, not one
-    // level below it. maps2's propdemo aligns to the tile's SKIRT bottom (row
-    // 54) instead, which drops every prop a full elevation level — the base V
-    // ended up under the grid V (playtester). The skirt is the flat tile's own
-    // front face; a prop is not part of that face.
-    const anchorRow = (this.tileBases?.groundTop ?? 8) + 2 * dy;
-    // INDOORS a prop outside my room is DRAWN like the ground it stands on —
-    // it renders below the multiply overlay, so zero ambient blacks it out for
-    // free and a torch through the doorway finds it. Its GLOW STAMP is another
-    // matter: that is a light source, additive into the glow field, and a
-    // glowing mushroom out on the grass would be the one thing lighting the
-    // world you shut the door on. Art drawn, light suppressed — the same split
-    // the bonfire gets. (Measured on the shipped worlds: 3 props, all deep in
-    // the_island2's caves, can reach a room interior at all; none near a house.)
-    const mask = this.indoorInside ? this.indoorMask : null;
-    const top = this.indoorTop;
-    for (const p of props) {
-      const propOut = !!mask && !((mask.get(p.row * this.world.width + p.col) ?? 0) & IN_ROOF);
-      const cell = this.world.rows[p.row]?.[p.col];
-      const key = pathTileKey(p.path);
-      if (!this.textures.exists(key)) continue;
-      // Indoors every column in the world is drawn truncated at the cut, so a
-      // prop rides its stump instead of hanging where the vanished hilltop
-      // used to be. Its own art is never shortened — it is one object, like a
-      // tree, and the occluder pass treats it the same way.
-      const lvl = mask ? Math.min(cell?.l ?? 0, top) : cell?.l ?? 0;
-      const u = p.col - p.row;
-      const v = p.col + p.row;
-      const bx = this.iso.ox + u * dx;
-      const byGround = this.iso.oy + v * dy - lvl * lh; // ground tile top-left
-      const b = this.propBounds(key); // opaque {top,bottom} rows in the art
-      const py = byGround + anchorRow - b.bottom; // base V on the grid diamond vertex
-      if (bx + tileSize < x0 || bx > x1 || py + b.bottom < y0 || py + b.top > y1) continue;
-      // Unlifted ground line (matches occluders + character depth), so painter
-      // order by (col+row) puts characters correctly in front / behind.
-      const depth = this.iso.oy + v * dy + dy;
-      this.propImgs.push(this.add.image(bx, py, key).setOrigin(0, 0).setDepth(depth));
-      // Self-emission: an emissive prop (a tiles2 tile with glow `sources`).
-      // Two SEPARATE jobs, mirroring how the bonfire works vs how it looked
-      // buggy before (root-caused with the playtester):
-      //   • light ON THE GROUND + CHARACTER: a strong pool at GROUND level in
-      //     the prop's real glow colour. Ground-anchored ⇒ the base lights up
-      //     AND a character brightens monotonically as it walks in (litChar).
-      //   • glow ON THE ART: the sharp per-source halos stamped high on the
-      //     tall tile so the runes/crystals bloom — cosmetic only (litChar
-      //     false), because sampling a HIGH point from the character's feet
-      //     made it brighter-then-darker as you approached.
-      const srcs = this.night && !propOut ? this.tiles2Src[p.path] : undefined;
-      if (srcs?.length) {
-        const mat = p.path.split("/")[1]; // tiles2/<material>/…
-        const em = this.tiles2Mat[mat];
-        const anim = ANIM[em?.anim ?? "static"] ?? 0;
-        // The prop's ACTUAL glow colour = strength-weighted mean of its source
-        // colours (a stone obelisk's material hue is blue, but its runes glow
-        // GREEN — the character was green, so the ground must be too), plus a
-        // representative strength for the pool intensity.
-        let cr = 0, cg = 0, cb = 0, sw = 0;
-        for (const g of srcs) {
-          cr += g.color[0] * g.s;
-          cg += g.color[1] * g.s;
-          cb += g.color[2] * g.s;
-          sw += g.s;
-        }
-        const glowColor: [number, number, number] =
-          sw > 0 ? [cr / sw, cg / sw, cb / sw] : em?.color ?? [1, 1, 1];
-        const avgS = srcs.length ? sw / srcs.length : 0;
-        // (a) GROUND POOL — the bonfire-like wash at ground level, in the real
-        // glow colour. The ONLY stamp that tints characters (litChar). Nudged a
-        // few px toward the camera-front so the standing sprite doesn't sit on
-        // the brightest core.
-        const rCells = (em?.radius ?? 2) + 0.5;
-        this.propStamps.push({
-          x: bx + dx,
-          y: byGround + dy + 4,
-          radius: rCells * Math.SQRT2 * dx,
-          ry: rCells * Math.SQRT2 * dy,
-          color: glowColor,
-          alpha: Math.min(0.85, avgS * 0.7),
-          anim,
-          phase: ((((p.col * 40503) ^ (p.row * 12289)) >>> 0) % 628) / 100,
-          litChar: true,
-        });
-        // (b) HIGH HALOS — cosmetic bloom on the glowing pixels of the art
-        // itself (rendered into the glow field over the prop body). NOT used to
-        // tint characters (litChar:false) — see the field note in nightlight.ts.
-        for (let i = 0; i < srcs.length; i++) {
-          const g = srcs[i];
-          const phase = ((((p.col * 73856093) ^ (p.row * 19349663) ^ (i * 83492791)) >>> 0) % 628) / 100;
-          this.propStamps.push({
-            x: bx + g.x,
-            y: py + g.y,
-            radius: Math.min(90, 8 + g.r * 4),
-            color: g.color,
-            alpha: Math.min(1, g.s * 0.4),
-            anim,
-            phase,
-            litChar: false,
-          });
-        }
-      }
-      // Register as a SOLID billboard occluder so a character standing behind
-      // the prop is hidden by it (the per-frame depth test's solidArtOver
-      // branch), instead of always drawing on top.
-      this.occluderMeta.push({
-        col: p.col,
-        row: p.row,
-        top: lvl + 1, // rises at least one level above its cell → "higher"
-        solid: true,
-        depth,
-        x0: bx,
-        x1: bx + tileSize,
-        y0: py + b.top,
-        y1: py + b.bottom,
-      });
+    // MAPS3: the column's art comes from tiles3, not from a baked path. Same
+    // cull boxes, same occluderMeta contract, same atomic rebuild — scenery
+    // rides here for exactly the reason props do (see rebuildProps).
+    if (this.maps3) {
+      this.occCulled = this.tiles3Occluders(u0, u1, v0, v1, mask, cuts, top, shows, columnShows);
+      this.ps();
+      this.rebuildScenery(cam);
+      this.pe("rebuildScenery");
+      // No glow field: tiles2/emission.json is a tiles2 product and a v3 world
+      // references none of it. An empty stamp list is what the night pipeline
+      // already does for a world with no emissive art.
+      this.glowStamps = [];
+      /* THE COVER INDEX, which this early return skipped on EVERY maps3 world.
+       * It is the last line of the maps2 path for a reason: the occluder images
+       * have just been destroyed and recreated, so this is the one moment their
+       * broad-phase index can go stale. Returning before it left `coverBuckets`
+       * empty, so `coverCandidates` found nothing for any body, nothing was ever
+       * COVERED, and the pixel-exact lit copy drew over every wall and roof in
+       * the world — the player standing on top of a house he was behind. The
+       * depth sort was right the whole time; the second copy was not. */
+      this.rebuildCoverIndex();
+      // WHAT THE POOL DID NOT GIVE BACK is what actually left the window.
+      const tLeft = performance.now();
+      const leftover: Phaser.GameObjects.Image[] = [];
+      for (const arr of this.occPool.values()) for (const im of arr) leftover.push(im);
+      this.occPool.clear();
+      this.destroyBatch(leftover);
+      this.occDestroyMs += performance.now() - tLeft;
+      return;
     }
   }
 
-  /** Opaque vertical extent {top,bottom} (rows) of a prop texture, measured
-   * once from its alpha and cached — props pad their 64×128 canvas differently
-   * per object, so the anchor + occluder box need the real content rows. */
-  private propBoundsCache = new Map<string, { top: number; bottom: number }>();
-  private propBounds(key: string): { top: number; bottom: number } {
-    let b = this.propBoundsCache.get(key);
-    if (b) return b;
-    b = { top: 0, bottom: 63 };
-    try {
-      const src = this.textures.get(key).getSourceImage() as CanvasImageSource & {
-        width: number;
-        height: number;
-      };
-      const w = src.width, h = src.height;
-      const cnv = document.createElement("canvas");
-      cnv.width = w;
-      cnv.height = h;
-      const ctx = cnv.getContext("2d", { willReadFrequently: true });
-      if (ctx) {
-        ctx.drawImage(src, 0, 0);
-        const d = ctx.getImageData(0, 0, w, h).data;
-        let top = -1, bottom = -1;
-        for (let y = 0; y < h; y++) {
-          let op = false;
-          for (let x = 0; x < w; x++)
-            if (d[(y * w + x) * 4 + 3] > 16) { op = true; break; }
-          if (op) {
-            if (top < 0) top = y;
-            bottom = y;
-          }
-        }
-        if (bottom >= 0) b = { top, bottom };
-      }
-    } catch {
-      // Unreadable source (shouldn't happen same-origin) — keep the fallback.
-    }
-    this.propBoundsCache.set(key, b);
-    return b;
-  }
-
-  /** Emission glow POOLS as elliptical stamps in the additive glow field.
-   *
-   * One cluster bucket per EMISSION_BUCKET cells of glowing same-category
-   * cells (top pool + a floating pool in front of each exposed s/e face —
-   * the top pool alone left a tall column's base wall pitch dark). Formerly
-   * these were shader light slots and only the nearest few
-   * won one, so walking re-ranked the winners and pools popped on/off deep
-   * inside the viewport. The stamp field is unlimited, and the EMISSION_PAD
-   * walk window exceeds the largest pool's reach plus the 96px rebuild
-   * drift — a culled pool's entire influence is off-screen, always.
-   *
-   * The pool's grid-circular falloff maps through the iso projection to an
-   * axis-aligned screen ellipse (1 cell of grid distance = √2·dx horizontal,
-   * √2·dy vertical at the extremes), so pool stamps carry ry = radius·dy/dx.
-   * Pools carry their category's anim mode: fire pools flicker with the
-   * gust envelope, crystal pools breathe with the slow pulse (see
-   * emissionWave — the calm "alive" waveform the maintainer asked for). */
-  private buildPoolStamps(cam: Phaser.Cameras.Scene2D.Camera): GlowStamp[] {
-    if (!this.world || !this.night) return [];
-    const { dx, dy, lh } = MAP_GEOMETRY;
-    const buckets = new Map<
-      string,
-      { color: [number, number, number]; strength: number; radius: number; anim: number; n: number; sc: number; sr: number; z: number }
-    >();
-    const x0 = cam.worldView.x - EMISSION_PAD;
-    const x1 = cam.worldView.right + EMISSION_PAD;
-    const y0 = cam.worldView.y - EMISSION_PAD;
-    const y1 = cam.worldView.bottom + EMISSION_PAD + this.maxLevel * lh;
-    const u0 = Math.floor((x0 - this.iso.ox) / dx) - 1;
-    const u1 = Math.ceil((x1 - this.iso.ox) / dx) + 1;
-    const v0 = Math.max(0, Math.floor((y0 - this.iso.oy) / dy) - 1);
-    const v1 = Math.ceil((y1 - this.iso.oy) / dy) + 1;
-    for (let v = v0; v <= v1; v++) {
-      for (let u = u0; u <= u1; u++) {
-        if ((u + v) & 1) continue;
-        const col = (u + v) / 2;
-        const row = (v - u) / 2;
-        const cell = this.world.rows[row]?.[col];
-        if (!cell) continue;
-        const em = this.emission[cell.t];
-        if (!em) continue;
-        if (em.sources && !(em.sources[String(cell.v)]?.length ?? 0)) continue;
-        const sample = (kind: string, sc: number, sr: number, sz: number) => {
-          const bk = `${cell.t}:${kind}:${Math.floor(col / EMISSION_BUCKET)}:${Math.floor(row / EMISSION_BUCKET)}`;
-          let b = buckets.get(bk);
-          if (!b) {
-            b = {
-              color: em.color,
-              strength: em.strength,
-              radius: em.radius,
-              anim: em.anim === "flicker" ? 2 : em.anim === "pulse" ? 1 : 0,
-              n: 0,
-              sc: 0,
-              sr: 0,
-              z: 0,
-            };
-            buckets.set(bk, b);
-          }
-          b.n++;
-          b.sc += sc;
-          b.sr += sr;
-          b.z += sz;
-        };
-        // Top glow pool: lights the surface around the tile.
-        sample("t", col + 0.5, row + 0.5, cell.l + 0.6);
-        // Exposed SIDE FACES are area lights of their own: a pool floating
-        // in FRONT of the face at mid-face height.
-        const lS = this.world.rows[row + 1]?.[col]?.l;
-        const lE = this.world.rows[row]?.[col + 1]?.l;
-        if (lS !== undefined && cell.l - lS >= 1)
-          sample("s", col + 0.5, row + 1.35, (cell.l + lS) / 2 + 0.3);
-        if (lE !== undefined && cell.l - lE >= 1)
-          sample("e", col + 1.35, row + 0.5, (cell.l + lE) / 2 + 0.3);
-      }
-    }
-    const out: GlowStamp[] = [];
-    for (const b of buckets.values()) {
-      const col = b.sc / b.n;
-      const row = b.sr / b.n;
-      const z = b.z / b.n; // mean sample height (tops carry their own +0.6)
-      // Pool radius grows gently with cluster size (a lake glows wider than
-      // a vein). √2·dx per cell: the widest point of the grid circle's
-      // screen ellipse (cells at ±45° to the axes project the farthest).
-      const rCells = b.radius * (1 + 0.35 * Math.sqrt(b.n - 1));
-      const phase = ((((Math.round(col * 8) * 73856093) ^ (Math.round(row * 8) * 19349663)) >>> 0) % 628) / 100;
-      out.push({
-        x: this.iso.ox + (col - row) * dx + dx,
-        y: this.iso.oy + 8 + (col + row) * dy - z * lh,
-        radius: rCells * Math.SQRT2 * dx,
-        ry: rCells * Math.SQRT2 * dy,
-        color: b.color,
-        // Calibrated against the former shader pools by the verify-emission
-        // field probes: the old path CULLED to the 8 nearest pools, so in a
-        // dense lake only part of the cluster ever lit at once — with every
-        // pool present the per-pool weight must sit lower (0.7 washed the
-        // crystal lake's field to near-white and broke its hue dominance).
-        alpha: Math.min(1, b.strength * 0.42),
-        anim: b.anim,
-        phase,
-      });
-    }
-    return out;
-  }
 
   /** A burning campfire beside the spawn point — the gathering spot, and the
    * "you are home" landmark (maintainer 2026-07-30). Anchored to the WORLD'S
@@ -10064,6 +19917,201 @@ export class WorldScene extends Phaser.Scene {
    * alone in unrelated terrain on every map. findSpawn then snaps to standable
    * ground exactly as the server does, so both sides agree without a round
    * trip. Its fire feeds the night shader. */
+
+  /** Fill the WORLD light slots for this frame: the campfire scenery + every
+   * emissive source whose pool can touch the view, closest to the camera
+   * first, at most WORLD_LIGHT_SLOTS of them (the QA probe light consumes one
+   * when set, so the total can never exceed MAX_SHADER_LIGHTS). The
+   * reservation is STRICT — empty torch/ambient/fx slots are never lent out,
+   * because a loan would mean a world light pops the moment the torch is
+   * struck. Losers keep their glow stamp (the old system IS the overflow
+   * fallback), so an over-budget spot degrades to exactly yesterday's look. */
+  private pickWorldLights(sl: ShaderLight[], fireLit: boolean, dtMs: number) {
+    const room = Math.max(0, WORLD_LIGHT_SLOTS - (this.probeLight ? 1 : 0));
+    const cam = this.cameras.main;
+    const wv = cam.worldView;
+    const cx = cam.midPoint.x;
+    const cy = cam.midPoint.y;
+    type Cand = { key: string; dist: number; edge: number; l: ShaderLight };
+    const cands = new Map<string, Cand>();
+    // How far OUTSIDE the view rect a pool's reach ends: negative while the
+    // pool can touch the screen. Enter and exit use DIFFERENT margins (space
+    // hysteresis): a light comes alive just before its pool scrolls on, but a
+    // HELD one is only released once it is comfortably past — a pool sitting
+    // exactly on the boundary must not flicker candidacy.
+    const edgeOf = (sx: number, sy: number, reach: number) =>
+      Math.max(wv.x - (sx + reach), sx - reach - wv.right, wv.y - (sy + reach), sy - reach - wv.bottom);
+    if (fireLit && this.campfire) {
+      const c = this.campfire;
+      const reach = 7 * this.geom.dx;
+      const edge = edgeOf(c.x, c.y, reach);
+      if (edge < LIGHT_EXIT_PX)
+        cands.set("campfire", {
+          key: "campfire",
+          dist: Math.hypot(c.x - cx, c.y - cy),
+          edge,
+          l: { col: c.col, row: c.row, z: c.z, radius: 7, color: [1.9, 0.88, 0.3], flicker: 1 },
+        });
+    }
+    for (const s of this.sceneryLightSources.length ? this.emissiveSources.concat(this.sceneryLightSources) : this.emissiveSources) {
+      // A pool reaches radius*dx px past its anchor — the light must be LIVE
+      // before its source scrolls on, or pools visibly pop at the screen edge.
+      const reach = s.radius * this.geom.dx + 128;
+      const edge = edgeOf(s.sx, s.sy, reach);
+      if (edge >= LIGHT_EXIT_PX) continue;
+      // A SEALED-ROOM fire is indoor-only: lit exactly to the degree I am in
+      // its room, invisible from outside. Without this, the LOS march's 0.22
+      // bounce floor let 22% of the indoor bonfire pour through the house
+      // walls at night (maintainer 2026-08-12: "I'm outside of the house and
+      // I can clearly see there is a light source inside bleeding through").
+      // Scaled by the GRADE — the same ramp the room's ambient rides — so
+      // walking out fades the fire with the room instead of popping it.
+      let gain = 1;
+      if (s.sealed) {
+        if (!(this.roomMask && this.inMyRoom(s.col, s.row))) continue;
+        gain = this.indoorGrade();
+        if (gain <= 0.01) continue;
+      }
+      cands.set(s.id, {
+        key: s.id,
+        dist: Math.hypot(s.sx - cx, s.sy - cy),
+        edge,
+        l: {
+          col: s.col,
+          row: s.row,
+          z: s.z,
+          // Sign of radius: negative = the shader's shadow-free glow pool.
+          radius: s.shadows ? s.radius : -s.radius,
+          color: gain === 1 ? s.color : [s.color[0] * gain, s.color[1] * gain, s.color[2] * gain],
+          flicker: s.flicker,
+        },
+      });
+    }
+    // TENURE, not a per-frame ranking (maintainer 2026-08-12, running across
+    // glow_test: "a lot of light sources pop in and out inside the view…
+    // maintain a light for as long as it's still impacting the game view
+    // before you free up its slot"). Re-ranking by distance every frame means
+    // slots change hands while BOTH fires are mid-screen — the loser snaps to
+    // stamp-look, the winner snaps to full light, a visible pop each handover.
+    // So: a HOLDER keeps its slot until its pool stops touching the view (or
+    // its candidacy dies — sealed rooms fade themselves out first via `gain`).
+    // Newcomers take only genuinely FREE slots, nearest first, and RAMP in
+    // over LIGHT_RAMP_MS while their pool stamp crossfades out — an
+    // over-budget map degrades to "some fires are stamp-only while visible",
+    // which is a look, never an event.
+    // Release: a holder leaves tenure only when its pool is a full
+    // LIGHT_EXIT_PX beyond touching the view (it fell out of `cands`), or its
+    // candidacy died (sealed room left — which faded itself to zero via
+    // `gain` first), or its RETIREMENT dissolve below reached zero.
+    // Acquisition requires edge < 0 (actually touching), so entry is strictly
+    // TIGHTER than release: a boundary hoverer can neither flicker in nor out.
+    for (const [key, t] of this.slotTenure) {
+      if (!cands.has(key) || (t.dir < 0 && t.ramp <= 0)) this.slotTenure.delete(key);
+    }
+    // Probe shrinks the room (QA): evict the farthest holders to fit.
+    while (this.slotTenure.size > room) {
+      let worst: string | null = null;
+      let worstDist = -1;
+      for (const key of this.slotTenure.keys()) {
+        const d = cands.get(key)?.dist ?? Infinity;
+        if (d > worstDist) {
+          worstDist = d;
+          worst = key;
+        }
+      }
+      if (worst === null) break;
+      this.slotTenure.delete(worst);
+    }
+    // GRACEFUL RETIREMENT (round 4, maintainer 2026-08-12: "are you holding a
+    // slot too long to fulfil never-pop, making it impossible for new scenes
+    // to show real spot-lights?"). Hold-until-exit alone biases the slots
+    // toward the TRAILING half of a run — the scene you are running INTO
+    // stays stamp-only while lights you are leaving hog their slots. So under
+    // pressure a clearly-outranked holder is DISSOLVED out: the same 450ms
+    // crossfade an acquisition uses, in reverse — light down, pool stamp back
+    // up — then its slot frees for the front. Rules that keep it calm: only
+    // fully-faded-in holders retire (a mid-fade flip would wobble), a waiting
+    // candidate must beat the holder by LIGHT_STEAL_MARGIN (hysteresis — the
+    // pair can't ping-pong), and at most LIGHT_RETIRE_MAX dissolves run at
+    // once, so heavy pressure reads as fires breathing one by one, never a
+    // wave. NOTHING here snaps: this trades "held too long" for a second
+    // dissolve, not for the pop the tenure rule exists to prevent.
+    const waiting = [...cands.values()]
+      .filter((c) => c.edge < 0 && !this.slotTenure.has(c.key))
+      .sort((a, b) => a.dist - b.dist);
+    let retiring = 0;
+    for (const t of this.slotTenure.values()) if (t.dir < 0) retiring++;
+    if (waiting.length && this.slotTenure.size >= room) {
+      let wi = 0;
+      while (retiring < LIGHT_RETIRE_MAX && wi < waiting.length) {
+        // The worst SETTLED holder (full ramp, not already retiring).
+        let worst: string | null = null;
+        let worstDist = -1;
+        for (const [key, t] of this.slotTenure) {
+          if (t.dir < 0 || t.ramp < 1) continue;
+          const d = cands.get(key)?.dist ?? Infinity;
+          if (d > worstDist) {
+            worstDist = d;
+            worst = key;
+          }
+        }
+        if (worst === null || waiting[wi].dist + LIGHT_STEAL_MARGIN >= worstDist) break;
+        this.slotTenure.get(worst)!.dir = -1;
+        retiring++;
+        wi++;
+      }
+    }
+    // Free slots go to the nearest unslotted candidates. Most acquisitions
+    // happen as a pool ENTERS the view (edge ≈ 0) where the ramp is invisible;
+    // a mid-view acquisition (a slot freed while a fire is centre screen)
+    // fades in instead of popping on.
+    if (this.slotTenure.size < room) {
+      for (const c of waiting) {
+        if (this.slotTenure.size >= room) break;
+        this.slotTenure.set(c.key, { ramp: 0, dir: 1 });
+      }
+    }
+    // QA: the fairness numbers the tenure gate asserts on — captured AFTER
+    // this frame's decisions, or a sample can show "pressure, nothing
+    // retiring" for a retirement that started the same frame.
+    {
+      let worstSettled = -1;
+      for (const [key, t] of this.slotTenure) {
+        if (t.dir < 0 || t.ramp < 1) continue;
+        worstSettled = Math.max(worstSettled, cands.get(key)?.dist ?? -1);
+      }
+      const stillWaiting = waiting.filter((c) => !this.slotTenure.has(c.key));
+      this.lastTenureStats = {
+        waitingBest: stillWaiting.length ? Math.round(stillWaiting[0].dist) : null,
+        worstSettled: worstSettled < 0 ? null : Math.round(worstSettled),
+        retiring: [...this.slotTenure.entries()].filter(([, t]) => t.dir < 0).map(([k]) => k),
+      };
+    }
+    this.lightOverflow = Math.max(0, cands.size - this.slotTenure.size);
+    this.slotLit.clear();
+    // STABLE PUSH ORDER: the shader's flicker phase is derived from the SLOT
+    // INDEX (uAnimTime*2.9 + i*5.3), not from the light itself — a shuffled
+    // order re-phases every flame. Tenure keys, sorted, are stable while the
+    // held set is.
+    const held = [...this.slotTenure.keys()].sort();
+    this.slotEdges = {};
+    for (const key of held) {
+      const c = cands.get(key);
+      const t = this.slotTenure.get(key)!;
+      if (!c) continue;
+      this.slotEdges[key] = Math.round(c.edge);
+      t.ramp = Math.max(0, Math.min(1, t.ramp + (t.dir * dtMs) / LIGHT_RAMP_MS));
+      const k = t.ramp * t.ramp * (3 - 2 * t.ramp); // smoothstep — no snap at either end
+      if (sl.length >= MAX_SHADER_LIGHTS) break;
+      sl.push(
+        k >= 1
+          ? c.l
+          : { ...c.l, color: [c.l.color[0] * k, c.l.color[1] * k, c.l.color[2] * k] },
+      );
+      this.slotLit.add(key);
+    }
+  }
+
   private placeCampfire() {
     if (!this.world || !this.terrain) return;
     if (!this.textures.exists(CAMPFIRE_KEY)) {
@@ -10098,7 +20146,7 @@ export class WorldScene extends Phaser.Scene {
     const p = this.project(fx, fy);
     // Same depth formula as players (unlifted ground y), nudged behind a
     // player standing on the very same cell.
-    const depth = p.y + lvl * MAP_GEOMETRY.lh + 0.4;
+    const depth = p.y + lvl * this.geom.lh + 0.4;
     if (!this.anims.exists(CAMPFIRE_KEY)) {
       this.anims.create({
         key: CAMPFIRE_KEY,
@@ -10159,7 +20207,7 @@ export class WorldScene extends Phaser.Scene {
    * the point where a character's feet stand, lifted by that cell's elevation. */
   private project(px: number, py: number): { x: number; y: number } {
     const f = this.projectFlat(px, py);
-    return { x: f.x, y: f.y - f.lvl * MAP_GEOMETRY.lh };
+    return { x: f.x, y: f.y - f.lvl * this.geom.lh };
   }
 
   /** Iso projection split into the FLAT (unlifted) ground point and the cell's
@@ -10168,7 +20216,7 @@ export class WorldScene extends Phaser.Scene {
    * only `lvl` steps at cell boundaries. */
   private projectFlat(px: number, py: number): { x: number; y: number; lvl: number } {
     if (!this.world) return { x: px, y: py, lvl: 0 };
-    const { dx, dy, tile } = MAP_GEOMETRY;
+    const { dx, dy, tile } = this.geom;
     const W = this.world.width;
     const H = this.world.height;
     const col = Math.max(0, Math.min(W - 0.001, px / CELL_WU)); // 1 cell = CELL_WU wu
@@ -10189,7 +20237,7 @@ export class WorldScene extends Phaser.Scene {
    * ground below instead of teleporting.
    */
   private stepElevation(av: Avatar, target: number, dt: number): void {
-    const s = integrateFall({ elev: av.elev, fallV: av.fallV, falling: av.falling }, target, dt, MAP_GEOMETRY.lh);
+    const s = integrateFall({ elev: av.elev, fallV: av.fallV, falling: av.falling }, target, dt, this.geom.lh);
     av.elev = s.elev;
     av.fallV = s.fallV;
     av.falling = s.falling;

@@ -1,0 +1,271 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-14T02:46:01+00:00",
+  "id": "cattail_clump_020",
+  "group": "cattail_clumps",
+  "rank": 33,
+  "index": 20,
+  "name": "Dark marsh cattails 020",
+  "lights": null,
+  "variety": "dark marsh cattails",
+  "modifier": "on a low grassy hummock",
+  "glow_concept": "a foxfire ring around the wet base",
+  "prompt": "a clump of cattails with strap-like arching leaves and brown velvet seed heads on tall straight stalks, growing from marshy ground, dark marsh cattails, on a low grassy hummock, roughly six feet tall, human height, self-emissive at night, softly radiating light: a foxfire ring around the wet base",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 64,
+  "sprite": "cattail_clumps/cattail_clump_020/sprite.webp",
+  "placement": {
+    "world_height_m": 1.036,
+    "world_px_height": 53,
+    "character_height_px": 87,
+    "character_height_m": 1.7,
+    "note": "ONE SCENERY PIXEL IS ONE PLAYER PIXEL. world_px_height IS the art's own alpha bbox height, so scenery is placed into the world at 1:1 exactly as the avatar is (setScale(1)) and the two share one pixel grid. The CAMERA still zooms the whole scene \u2014 that is uniform and correct; what must never happen is scenery being resampled on its own, against the player. world_height_m is what the art reads as beside a 87px character; declared_height_m is what it was once declared to be, and a gap between them means the ART is the wrong size.",
+    "declared_height_m": 1.73,
+    "content_box": [
+      14,
+      6,
+      52,
+      59
+    ],
+    "content_px_height": 53,
+    "canvas_render_px": 64
+  },
+  "pixellab_object_id": "45063c7c-e88d-452e-b792-a27d08e11510",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)",
+  "must_be_imbplemented_with_random_hflip": true,
+  "states": {
+    "LIT_1": {
+      "sprite": "cattail_clumps/cattail_clump_020/sprite.webp",
+      "pixellab_object_id": "45063c7c-e88d-452e-b792-a27d08e11510",
+      "generated_at": "2026-08-14T02:46:01+00:00"
+    },
+    "LIT_2": {
+      "sprite": "cattail_clumps/cattail_clump_020/lit_2/sprite.webp",
+      "pixellab_object_id": "3e0fc651-fbac-4dcb-9d8b-237b580c9998",
+      "generated_at": "2026-08-16T08:53:06+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.4749,
+      "glow_score": 0.0418,
+      "animations": {
+        "motion": {
+          "group_id": "6c852e97-2ee8-4205-99f3-b63bd860bb53",
+          "description": "This is the same picture in every frame. ONLY the green glow at the base brightens a little and returns. Nothing else moves, bends or leans, and nothing changes size, shape or position. The last frame must return to exactly how the first frame looks, so the loop joins. Nothing may become darker than it is in the first frame. Do not redraw anything else, and do not add or remove anything.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "cattail_clumps/cattail_clump_020/lit_2/animations/motion/00.webp",
+            "cattail_clumps/cattail_clump_020/lit_2/animations/motion/01.webp",
+            "cattail_clumps/cattail_clump_020/lit_2/animations/motion/02.webp",
+            "cattail_clumps/cattail_clump_020/lit_2/animations/motion/03.webp",
+            "cattail_clumps/cattail_clump_020/lit_2/animations/motion/04.webp"
+          ],
+          "strip": "cattail_clumps/cattail_clump_020/lit_2/animations/motion__strip.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-08-29T15:39:24+00:00",
+          "brief": "X38",
+          "review": "ANIMATION_PROBABLY_GOOD",
+          "review_metrics": {
+            "base_outline": 0.0
+          },
+          "light_frames": [
+            {
+              "intensity": 1.5,
+              "dx": 6.4,
+              "dy": 15.4
+            },
+            {
+              "intensity": 0.5,
+              "dx": 6.4,
+              "dy": 15.4
+            },
+            {
+              "intensity": 0.5,
+              "dx": 6.4,
+              "dy": 15.4
+            },
+            {
+              "intensity": 0.5,
+              "dx": 6.4,
+              "dy": 15.4
+            },
+            {
+              "intensity": 0.5,
+              "dx": 6.4,
+              "dy": 15.4
+            }
+          ]
+        }
+      }
+    },
+    "LIT_3": {
+      "sprite": "cattail_clumps/cattail_clump_020/lit_3/sprite.webp",
+      "pixellab_object_id": "2433fce3-0090-465f-8423-64ae4028f77e",
+      "generated_at": "2026-08-16T08:53:36+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.4393,
+      "glow_score": 0.0443,
+      "animations": {
+        "motion": {
+          "group_id": "cd945be2-ab05-4c49-b813-4371661dd717",
+          "description": "This is the same picture in every frame. ONLY the ring of cyan light at the base brightens a little and returns. It is lit and clearly visible in every frame, including the first. It gets only SLIGHTLY brighter -- never white, never washed out -- and keeps its own colour throughout: brightest in the middle, back to its first-frame brightness at the end. It stays exactly the same size and shape in every frame: it never grows and never spreads, only its brightness shifts. Every object stays the same kind of thing it is in the first frame and keeps its own colour: nothing turns into anything else. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour, no outline redrawn. The last frame matches the first exactly.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "cattail_clumps/cattail_clump_020/lit_3/animations/motion/00.webp",
+            "cattail_clumps/cattail_clump_020/lit_3/animations/motion/01.webp",
+            "cattail_clumps/cattail_clump_020/lit_3/animations/motion/02.webp",
+            "cattail_clumps/cattail_clump_020/lit_3/animations/motion/03.webp",
+            "cattail_clumps/cattail_clump_020/lit_3/animations/motion/04.webp"
+          ],
+          "strip": "cattail_clumps/cattail_clump_020/lit_3/animations/motion__strip.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-08-30T08:27:55+00:00",
+          "brief": "G22",
+          "review": "ANIMATION_PROBABLY_BAD",
+          "review_metrics": {
+            "class": "foliage",
+            "base": 0.9101,
+            "still": 0.141
+          },
+          "light_frames": [
+            {
+              "intensity": 0.5,
+              "dx": 10.2,
+              "dy": 15.5
+            },
+            {
+              "intensity": 0.5,
+              "dx": 1.5,
+              "dy": 15.5
+            },
+            {
+              "intensity": 1.5,
+              "dx": 1.2,
+              "dy": 20.4
+            },
+            {
+              "intensity": 1.5,
+              "dx": 0.7,
+              "dy": 19.9
+            },
+            {
+              "intensity": 0.5,
+              "dx": 5.5,
+              "dy": 19.5
+            }
+          ]
+        }
+      }
+    },
+    "LIT_4": {
+      "sprite": "cattail_clumps/cattail_clump_020/lit_4/sprite.webp",
+      "pixellab_object_id": "aeb24e3b-c43f-4e5a-a54e-6740f8f541d9",
+      "generated_at": "2026-08-16T08:56:10+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.689,
+      "glow_score": 0.0489,
+      "animations": {
+        "motion": {
+          "group_id": "d96764c9-8aa7-4941-a7f7-5d38c17d821b",
+          "description": "This is the same picture in every frame. ONLY the cyan light at the base brightens a little and returns. It is lit and clearly visible in every frame, including the first. It gets only SLIGHTLY brighter -- never white, never washed out -- and keeps its own colour throughout: brightest in the middle, back to its first-frame brightness at the end. It stays exactly the same size and shape in every frame: it never grows and never spreads, only its brightness shifts. Every object stays the same kind of thing it is in the first frame and keeps its own colour: nothing turns into anything else. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour, no outline redrawn. The last frame matches the first exactly.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "cattail_clumps/cattail_clump_020/lit_4/animations/motion/00.webp",
+            "cattail_clumps/cattail_clump_020/lit_4/animations/motion/01.webp",
+            "cattail_clumps/cattail_clump_020/lit_4/animations/motion/02.webp",
+            "cattail_clumps/cattail_clump_020/lit_4/animations/motion/03.webp",
+            "cattail_clumps/cattail_clump_020/lit_4/animations/motion/04.webp"
+          ],
+          "strip": "cattail_clumps/cattail_clump_020/lit_4/animations/motion__strip.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-08-30T08:16:32+00:00",
+          "brief": "G23",
+          "review": "ANIMATION_PROBABLY_GOOD",
+          "review_metrics": {
+            "base_outline": 0.0
+          },
+          "light_frames": [
+            {
+              "intensity": 0.5,
+              "dx": 2.5,
+              "dy": 21.0
+            },
+            {
+              "intensity": 0.5,
+              "dx": 0.0,
+              "dy": 14.5
+            },
+            {
+              "intensity": 1.5,
+              "dx": 0.2,
+              "dy": 21.3
+            },
+            {
+              "intensity": 0.5,
+              "dx": 14.0,
+              "dy": 18.0
+            },
+            {
+              "intensity": 1.5,
+              "dx": 0.7,
+              "dy": 20.6
+            }
+          ]
+        }
+      }
+    }
+  },
+  "collision": true,
+  "hitbox_shape": "ellipse",
+  "light": {
+    "strength": 0.05,
+    "color": "#9fe4ff",
+    "radius": 1,
+    "reference": "the spawn bonfire is 1.0 (radius 7); strength 0 is no light",
+    "states": {
+      "LIT_1": {
+        "strength": 0.05,
+        "color": "#9fe4ff",
+        "radius": 1
+      },
+      "LIT_2": {
+        "strength": 0.05,
+        "color": "#9fe4ff",
+        "radius": 1
+      },
+      "LIT_3": {
+        "strength": 0.05,
+        "color": "#9fe4ff",
+        "radius": 1
+      },
+      "LIT_4": {
+        "strength": 0.05,
+        "color": "#9fe4ff",
+        "radius": 1
+      }
+    },
+    "kind": "glow/water",
+    "flame": false,
+    "embers": false
+  }
+}

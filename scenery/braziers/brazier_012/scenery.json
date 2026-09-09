@@ -1,0 +1,317 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-14T00:47:18+00:00",
+  "id": "brazier_012",
+  "group": "braziers",
+  "rank": 4,
+  "index": 12,
+  "name": "Ship's cresset basket 012",
+  "lights": null,
+  "variety": "ship's cresset basket",
+  "modifier": "patched with mismatched materials",
+  "glow_concept": "molten soulstone shards glowing among coals",
+  "prompt": "a wide metal fire bowl standing on three splayed legs, heaped with coals and split logs, ship's cresset basket, patched with mismatched materials, waist-high, self-emissive at night, softly radiating light: molten soulstone shards glowing among coals",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 64,
+  "sprite": "braziers/brazier_012/sprite.webp",
+  "placement": {
+    "world_height_m": 0.997,
+    "world_px_height": 51,
+    "character_height_px": 87,
+    "character_height_m": 1.7,
+    "note": "ONE SCENERY PIXEL IS ONE PLAYER PIXEL. world_px_height IS the art's own alpha bbox height, so scenery is placed into the world at 1:1 exactly as the avatar is (setScale(1)) and the two share one pixel grid. The CAMERA still zooms the whole scene \u2014 that is uniform and correct; what must never happen is scenery being resampled on its own, against the player. world_height_m is what the art reads as beside a 87px character; declared_height_m is what it was once declared to be, and a gap between them means the ART is the wrong size.",
+    "declared_height_m": 0.78,
+    "content_box": [
+      9,
+      12,
+      56,
+      63
+    ],
+    "content_px_height": 51,
+    "canvas_render_px": 64
+  },
+  "pixellab_object_id": "2a6bd1fd-50bf-4962-b0ad-b9e3a3c8e017",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)",
+  "must_be_imbplemented_with_random_hflip": true,
+  "states": {
+    "LIT_2": {
+      "sprite": "braziers/brazier_012/lit_2/sprite.webp",
+      "pixellab_object_id": "318c1b67-36db-44de-bc94-4db11089c499",
+      "generated_at": "2026-08-15T20:41:22+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.653,
+      "glow_score": 0.1872,
+      "rotations": {
+        "south-east": "braziers/brazier_012/lit_2/rotations/south-east.webp",
+        "south-west": "braziers/brazier_012/lit_2/rotations/south-west.webp",
+        "south": "braziers/brazier_012/lit_2/sprite.webp"
+      },
+      "animations": {
+        "motion": {
+          "group_id": "535ed982-82ec-43df-ba5c-d46c294bfe3c",
+          "description": "This is the same picture in every frame. ONLY the fire in the bowl flickers. Everything else in the picture is copied from the first frame exactly, pixel for pixel, unchanged in shape, size, position and colour. No outline anywhere is redrawn. The last frame matches the first frame exactly, so the loop joins. Nothing anywhere becomes darker, lighter or a different colour except the one thing named above.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "braziers/brazier_012/lit_2/animations/motion/00.webp",
+            "braziers/brazier_012/lit_2/animations/motion/01.webp",
+            "braziers/brazier_012/lit_2/animations/motion/02.webp",
+            "braziers/brazier_012/lit_2/animations/motion/03.webp",
+            "braziers/brazier_012/lit_2/animations/motion/04.webp"
+          ],
+          "strip": "braziers/brazier_012/lit_2/animations/motion__strip.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-08-29T16:15:07+00:00",
+          "brief": "Y1",
+          "review": "ANIMATION_PROBABLY_GOOD",
+          "review_metrics": {
+            "class": "fire",
+            "base": 0.019,
+            "still": 0.814
+          },
+          "light_frames": [
+            {
+              "intensity": 0.996,
+              "dx": -0.6,
+              "dy": -14.9
+            },
+            {
+              "intensity": 1.182,
+              "dx": -0.2,
+              "dy": -16.2
+            },
+            {
+              "intensity": 0.956,
+              "dx": -0.4,
+              "dy": -15.1
+            },
+            {
+              "intensity": 0.957,
+              "dx": -0.3,
+              "dy": -14.3
+            },
+            {
+              "intensity": 0.909,
+              "dx": -0.4,
+              "dy": -14.0
+            }
+          ]
+        }
+      }
+    },
+    "LIT_3": {
+      "sprite": "braziers/brazier_012/lit_3/sprite.webp",
+      "pixellab_object_id": "78399ee2-8056-4569-a59f-df170398d338",
+      "generated_at": "2026-08-15T20:41:43+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.8652,
+      "glow_score": 0.0245,
+      "rotations": {
+        "south-east": "braziers/brazier_012/lit_3/rotations/south-east.webp",
+        "south-west": "braziers/brazier_012/lit_3/rotations/south-west.webp",
+        "south": "braziers/brazier_012/lit_3/sprite.webp"
+      },
+      "animations": {
+        "motion": {
+          "group_id": "0d5cc1b9-8d0c-4edb-9309-1d8e174db8ad",
+          "description": "This is the same picture in every frame. ONLY the fire in the box flickers. It is lit and clearly visible in every single frame, including the first. Everything else in the picture is copied from the first frame exactly, pixel for pixel, unchanged in shape, size, position and colour. No outline anywhere is redrawn. The last frame matches the first frame exactly, so the loop joins.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "braziers/brazier_012/lit_3/animations/motion/00.webp",
+            "braziers/brazier_012/lit_3/animations/motion/01.webp",
+            "braziers/brazier_012/lit_3/animations/motion/02.webp",
+            "braziers/brazier_012/lit_3/animations/motion/03.webp",
+            "braziers/brazier_012/lit_3/animations/motion/04.webp"
+          ],
+          "strip": "braziers/brazier_012/lit_3/animations/motion__strip.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-08-29T16:54:43+00:00",
+          "brief": "Z7",
+          "review": "ANIMATION_PROBABLY_GOOD",
+          "review_metrics": {
+            "class": "fire",
+            "base": 0.0,
+            "still": 0.843
+          },
+          "light_frames": [
+            {
+              "intensity": 1.062,
+              "dx": 0.1,
+              "dy": -8.3
+            },
+            {
+              "intensity": 1.073,
+              "dx": 0.3,
+              "dy": -8.1
+            },
+            {
+              "intensity": 0.974,
+              "dx": 1.0,
+              "dy": -7.9
+            },
+            {
+              "intensity": 0.972,
+              "dx": 1.3,
+              "dy": -7.9
+            },
+            {
+              "intensity": 0.918,
+              "dx": -0.1,
+              "dy": -7.9
+            }
+          ]
+        }
+      }
+    },
+    "LIT_4": {
+      "sprite": "braziers/brazier_012/lit_4/sprite.webp",
+      "pixellab_object_id": "ae11fdc7-bbbf-41d7-a426-91dc224c28aa",
+      "generated_at": "2026-08-15T20:41:23+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.6371,
+      "glow_score": 0.0105,
+      "rotations": {
+        "south-east": "braziers/brazier_012/lit_4/rotations/south-east.webp",
+        "south-west": "braziers/brazier_012/lit_4/rotations/south-west.webp",
+        "south": "braziers/brazier_012/lit_4/sprite.webp"
+      },
+      "animations": {
+        "motion": {
+          "group_id": "a1608813-3d7b-426f-93f6-cbd6b6d44eca",
+          "description": "This is the same picture in every frame. ONLY the flame in the bowl flickers. It is lit and clearly visible in every frame, including the first. It stays exactly the same size and shape in every frame: it never grows and never spreads, only its inner detail shifts. Nothing is added or removed anywhere: every object appears in every frame, the same number of them, in the same places, at the same size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour, no outline redrawn. The last frame matches the first exactly.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "braziers/brazier_012/lit_4/animations/motion/00.webp",
+            "braziers/brazier_012/lit_4/animations/motion/01.webp",
+            "braziers/brazier_012/lit_4/animations/motion/02.webp",
+            "braziers/brazier_012/lit_4/animations/motion/03.webp",
+            "braziers/brazier_012/lit_4/animations/motion/04.webp"
+          ],
+          "strip": "braziers/brazier_012/lit_4/animations/motion__strip.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-08-29T19:01:32+00:00",
+          "brief": "C5",
+          "review": "ANIMATION_PROBABLY_GOOD",
+          "review_metrics": {
+            "class": "fire",
+            "base": 0.0,
+            "still": 0.797
+          },
+          "light_frames": [
+            {
+              "intensity": 0.508,
+              "dx": 0.0,
+              "dy": -8.1
+            },
+            {
+              "intensity": 0.999,
+              "dx": 0.0,
+              "dy": -9.7
+            },
+            {
+              "intensity": 0.857,
+              "dx": -0.4,
+              "dy": -10.2
+            },
+            {
+              "intensity": 1.498,
+              "dx": -0.0,
+              "dy": -16.6
+            },
+            {
+              "intensity": 1.137,
+              "dx": -0.5,
+              "dy": -21.6
+            }
+          ]
+        }
+      }
+    },
+    "NOT_LIT_1": {
+      "sprite": "braziers/brazier_012/not_lit_1/sprite.webp",
+      "pixellab_object_id": "27f381b7-e551-41d4-9b0f-3e626a3c040e",
+      "generated_at": "2026-08-15T20:41:54+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.2412,
+      "glow_score": 0.0043,
+      "rotations": {
+        "south-east": "braziers/brazier_012/not_lit_1/rotations/south-east.webp",
+        "south-west": "braziers/brazier_012/not_lit_1/rotations/south-west.webp",
+        "south": "braziers/brazier_012/not_lit_1/sprite.webp"
+      }
+    },
+    "NOT_LIT_2": {
+      "sprite": "braziers/brazier_012/not_lit_2/sprite.webp",
+      "pixellab_object_id": "1f1beaa2-bfd2-40ae-a04b-d114818ef1da",
+      "generated_at": "2026-08-15T20:42:24+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.5945,
+      "glow_score": 0.0,
+      "rotations": {
+        "south-east": "braziers/brazier_012/not_lit_2/rotations/south-east.webp",
+        "south-west": "braziers/brazier_012/not_lit_2/rotations/south-west.webp",
+        "south": "braziers/brazier_012/not_lit_2/sprite.webp"
+      }
+    },
+    "NOT_LIT_3": {
+      "sprite": "braziers/brazier_012/sprite.webp",
+      "pixellab_object_id": "2a6bd1fd-50bf-4962-b0ad-b9e3a3c8e017",
+      "generated_at": "2026-08-14T00:47:18+00:00",
+      "relit_from": "LIT_1",
+      "rotations": {
+        "south-east": "braziers/brazier_012/rotations/south-east.webp",
+        "south-west": "braziers/brazier_012/rotations/south-west.webp",
+        "south": "braziers/brazier_012/sprite.webp"
+      }
+    }
+  },
+  "collision": true,
+  "hitbox_shape": "ellipse",
+  "light": {
+    "strength": 0.6,
+    "color": "#ffc96a",
+    "radius": 11,
+    "reference": "the spawn bonfire is 1.0 (radius 7); strength 0 is no light",
+    "states": {
+      "LIT_2": {
+        "strength": 0.72,
+        "color": "#ffc96a",
+        "radius": 13
+      },
+      "LIT_3": {
+        "strength": 0.48,
+        "color": "#ffb45c",
+        "radius": 9
+      },
+      "LIT_4": {
+        "strength": 0.6,
+        "color": "#ffbe85",
+        "radius": 11
+      }
+    },
+    "kind": "fire/open",
+    "flame": true,
+    "embers": true
+  }
+}

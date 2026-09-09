@@ -1,0 +1,132 @@
+{
+  "schema": "tiles3/tops@1",
+  "kind": "top_only",
+  "wall_is_meaningless": true,
+  "not_a_candidate_for": "x over y",
+  "ground": "black_rock",
+  "flavour": "detail",
+  "index": 119,
+  "seed": 17990,
+  "prompt": "black rock, a quartz vein in the middle, black rock all around the edge",
+  "palette_top": "#1e1d1e",
+  "tile_id": "1ae6e866-cc6f-4cdd-8ef5-835f67ed5801",
+  "n_tiles": 16,
+  "tiles": [
+    "tile_00.webp",
+    "tile_01.webp",
+    "tile_02.webp",
+    "tile_03.webp",
+    "tile_04.webp",
+    "tile_05.webp",
+    "tile_06.webp",
+    "tile_07.webp",
+    "tile_08.webp",
+    "tile_09.webp",
+    "tile_10.webp",
+    "tile_11.webp",
+    "tile_12.webp",
+    "tile_13.webp",
+    "tile_14.webp",
+    "tile_15.webp"
+  ],
+  "settings": {
+    "tile_size": 64,
+    "tile_view": "high top-down",
+    "view_angle": 28.0,
+    "depth_ratio": 0.5,
+    "tile_type": "isometric",
+    "flat_top_px": 2,
+    "outline_mode": "segmentation"
+  },
+  "usd": 0.096,
+  "created": "2026-09-03T04:25:19+00:00",
+  "top_face": {
+    "per_tile": [
+      {
+        "colours": 22,
+        "dominant_share": 0.571,
+        "px": 923
+      },
+      {
+        "colours": 27,
+        "dominant_share": 0.6284,
+        "px": 923
+      },
+      {
+        "colours": 25,
+        "dominant_share": 0.5632,
+        "px": 925
+      },
+      {
+        "colours": 25,
+        "dominant_share": 0.6808,
+        "px": 921
+      },
+      {
+        "colours": 24,
+        "dominant_share": 0.5141,
+        "px": 922
+      },
+      {
+        "colours": 26,
+        "dominant_share": 0.5369,
+        "px": 922
+      },
+      {
+        "colours": 25,
+        "dominant_share": 0.5682,
+        "px": 924
+      },
+      {
+        "colours": 25,
+        "dominant_share": 0.6706,
+        "px": 926
+      },
+      {
+        "colours": 21,
+        "dominant_share": 0.6385,
+        "px": 924
+      },
+      {
+        "colours": 23,
+        "dominant_share": 0.48,
+        "px": 923
+      },
+      {
+        "colours": 25,
+        "dominant_share": 0.4382,
+        "px": 922
+      },
+      {
+        "colours": 25,
+        "dominant_share": 0.6228,
+        "px": 920
+      },
+      {
+        "colours": 12,
+        "dominant_share": 0.605,
+        "px": 924
+      },
+      {
+        "colours": 25,
+        "dominant_share": 0.526,
+        "px": 924
+      },
+      {
+        "colours": 24,
+        "dominant_share": 0.5622,
+        "px": 925
+      },
+      {
+        "colours": 21,
+        "dominant_share": 0.6634,
+        "px": 924
+      }
+    ],
+    "mean_colours": 23.44,
+    "mean_dominant_share": 0.5793
+  },
+  "motif": "a quartz vein",
+  "motif_source": "tiles/config/details.json",
+  "walkable": true
+}

@@ -1,0 +1,142 @@
+{
+  "format": "scenery-piece@2",
+  "id": "mushroom_001",
+  "group": "mushrooms",
+  "rank": 31,
+  "index": 1,
+  "name": "Frost-grey winter mushrooms 001",
+  "lights": null,
+  "variety": "frost-grey winter mushrooms",
+  "glow_concept": null,
+  "prompt": "a small cluster of woodland mushrooms with rounded caps and pale stems growing from leaf litter, frost-grey winter mushrooms, tiny, ankle-height to an adult person, completely unlit, no glow, no light sources, no self-emission",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 48,
+  "sprite": "mushrooms/mushroom_001/sprite.webp",
+  "placement": {
+    "world_height_m": 0.625,
+    "world_px_height": 32,
+    "character_height_px": 87,
+    "character_height_m": 1.7,
+    "note": "ONE SCENERY PIXEL IS ONE PLAYER PIXEL. world_px_height IS the art's own alpha bbox height, so scenery is placed into the world at 1:1 exactly as the avatar is (setScale(1)) and the two share one pixel grid. The CAMERA still zooms the whole scene \u2014 that is uniform and correct; what must never happen is scenery being resampled on its own, against the player. world_height_m is what the art reads as beside a 87px character; declared_height_m is what it was once declared to be, and a gap between them means the ART is the wrong size.",
+    "declared_height_m": 0.31,
+    "content_box": [
+      10,
+      9,
+      40,
+      41
+    ],
+    "content_px_height": 32,
+    "canvas_render_px": 48
+  },
+  "pixellab_object_id": "81cc2d5b-1a09-4dff-b501-30b2d0f77b2e",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)",
+  "must_be_imbplemented_with_random_hflip": true,
+  "generated_at": "2026-08-13T00:55:11+00:00",
+  "states": {
+    "NOT_LIT_1": {
+      "sprite": "mushrooms/mushroom_001/sprite.webp",
+      "pixellab_object_id": "81cc2d5b-1a09-4dff-b501-30b2d0f77b2e",
+      "generated_at": "2026-08-13T00:55:11+00:00",
+      "animations": {
+        "motion": {
+          "group_id": "94b71838-48bf-42ac-8963-b8deb6e43349",
+          "description": "This is the same picture in every frame. ONLY the caps move, nodding a pixel or two as if something passed by. Do not redraw anything else, and do not add or remove anything.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "mushrooms/mushroom_001/animations/motion/00.webp",
+            "mushrooms/mushroom_001/animations/motion/01.webp",
+            "mushrooms/mushroom_001/animations/motion/02.webp",
+            "mushrooms/mushroom_001/animations/motion/03.webp",
+            "mushrooms/mushroom_001/animations/motion/04.webp"
+          ],
+          "strip": "mushrooms/mushroom_001/animations/motion__strip.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-08-29T11:06:59+00:00",
+          "brief": "N6",
+          "review": "ANIMATION_PROBABLY_BAD",
+          "review_metrics": {
+            "class": "foliage",
+            "base": 0.8817,
+            "still": 0.148
+          }
+        }
+      }
+    },
+    "NOT_LIT_2": {
+      "sprite": "mushrooms/mushroom_001/not_lit_2/sprite.webp",
+      "pixellab_object_id": "174e2d68-d768-4f51-a6b1-25aebb8dd0e3",
+      "generated_at": "2026-08-16T19:24:32+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.7349,
+      "glow_score": 0.0
+    },
+    "NOT_LIT_3": {
+      "sprite": "mushrooms/mushroom_001/not_lit_3/sprite.webp",
+      "pixellab_object_id": "c547cd4c-82e2-4f68-ab2e-8cb1cb342779",
+      "generated_at": "2026-08-16T18:06:14+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.8752,
+      "glow_score": 0.0
+    },
+    "NOT_LIT_4": {
+      "sprite": "mushrooms/mushroom_001/not_lit_4/sprite.webp",
+      "pixellab_object_id": "cb6b8b83-2b2d-41d9-8286-e28f2505b53b",
+      "generated_at": "2026-08-16T18:05:47+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.3835,
+      "glow_score": 0.0518
+    },
+    "NOT_LIT_5": {
+      "sprite": "mushrooms/mushroom_001/not_lit_5/sprite.webp",
+      "pixellab_object_id": "a0f4eccf-5a51-489d-9b81-ccef6dd69584",
+      "generated_at": "2026-08-16T19:28:50+00:00",
+      "glow_concept": "caps speckled with glowing spore freckles",
+      "difference_from_source": 0.6288,
+      "glow_score": 0.144,
+      "relit_from": "LIT_2",
+      "animations": {
+        "motion": {
+          "group_id": "7b2ed5bc-a688-4ed0-b34a-c7b0705324ee",
+          "description": "This is the same picture in every frame. ONLY the glowing freckles on the caps brighten a little and return. Nothing in the picture may change size, shape or position. The last frame must return to exactly how the first frame looks, so the loop joins. Nothing may become darker than it is in the first frame. Everything else is frozen and pixel-for-pixel identical. Do not redraw anything else, and do not add or remove anything.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "mushrooms/mushroom_001/not_lit_5/animations/motion/00.webp",
+            "mushrooms/mushroom_001/not_lit_5/animations/motion/01.webp",
+            "mushrooms/mushroom_001/not_lit_5/animations/motion/02.webp",
+            "mushrooms/mushroom_001/not_lit_5/animations/motion/03.webp",
+            "mushrooms/mushroom_001/not_lit_5/animations/motion/04.webp"
+          ],
+          "strip": "mushrooms/mushroom_001/not_lit_5/animations/motion__strip.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-08-29T14:27:14+00:00",
+          "brief": "U26",
+          "review": "ANIMATION_PROBABLY_BAD",
+          "review_metrics": {
+            "class": "foliage",
+            "base": 0.9785,
+            "still": 0.037
+          }
+        }
+      }
+    }
+  },
+  "collision": true,
+  "hitbox_shape": "ellipse"
+}

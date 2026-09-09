@@ -1,0 +1,249 @@
+// EVERY SECTION PAGE HAS A WAY BACK UP TO OVERVIEW.
+//
+// Maintainer, 2026-08-14: "When you stand on Creatures, Races, Scenery, Music
+// etc (a top headline). You have no back button to get to Overview the way you
+// can go back from a Scenery entity to the Scenery overview. A similar
+// 'breadcrumb back' button/navigation link will make the wiki easier to
+// navigate."
+//
+// Entity pages have had their "← Scenery" crumb since the start; the section
+// pages were the one rung of the ladder with nothing above them, so the only
+// route home was the ☰ menu. The crumb lives in sectionHead(), which every
+// section page opens with — so this gate walks the NAV's own list rather than
+// a list typed in here: a section added later is covered automatically, and a
+// section that somehow stops using sectionHead fails loudly.
+import { readFileSync } from "node:fs";
+import { createRequire } from "node:module";
+const { chromium } = createRequire(process.env.PLAYWRIGHT_FROM ?? new URL("../../games2/package.json", import.meta.url))("playwright-core");
+const fails = []; const ok = (c, m) => { console.log((c ? "  ok: " : "  FAIL: ") + m); if (!c) fails.push(m); };
+const W = `${process.env.WIKI_URL ?? "http://127.0.0.1:8902"}/assets/wiki/site/index.html`;
+
+const b = await chromium.launch({ executablePath: process.env.CHROMIUM_PATH ?? "/opt/pw-browsers/chromium-1194/chrome-linux/chrome" });
+// Admin, so the admin-only sections (Parameters) are covered too — a Game
+// Master navigates them as much as anyone.
+const p = await (await b.newContext({ viewport: { width: 393, height: 851 }, isMobile: true, hasTouch: true, deviceScaleFactor: 2 })).newPage();
+const errs = []; p.on("pageerror", (e) => errs.push(String(e)));
+await p.route("**/api/wiki/me", (r) => r.fulfill({ status: 200, contentType: "application/json", body: '{"admin":true}' }));
+await p.addInitScript(() => {
+  localStorage.setItem("wiki-admin-token", "gate");
+  // An admin reads the REPO, not the image (wiki.js useStagingRoot, 2026-08-14).
+  // The sandbox blocks browser egress, so point the staging base at this same
+  // server's /assets — the identical code path, resolvable offline.
+  localStorage.setItem("ml-staging-base", `${location.origin}/assets/`);
+});
+
+// The sections the wiki itself advertises, read off its own nav.
+await p.goto(`${W}#/`, { waitUntil: "load" });
+await p.waitForTimeout(1700);
+const slugs = await p.evaluate(() => [...document.querySelectorAll("#nav a")]
+  .map((a) => a.getAttribute("href"))
+  .filter((h) => h && h !== "#/")
+  .map((h) => h.replace("#/", "")));
+console.log("sections from the wiki's own nav:", slugs.join(", "));
+ok(slugs.length >= 8, `the nav advertises the whole ladder (${slugs.length} sections)`);
+
+// THE NAV AND THE OVERVIEW TILES ARE ONE ORDER (SECTION_ORDER feeds both), and
+// Races leads it — "feels like humans must be sorted before monsters"
+// (maintainer 2026-08-14). Two lists that can disagree eventually do.
+const tileOrder = await p.evaluate(() => [...document.querySelectorAll("#content a[href^='#/']")]
+  .map((a) => a.getAttribute("href").replace("#/", ""))
+  .filter((h) => h && h !== ""));
+const firstTiles = tileOrder.filter((x, i) => tileOrder.indexOf(x) === i).slice(0, slugs.length);
+console.log("overview tiles :", firstTiles.join(", "));
+ok(slugs[0] === "characters" && slugs[1] === "monsters",
+  `the menu puts Races before Creatures (${slugs.slice(0, 2).join(", ")})`);
+ok(JSON.stringify(firstTiles) === JSON.stringify(slugs),
+  "and the Overview tiles run in exactly the same order as the menu");
+
+const seen = [];
+for (const slug of slugs) {
+  await p.goto(`${W}#/${slug}`, { waitUntil: "load" });
+  await p.waitForTimeout(1200);
+  seen.push(await p.evaluate(() => {
+    const c = document.querySelector(".crumb");
+    const h1 = document.querySelector("h1");
+    return {
+      h1: h1?.textContent ?? null,
+      text: c?.textContent ?? null,
+      href: c?.getAttribute("href") ?? null,
+      // The crumb must sit ABOVE the headline, like it does on an entity page.
+      aboveTitle: !!(c && h1 && c.getBoundingClientRect().bottom <= h1.getBoundingClientRect().top + 2),
+    };
+  }));
+}
+for (const s of seen) console.log(`      ${String(s.h1).padEnd(14)} ${JSON.stringify(s.text)} -> ${s.href}`);
+const missing = slugs.filter((_, i) => !seen[i].text);
+ok(missing.length === 0, `every section page carries a crumb${missing.length ? ` — missing on: ${missing.join(", ")}` : ` (all ${slugs.length})`}`);
+ok(seen.every((s) => s.href === "#/"), "and every one of them points at Overview");
+ok(seen.every((s) => /Overview/.test(s.text ?? "")), `and says where it goes ("${seen[0]?.text}")`);
+ok(seen.every((s) => s.aboveTitle), "sitting above the headline, exactly like an entity page's crumb");
+
+// It must actually navigate — a crumb that looks right and does nothing is the
+// bug in a nicer costume.
+await p.goto(`${W}#/objects`, { waitUntil: "load" });
+await p.waitForTimeout(1300);
+await p.evaluate(() => document.querySelector(".crumb").click());
+await p.waitForTimeout(900);
+const landed = await p.evaluate(() => ({ hash: location.hash, h1: document.querySelector("h1")?.textContent }));
+console.log("after clicking it:", JSON.stringify(landed));
+ok(landed.hash === "#/" && /Nangijala/.test(landed.h1 ?? ""), `clicking it lands on Overview (${landed.h1})`);
+
+// The entity crumb is untouched — it still points at its own section, not home.
+await p.goto(`${W}#/objects`, { waitUntil: "load" });
+await p.waitForTimeout(1300);
+await p.evaluate(() => document.querySelector(".card")?.click());
+await p.waitForTimeout(1500);
+const ent = await p.evaluate(() => {
+  const c = document.querySelector(".crumb");
+  return { text: c?.textContent ?? null, href: c?.getAttribute("href") ?? null };
+});
+console.log("entity crumb:", JSON.stringify(ent));
+ok(ent.href === "#/objects", `an entity page still goes back to its SECTION, not to Overview (${ent.href})`);
+
+// THE PAGER STAYS ON SCREEN, AND KEEPS YOUR PLACE (maintainer 2026-08-15: "I
+// would like the breadcrumb and prev/next button to be visible at top even
+// if/when the player scrolls down on the page. And when/if the player presses
+// next/prev the page should switch to the new page, but keep the current
+// scroll from top ... so I can scroll down a bit and see the entire tree and
+// easily go to the next page with the same scroll").
+const objId = (await p.evaluate(async () => {
+  const d = await (await fetch("data.json")).json();
+  return [...d.domains.objects].sort((a, b2) => Object.keys(b2.animations).length - Object.keys(a.animations).length)[0].id;
+}));
+await p.goto(`${W}#/objects/${objId}`, { waitUntil: "load" });
+await p.waitForTimeout(2200);
+const where = () => p.evaluate(() => {
+  const cr = document.querySelector(".crumb-row")?.getBoundingClientRect();
+  const bar = document.querySelector("#topbar").getBoundingClientRect();
+  return { y: Math.round(window.scrollY), id: location.hash.split("/").pop(),
+    crumbTop: cr ? Math.round(cr.top) : null, barBottom: Math.round(bar.bottom),
+    onScreen: !!cr && cr.top >= 0 && cr.bottom <= window.innerHeight,
+    navOnScreen: (() => { const n = document.querySelector(".detail-nav")?.getBoundingClientRect();
+      return !!n && n.top >= 0 && n.bottom <= window.innerHeight; })(),
+    maxScroll: Math.max(0, document.documentElement.scrollHeight - window.innerHeight) };
+});
+const top = await where();
+await p.evaluate(() => window.scrollTo(0, 700));
+await p.waitForTimeout(400);
+const deep = await where();
+console.log("scrolled:", JSON.stringify(deep));
+ok(deep.y > 300, `the page really scrolls (${deep.y}px)`);
+ok(deep.onScreen && deep.navOnScreen, "the crumb and the ‹ › buttons are still on screen after scrolling down");
+ok(Math.abs(deep.crumbTop - deep.barBottom) <= 2,
+  `and they sit exactly under the topbar, not over it or below it (${deep.crumbTop} vs ${deep.barBottom})`);
+// IT MUST NOT MOVE AT ALL — not even the few pixels between where it rests and
+// where it pins (maintainer 2026-08-15, with two screenshots: "the pinned bar
+// moves a bit when I scroll ... that bug still exists"). A sticky row that
+// rests lower than it pins slides up under the topbar over the first pixels of
+// every scroll. THE OLD ASSERTION HERE DEMANDED EXACTLY THAT — `crumbTop <
+// top.crumbTop`, "they stuck, they did not merely stay put" — so the gate was
+// green while the bug was on screen. Measured before the fix: 9.3px of travel
+// across 5 distinct positions; after: one position, 0.0px.
+const sweep = [];
+for (const y of [0, 2, 4, 8, 12, 20, 40, 80, 200, 500]) {
+  await p.evaluate((v) => window.scrollTo(0, v), y);
+  await p.waitForTimeout(110);
+  sweep.push(await p.evaluate(() => {
+    const cr = document.querySelector(".crumb-row").getBoundingClientRect();
+    const tx = document.querySelector(".crumb").getBoundingClientRect();
+    return { row: +cr.top.toFixed(1), text: +tx.top.toFixed(1) };
+  }));
+}
+const rowTops = [...new Set(sweep.map((s) => s.row))];
+const textTops = [...new Set(sweep.map((s) => s.text))];
+const travel = Math.max(...textTops) - Math.min(...textTops);
+console.log("through the sticking threshold:", JSON.stringify({ rowTops, textTops, travel: +travel.toFixed(1) }));
+ok(rowTops.length === 1, `the row holds ONE position from the very first pixel of scroll (${rowTops.join(", ")})`);
+ok(travel <= 1, `and so does the text inside it — no slide before it pins (${travel.toFixed(1)}px of travel)`);
+await p.evaluate(() => window.scrollTo(0, 700));
+await p.waitForTimeout(200);
+// Pressing › keeps the reader where they were standing.
+const walk = [deep];
+for (let i = 0; i < 3; i++) {
+  await p.evaluate(() => [...document.querySelectorAll("button,a")].find((x) => x.textContent.trim() === "›")?.click());
+  await p.waitForTimeout(900);
+  walk.push(await where());
+}
+console.log("paging while scrolled:", JSON.stringify(walk.map((w) => ({ id: w.id, y: w.y }))));
+ok(new Set(walk.map((w) => w.id)).size === walk.length, "each press really moves to a new piece");
+ok(walk.every((w) => Math.abs(w.y - Math.min(deep.y, w.maxScroll)) <= 4),
+  `and every one of them keeps the scroll (${walk.map((w) => w.y).join(", ")} — clamped only by how tall the page is)`);
+ok(walk.every((w) => w.onScreen && w.navOnScreen), "with the pager still on screen on each of them");
+// THE RESTORE MUST NEVER FIGHT THE READER (maintainer 2026-08-15: "when I
+// scroll up the '← Scenery' top pinned bar also moves a bit before it stays.
+// It moves maybe 5px up and that looks ugly"). Restoring the scroll after ‹ ›
+// is re-tried once the art settles, because a piece of a different size
+// changes the page height — but an unconditional re-try lands mid-gesture and
+// yanks the page back, which is what he was watching. Measured before the fix:
+// a scroll to 560 was pulled back to 500 at t=321ms, and the pinned bar with
+// it.
+await p.evaluate(() => window.scrollTo(0, Math.max(0, (document.documentElement.scrollHeight - window.innerHeight) - 200)));
+await p.waitForTimeout(300);
+const yank = await p.evaluate(async () => {
+  const log = [];
+  const t0 = performance.now();
+  const tick = () => { log.push(Math.round(window.scrollY)); if (performance.now() - t0 < 900) requestAnimationFrame(tick); };
+  requestAnimationFrame(tick);
+  [...document.querySelectorAll("button,a")].find((x) => x.textContent.trim() === "›")?.click();
+  await new Promise((r) => setTimeout(r, 120));
+  const mine = window.scrollY + 60;
+  window.scrollBy(0, 60);                       // the reader keeps scrolling
+  await new Promise((r) => setTimeout(r, 780)); // long enough for every deferred re-try
+  // The browser clamps a scroll at the end of the page; what must not happen
+  // is the WIKI pulling it back.
+  const maxY = Math.max(0, document.documentElement.scrollHeight - window.innerHeight);
+  return { mine: Math.round(Math.min(mine, maxY)), ended: Math.round(window.scrollY), lowest: Math.min(...log.slice(-30)), maxY: Math.round(maxY) };
+});
+console.log("scrolling right after ›:", JSON.stringify(yank));
+ok(Math.abs(yank.ended - yank.mine) <= 2, `a scroll made just after ‹ › is left alone (asked ${yank.mine}, ended ${yank.ended})`);
+ok(yank.lowest >= yank.mine - 2, "and nothing pulls the page back at any point in the second after");
+
+// Going BACK up the ladder is not paging — it starts at the top, as it always did.
+await p.evaluate(() => document.querySelector(".crumb").click());
+await p.waitForTimeout(1200);
+const listed = await p.evaluate(() => ({ y: Math.round(window.scrollY), hash: location.hash }));
+console.log("crumb to the section:", JSON.stringify(listed));
+ok(listed.hash === "#/objects" && listed.y === 0, `the crumb still lands at the top of the section (y=${listed.y})`);
+
+// ---- THE STICKY ROW MUST NOT SIT ON THE CONTENT (maintainer 2026-08-21,
+// circling the clipped top of a tile thumbnail: "This page have the thimbnail
+// preview cut/clipped and I can't scroll up do show it").
+//
+// The crumb row pins under the topbar and cancels #content's top padding so it
+// RESTS exactly where it PINS. When that cancellation goes stale — a -24px
+// written against the desktop padding while the phone breakpoint sets 16 — the
+// row rests ABOVE its pin, sticky shoves it back down, and it paints over the
+// first 8.7px of whatever follows AT SCROLL ZERO, where no amount of scrolling
+// can move it. It hid under a monster's transparent sprite padding for weeks
+// and only showed when a tile's checkerboard made the cut visible.
+//
+// So: at the top of the page, at BOTH breakpoints, on a page of each shape.
+for (const [w, hgt, label] of [[346, 800, "phone (the in-game panel's layout width)"], [1100, 900, "desktop"]]) {
+  const q = await (await b.newContext({ viewport: { width: w, height: hgt } })).newPage();
+  q.on("pageerror", (e) => errs.push(String(e)));
+  await q.route("**/api/wiki/me", (r) => r.fulfill({ status: 200, contentType: "application/json", body: '{"admin":true}' }));
+  await q.addInitScript(() => { localStorage.setItem("wiki-admin-token", "gate"); localStorage.setItem("ml-staging-base", `${location.origin}/assets/`); });
+  for (const hash of ["#/world/grass/grass", "#/monsters/armor_tusker", "#/world/grass", "#/objects"]) {
+    await q.goto(`${W}${hash}`, { waitUntil: "load" });
+    await q.waitForTimeout(1800);
+    const over = await q.evaluate(() => {
+      window.scrollTo(0, 0);
+      const crumb = document.querySelector(".crumb-row");
+      if (!crumb) return { skip: true };
+      const next = crumb.nextElementSibling;
+      if (!next) return { skip: true };
+      const c = crumb.getBoundingClientRect(), n = next.getBoundingClientRect();
+      return { overlap: +(c.bottom - n.top).toFixed(2), cls: next.className, y: window.scrollY };
+    });
+    if (over.skip) continue;
+    ok(over.overlap <= 1,
+      `${label} ${hash}: the sticky row rests where it pins — it covers ${over.overlap}px of .${over.cls.split(" ")[0]} at scroll 0`);
+  }
+  await q.context().close();
+}
+
+console.log("page errors:", errs.length ? errs : "none");
+if (errs.length) fails.push("errors");
+await b.close();
+console.log(fails.length ? `\n${fails.length} FAILURES` : "\nALL CRUMB CHECKS PASSED");
+process.exit(fails.length ? 1 : 0);

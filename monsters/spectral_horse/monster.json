@@ -1,0 +1,633 @@
+{
+  "id": "spectral_horse",
+  "name": "Nightmare",
+  "lore": "It gallops where sleep is thin. Pale flames mark its passing, and by morning no one recalls their dreams.",
+  "source": {
+    "kind": "character",
+    "pixellab_id": "c25fa5a6-e315-4299-8ad7-3350e8317e70",
+    "url": "https://www.pixellab.ai/create-character/c25fa5a6-e315-4299-8ad7-3350e8317e70",
+    "prompt": "Sinister four-legged spectral horse with black body, elongated legs, ragged smoky mane, glowing pale-blue eyes, cracked hooves emitting ghostly flames and a long spectral tail dissolving into mist.",
+    "view": "low top-down",
+    "tags": [
+      "MONSTER"
+    ]
+  },
+  "size": {
+    "width": 152,
+    "height": 152
+  },
+  "native_size": {
+    "width": 152,
+    "height": 152
+  },
+  "pad": {
+    "x": 0,
+    "y": 0
+  },
+  "sprite": "spectral_horse/sprite.webp",
+  "directions": [
+    "east",
+    "north",
+    "north-east",
+    "north-west",
+    "south",
+    "south-east",
+    "south-west",
+    "west"
+  ],
+  "rotations": {
+    "south": "spectral_horse/rotations/south.webp",
+    "west": "spectral_horse/rotations/west.webp",
+    "east": "spectral_horse/rotations/east.webp",
+    "north": "spectral_horse/rotations/north.webp",
+    "south-east": "spectral_horse/rotations/south-east.webp",
+    "north-east": "spectral_horse/rotations/north-east.webp",
+    "north-west": "spectral_horse/rotations/north-west.webp",
+    "south-west": "spectral_horse/rotations/south-west.webp"
+  },
+  "animations": {
+    "idle": {
+      "group_id": "f9273857-e80c-43d5-8c80-5f4d5ec55ae4",
+      "source_name": "custom-Calm still idle, breathing",
+      "directions": {
+        "east": {
+          "frames": 5,
+          "strip": "spectral_horse/animations/idle__east.webp",
+          "frame_paths": [
+            "spectral_horse/animations/idle/east/00.webp",
+            "spectral_horse/animations/idle/east/01.webp",
+            "spectral_horse/animations/idle/east/02.webp",
+            "spectral_horse/animations/idle/east/03.webp",
+            "spectral_horse/animations/idle/east/04.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:48:30 GMT",
+          "src_frames": 5,
+          "sub": "c9123731-3378-46de-9d1b-3600f0762f94"
+        },
+        "north": {
+          "frames": 5,
+          "strip": "spectral_horse/animations/idle__north.webp",
+          "frame_paths": [
+            "spectral_horse/animations/idle/north/00.webp",
+            "spectral_horse/animations/idle/north/01.webp",
+            "spectral_horse/animations/idle/north/02.webp",
+            "spectral_horse/animations/idle/north/03.webp",
+            "spectral_horse/animations/idle/north/04.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:48:31 GMT",
+          "src_frames": 5,
+          "sub": "71b48b80-75b7-4282-b55e-a48e1d9fb9dd"
+        },
+        "north-east": {
+          "frames": 5,
+          "strip": "spectral_horse/animations/idle__north-east.webp",
+          "frame_paths": [
+            "spectral_horse/animations/idle/north-east/00.webp",
+            "spectral_horse/animations/idle/north-east/01.webp",
+            "spectral_horse/animations/idle/north-east/02.webp",
+            "spectral_horse/animations/idle/north-east/03.webp",
+            "spectral_horse/animations/idle/north-east/04.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:48:32 GMT",
+          "src_frames": 5,
+          "sub": "48470cc6-7654-4d19-b1f3-2f8e80e6c895"
+        },
+        "north-west": {
+          "frames": 5,
+          "strip": "spectral_horse/animations/idle__north-west.webp",
+          "frame_paths": [
+            "spectral_horse/animations/idle/north-west/00.webp",
+            "spectral_horse/animations/idle/north-west/01.webp",
+            "spectral_horse/animations/idle/north-west/02.webp",
+            "spectral_horse/animations/idle/north-west/03.webp",
+            "spectral_horse/animations/idle/north-west/04.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:48:34 GMT",
+          "src_frames": 5,
+          "sub": "94f6c726-0fe8-4c2e-84c6-63e84afd3809"
+        },
+        "south": {
+          "frames": 5,
+          "strip": "spectral_horse/animations/idle__south.webp",
+          "frame_paths": [
+            "spectral_horse/animations/idle/south/00.webp",
+            "spectral_horse/animations/idle/south/01.webp",
+            "spectral_horse/animations/idle/south/02.webp",
+            "spectral_horse/animations/idle/south/03.webp",
+            "spectral_horse/animations/idle/south/04.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:48:35 GMT",
+          "src_frames": 5,
+          "sub": "0f0f03fc-3881-4d5f-9dc6-816866a39d48"
+        },
+        "south-east": {
+          "frames": 5,
+          "strip": "spectral_horse/animations/idle__south-east.webp",
+          "frame_paths": [
+            "spectral_horse/animations/idle/south-east/00.webp",
+            "spectral_horse/animations/idle/south-east/01.webp",
+            "spectral_horse/animations/idle/south-east/02.webp",
+            "spectral_horse/animations/idle/south-east/03.webp",
+            "spectral_horse/animations/idle/south-east/04.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:48:37 GMT",
+          "src_frames": 5,
+          "sub": "60eb58b0-1d52-4c89-8bd8-4ef1177c6373"
+        },
+        "south-west": {
+          "frames": 5,
+          "strip": "spectral_horse/animations/idle__south-west.webp",
+          "frame_paths": [
+            "spectral_horse/animations/idle/south-west/00.webp",
+            "spectral_horse/animations/idle/south-west/01.webp",
+            "spectral_horse/animations/idle/south-west/02.webp",
+            "spectral_horse/animations/idle/south-west/03.webp",
+            "spectral_horse/animations/idle/south-west/04.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:48:39 GMT",
+          "src_frames": 5,
+          "sub": "152b6f78-0ae3-4501-bad1-552f6a4e02d3"
+        },
+        "west": {
+          "frames": 5,
+          "strip": "spectral_horse/animations/idle__west.webp",
+          "frame_paths": [
+            "spectral_horse/animations/idle/west/00.webp",
+            "spectral_horse/animations/idle/west/01.webp",
+            "spectral_horse/animations/idle/west/02.webp",
+            "spectral_horse/animations/idle/west/03.webp",
+            "spectral_horse/animations/idle/west/04.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:48:40 GMT",
+          "src_frames": 5,
+          "sub": "9c629c56-f815-49df-8ead-3206f01b7e64"
+        }
+      }
+    },
+    "attack": {
+      "group_id": "476bc3f5-67e6-4147-9d8b-a9f87ed1f8f8",
+      "source_name": "custom-Mystical light flame burst attack. Turns it's ligh",
+      "directions": {
+        "east": {
+          "frames": 4,
+          "strip": "spectral_horse/animations/attack__east.webp",
+          "frame_paths": [
+            "spectral_horse/animations/attack/east/00.webp",
+            "spectral_horse/animations/attack/east/01.webp",
+            "spectral_horse/animations/attack/east/02.webp",
+            "spectral_horse/animations/attack/east/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:48:44 GMT",
+          "src_frames": 4,
+          "sub": "7d38d3b8-d1d5-4187-875c-3b6ddd54c59e"
+        },
+        "north": {
+          "frames": 4,
+          "strip": "spectral_horse/animations/attack__north.webp",
+          "frame_paths": [
+            "spectral_horse/animations/attack/north/00.webp",
+            "spectral_horse/animations/attack/north/01.webp",
+            "spectral_horse/animations/attack/north/02.webp",
+            "spectral_horse/animations/attack/north/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:48:45 GMT",
+          "src_frames": 4,
+          "sub": "b0f64e05-12cd-4ba2-bf29-75daa595bf5a"
+        },
+        "north-east": {
+          "frames": 4,
+          "strip": "spectral_horse/animations/attack__north-east.webp",
+          "frame_paths": [
+            "spectral_horse/animations/attack/north-east/00.webp",
+            "spectral_horse/animations/attack/north-east/01.webp",
+            "spectral_horse/animations/attack/north-east/02.webp",
+            "spectral_horse/animations/attack/north-east/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:48:51 GMT",
+          "src_frames": 4,
+          "sub": "0f27cd55-b96b-4696-9ee4-79bb5a50a0d2"
+        },
+        "north-west": {
+          "frames": 4,
+          "strip": "spectral_horse/animations/attack__north-west.webp",
+          "frame_paths": [
+            "spectral_horse/animations/attack/north-west/00.webp",
+            "spectral_horse/animations/attack/north-west/01.webp",
+            "spectral_horse/animations/attack/north-west/02.webp",
+            "spectral_horse/animations/attack/north-west/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:48:52 GMT",
+          "src_frames": 4,
+          "sub": "0fe4058d-accb-4808-9e03-09a93038db0c"
+        },
+        "south": {
+          "frames": 4,
+          "strip": "spectral_horse/animations/attack__south.webp",
+          "frame_paths": [
+            "spectral_horse/animations/attack/south/00.webp",
+            "spectral_horse/animations/attack/south/01.webp",
+            "spectral_horse/animations/attack/south/02.webp",
+            "spectral_horse/animations/attack/south/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:48:53 GMT",
+          "src_frames": 4,
+          "sub": "878706ca-74b4-44c1-9c12-9717b53ca503"
+        },
+        "south-east": {
+          "frames": 4,
+          "strip": "spectral_horse/animations/attack__south-east.webp",
+          "frame_paths": [
+            "spectral_horse/animations/attack/south-east/00.webp",
+            "spectral_horse/animations/attack/south-east/01.webp",
+            "spectral_horse/animations/attack/south-east/02.webp",
+            "spectral_horse/animations/attack/south-east/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:48:54 GMT",
+          "src_frames": 4,
+          "sub": "848f8d6a-a19e-451c-9d5e-0a495a9d4298"
+        },
+        "south-west": {
+          "frames": 4,
+          "strip": "spectral_horse/animations/attack__south-west.webp",
+          "frame_paths": [
+            "spectral_horse/animations/attack/south-west/00.webp",
+            "spectral_horse/animations/attack/south-west/01.webp",
+            "spectral_horse/animations/attack/south-west/02.webp",
+            "spectral_horse/animations/attack/south-west/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:48:56 GMT",
+          "src_frames": 4,
+          "sub": "478e7dfb-3fee-4d71-a557-76bc06f89598"
+        },
+        "west": {
+          "frames": 4,
+          "strip": "spectral_horse/animations/attack__west.webp",
+          "frame_paths": [
+            "spectral_horse/animations/attack/west/00.webp",
+            "spectral_horse/animations/attack/west/01.webp",
+            "spectral_horse/animations/attack/west/02.webp",
+            "spectral_horse/animations/attack/west/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:48:58 GMT",
+          "src_frames": 4,
+          "sub": "f609b3d1-8b66-416e-bdb6-9787da8fb677"
+        }
+      }
+    },
+    "angry": {
+      "group_id": "09f37337-41c4-4990-a93d-88113757e52c",
+      "source_name": "custom-angry combat idle, frustrated",
+      "directions": {
+        "east": {
+          "frames": 4,
+          "strip": "spectral_horse/animations/angry__east.webp",
+          "frame_paths": [
+            "spectral_horse/animations/angry/east/00.webp",
+            "spectral_horse/animations/angry/east/01.webp",
+            "spectral_horse/animations/angry/east/02.webp",
+            "spectral_horse/animations/angry/east/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:48:59 GMT",
+          "src_frames": 4,
+          "sub": "865a671f-c4ba-4c2d-8684-294bc9bb15ab"
+        },
+        "north": {
+          "frames": 4,
+          "strip": "spectral_horse/animations/angry__north.webp",
+          "frame_paths": [
+            "spectral_horse/animations/angry/north/00.webp",
+            "spectral_horse/animations/angry/north/01.webp",
+            "spectral_horse/animations/angry/north/02.webp",
+            "spectral_horse/animations/angry/north/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:49:01 GMT",
+          "src_frames": 4,
+          "sub": "191c2337-7a75-46d8-9554-f7d16f30b0c4"
+        },
+        "north-east": {
+          "frames": 4,
+          "strip": "spectral_horse/animations/angry__north-east.webp",
+          "frame_paths": [
+            "spectral_horse/animations/angry/north-east/00.webp",
+            "spectral_horse/animations/angry/north-east/01.webp",
+            "spectral_horse/animations/angry/north-east/02.webp",
+            "spectral_horse/animations/angry/north-east/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:49:02 GMT",
+          "src_frames": 4,
+          "sub": "39d3f05e-a559-4c3a-8ee7-a375353d401f"
+        },
+        "north-west": {
+          "frames": 4,
+          "strip": "spectral_horse/animations/angry__north-west.webp",
+          "frame_paths": [
+            "spectral_horse/animations/angry/north-west/00.webp",
+            "spectral_horse/animations/angry/north-west/01.webp",
+            "spectral_horse/animations/angry/north-west/02.webp",
+            "spectral_horse/animations/angry/north-west/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:49:03 GMT",
+          "src_frames": 4,
+          "sub": "eff1a1a9-11e3-47eb-83bd-e55674414222"
+        },
+        "south": {
+          "frames": 4,
+          "strip": "spectral_horse/animations/angry__south.webp",
+          "frame_paths": [
+            "spectral_horse/animations/angry/south/00.webp",
+            "spectral_horse/animations/angry/south/01.webp",
+            "spectral_horse/animations/angry/south/02.webp",
+            "spectral_horse/animations/angry/south/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:49:04 GMT",
+          "src_frames": 4,
+          "sub": "2fb4c995-d2d8-4d37-a258-8b8e07cce315"
+        },
+        "south-east": {
+          "frames": 4,
+          "strip": "spectral_horse/animations/angry__south-east.webp",
+          "frame_paths": [
+            "spectral_horse/animations/angry/south-east/00.webp",
+            "spectral_horse/animations/angry/south-east/01.webp",
+            "spectral_horse/animations/angry/south-east/02.webp",
+            "spectral_horse/animations/angry/south-east/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:49:05 GMT",
+          "src_frames": 4,
+          "sub": "34f5df6a-2718-418c-8057-fcb44cb3fde5"
+        },
+        "south-west": {
+          "frames": 4,
+          "strip": "spectral_horse/animations/angry__south-west.webp",
+          "frame_paths": [
+            "spectral_horse/animations/angry/south-west/00.webp",
+            "spectral_horse/animations/angry/south-west/01.webp",
+            "spectral_horse/animations/angry/south-west/02.webp",
+            "spectral_horse/animations/angry/south-west/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:49:07 GMT",
+          "src_frames": 4,
+          "sub": "173966d0-f1ff-425b-951f-558c9d1879b0"
+        },
+        "west": {
+          "frames": 4,
+          "strip": "spectral_horse/animations/angry__west.webp",
+          "frame_paths": [
+            "spectral_horse/animations/angry/west/00.webp",
+            "spectral_horse/animations/angry/west/01.webp",
+            "spectral_horse/animations/angry/west/02.webp",
+            "spectral_horse/animations/angry/west/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:49:12 GMT",
+          "src_frames": 4,
+          "sub": "6a7d0c36-4348-4b7f-8e39-e7412e70f979"
+        }
+      }
+    },
+    "die": {
+      "group_id": "fb2ad902-6214-4283-bdec-2329512108db",
+      "source_name": "custom-faints and fades away",
+      "directions": {
+        "east": {
+          "frames": 4,
+          "strip": "spectral_horse/animations/die__east.webp",
+          "frame_paths": [
+            "spectral_horse/animations/die/east/00.webp",
+            "spectral_horse/animations/die/east/01.webp",
+            "spectral_horse/animations/die/east/02.webp",
+            "spectral_horse/animations/die/east/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:49:14 GMT",
+          "src_frames": 4,
+          "sub": "763130d7-a847-48dd-afc3-96f67a775e8a"
+        },
+        "north": {
+          "frames": 4,
+          "strip": "spectral_horse/animations/die__north.webp",
+          "frame_paths": [
+            "spectral_horse/animations/die/north/00.webp",
+            "spectral_horse/animations/die/north/01.webp",
+            "spectral_horse/animations/die/north/02.webp",
+            "spectral_horse/animations/die/north/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:49:15 GMT",
+          "src_frames": 4,
+          "sub": "27cdf8b0-f272-40b4-bdb6-4cae56b67d6b"
+        },
+        "north-east": {
+          "frames": 4,
+          "strip": "spectral_horse/animations/die__north-east.webp",
+          "frame_paths": [
+            "spectral_horse/animations/die/north-east/00.webp",
+            "spectral_horse/animations/die/north-east/01.webp",
+            "spectral_horse/animations/die/north-east/02.webp",
+            "spectral_horse/animations/die/north-east/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:49:16 GMT",
+          "src_frames": 4,
+          "sub": "5a87c0f5-5a3b-4133-a49c-26b5c7131ac9"
+        },
+        "north-west": {
+          "frames": 4,
+          "strip": "spectral_horse/animations/die__north-west.webp",
+          "frame_paths": [
+            "spectral_horse/animations/die/north-west/00.webp",
+            "spectral_horse/animations/die/north-west/01.webp",
+            "spectral_horse/animations/die/north-west/02.webp",
+            "spectral_horse/animations/die/north-west/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:49:18 GMT",
+          "src_frames": 4,
+          "sub": "cdfbf0a1-69ed-4a41-8818-d4c16ccf81f9"
+        },
+        "south": {
+          "frames": 4,
+          "strip": "spectral_horse/animations/die__south.webp",
+          "frame_paths": [
+            "spectral_horse/animations/die/south/00.webp",
+            "spectral_horse/animations/die/south/01.webp",
+            "spectral_horse/animations/die/south/02.webp",
+            "spectral_horse/animations/die/south/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:49:19 GMT",
+          "src_frames": 4,
+          "sub": "d41eed61-6230-48ec-8cd4-8b850046fb75"
+        },
+        "south-east": {
+          "frames": 4,
+          "strip": "spectral_horse/animations/die__south-east.webp",
+          "frame_paths": [
+            "spectral_horse/animations/die/south-east/00.webp",
+            "spectral_horse/animations/die/south-east/01.webp",
+            "spectral_horse/animations/die/south-east/02.webp",
+            "spectral_horse/animations/die/south-east/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:49:21 GMT",
+          "src_frames": 4,
+          "sub": "59f9fcaf-e7e2-4fe6-9248-ec1dfe6ff29f"
+        },
+        "south-west": {
+          "frames": 4,
+          "strip": "spectral_horse/animations/die__south-west.webp",
+          "frame_paths": [
+            "spectral_horse/animations/die/south-west/00.webp",
+            "spectral_horse/animations/die/south-west/01.webp",
+            "spectral_horse/animations/die/south-west/02.webp",
+            "spectral_horse/animations/die/south-west/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:49:22 GMT",
+          "src_frames": 4,
+          "sub": "4588da75-e563-4e5a-8410-a0d8e5215d3a"
+        },
+        "west": {
+          "frames": 4,
+          "strip": "spectral_horse/animations/die__west.webp",
+          "frame_paths": [
+            "spectral_horse/animations/die/west/00.webp",
+            "spectral_horse/animations/die/west/01.webp",
+            "spectral_horse/animations/die/west/02.webp",
+            "spectral_horse/animations/die/west/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:49:24 GMT",
+          "src_frames": 4,
+          "sub": "6c0ec432-fc8f-4639-9e3f-2e6ba80291df"
+        }
+      }
+    },
+    "walk": {
+      "group_id": "dac39b63-200e-4159-bffe-21ec5bcc0b25",
+      "source_name": "custom-walk loop. full walk cycle. sh",
+      "directions": {
+        "east": {
+          "frames": 6,
+          "strip": "spectral_horse/animations/walk__east.webp",
+          "frame_paths": [
+            "spectral_horse/animations/walk/east/00.webp",
+            "spectral_horse/animations/walk/east/01.webp",
+            "spectral_horse/animations/walk/east/02.webp",
+            "spectral_horse/animations/walk/east/03.webp",
+            "spectral_horse/animations/walk/east/04.webp",
+            "spectral_horse/animations/walk/east/05.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:49:25 GMT",
+          "src_frames": 6,
+          "sub": "2ed693ed-5029-4f9f-a8b1-183f3153d3af"
+        },
+        "north": {
+          "frames": 6,
+          "strip": "spectral_horse/animations/walk__north.webp",
+          "frame_paths": [
+            "spectral_horse/animations/walk/north/00.webp",
+            "spectral_horse/animations/walk/north/01.webp",
+            "spectral_horse/animations/walk/north/02.webp",
+            "spectral_horse/animations/walk/north/03.webp",
+            "spectral_horse/animations/walk/north/04.webp",
+            "spectral_horse/animations/walk/north/05.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:49:26 GMT",
+          "src_frames": 6,
+          "sub": "bc78180a-e715-4a76-b68b-16082b1c9f1a"
+        },
+        "north-east": {
+          "frames": 6,
+          "strip": "spectral_horse/animations/walk__north-east.webp",
+          "frame_paths": [
+            "spectral_horse/animations/walk/north-east/00.webp",
+            "spectral_horse/animations/walk/north-east/01.webp",
+            "spectral_horse/animations/walk/north-east/02.webp",
+            "spectral_horse/animations/walk/north-east/03.webp",
+            "spectral_horse/animations/walk/north-east/04.webp",
+            "spectral_horse/animations/walk/north-east/05.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:49:28 GMT",
+          "src_frames": 6,
+          "sub": "1794ae51-8b07-462d-bfe9-7d223e1c646c"
+        },
+        "north-west": {
+          "frames": 6,
+          "strip": "spectral_horse/animations/walk__north-west.webp",
+          "frame_paths": [
+            "spectral_horse/animations/walk/north-west/00.webp",
+            "spectral_horse/animations/walk/north-west/01.webp",
+            "spectral_horse/animations/walk/north-west/02.webp",
+            "spectral_horse/animations/walk/north-west/03.webp",
+            "spectral_horse/animations/walk/north-west/04.webp",
+            "spectral_horse/animations/walk/north-west/05.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:49:30 GMT",
+          "src_frames": 6,
+          "sub": "583e4fa5-4457-49cf-bc45-4b1f0fbbffb5"
+        },
+        "south": {
+          "frames": 6,
+          "strip": "spectral_horse/animations/walk__south.webp",
+          "frame_paths": [
+            "spectral_horse/animations/walk/south/00.webp",
+            "spectral_horse/animations/walk/south/01.webp",
+            "spectral_horse/animations/walk/south/02.webp",
+            "spectral_horse/animations/walk/south/03.webp",
+            "spectral_horse/animations/walk/south/04.webp",
+            "spectral_horse/animations/walk/south/05.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:49:31 GMT",
+          "src_frames": 6,
+          "sub": "b60d09f1-9560-430a-b11d-fc58349b6952"
+        },
+        "south-east": {
+          "frames": 6,
+          "strip": "spectral_horse/animations/walk__south-east.webp",
+          "frame_paths": [
+            "spectral_horse/animations/walk/south-east/00.webp",
+            "spectral_horse/animations/walk/south-east/01.webp",
+            "spectral_horse/animations/walk/south-east/02.webp",
+            "spectral_horse/animations/walk/south-east/03.webp",
+            "spectral_horse/animations/walk/south-east/04.webp",
+            "spectral_horse/animations/walk/south-east/05.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:49:33 GMT",
+          "src_frames": 6,
+          "sub": "578b4622-c1a0-48f4-88a8-22f6cdfb13b7"
+        },
+        "south-west": {
+          "frames": 6,
+          "strip": "spectral_horse/animations/walk__south-west.webp",
+          "frame_paths": [
+            "spectral_horse/animations/walk/south-west/00.webp",
+            "spectral_horse/animations/walk/south-west/01.webp",
+            "spectral_horse/animations/walk/south-west/02.webp",
+            "spectral_horse/animations/walk/south-west/03.webp",
+            "spectral_horse/animations/walk/south-west/04.webp",
+            "spectral_horse/animations/walk/south-west/05.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:49:34 GMT",
+          "src_frames": 6,
+          "sub": "bff09242-9361-44f9-a90b-c4383b638511"
+        },
+        "west": {
+          "frames": 6,
+          "strip": "spectral_horse/animations/walk__west.webp",
+          "frame_paths": [
+            "spectral_horse/animations/walk/west/00.webp",
+            "spectral_horse/animations/walk/west/01.webp",
+            "spectral_horse/animations/walk/west/02.webp",
+            "spectral_horse/animations/walk/west/03.webp",
+            "spectral_horse/animations/walk/west/04.webp",
+            "spectral_horse/animations/walk/west/05.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:49:36 GMT",
+          "src_frames": 6,
+          "sub": "31129127-459d-4db1-9b99-24fca200dd76"
+        }
+      }
+    }
+  },
+  "states": {
+    "idle": "idle",
+    "walk": "walk",
+    "angry": "angry",
+    "attack": "attack",
+    "die": "die"
+  },
+  "unresolved_takes": [],
+  "synced_from_pixellab": true
+}

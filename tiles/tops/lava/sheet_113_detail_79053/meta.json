@@ -1,0 +1,132 @@
+{
+  "schema": "tiles3/tops@1",
+  "kind": "top_only",
+  "wall_is_meaningless": true,
+  "not_a_candidate_for": "x over y",
+  "ground": "lava",
+  "flavour": "detail",
+  "index": 113,
+  "seed": 79053,
+  "prompt": "lava, a molten seam in the middle, lava all around the edge",
+  "palette_top": "#fd5a02",
+  "tile_id": "ae9547a5-6c80-4372-8b58-9d42829b0337",
+  "n_tiles": 16,
+  "tiles": [
+    "tile_00.webp",
+    "tile_01.webp",
+    "tile_02.webp",
+    "tile_03.webp",
+    "tile_04.webp",
+    "tile_05.webp",
+    "tile_06.webp",
+    "tile_07.webp",
+    "tile_08.webp",
+    "tile_09.webp",
+    "tile_10.webp",
+    "tile_11.webp",
+    "tile_12.webp",
+    "tile_13.webp",
+    "tile_14.webp",
+    "tile_15.webp"
+  ],
+  "settings": {
+    "tile_size": 64,
+    "tile_view": "high top-down",
+    "view_angle": 28.0,
+    "depth_ratio": 0.5,
+    "tile_type": "isometric",
+    "flat_top_px": 2,
+    "outline_mode": "segmentation"
+  },
+  "usd": 0.096,
+  "created": "2026-09-03T04:17:09+00:00",
+  "top_face": {
+    "per_tile": [
+      {
+        "colours": 23,
+        "dominant_share": 0.1396,
+        "px": 924
+      },
+      {
+        "colours": 23,
+        "dominant_share": 0.1052,
+        "px": 922
+      },
+      {
+        "colours": 22,
+        "dominant_share": 0.1127,
+        "px": 923
+      },
+      {
+        "colours": 28,
+        "dominant_share": 0.1235,
+        "px": 923
+      },
+      {
+        "colours": 26,
+        "dominant_share": 0.0963,
+        "px": 924
+      },
+      {
+        "colours": 24,
+        "dominant_share": 0.1115,
+        "px": 924
+      },
+      {
+        "colours": 20,
+        "dominant_share": 0.0954,
+        "px": 922
+      },
+      {
+        "colours": 24,
+        "dominant_share": 0.1039,
+        "px": 924
+      },
+      {
+        "colours": 24,
+        "dominant_share": 0.092,
+        "px": 924
+      },
+      {
+        "colours": 22,
+        "dominant_share": 0.1515,
+        "px": 924
+      },
+      {
+        "colours": 23,
+        "dominant_share": 0.1169,
+        "px": 924
+      },
+      {
+        "colours": 26,
+        "dominant_share": 0.0909,
+        "px": 924
+      },
+      {
+        "colours": 23,
+        "dominant_share": 0.1071,
+        "px": 924
+      },
+      {
+        "colours": 24,
+        "dominant_share": 0.1245,
+        "px": 924
+      },
+      {
+        "colours": 24,
+        "dominant_share": 0.1299,
+        "px": 924
+      },
+      {
+        "colours": 23,
+        "dominant_share": 0.1223,
+        "px": 924
+      }
+    ],
+    "mean_colours": 23.69,
+    "mean_dominant_share": 0.114
+  },
+  "motif": "a molten seam",
+  "motif_source": "tiles/config/details.json",
+  "walkable": true
+}

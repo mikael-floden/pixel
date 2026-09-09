@@ -1,0 +1,82 @@
+{
+  "format": "scenery-piece@2",
+  "id": "puffball_900",
+  "group": "puffballs",
+  "rank": 53,
+  "index": 900,
+  "name": "Giant white puffball 900",
+  "lights": null,
+  "variety": "giant white puffball",
+  "glow_concept": "burst husk spilling a pile of glowing spores",
+  "prompt": "a plump round puffball mushroom sitting directly on bare earth, giant white puffball, small, knee-high to an adult person, self-emissive at night, softly radiating light: burst husk spilling a pile of glowing spores",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 48,
+  "sprite": "puffballs/puffball_900/sprite.webp",
+  "placement": {
+    "world_height_m": 0.567,
+    "world_px_height": 29,
+    "character_height_px": 87,
+    "character_height_m": 1.7,
+    "note": "ONE SCENERY PIXEL IS ONE PLAYER PIXEL. world_px_height IS the art's own alpha bbox height, so scenery is placed into the world at 1:1 exactly as the avatar is (setScale(1)) and the two share one pixel grid. The CAMERA still zooms the whole scene \u2014 that is uniform and correct; what must never happen is scenery being resampled on its own, against the player. world_height_m is what the art reads as beside a 87px character; declared_height_m is what it was once declared to be, and a gap between them means the ART is the wrong size.",
+    "declared_height_m": 0.54,
+    "content_box": [
+      9,
+      8,
+      42,
+      37
+    ],
+    "content_px_height": 29,
+    "canvas_render_px": 48
+  },
+  "pixellab_object_id": "8c599849-adc1-4dd3-8412-7a8fa9a588d4",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)",
+  "adopted": "recovered from the PixelLab store 2026-08-13: runs 5/6 were cancelled mid-pass and their committed-but-unpushed art died with the runners; the store object survived. Index 900+ band avoids colliding with the concurrently-running pass.",
+  "recovered_spec": "metadata restored by replaying run 5's deterministic planner at its checkout (a21c4bc8); orphan creation order matched the planned sequence exactly",
+  "must_be_imbplemented_with_random_hflip": true,
+  "generated_at": "2026-08-13T19:46:47+00:00",
+  "states": {
+    "LIT_1": {
+      "sprite": "puffballs/puffball_900/sprite.webp",
+      "pixellab_object_id": "8c599849-adc1-4dd3-8412-7a8fa9a588d4",
+      "generated_at": "2026-08-13T19:46:47+00:00"
+    },
+    "LIT_2": {
+      "sprite": "puffballs/puffball_900/lit_2/sprite.webp",
+      "pixellab_object_id": "8ae4c46c-f2e9-4a52-b956-704235b07731",
+      "generated_at": "2026-08-16T19:59:23+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.2618,
+      "glow_score": 0.5554
+    }
+  },
+  "collision": true,
+  "hitbox_shape": "ellipse",
+  "light": {
+    "strength": 0.05,
+    "color": "#9fe4ff",
+    "radius": 1,
+    "reference": "the spawn bonfire is 1.0 (radius 7); strength 0 is no light",
+    "states": {
+      "LIT_1": {
+        "strength": 0.05,
+        "color": "#9fe4ff",
+        "radius": 1
+      },
+      "LIT_2": {
+        "strength": 0.05,
+        "color": "#9fe4ff",
+        "radius": 1
+      }
+    },
+    "kind": "glow/bio",
+    "flame": false,
+    "embers": false
+  }
+}

@@ -1,0 +1,253 @@
+{
+  "format": "scenery-piece@2",
+  "id": "brazier_001",
+  "group": "braziers",
+  "rank": 4,
+  "index": 1,
+  "name": "Carved stone basin brazier 001",
+  "lights": null,
+  "variety": "carved stone basin brazier",
+  "glow_concept": null,
+  "prompt": "a wide metal fire bowl standing on three splayed legs, heaped with coals and split logs, carved stone basin brazier, completely unlit, no glow, no light sources, no self-emission",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 64,
+  "sprite": "braziers/brazier_001/sprite.webp",
+  "placement": {
+    "world_height_m": 0.821,
+    "world_px_height": 42,
+    "character_height_px": 87,
+    "character_height_m": 1.7,
+    "note": "ONE SCENERY PIXEL IS ONE PLAYER PIXEL. world_px_height IS the art's own alpha bbox height, so scenery is placed into the world at 1:1 exactly as the avatar is (setScale(1)) and the two share one pixel grid. The CAMERA still zooms the whole scene \u2014 that is uniform and correct; what must never happen is scenery being resampled on its own, against the player. world_height_m is what the art reads as beside a 87px character; declared_height_m is what it was once declared to be, and a gap between them means the ART is the wrong size.",
+    "declared_height_m": 0.94,
+    "content_box": [
+      7,
+      12,
+      57,
+      54
+    ],
+    "content_px_height": 42,
+    "canvas_render_px": 64
+  },
+  "pixellab_object_id": "7b85014c-6e95-4f4b-9d5d-d1addf2bc632",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)",
+  "must_be_imbplemented_with_random_hflip": true,
+  "generated_at": "2026-08-12T23:44:09+00:00",
+  "states": {
+    "LIT_1": {
+      "sprite": "braziers/brazier_001/lit_1/sprite.webp",
+      "pixellab_object_id": "e75fd593-66d5-4921-b68c-e2049f12cf71",
+      "generated_at": "2026-08-15T20:29:08+00:00",
+      "glow_concept": "molten soulstone shards glowing among coals",
+      "difference_from_source": 0.6846,
+      "glow_score": 0.0967,
+      "rotations": {
+        "south-east": "braziers/brazier_001/lit_1/rotations/south-east.webp",
+        "south-west": "braziers/brazier_001/lit_1/rotations/south-west.webp",
+        "south": "braziers/brazier_001/lit_1/sprite.webp"
+      },
+      "animations": {
+        "motion": {
+          "group_id": "38f87c7e-5598-4f73-8754-4cbc1287d054",
+          "description": "This is the same picture in every frame. ONLY the cyan crystals in the bowl brighten a little and return. Nothing else moves, bends or leans, and nothing changes size, shape or position. The last frame must return to exactly how the first frame looks, so the loop joins. Nothing may become darker than it is in the first frame. Do not redraw anything else, and do not add or remove anything.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "braziers/brazier_001/lit_1/animations/motion/00.webp",
+            "braziers/brazier_001/lit_1/animations/motion/01.webp",
+            "braziers/brazier_001/lit_1/animations/motion/02.webp",
+            "braziers/brazier_001/lit_1/animations/motion/03.webp",
+            "braziers/brazier_001/lit_1/animations/motion/04.webp"
+          ],
+          "strip": "braziers/brazier_001/lit_1/animations/motion__strip.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-08-29T15:38:34+00:00",
+          "brief": "X37",
+          "review": "ANIMATION_PROBABLY_GOOD",
+          "review_metrics": {
+            "class": "fire",
+            "base": 0.0,
+            "still": 0.582
+          },
+          "light_frames": [
+            {
+              "intensity": 0.559,
+              "dx": 0.4,
+              "dy": -8.3
+            },
+            {
+              "intensity": 1.018,
+              "dx": 0.0,
+              "dy": -9.9
+            },
+            {
+              "intensity": 1.5,
+              "dx": 1.0,
+              "dy": -12.6
+            },
+            {
+              "intensity": 1.381,
+              "dx": 1.0,
+              "dy": -15.0
+            },
+            {
+              "intensity": 0.5,
+              "dx": 1.1,
+              "dy": -12.8
+            }
+          ]
+        }
+      }
+    },
+    "LIT_2": {
+      "sprite": "braziers/brazier_001/lit_2/sprite.webp",
+      "pixellab_object_id": "00587123-f5db-4988-94df-61eae305e4d5",
+      "generated_at": "2026-08-15T20:29:29+00:00",
+      "glow_concept": "column of drifting gold sparks",
+      "difference_from_source": 0.7971,
+      "glow_score": 0.078,
+      "rotations": {
+        "south-east": "braziers/brazier_001/lit_2/rotations/south-east.webp",
+        "south-west": "braziers/brazier_001/lit_2/rotations/south-west.webp",
+        "south": "braziers/brazier_001/lit_2/sprite.webp"
+      },
+      "animations": {
+        "motion": {
+          "group_id": "f41535e6-97b3-4524-a351-5b6e5c6d7890",
+          "description": "This is the same picture in every frame. ONLY the fire in the brazier flickers and the sparks above it drift upward. It is lit and clearly visible in every single frame, including the first. Everything else in the picture is copied from the first frame exactly, pixel for pixel, unchanged in shape, size, position and colour. No outline anywhere is redrawn. The last frame matches the first frame exactly, so the loop joins.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "braziers/brazier_001/lit_2/animations/motion/00.webp",
+            "braziers/brazier_001/lit_2/animations/motion/01.webp",
+            "braziers/brazier_001/lit_2/animations/motion/02.webp",
+            "braziers/brazier_001/lit_2/animations/motion/03.webp",
+            "braziers/brazier_001/lit_2/animations/motion/04.webp"
+          ],
+          "strip": "braziers/brazier_001/lit_2/animations/motion__strip.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-08-29T18:31:12+00:00",
+          "brief": "B10",
+          "review": "ANIMATION_PROBABLY_GOOD",
+          "review_metrics": {
+            "base_outline": 0.0
+          },
+          "light_frames": [
+            {
+              "intensity": 0.991,
+              "dx": -2.1,
+              "dy": -10.8
+            },
+            {
+              "intensity": 1.016,
+              "dx": -2.3,
+              "dy": -11.3
+            },
+            {
+              "intensity": 1.051,
+              "dx": -2.9,
+              "dy": -12.3
+            },
+            {
+              "intensity": 1.014,
+              "dx": -2.4,
+              "dy": -12.0
+            },
+            {
+              "intensity": 0.927,
+              "dx": -2.4,
+              "dy": -10.7
+            }
+          ]
+        }
+      }
+    },
+    "NOT_LIT_1": {
+      "sprite": "braziers/brazier_001/sprite.webp",
+      "pixellab_object_id": "7b85014c-6e95-4f4b-9d5d-d1addf2bc632",
+      "generated_at": "2026-08-12T23:44:09+00:00",
+      "rotations": {
+        "south-east": "braziers/brazier_001/rotations/south-east.webp",
+        "south-west": "braziers/brazier_001/rotations/south-west.webp",
+        "south": "braziers/brazier_001/sprite.webp"
+      },
+      "animations": {}
+    },
+    "NOT_LIT_2": {
+      "sprite": "braziers/brazier_001/not_lit_2/sprite.webp",
+      "pixellab_object_id": "5937302a-398a-444d-b42d-68bf53146ba0",
+      "generated_at": "2026-08-15T20:27:33+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.7376,
+      "glow_score": 0.2628,
+      "rotations": {
+        "south-east": "braziers/brazier_001/not_lit_2/rotations/south-east.webp",
+        "south-west": "braziers/brazier_001/not_lit_2/rotations/south-west.webp",
+        "south": "braziers/brazier_001/not_lit_2/sprite.webp"
+      }
+    },
+    "NOT_LIT_3": {
+      "sprite": "braziers/brazier_001/not_lit_3/sprite.webp",
+      "pixellab_object_id": "cfb84def-0b06-4061-a9fd-9049755950fc",
+      "generated_at": "2026-08-15T20:27:44+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.7856,
+      "glow_score": 0.0423,
+      "rotations": {
+        "south-east": "braziers/brazier_001/not_lit_3/rotations/south-east.webp",
+        "south-west": "braziers/brazier_001/not_lit_3/rotations/south-west.webp",
+        "south": "braziers/brazier_001/not_lit_3/sprite.webp"
+      }
+    },
+    "NOT_LIT_4": {
+      "sprite": "braziers/brazier_001/not_lit_4/sprite.webp",
+      "pixellab_object_id": "7264c5ac-418b-4162-a3c1-671741a94e6b",
+      "generated_at": "2026-08-15T20:28:58+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.8359,
+      "glow_score": 0.0466,
+      "rotations": {
+        "south-east": "braziers/brazier_001/not_lit_4/rotations/south-east.webp",
+        "south-west": "braziers/brazier_001/not_lit_4/rotations/south-west.webp",
+        "south": "braziers/brazier_001/not_lit_4/sprite.webp"
+      }
+    }
+  },
+  "collision": true,
+  "hitbox_shape": "ellipse",
+  "light": {
+    "strength": 0.6,
+    "color": "#4bffde",
+    "radius": 11,
+    "reference": "the spawn bonfire is 1.0 (radius 7); strength 0 is no light",
+    "states": {
+      "LIT_1": {
+        "strength": 0.6,
+        "color": "#4bffde",
+        "radius": 11
+      },
+      "LIT_2": {
+        "strength": 0.48,
+        "color": "#ffb45c",
+        "radius": 9
+      }
+    },
+    "kind": "glow/mineral",
+    "flame": false,
+    "embers": false
+  }
+}

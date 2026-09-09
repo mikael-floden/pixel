@@ -1,0 +1,132 @@
+{
+  "schema": "tiles3/tops@1",
+  "kind": "top_only",
+  "wall_is_meaningless": true,
+  "not_a_candidate_for": "x over y",
+  "ground": "black_rock",
+  "flavour": "detail",
+  "index": 108,
+  "seed": 27542,
+  "prompt": "black rock, a fossil imprint in the middle, black rock all around the edge",
+  "palette_top": "#1e1d1e",
+  "tile_id": "48e15366-b551-4d43-88e2-f65634dfb550",
+  "n_tiles": 16,
+  "tiles": [
+    "tile_00.webp",
+    "tile_01.webp",
+    "tile_02.webp",
+    "tile_03.webp",
+    "tile_04.webp",
+    "tile_05.webp",
+    "tile_06.webp",
+    "tile_07.webp",
+    "tile_08.webp",
+    "tile_09.webp",
+    "tile_10.webp",
+    "tile_11.webp",
+    "tile_12.webp",
+    "tile_13.webp",
+    "tile_14.webp",
+    "tile_15.webp"
+  ],
+  "settings": {
+    "tile_size": 64,
+    "tile_view": "high top-down",
+    "view_angle": 28.0,
+    "depth_ratio": 0.5,
+    "tile_type": "isometric",
+    "flat_top_px": 2,
+    "outline_mode": "segmentation"
+  },
+  "usd": 0.096,
+  "created": "2026-09-03T04:08:53+00:00",
+  "top_face": {
+    "per_tile": [
+      {
+        "colours": 15,
+        "dominant_share": 0.559,
+        "px": 923
+      },
+      {
+        "colours": 18,
+        "dominant_share": 0.2719,
+        "px": 923
+      },
+      {
+        "colours": 16,
+        "dominant_share": 0.494,
+        "px": 923
+      },
+      {
+        "colours": 22,
+        "dominant_share": 0.4453,
+        "px": 923
+      },
+      {
+        "colours": 20,
+        "dominant_share": 0.5238,
+        "px": 924
+      },
+      {
+        "colours": 19,
+        "dominant_share": 0.1558,
+        "px": 924
+      },
+      {
+        "colours": 13,
+        "dominant_share": 0.6082,
+        "px": 924
+      },
+      {
+        "colours": 19,
+        "dominant_share": 0.6342,
+        "px": 924
+      },
+      {
+        "colours": 15,
+        "dominant_share": 0.1656,
+        "px": 924
+      },
+      {
+        "colours": 19,
+        "dominant_share": 0.6544,
+        "px": 923
+      },
+      {
+        "colours": 20,
+        "dominant_share": 0.71,
+        "px": 924
+      },
+      {
+        "colours": 20,
+        "dominant_share": 0.3727,
+        "px": 923
+      },
+      {
+        "colours": 17,
+        "dominant_share": 0.6006,
+        "px": 924
+      },
+      {
+        "colours": 15,
+        "dominant_share": 0.2227,
+        "px": 925
+      },
+      {
+        "colours": 14,
+        "dominant_share": 0.5628,
+        "px": 924
+      },
+      {
+        "colours": 22,
+        "dominant_share": 0.631,
+        "px": 924
+      }
+    ],
+    "mean_colours": 17.75,
+    "mean_dominant_share": 0.4758
+  },
+  "motif": "a fossil imprint",
+  "motif_source": "tiles/config/details.json",
+  "walkable": true
+}

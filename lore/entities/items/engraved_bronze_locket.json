@@ -1,0 +1,22 @@
+{
+  "domain": "items",
+  "id": "engraved_bronze_locket",
+  "name_seen": "Rune Locket",
+  "law": "II",
+  "description": "Oval bronze, knotted over with spirals, a ring at the top for a cord. It is a locket. It has never once opened.",
+  "lore": [
+    "Opening it is the first thing everybody tries and the last thing anybody manages. Some have a hinge line under the knotwork and some have no hinge line whatsoever, and all of them are shut, and the trade has been quiet about that for a long while, on the grounds that eighty-five gold is a fair price and the question is not worth losing over.",
+    "Two facts sit side by side in [[lore/the_chronicle|the Chronicle]] with no third fact between them. They come up in the grass where [[monsters/rune_lion|Runemane]] walks. And they come off the black rock, grown in under the chest skin of a [[monsters/malformed_creature|Palehusk]] — a thing with nothing at all inside it, carrying, over the exact place a heart would sit, a container that has never been opened."
+  ],
+  "related": [
+    {
+      "domain": "monsters",
+      "id": "malformed_creature"
+    },
+    {
+      "domain": "lore",
+      "id": "the_chronicle"
+    }
+  ],
+  "gm_notes": "Same object from two find-sites with nothing linking them; most likely explanation is that it was a common piece of jewellery in some era, which is the explanation Bettany cannot make herself accept. Leave both open. Never decide what is inside."
+}

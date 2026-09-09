@@ -1,0 +1,263 @@
+{
+  "format": "scenery-piece@2",
+  "id": "stump_007",
+  "group": "stumps",
+  "rank": 24,
+  "index": 7,
+  "name": "Old rotting stump 007",
+  "lights": null,
+  "variety": "old rotting stump",
+  "glow_concept": null,
+  "prompt": "a cut tree stump with visible growth rings on the flat top, ragged bark sides, and small mushrooms and shoots around the base, old rotting stump, small, knee-high to an adult person, completely unlit, no glow, no light sources, no self-emission",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 64,
+  "sprite": "stumps/stump_007/sprite.webp",
+  "placement": {
+    "world_height_m": 0.899,
+    "world_px_height": 46,
+    "character_height_px": 87,
+    "character_height_m": 1.7,
+    "note": "ONE SCENERY PIXEL IS ONE PLAYER PIXEL. world_px_height IS the art's own alpha bbox height, so scenery is placed into the world at 1:1 exactly as the avatar is (setScale(1)) and the two share one pixel grid. The CAMERA still zooms the whole scene \u2014 that is uniform and correct; what must never happen is scenery being resampled on its own, against the player. world_height_m is what the art reads as beside a 87px character; declared_height_m is what it was once declared to be, and a gap between them means the ART is the wrong size.",
+    "declared_height_m": 0.5,
+    "content_box": [
+      7,
+      10,
+      58,
+      56
+    ],
+    "content_px_height": 46,
+    "canvas_render_px": 64
+  },
+  "pixellab_object_id": "3cdd15be-5051-474c-af1b-62f3ad86f293",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)",
+  "must_be_imbplemented_with_random_hflip": true,
+  "states": {
+    "LIT_2": {
+      "sprite": "stumps/stump_007/lit_2/sprite.webp",
+      "pixellab_object_id": "3a5bb20c-03ac-4fbc-8a13-ceb904b28df6",
+      "glow_concept": "shelf undersides shedding pale spore light downward",
+      "difference_from_source": 0.8201,
+      "glow_score": 0.0564,
+      "generated_at": "2026-08-15T16:27:38+00:00",
+      "animations": {
+        "motion": {
+          "group_id": "eb71246e-b954-48c3-aa19-5e57da1e94b7",
+          "description": "This is the same picture in every frame. ONLY the glowing fungi on the stump brighten a little and return. It is lit and clearly visible in every single frame, including the first. It only ever gets SLIGHTLY brighter: never white, never washed out, and it keeps its own colour at every single moment. It is at its brightest in the middle and back to exactly its first-frame brightness and colour at the end, never dimmer at the end than at the start. Everything else in the picture is copied from the first frame exactly, pixel for pixel, unchanged in shape, size, position and colour. No outline anywhere is redrawn. The last frame matches the first frame exactly, so the loop joins.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "stumps/stump_007/lit_2/animations/motion/00.webp",
+            "stumps/stump_007/lit_2/animations/motion/01.webp",
+            "stumps/stump_007/lit_2/animations/motion/02.webp",
+            "stumps/stump_007/lit_2/animations/motion/03.webp",
+            "stumps/stump_007/lit_2/animations/motion/04.webp"
+          ],
+          "strip": "stumps/stump_007/lit_2/animations/motion__strip.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-08-29T18:34:27+00:00",
+          "brief": "B39",
+          "review": "ANIMATION_PROBABLY_GOOD",
+          "review_metrics": {
+            "base_outline": 0.0
+          },
+          "light_frames": [
+            {
+              "intensity": 1.5,
+              "dx": -0.4,
+              "dy": 9.9
+            },
+            {
+              "intensity": 1.5,
+              "dx": -0.5,
+              "dy": 9.9
+            },
+            {
+              "intensity": 0.5,
+              "dx": 12.0,
+              "dy": 15.0
+            },
+            {
+              "intensity": 0.5,
+              "dx": 3.7,
+              "dy": 11.6
+            },
+            {
+              "intensity": 0.5,
+              "dx": 3.7,
+              "dy": 11.6
+            }
+          ]
+        }
+      }
+    },
+    "LIT_4": {
+      "sprite": "stumps/stump_007/lit_4/sprite.webp",
+      "pixellab_object_id": "08995fd4-d88c-471e-b981-dd3664bb72da",
+      "glow_concept": "ring of glowing mushrooms around the base",
+      "difference_from_source": 0.969,
+      "glow_score": 0.1994,
+      "generated_at": "2026-08-15T16:27:38+00:00",
+      "animations": {
+        "motion": {
+          "group_id": "acb9789c-6d9a-4d7a-b6c4-705edb63c30b",
+          "description": "This is the same picture in every frame. ONLY the cyan crystals on the stump brighten a little and return. It is lit and clearly visible in every frame, including the first. It gets only SLIGHTLY brighter -- never white, never washed out -- and keeps its own colour throughout: brightest in the middle, back to its first-frame brightness at the end, never dimmer at the end than the start. Nothing is added or removed anywhere: every object appears in every frame, the same number of them, in the same places, at the same size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour, no outline redrawn. The last frame matches the first exactly.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "stumps/stump_007/lit_4/animations/motion/00.webp",
+            "stumps/stump_007/lit_4/animations/motion/01.webp",
+            "stumps/stump_007/lit_4/animations/motion/02.webp",
+            "stumps/stump_007/lit_4/animations/motion/03.webp",
+            "stumps/stump_007/lit_4/animations/motion/04.webp"
+          ],
+          "strip": "stumps/stump_007/lit_4/animations/motion__strip.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-08-29T19:05:14+00:00",
+          "brief": "C43",
+          "review": "ANIMATION_PROBABLY_BAD",
+          "review_metrics": {
+            "class": "rigid",
+            "base": 0.6914,
+            "still": 0.22
+          },
+          "light_frames": [
+            {
+              "intensity": 1.334,
+              "dx": -1.0,
+              "dy": 4.9
+            },
+            {
+              "intensity": 1.484,
+              "dx": -0.4,
+              "dy": 0.9
+            },
+            {
+              "intensity": 0.922,
+              "dx": -0.7,
+              "dy": 2.0
+            },
+            {
+              "intensity": 1.025,
+              "dx": -0.2,
+              "dy": -6.2
+            },
+            {
+              "intensity": 0.5,
+              "dx": -1.3,
+              "dy": -1.7
+            }
+          ]
+        }
+      }
+    },
+    "NOT_LIT_1": {
+      "sprite": "stumps/stump_007/sprite.webp",
+      "pixellab_object_id": "3cdd15be-5051-474c-af1b-62f3ad86f293",
+      "glow_score": 0.1499,
+      "generated_at": "2026-08-13T13:56:25+00:00"
+    },
+    "NOT_LIT_10": {
+      "sprite": "stumps/stump_007/not_lit_10/sprite.webp",
+      "pixellab_object_id": "c4e2ce54-74e2-4526-8a04-18c403540d7c",
+      "glow_concept": null,
+      "difference_from_source": 0.3436,
+      "glow_score": 0.129,
+      "generated_at": "2026-08-15T16:27:38+00:00"
+    },
+    "NOT_LIT_2": {
+      "sprite": "stumps/stump_007/not_lit_2/sprite.webp",
+      "pixellab_object_id": "18026136-e1ea-4936-87f4-1ba9a93500bf",
+      "glow_concept": null,
+      "difference_from_source": 0.6626,
+      "glow_score": 0.0657,
+      "generated_at": "2026-08-15T16:27:38+00:00"
+    },
+    "NOT_LIT_4": {
+      "sprite": "stumps/stump_007/not_lit_4/sprite.webp",
+      "pixellab_object_id": "7c564e6a-8a57-4066-a1a4-7a0624869546",
+      "generated_at": "2026-08-16T14:25:50+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.467,
+      "glow_score": 0.0345
+    },
+    "NOT_LIT_5": {
+      "sprite": "stumps/stump_007/not_lit_5/sprite.webp",
+      "pixellab_object_id": "98b33b2f-3cc1-41ba-823e-874e72be2d49",
+      "generated_at": "2026-08-16T14:25:51+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.5648,
+      "glow_score": 0.0155
+    },
+    "NOT_LIT_6": {
+      "sprite": "stumps/stump_007/not_lit_6/sprite.webp",
+      "pixellab_object_id": "f44c0a86-d175-4055-9af6-be8111c000d6",
+      "glow_concept": null,
+      "difference_from_source": 0.5048,
+      "glow_score": 0.0267,
+      "generated_at": "2026-08-15T16:27:38+00:00"
+    },
+    "NOT_LIT_7": {
+      "sprite": "stumps/stump_007/not_lit_7/sprite.webp",
+      "pixellab_object_id": "d5261550-ccfe-461f-98b5-964436b836d3",
+      "generated_at": "2026-08-16T14:25:52+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.718,
+      "glow_score": 0.0
+    },
+    "NOT_LIT_8": {
+      "sprite": "stumps/stump_007/not_lit_8/sprite.webp",
+      "pixellab_object_id": "f4a36323-50f6-4173-a842-4eff71124478",
+      "glow_concept": null,
+      "difference_from_source": 0.7273,
+      "glow_score": 0.4484,
+      "generated_at": "2026-08-15T16:27:38+00:00"
+    },
+    "NOT_LIT_9": {
+      "sprite": "stumps/stump_007/not_lit_9/sprite.webp",
+      "pixellab_object_id": "da24185e-144d-4411-b2b0-e96186414ea2",
+      "generated_at": "2026-08-16T14:25:53+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.8142,
+      "glow_score": 0.0186
+    }
+  },
+  "generated_at": "2026-08-13T13:56:25+00:00",
+  "collision": true,
+  "hitbox_shape": "ellipse",
+  "light": {
+    "strength": 0.1,
+    "color": "#fff0a0",
+    "radius": 2,
+    "reference": "the spawn bonfire is 1.0 (radius 7); strength 0 is no light",
+    "states": {
+      "LIT_2": {
+        "strength": 0.08,
+        "color": "#fff0a0",
+        "radius": 2
+      },
+      "LIT_4": {
+        "strength": 0.12,
+        "color": "#9fffe0",
+        "radius": 2
+      }
+    },
+    "kind": "glow/bio",
+    "flame": false,
+    "embers": false
+  }
+}

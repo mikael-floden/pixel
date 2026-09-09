@@ -1,0 +1,99 @@
+{
+  "format": "scenery-piece@2",
+  "id": "fern_008",
+  "group": "ferns",
+  "rank": 42,
+  "index": 8,
+  "name": "Small polypody tuft 008",
+  "lights": null,
+  "variety": "small polypody tuft",
+  "glow_concept": "cool fog of light pooling under the fronds",
+  "prompt": "a bushy clump of arching ferns rising from a shaggy root crown, small polypody tuft, waist-high, self-emissive at night, softly radiating light: cool fog of light pooling under the fronds",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 64,
+  "sprite": "ferns/fern_008/sprite.webp",
+  "placement": {
+    "world_height_m": 0.957,
+    "world_px_height": 49,
+    "character_height_px": 87,
+    "character_height_m": 1.7,
+    "note": "ONE SCENERY PIXEL IS ONE PLAYER PIXEL. world_px_height IS the art's own alpha bbox height, so scenery is placed into the world at 1:1 exactly as the avatar is (setScale(1)) and the two share one pixel grid. The CAMERA still zooms the whole scene \u2014 that is uniform and correct; what must never happen is scenery being resampled on its own, against the player. world_height_m is what the art reads as beside a 87px character; declared_height_m is what it was once declared to be, and a gap between them means the ART is the wrong size.",
+    "declared_height_m": 1.03,
+    "content_box": [
+      6,
+      8,
+      59,
+      57
+    ],
+    "content_px_height": 49,
+    "canvas_render_px": 64
+  },
+  "pixellab_object_id": "44c451e7-b0de-496d-9dd4-bb5422249084",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)",
+  "must_be_imbplemented_with_random_hflip": true,
+  "generated_at": "2026-08-13T22:13:38+00:00",
+  "states": {
+    "NOT_LIT_3": {
+      "sprite": "ferns/fern_008/sprite.webp",
+      "pixellab_object_id": "44c451e7-b0de-496d-9dd4-bb5422249084",
+      "generated_at": "2026-08-13T22:13:38+00:00",
+      "relit_from": "LIT_1"
+    },
+    "NOT_LIT_4": {
+      "sprite": "ferns/fern_008/not_lit_4/sprite.webp",
+      "pixellab_object_id": "92d85f00-9f93-4aa0-a77d-4b53f30d3b4d",
+      "generated_at": "2026-08-16T12:09:28+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.8608,
+      "glow_score": 0.0,
+      "relit_from": "LIT_2",
+      "animations": {
+        "motion": {
+          "group_id": "d9056d1d-9d60-4ab2-b977-d6ff182a668b",
+          "description": "This is the same picture in every frame. ONLY the tips of the leaves move, each by a single pixel. Nothing else moves, bends or leans, and nothing changes size, shape or position. The last frame must return to exactly how the first frame looks, so the loop joins. Nothing may become darker than it is in the first frame. Do not redraw anything else, and do not add or remove anything.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "ferns/fern_008/not_lit_4/animations/motion/00.webp",
+            "ferns/fern_008/not_lit_4/animations/motion/01.webp",
+            "ferns/fern_008/not_lit_4/animations/motion/02.webp",
+            "ferns/fern_008/not_lit_4/animations/motion/03.webp",
+            "ferns/fern_008/not_lit_4/animations/motion/04.webp"
+          ],
+          "strip": "ferns/fern_008/not_lit_4/animations/motion__strip.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-08-29T15:41:04+00:00",
+          "brief": "X57",
+          "review": "ANIMATION_PROBABLY_GOOD",
+          "review_metrics": {
+            "class": "foliage",
+            "base": 0.0,
+            "still": 0.397
+          }
+        }
+      }
+    },
+    "NOT_LIT_5": {
+      "sprite": "ferns/fern_008/not_lit_5/sprite.webp",
+      "pixellab_object_id": "4b37a573-4c1b-408f-b238-0235d7ee4238",
+      "generated_at": "2026-08-16T12:09:40+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.7277,
+      "glow_score": 0.0,
+      "relit_from": "LIT_3"
+    }
+  },
+  "collision": true,
+  "hitbox_shape": "ellipse"
+}

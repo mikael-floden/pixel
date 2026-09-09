@@ -1,0 +1,132 @@
+{
+  "schema": "tiles3/tops@1",
+  "kind": "top_only",
+  "wall_is_meaningless": true,
+  "not_a_candidate_for": "x over y",
+  "ground": "brown_paving_stone",
+  "flavour": "detail",
+  "index": 117,
+  "seed": 56192,
+  "prompt": "brown paving stone, a pale mortar seam in the middle, brown paving stone all around the edge",
+  "palette_top": "#7d7265",
+  "tile_id": "2292d4d0-28fe-48f2-bd86-729bdeea84c1",
+  "n_tiles": 16,
+  "tiles": [
+    "tile_00.webp",
+    "tile_01.webp",
+    "tile_02.webp",
+    "tile_03.webp",
+    "tile_04.webp",
+    "tile_05.webp",
+    "tile_06.webp",
+    "tile_07.webp",
+    "tile_08.webp",
+    "tile_09.webp",
+    "tile_10.webp",
+    "tile_11.webp",
+    "tile_12.webp",
+    "tile_13.webp",
+    "tile_14.webp",
+    "tile_15.webp"
+  ],
+  "settings": {
+    "tile_size": 64,
+    "tile_view": "high top-down",
+    "view_angle": 28.0,
+    "depth_ratio": 0.5,
+    "tile_type": "isometric",
+    "flat_top_px": 2,
+    "outline_mode": "segmentation"
+  },
+  "usd": 0.096,
+  "created": "2026-09-03T05:23:46+00:00",
+  "top_face": {
+    "per_tile": [
+      {
+        "colours": 6,
+        "dominant_share": 0.7652,
+        "px": 920
+      },
+      {
+        "colours": 9,
+        "dominant_share": 0.7696,
+        "px": 920
+      },
+      {
+        "colours": 7,
+        "dominant_share": 0.7837,
+        "px": 920
+      },
+      {
+        "colours": 9,
+        "dominant_share": 0.775,
+        "px": 920
+      },
+      {
+        "colours": 8,
+        "dominant_share": 0.7633,
+        "px": 921
+      },
+      {
+        "colours": 7,
+        "dominant_share": 0.797,
+        "px": 921
+      },
+      {
+        "colours": 6,
+        "dominant_share": 0.81,
+        "px": 921
+      },
+      {
+        "colours": 12,
+        "dominant_share": 0.7655,
+        "px": 921
+      },
+      {
+        "colours": 10,
+        "dominant_share": 0.76,
+        "px": 921
+      },
+      {
+        "colours": 10,
+        "dominant_share": 0.7915,
+        "px": 921
+      },
+      {
+        "colours": 10,
+        "dominant_share": 0.798,
+        "px": 921
+      },
+      {
+        "colours": 10,
+        "dominant_share": 0.7804,
+        "px": 920
+      },
+      {
+        "colours": 9,
+        "dominant_share": 0.8043,
+        "px": 920
+      },
+      {
+        "colours": 9,
+        "dominant_share": 0.8205,
+        "px": 919
+      },
+      {
+        "colours": 8,
+        "dominant_share": 0.7815,
+        "px": 920
+      },
+      {
+        "colours": 14,
+        "dominant_share": 0.7772,
+        "px": 920
+      }
+    ],
+    "mean_colours": 9.0,
+    "mean_dominant_share": 0.7839
+  },
+  "motif": "a pale mortar seam",
+  "motif_source": "tiles/config/details.json",
+  "walkable": true
+}

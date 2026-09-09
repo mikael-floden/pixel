@@ -1,0 +1,22 @@
+{
+  "domain": "items",
+  "id": "grey_grindstone",
+  "name_seen": "Soulstone",
+  "law": "V",
+  "description": "Grey-brown and split by dark seams, ground smooth. Gnashjaw wears its tusks down on rock like this.",
+  "lore": [
+    "[[characters/54bead23|Osric]] has patched the same coat of mail three times for the same customer and finally said it across the counter: it is not cutting your mail, it is using it. A stone like this does not hit hard. It takes a little armour off, hands it back a breath later, takes a little more — and a man carrying one who simply keeps coming at you all afternoon will have the whole coat by evening. Forty-five gold. Every second beginner owns one, and the few who learn patience early keep it for years.",
+    "Go and watch [[monsters/gray_brute|Gnashjaw]] and you will see an animal filing its own tusks flat on a boulder, and you will call it tooth-care, because that is what it looks like and because the other reading takes some sitting with. The stone will not leave you the comfortable one. Pale grey lobes in rust-dark seams, the whole face worn flat and glossy, warm in the hand: what refused to thin any further in that creature was not the teeth, and was not the strength either. It was the wearing away. An animal can keep what its life is about to itself for as long as you care to stand there looking at it. A stone cannot, and every dealer between here and the east country has held one, and the young ones are out there grinding tonight."
+  ],
+  "related": [
+    {
+      "domain": "monsters",
+      "id": "gray_brute"
+    },
+    {
+      "domain": "lore",
+      "id": "the_hard_pieces"
+    }
+  ],
+  "gm_notes": "The bull east and the reason the brutes grind stay in the creature record; here it is only 'the other reading', unstated, so a reader who clicks through gets the answer rather than a repeat. Osric's line is a fresh trade beat — he is the armourer on the receiving end of a cheap stone, which is a different Osric from the one chasing seams and melting stones. The evidence claim is the point: attrition, not strength, is what pressed down, and watching the animal will always suggest the softer reading."
+}

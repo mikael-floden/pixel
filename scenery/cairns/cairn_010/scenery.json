@@ -1,0 +1,99 @@
+{
+  "format": "scenery-piece@2",
+  "id": "cairn_010",
+  "group": "cairns",
+  "rank": 9,
+  "index": 10,
+  "name": "Wide low memorial cairn 010",
+  "lights": null,
+  "variety": "wide low memorial cairn",
+  "glow_concept": "wisps of soul-light circling the peak",
+  "prompt": "a broad sturdy pile of large stacked rocks built as a trail marker, wide at the base, made of heavy weathered stones, wide low memorial cairn, roughly six feet tall, human height, self-emissive at night, softly radiating light: wisps of soul-light circling the peak",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 64,
+  "sprite": "cairns/cairn_010/sprite.webp",
+  "placement": {
+    "world_height_m": 0.977,
+    "world_px_height": 50,
+    "character_height_px": 87,
+    "character_height_m": 1.7,
+    "note": "ONE SCENERY PIXEL IS ONE PLAYER PIXEL. world_px_height IS the art's own alpha bbox height, so scenery is placed into the world at 1:1 exactly as the avatar is (setScale(1)) and the two share one pixel grid. The CAMERA still zooms the whole scene \u2014 that is uniform and correct; what must never happen is scenery being resampled on its own, against the player. world_height_m is what the art reads as beside a 87px character; declared_height_m is what it was once declared to be, and a gap between them means the ART is the wrong size.",
+    "declared_height_m": 1.26,
+    "content_box": [
+      9,
+      8,
+      56,
+      58
+    ],
+    "content_px_height": 50,
+    "canvas_render_px": 64
+  },
+  "pixellab_object_id": "6c3d78bd-1999-42ef-95c3-1d1dbb69c255",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)",
+  "must_be_imbplemented_with_random_hflip": true,
+  "generated_at": "2026-08-13T21:29:31+00:00",
+  "states": {
+    "NOT_LIT_3": {
+      "sprite": "cairns/cairn_010/sprite.webp",
+      "pixellab_object_id": "6c3d78bd-1999-42ef-95c3-1d1dbb69c255",
+      "generated_at": "2026-08-13T21:29:31+00:00",
+      "relit_from": "LIT_1",
+      "rotations": {
+        "south-east": "cairns/cairn_010/rotations/south-east.webp",
+        "south-west": "cairns/cairn_010/rotations/south-west.webp",
+        "south": "cairns/cairn_010/sprite.webp"
+      }
+    },
+    "NOT_LIT_4": {
+      "sprite": "cairns/cairn_010/not_lit_4/sprite.webp",
+      "pixellab_object_id": "ae6b0f1a-81e2-44e4-a8a1-b8da3785cf98",
+      "generated_at": "2026-08-15T21:21:17+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.2326,
+      "glow_score": 0.0,
+      "relit_from": "LIT_2",
+      "rotations": {
+        "south-east": "cairns/cairn_010/not_lit_4/rotations/south-east.webp",
+        "south-west": "cairns/cairn_010/not_lit_4/rotations/south-west.webp",
+        "south": "cairns/cairn_010/not_lit_4/sprite.webp"
+      }
+    },
+    "NOT_LIT_5": {
+      "sprite": "cairns/cairn_010/not_lit_5/sprite.webp",
+      "pixellab_object_id": "16854ea1-45d6-424b-8295-8907eee971a8",
+      "generated_at": "2026-08-15T21:21:50+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.8632,
+      "glow_score": 0.0,
+      "relit_from": "LIT_3",
+      "rotations": {
+        "south-east": "cairns/cairn_010/not_lit_5/rotations/south-east.webp",
+        "south-west": "cairns/cairn_010/not_lit_5/rotations/south-west.webp",
+        "south": "cairns/cairn_010/not_lit_5/sprite.webp"
+      }
+    },
+    "NOT_LIT_6": {
+      "sprite": "cairns/cairn_010/not_lit_6/sprite.webp",
+      "pixellab_object_id": "144571de-e73b-47c4-b719-e64d12c58cea",
+      "generated_at": "2026-08-15T21:22:11+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.5644,
+      "glow_score": 0.0,
+      "relit_from": "LIT_4",
+      "rotations": {
+        "south-east": "cairns/cairn_010/not_lit_6/rotations/south-east.webp",
+        "south-west": "cairns/cairn_010/not_lit_6/rotations/south-west.webp",
+        "south": "cairns/cairn_010/not_lit_6/sprite.webp"
+      }
+    }
+  },
+  "collision": true,
+  "hitbox_shape": "ellipse"
+}

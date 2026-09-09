@@ -1,0 +1,304 @@
+{
+  "format": "scenery-piece@2",
+  "id": "bed_005",
+  "group": "beds",
+  "rank": 105,
+  "index": 5,
+  "name": "Box bed with drawers underneath 005",
+  "lights": null,
+  "variety": "box bed with drawers underneath",
+  "glow_concept": null,
+  "prompt": "a solid wooden box bed with a thick quilted cover and a plump pillow, heavy frame standing on the floor, box bed with drawers underneath, roughly six feet tall, human height, completely unlit, no glow, no light sources, no self-emission",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 128,
+  "sprite": "beds/bed_005/sprite.webp",
+  "placement": {
+    "world_height_m": 2.013,
+    "world_px_height": 103,
+    "character_height_px": 87,
+    "character_height_m": 1.7,
+    "note": "ONE SCENERY PIXEL IS ONE PLAYER PIXEL. world_px_height IS the art's own alpha bbox height, so scenery is placed into the world at 1:1 exactly as the avatar is (setScale(1)) and the two share one pixel grid. The CAMERA still zooms the whole scene \u2014 that is uniform and correct; what must never happen is scenery being resampled on its own, against the player. world_height_m is what the art reads as beside a 87px character; declared_height_m is what it was once declared to be, and a gap between them means the ART is the wrong size.",
+    "declared_height_m": 1.29,
+    "content_box": [
+      27,
+      14,
+      102,
+      117
+    ],
+    "content_px_height": 103,
+    "canvas_render_px": 128
+  },
+  "pixellab_object_id": "89329afb-778a-439c-adc2-f91104af3a6a",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)",
+  "must_be_imbplemented_with_random_hflip": true,
+  "generated_at": "2026-08-13T22:17:18+00:00",
+  "states": {
+    "LIT_2": {
+      "sprite": "beds/bed_005/lit_2/sprite.webp",
+      "pixellab_object_id": "316d59a5-8d0a-478a-b8d6-c2167e3989be",
+      "generated_at": "2026-08-15T20:10:45+00:00",
+      "glow_concept": "a candle on the headboard shelf",
+      "difference_from_source": 0.9822,
+      "glow_score": 0.1173,
+      "animations": {
+        "flame": {
+          "group_id": "4a1dfc58-9a6e-4ee2-aeec-d4a79fd8bd59",
+          "description": "Animate the flame only",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "directions": {
+            "south": {
+              "frames": 5,
+              "frame_paths": [
+                "beds/bed_005/lit_2/animations/flame/south/00.webp",
+                "beds/bed_005/lit_2/animations/flame/south/01.webp",
+                "beds/bed_005/lit_2/animations/flame/south/02.webp",
+                "beds/bed_005/lit_2/animations/flame/south/03.webp",
+                "beds/bed_005/lit_2/animations/flame/south/04.webp"
+              ],
+              "strip": "beds/bed_005/lit_2/animations/flame__south.webp",
+              "light_frames": [
+                {
+                  "intensity": 1.074,
+                  "dx": 8.4,
+                  "dy": -28.4
+                },
+                {
+                  "intensity": 1.455,
+                  "dx": 7.1,
+                  "dy": -26.5
+                },
+                {
+                  "intensity": 1.5,
+                  "dx": 4.7,
+                  "dy": -25.0
+                },
+                {
+                  "intensity": 0.679,
+                  "dx": 6.2,
+                  "dy": -32.5
+                },
+                {
+                  "intensity": 0.5,
+                  "dx": 6.6,
+                  "dy": -28.1
+                }
+              ]
+            },
+            "south-east": {
+              "frames": 5,
+              "frame_paths": [
+                "beds/bed_005/lit_2/animations/flame/south-east/00.webp",
+                "beds/bed_005/lit_2/animations/flame/south-east/01.webp",
+                "beds/bed_005/lit_2/animations/flame/south-east/02.webp",
+                "beds/bed_005/lit_2/animations/flame/south-east/03.webp",
+                "beds/bed_005/lit_2/animations/flame/south-east/04.webp"
+              ],
+              "strip": "beds/bed_005/lit_2/animations/flame__south-east.webp",
+              "light_frames": [
+                {
+                  "intensity": 1.446,
+                  "dx": -17.7,
+                  "dy": -29.2
+                },
+                {
+                  "intensity": 1.5,
+                  "dx": -12.0,
+                  "dy": -17.4
+                },
+                {
+                  "intensity": 0.5,
+                  "dx": -20.3,
+                  "dy": -57.9
+                },
+                {
+                  "intensity": 0.5,
+                  "dx": -16.7,
+                  "dy": -34.8
+                },
+                {
+                  "intensity": 0.5,
+                  "dx": -16.7,
+                  "dy": -34.8
+                }
+              ]
+            }
+          },
+          "generated_at": "2026-08-29T08:10:07+00:00",
+          "review": "ANIMATION_PROBABLY_GOOD",
+          "review_metrics": {
+            "base_outline": 0.0428
+          },
+          "frame_paths": [
+            "beds/bed_005/lit_2/animations/flame/south/00.webp",
+            "beds/bed_005/lit_2/animations/flame/south/01.webp",
+            "beds/bed_005/lit_2/animations/flame/south/02.webp",
+            "beds/bed_005/lit_2/animations/flame/south/03.webp",
+            "beds/bed_005/lit_2/animations/flame/south/04.webp"
+          ],
+          "strip": "beds/bed_005/lit_2/animations/flame__south.webp",
+          "light_frames": [
+            {
+              "intensity": 1.074,
+              "dx": 8.4,
+              "dy": -28.4
+            },
+            {
+              "intensity": 1.455,
+              "dx": 7.1,
+              "dy": -26.5
+            },
+            {
+              "intensity": 1.5,
+              "dx": 4.7,
+              "dy": -25.0
+            },
+            {
+              "intensity": 0.679,
+              "dx": 6.2,
+              "dy": -32.5
+            },
+            {
+              "intensity": 0.5,
+              "dx": 6.6,
+              "dy": -28.1
+            }
+          ]
+        },
+        "motion": {
+          "group_id": "f70660ea-47c9-4d45-9589-55ed1229297c",
+          "description": "This is the same picture in every frame. ONLY the small candle flame on the headboard flickers, very gently. Everything else is frozen and pixel-for-pixel identical in every frame. Do not redraw anything else, and do not add or remove anything.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "beds/bed_005/lit_2/animations/motion/00.webp",
+            "beds/bed_005/lit_2/animations/motion/01.webp",
+            "beds/bed_005/lit_2/animations/motion/02.webp",
+            "beds/bed_005/lit_2/animations/motion/03.webp",
+            "beds/bed_005/lit_2/animations/motion/04.webp"
+          ],
+          "strip": "beds/bed_005/lit_2/animations/motion__strip.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-08-29T12:42:13+00:00",
+          "brief": "R25",
+          "review": "ANIMATION_PROBABLY_GOOD",
+          "review_metrics": {
+            "base_outline": 0.0
+          },
+          "light_frames": [
+            {
+              "intensity": 1.234,
+              "dx": 8.4,
+              "dy": -28.4
+            },
+            {
+              "intensity": 1.5,
+              "dx": 6.9,
+              "dy": -26.5
+            },
+            {
+              "intensity": 1.5,
+              "dx": 7.8,
+              "dy": -26.4
+            },
+            {
+              "intensity": 0.5,
+              "dx": 6.6,
+              "dy": -25.4
+            },
+            {
+              "intensity": 0.5,
+              "dx": 18.0,
+              "dy": -57.0
+            }
+          ]
+        }
+      },
+      "rotations": {
+        "south-east": "beds/bed_005/lit_2/rotations/south-east.webp",
+        "south-west": "beds/bed_005/lit_2/rotations/south-west.webp",
+        "south": "beds/bed_005/lit_2/sprite.webp"
+      }
+    },
+    "NOT_LIT_1": {
+      "sprite": "beds/bed_005/sprite.webp",
+      "pixellab_object_id": "89329afb-778a-439c-adc2-f91104af3a6a",
+      "generated_at": "2026-08-13T22:17:18+00:00",
+      "rotations": {
+        "south-east": "beds/bed_005/rotations/south-east.webp",
+        "south-west": "beds/bed_005/rotations/south-west.webp",
+        "south": "beds/bed_005/sprite.webp"
+      }
+    },
+    "NOT_LIT_2": {
+      "sprite": "beds/bed_005/not_lit_2/sprite.webp",
+      "pixellab_object_id": "1e8854eb-3c32-446f-8db6-cde5bdea33ea",
+      "generated_at": "2026-08-15T20:09:42+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.5564,
+      "glow_score": 0.2585,
+      "rotations": {
+        "south-east": "beds/bed_005/not_lit_2/rotations/south-east.webp",
+        "south-west": "beds/bed_005/not_lit_2/rotations/south-west.webp",
+        "south": "beds/bed_005/not_lit_2/sprite.webp"
+      }
+    },
+    "NOT_LIT_3": {
+      "sprite": "beds/bed_005/not_lit_3/sprite.webp",
+      "pixellab_object_id": "57f1511a-f01b-4958-b6ea-fbe75ab97e51",
+      "generated_at": "2026-08-15T20:08:42+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.7827,
+      "glow_score": 0.2821,
+      "rotations": {
+        "south-east": "beds/bed_005/not_lit_3/rotations/south-east.webp",
+        "south-west": "beds/bed_005/not_lit_3/rotations/south-west.webp",
+        "south": "beds/bed_005/not_lit_3/sprite.webp"
+      }
+    },
+    "NOT_LIT_4": {
+      "sprite": "beds/bed_005/not_lit_4/sprite.webp",
+      "pixellab_object_id": "87a9a0ae-dbbd-4259-a78c-e9612a3ae4d3",
+      "generated_at": "2026-08-15T20:09:13+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.9029,
+      "glow_score": 0.109,
+      "rotations": {
+        "south-east": "beds/bed_005/not_lit_4/rotations/south-east.webp",
+        "south-west": "beds/bed_005/not_lit_4/rotations/south-west.webp",
+        "south": "beds/bed_005/not_lit_4/sprite.webp"
+      }
+    }
+  },
+  "collision": true,
+  "hitbox_shape": "rect",
+  "light": {
+    "strength": 0.08,
+    "color": "#ffae5c",
+    "radius": 1,
+    "reference": "the spawn bonfire is 1.0 (radius 7); strength 0 is no light",
+    "states": {
+      "LIT_2": {
+        "strength": 0.08,
+        "color": "#ffae5c",
+        "radius": 1
+      }
+    },
+    "kind": "fire/open",
+    "flame": true,
+    "embers": true
+  }
+}

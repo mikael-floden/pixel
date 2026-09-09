@@ -1,0 +1,132 @@
+{
+  "schema": "tiles3/tops@1",
+  "kind": "top_only",
+  "wall_is_meaningless": true,
+  "not_a_candidate_for": "x over y",
+  "ground": "grey_paving_stone",
+  "flavour": "detail",
+  "index": 101,
+  "seed": 85457,
+  "prompt": "grey paving stone, a cracked slab in the middle, grey paving stone all around the edge",
+  "palette_top": "#a8a8a8",
+  "tile_id": "2682699c-df24-45ca-b0bd-75ad04529a50",
+  "n_tiles": 16,
+  "tiles": [
+    "tile_00.webp",
+    "tile_01.webp",
+    "tile_02.webp",
+    "tile_03.webp",
+    "tile_04.webp",
+    "tile_05.webp",
+    "tile_06.webp",
+    "tile_07.webp",
+    "tile_08.webp",
+    "tile_09.webp",
+    "tile_10.webp",
+    "tile_11.webp",
+    "tile_12.webp",
+    "tile_13.webp",
+    "tile_14.webp",
+    "tile_15.webp"
+  ],
+  "settings": {
+    "tile_size": 64,
+    "tile_view": "high top-down",
+    "view_angle": 28.0,
+    "depth_ratio": 0.5,
+    "tile_type": "isometric",
+    "flat_top_px": 2,
+    "outline_mode": "segmentation"
+  },
+  "usd": 0.096,
+  "created": "2026-09-03T04:55:28+00:00",
+  "top_face": {
+    "per_tile": [
+      {
+        "colours": 15,
+        "dominant_share": 0.4106,
+        "px": 923
+      },
+      {
+        "colours": 13,
+        "dominant_share": 0.3998,
+        "px": 923
+      },
+      {
+        "colours": 14,
+        "dominant_share": 0.4063,
+        "px": 923
+      },
+      {
+        "colours": 13,
+        "dominant_share": 0.3987,
+        "px": 923
+      },
+      {
+        "colours": 15,
+        "dominant_share": 0.4139,
+        "px": 923
+      },
+      {
+        "colours": 14,
+        "dominant_share": 0.402,
+        "px": 923
+      },
+      {
+        "colours": 15,
+        "dominant_share": 0.3413,
+        "px": 923
+      },
+      {
+        "colours": 14,
+        "dominant_share": 0.3868,
+        "px": 923
+      },
+      {
+        "colours": 14,
+        "dominant_share": 0.3619,
+        "px": 923
+      },
+      {
+        "colours": 14,
+        "dominant_share": 0.4074,
+        "px": 923
+      },
+      {
+        "colours": 14,
+        "dominant_share": 0.3099,
+        "px": 923
+      },
+      {
+        "colours": 13,
+        "dominant_share": 0.3467,
+        "px": 923
+      },
+      {
+        "colours": 16,
+        "dominant_share": 0.3304,
+        "px": 923
+      },
+      {
+        "colours": 16,
+        "dominant_share": 0.3586,
+        "px": 923
+      },
+      {
+        "colours": 15,
+        "dominant_share": 0.3619,
+        "px": 923
+      },
+      {
+        "colours": 13,
+        "dominant_share": 0.3369,
+        "px": 923
+      }
+    ],
+    "mean_colours": 14.25,
+    "mean_dominant_share": 0.3733
+  },
+  "motif": "a cracked slab",
+  "motif_source": "tiles/config/details.json",
+  "walkable": true
+}

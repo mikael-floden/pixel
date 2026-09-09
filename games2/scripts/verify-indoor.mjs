@@ -27,19 +27,23 @@
 // outside untruncated buries the room under 595px of mountain.
 //
 // Everything below is asserted on REAL PIXELS and REAL probe state, never on
-// the renderer's own arithmetic: the same camera frames the_island2's house
+// the renderer's own arithmetic: the same camera frames the_game's spawn house
 // from outside and from within, and the two screenshots are compared at points
 // derived from maps2' world.json (deck footprint + terrain levels) — so a
 // re-authored house moves the samples with it instead of silently passing.
 //
-// THE HOUSE (maps2/worlds/the_island2, deck kind "roof", level 6, thickness 0):
-// a 6x5 footprint of level-6 stone walls around a 4x3 level-0 floor with one
-// doorway at (201,117). 13 cells under the roof, 14 fringe, 1 entrance,
-// wallRatio 0.9286 — the smallest true interior any shipped world has, and the
-// one the maintainer actually stood in.
+// THE HOUSE (maps2/worlds3/the_game, the FIRST deck of kind "roof": level 6,
+// thickness 0, beside the spawn square): a 6x5 footprint of level-6 walls
+// around a 4x3 level-0 floor with one doorway cell — 13 cells under the roof,
+// the smallest true interior the world ships, and the one a new player stands
+// next to. Every cell below is derived from that deck, never typed.
+//
+// GEOMETRY: the_game is pixel-maps3 and draws on ISO_GEOMETRY_MAPS3 —
+// LH = 15 px per level, DY = 14 (a v2 world was 16/15). Every screen-space
+// formula below reads the two constants.
 //
 // WHY SOME ASSERTIONS ARE PER-POINT AND SOME ARE AGGREGATE: the far walls are
-// 6 levels = 96px tall and are drawn hanging DOWN from the ceiling plane, which
+// 6 levels = 90px tall and are drawn hanging DOWN from the ceiling plane, which
 // is exactly the screen band the roof slab occupied. So most ceiling points sit
 // behind a (legitimately drawn) wall face and cannot be "pure black" — the roof
 // test is therefore "every sampled roof cell got much darker AND a large share
@@ -68,9 +72,12 @@ import { dirname, join } from "node:path";
 const EXE = "/opt/pw-browsers/chromium-1194/chrome-linux/chrome";
 const here = dirname(fileURLToPath(import.meta.url));
 const world = JSON.parse(
-  readFileSync(join(here, "..", "..", "maps2", "worlds", "the_island2", "world.json"), "utf8"),
+  readFileSync(join(here, "..", "..", "maps2", "worlds3", "the_game", "world.json"), "utf8"),
 );
 const fail = (m) => { throw new Error(m); };
+// ISO_GEOMETRY_MAPS3 (shared): a v3 world draws on 32/14/15.
+const LH = 15; // px per level
+const DY = 14; // half the diamond height
 // The dial's own maximum (indoorwall.ts INDOOR_WALL_MAX). The dial is a WALL
 // HEIGHT in levels ABOVE THE ROOM'S OWN FLOOR — not a depth below its ceiling
 // (maintainer 2026-08-07: a cave's ceiling is higher than a house's, so roof-N
@@ -86,11 +93,11 @@ const lvl = (c, r) => world.level?.[r]?.[c] ?? 0;
 // GEOMETRY, derived from the world file exactly as shared/src/indoor.ts does
 // ---------------------------------------------------------------------------
 const roofDeck = (world.decks ?? []).find((d) => d.kind === "roof");
-if (!roofDeck) fail("the_island2 ships no deck of kind 'roof' — the house is gone?");
+if (!roofDeck) fail("the_game ships no deck of kind 'roof' — the house is gone?");
 const bridgeDeck = (world.decks ?? [])
   .filter((d) => d.kind === "bridge")
   .sort((a, b) => a.level - b.level || b.cells.length - a.cells.length)[0];
-if (!bridgeDeck) fail("the_island2 ships no bridge deck");
+if (!bridgeDeck) fail("the_game ships no bridge deck");
 
 const deckCells = roofDeck.cells.map((c) => [X(c), Y(c)]);
 const key = (c, r) => `${c},${r}`;
@@ -143,8 +150,37 @@ const roomR = Math.round(interior.reduce((a, [, r]) => a + r, 0) / interior.leng
 // Somewhere outdoors, well clear of the house, with the house still in frame.
 const OUTSIDE_SPOT = [roomC + 0.5, Math.max(...deckCells.map(([, r]) => r)) + 6.5];
 // A cell far from every light source: the ambient probe reads the light field
-// there, so it must be nothing but ambient.
-const FAR_CELL = [160, 200];
+// there, so it must be nothing but ambient. Derived: the land cell (world.json
+// `land` box, non-liquid ground, sampled every 4th cell) whose nearest `lit`
+// scenery piece is farthest away, at least 40 cells from the house.
+const FAR_CELL = (() => {
+  const lit = (world.scenery ?? []).filter((p) => p.lit).map((p) => [p.x, p.y]);
+  const liquid = new Set(world.liquids ?? []);
+  const land = world.land ?? { x0: 0, y0: 0, x1: world.size.w - 1, y1: world.size.h - 1 };
+  let best = null;
+  for (let r = land.y0; r <= land.y1; r += 4)
+    for (let c = land.x0; c <= land.x1; c += 4) {
+      const g = world.grounds?.[world.ground?.[r]?.[c]];
+      if (!g || liquid.has(g)) continue;
+      if (Math.hypot(c - roomC, r - roomR) < 40) continue;
+      const d = Math.min(...lit.map(([x, y]) => Math.hypot(x - c, y - r)));
+      if (!best || d > best.d) best = { d, cell: [c, r] };
+    }
+  if (!best) fail("no land cell away from the lights — the_game's scenery or land box changed shape");
+  return best.cell;
+})();
+// SECTION 9's fixture: a cell of the house's own footprint whose ROOF pixel,
+// read as ground, is a real interior floor cell. From outside, a roof pixel is
+// drawn `level·LH` px above the cell's own top, and the ground drawn at that
+// same pixel is the cell K = round(level·LH / (2·DY)) up-screen in BOTH axes
+// (the_game: 6·15/28 = 3.2 → 3). Take the most down-screen such cell so the
+// roof face is in frame; stand 5.5 cells further down-screen to tap it.
+const TAP_K = Math.round((roofDeck.level * LH) / (2 * DY));
+const TAP_CELL = deckCells
+  .filter(([c, r]) => lvl(c, r) >= roofDeck.level - 0.5 && inSet.has(key(c - TAP_K, r - TAP_K)))
+  .sort((a, b) => b[0] + b[1] - (a[0] + a[1]))[0];
+if (!TAP_CELL) fail(`no roof cell of the house reads back to interior floor ${TAP_K} cells up-screen — section 9 has no fixture`);
+const TAP_STAND = [TAP_CELL[0] + 5.5, TAP_CELL[1] + 5.5];
 
 console.log(
   `house: ${deckCells.length} deck cells, ${interior.length} under the roof, ` +
@@ -157,7 +193,7 @@ const browser = await chromium.launch({ executablePath: EXE, args: ["--no-sandbo
 try {
   // 520 css px wide keeps WorldScene.zoomFor() on zoom 1, which fits the whole
   // house (352x230 world px) in one frame; 800 tall gives the 61.8% game view
-  // enough height for the roof plane 96px above the floor.
+  // enough height for the roof plane 90px above the floor.
   const ctx = await browser.newContext({ viewport: { width: 520, height: 800 } });
   const page = await ctx.newPage();
   const errs = [];
@@ -165,8 +201,8 @@ try {
 
   await page.goto("http://localhost:5173/", { waitUntil: "load" });
   await page.waitForFunction(() => window.__mlSelect, { timeout: 25000 });
-  const idx = await page.evaluate(() => window.__mlSelect.worlds().findIndex((w) => /the_island2/i.test(w)));
-  if (idx < 0) fail("the_island2 missing from the picker");
+  const idx = await page.evaluate(() => window.__mlSelect.worlds().findIndex((w) => /the_game/i.test(w)));
+  if (idx < 0) fail("the_game missing from the picker");
   await page.evaluate((i) => { window.__mlSelect.pickWorld(i); window.__mlSelect.commit(); }, idx);
   await page.waitForFunction(() => window.__ml && window.__ml.players() >= 1, { timeout: 40000 });
   await page.waitForFunction(() => !document.querySelector("#ml-loading"), { timeout: 25000 });
@@ -180,7 +216,7 @@ try {
   await page.waitForTimeout(400);
   await page.evaluate(() => { window.__ml.timeOfDay("Day", true); window.__ml.aurora(false, true); window.__ml.weather(0, true); });
   await page.waitForTimeout(600);
-  ok("joined the_island2 at Day, clear sky, world clock frozen");
+  ok("joined the_game at Day, clear sky, world clock frozen");
 
   // ---- helpers ------------------------------------------------------------
   // SHOT_DIR=<dir> keeps every frame this gate judges, which is the fastest way
@@ -313,7 +349,7 @@ try {
     const out = [];
     for (const [c, r] of deckCells) {
       const s = await cellScreen(c, r);
-      const x = s.x + 38, y = s.y + 23 - (roofDeck.level - s.level) * 16;
+      const x = s.x + 38, y = s.y + 23 - (roofDeck.level - s.level) * LH;
       if (covered(me, x, y)) continue;
       const pt = { c, r, x, y };
       if (inView(pt)) out.push(pt);
@@ -356,8 +392,8 @@ try {
   const behindHouse = (c, r) =>
     deckCells.some(([hc, hr]) =>
       Math.abs(hc - hr - (c - r)) <= 1 &&
-      hc + hr - (c + r) <= (31 + cut * 16) / 15 &&
-      c + r - (hc + hr) <= 49 / 15);
+      hc + hr - (c + r) <= (31 + cut * LH) / DY &&
+      c + r - (hc + hr) <= 49 / DY);
   const outsidePoints = async () => {
     const minC = Math.min(...deckCells.map(([c]) => c));
     const maxC = Math.max(...deckCells.map(([c]) => c));
@@ -464,7 +500,10 @@ try {
   if (dark.length)
     fail(`the roof slab does not read as solid art from outside at ${dark.map((d) => `${d.c},${d.r}`).join(" ")} — the reference picture is wrong`);
   const roofOutMean = roofOut.reduce((a, s) => a + s.med, 0) / roofOut.length;
-  if (outsideOut.some((s) => s.black > 0.02)) fail("outdoor ground already reads black in the reference shot");
+  // A MAJORITY of the patch, not 2%: the world is shared and alive, and one
+  // wandering villager's outline or a monster's shadow inside a 17x17 patch
+  // is a dozen black pixels (measured: this tripped on 2 of 4 runs).
+  if (outsideOut.some((s) => s.black > 0.5)) fail("outdoor ground already reads black in the reference shot");
   if (wallOut.some((s) => s.mean < 30)) fail("wall faces are not drawn in the reference shot");
   ok(`outdoors the house is a solid closed box: ${roofOut.length} roof samples at median luminance ${roofOutMean.toFixed(1)}, ` +
     `none of them void`);
@@ -482,6 +521,15 @@ try {
     await page.waitForTimeout(1200);
   };
   await setTorch(false);
+  // 2a/2b/2c run on the FLAT cut (per-wall raise OFF): they pin the scalar
+  // contract — the roof slab is gone, the outside is unlit, every enclosure
+  // cell draws at the dial — and 2a's void proof NEEDS points no drawn column
+  // reaches, which a house raised to its ceiling no longer has. The raise
+  // gets its own section (2c') against this same frame. The cuts are read
+  // FIRST, while the raise is still on, for 2c' to assert with.
+  const raise0 = await page.evaluate(() => window.__ml.indoorRaise());
+  await page.evaluate(() => window.__ml.indoorRaise(false));
+  await page.waitForTimeout(900);
   const inShot = await shoot("inside");
 
   // -- 2a. THE ROOF IS GONE -------------------------------------------------
@@ -512,7 +560,7 @@ try {
   for (const [c, r] of [...interior, ...building]) {
     const sc = await cellScreen(c, r);
     const t = Math.min(sc.level, inn.top);
-    drawnBoxes.push({ x0: sc.x, x1: sc.x + 64, y0: sc.y + (sc.level - t) * 16, y1: sc.y + sc.level * 16 + 64 });
+    drawnBoxes.push({ x0: sc.x, x1: sc.x + 64, y0: sc.y + (sc.level - t) * LH, y1: sc.y + sc.level * LH + 64 });
   }
   const reached = (p) => drawnBoxes.some((b) => p.x >= b.x0 - 3 && p.x <= b.x1 + 3 && p.y >= b.y0 - 3 && p.y <= b.y1 + 3);
   const answerable = roofIn.filter((p) => !reached(p));
@@ -563,9 +611,9 @@ try {
   ok(`the outside is dark because its AMBIENT IS ZERO: lightAtCell(${FAR_CELL}) = ${fx(farIn)} while indoors`);
 
   // ...and nothing OUTSIDE is lighting the room either (maintainer 2026-08-07:
-  // "yes — point light from outside has to be turned off"). the_island2's spawn
-  // bonfire stands ~5 cells from the door with radius 7 and colour [1.9, .88,
-  // .3], so an unfiltered one pours firelight through the wall onto the floor —
+  // "yes — point light from outside has to be turned off"). the_game's lit
+  // streetlights stand within 3 cells of the house's door, so an unfiltered
+  // one pours lamplight through the wall onto the floor —
   // and it would be the LAST thing to notice, because a warm floor at night
   // looks intentional. The test is exact: with my own torch off, the light at
   // the room centre must be the indoor ambient dial and nothing else.
@@ -585,7 +633,11 @@ try {
   // cannot do is average zero — the void outside does exactly that.
   const floorIn = measure(inShot, floorP);
   const voidFloor = floorIn.filter((s) => s.mean < 2 || s.max < 5 || s.med < 1);
-  if (voidFloor.length)
+  // A MAJORITY, not every cell: outdoor scenery in FRONT of the house (the
+  // tree maps2 planted before the spawn house, 2026-09-09) is drawn black at
+  // zero ambient and legitimately covers the floor cells behind it from the
+  // camera. A blacked-out ROOM voids them all.
+  if (voidFloor.length * 2 > floorIn.length)
     fail(`the interior FLOOR reads black at ${voidFloor.map((s) => `${s.c},${s.r} (mean ${s.mean.toFixed(1)}, peak ${s.max.toFixed(1)})`).join("; ")} — the room was blacked out with the outside`);
   ok(`the interior is NOT black: all ${floorIn.length} floor cells clear of the avatar ` +
     `(${floorIn.map((s) => `${s.c},${s.r}`).join(" ")}) still carry ground art ` +
@@ -616,9 +668,12 @@ try {
   // there was none. The fill is black now, so the mistake surfaced. Sampling
   // three x offsets across the skirt and keeping the best keeps it honest at
   // the doorway jambs, where the centre column of one cell is a real gap.
-  const capBand = (sc) => {
-    const drawn = Math.min(sc.level, inn.top);
-    const capTop = sc.y + (sc.level - drawn) * 16;
+  // `cut` = which level this cell's cap sits at IN THE FRAME BEING MEASURED —
+  // the scalar dial for the flat frame here; 2c' re-runs this same band on the
+  // raised frame with each cell's own cut.
+  const capBand = (sc, cut) => {
+    const drawn = Math.min(sc.level, cut);
+    const capTop = sc.y + (sc.level - drawn) * LH;
     return drawn < sc.level
       ? [39, 46].flatMap((dy) => [16, 32, 48].map((dx) => ({ x: sc.x + dx, y: capTop + dy })))
       : [{ x: sc.x + 32, y: capTop + 23 }];
@@ -626,7 +681,7 @@ try {
   const bldP = [];
   for (const [c, r] of building) {
     const sc = await cellScreen(c, r);
-    const pts = capBand(sc).filter((p) => inView(p));
+    const pts = capBand(sc, inn.top).filter((p) => inView(p));
     if (pts.length) bldP.push({ c, r, pts });
   }
   if (bldP.length < building.length - 2)
@@ -643,6 +698,91 @@ try {
       `a cell of the enclosure that nobody draws is a black wedge through the house`);
   ok(`the building is SOLID: all ${bldIn.length} enclosure cells — corners and T-junctions included — ` +
     `carry art at their cut top (median luminance ${Math.min(...bldIn.map((s) => s.med)).toFixed(1)}-${Math.max(...bldIn.map((s) => s.med)).toFixed(1)})`);
+
+  // -- 2c'. THE PER-WALL RAISE ---------------------------------------------
+  // (maintainer 2026-08-13: "make the current wall height a MINIMUM setting...
+  // draw the walls all the way to the roof on sides where it's possible...
+  // just make them as tall as they can be before they intersect with another
+  // floor.") Three claims, each measured its own way:
+  //   • REACH — some wall of this house really rises to the CEILING (data),
+  //     and the shader's copy of the cuts matches the scene's (texture).
+  //   • INK — the raise is real paint: toggling it off changes a lot of the
+  //     house picture (the 2c/2a samples above already pin WHERE the ink is).
+  //   • PROTECTION — the floor I stand on is exactly as visible either way:
+  //     the raise may never buy walls with floor pixels. Compared per floor
+  //     patch as a median shift, not pixel equality — the avatar box is
+  //     already excluded from floorP, but a stray decor layer is not.
+  // (houseBox + diffPixels live here because this section and 2d both diff
+  // whole frames over the house's own screen box.)
+  const houseBox = await (async () => {
+    let x0 = 1e9, x1 = -1e9, y0 = 1e9, y1 = -1e9;
+    for (const [c, r] of [...interior, ...building]) {
+      const sc = await cellScreen(c, r);
+      x0 = Math.min(x0, sc.x); x1 = Math.max(x1, sc.x + 64);
+      y0 = Math.min(y0, sc.y); y1 = Math.max(y1, sc.y + sc.level * LH + 64);
+    }
+    return { x0: Math.max(gv.x, Math.round(x0)), x1: Math.min(gv.x + gv.w, Math.round(x1)),
+             y0: Math.max(gv.y, Math.round(y0)), y1: Math.min(gv.y + gv.h, Math.round(y1)) };
+  })();
+  // Pixels that differ by more than the art's own dither. Restricted to a box
+  // and to a bar of 8 so a firefly or a breathing NPC cannot pass for a dial.
+  const diffPixels = (a, b, box) => {
+    let n = 0;
+    for (let y = box.y0; y <= box.y1; y++)
+      for (let x = box.x0; x <= box.x1; x++) {
+        const i = (y * a.width + x) * 4;
+        if (Math.abs(a.data[i] - b.data[i]) + Math.abs(a.data[i + 1] - b.data[i + 1]) +
+            Math.abs(a.data[i + 2] - b.data[i + 2]) > 8) n++;
+      }
+    return n;
+  };
+  if (!(raise0.on && raise0.raised > 0))
+    fail(`the per-wall raise is not active in the house (on=${raise0.on}, raised=${raise0.raised})`);
+  // maxWallCut, not the max over the whole constrained set: the covering CONE
+  // (scoped-cut era) can carry caps above the ceiling out on the terrain.
+  if (raise0.maxWallCut !== inn.ceiling)
+    fail(`no wall reaches the roof: max wall cut ${raise0.maxWallCut} vs ceiling ${inn.ceiling} — ` +
+      `"all the way to the roof on sides where it's possible" is not happening`);
+  // Back ON (2a-2c measured the flat frame) — and from here the gate runs in
+  // the raise's design state.
+  await page.evaluate(() => window.__ml.indoorRaise(true));
+  await page.waitForTimeout(900);
+  const texR = await page.evaluate(() => window.__ml.roomTex());
+  if (texR.raisedCells !== raise0.raised || texR.maxCut !== raise0.maxWallCut)
+    fail(`the shader's room texture disagrees with the scene about the raise: texture ${texR.raisedCells} cells ` +
+      `(max ${texR.maxCut}) vs scene ${raise0.raised} (max ${raise0.maxWallCut}) — the light would truncate columns the renderer draws`);
+  const raisedShot = await shoot("raise-on");
+  const raiseInk = diffPixels(raisedShot, inShot, houseBox);
+  const floorRaised = measure(raisedShot, floorP);
+  const floorMoved = floorIn
+    .map((s, i) => {
+      const b = floorRaised[i];
+      return { c: s.c, r: s.r, d: Math.abs(s.med - b.med), flat: s.med, raised: b.med };
+    })
+    .filter((x) => x.d > 10);
+  if (raiseInk < 1500)
+    fail(`the raise only changes ${raiseInk} pixels of the house against the flat cut — walls are not visibly rising`);
+  if (floorMoved.length)
+    fail(`the raise changes the FLOOR at ${floorMoved.map((x) => `${x.c},${x.r} (median ${x.flat.toFixed(0)} -> ${x.raised.toFixed(0)})`).join("; ")} — ` +
+      `a wall bought its height with protected floor pixels`);
+  // ...and every enclosure cell still carries art AT ITS OWN CUT — the same
+  // solidity band as 2c, sampled where the raised renderer claims each cap is.
+  const cutOf = (c, r) => raise0.cuts[`${c},${r}`] ?? inn.top;
+  const raisedHoles = [];
+  for (const [c, r] of building) {
+    const sc = await cellScreen(c, r);
+    const pts = capBand(sc, cutOf(c, r)).filter((p) => inView(p));
+    if (!pts.length) continue;
+    const ss = pts.map((p) => patch(raisedShot, p.x, p.y, 2)).filter(Boolean);
+    if (!ss.length) continue;
+    const best = ss.reduce((a, s) => (s.med > a.med ? s : a), ss[0]);
+    if (best.med < 4) raisedHoles.push(`${c},${r} (cut ${cutOf(c, r)}, median ${best.med.toFixed(1)})`);
+  }
+  if (raisedHoles.length)
+    fail(`raised walls missing their claimed cap at ${raisedHoles.join("; ")} — the drawn column and the cut map disagree`);
+  ok(`the per-wall raise: ${raise0.raised} of ${building.length} wall cells rise past the dial (max = the ` +
+    `ceiling ${inn.ceiling}, texture in sync), repainting ${raiseInk}px of the house, every cap drawn at its ` +
+    `own cut, and every floor patch untouched`);
 
   // -- 2d. THE DIAL IS THE CUT ---------------------------------------------
   // The maintainer's actual requirement: "cut all walls at 'roof - 1',
@@ -665,28 +805,6 @@ try {
   // (b) change it inside the house and nowhere else, and (c) change it FURTHER
   // at every further step — measured against the shallowest cut, so the counts
   // are cumulative and a dial that saturated would show up as a flat run.
-  const houseBox = await (async () => {
-    let x0 = 1e9, x1 = -1e9, y0 = 1e9, y1 = -1e9;
-    for (const [c, r] of [...interior, ...building]) {
-      const sc = await cellScreen(c, r);
-      x0 = Math.min(x0, sc.x); x1 = Math.max(x1, sc.x + 64);
-      y0 = Math.min(y0, sc.y); y1 = Math.max(y1, sc.y + sc.level * 16 + 64);
-    }
-    return { x0: Math.max(gv.x, Math.round(x0)), x1: Math.min(gv.x + gv.w, Math.round(x1)),
-             y0: Math.max(gv.y, Math.round(y0)), y1: Math.min(gv.y + gv.h, Math.round(y1)) };
-  })();
-  // Pixels that differ by more than the art's own dither. Restricted to a box
-  // and to a bar of 8 so a firefly or a breathing NPC cannot pass for a dial.
-  const diffPixels = (a, b, box) => {
-    let n = 0;
-    for (let y = box.y0; y <= box.y1; y++)
-      for (let x = box.x0; x <= box.x1; x++) {
-        const i = (y * a.width + x) * 4;
-        if (Math.abs(a.data[i] - b.data[i]) + Math.abs(a.data[i + 1] - b.data[i + 1]) +
-            Math.abs(a.data[i + 2] - b.data[i + 2]) > 8) n++;
-      }
-    return n;
-  };
   const before = await page.evaluate(() => window.__ml.indoorWall());
   const cuts = [];
   for (const n of [1, 2, 3, 4]) {
@@ -1146,7 +1264,7 @@ try {
   // whether the cut applies to the outside as well is invisible there. A cave
   // is the opposite. Painter order draws by (col+row) ASCENDING, so a column
   // DOWN-SCREEN of the room draws over it, and it buries an interior cell once
-  // it is about 0.94*k levels taller at k steps. the_island2's caves are cut
+  // it is about 0.94*k levels taller at k steps. the_game's caves are cut
   // into rock at levels 24-40 with the interior floor at 0 — measured, drawing
   // the outside untruncated hides 417 of 417 interior cells, worst case 595px
   // of solid mountain over the room you are standing in. Truncating EVERY
@@ -1157,14 +1275,14 @@ try {
   //   • a cave cell can be geometrically interior and still UNREACHABLE — the
   //     teleport is server-authoritative and lands you on the base surface, so
   //     a sealed pocket high in the mountain bounces you back to spawn (the
-  //     level-40 chambers at the top of the_island2 all do);
+  //     level-40 chambers at the top of the_game's mountain all do);
   //   • the room is the 4-connected space around the PLAYER, which for a big
   //     deck may be one chamber of several.
   // Biggest-first rather than tallest-rock-first for the same reason: the
   // deepest chamber is the one with a way in. Height still has to be PROVEN,
   // not assumed — the assertion below refuses to pass unless the rock beside
   // the room really is far above the cut.
-  // DISABLE AGGRO for this section. the_island2's caves are populated with
+  // DISABLE AGGRO for this section. the_game's caves are populated with
   // level 24-36 monsters, and a gate that has to stand still in one taking
   // screenshots gets killed and respawned OUTDOORS mid-measurement — which
   // reads as a failure of whatever was being measured. This is the switch the
@@ -1184,7 +1302,7 @@ try {
     .filter((x) => x.floor.length >= 8)
     .sort((a, b) => b.floor.length - a.floor.length)
     .slice(0, 5); // a failed candidate costs ~40s of retries; five is plenty
-  if (!caves.length) fail("the_island2 ships no cave with a floor — section 7 cannot run");
+  if (!caves.length) fail("the_game ships no cave with a floor — section 7 cannot run");
   {
     let caveDeck = null, sc0 = 0, sr0 = 0;
     const tried = [];
@@ -1280,6 +1398,7 @@ try {
     // leak). If we are no longer inside, say so instead of asserting nonsense.
     const snap = await page.evaluate(() => ({
       st: window.__ml.indoor(),
+      raise: window.__ml.indoorRaise(),
       mons: window.__ml.monsterInfo().map((m) => ({
         kind: m.kind, c: +(m.x / 32).toFixed(1), r: +(m.y / 32).toFixed(1),
         lvl: m.surfLevel, culled: !!m.culled,
@@ -1288,9 +1407,21 @@ try {
     if (!snap.st.indoor)
       fail(`the player left the cave before the overhead-monster check (indoor=${snap.st.indoor}) — retry`);
     const mons = snap.mons;
-    const overhead = mons.filter((m) => m.lvl > snap.st.top);
-    if (overhead.length < 3)
-      fail(`only ${overhead.length} monsters stand above the cut (level ${snap.st.top}) near this cave — the assertion would be vacuous`);
+    // "Above the cut" is per CELL, and since the SCOPED cut an UNCONSTRAINED
+    // cell (no entry) is drawn WHOLE — a monster on the up-screen mountain
+    // stands on real painted rock now, black at zero ambient like the street,
+    // and is legitimately visible. Only bodies on CONSTRAINED columns
+    // (my building + the covering cone between the camera and my floor) can
+    // stand above their cut. Same rule as the client's aboveCut.
+    const cutAtM = (m) => snap.raise.cuts[`${Math.floor(m.c)},${Math.floor(m.r)}`] ?? Infinity;
+    const overhead = mons.filter((m) => m.lvl > cutAtM(m));
+    // The scoped cut shrank the constrained set to the covering cone, so far
+    // fewer monsters can be "above the cut" than under the world-wide rule —
+    // but the cone in front of a cave is exactly the populated down-screen
+    // rock, so at least one roamer should be standing in it.
+    if (overhead.length < 1)
+      fail(`no monster stands above a constrained cell's cut near this cave — the assertion would be vacuous ` +
+        `(${mons.length} monsters, ${Object.keys(snap.raise.cuts).length} constrained cells)`);
     const floating = overhead.filter((m) => !m.culled);
     if (floating.length)
       fail(`${floating.length} monsters are DRAWN above the cut while indoors: ` +
@@ -1299,7 +1430,7 @@ try {
     // ...and the rule is about HEIGHT, not about being outside the room: a body
     // at my own level must still be drawn, or this would just be the old
     // "hide everything outside" design coming back in through the side door.
-    const atLevel = mons.filter((m) => m.lvl <= snap.st.top && !m.culled);
+    const atLevel = mons.filter((m) => m.lvl <= cutAtM(m) && !m.culled);
     ok(`nothing stands on ground the cut removed: all ${overhead.length} monsters above level ${snap.st.top} ` +
       `(up to ${Math.max(...overhead.map((m) => m.lvl))}) are not drawn, while ${atLevel.length} at or below it still are`);
     ok(`the cut is WORLD-WIDE: standing in a cave (ceiling ${cav.ceiling}, cut to level ${cav.top}, ${cav.roof} cells under it), ` +
@@ -1395,13 +1526,20 @@ try {
     const mid = await page.evaluate(() => window.__leaveProbe);
     if (!mid)
       fail("never caught a frame that was outdoors with the ambient fade still running — the leave probe cannot judge the delay");
-    const midSealed = mid.mons.filter((m) => m.sealed && m.cover > 0.5);
+    // SEALED only — deliberately NOT `cover > 0.5` any more. The exit fade
+    // (2026-08-13) holds the CUT world until the mix lands on 0: on this
+    // mid-fade frame the returning rock is a debris layer, not occluder
+    // geometry, so occluder cover CANNOT exist here and requiring it made
+    // this a guaranteed no-measurement. The stronger statement replaces it:
+    // with no cover computable, ANY ring on a sealed body at this frame is
+    // the wall-hack leaking through the fade mask.
+    const midSealed = mid.mons.filter((m) => m.sealed);
     // NON-VACUITY, and it bit: the first version of this check reported
     // "none of the 0 sealed monsters is outlined" and PASSED against code that
     // still had the delay. The cave's population wanders, so the latched frame
-    // may simply contain nobody buried — that is a no-measurement, not a pass.
+    // may simply contain nobody sealed — that is a no-measurement, not a pass.
     if (!midSealed.length)
-      fail(`the frame latched on leaving the cave (mix ${mid.mix.toFixed(3)}) held no sealed, buried monster ` +
+      fail(`the frame latched on leaving the cave (mix ${mid.mix.toFixed(3)}) held no sealed monster ` +
         `out of ${mid.mons.length} nearby — nothing was measured, retry`);
     const midLeak = midSealed.filter((m) => m.ring > 0);
     if (midLeak.length)
@@ -1421,7 +1559,7 @@ try {
   //    get on top of it, so it must have meant the underside").
   //
   //    From OUTSIDE, the house's roof slab is drawn, so a tap on the house
-  //    resolves to the roof — level 6. A level-6 cell's FLOOR draws 6*lh = 96px
+  //    resolves to the roof — level 6. A level-6 cell's FLOOR draws 6*lh = 90px
   //    BELOW the finger, so targeting a roof with no ramp left the player a
   //    storey under the beacon. Both surfaces are now routed and the one that
   //    can actually be reached wins, beacon included.
@@ -1433,21 +1571,21 @@ try {
   //    "0.0 cells off the finger" against code that still had the bug.
   {
     const HALF_CELL_Y = 24; // px — the bar for "landed where you tapped"
-    await stand(184.5, 122.5, false, true);
-    await page.evaluate(() => window.__ml.lookAt(180, 118));
+    await stand(TAP_STAND[0], TAP_STAND[1], false, true);
+    await page.evaluate(([c, r]) => window.__ml.lookAt(c + 1, r + 1), TAP_CELL);
     await page.waitForTimeout(700);
 
-    const probe = await page.evaluate(() => {
-      const dy = 15, lh = 16; // ISO_DY / LEVEL_PX (shared)
-      const s = window.__ml.cellScreen(179, 117);
+    const probe = await page.evaluate(([tc, tr, dy, lh, roofLevel]) => {
+      // dy/lh = ISO_GEOMETRY_MAPS3 (shared); tc,tr = TAP_CELL
+      const s = window.__ml.cellScreen(tc, tr);
       if (!s) return { err: "cellScreen null" };
       const cellWorldY = s.y / s.zoom + s.camY;        // that cell's drawn top
-      const oy = cellWorldY - (179 + 117) * dy + s.level * lh;
+      const oy = cellWorldY - (tc + tr) * dy + s.level * lh;
       const wx = s.x / s.zoom + s.camX;
-      const wyRoof = cellWorldY - (6 - s.level) * lh;  // a pixel of ROOF SLAB
+      const wyRoof = cellWorldY - (roofLevel - s.level) * lh;  // a pixel of ROOF SLAB
       const r = window.__ml.tapPoint(wx, wyRoof);
       if (!r) return { err: "tapPoint returned null (void/solid)" };
-      window.__tapScreen = { sx: s.x, sy: s.y - (6 - s.level) * lh * s.zoom };
+      window.__tapScreen = { sx: s.x, sy: s.y - (roofLevel - s.level) * lh * s.zoom };
       // TWO PROPERTIES, and the second is the one that keeps getting broken:
       //   (a) the walk ARRIVES on the surface it chose, and
       //   (b) THE BEACON STAYS ON THE PIXEL THAT WAS CLICKED.
@@ -1458,16 +1596,16 @@ try {
       const m = window.__ml.marker();
       return { picked: r.picked, target: r.target, goalLevel: r.goalLevel, endLevel: r.endLevel,
                markerY: m ? m.y : null, markerOffFinger: m ? m.y - wyRoof : null,
-               walkOffMarker: m ? endY - m.y : null, wouldBe: 6 * lh };
-    });
+               walkOffMarker: m ? endY - m.y : null, wouldBe: roofLevel * lh };
+    }, [TAP_CELL[0], TAP_CELL[1], DY, LH, roofDeck.level]);
     if (probe.err) fail(`section 9 could not tap the roof: ${probe.err}`);
-    if (probe.picked.lvl !== 6)
+    if (probe.picked.lvl !== roofDeck.level)
       fail(`the tap on the house resolved to level ${probe.picked.lvl}, not the roof slab — ` +
         `section 9 is not exercising the ambiguous-cell path at all`);
-    // AIMED AT 179,117 ON PURPOSE. The ground drawn at a roof pixel is the cell
-    // 3.2 up-screen in BOTH axes, and for 178,117 that is 173,113 — a dividing
-    // WALL (col 173, rows 111-113), which has no floor reading at all. 179,117
-    // reads back to 175,113, real interior floor, so this fixture exercises the
+    // TAP_CELL IS CHOSEN ON PURPOSE (see its derivation): the ground drawn at
+    // a roof pixel is the cell TAP_K up-screen in BOTH axes, and for most ring
+    // cells that is another WALL cell, which has no floor reading at all.
+    // TAP_CELL reads back to real interior floor, so this fixture exercises the
     // case that matters instead of the one degenerate pixel.
     if (probe.markerY === null) fail("no destination beacon was placed by the tap");
     // (b) THE MARKER MUST NOT MOVE. Twice now the "fix" was to drop the beacon
@@ -1479,7 +1617,7 @@ try {
     // (a) ...and the walk ends there too.
     // (a) THE WALK ENDS AT THE MARKER. Not under it: "you don't walk to the
     // marker — you walk the player under it" is the whole complaint, and under
-    // is exactly 6*lh = 96px of screen y away.
+    // is exactly 6*lh = 90px of screen y away.
     if (Math.abs(probe.walkOffMarker) > HALF_CELL_Y)
       fail(`the walk ends ${probe.walkOffMarker.toFixed(0)}px below the beacon (the roof-vs-floor ` +
         `projection is ${probe.wouldBe}px) — target ${(probe.target.x / 32).toFixed(1)},` +

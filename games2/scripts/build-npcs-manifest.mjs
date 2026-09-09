@@ -135,6 +135,13 @@ function scan() {
       anchors, // dir -> {x, y, top} foot anchor (fractions of the frame)
       idleAnim,
       idle, // dir -> frame count (S/SE/SW today; empty for a few)
+      // NEVER RE-FACE THIS ONE. characters2' own metadata flag, published on
+      // character.json and index.json: some NPC art only reads right from one
+      // direction, so turning it looks broken rather than alive. Thorne is the
+      // first — his armorer's breastplate stands on the GROUND BESIDE HIM in
+      // south and south-west and is absent in south-east, so a turn pops a
+      // large prop in and out of the scene. Absent means false.
+      noTurn: !!(meta.no_turn ?? index[id]?.no_turn),
     });
   }
   return out;

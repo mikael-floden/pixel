@@ -1,0 +1,181 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-14T01:53:44+00:00",
+  "id": "dock_piling_013",
+  "group": "dock_pilings",
+  "rank": 35,
+  "index": 13,
+  "name": "Single bollard post with iron ring 013",
+  "lights": null,
+  "variety": "single bollard post with iron ring",
+  "modifier": "bird-favored, with droppings and a nest",
+  "glow_concept": null,
+  "prompt": "a cluster of weathered wooden dock pilings bound with tarred rope, the broken remnant of a pier standing at the shoreline, single bollard post with iron ring, bird-favored, with droppings and a nest, roughly six feet tall, human height, completely unlit, no glow, no light sources, no self-emission",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 64,
+  "sprite": "dock_pilings/dock_piling_013/sprite.webp",
+  "placement": {
+    "world_height_m": 0.938,
+    "world_px_height": 48,
+    "character_height_px": 87,
+    "character_height_m": 1.7,
+    "note": "ONE SCENERY PIXEL IS ONE PLAYER PIXEL. world_px_height IS the art's own alpha bbox height, so scenery is placed into the world at 1:1 exactly as the avatar is (setScale(1)) and the two share one pixel grid. The CAMERA still zooms the whole scene \u2014 that is uniform and correct; what must never happen is scenery being resampled on its own, against the player. world_height_m is what the art reads as beside a 87px character; declared_height_m is what it was once declared to be, and a gap between them means the ART is the wrong size.",
+    "declared_height_m": 1.86,
+    "content_box": [
+      14,
+      7,
+      52,
+      55
+    ],
+    "content_px_height": 48,
+    "canvas_render_px": 64
+  },
+  "pixellab_object_id": "5fa02842-7b92-48e8-989f-1f290e319459",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)",
+  "must_be_imbplemented_with_random_hflip": true,
+  "states": {
+    "LIT_2": {
+      "sprite": "dock_pilings/dock_piling_013/lit_2/sprite.webp",
+      "pixellab_object_id": "dc5b0fa4-98fd-4a38-b4b9-01dcf61bbf6d",
+      "generated_at": "2026-08-16T11:49:19+00:00",
+      "glow_concept": "a wisp of soul-light perched on the tallest post",
+      "difference_from_source": 0.2269,
+      "glow_score": 0.0701,
+      "rotations": {
+        "south-east": "dock_pilings/dock_piling_013/lit_2/rotations/south-east.webp",
+        "south-west": "dock_pilings/dock_piling_013/lit_2/rotations/south-west.webp",
+        "south": "dock_pilings/dock_piling_013/lit_2/sprite.webp"
+      },
+      "animations": {
+        "motion": {
+          "group_id": "466ee331-5c14-4513-91dd-cbf633b811bb",
+          "description": "This is the same picture in every frame. ONLY the blue wisp at the top flickers. It is lit and clearly visible in every single frame, including the first. Everything else in the picture is copied from the first frame exactly, pixel for pixel, unchanged in shape, size, position and colour. No outline anywhere is redrawn. The last frame matches the first frame exactly, so the loop joins.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "dock_pilings/dock_piling_013/lit_2/animations/motion/00.webp",
+            "dock_pilings/dock_piling_013/lit_2/animations/motion/01.webp",
+            "dock_pilings/dock_piling_013/lit_2/animations/motion/02.webp",
+            "dock_pilings/dock_piling_013/lit_2/animations/motion/03.webp",
+            "dock_pilings/dock_piling_013/lit_2/animations/motion/04.webp"
+          ],
+          "strip": "dock_pilings/dock_piling_013/lit_2/animations/motion__strip.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-08-29T18:32:03+00:00",
+          "brief": "B13",
+          "review": "ANIMATION_PROBABLY_BAD",
+          "review_metrics": {
+            "class": "rigid",
+            "base": 0.5618,
+            "still": 0.305
+          },
+          "light_frames": [
+            {
+              "intensity": 1.48,
+              "dx": 1.1,
+              "dy": -23.5
+            },
+            {
+              "intensity": 1.204,
+              "dx": 1.4,
+              "dy": -22.2
+            },
+            {
+              "intensity": 0.855,
+              "dx": 1.2,
+              "dy": -18.8
+            },
+            {
+              "intensity": 0.693,
+              "dx": 1.7,
+              "dy": -17.4
+            },
+            {
+              "intensity": 0.768,
+              "dx": 1.6,
+              "dy": -18.8
+            }
+          ]
+        }
+      }
+    },
+    "NOT_LIT_1": {
+      "sprite": "dock_pilings/dock_piling_013/sprite.webp",
+      "pixellab_object_id": "5fa02842-7b92-48e8-989f-1f290e319459",
+      "generated_at": "2026-08-14T01:53:44+00:00",
+      "rotations": {
+        "south-east": "dock_pilings/dock_piling_013/rotations/south-east.webp",
+        "south-west": "dock_pilings/dock_piling_013/rotations/south-west.webp",
+        "south": "dock_pilings/dock_piling_013/sprite.webp"
+      }
+    },
+    "NOT_LIT_2": {
+      "sprite": "dock_pilings/dock_piling_013/not_lit_2/sprite.webp",
+      "pixellab_object_id": "1d369ebe-5f1a-4963-8a63-947d090ca84b",
+      "generated_at": "2026-08-16T11:48:47+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.2663,
+      "glow_score": 0.0252,
+      "rotations": {
+        "south-east": "dock_pilings/dock_piling_013/not_lit_2/rotations/south-east.webp",
+        "south-west": "dock_pilings/dock_piling_013/not_lit_2/rotations/south-west.webp",
+        "south": "dock_pilings/dock_piling_013/not_lit_2/sprite.webp"
+      }
+    },
+    "NOT_LIT_3": {
+      "sprite": "dock_pilings/dock_piling_013/not_lit_3/sprite.webp",
+      "pixellab_object_id": "96b40137-e376-4399-b30f-db65f3c190a1",
+      "generated_at": "2026-08-16T11:49:30+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.8213,
+      "glow_score": 0.0065,
+      "rotations": {
+        "south-east": "dock_pilings/dock_piling_013/not_lit_3/rotations/south-east.webp",
+        "south-west": "dock_pilings/dock_piling_013/not_lit_3/rotations/south-west.webp",
+        "south": "dock_pilings/dock_piling_013/not_lit_3/sprite.webp"
+      }
+    },
+    "NOT_LIT_4": {
+      "sprite": "dock_pilings/dock_piling_013/not_lit_4/sprite.webp",
+      "pixellab_object_id": "ff009cf0-12c2-4471-94a2-d228c9576124",
+      "generated_at": "2026-08-16T11:49:17+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.711,
+      "glow_score": 0.0026,
+      "rotations": {
+        "south-east": "dock_pilings/dock_piling_013/not_lit_4/rotations/south-east.webp",
+        "south-west": "dock_pilings/dock_piling_013/not_lit_4/rotations/south-west.webp",
+        "south": "dock_pilings/dock_piling_013/not_lit_4/sprite.webp"
+      }
+    }
+  },
+  "collision": true,
+  "hitbox_shape": "ellipse",
+  "light": {
+    "strength": 0.1,
+    "color": "#f2fffa",
+    "radius": 2,
+    "reference": "the spawn bonfire is 1.0 (radius 7); strength 0 is no light",
+    "states": {
+      "LIT_2": {
+        "strength": 0.1,
+        "color": "#f2fffa",
+        "radius": 2
+      }
+    },
+    "kind": "glow/magic",
+    "flame": false,
+    "embers": false
+  }
+}

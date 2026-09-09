@@ -1,0 +1,124 @@
+{
+  "format": "scenery-piece@2",
+  "id": "well_011",
+  "group": "wells",
+  "rank": 11,
+  "index": 11,
+  "name": "Briar roses climbing the posts 011",
+  "lights": null,
+  "variety": "briar roses climbing the posts",
+  "glow_concept": null,
+  "prompt": "a round fieldstone well with thick stone walls and a heavy peaked wooden roof on two stout posts, a chunky windlass, briar roses climbing the posts, large, twice human height, completely unlit, no glow, no light sources, no self-emission",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 128,
+  "sprite": "wells/well_011/sprite.webp",
+  "placement": {
+    "world_height_m": 2.091,
+    "world_px_height": 107,
+    "character_height_px": 87,
+    "character_height_m": 1.7,
+    "note": "ONE SCENERY PIXEL IS ONE PLAYER PIXEL. world_px_height IS the art's own alpha bbox height, so scenery is placed into the world at 1:1 exactly as the avatar is (setScale(1)) and the two share one pixel grid. The CAMERA still zooms the whole scene \u2014 that is uniform and correct; what must never happen is scenery being resampled on its own, against the player. world_height_m is what the art reads as beside a 87px character; declared_height_m is what it was once declared to be, and a gap between them means the ART is the wrong size.",
+    "declared_height_m": 2.01,
+    "content_box": [
+      25,
+      13,
+      114,
+      120
+    ],
+    "content_px_height": 107,
+    "canvas_render_px": 128
+  },
+  "pixellab_object_id": "58cdbe47-441f-441f-bc8d-8f65f7f9d7d8",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)",
+  "must_be_imbplemented_with_random_hflip": true,
+  "generated_at": "2026-08-13T21:39:43+00:00",
+  "states": {
+    "NOT_LIT_1": {
+      "sprite": "wells/well_011/sprite.webp",
+      "pixellab_object_id": "58cdbe47-441f-441f-bc8d-8f65f7f9d7d8",
+      "generated_at": "2026-08-13T21:39:43+00:00",
+      "rotations": {
+        "south-east": "wells/well_011/rotations/south-east.webp",
+        "south-west": "wells/well_011/rotations/south-west.webp",
+        "south": "wells/well_011/sprite.webp"
+      }
+    },
+    "NOT_LIT_2": {
+      "sprite": "wells/well_011/not_lit_2/sprite.webp",
+      "pixellab_object_id": "20c67714-0e0d-4857-8d53-f7966ccdfeac",
+      "generated_at": "2026-08-17T12:55:47+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.3692,
+      "glow_score": 0.0,
+      "rotations": {
+        "south-east": "wells/well_011/not_lit_2/rotations/south-east.webp",
+        "south-west": "wells/well_011/not_lit_2/rotations/south-west.webp",
+        "south": "wells/well_011/not_lit_2/sprite.webp"
+      },
+      "animations": {}
+    },
+    "NOT_LIT_3": {
+      "sprite": "wells/well_011/not_lit_3/sprite.webp",
+      "pixellab_object_id": "016c3180-50d2-4cf4-b453-d75a4d847f89",
+      "generated_at": "2026-08-17T12:55:37+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.7321,
+      "glow_score": 0.0,
+      "rotations": {
+        "south-east": "wells/well_011/not_lit_3/rotations/south-east.webp",
+        "south-west": "wells/well_011/not_lit_3/rotations/south-west.webp",
+        "south": "wells/well_011/not_lit_3/sprite.webp"
+      },
+      "animations": {}
+    },
+    "NOT_LIT_4": {
+      "sprite": "wells/well_011/not_lit_4/sprite.webp",
+      "pixellab_object_id": "ddc811c8-20a1-43a9-bd0e-05d453a1bc3f",
+      "generated_at": "2026-08-17T12:56:31+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.7314,
+      "glow_score": 0.0,
+      "rotations": {
+        "south-east": "wells/well_011/not_lit_4/rotations/south-east.webp",
+        "south-west": "wells/well_011/not_lit_4/rotations/south-west.webp",
+        "south": "wells/well_011/not_lit_4/sprite.webp"
+      },
+      "animations": {
+        "motion": {
+          "group_id": "16c21f4f-d59b-4932-ac4f-f3762ba8ff90",
+          "description": "This is an almost completely still picture. ONLY the bucket hanging over the shaft moves: it turns very slightly where it hangs, by a single pixel, and turns straight back. It is clearly visible in every single frame and never disappears. It is only MOVED, never redrawn: every line, edge and colour of it is copied from the first frame exactly, and it is displaced as one solid piece. Nothing in the picture lights up or begins to glow at any point: there is no light source here and none appears. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "wells/well_011/not_lit_4/animations/motion/00.webp",
+            "wells/well_011/not_lit_4/animations/motion/01.webp",
+            "wells/well_011/not_lit_4/animations/motion/02.webp",
+            "wells/well_011/not_lit_4/animations/motion/03.webp",
+            "wells/well_011/not_lit_4/animations/motion/04.webp"
+          ],
+          "strip": "wells/well_011/not_lit_4/animations/motion__strip.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-08-30T11:16:48+00:00",
+          "brief": "M6",
+          "review": "ANIMATION_PROBABLY_GOOD",
+          "review_metrics": {
+            "base_outline": 0.0048
+          }
+        }
+      }
+    }
+  },
+  "collision": true,
+  "hitbox_shape": "ellipse"
+}

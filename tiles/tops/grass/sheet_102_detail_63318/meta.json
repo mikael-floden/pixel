@@ -1,0 +1,132 @@
+{
+  "schema": "tiles3/tops@1",
+  "kind": "top_only",
+  "wall_is_meaningless": true,
+  "not_a_candidate_for": "x over y",
+  "ground": "grass",
+  "flavour": "detail",
+  "index": 102,
+  "seed": 63318,
+  "prompt": "grass, a clover patch in the middle, grass all around the edge",
+  "palette_top": "#14523b",
+  "tile_id": "89e55748-8f85-494b-be2c-209fd2dbbb30",
+  "n_tiles": 16,
+  "tiles": [
+    "tile_00.webp",
+    "tile_01.webp",
+    "tile_02.webp",
+    "tile_03.webp",
+    "tile_04.webp",
+    "tile_05.webp",
+    "tile_06.webp",
+    "tile_07.webp",
+    "tile_08.webp",
+    "tile_09.webp",
+    "tile_10.webp",
+    "tile_11.webp",
+    "tile_12.webp",
+    "tile_13.webp",
+    "tile_14.webp",
+    "tile_15.webp"
+  ],
+  "settings": {
+    "tile_size": 64,
+    "tile_view": "high top-down",
+    "view_angle": 28.0,
+    "depth_ratio": 0.5,
+    "tile_type": "isometric",
+    "flat_top_px": 2,
+    "outline_mode": "segmentation"
+  },
+  "usd": 0.096,
+  "created": "2026-09-03T03:57:33+00:00",
+  "top_face": {
+    "per_tile": [
+      {
+        "colours": 16,
+        "dominant_share": 0.2634,
+        "px": 1006
+      },
+      {
+        "colours": 15,
+        "dominant_share": 0.3542,
+        "px": 1008
+      },
+      {
+        "colours": 15,
+        "dominant_share": 0.3899,
+        "px": 1049
+      },
+      {
+        "colours": 17,
+        "dominant_share": 0.4089,
+        "px": 1032
+      },
+      {
+        "colours": 16,
+        "dominant_share": 0.2913,
+        "px": 1040
+      },
+      {
+        "colours": 15,
+        "dominant_share": 0.2101,
+        "px": 1014
+      },
+      {
+        "colours": 19,
+        "dominant_share": 0.2515,
+        "px": 1014
+      },
+      {
+        "colours": 17,
+        "dominant_share": 0.2442,
+        "px": 1032
+      },
+      {
+        "colours": 17,
+        "dominant_share": 0.2488,
+        "px": 1025
+      },
+      {
+        "colours": 16,
+        "dominant_share": 0.1994,
+        "px": 1013
+      },
+      {
+        "colours": 16,
+        "dominant_share": 0.2842,
+        "px": 1010
+      },
+      {
+        "colours": 18,
+        "dominant_share": 0.207,
+        "px": 1053
+      },
+      {
+        "colours": 17,
+        "dominant_share": 0.251,
+        "px": 1028
+      },
+      {
+        "colours": 17,
+        "dominant_share": 0.2257,
+        "px": 1019
+      },
+      {
+        "colours": 17,
+        "dominant_share": 0.2231,
+        "px": 1022
+      },
+      {
+        "colours": 16,
+        "dominant_share": 0.2396,
+        "px": 1010
+      }
+    ],
+    "mean_colours": 16.5,
+    "mean_dominant_share": 0.2683
+  },
+  "motif": "a clover patch",
+  "motif_source": "tiles/config/details.json",
+  "walkable": true
+}

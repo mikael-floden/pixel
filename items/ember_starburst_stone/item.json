@@ -1,0 +1,38 @@
+{
+  "id": "ember_starburst_stone",
+  "name": "Soulstone",
+  "type": "SOUL",
+  "type_label": "Soul Stone",
+  "category": "ember",
+  "rarity": "rare",
+  "value": 72,
+  "stackable": true,
+  "max_stack": 20,
+  "equip_slot": null,
+  "sellable": true,
+  "description": "Dark red with an orange star bursting through the cracks. Cinderhowl is cracked open the same way.",
+  "sprite": "items/ember_starburst_stone/sprite.webp",
+  "size": [
+    48,
+    48
+  ],
+  "source": {
+    "store": "objects",
+    "pixellab_id": "88a3e89a-a52c-4520-aad3-9464cf3d7f69",
+    "tags": [
+      "SOUL"
+    ],
+    "prompt": "This is a soul stone. I need lots of different variations of it.",
+    "created_at": "2026-08-24T17:24:02.484625+00:00",
+    "last_modified": "Mon, 24 Aug 2026 17:41:49 GMT"
+  },
+  "synced_at": "2026-08-24T17:57:31+00:00",
+  "soul": {
+    "element": "ember",
+    "power": "+12 fire damage on hit, and the target burns for 5 a second",
+    "merge_into": [
+      "weapon",
+      "armor"
+    ]
+  }
+}

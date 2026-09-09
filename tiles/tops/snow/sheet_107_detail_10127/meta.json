@@ -1,0 +1,132 @@
+{
+  "schema": "tiles3/tops@1",
+  "kind": "top_only",
+  "wall_is_meaningless": true,
+  "not_a_candidate_for": "x over y",
+  "ground": "snow",
+  "flavour": "detail",
+  "index": 107,
+  "seed": 10127,
+  "prompt": "snow, a frozen twig in the middle, snow all around the edge",
+  "palette_top": "#ebf4f6",
+  "tile_id": "ba2d4069-6554-4b7d-8c14-f4b3c1152078",
+  "n_tiles": 16,
+  "tiles": [
+    "tile_00.webp",
+    "tile_01.webp",
+    "tile_02.webp",
+    "tile_03.webp",
+    "tile_04.webp",
+    "tile_05.webp",
+    "tile_06.webp",
+    "tile_07.webp",
+    "tile_08.webp",
+    "tile_09.webp",
+    "tile_10.webp",
+    "tile_11.webp",
+    "tile_12.webp",
+    "tile_13.webp",
+    "tile_14.webp",
+    "tile_15.webp"
+  ],
+  "settings": {
+    "tile_size": 64,
+    "tile_view": "high top-down",
+    "view_angle": 28.0,
+    "depth_ratio": 0.5,
+    "tile_type": "isometric",
+    "flat_top_px": 2,
+    "outline_mode": "segmentation"
+  },
+  "usd": 0.096,
+  "created": "2026-09-03T05:09:33+00:00",
+  "top_face": {
+    "per_tile": [
+      {
+        "colours": 25,
+        "dominant_share": 0.7243,
+        "px": 925
+      },
+      {
+        "colours": 21,
+        "dominant_share": 0.7205,
+        "px": 923
+      },
+      {
+        "colours": 23,
+        "dominant_share": 0.676,
+        "px": 926
+      },
+      {
+        "colours": 22,
+        "dominant_share": 0.7081,
+        "px": 925
+      },
+      {
+        "colours": 20,
+        "dominant_share": 0.6836,
+        "px": 926
+      },
+      {
+        "colours": 21,
+        "dominant_share": 0.6411,
+        "px": 925
+      },
+      {
+        "colours": 21,
+        "dominant_share": 0.694,
+        "px": 928
+      },
+      {
+        "colours": 22,
+        "dominant_share": 0.5705,
+        "px": 929
+      },
+      {
+        "colours": 21,
+        "dominant_share": 0.7289,
+        "px": 911
+      },
+      {
+        "colours": 24,
+        "dominant_share": 0.5849,
+        "px": 913
+      },
+      {
+        "colours": 22,
+        "dominant_share": 0.7031,
+        "px": 923
+      },
+      {
+        "colours": 22,
+        "dominant_share": 0.7302,
+        "px": 923
+      },
+      {
+        "colours": 23,
+        "dominant_share": 0.6928,
+        "px": 918
+      },
+      {
+        "colours": 23,
+        "dominant_share": 0.6656,
+        "px": 915
+      },
+      {
+        "colours": 22,
+        "dominant_share": 0.7495,
+        "px": 922
+      },
+      {
+        "colours": 23,
+        "dominant_share": 0.7003,
+        "px": 921
+      }
+    ],
+    "mean_colours": 22.19,
+    "mean_dominant_share": 0.6858
+  },
+  "motif": "a frozen twig",
+  "motif_source": "tiles/config/details.json",
+  "walkable": true
+}

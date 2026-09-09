@@ -35,8 +35,8 @@
     ]
   },
   "quality": "aaa",
-  "file": "movement/swim_stroke/swim_stroke.wav",
-  "format": "wav",
+  "file": "movement/swim_stroke/swim_stroke.ogg",
+  "format": "ogg",
   "audio": {
     "samples": 288443,
     "duration_seconds": 6.009,
@@ -49,17 +49,6 @@
   },
   "delivery": {
     "formats": {
-      "wav": {
-        "file": "movement/swim_stroke/swim_stroke.wav",
-        "bytes": 576930,
-        "codec": "pcm_s16le",
-        "role": "master"
-      },
-      "m4a": {
-        "file": "movement/swim_stroke/swim_stroke.m4a",
-        "bytes": 98010,
-        "codec": "aac"
-      },
       "ogg": {
         "file": "movement/swim_stroke/swim_stroke.ogg",
         "bytes": 88512,
@@ -67,12 +56,11 @@
       }
     },
     "web_source_order": [
-      "m4a",
       "ogg"
     ]
   },
   "takes": [
-    "movement/swim_stroke/swim_stroke.wav"
+    "movement/swim_stroke/swim_stroke.ogg"
   ],
   "ai": {
     "provider": "elevenlabs",

@@ -1,0 +1,244 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-13T22:57:32+00:00",
+  "id": "beached_rowboat_900",
+  "group": "beached_rowboats",
+  "rank": 84,
+  "index": 900,
+  "name": "Freshly tarred black hull 900",
+  "lights": null,
+  "variety": "freshly tarred black hull",
+  "glow_concept": "a storm lantern glowing at the prow",
+  "prompt": "a small clinker-built wooden rowboat pulled up onto the shore, resting tilted on the sand with oars shipped inside, freshly tarred black hull, waist-high, self-emissive at night, softly radiating light: a storm lantern glowing at the prow",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 160,
+  "sprite": "beached_rowboats/beached_rowboat_900/sprite.webp",
+  "placement": {
+    "world_height_m": 2.13,
+    "world_px_height": 109,
+    "character_height_px": 87,
+    "character_height_m": 1.7,
+    "note": "ONE SCENERY PIXEL IS ONE PLAYER PIXEL. world_px_height IS the art's own alpha bbox height, so scenery is placed into the world at 1:1 exactly as the avatar is (setScale(1)) and the two share one pixel grid. The CAMERA still zooms the whole scene \u2014 that is uniform and correct; what must never happen is scenery being resampled on its own, against the player. world_height_m is what the art reads as beside a 87px character; declared_height_m is what it was once declared to be, and a gap between them means the ART is the wrong size.",
+    "declared_height_m": 1.01,
+    "content_box": [
+      39,
+      32,
+      124,
+      141
+    ],
+    "content_px_height": 109,
+    "canvas_render_px": 160
+  },
+  "pixellab_object_id": "cd166835-c142-4fde-9f38-8016c6d40dce",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)",
+  "renamed_from": "beached_rowboat_006",
+  "renamed_why": "crash-window re-roll squatted a judged id; fresh id so old verdicts point at nothing and this enters the review queue as the new piece it is",
+  "must_be_imbplemented_with_random_hflip": true,
+  "states": {
+    "LIT_1": {
+      "sprite": "beached_rowboats/beached_rowboat_900/sprite.webp",
+      "pixellab_object_id": "cd166835-c142-4fde-9f38-8016c6d40dce",
+      "generated_at": "2026-08-13T22:57:32+00:00",
+      "rotations": {
+        "south-east": "beached_rowboats/beached_rowboat_900/rotations/south-east.webp",
+        "south-west": "beached_rowboats/beached_rowboat_900/rotations/south-west.77468ae6b9.webp",
+        "south": "beached_rowboats/beached_rowboat_900/sprite.webp"
+      }
+    },
+    "LIT_2": {
+      "sprite": "beached_rowboats/beached_rowboat_900/lit_2/sprite.webp",
+      "pixellab_object_id": "156a6e1e-d29d-43b6-96f6-c14e03e715bd",
+      "generated_at": "2026-08-15T19:48:54+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.2997,
+      "glow_score": 0.003,
+      "rotations": {
+        "south-east": "beached_rowboats/beached_rowboat_900/lit_2/rotations/south-east.webp",
+        "south-west": "beached_rowboats/beached_rowboat_900/lit_2/rotations/south-west.d18d1b38e1.webp",
+        "south": "beached_rowboats/beached_rowboat_900/lit_2/sprite.webp"
+      },
+      "animations": {
+        "motion": {
+          "group_id": "d01c3c3c-82a7-41e9-a910-7423bc115e35",
+          "description": "This is an almost completely still picture. ONLY the very tip of the small flame in the lantern at the bow of the boat shifts, by one or two pixels. The body of the flame keeps exactly the shape, size and position they have in the first frame and stay amber the whole time -- never pale, never white. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "beached_rowboats/beached_rowboat_900/lit_2/animations/motion/00.webp",
+            "beached_rowboats/beached_rowboat_900/lit_2/animations/motion/01.webp",
+            "beached_rowboats/beached_rowboat_900/lit_2/animations/motion/02.webp",
+            "beached_rowboats/beached_rowboat_900/lit_2/animations/motion/03.webp",
+            "beached_rowboats/beached_rowboat_900/lit_2/animations/motion/04.webp"
+          ],
+          "strip": "beached_rowboats/beached_rowboat_900/lit_2/animations/motion__strip.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-08-30T09:57:56+00:00",
+          "brief": "H17",
+          "review": "ANIMATION_PROBABLY_GOOD",
+          "review_metrics": {
+            "base_outline": 0.075
+          },
+          "light_frames": [
+            {
+              "intensity": 0.578,
+              "dx": 1.1,
+              "dy": -7.3
+            },
+            {
+              "intensity": 1.077,
+              "dx": 0.5,
+              "dy": -28.2
+            },
+            {
+              "intensity": 1.093,
+              "dx": 0.6,
+              "dy": -28.7
+            },
+            {
+              "intensity": 1.097,
+              "dx": 1.0,
+              "dy": -30.5
+            },
+            {
+              "intensity": 1.156,
+              "dx": 0.9,
+              "dy": -34.4
+            }
+          ]
+        }
+      }
+    },
+    "LIT_4": {
+      "sprite": "beached_rowboats/beached_rowboat_900/lit_4/sprite.webp",
+      "pixellab_object_id": "a36965f0-2b69-448d-8275-69d57bc13644",
+      "generated_at": "2026-08-15T19:48:55+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.4437,
+      "glow_score": 0.0048,
+      "rotations": {
+        "south-east": "beached_rowboats/beached_rowboat_900/lit_4/rotations/south-east.webp",
+        "south-west": "beached_rowboats/beached_rowboat_900/lit_4/rotations/south-west.6e9201f6f2.webp",
+        "south": "beached_rowboats/beached_rowboat_900/lit_4/sprite.webp"
+      },
+      "animations": {
+        "motion": {
+          "group_id": "dcedbca1-1d26-409f-9196-404c938b9a82",
+          "description": "This is an almost completely still picture. ONLY the very tip of the small flame in the lantern inside the boat shifts, by one or two pixels. The body of the flame keeps exactly the shape, size and position they have in the first frame and stay amber the whole time -- never pale, never white. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "beached_rowboats/beached_rowboat_900/lit_4/animations/motion/00.webp",
+            "beached_rowboats/beached_rowboat_900/lit_4/animations/motion/01.webp",
+            "beached_rowboats/beached_rowboat_900/lit_4/animations/motion/02.webp",
+            "beached_rowboats/beached_rowboat_900/lit_4/animations/motion/03.webp",
+            "beached_rowboats/beached_rowboat_900/lit_4/animations/motion/04.webp"
+          ],
+          "strip": "beached_rowboats/beached_rowboat_900/lit_4/animations/motion__strip.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-08-30T09:57:55+00:00",
+          "brief": "H16",
+          "review": "ANIMATION_PROBABLY_GOOD",
+          "review_metrics": {
+            "base_outline": 0.0396
+          },
+          "light_frames": [
+            {
+              "intensity": 0.68,
+              "dx": 1.0,
+              "dy": 4.3
+            },
+            {
+              "intensity": 0.877,
+              "dx": 0.9,
+              "dy": 1.1
+            },
+            {
+              "intensity": 1.116,
+              "dx": 0.9,
+              "dy": -1.2
+            },
+            {
+              "intensity": 1.108,
+              "dx": 0.7,
+              "dy": -0.1
+            },
+            {
+              "intensity": 1.217,
+              "dx": 0.8,
+              "dy": 0.8
+            }
+          ]
+        }
+      }
+    },
+    "NOT_LIT_1": {
+      "sprite": "beached_rowboats/beached_rowboat_900/not_lit_1/sprite.webp",
+      "pixellab_object_id": "ea08d728-551a-4a7c-b9e3-6f8060b48f35",
+      "generated_at": "2026-08-15T19:50:26+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.4033,
+      "glow_score": 0.0,
+      "rotations": {
+        "south-east": "beached_rowboats/beached_rowboat_900/not_lit_1/rotations/south-east.webp",
+        "south-west": "beached_rowboats/beached_rowboat_900/not_lit_1/rotations/south-west.c06e149b6a.webp",
+        "south": "beached_rowboats/beached_rowboat_900/not_lit_1/sprite.webp"
+      }
+    },
+    "NOT_LIT_2": {
+      "sprite": "beached_rowboats/beached_rowboat_900/not_lit_2/sprite.webp",
+      "pixellab_object_id": "b31bf4a2-80e3-4c20-a37d-465cecc29ce2",
+      "generated_at": "2026-08-15T19:50:40+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.5301,
+      "glow_score": 0.0,
+      "rotations": {
+        "south-east": "beached_rowboats/beached_rowboat_900/not_lit_2/rotations/south-east.webp",
+        "south-west": "beached_rowboats/beached_rowboat_900/not_lit_2/rotations/south-west.b6ea048fd3.webp",
+        "south": "beached_rowboats/beached_rowboat_900/not_lit_2/sprite.webp"
+      }
+    }
+  },
+  "collision": true,
+  "hitbox_shape": "ellipse",
+  "light": {
+    "strength": 0.08,
+    "color": "#ffd996",
+    "radius": 1,
+    "reference": "the spawn bonfire is 1.0 (radius 7); strength 0 is no light",
+    "states": {
+      "LIT_1": {
+        "strength": 0.08,
+        "color": "#ffd996",
+        "radius": 1
+      },
+      "LIT_2": {
+        "strength": 0.06,
+        "color": "#ffb45c",
+        "radius": 1
+      },
+      "LIT_4": {
+        "strength": 0.08,
+        "color": "#ffb45c",
+        "radius": 1
+      }
+    },
+    "kind": "fire/enclosed",
+    "flame": true,
+    "embers": false
+  }
+}

@@ -1,0 +1,226 @@
+{
+  "format": "scenery-piece@2",
+  "id": "torch_post_007",
+  "group": "torch_posts",
+  "rank": 7,
+  "index": 7,
+  "name": "Resin-knot pine torch 007",
+  "lights": null,
+  "variety": "resin-knot pine torch",
+  "glow_concept": null,
+  "prompt": "a rough wooden stake with an oil-soaked cloth-wrapped torch head bound at its top, resin-knot pine torch, about as tall as an adult person, completely unlit, no glow, no light sources, no self-emission",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 96,
+  "sprite": "torch_posts/torch_post_007/sprite.webp",
+  "placement": {
+    "world_height_m": 1.231,
+    "world_px_height": 63,
+    "character_height_px": 87,
+    "character_height_m": 1.7,
+    "note": "ONE SCENERY PIXEL IS ONE PLAYER PIXEL. world_px_height IS the art's own alpha bbox height, so scenery is placed into the world at 1:1 exactly as the avatar is (setScale(1)) and the two share one pixel grid. The CAMERA still zooms the whole scene \u2014 that is uniform and correct; what must never happen is scenery being resampled on its own, against the player. world_height_m is what the art reads as beside a 87px character; declared_height_m is what it was once declared to be, and a gap between them means the ART is the wrong size.",
+    "declared_height_m": 1.83,
+    "content_box": [
+      39,
+      17,
+      59,
+      80
+    ],
+    "content_px_height": 63,
+    "canvas_render_px": 96
+  },
+  "pixellab_object_id": "231927b3-e8cc-48db-9eb9-bfc57fd82a56",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)",
+  "must_be_imbplemented_with_random_hflip": true,
+  "generated_at": "2026-08-13T13:56:24+00:00",
+  "states": {
+    "LIT_1": {
+      "sprite": "torch_posts/torch_post_007/lit_1/sprite.webp",
+      "pixellab_object_id": "faa47cfd-82b3-40ae-ad61-c7e3b5b27468",
+      "generated_at": "2026-08-17T11:21:19+00:00",
+      "glow_concept": "ember-crusted head glowing without open flame",
+      "difference_from_source": 0.9127,
+      "glow_score": 0.0339,
+      "rotations": {
+        "south-east": "torch_posts/torch_post_007/lit_1/rotations/south-east.webp",
+        "south-west": "torch_posts/torch_post_007/lit_1/rotations/south-west.webp",
+        "south": "torch_posts/torch_post_007/lit_1/sprite.webp"
+      },
+      "animations": {
+        "motion": {
+          "group_id": "1614cfcd-4a3f-48c2-a16e-08ba2e845c09",
+          "description": "This is the same picture in every frame. ONLY the red embers brighten a little and return. Nothing else moves, bends or leans, and nothing changes size, shape or position. The last frame must return to exactly how the first frame looks, so the loop joins. Nothing may become darker than it is in the first frame. Do not redraw anything else, and do not add or remove anything.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "torch_posts/torch_post_007/lit_1/animations/motion/00.webp",
+            "torch_posts/torch_post_007/lit_1/animations/motion/01.webp",
+            "torch_posts/torch_post_007/lit_1/animations/motion/02.webp",
+            "torch_posts/torch_post_007/lit_1/animations/motion/03.webp",
+            "torch_posts/torch_post_007/lit_1/animations/motion/04.webp"
+          ],
+          "strip": "torch_posts/torch_post_007/lit_1/animations/motion__strip.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-08-29T15:35:56+00:00",
+          "brief": "X15",
+          "review": "ANIMATION_PROBABLY_GOOD",
+          "review_metrics": {
+            "base_outline": 0.0698
+          },
+          "light_frames": [
+            {
+              "intensity": 0.5,
+              "dx": 2.8,
+              "dy": -22.7
+            },
+            {
+              "intensity": 1.5,
+              "dx": 0.0,
+              "dy": -23.6
+            },
+            {
+              "intensity": 0.515,
+              "dx": -0.3,
+              "dy": -22.6
+            },
+            {
+              "intensity": 1.5,
+              "dx": 0.5,
+              "dy": -24.3
+            },
+            {
+              "intensity": 0.5,
+              "dx": 2.3,
+              "dy": -22.6
+            }
+          ]
+        }
+      }
+    },
+    "LIT_2": {
+      "sprite": "torch_posts/torch_post_007/lit_2/sprite.webp",
+      "pixellab_object_id": "d3356a2d-ddea-45e3-a603-6f8d7e985706",
+      "generated_at": "2026-08-17T11:22:13+00:00",
+      "glow_concept": "halo of glow-moths circling the head",
+      "difference_from_source": 0.82,
+      "glow_score": 0.0502,
+      "rotations": {
+        "south-east": "torch_posts/torch_post_007/lit_2/rotations/south-east.webp",
+        "south-west": "torch_posts/torch_post_007/lit_2/rotations/south-west.webp",
+        "south": "torch_posts/torch_post_007/lit_2/sprite.webp"
+      },
+      "animations": {
+        "motion": {
+          "group_id": "9befc27d-367a-4ec0-90be-3a4ea963ca20",
+          "description": "This is the same picture in every frame. ONLY the moths around the staff move, circling it. Nothing is added or removed anywhere: every object appears in every frame, the same number of them, in the same places, at the same size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour, no outline redrawn. The last frame matches the first exactly.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "torch_posts/torch_post_007/lit_2/animations/motion/00.webp",
+            "torch_posts/torch_post_007/lit_2/animations/motion/01.webp",
+            "torch_posts/torch_post_007/lit_2/animations/motion/02.webp",
+            "torch_posts/torch_post_007/lit_2/animations/motion/03.webp",
+            "torch_posts/torch_post_007/lit_2/animations/motion/04.webp"
+          ],
+          "strip": "torch_posts/torch_post_007/lit_2/animations/motion__strip.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-08-29T19:16:57+00:00",
+          "brief": "D25",
+          "review": "ANIMATION_PROBABLY_GOOD",
+          "review_metrics": {
+            "class": "fire",
+            "base": 0.0,
+            "still": 0.795
+          },
+          "light_frames": [
+            {
+              "intensity": 0.5,
+              "dx": 0.8,
+              "dy": -18.6
+            },
+            {
+              "intensity": 1.293,
+              "dx": 3.8,
+              "dy": -18.6
+            },
+            {
+              "intensity": 0.737,
+              "dx": 3.9,
+              "dy": -19.2
+            },
+            {
+              "intensity": 1.5,
+              "dx": -5.2,
+              "dy": -18.2
+            },
+            {
+              "intensity": 1.232,
+              "dx": 0.9,
+              "dy": -18.3
+            }
+          ]
+        }
+      }
+    },
+    "NOT_LIT_1": {
+      "sprite": "torch_posts/torch_post_007/sprite.webp",
+      "pixellab_object_id": "231927b3-e8cc-48db-9eb9-bfc57fd82a56",
+      "generated_at": "2026-08-13T13:56:24+00:00",
+      "rotations": {
+        "south-east": "torch_posts/torch_post_007/rotations/south-east.webp",
+        "south-west": "torch_posts/torch_post_007/rotations/south-west.webp",
+        "south": "torch_posts/torch_post_007/sprite.webp"
+      }
+    },
+    "NOT_LIT_2": {
+      "sprite": "torch_posts/torch_post_007/not_lit_2/sprite.webp",
+      "pixellab_object_id": "67c94f09-2e36-441d-9114-ae86999eb7c7",
+      "generated_at": "2026-08-17T11:19:52+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.6725,
+      "glow_score": 0.0176,
+      "rotations": {
+        "south-east": "torch_posts/torch_post_007/not_lit_2/rotations/south-east.webp",
+        "south-west": "torch_posts/torch_post_007/not_lit_2/rotations/south-west.webp",
+        "south": "torch_posts/torch_post_007/not_lit_2/sprite.webp"
+      }
+    }
+  },
+  "collision": true,
+  "hitbox_shape": "ellipse",
+  "light": {
+    "strength": 0.45,
+    "color": "#ff9b62",
+    "radius": 8,
+    "reference": "the spawn bonfire is 1.0 (radius 7); strength 0 is no light",
+    "states": {
+      "LIT_1": {
+        "strength": 0.36,
+        "color": "#ff9b62",
+        "radius": 6
+      },
+      "LIT_2": {
+        "strength": 0.45,
+        "color": "#fffbd2",
+        "radius": 8
+      }
+    },
+    "kind": "fire/ember",
+    "flame": true,
+    "embers": true
+  }
+}

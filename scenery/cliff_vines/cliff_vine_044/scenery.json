@@ -1,0 +1,88 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-14T04:30:16+00:00",
+  "id": "cliff_vine_044",
+  "group": "cliff_vines",
+  "rank": 101,
+  "index": 44,
+  "name": "Dark green ivy fall 044",
+  "lights": null,
+  "variety": "dark green ivy fall",
+  "modifier": "a denser knot in one corner, thin elsewhere",
+  "glow_concept": "amber memory-light dripping from the tips",
+  "prompt": "a SPARSE OPEN NETWORK of thin vine runners spreading every way, branching and rejoining like a loose graph, small leaf clusters at irregular intervals, MOSTLY EMPTY SPACE, OFF-CENTRE and LOPSIDED, entering from one corner and wandering across, denser at one end and empty at the other, never centred, never radial, never symmetric, never a neat tree diagram, clearly visible mid-tone greens and warm browns that read against dark grey stone \u2014 no main stem, no trunk, no origin, no line across the top, nothing it hangs from; thins out into a few isolated tendrils toward every edge so copies overlap freely; no rock, no cliff, no wall, nothing behind it, dark green ivy fall, a denser knot in one corner, thin elsewhere, towering, many times human height, self-emissive at night, softly radiating light: amber memory-light dripping from the tips",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 256,
+  "sprite": "cliff_vines/cliff_vine_044/sprite.webp",
+  "placement": {
+    "world_height_m": 4.397,
+    "world_px_height": 225,
+    "character_height_px": 87,
+    "character_height_m": 1.7,
+    "note": "ONE SCENERY PIXEL IS ONE PLAYER PIXEL. world_px_height IS the art's own alpha bbox height, so scenery is placed into the world at 1:1 exactly as the avatar is (setScale(1)) and the two share one pixel grid. The CAMERA still zooms the whole scene \u2014 that is uniform and correct; what must never happen is scenery being resampled on its own, against the player. world_height_m is what the art reads as beside a 87px character; declared_height_m is what it was once declared to be, and a gap between them means the ART is the wrong size.",
+    "declared_height_m": 10.27,
+    "content_box": [
+      24,
+      0,
+      256,
+      225
+    ],
+    "content_px_height": 225,
+    "canvas_render_px": 256
+  },
+  "pixellab_object_id": "44a6e116-bf3d-44bb-8c57-cbfa1efe20d7",
+  "pixellab_directions": 1,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-1-direction-object (single, S-only)",
+  "must_be_imbplemented_with_random_hflip": true,
+  "states": {
+    "NOT_LIT_2": {
+      "sprite": "cliff_vines/cliff_vine_044/not_lit_2/sprite.webp",
+      "pixellab_object_id": "b5cff3a2-8698-4450-ad68-66a00733e335",
+      "generated_at": "2026-08-16T10:18:21+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.6363,
+      "glow_score": 0.0
+    },
+    "NOT_LIT_3": {
+      "sprite": "cliff_vines/cliff_vine_044/sprite.webp",
+      "pixellab_object_id": "44a6e116-bf3d-44bb-8c57-cbfa1efe20d7",
+      "generated_at": "2026-08-14T04:30:16+00:00",
+      "relit_from": "LIT_1"
+    },
+    "NOT_LIT_4": {
+      "sprite": "cliff_vines/cliff_vine_044/not_lit_4/sprite.webp",
+      "pixellab_object_id": "871b8451-aed2-4dbe-ba0f-f94ecf93470d",
+      "generated_at": "2026-08-16T10:17:26+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.5545,
+      "glow_score": 0.0,
+      "relit_from": "LIT_2"
+    },
+    "NOT_LIT_5": {
+      "sprite": "cliff_vines/cliff_vine_044/not_lit_5/sprite.webp",
+      "pixellab_object_id": "9f1e8109-302e-4980-ad46-a55526a2b58a",
+      "generated_at": "2026-08-16T10:17:38+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.5718,
+      "glow_score": 0.0,
+      "relit_from": "LIT_3"
+    },
+    "NOT_LIT_6": {
+      "sprite": "cliff_vines/cliff_vine_044/not_lit_6/sprite.webp",
+      "pixellab_object_id": "17a6de82-dcf7-4600-9ffd-fe9f0a0bf5a8",
+      "generated_at": "2026-08-16T10:18:07+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.7196,
+      "glow_score": 0.0,
+      "relit_from": "LIT_4"
+    }
+  },
+  "collision": true,
+  "hitbox_shape": "ellipse"
+}

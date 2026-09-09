@@ -1,0 +1,74 @@
+{
+  "format": "scenery-piece@2",
+  "id": "stone_013",
+  "group": "stones",
+  "rank": 2,
+  "index": 13,
+  "name": "Red iron-stained stone 013",
+  "lights": null,
+  "variety": "red iron-stained stone",
+  "glow_concept": null,
+  "prompt": "a single natural fieldstone boulder resting on the ground, rounded and weathered, with subtle cracks, pits and patches of moss, red iron-stained stone, completely unlit, no glow, no light sources, no self-emission",
+  "view": "top-down",
+  "direction": "south",
+  "size": 64,
+  "sprite": "stones/stone_013/sprite.webp",
+  "placement": {
+    "world_height_m": 0.938,
+    "world_px_height": 48,
+    "character_height_px": 87,
+    "character_height_m": 1.7,
+    "note": "ONE SCENERY PIXEL IS ONE PLAYER PIXEL. world_px_height IS the art's own alpha bbox height, so scenery is placed into the world at 1:1 exactly as the avatar is (setScale(1)) and the two share one pixel grid. The CAMERA still zooms the whole scene \u2014 that is uniform and correct; what must never happen is scenery being resampled on its own, against the player. world_height_m is what the art reads as beside a 87px character; declared_height_m is what it was once declared to be, and a gap between them means the ART is the wrong size.",
+    "declared_height_m": 0.32,
+    "content_box": [
+      3,
+      8,
+      61,
+      56
+    ],
+    "content_px_height": 48,
+    "canvas_render_px": 64
+  },
+  "pixellab_object_id": "42f3bac2-9813-4fbe-91e2-337c43a3b5df",
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-1-direction-object (batched, S-only)",
+  "must_be_imbplemented_with_random_hflip": true,
+  "generated_at": "2026-08-12T23:22:20+00:00",
+  "states": {
+    "NOT_LIT_1": {
+      "sprite": "stones/stone_013/sprite.webp",
+      "pixellab_object_id": "42f3bac2-9813-4fbe-91e2-337c43a3b5df",
+      "generated_at": "2026-08-12T23:22:20+00:00"
+    },
+    "NOT_LIT_2": {
+      "sprite": "stones/stone_013/not_lit_2/sprite.webp",
+      "pixellab_object_id": "74015386-7bcc-459b-ac28-286fd0c35568",
+      "generated_at": "2026-08-16T21:44:22+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.447,
+      "glow_score": 0.0176
+    },
+    "NOT_LIT_3": {
+      "sprite": "stones/stone_013/not_lit_3/sprite.webp",
+      "pixellab_object_id": "3d150b64-25ef-4940-a9f1-2efc9b0bc633",
+      "generated_at": "2026-08-16T21:44:22+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.3814,
+      "glow_score": 0.0
+    },
+    "NOT_LIT_4": {
+      "sprite": "stones/stone_013/not_lit_4/sprite.webp",
+      "pixellab_object_id": "85ba5039-3284-488f-97ae-904034e26fe5",
+      "generated_at": "2026-08-16T21:44:23+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.4264,
+      "glow_score": 0.0
+    }
+  },
+  "collision": true,
+  "hitbox_shape": "ellipse"
+}

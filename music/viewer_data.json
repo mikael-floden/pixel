@@ -1,6 +1,6 @@
 {
   "domain": "music",
-  "generated_at": "2026-07-17T20:03:02+00:00",
+  "generated_at": "2026-09-09T01:47:00+00:00",
   "tracks": [
     {
       "id": "karmanjaka_riders_canyon",
@@ -13,16 +13,12 @@
         "wind in your face",
         "wild freedom"
       ],
-      "file": "karmanjaka_riders_canyon/karmanjaka_riders_canyon.wav",
-      "format": "wav",
+      "file": "karmanjaka_riders_canyon/karmanjaka_riders_canyon.ogg",
+      "format": "ogg",
       "stream": {
         "ogg": {
           "file": "karmanjaka_riders_canyon/karmanjaka_riders_canyon.ogg",
           "mime": "audio/ogg; codecs=opus"
-        },
-        "m4a": {
-          "file": "karmanjaka_riders_canyon/karmanjaka_riders_canyon.m4a",
-          "mime": "audio/mp4"
         }
       },
       "duration_s": 120.001,
@@ -73,16 +69,12 @@
         "quiet longing",
         "safety after a long journey"
       ],
-      "file": "nangijala_cherry_valley/nangijala_cherry_valley.wav",
-      "format": "wav",
+      "file": "nangijala_cherry_valley/nangijala_cherry_valley.ogg",
+      "format": "ogg",
       "stream": {
         "ogg": {
           "file": "nangijala_cherry_valley/nangijala_cherry_valley.ogg",
           "mime": "audio/ogg; codecs=opus"
-        },
-        "m4a": {
-          "file": "nangijala_cherry_valley/nangijala_cherry_valley.m4a",
-          "mime": "audio/mp4"
         }
       },
       "duration_s": 120.001,
@@ -119,15 +111,11 @@
           "id": "combat",
           "name": "Combat \u2014 Drums of the Valley",
           "intensity": 1.0,
-          "file": "nangijala_cherry_valley/layers/combat.wav",
+          "file": "nangijala_cherry_valley/layers/combat.ogg",
           "stream": {
             "ogg": {
               "file": "nangijala_cherry_valley/layers/combat.ogg",
               "mime": "audio/ogg; codecs=opus"
-            },
-            "m4a": {
-              "file": "nangijala_cherry_valley/layers/combat.m4a",
-              "mime": "audio/mp4"
             }
           },
           "metadata": "nangijala_cherry_valley/layers/combat.metadata.json"

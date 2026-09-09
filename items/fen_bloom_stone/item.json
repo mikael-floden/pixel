@@ -1,0 +1,38 @@
+{
+  "id": "fen_bloom_stone",
+  "name": "Soulstone",
+  "type": "SOUL",
+  "type_label": "Soul Stone",
+  "category": "bog",
+  "rarity": "epic",
+  "value": 200,
+  "stackable": true,
+  "max_stack": 20,
+  "equip_slot": null,
+  "sellable": true,
+  "description": "Green stone cracked with pale light, off a Mireback. Mushrooms fruit on it if you leave it alone.",
+  "sprite": "items/fen_bloom_stone/sprite.webp",
+  "size": [
+    48,
+    48
+  ],
+  "source": {
+    "store": "objects",
+    "pixellab_id": "af99074e-68e7-49af-a8ed-a1546319d04b",
+    "tags": [
+      "SOUL"
+    ],
+    "prompt": "This is a soul stone. I need lots of different variations of it. Different stone/soul/crack variants in different colors.",
+    "created_at": "2026-08-24T17:23:29.287201+00:00",
+    "last_modified": "Mon, 24 Aug 2026 17:41:59 GMT"
+  },
+  "synced_at": "2026-08-24T17:57:32+00:00",
+  "soul": {
+    "element": "bog",
+    "power": "Heal 6% of the damage you deal, and twice that standing in water",
+    "merge_into": [
+      "weapon",
+      "armor"
+    ]
+  }
+}

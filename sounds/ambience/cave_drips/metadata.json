@@ -35,8 +35,8 @@
     ]
   },
   "quality": "aaa",
-  "file": "ambience/cave_drips/cave_drips.wav",
-  "format": "wav",
+  "file": "ambience/cave_drips/cave_drips.ogg",
+  "format": "ogg",
   "audio": {
     "samples": 576835,
     "duration_seconds": 12.017,
@@ -48,7 +48,7 @@
     "delivered": "mp3"
   },
   "takes": [
-    "ambience/cave_drips/cave_drips.wav"
+    "ambience/cave_drips/cave_drips.ogg"
   ],
   "ai": {
     "provider": "elevenlabs",
@@ -93,17 +93,6 @@
   ],
   "delivery": {
     "formats": {
-      "wav": {
-        "file": "ambience/cave_drips/cave_drips.wav",
-        "bytes": 1153714,
-        "codec": "pcm_s16le",
-        "role": "master"
-      },
-      "m4a": {
-        "file": "ambience/cave_drips/cave_drips.m4a",
-        "bytes": 196914,
-        "codec": "aac"
-      },
       "ogg": {
         "file": "ambience/cave_drips/cave_drips.ogg",
         "bytes": 138666,
@@ -111,7 +100,6 @@
       }
     },
     "web_source_order": [
-      "m4a",
       "ogg"
     ]
   }

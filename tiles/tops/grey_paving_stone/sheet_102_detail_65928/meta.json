@@ -1,0 +1,132 @@
+{
+  "schema": "tiles3/tops@1",
+  "kind": "top_only",
+  "wall_is_meaningless": true,
+  "not_a_candidate_for": "x over y",
+  "ground": "grey_paving_stone",
+  "flavour": "detail",
+  "index": 102,
+  "seed": 65928,
+  "prompt": "grey paving stone, a dropped coin in the middle, grey paving stone all around the edge",
+  "palette_top": "#a8a8a8",
+  "tile_id": "be0ad5b2-32ef-48c5-b0db-2f0538bd7a7d",
+  "n_tiles": 16,
+  "tiles": [
+    "tile_00.webp",
+    "tile_01.webp",
+    "tile_02.webp",
+    "tile_03.webp",
+    "tile_04.webp",
+    "tile_05.webp",
+    "tile_06.webp",
+    "tile_07.webp",
+    "tile_08.webp",
+    "tile_09.webp",
+    "tile_10.webp",
+    "tile_11.webp",
+    "tile_12.webp",
+    "tile_13.webp",
+    "tile_14.webp",
+    "tile_15.webp"
+  ],
+  "settings": {
+    "tile_size": 64,
+    "tile_view": "high top-down",
+    "view_angle": 28.0,
+    "depth_ratio": 0.5,
+    "tile_type": "isometric",
+    "flat_top_px": 2,
+    "outline_mode": "segmentation"
+  },
+  "usd": 0.096,
+  "created": "2026-09-03T04:57:20+00:00",
+  "top_face": {
+    "per_tile": [
+      {
+        "colours": 27,
+        "dominant_share": 0.4447,
+        "px": 922
+      },
+      {
+        "colours": 26,
+        "dominant_share": 0.2939,
+        "px": 922
+      },
+      {
+        "colours": 23,
+        "dominant_share": 0.3257,
+        "px": 921
+      },
+      {
+        "colours": 23,
+        "dominant_share": 0.4539,
+        "px": 921
+      },
+      {
+        "colours": 26,
+        "dominant_share": 0.202,
+        "px": 921
+      },
+      {
+        "colours": 26,
+        "dominant_share": 0.266,
+        "px": 921
+      },
+      {
+        "colours": 27,
+        "dominant_share": 0.2798,
+        "px": 922
+      },
+      {
+        "colours": 25,
+        "dominant_share": 0.2546,
+        "px": 923
+      },
+      {
+        "colours": 24,
+        "dominant_share": 0.333,
+        "px": 922
+      },
+      {
+        "colours": 26,
+        "dominant_share": 0.3239,
+        "px": 923
+      },
+      {
+        "colours": 28,
+        "dominant_share": 0.1522,
+        "px": 920
+      },
+      {
+        "colours": 26,
+        "dominant_share": 0.295,
+        "px": 922
+      },
+      {
+        "colours": 28,
+        "dominant_share": 0.2633,
+        "px": 923
+      },
+      {
+        "colours": 25,
+        "dominant_share": 0.3229,
+        "px": 923
+      },
+      {
+        "colours": 26,
+        "dominant_share": 0.2863,
+        "px": 922
+      },
+      {
+        "colours": 26,
+        "dominant_share": 0.2611,
+        "px": 923
+      }
+    ],
+    "mean_colours": 25.75,
+    "mean_dominant_share": 0.2974
+  },
+  "motif": "a dropped coin",
+  "motif_source": "tiles/config/details.json",
+  "walkable": true
+}

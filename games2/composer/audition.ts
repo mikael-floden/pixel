@@ -11,9 +11,9 @@
  * takes. Selection by ear, promotion by agent.
  */
 
-import { composerFoleyPools, composerFoleyTakes } from "./engine/foley";
+import { composerFoleyPools, composerFoleyTakes, loadComposerFoley } from "./engine/foley";
 
-export function mountFoleyAudition(): void {
+export async function mountFoleyAudition(): Promise<void> {
   document.title = "Nangijala — foley audition";
   const root = document.createElement("div");
   root.style.cssText =
@@ -29,6 +29,8 @@ export function mountFoleyAudition(): void {
   sub.style.cssText = "color:#9aa0b4;margin:0 0 20px";
   root.append(h, sub);
 
+  // The library is described by a fetched index now, not a build-time glob.
+  await loadComposerFoley();
   const takes = composerFoleyTakes();
   const pools = composerFoleyPools();
   const sets = [...new Set([...takes.keys(), ...pools.keys()])].sort();

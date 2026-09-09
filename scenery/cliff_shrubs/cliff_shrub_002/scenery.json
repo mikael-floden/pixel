@@ -1,0 +1,107 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-14T02:59:42+00:00",
+  "id": "cliff_shrub_002",
+  "group": "cliff_shrubs",
+  "rank": 157,
+  "index": 2,
+  "name": "Wind-flattened juniper 002",
+  "lights": null,
+  "variety": "wind-flattened juniper",
+  "modifier": "a bird nest in its crown",
+  "glow_concept": "light in the crack at its root",
+  "prompt": "a tough shrub growing sideways out of a vertical rock face, its trunk bent hard outward then up, roots clamped into a crack, wind-flattened juniper, a bird nest in its crown, roughly six feet tall, human height, self-emissive at night, softly radiating light: light in the crack at its root",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 192,
+  "sprite": "cliff_shrubs/cliff_shrub_002/sprite.webp",
+  "placement": {
+    "world_height_m": 3.361,
+    "world_px_height": 172,
+    "character_height_px": 87,
+    "character_height_m": 1.7,
+    "note": "ONE SCENERY PIXEL IS ONE PLAYER PIXEL. world_px_height IS the art's own alpha bbox height, so scenery is placed into the world at 1:1 exactly as the avatar is (setScale(1)) and the two share one pixel grid. The CAMERA still zooms the whole scene \u2014 that is uniform and correct; what must never happen is scenery being resampled on its own, against the player. world_height_m is what the art reads as beside a 87px character; declared_height_m is what it was once declared to be, and a gap between them means the ART is the wrong size.",
+    "declared_height_m": 1.71,
+    "content_box": [
+      34,
+      20,
+      184,
+      192
+    ],
+    "content_px_height": 172,
+    "canvas_render_px": 192
+  },
+  "pixellab_object_id": "84dad1b8-c998-4e90-994f-c3640f007094",
+  "pixellab_directions": 1,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-1-direction-object (single, S-only)",
+  "must_be_imbplemented_with_random_hflip": true,
+  "states": {
+    "NOT_LIT_3": {
+      "sprite": "cliff_shrubs/cliff_shrub_002/sprite.webp",
+      "pixellab_object_id": "84dad1b8-c998-4e90-994f-c3640f007094",
+      "generated_at": "2026-08-14T02:59:42+00:00",
+      "relit_from": "LIT_1",
+      "animations": {
+        "motion": {
+          "group_id": "2ac605f0-61d0-4d4a-89a0-705852b73e31",
+          "description": "Animate the foliage only, shivering in a gentle breeze. Nothing else moves.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "cliff_shrubs/cliff_shrub_002/animations/motion/00.webp",
+            "cliff_shrubs/cliff_shrub_002/animations/motion/01.webp",
+            "cliff_shrubs/cliff_shrub_002/animations/motion/02.webp",
+            "cliff_shrubs/cliff_shrub_002/animations/motion/03.webp",
+            "cliff_shrubs/cliff_shrub_002/animations/motion/04.webp"
+          ],
+          "strip": "cliff_shrubs/cliff_shrub_002/animations/motion__strip.webp",
+          "directions": null,
+          "generated_at": "2026-08-29T08:38:27+00:00",
+          "brief": "G6",
+          "review": "ANIMATION_PROBABLY_BAD",
+          "review_metrics": {
+            "class": "foliage",
+            "base": 0.9899,
+            "still": 0.036
+          }
+        }
+      }
+    },
+    "NOT_LIT_4": {
+      "sprite": "cliff_shrubs/cliff_shrub_002/not_lit_4/sprite.webp",
+      "pixellab_object_id": "31eccee1-93d9-4237-9b31-44881d4c77c0",
+      "generated_at": "2026-08-16T09:50:29+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.5234,
+      "glow_score": 0.0,
+      "relit_from": "LIT_2"
+    },
+    "NOT_LIT_5": {
+      "sprite": "cliff_shrubs/cliff_shrub_002/not_lit_5/sprite.webp",
+      "pixellab_object_id": "4bed6757-4253-4b4f-aaa2-c4a67b8d4e2a",
+      "generated_at": "2026-08-16T09:50:31+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.7608,
+      "glow_score": 0.0029,
+      "relit_from": "LIT_3"
+    },
+    "NOT_LIT_6": {
+      "sprite": "cliff_shrubs/cliff_shrub_002/not_lit_6/sprite.webp",
+      "pixellab_object_id": "238fdc7b-759d-4abf-9205-f456bb47ba09",
+      "generated_at": "2026-08-16T09:50:43+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.729,
+      "glow_score": 0.0048,
+      "relit_from": "LIT_4"
+    }
+  },
+  "collision": true,
+  "hitbox_shape": "ellipse"
+}

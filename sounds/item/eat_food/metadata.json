@@ -17,8 +17,8 @@
   "license": "CC0-1.0",
   "status": "complete",
   "quality": "aaa",
-  "file": "item/eat_food/eat_food__take01.wav",
-  "format": "wav",
+  "file": "item/eat_food/eat_food__take01.ogg",
+  "format": "ogg",
   "audio": {
     "samples": 23875,
     "duration_seconds": 0.497,
@@ -30,8 +30,8 @@
     "delivered": "mp3"
   },
   "takes": [
-    "item/eat_food/eat_food__take01.wav",
-    "item/eat_food/eat_food__take02.wav"
+    "item/eat_food/eat_food__take01.ogg",
+    "item/eat_food/eat_food__take02.ogg"
   ],
   "ai": {
     "provider": "elevenlabs",
@@ -94,17 +94,6 @@
   ],
   "delivery": {
     "formats": {
-      "wav": {
-        "file": "item/eat_food/eat_food__take01.wav",
-        "bytes": 47794,
-        "codec": "pcm_s16le",
-        "role": "master"
-      },
-      "m4a": {
-        "file": "item/eat_food/eat_food__take01.m4a",
-        "bytes": 8820,
-        "codec": "aac"
-      },
       "ogg": {
         "file": "item/eat_food/eat_food__take01.ogg",
         "bytes": 11784,
@@ -112,7 +101,6 @@
       }
     },
     "web_source_order": [
-      "m4a",
       "ogg"
     ]
   }

@@ -1,0 +1,96 @@
+{
+  "format": "scenery-piece@2",
+  "id": "reed_bed_007",
+  "group": "reed_beds",
+  "rank": 32,
+  "index": 7,
+  "name": "Winter-bleached pale reeds 007",
+  "lights": null,
+  "variety": "winter-bleached pale reeds",
+  "glow_concept": null,
+  "prompt": "a dense clump of tall slender freshwater reeds with feathery seed plumes, rising from a small mound of wet mud and marsh grass, winter-bleached pale reeds, large, well above head height of a person, completely unlit, no glow, no light sources, no self-emission",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 96,
+  "sprite": "reed_beds/reed_bed_007/sprite.webp",
+  "placement": {
+    "world_height_m": 1.622,
+    "world_px_height": 83,
+    "character_height_px": 87,
+    "character_height_m": 1.7,
+    "note": "ONE SCENERY PIXEL IS ONE PLAYER PIXEL. world_px_height IS the art's own alpha bbox height, so scenery is placed into the world at 1:1 exactly as the avatar is (setScale(1)) and the two share one pixel grid. The CAMERA still zooms the whole scene \u2014 that is uniform and correct; what must never happen is scenery being resampled on its own, against the player. world_height_m is what the art reads as beside a 87px character; declared_height_m is what it was once declared to be, and a gap between them means the ART is the wrong size.",
+    "declared_height_m": 2.13,
+    "content_box": [
+      11,
+      7,
+      88,
+      90
+    ],
+    "content_px_height": 83,
+    "canvas_render_px": 96
+  },
+  "pixellab_object_id": "a21686f2-2725-4083-bf66-6f2e0ff9aabc",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)",
+  "must_be_imbplemented_with_random_hflip": true,
+  "generated_at": "2026-08-13T14:06:39+00:00",
+  "states": {
+    "NOT_LIT_1": {
+      "sprite": "reed_beds/reed_bed_007/sprite.webp",
+      "pixellab_object_id": "a21686f2-2725-4083-bf66-6f2e0ff9aabc",
+      "generated_at": "2026-08-13T14:06:39+00:00"
+    },
+    "NOT_LIT_2": {
+      "sprite": "reed_beds/reed_bed_007/not_lit_2/sprite.webp",
+      "pixellab_object_id": "b6aa8abc-e573-4b30-b65c-81fc4498af23",
+      "generated_at": "2026-08-16T20:09:02+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.7463,
+      "glow_score": 0.2227,
+      "animations": {
+        "motion": {
+          "group_id": "608c2a47-29ed-48fe-ba83-35856100f804",
+          "description": "This is the same picture in every frame. ONLY the feathery plume tops move, each leaning by a single pixel. Nothing else moves, bends or leans, and nothing changes size, shape or position. The last frame must return to exactly how the first frame looks, so the loop joins. Nothing may become darker than it is in the first frame. Do not redraw anything else, and do not add or remove anything.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "reed_beds/reed_bed_007/not_lit_2/animations/motion/00.webp",
+            "reed_beds/reed_bed_007/not_lit_2/animations/motion/01.webp",
+            "reed_beds/reed_bed_007/not_lit_2/animations/motion/02.webp",
+            "reed_beds/reed_bed_007/not_lit_2/animations/motion/03.webp",
+            "reed_beds/reed_bed_007/not_lit_2/animations/motion/04.webp"
+          ],
+          "strip": "reed_beds/reed_bed_007/not_lit_2/animations/motion__strip.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-08-29T15:41:24+00:00",
+          "brief": "X58",
+          "review": "ANIMATION_PROBABLY_GOOD",
+          "review_metrics": {
+            "class": "foliage",
+            "base": 0.1198,
+            "still": 0.453
+          }
+        }
+      }
+    },
+    "NOT_LIT_4": {
+      "sprite": "reed_beds/reed_bed_007/not_lit_4/sprite.webp",
+      "pixellab_object_id": "50f4590b-0e30-4d50-bf74-7a0eca7da6ae",
+      "generated_at": "2026-08-16T20:10:05+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.4874,
+      "glow_score": 0.2362
+    }
+  },
+  "collision": true,
+  "hitbox_shape": "ellipse"
+}

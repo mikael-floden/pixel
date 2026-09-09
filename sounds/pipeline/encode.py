@@ -3,7 +3,16 @@
 A lossless WAV is the master, but it's far too heavy to stream on a phone (a
 multi-minute music track is tens of MB). Every audio asset therefore ALSO ships:
 
-- **`.m4a` (AAC)** — for Safari / iOS (which don't reliably play Ogg Vorbis), with
+- **`.ogg` (Vorbis)** — the ONE shipping format, every browser.
+
+M4A/AAC WAS DROPPED 2026-09-09. It existed because Safari could not play the Ogg
+container; WebKit added Ogg support for Opus AND Vorbis in Safari 18.4 (macOS
+15.4 / iOS 18.4 / iPadOS 18.4, March 2025). Keeping a second codec cost 177 MB
+across this domain and music/ — 26% of the repo's HEAD — to serve iOS 18.3 and
+older, which already got NO sound effects at all, because the foley library has
+been ogg-only for 580 of its 585 takes. A second encoding that protects music on
+a device with no footsteps is not a fallback, it is dead weight.
+- (was) **`.m4a` (AAC)** — for Safari / iOS, with
   `+faststart` so the player can begin before the whole file downloads.
 - **`.ogg` (Vorbis)** — for Chrome / Firefox / Android.
 
@@ -24,10 +33,9 @@ import subprocess
 # Container/codec/extension for each delivery format, in `<source>` preference
 # order for the web (AAC first for iOS/Safari, then Vorbis). WAV is the master.
 FORMATS = {
-    "m4a": {"codec": "aac", "ext": ".m4a", "extra": ["-movflags", "+faststart"]},
     "ogg": {"codec": "libvorbis", "ext": ".ogg", "extra": []},
 }
-WEB_SOURCE_ORDER = ["m4a", "ogg"]
+WEB_SOURCE_ORDER = ["ogg"]
 
 
 def have_ffmpeg() -> bool:
@@ -41,7 +49,7 @@ def _run(args: list[str]) -> None:
 
 
 def encode_wav(wav_path: str, bitrate: str = "128k", overwrite: bool = False) -> dict:
-    """Write `<stem>.m4a` and `<stem>.ogg` next to `wav_path`. Returns
+    """Write `<stem>.ogg` next to `wav_path`. Returns
     {fmt: {"path": abs, "bytes": n}} for the encodings produced (skips ones that
     already exist unless `overwrite`). Raises if ffmpeg is unavailable."""
     if not have_ffmpeg():

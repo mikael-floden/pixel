@@ -1,6 +1,6 @@
 // MONSTER GAIT gate (maintainer round 13: monsters "jump" or the walk clip
 // "is limping forward" — the animation must sync with the actual movement).
-// The contract it proves, on the REAL monster_demo roster:
+// The contract it proves, on the_game's REAL roster (every zone in spawns.json):
 //   1. every walking monster's clip is paced by DISTANCE — one cycle per its
 //      art-measured gait.cycleWu (±25%, unless a readability clamp binds);
 //   2. the cadence FOLLOWS the speed — a monster dragged into a chase plays
@@ -26,13 +26,13 @@ try {
 
   await page.goto("http://localhost:5173/", { waitUntil: "load" });
   await page.waitForFunction(() => window.__mlSelect, { timeout: 25000 });
-  const idx = await page.evaluate(() => window.__mlSelect.worlds().findIndex((w) => /monster_demo/i.test(w)));
-  if (idx < 0) fail("monster_demo missing from the picker");
+  const idx = await page.evaluate(() => window.__mlSelect.worlds().findIndex((w) => /the_game/i.test(w)));
+  if (idx < 0) fail("the_game missing from the picker");
   await page.evaluate((i) => window.__mlSelect.pickWorld(i), idx);
   await page.evaluate(() => window.__mlSelect.commit());
   await page.waitForFunction(() => window.__ml && window.__ml.players() >= 1, { timeout: 30000 });
   await page.waitForFunction(() => !document.querySelector("#ml-loading"), { timeout: 10000 });
-  ok("joined monster_demo");
+  ok("joined the_game");
 
   // The manifest must carry a gait for every kind (the builder measures it).
   const missing = await page.evaluate(() =>
@@ -42,8 +42,10 @@ try {
   if (missing.length) fail(`kinds with no measured gait.cycleWu: ${missing.join(", ")}`);
   ok("every roster kind ships an art-measured gait.cycleWu");
 
-  // Sample the roster while it roams: walk the player around the pads so
-  // different kinds un-cull, and collect per-kind gait samples.
+  // Sample the roster while it roams: the_game's zones are spread over the
+  // whole island, so instead of pacing around spawn the player hops beside a
+  // monster of a kind not yet sampled (the room state carries every monster;
+  // only on-camera bodies animate), and collects per-kind gait samples.
   const seen = new Map();
   const t0 = Date.now();
   while (Date.now() - t0 < 45000) {
@@ -55,16 +57,18 @@ try {
       seen.set(r.kind, cur);
     }
     if (seen.size >= 8 && [...seen.values()].every((v) => v.length >= 3)) break;
-    // wander so more pads enter the view
-    await page.evaluate(() => {
-      const me = window.__ml.me();
-      const a = (Date.now() / 1400) % (Math.PI * 2);
-      window.__ml.teleport(
-        Math.round(me.x / 32 + Math.cos(a) * 5),
-        Math.round(me.y / 32 + Math.sin(a) * 5),
-      );
-    });
-    await page.waitForTimeout(320);
+    // hop beside the nearest monster whose kind still lacks samples
+    await page.evaluate((done) => {
+      const st = window.__ml, me = st.me();
+      let best = null;
+      for (const m of st.monsterInfo()) {
+        if (m.mstate === "die" || done.includes(m.kind)) continue;
+        const d = Math.hypot(m.x - me.x, m.y - me.y);
+        if (!best || d < best.d) best = { m, d };
+      }
+      if (best) st.teleport(Math.round(best.m.x / 32) + 3, Math.round(best.m.y / 32) + 3);
+    }, [...seen].filter(([, v]) => v.length >= 3).map(([k]) => k));
+    await page.waitForTimeout(900);
   }
   if (seen.size < 4) fail(`only ${seen.size} kinds sampled walking — cannot judge the roster`);
   ok(`sampled ${seen.size} kinds walking`);

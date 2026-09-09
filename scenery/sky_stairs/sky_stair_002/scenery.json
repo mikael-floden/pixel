@@ -1,0 +1,95 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-14T04:34:22+00:00",
+  "id": "sky_stair_002",
+  "group": "sky_stairs",
+  "rank": 165,
+  "index": 2,
+  "name": "Weathered sky stair 002",
+  "lights": null,
+  "variety": "weathered sky stair",
+  "modifier": "crumbling at the top step",
+  "glow_concept": "each tread glowing faintly upward",
+  "prompt": "a flight of worn stone steps rising out of the grass and simply ending in mid-air, mossy treads, no rail and nothing above, weathered sky stair, crumbling at the top step, tall, about three times human height, self-emissive at night, softly radiating light: each tread glowing faintly upward",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 192,
+  "sprite": "sky_stairs/sky_stair_002/sprite.webp",
+  "placement": {
+    "world_height_m": 3.029,
+    "world_px_height": 155,
+    "character_height_px": 87,
+    "character_height_m": 1.7,
+    "note": "ONE SCENERY PIXEL IS ONE PLAYER PIXEL. world_px_height IS the art's own alpha bbox height, so scenery is placed into the world at 1:1 exactly as the avatar is (setScale(1)) and the two share one pixel grid. The CAMERA still zooms the whole scene \u2014 that is uniform and correct; what must never happen is scenery being resampled on its own, against the player. world_height_m is what the art reads as beside a 87px character; declared_height_m is what it was once declared to be, and a gap between them means the ART is the wrong size.",
+    "declared_height_m": 4.25,
+    "content_box": [
+      32,
+      26,
+      161,
+      181
+    ],
+    "content_px_height": 155,
+    "canvas_render_px": 192
+  },
+  "pixellab_object_id": "5bcd27a3-706f-4edd-b988-fa19b8f7e3e6",
+  "pixellab_directions": 1,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-1-direction-object (single, S-only)",
+  "must_be_imbplemented_with_random_hflip": true,
+  "states": {
+    "LIT_1": {
+      "sprite": "sky_stairs/sky_stair_002/sprite.webp",
+      "pixellab_object_id": "5bcd27a3-706f-4edd-b988-fa19b8f7e3e6",
+      "generated_at": "2026-08-14T04:34:22+00:00"
+    },
+    "LIT_2": {
+      "sprite": "sky_stairs/sky_stair_002/lit_2/sprite.webp",
+      "pixellab_object_id": "30bf618d-7b8f-4390-8833-62eb78e280dd",
+      "generated_at": "2026-08-16T20:57:28+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.1975,
+      "glow_score": 0.1221
+    },
+    "LIT_3": {
+      "sprite": "sky_stairs/sky_stair_002/lit_3/sprite.webp",
+      "pixellab_object_id": "99537875-6508-4441-b968-d2285659de90",
+      "generated_at": "2026-08-16T20:57:49+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.3389,
+      "glow_score": 0.1204
+    }
+  },
+  "collision": true,
+  "hitbox_shape": "ellipse",
+  "light": {
+    "strength": 0.3,
+    "color": "#9fe4ff",
+    "radius": 5,
+    "reference": "the spawn bonfire is 1.0 (radius 7); strength 0 is no light",
+    "states": {
+      "LIT_1": {
+        "strength": 0.24,
+        "color": "#9fe4ff",
+        "radius": 4
+      },
+      "LIT_2": {
+        "strength": 0.36,
+        "color": "#ffe3b4",
+        "radius": 6
+      },
+      "LIT_3": {
+        "strength": 0.3,
+        "color": "#ffe1b4",
+        "radius": 5
+      }
+    },
+    "kind": "glow/magic",
+    "flame": false,
+    "embers": false
+  },
+  "type": "NATURE"
+}

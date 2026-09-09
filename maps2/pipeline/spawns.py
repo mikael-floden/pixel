@@ -128,30 +128,73 @@ FALLBACK_HABS = ("grass", "dirt", "stone", "dark", "snow", "forest",
 #   cave    THE CAVE floor (cells under kind:"cave" decks, elev [0,1])
 # plus one showcase zone on the biggest BRIDGE deck.
 MONSTER_HABITAT = {
-    "mystical_frog": "shore",
-    "hedgehog": "forest",
-    "white_rabbit": "snow",
-    "malformed_creature": "dark",
-    "masked_shadow_creature": "cave",
-    "night_beast": "cave",
-    "lava_salamander": "dark",
-    "lava_salamander_2": "dark",
-    "butterfly_dragon": "grass",
-    "ice_crystal_golem": "ice",
-    "water_poring": "shore",
-    "stone_turtle": "stone",
-    "tree_stump": "forest",
-    "snow_demon": "snow",
-    "forest_poring": "forest",
-    "forest_poring_2": "forest",
-    "stone_golem": "stone",
-    "lava_poring": "dark",
-    "diablo": "cave",
-    "diablo_2": "cave",
-    "ice_poring": "ice",
-    "dark_donkey": "dirt",
-    "saber_toothed_tiger": "grass",
-    "mammoth": "snow",
+    # -- grass ---------------------------------------------------------------
+    "plague_hound": "grass",                    # Blightcur L6 — a camp-follower stray that wants to sit near somebody, out on the meadow
+    "chestnut_horse": "grass",                  # Sorrel L8 — plain farm horse; lore says open grass and the field side of a gate, and at L8/aggro-0 it sorts ahead of Duskfang for the nearest meadow
+    "saber_toothed_tiger": "grass",             # Duskfang L8
+    "white_horse": "grass",                     # Snowmane L9 — woke in the meadow grass and leaves you holding tack in an empty field; not one frost pixel on the sprite despite the name
+    "armor_tusker": "grass",                    # Ironhide L11 — an armoured grazer; on stone its L11 strands at walk 112, on grass it lands at its 56 floor
+    "hellhound": "grass",                       # Cinderhowl L11 — a fire-cracked hound running the open plain; dirt is a ribbon and could not hold six
+    "butterfly_dragon": "grass",                # Emberwing L12
+    "shadow_panther": "grass",                  # Gloompard L12 — an open-ground night stalker — the smoke it trails needs distance to read
+    "undead_charger": "grass",                  # Gravecharger L12 — a charge needs an open field, and the ram's horns are a rumour the witnesses added, not anatomy
+    "corrupt_stag": "grass",                    # Thornstag L14 — a thorn-racked browser on the meadow edge; forest could not hold nine
+    "blight_elk": "grass",                      # Sporehorn L15 — fungus-steered elk grazing the open grass it sows spores across
+    "rune_lion": "grass",                       # Runemane L17 — lore insists 'no wall, no step, only long grass' and paler stone than any local hill; a guardian pacing a floor plan that is gone
+    "gray_brute_2": "grass",                    # Tuskmaul L18 — the old bull that 'does not grind its tusks' - the very habit that ties the young to boulders - and 'moves when it wants the sun' (verifier)
+    "storm_shellback": "grass",                 # Voltshell L20 — a near-twin of Magmashell already on stone; lore is a valley of alders and a beck, and it is the landmark people measure open distance by (verifier)
+    # -- forest --------------------------------------------------------------
+    "forest_poring": "forest",                  # Dewling L3
+    "forest_poring_2": "forest",                # Sprigling L3
+    "hedgehog": "forest",                       # Quillkin L4
+    "crystal_lynx": "forest",                   # Prismclaw L9 — art is cold cyan crystal but at L9 (floor 46) no cold ground exists inside walk 121; a woodland cat in a copse at 73 is the only in-gradient home
+    "tree_stump": "forest",                     # Stumpling L10
+    "root_bear": "forest",                      # Gnarloak L15 — literally made of root, bark and moss and wakes furious at whatever an axe is
+    # -- dirt ----------------------------------------------------------------
+    "undead_hound": "dirt",                     # Rotjaw L5 — farm dog still waiting on the track its master came home by; L5 lands at walk 26, near-road prey a newcomer can actually reach
+    "dark_donkey": "dirt",                      # Nightmule L11
+    "black_horse": "dirt",                      # Duskhoof L14 — a draught horse handed on by a dozen owners lives on the roads between them; no elemental cue anywhere on the sprite
+    "spectral_horse": "dirt",                   # Nightmare L17 — night-gallop road haunt; sand was quota-filling and at L17 it left the near beach dead anyway (overrules proposer AND verifier)
+    # -- sand ----------------------------------------------------------------
+    "desert_cat": "sand",                       # Sunscale L10 — its entire defence is sand camouflage and noon glare - any other ground deletes the creature's one idea
+    "dune_digger": "sand",                      # Dunedelver L13 — faceless plough-front and spade claws in exactly light_sand's ochre; a sand-swimmer, and sand runs to walk 254 so L13 is safe
+    # -- shore ---------------------------------------------------------------
+    "mystical_frog": "shore",                   # Mirewart L1
+    "water_poring": "shore",                    # Puddling L2
+    "swamp_cat": "shore",                       # Bogstalker L8 — pond weed physically hanging off it and splayed wet-ground feet; eyes just above the waterline
+    "swamp_cat_2": "shore",                     # Mireglare L10 — algae-green coat with blue water-bristles; the lore's scene is a fen fire
+    "swamp_bear": "shore",                      # Mireback L17 — moss and tiered red-caps only take on a thing that stands still in wet; it walks the same bank
+    # -- stone ---------------------------------------------------------------
+    "gray_brute": "stone",                      # Gnashjaw L7 — grinds its tusks flat on boulders all its life; takes stone's near bench at walk 36 as the massif's low rung
+    "crystal_horn": "stone",                    # Amethyrn L13 — slate plating and gem-grazing on the mineral benches; no heat for dark, and cave is at its cap
+    "stone_turtle": "stone",                    # Magmashell L13
+    "stone_golem": "stone",                     # Mosscairn L18
+    "eldritch_maw": "stone",                    # Voidmaw L19 — not one warm pixel so not dark; cave is full at 4 species, and a violet body silhouettes against grey rock (verifier)
+    "granite_bear": "stone",                    # Cragback L19 — grey granite with alpine moss and green seams down the legs - the hillside standing up
+    # -- snow ----------------------------------------------------------------
+    "white_rabbit": "snow",                     # Fluffang L5
+    "moon_wolf": "snow",                        # Moonpelt L12 — the trick is leaving no print in new snow, which only reads on a snowfield
+    "polar_bear": "snow",                       # Bergclaw L13 — fur first, ice second - the ice came out of the bear; crystal_ice belongs to the crystal-bodied
+    "snow_demon": "snow",                       # Frostwraith L17
+    "storm_stag": "snow",                       # Stormcrown L19 — its own line is 'the high fells in the worst weather'; snow is the under-used massif and lightning reads on white, not grey-on-grey
+    "mammoth": "snow",                          # Diretusk L20
+    # -- ice -----------------------------------------------------------------
+    "ice_poring": "ice",                        # Frostling L15
+    "ice_wolf": "ice",                          # Winterfang L16 — a crown that never melts, the exact hue of crystal_ice; joins the ice-construct cast at L16 between Frostling L15 and Rimeshard L19
+    "ice_crystal_golem": "ice",                 # Rimeshard L19
+    # -- dark ----------------------------------------------------------------
+    "lava_salamander_2": "dark",                # Palemaw L6
+    "lava_salamander": "dark",                  # Emberjaw L7
+    "lava_poring": "dark",                      # Slagling L9
+    "magma_wolf": "dark",                       # Slagfang L11 — black hide with magma standing in the seams and embers lifting off it; the lore sends the pack east into the burnt country
+    "malformed_creature": "dark",               # Palehusk L14
+    "magma_wolf_2": "dark",                     # Basalthowl L16 — the pack sire at the caldera, identified by the smoke plume standing off its shoulders; must not be split from the pack
+    "obsidian_lion": "dark",                    # Magmane L18 — poured from the volcano's throat - obsidian mane, magma cracks - the apex of the burnt country
+    # -- cave ----------------------------------------------------------------
+    "masked_shadow_creature": "cave",           # Grinmask L8
+    "diablo": "cave",                           # Ashfiend L13
+    "night_beast": "cave",                      # Glowbone L16
+    "diablo_2": "cave",                         # Balefiend L18
 }
 # a NEW roster id without a table entry still gets a sensible home
 # NOTE the water law: a new `*_water` / `*_frog` id lands on the BANK (shore),
@@ -169,10 +212,11 @@ BRIDGE_GUARD = "stone_turtle"       # the troll under^W on the bridge
 # the roster wildly lopsided (24 butterfly dragons on the plains vs 1 hedgehog
 # in a copse), so the budget is now allocated per MONSTER, not per zone:
 #   1. the world's budget B = land cells / WORLD_CELLS_PER_MONSTER, clamped so
-#      no type is rarer than MON_TOTAL_MIN or commoner than MON_TOTAL_MAX
-#      (the_island2: 21978 land cells -> B = 107);
+#      every type present gets at least MON_TOTAL_MIN and none more than
+#      MON_TOTAL_MAX
+#      (the_island2: 22395 land cells -> B = 124);
 #   2. B is split EVENLY across the types that live here (largest-remainder —
-#      so with 24 types and B=107, eleven get 5 and thirteen get 4); the +1s go
+#      so with 57 types and B=124, ten get 3 and forty-seven get 2); the +1s go
 #      to the types with the most habitat, the only nod left to raw area;
 #   3. each type's own total is then spread across ITS zones in proportion to
 #      zone area (min 1 per zone) — so density still decides WHERE a type is
@@ -276,16 +320,28 @@ CAVE_DENSITY_F = 0.4    # the cave's share of the open-ground cap -> 0.02/cell,
                         # one monster per 50 cells of floor. On the_island2 that
                         # is 9 in the cave where 18 stood: the maintainer's half.
 
-WORLD_CELLS_PER_MONSTER = 205       # world budget = land cells / this.
-                                    # 137 -> 205 (maintainer 2026-08-07: "reduce
-                                    # the total number of monsters on the map by
-                                    # 25%. I think we have too many now") — one
-                                    # constant, applied to every world, so the
-                                    # cut is proportional to land everywhere
+WORLD_CELLS_PER_MONSTER = 180       # world budget = land cells / this. ONE dial
+                                    # for how busy a world feels, applied to every
+                                    # map so a change lands proportional to land
                                     # instead of being trimmed off whichever map
-                                    # someone happened to be looking at.
-                                    # the_island2: 141 -> 106 monsters.
-MON_TOTAL_MIN = 3                   # per-type floor on a world it lives on
+                                    # someone was looking at. 137 -> 205 ("reduce
+                                    # the total number of monsters by 25%"),
+                                    # 205 -> 180 when the roster went 24 -> 57
+                                    # ("I can agree on increasing the total amount
+                                    # of monsters on the map by 25%"):
+                                    # the_island2 99 -> 124.
+# THE FLOOR IS "PRESENT AT ALL" (maintainer 2026-08-21: "I can agree on increasing
+# the total amount of monsters on the map by 25%... you will probably have to spawn
+# less of the monsters already on the map so everyone can be included"). It was 3,
+# and `n * 3` is a floor that GROWS with the species count — backwards, because the
+# more species share a fixed island the FEWER each can have. The roster going
+# 24 -> 57 made that floor demand 171 monsters of a world whose land asks for 124,
+# and it would climb again with every creature the monsters agent adds. At 1 the
+# floor states the only thing that is always true: a species that lives on a world
+# has at least ONE individual there, or it is not on the world at all — which is
+# exactly what MUST_HAVE_ALL promises. The LAND is then the only dial on how busy a
+# world feels, which is what WORLD_CELLS_PER_MONSTER is for.
+MON_TOTAL_MIN = 1                   # ...every species present is really present
 MON_TOTAL_MAX = 9                   # per-type ceiling
 MIN_ZONE = {"forest": ROOM_MIN}     # smallest component worth a zone (cells)
 MIN_ZONE_DEFAULT = 30
@@ -1170,6 +1226,17 @@ def zones_for(w):
     members = {}                     # habitat key -> [monster ids] in roster order
     for mid in ids:
         members.setdefault(habitat_of(mid), []).append(mid)
+    # THE EASIEST PICKS FIRST. Within a habitat the members choose their component
+    # in this order, and the first to choose gets the NEAREST ground it is allowed
+    # (the difficulty gradient decides what "allowed" means). Roster order is
+    # arbitrary, so sorting by combat level puts the gentlest creature of each
+    # habitat closest to the arrival point and pushes the dangerous ones to its far
+    # end — which is what a newcomer walking out of the spawn actually meets
+    # (maintainer 2026-08-21: "Think about not placing to hard monsters near the
+    # spawn where the player is level 1"). Ties break on roster order, so a rebuild
+    # still reproduces.
+    for hab in members:
+        members[hab].sort(key=lambda m: (threat(m)[0], threat(m)[1], ids.index(m)))
     masks = habitat_masks(w)
     field = walk_dist(w)             # THE DIFFICULTY GRADIENT: walk cells from spawn
     zones = []
@@ -1232,7 +1299,13 @@ def zones_for(w):
                 t = gradient_trim(c, field, floor)
                 if len(t) < min_cells:
                     continue
-                free = room[j] - used[j]          # monsters it can still take
+                # ROOM IS MEASURED ON THE TRIMMED PIECE, not the raw component.
+                # The gradient cuts a component down to the part far enough out
+                # for THIS monster, and dry_mask cuts it again; sizing room off
+                # the raw component overstates it, so several species judged a
+                # ledge "roomy", moved in together, and the crowding law then
+                # shaved them to one each afterwards.
+                free = len(t) * cap - used[j]     # monsters it can still take
                 fits = free >= demand
                 # Tier 1: components with room for the whole population, nearest
                 # first. Tier 2 (nothing has room): the EMPTIEST one — falling

@@ -1,0 +1,213 @@
+{
+  "format": "scenery-piece@2",
+  "id": "reed_bed_005",
+  "group": "reed_beds",
+  "rank": 32,
+  "index": 5,
+  "name": "Dark bog reeds 005",
+  "lights": null,
+  "variety": "dark bog reeds",
+  "glow_concept": null,
+  "prompt": "a dense clump of tall slender freshwater reeds with feathery seed plumes, rising from a small mound of wet mud and marsh grass, dark bog reeds, about as tall as an adult person, completely unlit, no glow, no light sources, no self-emission",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 96,
+  "sprite": "reed_beds/reed_bed_005/sprite.webp",
+  "placement": {
+    "world_height_m": 1.68,
+    "world_px_height": 86,
+    "character_height_px": 87,
+    "character_height_m": 1.7,
+    "note": "ONE SCENERY PIXEL IS ONE PLAYER PIXEL. world_px_height IS the art's own alpha bbox height, so scenery is placed into the world at 1:1 exactly as the avatar is (setScale(1)) and the two share one pixel grid. The CAMERA still zooms the whole scene \u2014 that is uniform and correct; what must never happen is scenery being resampled on its own, against the player. world_height_m is what the art reads as beside a 87px character; declared_height_m is what it was once declared to be, and a gap between them means the ART is the wrong size.",
+    "declared_height_m": 1.8,
+    "content_box": [
+      19,
+      6,
+      79,
+      92
+    ],
+    "content_px_height": 86,
+    "canvas_render_px": 96
+  },
+  "pixellab_object_id": "66a2172d-ca63-477f-9d79-da6fea18537f",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)",
+  "must_be_imbplemented_with_random_hflip": true,
+  "generated_at": "2026-08-13T11:18:21+00:00",
+  "states": {
+    "LIT_1": {
+      "sprite": "reed_beds/reed_bed_005/lit_1/sprite.webp",
+      "pixellab_object_id": "37d24923-ba6d-48cf-9f95-1646a3d84178",
+      "generated_at": "2026-08-16T20:06:52+00:00",
+      "glow_concept": "pale blue bioluminescent stalk tips",
+      "difference_from_source": 0.7861,
+      "glow_score": 0.1714,
+      "animations": {
+        "motion": {
+          "group_id": "a61e8e49-38d2-4834-aa2f-9c9cd3b0b3f9",
+          "description": "This is the same picture in every frame. ONLY the pale blue light on the reed tips brightens and dims, very slowly. Everything else is frozen and pixel-for-pixel identical in every frame. Do not redraw anything else, and do not add or remove anything.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "reed_beds/reed_bed_005/lit_1/animations/motion/00.webp",
+            "reed_beds/reed_bed_005/lit_1/animations/motion/01.webp",
+            "reed_beds/reed_bed_005/lit_1/animations/motion/02.webp",
+            "reed_beds/reed_bed_005/lit_1/animations/motion/03.webp",
+            "reed_beds/reed_bed_005/lit_1/animations/motion/04.webp"
+          ],
+          "strip": "reed_beds/reed_bed_005/lit_1/animations/motion__strip.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-08-29T13:28:22+00:00",
+          "brief": "S14",
+          "review": "ANIMATION_PROBABLY_GOOD",
+          "review_metrics": {
+            "class": "foliage",
+            "base": 0.0203,
+            "still": 0.455
+          },
+          "light_frames": [
+            {
+              "intensity": 1.216,
+              "dx": 1.9,
+              "dy": -12.7
+            },
+            {
+              "intensity": 0.992,
+              "dx": 0.9,
+              "dy": -11.9
+            },
+            {
+              "intensity": 1.094,
+              "dx": 1.1,
+              "dy": -12.2
+            },
+            {
+              "intensity": 1.257,
+              "dx": 0.4,
+              "dy": -13.4
+            },
+            {
+              "intensity": 0.5,
+              "dx": -0.1,
+              "dy": -7.9
+            }
+          ]
+        }
+      }
+    },
+    "NOT_LIT_1": {
+      "sprite": "reed_beds/reed_bed_005/sprite.webp",
+      "pixellab_object_id": "66a2172d-ca63-477f-9d79-da6fea18537f",
+      "generated_at": "2026-08-13T11:18:21+00:00",
+      "animations": {
+        "motion": {
+          "group_id": "fc73a756-ae07-45d5-b8e0-0fdb8256496e",
+          "description": "Animate the reeds only, bending in a gentle breeze. Nothing else moves.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "reed_beds/reed_bed_005/animations/motion/00.webp",
+            "reed_beds/reed_bed_005/animations/motion/01.webp",
+            "reed_beds/reed_bed_005/animations/motion/02.webp",
+            "reed_beds/reed_bed_005/animations/motion/03.webp",
+            "reed_beds/reed_bed_005/animations/motion/04.webp"
+          ],
+          "strip": "reed_beds/reed_bed_005/animations/motion__strip.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-08-29T08:36:52+00:00",
+          "brief": "G1",
+          "review": "ANIMATION_PROBABLY_GOOD",
+          "review_metrics": {
+            "class": "foliage",
+            "base": 0.0515,
+            "still": 0.42
+          }
+        }
+      }
+    },
+    "NOT_LIT_2": {
+      "sprite": "reed_beds/reed_bed_005/not_lit_2/sprite.webp",
+      "pixellab_object_id": "f2df7a4a-6718-475b-aef8-daf45d4fa2db",
+      "generated_at": "2026-08-16T20:04:31+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.7925,
+      "glow_score": 0.0097,
+      "animations": {
+        "motion": {
+          "group_id": "63197b32-cb5d-4988-af56-399a83dfdd36",
+          "description": "This is the same picture in every frame. ONLY the feathery heads move, each leaning by a single pixel. Everything else in the picture is copied from the first frame exactly, pixel for pixel, unchanged in shape, size, position and colour. No outline anywhere is redrawn. The last frame matches the first frame exactly, so the loop joins. Nothing anywhere becomes darker, lighter or a different colour except the one thing named above.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "reed_beds/reed_bed_005/not_lit_2/animations/motion/00.webp",
+            "reed_beds/reed_bed_005/not_lit_2/animations/motion/01.webp",
+            "reed_beds/reed_bed_005/not_lit_2/animations/motion/02.webp",
+            "reed_beds/reed_bed_005/not_lit_2/animations/motion/03.webp",
+            "reed_beds/reed_bed_005/not_lit_2/animations/motion/04.webp"
+          ],
+          "strip": "reed_beds/reed_bed_005/not_lit_2/animations/motion__strip.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-08-29T16:18:57+00:00",
+          "brief": "Y46",
+          "review": "ANIMATION_PROBABLY_GOOD",
+          "review_metrics": {
+            "class": "foliage",
+            "base": 0.0,
+            "still": 0.558
+          }
+        }
+      }
+    },
+    "NOT_LIT_3": {
+      "sprite": "reed_beds/reed_bed_005/not_lit_3/sprite.webp",
+      "pixellab_object_id": "ec71cf98-aba1-4310-bb64-955ef8e9a50f",
+      "generated_at": "2026-08-16T20:06:13+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.3372,
+      "glow_score": 0.01
+    },
+    "NOT_LIT_4": {
+      "sprite": "reed_beds/reed_bed_005/not_lit_4/sprite.webp",
+      "pixellab_object_id": "e1290d84-3eea-4677-a65a-36d9d1ece8c7",
+      "generated_at": "2026-08-16T20:05:08+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.5893,
+      "glow_score": 0.0442
+    }
+  },
+  "collision": true,
+  "hitbox_shape": "ellipse",
+  "light": {
+    "strength": 0.08,
+    "color": "#d6fbff",
+    "radius": 1,
+    "reference": "the spawn bonfire is 1.0 (radius 7); strength 0 is no light",
+    "states": {
+      "LIT_1": {
+        "strength": 0.08,
+        "color": "#d6fbff",
+        "radius": 1
+      }
+    },
+    "kind": "glow/bio",
+    "flame": false,
+    "embers": false
+  }
+}

@@ -1,0 +1,108 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-13T23:13:19+00:00",
+  "id": "moss_clump_012",
+  "group": "moss_clumps",
+  "rank": 45,
+  "index": 12,
+  "name": "Moss-swallowed stump 012",
+  "lights": null,
+  "variety": "moss-swallowed stump",
+  "glow_concept": "constellation of glowing pinprick spore capsules",
+  "prompt": "a flat spreading patch of thick velvety moss hugging the ground, creeping low across soil and over small stones, completely flat, not a dome and not a shrub, moss-swallowed stump, small, knee-high, self-emissive at night, softly radiating light: constellation of glowing pinprick spore capsules",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 48,
+  "sprite": "moss_clumps/moss_clump_012/sprite.webp",
+  "placement": {
+    "world_height_m": 0.625,
+    "world_px_height": 32,
+    "character_height_px": 87,
+    "character_height_m": 1.7,
+    "note": "ONE SCENERY PIXEL IS ONE PLAYER PIXEL. world_px_height IS the art's own alpha bbox height, so scenery is placed into the world at 1:1 exactly as the avatar is (setScale(1)) and the two share one pixel grid. The CAMERA still zooms the whole scene \u2014 that is uniform and correct; what must never happen is scenery being resampled on its own, against the player. world_height_m is what the art reads as beside a 87px character; declared_height_m is what it was once declared to be, and a gap between them means the ART is the wrong size.",
+    "declared_height_m": 0.56,
+    "content_box": [
+      3,
+      9,
+      47,
+      41
+    ],
+    "content_px_height": 32,
+    "canvas_render_px": 48
+  },
+  "pixellab_object_id": "cf4dbbc1-9582-4ddf-b3d5-ea0d73a446a8",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)",
+  "must_be_imbplemented_with_random_hflip": true,
+  "states": {
+    "NOT_LIT_3": {
+      "sprite": "moss_clumps/moss_clump_012/sprite.webp",
+      "pixellab_object_id": "cf4dbbc1-9582-4ddf-b3d5-ea0d73a446a8",
+      "generated_at": "2026-08-13T23:13:19+00:00",
+      "relit_from": "LIT_1"
+    },
+    "NOT_LIT_4": {
+      "sprite": "moss_clumps/moss_clump_012/not_lit_4/sprite.webp",
+      "pixellab_object_id": "ebe88aee-d7bd-4ae7-821c-add9f5f00b1e",
+      "generated_at": "2026-08-16T18:01:46+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.5554,
+      "glow_score": 0.0054,
+      "relit_from": "LIT_2",
+      "animations": {
+        "motion": {
+          "group_id": "364d6761-1044-4051-ad67-8e873a41a22b",
+          "description": "This is the same picture in every frame. ONLY the green light in the moss brightens a little and returns. It is lit and clearly visible in every frame, including the first. It gets only SLIGHTLY brighter -- never white, never washed out -- and keeps its own colour throughout: brightest in the middle, back to its first-frame brightness at the end, never dimmer at the end than the start. Nothing is added or removed anywhere: every object appears in every frame, the same number of them, in the same places, at the same size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour, no outline redrawn. The last frame matches the first exactly.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "moss_clumps/moss_clump_012/not_lit_4/animations/motion/00.webp",
+            "moss_clumps/moss_clump_012/not_lit_4/animations/motion/01.webp",
+            "moss_clumps/moss_clump_012/not_lit_4/animations/motion/02.webp",
+            "moss_clumps/moss_clump_012/not_lit_4/animations/motion/03.webp",
+            "moss_clumps/moss_clump_012/not_lit_4/animations/motion/04.webp"
+          ],
+          "strip": "moss_clumps/moss_clump_012/not_lit_4/animations/motion__strip.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-08-29T19:04:25+00:00",
+          "brief": "C30",
+          "review": "ANIMATION_PROBABLY_GOOD",
+          "review_metrics": {
+            "class": "foliage",
+            "base": 0.0,
+            "still": 0.8
+          }
+        }
+      }
+    },
+    "NOT_LIT_5": {
+      "sprite": "moss_clumps/moss_clump_012/not_lit_5/sprite.webp",
+      "pixellab_object_id": "621ac5c2-9953-4cdb-998f-d55a44053ce6",
+      "generated_at": "2026-08-16T18:02:28+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.7776,
+      "glow_score": 0.001,
+      "relit_from": "LIT_3"
+    },
+    "NOT_LIT_6": {
+      "sprite": "moss_clumps/moss_clump_012/not_lit_6/sprite.webp",
+      "pixellab_object_id": "4c825e90-bba5-4f0f-838c-64cbe6533c69",
+      "generated_at": "2026-08-16T18:02:17+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.5326,
+      "glow_score": 0.0032,
+      "relit_from": "LIT_4"
+    }
+  },
+  "collision": true,
+  "hitbox_shape": "ellipse"
+}

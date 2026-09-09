@@ -1,0 +1,321 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-14T01:17:18+00:00",
+  "id": "grave_028",
+  "group": "graves",
+  "rank": 3,
+  "index": 28,
+  "name": "Headstone with carved bird 028",
+  "lights": null,
+  "variety": "headstone with carved bird",
+  "modifier": "snow-dusted",
+  "glow_concept": "small lantern hung on the marker",
+  "prompt": "a weathered granite headstone with a carved name, standing on a low grassy mound with small wildflowers at its base, headstone with carved bird, snow-dusted, small, knee-high, self-emissive at night, softly radiating light: small lantern hung on the marker",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 64,
+  "sprite": "graves/grave_028/sprite.webp",
+  "placement": {
+    "world_height_m": 0.977,
+    "world_px_height": 50,
+    "character_height_px": 87,
+    "character_height_m": 1.7,
+    "note": "ONE SCENERY PIXEL IS ONE PLAYER PIXEL. world_px_height IS the art's own alpha bbox height, so scenery is placed into the world at 1:1 exactly as the avatar is (setScale(1)) and the two share one pixel grid. The CAMERA still zooms the whole scene \u2014 that is uniform and correct; what must never happen is scenery being resampled on its own, against the player. world_height_m is what the art reads as beside a 87px character; declared_height_m is what it was once declared to be, and a gap between them means the ART is the wrong size.",
+    "declared_height_m": 0.67,
+    "content_box": [
+      9,
+      8,
+      56,
+      58
+    ],
+    "content_px_height": 50,
+    "canvas_render_px": 64
+  },
+  "pixellab_object_id": "13aea3c4-fb1a-4032-941f-657da53d1c19",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)",
+  "must_be_imbplemented_with_random_hflip": true,
+  "states": {
+    "LIT_1": {
+      "sprite": "graves/grave_028/sprite.webp",
+      "pixellab_object_id": "13aea3c4-fb1a-4032-941f-657da53d1c19",
+      "generated_at": "2026-08-14T01:17:18+00:00",
+      "rotations": {
+        "south-east": "graves/grave_028/rotations/south-east.webp",
+        "south-west": "graves/grave_028/rotations/south-west.webp",
+        "south": "graves/grave_028/sprite.webp"
+      }
+    },
+    "LIT_2": {
+      "sprite": "graves/grave_028/lit_2/sprite.webp",
+      "pixellab_object_id": "65369dfa-a9d3-452d-8c06-c4e313380eba",
+      "generated_at": "2026-08-16T14:55:56+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.7712,
+      "glow_score": 0.0196,
+      "rotations": {
+        "south-east": "graves/grave_028/lit_2/rotations/south-east.webp",
+        "south-west": "graves/grave_028/lit_2/rotations/south-west.webp",
+        "south": "graves/grave_028/lit_2/sprite.webp"
+      },
+      "animations": {
+        "motion": {
+          "group_id": "5cab9b2b-8c04-4767-9cd8-3e0b4ff0a0ab",
+          "description": "This is the same picture in every frame. ONLY the flame inside the small lantern flickers. It is lit and clearly visible in every single frame, including the first. Everything else in the picture is copied from the first frame exactly, pixel for pixel, unchanged in shape, size, position and colour. No outline anywhere is redrawn. The last frame matches the first frame exactly, so the loop joins.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "graves/grave_028/lit_2/animations/motion/00.webp",
+            "graves/grave_028/lit_2/animations/motion/01.webp",
+            "graves/grave_028/lit_2/animations/motion/02.webp",
+            "graves/grave_028/lit_2/animations/motion/03.webp",
+            "graves/grave_028/lit_2/animations/motion/04.webp"
+          ],
+          "strip": "graves/grave_028/lit_2/animations/motion__strip.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-08-29T17:54:54+00:00",
+          "brief": "A6",
+          "review": "ANIMATION_PROBABLY_GOOD",
+          "review_metrics": {
+            "class": "fire",
+            "base": 0.0,
+            "still": 0.996
+          },
+          "light_frames": [
+            {
+              "intensity": 0.983,
+              "dx": 16.6,
+              "dy": -1.2
+            },
+            {
+              "intensity": 1.024,
+              "dx": 16.5,
+              "dy": -1.2
+            },
+            {
+              "intensity": 1.027,
+              "dx": 16.5,
+              "dy": -1.2
+            },
+            {
+              "intensity": 0.983,
+              "dx": 16.4,
+              "dy": -1.2
+            },
+            {
+              "intensity": 0.983,
+              "dx": 16.4,
+              "dy": -1.2
+            }
+          ]
+        }
+      }
+    },
+    "LIT_3": {
+      "sprite": "graves/grave_028/lit_3/sprite.webp",
+      "pixellab_object_id": "e29e7e9b-950e-4826-9489-28d8056a2abe",
+      "generated_at": "2026-08-16T14:56:28+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.6199,
+      "glow_score": 0.0701,
+      "rotations": {
+        "south-east": "graves/grave_028/lit_3/rotations/south-east.webp",
+        "south-west": "graves/grave_028/lit_3/rotations/south-west.webp",
+        "south": "graves/grave_028/lit_3/sprite.webp"
+      },
+      "animations": {
+        "motion": {
+          "group_id": "f3cdbc95-1fe9-4df6-8768-0b84a47fa75a",
+          "description": "This is the same picture in every frame. ONLY the flame in the niche flickers. It is lit and clearly visible in every single frame, including the first. Everything else in the picture is copied from the first frame exactly, pixel for pixel, unchanged in shape, size, position and colour. No outline anywhere is redrawn. The last frame matches the first frame exactly, so the loop joins.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "graves/grave_028/lit_3/animations/motion/00.webp",
+            "graves/grave_028/lit_3/animations/motion/01.webp",
+            "graves/grave_028/lit_3/animations/motion/02.webp",
+            "graves/grave_028/lit_3/animations/motion/03.webp",
+            "graves/grave_028/lit_3/animations/motion/04.webp"
+          ],
+          "strip": "graves/grave_028/lit_3/animations/motion__strip.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-08-29T18:31:28+00:00",
+          "brief": "B11",
+          "review": "ANIMATION_PROBABLY_GOOD",
+          "review_metrics": {
+            "class": "fire",
+            "base": 0.0481,
+            "still": 0.932
+          },
+          "light_frames": [
+            {
+              "intensity": 0.867,
+              "dx": -0.8,
+              "dy": 5.9
+            },
+            {
+              "intensity": 1.05,
+              "dx": 0.5,
+              "dy": 5.9
+            },
+            {
+              "intensity": 1.135,
+              "dx": 0.5,
+              "dy": 5.1
+            },
+            {
+              "intensity": 1.137,
+              "dx": 0.4,
+              "dy": 5.0
+            },
+            {
+              "intensity": 0.811,
+              "dx": 0.9,
+              "dy": 5.7
+            }
+          ]
+        }
+      }
+    },
+    "LIT_4": {
+      "sprite": "graves/grave_028/lit_4/sprite.webp",
+      "pixellab_object_id": "ee13cb79-136d-41ec-a288-4b8968afea7d",
+      "generated_at": "2026-08-16T14:56:16+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.6582,
+      "glow_score": 0.0854,
+      "rotations": {
+        "south-east": "graves/grave_028/lit_4/rotations/south-east.webp",
+        "south-west": "graves/grave_028/lit_4/rotations/south-west.webp",
+        "south": "graves/grave_028/lit_4/sprite.webp"
+      },
+      "animations": {
+        "motion": {
+          "group_id": "bbcc5c77-b756-4c6f-a4d2-5b5f523bdc4a",
+          "description": "This is the same picture in every frame. ONLY the flame inside the lantern flickers. It is lit and clearly visible in every frame, including the first. It stays exactly the same size and shape in every frame: it never grows and never spreads, only its inner detail shifts. Nothing is added or removed anywhere: every object appears in every frame, the same number of them, in the same places, at the same size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour, no outline redrawn. The last frame matches the first exactly.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "graves/grave_028/lit_4/animations/motion/00.webp",
+            "graves/grave_028/lit_4/animations/motion/01.webp",
+            "graves/grave_028/lit_4/animations/motion/02.webp",
+            "graves/grave_028/lit_4/animations/motion/03.webp",
+            "graves/grave_028/lit_4/animations/motion/04.webp"
+          ],
+          "strip": "graves/grave_028/lit_4/animations/motion__strip.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-08-29T19:02:34+00:00",
+          "brief": "C2",
+          "review": "ANIMATION_PROBABLY_GOOD",
+          "review_metrics": {
+            "class": "fire",
+            "base": 0.0513,
+            "still": 0.919
+          },
+          "light_frames": [
+            {
+              "intensity": 0.915,
+              "dx": 15.0,
+              "dy": -3.5
+            },
+            {
+              "intensity": 0.915,
+              "dx": 14.8,
+              "dy": -3.5
+            },
+            {
+              "intensity": 0.915,
+              "dx": 14.8,
+              "dy": -3.5
+            },
+            {
+              "intensity": 1.198,
+              "dx": 15.9,
+              "dy": -3.8
+            },
+            {
+              "intensity": 1.056,
+              "dx": 15.8,
+              "dy": -3.5
+            }
+          ]
+        }
+      }
+    },
+    "NOT_LIT_1": {
+      "sprite": "graves/grave_028/not_lit_1/sprite.webp",
+      "pixellab_object_id": "27c15eba-6fab-43f7-84f2-b9b6658315ab",
+      "generated_at": "2026-08-16T14:56:57+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.9197,
+      "glow_score": 0.0,
+      "rotations": {
+        "south-east": "graves/grave_028/not_lit_1/rotations/south-east.webp",
+        "south-west": "graves/grave_028/not_lit_1/rotations/south-west.webp",
+        "south": "graves/grave_028/not_lit_1/sprite.webp"
+      }
+    },
+    "NOT_LIT_2": {
+      "sprite": "graves/grave_028/not_lit_2/sprite.webp",
+      "pixellab_object_id": "54cb058b-7b55-463d-9c3c-e45cb298fa73",
+      "generated_at": "2026-08-16T14:56:17+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.6598,
+      "glow_score": 0.0103,
+      "rotations": {
+        "south-east": "graves/grave_028/not_lit_2/rotations/south-east.webp",
+        "south-west": "graves/grave_028/not_lit_2/rotations/south-west.webp",
+        "south": "graves/grave_028/not_lit_2/sprite.webp"
+      }
+    }
+  },
+  "collision": true,
+  "hitbox_shape": "rect",
+  "light": {
+    "strength": 0.08,
+    "color": "#fff3e6",
+    "radius": 1,
+    "reference": "the spawn bonfire is 1.0 (radius 7); strength 0 is no light",
+    "states": {
+      "LIT_1": {
+        "strength": 0.1,
+        "color": "#fff3e6",
+        "radius": 1
+      },
+      "LIT_2": {
+        "strength": 0.08,
+        "color": "#ffe5b5",
+        "radius": 1
+      },
+      "LIT_3": {
+        "strength": 0.06,
+        "color": "#c8e8ff",
+        "radius": 1
+      },
+      "LIT_4": {
+        "strength": 0.1,
+        "color": "#fff9ef",
+        "radius": 1
+      }
+    },
+    "kind": "fire/enclosed",
+    "flame": true,
+    "embers": false
+  }
+}

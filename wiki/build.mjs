@@ -20,6 +20,14 @@ import { createHash } from "node:crypto";
 import { join, dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { execSync } from "node:child_process";
+// NOT tools/ — THE IMAGE DOES NOT SHIP tools/. games2/config/publish.json
+// excludes `^wiki/tools/` (the Playwright gates have no business in a
+// container), so while this module lived there every deploy died on
+// ERR_MODULE_NOT_FOUND at import, the Dockerfile's `|| echo` swallowed it, and
+// the image shipped the last COMMITTED data.json instead of one built from its
+// own art — for weeks, with a version stamp naming the wrong build. lib/ ships.
+import { contentBounds, decodeWebP } from "./lib/webp-pixels.mjs";
+import { measureOverhang } from "./lib/overhang.mjs";
 
 const WIKI_DIR = dirname(fileURLToPath(import.meta.url));
 const args = process.argv.slice(2);
@@ -176,6 +184,59 @@ function gitSha() {
     return execSync("git rev-parse --short=9 HEAD", { cwd: WIKI_DIR, stdio: ["ignore", "pipe", "ignore"] })
       .toString().trim() || null;
   } catch { return null; }
+}
+
+// WHEN A PIECE ARRIVED (maintainer 2026-08-13: "As an admin I should be able
+// to sort the Scenery on the latest generated content first … to make it
+// easier to review"). Nothing in scenery.json carries a date, so the date is
+// the commit that ADDED the piece — read once for the whole domain, cached in
+// wiki/first_seen.json, which is committed.
+//
+// Inside the deploy image there is no .git (the .dockerignore allowlist keeps
+// it out), so `git log` yields nothing there and the cache carries the answer
+// instead. A piece the cache does not know is one that landed after the cache
+// was last committed — i.e. newer than everything in it — so it is stamped
+// with the build's own time, which sorts it exactly where the maintainer
+// wants it: first. That makes this self-seeding and correct in both places,
+// with no cross-domain dependency. The long-term fix is the scenery agent
+// stamping `generated_at` into its own manifest; a board request is out.
+// It dates the CURRENT art, not the path's first appearance. The scenery agent
+// deletes rejected pieces and regenerates them AT THE SAME PATH — 29 of them
+// in one day — so "when was this path created" answers the wrong question
+// twice over: brand-new art sorts as old, and (worse) the maintainer's verdict
+// on the art that used to live there still counts as a review of art he has
+// never seen. Both showed up the moment he sorted newest-first and found 3
+// unreviewed pieces after hours of new content.
+//
+// So the key is the sprite's CONTENT HASH. Same bytes → keep the stored date.
+// Different bytes → this is new art; date it from the commit that last touched
+// the sprite, or from now when there is no git (the deploy image). The wiki
+// then compares a verdict's timestamp against this date to tell a review of
+// THIS art from a review of whatever stood here before.
+let gitArtDates = null;
+function artChangeDates() {
+  if (gitArtDates) return gitArtDates;                 // lazy: a warm cache never shells out
+  gitArtDates = new Map();
+  try {
+    const out = execSync("git log --format=C%cI --name-only -- scenery/",
+      { cwd: ROOT, stdio: ["ignore", "pipe", "ignore"], maxBuffer: 128 * 1024 * 1024 }).toString();
+    let when = null;
+    for (const line of out.split("\n")) {
+      if (line.startsWith("C")) when = line.slice(1);
+      else if (line.endsWith("/sprite.webp") && when) {
+        const dir = line.slice(0, -"/sprite.webp".length);
+        // git log walks newest-first, so the FIRST sighting of a path is the
+        // most recent commit that touched its art. Keep that one.
+        if (!gitArtDates.has(dir)) gitArtDates.set(dir, when);
+      }
+    }
+  } catch { /* no git (deploy image) — the committed cache answers instead */ }
+  return gitArtDates;
+}
+function loadFirstSeen() {
+  const path = join(ROOT, "wiki", "first_seen.json");
+  const doc = readJson(path) ?? {};
+  return { path, seen: doc.entries ?? {} };
 }
 
 // ---------------------------------------------------------------- monsters
@@ -407,6 +468,13 @@ function buildCharacters() {
       species: cj.species ?? "Human",
       sex: cj.sex ?? null,
       lore: cj.lore ?? null,
+      // characters2' `no_turn`: this NPC's ART only reads right from ONE
+      // facing, so the game must never rotate them. Thorne is the first —
+      // his armorer's breastplate stands on the ground beside him in south
+      // and south-west and is absent in south-east, so a turn pops the prop
+      // in and out. Absent means false (their README, 2026-08-07). A pipeline
+      // constraint on the art, so the wiki shows it to the Game Master only.
+      noTurn: cj.no_turn === true,
       path: `characters2/npcs/${key}`,
       preview: art(`characters2/npcs/${key}/base/south`),
       baseStrip: art(`characters2/npcs/${key}/base/preview`),
@@ -427,6 +495,553 @@ function buildCharacters() {
   }
   return chars;
 }
+
+/* ------------------------------------------------------------------ WORLD
+ * TILES 3.0 (`tiles/`) — the ground system being built to replace `tiles2/`.
+ *
+ * Maintainer 2026-08-16: "The tiles agent is working in what we call Tiles
+ * 3.0 … When the new tile system is complete the old /tiles2 will be removed.
+ * This however is a big task and we will need the wiki in order to know if
+ * /tiles (3.0) works. Can you in the wiki have two tiles systems/pages? Tiles
+ * OLD and World? … I will have to review the new system to make it good."
+ *
+ * So the NEW system takes the good name — the section is **World** — and the
+ * outgoing one becomes **Tiles OLD**. Two live domains, side by side, for as
+ * long as the migration takes.
+ *
+ * WHAT HE REVIEWS IS THE CANDIDATE, NOT THE TILE. `tiles/review/manifest.json`
+ * (`tiles3/review@1`) is the tiles agent's own contract, written for exactly
+ * this: per CELL (a "grass over black rock" pair) it offers 2-3 CANDIDATES
+ * ranked by a measured wall score, and says what a verdict means — "`tile_id`
+ * is the PixelLab generation a rejection should delete … A DELETED cell is
+ * tombstoned and never regenerated, unlike a rejected one."
+ *
+ * Verdicts therefore ride the manifest's OWN keys (`tiles/<cell>/<n>`) in the
+ * `tiles` feedback file, which is the domain the manifest names and the file
+ * that agent already reads. Its ids are repo paths, so 3.0's `tiles/…` and
+ * 2.0's `tiles2/…` cannot collide even though they share the file.
+ */
+function buildWorld() {
+  const fringeByKey = {};
+  const swallowByKey = {};
+  // The agent's palette IS the ground truth for what shipped — the postprocess
+  // snaps to it — so the swallowed-face check judges the AFTER pass against it.
+  const palHex = (h) => [parseInt(h.slice(1, 3), 16), parseInt(h.slice(3, 5), 16), parseInt(h.slice(5, 7), 16)];
+  const palTypes = readJson(join(ROOT, "tiles/config/palette.json"))?.types ?? {};
+  const palOf = (m) => [palTypes[m]?.top, palTypes[m]?.wall].filter(Boolean).map(palHex);
+  const base = join(ROOT, "tiles");
+  if (!isDir(base)) return null;
+  const review = readJson(join(base, "review", "manifest.json"));
+  const cfg = readJson(join(base, "config", "tiles.json")) ?? {};
+  const tombs = readJson(join(base, "tombstones.json"));
+  // The ground types are the vocabulary — the wiki renders THEIRS, never its
+  // own, so a type added in config appears here with no wiki edit.
+  const types = new Map((cfg.ground_types ?? []).map((g) => {
+    const t = typeof g === "string" ? { id: g } : g;
+    return [t.id, t];
+  }));
+  const label = (id) => types.get(id)?.name ?? titleCase(id);
+  const dead = new Set(Array.isArray(tombs?.cells) ? tombs.cells
+    : tombs && typeof tombs === "object" ? Object.keys(tombs.cells ?? tombs) : []);
+  const topStatsCache = new Map();
+  const topStats = (rel) => {
+    if (topStatsCache.has(rel)) return topStatsCache.get(rel);
+    let d = null;
+    try { d = decodeWebP(readFileSync(join(ROOT, rel))); } catch { d = null; }
+    let out = { dominant: 1, sum: [0, 0, 0], n: 0, k: 0 };
+    if (d) {
+      const { w, h, pix } = d;
+      const cols = new Map(); const sum = [0, 0, 0]; let n = 0;
+      for (let x = 0; x < w; x++) {
+        let top = -1, bot = -1;
+        for (let y = 0; y < h; y++) if ((pix[y * w + x] >>> 24) > 0) { if (top < 0) top = y; bot = y; }
+        if (top < 0) continue;
+        for (let y = top; y <= bot - 17; y++) {
+          const v = pix[y * w + x], c = v & 0xffffff;
+          cols.set(c, (cols.get(c) ?? 0) + 1);
+          sum[0] += (v >> 16) & 255; sum[1] += (v >> 8) & 255; sum[2] += v & 255;
+          n++;
+        }
+      }
+      if (n) out = { dominant: Math.max(...cols.values()) / n, sum, n, k: cols.size };
+    }
+    topStatsCache.set(rel, out);
+    return out;
+  };
+  const topDominant = (rel) => topStats(rel).dominant;
+  const cells = [];
+  for (const [id, cell] of Object.entries(review?.cells ?? {})) {
+    const cands = (cell.candidates ?? [])
+      .map((c) => ({
+        // The manifest's own key IS the feedback id — no id scheme of the
+        // wiki's invention to keep in sync with the agent's.
+        key: c.key ?? `tiles/${id}/${c.file?.split("/").pop()?.replace(/\.\w+$/, "")}`,
+        // BEFORE and AFTER the postprocess (tiles3/review@2, shipped by the
+        // tiles agent 2026-08-17 for exactly this). Both are repo-relative,
+        // like every other domain's art. `file` is their @1 alias of `after`,
+        // so a manifest still on @1 keeps resolving.
+        art: c.after ?? c.file ?? null,
+        /* THE TEXTURED PASS (tiles agent, 2026-08-27): the after tile with its
+         * top substituted from the RAW top against the ground's palette, the
+         * art's own relief kept. A base tile is judged entirely on its top and
+         * `after` is the pass that flattens it, so the audition needs this or
+         * a clean-top ground shows every candidate as one colour. Nullable —
+         * a manifest written before that pass has no field. */
+        tex: c.textured ?? null,
+        raw: c.before ?? null,
+        wallScore: c.wall_score ?? null,
+        wall: c.wall ?? null,
+        topShare: c.top_share ?? null,
+        /* THE TILE OWNS THESE NOW (tiles3/review@3, tiles agent 2026-08-29,
+         * after the games agent asked for one source): top_only, own_top and
+         * the RESOLVED borrow_wall ride the candidate, so the wiki and the
+         * game read the same value instead of each deriving one. The wiki
+         * still writes his verdicts to live/ and the tiles agent folds them
+         * back in — this is the published side of that loop. */
+        topOnlyPub: c.top_only === true ? true : null,
+        ownTopPub: c.own_top === true ? true : null,
+        borrowWall: c.borrow_wall ?? null,
+        // How far the top surface droops over the wall — the thing "grass
+        // over rock" is trying to achieve — and the flat colour the top
+        // settled on.
+        overhang: c.overhang ?? null,
+        // The agent's own fringe_clarity — how decisively the spilled fringe
+        // can be told apart from the wall it landed on. Published all along;
+        // the card just never showed it.
+        clarity: c.clarity ?? null,
+        paletteTop: c.palette_top ?? null,
+        tileId: c.tile_id ?? null,
+        style: c.style ?? null,
+        prompt: c.prompt ?? null,
+      }))
+      // The BEFORE is optional: a candidate generated before @2 has none, and
+      // its card simply offers no comparison rather than a broken toggle.
+      .map((c) => ({ ...c, raw: c.raw && existsSync(join(ROOT, c.raw)) ? c.raw : null }))
+      /* Measured TEXTURED-top stats per candidate (mean RGB, dominant share,
+       * colour count), so the best-wall matcher can compare ANY face — the
+       * maintainer's top-only flow starts from x-over-y tiles, and a matcher
+       * that only knew the tops pool would degenerate to first-pick on
+       * exactly those. Cached decode; the after pass would measure flat-top
+       * grounds as one identical colour, so tex. */
+      .map((c) => {
+        const st = (c.tex ?? c.art) && existsSync(join(ROOT, c.tex ?? c.art)) ? topStats(c.tex ?? c.art) : null;
+        return st?.n ? { ...c, tm: st.sum.map((v) => Math.round(v / st.n)), tflat: +st.dominant.toFixed(3), tk: st.k || null } : c;
+      })
+      .filter((c) => c.art && existsSync(join(ROOT, c.art)))
+      // BEST FIRST. The manifest stopped arriving ranked (measured 2026-08-20:
+      // black_rock over black_rock came 3.21, 4.33, 1.18, 3.78, …), and the
+      // wiki's set page numbers its tiles "#1, #2, …" under a "ranked by wall
+      // score" pill — so the ranking is done here rather than claimed. Order is
+      // presentation; the KEY is identity and verdicts ride the key, so this
+      // cannot disturb a review. Mirrored in wiki.js for the live refresh.
+      .sort((a, b2) => (b2.wallScore ?? -Infinity) - (a.wallScore ?? -Infinity));
+    if (!cands.length) continue;
+    // DID THE BRIM SURVIVE THE POSTPROCESS? Measured here, keyed by the tile's
+    // own key, so the ADMIN's live-manifest refresh can merge it in without
+    // decoding anything in the browser.
+    // ONLY A CROSS-MATERIAL CELL CAN ANSWER IT. On grass over grass the top and
+    // the wall ARE the same material, so the brim differs from the wall only by
+    // the lighting the generator gave it — measuring "does the top drape" there
+    // reports on shading and flags tiles nobody can fix. The colour guard inside
+    // measureOverhang catches most of them; the cell's own materials settle it.
+    const cTop = cell.top ?? id.split("__over__")[0];
+    const cSide = cell.side ?? id.split("__over__")[1];
+    if (cTop !== cSide) {
+      const pal = { top: palOf(cTop), side: palOf(cSide) };
+      for (const c of cands) {
+        const m = measureOverhang(`${ROOT}/`, c.art, c.raw, pal);
+        if (m) {
+          fringeByKey[c.key] = [Math.round(m.worst.drawn * 100), Math.round(m.worst.kept * 100), m.side];
+          // A WHOLE WALL FACE HANDED TO THE TOP MATERIAL — the other half of
+          // the same break, and the one the brim measurement calls perfect.
+          if (m.body) swallowByKey[c.key] = [Math.round(m.body.worst.raw * 100), Math.round(m.body.worst.after * 100), m.body.side];
+        }
+      }
+    }
+    cells.push({
+      id,
+      // "Grass over Black rock" — the pair, in the order the agent names it:
+      // the walkable TOP first, the sideways WALL second.
+      name: `${label(cell.top ?? id.split("__over__")[0])} over ${label(cell.side ?? id.split("__over__")[1]).toLowerCase()}`,
+      top: cell.top ?? null, side: cell.side ?? null,
+      path: `tiles/${id}`,               // the CELL's own feedback id
+      preview: cands[0].art,             // the best-scoring candidate (sorted above)
+      candidates: cands,
+      best: cands[0].wallScore ?? null,
+      tombstoned: dead.has(id),
+    });
+  }
+  cells.sort((a, b) => a.name.localeCompare(b.name));
+  /* THE GROUND TYPE IS A PAGE NOW, not just a grouping (maintainer 2026-08-21:
+   * "World has Ground types. A Ground type has: Base tiles, On top of,
+   * Transitions ... The page should show the ground types base color ... and
+   * the ground tiles color palette"). Three enrichments, all READ from the
+   * tiles agent's own files — the wiki measures and mirrors, it never invents:
+   *
+   * 1. palette.json (tiles3/palette@1): the maintainer-picked top/wall colours
+   *    and the SURFACE TAXONOMY — transition_surface: "own" (always draws its
+   *    own texture), "base" (transitions mimic the base tile's texture),
+   *    "flat" (a clean colour stands in until a texture beats it).
+   * 2. A MEASURED palette per type: the exact colours of its own-wall tiles
+   *    (t over t — top and wall both this material), counted pixel by pixel
+   *    with the same VP8L decoder that measures art bounds. Top 10 by share.
+   * 3. tiles/transitions/: the Wang corner sets the transitions system is
+   *    generating (docs/TRANSITIONS.md) — per material pair, how many sets
+   *    exist and one representative set to draw samples from.
+   */
+  const palCfg = readJson(join(base, "config", "palette.json"));
+  const measurePalette = (typeId) => {
+    const own = cells.find((c) => c.id === `${typeId}__over__${typeId}`);
+    if (!own) return [];
+    const counts = new Map();
+    let total = 0;
+    // A handful of the best tiles is the material; all 35 is just more of it.
+    for (const cand of own.candidates.slice(0, 5)) {
+      try {
+        // decodeWebP returns { w, h, pix } — a Uint32Array of packed
+        // 0xAARRGGBB pixels (see contentBounds, which reads alpha as
+        // `pix[i] >>> 24`). Reading it as byte-RGBA counted one pixel as four
+        // and produced negative "hex" colours on the first run.
+        const { w, h, pix } = decodeWebP(readFileSync(join(ROOT, cand.art)));
+        for (let i = 0; i < w * h; i++) {
+          if (pix[i] >>> 24 <= 8) continue;
+          const c = pix[i] & 0xffffff;
+          counts.set(c, (counts.get(c) ?? 0) + 1);
+          total++;
+        }
+      } catch { /* one unreadable tile must not cost the type its palette */ }
+    }
+    return [...counts.entries()]
+      .sort((a, b) => b[1] - a[1]).slice(0, 10)
+      .map(([c, n]) => ({ c: `#${c.toString(16).padStart(6, "0")}`, share: +(n / total).toFixed(4) }));
+  };
+  /* THE POOL A BASE TILE SET PICKS FROM (tiles/base_candidates/<ground>/).
+   *
+   * NOT the x-over-x review tiles, which is where promote-to-base used to look
+   * and why the maintainer could not judge it: "the tile show a clean color top
+   * so I can't see the art under". Those are WALL showcases with deliberately
+   * flat tops (palette.json flat_top) — a base tile is judged entirely on its
+   * top, so that pool asks him to approve something he is not being shown.
+   *
+   * These are the pure corner tiles of generated transition sets, texture
+   * intact, already hue/saturation-corrected exactly as the game draws them —
+   * "the grass he called insanely good". The ballot ids are stable
+   * (<pair>__<variant>) and name their own provenance.
+   *
+   * Grounds with no ballot are not an error: a ground draws its clean colour
+   * until a texture beats it, and lava/water/deep_water probably always will. */
+  /* IS THIS TILE'S TOP ACTUALLY A SURFACE? (dominant share of its top face).
+   *
+   * A base tile is judged ENTIRELY on its top, and most published art has a
+   * deliberately flat one — palette.json flat_top, "a clean flat top is the
+   * default for every material". Measured over the plates: grass and snow and
+   * light_soil come out 100% flat (2.5-2.8 colours), while brown paving is
+   * only 10% flat at 11.8 colours, because paving's postprocess keeps its
+   * texture. So the pool cannot be filtered by ground or by source — only by
+   * what the pixels say. A flat plate offered as a base tile IS the clean
+   * colour, which every set already carries as its clean member. */
+  const basePools = {};
+  const bcDir = join(ROOT, "tiles", "base_candidates");
+  if (isDir(bcDir)) {
+    for (const ground of readdirSync(bcDir).sort()) {
+      const idx = join(bcDir, ground, "index.json");
+      if (!existsSync(idx)) continue;
+      let ballot = null;
+      try { ballot = JSON.parse(readFileSync(idx, "utf8")); } catch { continue; }
+      const cands = (ballot?.candidates ?? [])
+        .filter((c) => c?.id && c?.file && existsSync(join(ROOT, c.file)))
+        .map((c) => ({ id: c.id, art: c.file, from: c.source_set ?? null, flat: +topDominant(c.file).toFixed(2) }));
+      if (cands.length) basePools[ground] = cands;
+    }
+  }
+  /* WHAT THE GROUND'S TEXTURE ACTUALLY AVERAGES TO (maintainer 2026-08-27: "I
+   * now also feel our clean/plain tile single color is not at all an
+   * avarage/median of how the tile top with texture looks like ... How did you
+   * pick a ground types single/clean color? Isn't this a median of the top
+   * textures? (I thought it was)").
+   *
+   * It is not: the clean colour is palette.json types[g].top, authored against
+   * tiles2 by the tiles agent, and it comes out systematically DARKER than the
+   * 3.0 art it now sits beside — grass declared #14523b against a measured
+   * #175f43. That is why a clean tile in a textured set reads as a patch. The
+   * fix lives in palette.json, which is the tiles agent's file; what the wiki
+   * owes him is the measurement, on the page, so the gap is visible instead of
+   * being something he has to feel. Averaged over the TEXTURED candidates only
+   * — the flat ones already are the clean colour and would drag the mean back
+   * onto itself. */
+  const topAvg = {};
+  // Read here rather than reusing the one below: the pattern library is built
+  // AFTER the ground types, and reaching forward to it threw
+  // "Cannot access 'platesIdx' before initialization" — which build.mjs
+  // swallowed into a stack trace nobody was reading, leaving topAvg silently
+  // absent on every ground. readJson caches nothing but costs one file read.
+  const platesForAvg = readJson(join(ROOT, "tiles", "plates", "index.json"));
+  for (const [g, e] of Object.entries(platesForAvg?.grounds ?? {})) {
+    const sum = [0, 0, 0]; let n = 0;
+    const files = [
+      ...Object.values(e.plates ?? {}).flat().map((k) => `tiles/plates/${g}/${k}.webp`),
+      ...(basePools[g] ?? []).map((c) => c.art),
+    ];
+    for (const f of files) {
+      const st = topStats(f);
+      if (st.dominant >= 0.9 || !st.n) continue;
+      sum[0] += st.sum[0]; sum[1] += st.sum[1]; sum[2] += st.sum[2]; n += st.n;
+    }
+    if (n) topAvg[g] = "#" + sum.map((v) => Math.round(v / n).toString(16).padStart(2, "0")).join("");
+  }
+  /* THE TOP-ONLY POOL (tiles agent fb180da5b, schema tiles3/tops@1).
+   *
+   * "This set of textures/tiles is not supposed to show the wall ... The tiles
+   * generated now is candidates for being 'details' tile or a 'base tile'"
+   * (maintainer 2026-08-27). Generated with the wall and overhang explicitly
+   * unimportant, so every tile is a ground surface and nothing else — which is
+   * why these need no textured pass: there is no flattened top to undo.
+   *
+   * FLAVOUR IS A HINT, NOT A GATE. `subtle` is quiet enough to repeat across a
+   * field, `detail` is the once-in-a-while showpiece — but he named BOTH pools
+   * in one breath, so both flavours reach both surfaces and the flavour is
+   * shown rather than enforced. Sorted subtle-first, since a base tile set is
+   * the thing he is filling right now.
+   *
+   * NEVER an x-over-y candidate: nothing here is a cell, has a wall verdict, or
+   * appears in tiles/review/manifest.json. Kept in its own field for exactly
+   * that reason — anything walking worldCells cannot reach it by accident. */
+  const tops = {};
+  const topsIdx = readJson(join(ROOT, "tiles", "tops", "index.json"));
+  if (topsIdx?.sheets?.length) {
+    for (const sh of topsIdx.sheets) {
+      if (!sh?.ground || !sh?.dir) continue;
+      /* PREFER THE POST PASS (tiles agent cb43e2d89, and blocking: "the tops
+       * AUDITION is rendering the RAW pass, not post/ ... please land this
+       * before anything else").
+       *
+       * The sheets ship in the generator's own colour and the wiki corrected
+       * them IN THE BROWSER while no better pass existed. There is one now —
+       * every tile's background landed exactly on the ground's clean colour by
+       * a whole-tile translation, so the detail keeps its own colour instead
+       * of being flattened toward the anchor. Measured on the tile he was
+       * auditioning (black_rock sheet_00_subtle tile_11): the RAW top face is
+       * 41 RGB off the clean colour, the post file 0. The in-browser
+       * approximation stays reachable as the Before view; nothing here is a
+       * guess any more.
+       *
+       * MISFITS ARE WRITTEN, FLAGGED AND SORTED LAST — never hidden: "the
+       * maintainer may love one anyway and his verdict outranks my flag." */
+      // A MAP keyed by file name, not a list: {"tile_11.webp": {misfit, squeezed_pct, hue_deg}}.
+      // Read as a list it threw "object is not iterable" and killed the whole
+      // build — which the deploy's `||` fallback would have swallowed into a
+      // silently stale registry, the exact trap the Dockerfile documents.
+      const misfit = sh.misfit_tiles && typeof sh.misfit_tiles === "object" ? sh.misfit_tiles : {};
+      /* THE POST NAME COMES FROM THE INDEX, NEVER FROM ARITHMETIC. The cache-
+       * safety law renamed every post file to tile_NN.<hash>.webp, and this
+       * loop was still guessing post/tile_NN.webp — existsSync said no, `post`
+       * fell to null in a fresh build, and the COMMITTED registry (built
+       * before the rename) kept the unhashed names outright: every audition
+       * centre 404ed and drew as a hole in an intact ring, which is exactly
+       * the screenshot the maintainer sent (2026-08-27, "all I see is
+       * holes"). The index publishes post_files in tile order for precisely
+       * this reason; matched by stem, verified on disk, so a name this build
+       * emits is a file that exists. */
+      const postByStem = new Map((sh.post_files ?? []).map((pf) => [pf.replace(/\.(?:[0-9a-f]{8}\.)?webp$/, ""), pf]));
+      for (const f of sh.tiles ?? []) {
+        const rel = `${sh.dir}/${f}`;
+        if (!existsSync(join(ROOT, rel))) continue;
+        const postName = postByStem.get(f.replace(/\.webp$/, "")) ?? f;
+        const postRel = `${sh.dir}/post/${postName}`;
+        const hasPost = sh.post === true && existsSync(join(ROOT, postRel));
+        /* PER-TILE top-face stats on the DISPLAYED pass (post), so the
+         * best-wall matcher compares this exact picture — the sheet means
+         * below stay for the sort labels that already read them. */
+        const tst = topStats(hasPost ? postRel : rel);
+        (tops[sh.ground] ??= []).push({
+          // The identity stays the RAW path — it is what his verdicts are
+          // keyed by, and a post pass is a rendering of the same tile, not a
+          // different one. `post` is what to SHOW.
+          id: rel, art: rel, post: hasPost ? postRel : null,
+          flavour: sh.flavour ?? null, misfit: misfit[f]?.misfit ? true : undefined,
+          // The sheet's measured top-face numbers, so the picker can sort and
+          // label without decoding 1,440 files in the browser.
+          colours: sh.top_face?.mean_colours ?? null,
+          flat: sh.top_face?.mean_dominant_share ?? null,
+          m: tst.n ? tst.sum.map((v) => Math.round(v / tst.n)) : null,
+          tflat: tst.n ? +tst.dominant.toFixed(3) : null,
+          tk: tst.k || null,
+        });
+      }
+    }
+    for (const g of Object.keys(tops)) {
+      // Subtle first (a base tile set is what he is filling), and the flagged
+      // misfits last within each flavour — shown, never hidden.
+      tops[g].sort((a, b) =>
+        (a.flavour === b.flavour ? 0 : a.flavour === "subtle" ? -1 : 1)
+        || ((a.misfit ? 1 : 0) - (b.misfit ? 1 : 0)));
+    }
+  }
+  const groundTypes = [...types.values()].map((t) => {
+    const pal = palCfg?.types?.[t.id] ?? {};
+    return {
+      ...t,
+      // The game's own colour for this ground (palette.json top — the
+      // maintainer's pick), with the generator's intent hex as fallback.
+      top: pal.top ?? t.hex ?? null,
+      wallColor: pal.wall ?? null,
+      surface: pal.transition_surface ?? null,
+      palette: measurePalette(t.id),
+      // How many textured tiles he can choose from for this ground's sets.
+      // The art itself is in basePool; this is for counts without walking it.
+      basePool: (basePools[t.id] ?? []).length,
+      // What this ground's textured tops actually average to, against which
+      // `top` (the clean colour) can be compared on the page.
+      topAvg: topAvg[t.id] ?? null,
+    };
+  });
+  // ---- the pattern library + plates: composed transitions for EVERY pair ----
+  let patternLib = null;
+  const patIdx = readJson(join(ROOT, "tiles", "patterns", "index.json"));
+  const platesIdx = readJson(join(ROOT, "tiles", "plates", "index.json"));
+  if (patIdx?.patterns?.length && platesIdx?.grounds) {
+    patternLib = {
+      schema: patIdx.schema,
+      masks: patIdx.masks?.file ?? "tiles/patterns/masks.webp",
+      silhouette: patIdx.silhouette?.file ?? "tiles/patterns/silhouette.webp",
+      /* THE SEAM, and it is not optional (tiles agent, maintainer verdict
+       * 2026-08-27): a transition without it is a 0-100 hard cut, which is not
+       * what the generator drew. Same sheet layout as the masks, so the same
+       * frame arithmetic indexes it; black at overlay_alpha over it IS multiply
+       * by tone, which is why the consumer needs one more drawImage and no
+       * per-pixel work. */
+      border: patIdx.border ? {
+        file: patIdx.border.file,
+        alpha: patIdx.border.overlay_alpha ?? 0.18,
+        tone: patIdx.border.tone ?? 0.82,
+        rgb: patIdx.border.overlay_rgb ?? [0, 0, 0],
+      } : null,
+      frameW: patIdx.masks?.frame_w ?? 64,
+      frameH: patIdx.masks?.frame_h ?? 46,
+      cols: patIdx.masks?.cols ?? 16,
+      defaultPattern: patIdx.selection?.default_pattern ?? patIdx.patterns[0].id,
+      // side_b is whichever ground appears LATER here (wettest to built), so
+      // two consumers never disagree about which way a boundary fades.
+      sideOrder: patIdx.selection?.side_order ?? [],
+      patterns: patIdx.patterns.map((x) => ({
+        id: x.id, row: x.row, label: x.label,
+        amplitude: x.amplitude, seed: x.seed,
+        agreement: x.agreement, meanDev: x.roughness?.mean_dev_px ?? null,
+        duplicateOf: x.duplicate_of ?? null,
+      })),
+      /* ground -> its plates, which is also THE POOL a base tile set picks
+       * from: plates/index.json's own `pool.rule` is "ground G's pool is every
+       * approved candidate of every G__over__* cell". Paths are derived, not
+       * shipped (tiles/plates/<g>/<k>.webp, review key tiles/<cell>/<k>) —
+       * 3,685 entries, so spelling them here would cost a third of a megabyte
+       * for strings the client already knows how to write. */
+      plates: Object.fromEntries(Object.entries(platesIdx.grounds).map(([g, e]) => [g, {
+        clean: e.clean?.file ? `tiles/plates/${g}/clean.webp` : null,
+        keys: Object.values(e.plates ?? {}).flat(),
+        // [key8, cell] per plate, so a pool row can name its provenance and
+        // resolve to the review key the tiles agent asks members to carry.
+        /* EVERY approved tile, with its top's dominant share measured — never
+         * filtered (maintainer 2026-08-27: "all accepted tiles for brown
+         * paving stone over x should be a candidate here. So why do you try to
+         * make the button disabled in the first place?"). An earlier build
+         * dropped tops >=90% one tone, which was this build making a taste
+         * call that is his: whether a flat top belongs in a set is decided in
+         * the audition, by him. The number ships so the picker can SAY a top
+         * is flat and sort the textured ones first — information, not a gate. */
+        pool: Object.entries(e.plates ?? {}).flatMap(([cell, ks]) =>
+          ks.map((k) => [k, cell, +topDominant(`tiles/plates/${g}/${k}.webp`).toFixed(2)])),
+      }])),
+    };
+  }
+  // ---- transitions: what exists on disk, per unordered material pair ----
+  // Tile paths are NOT shipped — they are fully derivable
+  // (tiles/transitions/<pair>/<set>/tile_XX.webp, or post/tile_XX.webp once
+  // the tiles agent publishes the retextured pass), and 255 sets × 16 paths
+  // would fatten data.json by a quarter megabyte for strings the client can
+  // spell itself. The build verifies existence and ships metadata only.
+  const transitions = [];
+  const tDir = join(base, "transitions");
+  if (isDir(tDir)) {
+    for (const pair of readdirSync(tDir).filter((d) => d.includes("__to__")).sort()) {
+      const [a, bSide] = pair.split("__to__");
+      const sets = [];
+      let size = null;
+      for (const setId of readdirSync(join(tDir, pair)).sort()) {
+        const meta = readJson(join(tDir, pair, setId, "meta.json"));
+        if (!meta) continue;
+        const n = meta.n_tiles ?? 16;
+        let have = 0;
+        for (let i = 0; i < n; i++) {
+          if (existsSync(join(tDir, pair, setId, `tile_${String(i).padStart(2, "0")}.webp`))) have++;
+        }
+        if (!have) continue;
+        // The POSTPROCESSED pass (retexture_palette — the set's own colours
+        // corrected to the game palette in place, relief kept): published as
+        // <set>/post/tile_XX.webp when the tiles agent runs it. The flag is
+        // what lets the wiki prefer it the moment it lands, with no wiki
+        // change — the same trick review@2's before/after uses.
+        const post = existsSync(join(tDir, pair, setId, "post", "tile_00.webp"));
+        size = meta.size ?? size;
+        sets.push({ id: setId, amplitude: meta.boundary_amplitude ?? null, seed: meta.boundary_seed ?? null, n: have, post });
+      }
+      if (!sets.length) continue;
+      // The straightest boundary first — amplitude 0 is the canonical look;
+      // wilder seeds are variants of it.
+      sets.sort((x, y) => (x.amplitude ?? 9) - (y.amplitude ?? 9) || (x.seed ?? 9) - (y.seed ?? 9));
+      transitions.push({ a, b: bSide, size, sets });
+    }
+  }
+  const wallPools = {};
+  for (const c of cells) {
+    if (!c.top || c.top !== c.side) continue;
+    wallPools[c.top] = c.candidates.map((cand) => {
+      const st = topStats(cand.tex ?? cand.art);
+      return { key: cand.key, art: cand.art,
+        m: st.n ? st.sum.map((v) => Math.round(v / st.n)) : null,
+        flat: st.n ? +st.dominant.toFixed(3) : null, k: st.k || null };
+    });
+  }
+  worldMeta = {
+    // key -> [drawn %, kept %, face] — see wiki/lib/overhang.mjs.
+    fringe: fringeByKey,
+    // key -> [raw %, after %, face]: how much of that wall face reads as the
+    // TOP material. Low then high = the postprocess swallowed the face.
+    swallow: swallowByKey,
+    // What the agent measures a candidate against, published so the page can
+    // say WHY something ranks where it does instead of showing bare numbers.
+    accept: cfg.accept ?? null,
+    tile: cfg.tile ?? null,
+    groundTypes,
+    // ground -> [{id, art, from}] — the ballot a base tile set draws members
+    // from. Shipped whole (356 entries, ~40 KB) because the set editor needs
+    // every candidate's path at once to draw the picker.
+    basePools,
+    // ground -> [{id, art, flavour, colours, flat}] — the top-only pool, which
+    // is NOT a review cell and must never be offered as an x-over-y candidate.
+    tops,
+    /* ground -> [{key, art, m, flat, k}] — every x-over-x candidate with its
+     * measured TEXTURED-top stats (maintainer 2026-08-28: "you should not
+     * just pick 'the first' x over x — you should pick the BEST", closest in
+     * colour/tone and structure). Measured on the tex pass, like against
+     * like: the after pass flattens flat-top grounds to one colour and would
+     * make every wall measure identical. The browser picks argmin without
+     * decoding a pixel. */
+    wallPools,
+    transitions,
+    // THE TRANSITION PATTERN LIBRARY + BASE PLATES (tiles agent, 2026-08-25):
+    // a transition is now two plates and a mask. 18 material-free boundary
+    // patterns (tiles/patterns/masks.webp, one 64x46 alpha frame per pattern x
+    // Wang index) + every approved ground conformed into plates whose alpha is
+    // byte-identical to the shared silhouette — so the wiki composes a
+    // transition for ANY ground pair with three drawImage calls, and the pass
+    // switch (Clean #0 / Set #N) decides which plate fills each side.
+    patternLib,
+    tombstoned: [...dead],
+    schema: review?.schema ?? null,
+  };
+  return cells;
+}
+let worldMeta = null;
 
 // ------------------------------------------------------------------- tiles
 function buildTiles() {
@@ -493,23 +1108,145 @@ function buildTiles() {
 
 // ----------------------------------------------------------------- objects
 function buildObjects() {
-  const base = join(ROOT, "objects");
+  // The scenery domain (renamed from objects/ 2026-08-12 — scenery agent). The
+  // wiki's INTERNAL domain key stays "objects" (route slugs are URLs and
+  // feedback ids ride on them); only the disk paths moved.
+  // v2 (2026-08-12): pieces live in ranked GROUPS — scenery/<group>/<id>/ —
+  // with three legacy pieces still at the top level. A top-level dir carrying
+  // scenery.json is a legacy piece; one whose children carry it is a group.
+  const base = join(ROOT, "scenery");
   if (!isDir(base)) return null;
+  const { path: seenPath, seen } = loadFirstSeen();
+  const stamp = new Date().toISOString();
+  let seenGrew = 0, artChanged = 0;
+  // Returns { at, guess, hash }. `guess` is the load-bearing bit: inside the
+  // deploy image there is no git, so a piece missing from the committed cache
+  // gets `at` = THE BUILD'S OWN TIME — fine for newest-first sorting, but a
+  // LIE as a fact. Round one fed that lie to the staleness rule and every
+  // deploy post-dated the newly-landed pieces past the maintainer's fresh
+  // verdicts, throwing already-reviewed art back into his queue ("Why do I
+  // have to see and review items I have already reviewed?", 2026-08-14, 129
+  // pieces deep). A guessed date must never call a verdict stale.
+  const firstSeenOf = (rel, spritePath) => {
+    let hash = null;
+    try { hash = createHash("md5").update(readFileSync(join(ROOT, spritePath))).digest("hex").slice(0, 16); } catch { /* unreadable */ }
+    const prev = seen[rel];
+    if (prev && hash && prev.hash === hash) return { at: prev.at, guess: false, hash };  // unchanged art keeps its date
+    const real = artChangeDates().get(rel);
+    const at = real ?? stamp;
+    if (prev && hash && prev.hash !== hash) artChanged++;
+    seen[rel] = { at, hash };
+    seenGrew++;
+    return { at, guess: !real, hash };
+  };
+  const entries = [];
+  for (const top of listDirs(base)) {
+    if (["config", "pipeline", "spec"].includes(top)) continue;
+    const legacy = readJson(join(base, top, "scenery.json"));
+    if (legacy) { entries.push([top, null, legacy]); continue; }
+    for (const child of listDirs(join(base, top))) {
+      const m = readJson(join(base, top, child, "scenery.json"));
+      if (m) entries.push([`${top}/${child}`, top, m]);
+    }
+  }
+  // TYPE comes from the scenery domain's own catalog: every group in
+  // scenery/config/factory.json carries a `type` (TREE / WINDOW /
+  // MOUNTAIN_WALL / TOWN / INDOOR / NATURE / OTHER) so the wiki can offer a
+  // type filter without inventing the taxonomy here. A piece may override its
+  // group by putting its own `type` in scenery.json — the piece wins, the
+  // group is the default, and anything unrecognised falls to OTHER rather
+  // than vanishing from every filter.
+  const TYPES = ["TREE", "WINDOW", "MOUNTAIN_WALL", "TOWN", "INDOOR", "NATURE", "OTHER"];
+  const factory = readJson(join(base, "config", "factory.json")) ?? {};
+  const groupType = new Map((factory.groups ?? []).map((g) => [g.id, g.type]));
+  const typeOf = (oj, group) => {
+    const t = String(oj.type ?? groupType.get(group ?? oj.group) ?? "OTHER").toUpperCase();
+    return TYPES.includes(t) ? t : "OTHER";
+  };
   const objects = [];
-  for (const id of listDirs(base)) {
-    if (["config", "pipeline"].includes(id)) continue;
-    const oj = readJson(join(base, id, "object.json"));
-    if (!oj) continue;
+  for (const [rel, group, oj] of entries) {
+    const id = rel.split("/").pop();
     const anims = {};
+    /* ANIMATIONS MOVED UNDER THE STATES (scenery agent, 2026-08-28: "wind
+     * animation for trees/tree_004 (14 state(s))" — 179 pieces, 1,368
+     * animated states, wind and flame). scenery.json's top-level
+     * `animations` is now an empty object on those pieces, so the wiki went
+     * on publishing every state as a one-frame still and the maintainer saw
+     * no movement at all ("I can't see the tree and fire animation in the
+     * wiki"). Each STATE carries its own strip and frame_count; a state is a
+     * clip, which is exactly what the viewer's state segment already drives.
+     *
+     * Frames come from the STRIP, one row of frame_count cells — the same
+     * shape the top-level animations used, so the player is untouched. */
+    /* PER DIRECTION AS WELL AS PER STATE (scenery agent, 2026-08-29: SE and
+     * SW on top of S for town and indoor pieces, "some directions even have
+     * animation (fire) in now both SE, S and SW"). Two published shapes, both
+     * read: `directions: {<dir>: {frames, strip}}` — the map blood_spatter
+     * has used all along — and the flat `{frame_count, strip}` the per-state
+     * animations ship today, which means south. A direction the metadata does
+     * not name is still found on disk under the domain's own naming
+     * (`<name>__<dir>.webp`), so the art draws the day it lands rather than
+     * waiting on another agent's metadata edit. */
+    const dirClip = (rel2, name, a, dir) => {
+      const d = a.directions?.[dir];
+      const declared = d?.strip ? `scenery/${d.strip}`
+        : (dir === "south" && a.strip) ? `scenery/${a.strip}`
+          : `scenery/${rel2}/animations/${name}__${dir}`;
+      const strip = art(String(declared).replace(/\.(png|webp)$/i, ""));
+      const frames = d?.frames ?? d?.frame_count
+        ?? (typeof a.frame_count === "object" ? a.frame_count?.[dir] : (dir === "south" ? a.frame_count : null))
+        ?? (dir === "south" ? (a.frame_paths ?? []).length : 0);
+      if (!strip || !frames) return null;
+      const dims = imageSize(join(ROOT, strip));
+      return { frames, strip, fw: dims ? Math.round(dims.w / frames) : oj.size, fh: dims ? dims.h : oj.size };
+    };
+    for (const [sk, sv] of Object.entries(oj.states ?? {})) {
+      for (const [name, a] of Object.entries(sv.animations ?? {})) {
+        const dirs = {};
+        // a state's own folder holds its strips; the base state uses the piece root
+        const stateRel = sv.sprite ? String(sv.sprite).replace(/\/[^/]+$/, "") : rel;
+        for (const dir of DIRS) {
+          const clip = dirClip(stateRel, name, a, dir) ?? dirClip(rel, name, a, dir);
+          if (clip) dirs[dir] = clip;
+        }
+        if (!Object.keys(dirs).length) continue;
+        const key = sk.toLowerCase();
+        /* THE CLASSIFICATION RIDES THE STATE. Read from the animation first,
+         * then the state — whichever the scenery agent writes it on — so the
+         * review shows it the day they start, with no build change. */
+        /* THE FIELD IS `review`, THEIRS, NOT A NAME I INVENTED. I proposed
+         * `animation_state` on the board; the scenery agent had already
+         * shipped `review` on every animation an hour earlier (6d5f0b2412,
+         * 372 PROBABLY_GOOD / 1,622 PROBABLY_BAD), and the manifest is theirs
+         * — so the wiki reads what is written rather than what it asked for.
+         * The old name stays as a fallback and costs nothing. */
+        const cls = a.review ?? a.animation_state ?? sv.review ?? sv.animation_state ?? null;
+        /* A STATE CAN CARRY TWO ANIMATIONS, JUDGED DIFFERENTLY — 15 states do,
+         * and 4 of those disagree (meteor_stone_002's LIT_2 has a good flame
+         * and a bad motion). The wiki reviews per state, so the state takes the
+         * WORSE of them: an animation the agent called bad must not be hidden
+         * behind a sibling it called good, and he can still see which is which
+         * on the piece. Keyed per animation as well, so the row can name it. */
+        const RANK = { ANIMATION_REDO: 0, ANIMATION_PROBABLY_BAD: 1, ANIMATION_PROBABLY_GOOD: 2, ANIMATION_APPROVED: 3 };
+        const had = anims[key]?.animState;
+        const keep = typeof cls === "string" && cls
+          ? (had && RANK[had] <= (RANK[cls] ?? 9) ? had : cls)
+          : had;
+        anims[key] = { description: a.description ?? "", anim: name,
+          ...(keep ? { animState: keep } : {}),
+          ...(typeof cls === "string" && cls ? { animStates: { ...(anims[key]?.animStates ?? {}), [name]: cls } } : {}),
+          dirs: { ...(anims[key]?.dirs ?? {}), ...dirs } };
+      }
+    }
     for (const [key, a] of Object.entries(oj.animations ?? {})) {
       const dirs = {};
       for (const dir of DIRS) {
         const d = a.directions?.[dir];
         if (!d) continue;
-        const stripRel = d.strip ?? `${id}/animations/${key}__${dir}.png`;
-        const declared = `objects/${stripRel.startsWith(id + "/") ? stripRel : `${id}/animations/${key}__${dir}.png`}`;
-        // object.json names the file, and it may still say ".png" for a while
-        // after the objects domain converts. Resolve against the DISK, so the
+        const stripRel = d.strip ?? `${rel}/animations/${key}__${dir}.png`;
+        const declared = `scenery/${stripRel.startsWith(rel.split("/")[0] + "/") ? stripRel : `${rel}/animations/${key}__${dir}.png`}`;
+        // scenery.json names the file, and it may still say ".png" for a while
+        // after the scenery domain converts. Resolve against the DISK, so the
         // wiki doesn't go blank waiting for another agent's metadata edit.
         const strip = art(declared.replace(/\.(png|webp)$/i, ""));
         const frames = d.frames ?? a.frame_count ?? 0;
@@ -519,18 +1256,197 @@ function buildObjects() {
       }
       if (Object.keys(dirs).length) anims[key] = { description: a.description ?? "", dirs };
     }
+    // A STILL IS A ONE-FRAME ANIMATION (maintainer 2026-08-13: "a lot of
+    // scenery will not have any animation — or you can think of the image
+    // itself as a 'still' animation with only 1 frame … the animation viewer
+    // shows the object in its true scale and is a good tool for me to look at
+    // the object. We only need this if no real animation exist"). 368 of the
+    // 371 pieces are static, so without this the viewer — the one place the
+    // wiki draws scenery at its measured size next to everything else — was
+    // unreachable for all but three of them. Synthesised only when nothing
+    // real exists, and never overwriting a generated animation.
+    const preview = art(`scenery/${rel}/sprite`);
+    /* A PIECE CAN BE PART ANIMATED (2026-08-29): a beacon's lit states carry
+     * flame, its unlit ones nothing. Synthesising stills only when NOTHING is
+     * animated dropped those unlit states off the card entirely — the states
+     * a still branch exists to show. So the branch runs whenever a state is
+     * still missing a clip, and never overwrites an animated one. */
+    const stillOnly = !Object.keys(anims).length && !!preview;
+    const someStill = Object.keys(oj.states ?? {}).some((sk) => !anims[sk.toLowerCase()]);
+    if (stillOnly || (someStill && !!preview)) {
+      // A still can face more than one way. Since 2026-08-14 the scenery domain
+      // ships a `rotations` map (south / south-east / south-west so far) beside
+      // the sprite, and the maintainer reviews the DIRECTIONS a piece has, not
+      // just its front: "the animation preview should make it possible to
+      // review the directions the Scenery has". Each rotation becomes its own
+      // one-frame clip, so the viewer's existing direction pad — which shows
+      // exactly the directions that have a clip — does the rest untouched.
+      // Paths in `rotations` are relative to scenery/ and the extension is
+      // resolved against the disk, same as the animation strips above.
+      const dirsFrom = (rotations, spriteRel) => {
+        const pick = (p) => art(`scenery/${String(p).replace(/\.(png|webp)$/i, "")}`);
+        const out = {};
+        for (const dir of DIRS) {
+          const strip = rotations?.[dir] != null ? pick(rotations[dir])
+            : (dir === "south" && spriteRel ? pick(spriteRel) : null);
+          if (!strip) continue;
+          const dims = imageSize(join(ROOT, strip));
+          if (dims) out[dir] = { frames: 1, strip, fw: dims.w, fh: dims.h };
+        }
+        return out;
+      };
+      // STATES (scenery domain, 2026-08-14): a piece can now exist in more than
+      // one condition — LIGHTS_ON / LIGHTS_OFF today, each with its own sprite
+      // and its own rotations. Each becomes a state in the viewer, exactly like
+      // a monster's idle/walk/angry, so the maintainer switches between them
+      // with the same control in the same place. The piece's own `lights` value
+      // names the state the base sprite is in, and that one leads.
+      // ORDER: the state that IS the piece's own sprite leads, because that is
+      // the picture every card, thumbnail and review queue shows — opening the
+      // viewer on a different one would mean judging a picture you did not
+      // click. The scenery agent's naming is not fixed (LIGHTS_ON/LIGHTS_OFF
+      // on windows, LIT_1..NOT_LIT_5 on trees since 2026-08-14), so this
+      // matches on the FILE, falling back to the `lights` value and then to
+      // whatever order the manifest lists.
+      const states = Object.entries(oj.states ?? {}).filter(([, st]) => st && typeof st === "object");
+      // THE BASE STATE IS THE ONE THE CARD SHOWS. Matched by CONTENT, not by
+      // path: the scenery agent sometimes points a state at the piece's own
+      // sprite.webp (tree_001) and sometimes writes an identical copy under
+      // its own folder (most trees) — the same picture either way, and opening
+      // the viewer on a different variant than the thumbnail you clicked means
+      // judging art you did not choose.
+      const fileHash = (rel) => {
+        if (!rel) return null;
+        try { return createHash("md5").update(readFileSync(join(ROOT, rel))).digest("hex"); } catch { return null; }
+      };
+      const previewHash = preview ? fileHash(preview) : null;
+      const stateArt = ([, st]) => art(`scenery/${String(st.sprite ?? "").replace(/\.(png|webp)$/i, "")}`);
+      const isBase = (e) => {
+        const a = stateArt(e);
+        return !!a && (a === preview || (!!previewHash && fileHash(a) === previewHash));
+      };
+      // AND IN A READABLE ORDER. The manifest lists them however they were
+      // generated (NOT_LIT_1, LIT_1, LIT_2, NOT_LIT_2, NOT_LIT_3…), which the
+      // wiki was rendering verbatim — a row that jumps between unlit and lit
+      // and back. Unlit first, ascending, then lit, ascending, so the chips
+      // read "#1 #2 #3 💡#1 💡#2". The base still leads: it is the picture
+      // every card shows, and it is the unlit #1 in practice.
+      const rank = ([n]) => {
+        const m = /^(not[_-]?lit|lit|lights[_-]?off|lights[_-]?on)(?:[_-]?(\d+))?$/i.exec(n);
+        if (!m) return [2, 0, n];
+        const lit = /^lit/i.test(m[1]) || /on$/i.test(m[1]);
+        return [lit ? 1 : 0, Number(m[2] ?? 1), n];
+      };
+      const byVariant = (a, b) => {
+        const [al, an, ak] = rank(a), [bl, bn, bk] = rank(b);
+        return al - bl || an - bn || ak.localeCompare(bk);
+      };
+      const rest = states.filter((e) => !isBase(e)).sort(byVariant);
+      const base = states.filter(isBase);
+      const ordered = [...base, ...rest];
+      // A handful of pieces (4 of 110 on 2026-08-15) carry a sprite.webp that is
+      // none of their states — the original render the variants were grown
+      // from, and the one the GAME still places. It leads the row as "Base" so
+      // the canonical art is reviewable at all; without it the viewer opened on
+      // variant #1 while the card, the queue and the game showed something else.
+      if (states.length && !base.length && preview && !Object.keys(anims).length) {
+        const dirs = dirsFrom(oj.rotations, `${rel}/sprite`);
+        if (Object.keys(dirs).length) anims.base = { description: "", dirs };
+      }
+      for (const [name, st] of ordered) {
+        const key = name.toLowerCase();
+        const dirs = dirsFrom(st.rotations, st.sprite);
+        if (!Object.keys(dirs).length) continue;
+        /* PER DIRECTION, NEVER OVER A CLIP (2026-08-29): a piece can be
+         * animated facing south and still facing south-east, so a still fills
+         * the facings the animation does not cover and never replaces one. */
+        const had = anims[key];
+        anims[key] = had
+          ? { ...had, dirs: { ...dirs, ...had.dirs } }
+          : { description: st.edit_description ?? "", dirs };
+      }
+      if (!Object.keys(anims).length) {
+        const dirs = dirsFrom(oj.rotations, `${rel}/sprite`);
+        if (Object.keys(dirs).length) {
+          // Named "static" because the viewer ALWAYS shows a state row now —
+          // one button reading "Static" for a piece with nothing else, so the
+          // preview sits at the same height on every piece while paging
+          // (maintainer 2026-08-14: "always render a state even if the state
+          // only has Static … otherwise the preview will jump up and down when
+          // I press next next next").
+          anims.static = { description: "", dirs };
+        }
+      }
+    }
     objects.push({
       id,
       name: oj.name ?? titleCase(id),
-      category: oj.category ?? "misc",
-      description: oj.description ?? "",
-      path: `objects/${id}`,
-      preview: art(`objects/${id}/sprite`),
+      category: group ?? oj.category ?? "misc",
+      type: typeOf(oj, group),
+      lights: oj.lights ?? null,
+      /* WHAT KIND OF LIGHT A LIT STATE GIVES OFF (scenery, 2026-09-09): kind,
+       * colour, strength and radius, with per-STATE values under `states` and
+       * the piece's own as the fallback. The maintainer reviews and corrects it
+       * ("I want to be able to see this and edit/change this when doing a
+       * review"), so it has to reach the page — published verbatim rather than
+       * flattened, because the two levels are the contract and the wiki
+       * resolves them the same way the game must. */
+      light: oj.light && typeof oj.light === "object" ? oj.light : null,
+      /* THE ANIMATION'S CLASSIFICATION, per state, passed through the moment
+       * the scenery agent starts writing it (maintainer 2026-09-09: they
+       * categorise every animation ANIMATION_PROBABLY_GOOD or _BAD; he marks
+       * _APPROVED or _REDO in the wiki). Read from the state's own record —
+       * `animation_state` on the state, or on its single animation — because
+       * that is where a per-animation fact belongs. Absent = unclassified, and
+       * the review says so rather than guessing. */
+      description: oj.description ?? oj.prompt ?? "",
+      path: `scenery/${rel}`,
+      preview,
+      // So the page can say "Still" rather than claim an animation, and the
+      // list can keep calling these "static". A piece with LIGHTS_ON/LIGHTS_OFF
+      // states is still static — its clips are synthesised sprites, not frames
+      // — so this asks whether anything was SYNTHESISED, not for the `still`
+      // key specifically.
+      stillOnly: stillOnly && Object.keys(anims).length > 0,
+      /* NO COLLISION — A CARPET (scenery agent is writing this metadata now,
+       * 2026-08-29). Read from the piece, then its group, under any of the
+       * spellings the domain might land on: the wiki must draw it the day it
+       * appears, not a deploy later. The maintainer's correction lives in
+       * live/tuning/scenery_hitbox.json and outranks it. */
+      noCollision: (oj.no_collision === true || oj.collision === false || oj.flat === true
+        || factory.groups?.find?.((g) => g.id === (oj.group ?? group))?.no_collision === true) ? true : null,
+      /* WHAT SHAPE THE FOOTPRINT WANTS TO BE (scenery agent, 2026-09-02:
+       * `hitbox_shape` per piece — 131 rect, 576 ellipse). Same two-level
+       * arrangement as the collision flag: the DOMAIN states the fact, the
+       * maintainer's per-box choice in live/tuning/scenery_hitbox.json
+       * outranks it. Carried as-is so an unknown future value is visible
+       * rather than silently flattened to "ellipse". */
+      hitboxShape: typeof oj.hitbox_shape === "string" ? oj.hitbox_shape : null,
+      // When the art that is there NOW arrived, plus its content hash — the
+      // hash is what a verdict is really ABOUT, and wiki.js stamps it into
+      // every new verdict so staleness is byte-exact from here on. addedGuess
+      // marks a date the deploy image had to invent (no git there); the
+      // staleness rule must never trust one.
+      ...(() => {
+        if (!preview) return { added: null, addedGuess: false, artHash: null };
+        const f = firstSeenOf(`scenery/${rel}`, preview);
+        return { added: f.at, addedGuess: f.guess, artHash: f.hash };
+      })(),
       size: oj.size ?? null,
       placement: oj.placement ?? null,
       animations: anims,
     });
   }
+  if (seenGrew) {
+    try {
+      writeFileSync(seenPath, JSON.stringify({
+        format: "pixel-wiki-first-seen@1",
+        note: "when the art now at each path arrived, keyed by its sprite hash — a changed hash means new art, and any older verdict is about a piece that no longer exists",
+        entries: Object.fromEntries(Object.entries(seen).sort(([a], [b]) => a.localeCompare(b))),
+      }, null, 0) + "\n");
+    } catch { /* read-only fs — data.json already carries the dates */ }
+  }
+  if (artChanged) console.log(`[wiki] scenery: ${artChanged} piece(s) have NEW art at an existing path — any earlier verdict on them is now flagged for re-review`);
   return objects;
 }
 
@@ -611,7 +1527,7 @@ function buildMusic() {
   return [...tracks, ...buildComposerMusic()];
 }
 
-/* The COMPOSER's own score (games2/composer/music/tracks.json,
+/* The composer-generated SCORE (music/tracks.json,
    `composer-music@1`). Two sources make the game's music and the page listed
    only one, so the five context beds the composer generated on 2026-08-05
    were invisible (maintainer 2026-08-06: "he did 5 new songs and you are
@@ -632,9 +1548,144 @@ const BED_ROLE = {
   town: { when: "Standing on roads and farm tiles", live: false },
   adventure: { when: "Everywhere else — the default bed", live: false },
 };
+
+/* ---- THE MUSIC BENCH (maintainer 2026-08-22: "I want a music bench in the
+ * wiki for the new suite/pool/phrase system. All the data is already published
+ * by the composer agent — nothing needs generating.")
+ *
+ * A SUITE is one compatibility group: everything in it shares key, tempo and
+ * phrase length, so any two pools can switch on the beat or layer. Crossing
+ * BETWEEN suites is deliberately silence, never a musical transition — the
+ * brief's own words, and the reason the bench has a silence slider.
+ *
+ * A TAKE is one generation of a bed. The live one is the file the game
+ * streams; the rest are archived under pool/ and carry their own measurements,
+ * which is what makes an informed reject possible.
+ *
+ * PHRASE TIMING IS PER TAKE, and this is the whole reason the bench can sound
+ * seamless. Phrase N starts at beat_anchor_s + N × phrase_ms/1000. The live
+ * take publishes `phrase.phrase_ms` already corrected to its REAL measured
+ * tempo (13746 where the brief asked 13714 — a third of a beat per phrase,
+ * which is an audible slip by the fourth join). An archived take publishes its
+ * own `bars` and `bpm` instead, so its phrase length is derived from those.
+ * Nothing here uses the brief's number to schedule audio.
+ *
+ * WHAT IS NOT PUBLISHED, said plainly rather than papered over: archived takes
+ * carry no beat anchor of their own, so they borrow the track's. If the
+ * composer starts publishing one per take, this reads it without a UI change.
+ */
+const SW_NOTE = { C: "C", D: "D", E: "E", F: "F", G: "G", A: "A", B: "H" };
+/** Swedish key names — "D-dur", "C-moll" (maintainer 2026-08-22). Note B is H
+ *  in Swedish notation and B-flat is B, so the note letter is mapped, not just
+ *  the mode word. */
+function svKey(root, mode) {
+  if (!root) return null;
+  const m = String(root).match(/^([A-G])([#b]?)/);
+  if (!m) return null;
+  const letter = SW_NOTE[m[1]] ?? m[1];
+  const acc = m[2] === "#" ? "iss" : m[2] === "b" ? (m[1] === "H" ? "" : "ess") : "";
+  const minor = /min/i.test(mode ?? "");
+  return `${letter}${acc}-${minor ? "moll" : "dur"}`;
+}
+const svKeyText = (s2) => {
+  if (!s2) return null;
+  const m = String(s2).match(/^([A-G][#b]?)\s*(major|minor|dur|moll)?/i);
+  return m ? svKey(m[1], m[2] ?? "major") : String(s2);
+};
+function buildBench() {
+  // Manifest, briefs and audio each have their own home under music/ — the
+  // manifest at the domain root, the briefs beside it, the audio in beds/.
+  const doc = musicScoreDoc();
+  if (!doc?.tracks) return null;
+  // The suite contracts, read from the composer's own briefs.
+  const suites = {};
+  const bdir = musicBriefsDir();
+  if (bdir && isDir(bdir)) {
+    for (const f of readdirSync(bdir).filter((x) => x.endsWith(".json"))) {
+      const br = readJson(join(bdir, f));
+      if (!br?.suite) continue;
+      suites[br.suite] = {
+        id: br.suite, world: br.world ?? null,
+        bpm: br.bpm ?? null, bars: br.bars ?? null, phraseMs: br.phrase_ms ?? null,
+        key: br.key ?? null, keySv: svKeyText(br.key),
+        // "the idea behind each colour" — whatever shape the brief uses.
+        pools: br.pools ?? null,
+        harmony: br.harmony ?? null,
+      };
+    }
+  }
+  const fileMap = (arr) => {
+    const out = {};
+    for (const f of arr ?? []) {
+      const ext = (f.file.split(".").pop() ?? "").toLowerCase();
+      out[ext] = `${musicScoreRel()}/${f.file}`;
+    }
+    return out;
+  };
+  const tracks = [];
+  for (const [id, t] of Object.entries(doc.tracks)) {
+    const ph = t.phrase;
+    if (!ph) continue;                       // legacy bed, not part of this system
+    const anchor = ph.beat_anchor_s ?? t.timing?.beat_anchor_s ?? 0;
+    const takes = [];
+    for (const v of t.versions ?? []) {
+      // Per-take phrase length from the take's OWN measured tempo.
+      const bars = v.bars ?? ph.bars ?? null;
+      const bpm = v.bpm ?? null;
+      const ms = (bars && bpm) ? Math.round(bars * 4 * 60000 / bpm) : (ph.phrase_ms ?? null);
+      takes.push({
+        version: v.version,
+        id: `${id}__v${String(v.version).padStart(2, "0")}`,
+        files: fileMap(v.files), duration_s: v.duration_s ?? null,
+        bpm: bpm != null ? +bpm.toFixed(2) : null,
+        bars: bars != null ? +Number(bars).toFixed(2) : null,
+        phraseMs: ms, anchorS: anchor, anchorOwn: false,
+        key: v.musical?.root ? svKey(v.musical.root, v.musical.mode) : null,
+        // The measured key of every single phrase, and what it was supposed to
+        // be — this is what turns a reject into an informed one.
+        perPhrase: (v.phrase_key?.per_phrase ?? []).map((k) => ({ key: k, sv: svKeyText(k) })),
+        want: v.phrase_key?.want ?? null, wantSv: svKeyText(v.phrase_key?.want),
+        inKey: v.phrase_key?.in_key ?? null,
+        phrases: v.phrase_key?.phrases ?? (ms ? Math.max(1, Math.floor(((v.duration_s ?? 0) * 1000 - anchor * 1000) / ms)) : null),
+        live: !!v.live, usable: v.usable !== false,
+      });
+    }
+    // A track with no archive still has ONE take: the file the game streams.
+    const liveFiles = fileMap(t.files);
+    if (!takes.some((x) => x.live)) {
+      takes.push({
+        version: null, id, files: liveFiles, duration_s: t.duration_s ?? null,
+        bpm: t.bpm != null ? +t.bpm.toFixed(2) : (ph.bpm_measured ?? null),
+        bars: ph.bars ?? null, phraseMs: ph.phrase_ms ?? null, anchorS: anchor, anchorOwn: true,
+        key: t.musical?.root ? svKey(t.musical.root, t.musical.mode) : null,
+        perPhrase: [], want: null, wantSv: null, inKey: null,
+        phrases: ph.phrases ?? null, live: true, usable: true,
+      });
+    } else {
+      // The live archived take IS the streamed file; give it that path too, so
+      // the bench never downloads the same audio twice under two names.
+      for (const k of takes) if (k.live) { k.files = { ...k.files, ...liveFiles }; k.anchorOwn = true; k.phraseMs = ph.phrase_ms ?? k.phraseMs; }
+    }
+    tracks.push({
+      id, name: titleCase(id), suite: ph.suite ?? null, pool: ph.pool ?? null,
+      phraseMs: ph.phrase_ms ?? null, bars: ph.bars ?? null, phrases: ph.phrases ?? null,
+      anchorS: anchor, bpm: ph.bpm_measured ?? (t.bpm != null ? +t.bpm.toFixed(2) : null),
+      key: t.musical?.root ? svKey(t.musical.root, t.musical.mode) : null,
+      keyAsked: ph.key_asked ?? null,
+      duration_s: t.duration_s ?? null,
+      takes: takes.sort((a, b2) => (b2.version ?? 99) - (a.version ?? 99)),
+    });
+  }
+  tracks.sort((a, b2) => (a.suite ?? "").localeCompare(b2.suite ?? "") || (a.pool ?? "").localeCompare(b2.pool ?? "") || a.id.localeCompare(b2.id));
+  if (!tracks.length) return null;
+  return { suites, tracks, targetLufs: doc.target_lufs ?? null };
+}
+const bench = buildBench();
 function buildComposerMusic() {
-  const dir = composerDir() ? join(composerDir(), "music") : null;
-  const doc = dir ? readJson(join(dir, "tracks.json")) : null;
+  // The MANIFEST and the AUDIO are not in the same directory: tracks.json sits
+  // at music/, its files at music/beds/ (its own `root` says so). Joining the
+  // audio dir to find the manifest is how this silently listed 0 beds.
+  const doc = musicScoreDoc();
   if (!doc?.tracks) return [];
   // A bed the composer added that this build has no role text for is still
   // LISTED (never hidden), just without the routing line — and it warns, the
@@ -644,7 +1695,7 @@ function buildComposerMusic() {
     const files = {};
     for (const f of t.files ?? []) {
       const ext = (f.file.split(".").pop() ?? "").toLowerCase();
-      files[ext] = `composer/music/${f.file}`;
+      files[ext] = `${musicScoreRel()}/${f.file}`;
     }
     const role = BED_ROLE[id] ?? {};
     return {
@@ -937,6 +1988,41 @@ function composerDir() {
   for (const p of [join(GAMES2, "composer"), join(ROOT, "composer")]) if (isDir(p)) return p;
   return null;
 }
+/** WHERE A MANIFEST'S FILES LIVE — read from the manifest, never assumed.
+ *  The foley library and the score moved out of games2/composer/ into sounds/
+ *  and music/ on 2026-09-02 (the maintainer's restructure: one directory per
+ *  domain, so a dedicated sound or music agent can be hired without moving a
+ *  file). Both manifests publish `root`, repo-root-relative, exactly so this
+ *  build joins it instead of hardcoding a location and breaking on the move.
+ *  The fallback is the pre-move path, so an old checkout still builds. */
+function musicScoreDoc() {
+  const inMusic = readJson(join(ROOT, "music", "tracks.json"));
+  if (inMusic?.tracks) return inMusic;
+  const comp = composerDir();
+  return (comp && readJson(join(comp, "music", "tracks.json"))) || null;
+}
+function musicScoreDir() {
+  const rel = audioRoot(musicScoreDoc(), "music/beds");
+  if (isDir(join(ROOT, rel))) return join(ROOT, rel);
+  const comp = composerDir();
+  return comp && isDir(join(comp, "music")) ? join(comp, "music") : null;
+}
+/** The url prefix for a score file, from the manifest's own `root`. */
+/** Where the suite briefs live: beside the manifest, not inside the audio. */
+function musicBriefsDir() {
+  for (const d of [join(ROOT, "music", "briefs"),
+                   composerDir() && join(composerDir(), "music", "briefs")]) {
+    if (d && isDir(d)) return d;
+  }
+  return null;
+}
+function musicScoreRel() {
+  return audioRoot(musicScoreDoc(), "music/beds");
+}
+function audioRoot(manifest, fallback) {
+  const r = typeof manifest?.root === "string" ? manifest.root.replace(/^\/+|\/+$/g, "") : "";
+  return r || fallback;
+}
 /** Content hash, memoised — the ONLY way to tell a pool candidate that was
  *  promoted to a take from one that was passed over: the promotion is a plain
  *  file copy under a new name, so the paths never match and the bytes always
@@ -1012,16 +2098,35 @@ function buildSfx(soundEntries, entityIds = {}) {
   const JUMP_VOICE = tsRecord(apiSrc, "JUMP_VOICE") ?? {};
   const footDefault = apiSrc.match(/const FOOTSTEP_DEFAULT = "([^"]+)"/)?.[1] ?? (sfxDrift.push("FOOTSTEP_DEFAULT not found"), "stone");
 
-  // ---- composer's own foley sets (takes on disk, served at /assets/composer) --
-  const foleyDir = comp ? join(comp, "foley") : null;
+  // ---- the foley library (sounds/foley, served at /assets/sounds/foley) ----
+  const foleyIdx = readJson(join(ROOT, "sounds", "foley", "index.json")) ?? {};
+  const foleyRel = audioRoot(foleyIdx, "sounds/foley");
+  const foleyDir = isDir(join(ROOT, foleyRel)) ? join(ROOT, foleyRel)
+    : (comp && isDir(join(comp, "foley")) ? join(comp, "foley") : null);
   const foleyMeta = foleyDir ? readJson(join(foleyDir, "foley.json")) ?? {} : {};
   const composerSets = {};
+  /* PUBLISH THE FILE THAT IS THERE, not the one the manifest remembers.
+   * foley.json names every take `.wav`; the composer converted its foley to
+   * `.ogg` (673 ogg on disk against 5 wav) and left the manifest alone. The
+   * wiki republished those names verbatim, so every composer layer — the grass
+   * and snow footsteps, both jump voices — resolved to a 404 and played
+   * NOTHING, silently, in production. Found by check-sfx on 2026-09-03; the
+   * paths are resolved against disk now, so the same drift in either direction
+   * fixes itself at the next build. */
+  const foleyDisk = (rel) => {
+    if (!foleyDir || existsSync(join(foleyDir, rel))) return rel;
+    for (const ext of ["ogg", "m4a", "mp3", "wav"]) {
+      const alt = rel.replace(/\.[^./]+$/, `.${ext}`);
+      if (existsSync(join(foleyDir, alt))) return alt;
+    }
+    return rel;               // nothing on disk: publish what it said, and the row reports a missing file
+  };
   for (const [set, meta] of Object.entries(foleyMeta)) {
     if (!meta?.takes) continue;
     composerSets[set] = {
       takes: meta.takes.map((t, i) => ({
-        name: t.split("/").pop(),
-        file: `composer/foley/${t}`,
+        name: foleyDisk(t).split("/").pop(),
+        file: `${foleyRel}/${foleyDisk(t)}`,
         dur: meta.durations_s?.[i] ?? null,
       })),
       // ---- THE GENERATION POOL — the takes' unpicked siblings ----------
@@ -1038,13 +2143,16 @@ function buildSfx(soundEntries, entityIds = {}) {
       // Game Master can say so (maintainer 2026-08-06: "Every single
       // generated sound?"). Best-scoring first; `rank` ascends.
       alts: (() => {
-        const takeBytes = new Set(meta.takes.map((t) => fileHash(join(foleyDir, t))).filter(Boolean));
+        // Hashed through the same resolver, or the dedupe compares a take
+        // that is not on disk against a candidate that is, and every chosen
+        // take comes back a second time as its own alternative.
+        const takeBytes = new Set(meta.takes.map((t) => fileHash(join(foleyDir, foleyDisk(t)))).filter(Boolean));
         return (meta.pool_candidates ?? [])
-          .filter((c) => c?.file && !takeBytes.has(fileHash(join(foleyDir, c.file))))
+          .filter((c) => c?.file && !takeBytes.has(fileHash(join(foleyDir, foleyDisk(c.file)))))
           .sort((a, b) => (a.rank ?? Infinity) - (b.rank ?? Infinity))
           .map((c) => ({
-            name: c.file.split("/").pop(),
-            file: `composer/foley/${c.file}`,
+            name: foleyDisk(c.file).split("/").pop(),
+            file: `${foleyRel}/${foleyDisk(c.file)}`,
             dur: c.features?.duration_s ?? null,
           }));
       })(),
@@ -1610,12 +2718,17 @@ function seedMonsterLevels(monsters, world, artBounds) {
     const sorted = [...vals].sort((a, b) => a - b);
     return (v) => (sorted.length < 2 ? 0 : sorted.filter((x) => x < v).length / (sorted.length - 1));
   };
-  const pSize = pctOf(ids.map((i) => area[i] ?? 0));
+  const pSize = pctOf(Object.values(area));
   const pDist = pctOf(Object.values(dist));
   const ranked = ids
     // An unspawned monster has no habitat to measure — score it mid-field
-    // rather than pretending it lives on top of the bonfire.
-    .map((id) => ({ id, score: 0.7 * pSize(area[id] ?? 0) + 0.3 * (id in dist ? pDist(dist[id]) : 0.5) }))
+    // rather than pretending it lives on top of the bonfire. UNMEASURED art
+    // gets the same treatment: `area[id] ?? 0` used to read "smallest creature
+    // alive", so the 33 monsters imported while art_bounds.json was stale
+    // (2026-08-13) seeded at the bottom of the ladder — Cragback, the second
+    // largest creature in the game, came out level 4 while a rabbit was 5.
+    // A missing measurement is not a measurement of zero.
+    .map((id) => ({ id, score: 0.7 * (id in area ? pSize(area[id]) : 0.5) + 0.3 * (id in dist ? pDist(dist[id]) : 0.5) }))
     .sort((a, b) => a.score - b.score || a.id.localeCompare(b.id));
   const out = {};
   ranked.forEach((r, i) => { out[r.id] = Math.round(1 + (19 * i) / Math.max(1, ranked.length - 1)); });
@@ -1637,7 +2750,10 @@ function seedMonsterTuning(monsters, levels) {
     if (!tuned[m.id]) { tuned[m.id] = { level: lvl, ...defaults, loot: [] }; tuned[m.id].level = lvl; added++; }
     // Backfill entries seeded before levels existed. An entry the maintainer
     // has already levelled keeps its number — this is a seed, not a rewrite.
-    else if (tuned[m.id].level == null) { tuned[m.id] = { level: lvl, ...tuned[m.id] }; levelled++; }
+    // `level` goes AFTER the spread: an entry carrying an explicit `level:
+    // null` used to have that null win over the backfilled number, so the
+    // only shape this branch could actually repair was a MISSING key.
+    else if (tuned[m.id].level == null) { tuned[m.id] = { ...tuned[m.id], level: lvl }; levelled++; }
   }
   const out = {
     format: "pixel-wiki-tuning-monsters@1",
@@ -1653,29 +2769,346 @@ function seedMonsterTuning(monsters, levels) {
 const monsters = buildMonsters();
 const characters = buildCharacters();
 const tiles = buildTiles();
+const worldCells = buildWorld();
 const objects = buildObjects();
 const sounds = buildSounds();
 const music = buildMusic();
 const items = buildItems();
 const lore = buildLore();
 const constants = buildConstants();
-// Real creature bounds inside each frame (wiki/tools/art-bounds.py): lets the
-// viewer crop away transparent padding and draw everyone at ONE scale, so the
-// same creature is always the same size on screen. Missing file → the viewer
-// falls back to whole-frame scaling.
-const artBounds = readJson(join(ROOT, "wiki", "art_bounds.json"));
-const artScale = artBounds?.scale ?? 2;
-const artBox = artBounds?.boxes ?? null;
+// Real creature bounds inside each frame: the viewer crops away transparent
+// padding and draws everyone at ONE scale, so the same creature is always the
+// same size on screen.
+//
+// THE BUILD MEASURES THE ART ITSELF (maintainer 2026-08-13: "It should just
+// work when someone pushes"). This used to be a separate Python tool reading
+// this build's own data.json — a circular two-pass dance, and art pushed
+// between the passes shipped unmeasured: that is how 33 monsters overflowed
+// the animation viewer while Diretusk, measured weeks earlier, sat inside it.
+// Now every clip is measured right here (wiki/lib/webp-pixels.mjs, a VP8L
+// decoder proven md5-identical to Pillow over all 24,103 art files), and
+// because this build already runs inside every deploy's image build, art is
+// measured in the same breath it ships. art_bounds.json is only a CACHE keyed
+// by content hash — with it stale, missing, or deleted the build still
+// produces identical numbers, just a few seconds slower.
+const artBoundsPath = join(ROOT, "wiki", "art_bounds.json");
+const artPrior = readJson(artBoundsPath);
+/** The footprint rule's own version — part of every cache key below, so a
+ *  change to how a corner is chosen re-measures instead of reading back the
+ *  answer the old rule gave. */
+const BASE_RULE = "hull-4px+8pct";
+let artBases = artPrior?.bases ?? {};    // rect footprint cache, keyed by art hash @ rule
+let artAnims = artPrior?.anims ?? {};    // animation-drift cache, same keying
+const artClips = {}, artHashes = {};
+const artFailed = [];
+let artCachedN = 0, artMeasuredN = 0;
+const artBoxes = {}, artOpens = [];
+const bankers = (v) => { const f = Math.floor(v); const d = v - f; return d > 0.5 ? f + 1 : d < 0.5 ? f : f % 2 ? f + 1 : f; };
 for (const [dom, list] of Object.entries({ monsters, characters, objects })) {
   for (const e of list ?? []) {
+    const sh = e.shadow ?? {}, foot = e.artBottom ?? 1, hover = e.hoverPx ?? 0;
     for (const [sname, st] of Object.entries(e.animations ?? {})) {
       for (const [dname, clip] of Object.entries(st.dirs ?? {})) {
-        const bb = artBounds?.clips?.[`${e.path}|${sname}|${dname}`];
-        if (bb) clip.bb = bb;
+        const key = `${e.path}|${sname}|${dname}`;
+        const cw = clip.fw ?? e.frameW, ch = clip.fh ?? e.frameH;
+        if (!cw || !ch) continue;
+        // Per-frame files (characters2) or one strip (everyone else). The
+        // hash covers the bytes AND the slicing, so editing a declared frame
+        // size without touching the file still re-measures.
+        const files = clip.strip
+          ? [join(ROOT, clip.strip)]
+          : clip.framesDir
+            ? Array.from({ length: clip.frames ?? 0 }, (_, i) =>
+                join(ROOT, clip.framesDir, `${String(i).padStart(clip.framePad ?? 1, "0")}.${clip.frameExt ?? "png"}`))
+            : [];
+        if (!files.length) continue;
+        const hasher = createHash("md5");
+        let readable = 0;
+        const bufs = [];
+        for (const f of files) {
+          try { const b = readFileSync(f); hasher.update(b); bufs.push(b); readable++; }
+          catch { hasher.update("missing"); bufs.push(null); }
+        }
+        if (!readable) { artFailed.push(`${key}: no frames on disk`); continue; }
+        // Two hashes from one read. `plain` is the ART ONLY — md5 of the
+        // file's bytes (of all the frames' bytes, in order, for a frame
+        // directory) — so any agent can reproduce it with `md5sum` and no
+        // knowledge of this build. `digest` adds the declared slicing and is
+        // the MEASUREMENT cache key, so changing a frame size re-measures even
+        // when the pixels have not moved. They must not be confused: only the
+        // first is published.
+        const plain = hasher.copy().digest("hex").slice(0, 16);
+        hasher.update(`|${cw}x${ch}x${clip.frames ?? 1}`);
+        const digest = hasher.digest("hex");
+        let bb;
+        if (artPrior?.hashes?.[key] === digest) {
+          bb = artPrior.clips?.[key] ?? null;            // null = measured, empty
+          artCachedN++;
+        } else {
+          try {
+            if (clip.strip) bb = contentBounds(bufs[0], cw, clip.frames ?? 1)?.bb ?? null;
+            else {
+              // Union of the frames; a frame whose height disagrees with the
+              // first is skipped, exactly as the Python tool did.
+              let firstH = null; bb = null;
+              for (const b of bufs) {
+                if (!b) continue;
+                const r = contentBounds(b, cw, 1);
+                if (!r) continue;
+                if (firstH === null) firstH = r.h;
+                else if (r.h !== firstH) continue;
+                bb = bb ? [Math.min(bb[0], r.bb[0]), Math.min(bb[1], r.bb[1]), Math.max(bb[2], r.bb[2]), Math.max(bb[3], r.bb[3])] : r.bb;
+              }
+            }
+            artMeasuredN++;
+          } catch (err) {
+            // NO hash recorded: the next build retries instead of trusting a
+            // failure. The viewer self-measures these in the browser meanwhile.
+            artFailed.push(`${key}: ${err.message}`);
+            continue;
+          }
+        }
+        artHashes[key] = digest;
+        // THE CLIP'S OWN CONTENT HASH, published (scenery agent, 2026-08-15:
+        // "the art_hash I published yesterday ... can only auto-consume
+        // piece-level verdicts. For state verdicts to self-consume, the wiki
+        // needs to record the state's own hash rather than the piece's"). It
+        // is the digest this measurement already computes — the bytes of every
+        // frame plus the declared slicing — so a state whose art is re-rolled
+        // gets a new hash and the verdict against the old one is visibly about
+        // something else. Short form: a verdict stamp, not a checksum.
+        clip.h = plain;
+        if (bb) {
+          artClips[key] = bb;
+          clip.bb = bb;
+          // What this pose needs on stage — shadow and hover included — grows
+          // the domain's shared box; the idle/south view every page opens on
+          // decides the shared scale.
+          const w = bb[2] - bb[0], h = bb[3] - bb[1];
+          const box = artBoxes[dom] ?? (artBoxes[dom] = [0, 0]);
+          box[0] = Math.max(box[0], bankers(Math.max(w, sh.w ?? 0)));
+          box[1] = Math.max(box[1], bankers(Math.max(h, (foot * ch - bb[1]) + hover + (sh.h ?? 0) / 2 + 1)));
+          if (sname === "idle" && dname === "south" && dom !== "objects") artOpens.push(Math.max(w, h));
+        }
       }
     }
   }
-  void dom;
+}
+const artOpenMax = Math.max(...artOpens, 64);
+const artScale = Math.max(1, Math.min(6, Math.floor(300 / artOpenMax) || 1));
+const artBox = Object.keys(artBoxes).length ? artBoxes : null;
+/* THE FOOTPRINT OF A RECT PIECE, MEASURED FROM ITS OWN SILHOUETTE (maintainer
+ * 2026-09-03, after fitting "Map chest of wide flat drawers 010" by hand: "In
+ * SE it's easy to find the back-left (left), front-left (bottom) and
+ * front-right (right) corners. I adjusted the hitbox to perfectly capture all
+ * corners … By using this pattern, you should be able to place really really
+ * good default hitboxes for rect objects").
+ *
+ * On a turned facing a box's base is a parallelogram whose four corners are
+ * the piece's contact points — the four feet of a table — and its two FRONT
+ * edges are the LOWER CONVEX HULL of the silhouette: the chain of lowest
+ * points, which spans whatever is transparent in between.
+ *
+ * TRANSPARENCY BETWEEN THE CORNERS IS THE POINT (maintainer 2026-09-03, after
+ * fitting a supper table: "When finding the corners you should not care about
+ * transparency is in between the corners. Else you can't find the legs on a
+ * table!"). A hull spans the gap between two legs by construction, which
+ * neither earlier cut could: walking the bottom contour outward stops dead at
+ * the first gap, and fitting the edge by the MEDIAN of its columns follows the
+ * TABLETOP, because on a table most columns are the tabletop's underside.
+ *
+ * A HULL ALSO FITS THE REAL SLOPE, which a fixed tolerance band around the
+ * exact iso line cannot: pixel art misses that line by tenths of a pixel and
+ * the error ACCUMULATES, so a 6px band that comfortably held a 60px chest's
+ * edge was exceeded halfway along a 115px bed's — the edge came back cut in
+ * half and the solve produced a 7px sliver ("the hitboxes on Patchwork quilt
+ * bed 002 are crap"). The corners are hull vertices whose chord back to the
+ * bottom corner runs at roughly the iso slope, within 35%, so a bulge in the
+ * art cannot promote a point that is not a corner of the base.
+ *
+ * Reproduces all THIRTY boxes he has fitted by hand to a mean 0.59px in width,
+ * 0.43px in depth and 0.58px in centre.
+ *
+ * Per STATE, not per piece: the states of one piece are often different
+ * variants. Cached under each clip's own published art hash, in its own map,
+ * so the main 9,983-clip measurement cache is untouched. */
+{
+  const K = 15 / 32;                                   // the iso squash, dy/dx
+  const priorBase = artPrior?.bases ?? {};
+  const bases = {};
+  let baseMeasured = 0, baseCached = 0, basePieces = 0;
+  const median = (xs) => { const a = [...xs].sort((p, q) => p - q); const n = a.length; return n % 2 ? a[(n - 1) / 2] : (a[n / 2 - 1] + a[n / 2]) / 2; };
+  const footprint = (relStrip, fw, fh, turned) => {
+    const { w, pix } = decodeWebP(readFileSync(join(ROOT, relStrip)));
+    const bottom = new Map();                          // x -> lowest opaque y (first frame)
+    for (let y = 0; y < fh; y++) for (let x = 0; x < fw && x < w; x++) if ((pix[y * w + x] >>> 24) > 40) bottom.set(x, y);
+    const xs = [...bottom.keys()].sort((a, b) => a - b);
+    if (xs.length < 8) return null;
+    let lowest = -1; for (const x of xs) if (bottom.get(x) > lowest) lowest = bottom.get(x);
+    if (!turned) {
+      // South shows no depth at all: only the front edge and how wide it is.
+      const band = xs.filter((x) => bottom.get(x) >= lowest - 1.5);
+      if (band.length < 4) return null;
+      return [band[0], lowest, (band[0] + band[band.length - 1]) / 2, lowest, band[band.length - 1], lowest].map((v) => +v.toFixed(1));
+    }
+    const hull = [];
+    for (const x of xs) {
+      const p = [x, bottom.get(x)];
+      while (hull.length >= 2) {
+        const [x1, y1] = hull[hull.length - 2], [x2, y2] = hull[hull.length - 1];
+        if ((x2 - x1) * (p[1] - y1) - (y2 - y1) * (p[0] - x1) >= 0) hull.pop(); else break;
+      }
+      hull.push(p);
+    }
+    if (hull.length < 2) return null;
+    let bi = 0; for (let i = 1; i < hull.length; i++) if (hull[i][1] > hull[bi][1]) bi = i;
+    const B = hull[bi];
+    const far = (dir) => {
+      let best = null;
+      const to = dir < 0 ? -1 : hull.length;
+      for (let i = dir < 0 ? bi - 1 : bi + 1; dir < 0 ? i > to : i < to; i += dir) {
+        const v = hull[i];
+        if (v[0] === B[0]) continue;
+        /* HOW FAR OFF THE ISO LINE A CORNER MAY SIT — in PIXELS that grow
+         * with the run, not as a fraction of the slope. A slope tolerance is
+         * length-blind: 35% of K over a 90px chord admits a vertex 20px above
+         * the footprint, which is how cart_004's raised shoulder became its
+         * left corner and the fit came out 6.6px half-wide where he had drawn
+         * 35.2 (measured 2026-09-09, his worst of 31 hand fits). A flat band
+         * fails the other way — 6px flat put bed_002 54px out, the long-edge
+         * accumulation this file already learned once. 4px + 8% of the run is
+         * the best of both against his own fits: mean error 1.50px -> 1.06px,
+         * worst 28.6px -> 15.0px, and the plateau is flat from 3 to 5px so the
+         * constant is not perched on a peak. */
+        const dx = Math.abs(v[0] - B[0]), dy = B[1] - v[1];
+        if (Math.abs(dy - K * dx) <= 4 + 0.08 * dx) best = v;
+      }
+      return best;
+    };
+    const L = far(-1), R = far(1);
+    if (!L || !R || R[0] - L[0] < 6) return null;
+    return [L[0], L[1], B[0], B[1], R[0], R[1]].map((v) => +v.toFixed(1));
+  };
+  /* DOES THE ROOT MOVE? (maintainer 2026-09-09, to the scenery agent, copied to
+   * me: "The goal with the animations is to just animate some part of the
+   * object while the object itself stands still on the ground ... It's ok if
+   * the leaves move and it's even better if with the leaves and the branches
+   * move, but as soon as the root moves it looks wrong and the animation can't
+   * be used.")
+   *
+   * That is a measurement, not a matter of taste, so the build takes it and
+   * both the classifier and the review read the number instead of eyeballing
+   * 2,205 clips. Per animated clip, against frame 0:
+   *   base — how far the BOTTOM QUARTER's centroid travels, in px. This is the
+   *          root. beacon_001's flame moves its top 3.48px and its base 0.05;
+   *          barrel_007 moves its base 2.89px with a still top, which is the
+   *          fault he is describing.
+   *   top  — the same for the top quarter, so "nothing moves at all" (a dead
+   *          animation) is distinguishable from "the right part moves".
+   *   low  — the share of CHANGED pixels that fall in the bottom quarter.
+   *          barrel_007 is 0.92, the trees 0.00-0.17. A high share with a small
+   *          base drift is a wobble at the foot rather than a slide.
+   * Cached under the clip's own art hash + the rule, like the footprints. */
+  const ANIM_RULE = "quarters-v1";
+  {
+    const priorAnim = artPrior?.anims ?? {};
+    const anims = {};
+    let animMeasured = 0, animCached = 0, animClips = 0;
+    const measure = (relStrip, fw, fh, frames) => {
+      const { w, pix } = decodeWebP(readFileSync(join(ROOT, relStrip)));
+      if (frames < 2 || w < fw * frames) return null;
+      const on = (f, x, y) => (pix[y * w + f * fw + x] >>> 24) > 40;
+      let y0 = fh, y1 = -1;
+      for (let y = 0; y < fh; y++) for (let x = 0; x < fw; x++) if (on(0, x, y)) { if (y < y0) y0 = y; if (y > y1) y1 = y; }
+      if (y1 < y0) return null;
+      const h = y1 - y0 + 1;
+      const lo = Math.floor(y0 + 0.75 * h), hi = Math.ceil(y0 + 0.25 * h);
+      const cen = (f, a, b) => {
+        let sx = 0, sy = 0, n = 0;
+        for (let y = a; y <= b; y++) for (let x = 0; x < fw; x++) if (on(f, x, y)) { sx += x; sy += y; n++; }
+        return n ? [sx / n, sy / n, n] : null;
+      };
+      const b0 = cen(0, lo, y1), t0 = cen(0, y0, hi);
+      let base = 0, top = 0, low = 0;
+      for (let f = 1; f < frames; f++) {
+        const b = cen(f, lo, y1), tp = cen(f, y0, hi);
+        if (b0 && b) base = Math.max(base, Math.abs(b[0] - b0[0]) + Math.abs(b[1] - b0[1]));
+        if (t0 && tp) top = Math.max(top, Math.abs(tp[0] - t0[0]) + Math.abs(tp[1] - t0[1]));
+        let ch = 0, chLow = 0;
+        for (let y = y0; y <= y1; y++) for (let x = 0; x < fw; x++) {
+          if (on(0, x, y) === on(f, x, y)) continue;
+          ch++; if (y >= lo) chLow++;
+        }
+        if (ch) low = Math.max(low, chLow / ch);
+      }
+      return { base: +base.toFixed(2), top: +top.toFixed(2), low: +low.toFixed(3), frames };
+    };
+    for (const o of objects) {
+      if (!o.animations) continue;
+      for (const st of Object.keys(o.animations)) {
+        for (const [dname, c] of Object.entries(o.animations[st]?.dirs ?? {})) {
+          if (!c?.strip || !c.h || (c.frames ?? 1) < 2) continue;
+          const ck = `${c.h}@${ANIM_RULE}`;
+          if (priorAnim[ck] !== undefined) { anims[ck] = priorAnim[ck]; if (priorAnim[ck]) c.anim = priorAnim[ck]; animCached++; continue; }
+          let m = null;
+          try { m = measure(c.strip, c.fw, c.fh, c.frames); } catch { m = null; }
+          anims[ck] = m; animMeasured++;
+          if (m) c.anim = m;
+          void dname;
+        }
+      }
+      animClips++;
+    }
+    artAnims = anims;
+    console.log(`[wiki] animation drift: ${animMeasured} clips measured, ${animCached} from cache`);
+  }
+
+  for (const o of objects) {
+    if (o.hitboxShape !== "rect" || !o.animations) continue;
+    let any = false;
+    for (const st of Object.keys(o.animations)) {
+      for (const dname of ["south", "south-east", "south-west"]) {
+        const c = o.animations[st]?.dirs?.[dname];
+        if (!c?.strip || !c.h) continue;
+        /* KEYED BY THE ART *AND* THE RULE THAT MEASURED IT. The cache used to
+         * key on the clip's art hash alone, so changing the corner rule left
+         * every cached footprint in place and a rebuilt registry described the
+         * OLD measurement — the tolerance fix on 2026-09-09 looked like it had
+         * done nothing, twice, before this was the reason. Bump BASE_RULE
+         * whenever footprint() changes and the next build re-measures. */
+        const ck = `${c.h}@${BASE_RULE}`;
+        if (priorBase[ck] !== undefined) { bases[ck] = priorBase[ck]; if (priorBase[ck]) { c.base = priorBase[ck]; any = true; } baseCached++; continue; }
+        let m = null;
+        try { m = footprint(c.strip, c.fw, c.fh, dname !== "south"); } catch { m = null; }
+        bases[`${c.h}@${BASE_RULE}`] = m; baseMeasured++;
+        if (m) { c.base = m; any = true; }
+      }
+    }
+    if (any) basePieces++;
+  }
+  artBases = bases;
+  console.log(`[wiki] rect footprints: ${basePieces} pieces — measured ${baseMeasured} clips now, ${baseCached} from cache`);
+}
+
+// Rewrite the cache only when the measurements moved — a no-change build must
+// not churn generated_at.
+{
+  const sorted = (o) => Object.fromEntries(Object.entries(o).sort(([a], [b]) => a.localeCompare(b)));
+  const same = artPrior && JSON.stringify({ s: artPrior.scale, b: artPrior.boxes, c: artPrior.clips, h: artPrior.hashes })
+    === JSON.stringify({ s: artScale, b: artBoxes, c: sorted(artClips), h: sorted(artHashes) })
+    && JSON.stringify(artPrior.bases ?? {}) === JSON.stringify(sorted(artBases))
+    && JSON.stringify(artPrior.anims ?? {}) === JSON.stringify(sorted(artAnims));
+  if (!same) {
+    try {
+      writeFileSync(artBoundsPath, JSON.stringify({
+        format: "pixel-wiki-art-bounds@3",
+        generated_at: new Date().toISOString(),
+        note: "content-hash cache of build.mjs's own measurements — safe to delete, the build remeasures",
+        scale: artScale, boxes: artBoxes, clips: sorted(artClips), hashes: sorted(artHashes),
+        bases: sorted(artBases), anims: sorted(artAnims),
+      }) + "\n");
+    } catch { /* read-only fs (Docker image build) is fine — the numbers are already in data.json */ }
+  }
 }
 const world = buildWorldUsage();
 markSoundUsage(sounds);
@@ -1685,7 +3118,7 @@ const sfx = buildSfx(sounds, {
   objects: new Set(objects.map((o) => o.id)),
 });
 markMusicUsage(music);
-const { added, levelled, tuning } = seedMonsterTuning(monsters, seedMonsterLevels(monsters, world, artBounds));
+const { added, levelled, tuning } = seedMonsterTuning(monsters, seedMonsterLevels(monsters, world, { clips: artClips }));
 // Both directions of "who drops what", precomputed from the SEEDED tuning so
 // a monster added this run is already joined.
 const drops = joinDrops(items, tuning);
@@ -1719,6 +3152,22 @@ const data = {
   // The game's iso projection (maps2/spec/WORLD_FORMAT.md): tile-instance
   // previews must compose cells with the REAL geometry or the seams lie.
   iso: { tilePx: 64, dx: 32, dy: 15, levelPx: 16, diamondH: 30 },
+  /* HOW BIG THE GAME DRAWS A PIECE (games agent, 2026-09-02: "the size
+   * reference misled the maintainer into generating small beds — it draws the
+   * piece at its NATIVE sprite pixels beside the Man at his"). The game scales
+   * a piece so its cropped height is world_px_height × characterBodyPx /
+   * character_height_px (sceneryDrawnPx in games2/shared): the scenery
+   * contract sizes pieces against a 64-px person, the game's people are 88.
+   * Read from the game's own source so the day either number moves the wiki
+   * follows; the fallbacks are today's values. */
+  sceneryScale: (() => {
+    try {
+      const src = readFileSync(join(ROOT, "games2/shared/src/index.ts"), "utf8");
+      const body = src.match(/CHARACTER_BODY_PX\s*=\s*(\d+)/)?.[1];
+      const contract = src.match(/SCENERY_CONTRACT_CHARACTER_PX\s*=\s*(\d+)/)?.[1];
+      return { characterBodyPx: Number(body) || 88, contractCharacterPx: Number(contract) || 64 };
+    } catch { return { characterBodyPx: 88, contractCharacterPx: 64 }; }
+  })(),
   // One px-per-art-px for every creature in the animation viewer, and one
   // stage size per domain (the widest/tallest pose any of them needs) so
   // paging through monsters never moves the layout.
@@ -1742,6 +3191,10 @@ const data = {
     npcs: characters?.filter((c) => c.kind === "npc").length ?? 0,
     tile_types: tiles?.length ?? 0,
     tiles: tiles?.reduce((n, t) => n + t.tileCount, 0) ?? 0,
+    // Tiles 3.0 counts CELLS — one "grass over black rock" pair — because
+    // that is the unit he reviews and the unit the agent regenerates.
+    world: worldCells?.length ?? 0,
+    world_candidates: worldCells?.reduce((n, c) => n + c.candidates.length, 0) ?? 0,
     objects: objects?.length ?? 0,
     sounds: sounds?.length ?? 0,
     music: music?.length ?? 0,
@@ -1756,17 +3209,74 @@ const data = {
   domains: {
     monsters: monsters ?? [], characters: characters ?? [], tiles: tiles ?? [],
     objects: objects ?? [], sounds: sounds ?? [], music: music ?? [], items: items ?? [],
-    lore: lore ?? [],
+    lore: lore ?? [], world: worldCells ?? [],
   },
+  // The tiles agent's own vocabulary and acceptance thresholds.
+  worldMeta,
+  // The suite/pool/phrase score, for the music bench (see buildBench).
+  bench,
   constants,
 };
 
+/* NO EMITTED TILE PATH MAY POINT AT NOTHING. The registry has now shipped
+ * broken paths twice, both times through a RENAME on the tiles agent's side —
+ * hashless _textured.webp in the world candidates, hashless post/ names in the
+ * tops pool — and both times the symptom was the same: holes in an audition,
+ * on the maintainer's phone, with nothing anywhere saying why. Their board
+ * note asked for exactly this ("manifest revalidation there" — retention on
+ * their side, revalidation on ours).
+ *
+ * SANITISED, NOT FATAL: a missing OPTIONAL pass (tex, post) is nulled so the
+ * page falls back to the pass that exists; a missing PRIMARY art is left in
+ * place but counted, because dropping a candidate outright would silently
+ * shrink a review queue. Every repair is printed. The deploy swallows a build
+ * FAILURE into a stale committed registry (the Dockerfile documents that
+ * trap), so failing loud here would reintroduce the very staleness this
+ * guards against — loud-and-fixed beats dead. */
+{
+  const exists = (rel) => typeof rel === "string" && !rel.includes("::") && existsSync(join(ROOT, rel));
+  let nulled = 0, broken = 0;
+  const scrub = (obj, key, required) => {
+    const v = obj?.[key];
+    if (v == null || typeof v !== "string") return;
+    if (exists(v)) return;
+    if (required) { broken++; console.warn(`[wiki] MISSING art (kept): ${v}`); }
+    else { obj[key] = null; nulled++; console.warn(`[wiki] missing ${key} pass nulled: ${v}`); }
+  };
+  for (const c of data.domains.world ?? []) for (const cand of c.candidates ?? []) {
+    scrub(cand, "art", true); scrub(cand, "raw", false); scrub(cand, "tex", false);
+  }
+  for (const list of Object.values(data.worldMeta?.tops ?? {})) for (const c of list) {
+    scrub(c, "art", true); scrub(c, "post", false);
+  }
+  for (const list of Object.values(data.worldMeta?.basePools ?? {})) for (const c of list) scrub(c, "art", true);
+  if (nulled || broken) console.warn(`[wiki] path sweep: ${nulled} optional pass(es) nulled, ${broken} primary path(s) missing`);
+  else console.log("[wiki] path sweep: every emitted tile path exists");
+}
 writeFileSync(OUT, JSON.stringify(data));
+/* THE FRESHNESS BEACON. The wiki is a single-page app the maintainer keeps
+ * open in a tab or the game's drawer for hours; nothing ever told a running
+ * page that a deploy landed, so a fix could be LIVE while his screen still
+ * ran the previous build — which he then reported broken, correctly
+ * (2026-08-27, twice in one afternoon). data.json is 6.6 MB and cannot be
+ * polled; this 60-byte sidecar can, and the client compares its sha against
+ * the one it booted with. */
+writeFileSync(join(dirname(OUT), "version.json"),
+  JSON.stringify({ git_sha: data.git_sha, generated_at: data.generated_at }) + "\n");
 console.log(`[wiki] wrote ${OUT}`);
 console.log(`[wiki] ${JSON.stringify(data.counts)}${added ? ` — seeded ${added} new monster(s) into tuning/monsters.json` : ""}${levelled ? ` — backfilled ${levelled} monster level(s)` : ""}`);
+console.log(`[wiki] art: ${Object.keys(artHashes).length} clips — measured ${artMeasuredN} now, ${artCachedN} from cache${artFailed.length ? `, ${artFailed.length} FAILED` : ""}; stage ${Object.entries(artBoxes).map(([d, b]) => `${d} ${b[0]}x${b[1]}`).join(", ")} at ${artScale}x`);
 // The build carries on regardless — resolving keeps every page correct — but a
 // stale sidecar is a real fault at its SOURCE, and silence is what let the last
 // one rot for a day. Regenerate with wiki/tools/clean-base.py and world-map.py.
+if (artFailed.length) {
+  console.warn(`[wiki] WARNING: ${artFailed.length} clip(s) could not be measured — they will draw at whole-frame`);
+  console.warn("       size until the viewer's in-browser self-measure kicks in:");
+  for (const x of artFailed.slice(0, 8)) console.warn(`         ${x}`);
+  if (artFailed.length > 8) console.warn(`         … and ${artFailed.length - 8} more`);
+  console.warn("       A decode error here usually means art that is not lossless WebP —");
+  console.warn("       convert it with games2/scripts/to-webp.py (repo policy, CLAUDE.md).");
+}
 if (sfxDrift.length) {
   console.warn(`[wiki] WARNING: ${sfxDrift.length} sfx-parse miss(es) — the composer's engine moved; the event table may be stale:`);
   for (const x of sfxDrift) console.warn(`         ${x}`);

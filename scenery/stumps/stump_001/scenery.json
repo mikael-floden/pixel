@@ -1,0 +1,240 @@
+{
+  "format": "scenery-piece@2",
+  "id": "stump_001",
+  "group": "stumps",
+  "rank": 24,
+  "index": 1,
+  "name": "Stump with axe embedded 001",
+  "lights": null,
+  "variety": "stump with axe embedded",
+  "glow_concept": null,
+  "prompt": "a cut tree stump with visible growth rings on the flat top, ragged bark sides, and small mushrooms and shoots around the base, stump with axe embedded, small, knee-high to an adult person, completely unlit, no glow, no light sources, no self-emission",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 64,
+  "sprite": "stumps/stump_001/sprite.webp",
+  "placement": {
+    "world_height_m": 1.094,
+    "world_px_height": 56,
+    "character_height_px": 87,
+    "character_height_m": 1.7,
+    "note": "ONE SCENERY PIXEL IS ONE PLAYER PIXEL. world_px_height IS the art's own alpha bbox height, so scenery is placed into the world at 1:1 exactly as the avatar is (setScale(1)) and the two share one pixel grid. The CAMERA still zooms the whole scene \u2014 that is uniform and correct; what must never happen is scenery being resampled on its own, against the player. world_height_m is what the art reads as beside a 87px character; declared_height_m is what it was once declared to be, and a gap between them means the ART is the wrong size.",
+    "declared_height_m": 0.62,
+    "content_box": [
+      8,
+      4,
+      56,
+      60
+    ],
+    "content_px_height": 56,
+    "canvas_render_px": 64
+  },
+  "pixellab_object_id": "70b6c22d-3046-4d04-82b4-5e3935efedc4",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)",
+  "must_be_imbplemented_with_random_hflip": true,
+  "states": {
+    "LIT_2": {
+      "sprite": "stumps/stump_001/lit_2/sprite.webp",
+      "pixellab_object_id": "5087322a-ee7a-4f1c-9e82-9ea7cb4f98d9",
+      "generated_at": "2026-08-16T14:25:12+00:00",
+      "glow_concept": "ring of glowing mushrooms around the base",
+      "difference_from_source": 0.8958,
+      "glow_score": 0.1016,
+      "animations": {
+        "motion": {
+          "group_id": "ebc861f5-0f52-4187-915d-776f6014fdbe",
+          "description": "This is the same picture in every frame. ONLY the glowing mushrooms around the base brighten a little and return. It is lit and clearly visible in every single frame, including the first. It is at its brightest in the MIDDLE of the animation and back to exactly its first-frame brightness and colour at the end. It never fades out and is never dimmer at the end than at the start. Everything else in the picture is copied from the first frame exactly, pixel for pixel, unchanged in shape, size, position and colour. No outline anywhere is redrawn. The last frame matches the first frame exactly, so the loop joins.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "stumps/stump_001/lit_2/animations/motion/00.webp",
+            "stumps/stump_001/lit_2/animations/motion/01.webp",
+            "stumps/stump_001/lit_2/animations/motion/02.webp",
+            "stumps/stump_001/lit_2/animations/motion/03.webp",
+            "stumps/stump_001/lit_2/animations/motion/04.webp"
+          ],
+          "strip": "stumps/stump_001/lit_2/animations/motion__strip.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-08-29T17:56:03+00:00",
+          "brief": "A38",
+          "review": "ANIMATION_PROBABLY_GOOD",
+          "review_metrics": {
+            "base_outline": 0.0449
+          },
+          "light_frames": [
+            {
+              "intensity": 1.033,
+              "dx": -1.8,
+              "dy": 13.3
+            },
+            {
+              "intensity": 0.757,
+              "dx": 0.4,
+              "dy": 11.2
+            },
+            {
+              "intensity": 1.077,
+              "dx": -2.0,
+              "dy": 13.7
+            },
+            {
+              "intensity": 1.076,
+              "dx": -2.1,
+              "dy": 13.7
+            },
+            {
+              "intensity": 1.056,
+              "dx": -1.7,
+              "dy": 13.8
+            }
+          ]
+        }
+      }
+    },
+    "LIT_4": {
+      "sprite": "stumps/stump_001/lit_4/sprite.webp",
+      "pixellab_object_id": "c6fcc026-1d9a-4a25-82ea-f59acf0ae43f",
+      "glow_concept": "soulstone core shining in the heartwood",
+      "difference_from_source": 0.9643,
+      "glow_score": 0.2032,
+      "generated_at": "2026-08-15T16:13:33+00:00",
+      "animations": {
+        "motion": {
+          "group_id": "66e01afb-d062-4a56-9341-1da11843c400",
+          "description": "This is the same picture in every frame. ONLY the blue light above the stump brightens a little and returns. It is lit and clearly visible in every single frame, including the first. It only ever gets SLIGHTLY brighter: never white, never washed out, and it keeps its own colour at every single moment. It is at its brightest in the middle and back to exactly its first-frame brightness and colour at the end, never dimmer at the end than at the start. Everything else in the picture is copied from the first frame exactly, pixel for pixel, unchanged in shape, size, position and colour. No outline anywhere is redrawn. The last frame matches the first frame exactly, so the loop joins.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "stumps/stump_001/lit_4/animations/motion/00.webp",
+            "stumps/stump_001/lit_4/animations/motion/01.webp",
+            "stumps/stump_001/lit_4/animations/motion/02.webp",
+            "stumps/stump_001/lit_4/animations/motion/03.webp",
+            "stumps/stump_001/lit_4/animations/motion/04.webp"
+          ],
+          "strip": "stumps/stump_001/lit_4/animations/motion__strip.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-08-29T18:34:50+00:00",
+          "brief": "B37",
+          "review": "ANIMATION_PROBABLY_GOOD",
+          "review_metrics": {
+            "base_outline": 0.0426
+          },
+          "light_frames": [
+            {
+              "intensity": 1.487,
+              "dx": 1.1,
+              "dy": -6.6
+            },
+            {
+              "intensity": 0.917,
+              "dx": 1.6,
+              "dy": -3.6
+            },
+            {
+              "intensity": 0.894,
+              "dx": 1.4,
+              "dy": -5.8
+            },
+            {
+              "intensity": 1.118,
+              "dx": 0.4,
+              "dy": -4.9
+            },
+            {
+              "intensity": 0.583,
+              "dx": 1.8,
+              "dy": -3.6
+            }
+          ]
+        }
+      }
+    },
+    "NOT_LIT_1": {
+      "sprite": "stumps/stump_001/sprite.webp",
+      "pixellab_object_id": "70b6c22d-3046-4d04-82b4-5e3935efedc4",
+      "glow_score": 0.1315,
+      "generated_at": "2026-08-13T00:55:11+00:00",
+      "animations": {
+        "motion": {
+          "group_id": "cc7f4466-f4a9-4cea-b630-b3e48c6a5d32",
+          "description": "This is the same picture in every frame. ONLY the small growth on the cut face moves, stirring a pixel or two. Do not redraw anything else, and do not add or remove anything.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "stumps/stump_001/animations/motion/00.webp",
+            "stumps/stump_001/animations/motion/01.webp",
+            "stumps/stump_001/animations/motion/02.webp",
+            "stumps/stump_001/animations/motion/03.webp",
+            "stumps/stump_001/animations/motion/04.webp"
+          ],
+          "strip": "stumps/stump_001/animations/motion__strip.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-08-29T11:08:49+00:00",
+          "brief": "N35",
+          "review": "ANIMATION_PROBABLY_GOOD",
+          "review_metrics": {
+            "base_outline": 0.0625
+          }
+        }
+      }
+    },
+    "NOT_LIT_4": {
+      "sprite": "stumps/stump_001/not_lit_4/sprite.webp",
+      "pixellab_object_id": "29c9825a-753d-49e1-a966-5a50096b2d44",
+      "glow_concept": null,
+      "difference_from_source": 0.4331,
+      "glow_score": 0.0089,
+      "generated_at": "2026-08-15T16:13:33+00:00"
+    },
+    "NOT_LIT_5": {
+      "sprite": "stumps/stump_001/not_lit_5/sprite.webp",
+      "pixellab_object_id": "fea46b82-8a74-4a91-899f-9d2eea99e958",
+      "generated_at": "2026-08-16T14:25:17+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.6992,
+      "glow_score": 0.0252
+    }
+  },
+  "generated_at": "2026-08-13T00:55:11+00:00",
+  "collision": true,
+  "hitbox_shape": "ellipse",
+  "light": {
+    "strength": 0.1,
+    "color": "#91ffcd",
+    "radius": 2,
+    "reference": "the spawn bonfire is 1.0 (radius 7); strength 0 is no light",
+    "states": {
+      "LIT_2": {
+        "strength": 0.1,
+        "color": "#91ffcd",
+        "radius": 2
+      },
+      "LIT_4": {
+        "strength": 0.1,
+        "color": "#75daff",
+        "radius": 2
+      }
+    },
+    "kind": "glow/bio",
+    "flame": false,
+    "embers": false
+  }
+}

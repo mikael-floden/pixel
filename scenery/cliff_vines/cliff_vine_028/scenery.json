@@ -1,0 +1,88 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-14T03:36:49+00:00",
+  "id": "cliff_vine_028",
+  "group": "cliff_vines",
+  "rank": 101,
+  "index": 28,
+  "name": "Variegated cream-and-green fall 028",
+  "lights": null,
+  "variety": "variegated cream-and-green fall",
+  "modifier": "ending high, swinging free",
+  "glow_concept": "moonlit silver shimmer across the leaves",
+  "prompt": "an enormous hanging curtain of climbing vine seen from the front, a very tall narrow sheet of dense overlapping leaves falling straight down with thick woody stems running through it, hanging free in the air, an organic RAGGED IRREGULAR silhouette with leaves and strands trailing off unevenly at the edges and a torn uneven bottom \u2014 never a rectangle, never a straight edge, never a filled panel or square sheet, no hard border of any kind \u2014 ONLY the plant itself, isolated on a fully transparent background, NO rock, NO cliff, NO stone wall, NO mountain, NO ground, nothing behind it, variegated cream-and-green fall, ending high, swinging free, towering, many times human height, self-emissive at night, softly radiating light: moonlit silver shimmer across the leaves",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 256,
+  "sprite": "cliff_vines/cliff_vine_028/sprite.webp",
+  "placement": {
+    "world_height_m": 4.807,
+    "world_px_height": 246,
+    "character_height_px": 87,
+    "character_height_m": 1.7,
+    "note": "ONE SCENERY PIXEL IS ONE PLAYER PIXEL. world_px_height IS the art's own alpha bbox height, so scenery is placed into the world at 1:1 exactly as the avatar is (setScale(1)) and the two share one pixel grid. The CAMERA still zooms the whole scene \u2014 that is uniform and correct; what must never happen is scenery being resampled on its own, against the player. world_height_m is what the art reads as beside a 87px character; declared_height_m is what it was once declared to be, and a gap between them means the ART is the wrong size.",
+    "declared_height_m": 11.47,
+    "content_box": [
+      66,
+      6,
+      189,
+      252
+    ],
+    "content_px_height": 246,
+    "canvas_render_px": 256
+  },
+  "pixellab_object_id": "d6367e15-0d98-4faf-aaa2-69f1ceeff8f1",
+  "pixellab_directions": 1,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-1-direction-object (single, S-only)",
+  "must_be_imbplemented_with_random_hflip": true,
+  "states": {
+    "NOT_LIT_2": {
+      "sprite": "cliff_vines/cliff_vine_028/not_lit_2/sprite.webp",
+      "pixellab_object_id": "10101fef-4e2f-4ca8-aca1-26d4909889ec",
+      "generated_at": "2026-08-16T10:14:57+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.3577,
+      "glow_score": 0.0638
+    },
+    "NOT_LIT_3": {
+      "sprite": "cliff_vines/cliff_vine_028/sprite.webp",
+      "pixellab_object_id": "d6367e15-0d98-4faf-aaa2-69f1ceeff8f1",
+      "generated_at": "2026-08-14T03:36:49+00:00",
+      "relit_from": "LIT_1"
+    },
+    "NOT_LIT_4": {
+      "sprite": "cliff_vines/cliff_vine_028/not_lit_4/sprite.webp",
+      "pixellab_object_id": "519568e6-54fd-4a45-91f3-9371d064ab4f",
+      "generated_at": "2026-08-16T10:14:10+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.3938,
+      "glow_score": 0.1607,
+      "relit_from": "LIT_2"
+    },
+    "NOT_LIT_5": {
+      "sprite": "cliff_vines/cliff_vine_028/not_lit_5/sprite.webp",
+      "pixellab_object_id": "6944e100-96e0-4cbe-876c-82cd9b26bf8f",
+      "generated_at": "2026-08-16T10:13:59+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.3912,
+      "glow_score": 0.1811,
+      "relit_from": "LIT_3"
+    },
+    "NOT_LIT_6": {
+      "sprite": "cliff_vines/cliff_vine_028/not_lit_6/sprite.webp",
+      "pixellab_object_id": "c73e56c9-20cb-4759-8bcb-ea08cd3323ad",
+      "generated_at": "2026-08-16T10:15:28+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.4187,
+      "glow_score": 0.1593,
+      "relit_from": "LIT_4"
+    }
+  },
+  "collision": true,
+  "hitbox_shape": "ellipse"
+}

@@ -1,0 +1,132 @@
+{
+  "schema": "tiles3/tops@1",
+  "kind": "top_only",
+  "wall_is_meaningless": true,
+  "not_a_candidate_for": "x over y",
+  "ground": "light_beach",
+  "flavour": "detail",
+  "index": 112,
+  "seed": 78877,
+  "prompt": "light beach, a bird footprint in the middle, light beach all around the edge",
+  "palette_top": "#e4c495",
+  "tile_id": "f2eb6947-a9c5-4479-a690-d8411df8eef1",
+  "n_tiles": 16,
+  "tiles": [
+    "tile_00.webp",
+    "tile_01.webp",
+    "tile_02.webp",
+    "tile_03.webp",
+    "tile_04.webp",
+    "tile_05.webp",
+    "tile_06.webp",
+    "tile_07.webp",
+    "tile_08.webp",
+    "tile_09.webp",
+    "tile_10.webp",
+    "tile_11.webp",
+    "tile_12.webp",
+    "tile_13.webp",
+    "tile_14.webp",
+    "tile_15.webp"
+  ],
+  "settings": {
+    "tile_size": 64,
+    "tile_view": "high top-down",
+    "view_angle": 28.0,
+    "depth_ratio": 0.5,
+    "tile_type": "isometric",
+    "flat_top_px": 2,
+    "outline_mode": "segmentation"
+  },
+  "usd": 0.096,
+  "created": "2026-09-03T05:15:18+00:00",
+  "top_face": {
+    "per_tile": [
+      {
+        "colours": 11,
+        "dominant_share": 0.6863,
+        "px": 915
+      },
+      {
+        "colours": 11,
+        "dominant_share": 0.6273,
+        "px": 915
+      },
+      {
+        "colours": 11,
+        "dominant_share": 0.5307,
+        "px": 912
+      },
+      {
+        "colours": 9,
+        "dominant_share": 0.5913,
+        "px": 915
+      },
+      {
+        "colours": 9,
+        "dominant_share": 0.6426,
+        "px": 915
+      },
+      {
+        "colours": 13,
+        "dominant_share": 0.5066,
+        "px": 914
+      },
+      {
+        "colours": 12,
+        "dominant_share": 0.7424,
+        "px": 916
+      },
+      {
+        "colours": 10,
+        "dominant_share": 0.4755,
+        "px": 919
+      },
+      {
+        "colours": 14,
+        "dominant_share": 0.7872,
+        "px": 921
+      },
+      {
+        "colours": 12,
+        "dominant_share": 0.6623,
+        "px": 918
+      },
+      {
+        "colours": 13,
+        "dominant_share": 0.481,
+        "px": 919
+      },
+      {
+        "colours": 9,
+        "dominant_share": 0.4771,
+        "px": 918
+      },
+      {
+        "colours": 14,
+        "dominant_share": 0.6081,
+        "px": 916
+      },
+      {
+        "colours": 11,
+        "dominant_share": 0.4251,
+        "px": 915
+      },
+      {
+        "colours": 12,
+        "dominant_share": 0.5016,
+        "px": 915
+      },
+      {
+        "colours": 13,
+        "dominant_share": 0.5594,
+        "px": 917
+      }
+    ],
+    "mean_colours": 11.5,
+    "mean_dominant_share": 0.5815
+  },
+  "motif": "a bird footprint",
+  "motif_source": "tiles/config/details.json",
+  "walkable": true
+}

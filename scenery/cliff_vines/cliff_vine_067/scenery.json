@@ -1,0 +1,92 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-14T05:01:07+00:00",
+  "id": "cliff_vine_067",
+  "group": "cliff_vines",
+  "rank": 101,
+  "index": 67,
+  "name": "Dry brown wilted fall 067",
+  "lights": null,
+  "variety": "dry brown wilted fall",
+  "modifier": "one thick tendril reaching far out alone",
+  "glow_concept": null,
+  "prompt": "beautiful lush climbing ivy growing wild across an old ruin wall, deep green leaves in loose overlapping clusters with long trailing tendrils between them, lush fantasy RPG nature art, rich and beautiful, uneven natural growth that is thick and leafy in a few places and bare stone-empty elsewhere, drifting off one side, no straight edges, no border, nothing it hangs from and no line across the top, fading away into a few last leaves at the edges, transparent background, no rock or wall behind it, dry brown wilted fall, one thick tendril reaching far out alone, towering, many times human height, completely unlit, no glow, no light sources, no self-emission",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 256,
+  "sprite": "cliff_vines/cliff_vine_067/sprite.webp",
+  "placement": {
+    "world_height_m": 4.338,
+    "world_px_height": 222,
+    "character_height_px": 87,
+    "character_height_m": 1.7,
+    "note": "ONE SCENERY PIXEL IS ONE PLAYER PIXEL. world_px_height IS the art's own alpha bbox height, so scenery is placed into the world at 1:1 exactly as the avatar is (setScale(1)) and the two share one pixel grid. The CAMERA still zooms the whole scene \u2014 that is uniform and correct; what must never happen is scenery being resampled on its own, against the player. world_height_m is what the art reads as beside a 87px character; declared_height_m is what it was once declared to be, and a gap between them means the ART is the wrong size.",
+    "declared_height_m": 9.12,
+    "content_box": [
+      16,
+      20,
+      241,
+      242
+    ],
+    "content_px_height": 222,
+    "canvas_render_px": 256
+  },
+  "pixellab_object_id": "4995ce90-1993-405c-b5bf-589033a2f178",
+  "pixellab_directions": 1,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-1-direction-object (single, S-only)",
+  "must_be_imbplemented_with_random_hflip": true,
+  "states": {
+    "LIT_1": {
+      "sprite": "cliff_vines/cliff_vine_067/lit_1/sprite.webp",
+      "pixellab_object_id": "535654ca-0c74-4f97-9ce9-c9f5a3a30d38",
+      "generated_at": "2026-08-16T10:40:02+00:00",
+      "glow_concept": "luminous sap veins glowing through the leaves",
+      "difference_from_source": 0.5285,
+      "glow_score": 0.0805
+    },
+    "NOT_LIT_1": {
+      "sprite": "cliff_vines/cliff_vine_067/sprite.webp",
+      "pixellab_object_id": "4995ce90-1993-405c-b5bf-589033a2f178",
+      "generated_at": "2026-08-14T05:01:07+00:00"
+    },
+    "NOT_LIT_2": {
+      "sprite": "cliff_vines/cliff_vine_067/not_lit_2/sprite.webp",
+      "pixellab_object_id": "3684e2b1-f4fc-4fd0-99cc-4e5a6fb83082",
+      "generated_at": "2026-08-16T10:49:46+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.5223,
+      "glow_score": 0.0004
+    },
+    "NOT_LIT_4": {
+      "sprite": "cliff_vines/cliff_vine_067/not_lit_4/sprite.webp",
+      "pixellab_object_id": "e2b99daa-66e5-435b-8ae8-ef3a4f571db4",
+      "generated_at": "2026-08-16T10:39:41+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.4558,
+      "glow_score": 0.0004
+    }
+  },
+  "collision": true,
+  "hitbox_shape": "ellipse",
+  "light": {
+    "strength": 0.1,
+    "color": "#ffdb9d",
+    "radius": 2,
+    "reference": "the spawn bonfire is 1.0 (radius 7); strength 0 is no light",
+    "states": {
+      "LIT_1": {
+        "strength": 0.12,
+        "color": "#ffdb9d",
+        "radius": 2
+      }
+    },
+    "kind": "glow/bio",
+    "flame": false,
+    "embers": false
+  }
+}

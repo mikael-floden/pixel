@@ -1,0 +1,293 @@
+{
+  "format": "scenery-piece@2",
+  "id": "ivy_post_005",
+  "group": "ivy_posts",
+  "rank": 41,
+  "index": 5,
+  "name": "Pale spring ivy shoots 005",
+  "lights": null,
+  "variety": "pale spring ivy shoots",
+  "glow_concept": null,
+  "prompt": "a weathered wooden fence post thickly wrapped in climbing ivy, loose tendrils reaching past the top, pale spring ivy shoots, about as tall as an adult person, completely unlit, no glow, no light sources, no self-emission",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 128,
+  "sprite": "ivy_posts/ivy_post_005/sprite.webp",
+  "placement": {
+    "world_height_m": 2.149,
+    "world_px_height": 110,
+    "character_height_px": 87,
+    "character_height_m": 1.7,
+    "note": "ONE SCENERY PIXEL IS ONE PLAYER PIXEL. world_px_height IS the art's own alpha bbox height, so scenery is placed into the world at 1:1 exactly as the avatar is (setScale(1)) and the two share one pixel grid. The CAMERA still zooms the whole scene \u2014 that is uniform and correct; what must never happen is scenery being resampled on its own, against the player. world_height_m is what the art reads as beside a 87px character; declared_height_m is what it was once declared to be, and a gap between them means the ART is the wrong size.",
+    "declared_height_m": 1.65,
+    "content_box": [
+      34,
+      10,
+      99,
+      120
+    ],
+    "content_px_height": 110,
+    "canvas_render_px": 128
+  },
+  "pixellab_object_id": "93fa63a1-d080-4605-b740-451e84efe95b",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)",
+  "must_be_imbplemented_with_random_hflip": true,
+  "generated_at": "2026-08-13T12:04:08+00:00",
+  "states": {
+    "LIT_2": {
+      "sprite": "ivy_posts/ivy_post_005/lit_2/sprite.webp",
+      "pixellab_object_id": "9893f1f3-5954-4458-8ae0-749094c603ef",
+      "generated_at": "2026-08-16T17:07:48+00:00",
+      "glow_concept": "ivy berries lit like tiny coals",
+      "difference_from_source": 0.7279,
+      "glow_score": 0.0479,
+      "animations": {
+        "flame": {
+          "group_id": "1430484e-28f3-4c3a-a24a-0d6f703c3b4b",
+          "description": "Animate the flame only",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "directions": {
+            "south": {
+              "frames": 5,
+              "frame_paths": [
+                "ivy_posts/ivy_post_005/lit_2/animations/flame/south/00.webp",
+                "ivy_posts/ivy_post_005/lit_2/animations/flame/south/01.webp",
+                "ivy_posts/ivy_post_005/lit_2/animations/flame/south/02.webp",
+                "ivy_posts/ivy_post_005/lit_2/animations/flame/south/03.webp",
+                "ivy_posts/ivy_post_005/lit_2/animations/flame/south/04.webp"
+              ],
+              "strip": "ivy_posts/ivy_post_005/lit_2/animations/flame__south.webp",
+              "light_frames": [
+                {
+                  "intensity": 1.5,
+                  "dx": -3.1,
+                  "dy": 12.1
+                },
+                {
+                  "intensity": 1.356,
+                  "dx": -3.2,
+                  "dy": 13.5
+                },
+                {
+                  "intensity": 0.731,
+                  "dx": -4.1,
+                  "dy": 12.1
+                },
+                {
+                  "intensity": 0.5,
+                  "dx": -4.2,
+                  "dy": 13.5
+                },
+                {
+                  "intensity": 0.5,
+                  "dx": -2.0,
+                  "dy": 10.4
+                }
+              ]
+            },
+            "south-east": {
+              "frames": 5,
+              "frame_paths": [
+                "ivy_posts/ivy_post_005/lit_2/animations/flame/south-east/00.webp",
+                "ivy_posts/ivy_post_005/lit_2/animations/flame/south-east/01.webp",
+                "ivy_posts/ivy_post_005/lit_2/animations/flame/south-east/02.webp",
+                "ivy_posts/ivy_post_005/lit_2/animations/flame/south-east/03.webp",
+                "ivy_posts/ivy_post_005/lit_2/animations/flame/south-east/04.webp"
+              ],
+              "strip": "ivy_posts/ivy_post_005/lit_2/animations/flame__south-east.webp",
+              "light_frames": [
+                {
+                  "intensity": 0.5,
+                  "dx": -5.2,
+                  "dy": 21.5
+                },
+                {
+                  "intensity": 0.5,
+                  "dx": -1.6,
+                  "dy": -17.7
+                },
+                {
+                  "intensity": 0.629,
+                  "dx": -1.3,
+                  "dy": -29.3
+                },
+                {
+                  "intensity": 1.5,
+                  "dx": -1.6,
+                  "dy": -33.1
+                },
+                {
+                  "intensity": 1.5,
+                  "dx": -1.9,
+                  "dy": -35.3
+                }
+              ]
+            },
+            "south-west": {
+              "frames": 5,
+              "frame_paths": [
+                "ivy_posts/ivy_post_005/lit_2/animations/flame/south-west/00.webp",
+                "ivy_posts/ivy_post_005/lit_2/animations/flame/south-west/01.webp",
+                "ivy_posts/ivy_post_005/lit_2/animations/flame/south-west/02.webp",
+                "ivy_posts/ivy_post_005/lit_2/animations/flame/south-west/03.webp",
+                "ivy_posts/ivy_post_005/lit_2/animations/flame/south-west/04.webp"
+              ],
+              "strip": "ivy_posts/ivy_post_005/lit_2/animations/flame__south-west.webp",
+              "light_frames": [
+                {
+                  "intensity": 0.5,
+                  "dx": 4.6,
+                  "dy": 19.7
+                },
+                {
+                  "intensity": 0.5,
+                  "dx": 4.6,
+                  "dy": 18.7
+                },
+                {
+                  "intensity": 0.5,
+                  "dx": 11.1,
+                  "dy": -2.8
+                },
+                {
+                  "intensity": 1.5,
+                  "dx": 6.0,
+                  "dy": -32.8
+                },
+                {
+                  "intensity": 1.5,
+                  "dx": 7.1,
+                  "dy": -35.9
+                }
+              ]
+            }
+          },
+          "generated_at": "2026-08-29T08:22:27+00:00",
+          "review": "ANIMATION_PROBABLY_GOOD",
+          "review_metrics": {
+            "base_outline": 0.0105
+          },
+          "frame_paths": [
+            "ivy_posts/ivy_post_005/lit_2/animations/flame/south/00.webp",
+            "ivy_posts/ivy_post_005/lit_2/animations/flame/south/01.webp",
+            "ivy_posts/ivy_post_005/lit_2/animations/flame/south/02.webp",
+            "ivy_posts/ivy_post_005/lit_2/animations/flame/south/03.webp",
+            "ivy_posts/ivy_post_005/lit_2/animations/flame/south/04.webp"
+          ],
+          "strip": "ivy_posts/ivy_post_005/lit_2/animations/flame__south.webp",
+          "light_frames": [
+            {
+              "intensity": 1.5,
+              "dx": -3.1,
+              "dy": 12.1
+            },
+            {
+              "intensity": 1.356,
+              "dx": -3.2,
+              "dy": 13.5
+            },
+            {
+              "intensity": 0.731,
+              "dx": -4.1,
+              "dy": 12.1
+            },
+            {
+              "intensity": 0.5,
+              "dx": -4.2,
+              "dy": 13.5
+            },
+            {
+              "intensity": 0.5,
+              "dx": -2.0,
+              "dy": 10.4
+            }
+          ]
+        }
+      },
+      "rotations": {
+        "south-east": "ivy_posts/ivy_post_005/lit_2/rotations/south-east.webp",
+        "south-west": "ivy_posts/ivy_post_005/lit_2/rotations/south-west.webp",
+        "south": "ivy_posts/ivy_post_005/lit_2/sprite.webp"
+      }
+    },
+    "NOT_LIT_1": {
+      "sprite": "ivy_posts/ivy_post_005/sprite.webp",
+      "pixellab_object_id": "93fa63a1-d080-4605-b740-451e84efe95b",
+      "generated_at": "2026-08-13T12:04:08+00:00",
+      "rotations": {
+        "south-east": "ivy_posts/ivy_post_005/rotations/south-east.webp",
+        "south-west": "ivy_posts/ivy_post_005/rotations/south-west.webp",
+        "south": "ivy_posts/ivy_post_005/sprite.webp"
+      },
+      "animations": {
+        "motion": {
+          "group_id": "83e19088-96e7-4ee4-a90e-c5be40b071cb",
+          "description": "Animate the loose ivy trails only, stirring gently. Nothing else moves.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "ivy_posts/ivy_post_005/animations/motion/00.webp",
+            "ivy_posts/ivy_post_005/animations/motion/01.webp",
+            "ivy_posts/ivy_post_005/animations/motion/02.webp",
+            "ivy_posts/ivy_post_005/animations/motion/03.webp",
+            "ivy_posts/ivy_post_005/animations/motion/04.webp"
+          ],
+          "strip": "ivy_posts/ivy_post_005/animations/motion__strip.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-08-29T08:37:13+00:00",
+          "brief": "G10",
+          "review": "ANIMATION_PROBABLY_GOOD",
+          "review_metrics": {
+            "class": "foliage",
+            "base": 0.0966,
+            "still": 0.751
+          }
+        }
+      }
+    },
+    "NOT_LIT_3": {
+      "sprite": "ivy_posts/ivy_post_005/not_lit_3/sprite.webp",
+      "pixellab_object_id": "3a59d23a-3ec3-4625-8e8d-23f47c147898",
+      "generated_at": "2026-08-16T17:07:06+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.6748,
+      "glow_score": 0.0129,
+      "rotations": {
+        "south-east": "ivy_posts/ivy_post_005/not_lit_3/rotations/south-east.webp",
+        "south-west": "ivy_posts/ivy_post_005/not_lit_3/rotations/south-west.webp",
+        "south": "ivy_posts/ivy_post_005/not_lit_3/sprite.webp"
+      }
+    }
+  },
+  "collision": true,
+  "hitbox_shape": "ellipse",
+  "light": {
+    "strength": 0.1,
+    "color": "#ffcd54",
+    "radius": 2,
+    "reference": "the spawn bonfire is 1.0 (radius 7); strength 0 is no light",
+    "states": {
+      "LIT_2": {
+        "strength": 0.1,
+        "color": "#ffcd54",
+        "radius": 2
+      }
+    },
+    "kind": "glow/bio",
+    "flame": false,
+    "embers": false
+  }
+}

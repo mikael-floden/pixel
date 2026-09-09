@@ -1,0 +1,132 @@
+{
+  "schema": "tiles3/tops@1",
+  "kind": "top_only",
+  "wall_is_meaningless": true,
+  "not_a_candidate_for": "x over y",
+  "ground": "light_soil",
+  "flavour": "detail",
+  "index": 126,
+  "seed": 69290,
+  "prompt": "light soil, a mushroom cap in the middle, light soil all around the edge",
+  "palette_top": "#c9ab7e",
+  "tile_id": "63f13c1b-8213-435d-827d-094660f277c9",
+  "n_tiles": 16,
+  "tiles": [
+    "tile_00.webp",
+    "tile_01.webp",
+    "tile_02.webp",
+    "tile_03.webp",
+    "tile_04.webp",
+    "tile_05.webp",
+    "tile_06.webp",
+    "tile_07.webp",
+    "tile_08.webp",
+    "tile_09.webp",
+    "tile_10.webp",
+    "tile_11.webp",
+    "tile_12.webp",
+    "tile_13.webp",
+    "tile_14.webp",
+    "tile_15.webp"
+  ],
+  "settings": {
+    "tile_size": 64,
+    "tile_view": "high top-down",
+    "view_angle": 28.0,
+    "depth_ratio": 0.5,
+    "tile_type": "isometric",
+    "flat_top_px": 2,
+    "outline_mode": "segmentation"
+  },
+  "usd": 0.096,
+  "created": "2026-09-03T06:43:00+00:00",
+  "top_face": {
+    "per_tile": [
+      {
+        "colours": 13,
+        "dominant_share": 0.6258,
+        "px": 922
+      },
+      {
+        "colours": 16,
+        "dominant_share": 0.6323,
+        "px": 922
+      },
+      {
+        "colours": 20,
+        "dominant_share": 0.5728,
+        "px": 920
+      },
+      {
+        "colours": 16,
+        "dominant_share": 0.5036,
+        "px": 981
+      },
+      {
+        "colours": 17,
+        "dominant_share": 0.6605,
+        "px": 922
+      },
+      {
+        "colours": 19,
+        "dominant_share": 0.547,
+        "px": 925
+      },
+      {
+        "colours": 20,
+        "dominant_share": 0.5817,
+        "px": 930
+      },
+      {
+        "colours": 18,
+        "dominant_share": 0.588,
+        "px": 932
+      },
+      {
+        "colours": 19,
+        "dominant_share": 0.6319,
+        "px": 921
+      },
+      {
+        "colours": 19,
+        "dominant_share": 0.6757,
+        "px": 922
+      },
+      {
+        "colours": 16,
+        "dominant_share": 0.602,
+        "px": 922
+      },
+      {
+        "colours": 20,
+        "dominant_share": 0.6241,
+        "px": 923
+      },
+      {
+        "colours": 19,
+        "dominant_share": 0.5087,
+        "px": 979
+      },
+      {
+        "colours": 16,
+        "dominant_share": 0.585,
+        "px": 935
+      },
+      {
+        "colours": 17,
+        "dominant_share": 0.5576,
+        "px": 929
+      },
+      {
+        "colours": 21,
+        "dominant_share": 0.4749,
+        "px": 1076
+      }
+    ],
+    "mean_colours": 17.88,
+    "mean_dominant_share": 0.5857
+  },
+  "motif": "a mushroom cap",
+  "motif_source": "tiles/config/details.json",
+  "walkable": true
+}

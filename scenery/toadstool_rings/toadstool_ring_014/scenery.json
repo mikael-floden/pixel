@@ -1,0 +1,93 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-13T23:38:32+00:00",
+  "id": "toadstool_ring_014",
+  "group": "toadstool_rings",
+  "rank": 39,
+  "index": 14,
+  "name": "Old ring of withered caps 014",
+  "lights": null,
+  "variety": "old ring of withered caps",
+  "glow_concept": "low glowing spore mist pooled in the center",
+  "prompt": "a circle of toadstools growing as a fairy ring on bare trodden forest soil, old ring of withered caps, small, knee-high, self-emissive at night, softly radiating light: low glowing spore mist pooled in the center",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 64,
+  "sprite": "toadstool_rings/toadstool_ring_014/sprite.webp",
+  "placement": {
+    "world_height_m": 0.899,
+    "world_px_height": 46,
+    "character_height_px": 87,
+    "character_height_m": 1.7,
+    "note": "ONE SCENERY PIXEL IS ONE PLAYER PIXEL. world_px_height IS the art's own alpha bbox height, so scenery is placed into the world at 1:1 exactly as the avatar is (setScale(1)) and the two share one pixel grid. The CAMERA still zooms the whole scene \u2014 that is uniform and correct; what must never happen is scenery being resampled on its own, against the player. world_height_m is what the art reads as beside a 87px character; declared_height_m is what it was once declared to be, and a gap between them means the ART is the wrong size.",
+    "declared_height_m": 0.4,
+    "content_box": [
+      3,
+      9,
+      61,
+      55
+    ],
+    "content_px_height": 46,
+    "canvas_render_px": 64
+  },
+  "pixellab_object_id": "a80a91dc-8a10-4c5b-9c8b-e375213919d8",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)",
+  "must_be_imbplemented_with_random_hflip": true,
+  "states": {
+    "LIT_1": {
+      "sprite": "toadstool_rings/toadstool_ring_014/sprite.webp",
+      "pixellab_object_id": "a80a91dc-8a10-4c5b-9c8b-e375213919d8",
+      "generated_at": "2026-08-13T23:38:32+00:00"
+    },
+    "LIT_2": {
+      "sprite": "toadstool_rings/toadstool_ring_014/lit_2/sprite.webp",
+      "pixellab_object_id": "3daaa735-b379-4e74-bd4e-71fff1b97687",
+      "generated_at": "2026-08-17T11:17:03+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.4717,
+      "glow_score": 0.0272
+    },
+    "LIT_4": {
+      "sprite": "toadstool_rings/toadstool_ring_014/lit_4/sprite.webp",
+      "pixellab_object_id": "13c1db0a-75b3-47f1-b8eb-281f6bdd5a0c",
+      "generated_at": "2026-08-17T11:07:35+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.714,
+      "glow_score": 0.16
+    }
+  },
+  "collision": true,
+  "hitbox_shape": "ellipse",
+  "light": {
+    "strength": 0.15,
+    "color": "#9fe4ff",
+    "radius": 3,
+    "reference": "the spawn bonfire is 1.0 (radius 7); strength 0 is no light",
+    "states": {
+      "LIT_1": {
+        "strength": 0.12,
+        "color": "#9fe4ff",
+        "radius": 2
+      },
+      "LIT_2": {
+        "strength": 0.12,
+        "color": "#ffd09d",
+        "radius": 2
+      },
+      "LIT_4": {
+        "strength": 0.12,
+        "color": "#9fe4ff",
+        "radius": 2
+      }
+    },
+    "kind": "glow/bio",
+    "flame": false,
+    "embers": false
+  }
+}

@@ -1,0 +1,23 @@
+{
+  "domain": "items",
+  "id": "grey_violet_charge_stone",
+  "name_seen": "Soulstone",
+  "law": "V",
+  "description": "Grey stone veined in dead violet, off a Gravecharger. It is still trying to reach a line that fell centuries ago.",
+  "lore": [
+    "It pays nothing to a man standing still. Set into a spear-shaft or a shoulder-plate it adds a quarter to whatever you were already committed to, and it adds it at the far end of the movement, once you have run out of ways to change your mind. Setters keep it out of knives, a knife being a stopping weapon and this being no sort of stopping stone. People who wear one arrive at the far side of things they had meant to go around.",
+    "The war [[monsters/undead_charger|the horse]] comes out of is in no book, and [[characters/ef25b1f0|Bettany]] has spent a whole circuit of fires establishing that it is in nobody's mouth either. What she has instead is ninety-two gold on a bench: grey plates, dead violet in the seams, a pale star at the middle. A stone is one fact pressed down until it is nearly a mineral, and the fact in this one is not running, and is not fear, and is not carrying a man. It is a shape. The middle of a row, at a flat gallop, without checking. Which means there were rows, and somebody stood men in them, and worked an animal at them morning after morning until that was the last thing left in it.",
+    "So it is a document, the shortest she owns, and the only source in the Chronicle she can verify by picking it up. What buyers pay for is the second half of the effect, the part where whatever you hit goes backwards. None of that is the animal's. That is what a line looks like from the front."
+  ],
+  "related": [
+    {
+      "domain": "monsters",
+      "id": "undead_charger"
+    },
+    {
+      "domain": "lore",
+      "id": "the_hard_pieces"
+    }
+  ],
+  "gm_notes": "The creature's record owns the horns, the frightened witnesses and Hearn's three orders; none of it is repeated here. This works the other side: the stone is the only surviving document of a drill, and reads as evidence that the rows existed before the horse did. Bettany's failed circuit is referred to in one clause, not restaged. The knockback line is the payload — keep it last."
+}

@@ -1,0 +1,353 @@
+{
+  "format": "scenery-piece@2",
+  "id": "offering_table_003",
+  "group": "offering_tables",
+  "rank": 22,
+  "index": 3,
+  "name": "Flat dolmen stone, apples 003",
+  "lights": null,
+  "variety": "flat dolmen stone, apples",
+  "glow_concept": null,
+  "prompt": "a low wooden offering table set with bowls of food, cut flowers and small keepsakes left for the dead, flat dolmen stone, apples, waist-high to an adult person, completely unlit, no glow, no light sources, no self-emission",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 64,
+  "sprite": "offering_tables/offering_table_003/sprite.webp",
+  "placement": {
+    "world_height_m": 0.782,
+    "world_px_height": 40,
+    "character_height_px": 87,
+    "character_height_m": 1.7,
+    "note": "ONE SCENERY PIXEL IS ONE PLAYER PIXEL. world_px_height IS the art's own alpha bbox height, so scenery is placed into the world at 1:1 exactly as the avatar is (setScale(1)) and the two share one pixel grid. The CAMERA still zooms the whole scene \u2014 that is uniform and correct; what must never happen is scenery being resampled on its own, against the player. world_height_m is what the art reads as beside a 87px character; declared_height_m is what it was once declared to be, and a gap between them means the ART is the wrong size.",
+    "declared_height_m": 0.75,
+    "content_box": [
+      5,
+      13,
+      60,
+      53
+    ],
+    "content_px_height": 40,
+    "canvas_render_px": 64
+  },
+  "pixellab_object_id": "3f1ed1ca-db9b-4dc6-a632-af2e22b26d64",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)",
+  "must_be_imbplemented_with_random_hflip": true,
+  "generated_at": "2026-08-13T07:06:21+00:00",
+  "states": {
+    "LIT_1": {
+      "sprite": "offering_tables/offering_table_003/lit_1/sprite.webp",
+      "pixellab_object_id": "34186f4a-cdd7-40ed-9b4a-6cd9ac07aff8",
+      "generated_at": "2026-08-16T19:45:41+00:00",
+      "glow_concept": "the offerings themselves glowing faintly gold",
+      "difference_from_source": 0.8397,
+      "glow_score": 0.0905,
+      "rotations": {
+        "south-east": "offering_tables/offering_table_003/lit_1/rotations/south-east.webp",
+        "south-west": "offering_tables/offering_table_003/lit_1/rotations/south-west.webp",
+        "south": "offering_tables/offering_table_003/lit_1/sprite.webp"
+      },
+      "animations": {
+        "motion": {
+          "group_id": "6b132d45-f354-4c9c-a9f7-9ecf88240400",
+          "description": "This is the same picture in every frame. ONLY the gold crystal on the table brightens a little and returns. It is lit and clearly visible in every frame, including the first. It gets only SLIGHTLY brighter -- never white, never washed out -- and keeps its own colour throughout: brightest in the middle, back to its first-frame brightness at the end, never dimmer at the end than the start. Nothing is added or removed anywhere: every object appears in every frame, the same number of them, in the same places, at the same size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour, no outline redrawn. The last frame matches the first exactly.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "offering_tables/offering_table_003/lit_1/animations/motion/00.webp",
+            "offering_tables/offering_table_003/lit_1/animations/motion/01.webp",
+            "offering_tables/offering_table_003/lit_1/animations/motion/02.webp",
+            "offering_tables/offering_table_003/lit_1/animations/motion/03.webp",
+            "offering_tables/offering_table_003/lit_1/animations/motion/04.webp"
+          ],
+          "strip": "offering_tables/offering_table_003/lit_1/animations/motion__strip.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-08-29T18:55:53+00:00",
+          "brief": "B46",
+          "review": "ANIMATION_PROBABLY_GOOD",
+          "review_metrics": {
+            "class": "fire",
+            "base": 0.0,
+            "still": 0.57
+          },
+          "light_frames": [
+            {
+              "intensity": 0.768,
+              "dx": -2.7,
+              "dy": -10.2
+            },
+            {
+              "intensity": 1.194,
+              "dx": 3.2,
+              "dy": -6.9
+            },
+            {
+              "intensity": 1.275,
+              "dx": 2.7,
+              "dy": -6.8
+            },
+            {
+              "intensity": 1.17,
+              "dx": -2.6,
+              "dy": -7.1
+            },
+            {
+              "intensity": 0.593,
+              "dx": -2.5,
+              "dy": -10.3
+            }
+          ]
+        }
+      }
+    },
+    "LIT_2": {
+      "sprite": "offering_tables/offering_table_003/lit_2/sprite.webp",
+      "pixellab_object_id": "56ff21e9-fbd3-4da1-8255-e7c6bd84b66a",
+      "generated_at": "2026-08-16T19:45:43+00:00",
+      "glow_concept": "ring of lit tea candles among the gifts",
+      "difference_from_source": 0.8267,
+      "glow_score": 0.1246,
+      "animations": {
+        "flame": {
+          "group_id": "13cdbe52-3a3f-4a41-b711-4e91fb65c66d",
+          "description": "Animate the flame only",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "directions": {
+            "south": {
+              "frames": 5,
+              "frame_paths": [
+                "offering_tables/offering_table_003/lit_2/animations/flame/south/00.webp",
+                "offering_tables/offering_table_003/lit_2/animations/flame/south/01.webp",
+                "offering_tables/offering_table_003/lit_2/animations/flame/south/02.webp",
+                "offering_tables/offering_table_003/lit_2/animations/flame/south/03.webp",
+                "offering_tables/offering_table_003/lit_2/animations/flame/south/04.webp"
+              ],
+              "strip": "offering_tables/offering_table_003/lit_2/animations/flame__south.webp",
+              "light_frames": [
+                {
+                  "intensity": 0.99,
+                  "dx": 1.6,
+                  "dy": -1.7
+                },
+                {
+                  "intensity": 1.027,
+                  "dx": 1.7,
+                  "dy": -1.5
+                },
+                {
+                  "intensity": 0.929,
+                  "dx": 1.6,
+                  "dy": -1.3
+                },
+                {
+                  "intensity": 1.01,
+                  "dx": 1.6,
+                  "dy": -1.3
+                },
+                {
+                  "intensity": 1.044,
+                  "dx": 1.2,
+                  "dy": -1.6
+                }
+              ]
+            },
+            "south-east": {
+              "frames": 5,
+              "frame_paths": [
+                "offering_tables/offering_table_003/lit_2/animations/flame/south-east/00.webp",
+                "offering_tables/offering_table_003/lit_2/animations/flame/south-east/01.webp",
+                "offering_tables/offering_table_003/lit_2/animations/flame/south-east/02.webp",
+                "offering_tables/offering_table_003/lit_2/animations/flame/south-east/03.webp",
+                "offering_tables/offering_table_003/lit_2/animations/flame/south-east/04.webp"
+              ],
+              "strip": "offering_tables/offering_table_003/lit_2/animations/flame__south-east.webp",
+              "light_frames": [
+                {
+                  "intensity": 0.764,
+                  "dx": 5.1,
+                  "dy": -3.7
+                },
+                {
+                  "intensity": 1.469,
+                  "dx": 3.2,
+                  "dy": -5.3
+                },
+                {
+                  "intensity": 0.5,
+                  "dx": 2.1,
+                  "dy": -5.0
+                },
+                {
+                  "intensity": 1.187,
+                  "dx": 3.9,
+                  "dy": -4.1
+                },
+                {
+                  "intensity": 1.318,
+                  "dx": 3.6,
+                  "dy": -4.7
+                }
+              ]
+            },
+            "south-west": {
+              "frames": 5,
+              "frame_paths": [
+                "offering_tables/offering_table_003/lit_2/animations/flame/south-west/00.webp",
+                "offering_tables/offering_table_003/lit_2/animations/flame/south-west/01.webp",
+                "offering_tables/offering_table_003/lit_2/animations/flame/south-west/02.webp",
+                "offering_tables/offering_table_003/lit_2/animations/flame/south-west/03.webp",
+                "offering_tables/offering_table_003/lit_2/animations/flame/south-west/04.webp"
+              ],
+              "strip": "offering_tables/offering_table_003/lit_2/animations/flame__south-west.webp",
+              "light_frames": [
+                {
+                  "intensity": 0.772,
+                  "dx": -1.3,
+                  "dy": -3.2
+                },
+                {
+                  "intensity": 1.5,
+                  "dx": -2.3,
+                  "dy": -4.9
+                },
+                {
+                  "intensity": 1.5,
+                  "dx": -2.6,
+                  "dy": -4.2
+                },
+                {
+                  "intensity": 0.5,
+                  "dx": -1.4,
+                  "dy": -3.8
+                },
+                {
+                  "intensity": 0.5,
+                  "dx": -1.5,
+                  "dy": -3.7
+                }
+              ]
+            }
+          },
+          "generated_at": "2026-08-29T08:25:24+00:00",
+          "review": "ANIMATION_PROBABLY_GOOD",
+          "review_metrics": {
+            "class": "fire",
+            "base": 0.0526,
+            "still": 0.564
+          },
+          "frame_paths": [
+            "offering_tables/offering_table_003/lit_2/animations/flame/south/00.webp",
+            "offering_tables/offering_table_003/lit_2/animations/flame/south/01.webp",
+            "offering_tables/offering_table_003/lit_2/animations/flame/south/02.webp",
+            "offering_tables/offering_table_003/lit_2/animations/flame/south/03.webp",
+            "offering_tables/offering_table_003/lit_2/animations/flame/south/04.webp"
+          ],
+          "strip": "offering_tables/offering_table_003/lit_2/animations/flame__south.webp",
+          "light_frames": [
+            {
+              "intensity": 0.99,
+              "dx": 1.6,
+              "dy": -1.7
+            },
+            {
+              "intensity": 1.027,
+              "dx": 1.7,
+              "dy": -1.5
+            },
+            {
+              "intensity": 0.929,
+              "dx": 1.6,
+              "dy": -1.3
+            },
+            {
+              "intensity": 1.01,
+              "dx": 1.6,
+              "dy": -1.3
+            },
+            {
+              "intensity": 1.044,
+              "dx": 1.2,
+              "dy": -1.6
+            }
+          ]
+        }
+      },
+      "rotations": {
+        "south-east": "offering_tables/offering_table_003/lit_2/rotations/south-east.webp",
+        "south-west": "offering_tables/offering_table_003/lit_2/rotations/south-west.webp",
+        "south": "offering_tables/offering_table_003/lit_2/sprite.webp"
+      }
+    },
+    "NOT_LIT_1": {
+      "sprite": "offering_tables/offering_table_003/sprite.webp",
+      "pixellab_object_id": "3f1ed1ca-db9b-4dc6-a632-af2e22b26d64",
+      "generated_at": "2026-08-13T07:06:21+00:00",
+      "rotations": {
+        "south-east": "offering_tables/offering_table_003/rotations/south-east.webp",
+        "south-west": "offering_tables/offering_table_003/rotations/south-west.webp",
+        "south": "offering_tables/offering_table_003/sprite.webp"
+      }
+    },
+    "NOT_LIT_2": {
+      "sprite": "offering_tables/offering_table_003/not_lit_2/sprite.webp",
+      "pixellab_object_id": "5641e324-efa4-4d26-b66e-3a2e6425baf6",
+      "generated_at": "2026-08-16T19:44:32+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.4145,
+      "glow_score": 0.0574,
+      "rotations": {
+        "south-east": "offering_tables/offering_table_003/not_lit_2/rotations/south-east.webp",
+        "south-west": "offering_tables/offering_table_003/not_lit_2/rotations/south-west.webp",
+        "south": "offering_tables/offering_table_003/not_lit_2/sprite.webp"
+      }
+    },
+    "NOT_LIT_3": {
+      "sprite": "offering_tables/offering_table_003/not_lit_3/sprite.webp",
+      "pixellab_object_id": "e7f53100-8478-4817-ad3c-137eba102613",
+      "generated_at": "2026-08-16T19:44:42+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.4899,
+      "glow_score": 0.0292,
+      "rotations": {
+        "south-east": "offering_tables/offering_table_003/not_lit_3/rotations/south-east.webp",
+        "south-west": "offering_tables/offering_table_003/not_lit_3/rotations/south-west.webp",
+        "south": "offering_tables/offering_table_003/not_lit_3/sprite.webp"
+      }
+    }
+  },
+  "collision": true,
+  "hitbox_shape": "rect",
+  "light": {
+    "strength": 0.2,
+    "color": "#ffdd78",
+    "radius": 4,
+    "reference": "the spawn bonfire is 1.0 (radius 7); strength 0 is no light",
+    "states": {
+      "LIT_1": {
+        "strength": 0.2,
+        "color": "#ffdd78",
+        "radius": 4
+      },
+      "LIT_2": {
+        "strength": 0.2,
+        "color": "#ffcb86",
+        "radius": 4
+      }
+    },
+    "kind": "glow/magic",
+    "flame": false,
+    "embers": false
+  }
+}

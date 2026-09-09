@@ -1,0 +1,86 @@
+{
+  "format": "scenery-piece@2",
+  "id": "ruined_arch_002",
+  "group": "ruined_arches",
+  "rank": 51,
+  "index": 2,
+  "name": "Round roman arch 002",
+  "lights": null,
+  "variety": "round roman arch",
+  "glow_concept": "luminous briar roses climbing one side",
+  "prompt": "a freestanding ruined stone archway with crumbling voussoirs, a worn threshold, and rubble at its feet, round roman arch, tall, about two people high, self-emissive at night, softly radiating light: luminous briar roses climbing one side",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 160,
+  "sprite": "ruined_arches/ruined_arch_002/sprite.webp",
+  "placement": {
+    "world_height_m": 2.99,
+    "world_px_height": 153,
+    "character_height_px": 87,
+    "character_height_m": 1.7,
+    "note": "ONE SCENERY PIXEL IS ONE PLAYER PIXEL. world_px_height IS the art's own alpha bbox height, so scenery is placed into the world at 1:1 exactly as the avatar is (setScale(1)) and the two share one pixel grid. The CAMERA still zooms the whole scene \u2014 that is uniform and correct; what must never happen is scenery being resampled on its own, against the player. world_height_m is what the art reads as beside a 87px character; declared_height_m is what it was once declared to be, and a gap between them means the ART is the wrong size.",
+    "declared_height_m": 3.06,
+    "content_box": [
+      13,
+      5,
+      148,
+      158
+    ],
+    "content_px_height": 153,
+    "canvas_render_px": 160
+  },
+  "pixellab_object_id": "213a34bf-7043-4230-811f-43ad108a4891",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)",
+  "must_be_imbplemented_with_random_hflip": true,
+  "generated_at": "2026-08-13T04:39:53+00:00",
+  "states": {
+    "LIT_1": {
+      "sprite": "ruined_arches/ruined_arch_002/sprite.webp",
+      "pixellab_object_id": "213a34bf-7043-4230-811f-43ad108a4891",
+      "generated_at": "2026-08-13T04:39:53+00:00",
+      "rotations": {
+        "south-east": "ruined_arches/ruined_arch_002/rotations/south-east.webp",
+        "south-west": "ruined_arches/ruined_arch_002/rotations/south-west.webp",
+        "south": "ruined_arches/ruined_arch_002/sprite.webp"
+      }
+    },
+    "NOT_LIT_3": {
+      "sprite": "ruined_arches/ruined_arch_002/not_lit_3/sprite.webp",
+      "pixellab_object_id": "baae5772-01ef-43e8-b94a-e2acaf47b9cb",
+      "generated_at": "2026-08-16T20:28:45+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.6068,
+      "glow_score": 0.0703,
+      "relit_from": "LIT_3",
+      "rotations": {
+        "south-east": "ruined_arches/ruined_arch_002/not_lit_3/rotations/south-east.webp",
+        "south-west": "ruined_arches/ruined_arch_002/not_lit_3/rotations/south-west.webp",
+        "south": "ruined_arches/ruined_arch_002/not_lit_3/sprite.webp"
+      }
+    }
+  },
+  "collision": true,
+  "hitbox_shape": "rect",
+  "light": {
+    "strength": 0.2,
+    "color": "#ffc58d",
+    "radius": 4,
+    "reference": "the spawn bonfire is 1.0 (radius 7); strength 0 is no light",
+    "states": {
+      "LIT_1": {
+        "strength": 0.2,
+        "color": "#ffc58d",
+        "radius": 4
+      }
+    },
+    "kind": "glow/bio",
+    "flame": false,
+    "embers": false
+  }
+}

@@ -1,0 +1,132 @@
+{
+  "schema": "tiles3/tops@1",
+  "kind": "top_only",
+  "wall_is_meaningless": true,
+  "not_a_candidate_for": "x over y",
+  "ground": "snow",
+  "flavour": "detail",
+  "index": 108,
+  "seed": 57430,
+  "prompt": "snow, a sparkle of frost in the middle, snow all around the edge",
+  "palette_top": "#ebf4f6",
+  "tile_id": "7f550481-532c-4c73-84a8-16bac58733d4",
+  "n_tiles": 16,
+  "tiles": [
+    "tile_00.webp",
+    "tile_01.webp",
+    "tile_02.webp",
+    "tile_03.webp",
+    "tile_04.webp",
+    "tile_05.webp",
+    "tile_06.webp",
+    "tile_07.webp",
+    "tile_08.webp",
+    "tile_09.webp",
+    "tile_10.webp",
+    "tile_11.webp",
+    "tile_12.webp",
+    "tile_13.webp",
+    "tile_14.webp",
+    "tile_15.webp"
+  ],
+  "settings": {
+    "tile_size": 64,
+    "tile_view": "high top-down",
+    "view_angle": 28.0,
+    "depth_ratio": 0.5,
+    "tile_type": "isometric",
+    "flat_top_px": 2,
+    "outline_mode": "segmentation"
+  },
+  "usd": 0.096,
+  "created": "2026-09-03T05:11:22+00:00",
+  "top_face": {
+    "per_tile": [
+      {
+        "colours": 7,
+        "dominant_share": 0.8189,
+        "px": 922
+      },
+      {
+        "colours": 13,
+        "dominant_share": 0.7115,
+        "px": 922
+      },
+      {
+        "colours": 13,
+        "dominant_share": 0.6996,
+        "px": 922
+      },
+      {
+        "colours": 12,
+        "dominant_share": 0.6649,
+        "px": 922
+      },
+      {
+        "colours": 11,
+        "dominant_share": 0.7202,
+        "px": 922
+      },
+      {
+        "colours": 9,
+        "dominant_share": 0.7202,
+        "px": 922
+      },
+      {
+        "colours": 13,
+        "dominant_share": 0.6999,
+        "px": 923
+      },
+      {
+        "colours": 13,
+        "dominant_share": 0.6501,
+        "px": 923
+      },
+      {
+        "colours": 14,
+        "dominant_share": 0.7335,
+        "px": 923
+      },
+      {
+        "colours": 14,
+        "dominant_share": 0.6587,
+        "px": 923
+      },
+      {
+        "colours": 12,
+        "dominant_share": 0.6371,
+        "px": 923
+      },
+      {
+        "colours": 14,
+        "dominant_share": 0.6327,
+        "px": 923
+      },
+      {
+        "colours": 13,
+        "dominant_share": 0.6674,
+        "px": 923
+      },
+      {
+        "colours": 14,
+        "dominant_share": 0.6981,
+        "px": 924
+      },
+      {
+        "colours": 12,
+        "dominant_share": 0.6082,
+        "px": 924
+      },
+      {
+        "colours": 13,
+        "dominant_share": 0.5812,
+        "px": 924
+      }
+    ],
+    "mean_colours": 12.31,
+    "mean_dominant_share": 0.6814
+  },
+  "motif": "a sparkle of frost",
+  "motif_source": "tiles/config/details.json",
+  "walkable": true
+}

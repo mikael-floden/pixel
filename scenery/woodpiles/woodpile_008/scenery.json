@@ -1,0 +1,99 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-13T22:57:09+00:00",
+  "id": "woodpile_008",
+  "group": "woodpiles",
+  "rank": 87,
+  "index": 8,
+  "name": "Fresh pale split-pine stack 008",
+  "lights": null,
+  "variety": "fresh pale split-pine stack",
+  "glow_concept": "sparks of light drifting off fresh-split wood",
+  "prompt": "a neatly stacked pile of split firewood logs with a chopping block and an axe standing beside it, fresh pale split-pine stack, waist-high, self-emissive at night, softly radiating light: sparks of light drifting off fresh-split wood",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 64,
+  "sprite": "woodpiles/woodpile_008/sprite.webp",
+  "placement": {
+    "world_height_m": 0.86,
+    "world_px_height": 44,
+    "character_height_px": 87,
+    "character_height_m": 1.7,
+    "note": "ONE SCENERY PIXEL IS ONE PLAYER PIXEL. world_px_height IS the art's own alpha bbox height, so scenery is placed into the world at 1:1 exactly as the avatar is (setScale(1)) and the two share one pixel grid. The CAMERA still zooms the whole scene \u2014 that is uniform and correct; what must never happen is scenery being resampled on its own, against the player. world_height_m is what the art reads as beside a 87px character; declared_height_m is what it was once declared to be, and a gap between them means the ART is the wrong size.",
+    "declared_height_m": 1.13,
+    "content_box": [
+      5,
+      14,
+      62,
+      58
+    ],
+    "content_px_height": 44,
+    "canvas_render_px": 64
+  },
+  "pixellab_object_id": "5dd55055-68b8-4ed1-9249-3d261a8c13dc",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)",
+  "must_be_imbplemented_with_random_hflip": true,
+  "states": {
+    "NOT_LIT_3": {
+      "sprite": "woodpiles/woodpile_008/sprite.webp",
+      "pixellab_object_id": "5dd55055-68b8-4ed1-9249-3d261a8c13dc",
+      "generated_at": "2026-08-13T22:57:09+00:00",
+      "relit_from": "LIT_1",
+      "rotations": {
+        "south-east": "woodpiles/woodpile_008/rotations/south-east.webp",
+        "south-west": "woodpiles/woodpile_008/rotations/south-west.webp",
+        "south": "woodpiles/woodpile_008/sprite.webp"
+      }
+    },
+    "NOT_LIT_4": {
+      "sprite": "woodpiles/woodpile_008/not_lit_4/sprite.webp",
+      "pixellab_object_id": "f1f859cb-7b6d-4ba8-bf6f-7f0f3971b254",
+      "generated_at": "2026-08-17T13:19:44+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.5857,
+      "glow_score": 0.2324,
+      "relit_from": "LIT_2",
+      "rotations": {
+        "south-east": "woodpiles/woodpile_008/not_lit_4/rotations/south-east.webp",
+        "south-west": "woodpiles/woodpile_008/not_lit_4/rotations/south-west.webp",
+        "south": "woodpiles/woodpile_008/not_lit_4/sprite.webp"
+      }
+    },
+    "NOT_LIT_5": {
+      "sprite": "woodpiles/woodpile_008/not_lit_5/sprite.webp",
+      "pixellab_object_id": "acc428a6-25ca-4764-b1df-6b4a56da7dd3",
+      "generated_at": "2026-08-17T13:19:35+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.7241,
+      "glow_score": 0.1001,
+      "relit_from": "LIT_3",
+      "rotations": {
+        "south-east": "woodpiles/woodpile_008/not_lit_5/rotations/south-east.webp",
+        "south-west": "woodpiles/woodpile_008/not_lit_5/rotations/south-west.webp",
+        "south": "woodpiles/woodpile_008/not_lit_5/sprite.webp"
+      }
+    },
+    "NOT_LIT_6": {
+      "sprite": "woodpiles/woodpile_008/not_lit_6/sprite.webp",
+      "pixellab_object_id": "e3a1639f-0618-4766-a65c-db68429dcb5f",
+      "generated_at": "2026-08-17T13:20:14+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.73,
+      "glow_score": 0.1596,
+      "relit_from": "LIT_4",
+      "rotations": {
+        "south-east": "woodpiles/woodpile_008/not_lit_6/rotations/south-east.webp",
+        "south-west": "woodpiles/woodpile_008/not_lit_6/rotations/south-west.webp",
+        "south": "woodpiles/woodpile_008/not_lit_6/sprite.webp"
+      }
+    }
+  },
+  "collision": true,
+  "hitbox_shape": "rect"
+}

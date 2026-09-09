@@ -1,0 +1,141 @@
+{
+  "format": "scenery-piece@2",
+  "id": "washing_line_002",
+  "group": "washing_lines",
+  "rank": 40,
+  "index": 2,
+  "name": "Dye-stained craftsman's cloths 002",
+  "lights": null,
+  "variety": "dye-stained craftsman's cloths",
+  "glow_concept": "glowworm-dotted rope like strung beads",
+  "prompt": "two wooden posts holding a sagging rope line hung with pegged linens and clothes, dye-stained craftsman's cloths, large, well above head height of a person, self-emissive at night, softly radiating light: glowworm-dotted rope like strung beads",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 128,
+  "sprite": "washing_lines/washing_line_002/sprite.webp",
+  "placement": {
+    "world_height_m": 1.661,
+    "world_px_height": 85,
+    "character_height_px": 87,
+    "character_height_m": 1.7,
+    "note": "ONE SCENERY PIXEL IS ONE PLAYER PIXEL. world_px_height IS the art's own alpha bbox height, so scenery is placed into the world at 1:1 exactly as the avatar is (setScale(1)) and the two share one pixel grid. The CAMERA still zooms the whole scene \u2014 that is uniform and correct; what must never happen is scenery being resampled on its own, against the player. world_height_m is what the art reads as beside a 87px character; declared_height_m is what it was once declared to be, and a gap between them means the ART is the wrong size.",
+    "declared_height_m": 2.08,
+    "content_box": [
+      10,
+      21,
+      120,
+      106
+    ],
+    "content_px_height": 85,
+    "canvas_render_px": 128
+  },
+  "pixellab_object_id": "a6f0b50c-a22e-4399-8325-0103a997d63f",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)",
+  "must_be_imbplemented_with_random_hflip": true,
+  "generated_at": "2026-08-13T04:18:48+00:00",
+  "states": {
+    "NOT_LIT_3": {
+      "sprite": "washing_lines/washing_line_002/sprite.webp",
+      "pixellab_object_id": "a6f0b50c-a22e-4399-8325-0103a997d63f",
+      "generated_at": "2026-08-13T04:18:48+00:00",
+      "relit_from": "LIT_1",
+      "rotations": {
+        "south-east": "washing_lines/washing_line_002/rotations/south-east.webp",
+        "south-west": "washing_lines/washing_line_002/rotations/south-west.webp",
+        "south": "washing_lines/washing_line_002/sprite.webp"
+      }
+    },
+    "NOT_LIT_4": {
+      "sprite": "washing_lines/washing_line_002/not_lit_4/sprite.webp",
+      "pixellab_object_id": "594a952b-8226-4dd2-a597-790128ea70c6",
+      "generated_at": "2026-08-17T11:54:19+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.594,
+      "glow_score": 0.0603,
+      "relit_from": "LIT_2",
+      "rotations": {
+        "south-east": "washing_lines/washing_line_002/not_lit_4/rotations/south-east.webp",
+        "south-west": "washing_lines/washing_line_002/not_lit_4/rotations/south-west.webp",
+        "south": "washing_lines/washing_line_002/not_lit_4/sprite.webp"
+      },
+      "animations": {
+        "motion": {
+          "group_id": "f3336613-83e4-4bbb-8984-c9604121d2a3",
+          "description": "This is the same picture in every frame. ONLY the washing hanging on the line moves, swaying. Everything else in the picture is copied from the first frame exactly, pixel for pixel, unchanged in shape, size, position and colour. No outline anywhere is redrawn. The last frame matches the first frame exactly, so the loop joins. Nothing anywhere becomes darker, lighter or a different colour except the one thing named above.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "washing_lines/washing_line_002/not_lit_4/animations/motion/00.webp",
+            "washing_lines/washing_line_002/not_lit_4/animations/motion/01.webp",
+            "washing_lines/washing_line_002/not_lit_4/animations/motion/02.webp",
+            "washing_lines/washing_line_002/not_lit_4/animations/motion/03.webp",
+            "washing_lines/washing_line_002/not_lit_4/animations/motion/04.webp"
+          ],
+          "strip": "washing_lines/washing_line_002/not_lit_4/animations/motion__strip.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-08-29T16:16:00+00:00",
+          "brief": "Y14",
+          "review": "ANIMATION_PROBABLY_GOOD",
+          "review_metrics": {
+            "base_outline": 0.0587
+          }
+        }
+      }
+    },
+    "NOT_LIT_5": {
+      "sprite": "washing_lines/washing_line_002/not_lit_5/sprite.webp",
+      "pixellab_object_id": "09f9558d-563f-4b9b-8fed-6d36165ff478",
+      "generated_at": "2026-08-17T11:51:12+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.5975,
+      "glow_score": 0.0096,
+      "relit_from": "LIT_3",
+      "rotations": {
+        "south-east": "washing_lines/washing_line_002/not_lit_5/rotations/south-east.webp",
+        "south-west": "washing_lines/washing_line_002/not_lit_5/rotations/south-west.webp",
+        "south": "washing_lines/washing_line_002/not_lit_5/sprite.webp"
+      },
+      "animations": {
+        "motion": {
+          "group_id": "2cb3a065-35b4-4c9b-9944-82753dbc7641",
+          "description": "This is the same picture in every frame. ONLY the washing hanging on the line swings. It moves as one solid piece and keeps exactly the same shape, size and colours the whole time it moves. It is never redrawn, never reshaped and never changes its outline. Everything else in the picture is copied from the first frame exactly, pixel for pixel, unchanged in shape, size, position and colour. No outline anywhere is redrawn. The last frame matches the first frame exactly, so the loop joins.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "washing_lines/washing_line_002/not_lit_5/animations/motion/00.webp",
+            "washing_lines/washing_line_002/not_lit_5/animations/motion/01.webp",
+            "washing_lines/washing_line_002/not_lit_5/animations/motion/02.webp",
+            "washing_lines/washing_line_002/not_lit_5/animations/motion/03.webp",
+            "washing_lines/washing_line_002/not_lit_5/animations/motion/04.webp"
+          ],
+          "strip": "washing_lines/washing_line_002/not_lit_5/animations/motion__strip.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-08-29T16:56:00+00:00",
+          "brief": "Z18",
+          "review": "ANIMATION_PROBABLY_GOOD",
+          "review_metrics": {
+            "class": "fire",
+            "base": 0.0323,
+            "still": 0.589
+          }
+        }
+      }
+    }
+  },
+  "collision": true,
+  "hitbox_shape": "rect"
+}

@@ -1,0 +1,15 @@
+{
+  "domain": "items",
+  "id": "bleached_sea_shells",
+  "name_seen": "Sea Shells",
+  "law": "V",
+  "description": "Scallops and spirals, sun-faded to tan. A Dunedelver turns them up where the sea has not been for an age.",
+  "lore": [
+    "Eleven gold a handful — on the dune road, at the crossings, from anybody, in any season. That figure has not moved in anyone's memory, which makes sea shells the steadiest price in the world after [[lore/the_gold_agreement|gold itself]], and the trade uses them as a ruler: when two people cannot agree what a hide is worth, one of them says it in handfuls and the argument is finished inside a minute. The reason is not flattering. Prices move because people want things, and want is the unsteady part, and nothing about a scallop faded to the colour of a fingernail has ever moved anybody. The trade got its one honest measure out of the only goods in the country nobody has ever wanted."
+  ],
+  "related": [
+    { "domain": "lore", "id": "the_gold_agreement" },
+    { "domain": "lore", "id": "the_hard_pieces" }
+  ],
+  "gm_notes": "The junk trade's unit of account, and why it works: worthlessness is the second thing everybody agrees on. Sits next to gold in chapter six without competing with it — gold never drifts, shells are never wanted."
+}

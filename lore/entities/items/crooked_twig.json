@@ -1,0 +1,21 @@
+{
+  "domain": "items",
+  "id": "crooked_twig",
+  "name_seen": "Crooked Twig",
+  "law": "V",
+  "description": "One dark twig with a knob at the end. Stumpling sheds a hundred a season and misses every one.",
+  "lore": [
+    "Five gold for a stick. Say that out loud at a stall and the seller will wait you out, because the answer is not funny. Somebody is buying. Everything that comes off anything that walks goes into the same carts sooner or later — teeth, hide, cracked shell, and twigs, by weight, no questions asked about condition. Children on the east road work this out inside a season and keep a sack under the bed. Grown men are embarrassed to be seen stooping, and stoop. The carts go east and come back empty and the drivers are perfectly civil, and not one of them has ever been able to say who pays them, or what for. [[lore/the_hard_pieces|The trade]] gave up asking a long time ago. The price is good and it has never once gone down."
+  ],
+  "related": [
+    {
+      "domain": "lore",
+      "id": "the_hard_pieces"
+    },
+    {
+      "domain": "monsters",
+      "id": "tree_stump"
+    }
+  ],
+  "gm_notes": "The batch's one look at the buyer who takes every scrap. Leave it unresolved; the point is that a worthless stick has a floor price and the floor never moves."
+}

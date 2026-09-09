@@ -1,0 +1,641 @@
+{
+  "id": "gray_brute",
+  "name": "Gnashjaw",
+  "lore": "It gnaws boulders to keep its tusks short. When the grinding stops, something softer has wandered close.",
+  "source": {
+    "kind": "character",
+    "pixellab_id": "20c9597b-ebc9-42e3-b9ee-aaab69674b89",
+    "url": "https://www.pixellab.ai/create-character/20c9597b-ebc9-42e3-b9ee-aaab69674b89",
+    "prompt": "Gigantic four-legged brute with dark gray leathery skin, extremely broad shoulders, oversized front limbs, tiny hostile eyes, huge lower tusks and a row of enormous jagged bone spikes extending from its neck to its tail.",
+    "view": "low top-down",
+    "tags": [
+      "MONSTER"
+    ]
+  },
+  "size": {
+    "width": 120,
+    "height": 120
+  },
+  "native_size": {
+    "width": 120,
+    "height": 120
+  },
+  "pad": {
+    "x": 0,
+    "y": 0
+  },
+  "sprite": "gray_brute/sprite.webp",
+  "directions": [
+    "east",
+    "north",
+    "north-east",
+    "north-west",
+    "south",
+    "south-east",
+    "south-west",
+    "west"
+  ],
+  "rotations": {
+    "south": "gray_brute/rotations/south.webp",
+    "west": "gray_brute/rotations/west.webp",
+    "east": "gray_brute/rotations/east.webp",
+    "north": "gray_brute/rotations/north.webp",
+    "south-east": "gray_brute/rotations/south-east.webp",
+    "north-east": "gray_brute/rotations/north-east.webp",
+    "north-west": "gray_brute/rotations/north-west.webp",
+    "south-west": "gray_brute/rotations/south-west.webp"
+  },
+  "animations": {
+    "idle": {
+      "group_id": "b3c67815-6925-497e-8ec4-e974e4337d90",
+      "source_name": "custom-Calm still idle, breathing",
+      "directions": {
+        "east": {
+          "frames": 5,
+          "strip": "gray_brute/animations/idle__east.webp",
+          "frame_paths": [
+            "gray_brute/animations/idle/east/00.webp",
+            "gray_brute/animations/idle/east/01.webp",
+            "gray_brute/animations/idle/east/02.webp",
+            "gray_brute/animations/idle/east/03.webp",
+            "gray_brute/animations/idle/east/04.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:38:31 GMT",
+          "src_frames": 5,
+          "sub": "75ccb593-09b8-4eca-bffd-34339a635daa"
+        },
+        "north": {
+          "frames": 5,
+          "strip": "gray_brute/animations/idle__north.webp",
+          "frame_paths": [
+            "gray_brute/animations/idle/north/00.webp",
+            "gray_brute/animations/idle/north/01.webp",
+            "gray_brute/animations/idle/north/02.webp",
+            "gray_brute/animations/idle/north/03.webp",
+            "gray_brute/animations/idle/north/04.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:38:32 GMT",
+          "src_frames": 5,
+          "sub": "7ee02a69-5fee-475d-b7fb-eabb2dde4071"
+        },
+        "north-east": {
+          "frames": 5,
+          "strip": "gray_brute/animations/idle__north-east.webp",
+          "frame_paths": [
+            "gray_brute/animations/idle/north-east/00.webp",
+            "gray_brute/animations/idle/north-east/01.webp",
+            "gray_brute/animations/idle/north-east/02.webp",
+            "gray_brute/animations/idle/north-east/03.webp",
+            "gray_brute/animations/idle/north-east/04.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:38:34 GMT",
+          "src_frames": 5,
+          "sub": "00cf94bc-a648-428d-91e5-5d6845093578"
+        },
+        "north-west": {
+          "frames": 5,
+          "strip": "gray_brute/animations/idle__north-west.webp",
+          "frame_paths": [
+            "gray_brute/animations/idle/north-west/00.webp",
+            "gray_brute/animations/idle/north-west/01.webp",
+            "gray_brute/animations/idle/north-west/02.webp",
+            "gray_brute/animations/idle/north-west/03.webp",
+            "gray_brute/animations/idle/north-west/04.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:38:35 GMT",
+          "src_frames": 5,
+          "sub": "5e45e45e-b085-4b38-8888-64099e995883"
+        },
+        "south": {
+          "frames": 5,
+          "strip": "gray_brute/animations/idle__south.webp",
+          "frame_paths": [
+            "gray_brute/animations/idle/south/00.webp",
+            "gray_brute/animations/idle/south/01.webp",
+            "gray_brute/animations/idle/south/02.webp",
+            "gray_brute/animations/idle/south/03.webp",
+            "gray_brute/animations/idle/south/04.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:38:35 GMT",
+          "src_frames": 5,
+          "sub": "496e8c55-de4c-4909-bdaa-946dbb2a1b35"
+        },
+        "south-east": {
+          "frames": 5,
+          "strip": "gray_brute/animations/idle__south-east.webp",
+          "frame_paths": [
+            "gray_brute/animations/idle/south-east/00.webp",
+            "gray_brute/animations/idle/south-east/01.webp",
+            "gray_brute/animations/idle/south-east/02.webp",
+            "gray_brute/animations/idle/south-east/03.webp",
+            "gray_brute/animations/idle/south-east/04.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:38:37 GMT",
+          "src_frames": 5,
+          "sub": "5e6a32b4-be77-45c0-bdb3-9799e48b4b38"
+        },
+        "south-west": {
+          "frames": 5,
+          "strip": "gray_brute/animations/idle__south-west.webp",
+          "frame_paths": [
+            "gray_brute/animations/idle/south-west/00.webp",
+            "gray_brute/animations/idle/south-west/01.webp",
+            "gray_brute/animations/idle/south-west/02.webp",
+            "gray_brute/animations/idle/south-west/03.webp",
+            "gray_brute/animations/idle/south-west/04.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:38:39 GMT",
+          "src_frames": 5,
+          "sub": "ab3bb9c7-9034-485d-8c95-47dca70edf62"
+        },
+        "west": {
+          "frames": 5,
+          "strip": "gray_brute/animations/idle__west.webp",
+          "frame_paths": [
+            "gray_brute/animations/idle/west/00.webp",
+            "gray_brute/animations/idle/west/01.webp",
+            "gray_brute/animations/idle/west/02.webp",
+            "gray_brute/animations/idle/west/03.webp",
+            "gray_brute/animations/idle/west/04.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:38:46 GMT",
+          "src_frames": 5,
+          "sub": "eb39b580-cc71-4610-8af2-c5fb98f13dbe"
+        }
+      }
+    },
+    "attack": {
+      "group_id": "e13064e9-12b0-4605-9b73-bfb0f8e37087",
+      "source_name": "custom-Ground Bite - Lowers head quickly and snaps jaws t",
+      "directions": {
+        "east": {
+          "frames": 4,
+          "strip": "gray_brute/animations/attack__east.webp",
+          "frame_paths": [
+            "gray_brute/animations/attack/east/00.webp",
+            "gray_brute/animations/attack/east/01.webp",
+            "gray_brute/animations/attack/east/02.webp",
+            "gray_brute/animations/attack/east/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:38:48 GMT",
+          "src_frames": 4,
+          "sub": "a4ae5c38-f8f5-4a0c-afc3-a3f8b395f3b3"
+        },
+        "north": {
+          "frames": 4,
+          "strip": "gray_brute/animations/attack__north.webp",
+          "frame_paths": [
+            "gray_brute/animations/attack/north/00.webp",
+            "gray_brute/animations/attack/north/01.webp",
+            "gray_brute/animations/attack/north/02.webp",
+            "gray_brute/animations/attack/north/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:38:49 GMT",
+          "src_frames": 4,
+          "sub": "af1f120f-094c-46ac-8c66-68cda33758c4"
+        },
+        "north-east": {
+          "frames": 4,
+          "strip": "gray_brute/animations/attack__north-east.webp",
+          "frame_paths": [
+            "gray_brute/animations/attack/north-east/00.webp",
+            "gray_brute/animations/attack/north-east/01.webp",
+            "gray_brute/animations/attack/north-east/02.webp",
+            "gray_brute/animations/attack/north-east/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:38:50 GMT",
+          "src_frames": 4,
+          "sub": "1fa5f798-8a21-4c8b-94e7-37c13f0d38e8"
+        },
+        "north-west": {
+          "frames": 4,
+          "strip": "gray_brute/animations/attack__north-west.webp",
+          "frame_paths": [
+            "gray_brute/animations/attack/north-west/00.webp",
+            "gray_brute/animations/attack/north-west/01.webp",
+            "gray_brute/animations/attack/north-west/02.webp",
+            "gray_brute/animations/attack/north-west/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:38:52 GMT",
+          "src_frames": 4,
+          "sub": "fc7255d3-f85d-4838-9778-74925b130235"
+        },
+        "south": {
+          "frames": 4,
+          "strip": "gray_brute/animations/attack__south.webp",
+          "frame_paths": [
+            "gray_brute/animations/attack/south/00.webp",
+            "gray_brute/animations/attack/south/01.webp",
+            "gray_brute/animations/attack/south/02.webp",
+            "gray_brute/animations/attack/south/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:38:53 GMT",
+          "src_frames": 4,
+          "sub": "9e449056-ae5b-4ea6-81d2-2497df7632bf"
+        },
+        "south-east": {
+          "frames": 4,
+          "strip": "gray_brute/animations/attack__south-east.webp",
+          "frame_paths": [
+            "gray_brute/animations/attack/south-east/00.webp",
+            "gray_brute/animations/attack/south-east/01.webp",
+            "gray_brute/animations/attack/south-east/02.webp",
+            "gray_brute/animations/attack/south-east/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:38:54 GMT",
+          "src_frames": 4,
+          "sub": "a7118242-2297-402e-8aff-b3879b1616ac"
+        },
+        "south-west": {
+          "frames": 4,
+          "strip": "gray_brute/animations/attack__south-west.webp",
+          "frame_paths": [
+            "gray_brute/animations/attack/south-west/00.webp",
+            "gray_brute/animations/attack/south-west/01.webp",
+            "gray_brute/animations/attack/south-west/02.webp",
+            "gray_brute/animations/attack/south-west/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:38:56 GMT",
+          "src_frames": 4,
+          "sub": "820c810d-fc85-405c-b219-1568282ab57c"
+        },
+        "west": {
+          "frames": 4,
+          "strip": "gray_brute/animations/attack__west.webp",
+          "frame_paths": [
+            "gray_brute/animations/attack/west/00.webp",
+            "gray_brute/animations/attack/west/01.webp",
+            "gray_brute/animations/attack/west/02.webp",
+            "gray_brute/animations/attack/west/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:38:57 GMT",
+          "src_frames": 4,
+          "sub": "5c5fb765-e419-4f75-b7a0-44d9004ca5f5"
+        }
+      }
+    },
+    "angry": {
+      "group_id": "29861aeb-3fe1-4986-9b20-ce9d059dd2a8",
+      "source_name": "custom-angry combat idle, frustrated",
+      "directions": {
+        "east": {
+          "frames": 4,
+          "strip": "gray_brute/animations/angry__east.webp",
+          "frame_paths": [
+            "gray_brute/animations/angry/east/00.webp",
+            "gray_brute/animations/angry/east/01.webp",
+            "gray_brute/animations/angry/east/02.webp",
+            "gray_brute/animations/angry/east/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:38:59 GMT",
+          "src_frames": 4,
+          "sub": "08be3721-4340-40b6-817f-26a32df56748"
+        },
+        "north": {
+          "frames": 4,
+          "strip": "gray_brute/animations/angry__north.webp",
+          "frame_paths": [
+            "gray_brute/animations/angry/north/00.webp",
+            "gray_brute/animations/angry/north/01.webp",
+            "gray_brute/animations/angry/north/02.webp",
+            "gray_brute/animations/angry/north/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:39:00 GMT",
+          "src_frames": 4,
+          "sub": "994c4883-343e-4054-a970-893742ebafbd"
+        },
+        "north-east": {
+          "frames": 4,
+          "strip": "gray_brute/animations/angry__north-east.webp",
+          "frame_paths": [
+            "gray_brute/animations/angry/north-east/00.webp",
+            "gray_brute/animations/angry/north-east/01.webp",
+            "gray_brute/animations/angry/north-east/02.webp",
+            "gray_brute/animations/angry/north-east/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:39:02 GMT",
+          "src_frames": 4,
+          "sub": "fdd09914-93f0-4949-8fce-6132e1db2d5c"
+        },
+        "north-west": {
+          "frames": 4,
+          "strip": "gray_brute/animations/angry__north-west.webp",
+          "frame_paths": [
+            "gray_brute/animations/angry/north-west/00.webp",
+            "gray_brute/animations/angry/north-west/01.webp",
+            "gray_brute/animations/angry/north-west/02.webp",
+            "gray_brute/animations/angry/north-west/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:39:03 GMT",
+          "src_frames": 4,
+          "sub": "85a4d15f-58da-457d-85c7-9a5988c5d990"
+        },
+        "south": {
+          "frames": 4,
+          "strip": "gray_brute/animations/angry__south.webp",
+          "frame_paths": [
+            "gray_brute/animations/angry/south/00.webp",
+            "gray_brute/animations/angry/south/01.webp",
+            "gray_brute/animations/angry/south/02.webp",
+            "gray_brute/animations/angry/south/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:39:04 GMT",
+          "src_frames": 4,
+          "sub": "48c7e6cf-6802-400f-9c74-55027f5708c2"
+        },
+        "south-east": {
+          "frames": 4,
+          "strip": "gray_brute/animations/angry__south-east.webp",
+          "frame_paths": [
+            "gray_brute/animations/angry/south-east/00.webp",
+            "gray_brute/animations/angry/south-east/01.webp",
+            "gray_brute/animations/angry/south-east/02.webp",
+            "gray_brute/animations/angry/south-east/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:39:05 GMT",
+          "src_frames": 4,
+          "sub": "cff99f14-6bf9-42e7-83f3-02a8039aa68e"
+        },
+        "south-west": {
+          "frames": 4,
+          "strip": "gray_brute/animations/angry__south-west.webp",
+          "frame_paths": [
+            "gray_brute/animations/angry/south-west/00.webp",
+            "gray_brute/animations/angry/south-west/01.webp",
+            "gray_brute/animations/angry/south-west/02.webp",
+            "gray_brute/animations/angry/south-west/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:39:06 GMT",
+          "src_frames": 4,
+          "sub": "4492f2bd-1aaa-4902-b52c-2aa5ae2f00f9"
+        },
+        "west": {
+          "frames": 4,
+          "strip": "gray_brute/animations/angry__west.webp",
+          "frame_paths": [
+            "gray_brute/animations/angry/west/00.webp",
+            "gray_brute/animations/angry/west/01.webp",
+            "gray_brute/animations/angry/west/02.webp",
+            "gray_brute/animations/angry/west/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:39:07 GMT",
+          "src_frames": 4,
+          "sub": "52ec2958-ddbf-414b-bb3f-6a4169ed876e"
+        }
+      }
+    },
+    "die": {
+      "group_id": "b04c45ec-ed5c-4ec4-8dcb-1d1907b9a603",
+      "source_name": "custom-turns to skeleton and fades away",
+      "directions": {
+        "east": {
+          "frames": 4,
+          "strip": "gray_brute/animations/die__east.webp",
+          "frame_paths": [
+            "gray_brute/animations/die/east/00.webp",
+            "gray_brute/animations/die/east/01.webp",
+            "gray_brute/animations/die/east/02.webp",
+            "gray_brute/animations/die/east/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:39:09 GMT",
+          "src_frames": 4,
+          "sub": "d6339840-8cc8-48b8-8691-ef27a5abdff4"
+        },
+        "north": {
+          "frames": 4,
+          "strip": "gray_brute/animations/die__north.webp",
+          "frame_paths": [
+            "gray_brute/animations/die/north/00.webp",
+            "gray_brute/animations/die/north/01.webp",
+            "gray_brute/animations/die/north/02.webp",
+            "gray_brute/animations/die/north/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:39:10 GMT",
+          "src_frames": 4,
+          "sub": "26aedf6d-a5c1-4358-a347-2f6ed9898d93"
+        },
+        "north-east": {
+          "frames": 4,
+          "strip": "gray_brute/animations/die__north-east.webp",
+          "frame_paths": [
+            "gray_brute/animations/die/north-east/00.webp",
+            "gray_brute/animations/die/north-east/01.webp",
+            "gray_brute/animations/die/north-east/02.webp",
+            "gray_brute/animations/die/north-east/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:39:16 GMT",
+          "src_frames": 4,
+          "sub": "7f72bd6c-0912-4eac-861f-71816c99c788"
+        },
+        "north-west": {
+          "frames": 4,
+          "strip": "gray_brute/animations/die__north-west.webp",
+          "frame_paths": [
+            "gray_brute/animations/die/north-west/00.webp",
+            "gray_brute/animations/die/north-west/01.webp",
+            "gray_brute/animations/die/north-west/02.webp",
+            "gray_brute/animations/die/north-west/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:39:17 GMT",
+          "src_frames": 4,
+          "sub": "5fa1f17b-4dc3-4cd0-be5b-987627f9f5a1"
+        },
+        "south": {
+          "frames": 4,
+          "strip": "gray_brute/animations/die__south.webp",
+          "frame_paths": [
+            "gray_brute/animations/die/south/00.webp",
+            "gray_brute/animations/die/south/01.webp",
+            "gray_brute/animations/die/south/02.webp",
+            "gray_brute/animations/die/south/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:39:20 GMT",
+          "src_frames": 4,
+          "sub": "077d4ee1-3745-4ebc-bd3c-c38dc84bc371"
+        },
+        "south-east": {
+          "frames": 4,
+          "strip": "gray_brute/animations/die__south-east.webp",
+          "frame_paths": [
+            "gray_brute/animations/die/south-east/00.webp",
+            "gray_brute/animations/die/south-east/01.webp",
+            "gray_brute/animations/die/south-east/02.webp",
+            "gray_brute/animations/die/south-east/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:39:21 GMT",
+          "src_frames": 4,
+          "sub": "691147b3-5a82-4ad4-8099-555d72211e15"
+        },
+        "south-west": {
+          "frames": 4,
+          "strip": "gray_brute/animations/die__south-west.webp",
+          "frame_paths": [
+            "gray_brute/animations/die/south-west/00.webp",
+            "gray_brute/animations/die/south-west/01.webp",
+            "gray_brute/animations/die/south-west/02.webp",
+            "gray_brute/animations/die/south-west/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:39:22 GMT",
+          "src_frames": 4,
+          "sub": "3f30b1be-a5a8-42ba-842a-02a17f6c3194"
+        },
+        "west": {
+          "frames": 4,
+          "strip": "gray_brute/animations/die__west.webp",
+          "frame_paths": [
+            "gray_brute/animations/die/west/00.webp",
+            "gray_brute/animations/die/west/01.webp",
+            "gray_brute/animations/die/west/02.webp",
+            "gray_brute/animations/die/west/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:39:23 GMT",
+          "src_frames": 4,
+          "sub": "f121648c-e960-4d04-b6a4-607c8889212b"
+        }
+      }
+    },
+    "walk": {
+      "group_id": "17320b68-ae40-4209-b3fb-eaa53a2f7aa2",
+      "source_name": "custom-walk loop. full walk cycle. sh",
+      "directions": {
+        "east": {
+          "frames": 7,
+          "strip": "gray_brute/animations/walk__east.webp",
+          "frame_paths": [
+            "gray_brute/animations/walk/east/00.webp",
+            "gray_brute/animations/walk/east/01.webp",
+            "gray_brute/animations/walk/east/02.webp",
+            "gray_brute/animations/walk/east/03.webp",
+            "gray_brute/animations/walk/east/04.webp",
+            "gray_brute/animations/walk/east/05.webp",
+            "gray_brute/animations/walk/east/06.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:39:24 GMT",
+          "src_frames": 7,
+          "sub": "d31b7fb1-d024-4fe6-8fe8-d32ad7229979"
+        },
+        "north": {
+          "frames": 7,
+          "strip": "gray_brute/animations/walk__north.webp",
+          "frame_paths": [
+            "gray_brute/animations/walk/north/00.webp",
+            "gray_brute/animations/walk/north/01.webp",
+            "gray_brute/animations/walk/north/02.webp",
+            "gray_brute/animations/walk/north/03.webp",
+            "gray_brute/animations/walk/north/04.webp",
+            "gray_brute/animations/walk/north/05.webp",
+            "gray_brute/animations/walk/north/06.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:39:26 GMT",
+          "src_frames": 7,
+          "sub": "27bf029c-5a40-4c8d-8080-80155142d6c5"
+        },
+        "north-east": {
+          "frames": 7,
+          "strip": "gray_brute/animations/walk__north-east.webp",
+          "frame_paths": [
+            "gray_brute/animations/walk/north-east/00.webp",
+            "gray_brute/animations/walk/north-east/01.webp",
+            "gray_brute/animations/walk/north-east/02.webp",
+            "gray_brute/animations/walk/north-east/03.webp",
+            "gray_brute/animations/walk/north-east/04.webp",
+            "gray_brute/animations/walk/north-east/05.webp",
+            "gray_brute/animations/walk/north-east/06.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:39:27 GMT",
+          "src_frames": 7,
+          "sub": "5e6bd4d7-732c-484e-8c7a-d042d40daf4a"
+        },
+        "north-west": {
+          "frames": 7,
+          "strip": "gray_brute/animations/walk__north-west.webp",
+          "frame_paths": [
+            "gray_brute/animations/walk/north-west/00.webp",
+            "gray_brute/animations/walk/north-west/01.webp",
+            "gray_brute/animations/walk/north-west/02.webp",
+            "gray_brute/animations/walk/north-west/03.webp",
+            "gray_brute/animations/walk/north-west/04.webp",
+            "gray_brute/animations/walk/north-west/05.webp",
+            "gray_brute/animations/walk/north-west/06.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:39:30 GMT",
+          "src_frames": 7,
+          "sub": "d9759c27-fa1a-442c-afc3-631fa107e2b9"
+        },
+        "south": {
+          "frames": 7,
+          "strip": "gray_brute/animations/walk__south.webp",
+          "frame_paths": [
+            "gray_brute/animations/walk/south/00.webp",
+            "gray_brute/animations/walk/south/01.webp",
+            "gray_brute/animations/walk/south/02.webp",
+            "gray_brute/animations/walk/south/03.webp",
+            "gray_brute/animations/walk/south/04.webp",
+            "gray_brute/animations/walk/south/05.webp",
+            "gray_brute/animations/walk/south/06.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:39:31 GMT",
+          "src_frames": 7,
+          "sub": "c19a98f2-340b-42ea-930d-7785b9f0c6b1"
+        },
+        "south-east": {
+          "frames": 7,
+          "strip": "gray_brute/animations/walk__south-east.webp",
+          "frame_paths": [
+            "gray_brute/animations/walk/south-east/00.webp",
+            "gray_brute/animations/walk/south-east/01.webp",
+            "gray_brute/animations/walk/south-east/02.webp",
+            "gray_brute/animations/walk/south-east/03.webp",
+            "gray_brute/animations/walk/south-east/04.webp",
+            "gray_brute/animations/walk/south-east/05.webp",
+            "gray_brute/animations/walk/south-east/06.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:39:33 GMT",
+          "src_frames": 7,
+          "sub": "51e26164-48f5-44f7-9135-25396b738194"
+        },
+        "south-west": {
+          "frames": 7,
+          "strip": "gray_brute/animations/walk__south-west.webp",
+          "frame_paths": [
+            "gray_brute/animations/walk/south-west/00.webp",
+            "gray_brute/animations/walk/south-west/01.webp",
+            "gray_brute/animations/walk/south-west/02.webp",
+            "gray_brute/animations/walk/south-west/03.webp",
+            "gray_brute/animations/walk/south-west/04.webp",
+            "gray_brute/animations/walk/south-west/05.webp",
+            "gray_brute/animations/walk/south-west/06.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:39:34 GMT",
+          "src_frames": 7,
+          "sub": "235460b5-b49d-43ea-add5-09e8e733e8c9"
+        },
+        "west": {
+          "frames": 7,
+          "strip": "gray_brute/animations/walk__west.webp",
+          "frame_paths": [
+            "gray_brute/animations/walk/west/00.webp",
+            "gray_brute/animations/walk/west/01.webp",
+            "gray_brute/animations/walk/west/02.webp",
+            "gray_brute/animations/walk/west/03.webp",
+            "gray_brute/animations/walk/west/04.webp",
+            "gray_brute/animations/walk/west/05.webp",
+            "gray_brute/animations/walk/west/06.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:39:36 GMT",
+          "src_frames": 7,
+          "sub": "c397cc24-6be3-4bd4-84cc-5c0afa5a79f2"
+        }
+      }
+    }
+  },
+  "states": {
+    "idle": "idle",
+    "walk": "walk",
+    "angry": "angry",
+    "attack": "attack",
+    "die": "die"
+  },
+  "unresolved_takes": [],
+  "synced_from_pixellab": true
+}

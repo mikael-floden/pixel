@@ -1,0 +1,124 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-14T03:36:29+00:00",
+  "id": "cliff_shrub_012",
+  "group": "cliff_shrubs",
+  "rank": 157,
+  "index": 12,
+  "name": "Dark holly bush 012",
+  "lights": null,
+  "variety": "dark holly bush",
+  "modifier": "two shrubs from one crack",
+  "glow_concept": "blossoms glowing along the branches",
+  "prompt": "a tough windbent shrub whose trunk kinks hard sideways then turns up, its bare gripping roots clenched around a single small stone at its base, an organic RAGGED IRREGULAR silhouette with leaves and strands trailing off unevenly at the edges and a torn uneven bottom \u2014 never a rectangle, never a straight edge, never a filled panel or square sheet, no hard border of any kind \u2014 ONLY the plant itself, isolated on a fully transparent background, NO rock, NO cliff, NO stone wall, NO mountain, NO ground, nothing behind it, dark holly bush, two shrubs from one crack, tall, about three times human height, self-emissive at night, softly radiating light: blossoms glowing along the branches",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 192,
+  "sprite": "cliff_shrubs/cliff_shrub_012/sprite.webp",
+  "placement": {
+    "world_height_m": 3.107,
+    "world_px_height": 159,
+    "character_height_px": 87,
+    "character_height_m": 1.7,
+    "note": "ONE SCENERY PIXEL IS ONE PLAYER PIXEL. world_px_height IS the art's own alpha bbox height, so scenery is placed into the world at 1:1 exactly as the avatar is (setScale(1)) and the two share one pixel grid. The CAMERA still zooms the whole scene \u2014 that is uniform and correct; what must never happen is scenery being resampled on its own, against the player. world_height_m is what the art reads as beside a 87px character; declared_height_m is what it was once declared to be, and a gap between them means the ART is the wrong size.",
+    "declared_height_m": 3.6,
+    "content_box": [
+      41,
+      17,
+      150,
+      176
+    ],
+    "content_px_height": 159,
+    "canvas_render_px": 192
+  },
+  "pixellab_object_id": "35f5a2be-17f1-4763-bfac-2da72640424f",
+  "pixellab_directions": 1,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-1-direction-object (single, S-only)",
+  "must_be_imbplemented_with_random_hflip": true,
+  "states": {
+    "LIT_1": {
+      "sprite": "cliff_shrubs/cliff_shrub_012/sprite.webp",
+      "pixellab_object_id": "35f5a2be-17f1-4763-bfac-2da72640424f",
+      "generated_at": "2026-08-14T03:36:29+00:00"
+    },
+    "LIT_2": {
+      "sprite": "cliff_shrubs/cliff_shrub_012/lit_2/sprite.webp",
+      "pixellab_object_id": "42e10411-515c-45a2-9aa6-9fbc626d3afd",
+      "generated_at": "2026-08-16T09:56:09+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.7857,
+      "glow_score": 0.0636
+    },
+    "LIT_3": {
+      "sprite": "cliff_shrubs/cliff_shrub_012/lit_3/sprite.webp",
+      "pixellab_object_id": "c1d6e745-012f-4ef8-be03-e90825a40e53",
+      "generated_at": "2026-08-16T09:56:50+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.3328,
+      "glow_score": 0.0277
+    },
+    "LIT_4": {
+      "sprite": "cliff_shrubs/cliff_shrub_012/lit_4/sprite.webp",
+      "pixellab_object_id": "95b64f67-4fa8-4141-b067-bc4557736d27",
+      "generated_at": "2026-08-16T09:56:51+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.3586,
+      "glow_score": 0.032
+    },
+    "NOT_LIT_1": {
+      "sprite": "cliff_shrubs/cliff_shrub_012/not_lit_1/sprite.webp",
+      "pixellab_object_id": "f9d6b014-5e5c-49bc-a8da-d750f44a74ec",
+      "generated_at": "2026-08-16T09:57:08+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.8136,
+      "glow_score": 0.0
+    },
+    "NOT_LIT_2": {
+      "sprite": "cliff_shrubs/cliff_shrub_012/not_lit_2/sprite.webp",
+      "pixellab_object_id": "6fce21b1-883e-4cf1-9bed-02ea4c23e156",
+      "generated_at": "2026-08-16T09:57:09+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.284,
+      "glow_score": 0.0
+    }
+  },
+  "collision": true,
+  "hitbox_shape": "ellipse",
+  "type": "NATURE",
+  "light": {
+    "strength": 0.08,
+    "color": "#ffdeb6",
+    "radius": 1,
+    "reference": "the spawn bonfire is 1.0 (radius 7); strength 0 is no light",
+    "states": {
+      "LIT_1": {
+        "strength": 0.08,
+        "color": "#ffdeb6",
+        "radius": 1
+      },
+      "LIT_2": {
+        "strength": 0.1,
+        "color": "#ffe5ba",
+        "radius": 1
+      },
+      "LIT_3": {
+        "strength": 0.08,
+        "color": "#ffdbb3",
+        "radius": 1
+      },
+      "LIT_4": {
+        "strength": 0.08,
+        "color": "#ffe5bc",
+        "radius": 1
+      }
+    },
+    "kind": "glow/bio",
+    "flame": false,
+    "embers": false
+  }
+}

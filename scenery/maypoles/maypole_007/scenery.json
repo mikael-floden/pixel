@@ -1,0 +1,234 @@
+{
+  "format": "scenery-piece@2",
+  "id": "maypole_007",
+  "group": "maypoles",
+  "rank": 48,
+  "index": 7,
+  "name": "Rose-and-daisy garlanded pole 007",
+  "lights": null,
+  "variety": "rose-and-daisy garlanded pole",
+  "glow_concept": null,
+  "prompt": "a tall midsummer maypole wrapped in birch leaves and flowers, a crossarm near the top with two flower wreaths hanging from its ends and long ribbons trailing, rose-and-daisy garlanded pole, tall, about three times human height, completely unlit, no glow, no light sources, no self-emission",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 256,
+  "sprite": "maypoles/maypole_007/sprite.webp",
+  "placement": {
+    "world_height_m": 4.514,
+    "world_px_height": 231,
+    "character_height_px": 87,
+    "character_height_m": 1.7,
+    "note": "ONE SCENERY PIXEL IS ONE PLAYER PIXEL. world_px_height IS the art's own alpha bbox height, so scenery is placed into the world at 1:1 exactly as the avatar is (setScale(1)) and the two share one pixel grid. The CAMERA still zooms the whole scene \u2014 that is uniform and correct; what must never happen is scenery being resampled on its own, against the player. world_height_m is what the art reads as beside a 87px character; declared_height_m is what it was once declared to be, and a gap between them means the ART is the wrong size.",
+    "declared_height_m": 4.44,
+    "content_box": [
+      30,
+      10,
+      231,
+      241
+    ],
+    "content_px_height": 231,
+    "canvas_render_px": 256
+  },
+  "pixellab_object_id": "ad9da301-876b-443b-88ad-23dbe604adf0",
+  "pixellab_directions": 1,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-1-direction-object (single, S-only)",
+  "must_be_imbplemented_with_random_hflip": true,
+  "generated_at": "2026-08-13T22:14:59+00:00",
+  "states": {
+    "LIT_1": {
+      "sprite": "maypoles/maypole_007/lit_1/sprite.webp",
+      "pixellab_object_id": "464fa141-6d2b-4bed-90ca-5f7cd666e416",
+      "generated_at": "2026-08-16T17:56:28+00:00",
+      "glow_concept": "blossom wrappings shining soft pink-white",
+      "difference_from_source": 0.8175,
+      "glow_score": 0.1034,
+      "animations": {
+        "motion": {
+          "group_id": "c41eb2c0-a7fa-4657-9157-c5918766e619",
+          "description": "This is the same picture in every frame. ONLY the hanging blossom garlands move, swaying very gently. Everything else is frozen and pixel-for-pixel identical in every frame. Do not redraw anything else, and do not add or remove anything.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "maypoles/maypole_007/lit_1/animations/motion/00.webp",
+            "maypoles/maypole_007/lit_1/animations/motion/01.webp",
+            "maypoles/maypole_007/lit_1/animations/motion/02.webp",
+            "maypoles/maypole_007/lit_1/animations/motion/03.webp",
+            "maypoles/maypole_007/lit_1/animations/motion/04.webp"
+          ],
+          "strip": "maypoles/maypole_007/lit_1/animations/motion__strip.webp",
+          "directions": null,
+          "generated_at": "2026-08-29T13:30:05+00:00",
+          "brief": "S18",
+          "review": "ANIMATION_PROBABLY_GOOD",
+          "review_metrics": {
+            "class": "foliage",
+            "base": 0.0044,
+            "still": 0.613
+          },
+          "light_frames": [
+            {
+              "intensity": 1.117,
+              "dx": 1.7,
+              "dy": -37.8
+            },
+            {
+              "intensity": 1.035,
+              "dx": 3.8,
+              "dy": -35.4
+            },
+            {
+              "intensity": 0.963,
+              "dx": 0.8,
+              "dy": -36.6
+            },
+            {
+              "intensity": 0.944,
+              "dx": 2.1,
+              "dy": -36.0
+            },
+            {
+              "intensity": 0.941,
+              "dx": 2.2,
+              "dy": -36.0
+            }
+          ]
+        }
+      }
+    },
+    "NOT_LIT_1": {
+      "sprite": "maypoles/maypole_007/sprite.webp",
+      "pixellab_object_id": "ad9da301-876b-443b-88ad-23dbe604adf0",
+      "generated_at": "2026-08-13T22:14:59+00:00"
+    },
+    "NOT_LIT_2": {
+      "sprite": "maypoles/maypole_007/not_lit_2/sprite.webp",
+      "pixellab_object_id": "8d50c526-ef21-4efb-aa5b-f4f7c4132424",
+      "generated_at": "2026-08-16T17:55:45+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.1964,
+      "glow_score": 0.0481,
+      "animations": {
+        "motion": {
+          "group_id": "4c8388c7-20a5-49b2-abf2-5ad61565fbea",
+          "description": "This is the same picture in every frame. ONLY the hanging ribbons move, swaying. Nothing else moves, bends or leans, and nothing changes size, shape or position. The last frame must return to exactly how the first frame looks, so the loop joins. Nothing may become darker than it is in the first frame. Do not redraw anything else, and do not add or remove anything.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "maypoles/maypole_007/not_lit_2/animations/motion/00.webp",
+            "maypoles/maypole_007/not_lit_2/animations/motion/01.webp",
+            "maypoles/maypole_007/not_lit_2/animations/motion/02.webp",
+            "maypoles/maypole_007/not_lit_2/animations/motion/03.webp",
+            "maypoles/maypole_007/not_lit_2/animations/motion/04.webp"
+          ],
+          "strip": "maypoles/maypole_007/not_lit_2/animations/motion__strip.webp",
+          "directions": null,
+          "generated_at": "2026-08-29T15:37:19+00:00",
+          "brief": "X27",
+          "review": "ANIMATION_PROBABLY_GOOD",
+          "review_metrics": {
+            "class": "foliage",
+            "base": 0.0461,
+            "still": 0.631
+          }
+        }
+      }
+    },
+    "NOT_LIT_3": {
+      "sprite": "maypoles/maypole_007/not_lit_3/sprite.webp",
+      "pixellab_object_id": "925c27af-e27a-48c7-a8eb-b0b11aef8025",
+      "generated_at": "2026-08-16T17:56:05+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.3296,
+      "glow_score": 0.0738,
+      "animations": {
+        "motion": {
+          "group_id": "e8cfb599-5b5f-434a-ab89-7bd7017fd403",
+          "description": "This is the same picture in every frame. ONLY the hanging ribbons swing. Everything else in the picture is copied from the first frame exactly, pixel for pixel, unchanged in shape, size, position and colour. No outline anywhere is redrawn. The last frame matches the first frame exactly, so the loop joins.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "maypoles/maypole_007/not_lit_3/animations/motion/00.webp",
+            "maypoles/maypole_007/not_lit_3/animations/motion/01.webp",
+            "maypoles/maypole_007/not_lit_3/animations/motion/02.webp",
+            "maypoles/maypole_007/not_lit_3/animations/motion/03.webp",
+            "maypoles/maypole_007/not_lit_3/animations/motion/04.webp"
+          ],
+          "strip": "maypoles/maypole_007/not_lit_3/animations/motion__strip.webp",
+          "directions": null,
+          "generated_at": "2026-08-29T16:56:15+00:00",
+          "brief": "Z15",
+          "review": "ANIMATION_PROBABLY_GOOD",
+          "review_metrics": {
+            "class": "foliage",
+            "base": 0.0651,
+            "still": 0.549
+          }
+        }
+      }
+    },
+    "NOT_LIT_4": {
+      "sprite": "maypoles/maypole_007/not_lit_4/sprite.webp",
+      "pixellab_object_id": "9aa6fbb1-5d13-4b0d-8a92-2905d82e34d8",
+      "generated_at": "2026-08-16T17:56:16+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.2325,
+      "glow_score": 0.0645,
+      "animations": {
+        "motion": {
+          "group_id": "bb515887-6cd9-4853-9c00-f11ffc0473de",
+          "description": "This is the same picture in every frame. ONLY the hanging ribbons swing. It moves as one solid piece and keeps exactly the same shape, size and colours the whole time it moves. It is never redrawn, never reshaped and never changes its outline. Everything else in the picture is copied from the first frame exactly, pixel for pixel, unchanged in shape, size, position and colour. No outline anywhere is redrawn. The last frame matches the first frame exactly, so the loop joins.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "maypoles/maypole_007/not_lit_4/animations/motion/00.webp",
+            "maypoles/maypole_007/not_lit_4/animations/motion/01.webp",
+            "maypoles/maypole_007/not_lit_4/animations/motion/02.webp",
+            "maypoles/maypole_007/not_lit_4/animations/motion/03.webp",
+            "maypoles/maypole_007/not_lit_4/animations/motion/04.webp"
+          ],
+          "strip": "maypoles/maypole_007/not_lit_4/animations/motion__strip.webp",
+          "directions": null,
+          "generated_at": "2026-08-29T17:54:56+00:00",
+          "brief": "A23",
+          "review": "ANIMATION_PROBABLY_GOOD",
+          "review_metrics": {
+            "class": "foliage",
+            "base": 0.0398,
+            "still": 0.538
+          }
+        }
+      }
+    }
+  },
+  "collision": true,
+  "hitbox_shape": "ellipse",
+  "light": {
+    "strength": 0.2,
+    "color": "#ffd3c8",
+    "radius": 4,
+    "reference": "the spawn bonfire is 1.0 (radius 7); strength 0 is no light",
+    "states": {
+      "LIT_1": {
+        "strength": 0.2,
+        "color": "#ffd3c8",
+        "radius": 4
+      }
+    },
+    "kind": "glow/bio",
+    "flame": false,
+    "embers": false
+  }
+}

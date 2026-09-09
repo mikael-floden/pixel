@@ -1,0 +1,132 @@
+{
+  "schema": "tiles3/tops@1",
+  "kind": "top_only",
+  "wall_is_meaningless": true,
+  "not_a_candidate_for": "x over y",
+  "ground": "brown_paving_stone",
+  "flavour": "detail",
+  "index": 116,
+  "seed": 29002,
+  "prompt": "brown paving stone, a carved initial in the middle, brown paving stone all around the edge",
+  "palette_top": "#7d7265",
+  "tile_id": "b6226484-539c-46fd-a590-7a7affe34d83",
+  "n_tiles": 16,
+  "tiles": [
+    "tile_00.webp",
+    "tile_01.webp",
+    "tile_02.webp",
+    "tile_03.webp",
+    "tile_04.webp",
+    "tile_05.webp",
+    "tile_06.webp",
+    "tile_07.webp",
+    "tile_08.webp",
+    "tile_09.webp",
+    "tile_10.webp",
+    "tile_11.webp",
+    "tile_12.webp",
+    "tile_13.webp",
+    "tile_14.webp",
+    "tile_15.webp"
+  ],
+  "settings": {
+    "tile_size": 64,
+    "tile_view": "high top-down",
+    "view_angle": 28.0,
+    "depth_ratio": 0.5,
+    "tile_type": "isometric",
+    "flat_top_px": 2,
+    "outline_mode": "segmentation"
+  },
+  "usd": 0.096,
+  "created": "2026-09-03T05:21:59+00:00",
+  "top_face": {
+    "per_tile": [
+      {
+        "colours": 17,
+        "dominant_share": 0.2996,
+        "px": 918
+      },
+      {
+        "colours": 17,
+        "dominant_share": 0.2697,
+        "px": 916
+      },
+      {
+        "colours": 19,
+        "dominant_share": 0.2243,
+        "px": 914
+      },
+      {
+        "colours": 19,
+        "dominant_share": 0.1806,
+        "px": 919
+      },
+      {
+        "colours": 20,
+        "dominant_share": 0.2344,
+        "px": 913
+      },
+      {
+        "colours": 21,
+        "dominant_share": 0.2232,
+        "px": 914
+      },
+      {
+        "colours": 18,
+        "dominant_share": 0.2232,
+        "px": 914
+      },
+      {
+        "colours": 18,
+        "dominant_share": 0.1663,
+        "px": 914
+      },
+      {
+        "colours": 20,
+        "dominant_share": 0.2845,
+        "px": 914
+      },
+      {
+        "colours": 19,
+        "dominant_share": 0.3304,
+        "px": 914
+      },
+      {
+        "colours": 18,
+        "dominant_share": 0.3486,
+        "px": 915
+      },
+      {
+        "colours": 17,
+        "dominant_share": 0.2546,
+        "px": 915
+      },
+      {
+        "colours": 21,
+        "dominant_share": 0.2144,
+        "px": 914
+      },
+      {
+        "colours": 19,
+        "dominant_share": 0.2536,
+        "px": 915
+      },
+      {
+        "colours": 20,
+        "dominant_share": 0.241,
+        "px": 913
+      },
+      {
+        "colours": 20,
+        "dominant_share": 0.1845,
+        "px": 916
+      }
+    ],
+    "mean_colours": 18.94,
+    "mean_dominant_share": 0.2458
+  },
+  "motif": "a carved initial",
+  "motif_source": "tiles/config/details.json",
+  "walkable": true
+}

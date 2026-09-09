@@ -11,32 +11,34 @@
 //   (1) deck-top LIT   — sunAt(interior cell, DECK level) is ~full sun,
 //   (2) the GAP exists  — sunAt(interior cell, BASE level) is meaningfully
 //       darker, i.e. the level you sample REALLY matters (else the fix is moot).
-// Static probes on the real occlusion_test world at Day — no avatar navigation
-// (deterministic, starvation-immune), same family as verify-sunshadow.
+// Static probes on the_game (maps2/worlds3) at Day — no avatar navigation
+// (deterministic, starvation-immune), same family as verify-sunshadow. Only
+// roof and bridge decks are probed: a cave deck's top is a mountain shelf that
+// taller rock beside it may legitimately shade, so it cannot pin "lit".
 import { chromium } from "playwright-core";
 import { readFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
 
 const here = dirname(fileURLToPath(import.meta.url));
-const world = JSON.parse(readFileSync(join(here, "..", "..", "maps2", "worlds", "occlusion_test", "world.json"), "utf8"));
+const world = JSON.parse(readFileSync(join(here, "..", "..", "maps2", "worlds3", "the_game", "world.json"), "utf8"));
 const X = (c) => c.col ?? c.x, Y = (c) => c.row ?? c.y;
 const baseLevelAt = (c, r) => world.level?.[r]?.[c] ?? 0;
 const median = (a) => { const s = [...a].sort((x, y) => x - y); return s[Math.floor(s.length / 2)]; };
 
 // Interior cells per deck: footprint cells whose BASE sits below the deck level
 // (the raised span you walk on OVER a floor/water gap). Cap the sample per deck.
-const decks = (world.decks ?? []).map((d) => ({
+const decks = (world.decks ?? []).filter((d) => d.kind === "roof" || d.kind === "bridge").map((d) => ({
   kind: d.kind ?? "deck",
   level: d.level,
   interior: d.cells.map((c) => ({ c: X(c), r: Y(c) })).filter(({ c, r }) => baseLevelAt(c, r) < d.level - 0.5).slice(0, 16),
 }));
-if (!decks.length) { console.log("verify-decklight: no decks in occlusion_test?!"); process.exit(1); }
+if (!decks.length) { console.log("verify-decklight: no roof/bridge decks in the_game?!"); process.exit(1); }
 
 const EXE = "/opt/pw-browsers/chromium-1194/chrome-linux/chrome";
 const browser = await chromium.launch({ executablePath: EXE, args: ["--no-sandbox"] });
 const page = await browser.newPage({ viewport: { width: 480, height: 320 } });
-await page.addInitScript(() => { localStorage.setItem("ml-last-choice", JSON.stringify({ world: "occlusion_test", characterUid: "default_boy", name: "dl" })); sessionStorage.setItem("ml-rejoin", "1"); });
+await page.addInitScript(() => { localStorage.setItem("ml-last-choice", JSON.stringify({ world: "the_game", characterUid: "default_boy", name: "dl" })); sessionStorage.setItem("ml-rejoin", "1"); });
 await page.goto("http://localhost:5173/", { waitUntil: "load" });
 await page.waitForFunction(() => window.__ml && window.__ml.players?.() >= 1, null, { timeout: 30000 });
 await page.evaluate(() => window.__ml.timeOfDay("Day"));

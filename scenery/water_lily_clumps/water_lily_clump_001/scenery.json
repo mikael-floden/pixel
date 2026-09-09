@@ -1,0 +1,176 @@
+{
+  "format": "scenery-piece@2",
+  "id": "water_lily_clump_001",
+  "group": "water_lily_clumps",
+  "rank": 63,
+  "index": 1,
+  "name": "Frost-edged late pads 001",
+  "lights": null,
+  "variety": "frost-edged late pads",
+  "glow_concept": null,
+  "prompt": "a floating clump of overlapping round water lily pads with a few cupped blossoms and short trailing stems, drawn alone with no water beneath, frost-edged late pads, tiny, ankle-height to an adult person, completely unlit, no glow, no light sources, no self-emission",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 64,
+  "sprite": "water_lily_clumps/water_lily_clump_001/sprite.webp",
+  "placement": {
+    "world_height_m": 0.918,
+    "world_px_height": 47,
+    "character_height_px": 87,
+    "character_height_m": 1.7,
+    "note": "ONE SCENERY PIXEL IS ONE PLAYER PIXEL. world_px_height IS the art's own alpha bbox height, so scenery is placed into the world at 1:1 exactly as the avatar is (setScale(1)) and the two share one pixel grid. The CAMERA still zooms the whole scene \u2014 that is uniform and correct; what must never happen is scenery being resampled on its own, against the player. world_height_m is what the art reads as beside a 87px character; declared_height_m is what it was once declared to be, and a gap between them means the ART is the wrong size.",
+    "declared_height_m": 0.26,
+    "content_box": [
+      5,
+      12,
+      59,
+      59
+    ],
+    "content_px_height": 47,
+    "canvas_render_px": 64
+  },
+  "pixellab_object_id": "66f1f5ab-0cc7-427f-98c2-27b98ec22887",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)",
+  "must_be_imbplemented_with_random_hflip": true,
+  "generated_at": "2026-08-13T01:45:58+00:00",
+  "states": {
+    "LIT_2": {
+      "sprite": "water_lily_clumps/water_lily_clump_001/lit_2/sprite.webp",
+      "pixellab_object_id": "9acadbbc-0982-496d-9f41-ebaa2d216f4d",
+      "generated_at": "2026-08-17T12:04:32+00:00",
+      "glow_concept": "soul-light shining up through gaps between pads",
+      "difference_from_source": 0.2907,
+      "glow_score": 0.1049,
+      "animations": {
+        "motion": {
+          "group_id": "234d6bf4-3f42-404b-a93d-7ffe11e00f2b",
+          "description": "This is the same picture in every frame. ONLY the ring of violet light on the pads brightens a little and returns. It is lit and clearly visible in every frame, including the first. It gets only SLIGHTLY brighter -- never white, never washed out -- and keeps its own colour throughout: brightest in the middle, back to its first-frame brightness at the end. It stays exactly the same size and shape in every frame: it never grows and never spreads, only its brightness shifts. Every object stays the same kind of thing it is in the first frame and keeps its own colour: nothing turns into anything else. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour, no outline redrawn. The last frame matches the first exactly.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "water_lily_clumps/water_lily_clump_001/lit_2/animations/motion/00.webp",
+            "water_lily_clumps/water_lily_clump_001/lit_2/animations/motion/01.webp",
+            "water_lily_clumps/water_lily_clump_001/lit_2/animations/motion/02.webp",
+            "water_lily_clumps/water_lily_clump_001/lit_2/animations/motion/03.webp",
+            "water_lily_clumps/water_lily_clump_001/lit_2/animations/motion/04.webp"
+          ],
+          "strip": "water_lily_clumps/water_lily_clump_001/lit_2/animations/motion__strip.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-08-30T08:17:38+00:00",
+          "brief": "G30",
+          "review": "ANIMATION_PROBABLY_BAD",
+          "review_metrics": {
+            "class": "foliage",
+            "base": 0.973,
+            "still": 0.098
+          },
+          "light_frames": [
+            {
+              "intensity": 1.233,
+              "dx": -2.9,
+              "dy": -4.5
+            },
+            {
+              "intensity": 0.714,
+              "dx": -0.9,
+              "dy": -7.6
+            },
+            {
+              "intensity": 0.626,
+              "dx": -3.4,
+              "dy": -9.1
+            },
+            {
+              "intensity": 0.992,
+              "dx": -1.3,
+              "dy": -7.4
+            },
+            {
+              "intensity": 1.435,
+              "dx": -2.9,
+              "dy": -7.0
+            }
+          ]
+        }
+      }
+    },
+    "NOT_LIT_1": {
+      "sprite": "water_lily_clumps/water_lily_clump_001/sprite.webp",
+      "pixellab_object_id": "66f1f5ab-0cc7-427f-98c2-27b98ec22887",
+      "generated_at": "2026-08-13T01:45:58+00:00",
+      "animations": {
+        "motion": {
+          "group_id": "c194fb02-acd8-4539-bd8e-95d2cd931340",
+          "description": "This is the same picture in every frame. ONLY the small flower at the centre moves, nodding very slightly. Nothing changes size, shape or position. Do not redraw anything else, and do not add or remove anything.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "water_lily_clumps/water_lily_clump_001/animations/motion/00.webp",
+            "water_lily_clumps/water_lily_clump_001/animations/motion/01.webp",
+            "water_lily_clumps/water_lily_clump_001/animations/motion/02.webp",
+            "water_lily_clumps/water_lily_clump_001/animations/motion/03.webp",
+            "water_lily_clumps/water_lily_clump_001/animations/motion/04.webp"
+          ],
+          "strip": "water_lily_clumps/water_lily_clump_001/animations/motion__strip.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-08-29T10:34:35+00:00",
+          "brief": "W7",
+          "review": "ANIMATION_PROBABLY_BAD",
+          "review_metrics": {
+            "class": "foliage",
+            "base": 1.0,
+            "still": 0.043
+          }
+        }
+      }
+    },
+    "NOT_LIT_2": {
+      "sprite": "water_lily_clumps/water_lily_clump_001/not_lit_2/sprite.webp",
+      "pixellab_object_id": "c551a1cb-486f-465a-a2f4-9bc63ce84221",
+      "generated_at": "2026-08-17T12:03:23+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.7503,
+      "glow_score": 0.1418
+    },
+    "NOT_LIT_3": {
+      "sprite": "water_lily_clumps/water_lily_clump_001/not_lit_3/sprite.webp",
+      "pixellab_object_id": "fc3b5f94-8187-431f-9893-a12f50c3c741",
+      "generated_at": "2026-08-17T12:04:01+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.732,
+      "glow_score": 0.0286
+    }
+  },
+  "collision": true,
+  "hitbox_shape": "ellipse",
+  "light": {
+    "strength": 0.1,
+    "color": "#d1fff5",
+    "radius": 2,
+    "reference": "the spawn bonfire is 1.0 (radius 7); strength 0 is no light",
+    "states": {
+      "LIT_2": {
+        "strength": 0.08,
+        "color": "#d1fff5",
+        "radius": 2
+      }
+    },
+    "kind": "glow/bio",
+    "flame": false,
+    "embers": false
+  }
+}

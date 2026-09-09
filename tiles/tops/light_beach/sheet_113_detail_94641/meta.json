@@ -1,0 +1,132 @@
+{
+  "schema": "tiles3/tops@1",
+  "kind": "top_only",
+  "wall_is_meaningless": true,
+  "not_a_candidate_for": "x over y",
+  "ground": "light_beach",
+  "flavour": "detail",
+  "index": 113,
+  "seed": 94641,
+  "prompt": "light beach, a sand dollar in the middle, light beach all around the edge",
+  "palette_top": "#e4c495",
+  "tile_id": "91c7d9c3-6d09-4b58-b3f6-1fddb8a5fdd7",
+  "n_tiles": 16,
+  "tiles": [
+    "tile_00.webp",
+    "tile_01.webp",
+    "tile_02.webp",
+    "tile_03.webp",
+    "tile_04.webp",
+    "tile_05.webp",
+    "tile_06.webp",
+    "tile_07.webp",
+    "tile_08.webp",
+    "tile_09.webp",
+    "tile_10.webp",
+    "tile_11.webp",
+    "tile_12.webp",
+    "tile_13.webp",
+    "tile_14.webp",
+    "tile_15.webp"
+  ],
+  "settings": {
+    "tile_size": 64,
+    "tile_view": "high top-down",
+    "view_angle": 28.0,
+    "depth_ratio": 0.5,
+    "tile_type": "isometric",
+    "flat_top_px": 2,
+    "outline_mode": "segmentation"
+  },
+  "usd": 0.096,
+  "created": "2026-09-03T05:16:53+00:00",
+  "top_face": {
+    "per_tile": [
+      {
+        "colours": 15,
+        "dominant_share": 0.362,
+        "px": 906
+      },
+      {
+        "colours": 14,
+        "dominant_share": 0.3798,
+        "px": 911
+      },
+      {
+        "colours": 16,
+        "dominant_share": 0.3337,
+        "px": 905
+      },
+      {
+        "colours": 15,
+        "dominant_share": 0.3484,
+        "px": 907
+      },
+      {
+        "colours": 15,
+        "dominant_share": 0.3241,
+        "px": 904
+      },
+      {
+        "colours": 15,
+        "dominant_share": 0.2917,
+        "px": 912
+      },
+      {
+        "colours": 14,
+        "dominant_share": 0.3422,
+        "px": 903
+      },
+      {
+        "colours": 14,
+        "dominant_share": 0.3385,
+        "px": 907
+      },
+      {
+        "colours": 15,
+        "dominant_share": 0.3422,
+        "px": 903
+      },
+      {
+        "colours": 15,
+        "dominant_share": 0.3271,
+        "px": 911
+      },
+      {
+        "colours": 15,
+        "dominant_share": 0.3319,
+        "px": 904
+      },
+      {
+        "colours": 16,
+        "dominant_share": 0.3286,
+        "px": 910
+      },
+      {
+        "colours": 15,
+        "dominant_share": 0.3333,
+        "px": 906
+      },
+      {
+        "colours": 16,
+        "dominant_share": 0.3359,
+        "px": 908
+      },
+      {
+        "colours": 16,
+        "dominant_share": 0.305,
+        "px": 905
+      },
+      {
+        "colours": 14,
+        "dominant_share": 0.3108,
+        "px": 904
+      }
+    ],
+    "mean_colours": 15.0,
+    "mean_dominant_share": 0.3335
+  },
+  "motif": "a sand dollar",
+  "motif_source": "tiles/config/details.json",
+  "walkable": true
+}

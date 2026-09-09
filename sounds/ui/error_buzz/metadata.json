@@ -17,8 +17,8 @@
   "license": "CC0-1.0",
   "status": "complete",
   "quality": "aaa",
-  "file": "ui/error_buzz/error_buzz__take01.wav",
-  "format": "wav",
+  "file": "ui/error_buzz/error_buzz__take01.ogg",
+  "format": "ogg",
   "audio": {
     "samples": 23875,
     "duration_seconds": 0.497,
@@ -30,8 +30,8 @@
     "delivered": "mp3"
   },
   "takes": [
-    "ui/error_buzz/error_buzz__take01.wav",
-    "ui/error_buzz/error_buzz__take02.wav"
+    "ui/error_buzz/error_buzz__take01.ogg",
+    "ui/error_buzz/error_buzz__take02.ogg"
   ],
   "ai": {
     "provider": "elevenlabs",
@@ -94,17 +94,6 @@
   ],
   "delivery": {
     "formats": {
-      "wav": {
-        "file": "ui/error_buzz/error_buzz__take01.wav",
-        "bytes": 47794,
-        "codec": "pcm_s16le",
-        "role": "master"
-      },
-      "m4a": {
-        "file": "ui/error_buzz/error_buzz__take01.m4a",
-        "bytes": 8969,
-        "codec": "aac"
-      },
       "ogg": {
         "file": "ui/error_buzz/error_buzz__take01.ogg",
         "bytes": 10047,
@@ -112,7 +101,6 @@
       }
     },
     "web_source_order": [
-      "m4a",
       "ogg"
     ]
   }

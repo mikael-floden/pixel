@@ -1,0 +1,132 @@
+{
+  "schema": "tiles3/tops@1",
+  "kind": "top_only",
+  "wall_is_meaningless": true,
+  "not_a_candidate_for": "x over y",
+  "ground": "black_rock",
+  "flavour": "detail",
+  "index": 113,
+  "seed": 91912,
+  "prompt": "black rock, a carved rune in the middle, black rock all around the edge",
+  "palette_top": "#1e1d1e",
+  "tile_id": "b55a962f-6dcb-4ad8-99d7-4027eee06db6",
+  "n_tiles": 16,
+  "tiles": [
+    "tile_00.webp",
+    "tile_01.webp",
+    "tile_02.webp",
+    "tile_03.webp",
+    "tile_04.webp",
+    "tile_05.webp",
+    "tile_06.webp",
+    "tile_07.webp",
+    "tile_08.webp",
+    "tile_09.webp",
+    "tile_10.webp",
+    "tile_11.webp",
+    "tile_12.webp",
+    "tile_13.webp",
+    "tile_14.webp",
+    "tile_15.webp"
+  ],
+  "settings": {
+    "tile_size": 64,
+    "tile_view": "high top-down",
+    "view_angle": 28.0,
+    "depth_ratio": 0.5,
+    "tile_type": "isometric",
+    "flat_top_px": 2,
+    "outline_mode": "segmentation"
+  },
+  "usd": 0.096,
+  "created": "2026-09-03T04:16:39+00:00",
+  "top_face": {
+    "per_tile": [
+      {
+        "colours": 18,
+        "dominant_share": 0.5332,
+        "px": 1234
+      },
+      {
+        "colours": 17,
+        "dominant_share": 0.4867,
+        "px": 1243
+      },
+      {
+        "colours": 18,
+        "dominant_share": 0.4624,
+        "px": 1222
+      },
+      {
+        "colours": 18,
+        "dominant_share": 0.514,
+        "px": 1175
+      },
+      {
+        "colours": 17,
+        "dominant_share": 0.5034,
+        "px": 1307
+      },
+      {
+        "colours": 18,
+        "dominant_share": 0.5004,
+        "px": 1331
+      },
+      {
+        "colours": 18,
+        "dominant_share": 0.5062,
+        "px": 1288
+      },
+      {
+        "colours": 16,
+        "dominant_share": 0.5862,
+        "px": 1242
+      },
+      {
+        "colours": 18,
+        "dominant_share": 0.4769,
+        "px": 1323
+      },
+      {
+        "colours": 18,
+        "dominant_share": 0.5101,
+        "px": 1343
+      },
+      {
+        "colours": 17,
+        "dominant_share": 0.5601,
+        "px": 1307
+      },
+      {
+        "colours": 18,
+        "dominant_share": 0.5095,
+        "px": 1258
+      },
+      {
+        "colours": 17,
+        "dominant_share": 0.4918,
+        "px": 1342
+      },
+      {
+        "colours": 18,
+        "dominant_share": 0.4717,
+        "px": 1361
+      },
+      {
+        "colours": 17,
+        "dominant_share": 0.4841,
+        "px": 1324
+      },
+      {
+        "colours": 18,
+        "dominant_share": 0.52,
+        "px": 1273
+      }
+    ],
+    "mean_colours": 17.56,
+    "mean_dominant_share": 0.5073
+  },
+  "motif": "a carved rune",
+  "motif_source": "tiles/config/details.json",
+  "walkable": true
+}

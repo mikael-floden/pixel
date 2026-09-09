@@ -8,6 +8,9 @@
  * empty, and every facing always has a static `base` rotation to fall back to.
  * When characters2 generates the other seven rotations they appear here with
  * no client change. */
+import { gameUrl } from "./staging";
+import { worldFileUrl } from "./maps";
+
 export interface NpcDef {
   id: string;
   name: string;
@@ -22,6 +25,10 @@ export interface NpcDef {
    * Verified equal to the idle frames' own anchor (0.00px across 60 NPCs), so
    * one anchor serves the static rotation AND the clip with no snap. */
   anchors: Record<string, { x: number; y: number; top: number }>;
+  /** characters2 says this NPC's art only reads right from one facing, so it
+   * must NEVER change direction — not for a glance, not to look at the player.
+   * See build-npcs-manifest.mjs and WorldScene.stepNpcFacing. */
+  noTurn?: boolean;
   idleAnim: string | null; // the idle folder name, if any
   idle: Record<string, number>; // dir -> frame count (south only today)
 }
@@ -32,7 +39,7 @@ export interface NpcManifest {
 }
 
 export async function loadNpcManifest(): Promise<NpcManifest> {
-  const res = await fetch("/npcs.json");
+  const res = await fetch(gameUrl("/npcs.json"));
   if (!res.ok) throw new Error(`npcs.json ${res.status}`);
   return (await res.json()) as NpcManifest;
 }
@@ -53,7 +60,7 @@ export interface NpcPlacement {
 /** A world's NPC placement, or [] when it ships none (most demo worlds). */
 export async function loadNpcPlacement(world: string): Promise<NpcPlacement[]> {
   try {
-    const res = await fetch(`/assets/maps2/worlds/${world}/npcs.json`);
+    const res = await fetch(gameUrl(worldFileUrl(world, "npcs.json")));
     if (!res.ok) return [];
     const j = await res.json();
     return Array.isArray(j?.npcs) ? (j.npcs as NpcPlacement[]) : [];

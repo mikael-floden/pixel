@@ -29,9 +29,15 @@ on:
     paths:
       - "games2/**"
       - "characters2/**"
-      - "tiles2/**"
+      # Tiles 3.0. Without this line the domain is in the image (Dockerfile COPYs it,
+      # .dockerignore allows it) but nothing ever REBUILDS the image when it changes,
+      # so the wiki's World section serves whatever tiles happened to be baked in by
+      # someone else's deploy. Third allowlist in the chain that has to name a new
+      # domain explicitly, after .dockerignore and the Dockerfile — added by the tiles
+      # agent 2026-08-17 with the maintainer's go-ahead.
+      - "tiles/**"
       - "maps2/**"
-      - "objects/**"
+      - "scenery/**"
       - "sounds/**"
       - "music/**"
       - "monsters/**"
@@ -43,6 +49,10 @@ on:
       - "wiki/**"
       - "!wiki/site/data.json"
       - ".github/workflows/nangijala-deploy.yml"
+      # The image's allowlist itself: adding or removing a domain there changes what
+      # ships, and previously changed it silently until some other domain's push
+      # happened to trigger a build.
+      - ".dockerignore"
   workflow_dispatch: {}       # manual: force a roll without any commit
 
 # CONCURRENCY — NO SHARED GROUP, because a shared one can DEADLOCK THE WHOLE
@@ -114,10 +124,13 @@ jobs:
 
   # Quality gate — runs in parallel with the image build, so it adds ~no wall
   # time. Sparse checkout: only what typecheck + npm test actually read
-  # (games2, characters2 for the manifest, maps2/worlds for the navigation
-  # sim and the surface gate, live for the tuning resolver's baked layer —
-  # without it every monster fights as the builtin poring and the combat
-  # tests fail on exactly the stats they assert).
+  # (games2, characters2 for the manifest, live for the tuning resolver's
+  # baked layer — without it every monster fights as the builtin poring and
+  # the combat tests fail on exactly the stats they assert).
+  # KNOWN GAP: /maps2/worlds3/ (the_game, the only world) is NOT here, so every
+  # world-reading test skips — add it (18 MB) the moment the_game's parity
+  # fixtures are green, because until then it would stop every deploy
+  # (games2/CLAUDE.md "THE DEPLOY GATE AND CI MUST SEE THE SAME WORLD").
   test:
     needs: resolve
     runs-on: ubuntu-latest
@@ -132,8 +145,14 @@ jobs:
           sparse-checkout: |
             /games2/
             /characters2/
-            /maps2/worlds/
             /live/
+            # ...and the wiki parse gate below reads its own script and the
+            # file it checks. A step that reads a path this list does not
+            # fetch fails MODULE_NOT_FOUND and takes every domain's deploy
+            # with it — three commits in a row on 2026-09-07, none of them
+            # the wiki's own.
+            /wiki/tools/
+            /wiki/site/wiki.js
           sparse-checkout-cone-mode: false
       - uses: actions/setup-node@v4
         with:
@@ -144,6 +163,16 @@ jobs:
         working-directory: games2
       - run: npm run typecheck
         working-directory: games2
+      # THE WIKI'S SCRIPT MUST PARSE. wiki/site/wiki.js is loaded by a plain
+      # <script src>, so ONE module keyword in it is a SyntaxError that stops
+      # the whole file and the wiki never boots — production hung on "GATHERING
+      # THE WORLD…" for every visitor on 2026-09-06, from an `export` added in
+      # passing by another domain's refactor, and the deploy that shipped it was
+      # green. NOT `node --check`: Node 22 sees the export, decides the file is
+      # a module and passes it. The check compiles it under classic-script
+      # rules, which is what the <script> tag already committed to.
+      - name: wiki.js parses as a classic script
+        run: node wiki/tools/check-script.mjs
       - run: npm test
         working-directory: games2
 

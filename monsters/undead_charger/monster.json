@@ -1,0 +1,633 @@
+{
+  "id": "undead_charger",
+  "name": "Gravecharger",
+  "lore": "A war-mount that refused to fall with its rider. It still charges the enemy line, centuries after the war.",
+  "source": {
+    "kind": "character",
+    "pixellab_id": "57721458-6d4d-4e98-a018-cd6713590707",
+    "url": "https://www.pixellab.ai/create-character/57721458-6d4d-4e98-a018-cd6713590707",
+    "prompt": "Four-legged undead war beast with a muscular horse-like body, dark leathery skin, exposed skeletal face, large forward-curving bone horns, glowing red eyes, bone armor along its spine and heavy cracked hooves.",
+    "view": "low top-down",
+    "tags": [
+      "MONSTER"
+    ]
+  },
+  "size": {
+    "width": 164,
+    "height": 164
+  },
+  "native_size": {
+    "width": 164,
+    "height": 164
+  },
+  "pad": {
+    "x": 0,
+    "y": 0
+  },
+  "sprite": "undead_charger/sprite.webp",
+  "directions": [
+    "east",
+    "north",
+    "north-east",
+    "north-west",
+    "south",
+    "south-east",
+    "south-west",
+    "west"
+  ],
+  "rotations": {
+    "south": "undead_charger/rotations/south.webp",
+    "west": "undead_charger/rotations/west.webp",
+    "east": "undead_charger/rotations/east.webp",
+    "north": "undead_charger/rotations/north.webp",
+    "south-east": "undead_charger/rotations/south-east.webp",
+    "north-east": "undead_charger/rotations/north-east.webp",
+    "north-west": "undead_charger/rotations/north-west.webp",
+    "south-west": "undead_charger/rotations/south-west.webp"
+  },
+  "animations": {
+    "idle": {
+      "group_id": "0dbee5d1-ec73-4f25-a81b-3ce08a50cd00",
+      "source_name": "custom-Calm still idle, breathing",
+      "directions": {
+        "east": {
+          "frames": 5,
+          "strip": "undead_charger/animations/idle__east.webp",
+          "frame_paths": [
+            "undead_charger/animations/idle/east/00.webp",
+            "undead_charger/animations/idle/east/01.webp",
+            "undead_charger/animations/idle/east/02.webp",
+            "undead_charger/animations/idle/east/03.webp",
+            "undead_charger/animations/idle/east/04.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:51:10 GMT",
+          "src_frames": 5,
+          "sub": "01d6b236-c168-46f0-b017-fa0d658aec94"
+        },
+        "north": {
+          "frames": 5,
+          "strip": "undead_charger/animations/idle__north.webp",
+          "frame_paths": [
+            "undead_charger/animations/idle/north/00.webp",
+            "undead_charger/animations/idle/north/01.webp",
+            "undead_charger/animations/idle/north/02.webp",
+            "undead_charger/animations/idle/north/03.webp",
+            "undead_charger/animations/idle/north/04.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:51:12 GMT",
+          "src_frames": 5,
+          "sub": "8c058d23-c697-47ca-9968-d780649a5a2b"
+        },
+        "north-east": {
+          "frames": 5,
+          "strip": "undead_charger/animations/idle__north-east.webp",
+          "frame_paths": [
+            "undead_charger/animations/idle/north-east/00.webp",
+            "undead_charger/animations/idle/north-east/01.webp",
+            "undead_charger/animations/idle/north-east/02.webp",
+            "undead_charger/animations/idle/north-east/03.webp",
+            "undead_charger/animations/idle/north-east/04.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:51:14 GMT",
+          "src_frames": 5,
+          "sub": "b651dee3-6021-4062-bb71-538b37d1c893"
+        },
+        "north-west": {
+          "frames": 5,
+          "strip": "undead_charger/animations/idle__north-west.webp",
+          "frame_paths": [
+            "undead_charger/animations/idle/north-west/00.webp",
+            "undead_charger/animations/idle/north-west/01.webp",
+            "undead_charger/animations/idle/north-west/02.webp",
+            "undead_charger/animations/idle/north-west/03.webp",
+            "undead_charger/animations/idle/north-west/04.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:51:15 GMT",
+          "src_frames": 5,
+          "sub": "378cd49f-a149-4316-a813-a6c4c7c2c317"
+        },
+        "south": {
+          "frames": 5,
+          "strip": "undead_charger/animations/idle__south.webp",
+          "frame_paths": [
+            "undead_charger/animations/idle/south/00.webp",
+            "undead_charger/animations/idle/south/01.webp",
+            "undead_charger/animations/idle/south/02.webp",
+            "undead_charger/animations/idle/south/03.webp",
+            "undead_charger/animations/idle/south/04.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:51:16 GMT",
+          "src_frames": 5,
+          "sub": "6edf2e42-5c5c-46c2-8ae9-bcb6e6e88a78"
+        },
+        "south-east": {
+          "frames": 5,
+          "strip": "undead_charger/animations/idle__south-east.webp",
+          "frame_paths": [
+            "undead_charger/animations/idle/south-east/00.webp",
+            "undead_charger/animations/idle/south-east/01.webp",
+            "undead_charger/animations/idle/south-east/02.webp",
+            "undead_charger/animations/idle/south-east/03.webp",
+            "undead_charger/animations/idle/south-east/04.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:51:18 GMT",
+          "src_frames": 5,
+          "sub": "7c1be74f-57a8-4d2d-9c9b-3f5b943e31b8"
+        },
+        "south-west": {
+          "frames": 5,
+          "strip": "undead_charger/animations/idle__south-west.webp",
+          "frame_paths": [
+            "undead_charger/animations/idle/south-west/00.webp",
+            "undead_charger/animations/idle/south-west/01.webp",
+            "undead_charger/animations/idle/south-west/02.webp",
+            "undead_charger/animations/idle/south-west/03.webp",
+            "undead_charger/animations/idle/south-west/04.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:51:19 GMT",
+          "src_frames": 5,
+          "sub": "acde3601-697d-4fcc-ba1b-42b4507ac472"
+        },
+        "west": {
+          "frames": 5,
+          "strip": "undead_charger/animations/idle__west.webp",
+          "frame_paths": [
+            "undead_charger/animations/idle/west/00.webp",
+            "undead_charger/animations/idle/west/01.webp",
+            "undead_charger/animations/idle/west/02.webp",
+            "undead_charger/animations/idle/west/03.webp",
+            "undead_charger/animations/idle/west/04.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:51:21 GMT",
+          "src_frames": 5,
+          "sub": "f773b7f9-57bd-4cf1-8f19-be4c0e24650d"
+        }
+      }
+    },
+    "attack": {
+      "group_id": "290c11b0-af5c-4d3b-abcf-3c5702ebd2bf",
+      "source_name": "custom-Headbutt - Pulls head back slightly, then quickly ",
+      "directions": {
+        "east": {
+          "frames": 4,
+          "strip": "undead_charger/animations/attack__east.webp",
+          "frame_paths": [
+            "undead_charger/animations/attack/east/00.webp",
+            "undead_charger/animations/attack/east/01.webp",
+            "undead_charger/animations/attack/east/02.webp",
+            "undead_charger/animations/attack/east/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:51:22 GMT",
+          "src_frames": 4,
+          "sub": "dac5325b-0d36-4aaa-a83d-946fb6d0aa0e"
+        },
+        "north": {
+          "frames": 4,
+          "strip": "undead_charger/animations/attack__north.webp",
+          "frame_paths": [
+            "undead_charger/animations/attack/north/00.webp",
+            "undead_charger/animations/attack/north/01.webp",
+            "undead_charger/animations/attack/north/02.webp",
+            "undead_charger/animations/attack/north/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:51:23 GMT",
+          "src_frames": 4,
+          "sub": "15e622da-2460-4865-9347-4a33a1fd0aa6"
+        },
+        "north-east": {
+          "frames": 4,
+          "strip": "undead_charger/animations/attack__north-east.webp",
+          "frame_paths": [
+            "undead_charger/animations/attack/north-east/00.webp",
+            "undead_charger/animations/attack/north-east/01.webp",
+            "undead_charger/animations/attack/north-east/02.webp",
+            "undead_charger/animations/attack/north-east/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:51:24 GMT",
+          "src_frames": 4,
+          "sub": "bb7f0ccd-397c-46e2-a483-41d5771864f6"
+        },
+        "north-west": {
+          "frames": 4,
+          "strip": "undead_charger/animations/attack__north-west.webp",
+          "frame_paths": [
+            "undead_charger/animations/attack/north-west/00.webp",
+            "undead_charger/animations/attack/north-west/01.webp",
+            "undead_charger/animations/attack/north-west/02.webp",
+            "undead_charger/animations/attack/north-west/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:51:27 GMT",
+          "src_frames": 4,
+          "sub": "59979841-f2ba-47fd-9d13-f7276d0d4a0b"
+        },
+        "south": {
+          "frames": 4,
+          "strip": "undead_charger/animations/attack__south.webp",
+          "frame_paths": [
+            "undead_charger/animations/attack/south/00.webp",
+            "undead_charger/animations/attack/south/01.webp",
+            "undead_charger/animations/attack/south/02.webp",
+            "undead_charger/animations/attack/south/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:51:28 GMT",
+          "src_frames": 4,
+          "sub": "b3968ae4-517a-4a47-bee4-49b173985d5d"
+        },
+        "south-east": {
+          "frames": 4,
+          "strip": "undead_charger/animations/attack__south-east.webp",
+          "frame_paths": [
+            "undead_charger/animations/attack/south-east/00.webp",
+            "undead_charger/animations/attack/south-east/01.webp",
+            "undead_charger/animations/attack/south-east/02.webp",
+            "undead_charger/animations/attack/south-east/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:51:29 GMT",
+          "src_frames": 4,
+          "sub": "b08277b9-01ee-410b-be74-ecb2532cbb67"
+        },
+        "south-west": {
+          "frames": 4,
+          "strip": "undead_charger/animations/attack__south-west.webp",
+          "frame_paths": [
+            "undead_charger/animations/attack/south-west/00.webp",
+            "undead_charger/animations/attack/south-west/01.webp",
+            "undead_charger/animations/attack/south-west/02.webp",
+            "undead_charger/animations/attack/south-west/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:51:31 GMT",
+          "src_frames": 4,
+          "sub": "3eecf58e-458a-48d0-b438-9ab4359c36e4"
+        },
+        "west": {
+          "frames": 4,
+          "strip": "undead_charger/animations/attack__west.webp",
+          "frame_paths": [
+            "undead_charger/animations/attack/west/00.webp",
+            "undead_charger/animations/attack/west/01.webp",
+            "undead_charger/animations/attack/west/02.webp",
+            "undead_charger/animations/attack/west/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:51:33 GMT",
+          "src_frames": 4,
+          "sub": "7f4d1e3d-6ccc-4033-b4b3-6802985f8dec"
+        }
+      }
+    },
+    "angry": {
+      "group_id": "5e0390dc-6899-49cf-9455-91236fe0f55b",
+      "source_name": "custom-angry combat idle, frustrated",
+      "directions": {
+        "east": {
+          "frames": 4,
+          "strip": "undead_charger/animations/angry__east.webp",
+          "frame_paths": [
+            "undead_charger/animations/angry/east/00.webp",
+            "undead_charger/animations/angry/east/01.webp",
+            "undead_charger/animations/angry/east/02.webp",
+            "undead_charger/animations/angry/east/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:51:34 GMT",
+          "src_frames": 4,
+          "sub": "98301659-a5cc-44eb-a5bb-12b5a0e5a81f"
+        },
+        "north": {
+          "frames": 4,
+          "strip": "undead_charger/animations/angry__north.webp",
+          "frame_paths": [
+            "undead_charger/animations/angry/north/00.webp",
+            "undead_charger/animations/angry/north/01.webp",
+            "undead_charger/animations/angry/north/02.webp",
+            "undead_charger/animations/angry/north/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:51:36 GMT",
+          "src_frames": 4,
+          "sub": "2137d42b-e683-4208-898d-de31a3f1a9bb"
+        },
+        "north-east": {
+          "frames": 4,
+          "strip": "undead_charger/animations/angry__north-east.webp",
+          "frame_paths": [
+            "undead_charger/animations/angry/north-east/00.webp",
+            "undead_charger/animations/angry/north-east/01.webp",
+            "undead_charger/animations/angry/north-east/02.webp",
+            "undead_charger/animations/angry/north-east/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:51:37 GMT",
+          "src_frames": 4,
+          "sub": "a7119d3b-9e27-441d-80a6-d67ecf6cd972"
+        },
+        "north-west": {
+          "frames": 4,
+          "strip": "undead_charger/animations/angry__north-west.webp",
+          "frame_paths": [
+            "undead_charger/animations/angry/north-west/00.webp",
+            "undead_charger/animations/angry/north-west/01.webp",
+            "undead_charger/animations/angry/north-west/02.webp",
+            "undead_charger/animations/angry/north-west/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:51:38 GMT",
+          "src_frames": 4,
+          "sub": "b9fc957c-0257-4ce2-9913-f306015ee82a"
+        },
+        "south": {
+          "frames": 4,
+          "strip": "undead_charger/animations/angry__south.webp",
+          "frame_paths": [
+            "undead_charger/animations/angry/south/00.webp",
+            "undead_charger/animations/angry/south/01.webp",
+            "undead_charger/animations/angry/south/02.webp",
+            "undead_charger/animations/angry/south/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:51:40 GMT",
+          "src_frames": 4,
+          "sub": "dc810d1f-b195-4dd1-aa1c-8e4d7e476660"
+        },
+        "south-east": {
+          "frames": 4,
+          "strip": "undead_charger/animations/angry__south-east.webp",
+          "frame_paths": [
+            "undead_charger/animations/angry/south-east/00.webp",
+            "undead_charger/animations/angry/south-east/01.webp",
+            "undead_charger/animations/angry/south-east/02.webp",
+            "undead_charger/animations/angry/south-east/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:51:41 GMT",
+          "src_frames": 4,
+          "sub": "d4819868-c20d-41f8-851f-be977782c8e0"
+        },
+        "south-west": {
+          "frames": 4,
+          "strip": "undead_charger/animations/angry__south-west.webp",
+          "frame_paths": [
+            "undead_charger/animations/angry/south-west/00.webp",
+            "undead_charger/animations/angry/south-west/01.webp",
+            "undead_charger/animations/angry/south-west/02.webp",
+            "undead_charger/animations/angry/south-west/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:51:43 GMT",
+          "src_frames": 4,
+          "sub": "5aca824e-3440-426a-8e6f-4cf631d6c09d"
+        },
+        "west": {
+          "frames": 4,
+          "strip": "undead_charger/animations/angry__west.webp",
+          "frame_paths": [
+            "undead_charger/animations/angry/west/00.webp",
+            "undead_charger/animations/angry/west/01.webp",
+            "undead_charger/animations/angry/west/02.webp",
+            "undead_charger/animations/angry/west/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:51:44 GMT",
+          "src_frames": 4,
+          "sub": "4ac127f9-d146-4aab-82ca-394a480a0c82"
+        }
+      }
+    },
+    "die": {
+      "group_id": "e6d05e5a-4f03-41b3-a190-82b2471b69c9",
+      "source_name": "custom-faints and fades away",
+      "directions": {
+        "east": {
+          "frames": 4,
+          "strip": "undead_charger/animations/die__east.webp",
+          "frame_paths": [
+            "undead_charger/animations/die/east/00.webp",
+            "undead_charger/animations/die/east/01.webp",
+            "undead_charger/animations/die/east/02.webp",
+            "undead_charger/animations/die/east/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:51:46 GMT",
+          "src_frames": 4,
+          "sub": "c8b3feab-0791-4d78-95ea-d45f2be54210"
+        },
+        "north": {
+          "frames": 4,
+          "strip": "undead_charger/animations/die__north.webp",
+          "frame_paths": [
+            "undead_charger/animations/die/north/00.webp",
+            "undead_charger/animations/die/north/01.webp",
+            "undead_charger/animations/die/north/02.webp",
+            "undead_charger/animations/die/north/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:51:47 GMT",
+          "src_frames": 4,
+          "sub": "8dbcf1b8-5117-4007-b6e1-5e6ab1d3fab8"
+        },
+        "north-east": {
+          "frames": 4,
+          "strip": "undead_charger/animations/die__north-east.webp",
+          "frame_paths": [
+            "undead_charger/animations/die/north-east/00.webp",
+            "undead_charger/animations/die/north-east/01.webp",
+            "undead_charger/animations/die/north-east/02.webp",
+            "undead_charger/animations/die/north-east/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:51:48 GMT",
+          "src_frames": 4,
+          "sub": "17f64d29-39a9-45d0-9700-b33a04d56951"
+        },
+        "north-west": {
+          "frames": 4,
+          "strip": "undead_charger/animations/die__north-west.webp",
+          "frame_paths": [
+            "undead_charger/animations/die/north-west/00.webp",
+            "undead_charger/animations/die/north-west/01.webp",
+            "undead_charger/animations/die/north-west/02.webp",
+            "undead_charger/animations/die/north-west/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:51:51 GMT",
+          "src_frames": 4,
+          "sub": "4fb2ff96-2405-4dc0-bca9-01ef9308458e"
+        },
+        "south": {
+          "frames": 4,
+          "strip": "undead_charger/animations/die__south.webp",
+          "frame_paths": [
+            "undead_charger/animations/die/south/00.webp",
+            "undead_charger/animations/die/south/01.webp",
+            "undead_charger/animations/die/south/02.webp",
+            "undead_charger/animations/die/south/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:51:52 GMT",
+          "src_frames": 4,
+          "sub": "b03dd0ba-0011-4de6-b0c2-9fbd66619f97"
+        },
+        "south-east": {
+          "frames": 4,
+          "strip": "undead_charger/animations/die__south-east.webp",
+          "frame_paths": [
+            "undead_charger/animations/die/south-east/00.webp",
+            "undead_charger/animations/die/south-east/01.webp",
+            "undead_charger/animations/die/south-east/02.webp",
+            "undead_charger/animations/die/south-east/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:51:54 GMT",
+          "src_frames": 4,
+          "sub": "3a17575f-e95a-48ec-872f-b98148e90348"
+        },
+        "south-west": {
+          "frames": 4,
+          "strip": "undead_charger/animations/die__south-west.webp",
+          "frame_paths": [
+            "undead_charger/animations/die/south-west/00.webp",
+            "undead_charger/animations/die/south-west/01.webp",
+            "undead_charger/animations/die/south-west/02.webp",
+            "undead_charger/animations/die/south-west/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:51:55 GMT",
+          "src_frames": 4,
+          "sub": "07b86d42-d3e6-4f9b-b771-8f6653878381"
+        },
+        "west": {
+          "frames": 4,
+          "strip": "undead_charger/animations/die__west.webp",
+          "frame_paths": [
+            "undead_charger/animations/die/west/00.webp",
+            "undead_charger/animations/die/west/01.webp",
+            "undead_charger/animations/die/west/02.webp",
+            "undead_charger/animations/die/west/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:51:57 GMT",
+          "src_frames": 4,
+          "sub": "caef3ff1-2e69-48f6-bfb4-dc34fee7be9f"
+        }
+      }
+    },
+    "walk": {
+      "group_id": "2c5437b2-0449-4e1f-8066-c5711ba6dd99",
+      "source_name": "custom-walk loop. full walk cycle. sh",
+      "directions": {
+        "east": {
+          "frames": 6,
+          "strip": "undead_charger/animations/walk__east.webp",
+          "frame_paths": [
+            "undead_charger/animations/walk/east/00.webp",
+            "undead_charger/animations/walk/east/01.webp",
+            "undead_charger/animations/walk/east/02.webp",
+            "undead_charger/animations/walk/east/03.webp",
+            "undead_charger/animations/walk/east/04.webp",
+            "undead_charger/animations/walk/east/05.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:51:58 GMT",
+          "src_frames": 6,
+          "sub": "e71b0fb2-5c43-4919-8c95-fb8b928570aa"
+        },
+        "north": {
+          "frames": 6,
+          "strip": "undead_charger/animations/walk__north.webp",
+          "frame_paths": [
+            "undead_charger/animations/walk/north/00.webp",
+            "undead_charger/animations/walk/north/01.webp",
+            "undead_charger/animations/walk/north/02.webp",
+            "undead_charger/animations/walk/north/03.webp",
+            "undead_charger/animations/walk/north/04.webp",
+            "undead_charger/animations/walk/north/05.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:52:00 GMT",
+          "src_frames": 6,
+          "sub": "0259fb57-8b5f-47cb-9089-846c74c935dc"
+        },
+        "north-east": {
+          "frames": 6,
+          "strip": "undead_charger/animations/walk__north-east.webp",
+          "frame_paths": [
+            "undead_charger/animations/walk/north-east/00.webp",
+            "undead_charger/animations/walk/north-east/01.webp",
+            "undead_charger/animations/walk/north-east/02.webp",
+            "undead_charger/animations/walk/north-east/03.webp",
+            "undead_charger/animations/walk/north-east/04.webp",
+            "undead_charger/animations/walk/north-east/05.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:52:02 GMT",
+          "src_frames": 6,
+          "sub": "0ba6ce68-3023-4a7a-8e00-e049b95312fa"
+        },
+        "north-west": {
+          "frames": 6,
+          "strip": "undead_charger/animations/walk__north-west.webp",
+          "frame_paths": [
+            "undead_charger/animations/walk/north-west/00.webp",
+            "undead_charger/animations/walk/north-west/01.webp",
+            "undead_charger/animations/walk/north-west/02.webp",
+            "undead_charger/animations/walk/north-west/03.webp",
+            "undead_charger/animations/walk/north-west/04.webp",
+            "undead_charger/animations/walk/north-west/05.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:52:03 GMT",
+          "src_frames": 6,
+          "sub": "6ba977cc-8e71-4f1d-91fd-f850463bc164"
+        },
+        "south": {
+          "frames": 6,
+          "strip": "undead_charger/animations/walk__south.webp",
+          "frame_paths": [
+            "undead_charger/animations/walk/south/00.webp",
+            "undead_charger/animations/walk/south/01.webp",
+            "undead_charger/animations/walk/south/02.webp",
+            "undead_charger/animations/walk/south/03.webp",
+            "undead_charger/animations/walk/south/04.webp",
+            "undead_charger/animations/walk/south/05.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:52:04 GMT",
+          "src_frames": 6,
+          "sub": "f127e858-316f-47f3-8a09-4bb0b1cac149"
+        },
+        "south-east": {
+          "frames": 6,
+          "strip": "undead_charger/animations/walk__south-east.webp",
+          "frame_paths": [
+            "undead_charger/animations/walk/south-east/00.webp",
+            "undead_charger/animations/walk/south-east/01.webp",
+            "undead_charger/animations/walk/south-east/02.webp",
+            "undead_charger/animations/walk/south-east/03.webp",
+            "undead_charger/animations/walk/south-east/04.webp",
+            "undead_charger/animations/walk/south-east/05.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:52:06 GMT",
+          "src_frames": 6,
+          "sub": "38fd1968-9e26-4e5f-b137-5c9c172e3f1c"
+        },
+        "south-west": {
+          "frames": 6,
+          "strip": "undead_charger/animations/walk__south-west.webp",
+          "frame_paths": [
+            "undead_charger/animations/walk/south-west/00.webp",
+            "undead_charger/animations/walk/south-west/01.webp",
+            "undead_charger/animations/walk/south-west/02.webp",
+            "undead_charger/animations/walk/south-west/03.webp",
+            "undead_charger/animations/walk/south-west/04.webp",
+            "undead_charger/animations/walk/south-west/05.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:52:08 GMT",
+          "src_frames": 6,
+          "sub": "f4c0c335-f73f-4b1e-bb2d-96e46b44d64a"
+        },
+        "west": {
+          "frames": 6,
+          "strip": "undead_charger/animations/walk__west.webp",
+          "frame_paths": [
+            "undead_charger/animations/walk/west/00.webp",
+            "undead_charger/animations/walk/west/01.webp",
+            "undead_charger/animations/walk/west/02.webp",
+            "undead_charger/animations/walk/west/03.webp",
+            "undead_charger/animations/walk/west/04.webp",
+            "undead_charger/animations/walk/west/05.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 09:52:09 GMT",
+          "src_frames": 6,
+          "sub": "f6d33f1c-f628-4cd5-a4c8-5407423207b4"
+        }
+      }
+    }
+  },
+  "states": {
+    "idle": "idle",
+    "walk": "walk",
+    "angry": "angry",
+    "attack": "attack",
+    "die": "die"
+  },
+  "unresolved_takes": [],
+  "synced_from_pixellab": true
+}

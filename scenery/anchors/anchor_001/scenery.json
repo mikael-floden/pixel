@@ -1,0 +1,95 @@
+{
+  "format": "scenery-piece@2",
+  "id": "anchor_001",
+  "group": "anchors",
+  "rank": 92,
+  "index": 1,
+  "name": "Seaweed-draped fresh-raised anchor 001",
+  "lights": null,
+  "variety": "seaweed-draped fresh-raised anchor",
+  "glow_concept": null,
+  "prompt": "a large rusted ship anchor standing propped ashore, one fluke sunk into the ground and a length of heavy chain pooled at its base, seaweed-draped fresh-raised anchor, about as tall as an adult person, completely unlit, no glow, no light sources, no self-emission",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 96,
+  "sprite": "anchors/anchor_001/sprite.webp",
+  "placement": {
+    "world_height_m": 1.524,
+    "world_px_height": 78,
+    "character_height_px": 87,
+    "character_height_m": 1.7,
+    "note": "ONE SCENERY PIXEL IS ONE PLAYER PIXEL. world_px_height IS the art's own alpha bbox height, so scenery is placed into the world at 1:1 exactly as the avatar is (setScale(1)) and the two share one pixel grid. The CAMERA still zooms the whole scene \u2014 that is uniform and correct; what must never happen is scenery being resampled on its own, against the player. world_height_m is what the art reads as beside a 87px character; declared_height_m is what it was once declared to be, and a gap between them means the ART is the wrong size.",
+    "declared_height_m": 1.52,
+    "content_box": [
+      17,
+      8,
+      78,
+      86
+    ],
+    "content_px_height": 78,
+    "canvas_render_px": 96
+  },
+  "pixellab_object_id": "57f27b0e-262c-4695-983e-9b0742f93746",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)",
+  "must_be_imbplemented_with_random_hflip": true,
+  "generated_at": "2026-08-13T02:46:04+00:00",
+  "states": {
+    "NOT_LIT_1": {
+      "sprite": "anchors/anchor_001/sprite.webp",
+      "pixellab_object_id": "57f27b0e-262c-4695-983e-9b0742f93746",
+      "generated_at": "2026-08-13T02:46:04+00:00",
+      "rotations": {
+        "south-east": "anchors/anchor_001/rotations/south-east.webp",
+        "south-west": "anchors/anchor_001/rotations/south-west.webp",
+        "south": "anchors/anchor_001/sprite.webp"
+      }
+    },
+    "NOT_LIT_2": {
+      "sprite": "anchors/anchor_001/not_lit_2/sprite.webp",
+      "pixellab_object_id": "2f83e7ac-995f-4be9-b72c-bda4390972e8",
+      "generated_at": "2026-08-15T19:28:54+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.6852,
+      "glow_score": 0.0,
+      "rotations": {
+        "south-east": "anchors/anchor_001/not_lit_2/rotations/south-east.webp",
+        "south-west": "anchors/anchor_001/not_lit_2/rotations/south-west.webp",
+        "south": "anchors/anchor_001/not_lit_2/sprite.webp"
+      }
+    },
+    "NOT_LIT_3": {
+      "sprite": "anchors/anchor_001/not_lit_3/sprite.webp",
+      "pixellab_object_id": "613121f1-c5d9-4e83-a41a-b4acec7ae010",
+      "generated_at": "2026-08-15T19:29:05+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.8759,
+      "glow_score": 0.0,
+      "rotations": {
+        "south-east": "anchors/anchor_001/not_lit_3/rotations/south-east.webp",
+        "south-west": "anchors/anchor_001/not_lit_3/rotations/south-west.webp",
+        "south": "anchors/anchor_001/not_lit_3/sprite.webp"
+      }
+    },
+    "NOT_LIT_4": {
+      "sprite": "anchors/anchor_001/not_lit_4/sprite.webp",
+      "pixellab_object_id": "d67bae36-d262-47e0-94df-a70290567826",
+      "generated_at": "2026-08-15T19:31:18+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.4762,
+      "glow_score": 0.0,
+      "rotations": {
+        "south-east": "anchors/anchor_001/not_lit_4/rotations/south-east.webp",
+        "south-west": "anchors/anchor_001/not_lit_4/rotations/south-west.webp",
+        "south": "anchors/anchor_001/not_lit_4/sprite.webp"
+      }
+    }
+  },
+  "collision": true,
+  "hitbox_shape": "ellipse"
+}

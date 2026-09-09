@@ -1,0 +1,22 @@
+{
+  "domain": "items",
+  "id": "black_tipped_horns",
+  "name_seen": "Dark Horns",
+  "law": "II",
+  "description": "A pair of black horns tipped in sickly green. Thornstag drops one every autumn and grows it back worse.",
+  "lore": [
+    "Out east the year is not counted, it is picked up. [[monsters/corrupt_stag|Thornstag]] sheds one horn every autumn within a night or two of the same night, and a household on that road has been gathering them since before anyone there can date, one to a shelf, in order, the oldest by the door. Thirty-four gold apiece if they ever sold one. They never have, because the shelf is the only almanac that stretch of country has, and people will walk a day and a half to stand in the doorway and count back to the autumn they are trying to place.",
+    "Count the other way and you get the thing they do not walk there for. The green is climbing. On the ones by the door it is a fleck at the point. On this year's it is a third of the way up the horn."
+  ],
+  "related": [
+    {
+      "domain": "monsters",
+      "id": "corrupt_stag"
+    },
+    {
+      "domain": "lore",
+      "id": "the_hard_pieces"
+    }
+  ],
+  "gm_notes": "The east's working calendar, and a measured trend nobody has decided what to do about. Useful if a season needs a date: count horns from the door."
+}

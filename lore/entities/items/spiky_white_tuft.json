@@ -1,0 +1,21 @@
+{
+  "domain": "items",
+  "id": "spiky_white_tuft",
+  "name_seen": "Snow Tuft",
+  "law": "V",
+  "description": "A burr of white fur bristling every way, blue in its shadows. Warm to wear, and slow to finish thawing.",
+  "lore": [
+    "It comes off thorn scrub and fence wire on the passes, wherever the white things have gone through — [[monsters/ice_wolf|Winterfang]] leaves it by the handful and never comes back for it. The seller at the north market has one rule and will not sell to anyone who breaks it: take a tuft bare-handed and hold it until it stops being cold. That is about a minute. The cold comes out of it into you first, all of it, before any warmth arrives, and a man who sews a hood full of it without knowing that gets an hour on the road worse than no hood at all — which is precisely the hour a cold man decides to sit down and rest a moment. Twenty gold. Half the young crackers think the minute is theatre. He lets them think so, and he still will not sell to one who lets go early."
+  ],
+  "related": [
+    {
+      "domain": "monsters",
+      "id": "ice_wolf"
+    },
+    {
+      "domain": "lore",
+      "id": "the_hard_pieces"
+    }
+  ],
+  "gm_notes": "The warmest material in the country charges its price up front. The seller's rule is a bereavement he does not explain; leave it unexplained."
+}

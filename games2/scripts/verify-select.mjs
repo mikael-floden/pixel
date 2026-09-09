@@ -95,6 +95,42 @@ try {
   if (dom.enterPos !== "fixed" || !dom.enterVisible)
     throw new Error(`#ml-enter must be a visible fixed button (pos=${dom.enterPos})`);
 
+  // ── THE CORNER PAIR: Wiki + Theme, both the maintainer's own pixel art ──
+  // (2026-09-03, replacing the 📖 and 🌗 emoji.) They share ONE fixed box so
+  // they can never differ in size or baseline — his 2026-07-30 report — so
+  // this asserts the PAIR, not two icons independently, and it asserts the
+  // decoded bitmaps: a missing /ui2 file is an empty box, not an error.
+  const pair = await page.evaluate(() => {
+    const one = (sel) => {
+      const b = document.querySelector(sel);
+      const i = b.querySelector(".ml-cicon-img");
+      const br = b.getBoundingClientRect(), ir = i.getBoundingClientRect();
+      return {
+        src: i.getAttribute("src") ?? "", nat: [i.naturalWidth, i.naturalHeight],
+        box: [Math.round(ir.width), Math.round(ir.height)],
+        rendering: getComputedStyle(i).imageRendering,
+        left: Math.round(ir.left), midOffset: +((ir.top + ir.bottom) / 2 - (br.top + br.bottom) / 2).toFixed(1),
+        btn: [Math.round(br.width), Math.round(br.height)], top: Math.round(br.top), bottom: Math.round(br.bottom),
+      };
+    };
+    return { wiki: one("#ml-wiki"), theme: one("#ml-theme-btn") };
+  });
+  for (const [name, g] of Object.entries(pair)) {
+    if (g.nat[0] !== 48 || g.nat[1] !== 48)
+      throw new Error(`${name} icon did not decode (${g.src}, natural ${g.nat.join("x")}) — a 404 in /ui2 renders as an empty box`);
+    if (g.box[0] !== 24 || g.box[1] !== 24 || g.rendering !== "pixelated")
+      throw new Error(`${name} icon is ${g.box.join("x")}/${g.rendering}, wanted its authored 24x24 pixelated`);
+  }
+  const gap = pair.theme.top - pair.wiki.bottom;
+  if (pair.wiki.left !== pair.theme.left || Math.abs(pair.wiki.midOffset - pair.theme.midOffset) > 0.6)
+    throw new Error(`the corner pair is not aligned: left ${pair.wiki.left}/${pair.theme.left}, centre offset ${pair.wiki.midOffset}/${pair.theme.midOffset}`);
+  if (String(pair.wiki.btn) !== String(pair.theme.btn))
+    throw new Error(`the corner pair differs in size: ${pair.wiki.btn} vs ${pair.theme.btn}`);
+  // The buttons grew with the 24px box; .ml-theme{top} is an ABSOLUTE offset
+  // that does not follow, and silently closed this to 4px once already.
+  if (Math.abs(gap - 9) > 1.5) throw new Error(`Wiki/Theme gap is ${gap}px, wanted the 9px the pair has always had`);
+  console.log("CORNER " + JSON.stringify({ ...pair, gap }));
+
   await page.fill("#ml-name", "Verifier");
   const chosenUid = await page.evaluate(async () => {
     const idx = window.__mlSelect.selected();

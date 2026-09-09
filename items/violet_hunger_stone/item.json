@@ -1,0 +1,38 @@
+{
+  "id": "violet_hunger_stone",
+  "name": "Soulstone",
+  "type": "SOUL",
+  "type_label": "Soul Stone",
+  "category": "void",
+  "rarity": "epic",
+  "value": 260,
+  "stackable": true,
+  "max_stack": 20,
+  "equip_slot": null,
+  "sellable": true,
+  "description": "Violet with a dark mouth of a core, cut out of a Voidmaw. Set it down and the light near it goes first.",
+  "sprite": "items/violet_hunger_stone/sprite.webp",
+  "size": [
+    48,
+    48
+  ],
+  "source": {
+    "store": "objects",
+    "pixellab_id": "445acf04-e5c6-47d0-99a7-08f154daaf19",
+    "tags": [
+      "SOUL"
+    ],
+    "prompt": "This is a soul stone. I need lots of different variations of it.",
+    "created_at": "2026-08-24T17:24:02.484625+00:00",
+    "last_modified": "Mon, 24 Aug 2026 17:41:54 GMT"
+  },
+  "synced_at": "2026-08-24T17:57:32+00:00",
+  "soul": {
+    "element": "void",
+    "power": "+18 void damage on hit, and 10% of it feeds your own health",
+    "merge_into": [
+      "weapon",
+      "armor"
+    ]
+  }
+}

@@ -1,0 +1,221 @@
+{
+  "format": "scenery-piece@2",
+  "id": "water_lily_clump_002",
+  "group": "water_lily_clumps",
+  "rank": 63,
+  "index": 2,
+  "name": "Night-closed folded blossoms 002",
+  "lights": null,
+  "variety": "night-closed folded blossoms",
+  "glow_concept": "soul-light shining up through gaps between pads",
+  "prompt": "a floating clump of overlapping round water lily pads with a few cupped blossoms and short trailing stems, drawn alone with no water beneath, night-closed folded blossoms, tiny, ankle-height to an adult person, self-emissive at night, softly radiating light: soul-light shining up through gaps between pads",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 64,
+  "sprite": "water_lily_clumps/water_lily_clump_002/sprite.webp",
+  "placement": {
+    "world_height_m": 0.938,
+    "world_px_height": 48,
+    "character_height_px": 87,
+    "character_height_m": 1.7,
+    "note": "ONE SCENERY PIXEL IS ONE PLAYER PIXEL. world_px_height IS the art's own alpha bbox height, so scenery is placed into the world at 1:1 exactly as the avatar is (setScale(1)) and the two share one pixel grid. The CAMERA still zooms the whole scene \u2014 that is uniform and correct; what must never happen is scenery being resampled on its own, against the player. world_height_m is what the art reads as beside a 87px character; declared_height_m is what it was once declared to be, and a gap between them means the ART is the wrong size.",
+    "declared_height_m": 0.28,
+    "content_box": [
+      2,
+      10,
+      63,
+      58
+    ],
+    "content_px_height": 48,
+    "canvas_render_px": 64
+  },
+  "pixellab_object_id": "13678f32-9861-4104-944a-effd471e7728",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)",
+  "must_be_imbplemented_with_random_hflip": true,
+  "generated_at": "2026-08-13T04:58:17+00:00",
+  "states": {
+    "LIT_1": {
+      "sprite": "water_lily_clumps/water_lily_clump_002/sprite.webp",
+      "pixellab_object_id": "13678f32-9861-4104-944a-effd471e7728",
+      "generated_at": "2026-08-13T04:58:17+00:00"
+    },
+    "LIT_2": {
+      "sprite": "water_lily_clumps/water_lily_clump_002/lit_2/sprite.webp",
+      "pixellab_object_id": "332fdb28-447f-402c-bbdc-2db5cda81179",
+      "generated_at": "2026-08-17T12:05:00+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.3425,
+      "glow_score": 0.349,
+      "animations": {
+        "motion": {
+          "group_id": "081bd1c9-35c3-4f41-91a3-1aded1fc21fe",
+          "description": "This is an almost completely still picture. ONLY the outermost edge of the two white flowers on the pads changes, and barely: a few pixels along that edge lift very slightly in brightness and drop straight back. The two white flowers on the pads is fully visible and exactly as easy to read in every frame -- it never fades, never vanishes and is never swallowed by glare. Its inside stays exactly the white it is in the first frame. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "water_lily_clumps/water_lily_clump_002/lit_2/animations/motion/00.webp",
+            "water_lily_clumps/water_lily_clump_002/lit_2/animations/motion/01.webp",
+            "water_lily_clumps/water_lily_clump_002/lit_2/animations/motion/02.webp",
+            "water_lily_clumps/water_lily_clump_002/lit_2/animations/motion/03.webp",
+            "water_lily_clumps/water_lily_clump_002/lit_2/animations/motion/04.webp"
+          ],
+          "strip": "water_lily_clumps/water_lily_clump_002/lit_2/animations/motion__strip.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-08-30T11:17:57+00:00",
+          "brief": "M41",
+          "review": "ANIMATION_PROBABLY_BAD",
+          "review_metrics": {
+            "class": "foliage",
+            "base": 0.9833,
+            "still": 0.504
+          },
+          "light_frames": [
+            {
+              "intensity": 0.986,
+              "dx": 3.2,
+              "dy": -2.2
+            },
+            {
+              "intensity": 1.007,
+              "dx": 3.5,
+              "dy": -2.7
+            },
+            {
+              "intensity": 1.013,
+              "dx": 3.3,
+              "dy": -2.8
+            },
+            {
+              "intensity": 0.999,
+              "dx": 3.3,
+              "dy": -3.1
+            },
+            {
+              "intensity": 0.995,
+              "dx": 3.5,
+              "dy": -2.5
+            }
+          ]
+        }
+      }
+    },
+    "LIT_3": {
+      "sprite": "water_lily_clumps/water_lily_clump_002/lit_3/sprite.webp",
+      "pixellab_object_id": "24deac5c-543a-4e3e-81c5-f61d3bbe3424",
+      "generated_at": "2026-08-17T12:07:19+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.5938,
+      "glow_score": 0.1249,
+      "animations": {
+        "motion": {
+          "group_id": "66dc7f81-adff-4ab0-9c54-9655e3a156f5",
+          "description": "This is an almost completely still picture. ONLY the outermost edge of the two white flowers on the pads changes, and barely: a few pixels along that edge lift very slightly in brightness and drop straight back. The two white flowers on the pads is fully visible and exactly as easy to read in every frame -- it never fades, never vanishes and is never swallowed by glare. Its inside stays exactly the white it is in the first frame. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "water_lily_clumps/water_lily_clump_002/lit_3/animations/motion/00.webp",
+            "water_lily_clumps/water_lily_clump_002/lit_3/animations/motion/01.webp",
+            "water_lily_clumps/water_lily_clump_002/lit_3/animations/motion/02.webp",
+            "water_lily_clumps/water_lily_clump_002/lit_3/animations/motion/03.webp",
+            "water_lily_clumps/water_lily_clump_002/lit_3/animations/motion/04.webp"
+          ],
+          "strip": "water_lily_clumps/water_lily_clump_002/lit_3/animations/motion__strip.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-08-30T11:18:37+00:00",
+          "brief": "M42",
+          "review": "ANIMATION_PROBABLY_BAD",
+          "review_metrics": {
+            "class": "foliage",
+            "base": 0.6304,
+            "still": 0.59
+          },
+          "light_frames": [
+            {
+              "intensity": 1.163,
+              "dx": -1.9,
+              "dy": -6.3
+            },
+            {
+              "intensity": 0.991,
+              "dx": -1.9,
+              "dy": -6.0
+            },
+            {
+              "intensity": 1.005,
+              "dx": -1.9,
+              "dy": -5.9
+            },
+            {
+              "intensity": 0.942,
+              "dx": -0.1,
+              "dy": -5.5
+            },
+            {
+              "intensity": 0.9,
+              "dx": -0.5,
+              "dy": -6.1
+            }
+          ]
+        }
+      }
+    },
+    "NOT_LIT_1": {
+      "sprite": "water_lily_clumps/water_lily_clump_002/not_lit_1/sprite.webp",
+      "pixellab_object_id": "e774ef49-aca7-4017-811c-dcb3209a042a",
+      "generated_at": "2026-08-17T12:09:21+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.9915,
+      "glow_score": 0.0
+    },
+    "NOT_LIT_2": {
+      "sprite": "water_lily_clumps/water_lily_clump_002/not_lit_2/sprite.webp",
+      "pixellab_object_id": "6e4576f7-4f11-4738-8cdf-af0bf2eea412",
+      "generated_at": "2026-08-17T12:05:50+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.9995,
+      "glow_score": 0.0
+    }
+  },
+  "collision": true,
+  "hitbox_shape": "ellipse",
+  "light": {
+    "strength": 0.1,
+    "color": "#ffe8ad",
+    "radius": 2,
+    "reference": "the spawn bonfire is 1.0 (radius 7); strength 0 is no light",
+    "states": {
+      "LIT_1": {
+        "strength": 0.1,
+        "color": "#ffe8ad",
+        "radius": 2
+      },
+      "LIT_2": {
+        "strength": 0.1,
+        "color": "#feeeb8",
+        "radius": 2
+      },
+      "LIT_3": {
+        "strength": 0.1,
+        "color": "#feeeb6",
+        "radius": 2
+      }
+    },
+    "kind": "glow/bio",
+    "flame": false,
+    "embers": false
+  }
+}

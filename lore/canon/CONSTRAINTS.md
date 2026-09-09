@@ -140,7 +140,7 @@ world, not the player's verbs.
   stone, black volcanic rock, clear water, light sand, crystal ice. There is
   **no wood, no brick, no paved road, no lava terrain, no swamp, no jungle, no
   farmland, no interior floor.** Buildings are made of ground materials. Lore
-  requiring new terrain is a tiles2 request first, prose second.
+  requiring new terrain is a tiles (3.0) request first, prose second.
 - **The mountain is north/up-screen; meadows and maze are south/near; beaches
   exist on the near shore only**; ocean rings everything.
 - The named features that exist in the map generator — the **Trollstigen**, the
@@ -149,10 +149,21 @@ world, not the player's verbs.
   *names* have persisted; their *coordinates* have not. Use the names, never
   the positions.
 - **Counts are as unstable as coordinates.** The gorge is crossed in *four*
-  places (`GORGE_BRIDGE_FRACS`, plus river bridges), and the cave has exactly
-  one mouth today. Never write "the only" or "the one" about a map feature
-  without checking the generator — and prefer phrasing that survives the
-  number changing.
+  places (`GORGE_BRIDGE_FRACS`), and the cave has exactly one mouth today.
+  `the_island2` has **one river** — the massif gorge; the second river was
+  removed 2026-08-07 (maintainer), so any text leaning on two waterways is
+  stale. Never write "the only" or "the one" about a map feature without
+  checking the generator, and prefer phrasing that survives the number
+  changing.
+- **The maps2 agent has named the insides** (`worlds/<name>/places.json`,
+  `pixel-maps2/places@1`). Our vocabulary won where we had a name: the spawn
+  cottage ships as **The Stone House** and the dungeon as **The Cave**, both
+  verbatim from the glossary. Display names there are ours to rewrite; the id
+  is what the engine binds to and never moves.
+- **Habitats are data and they win.** `maps2/pipeline/spawns.py MONSTER_HABITAT`
+  places every creature, and placement is measured against habitat capacity,
+  not taste. When a creature moves, the lore follows it onto the new ground —
+  the alternative costs the map a species.
 - The props already drawable are the real visual canon and they say the world
   is **inhabited-then-abandoned**: aqueducts, triumphal arches, castle turrets,
   obelisks, standing stones, shrines, wells, windmills, telegraph poles,

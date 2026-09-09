@@ -1,0 +1,233 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-13T23:10:02+00:00",
+  "id": "wayside_shrine_016",
+  "group": "wayside_shrines",
+  "rank": 19,
+  "index": 16,
+  "name": "Tiny painted icon shrine 016",
+  "lights": null,
+  "variety": "tiny painted icon shrine",
+  "glow_concept": "painted icon inside glowing gently",
+  "prompt": "a small sturdy stone shrine standing directly on the ground on a broad base, thick walls, a shallow arched alcove sheltering a candle, heavy slab roof, tiny painted icon shrine, roughly six feet tall, human height, self-emissive at night, softly radiating light: painted icon inside glowing gently",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 64,
+  "sprite": "wayside_shrines/wayside_shrine_016/sprite.webp",
+  "placement": {
+    "world_height_m": 0.938,
+    "world_px_height": 48,
+    "character_height_px": 87,
+    "character_height_m": 1.7,
+    "note": "ONE SCENERY PIXEL IS ONE PLAYER PIXEL. world_px_height IS the art's own alpha bbox height, so scenery is placed into the world at 1:1 exactly as the avatar is (setScale(1)) and the two share one pixel grid. The CAMERA still zooms the whole scene \u2014 that is uniform and correct; what must never happen is scenery being resampled on its own, against the player. world_height_m is what the art reads as beside a 87px character; declared_height_m is what it was once declared to be, and a gap between them means the ART is the wrong size.",
+    "declared_height_m": 1.35,
+    "content_box": [
+      14,
+      8,
+      51,
+      56
+    ],
+    "content_px_height": 48,
+    "canvas_render_px": 64
+  },
+  "pixellab_object_id": "91771a37-d054-4c8e-9b8b-cc6318313c02",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)",
+  "must_be_imbplemented_with_random_hflip": true,
+  "states": {
+    "LIT_1": {
+      "sprite": "wayside_shrines/wayside_shrine_016/sprite.webp",
+      "pixellab_object_id": "91771a37-d054-4c8e-9b8b-cc6318313c02",
+      "generated_at": "2026-08-13T23:10:02+00:00",
+      "rotations": {
+        "south-east": "wayside_shrines/wayside_shrine_016/rotations/south-east.webp",
+        "south-west": "wayside_shrines/wayside_shrine_016/rotations/south-west.webp",
+        "south": "wayside_shrines/wayside_shrine_016/sprite.webp"
+      }
+    },
+    "LIT_2": {
+      "sprite": "wayside_shrines/wayside_shrine_016/lit_2/sprite.webp",
+      "pixellab_object_id": "c3e94033-d675-4a02-a104-35c1465fdf0c",
+      "generated_at": "2026-08-17T12:25:45+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.5485,
+      "glow_score": 0.0191,
+      "rotations": {
+        "south-east": "wayside_shrines/wayside_shrine_016/lit_2/rotations/south-east.webp",
+        "south-west": "wayside_shrines/wayside_shrine_016/lit_2/rotations/south-west.webp",
+        "south": "wayside_shrines/wayside_shrine_016/lit_2/sprite.webp"
+      },
+      "animations": {
+        "motion": {
+          "group_id": "b495a5f0-7978-4c2f-b6ad-f7957d6fa687",
+          "description": "This is the same picture in every frame. ONLY the two candle flames flicker. Nothing else moves, bends or leans, and nothing changes size, shape or position. The last frame must return to exactly how the first frame looks, so the loop joins. Nothing may become darker than it is in the first frame. Do not redraw anything else, and do not add or remove anything.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "wayside_shrines/wayside_shrine_016/lit_2/animations/motion/00.webp",
+            "wayside_shrines/wayside_shrine_016/lit_2/animations/motion/01.webp",
+            "wayside_shrines/wayside_shrine_016/lit_2/animations/motion/02.webp",
+            "wayside_shrines/wayside_shrine_016/lit_2/animations/motion/03.webp",
+            "wayside_shrines/wayside_shrine_016/lit_2/animations/motion/04.webp"
+          ],
+          "strip": "wayside_shrines/wayside_shrine_016/lit_2/animations/motion__strip.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-08-29T15:35:45+00:00",
+          "brief": "X8",
+          "review": "ANIMATION_PROBABLY_GOOD",
+          "review_metrics": {
+            "class": "fire",
+            "base": 0.0,
+            "still": 0.917
+          },
+          "light_frames": [
+            {
+              "intensity": 1.036,
+              "dx": -0.0,
+              "dy": 7.8
+            },
+            {
+              "intensity": 1.032,
+              "dx": -0.1,
+              "dy": 7.7
+            },
+            {
+              "intensity": 0.956,
+              "dx": 0.5,
+              "dy": 7.7
+            },
+            {
+              "intensity": 1.196,
+              "dx": 0.2,
+              "dy": 7.4
+            },
+            {
+              "intensity": 0.78,
+              "dx": 4.4,
+              "dy": 7.6
+            }
+          ]
+        }
+      }
+    },
+    "LIT_4": {
+      "sprite": "wayside_shrines/wayside_shrine_016/lit_4/sprite.webp",
+      "pixellab_object_id": "eac92422-1887-4427-b8a2-c956a254fcde",
+      "generated_at": "2026-08-17T12:26:04+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.6874,
+      "glow_score": 0.0193,
+      "rotations": {
+        "south-east": "wayside_shrines/wayside_shrine_016/lit_4/rotations/south-east.webp",
+        "south-west": "wayside_shrines/wayside_shrine_016/lit_4/rotations/south-west.webp",
+        "south": "wayside_shrines/wayside_shrine_016/lit_4/sprite.webp"
+      },
+      "animations": {
+        "motion": {
+          "group_id": "687463ae-7955-4c89-a216-75dffaf291a5",
+          "description": "This is the same picture in every frame. ONLY the two candle flames flicker. It is lit and clearly visible in every single frame, including the first. Everything else in the picture is copied from the first frame exactly, pixel for pixel, unchanged in shape, size, position and colour. No outline anywhere is redrawn. The last frame matches the first frame exactly, so the loop joins.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "wayside_shrines/wayside_shrine_016/lit_4/animations/motion/00.webp",
+            "wayside_shrines/wayside_shrine_016/lit_4/animations/motion/01.webp",
+            "wayside_shrines/wayside_shrine_016/lit_4/animations/motion/02.webp",
+            "wayside_shrines/wayside_shrine_016/lit_4/animations/motion/03.webp",
+            "wayside_shrines/wayside_shrine_016/lit_4/animations/motion/04.webp"
+          ],
+          "strip": "wayside_shrines/wayside_shrine_016/lit_4/animations/motion__strip.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-08-29T16:55:00+00:00",
+          "brief": "Z10",
+          "review": "ANIMATION_PROBABLY_GOOD",
+          "review_metrics": {
+            "class": "fire",
+            "base": 0.0,
+            "still": 0.951
+          },
+          "light_frames": [
+            {
+              "intensity": 0.909,
+              "dx": 0.5,
+              "dy": 7.3
+            },
+            {
+              "intensity": 0.94,
+              "dx": -0.3,
+              "dy": 8.0
+            },
+            {
+              "intensity": 1.101,
+              "dx": -0.5,
+              "dy": 7.6
+            },
+            {
+              "intensity": 1.077,
+              "dx": -0.7,
+              "dy": 7.1
+            },
+            {
+              "intensity": 0.972,
+              "dx": 0.4,
+              "dy": 7.3
+            }
+          ]
+        }
+      }
+    },
+    "NOT_LIT_1": {
+      "sprite": "wayside_shrines/wayside_shrine_016/not_lit_1/sprite.webp",
+      "pixellab_object_id": "4bd22870-108f-4302-b2d7-e833a8028972",
+      "generated_at": "2026-08-17T12:26:04+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.4859,
+      "glow_score": 0.0,
+      "rotations": {
+        "south-east": "wayside_shrines/wayside_shrine_016/not_lit_1/rotations/south-east.webp",
+        "south-west": "wayside_shrines/wayside_shrine_016/not_lit_1/rotations/south-west.webp",
+        "south": "wayside_shrines/wayside_shrine_016/not_lit_1/sprite.webp"
+      }
+    }
+  },
+  "collision": true,
+  "hitbox_shape": "ellipse",
+  "light": {
+    "strength": 0.25,
+    "color": "#ffcc91",
+    "radius": 4,
+    "reference": "the spawn bonfire is 1.0 (radius 7); strength 0 is no light",
+    "states": {
+      "LIT_1": {
+        "strength": 0.3,
+        "color": "#ffcc91",
+        "radius": 5
+      },
+      "LIT_2": {
+        "strength": 0.2,
+        "color": "#ffb45c",
+        "radius": 3
+      },
+      "LIT_4": {
+        "strength": 0.2,
+        "color": "#ffb45c",
+        "radius": 3
+      }
+    },
+    "kind": "fire/open",
+    "flame": true,
+    "embers": true
+  }
+}

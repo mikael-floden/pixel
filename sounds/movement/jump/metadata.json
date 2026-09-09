@@ -16,8 +16,8 @@
   "license": "CC0-1.0",
   "status": "complete",
   "quality": "aaa",
-  "file": "movement/jump/jump__take01.wav",
-  "format": "wav",
+  "file": "movement/jump/jump__take01.ogg",
+  "format": "ogg",
   "audio": {
     "samples": 23875,
     "duration_seconds": 0.497,
@@ -29,8 +29,8 @@
     "delivered": "mp3"
   },
   "takes": [
-    "movement/jump/jump__take01.wav",
-    "movement/jump/jump__take02.wav"
+    "movement/jump/jump__take01.ogg",
+    "movement/jump/jump__take02.ogg"
   ],
   "ai": {
     "provider": "elevenlabs",
@@ -93,17 +93,6 @@
   ],
   "delivery": {
     "formats": {
-      "wav": {
-        "file": "movement/jump/jump__take01.wav",
-        "bytes": 47794,
-        "codec": "pcm_s16le",
-        "role": "master"
-      },
-      "m4a": {
-        "file": "movement/jump/jump__take01.m4a",
-        "bytes": 8881,
-        "codec": "aac"
-      },
       "ogg": {
         "file": "movement/jump/jump__take01.ogg",
         "bytes": 9993,
@@ -111,7 +100,6 @@
       }
     },
     "web_source_order": [
-      "m4a",
       "ogg"
     ]
   }

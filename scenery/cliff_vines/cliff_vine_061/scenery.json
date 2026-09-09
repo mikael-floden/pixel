@@ -1,0 +1,221 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-14T04:57:20+00:00",
+  "id": "cliff_vine_061",
+  "group": "cliff_vines",
+  "rank": 101,
+  "index": 61,
+  "name": "Moss-heavy dripping fall 061",
+  "lights": null,
+  "variety": "moss-heavy dripping fall",
+  "modifier": "clustered thickly at the top corner, trailing below",
+  "glow_concept": null,
+  "prompt": "beautiful lush climbing ivy growing wild across an old ruin wall, deep green leaves in loose overlapping clusters with long trailing tendrils between them, lush fantasy RPG nature art, rich and beautiful, uneven natural growth that is thick and leafy in a few places and bare stone-empty elsewhere, drifting off one side, no straight edges, no border, nothing it hangs from and no line across the top, fading away into a few last leaves at the edges, transparent background, no rock or wall behind it, moss-heavy dripping fall, clustered thickly at the top corner, trailing below, towering, many times human height, completely unlit, no glow, no light sources, no self-emission",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 256,
+  "sprite": "cliff_vines/cliff_vine_061/sprite.webp",
+  "placement": {
+    "world_height_m": 4.24,
+    "world_px_height": 217,
+    "character_height_px": 87,
+    "character_height_m": 1.7,
+    "note": "ONE SCENERY PIXEL IS ONE PLAYER PIXEL. world_px_height IS the art's own alpha bbox height, so scenery is placed into the world at 1:1 exactly as the avatar is (setScale(1)) and the two share one pixel grid. The CAMERA still zooms the whole scene \u2014 that is uniform and correct; what must never happen is scenery being resampled on its own, against the player. world_height_m is what the art reads as beside a 87px character; declared_height_m is what it was once declared to be, and a gap between them means the ART is the wrong size.",
+    "declared_height_m": 6.87,
+    "content_box": [
+      19,
+      22,
+      240,
+      239
+    ],
+    "content_px_height": 217,
+    "canvas_render_px": 256
+  },
+  "pixellab_object_id": "1c007796-fae6-4a7e-b801-bbcacd737373",
+  "pixellab_directions": 1,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-1-direction-object (single, S-only)",
+  "must_be_imbplemented_with_random_hflip": true,
+  "states": {
+    "LIT_1": {
+      "sprite": "cliff_vines/cliff_vine_061/lit_1/sprite.webp",
+      "pixellab_object_id": "e9e8e95b-a8c4-4212-8e30-24c7f2d73e8c",
+      "generated_at": "2026-08-16T10:37:13+00:00",
+      "glow_concept": "pale blue soul-flowers dotted down the fall",
+      "difference_from_source": 0.2033,
+      "glow_score": 0.0361,
+      "animations": {
+        "motion": {
+          "group_id": "9f37b315-7cd8-4dfe-9f05-8b7f2876c24e",
+          "description": "This is an almost completely still picture. ONLY the outermost edge of the cyan flowers on the vine changes, and barely: a few pixels along that edge lift very slightly in brightness and drop straight back. They stay exactly the cyan they are in the first frame and are equally visible in every frame. Every leaf, every stem and every branch is copied from the first frame exactly: not one of them moves, bends, shifts, grows or changes shape or colour at any point. Frames 1, 2 and 5 are identical to each other. Only frames 3 and 4 differ at all, and only by a handful of pixels. Everything else is copied from the first frame exactly, pixel for pixel. The last frame matches the first exactly.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "cliff_vines/cliff_vine_061/lit_1/animations/motion/00.webp",
+            "cliff_vines/cliff_vine_061/lit_1/animations/motion/01.webp",
+            "cliff_vines/cliff_vine_061/lit_1/animations/motion/02.webp",
+            "cliff_vines/cliff_vine_061/lit_1/animations/motion/03.webp",
+            "cliff_vines/cliff_vine_061/lit_1/animations/motion/04.webp"
+          ],
+          "strip": "cliff_vines/cliff_vine_061/lit_1/animations/motion__strip.webp",
+          "directions": null,
+          "generated_at": "2026-08-30T10:50:23+00:00",
+          "brief": "K14",
+          "review": "ANIMATION_PROBABLY_BAD",
+          "review_metrics": {
+            "class": "foliage",
+            "base": 0.9977,
+            "still": 0.031
+          },
+          "light_frames": [
+            {
+              "intensity": 0.966,
+              "dx": 12.7,
+              "dy": 25.0
+            },
+            {
+              "intensity": 1.047,
+              "dx": 9.5,
+              "dy": 35.4
+            },
+            {
+              "intensity": 1.056,
+              "dx": 6.8,
+              "dy": 33.7
+            },
+            {
+              "intensity": 1.062,
+              "dx": 5.2,
+              "dy": 35.9
+            },
+            {
+              "intensity": 0.868,
+              "dx": 15.5,
+              "dy": 35.6
+            }
+          ]
+        }
+      }
+    },
+    "LIT_2": {
+      "sprite": "cliff_vines/cliff_vine_061/lit_2/sprite.webp",
+      "pixellab_object_id": "e1fb04a8-469d-42df-b4e7-d0090051a18b",
+      "generated_at": "2026-08-16T10:37:33+00:00",
+      "glow_concept": "glowworm colonies strung in the foliage",
+      "difference_from_source": 0.4477,
+      "glow_score": 0.0502,
+      "animations": {
+        "motion": {
+          "group_id": "dbbfd12b-3bbb-4341-a610-de2ec8f858c9",
+          "description": "This is an almost completely still picture. ONLY the cyan flowers on the vine change. Their brightness lifts very slightly and comes straight back: no more than a few pixels change anywhere in the whole picture. At their brightest they are still exactly the same cyan as in the first frame -- never pale, never white, never any other colour. They never fade, never vanish, never spread and never change shape. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "cliff_vines/cliff_vine_061/lit_2/animations/motion/00.webp",
+            "cliff_vines/cliff_vine_061/lit_2/animations/motion/01.webp",
+            "cliff_vines/cliff_vine_061/lit_2/animations/motion/02.webp",
+            "cliff_vines/cliff_vine_061/lit_2/animations/motion/03.webp",
+            "cliff_vines/cliff_vine_061/lit_2/animations/motion/04.webp"
+          ],
+          "strip": "cliff_vines/cliff_vine_061/lit_2/animations/motion__strip.webp",
+          "directions": null,
+          "generated_at": "2026-08-30T10:35:16+00:00",
+          "brief": "K15",
+          "review": "ANIMATION_PROBABLY_BAD",
+          "review_metrics": {
+            "class": "foliage",
+            "base": 0.8157,
+            "still": 0.18
+          },
+          "light_frames": [
+            {
+              "intensity": 1.236,
+              "dx": 15.2,
+              "dy": 13.0
+            },
+            {
+              "intensity": 0.713,
+              "dx": 24.5,
+              "dy": 11.5
+            },
+            {
+              "intensity": 1.15,
+              "dx": 21.1,
+              "dy": 9.1
+            },
+            {
+              "intensity": 0.696,
+              "dx": 17.3,
+              "dy": 11.9
+            },
+            {
+              "intensity": 1.205,
+              "dx": 24.0,
+              "dy": 8.8
+            }
+          ]
+        }
+      }
+    },
+    "NOT_LIT_1": {
+      "sprite": "cliff_vines/cliff_vine_061/sprite.webp",
+      "pixellab_object_id": "1c007796-fae6-4a7e-b801-bbcacd737373",
+      "generated_at": "2026-08-14T04:57:20+00:00"
+    },
+    "NOT_LIT_2": {
+      "sprite": "cliff_vines/cliff_vine_061/not_lit_2/sprite.webp",
+      "pixellab_object_id": "2ae19eff-42bd-4cf4-9b53-b85f3ee19c5a",
+      "generated_at": "2026-08-16T10:36:10+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.2653,
+      "glow_score": 0.0006
+    },
+    "NOT_LIT_3": {
+      "sprite": "cliff_vines/cliff_vine_061/not_lit_3/sprite.webp",
+      "pixellab_object_id": "abb1bb13-08e8-4ff9-a51b-437c54effa93",
+      "generated_at": "2026-08-16T10:36:23+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.4389,
+      "glow_score": 0.0005
+    },
+    "NOT_LIT_4": {
+      "sprite": "cliff_vines/cliff_vine_061/not_lit_4/sprite.webp",
+      "pixellab_object_id": "915f3b72-f815-42d5-b4d8-9ac8364d6462",
+      "generated_at": "2026-08-16T10:36:34+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.3059,
+      "glow_score": 0.0023
+    }
+  },
+  "collision": true,
+  "hitbox_shape": "ellipse",
+  "light": {
+    "strength": 0.1,
+    "color": "#b0f0ff",
+    "radius": 2,
+    "reference": "the spawn bonfire is 1.0 (radius 7); strength 0 is no light",
+    "states": {
+      "LIT_1": {
+        "strength": 0.12,
+        "color": "#b0f0ff",
+        "radius": 2
+      },
+      "LIT_2": {
+        "strength": 0.12,
+        "color": "#c5fff3",
+        "radius": 2
+      }
+    },
+    "kind": "glow/bio",
+    "flame": false,
+    "embers": false
+  }
+}

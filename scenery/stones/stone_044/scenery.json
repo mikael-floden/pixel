@@ -1,0 +1,278 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-15T17:59:02+00:00",
+  "id": "stone_044",
+  "group": "stones",
+  "type": "NATURE",
+  "rank": 2,
+  "index": 44,
+  "name": "Hollowed stone cupping rainwater 044",
+  "lights": null,
+  "variety": "hollowed stone cupping rainwater",
+  "modifier": "with a bird nest tucked in it",
+  "glow_concept": "ember light leaking from a hollow beneath",
+  "prompt": "a single natural fieldstone boulder resting on the ground, rounded and weathered, with subtle cracks, pits and patches of moss, hollowed stone cupping rainwater, with a bird nest tucked in it, waist-high, self-emissive at night, softly radiating light: ember light leaking from a hollow beneath",
+  "view": "low top-down",
+  "direction": "south",
+  "directions": [
+    "south"
+  ],
+  "must_be_imbplemented_with_random_hflip": true,
+  "rotations": null,
+  "size": 64,
+  "sprite": "stones/stone_044/sprite.webp",
+  "placement": {
+    "world_height_m": 0.957,
+    "world_px_height": 49,
+    "character_height_px": 87,
+    "character_height_m": 1.7,
+    "note": "ONE SCENERY PIXEL IS ONE PLAYER PIXEL. world_px_height IS the art's own alpha bbox height, so scenery is placed into the world at 1:1 exactly as the avatar is (setScale(1)) and the two share one pixel grid. The CAMERA still zooms the whole scene \u2014 that is uniform and correct; what must never happen is scenery being resampled on its own, against the player. world_height_m is what the art reads as beside a 87px character; declared_height_m is what it was once declared to be, and a gap between them means the ART is the wrong size.",
+    "content_box": [
+      6,
+      8,
+      60,
+      57
+    ],
+    "content_px_height": 49,
+    "canvas_render_px": 64,
+    "declared_height_m": 1.14
+  },
+  "pixellab_object_id": "f1386a90-2174-4f5e-b38b-f737c2f0e228",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)",
+  "states": {
+    "LIT_1": {
+      "sprite": "stones/stone_044/sprite.webp",
+      "pixellab_object_id": "f1386a90-2174-4f5e-b38b-f737c2f0e228",
+      "generated_at": "2026-08-15T17:59:02+00:00",
+      "animations": {
+        "flame": {
+          "group_id": "f3d18ad5-9269-490d-9d84-8546dc8b979a",
+          "description": "Animate the flame only",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "stones/stone_044/animations/flame/00.webp",
+            "stones/stone_044/animations/flame/01.webp",
+            "stones/stone_044/animations/flame/02.webp",
+            "stones/stone_044/animations/flame/03.webp",
+            "stones/stone_044/animations/flame/04.webp"
+          ],
+          "strip": "stones/stone_044/animations/flame__strip.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-08-29T07:08:05+00:00",
+          "review": "ANIMATION_PROBABLY_BAD",
+          "review_metrics": {
+            "class": "rigid",
+            "base": 0.7612,
+            "still": 0.344
+          },
+          "light_frames": [
+            {
+              "intensity": 1.178,
+              "dx": -12.0,
+              "dy": 15.8
+            },
+            {
+              "intensity": 0.856,
+              "dx": -11.6,
+              "dy": 15.2
+            },
+            {
+              "intensity": 0.887,
+              "dx": -11.6,
+              "dy": 14.2
+            },
+            {
+              "intensity": 1.052,
+              "dx": -11.8,
+              "dy": 15.6
+            },
+            {
+              "intensity": 1.026,
+              "dx": -11.7,
+              "dy": 15.6
+            }
+          ]
+        }
+      }
+    },
+    "LIT_2": {
+      "sprite": "stones/stone_044/lit_2/sprite.webp",
+      "pixellab_object_id": "1179942b-4a47-421e-b7f4-f12fd234ef22",
+      "generated_at": "2026-08-16T22:16:42+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.8183,
+      "glow_score": 0.0372,
+      "animations": {
+        "flame": {
+          "group_id": "131c4399-97db-4eb7-8b13-1b622a1213c3",
+          "description": "Animate the flame only",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "stones/stone_044/lit_2/animations/flame/00.webp",
+            "stones/stone_044/lit_2/animations/flame/01.webp",
+            "stones/stone_044/lit_2/animations/flame/02.webp",
+            "stones/stone_044/lit_2/animations/flame/03.webp",
+            "stones/stone_044/lit_2/animations/flame/04.webp"
+          ],
+          "strip": "stones/stone_044/lit_2/animations/flame__strip.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-08-29T07:08:34+00:00",
+          "review": "ANIMATION_PROBABLY_GOOD",
+          "review_metrics": {
+            "base_outline": 0.0382
+          },
+          "light_frames": [
+            {
+              "intensity": 0.836,
+              "dx": -2.1,
+              "dy": 17.2
+            },
+            {
+              "intensity": 1.157,
+              "dx": -2.1,
+              "dy": 18.8
+            },
+            {
+              "intensity": 1.11,
+              "dx": -2.0,
+              "dy": 19.3
+            },
+            {
+              "intensity": 1.072,
+              "dx": -1.9,
+              "dy": 19.9
+            },
+            {
+              "intensity": 0.824,
+              "dx": -1.9,
+              "dy": 21.1
+            }
+          ]
+        }
+      }
+    },
+    "LIT_4": {
+      "sprite": "stones/stone_044/lit_4/sprite.webp",
+      "pixellab_object_id": "328a033a-3f51-4f31-aa55-b540e57c6a93",
+      "generated_at": "2026-08-16T22:17:11+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.8399,
+      "glow_score": 0.0208,
+      "animations": {
+        "flame": {
+          "group_id": "0b5da0e8-5965-41c0-bdcb-acfc4a0df671",
+          "description": "Animate the flame only",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "stones/stone_044/lit_4/animations/flame/00.webp",
+            "stones/stone_044/lit_4/animations/flame/01.webp",
+            "stones/stone_044/lit_4/animations/flame/02.webp",
+            "stones/stone_044/lit_4/animations/flame/03.webp",
+            "stones/stone_044/lit_4/animations/flame/04.webp"
+          ],
+          "strip": "stones/stone_044/lit_4/animations/flame__strip.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-08-29T07:08:18+00:00",
+          "review": "ANIMATION_PROBABLY_GOOD",
+          "review_metrics": {
+            "class": "rigid",
+            "base": 0.0034,
+            "still": 0.96
+          },
+          "light_frames": [
+            {
+              "intensity": 0.973,
+              "dx": -0.5,
+              "dy": 4.0
+            },
+            {
+              "intensity": 0.989,
+              "dx": -0.4,
+              "dy": 4.0
+            },
+            {
+              "intensity": 1.011,
+              "dx": -0.2,
+              "dy": 4.1
+            },
+            {
+              "intensity": 1.018,
+              "dx": -0.3,
+              "dy": 4.0
+            },
+            {
+              "intensity": 1.008,
+              "dx": -0.3,
+              "dy": 4.0
+            }
+          ]
+        }
+      }
+    },
+    "NOT_LIT_1": {
+      "sprite": "stones/stone_044/not_lit_1/sprite.webp",
+      "pixellab_object_id": "27667f40-7117-4de2-94c1-2cd2b7265033",
+      "generated_at": "2026-08-16T22:17:11+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.701,
+      "glow_score": 0.0
+    },
+    "NOT_LIT_2": {
+      "sprite": "stones/stone_044/not_lit_2/sprite.webp",
+      "pixellab_object_id": "6271e0f7-5249-485f-8fdd-1b4d05f8d830",
+      "generated_at": "2026-08-16T22:17:40+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.8149,
+      "glow_score": 0.0009
+    }
+  },
+  "collision": true,
+  "hitbox_shape": "ellipse",
+  "light": {
+    "strength": 0.08,
+    "color": "#ffa857",
+    "radius": 1,
+    "reference": "the spawn bonfire is 1.0 (radius 7); strength 0 is no light",
+    "states": {
+      "LIT_1": {
+        "strength": 0.06,
+        "color": "#ffa857",
+        "radius": 1
+      },
+      "LIT_2": {
+        "strength": 0.08,
+        "color": "#ffb44d",
+        "radius": 1
+      },
+      "LIT_4": {
+        "strength": 0.08,
+        "color": "#ffb652",
+        "radius": 1
+      }
+    },
+    "kind": "glow/magic",
+    "flame": false,
+    "embers": false
+  }
+}

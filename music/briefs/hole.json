@@ -1,0 +1,223 @@
+{
+ "_comment": "SUITE TWO. One suite = one compatibility group: every pool and colour here shares the key, the tempo and the phrase length, so any of them can cross-fade, layer or switch ON THE BEAT with any other. Nangijala (D major, 140) and this (C minor, 96) never have to agree, because you only cross between suites at a hard boundary and the crossing is SILENCE — here, the walk to the cave mouth. See MUSIC_DESIGN.md.",
+ "suite": "hole",
+ "world": "the_island2",
+ "bpm": 96,
+ "bars": 8,
+ "phrase_ms": 20000,
+ "key": "C minor",
+ "key_line": "stays in C minor for the entire piece, home note C, every phrase begins and ends on the note C, one constant tempo of 96 BPM that never changes",
+ "harmony": "the same C minor cycle under every phrase: Cm, A-flat, B-flat, Cm — two bars each — so every phrase BEGINS and ENDS on the C minor chord with a low C in the bass, and the reverb tail that carries into the next phrase is that C",
+ "_source": "lore/entries/the_hole_under_the_mountain — a cave under the eastern mountain where things forget faster; creatures that were emptied all at once with something else wearing the outside (Hollowed); eleven masks on one table, one face, all smiling; 'it is hungry, not hateful — it asked politely'. The lore is the brief.",
+ "_key_note": "C MINOR AT 96 DELIBERATELY SHARES NOTHING WITH NANGIJALA. Not B minor or G major (D major's relatives) — two suites that half-agree sound like one suite going wrong, and the silent crossing has nothing to separate. 96 is not a simple ratio of 140 either, so the two can never be mistaken for the same music at a different speed. 8 bars at 96 BPM = 20.0 s, the top of the 12-20 s band where a phrase reads as an idea rather than a section.",
+ "_spine_note": "EVERY PHRASE ENDS ON THE TONIC HERE, not the dominant — the whole suite is reverberant, and Nangijala's wave four measured what that does: its two resonant colours (a ringing fiddle drone, a vast reverb bed) came out in the DOMINANT key every single take while their dry siblings held the tonic, because in a wet texture the phrase's last chord hangs over the seam and becomes home. A cave is the wettest texture there is.",
+ "pools": {
+  "descend": {
+   "phrases": 3,
+   "idea": "the mouth of the cave, and the moment you go in",
+   "colours": [
+    {
+     "slug": "threshold",
+     "idea": "the last daylight behind you",
+     "prompt": "Low, wide and hushed: the sound of standing at a cave mouth in the eastern mountains with the wind behind you and cold air coming out. A distant wordless choir hums one long open chord while a solo bass flute breathes a slow four-note descending figure over it, a bowed double bass holds the floor, and a single struck stone marks the pulse like a footstep on scree. Far off, almost too quiet to place, a small bell. Awe with dread underneath — vast, patient, and not hostile yet. Stays in c minor for the entire piece, home note c, every phrase begins and ends on the note c, one constant tempo of 96 bpm that never changes. One constant tempo of 96 BPM from the first bar to the last. 96 is slower than a walk and it must be FELT the whole way through — a low drum, a plucked string or a dripping pulse always marks it, even in the stillest bars, so the music never sags. The calm music is half-time: long held notes floating over that steady quick pulse, never a slower tempo. Build the piece as 3 interchangeable 20-second phrases of exactly 8 bars each, all the same length, every one starting cleanly on beat one. Any phrase must be able to follow any other, so give none of them an introduction, a build or an ending — no piece -wide arc, no final ritardando, no fade. Each phrase is a complete small idea over the same chord cycle; what changes between them is WHICH INSTRUMENT carries the line. Under every phrase runs the same C minor cycle under every phrase: Cm, A-flat, B-flat, Cm — two bars each — so every phrase BEGINS and ENDS on the C minor chord with a low C in the bass, and the reverb tail that carries into the next phrase is that C. Instrumental only, no words, no lyrics.",
+     "foregrounds": [
+      "bass flute",
+      "wordless choir",
+      "solo cello",
+      "struck stone"
+     ]
+    },
+    {
+     "slug": "forgetting",
+     "idea": "the tune that cannot hold on to itself",
+     "prompt": "Music that loses its own memory. A simple, tender folk melody on a lone hammered dulcimer keeps beginning, gets four or five notes in, and thins away mid-line as if the player forgot it — then another instrument picks it up somewhere else and does the same. Underneath, a warm string bed and a low drum stay completely steady and unbothered, so the falling-apart is only ever in the tune. Beautiful, and wrong. Every phrase still lands squarely on the beat and on the chord; the instability is in the MELODY LINE alone, never in the pulse or the harmony. Stays in c minor for the entire piece, home note c, every phrase begins and ends on the note c, one constant tempo of 96 bpm that never changes. One constant tempo of 96 BPM from the first bar to the last. 96 is slower than a walk and it must be FELT the whole way through — a low drum, a plucked string or a dripping pulse always marks it, even in the stillest bars, so the music never sags. The calm music is half-time: long held notes floating over that steady quick pulse, never a slower tempo. Build the piece as 3 interchangeable 20-second phrases of exactly 8 bars each, all the same length, every one starting cleanly on beat one. Any phrase must be able to follow any other, so give none of them an introduction, a build or an ending — no piece -wide arc, no final ritardando, no fade. Each phrase is a complete small idea over the same chord cycle; what changes between them is WHICH INSTRUMENT carries the line. Under every phrase runs the same C minor cycle under every phrase: Cm, A-flat, B-flat, Cm — two bars each — so every phrase BEGINS and ENDS on the C minor chord with a low C in the bass, and the reverb tail that carries into the next phrase is that C. Instrumental only, no words, no lyrics.",
+     "foregrounds": [
+      "hammered dulcimer",
+      "tin whistle",
+      "solo viola",
+      "celesta"
+     ]
+    },
+    {
+     "slug": "weight",
+     "idea": "stone closing over your head",
+     "prompt": "Heavy, close and physical: descending under enormous rock. Contrabassoon and bass clarinet grind a slow rising-and-falling line, a prepared piano thuds dead low notes, huge frame drums strike on the two, and a scrape of bowed metal rises through each phrase and cuts off. Dry and near, not cathedral — you can hear the room is small and the ceiling is low. More geology than melody. Stays in c minor for the entire piece, home note c, every phrase begins and ends on the note c, one constant tempo of 96 bpm that never changes. One constant tempo of 96 BPM from the first bar to the last. 96 is slower than a walk and it must be FELT the whole way through — a low drum, a plucked string or a dripping pulse always marks it, even in the stillest bars, so the music never sags. The calm music is half-time: long held notes floating over that steady quick pulse, never a slower tempo. Build the piece as 3 interchangeable 20-second phrases of exactly 8 bars each, all the same length, every one starting cleanly on beat one. Any phrase must be able to follow any other, so give none of them an introduction, a build or an ending — no piece -wide arc, no final ritardando, no fade. Each phrase is a complete small idea over the same chord cycle; what changes between them is WHICH INSTRUMENT carries the line. Under every phrase runs the same C minor cycle under every phrase: Cm, A-flat, B-flat, Cm — two bars each — so every phrase BEGINS and ENDS on the C minor chord with a low C in the bass, and the reverb tail that carries into the next phrase is that C. Instrumental only, no words, no lyrics.",
+     "foregrounds": [
+      "contrabassoon",
+      "prepared piano",
+      "bass clarinet",
+      "bowed metal"
+     ]
+    }
+   ]
+  },
+  "deep": {
+   "phrases": 12,
+   "idea": "walking the dark under the eastern mountain",
+   "colours": [
+    {
+     "slug": "driftlight",
+     "idea": "the dark, and something luminous in it",
+     "prompt": "A long, patient walking piece for a lantern moving through an enormous wet cave. A glass harmonica and a celesta trade slow shimmering figures that ring a long time; a solo cello sings a plain, singable, stepwise melody underneath that a listener could hum after one pass; a marimba runs a soft continuous ostinato all the way through so something is always quietly moving; a low drum marks a slow heartbeat. Beautiful, cold, enormous and mostly calm — wonder first, threat second. Wet stone and far-off water. Stays in c minor for the entire piece, home note c, every phrase begins and ends on the note c, one constant tempo of 96 bpm that never changes. One constant tempo of 96 BPM from the first bar to the last. 96 is slower than a walk and it must be FELT the whole way through — a low drum, a plucked string or a dripping pulse always marks it, even in the stillest bars, so the music never sags. The calm music is half-time: long held notes floating over that steady quick pulse, never a slower tempo. Build the piece as 12 interchangeable 20-second phrases of exactly 8 bars each, all the same length, every one starting cleanly on beat one. Any phrase must be able to follow any other, so give none of them an introduction, a build or an ending — no piece -wide arc, no final ritardando, no fade. Each phrase is a complete small idea over the same chord cycle; what changes between them is WHICH INSTRUMENT carries the line. Under every phrase runs the same C minor cycle under every phrase: Cm, A-flat, B-flat, Cm — two bars each — so every phrase BEGINS and ENDS on the C minor chord with a low C in the bass, and the reverb tail that carries into the next phrase is that C. Instrumental only, no words, no lyrics.",
+     "foregrounds": [
+      "glass harmonica",
+      "solo cello",
+      "celesta",
+      "marimba",
+      "bass flute",
+      "wordless soprano"
+     ]
+    },
+    {
+     "slug": "ropewalk",
+     "idea": "measuring your way in the dark",
+     "prompt": "Careful forward motion in a place with no light: the sound of a person counting their steps. A pizzicato double bass and a plucked bass zither walk a steady deliberate line the entire piece while a bass clarinet turns a short stepwise tune over and over, testing it. A hand drum and soft claves keep an unhurried, absolutely regular pulse. Dry and close, very little reverb — the opposite of a cathedral, all attention and no awe. Tense but not frightened; this is competence in the dark. Stays in c minor for the entire piece, home note c, every phrase begins and ends on the note c, one constant tempo of 96 bpm that never changes. One constant tempo of 96 BPM from the first bar to the last. 96 is slower than a walk and it must be FELT the whole way through — a low drum, a plucked string or a dripping pulse always marks it, even in the stillest bars, so the music never sags. The calm music is half-time: long held notes floating over that steady quick pulse, never a slower tempo. Build the piece as 12 interchangeable 20-second phrases of exactly 8 bars each, all the same length, every one starting cleanly on beat one. Any phrase must be able to follow any other, so give none of them an introduction, a build or an ending — no piece -wide arc, no final ritardando, no fade. Each phrase is a complete small idea over the same chord cycle; what changes between them is WHICH INSTRUMENT carries the line. Under every phrase runs the same C minor cycle under every phrase: Cm, A-flat, B-flat, Cm — two bars each — so every phrase BEGINS and ENDS on the C minor chord with a low C in the bass, and the reverb tail that carries into the next phrase is that C. Instrumental only, no words, no lyrics.",
+     "foregrounds": [
+      "bass clarinet",
+      "pizzicato bass",
+      "bass zither",
+      "hand drum",
+      "alto flute",
+      "muted trumpet"
+     ]
+    },
+    {
+     "slug": "thinning",
+     "idea": "ground that forgets it was ever held",
+     "prompt": "A wide, aching, slowly-moving piece about a place where things lose their names. A vast string orchestra holds long sustained chords that swell and recede; over them a solo violin plays a warm, simple, deeply singable lament, and each time it is answered by the same line played fainter and further away, like an echo of a memory rather than of a sound. A low drum keeps a steady slow heartbeat under everything and never stops. Immense space and long reverberation, grief with dignity — sorrowful and lovely, never frightening. Stays in c minor for the entire piece, home note c, every phrase begins and ends on the note c, one constant tempo of 96 bpm that never changes. One constant tempo of 96 BPM from the first bar to the last. 96 is slower than a walk and it must be FELT the whole way through — a low drum, a plucked string or a dripping pulse always marks it, even in the stillest bars, so the music never sags. The calm music is half-time: long held notes floating over that steady quick pulse, never a slower tempo. Build the piece as 12 interchangeable 20-second phrases of exactly 8 bars each, all the same length, every one starting cleanly on beat one. Any phrase must be able to follow any other, so give none of them an introduction, a build or an ending — no piece -wide arc, no final ritardando, no fade. Each phrase is a complete small idea over the same chord cycle; what changes between them is WHICH INSTRUMENT carries the line. Under every phrase runs the same C minor cycle under every phrase: Cm, A-flat, B-flat, Cm — two bars each — so every phrase BEGINS and ENDS on the C minor chord with a low C in the bass, and the reverb tail that carries into the next phrase is that C. Instrumental only, no words, no lyrics.",
+     "foregrounds": [
+      "solo violin",
+      "string orchestra",
+      "cor anglais",
+      "wordless choir",
+      "harp",
+      "french horn"
+     ]
+    }
+   ]
+  },
+  "masks": {
+   "phrases": 7,
+   "idea": "being watched by things that are wearing faces",
+   "colours": [
+    {
+     "slug": "elevensmiles",
+     "idea": "one face, eleven times, all smiling",
+     "prompt": "Quiet, close, and deeply wrong. A small consort of old instruments — viola da gamba, lute, recorder — plays a courteous little dance, pleasant and well-mannered, the sort of tune you would be glad to hear in a warm room. It is placed in far too big a space, played slightly too slowly, and the same short phrase is answered by copies of itself at different distances until the politeness itself becomes the threat. A soft tambourine and a low pulse hold it perfectly steady. Nothing lurches, nothing screams — the horror is that it stays charming. Stays in c minor for the entire piece, home note c, every phrase begins and ends on the note c, one constant tempo of 96 bpm that never changes. One constant tempo of 96 BPM from the first bar to the last. 96 is slower than a walk and it must be FELT the whole way through — a low drum, a plucked string or a dripping pulse always marks it, even in the stillest bars, so the music never sags. The calm music is half-time: long held notes floating over that steady quick pulse, never a slower tempo. Build the piece as 7 interchangeable 20-second phrases of exactly 8 bars each, all the same length, every one starting cleanly on beat one. Any phrase must be able to follow any other, so give none of them an introduction, a build or an ending — no piece -wide arc, no final ritardando, no fade. Each phrase is a complete small idea over the same chord cycle; what changes between them is WHICH INSTRUMENT carries the line. Under every phrase runs the same C minor cycle under every phrase: Cm, A-flat, B-flat, Cm — two bars each — so every phrase BEGINS and ENDS on the C minor chord with a low C in the bass, and the reverb tail that carries into the next phrase is that C. Instrumental only, no words, no lyrics.",
+     "foregrounds": [
+      "viola da gamba",
+      "lute",
+      "recorder",
+      "harpsichord",
+      "glass harmonica"
+     ]
+    },
+    {
+     "slug": "hollowed",
+     "idea": "emptied all at once, and something wearing the outside",
+     "prompt": "Held, airless dread for creatures that are shapes with something else inside. Very low sustained strings sit almost still while a col legno tapping and dry bone-like woodblocks pick out the pulse; a bass trombone breathes long swells that arrive and leave without ever resolving into a tune; a wordless male choir hums so low it is more pressure than pitch. One clear cold bell somewhere far off in every phrase. Almost no melody at all: this is presence, not music. Stays in c minor for the entire piece, home note c, every phrase begins and ends on the note c, one constant tempo of 96 bpm that never changes. One constant tempo of 96 BPM from the first bar to the last. 96 is slower than a walk and it must be FELT the whole way through — a low drum, a plucked string or a dripping pulse always marks it, even in the stillest bars, so the music never sags. The calm music is half-time: long held notes floating over that steady quick pulse, never a slower tempo. Build the piece as 7 interchangeable 20-second phrases of exactly 8 bars each, all the same length, every one starting cleanly on beat one. Any phrase must be able to follow any other, so give none of them an introduction, a build or an ending — no piece -wide arc, no final ritardando, no fade. Each phrase is a complete small idea over the same chord cycle; what changes between them is WHICH INSTRUMENT carries the line. Under every phrase runs the same C minor cycle under every phrase: Cm, A-flat, B-flat, Cm — two bars each — so every phrase BEGINS and ENDS on the C minor chord with a low C in the bass, and the reverb tail that carries into the next phrase is that C. Instrumental only, no words, no lyrics.",
+     "foregrounds": [
+      "bass trombone",
+      "low strings",
+      "male choir",
+      "woodblocks",
+      "contrabass clarinet"
+     ]
+    },
+    {
+     "slug": "itasked",
+     "idea": "it asked politely",
+     "prompt": "A wordless female voice sings a plain, gentle lullaby — genuinely tender, the tune a mother would use — over a sparse music box and a soft plucked harp. Underneath it, unhurried and completely separate, a very low drone and a slow deep drum keep a steady patient pulse that has nothing to do with the lullaby and never once matches its warmth. Close and intimate on top, enormous and cold beneath. The sweetness must be real for the wrongness to work. Stays in c minor for the entire piece, home note c, every phrase begins and ends on the note c, one constant tempo of 96 bpm that never changes. One constant tempo of 96 BPM from the first bar to the last. 96 is slower than a walk and it must be FELT the whole way through — a low drum, a plucked string or a dripping pulse always marks it, even in the stillest bars, so the music never sags. The calm music is half-time: long held notes floating over that steady quick pulse, never a slower tempo. Build the piece as 7 interchangeable 20-second phrases of exactly 8 bars each, all the same length, every one starting cleanly on beat one. Any phrase must be able to follow any other, so give none of them an introduction, a build or an ending — no piece -wide arc, no final ritardando, no fade. Each phrase is a complete small idea over the same chord cycle; what changes between them is WHICH INSTRUMENT carries the line. Under every phrase runs the same C minor cycle under every phrase: Cm, A-flat, B-flat, Cm — two bars each — so every phrase BEGINS and ENDS on the C minor chord with a low C in the bass, and the reverb tail that carries into the next phrase is that C. Instrumental only, no words, no lyrics.",
+     "foregrounds": [
+      "wordless soprano",
+      "music box",
+      "harp",
+      "low drone",
+      "solo oboe"
+     ]
+    }
+   ]
+  },
+  "hollow": {
+   "phrases": 4,
+   "idea": "a pocket of stillness down there that is not safe, only quiet",
+   "colours": [
+    {
+     "slug": "quiet",
+     "idea": "still air in a place where nothing thins",
+     "prompt": "Small, still and warm-ish: resting in a dry pocket of the cave. A solo alto flute plays a short simple resting melody with long gaps; a nylon-string guitar fingerpicks a soft continuous figure so the music always keeps moving gently; a low bowed bass holds the floor; a single soft drum taps a slow steady pulse. Intimate and close-miked, almost tender. Relief, held lightly — this is a breath, not safety. Stays in c minor for the entire piece, home note c, every phrase begins and ends on the note c, one constant tempo of 96 bpm that never changes. One constant tempo of 96 BPM from the first bar to the last. 96 is slower than a walk and it must be FELT the whole way through — a low drum, a plucked string or a dripping pulse always marks it, even in the stillest bars, so the music never sags. The calm music is half-time: long held notes floating over that steady quick pulse, never a slower tempo. Build the piece as 4 interchangeable 20-second phrases of exactly 8 bars each, all the same length, every one starting cleanly on beat one. Any phrase must be able to follow any other, so give none of them an introduction, a build or an ending — no piece -wide arc, no final ritardando, no fade. Each phrase is a complete small idea over the same chord cycle; what changes between them is WHICH INSTRUMENT carries the line. Under every phrase runs the same C minor cycle under every phrase: Cm, A-flat, B-flat, Cm — two bars each — so every phrase BEGINS and ENDS on the C minor chord with a low C in the bass, and the reverb tail that carries into the next phrase is that C. Instrumental only, no words, no lyrics.",
+     "foregrounds": [
+      "alto flute",
+      "nylon guitar",
+      "solo cello",
+      "celesta"
+     ]
+    },
+    {
+     "slug": "emberkeep",
+     "idea": "a fire somebody else left burning",
+     "prompt": "The sound of finding a fire still lit in a place nobody should be. A hurdy-gurdy drones warmly on C while a fiddle plays a slow, kind, folk-simple tune over it, a bodhran taps an easy steady pulse, and a hammered dulcimer answers in soft runs. Human, hand-made, close and small-room — everything above it in this cave is enormous, and this is not. Comfort with a question inside it. The hurdy-gurdy drone is always C, never G. Stays in c minor for the entire piece, home note c, every phrase begins and ends on the note c, one constant tempo of 96 bpm that never changes. One constant tempo of 96 BPM from the first bar to the last. 96 is slower than a walk and it must be FELT the whole way through — a low drum, a plucked string or a dripping pulse always marks it, even in the stillest bars, so the music never sags. The calm music is half-time: long held notes floating over that steady quick pulse, never a slower tempo. Build the piece as 4 interchangeable 20-second phrases of exactly 8 bars each, all the same length, every one starting cleanly on beat one. Any phrase must be able to follow any other, so give none of them an introduction, a build or an ending — no piece -wide arc, no final ritardando, no fade. Each phrase is a complete small idea over the same chord cycle; what changes between them is WHICH INSTRUMENT carries the line. Under every phrase runs the same C minor cycle under every phrase: Cm, A-flat, B-flat, Cm — two bars each — so every phrase BEGINS and ENDS on the C minor chord with a low C in the bass, and the reverb tail that carries into the next phrase is that C. Instrumental only, no words, no lyrics.",
+     "foregrounds": [
+      "hurdy-gurdy",
+      "fiddle",
+      "hammered dulcimer",
+      "bodhran"
+     ]
+    },
+    {
+     "slug": "waterclock",
+     "idea": "drips keeping a count nobody set",
+     "prompt": "Almost ambient, but always moving: water in stone. Struck tuned metal and a prepared piano place single ringing notes in a perfectly regular pattern like a clock, a marimba runs a soft continuous ostinato, a low synth-less bowed drone holds underneath, and a distant wordless choir breathes once per phrase. Cool, spacious, patient and quietly beautiful. No melody to speak of and no threat — a place to stand still in, with a pulse you can always feel. Stays in c minor for the entire piece, home note c, every phrase begins and ends on the note c, one constant tempo of 96 bpm that never changes. One constant tempo of 96 BPM from the first bar to the last. 96 is slower than a walk and it must be FELT the whole way through — a low drum, a plucked string or a dripping pulse always marks it, even in the stillest bars, so the music never sags. The calm music is half-time: long held notes floating over that steady quick pulse, never a slower tempo. Build the piece as 4 interchangeable 20-second phrases of exactly 8 bars each, all the same length, every one starting cleanly on beat one. Any phrase must be able to follow any other, so give none of them an introduction, a build or an ending — no piece -wide arc, no final ritardando, no fade. Each phrase is a complete small idea over the same chord cycle; what changes between them is WHICH INSTRUMENT carries the line. Under every phrase runs the same C minor cycle under every phrase: Cm, A-flat, B-flat, Cm — two bars each — so every phrase BEGINS and ENDS on the C minor chord with a low C in the bass, and the reverb tail that carries into the next phrase is that C. Instrumental only, no words, no lyrics.",
+     "foregrounds": [
+      "tuned metal",
+      "prepared piano",
+      "marimba",
+      "wordless choir"
+     ]
+    }
+   ]
+  },
+  "hunger": {
+   "phrases": 6,
+   "idea": "the hole itself — patient, polite, and hungry",
+   "colours": [
+    {
+     "slug": "politely",
+     "idea": "it asked, and it will ask again",
+     "prompt": "A boss piece that never raises its voice. A full orchestra plays with enormous restraint: low strings grind a short repeated stepwise cell over and over, timpani and a deep drum keep a hard regular tread, and horns and low brass swell in slowly and withdraw. Above it all a wordless choir sings one calm sustained line, unbothered. Relentless rather than furious — the terror is patience. Dense, dark, and absolutely steady; every phrase drives forward and lands home. Stays in c minor for the entire piece, home note c, every phrase begins and ends on the note c, one constant tempo of 96 bpm that never changes. One constant tempo of 96 BPM from the first bar to the last. 96 is slower than a walk and it must be FELT the whole way through — a low drum, a plucked string or a dripping pulse always marks it, even in the stillest bars, so the music never sags. The calm music is half-time: long held notes floating over that steady quick pulse, never a slower tempo. Build the piece as 6 interchangeable 20-second phrases of exactly 8 bars each, all the same length, every one starting cleanly on beat one. Any phrase must be able to follow any other, so give none of them an introduction, a build or an ending — no piece -wide arc, no final ritardando, no fade. Each phrase is a complete small idea over the same chord cycle; what changes between them is WHICH INSTRUMENT carries the line. Under every phrase runs the same C minor cycle under every phrase: Cm, A-flat, B-flat, Cm — two bars each — so every phrase BEGINS and ENDS on the C minor chord with a low C in the bass, and the reverb tail that carries into the next phrase is that C. Instrumental only, no words, no lyrics.",
+     "foregrounds": [
+      "low strings",
+      "french horns",
+      "wordless choir",
+      "timpani",
+      "bass trombone"
+     ]
+    },
+    {
+     "slug": "mouth",
+     "idea": "teeth in the dark",
+     "prompt": "Loud, close and physical fantasy menace. War drums and taiko hammer a hard driving pattern, struck anvils and scraped iron clatter between them, cellos and double basses saw a short furious ostinato, contrabassoon snarls beneath, and bass trombones stab the downbeats. Dry, tight and close-miked — wood, skin and metal in a small stone room. The melodic idea is a three-note cell ground out again and again, more chant than fanfare. Muscular, driving, frightening, and rock steady on the beat. Stays in c minor for the entire piece, home note c, every phrase begins and ends on the note c, one constant tempo of 96 bpm that never changes. One constant tempo of 96 BPM from the first bar to the last. 96 is slower than a walk and it must be FELT the whole way through — a low drum, a plucked string or a dripping pulse always marks it, even in the stillest bars, so the music never sags. The calm music is half-time: long held notes floating over that steady quick pulse, never a slower tempo. Build the piece as 6 interchangeable 20-second phrases of exactly 8 bars each, all the same length, every one starting cleanly on beat one. Any phrase must be able to follow any other, so give none of them an introduction, a build or an ending — no piece -wide arc, no final ritardando, no fade. Each phrase is a complete small idea over the same chord cycle; what changes between them is WHICH INSTRUMENT carries the line. Under every phrase runs the same C minor cycle under every phrase: Cm, A-flat, B-flat, Cm — two bars each — so every phrase BEGINS and ENDS on the C minor chord with a low C in the bass, and the reverb tail that carries into the next phrase is that C. Instrumental only, no words, no lyrics.",
+     "foregrounds": [
+      "taiko",
+      "cellos",
+      "anvils",
+      "contrabassoon",
+      "bass trombone"
+     ]
+    },
+    {
+     "slug": "mercy",
+     "idea": "the worst part is who it must have been",
+     "prompt": "Tragedy at full orchestral scale: a boss you are sorry for. A solo cello sings a slow, stepwise, achingly singable lament you could hum; a vast distant string orchestra answers in long sustained chords; horns swell nobly; a lone deep drum keeps a slow heavy heartbeat; a far-off wordless choir drifts across the top. Immense space, long reverberation, sorrow with dignity and real grandeur. Every phrase settles home onto a C minor chord before it ends, and the reverb tail carried into the next phrase is that C. Stays in c minor for the entire piece, home note c, every phrase begins and ends on the note c, one constant tempo of 96 bpm that never changes. One constant tempo of 96 BPM from the first bar to the last. 96 is slower than a walk and it must be FELT the whole way through — a low drum, a plucked string or a dripping pulse always marks it, even in the stillest bars, so the music never sags. The calm music is half-time: long held notes floating over that steady quick pulse, never a slower tempo. Build the piece as 6 interchangeable 20-second phrases of exactly 8 bars each, all the same length, every one starting cleanly on beat one. Any phrase must be able to follow any other, so give none of them an introduction, a build or an ending — no piece -wide arc, no final ritardando, no fade. Each phrase is a complete small idea over the same chord cycle; what changes between them is WHICH INSTRUMENT carries the line. Under every phrase runs the same C minor cycle under every phrase: Cm, A-flat, B-flat, Cm — two bars each — so every phrase BEGINS and ENDS on the C minor chord with a low C in the bass, and the reverb tail that carries into the next phrase is that C. Instrumental only, no words, no lyrics.",
+     "foregrounds": [
+      "solo cello",
+      "string orchestra",
+      "french horns",
+      "wordless choir",
+      "cor anglais"
+     ]
+    }
+   ]
+  }
+ }
+}

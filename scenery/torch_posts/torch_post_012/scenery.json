@@ -1,0 +1,245 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-14T00:33:38+00:00",
+  "id": "torch_post_012",
+  "group": "torch_posts",
+  "rank": 7,
+  "index": 12,
+  "name": "Banded ceremonial torch post 012",
+  "lights": null,
+  "variety": "banded ceremonial torch post",
+  "modifier": "overgrown at the base",
+  "glow_concept": "halo of glow-moths circling the head",
+  "prompt": "a rough wooden stake with an oil-soaked cloth-wrapped torch head bound at its top, banded ceremonial torch post, overgrown at the base, roughly six feet tall, human height, self-emissive at night, softly radiating light: halo of glow-moths circling the head",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 64,
+  "sprite": "torch_posts/torch_post_012/sprite.webp",
+  "placement": {
+    "world_height_m": 1.172,
+    "world_px_height": 60,
+    "character_height_px": 87,
+    "character_height_m": 1.7,
+    "note": "ONE SCENERY PIXEL IS ONE PLAYER PIXEL. world_px_height IS the art's own alpha bbox height, so scenery is placed into the world at 1:1 exactly as the avatar is (setScale(1)) and the two share one pixel grid. The CAMERA still zooms the whole scene \u2014 that is uniform and correct; what must never happen is scenery being resampled on its own, against the player. world_height_m is what the art reads as beside a 87px character; declared_height_m is what it was once declared to be, and a gap between them means the ART is the wrong size.",
+    "declared_height_m": 1.61,
+    "content_box": [
+      18,
+      1,
+      46,
+      61
+    ],
+    "content_px_height": 60,
+    "canvas_render_px": 64
+  },
+  "pixellab_object_id": "01b44217-5169-42cc-ac33-953d1f06c9cf",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)",
+  "must_be_imbplemented_with_random_hflip": true,
+  "states": {
+    "LIT_1": {
+      "sprite": "torch_posts/torch_post_012/sprite.webp",
+      "pixellab_object_id": "01b44217-5169-42cc-ac33-953d1f06c9cf",
+      "generated_at": "2026-08-14T00:33:38+00:00",
+      "rotations": {
+        "south-east": "torch_posts/torch_post_012/rotations/south-east.webp",
+        "south-west": "torch_posts/torch_post_012/rotations/south-west.webp",
+        "south": "torch_posts/torch_post_012/sprite.webp"
+      }
+    },
+    "LIT_3": {
+      "sprite": "torch_posts/torch_post_012/lit_3/sprite.webp",
+      "pixellab_object_id": "5b7b41bc-97d9-4111-add4-9f67328778f9",
+      "generated_at": "2026-08-17T11:24:10+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.8133,
+      "glow_score": 0.1142,
+      "rotations": {
+        "south-east": "torch_posts/torch_post_012/lit_3/rotations/south-east.webp",
+        "south-west": "torch_posts/torch_post_012/lit_3/rotations/south-west.webp",
+        "south": "torch_posts/torch_post_012/lit_3/sprite.webp"
+      },
+      "animations": {
+        "motion": {
+          "group_id": "c635f7c5-94f6-4b6b-9525-8c8676431659",
+          "description": "This is the same picture in every frame. ONLY the flame at the top flickers and the small moths around it move. Everything else in the picture is copied from the first frame exactly, pixel for pixel, unchanged in shape, size, position and colour. No outline anywhere is redrawn. The last frame matches the first frame exactly, so the loop joins. Nothing anywhere becomes darker, lighter or a different colour except the one thing named above.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "torch_posts/torch_post_012/lit_3/animations/motion/00.webp",
+            "torch_posts/torch_post_012/lit_3/animations/motion/01.webp",
+            "torch_posts/torch_post_012/lit_3/animations/motion/02.webp",
+            "torch_posts/torch_post_012/lit_3/animations/motion/03.webp",
+            "torch_posts/torch_post_012/lit_3/animations/motion/04.webp"
+          ],
+          "strip": "torch_posts/torch_post_012/lit_3/animations/motion__strip.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-08-29T16:14:52+00:00",
+          "brief": "Y8",
+          "review": "ANIMATION_PROBABLY_GOOD",
+          "review_metrics": {
+            "class": "fire",
+            "base": 0.0,
+            "still": 0.849
+          },
+          "light_frames": [
+            {
+              "intensity": 1.102,
+              "dx": -0.5,
+              "dy": -20.9
+            },
+            {
+              "intensity": 1.102,
+              "dx": -0.0,
+              "dy": -20.5
+            },
+            {
+              "intensity": 0.953,
+              "dx": -0.9,
+              "dy": -19.6
+            },
+            {
+              "intensity": 0.884,
+              "dx": 0.1,
+              "dy": -19.8
+            },
+            {
+              "intensity": 0.959,
+              "dx": -0.4,
+              "dy": -20.2
+            }
+          ]
+        }
+      }
+    },
+    "LIT_4": {
+      "sprite": "torch_posts/torch_post_012/lit_4/sprite.webp",
+      "pixellab_object_id": "8be544ce-400d-4a19-b157-8c0c8bc2f79e",
+      "generated_at": "2026-08-17T11:24:56+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.8794,
+      "glow_score": 0.0613,
+      "rotations": {
+        "south-east": "torch_posts/torch_post_012/lit_4/rotations/south-east.webp",
+        "south-west": "torch_posts/torch_post_012/lit_4/rotations/south-west.webp",
+        "south": "torch_posts/torch_post_012/lit_4/sprite.webp"
+      },
+      "animations": {
+        "motion": {
+          "group_id": "89653f65-c0da-4d77-9ea0-e82bb8972b3e",
+          "description": "This is the same picture in every frame. ONLY the cyan light on the crystals at the top brightens a little and returns. It is lit and clearly visible in every frame, including the first. It gets only SLIGHTLY brighter -- never white, never washed out -- and keeps its own colour throughout: brightest in the middle, back to its first-frame brightness at the end. It stays exactly the same size and shape in every frame: it never grows and never spreads, only its brightness shifts. Every object stays the same kind of thing it is in the first frame and keeps its own colour: nothing turns into anything else. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour, no outline redrawn. The last frame matches the first exactly.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "torch_posts/torch_post_012/lit_4/animations/motion/00.webp",
+            "torch_posts/torch_post_012/lit_4/animations/motion/01.webp",
+            "torch_posts/torch_post_012/lit_4/animations/motion/02.webp",
+            "torch_posts/torch_post_012/lit_4/animations/motion/03.webp",
+            "torch_posts/torch_post_012/lit_4/animations/motion/04.webp"
+          ],
+          "strip": "torch_posts/torch_post_012/lit_4/animations/motion__strip.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-08-30T08:14:51+00:00",
+          "brief": "G9",
+          "review": "ANIMATION_PROBABLY_GOOD",
+          "review_metrics": {
+            "base_outline": 0.08
+          },
+          "light_frames": [
+            {
+              "intensity": 0.916,
+              "dx": 0.2,
+              "dy": -11.6
+            },
+            {
+              "intensity": 0.5,
+              "dx": -1.5,
+              "dy": -9.9
+            },
+            {
+              "intensity": 1.5,
+              "dx": 2.3,
+              "dy": -4.0
+            },
+            {
+              "intensity": 0.5,
+              "dx": 1.1,
+              "dy": 8.7
+            },
+            {
+              "intensity": 1.324,
+              "dx": 2.6,
+              "dy": 5.7
+            }
+          ]
+        }
+      }
+    },
+    "NOT_LIT_1": {
+      "sprite": "torch_posts/torch_post_012/not_lit_1/sprite.webp",
+      "pixellab_object_id": "4c35ce60-ccda-483f-9c72-4564a9bd95ea",
+      "generated_at": "2026-08-17T11:26:24+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.5983,
+      "glow_score": 0.0,
+      "rotations": {
+        "south-east": "torch_posts/torch_post_012/not_lit_1/rotations/south-east.webp",
+        "south-west": "torch_posts/torch_post_012/not_lit_1/rotations/south-west.webp",
+        "south": "torch_posts/torch_post_012/not_lit_1/sprite.webp"
+      }
+    },
+    "NOT_LIT_2": {
+      "sprite": "torch_posts/torch_post_012/not_lit_2/sprite.webp",
+      "pixellab_object_id": "a88e504d-1d9a-4f0e-b1ee-c2f8a03792bf",
+      "generated_at": "2026-08-17T11:26:14+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.3191,
+      "glow_score": 0.0,
+      "rotations": {
+        "south-east": "torch_posts/torch_post_012/not_lit_2/rotations/south-east.webp",
+        "south-west": "torch_posts/torch_post_012/not_lit_2/rotations/south-west.webp",
+        "south": "torch_posts/torch_post_012/not_lit_2/sprite.webp"
+      }
+    }
+  },
+  "collision": true,
+  "hitbox_shape": "ellipse",
+  "light": {
+    "strength": 0.45,
+    "color": "#ffde77",
+    "radius": 8,
+    "reference": "the spawn bonfire is 1.0 (radius 7); strength 0 is no light",
+    "states": {
+      "LIT_1": {
+        "strength": 0.45,
+        "color": "#ffde77",
+        "radius": 8
+      },
+      "LIT_3": {
+        "strength": 0.45,
+        "color": "#ffd67a",
+        "radius": 8
+      },
+      "LIT_4": {
+        "strength": 0.45,
+        "color": "#c8ffe4",
+        "radius": 8
+      }
+    },
+    "kind": "fire/open",
+    "flame": true,
+    "embers": true
+  }
+}

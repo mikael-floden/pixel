@@ -1,6 +1,7 @@
-import { Schema, MapSchema, ArraySchema, defineTypes } from "@colyseus/schema";
+import { Schema, MapSchema, ArraySchema, defineTypes, view } from "@colyseus/schema";
 import { DEFAULT_DIRECTION, DEFAULT_TIME_IDX, MAX_STAMINA } from "@nangijala/shared";
 import type { AutopilotTrip } from "@nangijala/shared";
+import type { AccountRecord } from "../account/store.js";
 
 /**
  * One connected player. Synced fields are declared with `declare` (so no class
@@ -35,6 +36,10 @@ export class Player extends Schema {
   declare action: string; // transient one-shot: "attack" (client picks kick/punch) | "pickup"
   declare actionSeq: number; // bumps per action so clients retrigger the clip
   declare hitSeq: number; // bumps per hit TAKEN (drives the hurt flinch + damage float)
+  /** The session this body belongs to IN THIS ROOM. The map key is the stable
+   *  `pid` (spec/ZONES.md) and survives a zone hand-off; the session does not,
+   *  so a client finds itself by `sid === room.sessionId`, never by key. */
+  declare sid: string;
 
   // Server-only (not synced): queued inputs + rate-limit bookkeeping. The
   // server integrates each input's dt (client-reported, budget-bounded) so
@@ -45,20 +50,41 @@ export class Player extends Schema {
   jumpUntil = 0; // ms timestamp: jump window ends
   jumpReadyAt = 0; // ms timestamp: earliest next jump (cooldown)
   lastChatAt = 0;
-  token = ""; // persistence key (server-only)
+  accountId = ""; // the account of record (server-only; see src/account/store.ts)
+  /** Has this player EARNED something since their last save? Set on level, xp
+   *  and inventory changes only — never on hp/ep, which regenerate and are not
+   *  worth a durable write. The periodic flush saves the dirty and skips the
+   *  rest, so an idle world writes nothing at all. */
+  dirty = false;
+  /** The loaded account document. Held so a save REWRITES it rather than
+   *  rebuilding one from the live player — rebuilding would wipe the fields
+   *  the room never sees (secretHash, createdAt, and every OTHER world's
+   *  saved position). */
+  rec: AccountRecord | null = null;
+  /** Set ONLY when this join minted a brand-new account, and handed over when
+   *  the client asks. Not pushed at join time: a message sent from onJoin can
+   *  land before the client has registered its handler, and a dropped pair
+   *  means a silently NEW account on every visit. */
+  mintedSecret = "";
   // Server-only combat bookkeeping.
   target = ""; // engaged monster id ("" = none)
   nextSwingAt = 0;
   lastHitAt = -100000; // when the last hit LANDED on this player (drives slow)
   lastCombatAt = -100000; // last swing given OR taken (gates regen)
-  respawnAt = 0; // while dead: when to revive
+  respawnAt = 0; // while dead: the EARLIEST a press may revive (die clip done)
+  deadUntil = 0; // ...and the backstop, if the press never comes (closed tab)
   nextItemMsgAt = 0; // pickup/drop cadence cap
   regenAccHp = 0; // fractional regen accumulators: synced hp/ep move in whole
   regenAccEp = 0; // points only, so patches stop churning at 20Hz while healing
   inv: { item: string; n: number }[] = []; // backpack (synced via targeted "inv" messages, not schema — private)
+  // ZONES (spec/ZONES.md), server-only.
+  pid = ""; // the stable id (the map key); the first session id of this login
+  handoff: { to: number; key: string; at: number } | null = null; // a crossing in flight
+  lastSeen = 0; // ghosts only: when the owner's last edge snapshot carried it
 
   constructor() {
     super();
+    this.sid = "";
     this.x = 0;
     this.y = 0;
     this.dir = DEFAULT_DIRECTION;
@@ -111,6 +137,7 @@ defineTypes(Player, {
   action: "string",
   actionSeq: "number",
   hitSeq: "number",
+  sid: "string",
 });
 
 /**
@@ -165,6 +192,9 @@ export class Monster extends Schema {
   orbitSign = 1; // per-monster circling handedness (id-hashed at seed)
   returning = false; // walking home after a chase ended outside the zone
   diedAt = 0; // when the death started (drops + removal at diedAt + MONSTER_DIE_MS)
+  // ZONES (spec/ZONES.md), server-only.
+  home = -1; // the zone room that seeded it (its respawn goes back there)
+  lastSeen = 0; // ghosts only
 
   constructor() {
     super();
@@ -213,6 +243,7 @@ export class GroundItem extends Schema {
 
   // Server-only.
   bornAt = 0; // Date.now() — despawns at bornAt + DROP_TTL_MS
+  lastSeen = 0; // ghosts only (spec/ZONES.md)
 
   constructor() {
     super();
@@ -265,11 +296,79 @@ defineTypes(MonsterArea, {
 });
 
 /** The whole shared world. Everyone connected is in this one state. */
+
+// ---------------------------------------------------------------- chess ----
+/** A chess board placed in the world (config/chess_boards.json, overridable
+ * live via tuning/chess.json). `waitingSid` is the whole "challenge" UX: set
+ * = that player stands at a seat with no opponent, and every client draws the
+ * waiting bubble over them. */
+export class ChessBoard extends Schema {
+  declare id: string;
+  declare col: number;
+  declare row: number;
+  declare seatAc: number;
+  declare seatAr: number;
+  declare seatBc: number;
+  declare seatBr: number;
+  declare npc: string; // "" = PvP board; else the resident opponent's display name
+  declare waitingSid: string;
+  declare matchId: string;
+  declare sprite: string; // /assets path of the board's in-world art ("" = placeholder)
+  declare bubble: string; // /assets path of the challenge bubble art ("" = drawn fallback)
+}
+defineTypes(ChessBoard, {
+  id: "string", col: "number", row: "number",
+  seatAc: "number", seatAr: "number", seatBc: "number", seatBr: "number",
+  npc: "string", waitingSid: "string", matchId: "string",
+  sprite: "string", bubble: "string",
+});
+
+/** One running (or just-finished) game. Moves are coordinate strings
+ * ("e2e4", "e7e8q"); clients rebuild the position from the shared rules, so
+ * the schema never carries a board. Clocks: `wMs`/`bMs` are the remaining
+ * banks AT `turnStart`; the side to move burns time client-display-side and
+ * authoritatively on the server at move receipt / the 1s sweep. turnStart 0 =
+ * white has not moved yet, nobody burns (maintainer: the clock starts ticking
+ * when white makes the first move). */
+export class ChessMatch extends Schema {
+  declare id: string;
+  declare boardId: string;
+  declare aSid: string; // seat A occupant (session id)
+  declare bSid: string; // seat B occupant, or "npc" on an NPC board
+  declare phase: string; // dice | play | over
+  declare diceA: number; // 0 = not thrown yet
+  declare diceB: number;
+  declare whiteSid: string; // set when both dice are in
+  declare moves: ArraySchema<string>;
+  declare turn: string; // "w" | "b"
+  declare wMs: number;
+  declare bMs: number;
+  declare turnStart: number; // epoch ms; 0 = clock not running
+  declare result: string; // "" | "w" | "b" | "draw"
+  declare reason: string; // checkmate | stalemate | resign | time | ...
+}
+defineTypes(ChessMatch, {
+  id: "string", boardId: "string", aSid: "string", bSid: "string",
+  phase: "string", diceA: "number", diceB: "number", whiteSid: "string",
+  moves: { array: "string" }, turn: "string",
+  wMs: "number", bMs: "number", turnStart: "number",
+  result: "string", reason: "string",
+});
+
 export class WorldState extends Schema {
   declare players: MapSchema<Player>;
   declare monsters: MapSchema<Monster>;
   declare spawnAreas: ArraySchema<MonsterArea>; // monster areas for this world (synced for the client overlay)
   declare drops: MapSchema<GroundItem>; // items on the ground (monster loot + player discards)
+  /** GHOSTS (spec/ZONES.md): the neighbouring zones' border-band entities,
+   *  mirrored here from their edge snapshots so a client near a border sees
+   *  across it through one socket. Separate maps so no server loop ever
+   *  steps, fights or saves one; the client draws them like the real maps. */
+  declare ghosts: MapSchema<Player>;
+  declare ghostMonsters: MapSchema<Monster>;
+  declare ghostDrops: MapSchema<GroundItem>;
+  declare chessBoards: MapSchema<ChessBoard>;
+  declare chessMatches: MapSchema<ChessMatch>;
   declare timeIdx: number; // shared time-of-day phase (server-owned)
   declare phaseT: number; // continuous progress 0..1 through the phase (clock hand/sun sweep smoothly)
   declare weather: number; // shared weather layer (server-owned; 0 = clear)
@@ -283,6 +382,11 @@ export class WorldState extends Schema {
     this.monsters = new MapSchema<Monster>();
     this.spawnAreas = new ArraySchema<MonsterArea>();
     this.drops = new MapSchema<GroundItem>();
+    this.ghosts = new MapSchema<Player>();
+    this.ghostMonsters = new MapSchema<Monster>();
+    this.ghostDrops = new MapSchema<GroundItem>();
+    this.chessBoards = new MapSchema<ChessBoard>();
+    this.chessMatches = new MapSchema<ChessMatch>();
     this.timeIdx = DEFAULT_TIME_IDX;
     this.phaseT = 0.5; // mid-phase: the exact "characteristic" look of the phase
     this.weather = 0;
@@ -304,6 +408,11 @@ defineTypes(WorldState, {
   monsters: { map: Monster },
   spawnAreas: { array: MonsterArea },
   drops: { map: GroundItem },
+  ghosts: { map: Player },
+  ghostMonsters: { map: Monster },
+  ghostDrops: { map: GroundItem },
+  chessBoards: { map: ChessBoard },
+  chessMatches: { map: ChessMatch },
   timeIdx: "number",
   phaseT: "number",
   weather: "number",
@@ -311,3 +420,12 @@ defineTypes(WorldState, {
   frozen: "boolean",
   timeSpeed: "number",
 });
+// players / monsters / drops are VIEW-FILTERED (spec/ZONES.md, interest):
+// a client receives only the entries its StateView holds, which WorldRoom
+// recomputes from distance. A client with no view would receive NONE of them,
+// so every client gets a view — "unlimited" is a view holding everything.
+// Applied as the decorator call itself: `defineTypes` ignores a `view: true`
+// on a field (only the `schema()` builder reads it; measured, hasFilters
+// stayed false and every client received the whole room).
+for (const field of ["players", "monsters", "drops", "ghosts", "ghostMonsters", "ghostDrops"])
+  view()(WorldState.prototype, field);

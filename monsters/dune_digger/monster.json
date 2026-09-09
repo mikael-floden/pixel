@@ -1,0 +1,633 @@
+{
+  "id": "dune_digger",
+  "name": "Dunedelver",
+  "lore": "It swims through sand the way fish forget water. Only the jagged back-plates betray the tide beneath.",
+  "source": {
+    "kind": "character",
+    "pixellab_id": "7bbf1757-6a10-4d7d-8e93-9b26e8b10753",
+    "url": "https://www.pixellab.ai/create-character/7bbf1757-6a10-4d7d-8e93-9b26e8b10753",
+    "prompt": "Low, stocky desert monster with sandy-brown armored scales, enormous digging claws, wedge-shaped armored head, tiny orange eyes and jagged back plates.",
+    "view": "low top-down",
+    "tags": [
+      "MONSTER"
+    ]
+  },
+  "size": {
+    "width": 140,
+    "height": 140
+  },
+  "native_size": {
+    "width": 140,
+    "height": 140
+  },
+  "pad": {
+    "x": 0,
+    "y": 0
+  },
+  "sprite": "dune_digger/sprite.webp",
+  "directions": [
+    "east",
+    "north",
+    "north-east",
+    "north-west",
+    "south",
+    "south-east",
+    "south-west",
+    "west"
+  ],
+  "rotations": {
+    "south": "dune_digger/rotations/south.webp",
+    "west": "dune_digger/rotations/west.webp",
+    "east": "dune_digger/rotations/east.webp",
+    "north": "dune_digger/rotations/north.webp",
+    "south-east": "dune_digger/rotations/south-east.webp",
+    "north-east": "dune_digger/rotations/north-east.webp",
+    "north-west": "dune_digger/rotations/north-west.webp",
+    "south-west": "dune_digger/rotations/south-west.webp"
+  },
+  "animations": {
+    "idle": {
+      "group_id": "ff2d4937-fdd3-4deb-a8d1-7a3b9d80dfaf",
+      "source_name": "custom-Calm still idle, breathing",
+      "directions": {
+        "east": {
+          "frames": 5,
+          "strip": "dune_digger/animations/idle__east.webp",
+          "frame_paths": [
+            "dune_digger/animations/idle/east/00.webp",
+            "dune_digger/animations/idle/east/01.webp",
+            "dune_digger/animations/idle/east/02.webp",
+            "dune_digger/animations/idle/east/03.webp",
+            "dune_digger/animations/idle/east/04.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:09:38 GMT",
+          "src_frames": 5,
+          "sub": "6ac14a84-8699-44ce-b990-649129c7a29f"
+        },
+        "north": {
+          "frames": 5,
+          "strip": "dune_digger/animations/idle__north.webp",
+          "frame_paths": [
+            "dune_digger/animations/idle/north/00.webp",
+            "dune_digger/animations/idle/north/01.webp",
+            "dune_digger/animations/idle/north/02.webp",
+            "dune_digger/animations/idle/north/03.webp",
+            "dune_digger/animations/idle/north/04.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:09:39 GMT",
+          "src_frames": 5,
+          "sub": "86b98178-997f-45af-a758-db1c85c623a1"
+        },
+        "north-east": {
+          "frames": 5,
+          "strip": "dune_digger/animations/idle__north-east.webp",
+          "frame_paths": [
+            "dune_digger/animations/idle/north-east/00.webp",
+            "dune_digger/animations/idle/north-east/01.webp",
+            "dune_digger/animations/idle/north-east/02.webp",
+            "dune_digger/animations/idle/north-east/03.webp",
+            "dune_digger/animations/idle/north-east/04.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:09:41 GMT",
+          "src_frames": 5,
+          "sub": "efc1b3f7-0c0b-4c28-8ef7-bdd84919aa86"
+        },
+        "north-west": {
+          "frames": 5,
+          "strip": "dune_digger/animations/idle__north-west.webp",
+          "frame_paths": [
+            "dune_digger/animations/idle/north-west/00.webp",
+            "dune_digger/animations/idle/north-west/01.webp",
+            "dune_digger/animations/idle/north-west/02.webp",
+            "dune_digger/animations/idle/north-west/03.webp",
+            "dune_digger/animations/idle/north-west/04.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:09:42 GMT",
+          "src_frames": 5,
+          "sub": "f5b6b536-3662-4a67-af2e-25f97bae6c8b"
+        },
+        "south": {
+          "frames": 5,
+          "strip": "dune_digger/animations/idle__south.webp",
+          "frame_paths": [
+            "dune_digger/animations/idle/south/00.webp",
+            "dune_digger/animations/idle/south/01.webp",
+            "dune_digger/animations/idle/south/02.webp",
+            "dune_digger/animations/idle/south/03.webp",
+            "dune_digger/animations/idle/south/04.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:09:44 GMT",
+          "src_frames": 5,
+          "sub": "ea86d23b-619d-4282-9d93-4268fae8561c"
+        },
+        "south-east": {
+          "frames": 5,
+          "strip": "dune_digger/animations/idle__south-east.webp",
+          "frame_paths": [
+            "dune_digger/animations/idle/south-east/00.webp",
+            "dune_digger/animations/idle/south-east/01.webp",
+            "dune_digger/animations/idle/south-east/02.webp",
+            "dune_digger/animations/idle/south-east/03.webp",
+            "dune_digger/animations/idle/south-east/04.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:09:46 GMT",
+          "src_frames": 5,
+          "sub": "8da33829-c652-4d44-bf61-497420378acd"
+        },
+        "south-west": {
+          "frames": 5,
+          "strip": "dune_digger/animations/idle__south-west.webp",
+          "frame_paths": [
+            "dune_digger/animations/idle/south-west/00.webp",
+            "dune_digger/animations/idle/south-west/01.webp",
+            "dune_digger/animations/idle/south-west/02.webp",
+            "dune_digger/animations/idle/south-west/03.webp",
+            "dune_digger/animations/idle/south-west/04.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:09:47 GMT",
+          "src_frames": 5,
+          "sub": "415568a9-0625-4847-bfcd-6c1f27bb920f"
+        },
+        "west": {
+          "frames": 5,
+          "strip": "dune_digger/animations/idle__west.webp",
+          "frame_paths": [
+            "dune_digger/animations/idle/west/00.webp",
+            "dune_digger/animations/idle/west/01.webp",
+            "dune_digger/animations/idle/west/02.webp",
+            "dune_digger/animations/idle/west/03.webp",
+            "dune_digger/animations/idle/west/04.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:09:48 GMT",
+          "src_frames": 5,
+          "sub": "7a3813c0-1a93-4dd6-82fe-f5f441ec48c7"
+        }
+      }
+    },
+    "attack": {
+      "group_id": "941adefb-3c5b-4214-ad87-d707624d906b",
+      "source_name": "custom-Powerful one arm/hand slash attack with motion tra",
+      "directions": {
+        "east": {
+          "frames": 4,
+          "strip": "dune_digger/animations/attack__east.webp",
+          "frame_paths": [
+            "dune_digger/animations/attack/east/00.webp",
+            "dune_digger/animations/attack/east/01.webp",
+            "dune_digger/animations/attack/east/02.webp",
+            "dune_digger/animations/attack/east/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:09:50 GMT",
+          "src_frames": 4,
+          "sub": "302ae192-def6-4ceb-a165-b82dbd3ad892"
+        },
+        "north": {
+          "frames": 4,
+          "strip": "dune_digger/animations/attack__north.webp",
+          "frame_paths": [
+            "dune_digger/animations/attack/north/00.webp",
+            "dune_digger/animations/attack/north/01.webp",
+            "dune_digger/animations/attack/north/02.webp",
+            "dune_digger/animations/attack/north/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:09:51 GMT",
+          "src_frames": 4,
+          "sub": "73c986e0-5676-479e-9ba5-6831cc85dbb3"
+        },
+        "north-east": {
+          "frames": 4,
+          "strip": "dune_digger/animations/attack__north-east.webp",
+          "frame_paths": [
+            "dune_digger/animations/attack/north-east/00.webp",
+            "dune_digger/animations/attack/north-east/01.webp",
+            "dune_digger/animations/attack/north-east/02.webp",
+            "dune_digger/animations/attack/north-east/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:09:52 GMT",
+          "src_frames": 4,
+          "sub": "26030c44-30af-435a-9d0f-1de1f39d3cfb"
+        },
+        "north-west": {
+          "frames": 4,
+          "strip": "dune_digger/animations/attack__north-west.webp",
+          "frame_paths": [
+            "dune_digger/animations/attack/north-west/00.webp",
+            "dune_digger/animations/attack/north-west/01.webp",
+            "dune_digger/animations/attack/north-west/02.webp",
+            "dune_digger/animations/attack/north-west/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:09:53 GMT",
+          "src_frames": 4,
+          "sub": "40ab1e52-dede-4ec9-9f8f-0b4d92b39dea"
+        },
+        "south": {
+          "frames": 4,
+          "strip": "dune_digger/animations/attack__south.webp",
+          "frame_paths": [
+            "dune_digger/animations/attack/south/00.webp",
+            "dune_digger/animations/attack/south/01.webp",
+            "dune_digger/animations/attack/south/02.webp",
+            "dune_digger/animations/attack/south/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:09:55 GMT",
+          "src_frames": 4,
+          "sub": "3c8c405d-bf25-4079-a509-3a9a9bc692fe"
+        },
+        "south-east": {
+          "frames": 4,
+          "strip": "dune_digger/animations/attack__south-east.webp",
+          "frame_paths": [
+            "dune_digger/animations/attack/south-east/00.webp",
+            "dune_digger/animations/attack/south-east/01.webp",
+            "dune_digger/animations/attack/south-east/02.webp",
+            "dune_digger/animations/attack/south-east/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:10:00 GMT",
+          "src_frames": 4,
+          "sub": "d028f092-3f31-415f-b1c5-ad4c9bfd53b7"
+        },
+        "south-west": {
+          "frames": 4,
+          "strip": "dune_digger/animations/attack__south-west.webp",
+          "frame_paths": [
+            "dune_digger/animations/attack/south-west/00.webp",
+            "dune_digger/animations/attack/south-west/01.webp",
+            "dune_digger/animations/attack/south-west/02.webp",
+            "dune_digger/animations/attack/south-west/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:10:01 GMT",
+          "src_frames": 4,
+          "sub": "0fe5e742-cbbe-4a10-8efd-b9d7223572a6"
+        },
+        "west": {
+          "frames": 4,
+          "strip": "dune_digger/animations/attack__west.webp",
+          "frame_paths": [
+            "dune_digger/animations/attack/west/00.webp",
+            "dune_digger/animations/attack/west/01.webp",
+            "dune_digger/animations/attack/west/02.webp",
+            "dune_digger/animations/attack/west/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:10:03 GMT",
+          "src_frames": 4,
+          "sub": "bcc734b6-5567-4146-abbc-e00aca4bd2f5"
+        }
+      }
+    },
+    "angry": {
+      "group_id": "5dd547e6-1b76-4c47-83c3-c29b51b043c0",
+      "source_name": "custom-angry combat idle, frustrated",
+      "directions": {
+        "east": {
+          "frames": 4,
+          "strip": "dune_digger/animations/angry__east.webp",
+          "frame_paths": [
+            "dune_digger/animations/angry/east/00.webp",
+            "dune_digger/animations/angry/east/01.webp",
+            "dune_digger/animations/angry/east/02.webp",
+            "dune_digger/animations/angry/east/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:10:04 GMT",
+          "src_frames": 4,
+          "sub": "5cccdb03-92c2-417d-b04a-85ce63f75527"
+        },
+        "north": {
+          "frames": 4,
+          "strip": "dune_digger/animations/angry__north.webp",
+          "frame_paths": [
+            "dune_digger/animations/angry/north/00.webp",
+            "dune_digger/animations/angry/north/01.webp",
+            "dune_digger/animations/angry/north/02.webp",
+            "dune_digger/animations/angry/north/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:10:06 GMT",
+          "src_frames": 4,
+          "sub": "c6d3f085-7d79-4cec-ae44-9b4a289d44e1"
+        },
+        "north-east": {
+          "frames": 4,
+          "strip": "dune_digger/animations/angry__north-east.webp",
+          "frame_paths": [
+            "dune_digger/animations/angry/north-east/00.webp",
+            "dune_digger/animations/angry/north-east/01.webp",
+            "dune_digger/animations/angry/north-east/02.webp",
+            "dune_digger/animations/angry/north-east/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:10:08 GMT",
+          "src_frames": 4,
+          "sub": "3144b6ba-0955-40d9-bf3d-e9652233f584"
+        },
+        "north-west": {
+          "frames": 4,
+          "strip": "dune_digger/animations/angry__north-west.webp",
+          "frame_paths": [
+            "dune_digger/animations/angry/north-west/00.webp",
+            "dune_digger/animations/angry/north-west/01.webp",
+            "dune_digger/animations/angry/north-west/02.webp",
+            "dune_digger/animations/angry/north-west/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:10:09 GMT",
+          "src_frames": 4,
+          "sub": "6a85a5cc-daf0-4457-8bbf-75ebe82c10d3"
+        },
+        "south": {
+          "frames": 4,
+          "strip": "dune_digger/animations/angry__south.webp",
+          "frame_paths": [
+            "dune_digger/animations/angry/south/00.webp",
+            "dune_digger/animations/angry/south/01.webp",
+            "dune_digger/animations/angry/south/02.webp",
+            "dune_digger/animations/angry/south/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:10:10 GMT",
+          "src_frames": 4,
+          "sub": "6dd81e81-9306-4979-90ac-30fd03d261d4"
+        },
+        "south-east": {
+          "frames": 4,
+          "strip": "dune_digger/animations/angry__south-east.webp",
+          "frame_paths": [
+            "dune_digger/animations/angry/south-east/00.webp",
+            "dune_digger/animations/angry/south-east/01.webp",
+            "dune_digger/animations/angry/south-east/02.webp",
+            "dune_digger/animations/angry/south-east/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:10:11 GMT",
+          "src_frames": 4,
+          "sub": "a132f98a-a036-4bbc-a931-9868f99ec90e"
+        },
+        "south-west": {
+          "frames": 4,
+          "strip": "dune_digger/animations/angry__south-west.webp",
+          "frame_paths": [
+            "dune_digger/animations/angry/south-west/00.webp",
+            "dune_digger/animations/angry/south-west/01.webp",
+            "dune_digger/animations/angry/south-west/02.webp",
+            "dune_digger/animations/angry/south-west/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:10:12 GMT",
+          "src_frames": 4,
+          "sub": "47916c6e-91bb-4f5b-a2aa-aacbddff8ff2"
+        },
+        "west": {
+          "frames": 4,
+          "strip": "dune_digger/animations/angry__west.webp",
+          "frame_paths": [
+            "dune_digger/animations/angry/west/00.webp",
+            "dune_digger/animations/angry/west/01.webp",
+            "dune_digger/animations/angry/west/02.webp",
+            "dune_digger/animations/angry/west/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:10:15 GMT",
+          "src_frames": 4,
+          "sub": "6dc04b55-c22d-41f1-80e6-30df98395852"
+        }
+      }
+    },
+    "die": {
+      "group_id": "a72bc319-720a-40af-9e1e-a6380634a832",
+      "source_name": "custom-faints and fades away",
+      "directions": {
+        "east": {
+          "frames": 4,
+          "strip": "dune_digger/animations/die__east.webp",
+          "frame_paths": [
+            "dune_digger/animations/die/east/00.webp",
+            "dune_digger/animations/die/east/01.webp",
+            "dune_digger/animations/die/east/02.webp",
+            "dune_digger/animations/die/east/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:10:16 GMT",
+          "src_frames": 4,
+          "sub": "b9a1a59f-57dc-44e8-99dd-97531b564cfa"
+        },
+        "north": {
+          "frames": 4,
+          "strip": "dune_digger/animations/die__north.webp",
+          "frame_paths": [
+            "dune_digger/animations/die/north/00.webp",
+            "dune_digger/animations/die/north/01.webp",
+            "dune_digger/animations/die/north/02.webp",
+            "dune_digger/animations/die/north/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:10:18 GMT",
+          "src_frames": 4,
+          "sub": "864ce532-f270-4a5f-bc70-6e93df47fd06"
+        },
+        "north-east": {
+          "frames": 4,
+          "strip": "dune_digger/animations/die__north-east.webp",
+          "frame_paths": [
+            "dune_digger/animations/die/north-east/00.webp",
+            "dune_digger/animations/die/north-east/01.webp",
+            "dune_digger/animations/die/north-east/02.webp",
+            "dune_digger/animations/die/north-east/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:10:19 GMT",
+          "src_frames": 4,
+          "sub": "ec58a645-1cab-4e8f-aaae-52cfe2474a59"
+        },
+        "north-west": {
+          "frames": 4,
+          "strip": "dune_digger/animations/die__north-west.webp",
+          "frame_paths": [
+            "dune_digger/animations/die/north-west/00.webp",
+            "dune_digger/animations/die/north-west/01.webp",
+            "dune_digger/animations/die/north-west/02.webp",
+            "dune_digger/animations/die/north-west/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:10:20 GMT",
+          "src_frames": 4,
+          "sub": "6eb910ce-9f34-46c9-8665-7932f31b5013"
+        },
+        "south": {
+          "frames": 4,
+          "strip": "dune_digger/animations/die__south.webp",
+          "frame_paths": [
+            "dune_digger/animations/die/south/00.webp",
+            "dune_digger/animations/die/south/01.webp",
+            "dune_digger/animations/die/south/02.webp",
+            "dune_digger/animations/die/south/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:10:22 GMT",
+          "src_frames": 4,
+          "sub": "174b45c8-e2ef-45bc-9b36-75a07cb9b86c"
+        },
+        "south-east": {
+          "frames": 4,
+          "strip": "dune_digger/animations/die__south-east.webp",
+          "frame_paths": [
+            "dune_digger/animations/die/south-east/00.webp",
+            "dune_digger/animations/die/south-east/01.webp",
+            "dune_digger/animations/die/south-east/02.webp",
+            "dune_digger/animations/die/south-east/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:10:23 GMT",
+          "src_frames": 4,
+          "sub": "41ee8441-ae65-4d96-afe0-e9e10c25585d"
+        },
+        "south-west": {
+          "frames": 4,
+          "strip": "dune_digger/animations/die__south-west.webp",
+          "frame_paths": [
+            "dune_digger/animations/die/south-west/00.webp",
+            "dune_digger/animations/die/south-west/01.webp",
+            "dune_digger/animations/die/south-west/02.webp",
+            "dune_digger/animations/die/south-west/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:10:24 GMT",
+          "src_frames": 4,
+          "sub": "aee990b9-e4dd-4f4d-82e1-0e9e7d8e0415"
+        },
+        "west": {
+          "frames": 4,
+          "strip": "dune_digger/animations/die__west.webp",
+          "frame_paths": [
+            "dune_digger/animations/die/west/00.webp",
+            "dune_digger/animations/die/west/01.webp",
+            "dune_digger/animations/die/west/02.webp",
+            "dune_digger/animations/die/west/03.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:10:26 GMT",
+          "src_frames": 4,
+          "sub": "4c2f5d82-02ff-4152-9df5-5d0f2453c3af"
+        }
+      }
+    },
+    "walk": {
+      "group_id": "4f6c8308-3eb6-414d-ae12-b2562c9cbeed",
+      "source_name": "custom-walk loop. full walk cycle. sh",
+      "directions": {
+        "east": {
+          "frames": 6,
+          "strip": "dune_digger/animations/walk__east.webp",
+          "frame_paths": [
+            "dune_digger/animations/walk/east/00.webp",
+            "dune_digger/animations/walk/east/01.webp",
+            "dune_digger/animations/walk/east/02.webp",
+            "dune_digger/animations/walk/east/03.webp",
+            "dune_digger/animations/walk/east/04.webp",
+            "dune_digger/animations/walk/east/05.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:10:27 GMT",
+          "src_frames": 6,
+          "sub": "96df6e37-172e-4775-9da6-eadb5e05cafc"
+        },
+        "north": {
+          "frames": 6,
+          "strip": "dune_digger/animations/walk__north.webp",
+          "frame_paths": [
+            "dune_digger/animations/walk/north/00.webp",
+            "dune_digger/animations/walk/north/01.webp",
+            "dune_digger/animations/walk/north/02.webp",
+            "dune_digger/animations/walk/north/03.webp",
+            "dune_digger/animations/walk/north/04.webp",
+            "dune_digger/animations/walk/north/05.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:10:28 GMT",
+          "src_frames": 6,
+          "sub": "da657b6b-f238-43a4-a3e0-ee2f133a1afc"
+        },
+        "north-east": {
+          "frames": 6,
+          "strip": "dune_digger/animations/walk__north-east.webp",
+          "frame_paths": [
+            "dune_digger/animations/walk/north-east/00.webp",
+            "dune_digger/animations/walk/north-east/01.webp",
+            "dune_digger/animations/walk/north-east/02.webp",
+            "dune_digger/animations/walk/north-east/03.webp",
+            "dune_digger/animations/walk/north-east/04.webp",
+            "dune_digger/animations/walk/north-east/05.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:10:30 GMT",
+          "src_frames": 6,
+          "sub": "cf496375-674b-4816-971b-25e6f2a3c904"
+        },
+        "north-west": {
+          "frames": 6,
+          "strip": "dune_digger/animations/walk__north-west.webp",
+          "frame_paths": [
+            "dune_digger/animations/walk/north-west/00.webp",
+            "dune_digger/animations/walk/north-west/01.webp",
+            "dune_digger/animations/walk/north-west/02.webp",
+            "dune_digger/animations/walk/north-west/03.webp",
+            "dune_digger/animations/walk/north-west/04.webp",
+            "dune_digger/animations/walk/north-west/05.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:10:32 GMT",
+          "src_frames": 6,
+          "sub": "9e3f8f11-382b-4260-9a66-e0bb69aa33f7"
+        },
+        "south": {
+          "frames": 6,
+          "strip": "dune_digger/animations/walk__south.webp",
+          "frame_paths": [
+            "dune_digger/animations/walk/south/00.webp",
+            "dune_digger/animations/walk/south/01.webp",
+            "dune_digger/animations/walk/south/02.webp",
+            "dune_digger/animations/walk/south/03.webp",
+            "dune_digger/animations/walk/south/04.webp",
+            "dune_digger/animations/walk/south/05.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:10:34 GMT",
+          "src_frames": 6,
+          "sub": "2c54abd0-ed0e-491a-a25d-2a5a37dc9b70"
+        },
+        "south-east": {
+          "frames": 6,
+          "strip": "dune_digger/animations/walk__south-east.webp",
+          "frame_paths": [
+            "dune_digger/animations/walk/south-east/00.webp",
+            "dune_digger/animations/walk/south-east/01.webp",
+            "dune_digger/animations/walk/south-east/02.webp",
+            "dune_digger/animations/walk/south-east/03.webp",
+            "dune_digger/animations/walk/south-east/04.webp",
+            "dune_digger/animations/walk/south-east/05.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:10:35 GMT",
+          "src_frames": 6,
+          "sub": "30f6d105-3339-42f2-9c82-fe2d1bbea5dd"
+        },
+        "south-west": {
+          "frames": 6,
+          "strip": "dune_digger/animations/walk__south-west.webp",
+          "frame_paths": [
+            "dune_digger/animations/walk/south-west/00.webp",
+            "dune_digger/animations/walk/south-west/01.webp",
+            "dune_digger/animations/walk/south-west/02.webp",
+            "dune_digger/animations/walk/south-west/03.webp",
+            "dune_digger/animations/walk/south-west/04.webp",
+            "dune_digger/animations/walk/south-west/05.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:10:37 GMT",
+          "src_frames": 6,
+          "sub": "5bee5f4b-588b-40e6-8543-fb36a10099e5"
+        },
+        "west": {
+          "frames": 6,
+          "strip": "dune_digger/animations/walk__west.webp",
+          "frame_paths": [
+            "dune_digger/animations/walk/west/00.webp",
+            "dune_digger/animations/walk/west/01.webp",
+            "dune_digger/animations/walk/west/02.webp",
+            "dune_digger/animations/walk/west/03.webp",
+            "dune_digger/animations/walk/west/04.webp",
+            "dune_digger/animations/walk/west/05.webp"
+          ],
+          "lm": "Thu, 13 Aug 2026 10:10:38 GMT",
+          "src_frames": 6,
+          "sub": "a1741418-1549-4b09-88a4-ca08dcc5473c"
+        }
+      }
+    }
+  },
+  "states": {
+    "idle": "idle",
+    "walk": "walk",
+    "angry": "angry",
+    "attack": "attack",
+    "die": "die"
+  },
+  "unresolved_takes": [],
+  "synced_from_pixellab": true
+}

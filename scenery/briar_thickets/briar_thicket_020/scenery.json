@@ -1,0 +1,80 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-14T00:46:41+00:00",
+  "id": "briar_thicket_020",
+  "group": "briar_thickets",
+  "rank": 13,
+  "index": 20,
+  "name": "Dead grey thorn tangle 020",
+  "lights": null,
+  "variety": "dead grey thorn tangle",
+  "modifier": "unusually tall and narrow",
+  "glow_concept": "petals shedding slow drifting motes of light",
+  "prompt": "a dense sprawling bramble thicket of dark green leaves and thick arcing thorny stems, a low lush leafy mass hugging the ground with wild roses scattered through it, dead grey thorn tangle, unusually tall and narrow, roughly six feet tall, human height, self-emissive at night, softly radiating light: petals shedding slow drifting motes of light",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 64,
+  "sprite": "briar_thickets/briar_thicket_020/sprite.webp",
+  "placement": {
+    "world_height_m": 1.075,
+    "world_px_height": 55,
+    "character_height_px": 87,
+    "character_height_m": 1.7,
+    "note": "ONE SCENERY PIXEL IS ONE PLAYER PIXEL. world_px_height IS the art's own alpha bbox height, so scenery is placed into the world at 1:1 exactly as the avatar is (setScale(1)) and the two share one pixel grid. The CAMERA still zooms the whole scene \u2014 that is uniform and correct; what must never happen is scenery being resampled on its own, against the player. world_height_m is what the art reads as beside a 87px character; declared_height_m is what it was once declared to be, and a gap between them means the ART is the wrong size.",
+    "declared_height_m": 1.41,
+    "content_box": [
+      6,
+      5,
+      59,
+      60
+    ],
+    "content_px_height": 55,
+    "canvas_render_px": 64
+  },
+  "pixellab_object_id": "5bc32c42-1c84-4966-b16a-fc7670ee6700",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)",
+  "must_be_imbplemented_with_random_hflip": true,
+  "states": {
+    "NOT_LIT_3": {
+      "sprite": "briar_thickets/briar_thicket_020/sprite.webp",
+      "pixellab_object_id": "5bc32c42-1c84-4966-b16a-fc7670ee6700",
+      "generated_at": "2026-08-14T00:46:41+00:00",
+      "relit_from": "LIT_1"
+    },
+    "NOT_LIT_4": {
+      "sprite": "briar_thickets/briar_thicket_020/not_lit_4/sprite.webp",
+      "pixellab_object_id": "ae06d0cb-7297-4446-8d14-efc2c26240bf",
+      "generated_at": "2026-08-15T20:57:10+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.5396,
+      "glow_score": 0.0267,
+      "relit_from": "LIT_2"
+    },
+    "NOT_LIT_5": {
+      "sprite": "briar_thickets/briar_thicket_020/not_lit_5/sprite.webp",
+      "pixellab_object_id": "18c2f603-c43f-47d8-89d8-77c75db39103",
+      "generated_at": "2026-08-15T20:57:22+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.3725,
+      "glow_score": 0.0125,
+      "relit_from": "LIT_3"
+    },
+    "NOT_LIT_6": {
+      "sprite": "briar_thickets/briar_thicket_020/not_lit_6/sprite.webp",
+      "pixellab_object_id": "d5406103-af73-47fe-a3e5-e60e662374f6",
+      "generated_at": "2026-08-15T20:56:59+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.6512,
+      "glow_score": 0.0039,
+      "relit_from": "LIT_4"
+    }
+  },
+  "collision": true,
+  "hitbox_shape": "ellipse"
+}

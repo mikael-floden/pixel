@@ -1,0 +1,85 @@
+{
+  "format": "scenery-piece@2",
+  "id": "flower_stand_008",
+  "group": "flower_stands",
+  "rank": 34,
+  "index": 8,
+  "name": "Fireweed in magenta bloom 008",
+  "lights": null,
+  "variety": "fireweed in magenta bloom",
+  "glow_concept": "foxglove bells glowing like hanging lamps",
+  "prompt": "a stand of tall wildflowers with upright leafy stems and clustered blooms at different heights, fireweed in magenta bloom, waist-high, self-emissive at night, softly radiating light: foxglove bells glowing like hanging lamps",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 64,
+  "sprite": "flower_stands/flower_stand_008/sprite.webp",
+  "placement": {
+    "world_height_m": 1.055,
+    "world_px_height": 54,
+    "character_height_px": 87,
+    "character_height_m": 1.7,
+    "note": "ONE SCENERY PIXEL IS ONE PLAYER PIXEL. world_px_height IS the art's own alpha bbox height, so scenery is placed into the world at 1:1 exactly as the avatar is (setScale(1)) and the two share one pixel grid. The CAMERA still zooms the whole scene \u2014 that is uniform and correct; what must never happen is scenery being resampled on its own, against the player. world_height_m is what the art reads as beside a 87px character; declared_height_m is what it was once declared to be, and a gap between them means the ART is the wrong size.",
+    "declared_height_m": 1.08,
+    "content_box": [
+      9,
+      6,
+      57,
+      60
+    ],
+    "content_px_height": 54,
+    "canvas_render_px": 64
+  },
+  "pixellab_object_id": "8d06244b-0ef5-43b9-a709-95df2e7517f4",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)",
+  "must_be_imbplemented_with_random_hflip": true,
+  "generated_at": "2026-08-13T21:56:01+00:00",
+  "states": {
+    "NOT_LIT_3": {
+      "sprite": "flower_stands/flower_stand_008/sprite.webp",
+      "pixellab_object_id": "8d06244b-0ef5-43b9-a709-95df2e7517f4",
+      "generated_at": "2026-08-13T21:56:01+00:00",
+      "relit_from": "LIT_1",
+      "rotations": {
+        "south-east": "flower_stands/flower_stand_008/rotations/south-east.webp",
+        "south-west": "flower_stands/flower_stand_008/rotations/south-west.webp",
+        "south": "flower_stands/flower_stand_008/sprite.webp"
+      }
+    },
+    "NOT_LIT_4": {
+      "sprite": "flower_stands/flower_stand_008/not_lit_4/sprite.webp",
+      "pixellab_object_id": "bb4c35d7-3ba8-400f-a097-5e1847a02aa4",
+      "generated_at": "2026-08-16T14:10:46+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.9256,
+      "glow_score": 0.0415,
+      "relit_from": "LIT_2",
+      "rotations": {
+        "south-east": "flower_stands/flower_stand_008/not_lit_4/rotations/south-east.webp",
+        "south-west": "flower_stands/flower_stand_008/not_lit_4/rotations/south-west.webp",
+        "south": "flower_stands/flower_stand_008/not_lit_4/sprite.webp"
+      }
+    },
+    "NOT_LIT_5": {
+      "sprite": "flower_stands/flower_stand_008/not_lit_5/sprite.webp",
+      "pixellab_object_id": "eba4f2f0-8da0-4a02-b9ce-0ebae23b9b56",
+      "generated_at": "2026-08-16T14:11:08+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.9486,
+      "glow_score": 0.0325,
+      "relit_from": "LIT_3",
+      "rotations": {
+        "south-east": "flower_stands/flower_stand_008/not_lit_5/rotations/south-east.webp",
+        "south-west": "flower_stands/flower_stand_008/not_lit_5/rotations/south-west.webp",
+        "south": "flower_stands/flower_stand_008/not_lit_5/sprite.webp"
+      }
+    }
+  },
+  "collision": true,
+  "hitbox_shape": "ellipse"
+}

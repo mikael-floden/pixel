@@ -1,0 +1,22 @@
+{
+  "domain": "items",
+  "id": "split_bone_pile",
+  "name_seen": "Split Bones",
+  "law": "V",
+  "description": "Cracked long bones, split for marrow by something with no patience. Rotjaw leaves piles of them.",
+  "lore": [
+    "A jaw splits a long bone the long way, following the grain, and leaves the halves rocking where they fell. A person splits one across, with a rock, because a person wants the marrow out and does not much care about the bone afterwards. Every guide teaches the difference in the first hour, and [[characters/8c41be1e|Hearn]] teaches it as an order: look at the split before you look at anything else.",
+    "He has his reasons. A cracker new to that country came over a rise, found cracked bone scattered round a hollow, decided he was standing in somebody's camp, and sat down in it to wait for company. What came was not company. He re-formed beside a fire two nights later, short the whole afternoon and most of his reasons for being out there at all, and he tells it himself now, badly, to anyone who will sit."
+  ],
+  "related": [
+    {
+      "domain": "lore",
+      "id": "the_hard_pieces"
+    },
+    {
+      "domain": "monsters",
+      "id": "undead_hound"
+    }
+  ],
+  "gm_notes": "Trade craft record. Establishes reading a pile as first-hour fieldwork and shows being broken as a subtraction, not an ending. No beat advanced."
+}

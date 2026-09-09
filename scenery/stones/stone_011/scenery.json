@@ -1,0 +1,154 @@
+{
+  "format": "scenery-piece@2",
+  "id": "stone_011",
+  "group": "stones",
+  "rank": 2,
+  "index": 11,
+  "name": "Dark basalt block 011",
+  "lights": null,
+  "variety": "dark basalt block",
+  "glow_concept": null,
+  "prompt": "a single natural fieldstone boulder resting on the ground, rounded and weathered, with subtle cracks, pits and patches of moss, dark basalt block, completely unlit, no glow, no light sources, no self-emission",
+  "view": "top-down",
+  "direction": "south",
+  "size": 64,
+  "sprite": "stones/stone_011/sprite.webp",
+  "placement": {
+    "world_height_m": 1.036,
+    "world_px_height": 53,
+    "character_height_px": 87,
+    "character_height_m": 1.7,
+    "note": "ONE SCENERY PIXEL IS ONE PLAYER PIXEL. world_px_height IS the art's own alpha bbox height, so scenery is placed into the world at 1:1 exactly as the avatar is (setScale(1)) and the two share one pixel grid. The CAMERA still zooms the whole scene \u2014 that is uniform and correct; what must never happen is scenery being resampled on its own, against the player. world_height_m is what the art reads as beside a 87px character; declared_height_m is what it was once declared to be, and a gap between them means the ART is the wrong size.",
+    "declared_height_m": 1.23,
+    "content_box": [
+      5,
+      6,
+      59,
+      59
+    ],
+    "content_px_height": 53,
+    "canvas_render_px": 64
+  },
+  "pixellab_object_id": "d435c5be-1a68-4c27-91f7-24f665ee853f",
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-1-direction-object (batched, S-only)",
+  "must_be_imbplemented_with_random_hflip": true,
+  "generated_at": "2026-08-12T23:22:20+00:00",
+  "states": {
+    "LIT_1": {
+      "sprite": "stones/stone_011/lit_1/sprite.webp",
+      "pixellab_object_id": "f512f558-a191-4bf6-8fcd-bb5e823f6508",
+      "generated_at": "2026-08-16T21:43:12+00:00",
+      "glow_concept": "ring of ghost-blue lichen circles",
+      "difference_from_source": 0.459,
+      "glow_score": 0.0858,
+      "animations": {
+        "motion": {
+          "group_id": "343684c2-4ed2-484d-aa36-8f3eddbb7f7c",
+          "description": "This is the same picture in every frame. ONLY the glowing patches on the block brighten a little and return. It is lit and clearly visible in every frame, including the first. It gets only SLIGHTLY brighter -- never white, never washed out -- and keeps its own colour throughout: brightest in the middle, back to its first-frame brightness at the end, never dimmer at the end than the start. Nothing is added or removed anywhere: every object appears in every frame, the same number of them, in the same places, at the same size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour, no outline redrawn. The last frame matches the first exactly.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "stones/stone_011/lit_1/animations/motion/00.webp",
+            "stones/stone_011/lit_1/animations/motion/01.webp",
+            "stones/stone_011/lit_1/animations/motion/02.webp",
+            "stones/stone_011/lit_1/animations/motion/03.webp",
+            "stones/stone_011/lit_1/animations/motion/04.webp"
+          ],
+          "strip": "stones/stone_011/lit_1/animations/motion__strip.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-08-29T19:04:47+00:00",
+          "brief": "C35",
+          "review": "ANIMATION_PROBABLY_BAD",
+          "review_metrics": {
+            "class": "rigid",
+            "base": 0.593,
+            "still": 0.332
+          },
+          "light_frames": [
+            {
+              "intensity": 1.179,
+              "dx": -3.3,
+              "dy": -10.7
+            },
+            {
+              "intensity": 1.341,
+              "dx": -1.5,
+              "dy": -7.1
+            },
+            {
+              "intensity": 1.219,
+              "dx": -2.2,
+              "dy": -0.9
+            },
+            {
+              "intensity": 0.67,
+              "dx": -2.4,
+              "dy": 3.1
+            },
+            {
+              "intensity": 0.591,
+              "dx": -3.1,
+              "dy": 5.2
+            }
+          ]
+        }
+      }
+    },
+    "NOT_LIT_1": {
+      "sprite": "stones/stone_011/sprite.webp",
+      "pixellab_object_id": "d435c5be-1a68-4c27-91f7-24f665ee853f",
+      "generated_at": "2026-08-12T23:22:20+00:00"
+    },
+    "NOT_LIT_2": {
+      "sprite": "stones/stone_011/not_lit_2/sprite.webp",
+      "pixellab_object_id": "792d0af4-c576-4318-a05d-70f7bd19ce58",
+      "generated_at": "2026-08-16T21:43:11+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.303,
+      "glow_score": 0.0
+    },
+    "NOT_LIT_3": {
+      "sprite": "stones/stone_011/not_lit_3/sprite.webp",
+      "pixellab_object_id": "3ccb19c9-fd08-4b40-8b09-383a5c5d6224",
+      "generated_at": "2026-08-16T21:43:22+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.3332,
+      "glow_score": 0.0
+    },
+    "NOT_LIT_4": {
+      "sprite": "stones/stone_011/not_lit_4/sprite.webp",
+      "pixellab_object_id": "87ec7a08-ae3d-4b72-8361-6473ffa03a8f",
+      "generated_at": "2026-08-16T21:43:11+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.2362,
+      "glow_score": 0.0
+    }
+  },
+  "collision": true,
+  "hitbox_shape": "ellipse",
+  "light": {
+    "strength": 0.08,
+    "color": "#bffff8",
+    "radius": 1,
+    "reference": "the spawn bonfire is 1.0 (radius 7); strength 0 is no light",
+    "states": {
+      "LIT_1": {
+        "strength": 0.1,
+        "color": "#bffff8",
+        "radius": 1
+      }
+    },
+    "kind": "glow/mineral",
+    "flame": false,
+    "embers": false
+  }
+}

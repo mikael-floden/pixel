@@ -1,0 +1,22 @@
+{
+  "domain": "items",
+  "id": "pale_grey_eyeball",
+  "name_seen": "Pale Eye",
+  "law": "V",
+  "description": "A grey eye with the light gone out of it. Palehusk collects them, which is not a comforting thought.",
+  "lore": [
+    "A sorter at the fen counter set one aside out of a new bag and asked the plain question: where on the animal was it. The cracker could not say. Neither could the next one asked, nor anyone on that road since. They are picked out of the grass afterwards, at the edge of the pressed circle, loose, never attached to the thing that came down. And what [[monsters/masked_shadow_creature|that one]] leaves is a mask, and the mask has no eyes in it and never had; the inward side is smooth.",
+    "So the trade did what the trade does. Named it Pale Eye, priced it at twenty-six, agreed the price, stopped asking. Ask at a stall today and you will be told they come off Grinmask, which is where they come from and not where they were."
+  ],
+  "related": [
+    {
+      "domain": "monsters",
+      "id": "masked_shadow_creature"
+    },
+    {
+      "domain": "lore",
+      "id": "the_hard_pieces"
+    }
+  ],
+  "gm_notes": "An unattributable piece, handled the way a working economy handles the inexplicable: name, price, next. The distinction in the last line is the whole record — hand a player the eye, let them ask the sorter's question, and let it stay unanswered."
+}

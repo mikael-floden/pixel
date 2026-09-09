@@ -1,0 +1,100 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-14T01:15:52+00:00",
+  "id": "shipwreck_prow_002",
+  "group": "shipwreck_prows",
+  "rank": 119,
+  "index": 2,
+  "name": "Carved longship prow 002",
+  "lights": null,
+  "variety": "carved longship prow",
+  "modifier": "a rope ladder still hanging",
+  "glow_concept": "the figurehead's eyes faintly aglow",
+  "prompt": "the broken bow of an old wooden ship beached far from any sea, planks sprung and keel buried in the grass, carved longship prow, a rope ladder still hanging, large, twice human height, self-emissive at night, softly radiating light: the figurehead's eyes faintly aglow",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 128,
+  "sprite": "shipwreck_prows/shipwreck_prow_002/sprite.webp",
+  "placement": {
+    "world_height_m": 2.247,
+    "world_px_height": 115,
+    "character_height_px": 87,
+    "character_height_m": 1.7,
+    "note": "ONE SCENERY PIXEL IS ONE PLAYER PIXEL. world_px_height IS the art's own alpha bbox height, so scenery is placed into the world at 1:1 exactly as the avatar is (setScale(1)) and the two share one pixel grid. The CAMERA still zooms the whole scene \u2014 that is uniform and correct; what must never happen is scenery being resampled on its own, against the player. world_height_m is what the art reads as beside a 87px character; declared_height_m is what it was once declared to be, and a gap between them means the ART is the wrong size.",
+    "declared_height_m": 2.94,
+    "content_box": [
+      0,
+      12,
+      128,
+      127
+    ],
+    "content_px_height": 115,
+    "canvas_render_px": 128
+  },
+  "pixellab_object_id": "7d69421f-d5d7-4529-94f6-c17cf84d7788",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)",
+  "must_be_imbplemented_with_random_hflip": true,
+  "states": {
+    "NOT_LIT_3": {
+      "sprite": "shipwreck_prows/shipwreck_prow_002/sprite.webp",
+      "pixellab_object_id": "7d69421f-d5d7-4529-94f6-c17cf84d7788",
+      "generated_at": "2026-08-14T01:15:52+00:00",
+      "relit_from": "LIT_1",
+      "rotations": {
+        "south-east": "shipwreck_prows/shipwreck_prow_002/rotations/south-east.webp",
+        "south-west": "shipwreck_prows/shipwreck_prow_002/rotations/south-west.webp",
+        "south": "shipwreck_prows/shipwreck_prow_002/sprite.webp"
+      }
+    },
+    "NOT_LIT_4": {
+      "sprite": "shipwreck_prows/shipwreck_prow_002/not_lit_4/sprite.webp",
+      "pixellab_object_id": "59332fcd-c076-40c0-81a5-3cf96d064aed",
+      "generated_at": "2026-08-16T20:45:14+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.3914,
+      "glow_score": 0.0,
+      "relit_from": "LIT_2",
+      "rotations": {
+        "south-east": "shipwreck_prows/shipwreck_prow_002/not_lit_4/rotations/south-east.webp",
+        "south-west": "shipwreck_prows/shipwreck_prow_002/not_lit_4/rotations/south-west.webp",
+        "south": "shipwreck_prows/shipwreck_prow_002/not_lit_4/sprite.webp"
+      }
+    },
+    "NOT_LIT_5": {
+      "sprite": "shipwreck_prows/shipwreck_prow_002/not_lit_5/sprite.webp",
+      "pixellab_object_id": "5b90087e-4cba-441b-aaaf-dd9c882eace4",
+      "generated_at": "2026-08-16T20:45:53+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.4734,
+      "glow_score": 0.0,
+      "relit_from": "LIT_3",
+      "rotations": {
+        "south-east": "shipwreck_prows/shipwreck_prow_002/not_lit_5/rotations/south-east.webp",
+        "south-west": "shipwreck_prows/shipwreck_prow_002/not_lit_5/rotations/south-west.webp",
+        "south": "shipwreck_prows/shipwreck_prow_002/not_lit_5/sprite.webp"
+      }
+    },
+    "NOT_LIT_6": {
+      "sprite": "shipwreck_prows/shipwreck_prow_002/not_lit_6/sprite.webp",
+      "pixellab_object_id": "bc3a4dd4-3e18-487c-9c56-06c24ae64c20",
+      "generated_at": "2026-08-16T20:46:23+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.4333,
+      "glow_score": 0.0,
+      "relit_from": "LIT_4",
+      "rotations": {
+        "south-east": "shipwreck_prows/shipwreck_prow_002/not_lit_6/rotations/south-east.webp",
+        "south-west": "shipwreck_prows/shipwreck_prow_002/not_lit_6/rotations/south-west.webp",
+        "south": "shipwreck_prows/shipwreck_prow_002/not_lit_6/sprite.webp"
+      }
+    }
+  },
+  "collision": true,
+  "hitbox_shape": "rect"
+}

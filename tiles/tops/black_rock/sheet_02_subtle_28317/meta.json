@@ -1,0 +1,129 @@
+{
+  "schema": "tiles3/tops@1",
+  "kind": "top_only",
+  "wall_is_meaningless": true,
+  "not_a_candidate_for": "x over y",
+  "ground": "black_rock",
+  "flavour": "subtle",
+  "index": 2,
+  "seed": 28317,
+  "prompt": "quiet black volcanic rock, near black, fine even grain, barely any variation",
+  "palette_top": "#1e1d1e",
+  "tile_id": "7d0113ca-2def-4bca-ad3d-fb9191b7fd60",
+  "n_tiles": 16,
+  "tiles": [
+    "tile_00.webp",
+    "tile_01.webp",
+    "tile_02.webp",
+    "tile_03.webp",
+    "tile_04.webp",
+    "tile_05.webp",
+    "tile_06.webp",
+    "tile_07.webp",
+    "tile_08.webp",
+    "tile_09.webp",
+    "tile_10.webp",
+    "tile_11.webp",
+    "tile_12.webp",
+    "tile_13.webp",
+    "tile_14.webp",
+    "tile_15.webp"
+  ],
+  "settings": {
+    "tile_size": 64,
+    "tile_view": "high top-down",
+    "view_angle": 28.0,
+    "depth_ratio": 0.5,
+    "tile_type": "isometric",
+    "flat_top_px": 2,
+    "outline_mode": "segmentation"
+  },
+  "usd": 0.096,
+  "created": "2026-08-27T15:43:47+00:00",
+  "top_face": {
+    "per_tile": [
+      {
+        "colours": 11,
+        "dominant_share": 0.7617,
+        "px": 1284
+      },
+      {
+        "colours": 12,
+        "dominant_share": 0.7533,
+        "px": 1301
+      },
+      {
+        "colours": 12,
+        "dominant_share": 0.7694,
+        "px": 1266
+      },
+      {
+        "colours": 11,
+        "dominant_share": 0.7794,
+        "px": 1215
+      },
+      {
+        "colours": 9,
+        "dominant_share": 0.7508,
+        "px": 1284
+      },
+      {
+        "colours": 11,
+        "dominant_share": 0.7261,
+        "px": 1296
+      },
+      {
+        "colours": 11,
+        "dominant_share": 0.7019,
+        "px": 1258
+      },
+      {
+        "colours": 13,
+        "dominant_share": 0.7282,
+        "px": 1214
+      },
+      {
+        "colours": 10,
+        "dominant_share": 0.7394,
+        "px": 1293
+      },
+      {
+        "colours": 11,
+        "dominant_share": 0.6586,
+        "px": 1318
+      },
+      {
+        "colours": 11,
+        "dominant_share": 0.6708,
+        "px": 1276
+      },
+      {
+        "colours": 11,
+        "dominant_share": 0.7307,
+        "px": 1229
+      },
+      {
+        "colours": 10,
+        "dominant_share": 0.7233,
+        "px": 1301
+      },
+      {
+        "colours": 11,
+        "dominant_share": 0.7066,
+        "px": 1326
+      },
+      {
+        "colours": 9,
+        "dominant_share": 0.712,
+        "px": 1288
+      },
+      {
+        "colours": 11,
+        "dominant_share": 0.7599,
+        "px": 1233
+      }
+    ],
+    "mean_colours": 10.88,
+    "mean_dominant_share": 0.7295
+  }
+}

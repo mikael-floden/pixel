@@ -1,0 +1,114 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-14T01:10:46+00:00",
+  "id": "witch_ring_002",
+  "group": "witch_rings",
+  "rank": 115,
+  "index": 2,
+  "name": "Nine-stone ring 002",
+  "lights": null,
+  "variety": "nine-stone ring",
+  "modifier": "half-swallowed by moss",
+  "glow_concept": "a faint ring of light on the grass",
+  "prompt": "a ring of small carved stones set in trampled grass with melted candle stubs between them, the site of quiet old rituals, nine-stone ring, half-swallowed by moss, tiny, only ankle-high, self-emissive at night, softly radiating light: a faint ring of light on the grass",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 64,
+  "sprite": "witch_rings/witch_ring_002/sprite.webp",
+  "placement": {
+    "world_height_m": 0.86,
+    "world_px_height": 44,
+    "character_height_px": 87,
+    "character_height_m": 1.7,
+    "note": "ONE SCENERY PIXEL IS ONE PLAYER PIXEL. world_px_height IS the art's own alpha bbox height, so scenery is placed into the world at 1:1 exactly as the avatar is (setScale(1)) and the two share one pixel grid. The CAMERA still zooms the whole scene \u2014 that is uniform and correct; what must never happen is scenery being resampled on its own, against the player. world_height_m is what the art reads as beside a 87px character; declared_height_m is what it was once declared to be, and a gap between them means the ART is the wrong size.",
+    "declared_height_m": 0.32,
+    "content_box": [
+      1,
+      15,
+      63,
+      59
+    ],
+    "content_px_height": 44,
+    "canvas_render_px": 64
+  },
+  "pixellab_object_id": "ac611917-aaa4-4b4d-a439-f2c0282f4579",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)",
+  "must_be_imbplemented_with_random_hflip": true,
+  "states": {
+    "NOT_LIT_2": {
+      "sprite": "witch_rings/witch_ring_002/not_lit_2/sprite.webp",
+      "pixellab_object_id": "61336711-5004-4e93-bbd3-6c5c89646dbd",
+      "generated_at": "2026-08-17T13:17:36+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.2753,
+      "glow_score": 0.0592,
+      "rotations": {
+        "south-east": "witch_rings/witch_ring_002/not_lit_2/rotations/south-east.webp",
+        "south-west": "witch_rings/witch_ring_002/not_lit_2/rotations/south-west.webp",
+        "south": "witch_rings/witch_ring_002/not_lit_2/sprite.webp"
+      }
+    },
+    "NOT_LIT_3": {
+      "sprite": "witch_rings/witch_ring_002/sprite.webp",
+      "pixellab_object_id": "ac611917-aaa4-4b4d-a439-f2c0282f4579",
+      "generated_at": "2026-08-14T01:10:46+00:00",
+      "relit_from": "LIT_1",
+      "rotations": {
+        "south-east": "witch_rings/witch_ring_002/rotations/south-east.webp",
+        "south-west": "witch_rings/witch_ring_002/rotations/south-west.webp",
+        "south": "witch_rings/witch_ring_002/sprite.webp"
+      },
+      "animations": {}
+    },
+    "NOT_LIT_4": {
+      "sprite": "witch_rings/witch_ring_002/not_lit_4/sprite.webp",
+      "pixellab_object_id": "b25c11e4-2f29-4ae2-8cf4-3a05b43f3d2b",
+      "generated_at": "2026-08-17T13:16:18+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.2992,
+      "glow_score": 0.0685,
+      "relit_from": "LIT_2",
+      "rotations": {
+        "south-east": "witch_rings/witch_ring_002/not_lit_4/rotations/south-east.webp",
+        "south-west": "witch_rings/witch_ring_002/not_lit_4/rotations/south-west.webp",
+        "south": "witch_rings/witch_ring_002/not_lit_4/sprite.webp"
+      }
+    },
+    "NOT_LIT_5": {
+      "sprite": "witch_rings/witch_ring_002/not_lit_5/sprite.webp",
+      "pixellab_object_id": "bac3940d-8555-4e13-ad9f-595c7d2fbff1",
+      "generated_at": "2026-08-17T13:15:58+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.5815,
+      "glow_score": 0.062,
+      "relit_from": "LIT_3",
+      "rotations": {
+        "south-east": "witch_rings/witch_ring_002/not_lit_5/rotations/south-east.webp",
+        "south-west": "witch_rings/witch_ring_002/not_lit_5/rotations/south-west.webp",
+        "south": "witch_rings/witch_ring_002/not_lit_5/sprite.webp"
+      }
+    },
+    "NOT_LIT_6": {
+      "sprite": "witch_rings/witch_ring_002/not_lit_6/sprite.webp",
+      "pixellab_object_id": "26b57b62-e80b-4904-a20b-b96004161bed",
+      "generated_at": "2026-08-17T13:16:09+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.557,
+      "glow_score": 0.0841,
+      "relit_from": "LIT_4",
+      "rotations": {
+        "south-east": "witch_rings/witch_ring_002/not_lit_6/rotations/south-east.webp",
+        "south-west": "witch_rings/witch_ring_002/not_lit_6/rotations/south-west.webp",
+        "south": "witch_rings/witch_ring_002/not_lit_6/sprite.webp"
+      }
+    }
+  },
+  "collision": true,
+  "hitbox_shape": "ellipse"
+}

@@ -1,0 +1,110 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-13T23:11:44+00:00",
+  "id": "cattail_clump_900",
+  "group": "cattail_clumps",
+  "rank": 33,
+  "index": 900,
+  "name": "Dark marsh cattails 900",
+  "lights": null,
+  "variety": "dark marsh cattails",
+  "glow_concept": "a foxfire ring around the wet base",
+  "prompt": "a clump of cattails with strap-like arching leaves and brown velvet seed heads on tall straight stalks, growing from marshy ground, dark marsh cattails, waist-high, self-emissive at night, softly radiating light: a foxfire ring around the wet base",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 64,
+  "sprite": "cattail_clumps/cattail_clump_900/sprite.webp",
+  "placement": {
+    "world_height_m": 1.036,
+    "world_px_height": 53,
+    "character_height_px": 87,
+    "character_height_m": 1.7,
+    "note": "ONE SCENERY PIXEL IS ONE PLAYER PIXEL. world_px_height IS the art's own alpha bbox height, so scenery is placed into the world at 1:1 exactly as the avatar is (setScale(1)) and the two share one pixel grid. The CAMERA still zooms the whole scene \u2014 that is uniform and correct; what must never happen is scenery being resampled on its own, against the player. world_height_m is what the art reads as beside a 87px character; declared_height_m is what it was once declared to be, and a gap between them means the ART is the wrong size.",
+    "declared_height_m": 1.08,
+    "content_box": [
+      12,
+      7,
+      55,
+      60
+    ],
+    "content_px_height": 53,
+    "canvas_render_px": 64
+  },
+  "pixellab_object_id": "1bfa5030-0098-41f9-8f63-235ff36a39a9",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)",
+  "renamed_from": "cattail_clump_008",
+  "renamed_why": "crash-window re-roll squatted a judged id; fresh id so old verdicts point at nothing and this enters the review queue as the new piece it is",
+  "must_be_imbplemented_with_random_hflip": true,
+  "states": {
+    "NOT_LIT_3": {
+      "sprite": "cattail_clumps/cattail_clump_900/sprite.webp",
+      "pixellab_object_id": "1bfa5030-0098-41f9-8f63-235ff36a39a9",
+      "generated_at": "2026-08-13T23:11:44+00:00",
+      "relit_from": "LIT_1"
+    },
+    "NOT_LIT_4": {
+      "sprite": "cattail_clumps/cattail_clump_900/not_lit_4/sprite.webp",
+      "pixellab_object_id": "3467a606-a27b-4718-8138-fa4491c55a0e",
+      "generated_at": "2026-08-16T08:56:42+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.4887,
+      "glow_score": 0.0017,
+      "relit_from": "LIT_2",
+      "animations": {
+        "motion": {
+          "group_id": "2d8888c5-6aad-4243-ada1-a946d4dd2464",
+          "description": "This is the same picture in every frame. ONLY the cattail heads move, each leaning by a single pixel. Nothing else moves, bends or leans, and nothing changes size, shape or position. The last frame must return to exactly how the first frame looks, so the loop joins. Nothing may become darker than it is in the first frame. Do not redraw anything else, and do not add or remove anything.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "cattail_clumps/cattail_clump_900/not_lit_4/animations/motion/00.webp",
+            "cattail_clumps/cattail_clump_900/not_lit_4/animations/motion/01.webp",
+            "cattail_clumps/cattail_clump_900/not_lit_4/animations/motion/02.webp",
+            "cattail_clumps/cattail_clump_900/not_lit_4/animations/motion/03.webp",
+            "cattail_clumps/cattail_clump_900/not_lit_4/animations/motion/04.webp"
+          ],
+          "strip": "cattail_clumps/cattail_clump_900/not_lit_4/animations/motion__strip.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-08-29T15:40:30+00:00",
+          "brief": "X60",
+          "review": "ANIMATION_PROBABLY_BAD",
+          "review_metrics": {
+            "class": "foliage",
+            "base": 0.5507,
+            "still": 0.375
+          }
+        }
+      }
+    },
+    "NOT_LIT_5": {
+      "sprite": "cattail_clumps/cattail_clump_900/not_lit_5/sprite.webp",
+      "pixellab_object_id": "a6ed023f-00bc-4683-858f-bfb0807a17a6",
+      "generated_at": "2026-08-16T08:55:01+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.2219,
+      "glow_score": 0.0074,
+      "relit_from": "LIT_3"
+    },
+    "NOT_LIT_6": {
+      "sprite": "cattail_clumps/cattail_clump_900/not_lit_6/sprite.webp",
+      "pixellab_object_id": "bd4cf00d-7b36-4ed3-b8e1-c831613dac4e",
+      "generated_at": "2026-08-16T08:55:30+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.7849,
+      "glow_score": 0.0,
+      "relit_from": "LIT_4"
+    }
+  },
+  "collision": true,
+  "hitbox_shape": "ellipse"
+}

@@ -21,8 +21,15 @@ import { createServer } from "http";
 import { Server } from "@colyseus/core";
 import { WebSocketTransport } from "@colyseus/ws-transport";
 import { Client } from "colyseus.js";
-import { ROOM_NAME } from "@nangijala/shared";
+import { existsSync } from "node:fs";
+import { dirname, join } from "node:path";
+import { fileURLToPath } from "node:url";
+import { ROOM_NAME, PLAYER_RESPAWN_MS } from "@nangijala/shared";
 import { WorldRoom } from "../src/rooms/WorldRoom.js";
+
+// The deploy's test job checks out no world tree: skip BEFORE the server opens
+// when the_game is absent.
+const HAVE_WORLD = existsSync(join(dirname(fileURLToPath(import.meta.url)), "..", "..", "..", "maps2", "worlds3", "the_game", "world.json"));
 
 async function waitFor(cond: () => boolean, timeout = 8000, label = "condition"): Promise<void> {
   const start = Date.now();
@@ -48,6 +55,15 @@ function predators(room: any): { id: string; m: any }[] {
 async function hover(room: any, m: any, ms: number, hunting: () => boolean): Promise<boolean> {
   const until = Date.now() + ms;
   while (Date.now() < until) {
+    // Parking ON a predator gets you killed, and a dead player no longer comes
+    // back on a timer — the press does (see the death sequence). So stand back
+    // up and carry on: this test is about the aggro switch, not about dying.
+    const me = room.state.players.get(room.sessionId);
+    if (me?.dead) {
+      await new Promise((r) => setTimeout(r, PLAYER_RESPAWN_MS + 200));
+      room.send("respawn", {});
+      await new Promise((r) => setTimeout(r, 300));
+    }
     room.send("teleport", { x: m.x, y: m.y });
     await new Promise((r) => setTimeout(r, 120));
     if (hunting()) return true;
@@ -55,16 +71,17 @@ async function hover(room: any, m: any, ms: number, hunting: () => boolean): Pro
   return false;
 }
 
-test("disable aggro: a predator stops noticing you, and lets go of a hunt already running", async () => {
+test("disable aggro: a predator stops noticing you, and lets go of a hunt already running", async (t) => {
+  if (!HAVE_WORLD) return t.skip("maps2/worlds3/the_game missing");
   const port = 2990; // unique per test FILE — see test/ports.test.ts (2993 is timeofday's)
   const gameServer = new Server({ transport: new WebSocketTransport({ server: createServer() }) });
   gameServer.define(ROOM_NAME, WorldRoom);
   await gameServer.listen(port);
   try {
     const c1 = new Client(`ws://localhost:${port}`);
-    const r1: any = await c1.joinOrCreate(ROOM_NAME, {
+    const r1: any = await c1.joinOrCreate(ROOM_NAME, { interestRadius: 0, /* the whole roster: these tests pick monsters by kind across the map */
       name: "Walker", character: "default_boy", token: `noaggro-${Date.now()}`,
-      world: "monster_demo", monsterSeed: 4242, monsterCount: 4,
+      world: "the_game", monsterSeed: 4242, monsterCount: 1,
     });
     for (const t of ["inv", "chat", "levelup", "star", "live:update"]) r1.onMessage(t, () => {});
     await waitFor(() => r1.state.players.size === 1 && r1.state.monsters.size > 0, 8000, "join");
@@ -74,8 +91,9 @@ test("disable aggro: a predator stops noticing you, and lets go of a hunt alread
     // design — reusing it would make the next step time out for a reason that
     // has nothing to do with this switch.
     const ps = predators(r1);
-    // monster_demo's roster is tuning-driven; say so rather than pass silently.
-    assert.ok(ps.length >= 2, `monster_demo gave ${ps.length} monsters with aggro_radius_wu > 0 — need 2`);
+    // Which kinds are predators is tuning-driven (the_game zones nine of them,
+    // caves and lava mostly); say so rather than pass silently.
+    assert.ok(ps.length >= 2, `the_game gave ${ps.length} monsters with aggro_radius_wu > 0 — need 2`);
     const [a, b] = ps;
     const hunts = (id: string) => () => r1.state.monsters.get(id)?.tsid === r1.sessionId;
 

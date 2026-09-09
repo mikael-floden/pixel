@@ -1,0 +1,30 @@
+{
+  "id": "segmented_carapace",
+  "name": "Carapace",
+  "type": "MISC",
+  "type_label": "Junk",
+  "category": "shell",
+  "rarity": "uncommon",
+  "value": 32,
+  "stackable": true,
+  "max_stack": 99,
+  "equip_slot": null,
+  "sellable": true,
+  "description": "A plate of segmented shell, scuffed from digging. Dunedelver sheds them the way a road sheds gravel.",
+  "sprite": "items/segmented_carapace/sprite.webp",
+  "size": [
+    48,
+    48
+  ],
+  "source": {
+    "store": "objects",
+    "pixellab_id": "3d25cc8d-dc12-4fb8-abf8-507978c21f7e",
+    "tags": [
+      "MISC"
+    ],
+    "prompt": "Need lots of different loot items/misc/drop for a RPG game. This is the drop from different monsters and is not weapons/geer. This is often things the monster is made of that can be sold for gold.",
+    "created_at": "2026-08-24T17:24:51.282320+00:00",
+    "last_modified": "Mon, 24 Aug 2026 17:41:44 GMT"
+  },
+  "synced_at": "2026-08-24T17:57:30+00:00"
+}

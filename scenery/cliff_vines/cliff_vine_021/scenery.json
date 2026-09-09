@@ -1,0 +1,130 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-14T04:08:57+00:00",
+  "id": "cliff_vine_021",
+  "group": "cliff_vines",
+  "rank": 101,
+  "index": 21,
+  "name": "Frost-silvered winter fall 021",
+  "lights": null,
+  "variety": "frost-silvered winter fall",
+  "modifier": "strands drifting apart toward one side",
+  "glow_concept": null,
+  "prompt": "a SPARSE OPEN NETWORK of thin vine runners spreading every way, branching and rejoining like a loose graph, small leaf clusters at irregular intervals, MOSTLY EMPTY SPACE \u2014 no main stem, no trunk, no origin, no line across the top, nothing it hangs from; thins out into a few isolated tendrils toward every edge so copies overlap freely; no rock, no cliff, no wall, nothing behind it, frost-silvered winter fall, strands drifting apart toward one side, towering, many times human height, completely unlit, no glow, no light sources, no self-emission",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 256,
+  "sprite": "cliff_vines/cliff_vine_021/sprite.webp",
+  "placement": {
+    "world_height_m": 5.002,
+    "world_px_height": 256,
+    "character_height_px": 87,
+    "character_height_m": 1.7,
+    "note": "ONE SCENERY PIXEL IS ONE PLAYER PIXEL. world_px_height IS the art's own alpha bbox height, so scenery is placed into the world at 1:1 exactly as the avatar is (setScale(1)) and the two share one pixel grid. The CAMERA still zooms the whole scene \u2014 that is uniform and correct; what must never happen is scenery being resampled on its own, against the player. world_height_m is what the art reads as beside a 87px character; declared_height_m is what it was once declared to be, and a gap between them means the ART is the wrong size.",
+    "declared_height_m": 8.85,
+    "content_box": [
+      2,
+      0,
+      256,
+      256
+    ],
+    "content_px_height": 256,
+    "canvas_render_px": 256
+  },
+  "pixellab_object_id": "f3a413cb-313d-42cb-b3f4-d877c7fb7211",
+  "pixellab_directions": 1,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-1-direction-object (single, S-only)",
+  "must_be_imbplemented_with_random_hflip": true,
+  "states": {
+    "LIT_2": {
+      "sprite": "cliff_vines/cliff_vine_021/lit_2/sprite.webp",
+      "pixellab_object_id": "973a673c-881a-4eeb-a55e-3921248dc42f",
+      "generated_at": "2026-08-16T10:11:39+00:00",
+      "glow_concept": "glowworm colonies strung in the foliage",
+      "difference_from_source": 0.4251,
+      "glow_score": 0.2172,
+      "animations": {
+        "motion": {
+          "group_id": "252b8c92-7092-452d-8692-24c1209d02ea",
+          "description": "This is the same picture in every frame. ONLY the small green points of light move, blinking slowly one after another. Everything else is frozen and pixel-for-pixel identical in every frame. Do not redraw anything else, and do not add or remove anything.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "cliff_vines/cliff_vine_021/lit_2/animations/motion/00.webp",
+            "cliff_vines/cliff_vine_021/lit_2/animations/motion/01.webp",
+            "cliff_vines/cliff_vine_021/lit_2/animations/motion/02.webp",
+            "cliff_vines/cliff_vine_021/lit_2/animations/motion/03.webp",
+            "cliff_vines/cliff_vine_021/lit_2/animations/motion/04.webp"
+          ],
+          "strip": "cliff_vines/cliff_vine_021/lit_2/animations/motion__strip.webp",
+          "directions": null,
+          "generated_at": "2026-08-29T12:41:22+00:00",
+          "brief": "R18",
+          "review": "ANIMATION_PROBABLY_BAD",
+          "review_metrics": {
+            "class": "foliage",
+            "base": 1.0,
+            "still": 0.005
+          },
+          "light_frames": [
+            {
+              "intensity": 1.209,
+              "dx": 12.9,
+              "dy": -2.2
+            },
+            {
+              "intensity": 0.917,
+              "dx": 12.7,
+              "dy": -0.7
+            },
+            {
+              "intensity": 1.006,
+              "dx": 7.9,
+              "dy": -3.1
+            },
+            {
+              "intensity": 0.707,
+              "dx": 8.3,
+              "dy": -4.3
+            },
+            {
+              "intensity": 1.162,
+              "dx": 8.2,
+              "dy": -5.5
+            }
+          ]
+        }
+      }
+    },
+    "NOT_LIT_1": {
+      "sprite": "cliff_vines/cliff_vine_021/sprite.webp",
+      "pixellab_object_id": "f3a413cb-313d-42cb-b3f4-d877c7fb7211",
+      "generated_at": "2026-08-14T04:08:57+00:00"
+    }
+  },
+  "collision": true,
+  "hitbox_shape": "ellipse",
+  "light": {
+    "strength": 0.1,
+    "color": "#b0ffb9",
+    "radius": 2,
+    "reference": "the spawn bonfire is 1.0 (radius 7); strength 0 is no light",
+    "states": {
+      "LIT_2": {
+        "strength": 0.12,
+        "color": "#b0ffb9",
+        "radius": 2
+      }
+    },
+    "kind": "glow/bio",
+    "flame": false,
+    "embers": false
+  }
+}

@@ -1,0 +1,149 @@
+{
+  "format": "scenery-piece@2",
+  "id": "moss_clump_900",
+  "group": "moss_clumps",
+  "rank": 45,
+  "index": 900,
+  "name": "Moss-swallowed stump 900",
+  "lights": null,
+  "variety": "moss-swallowed stump",
+  "glow_concept": "moss veined with glowing soulstone seams",
+  "prompt": "a flat spreading patch of thick velvety moss hugging the ground, creeping low across soil and over small stones, completely flat, not a dome and not a shrub, moss-swallowed stump, small, knee-high to an adult person, self-emissive at night, softly radiating light: moss veined with glowing soulstone seams",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 48,
+  "sprite": "moss_clumps/moss_clump_900/sprite.webp",
+  "placement": {
+    "world_height_m": 0.469,
+    "world_px_height": 24,
+    "character_height_px": 87,
+    "character_height_m": 1.7,
+    "note": "ONE SCENERY PIXEL IS ONE PLAYER PIXEL. world_px_height IS the art's own alpha bbox height, so scenery is placed into the world at 1:1 exactly as the avatar is (setScale(1)) and the two share one pixel grid. The CAMERA still zooms the whole scene \u2014 that is uniform and correct; what must never happen is scenery being resampled on its own, against the player. world_height_m is what the art reads as beside a 87px character; declared_height_m is what it was once declared to be, and a gap between them means the ART is the wrong size.",
+    "declared_height_m": 0.6,
+    "content_box": [
+      4,
+      13,
+      46,
+      37
+    ],
+    "content_px_height": 24,
+    "canvas_render_px": 48
+  },
+  "pixellab_object_id": "d5d79a1e-ba0d-42fc-862f-f3e2021ad1ac",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)",
+  "adopted": "recovered from the PixelLab store 2026-08-13: runs 5/6 were cancelled mid-pass and their committed-but-unpushed art died with the runners; the store object survived. Index 900+ band avoids colliding with the concurrently-running pass.",
+  "recovered_spec": "metadata restored by replaying run 5's deterministic planner at its checkout (a21c4bc8); orphan creation order matched the planned sequence exactly",
+  "must_be_imbplemented_with_random_hflip": true,
+  "generated_at": "2026-08-13T19:46:47+00:00",
+  "states": {
+    "LIT_1": {
+      "sprite": "moss_clumps/moss_clump_900/sprite.webp",
+      "pixellab_object_id": "d5d79a1e-ba0d-42fc-862f-f3e2021ad1ac",
+      "generated_at": "2026-08-13T19:46:47+00:00"
+    },
+    "LIT_2": {
+      "sprite": "moss_clumps/moss_clump_900/lit_2/sprite.webp",
+      "pixellab_object_id": "edefe173-ac43-4528-af09-8b3caf7db6fa",
+      "generated_at": "2026-08-16T18:03:58+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.881,
+      "glow_score": 0.0733,
+      "animations": {
+        "motion": {
+          "group_id": "542a1545-87ab-4be9-b408-4404070ae0a3",
+          "description": "This is the same picture in every frame. ONLY the glowing gold spiral brightens a little and returns. It is lit and clearly visible in every single frame, including the first. Everything else in the picture is copied from the first frame exactly, pixel for pixel, unchanged in shape, size, position and colour. No outline anywhere is redrawn. The last frame matches the first frame exactly, so the loop joins.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "moss_clumps/moss_clump_900/lit_2/animations/motion/00.webp",
+            "moss_clumps/moss_clump_900/lit_2/animations/motion/01.webp",
+            "moss_clumps/moss_clump_900/lit_2/animations/motion/02.webp",
+            "moss_clumps/moss_clump_900/lit_2/animations/motion/03.webp",
+            "moss_clumps/moss_clump_900/lit_2/animations/motion/04.webp"
+          ],
+          "strip": "moss_clumps/moss_clump_900/lit_2/animations/motion__strip.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-08-29T16:58:12+00:00",
+          "brief": "Z37",
+          "review": "ANIMATION_PROBABLY_GOOD",
+          "review_metrics": {
+            "base_outline": 0.0
+          },
+          "light_frames": [
+            {
+              "intensity": 1.5,
+              "dx": 0.1,
+              "dy": 6.9
+            },
+            {
+              "intensity": 1.448,
+              "dx": -0.2,
+              "dy": 6.7
+            },
+            {
+              "intensity": 1.049,
+              "dx": -0.9,
+              "dy": 8.1
+            },
+            {
+              "intensity": 0.84,
+              "dx": -0.4,
+              "dy": 7.2
+            },
+            {
+              "intensity": 0.5,
+              "dx": 6.0,
+              "dy": -5.0
+            }
+          ]
+        }
+      }
+    },
+    "LIT_4": {
+      "sprite": "moss_clumps/moss_clump_900/lit_4/sprite.webp",
+      "pixellab_object_id": "d2115014-a7c9-4f9c-b6fe-4db79c3f135c",
+      "generated_at": "2026-08-16T18:04:49+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.5132,
+      "glow_score": 0.0
+    }
+  },
+  "collision": true,
+  "hitbox_shape": "ellipse",
+  "light": {
+    "strength": 0.05,
+    "color": "#b0ffb0",
+    "radius": 1,
+    "reference": "the spawn bonfire is 1.0 (radius 7); strength 0 is no light",
+    "states": {
+      "LIT_1": {
+        "strength": 0.04,
+        "color": "#b0ffb0",
+        "radius": 1
+      },
+      "LIT_2": {
+        "strength": 0.05,
+        "color": "#ffeea1",
+        "radius": 1
+      },
+      "LIT_4": {
+        "strength": 0.04,
+        "color": "#b0ffb0",
+        "radius": 1
+      }
+    },
+    "kind": "glow/bio",
+    "flame": false,
+    "embers": false
+  }
+}

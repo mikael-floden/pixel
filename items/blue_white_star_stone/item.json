@@ -1,0 +1,38 @@
+{
+  "id": "blue_white_star_stone",
+  "name": "Soulstone",
+  "type": "SOUL",
+  "type_label": "Soul Stone",
+  "category": "frost",
+  "rarity": "rare",
+  "value": 90,
+  "stackable": true,
+  "max_stack": 20,
+  "equip_slot": null,
+  "sellable": true,
+  "description": "Blue-grey plates around a white star. Cold to hold, and nothing anyone has killed was carrying it.",
+  "sprite": "items/blue_white_star_stone/sprite.webp",
+  "size": [
+    48,
+    48
+  ],
+  "source": {
+    "store": "objects",
+    "pixellab_id": "2981b9b9-903d-40bd-b8f8-970e942be16c",
+    "tags": [
+      "SOUL"
+    ],
+    "prompt": "This is a soul stone. I need lots of different variations of it.",
+    "created_at": "2026-08-24T17:24:02.484625+00:00",
+    "last_modified": "Mon, 24 Aug 2026 17:41:49 GMT"
+  },
+  "synced_at": "2026-08-24T17:57:31+00:00",
+  "soul": {
+    "element": "frost",
+    "power": "+10 frost damage on hit, and cold targets take 15% more",
+    "merge_into": [
+      "weapon",
+      "armor"
+    ]
+  }
+}

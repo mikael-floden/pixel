@@ -1,0 +1,22 @@
+{
+  "domain": "items",
+  "id": "corked_glass_vial",
+  "name_seen": "Corked Vial",
+  "law": "II",
+  "description": "A corked bottle of something olive and settled, sediment on the floor of it. Whoever kept it never opened it.",
+  "lore": [
+    "It has stood still long enough to separate out: a clear finger under the cork, olive through the middle, and a floor of sediment that has not been stirred in a very long time. That is the sum of what anyone knows about the contents and it is not nothing. A bottle only settles like that if it is carried level and never once broached. Somebody had this for later, the whole way along a road, and later did not arrive.",
+    "Crackers will not draw the cork, and it is not nerves, it is arithmetic. Sealed, twenty-six gold. Open, it is a bottle. So it goes down the counters exactly as it came off the black rock and out of a [[monsters/malformed_creature|Palehusk]]'s grip, and every hand it passes through decides the same way, and the thing goes on being for later. [[characters/ef25b1f0|Bettany]] has asked three of the buyers who take them what they want them for. Two gave her nothing worth writing down. The third stopped coming."
+  ],
+  "related": [
+    {
+      "domain": "monsters",
+      "id": "malformed_creature"
+    },
+    {
+      "domain": "lore",
+      "id": "the_hard_pieces"
+    }
+  ],
+  "gm_notes": "The junk buyer, touched once and not resolved. A buyer who vanishes after one question is the cleanest hook in the batch; keep the contents of the vial undecided, since deciding costs more than it pays."
+}

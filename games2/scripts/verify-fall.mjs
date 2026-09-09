@@ -10,7 +10,7 @@
 import { chromium } from "playwright-core";
 
 const EXE = "/opt/pw-browsers/chromium-1194/chrome-linux/chrome";
-const WORLD = process.env.WORLD || "ring_test";
+const WORLD = process.env.WORLD || "the_game";
 const CELL = 32;
 const TELEPORT_LIMIT = 28; // one 20Hz run-step is well under a cell; a ledge snap was ~24–32u
 

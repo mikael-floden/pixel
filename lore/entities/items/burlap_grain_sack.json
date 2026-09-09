@@ -1,0 +1,21 @@
+{
+  "domain": "items",
+  "id": "burlap_grain_sack",
+  "name_seen": "Grain Sack",
+  "law": "III",
+  "description": "A burlap sack of oats, gnawed open at one corner. Sorrel has been carrying its own feed for years.",
+  "lore": [
+    "The oats are worth nothing and wet sacking less. What sells is the corner, where a farm's mark is stitched into the weave — three lines and a hook, so the mill gives you back your own sacks and not somebody else's. A collector cut that corner out and carried it round the fires, asking. [[characters/7a779de1|Wendell]] could not place it, and was short with people for a week afterwards. Four fires on, a man set his cup down and said that is my father's mark, we had it on the sacks and the gate and the churn — and then sat holding it, and could not produce his father's name, and the fire waited the way fires do. He bought the corner. He paid gold for a corner of sacking. Everyone there thought it was cheap."
+  ],
+  "related": [
+    {
+      "domain": "characters",
+      "id": "7a779de1"
+    },
+    {
+      "domain": "lore",
+      "id": "the_hard_pieces"
+    }
+  ],
+  "gm_notes": "The mark outlasts the name. Wendell's trade is remembering a road, so being stumped by a sack corner costs him something. The buyer stays unnamed on purpose."
+}

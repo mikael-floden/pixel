@@ -1,0 +1,409 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-15T17:52:18+00:00",
+  "id": "fallen_log_011",
+  "group": "fallen_logs",
+  "type": "NATURE",
+  "rank": 20,
+  "index": 11,
+  "name": "Moss-covered oak log 011",
+  "lights": null,
+  "variety": "moss-covered oak log",
+  "modifier": "one side die-back, the other thriving",
+  "glow_concept": null,
+  "prompt": "a fallen tree trunk lying on its side with broken branch stubs, torn bark, moss and fungi along its length, moss-covered oak log, one side die-back, the other thriving, small, knee-high, completely unlit, no glow, no light sources, no self-emission",
+  "view": "low top-down",
+  "direction": "south",
+  "directions": [
+    "south"
+  ],
+  "must_be_imbplemented_with_random_hflip": true,
+  "rotations": null,
+  "size": 128,
+  "sprite": "fallen_logs/fallen_log_011/sprite.webp",
+  "placement": {
+    "world_height_m": 1.172,
+    "world_px_height": 60,
+    "character_height_px": 87,
+    "character_height_m": 1.7,
+    "note": "ONE SCENERY PIXEL IS ONE PLAYER PIXEL. world_px_height IS the art's own alpha bbox height, so scenery is placed into the world at 1:1 exactly as the avatar is (setScale(1)) and the two share one pixel grid. The CAMERA still zooms the whole scene \u2014 that is uniform and correct; what must never happen is scenery being resampled on its own, against the player. world_height_m is what the art reads as beside a 87px character; declared_height_m is what it was once declared to be, and a gap between them means the ART is the wrong size.",
+    "content_box": [
+      10,
+      33,
+      120,
+      93
+    ],
+    "content_px_height": 60,
+    "canvas_render_px": 128,
+    "declared_height_m": 0.55
+  },
+  "pixellab_object_id": "5a872c5e-f5e9-4400-97f6-ffa1ae693312",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)",
+  "states": {
+    "LIT_1": {
+      "sprite": "fallen_logs/fallen_log_011/lit_1/sprite.webp",
+      "pixellab_object_id": "7467369c-ce4a-48d3-8bd8-d0a99c33b900",
+      "generated_at": "2026-08-15T19:25:15+00:00",
+      "glow_concept": "blue foxfire glowing in the bark cracks",
+      "difference_from_source": 0.8069,
+      "glow_score": 0.0524,
+      "animations": {
+        "motion": {
+          "group_id": "d536bb5c-fc3b-4246-85e2-8c8cfacfa124",
+          "description": "This is the same picture in every frame. ONLY the glowing light inside the split brightens a little and returns. It is lit and clearly visible in every single frame, including the first. It is at its brightest in the MIDDLE of the animation and back to exactly its first-frame brightness and colour at the end. It never fades out and is never dimmer at the end than at the start. Everything else in the picture is copied from the first frame exactly, pixel for pixel, unchanged in shape, size, position and colour. No outline anywhere is redrawn. The last frame matches the first frame exactly, so the loop joins.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "fallen_logs/fallen_log_011/lit_1/animations/motion/00.webp",
+            "fallen_logs/fallen_log_011/lit_1/animations/motion/01.webp",
+            "fallen_logs/fallen_log_011/lit_1/animations/motion/02.webp",
+            "fallen_logs/fallen_log_011/lit_1/animations/motion/03.webp",
+            "fallen_logs/fallen_log_011/lit_1/animations/motion/04.webp"
+          ],
+          "strip": "fallen_logs/fallen_log_011/lit_1/animations/motion__strip.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-08-29T17:56:51+00:00",
+          "brief": "A35",
+          "review": "ANIMATION_PROBABLY_BAD",
+          "review_metrics": {
+            "class": "rigid",
+            "base": 0.7901,
+            "still": 0.422
+          },
+          "light_frames": [
+            {
+              "intensity": 0.992,
+              "dx": 6.3,
+              "dy": 1.9
+            },
+            {
+              "intensity": 1.047,
+              "dx": 3.1,
+              "dy": 3.4
+            },
+            {
+              "intensity": 0.943,
+              "dx": 2.2,
+              "dy": 2.9
+            },
+            {
+              "intensity": 0.923,
+              "dx": 5.5,
+              "dy": 3.1
+            },
+            {
+              "intensity": 1.095,
+              "dx": 11.0,
+              "dy": 2.6
+            }
+          ]
+        }
+      }
+    },
+    "LIT_2": {
+      "sprite": "fallen_logs/fallen_log_011/lit_2/sprite.webp",
+      "pixellab_object_id": "451d2a50-9496-42e1-8437-cd9999c14b0c",
+      "generated_at": "2026-08-15T19:21:50+00:00",
+      "glow_concept": "rows of shelf fungi glowing pale green",
+      "difference_from_source": 0.7085,
+      "glow_score": 0.1352,
+      "animations": {
+        "motion": {
+          "group_id": "cd6afb38-00f4-43d2-8070-359af39b69fd",
+          "description": "This is the same picture in every frame. ONLY the green light on the fungi brightens a little and returns. The fungi themselves keep exactly the shape, size, position and number they have in the first frame. It is lit and clearly visible in every frame, including the first. It gets only SLIGHTLY brighter -- never white, never washed out -- and keeps its own colour throughout: brightest in the middle, back to its first-frame brightness at the end, never dimmer at the end than the start. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour, no outline redrawn. The last frame matches the first exactly.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "fallen_logs/fallen_log_011/lit_2/animations/motion/00.webp",
+            "fallen_logs/fallen_log_011/lit_2/animations/motion/01.webp",
+            "fallen_logs/fallen_log_011/lit_2/animations/motion/02.webp",
+            "fallen_logs/fallen_log_011/lit_2/animations/motion/03.webp",
+            "fallen_logs/fallen_log_011/lit_2/animations/motion/04.webp"
+          ],
+          "strip": "fallen_logs/fallen_log_011/lit_2/animations/motion__strip.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-08-29T19:11:57+00:00",
+          "brief": "B34",
+          "review": "ANIMATION_PROBABLY_GOOD",
+          "review_metrics": {
+            "base_outline": 0.0534
+          },
+          "light_frames": [
+            {
+              "intensity": 1.181,
+              "dx": -13.1,
+              "dy": 10.0
+            },
+            {
+              "intensity": 1.175,
+              "dx": -12.9,
+              "dy": 9.0
+            },
+            {
+              "intensity": 1.449,
+              "dx": -12.0,
+              "dy": 8.4
+            },
+            {
+              "intensity": 1.188,
+              "dx": -10.6,
+              "dy": 7.7
+            },
+            {
+              "intensity": 0.5,
+              "dx": -45.0,
+              "dy": 9.7
+            }
+          ]
+        }
+      }
+    },
+    "LIT_3": {
+      "sprite": "fallen_logs/fallen_log_011/lit_3/sprite.webp",
+      "pixellab_object_id": "c4fac6da-906e-4afd-a330-5f7c95144006",
+      "generated_at": "2026-08-15T19:22:28+00:00",
+      "glow_concept": "luminous moss carpeting the upper side",
+      "difference_from_source": 0.9869,
+      "glow_score": 0.2163,
+      "animations": {
+        "motion": {
+          "group_id": "86c294de-ed43-4b91-807b-f4c1f7c94979",
+          "description": "This is the same picture in every frame. ONLY the green light along the log brightens a little and returns. It is lit and clearly visible in every frame, including the first. It gets only SLIGHTLY brighter -- never white, never washed out -- and keeps its own colour throughout: brightest in the middle, back to its first-frame brightness at the end, never dimmer at the end than the start. Nothing is added or removed anywhere: every object appears in every frame, the same number of them, in the same places, at the same size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour, no outline redrawn. The last frame matches the first exactly.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "fallen_logs/fallen_log_011/lit_3/animations/motion/00.webp",
+            "fallen_logs/fallen_log_011/lit_3/animations/motion/01.webp",
+            "fallen_logs/fallen_log_011/lit_3/animations/motion/02.webp",
+            "fallen_logs/fallen_log_011/lit_3/animations/motion/03.webp",
+            "fallen_logs/fallen_log_011/lit_3/animations/motion/04.webp"
+          ],
+          "strip": "fallen_logs/fallen_log_011/lit_3/animations/motion__strip.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-08-29T19:04:05+00:00",
+          "brief": "C31",
+          "review": "ANIMATION_PROBABLY_GOOD",
+          "review_metrics": {
+            "base_outline": 0.0036
+          },
+          "light_frames": [
+            {
+              "intensity": 0.777,
+              "dx": -8.7,
+              "dy": -13.3
+            },
+            {
+              "intensity": 1.425,
+              "dx": -9.3,
+              "dy": -13.2
+            },
+            {
+              "intensity": 1.5,
+              "dx": -8.8,
+              "dy": -11.9
+            },
+            {
+              "intensity": 0.742,
+              "dx": -8.7,
+              "dy": -13.0
+            },
+            {
+              "intensity": 0.5,
+              "dx": -8.9,
+              "dy": -12.9
+            }
+          ]
+        }
+      }
+    },
+    "LIT_4": {
+      "sprite": "fallen_logs/fallen_log_011/lit_4/sprite.webp",
+      "pixellab_object_id": "3f81f207-fe32-4137-9e9f-b317679698c6",
+      "generated_at": "2026-08-15T19:22:41+00:00",
+      "glow_concept": "ember-orange glow inside the hollow end",
+      "difference_from_source": 0.8158,
+      "glow_score": 0.0311,
+      "animations": {
+        "flame": {
+          "group_id": "91137d7f-2bab-41a8-9a99-9425125b111a",
+          "description": "Animate the flame only",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "fallen_logs/fallen_log_011/lit_4/animations/flame/00.webp",
+            "fallen_logs/fallen_log_011/lit_4/animations/flame/01.webp",
+            "fallen_logs/fallen_log_011/lit_4/animations/flame/02.webp",
+            "fallen_logs/fallen_log_011/lit_4/animations/flame/03.webp",
+            "fallen_logs/fallen_log_011/lit_4/animations/flame/04.webp"
+          ],
+          "strip": "fallen_logs/fallen_log_011/lit_4/animations/flame__strip.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-08-29T06:58:24+00:00",
+          "review": "ANIMATION_PROBABLY_GOOD",
+          "review_metrics": {
+            "base_outline": 0.0097
+          },
+          "light_frames": [
+            {
+              "intensity": 1.075,
+              "dx": 24.8,
+              "dy": 4.6
+            },
+            {
+              "intensity": 0.984,
+              "dx": 24.6,
+              "dy": 3.9
+            },
+            {
+              "intensity": 0.949,
+              "dx": 24.2,
+              "dy": 4.1
+            },
+            {
+              "intensity": 1.014,
+              "dx": 28.6,
+              "dy": 4.1
+            },
+            {
+              "intensity": 0.977,
+              "dx": 28.0,
+              "dy": 4.1
+            }
+          ]
+        }
+      }
+    },
+    "NOT_LIT_1": {
+      "sprite": "fallen_logs/fallen_log_011/sprite.webp",
+      "pixellab_object_id": "5a872c5e-f5e9-4400-97f6-ffa1ae693312",
+      "glow_score": 0.0097
+    },
+    "NOT_LIT_10": {
+      "sprite": "fallen_logs/fallen_log_011/not_lit_10/sprite.webp",
+      "pixellab_object_id": "6045a7e1-40b1-49cb-bf53-474ac4d79b2f",
+      "generated_at": "2026-08-15T18:55:44+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.563,
+      "glow_score": 0.0105
+    },
+    "NOT_LIT_2": {
+      "sprite": "fallen_logs/fallen_log_011/not_lit_2/sprite.webp",
+      "pixellab_object_id": "43a23978-36fa-45ad-94d1-848cddc74089",
+      "generated_at": "2026-08-15T18:55:18+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.8819,
+      "glow_score": 0.003
+    },
+    "NOT_LIT_3": {
+      "sprite": "fallen_logs/fallen_log_011/not_lit_3/sprite.webp",
+      "pixellab_object_id": "09369d0e-d7e4-436a-bf40-8d14e1ebb92e",
+      "generated_at": "2026-08-15T18:53:44+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.931,
+      "glow_score": 0.0066
+    },
+    "NOT_LIT_4": {
+      "sprite": "fallen_logs/fallen_log_011/not_lit_4/sprite.webp",
+      "pixellab_object_id": "e21e5e5b-4e49-45f3-8803-ba6d625113da",
+      "generated_at": "2026-08-15T18:53:45+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.7199,
+      "glow_score": 0.0293
+    },
+    "NOT_LIT_5": {
+      "sprite": "fallen_logs/fallen_log_011/not_lit_5/sprite.webp",
+      "pixellab_object_id": "5b5252c9-4a83-4394-bf45-c29d34534f11",
+      "generated_at": "2026-08-15T18:53:30+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.9263,
+      "glow_score": 0.0169
+    },
+    "NOT_LIT_6": {
+      "sprite": "fallen_logs/fallen_log_011/not_lit_6/sprite.webp",
+      "pixellab_object_id": "3a38190e-1de6-4fae-b415-3f14c09ed392",
+      "generated_at": "2026-08-15T18:53:31+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.8651,
+      "glow_score": 0.0082
+    },
+    "NOT_LIT_7": {
+      "sprite": "fallen_logs/fallen_log_011/not_lit_7/sprite.webp",
+      "pixellab_object_id": "9ed3b1b7-0d35-4edc-a4f9-5bf8091aeb43",
+      "generated_at": "2026-08-15T18:55:31+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.745,
+      "glow_score": 0.0201
+    },
+    "NOT_LIT_8": {
+      "sprite": "fallen_logs/fallen_log_011/not_lit_8/sprite.webp",
+      "pixellab_object_id": "2974d8dd-c20a-4b63-8dd9-7caae4cec01b",
+      "generated_at": "2026-08-15T18:54:09+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.8984,
+      "glow_score": 0.0402
+    },
+    "NOT_LIT_9": {
+      "sprite": "fallen_logs/fallen_log_011/not_lit_9/sprite.webp",
+      "pixellab_object_id": "b6d880b6-8ec3-41db-8e68-d8638ee792fb",
+      "generated_at": "2026-08-15T18:53:18+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.7462,
+      "glow_score": 0.016
+    }
+  },
+  "collision": true,
+  "hitbox_shape": "ellipse",
+  "light": {
+    "strength": 0.1,
+    "color": "#7cfcff",
+    "radius": 2,
+    "reference": "the spawn bonfire is 1.0 (radius 7); strength 0 is no light",
+    "states": {
+      "LIT_1": {
+        "strength": 0.1,
+        "color": "#7cfcff",
+        "radius": 2
+      },
+      "LIT_2": {
+        "strength": 0.12,
+        "color": "#cfffbd",
+        "radius": 2
+      },
+      "LIT_3": {
+        "strength": 0.12,
+        "color": "#37ffb0",
+        "radius": 2
+      },
+      "LIT_4": {
+        "strength": 0.08,
+        "color": "#ffaa59",
+        "radius": 2
+      }
+    },
+    "kind": "glow/bio",
+    "flame": false,
+    "embers": false
+  }
+}

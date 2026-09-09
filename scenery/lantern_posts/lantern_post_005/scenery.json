@@ -1,0 +1,152 @@
+{
+  "format": "scenery-piece@2",
+  "id": "lantern_post_005",
+  "group": "lantern_posts",
+  "rank": 5,
+  "index": 5,
+  "name": "Driftwood post with barnacles 005",
+  "lights": null,
+  "variety": "driftwood post with barnacles",
+  "glow_concept": null,
+  "prompt": "a shoulder-height wooden post with a small metal-framed glass lantern fixed on its flat top, driftwood post with barnacles, about as tall as an adult person, completely unlit, no glow, no light sources, no self-emission",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 96,
+  "sprite": "lantern_posts/lantern_post_005/sprite.webp",
+  "placement": {
+    "world_height_m": 1.309,
+    "world_px_height": 67,
+    "character_height_px": 87,
+    "character_height_m": 1.7,
+    "note": "ONE SCENERY PIXEL IS ONE PLAYER PIXEL. world_px_height IS the art's own alpha bbox height, so scenery is placed into the world at 1:1 exactly as the avatar is (setScale(1)) and the two share one pixel grid. The CAMERA still zooms the whole scene \u2014 that is uniform and correct; what must never happen is scenery being resampled on its own, against the player. world_height_m is what the art reads as beside a 87px character; declared_height_m is what it was once declared to be, and a gap between them means the ART is the wrong size.",
+    "declared_height_m": 1.79,
+    "content_box": [
+      31,
+      16,
+      64,
+      83
+    ],
+    "content_px_height": 67,
+    "canvas_render_px": 96
+  },
+  "pixellab_object_id": "5c90d99a-daa1-4d8f-9323-38dd860874e6",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)",
+  "must_be_imbplemented_with_random_hflip": true,
+  "generated_at": "2026-08-13T09:59:47+00:00",
+  "states": {
+    "LIT_3": {
+      "sprite": "lantern_posts/lantern_post_005/lit_3/sprite.webp",
+      "pixellab_object_id": "4f1cceec-a7e4-4f67-938e-2f94c8242a46",
+      "generated_at": "2026-08-16T17:16:01+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.8441,
+      "glow_score": 0.0185,
+      "relit_from": "NOT_LIT_3",
+      "rotations": {
+        "south-east": "lantern_posts/lantern_post_005/lit_3/rotations/south-east.webp",
+        "south-west": "lantern_posts/lantern_post_005/lit_3/rotations/south-west.webp",
+        "south": "lantern_posts/lantern_post_005/lit_3/sprite.webp"
+      },
+      "animations": {
+        "motion": {
+          "group_id": "45a54dff-06c6-478a-8ca2-40e7fb7db178",
+          "description": "This is the same picture in every frame. ONLY the flame inside the lantern flickers. It is lit and clearly visible in every frame, including the first. It stays exactly the same size and shape in every frame: it never grows and never spreads, only its inner detail shifts. Nothing is added or removed anywhere: every object appears in every frame, the same number of them, in the same places, at the same size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour, no outline redrawn. The last frame matches the first exactly.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "lantern_posts/lantern_post_005/lit_3/animations/motion/00.webp",
+            "lantern_posts/lantern_post_005/lit_3/animations/motion/01.webp",
+            "lantern_posts/lantern_post_005/lit_3/animations/motion/02.webp",
+            "lantern_posts/lantern_post_005/lit_3/animations/motion/03.webp",
+            "lantern_posts/lantern_post_005/lit_3/animations/motion/04.webp"
+          ],
+          "strip": "lantern_posts/lantern_post_005/lit_3/animations/motion__strip.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-08-29T19:02:04+00:00",
+          "brief": "C10",
+          "review": "ANIMATION_PROBABLY_GOOD",
+          "review_metrics": {
+            "class": "fire",
+            "base": 0.0,
+            "still": 0.849
+          },
+          "light_frames": [
+            {
+              "intensity": 1.5,
+              "dx": 0.9,
+              "dy": 1.4
+            },
+            {
+              "intensity": 0.5,
+              "dx": 0.0,
+              "dy": 7.0
+            },
+            {
+              "intensity": 1.145,
+              "dx": 0.7,
+              "dy": 1.0
+            },
+            {
+              "intensity": 1.5,
+              "dx": 1.2,
+              "dy": 1.8
+            },
+            {
+              "intensity": 0.5,
+              "dx": 2.0,
+              "dy": 2.0
+            }
+          ]
+        }
+      }
+    },
+    "LIT_4": {
+      "sprite": "lantern_posts/lantern_post_005/sprite.webp",
+      "pixellab_object_id": "5c90d99a-daa1-4d8f-9323-38dd860874e6",
+      "generated_at": "2026-08-16T17:16:02+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.896,
+      "glow_score": 0.0779,
+      "relit_from": "NOT_LIT_4",
+      "replaced_anchor": "NOT_LIT_1",
+      "rotations": {
+        "south-east": "lantern_posts/lantern_post_005/rotations/south-east.webp",
+        "south-west": "lantern_posts/lantern_post_005/rotations/south-west.webp",
+        "south": "lantern_posts/lantern_post_005/sprite.webp"
+      }
+    }
+  },
+  "collision": true,
+  "hitbox_shape": "ellipse",
+  "light": {
+    "strength": 0.35,
+    "color": "#ffd27a",
+    "radius": 6,
+    "reference": "the spawn bonfire is 1.0 (radius 7); strength 0 is no light",
+    "states": {
+      "LIT_3": {
+        "strength": 0.28,
+        "color": "#ffd27a",
+        "radius": 5
+      },
+      "LIT_4": {
+        "strength": 0.28,
+        "color": "#ffd27a",
+        "radius": 5
+      }
+    },
+    "kind": "fire/enclosed",
+    "flame": true,
+    "embers": false
+  }
+}

@@ -1,0 +1,99 @@
+{
+  "format": "scenery-piece@2",
+  "id": "chair_010",
+  "group": "chairs_and_benches",
+  "rank": 104,
+  "index": 10,
+  "name": "Ladder-back kitchen chair 010",
+  "lights": null,
+  "variety": "ladder-back kitchen chair",
+  "glow_concept": "a knitted blanket glowing faintly with kept warmth",
+  "prompt": "a sturdy wooden seat for a house: a chunky chair, stool or short bench with thick legs, standing solidly on the floor, ladder-back kitchen chair, waist-high, self-emissive at night, softly radiating light: a knitted blanket glowing faintly with kept warmth",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 64,
+  "sprite": "chairs_and_benches/chair_010/sprite.webp",
+  "placement": {
+    "world_height_m": 1.094,
+    "world_px_height": 56,
+    "character_height_px": 87,
+    "character_height_m": 1.7,
+    "note": "ONE SCENERY PIXEL IS ONE PLAYER PIXEL. world_px_height IS the art's own alpha bbox height, so scenery is placed into the world at 1:1 exactly as the avatar is (setScale(1)) and the two share one pixel grid. The CAMERA still zooms the whole scene \u2014 that is uniform and correct; what must never happen is scenery being resampled on its own, against the player. world_height_m is what the art reads as beside a 87px character; declared_height_m is what it was once declared to be, and a gap between them means the ART is the wrong size.",
+    "declared_height_m": 0.94,
+    "content_box": [
+      16,
+      7,
+      49,
+      63
+    ],
+    "content_px_height": 56,
+    "canvas_render_px": 64
+  },
+  "pixellab_object_id": "766535cf-32cc-4107-b9ac-517becac88d8",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)",
+  "must_be_imbplemented_with_random_hflip": true,
+  "generated_at": "2026-08-13T22:00:41+00:00",
+  "states": {
+    "NOT_LIT_3": {
+      "sprite": "chairs_and_benches/chair_010/sprite.webp",
+      "pixellab_object_id": "766535cf-32cc-4107-b9ac-517becac88d8",
+      "generated_at": "2026-08-13T22:00:41+00:00",
+      "relit_from": "LIT_1",
+      "rotations": {
+        "south-east": "chairs_and_benches/chair_010/rotations/south-east.webp",
+        "south-west": "chairs_and_benches/chair_010/rotations/south-west.webp",
+        "south": "chairs_and_benches/chair_010/sprite.webp"
+      }
+    },
+    "NOT_LIT_4": {
+      "sprite": "chairs_and_benches/chair_010/not_lit_4/sprite.webp",
+      "pixellab_object_id": "4e4869f1-a799-4400-9051-f5498648f047",
+      "generated_at": "2026-08-16T09:03:31+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.5875,
+      "glow_score": 0.0904,
+      "relit_from": "LIT_2",
+      "rotations": {
+        "south-east": "chairs_and_benches/chair_010/not_lit_4/rotations/south-east.webp",
+        "south-west": "chairs_and_benches/chair_010/not_lit_4/rotations/south-west.webp",
+        "south": "chairs_and_benches/chair_010/not_lit_4/sprite.webp"
+      }
+    },
+    "NOT_LIT_5": {
+      "sprite": "chairs_and_benches/chair_010/not_lit_5/sprite.webp",
+      "pixellab_object_id": "cca0f79b-08f8-4724-a924-9cb6729eabfc",
+      "generated_at": "2026-08-16T09:03:44+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.9299,
+      "glow_score": 0.2571,
+      "relit_from": "LIT_3",
+      "rotations": {
+        "south-east": "chairs_and_benches/chair_010/not_lit_5/rotations/south-east.webp",
+        "south-west": "chairs_and_benches/chair_010/not_lit_5/rotations/south-west.webp",
+        "south": "chairs_and_benches/chair_010/not_lit_5/sprite.webp"
+      }
+    },
+    "NOT_LIT_6": {
+      "sprite": "chairs_and_benches/chair_010/not_lit_6/sprite.webp",
+      "pixellab_object_id": "02db92aa-fc0e-4f5c-a263-b36bde832186",
+      "generated_at": "2026-08-16T09:03:56+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.5169,
+      "glow_score": 0.055,
+      "relit_from": "LIT_4",
+      "rotations": {
+        "south-east": "chairs_and_benches/chair_010/not_lit_6/rotations/south-east.webp",
+        "south-west": "chairs_and_benches/chair_010/not_lit_6/rotations/south-west.webp",
+        "south": "chairs_and_benches/chair_010/not_lit_6/sprite.webp"
+      }
+    }
+  },
+  "collision": true,
+  "hitbox_shape": "rect"
+}

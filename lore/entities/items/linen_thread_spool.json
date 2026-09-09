@@ -1,0 +1,22 @@
+{
+  "domain": "items",
+  "id": "linen_thread_spool",
+  "name_seen": "Thread Spool",
+  "law": "II",
+  "description": "Half a spool of plain linen thread. Something stitched the Palehusk together, and it was not a tailor.",
+  "lore": [
+    "Dealers will tell you what the sewing on [[monsters/malformed_creature|the walking things]] was for. They are guessing. The spool is the interesting part: every one that has ever come in off the black rock is half used, and ask ten people who have handled one to describe it and you get the same half, down to the tail of thread hanging loose at the side.",
+    "A woman at a fire on the north road took hers in payment two winters ago and has mended out of it since — eleven coats, a tent wall, a boot she had no business saving. It is exactly as full as the day she got it. She stopped mentioning that at about the fourth coat, because of how people's faces went. She has not stopped sewing, and she would like it on record, if anybody is keeping one, that she got eleven coats out of a thing the rest of them were afraid to touch."
+  ],
+  "related": [
+    {
+      "domain": "monsters",
+      "id": "malformed_creature"
+    },
+    {
+      "domain": "lore",
+      "id": "the_hard_pieces"
+    }
+  ],
+  "gm_notes": "Law II demonstrated by an object: everyone remembers the spool half-used, so it holds at half. Never state the mechanism in-text. The mender is unnamed and unplaced — free for reuse."
+}

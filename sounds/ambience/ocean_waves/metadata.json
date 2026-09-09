@@ -35,8 +35,8 @@
     ]
   },
   "quality": "aaa",
-  "file": "ambience/ocean_waves/ocean_waves.wav",
-  "format": "wav",
+  "file": "ambience/ocean_waves/ocean_waves.ogg",
+  "format": "ogg",
   "audio": {
     "samples": 576835,
     "duration_seconds": 12.017,
@@ -48,7 +48,7 @@
     "delivered": "mp3"
   },
   "takes": [
-    "ambience/ocean_waves/ocean_waves.wav"
+    "ambience/ocean_waves/ocean_waves.ogg"
   ],
   "ai": {
     "provider": "elevenlabs",
@@ -93,17 +93,6 @@
   ],
   "delivery": {
     "formats": {
-      "wav": {
-        "file": "ambience/ocean_waves/ocean_waves.wav",
-        "bytes": 1153714,
-        "codec": "pcm_s16le",
-        "role": "master"
-      },
-      "m4a": {
-        "file": "ambience/ocean_waves/ocean_waves.m4a",
-        "bytes": 195803,
-        "codec": "aac"
-      },
       "ogg": {
         "file": "ambience/ocean_waves/ocean_waves.ogg",
         "bytes": 148885,
@@ -111,7 +100,6 @@
       }
     },
     "web_source_order": [
-      "m4a",
       "ogg"
     ]
   }

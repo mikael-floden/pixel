@@ -1,0 +1,95 @@
+{
+  "format": "scenery-piece@2",
+  "id": "sheaf_pole_005",
+  "group": "sheaf_poles",
+  "rank": 95,
+  "index": 5,
+  "name": "Small child-raised sheaf 005",
+  "lights": null,
+  "variety": "small child-raised sheaf",
+  "glow_concept": null,
+  "prompt": "a wooden pole with a fat sheaf of oats bound at its top, grain heads nodding over a tied straw cord, small child-raised sheaf, roughly six feet tall, human height, completely unlit, no glow, no light sources, no self-emission",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 64,
+  "sprite": "sheaf_poles/sheaf_pole_005/sprite.webp",
+  "placement": {
+    "world_height_m": 1.016,
+    "world_px_height": 52,
+    "character_height_px": 87,
+    "character_height_m": 1.7,
+    "note": "ONE SCENERY PIXEL IS ONE PLAYER PIXEL. world_px_height IS the art's own alpha bbox height, so scenery is placed into the world at 1:1 exactly as the avatar is (setScale(1)) and the two share one pixel grid. The CAMERA still zooms the whole scene \u2014 that is uniform and correct; what must never happen is scenery being resampled on its own, against the player. world_height_m is what the art reads as beside a 87px character; declared_height_m is what it was once declared to be, and a gap between them means the ART is the wrong size.",
+    "declared_height_m": 1.75,
+    "content_box": [
+      18,
+      6,
+      47,
+      58
+    ],
+    "content_px_height": 52,
+    "canvas_render_px": 64
+  },
+  "pixellab_object_id": "d31ad1a9-b8c1-4d3c-b55b-265b135ffbdd",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)",
+  "must_be_imbplemented_with_random_hflip": true,
+  "generated_at": "2026-08-13T21:28:04+00:00",
+  "states": {
+    "NOT_LIT_1": {
+      "sprite": "sheaf_poles/sheaf_pole_005/sprite.webp",
+      "pixellab_object_id": "d31ad1a9-b8c1-4d3c-b55b-265b135ffbdd",
+      "generated_at": "2026-08-13T21:28:04+00:00",
+      "rotations": {
+        "south-east": "sheaf_poles/sheaf_pole_005/rotations/south-east.webp",
+        "south-west": "sheaf_poles/sheaf_pole_005/rotations/south-west.webp",
+        "south": "sheaf_poles/sheaf_pole_005/sprite.webp"
+      }
+    },
+    "NOT_LIT_2": {
+      "sprite": "sheaf_poles/sheaf_pole_005/not_lit_2/sprite.webp",
+      "pixellab_object_id": "f896ccc2-6dd2-4e6e-aefd-462d116d9c97",
+      "generated_at": "2026-08-16T20:44:07+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.7329,
+      "glow_score": 0.1055,
+      "rotations": {
+        "south-east": "sheaf_poles/sheaf_pole_005/not_lit_2/rotations/south-east.webp",
+        "south-west": "sheaf_poles/sheaf_pole_005/not_lit_2/rotations/south-west.webp",
+        "south": "sheaf_poles/sheaf_pole_005/not_lit_2/sprite.webp"
+      }
+    },
+    "NOT_LIT_3": {
+      "sprite": "sheaf_poles/sheaf_pole_005/not_lit_3/sprite.webp",
+      "pixellab_object_id": "a6578d24-b567-4bee-a4dc-c489e3afb976",
+      "generated_at": "2026-08-16T20:44:17+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.9384,
+      "glow_score": 0.0,
+      "rotations": {
+        "south-east": "sheaf_poles/sheaf_pole_005/not_lit_3/rotations/south-east.webp",
+        "south-west": "sheaf_poles/sheaf_pole_005/not_lit_3/rotations/south-west.webp",
+        "south": "sheaf_poles/sheaf_pole_005/not_lit_3/sprite.webp"
+      }
+    },
+    "NOT_LIT_4": {
+      "sprite": "sheaf_poles/sheaf_pole_005/not_lit_4/sprite.webp",
+      "pixellab_object_id": "da2465a3-08af-4dd1-830d-fa1e65cdfc30",
+      "generated_at": "2026-08-16T20:43:56+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.8554,
+      "glow_score": 0.0929,
+      "rotations": {
+        "south-east": "sheaf_poles/sheaf_pole_005/not_lit_4/rotations/south-east.webp",
+        "south-west": "sheaf_poles/sheaf_pole_005/not_lit_4/rotations/south-west.webp",
+        "south": "sheaf_poles/sheaf_pole_005/not_lit_4/sprite.webp"
+      }
+    }
+  },
+  "collision": true,
+  "hitbox_shape": "ellipse"
+}

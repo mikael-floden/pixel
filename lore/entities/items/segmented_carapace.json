@@ -1,0 +1,16 @@
+{
+  "domain": "items",
+  "id": "segmented_carapace",
+  "name_seen": "Carapace",
+  "law": "V",
+  "description": "A plate of segmented shell, scuffed from digging. Dunedelver sheds them the way a road sheds gravel.",
+  "lore": [
+    "There are still legs on it. Six or eight little dry stubs around the rim, snapped short, because a [[monsters/dune_digger|Dunedelver]] comes out of this the way a man comes out of a coat and walks off out of the leg cases as it goes. That is the whole difference between this and the rest of a bag: nothing had to be broken for it. The animal is out there right now, one size bigger, and its old back is in your hand.",
+    "The trade finds that unsettling and cannot defend the feeling. A bag of teeth is a bag of endings and no one flinches at it. A carapace is a thing somebody outgrew, lying in the sand looking exactly like a leaving without being one, and there are buyers who will handle them all day and buyers who will not have them in with the rest."
+  ],
+  "related": [
+    { "domain": "monsters", "id": "dune_digger" },
+    { "domain": "lore", "id": "the_hard_pieces" }
+  ],
+  "gm_notes": "The one junk item that is evidence of nothing bad having happened, and the trade is bothered by it anyway. Handy for showing a new player what the rest of the bag means without saying it."
+}

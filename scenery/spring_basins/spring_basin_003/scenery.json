@@ -1,0 +1,273 @@
+{
+  "format": "scenery-piece@2",
+  "id": "spring_basin_003",
+  "group": "spring_basins",
+  "rank": 94,
+  "index": 3,
+  "name": "Moss-rimmed old basin 003",
+  "lights": null,
+  "variety": "moss-rimmed old basin",
+  "glow_concept": null,
+  "prompt": "a natural spring welling up in a shallow rocky hollow, wet mossy boulders ringing a pool of clear water, no built stonework, moss-rimmed old basin, waist-high to an adult person, completely unlit, no glow, no light sources, no self-emission",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 96,
+  "sprite": "spring_basins/spring_basin_003/sprite.webp",
+  "placement": {
+    "world_height_m": 1.251,
+    "world_px_height": 64,
+    "character_height_px": 87,
+    "character_height_m": 1.7,
+    "note": "ONE SCENERY PIXEL IS ONE PLAYER PIXEL. world_px_height IS the art's own alpha bbox height, so scenery is placed into the world at 1:1 exactly as the avatar is (setScale(1)) and the two share one pixel grid. The CAMERA still zooms the whole scene \u2014 that is uniform and correct; what must never happen is scenery being resampled on its own, against the player. world_height_m is what the art reads as beside a 87px character; declared_height_m is what it was once declared to be, and a gap between them means the ART is the wrong size.",
+    "declared_height_m": 1.0,
+    "content_box": [
+      9,
+      18,
+      89,
+      82
+    ],
+    "content_px_height": 64,
+    "canvas_render_px": 96
+  },
+  "pixellab_object_id": "38de4942-59b4-4a97-8ffb-b5aa7b6c8ddc",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)",
+  "renamed_from": "spring_basin_001",
+  "renamed_why": "the original id was retired with the piece the maintainer rejected; fresh art gets a fresh id so his verdict keeps pointing at what he judged and this lands in his unreviewed queue",
+  "must_be_imbplemented_with_random_hflip": true,
+  "generated_at": "2026-08-13T19:23:23+00:00",
+  "states": {
+    "LIT_2": {
+      "sprite": "spring_basins/spring_basin_003/lit_2/sprite.webp",
+      "pixellab_object_id": "bffcf95e-fe33-40d2-bf84-e1b6332d9ac3",
+      "generated_at": "2026-08-16T21:14:42+00:00",
+      "glow_concept": "lit mist curling off the warm water",
+      "difference_from_source": 0.9422,
+      "glow_score": 0.3091,
+      "animations": {
+        "motion": {
+          "group_id": "1f6af239-a387-4564-b15e-18c0089f0a44",
+          "description": "This is the same picture in every frame. ONLY the thin white streams of water falling from the spouts move, running downward. Nothing in the picture may change size, shape or position. The last frame must return to exactly how the first frame looks, so the loop joins. Nothing may become darker than it is in the first frame. Everything else is frozen and pixel-for-pixel identical. Do not redraw anything else, and do not add or remove anything.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "spring_basins/spring_basin_003/lit_2/animations/motion/00.webp",
+            "spring_basins/spring_basin_003/lit_2/animations/motion/01.webp",
+            "spring_basins/spring_basin_003/lit_2/animations/motion/02.webp",
+            "spring_basins/spring_basin_003/lit_2/animations/motion/03.webp",
+            "spring_basins/spring_basin_003/lit_2/animations/motion/04.webp"
+          ],
+          "strip": "spring_basins/spring_basin_003/lit_2/animations/motion__strip.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-08-29T14:02:05+00:00",
+          "brief": "T13",
+          "review": "ANIMATION_PROBABLY_GOOD",
+          "review_metrics": {
+            "class": "water",
+            "base": 0.0,
+            "still": 0.699
+          },
+          "light_frames": [
+            {
+              "intensity": 1.068,
+              "dx": 1.8,
+              "dy": -2.3
+            },
+            {
+              "intensity": 1.02,
+              "dx": 1.0,
+              "dy": -1.3
+            },
+            {
+              "intensity": 0.984,
+              "dx": 1.0,
+              "dy": -0.6
+            },
+            {
+              "intensity": 0.961,
+              "dx": 1.0,
+              "dy": -0.6
+            },
+            {
+              "intensity": 0.968,
+              "dx": 1.1,
+              "dy": -1.0
+            }
+          ]
+        }
+      }
+    },
+    "NOT_LIT_1": {
+      "sprite": "spring_basins/spring_basin_003/sprite.webp",
+      "pixellab_object_id": "38de4942-59b4-4a97-8ffb-b5aa7b6c8ddc",
+      "generated_at": "2026-08-13T19:23:23+00:00",
+      "animations": {
+        "motion": {
+          "group_id": "d5b84c41-fe12-450b-b790-c5db8f5d3e09",
+          "description": "Animate the water surface only. Nothing else moves.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "spring_basins/spring_basin_003/animations/motion/00.webp",
+            "spring_basins/spring_basin_003/animations/motion/01.webp",
+            "spring_basins/spring_basin_003/animations/motion/02.webp",
+            "spring_basins/spring_basin_003/animations/motion/03.webp",
+            "spring_basins/spring_basin_003/animations/motion/04.webp"
+          ],
+          "strip": "spring_basins/spring_basin_003/animations/motion__strip.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-08-29T08:35:57+00:00",
+          "brief": "W4",
+          "review": "ANIMATION_PROBABLY_GOOD",
+          "review_metrics": {
+            "class": "water",
+            "base": 0.0606,
+            "still": 0.594
+          }
+        }
+      }
+    },
+    "NOT_LIT_2": {
+      "sprite": "spring_basins/spring_basin_003/not_lit_2/sprite.webp",
+      "pixellab_object_id": "77e1c307-87e8-4e90-8bbb-4b56c39b449b",
+      "generated_at": "2026-08-16T21:13:51+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.8522,
+      "glow_score": 0.0208,
+      "animations": {
+        "motion": {
+          "group_id": "c73a8c22-edc4-4b67-b6e1-9b2a480e1a5c",
+          "description": "This is the same picture in every frame. ONLY the three jets of water run downward. Nothing else moves, bends or leans, and nothing changes size, shape or position. The last frame must return to exactly how the first frame looks, so the loop joins. Nothing may become darker than it is in the first frame. Do not redraw anything else, and do not add or remove anything.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "spring_basins/spring_basin_003/not_lit_2/animations/motion/00.webp",
+            "spring_basins/spring_basin_003/not_lit_2/animations/motion/01.webp",
+            "spring_basins/spring_basin_003/not_lit_2/animations/motion/02.webp",
+            "spring_basins/spring_basin_003/not_lit_2/animations/motion/03.webp",
+            "spring_basins/spring_basin_003/not_lit_2/animations/motion/04.webp"
+          ],
+          "strip": "spring_basins/spring_basin_003/not_lit_2/animations/motion__strip.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-08-29T15:39:42+00:00",
+          "brief": "X52",
+          "review": "ANIMATION_PROBABLY_GOOD",
+          "review_metrics": {
+            "class": "water",
+            "base": 0.0,
+            "still": 0.88
+          }
+        }
+      }
+    },
+    "NOT_LIT_3": {
+      "sprite": "spring_basins/spring_basin_003/not_lit_3/sprite.webp",
+      "pixellab_object_id": "d821ff96-5705-409d-bbb6-82f9d5f47a5d",
+      "generated_at": "2026-08-16T21:13:32+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.7457,
+      "glow_score": 0.0166,
+      "animations": {
+        "motion": {
+          "group_id": "037dbd27-a13a-4292-96d6-6bd79e2d88df",
+          "description": "This is the same picture in every frame. ONLY the water spouting from the carved face runs downward. Everything else in the picture is copied from the first frame exactly, pixel for pixel, unchanged in shape, size, position and colour. No outline anywhere is redrawn. The last frame matches the first frame exactly, so the loop joins. Nothing anywhere becomes darker, lighter or a different colour except the one thing named above.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "spring_basins/spring_basin_003/not_lit_3/animations/motion/00.webp",
+            "spring_basins/spring_basin_003/not_lit_3/animations/motion/01.webp",
+            "spring_basins/spring_basin_003/not_lit_3/animations/motion/02.webp",
+            "spring_basins/spring_basin_003/not_lit_3/animations/motion/03.webp",
+            "spring_basins/spring_basin_003/not_lit_3/animations/motion/04.webp"
+          ],
+          "strip": "spring_basins/spring_basin_003/not_lit_3/animations/motion__strip.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-08-29T16:18:14+00:00",
+          "brief": "Y39",
+          "review": "ANIMATION_PROBABLY_GOOD",
+          "review_metrics": {
+            "class": "water",
+            "base": 0.0,
+            "still": 0.787
+          }
+        }
+      }
+    },
+    "NOT_LIT_4": {
+      "sprite": "spring_basins/spring_basin_003/not_lit_4/sprite.webp",
+      "pixellab_object_id": "9f8ac5cf-c3db-4670-b90e-2d9c3c1016a7",
+      "generated_at": "2026-08-16T21:14:31+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.7306,
+      "glow_score": 0.018,
+      "animations": {
+        "motion": {
+          "group_id": "f8f08f85-1c7a-4861-ba52-be1c6ef2c81d",
+          "description": "This is the same picture in every frame. ONLY the three jets of water run downward. Everything else in the picture is copied from the first frame exactly, pixel for pixel, unchanged in shape, size, position and colour. No outline anywhere is redrawn. The last frame matches the first frame exactly, so the loop joins.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "spring_basins/spring_basin_003/not_lit_4/animations/motion/00.webp",
+            "spring_basins/spring_basin_003/not_lit_4/animations/motion/01.webp",
+            "spring_basins/spring_basin_003/not_lit_4/animations/motion/02.webp",
+            "spring_basins/spring_basin_003/not_lit_4/animations/motion/03.webp",
+            "spring_basins/spring_basin_003/not_lit_4/animations/motion/04.webp"
+          ],
+          "strip": "spring_basins/spring_basin_003/not_lit_4/animations/motion__strip.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-08-29T16:59:02+00:00",
+          "brief": "Z43",
+          "review": "ANIMATION_PROBABLY_GOOD",
+          "review_metrics": {
+            "class": "water",
+            "base": 0.0083,
+            "still": 0.853
+          }
+        }
+      }
+    }
+  },
+  "collision": true,
+  "hitbox_shape": "ellipse",
+  "light": {
+    "strength": 0.25,
+    "color": "#51f0ff",
+    "radius": 4,
+    "reference": "the spawn bonfire is 1.0 (radius 7); strength 0 is no light",
+    "states": {
+      "LIT_2": {
+        "strength": 0.25,
+        "color": "#51f0ff",
+        "radius": 4
+      }
+    },
+    "kind": "glow/water",
+    "flame": false,
+    "embers": false
+  }
+}

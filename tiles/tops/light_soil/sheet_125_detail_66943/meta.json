@@ -1,0 +1,132 @@
+{
+  "schema": "tiles3/tops@1",
+  "kind": "top_only",
+  "wall_is_meaningless": true,
+  "not_a_candidate_for": "x over y",
+  "ground": "light_soil",
+  "flavour": "detail",
+  "index": 125,
+  "seed": 66943,
+  "prompt": "light soil, a pebble half-buried in the middle, light soil all around the edge",
+  "palette_top": "#c9ab7e",
+  "tile_id": "eba81c42-2545-4e69-a967-512ab7b29630",
+  "n_tiles": 16,
+  "tiles": [
+    "tile_00.webp",
+    "tile_01.webp",
+    "tile_02.webp",
+    "tile_03.webp",
+    "tile_04.webp",
+    "tile_05.webp",
+    "tile_06.webp",
+    "tile_07.webp",
+    "tile_08.webp",
+    "tile_09.webp",
+    "tile_10.webp",
+    "tile_11.webp",
+    "tile_12.webp",
+    "tile_13.webp",
+    "tile_14.webp",
+    "tile_15.webp"
+  ],
+  "settings": {
+    "tile_size": 64,
+    "tile_view": "high top-down",
+    "view_angle": 28.0,
+    "depth_ratio": 0.5,
+    "tile_type": "isometric",
+    "flat_top_px": 2,
+    "outline_mode": "segmentation"
+  },
+  "usd": 0.096,
+  "created": "2026-09-03T06:41:07+00:00",
+  "top_face": {
+    "per_tile": [
+      {
+        "colours": 19,
+        "dominant_share": 0.6728,
+        "px": 923
+      },
+      {
+        "colours": 19,
+        "dominant_share": 0.6891,
+        "px": 923
+      },
+      {
+        "colours": 19,
+        "dominant_share": 0.5427,
+        "px": 925
+      },
+      {
+        "colours": 12,
+        "dominant_share": 0.6569,
+        "px": 924
+      },
+      {
+        "colours": 19,
+        "dominant_share": 0.5845,
+        "px": 917
+      },
+      {
+        "colours": 22,
+        "dominant_share": 0.6503,
+        "px": 918
+      },
+      {
+        "colours": 20,
+        "dominant_share": 0.6146,
+        "px": 916
+      },
+      {
+        "colours": 18,
+        "dominant_share": 0.6404,
+        "px": 915
+      },
+      {
+        "colours": 19,
+        "dominant_share": 0.6674,
+        "px": 920
+      },
+      {
+        "colours": 21,
+        "dominant_share": 0.5378,
+        "px": 926
+      },
+      {
+        "colours": 19,
+        "dominant_share": 0.6259,
+        "px": 925
+      },
+      {
+        "colours": 13,
+        "dominant_share": 0.6994,
+        "px": 928
+      },
+      {
+        "colours": 20,
+        "dominant_share": 0.5185,
+        "px": 945
+      },
+      {
+        "colours": 22,
+        "dominant_share": 0.5778,
+        "px": 938
+      },
+      {
+        "colours": 19,
+        "dominant_share": 0.6107,
+        "px": 935
+      },
+      {
+        "colours": 19,
+        "dominant_share": 0.6094,
+        "px": 932
+      }
+    ],
+    "mean_colours": 18.75,
+    "mean_dominant_share": 0.6186
+  },
+  "motif": "a pebble half-buried",
+  "motif_source": "tiles/config/details.json",
+  "walkable": true
+}

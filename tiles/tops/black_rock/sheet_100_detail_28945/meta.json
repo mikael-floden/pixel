@@ -1,0 +1,132 @@
+{
+  "schema": "tiles3/tops@1",
+  "kind": "top_only",
+  "wall_is_meaningless": true,
+  "not_a_candidate_for": "x over y",
+  "ground": "black_rock",
+  "flavour": "detail",
+  "index": 100,
+  "seed": 28945,
+  "prompt": "black rock, a jagged crack in the middle, black rock all around the edge",
+  "palette_top": "#1e1d1e",
+  "tile_id": "c54333f2-a1ee-4502-b1cf-9fd9a1a1d7f6",
+  "n_tiles": 16,
+  "tiles": [
+    "tile_00.webp",
+    "tile_01.webp",
+    "tile_02.webp",
+    "tile_03.webp",
+    "tile_04.webp",
+    "tile_05.webp",
+    "tile_06.webp",
+    "tile_07.webp",
+    "tile_08.webp",
+    "tile_09.webp",
+    "tile_10.webp",
+    "tile_11.webp",
+    "tile_12.webp",
+    "tile_13.webp",
+    "tile_14.webp",
+    "tile_15.webp"
+  ],
+  "settings": {
+    "tile_size": 64,
+    "tile_view": "high top-down",
+    "view_angle": 28.0,
+    "depth_ratio": 0.5,
+    "tile_type": "isometric",
+    "flat_top_px": 2,
+    "outline_mode": "segmentation"
+  },
+  "usd": 0.096,
+  "created": "2026-09-03T03:56:21+00:00",
+  "top_face": {
+    "per_tile": [
+      {
+        "colours": 9,
+        "dominant_share": 0.3485,
+        "px": 924
+      },
+      {
+        "colours": 13,
+        "dominant_share": 0.1424,
+        "px": 920
+      },
+      {
+        "colours": 12,
+        "dominant_share": 0.2576,
+        "px": 924
+      },
+      {
+        "colours": 13,
+        "dominant_share": 0.2325,
+        "px": 916
+      },
+      {
+        "colours": 13,
+        "dominant_share": 0.1497,
+        "px": 915
+      },
+      {
+        "colours": 14,
+        "dominant_share": 0.1785,
+        "px": 913
+      },
+      {
+        "colours": 13,
+        "dominant_share": 0.29,
+        "px": 924
+      },
+      {
+        "colours": 14,
+        "dominant_share": 0.2609,
+        "px": 920
+      },
+      {
+        "colours": 15,
+        "dominant_share": 0.2749,
+        "px": 924
+      },
+      {
+        "colours": 13,
+        "dominant_share": 0.1598,
+        "px": 920
+      },
+      {
+        "colours": 12,
+        "dominant_share": 0.2419,
+        "px": 922
+      },
+      {
+        "colours": 15,
+        "dominant_share": 0.1735,
+        "px": 922
+      },
+      {
+        "colours": 12,
+        "dominant_share": 0.2175,
+        "px": 915
+      },
+      {
+        "colours": 12,
+        "dominant_share": 0.2927,
+        "px": 919
+      },
+      {
+        "colours": 13,
+        "dominant_share": 0.1641,
+        "px": 920
+      },
+      {
+        "colours": 12,
+        "dominant_share": 0.3236,
+        "px": 924
+      }
+    ],
+    "mean_colours": 12.81,
+    "mean_dominant_share": 0.2318
+  },
+  "motif": "a jagged crack",
+  "motif_source": "tiles/config/details.json",
+  "walkable": true
+}

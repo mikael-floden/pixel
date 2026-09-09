@@ -4,7 +4,7 @@
 // plus the CALM idle: "freeze on the first frame for a pseudo-random duration
 // between 0.1s and 5s so they don't repeat the idle animation too often and
 // too regularly").
-// Runs on the_island2 (19 placed NPCs) against the dev stack.
+// Runs on the_game (maps2/worlds3, 33 placed NPCs in npcs.json) against the dev stack.
 import { chromium } from "playwright-core";
 
 const EXE = "/opt/pw-browsers/chromium-1194/chrome-linux/chrome";
@@ -20,13 +20,13 @@ try {
 
   await page.goto("http://localhost:5173/", { waitUntil: "load" });
   await page.waitForFunction(() => window.__mlSelect, { timeout: 25000 });
-  const idx = await page.evaluate(() => window.__mlSelect.worlds().findIndex((w) => /the_island2/i.test(w)));
-  if (idx < 0) fail("the_island2 missing from the picker");
+  const idx = await page.evaluate(() => window.__mlSelect.worlds().findIndex((w) => /the_game/i.test(w)));
+  if (idx < 0) fail("the_game missing from the picker");
   await page.evaluate((i) => window.__mlSelect.pickWorld(i), idx);
   await page.evaluate(() => window.__mlSelect.commit());
   await page.waitForFunction(() => window.__ml && window.__ml.players() >= 1, { timeout: 40000 });
   await page.waitForFunction(() => !document.querySelector("#ml-loading"), { timeout: 20000 });
-  ok("joined the_island2");
+  ok("joined the_game");
 
   // (1) every placed NPC is spawned, at maps2' cell, facing maps2' way.
   await page.waitForFunction(() => (window.__ml.npcInfo()?.length ?? 0) > 0, undefined, {
@@ -34,7 +34,7 @@ try {
     polling: 200,
   });
   const placed = await page.evaluate(async () => {
-    const r = await fetch("/assets/maps2/worlds/the_island2/npcs.json");
+    const r = await fetch("/assets/maps2/worlds3/the_game/npcs.json");
     return (await r.json()).npcs;
   });
   const npcs = await page.evaluate(() => window.__ml.npcInfo());
@@ -122,7 +122,7 @@ try {
       fail(`${p.id} faces ${n.dir}; maps2 placed it ${p.facing} and it ${canIdle ? "HAS" : "has no"} idle art for that, so it should face ${want}`);
     if (canIdle && p.facing !== "south") honoured++;
   }
-  // NON-VACUOUS: the_island2 places 9 NPCs south-west, so "everything is south"
+  // NON-VACUOUS: the_game places 14 NPCs east and 9 south-west, so "everything is south"
   // must not be able to pass this. Without it, a client that still forced south
   // would sail through on a world that happened to place everyone south.
   if (!honoured)
@@ -139,7 +139,10 @@ try {
       const d = Math.abs(RING.indexOf(a) - RING.indexOf(b));
       return Math.min(d, RING.length - d);
     };
-    const one = npcs.find((n) => !n.culled) ?? npcs[0];
+    // A TURNABLE one — the gate used to grab the first on-screen NPC, which is
+    // Thorne, who is now no_turn. Picking blind would have read "he did not
+    // turn" as a broken look-at.
+    const one = npcs.find((n) => !n.culled && !n.noTurn) ?? npcs.find((n) => !n.noTurn) ?? npcs[0];
     const read = () =>
       page.evaluate((id) => {
         const n = window.__ml.npcInfo().find((x) => x.id === id);
@@ -207,6 +210,38 @@ try {
     if (back.dir !== back.home && !back.looking)
       fail(`${one.id}: after backing off it sits on ${back.dir}, not its home ${back.home} (glance is allowed, but none was active)`);
     ok(`facing returns to maps2' ${back.home} once the player leaves`);
+
+    // (iv) AND THE ONES THAT MUST NOT TURN, DO NOT. characters2 flags art that
+    // only reads right from one facing (`no_turn`); Thorne's armorer's
+    // breastplate stands on the ground beside him in south/south-west and is
+    // gone in south-east, so a turn pops a large prop in and out. Brushing
+    // past him must move nothing.
+    const still = npcs.find((n) => n.noTurn);
+    if (!still) console.log("(no no_turn NPC placed in this world — skipping)");
+    else {
+      const readS = () =>
+        page.evaluate((id) => {
+          const n = window.__ml.npcInfo().find((x) => x.id === id);
+          return n && { dir: n.dir, home: n.home, looking: n.looking, tex: n.tex };
+        }, still.id);
+      const sc = still.x / 32;
+      const sr = still.y / 32;
+      await page.evaluate(([c, r]) => window.__ml.teleport(c - 3, r - 3), [sc, sr]);
+      await page.waitForTimeout(1000);
+      const s0 = await readS();
+      // Walk a full circle around him at touching distance: every approach
+      // angle asks for a different facing, so a look-at that ignores the flag
+      // cannot survive all eight.
+      const seenS = new Set([s0.dir]);
+      for (const [dx, dy] of [[-0.35, -0.35], [0.35, -0.35], [0.35, 0.35], [-0.35, 0.35], [0, -0.4], [0, 0.4], [-0.4, 0], [0.4, 0]]) {
+        await page.evaluate(([c, r]) => window.__ml.teleport(c, r), [sc + dx, sr + dy]);
+        await page.waitForTimeout(400);
+        seenS.add((await readS()).dir);
+      }
+      if (seenS.size !== 1)
+        fail(`${still.id} is no_turn but faced ${[...seenS].join("/")} while the player circled it`);
+      ok(`no_turn NPC ${still.id} held ${s0.dir} through eight approach angles`);
+    }
   }
 
   // (3) THE CALM IDLE. Watch one NPC that has an idle clip: over a long sample

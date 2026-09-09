@@ -1,0 +1,109 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-13T22:59:03+00:00",
+  "id": "rug_009",
+  "group": "rugs_and_hides",
+  "rank": 108,
+  "index": 9,
+  "name": "Long woven runner rug 009",
+  "lights": null,
+  "variety": "long woven runner rug",
+  "glow_concept": null,
+  "prompt": "a flat woven floor rug lying on the ground seen from above, thick fabric with a bold folk pattern, completely flat underfoot, long woven runner rug, waist-high, completely unlit, no glow, no light sources, no self-emission",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 64,
+  "sprite": "rugs_and_hides/rug_009/sprite.webp",
+  "placement": {
+    "world_height_m": 1.036,
+    "world_px_height": 53,
+    "character_height_px": 87,
+    "character_height_m": 1.7,
+    "note": "ONE SCENERY PIXEL IS ONE PLAYER PIXEL. world_px_height IS the art's own alpha bbox height, so scenery is placed into the world at 1:1 exactly as the avatar is (setScale(1)) and the two share one pixel grid. The CAMERA still zooms the whole scene \u2014 that is uniform and correct; what must never happen is scenery being resampled on its own, against the player. world_height_m is what the art reads as beside a 87px character; declared_height_m is what it was once declared to be, and a gap between them means the ART is the wrong size.",
+    "declared_height_m": 1.03,
+    "content_box": [
+      10,
+      6,
+      55,
+      59
+    ],
+    "content_px_height": 53,
+    "canvas_render_px": 64
+  },
+  "pixellab_object_id": "d2c5e5b0-b4f8-4a2f-a2ce-5ba9b25782ba",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)",
+  "must_be_imbplemented_with_random_hflip": true,
+  "states": {
+    "NOT_LIT_1": {
+      "sprite": "rugs_and_hides/rug_009/sprite.webp",
+      "pixellab_object_id": "d2c5e5b0-b4f8-4a2f-a2ce-5ba9b25782ba",
+      "generated_at": "2026-08-13T22:59:03+00:00",
+      "rotations": {
+        "south-east": "rugs_and_hides/rug_009/rotations/south-east.webp",
+        "south-west": "rugs_and_hides/rug_009/rotations/south-west.webp",
+        "south": "rugs_and_hides/rug_009/sprite.webp"
+      }
+    },
+    "NOT_LIT_2": {
+      "sprite": "rugs_and_hides/rug_009/not_lit_2/sprite.webp",
+      "pixellab_object_id": "0ee71db8-06bc-44ca-9f09-737a3dd2b690",
+      "generated_at": "2026-08-16T20:19:58+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.6506,
+      "glow_score": 0.1211,
+      "rotations": {
+        "south-east": "rugs_and_hides/rug_009/not_lit_2/rotations/south-east.webp",
+        "south-west": "rugs_and_hides/rug_009/not_lit_2/rotations/south-west.webp",
+        "south": "rugs_and_hides/rug_009/not_lit_2/sprite.webp"
+      }
+    },
+    "NOT_LIT_3": {
+      "sprite": "rugs_and_hides/rug_009/not_lit_3/sprite.webp",
+      "pixellab_object_id": "3a63400d-272f-4f67-b86b-635c07715eee",
+      "generated_at": "2026-08-16T20:19:09+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.5034,
+      "glow_score": 0.2712,
+      "rotations": {
+        "south-east": "rugs_and_hides/rug_009/not_lit_3/rotations/south-east.webp",
+        "south-west": "rugs_and_hides/rug_009/not_lit_3/rotations/south-west.webp",
+        "south": "rugs_and_hides/rug_009/not_lit_3/sprite.webp"
+      }
+    },
+    "NOT_LIT_4": {
+      "sprite": "rugs_and_hides/rug_009/not_lit_4/sprite.webp",
+      "pixellab_object_id": "b703c646-81f0-42a7-be46-296494a2656e",
+      "generated_at": "2026-08-16T20:18:59+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.7613,
+      "glow_score": 0.1374,
+      "rotations": {
+        "south-east": "rugs_and_hides/rug_009/not_lit_4/rotations/south-east.webp",
+        "south-west": "rugs_and_hides/rug_009/not_lit_4/rotations/south-west.webp",
+        "south": "rugs_and_hides/rug_009/not_lit_4/sprite.webp"
+      }
+    },
+    "NOT_LIT_5": {
+      "sprite": "rugs_and_hides/rug_009/not_lit_5/sprite.webp",
+      "pixellab_object_id": "862ee1ad-8855-4882-98cb-f2e5f21e689e",
+      "generated_at": "2026-08-16T20:20:17+00:00",
+      "glow_concept": "warm hearthlight reflected across the pile",
+      "difference_from_source": 0.5817,
+      "glow_score": 0.2802,
+      "relit_from": "LIT_1",
+      "rotations": {
+        "south-east": "rugs_and_hides/rug_009/not_lit_5/rotations/south-east.webp",
+        "south-west": "rugs_and_hides/rug_009/not_lit_5/rotations/south-west.webp",
+        "south": "rugs_and_hides/rug_009/not_lit_5/sprite.webp"
+      }
+    }
+  },
+  "collision": false,
+  "hitbox_shape": "rect"
+}

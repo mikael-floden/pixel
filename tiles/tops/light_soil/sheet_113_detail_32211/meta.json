@@ -1,0 +1,132 @@
+{
+  "schema": "tiles3/tops@1",
+  "kind": "top_only",
+  "wall_is_meaningless": true,
+  "not_a_candidate_for": "x over y",
+  "ground": "light_soil",
+  "flavour": "detail",
+  "index": 113,
+  "seed": 32211,
+  "prompt": "light soil, a clod of earth in the middle, light soil all around the edge",
+  "palette_top": "#c9ab7e",
+  "tile_id": "e1d1cdb6-ee77-447b-8fd5-61f33059d710",
+  "n_tiles": 16,
+  "tiles": [
+    "tile_00.webp",
+    "tile_01.webp",
+    "tile_02.webp",
+    "tile_03.webp",
+    "tile_04.webp",
+    "tile_05.webp",
+    "tile_06.webp",
+    "tile_07.webp",
+    "tile_08.webp",
+    "tile_09.webp",
+    "tile_10.webp",
+    "tile_11.webp",
+    "tile_12.webp",
+    "tile_13.webp",
+    "tile_14.webp",
+    "tile_15.webp"
+  ],
+  "settings": {
+    "tile_size": 64,
+    "tile_view": "high top-down",
+    "view_angle": 28.0,
+    "depth_ratio": 0.5,
+    "tile_type": "isometric",
+    "flat_top_px": 2,
+    "outline_mode": "segmentation"
+  },
+  "usd": 0.096,
+  "created": "2026-09-03T06:23:37+00:00",
+  "top_face": {
+    "per_tile": [
+      {
+        "colours": 20,
+        "dominant_share": 0.4723,
+        "px": 1389
+      },
+      {
+        "colours": 19,
+        "dominant_share": 0.3279,
+        "px": 1412
+      },
+      {
+        "colours": 22,
+        "dominant_share": 0.4481,
+        "px": 1377
+      },
+      {
+        "colours": 17,
+        "dominant_share": 0.3868,
+        "px": 1321
+      },
+      {
+        "colours": 23,
+        "dominant_share": 0.3808,
+        "px": 1389
+      },
+      {
+        "colours": 21,
+        "dominant_share": 0.2578,
+        "px": 1416
+      },
+      {
+        "colours": 21,
+        "dominant_share": 0.3557,
+        "px": 1386
+      },
+      {
+        "colours": 23,
+        "dominant_share": 0.3061,
+        "px": 1320
+      },
+      {
+        "colours": 22,
+        "dominant_share": 0.1284,
+        "px": 1386
+      },
+      {
+        "colours": 21,
+        "dominant_share": 0.3402,
+        "px": 1408
+      },
+      {
+        "colours": 21,
+        "dominant_share": 0.267,
+        "px": 1371
+      },
+      {
+        "colours": 26,
+        "dominant_share": 0.2815,
+        "px": 1343
+      },
+      {
+        "colours": 22,
+        "dominant_share": 0.3563,
+        "px": 1381
+      },
+      {
+        "colours": 22,
+        "dominant_share": 0.3284,
+        "px": 1416
+      },
+      {
+        "colours": 21,
+        "dominant_share": 0.2865,
+        "px": 1382
+      },
+      {
+        "colours": 19,
+        "dominant_share": 0.3602,
+        "px": 1316
+      }
+    ],
+    "mean_colours": 21.25,
+    "mean_dominant_share": 0.3302
+  },
+  "motif": "a clod of earth",
+  "motif_source": "tiles/config/details.json",
+  "walkable": true
+}

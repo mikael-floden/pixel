@@ -34,8 +34,8 @@
     ]
   },
   "quality": "aaa",
-  "file": "ambience/wind/wind.wav",
-  "format": "wav",
+  "file": "ambience/wind/wind.ogg",
+  "format": "ogg",
   "audio": {
     "samples": 576835,
     "duration_seconds": 12.017,
@@ -47,7 +47,7 @@
     "delivered": "mp3"
   },
   "takes": [
-    "ambience/wind/wind.wav"
+    "ambience/wind/wind.ogg"
   ],
   "ai": {
     "provider": "elevenlabs",
@@ -92,17 +92,6 @@
   ],
   "delivery": {
     "formats": {
-      "wav": {
-        "file": "ambience/wind/wind.wav",
-        "bytes": 1153714,
-        "codec": "pcm_s16le",
-        "role": "master"
-      },
-      "m4a": {
-        "file": "ambience/wind/wind.m4a",
-        "bytes": 196263,
-        "codec": "aac"
-      },
       "ogg": {
         "file": "ambience/wind/wind.ogg",
         "bytes": 152472,
@@ -110,7 +99,6 @@
       }
     },
     "web_source_order": [
-      "m4a",
       "ogg"
     ]
   }

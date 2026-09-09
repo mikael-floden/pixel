@@ -1,0 +1,112 @@
+{
+  "format": "scenery-piece@2",
+  "id": "clutter_006",
+  "group": "house_clutter",
+  "rank": 109,
+  "index": 6,
+  "name": "Washtub with a washboard 006",
+  "lights": null,
+  "variety": "washtub with a washboard",
+  "glow_concept": "embers glowing in a small warming pot",
+  "prompt": "a small chunky cluster of household things arranged together on the floor, solid everyday objects with visible weight, washtub with a washboard, small, knee-high, self-emissive at night, softly radiating light: embers glowing in a small warming pot",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 64,
+  "sprite": "house_clutter/clutter_006/sprite.webp",
+  "placement": {
+    "world_height_m": 0.86,
+    "world_px_height": 44,
+    "character_height_px": 87,
+    "character_height_m": 1.7,
+    "note": "ONE SCENERY PIXEL IS ONE PLAYER PIXEL. world_px_height IS the art's own alpha bbox height, so scenery is placed into the world at 1:1 exactly as the avatar is (setScale(1)) and the two share one pixel grid. The CAMERA still zooms the whole scene \u2014 that is uniform and correct; what must never happen is scenery being resampled on its own, against the player. world_height_m is what the art reads as beside a 87px character; declared_height_m is what it was once declared to be, and a gap between them means the ART is the wrong size.",
+    "declared_height_m": 0.35,
+    "content_box": [
+      10,
+      11,
+      55,
+      55
+    ],
+    "content_px_height": 44,
+    "canvas_render_px": 64
+  },
+  "pixellab_object_id": "0dd70961-df0f-4114-a4bb-85e79c6e7203",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)",
+  "must_be_imbplemented_with_random_hflip": true,
+  "generated_at": "2026-08-13T22:02:24+00:00",
+  "states": {
+    "NOT_LIT_2": {
+      "sprite": "house_clutter/clutter_006/not_lit_2/sprite.webp",
+      "pixellab_object_id": "20ca2c77-0e81-42c4-8653-b9d277620863",
+      "generated_at": "2026-08-16T16:53:46+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.3232,
+      "glow_score": 0.0,
+      "rotations": {
+        "south-east": "house_clutter/clutter_006/not_lit_2/rotations/south-east.webp",
+        "south-west": "house_clutter/clutter_006/not_lit_2/rotations/south-west.webp",
+        "south": "house_clutter/clutter_006/not_lit_2/sprite.webp"
+      }
+    },
+    "NOT_LIT_3": {
+      "sprite": "house_clutter/clutter_006/sprite.webp",
+      "pixellab_object_id": "0dd70961-df0f-4114-a4bb-85e79c6e7203",
+      "generated_at": "2026-08-13T22:02:24+00:00",
+      "relit_from": "LIT_1",
+      "rotations": {
+        "south-east": "house_clutter/clutter_006/rotations/south-east.webp",
+        "south-west": "house_clutter/clutter_006/rotations/south-west.webp",
+        "south": "house_clutter/clutter_006/sprite.webp"
+      }
+    },
+    "NOT_LIT_4": {
+      "sprite": "house_clutter/clutter_006/not_lit_4/sprite.webp",
+      "pixellab_object_id": "c2a51064-a8fe-4ffe-a32a-61ee9b0ed5d0",
+      "generated_at": "2026-08-16T16:52:34+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.5409,
+      "glow_score": 0.0131,
+      "relit_from": "LIT_2",
+      "rotations": {
+        "south-east": "house_clutter/clutter_006/not_lit_4/rotations/south-east.webp",
+        "south-west": "house_clutter/clutter_006/not_lit_4/rotations/south-west.webp",
+        "south": "house_clutter/clutter_006/not_lit_4/sprite.webp"
+      }
+    },
+    "NOT_LIT_5": {
+      "sprite": "house_clutter/clutter_006/not_lit_5/sprite.webp",
+      "pixellab_object_id": "adc45155-65ec-4f91-bb97-f85bc0dbc731",
+      "generated_at": "2026-08-16T16:52:35+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.8031,
+      "glow_score": 0.0287,
+      "relit_from": "LIT_3",
+      "rotations": {
+        "south-east": "house_clutter/clutter_006/not_lit_5/rotations/south-east.webp",
+        "south-west": "house_clutter/clutter_006/not_lit_5/rotations/south-west.webp",
+        "south": "house_clutter/clutter_006/not_lit_5/sprite.webp"
+      }
+    },
+    "NOT_LIT_6": {
+      "sprite": "house_clutter/clutter_006/not_lit_6/sprite.webp",
+      "pixellab_object_id": "1936c5ce-85e2-42da-bc76-d319bf1b4329",
+      "generated_at": "2026-08-16T16:53:43+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.6353,
+      "glow_score": 0.0187,
+      "relit_from": "LIT_4",
+      "rotations": {
+        "south-east": "house_clutter/clutter_006/not_lit_6/rotations/south-east.webp",
+        "south-west": "house_clutter/clutter_006/not_lit_6/rotations/south-west.webp",
+        "south": "house_clutter/clutter_006/not_lit_6/sprite.webp"
+      }
+    }
+  },
+  "collision": true,
+  "hitbox_shape": "rect"
+}

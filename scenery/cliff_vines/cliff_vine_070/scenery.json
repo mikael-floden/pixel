@@ -1,0 +1,88 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-14T04:57:15+00:00",
+  "id": "cliff_vine_070",
+  "group": "cliff_vines",
+  "rank": 101,
+  "index": 70,
+  "name": "Variegated cream-and-green fall 070",
+  "lights": null,
+  "variety": "variegated cream-and-green fall",
+  "modifier": "a broad patch with smaller islands around it",
+  "glow_concept": "glowworm colonies strung in the foliage",
+  "prompt": "beautiful lush climbing ivy growing wild across an old ruin wall, deep green leaves in loose overlapping clusters with long trailing tendrils between them, lush fantasy RPG nature art, rich and beautiful, uneven natural growth that is thick and leafy in a few places and bare stone-empty elsewhere, drifting off one side, no straight edges, no border, nothing it hangs from and no line across the top, fading away into a few last leaves at the edges, transparent background, no rock or wall behind it, variegated cream-and-green fall, a broad patch with smaller islands around it, towering, many times human height, self-emissive at night, softly radiating light: glowworm colonies strung in the foliage",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 256,
+  "sprite": "cliff_vines/cliff_vine_070/sprite.webp",
+  "placement": {
+    "world_height_m": 4.084,
+    "world_px_height": 209,
+    "character_height_px": 87,
+    "character_height_m": 1.7,
+    "note": "ONE SCENERY PIXEL IS ONE PLAYER PIXEL. world_px_height IS the art's own alpha bbox height, so scenery is placed into the world at 1:1 exactly as the avatar is (setScale(1)) and the two share one pixel grid. The CAMERA still zooms the whole scene \u2014 that is uniform and correct; what must never happen is scenery being resampled on its own, against the player. world_height_m is what the art reads as beside a 87px character; declared_height_m is what it was once declared to be, and a gap between them means the ART is the wrong size.",
+    "declared_height_m": 9.16,
+    "content_box": [
+      18,
+      23,
+      234,
+      232
+    ],
+    "content_px_height": 209,
+    "canvas_render_px": 256
+  },
+  "pixellab_object_id": "219ac62a-4571-45d3-ab1b-407c3513913f",
+  "pixellab_directions": 1,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-1-direction-object (single, S-only)",
+  "must_be_imbplemented_with_random_hflip": true,
+  "states": {
+    "NOT_LIT_2": {
+      "sprite": "cliff_vines/cliff_vine_070/not_lit_2/sprite.webp",
+      "pixellab_object_id": "52de666b-b66e-498e-b3f0-cebd8e4d0a0f",
+      "generated_at": "2026-08-16T10:44:50+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.2534,
+      "glow_score": 0.0455
+    },
+    "NOT_LIT_3": {
+      "sprite": "cliff_vines/cliff_vine_070/sprite.webp",
+      "pixellab_object_id": "219ac62a-4571-45d3-ab1b-407c3513913f",
+      "generated_at": "2026-08-14T04:57:15+00:00",
+      "relit_from": "LIT_1"
+    },
+    "NOT_LIT_4": {
+      "sprite": "cliff_vines/cliff_vine_070/not_lit_4/sprite.webp",
+      "pixellab_object_id": "b9e2ee2e-75d4-497a-ad12-a4b560c709bc",
+      "generated_at": "2026-08-16T10:40:26+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.3463,
+      "glow_score": 0.0756,
+      "relit_from": "LIT_2"
+    },
+    "NOT_LIT_5": {
+      "sprite": "cliff_vines/cliff_vine_070/not_lit_5/sprite.webp",
+      "pixellab_object_id": "b1c64a99-c6f1-40a9-b93e-5ed839ac681b",
+      "generated_at": "2026-08-16T10:40:51+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.3892,
+      "glow_score": 0.0236,
+      "relit_from": "LIT_3"
+    },
+    "NOT_LIT_6": {
+      "sprite": "cliff_vines/cliff_vine_070/not_lit_6/sprite.webp",
+      "pixellab_object_id": "b9f4be69-2404-4b3e-b000-211dcabe20d2",
+      "generated_at": "2026-08-16T10:41:25+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.4087,
+      "glow_score": 0.0552,
+      "relit_from": "LIT_4"
+    }
+  },
+  "collision": true,
+  "hitbox_shape": "ellipse"
+}

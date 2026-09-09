@@ -1,0 +1,113 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-13T23:45:49+00:00",
+  "id": "cupboard_008",
+  "group": "cupboards_and_shelves",
+  "rank": 106,
+  "index": 8,
+  "name": "Open shelf unit of jars and crocks 008",
+  "lights": null,
+  "variety": "open shelf unit of jars and crocks",
+  "glow_concept": "jars of glowing preserves on the shelves",
+  "prompt": "a heavy floor-standing piece of wooden storage furniture: a cupboard, dresser or laden shelf unit with thick boards, made to stand against a wall, open shelf unit of jars and crocks, roughly six feet tall, human height, self-emissive at night, softly radiating light: jars of glowing preserves on the shelves",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 128,
+  "sprite": "cupboards_and_shelves/cupboard_008/sprite.webp",
+  "placement": {
+    "world_height_m": 1.798,
+    "world_px_height": 92,
+    "character_height_px": 87,
+    "character_height_m": 1.7,
+    "note": "ONE SCENERY PIXEL IS ONE PLAYER PIXEL. world_px_height IS the art's own alpha bbox height, so scenery is placed into the world at 1:1 exactly as the avatar is (setScale(1)) and the two share one pixel grid. The CAMERA still zooms the whole scene \u2014 that is uniform and correct; what must never happen is scenery being resampled on its own, against the player. world_height_m is what the art reads as beside a 87px character; declared_height_m is what it was once declared to be, and a gap between them means the ART is the wrong size.",
+    "declared_height_m": 1.4,
+    "content_box": [
+      24,
+      21,
+      104,
+      113
+    ],
+    "content_px_height": 92,
+    "canvas_render_px": 128
+  },
+  "pixellab_object_id": "dade316b-1b0e-4d90-89dd-cbc9bc3d4698",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)",
+  "must_be_imbplemented_with_random_hflip": true,
+  "states": {
+    "LIT_4": {
+      "sprite": "cupboards_and_shelves/cupboard_008/lit_4/sprite.webp",
+      "pixellab_object_id": "58246f15-ef1e-42a8-b530-431bc435c6e2",
+      "generated_at": "2026-08-16T11:35:46+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.8147,
+      "glow_score": 0.0323,
+      "rotations": {
+        "south-east": "cupboards_and_shelves/cupboard_008/lit_4/rotations/south-east.webp",
+        "south-west": "cupboards_and_shelves/cupboard_008/lit_4/rotations/south-west.webp",
+        "south": "cupboards_and_shelves/cupboard_008/lit_4/sprite.webp"
+      }
+    },
+    "NOT_LIT_2": {
+      "sprite": "cupboards_and_shelves/cupboard_008/not_lit_2/sprite.webp",
+      "pixellab_object_id": "4c549b23-a3d9-4d47-8c93-5d76c3cc88e6",
+      "generated_at": "2026-08-16T11:35:26+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.4059,
+      "glow_score": 0.0039,
+      "rotations": {
+        "south-east": "cupboards_and_shelves/cupboard_008/not_lit_2/rotations/south-east.webp",
+        "south-west": "cupboards_and_shelves/cupboard_008/not_lit_2/rotations/south-west.webp",
+        "south": "cupboards_and_shelves/cupboard_008/not_lit_2/sprite.webp"
+      }
+    },
+    "NOT_LIT_3": {
+      "sprite": "cupboards_and_shelves/cupboard_008/sprite.webp",
+      "pixellab_object_id": "dade316b-1b0e-4d90-89dd-cbc9bc3d4698",
+      "generated_at": "2026-08-13T23:45:49+00:00",
+      "relit_from": "LIT_1",
+      "rotations": {
+        "south-east": "cupboards_and_shelves/cupboard_008/rotations/south-east.webp",
+        "south-west": "cupboards_and_shelves/cupboard_008/rotations/south-west.webp",
+        "south": "cupboards_and_shelves/cupboard_008/sprite.webp"
+      }
+    },
+    "NOT_LIT_4": {
+      "sprite": "cupboards_and_shelves/cupboard_008/not_lit_4/sprite.webp",
+      "pixellab_object_id": "b8dc5974-eacf-4493-988c-852341c19708",
+      "generated_at": "2026-08-16T11:34:44+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.7877,
+      "glow_score": 0.0618,
+      "relit_from": "LIT_3",
+      "rotations": {
+        "south-east": "cupboards_and_shelves/cupboard_008/not_lit_4/rotations/south-east.webp",
+        "south-west": "cupboards_and_shelves/cupboard_008/not_lit_4/rotations/south-west.webp",
+        "south": "cupboards_and_shelves/cupboard_008/not_lit_4/sprite.webp"
+      }
+    }
+  },
+  "collision": true,
+  "hitbox_shape": "rect",
+  "light": {
+    "strength": 0.1,
+    "color": "#ffd892",
+    "radius": 2,
+    "reference": "the spawn bonfire is 1.0 (radius 7); strength 0 is no light",
+    "states": {
+      "LIT_4": {
+        "strength": 0.08,
+        "color": "#ffd892",
+        "radius": 2
+      }
+    },
+    "kind": "glow/magic",
+    "flame": false,
+    "embers": false
+  }
+}

@@ -1,0 +1,132 @@
+{
+  "schema": "tiles3/tops@1",
+  "kind": "top_only",
+  "wall_is_meaningless": true,
+  "not_a_candidate_for": "x over y",
+  "ground": "parquet_floor",
+  "flavour": "detail",
+  "index": 111,
+  "seed": 41843,
+  "prompt": "parquet floor, a crack in the varnish in the middle, parquet floor all around the edge",
+  "palette_top": "#a7754b",
+  "tile_id": "02dbd223-2118-45a7-b27b-b36d9d19bbda",
+  "n_tiles": 16,
+  "tiles": [
+    "tile_00.webp",
+    "tile_01.webp",
+    "tile_02.webp",
+    "tile_03.webp",
+    "tile_04.webp",
+    "tile_05.webp",
+    "tile_06.webp",
+    "tile_07.webp",
+    "tile_08.webp",
+    "tile_09.webp",
+    "tile_10.webp",
+    "tile_11.webp",
+    "tile_12.webp",
+    "tile_13.webp",
+    "tile_14.webp",
+    "tile_15.webp"
+  ],
+  "settings": {
+    "tile_size": 64,
+    "tile_view": "high top-down",
+    "view_angle": 28.0,
+    "depth_ratio": 0.5,
+    "tile_type": "isometric",
+    "flat_top_px": 2,
+    "outline_mode": "segmentation"
+  },
+  "usd": 0.096,
+  "created": "2026-09-03T07:18:27+00:00",
+  "top_face": {
+    "per_tile": [
+      {
+        "colours": 17,
+        "dominant_share": 0.1775,
+        "px": 924
+      },
+      {
+        "colours": 19,
+        "dominant_share": 0.1526,
+        "px": 924
+      },
+      {
+        "colours": 19,
+        "dominant_share": 0.1981,
+        "px": 924
+      },
+      {
+        "colours": 24,
+        "dominant_share": 0.2229,
+        "px": 924
+      },
+      {
+        "colours": 20,
+        "dominant_share": 0.1797,
+        "px": 924
+      },
+      {
+        "colours": 24,
+        "dominant_share": 0.1255,
+        "px": 924
+      },
+      {
+        "colours": 19,
+        "dominant_share": 0.2013,
+        "px": 924
+      },
+      {
+        "colours": 21,
+        "dominant_share": 0.145,
+        "px": 924
+      },
+      {
+        "colours": 21,
+        "dominant_share": 0.171,
+        "px": 924
+      },
+      {
+        "colours": 23,
+        "dominant_share": 0.1429,
+        "px": 924
+      },
+      {
+        "colours": 20,
+        "dominant_share": 0.1602,
+        "px": 924
+      },
+      {
+        "colours": 20,
+        "dominant_share": 0.1418,
+        "px": 924
+      },
+      {
+        "colours": 19,
+        "dominant_share": 0.1569,
+        "px": 924
+      },
+      {
+        "colours": 28,
+        "dominant_share": 0.1331,
+        "px": 924
+      },
+      {
+        "colours": 18,
+        "dominant_share": 0.1494,
+        "px": 924
+      },
+      {
+        "colours": 16,
+        "dominant_share": 0.1688,
+        "px": 924
+      }
+    ],
+    "mean_colours": 20.5,
+    "mean_dominant_share": 0.1642
+  },
+  "motif": "a crack in the varnish",
+  "motif_source": "tiles/config/details.json",
+  "walkable": true
+}

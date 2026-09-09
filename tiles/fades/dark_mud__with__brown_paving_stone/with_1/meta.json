@@ -1,0 +1,41 @@
+{
+ "schema": "tiles3/fades@1",
+ "kind": "fade_top_only",
+ "wall_is_meaningless": true,
+ "use_for": "transition",
+ "dominant": "dark_mud",
+ "minor": "brown_paving_stone",
+ "prompt": "dark mud with brown paving stone",
+ "phrasing": "with",
+ "rep": 1,
+ "seed": 81940,
+ "tile_id": "7e856eca-48f8-4dc2-bd85-2dd3e7d8742d",
+ "settings": {
+  "tile_size": 64,
+  "tile_view": "high top-down",
+  "view_angle": 28.0,
+  "depth_ratio": 0.5,
+  "tile_type": "isometric",
+  "flat_top_px": 2,
+  "outline_mode": "segmentation"
+ },
+ "n_tiles": 16,
+ "tiles": [
+  "tile_00.webp",
+  "tile_01.webp",
+  "tile_02.webp",
+  "tile_03.webp",
+  "tile_04.webp",
+  "tile_05.webp",
+  "tile_06.webp",
+  "tile_07.webp",
+  "tile_08.webp",
+  "tile_09.webp",
+  "tile_10.webp",
+  "tile_11.webp",
+  "tile_12.webp",
+  "tile_13.webp",
+  "tile_14.webp",
+  "tile_15.webp"
+ ]
+}

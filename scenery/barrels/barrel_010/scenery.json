@@ -1,0 +1,111 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-13T23:35:28+00:00",
+  "id": "barrel_010",
+  "group": "barrels",
+  "rank": 28,
+  "index": 10,
+  "name": "Cracked-stave double-banded barrel 010",
+  "lights": null,
+  "variety": "cracked-stave double-banded barrel",
+  "glow_concept": "pale soulstone hoops instead of iron",
+  "prompt": "a stout oak barrel with iron hoops and a wooden lid standing on bare ground, cracked-stave double-banded barrel, waist-high, self-emissive at night, softly radiating light: pale soulstone hoops instead of iron",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 64,
+  "sprite": "barrels/barrel_010/sprite.webp",
+  "placement": {
+    "world_height_m": 1.016,
+    "world_px_height": 52,
+    "character_height_px": 87,
+    "character_height_m": 1.7,
+    "note": "ONE SCENERY PIXEL IS ONE PLAYER PIXEL. world_px_height IS the art's own alpha bbox height, so scenery is placed into the world at 1:1 exactly as the avatar is (setScale(1)) and the two share one pixel grid. The CAMERA still zooms the whole scene \u2014 that is uniform and correct; what must never happen is scenery being resampled on its own, against the player. world_height_m is what the art reads as beside a 87px character; declared_height_m is what it was once declared to be, and a gap between them means the ART is the wrong size.",
+    "declared_height_m": 0.97,
+    "content_box": [
+      13,
+      7,
+      52,
+      59
+    ],
+    "content_px_height": 52,
+    "canvas_render_px": 64
+  },
+  "pixellab_object_id": "bbd23dff-c544-4ec4-8865-8fb169f4d5a6",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)",
+  "must_be_imbplemented_with_random_hflip": true,
+  "states": {
+    "NOT_LIT_1": {
+      "sprite": "barrels/barrel_010/not_lit_1/sprite.webp",
+      "pixellab_object_id": "8dc40f37-fca4-4a1f-9f9e-c975c7cf9957",
+      "generated_at": "2026-08-15T19:44:38+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.9105,
+      "glow_score": 0.0,
+      "rotations": {
+        "south-east": "barrels/barrel_010/not_lit_1/rotations/south-east.webp",
+        "south-west": "barrels/barrel_010/not_lit_1/rotations/south-west.webp",
+        "south": "barrels/barrel_010/not_lit_1/sprite.webp"
+      }
+    },
+    "NOT_LIT_2": {
+      "sprite": "barrels/barrel_010/not_lit_2/sprite.webp",
+      "pixellab_object_id": "aa5a2c74-7cbb-4b73-841f-cf19c967b87a",
+      "generated_at": "2026-08-15T19:44:49+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.902,
+      "glow_score": 0.0,
+      "rotations": {
+        "south-east": "barrels/barrel_010/not_lit_2/rotations/south-east.webp",
+        "south-west": "barrels/barrel_010/not_lit_2/rotations/south-west.webp",
+        "south": "barrels/barrel_010/not_lit_2/sprite.webp"
+      }
+    },
+    "NOT_LIT_3": {
+      "sprite": "barrels/barrel_010/sprite.webp",
+      "pixellab_object_id": "bbd23dff-c544-4ec4-8865-8fb169f4d5a6",
+      "generated_at": "2026-08-13T23:35:28+00:00",
+      "relit_from": "LIT_1",
+      "rotations": {
+        "south-east": "barrels/barrel_010/rotations/south-east.webp",
+        "south-west": "barrels/barrel_010/rotations/south-west.webp",
+        "south": "barrels/barrel_010/sprite.webp"
+      }
+    },
+    "NOT_LIT_4": {
+      "sprite": "barrels/barrel_010/not_lit_4/sprite.webp",
+      "pixellab_object_id": "7c1c6f95-9f49-412c-9e04-f1b1e2606ac7",
+      "generated_at": "2026-08-15T19:44:48+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.4043,
+      "glow_score": 0.0,
+      "relit_from": "LIT_2",
+      "rotations": {
+        "south-east": "barrels/barrel_010/not_lit_4/rotations/south-east.webp",
+        "south-west": "barrels/barrel_010/not_lit_4/rotations/south-west.webp",
+        "south": "barrels/barrel_010/not_lit_4/sprite.webp"
+      }
+    },
+    "NOT_LIT_5": {
+      "sprite": "barrels/barrel_010/not_lit_5/sprite.webp",
+      "pixellab_object_id": "9a2b71e6-0178-4b63-ac2f-f696d1166111",
+      "generated_at": "2026-08-15T19:44:37+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.8539,
+      "glow_score": 0.0,
+      "relit_from": "LIT_4",
+      "rotations": {
+        "south-east": "barrels/barrel_010/not_lit_5/rotations/south-east.webp",
+        "south-west": "barrels/barrel_010/not_lit_5/rotations/south-west.webp",
+        "south": "barrels/barrel_010/not_lit_5/sprite.webp"
+      }
+    }
+  },
+  "collision": true,
+  "hitbox_shape": "ellipse"
+}

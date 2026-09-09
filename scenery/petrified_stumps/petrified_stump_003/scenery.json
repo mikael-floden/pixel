@@ -1,0 +1,281 @@
+{
+  "format": "scenery-piece@2",
+  "id": "petrified_stump_003",
+  "group": "petrified_stumps",
+  "rank": 65,
+  "index": 3,
+  "name": "Tall broken petrified trunk 003",
+  "lights": null,
+  "variety": "tall broken petrified trunk",
+  "glow_concept": null,
+  "prompt": "a tree stump turned entirely to grey banded stone, cold mineral colors with agate rings on the cut top, clearly rock not wood, no brown bark, tall broken petrified trunk, roughly six feet tall, human height, completely unlit, no glow, no light sources, no self-emission",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 64,
+  "sprite": "petrified_stumps/petrified_stump_003/sprite.webp",
+  "placement": {
+    "world_height_m": 0.957,
+    "world_px_height": 49,
+    "character_height_px": 87,
+    "character_height_m": 1.7,
+    "note": "ONE SCENERY PIXEL IS ONE PLAYER PIXEL. world_px_height IS the art's own alpha bbox height, so scenery is placed into the world at 1:1 exactly as the avatar is (setScale(1)) and the two share one pixel grid. The CAMERA still zooms the whole scene \u2014 that is uniform and correct; what must never happen is scenery being resampled on its own, against the player. world_height_m is what the art reads as beside a 87px character; declared_height_m is what it was once declared to be, and a gap between them means the ART is the wrong size.",
+    "declared_height_m": 1.4,
+    "content_box": [
+      14,
+      8,
+      50,
+      57
+    ],
+    "content_px_height": 49,
+    "canvas_render_px": 64
+  },
+  "pixellab_object_id": "9abc904d-69d4-400e-a201-d8d906c90625",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)",
+  "must_be_imbplemented_with_random_hflip": true,
+  "states": {
+    "LIT_1": {
+      "sprite": "petrified_stumps/petrified_stump_003/lit_1/sprite.webp",
+      "pixellab_object_id": "a2d157f0-f14d-4a10-be67-6dbf51a4d6b5",
+      "generated_at": "2026-08-16T14:24:58+00:00",
+      "glow_concept": "growth rings glowing amber in the cut top",
+      "difference_from_source": 0.7827,
+      "glow_score": 0.1994,
+      "animations": {
+        "motion": {
+          "group_id": "7f3b5cca-8238-4290-8f3b-18f861cd20e6",
+          "description": "This is the same picture in every frame. ONLY the gold light on top of the stump brightens a little and returns. It is lit and clearly visible in every frame, including the first. It gets only SLIGHTLY brighter -- never white, never washed out -- and keeps its own colour throughout: brightest in the middle, back to its first-frame brightness at the end, never dimmer at the end than the start. Nothing is added or removed anywhere: every object appears in every frame, the same number of them, in the same places, at the same size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour, no outline redrawn. The last frame matches the first exactly.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "petrified_stumps/petrified_stump_003/lit_1/animations/motion/00.webp",
+            "petrified_stumps/petrified_stump_003/lit_1/animations/motion/01.webp",
+            "petrified_stumps/petrified_stump_003/lit_1/animations/motion/02.webp",
+            "petrified_stumps/petrified_stump_003/lit_1/animations/motion/03.webp",
+            "petrified_stumps/petrified_stump_003/lit_1/animations/motion/04.webp"
+          ],
+          "strip": "petrified_stumps/petrified_stump_003/lit_1/animations/motion__strip.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-08-29T19:16:17+00:00",
+          "brief": "D17",
+          "review": "ANIMATION_PROBABLY_GOOD",
+          "review_metrics": {
+            "base_outline": 0.0
+          },
+          "light_frames": [
+            {
+              "intensity": 1.091,
+              "dx": -0.5,
+              "dy": -15.7
+            },
+            {
+              "intensity": 1.5,
+              "dx": -0.9,
+              "dy": -11.7
+            },
+            {
+              "intensity": 0.939,
+              "dx": -0.8,
+              "dy": -9.5
+            },
+            {
+              "intensity": 1.409,
+              "dx": -0.6,
+              "dy": -15.2
+            },
+            {
+              "intensity": 0.5,
+              "dx": -0.7,
+              "dy": -13.0
+            }
+          ]
+        }
+      }
+    },
+    "LIT_2": {
+      "sprite": "petrified_stumps/petrified_stump_003/lit_2/sprite.webp",
+      "pixellab_object_id": "184385ec-7978-4f2f-b6ce-e9cd140ca5c5",
+      "glow_concept": "opalized bark shimmering with rainbow light",
+      "difference_from_source": 0.914,
+      "glow_score": 0.2623,
+      "generated_at": "2026-08-15T16:13:33+00:00"
+    },
+    "LIT_4": {
+      "sprite": "petrified_stumps/petrified_stump_003/lit_4/sprite.webp",
+      "pixellab_object_id": "e27c69a0-e06d-49ce-a0a7-42dbc70c7e91",
+      "glow_concept": "small ghost-flames where branches once grew",
+      "difference_from_source": 0.8493,
+      "glow_score": 0.1898,
+      "generated_at": "2026-08-15T16:13:33+00:00",
+      "animations": {
+        "flame": {
+          "group_id": "015e5dd5-20a4-4c55-a5b6-f4b71979e155",
+          "description": "Animate the flame only",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "petrified_stumps/petrified_stump_003/lit_4/animations/flame/00.webp",
+            "petrified_stumps/petrified_stump_003/lit_4/animations/flame/01.webp",
+            "petrified_stumps/petrified_stump_003/lit_4/animations/flame/02.webp",
+            "petrified_stumps/petrified_stump_003/lit_4/animations/flame/03.webp",
+            "petrified_stumps/petrified_stump_003/lit_4/animations/flame/04.webp"
+          ],
+          "strip": "petrified_stumps/petrified_stump_003/lit_4/animations/flame__strip.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-08-29T07:07:05+00:00",
+          "review": "ANIMATION_PROBABLY_GOOD",
+          "review_metrics": {
+            "base_outline": 0.0
+          },
+          "light_frames": [
+            {
+              "intensity": 1.162,
+              "dx": -1.0,
+              "dy": -8.6
+            },
+            {
+              "intensity": 1.218,
+              "dx": -0.7,
+              "dy": -6.7
+            },
+            {
+              "intensity": 1.03,
+              "dx": -1.0,
+              "dy": -6.0
+            },
+            {
+              "intensity": 0.823,
+              "dx": -0.9,
+              "dy": -6.5
+            },
+            {
+              "intensity": 0.767,
+              "dx": -0.6,
+              "dy": -6.0
+            }
+          ]
+        }
+      }
+    },
+    "NOT_LIT_1": {
+      "sprite": "petrified_stumps/petrified_stump_003/sprite.webp",
+      "pixellab_object_id": "9abc904d-69d4-400e-a201-d8d906c90625",
+      "glow_score": 0.0,
+      "generated_at": "2026-08-13T20:35:56+00:00"
+    },
+    "NOT_LIT_10": {
+      "sprite": "petrified_stumps/petrified_stump_003/not_lit_10/sprite.webp",
+      "pixellab_object_id": "e5cedf39-3de9-45e0-b353-33a5e2310ed0",
+      "glow_concept": null,
+      "difference_from_source": 0.7263,
+      "glow_score": 0.0,
+      "generated_at": "2026-08-15T16:13:33+00:00"
+    },
+    "NOT_LIT_2": {
+      "sprite": "petrified_stumps/petrified_stump_003/not_lit_2/sprite.webp",
+      "pixellab_object_id": "12f76909-8ef6-4a19-a7fa-fd65574d47ad",
+      "glow_concept": null,
+      "difference_from_source": 0.8033,
+      "glow_score": 0.0,
+      "generated_at": "2026-08-15T16:13:33+00:00"
+    },
+    "NOT_LIT_3": {
+      "sprite": "petrified_stumps/petrified_stump_003/not_lit_3/sprite.webp",
+      "pixellab_object_id": "758318a3-8589-4e31-b42d-e6ec5125e631",
+      "generated_at": "2026-08-16T14:24:59+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.7228,
+      "glow_score": 0.0
+    },
+    "NOT_LIT_4": {
+      "sprite": "petrified_stumps/petrified_stump_003/not_lit_4/sprite.webp",
+      "pixellab_object_id": "f833aa45-64d2-46f2-98af-2d6dd8b80f12",
+      "glow_concept": null,
+      "difference_from_source": 0.6408,
+      "glow_score": 0.0715,
+      "generated_at": "2026-08-15T16:13:33+00:00"
+    },
+    "NOT_LIT_5": {
+      "sprite": "petrified_stumps/petrified_stump_003/not_lit_5/sprite.webp",
+      "pixellab_object_id": "2d68c6b2-dc2b-4af8-9073-067ede86b927",
+      "generated_at": "2026-08-16T14:25:00+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.7718,
+      "glow_score": 0.0
+    },
+    "NOT_LIT_6": {
+      "sprite": "petrified_stumps/petrified_stump_003/not_lit_6/sprite.webp",
+      "pixellab_object_id": "28edc579-8a6d-4a29-9612-85d0c3d58617",
+      "glow_concept": null,
+      "difference_from_source": 0.7247,
+      "glow_score": 0.0,
+      "generated_at": "2026-08-15T16:13:33+00:00"
+    },
+    "NOT_LIT_7": {
+      "sprite": "petrified_stumps/petrified_stump_003/not_lit_7/sprite.webp",
+      "pixellab_object_id": "9e63707a-4c83-44fb-b206-39b72ff5bbd0",
+      "generated_at": "2026-08-16T14:25:01+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.7874,
+      "glow_score": 0.0
+    },
+    "NOT_LIT_8": {
+      "sprite": "petrified_stumps/petrified_stump_003/not_lit_8/sprite.webp",
+      "pixellab_object_id": "bccd11e4-7450-49bb-8603-206ff88e0c49",
+      "generated_at": "2026-08-16T14:25:10+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.8015,
+      "glow_score": 0.0
+    },
+    "NOT_LIT_9": {
+      "sprite": "petrified_stumps/petrified_stump_003/not_lit_9/sprite.webp",
+      "pixellab_object_id": "9a4ef5a4-b5b1-4e14-896f-1846551aec7f",
+      "glow_concept": null,
+      "difference_from_source": 0.7013,
+      "glow_score": 0.0007,
+      "generated_at": "2026-08-15T16:13:33+00:00"
+    }
+  },
+  "generated_at": "2026-08-13T20:35:56+00:00",
+  "collision": true,
+  "hitbox_shape": "ellipse",
+  "light": {
+    "strength": 0.15,
+    "color": "#ffbc2c",
+    "radius": 3,
+    "reference": "the spawn bonfire is 1.0 (radius 7); strength 0 is no light",
+    "states": {
+      "LIT_1": {
+        "strength": 0.15,
+        "color": "#ffbc2c",
+        "radius": 3
+      },
+      "LIT_2": {
+        "strength": 0.15,
+        "color": "#efffe7",
+        "radius": 3
+      },
+      "LIT_4": {
+        "strength": 0.18,
+        "color": "#95fff4",
+        "radius": 4
+      }
+    },
+    "kind": "glow/magic",
+    "flame": false,
+    "embers": false
+  }
+}

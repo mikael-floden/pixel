@@ -1,0 +1,78 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-15T18:03:40+00:00",
+  "id": "window_098",
+  "group": "windows",
+  "type": "WINDOW",
+  "rank": 25,
+  "index": 98,
+  "name": "A plain rectangular window in whitewashed plaster and wood 098",
+  "lights": "LIGHTS_OFF",
+  "variety": "a plain rectangular window in whitewashed plaster and wood",
+  "modifier": "a window box of dead brown plants",
+  "glow_concept": null,
+  "prompt": "a house WINDOW seen from outside, dark and unlit with nobody home, ONLY the window itself with its frame and sill, no wall around it, no building, no people, fantasy RPG village architecture, small clear margin at edges, transparent background, a plain rectangular window in whitewashed plaster and wood, a window box of dead brown plants, a tall window, nearly a person's height, completely unlit, no glow, no light sources, no self-emission",
+  "view": "low top-down",
+  "direction": "south",
+  "directions": [
+    "south",
+    "south-east",
+    "south-west"
+  ],
+  "must_be_imbplemented_with_random_hflip": false,
+  "rotations": {
+    "south-east": "windows/window_098/rotations/south-east.webp",
+    "south-west": "windows/window_098/rotations/south-west.webp",
+    "south": "windows/window_098/sprite.webp"
+  },
+  "size": 80,
+  "sprite": "windows/window_098/sprite.webp",
+  "placement": {
+    "world_height_m": 1.29,
+    "world_px_height": 66,
+    "character_height_px": 87,
+    "character_height_m": 1.7,
+    "note": "ONE SCENERY PIXEL IS ONE PLAYER PIXEL. world_px_height IS the art's own alpha bbox height, so scenery is placed into the world at 1:1 exactly as the avatar is (setScale(1)) and the two share one pixel grid. The CAMERA still zooms the whole scene \u2014 that is uniform and correct; what must never happen is scenery being resampled on its own, against the player. world_height_m is what the art reads as beside a 87px character; declared_height_m is what it was once declared to be, and a gap between them means the ART is the wrong size.",
+    "content_box": [
+      17,
+      9,
+      64,
+      75
+    ],
+    "content_px_height": 66,
+    "canvas_render_px": 80,
+    "declared_height_m": 1.18
+  },
+  "pixellab_object_id": "2ffeadde-5e82-4585-93e9-96db1571fb51",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)",
+  "states": {
+    "LIGHTS_OFF": {
+      "sprite": "windows/window_098/sprite.webp",
+      "rotations": {
+        "south-east": "windows/window_098/rotations/south-east.webp",
+        "south-west": "windows/window_098/rotations/south-west.webp",
+        "south": "windows/window_098/sprite.webp"
+      },
+      "pixellab_object_id": "2ffeadde-5e82-4585-93e9-96db1571fb51"
+    },
+    "LIGHTS_ON": {
+      "sprite": "windows/window_098/lights_on/sprite.webp",
+      "rotations": {
+        "south-east": "windows/window_098/lights_on/rotations/south-east.webp",
+        "south": "windows/window_098/lights_on/sprite.webp",
+        "south-west": "windows/window_098/lights_on/rotations/south-west.webp"
+      },
+      "pixellab_object_id": "5c938b7f-437d-4241-b200-851231c2a712",
+      "generated_at": "2026-08-19T16:46:28+00:00",
+      "edit_description": "Change the window to represent lights being on inside the house. DON'T CHANGE ANYTHING ELSE. THE FRAME SHOULD BE 100% IDENTICAL. DON'T CHANGE A SINGLE PIXEL OTHER THEN TURNING THE LIGHTS ON SO THE WINDOW REPRESENTS SOMEONE IS HOME."
+    }
+  },
+  "collision": true,
+  "hitbox_shape": "ellipse"
+}

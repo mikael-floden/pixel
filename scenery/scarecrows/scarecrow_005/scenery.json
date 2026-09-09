@@ -1,0 +1,187 @@
+{
+  "format": "scenery-piece@2",
+  "id": "scarecrow_005",
+  "group": "scarecrows",
+  "rank": 26,
+  "index": 5,
+  "name": "Fresh straw, bright kerchief 005",
+  "lights": null,
+  "variety": "fresh straw, bright kerchief",
+  "glow_concept": null,
+  "prompt": "a scarecrow on a cross-pole frame wearing old patched clothes, a stuffed sack head, straw spilling from the sleeves, fresh straw, bright kerchief, large, well above head height of a person, completely unlit, no glow, no light sources, no self-emission",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 96,
+  "sprite": "scarecrows/scarecrow_005/sprite.webp",
+  "placement": {
+    "world_height_m": 1.798,
+    "world_px_height": 92,
+    "character_height_px": 87,
+    "character_height_m": 1.7,
+    "note": "ONE SCENERY PIXEL IS ONE PLAYER PIXEL. world_px_height IS the art's own alpha bbox height, so scenery is placed into the world at 1:1 exactly as the avatar is (setScale(1)) and the two share one pixel grid. The CAMERA still zooms the whole scene \u2014 that is uniform and correct; what must never happen is scenery being resampled on its own, against the player. world_height_m is what the art reads as beside a 87px character; declared_height_m is what it was once declared to be, and a gap between them means the ART is the wrong size.",
+    "declared_height_m": 2.11,
+    "content_box": [
+      12,
+      2,
+      86,
+      94
+    ],
+    "content_px_height": 92,
+    "canvas_render_px": 96
+  },
+  "pixellab_object_id": "c7ad361a-473a-4938-8415-df38179baeb6",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)",
+  "must_be_imbplemented_with_random_hflip": true,
+  "generated_at": "2026-08-13T11:18:21+00:00",
+  "states": {
+    "LIT_1": {
+      "sprite": "scarecrows/scarecrow_005/lit_1/sprite.webp",
+      "pixellab_object_id": "52e16866-0af3-480e-bf07-f76eb879ac5d",
+      "generated_at": "2026-08-16T20:36:51+00:00",
+      "glow_concept": "lantern hung from an outstretched arm",
+      "difference_from_source": 0.9174,
+      "glow_score": 0.0691,
+      "rotations": {
+        "south-east": "scarecrows/scarecrow_005/lit_1/rotations/south-east.webp",
+        "south-west": "scarecrows/scarecrow_005/lit_1/rotations/south-west.webp",
+        "south": "scarecrows/scarecrow_005/lit_1/sprite.webp"
+      },
+      "animations": {
+        "motion": {
+          "group_id": "270f1aa0-81ec-4ff7-9549-f3325206076e",
+          "description": "This is the same picture in every frame. ONLY the hanging lantern moves, swinging very gently. Everything else is frozen and pixel-for-pixel identical in every frame. Do not redraw anything else, and do not add or remove anything.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "scarecrows/scarecrow_005/lit_1/animations/motion/00.webp",
+            "scarecrows/scarecrow_005/lit_1/animations/motion/01.webp",
+            "scarecrows/scarecrow_005/lit_1/animations/motion/02.webp",
+            "scarecrows/scarecrow_005/lit_1/animations/motion/03.webp",
+            "scarecrows/scarecrow_005/lit_1/animations/motion/04.webp"
+          ],
+          "strip": "scarecrows/scarecrow_005/lit_1/animations/motion__strip.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-08-29T13:28:38+00:00",
+          "brief": "S2",
+          "review": "ANIMATION_PROBABLY_BAD",
+          "review_metrics": {
+            "class": "fire",
+            "base": 0.5316,
+            "still": 0.228
+          },
+          "light_frames": [
+            {
+              "intensity": 1.248,
+              "dx": 17.4,
+              "dy": -3.5
+            },
+            {
+              "intensity": 0.562,
+              "dx": 22.4,
+              "dy": -1.5
+            },
+            {
+              "intensity": 0.804,
+              "dx": 20.0,
+              "dy": -1.0
+            },
+            {
+              "intensity": 1.107,
+              "dx": 18.1,
+              "dy": -3.5
+            },
+            {
+              "intensity": 1.279,
+              "dx": 17.1,
+              "dy": -4.8
+            }
+          ]
+        }
+      }
+    },
+    "NOT_LIT_3": {
+      "sprite": "scarecrows/scarecrow_005/not_lit_3/sprite.webp",
+      "pixellab_object_id": "91373e33-2949-49e7-bb82-3a6bde4178d6",
+      "generated_at": "2026-08-16T20:35:48+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.5948,
+      "glow_score": 0.0224,
+      "rotations": {
+        "south-east": "scarecrows/scarecrow_005/not_lit_3/rotations/south-east.webp",
+        "south-west": "scarecrows/scarecrow_005/not_lit_3/rotations/south-west.webp",
+        "south": "scarecrows/scarecrow_005/not_lit_3/sprite.webp"
+      }
+    },
+    "NOT_LIT_4": {
+      "sprite": "scarecrows/scarecrow_005/sprite.webp",
+      "pixellab_object_id": "c7ad361a-473a-4938-8415-df38179baeb6",
+      "generated_at": "2026-08-16T20:35:49+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.7883,
+      "glow_score": 0.1087,
+      "replaced_anchor": "NOT_LIT_1",
+      "rotations": {
+        "south-east": "scarecrows/scarecrow_005/rotations/south-east.webp",
+        "south-west": "scarecrows/scarecrow_005/rotations/south-west.webp",
+        "south": "scarecrows/scarecrow_005/sprite.webp"
+      },
+      "animations": {
+        "motion": {
+          "group_id": "8d8dc4e5-ea28-4b94-8b6d-694b0f25c8a8",
+          "description": "Animate the loose clothing only, flapping in a breeze. Nothing else moves.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "scarecrows/scarecrow_005/animations/motion/00.webp",
+            "scarecrows/scarecrow_005/animations/motion/01.webp",
+            "scarecrows/scarecrow_005/animations/motion/02.webp",
+            "scarecrows/scarecrow_005/animations/motion/03.webp",
+            "scarecrows/scarecrow_005/animations/motion/04.webp"
+          ],
+          "strip": "scarecrows/scarecrow_005/animations/motion__strip.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-08-29T08:36:13+00:00",
+          "brief": "C3",
+          "review": "ANIMATION_PROBABLY_BAD",
+          "review_metrics": {
+            "class": "fire",
+            "base": 0.4815,
+            "still": 0.182
+          }
+        }
+      }
+    }
+  },
+  "collision": true,
+  "hitbox_shape": "ellipse",
+  "light": {
+    "strength": 0.08,
+    "color": "#ffb45c",
+    "radius": 1,
+    "reference": "the spawn bonfire is 1.0 (radius 7); strength 0 is no light",
+    "states": {
+      "LIT_1": {
+        "strength": 0.06,
+        "color": "#ffb45c",
+        "radius": 1
+      }
+    },
+    "kind": "fire/enclosed",
+    "flame": true,
+    "embers": false
+  }
+}

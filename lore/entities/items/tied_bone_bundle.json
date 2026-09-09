@@ -1,0 +1,23 @@
+{
+  "domain": "items",
+  "id": "tied_bone_bundle",
+  "name_seen": "Bone Bundle",
+  "law": "V",
+  "description": "Long pale bones tied off in a bundle. A Palehusk was carrying them, which raises questions about the string.",
+  "lore": [
+    "Fourteen gold for the bones, which is generous, and nothing whatever for the cord, which is the part everyone actually looks at.",
+    "A [[monsters/malformed_creature|Palehusk]] was carrying it. That is not the strange part — they carry things, and going through what a broken one leaves is reading rather than robbing. The strange part is the knot. A ropemaker on the black rock road was shown one and named it without hesitating: a load-hitch, thrown left over right and dressed down, the knot you use when you mean to carry a weight a long way and want it riding quiet on your back. It is not a knot a hand arrives at by accident. Somebody was taught it.",
+    "The crackers untie them. They could cut them. They untie them."
+  ],
+  "related": [
+    {
+      "domain": "monsters",
+      "id": "malformed_creature"
+    },
+    {
+      "domain": "lore",
+      "id": "the_hard_pieces"
+    }
+  ],
+  "gm_notes": "A Hollowed thing running a hand's craft it has no inside left to have learned. Sits beside the locket and the ring in the Palehusk record; still no name has been read off one."
+}

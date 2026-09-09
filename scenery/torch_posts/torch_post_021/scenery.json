@@ -1,0 +1,195 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-14T01:42:08+00:00",
+  "id": "torch_post_021",
+  "group": "torch_posts",
+  "rank": 7,
+  "index": 21,
+  "name": "Leaning trailside torch 021",
+  "lights": null,
+  "variety": "leaning trailside torch",
+  "modifier": "moss-capped",
+  "glow_concept": null,
+  "prompt": "a rough wooden stake with an oil-soaked cloth-wrapped torch head bound at its top, leaning trailside torch, moss-capped, roughly six feet tall, human height, completely unlit, no glow, no light sources, no self-emission",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 64,
+  "sprite": "torch_posts/torch_post_021/sprite.webp",
+  "placement": {
+    "world_height_m": 1.192,
+    "world_px_height": 61,
+    "character_height_px": 87,
+    "character_height_m": 1.7,
+    "note": "ONE SCENERY PIXEL IS ONE PLAYER PIXEL. world_px_height IS the art's own alpha bbox height, so scenery is placed into the world at 1:1 exactly as the avatar is (setScale(1)) and the two share one pixel grid. The CAMERA still zooms the whole scene \u2014 that is uniform and correct; what must never happen is scenery being resampled on its own, against the player. world_height_m is what the art reads as beside a 87px character; declared_height_m is what it was once declared to be, and a gap between them means the ART is the wrong size.",
+    "declared_height_m": 1.52,
+    "content_box": [
+      23,
+      2,
+      41,
+      63
+    ],
+    "content_px_height": 61,
+    "canvas_render_px": 64
+  },
+  "pixellab_object_id": "e6889488-d8ec-44b6-a649-833908806f5d",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)",
+  "must_be_imbplemented_with_random_hflip": true,
+  "states": {
+    "LIT_1": {
+      "sprite": "torch_posts/torch_post_021/lit_1/sprite.webp",
+      "pixellab_object_id": "9e5058ea-53a3-45ab-a36c-0c8d77a1e4ea",
+      "generated_at": "2026-08-17T11:32:22+00:00",
+      "glow_concept": "molten pitch dripping in glowing beads",
+      "difference_from_source": 0.6218,
+      "glow_score": 0.1454,
+      "rotations": {
+        "south-east": "torch_posts/torch_post_021/lit_1/rotations/south-east.webp",
+        "south-west": "torch_posts/torch_post_021/lit_1/rotations/south-west.webp",
+        "south": "torch_posts/torch_post_021/lit_1/sprite.webp"
+      },
+      "animations": {
+        "motion": {
+          "group_id": "00372038-fe1d-4154-9e33-2892c38d89ad",
+          "description": "This is the same picture in every frame. ONLY the molten orange light in the head at the top brightens a little and returns. It only ever gets SLIGHTLY brighter: never white, never washed out, and it keeps its own colour at every single moment. It is at its brightest in the middle and back to exactly its first-frame brightness and colour at the end, never dimmer at the end than at the start. Everything else in the picture is copied from the first frame exactly, pixel for pixel, unchanged in shape, size, position and colour. No outline anywhere is redrawn. The last frame matches the first frame exactly, so the loop joins.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "torch_posts/torch_post_021/lit_1/animations/motion/00.webp",
+            "torch_posts/torch_post_021/lit_1/animations/motion/01.webp",
+            "torch_posts/torch_post_021/lit_1/animations/motion/02.webp",
+            "torch_posts/torch_post_021/lit_1/animations/motion/03.webp",
+            "torch_posts/torch_post_021/lit_1/animations/motion/04.webp"
+          ],
+          "strip": "torch_posts/torch_post_021/lit_1/animations/motion__strip.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-08-29T18:05:48+00:00",
+          "brief": "A3",
+          "review": "ANIMATION_PROBABLY_GOOD",
+          "review_metrics": {
+            "class": "fire",
+            "base": 0.0192,
+            "still": 0.682
+          },
+          "light_frames": [
+            {
+              "intensity": 1.222,
+              "dx": -0.6,
+              "dy": -18.3
+            },
+            {
+              "intensity": 1.282,
+              "dx": -0.6,
+              "dy": -18.3
+            },
+            {
+              "intensity": 0.885,
+              "dx": -0.2,
+              "dy": -14.9
+            },
+            {
+              "intensity": 0.848,
+              "dx": -0.3,
+              "dy": -20.0
+            },
+            {
+              "intensity": 0.764,
+              "dx": -0.5,
+              "dy": -17.8
+            }
+          ]
+        }
+      }
+    },
+    "NOT_LIT_1": {
+      "sprite": "torch_posts/torch_post_021/sprite.webp",
+      "pixellab_object_id": "e6889488-d8ec-44b6-a649-833908806f5d",
+      "generated_at": "2026-08-14T01:42:08+00:00",
+      "rotations": {
+        "south-east": "torch_posts/torch_post_021/rotations/south-east.webp",
+        "south-west": "torch_posts/torch_post_021/rotations/south-west.webp",
+        "south": "torch_posts/torch_post_021/sprite.webp"
+      }
+    },
+    "NOT_LIT_2": {
+      "sprite": "torch_posts/torch_post_021/not_lit_2/sprite.webp",
+      "pixellab_object_id": "cad24576-71d5-44e9-866f-9cbf98a0ca9b",
+      "generated_at": "2026-08-17T11:31:25+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.7859,
+      "glow_score": 0.0,
+      "rotations": {
+        "south-east": "torch_posts/torch_post_021/not_lit_2/rotations/south-east.webp",
+        "south-west": "torch_posts/torch_post_021/not_lit_2/rotations/south-west.webp",
+        "south": "torch_posts/torch_post_021/not_lit_2/sprite.webp"
+      }
+    },
+    "NOT_LIT_3": {
+      "sprite": "torch_posts/torch_post_021/not_lit_3/sprite.webp",
+      "pixellab_object_id": "152f6367-09e1-445e-9e38-cc3a2e730f56",
+      "generated_at": "2026-08-17T11:31:06+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.7014,
+      "glow_score": 0.0,
+      "rotations": {
+        "south-east": "torch_posts/torch_post_021/not_lit_3/rotations/south-east.webp",
+        "south-west": "torch_posts/torch_post_021/not_lit_3/rotations/south-west.webp",
+        "south": "torch_posts/torch_post_021/not_lit_3/sprite.webp"
+      }
+    },
+    "NOT_LIT_4": {
+      "sprite": "torch_posts/torch_post_021/not_lit_4/sprite.webp",
+      "pixellab_object_id": "e13e2ffe-e8ca-46c5-b84b-5f798507e792",
+      "generated_at": "2026-08-17T11:31:53+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.7789,
+      "glow_score": 0.034,
+      "rotations": {
+        "south-east": "torch_posts/torch_post_021/not_lit_4/rotations/south-east.webp",
+        "south-west": "torch_posts/torch_post_021/not_lit_4/rotations/south-west.webp",
+        "south": "torch_posts/torch_post_021/not_lit_4/sprite.webp"
+      }
+    },
+    "NOT_LIT_5": {
+      "sprite": "torch_posts/torch_post_021/not_lit_5/sprite.webp",
+      "pixellab_object_id": "5a2f9fd4-c150-4eb2-ac1d-082858142d94",
+      "generated_at": "2026-08-17T11:31:26+00:00",
+      "glow_concept": "unreadable charms glowing faintly up the post",
+      "difference_from_source": 0.5464,
+      "glow_score": 0.0087,
+      "relit_from": "LIT_2",
+      "rotations": {
+        "south-east": "torch_posts/torch_post_021/not_lit_5/rotations/south-east.webp",
+        "south-west": "torch_posts/torch_post_021/not_lit_5/rotations/south-west.webp",
+        "south": "torch_posts/torch_post_021/not_lit_5/sprite.webp"
+      }
+    }
+  },
+  "collision": true,
+  "hitbox_shape": "ellipse",
+  "light": {
+    "strength": 0.45,
+    "color": "#ffdb67",
+    "radius": 8,
+    "reference": "the spawn bonfire is 1.0 (radius 7); strength 0 is no light",
+    "states": {
+      "LIT_1": {
+        "strength": 0.54,
+        "color": "#ffdb67",
+        "radius": 10
+      }
+    },
+    "kind": "fire/open",
+    "flame": true,
+    "embers": true
+  }
+}

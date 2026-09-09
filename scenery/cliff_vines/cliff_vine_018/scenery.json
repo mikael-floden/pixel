@@ -1,0 +1,108 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-14T03:14:02+00:00",
+  "id": "cliff_vine_018",
+  "group": "cliff_vines",
+  "rank": 101,
+  "index": 18,
+  "name": "White-flowering bindweed fall 018",
+  "lights": null,
+  "variety": "white-flowering bindweed fall",
+  "modifier": "broken by a bare rock band mid-fall",
+  "glow_concept": "moonlit silver shimmer across the leaves",
+  "prompt": "an enormous curtain of climbing vine falling down a vertical rock face, a very tall narrow sheet of dense overlapping leaves hanging far down the cliff, thick woody stems gripping the stone, the fall much taller than it is wide, white-flowering bindweed fall, broken by a bare rock band mid-fall, towering, many times human height, self-emissive at night, softly radiating light: moonlit silver shimmer across the leaves",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 256,
+  "sprite": "cliff_vines/cliff_vine_018/sprite.webp",
+  "placement": {
+    "world_height_m": 4.807,
+    "world_px_height": 246,
+    "character_height_px": 87,
+    "character_height_m": 1.7,
+    "note": "ONE SCENERY PIXEL IS ONE PLAYER PIXEL. world_px_height IS the art's own alpha bbox height, so scenery is placed into the world at 1:1 exactly as the avatar is (setScale(1)) and the two share one pixel grid. The CAMERA still zooms the whole scene \u2014 that is uniform and correct; what must never happen is scenery being resampled on its own, against the player. world_height_m is what the art reads as beside a 87px character; declared_height_m is what it was once declared to be, and a gap between them means the ART is the wrong size.",
+    "declared_height_m": 8.45,
+    "content_box": [
+      77,
+      5,
+      178,
+      251
+    ],
+    "content_px_height": 246,
+    "canvas_render_px": 256
+  },
+  "pixellab_object_id": "6ebd05d0-2c86-4f4f-93fe-e47224391fb0",
+  "pixellab_directions": 1,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-1-direction-object (single, S-only)",
+  "must_be_imbplemented_with_random_hflip": true,
+  "states": {
+    "LIT_1": {
+      "sprite": "cliff_vines/cliff_vine_018/sprite.webp",
+      "pixellab_object_id": "6ebd05d0-2c86-4f4f-93fe-e47224391fb0",
+      "generated_at": "2026-08-14T03:14:02+00:00"
+    },
+    "LIT_2": {
+      "sprite": "cliff_vines/cliff_vine_018/lit_2/sprite.webp",
+      "pixellab_object_id": "41f5fd7b-590e-40af-84f1-f5907d43e6bf",
+      "generated_at": "2026-08-16T10:06:20+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.4051,
+      "glow_score": 0.0311
+    },
+    "LIT_3": {
+      "sprite": "cliff_vines/cliff_vine_018/lit_3/sprite.webp",
+      "pixellab_object_id": "0d1a8ea7-ccfd-45ea-bb35-1fdad1438832",
+      "generated_at": "2026-08-16T10:07:52+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.6759,
+      "glow_score": 0.0335
+    },
+    "LIT_4": {
+      "sprite": "cliff_vines/cliff_vine_018/lit_4/sprite.webp",
+      "pixellab_object_id": "c213d9ff-49b2-4f8c-a6bc-80292492a16b",
+      "generated_at": "2026-08-16T10:07:41+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.637,
+      "glow_score": 0.0269
+    }
+  },
+  "collision": true,
+  "hitbox_shape": "ellipse",
+  "type": "NATURE",
+  "light": {
+    "strength": 0.1,
+    "color": "#fff0a0",
+    "radius": 2,
+    "reference": "the spawn bonfire is 1.0 (radius 7); strength 0 is no light",
+    "states": {
+      "LIT_1": {
+        "strength": 0.08,
+        "color": "#fff0a0",
+        "radius": 2
+      },
+      "LIT_2": {
+        "strength": 0.08,
+        "color": "#fff0a0",
+        "radius": 2
+      },
+      "LIT_3": {
+        "strength": 0.08,
+        "color": "#fff0a0",
+        "radius": 2
+      },
+      "LIT_4": {
+        "strength": 0.08,
+        "color": "#fff0a0",
+        "radius": 2
+      }
+    },
+    "kind": "glow/bio",
+    "flame": false,
+    "embers": false
+  }
+}

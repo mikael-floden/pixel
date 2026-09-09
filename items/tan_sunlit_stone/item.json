@@ -1,0 +1,38 @@
+{
+  "id": "tan_sunlit_stone",
+  "name": "Soulstone",
+  "type": "SOUL",
+  "type_label": "Soul Stone",
+  "category": "sun",
+  "rarity": "rare",
+  "value": 62,
+  "stackable": true,
+  "max_stack": 20,
+  "equip_slot": null,
+  "sellable": true,
+  "description": "Sand-gold and cracked like a dry bed, left by a Sunscale. It keeps the desert's noon inside it.",
+  "sprite": "items/tan_sunlit_stone/sprite.webp",
+  "size": [
+    48,
+    48
+  ],
+  "source": {
+    "store": "objects",
+    "pixellab_id": "3b753af4-b1b8-498c-8c59-0588d0bea8ad",
+    "tags": [
+      "SOUL"
+    ],
+    "prompt": "This is a soul stone. I need lots of different variations of it.",
+    "created_at": "2026-08-24T17:24:02.484625+00:00",
+    "last_modified": "Mon, 24 Aug 2026 17:41:55 GMT"
+  },
+  "synced_at": "2026-08-24T17:57:32+00:00",
+  "soul": {
+    "element": "sun",
+    "power": "Attacks flash bright: 15% chance to blind the target for 2 seconds",
+    "merge_into": [
+      "weapon",
+      "armor"
+    ]
+  }
+}

@@ -1,0 +1,98 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-14T04:48:50+00:00",
+  "id": "cliff_root_040",
+  "group": "cliff_roots",
+  "rank": 155,
+  "index": 40,
+  "name": "Pale bleached roots 040",
+  "lights": null,
+  "variety": "pale bleached roots",
+  "modifier": "strands closer together on one side",
+  "glow_concept": "the root tips glowing faintly",
+  "prompt": "a FEW long separate tree roots creeping down over old stone, each root its own independent strand with wide bare empty gaps between them, a little moss or a small fern where they touch, the tree they belong to is FAR ABOVE and out of sight \u2014 the roots never join or converge, no trunk, no stump, no root crown, no bundle, no starting point anywhere, each strand simply thinning to a fine tip at both ends, lush fantasy RPG nature art, drifting off one side, no straight edges, no border, transparent background, no rock or wall behind it, pale bleached roots, strands closer together on one side, towering, many times human height, self-emissive at night, softly radiating light: the root tips glowing faintly",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 256,
+  "sprite": "cliff_roots/cliff_root_040/sprite.webp",
+  "placement": {
+    "world_height_m": 4.064,
+    "world_px_height": 208,
+    "character_height_px": 87,
+    "character_height_m": 1.7,
+    "note": "ONE SCENERY PIXEL IS ONE PLAYER PIXEL. world_px_height IS the art's own alpha bbox height, so scenery is placed into the world at 1:1 exactly as the avatar is (setScale(1)) and the two share one pixel grid. The CAMERA still zooms the whole scene \u2014 that is uniform and correct; what must never happen is scenery being resampled on its own, against the player. world_height_m is what the art reads as beside a 87px character; declared_height_m is what it was once declared to be, and a gap between them means the ART is the wrong size.",
+    "declared_height_m": 5.32,
+    "content_box": [
+      28,
+      24,
+      225,
+      232
+    ],
+    "content_px_height": 208,
+    "canvas_render_px": 256
+  },
+  "pixellab_object_id": "a4dd0bdb-336d-4f34-acdb-6c72b3eb4d73",
+  "pixellab_directions": 1,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-1-direction-object (single, S-only)",
+  "must_be_imbplemented_with_random_hflip": true,
+  "states": {
+    "LIT_2": {
+      "sprite": "cliff_roots/cliff_root_040/lit_2/sprite.webp",
+      "pixellab_object_id": "38bf7908-5784-4d93-b525-dbe45489dbf9",
+      "generated_at": "2026-08-16T09:44:33+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.8403,
+      "glow_score": 0.2994
+    },
+    "LIT_4": {
+      "sprite": "cliff_roots/cliff_root_040/lit_4/sprite.webp",
+      "pixellab_object_id": "94ff5fcd-4fca-4b0b-841d-37fb7430ecfc",
+      "generated_at": "2026-08-16T09:44:54+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.6088,
+      "glow_score": 0.3624
+    },
+    "NOT_LIT_2": {
+      "sprite": "cliff_roots/cliff_root_040/not_lit_2/sprite.webp",
+      "pixellab_object_id": "224b634b-c4a3-46ac-b992-c0d6de334d04",
+      "generated_at": "2026-08-16T09:46:07+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.6272,
+      "glow_score": 0.2615
+    },
+    "NOT_LIT_3": {
+      "sprite": "cliff_roots/cliff_root_040/sprite.webp",
+      "pixellab_object_id": "a4dd0bdb-336d-4f34-acdb-6c72b3eb4d73",
+      "generated_at": "2026-08-14T04:48:50+00:00",
+      "relit_from": "LIT_1"
+    }
+  },
+  "collision": true,
+  "hitbox_shape": "ellipse",
+  "light": {
+    "strength": 0.1,
+    "color": "#fff5d3",
+    "radius": 2,
+    "reference": "the spawn bonfire is 1.0 (radius 7); strength 0 is no light",
+    "states": {
+      "LIT_2": {
+        "strength": 0.1,
+        "color": "#fff5d3",
+        "radius": 2
+      },
+      "LIT_4": {
+        "strength": 0.1,
+        "color": "#fff6d5",
+        "radius": 2
+      }
+    },
+    "kind": "glow/bio",
+    "flame": false,
+    "embers": false
+  }
+}

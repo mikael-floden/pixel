@@ -124,8 +124,52 @@ code { font-family: var(--mono); font-size: 0.86em; background: var(--surface-2)
 #build-stamp .stamp-date { white-space: nowrap; }
 #build-stamp .stamp-sha { font-family: var(--mono); font-size: 10.5px; opacity: 0.85; }
 .mute-game { display: inline-block; margin: 0 0 14px; }
-#content { padding: 24px 26px 120px; max-width: 1180px; }
-.loading { color: var(--muted); padding: 40px 0; }
+/* The top padding is a VARIABLE because the sticky crumb row has to cancel
+   exactly it — see .crumb-row. A hardcoded -24px there went stale the day the
+   phone breakpoint dropped this to 16px. */
+:root { --content-pad-top: 24px; }
+#content { padding: var(--content-pad-top) 26px 120px; max-width: 1180px; }
+/* THE WAIT SHOULD LOOK LIKE THE REST OF IT (maintainer 2026-08-15: "when
+   opening the wiki it can take some time to load ... you have an ugly looking
+   loading screen. It would be better if that loading screen is a centered and
+   45% from top centered loading bar that follows the UI/UX CSS design").
+   The wiki's own furniture: the serif brand word, the accent, the rounded
+   pill, quiet borders, and the theme's tokens so it is right in both.
+   Positioned against the VIEWPORT rather than the content column, so it does
+   not drift with the page's padding, and it disappears the moment the first
+   view replaces #content. */
+.loading {
+  position: fixed; left: 50%; top: 45%; transform: translate(-50%, -50%);
+  display: flex; flex-direction: column; align-items: center; gap: 12px;
+  width: min(280px, 74vw); text-align: center; color: var(--muted);
+}
+.loading-brand { font-family: var(--serif); font-size: 21px; font-weight: 600; color: var(--ink); }
+.loading-note { font-size: 12.5px; letter-spacing: 0.06em; text-transform: uppercase; }
+.loading-bar {
+  width: 100%; height: 6px; border-radius: 999px; overflow: hidden;
+  background: var(--surface-2); border: 1px solid var(--border);
+}
+/* An honest indeterminate sweep: nothing here knows how much is left, so it
+   must not pretend to be a percentage. It travels edge to edge INSIDE the
+   track and turns around — a first cut ran it from -105% to 255%, which put
+   the fill outside the clipped track for a good part of every cycle and left
+   the bar looking flat and dead exactly when you happened to look at it. */
+.loading-bar span {
+  display: block; width: 40%; height: 100%; border-radius: 999px;
+  background: var(--accent); animation: loading-sweep 1.05s ease-in-out infinite alternate;
+}
+@keyframes loading-sweep {
+  from { transform: translateX(0); }
+  to   { transform: translateX(150%); }   /* 150% of the fill = the track's far edge */
+}
+/* A reader who asked for less motion gets NO motion — this stylesheet already
+   enforces that globally (`* { animation: none !important }` further down), so
+   a pulse here could never run and a 40%-wide sliver would simply sit frozen,
+   reading as a hung page. Instead the bar fills its track and dims: a plain
+   "something is happening" mark that does not pretend to be a percentage. */
+@media (prefers-reduced-motion: reduce) {
+  .loading-bar span { width: 100%; opacity: 0.55; }
+}
 
 /* ---- cards & grids ---- */
 .grid { display: grid; gap: 14px; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); }
@@ -145,9 +189,312 @@ a.card:hover { text-decoration: none; border-color: var(--border-strong); }
 .card .card-name { font-weight: 600; font-size: 14.5px; }
 .card .card-sub { color: var(--muted); font-size: 12.5px; }
 .card-badges { display: flex; gap: 5px; flex-wrap: wrap; }
+/* ---- Creatures overview: a SHOWCASE, not a contact sheet ----
+   Every creature at the GAME's own scale, cropped free of its frame padding —
+   and the CARD grows instead of the zoom shrinking (maintainer 2026-08-18:
+   "just showing the monsters in their true scale … and just make some cards
+   take up more space instead … 1x1 (small), 2x1 (wide), 1x2 (tall) or 2x2 …
+   On mobile two 1x1 can fit on one row"). Spans are assigned in JS from the
+   measured cell, so a narrow phone and a wide desktop both get honest sizes;
+   `dense` packs the small ones into the gaps the big ones leave. */
+.showcase-grid {
+  display: grid;
+  gap: var(--sc-gap, 10px);
+  grid-template-columns: repeat(auto-fill, minmax(var(--sc-min, 168px), 1fr));
+  grid-auto-rows: var(--sc-row, 184px);
+  grid-auto-flow: row dense;
+}
+.showcase-card {
+  grid-column: span var(--c, 1);
+  grid-row: span var(--r, 1);
+  padding: 8px; gap: 6px; overflow: hidden;
+}
+/* The art takes whatever the row span left over — no arithmetic to keep in
+   step with the stylesheet.
+
+   EVERY CREATURE IS CENTRED IN ITS OWN STAGE, whatever the card's size. The
+   first cut bottom-aligned the one-row cards so row-mates shared a floor, on
+   the theory that a common ground line makes the size difference read;
+   maintainer 2026-08-18, looking at it: "the monster is not centered on the
+   1x1 card. The bigger cards got centering and on the small 1x1 you draw the
+   monster at the bottom of the preview. Centering looks best." He is right —
+   the card is a frame, not a diorama, and one rule for all four sizes reads
+   calmer than two.
+
+   THE 3px PAD IS THE DESIGN, NOT A FUDGE: it is the breathing room between a
+   creature and its frame, and because it is real padding the span decision can
+   simply ask "does the art fit this box" with no constant to keep in step. */
+.showcase { position: relative; flex: 1; min-height: 0; border-radius: 8px; overflow: hidden;
+  display: flex; align-items: center; justify-content: center; padding: 3px; }
+.showcase-art {
+  background-repeat: no-repeat;
+  image-rendering: pixelated;          /* the game's own scale, nearest neighbour */
+  flex: none;
+}
+/* ONE keyframe for every card: the per-card geometry rides in custom
+   properties, so 57 creatures animate without 57 rules. */
+@keyframes showcase-run {
+  from { background-position-x: var(--f0); }
+  to   { background-position-x: var(--fn); }
+}
+.showcase-art.play { animation: showcase-run var(--dur, 0.5s) steps(var(--frames, 1)) infinite; }
+.showcase-plain { max-width: 100%; max-height: 100%; object-fit: contain; image-rendering: pixelated; }
+@media (prefers-reduced-motion: reduce) { .showcase-art.play { animation: none; } }
+
+/* Chrome rides ON the art — a 168px card has no room for a row per fact — and
+   in the TOP corners, because a creature stands on the bottom of its box and a
+   pill parked down there sits across its legs. */
+.showcase-marks {
+  position: absolute; top: 6px; left: 6px; z-index: 1;
+  display: flex; flex-direction: column; align-items: flex-start; gap: 4px;
+}
+.showcase-marks .pill { font-size: 10.5px; padding: 1px 7px; }
+.showcase-level {
+  position: absolute; top: 6px; right: 6px; z-index: 1;
+  font-size: 12px; padding: 2px 8px; border-radius: 999px;
+  background: color-mix(in srgb, var(--surface) 82%, transparent);
+  color: var(--muted); border: 1px solid var(--border);
+}
+.showcase-level b { color: var(--ink); }
+.showcase-nospawn { opacity: 0.8; }
+/* Name and stats: two tight lines that never wrap, so every row is the height
+   the grid says it is. */
+.showcase-text { display: flex; flex-direction: column; gap: 1px; min-width: 0; }
+.showcase-text .card-name { font-size: 14px; line-height: 1.25; }
+.showcase-text .card-sub { font-size: 11.5px; line-height: 1.25; }
+.showcase-text .card-name, .showcase-text .card-sub {
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.showcase-text .card-badges:empty { display: none; }
+
+/* The stamp's alarm: only ever visible when the deploy fell back to a committed
+   registry, so it is allowed to be loud. */
+.stamp-stale {
+  font-size: 10.5px; font-weight: 600; letter-spacing: 0.02em;
+  color: var(--err, #b3453a);
+}
+
+/* ---- ground type page: identity card, tabs, base groups, transitions ---- */
+.groundtabs, .pagetabs {
+  display: flex; flex-wrap: wrap; gap: 0; margin: 10px 0 14px;
+  border: 1px solid var(--border); border-radius: 10px; background: var(--surface);
+  overflow: hidden; width: fit-content; max-width: 100%;
+}
+.groundtab, .pagetab {
+  padding: 10px 16px; font-size: 14px; border: none; background: transparent;
+  color: var(--muted); border-right: 1px solid var(--border); white-space: nowrap;
+}
+/* FOUR TABS WITH COUNTS DO NOT FIT A PHONE AT DESKTOP PADDING (maintainer
+   2026-08-25: "so the entire radio button group/tabs fit on the page (it's cut
+   right now)"). Shortening "Base tiles" to "Base" recovered 40px and the strip
+   was still 21px over at 412px wide. The rest comes out of the padding and the
+   count chip, which is where slack belongs — the labels are his words and the
+   tap target stays 44px tall. Measured after: 331px of content in 384px. */
+/* The roomy tier is for tablets and up: FIVE tabs with counts measured 400px
+   of content against 384 available at 412px wide, so every phone tier below
+   is tighter than the desktop one by design. */
+@media (max-width: 620px) {
+  .groundtab, .pagetab { padding: 10px 6px; font-size: 13.5px; }
+  .groundtab .tab-n { margin-left: 4px; padding: 1px 4px; font-size: 11px; }
+}
+/* And one tier tighter for the small phones. The thresholds moved 2026-08-28:
+   the count chips change width with his review (a 3-digit queue became a
+   2-digit one and the strip STILL measured 8px over at 393) — so the tiers
+   are set against the widest realistic chip set, not the day's counts. */
+/* FIVE TABS, ONE ROW (maintainer 2026-08-28: "We need to change the title
+   button to fit all buttons on the same row"). Shortening the labels to his
+   words ("Wall", "Fade") recovered most of it; the last 6-10px come out of
+   the COUNT CHIPS, of which there are four — measured 338 of 332 available at
+   360px before, 27px per chip. The chip is a number in a pill: it survives a
+   tighter pill, where a label would not. */
+@media (max-width: 400px) {
+  .groundtab, .pagetab { padding: 10px 5px; font-size: 13px; }
+  .groundtab .tab-n { margin-left: 3px; padding: 1px 3px; font-size: 10.5px; }
+}
+@media (max-width: 366px) {
+  /* the tap target survives the squeeze — 44px is the floor, not the padding */
+  .groundtab, .pagetab { padding: 10px 3px; font-size: 12.5px; min-height: 42px; }
+  .groundtab .tab-n { margin-left: 2px; padding: 0 3px; font-size: 10px; }
+}
+.groundtab:last-child { border-right: none; }
+.groundtab.sel, .pagetab.sel { background: var(--accent-soft, #f6dfd4); color: var(--ink); font-weight: 600; }
+.groundtab.off, .pagetab.off { opacity: 0.45; }
+.groundtab .tab-n {
+  margin-left: 7px; font-size: 11.5px; padding: 1px 7px; border-radius: 999px;
+  background: color-mix(in srgb, var(--ink) 8%, transparent);
+}
+/* ---- BASE TILE SETS (maintainer 2026-08-25) ----
+   A set panel is read top-down: what it is and how often it is used, then the
+   FIELD (the only honest picture of a set), then the rows that make it. The
+   field comes before the rows deliberately — he judges the ground, then adjusts
+   the numbers that produced it. */
+.base-set { margin-bottom: 14px; }
+/* A set at weight 0 is switched off, not broken. Dimmed, never hidden: it is
+   how he parks a look he is not using, and a parked set has to stay findable. */
+.base-set.off { opacity: 0.62; }
+.set-controls { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; margin: 6px 0 10px; }
+.set-name {
+  flex: 1 1 140px; min-width: 0; padding: 7px 9px; font-size: 14px;
+  border: 1px solid var(--border); border-radius: 7px; background: var(--surface); color: var(--ink);
+}
+.set-rows { display: flex; flex-direction: column; gap: 6px; margin: 10px 0 8px; }
+.set-row {
+  display: flex; align-items: center; gap: 9px; flex-wrap: wrap;
+  padding: 6px 8px; border: 1px solid var(--border); border-radius: 8px; background: var(--surface);
+}
+/* Weight 0 means never. The row stays — it is the control he sets to say so. */
+.set-row.off { opacity: 0.55; }
+.set-row.gone { border-color: var(--err, #a33); }
+.set-row-tile { width: 44px; height: auto; image-rendering: pixelated; flex: none; }
+.set-row-name { flex: 1 1 120px; min-width: 0; font-size: 12.5px; color: var(--muted); overflow-wrap: anywhere; }
+.set-row .weight-label { flex: none; }
+.add-tiles, .new-set { margin-top: 4px; }
+/* THE POOL PICKER: 161 candidates, so the grid is dense and the tiles are shown
+   at their authored size — a base tile is judged on its surface, and scaling a
+   pixel surface up is judging a different surface. */
+/* THE AUDITION LIST (maintainer 2026-08-27): one row per candidate, each a
+   7x7 field with the candidate as the centre 3x3 in two rings of the set.
+   Vertical scroll over rows; each FIELD pans horizontally on its own, since
+   7x7 at 1:1 is wider than a phone and pixel art scales only by integers. */
+.pool-list { display: flex; flex-direction: column; gap: 10px; margin: 10px 0; max-height: 62vh; overflow-y: auto; }
+.pool-cell { padding: 8px; border: 1px solid var(--border); border-radius: 9px; background: var(--surface); }
+.pool-cell.in-set { border-color: var(--good, #4a7); }
+/* Rejected FOR THIS SET: dimmed but standing, with the undo where the mistake
+   was made — it disappears from the list on the next open, not this one. */
+.pool-cell.set-rejected { opacity: 0.5; }
+.pool-head { display: flex; align-items: center; gap: 9px; flex-wrap: wrap; margin-bottom: 6px; }
+.pool-tile { width: 44px; height: auto; image-rendering: pixelated; flex: none; }
+.pool-name { flex: 1 1 120px; min-width: 0; font-size: 12.5px; color: var(--muted); overflow-wrap: anywhere; }
+.pool-stage { min-height: 120px; }
+/* THE WAY OUT, bottom right, where an OK button belongs. Sticky to the dialog's
+   floor so a 400-row list can never scroll it out of reach. */
+.pool-foot {
+  position: sticky; bottom: -14px; display: flex; align-items: center; gap: 10px;
+  margin: 10px -14px -14px; padding: 10px 14px;
+  border-top: 1px solid var(--border); background: var(--surface);
+}
+.pool-tally { flex: 1; min-width: 0; font-size: 12.5px; }
+/* 44px, the tap target this site holds everywhere else — it came out 37 by
+   inheriting the generic button padding, and this is the one control in the
+   dialog he must never miss. */
+.pool-done { flex: none; min-width: 92px; min-height: 44px; padding: 10px 18px; }
+.base-group { margin-bottom: 14px; }
+.group-stage { display: flex; justify-content: center; padding: 8px; border-radius: 10px; overflow-x: auto; }
+/* CENTERED, NO SCROLL (maintainer 2026-08-27: "If 7x7 doesn't fit in the
+   preview. Just center it and disable the scroll. Same for the + Add tiles
+   popup"). The field is a picture to judge, not a document to pan: what
+   matters is the middle, and the ring exists precisely so the clipped edges
+   hold nothing he needs. justify-content centering with hidden overflow clips
+   both edges equally, which keeps the reviewed tiles dead centre. */
+.stage-clip { overflow: hidden; }
+.base-member {
+  display: flex; gap: 12px; align-items: flex-start; flex-wrap: wrap;
+  padding: 10px 0; border-top: 1px solid var(--border); margin-top: 10px;
+}
+.base-member-previews { display: flex; gap: 10px; align-items: center; }
+.member-solo { display: flex; align-items: center; justify-content: center; padding: 8px; border-radius: 8px; min-width: 80px; min-height: 80px; }
+.member-tile { width: 64px; height: auto; image-rendering: pixelated; }
+.base-member-meta { display: flex; flex-direction: column; gap: 8px; min-width: 130px; }
+.weight-label { font-size: 12.5px; color: var(--muted); display: flex; align-items: center; gap: 6px; }
+.weight-input { width: 64px; padding: 6px; border: 1px solid var(--border); border-radius: 7px; background: var(--surface); color: var(--ink); }
+/* the modal */
+.promote-modal {
+  border: 1px solid var(--border-strong); border-radius: 14px; background: var(--surface);
+  color: var(--ink); padding: 14px; width: min(430px, 92vw); max-height: 84vh; overflow-y: auto;
+}
+.promote-modal::backdrop { background: rgba(10, 8, 6, 0.55); }
+.promote-head { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.promote-head b { flex: 1; min-width: 140px; }
+.promote-hint { margin: 6px 0 10px; }
+.promote-group { border-top: 1px solid var(--border); padding-top: 10px; margin-top: 10px; }
+.promote-into { margin-top: 8px; }
+/* the transition demo */
+.trans-scene .iso-stage { display: flex; justify-content: center; padding: 8px; border-radius: 10px; overflow-x: auto; }
+.trans-all { flex-wrap: wrap; max-width: 100%; }
+a.trans-row { color: inherit; }
+a.trans-row:hover { text-decoration: none; background: color-mix(in srgb, var(--ink) 4%, transparent); }
+
+/* The pass switch: one control for the whole ground page, and one in the
+   promote dialog where the decision is actually made. */
+.ground-pass, .promote-pass {
+  display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
+  /* A BOTTOM MARGIN OF ITS OWN (maintainer 2026-08-25: "when I press on Raw
+     the radio button group has no line space until the next radio button group
+     begins"). The inner sortbar's own margin is zeroed so the row stays tight,
+     which left nothing between this group and the set picker under it — and it
+     only showed on Raw, because the explaining text beside the other passes
+     used to wrap and fake the gap. */
+  margin: 10px 0 14px; font-size: 12.5px;
+}
+.promote-pass { margin: 8px 0 12px; }
+.ground-pass .sortbar, .promote-pass .sortbar { margin-bottom: 0; }
+
+/* ---- ground details ---- */
+.detail-grid { grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 12px; }
+.detail-card { gap: 6px; }
+.detail-card .group-stage { padding: 6px; }
+/* THE REVIEW LEDGER — what is actually left, before any art. */
+.ledger.clear { border-color: color-mix(in srgb, var(--ok) 40%, var(--border)); }
+.ledger-line { display: flex; align-items: baseline; gap: 8px; flex-wrap: wrap; padding: 6px 0; border-top: 1px solid var(--border); }
+.ledger-line:first-of-type { border-top: 0; }
+.ledger-label { font-weight: 600; min-width: 92px; }
+.ledger-body { color: var(--muted); flex: 1 1 180px; }
+.ledger-jump { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; padding: 2px 0 8px; }
+.ledger-foot { margin: 6px 0 0; font-size: 12px; }
+.top-hint { margin: 4px 0 6px; font-size: 12px; }
+/* THE TEXTURED PASS — synthesized in the browser (no file exists for it), so
+   on the A/B/C cards it is the one layer that is a canvas. Sized like the
+   <img> beside it and pixelated like everything else here. */
+.world-art .art-tex { display: none; image-rendering: pixelated; max-width: 100%; max-height: 100%; }
+.world-art.on-texture .art-after { display: none; }
+.world-art.on-texture .art-tex { display: block; }
+.world-cand .thumb .art-tex { width: 96px; height: auto; }
+/* Roofs — the TOP review's rating glyph. ⌂ has no filled form, so lit-vs-dim
+   is colour and weight, not shape. */
+.stars.roofs button { color: var(--muted); opacity: 0.55; }
+.stars.roofs button.lit { color: var(--star); opacity: 1; }
+.stars.roofs.ro { color: var(--star); }
+.review-box .top-hint { margin: 0 0 6px; }
+
+/* ---- ground type page: identity card, base tiles, transitions ---- */
+.ground-swatch {
+  display: inline-block; width: 14px; height: 14px; border-radius: 4px;
+  border: 1px solid var(--border-strong); vertical-align: -2px;
+}
+.ground-base .ground-swatch { margin-right: 2px; }
+.ground-palette { display: flex; gap: 5px; flex-wrap: wrap; margin: 2px 0 10px; }
+.ground-palette .ground-swatch { width: 22px; height: 22px; border-radius: 5px; }
+.ground-idcard { margin-bottom: 6px; }
+.ground-bases { margin: 10px 0 14px; }
+.base-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 10px; }
+.base-card { gap: 6px; }
+.base-row { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.base-btn.on { color: var(--ink); }
+.ground-section { margin: 4px 0 8px; }
+.ground-trans { margin-top: 16px; }
+.trans-row { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; padding: 6px 0; border-top: 1px solid var(--border); }
+.trans-row:first-of-type { border-top: none; }
+.trans-name { font-weight: 600; }
+.trans-strip { display: inline-flex; gap: 4px; padding: 4px; border-radius: 8px; }
+.trans-strip img { width: 64px; height: auto; image-rendering: pixelated; }
+
 .checker {
   background: repeating-conic-gradient(var(--checker-a) 0% 25%, var(--checker-b) 0% 50%) 0 0 / 16px 16px;
 }
+
+/* ---- art the producing agent has since deleted ----
+   The admin's art comes from HEAD of main while the piece list is the
+   deployed build, so a rejected-and-actioned piece is listed with no file
+   behind it. That is the contract working, not a fault, so it reads as a
+   quiet note in the frame the art would have filled — never a broken image
+   with its alt text sprawling across the card. */
+.art-gone, .art-failed {
+  flex-direction: column; gap: 2px; text-align: center; padding: 6px;
+  background: var(--surface-2);
+}
+.art-note { font-size: 12.5px; color: var(--muted); line-height: 1.25; }
+.art-note small { display: block; font-size: 11px; opacity: 0.75; }
+.art-gone .art-note { color: var(--bad); }
 
 .pill {
   display: inline-block; font-size: 11.5px; padding: 1px 8px; border-radius: 999px;
@@ -157,8 +504,26 @@ a.card:hover { text-decoration: none; border-color: var(--border-strong); }
 .pill.warn { background: var(--accent-soft); color: var(--accent-ink); border-color: transparent; }
 .pill.err { background: var(--bad-soft); color: var(--bad); border-color: transparent; }
 
-/* ---- buttons ---- */
-button { font: inherit; cursor: pointer; }
+/* ---- buttons ----
+   NO PLATFORM PRESS EFFECT (maintainer 2026-08-17, seeing a blue fill under his
+   thumb: "Why did you do the button down effect blue? Is that part of our CSS
+   style guide? … Is it a default html effect leaking through?" — it was: the
+   WebKit/Blink tap highlight, which is a translucent BLUE on this device and
+   owes nothing to our palette, where --accent is terracotta and nothing is
+   blue). It is killed here rather than per control, because it leaks on every
+   button and only becomes obvious on one sitting over art.
+   touch-action: manipulation drops the 300ms double-tap-zoom wait with it — the
+   same treatment .stars button already had. */
+button {
+  font: inherit; cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+}
+/* Something has to replace it, or a tap has no acknowledgement at all. Ours is
+   the press itself: the control dips, in its own colours. */
+button:active:not(:disabled) { filter: brightness(0.94); }
+/* Keyboard focus stays visible — the ring is the palette's, not the browser's. */
+button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 .primary-btn {
   background: var(--accent); color: #fff; border: none; border-radius: 9px;
   padding: 7px 16px; font-weight: 600;
@@ -169,7 +534,12 @@ button { font: inherit; cursor: pointer; }
   background: transparent; color: var(--ink);
   border: 1px solid var(--border); border-radius: 9px; padding: 6px 12px;
 }
-.ghost-btn:hover { background: var(--surface-2); }
+.ghost-btn:hover:not(:disabled) { background: var(--surface-2); }
+/* A DEAD GHOST BUTTON MUST LOOK DEAD. It had no disabled styling at all, so
+   "+ Add tiles…" on a ground with no textured candidates was pixel-identical
+   to a working one — the maintainer pressed it twice and reported the page
+   broken, correctly (2026-08-27). Only .shadow-bar had ever dimmed its own. */
+.ghost-btn:disabled { opacity: 0.45; cursor: default; }
 /* A hero now has more animation states than fit one drawer-width row
    (maintainer 2026-08-05: keep this layout, let the finger scroll). The seg
    LOOKS identical — no scrollbar, same border, same pills — but pans
@@ -188,27 +558,78 @@ button { font: inherit; cursor: pointer; }
 }
 .seg button:last-child { border-right: none; }
 .seg button.on { background: var(--accent-soft); color: var(--ink); font-weight: 600; }
+/* WHERE THE REVIEW STANDS, ON THE CHIP (maintainer 2026-08-15: "the admin will
+   see the state text 1, 2 etc in green = approved, red = rejected ... normal
+   color means I have not reviewed it yet"). --good/--bad are the theme's own
+   tokens: dark green / dark red on the light theme, light green / light red on
+   the dark one, so both stay legible either way. The colour survives on the
+   SELECTED chip too — the one you are looking at is the one you are about to
+   judge, and it must not lose its state to the highlight. */
+.seg button.judged-ok, .dirpad button.judged-ok { color: var(--good); font-weight: 600; }
+.seg button.judged-no, .dirpad button.judged-no { color: var(--bad); font-weight: 600; }
+.seg button.on.judged-ok, .dirpad button.on.judged-ok { color: var(--good); }
+.seg button.on.judged-no, .dirpad button.on.judged-no { color: var(--bad); }
+.dirpad button.judged-ok { border-color: var(--good); }
+.dirpad button.judged-no { border-color: var(--bad); }
 
 /* ---- feedback controls ---- */
-.stars { display: inline-flex; gap: 1px; }
+/* BIG ENOUGH TO HIT (maintainer 2026-08-14: "I also want all stars in the
+   entire application to be a bit bigger, hard to click"). 17px glyphs with 1px
+   of padding gave a ~19x17 target on a phone — well under the ~44px a thumb
+   wants, and he rates hundreds of pieces in a session. The glyph grows and the
+   tap area grows more; touch-action kills the double-tap zoom that a quick
+   second star press would otherwise trigger. */
+.stars { display: inline-flex; gap: 2px; }
+/* THUMB-SIZED, ON EVERY REVIEW PAGE (maintainer 2026-09-03: "Can you make the
+   rating (the stars) and the approve/remove/redo buttons a little bit bigger
+   on all review pages?"). He reviews on a phone and these three are the
+   controls he presses hundreds of times a day. */
 .stars button {
-  background: none; border: none; padding: 0 1px; font-size: 17px; line-height: 1;
+  background: none; border: none; padding: 5px 4px; font-size: 25px; line-height: 1;
+  min-width: 36px; min-height: 40px; touch-action: manipulation;
   color: var(--border-strong);
 }
 .stars button.lit { color: var(--star); }
 .stars button:hover { transform: scale(1.15); }
-.verdict { display: inline-flex; gap: 4px; }
+.verdict { display: inline-flex; gap: 6px; }
 .verdict button {
-  border: 1px solid var(--border); background: var(--surface); border-radius: 7px;
-  padding: 2px 9px; font-size: 12.5px; color: var(--muted);
+  border: 1px solid var(--border); background: var(--surface); border-radius: 8px;
+  padding: 7px 13px; font-size: 14px; min-height: 40px; color: var(--muted);
+  touch-action: manipulation;
 }
 .verdict button.approved { background: var(--good-soft); color: var(--good); border-color: transparent; font-weight: 600; }
+/* Remove/Reject wears the theme's danger token at rest, everywhere (maintainer
+   2026-09-03: "the CSS we have closest to red that still follow the CSS
+   styling") — filled once it is the verdict. */
+.verdict button.reject-btn { color: var(--bad); border-color: var(--bad); }
 .verdict button.rejected { background: var(--bad-soft); color: var(--bad); border-color: transparent; font-weight: 600; }
-.fb-row { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+/* Redo (scenery): kept AND asked for another variant — neither green nor red. */
+.verdict button.redo { background: var(--surface); color: var(--ink); border-color: var(--ink); font-weight: 600; }
+/* min-height reserves the verdict line whether or not there IS a verdict: to a
+   reader the row is a pill or nothing, so it collapsed to 0px on an unjudged
+   piece and stood 22px on an approved one — and paging ‹ › through a
+   half-reviewed library moved the animation viewer by exactly that, the
+   jumping this page was rebuilt to stop (maintainer 2026-08-07). Admin rows
+   hold buttons and are taller; a minimum can only ever help them. */
+.fb-row { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; min-height: 30px; }
+/* JUDGING THE FACET ON SCREEN — above the preview and above the selectors
+   (maintainer 2026-08-14: "I want it in the same card but OVER the preview").
+   The whole entity is judged further up the page, outside this card; this
+   block judges only the one state+direction its pill names. A rule under it
+   separates the judging from the art it is about. */
+.facet-head { border-bottom: 1px solid var(--border); padding-bottom: 10px; margin: 0 0 12px; }
+.facet-head-line { display: flex; align-items: center; gap: 8px; margin: 0 0 8px; min-height: 22px; }
+.facet-head .facet-label { font-size: 12.5px; white-space: nowrap; }
+.facet-head .fb-row { flex: 1; min-width: 0; }
+/* THE NOTE SITS AWAY FROM THE BUTTONS (maintainer 2026-09-03: "add a little
+   spacing to the comment/note so I don't press that text input by mistake").
+   A wrongly-pressed verdict is one tap to undo; a wrongly-focused textarea
+   opens the phone keyboard over the art he is judging. */
 .fb-note {
   width: 100%; background: var(--surface); color: var(--ink);
   border: 1px solid var(--border); border-radius: 8px; padding: 6px 9px;
   font: 13px/1.4 var(--sans); resize: vertical; min-height: 30px;
+  margin-top: 12px;
 }
 
 /* ---- detail pages ---- */
@@ -322,17 +743,59 @@ button { font: inherit; cursor: pointer; }
 
 /* ---- animation player ---- */
 .player { display: flex; flex-direction: column; gap: 10px; }
+/* NARROW-SCREEN CROP BUG (diagnosed by the scenery agent and independently
+   here, 2026-08-14 — the maintainer lost 200+ good pieces to it): the stage
+   clamps to viewport width on a phone while the canvas is drawn at full art
+   size and CENTRED, so an oversized sprite's left and right edges sat outside
+   the scroll view and read as art that had been cut off. He rejected piece
+   after piece for "the image is cut at the left side" when every sprite was
+   complete (measured: content bbox had margin on all four sides).
+
+   The scenery agent's fix squeezed the canvas with `max-width:100%` and this
+   file carried it briefly. It is REMOVED, on the maintainer's explicit
+   instruction the same day: "I want the default to review in x2 because
+   that's what the game uses." Squeezing renders a 512px canvas at ~313px —
+   about 1.2x, not 2x, and a fractional nearest-neighbour DOWNSCALE drops
+   pixel rows unevenly, so the art is judged at a size and a fidelity the game
+   never shows. The same objection retired an autoScale() that stepped the
+   default down to fit.
+
+   So the piece is drawn at true 2x and is ALLOWED to overflow — what is fixed
+   is that the overflow is now reachable (`safe center` below, so it runs
+   right into real scroll space instead of into negative scroll space nothing
+   can reach) and ANNOUNCED (the .stage-wide caption under the stage). Nothing
+   is ever hidden; a handful of giant pieces need a swipe, or one tap on 1x. */
 .player-stage {
   align-self: flex-start; border: 1px solid var(--border); border-radius: 10px;
   padding: 8px; max-width: 100%; overflow: auto;
   /* fixed per-domain stage: the creature is centred in it, so paging
      through monsters keeps the layout perfectly still */
-  display: flex; align-items: center; justify-content: center;
+  /* `safe` centring, and it must be THIS declaration — an earlier one in the
+     same rule is simply overridden and does nothing. A plain centred flex
+     child that overflows puts half its width in NEGATIVE scroll space, which
+     no scrollbar can reach: that is exactly how a big piece lost its left
+     edge with no way to bring it back. `safe` falls back to start-alignment
+     the moment the content overflows, so it runs RIGHT into real scroll
+     space and every pixel is reachable. */
+  display: flex; align-items: safe center; justify-content: safe center;
+  /* NEVER TALLER THAN THE SCREEN UNDER THE STICKY BARS (maintainer
+     2026-09-09, a 4× tree: "the tree is cut/clipped at the exact preview div
+     boundary"). It was not clipped — the stage grew to 1,139px on a 740px
+     phone, and its top slid under the sticky topbar and crumb row (118px)
+     the moment he scrolled to the roots, which is indistinguishable from a
+     clip. So the stage stops at the visible screen and the picture scrolls
+     INSIDE it, the way it already does sideways — and `safe` on this axis
+     too, or a centred taller canvas parks its crown in negative scroll
+     space nothing can reach. --topbar-h/--crumb-h are measured by
+     measureBar(); the 24px is the content padding above the stage. */
+  max-height: calc(100vh - var(--topbar-h, 56px) - var(--crumb-h, 54px) - 24px);
+  max-height: calc(100dvh - var(--topbar-h, 56px) - var(--crumb-h, 54px) - 24px);
 }
 .player-controls { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
 .player-controls .frame-no { font-variant-numeric: tabular-nums; color: var(--muted); font-size: 13px; min-width: 52px; }
 /* min-height so the row keeps its line even for a state with no directions at
    all — the panels below must not move when you step between states. */
+.stage-wide { margin: 6px 0 0; font-size: 12.5px; max-width: 100%; }
 .dirpad { display: inline-flex; flex-wrap: wrap; gap: 3px; min-height: 28px; }
 .dirpad button {
   width: 37px; padding: 4px 0; border: 1px solid var(--border); background: var(--surface);
@@ -340,6 +803,61 @@ button { font: inherit; cursor: pointer; }
 }
 .dirpad button.on { background: var(--accent-soft); color: var(--ink); border-color: var(--accent); font-weight: 700; }
 label.chk { display: inline-flex; align-items: center; gap: 5px; font-size: 13px; color: var(--muted); user-select: none; }
+
+/* ---- nadir shadow editor (admin, monsters) ----
+   The button is a plain ghost button that latches on, so it reads like every
+   other "pick one" control in this card rather than announcing itself. What
+   changes while it is on is the CANVAS: a move cursor, and no text selection
+   or touch panning stealing the drag out from under the finger. */
+.shadow-btn.on { background: var(--accent-soft); border-color: var(--accent); font-weight: 600; }
+/* `pan-y`, never `none`: the stage is most of a phone's screen, so a canvas
+   that swallows every touch traps the PAGE in edit mode. Vertical swipes
+   scroll as always; a horizontal drag on the ellipse still works with a
+   mouse, and the pad below is what a thumb is meant to use. */
+.player-stage.editing-shadow canvas { cursor: move; touch-action: pan-y; }
+.player-stage.editing-shadow { user-select: none; }
+.shadow-bar { display: flex; flex-direction: column; gap: 8px; font-size: 13px; color: var(--muted); }
+.shadow-bar.hidden { display: none; }
+.shadow-hint { font-size: 12.5px; }
+/* ONE LINE, ALWAYS (maintainer 2026-08-29: a status suffix wrapped this to
+   two lines, and the moment he touched a rail the state changed, the line
+   unwrapped and every control below jumped up under his thumb). A fixed row
+   height means no text this line can ever hold moves the rails. */
+.shadow-read {
+  font-variant-numeric: tabular-nums; color: var(--ink);
+  display: block; min-height: 1.5em; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+.shadow-bar .ghost-btn { padding: 4px 10px; font-size: 13px; }
+.shadow-bar .ghost-btn:disabled { opacity: 0.45; cursor: default; background: transparent; }
+
+/* ---- the proxy controls ----
+   Right-aligned under the stage: the thumb works down here, the eye stays on
+   the shadow up there. The rails take the space that is left so they stay
+   usable on a narrow phone; the pad keeps its size, because a pad you have to
+   aim at is not a pad. */
+.shadow-tools { display: flex; gap: 14px; align-items: center; justify-content: flex-end; width: 100%; }
+.shadow-sliders { display: flex; flex-direction: column; gap: 10px; flex: 1; min-width: 0; }
+.shadow-sliders label { display: flex; align-items: center; gap: 10px; font-size: 12.5px; }
+.shadow-sliders label > span { width: 13px; color: var(--muted); font-weight: 600; }
+.shadow-slider { flex: 1; min-width: 0; height: 30px; accent-color: var(--accent); touch-action: pan-y; }
+.shadow-pad {
+  position: relative; width: 108px; height: 108px; flex: none;
+  border: 1px solid var(--border); border-radius: 16px; background: var(--surface-2);
+  display: flex; align-items: center; justify-content: center;
+  touch-action: none;              /* the pad IS the gesture — never scroll it */
+  cursor: grab;
+}
+.shadow-pad.held { border-color: var(--accent); cursor: grabbing; }
+.pad-label {
+  position: absolute; top: 6px; left: 0; right: 0; text-align: center;
+  font-size: 11px; color: var(--muted); pointer-events: none;
+}
+.pad-knob {
+  width: 38px; height: 38px; border-radius: 50%;
+  background: var(--accent-soft); border: 1.5px solid var(--accent);
+  transition: transform 0.08s ease-out;
+}
+.shadow-pad.held .pad-knob { transition: none; background: var(--accent); }
 
 /* ---- tiles ---- */
 .tile-group { margin: 10px 0; }
@@ -352,7 +870,7 @@ label.chk { display: inline-flex; align-items: center; gap: 5px; font-size: 13px
 .tile-cell img { width: 64px; height: auto; display: block; }
 .tile-cell.rejected { outline: 2px solid var(--bad); opacity: 0.45; }
 .tile-cell.approved { outline: 2px solid var(--good); }
-.tile-cell .stars button { font-size: 12px; }
+.tile-cell .stars button { font-size: 15px; padding: 2px; min-width: 22px; min-height: 24px; }
 .tile-cell .tile-x {
   position: absolute; top: 2px; right: 2px; border: none; background: none;
   color: var(--muted); font-size: 12px; padding: 2px 4px; border-radius: 5px;
@@ -413,7 +931,13 @@ table.tune input.overridden { border-color: var(--accent); background: var(--acc
   box-shadow: var(--shadow); padding: 10px 14px;
   display: flex; gap: 10px; align-items: center; z-index: 60; max-width: 92vw;
 }
-#savebar-text { font-size: 13.5px; }
+/* The bar is position:fixed, so it SHRINK-WRAPS its contents — which is why
+   flex-wrap must stay off: with wrapping enabled the box computes a narrow
+   preferred width and folds itself onto three rows even with room to spare.
+   nowrap on the count then keeps "12 changes" from breaking into one word per
+   line, which is what it did while Export was still stealing the width. */
+#savebar-text { font-size: 13.5px; white-space: nowrap; }
+#savebar-text b { font-weight: 700; }
 
 /* ---- dialog ---- */
 dialog {
@@ -479,19 +1003,27 @@ a.stat-tile:hover { text-decoration: none; border-color: var(--border-strong); }
   }
   #sidebar.open { transform: translateX(0); }
   #menu-btn { display: inline-block; }
-  #content { padding: 16px 14px 130px; }
+  :root { --content-pad-top: 16px; }
+  #content { padding: var(--content-pad-top) 14px 130px; }
   /* Match the content column: the desktop 26px left the menu button with a
      26px gap to the edge against its own 13px top/bottom, while everything
      below it — crumb, portrait, the prev/next buttons' right gap — sat at
      14px (maintainer 2026-07-30). */
   #topbar { padding: 12px 14px; }
+  /* A World tile's card gives its 16px of panel padding to the art: the 3×3
+     and the cliff beside it need every pixel a phone has, and this is the one
+     card whose content is measured in the game's own units. */
+  .world-cands .world-cand { margin-inline: -16px; border-radius: 0; }
 }
 @media (prefers-reduced-motion: reduce) {
   * { transition: none !important; animation: none !important; }
 }
 
 /* ---- public (read-only) faces + admin login ---- */
-.stars.ro { color: var(--star); font-size: 13px; letter-spacing: 1px; }
+/* Read-only stars: line-height pinned so a rated piece and an unrated one are
+   the SAME row height. Bumping the glyph to 15px made a rated piece's row 1px
+   taller, which paged the whole viewer up and down by 2px. */
+.stars.ro { color: var(--star); font-size: 15px; line-height: 1; letter-spacing: 1px; }
 .stat-grid.ro .stat-value {
   font-size: 15px; font-weight: 600; color: var(--fg);
   padding: 6px 0 2px; font-variant-numeric: tabular-nums;
@@ -500,7 +1032,39 @@ a.stat-tile:hover { text-decoration: none; border-color: var(--border-strong); }
 #login-dialog input { width: 100%; margin-top: 8px; }
 
 /* ---- detail prev/next navigation ---- */
-.crumb-row { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+/* THE WAY OUT AND THE WAY ON STAY PUT (maintainer 2026-08-15: "I would like
+   the breadcrumb and prev/next button to be visible at top even if/when the
+   player scrolls down on the page ... so I can scroll down a bit and see the
+   entire tree and easily go to the next page with the same scroll"). It sticks
+   directly under the topbar, whose real height is measured into --topbar-h at
+   boot and on every resize — hardcoding it would leave a gap or a cover-up on
+   any font size but the one it was written for. Opaque, or the page would
+   scroll through it. */
+.crumb-row {
+  display: flex; align-items: center; gap: 12px; flex-wrap: wrap;
+  position: sticky; top: var(--topbar-h, 56px); z-index: 15;
+  background: var(--bg);
+  /* IT MUST ALREADY BE WHERE IT WILL STICK (maintainer 2026-08-15, with two
+     screenshots: "the pinned bar moves a bit when I scroll"). A sticky element
+     travels with the page until it reaches its pin — so if it RESTS lower than
+     it PINS, the first few pixels of every scroll slide it up under the topbar
+     and then it stops. That is what he was watching, and no amount of
+     measuring the stuck state could find it: the stuck state was always right.
+     #content's top padding was the whole gap, so the row cancels it and
+     starts flush under the bar, where it is going to stay. Its own padding
+     gives the text the air the page padding used to.
+
+     …AND IT CANCELS THE PADDING THAT IS ACTUALLY THERE (maintainer 2026-08-21,
+     with a circle drawn round the clipped top of a tile thumbnail: "This page
+     have the thimbnail preview cut/clipped and I can't scroll up do show it").
+     The -24px was written against the desktop padding; the phone breakpoint
+     sets 16px, so on a phone the row RESTED 8px above its own pin and sticky
+     shoved it back down — over the first 8.7px of whatever followed, at scroll
+     zero, unscrollable by construction. Every detail page had it; a monster's
+     transparent sprite padding hid it and a tile's checkerboard did not.
+     Cancelling the variable keeps rest == pin at every breakpoint. */
+  margin: calc(-1 * var(--content-pad-top)) 0 0; padding: 10px 0 8px;
+}
 .detail-nav { margin-left: auto; display: flex; align-items: center; gap: 10px; }
 .detail-count { font-size: 13.5px; color: var(--muted); font-variant-numeric: tabular-nums; }
 .nav-btn {
@@ -704,7 +1268,8 @@ button.drop-row {
 /* "in the world" is the fact worth keeping whole, so it never shrinks. The
    role and the wares list both ellipsize instead — min-width:0 is what
    actually lets a flex item do that. */
-.npc-trade .pill.ok { flex: none; }
+.npc-trade .pill.ok,
+.npc-trade .npc-noturn { flex: none; }
 .npc-trade .npc-role,
 .npc-trade .npc-wares { flex: 0 1 auto; min-width: 0; overflow: hidden; text-overflow: ellipsis; }
 /* The few NPCs maps2 actually stands in the world, marked ON the portrait so
@@ -812,21 +1377,85 @@ input[type="range"] { accent-color: var(--accent); }
    order you choose and however few rows a search leaves. */
 /* The section sort row, same control as the picker's. Its own fixed-height
    row so the grid below can reorder without anything above it moving. */
-.sortbar { display: flex; gap: 6px; margin: 0 0 14px; flex-wrap: wrap; }
-.picker-sort { display: flex; gap: 6px; margin-top: 8px; }
+/* PICK ONE FROM THIS SET — the same control the animation preview uses for
+   states, directions, speed and zoom (maintainer 2026-08-15: "when sorting and
+   filtering in the wiki we use buttons for things that should have been a
+   radio button ... I mean our design for 'you can only select one in this
+   set'"). As separate pills they read as independent toggles, so a row of them
+   invites you to press two — and neither sorting nor filtering can honour
+   that. One bordered strip with hairline dividers says it in the shape.
+   It PANS rather than wraps, exactly like the state row: buttons keep their
+   size, the strip scrolls, and the half-cut chip at the edge is the
+   affordance. sortBar() scrolls the selected one into view. */
+.sortbar {
+  display: inline-flex; max-width: 100%; margin: 0 0 10px;
+  border: 1px solid var(--border); border-radius: 9px; background: var(--surface);
+  overflow-x: auto; overflow-y: hidden; -webkit-overflow-scrolling: touch; scrollbar-width: none;
+}
+.picker-sort {
+  display: flex; width: 100%; margin-top: 8px;
+  border: 1px solid var(--border); border-radius: 9px; background: var(--surface);
+  overflow: hidden;
+}
+.sortbar::-webkit-scrollbar { display: none; }
 .sortbar-btn,
 .picker-sort-btn {
   flex: 1; padding: 7px 8px; font-size: 12.5px; line-height: 1.2;
-  border: 1px solid var(--border); border-radius: 9px;
-  background: transparent; color: var(--muted);
+  border: none; border-right: 1px solid var(--border); border-radius: 0;
+  background: transparent; color: var(--muted); white-space: nowrap;
 }
+.sortbar-btn:last-child,
+.picker-sort-btn:last-child { border-right: none; }
 /* On a page the bar is not sharing a fixed modal width, so the buttons hug
    their text instead of stretching across a desktop column. */
-.sortbar-btn { flex: 0 0 auto; padding: 7px 14px; }
+.sortbar-btn { flex: 0 0 auto; padding: 7px 13px; }
+/* A chip whose option cannot apply here — a Raw pass on a pair the generator
+   never produced. Dimmed and inert, never removed: the row keeps its shape
+   from pair to pair, so nothing shifts under his thumb as he pages. */
+.sortbar-btn.off { opacity: 0.42; cursor: default; }
+/* The selected chip wears the seg's own on-state, so the two controls cannot
+   drift apart: same fill, same ink, same weight. */
 .sortbar-btn.sel,
-.picker-sort-btn.sel { background: var(--accent-soft); color: var(--accent-ink); border-color: transparent; font-weight: 600; }
+.picker-sort-btn.sel { background: var(--accent-soft); color: var(--ink); font-weight: 600; }
 /* Card pill row: replaces the habitat line, so it keeps that line's rhythm. */
 .card-pills { display: flex; gap: 6px; flex-wrap: wrap; align-items: center; }
+/* Scenery header at ONE height per piece (maintainer 2026-08-13: paging must
+   not move the animation viewer). The title box is EXACTLY two lines whatever
+   the name does — clamp caps it, min-height pads it — and the sub row keeps
+   one height whether it holds pills, the Read more button, both, or neither.
+   The description costs no height until its button opens it. */
+.obj-title {
+  font-size: 1.3rem; line-height: 1.3; margin: 0 0 4px;
+  display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;
+  overflow: hidden; min-height: 2.6em;
+}
+.obj-sub { display: flex; gap: 8px; align-items: center; flex-wrap: nowrap; min-height: 30px; margin: 0 0 4px; }
+.obj-sub .pill { flex: none; }
+.obj-more { padding: 3px 10px; font-size: 13px; }
+.obj-desc { display: none; margin: 6px 0; }
+.obj-desc.open { display: block; }
+/* Admin size reference: the Man beside the piece, drawn at the page's own
+   scale. Absolute inside the stage — hugging its left edge per the
+   maintainer, so the piece itself stays centred and untouched — with his
+   feet set on the creature's baseline by the player. pointer-events off:
+   he is a ruler, not a control. */
+.player-stage { position: relative; }
+.human-ref {
+  position: absolute; left: 0; top: 50%; transform: translateY(-50%); z-index: 2;
+  background-repeat: no-repeat; image-rendering: pixelated; pointer-events: none;
+}
+.empty-queue { display: flex; flex-direction: column; align-items: flex-start; gap: 10px; }
+.empty-queue p { margin: 0; }
+/* "You are inside a filtered walk" — sits between the crumb row and the piece,
+   so the reason ‹ › skips most of the domain is on screen, not remembered. */
+.queue-note {
+  display: flex; align-items: center; gap: 8px; flex-wrap: wrap;
+  margin: -4px 0 12px; padding: 7px 10px; border-radius: 9px;
+  background: var(--accent-soft); color: var(--accent-ink);
+  font-size: 12.5px; text-decoration: none;
+}
+.human-toggle { margin-left: auto; padding: 2px 10px; font-size: 12.5px; font-weight: 400; }
+.human-toggle.on { background: var(--accent-soft); border-color: var(--accent); font-weight: 600; }
 /* A FIXED row: no wrap, nothing that can grow. The dialog is centred, so any
    height change here shifts every control — Next must be where it was after
    you press Next. */
@@ -877,3 +1506,408 @@ input[type="range"] { accent-color: var(--accent); }
 .race-block h2 { display: flex; align-items: center; }
 .race-blurb { margin: 2px 0 10px; }
 .npc-block .page-rail { display: flex; align-items: center; gap: 6px; justify-content: flex-end; margin-top: 8px; }
+
+/* ---- World (Tiles 3.0) ----
+   The review unit is a CANDIDATE, so the card carries its measurements and
+   its verdict together: he compares two or three generations of the same pair
+   side by side and picks one. The picked/dropped outlines are the same
+   language the tile cells use in Tiles OLD. */
+.plain-list { margin: 6px 0 0; padding-left: 18px; color: var(--muted); font-size: 14px; }
+.plain-list li { margin: 4px 0; }
+.plain-list b { color: var(--ink); }
+/* A COLUMN HAS TO HOLD BOTH SHAPES, or the auto-fill grid hands a tile 232px
+   for 334px of art and the cliff goes back behind a scrollbar — the same
+   failure as the phone, on a wide screen. 380px is the 3×3 plus the cliff plus
+   the card's padding; below that the grid drops to one card per row rather
+   than cutting the art.
+   overflow-hidden because the stage inside bleeds to this border: the card's
+   own radius is what rounds it. */
+.world-cands { grid-template-columns: repeat(auto-fill, minmax(min(380px, 100%), 1fr)); }
+.world-cands .world-cand { gap: 6px; overflow: hidden; }
+.world-cand.picked { outline: 2px solid var(--good); }
+.world-cand.dropped { outline: 2px solid var(--bad); opacity: 0.55; }
+.world-cand .thumb { height: 132px; }
+.world-cand .thumb img { image-rendering: pixelated; width: 96px; height: auto; }
+.metric-row { display: flex; flex-wrap: wrap; gap: 4px 10px; font-variant-numeric: tabular-nums; }
+.world-prompt summary { cursor: pointer; color: var(--muted); font-size: 12.5px; }
+.world-prompt p { font-size: 12.5px; margin: 6px 0 0; }
+.world-prompt .mono { font-family: ui-monospace, monospace; font-size: 11.5px; word-break: break-all; }
+
+/* ---- World: before / after the postprocess ----
+   BOTH images are in the DOM and CSS picks; swapping a src re-decodes and the
+   blink is exactly what a comparison must not have. */
+.world-art { position: relative; }
+.world-art .art-before { display: none; }
+.world-art.on-before .art-after { display: none; }
+.world-art.on-before .art-before { display: block; }
+.art-tag {
+  position: absolute; left: 6px; top: 6px; z-index: 1;
+  font-size: 11px; padding: 1px 7px; border-radius: 999px;
+  background: var(--accent); color: #fff; letter-spacing: 0.02em;
+}
+.art-tag.muted-tag { background: var(--surface-2); color: var(--muted); border: 1px solid var(--border); }
+.world-viewbar { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin: 10px 0 4px; font-size: 13px; }
+.swatch-wrap { display: inline-flex; align-items: center; gap: 5px; }
+.swatch { width: 11px; height: 11px; border-radius: 3px; border: 1px solid var(--border); display: inline-block; }
+
+/* ---- World: the set laid out as ground ----
+   Both shapes share the tile page's chessboard and its real-scale canvas, so
+   a strip here measures what a strip measures in the world. */
+.wall-mode { display: flex; align-items: center; gap: 8px; }
+/* "Is this state really lit?" on the Scenery review — the page's ORDINARY
+   control size, not the tiles card's shrunken one (maintainer 2026-08-18: it
+   was "smaller than the other radio-group-buttons I use on the page"). Sits
+   above the verdict row and wraps, because a corrected state also carries the
+   chip saying what it was generated as. */
+.lit-mode { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 8px; }
+.lit-mode .sortbar { flex: none; margin: 0; }
+.lit-mode .sortbar-btn { padding: 9px 16px; font-size: 13.5px; min-height: 38px; }
+.lit-mode .lit-label { font-size: 13.5px; }
+.wall-mode .sortbar { flex: none; }
+.wall-mode .sortbar-btn { padding: 3px 9px; font-size: 12px; }
+
+/* ---- World: one tile, both shapes, one box ----
+   Side by side to save vertical space on a page that already carries a card
+   per tile (maintainer 2026-08-17). The stage scrolls rather than scaling:
+   these canvases are drawn at the game's own 1:1, and resampling pixel art to
+   make it fit is the one thing that is never allowed.
+
+   WHICH MEANS THE ROOM HAS TO COME FROM THE PADDING. A 3×3 field is 200px and
+   a cliff corner 136px at that scale; a phone's card offered 305. So the stage
+   spans its card edge to edge and, on a phone, the card spans the panel's
+   padding as well — the same trade the tiles2 pair-row makes ("those 28px of
+   panel padding are exactly what two 3×3 fields need"). 393px of viewport ends
+   up holding ~340px of art with room to spare, and overflow-x stays as the
+   last resort on a narrower screen than that. Both shapes visible at once IS
+   the feature: a scrollbar between them would put back the second look the one
+   box removed. */
+.tile-stage { position: relative; display: flex; flex-direction: column; gap: 6px; padding: 4px 0; margin-inline: -12px; border-radius: 0; }
+/* CENTRED, NOT LEFT-PACKED. Two canvases of fixed pixel widths never fill the
+   box exactly, and flex-start put every leftover pixel on the right — a tile
+   flush against one edge with a hand's width of chessboard at the other
+   (maintainer 2026-08-17). Centring splits the slack in two. */
+.tile-row { display: flex; align-items: flex-end; justify-content: center; gap: 6px; overflow-x: auto; }
+.tile-row.zooms { align-items: center; }
+/* TWO PREVIEWS, TWO BOXES (maintainer 2026-08-17, after a rule drawn inside one
+   box was not enough: "there should be some separation between the preview on
+   top and bottom — it's not the same preview"). They are not at the same scale,
+   so one chessboard makes them one picture, and a 2× tile over a 1:1 field
+   becomes a lie about how big the tile is. A line says "same window, new
+   section"; a gap of the card's own surface says what is true. */
+.tile-preview { display: flex; flex-direction: column; gap: 10px; }
+.tile-preview .tile-stage { border-block: 1px solid var(--border); }
+.tile-stage .iso-canvas { flex: none; display: block; image-rendering: pixelated; }
+/* BEFORE/AFTER WITHIN REACH OF THE TILE IT CHANGES (maintainer 2026-08-17:
+   "that button might be higher up so I have to scroll. Can you place that
+   button so I have access to it for each tile?"). On the picture, not under it:
+   a row below the art would push the next tile down the page and cost the
+   vertical space the one box just saved. It reads as a badge because it is one
+   — the label says which of the two you are looking at. */
+.stage-flip {
+  position: absolute; top: 6px; right: 10px; z-index: 1;
+  font: inherit; font-size: 12px; line-height: 1; font-weight: 600;
+  padding: 8px 11px; border-radius: 999px; cursor: pointer;
+  background: var(--surface); color: var(--muted);
+  border: 1px solid var(--border); box-shadow: var(--shadow);
+  user-select: none; -webkit-user-select: none;   /* a long press must not select the label */
+}
+.stage-flip.on { background: var(--accent); color: #fff; border-color: transparent; }
+/* Pressed: it sinks a hair. Small, because the real feedback is the picture
+   under it changing. */
+.stage-flip:active:not(:disabled) { transform: translateY(1px); filter: brightness(0.94); }
+.stage-flip[disabled] { cursor: default; opacity: 0.6; font-weight: 400; }
+
+/* ---- THE MUSIC BENCH. Phone first: every target is at least 44px, the order
+   wraps rather than scrolling sideways, and nothing depends on hover. */
+.bench { display: flex; flex-direction: column; gap: 12px; }
+.bench-row { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
+.bench-decks { display: flex; gap: 12px; flex-wrap: wrap; }
+.bench-deck { flex: 1 1 240px; display: flex; flex-direction: column; gap: 6px; }
+.bench-deck-head { display: flex; align-items: center; gap: 10px; }
+.bench-select {
+  width: 100%; min-height: 44px; padding: 8px 10px; font-size: 15px;
+  background: var(--surface); color: var(--ink);
+  border: 1px solid var(--border); border-radius: 10px;
+}
+.bench-transport { display: flex; flex-direction: column; gap: 10px; padding: 10px 0; }
+.bench-btn {
+  min-height: 48px; min-width: 92px; padding: 10px 16px; font-size: 15.5px; font-weight: 600;
+  background: var(--surface); color: var(--ink);
+  border: 1px solid var(--border); border-radius: 12px; cursor: pointer;
+}
+.bench-btn.go { background: var(--accent); color: #fff; border-color: transparent; }
+.bench-btn:active { transform: translateY(1px); filter: brightness(0.95); }
+.bench-slider { display: flex; align-items: center; gap: 8px; font-size: 13.5px; color: var(--muted); flex: 1 1 200px; }
+.bench-slider input { flex: 1; min-height: 36px; }
+.bench-now { min-height: 20px; font-variant-numeric: tabular-nums; font-size: 13px; }
+.bench-order, .bench-phrases { display: flex; gap: 6px; flex-wrap: wrap; align-items: center; }
+.bench-chip {
+  display: inline-flex; flex-direction: column; align-items: center; gap: 1px;
+  min-height: 44px; min-width: 44px; padding: 5px 9px; cursor: pointer;
+  background: var(--surface); color: var(--ink);
+  border: 1px solid var(--border); border-radius: 10px;
+  font-size: 13.5px; font-weight: 600; font-variant-numeric: tabular-nums;
+}
+.bench-chip .bench-chip-key { font-size: 10.5px; font-weight: 400; color: var(--muted); }
+/* OUT OF THE KEY THAT WAS ASKED FOR — the mark that makes a reject informed. */
+/* A BORDER ALONE READ AS "SELECTED", not as "wrong" — the tint is what makes
+   an off-key phrase legible at a glance in a row of twenty. */
+.bench-chip.off-key {
+  border-color: var(--err); color: var(--err);
+  background: color-mix(in srgb, var(--err) 10%, var(--surface));
+}
+.bench-chip.off-key .bench-chip-key { color: var(--err); }
+.bench-chip.picked { background: var(--accent); color: #fff; border-color: transparent; }
+.bench-chip.picked .bench-chip-key { color: #fff; }
+.bench-x, .bench-seam {
+  min-height: 44px; min-width: 32px; padding: 0 6px; cursor: pointer;
+  background: transparent; color: var(--muted);
+  border: 1px solid transparent; border-radius: 8px; font-size: 15px;
+}
+.bench-seam { border-color: var(--border); }
+.bench-seam.on { background: var(--accent); color: #fff; border-color: transparent; }
+.bench-take.is-live { border-color: color-mix(in srgb, var(--ok) 45%, var(--border)); }
+.bench-fb { display: inline-flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+@media (max-width: 760px) {
+  /* STACKED, THE BASIS IS A HEIGHT. `flex: 1 1 240px` gave each deck a 240px
+     tall box on a phone and left a screen of nothing between them. */
+  .bench-decks { flex-direction: column; }
+  .bench-deck { flex: 0 0 auto; }
+  .bench-btn { flex: 1 1 40%; }
+}
+
+.bench-pair { display: inline-flex; align-items: stretch; gap: 2px; }
+.bench-judge {
+  min-height: 44px; min-width: 30px; padding: 0 5px; cursor: pointer; font-size: 13px;
+  background: transparent; color: var(--muted);
+  border: 1px solid var(--border); border-radius: 8px;
+}
+.bench-judge.on { background: var(--accent); color: #fff; border-color: transparent; }
+.bench-judge-row { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-top: 6px; }
+/* What has already been judged, so a second pass can see itself. */
+.bench-chip.judged-ok { box-shadow: inset 0 -3px 0 var(--ok); }
+.bench-chip.judged-no { box-shadow: inset 0 -3px 0 var(--err); }
+.bench-chip.judged { box-shadow: inset 0 -3px 0 var(--star); }
+
+
+.bench-problem { display: flex; gap: 8px; align-items: baseline; flex-wrap: wrap; font-size: 12.5px; color: var(--err); }
+.bench-problem:empty { display: none; }
+
+.bench-duck { flex-direction: column; align-items: stretch; gap: 4px; }
+.bench-duck .bench-slider { flex-direction: column; align-items: stretch; gap: 6px; font-size: 14px; color: var(--ink); }
+.bench-duck .bench-slider input { width: 100%; }
+.bench-duck.idle { opacity: 0.55; }
+.bench-hint { font-size: 12.5px; }
+
+.ground-pass.idle { opacity: 0.62; }
+.trans-nopost { display: flex; align-items: baseline; gap: 8px; flex-wrap: wrap; margin: 0 0 10px; }
+
+/* ---- THE ITEM INVENTORY GRID (maintainer 2026-08-24: "Items are so small and
+   we have so many … It's unreasonable the card is as big as a monster").
+   Every icon is authored 48x48, so a cell is built around exactly that: the art
+   at 1x, never resampled, with the name clamped under it. auto-fill puts five
+   across a phone and more on anything wider — about 35 items in view where the
+   creature-sized cards showed four. */
+.item-grid {
+  display: grid; gap: 8px;
+  /* FOUR ACROSS A PHONE, EXACTLY (maintainer 2026-08-24: "I now see 5/row. If
+     you make it 4/row (given my mobile resolution/view) can you fit how much
+     it's worth then to?"). auto-fill gave four on a 393px viewport and five on
+     his wider one — the count drifted with the device. A fixed four holds the
+     cell wide enough for a name AND a price on every phone. */
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+.item-cell {
+  position: relative; display: flex; flex-direction: column; align-items: center; gap: 3px;
+  padding: 5px 3px 6px; text-decoration: none; color: var(--ink);
+  background: var(--surface); border: 1px solid var(--border); border-radius: 10px;
+  min-height: 44px;
+}
+.item-cell:active { transform: translateY(1px); filter: brightness(0.96); }
+.item-cell.dim { opacity: 0.55; }        /* nothing drops it yet */
+.item-cell-art {
+  width: 100%; height: 52px; display: flex; align-items: center; justify-content: center;
+  border-radius: 7px; overflow: hidden;
+}
+.item-cell-art .item-icon { max-width: none; max-height: none; object-fit: none; }
+.item-cell-name {
+  font-size: 11px; line-height: 1.25; text-align: center; color: var(--ink);
+  display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;
+  overflow: hidden; word-break: break-word;
+}
+/* The two marks a cell carries: what KIND it is, and what he has said about it. */
+.item-cell-type { position: absolute; top: 2px; left: 2px; line-height: 0; opacity: 0.85; }
+.item-cell-type img, .item-cell-type .type-icon { width: 14px; height: 14px; }
+.item-cell-mark { position: absolute; top: 2px; right: 2px; display: flex; gap: 2px; }
+.item-cell-mark .pill { padding: 0 4px; font-size: 9.5px; line-height: 1.5; }
+.item-cell-mark .stars { font-size: 9px; }
+/* The worth, in the theme's own gold, tabular so the column reads as a column
+   when he sorts by it. */
+.item-cell-value {
+  display: inline-flex; align-items: center; gap: 2px;
+  font-size: 11px; line-height: 1.1; color: var(--star);
+  font-variant-numeric: tabular-nums; font-weight: 600;
+}
+/* His coin, authored 24x24 and drawn at 24 — never resampled, like every other
+   piece of pixel art on this site. */
+.coin-24 { width: 24px; height: 24px; image-rendering: pixelated; flex: none; }
+.card .thumb img.coin-24 { max-width: none; max-height: none; object-fit: none; }
+@media (min-width: 760px) {
+  /* Past the phone, go back to filling the width — a desktop should not be held
+     to four. */
+  .item-grid { grid-template-columns: repeat(auto-fill, minmax(96px, 1fr)); gap: 10px; }
+  .item-cell-name { font-size: 12px; }
+}
+
+/* THE NEW-BUILD BAR: fixed over everything, never in the layout, so its
+   arrival cannot move the page under a comparison. One line, both shas, one
+   action. */
+/* AT THE TOP, over the search bar (maintainer 2026-08-28: "I can't press on
+   Commit and have a lot of things to commit") — the bottom is the savebar's:
+   a banner there sits exactly on the Commit button mid-review. */
+/* The page's own error report — same shape as the update bar, red, and it
+   never hides an error behind a dead screen (2026-08-28). */
+.err-strip {
+  position: fixed; left: 12px; right: 12px; top: max(8px, env(safe-area-inset-top)); z-index: 61;
+  display: flex; align-items: stretch; gap: 0;
+  border-radius: 10px; border: 1px solid #c0392b;
+  background: var(--surface); box-shadow: 0 4px 18px rgba(0, 0, 0, 0.35);
+  overflow: hidden;
+}
+.err-strip .update-go { flex: 1; min-width: 0; padding: 12px 14px; border: 0; background: transparent; color: var(--ink); font-size: 12.5px; text-align: left; word-break: break-word; }
+.err-strip .update-x { flex: none; min-width: 48px; border: 0; border-left: 1px solid var(--border); background: transparent; color: var(--muted); font-size: 15px; cursor: pointer; }
+.update-bar {
+  position: fixed; left: 12px; right: 12px; top: max(8px, env(safe-area-inset-top)); z-index: 60;
+  display: flex; align-items: stretch; gap: 0;
+  border-radius: 10px; border: 1px solid var(--accent, #c9a227);
+  background: var(--surface); box-shadow: 0 4px 18px rgba(0, 0, 0, 0.35);
+  overflow: hidden;
+}
+.update-go {
+  flex: 1; min-width: 0; padding: 12px 14px; border: 0; background: transparent;
+  color: var(--ink); font-size: 13.5px; font-weight: 600; text-align: left; cursor: pointer;
+}
+/* DISMISSIBLE, always. A bar that can only be obeyed is a trap when it is
+   wrong — and it was wrong, returning on every tab switch. */
+.update-x {
+  flex: none; min-width: 48px; border: 0; border-left: 1px solid var(--border);
+  background: transparent; color: var(--muted); font-size: 15px; cursor: pointer;
+}
+
+/* ---- THE SCENERY HITBOX EDITOR (maintainer 2026-08-27) ----
+   Same instrument as the monster shadow bar — it reuses .shadow-bar,
+   .shadow-pad and .shadow-slider wholesale, because a second feel would be a
+   second thing to learn. What is added is the ellipse picker, which only
+   appears once a piece has more than one. */
+.hit-chips { display: flex; gap: 6px; margin: 6px 0; }
+/* The shape segment sits beside the box chips: both answer "which box, and what
+   is it". Fixed height whether one box is listed or five, so choosing a shape
+   never shifts the rails under his thumb. */
+.hit-shape-row { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+.hit-shape { flex: 0 0 auto; }
+.hit-shape button { min-height: 40px; padding: 0 12px; }
+.hit-shape button[disabled] { opacity: 0.45; }
+.hit-chips.hidden { display: none; }
+.hit-chips .sortbar-btn { min-width: 40px; min-height: 40px; border-radius: 8px; }
+/* Three rails now, not two, so they get a little less room each. */
+.hit-bar .shadow-sliders { gap: 6px; }
+
+/* ---- ONE TILE, CLOSE UP (maintainer 2026-08-27) ----
+   The row thumbnail is a button now; it must not look like one — the tile is
+   the affordance, so the button is a bare frame around it with a real tap
+   target. */
+.set-row-zoom {
+  flex: none; padding: 0; border: 0; background: transparent; cursor: zoom-in;
+  line-height: 0; min-height: 44px; display: flex; align-items: center;
+}
+.set-row-zoom:focus-visible { outline: 2px solid var(--accent, #c9a227); outline-offset: 2px; }
+/* The solo tile scales by a CSS variable so the zoom chips cost no reflow of
+   anything but the tile itself. */
+.tilezoom-solo { display: flex; justify-content: center; padding: 10px; border-radius: 10px; overflow: auto; }
+.tilezoom-tile { width: calc(64px * var(--z, 2)); height: auto; image-rendering: pixelated; }
+.tilezoom-modal .group-stage { margin-top: 6px; }
+
+/* ---- FADE TILES (maintainer 2026-08-28): one review block per tile — the
+   share line, the wandering-edge field it sits in, the standard verdict row. */
+.fade-tile { border-top: 1px solid var(--border); padding-top: 10px; margin-top: 12px; }
+.fade-key { font-size: 11.5px; overflow-wrap: anywhere; }
+
+/* ---- SLOPES (maintainer 2026-08-28): the walkable ramp cards ---- */
+.slope-stage { padding: 10px; display: flex; justify-content: center; align-items: center; }
+/* 1x, the game's own scale (maintainer 2026-08-28). height:auto is load-bearing:
+   a flex item stretches on the cross axis by default, which drew a 64x46 tile
+   64x120 — right width, wrong height, and it read as "very zoomed in". */
+.slope-tile { width: auto; height: auto; align-self: center; image-rendering: pixelated; }
+
+/* ---- SCENERY AT A GLANCE (maintainer 2026-08-29: "I want it to be clearer
+   to see how many states, directions and if it's animated ... a x3, x7 pill
+   in the top right corner. To hard to know now without clicking on it") ----
+   The two marks ride the ARTWORK, where the eye already is while scrolling;
+   the facings and the animated/static word sit on the row beneath the name,
+   so a card still reads top-down without the picture becoming a dashboard. */
+.card .thumb { position: relative; }
+.thumb-count, .thumb-play {
+  position: absolute; top: 5px; z-index: 1;
+  font-size: 11.5px; line-height: 1; padding: 3px 6px; border-radius: 999px;
+  background: color-mix(in srgb, var(--surface) 86%, transparent);
+  border: 1px solid var(--border); color: var(--ink);
+  font-variant-numeric: tabular-nums; pointer-events: none;
+}
+.thumb-count { right: 5px; font-weight: 600; }
+.thumb-play { left: 5px; color: var(--accent, #c9a227); border-color: color-mix(in srgb, var(--accent, #c9a227) 55%, var(--border)); }
+.obj-shape { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+.obj-shape .pill { font-size: 11px; padding: 1px 6px; }
+
+/* The 🔍 page's Hearing rows have no art: a glyph in the thumb slot keeps the
+   grid's rhythm. .spot is the card a #/sounds/<id> or #/music/<id> link
+   landed on — lit for a moment, then ordinary. */
+.near-glyph { display: flex; align-items: center; justify-content: center; width: 100%; height: 100%; font-size: 30px; opacity: 0.8; }
+.near-hearing { margin-top: 18px; }
+.panel.spot, .sfx-event.spot { outline: 2px solid var(--accent, #d97757); outline-offset: 2px; transition: outline-color 1.2s ease 1.2s; }
+
+/* The fade list's seam between "still to review" and "already reviewed". */
+.fade-divider { margin: 14px 0 6px; padding-top: 8px; border-top: 1px dashed var(--border, #555); font-size: 13px; }
+.fade-tile.reviewed { opacity: 0.86; }
+/* A judged fade tile wears its verdict, the same outline the world candidates
+   use — visible the instant he taps, queued or committed. Not dimmed: seeing
+   what he rejected is the point. */
+.fade-tile.picked, .fade-tile.dropped { border-radius: 8px; outline-offset: 3px; }
+.fade-tile.picked { outline: 2px solid var(--good); }
+.fade-tile.dropped { outline: 2px solid var(--bad); }
+
+/* THE TONE CHIP on a fade card (maintainer 2026-09-03: "I feel as if the grey
+   tone is slightly wrong ... it's almost as if the stone belongs to brown
+   paving stone"). Sits under the scene, out of the art's way; the colour is
+   the verdict — green matches, amber is a difference he can see. */
+.fade-tile .tone-chip { display: inline-block; margin: 6px 0 0; font-variant-numeric: tabular-nums; }
+
+/* THE FACET BLOCK'S ONE IDIOM (maintainer 2026-09-09: "you have added a lot of
+   UX/UI that doesn't follow the CSS style guide. And the page starts to become
+   a bit hard to understand"). Every row is: a label in ONE column, then the
+   page's own controls — a chip radio (.sortbar), or a select dressed exactly
+   like one, or the hitbox editor's rails. A row's details are its second line,
+   never more rows. Nothing here defines a new look. */
+.lit-mode .lit-label { flex: 0 0 84px; }
+.facet-divider { flex-basis: 100%; height: 1px; background: var(--border); margin: 2px 0 10px; }
+/* A select that reads as a chip strip: the seg's surface, border, radius and
+   type, with the lit row's chip padding, so Kind and the light's kind look like
+   the Placed and Light chips beside them rather than like a form field. */
+.wiki-select {
+  appearance: none; -webkit-appearance: none;
+  background: var(--surface); color: var(--ink); border: 1px solid var(--border);
+  border-radius: 9px; padding: 9px 34px 9px 14px; font: inherit; font-size: 13.5px; min-height: 38px;
+  background-image: linear-gradient(45deg, transparent 50%, var(--muted) 50%), linear-gradient(135deg, var(--muted) 50%, transparent 50%);
+  background-position: calc(100% - 18px) 55%, calc(100% - 13px) 55%; background-size: 5px 5px; background-repeat: no-repeat;
+  max-width: 60vw;
+}
+/* The Light row's second line: the light's own controls, aligned under the
+   chips, present only while the state is lit. */
+.lit-detail { flex-basis: 100%; margin-left: 94px; display: flex; flex-direction: column; gap: 10px; }
+@media (max-width: 480px) { .lit-detail { margin-left: 0; } }
+.light-line { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+.light-color { width: 38px; height: 38px; padding: 2px; border: 1px solid var(--border); border-radius: 9px; background: var(--surface); }
+.light-flags button { min-height: 38px; padding: 0 14px; font-size: 13.5px; }
+.light-rails label > span { width: 64px; }
+.light-rails .shadow-val { min-width: 64px; text-align: right; }
+/* A rail's readout: the same mono chip the sound picker's rails use. */
+.shadow-val { font-family: ui-monospace, monospace; font-size: 12px; color: var(--muted); }

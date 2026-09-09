@@ -1,0 +1,90 @@
+{
+  "format": "scenery-piece@2",
+  "id": "briar_thicket_010",
+  "group": "briar_thickets",
+  "rank": 13,
+  "index": 10,
+  "name": "Petal-strewn shedding briar 010",
+  "lights": null,
+  "variety": "petal-strewn shedding briar",
+  "glow_concept": "thorn tips sparking with points of light",
+  "prompt": "a dense sprawling bramble thicket of dark green leaves and thick arcing thorny stems, a low lush leafy mass hugging the ground with wild roses scattered through it, petal-strewn shedding briar, roughly six feet tall, human height, self-emissive at night, softly radiating light: thorn tips sparking with points of light",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 96,
+  "sprite": "briar_thickets/briar_thicket_010/sprite.webp",
+  "placement": {
+    "world_height_m": 0.938,
+    "world_px_height": 48,
+    "character_height_px": 87,
+    "character_height_m": 1.7,
+    "note": "ONE SCENERY PIXEL IS ONE PLAYER PIXEL. world_px_height IS the art's own alpha bbox height, so scenery is placed into the world at 1:1 exactly as the avatar is (setScale(1)) and the two share one pixel grid. The CAMERA still zooms the whole scene \u2014 that is uniform and correct; what must never happen is scenery being resampled on its own, against the player. world_height_m is what the art reads as beside a 87px character; declared_height_m is what it was once declared to be, and a gap between them means the ART is the wrong size.",
+    "declared_height_m": 1.55,
+    "content_box": [
+      16,
+      25,
+      84,
+      73
+    ],
+    "content_px_height": 48,
+    "canvas_render_px": 96
+  },
+  "pixellab_object_id": "361c1df6-6dfe-4f53-ab24-9fd053ed66c1",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)",
+  "must_be_imbplemented_with_random_hflip": true,
+  "generated_at": "2026-08-13T20:54:29+00:00",
+  "states": {
+    "LIT_1": {
+      "sprite": "briar_thickets/briar_thicket_010/sprite.webp",
+      "pixellab_object_id": "361c1df6-6dfe-4f53-ab24-9fd053ed66c1",
+      "generated_at": "2026-08-13T20:54:29+00:00",
+      "animations": {}
+    },
+    "LIT_2": {
+      "sprite": "briar_thickets/briar_thicket_010/lit_2/sprite.webp",
+      "pixellab_object_id": "740acd41-3018-4e70-bcf8-39acebb85380",
+      "generated_at": "2026-08-15T20:51:40+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.6519,
+      "glow_score": 0.0137,
+      "animations": {}
+    },
+    "NOT_LIT_2": {
+      "sprite": "briar_thickets/briar_thicket_010/not_lit_2/sprite.webp",
+      "pixellab_object_id": "819c76fa-47f1-4d07-a86a-de2d6acbe22d",
+      "generated_at": "2026-08-15T20:46:21+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.3418,
+      "glow_score": 0.0
+    }
+  },
+  "collision": true,
+  "hitbox_shape": "ellipse",
+  "light": {
+    "strength": 0.08,
+    "color": "#fefeb7",
+    "radius": 1,
+    "reference": "the spawn bonfire is 1.0 (radius 7); strength 0 is no light",
+    "states": {
+      "LIT_1": {
+        "strength": 0.08,
+        "color": "#fefeb7",
+        "radius": 1
+      },
+      "LIT_2": {
+        "strength": 0.06,
+        "color": "#fff5d0",
+        "radius": 1
+      }
+    },
+    "kind": "glow/bio",
+    "flame": false,
+    "embers": false
+  }
+}

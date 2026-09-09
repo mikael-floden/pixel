@@ -1,0 +1,22 @@
+{
+  "domain": "items",
+  "id": "spotted_purple_mushroom",
+  "name_seen": "Gloom Cap",
+  "law": "V",
+  "description": "Fat violet cap, pale freckles, thick lavender stem. It grows on Stumplings, which should tell you plenty.",
+  "lore": [
+    "A [[monsters/tree_stump|Stumpling]] will stand and let you work. You can take four caps off the shoulder of one, unhurried, with it watching you do it, and it will not shift its weight the whole time — and then the basket is full, and the job is done, and the entire problem is in front of you, which is getting back out of the clearing.",
+    "So watch a picker leave a wood sometime. They go backwards. Slowly, basket held to the chest, feeling behind for roots with one heel, all the way to the tree line, eyes front the whole distance. Nothing about it is dignified. Everyone who has tried it facing the other way agrees the silliness is worth twenty-four gold a cap, and they do not go into detail, and they change the subject well."
+  ],
+  "related": [
+    {
+      "domain": "monsters",
+      "id": "tree_stump"
+    },
+    {
+      "domain": "lore",
+      "id": "the_hard_pieces"
+    }
+  ],
+  "gm_notes": "A whole profession's body language, derived from one creature's one rule. Players who have met a Stumpling get the joke; players who have not will find out."
+}

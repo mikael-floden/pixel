@@ -1,0 +1,23 @@
+{
+  "domain": "items",
+  "id": "crimson_spiral_stone",
+  "name_seen": "Soulstone",
+  "law": "V",
+  "description": "Crimson with one spiral rune cut deep. Unclaimed: nothing that bleeds has dropped it so far.",
+  "lore": [
+    "Nothing happens while you are winning, which is the difficulty in selling one: the only demonstration is a bad afternoon. Below your half it starts paying, a tenth of everything you land coming back the other way, for exactly as long as you are losing. Above that line it is a heavy red pebble worth two hundred and twenty [[lore/the_gold_agreement|gold]]. Whatever settled to the bottom of it had no interest in a fight until the fight was going badly.",
+    "The spiral goes in deep and was not cut. The trade had that argument already over [[items/white_rune_frost_stone|a stone with a frost-rune in it]] and will not have it twice: a few come up with a shape in them, the shape runs all the way down, and there is no bench mark on any of them.",
+    "There is a buyer who pays three hundred. He has paid it eleven times, to eleven sellers, in weighed gold, and has never once haggled, which in this trade is stranger than the money. The seller who asked what he wanted them for was told it was a fair price, and asked whether he would like it. He would. Nothing that bleeds has ever been broken carrying one — it is the first thing anybody says about the stone, and he knows it better than the people telling him. He is buying them faster than they surface, and there is not one under a cloth on any bench in the country tonight."
+  ],
+  "related": [
+    {
+      "domain": "items",
+      "id": "white_rune_frost_stone"
+    },
+    {
+      "domain": "lore",
+      "id": "the_hard_pieces"
+    }
+  ],
+  "gm_notes": "Unbound. The buyer is a prop and not a lead: never named, never described, never explained, and he must not be quietly assigned to the mountain by a later writer — the cold part is that he could be anyone. The frost-rune cross-reference keeps the two rune stones from arguing the same case twice; that record owns the argument, this one owns the buyer. Items line adopted verbatim."
+}
