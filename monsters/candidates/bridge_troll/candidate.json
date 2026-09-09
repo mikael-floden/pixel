@@ -138,5 +138,203 @@
       }
     }
   },
-  "approved_at": "2026-09-09T19:59:27+00:00"
+  "approved_at": "2026-09-09T19:59:27+00:00",
+  "animations": {
+    "idle": {
+      "directions": {
+        "south": {
+          "status": "pass",
+          "step_mean": 0.0578,
+          "step_max": 0.0985,
+          "drift": 1.58,
+          "loop": 0.0002,
+          "pin": 1.0,
+          "reasons": [],
+          "cut": 0,
+          "sub": "d1eb5ad8-0592-4c97-ac6a-2187d810cecf",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "generated_at": "2026-09-09T20:23:46+00:00"
+        },
+        "south-east": {
+          "status": "pass",
+          "step_mean": 0.0481,
+          "step_max": 0.077,
+          "drift": 1.82,
+          "loop": 0.0,
+          "pin": 1.0,
+          "reasons": [],
+          "cut": 0,
+          "sub": "ff570aa0-a473-4e1a-8ebe-25d707744b8a",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "generated_at": "2026-09-09T20:23:47+00:00"
+        },
+        "east": {
+          "status": "pass",
+          "step_mean": 0.0347,
+          "step_max": 0.0495,
+          "drift": 2.03,
+          "loop": 0.0007,
+          "pin": 1.0,
+          "reasons": [],
+          "cut": 0,
+          "sub": "89ae5278-1d59-4640-9b78-057c0e1213c4",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "generated_at": "2026-09-09T20:23:48+00:00"
+        },
+        "north-east": {
+          "status": "pass",
+          "step_mean": 0.0204,
+          "step_max": 0.0222,
+          "drift": 1.12,
+          "loop": 0.0,
+          "pin": 1.0,
+          "reasons": [],
+          "cut": 0,
+          "sub": "0b3ce60b-9803-4f25-8063-da8096368787",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "generated_at": "2026-09-09T20:23:49+00:00"
+        },
+        "north": {
+          "status": "pass",
+          "step_mean": 0.0368,
+          "step_max": 0.0634,
+          "drift": 1.08,
+          "loop": 0.0,
+          "pin": 1.0,
+          "reasons": [],
+          "cut": 0,
+          "sub": "21866e48-ba6a-4b24-885e-d1c5e648dbf4",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "generated_at": "2026-09-09T20:23:49+00:00"
+        },
+        "south-west": {
+          "status": "pass",
+          "step_mean": 0.0481,
+          "step_max": 0.077,
+          "drift": 1.82,
+          "loop": 0.0,
+          "pin": 1.0,
+          "reasons": [],
+          "cut": 0,
+          "sub": "ff570aa0-a473-4e1a-8ebe-25d707744b8a",
+          "takes": 1,
+          "version": 1,
+          "mirrored": true,
+          "generated_at": "2026-09-09T20:23:47+00:00",
+          "source": "south-east"
+        },
+        "west": {
+          "status": "pass",
+          "step_mean": 0.0347,
+          "step_max": 0.0495,
+          "drift": 2.03,
+          "loop": 0.0007,
+          "pin": 1.0,
+          "reasons": [],
+          "cut": 0,
+          "sub": "89ae5278-1d59-4640-9b78-057c0e1213c4",
+          "takes": 1,
+          "version": 1,
+          "mirrored": true,
+          "generated_at": "2026-09-09T20:23:48+00:00",
+          "source": "east"
+        },
+        "north-west": {
+          "status": "pass",
+          "step_mean": 0.0204,
+          "step_max": 0.0222,
+          "drift": 1.12,
+          "loop": 0.0,
+          "pin": 1.0,
+          "reasons": [],
+          "cut": 0,
+          "sub": "0b3ce60b-9803-4f25-8063-da8096368787",
+          "takes": 1,
+          "version": 1,
+          "mirrored": true,
+          "generated_at": "2026-09-09T20:23:49+00:00",
+          "source": "north-east"
+        }
+      },
+      "action": "Calm still idle, breathing very slowly and subtly, chest and shoulders rise and fall a little, feet planted, no other movement, ends in the same neutral pose it started in",
+      "frame_paths": {
+        "south": [
+          "bridge_troll/animations/idle/south/00.webp",
+          "bridge_troll/animations/idle/south/01.webp",
+          "bridge_troll/animations/idle/south/02.webp",
+          "bridge_troll/animations/idle/south/03.webp",
+          "bridge_troll/animations/idle/south/04.webp"
+        ],
+        "south-east": [
+          "bridge_troll/animations/idle/south-east/00.webp",
+          "bridge_troll/animations/idle/south-east/01.webp",
+          "bridge_troll/animations/idle/south-east/02.webp",
+          "bridge_troll/animations/idle/south-east/03.webp",
+          "bridge_troll/animations/idle/south-east/04.webp"
+        ],
+        "east": [
+          "bridge_troll/animations/idle/east/00.webp",
+          "bridge_troll/animations/idle/east/01.webp",
+          "bridge_troll/animations/idle/east/02.webp",
+          "bridge_troll/animations/idle/east/03.webp",
+          "bridge_troll/animations/idle/east/04.webp"
+        ],
+        "north-east": [
+          "bridge_troll/animations/idle/north-east/00.webp",
+          "bridge_troll/animations/idle/north-east/01.webp",
+          "bridge_troll/animations/idle/north-east/02.webp",
+          "bridge_troll/animations/idle/north-east/03.webp",
+          "bridge_troll/animations/idle/north-east/04.webp"
+        ],
+        "north": [
+          "bridge_troll/animations/idle/north/00.webp",
+          "bridge_troll/animations/idle/north/01.webp",
+          "bridge_troll/animations/idle/north/02.webp",
+          "bridge_troll/animations/idle/north/03.webp",
+          "bridge_troll/animations/idle/north/04.webp"
+        ],
+        "south-west": [
+          "bridge_troll/animations/idle/south-west/00.webp",
+          "bridge_troll/animations/idle/south-west/01.webp",
+          "bridge_troll/animations/idle/south-west/02.webp",
+          "bridge_troll/animations/idle/south-west/03.webp",
+          "bridge_troll/animations/idle/south-west/04.webp"
+        ],
+        "west": [
+          "bridge_troll/animations/idle/west/00.webp",
+          "bridge_troll/animations/idle/west/01.webp",
+          "bridge_troll/animations/idle/west/02.webp",
+          "bridge_troll/animations/idle/west/03.webp",
+          "bridge_troll/animations/idle/west/04.webp"
+        ],
+        "north-west": [
+          "bridge_troll/animations/idle/north-west/00.webp",
+          "bridge_troll/animations/idle/north-west/01.webp",
+          "bridge_troll/animations/idle/north-west/02.webp",
+          "bridge_troll/animations/idle/north-west/03.webp",
+          "bridge_troll/animations/idle/north-west/04.webp"
+        ]
+      },
+      "strips": {
+        "south": "bridge_troll/animations/idle__south.webp",
+        "south-east": "bridge_troll/animations/idle__south-east.webp",
+        "east": "bridge_troll/animations/idle__east.webp",
+        "north-east": "bridge_troll/animations/idle__north-east.webp",
+        "north": "bridge_troll/animations/idle__north.webp",
+        "south-west": "bridge_troll/animations/idle__south-west.webp",
+        "west": "bridge_troll/animations/idle__west.webp",
+        "north-west": "bridge_troll/animations/idle__north-west.webp"
+      }
+    }
+  }
 }

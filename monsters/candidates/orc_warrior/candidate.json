@@ -138,5 +138,203 @@
       }
     }
   },
-  "approved_at": "2026-09-09T19:59:26+00:00"
+  "approved_at": "2026-09-09T19:59:26+00:00",
+  "animations": {
+    "idle": {
+      "directions": {
+        "south": {
+          "status": "pass",
+          "step_mean": 0.0558,
+          "step_max": 0.0701,
+          "drift": 0.73,
+          "loop": 0.0003,
+          "pin": 1.0,
+          "reasons": [],
+          "cut": 0,
+          "sub": "00f923f6-952b-47aa-bd0a-5a08c22fb7b8",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "generated_at": "2026-09-09T20:24:07+00:00"
+        },
+        "south-east": {
+          "status": "pass",
+          "step_mean": 0.0127,
+          "step_max": 0.0222,
+          "drift": 0.22,
+          "loop": 0.002,
+          "pin": 1.0,
+          "reasons": [],
+          "cut": 0,
+          "sub": "6c4c310f-cc12-4f82-9500-285eaa70cab7",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "generated_at": "2026-09-09T20:24:07+00:00"
+        },
+        "east": {
+          "status": "pass",
+          "step_mean": 0.0654,
+          "step_max": 0.1147,
+          "drift": 1.17,
+          "loop": 0.0,
+          "pin": 1.0,
+          "reasons": [],
+          "cut": 0,
+          "sub": "71569607-093a-4f14-9b5c-e4bcd7ae837c",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "generated_at": "2026-09-09T20:24:08+00:00"
+        },
+        "north-east": {
+          "status": "pass",
+          "step_mean": 0.0728,
+          "step_max": 0.1017,
+          "drift": 1.03,
+          "loop": 0.0,
+          "pin": 1.0,
+          "reasons": [],
+          "cut": 0,
+          "sub": "09d33f48-b390-4262-886a-ec64318b371c",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "generated_at": "2026-09-09T20:24:09+00:00"
+        },
+        "north": {
+          "status": "pass",
+          "step_mean": 0.0373,
+          "step_max": 0.0728,
+          "drift": 0.53,
+          "loop": 0.0,
+          "pin": 1.0,
+          "reasons": [],
+          "cut": 0,
+          "sub": "b82e61e1-6ebb-4d8a-ad60-cb27998139e6",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "generated_at": "2026-09-09T20:24:10+00:00"
+        },
+        "south-west": {
+          "status": "pass",
+          "step_mean": 0.0127,
+          "step_max": 0.0222,
+          "drift": 0.22,
+          "loop": 0.002,
+          "pin": 1.0,
+          "reasons": [],
+          "cut": 0,
+          "sub": "6c4c310f-cc12-4f82-9500-285eaa70cab7",
+          "takes": 1,
+          "version": 1,
+          "mirrored": true,
+          "generated_at": "2026-09-09T20:24:07+00:00",
+          "source": "south-east"
+        },
+        "west": {
+          "status": "pass",
+          "step_mean": 0.0654,
+          "step_max": 0.1147,
+          "drift": 1.17,
+          "loop": 0.0,
+          "pin": 1.0,
+          "reasons": [],
+          "cut": 0,
+          "sub": "71569607-093a-4f14-9b5c-e4bcd7ae837c",
+          "takes": 1,
+          "version": 1,
+          "mirrored": true,
+          "generated_at": "2026-09-09T20:24:08+00:00",
+          "source": "east"
+        },
+        "north-west": {
+          "status": "pass",
+          "step_mean": 0.0728,
+          "step_max": 0.1017,
+          "drift": 1.03,
+          "loop": 0.0,
+          "pin": 1.0,
+          "reasons": [],
+          "cut": 0,
+          "sub": "09d33f48-b390-4262-886a-ec64318b371c",
+          "takes": 1,
+          "version": 1,
+          "mirrored": true,
+          "generated_at": "2026-09-09T20:24:09+00:00",
+          "source": "north-east"
+        }
+      },
+      "action": "Calm still idle, breathing very slowly and subtly, chest and shoulders rise and fall a little, feet planted, no other movement, ends in the same neutral pose it started in",
+      "frame_paths": {
+        "south": [
+          "orc_warrior/animations/idle/south/00.webp",
+          "orc_warrior/animations/idle/south/01.webp",
+          "orc_warrior/animations/idle/south/02.webp",
+          "orc_warrior/animations/idle/south/03.webp",
+          "orc_warrior/animations/idle/south/04.webp"
+        ],
+        "south-east": [
+          "orc_warrior/animations/idle/south-east/00.webp",
+          "orc_warrior/animations/idle/south-east/01.webp",
+          "orc_warrior/animations/idle/south-east/02.webp",
+          "orc_warrior/animations/idle/south-east/03.webp",
+          "orc_warrior/animations/idle/south-east/04.webp"
+        ],
+        "east": [
+          "orc_warrior/animations/idle/east/00.webp",
+          "orc_warrior/animations/idle/east/01.webp",
+          "orc_warrior/animations/idle/east/02.webp",
+          "orc_warrior/animations/idle/east/03.webp",
+          "orc_warrior/animations/idle/east/04.webp"
+        ],
+        "north-east": [
+          "orc_warrior/animations/idle/north-east/00.webp",
+          "orc_warrior/animations/idle/north-east/01.webp",
+          "orc_warrior/animations/idle/north-east/02.webp",
+          "orc_warrior/animations/idle/north-east/03.webp",
+          "orc_warrior/animations/idle/north-east/04.webp"
+        ],
+        "north": [
+          "orc_warrior/animations/idle/north/00.webp",
+          "orc_warrior/animations/idle/north/01.webp",
+          "orc_warrior/animations/idle/north/02.webp",
+          "orc_warrior/animations/idle/north/03.webp",
+          "orc_warrior/animations/idle/north/04.webp"
+        ],
+        "south-west": [
+          "orc_warrior/animations/idle/south-west/00.webp",
+          "orc_warrior/animations/idle/south-west/01.webp",
+          "orc_warrior/animations/idle/south-west/02.webp",
+          "orc_warrior/animations/idle/south-west/03.webp",
+          "orc_warrior/animations/idle/south-west/04.webp"
+        ],
+        "west": [
+          "orc_warrior/animations/idle/west/00.webp",
+          "orc_warrior/animations/idle/west/01.webp",
+          "orc_warrior/animations/idle/west/02.webp",
+          "orc_warrior/animations/idle/west/03.webp",
+          "orc_warrior/animations/idle/west/04.webp"
+        ],
+        "north-west": [
+          "orc_warrior/animations/idle/north-west/00.webp",
+          "orc_warrior/animations/idle/north-west/01.webp",
+          "orc_warrior/animations/idle/north-west/02.webp",
+          "orc_warrior/animations/idle/north-west/03.webp",
+          "orc_warrior/animations/idle/north-west/04.webp"
+        ]
+      },
+      "strips": {
+        "south": "orc_warrior/animations/idle__south.webp",
+        "south-east": "orc_warrior/animations/idle__south-east.webp",
+        "east": "orc_warrior/animations/idle__east.webp",
+        "north-east": "orc_warrior/animations/idle__north-east.webp",
+        "north": "orc_warrior/animations/idle__north.webp",
+        "south-west": "orc_warrior/animations/idle__south-west.webp",
+        "west": "orc_warrior/animations/idle__west.webp",
+        "north-west": "orc_warrior/animations/idle__north-west.webp"
+      }
+    }
+  }
 }
