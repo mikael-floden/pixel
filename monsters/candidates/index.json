@@ -1,6 +1,6 @@
 {
   "format": "monster-candidates@1",
-  "generated_at": "2026-09-09T17:36:10+00:00",
+  "generated_at": "2026-09-09T17:37:23+00:00",
   "art_ext": ".webp",
   "directions": [
     "south",
@@ -18,7 +18,7 @@
     "rejected"
   ],
   "feedback_key": "monsters/candidates/<id>",
-  "count": 4,
+  "count": 5,
   "candidates": [
     {
       "id": "lantern_bat",
@@ -537,6 +537,133 @@
       },
       "review": "pending",
       "generated_at": "2026-09-09T17:34:22+00:00"
+    },
+    {
+      "id": "hollow_knight",
+      "name": "Hollowplate",
+      "tier": "evil",
+      "lore": "The knight left long ago. The armor kept the vigil, and the fire that keeps it standing has forgotten whose it was.",
+      "biome": [
+        "grey_paving_stone",
+        "grey_stone",
+        "parquet_floor"
+      ],
+      "items": [],
+      "size": [
+        112,
+        112
+      ],
+      "template_id": "mannequin",
+      "pixellab_id": "2f3aecad-cef3-4701-89a7-457b7eaf9007",
+      "version": 1,
+      "sheet": "hollow_knight/sheet.webp",
+      "rotations": {
+        "south": "hollow_knight/rotations/south.webp",
+        "south-east": "hollow_knight/rotations/south-east.webp",
+        "east": "hollow_knight/rotations/east.webp",
+        "north-east": "hollow_knight/rotations/north-east.webp",
+        "north": "hollow_knight/rotations/north.webp",
+        "north-west": "hollow_knight/rotations/north-west.webp",
+        "west": "hollow_knight/rotations/west.webp",
+        "south-west": "hollow_knight/rotations/south-west.webp"
+      },
+      "qa": {
+        "status": "pass",
+        "min_run1": 0.692,
+        "reasons": [],
+        "directions": {
+          "south": {
+            "run1": 0.723,
+            "bbox": [
+              3,
+              2,
+              108,
+              109
+            ],
+            "fill": 0.896,
+            "touches_edge": false
+          },
+          "west": {
+            "run1": 0.732,
+            "bbox": [
+              29,
+              3,
+              93,
+              110
+            ],
+            "fill": 0.546,
+            "touches_edge": false
+          },
+          "east": {
+            "run1": 0.773,
+            "bbox": [
+              16,
+              3,
+              81,
+              110
+            ],
+            "fill": 0.554,
+            "touches_edge": false
+          },
+          "north": {
+            "run1": 0.699,
+            "bbox": [
+              5,
+              1,
+              108,
+              107
+            ],
+            "fill": 0.87,
+            "touches_edge": false
+          },
+          "south-east": {
+            "run1": 0.783,
+            "bbox": [
+              12,
+              3,
+              100,
+              110
+            ],
+            "fill": 0.751,
+            "touches_edge": false
+          },
+          "north-east": {
+            "run1": 0.73,
+            "bbox": [
+              10,
+              1,
+              105,
+              108
+            ],
+            "fill": 0.81,
+            "touches_edge": false
+          },
+          "north-west": {
+            "run1": 0.692,
+            "bbox": [
+              25,
+              1,
+              98,
+              108
+            ],
+            "fill": 0.623,
+            "touches_edge": false
+          },
+          "south-west": {
+            "run1": 0.788,
+            "bbox": [
+              5,
+              3,
+              99,
+              110
+            ],
+            "fill": 0.802,
+            "touches_edge": false
+          }
+        }
+      },
+      "review": "pending",
+      "generated_at": "2026-09-09T17:37:23+00:00"
     }
   ]
 }
