@@ -188,8 +188,16 @@ there:
   > 0.05 (a symmetric body scores both ways equally — without the margin
   Pebblemite and Shellet were false alarms). A mere border touch is a warn.
 - **`idle` is resumable and is the redo sweep**: it regenerates every
-  direction whose verdict is missing or fail; a `redo` deletes the old take
-  on PixelLab first so the record does not accumulate.
+  direction whose verdict is missing or fail, and clears that direction's
+  old takes on PixelLab first (a regenerated direction is by definition one
+  nobody wants to keep), so the record never accumulates rejected rolls.
+- **The take is picked by the job's own `animation_group_id`** (from the
+  finished background job), never by position in the character's animation
+  list: PixelLab returns that list in NO particular order (measured
+  2026-09-09 — a sweep's "last take" re-downloaded the previous roll for
+  three monsters in a row, verdicts identical to four decimals, $0.25 of
+  fresh clips never looked at). `fetch` (no job at hand) is the only caller
+  that falls back to the last listed take.
 - Review is a published artifact page with the clips PLAYING (maintainer:
   "send the page as an artifact so I can see the real animation") — canvases
   looping at idle pace, a redo toggle per direction that collects
