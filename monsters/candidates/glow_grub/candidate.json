@@ -1,0 +1,141 @@
+{
+  "id": "glow_grub",
+  "name": "Glowgrub",
+  "tier": "cute",
+  "scale": "small",
+  "lore": "The only light in the deep galleries. Miners follow it, and it leads them where it feeds.",
+  "biome": [
+    "black_rock",
+    "grey_stone"
+  ],
+  "items": [],
+  "prompt": "Small fantasy cave grub with a plump segmented pale body, soft blue bioluminescent spots along its sides, a small dark head with tiny mandibles, and short stubby legs.",
+  "size": [
+    32,
+    32
+  ],
+  "template_id": "bear",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "glow_grub/rotations/south.webp",
+    "south-east": "glow_grub/rotations/south-east.webp",
+    "east": "glow_grub/rotations/east.webp",
+    "north-east": "glow_grub/rotations/north-east.webp",
+    "north": "glow_grub/rotations/north.webp",
+    "north-west": "glow_grub/rotations/north-west.webp",
+    "west": "glow_grub/rotations/west.webp",
+    "south-west": "glow_grub/rotations/south-west.webp"
+  },
+  "sheet": "glow_grub/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "841e4352-bb75-414d-b149-e215a819d9a7",
+  "seed": 1817732870,
+  "version": 1,
+  "usage": null,
+  "generated_at": "2026-09-09T18:55:22+00:00",
+  "elapsed_s": 150.1,
+  "qa": {
+    "status": "pass",
+    "min_run1": 0.73,
+    "reasons": [],
+    "directions": {
+      "south": {
+        "run1": 0.754,
+        "bbox": [
+          2,
+          6,
+          30,
+          28
+        ],
+        "fill": 0.602,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.783,
+        "bbox": [
+          3,
+          4,
+          30,
+          28
+        ],
+        "fill": 0.633,
+        "touches_edge": false
+      },
+      "east": {
+        "run1": 0.761,
+        "bbox": [
+          4,
+          6,
+          28,
+          28
+        ],
+        "fill": 0.516,
+        "touches_edge": false
+      },
+      "north": {
+        "run1": 0.73,
+        "bbox": [
+          3,
+          4,
+          28,
+          28
+        ],
+        "fill": 0.586,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.738,
+        "bbox": [
+          7,
+          6,
+          24,
+          28
+        ],
+        "fill": 0.365,
+        "touches_edge": false
+      },
+      "north-east": {
+        "run1": 0.789,
+        "bbox": [
+          2,
+          5,
+          30,
+          28
+        ],
+        "fill": 0.629,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.749,
+        "bbox": [
+          7,
+          3,
+          25,
+          28
+        ],
+        "fill": 0.439,
+        "touches_edge": false
+      },
+      "south-west": {
+        "run1": 0.767,
+        "bbox": [
+          2,
+          5,
+          30,
+          28
+        ],
+        "fill": 0.629,
+        "touches_edge": false
+      }
+    }
+  }
+}
