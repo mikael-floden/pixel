@@ -385,21 +385,6 @@
       "lore": "Too slow to chase and too stubborn to yield. Its shell is a garden, and it defends the garden."
     },
     {
-      "id": "bog_leech",
-      "name": "Leechling",
-      "tier": "mid",
-      "scale": "small",
-      "template_id": "bear",
-      "size": 40,
-      "biome": [
-        "dark_mud",
-        "water"
-      ],
-      "items": [],
-      "prompt": "Tiny fat fantasy leech with a glossy dark purple segmented body, a round sucker mouth ringed with small white teeth, two beady yellow eyes, and drips of swamp water sliding off its back.",
-      "lore": "It waits under the mud for a warm ankle. Most people never feel it; the ones who do never stop feeling it."
-    },
-    {
       "id": "bone_colossus",
       "name": "Ossuar",
       "tier": "boss",
@@ -481,13 +466,13 @@
       "tier": "mid",
       "scale": "standard",
       "template_id": "bear",
-      "size": 88,
+      "size": 96,
       "biome": [
         "lava",
         "black_rock"
       ],
       "items": [],
-      "prompt": "Fat fantasy slug with a body of dark cooled rock split by glowing orange magma seams, two thick eyestalks with ember eyes, a trail of molten drips beneath it, and small vents on its back puffing smoke.",
+      "prompt": "Fat fantasy slug with a body of dark cooled rock split by glowing orange magma seams, two short thick eyestalks with ember eyes held close to its body, a trail of molten drips beneath it, and small vents on its back puffing smoke.",
       "lore": "It moves a hand's width a day and melts the road behind it. Patient things kill the most travellers."
     },
     {
@@ -504,21 +489,6 @@
       "items": [],
       "prompt": "Stocky fantasy wild boar with dark brown bristled hide, a thicket of thorny bramble vines growing across its back dotted with red berries, two yellowed tusks, small angry red eyes, and cloven hooves.",
       "lore": "The hedge got up and charged. Its back is a bramble patch and the berries are the only thing that has ever calmed it."
-    },
-    {
-      "id": "jelly_cube",
-      "name": "Gelatine",
-      "tier": "mid",
-      "scale": "standard",
-      "template_id": "mannequin",
-      "size": 96,
-      "biome": [
-        "parquet_floor",
-        "grey_paving_stone"
-      ],
-      "items": [],
-      "prompt": "Fantasy gelatinous cube, a translucent pale green block of jelly with rounded edges, small bones, a rusty helmet and a few gold coins suspended inside it, and two faint glowing dots for eyes near the top.",
-      "lore": "It has eaten three companies of adventurers and still carries their helmets. The dungeon floors it crosses come out clean."
     },
     {
       "id": "ghost_lantern",
@@ -1550,6 +1520,36 @@
       "items": [],
       "prompt": "Small fantasy salamander hatchling with dark ash-grey scales, glowing ember-orange eyes, a short thick tail curled around it, small clawed feet, and faint heat glow between its scales.",
       "lore": "Hatched in the cinder beds beneath the caldera. It will grow into a mouthful of flame; for now it only glows."
+    },
+    {
+      "id": "cave_bear",
+      "name": "Deepclaw",
+      "tier": "evil",
+      "scale": "standard",
+      "template_id": "bear",
+      "size": 128,
+      "biome": [
+        "black_rock",
+        "grey_stone"
+      ],
+      "items": [],
+      "prompt": "Fantasy cave bear with pale hairless grey skin over heavy muscle, no eyes only smooth skin where eyes would be, a wide nose and long yellow fangs, enormous black claws, and pale fungus growing along its spine.",
+      "lore": "It has never seen the sun and hunts without needing to. In the deep galleries it smells a torch before the torch is lit."
+    },
+    {
+      "id": "bog_viper",
+      "name": "Fenfang",
+      "tier": "mid",
+      "scale": "small",
+      "template_id": "bear",
+      "size": 40,
+      "biome": [
+        "dark_mud",
+        "water"
+      ],
+      "items": [],
+      "prompt": "Small fantasy bog viper coiled tightly on the mud with its head raised, dark olive scales with black diamond markings, a pale belly, yellow slit eyes, and a forked tongue.",
+      "lore": "It lies in the shallows with only its eyes above the water. The bite is small, and the swelling is not."
     }
   ],
   "retired": [
@@ -1803,6 +1803,42 @@
       "prompt": "Tiny cute fantasy snow creature, a small round snowball body with two coal eyes, a tiny carrot nose, twig arms, and a little frost sparkle.",
       "lore": "A snowman that got up before it was finished. It follows children home and melts on the doorstep, sulking.",
       "retired": "maintainer 2026-09-09: silly monsters are rejected on sight — cute must be DESIGNED, never a gag"
+    },
+    {
+      "id": "bog_leech",
+      "name": "Leechling",
+      "tier": "mid",
+      "scale": "small",
+      "template_id": "bear",
+      "size": 40,
+      "biome": [
+        "dark_mud",
+        "water"
+      ],
+      "items": [],
+      "prompt": "Tiny fat fantasy leech with a glossy dark purple segmented body, a round sucker mouth ringed with small white teeth, two beady yellow eyes, and drips of swamp water sliding off its back.",
+      "lore": "It waits under the mud for a warm ankle. Most people never feel it; the ones who do never stop feeling it.",
+      "retired": "maintainer 2026-09-09: no silly monsters — rendered as a cube-shaped man in a helmet / a goggle-eyed blob; replaced by cave_bear and bog_viper",
+      "retired_at": "2026-09-09T18:10:25+00:00",
+      "versions_tried": 1
+    },
+    {
+      "id": "jelly_cube",
+      "name": "Gelatine",
+      "tier": "mid",
+      "scale": "standard",
+      "template_id": "mannequin",
+      "size": 96,
+      "biome": [
+        "parquet_floor",
+        "grey_paving_stone"
+      ],
+      "items": [],
+      "prompt": "Fantasy gelatinous cube, a translucent pale green block of jelly with rounded edges, small bones, a rusty helmet and a few gold coins suspended inside it, and two faint glowing dots for eyes near the top.",
+      "lore": "It has eaten three companies of adventurers and still carries their helmets. The dungeon floors it crosses come out clean.",
+      "retired": "maintainer 2026-09-09: no silly monsters — rendered as a cube-shaped man in a helmet / a goggle-eyed blob; replaced by cave_bear and bog_viper",
+      "retired_at": "2026-09-09T18:10:26+00:00",
+      "versions_tried": 1
     }
   ]
 }
