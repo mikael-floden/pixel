@@ -1,0 +1,141 @@
+{
+  "id": "iron_golem",
+  "name": "Forgewarden",
+  "tier": "boss",
+  "scale": "big",
+  "lore": "Built to guard the forge and still guarding it, long after the forge went cold. It relights when anyone comes near.",
+  "biome": [
+    "lava",
+    "black_rock"
+  ],
+  "items": [],
+  "prompt": "Gigantic fantasy iron golem shown full body from head to feet, a body of riveted black iron plates glowing orange at the seams, a furnace grate for a face with fire behind it, huge hammer-like fists, and heavy pistons in its legs venting steam.",
+  "size": [
+    232,
+    232
+  ],
+  "template_id": "mannequin",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "iron_golem/rotations/south.webp",
+    "south-east": "iron_golem/rotations/south-east.webp",
+    "east": "iron_golem/rotations/east.webp",
+    "north-east": "iron_golem/rotations/north-east.webp",
+    "north": "iron_golem/rotations/north.webp",
+    "north-west": "iron_golem/rotations/north-west.webp",
+    "west": "iron_golem/rotations/west.webp",
+    "south-west": "iron_golem/rotations/south-west.webp"
+  },
+  "sheet": "iron_golem/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "ecf62b53-1687-4d31-97c2-7406cee85462",
+  "seed": 783639205,
+  "version": 1,
+  "usage": null,
+  "generated_at": "2026-09-09T18:47:34+00:00",
+  "elapsed_s": 175.1,
+  "qa": {
+    "status": "pass",
+    "min_run1": 0.616,
+    "reasons": [],
+    "directions": {
+      "south": {
+        "run1": 0.616,
+        "bbox": [
+          8,
+          16,
+          224,
+          218
+        ],
+        "fill": 0.811,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.68,
+        "bbox": [
+          77,
+          13,
+          154,
+          221
+        ],
+        "fill": 0.298,
+        "touches_edge": false
+      },
+      "east": {
+        "run1": 0.694,
+        "bbox": [
+          69,
+          13,
+          156,
+          221
+        ],
+        "fill": 0.336,
+        "touches_edge": false
+      },
+      "north": {
+        "run1": 0.659,
+        "bbox": [
+          24,
+          13,
+          208,
+          217
+        ],
+        "fill": 0.697,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.685,
+        "bbox": [
+          35,
+          16,
+          199,
+          224
+        ],
+        "fill": 0.634,
+        "touches_edge": false
+      },
+      "north-east": {
+        "run1": 0.644,
+        "bbox": [
+          37,
+          12,
+          194,
+          219
+        ],
+        "fill": 0.604,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.641,
+        "bbox": [
+          38,
+          12,
+          191,
+          218
+        ],
+        "fill": 0.586,
+        "touches_edge": false
+      },
+      "south-west": {
+        "run1": 0.675,
+        "bbox": [
+          33,
+          16,
+          197,
+          224
+        ],
+        "fill": 0.634,
+        "touches_edge": false
+      }
+    }
+  }
+}
