@@ -67,6 +67,49 @@ did exactly that once — 572 files). Paths that *read* art accept either
 extension; paths that *write* it go through the helpers; paths that *name* a
 file go through `_art_path`.
 
+## Candidates: the ONE place this domain spends generations
+
+New monsters are **designed by this agent** (`config/candidates.json`) and
+born on PixelLab as an 8-direction base only — `create-character-v3` from
+scratch, zero animations — tagged **`MONSTER_CANDIDATE`**, never `MONSTER`
+(sync would import a base with no animations as a broken monster). The
+maintainer reviews the 8 directions in the wiki; only an **approved** base
+earns its five states, because a bad direction cannot be fixed later
+(maintainer 2026-09-09: "if the initial 8 directions is not perfect — don't
+even think about continuing with that monster").
+
+```bash
+python monsters/pipeline/candidates.py status
+python monsters/pipeline/candidates.py generate [--only id,id] [--dry-run]
+python monsters/pipeline/candidates.py redo --only <id>   # next seed; old record deleted
+python monsters/pipeline/candidates.py qa                 # re-verdict from disk
+```
+
+Layout: `candidates/<id>/rotations/<dir>.webp`, `sheet.webp` (8-up, compass
+order) and `candidate.json`; `candidates/index.json` is the wiki's contract
+(`format: monster-candidates@1`, one entry per generated candidate with
+`sheet`, `rotations`, `qa`, `review`). Verdicts land in
+`live/feedback/monsters.json` under `monsters/candidates/<id>`.
+
+What makes a base sound, and how much of it is machine-checked:
+- **1 px/px density, never a zoomed render.** `run1` = share of same-colour
+  runs exactly one pixel long; measured 0.47–0.83 over the 57 shipped
+  monsters, 0.32 on the maintainer's reference "zoomed" case
+  (storm_shellback, 256 px). Pass ≥ 0.50, warn ≥ 0.45, fail below. Density
+  holds through 184 px and degrades from ~236, so `size` stays ≤ 176.
+- **All 8 present, one square canvas, no clipping, no speck-in-a-frame** —
+  machine-checked.
+- **Each facing IS its facing; no text baked into the art** — a human, or
+  the agent reading `sheet.webp`. The machine cannot judge this.
+- **High-detail prompts** (maintainer: low detail confuses the model — it
+  cannot tell what is what). Prompts never name a facing or a background: v3
+  rotates a south sprite and always renders transparent.
+
+Cost: 1 + ceil(size²·8/65536) generations (64 px → 2, 128 px → 3,
+176 px → 5), billed at $0.02/generation once the subscription pool is empty
+(measured 2026-09-09). The loop stops below `--min-usd` (default $5). Seeds
+are `crc32(id:vN)`, so a redo is reproducible and never re-rolls a kept one.
+
 ## Review gallery (chat artifact, NOT in git)
 
 The review gallery is a **claude.ai artifact** the maintainer views in chat —

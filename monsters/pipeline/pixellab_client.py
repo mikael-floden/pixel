@@ -305,10 +305,81 @@ class PixelLabClient:
             out.append(g)
         return out
 
+    # -- writes: candidate creation (the ONLY generation this domain does) ----
+
+    def wait_job(self, job_id, timeout=900, interval=6):
+        """Poll a background job to completion; returns the job record."""
+        deadline = time.monotonic() + timeout
+        while True:
+            j = self._request("GET", f"background-jobs/{job_id}")
+            st = j.get("status")
+            if st == "completed":
+                return j
+            if st == "failed":
+                raise PixelLabError(f"job {job_id} failed: {str(j.get('last_response'))[:300]}")
+            if time.monotonic() > deadline:
+                raise PixelLabError(f"job {job_id} timed out after {timeout}s")
+            time.sleep(interval)
+
+    def create_character_v3(self, description, size, view="low top-down",
+                            template_id="mannequin", name=None, seed=None,
+                            outline=None, detail=None, job_timeout=900):
+        """Create an 8-direction character FROM SCRATCH (create-character-v3:
+        Pixen draws a south sprite, v3 rotates it). Cost per the API contract:
+        1 + ceil(size*size*8 / 65536) generations — 64px→2, 128px→3,
+        176px→5. Returns (character_id, usage). Blocks until the job lands."""
+        payload = {
+            "description": description,
+            "image_size": {"width": int(size), "height": int(size)},
+            "view": view,
+            "template_id": template_id,
+        }
+        if name:
+            payload["name"] = name
+        if seed is not None:
+            payload["seed"] = int(seed)
+        for k, v in (("outline", outline), ("detail", detail)):
+            if v:
+                payload[k] = v
+        resp = self._request("POST", "create-character-v3", json=payload)
+        cid = resp.get("character_id")
+        job = resp.get("background_job_id")
+        if job:
+            self.wait_job(job, timeout=job_timeout)
+        return cid, resp.get("usage")
+
+    def character_rotations(self, character_id, wait=240, poll=5):
+        """{direction: PIL} for all 8 rotations; keeps polling while the CDN
+        files settle after generation."""
+        deadline = time.monotonic() + wait
+        out = {}
+        while True:
+            detail = self.get_character(character_id)
+            urls = {d: u for d, u in (detail.get("rotation_urls") or {}).items() if u}
+            missing = [d for d in urls if d not in out]
+            for d, img in zip(missing, self.download_many([urls[d] for d in missing])):
+                if img is not None:
+                    out[d] = img
+            if urls and len(out) == len(urls):
+                return out
+            if time.monotonic() > deadline:
+                return out
+            time.sleep(poll)
+
+    def set_character_tags(self, character_id, tags):
+        """REPLACES the character's tag list (PATCH semantics on PixelLab)."""
+        return self._request("PATCH", f"characters/{character_id}/tags", json={"tags": list(tags)})
+
+    def delete_character(self, character_id):
+        return self._request("DELETE", f"characters/{character_id}")
+
     # -- balance / budget ----------------------------------------------------
 
     def balance(self):
         return self._request("GET", BALANCE_URL)
+
+    def usd_credits(self):
+        return float(self.balance().get("credits", {}).get("usd", 0) or 0)
 
     def generations_remaining(self):
         b = self.balance()

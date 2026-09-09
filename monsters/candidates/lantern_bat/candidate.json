@@ -1,0 +1,142 @@
+{
+  "id": "lantern_bat",
+  "name": "Lanternwing",
+  "tier": "cute",
+  "lore": "It roosts where the miners' lamps went out. The twin glows on its wings are the only light left down there, and it knows it.",
+  "biome": [
+    "black_rock",
+    "grey_stone"
+  ],
+  "items": [
+    "bat wings"
+  ],
+  "prompt": "Plump fantasy cave bat with soft charcoal-gray fur, oversized rounded ears with glowing amber inner membranes, large dark shiny eyes, two tiny white fangs, wide leathery wings with visible finger bones and slightly torn edges, and a small glowing amber lantern-like tuft on each wingtip.",
+  "size": [
+    80,
+    80
+  ],
+  "template_id": "mannequin",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "lantern_bat/rotations/south.webp",
+    "south-east": "lantern_bat/rotations/south-east.webp",
+    "east": "lantern_bat/rotations/east.webp",
+    "north-east": "lantern_bat/rotations/north-east.webp",
+    "north": "lantern_bat/rotations/north.webp",
+    "north-west": "lantern_bat/rotations/north-west.webp",
+    "west": "lantern_bat/rotations/west.webp",
+    "south-west": "lantern_bat/rotations/south-west.webp"
+  },
+  "sheet": "lantern_bat/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "51214460-d912-4ac3-a812-332f78203656",
+  "seed": 1451068580,
+  "version": 1,
+  "usage": null,
+  "generated_at": "2026-09-09T17:35:11+00:00",
+  "elapsed_s": 205.7,
+  "qa": {
+    "status": "pass",
+    "min_run1": 0.66,
+    "reasons": [],
+    "directions": {
+      "south": {
+        "run1": 0.705,
+        "bbox": [
+          2,
+          3,
+          78,
+          75
+        ],
+        "fill": 0.855,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.765,
+        "bbox": [
+          21,
+          2,
+          60,
+          77
+        ],
+        "fill": 0.457,
+        "touches_edge": false
+      },
+      "east": {
+        "run1": 0.786,
+        "bbox": [
+          20,
+          2,
+          58,
+          77
+        ],
+        "fill": 0.445,
+        "touches_edge": false
+      },
+      "north": {
+        "run1": 0.66,
+        "bbox": [
+          2,
+          3,
+          78,
+          74
+        ],
+        "fill": 0.843,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.809,
+        "bbox": [
+          11,
+          3,
+          71,
+          76
+        ],
+        "fill": 0.684,
+        "touches_edge": false
+      },
+      "north-east": {
+        "run1": 0.702,
+        "bbox": [
+          13,
+          2,
+          71,
+          75
+        ],
+        "fill": 0.662,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.685,
+        "bbox": [
+          11,
+          2,
+          66,
+          75
+        ],
+        "fill": 0.627,
+        "touches_edge": false
+      },
+      "south-west": {
+        "run1": 0.805,
+        "bbox": [
+          9,
+          3,
+          70,
+          76
+        ],
+        "fill": 0.696,
+        "touches_edge": false
+      }
+    }
+  }
+}

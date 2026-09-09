@@ -1,0 +1,338 @@
+{
+  "_comment": "Candidate monsters DESIGNED BY THE MONSTERS AGENT, not yet in the game. Each is generated on PixelLab as an 8-direction base (create-character-v3, from scratch, zero animations) and tagged MONSTER_CANDIDATE — never MONSTER, which is the shipping roster's ground truth. The maintainer reviews the 8 directions in the wiki; an APPROVED candidate is retagged MONSTER and only then gets its five animated states. `size` stays <= 176: measured over the 57 shipped monsters plus the maintainer's two references, 1 px/px density holds through 184 and degrades from ~236 (storm_shellback at 256 is the reference 'zoomed' case). Prompts are high-detail on purpose (maintainer 2026-09-09: low detail confuses the model — it cannot tell what is what). Prompts never name a facing or a background: v3 rotates a south sprite and always renders transparent.",
+  "defaults": {
+    "view": "low top-down",
+    "outline": "single color black outline",
+    "detail": "high detail",
+    "candidate_tag": "MONSTER_CANDIDATE"
+  },
+  "candidates": [
+    {
+      "id": "lantern_bat",
+      "name": "Lanternwing",
+      "tier": "cute",
+      "template_id": "mannequin",
+      "size": 80,
+      "biome": [
+        "black_rock",
+        "grey_stone"
+      ],
+      "items": [
+        "bat wings"
+      ],
+      "prompt": "Plump fantasy cave bat with soft charcoal-gray fur, oversized rounded ears with glowing amber inner membranes, large dark shiny eyes, two tiny white fangs, wide leathery wings with visible finger bones and slightly torn edges, and a small glowing amber lantern-like tuft on each wingtip.",
+      "lore": "It roosts where the miners' lamps went out. The twin glows on its wings are the only light left down there, and it knows it."
+    },
+    {
+      "id": "plume_brawler",
+      "name": "Plumefist",
+      "tier": "mid",
+      "template_id": "mannequin",
+      "size": 104,
+      "biome": [
+        "grass",
+        "light_soil"
+      ],
+      "items": [
+        "barred feather",
+        "rainbow tail plume",
+        "teal quill",
+        "bundle of bright plumes"
+      ],
+      "prompt": "Stocky flightless fantasy bird with a barrel chest, thick scaly yellow legs ending in hooked black talons, a heavy hooked beak, a tall crest of stiff feathers in teal, crimson and gold, barred brown-and-cream wing feathers, and a long fan of iridescent rainbow tail plumes.",
+      "lore": "Too heavy to fly and too proud to care. It settles every argument with its legs, and it starts most of them."
+    },
+    {
+      "id": "tide_crab",
+      "name": "Snapshell",
+      "tier": "mid",
+      "template_id": "bear",
+      "size": 112,
+      "biome": [
+        "light_beach",
+        "water"
+      ],
+      "items": [
+        "curved pincer",
+        "sea shells"
+      ],
+      "prompt": "Large fantasy shore crab with a barnacle-crusted orange-red shell, one enormous curved pincer with a pale bone-white edge and a smaller pincer, six jointed legs with dark tips, stalked black eyes, and clumps of green seaweed and small sea shells stuck to its back.",
+      "lore": "The tide brings it up and forgets to take it back. It holds the beach with one great claw and never learned to let go."
+    },
+    {
+      "id": "iron_beetle",
+      "name": "Ironclack",
+      "tier": "mid",
+      "template_id": "bear",
+      "size": 88,
+      "biome": [
+        "light_soil",
+        "grey_stone",
+        "lava"
+      ],
+      "items": [
+        "plated beetle"
+      ],
+      "prompt": "Heavily armored fantasy beetle with overlapping dark iron-gray plates riveted with copper studs, a single thick curved horn on its head, six thick segmented legs, glowing orange slits for eyes, and cracks between the plates showing hot orange light underneath.",
+      "lore": "Forged, or grown — the smiths cannot agree. Its plates ring like a bell when struck, and the sound calls the others."
+    },
+    {
+      "id": "twig_dragonfly",
+      "name": "Twigwhirr",
+      "tier": "cute",
+      "template_id": "mannequin",
+      "size": 80,
+      "biome": [
+        "water",
+        "grass",
+        "dark_mud"
+      ],
+      "items": [
+        "twig-bodied dragonfly"
+      ],
+      "prompt": "Fantasy dragonfly whose long body is a living twig with bark texture and tiny green leaves sprouting from it, four long translucent wings with visible veining and a rainbow sheen, big compound eyes like green glass beads, and small leaf-shaped legs.",
+      "lore": "A twig that learned to fly by watching the reeds. It hums over still water and bites whatever ripples it."
+    },
+    {
+      "id": "silk_spider",
+      "name": "Silkmaw",
+      "tier": "evil",
+      "template_id": "bear",
+      "size": 136,
+      "biome": [
+        "dark_mud",
+        "black_rock"
+      ],
+      "items": [
+        "silk skein"
+      ],
+      "prompt": "Huge fantasy cave spider with a hairy black abdomen marked with a pale bone-white skull pattern, eight long jointed legs with dark red joints, a cluster of eight glowing red eyes, large dripping fangs, and thick strands of white silk trailing from its spinnerets.",
+      "lore": "It spins in the dark and waits for the dark to be crossed. The skull on its back is the last thing many travellers read."
+    },
+    {
+      "id": "pearl_clam",
+      "name": "Nacrebite",
+      "tier": "mid",
+      "template_id": "bear",
+      "size": 96,
+      "biome": [
+        "light_beach",
+        "water",
+        "deep_water"
+      ],
+      "items": [
+        "great pearl",
+        "nacre shard",
+        "sea shells"
+      ],
+      "prompt": "Fantasy giant clam monster with a ridged blue-gray shell edged in shimmering mother-of-pearl, the shell gaping open to show a soft pink fleshy mouth with rows of small teeth and one large glowing pearl inside, walking on six pale hermit-crab legs with a fringe of short blue tentacles.",
+      "lore": "It grows one pearl a century and guards it with the whole of its shell. Divers who reach for it come up in pieces."
+    },
+    {
+      "id": "root_forager",
+      "name": "Twineback",
+      "tier": "mid",
+      "template_id": "mannequin",
+      "size": 96,
+      "biome": [
+        "grass",
+        "dark_mud",
+        "light_soil"
+      ],
+      "items": [
+        "twine-tied herbs",
+        "twine-tied roots",
+        "twine-tied dried grass"
+      ],
+      "prompt": "Hunched fantasy forager bandit wearing a ragged moss-green hooded cloak over patched brown leather, face hidden in shadow except a crooked nose and two glinting eyes, a rusty sickle in one hand, twine-tied bundles of herbs, roots and dried grass strapped across the back, and muddy bare feet.",
+      "lore": "Not a monster, exactly. A man who took to the hedgerows and now takes from everyone who walks them."
+    },
+    {
+      "id": "ember_king",
+      "name": "Pyrelord",
+      "tier": "boss",
+      "template_id": "mannequin",
+      "size": 176,
+      "biome": [
+        "lava",
+        "black_rock"
+      ],
+      "items": [
+        "fire soulstone"
+      ],
+      "prompt": "Towering fantasy fire demon lord with a body of black volcanic rock split by glowing orange magma cracks, a crown of jagged obsidian horns wreathed in flames, burning white-hot eyes, massive clawed hands, a molten glowing chain draped across its chest, and flames rising from its shoulders.",
+      "lore": "The mountain's first king, and its only one. Every eruption since has been him clearing his throat."
+    },
+    {
+      "id": "mist_wisp",
+      "name": "Mistling",
+      "tier": "cute",
+      "template_id": "mannequin",
+      "size": 72,
+      "biome": [
+        "water",
+        "snow",
+        "grass"
+      ],
+      "items": [
+        "mist soulstone"
+      ],
+      "prompt": "Small cute fantasy mist spirit shaped like a floating puff of pale blue-white fog with a round soft body, wide sleepy glowing white eyes, two tiny wispy arms, faint curling swirls trailing off its edges, and a small glowing blue droplet floating just above its head.",
+      "lore": "Morning fog that forgot to lift. It drifts after travellers, dampening lanterns and whispering half a word."
+    },
+    {
+      "id": "rime_yeti",
+      "name": "Rimehulk",
+      "tier": "boss",
+      "template_id": "mannequin",
+      "size": 160,
+      "biome": [
+        "snow",
+        "ice"
+      ],
+      "items": [
+        "ice soulstone"
+      ],
+      "prompt": "Hulking fantasy yeti with thick shaggy white fur crusted with ice, long powerful arms ending in blue-black claws, a broad ape-like face with a wide mouth of jagged icicle teeth, glowing pale blue eyes, icicles hanging from its chin and elbows, and a frost-blue underbelly.",
+      "lore": "The blizzard walks on two legs up there. Climbers hear it breathing through the snow long before the snow turns red."
+    },
+    {
+      "id": "gold_mimic",
+      "name": "Gildmaw",
+      "tier": "evil",
+      "template_id": "bear",
+      "size": 96,
+      "biome": [
+        "parquet_floor",
+        "brown_paving_stone",
+        "grey_paving_stone"
+      ],
+      "items": [
+        "treasure soulstone"
+      ],
+      "prompt": "Fantasy treasure chest mimic with a dark oak wooden body bound in tarnished brass bands, the lid gaping open as a huge mouth with gold coins for teeth and a long purple tongue, two glowing greedy yellow eyes on the lid, gold coins and gems spilling out, standing on four short clawed wooden legs.",
+      "lore": "It ate a king's ransom and then the king. Everything it has ever swallowed still glitters between its teeth."
+    },
+    {
+      "id": "bulb_hopper",
+      "name": "Bulbling",
+      "tier": "cute",
+      "template_id": "mannequin",
+      "size": 64,
+      "biome": [
+        "grass",
+        "light_soil"
+      ],
+      "items": [],
+      "prompt": "Small cute round fantasy seed creature with a smooth tan bulb body, a single green sprout with two soft leaves growing from the top of its head, large friendly black eyes, rosy pink cheeks, two tiny stubby legs and a short curling root tail.",
+      "lore": "Planted by nobody and growing anyway. It hops after anything warm and is heartbroken to be stepped on."
+    },
+    {
+      "id": "puff_owl",
+      "name": "Puffowl",
+      "tier": "cute",
+      "template_id": "mannequin",
+      "size": 64,
+      "biome": [
+        "grass",
+        "snow"
+      ],
+      "items": [
+        "barred feather"
+      ],
+      "prompt": "Small cute round fantasy owl chick covered in extremely fluffy cream and brown feathers, enormous golden eyes, a tiny orange beak, short stubby wings with barred brown feather tips, and small clawed orange feet.",
+      "lore": "All eyes and no patience. It falls out of every nest it is put in and pecks whoever picks it up."
+    },
+    {
+      "id": "bog_lurker",
+      "name": "Boglurk",
+      "tier": "mid",
+      "template_id": "bear",
+      "size": 128,
+      "biome": [
+        "dark_mud",
+        "water"
+      ],
+      "items": [],
+      "prompt": "Fantasy amphibian monster like a giant axolotl with slimy dark olive skin, feathery crimson external gills fanning from its head, a wide flat toothy grin, bulging yellow eyes, four webbed clawed limbs, a short stubby paddle tail, and strands of slime and pond weed hanging from its body.",
+      "lore": "Only the gills show above the mud, red as flowers. Pick one and the rest of it comes up smiling."
+    },
+    {
+      "id": "hollow_knight",
+      "name": "Hollowplate",
+      "tier": "evil",
+      "template_id": "mannequin",
+      "size": 112,
+      "biome": [
+        "grey_paving_stone",
+        "grey_stone",
+        "parquet_floor"
+      ],
+      "items": [],
+      "prompt": "Fantasy hollow suit of rusted plate armor animated by green witchfire, nothing inside it, green flames burning in the empty helmet visor, a chipped greatsword held in one gauntlet, a torn dark cape, and cracks in the armor leaking green light.",
+      "lore": "The knight left long ago. The armor kept the vigil, and the fire that keeps it standing has forgotten whose it was."
+    },
+    {
+      "id": "veil_wraith",
+      "name": "Veilmother",
+      "tier": "evil",
+      "template_id": "mannequin",
+      "size": 128,
+      "biome": [
+        "snow",
+        "grey_stone",
+        "grey_paving_stone"
+      ],
+      "items": [
+        "mist soulstone"
+      ],
+      "prompt": "Tall floating fantasy wraith with a gaunt pale face, hollow black eyes weeping dark tears, a long tattered veil and dress of gray-white cloth fading into mist at the bottom, long thin arms with elongated fingers, and a faint cold blue glow around its body.",
+      "lore": "She searches every cradle in the valley and finds none of them hers. The cold that follows her is the closest she gets to company."
+    },
+    {
+      "id": "gloom_cap",
+      "name": "Gloomcap",
+      "tier": "mid",
+      "template_id": "mannequin",
+      "size": 88,
+      "biome": [
+        "dark_mud",
+        "grass"
+      ],
+      "items": [],
+      "prompt": "Fantasy walking mushroom creature with a wide dark purple cap spotted with pale glowing dots, a pale stubby stalk body, two small glowing lavender eyes, stubby arms and legs, and puffs of purple spores venting from the gills under the cap.",
+      "lore": "It walks when the woods are dark and stands very still when they are not. The spores smell sweet, which is how it wins."
+    },
+    {
+      "id": "storm_roc",
+      "name": "Stormroc",
+      "tier": "boss",
+      "template_id": "mannequin",
+      "size": 168,
+      "biome": [
+        "grey_stone",
+        "snow"
+      ],
+      "items": [
+        "bundle of bright plumes",
+        "rainbow tail plume"
+      ],
+      "prompt": "Enormous fantasy storm bird with dark slate-blue feathers edged in white lightning, a hooked steel-gray beak, blazing white eyes, wide spread wings crackling with electric arcs, long sharp talons, and a crest of feathers standing up like jagged lightning bolts.",
+      "lore": "It nests above the weather and hunts below it. Every thunderclap on the fells is a wingbeat somebody did not see."
+    },
+    {
+      "id": "cinder_imp",
+      "name": "Cinderimp",
+      "tier": "cute",
+      "template_id": "mannequin",
+      "size": 64,
+      "biome": [
+        "lava",
+        "black_rock"
+      ],
+      "items": [],
+      "prompt": "Small mischievous fantasy imp with dark red skin, two small curved black horns, a wide grin of sharp white teeth, glowing orange eyes, small bat-like wings, a pointed tail with a flame at the tip, and a tiny rusty pitchfork held in both hands.",
+      "lore": "The smallest thing the volcano ever coughed up, and the loudest. It steals boots and sets them on fire out of principle."
+    }
+  ]
+}

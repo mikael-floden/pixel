@@ -1,0 +1,140 @@
+{
+  "id": "bulb_hopper",
+  "name": "Bulbling",
+  "tier": "cute",
+  "lore": "Planted by nobody and growing anyway. It hops after anything warm and is heartbroken to be stepped on.",
+  "biome": [
+    "grass",
+    "light_soil"
+  ],
+  "items": [],
+  "prompt": "Small cute round fantasy seed creature with a smooth tan bulb body, a single green sprout with two soft leaves growing from the top of its head, large friendly black eyes, rosy pink cheeks, two tiny stubby legs and a short curling root tail.",
+  "size": [
+    64,
+    64
+  ],
+  "template_id": "mannequin",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "bulb_hopper/rotations/south.webp",
+    "south-east": "bulb_hopper/rotations/south-east.webp",
+    "east": "bulb_hopper/rotations/east.webp",
+    "north-east": "bulb_hopper/rotations/north-east.webp",
+    "north": "bulb_hopper/rotations/north.webp",
+    "north-west": "bulb_hopper/rotations/north-west.webp",
+    "west": "bulb_hopper/rotations/west.webp",
+    "south-west": "bulb_hopper/rotations/south-west.webp"
+  },
+  "sheet": "bulb_hopper/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "ce5d8364-7477-4bd7-a84a-47c12512ee0c",
+  "seed": 1857375238,
+  "version": 1,
+  "usage": null,
+  "generated_at": "2026-09-09T17:31:12+00:00",
+  "elapsed_s": 205.5,
+  "qa": {
+    "status": "pass",
+    "min_run1": 0.637,
+    "reasons": [],
+    "directions": {
+      "south": {
+        "run1": 0.641,
+        "bbox": [
+          7,
+          5,
+          57,
+          59
+        ],
+        "fill": 0.659,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.637,
+        "bbox": [
+          10,
+          4,
+          58,
+          60
+        ],
+        "fill": 0.656,
+        "touches_edge": false
+      },
+      "east": {
+        "run1": 0.658,
+        "bbox": [
+          8,
+          4,
+          52,
+          60
+        ],
+        "fill": 0.602,
+        "touches_edge": false
+      },
+      "north": {
+        "run1": 0.676,
+        "bbox": [
+          12,
+          6,
+          55,
+          61
+        ],
+        "fill": 0.577,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.686,
+        "bbox": [
+          12,
+          4,
+          51,
+          60
+        ],
+        "fill": 0.533,
+        "touches_edge": false
+      },
+      "north-east": {
+        "run1": 0.651,
+        "bbox": [
+          9,
+          4,
+          53,
+          59
+        ],
+        "fill": 0.591,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.658,
+        "bbox": [
+          13,
+          4,
+          51,
+          58
+        ],
+        "fill": 0.501,
+        "touches_edge": false
+      },
+      "south-west": {
+        "run1": 0.712,
+        "bbox": [
+          9,
+          4,
+          57,
+          60
+        ],
+        "fill": 0.656,
+        "touches_edge": false
+      }
+    }
+  }
+}
