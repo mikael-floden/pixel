@@ -1,0 +1,141 @@
+{
+  "id": "elder_treant",
+  "name": "Rootfather",
+  "tier": "boss",
+  "scale": "big",
+  "lore": "Older than the road that was cut around it. It has forgiven the axe once, and says so, and will not do it twice.",
+  "biome": [
+    "grass",
+    "dark_mud"
+  ],
+  "items": [],
+  "prompt": "Enormous ancient fantasy treant shown full body from crown to roots, a thick gnarled oak trunk for a torso with a hollow glowing amber face, a wide crown of dense green leaves, two massive branch arms with clawed twig fingers, and two sturdy root-bundle legs planted on the ground.",
+  "size": [
+    224,
+    224
+  ],
+  "template_id": "mannequin",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "elder_treant/rotations/south.webp",
+    "south-east": "elder_treant/rotations/south-east.webp",
+    "east": "elder_treant/rotations/east.webp",
+    "north-east": "elder_treant/rotations/north-east.webp",
+    "north": "elder_treant/rotations/north.webp",
+    "north-west": "elder_treant/rotations/north-west.webp",
+    "west": "elder_treant/rotations/west.webp",
+    "south-west": "elder_treant/rotations/south-west.webp"
+  },
+  "sheet": "elder_treant/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "8b10fb4b-a3a2-4510-9d56-2fabd851e20a",
+  "seed": 179077326,
+  "version": 1,
+  "usage": null,
+  "generated_at": "2026-09-09T18:02:55+00:00",
+  "elapsed_s": 207.1,
+  "qa": {
+    "status": "pass",
+    "min_run1": 0.73,
+    "reasons": [],
+    "directions": {
+      "south": {
+        "run1": 0.73,
+        "bbox": [
+          27,
+          8,
+          197,
+          215
+        ],
+        "fill": 0.701,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.768,
+        "bbox": [
+          74,
+          7,
+          156,
+          218
+        ],
+        "fill": 0.345,
+        "touches_edge": false
+      },
+      "east": {
+        "run1": 0.773,
+        "bbox": [
+          65,
+          7,
+          153,
+          218
+        ],
+        "fill": 0.37,
+        "touches_edge": false
+      },
+      "north": {
+        "run1": 0.736,
+        "bbox": [
+          26,
+          6,
+          198,
+          209
+        ],
+        "fill": 0.696,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.764,
+        "bbox": [
+          47,
+          8,
+          186,
+          219
+        ],
+        "fill": 0.585,
+        "touches_edge": false
+      },
+      "north-east": {
+        "run1": 0.741,
+        "bbox": [
+          52,
+          7,
+          184,
+          212
+        ],
+        "fill": 0.539,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.737,
+        "bbox": [
+          34,
+          7,
+          172,
+          212
+        ],
+        "fill": 0.564,
+        "touches_edge": false
+      },
+      "south-west": {
+        "run1": 0.748,
+        "bbox": [
+          37,
+          8,
+          173,
+          219
+        ],
+        "fill": 0.572,
+        "touches_edge": false
+      }
+    }
+  }
+}
