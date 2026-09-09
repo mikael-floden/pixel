@@ -183,7 +183,9 @@ def qa_clip(cid, state, d, frames):
         bo = _sil(opp)
         own = np.mean([_iou(b0, o) for o in ops[1:]])
         other = np.mean([_iou(bo, o) for o in ops[1:]])
-        if other > own:
+        # a symmetric body matches both about equally — only a clear margin means
+        # the model actually turned it (Pebblemite: 0.92 vs 0.92 was a false alarm)
+        if other > own + 0.05:
             reasons.append(f"body turned the wrong way: matches mirrored {OPPOSITE[d]} ({other:.2f}) better than {d} ({own:.2f})")
     status = "pass"
     lo, hi = band["step_pass"]
