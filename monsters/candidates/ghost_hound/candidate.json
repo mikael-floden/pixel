@@ -1,0 +1,141 @@
+{
+  "id": "ghost_hound",
+  "name": "Palehound",
+  "tier": "evil",
+  "scale": "standard",
+  "lore": "It runs the old road at the hour its master died. Travellers who hear it do not see it; the ones who see it do not travel again.",
+  "biome": [
+    "grey_paving_stone",
+    "snow"
+  ],
+  "items": [],
+  "prompt": "Spectral hound with realistic proportions, a gaunt greyhound-like body of translucent pale blue-white mist over faint bones, hollow glowing white eyes, a long muzzle with bared teeth, thin legs, and cold vapor trailing from its flanks.",
+  "size": [
+    104,
+    104
+  ],
+  "template_id": "dog",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "ghost_hound/rotations/south.webp",
+    "south-east": "ghost_hound/rotations/south-east.webp",
+    "east": "ghost_hound/rotations/east.webp",
+    "north-east": "ghost_hound/rotations/north-east.webp",
+    "north": "ghost_hound/rotations/north.webp",
+    "north-west": "ghost_hound/rotations/north-west.webp",
+    "west": "ghost_hound/rotations/west.webp",
+    "south-west": "ghost_hound/rotations/south-west.webp"
+  },
+  "sheet": "ghost_hound/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "eb074632-1ea5-4b13-b784-90de469decb5",
+  "seed": 889861591,
+  "version": 1,
+  "usage": null,
+  "generated_at": "2026-09-09T19:20:53+00:00",
+  "elapsed_s": 199.4,
+  "qa": {
+    "status": "pass",
+    "min_run1": 0.748,
+    "reasons": [],
+    "directions": {
+      "south": {
+        "run1": 0.748,
+        "bbox": [
+          11,
+          3,
+          97,
+          101
+        ],
+        "fill": 0.779,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.813,
+        "bbox": [
+          6,
+          5,
+          100,
+          100
+        ],
+        "fill": 0.826,
+        "touches_edge": false
+      },
+      "east": {
+        "run1": 0.833,
+        "bbox": [
+          18,
+          8,
+          94,
+          96
+        ],
+        "fill": 0.618,
+        "touches_edge": false
+      },
+      "north": {
+        "run1": 0.811,
+        "bbox": [
+          11,
+          3,
+          77,
+          99
+        ],
+        "fill": 0.586,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.83,
+        "bbox": [
+          30,
+          3,
+          69,
+          100
+        ],
+        "fill": 0.35,
+        "touches_edge": false
+      },
+      "north-east": {
+        "run1": 0.822,
+        "bbox": [
+          2,
+          5,
+          98,
+          95
+        ],
+        "fill": 0.799,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.807,
+        "bbox": [
+          34,
+          3,
+          72,
+          101
+        ],
+        "fill": 0.344,
+        "touches_edge": false
+      },
+      "south-west": {
+        "run1": 0.824,
+        "bbox": [
+          3,
+          4,
+          103,
+          99
+        ],
+        "fill": 0.878,
+        "touches_edge": false
+      }
+    }
+  }
+}
