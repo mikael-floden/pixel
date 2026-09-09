@@ -1411,6 +1411,42 @@ Gate: `wiki/tools/check-litstate.mjs` — drives the real page, corrects a state
 commits, and asserts the file, the key, the `was`, that nothing lands in the
 feedback file, that agreeing again DELETES, that the switch follows the state
 chip (unlit → 💡lit) and that a reader never sees the control at all.
+## The facet block is ONE idiom — a label column, chip radios, a pill
+
+Maintainer 2026-09-09: *"I can see you have added a lot of UX/UI that doesn't
+follow the CSS style guide. And the page starts to become a bit hard to
+understand."* Kind, Placed, Light, Facing and Animation had each arrived in
+its own markup: two rows both called Light, a native select with a hex string
+and a "per state" pill beside it, an orphaned "✕ embers" button, a reference
+sentence as a line of its own, and an approve/redo pair above the state's
+real approve/remove/redo.
+
+The rule that keeps the block readable, and that the next row follows:
+
+- **Every row is `div.card-sub.lit-mode`** = `span.muted.lit-label` (one
+  84px column, so the labels line up) + a `sortBar(..., {persist:false})`
+  chip radio + at most one `.pill` for a measurement. A select is
+  `.wiki-select` (the seg look, the chips' 38px); a slider is the hitbox
+  editor's `.shadow-sliders label > span / .shadow-slider / .shadow-val`.
+- **A row's details are its SECOND LINE, not more rows** (`.lit-detail`,
+  indented under the chips) and exist only while the row's chip says there is
+  something to detail — the light's kind, colour, flame/embers, strength and
+  radius appear under Light only while it is lit. The bonfire scale is the
+  strength rail's tooltip.
+- **One approve on the page.** The animation verdict is a three-chip radio —
+  the agent's class | approved | redo — where choosing the agent's chip
+  withdraws his verdict. The state's own approve/remove/redo row stays the
+  only place those words appear as buttons.
+- **The piece's rows above a rule, the state's below** (`.facet-divider`):
+  Kind and Placed are one decision for the whole piece; everything under the
+  line is about the state and facing named in the pill.
+- **Chips are short.** "agent: probably bad" pushed the radio onto a second
+  line on a 393px phone; the chip reads the class and the tooltip says whose
+  call it is.
+
+Gate: `wiki/tools/check-facet.mjs` (light details under the Light row, one
+row called Light on an unlit state, a three-chip animation radio, no control
+smaller than the page's others).
 ## "Which ones have I already done?" — the shadow queue
 
 Maintainer 2026-08-22: *"If I login with admin the monster page should make it
