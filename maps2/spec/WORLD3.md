@@ -358,7 +358,14 @@ bit random."* The 12 ported cave lids kept the mountain's own top as their
 floor (snow and ice floors underground) and their inner walls took whatever
 pool the terrace above happened to draw.
 
-`caves()` (right after `i2_cave`): every cave floor cell is **dark_mud**.
+`caves()` (right after `i2_cave`): first **one lid per chamber**
+(`_merge_lids`): cave lids of one level whose cells touch become one deck (the
+larger keeps its record, the top ground is the majority's) — the ported cave
+arrived split where its top ground changed, `rooms()` publishes every lid as a
+room, and the game lights and fogs THE ROOM YOU ARE IN, so a player crossing
+the seam in the hall at (255,189) saw the room change (maintainer 2026-09-09:
+*"Depending on where I stand in this room the room is different lit up"*; 7
+such pairs). Then every cave floor cell is **dark_mud**.
 **THE WALLS ARE CHOSEN FOR THE CAVE, NOT READ OFF THE MOUNTAIN TOP**
 (maintainer 2026-09-06: *"This is inside the mountain and we can have any
 floor/ground type on the top regardless of what walls we use inside the cave
@@ -452,12 +459,14 @@ them: feet on the ground cell in FRONT of the wall, on the wall's foot line
 (`y = row + 0.001` for a south face, `x = col + 0.001` for an east one, so the
 anchor cell is the outdoor one at the floor's level), lifted so the window's
 centre sits at `WIN_CENTRE = 0.50` of the wall (`_lift`, clamped `SILL_CLEAR =
-0` px off the ground and **`ROOF_CLEAR = 8` px under the roof course** — the top
+0` px off the ground and **`ROOF_CLEAR = 4` px under the roof course** — the top
 storey of a house wall IS the roof's edge, the x-over-y cap hanging its 17 px
-band down the face, 2 px past the 15 px storey line; a window centred at 0.55
-ran into it, and 4 px of clearance still read as touching; maintainer
-2026-09-09: *"You place them a bit too high so they touch the roof overhang
-graphics"* — *"This is again too high up! ... You need some space here!"*).
+band down the face, 2 px past the 15 px storey line, so 2 px of wall stay bare
+under the band; a window centred at 0.55 ran into it (maintainer 2026-09-09:
+*"You place them a bit too high so they touch the roof overhang graphics"*),
+8 px was *"a tiny bit too low ... in between now and the overhang is a good
+target"*, and the picture that read as touching at 4 was render3's own 10 px
+lift, since fixed).
 Every type gets its own `z` from its own rotation's alpha bbox, so a sill or a
 window box hangs lower and the glass stays where it is. **The south face wants
 the `south-west` rotation and the east face `south-east`**, the same rule as
@@ -475,13 +484,14 @@ place a single window type? We have many windows! Yes on the same house it
 should be the same window type, but not on different houses."* — before this the
 rating-weighted draw put `window_102` on 10 of 40 windows and `window_086` on
 three houses, one of them stone). Only pieces that fit a face: drawn height
-≤ the wall under the roof course less the clearances (67 px on a six-storey
-wall; a taller window is a door) and width ≤ `WIN_MAX_W = 64` px (two face
+≤ the wall under the roof course less the clearances, less one px so nothing
+fits only by touching both limits (70 px on a six-storey wall; a taller window
+is a door) and width ≤ `WIN_MAX_W = 64` px (two face
 cells). **THE WALL IS THE LIMIT, NOT THE LIBRARY**: a house wall is 6 × 15 = 90
 px, its top storey the roof, and the windows are drawn 1:1 at 40–95 px tall —
-so only 5 of the 58 fit under the roof with the clearance he asked for (stone:
-005, 012, 088; wood: 086, 111; none of plaster), and that is the whole variety
-a six-storey house can wear. The old 0.80-of-the-wall rule let 66–72 px windows
+so only 10 of the 58 fit under the roof with the clearance he asked for (stone:
+005, 012, 033, 047, 048, 088; wood: 067, 086, 102, 111; none of plaster), and
+that is the whole variety a six-storey house can wear. The old 0.80-of-the-wall rule let 66–72 px windows
 through and they are the ones that touched the roof. A seventh storey would
 admit 82 px and most of the library (his call: the six-tile house is his). More types need taller
 houses or shorter windows, not scaling (one scenery pixel is one player pixel).
@@ -496,7 +506,7 @@ second face always delivers, and **every house gets at least one window**
 (build-asserted, as is that every window's anchor cell is outdoor ground at the
 floor's own level). The first gap rule (24 px, half a window) put five windows
 on the hall's twelve-cell east face against the three of his sketch; 40 px and
-0.8 gives four and three. the_game: 11 houses, 5 window types (every one that
+0.8 gives four and three. the_game: 11 houses, 10 window types (every one that
 fits), 3 faces left bare. Windows are placed unlit (`LIGHTS_OFF` is the base state; the
 night-time `LIGHTS_ON` is the game's to switch, and it spends no light slot).
 

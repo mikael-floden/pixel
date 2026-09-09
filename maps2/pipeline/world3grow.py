@@ -1046,8 +1046,58 @@ class Grow:
     CAVE_DRESS_PER = 7 # one piece per this many floor cells of a room
     CAVE_GAP = 3       # cells between pieces
 
+    def _merge_lids(self):
+        """ONE LID PER CHAMBER. The ported cave arrived as several lids per
+        chamber, split where its top ground changed, and `rooms()` publishes
+        every lid as a room - so the game, which lights and fogs THE ROOM
+        YOU ARE IN, switched rooms as the player crossed the seam (maintainer
+        2026-09-09, two screenshots two cells apart in the hall at (255,189):
+        "Depending on where I stand in this room the room is different lit
+        up"; that hall was decks 6 and 7, both cave, both level 24, touching
+        along 14 cells). Cave lids of one level whose cells touch are one
+        deck: the larger keeps its record, the top ground is the majority's.
+        7 such pairs on the_game."""
+        decks = [i for i, dk in enumerate(self.doc["decks"]) if dk.get("kind") == "cave"]
+        at = {}
+        for i in decks:
+            for c in self.doc["decks"][i]["cells"]:
+                at[(c["x"], c["y"])] = i
+        parent = {i: i for i in decks}
+
+        def find(i):
+            while parent[i] != i:
+                parent[i] = parent[parent[i]]
+                i = parent[i]
+            return i
+        for (x, y), i in at.items():
+            for m in ((x + 1, y), (x, y + 1)):
+                j = at.get(m)
+                if j is not None and j != i and \
+                        self.doc["decks"][i]["level"] == self.doc["decks"][j]["level"]:
+                    parent[find(i)] = find(j)
+        groups = collections.defaultdict(list)
+        for i in decks:
+            groups[find(i)].append(i)
+        drop, merged = set(), 0
+        for members in groups.values():
+            if len(members) < 2:
+                continue
+            members.sort(key=lambda i: -len(self.doc["decks"][i]["cells"]))
+            keep = self.doc["decks"][members[0]]
+            grounds = collections.Counter()
+            for i in members:
+                grounds[self.doc["decks"][i]["ground"]] += len(self.doc["decks"][i]["cells"])
+            keep["ground"] = grounds.most_common(1)[0][0]
+            for i in members[1:]:
+                keep["cells"] += self.doc["decks"][i]["cells"]
+                drop.add(i)
+            merged += len(members) - 1
+        self.doc["decks"] = [dk for i, dk in enumerate(self.doc["decks"]) if i not in drop]
+        self.placed += [("cave lids merged into their chamber", merged)]
+
     def caves(self):
         gi = self.gi
+        self._merge_lids()
         self.cave_floor, self.cave_side = {}, {}
         decks = [(i, dk) for i, dk in enumerate(self.doc["decks"]) if dk.get("kind") == "cave"]
         cave_all = {(c["x"], c["y"]) for _, dk in decks for c in dk["cells"]}
@@ -3535,17 +3585,18 @@ class Grow:
     FACE_PX = 32         # one cell of a wall face is DX (32) screen px wide
     WIN_CENTRE = 0.50    # the window's centre, as a share of the wall's height
     HANG_CENTRE = 0.62   # a hanging sits higher - it is looked at, not through
-    ROOF_CLEAR = 8       # px of bare wall between a window's top and the roof
+    ROOF_CLEAR = 4       # px of bare wall between a window's top and the roof
                          # course - the top storey of a house wall IS the roof's
                          # edge (the x-over-y cap hangs one storey of side down
                          # the face), and a window centred at 0.55 of a
                          # six-storey wall ran into it (maintainer 2026-09-09:
                          # "You place them a bit too high so they touch the
-                         # roof overhang graphics"; at 4 px, again: "This is
-                         # again too high up! ... You need some space here!").
-                         # The roof tile's band is drawn 17 px tall over a 15 px
-                         # storey, so it reaches 2 px below the storey line and
-                         # the clearance counts from there. SILL_CLEAR px keep
+                         # roof overhang graphics"). 8 px was then "a tiny bit
+                         # too low ... in between now and the overhang is a good
+                         # target" (2026-09-09, the game applying z at last), so
+                         # 4: the band is drawn 17 px over a 15 px storey and
+                         # reaches 2 px below the line, 2 px of wall stay bare
+                         # under it. SILL_CLEAR px keep
                          # the sill off the ground - 0, because the wall is 90
                          # px and the windows 40-95: under the roof course only
                          # 5 of 58 fit at all, and every px is a window type
@@ -3677,7 +3728,9 @@ class Grow:
                            "door": doors[0] if doors else None,
                            "side": dk.get("side")})
         pool = {}
-        fit = (self.HOUSE_RISE - 1) * self.PITCH_GAME - self.ROOF_CLEAR - self.SILL_CLEAR
+        # one px stricter than the clamp: a window that only fits by being
+        # pushed to both limits at once is a window that touches something
+        fit = (self.HOUSE_RISE - 1) * self.PITCH_GAME - self.ROOF_CLEAR - self.SILL_CLEAR - 1
         for q in self.pool("windows"):
             ok, rating = self._rated(q)
             if not ok:
