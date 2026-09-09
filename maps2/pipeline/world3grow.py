@@ -6081,37 +6081,9 @@ class Grow:
         self.placed += [("ramps", len(runs)), ("ramp level moves", moved)]
 
     # -- run ------------------------------------------------------------------
-    def run(self):
-        import time
-        t0 = time.time()
-        for step in (self.grow_canvas, self.island2, self.deepen,
-                     # no cross-country tunnel: over the sea it rendered a
-                     # 300-cell black spine, along the isthmus a black scar
-                     # (both measured). A buried tunnel needs an underground
-                     # LAYER in the format — flagged; the isthmus road is
-                     # the crossing, each massif keeps its own dungeon.
-                     self.town_ground, self.i2_cave, self.caves,
-                     self.i2_road, self.i2_systems, self.groom, self._reindex,
-                     self.archipelago, self.pier, self.houses, self.town,
-                     self.mountain_back, self.wild, self.terrace_grounds, self.lava,
-                     self.build_no_place, self.interiors, self.village, self.windows,
-                     self.roads, self.nature, self.cave_dress, self.dress_islets,
-                     self.retype, self.widen_roads, self.ramps,
-                     self.ramp_paths, self.regroom, self.reach_audit,
-                     self.snap_hitboxes, self.police_footprints,
-                     self.lights, self.npcs,
-                     self.rooms, self.cliff_faces, self.cliff_apron, self.way_ground,
-                     self.audit_ground,
-                     self.spawns, self.recentre):
-            t = time.time()
-            step()
-            print(f"  [{step.__name__} {time.time() - t:.1f}s]", flush=True)
-        print(f"  [total {time.time() - t0:.1f}s]", flush=True)
-        sx, sy = self.doc["spawn"]
-        nlit, worst = world3._light_audit(
-            self.doc["scenery"], [(sx + 0.5, sy + 0.5, self.BONFIRE_R)])
-        json.dump(self.doc, open(os.path.join(OUT, "world.json"), "w"),
-                  separators=(",", ":"))
+    def settle_states(self):
+        """The last word on every placement's state, whichever path placed
+        it - and the build-asserted rule that the look agrees with `lit`."""
         # EVERY PLACEMENT SETTLES ON A STATE, whichever path placed it: the
         # base build's ported trees are appended straight into the list, and
         # the light pass un-lights a lamp but left its LIT state on it.
@@ -6145,6 +6117,38 @@ class Grow:
                 fakes.append((p["piece"], p["x"], p["y"], p.get("state"), base))
         assert not fakes, ("placements whose look disagrees with lit", len(fakes), fakes[:5])
 
+
+    def run(self):
+        import time
+        t0 = time.time()
+        for step in (self.grow_canvas, self.island2, self.deepen,
+                     # no cross-country tunnel: over the sea it rendered a
+                     # 300-cell black spine, along the isthmus a black scar
+                     # (both measured). A buried tunnel needs an underground
+                     # LAYER in the format — flagged; the isthmus road is
+                     # the crossing, each massif keeps its own dungeon.
+                     self.town_ground, self.i2_cave, self.caves,
+                     self.i2_road, self.i2_systems, self.groom, self._reindex,
+                     self.archipelago, self.pier, self.houses, self.town,
+                     self.mountain_back, self.wild, self.terrace_grounds, self.lava,
+                     self.build_no_place, self.interiors, self.village, self.windows,
+                     self.roads, self.nature, self.cave_dress, self.dress_islets,
+                     self.retype, self.widen_roads, self.ramps,
+                     self.ramp_paths, self.regroom, self.reach_audit,
+                     self.snap_hitboxes, self.police_footprints,
+                     self.lights, self.npcs,
+                     self.rooms, self.cliff_faces, self.cliff_apron, self.way_ground,
+                     self.audit_ground,
+                     self.spawns, self.recentre, self.settle_states):
+            t = time.time()
+            step()
+            print(f"  [{step.__name__} {time.time() - t:.1f}s]", flush=True)
+        print(f"  [total {time.time() - t0:.1f}s]", flush=True)
+        sx, sy = self.doc["spawn"]
+        nlit, worst = world3._light_audit(
+            self.doc["scenery"], [(sx + 0.5, sy + 0.5, self.BONFIRE_R)])
+        json.dump(self.doc, open(os.path.join(OUT, "world.json"), "w"),
+                  separators=(",", ":"))
         print(f"the_game grown: {NEW}x{NEW}, {len(self.doc['scenery'])} scenery "
               f"({nlit} lit, worst window {worst}/8), "
               f"{len(self.doc['decks'])} decks, {self.fail} placements dropped")
