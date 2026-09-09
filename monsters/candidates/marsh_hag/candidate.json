@@ -597,6 +597,281 @@
         "west": "marsh_hag/animations/walk__west.webp",
         "north-west": "marsh_hag/animations/walk__north-west.webp"
       }
+    },
+    "attack": {
+      "directions": {
+        "south": {
+          "status": "pass",
+          "step_mean": 0.2268,
+          "step_max": 0.3751,
+          "drift": 10.65,
+          "loop": 0.0,
+          "loop_ratio": 0.0,
+          "travel": 4.58,
+          "pin": 1.0,
+          "pad": 0,
+          "canvas": [
+            112,
+            112
+          ],
+          "reasons": [],
+          "sub": "1772dfa3-24f5-4a4b-b0e1-48bf87aa97ef",
+          "group": "4e70b108-a5b3-4c8f-bda1-de1b36392ab6",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "generated_at": "2026-09-09T21:59:56+00:00"
+        },
+        "south-east": {
+          "status": "pass",
+          "step_mean": 0.2714,
+          "step_max": 0.3919,
+          "drift": 7.26,
+          "loop": 0.0,
+          "loop_ratio": 0.0,
+          "travel": 4.24,
+          "pin": 1.0,
+          "pad": 1,
+          "canvas": [
+            114,
+            114
+          ],
+          "reasons": [
+            "canvas grown by 1 px a side to hold the motion"
+          ],
+          "sub": "51255424-1eae-49ac-8fde-cac3853a7fac",
+          "group": "acf01128-3852-493c-89a7-7267ab06b6ec",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "generated_at": "2026-09-09T21:59:57+00:00"
+        },
+        "east": {
+          "status": "pass",
+          "step_mean": 0.1787,
+          "step_max": 0.3342,
+          "drift": 8.09,
+          "loop": 0.0,
+          "loop_ratio": 0.0,
+          "travel": 9.09,
+          "pin": 1.0,
+          "pad": 0,
+          "canvas": [
+            112,
+            112
+          ],
+          "reasons": [],
+          "sub": "d1325afa-80dc-4919-b320-78fad42b25ad",
+          "group": "97676fec-4d6f-41e4-a20d-6ba4c3df46f4",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "generated_at": "2026-09-09T22:00:03+00:00"
+        },
+        "north-east": {
+          "status": "pass",
+          "step_mean": 0.1712,
+          "step_max": 0.269,
+          "drift": 2.96,
+          "loop": 0.0,
+          "loop_ratio": 0.0,
+          "travel": 1.85,
+          "pin": 1.0,
+          "pad": 0,
+          "canvas": [
+            112,
+            112
+          ],
+          "reasons": [],
+          "sub": "9e066680-8217-42b5-a2e0-f81bca9e4096",
+          "group": "63c39925-a2d8-4833-8bbe-5b0614a2cd1e",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "generated_at": "2026-09-09T22:00:03+00:00"
+        },
+        "north": {
+          "status": "warn",
+          "step_mean": 0.3072,
+          "step_max": 0.5199,
+          "drift": 16.64,
+          "loop": 0.0029,
+          "loop_ratio": 0.01,
+          "travel": 16.65,
+          "pin": 1.0,
+          "pad": 3,
+          "canvas": [
+            118,
+            118
+          ],
+          "reasons": [
+            "drifts 16.6 px — eyeball it",
+            "canvas grown by 3 px a side to hold the motion"
+          ],
+          "sub": "3da2b349-bf40-4cff-bc75-a6ab13dbf000",
+          "group": "3c8d2bd1-dc42-48dc-a1a7-f106395e2331",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "generated_at": "2026-09-09T22:00:04+00:00"
+        },
+        "south-west": {
+          "status": "pass",
+          "step_mean": 0.2714,
+          "step_max": 0.3919,
+          "drift": 7.26,
+          "loop": 0.0,
+          "loop_ratio": 0.0,
+          "travel": 4.24,
+          "pin": 1.0,
+          "pad": 1,
+          "canvas": [
+            114,
+            114
+          ],
+          "reasons": [
+            "canvas grown by 1 px a side to hold the motion"
+          ],
+          "sub": "51255424-1eae-49ac-8fde-cac3853a7fac",
+          "group": "acf01128-3852-493c-89a7-7267ab06b6ec",
+          "takes": 1,
+          "version": 1,
+          "mirrored": true,
+          "generated_at": "2026-09-09T21:59:57+00:00",
+          "source": "south-east"
+        },
+        "west": {
+          "status": "pass",
+          "step_mean": 0.1787,
+          "step_max": 0.3342,
+          "drift": 8.09,
+          "loop": 0.0,
+          "loop_ratio": 0.0,
+          "travel": 9.09,
+          "pin": 1.0,
+          "pad": 0,
+          "canvas": [
+            112,
+            112
+          ],
+          "reasons": [],
+          "sub": "d1325afa-80dc-4919-b320-78fad42b25ad",
+          "group": "97676fec-4d6f-41e4-a20d-6ba4c3df46f4",
+          "takes": 1,
+          "version": 1,
+          "mirrored": true,
+          "generated_at": "2026-09-09T22:00:03+00:00",
+          "source": "east"
+        },
+        "north-west": {
+          "status": "pass",
+          "step_mean": 0.1712,
+          "step_max": 0.269,
+          "drift": 2.96,
+          "loop": 0.0,
+          "loop_ratio": 0.0,
+          "travel": 1.85,
+          "pin": 1.0,
+          "pad": 0,
+          "canvas": [
+            112,
+            112
+          ],
+          "reasons": [],
+          "sub": "9e066680-8217-42b5-a2e0-f81bca9e4096",
+          "group": "63c39925-a2d8-4833-8bbe-5b0614a2cd1e",
+          "takes": 1,
+          "version": 1,
+          "mirrored": true,
+          "generated_at": "2026-09-09T22:00:03+00:00",
+          "source": "north-east"
+        }
+      },
+      "action": "raises the staff and jabs it forward, a burst of green swamp magic flashing from the tip, then returns exactly to the starting pose",
+      "frame_paths": {
+        "south": [
+          "marsh_hag/animations/attack/south/00.webp",
+          "marsh_hag/animations/attack/south/01.webp",
+          "marsh_hag/animations/attack/south/02.webp",
+          "marsh_hag/animations/attack/south/03.webp",
+          "marsh_hag/animations/attack/south/04.webp",
+          "marsh_hag/animations/attack/south/05.webp",
+          "marsh_hag/animations/attack/south/06.webp"
+        ],
+        "south-east": [
+          "marsh_hag/animations/attack/south-east/00.webp",
+          "marsh_hag/animations/attack/south-east/01.webp",
+          "marsh_hag/animations/attack/south-east/02.webp",
+          "marsh_hag/animations/attack/south-east/03.webp",
+          "marsh_hag/animations/attack/south-east/04.webp",
+          "marsh_hag/animations/attack/south-east/05.webp",
+          "marsh_hag/animations/attack/south-east/06.webp"
+        ],
+        "east": [
+          "marsh_hag/animations/attack/east/00.webp",
+          "marsh_hag/animations/attack/east/01.webp",
+          "marsh_hag/animations/attack/east/02.webp",
+          "marsh_hag/animations/attack/east/03.webp",
+          "marsh_hag/animations/attack/east/04.webp",
+          "marsh_hag/animations/attack/east/05.webp",
+          "marsh_hag/animations/attack/east/06.webp"
+        ],
+        "north-east": [
+          "marsh_hag/animations/attack/north-east/00.webp",
+          "marsh_hag/animations/attack/north-east/01.webp",
+          "marsh_hag/animations/attack/north-east/02.webp",
+          "marsh_hag/animations/attack/north-east/03.webp",
+          "marsh_hag/animations/attack/north-east/04.webp",
+          "marsh_hag/animations/attack/north-east/05.webp",
+          "marsh_hag/animations/attack/north-east/06.webp"
+        ],
+        "north": [
+          "marsh_hag/animations/attack/north/00.webp",
+          "marsh_hag/animations/attack/north/01.webp",
+          "marsh_hag/animations/attack/north/02.webp",
+          "marsh_hag/animations/attack/north/03.webp",
+          "marsh_hag/animations/attack/north/04.webp",
+          "marsh_hag/animations/attack/north/05.webp",
+          "marsh_hag/animations/attack/north/06.webp"
+        ],
+        "south-west": [
+          "marsh_hag/animations/attack/south-west/00.webp",
+          "marsh_hag/animations/attack/south-west/01.webp",
+          "marsh_hag/animations/attack/south-west/02.webp",
+          "marsh_hag/animations/attack/south-west/03.webp",
+          "marsh_hag/animations/attack/south-west/04.webp",
+          "marsh_hag/animations/attack/south-west/05.webp",
+          "marsh_hag/animations/attack/south-west/06.webp"
+        ],
+        "west": [
+          "marsh_hag/animations/attack/west/00.webp",
+          "marsh_hag/animations/attack/west/01.webp",
+          "marsh_hag/animations/attack/west/02.webp",
+          "marsh_hag/animations/attack/west/03.webp",
+          "marsh_hag/animations/attack/west/04.webp",
+          "marsh_hag/animations/attack/west/05.webp",
+          "marsh_hag/animations/attack/west/06.webp"
+        ],
+        "north-west": [
+          "marsh_hag/animations/attack/north-west/00.webp",
+          "marsh_hag/animations/attack/north-west/01.webp",
+          "marsh_hag/animations/attack/north-west/02.webp",
+          "marsh_hag/animations/attack/north-west/03.webp",
+          "marsh_hag/animations/attack/north-west/04.webp",
+          "marsh_hag/animations/attack/north-west/05.webp",
+          "marsh_hag/animations/attack/north-west/06.webp"
+        ]
+      },
+      "strips": {
+        "south": "marsh_hag/animations/attack__south.webp",
+        "south-east": "marsh_hag/animations/attack__south-east.webp",
+        "east": "marsh_hag/animations/attack__east.webp",
+        "north-east": "marsh_hag/animations/attack__north-east.webp",
+        "north": "marsh_hag/animations/attack__north.webp",
+        "south-west": "marsh_hag/animations/attack__south-west.webp",
+        "west": "marsh_hag/animations/attack__west.webp",
+        "north-west": "marsh_hag/animations/attack__north-west.webp"
+      }
     }
   }
 }
