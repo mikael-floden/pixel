@@ -1,6 +1,6 @@
 {
   "format": "monster-candidates@1",
-  "generated_at": "2026-09-09T18:02:05+00:00",
+  "generated_at": "2026-09-09T18:02:13+00:00",
   "art_ext": ".webp",
   "directions": [
     "south",
@@ -18,7 +18,7 @@
     "rejected"
   ],
   "feedback_key": "monsters/candidates/<id>",
-  "count": 21,
+  "count": 22,
   "candidates": [
     {
       "id": "lantern_bat",
@@ -2625,6 +2625,137 @@
       "review": "pending",
       "notes": null,
       "generated_at": "2026-09-09T17:59:01+00:00"
+    },
+    {
+      "id": "pebble_crab",
+      "name": "Pebblet",
+      "tier": "cute",
+      "lore": "A pebble that pinches. Beachcombers learn which stones to skip the hard way.",
+      "biome": [
+        "light_beach",
+        "grey_stone"
+      ],
+      "items": [
+        "sea shells",
+        "curved pincer"
+      ],
+      "size": [
+        40,
+        40
+      ],
+      "template_id": "bear",
+      "scale": "small",
+      "pixellab_id": "18c91c91-e3c9-41a0-a1aa-fe76b922c7f8",
+      "version": 1,
+      "sheet": "pebble_crab/sheet.webp",
+      "rotations": {
+        "south": "pebble_crab/rotations/south.webp",
+        "south-east": "pebble_crab/rotations/south-east.webp",
+        "east": "pebble_crab/rotations/east.webp",
+        "north-east": "pebble_crab/rotations/north-east.webp",
+        "north": "pebble_crab/rotations/north.webp",
+        "north-west": "pebble_crab/rotations/north-west.webp",
+        "west": "pebble_crab/rotations/west.webp",
+        "south-west": "pebble_crab/rotations/south-west.webp"
+      },
+      "qa": {
+        "status": "pass",
+        "min_run1": 0.678,
+        "reasons": [],
+        "directions": {
+          "south": {
+            "run1": 0.703,
+            "bbox": [
+              1,
+              2,
+              39,
+              36
+            ],
+            "fill": 0.807,
+            "touches_edge": false
+          },
+          "west": {
+            "run1": 0.766,
+            "bbox": [
+              3,
+              2,
+              34,
+              37
+            ],
+            "fill": 0.678,
+            "touches_edge": false
+          },
+          "east": {
+            "run1": 0.753,
+            "bbox": [
+              6,
+              2,
+              37,
+              37
+            ],
+            "fill": 0.678,
+            "touches_edge": false
+          },
+          "north": {
+            "run1": 0.678,
+            "bbox": [
+              2,
+              5,
+              38,
+              36
+            ],
+            "fill": 0.698,
+            "touches_edge": false
+          },
+          "south-east": {
+            "run1": 0.779,
+            "bbox": [
+              4,
+              2,
+              37,
+              37
+            ],
+            "fill": 0.722,
+            "touches_edge": false
+          },
+          "north-east": {
+            "run1": 0.723,
+            "bbox": [
+              3,
+              3,
+              37,
+              38
+            ],
+            "fill": 0.744,
+            "touches_edge": false
+          },
+          "north-west": {
+            "run1": 0.715,
+            "bbox": [
+              3,
+              3,
+              36,
+              38
+            ],
+            "fill": 0.722,
+            "touches_edge": false
+          },
+          "south-west": {
+            "run1": 0.779,
+            "bbox": [
+              3,
+              2,
+              36,
+              37
+            ],
+            "fill": 0.722,
+            "touches_edge": false
+          }
+        }
+      },
+      "review": "pending",
+      "notes": null,
+      "generated_at": "2026-09-09T18:02:13+00:00"
     },
     {
       "id": "bone_colossus",
