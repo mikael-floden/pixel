@@ -9,7 +9,7 @@ import { chromium } from "playwright-core";
 
 const EXE = "/opt/pw-browsers/chromium-1194/chrome-linux/chrome";
 const BASE = process.env.BASE || "http://localhost:5173";
-const WORLD = process.env.WORLD || "the_island2";
+const WORLD = process.env.WORLD || "the_game";
 
 const fail = (m) => {
   throw new Error(m);

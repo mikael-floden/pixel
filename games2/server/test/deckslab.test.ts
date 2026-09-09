@@ -9,9 +9,9 @@ import {
 } from "@nangijala/shared";
 
 // A deck's slab [level - thickness, level] is SOLID: nothing moves through it.
-// The maps2 cave carves the east mountain of the_island2 into a level-0 floor
-// under kind:"cave" roof decks that carry the original surface (level 24-40,
-// thickness = level - 8, so the slab underside sits 8 levels over the floor).
+// the_game's cave carves its mountain into a level-0 floor under kind:"cave"
+// decks that carry the original surface (level 24-40, thickness = level - 8,
+// so every slab underside sits 8 levels over the floor).
 // Before deckBot, a surface walker stepping into a too-high roof ledge was
 // offered the cave FLOOR as a free drop — and fell through 24+ levels of rock.
 //
@@ -24,11 +24,11 @@ import {
 function caveGrid() {
   const rows = [
     [
-      { t: "stone_mountain", l: 24 },
-      { t: "stone_mountain", l: 0 },
-      { t: "regular_snow", l: 0 },
-      { t: "saturated_grass", l: 0 },
-      { t: "clear_water", l: 0 },
+      { t: "grey_stone", l: 24 },
+      { t: "grey_stone", l: 0 },
+      { t: "snow", l: 0 },
+      { t: "grass", l: 0 },
+      { t: "water", l: 0 },
     ],
   ];
   const decks = [

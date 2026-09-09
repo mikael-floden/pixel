@@ -746,11 +746,9 @@ export function footBand(
 
 /* -- keys ------------------------------------------------------------------- */
 
-/** Texture key for a repo-relative art file. THE SAME `t2:<path>` NAMESPACE the
- *  world@1/world@2 renderer already uses (client/src/maps.ts `pathTileKey`),
- *  deliberately: a tiles3 plate and a tiles2 tile are both identified by their
- *  path, a path can never collide across the two, and every existing draw site
- *  that resolves a texture by path keeps working with no branch on schema.
+/** Texture key for a repo-relative art file: `t2:<path>` — the namespace the
+ *  retired tiles2 renderer used, kept because a plate is identified by its
+ *  path and every draw site that resolves a texture by path reads it.
  *  Kept as its own function rather than an import so this module stays free of
  *  the DOM-typed graph maps.ts pulls in — the two definitions are one line and
  *  the parity is asserted in the gate. */

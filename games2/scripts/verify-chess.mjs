@@ -1,15 +1,23 @@
-// verify-chess — walk to Wendell's board on the_island2, and the whole feature
+// verify-chess — walk to Rannulf's board on the_game, and the whole feature
 // must happen: proximity seat -> dialog -> dice theater -> a real move -> the
 // NPC answers -> resign -> verdict -> movement unlocked. Dev stack required.
+//
+// BOARD CELLS ARE READ FROM THE GAME (__ml.chess().boards, synced from
+// config/chess_boards.json): the board with an `npc` is Rannulf's, the one
+// without is the player-vs-player board. A seat is the cell one column east
+// and one row north of the table (the offer fires within 1.75 cells of the
+// table cell's centre); "walking away" is the world's own spawn cell.
 import { chromium } from "playwright-core";
+import { readFileSync } from "node:fs";
 const EXE = "/opt/pw-browsers/chromium-1194/chrome-linux/chrome";
 const fail = (m) => { console.error(`verify-chess: FAIL — ${m}`); process.exit(1); };
+const SPAWN = JSON.parse(readFileSync(new URL("../../maps2/worlds3/the_game/world.json", import.meta.url), "utf8")).spawn;
 const b = await chromium.launch({ executablePath: EXE, args: ["--no-sandbox"] });
 try {
   const page = await (await b.newContext({ viewport: { width: 393, height: 700 } })).newPage();
   await page.goto("http://localhost:5173/", { waitUntil: "domcontentloaded", timeout: 60000 });
   await page.evaluate(() => {
-    localStorage.setItem("ml-last-choice", JSON.stringify({ world: "the_island2", characterUid: "default_boy", name: "Kasparov" }));
+    localStorage.setItem("ml-last-choice", JSON.stringify({ world: "the_game", characterUid: "default_boy", name: "Kasparov" }));
     sessionStorage.setItem("ml-rejoin", "1");
   });
   await page.reload({ waitUntil: "domcontentloaded" });
@@ -20,28 +28,33 @@ try {
   await page.waitForFunction(() => window.__ml.chess?.().boards.length >= 2, { timeout: 15000 })
     .catch(() => fail("chess boards never synced (config/chess_boards.json)"));
 
+  const boards = await page.evaluate(() => window.__ml.chess().boards.map((b2) => ({ id: b2.id, col: b2.col, row: b2.row, npc: b2.npc })));
+  const pvp = boards.find((b2) => !b2.npc);
+  const npcBoard = boards.find((b2) => !!b2.npc);
+  if (!pvp || !npcBoard) fail(`the_game needs one PvP board and one NPC board, got ${JSON.stringify(boards)}`);
+
   // FIRST: the waiting contract at the PvP board — stand at a free seat and
   // every client must see the challenge bubble; walk away and it clears.
-  await page.evaluate(() => window.__ml.teleport(205, 120));
+  await page.evaluate((b2) => window.__ml.teleport(b2.col + 1, b2.row - 1), pvp);
   // The jump button must OFFER the game first (prompt "start"), and pressing
   // SPACE — the exact key the button synthesizes — seats you.
   await page.waitForFunction(() => window.__ml.chess().prompt === "start", { timeout: 12000 })
     .catch(() => fail("jump button never offered START CHESS GAME at a free board"));
   await page.keyboard.press("Space");
-  await page.waitForFunction(() => {
+  await page.waitForFunction((pid) => {
     const c = window.__ml.chess();
-    return c.boards.some((b2) => b2.id === "fireside" && b2.waiting) && c.waitBubbles === 1;
-  }, { timeout: 12000 }).catch(() => fail("waiting bubble never appeared after pressing the offer"));
-  await page.evaluate(() => window.__ml.teleport(210, 113));
+    return c.boards.some((b2) => b2.id === pid && b2.waiting) && c.waitBubbles === 1;
+  }, pvp.id, { timeout: 12000 }).catch(() => fail("waiting bubble never appeared after pressing the offer"));
+  await page.evaluate(([c, r]) => window.__ml.teleport(c, r), SPAWN);
   await page.waitForFunction(() => {
     const c = window.__ml.chess();
     return c.boards.every((b2) => !b2.waiting) && c.waitBubbles === 0;
   }, { timeout: 12000 }).catch(() => fail("waiting bubble did not clear after walking away"));
   console.log("verify-chess: waiting bubble appears and clears");
 
-  // Sit at Rannulf's player seat (198,120): prompt says JOIN (he waits), and
+  // Sit at Rannulf's player seat (one column east, one row north of his table): prompt says JOIN (he waits), and
   // SPACE starts the game.
-  await page.evaluate(() => window.__ml.teleport(198, 120));
+  await page.evaluate((b2) => window.__ml.teleport(b2.col + 1, b2.row - 1), npcBoard);
   await page.waitForFunction(() => window.__ml.chess().prompt === "join", { timeout: 12000 })
     .catch(() => fail("jump button never offered JOIN CHESS GAME at Rannulf's board"));
   await page.keyboard.press("Space");

@@ -5,13 +5,37 @@
 // Navigation LOGIC is not proven here (that's server/test/navigation.sim.test.ts
 // at ~1000x real time); this proves the glue: tap picking → trip → input synth,
 // anim states, measured playback rates, the version badge, loading overlay,
-// and in-place reconnect. Reconnect runs LAST (it swaps the session); then one
-// reload covers the emission world's join + a short trip.
+// and in-place reconnect. Reconnect runs LAST (it swaps the session); then two
+// reloads cover the monster checks at the_game's busiest spawn cluster and the
+// occluder audit. Every section runs on the_game (maps2/worlds3) — the
+// prop_demo/glow_test/monster_demo/occlusion_test showcases this was written
+// against were RETIRED with tiles2.
 //
 // PRE-FLIGHT: headless software-GL can starve the frame loop into slow-motion
 // that fakes "stuck player" bugs (cost us an hour once). Before any check we
 // measure raw keyboard speed and ABORT if the harness itself is too slow.
 import { chromium } from "playwright-core";
+import { readFileSync } from "node:fs";
+
+// the_game's busiest spawn cluster, from spawns.json: the polygon shared by the
+// most zone entries by monster count (the grass meadow west of the town today).
+// Its vertex centroid is the camera spot for the monster checks; the page
+// searches out from it for a standable cell before teleporting.
+const CLUSTER = (() => {
+  const doc = JSON.parse(readFileSync(new URL("../../maps2/worlds3/the_game/spawns.json", import.meta.url), "utf8"));
+  const byArea = new Map();
+  for (const z of doc.zones) {
+    const k = JSON.stringify(z.area);
+    const e = byArea.get(k) ?? { area: z.area, num: 0, kinds: 0 };
+    e.num += z.num ?? 1;
+    e.kinds++;
+    byArea.set(k, e);
+  }
+  const best = [...byArea.values()].sort((a, b) => b.num - a.num)[0];
+  const cx = best.area.reduce((s, [x]) => s + x, 0) / best.area.length;
+  const cy = best.area.reduce((s, [, y]) => s + y, 0) / best.area.length;
+  return { col: Math.round(cx), row: Math.round(cy), num: best.num, kinds: best.kinds };
+})();
 
 const EXE = "/opt/pw-browsers/chromium-1194/chrome-linux/chrome";
 const browser = await chromium.launch({ executablePath: EXE, args: ["--no-sandbox"] });
@@ -30,11 +54,9 @@ try {
   const errors = [];
   page.on("pageerror", (e) => errors.push(e.message));
 
-  // ---- join the props world (loading overlay checked on the way in) ----
+  // ---- join the_game, the default (loading overlay checked on the way in) ----
   await page.goto("http://localhost:5173/", { waitUntil: "load" });
   await page.waitForFunction(() => window.__mlSelect, { timeout: 25000 });
-  const idx = await page.evaluate(() => window.__mlSelect.worlds().findIndex((w) => /prop/i.test(w)));
-  if (idx >= 0) await page.evaluate((i) => window.__mlSelect.pickWorld(i), idx);
   await page.evaluate(() => window.__mlSelect.commit());
   const seenLoading = await page
     .waitForSelector("#ml-loading", { timeout: 5000 })
@@ -355,62 +377,39 @@ try {
     console.log(`reconnect-in-place OK (drift ${drift.toFixed(0)}wu, no reload)`);
   }
 
-  // ---- one reload: the glow_test showcase (maps2's emissive world) ----
-  {
-    await page.goto("http://localhost:5173/", { waitUntil: "load" });
-    await page.waitForFunction(() => window.__mlSelect, { timeout: 25000 });
-    await page.evaluate(() => {
-      const i = window.__mlSelect.worlds().findIndex((w) => /glow/i.test(w));
-      if (i >= 0) window.__mlSelect.pickWorld(i);
-      window.__mlSelect.commit();
-    });
-    await page.waitForFunction(() => window.__ml && window.__ml.players() >= 1, { timeout: 30000 });
-    await page.waitForTimeout(1200);
-    await page.bringToFront();
-    const p0 = await pos();
-    const t = await page.evaluate(({ x, y }) => {
-      for (const [dx, dy] of [[6, 3], [-6, 4], [5, -4], [-5, -5]]) {
-        const tx = x + dx * 32;
-        const ty = y + dy * 32;
-        if (window.__ml.blockedAt(tx, ty)) continue;
-        const s = window.__ml.surfaceAt(tx, ty);
-        if (!s || (!s.standable && !s.swimmable)) continue;
-        window.__ml.tapTo(tx, ty, false);
-        if (window.__ml.target()) return window.__ml.target();
-      }
-      return null;
-    }, p0);
-    if (!t) fail("glow_test: no tap target found");
-    let arrived = false;
-    for (let i = 0; i < 100 && !arrived; i++) {
-      await page.waitForTimeout(150);
-      arrived = await page.evaluate(() => !window.__ml.target());
-    }
-    const p1 = await pos();
-    const dEnd = Math.hypot(t.x - p1.x, t.y - p1.y);
-    if (!arrived || dEnd > 40) fail(`glow_test trip did not arrive (dist ${dEnd.toFixed(0)}wu)`);
-    console.log(`glow_test smoke OK (arrived, ${dEnd.toFixed(0)}wu)`);
-  }
-
-  // ---- one reload: monster_demo (every monster pad; walk anims must PLAY) ----
+  // ---- one reload: the_game's busiest spawn cluster (walk anims must PLAY) ----
   // Guards the frozen-slide class: a hardcoded/mis-resolved anim key leaves
   // every monster gliding as a statue — invisible to screenshots (a stuck walk
   // frame looks exactly like the freeze-frame idle), so assert the ANIMATION
-  // STATE via __ml.monsterInfo(). Needs a world that actually has zones —
-  // prop_demo/glow_test legitimately ship zero (no habitats), monster_demo is
-  // the showcase with a pad per roster monster.
+  // STATE via __ml.monsterInfo(). Only on-camera bodies animate, and the town
+  // spawn has no zone in view, so the player stands in the cluster CLUSTER
+  // names (derived from spawns.json above) before anything is sampled.
   {
     await page.goto("http://localhost:5173/", { waitUntil: "load" });
     await page.waitForFunction(() => window.__mlSelect, { timeout: 25000 });
-    await page.evaluate(() => {
-      const i = window.__mlSelect.worlds().findIndex((w) => /monster/i.test(w));
-      if (i >= 0) window.__mlSelect.pickWorld(i);
-      window.__mlSelect.commit();
-    });
+    await page.evaluate(() => window.__mlSelect.commit());
     await page.waitForFunction(() => window.__ml && window.__ml.players() >= 1, { timeout: 30000 });
     await page.waitForTimeout(1500);
     const count = await page.evaluate(() => window.__ml.monsterInfo().length);
-    if (count === 0) fail("monster_demo has no monsters (zones failed to load)");
+    if (count === 0) fail("the_game has no monsters (zones failed to load)");
+    const stood = await page.evaluate(({ col, row }) => {
+      // nearest standable, unblocked cell to the cluster centroid (radius 8)
+      for (let d = 0; d <= 8; d++)
+        for (let dr = -d; dr <= d; dr++)
+          for (let dc = -d; dc <= d; dc++) {
+            if (Math.max(Math.abs(dr), Math.abs(dc)) !== d) continue;
+            const x = (col + dc + 0.5) * 32, y = (row + dr + 0.5) * 32;
+            const s = window.__ml.surfaceAt(x, y);
+            if (!s || !s.standable || window.__ml.blockedAt(x, y)) continue;
+            window.__ml.teleport(col + dc + 0.5, row + dr + 0.5);
+            return { col: col + dc, row: row + dr };
+          }
+      return null;
+    }, CLUSTER);
+    if (!stood) fail(`no standable cell within 8 of the cluster centroid ${CLUSTER.col},${CLUSTER.row}`);
+    console.log(`standing in the ${CLUSTER.kinds}-kind cluster (${CLUSTER.num} monsters) at ${stood.col},${stood.row}`);
+    await page.waitForFunction(() => window.__ml.monsterInfo().some((m) => !m.culled), { timeout: 15000 })
+      .catch(() => fail("no monster came on camera in the busiest cluster"));
     let playingSeen = 0;
     let badIdle = 0;
     const t0 = Date.now();
@@ -487,18 +486,13 @@ try {
   // resolveBodyDepth reads: every non-prop meta record overlapping the view
   // must still have drawn art behind it. `metaWithoutArt` must be 0, standing
   // AND walking (the camera drifts up to OCC_STEP between rebuilds).
-  // Runs on occlusion_test: the only compact world with BOTH raised terrain
-  // (level 32) and decks, so it exercises the terrain cull and the deck
-  // exposure rule. monster_demo/glow_test/prop_demo are all flat — the check
-  // is vacuous there.
+  // Runs on the_game from its spawn: the level-6 house and the town terraces
+  // are in view, the mountain (level 46) and 28 decks are off-screen, so both
+  // the terrain cull and the deck exposure rule are exercised from one spot.
   {
     await page.goto("http://localhost:5173/", { waitUntil: "load" });
     await page.waitForFunction(() => window.__mlSelect, { timeout: 25000 });
-    await page.evaluate(() => {
-      const i = window.__mlSelect.worlds().findIndex((w) => /occlusion_test/.test(w));
-      if (i >= 0) window.__mlSelect.pickWorld(i);
-      window.__mlSelect.commit();
-    });
+    await page.evaluate(() => window.__mlSelect.commit());
     await page.waitForFunction(() => window.__ml && window.__ml.players() >= 1, { timeout: 30000 });
     await page.waitForTimeout(3000);
     const audit = await page.evaluate(() => (window.__ml.occAudit ? window.__ml.occAudit() : null));
@@ -506,7 +500,7 @@ try {
     if (audit.built + audit.culled === 0)
       fail("occAudit: nothing built and nothing culled — the occluder pass did not run");
     if (audit.culled === 0)
-      fail("occAudit: culled 0 images on a level-32 world with decks — the cull is not active");
+      fail("occAudit: culled 0 images on a level-46 world with decks — the cull is not active");
     if (audit.metaWithoutArt > 0)
       fail(
         `occAudit: ${audit.metaWithoutArt} visible occluder columns draw NOTHING ` +

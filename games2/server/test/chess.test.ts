@@ -138,33 +138,23 @@ test("the NPC brain: always legal, deterministic per seed, and CHEAP", () => {
   const CFG = join(REPO, "games2", "config", "chess_boards.json");
   const publish = join(REPO, "games2", "config", "publish.json");
   const worldDoc = (w: string) => {
-    for (const root of ["worlds", "worlds3"]) {
-      const p = join(REPO, "maps2", root, w, "world.json");
-      if (existsSync(p)) return JSON.parse(readFileSync(p, "utf8"));
-    }
-    return null;
+    const p = join(REPO, "maps2", "worlds3", w, "world.json");
+    return existsSync(p) ? JSON.parse(readFileSync(p, "utf8")) : null;
   };
   const have = existsSync(CFG) && existsSync(publish);
-  test("every chess table a world places is a board you can sit at", { skip: !have }, () => {
+  test("every chess table a world places is a board you can sit at", { skip: !have }, (t) => {
     const cfg = JSON.parse(readFileSync(CFG, "utf8"));
     const worlds: string[] = JSON.parse(readFileSync(publish, "utf8")).userWorlds ?? [];
+    if (!worlds.some((w) => worldDoc(w))) return t.skip("maps2/worlds3 not checked out");
     let tables = 0;
     const orphans: string[] = [];
     for (const w of worlds) {
       const doc = worldDoc(w);
       if (!doc) continue;
-      /* A maps3 world places the table as SCENERY (a piece id); a tiles2 world
-       * as a PROP, which carries NO type string at all — only `{x, y, tile}`,
-       * an INDEX into the world's own `paths[]`. Resolving that index is the
-       * only way to see the_island2's two tables; matching on a `type` field
-       * finds nothing and leaves the older world silently uncovered. */
-      const paths: string[] = doc.paths ?? [];
-      const placed: { x: number; y: number }[] = [
-        ...((doc.scenery ?? []) as any[]).filter((p) => String(p.piece).includes("chess")),
-        ...((doc.props ?? []) as any[]).filter((p) =>
-          String(paths[p.tile] ?? "").toLowerCase().includes("chess"),
-        ),
-      ];
+      // A maps3 world places the table as SCENERY: a piece id, matched by name.
+      const placed: { x: number; y: number }[] = ((doc.scenery ?? []) as any[]).filter((p) =>
+        String(p.piece).includes("chess"),
+      );
       const boards: any[] = cfg.worlds?.[w] ?? [];
       for (const t of placed) {
         tables++;

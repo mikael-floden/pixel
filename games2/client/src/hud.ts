@@ -568,10 +568,9 @@ export class HudBar {
     const m = ml && typeof ml.minimap === "function" ? ml.minimap() : null;
     if (!m || !m.w || !m.h) return;
     // Load the world's map image once (and again if the world changed on
-    // rejoin). WHICH FILE IS maps.ts's CALL, not the HUD's: the two map
-    // renderers write two names in two trees (minimap.webp beside a world@1/@2
-    // world, overview.webp beside a maps3 one) and `mapImageUrls` is the one
-    // place that resolves it. The HUD only walks the candidates in order and
+    // rejoin). WHICH FILE IS maps.ts's CALL, not the HUD's: `mapImageUrls` is
+    // the one place that resolves the map renderer's file name (minimap.webp
+    // beside the world). The HUD only walks the candidates in order and
     // remembers which one this world answered to, so a miss costs at most one
     // request per world per session. No art domain needs a handshake with us.
     if (m.world && m.world !== this.mapSrcWorld) {

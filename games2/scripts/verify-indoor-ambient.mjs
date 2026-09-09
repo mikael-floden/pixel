@@ -28,7 +28,7 @@ function chromePath() {
 }
 
 const URL = process.env.GAME_URL || "http://localhost:5173/";
-const WORLD = process.env.WORLD || "house_demo";
+const WORLD = process.env.WORLD || "the_game"; // maps2/worlds3
 let failed = false;
 const fail = (m) => {
   console.error("FAIL:", m);
@@ -85,12 +85,12 @@ const home = await page.evaluate(() => {
 if (!Number.isFinite(home.col) || !Number.isFinite(home.row)) fail(`bad outdoor home cell: ${JSON.stringify(home)}`);
 
 // ---- Walk inside. Go straight to a house instead of sweeping the map: the
-// world data says where the roofs are (world@2 decks, kind "roof"), so a few
+// world data says where the roofs are (pixel-maps3 decks, kind "roof"), so a few
 // candidates under one beat thousands of teleports — a per-cell sweep here
 // timed out entirely under headless GL. The GAME still decides indoor/out;
 // the deck data only picks where to stand.
 const spot = await page.evaluate(async (world) => {
-  const res = await fetch(`/assets/maps2/worlds/${world}/world.json`);
+  const res = await fetch(`/assets/maps2/worlds3/${world}/world.json`);
   if (!res.ok) return { error: `world.json ${res.status}` };
   const w = await res.json();
   const roofs = (w.decks ?? []).filter((d) => d.kind === "roof" && d.cells?.length);

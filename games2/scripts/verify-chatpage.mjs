@@ -79,7 +79,7 @@ try {
   await ctx.addInitScript(() => Object.defineProperty(navigator, "maxTouchPoints", { get: () => 5, configurable: true }));
   const page = await ctx.newPage();
   page.setDefaultTimeout(60000); // headless software-GL frames run ~1s — give clicks room
-  await enter(page, "ring_test");
+  await enter(page, "the_game");
   await openChat(page);
   await page.waitForSelector(".ml-chat-log", { timeout: 10000 });
 

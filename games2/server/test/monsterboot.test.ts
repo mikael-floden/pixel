@@ -47,10 +47,10 @@ test("monsterBootKinds: near kinds only, union over centres, everything when no 
   assert.equal(monsterBootKinds([], [spawn]).size, 0);
 });
 
-test("on every spawns.json on disk the split is a partition that the definition explains", () => {
+test("on the_game's spawns.json the split is a partition that the definition explains", () => {
   const here = dirname(fileURLToPath(import.meta.url));
   let worlds = 0;
-  for (const [tree, name] of [["worlds3", "the_game"], ["worlds", "the_island2"]] as const) {
+  for (const [tree, name] of [["worlds3", "the_game"]] as const) {
     const dir = join(here, "..", "..", "..", "maps2", tree, name);
     if (!existsSync(join(dir, "spawns.json")) || !existsSync(join(dir, "world.json"))) continue;
     const zones = parseSpawns(JSON.parse(readFileSync(join(dir, "spawns.json"), "utf8")));
@@ -69,5 +69,5 @@ test("on every spawns.json on disk the split is a partition that the definition 
     console.log(`  monsterboot: ${name} boots ${boot.size} of ${all.size} kinds within ${MONSTER_BOOT_RADIUS_CELLS} cells of ${spawn}`);
     worlds++;
   }
-  if (!worlds) console.log("  monsterboot: no world on disk (sparse checkout) — synthetic cases only");
+  if (!worlds) console.log("  monsterboot: maps2/worlds3/the_game not on disk (sparse checkout) — synthetic cases only");
 });

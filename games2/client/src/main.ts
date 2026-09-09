@@ -10,7 +10,6 @@ import { withFallback } from "./placeholder";
 import { chooseCharacter } from "./select";
 import { WorldScene } from "./scenes/WorldScene";
 import { loadWorld, loadWorldsList, loadWorldRoots, worldRoot, DEFAULT_WORLD } from "./maps";
-import { fetchAtlasIndex } from "./tileatlas";
 import { MapPreviewScene } from "./scenes/MapPreviewScene";
 import { setLoadingProgress, showLoading } from "./loading";
 import { mountTheme } from "./theme";
@@ -65,8 +64,7 @@ async function bootMapPreview(): Promise<boolean> {
   // WHICH world: the one you last played, else the default. `#map` previewed
   // DEFAULT_WORLD's data under a hardcoded ring_test image before this. The
   // roots come from the built manifest first, because a world's TREE is what
-  // every URL below is built from (a worlds3 name resolved to maps2/worlds
-  // 404s its own world.json).
+  // every URL below is built from.
   await loadWorldRoots();
   let name = DEFAULT_WORLD;
   try {
@@ -302,7 +300,7 @@ async function boot() {
   setLoadingProgress(0.05, "Fetching world…");
   // The chosen isometric world (null if its world.json is missing; the world
   // scene then falls back to a plain ground).
-  const [world, atlasIndex] = await Promise.all([loadWorld(worldName), fetchAtlasIndex(worldName)]);
+  const world = await loadWorld(worldName);
   // WHO stands where, fetched at BOOT alongside the world (maintainer
   // 2026-08-06: "the loading restarts just before the game loads and once
   // loaded it takes ~0.5s before the NPC is drawn"). Both symptoms were one
@@ -428,7 +426,6 @@ async function boot() {
   game.registry.set("npcManifest", npcManifest);
   game.registry.set("npcPlacement", npcPlacement);
   game.registry.set("monsterBootKinds", monsterBootKinds);
-  game.registry.set("atlasIndex", atlasIndex);
   game.registry.set("character", character);
   game.registry.set("name", name);
   game.registry.set("world", world);

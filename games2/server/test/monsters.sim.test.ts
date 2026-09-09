@@ -1,5 +1,5 @@
-// Headless monster tests for the maps2 SPAWN ZONES (pixel-maps2/spawns@1).
-// maps2 owns monster placement: every world ships worlds/<name>/spawns.json
+// Headless monster tests for the maps2 SPAWN ZONES (pixel-maps3/spawns@1).
+// maps2 owns monster placement: the world ships worlds3/<name>/spawns.json
 // with polygon zones {id, monster, area, elev, num}. These tests cover the
 // pure geometry (parseSpawns / pointInZone / zonePolygonCells), the
 // terrain-aware resolution (buildZoneRuntimes — the SAME function WorldRoom
@@ -58,13 +58,13 @@ interface SimWorld {
   runtimes: ZoneRuntime[];
 }
 
-function loadMaps2World(name: string): SimWorld | null {
-  const path = join(REPO, "maps2", "worlds", name, "world.json");
+function loadWorld3(name: string): SimWorld | null {
+  const path = join(REPO, "maps2", "worlds3", name, "world.json");
   if (!existsSync(path)) return null;
   const world = parseWorld(JSON.parse(readFileSync(path, "utf8")));
   if (!world) return null;
   const grid = buildTerrainGrid(world.width, world.height, world.rows, world.props, world.decks);
-  const spawnsPath = join(REPO, "maps2", "worlds", name, "spawns.json");
+  const spawnsPath = join(REPO, "maps2", "worlds3", name, "spawns.json");
   const zones = existsSync(spawnsPath)
     ? parseSpawns(JSON.parse(readFileSync(spawnsPath, "utf8")))
     : [];
@@ -96,7 +96,7 @@ function mulberry32(seed: number): () => number {
 
 test("parseSpawns: accepts spawns@1, skips malformed zones, rejects other docs", () => {
   const good = {
-    schema: "pixel-maps2/spawns@1",
+    schema: "pixel-maps3/spawns@1",
     zones: [
       { id: "a", monster: "poring", area: [[0, 0], [4, 0], [4, 4]], elev: [0, 2], num: 3 },
       { id: "bad-no-monster", area: [[0, 0], [4, 0], [4, 4]], elev: [0, 2], num: 3 },
@@ -110,7 +110,7 @@ test("parseSpawns: accepts spawns@1, skips malformed zones, rejects other docs",
   assert.equal(zones[1].num, 1, "missing num defaults to 1");
   assert.deepEqual(parseSpawns({ schema: "something-else", zones: [] }), []);
   assert.deepEqual(parseSpawns(null), []);
-  assert.deepEqual(parseSpawns({ schema: "pixel-maps2/spawns@1" }), []);
+  assert.deepEqual(parseSpawns({ schema: "pixel-maps3/spawns@1" }), []);
 });
 
 // An L-shape (concave): the 4x4 square minus its top-right 2x2 quadrant.
@@ -161,9 +161,9 @@ test("randomPauseMs: within the configured range", () => {
 // and every resolved cell truly satisfies the zone's contract on the grid.
 // ---------------------------------------------------------------------------
 
-for (const worldName of ["ring_test", "the_island2", "monster_demo"]) {
+for (const worldName of ["the_game"]) {
   test(`zones on ${worldName}: every shipped zone resolves to valid cells`, () => {
-    const w = loadMaps2World(worldName);
+    const w = loadWorld3(worldName);
     if (!w) return test.skip(`${worldName} missing`);
     assert.ok(w.zones.length > 0, `${worldName} ships spawn zones`);
     // The generator asserts >= num standable cells per zone before writing the
@@ -210,11 +210,12 @@ for (const worldName of ["ring_test", "the_island2", "monster_demo"]) {
   });
 }
 
-test("the_island2 layered zones: cave floor vs roof-deck zones share cells at different levels", () => {
-  const w = loadMaps2World("the_island2");
-  if (!w) return test.skip("the_island2 missing");
+test("the_game layered zones: cave floor vs cave-deck zones share cells at different levels", () => {
+  const w = loadWorld3("the_game");
+  if (!w) return test.skip("the_game missing");
   // The spawns@1 headline case: somewhere in the file two zones resolve the
-  // SAME cell at DIFFERENT levels (cave floor under a walkable roof deck).
+  // SAME cell at DIFFERENT levels (cave floor under a walkable cave deck —
+  // measured 585 such cells on the_game).
   const byCell = new Map<number, Set<number>>();
   for (const rt of w.runtimes) {
     for (const cell of rt.cells) {
@@ -358,20 +359,22 @@ function roamOneMonster(
   return { moved, violations, trips };
 }
 
-for (const worldName of ["ring_test", "the_island2", "monster_demo"]) {
+for (const worldName of ["the_game"]) {
   test(`headless roam on ${worldName}: monsters stay in their zones on valid ground`, () => {
-    const w = loadMaps2World(worldName);
+    const w = loadWorld3(worldName);
     if (!w) return test.skip(`${worldName} missing`);
     assert.ok(w.runtimes.length > 0, "world has resolved zones");
-    // A spread of zones per world: land, water (canSwim), deck/cave layers —
-    // whatever the file ships, capped so the suite stays fast.
+    // A spread of zones: the first few in file order (cave-floor zones under
+    // the mountain's decks) plus the zones holding the spawn's shore and the
+    // snow above — whatever the file ships, capped so the suite stays fast.
     const sample: ZoneRuntime[] = [];
-    const water = w.runtimes.find((r) => r.canSwim);
-    if (water) sample.push(water);
+    const deckZone = w.runtimes.find((r) => r.cells.some((c) => w.grid.deck[c.r * w.grid.width + c.c] === c.lvl));
+    if (deckZone) sample.push(deckZone);
     for (const rt of w.runtimes) {
       if (sample.length >= 6) break;
       if (!sample.includes(rt)) sample.push(rt);
     }
+    assert.ok(deckZone, "the_game zones its cave/roof decks — a deck zone must be in the sample");
     let anyMoved = false;
     for (let zi = 0; zi < sample.length; zi++) {
       const rt = sample[zi];

@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
-"""build-bodyatlas — pack character frames and monster strips into committed
-lossless-WebP sheets, the way build-atlas.py already packs tiles.
+"""build-bodyatlas — pack character frames and monster strips into
+lossless-WebP sheets under client/public/atlases (the tile atlas that
+preceded it, build-atlas.py + check-atlas.mjs, was RETIRED with tiles2).
 
 WHY (measured 2026-08-15): a boot loads ~930 individual sprite files and spends
 4.6 s doing it EVEN AT ZERO NETWORK LATENCY — the cost is per-file, not
@@ -26,7 +27,11 @@ maintainer's hard requirement here ("as fast or faster than before"):
    over its file list AND every file's bytes (plus PACKER, so a change to the
    layout logic below invalidates on purpose). An unchanged unit is skipped.
    The no-op pass is a hash of the inputs: measured ~0.2 s for 1,200 character
-   frames. Deploys never build at all — they only VERIFY (check-atlas.mjs).
+   frames. Deploys never build at all, and nothing verifies the sheets any
+   more: check-atlas.mjs went with the tile atlas, and client/public/atlases
+   holds no tracked file today, so what ships is the client's per-file
+   fallback. Running this is a local optimisation until the sheets are
+   committed again.
 2. BLAZING FAST WHEN NEEDED, and the reason is a measurement, not C.
    Pillow's WebP `method` is the entire story:
 
@@ -39,7 +44,7 @@ maintainer's hard requirement here ("as fast or faster than before"):
    Body art is mostly transparent, so the encoder converges long before
    method 6's extra search does anything: it costs 17x for nothing. (On DENSE
    art the trade is real — the tile sheet is 5% smaller at method 6 — which is
-   why build-atlas.py documents its own choice separately.) There is no C
+   why the retired tile packer chose method 6.) There is no C
    extension to write here; there was just a wrong constant.
 3. PARALLEL ACROSS UNITS. Units are independent, so a Pool packs them on every
    core. This is why the unit is small: one changed state is one small sheet on
@@ -74,8 +79,9 @@ ASSETS_ROOT = Path(os.environ.get("ASSETS_ROOT", GAME_ROOT.parent))
 PUBLIC = GAME_ROOT / "client" / "public"
 OUT = PUBLIC / "atlases"
 INDEX = OUT / "bodies.json"
-# Build-time only (see the write site): the source lists check-atlas.mjs needs
-# to recompute digests without re-deriving them from the manifests itself.
+# Build-time only (see the write site): the source lists a verifier needs to
+# recompute digests without re-deriving them from the manifests itself. No
+# verifier reads it today (check-atlas.mjs is gone); kept so one can.
 SOURCES = GAME_ROOT / "scripts" / "bodyatlas-sources.json"
 SCHEMA = "nangijala/body-atlas@1"
 # Bump when the PACKING LAYOUT changes: it rides in every digest, so a bump
@@ -101,13 +107,14 @@ def asset_path(url: str) -> Path:
 def digest_of(items: list[dict]) -> str:
     """Digest of the source LIST and every source's BYTES. Art agents repaint
     in place (same path, new pixels), so a list-only digest would happily serve
-    the old art forever — the same rule the tile atlas learned.
+    the old art forever — the same rule the retired tile atlas learned.
 
-    KEYED BY THE MANIFEST URL, NEVER THE ABSOLUTE PATH. The digest is
-    recomputed by check-atlas.mjs at image-build time, where ASSETS_ROOT is
-    the CURATED root (/assets) and not this checkout — an absolute path would
-    hash differently there and every unit would look stale, pruning the whole
-    atlas on every deploy while looking like it worked."""
+    KEYED BY THE MANIFEST URL, NEVER THE ABSOLUTE PATH. A digest recomputed
+    at image-build time sees ASSETS_ROOT as the CURATED root (/assets), not
+    this checkout — an absolute path would hash differently there and every
+    unit would look stale, pruning the whole atlas on every deploy while
+    looking like it worked. (Measured on the tile atlas; nothing recomputes
+    body digests at build time today.)"""
     h = hashlib.sha256()
     h.update(f"{SCHEMA}/{PACKER}".encode())
     for it in items:
@@ -291,11 +298,12 @@ def main() -> None:
             index["units"].setdefault(k, v)
     INDEX.write_text(json.dumps(index, separators=(",", ":"), sort_keys=True))
 
-    # THE VERIFY SIDECAR. check-atlas.mjs must be able to recompute every
-    # digest at image-build time, and re-deriving the source lists in JS would
-    # duplicate collect_units — two implementations of "which files belong to
-    # this unit" that drift silently. So the builder publishes the lists it
-    # actually used, keyed by the stable manifest URL.
+    # THE VERIFY SIDECAR. A build-time verifier must be able to recompute
+    # every digest, and re-deriving the source lists in JS would duplicate
+    # collect_units — two implementations of "which files belong to this
+    # unit" that drift silently. So the builder publishes the lists it
+    # actually used, keyed by the stable manifest URL. (No verifier reads it
+    # today — check-atlas.mjs was retired with the tile atlas.)
     #
     # It lives in scripts/, NOT client/public: the client never reads it, and
     # ~200 KB of source paths in the served bundle is weight every player would

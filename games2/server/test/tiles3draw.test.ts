@@ -377,16 +377,13 @@ test("a key is a function of the content and of nothing else", () => {
   assert.match(plateKey(PC, "grass"), /^t3c:grass\|tiles\/tops\/grass\/x\.webp$/);
 });
 
-test("the art key namespace is the renderer's existing one", () => {
-  // client/src/maps.ts pathTileKey — the world@1/world@2 draw sites resolve a
-  // texture by path through this exact prefix, so tiles3 art needs no branch.
-  const maps = readFileSync(join(REPO, "games2", "client", "src", "maps.ts"), "utf8");
-  const m = /export function pathTileKey\(path: string\): string \{\s*return "([^"]+)" \+ path;/.exec(maps);
-  assert.ok(m, "maps.ts still defines pathTileKey as a prefix + path");
-  assert.equal(artKey("x/y.webp"), m![1] + "x/y.webp");
-  const am = /export function assetUrl\(path: string\): string \{\s*return "([^"]+)" \+/.exec(maps);
-  assert.ok(am, "maps.ts still defines assetUrl");
-  assert.equal(assetPath("x/y.webp"), am![1] + "x/y.webp");
+test("the art key namespace is the one every draw site resolves by path", () => {
+  // `t2:<path>` is the key every texture-by-path draw site reads (the prefix
+  // the retired tiles2 renderer used; kept, not re-derived) and `/assets/` the
+  // URL root the server mounts every art domain under. Pinned as literals: a
+  // renamed prefix would silently miss every resident texture.
+  assert.equal(artKey("x/y.webp"), "t2:x/y.webp");
+  assert.equal(assetPath("x/y.webp"), "/assets/x/y.webp");
 });
 
 /* -- 4. the load list ------------------------------------------------------- */

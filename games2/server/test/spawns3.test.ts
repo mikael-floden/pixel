@@ -2,12 +2,12 @@
 // SPAWNS3 — monsters live in a `pixel-maps3` world
 // ============================================================================
 //
-// maps2/worlds3/the_game ships 82 spawn zones under `pixel-maps3/spawns@1`.
-// The zone DOCUMENT is the same one maps2/worlds ships under
+// maps2/worlds3/the_game ships its spawn zones under `pixel-maps3/spawns@1`.
+// The zone DOCUMENT is the shape the retired maps2/worlds tree shipped under
 // `pixel-maps2/spawns@1` — the version rides with the WORLD schema, not with
 // the zone shape — so `parseSpawns` reads both names. Before that it read one,
-// returned [] for the other, and the_game joined with 82 zones and ZERO
-// monsters: a 512x512 island with no life in it, no error anywhere.
+// returned [] for the other, and the_game joined with every zone and ZERO
+// monsters: an island with no life in it, no error anywhere.
 //
 // Everything here is measured against the REAL files in the same test (counts
 // are DERIVED, never transcribed), so the parser and the map data cannot drift
@@ -34,67 +34,57 @@ import {
 
 const REPO = join(dirname(fileURLToPath(import.meta.url)), "..", "..", "..");
 const GAME3 = join(REPO, "maps2", "worlds3", "the_game");
-const ISLAND2 = join(REPO, "maps2", "worlds", "the_island2");
 
 const read = (p: string): any => (existsSync(p) ? JSON.parse(readFileSync(p, "utf8")) : null);
 const game3 = read(join(GAME3, "spawns.json"));
-const island2 = read(join(ISLAND2, "spawns.json"));
+const worldDoc = read(join(GAME3, "world.json"));
 
 /** The world's terrain grid, exactly as WorldRoom builds it at room create.
- * Memoized: parsing the_game's 512x512 world.json costs ~2s and four tests
- * want the same grid. */
-const grids = new Map<string, TerrainGrid | null>();
-function gridOf(dir: string): TerrainGrid | null {
-  if (!grids.has(dir)) {
-    const doc = read(join(dir, "world.json"));
-    const w = doc ? parseWorld(doc) : null;
-    grids.set(dir, w ? buildTerrainGrid(w.width, w.height, w.rows, w.props, w.decks) : null);
+ * Memoized: parsing the_game's world.json costs ~1s and four tests want the
+ * same grid. */
+let cached: TerrainGrid | null | undefined;
+function gridOf(): TerrainGrid | null {
+  if (cached === undefined) {
+    const w = worldDoc ? parseWorld(worldDoc) : null;
+    cached = w ? buildTerrainGrid(w.width, w.height, w.rows, w.props, w.decks) : null;
   }
-  return grids.get(dir)!;
+  return cached;
 }
 
 // ---------------------------------------------------------------------------
 // The shape claim the schema widening rests on
 // ---------------------------------------------------------------------------
 
-test("the maps2 and maps3 zone documents are the SAME shape, field for field", () => {
-  if (!game3 || !island2) {
-    test.skip("a spawns.json is missing");
+test("the_game's zone document is the spawns@1 shape, field for field", () => {
+  if (!game3) {
+    test.skip("maps2/worlds3/the_game/spawns.json missing");
     return;
   }
-  assert.equal(island2.schema, "pixel-maps2/spawns@1");
   assert.equal(game3.schema, "pixel-maps3/spawns@1");
-  // Same top-level keys — only the two STRINGS inside them differ.
-  assert.deepEqual(Object.keys(game3).sort(), Object.keys(island2).sort());
-  assert.deepEqual(
-    { ...game3, schema: null, world: null, zones: null },
-    { ...island2, schema: null, world: null, zones: null },
-    "the documents differ ONLY in schema, world and zones",
+  assert.deepEqual(Object.keys(game3).sort(), ["schema", "world", "zones"]);
+  assert.equal(game3.world, "the_game");
+  // Same zone keys, in the same ORDER, carrying the same value types on every
+  // zone. Key order is not something a JSON parser cares about, but it is what
+  // makes "one zone shape" a checkable statement rather than a hope.
+  const shapes = new Set(
+    game3.zones.map((z: Record<string, unknown>) =>
+      Object.entries(z)
+        .map(([k, v]) => `${k}:${Array.isArray(v) ? "array" : typeof v}`)
+        .join(","),
+    ),
   );
-  // Same zone keys, in the same ORDER, carrying the same value types. Key
-  // order is not something a JSON parser cares about, but it is what makes
-  // "byte-identical zone shape" a checkable statement rather than a hope.
-  const shapes = (doc: any) =>
-    new Set(
-      doc.zones.map((z: Record<string, unknown>) =>
-        Object.entries(z)
-          .map(([k, v]) => `${k}:${Array.isArray(v) ? "array" : typeof v}`)
-          .join(","),
-      ),
-    );
-  assert.deepEqual([...shapes(game3)], ["id:string,monster:string,area:array,elev:array,num:number"]);
-  assert.deepEqual([...shapes(game3)], [...shapes(island2)]);
-  for (const doc of [game3, island2])
-    for (const z of doc.zones) {
-      assert.equal(z.elev.length, 2, `${z.id}: elev is a [min,max] band`);
-      assert.ok(z.elev.every((n: unknown) => Number.isInteger(n)), `${z.id}: elev is integers`);
-      assert.ok(z.area.length >= 3, `${z.id}: area is a polygon`);
-      for (const pt of z.area)
-        assert.ok(
-          Array.isArray(pt) && pt.length === 2 && pt.every((n: unknown) => Number.isInteger(n)),
-          `${z.id}: every area vertex is an integer tile corner`,
-        );
-    }
+  assert.deepEqual([...shapes], ["id:string,monster:string,area:array,elev:array,num:number"]);
+  assert.ok(game3.zones.length > 0, "the file ships zones");
+  for (const z of game3.zones) {
+    assert.equal(z.elev.length, 2, `${z.id}: elev is a [min,max] band`);
+    assert.ok(z.elev.every((n: unknown) => Number.isInteger(n)), `${z.id}: elev is integers`);
+    assert.ok(z.area.length >= 3, `${z.id}: area is a polygon`);
+    for (const pt of z.area)
+      assert.ok(
+        Array.isArray(pt) && pt.length === 2 && pt.every((n: unknown) => Number.isInteger(n)),
+        `${z.id}: every area vertex is an integer tile corner`,
+      );
+  }
 });
 
 // ---------------------------------------------------------------------------
@@ -133,34 +123,31 @@ test("parseSpawns accepts BOTH spawn schemas and nothing else", () => {
   assert.equal(mixed[1].num, 1, "missing num still defaults to 1");
 });
 
-test("the parse is the IDENTITY on both live documents, and the schema name is all that differs", () => {
-  if (!game3 || !island2) {
-    test.skip("a spawns.json is missing");
+test("the parse is the IDENTITY on the live document, and the schema name is all that differs", () => {
+  if (!game3) {
+    test.skip("maps2/worlds3/the_game/spawns.json missing");
     return;
   }
-  for (const [name, doc] of [["the_game", game3], ["the_island2", island2]] as const) {
-    const zones = parseSpawns(doc);
-    assert.equal(zones.length, doc.zones.length, `${name}: every zone in the file parses`);
-    assert.deepEqual(zones, doc.zones, `${name}: the parse returns the file's zones unchanged`);
-    // THE STATEMENT OF "NOTHING CHANGED": the same bytes under the other
-    // schema name parse to the same zones. the_island2 is the LIVE game, so
-    // this is the assertion that its monsters cannot have moved.
-    const swapped = doc.schema === island2.schema ? game3.schema : island2.schema;
-    assert.deepEqual(parseSpawns({ ...doc, schema: swapped }), zones, `${name}: schema-name independent`);
-  }
+  const zones = parseSpawns(game3);
+  assert.equal(zones.length, game3.zones.length, "every zone in the file parses");
+  assert.deepEqual(zones, game3.zones, "the parse returns the file's zones unchanged");
+  // THE STATEMENT OF "NOTHING CHANGED": the same bytes under the other schema
+  // name parse to the same zones — the monsters cannot have moved.
+  assert.deepEqual(parseSpawns({ ...game3, schema: "pixel-maps2/spawns@1" }), zones, "schema-name independent");
 });
 
 // ---------------------------------------------------------------------------
 // buildZoneRuntimes against maps3 terrain
 // ---------------------------------------------------------------------------
 
-test("the_game's 82 zones resolve against maps3 terrain — every cell base OR deck, in band, enterable", () => {
-  const grid = gridOf(GAME3);
+test("every zone in the file resolves against maps3 terrain — every cell base OR deck, in band, enterable", () => {
+  const grid = gridOf();
   if (!grid || !game3) {
     test.skip("maps2/worlds3/the_game missing");
     return;
   }
-  assert.equal(grid.width, 512);
+  assert.equal(grid.width, worldDoc.size.w, "the grid is the doc's own width");
+  assert.equal(grid.height, worldDoc.size.h);
   const zones = parseSpawns(game3);
   const runtimes = buildZoneRuntimes(grid, zones);
   assert.equal(zones.length, game3.zones.length);
@@ -192,54 +179,56 @@ test("the_game's 82 zones resolve against maps3 terrain — every cell base OR d
     }
   }
   assert.ok(deck > 0, "the_game's cave/roof zones stand on DECKS — the base-or-deck branch must be exercised");
-  assert.ok(base > deck, "most of a 512x512 island's zone cells are ordinary ground");
+  assert.ok(base > deck, "most of an island's zone cells are ordinary ground");
 
   // WorldRoom.seedMonsters' own formula, so the count here IS the count that
   // reaches the room: `num` per zone, capped by the cells actually available.
   const seeded = runtimes.reduce((n, rt) => n + Math.min(rt.zone.num, rt.cells.length), 0);
   const wanted = zones.reduce((n, z) => n + z.num, 0);
   assert.equal(seeded, wanted, "no zone is so small that it caps its own population");
-  assert.equal(seeded, 146);
-  assert.equal(new Set(runtimes.map((rt) => rt.zone.monster)).size, 57, "all 57 named kinds get a home");
+  const kinds = new Set(game3.zones.map((z: { monster: string }) => z.monster));
+  assert.equal(new Set(runtimes.map((rt) => rt.zone.monster)).size, kinds.size, `all ${kinds.size} named kinds get a home`);
+  console.log(`spawns3: ${zones.length} zones, ${kinds.size} kinds, ${seeded} monsters seeded, ${deck} deck cells / ${base} base cells`);
 });
 
 // ---------------------------------------------------------------------------
 // WATER IS A PLAYER SANCTUARY
 // ---------------------------------------------------------------------------
 
-test("no zone runtime ever offers a swim cell — on either world", () => {
-  for (const [name, dir, doc] of [["the_game", GAME3, game3], ["the_island2", ISLAND2, island2]] as const) {
-    const grid = gridOf(dir);
-    if (!grid || !doc) continue;
-    const runtimes = buildZoneRuntimes(grid, parseSpawns(doc));
-    assert.ok(runtimes.length > 0, `${name}: nothing resolved`);
-    for (const rt of runtimes) {
-      assert.equal(rt.canSwim, false, `${name}/${rt.zone.id}: canSwim is always false`);
-      for (const { c, r, lvl } of rt.cells) {
-        const i: number = r * grid.width + c;
-        // A DECK over water is walkable (the bridge guard) — the base under it
-        // is not the surface the monster is standing on. Everything else must
-        // be dry land.
-        if (grid.deck[i] === lvl) continue;
-        assert.ok(
-          !surfaceFor(grid.type[i]).swimmable,
-          `${name}/${rt.zone.id}: (${c},${r}) is ${grid.type[i]} — a monster may never stand there`,
-        );
-      }
+test("no zone runtime ever offers a swim cell", () => {
+  const grid = gridOf();
+  if (!grid || !game3) {
+    test.skip("maps2/worlds3/the_game missing");
+    return;
+  }
+  const runtimes = buildZoneRuntimes(grid, parseSpawns(game3));
+  assert.ok(runtimes.length > 0, "nothing resolved");
+  for (const rt of runtimes) {
+    assert.equal(rt.canSwim, false, `${rt.zone.id}: canSwim is always false`);
+    for (const { c, r, lvl } of rt.cells) {
+      const i: number = r * grid.width + c;
+      // A DECK over water is walkable (the bridge guard) — the base under it
+      // is not the surface the monster is standing on. Everything else must
+      // be dry land.
+      if (grid.deck[i] === lvl) continue;
+      assert.ok(
+        !surfaceFor(grid.type[i]).swimmable,
+        `${rt.zone.id}: (${c},${r}) is ${grid.type[i]} — a monster may never stand there`,
+      );
     }
   }
 });
 
 test("a mostly-liquid polygon keeps only its dry cells; a pure deep_water one takes the shore or is dropped", () => {
-  const grid = gridOf(GAME3);
+  const grid = gridOf();
   if (!grid || !game3) {
     test.skip("maps2/worlds3/the_game missing");
     return;
   }
   const W = grid.width;
   const H = grid.height;
-  // Cache the surface verdicts once — the pad scan below asks per cell over a
-  // 512x512 grid, and surfaceFor is a string lookup.
+  // Cache the surface verdicts once — the pad scan below asks per cell over
+  // the whole grid, and surfaceFor is a string lookup.
   const wet = new Uint8Array(W * H);
   const dry = new Uint8Array(W * H);
   for (let i = 0; i < W * H; i++) {
@@ -249,11 +238,10 @@ test("a mostly-liquid polygon keeps only its dry cells; a pure deep_water one ta
   }
   const swimmable = (i: number) => wet[i] === 1;
 
-  // the_game is 78% liquid, so this is far more load-bearing here than on
-  // the_island2: a zone drawn over the coast is MOSTLY water. Its swim cells
-  // are simply not offered — the monsters keep the dry remainder. (Under the
-  // retired water-zone rule such a zone became a SWIMMING zone; the sanctuary
-  // makes it a shore zone instead.)
+  // the_game is an island in open sea, so a zone drawn over the coast is
+  // MOSTLY water. Its swim cells are simply not offered — the monsters keep
+  // the dry remainder. (Under the retired water-zone rule such a zone became
+  // a SWIMMING zone; the sanctuary makes it a shore zone instead.)
   const zones = parseSpawns(game3);
   const runtimes = buildZoneRuntimes(grid, zones);
   let wettest = { id: "", frac: 0, dry: 0 };
@@ -351,28 +339,4 @@ test("a mostly-liquid polygon keeps only its dry cells; a pure deep_water one ta
   const ocean = [...pads.entries()].filter(([d, p]) => p.deep && d > 8);
   assert.ok(ocean.length > 0, "the_game has open deep_water far from any shore");
   for (const [, p] of ocean) assert.deepEqual(buildZoneRuntimes(grid, [pad(p.x, p.y)]), []);
-});
-
-// ---------------------------------------------------------------------------
-// The live game
-// ---------------------------------------------------------------------------
-
-test("the_island2 resolves exactly as before — world@1/world@2 is the LIVE game", () => {
-  const grid = gridOf(ISLAND2);
-  if (!grid || !island2) {
-    test.skip("maps2/worlds/the_island2 missing");
-    return;
-  }
-  const zones = parseSpawns(island2);
-  const runtimes = buildZoneRuntimes(grid, zones);
-  assert.equal(zones.length, island2.zones.length);
-  assert.equal(runtimes.length, zones.length, "no the_island2 zone may start being dropped");
-  assert.deepEqual(
-    runtimes.map((rt) => rt.zone),
-    island2.zones,
-    "the resolved zones are the file's zones — the maps3 schema is additive, not a rewrite",
-  );
-  const seeded = runtimes.reduce((n, rt) => n + Math.min(rt.zone.num, rt.cells.length), 0);
-  assert.equal(seeded, zones.reduce((n, z) => n + z.num, 0));
-  assert.equal(seeded, 122);
 });

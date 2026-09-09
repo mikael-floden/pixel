@@ -17,9 +17,11 @@
 //      layer is gone once settled) and on pixels (a mid-fade shot's roof
 //      patch sits strictly between the outdoor and settled values).
 //
-// FIXTURE: house_demo — six roofed houses; house_a is the north-west one,
-// house_b its neighbour ~8 cells east. Both derived from world.json, so a
-// re-authored map moves the assertions with it.
+// FIXTURE: the_game (maps2/worlds3) — nine roofed houses; house_a is the
+// north-west one (the town's stone hall), house_b the nearest other roof to it
+// (the meadow house six rows south). Both derived from world.json, so a
+// re-authored map moves the assertions with it. (house_demo, the six-house
+// fixture this was written on, was RETIRED with tiles2.)
 import { chromium } from "playwright-core";
 import { PNG } from "pngjs";
 import { readFileSync } from "node:fs";
@@ -31,7 +33,7 @@ let passed = 0;
 const ok = (m) => { passed++; console.log(`ok - ${m}`); };
 
 const world = JSON.parse(
-  readFileSync(new URL("../../maps2/worlds/house_demo/world.json", import.meta.url), "utf8"),
+  readFileSync(new URL("../../maps2/worlds3/the_game/world.json", import.meta.url), "utf8"),
 );
 const lvl = (c, r) => {
   const row = world.level?.[r];
@@ -40,7 +42,7 @@ const lvl = (c, r) => {
 const X = (c) => (Array.isArray(c) ? c[0] : c.x);
 const Y = (c) => (Array.isArray(c) ? c[1] : c.y);
 const roofs = (world.decks ?? []).filter((d) => d.kind === "roof");
-if (roofs.length < 2) fail(`house_demo ships ${roofs.length} roof decks — the two-house fixture is gone`);
+if (roofs.length < 2) fail(`the_game ships ${roofs.length} roof decks — the two-house fixture is gone`);
 const houseOf = (d) => {
   const cells = d.cells.map((c) => [X(c), Y(c)]);
   const xs = cells.map(([c]) => c), ys = cells.map(([, r]) => r);
@@ -48,11 +50,13 @@ const houseOf = (d) => {
   return { d, cells, floor, x0: Math.min(...xs), x1: Math.max(...xs), y0: Math.min(...ys), y1: Math.max(...ys) };
 };
 // house_a: the roof nearest the world's north-west; house_b: the nearest OTHER
-// roof to its east — the "city neighbour" case.
+// roof by footprint centre — the "city neighbour" case.
 const houses = roofs.map(houseOf).filter((h) => h.floor.length >= 8);
 houses.sort((a, b) => a.x0 + a.y0 - (b.x0 + b.y0));
 const A = houses[0];
-const B = houses.find((h) => h !== A && Math.abs(h.y0 - A.y0) < 8) ?? houses[1];
+const mid = (h) => [(h.x0 + h.x1) / 2, (h.y0 + h.y1) / 2];
+const gap = (h) => Math.hypot(mid(h)[0] - mid(A)[0], mid(h)[1] - mid(A)[1]);
+const B = houses.filter((h) => h !== A).sort((p, q) => gap(p) - gap(q))[0];
 const centre = (h) => {
   const cc = Math.round(h.floor.reduce((s, [c]) => s + c, 0) / h.floor.length);
   const cr = Math.round(h.floor.reduce((s, [, r]) => s + r, 0) / h.floor.length);
@@ -90,8 +94,8 @@ try {
   page.on("pageerror", (e) => errs.push(e.message.slice(0, 160)));
   await page.goto("http://localhost:5173/", { waitUntil: "load" });
   await page.waitForFunction(() => window.__mlSelect, { timeout: 25000 });
-  const idx = await page.evaluate(() => window.__mlSelect.worlds().findIndex((w) => /house_demo/i.test(w)));
-  if (idx < 0) fail("house_demo missing from the picker");
+  const idx = await page.evaluate(() => window.__mlSelect.worlds().findIndex((w) => /the_game/i.test(w)));
+  if (idx < 0) fail("the_game missing from the picker");
   await page.evaluate((i) => { window.__mlSelect.pickWorld(i); window.__mlSelect.commit(); }, idx);
   await page.waitForFunction(() => window.__ml && window.__ml.players() >= 1, { timeout: 40000 });
   await page.waitForFunction(() => !document.querySelector("#ml-loading"), { timeout: 25000 });
@@ -413,7 +417,7 @@ try {
         `tile over its own equal-height column again (the island hall's "roof suddenly changes look")`);
     ok(`the wall-top ring holds through the swap: lap cell late ${exit.lapLate.toFixed(1)} ≈ settled ${exit.lapAfter.toFixed(1)} ` +
       `(drift ${lapDrift.toFixed(1)})`);
-    // Structural half of the same rule (tone-independent — house_demo's roof
+    // Structural half of the same rule (tone-independent — the_game's roof
     // and wall-top tiles happen to read alike): ONE piece per level on the
     // lap cell. The deck stamped over its own equal-height column was two
     // pieces at deck level; and the column's own pale top must be there.

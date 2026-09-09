@@ -441,8 +441,8 @@ export function tiles3DataFrom(
  *
  *  `cut` truncates the column at a level (indoor mode's cut-away). The tile at
  *  the top of a TRUNCATED stack is a FACE, never the cap: the cap carries the
- *  cell's own top diamond and reads as a lid on a wall stump — the same rule
- *  the world@2 branch has carried since the cut-away shipped. */
+ *  cell's own top diamond and reads as a lid on a wall stump (the rule the
+ *  cut-away has carried since it shipped). */
 export function cellBlits(
   t3: Tiles3Textures,
   tex: TextureManagerLike,

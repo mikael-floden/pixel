@@ -318,7 +318,7 @@ export class WorldRoom extends Room<WorldState> {
     if (typeof options?.monsterSeed === "number") this.monsterRng = mulberry32(options.monsterSeed);
     if (typeof options?.lootChance === "number") this.lootChance = clamp(options.lootChance, 0, 1);
     {
-      // Load the maps2 world the client asked for (default ring_test). Rooms are
+      // Load the maps2 world the client asked for (default the_game). Rooms are
       // matched by this name (filterBy in index.ts), so everyone who picks the
       // same world shares one room; different worlds get separate rooms.
       const world = (options?.world || DEFAULT_WORLD).replace(/[^a-z0-9_-]/gi, "");
@@ -2017,8 +2017,8 @@ interface LoadedWorld {
   worldH: number;
 }
 
-/** Default world when the client sends none. */
-export const DEFAULT_WORLD = "ring_test";
+/** Default world when the client sends none: THE game (the only world). */
+export const DEFAULT_WORLD = "the_game";
 
 function assetsRoot(): string {
   const srcDir = dirname(fileURLToPath(import.meta.url)); // server/src/rooms
@@ -2058,16 +2058,11 @@ async function fetchStagingJson(rel: string): Promise<unknown | null> {
   return doc;
 }
 
-// THE TWO WORLD TREES. `maps2/worlds` holds world@1/world@2 (baked tile
-// paths); `maps2/worlds3` holds pixel-maps3/world@1 (semantics only, art
-// resolved at draw time). Both parse through the SAME `parseWorld` into the
-// same ParsedWorld, so nothing downstream of here knows the difference — only
-// the directory a name lives in differs, and that is what this list settles.
-//
-// ORDER IS LOAD-BEARING: `maps2/worlds` is probed first, so every existing
-// world resolves on its first candidate and issues exactly the disk reads and
-// network requests it did before worlds3 existed.
-const WORLD_ROOTS = ["maps2/worlds", "maps2/worlds3"] as const;
+// THE WORLD TREE: `maps2/worlds3` holds pixel-maps3/world@1 (semantics only,
+// art resolved at draw time). A list, not a string, so a second tree can be
+// probed again without touching the callers. (`maps2/worlds` — world@1/@2
+// with baked tile paths — was retired 2026-09-09 with tiles2.)
+const WORLD_ROOTS = ["maps2/worlds3"] as const;
 
 /** Which tree holds `name`, resolved ONCE per world and cached for the process.
  *
@@ -2104,9 +2099,8 @@ export async function worldRootFor(name: string): Promise<string> {
 
 /** The raw world.json/spawns.json for a name: disk (the shipped image / dev
  * working tree) first, staging fetch second. Null = the world truly does not
- * exist. Every file of one world is read from the SAME tree — resolving the
- * root per file would let a v3 world's spawns.json be searched for under
- * maps2/worlds, which is one pointless 404 per sidecar. */
+ * exist. Every file of one world is read from the SAME tree (resolving the
+ * root per file would cost one pointless probe per sidecar). */
 export async function readWorldDoc(name: string, file: string): Promise<unknown | null> {
   const root = await worldRootFor(name);
   try {
@@ -2147,10 +2141,9 @@ function hitboxStamp(): string {
   return (h >>> 0).toString(36);
 }
 
-/** Load a named world (maps2/worlds or maps2/worlds3 — see WORLD_ROOTS) into a
- * collision grid + spawn + extent, or an open world if it isn't
- * present/parseable. `parseWorld` dispatches on the doc's own schema, so a
- * pixel-maps3 world produces the same grid a world@1 one does.
+/** Load a named world (maps2/worlds3 — see WORLD_ROOTS) into a collision
+ * grid + spawn + extent, or an open world if it isn't present/parseable.
+ * `parseWorld` dispatches on the doc's own schema.
  * Async since the staging path (2026-08-15): a world absent from disk may
  * stream from the repo — see readWorldDoc. */
 export async function loadWorldGrid(name: string): Promise<LoadedWorld> {
@@ -2177,7 +2170,7 @@ export async function loadWorldGrid(name: string): Promise<LoadedWorld> {
         world.scenery,
         sceneryBbox(),
         sceneryHitboxOverrides(),
-        // Scenery is a maps3 thing, and maps3 draws on dy=14, not tiles2's 15.
+        // Scenery is a maps3 thing, and maps3 draws on dy=14, not the default 15.
         ISO_GEOMETRY_MAPS3,
       );
       if (n) console.log(`[scenery] ${world.scenery.length} pieces block ${n} cells`);

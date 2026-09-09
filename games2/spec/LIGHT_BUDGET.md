@@ -50,21 +50,18 @@ radius-R pool reaches ≤46·R px horizontally, ≤22·R px vertically):
   spacing rule of thumb: **≤ 8 sources per ~1500×1100 world-px window**, which
   at radius-4 lights is roughly "keep 5+ cells between lamps and don't cluster
   more than a handful per screen".
-- A decorative glow that should never spend a slot can opt out:
-  `tiles2/emission.json` → `lights` → `null` for its path/material (it keeps
-  its stamp).
-- `node games2/scripts/check-light-budget.mjs` tells you your world's worst
-  window and where it is — run it before shipping. Worlds that exceeded the
-  budget before this rule existed are pinned in
-  `games2/spec/light-budget-baseline.json` (ratchet: they may not get worse;
-  burn the pins down when touched).
+- A scenery light is tuned in its piece's `scenery.json` `light` block (the
+  maintainer edits it from the wiki; see games2/CLAUDE.md "A `lit` SCENERY
+  PLACEMENT IS A LIGHT"). `strength` 0 = no light, no slot.
+- RETIRED 2026-09-09 with tiles2: emissive TILES (`tiles2/emission.json`
+  `lights`), `check-light-budget.mjs` and its baseline ratchet. A budget gate
+  over the_game's scenery lights is owed.
 
-## Tuning a tile's light (tiles2)
+## The retired tile `lights` table (reference for the scenery contract)
 
-`tiles2/emission.json` gains an optional **`lights`** table (owned by tiles2,
-curated in `tiles2/pipeline/emission.py` `LIGHTS`, emitted on regeneration).
-Key = tile-path **stem** (no extension; wins) or material name. Value `null` =
-stamp-only. Fields (all optional):
+The fields below were the per-tile light contract; the scenery `light` block
+carries `strength`/`color`/`radius` with the same meanings. Fields (all
+optional):
 
 | field | meaning |
 |-------|---------|

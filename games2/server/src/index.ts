@@ -131,7 +131,7 @@ const serveClient = process.env.SERVE_CLIENT === "1" || existsSync(clientDist);
 //   for why that distinction is what keeps in-place art edits safe;
 // - art (tiles/characters PNGs) → no-cache BY DEFAULT. The path LOOKS
 //   content-hashed (…/base_x_2_161302781/…), but the art agents routinely edit
-//   a tile IN-PLACE (same path, new pixels — e.g. tiles2 softening edges), so a
+//   a tile IN-PLACE (same path, new pixels — an art agent softening edges), so a
 //   long cache once served the OLD art for up to an hour after a deploy.
 // - EXCEPT: art requested with ?v=<GIT_SHA> → immutable. The client stamps its
 //   own build sha (VITE_GIT_SHA, baked with the art into the SAME image) onto

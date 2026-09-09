@@ -178,39 +178,28 @@ test("screen speed is uniform: Up, Right and diagonals all move equally fast on 
   assert.ok(up > 0);
 });
 
-test("parseWorld reads the bigworld@1 index-array schema", () => {
-  const json = {
+test("parseWorld rejects the retired bigworld@1 form and still reads a rows literal", () => {
+  // The first-generation index-array schema went with tiles2 (2026-09-09): a
+  // doc in that form is not a world any more, so it must come back NULL — the
+  // loader's "open plain" path — rather than half-parse into a wrong grid.
+  const retired = {
     schema: "pixel-maps/bigworld@1",
     w: 2,
     h: 2,
     categories: ["water", "grass", "stairs"],
     climates: ["sea", "plain"],
-    terr: [
-      [0, 1],
-      [1, 2],
-    ],
-    variant: [
-      [3, 0],
-      [1, 0],
-    ],
-    level: [
-      [0, 0],
-      [1, 1],
-    ],
-    climate: [
-      [0, 1],
-      [1, 1],
-    ],
+    terr: [[0, 1], [1, 2]],
+    variant: [[3, 0], [1, 0]],
+    level: [[0, 0], [1, 1]],
+    climate: [[0, 1], [1, 1]],
     pois: [{ x: 1, y: 1, label: "Somewhere", tile: "obelisk" }],
   };
-  const w = parseWorld(json)!;
-  assert.equal(w.width, 2);
-  assert.deepEqual(w.rows[0][0], { t: "water", v: 3, l: 0, r: "sea" });
-  assert.deepEqual(w.rows[1][1], { t: "stairs", v: 0, l: 1, r: "plain" });
-  assert.equal(w.pois[0].label, "Somewhere");
-  // Legacy rows schema still parses.
+  assert.equal(parseWorld(retired), null, "a bigworld@1 doc must not parse");
+  // The hand-built rows literal every fixture in this file uses still parses.
   const legacy = parseWorld({ width: 1, height: 1, rows: [[{ t: "grass", v: 0, l: 0 }]] })!;
+  assert.ok(legacy, "the {width,height,rows} literal is the fixture form — it must keep parsing");
   assert.equal(legacy.rows[0][0].t, "grass");
+  assert.equal(legacy.width, 1);
 });
 
 test("stairs allow walking a full 1-level step without a jump", () => {
@@ -552,8 +541,9 @@ test("findPath's final waypoint respects the collision margin next to props", ()
 test("findPath never routes through the world-border margin band", () => {
   // stepMovement clamps the body to SPAWN_MARGIN from the world edge; a tap
   // AT the edge must clamp its goal + route into the reachable band or the
-  // follower stalls ~24wu short of border waypoints forever (glow_test west
-  // edge). 12x12 grass, tap at (3,180) hugging the west border.
+  // follower stalls ~24wu short of border waypoints forever (measured at a
+  // world's west edge before the clamp). 12x12 grass, tap at (3,180) hugging
+  // the west border.
   const g = () => ({ t: "grass", l: 0 });
   const rows = Array.from({ length: 12 }, () => Array.from({ length: 12 }, g));
   const grid = buildTerrainGrid(12, 12, rows);

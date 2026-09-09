@@ -53,7 +53,7 @@ test("ART with a hash-SHAPED name is never frozen — it is edited in place", ()
   // rule and served stale for a year after the owning agent repaints it.
   const ART = join(GAME_ROOT, "..");
   for (const rel of [
-    ["tiles2", "grass_x_2", "tile-a1b2c3d4.webp"],
+    ["tiles", "plates", "grass", "clean-a1b2c3d4.webp"],
     ["characters2", "humans", "hero", "walk-DmHrn4Nx.webp"],
     ["monsters", "saber_tooth", "attack-76AJUTK9.webp"],
     ["scenery", "trees", "oak-THfxJyrg.webp"],
@@ -71,7 +71,7 @@ test("a sibling directory cannot pass as the bundle dir", () => {
 });
 
 test("the ?v art grant is unchanged: matching sha only, real deploys only", () => {
-  const tile = join(GAME_ROOT, "..", "tiles2", "grass_x_2", "0.webp");
+  const tile = join(GAME_ROOT, "..", "tiles", "plates", "grass", "clean.webp");
   assert.equal(cc(tile, SHA), IMMUTABLE, "?v matches this instance");
   assert.equal(cc(tile, "deadbeef"), REVALIDATE, "rollout mismatch degrades, never freezes");
   assert.equal(cc(tile, undefined), REVALIDATE, "unstamped art revalidates");
@@ -80,7 +80,7 @@ test("the ?v art grant is unchanged: matching sha only, real deploys only", () =
 });
 
 test("the ?h grant is verified against the SERVED BYTES, never against the index or the URL alone", () => {
-  const tile = join(GAME_ROOT, "..", "tiles2", "grass_x_2", "0.webp");
+  const tile = join(GAME_ROOT, "..", "tiles", "plates", "grass", "clean.webp");
   const real = "0123456789abcdef"; // what the file hashes to, per the server's own hashing
   const at = (queryH: unknown, fileHash: (() => string | null) | undefined, queryV?: unknown, gitSha = SHA) =>
     cacheControlFor({ filePath: tile, bundleDir: BUNDLE_DIR, gitSha, queryV, queryH, fileHash });

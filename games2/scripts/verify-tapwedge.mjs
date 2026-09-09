@@ -19,7 +19,7 @@ const EXE = "/opt/pw-browsers/chromium-1194/chrome-linux/chrome";
 const browser = await chromium.launch({ executablePath: EXE, args: ["--no-sandbox"] });
 const page = await browser.newPage({ viewport: { width: 480, height: 320 } });
 await page.addInitScript(() => {
-  localStorage.setItem("ml-last-choice", JSON.stringify({ world: "ring_test", characterUid: "default_boy", name: "tw" }));
+  localStorage.setItem("ml-last-choice", JSON.stringify({ world: "the_game", characterUid: "default_boy", name: "tw" }));
   sessionStorage.setItem("ml-rejoin", "1");
 });
 await page.goto("http://localhost:5173/", { waitUntil: "load" });

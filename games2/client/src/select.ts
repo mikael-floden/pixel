@@ -146,7 +146,7 @@ export interface JoinChoice {
 }
 
 /**
- * Show a pre-join screen: pick a WORLD (any playable maps2 world) + a character
+ * Show a pre-join screen: pick a WORLD (any playable world) + a character
  * + a name. `worlds` empty ⇒ no world picker (demo mode fixes the world);
  * resolves once the player commits, then the caller starts the game.
  *

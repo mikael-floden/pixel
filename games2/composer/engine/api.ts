@@ -361,7 +361,7 @@ const THUNDER_GAIN_DB = 14;
 // A NAMED PLACE PLAYS ITS OWN SCORE (maintainer 2026-08-08, after picking
 // cave4: "Can you play the music cave4 inside that cave regardless if it's day
 // or night?"). Keyed by the maps agent's place id from
-// maps2/worlds/<world>/places.json — `the_cave` on the_island2 — so adding a
+// maps2/worlds3/<world>/places.json — so adding a
 // room's music is a line here plus a track, with no geometry in the audio code.
 // Deliberately keyed on the ID and not the `kind`: two caves can want different
 // music, and "every cave sounds the same" should be a choice, not a default.
@@ -385,9 +385,9 @@ const BATTLE_TAIL_S = 4;
 
 const PLACE_BEDS: Record<string, BedName> = {
   the_cave: "cave4",
-  // The maps agent names the summit `mountain_top` on every world that has one
-  // (the_island2, the_island, demo_isle, demo_lost), so one entry covers them
-  // all — which is the payoff of keying on the place ID rather than the world.
+  // The maps agent names a summit `mountain_top` on every world that has one,
+  // so one entry covers them all — the payoff of keying on the place ID rather
+  // than the world.
   mountain_top: "summit_triumph",
 };
 // Walk plays softer than run by this penalty (default −3 dB ≈ 70%). Snow's

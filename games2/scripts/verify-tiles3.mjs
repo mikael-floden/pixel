@@ -12,9 +12,9 @@
 //
 // THE FAILURE MODE THIS EXISTS TO END is silent: an unparsed world falls back
 // to the empty 160x160 plain and the game still boots, still joins, still
-// renders green. Section 1 therefore asserts the GRID SIZE (512x512) before
-// anything else, and every later section is pinned to cells that only exist in
-// the_game.
+// renders green. Section 1 therefore asserts the GRID SIZE (world.json's own
+// `size`) before anything else, and every later section is pinned to cells
+// that only exist in the_game.
 //
 // TWO INSTRUMENTS, and both are needed:
 //   • `__ml.t3at(col,row)` — the resolver's verdict for ONE cell plus the blits
@@ -34,19 +34,21 @@
 // Needs the dev stack (npm run dev: vite :5173 + colyseus :2567).
 import { chromium } from "playwright-core";
 import { PNG } from "pngjs";
+import { readFileSync } from "node:fs";
 
 const EXE = "/opt/pw-browsers/chromium-1194/chrome-linux/chrome";
-const WORLD = "the_game"; // maps2/worlds3 — pixel-maps3/world@1
-const ISLAND = "the_island2"; // maps2/worlds — world@2, what players are on today
+const WORLD = "the_game"; // maps2/worlds3 — pixel-maps3/world@1, the only world the game ships
 
 /* -- the world's own numbers ------------------------------------------------ */
 
-// the_game's grid. The whole point of section 1: the silent fallback is a
-// 160x160 plain, so a wrong size is the one symptom that says "the maps3 parse
-// did not happen" while everything else still looks alive.
-const W3 = 512;
-// tiles3's projection (shared ISO_GEOMETRY_MAPS3). tiles2 is 32/15/16; a v3
-// world draws on 32/14/**15** — the storey pitch measured off the wall art.
+// the_game's grid, read from the doc (394x394 since the sea margin shrank it
+// from 512). The whole point of section 1: the silent fallback is a 160x160
+// plain, so a wrong size is the one symptom that says "the maps3 parse did not
+// happen" while everything else still looks alive.
+const WORLD_DOC = JSON.parse(readFileSync(new URL(`../../maps2/worlds3/${WORLD}/world.json`, import.meta.url), "utf8"));
+const W3 = WORLD_DOC.size.w;
+// tiles3's projection (shared ISO_GEOMETRY_MAPS3): a v3 world draws on
+// 32/14/**15** — the storey pitch measured off the wall art (a v2 world was 32/15/16).
 const GEOM3 = { dx: 32, dy: 14, lh: 15 };
 
 // Art-box geometry, from tiles3.ts. A cell's 64-wide art box has its top
@@ -133,6 +135,13 @@ const OPEN = [411, 221];
  * control that proves the input had force. */
 const POCKET = [186.5, 407.5];
 const POCKET_LEVEL = 0;
+
+// The fixture cells above were derived on the 512x512 doc. A cell off today's
+// grid means the maps2 agent re-authored that corner: re-derive it by the rule
+// at its constant — never relax a threshold, never let it fail as a "hole".
+for (const [name, cell] of Object.entries({ COAST: COAST.at, COAST_GRASS, COAST_WATER, COAST_BEACH, FADE_CELL, BOUNDARY_CELL, STONE_CELL, SEA_CELL, CLIFF, SCENERY_AT, OPEN, POCKET }))
+  if (!(cell[0] < W3 && cell[1] < W3))
+    throw new Error(`verify-tiles3: ${name} ${cell} lies outside the_game's ${W3}x${W3} grid — re-derive it from world.json by the rule at its constant`);
 
 /* -- plumbing --------------------------------------------------------------- */
 
@@ -701,42 +710,7 @@ try {
   if (errs.length) fail(`page errors on ${WORLD}: ${errs.join(" | ")}`);
   if (bad.length) fail(`${bad.length} failed requests on ${WORLD}: ${bad.slice(0, 5).join(" | ")}`);
 
-  /* ======================================================================== */
-  /* 7. THE LIVE WORLD STILL RENDERS                                          */
-  /* ======================================================================== */
-  errs.length = 0;
-  bad.length = 0;
-  await join(ISLAND);
-  const i2 = await page.evaluate(() => window.__ml.worldInfo());
-  if (i2.name !== ISLAND || i2.w !== 248 || i2.h !== 248)
-    fail(`${ISLAND} came back as ${i2.name} ${i2.w}x${i2.h}, expected ${ISLAND} 248x248`);
-  if (i2.maps2 !== true) fail(`${ISLAND} is no longer read as a maps2 world`);
-  const i2t3 = await page.evaluate(() => window.__ml.tiles3());
-  if (i2t3.on) fail(`${ISLAND} switched the maps3 art source ON — a world@2 world must never resolve tiles3 art`);
-  const atlas = await page.evaluate(() => window.__ml.atlasInfo());
-  if (!atlas || !atlas.index || atlas.individual !== 0)
-    fail(`${ISLAND} no longer boots from its committed atlas: ${JSON.stringify(atlas)}`);
-  await page.waitForTimeout(2500);
-  const i2shot = await shoot("island2");
-  // The same instrument verify-atlas uses: a centre patch of the frame has to
-  // carry art rather than void.
-  let sum = 0;
-  let n = 0;
-  for (let y = 40; y < 170; y += 2)
-    for (let x = 140; x < 340; x += 2) {
-      const i = (y * i2shot.width + x) * 4;
-      sum += 0.299 * i2shot.data[i] + 0.587 * i2shot.data[i + 1] + 0.114 * i2shot.data[i + 2];
-      n++;
-    }
-  const lum = sum / n;
-  if (!(lum > 8)) fail(`${ISLAND} did not render (centre luminance ${lum.toFixed(1)})`);
-  if (errs.length) fail(`page errors on ${ISLAND}: ${errs.join(" | ")}`);
-  ok(
-    `${ISLAND} still renders: ${i2.w}x${i2.h} world@2, tiles3 off, ${atlas.sliced} tiles sliced from the atlas ` +
-      `with 0 individual requests, centre luminance ${lum.toFixed(1)}`,
-  );
-
-  console.log(`verify-tiles3: OK — ${WORLD} loads at ${W3}x${W3}, draws ground/fade/boundary/cliff/scenery, is walkable, and ${ISLAND} is untouched`);
+  console.log(`verify-tiles3: OK — ${WORLD} loads at ${W3}x${W3}, draws ground/fade/boundary/cliff/scenery, is walkable`);
 } catch (e) {
   console.error(`verify-tiles3: FAIL — ${e.message}`);
   if (page) {

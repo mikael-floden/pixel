@@ -54,9 +54,10 @@ Probes: `__ml.indoorWall(v?)` / `__ml.indoor()`.
     zero-ambient blackness; fog outside my room fades on the same mix.
     Outdoors byte-identical. The MIST pass still paints indoors-outside —
     pre-existing, rare, noted.
-  - Gate: `scripts/verify-indoorscope.mjs` (house_demo, six roofed houses):
-    no constrained cell inside house_b, sentinels published, probe-light on
-    the neighbour's roof, kill-switch flat world, the transition fade.
+  - Gate: `scripts/verify-indoorscope.mjs` (the_game; house_b = the nearest
+    other roof): no constrained cell inside house_b, sentinels published,
+    probe-light on the neighbour's roof, kill-switch flat world, the
+    transition fade.
 - **SCENERY UNDER THE ROOF FOLLOWS THE CUT** (maps3): a placement under a
   roof/cave deck is kept in the index and flagged (`SceneryPlacement.roofed`);
   `WorldScene.roofCutAwayAt` draws it only while `indoorMask` is up and that
@@ -68,10 +69,10 @@ Probes: `__ml.indoorWall(v?)` / `__ml.indoor()`.
 - **The transition is a DEBRIS CROSSFADE, not a pop**: on the indoor flip the
   REMOVED art (roof slab, wall bands above each cut, the cone's tops) is
   rebuilt as ordinary world-anchored images at occluder depths
-  (`buildIndoorDebris` for world@2, `buildIndoorDebris3` for maps3 — the
-  latter from tiles3 art, one depth step above the pooled occluders; until
-  2026-09-05 maps3 had no debris at all and the_game's roofs popped on one
-  frame) wearing `alpha = 1 − indoorGrade()`. ENTRY: the
+  (`buildIndoorDebris3`, from tiles3 art, one depth step above the pooled
+  occluders; until 2026-09-05 maps3 had no debris at all and the_game's roofs
+  popped on one frame; the world@2 builder retired 2026-09-09) wearing
+  `alpha = 1 − indoorGrade()`. ENTRY: the
   world repaints to the cut state on the flip frame under OPAQUE debris
   (picture unchanged), which then dissolves. EXIT: commitIndoor(false) does
   NOT repaint; the cut world stays drawn (mask, cuts, `night.indoor`,
@@ -244,7 +245,7 @@ Probes: `__ml.indoorWall(v?)` / `__ml.indoor()`.
     ring is the mountain's outside skirt — darkening it blackened houses).
     No band, no rings (a wall face is 8 levels ≈ 128px vs a 15px cell step).
     The rock bar (two levels of headroom above the ceiling) keeps house walls
-    out: the_island2's cave marks 146 cells, every house/arch 0.
+    out: measured on the old island, its cave marked 146 cells, every house/arch 0.
   - `uCaveK` = 1.2 is the single dial (mouth untouched, then 30/9/2.7/0.8%
     over four cells; 3.6 was a cliff once the depth reached drawn cells).
 - `shared/src/indoor.ts` publishes **`shell`** — the building, 8-connected,
@@ -323,7 +324,7 @@ Probes: `__ml.indoorWall(v?)` / `__ml.indoor()`.
     body's cut/bow/bob/exit-jump and all three bail-outs. Measured fully
     submerged: 712 ring pixels above the crest, 0 below.
 - **INDOOR MODE → `scripts/verify-indoor.mjs`** (dev stack, ~3 min): one
-  pinned camera frames the_island2's house from outside and from within and
+  pinned camera frames the_game's spawn house from outside and from within and
   the two shots are compared on REAL pixels. The script carries its own
   numbered sections and their reasoning in its header — read it there, and
   keep these four laws when you change it: sample points are DERIVED from

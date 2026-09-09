@@ -5,7 +5,7 @@
 // This is the ONE games2 file the ART agents may edit. When a maps2 world uses
 // a tile category with NO entry here, the `check-surfaces` gate FAILS and the
 // deploy is BLOCKED (prod stays on the previous revision). Rather than wait for
-// the game agent, the tiles2 and maps2 agents are AUTHORISED to add the missing
+// the game agent, the tiles and maps2 agents are AUTHORISED to add the missing
 // entry themselves — full runbook: games2/SURFACES.md. In short:
 //
 //   1. Add ONE line per category to the SURFACES object below. The failing
@@ -121,21 +121,9 @@ export const SURFACES: Record<string, Surface> = {
   obelisk_v2: solid,
   watchtower: solid,
   cactus: solid,
-  // tiles2 materials (maps2 worlds) — terrain the player stands on (elevation
-  // drives walls, not solidity); clear_water is swimmable like `water`.
-  clear_water: { standable: false, swimmable: true, speed: 0.55, sound: "water" },
-  saturated_grass: ground(1.0, "grass"),
-  regular_snow: ground(0.8, "snow"),
-  light_sand: ground(0.8, "sand"),
-  lightdark_dirt: ground(0.95, "dirt"),
-  stone_mountain: ground(1.0, "stone"),
-  black_mountain: ground(1.0, "stone"),
-  crystal_ice: ground(1.05, "ice"),
-  wooden_balcony: ground(1.0, "wood"),
-  // tiles3 grounds (maps2/worlds3 — the_game). Eight of these are a tiles2
-  // material RENAMED by the v2→v3 translation (maps2/spec/WORLD3.md), so they
-  // keep their old classification exactly: the ground did not change, only its
-  // name. grass/snow/ice/water already carry the renamed entry.
+  // tiles3 grounds (maps2/worlds3 — the_game). Eight of these were tiles2
+  // materials RENAMED by the v2→v3 translation (maps2/spec/WORLD3.md) and keep
+  // that classification exactly; tiles2 itself was retired 2026-09-09.
   black_rock: ground(1.0, "stone"), // was black_mountain — TERRAIN, not a solid prop
   grey_stone: ground(1.0, "stone"), // was stone_mountain — dito (elevation makes the cliff)
   light_beach: ground(0.8, "sand"), // was light_sand

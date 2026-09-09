@@ -116,21 +116,21 @@ const worldNames = policy.userWorlds ?? policy.worlds ?? [];
 if (!worldNames.length) warn("policy publishes NO worlds — the image will have no map art");
 
 const perWorld = {};
-// A published world lives in ONE of the two trees — maps2/worlds (world@1/@2,
-// baked tile paths) or maps2/worlds3 (pixel-maps3, a ground name per cell) —
-// resolved by probing, worlds first, exactly as the server's worldRootFor and
+// A published world lives in maps2/worlds3 (pixel-maps3, a ground name per
+// cell), resolved by probing exactly as the server's worldRootFor and
 // build-worlds.mjs do, so the policy names a world and nothing else. A worlds3
-// world has no paths[] to close over: its terrain art is the tiles3 resolver's
-// closure, computed with the real resolver by scripts/ship-tiles3.ts in the
-// Dockerfile's BUILD stage (TypeScript is not available in this one). What it
-// does carry here is its SCENERY placements, closed over by piece directory.
+// world has no tile paths to close over: its terrain art is the tiles3
+// resolver's closure, computed with the real resolver by scripts/ship-tiles3.ts
+// in the Dockerfile's BUILD stage (TypeScript is not available in this one).
+// What it does carry here is its SCENERY placements, closed over by piece
+// directory. (`maps2/worlds`, world@1/@2, was retired 2026-09-09.)
+const WORLD_TREES = ["worlds3"];
 const treeOf = (name) =>
-  ["worlds", "worlds3"].map((t) => [`maps2/${t}`, join(ASSETS_ROOT, "maps2", t, name)]).find(([, d]) => existsSync(d)) ??
-  null;
+  WORLD_TREES.map((t) => [`maps2/${t}`, join(ASSETS_ROOT, "maps2", t, name)]).find(([, d]) => existsSync(d)) ?? null;
 for (const name of worldNames) {
   const found = treeOf(name);
   if (!found) {
-    warn(`published world "${name}" does not exist in maps2/worlds or maps2/worlds3 — skipping`);
+    warn(`published world "${name}" does not exist in maps2/worlds3 — skipping`);
     continue;
   }
   const [tree, dir] = found;
@@ -254,7 +254,7 @@ for (const spec of policy.alwaysShip ?? []) {
 
 // ------------------------------------------------------------- excludes -----
 // Applied LAST so it can carve out subtrees an alwaysShip pulled in wholesale
-// (e.g. music masters, the tiles2 generator's raw sheets).
+// (e.g. music masters).
 const excludes = (policy.exclude ?? []).map((g) => new RegExp(g));
 let excluded = 0;
 for (const p of [...ship]) {
@@ -395,46 +395,37 @@ if (emitIdx !== -1) {
 // POLICY CHECK — the part that is meaningful WITHOUT the art tree, and so the
 // only part safe to run from `npm test`.
 //
-// The deploy's `test` job sparse-checks-out games2 + characters2 +
-// maps2/worlds + live + tiles2/emission.json. Under that tree a full --check
-// is meaningless: tiles2/ EXISTS (one file) but 571 tile paths are absent, so
-// it cannot even be rescued by an "is the domain missing?" heuristic — which
-// is exactly how the first attempt turned the pipeline red while the image
-// itself built fine. Asset existence is verified where the whole tree really
+// The deploy's `test` job sparse-checks-out games2 + characters2 + the world
+// tree + live. Under that tree a full --check is meaningless (the art domains
+// are absent, and a heuristic once turned the pipeline red while the image
+// itself built fine). Asset existence is verified where the whole tree really
 // is: the Dockerfile's curate stage.
 //
 // What IS checkable here: the policy names things that exist. A typo'd world
-// silently ships an empty game, and maps2/worlds is checked out, so this
+// silently ships an empty game, and the world tree is checked out, so this
 // catches the failure that actually bites.
 if (process.argv.includes("--check-policy")) {
   const problems = [];
   if (!worldNames.length) problems.push("policy publishes no worlds");
   // Dev worlds are not shipped, but a typo here silently empties the admin
   // picker's staging list — same class of failure, same check. `devWorlds3`
-  // names the SECOND world tree (maps2/worlds3, pixel-maps3/world@1); it is
-  // checked here and NOWHERE ELSE in this file — the ship-set closure above
-  // walks `userWorlds` only, so neither a worlds3 world nor a byte of tiles/
+  // is checked here and NOWHERE ELSE in this file — the ship-set closure above
+  // walks `userWorlds` only, so neither a staging world nor a byte of tiles/
   // enters the image.
-  // A PUBLISHED world may live in either tree (see treeOf above). Missing from
-  // every tree that IS checked out is a problem only when both trees are — the
-  // deploy's test job sparse-checks-out maps2/worlds alone, and a worlds3 world
-  // is simply unverifiable there, not a typo.
-  const trees = ["worlds", "worlds3"].filter((t) => existsSync(join(ASSETS_ROOT, "maps2", t)));
+  // A PUBLISHED world missing from a tree that IS checked out is a problem; an
+  // absent tree makes it unverifiable, not a typo.
+  const trees = WORLD_TREES.filter((t) => existsSync(join(ASSETS_ROOT, "maps2", t)));
   for (const n of worldNames) {
     const wj = trees.map((t) => join(ASSETS_ROOT, "maps2", t, n, "world.json")).find((p) => existsSync(p));
     if (wj) {
       if (!readJson(wj, `world ${n}`)) problems.push(`world "${n}" has unparseable world.json`);
-    } else if (trees.length === 2) problems.push(`published world "${n}" has no world.json in maps2/worlds or maps2/worlds3`);
+    } else if (trees.length === WORLD_TREES.length) problems.push(`published world "${n}" has no world.json in maps2/worlds3`);
     else console.log(`[shipset] published world "${n}" not found in the checked-out tree(s) — unverified`);
   }
-  for (const [root, names] of [
-    ["worlds", policy.devWorlds ?? []],
-    ["worlds3", policy.devWorlds3 ?? []],
-  ]) {
+  for (const [root, names] of [["worlds3", policy.devWorlds3 ?? []]]) {
     // AN ABSENT TREE IS "NOT CHECKED OUT HERE", NOT A TYPO — the same rule
-    // --check applies to a missing domain, for the same reason: the deploy's
-    // test job sparse-checks-out `/maps2/worlds/` and nothing else, so failing
-    // on an absent maps2/worlds3 would turn the pipeline red while the image
+    // --check applies to a missing domain, for the same reason: a sparse
+    // checkout without the tree would turn the pipeline red while the image
     // (which builds from the full context) is perfectly fine.
     if (!names.length) continue;
     if (!existsSync(join(ASSETS_ROOT, "maps2", root))) {
@@ -469,8 +460,8 @@ if (process.argv.includes("--check")) {
   // it is a guaranteed 404 in production.
   //
   // PARTIAL CHECKOUTS ARE NOT THAT FAILURE. The deploy's `test` job uses a
-  // sparse checkout (games2 + characters2 + maps2/worlds + live + one tiles2
-  // file) because materialising 200 MB of art to run unit tests is pure cost.
+  // sparse checkout (games2 + characters2 + the world tree + live) because
+  // materialising 200 MB of art to run unit tests is pure cost.
   // The first version of this check ignored that, saw every absent domain as
   // "missing", exited 1, and turned the whole pipeline red — the image built
   // fine, the gate did not. So: an ENTIRELY absent domain root means "not

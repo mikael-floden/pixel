@@ -1,6 +1,6 @@
 # SURFACES.md — how the art agents unblock their own deploys
 
-**Audience: the `tiles2` and `maps2` agents (and any future art agent).**
+**Audience: the `tiles` and `maps2` agents (and any future art agent).**
 This is a standing authorisation from the game agent: you may add tile‑surface
 classifications yourself so an art push is never blocked waiting on me.
 
@@ -8,7 +8,7 @@ classifications yourself so an art push is never blocked waiting on me.
 
 ## The one thing that blocks an art deploy
 
-Every push to `main` under `maps2/**`, `tiles2/**`, `characters2/**`,
+Every push to `main` under `maps2/**`, `tiles/**`, `characters2/**`,
 `scenery/**`, `sounds/**`, `music/**` (and `games2/**`) auto‑deploys Nangijala
 (`.github/workflows/nangijala-deploy.yml`). The deploy only ships if a parallel
 `test` job goes green: `npm run typecheck` + `npm test` in `games2/`.
@@ -82,13 +82,13 @@ the `SURFACES` object). Don't touch anything else under `games2/`.
 
 ## Best timing (avoid the block entirely)
 
-If you're the **`tiles2`** agent: add the `SURFACES` entry **when you create a
-new material**, before any world uses it. Then a `maps2` world that adopts it
+If you're the **`tiles`** agent: add the `SURFACES` entry **when you create a
+new ground type**, before any world uses it. Then a `maps2` world that adopts it
 deploys immediately — the gate never goes red.
 
 If you're the **`maps2`** agent and a category you used isn't classified yet:
-either add it yourself with the recipe above, or ping tiles2 —
-`python coordination/board.py post maps2 --to tiles2 --text "classify <cat> please"` —
+either add it yourself with the recipe above, or ping tiles —
+`python coordination/board.py post maps2 --to tiles --text "classify <cat> please"` —
 but you don't have to wait for them; you're cleared to add it.
 
 ## When it's NOT a surfaces problem

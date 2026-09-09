@@ -56,7 +56,7 @@ it HERE in maps2 — do not touch anything else under `games2/`.
 **After EVERY deploy, send the maintainer the full-map image** (maintainer:
 "always do that after you have deployed, so I can see the entire map state
 directly"): once the deploy run is green, deliver
-`worlds/the_island2/minimap.webp` — don't wait to be asked.
+`worlds3/the_game/minimap.webp` — don't wait to be asked.
 
 ## Map images — one `minimap.webp` + one `map_base.webp` per world
 
@@ -125,7 +125,7 @@ Consequences:
 - **Ground types never change "this fast" (maintainer).** A ground tile can
   carry a transition to only ONE partner, so a tile may border at most one
   foreign ground type — no 1-tile slivers, no three-ground junction points.
-  Enforced on the_island2 as GENERATOR RULES (never spot edits):
+  Enforced as GENERATOR RULES (never spot edits):
   - **Containment collars** (`_materials`): accents live strictly INSIDE their
     parent — ice inside snow, obsidian inside snow/stone (≥2 from ice), sand
     collared off rock by grass — so pure-terrain pairs meet two-by-two.
@@ -260,12 +260,9 @@ The laws (details + provenance in the spec):
   budget = land/`WORLD_CELLS_PER_MONSTER` (205 — the ONE busy-ness dial; 137→
   205 = the maintainer's "25% fewer"), split evenly across resident types,
   spread over each type's zones by area, capped by room).
-- **`the_island2` MUST contain every roster monster** (build-asserted, with
-  habitat fallback). Currently: 99 monsters, 24 types, 2-5 of each.
-- **Feature-test maps carry NO monsters** (`prop_demo`, `trans_demo`,
-  `glow_test`, `occlusion_test`, `house_demo`: explicit `zones: []`).
-  `monster_demo` is the showcase (one 5×5 habitat pad per monster,
-  `pipeline/monsterdemo.py`) and the one world the crowding law does not bind.
+- **`the_game` MUST contain every roster monster** (build-asserted, with
+  habitat fallback). (The feature-test and showcase worlds that carried
+  explicit `zones: []` or one pad per monster were retired 2026-09-09.)
 
 ## Named places — `places.json` (`pixel-maps2/places@2`)
 
@@ -286,7 +283,7 @@ Re-derived by `save_world`. **Canon wins where canon has a name**
 (`lore/canon/CONSTRAINTS.md` §5): The Stone House and The Cave are adopted
 verbatim; The Meadow House is the one plain-descriptive addition.
 `mountain_top` is MEASURED, not chosen — snow line down to the massif's foot
-(7,309 cells, elev 16-40 on the_island2; derivation + rejected statistics in
+(7,309 cells, elev 16-40, measured on the old island; derivation + rejected statistics in
 the spec). Gate: `python maps2/pipeline/places.py --check` (every roofed cell
 named; every named cell still as named; no overlapping-band double booking).
 Consumers are live: the client's place lookup and the composer's per-id music

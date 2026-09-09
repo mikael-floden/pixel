@@ -5,10 +5,13 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { createServer } from "http";
+import { existsSync, readFileSync } from "node:fs";
+import { dirname, join as pathJoin } from "node:path";
+import { fileURLToPath } from "node:url";
 import { Server } from "@colyseus/core";
 import { WebSocketTransport } from "@colyseus/ws-transport";
 import { Client, Room } from "colyseus.js";
-import { ROOM_NAME, CELL_WU } from "@nangijala/shared";
+import { ROOM_NAME, CELL_WU, parseWorld, buildTerrainGrid, surfaceFor } from "@nangijala/shared";
 import { WorldRoom } from "../src/rooms/WorldRoom.js";
 
 // One port PER TEST: gracefullyShutdown resolves before the OS has freed the
@@ -27,12 +30,45 @@ async function waitFor(cond: () => boolean, timeout = 6000): Promise<void> {
   }
 }
 
-// monster_demo is small and flat; boards are injected via room options so the
-// test controls geometry completely.
+// Boards are injected via room options so the test controls geometry
+// completely, but the geometry is the_game's: a flat 7x7 patch of level-0
+// standable ground — no deck, no scenery within 6 cells — nearest the declared
+// spawn, derived from the world doc so a reshaped town moves the boards, not
+// the test. Two boards four rows apart, seats a cell either side.
+const WORLD_PATH = pathJoin(dirname(fileURLToPath(import.meta.url)), "..", "..", "..", "maps2", "worlds3", "the_game", "world.json");
+const SKIP = "maps2/worlds3/the_game missing"; // the deploy's test job checks out no world tree
+function flatPatch(): { c: number; r: number } {
+  const doc = JSON.parse(readFileSync(WORLD_PATH, "utf8"));
+  const world = parseWorld(doc)!;
+  const grid = buildTerrainGrid(world.width, world.height, world.rows, world.props, world.decks);
+  const scenery = world.scenery ?? [];
+  const spawn = world.spawn!;
+  let best: { c: number; r: number; d: number } | null = null;
+  for (let r = 8; r < world.height - 8; r++) {
+    for (let c = 8; c < world.width - 8; c++) {
+      const d = Math.hypot(c - spawn[0], r - spawn[1]);
+      if (best && d >= best.d) continue;
+      let flat = true;
+      for (let dr = -3; dr <= 3 && flat; dr++) {
+        for (let dc = -3; dc <= 3 && flat; dc++) {
+          const i = (r + dr) * grid.width + c + dc;
+          if (grid.level[i] !== 0 || grid.deck[i] >= 0 || !surfaceFor(grid.type[i]).standable) flat = false;
+        }
+      }
+      if (!flat) continue;
+      if (scenery.some((p) => Math.abs(p.x - (c + 0.5)) <= 6 && Math.abs(p.y - (r + 0.5)) <= 6)) continue;
+      best = { c, r, d };
+    }
+  }
+  assert.ok(best, "the_game has no flat scenery-free 7x7 patch to put two chess boards on");
+  return best!;
+}
+const P = existsSync(WORLD_PATH) ? flatPatch() : { c: 0, r: 0 };
 const BOARDS = [
-  { id: "pvp", col: 10, row: 7, seatA: [9, 7] as [number, number], seatB: [11, 7] as [number, number] },
-  { id: "bot", col: 10, row: 11, seatA: [9, 11] as [number, number], seatB: [11, 11] as [number, number], npc: "Wendell" },
+  { id: "pvp", col: P.c, row: P.r - 2, seatA: [P.c - 1, P.r - 2] as [number, number], seatB: [P.c + 1, P.r - 2] as [number, number] },
+  { id: "bot", col: P.c, row: P.r + 2, seatA: [P.c - 1, P.r + 2] as [number, number], seatB: [P.c + 1, P.r + 2] as [number, number], npc: "Wendell" },
 ];
+if (existsSync(WORLD_PATH)) console.log(`chessroom: boards on the_game at ${BOARDS[0].col},${BOARDS[0].row} and ${BOARDS[1].col},${BOARDS[1].row}`);
 
 /** The repo's proven lifecycle (torch.test.ts): server per TEST, closed in a
  * finally with gracefullyShutdown(false) — a hook-held server keeps the node
@@ -61,20 +97,23 @@ async function join(world: string, opts: Record<string, unknown> = {}): Promise<
   return r as AnyRoom;
 }
 
-test("PvP: seat -> wait bubble -> match -> dice -> moves -> resign", async () => { await withServer(async () => {
+const pvp = BOARDS[0];
+const bot = BOARDS[1];
+
+test("PvP: seat -> wait bubble -> match -> dice -> moves -> resign", async (t) => { if (!existsSync(WORLD_PATH)) return t.skip(SKIP); await withServer(async () => {
   const opts = { chessBoards: BOARDS, monsterCount: 0 };
-  const a = await join("monster_demo", opts);
-  const b = await join("monster_demo", opts);
+  const a = await join("the_game", opts);
+  const b = await join("the_game", opts);
   await waitFor(() => a.state.chessBoards?.size === 2);
 
   // Standing there alone does NOT seat you — the press does.
-  a.send("teleport", { x: 9.5 * CELL_WU, y: 7.5 * CELL_WU });
+  a.send("teleport", { x: (pvp.seatA[0] + 0.5) * CELL_WU, y: (pvp.seatA[1] + 0.5) * CELL_WU });
   await new Promise((res) => setTimeout(res, 700));
   assert.equal(a.state.chessBoards.get("pvp")?.waitingSid ?? "", "", "no auto-seat from proximity");
   a.send("chess.sit", {});
   await waitFor(() => a.state.chessBoards.get("pvp")?.waitingSid === a.sessionId);
 
-  await sit(b, 11, 7);
+  await sit(b, pvp.seatB[0], pvp.seatB[1]);
   await waitFor(() => a.state.chessMatches?.size === 1);
   const mid: string = [...a.state.chessMatches.keys()][0];
   const m = () => a.state.chessMatches.get(mid)!;
@@ -108,10 +147,10 @@ test("PvP: seat -> wait bubble -> match -> dice -> moves -> resign", async () =>
   await a.leave(); await b.leave();
 }); });
 
-test("NPC board: instant match, NPC throws its die and answers moves", async () => { await withServer(async () => {
-  const a = await join("monster_demo", { chessBoards: BOARDS, monsterCount: 0 });
+test("NPC board: instant match, NPC throws its die and answers moves", async (t) => { if (!existsSync(WORLD_PATH)) return t.skip(SKIP); await withServer(async () => {
+  const a = await join("the_game", { chessBoards: BOARDS, monsterCount: 0 });
   await waitFor(() => a.state.chessBoards?.size === 2);
-  await sit(a, 9, 11);
+  await sit(a, bot.seatA[0], bot.seatA[1]);
   await waitFor(() => a.state.chessMatches?.size === 1, 4000);
   const mid: string = [...a.state.chessMatches.keys()][0];
   const m = () => a.state.chessMatches.get(mid)!;
@@ -131,11 +170,11 @@ test("NPC board: instant match, NPC throws its die and answers moves", async () 
   await a.leave();
 }); });
 
-test("timeout: the bank empties and the flag falls", async () => { await withServer(async () => {
-  const a = await join("monster_demo", { chessBoards: BOARDS, monsterCount: 0, chessClockMs: 1200 });
-  const b = await join("monster_demo", { chessBoards: BOARDS, monsterCount: 0, chessClockMs: 1200 });
+test("timeout: the bank empties and the flag falls", async (t) => { if (!existsSync(WORLD_PATH)) return t.skip(SKIP); await withServer(async () => {
+  const a = await join("the_game", { chessBoards: BOARDS, monsterCount: 0, chessClockMs: 1200 });
+  const b = await join("the_game", { chessBoards: BOARDS, monsterCount: 0, chessClockMs: 1200 });
   await waitFor(() => a.state.chessBoards?.size === 2);
-  await sit(a, 9, 7); await sit(b, 11, 7);
+  await sit(a, pvp.seatA[0], pvp.seatA[1]); await sit(b, pvp.seatB[0], pvp.seatB[1]);
   await waitFor(() => a.state.chessMatches?.size >= 1);
   const mid: string = [...a.state.chessMatches.keys()][0];
   const m = () => a.state.chessMatches.get(mid)!;

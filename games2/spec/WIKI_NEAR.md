@@ -34,12 +34,11 @@ it in the same commit as either side.
 ```jsonc
 {
   "type": "wiki:near",
-  "world": "the_island2",          // the maps2 world id
+  "world": "the_game",             // the maps2 world id
   "at": { "col": 13.75, "row": 11.4 }, // the player, fractional cells
   "radius": 12,                    // cells searched for bodies and pieces
   "items": [                       // SORTED ascending by dist, nearest first
-    { "domain": "tiles",      "id": "saturated_grass", "dist": 0,   "n": 41,
-      "path": "tiles2/saturated_grass/base/base_246233070/tile_00.webp" },
+    { "domain": "world",      "id": "grass",           "dist": 0,   "n": 41 },
     { "domain": "characters", "id": "05e26d78",        "dist": 1.3, "n": 1 },
     { "domain": "objects",    "id": "lantern_post_002","dist": 2.1, "n": 1 },
     { "domain": "items",      "id": "leather_scrap",   "dist": 3.7, "n": 2 },
@@ -49,17 +48,16 @@ it in the same commit as either side.
 ```
 
 - `domain` is the wiki's own domain key in `data.json` (`monsters`,
-  `characters`, `items`, `objects`, `tiles`, `world`) and `id` is that
+  `characters`, `items`, `objects`, `world`) and `id` is that
   domain's `id` — the pair is exactly the wiki's route `#/<domain>/<id>`.
   Nothing is invented on the game side: a monster's `id` is its roster id
   (`mv.kind`), an NPC's is its characters2 folder key (`charId`), a drop's
   is its item id, a scenery placement's is its bare piece id (the last
   segment of `category/piece` — unique across categories), and the GROUND
-  is the cell's material under one of two domains: a Tiles 2.0 world's
-  materials are `tiles` pages (`saturated_grass`), a Tiles 3.0 world's
-  ground TYPES (`the_game` and every maps3 world: `grass`,
-  `brown_paving_stone`, …) are `world` pages — `#/world/<type>`, the
-  ground-type view. The wiki should still tolerate an id it does not know
+  is the cell's ground TYPE (`grass`, `brown_paving_stone`, …) as a `world`
+  page — `#/world/<type>`, the ground-type view. (The `tiles` domain was
+  Tiles 2.0's material pages; retired 2026-09-09 with tiles2, so a ground row
+  never carries a `path` any more.) The wiki should still tolerate an id it does not know
   (a fresh roster entry the wiki has not rebuilt for yet) by showing the id
   plainly.
 - **One row per (domain, id)**, at the NEAREST instance's distance, with
@@ -67,10 +65,6 @@ it in the same commit as either side.
   three.
 - `dist` is the flat world distance in **cells** (world units ÷ 32), two
   decimals. `0` means "under your feet".
-- `path` appears on ground rows when the world names a tile file per cell
-  (Tiles 2.0): the exact tile drawn under the nearest instance, so the wiki
-  can deep-link `#/tiles/<id>/<instance>` if it wants to; the material page
-  alone is fine. Tiles 3.0 worlds resolve art at draw time and send none.
 - The list is capped at 80 rows after sorting. Other PLAYERS are not
   included — they have no wiki page.
 - `items` may be **empty** (a swim far from anything). The wiki should say

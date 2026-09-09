@@ -175,8 +175,9 @@ export interface MoveResult {
 // so a raw world-axis input renders as a diagonal slide. Controls should be
 // SCREEN-relative: pressing Up moves the character straight up on screen.
 // These constants are the projection ratio (client MAP_GEOMETRY uses the same).
-// maps2/tiles2 geometry: top diamond 30px tall × 64px wide, grid steps DX=32,
-// DY=15; one elevation level = 16px of vertical face (tiles2/docs/ELEVATION.md).
+// Grid steps DX=32, DY=14 (tiles3: a 64x28 top diamond); one elevation level
+// = 16px of vertical face by default (LEVEL_PX; tiles3 worlds carry their own
+// measured 15 — see ISO_GEOMETRY_MAPS3).
 export const ISO_DX = 32;
 // 14, NOT 15 — maintainer 2026-09-03: "ISO_DY SHOULD BE 14. EVERYTHING OTHER THAN 14
 // CREATES A ZIGZAG BUG! WE WANT TO GET RID OF ZIGZAG BUGS!"
@@ -190,24 +191,22 @@ export const ISO_DX = 32;
 // is a staircase.
 //
 // This is the DEFAULT every world without its own `iso` falls back to, so it is the
-// value that decides what a world@1/@2 doc draws at and what any path that loses the
-// per-world geometry lands on. ISO_GEOMETRY_MAPS3 already said 14; making the default
-// agree means no code path can render a 3.0 tile at 15 by omission — which is what was
-// happening in production while the constant below it read correctly.
-//
-// His earlier verdict that "15 looks best on tiles2" is superseded by the instruction
-// above; the switch to 3.0 has landed in the live world.
+// value any path that loses the per-world geometry lands on. ISO_GEOMETRY_MAPS3 already
+// said 14; making the default agree means no code path can render a 3.0 tile at 15 by
+// omission — which is what was happening in production while the constant below it
+// read correctly. (The retired tiles2 drew on 15; his verdict that "15 looks best on
+// tiles2" is superseded.)
 export const ISO_DY = 14;
 // Vertical face pixels per elevation level (maps2 LEVEL_PX).
 export const LEVEL_PX = 16;
 
-/** THE PROJECTION IS PER WORLD, not per engine. tiles2 draws a 30px top diamond
- * on a dy=15 lattice with a 16px storey; tiles3 draws on dy=14 with a MEASURED
- * 15px storey, and the two cannot share one constant — a maps3 world rendered
- * at dy=15 shears by one row per grid step and every boundary leaks a 1px wall
- * band (tiles3.ts DY). So a world carries its own geometry and the constants
- * above are the DEFAULT: an absent `ParsedWorld.iso` means today's numbers, so
- * every world@1/world@2 world projects byte-identically. */
+/** THE PROJECTION IS PER WORLD, not per engine. tiles3 draws on dy=14 with a
+ * MEASURED 15px storey (the retired tiles2 drew a 30px top diamond on a dy=15
+ * lattice with a 16px storey, and the two could not share one constant — a
+ * maps3 world rendered at dy=15 shears by one row per grid step and every
+ * boundary leaks a 1px wall band, tiles3.ts DY). So a world carries its own
+ * geometry and the constants above are the DEFAULT for a world without
+ * `ParsedWorld.iso` (a hand-built fixture). */
 export interface IsoGeometry {
   /** Half tile width — screen px per grid step in x−y. */
   dx: number;
@@ -227,7 +226,8 @@ export const ISO_GEOMETRY_MAPS3: IsoGeometry = { dx: 32, dy: 14, lh: 15 };
 export function isoOf(world?: { iso?: IsoGeometry } | null): IsoGeometry {
   return world?.iso ?? ISO_GEOMETRY;
 }
-// Top-diamond height in px (apex→bottom); tiles2 top is 30px on a 64px tile.
+// Top-diamond height in px (apex→bottom) of the DEFAULT geometry (30px on a
+// 64px tile; a tiles3 plate's is 28 and its renderer carries its own).
 export const DIAMOND_H = 30;
 
 // --- The monster's ONE tuned shadow -------------------------------------------
@@ -725,22 +725,14 @@ export const MAX_STAMINA = 100;
 export const SWIM_DRAIN = 20; // stamina per second while swimming
 export const STAMINA_REGEN = 30; // stamina per second recovered on land
 
-/** One map cell as the game consumes it (t = tile category/material,
- * v = variant, l = elevation level, r = region/climate tag).
- * `path` (maps2/ringworld@1) is the EXACT top-surface tile PNG for this cell
- * (repo-relative, e.g. "tiles2/saturated_grass/base/base_123/tile_04.png") —
- * the maps2 world bakes the chosen tile per cell instead of a category+variant
- * the game looks up. When present the renderer uses it directly. */
+/** One map cell as the game consumes it (t = ground TYPE — a tiles3 ground
+ * name on a maps3 world — v = variant, l = elevation level, r = region/climate
+ * tag). No art: tiles3 resolves what draws at draw time. */
 export interface WorldCell {
   t: string;
   v: number;
   l: number;
   r?: string;
-  path?: string;
-  // maps2 world@1: draw this cell's tile HORIZONTALLY FLIPPED. The auto-tiler
-  // places some transition tiles as mirrors; without honouring it, those tiles
-  // face the wrong way at material borders.
-  flip?: boolean;
 }
 
 export interface ParsedWorld {
@@ -750,16 +742,12 @@ export interface ParsedWorld {
   pois: { x: number; y: number; label: string; tile?: string }[];
   /** Player spawn cell (col,row), if the world specifies one (maps2). */
   spawn?: [number, number];
-  /** maps2: per-material canonical PLAIN base tile PNG, used for cliff faces
-   * (the stacked part below a cell's top surface) — matches maps2 render2.py
-   * which draws faces with the material's plain tile so terraces read as one
-   * wall, not a patchwork of the top's transition tiles. */
-  faceTiles?: Record<string, string>;
-  /** maps2 world@1: decorative objects placed on cells (grass tufts, rocks,
-   * …). Each is a TALL 64×128 tile PNG standing on its cell's ground. */
+  /** Grid-aligned SOLID objects standing on cells: each blocks its cell and
+   * casts a contact shade. No shipped world places any (the retired world@1
+   * worlds did); hand-built fixtures still do, so the terrain grid keeps them. */
   props?: WorldProp[];
-  /** maps2 world@2: elevated walkable slabs (roofs, bridge spans) floating over
-   * the unchanged base terrain — a SECOND walkable surface at some cells. */
+  /** Elevated walkable slabs (roofs, bridge spans) floating over the unchanged
+   * base terrain — a SECOND walkable surface at some cells. */
   decks?: Deck[];
   /** maps3 `rooms[]`: ONE FLOOR EACH. A room is a connected patch of indoor
    *  floor bounded by its walls, and a DOORWAY DOES NOT CONDUCT — maps2 spec
@@ -781,15 +769,15 @@ export interface ParsedWorld {
   /** maps3: freely placed, off-grid set dressing (see WorldScenery). Not
    * `props`: those are grid-aligned tile PNGs that block their cell. */
   scenery?: WorldScenery[];
-  /** THE WORLD'S OWN PROJECTION. Set by parseWorld3 only — absent on
-   * world@1/world@2, which is what keeps their parse byte-identical (their
-   * digest is pinned in server/test/world3.test.ts). Read it with `isoOf`. */
+  /** THE WORLD'S OWN PROJECTION. Set by parseWorld3; a bare `rows` literal
+   * has none and draws at the default geometry. Read it with `isoOf`. */
   iso?: IsoGeometry;
 }
 
-/** A placed decoration: its cell (col,row) + tall (64×128) tile PNG path.
- * `levels` = how many elevation levels the art spans (2-5) — drives the
- * contact shade it casts on neighbouring ground. */
+/** A placed solid: its cell (col,row) + an art path (unused by the renderer
+ * since the prop art path was retired with tiles2; the cell still BLOCKS).
+ * `levels` = how many elevation levels it spans (2-5) — drives the contact
+ * shade it casts on neighbouring ground. */
 export interface WorldProp {
   col: number;
   row: number;
@@ -823,21 +811,22 @@ export interface WorldScenery {
   dir?: string;
 }
 
-/** world@2 deck: a thin walkable slab at `level`, floating over the base
+/** A deck cell: a thin walkable slab at `level`, floating over the base
  * terrain (which stays walkable/swimmable underneath). Rendered like a raised
- * ground cell — `thickness` face tiles under the top, then the top diamond at
- * `level`, with OPEN AIR below (so you can see/walk/swim under it). */
+ * ground cell — `thickness` face courses under the top, then the slab's
+ * surface at `level`, with OPEN AIR below (so you can see/walk/swim under it). */
 export interface DeckCell {
   col: number;
   row: number;
-  path?: string; // the slab's TOP tile PNG (paths[top])
+  /** Always false on a maps3 world (art is resolved at draw time); kept so a
+   *  hand-built fixture keeps its shape. */
   flip: boolean;
 }
 export interface Deck {
-  // "roof" | "bridge" | "cave". A LABEL in world@2 (indoor-ness is derived
-  // geometrically — see indoor.ts); LOAD-BEARING in maps3, where roof and cave
-  // mean INDOORS and bridge does not (render3.py skips scenery under the first
-  // two). Carried through verbatim by both parsers.
+  // "roof" | "bridge" | "cave". LOAD-BEARING in maps3: roof and cave mean
+  // INDOORS and bridge does not (render3.py skips scenery under the first two);
+  // indoor-ness is ALSO derived geometrically (see indoor.ts). Carried through
+  // verbatim by the parser.
   kind: string;
   mat: string; // material NAME (its face tile builds the slab's underside/sides)
   level: number; // elevation of the walkable top, in levels
@@ -847,10 +836,10 @@ export interface Deck {
 }
 
 /**
- * Parse the maps agent's world.json into rows of cells. Supports both schemas:
- * - legacy: { width, height, rows: [[{t,v,l,r}, …], …] }
- * - pixel-maps/bigworld@1: { w, h, categories[], climates[], terr/variant/
- *   level/climate as h×w index arrays, pois[] }
+ * Parse the maps agent's world.json into rows of cells. Two forms:
+ * - pixel-maps3/world@1 (the_game): a ground NAME per cell, level, walls,
+ *   decks, rooms, scenery, the world's own `iso` — `parseWorld3`.
+ * - a hand-built literal: { width, height, rows: [[{t,v,l,r}, …], …] } (tests).
  * Returns null for anything unrecognisable.
  */
 export function parseWorld(json: any): ParsedWorld | null {
@@ -863,129 +852,16 @@ export function parseWorld(json: any): ParsedWorld | null {
   if (typeof json.schema === "string" && json.schema.startsWith("pixel-maps3/")) {
     return parseWorld3(json);
   }
-  // maps2 / ringworld@1: 2D `top` (index into `paths`, -1 = void), `level`
-  // and `mat` (index into `matids`) grids; the world bakes the exact top tile
-  // per cell. Faces use the material's plain base tile (see faceTiles).
-  if (typeof json.schema === "string" && json.schema.startsWith("pixel-maps2/") &&
-      Array.isArray(json.top) && Array.isArray(json.paths)) {
-    return parseRingworld(json);
-  }
+  // A hand-built world literal (tests, fixtures): rows of cells as parsed.
   if (Array.isArray(json.rows) && typeof json.width === "number") {
     cleanupRoads(json.width, json.height, json.rows);
     return { width: json.width, height: json.height, rows: json.rows, pois: json.pois ?? [] };
   }
-  if (typeof json.w === "number" && Array.isArray(json.terr) && Array.isArray(json.categories)) {
-    const cats: string[] = json.categories;
-    const climates: string[] = json.climates ?? [];
-    const rows: WorldCell[][] = [];
-    for (let r = 0; r < json.h; r++) {
-      const tr = json.terr[r];
-      const vr = json.variant?.[r];
-      const lr = json.level?.[r];
-      const cr = json.climate?.[r];
-      const row: WorldCell[] = [];
-      for (let c = 0; c < json.w; c++) {
-        row.push({
-          t: cats[tr[c]] ?? "",
-          v: vr?.[c] ?? 0,
-          l: lr?.[c] ?? 0,
-          r: climates[cr?.[c]] ?? undefined,
-        });
-      }
-      rows.push(row);
-    }
-    cleanupRoads(json.w, json.h, rows);
-    return { width: json.w, height: json.h, rows, pois: json.pois ?? [] };
-  }
+  // (pixel-maps2/* — world@1/@2 with baked tile paths — and the first-generation
+  // bigworld@1 form were retired 2026-09-09 with tiles2; history in git.)
   return null;
 }
 
-/** Parse a maps2 world (schema pixel-maps2/world@1, and the older ringworld@1)
- * into the shared ParsedWorld model. world@1 changed a few things: it carries a
- * `size` {w,h} so worlds can be NON-SQUARE, ships materials as an id→name ARRAY
- * (was a `matids` name→id map), and puts `spawn` at the top level (was
- * `meta.spawn`). Cells still bake explicit tile PNG paths in `top`.
- *
- * We read `mat`/`level`/`top`/`mirror`/`spawn`/`size`. We deliberately IGNORE
- * the world's `collision` field: walkability is the GAME ENGINE's job, derived
- * from elevation (level steps) + SURFACES (per-material standable/swimmable) —
- * see buildTerrainGrid/canEnter. The maps agent owns world DATA; the engine owns
- * what it MEANS for movement. `props`/`geometry`/`water` aren't consumed yet. */
-function parseRingworld(json: any): ParsedWorld {
-  const top: number[][] = json.top;
-  const level: number[][] = json.level ?? [];
-  const mat: number[][] = json.mat ?? [];
-  const paths: string[] = json.paths ?? [];
-  const mirror: number[][] = json.mirror ?? [];
-  // Non-square worlds: prefer the explicit size; fall back to the grid shape.
-  const height = json.size?.h ?? top.length;
-  const width = json.size?.w ?? top[0]?.length ?? height;
-  // Material id → name. world@1 = `materials` array (index is the id);
-  // ringworld@1 = `matids` name→id map.
-  let idToMat: string[] = [];
-  if (Array.isArray(json.materials)) {
-    idToMat = json.materials as string[];
-  } else {
-    for (const [name, id] of Object.entries(json.matids ?? {})) idToMat[id as number] = name;
-  }
-  const rows: WorldCell[][] = [];
-  const faceTiles: Record<string, string> = {};
-  for (let r = 0; r < height; r++) {
-    const row: WorldCell[] = [];
-    for (let c = 0; c < width; c++) {
-      const m = idToMat[mat[r]?.[c] ?? 0] ?? "";
-      const ti = top[r]?.[c] ?? -1;
-      const path = ti >= 0 ? paths[ti] : undefined;
-      row.push({ t: m, v: 0, l: level[r]?.[c] ?? 0, path, flip: !!mirror[r]?.[c] });
-      // Canonical PLAIN base tile per material for cliff faces: a pure cell's
-      // top tile lives under .../base/ (only borders use .../transitions/), so
-      // the first base-folder tile we see for a material is a plain face tile.
-      if (m && path && !faceTiles[m] && path.includes("/base/") && !path.includes("/transitions/")) {
-        faceTiles[m] = path;
-      }
-    }
-    rows.push(row);
-  }
-  const sp = json.spawn ?? json.meta?.spawn;
-  const spawn = Array.isArray(sp) ? (sp as [number, number]) : undefined;
-  // Props: {x,y,tile} → place the tall tile paths[tile] on cell (x,y).
-  const props: WorldProp[] = Array.isArray(json.props)
-    ? json.props
-        .map((p: any) => ({
-          col: p.x,
-          row: p.y,
-          path: paths[p.tile],
-          levels: typeof p.levels === "number" ? p.levels : 2,
-        }))
-        .filter((p: WorldProp) => !!p.path)
-    : [];
-  // Decks (world@2): elevated walkable slabs. Resolve mat id → name and each
-  // cell's top index → PNG path so the client can render them like ground.
-  const decks: Deck[] = Array.isArray(json.decks)
-    ? json.decks.map((d: any) => ({
-        kind: String(d.kind ?? "deck"),
-        mat: idToMat[d.mat ?? 0] ?? "",
-        level: d.level ?? 0,
-        thickness: Math.max(0, d.thickness ?? 1),
-        cells: (Array.isArray(d.cells) ? d.cells : [])
-          .map((c: any) => ({ col: c.x, row: c.y, path: paths[c.top], flip: !!c.mirror }))
-          .filter((c: DeckCell) => !!c.path),
-      }))
-    : [];
-  return { width, height, rows, pois: [], spawn, faceTiles, props, decks: decks.length ? decks : undefined };
-}
-
-/**
- * Cosmetic repair for the generator's road defects (also reported upstream to
- * the maps agent — this pass becomes a no-op once they ship clean roads):
- * 1. Orphan stubs (road components of ≤ STUB_MAX cells) are replaced with
- *    neighbouring ground so the map isn't littered with disconnected bits.
- * 2. Each road component is restyled to its MAJORITY style (e.g. all
- *    road_dirt_grass), so a single road doesn't flip styles back and forth.
- *    Restyles only use (category, variant) pairs that exist elsewhere in the
- *    map, so every referenced tile file is guaranteed to exist.
- * Runs inside parseWorld → server terrain and client render stay identical.
- */
 const ROAD_STUB_MAX = 4;
 // Ground categories whose tile art has path-like edging: scattered as 1-3
 // cell noise specks by the generator they read as broken road fragments.

@@ -1,7 +1,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { createServer } from "http";
-import { readFileSync } from "node:fs";
+import { existsSync, readFileSync } from "node:fs";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 import { Server } from "@colyseus/core";
@@ -51,22 +51,31 @@ function snapshot(room: {
   return out;
 }
 
+const REPO = join(dirname(fileURLToPath(import.meta.url)), "..", "..", "..");
+// The deploy's test job checks out no world tree: skip BEFORE the server opens
+// when the_game is absent. (An ENOENT thrown after listen() left the server
+// up and node --test hung until CI's 20-minute cancel — deploy run 3279.)
+const HAVE_WORLD = existsSync(join(REPO, "maps2", "worlds3", "the_game", "world.json"));
+const SKIP = "maps2/worlds3/the_game missing";
+
 // The SAME zone resolution the server runs at room create, from the REAL
-// shipped files — so the test knows exactly which zones ring_test carries.
-function ringTestZones(): ZoneRuntime[] {
-  const HERE = dirname(fileURLToPath(import.meta.url));
-  const REPO = join(HERE, "..", "..", "..");
+// shipped files — so the test knows exactly which zones the_game carries.
+function theGameZones(): ZoneRuntime[] {
   const world = parseWorld(
-    JSON.parse(readFileSync(join(REPO, "maps2", "worlds", "ring_test", "world.json"), "utf8")),
+    JSON.parse(readFileSync(join(REPO, "maps2", "worlds3", "the_game", "world.json"), "utf8")),
   )!;
   const grid = buildTerrainGrid(world.width, world.height, world.rows, world.props, world.decks);
   const zones = parseSpawns(
-    JSON.parse(readFileSync(join(REPO, "maps2", "worlds", "ring_test", "spawns.json"), "utf8")),
+    JSON.parse(readFileSync(join(REPO, "maps2", "worlds3", "the_game", "spawns.json"), "utf8")),
   );
   return buildZoneRuntimes(grid, zones);
 }
 
-test("maps2 spawn zones drive the room: shared, per-zone, zone-confined, moving", async () => {
+test("maps2 spawn zones drive the room: shared, per-zone, zone-confined, moving", async (t) => {
+  if (!HAVE_WORLD) return t.skip(SKIP);
+  // Read and asserted BEFORE listen(): nothing may throw past an open server.
+  const expected = theGameZones();
+  assert.ok(expected.length > 0, "the_game ships spawn zones");
   const port = 2997; // unique per test file
   const gameServer = new Server({
     transport: new WebSocketTransport({ server: createServer() }),
@@ -74,11 +83,9 @@ test("maps2 spawn zones drive the room: shared, per-zone, zone-confined, moving"
   gameServer.define(ROOM_NAME, WorldRoom);
   await gameServer.listen(port);
 
-  const expected = ringTestZones();
-  assert.ok(expected.length > 0, "ring_test ships spawn zones");
   // Deterministic spawns/roam; ONE monster per zone keeps the room light.
   const COUNT = 1;
-  const opts = { world: "ring_test", monsterSeed: 12345, monsterCount: COUNT };
+  const opts = { world: "the_game", monsterSeed: 12345, monsterCount: COUNT };
   const expectedTotal = expected.length * COUNT;
   const zoneById = new Map(expected.map((z) => [z.zone.id, z]));
   // Containment tolerance: the synced position can lag a snap by a patch, so
@@ -96,7 +103,7 @@ test("maps2 spawn zones drive the room: shared, per-zone, zone-confined, moving"
   try {
     const c1 = new Client(`ws://localhost:${port}`);
     const c2 = new Client(`ws://localhost:${port}`);
-    // Both joinOrCreate the SAME ring_test room; the first creates it with the
+    // Both joinOrCreate the SAME the_game room; the first creates it with the
     // monster options, the second joins the already-created shared world.
     const r1 = await c1.joinOrCreate(ROOM_NAME, { name: "A", character: "char_a", ...opts });
     const r2 = await c2.joinOrCreate(ROOM_NAME, { name: "B", character: "char_b", ...opts });
@@ -178,7 +185,8 @@ test("maps2 spawn zones drive the room: shared, per-zone, zone-confined, moving"
   }
 });
 
-test("soft separation: same-pad monsters relax to a comfortable distance", async () => {
+test("soft separation: same-pad monsters relax to a comfortable distance", async (t) => {
+  if (!HAVE_WORLD) return t.skip(SKIP);
   const port = 2996; // unique per test
   const gameServer = new Server({
     transport: new WebSocketTransport({ server: createServer() }),
@@ -187,13 +195,14 @@ test("soft separation: same-pad monsters relax to a comfortable distance", async
   await gameServer.listen(port);
   try {
     const c1 = new Client(`ws://localhost:${port}`);
-    // monster_demo: one 5x5 pad per monster, TWO monsters per pad — the
-    // worst-case cluster (both seeded on the same few cells). With the
-    // separation nudge they must spread out instead of stacking.
+    // the_game with TWO monsters per zone: every zone seeds a same-zone pair
+    // (54 of its 79 zones ask for two anyway), the cave zones on a few cells
+    // of floor — the cluster case. With the separation nudge they must spread
+    // out instead of stacking.
     const r1 = await c1.joinOrCreate(ROOM_NAME, {
       name: "S",
       character: "char_s",
-      world: "monster_demo",
+      world: "the_game",
       monsterSeed: 777,
       monsterCount: 2,
     });
@@ -213,7 +222,7 @@ test("soft separation: same-pad monsters relax to a comfortable distance", async
     ) as { monsters: Array<{ id: string; radius?: number }> };
     const art = new Map(manifest.monsters.map((m) => [m.id, m.radius]));
     const radius = (kind: string) => monsterRadiusFor(kind, art.get(kind), 13);
-    /** Min of (distance / pair comfort target) across every same-pad pair. */
+    /** Min of (distance / pair comfort target) across every same-zone pair. */
     const worstPair = () => {
       const byZone = new Map<string, Array<{ x: number; y: number; r: number }>>();
       r1.state.monsters.forEach((m: any, id: string) => {
@@ -230,6 +239,7 @@ test("soft separation: same-pad monsters relax to a comfortable distance", async
           }
       return worst;
     };
+    assert.ok(Number.isFinite(worstPair()), "no zone seeded a pair — nothing here measures separation");
     // Seeded pairs start close (possibly overlapping) and the separation nudge
     // walks them apart at MONSTER_SEP_RELAX_SPEED. POLL for convergence rather
     // than sleeping a fixed 3.5s: the assertion is identical, it passes the
@@ -239,7 +249,7 @@ test("soft separation: same-pad monsters relax to a comfortable distance", async
     const worst = worstPair();
     assert.ok(
       worst >= 0.5,
-      `same-pad monsters keep radius-scaled distance (worst pair at ${(worst * 100).toFixed(0)}% of its comfort target)`,
+      `same-zone monsters keep radius-scaled distance (worst pair at ${(worst * 100).toFixed(0)}% of its comfort target)`,
     );
     await r1.leave();
   } finally {

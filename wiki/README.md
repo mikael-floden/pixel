@@ -381,8 +381,8 @@ measurements behind that rank, how flat the top came out, and its prompt.
 
 - **Verdicts ride the manifest's own keys** (`tiles/<cell>/<n>`) in the `tiles`
   feedback file that agent already reads — no id scheme of the wiki's invention
-  to keep in sync. Feedback ids are repo paths, so 3.0's `tiles/…` and 2.0's
-  `tiles2/…` share one file without colliding.
+  to keep in sync. Feedback ids are repo paths, so two domains never collide
+  in one file.
 - **The pair carries NO verdict of its own** (maintainer 2026-08-17: *"You can
   also remove the approve/reject/rate at the top of the page. The review will
   only ever happen on the individual tiles themselves"*). The pair's state is
@@ -1722,7 +1722,7 @@ only at 4×, where its pose is 410×542).
 
 "Is this actually in the game?" is answered against the world players really
 enter (`DEFAULT_WORLD` in `games2/client/src/maps.ts`, read at build time so
-it can't drift — currently `the_island2`). The **UI never names the world**:
+it can't drift — `the_game`, the only world). The **UI never names the world**:
 the other worlds are a development convenience, and the finished game has a
 single world players never think of as one of several (maintainer
 2026-07-30) — copy says "used 137× in the world" / "unused", never a world
@@ -1754,7 +1754,7 @@ id. `build.mjs` emits `data.json` `world`:
   disagree or if zones project off the drawn map, so a silently-misaligned
   overlay can't ship.
 - `npcs[<characters2 folder id>] = [{id, name, type, anchor, x, y, elev,
-  wares}]` — the cast maps2 stands in the world (`maps2/worlds/<w>/npcs.json`,
+  wares}]` — the cast maps2 stands in the world (`maps2/worlds3/<w>/npcs.json`,
   `pixel-maps2/npcs@1`), keyed by the same folder id this build uses for an
   NPC, so the join needs no translation table. An NPC who is placed gets a
   **"Where you'll find them"** panel (maintainer 2026-08-06) — the creatures'

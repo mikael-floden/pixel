@@ -13,9 +13,12 @@
 // Asserted on the REAL shipped geometry rather than a fixture, because the
 // thing that made this bug invisible is exactly that it needs a tall wall with
 // walkable ground at its foot — and that only exists in a real world file.
+// The wall is DERIVED from the_game: the biggest roofed house (the inn), its
+// south wall row, its doorway, and the wall run east of the door — a reshaped
+// town moves the numbers, not the test.
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { readFileSync } from "node:fs";
+import { existsSync, readFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import {
@@ -28,28 +31,57 @@ import {
 // `server` workspace (`npm run test -w server`) while a direct run sits in
 // games2, and a cwd-relative path silently resolves to two different places.
 const here = dirname(fileURLToPath(import.meta.url));
-const world = parseWorld(
-  JSON.parse(readFileSync(join(here, "..", "..", "..", "maps2", "worlds", "the_island2", "world.json"), "utf8")),
-)!;
-const grid = buildTerrainGrid(world.width, world.height, world.rows, world.props, world.decks);
+const WORLD_PATH = join(here, "..", "..", "..", "maps2", "worlds3", "the_game", "world.json");
+// The deploy's test job checks out no world tree: skip, never throw, without it.
+const world = existsSync(WORLD_PATH) ? parseWorld(JSON.parse(readFileSync(WORLD_PATH, "utf8"))) : null;
+const SKIP = "maps2/worlds3/the_game missing";
+const grid = world ? buildTerrainGrid(world.width, world.height, world.rows, world.props, world.decks) : null!;
 const lvl = (c: number, r: number) =>
   c < 0 || r < 0 || c >= grid.width || r >= grid.height ? 0 : grid.level[r * grid.width + c];
 
-test("a route along a house wall keeps the body's probe clear of it", () => {
-  // The maintainer's own trip: out of the second house and east to the marker.
-  const path = findPath(grid, 176.2 * CELL_WU, 117.6 * CELL_WU, 183.3 * CELL_WU, 118.3 * CELL_WU);
+/** THE INN: the roof deck with the most floor under it. Its south wall is the
+ *  deck's last row; the doorway is that row's one level-0 cell; the wall run
+ *  this file is about is every wall cell EAST of the door, whose foot (the row
+ *  below) is walkable level-0 ground — the maintainer's walk out of the house
+ *  and east along it. */
+function theInn() {
+  const inn = world!.decks!
+    .filter((d) => d.kind === "roof")
+    .map((d) => ({ d, floor: d.cells.filter((c) => grid.deck[c.row * grid.width + c.col] === d.level).length }))
+    .sort((a, b) => b.floor - a.floor)[0].d;
+  const wallRow = Math.max(...inn.cells.map((c) => c.row));
+  const wallCols = inn.cells.filter((c) => c.row === wallRow).map((c) => c.col).sort((a, b) => a - b);
+  const doorCol = wallCols.find((c) => lvl(c, wallRow) === 0)!;
+  const run = wallCols.filter((c) => c > doorCol && lvl(c, wallRow) === inn.level);
+  const east = run[run.length - 1];
+  // Standing inside, a cell past the door; the marker out on the grass past the
+  // house's east corner, a row above the wall's foot.
+  const INSIDE: [number, number] = [doorCol + 1.2, wallRow - 1.4];
+  const MARKER: [number, number] = [east + 3.3, wallRow - 0.7];
+  console.log(`wallhug: the inn's south wall is row ${wallRow}, door at col ${doorCol}, wall run ${run[0]}-${east} (level ${inn.level})`);
+  return { inn, wallRow, doorCol, run, east, INSIDE, MARKER };
+}
+const { inn, wallRow, doorCol, run, east, INSIDE, MARKER } = world ? theInn() : ({} as ReturnType<typeof theInn>);
+
+test("a route along a house wall keeps the body's probe clear of it", (t) => {
+  if (!world) return t.skip(SKIP);
+  // The maintainer's own trip: out of the house and east to the marker.
+  const path = findPath(grid, INSIDE[0] * CELL_WU, INSIDE[1] * CELL_WU, MARKER[0] * CELL_WU, MARKER[1] * CELL_WU);
   assert.ok(path && path.length > 2, "no route out of the house at all");
 
-  // The house's south wall is row 119, cols 176-180 at level 6, with the
-  // doorway at col 175. Every waypoint that passes under it must sit far
-  // enough south that the body's LEADING PROBE does not reach the wall cell.
-  const wallRow = 119;
-  assert.equal(lvl(178, wallRow), 6, "the world moved — this test is aimed at the wrong wall");
-  assert.equal(lvl(178, 120), 0, "the ground at the wall's foot is not walkable any more");
+  // The inn's south wall run east of the door sits at the roof's level, with
+  // walkable level-0 ground at its foot. Every waypoint that passes under it
+  // must sit far enough south that the body's LEADING PROBE does not reach
+  // the wall cell.
+  assert.ok(run.length >= 4, `the wall run east of the door is only ${run.length} cells — too short to hug`);
+  const mid = run[Math.floor(run.length / 2)];
+  assert.equal(lvl(mid, wallRow), inn.level, "the world moved — this test is aimed at the wrong wall");
+  assert.ok(inn.level >= 6, "a house wall is a CLIMB wall, six levels or more");
+  assert.equal(lvl(mid, wallRow + 1), 0, "the ground at the wall's foot is not walkable any more");
 
   const under = path!.filter((p) => {
     const c = Math.floor(p.x / CELL_WU);
-    return c >= 176 && c <= 180 && Math.floor(p.y / CELL_WU) === wallRow + 1;
+    return c >= run[0] && c <= east && Math.floor(p.y / CELL_WU) === wallRow + 1;
   });
   assert.ok(under.length >= 2, `expected the route to run under the wall, got ${under.length} waypoints there`);
 
@@ -77,17 +109,18 @@ test("a route along a house wall keeps the body's probe clear of it", () => {
   }
 });
 
-test("the nudge is aimed at CLIMB walls, not just solids — and a doorway still admits a route", () => {
-  // The clearance rule must not seal a legitimate 1-cell gap: the same house's
-  // doorway at (175,119) has level-6 wall on BOTH sides, so a rule that refused
-  // to route near tall cells would make the house impossible to leave.
-  assert.equal(lvl(174, 119), 6);
-  assert.equal(lvl(176, 119), 6);
-  assert.equal(lvl(175, 119), 0, "the doorway is not where this test thinks it is");
-  const out = findPath(grid, 177.5 * CELL_WU, 116.5 * CELL_WU, 177.5 * CELL_WU, 122.5 * CELL_WU);
+test("the nudge is aimed at CLIMB walls, not just solids — and a doorway still admits a route", (t) => {
+  if (!world) return t.skip(SKIP);
+  // The clearance rule must not seal a legitimate 1-cell gap: the inn's
+  // doorway has a wall on BOTH sides, so a rule that refused to route near
+  // tall cells would make the house impossible to leave.
+  assert.equal(lvl(doorCol - 1, wallRow), inn.level);
+  assert.equal(lvl(doorCol + 1, wallRow), inn.level);
+  assert.equal(lvl(doorCol, wallRow), 0, "the doorway is not where this test thinks it is");
+  const out = findPath(grid, (doorCol + 0.5) * CELL_WU, (wallRow - 2.5) * CELL_WU, (doorCol + 0.5) * CELL_WU, (wallRow + 3.5) * CELL_WU);
   assert.ok(out && out.length > 0, "no route through the doorway — the clearance rule sealed the house");
   assert.ok(
-    out!.some((p) => Math.floor(p.y / CELL_WU) === 119),
+    out!.some((p) => Math.floor(p.y / CELL_WU) === wallRow),
     "the route never crosses the wall row, so it did not use the doorway",
   );
 
@@ -250,11 +283,15 @@ test("a dodge only emits a heading it checked, and keeps making progress", () =>
 //
 // Replayed at 60Hz through the real brain, because that fight only exists when
 // stepAutopilot, monsterDodge and stepMovement all run against real geometry.
-test("a body standing on the route is passed, not orbited", () => {
+test("a body standing on the route is passed, not orbited", (t) => {
+  if (!world) return t.skip(SKIP);
   const walk = { maxClimb: WALK_CLIMB, canSwim: true };
   const worldW = grid.width * CELL_WU;
   const worldH = grid.height * CELL_WU;
-  const npc = { id: "npc:aurelia", x: 178.5 * CELL_WU, y: 120.5 * CELL_WU, r: 9 };
+  // A villager parked at the wall's foot, in the middle of the run — on the
+  // route, which is the whole point.
+  const npcCol = run[Math.floor(run.length / 2)];
+  const npc = { id: "npc:villager", x: (npcCol + 0.5) * CELL_WU, y: (wallRow + 1.5) * CELL_WU, r: 9 };
 
   // 9 (npc) + (9 + 6) * MONSTER_DODGE_TIGHTEN(0.85). A GUARD, not a behaviour
   // check: it fires when the clearance moves so this fixture's geometry gets
@@ -303,8 +340,8 @@ test("a body standing on the route is passed, not orbited", () => {
   // Passing her: walking round somebody sweeps at most half a turn — beyond
   // 180° you are going round the back, which is the circle.
   for (const [label, from, to] of [
-    ["out of the house", [176.2, 117.6], [183.3, 118.3]],
-    ["back into it", [183.3, 118.3], [176.2, 117.6]],
+    ["out of the house", INSIDE, MARKER],
+    ["back into it", MARKER, INSIDE],
   ] as Array<[string, [number, number], [number, number]]>) {
     const r = trip(from, to);
     assert.ok(r.arrived, `${label}: never arrived`);
@@ -313,7 +350,7 @@ test("a body standing on the route is passed, not orbited", () => {
 
   // ...and tapping the ground she is STANDING on ends the trip beside her,
   // rather than circling until the 1.5s stall timer bails it out.
-  const onto = trip([176.2, 117.6], [178.5, 120.5]);
+  const onto = trip(INSIDE, [npcCol + 0.5, wallRow + 1.5]);
   assert.ok(onto.arrived, "a trip onto an occupied spot never ended");
   assert.ok(onto.t < 3.5, `took ${onto.t.toFixed(2)}s to give up on an occupied spot`);
   assert.ok(onto.deg < 90, `swept ${onto.deg.toFixed(0)}° around the spot before settling`);

@@ -9,34 +9,28 @@ inside the actual real game").
 
 - **`games2/config/publish.json`** — the ONLY hand-maintained part: published
   worlds, playable characters, the three game-referenced scenery pieces.
-  Everything else is DERIVED. `userWorlds` = `the_game` + `the_island2`
-  (maintainer 2026-09-02: the_game is the default map and, once he is happy
-  with it, the only playable one; the_island2 stays until then). A name may
-  live in EITHER world tree — resolved by probing `maps2/worlds` then
-  `maps2/worlds3`, as the server and build-worlds do — so the policy names a
-  world and nothing else.
-  **THE ONLY MAP THAT MATTERS IS `the_game`, AND THE TILES 2.0 WORLDS ARE ON A
-  COUNTDOWN** (maintainer 2026-09-05: "Only the_game is important, we will soon
-  remove all other maps that uses the tiles2 system. I just want to still have
-  it until the new map works."). They must keep WORKING — do not break the maps2
-  branch, its atlas or its gates — but they are not what anything is FOR:
-  measure, calibrate, profile and optimise against the_game, and never let a
-  tiles2 world's numbers stand in for the shipped one. That distinction is not
-  academic: `bench-findpath.ts` set the client's hold-to-move repath budget from
-  ring_test / glow_test / prop_demo at 6k-25k cells, where a route costs
-  0.46-10.54 ms p50, while the_game is 262,144 cells and costs 38.24 ms p50 and
-  70.10 ms max — the budget was tuned against a map nobody plays. When a tiles2
-  world and the_game disagree about a cost, the_game is the answer.
+  Everything else is DERIVED. `userWorlds` = `the_game`, THE ONLY WORLD
+  (maintainer 2026-09-09: "We will commit 100% to the new tiles3 system and
+  the new map from here on ... We will never go back to the tile2 system
+  again"). A name is resolved by probing `maps2/worlds3`, as the server and
+  build-worlds do — so the policy names a world and nothing else.
+  **MEASURE, CALIBRATE, PROFILE AND OPTIMISE AGAINST `the_game`**, and never
+  let a fixture's numbers stand in for the shipped map (paid for once:
+  `bench-findpath.ts` set the hold-to-move repath budget from 6k-25k-cell demo
+  worlds at 0.46-10.54 ms p50, while the_game costs 38.24 ms p50 — a budget
+  tuned against a map nobody plays).
+  RETIRED 2026-09-09: `tiles2/` (Tiles 2.0), `maps2/worlds/` (world@1/@2 —
+  the_island2, the demos, the test beds), the tile atlas, the maps2 render
+  branch of `WorldScene` (`this.maps2`, `rebuildProps`, `buildEmissiveSources`,
+  `tileatlas.ts`) and the tiles2 emission registry — history in git.
 - **`games2/scripts/shipset.mjs`** closes over those roots: a published world
-  drags in its `paths[]` tiles, its NPCs' character art, its spawn zones'
-  monsters, and — a worlds3 world — its placed SCENERY pieces' whole
-  directories (the manifest names sprite, rotations, variations and animations
-  and the maps2 agent places a piece as a whole: the_game, 187 pieces / 23.7 MB
-  for 1,263 placements). `--report` prints the savings table, `--check` fails
-  on a reachable-but-missing file, `--emit <dir>` materialises the curated
-  root. The Dockerfile's **`curate` stage** runs `--emit`; the final image
-  copies from it, one layer per domain. Measured: 358 MB of art on disk →
-  130.5 MB in the image (92.5 with the_island2 alone).
+  drags in its NPCs' character art, its spawn zones' monsters and its placed
+  SCENERY pieces' whole directories (the manifest names sprite, rotations,
+  variations and animations and the maps2 agent places a piece as a whole:
+  the_game, 187 pieces / 23.7 MB for 1,263 placements). `--report` prints the
+  savings table, `--check` fails on a reachable-but-missing file, `--emit
+  <dir>` materialises the curated root. The Dockerfile's **`curate` stage**
+  runs `--emit`; the final image copies from it, one layer per domain.
 - **A worlds3 world's TERRAIN ART is the tiles3 resolver's exact closure**,
   not the `tiles/` domain: `scripts/ship-tiles3.ts` (Dockerfile BUILD stage,
   where TypeScript exists; the curate stage has none) runs the real resolver
@@ -71,38 +65,22 @@ inside the actual real game").
   `max-age=31536000, immutable` + CORS. Sha-pinned jsDelivr first, raw as
   fallback for commits the CDN hasn't picked up.
 
-**THE TILE ATLAS.** A maps2 world boots from 1-2 committed sheets instead of
-one HTTP request per tile (571 for the_island2).
+**THE TILE ATLAS IS RETIRED** (2026-09-09, with tiles2): a maps3 world ships
+no per-cell tile art to pack, the ground streams per camera window
+(`Tiles3Loader`). `client/public/atlases/` holds nothing tracked; the BODY
+atlas (`bodyatlas.ts`, `scripts/build-bodyatlas.py`) is a separate, still
+unshipped loading strategy and falls back to per-file loads.
 
-- `scripts/build-atlas.py` packs each world's `paths[]` into **lossless** WebP
-  sheets under `client/public/atlases/` (lossless+exact per repo law — the
-  maintainer reviewed a lossy q85-q95 ladder on real sheets and ruled: **stay
-  lossless**), self-verified byte-for-byte per frame, two-band shelf pack
-  (tiles are 64×64 / 64×128), deterministic. `npm run atlas`; `-f` forces.
-- **The work is never repeated**: atlases are committed, content-addressed by
-  a digest over the tile list AND every tile's bytes; the packer skips
-  matching digests. Deploys only VERIFY (`scripts/check-atlas.mjs`, wired into
-  `npm run manifest` and the Dockerfile). A STALE atlas is **pruned, not
-  failed**: the client's index fetch 404s and it falls back to per-file tiles
-  — slower, never wrong pixels, never a red pipeline.
-- `client/src/tileatlas.ts` is a LOADING strategy only: sheets are sliced into
-  per-path canvas textures under the exact `t2:<path>` keys per-file loads
-  produced, so no draw site (ground RT, occluders, debris, flippedKey) can
-  tell which path ran; any failure degrades to individual loads. Probe:
-  `__ml.atlasInfo()`. Gates: `verify-atlas.mjs` (zero individual tile-art
-  requests on boot, all sliced, world renders); verify-indoor doubles as the
-  pixel canary against atlas-sliced textures.
-
-**STAGING WORLDS.** The image ships `userWorlds` ONLY (either tree — see the
-content split above); every `devWorlds`/`devWorlds3` map is streamed from the
-repo when an admin joins — a dev map costs production ZERO bytes (the leak
-this stops: 57 monsters in monster_demo dragged 16 MB of monster art in;
-measured 89.5 → 105.4 MB).
+**STAGING WORLDS.** The image ships `userWorlds` ONLY (see the content split
+above); every `devWorlds3` map (none today) is streamed from the repo when an
+admin joins — a dev map costs production ZERO bytes (the leak this stops: a
+57-monster demo world once dragged 16 MB of monster art in; measured 89.5 →
+105.4 MB).
 
 - CLIENT: `client/src/staging.ts`, one chokepoint `gameUrl()` — identity
   function when inactive (a normal player's path is byte-identical). Activated
-  (main.ts, chosen world not in the build) it rewrites `/assets/**`,
-  `/atlases/**` and the manifests to the sha-pinned jsDelivr base;
+  (main.ts, chosen world not in the build) it rewrites `/assets/**` and the
+  manifests to the sha-pinned jsDelivr base;
   `mergeStagingEntries` folds the repo's full monster/NPC manifests over the
   image's, rewriting only ADDED entries' URLs.
 - SERVER: `WorldRoom.readWorldDoc` — **disk first, always**; only a name the
@@ -110,36 +88,32 @@ measured 89.5 → 105.4 MB).
   (collision + spawn zones), so browser CORS alone can never make an unshipped
   map joinable.
 
-**TWO WORLD TREES.** `maps2/worlds` holds world@1/world@2 (baked tile paths);
-`maps2/worlds3` holds `pixel-maps3/world@1` (a ground NAME per cell, no art —
-tiles3 resolves what draws at draw time). `parseWorld` dispatches on the doc's
-own schema, so everything downstream of the read is identical; the ONLY
-difference is which directory a name lives in, and exactly three places carry
-it. **`maps2/worlds` is probed first everywhere**, which is what keeps every
-existing world's disk reads and network requests unchanged.
+**THE WORLD TREE.** `maps2/worlds3` holds `pixel-maps3/world@1` (a ground NAME
+per cell, no art — tiles3 resolves what draws at draw time). It is the ONLY
+tree since 2026-09-09 (`maps2/worlds`, world@1/@2 with baked tile paths, is
+retired), and exactly three places name it, each as a LIST so a second tree
+can be probed again without touching the callers: `WorldRoom.WORLD_ROOTS`,
+`build-worlds.mjs WORLD_ROOTS`, `shipset.mjs WORLD_TREES`.
 
-- `scripts/build-worlds.mjs` scans both and records `root` on an entry — OMITTED
-  for `maps2/worlds`, so those rows are byte-identical to before worlds3
-  existed. In the image this runs against the CURATED root, so production's
-  worlds.json still lists `userWorlds` only.
+- `scripts/build-worlds.mjs` scans it and records `root` on every entry. In
+  the image this runs against the CURATED root, so production's worlds.json
+  lists `userWorlds` only.
 - `client/src/maps.ts` — `worldRoot`/`setWorldRoot`/`worldFileUrl` are the ONE
   place the client builds a world-file URL (world.json, spawns, npcs, places).
-  A name nobody registered answers with `maps2/worlds`; only the two known
-  trees can be registered (a root arrives over the network).
-  `enterStaging(world, root)` takes it as a parameter rather than importing it
-  — maps.ts already imports `gameUrl` from staging.ts.
-- `WorldRoom.worldRootFor` resolves a name's tree ONCE per process: DISK across
-  both trees before any network, so a shipped world still never touches GitHub;
-  the staging fetch that resolves the root is the same one `stagingCache`
-  serves to the read behind it, so a v3 world costs ONE extra 404 per process
-  and a v2 world costs none. Every file of a world reads from ITS tree.
+  A name nobody registered answers with `maps2/worlds3`; only that tree can be
+  registered (a root arrives over the network). `enterStaging(world, root)`
+  takes it as a parameter rather than importing it — maps.ts already imports
+  `gameUrl` from staging.ts.
+- `WorldRoom.worldRootFor` resolves a name's tree ONCE per process: DISK
+  before any network, so a shipped world never touches GitHub; the staging
+  fetch that resolves the root is the same one `stagingCache` serves to the
+  read behind it. Every file of a world reads from ITS tree.
 - `config/publish.json` `devWorlds3` names maps3 STAGING worlds (none today:
   `the_game` is published). A published worlds3 world ships its docs, NPC,
   monster and scenery closure through shipset and its terrain art through
   ship-tiles3 (content split above); `--check-policy` verifies a published
   name against whichever trees are checked out, and an absent tree is "not
-  checked out", not a typo (the deploy's test job sparse-checks-out
-  `/maps2/worlds/` alone).
+  checked out", not a typo.
 - **The tiles3 ART needs no new plumbing**: the resolver names repo-relative
   files (`tiles/plates`, `tiles/patterns`, `tiles/tops`, `tiles/fades`,
   `tiles/base_candidates`, `tiles/review`, the index JSONs) served at
@@ -148,16 +122,11 @@ existing world's disk reads and network requests unchanged.
   `tiles` is in both asset-domain lists: dev serves the working tree, prod
   serves the published worlds' closure baked by ship-tiles3 and 404s
   everything else — the 400 MB domain never enters the image.
-- HOW TO PLAY IT: it is the DEFAULT map (`maps.ts DEFAULT_WORLD`, first in
-  the picker, preselected) and a user world since 2026-09-02; the dev worlds
-  stay admin-only (`npm run dev` shows them unconditionally). Gate:
-  `server/test/worldserve.test.ts` — both trees, disk and network, the request
-  log, `gameUrl`'s identity, and a real Colyseus join landing on the maps3
-  spawn.
-- KNOWN GAP, not this unit: `shared/parseSpawns` accepts
-  `pixel-maps2/spawns@1` only, and the_game's spawns.json says
-  `pixel-maps3/spawns@1` with a BYTE-IDENTICAL zone shape — so it joins with
-  82 zones and zero monsters until that schema is accepted.
+- HOW TO PLAY IT: it is the DEFAULT map (`maps.ts DEFAULT_WORLD`, the
+  server's `WorldRoom.DEFAULT_WORLD`, first in the picker, preselected); dev
+  worlds stay admin-only (`npm run dev` shows them unconditionally). Gate:
+  `server/test/worldserve.test.ts` — disk and network, the request log,
+  `gameUrl`'s identity, and a real Colyseus join landing on the maps3 spawn.
 
 **RENDERING A MAPS3 WORLD.** `WorldScene` has a SECOND art source, not a second
 renderer: the streaming RenderTexture, depth sort, occluders, painter order,
@@ -166,17 +135,17 @@ care where the picture came from. Four modules, all pure and Phaser-free:
 `client/src/tiles3.ts` (what draws on this cell), `tiles3draw.ts` (the two pixel
 ops + the composed-texture factory), `tiles3runtime.ts` (the same resolution ONE
 CELL AT A TIME, plus the streaming loader), `scenery3.ts` (off-grid set
-dressing). `this.maps3` gates every branch; `this.maps2` is false on a v3 world
-by construction, so no existing branch changed.
+dressing). `this.maps3` gates every terrain branch (false only for a hand-built
+`rows` literal, which draws a plain ground).
 
-- **THE PROJECTION IS PER WORLD.** tiles2 is dx 32 / dy 15 / storey 16; tiles3
-  is 32 / 14 / **15**, the last MEASURED off the x-over-x wall art
+- **THE PROJECTION IS PER WORLD.** The default (`MAP_GEOMETRY`) is dx 32 / dy
+  15 / storey 16; tiles3 is 32 / 14 / **15**, the last MEASURED off the x-over-x wall art
   (`measureStoreyPitch` — the doc says 17, render3 falls back to 16, and a
   pitch one row too large exposes a bright stripe of each lower floor at every
   storey). `parseWorld3` publishes it as `ParsedWorld.iso`; `maps.ts
   geometryFor` turns it into the scene's `this.geom` and returns the
-  `MAP_GEOMETRY` object ITSELF when it matches, so a world@1/@2 world cannot
-  move a pixel. `nightlight.ts` reads the same geometry. **INPUT ROTATION
+  `MAP_GEOMETRY` object ITSELF when it matches. `nightlight.ts` reads the same
+  geometry. **INPUT ROTATION
   DELIBERATELY DOES NOT**: `screenToWorldVector` takes the geometry but every
   movement call keeps the default, because client prediction and the
   authoritative server integrate the same inputs and the server carries no
@@ -238,9 +207,9 @@ by construction, so no existing branch changed.
       top face, margin 1         0            0                  6464
       top face, margin 2         0            0                  6000
 
-  A full plate's 17-row wall band gives 32 rows of overlap; a tiles2 tile gives
-  49, which is the whole reason no tiles2 world has ever shown a seam artefact —
-  that renderer is TOLERANT BY CONSTRUCTION, not more correct. A top-face-only
+  A full plate's 17-row wall band gives 32 rows of overlap (the retired tiles2
+  renderer's 64-px tiles gave 49, which is why its worlds never showed a seam —
+  tolerant by construction, not more correct). A top-face-only
   plate gives ONE, so it is the only thing here a single-row slip can mark, and
   it carries `TOP_FACE_MARGIN` (2) rows of its own SURFACE below the diamond —
   never the art's next row, which is the WALL BAND and put 76 wall texels per
@@ -260,11 +229,10 @@ by construction, so no existing branch changed.
   resident (deliberately — a fallback tile is a wrong picture nothing corrects),
   so a window painted while plates are in flight is missing art until a landing
   repaints those cells (`t3missing` -> `onTerrainBatch` -> `repaintTiles3Cells`).
-  **the_island2 boots from ONE committed atlas sheet with every tile resident,
-  while a maps3 world streams plates per file** — which is the real reason the
-  old world never shows this and the new one does, and NOT dy=15 vs dy=14 or the
-  tile overlap. Any seam report from the phone should be reproduced against COLD
-  art, not a warm local cache.
+  **A maps3 world streams plates per file** (the retired atlas worlds booted
+  with every tile resident, which is why they never showed this). Any seam
+  report from the phone should be reproduced against COLD art, not a warm
+  local cache.
 
 - **TWO PHASER TRAPS, both silent, both paid for here.**
   `textures.get(key)` returns the built-in `__MISSING` 32x32 checker for an
@@ -279,11 +247,11 @@ by construction, so no existing branch changed.
   plates back with `getImageData`, and a cross-origin image loaded without the
   attribute taints the canvas and makes every boundary in the world vanish.
 - **A TOP-FACE-ONLY PLATE IS THE ONLY ZERO-SLACK SEAM IN THE GAME, and it is
-  the whole reason the sea zigzags where no old map ever did** (maintainer
-  2026-09-03, the_island2 beside the_game: "0 zigzag. it just works"). A tiles2
-  world draws a 64-px-tall tile per cell on a dy=15 lattice, so neighbours
-  overlap by FORTY-NINE rows and there is no seam to get wrong at all; a full
-  tiles3 plate is 46 rows at dy=14 and overlaps by SEVENTEEN. A top-face-only
+  the whole reason the sea zigzagged where the old map never did** (maintainer
+  2026-09-03, the_island2 beside the_game: "0 zigzag. it just works"). The
+  retired tiles2 renderer drew a 64-px-tall tile per cell on a dy=15 lattice, so
+  neighbours overlapped by FORTY-NINE rows and there was no seam to get wrong; a
+  full tiles3 plate is 46 rows at dy=14 and overlaps by SEVENTEEN. A top-face-only
   plate is 29 rows overlapping by exactly ONE — and liquids are the only grounds
   still on that path, which is why sand stopped showing the artefact and water
   did not. The old renderer was TOLERANT BY CONSTRUCTION, not correct: every
@@ -451,9 +419,11 @@ by construction, so no existing branch changed.
   coloured frame cannot survive), a ring-2 fade cell and a composed boundary are
   resolved AND composed, a 7-storey capped cliff draws every storey, scenery
   reaches the window, the player walks on open grass and a level-6 escarpment
-  stops them, and the_island2 is re-joined in the same run and still renders off
-  its atlas. Every coordinate is derived from the world doc and carries its
+  stops them. Every coordinate is derived from the world doc and carries its
   derivation; every threshold was falsified against a deliberately wrong cell.
+  KNOWN STALE (2026-09-09): its fixture cells predate the 394x394 canvas
+  (maps2 b062b85874) and several lie off-grid — the gate now fails loudly
+  with a re-derive instruction instead of passing on holes.
   **COLOUR IS COMPARED UNLIT.** The night shader multiplies, and the light is
   PER CELL: measured at pinned Day on the_game it is 1.0 in the open and exactly
   0.55 on the east-coast cells standing in the level-6 cliff's own sun shadow.
@@ -625,16 +595,15 @@ by construction, so no existing branch changed.
   every bed and hearth arrived a round trip later and popped (maintainer
   2026-09-05: "the game is not ready to display what's inside"). 136
   placements on the_game, all already in the ship closure.
-  **THE MAPS3 TRANSITION FADES TOO** (`buildIndoorDebris3`): `buildIndoorDebris`
-  returned early on `!this.maps2`, so on the_game the roof left and returned on
-  ONE frame while the light eased — "I felt we had a solution for this that
-  looked ok": he had, on the_island2 (world@2). The maps3 branch builds the same
-  debris from tiles3 art — the storeys above the cut at `by - lvl*lh`, the real
-  cap at `surfaceY`, every deck the constrained column hides (equal-level roofs
-  over wall tops included) — at `oDepth + 0.01`, one step above the pooled
-  occluders' epsilons and 0.49 under the bodies. `verify-indoorscope` runs on
-  house_demo (world@2), which is why its "must not pop on a single frame" gate
-  never saw this. Probe: `__ml.indoorFade()` (debris count + alpha per frame).
+  **THE ROOF CROSSFADES** (`buildIndoorDebris3`, the only debris builder since
+  the world@2 one was retired): the roof used to leave and return on ONE frame
+  on the_game while the light eased ("I felt we had a solution for this that
+  looked ok" — he had, on the old world). The debris is built from tiles3 art
+  — the storeys above the cut at `by - lvl*lh`, the real cap at `surfaceY`,
+  every deck the constrained column hides (equal-level roofs over wall tops
+  included) — at `oDepth + 0.01`, one step above the pooled occluders'
+  epsilons and 0.49 under the bodies. `verify-indoorscope` runs on the_game.
+  Probe: `__ml.indoorFade()` (debris count + alpha per frame).
 - KNOWN GAPS, stated: no FADE GUARD in the game (it is a pixel test over art the
   pool has not fetched yet — measured, 2 of 10 pools keep a tile render3 drops,
   which is a wrong tile inside a 1-cell band, never a hole;
@@ -644,17 +613,11 @@ by construction, so no existing branch changed.
   parity fixture, and render3 has since grown slopes, set-dressed wall caps and
   a Chebyshev fade band, all of which are RESOLUTION decisions and belong in
   tiles3.ts and its fixture.
-- Both bases are INJECTABLE (`ml-staging-base`, `STAGING_WORLD_BASE`) — the
-  sandbox denies headless-browser egress, so the gate points at a local
-  fixture origin.
-- Gate: `verify-stagingworld.mjs` joins a world existing ONLY on the fixture,
-  named `staging_probe_<t>` unique per run (Colyseus keeps a room per world
-  name; a reused name rejoins the old room). Asserts the server half (fixture
-  spawn cell + monsters) AND client half (all tiles from the fixture, ZERO
-  requests for that world to the game origin). Fixture is monster_demo, NOT
-  house_demo (house_demo ships zero spawn zones — it can only fail).
-- `check-atlas.mjs --ship` drops non-published worlds' atlases from the image
-  (18 MB → 1.7 MB).
+- Both staging bases are INJECTABLE (`ml-staging-base`, `STAGING_WORLD_BASE`)
+  — the sandbox denies headless-browser egress, so a gate can point at a local
+  fixture origin. (`verify-stagingworld.mjs`, which joined a fixture-only
+  world@2 demo, was retired with tiles2; the server half is gated by
+  `worldserve.test.ts`.)
 
 **AR RETENTION**: `deploy/ar-cleanup.sh` — a server-side Artifact Registry
 cleanup policy (keep newest 15 versions, delete >14 days), pasted once into
@@ -664,7 +627,7 @@ pipeline.
 ## What this is
 
 The Nangijala game client + server. Renders the sibling art domains
-(`characters2/`, `tiles2/`, `maps2/`, `scenery/`) **read-only** — never edit
+(`characters2/`, `tiles/`, `maps2/`, `scenery/`) **read-only** — never edit
 them (`coordination/PROTOCOL.md`). Boards: `coordination/games.json` (game
 agent) + `coordination/games-ui.json` (games-ui agent; the per-file ownership
 split is `UI_AGENT.md`). Self-iterating loop: `loop/LOOP.md`.
@@ -685,11 +648,11 @@ split is `UI_AGENT.md`). Self-iterating loop: `loop/LOOP.md`.
 
 - Art is read from the repo-root sibling domains — NOT copied in. Dev (Vite
   middleware in `client/vite.config.ts`) and prod (`server/src/index.ts`) both
-  serve `/assets/<domain>/…` from `characters2/ tiles2/ maps2/ scenery/`
+  serve `/assets/<domain>/…` from `characters2/ tiles/ maps2/ scenery/`
   (`ASSETS_ROOT` overrides, e.g. in Docker).
 - `scripts/build-manifest.mjs` scans `characters2/humans/` →
   `client/public/characters.json` (uid, name, frame size, per-anim/dir counts,
-  urls); `build-worlds.mjs` discovers `maps2/worlds/*/world.json` →
+  urls); `build-worlds.mjs` discovers `maps2/worlds3/*/world.json` →
   `client/public/worlds.json`. Regenerate after graphics change
   (`npm run manifest`).
 - **LOSSLESS WEBP IS THE PRODUCTION IMAGE FORMAT** (repo law — see root
@@ -702,7 +665,7 @@ split is `UI_AGENT.md`). Self-iterating loop: `loop/LOOP.md`.
   2. `client/ui-src/**`, `scripts/assets/**` — the maintainer's hand-drawn
      SOURCE art; build inputs, never served (baked output in `ui2/` is WebP).
   3. `server/test/fixtures/*.png` — the WebP gate's comparison pair.
-  4. `tiles2/docs/`, `lore/icons/` — documentation art.
+  4. `lore/icons/` — documentation art.
 - **The transitional fallbacks are GONE — do not reintroduce them** (removed
   2026-07-31 once measured clean: the server's `.png`↔`.webp` sibling
   middleware, `WorldScene.loadImageEitherExt`/`onLoadMiss`, the campfire
@@ -741,9 +704,11 @@ split is `UI_AGENT.md`). Self-iterating loop: `loop/LOOP.md`.
 
 ## Isometric world
 
-- `shared/parseWorld` reads `maps2/worlds/<name>/world.json` — **world@1**
-  (materials/paths/top/level/mat grids + props + spawn + size; legacy
-  `rows`/bigworld@1 still parse). Geometry: `x=(col-row)*32`,
+- `shared/parseWorld` reads `maps2/worlds3/<name>/world.json` —
+  **pixel-maps3/world@1** (`parseWorld3`: a ground NAME per cell, level, walls,
+  decks, rooms, scenery, spawn, size, the world's own `iso`); a hand-built
+  `{width,height,rows}` literal still parses for fixtures. (world@1/@2 and
+  bigworld@1 retired 2026-09-09.) Geometry: `x=(col-row)*32`,
   `y=(col+row)*dy − level*lh`, painter order `(col+row,row)`. World units:
   **32 per cell** (`CELL_WU`); WORLD_WIDTH/HEIGHT are sized to the grid.
 - The world is too large for one texture: `WorldScene` streams a
@@ -754,18 +719,18 @@ split is `UI_AGENT.md`). Self-iterating loop: `loop/LOOP.md`.
   this repo never swaps a cell's art. REJECTED and fully rolled back: a shader
   seam-smear AND a brightness "ground wash" (maintainer wants the fresh,
   effect-free ground). Do not reintroduce any ground repetition effect.
-- **world@2 decks** (elevated walkable slabs — roofs, bridge spans): strict
-  superset of world@1 (`parseWorld` optional `decks`; `Deck`/`DeckCell`). A
-  deck is a SECOND surface floating over unchanged base terrain (walk/swim
-  UNDER it). `redrawGround` draws each deck cell right after its base cell:
-  `thickness` face tiles then the `top` diamond at `level`. Spec:
-  `maps2/spec/WORLD_FORMAT.md`; only `occlusion_test` ships decks.
+- **Decks** (elevated walkable slabs — roofs, bridge spans; `parseWorld`
+  optional `decks`; `Deck`/`DeckCell`). A deck is a SECOND surface floating
+  over unchanged base terrain (walk/swim UNDER it). `redrawGround` draws each
+  deck cell right after its base cell: `thickness` face courses then the
+  slab's ONE surface at `level` (A SLAB WEARS ONE SURFACE, above). Spec:
+  `maps2/spec/WORLD3.md`; the_game ships 28 decks.
   - **Current-layer movement**: each `Player` carries `elev` (surface LEVEL);
     `shared/canEnterElev`+`resolveElevAt` offer a deck cell TWO surfaces and
     keep you on whichever is reachable and closest to your current elev — you
     cross a bridge/roof instead of falling through; under-walkers stay on the
-    base. Non-deck cells resolve exactly as `canEnter` (world@1 unaffected). A
-    deck stays walkable over a blocked base.
+    base. Non-deck cells resolve exactly as `canEnter`. A deck stays walkable
+    over a blocked base.
   - **Tap-to-move is deck-aware**: `pickGround` returns the deck when tapped;
     `findPath` searches a LAYERED graph (node = (cell, base|deck)), threaded
     through `startTrip`/`stepAutopilot` as `fromElev`/`goalLevel`.
@@ -797,12 +762,12 @@ split is `UI_AGENT.md`). Self-iterating loop: `loop/LOOP.md`.
   `"ot"`/`"od"` occluder tags went with it; `tagOccluder` stamps the cell
   only. History in git.
 - **Occluder view-cull + deck exposure** (`rebuildOccluders` rebuilds the set
-  when the camera drifts `OCC_STEP` = 96px — pooled on maps3, see THE OCCLUDER
-  SET IS POOLED below; the maps2 branch still destroys and recreates):
+  when the camera drifts `OCC_STEP` = 96px — pooled, see THE OCCLUDER SET IS
+  POOLED below):
   - Deck cells get the exposed-face rule via `deckCoverFrom`, comparing BANDS
     (a slab covers `[level-thickness, level]`; only a CONTIGUOUS run reaching
     my own bottom hides my faces). Without it every face level of every deck
-    cell drew — the_island2's 16-32-level cave decks were ~65% of the mountain
+    cell drew — the old island's 16-32-level cave decks were ~65% of the mountain
     window's images.
   - Each face/top image is skipped unless it lands in the camera view grown by
     `OCC_CULL_PAD` (a rebuild step + a tile + the widest body art box).
@@ -820,11 +785,10 @@ split is `UI_AGENT.md`). Self-iterating loop: `loop/LOOP.md`.
     per-tile culling left 94 uncovered columns.
   - Probe `__ml.occAudit()` checks against Phaser's own `getBounds()` and the
     camera's `worldView` (never the cull arithmetic): `metaWithoutArt` must be
-    0 (props excluded — they draw from `propImgs`, never culled). Measured:
-    13,521 → 3,885 images at the mountain; `coverY` under every thick cave
-    slab bit-identical to pre-cull. Gate: the occluder block of
-    `verify-smoke.mjs` on `occlusion_test` (the only compact world with BOTH
-    level-32 terrain and decks), standing and walking.
+    0 (solid scenery meta excluded — it never has an occluder image).
+    Measured: 13,521 → 3,885 images at the mountain; `coverY` under every
+    thick cave slab bit-identical to pre-cull. Gate: the occluder block of
+    `verify-smoke.mjs` at the_game's spawn, standing and walking.
   - **THE OCCLUDER SET IS POOLED, NOT REBUILT** (`occImage`, `destroyBatch`,
     2026-09-02). A rebuild used to destroy every image and create every image,
     and 90-95% of what it created was bit-identical to what it had just
@@ -858,8 +822,7 @@ split is `UI_AGENT.md`). Self-iterating loop: `loop/LOOP.md`.
     goes through `litDepth` (×1e-5) takes it** — lit copies are never pooled
     and keep their creation order, and 1e-6 in the lit band is 0.1 world px
     per index (review caught scenery lit copies 165-540 px in front of the
-    bodies before them). The maps2 branch (the_island2) creates images the old
-    way and never sees the pool. A pooled image the scene has destroyed
+    bodies before them). A pooled image the scene has destroyed
     (`scene` gone) is dropped, never reused; anything a throw strands in the
     pool is drained at the next rebuild. The pool holds TEXTURE OBJECTS across
     rebuilds, so tiles3's `limit: 0` cache must stay unbounded, or an eviction
@@ -1353,7 +1316,7 @@ split is `UI_AGENT.md`). Self-iterating loop: `loop/LOOP.md`.
     ≥ 6 levels costs `round(frac·hpMax)` through the standard `hurtPlayer`.
     Landing in SWIMMABLE water is a dive — free. Walking off a cliff manually
     is allowed; the damage is the price.
-  - Gates: `server/test/falldamage.test.ts` (curve pins; the_island2 route law
+  - Gates: `server/test/falldamage.test.ts` (curve pins; the route law
     verified failing on the pre-fix baseline; live-room cliff + dive).
 - **Auto-jump**: walking INTO a 1-level wall auto-fires the jump
   (`maybeAutoJump`/`wouldAutoJump` from `predictAndSend`). Rule: exactly
@@ -1459,16 +1422,15 @@ split is `UI_AGENT.md`). Self-iterating loop: `loop/LOOP.md`.
 - **THE DEPLOY GATE AND CI MUST SEE THE SAME WORLD** — they do not, and that
   is why main can deploy while CI is red (ambient agent, 2026-09-07). The
   deploy workflow's test job uses a SPARSE CHECKOUT (`nangijala-deploy.yml`:
-  `/games2/`, `/characters2/`, `/maps2/worlds/`, `/live/`,
-  `/tiles2/emission.json`) and `maps2/worlds3/` — the directory holding
-  the_game, the world that actually ships — is NOT in it. Every test that reads
-  it calls `test.skip("maps2/worlds3/the_game missing")`, so the gate goes
-  green on tests it never ran. MEASURED by hiding the directory locally:
-  461 tests, 0 fail, 88 SKIPPED — against 441 tests and 20 fail with it
-  present. A skipping test is not a passing test, and a gate that cannot see
-  its data cannot fail. Closing it means adding `/maps2/worlds3/` (18 MB) to
-  that sparse checkout — do it the moment the fixtures are green, because
-  until then it stops every deploy, and the maintainer tests in production.
+  `/games2/`, `/characters2/`, `/live/`, the wiki gate's two paths) and
+  `maps2/worlds3/` — the directory holding the_game, the ONLY world — is NOT
+  in it. Every test that reads it calls `test.skip("maps2/worlds3/the_game
+  missing")`, so the gate goes green on tests it never ran (since 2026-09-09
+  every world-reading test targets the_game, so the gate runs none of them).
+  A skipping test is not a passing test, and a gate that cannot see its data
+  cannot fail. Closing it means adding `/maps2/worlds3/` (18 MB) to that
+  sparse checkout — do it the moment the fixtures are green, because until
+  then it stops every deploy, and the maintainer tests in production.
   (`/tiles/` 684 MB and `/scenery/` 221 MB stay out — those tests already
   guard themselves on their own fixtures.)
 - **INDOOR FURNITURE CROSSES WITH ITS ROOF** (`roofedFade()` = 1 −
@@ -1593,9 +1555,8 @@ split is `UI_AGENT.md`). Self-iterating loop: `loop/LOOP.md`.
   BEHIND a house over the house's front wall (lifted from its 10861.8 anchor
   line to 10918.6, a wall cell's front edge four cells in front). One-level
   columns always lift: a room's interior walls are cut to height 1 indoors,
-  and one-level ledges have their own cover rules (`faceOverFeet`). maps2
-  metas carry no `stand` and keep the unconditional lift (the_island2
-  unchanged). Measured after: house 10 roofed pieces drawn; the 4 beds whose bottom a one-level stub in front covers are the same pieces at the same depths with the rule stashed; cave 5 pieces under one-level stubs, identical pieces and depths with and without the rule; the tree stays at its own line (10875.8) under both overlapping wall cells (10946, 10960); the sign paints over the player behind it (11631.6 vs 11619.9) and under the player in front (11647.9).
+  and one-level ledges have their own cover rules (`faceOverFeet`). A meta
+  without `stand` keeps the unconditional lift. Measured after: house 10 roofed pieces drawn; the 4 beds whose bottom a one-level stub in front covers are the same pieces at the same depths with the rule stashed; cave 5 pieces under one-level stubs, identical pieces and depths with and without the rule; the tree stays at its own line (10875.8) under both overlapping wall cells (10946, 10960); the sign paints over the player behind it (11631.6 vs 11619.9) and under the player in front (11647.9).
   THE RECORD ON THE FIRST GATE (2026-09-06): keyed on `top` alone, it was
   blamed for a room's furniture vanishing and reverted within the hour. The
   empty house was maps2's cave-gate commit dropping the furniture from the
@@ -1710,17 +1671,17 @@ clip, no tint.
 - Style per sound id + MATERIAL (`styleFor`): tints chosen for CONTRAST, not
   match — a dark ground reveals a lighter SUB-material (maintainer). Grass →
   DIRT through the blades (`fs-pair` ≈ `#9c7d4f`); `stone` keeps its dark
-  scuff (`fs-dot` `#141418`); only near-black `black_mountain` overrides to
+  scuff (`fs-dot` `#141418`); only near-black `black_rock` overrides to
   lighter stone dust (≈ `#9a9aa0`); sand/snow/ice get darker/cool presses.
   Marks draw below the night overlay (contrast holds at night); foot-width
   ~7px; depth `y-0.5`; pooled + capped 240; peak alpha ~2s then quadratic
   ease-out. Probes: `__ml.footprints()`, `__ml.footprintsList()`,
-  `__ml.myScreen()`. QA on trans_demo's flat material bands.
+  `__ml.myScreen()`.
 
 ## Monsters (client rendering = the SHARED body pipeline)
 
 - **Spawn placement is MAPS2 DATA**: every world ships
-  `maps2/worlds/<name>/spawns.json` (`pixel-maps2/spawns@1`, spec
+  `maps2/worlds3/<name>/spawns.json` (`pixel-maps3/spawns@1`, spec
   `maps2/spec/SPAWNS.md`) — polygon zones `{id, monster, area, elev, num}`.
   The game's old hardcoded rectangles are DELETED. `shared/monsters.ts` does
   the pure geometry (`parseSpawns`/`pointInZone` even-odd/`zonePolygonCells` —
@@ -2487,7 +2448,7 @@ drives all of it: camera zooms to 3× on the body; a screen-space veil ramps to
 
 ## NPCs (maps2 placement + characters2 art, client-side decor)
 
-maps2 places people (`maps2/worlds/<name>/npcs.json`, `pixel-maps2/npcs@1`,
+maps2 places people (`maps2/worlds3/<name>/npcs.json`, `pixel-maps2/npcs@1`,
 spec `maps2/spec/NPCS.md`); characters2 owns who they are
 (`characters2/npcs/<id>/`). The game just draws them.
 
@@ -2857,12 +2818,11 @@ height reads per thing per frame.
   ambient clock so shadows sweep. CPU twin `sunFactorAt()` shades lit-copy
   tints. Probes: `__ml.sunInfo()`, `__ml.sunAt(col,row[,z])` (z=−1 = own
   height). Regression: scripts/verify-sunshadow.mjs.
-- STALE GATES, known: verify-glow-seams (11 horizontal raw-field seams on
-  glow_test, identical on the pre-light-ledger baseline — pre-existing);
-  verify-solidband + verify-wallspread (predate maps2 worlds, fail on
-  baseline); verify-penumbra is PINNED TO NIGHT and finds pre-existing base
-  defects at some ledges (fails identically on the pre-sun baseline —
-  candidate-placement sensitivity, needs its own follow-up).
+- STALE GATES, known: verify-solidband + verify-wallspread (predate maps2
+  worlds, fail on baseline); verify-penumbra is PINNED TO NIGHT and finds
+  pre-existing base defects at some ledges (fails identically on the pre-sun
+  baseline — candidate-placement sensitivity, needs its own follow-up).
+  verify-glow-seams went with its glow_test world (2026-09-09).
 
 ## Night lighting (client/src/nightlight.ts)
 
@@ -2901,8 +2861,7 @@ height reads per thing per frame.
   keys it on the ground map's G flag, set within 4 cells of any share
   (`setSceneryOccluders`), so the 8 steps × 2 fetches run on ~2% of the map
   and one texel-centre fetch elsewhere (identity, proven per turn by
-  `__ml.nightParity("night","gate")`; tiles2 worlds keep the gate 0 and the
-  loop unconditional as before); `emitAt` is fetched only
+  `__ml.nightParity("night","gate")`); `emitAt` is fetched only
   under `uEmitN > 0.5`; the glow field is cleared only when it has or had
   stamps and `uGlowOn` is 1 only when it has them (a clear of an empty field
   is a whole extra render pass on a tiler). NOT taken, on purpose: half-res
@@ -2921,7 +2880,7 @@ height reads per thing per frame.
   GLSL const atop DEPTHFOG_FRAG: read the meanings there, not here.
   **ELEV_D0 = 7** is the elevation DEAD-ZONE — no edge fog until the surface
   is 7 LEVELS from the player, so a house/roof stays clear and only real
-  mountains fog (occlusion_test tops at exactly 7 = the boundary). REJECTED:
+  mountains fog (a house roof at level 6 sits just inside it). REJECTED:
   elevation-banded v1; then a TRUE 3D-distance SPHERE, which killed the zigzag
   AND, fatally, the edge contrast (its bands floated across terrain, never
   landing on an edge — maintainer: "makes it even harder to see the real
@@ -2956,7 +2915,7 @@ height reads per thing per frame.
   painted knife-edged phantom shadows outside the drawn art.
 - **SCENERY OCCLUDES LIKE A PROP** (`NightLights.setSceneryOccluders`): a maps3
   piece's collision footprint (`grid.footprints`) enters the SAME channels a
-  tiles2 prop does — linear R + an EQUAL G share, ground R — so the torch's LOS
+  grid prop did — linear R + an EQUAL G share, ground R — so the torch's LOS
   march and the sun's prop patch shade it with no shader change and R−G stays
   byte-exact (cliffs and depth fog untouched: fog hash identical on/off).
   Trunk = the footprint's cells at round(art px / 88) levels, clamped 1..3 (a
@@ -2976,8 +2935,7 @@ height reads per thing per frame.
   the skirt-shaded ground around it ("darker in corners like this"); and this.
   Measured, signpost: Day own cell cast side 0.66 = the cast shadow, sunny side 0.78 (was 1.00), ground outside the cell 1.00; Night torch the Night reading caught the phase change mid-flight; the torch case is the barrel; house barrel own cell cast side 0.43 (cast shadow 0.41), near side 0.56 (was 0.73), outside 0.84.
   The twin takes the contact only for GROUND samples (`groundContact`, the
-  `__ml.lightAt` probe): a body brushing past a post keeps its tint. Scenery
-  only (ownShare is 0 on a props world) — the_island2 byte-identical. A
+  `__ml.lightAt` probe): a body brushing past a post keeps its tint. A
   canopy disc would still lattice under the sample skip; unbuilt, the
   maintainer's call.
   THE SWITCHES ARE PUSHED ON THE SHADER BEING BUILT (`setScenerySwitches(s)`
@@ -3012,8 +2970,8 @@ height reads per thing per frame.
   OWN-CELL SKIRT SKIP: the bump's bilinear skirt reaches a cell out, so the
   tread under a 0.5-cell trunk darkened 21% on the torch side — a pixel whose
   cell carries a share now skips LOS samples within one cell of that cell's
-  centre (`ownShare`, twin in `lightAt`); props write no B, so tiles2 is
-  byte-identical. THE LIGHT'S OWN CELL IS SKIPPED THE SAME WAY (`lShare`,
+  centre (`ownShare`, twin in `lightAt`). THE LIGHT'S OWN CELL IS SKIPPED
+  THE SAME WAY (`lShare`,
   twin `lShare`): a fire IS its piece, and a share taller than the light
   (a lamp post's 2 levels vs a light at head height) would block its own
   pool from the samples that land in its cell. By construction — the cave
@@ -3367,17 +3325,16 @@ height reads per thing per frame.
   ground 1 cell from the nearest lamp 0.63 luma vs 0.30 at 4.5 cells — half
   the campfire, exactly the table's strength 0.5; brightness is now the
   maintainer's column, not ours.
-- **EMISSIVE TILES ARE REAL LIGHTS — THE LIGHT SLOT LEDGER** (maintainer: "NO
-  DIFFERENCE in how bright the bonfire [tile] is vs the campfire [object]";
-  measured parity 0.95). `buildEmissiveSources()` resolves every emissive prop
-  once per world and `pickWorldLights()` fills THE LEDGER: 12 slots = 1 my
+- **EVERY WORLD LIGHT IS A REAL LIGHT — THE LIGHT SLOT LEDGER** (maintainer:
+  "NO DIFFERENCE in how bright the bonfire is vs the campfire"; measured
+  parity 0.95). The sources are the scenery lights (`sceneryLightSources`,
+  above; the tiles2 emissive props and `buildEmissiveSources` were retired
+  2026-09-09) and `pickWorldLights()` fills THE LEDGER: 12 slots = 1 my
   torch + 1 ambient agent + 2 future fx + **8 world**, reservations STRICT,
   never lent. Write-side APIs: `client/src/lightslots.ts`; the slot table,
-  placement rule, derived-default formula and `tiles2/emission.json` `lights`
-  fields are in `games2/spec/LIGHT_BUDGET.md` (whose `LIGHT_HYST_PX`
-  hysteresis predates tenure — this file wins). Curated params live in
-  tiles2's `pipeline/emission.py` LIGHTS; a hand-edit of the json is lost on
-  regeneration. A slotted source's ground-pool STAMP is suppressed while it
+  placement rule and derived-default formula are in
+  `games2/spec/LIGHT_BUDGET.md` (whose `LIGHT_HYST_PX` hysteresis predates
+  tenure — this file wins). A slotted source's ground-pool STAMP is suppressed while it
   holds the slot (both feed `lightAt` — keeping them double-brightens ground
   AND characters); losing the slot returns the pool = the OVERFLOW FALLBACK,
   so an over-budget spot degrades to "stamp-only while visible" — a look,
@@ -3418,29 +3375,21 @@ height reads per thing per frame.
     `LIGHT_RAMP_MS` (450) while their pool stamp crossfades out; a candidate
     beating a fully-settled holder by `LIGHT_STEAL_MARGIN` (200px) dissolves
     the worst holder out, at most `LIGHT_RETIRE_MAX` (2) at once — all four
-    defined with their reasoning in WorldScene.ts. Gate:
-    scripts/verify-lighttenure.mjs (pans glow_test, ~180 sources vs 8 slots).
-    ITS TRAPS: the first lookAt is a camera TELEPORT that legitimately dumps
-    spawn-side holders (settle before the baseline), and fairness numbers are
-    captured AFTER the frame's decisions.
-  - `check-light-budget.mjs` (in `npm test`): no camera window may be
-    reachable by >8 world pools. RATCHET: pre-existing over-budget worlds are
-    pinned in `spec/light-budget-baseline.json` at their measured worst and
-    fail only when WORSE; it MIRRORS the client's radius derivation (drift
-    audits a different set than the renderer lights). The LIVE the_island2 is
-    **8/8, exactly at the line** (worst window at 114,54) — tell maps2 before
-    adding ANY light source near it.
+    defined with their reasoning in WorldScene.ts. (Gate
+    `verify-lighttenure.mjs` and the `check-light-budget.mjs` ratchet went
+    with their tiles2 worlds, 2026-09-09; a scenery-light budget gate over
+    the_game is owed. TRAPS for whoever writes it: the first lookAt is a
+    camera TELEPORT that legitimately dumps spawn-side holders — settle
+    before the baseline — and fairness numbers are captured AFTER the frame's
+    decisions.)
   - The QA `probeLight` consumes a WORLD slot while set — slot-counting gates
     must expect ≤7 world holders. Probes: `__ml.lightSlots()` (live ledger +
     overflow), `__ml.lightAt()` (CPU twin), `__ml.torch(on?)`. Gate:
     `scripts/verify-lightparity.mjs` (parity, indoor, budget invariants).
-- **Self-emission** is data-driven from `tiles2/emission.json`
-  (`tiles2-emission@1`, tiles2's): per-MATERIAL glow params + per-tile-path
-  `sources`. In maps2 worlds every emissive tile is a PROP; `rebuildProps`
-  stamps a tinted radial halo per visible source into the world-anchored
-  additive glow RT the shader ADDS to the light field (a mushroom lights its
-  patch, the forest stays dark). Showcase world: maps2's `glow_test` — where
-  glow/night QA happens.
+- **Tile self-emission is RETIRED** (2026-09-09, with `tiles2/emission.json`
+  and its `rebuildProps` halos): `NightLights` still takes an `EmissionMap`
+  and the scene passes an empty one; scenery lights carry every glow stamp
+  (`sceneryStamps`). glow/night QA happens at the_game's town by Night.
 - The light/mist/depth-fog overlay quads BLEED ~1% past every screen edge
   (spanScale = 1.02; overlays drawn at invZoom*k while uCam spans k× the
   view — the stretches cancel, world→screen mapping EXACT): without it,
@@ -3539,7 +3488,7 @@ height reads per thing per frame.
     current level — the round body clips the shared CORNER cell mid-segment,
     and a diagonal past a real drop walked bodies off the corner into the gap
     (maintainer: "shortcuts and falls"). Jump-climb diagonals disallowed
-    (jumps are cardinal). Gate: the occlusion_test bridge-climb trip in
+    (jumps are cardinal). Gate: the bridge-climb trip in
     navigation.sim.test.ts.
   - The route is HITBOX-aware end to end: waypoints one per cell (merged
     long legs drift a quantized follower into prop margins), each nudged
@@ -3652,7 +3601,8 @@ height reads per thing per frame.
   runs everything browser-bound in a single Chromium + world load (~30s):
   loading overlay, badge, tap run, hold steering, keyboard cancel, jump anim,
   anim rates, in-place reconnect (last — it swaps the session), then one
-  reload for a glow_test join. Per-feature scripts remain for deep dives.
+  reload into the busiest spawn cluster for the monster and occluder blocks.
+  Per-feature scripts remain for deep dives.
 - **Headless-GL starvation preflight**: verify-smoke measures raw keyboard
   speed first and ABORTS ("HARNESS STARVED") if slow — software-GL at big
   viewports throttles the frame loop into slow motion that fakes "stuck
@@ -3684,6 +3634,15 @@ height reads per thing per frame.
     device px. Any straight-edge artefact belongs to that state.
 - Rule of thumb: no pixels/pointers/websockets/Phaser anims needed → it
   belongs in `server/test` (3s), not a browser (minutes).
+- **A WORLD-READING TEST SKIPS WHEN THE TREE IS ABSENT, AND SKIPS BEFORE IT
+  LISTENS.** The deploy's test job checks out no world tree (see THE DEPLOY
+  GATE, above), so `maps2/worlds3/the_game` is missing there; a test that
+  `readFileSync`s it after `gameServer.listen()` throws, the open server keeps
+  the process alive, and `node --test` waits for the file forever — deploy run
+  3279 (2026-09-09) sat 20 minutes on exactly that and was cancelled, which
+  blocked every deploy behind it. The pattern is `if (!existsSync(path))
+  return t.skip("the_game missing")` as the FIRST line, and `listen` inside
+  the `try` whose `finally` shuts the server down.
 - **Deploy** (push to main → live): the workflow runs `test` (typecheck +
   full suite) IN PARALLEL with the layer-cached image build; `deploy` needs
   both. Triggers on `games2/**` AND every domain the image bakes (art pushes
@@ -3740,7 +3699,7 @@ height reads per thing per frame.
   file (maintainer 2026-09-02: one uncached list of hashes, fetch only what
   changed — and no cache bugs). `?v=<build sha>` (VITE_GIT_SHA) remains the
   FALLBACK for whatever the index does not name — client/public art (UI,
-  atlases, icons), a staging world's CDN URLs, any boot where the index
+  icons), a staging world's CDN URLs, any boot where the index
   failed — with the old rule: `immutable` only when v matches the server's
   OWN GIT_SHA, else no-cache. sw.js caches nothing. The index is fetched
   first of all in main.ts and awaited with the four boot catalogs (which

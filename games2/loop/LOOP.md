@@ -6,7 +6,7 @@ pushes to `main`. The next run resumes from the repo state.
 
 The game lives at **`games2/`** inside the **`mikael-floden/pixel`** monorepo
 (Node/TS + Colyseus server, Phaser + Vite client). Art comes from the sibling
-agent domains at the repo root (`characters2/`, `tiles2/`, `maps2/`,
+agent domains at the repo root (`characters2/`, `tiles/`, `maps2/`,
 `scenery/`) — no submodule. See `games2/CLAUDE.md` and
 `coordination/PROTOCOL.md`. **Run everything from `games2/`.**
 
@@ -17,7 +17,7 @@ agent domains at the repo root (`characters2/`, `tiles2/`, `maps2/`,
   `git fetch && git rebase origin/main` and retry (disjoint paths merge
   cleanly).
 - **Stay inside `games2/`.** Never create/edit/delete files under another
-  agent's domain (`characters2/`, `tiles2/`, `maps2/`, `scenery/`, other
+  agent's domain (`characters2/`, `tiles/`, `maps2/`, `scenery/`, other
   `coordination/*`). The only file you write outside `games2/` is your own
   `coordination/games.json`.
 - **MAP/WORLD ART is the maps/tiles agents' domain** — never redesign or

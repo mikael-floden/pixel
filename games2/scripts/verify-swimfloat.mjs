@@ -1,5 +1,5 @@
 // Elevated-pool swim FLOAT gate (dev-stack browser): water can sit at ANY
-// elevation (the_island2's plateau lagoons are level-4 clear_water), and the
+// elevation (the_game's hill pools are level-2/level-6 water), and the
 // swim float must settle relative to the POOL'S OWN surface — feet `swimDrop`
 // px under `surfLevel·lh` — not at the absolute `-swimDrop` below world level
 // 0 (the original bug: walking into a level-4 lagoon sank the character the
@@ -11,17 +11,22 @@
 import { chromium } from "playwright-core";
 import { readFileSync } from "fs";
 
-const WORLD = "the_island2";
-const w = JSON.parse(readFileSync(new URL(`../../maps2/worlds/${WORLD}/world.json`, import.meta.url)));
-const LH = w.geometry?.level_px ?? 16; // px per elevation level (client MAP_GEOMETRY.lh)
+const WORLD = "the_game"; // maps2/worlds3 — pixel-maps3/world@1
+const w = JSON.parse(readFileSync(new URL(`../../maps2/worlds3/${WORLD}/world.json`, import.meta.url)));
+const LH = 15; // px per elevation level: ISO_GEOMETRY_MAPS3.lh (a v3 world draws on 32/14/15)
 const W = w.size.w, H = w.size.h;
-const mat = (c, r) => { const m = w.mat[r]?.[c]; return (w.materials && w.materials[m]) || m; };
+// pixel-maps3: `ground[y][x]` indexes `grounds` by name; a swimmable ground is
+// one named in `liquids` other than lava (swimmable too, but it burns).
+const mat = (c, r) => { const g = w.ground[r]?.[c]; return g >= 0 ? w.grounds[g] : ""; };
 const lvl = (c, r) => w.level[r]?.[c];
 const isWater = (c, r) => /water/.test(mat(c, r) ?? "");
 
 // Find a walk-in entry (land cell whose S neighbour is water at the SAME level)
 // for (a) the highest-elevation pool and (b) the level-0 sea — both derived
 // from world.json so the maps agent reshaping the island keeps this gate alive.
+// the_game has 116 water cells above level 0 (levels 2 and 6, around 162..171,
+// 126); should a re-author drop them all, only the level-0 float is asserted
+// and the run says so.
 function findEntry(wantLevel) {
   let best = null;
   for (let r = 20; r < H - 20; r++)
@@ -37,11 +42,12 @@ function findEntry(wantLevel) {
 }
 const pool = findEntry("max");
 const sea = findEntry(0);
-if (!pool || pool.L < 1) {
-  console.log(`verify-swimfloat: SKIP — ${WORLD} has no elevated pool with a same-level walk-in entry (highest=${pool?.L ?? "none"}).`);
-  process.exit(0);
-}
-console.log(`${WORLD}: pool entry land(${pool.land}) -> water(${pool.water}) level=${pool.L}; sea entry land(${sea.land}) -> water(${sea.water})`);
+if (!sea) { console.log(`verify-swimfloat: FAIL — ${WORLD} has no level-0 sea with a walk-in entry`); process.exit(1); }
+const ELEVATED = !!pool && pool.L >= 1;
+if (!ELEVATED)
+  console.log(`verify-swimfloat: ${WORLD} has no elevated pool with a same-level walk-in entry (highest=${pool?.L ?? "none"}) — asserting the level-0 float only.`);
+else console.log(`${WORLD}: pool entry land(${pool.land}) -> water(${pool.water}) level=${pool.L}`);
+console.log(`${WORLD}: sea entry land(${sea.land}) -> water(${sea.water})`);
 
 const EXE = "/opt/pw-browsers/chromium-1194/chrome-linux/chrome";
 const browser = await chromium.launch({ executablePath: EXE, args: ["--no-sandbox"] });
@@ -79,7 +85,7 @@ async function walkIn(entry) {
 // (a) Elevated lagoon: settle elev must be the POOL surface minus swimDrop —
 // i.e. STRICTLY above the ground floor below and within a body of the surface
 // (swimDrop is character/dir-dependent, ~15..60px), never near -swimDrop.
-{
+if (ELEVATED) {
   const s = await walkIn(pool);
   const surface = pool.L * LH;
   console.log(`lagoon: ${JSON.stringify(s)} (pool surface = ${surface}px)`);
@@ -108,4 +114,6 @@ async function walkIn(entry) {
 
 await browser.close();
 if (fails) { console.log(`verify-swimfloat: ${fails} FAILURE(S)`); process.exit(1); }
-console.log("verify-swimfloat: OK — elevated lagoon floats at its own surface; level-0 sea unchanged.");
+console.log(ELEVATED
+  ? "verify-swimfloat: OK — elevated lagoon floats at its own surface; level-0 sea unchanged."
+  : "verify-swimfloat: OK — level-0 sea float holds (no elevated pool in this world to test).");

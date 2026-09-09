@@ -26,10 +26,10 @@
 <canvas id="cv" width="64" height="64"></canvas>
 
 <script>
-  // house_demo is a DEV world. Whether or not it is inside the container, this
-  // page always pulls it from GitHub — that is the point.
+  // Whether or not the world is inside the container, this page always pulls
+  // it from GitHub — that is the point (the staging path a dev world takes).
   const REPO = "mikael-floden/pixel";
-  const WORLD = "maps2/worlds/house_demo/world.json";
+  const WORLD = "maps2/worlds3/the_game/world.json";
   const rows = document.getElementById("rows");
   document.getElementById("org").textContent = location.origin;
   const add = (t) => {
@@ -78,8 +78,10 @@
     try {
       const r = await fetch(jsd(WORLD));
       const j = await r.json();
-      firstTile = (j.paths || [])[0];
-      results.push(r1(true, `house_demo — ${j.size?.w}x${j.size?.h}, ${(j.paths || []).length} tiles`));
+      // A maps3 world names no art; the tiles3 resolver does. One plate the
+      // world is known to draw stands in for "a tile the renderer reads back".
+      firstTile = j.schema ? "tiles/plates/light_beach/clean.webp" : (j.paths || [])[0];
+      results.push(r1(true, `the_game — ${j.size?.w}x${j.size?.h}, ${(j.grounds || []).length} grounds`));
     } catch (e) {
       results.push(r1(false, String(e)));
     }

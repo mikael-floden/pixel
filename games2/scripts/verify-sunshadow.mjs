@@ -1,5 +1,5 @@
 // Directional sun shadows (day phases): numeric gate on the CPU twin the
-// shader mirrors. Joins the smoke's props world, sets each phase INSTANTLY
+// shader mirrors. Joins the default world (the_game), sets each phase INSTANTLY
 // via the local __ml.timeOfDay probe, and samples __ml.sunAt over a window
 // around the spawn:
 //   - NIGHT has no sun -> every factor is exactly 1;
@@ -20,8 +20,8 @@ try {
   const page = await browser.newPage({ viewport: { width: 480, height: 320 } });
   await page.goto("http://localhost:5173/", { waitUntil: "load" });
   await page.waitForFunction(() => window.__mlSelect, null, { timeout: 25000 });
-  // Default world (demo_lost): real multi-level cliffs — the props demo is
-  // flat and casts nothing.
+  // Default world (the_game): the spawn square sits beside a level-6 house and
+  // the level-4..12 town terraces, so the ±18-cell window has real casters.
   await page.evaluate(() => window.__mlSelect.commit());
   await page.waitForFunction(() => window.__ml && window.__ml.players() >= 1, null, { timeout: 30000 });
   await page.waitForTimeout(600);

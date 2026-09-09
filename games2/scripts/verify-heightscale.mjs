@@ -1,7 +1,7 @@
 // Tall-world heightmap gate (dev-stack browser, like verify-depthfog): the
 // surface/occlusion heightmaps pack a cell's LEVEL into ONE 8-bit channel. The
 // historical scale (level*16) SATURATES at 255/16 = 15.9 levels, so a world
-// taller than that (the_island2 peaks at 32) clamped every high cell to a
+// taller than that (the_game peaks at 46) clamped every high cell to a
 // phantom ~16-level ceiling — the depth-fog's surface resolve then read a bogus
 // low `z` while the player's own z was the true peak, a big mismatch that
 // painted the WHOLE flat top with a hard jagged fog seam at the player's feet.
@@ -15,8 +15,8 @@ import { chromium } from "playwright-core";
 import { PNG } from "pngjs";
 import { readFileSync } from "fs";
 
-const WORLD = "the_island2";
-const w = JSON.parse(readFileSync(new URL(`../../maps2/worlds/${WORLD}/world.json`, import.meta.url)));
+const WORLD = "the_game"; // maps2/worlds3 — pixel-maps3/world@1
+const w = JSON.parse(readFileSync(new URL(`../../maps2/worlds3/${WORLD}/world.json`, import.meta.url)));
 const L = w.level, W = w.size.w, H = w.size.h;
 // Broadest 7x7 flat-top = a cell whose whole neighbourhood sits at one high
 // level, so a screen patch beside the standing player is guaranteed same-level.

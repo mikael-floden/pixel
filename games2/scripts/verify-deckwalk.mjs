@@ -14,13 +14,20 @@
 // world (maps2/worlds3, 28 decks) through the exact server code path
 // (parseWorld → buildTerrainGrid → canEnterElev/resolveElevAt/findPath), no
 // browser. (occlusion_test, the world@2 reference, was retired 2026-09-09.)
-import { readFileSync } from "node:fs";
+import { readFileSync, existsSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
 import { parseWorld, buildTerrainGrid, canEnterElev, resolveElevAt, findPath, CELL_WU, WALK_CLIMB } from "../shared/src/index.ts";
 
 const here = dirname(fileURLToPath(import.meta.url));
 const worldPath = join(here, "..", "..", "maps2", "worlds3", "the_game", "world.json");
+// AN ABSENT WORLD TREE IS "NOT CHECKED OUT HERE", NOT A FAILURE — the deploy's
+// test job sparse-checks-out games2 + characters2 + live and no world (the same
+// rule check-scenery-bbox and shipset --check-policy apply). Skip, loudly.
+if (!existsSync(worldPath)) {
+  console.log("[deckwalk] maps2/worlds3/the_game not checked out — skipped");
+  process.exit(0);
+}
 const w = parseWorld(JSON.parse(readFileSync(worldPath, "utf8")));
 if (!w) throw new Error("parseWorld returned null for the_game");
 const grid = buildTerrainGrid(w.width, w.height, w.rows, w.props, w.decks);

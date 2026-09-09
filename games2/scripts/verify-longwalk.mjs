@@ -1,13 +1,12 @@
-// The honest navigation test: LONG walk/run trips across the dense prop
-// world. A trip only PASSES if the player actually ARRIVES near the
+// The honest navigation test: LONG walk/run trips across the_game's dense
+// town square. A trip only PASSES if the player actually ARRIVES near the
 // (clearance-adjusted) destination — "gave up mid-way" and "ground into an
 // object" are failures. This is what playing feels like.
 import { chromium } from "playwright-core";
 const EXE = "/opt/pw-browsers/chromium-1194/chrome-linux/chrome";
 const SEED = Number(process.env.SEED || 5);
-// WORLD is a regex over the select-screen world list (default: props;
-// WORLD=glow runs the emissive glow_test showcase).
-const WORLD = process.env.WORLD || "prop";
+// WORLD is a regex over the select-screen world list (default: the_game).
+const WORLD = process.env.WORLD || "the_game";
 let rng = SEED;
 const rand = () => ((rng = (rng * 1103515245 + 12345) & 0x7fffffff) / 0x7fffffff);
 const browser = await chromium.launch({ executablePath: EXE, args: ["--no-sandbox"] });

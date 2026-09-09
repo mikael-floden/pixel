@@ -189,7 +189,7 @@ export function parseWorld3(json: any): ParsedWorld | null {
     decks: decks.length ? decks : undefined,
     rooms: rooms.length ? rooms : undefined,
     // THE PROJECTION TRAVELS WITH THE WORLD. tiles3 lays out on dy=14 with a
-    // 15px storey; the engine's constants are tiles2's 15/16. A v3 world that
+    // 15px storey; the engine's default constants are 15/16. A v3 world that
     // projects at 15 shears one row per grid step, so the geometry is published
     // here — the ONE place that knows the doc is a maps3 doc — and every
     // consumer reads it through `isoOf`. world@1/@2 never gets the field.

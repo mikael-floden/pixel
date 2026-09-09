@@ -15,7 +15,7 @@ const page = await (await b.newContext({ viewport: { width: 480, height: 320 } }
 try {
   await page.goto(`${BASE}/`, { waitUntil: "domcontentloaded", timeout: 60000 });
   await page.evaluate(() => {
-    localStorage.setItem("ml-last-choice", JSON.stringify({ world: "the_island2", characterUid: "default_boy", name: "DeathGate" }));
+    localStorage.setItem("ml-last-choice", JSON.stringify({ world: "the_game", characterUid: "default_boy", name: "DeathGate" }));
     sessionStorage.setItem("ml-rejoin", "1");
   });
   await page.reload({ waitUntil: "domcontentloaded" });

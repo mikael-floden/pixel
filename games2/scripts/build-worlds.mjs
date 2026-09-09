@@ -1,14 +1,13 @@
 // Emit the list of PLAYABLE worlds the client offers in the selector.
-// A world is playable once the maps agent writes world.json under one of the
-// two world trees (maps2/worlds for world@1/@2, maps2/worlds3 for
-// pixel-maps3/world@1); this scans both and records a little metadata (grid
-// size, spawn, schema, which tree, whether a preview/minimap image exists) →
-// client/public/worlds.json. Regenerated at manifest time (npm run manifest),
-// so new worlds appear on the next build.
+// A world is playable once the maps agent writes world.json under the world
+// tree (maps2/worlds3, pixel-maps3/world@1); this scans it and records a
+// little metadata (grid size, spawn, schema, tree, whether a preview/minimap
+// image exists) → client/public/worlds.json. Regenerated at manifest time
+// (npm run manifest), so new worlds appear on the next build.
 //
 // IN THE IMAGE THIS RUNS AGAINST THE CURATED ROOT (ASSETS_ROOT=/assets, the
 // shipset emit), which holds `userWorlds` only — so production's worlds.json
-// lists the published worlds and nothing else, whichever tree they came from.
+// lists the published worlds and nothing else.
 // The dev worlds an admin can reach come from config/publish.json via the
 // staging CDN instead (maps.ts stagingWorlds).
 import { existsSync, readdirSync, readFileSync, statSync, writeFileSync, mkdirSync } from "node:fs";
@@ -20,18 +19,13 @@ import { IMG_EXTS } from "./imagelib.mjs";
 const SCRIPT_DIR = dirname(fileURLToPath(import.meta.url));
 const GAME_ROOT = join(SCRIPT_DIR, "..");
 const ASSETS_ROOT = process.env.ASSETS_ROOT || join(SCRIPT_DIR, "..", "..");
-// THE TWO WORLD TREES. `maps2/worlds` holds world@1/world@2 (baked tile paths);
-// `maps2/worlds3` holds pixel-maps3/world@1 (a ground NAME per cell, no art —
-// tiles3 resolves what draws at draw time). Both parse through the same
-// `parseWorld`, so a picker entry is the same shape either way; the tree is
-// recorded as `root` so the client knows where the world's files live.
-//
-// ORDER IS LOAD-BEARING TWICE OVER: `maps2/worlds` is scanned first, so every
-// existing entry keeps its exact fields (the default root is OMITTED, making
-// those rows byte-identical to before worlds3 existed), and a name present in
-// both trees resolves to the v2 one.
-const WORLD_ROOT_DEFAULT = "maps2/worlds";
-const WORLD_ROOTS = [WORLD_ROOT_DEFAULT, "maps2/worlds3"];
+// THE WORLD TREE: `maps2/worlds3` holds pixel-maps3/world@1 (a ground NAME
+// per cell, no art — tiles3 resolves what draws at draw time). The tree is
+// recorded as `root` on every entry so the client knows where the world's
+// files live; a list so a second tree can be scanned again without touching
+// the callers. (`maps2/worlds` — world@1/@2 with baked tile paths — was
+// retired 2026-09-09 with tiles2.)
+const WORLD_ROOTS = ["maps2/worlds3"];
 const OUT = join(GAME_ROOT, "client", "public", "worlds.json");
 
 // Thumbnail stems the maps agent may render, and the extensions to try for
@@ -104,10 +98,9 @@ function scanRoot(root, out, seen) {
       // as admin — see loadWorldsList. A product gate, not a security boundary:
       // the repo is public. The point is the game never OFFERS these.
       ...(USER_WORLDS.length && !USER_WORLDS.includes(name) ? { dev: true } : {}),
-      // Only a NON-default tree is recorded, so every maps2/worlds row stays
-      // exactly the object it was; the client reads `root` and falls back to
-      // maps2/worlds when it is absent (maps.ts worldRoot).
-      ...(root === WORLD_ROOT_DEFAULT ? {} : { root }),
+      // The client reads `root` (maps.ts worldRoot) and defaults to
+      // maps2/worlds3 when it is absent.
+      root,
     });
   }
 }

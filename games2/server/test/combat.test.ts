@@ -1,5 +1,5 @@
 // COMBAT, live-room: engage -> swings -> death -> loot -> pickup -> drop ->
-// persistence, against the REAL monster_demo world and the REAL tuning data.
+// persistence, against the REAL the_game world and the REAL tuning data.
 // Movement mechanics (chase speed vs slow) are covered numerically by
 // combat.unit.test.ts; this file proves the ROOM wiring end to end.
 import { test } from "node:test";
@@ -8,8 +8,17 @@ import { createServer } from "http";
 import { Server } from "@colyseus/core";
 import { WebSocketTransport } from "@colyseus/ws-transport";
 import { Client } from "colyseus.js";
+import { existsSync } from "node:fs";
+import { dirname, join } from "node:path";
+import { fileURLToPath } from "node:url";
 import { ROOM_NAME, SLOW_FACTOR, PICKUP_RADIUS_WU, PLAYER_RESPAWN_MS } from "@nangijala/shared";
 import { WorldRoom } from "../src/rooms/WorldRoom.js";
+
+// The deploy's test job checks out no world tree: skip BEFORE the server
+// opens when the_game is absent (a server left listening keeps node --test
+// alive until CI's 20-minute cancel).
+const HAVE_WORLD = existsSync(join(dirname(fileURLToPath(import.meta.url)), "..", "..", "..", "maps2", "worlds3", "the_game", "world.json"));
+const SKIP = "maps2/worlds3/the_game missing";
 
 async function waitFor(cond: () => boolean, timeout = 8000, label = "condition"): Promise<void> {
   const start = Date.now();
@@ -34,7 +43,8 @@ function monsterByKind(room: any, kind: string): { id: string; m: any } | null {
   return out;
 }
 
-test("combat end to end: engage, kill, loot, pickup, drop, slow, persistence", async () => {
+test("combat end to end: engage, kill, loot, pickup, drop, slow, persistence", async (t) => {
+  if (!HAVE_WORLD) return t.skip(SKIP);
   const port = 2995;
   const gameServer = new Server({ transport: new WebSocketTransport({ server: createServer() }) });
   gameServer.define(ROOM_NAME, WorldRoom);
@@ -44,7 +54,7 @@ test("combat end to end: engage, kill, loot, pickup, drop, slow, persistence", a
   let account: { id?: string; secret?: string } = {};
   try {
     const c1 = new Client(`ws://localhost:${port}`);
-    const opts = { world: "monster_demo", monsterSeed: 4242, monsterCount: 1, lootChance: 1 };
+    const opts = { world: "the_game", monsterSeed: 4242, monsterCount: 1, lootChance: 1 };
     const r1: any = await c1.joinOrCreate(ROOM_NAME, { name: "Duelist", character: "default_boy", account, ...opts });
     r1.onMessage("account", (a: any) => { account = a; });
     r1.send("account:want");
@@ -67,9 +77,10 @@ test("combat end to end: engage, kill, loot, pickup, drop, slow, persistence", a
     assert.equal(invs.length >= 1, true, "inventory sent on join");
     assert.deepEqual(invs[0].items, [], "fresh backpack is empty");
 
-    // PASSIVE BY DEFAULT: idle at spawn (2.8 cells from the hedgehog pad) and
-    // nobody attacks — the old tuning default (aggro 96 on everything) would
-    // have mobbed the spawn.
+    // PASSIVE BY DEFAULT: idle at spawn (inside the frog zone; the nearest
+    // predator zone, the saber-tooth's, starts 21 cells out) and nobody
+    // attacks — the old tuning default (aggro 96 on everything) would have
+    // mobbed the spawn.
     await new Promise((r) => setTimeout(r, 1200));
     let anyHunting = false;
     r1.state.monsters.forEach((m: any) => {
@@ -81,7 +92,7 @@ test("combat end to end: engage, kill, loot, pickup, drop, slow, persistence", a
     // ENGAGE a mystical_frog (L1: 25hp, 4dmg): teleport into reach, tracking
     // its roaming until the first swing lands (server drives the loop).
     const frog = monsterByKind(r1, "mystical_frog");
-    assert.ok(frog, "monster_demo spawns a mystical_frog");
+    assert.ok(frog, "the_game spawns a mystical_frog");
     const frogId = frog!.id;
     const hp0 = frog!.m.hp;
     assert.ok(hp0 > 0 && frog!.m.hpMax === hp0, "frog spawns at tuning max_hp");
@@ -173,7 +184,8 @@ test("combat end to end: engage, kill, loot, pickup, drop, slow, persistence", a
   }
 });
 
-test("a monster kills a careless player; the player respawns", async () => {
+test("a monster kills a careless player; the player respawns", async (t) => {
+  if (!HAVE_WORLD) return t.skip(SKIP);
   const port = 2998; // 2994 belongs to timeofday.test.ts — ports are per FILE, not per test
   const gameServer = new Server({ transport: new WebSocketTransport({ server: createServer() }) });
   gameServer.define(ROOM_NAME, WorldRoom);
@@ -183,7 +195,7 @@ test("a monster kills a careless player; the player respawns", async () => {
     const r1: any = await c1.joinOrCreate(ROOM_NAME, {
       name: "Reckless",
       character: "default_girl",
-      world: "monster_demo",
+      world: "the_game",
       monsterSeed: 777,
       monsterCount: 1,
     });
@@ -199,7 +211,7 @@ test("a monster kills a careless player; the player respawns", async () => {
     // Poke the mammoth (L20: 215hp, 34dmg — two hits kill a fresh spawn) and
     // stand there. Retaliation must chase + slow + kill us.
     const mam = monsterByKind(r1, "mammoth");
-    assert.ok(mam, "monster_demo spawns a mammoth");
+    assert.ok(mam, "the_game spawns a mammoth");
     const mamId = mam!.id;
     const keep = setInterval(() => {
       const m = r1.state.monsters.get(mamId);

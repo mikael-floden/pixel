@@ -50,7 +50,7 @@ async function run(label, { hangGithub }) {
     return r.fulfill({ status: 200, contentType: "application/json", body: JSON.stringify({ sha: "deadbeef" }) });
   });
   await page.route("https://cdn.jsdelivr.net/**", (r) =>
-    r.fulfill({ status: 200, contentType: "application/json", body: JSON.stringify({ devWorlds: [] }) }),
+    r.fulfill({ status: 200, contentType: "application/json", body: JSON.stringify({ devWorlds3: [] }) }),
   );
 
   await page.evaluateOnNewDocument?.(() => {}).catch(() => {});

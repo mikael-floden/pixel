@@ -14,7 +14,7 @@
 //   node scripts/verify-boottime.mjs                       # 5 runs, no throttling
 //   node scripts/verify-boottime.mjs --throttle=4g
 //   node scripts/verify-boottime.mjs --throttle=slow4g --runs=5
-//   node scripts/verify-boottime.mjs --cpu=4 --label=after-atlas
+//   node scripts/verify-boottime.mjs --cpu=4 --label=after
 //   node scripts/verify-boottime.mjs --no-build --port=2599  # reuse a server
 //
 // EVERY HARNESS TRAP BELOW WAS PAID FOR IN WASTED HOURS. Do not "simplify"
@@ -54,8 +54,8 @@
 // stage emits (scripts/shipset.mjs) and rebuilds every manifest from it. So
 // this harness boots against the STAGING superset: monsters.json lists all 57
 // creatures and the boot pulls walk+idle strips for every one of them (912
-// requests / 5.03 MB), where the image ships only the 24 kinds the_island2's
-// spawn zones name (384 strips / 2.18 MB). Everything else — tiles, NPCs,
+// requests / 5.03 MB), where the image ships only the kinds the_game's
+// spawn zones name (spawns.json). Everything else — tiles, NPCs,
 // characters, audio — is already world-scoped and matches.
 // Consequence: the ABSOLUTE numbers are pessimistic for monster art and honest
 // for everything else, and the A/B use (same harness before and after) is
@@ -122,7 +122,7 @@ const RUNS = Number(args.runs ?? 5);
 const WARMUP = Number(args.warmup ?? 1);
 const THROTTLE = String(args.throttle ?? "none");
 const CPU = Number(args.cpu ?? 1);
-const WORLD = String(args.world ?? "the_island2");
+const WORLD = String(args.world ?? "the_game");
 const CHARACTER = String(args.character ?? "default_boy");
 const LABEL = String(args.label ?? "");
 // Generous on purpose: a slow-4G boot legitimately runs past two minutes, and
@@ -295,7 +295,7 @@ function probe({ world, characterUid }) {
         if (B.ws.first.length < 8) B.ws.first.push([Math.round(now()), n]);
         if (B.ws.msgs === 1) mark("wsFirstMsg");
         // The room's FULL-STATE snapshot is the first substantial payload
-        // (the_island2's is multi-KB; the handshake frames before it are tiny).
+        // (the_game's is multi-KB; the handshake frames before it are tiny).
         if (n >= 1024) mark("firstState");
       });
     }
@@ -371,7 +371,7 @@ function probe({ world, characterUid }) {
 }
 
 // ---------------------------------------------------------------- one run
-const ART_DOMAINS = ["characters2", "monsters", "tiles2", "maps2", "scenery", "items", "sounds", "music", "composer", "lore", "wiki"];
+const ART_DOMAINS = ["characters2", "monsters", "tiles", "maps2", "scenery", "items", "sounds", "music", "composer", "lore", "wiki"];
 
 async function collect(page) {
   return page.evaluate((domains) => {
@@ -397,12 +397,11 @@ async function collect(page) {
         const d = m[1];
         if (d === "characters2") cat = /\/animations\//.test(p) ? "characterFrames" : "characterOther";
         else if (d === "monsters") cat = "monsterStrips";
-        else if (d === "tiles2") cat = "tiles";
+        else if (d === "tiles") cat = "tiles";
         else if (d === "maps2") cat = "worldData";
         else if (d === "sounds" || d === "music" || d === "composer") cat = "audio";
         else cat = d;
-      } else if (/^\/atlases\//.test(p)) cat = "atlases";
-      else if (/^\/assets\//.test(p)) cat = /\.(ogg|m4a|mp3|wav)$/.test(p) ? "audio" : "bundle";
+      } else if (/^\/assets\//.test(p)) cat = /\.(ogg|m4a|mp3|wav)$/.test(p) ? "audio" : "bundle";
       else if (/^\/matchmake\//.test(p)) cat = "matchmake";
       else if (/\.json$/.test(p)) cat = "manifests";
       else if (/\.(webp|png|jpg)$/.test(p)) cat = "uiArt";

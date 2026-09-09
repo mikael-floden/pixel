@@ -8,23 +8,32 @@
 // that OFF is unchanged from baseline.
 import { chromium } from "playwright-core";
 import { PNG } from "pngjs";
+import { readFileSync } from "node:fs";
+
+// the_game (maps2/worlds3): the camera parks on the spawn square (level-6 house
+// beside level-0 ground) and the virtual player is forced above the world's
+// tallest cell — both read from world.json so a re-authored map keeps the gate.
+const world = JSON.parse(readFileSync(new URL("../../maps2/worlds3/the_game/world.json", import.meta.url), "utf8"));
+const [SPAWN_C, SPAWN_R] = world.spawn;
+const MAX_LEVEL = Math.max(...world.level.map((row) => Math.max(...row)));
 
 const EXE = "/opt/pw-browsers/chromium-1194/chrome-linux/chrome";
 const browser = await chromium.launch({ executablePath: EXE, args: ["--no-sandbox"] });
 const page = await browser.newPage({ viewport: { width: 760, height: 900 } });
 await page.addInitScript(() => {
-  localStorage.setItem("ml-last-choice", JSON.stringify({ world: "occlusion_test", characterUid: "default_boy", name: "df" }));
+  localStorage.setItem("ml-last-choice", JSON.stringify({ world: "the_game", characterUid: "default_boy", name: "df" }));
   sessionStorage.setItem("ml-rejoin", "1");
 });
 await page.goto("http://localhost:5173/", { waitUntil: "load" });
 await page.waitForFunction(() => window.__ml && window.__ml.players?.() >= 1, null, { timeout: 30000 });
 await page.waitForTimeout(9000);
 await page.evaluate(() => window.__ml.timeOfDay("Day"));
-await page.evaluate(() => window.__ml.lookAt(60, 110)); // the plateau + surrounding low ground
-// Force the virtual player WAY above the terrain (level 20; occlusion_test tops out at 7),
-// so every ground pixel is far below the ELEV_D0 dead-zone → the elevation-edge fog fires
-// regardless of the tuned FOG_D0 / ELEV_D0 (this gate proves the pass RENDERS, not its tuning).
-await page.evaluate(() => window.__ml.depthFog(0, 20));
+await page.evaluate(([c, r]) => window.__ml.lookAt(c, r), [SPAWN_C, SPAWN_R]); // the spawn house + low ground
+// Force the virtual player WAY above the terrain (the world's max level + 13; the_game tops
+// out at 46), so every ground pixel is far below the ELEV_D0 dead-zone → the elevation-edge
+// fog fires regardless of the tuned FOG_D0 / ELEV_D0 (this gate proves the pass RENDERS, not
+// its tuning).
+await page.evaluate((z) => window.__ml.depthFog(0, z), MAX_LEVEL + 13);
 await page.waitForTimeout(700);
 
 // Mean "teal-ness" = (G+B)/2 - R over the central game area (avoid frame + HUD).

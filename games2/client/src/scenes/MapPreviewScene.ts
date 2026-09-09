@@ -7,10 +7,9 @@ import { World, canvasSize, mapImageUrls, minimapDotPct } from "../maps";
  * shows the maps agent's own pre-rendered map image. Drag to pan, wheel to zoom.
  *
  * WHICH image and WHERE a cell lands on it are both `maps.ts`'s call, not this
- * scene's: the two map renderers write two names in two trees and project on
- * two different origins (`mapImageUrls` / `minimapDotPct`). This file used to
- * hardcode `maps2/worlds/ring_test/minimap.webp` — a fixed world, a fixed tree
- * and a fixed filename — under whichever world main.ts had actually loaded.
+ * scene's (`mapImageUrls` / `minimapDotPct`). This file used to hardcode one
+ * world's `minimap.webp` — a fixed world, a fixed tree and a fixed filename —
+ * under whichever world main.ts had actually loaded.
  */
 const MINIMAP_KEY = "world-minimap";
 

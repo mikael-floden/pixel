@@ -1,21 +1,18 @@
 // ============================================================================
-// SERVE — a maps3 world is REACHABLE, and a maps2 world is untouched
+// SERVE — the_game is REACHABLE, from disk and over the wire
 // ============================================================================
 //
-// Milestone 1 taught the game to READ a `pixel-maps3/world@1` document
-// (world3.test.ts). Nothing could REACH one: build-worlds.mjs globbed only
-// maps2/worlds, config/publish.json named no maps3 world, and WorldRoom's
-// readWorldDoc hardcoded the maps2/worlds path. This gate covers the fix, and
-// it covers BOTH halves of "reachable":
+// world3.test.ts proves the game can READ a `pixel-maps3/world@1` document.
+// This gate proves one can be REACHED, and it covers BOTH halves of that:
 //
-//   • THE SERVER IS AUTHORITATIVE for collision and spawn zones, so a world the
-//     image lacks has to parse SERVER-SIDE. Both trees are exercised through
-//     the REAL readWorldDoc/loadWorldGrid — imported from WorldRoom, not
-//     re-implemented — from disk AND over the wire.
-//   • A NORMAL PLAYER'S PATH IS BYTE-IDENTICAL. Two independent pins: the disk
-//     read of a shipped world issues ZERO network requests, and a maps2
-//     staging world issues EXACTLY the requests it issued before worlds3
-//     existed (one per file, in maps2/worlds, no second-tree probe).
+//   • THE SERVER IS AUTHORITATIVE for collision and spawn zones, so a world
+//     has to parse SERVER-SIDE. The one world tree (maps2/worlds3) is
+//     exercised through the REAL readWorldDoc/loadWorldGrid — imported from
+//     WorldRoom, not re-implemented — from disk AND over the wire.
+//   • A NORMAL PLAYER'S PATH ISSUES NO NETWORK REQUEST: the disk read of the
+//     shipped world is pinned at ZERO fetches, and a staging world absent from
+//     disk issues EXACTLY one request per file, in maps2/worlds3 — there is no
+//     second tree to probe (the world@1/@2 tree was retired 2026-09-09).
 //
 // The staging base is a LOCAL FIXTURE ORIGIN — the same injection point the
 // real CDN uses (STAGING_WORLD_BASE) — because this sandbox gives no external
@@ -33,12 +30,11 @@ import { parseWorld, CELL_WU } from "@nangijala/shared";
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 const REPO = join(HERE, "..", "..", "..");
-const ISLAND2 = join(REPO, "maps2", "worlds", "the_island2");
 const GAME3 = join(REPO, "maps2", "worlds3", "the_game");
 
 /* -- the fixture origin ----------------------------------------------------- */
-// Serves exactly two worlds that exist NOWHERE on disk and logs every path it
-// is asked for — the request log IS the assertion for "resolves as before".
+// Serves one world that exists NOWHERE on disk and logs every path it is asked
+// for — the request log IS the assertion for "one request per file".
 const served = new Map<string, unknown>();
 const log: string[] = [];
 const fixture = createServer((req, res) => {
@@ -71,7 +67,7 @@ const room = (await import("../src/rooms/WorldRoom")) as {
 };
 
 /** A minimal but REAL pixel-maps3 doc — same schema the dispatch keys on, so
- *  the fixture proves routing without pushing 1.2 MB per request. */
+ *  the fixture proves routing without pushing 1 MB per request. */
 const probe3Doc = {
   schema: "pixel-maps3/world@1",
   name: "probe3",
@@ -95,29 +91,8 @@ const probe3Doc = {
   walls: [],
   scenery: [],
 };
-const probe2Doc = {
-  schema: "pixel-maps2/world@1",
-  size: { w: 2, h: 2 },
-  paths: ["tiles2/x/tile_00.webp"],
-  materials: ["grass"],
-  mat: [
-    [0, 0],
-    [0, 0],
-  ],
-  top: [
-    [0, 0],
-    [0, 0],
-  ],
-  level: [
-    [0, 0],
-    [0, 0],
-  ],
-  spawn: [1, 1],
-};
 served.set("/maps2/worlds3/probe3/world.json", probe3Doc);
-served.set("/maps2/worlds3/probe3/spawns.json", { schema: "pixel-maps2/spawns@1", zones: [] });
-served.set("/maps2/worlds/probe2/world.json", probe2Doc);
-served.set("/maps2/worlds/probe2/spawns.json", { schema: "pixel-maps2/spawns@1", zones: [] });
+served.set("/maps2/worlds3/probe3/spawns.json", { schema: "pixel-maps3/spawns@1", zones: [] });
 
 /** Run `fn` from cold caches, with the network either forbidden or logged. */
 async function fromCold<T>(fn: () => Promise<T>, { offline = false } = {}): Promise<T> {
@@ -135,34 +110,9 @@ async function fromCold<T>(fn: () => Promise<T>, { offline = false } = {}): Prom
   }
 }
 
-/* -- disk: the live game, unchanged ---------------------------------------- */
+/* -- disk: the shipped world ------------------------------------------------ */
 
-test("a shipped maps2 world resolves from DISK with zero network requests", async () => {
-  if (!existsSync(ISLAND2)) return test.skip("maps2/worlds/the_island2 missing");
-  const grid = await fromCold(
-    async () => {
-      assert.equal(await room.worldRootFor("the_island2"), "maps2/worlds");
-      const doc = await room.readWorldDoc("the_island2", "world.json");
-      assert.deepEqual(doc, JSON.parse(readFileSync(join(ISLAND2, "world.json"), "utf8")));
-      assert.deepEqual(
-        await room.readWorldDoc("the_island2", "spawns.json"),
-        JSON.parse(readFileSync(join(ISLAND2, "spawns.json"), "utf8")),
-      );
-      return room.loadWorldGrid("the_island2");
-    },
-    { offline: true },
-  );
-  // The_island2's own numbers, so a wrong tree or a wrong parse cannot pass.
-  assert.ok(grid.terrain, "the live world must produce a collision grid");
-  assert.deepEqual(grid.spawn, { x: 201 * CELL_WU, y: 120 * CELL_WU });
-  assert.equal(grid.worldW, 248 * CELL_WU);
-  assert.equal(grid.worldH, 248 * CELL_WU);
-  assert.equal(log.length, 0);
-});
-
-/* -- disk: the maps3 world -------------------------------------------------- */
-
-test("the_game resolves out of maps2/worlds3 and parses through the real server path", async () => {
+test("the_game resolves out of maps2/worlds3 from DISK, through the real server path, with zero network requests", async () => {
   if (!existsSync(GAME3)) return test.skip("maps2/worlds3/the_game missing");
   const doc = JSON.parse(readFileSync(join(GAME3, "world.json"), "utf8"));
   const grid = await fromCold(
@@ -170,8 +120,7 @@ test("the_game resolves out of maps2/worlds3 and parses through the real server 
       assert.equal(await room.worldRootFor("the_game"), "maps2/worlds3");
       // The SAME bytes the file holds — no rewriting, no second source.
       assert.deepEqual(await room.readWorldDoc("the_game", "world.json"), doc);
-      // Sidecars follow the world into ITS tree; searching maps2/worlds for
-      // them would be one pointless 404 per file on the staging path.
+      // Sidecars follow the world into its tree.
       assert.deepEqual(
         await room.readWorldDoc("the_game", "spawns.json"),
         JSON.parse(readFileSync(join(GAME3, "spawns.json"), "utf8")),
@@ -181,49 +130,36 @@ test("the_game resolves out of maps2/worlds3 and parses through the real server 
     { offline: true },
   );
   assert.equal(doc.schema, "pixel-maps3/world@1");
-  assert.ok(parseWorld(doc), "parseWorld must dispatch the maps3 schema (milestone 1)");
-  assert.ok(grid.terrain, "a maps3 world must produce a collision grid — the server owns collision");
+  assert.ok(parseWorld(doc), "parseWorld must dispatch the maps3 schema");
+  assert.ok(grid.terrain, "the world must produce a collision grid — the server owns collision");
+  // The doc's own numbers, so a wrong tree or a wrong parse cannot pass.
   assert.deepEqual(grid.spawn, { x: doc.spawn[0] * CELL_WU, y: doc.spawn[1] * CELL_WU });
-  assert.equal(grid.worldW, 512 * CELL_WU);
-  assert.equal(grid.worldH, 512 * CELL_WU);
+  assert.equal(grid.worldW, doc.size.w * CELL_WU);
+  assert.equal(grid.worldH, doc.size.h * CELL_WU);
   assert.equal(log.length, 0);
 });
 
-/* -- network: the staging half, both trees --------------------------------- */
+/* -- network: the staging half ---------------------------------------------- */
 
-test("a maps2 world absent from disk streams with EXACTLY the old request set", async () => {
-  const grid = await fromCold(() => room.loadWorldGrid("probe2"));
-  assert.ok(grid.terrain);
-  assert.deepEqual(grid.spawn, { x: 1 * CELL_WU, y: 1 * CELL_WU });
-  // ONE request, in the first tree. A second-tree probe here would be the
-  // regression: every existing dev world would pay a 404 per file.
-  assert.deepEqual(log, ["/maps2/worlds/probe2/world.json"]);
-  assert.ok(await room.readWorldDoc("probe2", "spawns.json"));
-  assert.deepEqual(log, ["/maps2/worlds/probe2/world.json", "/maps2/worlds/probe2/spawns.json"]);
-});
-
-test("a maps3 world absent from disk streams from maps2/worlds3", async () => {
+test("a world absent from disk streams from maps2/worlds3 with ONE request per file", async () => {
   const grid = await fromCold(() => room.loadWorldGrid("probe3"));
   assert.ok(grid.terrain, "the server must build collision from a STREAMED maps3 doc");
   assert.deepEqual(grid.spawn, { x: 1 * CELL_WU, y: 0 * CELL_WU });
   assert.equal(grid.worldW, 4 * CELL_WU);
-  // The first tree is probed first and misses; the second answers. The
-  // world.json is then served out of stagingCache, so resolving the ROOT costs
-  // no extra request — the log would carry a duplicate otherwise.
-  assert.deepEqual(log, ["/maps2/worlds/probe3/world.json", "/maps2/worlds3/probe3/world.json"]);
+  // ONE request, in the ONE tree. The world.json is then served out of
+  // stagingCache, so resolving the ROOT costs no extra request — the log
+  // would carry a duplicate otherwise.
+  assert.deepEqual(log, ["/maps2/worlds3/probe3/world.json"]);
   assert.ok(await room.readWorldDoc("probe3", "world.json"));
-  assert.equal(log.length, 2, "the root resolve and the read must share one fetch");
+  assert.equal(log.length, 1, "the root resolve and the read must share one fetch");
   assert.ok(await room.readWorldDoc("probe3", "spawns.json"));
-  assert.deepEqual(log[2], "/maps2/worlds3/probe3/spawns.json");
+  assert.deepEqual(log, ["/maps2/worlds3/probe3/world.json", "/maps2/worlds3/probe3/spawns.json"]);
 });
 
-test("a world in neither tree degrades to an open plain, as before", async () => {
+test("a world in no tree degrades to an open plain after exactly one probe", async () => {
   const grid = await fromCold(() => room.loadWorldGrid("no_such_world"));
   assert.equal(grid.terrain, null);
-  assert.deepEqual(log, [
-    "/maps2/worlds/no_such_world/world.json",
-    "/maps2/worlds3/no_such_world/world.json",
-  ]);
+  assert.deepEqual(log, ["/maps2/worlds3/no_such_world/world.json"]);
 });
 
 /* -- the whole join, through a live room ------------------------------------ */
@@ -284,11 +220,9 @@ const staging = (await import(
 test("gameUrl is the IDENTITY function while staging is inactive", () => {
   assert.equal(staging.stagingActive(), false);
   for (const u of [
-    "/assets/maps2/worlds/the_island2/world.json",
     "/assets/maps2/worlds3/the_game/world.json",
     "/assets/tiles/plates/index.json",
     "/assets/live/tuning/base_tile_sets.json",
-    "/atlases/the_island2.json",
     "/monsters.json",
     "/npcs.json",
     "/worlds.json",
@@ -296,33 +230,32 @@ test("gameUrl is the IDENTITY function while staging is inactive", () => {
     assert.equal(staging.gameUrl(u), u, "a normal player's URL must come back untouched");
 });
 
-test("an unregistered world keeps the exact maps2/worlds URL it always had", () => {
-  assert.equal(maps.worldRoot("the_island2"), "maps2/worlds");
-  assert.equal(maps.worldUrl("the_island2"), "/assets/maps2/worlds/the_island2/world.json");
-  assert.equal(maps.worldFileUrl("the_island2", "npcs.json"), "/assets/maps2/worlds/the_island2/npcs.json");
-});
-
-test("a registered maps3 world addresses its own tree, and junk cannot register", () => {
+test("every world addresses maps2/worlds3 — registered or not — and junk cannot register", () => {
+  // A name nobody registered still answers with the one tree.
+  assert.equal(maps.worldRoot("nobody_registered_me"), "maps2/worlds3");
+  assert.equal(maps.worldUrl("nobody_registered_me"), "/assets/maps2/worlds3/nobody_registered_me/world.json");
   maps.setWorldRoot("the_game", "maps2/worlds3");
   assert.equal(maps.worldUrl("the_game"), "/assets/maps2/worlds3/the_game/world.json");
   for (const f of ["spawns.json", "npcs.json", "places.json"])
     assert.equal(maps.worldFileUrl("the_game", f), `/assets/maps2/worlds3/the_game/${f}`);
-  // Only the two known trees are accepted — a root is data off the network.
+  // Only the known tree is accepted — a root is data off the network, and the
+  // retired tree is junk now too.
   maps.setWorldRoot("evil", "../../../etc");
   maps.setWorldRoot("evil2", "https://elsewhere.example/x");
-  assert.equal(maps.worldRoot("evil"), "maps2/worlds");
-  assert.equal(maps.worldRoot("evil2"), "maps2/worlds");
+  maps.setWorldRoot("evil3", "maps2/worlds");
+  assert.equal(maps.worldRoot("evil"), "maps2/worlds3");
+  assert.equal(maps.worldRoot("evil2"), "maps2/worlds3");
+  assert.equal(maps.worldRoot("evil3"), "maps2/worlds3");
   // The world NAME is sanitised at the join, as it always was.
-  assert.equal(maps.worldFileUrl("../secret", "world.json"), "/assets/maps2/worlds/secret/world.json");
+  assert.equal(maps.worldFileUrl("../secret", "world.json"), "/assets/maps2/worlds3/secret/world.json");
 });
 
 /* -- the policy names it, the picker manifest carries the tree -------------- */
 
 test("publish.json publishes the_game as a USER world, and the tiles/ domain still never ships wholesale", () => {
   const pol = JSON.parse(readFileSync(join(REPO, "games2", "config", "publish.json"), "utf8"));
-  // the_game is baked into the image (maintainer 2026-09-02: the default map,
-  // and once he is happy with it the only playable one). A published name may
-  // live in either world tree; shipset resolves it by probing.
+  // the_game is baked into the image: the only playable world (maintainer
+  // 2026-09-09: "We will commit 100% to the new tiles3 system and the new map").
   assert.ok(pol.userWorlds.includes("the_game"), "the_game is a published world");
   assert.ok(!(pol.devWorlds3 ?? []).includes("the_game"), "a world is published OR staging, never both");
   // Its terrain art enters the image ONLY as the resolver's closure
@@ -332,14 +265,12 @@ test("publish.json publishes the_game as a USER world, and the tiles/ domain sti
   assert.ok(!(pol.entityDomains ?? []).includes("tiles"), "tiles/ must not ship per entity");
 });
 
-test("worlds.json carries the tree for a maps3 world and omits it for maps2", () => {
+test("worlds.json carries the tree and schema for the_game", () => {
   const wl = JSON.parse(readFileSync(join(REPO, "games2", "client", "public", "worlds.json"), "utf8"));
-  const island = wl.find((w: { name: string }) => w.name === "the_island2");
-  if (island) assert.equal("root" in island, false, "the default tree stays omitted — those rows must not move");
   const game = wl.find((w: { name: string }) => w.name === "the_game");
   if (!game) return test.skip("maps2/worlds3 not checked out");
   assert.equal(game.root, "maps2/worlds3");
-  assert.equal(game.dev, undefined, "a published world is offered to every player, whichever tree holds it");
+  assert.equal(game.dev, undefined, "a published world is offered to every player");
   assert.equal(game.schema, "pixel-maps3/world@1");
 });
 

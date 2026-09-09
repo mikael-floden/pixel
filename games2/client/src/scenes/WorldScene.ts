@@ -98,7 +98,6 @@ import { installTexUploadProbe, texUploadTake } from "../texupload";
 import { installCaptureProbe, installCapturePool, captureTake } from "../capturepool";
 import { installGlFrameProbe, glFrameTake, glWindowTake, glFrameEmpty, type GlFrame } from "../glframe";
 import { fadeTune, setFadeTune } from "../fadetune";
-import { queueTileLoads, TileAtlasLoad } from "../tileatlas";
 import { ChessDialog, ChessMatchView } from "../chessui";
 import { gameUrl } from "../staging";
 import { MonsterManifest, MonsterDef, monsterWalkKey, resolveMonsterAnim } from "../monsterManifest";
@@ -142,20 +141,7 @@ import {
   MAP_GEOMETRY,
   geometryFor,
   isMaps3World,
-  tileKey,
-  tileUrl,
-  distinctTiles,
-  distinctTilePaths,
-  distinctPropPaths,
-  pathTileKey,
-  assetUrl,
-  faceKeyFor,
-  topKeyFor,
-  isMaps2World,
-  drawOrder,
   canvasSize,
-  TileBases,
-  artLift,
   DEFAULT_WORLD,
   Deck,
   loadPlaces,
@@ -509,18 +495,12 @@ function applyTunedOrigin(
 // re-enter the view already in the right place, never sliding in from a stale
 // spot. See `__ml.monsterGate()`.
 const MONSTER_CULL_SLACK = 64;
-// Tile self-emission is data-driven: tiles/emission.json (owned by the tiles
-// agent — every category has an entry, null = does not glow). Each glowing
-// category gets (a) a self-glow FLOOR on its own pixels (shader, nightlight.ts)
-// and (b) a small SHADOW-FREE glow pool around it. Pools are clustered per
-// EMISSION_BUCKET-cell bucket (a whole lava lake becomes a few soft pools)
-// and rendered as big elliptical stamps in the additive glow field — NOT as
-// shader light slots. Slots are capped at 12 and were handed to the nearest
-// pools only, so walking a few steps re-ranked the winners and pools popped
-// on/off deep inside the viewport (playtester). The stamp field has no slot
-// limit, and EMISSION_PAD keeps every pool whose light could reach the view
-// inside the rebuild window: culling only ever drops light that is entirely
-// off-screen.
+// Glow pools are big elliptical STAMPS in the additive glow field, never
+// shader light slots (slots are capped at 12; handing them to the nearest
+// pools re-ranked the winners as you walked and pools popped on/off deep
+// inside the viewport). Today every stamp comes from scenery lights
+// (`sceneryStamps`); the tile-emission registries that used to feed it
+// (first-gen tiles/emission.json, tiles2/emission.json) are retired.
 const MAX_EMISSIVE = 48; // atmosphere blooms per view (canvas fallback, perf)
 
 // THE LIGHT SLOT LEDGER — see lightslots.ts for the layout. World lights are
@@ -581,21 +561,6 @@ interface EmissiveSource {
   // contain it (the same trap the stamp gate fell into).
   sealed: boolean;
 }
-// The optional `lights` block in tiles2/emission.json (per tile-path stem or
-// per material). All fields optional; radius in CELLS; color may exceed 1
-// (the shader clamps the multiply at 1.25, so >1 widens the hot plateau —
-// the campfire trick); z = levels above the cell surface.
-interface EmissiveLightCfg {
-  radius?: number;
-  color?: [number, number, number];
-  flicker?: number;
-  shadows?: boolean;
-  z?: number;
-}
-const EMISSION_BUCKET = 3; // cells per cluster bucket side
-// Pool reach ≈ radius(≤3.5 cells) × cluster growth(≤2) × 45.3 px/cell ≈ 316px,
-// plus the 96px camera drift allowed between occluder rebuilds.
-const EMISSION_PAD = 448;
 // Time-of-day cycle ([1] cycles, ~2.5s smooth interpolation between phases).
 // Each phase is ONLY an ambient grade (what unlit art is multiplied by) —
 // point lights are never phase-tuned (a light is a light; daylight drowns
@@ -1617,18 +1582,15 @@ export class WorldScene extends Phaser.Scene {
   // Isometric tile world (null → fall back to a plain ground).
   private world: World | null = null;
   private worldName: string = DEFAULT_WORLD; // which maps2 world (room + assets)
-  private tileAtlas: TileAtlasLoad | null = null; // this world's sheet loader (tileatlas.ts)
   private worldW = WORLD_WIDTH; // this world's extent in world units (grid×CELL_WU)
   private worldH = WORLD_HEIGHT;
-  private maps2 = false; // true when the world uses maps2 explicit tile paths
   // MAPS3 (pixel-maps3/world@1): cells name a ground TYPE and no art at all —
-  // tiles3 resolves what draws, per cell, at draw time. Mutually exclusive with
-  // maps2 by construction (isMaps2World tests for baked paths, which a v3 world
-  // has none of), so every existing `if (this.maps2)` branch is untouched.
+  // tiles3 resolves what draws, per cell, at draw time. The only world kind
+  // since tiles2 and the world@1/@2 worlds were retired (2026-09-09); false
+  // only for a hand-built `rows` literal, which draws a plain ground.
   private maps3 = false;
-  // THE PROJECTION IS PER WORLD. `MAP_GEOMETRY` is the default (tiles2's
-  // 32/15/16) and is the exact object a world@1/world@2 world gets, so their
-  // pixels cannot move; a maps3 world draws on 32/14/15 (shared
+  // THE PROJECTION IS PER WORLD. `MAP_GEOMETRY` is the default (32/15/16,
+  // what a bare `rows` literal gets); a maps3 world draws on 32/14/15 (shared
   // ISO_GEOMETRY_MAPS3, the second number MEASURED off the wall art). Every
   // projection in this scene reads THIS, never the module constant.
   private geom: MapGeometry = MAP_GEOMETRY;
@@ -3027,9 +2989,6 @@ export class WorldScene extends Phaser.Scene {
   // Occlusion: raised/solid tiles near the camera drawn as depth-sorted images
   // so they cover characters standing BEHIND them (the ground RT is flat).
   private occluders: Phaser.GameObjects.Image[] = [];
-  // Placed decorations (maps2 world@1 props): depth-sorted so characters pass
-  // in front of / behind them; rebuilt with the occluders as the camera moves.
-  private propImgs: Phaser.GameObjects.Image[] = [];
   // Lit copies of TALL NON-EMISSIVE solid structures: billboard art samples
   // the light field of the terrain BEHIND it, so a shore tree's canopy was
   // multiplied by the level-0 ocean's night — pitch black above the horizon
@@ -3257,16 +3216,10 @@ export class WorldScene extends Phaser.Scene {
   private atmo!: Atmosphere;
   private night?: NightLights;
 
-  // tiles/emission.json categories (empty when the registry failed to load).
+  // Per-category tile emission (NightLights' self-glow floor). Always empty:
+  // the registries that filled it (first-gen tiles/emission.json, then
+  // tiles2/emission.json) are retired; scenery lights carry every light now.
   private emission: EmissionMap = {};
-  // tiles2/emission.json (maps2 worlds): per-material glow params (keyed by
-  // material name = a maps2 cell/prop's `t`) + per-tile-path glow sources.
-  private tiles2Mat: EmissionMap = {};
-  private tiles2Src: Record<string, EmissionSource[]> = {};
-  // OPTIONAL real-light params from emission.json `lights` (tiles2-owned):
-  // keyed by tile-path STEM (no extension) or material name; explicit null =
-  // "stamp only, never a real light". Absent → a subtle default is derived.
-  private tiles2Lights: Record<string, EmissiveLightCfg | null> = {};
   // Every emissive prop in the WORLD, resolved once per world into real-light
   // candidates. World-level on purpose: a light reaches the screen before its
   // source does, so the per-frame pick below cannot start from the visible-prop
@@ -3296,8 +3249,6 @@ export class WorldScene extends Phaser.Scene {
   private lastSlotInfo = { torch: false, reserved: 0, total: 0 };
   // Cells of emissive props standing inside a sealed room (indoor-only light).
   private sealedEmissiveCells = new Set<number>();
-  // Glow halos emitted by emissive PROPS this frame — merged into glowStamps.
-  private propStamps: GlowStamp[] = [];
   /* SCENERY LIGHTS — every `lit` placement drawn in a LIT_* state is an
    * emissive source derived from its art (scenerylights.ts), rebuilt with the
    * scenery pass. They compete for the 8 world slots exactly like the props'
@@ -3307,13 +3258,6 @@ export class WorldScene extends Phaser.Scene {
   /** Per LIT texture key: the derived emissive (canvas px) + params, or null
    *  when the art has nothing bright — derived once, the art never changes. */
   private sceneryLightCache = new Map<string, { cx: number; cy: number; params: SceneryLightParams } | null>();
-  // Bottom-anchor offset for tall (64x128 cliff/tall profile) tile art: drawn
-  // with the same top-left anchor as 64px tiles it sinks 64px into the ground
-  // (only the crystal tip peeked out — playtester report). Lift comes from the
-  // variant's measured art base (tile-bases.json), see artYOff.
-  private artOffCache = new Map<string, number>();
-  private tileBases: TileBases | null = null;
-  // /#emission: this SAME scene on the generated station world (demo room).
   // Per-pixel glow halos for the visible window (rebuilt with the occluders).
   private glowStamps: GlowStamp[] = [];
   // The spawn campfire: an animated world object with its own fire light.
@@ -3375,7 +3319,6 @@ export class WorldScene extends Phaser.Scene {
     this.myName = this.registry.get("name") as string;
     this.world = (this.registry.get("world") as World | null) ?? null;
     this.worldName = (this.registry.get("worldName") as string | undefined) ?? DEFAULT_WORLD;
-    this.maps2 = !!this.world && isMaps2World(this.world);
     this.maps3 = !!this.world && isMaps3World(this.world);
     this.geom = geometryFor(this.world);
     // The maps agent's named interiors, fetched alongside the world. Async and
@@ -3387,7 +3330,6 @@ export class WorldScene extends Phaser.Scene {
       this.places = p;
       this.indoorDirty = true; // re-answer "where am I" on the next frame
     });
-    this.tileBases = (this.registry.get("tileBases") as TileBases | null) ?? null;
     if (this.world) {
       // The world's extent in world units (grid×CELL_WU) — per-world, so any
       // size renders/collides right (see shared: WORLD_WIDTH is only a default).
@@ -3489,25 +3431,6 @@ export class WorldScene extends Phaser.Scene {
     }
     // Isometric ground tiles.
     if (this.world) {
-      if (this.maps2) {
-        // maps2 world bakes an explicit tile PNG per cell + per-material face
-        // tiles + placed props. Since 2026-08-15 that unique set arrives as a
-        // committed atlas sheet when one exists (571 requests → 2 on
-        // the_island2) and falls back to per-file loads for anything the
-        // atlas cannot provide — see tileatlas.ts. Same `t2:` texture keys
-        // either way; the renderer cannot tell which path ran.
-        this.tileAtlas = queueTileLoads(this, this.world, this.worldName, this.game.registry.get("atlasIndex") ?? null);
-      } else if (!this.maps3) {
-        // The legacy category+variant worlds. A MAPS3 world must not fall in
-        // here: its `t` is a ground TYPE, not a tile category, so every one of
-        // these would be a 404 for art that does not exist and never did.
-        for (const { t, v } of distinctTiles(this.world)) {
-          this.load.image(tileKey(t, v), withV(tileUrl(t, v)));
-        }
-      }
-      // maps2 worlds get their glow from tiles2/emission.json
-      // (per-MATERIAL params + per-TILE-PATH sources — see loadTiles2Emission).
-      if (this.maps2) this.load.json("tiles2-emission", withV("/assets/tiles2/emission.json"));
       if (this.maps3) {
         // MAPS3 SHIPS NO TILE ART IN THE WORLD, so there is no per-cell load
         // list to queue here — only the DOCUMENTS the resolver reads, and the
@@ -3573,10 +3496,6 @@ export class WorldScene extends Phaser.Scene {
     this.initCoverSurfaces();
     this.buildAnimations();
     this.buildMonsterAnimations();
-    // Slice the atlas sheets into per-path textures BEFORE anything draws:
-    // the ground RT and occluder passes resolve tiles via textures.exists and
-    // silently skip missing keys, so this must run ahead of them.
-    this.tileAtlas?.finalize(this);
     if (this.world) {
       this.setupStreamingGround();
       // MAPS3 resolves its art at draw time, so the runtime has to exist before
@@ -3593,27 +3512,6 @@ export class WorldScene extends Phaser.Scene {
     this.atmo = new Atmosphere(this);
     this.atmo.create();
     this.atmo.setPreset("night");
-    // Shader night needs WebGL; on canvas renderers the multiply grade
-    // remains the night fallback.
-    // maps2 self-emission (tiles2/emission.json): per-material glow params +
-    // per-tile-path glow sources. In every maps2 world the emissive tiles are
-    // PROPS (geodes, lava rocks, glowing mushrooms — base_x_N object tiles), so
-    // the glow is stamped from prop positions in rebuildProps; nothing on the
-    // flat terrain glows, so this stays out of the per-cell shader floor.
-    if (this.maps2) {
-      const t2 = this.cache.json.get("tiles2-emission") as
-        | {
-            materials?: EmissionMap;
-            sources?: Record<string, EmissionSource[]>;
-            lights?: Record<string, EmissiveLightCfg | null>;
-          }
-        | undefined;
-      this.tiles2Mat = t2?.materials ?? {};
-      this.tiles2Src = t2?.sources ?? {};
-      this.tiles2Lights = t2?.lights ?? {};
-      if (!t2) console.warn("[nangijala] tiles2/emission.json missing — prop glow disabled");
-      this.buildEmissiveSources();
-    }
     if (this.world && this.game.renderer.type === Phaser.WEBGL) {
       try {
         this.night = new NightLights(this, this.world, this.iso, this.maxLevel, this.emission);
@@ -4280,7 +4178,6 @@ export class WorldScene extends Phaser.Scene {
       }),
       // How this world's tile art arrived: sheets sliced from the committed
       // atlas vs individual fallback requests (verify-atlas's instrument).
-      atlasInfo: () => this.tileAtlas?.stats() ?? null,
       chess: () => ({
         boards: this.room ? [...this.room.state.chessBoards.entries()].map(([id, b]: [string, any]) => ({
           id, col: b.col, row: b.row, npc: b.npc, waiting: b.waitingSid, matchId: b.matchId,
@@ -4459,26 +4356,6 @@ export class WorldScene extends Phaser.Scene {
         decks: (this.world?.decks ?? []).map((d) => ({ kind: d.kind, mat: d.mat, level: d.level, thickness: d.thickness, cells: d.cells.length })),
         indexed: this.deckIndex.size,
       }),
-      // Per-deck render diagnosis: how many cells have a VOID base (deck skipped
-      // by the void `continue`), a missing deck-top texture, or render OK.
-      deckDiag: () => {
-        const w = this.world;
-        if (!w) return null;
-        return (w.decks ?? []).map((d) => {
-          let voidBase = 0, deckTopMissing = 0, ok = 0;
-          for (const c of d.cells) {
-            const base = w.rows[c.row]?.[c.col];
-            const bk = base ? topKeyFor(base) : null;
-            const baseVoid = !bk || !this.textures.exists(bk);
-            const dt = c.path ? pathTileKey(c.path) : null;
-            const dtMissing = !dt || !this.textures.exists(dt);
-            if (baseVoid) voidBase++;
-            if (dtMissing) deckTopMissing++;
-            if (!baseVoid && !dtMissing) ok++;
-          }
-          return { kind: d.kind, level: d.level, cells: d.cells.length, voidBase, deckTopMissing, ok };
-        });
-      },
       myX: () => {
         const id = this.room?.sessionId;
         const av = id ? this.avatars.get(id) : undefined;
@@ -4497,7 +4374,6 @@ export class WorldScene extends Phaser.Scene {
         this.hud?.pushChat(name, text, tMs != null ? new Date(tMs) : undefined),
       // Debug: occluder build state (maps2 z-order verification).
       occCount: () => ({
-        maps2: this.maps2,
         occluders: this.occluders.length,
         meta: this.occluderMeta.length,
         culled: this.occCulled,
@@ -4534,9 +4410,9 @@ export class WorldScene extends Phaser.Scene {
         const offenders: Array<Record<string, number>> = [];
         for (const m of this.occluderMeta) {
           if (m.x1 < v.x || m.x0 > v.right || m.y1 < v.y || m.y0 > v.bottom) continue;
-          // PROPS (solid) live in `propImgs`, never in `occluders`, and are
-          // not touched by the cull — their meta legitimately has no occluder
-          // image, so they are not offenders.
+          // SOLID meta (scenery footprints) is never an occluder image and is
+          // not touched by the cull — legitimately without art, so not an
+          // offender.
           if (m.solid) {
             propMeta++;
             continue;
@@ -5070,7 +4946,7 @@ export class WorldScene extends Phaser.Scene {
       worldInfo: () => {
         let maxL = 0;
         if (this.world) for (const r of this.world.rows) for (const c of r) if (c.l > maxL) maxL = c.l;
-        return { name: this.worldName, maps2: this.maps2, w: this.world?.width, h: this.world?.height, maxL };
+        return { name: this.worldName, w: this.world?.width, h: this.world?.height, maxL };
       },
       // Would auto-jump fire from world (x,y) moving in screen dir (ax,ay)?
       // Headless probe for the auto-hop rule against real map geometry.
@@ -5167,7 +5043,6 @@ export class WorldScene extends Phaser.Scene {
       },
       surfaceAt: (x: number, y: number) => (this.terrain ? surfaceAtWorld(this.terrain, x, y) : null),
       blockedAt: (x: number, y: number) => (this.terrain ? isBlockedAtWorld(this.terrain, x, y) : null),
-      propCount: () => this.propImgs.length,
       // Sample the CPU light (what a character's lit copy is tinted by) at a
       // grid cell — headless probe for emission monotonicity/colour.
       lightAtCell: (col: number, row: number, z = 0) =>
@@ -6364,7 +6239,6 @@ export class WorldScene extends Phaser.Scene {
             litOccluders: this.litOccluders.length,
             occluderMeta: this.occluderMeta.length,
             sceneryImgs: this.sceneryImgs.length,
-            propImgs: this.propImgs?.length ?? 0,
             monsters: this.monsters.size,
             monstersActive: this.monstersActive,
             avatars: this.avatars.size,
@@ -6907,14 +6781,11 @@ export class WorldScene extends Phaser.Scene {
           // bare piece id (unique across categories — verified on the index).
           if (within(wx, wy, radius)) add("objects", sc.piece.split("/").pop() ?? sc.piece, wx, wy);
         }
-        // GROUND: a Tiles 2.0 material is a page in the wiki's `tiles` domain;
-        // a Tiles 3.0 ground TYPE (the_game and every maps3 world) is a page in
-        // its `world` domain (`#/world/<type>` — viewWorldType). Same cell.t,
-        // two routes, decided by which renderer this world booted.
-        const groundDomain = this.t3 ? "world" : "tiles";
-        // Terrain: the cell centres in a ring around the feet, plus the tiles2
-        // PROPS standing on them (tall tile art — a tree, a boulder — whose
-        // page is its material's).
+        // GROUND: a Tiles 3.0 ground TYPE is a page in the wiki's `world`
+        // domain (`#/world/<type>` — viewWorldType). (The `tiles` domain
+        // was Tiles 2.0's and is retired.)
+        const groundDomain = "world";
+        // Terrain: the cell centres in a ring around the feet.
         const c0 = Math.floor(mx / CELL_WU), r0 = Math.floor(my / CELL_WU);
         const rows = this.world.rows;
         for (let rr = r0 - groundRadius; rr <= r0 + groundRadius; rr++) {
@@ -6925,14 +6796,8 @@ export class WorldScene extends Phaser.Scene {
             if (!within(wx, wy, groundRadius)) continue;
             // The cell UNDER the feet is "0 cells away" whatever its centre is.
             const under = cc === c0 && rr === r0;
-            add(groundDomain, cell.t, under ? mx : wx, under ? my : wy, cell.path);
+            add(groundDomain, cell.t, under ? mx : wx, under ? my : wy);
           }
-        }
-        for (const pr of this.world.props ?? []) {
-          const wx = (pr.col + 0.5) * CELL_WU, wy = (pr.row + 0.5) * CELL_WU;
-          if (!within(wx, wy, radius)) continue;
-          const mat = pr.path.split("/")[1];
-          if (mat) add(groundDomain, mat, wx, wy, pr.path);
         }
         const items = [...best.values()]
           .map((r) => ({ ...r, dist: +r.dist.toFixed(2) }))
@@ -7958,7 +7823,6 @@ export class WorldScene extends Phaser.Scene {
         }
     };
     for (const im of this.occluders) add(im);
-    for (const im of this.propImgs) add(im);
     /* SCENERY TOO. A tree is a prop that happens to sit off the grid, and a
      * body walking behind one must be covered by it exactly as by a boulder. */
     for (const im of this.sceneryImgs) add(im);
@@ -13960,12 +13824,6 @@ export class WorldScene extends Phaser.Scene {
       });
   }
 
-  /** Face tile key for a deck's underside/sides (the material's plain face, like
-   * a raised ground cell), falling back to the slab's own top art. */
-  private deckFaceKey(deck: Deck, topKey: string): string {
-    const fp = this.world?.faceTiles?.[deck.mat];
-    return fp && this.textures.exists(pathTileKey(fp)) ? pathTileKey(fp) : topKey;
-  }
 
   // =========================================================================
   // INDOOR STATE MACHINE
@@ -14276,7 +14134,7 @@ export class WorldScene extends Phaser.Scene {
    * covered by it exactly as they will be once it is real. */
   /** THE DEBRIS FOR A MAPS3 WORLD — the same crossfade, drawn from tiles3 art.
    *
-   *  `buildIndoorDebris` returned early on `!this.maps2`, so on the_game the
+   *  `buildIndoorDebris` used to return early on a maps3 world, so on the_game the
    *  roof left and came back on ONE frame while the light still eased
    *  (maintainer 2026-09-05: "the roof feels like it pops on a single frame
    *  without any fade whatsoever ... I felt we had a solution for this that
@@ -14356,82 +14214,6 @@ export class WorldScene extends Phaser.Scene {
       this.buildIndoorDebris3(cuts, world);
       return;
     }
-    if (!this.maps2) return;
-    const { dx, dy, lh, tile: tileSize } = this.geom;
-    const cam = this.cameras.main;
-    const cx0 = cam.worldView.x - OCC_CULL_PAD;
-    const cx1 = cam.worldView.right + OCC_CULL_PAD;
-    const cy0 = cam.worldView.y - OCC_CULL_PAD;
-    const cy1 = cam.worldView.bottom + OCC_CULL_PAD;
-    const shows = (ix: number, iy: number) =>
-      ix + tileSize >= cx0 && ix <= cx1 && iy + tileSize >= cy0 && iy <= cy1;
-    const a = this.debrisAlpha();
-    const out: Phaser.GameObjects.Image[] = [];
-    const push = (img: Phaser.GameObjects.Image) => out.push(img.setAlpha(a));
-    for (const [idx, cutE] of cuts) {
-      const col: number = idx % world.width;
-      const row: number = (idx - col) / world.width;
-      const cell = world.rows[row]?.[col];
-      if (!cell) continue;
-      const u = col - row;
-      const v = col + row;
-      const bx = this.iso.ox + u * dx;
-      const by = this.iso.oy + v * dy;
-      const depth = by + dy;
-      const hi = Math.min(cell.l, cutE);
-      if (hi < cell.l) {
-        const topKey0 = topKeyFor(cell);
-        if (topKey0 && this.textures.exists(topKey0)) {
-          const faceKey = faceKeyFor(world, cell);
-          const fk = faceKey && this.textures.exists(faceKey) ? faceKey : topKey0;
-          // The removed band: faces above the drawn cap (the cap itself is
-          // identical art in both states), then the real top diamond.
-          for (let lvl = hi + 1; lvl < cell.l; lvl++)
-            if (shows(bx, by - lvl * lh))
-              push(this.add.image(bx, by - lvl * lh, fk).setOrigin(0, 0).setDepth(depth));
-          if (shows(bx, by - cell.l * lh))
-            push(
-              this.add
-                .image(bx, by - cell.l * lh, topKey0)
-                .setOrigin(0, 0)
-                .setFlipX(!!cell.flip)
-                .setDepth(depth),
-            );
-        }
-      }
-      // The deck a constrained cell no longer draws — my own roof, or a slab
-      // that would lid my floor. Exposed faces + top, the outdoor rule —
-      // INCLUDING the lap rule: where the deck coincides with its own
-      // equal-height column (deck.level == cell.l — the roof lapping its
-      // walls, or the pillars of a hypostyle hall), the real renderers draw
-      // the COLUMN's baked top and skip the deck (rebuildOccluders /
-      // redrawGround), so the debris must too. Without this the fade stamped
-      // the dark deck tile over every pale wall-top and pillar-top, and the
-      // swap popped the real mixed-tile roof back in (maintainer 2026-08-13,
-      // the island hall: "the roof suddenly changes look... something to do
-      // with the walls having a different tile than the roof").
-      const dk = this.deckIndex.get(idx);
-      if (dk && dk.cell.path && dk.deck.level > cell.l) {
-        const dTop0 = pathTileKey(dk.cell.path);
-        if (this.textures.exists(dTop0)) {
-          const dFace = this.deckFaceKey(dk.deck, dTop0);
-          const lvl0 = Math.max(0, dk.deck.level - dk.deck.thickness);
-          const dFrom = this.deckCoverFrom(col, row, lvl0, dk.deck.level);
-          for (let lvl = dFrom; lvl < dk.deck.level; lvl++)
-            if (shows(bx, by - lvl * lh))
-              push(this.add.image(bx, by - lvl * lh, dFace).setOrigin(0, 0).setDepth(depth));
-          if (shows(bx, by - dk.deck.level * lh))
-            push(
-              this.add
-                .image(bx, by - dk.deck.level * lh, dTop0)
-                .setOrigin(0, 0)
-                .setFlipX(!!dk.cell.flip)
-                .setDepth(depth),
-            );
-        }
-      }
-    }
-    this.indoorDebris = out.length ? out : null;
   }
 
   /** An EXPLICIT repaint — a state change (the indoor cut, a landed hitbox
@@ -18493,127 +18275,6 @@ export class WorldScene extends Phaser.Scene {
       this.groundFullRuns++;
       return;
     }
-    rt.setPosition(ax, ay);
-    rt.clear();
-    this.fillGround(rt, mask ? 0x000000 : 0x181c28);
-
-    // Covered rect in virtual-canvas coords, padded for tile size + max lift.
-    const x0 = ax - tile;
-    const x1 = ax + rt.width + tile;
-    const y0 = ay - tile;
-    const y1 = ay + rt.height + tile + this.maxLevel * lh;
-    // u = col−row indexes screen-x; v = col+row indexes screen-y.
-    const u0 = Math.floor((x0 - this.iso.ox) / dx) - 1;
-    const u1 = Math.ceil((x1 - this.iso.ox) / dx) + 1;
-    const v0 = Math.max(0, Math.floor((y0 - this.iso.oy) / dy) - 1);
-    const v1 = Math.ceil((y1 - this.iso.oy) / dy) + 1;
-
-    // MAPS3: no cell carries a baked path, so the whole pass is the tiles3
-    // resolution — three ordered sub-passes with their own begin/endDraw.
-    rt.beginDraw();
-    for (let v = v0; v <= v1; v++) {
-      for (let u = u0; u <= u1; u++) {
-        if ((u + v) & 1) continue; // col/row must be integers
-        const col = (u + v) / 2;
-        const row = (v - u) / 2;
-        if (col < 0 || row < 0 || col >= world.width || row >= world.height) continue;
-        const cell = world.rows[row][col];
-        const bx = this.iso.ox + u * dx - ax;
-        const by = this.iso.oy + v * dy - ay;
-        if (this.maps2) {
-          // maps2: the world bakes the exact TOP tile per cell; terraces are
-          // built by stacking the material's plain FACE tile 16px per level
-          // (LEVEL_PX), with the cell's top tile last (like maps2 render2.py).
-          const topKey0 = topKeyFor(cell);
-          if (!topKey0 || !this.textures.exists(topKey0)) continue; // void cell
-          // world@1 mirror: some transition tiles are placed flipped; honour it
-          // or borders face the wrong way. RT batchDraw can't flip, so draw a
-          // lazily-mirrored texture copy for flipped cells.
-          const topKey = cell.flip ? this.flippedKey(topKey0) : topKey0;
-          const faceKey = faceKeyFor(world, cell);
-          const fk = faceKey && this.textures.exists(faceKey) ? faceKey : topKey0;
-          if (mask) {
-            // ---- THE CUT-AWAY, scoped to what can HIDE MY ROOM ----
-            // A cell with an entry in the cut map is CONSTRAINED: my own
-            // building (the roof comes off, the walls stand at their per-wall
-            // raise) and the covering cone — any column down-screen whose
-            // full-height art would bury one of my floors, mountain and
-            // neighbouring wall alike (computeIndoorCuts). Painter order is
-            // why the cone exists at all: a column k steps down-screen buries
-            // an interior cell once it is ≳0.94·k levels taller — in
-            // the_island2's caves the surrounding rock hides 417 of 417
-            // interior cells if left standing.
-            //
-            // A cell WITHOUT an entry cannot cover my room from any angle and
-            // falls through to the ordinary outdoor draw below — full column,
-            // deck slab and all. That is what keeps the NEIGHBOUR'S house
-            // closed when you step into yours (maintainer 2026-08-13: "you
-            // don't want to also see into house_b") — it renders whole and
-            // simply goes black under the zero-ambient rule, torch-findable
-            // like everything else out there. With the legacy kill switch
-            // (cuts null) every cell is constrained at the scalar dial — the
-            // pre-scope world-wide cut, kept for QA's flat frames.
-            //
-            // The tile at the top of a TRUNCATED stack is a FACE, not the
-            // baked top diamond — the baked top is the outdoor grass/rock
-            // surface and reads as a lid on a wall stump. Only a column that
-            // reaches its own real top gets its diamond (the floor, a sill, a
-            // raised wall drawn whole).
-            const cutE = cuts ? cuts.get(row * world.width + col) : top;
-            if (cutE !== undefined) {
-              const hi = Math.min(cell.l, cutE);
-              if (hi >= 0) {
-                for (let lvl = 0; lvl < hi; lvl++) rt.batchDraw(fk, bx, by - lvl * lh);
-                rt.batchDraw(hi === cell.l ? topKey : fk, bx, by - hi * lh);
-              }
-              continue; // and never its deck slab — my roof, or a lid over my floor
-            }
-          }
-          // The face stack too: an interior wall is what you actually SEE
-          // through the opening, and a floor alone still reads bright.
-          const ct = this.caveTint(row * world.width + col, !!mask);
-          for (let lvl = 0; lvl < cell.l; lvl++) rt.batchDraw(fk, bx, by - lvl * lh, 1, ct);
-          // THE CAVE SWALLOWS THE LIGHT — and it has to happen HERE, not in the
-          // light shader. Outdoors the shader resolves every pixel of a cave to
-          // max(terrain, deck), which in the_island2 is the MOUNTAIN's own 24:
-          // floor and rock become the same number, so no per-pixel test can
-          // separate them (four tried). At THIS line there is no ambiguity —
-          // this is the cell's floor tile, being drawn as a floor.
-          rt.batchDraw(topKey, bx, by - cell.l * lh, 1, ct);
-          // world@2 deck slab (roof / bridge span) at this cell, drawn right
-          // after its base in (x+y) order: `thickness` face tiles below the top
-          // with OPEN AIR beneath (so you see under it), then the top diamond.
-          const dk = this.deckIndex.get(row * world.width + col);
-          if (dk && dk.cell.path) {
-            const dTop0 = pathTileKey(dk.cell.path);
-            if (this.textures.exists(dTop0)) {
-              const dTop = dk.cell.flip ? this.flippedKey(dTop0) : dTop0;
-              const dFace = this.deckFaceKey(dk.deck, dTop0);
-              const lvl0 = Math.max(0, dk.deck.level - dk.deck.thickness);
-              const dct = this.caveTint(row * world.width + col, !!mask);
-              for (let lvl = lvl0; lvl < dk.deck.level; lvl++) rt.batchDraw(dFace, bx, by - lvl * lh, 1, dct);
-              rt.batchDraw(dTop, bx, by - dk.deck.level * lh, 1, dct);
-            }
-          }
-          continue;
-        }
-        const key = tileKey(cell.t, cell.v);
-        if (!this.textures.exists(key)) continue;
-        // Per-level stacking builds raised TERRAIN columns out of flat tiles.
-        // SOLID structures (trees, pillars, towers) are one object: stacking
-        // their tall art drew 2-3 overlapping copies ("two long tiles on top
-        // of each other" — trees on earth columns, scalloped pillar bases).
-        // They draw exactly once, grounded at their cell's level, like the
-        // maps agent's own renderer.
-        const sSolid = surfaceFor(cell.t);
-        const fromLvl = !sSolid.standable && !sSolid.swimmable
-          ? cell.l
-          : 0;
-        for (let lvl = fromLvl; lvl <= cell.l; lvl++)
-          rt.batchDraw(key, bx, by - lvl * lh - this.artYOff(key));
-      }
-    }
-    rt.endDraw();
   }
 
   /** Start a jump if grounded and off cooldown (client-side prediction; the
@@ -18963,22 +18624,6 @@ export class WorldScene extends Phaser.Scene {
     return Math.max(from, Math.min(level, cover + 1));
   }
 
-  private artYOff(key: string): number {
-    let off = this.artOffCache.get(key);
-    if (off === undefined) {
-      // Per-variant measured base (tile-bases.json) when available — "extra
-      // long" art (content to the canvas bottom) gets a deeper lift than
-      // "long" art, so nothing sinks. Solid structures anchor their bottom V
-      // to the surface diamond (footprint = collision diamond). Fallback:
-      // the old constant imgH - 64.
-      const [, t, v] = key.split(":");
-      const sf = surfaceFor(t);
-      const src = this.textures.get(key)?.getSourceImage() as { height?: number } | undefined;
-      off = artLift(this.tileBases, t, Number(v), src?.height ?? 64, !sf.standable && !sf.swimmable);
-      this.artOffCache.set(key, off);
-    }
-    return off;
-  }
 
   /** Stamp a maps2 terrain occluder image with the CELL it was built for — that
    * is all these tags carry. The ONE reader is the cull audit
@@ -19264,7 +18909,7 @@ export class WorldScene extends Phaser.Scene {
   private cullRect: ViewRect = { x: 0, y: 0, width: 0, height: 0 };
 
   private get cullLists(): Phaser.GameObjects.Image[][] {
-    return [this.occluders, this.sceneryImgs, this.sceneryRoofedImgs, this.propImgs];
+    return [this.occluders, this.sceneryImgs, this.sceneryRoofedImgs];
   }
   /** Occluders whose submit the last frame skipped — reported by the beacon. */
   private occCulledSubmits = 0;
@@ -19407,610 +19052,8 @@ export class WorldScene extends Phaser.Scene {
       this.occDestroyMs += performance.now() - tLeft;
       return;
     }
-    for (let v = v0; v <= v1; v++) {
-      for (let u = u0; u <= u1; u++) {
-        if ((u + v) & 1) continue;
-        const col = (u + v) / 2;
-        const row = (v - u) / 2;
-        const cell = this.world.rows[row]?.[col];
-        if (!cell) continue;
-        const s = surfaceFor(cell.t);
-        if (this.maps2) {
-          // world@2 DECK occluder: a slab floating ABOVE its base (deck.level >
-          // base level) must occlude whoever walks/swims under it, and must draw
-          // on top of the ground RT so it's visible over the walls it roofs.
-          // Built regardless of the base cell's own level (the interior floor is
-          // l=0, which the terrain branch below skips). Where the deck coincides
-          // with its base top (deck.level == base l — a roof lapping its own
-          // walls), the terrain occluder already covers it, so skip.
-          // INDOORS a CONSTRAINED cell draws no deck — my own ceiling (the
-          // roof the cut takes off) and any slab in the covering cone. An
-          // UNCONSTRAINED cell keeps its deck exactly as outdoors: the
-          // neighbour's roof and a distant bridge are painted by the RT now,
-          // so the occluder copy must exist too — art and meta agree, in both
-          // directions (a meta record without art crops a body's lit copy
-          // against terrain that is not there, and art without meta lets a
-          // body draw through the neighbour's roof).
-          const occIdx = row * this.world.width + col;
-          const occCut = mask ? (cuts ? cuts.get(occIdx) : top) : undefined;
-          const dk = occCut !== undefined ? undefined : this.deckIndex.get(occIdx);
-          if (dk && dk.cell.path && dk.deck.level > cell.l) {
-            const dTop0 = pathTileKey(dk.cell.path);
-            if (this.textures.exists(dTop0)) {
-              const dFace = this.deckFaceKey(dk.deck, dTop0);
-              const bx0 = this.iso.ox + u * dx;
-              const by0 = this.iso.oy + v * dy;
-              const dDepth = by0 + dy;
-              const lvl0 = Math.max(0, dk.deck.level - dk.deck.thickness);
-              // EXPOSED slab faces only — the rule the terrain branch has had
-              // since the terrace-tear fix, which the deck branch never got.
-              // A cave cell walled in by its own slab on both front sides
-              // needs nothing but its top; these decks are 16-32 thick, and
-              // this was ~65% of every occluder image in the mountain window.
-              const dFrom = this.deckCoverFrom(col, row, lvl0, dk.deck.level);
-              for (let lvl = dFrom; lvl < dk.deck.level; lvl++) {
-                if (!shows(bx0, by0 - lvl * lh)) {
-                  culled++;
-                  continue;
-                }
-                this.occluders.push(
-                  this.tagOccluder(this.add.image(bx0, by0 - lvl * lh, dFace).setOrigin(0, 0).setDepth(dDepth), col, row),
-                );
-              }
-              culled += dFrom - lvl0;
-              // The deck TOP is the walkable surface — it is what occludes a
-              // body walking UNDER the slab. Never exposure-cull it, and keep
-              // it whenever the COLUMN reaches the cull box (not merely when
-              // the top tile itself does), so a meta record can never describe
-              // terrain that draws nothing.
-              if (columnShows(bx0, by0 - dk.deck.level * lh, by0 + tileSize))
-                this.occluders.push(
-                  this.tagOccluder(
-                    this.add.image(bx0, by0 - dk.deck.level * lh, dTop0).setOrigin(0, 0).setFlipX(!!dk.cell.flip).setDepth(dDepth),
-                    col, row,
-                  ),
-                );
-              else culled++;
-              this.occluderMeta.push({
-                col, row, top: dk.deck.level, solid: false, depth: dDepth,
-                x0: bx0, x1: bx0 + tileSize, y0: by0 - dk.deck.level * lh, y1: by0 + tileSize,
-              });
-            }
-          }
-          // maps2 cells bake an explicit tile PNG path (loaded under
-          // pathTileKey), NOT the legacy tile:(t,v) key — so the legacy branch
-          // below finds no texture and builds ZERO occluders, leaving every
-          // sprite drawn ON TOP of raised terraces. Build the occluder column
-          // here instead, mirroring the ground pass's stacking (faces 0..l-1,
-          // then the baked top at l). Flat (l=0) and void cells never occlude.
-          if (cell.l <= 0) continue;
-          const topKey = topKeyFor(cell);
-          if (!topKey || !this.textures.exists(topKey)) continue;
-          const faceKey = faceKeyFor(this.world, cell);
-          const fk = faceKey && this.textures.exists(faceKey) ? faceKey : topKey;
-          const bx = this.iso.ox + u * dx;
-          const by = this.iso.oy + v * dy;
-          const oDepth = by + dy;
-          // The occluder copy must draw exactly what the ground RT drew, or
-          // the difference comes back as a sprite at sprite depth: draw taller
-          // here and the battlement the RT no longer has reappears above the
-          // cut. Same per-cell constraint as the RT — a CONSTRAINED column is
-          // truncated at its own cut, an unconstrained one is whole. `topL <
-          // cell.l` means the column was cut, and the surviving top is a FACE
-          // tile — the baked top diamond is the outdoor grass/rock surface and
-          // would read as a lid on a wall stump.
-          const topL = occCut !== undefined ? Math.min(cell.l, occCut) : cell.l;
-          if (topL < 0) continue;
-          // Draw only the EXPOSED cliff faces (from the lowest front neighbour
-          // up). The ground RT already bakes every cell's full face stack with
-          // the lower front cells drawn OVER it; redrawing the covered lower
-          // faces here — on top of the RT at a high depth — re-exposed them,
-          // painting the front cell's ground back into a wall (the "half-tile"
-          // terrace tear). stackFrom = one above the lower of the E/S fronts.
-          // INDOORS the front neighbours' cover is their DRAWN height, not the
-          // terrain's: per-cell cuts mean a raised wall can stand behind an
-          // unraised one whose real column is far taller than what is painted
-          // (the corner where the far run meets the capped near run), and
-          // trusting the real level there skips faces the RT plainly shows —
-          // an occluder hole a body behind the wall would draw straight
-          // through. An UNCONSTRAINED neighbour draws whole and covers with
-          // its real level, exactly as stackFrom assumes outdoors.
-          const cutL = (c: number, r: number): number => {
-            const n = this.world?.rows[r]?.[c];
-            if (!n) return -1;
-            const e = cuts ? cuts.get(r * (this.world?.width ?? 0) + c) : top;
-            return e === undefined ? n.l : Math.min(n.l, e);
-          };
-          const from = mask
-            ? Math.max(0, Math.min(topL, Math.min(cutL(col + 1, row), cutL(col, row + 1)) + 1))
-            : this.stackFrom(col, row, topL, false);
-          for (let lvl = from; lvl < topL; lvl++) {
-            if (!shows(bx, by - lvl * lh)) {
-              culled++;
-              continue;
-            }
-            this.occluders.push(
-              this.tagOccluder(this.add.image(bx, by - lvl * lh, fk).setOrigin(0, 0).setDepth(oDepth), col, row),
-            );
-          }
-          // Keep the top whenever the COLUMN reaches the cull box, so every
-          // meta record in range still has drawn art behind it (see
-          // columnShows).
-          if (columnShows(bx, by - topL * lh, by + tileSize))
-            this.occluders.push(
-              // Occluder images CAN flip directly (setFlipX) — matches the RT's
-              // mirrored top so the two layers stay pixel-aligned for flipped cells.
-              this.tagOccluder(
-                this.add
-                  .image(bx, by - topL * lh, topL === cell.l ? topKey : fk)
-                  .setOrigin(0, 0)
-                  .setFlipX(topL === cell.l && !!cell.flip)
-                  .setDepth(oDepth),
-                col,
-                row,
-              ),
-            );
-          else culled++;
-          this.occluderMeta.push({
-            col,
-            row,
-            top: topL, // maps2 terrain is all standable ground: visual top = level
-            solid: false,
-            depth: oDepth,
-            x0: bx,
-            x1: bx + tileSize,
-            y0: by - topL * lh,
-            y1: by + tileSize,
-          });
-          continue;
-        }
-        // Emissive tiles (tiles/emission.json): atmosphere bloom for the
-        // canvas fallback (glow POOLS are collected in their own wider pass
-        // below). Per-VARIANT: plain variants of a glowing category stay
-        // dark (only variants with detected glow sources emit; v1 entries
-        // emit always).
-        const em = this.emission[cell.t];
-        const variantGlows = em && (!em.sources || (em.sources[String(cell.v)]?.length ?? 0) > 0);
-        if (em && variantGlows && !this.night && this.emissiveLights.length < MAX_EMISSIVE) {
-          const hex =
-            (Math.round(em.color[0] * 255) << 16) |
-            (Math.round(em.color[1] * 255) << 8) |
-            Math.round(em.color[2] * 255);
-          this.emissiveLights.push({
-            x: this.iso.ox + u * dx + dx,
-            y: this.iso.oy + v * dy + dy - cell.l * lh,
-            color: hex,
-            radius: em.radius * 32,
-            ground: true,
-            depth: this.iso.oy + v * dy + dy + 0.2, // occluded by fronting walls
-          });
-        }
-        const tall = cell.l > 0 || (!s.standable && !s.swimmable);
-        if (!tall) continue;
-        const key = tileKey(cell.t, cell.v);
-        if (!this.textures.exists(key)) continue;
-        const bx = this.iso.ox + u * dx;
-        const by = this.iso.oy + v * dy;
-        // Depth = the column's CENTRE line (by + dy); avatars refine their
-        // own depth against these per frame (see update) since a single
-        // scalar can't resolve every sprite-vs-column case exactly. SOLID
-        // structures draw ONCE (same rule as the ground RT) and get a +0.5
-        // depth bias: they STAND ON their cell, in front of every terrain
-        // copy on the same diagonal — so a sprite clamped behind a pillar
-        // (below - 0.3) still stays ABOVE the neighbouring grass copies
-        // (playtester: "my foot is drawn behind the grass to the left").
-        // Every raised terrain cell keeps its copies: the occluder layer is
-        // a complete painter re-render of the raised world, and each rim's
-        // buried stack layers are covered by the cells in front of it —
-        // culling "interior" cells re-exposed them ("tiles drawn 3 times").
-        const solidHere = !s.standable && !s.swimmable;
-        const oDepth = by + dy + (solidHere ? 0.5 : 0);
-        const aOff = this.artYOff(key);
-        const fromLvl = solidHere
-          ? cell.l
-          : 0;
-        for (let lvl = fromLvl; lvl <= cell.l; lvl++) {
-          this.occluders.push(
-            this.add.image(bx, by - lvl * lh - aOff, key).setOrigin(0, 0).setDepth(oDepth),
-          );
-        }
-        // DEMO stations: a raised EMISSIVE terrain column (flat glowing tile
-        // stacked to expose its faces) gets floor-tinted glow copies of the
-        // whole stack — the wall's lowest band falls into the diamond
-        // interlock wedge where the shader resolves pixels to the dark
-        // meadow IN FRONT, leaving an unlit "step" at the base (#64).
-        // Tall solids get a LIT COPY above the darkness overlay (see the
-        // litOccluders field note): billboard art must be lit by its OWN
-        // cell, not by whatever terrain lies behind its upper pixels.
-        // EMISSIVE variants additionally carry their emission entry — the
-        // copy's tint gets the self-glow FLOOR (max per channel), so the
-        // glow follows the ART'S OWN SHAPE instead of the shader's world
-        // geometry (which lit the flat cell diamond / an analytic box
-        // around the art — playtester, demo #28). Same depth band as every
-        // other lit copy; no new ordering rules.
-        if (this.night && solidHere && aOff > 0) {
-          this.litOccluders.push({
-            img: this.add
-              .image(bx, by - cell.l * lh - aOff, key)
-              .setOrigin(0, 0)
-              .setDepth(litDepth(oDepth)),
-            col: col + 0.5,
-            row: row + 0.5,
-            z: cell.l + 0.5,
-            emission: em && variantGlows ? em : undefined,
-            phase: ((((col * 73856093) ^ (row * 19349663)) >>> 0) % 628) / 100,
-            bx: bx + tileSize / 2,
-            by: by + this.geom.margin + dy - cell.l * lh, // the tread's diamond centre
-            pd: oDepth,
-          });
-          this.makeFogSilhouette(this.litOccluders[this.litOccluders.length - 1]);
-        }
-        this.occluderMeta.push({
-          col,
-          row,
-          // Solid structures (trees, boulders…) visually stand ~1 level tall.
-          top: cell.l + (s.standable ? 0 : 1),
-          solid: solidHere,
-          depth: oDepth,
-          x0: bx,
-          x1: bx + tileSize,
-          y0: by - cell.l * lh - aOff,
-          y1: by + tileSize,
-        });
-      }
-    }
-
-    this.occCulled = culled;
-
-    // Placed props (maps2 world@1) share the occluder rebuild: they're tall
-    // billboards that also occlude characters, so building them here — under
-    // the same camera-move guard, appending to the SAME occluderMeta — keeps
-    // the two layers atomic (a separate guard could rebuild one without the
-    // other and desync the depth metadata).
-    this.rebuildProps(cam);
-
-    // Per-pixel glow halos (tile-emission@2 sources) for this window. Demo
-    // stations draw tall art ONCE at ground level, so every source anchors
-    // to the drawn art instead of repeating down a stacked column.
-    this.glowStamps = buildGlowStamps(
-      this.world,
-      this.emission,
-      this.iso,
-      { x0, y0, x1, y1 },
-      this.maxLevel,
-      undefined,
-      (t, v) => this.artYOff(tileKey(t, v)),
-      false,
-    ).concat(this.buildPoolStamps(cam)).concat(this.propStamps);
-
-    // The occluder + prop images have just been destroyed and recreated, so
-    // this is the one moment their broad-phase index (and every cover slot's
-    // "did the terrain move" signature term) can go stale.
-    this.rebuildCoverIndex();
   }
 
-  /**
-   * Rebuild the placed-decoration set (maps2 world@1 `props`): each prop is a
-   * TALL 64×128 tile standing on its cell, drawn as a depth-sorted billboard so
-   * characters pass in front of / behind it. Called from rebuildOccluders under
-   * its camera-move guard, so it culls to the same window and appends to the
-   * same occluderMeta.
-   *
-   * ANCHOR: a prop's canvas is NOT bottom-full — the object's ground-contact row
-   * varies (a short bush ends high in the canvas, a tall tower nearly fills it).
-   * So we measure each prop's opaque BOTTOM (its base V) and plant it on the
-   * cell's grid diamond FRONT vertex (groundTop + 2·dy), so the base sits IN the
-   * grid cell. Two earlier tries were wrong: bottom-of-CANVAS (imgH−64) only
-   * matched full-height props; content-bottom-to-skirt (row 54, as propdemo.py
-   * does) dropped every prop one elevation level below the grid V (playtester).
-   */
-  private rebuildProps(cam: Phaser.Cameras.Scene2D.Camera) {
-    for (const im of this.propImgs) im.destroy();
-    this.propImgs = [];
-    this.propStamps = [];
-    if (!this.world || !this.maps2) return;
-    const props = this.world.props;
-    if (!props || !props.length) return;
-    const ANIM: Record<string, number> = { static: 0, pulse: 1, flicker: 2 };
-
-    const { dx, dy, lh, tile: tileSize } = this.geom;
-    const pad = 200;
-    // A tall prop rises well above its ground box, so pad the top generously.
-    const x0 = cam.worldView.x - pad;
-    const x1 = cam.worldView.right + pad;
-    const y0 = cam.worldView.y - pad - 128;
-    const y1 = cam.worldView.bottom + pad + this.maxLevel * lh;
-    // Anchor row: the cell's grid diamond FRONT vertex — groundTop (the surface
-    // diamond's top row) + the diamond's full height (2·dy). A prop's opaque
-    // BOTTOM (its base V) is planted here so it sits IN the grid cell, not one
-    // level below it. maps2's propdemo aligns to the tile's SKIRT bottom (row
-    // 54) instead, which drops every prop a full elevation level — the base V
-    // ended up under the grid V (playtester). The skirt is the flat tile's own
-    // front face; a prop is not part of that face.
-    const anchorRow = (this.tileBases?.groundTop ?? 8) + 2 * dy;
-    // INDOORS a prop outside my room is DRAWN like the ground it stands on —
-    // it renders below the multiply overlay, so zero ambient blacks it out for
-    // free and a torch through the doorway finds it. Its GLOW STAMP is another
-    // matter: that is a light source, additive into the glow field, and a
-    // glowing mushroom out on the grass would be the one thing lighting the
-    // world you shut the door on. Art drawn, light suppressed — the same split
-    // the bonfire gets. (Measured on the shipped worlds: 3 props, all deep in
-    // the_island2's caves, can reach a room interior at all; none near a house.)
-    const mask = this.indoorInside ? this.indoorMask : null;
-    const top = this.indoorTop;
-    for (const p of props) {
-      // ROOM MEMBERSHIP FOR A PROP IS ROOF ∪ WALL, not roof alone. A prop
-      // BLOCKS its own cell in the terrain grid, so the room flood-fill can
-      // never put that cell in `roof` ("could the player stand here") — it
-      // lands in the shell. Gating on IN_ROOF alone therefore classified every
-      // emissive prop as "outside my room" the moment you stepped indoors,
-      // including the bonfire burning in the middle of the room you are
-      // standing in (maintainer 2026-08-12, screenshot: a pitch-black room
-      // around a lit fire). The LIGHT filter's mask has always been floor ∪
-      // shell for exactly this reason ("a torch mounted ON the wall of my room
-      // lights it") — the stamp gate now matches it. A glowing mushroom out on
-      // the grass is neither roof nor wall and stays suppressed.
-      const propIdx = p.row * this.world.width + p.col;
-      const propOut =
-        (!!mask && !((mask.get(propIdx) ?? 0) & (IN_ROOF | IN_WALL))) ||
-        // A SEALED-ROOM fire's stamps are indoor-only too: its high halos
-        // paint at the prop's screen position, which from OUTSIDE is the
-        // house's ROOF — an orange blob glowing on the shingles (the other
-        // half of the maintainer's bleed-through screenshot). Same gate as
-        // the light: visible only while I am in its room. rebuildProps
-        // re-runs on the indoor commit, so door crossings stay fresh.
-        (this.sealedEmissiveCells.has(propIdx) && !(this.roomMask && this.inMyRoom(p.col, p.row)));
-      const cell = this.world.rows[p.row]?.[p.col];
-      const key = pathTileKey(p.path);
-      if (!this.textures.exists(key)) continue;
-      // Indoors a prop on a CONSTRAINED column rides its truncated stump
-      // instead of hanging where the vanished hilltop used to be; on an
-      // unconstrained column (the neighbour's garden) it stands at full
-      // height like the ground it grows from. Its own art is never shortened
-      // — it is one object, like a tree, and the occluder pass agrees.
-      let lvl = cell?.l ?? 0;
-      if (mask) {
-        const e = this.indoorCut ? this.indoorCut.get(propIdx) : top;
-        if (e !== undefined) lvl = Math.min(lvl, e);
-      }
-      const u = p.col - p.row;
-      const v = p.col + p.row;
-      const bx = this.iso.ox + u * dx;
-      const byGround = this.iso.oy + v * dy - lvl * lh; // ground tile top-left
-      const b = this.propBounds(key); // opaque {top,bottom} rows in the art
-      const py = byGround + anchorRow - b.bottom; // base V on the grid diamond vertex
-      if (bx + tileSize < x0 || bx > x1 || py + b.bottom < y0 || py + b.top > y1) continue;
-      // Unlifted ground line (matches occluders + character depth), so painter
-      // order by (col+row) puts characters correctly in front / behind.
-      const depth = this.iso.oy + v * dy + dy;
-      this.propImgs.push(this.add.image(bx, py, key).setOrigin(0, 0).setDepth(depth));
-      // Self-emission: an emissive prop (a tiles2 tile with glow `sources`).
-      // Two SEPARATE jobs, mirroring how the bonfire works vs how it looked
-      // buggy before (root-caused with the playtester):
-      //   • light ON THE GROUND + CHARACTER: a strong pool at GROUND level in
-      //     the prop's real glow colour. Ground-anchored ⇒ the base lights up
-      //     AND a character brightens monotonically as it walks in (litChar).
-      //   • glow ON THE ART: the sharp per-source halos stamped high on the
-      //     tall tile so the runes/crystals bloom — cosmetic only (litChar
-      //     false), because sampling a HIGH point from the character's feet
-      //     made it brighter-then-darker as you approached.
-      const srcs = this.night && !propOut ? this.tiles2Src[p.path] : undefined;
-      if (srcs?.length) {
-        const mat = p.path.split("/")[1]; // tiles2/<material>/…
-        const em = this.tiles2Mat[mat];
-        const anim = ANIM[em?.anim ?? "static"] ?? 0;
-        // The prop's ACTUAL glow colour = strength-weighted mean of its source
-        // colours (a stone obelisk's material hue is blue, but its runes glow
-        // GREEN — the character was green, so the ground must be too), plus a
-        // representative strength for the pool intensity.
-        let cr = 0, cg = 0, cb = 0, sw = 0;
-        for (const g of srcs) {
-          cr += g.color[0] * g.s;
-          cg += g.color[1] * g.s;
-          cb += g.color[2] * g.s;
-          sw += g.s;
-        }
-        const glowColor: [number, number, number] =
-          sw > 0 ? [cr / sw, cg / sw, cb / sw] : em?.color ?? [1, 1, 1];
-        const avgS = srcs.length ? sw / srcs.length : 0;
-        // (a) GROUND POOL — the bonfire-like wash at ground level, in the real
-        // glow colour. The ONLY stamp that tints characters (litChar). Nudged a
-        // few px toward the camera-front so the standing sprite doesn't sit on
-        // the brightest core.
-        const rCells = (em?.radius ?? 2) + 0.5;
-        this.propStamps.push({
-          x: bx + dx,
-          y: byGround + dy + 4,
-          radius: rCells * Math.SQRT2 * dx,
-          ry: rCells * Math.SQRT2 * dy,
-          color: glowColor,
-          alpha: Math.min(0.85, avgS * 0.7),
-          anim,
-          phase: ((((p.col * 40503) ^ (p.row * 12289)) >>> 0) % 628) / 100,
-          litChar: true,
-          // Tagged with its source: while this source holds a REAL light slot
-          // the pool is filtered out per frame (the light replaces it) and it
-          // returns the moment the slot is lost — the overflow fallback.
-          srcId: `${p.col},${p.row}`,
-        });
-        // (b) HIGH HALOS — cosmetic bloom on the glowing pixels of the art
-        // itself (rendered into the glow field over the prop body). NOT used to
-        // tint characters (litChar:false) — see the field note in nightlight.ts.
-        for (let i = 0; i < srcs.length; i++) {
-          const g = srcs[i];
-          const phase = ((((p.col * 73856093) ^ (p.row * 19349663) ^ (i * 83492791)) >>> 0) % 628) / 100;
-          this.propStamps.push({
-            x: bx + g.x,
-            y: py + g.y,
-            radius: Math.min(90, 8 + g.r * 4),
-            color: g.color,
-            alpha: Math.min(1, g.s * 0.4),
-            anim,
-            phase,
-            litChar: false,
-          });
-        }
-      }
-      // Register as a SOLID billboard occluder so a character standing behind
-      // the prop is hidden by it (the per-frame depth test's solidArtOver
-      // branch), instead of always drawing on top.
-      this.occluderMeta.push({
-        col: p.col,
-        row: p.row,
-        top: lvl + 1, // rises at least one level above its cell → "higher"
-        solid: true,
-        depth,
-        x0: bx,
-        x1: bx + tileSize,
-        y0: py + b.top,
-        y1: py + b.bottom,
-      });
-    }
-  }
-
-  /** Opaque vertical extent {top,bottom} (rows) of a prop texture, measured
-   * once from its alpha and cached — props pad their 64×128 canvas differently
-   * per object, so the anchor + occluder box need the real content rows. */
-  private propBoundsCache = new Map<string, { top: number; bottom: number }>();
-  private propBounds(key: string): { top: number; bottom: number } {
-    let b = this.propBoundsCache.get(key);
-    if (b) return b;
-    b = { top: 0, bottom: 63 };
-    try {
-      const src = this.textures.get(key).getSourceImage() as CanvasImageSource & {
-        width: number;
-        height: number;
-      };
-      const w = src.width, h = src.height;
-      const cnv = document.createElement("canvas");
-      cnv.width = w;
-      cnv.height = h;
-      const ctx = cnv.getContext("2d", { willReadFrequently: true });
-      if (ctx) {
-        ctx.drawImage(src, 0, 0);
-        const d = ctx.getImageData(0, 0, w, h).data;
-        let top = -1, bottom = -1;
-        for (let y = 0; y < h; y++) {
-          let op = false;
-          for (let x = 0; x < w; x++)
-            if (d[(y * w + x) * 4 + 3] > 16) { op = true; break; }
-          if (op) {
-            if (top < 0) top = y;
-            bottom = y;
-          }
-        }
-        if (bottom >= 0) b = { top, bottom };
-      }
-    } catch {
-      // Unreadable source (shouldn't happen same-origin) — keep the fallback.
-    }
-    this.propBoundsCache.set(key, b);
-    return b;
-  }
-
-  /** Emission glow POOLS as elliptical stamps in the additive glow field.
-   *
-   * One cluster bucket per EMISSION_BUCKET cells of glowing same-category
-   * cells (top pool + a floating pool in front of each exposed s/e face —
-   * the top pool alone left a tall column's base wall pitch dark). Formerly
-   * these were shader light slots and only the nearest few
-   * won one, so walking re-ranked the winners and pools popped on/off deep
-   * inside the viewport. The stamp field is unlimited, and the EMISSION_PAD
-   * walk window exceeds the largest pool's reach plus the 96px rebuild
-   * drift — a culled pool's entire influence is off-screen, always.
-   *
-   * The pool's grid-circular falloff maps through the iso projection to an
-   * axis-aligned screen ellipse (1 cell of grid distance = √2·dx horizontal,
-   * √2·dy vertical at the extremes), so pool stamps carry ry = radius·dy/dx.
-   * Pools carry their category's anim mode: fire pools flicker with the
-   * gust envelope, crystal pools breathe with the slow pulse (see
-   * emissionWave — the calm "alive" waveform the maintainer asked for). */
-  private buildPoolStamps(cam: Phaser.Cameras.Scene2D.Camera): GlowStamp[] {
-    if (!this.world || !this.night) return [];
-    const { dx, dy, lh } = this.geom;
-    const buckets = new Map<
-      string,
-      { color: [number, number, number]; strength: number; radius: number; anim: number; n: number; sc: number; sr: number; z: number }
-    >();
-    const x0 = cam.worldView.x - EMISSION_PAD;
-    const x1 = cam.worldView.right + EMISSION_PAD;
-    const y0 = cam.worldView.y - EMISSION_PAD;
-    const y1 = cam.worldView.bottom + EMISSION_PAD + this.maxLevel * lh;
-    const u0 = Math.floor((x0 - this.iso.ox) / dx) - 1;
-    const u1 = Math.ceil((x1 - this.iso.ox) / dx) + 1;
-    const v0 = Math.max(0, Math.floor((y0 - this.iso.oy) / dy) - 1);
-    const v1 = Math.ceil((y1 - this.iso.oy) / dy) + 1;
-    for (let v = v0; v <= v1; v++) {
-      for (let u = u0; u <= u1; u++) {
-        if ((u + v) & 1) continue;
-        const col = (u + v) / 2;
-        const row = (v - u) / 2;
-        const cell = this.world.rows[row]?.[col];
-        if (!cell) continue;
-        const em = this.emission[cell.t];
-        if (!em) continue;
-        if (em.sources && !(em.sources[String(cell.v)]?.length ?? 0)) continue;
-        const sample = (kind: string, sc: number, sr: number, sz: number) => {
-          const bk = `${cell.t}:${kind}:${Math.floor(col / EMISSION_BUCKET)}:${Math.floor(row / EMISSION_BUCKET)}`;
-          let b = buckets.get(bk);
-          if (!b) {
-            b = {
-              color: em.color,
-              strength: em.strength,
-              radius: em.radius,
-              anim: em.anim === "flicker" ? 2 : em.anim === "pulse" ? 1 : 0,
-              n: 0,
-              sc: 0,
-              sr: 0,
-              z: 0,
-            };
-            buckets.set(bk, b);
-          }
-          b.n++;
-          b.sc += sc;
-          b.sr += sr;
-          b.z += sz;
-        };
-        // Top glow pool: lights the surface around the tile.
-        sample("t", col + 0.5, row + 0.5, cell.l + 0.6);
-        // Exposed SIDE FACES are area lights of their own: a pool floating
-        // in FRONT of the face at mid-face height.
-        const lS = this.world.rows[row + 1]?.[col]?.l;
-        const lE = this.world.rows[row]?.[col + 1]?.l;
-        if (lS !== undefined && cell.l - lS >= 1)
-          sample("s", col + 0.5, row + 1.35, (cell.l + lS) / 2 + 0.3);
-        if (lE !== undefined && cell.l - lE >= 1)
-          sample("e", col + 1.35, row + 0.5, (cell.l + lE) / 2 + 0.3);
-      }
-    }
-    const out: GlowStamp[] = [];
-    for (const b of buckets.values()) {
-      const col = b.sc / b.n;
-      const row = b.sr / b.n;
-      const z = b.z / b.n; // mean sample height (tops carry their own +0.6)
-      // Pool radius grows gently with cluster size (a lake glows wider than
-      // a vein). √2·dx per cell: the widest point of the grid circle's
-      // screen ellipse (cells at ±45° to the axes project the farthest).
-      const rCells = b.radius * (1 + 0.35 * Math.sqrt(b.n - 1));
-      const phase = ((((Math.round(col * 8) * 73856093) ^ (Math.round(row * 8) * 19349663)) >>> 0) % 628) / 100;
-      out.push({
-        x: this.iso.ox + (col - row) * dx + dx,
-        y: this.iso.oy + 8 + (col + row) * dy - z * lh,
-        radius: rCells * Math.SQRT2 * dx,
-        ry: rCells * Math.SQRT2 * dy,
-        color: b.color,
-        // Calibrated against the former shader pools by the verify-emission
-        // field probes: the old path CULLED to the 8 nearest pools, so in a
-        // dense lake only part of the cluster ever lit at once — with every
-        // pool present the per-pool weight must sit lower (0.7 washed the
-        // crystal lake's field to near-white and broke its hue dominance).
-        alpha: Math.min(1, b.strength * 0.42),
-        anim: b.anim,
-        phase,
-      });
-    }
-    return out;
-  }
 
   /** A burning campfire beside the spawn point — the gathering spot, and the
    * "you are home" landmark (maintainer 2026-07-30). Anchored to the WORLD'S
@@ -20021,116 +19064,6 @@ export class WorldScene extends Phaser.Scene {
    * alone in unrelated terrain on every map. findSpawn then snaps to standable
    * ground exactly as the server does, so both sides agree without a round
    * trip. Its fire feeds the night shader. */
-  /** Resolve every emissive prop in the world into a REAL-light candidate,
-   * once per world. Until 2026-08-12 an emissive tile only ever produced an
-   * additive glow stamp — a sticker over the darkened frame, no attenuation,
-   * no LOS, no elevation ("why can't the bonfire tile look like the campfire
-   * object? SAME PLACE, SAME NIGHT" — maintainer). The shader's real-light
-   * path (including the never-wired negative-radius glow pool) was built for
-   * exactly this; what was missing is this list and the per-frame pick.
-   *
-   * Params come from emission.json's optional `lights` block (tile-path stem
-   * beats material name; explicit null = stamp-only opt-out). Absent, a
-   * SUBTLE default is derived from the data that already ships: the same
-   * strength-weighted source colour the pool stamp uses, radius a little
-   * past the stamp's, flicker from the material's anim. The bonfire tile's
-   * entry pins the campfire object's exact numbers — that parity is the
-   * whole point — while a glowing flower stays a quiet pool. */
-  private buildEmissiveSources() {
-    this.emissiveSources = [];
-    this.sealedEmissiveCells.clear();
-    this.slotTenure.clear(); // a fresh world starts with no held slots
-    if (!this.world?.props?.length) return;
-    const stem = (p: string) => p.replace(/\.(png|webp)$/, "");
-    for (const p of this.world.props) {
-      const srcs = this.tiles2Src[p.path];
-      if (!srcs?.length) continue;
-      const mat = p.path.split("/")[1];
-      const cfg = this.tiles2Lights[stem(p.path)] !== undefined
-        ? this.tiles2Lights[stem(p.path)]
-        : this.tiles2Lights[mat];
-      if (cfg === null) continue; // tiles2 said: stamp only
-      const em = this.tiles2Mat[mat];
-      // Same colour derivation as the pool stamp — the ground must glow in
-      // the colour the art actually emits, not the material's average hue.
-      let cr = 0, cg = 0, cb = 0, sw = 0;
-      for (const g of srcs) {
-        cr += g.color[0] * g.s;
-        cg += g.color[1] * g.s;
-        cb += g.color[2] * g.s;
-        sw += g.s;
-      }
-      const glowColor: [number, number, number] =
-        sw > 0 ? [cr / sw, cg / sw, cb / sw] : em?.color ?? [1, 1, 1];
-      const avgS = srcs.length ? sw / srcs.length : 0;
-      const lvl = this.world.rows[p.row]?.[p.col]?.l ?? 0;
-      const pj = this.project((p.col + 0.5) * CELL_WU, (p.row + 0.5) * CELL_WU);
-      // CAMPFIRE-ANCHORED intensity (round 5, the maintainer's night on
-      // glow_test: "IT'S FILLED WITH LIGHT SOURCES — HOW CAN THIS MAP STILL
-      // BE DARK?… a tile light source should aim to look as bright and lit
-      // up as the good old campfire"). Two earlier deriveds (avgS*0.9, then
-      // *1.3) produced peak channels of ~0.2-0.5 against the campfire's 1.9
-      // OVERBRIGHT at twice the radius — a 4-10x intensity gap; eight of
-      // those cannot light a night, and that is the whole answer to "why
-      // isn't 8 point lights making the night bright". The anchor: take the
-      // art's HUE (normalized so its strongest channel is 1) and give it
-      // CAMPFIRE-CLASS punch scaled by the art's own strength — a blazing
-      // source reaches the campfire's 1.9 peak, a faint one still lands at
-      // ~45% of it, and radius grows with strength toward the campfire's 7.
-      // "Some objects will be way brighter and some less" — the s values in
-      // emission.json are that dial, and tiles2's curated `lights` entries
-      // can still override either way.
-      const peak = Math.max(glowColor[0], glowColor[1], glowColor[2], 0.001);
-      const inten = 1.9 * Math.min(1, Math.max(0.45, avgS * 1.15));
-      // SEALED-ROOM test: the prop's own cell is blocked (never in a room's
-      // roof set), so ask the 4-neighbours — the floor around a fire in a
-      // room IS the room. A fire under a bridge stays unsealed (a bridge is
-      // not a room by the indoor verdict), so it still lights the night.
-      let sealed = false;
-      for (const [dc, dr] of [[1, 0], [-1, 0], [0, 1], [0, -1]] as const) {
-        const nc = p.col + dc;
-        const nr = p.row + dr;
-        const nl = this.world.rows[nr]?.[nc]?.l ?? lvl;
-        if (this.roomVerdictAt(nc, nr, nl)) {
-          sealed = true;
-          break;
-        }
-      }
-      this.emissiveSources.push({
-        id: `${p.col},${p.row}`,
-        col: p.col + 0.5,
-        row: p.row + 0.5,
-        z: lvl + (cfg?.z ?? 0.5),
-        radius: Math.max(1, cfg?.radius ?? Math.min(7, 4 + avgS * 4)),
-        color:
-          cfg?.color ??
-          [(glowColor[0] / peak) * inten, (glowColor[1] / peak) * inten, (glowColor[2] / peak) * inten],
-        flicker: cfg?.flicker ?? (em?.anim === "flicker" ? 0.5 : em?.anim === "pulse" ? 0.15 : 0),
-        // Derived defaults are SHADOW-FREE GLOW POOLS (negative radius) — the
-        // path built for tile emission. Two reasons, both from the maintainer's
-        // first night with the ledger: a prop occludes ITS OWN CELL in the
-        // heightmap, so a shadowed light at z 0.5 is eaten by its own prop
-        // before it reaches the body standing beside it (the ground survives
-        // on the march's bounce floor — which is exactly why "the surrounding
-        // is lit up more than the player"); and a decorative glow has no
-        // business casting hard LOS geometry anyway. Curated entries (the
-        // bonfire) opt back into shadows and must place their z ABOVE the
-        // prop's +1 occluder.
-        shadows: cfg?.shadows ?? false,
-        sx: pj.x,
-        sy: pj.y,
-        // An emissive TILE has no lantern to find: the glow is the tile itself,
-        // so its drawn light point is its own anchor lifted by its own z.
-        hx: pj.x,
-        hy: pj.y - (cfg?.z ?? 0.5) * this.geom.lh,
-        piece: "",
-        embers: false,
-        kind: "",
-        sealed,
-      });
-      if (sealed) this.sealedEmissiveCells.add(p.row * this.world.width + p.col);
-    }
-  }
 
   /** Fill the WORLD light slots for this frame: the campfire scenery + every
    * emissive source whose pool can touch the view, closest to the camera

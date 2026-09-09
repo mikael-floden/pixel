@@ -100,15 +100,14 @@ export async function resolveStagingBase(): Promise<string | null> {
  * fetching the world's own world.json — activating on a dead base would turn
  * one broken join into a page of broken art.
  */
-export async function enterStaging(world: string, root = "maps2/worlds"): Promise<boolean> {
+export async function enterStaging(world: string, root = "maps2/worlds3"): Promise<boolean> {
   const b = await resolveStagingBase();
   if (!b) return false;
   try {
-    // `root` is the world's tree (maps2/worlds or maps2/worlds3) — passed in by
+    // `root` is the world's tree (maps2/worlds3, the only one) — passed in by
     // the caller rather than imported from maps.ts, which imports gameUrl from
-    // here. Anything else falls back to the default tree, so an unknown value
-    // probes exactly the path this function probed before worlds3 existed.
-    const dir = /^maps2\/worlds3?$/.test(root) ? root : "maps2/worlds";
+    // here. Anything else falls back to that tree.
+    const dir = /^maps2\/worlds3$/.test(root) ? root : "maps2/worlds3";
     const probe = await fetchSoon(`${b}${dir}/${world.replace(/[^a-z0-9_-]/gi, "")}/world.json`, 5000);
     if (!probe.ok) return false;
   } catch {
@@ -123,7 +122,7 @@ export async function enterStaging(world: string, root = "maps2/worlds"): Promis
  * THE CHOKEPOINT. Image-relative URL → where it really lives right now.
  * Inactive (every normal player, every shipped world): identity, zero cost.
  * Active: /assets/<path> is the repo path itself; the generated bundle files
- * (/atlases, /monsters.json, /npcs.json) live under games2/client/public in
+ * (/monsters.json, /npcs.json) live under games2/client/public in
  * the repo, because that is where their builders write and git tracks them.
  *
  * THE `/assets/<path>` RULE ALREADY COVERS TILES 3.0, and that is why no
@@ -138,7 +137,6 @@ export async function enterStaging(world: string, root = "maps2/worlds"): Promis
 export function gameUrl(url: string): string {
   if (base === null) return url;
   if (url.startsWith("/assets/")) return base + url.slice("/assets/".length);
-  if (url.startsWith("/atlases/")) return base + "games2/client/public" + url;
   if (url === "/monsters.json" || url === "/npcs.json") return base + "games2/client/public" + url;
   return url;
 }

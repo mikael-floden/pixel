@@ -4,7 +4,7 @@
 // plus the CALM idle: "freeze on the first frame for a pseudo-random duration
 // between 0.1s and 5s so they don't repeat the idle animation too often and
 // too regularly").
-// Runs on the_island2 (19 placed NPCs) against the dev stack.
+// Runs on the_game (maps2/worlds3, 33 placed NPCs in npcs.json) against the dev stack.
 import { chromium } from "playwright-core";
 
 const EXE = "/opt/pw-browsers/chromium-1194/chrome-linux/chrome";
@@ -20,13 +20,13 @@ try {
 
   await page.goto("http://localhost:5173/", { waitUntil: "load" });
   await page.waitForFunction(() => window.__mlSelect, { timeout: 25000 });
-  const idx = await page.evaluate(() => window.__mlSelect.worlds().findIndex((w) => /the_island2/i.test(w)));
-  if (idx < 0) fail("the_island2 missing from the picker");
+  const idx = await page.evaluate(() => window.__mlSelect.worlds().findIndex((w) => /the_game/i.test(w)));
+  if (idx < 0) fail("the_game missing from the picker");
   await page.evaluate((i) => window.__mlSelect.pickWorld(i), idx);
   await page.evaluate(() => window.__mlSelect.commit());
   await page.waitForFunction(() => window.__ml && window.__ml.players() >= 1, { timeout: 40000 });
   await page.waitForFunction(() => !document.querySelector("#ml-loading"), { timeout: 20000 });
-  ok("joined the_island2");
+  ok("joined the_game");
 
   // (1) every placed NPC is spawned, at maps2' cell, facing maps2' way.
   await page.waitForFunction(() => (window.__ml.npcInfo()?.length ?? 0) > 0, undefined, {
@@ -34,7 +34,7 @@ try {
     polling: 200,
   });
   const placed = await page.evaluate(async () => {
-    const r = await fetch("/assets/maps2/worlds/the_island2/npcs.json");
+    const r = await fetch("/assets/maps2/worlds3/the_game/npcs.json");
     return (await r.json()).npcs;
   });
   const npcs = await page.evaluate(() => window.__ml.npcInfo());
@@ -122,7 +122,7 @@ try {
       fail(`${p.id} faces ${n.dir}; maps2 placed it ${p.facing} and it ${canIdle ? "HAS" : "has no"} idle art for that, so it should face ${want}`);
     if (canIdle && p.facing !== "south") honoured++;
   }
-  // NON-VACUOUS: the_island2 places 9 NPCs south-west, so "everything is south"
+  // NON-VACUOUS: the_game places 14 NPCs east and 9 south-west, so "everything is south"
   // must not be able to pass this. Without it, a client that still forced south
   // would sail through on a world that happened to place everyone south.
   if (!honoured)

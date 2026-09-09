@@ -23,13 +23,27 @@ try {
 
   await page.goto("http://localhost:5173/", { waitUntil: "load" });
   await page.waitForFunction(() => window.__mlSelect, { timeout: 25000 });
-  const idx = await page.evaluate(() => window.__mlSelect.worlds().findIndex((w) => /monster_demo/i.test(w)));
-  if (idx < 0) fail("monster_demo missing from the picker");
+  const idx = await page.evaluate(() => window.__mlSelect.worlds().findIndex((w) => /the_game/i.test(w)));
+  if (idx < 0) fail("the_game missing from the picker");
   await page.evaluate((i) => window.__mlSelect.pickWorld(i), idx);
   await page.evaluate(() => window.__mlSelect.commit());
   await page.waitForFunction(() => window.__ml && window.__ml.players() >= 1, { timeout: 30000 });
   await page.waitForFunction(() => !document.querySelector("#ml-loading"), { timeout: 10000 });
-  ok("joined monster_demo");
+  ok("joined the_game");
+  // the_game's frogs live in its shore zones (spawns.json shore-1/shore-6), far
+  // from the town spawn — stand beside the nearest one. Its own cell is
+  // standable by construction (a zone only places on terrain the monster can
+  // walk), and the room state carries every monster, so the nearest one is
+  // known before it is on screen.
+  await page.waitForFunction(() => window.__ml.monsterInfo().some((m) => m.kind === "mystical_frog"), { timeout: 30000 })
+    .catch(() => fail("no mystical_frog in the_game's zones (spawns.json)"));
+  await page.evaluate(() => {
+    const st = window.__ml, mine = st.me();
+    const frogs = st.monsterInfo().filter((m) => m.kind === "mystical_frog");
+    frogs.sort((a, b) => Math.hypot(a.x - mine.x, a.y - mine.y) - Math.hypot(b.x - mine.x, b.y - mine.y));
+    st.teleport(Math.round(frogs[0].x / 32) + 1, Math.round(frogs[0].y / 32) + 1);
+  });
+  await page.waitForTimeout(800);
 
   // (1) measured grab data
   const g0 = await page.evaluate(() => window.__ml.grabInfo());
