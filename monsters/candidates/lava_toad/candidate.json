@@ -8,7 +8,7 @@
     "lava"
   ],
   "items": [],
-  "prompt": "Fat fantasy toad of cooled black rock with glowing orange cracks, bulging ember eyes, a wide mouth breathing a wisp of smoke, and a hot glowing throat sac.",
+  "prompt": "Fat fantasy toad of cooled black rock with glowing orange cracks, bulging ember eyes, a wide mouth breathing a wisp of smoke, and a hot glowing throat sac, no drop shadow on the ground.",
   "size": [
     96,
     96
@@ -36,103 +36,103 @@
   },
   "sheet": "lava_toad/sheet.webp",
   "review": "pending",
-  "pixellab_id": "3b596d69-fe21-4b8e-b8a4-e3ff07e6ce7a",
-  "seed": 189458014,
-  "version": 1,
+  "pixellab_id": "36c75df5-bca7-4a50-b7de-d626849c2f4f",
+  "seed": 306427876,
+  "version": 2,
   "usage": null,
-  "generated_at": "2026-09-09T18:35:57+00:00",
-  "elapsed_s": 213.9,
+  "generated_at": "2026-09-09T18:39:52+00:00",
+  "elapsed_s": 162.8,
   "qa": {
     "status": "pass",
-    "min_run1": 0.592,
+    "min_run1": 0.549,
     "reasons": [],
     "directions": {
       "south": {
-        "run1": 0.592,
+        "run1": 0.615,
         "bbox": [
-          3,
           4,
-          93,
-          90
+          7,
+          92,
+          89
         ],
-        "fill": 0.84,
+        "fill": 0.783,
         "touches_edge": false
       },
       "west": {
-        "run1": 0.687,
+        "run1": 0.679,
         "bbox": [
-          10,
-          8,
-          91,
-          90
+          11,
+          9,
+          85,
+          88
         ],
-        "fill": 0.721,
+        "fill": 0.634,
         "touches_edge": false
       },
       "east": {
-        "run1": 0.688,
+        "run1": 0.695,
         "bbox": [
-          5,
+          10,
           8,
-          85,
-          90
+          84,
+          88
         ],
-        "fill": 0.712,
+        "fill": 0.642,
         "touches_edge": false
       },
       "north": {
-        "run1": 0.622,
+        "run1": 0.549,
         "bbox": [
           6,
-          6,
+          7,
           89,
           85
         ],
-        "fill": 0.711,
+        "fill": 0.702,
         "touches_edge": false
       },
       "south-east": {
-        "run1": 0.7,
+        "run1": 0.734,
         "bbox": [
-          4,
+          6,
           11,
-          87,
-          92
+          86,
+          90
         ],
-        "fill": 0.729,
+        "fill": 0.686,
         "touches_edge": false
       },
       "north-east": {
-        "run1": 0.643,
+        "run1": 0.649,
         "bbox": [
           4,
-          6,
-          93,
-          92
+          7,
+          87,
+          89
         ],
-        "fill": 0.831,
+        "fill": 0.738,
         "touches_edge": false
       },
       "north-west": {
-        "run1": 0.651,
+        "run1": 0.642,
         "bbox": [
-          11,
-          6,
-          90,
-          91
+          9,
+          7,
+          91,
+          89
         ],
-        "fill": 0.729,
+        "fill": 0.73,
         "touches_edge": false
       },
       "south-west": {
-        "run1": 0.697,
+        "run1": 0.734,
         "bbox": [
           9,
           11,
-          92,
-          92
+          90,
+          90
         ],
-        "fill": 0.729,
+        "fill": 0.694,
         "touches_edge": false
       }
     }

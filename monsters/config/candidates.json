@@ -764,21 +764,6 @@
       "lore": "It watches for something bigger. What it sees, the something bigger sees too."
     },
     {
-      "id": "dread_gazer",
-      "name": "Gazer",
-      "tier": "boss",
-      "scale": "standard",
-      "template_id": "mannequin",
-      "size": 128,
-      "biome": [
-        "black_rock",
-        "grey_paving_stone"
-      ],
-      "items": [],
-      "prompt": "Fantasy beholder-like eye tyrant, a floating round body of purple leathery hide with one huge central eye, a wide fanged mouth beneath it, and a crown of short thick eyestalks curled close, each ending in a smaller glowing eye.",
-      "lore": "An eye for every direction and a hatred for every eye. It cannot bear to be seen, and cannot stop seeing."
-    },
-    {
       "id": "rock_mite",
       "name": "Pebblemite",
       "tier": "cute",
@@ -1540,6 +1525,21 @@
       "items": [],
       "prompt": "Giant antlion larva with realistic proportions, a broad flattened sand-brown armored body, a wide head with two enormous curved serrated jaws held close together, small black eyes, six short digging legs tucked beneath, and sand grains caught in its plates.",
       "lore": "It digs the pit and lies beneath the floor of it. The sand slides, and whatever stood on the slope goes down to the jaws."
+    },
+    {
+      "id": "vampire_lord",
+      "name": "Nightthirst",
+      "tier": "evil",
+      "scale": "standard",
+      "template_id": "mannequin",
+      "size": 112,
+      "biome": [
+        "parquet_floor",
+        "grey_paving_stone"
+      ],
+      "items": [],
+      "prompt": "Vampire lord shown full body from head to feet, realistic proportions, gaunt pale skin, slicked black hair, narrow crimson eyes, two long fangs behind thin lips, a high-collared black cloak lined in dark red, a black doublet with silver clasps, and long clawed fingers.",
+      "lore": "The manor on the ridge has had one master for three hundred years. He receives guests at dusk and none of them are seen leaving."
     }
   ],
   "retired": [
@@ -2390,6 +2390,24 @@
       "retired": "winged insect fights the canvas: v1 80px baked ground shadows, v2 88px legs clipped SE/SW. Replaced by ant_lion, a compact ground insect.",
       "retired_at": "2026-09-09T18:34:16+00:00",
       "versions_tried": 2
+    },
+    {
+      "id": "dread_gazer",
+      "name": "Gazer",
+      "tier": "boss",
+      "scale": "standard",
+      "template_id": "mannequin",
+      "size": 128,
+      "biome": [
+        "black_rock",
+        "grey_paving_stone"
+      ],
+      "items": [],
+      "prompt": "Fantasy beholder-like eye tyrant, a floating round body of purple leathery hide with one huge central eye, a wide fanged mouth beneath it, and a crown of short thick eyestalks curled close, each ending in a smaller glowing eye.",
+      "lore": "An eye for every direction and a hatred for every eye. It cannot bear to be seen, and cannot stop seeing.",
+      "retired": "maintainer bar: rendered as a grinning cartoon with legs and a crown — the model plays a beholder for laughs. Replaced by vampire_lord.",
+      "retired_at": "2026-09-09T18:39:58+00:00",
+      "versions_tried": 1
     }
   ]
 }

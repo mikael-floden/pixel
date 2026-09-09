@@ -1,6 +1,6 @@
 {
   "format": "monster-candidates@1",
-  "generated_at": "2026-09-09T18:39:19+00:00",
+  "generated_at": "2026-09-09T18:39:58+00:00",
   "art_ext": ".webp",
   "directions": [
     "south",
@@ -5447,8 +5447,8 @@
       ],
       "template_id": "bear",
       "scale": "standard",
-      "pixellab_id": "3b596d69-fe21-4b8e-b8a4-e3ff07e6ce7a",
-      "version": 1,
+      "pixellab_id": "36c75df5-bca7-4a50-b7de-d626849c2f4f",
+      "version": 2,
       "sheet": "lava_toad/sheet.webp",
       "rotations": {
         "south": "lava_toad/rotations/south.webp",
@@ -5462,102 +5462,102 @@
       },
       "qa": {
         "status": "pass",
-        "min_run1": 0.592,
+        "min_run1": 0.549,
         "reasons": [],
         "directions": {
           "south": {
-            "run1": 0.592,
+            "run1": 0.615,
             "bbox": [
-              3,
               4,
-              93,
-              90
+              7,
+              92,
+              89
             ],
-            "fill": 0.84,
+            "fill": 0.783,
             "touches_edge": false
           },
           "west": {
-            "run1": 0.687,
+            "run1": 0.679,
             "bbox": [
-              10,
-              8,
-              91,
-              90
+              11,
+              9,
+              85,
+              88
             ],
-            "fill": 0.721,
+            "fill": 0.634,
             "touches_edge": false
           },
           "east": {
-            "run1": 0.688,
+            "run1": 0.695,
             "bbox": [
-              5,
+              10,
               8,
-              85,
-              90
+              84,
+              88
             ],
-            "fill": 0.712,
+            "fill": 0.642,
             "touches_edge": false
           },
           "north": {
-            "run1": 0.622,
+            "run1": 0.549,
             "bbox": [
               6,
-              6,
+              7,
               89,
               85
             ],
-            "fill": 0.711,
+            "fill": 0.702,
             "touches_edge": false
           },
           "south-east": {
-            "run1": 0.7,
+            "run1": 0.734,
             "bbox": [
-              4,
+              6,
               11,
-              87,
-              92
+              86,
+              90
             ],
-            "fill": 0.729,
+            "fill": 0.686,
             "touches_edge": false
           },
           "north-east": {
-            "run1": 0.643,
+            "run1": 0.649,
             "bbox": [
               4,
-              6,
-              93,
-              92
+              7,
+              87,
+              89
             ],
-            "fill": 0.831,
+            "fill": 0.738,
             "touches_edge": false
           },
           "north-west": {
-            "run1": 0.651,
+            "run1": 0.642,
             "bbox": [
-              11,
-              6,
-              90,
-              91
+              9,
+              7,
+              91,
+              89
             ],
-            "fill": 0.729,
+            "fill": 0.73,
             "touches_edge": false
           },
           "south-west": {
-            "run1": 0.697,
+            "run1": 0.734,
             "bbox": [
               9,
               11,
-              92,
-              92
+              90,
+              90
             ],
-            "fill": 0.729,
+            "fill": 0.694,
             "touches_edge": false
           }
         }
       },
       "review": "pending",
       "notes": null,
-      "generated_at": "2026-09-09T18:35:57+00:00"
+      "generated_at": "2026-09-09T18:39:52+00:00"
     },
     {
       "id": "jackal_warrior",
@@ -6071,132 +6071,132 @@
       "generated_at": "2026-09-09T18:38:42+00:00"
     },
     {
-      "id": "dread_gazer",
-      "name": "Gazer",
-      "tier": "boss",
-      "lore": "An eye for every direction and a hatred for every eye. It cannot bear to be seen, and cannot stop seeing.",
+      "id": "ant_lion",
+      "name": "Pitjaw",
+      "tier": "mid",
+      "lore": "It digs the pit and lies beneath the floor of it. The sand slides, and whatever stood on the slope goes down to the jaws.",
       "biome": [
-        "black_rock",
-        "grey_paving_stone"
+        "light_soil",
+        "light_beach"
       ],
       "items": [],
       "size": [
-        128,
-        128
+        88,
+        88
       ],
-      "template_id": "mannequin",
+      "template_id": "bear",
       "scale": "standard",
-      "pixellab_id": "c02104e7-fc53-461f-8e26-38a4c9206556",
+      "pixellab_id": "cadb92cf-6f75-4afd-abdb-bf958fc007a3",
       "version": 1,
-      "sheet": "dread_gazer/sheet.webp",
+      "sheet": "ant_lion/sheet.webp",
       "rotations": {
-        "south": "dread_gazer/rotations/south.webp",
-        "south-east": "dread_gazer/rotations/south-east.webp",
-        "east": "dread_gazer/rotations/east.webp",
-        "north-east": "dread_gazer/rotations/north-east.webp",
-        "north": "dread_gazer/rotations/north.webp",
-        "north-west": "dread_gazer/rotations/north-west.webp",
-        "west": "dread_gazer/rotations/west.webp",
-        "south-west": "dread_gazer/rotations/south-west.webp"
+        "south": "ant_lion/rotations/south.webp",
+        "south-east": "ant_lion/rotations/south-east.webp",
+        "east": "ant_lion/rotations/east.webp",
+        "north-east": "ant_lion/rotations/north-east.webp",
+        "north": "ant_lion/rotations/north.webp",
+        "north-west": "ant_lion/rotations/north-west.webp",
+        "west": "ant_lion/rotations/west.webp",
+        "south-west": "ant_lion/rotations/south-west.webp"
       },
       "qa": {
         "status": "pass",
-        "min_run1": 0.697,
+        "min_run1": 0.715,
         "reasons": [],
         "directions": {
           "south": {
-            "run1": 0.744,
+            "run1": 0.715,
             "bbox": [
-              10,
-              9,
-              118,
-              119
+              3,
+              5,
+              85,
+              83
             ],
-            "fill": 0.725,
+            "fill": 0.826,
             "touches_edge": false
           },
           "west": {
-            "run1": 0.731,
+            "run1": 0.774,
             "bbox": [
-              27,
-              7,
-              97,
-              120
+              4,
+              9,
+              84,
+              84
             ],
-            "fill": 0.483,
+            "fill": 0.775,
             "touches_edge": false
           },
           "east": {
-            "run1": 0.739,
+            "run1": 0.777,
             "bbox": [
-              29,
-              7,
-              99,
-              120
+              4,
+              9,
+              84,
+              84
             ],
-            "fill": 0.483,
+            "fill": 0.775,
             "touches_edge": false
           },
           "north": {
-            "run1": 0.697,
+            "run1": 0.741,
             "bbox": [
-              10,
-              12,
-              118,
-              118
+              8,
+              11,
+              80,
+              81
             ],
-            "fill": 0.699,
+            "fill": 0.651,
             "touches_edge": false
           },
           "south-east": {
-            "run1": 0.789,
+            "run1": 0.82,
             "bbox": [
-              23,
-              8,
-              111,
-              120
+              5,
+              6,
+              86,
+              83
             ],
-            "fill": 0.602,
+            "fill": 0.805,
             "touches_edge": false
           },
           "north-east": {
-            "run1": 0.714,
+            "run1": 0.737,
             "bbox": [
-              17,
-              10,
-              105,
-              119
+              7,
+              4,
+              83,
+              83
             ],
-            "fill": 0.585,
+            "fill": 0.775,
             "touches_edge": false
           },
           "north-west": {
-            "run1": 0.714,
+            "run1": 0.761,
             "bbox": [
-              21,
-              10,
-              110,
-              119
+              5,
+              4,
+              81,
+              83
             ],
-            "fill": 0.592,
+            "fill": 0.775,
             "touches_edge": false
           },
           "south-west": {
-            "run1": 0.785,
+            "run1": 0.822,
             "bbox": [
-              17,
-              8,
-              104,
-              120
+              2,
+              6,
+              83,
+              83
             ],
-            "fill": 0.595,
+            "fill": 0.805,
             "touches_edge": false
           }
         }
       },
       "review": "pending",
       "notes": null,
-      "generated_at": "2026-09-09T18:39:19+00:00"
+      "generated_at": "2026-09-09T18:38:03+00:00"
     }
   ]
 }
