@@ -1,0 +1,141 @@
+{
+  "id": "black_knight",
+  "name": "Duskplate",
+  "tier": "evil",
+  "scale": "standard",
+  "lore": "He kept his oath after his lord broke it, and now the oath is all that is left of him.",
+  "biome": [
+    "grey_paving_stone",
+    "grey_stone"
+  ],
+  "items": [],
+  "prompt": "Fallen knight shown full body from head to feet, realistic proportions, black steel plate armor scored with old cuts, a closed great helm with a narrow slit, a tattered black surcoat with a defaced crest, a longsword held upright and a kite shield.",
+  "size": [
+    128,
+    128
+  ],
+  "template_id": "mannequin",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "black_knight/rotations/south.webp",
+    "south-east": "black_knight/rotations/south-east.webp",
+    "east": "black_knight/rotations/east.webp",
+    "north-east": "black_knight/rotations/north-east.webp",
+    "north": "black_knight/rotations/north.webp",
+    "north-west": "black_knight/rotations/north-west.webp",
+    "west": "black_knight/rotations/west.webp",
+    "south-west": "black_knight/rotations/south-west.webp"
+  },
+  "sheet": "black_knight/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "48c6838e-8bfa-415e-8b2c-bcb68c1e6461",
+  "seed": 1892726372,
+  "version": 1,
+  "usage": null,
+  "generated_at": "2026-09-09T19:08:37+00:00",
+  "elapsed_s": 232.0,
+  "qa": {
+    "status": "pass",
+    "min_run1": 0.645,
+    "reasons": [],
+    "directions": {
+      "south": {
+        "run1": 0.678,
+        "bbox": [
+          19,
+          5,
+          109,
+          123
+        ],
+        "fill": 0.648,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.674,
+        "bbox": [
+          37,
+          7,
+          108,
+          124
+        ],
+        "fill": 0.507,
+        "touches_edge": false
+      },
+      "east": {
+        "run1": 0.714,
+        "bbox": [
+          18,
+          7,
+          94,
+          124
+        ],
+        "fill": 0.543,
+        "touches_edge": false
+      },
+      "north": {
+        "run1": 0.645,
+        "bbox": [
+          19,
+          3,
+          109,
+          120
+        ],
+        "fill": 0.643,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.756,
+        "bbox": [
+          17,
+          7,
+          103,
+          125
+        ],
+        "fill": 0.619,
+        "touches_edge": false
+      },
+      "north-east": {
+        "run1": 0.702,
+        "bbox": [
+          20,
+          5,
+          102,
+          123
+        ],
+        "fill": 0.591,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.688,
+        "bbox": [
+          25,
+          5,
+          111,
+          123
+        ],
+        "fill": 0.619,
+        "touches_edge": false
+      },
+      "south-west": {
+        "run1": 0.753,
+        "bbox": [
+          22,
+          6,
+          110,
+          125
+        ],
+        "fill": 0.639,
+        "touches_edge": false
+      }
+    }
+  }
+}
