@@ -601,6 +601,274 @@
         "west": "mummy/animations/walk__west.webp",
         "north-west": "mummy/animations/walk__north-west.webp"
       }
+    },
+    "attack": {
+      "directions": {
+        "south": {
+          "status": "pass",
+          "step_mean": 0.1945,
+          "step_max": 0.2599,
+          "drift": 2.69,
+          "loop": 0.0011,
+          "loop_ratio": 0.01,
+          "travel": 0.23,
+          "pin": 1.0,
+          "pad": 0,
+          "canvas": [
+            104,
+            104
+          ],
+          "reasons": [],
+          "sub": "8688012c-f017-4065-8be6-00f5328e57fa",
+          "group": "f8b1a266-b7f8-48e1-b343-e1e9aa7c3abc",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "generated_at": "2026-09-09T22:02:10+00:00"
+        },
+        "south-east": {
+          "status": "pass",
+          "step_mean": 0.1288,
+          "step_max": 0.2025,
+          "drift": 2.54,
+          "loop": 0.0101,
+          "loop_ratio": 0.08,
+          "travel": 0.52,
+          "pin": 1.0,
+          "pad": 0,
+          "canvas": [
+            104,
+            104
+          ],
+          "reasons": [],
+          "sub": "ee6091dd-d9a4-42d0-a5f3-ce150e1e0642",
+          "group": "595f7252-0b39-4a8b-9288-b4d76c2c2c34",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "generated_at": "2026-09-09T22:02:10+00:00"
+        },
+        "east": {
+          "status": "pass",
+          "step_mean": 0.2042,
+          "step_max": 0.2825,
+          "drift": 1.18,
+          "loop": 0.0,
+          "loop_ratio": 0.0,
+          "travel": 1.18,
+          "pin": 1.0,
+          "pad": 0,
+          "canvas": [
+            104,
+            104
+          ],
+          "reasons": [],
+          "sub": "dca6f884-eccf-4a6e-8fe8-403b16802fc6",
+          "group": "d0d766ee-c06c-46a3-9d48-0044f2302229",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "generated_at": "2026-09-09T22:02:11+00:00"
+        },
+        "north-east": {
+          "status": "pass",
+          "step_mean": 0.2301,
+          "step_max": 0.3207,
+          "drift": 2.3,
+          "loop": 0.0,
+          "loop_ratio": 0.0,
+          "travel": 2.3,
+          "pin": 1.0,
+          "pad": 0,
+          "canvas": [
+            104,
+            104
+          ],
+          "reasons": [],
+          "sub": "aa245428-3d72-48da-abd1-efb6e98677d2",
+          "group": "66d8c4c4-3cdd-42ca-b511-b3674f08aeba",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "generated_at": "2026-09-09T22:02:11+00:00"
+        },
+        "north": {
+          "status": "pass",
+          "step_mean": 0.1591,
+          "step_max": 0.2197,
+          "drift": 2.09,
+          "loop": 0.0,
+          "loop_ratio": 0.0,
+          "travel": 0.3,
+          "pin": 1.0,
+          "pad": 0,
+          "canvas": [
+            104,
+            104
+          ],
+          "reasons": [],
+          "sub": "20eea505-a488-4d71-9e60-a8a59ff78e92",
+          "group": "ed01c5d5-148c-4419-96c2-271f51272e50",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "generated_at": "2026-09-09T22:02:12+00:00"
+        },
+        "south-west": {
+          "status": "pass",
+          "step_mean": 0.1288,
+          "step_max": 0.2025,
+          "drift": 2.54,
+          "loop": 0.0101,
+          "loop_ratio": 0.08,
+          "travel": 0.52,
+          "pin": 1.0,
+          "pad": 0,
+          "canvas": [
+            104,
+            104
+          ],
+          "reasons": [],
+          "sub": "ee6091dd-d9a4-42d0-a5f3-ce150e1e0642",
+          "group": "595f7252-0b39-4a8b-9288-b4d76c2c2c34",
+          "takes": 1,
+          "version": 1,
+          "mirrored": true,
+          "generated_at": "2026-09-09T22:02:10+00:00",
+          "source": "south-east"
+        },
+        "west": {
+          "status": "pass",
+          "step_mean": 0.2042,
+          "step_max": 0.2825,
+          "drift": 1.18,
+          "loop": 0.0,
+          "loop_ratio": 0.0,
+          "travel": 1.18,
+          "pin": 1.0,
+          "pad": 0,
+          "canvas": [
+            104,
+            104
+          ],
+          "reasons": [],
+          "sub": "dca6f884-eccf-4a6e-8fe8-403b16802fc6",
+          "group": "d0d766ee-c06c-46a3-9d48-0044f2302229",
+          "takes": 1,
+          "version": 1,
+          "mirrored": true,
+          "generated_at": "2026-09-09T22:02:11+00:00",
+          "source": "east"
+        },
+        "north-west": {
+          "status": "pass",
+          "step_mean": 0.2301,
+          "step_max": 0.3207,
+          "drift": 2.3,
+          "loop": 0.0,
+          "loop_ratio": 0.0,
+          "travel": 2.3,
+          "pin": 1.0,
+          "pad": 0,
+          "canvas": [
+            104,
+            104
+          ],
+          "reasons": [],
+          "sub": "aa245428-3d72-48da-abd1-efb6e98677d2",
+          "group": "66d8c4c4-3cdd-42ca-b511-b3674f08aeba",
+          "takes": 1,
+          "version": 1,
+          "mirrored": true,
+          "generated_at": "2026-09-09T22:02:11+00:00",
+          "source": "north-east"
+        }
+      },
+      "action": "lunges forward with both bandaged arms in a grasping swipe, bandages trailing, a physical strike with no glowing magic effect, then returns exactly to the starting pose",
+      "frame_paths": {
+        "south": [
+          "mummy/animations/attack/south/00.webp",
+          "mummy/animations/attack/south/01.webp",
+          "mummy/animations/attack/south/02.webp",
+          "mummy/animations/attack/south/03.webp",
+          "mummy/animations/attack/south/04.webp",
+          "mummy/animations/attack/south/05.webp",
+          "mummy/animations/attack/south/06.webp"
+        ],
+        "south-east": [
+          "mummy/animations/attack/south-east/00.webp",
+          "mummy/animations/attack/south-east/01.webp",
+          "mummy/animations/attack/south-east/02.webp",
+          "mummy/animations/attack/south-east/03.webp",
+          "mummy/animations/attack/south-east/04.webp",
+          "mummy/animations/attack/south-east/05.webp",
+          "mummy/animations/attack/south-east/06.webp"
+        ],
+        "east": [
+          "mummy/animations/attack/east/00.webp",
+          "mummy/animations/attack/east/01.webp",
+          "mummy/animations/attack/east/02.webp",
+          "mummy/animations/attack/east/03.webp",
+          "mummy/animations/attack/east/04.webp",
+          "mummy/animations/attack/east/05.webp",
+          "mummy/animations/attack/east/06.webp"
+        ],
+        "north-east": [
+          "mummy/animations/attack/north-east/00.webp",
+          "mummy/animations/attack/north-east/01.webp",
+          "mummy/animations/attack/north-east/02.webp",
+          "mummy/animations/attack/north-east/03.webp",
+          "mummy/animations/attack/north-east/04.webp",
+          "mummy/animations/attack/north-east/05.webp",
+          "mummy/animations/attack/north-east/06.webp"
+        ],
+        "north": [
+          "mummy/animations/attack/north/00.webp",
+          "mummy/animations/attack/north/01.webp",
+          "mummy/animations/attack/north/02.webp",
+          "mummy/animations/attack/north/03.webp",
+          "mummy/animations/attack/north/04.webp",
+          "mummy/animations/attack/north/05.webp",
+          "mummy/animations/attack/north/06.webp"
+        ],
+        "south-west": [
+          "mummy/animations/attack/south-west/00.webp",
+          "mummy/animations/attack/south-west/01.webp",
+          "mummy/animations/attack/south-west/02.webp",
+          "mummy/animations/attack/south-west/03.webp",
+          "mummy/animations/attack/south-west/04.webp",
+          "mummy/animations/attack/south-west/05.webp",
+          "mummy/animations/attack/south-west/06.webp"
+        ],
+        "west": [
+          "mummy/animations/attack/west/00.webp",
+          "mummy/animations/attack/west/01.webp",
+          "mummy/animations/attack/west/02.webp",
+          "mummy/animations/attack/west/03.webp",
+          "mummy/animations/attack/west/04.webp",
+          "mummy/animations/attack/west/05.webp",
+          "mummy/animations/attack/west/06.webp"
+        ],
+        "north-west": [
+          "mummy/animations/attack/north-west/00.webp",
+          "mummy/animations/attack/north-west/01.webp",
+          "mummy/animations/attack/north-west/02.webp",
+          "mummy/animations/attack/north-west/03.webp",
+          "mummy/animations/attack/north-west/04.webp",
+          "mummy/animations/attack/north-west/05.webp",
+          "mummy/animations/attack/north-west/06.webp"
+        ]
+      },
+      "strips": {
+        "south": "mummy/animations/attack__south.webp",
+        "south-east": "mummy/animations/attack__south-east.webp",
+        "east": "mummy/animations/attack__east.webp",
+        "north-east": "mummy/animations/attack__north-east.webp",
+        "north": "mummy/animations/attack__north.webp",
+        "south-west": "mummy/animations/attack__south-west.webp",
+        "west": "mummy/animations/attack__west.webp",
+        "north-west": "mummy/animations/attack__north-west.webp"
+      }
     }
   }
 }
