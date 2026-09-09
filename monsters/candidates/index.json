@@ -1,6 +1,6 @@
 {
   "format": "monster-candidates@1",
-  "generated_at": "2026-09-09T18:18:47+00:00",
+  "generated_at": "2026-09-09T18:21:42+00:00",
   "art_ext": ".webp",
   "directions": [
     "south",
@@ -18,7 +18,7 @@
     "rejected"
   ],
   "feedback_key": "monsters/candidates/<id>",
-  "count": 26,
+  "count": 28,
   "candidates": [
     {
       "id": "plume_brawler",
@@ -2497,13 +2497,13 @@
       ],
       "items": [],
       "size": [
-        88,
-        88
+        96,
+        96
       ],
       "template_id": "mannequin",
       "scale": "standard",
-      "pixellab_id": "3601f70a-9fb4-409e-b910-5c5c5921894c",
-      "version": 1,
+      "pixellab_id": "330d0c1a-2f78-4fc7-9d60-490bd488c8a1",
+      "version": 2,
       "sheet": "goblin_scout/sheet.webp",
       "rotations": {
         "south": "goblin_scout/rotations/south.webp",
@@ -2516,105 +2516,103 @@
         "south-west": "goblin_scout/rotations/south-west.webp"
       },
       "qa": {
-        "status": "fail",
-        "min_run1": 0.777,
-        "reasons": [
-          "north: content touches the canvas edge (clipped)"
-        ],
+        "status": "pass",
+        "min_run1": 0.757,
+        "reasons": [],
         "directions": {
           "south": {
-            "run1": 0.781,
+            "run1": 0.773,
             "bbox": [
+              6,
               3,
-              3,
-              82,
-              85
+              85,
+              93
             ],
-            "fill": 0.837,
+            "fill": 0.771,
             "touches_edge": false
           },
           "west": {
-            "run1": 0.811,
+            "run1": 0.786,
             "bbox": [
-              22,
+              27,
               3,
-              67,
-              86
+              65,
+              94
             ],
-            "fill": 0.482,
+            "fill": 0.375,
             "touches_edge": false
           },
           "east": {
-            "run1": 0.812,
+            "run1": 0.801,
             "bbox": [
-              21,
+              30,
               3,
-              66,
-              86
+              68,
+              94
             ],
-            "fill": 0.482,
+            "fill": 0.375,
             "touches_edge": false
           },
           "north": {
-            "run1": 0.778,
+            "run1": 0.767,
             "bbox": [
-              9,
-              3,
-              88,
-              83
+              11,
+              2,
+              90,
+              91
             ],
-            "fill": 0.816,
-            "touches_edge": true
+            "fill": 0.763,
+            "touches_edge": false
           },
           "south-east": {
-            "run1": 0.814,
+            "run1": 0.809,
             "bbox": [
-              17,
+              20,
               3,
-              76,
-              86
+              78,
+              94
             ],
-            "fill": 0.632,
+            "fill": 0.573,
             "touches_edge": false
           },
           "north-east": {
-            "run1": 0.789,
+            "run1": 0.772,
             "bbox": [
-              19,
+              22,
               3,
               84,
-              84
+              93
             ],
-            "fill": 0.68,
+            "fill": 0.605,
             "touches_edge": false
           },
           "north-west": {
-            "run1": 0.777,
+            "run1": 0.757,
             "bbox": [
-              14,
+              19,
               3,
               80,
-              84
+              93
             ],
-            "fill": 0.69,
+            "fill": 0.596,
             "touches_edge": false
           },
           "south-west": {
-            "run1": 0.812,
+            "run1": 0.802,
             "bbox": [
+              15,
               3,
-              3,
-              74,
-              86
+              77,
+              94
             ],
-            "fill": 0.761,
+            "fill": 0.612,
             "touches_edge": false
           }
         }
       },
       "review": "pending",
       "notes": null,
-      "generated_at": "2026-09-09T18:17:38+00:00"
+      "generated_at": "2026-09-09T18:21:09+00:00"
     },
     {
       "id": "goblin_shaman",
@@ -3383,6 +3381,262 @@
       "review": "pending",
       "notes": null,
       "generated_at": "2026-09-09T18:18:09+00:00"
+    },
+    {
+      "id": "fire_elemental",
+      "name": "Flarewisp",
+      "tier": "mid",
+      "lore": "It burns because it is, not because it must. It follows travellers for the company and leaves them as ash.",
+      "biome": [
+        "lava",
+        "black_rock"
+      ],
+      "items": [],
+      "size": [
+        96,
+        96
+      ],
+      "template_id": "mannequin",
+      "scale": "standard",
+      "pixellab_id": "ed20edca-0a76-41ff-934a-5a1f4c33849e",
+      "version": 1,
+      "sheet": "fire_elemental/sheet.webp",
+      "rotations": {
+        "south": "fire_elemental/rotations/south.webp",
+        "south-east": "fire_elemental/rotations/south-east.webp",
+        "east": "fire_elemental/rotations/east.webp",
+        "north-east": "fire_elemental/rotations/north-east.webp",
+        "north": "fire_elemental/rotations/north.webp",
+        "north-west": "fire_elemental/rotations/north-west.webp",
+        "west": "fire_elemental/rotations/west.webp",
+        "south-west": "fire_elemental/rotations/south-west.webp"
+      },
+      "qa": {
+        "status": "pass",
+        "min_run1": 0.799,
+        "reasons": [],
+        "directions": {
+          "south": {
+            "run1": 0.825,
+            "bbox": [
+              15,
+              3,
+              81,
+              92
+            ],
+            "fill": 0.637,
+            "touches_edge": false
+          },
+          "west": {
+            "run1": 0.851,
+            "bbox": [
+              33,
+              3,
+              65,
+              94
+            ],
+            "fill": 0.316,
+            "touches_edge": false
+          },
+          "east": {
+            "run1": 0.846,
+            "bbox": [
+              28,
+              3,
+              63,
+              94
+            ],
+            "fill": 0.346,
+            "touches_edge": false
+          },
+          "north": {
+            "run1": 0.799,
+            "bbox": [
+              19,
+              2,
+              77,
+              92
+            ],
+            "fill": 0.566,
+            "touches_edge": false
+          },
+          "south-east": {
+            "run1": 0.861,
+            "bbox": [
+              18,
+              2,
+              75,
+              94
+            ],
+            "fill": 0.569,
+            "touches_edge": false
+          },
+          "north-east": {
+            "run1": 0.829,
+            "bbox": [
+              24,
+              2,
+              70,
+              94
+            ],
+            "fill": 0.459,
+            "touches_edge": false
+          },
+          "north-west": {
+            "run1": 0.83,
+            "bbox": [
+              26,
+              3,
+              74,
+              94
+            ],
+            "fill": 0.474,
+            "touches_edge": false
+          },
+          "south-west": {
+            "run1": 0.871,
+            "bbox": [
+              26,
+              2,
+              76,
+              94
+            ],
+            "fill": 0.499,
+            "touches_edge": false
+          }
+        }
+      },
+      "review": "pending",
+      "notes": null,
+      "generated_at": "2026-09-09T18:20:52+00:00"
+    },
+    {
+      "id": "lich",
+      "name": "Dreadmage",
+      "tier": "boss",
+      "lore": "It refused death to finish its work. The work is finished. It has not stopped.",
+      "biome": [
+        "grey_paving_stone",
+        "parquet_floor"
+      ],
+      "items": [],
+      "size": [
+        128,
+        128
+      ],
+      "template_id": "mannequin",
+      "scale": "standard",
+      "pixellab_id": "aa63dfa8-2638-4ef4-9d2a-e10513298a58",
+      "version": 1,
+      "sheet": "lich/sheet.webp",
+      "rotations": {
+        "south": "lich/rotations/south.webp",
+        "south-east": "lich/rotations/south-east.webp",
+        "east": "lich/rotations/east.webp",
+        "north-east": "lich/rotations/north-east.webp",
+        "north": "lich/rotations/north.webp",
+        "north-west": "lich/rotations/north-west.webp",
+        "west": "lich/rotations/west.webp",
+        "south-west": "lich/rotations/south-west.webp"
+      },
+      "qa": {
+        "status": "pass",
+        "min_run1": 0.674,
+        "reasons": [],
+        "directions": {
+          "south": {
+            "run1": 0.719,
+            "bbox": [
+              6,
+              4,
+              120,
+              123
+            ],
+            "fill": 0.828,
+            "touches_edge": false
+          },
+          "west": {
+            "run1": 0.712,
+            "bbox": [
+              39,
+              4,
+              111,
+              123
+            ],
+            "fill": 0.523,
+            "touches_edge": false
+          },
+          "east": {
+            "run1": 0.745,
+            "bbox": [
+              14,
+              4,
+              89,
+              123
+            ],
+            "fill": 0.545,
+            "touches_edge": false
+          },
+          "north": {
+            "run1": 0.674,
+            "bbox": [
+              10,
+              4,
+              122,
+              122
+            ],
+            "fill": 0.807,
+            "touches_edge": false
+          },
+          "south-east": {
+            "run1": 0.762,
+            "bbox": [
+              9,
+              4,
+              115,
+              123
+            ],
+            "fill": 0.77,
+            "touches_edge": false
+          },
+          "north-east": {
+            "run1": 0.688,
+            "bbox": [
+              9,
+              4,
+              109,
+              124
+            ],
+            "fill": 0.732,
+            "touches_edge": false
+          },
+          "north-west": {
+            "run1": 0.705,
+            "bbox": [
+              11,
+              4,
+              119,
+              124
+            ],
+            "fill": 0.791,
+            "touches_edge": false
+          },
+          "south-west": {
+            "run1": 0.776,
+            "bbox": [
+              16,
+              4,
+              114,
+              124
+            ],
+            "fill": 0.718,
+            "touches_edge": false
+          }
+        }
+      },
+      "review": "pending",
+      "notes": null,
+      "generated_at": "2026-09-09T18:21:42+00:00"
     }
   ]
 }

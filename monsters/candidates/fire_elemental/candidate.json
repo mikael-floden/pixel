@@ -1,0 +1,141 @@
+{
+  "id": "fire_elemental",
+  "name": "Flarewisp",
+  "tier": "mid",
+  "scale": "standard",
+  "lore": "It burns because it is, not because it must. It follows travellers for the company and leaves them as ash.",
+  "biome": [
+    "lava",
+    "black_rock"
+  ],
+  "items": [],
+  "prompt": "Fantasy fire elemental shown full body from head to feet, a humanoid figure of living orange and yellow flame with a dark ember core, two blazing white eyes, arms tapering into licks of fire, and sparks drifting off its shoulders.",
+  "size": [
+    96,
+    96
+  ],
+  "template_id": "mannequin",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "fire_elemental/rotations/south.webp",
+    "south-east": "fire_elemental/rotations/south-east.webp",
+    "east": "fire_elemental/rotations/east.webp",
+    "north-east": "fire_elemental/rotations/north-east.webp",
+    "north": "fire_elemental/rotations/north.webp",
+    "north-west": "fire_elemental/rotations/north-west.webp",
+    "west": "fire_elemental/rotations/west.webp",
+    "south-west": "fire_elemental/rotations/south-west.webp"
+  },
+  "sheet": "fire_elemental/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "ed20edca-0a76-41ff-934a-5a1f4c33849e",
+  "seed": 106115589,
+  "version": 1,
+  "usage": null,
+  "generated_at": "2026-09-09T18:20:52+00:00",
+  "elapsed_s": 194.2,
+  "qa": {
+    "status": "pass",
+    "min_run1": 0.799,
+    "reasons": [],
+    "directions": {
+      "south": {
+        "run1": 0.825,
+        "bbox": [
+          15,
+          3,
+          81,
+          92
+        ],
+        "fill": 0.637,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.851,
+        "bbox": [
+          33,
+          3,
+          65,
+          94
+        ],
+        "fill": 0.316,
+        "touches_edge": false
+      },
+      "east": {
+        "run1": 0.846,
+        "bbox": [
+          28,
+          3,
+          63,
+          94
+        ],
+        "fill": 0.346,
+        "touches_edge": false
+      },
+      "north": {
+        "run1": 0.799,
+        "bbox": [
+          19,
+          2,
+          77,
+          92
+        ],
+        "fill": 0.566,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.861,
+        "bbox": [
+          18,
+          2,
+          75,
+          94
+        ],
+        "fill": 0.569,
+        "touches_edge": false
+      },
+      "north-east": {
+        "run1": 0.829,
+        "bbox": [
+          24,
+          2,
+          70,
+          94
+        ],
+        "fill": 0.459,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.83,
+        "bbox": [
+          26,
+          3,
+          74,
+          94
+        ],
+        "fill": 0.474,
+        "touches_edge": false
+      },
+      "south-west": {
+        "run1": 0.871,
+        "bbox": [
+          26,
+          2,
+          76,
+          94
+        ],
+        "fill": 0.499,
+        "touches_edge": false
+      }
+    }
+  }
+}

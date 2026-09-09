@@ -11,8 +11,8 @@
   "items": [],
   "prompt": "Small fantasy goblin shown full body from head to feet, green warty skin, a large hooked nose, pointed ears, a patched leather cap, a ragged brown tunic, a rusty dagger in one hand and a lumpy loot sack in the other.",
   "size": [
-    88,
-    88
+    96,
+    96
   ],
   "template_id": "mannequin",
   "directions": [
@@ -37,105 +37,103 @@
   },
   "sheet": "goblin_scout/sheet.webp",
   "review": "pending",
-  "pixellab_id": "3601f70a-9fb4-409e-b910-5c5c5921894c",
-  "seed": 1795536248,
-  "version": 1,
+  "pixellab_id": "330d0c1a-2f78-4fc7-9d60-490bd488c8a1",
+  "seed": 1913447618,
+  "version": 2,
   "usage": null,
-  "generated_at": "2026-09-09T18:17:38+00:00",
-  "elapsed_s": 169.0,
+  "generated_at": "2026-09-09T18:21:09+00:00",
+  "elapsed_s": 181.1,
   "qa": {
-    "status": "fail",
-    "min_run1": 0.777,
-    "reasons": [
-      "north: content touches the canvas edge (clipped)"
-    ],
+    "status": "pass",
+    "min_run1": 0.757,
+    "reasons": [],
     "directions": {
       "south": {
-        "run1": 0.781,
+        "run1": 0.773,
         "bbox": [
+          6,
           3,
-          3,
-          82,
-          85
+          85,
+          93
         ],
-        "fill": 0.837,
+        "fill": 0.771,
         "touches_edge": false
       },
       "west": {
-        "run1": 0.811,
+        "run1": 0.786,
         "bbox": [
-          22,
+          27,
           3,
-          67,
-          86
+          65,
+          94
         ],
-        "fill": 0.482,
+        "fill": 0.375,
         "touches_edge": false
       },
       "east": {
-        "run1": 0.812,
+        "run1": 0.801,
         "bbox": [
-          21,
+          30,
           3,
-          66,
-          86
+          68,
+          94
         ],
-        "fill": 0.482,
+        "fill": 0.375,
         "touches_edge": false
       },
       "north": {
-        "run1": 0.778,
+        "run1": 0.767,
         "bbox": [
-          9,
-          3,
-          88,
-          83
+          11,
+          2,
+          90,
+          91
         ],
-        "fill": 0.816,
-        "touches_edge": true
+        "fill": 0.763,
+        "touches_edge": false
       },
       "south-east": {
-        "run1": 0.814,
+        "run1": 0.809,
         "bbox": [
-          17,
+          20,
           3,
-          76,
-          86
+          78,
+          94
         ],
-        "fill": 0.632,
+        "fill": 0.573,
         "touches_edge": false
       },
       "north-east": {
-        "run1": 0.789,
+        "run1": 0.772,
         "bbox": [
-          19,
+          22,
           3,
           84,
-          84
+          93
         ],
-        "fill": 0.68,
+        "fill": 0.605,
         "touches_edge": false
       },
       "north-west": {
-        "run1": 0.777,
+        "run1": 0.757,
         "bbox": [
-          14,
+          19,
           3,
           80,
-          84
+          93
         ],
-        "fill": 0.69,
+        "fill": 0.596,
         "touches_edge": false
       },
       "south-west": {
-        "run1": 0.812,
+        "run1": 0.802,
         "bbox": [
+          15,
           3,
-          3,
-          74,
-          86
+          77,
+          94
         ],
-        "fill": 0.761,
+        "fill": 0.612,
         "touches_edge": false
       }
     }
