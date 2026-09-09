@@ -818,11 +818,33 @@ export class WorldRoom extends Room<WorldState> {
     // (server-authoritative), but rescue anyone whose saved spot is now
     // blocked (terrain can change).
     const spot = acc.rec.pos?.[this.worldName];
-    if (spot && !(this.terrain && !isStandableAtWorld(this.terrain, spot.x, spot.y))) {
-      // Returning player: restore their last position on the base ground there.
+    /* A saved spot on a DECK is a legal spot: the base under a cave lid is the
+     * cave floor and under a bridge the water, so "standable at the base"
+     * alone sent a lid-walker to the spawn or, worse, restored him INTO the
+     * cave (maintainer 2026-09-09: "if I log out and back in again I get
+     * teleported to inside the cave"). */
+    const deckUnderSpot = (s: { x: number; y: number }): boolean => {
+      const t = this.terrain;
+      if (!t) return false;
+      const c = Math.floor(s.x / CELL_WU);
+      const r = Math.floor(s.y / CELL_WU);
+      return c >= 0 && r >= 0 && c < t.width && r < t.height && t.deck[r * t.width + c] >= 0;
+    };
+    if (spot && (!this.terrain || isStandableAtWorld(this.terrain, spot.x, spot.y) || deckUnderSpot(spot))) {
+      // Returning player: restore their last position ON THE SURFACE THEY LEFT
+      // FROM — the saved elev, resolved against today's terrain (a spot that
+      // lost its deck falls back to the base; one without a saved elev too).
       player.x = spot.x;
       player.y = spot.y;
-      player.elev = this.terrain ? levelAtWorld(this.terrain, player.x, player.y) : 0;
+      player.elev = this.terrain
+        ? resolveElevAt(
+            this.terrain,
+            spot.elev ?? levelAtWorld(this.terrain, player.x, player.y),
+            player.x,
+            player.y,
+            { maxClimb: WALK_CLIMB, canSwim: true },
+          )
+        : 0;
     } else {
       this.placeAtSpawn(player);
     }
@@ -922,7 +944,7 @@ export class WorldRoom extends Room<WorldState> {
     // COPY, never alias: a live Player.inv sharing the stored array is the bug
     // that silently corrupted saves in the store this replaces.
     rec.inv = player.inv.map((s) => ({ item: s.item, n: s.n }));
-    if (this.worldName) rec.pos[this.worldName] = { x: player.x, y: player.y };
+    if (this.worldName) rec.pos[this.worldName] = { x: player.x, y: player.y, elev: player.elev };
     void this.store
       .save(player.accountId, rec)
       .catch((e) => console.error(`[account] save failed for ${player.accountId}:`, e));

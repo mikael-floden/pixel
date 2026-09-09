@@ -12758,17 +12758,17 @@ export class WorldScene extends Phaser.Scene {
     const now = this.time.now;
     if (now < this.jumpUntil || now < this.jumpReadyAt) return; // already airborne / cooling down
     const me = this.room ? this.avatars.get(this.room.sessionId) : undefined;
-    if (me && this.wouldAutoJump(me.fx, me.fy, ax, ay)) this.tryJump();
+    if (me && this.wouldAutoJump(me.fx, me.fy, ax, ay, me.surfLevel)) this.tryJump();
   }
 
   /** The terrain predicate behind auto-jump: from world (fromX,fromY), moving
    * in screen direction (ax,ay), is the terrain just past the feet a 2-level
    * ledge a jump would clear? Delegates to the shared `autoJumpWanted` (which
    * also handles the concave-corner probe geometry). Exposed via __ml.autoJumpAt. */
-  private wouldAutoJump(fromX: number, fromY: number, ax: number, ay: number): boolean {
+  private wouldAutoJump(fromX: number, fromY: number, ax: number, ay: number, elev?: number): boolean {
     if (!this.terrain) return false;
     const w = screenToWorldVector(ax, ay);
-    return autoJumpWanted(this.terrain, fromX, fromY, w.x, w.y);
+    return autoJumpWanted(this.terrain, fromX, fromY, w.x, w.y, elev);
   }
 
   /** Persist + send the accumulated input window (prediction and server get

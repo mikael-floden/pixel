@@ -2131,6 +2131,7 @@ export function autoJumpWanted(
   y: number,
   ux: number,
   uy: number,
+  elev?: number,
 ): boolean {
   const len = Math.hypot(ux, uy);
   if (len < 1e-6) return false;
@@ -2141,6 +2142,13 @@ export function autoJumpWanted(
   const ty = y + uy * d;
   const walk = { maxClimb: WALK_CLIMB, canSwim: true };
   const jump = { maxClimb: JUMP_CLIMB, canSwim: true };
+  /* WITH THE ELEVATION, ASK THE DECK-AWARE RULE. `canEnter` reads the BASE
+   * level under both points, and on a cave lid the base is the cave floor: a
+   * one-level step down there fired a hop up here, for a ledge that exists
+   * sixteen levels beneath the feet (maintainer 2026-09-09, "influenced by
+   * what's under me"). A caller without a level keeps the base rule. */
+  if (elev !== undefined)
+    return !canEnterElev(grid, elev, x, y, tx, ty, walk).ok && canEnterElev(grid, elev, x, y, tx, ty, jump).ok;
   return !canEnter(grid, x, y, tx, ty, walk) && canEnter(grid, x, y, tx, ty, jump);
 }
 
@@ -2184,13 +2192,17 @@ export function steerAssist(
   const worldW = worldWidthOf(grid);
   const worldH = worldHeightOf(grid);
   const dt = 0.08; // probe step ≈ 5.6wu at walk speed — spans a substep + margin
+  /* WITH THE ELEVATION, THE FORWARD RULE IS THE DECK-AWARE ONE. `makeBlocked`
+   * reads the BASE level under both points, and on a cave lid the base is the
+   * cave: two lid cells over a cave wall read as a cliff, the sim said
+   * "stalled", and this assist steered around a wall 16 levels beneath the
+   * feet (maintainer 2026-09-09, still "influenced by what's under me" after
+   * the footprints were fixed). Same predicate the body integrates with. */
   const ge = elev === undefined ? undefined : () => elev;
+  const fwd = ge ? makeBlockedElev(grid, walk, ge) : makeBlocked(grid, walk);
+  const side = makeSideBlocked(grid, walk, ge);
   const sim = (iax: number, iay: number) =>
-    stepMovement(
-      x, y, iax, iay, false, dt,
-      makeBlocked(grid, walk, ge), 1, true, worldW, worldH,
-      makeSideBlocked(grid, walk, ge),
-    );
+    stepMovement(x, y, iax, iay, false, dt, fwd, 1, true, worldW, worldH, side);
   const moved = (r: { x: number; y: number }) => Math.hypot(r.x - x, r.y - y);
   // Only assist a real STALL. A wall-slide (diagonal input with one free axis)
   // still moves at ≥~0.7 of speed and must stay untouched.
@@ -2211,13 +2223,13 @@ export function steerAssist(
   for (const lat of [0, 0.75 * PLAYER_RADIUS, -0.75 * PLAYER_RADIUS]) {
     const c = Math.floor((px - uy * lat) / CELL_WU);
     const r = Math.floor((py + ux * lat) / CELL_WU);
-    if (cellSolid(grid, c, r)) {
+    if (cellSolid(grid, c, r, elev)) {
       bc = c;
       br = r;
       break;
     }
   }
-  if (bc < 0) return steerAssistWall(grid, x, y, ax, ay, ux, uy, w, sim, moved);
+  if (bc < 0) return steerAssistWall(grid, x, y, ax, ay, ux, uy, w, sim, moved, elev);
   // Perpendicular axis relative to the DOMINANT world axis of the intent.
   const domX = Math.abs(w.x) >= Math.abs(w.y);
   const perp = domX ? { x: 0, y: 1 } : { x: 1, y: 0 };
@@ -2305,9 +2317,13 @@ function steerAssistWall(
   w: { x: number; y: number },
   sim: (iax: number, iay: number) => { x: number; y: number },
   moved: (r: { x: number; y: number }) => number,
+  elev?: number,
 ): { ax: number; ay: number } | null {
   const walk = { maxClimb: WALK_CLIMB, canSwim: true };
-  const myLevel = levelAtWorld(grid, x, y);
+  // The SURFACE level when the caller knows it: the base under a deck is the
+  // cave, and every rock cell beside the lid then read as a wall to hunt a
+  // door along (see steerAssist).
+  const myLevel = elev ?? levelAtWorld(grid, x, y);
   // The wall cell the body is stalled on: same probe points as the prop
   // branch, but the tell is CLIMB — higher than even a jump takes. (A
   // jumpable 1-level ledge never reaches here alive: auto-jump fires first,
@@ -2423,9 +2439,12 @@ const NEAR_SOLID_COST = 0.6;
 /** Is this CELL a solid obstacle (prop / structure / non-enterable surface)? A
  * world@2 deck makes its cell walkable ON TOP regardless of the base, so a
  * decked cell is never a solid obstacle. */
-function cellSolid(grid: TerrainGrid, c: number, r: number): boolean {
+function cellSolid(grid: TerrainGrid, c: number, r: number, elev?: number): boolean {
   if (c < 0 || r < 0 || c >= grid.width || r >= grid.height) return false;
   if (grid.deck[r * grid.width + c] >= 0) return false; // walkable deck overhead
+  // A nav-blocked cell on another floor is not in the caller's way (the cave
+  // under the lid it stands on) — the footprint rule, at cell resolution.
+  if (elev !== undefined && Math.abs(grid.level[r * grid.width + c] - elev) > FOOTPRINT_LEVEL_SLACK) return false;
   if (grid.blocked[r * grid.width + c]) return true;
   const s = surfaceAtWorld(grid, (c + 0.5) * CELL_WU, (r + 0.5) * CELL_WU);
   return !s.standable && !s.swimmable;
@@ -3148,7 +3167,7 @@ export function bodyStalled(
   const ge = elev === undefined ? undefined : () => elev;
   const r = stepMovement(
     x, y, ax, ay, false, dt,
-    makeBlocked(grid, walk, ge), 1, true, worldWidthOf(grid), worldHeightOf(grid),
+    ge ? makeBlockedElev(grid, walk, ge) : makeBlocked(grid, walk), 1, true, worldWidthOf(grid), worldHeightOf(grid),
     makeSideBlocked(grid, walk, ge),
   );
   return Math.hypot(r.x - x, r.y - y) <= WALK_SPEED * dt * 0.35;
@@ -3203,14 +3222,12 @@ export function headingClear(
   const worldW = worldWidthOf(grid);
   const worldH = worldHeightOf(grid);
   const ge = elev === undefined ? undefined : () => elev;
+  const fwd = ge ? makeBlockedElev(grid, walk, ge) : makeBlocked(grid, walk);
+  const side = makeSideBlocked(grid, walk, ge);
   let cx = x;
   let cy = y;
   for (let i = 0; i < CLEAR_LOOKAHEAD_STEPS; i++) {
-    const r = stepMovement(
-      cx, cy, ax, ay, false, dt,
-      makeBlocked(grid, walk, ge), 1, true, worldW, worldH,
-      makeSideBlocked(grid, walk, ge),
-    );
+    const r = stepMovement(cx, cy, ax, ay, false, dt, fwd, 1, true, worldW, worldH, side);
     if (Math.hypot(r.x - cx, r.y - cy) <= WALK_SPEED * dt * 0.35) return false;
     cx = r.x;
     cy = r.y;
@@ -3247,17 +3264,15 @@ export function slideAlong(
   const walk = { maxClimb: WALK_CLIMB, canSwim: true };
   const dt = 0.08;
   const ge = elev === undefined ? undefined : () => elev;
+  const fwd = ge ? makeBlockedElev(grid, walk, ge) : makeBlocked(grid, walk);
+  const side = makeSideBlocked(grid, walk, ge);
   const worldW = worldWidthOf(grid);
   const worldH = worldHeightOf(grid);
   const w = screenToWorldVector(ax, ay);
   const il = Math.hypot(w.x, w.y);
   if (il < 1e-6) return null;
   const moves = (cax: number, cay: number) => {
-    const r = stepMovement(
-      x, y, cax, cay, false, dt,
-      makeBlocked(grid, walk, ge), 1, true, worldW, worldH,
-      makeSideBlocked(grid, walk, ge),
-    );
+    const r = stepMovement(x, y, cax, cay, false, dt, fwd, 1, true, worldW, worldH, side);
     return Math.hypot(r.x - x, r.y - y) > WALK_SPEED * dt * 0.35;
   };
   let best: { ax: number; ay: number } | null = null;
@@ -3690,7 +3705,7 @@ export function stepAutopilot(
         // scored a diagonal's clean one-axis wall-slide at exactly 0.5 and
         // disqualified the best detours around props.
         const frac = Math.hypot(r.x - x, r.y - y) / (wl * WALK_SPEED * PROBE_DT);
-        open = frac > 0.45 || autoJumpWanted(grid, x, y, w.x, w.y);
+        open = frac > 0.45 || autoJumpWanted(grid, x, y, w.x, w.y, probeElev);
       }
       cand.push({ ax: ix, ay: iy, dot, open });
     }

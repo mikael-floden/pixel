@@ -41,7 +41,10 @@ export interface AccountRecord {
   hp: number;
   ep: number;
   inv: { item: string; n: number }[];
-  pos: Record<string, { x: number; y: number }>;
+  /** Per world: where the player stood, and the SURFACE level they stood on
+   *  (absent in older records — the base level then; a deck walker without it
+   *  was restored into the cave under the lid). */
+  pos: Record<string, { x: number; y: number; elev?: number }>;
 }
 
 export interface AccountStore {

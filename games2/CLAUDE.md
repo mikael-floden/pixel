@@ -1354,9 +1354,19 @@ split is `UI_AGENT.md`). Self-iterating loop: `loop/LOOP.md`.
   Measured on the_game: 1,291 footprints, 101 under a deck two or more levels
   above their floor; replayed at 267.5,184.5 on the lid, left/right/down-left
   moved 11-15 wu in 2 s with 113-117 stalled ticks before, 249 wu and 0 after
-  (`scripts/_tmp-lidsim.mts`-style: the real shared tick, no browser). KNOWN
-  GAP: a piece placed ON a deck reads the base under it (none in the_game).
-  Gate: the floor test in `server/test/footprint.test.ts`.
+  (`scripts/_tmp-lidsim.mts`-style: the real shared tick, no browser). THE
+  DETECTORS TOO: `steerAssist`, `bodyStalled`, `headingClear`, `slideAlong`,
+  `steerAssistWall` and `autoJumpWanted` take the elevation and then probe
+  with `canEnterElev`/`makeBlockedElev`, not the base `canEnter` — the base
+  under a lid is the cave, so two lid cells over a cave wall read as a cliff,
+  the door-finder hunted along it and the stick was deflected (his second
+  report, same spot). Measured over every cave-lid cell of the_game, 598 x 8
+  headings: 158 phantom stalls with the base rule, 0 with the surface level.
+  A caller without a level keeps the base rule. AND THE RELOG: `rec.pos`
+  saves `elev`, and the join resolves it against today's terrain — restoring
+  the base level put a lid-walker back INSIDE the cave. KNOWN GAP: a piece
+  placed ON a deck reads the base under it (none in the_game). Gate: the
+  floor test in `server/test/footprint.test.ts`.
 - **Steer assist** (`shared/steerAssist`): running DIRECT input (WASD/HUD
   stick) into a SOLID PROP dead-stops even when the player obviously meant to
   pass beside it. Deliberately NOT navigation: on a real stall, inspect ONLY
