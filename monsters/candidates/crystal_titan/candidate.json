@@ -335,6 +335,243 @@
         "west": "crystal_titan/animations/idle__west.webp",
         "north-west": "crystal_titan/animations/idle__north-west.webp"
       }
+    },
+    "walk": {
+      "directions": {
+        "south": {
+          "status": "pass",
+          "step_mean": 0.1001,
+          "step_max": 0.1206,
+          "drift": 5.02,
+          "loop": 0.1877,
+          "loop_ratio": 1.88,
+          "travel": 0.52,
+          "pin": 0.932,
+          "pad": 0,
+          "canvas": [
+            232,
+            232
+          ],
+          "reasons": [],
+          "sub": "bc2b0d74-bef4-4cdd-92da-806ecac90c9c",
+          "group": "5fdea535-312d-465d-9fa1-0b4697d1b9a0",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "generated_at": "2026-09-09T21:16:39+00:00"
+        },
+        "south-east": {
+          "status": "fail",
+          "step_mean": 0.1761,
+          "step_max": 0.224,
+          "drift": 9.4,
+          "loop": 0.4794,
+          "loop_ratio": 2.72,
+          "travel": 2.39,
+          "pin": 0.879,
+          "pad": 0,
+          "canvas": [
+            232,
+            232
+          ],
+          "reasons": [
+            "drifts 9.4 px — eyeball it",
+            "last→first hand-off is 2.7× a normal step — the loop hitches"
+          ],
+          "sub": "d2475410-3d39-400b-914b-5312681ff522",
+          "group": "5f9a545f-67ac-45b0-8636-7e217de862a0",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "generated_at": "2026-09-09T21:16:40+00:00"
+        },
+        "east": {
+          "status": "pass",
+          "step_mean": 0.2299,
+          "step_max": 0.3334,
+          "drift": 5.12,
+          "loop": 0.3782,
+          "loop_ratio": 1.64,
+          "travel": 2.92,
+          "pin": 0.724,
+          "pad": 0,
+          "canvas": [
+            232,
+            232
+          ],
+          "reasons": [],
+          "sub": "597523b3-29e3-4b37-a1ac-f56ed4b3cf86",
+          "group": "9ceffd7b-b027-4092-ad3a-d7652f39dcde",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "generated_at": "2026-09-09T21:16:40+00:00"
+        },
+        "north-east": {
+          "status": "warn",
+          "step_mean": 0.1579,
+          "step_max": 0.206,
+          "drift": 3.61,
+          "loop": 0.3434,
+          "loop_ratio": 2.18,
+          "travel": 2.7,
+          "pin": 0.838,
+          "pad": 0,
+          "canvas": [
+            232,
+            232
+          ],
+          "reasons": [
+            "last→first hand-off 2.2× a step — eyeball the loop"
+          ],
+          "sub": "bb984589-2dc7-4af3-b0d3-5ed2fac9ddd7",
+          "group": "d635ca0a-251f-44ad-87f8-6ecb16e3c504",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "generated_at": "2026-09-09T21:16:41+00:00"
+        },
+        "north": {
+          "status": "warn",
+          "step_mean": 0.1632,
+          "step_max": 0.2043,
+          "drift": 7.52,
+          "loop": 0.2479,
+          "loop_ratio": 1.52,
+          "travel": 0.63,
+          "pin": 0.891,
+          "pad": 0,
+          "canvas": [
+            232,
+            232
+          ],
+          "reasons": [
+            "drifts 7.5 px — eyeball it"
+          ],
+          "sub": "012bbaed-61ac-452d-a0f7-4d7888fafc50",
+          "group": "6451f08d-d0ca-454d-99fe-00501f2d11f0",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "generated_at": "2026-09-09T21:16:42+00:00"
+        },
+        "west": {
+          "status": "pass",
+          "step_mean": 0.2299,
+          "step_max": 0.3334,
+          "drift": 5.12,
+          "loop": 0.3782,
+          "loop_ratio": 1.64,
+          "travel": 2.92,
+          "pin": 0.724,
+          "pad": 0,
+          "canvas": [
+            232,
+            232
+          ],
+          "reasons": [],
+          "sub": "597523b3-29e3-4b37-a1ac-f56ed4b3cf86",
+          "group": "9ceffd7b-b027-4092-ad3a-d7652f39dcde",
+          "takes": 1,
+          "version": 1,
+          "mirrored": true,
+          "generated_at": "2026-09-09T21:16:40+00:00",
+          "source": "east"
+        },
+        "north-west": {
+          "status": "warn",
+          "step_mean": 0.1579,
+          "step_max": 0.206,
+          "drift": 3.61,
+          "loop": 0.3434,
+          "loop_ratio": 2.18,
+          "travel": 2.7,
+          "pin": 0.838,
+          "pad": 0,
+          "canvas": [
+            232,
+            232
+          ],
+          "reasons": [
+            "last→first hand-off 2.2× a step — eyeball the loop"
+          ],
+          "sub": "bb984589-2dc7-4af3-b0d3-5ed2fac9ddd7",
+          "group": "d635ca0a-251f-44ad-87f8-6ecb16e3c504",
+          "takes": 1,
+          "version": 1,
+          "mirrored": true,
+          "generated_at": "2026-09-09T21:16:41+00:00",
+          "source": "north-east"
+        }
+      },
+      "action": "walk loop, full walk cycle in place, legs alternate naturally, normal calm walking pace, body stays centered, seamless loop whose last frame leads straight back into the first, no turning",
+      "frame_paths": {
+        "south": [
+          "crystal_titan/animations/walk/south/00.webp",
+          "crystal_titan/animations/walk/south/01.webp",
+          "crystal_titan/animations/walk/south/02.webp",
+          "crystal_titan/animations/walk/south/03.webp",
+          "crystal_titan/animations/walk/south/04.webp",
+          "crystal_titan/animations/walk/south/05.webp"
+        ],
+        "south-east": [
+          "crystal_titan/animations/walk/south-east/00.webp",
+          "crystal_titan/animations/walk/south-east/01.webp",
+          "crystal_titan/animations/walk/south-east/02.webp",
+          "crystal_titan/animations/walk/south-east/03.webp",
+          "crystal_titan/animations/walk/south-east/04.webp",
+          "crystal_titan/animations/walk/south-east/05.webp"
+        ],
+        "east": [
+          "crystal_titan/animations/walk/east/00.webp",
+          "crystal_titan/animations/walk/east/01.webp",
+          "crystal_titan/animations/walk/east/02.webp",
+          "crystal_titan/animations/walk/east/03.webp",
+          "crystal_titan/animations/walk/east/04.webp",
+          "crystal_titan/animations/walk/east/05.webp"
+        ],
+        "north-east": [
+          "crystal_titan/animations/walk/north-east/00.webp",
+          "crystal_titan/animations/walk/north-east/01.webp",
+          "crystal_titan/animations/walk/north-east/02.webp",
+          "crystal_titan/animations/walk/north-east/03.webp",
+          "crystal_titan/animations/walk/north-east/04.webp",
+          "crystal_titan/animations/walk/north-east/05.webp"
+        ],
+        "north": [
+          "crystal_titan/animations/walk/north/00.webp",
+          "crystal_titan/animations/walk/north/01.webp",
+          "crystal_titan/animations/walk/north/02.webp",
+          "crystal_titan/animations/walk/north/03.webp",
+          "crystal_titan/animations/walk/north/04.webp",
+          "crystal_titan/animations/walk/north/05.webp"
+        ],
+        "west": [
+          "crystal_titan/animations/walk/west/00.webp",
+          "crystal_titan/animations/walk/west/01.webp",
+          "crystal_titan/animations/walk/west/02.webp",
+          "crystal_titan/animations/walk/west/03.webp",
+          "crystal_titan/animations/walk/west/04.webp",
+          "crystal_titan/animations/walk/west/05.webp"
+        ],
+        "north-west": [
+          "crystal_titan/animations/walk/north-west/00.webp",
+          "crystal_titan/animations/walk/north-west/01.webp",
+          "crystal_titan/animations/walk/north-west/02.webp",
+          "crystal_titan/animations/walk/north-west/03.webp",
+          "crystal_titan/animations/walk/north-west/04.webp",
+          "crystal_titan/animations/walk/north-west/05.webp"
+        ]
+      },
+      "strips": {
+        "south": "crystal_titan/animations/walk__south.webp",
+        "south-east": "crystal_titan/animations/walk__south-east.webp",
+        "east": "crystal_titan/animations/walk__east.webp",
+        "north-east": "crystal_titan/animations/walk__north-east.webp",
+        "north": "crystal_titan/animations/walk__north.webp",
+        "west": "crystal_titan/animations/walk__west.webp",
+        "north-west": "crystal_titan/animations/walk__north-west.webp"
+      }
     }
   }
 }

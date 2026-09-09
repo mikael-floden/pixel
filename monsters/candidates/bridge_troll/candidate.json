@@ -347,40 +347,47 @@
           "loop_ratio": 3.22,
           "travel": 0.46,
           "pin": 0.949,
+          "pad": 0,
+          "canvas": [
+            136,
+            136
+          ],
           "reasons": [
             "drifts 6.1 px — eyeball it",
             "last→first hand-off is 3.2× a normal step — the loop hitches"
           ],
-          "cut": 0,
           "sub": "d7797796-690c-4191-b774-940c3d0b0caa",
           "group": "7125f6ff-e3e1-420f-898e-a414ce0908f8",
           "takes": 1,
           "version": 1,
           "mirrored": false,
-          "generated_at": "2026-09-09T21:13:15+00:00"
+          "generated_at": "2026-09-09T21:17:05+00:00"
         },
         "south-east": {
           "status": "warn",
-          "step_mean": 0.1873,
+          "step_mean": 0.1875,
           "step_max": 0.2506,
           "drift": 6.76,
-          "loop": 0.4957,
+          "loop": 0.4968,
           "loop_ratio": 2.65,
           "travel": 1.1,
           "pin": 0.83,
-          "reasons": [
-            "frame 5 touches a canvas edge the base does not (overflow / wrap risk)",
-            "drifts 6.8 px — eyeball it",
-            "last→first hand-off 2.6× a step — eyeball the loop",
-            "8 px of motion fell outside the base canvas (overflow)"
+          "pad": 1,
+          "canvas": [
+            138,
+            138
           ],
-          "cut": 8,
+          "reasons": [
+            "drifts 6.8 px — eyeball it",
+            "last→first hand-off 2.7× a step — eyeball the loop",
+            "canvas grown by 1 px a side to hold the motion"
+          ],
           "sub": "7755563f-d1f8-46fd-b701-bb460c3f4b8b",
           "group": "b64abaf4-8ecb-404c-9631-0dd1d5a9a2e9",
           "takes": 1,
           "version": 1,
           "mirrored": false,
-          "generated_at": "2026-09-09T21:13:16+00:00"
+          "generated_at": "2026-09-09T21:17:06+00:00"
         },
         "east": {
           "status": "pass",
@@ -391,14 +398,18 @@
           "loop_ratio": 1.37,
           "travel": 2.14,
           "pin": 0.799,
+          "pad": 0,
+          "canvas": [
+            136,
+            136
+          ],
           "reasons": [],
-          "cut": 0,
           "sub": "9ea99894-7703-498e-9c95-8e2469477e9a",
           "group": "e3230d10-a8c5-4f6e-880b-94c2abe7852f",
           "takes": 1,
           "version": 1,
           "mirrored": false,
-          "generated_at": "2026-09-09T21:13:17+00:00"
+          "generated_at": "2026-09-09T21:17:07+00:00"
         },
         "north-east": {
           "status": "warn",
@@ -409,16 +420,20 @@
           "loop_ratio": 2.21,
           "travel": 1.9,
           "pin": 0.823,
+          "pad": 0,
+          "canvas": [
+            136,
+            136
+          ],
           "reasons": [
             "last→first hand-off 2.2× a step — eyeball the loop"
           ],
-          "cut": 0,
           "sub": "d0f62a0d-1727-4711-b4f5-4ada095c9f6d",
           "group": "f3163380-8ab7-44c7-9ef9-c26541196347",
           "takes": 1,
           "version": 1,
           "mirrored": false,
-          "generated_at": "2026-09-09T21:13:17+00:00"
+          "generated_at": "2026-09-09T21:17:07+00:00"
         },
         "north": {
           "status": "pass",
@@ -429,37 +444,44 @@
           "loop_ratio": 1.86,
           "travel": 0.5,
           "pin": 0.846,
+          "pad": 0,
+          "canvas": [
+            136,
+            136
+          ],
           "reasons": [],
-          "cut": 0,
           "sub": "42e3d8b2-e21a-48f7-bf30-a964e41d4450",
           "group": "9154c97e-cb52-4866-8233-b789f1e47741",
           "takes": 1,
           "version": 1,
           "mirrored": false,
-          "generated_at": "2026-09-09T21:13:18+00:00"
+          "generated_at": "2026-09-09T21:17:08+00:00"
         },
         "south-west": {
           "status": "warn",
-          "step_mean": 0.1873,
+          "step_mean": 0.1875,
           "step_max": 0.2506,
           "drift": 6.76,
-          "loop": 0.4957,
+          "loop": 0.4968,
           "loop_ratio": 2.65,
           "travel": 1.1,
           "pin": 0.83,
-          "reasons": [
-            "frame 5 touches a canvas edge the base does not (overflow / wrap risk)",
-            "drifts 6.8 px — eyeball it",
-            "last→first hand-off 2.6× a step — eyeball the loop",
-            "8 px of motion fell outside the base canvas (overflow)"
+          "pad": 1,
+          "canvas": [
+            138,
+            138
           ],
-          "cut": 8,
+          "reasons": [
+            "drifts 6.8 px — eyeball it",
+            "last→first hand-off 2.7× a step — eyeball the loop",
+            "canvas grown by 1 px a side to hold the motion"
+          ],
           "sub": "7755563f-d1f8-46fd-b701-bb460c3f4b8b",
           "group": "b64abaf4-8ecb-404c-9631-0dd1d5a9a2e9",
           "takes": 1,
           "version": 1,
           "mirrored": true,
-          "generated_at": "2026-09-09T21:13:16+00:00",
+          "generated_at": "2026-09-09T21:17:06+00:00",
           "source": "south-east"
         },
         "west": {
@@ -471,14 +493,18 @@
           "loop_ratio": 1.37,
           "travel": 2.14,
           "pin": 0.799,
+          "pad": 0,
+          "canvas": [
+            136,
+            136
+          ],
           "reasons": [],
-          "cut": 0,
           "sub": "9ea99894-7703-498e-9c95-8e2469477e9a",
           "group": "e3230d10-a8c5-4f6e-880b-94c2abe7852f",
           "takes": 1,
           "version": 1,
           "mirrored": true,
-          "generated_at": "2026-09-09T21:13:17+00:00",
+          "generated_at": "2026-09-09T21:17:07+00:00",
           "source": "east"
         },
         "north-west": {
@@ -490,16 +516,20 @@
           "loop_ratio": 2.21,
           "travel": 1.9,
           "pin": 0.823,
+          "pad": 0,
+          "canvas": [
+            136,
+            136
+          ],
           "reasons": [
             "last→first hand-off 2.2× a step — eyeball the loop"
           ],
-          "cut": 0,
           "sub": "d0f62a0d-1727-4711-b4f5-4ada095c9f6d",
           "group": "f3163380-8ab7-44c7-9ef9-c26541196347",
           "takes": 1,
           "version": 1,
           "mirrored": true,
-          "generated_at": "2026-09-09T21:13:17+00:00",
+          "generated_at": "2026-09-09T21:17:07+00:00",
           "source": "north-east"
         }
       },

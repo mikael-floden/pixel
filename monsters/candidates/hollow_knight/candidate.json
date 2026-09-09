@@ -343,46 +343,52 @@
     "walk": {
       "directions": {
         "south": {
-          "status": "fail",
-          "step_mean": 0.16,
-          "step_max": 0.1864,
-          "drift": 2.41,
-          "loop": 0.2756,
-          "loop_ratio": 1.72,
-          "travel": 2.41,
+          "status": "pass",
+          "step_mean": 0.1621,
+          "step_max": 0.1859,
+          "drift": 2.55,
+          "loop": 0.2774,
+          "loop_ratio": 1.71,
+          "travel": 2.55,
           "pin": 0.891,
-          "reasons": [
-            "frame 1 touches a canvas edge the base does not (overflow / wrap risk)",
-            "64 px of motion fell outside the base canvas (overflow)"
+          "pad": 3,
+          "canvas": [
+            118,
+            118
           ],
-          "cut": 64,
+          "reasons": [
+            "canvas grown by 3 px a side to hold the motion"
+          ],
           "sub": "f5b46679-7014-41e4-9f23-0c64f3f47e6b",
           "group": "15c13add-445c-429c-898a-3ca25c236fd0",
           "takes": 1,
           "version": 1,
           "mirrored": false,
-          "generated_at": "2026-09-09T20:52:03+00:00"
+          "generated_at": "2026-09-09T21:14:57+00:00"
         },
         "south-east": {
-          "status": "fail",
-          "step_mean": 0.156,
+          "status": "pass",
+          "step_mean": 0.1568,
           "step_max": 0.1672,
           "drift": 2.18,
-          "loop": 0.2824,
-          "loop_ratio": 1.81,
-          "travel": 2.09,
+          "loop": 0.2864,
+          "loop_ratio": 1.83,
+          "travel": 2.12,
           "pin": 0.869,
-          "reasons": [
-            "frame 5 touches a canvas edge the base does not (overflow / wrap risk)",
-            "21 px of motion fell outside the base canvas (overflow)"
+          "pad": 2,
+          "canvas": [
+            116,
+            116
           ],
-          "cut": 21,
+          "reasons": [
+            "canvas grown by 2 px a side to hold the motion"
+          ],
           "sub": "0d1dbf44-f7b2-4c91-9425-6fb547eb0c91",
           "group": "0bce5446-4bbd-4315-b368-1ae99771f181",
           "takes": 1,
           "version": 1,
           "mirrored": false,
-          "generated_at": "2026-09-09T20:52:04+00:00"
+          "generated_at": "2026-09-09T21:14:58+00:00"
         },
         "east": {
           "status": "pass",
@@ -393,38 +399,45 @@
           "loop_ratio": 1.95,
           "travel": 3.4,
           "pin": 0.823,
+          "pad": 0,
+          "canvas": [
+            112,
+            112
+          ],
           "reasons": [],
-          "cut": 0,
           "sub": "f25d0cf6-9e7e-48df-b5e7-e31063804d37",
           "group": "20c4eb59-1022-4aa7-a7fe-d7a02635b2b0",
           "takes": 1,
           "version": 1,
           "mirrored": false,
-          "generated_at": "2026-09-09T20:52:04+00:00"
+          "generated_at": "2026-09-09T21:14:59+00:00"
         },
         "north-east": {
-          "status": "warn",
-          "step_mean": 0.1646,
-          "step_max": 0.1988,
-          "drift": 1.99,
-          "loop": 0.2009,
+          "status": "pass",
+          "step_mean": 0.1652,
+          "step_max": 0.1992,
+          "drift": 2.06,
+          "loop": 0.2012,
           "loop_ratio": 1.22,
           "travel": 2.25,
           "pin": 0.819,
-          "reasons": [
-            "frame 0 touches a canvas edge the base does not (overflow / wrap risk)",
-            "12 px of motion fell outside the base canvas (overflow)"
+          "pad": 1,
+          "canvas": [
+            114,
+            114
           ],
-          "cut": 12,
+          "reasons": [
+            "canvas grown by 1 px a side to hold the motion"
+          ],
           "sub": "22160438-ede9-4dd1-b215-c71f031db5ff",
           "group": "17e12e13-a9f8-4826-a940-bc8bd4967cf2",
           "takes": 1,
           "version": 1,
           "mirrored": false,
-          "generated_at": "2026-09-09T20:52:05+00:00"
+          "generated_at": "2026-09-09T21:15:00+00:00"
         },
         "north": {
-          "status": "warn",
+          "status": "pass",
           "step_mean": 0.1707,
           "step_max": 0.2037,
           "drift": 3.8,
@@ -432,16 +445,18 @@
           "loop_ratio": 1.95,
           "travel": 3.1,
           "pin": 0.842,
-          "reasons": [
-            "frame 3 touches a canvas edge the base does not (overflow / wrap risk)"
+          "pad": 0,
+          "canvas": [
+            112,
+            112
           ],
-          "cut": 0,
+          "reasons": [],
           "sub": "5b66441d-d2e0-4813-9a6e-9ce589ec4580",
           "group": "131c38c2-c657-486b-a5b1-d05911c38a98",
           "takes": 1,
           "version": 1,
           "mirrored": false,
-          "generated_at": "2026-09-09T20:52:05+00:00"
+          "generated_at": "2026-09-09T21:15:01+00:00"
         },
         "west": {
           "status": "pass",
@@ -452,37 +467,69 @@
           "loop_ratio": 1.95,
           "travel": 3.4,
           "pin": 0.823,
+          "pad": 0,
+          "canvas": [
+            112,
+            112
+          ],
           "reasons": [],
-          "cut": 0,
           "sub": "f25d0cf6-9e7e-48df-b5e7-e31063804d37",
           "group": "20c4eb59-1022-4aa7-a7fe-d7a02635b2b0",
           "takes": 1,
           "version": 1,
           "mirrored": true,
-          "generated_at": "2026-09-09T20:52:04+00:00",
+          "generated_at": "2026-09-09T21:14:59+00:00",
           "source": "east"
         },
         "north-west": {
-          "status": "warn",
-          "step_mean": 0.1646,
-          "step_max": 0.1988,
-          "drift": 1.99,
-          "loop": 0.2009,
+          "status": "pass",
+          "step_mean": 0.1652,
+          "step_max": 0.1992,
+          "drift": 2.06,
+          "loop": 0.2012,
           "loop_ratio": 1.22,
           "travel": 2.25,
           "pin": 0.819,
-          "reasons": [
-            "frame 0 touches a canvas edge the base does not (overflow / wrap risk)",
-            "12 px of motion fell outside the base canvas (overflow)"
+          "pad": 1,
+          "canvas": [
+            114,
+            114
           ],
-          "cut": 12,
+          "reasons": [
+            "canvas grown by 1 px a side to hold the motion"
+          ],
           "sub": "22160438-ede9-4dd1-b215-c71f031db5ff",
           "group": "17e12e13-a9f8-4826-a940-bc8bd4967cf2",
           "takes": 1,
           "version": 1,
           "mirrored": true,
-          "generated_at": "2026-09-09T20:52:05+00:00",
+          "generated_at": "2026-09-09T21:15:00+00:00",
           "source": "north-east"
+        },
+        "south-west": {
+          "status": "pass",
+          "step_mean": 0.1568,
+          "step_max": 0.1672,
+          "drift": 2.18,
+          "loop": 0.2864,
+          "loop_ratio": 1.83,
+          "travel": 2.12,
+          "pin": 0.869,
+          "pad": 2,
+          "canvas": [
+            116,
+            116
+          ],
+          "reasons": [
+            "canvas grown by 2 px a side to hold the motion"
+          ],
+          "sub": "0d1dbf44-f7b2-4c91-9425-6fb547eb0c91",
+          "group": "0bce5446-4bbd-4315-b368-1ae99771f181",
+          "takes": 1,
+          "version": 1,
+          "mirrored": true,
+          "generated_at": "2026-09-09T21:14:58+00:00",
+          "source": "south-east"
         }
       },
       "action": "walk loop, full walk cycle in place, legs alternate naturally, normal calm walking pace, body stays centered, seamless loop whose last frame leads straight back into the first, no turning",
@@ -542,6 +589,14 @@
           "hollow_knight/animations/walk/north-west/03.webp",
           "hollow_knight/animations/walk/north-west/04.webp",
           "hollow_knight/animations/walk/north-west/05.webp"
+        ],
+        "south-west": [
+          "hollow_knight/animations/walk/south-west/00.webp",
+          "hollow_knight/animations/walk/south-west/01.webp",
+          "hollow_knight/animations/walk/south-west/02.webp",
+          "hollow_knight/animations/walk/south-west/03.webp",
+          "hollow_knight/animations/walk/south-west/04.webp",
+          "hollow_knight/animations/walk/south-west/05.webp"
         ]
       },
       "strips": {
@@ -551,7 +606,8 @@
         "north-east": "hollow_knight/animations/walk__north-east.webp",
         "north": "hollow_knight/animations/walk__north.webp",
         "west": "hollow_knight/animations/walk__west.webp",
-        "north-west": "hollow_knight/animations/walk__north-west.webp"
+        "north-west": "hollow_knight/animations/walk__north-west.webp",
+        "south-west": "hollow_knight/animations/walk__south-west.webp"
       }
     }
   }

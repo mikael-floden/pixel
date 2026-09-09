@@ -351,7 +351,7 @@
     "walk": {
       "directions": {
         "south": {
-          "status": "warn",
+          "status": "pass",
           "step_mean": 0.1279,
           "step_max": 0.2141,
           "drift": 1.85,
@@ -359,16 +359,18 @@
           "loop_ratio": 0.67,
           "travel": 0.26,
           "pin": 0.845,
-          "reasons": [
-            "frame 1 touches a canvas edge the base does not (overflow / wrap risk)"
+          "pad": 0,
+          "canvas": [
+            40,
+            40
           ],
-          "cut": 0,
+          "reasons": [],
           "sub": "966af920-068c-44a0-8382-b97c4d2123d6",
           "group": "7f325d4d-c0ec-4ac9-9e46-c977114213b3",
           "takes": 1,
           "version": 1,
           "mirrored": false,
-          "generated_at": "2026-09-09T21:11:49+00:00"
+          "generated_at": "2026-09-09T21:16:53+00:00"
         },
         "south-east": {
           "status": "pass",
@@ -379,14 +381,18 @@
           "loop_ratio": 1.86,
           "travel": 0.46,
           "pin": 0.845,
+          "pad": 0,
+          "canvas": [
+            40,
+            40
+          ],
           "reasons": [],
-          "cut": 0,
           "sub": "74969406-b3d6-4fa6-93a4-5aad0972ec4d",
           "group": "11ee16ba-401b-4ae6-9241-ac82cec429c0",
           "takes": 1,
           "version": 1,
           "mirrored": false,
-          "generated_at": "2026-09-09T21:11:50+00:00"
+          "generated_at": "2026-09-09T21:16:54+00:00"
         },
         "east": {
           "status": "warn",
@@ -397,16 +403,20 @@
           "loop_ratio": 2.29,
           "travel": 0.84,
           "pin": 0.888,
+          "pad": 0,
+          "canvas": [
+            40,
+            40
+          ],
           "reasons": [
             "last→first hand-off 2.3× a step — eyeball the loop"
           ],
-          "cut": 0,
           "sub": "ccb598f5-ab28-4b66-810b-f0493ccc1335",
           "group": "f9dc4fc4-3ccc-4cc6-969d-99fc3d9f2ab8",
           "takes": 1,
           "version": 1,
           "mirrored": false,
-          "generated_at": "2026-09-09T21:11:50+00:00"
+          "generated_at": "2026-09-09T21:16:54+00:00"
         },
         "north-east": {
           "status": "pass",
@@ -417,14 +427,18 @@
           "loop_ratio": 1.64,
           "travel": 0.69,
           "pin": 0.856,
+          "pad": 0,
+          "canvas": [
+            40,
+            40
+          ],
           "reasons": [],
-          "cut": 0,
           "sub": "31a155ad-8dd8-4961-9d41-36cff6b3601a",
           "group": "d6efb8cb-0d26-41de-b96d-6504ce874ca6",
           "takes": 1,
           "version": 1,
           "mirrored": false,
-          "generated_at": "2026-09-09T21:11:51+00:00"
+          "generated_at": "2026-09-09T21:16:55+00:00"
         },
         "north": {
           "status": "pass",
@@ -435,14 +449,18 @@
           "loop_ratio": 0.79,
           "travel": 1.0,
           "pin": 0.883,
+          "pad": 0,
+          "canvas": [
+            40,
+            40
+          ],
           "reasons": [],
-          "cut": 0,
           "sub": "b622373f-2c99-4372-8c90-d1409d7c06fb",
           "group": "b1cc2eb8-d119-4cef-89c9-ac90c032bd84",
           "takes": 1,
           "version": 1,
           "mirrored": false,
-          "generated_at": "2026-09-09T21:11:52+00:00"
+          "generated_at": "2026-09-09T21:16:55+00:00"
         },
         "south-west": {
           "status": "pass",
@@ -453,14 +471,18 @@
           "loop_ratio": 1.86,
           "travel": 0.46,
           "pin": 0.845,
+          "pad": 0,
+          "canvas": [
+            40,
+            40
+          ],
           "reasons": [],
-          "cut": 0,
           "sub": "74969406-b3d6-4fa6-93a4-5aad0972ec4d",
           "group": "11ee16ba-401b-4ae6-9241-ac82cec429c0",
           "takes": 1,
           "version": 1,
           "mirrored": true,
-          "generated_at": "2026-09-09T21:11:50+00:00",
+          "generated_at": "2026-09-09T21:16:54+00:00",
           "source": "south-east"
         },
         "west": {
@@ -472,16 +494,20 @@
           "loop_ratio": 2.29,
           "travel": 0.84,
           "pin": 0.888,
+          "pad": 0,
+          "canvas": [
+            40,
+            40
+          ],
           "reasons": [
             "last→first hand-off 2.3× a step — eyeball the loop"
           ],
-          "cut": 0,
           "sub": "ccb598f5-ab28-4b66-810b-f0493ccc1335",
           "group": "f9dc4fc4-3ccc-4cc6-969d-99fc3d9f2ab8",
           "takes": 1,
           "version": 1,
           "mirrored": true,
-          "generated_at": "2026-09-09T21:11:50+00:00",
+          "generated_at": "2026-09-09T21:16:54+00:00",
           "source": "east"
         },
         "north-west": {
@@ -493,14 +519,18 @@
           "loop_ratio": 1.64,
           "travel": 0.69,
           "pin": 0.856,
+          "pad": 0,
+          "canvas": [
+            40,
+            40
+          ],
           "reasons": [],
-          "cut": 0,
           "sub": "31a155ad-8dd8-4961-9d41-36cff6b3601a",
           "group": "d6efb8cb-0d26-41de-b96d-6504ce874ca6",
           "takes": 1,
           "version": 1,
           "mirrored": true,
-          "generated_at": "2026-09-09T21:11:51+00:00",
+          "generated_at": "2026-09-09T21:16:55+00:00",
           "source": "north-east"
         }
       },

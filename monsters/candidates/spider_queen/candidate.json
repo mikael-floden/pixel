@@ -349,14 +349,18 @@
           "loop_ratio": 1.65,
           "travel": 1.23,
           "pin": 0.881,
+          "pad": 0,
+          "canvas": [
+            240,
+            240
+          ],
           "reasons": [],
-          "cut": 0,
           "sub": "40ae1639-972b-43f6-903e-9c176c64171e",
           "group": "3e80cc17-0fec-4499-a339-784c7cd64c55",
           "takes": 1,
           "version": 1,
           "mirrored": false,
-          "generated_at": "2026-09-09T21:06:10+00:00"
+          "generated_at": "2026-09-09T21:16:20+00:00"
         },
         "south-east": {
           "status": "pass",
@@ -367,14 +371,18 @@
           "loop_ratio": 1.68,
           "travel": 3.61,
           "pin": 0.89,
+          "pad": 0,
+          "canvas": [
+            240,
+            240
+          ],
           "reasons": [],
-          "cut": 0,
           "sub": "02bc7135-f398-4c9c-9c47-0c3827a44d86",
           "group": "8c085224-a64d-44c5-b92d-336afb902571",
           "takes": 1,
           "version": 1,
           "mirrored": false,
-          "generated_at": "2026-09-09T21:06:11+00:00"
+          "generated_at": "2026-09-09T21:16:20+00:00"
         },
         "east": {
           "status": "warn",
@@ -385,19 +393,23 @@
           "loop_ratio": 1.07,
           "travel": 1.53,
           "pin": 0.862,
+          "pad": 0,
+          "canvas": [
+            240,
+            240
+          ],
           "reasons": [
             "drifts 7.4 px — eyeball it"
           ],
-          "cut": 0,
           "sub": "a6d75123-8289-49e9-95b8-6a2c3d580a80",
           "group": "6be81d8c-b09c-47ea-87a1-f347fb61725d",
           "takes": 1,
           "version": 1,
           "mirrored": false,
-          "generated_at": "2026-09-09T21:06:11+00:00"
+          "generated_at": "2026-09-09T21:16:21+00:00"
         },
         "north-east": {
-          "status": "warn",
+          "status": "pass",
           "step_mean": 0.1341,
           "step_max": 0.1597,
           "drift": 6.13,
@@ -405,19 +417,21 @@
           "loop_ratio": 1.01,
           "travel": 3.14,
           "pin": 0.889,
-          "reasons": [
-            "drifts 6.1 px — eyeball it"
+          "pad": 0,
+          "canvas": [
+            240,
+            240
           ],
-          "cut": 0,
+          "reasons": [],
           "sub": "b44eaab0-5635-4bcc-b6e4-8f72f32263a4",
           "group": "f6c53127-d834-47fe-8f9b-bd72706b2a00",
           "takes": 1,
           "version": 1,
           "mirrored": false,
-          "generated_at": "2026-09-09T21:06:12+00:00"
+          "generated_at": "2026-09-09T21:16:22+00:00"
         },
         "north": {
-          "status": "fail",
+          "status": "warn",
           "step_mean": 0.2037,
           "step_max": 0.2473,
           "drift": 8.89,
@@ -425,16 +439,20 @@
           "loop_ratio": 1.6,
           "travel": 1.01,
           "pin": 0.847,
-          "reasons": [
-            "drifts 8.9 px"
+          "pad": 0,
+          "canvas": [
+            240,
+            240
           ],
-          "cut": 0,
+          "reasons": [
+            "drifts 8.9 px — eyeball it"
+          ],
           "sub": "8f88d720-cd78-4e2c-907b-fbd775876361",
           "group": "66f5dcbd-6193-4466-9a9d-7f786860cb06",
           "takes": 1,
           "version": 1,
           "mirrored": false,
-          "generated_at": "2026-09-09T21:06:13+00:00"
+          "generated_at": "2026-09-09T21:16:23+00:00"
         },
         "south-west": {
           "status": "pass",
@@ -445,14 +463,18 @@
           "loop_ratio": 1.68,
           "travel": 3.61,
           "pin": 0.89,
+          "pad": 0,
+          "canvas": [
+            240,
+            240
+          ],
           "reasons": [],
-          "cut": 0,
           "sub": "02bc7135-f398-4c9c-9c47-0c3827a44d86",
           "group": "8c085224-a64d-44c5-b92d-336afb902571",
           "takes": 1,
           "version": 1,
           "mirrored": true,
-          "generated_at": "2026-09-09T21:06:11+00:00",
+          "generated_at": "2026-09-09T21:16:20+00:00",
           "source": "south-east"
         },
         "west": {
@@ -464,20 +486,24 @@
           "loop_ratio": 1.07,
           "travel": 1.53,
           "pin": 0.862,
+          "pad": 0,
+          "canvas": [
+            240,
+            240
+          ],
           "reasons": [
             "drifts 7.4 px — eyeball it"
           ],
-          "cut": 0,
           "sub": "a6d75123-8289-49e9-95b8-6a2c3d580a80",
           "group": "6be81d8c-b09c-47ea-87a1-f347fb61725d",
           "takes": 1,
           "version": 1,
           "mirrored": true,
-          "generated_at": "2026-09-09T21:06:11+00:00",
+          "generated_at": "2026-09-09T21:16:21+00:00",
           "source": "east"
         },
         "north-west": {
-          "status": "warn",
+          "status": "pass",
           "step_mean": 0.1341,
           "step_max": 0.1597,
           "drift": 6.13,
@@ -485,16 +511,18 @@
           "loop_ratio": 1.01,
           "travel": 3.14,
           "pin": 0.889,
-          "reasons": [
-            "drifts 6.1 px — eyeball it"
+          "pad": 0,
+          "canvas": [
+            240,
+            240
           ],
-          "cut": 0,
+          "reasons": [],
           "sub": "b44eaab0-5635-4bcc-b6e4-8f72f32263a4",
           "group": "f6c53127-d834-47fe-8f9b-bd72706b2a00",
           "takes": 1,
           "version": 1,
           "mirrored": true,
-          "generated_at": "2026-09-09T21:06:12+00:00",
+          "generated_at": "2026-09-09T21:16:22+00:00",
           "source": "north-east"
         }
       },

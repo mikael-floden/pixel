@@ -347,14 +347,18 @@
           "loop_ratio": 1.36,
           "travel": 1.19,
           "pin": 0.887,
+          "pad": 0,
+          "canvas": [
+            104,
+            104
+          ],
           "reasons": [],
-          "cut": 0,
           "sub": "273e9d57-3e79-4b47-9ed1-baef5eaeca6a",
           "group": "b9c90ac3-cddf-4f3c-b39b-a483027e48bb",
           "takes": 1,
           "version": 1,
           "mirrored": false,
-          "generated_at": "2026-09-09T20:57:14+00:00"
+          "generated_at": "2026-09-09T21:15:36+00:00"
         },
         "south-east": {
           "status": "fail",
@@ -365,17 +369,20 @@
           "loop_ratio": 2.72,
           "travel": 1.36,
           "pin": 0.851,
+          "pad": 0,
+          "canvas": [
+            104,
+            104
+          ],
           "reasons": [
-            "frame 5 touches a canvas edge the base does not (overflow / wrap risk)",
             "last→first hand-off is 2.7× a normal step — the loop hitches"
           ],
-          "cut": 0,
           "sub": "acf49ccd-b4e0-472b-b357-33e7bb449a90",
           "group": "d7b3869e-c5e6-4c1f-a141-5b259baceb85",
           "takes": 1,
           "version": 1,
           "mirrored": false,
-          "generated_at": "2026-09-09T20:57:14+00:00"
+          "generated_at": "2026-09-09T21:15:36+00:00"
         },
         "east": {
           "status": "pass",
@@ -386,14 +393,18 @@
           "loop_ratio": 1.65,
           "travel": 3.76,
           "pin": 0.791,
+          "pad": 0,
+          "canvas": [
+            104,
+            104
+          ],
           "reasons": [],
-          "cut": 0,
           "sub": "bf378747-a177-4440-82be-9a2e3fc27a59",
           "group": "df72806b-d9ea-444a-bb5a-2f0d3c226b42",
           "takes": 1,
           "version": 1,
           "mirrored": false,
-          "generated_at": "2026-09-09T20:57:15+00:00"
+          "generated_at": "2026-09-09T21:15:37+00:00"
         },
         "north-east": {
           "status": "pass",
@@ -404,14 +415,18 @@
           "loop_ratio": 1.46,
           "travel": 1.24,
           "pin": 0.816,
+          "pad": 0,
+          "canvas": [
+            104,
+            104
+          ],
           "reasons": [],
-          "cut": 0,
           "sub": "47a4c707-e74c-4168-8852-6f269975524f",
           "group": "43c82aae-4b80-4145-ae27-fa6875a658f0",
           "takes": 1,
           "version": 1,
           "mirrored": false,
-          "generated_at": "2026-09-09T20:57:15+00:00"
+          "generated_at": "2026-09-09T21:15:38+00:00"
         },
         "north": {
           "status": "fail",
@@ -422,16 +437,20 @@
           "loop_ratio": 2.79,
           "travel": 1.51,
           "pin": 0.909,
+          "pad": 0,
+          "canvas": [
+            104,
+            104
+          ],
           "reasons": [
             "last→first hand-off is 2.8× a normal step — the loop hitches"
           ],
-          "cut": 0,
           "sub": "9fdb936c-e67b-435d-9824-2131c94c45cf",
           "group": "219c4719-f891-4435-b8da-f6cbbaf75052",
           "takes": 1,
           "version": 1,
           "mirrored": false,
-          "generated_at": "2026-09-09T20:57:16+00:00"
+          "generated_at": "2026-09-09T21:15:39+00:00"
         },
         "west": {
           "status": "pass",
@@ -442,14 +461,18 @@
           "loop_ratio": 1.65,
           "travel": 3.76,
           "pin": 0.791,
+          "pad": 0,
+          "canvas": [
+            104,
+            104
+          ],
           "reasons": [],
-          "cut": 0,
           "sub": "bf378747-a177-4440-82be-9a2e3fc27a59",
           "group": "df72806b-d9ea-444a-bb5a-2f0d3c226b42",
           "takes": 1,
           "version": 1,
           "mirrored": true,
-          "generated_at": "2026-09-09T20:57:15+00:00",
+          "generated_at": "2026-09-09T21:15:37+00:00",
           "source": "east"
         },
         "north-west": {
@@ -461,14 +484,18 @@
           "loop_ratio": 1.46,
           "travel": 1.24,
           "pin": 0.816,
+          "pad": 0,
+          "canvas": [
+            104,
+            104
+          ],
           "reasons": [],
-          "cut": 0,
           "sub": "47a4c707-e74c-4168-8852-6f269975524f",
           "group": "43c82aae-4b80-4145-ae27-fa6875a658f0",
           "takes": 1,
           "version": 1,
           "mirrored": true,
-          "generated_at": "2026-09-09T20:57:15+00:00",
+          "generated_at": "2026-09-09T21:15:38+00:00",
           "source": "north-east"
         }
       },

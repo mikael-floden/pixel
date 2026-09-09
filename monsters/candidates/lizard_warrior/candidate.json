@@ -347,17 +347,21 @@
           "loop_ratio": 1.65,
           "travel": 0.73,
           "pin": 0.873,
+          "pad": 0,
+          "canvas": [
+            128,
+            128
+          ],
           "reasons": [],
-          "cut": 0,
           "sub": "518de8fe-467c-4b59-8b75-b6376a744502",
           "group": "1992c55e-5edf-4832-9bb6-9039b08f5d87",
           "takes": 1,
           "version": 1,
           "mirrored": false,
-          "generated_at": "2026-09-09T20:59:06+00:00"
+          "generated_at": "2026-09-09T21:15:53+00:00"
         },
         "south-east": {
-          "status": "warn",
+          "status": "pass",
           "step_mean": 0.2384,
           "step_max": 0.273,
           "drift": 2.48,
@@ -365,16 +369,18 @@
           "loop_ratio": 1.18,
           "travel": 1.64,
           "pin": 0.808,
-          "reasons": [
-            "frame 3 touches a canvas edge the base does not (overflow / wrap risk)"
+          "pad": 0,
+          "canvas": [
+            128,
+            128
           ],
-          "cut": 0,
+          "reasons": [],
           "sub": "069fb853-0021-4298-bdfe-adb9422e999e",
           "group": "c08e4a5c-a076-43c2-8931-f5977e381f5f",
           "takes": 1,
           "version": 1,
           "mirrored": false,
-          "generated_at": "2026-09-09T20:59:07+00:00"
+          "generated_at": "2026-09-09T21:15:54+00:00"
         },
         "east": {
           "status": "warn",
@@ -385,63 +391,73 @@
           "loop_ratio": 2.37,
           "travel": 5.21,
           "pin": 0.782,
+          "pad": 0,
+          "canvas": [
+            128,
+            128
+          ],
           "reasons": [
             "drifts 5.2 px — eyeball it",
             "last→first hand-off 2.4× a step — eyeball the loop",
             "5.2 px of x-travel — eyeball it"
           ],
-          "cut": 0,
           "sub": "ff1b3d57-6830-4d8a-91d0-39d242c7d6d5",
           "group": "219c622a-265c-4344-858d-b60b579242f3",
           "takes": 1,
           "version": 1,
           "mirrored": false,
-          "generated_at": "2026-09-09T20:59:08+00:00"
+          "generated_at": "2026-09-09T21:15:54+00:00"
         },
         "north-east": {
-          "status": "fail",
-          "step_mean": 0.2603,
+          "status": "pass",
+          "step_mean": 0.2627,
           "step_max": 0.299,
           "drift": 4.42,
           "loop": 0.2528,
-          "loop_ratio": 0.97,
+          "loop_ratio": 0.96,
           "travel": 2.2,
           "pin": 0.775,
-          "reasons": [
-            "frame 1 touches a canvas edge the base does not (overflow / wrap risk)",
-            "36 px of motion fell outside the base canvas (overflow)"
+          "pad": 2,
+          "canvas": [
+            132,
+            132
           ],
-          "cut": 36,
+          "reasons": [
+            "canvas grown by 2 px a side to hold the motion"
+          ],
           "sub": "d225d0fd-a21f-444b-a3db-08735461de95",
           "group": "a34da9c5-8ad7-492d-835a-d990a45f0cac",
           "takes": 1,
           "version": 1,
           "mirrored": false,
-          "generated_at": "2026-09-09T20:59:08+00:00"
+          "generated_at": "2026-09-09T21:15:55+00:00"
         },
         "north": {
-          "status": "fail",
-          "step_mean": 0.2024,
-          "step_max": 0.2415,
-          "drift": 4.13,
+          "status": "pass",
+          "step_mean": 0.2042,
+          "step_max": 0.2441,
+          "drift": 4.35,
           "loop": 0.3487,
-          "loop_ratio": 1.72,
+          "loop_ratio": 1.71,
           "travel": 1.91,
           "pin": 0.833,
-          "reasons": [
-            "frame 0 touches a canvas edge the base does not (overflow / wrap risk)",
-            "41 px of motion fell outside the base canvas (overflow)"
+          "pad": 5,
+          "canvas": [
+            138,
+            138
           ],
-          "cut": 41,
+          "reasons": [
+            "canvas grown by 5 px a side to hold the motion"
+          ],
           "sub": "0f59ffac-b8d8-4a6f-9dc8-8d39a40f145b",
           "group": "57ba59ce-fdb2-434c-af84-f85b8abc5267",
           "takes": 1,
           "version": 1,
           "mirrored": false,
-          "generated_at": "2026-09-09T20:59:09+00:00"
+          "generated_at": "2026-09-09T21:15:56+00:00"
         },
         "south-west": {
-          "status": "warn",
+          "status": "pass",
           "step_mean": 0.2384,
           "step_max": 0.273,
           "drift": 2.48,
@@ -449,16 +465,18 @@
           "loop_ratio": 1.18,
           "travel": 1.64,
           "pin": 0.808,
-          "reasons": [
-            "frame 3 touches a canvas edge the base does not (overflow / wrap risk)"
+          "pad": 0,
+          "canvas": [
+            128,
+            128
           ],
-          "cut": 0,
+          "reasons": [],
           "sub": "069fb853-0021-4298-bdfe-adb9422e999e",
           "group": "c08e4a5c-a076-43c2-8931-f5977e381f5f",
           "takes": 1,
           "version": 1,
           "mirrored": true,
-          "generated_at": "2026-09-09T20:59:07+00:00",
+          "generated_at": "2026-09-09T21:15:54+00:00",
           "source": "south-east"
         },
         "west": {
@@ -470,19 +488,48 @@
           "loop_ratio": 2.37,
           "travel": 5.21,
           "pin": 0.782,
+          "pad": 0,
+          "canvas": [
+            128,
+            128
+          ],
           "reasons": [
             "drifts 5.2 px — eyeball it",
             "last→first hand-off 2.4× a step — eyeball the loop",
             "5.2 px of x-travel — eyeball it"
           ],
-          "cut": 0,
           "sub": "ff1b3d57-6830-4d8a-91d0-39d242c7d6d5",
           "group": "219c622a-265c-4344-858d-b60b579242f3",
           "takes": 1,
           "version": 1,
           "mirrored": true,
-          "generated_at": "2026-09-09T20:59:08+00:00",
+          "generated_at": "2026-09-09T21:15:54+00:00",
           "source": "east"
+        },
+        "north-west": {
+          "status": "pass",
+          "step_mean": 0.2627,
+          "step_max": 0.299,
+          "drift": 4.42,
+          "loop": 0.2528,
+          "loop_ratio": 0.96,
+          "travel": 2.2,
+          "pin": 0.775,
+          "pad": 2,
+          "canvas": [
+            132,
+            132
+          ],
+          "reasons": [
+            "canvas grown by 2 px a side to hold the motion"
+          ],
+          "sub": "d225d0fd-a21f-444b-a3db-08735461de95",
+          "group": "a34da9c5-8ad7-492d-835a-d990a45f0cac",
+          "takes": 1,
+          "version": 1,
+          "mirrored": true,
+          "generated_at": "2026-09-09T21:15:55+00:00",
+          "source": "north-east"
         }
       },
       "action": "walk loop, full walk cycle in place, legs alternate naturally, normal calm walking pace, body stays centered, seamless loop whose last frame leads straight back into the first, no turning",
@@ -542,6 +589,14 @@
           "lizard_warrior/animations/walk/west/03.webp",
           "lizard_warrior/animations/walk/west/04.webp",
           "lizard_warrior/animations/walk/west/05.webp"
+        ],
+        "north-west": [
+          "lizard_warrior/animations/walk/north-west/00.webp",
+          "lizard_warrior/animations/walk/north-west/01.webp",
+          "lizard_warrior/animations/walk/north-west/02.webp",
+          "lizard_warrior/animations/walk/north-west/03.webp",
+          "lizard_warrior/animations/walk/north-west/04.webp",
+          "lizard_warrior/animations/walk/north-west/05.webp"
         ]
       },
       "strips": {
@@ -551,7 +606,8 @@
         "north-east": "lizard_warrior/animations/walk__north-east.webp",
         "north": "lizard_warrior/animations/walk__north.webp",
         "south-west": "lizard_warrior/animations/walk__south-west.webp",
-        "west": "lizard_warrior/animations/walk__west.webp"
+        "west": "lizard_warrior/animations/walk__west.webp",
+        "north-west": "lizard_warrior/animations/walk__north-west.webp"
       }
     }
   }

@@ -347,17 +347,21 @@
           "loop_ratio": 2.23,
           "travel": 2.12,
           "pin": 0.863,
+          "pad": 0,
+          "canvas": [
+            128,
+            128
+          ],
           "reasons": [
             "drifts 6.4 px — eyeball it",
             "last→first hand-off 2.2× a step — eyeball the loop"
           ],
-          "cut": 0,
           "sub": "534b9722-71ac-47f9-a9cc-068bcdb89aa9",
           "group": "f2699cd5-da1b-428e-83af-58132f904a7a",
           "takes": 1,
           "version": 1,
           "mirrored": false,
-          "generated_at": "2026-09-09T21:10:33+00:00"
+          "generated_at": "2026-09-09T21:17:01+00:00"
         },
         "south-east": {
           "status": "warn",
@@ -368,16 +372,20 @@
           "loop_ratio": 2.08,
           "travel": 1.43,
           "pin": 0.859,
+          "pad": 0,
+          "canvas": [
+            128,
+            128
+          ],
           "reasons": [
             "last→first hand-off 2.1× a step — eyeball the loop"
           ],
-          "cut": 0,
           "sub": "ab9cab4b-2db5-41d0-8248-ccc3217f6efd",
           "group": "020dd113-e516-42d0-89fb-10a9fbe9690d",
           "takes": 1,
           "version": 1,
           "mirrored": false,
-          "generated_at": "2026-09-09T21:10:34+00:00"
+          "generated_at": "2026-09-09T21:17:01+00:00"
         },
         "east": {
           "status": "warn",
@@ -388,16 +396,20 @@
           "loop_ratio": 2.01,
           "travel": 2.15,
           "pin": 0.818,
+          "pad": 0,
+          "canvas": [
+            128,
+            128
+          ],
           "reasons": [
             "last→first hand-off 2.0× a step — eyeball the loop"
           ],
-          "cut": 0,
           "sub": "1c13d536-09e0-4e39-8d96-ec99cb032ff1",
           "group": "72e8851e-f4a4-4e7b-b161-3a7fff417a48",
           "takes": 1,
           "version": 1,
           "mirrored": false,
-          "generated_at": "2026-09-09T21:10:34+00:00"
+          "generated_at": "2026-09-09T21:17:02+00:00"
         },
         "north-east": {
           "status": "pass",
@@ -408,14 +420,18 @@
           "loop_ratio": 1.21,
           "travel": 1.65,
           "pin": 0.816,
+          "pad": 0,
+          "canvas": [
+            128,
+            128
+          ],
           "reasons": [],
-          "cut": 0,
           "sub": "8c669de1-b0fd-478a-a483-9687b4491ebf",
           "group": "24c1d456-ffda-4a1c-a790-f5e802dd7f94",
           "takes": 1,
           "version": 1,
           "mirrored": false,
-          "generated_at": "2026-09-09T21:10:35+00:00"
+          "generated_at": "2026-09-09T21:17:03+00:00"
         },
         "north": {
           "status": "warn",
@@ -426,17 +442,21 @@
           "loop_ratio": 2.43,
           "travel": 1.63,
           "pin": 0.863,
+          "pad": 0,
+          "canvas": [
+            128,
+            128
+          ],
           "reasons": [
             "motion 0.100 outside the calm band 0.1–0.4 — eyeball it",
             "last→first hand-off 2.4× a step — eyeball the loop"
           ],
-          "cut": 0,
           "sub": "c0d68b9e-cdd0-4065-a4f9-8920d3f72802",
           "group": "5ed49f20-3d39-4071-9855-bb560ec88be5",
           "takes": 1,
           "version": 1,
           "mirrored": false,
-          "generated_at": "2026-09-09T21:10:36+00:00"
+          "generated_at": "2026-09-09T21:17:04+00:00"
         },
         "south-west": {
           "status": "warn",
@@ -447,16 +467,20 @@
           "loop_ratio": 2.08,
           "travel": 1.43,
           "pin": 0.859,
+          "pad": 0,
+          "canvas": [
+            128,
+            128
+          ],
           "reasons": [
             "last→first hand-off 2.1× a step — eyeball the loop"
           ],
-          "cut": 0,
           "sub": "ab9cab4b-2db5-41d0-8248-ccc3217f6efd",
           "group": "020dd113-e516-42d0-89fb-10a9fbe9690d",
           "takes": 1,
           "version": 1,
           "mirrored": true,
-          "generated_at": "2026-09-09T21:10:34+00:00",
+          "generated_at": "2026-09-09T21:17:01+00:00",
           "source": "south-east"
         },
         "west": {
@@ -468,16 +492,20 @@
           "loop_ratio": 2.01,
           "travel": 2.15,
           "pin": 0.818,
+          "pad": 0,
+          "canvas": [
+            128,
+            128
+          ],
           "reasons": [
             "last→first hand-off 2.0× a step — eyeball the loop"
           ],
-          "cut": 0,
           "sub": "1c13d536-09e0-4e39-8d96-ec99cb032ff1",
           "group": "72e8851e-f4a4-4e7b-b161-3a7fff417a48",
           "takes": 1,
           "version": 1,
           "mirrored": true,
-          "generated_at": "2026-09-09T21:10:34+00:00",
+          "generated_at": "2026-09-09T21:17:02+00:00",
           "source": "east"
         },
         "north-west": {
@@ -489,14 +517,18 @@
           "loop_ratio": 1.21,
           "travel": 1.65,
           "pin": 0.816,
+          "pad": 0,
+          "canvas": [
+            128,
+            128
+          ],
           "reasons": [],
-          "cut": 0,
           "sub": "8c669de1-b0fd-478a-a483-9687b4491ebf",
           "group": "24c1d456-ffda-4a1c-a790-f5e802dd7f94",
           "takes": 1,
           "version": 1,
           "mirrored": true,
-          "generated_at": "2026-09-09T21:10:35+00:00",
+          "generated_at": "2026-09-09T21:17:03+00:00",
           "source": "north-east"
         }
       },
