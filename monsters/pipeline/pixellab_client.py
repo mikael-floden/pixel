@@ -366,6 +366,60 @@ class PixelLabClient:
                 return out
             time.sleep(poll)
 
+    def animate_v3(self, character_id, name, action, direction, frame_count=4,
+                   end_frame=None, seed=None):
+        """Start ONE v3 custom animation job for ONE direction of an existing
+        character. Returns the background job id.
+
+        `end_frame` (PIL) turns on interpolation mode: the clip runs from the
+        character's rotation image for `direction` to that pose — passing the
+        rotation image itself pins a loop that starts and ends neutral (the
+        maintainer's trick for calm idles). keep_first_frame stays True, so
+        the stored clip is frame_count+1 frames with the base as frame 0."""
+        payload = {
+            "character_id": character_id,
+            "animation_name": name,
+            "action_description": action,
+            "mode": "v3",
+            "frame_count": int(frame_count),
+            "directions": [direction],
+            "keep_first_frame": True,
+        }
+        if end_frame is not None:
+            payload["end_frame"] = _image_to_b64obj(end_frame)
+        if seed is not None:
+            payload["seed"] = int(seed)
+        resp = self._request("POST", "characters/animations", json=payload)
+        jobs = resp.get("background_job_ids") or []
+        return jobs[0] if jobs else None
+
+    def animation_takes(self, character_id, name):
+        """{direction: [[urls], ...]} — EVERY take of every direction of the
+        animation whose type ends with `name` (v3 stores it as custom-<name>).
+        Callers pick; the last take is what the UI shows."""
+        detail = self.get_character(character_id)
+        out = {}
+        for a in detail.get("animations") or []:
+            t = a.get("animation_type") or ""
+            if t == name or t.endswith("-" + name) or t.endswith(name):
+                for x in a.get("directions") or []:
+                    urls = [u for u in (x.get("frames") or []) if u]
+                    if x.get("direction") and urls:
+                        out.setdefault(x["direction"], []).append(urls)
+        return out
+
+    def delete_animation(self, character_id, animation_type=None, group_id=None, direction=None):
+        """Delete an animation (all directions, or one). PixelLab keys by
+        animation_type or animation_group_id."""
+        q = {}
+        if group_id:
+            q["animation_group_id"] = group_id
+        elif animation_type:
+            q["animation_type"] = animation_type
+        if direction:
+            q["direction"] = direction
+        return self._request("DELETE", f"characters/{character_id}/animations", params=q)
+
     def set_character_tags(self, character_id, tags):
         """REPLACES the character's tag list (PATCH semantics on PixelLab)."""
         return self._request("PATCH", f"characters/{character_id}/tags", json={"tags": list(tags)})
