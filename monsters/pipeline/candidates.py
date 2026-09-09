@@ -221,6 +221,12 @@ def rebuild_index(cfg):
     for design in cfg["candidates"]:
         man = load_manifest(design["id"])
         if man:
+            # design-level fields follow the CONFIG (a manifest written before
+            # a field existed, or before a lore rewrite, must not pin the old value)
+            for k in ("name", "tier", "scale", "lore", "biome", "items"):
+                if k in design:
+                    man[k] = design[k]
+            man.setdefault("scale", "standard")
             items.append({k: man.get(k) for k in (
                 "id", "name", "tier", "lore", "biome", "items", "size", "template_id",
                 "scale", "pixellab_id", "version", "sheet", "rotations", "qa", "review", "notes",

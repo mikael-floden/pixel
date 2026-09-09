@@ -1,0 +1,141 @@
+{
+  "id": "stone_imp",
+  "name": "Grimimp",
+  "tier": "evil",
+  "scale": "standard",
+  "lore": "The gargoyles' lesser kin, cut from the same stone. It sits in the eaves and drops on whatever passes beneath.",
+  "biome": [
+    "black_rock",
+    "grey_paving_stone"
+  ],
+  "items": [],
+  "prompt": "Small gargoyle-like imp shown full body from horns to feet, realistic proportions, dark grey stone-like hide, two curved black horns, narrow burning orange eyes, a mouth of small sharp teeth set in a hard line, bat-like wings folded tight, clawed hands and feet.",
+  "size": [
+    72,
+    72
+  ],
+  "template_id": "mannequin",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "stone_imp/rotations/south.webp",
+    "south-east": "stone_imp/rotations/south-east.webp",
+    "east": "stone_imp/rotations/east.webp",
+    "north-east": "stone_imp/rotations/north-east.webp",
+    "north": "stone_imp/rotations/north.webp",
+    "north-west": "stone_imp/rotations/north-west.webp",
+    "west": "stone_imp/rotations/west.webp",
+    "south-west": "stone_imp/rotations/south-west.webp"
+  },
+  "sheet": "stone_imp/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "f5cdd4e4-9c9f-470c-aef0-a6ddeaa259b4",
+  "seed": 989885870,
+  "version": 1,
+  "usage": null,
+  "generated_at": "2026-09-09T19:23:25+00:00",
+  "elapsed_s": 267.2,
+  "qa": {
+    "status": "pass",
+    "min_run1": 0.721,
+    "reasons": [],
+    "directions": {
+      "south": {
+        "run1": 0.787,
+        "bbox": [
+          2,
+          3,
+          69,
+          69
+        ],
+        "fill": 0.853,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.824,
+        "bbox": [
+          4,
+          3,
+          59,
+          71
+        ],
+        "fill": 0.721,
+        "touches_edge": false
+      },
+      "east": {
+        "run1": 0.802,
+        "bbox": [
+          13,
+          2,
+          55,
+          69
+        ],
+        "fill": 0.543,
+        "touches_edge": false
+      },
+      "north-east": {
+        "run1": 0.761,
+        "bbox": [
+          6,
+          2,
+          57,
+          69
+        ],
+        "fill": 0.659,
+        "touches_edge": false
+      },
+      "north": {
+        "run1": 0.721,
+        "bbox": [
+          3,
+          2,
+          69,
+          68
+        ],
+        "fill": 0.84,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.749,
+        "bbox": [
+          14,
+          2,
+          66,
+          69
+        ],
+        "fill": 0.672,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.791,
+        "bbox": [
+          16,
+          2,
+          59,
+          69
+        ],
+        "fill": 0.556,
+        "touches_edge": false
+      },
+      "south-west": {
+        "run1": 0.812,
+        "bbox": [
+          12,
+          3,
+          68,
+          71
+        ],
+        "fill": 0.735,
+        "touches_edge": false
+      }
+    }
+  }
+}

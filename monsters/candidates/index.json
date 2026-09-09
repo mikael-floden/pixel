@@ -1,6 +1,6 @@
 {
   "format": "monster-candidates@1",
-  "generated_at": "2026-09-09T19:20:53+00:00",
+  "generated_at": "2026-09-09T19:24:23+00:00",
   "art_ext": ".webp",
   "directions": [
     "south",
@@ -18,13 +18,13 @@
     "rejected"
   ],
   "feedback_key": "monsters/candidates/<id>",
-  "count": 99,
+  "count": 100,
   "candidates": [
     {
       "id": "plume_brawler",
       "name": "Plumefist",
       "tier": "mid",
-      "lore": "Too heavy to fly and too proud to care. It settles every argument with its legs, and it starts most of them.",
+      "lore": "Too heavy to fly and too proud to hide. It settles every dispute with its talons, and it looks for disputes.",
       "biome": [
         "grass",
         "light_soil"
@@ -40,7 +40,7 @@
         104
       ],
       "template_id": "mannequin",
-      "scale": null,
+      "scale": "standard",
       "pixellab_id": "502b3605-3b7f-46ad-8ca8-8c87d35f1f2a",
       "version": 1,
       "sheet": "plume_brawler/sheet.webp",
@@ -171,7 +171,7 @@
         112
       ],
       "template_id": "bear",
-      "scale": null,
+      "scale": "standard",
       "pixellab_id": "2d53ec75-f35d-4226-b081-2c392864c29c",
       "version": 1,
       "sheet": "tide_crab/sheet.webp",
@@ -288,7 +288,7 @@
       "id": "shell_roller",
       "name": "Clankball",
       "tier": "mid",
-      "lore": "It rolls downhill at anything that moves and uphill at anything that doesn't. The smiths say the plates ring in a key they can't forge.",
+      "lore": "It rolls down the scree at whatever moves. The smiths say its plates ring in a note they cannot forge.",
       "biome": [
         "light_soil",
         "grey_stone",
@@ -302,7 +302,7 @@
         88
       ],
       "template_id": "bear",
-      "scale": null,
+      "scale": "standard",
       "pixellab_id": "22ac39f2-9724-4508-b1a5-697245f76ff6",
       "version": 1,
       "sheet": "shell_roller/sheet.webp",
@@ -432,7 +432,7 @@
         136
       ],
       "template_id": "bear",
-      "scale": null,
+      "scale": "standard",
       "pixellab_id": "6846ce14-bfbd-40a8-873a-4cf62136c7a2",
       "version": 1,
       "sheet": "silk_spider/sheet.webp",
@@ -565,7 +565,7 @@
         96
       ],
       "template_id": "mannequin",
-      "scale": null,
+      "scale": "standard",
       "pixellab_id": "c6d0cee3-2047-46b4-9e49-1851081f1579",
       "version": 1,
       "sheet": "root_forager/sheet.webp",
@@ -682,7 +682,7 @@
       "id": "ember_king",
       "name": "Pyrelord",
       "tier": "boss",
-      "lore": "The mountain's first king, and its only one. Every eruption since has been him clearing his throat.",
+      "lore": "The mountain's first king and its only one. Every eruption since has been his voice.",
       "biome": [
         "lava",
         "black_rock"
@@ -695,7 +695,7 @@
         176
       ],
       "template_id": "mannequin",
-      "scale": null,
+      "scale": "standard",
       "pixellab_id": "e31ae5b5-a1eb-4692-afe3-aa6c4fae398f",
       "version": 2,
       "sheet": "ember_king/sheet.webp",
@@ -825,7 +825,7 @@
         160
       ],
       "template_id": "mannequin",
-      "scale": null,
+      "scale": "standard",
       "pixellab_id": "66284ee9-3c6e-4fa4-bbb1-3ed92df7c749",
       "version": 1,
       "sheet": "rime_yeti/sheet.webp",
@@ -953,7 +953,7 @@
         136
       ],
       "template_id": "bear",
-      "scale": null,
+      "scale": "standard",
       "pixellab_id": "e0dca645-7838-4945-8fd7-5fac5bb51e17",
       "version": 3,
       "sheet": "bog_lurker/sheet.webp",
@@ -1082,7 +1082,7 @@
         112
       ],
       "template_id": "mannequin",
-      "scale": null,
+      "scale": "standard",
       "pixellab_id": "2f3aecad-cef3-4701-89a7-457b7eaf9007",
       "version": 1,
       "sheet": "hollow_knight/sheet.webp",
@@ -1213,7 +1213,7 @@
         128
       ],
       "template_id": "mannequin",
-      "scale": null,
+      "scale": "standard",
       "pixellab_id": "8a296245-c8b0-4c17-8701-918116bd828e",
       "version": 1,
       "sheet": "veil_wraith/sheet.webp",
@@ -1344,7 +1344,7 @@
         176
       ],
       "template_id": "mannequin",
-      "scale": null,
+      "scale": "standard",
       "pixellab_id": "813cbec7-cff5-4d7b-a305-740133836350",
       "version": 2,
       "sheet": "storm_roc/sheet.webp",
@@ -1461,7 +1461,7 @@
       "id": "pebble_crab",
       "name": "Pebblet",
       "tier": "cute",
-      "lore": "A pebble that pinches. Beachcombers learn which stones to skip the hard way.",
+      "lore": "A pebble that pinches. The beach is full of stones, and some of them are waiting.",
       "biome": [
         "light_beach",
         "grey_stone"
@@ -1592,7 +1592,7 @@
       "id": "moss_snail",
       "name": "Mosscoil",
       "tier": "cute",
-      "lore": "Too slow to chase anyone and too stubborn to move aside. Its shell is a garden and it defends the garden.",
+      "lore": "Too slow to chase and too stubborn to yield. Its shell is a garden, and it defends the garden.",
       "biome": [
         "grass",
         "dark_mud"
@@ -2618,7 +2618,7 @@
       "id": "goblin_shaman",
       "name": "Hexgob",
       "tier": "mid",
-      "lore": "It reads the future in bog-gas and finds it favorable. Its curses work about half the time, which is enough.",
+      "lore": "It reads omens in the bog-gas and believes them. The curses it throws are old, and some of them still hold.",
       "biome": [
         "dark_mud",
         "black_rock"
@@ -11367,15 +11367,15 @@
             "fill": 0.791,
             "touches_edge": false
           },
-          "west": {
-            "run1": 0.793,
+          "south-east": {
+            "run1": 0.8,
             "bbox": [
-              15,
-              4,
-              79,
-              93
+              11,
+              8,
+              86,
+              91
             ],
-            "fill": 0.618,
+            "fill": 0.675,
             "touches_edge": false
           },
           "east": {
@@ -11389,28 +11389,6 @@
             "fill": 0.741,
             "touches_edge": false
           },
-          "north": {
-            "run1": 0.775,
-            "bbox": [
-              9,
-              8,
-              88,
-              89
-            ],
-            "fill": 0.694,
-            "touches_edge": false
-          },
-          "south-east": {
-            "run1": 0.8,
-            "bbox": [
-              11,
-              8,
-              86,
-              91
-            ],
-            "fill": 0.675,
-            "touches_edge": false
-          },
           "north-east": {
             "run1": 0.788,
             "bbox": [
@@ -11422,6 +11400,17 @@
             "fill": 0.742,
             "touches_edge": false
           },
+          "north": {
+            "run1": 0.775,
+            "bbox": [
+              9,
+              8,
+              88,
+              89
+            ],
+            "fill": 0.694,
+            "touches_edge": false
+          },
           "north-west": {
             "run1": 0.769,
             "bbox": [
@@ -11431,6 +11420,17 @@
               94
             ],
             "fill": 0.773,
+            "touches_edge": false
+          },
+          "west": {
+            "run1": 0.793,
+            "bbox": [
+              15,
+              4,
+              79,
+              93
+            ],
+            "fill": 0.618,
             "touches_edge": false
           },
           "south-west": {
@@ -11495,15 +11495,15 @@
             "fill": 0.815,
             "touches_edge": false
           },
-          "west": {
-            "run1": 0.791,
+          "south-east": {
+            "run1": 0.836,
             "bbox": [
-              25,
-              2,
-              63,
-              86
+              13,
+              3,
+              75,
+              87
             ],
-            "fill": 0.412,
+            "fill": 0.673,
             "touches_edge": false
           },
           "east": {
@@ -11517,28 +11517,6 @@
             "fill": 0.412,
             "touches_edge": false
           },
-          "north": {
-            "run1": 0.793,
-            "bbox": [
-              7,
-              2,
-              82,
-              84
-            ],
-            "fill": 0.794,
-            "touches_edge": false
-          },
-          "south-east": {
-            "run1": 0.836,
-            "bbox": [
-              13,
-              3,
-              75,
-              87
-            ],
-            "fill": 0.673,
-            "touches_edge": false
-          },
           "north-east": {
             "run1": 0.796,
             "bbox": [
@@ -11550,6 +11528,17 @@
             "fill": 0.6,
             "touches_edge": false
           },
+          "north": {
+            "run1": 0.793,
+            "bbox": [
+              7,
+              2,
+              82,
+              84
+            ],
+            "fill": 0.794,
+            "touches_edge": false
+          },
           "north-west": {
             "run1": 0.798,
             "bbox": [
@@ -11559,6 +11548,17 @@
               85
             ],
             "fill": 0.6,
+            "touches_edge": false
+          },
+          "west": {
+            "run1": 0.791,
+            "bbox": [
+              25,
+              2,
+              63,
+              86
+            ],
+            "fill": 0.412,
             "touches_edge": false
           },
           "south-west": {
@@ -11623,15 +11623,15 @@
             "fill": 0.764,
             "touches_edge": false
           },
-          "west": {
-            "run1": 0.786,
+          "south-east": {
+            "run1": 0.802,
             "bbox": [
-              22,
-              3,
-              72,
+              12,
+              2,
+              79,
               85
             ],
-            "fill": 0.529,
+            "fill": 0.718,
             "touches_edge": false
           },
           "east": {
@@ -11645,28 +11645,6 @@
             "fill": 0.529,
             "touches_edge": false
           },
-          "north": {
-            "run1": 0.779,
-            "bbox": [
-              7,
-              7,
-              81,
-              81
-            ],
-            "fill": 0.707,
-            "touches_edge": false
-          },
-          "south-east": {
-            "run1": 0.802,
-            "bbox": [
-              12,
-              2,
-              79,
-              85
-            ],
-            "fill": 0.718,
-            "touches_edge": false
-          },
           "north-east": {
             "run1": 0.775,
             "bbox": [
@@ -11678,6 +11656,17 @@
             "fill": 0.671,
             "touches_edge": false
           },
+          "north": {
+            "run1": 0.779,
+            "bbox": [
+              7,
+              7,
+              81,
+              81
+            ],
+            "fill": 0.707,
+            "touches_edge": false
+          },
           "north-west": {
             "run1": 0.759,
             "bbox": [
@@ -11687,6 +11676,17 @@
               83
             ],
             "fill": 0.671,
+            "touches_edge": false
+          },
+          "west": {
+            "run1": 0.786,
+            "bbox": [
+              22,
+              3,
+              72,
+              85
+            ],
+            "fill": 0.529,
             "touches_edge": false
           },
           "south-west": {
@@ -11751,15 +11751,15 @@
             "fill": 0.566,
             "touches_edge": false
           },
-          "west": {
-            "run1": 0.81,
+          "south-east": {
+            "run1": 0.831,
             "bbox": [
-              20,
-              5,
-              87,
+              13,
+              4,
+              75,
               93
             ],
-            "fill": 0.64,
+            "fill": 0.599,
             "touches_edge": false
           },
           "east": {
@@ -11773,28 +11773,6 @@
             "fill": 0.63,
             "touches_edge": false
           },
-          "north": {
-            "run1": 0.794,
-            "bbox": [
-              21,
-              6,
-              74,
-              88
-            ],
-            "fill": 0.472,
-            "touches_edge": false
-          },
-          "south-east": {
-            "run1": 0.831,
-            "bbox": [
-              13,
-              4,
-              75,
-              93
-            ],
-            "fill": 0.599,
-            "touches_edge": false
-          },
           "north-east": {
             "run1": 0.798,
             "bbox": [
@@ -11806,6 +11784,17 @@
             "fill": 0.489,
             "touches_edge": false
           },
+          "north": {
+            "run1": 0.794,
+            "bbox": [
+              21,
+              6,
+              74,
+              88
+            ],
+            "fill": 0.472,
+            "touches_edge": false
+          },
           "north-west": {
             "run1": 0.797,
             "bbox": [
@@ -11815,6 +11804,17 @@
               88
             ],
             "fill": 0.52,
+            "touches_edge": false
+          },
+          "west": {
+            "run1": 0.81,
+            "bbox": [
+              20,
+              5,
+              87,
+              93
+            ],
+            "fill": 0.64,
             "touches_edge": false
           },
           "south-west": {
@@ -11879,15 +11879,15 @@
             "fill": 0.728,
             "touches_edge": false
           },
-          "west": {
-            "run1": 0.762,
+          "south-east": {
+            "run1": 0.799,
             "bbox": [
               5,
-              3,
+              2,
               41,
-              45
+              46
             ],
-            "fill": 0.656,
+            "fill": 0.688,
             "touches_edge": false
           },
           "east": {
@@ -11901,28 +11901,6 @@
             "fill": 0.638,
             "touches_edge": false
           },
-          "north": {
-            "run1": 0.765,
-            "bbox": [
-              6,
-              6,
-              42,
-              44
-            ],
-            "fill": 0.594,
-            "touches_edge": false
-          },
-          "south-east": {
-            "run1": 0.799,
-            "bbox": [
-              5,
-              2,
-              41,
-              46
-            ],
-            "fill": 0.688,
-            "touches_edge": false
-          },
           "north-east": {
             "run1": 0.782,
             "bbox": [
@@ -11934,6 +11912,17 @@
             "fill": 0.587,
             "touches_edge": false
           },
+          "north": {
+            "run1": 0.765,
+            "bbox": [
+              6,
+              6,
+              42,
+              44
+            ],
+            "fill": 0.594,
+            "touches_edge": false
+          },
           "north-west": {
             "run1": 0.789,
             "bbox": [
@@ -11943,6 +11932,17 @@
               45
             ],
             "fill": 0.587,
+            "touches_edge": false
+          },
+          "west": {
+            "run1": 0.762,
+            "bbox": [
+              5,
+              3,
+              41,
+              45
+            ],
+            "fill": 0.656,
             "touches_edge": false
           },
           "south-west": {
@@ -12007,15 +12007,15 @@
             "fill": 0.741,
             "touches_edge": false
           },
-          "west": {
-            "run1": 0.773,
+          "south-east": {
+            "run1": 0.795,
             "bbox": [
-              20,
-              6,
-              58,
+              13,
+              3,
+              69,
               77
             ],
-            "fill": 0.422,
+            "fill": 0.647,
             "touches_edge": false
           },
           "east": {
@@ -12029,28 +12029,6 @@
             "fill": 0.456,
             "touches_edge": false
           },
-          "north": {
-            "run1": 0.757,
-            "bbox": [
-              9,
-              5,
-              71,
-              76
-            ],
-            "fill": 0.688,
-            "touches_edge": false
-          },
-          "south-east": {
-            "run1": 0.795,
-            "bbox": [
-              13,
-              3,
-              69,
-              77
-            ],
-            "fill": 0.647,
-            "touches_edge": false
-          },
           "north-east": {
             "run1": 0.754,
             "bbox": [
@@ -12062,6 +12040,17 @@
             "fill": 0.567,
             "touches_edge": false
           },
+          "north": {
+            "run1": 0.757,
+            "bbox": [
+              9,
+              5,
+              71,
+              76
+            ],
+            "fill": 0.688,
+            "touches_edge": false
+          },
           "north-west": {
             "run1": 0.76,
             "bbox": [
@@ -12071,6 +12060,17 @@
               77
             ],
             "fill": 0.641,
+            "touches_edge": false
+          },
+          "west": {
+            "run1": 0.773,
+            "bbox": [
+              20,
+              6,
+              58,
+              77
+            ],
+            "fill": 0.422,
             "touches_edge": false
           },
           "south-west": {
@@ -12089,6 +12089,134 @@
       "review": "pending",
       "notes": null,
       "generated_at": "2026-09-09T19:20:34+00:00"
+    },
+    {
+      "id": "stone_imp",
+      "name": "Grimimp",
+      "tier": "evil",
+      "lore": "The gargoyles' lesser kin, cut from the same stone. It sits in the eaves and drops on whatever passes beneath.",
+      "biome": [
+        "black_rock",
+        "grey_paving_stone"
+      ],
+      "items": [],
+      "size": [
+        72,
+        72
+      ],
+      "template_id": "mannequin",
+      "scale": "standard",
+      "pixellab_id": "f5cdd4e4-9c9f-470c-aef0-a6ddeaa259b4",
+      "version": 1,
+      "sheet": "stone_imp/sheet.webp",
+      "rotations": {
+        "south": "stone_imp/rotations/south.webp",
+        "south-east": "stone_imp/rotations/south-east.webp",
+        "east": "stone_imp/rotations/east.webp",
+        "north-east": "stone_imp/rotations/north-east.webp",
+        "north": "stone_imp/rotations/north.webp",
+        "north-west": "stone_imp/rotations/north-west.webp",
+        "west": "stone_imp/rotations/west.webp",
+        "south-west": "stone_imp/rotations/south-west.webp"
+      },
+      "qa": {
+        "status": "pass",
+        "min_run1": 0.721,
+        "reasons": [],
+        "directions": {
+          "south": {
+            "run1": 0.787,
+            "bbox": [
+              2,
+              3,
+              69,
+              69
+            ],
+            "fill": 0.853,
+            "touches_edge": false
+          },
+          "south-east": {
+            "run1": 0.824,
+            "bbox": [
+              4,
+              3,
+              59,
+              71
+            ],
+            "fill": 0.721,
+            "touches_edge": false
+          },
+          "east": {
+            "run1": 0.802,
+            "bbox": [
+              13,
+              2,
+              55,
+              69
+            ],
+            "fill": 0.543,
+            "touches_edge": false
+          },
+          "north-east": {
+            "run1": 0.761,
+            "bbox": [
+              6,
+              2,
+              57,
+              69
+            ],
+            "fill": 0.659,
+            "touches_edge": false
+          },
+          "north": {
+            "run1": 0.721,
+            "bbox": [
+              3,
+              2,
+              69,
+              68
+            ],
+            "fill": 0.84,
+            "touches_edge": false
+          },
+          "north-west": {
+            "run1": 0.749,
+            "bbox": [
+              14,
+              2,
+              66,
+              69
+            ],
+            "fill": 0.672,
+            "touches_edge": false
+          },
+          "west": {
+            "run1": 0.791,
+            "bbox": [
+              16,
+              2,
+              59,
+              69
+            ],
+            "fill": 0.556,
+            "touches_edge": false
+          },
+          "south-west": {
+            "run1": 0.812,
+            "bbox": [
+              12,
+              3,
+              68,
+              71
+            ],
+            "fill": 0.735,
+            "touches_edge": false
+          }
+        }
+      },
+      "review": "pending",
+      "notes": null,
+      "generated_at": "2026-09-09T19:23:25+00:00"
     },
     {
       "id": "ant_lion",
@@ -12647,15 +12775,15 @@
             "fill": 0.779,
             "touches_edge": false
           },
-          "west": {
-            "run1": 0.813,
+          "south-east": {
+            "run1": 0.83,
             "bbox": [
-              6,
-              5,
-              100,
+              30,
+              3,
+              69,
               100
             ],
-            "fill": 0.826,
+            "fill": 0.35,
             "touches_edge": false
           },
           "east": {
@@ -12669,28 +12797,6 @@
             "fill": 0.618,
             "touches_edge": false
           },
-          "north": {
-            "run1": 0.811,
-            "bbox": [
-              11,
-              3,
-              77,
-              99
-            ],
-            "fill": 0.586,
-            "touches_edge": false
-          },
-          "south-east": {
-            "run1": 0.83,
-            "bbox": [
-              30,
-              3,
-              69,
-              100
-            ],
-            "fill": 0.35,
-            "touches_edge": false
-          },
           "north-east": {
             "run1": 0.822,
             "bbox": [
@@ -12702,6 +12808,17 @@
             "fill": 0.799,
             "touches_edge": false
           },
+          "north": {
+            "run1": 0.811,
+            "bbox": [
+              11,
+              3,
+              77,
+              99
+            ],
+            "fill": 0.586,
+            "touches_edge": false
+          },
           "north-west": {
             "run1": 0.807,
             "bbox": [
@@ -12711,6 +12828,17 @@
               101
             ],
             "fill": 0.344,
+            "touches_edge": false
+          },
+          "west": {
+            "run1": 0.813,
+            "bbox": [
+              6,
+              5,
+              100,
+              100
+            ],
+            "fill": 0.826,
             "touches_edge": false
           },
           "south-west": {
