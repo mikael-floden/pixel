@@ -365,30 +365,29 @@
           "generated_at": "2026-09-09T21:14:53+00:00"
         },
         "south-east": {
-          "status": "fail",
-          "step_mean": 0.2274,
-          "step_max": 0.3217,
-          "drift": 8.9,
-          "loop": 0.5169,
-          "loop_ratio": 2.27,
-          "travel": 2.45,
-          "pin": 0.826,
-          "pad": 2,
+          "status": "warn",
+          "step_mean": 0.2066,
+          "step_max": 0.2519,
+          "drift": 7.57,
+          "loop": 0.4024,
+          "loop_ratio": 1.95,
+          "travel": 1.23,
+          "pin": 0.82,
+          "pad": 4,
           "canvas": [
-            180,
-            180
+            184,
+            184
           ],
           "reasons": [
-            "drifts 8.9 px (> 9)",
-            "last→first hand-off 2.3× a step — eyeball the loop",
-            "canvas grown by 2 px a side to hold the motion"
+            "drifts 7.6 px — eyeball it",
+            "canvas grown by 4 px a side to hold the motion"
           ],
-          "sub": "6d8cac30-76e3-4728-b1d3-87409c028ceb",
-          "group": "e3e5ed56-5722-4f9e-8c4d-9062850a163c",
-          "takes": 2,
-          "version": 2,
+          "sub": "2535fe34-0e8e-4d99-9183-a83e142f05d6",
+          "group": "f2029a75-4f34-4997-876b-15c226f84652",
+          "takes": 3,
+          "version": 3,
           "mirrored": false,
-          "generated_at": "2026-09-09T21:19:30+00:00"
+          "generated_at": "2026-09-09T21:36:01+00:00"
         },
         "east": {
           "status": "pass",
@@ -509,6 +508,32 @@
           "mirrored": true,
           "generated_at": "2026-09-09T21:14:55+00:00",
           "source": "north-east"
+        },
+        "south-west": {
+          "status": "warn",
+          "step_mean": 0.2066,
+          "step_max": 0.2519,
+          "drift": 7.57,
+          "loop": 0.4024,
+          "loop_ratio": 1.95,
+          "travel": 1.23,
+          "pin": 0.82,
+          "pad": 4,
+          "canvas": [
+            184,
+            184
+          ],
+          "reasons": [
+            "drifts 7.6 px — eyeball it",
+            "canvas grown by 4 px a side to hold the motion"
+          ],
+          "sub": "2535fe34-0e8e-4d99-9183-a83e142f05d6",
+          "group": "f2029a75-4f34-4997-876b-15c226f84652",
+          "takes": 3,
+          "version": 3,
+          "mirrored": true,
+          "generated_at": "2026-09-09T21:36:01+00:00",
+          "source": "south-east"
         }
       },
       "action": "walk loop, full walk cycle in place, legs alternate naturally, normal calm walking pace, body stays centered, seamless loop whose last frame leads straight back into the first, no turning",
@@ -568,6 +593,14 @@
           "ember_king/animations/walk/north-west/03.webp",
           "ember_king/animations/walk/north-west/04.webp",
           "ember_king/animations/walk/north-west/05.webp"
+        ],
+        "south-west": [
+          "ember_king/animations/walk/south-west/00.webp",
+          "ember_king/animations/walk/south-west/01.webp",
+          "ember_king/animations/walk/south-west/02.webp",
+          "ember_king/animations/walk/south-west/03.webp",
+          "ember_king/animations/walk/south-west/04.webp",
+          "ember_king/animations/walk/south-west/05.webp"
         ]
       },
       "strips": {
@@ -577,7 +610,8 @@
         "north-east": "ember_king/animations/walk__north-east.webp",
         "north": "ember_king/animations/walk__north.webp",
         "west": "ember_king/animations/walk__west.webp",
-        "north-west": "ember_king/animations/walk__north-west.webp"
+        "north-west": "ember_king/animations/walk__north-west.webp",
+        "south-west": "ember_king/animations/walk__south-west.webp"
       }
     }
   }
