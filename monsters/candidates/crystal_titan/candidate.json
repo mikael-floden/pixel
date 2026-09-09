@@ -1,0 +1,141 @@
+{
+  "id": "crystal_titan",
+  "name": "Prismfather",
+  "tier": "boss",
+  "scale": "big",
+  "lore": "Light goes into it and comes out wrong. Miners follow the rainbows down and are found as rainbows themselves.",
+  "biome": [
+    "grey_stone",
+    "ice"
+  ],
+  "items": [],
+  "prompt": "Gigantic fantasy crystal titan shown full body from head to feet, a body of jagged translucent amethyst and quartz crystal over dark stone, light refracting inside it, a faceted head with two glowing white eyes, huge crystal-bladed arms, and pillar legs.",
+  "size": [
+    232,
+    232
+  ],
+  "template_id": "mannequin",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "crystal_titan/rotations/south.webp",
+    "south-east": "crystal_titan/rotations/south-east.webp",
+    "east": "crystal_titan/rotations/east.webp",
+    "north-east": "crystal_titan/rotations/north-east.webp",
+    "north": "crystal_titan/rotations/north.webp",
+    "north-west": "crystal_titan/rotations/north-west.webp",
+    "west": "crystal_titan/rotations/west.webp",
+    "south-west": "crystal_titan/rotations/south-west.webp"
+  },
+  "sheet": "crystal_titan/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "f6dad916-5b59-4639-a571-c2118f8dc6c6",
+  "seed": 430073138,
+  "version": 1,
+  "usage": null,
+  "generated_at": "2026-09-09T18:50:15+00:00",
+  "elapsed_s": 168.6,
+  "qa": {
+    "status": "pass",
+    "min_run1": 0.637,
+    "reasons": [],
+    "directions": {
+      "south": {
+        "run1": 0.643,
+        "bbox": [
+          24,
+          7,
+          208,
+          225
+        ],
+        "fill": 0.745,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.696,
+        "bbox": [
+          82,
+          3,
+          152,
+          227
+        ],
+        "fill": 0.291,
+        "touches_edge": false
+      },
+      "east": {
+        "run1": 0.7,
+        "bbox": [
+          76,
+          3,
+          150,
+          228
+        ],
+        "fill": 0.309,
+        "touches_edge": false
+      },
+      "north": {
+        "run1": 0.637,
+        "bbox": [
+          31,
+          5,
+          201,
+          223
+        ],
+        "fill": 0.689,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.691,
+        "bbox": [
+          41,
+          3,
+          188,
+          228
+        ],
+        "fill": 0.615,
+        "touches_edge": false
+      },
+      "north-east": {
+        "run1": 0.645,
+        "bbox": [
+          49,
+          3,
+          182,
+          226
+        ],
+        "fill": 0.551,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.643,
+        "bbox": [
+          53,
+          3,
+          182,
+          226
+        ],
+        "fill": 0.534,
+        "touches_edge": false
+      },
+      "south-west": {
+        "run1": 0.668,
+        "bbox": [
+          44,
+          3,
+          190,
+          228
+        ],
+        "fill": 0.61,
+        "touches_edge": false
+      }
+    }
+  }
+}

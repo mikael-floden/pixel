@@ -1,6 +1,6 @@
 {
   "format": "monster-candidates@1",
-  "generated_at": "2026-09-09T18:49:30+00:00",
+  "generated_at": "2026-09-09T18:50:54+00:00",
   "art_ext": ".webp",
   "directions": [
     "south",
@@ -18,7 +18,7 @@
     "rejected"
   ],
   "feedback_key": "monsters/candidates/<id>",
-  "count": 58,
+  "count": 60,
   "candidates": [
     {
       "id": "plume_brawler",
@@ -7482,6 +7482,262 @@
       "review": "pending",
       "notes": null,
       "generated_at": "2026-09-09T18:49:12+00:00"
+    },
+    {
+      "id": "bog_titan",
+      "name": "Fenfather",
+      "tier": "boss",
+      "lore": "The fen itself, when the fen stands up. Villages built on it are carried off when it turns.",
+      "biome": [
+        "dark_mud",
+        "water"
+      ],
+      "items": [],
+      "size": [
+        224,
+        224
+      ],
+      "template_id": "mannequin",
+      "scale": "big",
+      "pixellab_id": "83b4bbfd-d8d1-40ca-8a91-08fb033241a3",
+      "version": 1,
+      "sheet": "bog_titan/sheet.webp",
+      "rotations": {
+        "south": "bog_titan/rotations/south.webp",
+        "south-east": "bog_titan/rotations/south-east.webp",
+        "east": "bog_titan/rotations/east.webp",
+        "north-east": "bog_titan/rotations/north-east.webp",
+        "north": "bog_titan/rotations/north.webp",
+        "north-west": "bog_titan/rotations/north-west.webp",
+        "west": "bog_titan/rotations/west.webp",
+        "south-west": "bog_titan/rotations/south-west.webp"
+      },
+      "qa": {
+        "status": "pass",
+        "min_run1": 0.549,
+        "reasons": [],
+        "directions": {
+          "south": {
+            "run1": 0.549,
+            "bbox": [
+              31,
+              10,
+              192,
+              209
+            ],
+            "fill": 0.639,
+            "touches_edge": false
+          },
+          "west": {
+            "run1": 0.646,
+            "bbox": [
+              68,
+              8,
+              148,
+              216
+            ],
+            "fill": 0.332,
+            "touches_edge": false
+          },
+          "east": {
+            "run1": 0.646,
+            "bbox": [
+              72,
+              8,
+              153,
+              216
+            ],
+            "fill": 0.336,
+            "touches_edge": false
+          },
+          "north": {
+            "run1": 0.586,
+            "bbox": [
+              33,
+              10,
+              189,
+              209
+            ],
+            "fill": 0.619,
+            "touches_edge": false
+          },
+          "south-east": {
+            "run1": 0.642,
+            "bbox": [
+              38,
+              11,
+              182,
+              215
+            ],
+            "fill": 0.585,
+            "touches_edge": false
+          },
+          "north-east": {
+            "run1": 0.605,
+            "bbox": [
+              50,
+              8,
+              172,
+              214
+            ],
+            "fill": 0.501,
+            "touches_edge": false
+          },
+          "north-west": {
+            "run1": 0.602,
+            "bbox": [
+              47,
+              8,
+              173,
+              214
+            ],
+            "fill": 0.517,
+            "touches_edge": false
+          },
+          "south-west": {
+            "run1": 0.634,
+            "bbox": [
+              42,
+              10,
+              182,
+              215
+            ],
+            "fill": 0.572,
+            "touches_edge": false
+          }
+        }
+      },
+      "review": "pending",
+      "notes": null,
+      "generated_at": "2026-09-09T18:50:54+00:00"
+    },
+    {
+      "id": "crystal_titan",
+      "name": "Prismfather",
+      "tier": "boss",
+      "lore": "Light goes into it and comes out wrong. Miners follow the rainbows down and are found as rainbows themselves.",
+      "biome": [
+        "grey_stone",
+        "ice"
+      ],
+      "items": [],
+      "size": [
+        232,
+        232
+      ],
+      "template_id": "mannequin",
+      "scale": "big",
+      "pixellab_id": "f6dad916-5b59-4639-a571-c2118f8dc6c6",
+      "version": 1,
+      "sheet": "crystal_titan/sheet.webp",
+      "rotations": {
+        "south": "crystal_titan/rotations/south.webp",
+        "south-east": "crystal_titan/rotations/south-east.webp",
+        "east": "crystal_titan/rotations/east.webp",
+        "north-east": "crystal_titan/rotations/north-east.webp",
+        "north": "crystal_titan/rotations/north.webp",
+        "north-west": "crystal_titan/rotations/north-west.webp",
+        "west": "crystal_titan/rotations/west.webp",
+        "south-west": "crystal_titan/rotations/south-west.webp"
+      },
+      "qa": {
+        "status": "pass",
+        "min_run1": 0.637,
+        "reasons": [],
+        "directions": {
+          "south": {
+            "run1": 0.643,
+            "bbox": [
+              24,
+              7,
+              208,
+              225
+            ],
+            "fill": 0.745,
+            "touches_edge": false
+          },
+          "west": {
+            "run1": 0.696,
+            "bbox": [
+              82,
+              3,
+              152,
+              227
+            ],
+            "fill": 0.291,
+            "touches_edge": false
+          },
+          "east": {
+            "run1": 0.7,
+            "bbox": [
+              76,
+              3,
+              150,
+              228
+            ],
+            "fill": 0.309,
+            "touches_edge": false
+          },
+          "north": {
+            "run1": 0.637,
+            "bbox": [
+              31,
+              5,
+              201,
+              223
+            ],
+            "fill": 0.689,
+            "touches_edge": false
+          },
+          "south-east": {
+            "run1": 0.691,
+            "bbox": [
+              41,
+              3,
+              188,
+              228
+            ],
+            "fill": 0.615,
+            "touches_edge": false
+          },
+          "north-east": {
+            "run1": 0.645,
+            "bbox": [
+              49,
+              3,
+              182,
+              226
+            ],
+            "fill": 0.551,
+            "touches_edge": false
+          },
+          "north-west": {
+            "run1": 0.643,
+            "bbox": [
+              53,
+              3,
+              182,
+              226
+            ],
+            "fill": 0.534,
+            "touches_edge": false
+          },
+          "south-west": {
+            "run1": 0.668,
+            "bbox": [
+              44,
+              3,
+              190,
+              228
+            ],
+            "fill": 0.61,
+            "touches_edge": false
+          }
+        }
+      },
+      "review": "pending",
+      "notes": null,
+      "generated_at": "2026-09-09T18:50:15+00:00"
     }
   ]
 }
