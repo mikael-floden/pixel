@@ -629,10 +629,10 @@
           "reasons": [],
           "sub": "3a977bbb-98d2-4479-982b-49269e065da3",
           "group": "e9c8ab73-19bc-47f8-95f7-259c005bbdf0",
-          "takes": 1,
-          "version": 1,
+          "takes": 2,
+          "version": 2,
           "mirrored": false,
-          "generated_at": "2026-09-09T21:46:47+00:00"
+          "generated_at": "2026-09-09T22:11:15+00:00"
         },
         "south-east": {
           "status": "pass",
@@ -651,10 +651,10 @@
           "reasons": [],
           "sub": "a54b937d-be14-4d7f-98a3-96dbb4c5171f",
           "group": "39fc5236-bd84-4d17-bab9-6c80437e2b8d",
-          "takes": 1,
-          "version": 1,
+          "takes": 2,
+          "version": 2,
           "mirrored": false,
-          "generated_at": "2026-09-09T21:46:48+00:00"
+          "generated_at": "2026-09-09T22:11:16+00:00"
         },
         "east": {
           "status": "pass",
@@ -673,19 +673,19 @@
           "reasons": [],
           "sub": "9b3a22ce-7a77-407d-a2d6-7dd332036726",
           "group": "7250e934-72ea-4d5a-b1aa-1e715deb0e91",
-          "takes": 1,
-          "version": 1,
+          "takes": 2,
+          "version": 2,
           "mirrored": false,
-          "generated_at": "2026-09-09T21:46:48+00:00"
+          "generated_at": "2026-09-09T22:11:17+00:00"
         },
         "north-east": {
           "status": "pass",
-          "step_mean": 0.1324,
-          "step_max": 0.2084,
-          "drift": 5.38,
-          "loop": 0.0002,
+          "step_mean": 0.1391,
+          "step_max": 0.1726,
+          "drift": 3.95,
+          "loop": 0.0,
           "loop_ratio": 0.0,
-          "travel": 5.88,
+          "travel": 3.95,
           "pin": 1.0,
           "pad": 0,
           "canvas": [
@@ -693,12 +693,12 @@
             128
           ],
           "reasons": [],
-          "sub": "d54597dd-791e-4c5c-810d-603abfcc50a7",
-          "group": "b20f27bf-55ee-4511-89f7-f152a055e8d5",
-          "takes": 1,
-          "version": 1,
+          "sub": "c7d2f1f4-9146-4ecc-a56f-dc9e5698654a",
+          "group": "c8e5a480-3d1e-454b-b5ea-315f42f9cdb0",
+          "takes": 2,
+          "version": 2,
           "mirrored": false,
-          "generated_at": "2026-09-09T21:46:49+00:00"
+          "generated_at": "2026-09-09T22:11:17+00:00"
         },
         "north": {
           "status": "pass",
@@ -717,10 +717,10 @@
           "reasons": [],
           "sub": "8f382e05-4bae-472d-9a2f-d0bcf1b62388",
           "group": "95d7ab9c-5064-4d60-9223-5212023b9fc2",
-          "takes": 1,
-          "version": 1,
+          "takes": 2,
+          "version": 2,
           "mirrored": false,
-          "generated_at": "2026-09-09T21:46:49+00:00"
+          "generated_at": "2026-09-09T22:11:18+00:00"
         },
         "south-west": {
           "status": "pass",
@@ -739,10 +739,10 @@
           "reasons": [],
           "sub": "a54b937d-be14-4d7f-98a3-96dbb4c5171f",
           "group": "39fc5236-bd84-4d17-bab9-6c80437e2b8d",
-          "takes": 1,
-          "version": 1,
+          "takes": 2,
+          "version": 2,
           "mirrored": true,
-          "generated_at": "2026-09-09T21:46:48+00:00",
+          "generated_at": "2026-09-09T22:11:16+00:00",
           "source": "south-east"
         },
         "west": {
@@ -762,20 +762,20 @@
           "reasons": [],
           "sub": "9b3a22ce-7a77-407d-a2d6-7dd332036726",
           "group": "7250e934-72ea-4d5a-b1aa-1e715deb0e91",
-          "takes": 1,
-          "version": 1,
+          "takes": 2,
+          "version": 2,
           "mirrored": true,
-          "generated_at": "2026-09-09T21:46:48+00:00",
+          "generated_at": "2026-09-09T22:11:17+00:00",
           "source": "east"
         },
         "north-west": {
           "status": "pass",
-          "step_mean": 0.1324,
-          "step_max": 0.2084,
-          "drift": 5.38,
-          "loop": 0.0002,
+          "step_mean": 0.1391,
+          "step_max": 0.1726,
+          "drift": 3.95,
+          "loop": 0.0,
           "loop_ratio": 0.0,
-          "travel": 5.88,
+          "travel": 3.95,
           "pin": 1.0,
           "pad": 0,
           "canvas": [
@@ -783,16 +783,16 @@
             128
           ],
           "reasons": [],
-          "sub": "d54597dd-791e-4c5c-810d-603abfcc50a7",
-          "group": "b20f27bf-55ee-4511-89f7-f152a055e8d5",
-          "takes": 1,
-          "version": 1,
+          "sub": "c7d2f1f4-9146-4ecc-a56f-dc9e5698654a",
+          "group": "c8e5a480-3d1e-454b-b5ea-315f42f9cdb0",
+          "takes": 2,
+          "version": 2,
           "mirrored": true,
-          "generated_at": "2026-09-09T21:46:49+00:00",
+          "generated_at": "2026-09-09T22:11:17+00:00",
           "source": "north-east"
         }
       },
-      "action": "swings the battle axe in one heavy sideways cleave, then returns exactly to the starting pose",
+      "action": "swings the battle axe in one heavy sideways cleave, a physical strike with no glowing magic effect, then returns exactly to the starting pose",
       "frame_paths": {
         "south": [
           "orc_warrior/animations/attack/south/00.webp",

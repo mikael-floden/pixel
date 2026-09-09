@@ -610,6 +610,274 @@
         "west": "bridge_troll/animations/walk__west.webp",
         "north-west": "bridge_troll/animations/walk__north-west.webp"
       }
+    },
+    "attack": {
+      "directions": {
+        "south": {
+          "status": "pass",
+          "step_mean": 0.1397,
+          "step_max": 0.2493,
+          "drift": 5.63,
+          "loop": 0.0001,
+          "loop_ratio": 0.0,
+          "travel": 5.68,
+          "pin": 1.0,
+          "pad": 0,
+          "canvas": [
+            136,
+            136
+          ],
+          "reasons": [],
+          "sub": "e2fd67c3-a579-447c-818f-3368014c4ebf",
+          "group": "169ea38f-8011-4212-84ef-bf6a0d325ab6",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "generated_at": "2026-09-09T22:13:39+00:00"
+        },
+        "south-east": {
+          "status": "pass",
+          "step_mean": 0.1166,
+          "step_max": 0.1965,
+          "drift": 5.34,
+          "loop": 0.0,
+          "loop_ratio": 0.0,
+          "travel": 5.34,
+          "pin": 1.0,
+          "pad": 0,
+          "canvas": [
+            136,
+            136
+          ],
+          "reasons": [],
+          "sub": "fb3cf7e8-d5e0-41b9-8051-1b474968e7e3",
+          "group": "f1711d2a-34a7-4c94-b3ea-c9a04d8ae214",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "generated_at": "2026-09-09T22:13:39+00:00"
+        },
+        "east": {
+          "status": "pass",
+          "step_mean": 0.1776,
+          "step_max": 0.2787,
+          "drift": 6.58,
+          "loop": 0.0003,
+          "loop_ratio": 0.0,
+          "travel": 1.78,
+          "pin": 1.0,
+          "pad": 0,
+          "canvas": [
+            136,
+            136
+          ],
+          "reasons": [],
+          "sub": "1464fe0f-a67e-4875-bf6c-b0068d43eb64",
+          "group": "acb25f1b-fc19-4b86-ab0f-eab0dcaf1868",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "generated_at": "2026-09-09T22:13:40+00:00"
+        },
+        "north-east": {
+          "status": "pass",
+          "step_mean": 0.1397,
+          "step_max": 0.2018,
+          "drift": 6.11,
+          "loop": 0.0,
+          "loop_ratio": 0.0,
+          "travel": 3.32,
+          "pin": 1.0,
+          "pad": 0,
+          "canvas": [
+            136,
+            136
+          ],
+          "reasons": [],
+          "sub": "7fc2b7e1-4397-4b85-8941-2cc7d302d242",
+          "group": "b6944586-35cf-47f3-b6ba-573b191e77e0",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "generated_at": "2026-09-09T22:13:40+00:00"
+        },
+        "north": {
+          "status": "pass",
+          "step_mean": 0.1311,
+          "step_max": 0.166,
+          "drift": 4.92,
+          "loop": 0.0,
+          "loop_ratio": 0.0,
+          "travel": 2.19,
+          "pin": 1.0,
+          "pad": 0,
+          "canvas": [
+            136,
+            136
+          ],
+          "reasons": [],
+          "sub": "ba9c4973-b90b-4dbb-b3fa-bf80f5d7fe37",
+          "group": "c81f49a1-3e4e-431c-8dcb-1164254405f3",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "generated_at": "2026-09-09T22:13:41+00:00"
+        },
+        "south-west": {
+          "status": "pass",
+          "step_mean": 0.1166,
+          "step_max": 0.1965,
+          "drift": 5.34,
+          "loop": 0.0,
+          "loop_ratio": 0.0,
+          "travel": 5.34,
+          "pin": 1.0,
+          "pad": 0,
+          "canvas": [
+            136,
+            136
+          ],
+          "reasons": [],
+          "sub": "fb3cf7e8-d5e0-41b9-8051-1b474968e7e3",
+          "group": "f1711d2a-34a7-4c94-b3ea-c9a04d8ae214",
+          "takes": 1,
+          "version": 1,
+          "mirrored": true,
+          "generated_at": "2026-09-09T22:13:39+00:00",
+          "source": "south-east"
+        },
+        "west": {
+          "status": "pass",
+          "step_mean": 0.1776,
+          "step_max": 0.2787,
+          "drift": 6.58,
+          "loop": 0.0003,
+          "loop_ratio": 0.0,
+          "travel": 1.78,
+          "pin": 1.0,
+          "pad": 0,
+          "canvas": [
+            136,
+            136
+          ],
+          "reasons": [],
+          "sub": "1464fe0f-a67e-4875-bf6c-b0068d43eb64",
+          "group": "acb25f1b-fc19-4b86-ab0f-eab0dcaf1868",
+          "takes": 1,
+          "version": 1,
+          "mirrored": true,
+          "generated_at": "2026-09-09T22:13:40+00:00",
+          "source": "east"
+        },
+        "north-west": {
+          "status": "pass",
+          "step_mean": 0.1397,
+          "step_max": 0.2018,
+          "drift": 6.11,
+          "loop": 0.0,
+          "loop_ratio": 0.0,
+          "travel": 3.32,
+          "pin": 1.0,
+          "pad": 0,
+          "canvas": [
+            136,
+            136
+          ],
+          "reasons": [],
+          "sub": "7fc2b7e1-4397-4b85-8941-2cc7d302d242",
+          "group": "b6944586-35cf-47f3-b6ba-573b191e77e0",
+          "takes": 1,
+          "version": 1,
+          "mirrored": true,
+          "generated_at": "2026-09-09T22:13:40+00:00",
+          "source": "north-east"
+        }
+      },
+      "action": "whips the iron chain forward in one heavy lash, a physical strike with no glowing magic effect, then returns exactly to the starting pose",
+      "frame_paths": {
+        "south": [
+          "bridge_troll/animations/attack/south/00.webp",
+          "bridge_troll/animations/attack/south/01.webp",
+          "bridge_troll/animations/attack/south/02.webp",
+          "bridge_troll/animations/attack/south/03.webp",
+          "bridge_troll/animations/attack/south/04.webp",
+          "bridge_troll/animations/attack/south/05.webp",
+          "bridge_troll/animations/attack/south/06.webp"
+        ],
+        "south-east": [
+          "bridge_troll/animations/attack/south-east/00.webp",
+          "bridge_troll/animations/attack/south-east/01.webp",
+          "bridge_troll/animations/attack/south-east/02.webp",
+          "bridge_troll/animations/attack/south-east/03.webp",
+          "bridge_troll/animations/attack/south-east/04.webp",
+          "bridge_troll/animations/attack/south-east/05.webp",
+          "bridge_troll/animations/attack/south-east/06.webp"
+        ],
+        "east": [
+          "bridge_troll/animations/attack/east/00.webp",
+          "bridge_troll/animations/attack/east/01.webp",
+          "bridge_troll/animations/attack/east/02.webp",
+          "bridge_troll/animations/attack/east/03.webp",
+          "bridge_troll/animations/attack/east/04.webp",
+          "bridge_troll/animations/attack/east/05.webp",
+          "bridge_troll/animations/attack/east/06.webp"
+        ],
+        "north-east": [
+          "bridge_troll/animations/attack/north-east/00.webp",
+          "bridge_troll/animations/attack/north-east/01.webp",
+          "bridge_troll/animations/attack/north-east/02.webp",
+          "bridge_troll/animations/attack/north-east/03.webp",
+          "bridge_troll/animations/attack/north-east/04.webp",
+          "bridge_troll/animations/attack/north-east/05.webp",
+          "bridge_troll/animations/attack/north-east/06.webp"
+        ],
+        "north": [
+          "bridge_troll/animations/attack/north/00.webp",
+          "bridge_troll/animations/attack/north/01.webp",
+          "bridge_troll/animations/attack/north/02.webp",
+          "bridge_troll/animations/attack/north/03.webp",
+          "bridge_troll/animations/attack/north/04.webp",
+          "bridge_troll/animations/attack/north/05.webp",
+          "bridge_troll/animations/attack/north/06.webp"
+        ],
+        "south-west": [
+          "bridge_troll/animations/attack/south-west/00.webp",
+          "bridge_troll/animations/attack/south-west/01.webp",
+          "bridge_troll/animations/attack/south-west/02.webp",
+          "bridge_troll/animations/attack/south-west/03.webp",
+          "bridge_troll/animations/attack/south-west/04.webp",
+          "bridge_troll/animations/attack/south-west/05.webp",
+          "bridge_troll/animations/attack/south-west/06.webp"
+        ],
+        "west": [
+          "bridge_troll/animations/attack/west/00.webp",
+          "bridge_troll/animations/attack/west/01.webp",
+          "bridge_troll/animations/attack/west/02.webp",
+          "bridge_troll/animations/attack/west/03.webp",
+          "bridge_troll/animations/attack/west/04.webp",
+          "bridge_troll/animations/attack/west/05.webp",
+          "bridge_troll/animations/attack/west/06.webp"
+        ],
+        "north-west": [
+          "bridge_troll/animations/attack/north-west/00.webp",
+          "bridge_troll/animations/attack/north-west/01.webp",
+          "bridge_troll/animations/attack/north-west/02.webp",
+          "bridge_troll/animations/attack/north-west/03.webp",
+          "bridge_troll/animations/attack/north-west/04.webp",
+          "bridge_troll/animations/attack/north-west/05.webp",
+          "bridge_troll/animations/attack/north-west/06.webp"
+        ]
+      },
+      "strips": {
+        "south": "bridge_troll/animations/attack__south.webp",
+        "south-east": "bridge_troll/animations/attack__south-east.webp",
+        "east": "bridge_troll/animations/attack__east.webp",
+        "north-east": "bridge_troll/animations/attack__north-east.webp",
+        "north": "bridge_troll/animations/attack__north.webp",
+        "south-west": "bridge_troll/animations/attack__south-west.webp",
+        "west": "bridge_troll/animations/attack__west.webp",
+        "north-west": "bridge_troll/animations/attack__north-west.webp"
+      }
     }
   }
 }
