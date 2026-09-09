@@ -1,0 +1,142 @@
+{
+  "id": "rime_yeti",
+  "name": "Rimehulk",
+  "tier": "boss",
+  "lore": "The blizzard walks on two legs up there. Climbers hear it breathing through the snow long before the snow turns red.",
+  "biome": [
+    "snow",
+    "ice"
+  ],
+  "items": [
+    "ice soulstone"
+  ],
+  "prompt": "Hulking fantasy yeti with thick shaggy white fur crusted with ice, long powerful arms ending in blue-black claws, a broad ape-like face with a wide mouth of jagged icicle teeth, glowing pale blue eyes, icicles hanging from its chin and elbows, and a frost-blue underbelly.",
+  "size": [
+    160,
+    160
+  ],
+  "template_id": "mannequin",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "rime_yeti/rotations/south.webp",
+    "south-east": "rime_yeti/rotations/south-east.webp",
+    "east": "rime_yeti/rotations/east.webp",
+    "north-east": "rime_yeti/rotations/north-east.webp",
+    "north": "rime_yeti/rotations/north.webp",
+    "north-west": "rime_yeti/rotations/north-west.webp",
+    "west": "rime_yeti/rotations/west.webp",
+    "south-west": "rime_yeti/rotations/south-west.webp"
+  },
+  "sheet": "rime_yeti/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "66284ee9-3c6e-4fa4-bbb1-3ed92df7c749",
+  "seed": 1277464675,
+  "version": 1,
+  "usage": null,
+  "generated_at": "2026-09-09T17:47:01+00:00",
+  "elapsed_s": 237.7,
+  "qa": {
+    "status": "pass",
+    "min_run1": 0.678,
+    "reasons": [],
+    "directions": {
+      "south": {
+        "run1": 0.678,
+        "bbox": [
+          7,
+          6,
+          153,
+          154
+        ],
+        "fill": 0.844,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.788,
+        "bbox": [
+          41,
+          4,
+          120,
+          156
+        ],
+        "fill": 0.469,
+        "touches_edge": false
+      },
+      "east": {
+        "run1": 0.792,
+        "bbox": [
+          38,
+          4,
+          116,
+          156
+        ],
+        "fill": 0.463,
+        "touches_edge": false
+      },
+      "north": {
+        "run1": 0.733,
+        "bbox": [
+          11,
+          4,
+          149,
+          154
+        ],
+        "fill": 0.809,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.788,
+        "bbox": [
+          17,
+          6,
+          141,
+          156
+        ],
+        "fill": 0.727,
+        "touches_edge": false
+      },
+      "north-east": {
+        "run1": 0.746,
+        "bbox": [
+          22,
+          4,
+          130,
+          154
+        ],
+        "fill": 0.633,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.746,
+        "bbox": [
+          30,
+          4,
+          137,
+          154
+        ],
+        "fill": 0.627,
+        "touches_edge": false
+      },
+      "south-west": {
+        "run1": 0.791,
+        "bbox": [
+          17,
+          6,
+          146,
+          156
+        ],
+        "fill": 0.756,
+        "touches_edge": false
+      }
+    }
+  }
+}
