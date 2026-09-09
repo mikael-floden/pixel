@@ -1,6 +1,6 @@
 {
   "format": "monster-candidates@1",
-  "generated_at": "2026-09-09T18:39:58+00:00",
+  "generated_at": "2026-09-09T18:41:31+00:00",
   "art_ext": ".webp",
   "directions": [
     "south",
@@ -18,7 +18,7 @@
     "rejected"
   ],
   "feedback_key": "monsters/candidates/<id>",
-  "count": 48,
+  "count": 49,
   "candidates": [
     {
       "id": "plume_brawler",
@@ -6071,132 +6071,262 @@
       "generated_at": "2026-09-09T18:38:42+00:00"
     },
     {
-      "id": "ant_lion",
-      "name": "Pitjaw",
-      "tier": "mid",
-      "lore": "It digs the pit and lies beneath the floor of it. The sand slides, and whatever stood on the slope goes down to the jaws.",
+      "id": "rock_mite",
+      "name": "Pebblemite",
+      "tier": "cute",
+      "lore": "It is a pebble until it isn't. Cairns are made of them, and cairns move at night.",
       "biome": [
-        "light_soil",
-        "light_beach"
+        "grey_stone",
+        "black_rock"
       ],
       "items": [],
       "size": [
-        88,
-        88
+        32,
+        32
       ],
       "template_id": "bear",
-      "scale": "standard",
-      "pixellab_id": "cadb92cf-6f75-4afd-abdb-bf958fc007a3",
+      "scale": "small",
+      "pixellab_id": "422712ff-68b6-4fd2-ab6a-c398a3616f8c",
       "version": 1,
-      "sheet": "ant_lion/sheet.webp",
+      "sheet": "rock_mite/sheet.webp",
       "rotations": {
-        "south": "ant_lion/rotations/south.webp",
-        "south-east": "ant_lion/rotations/south-east.webp",
-        "east": "ant_lion/rotations/east.webp",
-        "north-east": "ant_lion/rotations/north-east.webp",
-        "north": "ant_lion/rotations/north.webp",
-        "north-west": "ant_lion/rotations/north-west.webp",
-        "west": "ant_lion/rotations/west.webp",
-        "south-west": "ant_lion/rotations/south-west.webp"
+        "south": "rock_mite/rotations/south.webp",
+        "south-east": "rock_mite/rotations/south-east.webp",
+        "east": "rock_mite/rotations/east.webp",
+        "north-east": "rock_mite/rotations/north-east.webp",
+        "north": "rock_mite/rotations/north.webp",
+        "north-west": "rock_mite/rotations/north-west.webp",
+        "west": "rock_mite/rotations/west.webp",
+        "south-west": "rock_mite/rotations/south-west.webp"
       },
       "qa": {
-        "status": "pass",
-        "min_run1": 0.715,
-        "reasons": [],
+        "status": "fail",
+        "min_run1": 0.668,
+        "reasons": [
+          "south: content touches the canvas edge (clipped)"
+        ],
         "directions": {
           "south": {
-            "run1": 0.715,
+            "run1": 0.73,
             "bbox": [
-              3,
-              5,
-              85,
-              83
+              0,
+              1,
+              32,
+              28
             ],
-            "fill": 0.826,
-            "touches_edge": false
+            "fill": 0.844,
+            "touches_edge": true
           },
           "west": {
-            "run1": 0.774,
+            "run1": 0.668,
             "bbox": [
               4,
-              9,
-              84,
-              84
+              2,
+              30,
+              30
             ],
-            "fill": 0.775,
+            "fill": 0.711,
             "touches_edge": false
           },
           "east": {
-            "run1": 0.777,
+            "run1": 0.681,
             "bbox": [
-              4,
-              9,
-              84,
-              84
+              2,
+              2,
+              28,
+              30
             ],
-            "fill": 0.775,
+            "fill": 0.711,
             "touches_edge": false
           },
           "north": {
-            "run1": 0.741,
+            "run1": 0.687,
             "bbox": [
-              8,
-              11,
-              80,
-              81
+              1,
+              1,
+              31,
+              29
             ],
-            "fill": 0.651,
+            "fill": 0.82,
             "touches_edge": false
           },
           "south-east": {
-            "run1": 0.82,
+            "run1": 0.736,
             "bbox": [
-              5,
-              6,
-              86,
-              83
+              2,
+              2,
+              31,
+              30
             ],
-            "fill": 0.805,
+            "fill": 0.793,
             "touches_edge": false
           },
           "north-east": {
-            "run1": 0.737,
+            "run1": 0.694,
             "bbox": [
-              7,
-              4,
-              83,
-              83
+              2,
+              2,
+              29,
+              30
             ],
-            "fill": 0.775,
+            "fill": 0.738,
             "touches_edge": false
           },
           "north-west": {
-            "run1": 0.761,
+            "run1": 0.696,
             "bbox": [
-              5,
-              4,
-              81,
-              83
+              3,
+              2,
+              30,
+              30
             ],
-            "fill": 0.775,
+            "fill": 0.738,
             "touches_edge": false
           },
           "south-west": {
-            "run1": 0.822,
+            "run1": 0.718,
             "bbox": [
+              1,
               2,
-              6,
-              83,
-              83
+              30,
+              30
             ],
-            "fill": 0.805,
+            "fill": 0.793,
             "touches_edge": false
           }
         }
       },
       "review": "pending",
       "notes": null,
-      "generated_at": "2026-09-09T18:38:03+00:00"
+      "generated_at": "2026-09-09T18:41:31+00:00"
+    },
+    {
+      "id": "frost_mite",
+      "name": "Rimemite",
+      "tier": "cute",
+      "lore": "It bites once and the bite never thaws. Snow-walkers check their boots every night for good reason.",
+      "biome": [
+        "ice",
+        "snow"
+      ],
+      "items": [],
+      "size": [
+        32,
+        32
+      ],
+      "template_id": "bear",
+      "scale": "small",
+      "pixellab_id": "2fcc0529-ebc2-4078-9ffb-48abac3fe1ad",
+      "version": 1,
+      "sheet": "frost_mite/sheet.webp",
+      "rotations": {
+        "south": "frost_mite/rotations/south.webp",
+        "south-east": "frost_mite/rotations/south-east.webp",
+        "east": "frost_mite/rotations/east.webp",
+        "north-east": "frost_mite/rotations/north-east.webp",
+        "north": "frost_mite/rotations/north.webp",
+        "north-west": "frost_mite/rotations/north-west.webp",
+        "west": "frost_mite/rotations/west.webp",
+        "south-west": "frost_mite/rotations/south-west.webp"
+      },
+      "qa": {
+        "status": "pass",
+        "min_run1": 0.762,
+        "reasons": [],
+        "directions": {
+          "south": {
+            "run1": 0.788,
+            "bbox": [
+              2,
+              4,
+              30,
+              28
+            ],
+            "fill": 0.656,
+            "touches_edge": false
+          },
+          "west": {
+            "run1": 0.762,
+            "bbox": [
+              5,
+              5,
+              28,
+              28
+            ],
+            "fill": 0.517,
+            "touches_edge": false
+          },
+          "east": {
+            "run1": 0.771,
+            "bbox": [
+              4,
+              5,
+              27,
+              28
+            ],
+            "fill": 0.517,
+            "touches_edge": false
+          },
+          "north": {
+            "run1": 0.849,
+            "bbox": [
+              4,
+              5,
+              29,
+              27
+            ],
+            "fill": 0.537,
+            "touches_edge": false
+          },
+          "south-east": {
+            "run1": 0.802,
+            "bbox": [
+              4,
+              4,
+              29,
+              28
+            ],
+            "fill": 0.586,
+            "touches_edge": false
+          },
+          "north-east": {
+            "run1": 0.818,
+            "bbox": [
+              4,
+              5,
+              27,
+              27
+            ],
+            "fill": 0.494,
+            "touches_edge": false
+          },
+          "north-west": {
+            "run1": 0.819,
+            "bbox": [
+              5,
+              5,
+              28,
+              27
+            ],
+            "fill": 0.494,
+            "touches_edge": false
+          },
+          "south-west": {
+            "run1": 0.817,
+            "bbox": [
+              3,
+              4,
+              28,
+              28
+            ],
+            "fill": 0.586,
+            "touches_edge": false
+          }
+        }
+      },
+      "review": "pending",
+      "notes": null,
+      "generated_at": "2026-09-09T18:41:24+00:00"
     }
   ]
 }

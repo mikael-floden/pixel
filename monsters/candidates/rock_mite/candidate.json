@@ -1,0 +1,143 @@
+{
+  "id": "rock_mite",
+  "name": "Pebblemite",
+  "tier": "cute",
+  "scale": "small",
+  "lore": "It is a pebble until it isn't. Cairns are made of them, and cairns move at night.",
+  "biome": [
+    "grey_stone",
+    "black_rock"
+  ],
+  "items": [],
+  "prompt": "Tiny fantasy stone bug, a round pebble-shaped body of grey rock with six tiny legs, two glowing orange eyes, and a crack of light along its back.",
+  "size": [
+    32,
+    32
+  ],
+  "template_id": "bear",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "rock_mite/rotations/south.webp",
+    "south-east": "rock_mite/rotations/south-east.webp",
+    "east": "rock_mite/rotations/east.webp",
+    "north-east": "rock_mite/rotations/north-east.webp",
+    "north": "rock_mite/rotations/north.webp",
+    "north-west": "rock_mite/rotations/north-west.webp",
+    "west": "rock_mite/rotations/west.webp",
+    "south-west": "rock_mite/rotations/south-west.webp"
+  },
+  "sheet": "rock_mite/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "422712ff-68b6-4fd2-ab6a-c398a3616f8c",
+  "seed": 1545565727,
+  "version": 1,
+  "usage": null,
+  "generated_at": "2026-09-09T18:41:31+00:00",
+  "elapsed_s": 137.6,
+  "qa": {
+    "status": "fail",
+    "min_run1": 0.668,
+    "reasons": [
+      "south: content touches the canvas edge (clipped)"
+    ],
+    "directions": {
+      "south": {
+        "run1": 0.73,
+        "bbox": [
+          0,
+          1,
+          32,
+          28
+        ],
+        "fill": 0.844,
+        "touches_edge": true
+      },
+      "west": {
+        "run1": 0.668,
+        "bbox": [
+          4,
+          2,
+          30,
+          30
+        ],
+        "fill": 0.711,
+        "touches_edge": false
+      },
+      "east": {
+        "run1": 0.681,
+        "bbox": [
+          2,
+          2,
+          28,
+          30
+        ],
+        "fill": 0.711,
+        "touches_edge": false
+      },
+      "north": {
+        "run1": 0.687,
+        "bbox": [
+          1,
+          1,
+          31,
+          29
+        ],
+        "fill": 0.82,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.736,
+        "bbox": [
+          2,
+          2,
+          31,
+          30
+        ],
+        "fill": 0.793,
+        "touches_edge": false
+      },
+      "north-east": {
+        "run1": 0.694,
+        "bbox": [
+          2,
+          2,
+          29,
+          30
+        ],
+        "fill": 0.738,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.696,
+        "bbox": [
+          3,
+          2,
+          30,
+          30
+        ],
+        "fill": 0.738,
+        "touches_edge": false
+      },
+      "south-west": {
+        "run1": 0.718,
+        "bbox": [
+          1,
+          2,
+          30,
+          30
+        ],
+        "fill": 0.793,
+        "touches_edge": false
+      }
+    }
+  }
+}

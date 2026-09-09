@@ -1,0 +1,141 @@
+{
+  "id": "frost_mite",
+  "name": "Rimemite",
+  "tier": "cute",
+  "scale": "small",
+  "lore": "It bites once and the bite never thaws. Snow-walkers check their boots every night for good reason.",
+  "biome": [
+    "ice",
+    "snow"
+  ],
+  "items": [],
+  "prompt": "Tiny fantasy ice tick, a round body of frosted blue crystal with six small legs, two pale glowing eyes, and a few snowflakes clinging to its back.",
+  "size": [
+    32,
+    32
+  ],
+  "template_id": "bear",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "frost_mite/rotations/south.webp",
+    "south-east": "frost_mite/rotations/south-east.webp",
+    "east": "frost_mite/rotations/east.webp",
+    "north-east": "frost_mite/rotations/north-east.webp",
+    "north": "frost_mite/rotations/north.webp",
+    "north-west": "frost_mite/rotations/north-west.webp",
+    "west": "frost_mite/rotations/west.webp",
+    "south-west": "frost_mite/rotations/south-west.webp"
+  },
+  "sheet": "frost_mite/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "2fcc0529-ebc2-4078-9ffb-48abac3fe1ad",
+  "seed": 1384120121,
+  "version": 1,
+  "usage": null,
+  "generated_at": "2026-09-09T18:41:24+00:00",
+  "elapsed_s": 161.7,
+  "qa": {
+    "status": "pass",
+    "min_run1": 0.762,
+    "reasons": [],
+    "directions": {
+      "south": {
+        "run1": 0.788,
+        "bbox": [
+          2,
+          4,
+          30,
+          28
+        ],
+        "fill": 0.656,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.762,
+        "bbox": [
+          5,
+          5,
+          28,
+          28
+        ],
+        "fill": 0.517,
+        "touches_edge": false
+      },
+      "east": {
+        "run1": 0.771,
+        "bbox": [
+          4,
+          5,
+          27,
+          28
+        ],
+        "fill": 0.517,
+        "touches_edge": false
+      },
+      "north": {
+        "run1": 0.849,
+        "bbox": [
+          4,
+          5,
+          29,
+          27
+        ],
+        "fill": 0.537,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.802,
+        "bbox": [
+          4,
+          4,
+          29,
+          28
+        ],
+        "fill": 0.586,
+        "touches_edge": false
+      },
+      "north-east": {
+        "run1": 0.818,
+        "bbox": [
+          4,
+          5,
+          27,
+          27
+        ],
+        "fill": 0.494,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.819,
+        "bbox": [
+          5,
+          5,
+          28,
+          27
+        ],
+        "fill": 0.494,
+        "touches_edge": false
+      },
+      "south-west": {
+        "run1": 0.817,
+        "bbox": [
+          3,
+          4,
+          28,
+          28
+        ],
+        "fill": 0.586,
+        "touches_edge": false
+      }
+    }
+  }
+}
