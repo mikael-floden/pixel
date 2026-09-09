@@ -96,7 +96,9 @@ What makes a base sound, and how much of it is machine-checked:
   runs exactly one pixel long; measured 0.47–0.83 over the 57 shipped
   monsters, 0.32 on the maintainer's reference "zoomed" case
   (storm_shellback, 256 px). Pass ≥ 0.50, warn ≥ 0.45, fail below. Density
-  holds through 184 px and degrades from ~236, so `size` stays ≤ 176.
+  holds through 184 px and is a coin flip from ~236 (Cragback 236 and
+  Magmane 252 crisp, Voltshell 256 and Voidmaw 236 zoomed), so standard
+  designs stay ≤ 176 and `big` ones (224–240) live or die by this check.
 - **All 8 present, one square canvas, no clipping, no speck-in-a-frame** —
   machine-checked. A base that touches the edge is CLIPPED, not wrapped
   (measured: the overflow pixels are absent from every other direction's
