@@ -119,9 +119,14 @@ if (!spot || spot.error) {
   fail(`could not find an indoor cell in ${WORLD} — the game reported no indoor space anywhere nearby`);
 } else {
   console.log(`indoors at (${spot.col}, ${spot.row}) roofLevel=${spot.info.roofLevel} depth=${spot.info.depth}`);
-  // Let a few frames run so every feature has ticked at the new verdict.
+  // The gain FADES (ambient/runtime/outdoor.ts, OUTDOOR_FADE_MS — the
+  // maintainer asked for the fade, the snap is gone): wait for it to land
+  // rather than counting frames, then assert the landed state.
   const inside = await page.evaluate(async () => {
-    for (let i = 0; i < 12; i++) await new Promise((r) => requestAnimationFrame(r));
+    const t0 = performance.now();
+    while (window.__mlAmbient.outdoor().gain !== 0 && performance.now() - t0 < 6000)
+      await new Promise((r) => requestAnimationFrame(r));
+    for (let i = 0; i < 4; i++) await new Promise((r) => requestAnimationFrame(r));
     const o = window.__mlAmbient.outdoor();
     const names = window.__mlAmbient.list();
     const alphas = {};
@@ -134,7 +139,7 @@ if (!spot || spot.error) {
   });
   console.log(`indoors: indoor=${inside.o.indoor} gain=${inside.o.gain} fadeMs=${inside.o.fadeMs}`);
   if (!inside.o.indoor) fail("the game says outdoors at a cell it just called indoors");
-  if (inside.o.gain !== 0) fail(`outdoor gain should SNAP to 0 indoors, got ${inside.o.gain}`);
+  if (inside.o.gain !== 0) fail(`outdoor gain never landed on 0 indoors (${inside.o.fadeMs} ms fade), got ${inside.o.gain}`);
   for (const [n, a] of Object.entries(inside.alphas)) {
     console.log(`  ${n}: maxAlpha ${a}`);
     if (a > 0) fail(`${n} is still drawing indoors (alpha ${a})`);

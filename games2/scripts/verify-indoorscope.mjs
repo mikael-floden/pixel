@@ -167,7 +167,10 @@ try {
   // Pin the camera between the houses and WAIT FOR IT TO ARRIVE — lookAt
   // glides, and a teleport re-attaches + snaps it to the player, so every
   // sample point must be projected against a camera that has stopped moving.
-  const CAM = [aC + 7, aR];
+  // Pinned BETWEEN the two houses: the fixture is derived from world.json and
+  // the maps2 world moves, so a fixed offset from house_a put house_b 440 px
+  // off the left edge (2026-09-09). The midpoint holds both in a 720 px frame.
+  const CAM = [(aC + bCol) / 2, (aR + bRow) / 2];
   const camPin = async () => {
     await page.evaluate(([c, r]) => window.__ml.lookAt(c, r), CAM);
     // Settled = the projection of a fixed cell stops moving ACROSS SUSTAINED
