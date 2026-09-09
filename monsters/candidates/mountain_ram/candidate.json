@@ -1,0 +1,141 @@
+{
+  "id": "mountain_ram",
+  "name": "Cragram",
+  "tier": "mid",
+  "scale": "standard",
+  "lore": "It holds the high ledge against anything that climbs. The horns have broken shields, and the mountain has never won.",
+  "biome": [
+    "grey_stone",
+    "snow"
+  ],
+  "items": [],
+  "prompt": "Mountain ram with realistic proportions, thick shaggy grey-white wool, huge curled horns of ridged brown bone, dark hooves, a proud bearded face with pale eyes, and small stones caught in its coat.",
+  "size": [
+    112,
+    112
+  ],
+  "template_id": "horse",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "mountain_ram/rotations/south.webp",
+    "south-east": "mountain_ram/rotations/south-east.webp",
+    "east": "mountain_ram/rotations/east.webp",
+    "north-east": "mountain_ram/rotations/north-east.webp",
+    "north": "mountain_ram/rotations/north.webp",
+    "north-west": "mountain_ram/rotations/north-west.webp",
+    "west": "mountain_ram/rotations/west.webp",
+    "south-west": "mountain_ram/rotations/south-west.webp"
+  },
+  "sheet": "mountain_ram/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "b43be5e0-0c75-47c9-9b65-0ed0a9497864",
+  "seed": 1866682020,
+  "version": 1,
+  "usage": null,
+  "generated_at": "2026-09-09T19:05:29+00:00",
+  "elapsed_s": 243.1,
+  "qa": {
+    "status": "pass",
+    "min_run1": 0.706,
+    "reasons": [],
+    "directions": {
+      "south": {
+        "run1": 0.706,
+        "bbox": [
+          9,
+          3,
+          102,
+          109
+        ],
+        "fill": 0.786,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.752,
+        "bbox": [
+          9,
+          3,
+          105,
+          106
+        ],
+        "fill": 0.788,
+        "touches_edge": false
+      },
+      "east": {
+        "run1": 0.759,
+        "bbox": [
+          7,
+          3,
+          102,
+          106
+        ],
+        "fill": 0.78,
+        "touches_edge": false
+      },
+      "north": {
+        "run1": 0.751,
+        "bbox": [
+          13,
+          3,
+          98,
+          109
+        ],
+        "fill": 0.718,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.797,
+        "bbox": [
+          10,
+          4,
+          105,
+          108
+        ],
+        "fill": 0.788,
+        "touches_edge": false
+      },
+      "north-east": {
+        "run1": 0.736,
+        "bbox": [
+          12,
+          3,
+          103,
+          109
+        ],
+        "fill": 0.769,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.724,
+        "bbox": [
+          9,
+          3,
+          101,
+          109
+        ],
+        "fill": 0.777,
+        "touches_edge": false
+      },
+      "south-west": {
+        "run1": 0.791,
+        "bbox": [
+          6,
+          4,
+          101,
+          108
+        ],
+        "fill": 0.788,
+        "touches_edge": false
+      }
+    }
+  }
+}
