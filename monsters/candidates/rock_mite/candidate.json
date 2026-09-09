@@ -248,6 +248,22 @@
           "generated_at": "2026-09-09T20:18:35+00:00",
           "cut": 0,
           "source": "north-east"
+        },
+        "west": {
+          "status": "pass",
+          "step_mean": 0.0769,
+          "step_max": 0.1174,
+          "drift": 0.95,
+          "loop": 0.0,
+          "pin": 1.0,
+          "reasons": [],
+          "sub": "fd5a25b8-caa5-4dff-b3b4-0be9a8315913",
+          "takes": 1,
+          "version": 1,
+          "mirrored": true,
+          "generated_at": "2026-09-09T20:18:34+00:00",
+          "cut": 0,
+          "source": "east"
         }
       },
       "action": "Calm still idle, breathing very slowly and subtly, chest and shoulders rise and fall a little, feet planted, no other movement, ends in the same neutral pose it started in",
@@ -300,6 +316,13 @@
           "rock_mite/animations/idle/north-west/02.webp",
           "rock_mite/animations/idle/north-west/03.webp",
           "rock_mite/animations/idle/north-west/04.webp"
+        ],
+        "west": [
+          "rock_mite/animations/idle/west/00.webp",
+          "rock_mite/animations/idle/west/01.webp",
+          "rock_mite/animations/idle/west/02.webp",
+          "rock_mite/animations/idle/west/03.webp",
+          "rock_mite/animations/idle/west/04.webp"
         ]
       },
       "strips": {
@@ -309,7 +332,8 @@
         "north-east": "rock_mite/animations/idle__north-east.webp",
         "north": "rock_mite/animations/idle__north.webp",
         "south-west": "rock_mite/animations/idle__south-west.webp",
-        "north-west": "rock_mite/animations/idle__north-west.webp"
+        "north-west": "rock_mite/animations/idle__north-west.webp",
+        "west": "rock_mite/animations/idle__west.webp"
       }
     }
   }

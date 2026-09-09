@@ -248,6 +248,22 @@
           "generated_at": "2026-09-09T20:23:03+00:00",
           "cut": 0,
           "source": "east"
+        },
+        "north-west": {
+          "status": "pass",
+          "step_mean": 0.1061,
+          "step_max": 0.1146,
+          "drift": 1.12,
+          "loop": 0.0,
+          "pin": 1.0,
+          "reasons": [],
+          "sub": "e5344c20-203b-4696-8622-c1fa27095aef",
+          "takes": 1,
+          "version": 1,
+          "mirrored": true,
+          "generated_at": "2026-09-09T20:23:03+00:00",
+          "cut": 0,
+          "source": "north-east"
         }
       },
       "action": "Calm still idle, breathing very slowly and subtly, chest and shoulders rise and fall a little, feet planted, no other movement, ends in the same neutral pose it started in",
@@ -300,6 +316,13 @@
           "turtle_hatchling/animations/idle/west/02.webp",
           "turtle_hatchling/animations/idle/west/03.webp",
           "turtle_hatchling/animations/idle/west/04.webp"
+        ],
+        "north-west": [
+          "turtle_hatchling/animations/idle/north-west/00.webp",
+          "turtle_hatchling/animations/idle/north-west/01.webp",
+          "turtle_hatchling/animations/idle/north-west/02.webp",
+          "turtle_hatchling/animations/idle/north-west/03.webp",
+          "turtle_hatchling/animations/idle/north-west/04.webp"
         ]
       },
       "strips": {
@@ -309,7 +332,8 @@
         "north-east": "turtle_hatchling/animations/idle__north-east.webp",
         "north": "turtle_hatchling/animations/idle__north.webp",
         "south-west": "turtle_hatchling/animations/idle__south-west.webp",
-        "west": "turtle_hatchling/animations/idle__west.webp"
+        "west": "turtle_hatchling/animations/idle__west.webp",
+        "north-west": "turtle_hatchling/animations/idle__north-west.webp"
       }
     }
   }

@@ -239,6 +239,43 @@
           "generated_at": "2026-09-09T20:23:35+00:00",
           "cut": 0,
           "source": "north-east"
+        },
+        "south-west": {
+          "status": "warn",
+          "step_mean": 0.1332,
+          "step_max": 0.1911,
+          "drift": 1.2,
+          "loop": 0.0,
+          "pin": 1.0,
+          "reasons": [
+            "frame 1 touches a canvas edge the base does not (overflow / wrap risk)",
+            "6 px of motion fell outside the base canvas (overflow)"
+          ],
+          "sub": "c3e1908d-1eb3-447d-b1ca-6ea5729ef0ea",
+          "takes": 1,
+          "version": 1,
+          "mirrored": true,
+          "generated_at": "2026-09-09T20:23:34+00:00",
+          "cut": 6,
+          "source": "south-east"
+        },
+        "west": {
+          "status": "warn",
+          "step_mean": 0.1501,
+          "step_max": 0.1696,
+          "drift": 1.76,
+          "loop": 0.0,
+          "pin": 1.0,
+          "reasons": [
+            "frame 2 touches a canvas edge the base does not (overflow / wrap risk)"
+          ],
+          "sub": "f1a0288f-8f2c-4ba3-959a-70c91bedf306",
+          "takes": 1,
+          "version": 1,
+          "mirrored": true,
+          "generated_at": "2026-09-09T20:23:35+00:00",
+          "cut": 0,
+          "source": "east"
         }
       },
       "action": "Calm still idle, breathing very slowly and subtly, chest and shoulders rise and fall a little, feet planted, no other movement, ends in the same neutral pose it started in",
@@ -284,6 +321,20 @@
           "ash_hatchling/animations/idle/north-west/02.webp",
           "ash_hatchling/animations/idle/north-west/03.webp",
           "ash_hatchling/animations/idle/north-west/04.webp"
+        ],
+        "south-west": [
+          "ash_hatchling/animations/idle/south-west/00.webp",
+          "ash_hatchling/animations/idle/south-west/01.webp",
+          "ash_hatchling/animations/idle/south-west/02.webp",
+          "ash_hatchling/animations/idle/south-west/03.webp",
+          "ash_hatchling/animations/idle/south-west/04.webp"
+        ],
+        "west": [
+          "ash_hatchling/animations/idle/west/00.webp",
+          "ash_hatchling/animations/idle/west/01.webp",
+          "ash_hatchling/animations/idle/west/02.webp",
+          "ash_hatchling/animations/idle/west/03.webp",
+          "ash_hatchling/animations/idle/west/04.webp"
         ]
       },
       "strips": {
@@ -292,7 +343,9 @@
         "east": "ash_hatchling/animations/idle__east.webp",
         "north-east": "ash_hatchling/animations/idle__north-east.webp",
         "north": "ash_hatchling/animations/idle__north.webp",
-        "north-west": "ash_hatchling/animations/idle__north-west.webp"
+        "north-west": "ash_hatchling/animations/idle__north-west.webp",
+        "south-west": "ash_hatchling/animations/idle__south-west.webp",
+        "west": "ash_hatchling/animations/idle__west.webp"
       }
     }
   }

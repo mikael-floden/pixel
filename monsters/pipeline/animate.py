@@ -401,7 +401,7 @@ def cmd_requal(args):
         rec = ((man or {}).get("animations") or {}).get(args.state)
         if not rec:
             continue
-        for d, q in rec["directions"].items():
+        for d, q in list(rec["directions"].items()):
             if q.get("mirrored"):
                 continue
             frames = load_frames(cid, args.state, d)

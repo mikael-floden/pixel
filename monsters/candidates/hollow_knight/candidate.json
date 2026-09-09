@@ -250,6 +250,24 @@
           "generated_at": "2026-09-09T20:06:58+00:00",
           "cut": 0,
           "source": "east"
+        },
+        "north-west": {
+          "status": "warn",
+          "step_mean": 0.0558,
+          "step_max": 0.0808,
+          "drift": 0.8,
+          "loop": 0.0021,
+          "pin": 1.0,
+          "reasons": [
+            "frame 1 touches a canvas edge the base does not (overflow / wrap risk)"
+          ],
+          "sub": "937bf38d-3dc1-4de0-aac1-c279abe5a52b",
+          "takes": 1,
+          "version": 1,
+          "mirrored": true,
+          "generated_at": "2026-09-09T20:06:58+00:00",
+          "cut": 0,
+          "source": "north-east"
         }
       },
       "action": "Calm still idle, breathing very slowly and subtly, chest and shoulders rise and fall a little, feet planted, no other movement, ends in the same neutral pose it started in",
@@ -302,6 +320,13 @@
           "hollow_knight/animations/idle/west/02.webp",
           "hollow_knight/animations/idle/west/03.webp",
           "hollow_knight/animations/idle/west/04.webp"
+        ],
+        "north-west": [
+          "hollow_knight/animations/idle/north-west/00.webp",
+          "hollow_knight/animations/idle/north-west/01.webp",
+          "hollow_knight/animations/idle/north-west/02.webp",
+          "hollow_knight/animations/idle/north-west/03.webp",
+          "hollow_knight/animations/idle/north-west/04.webp"
         ]
       },
       "strips": {
@@ -311,7 +336,8 @@
         "north-east": "hollow_knight/animations/idle__north-east.webp",
         "north": "hollow_knight/animations/idle__north.webp",
         "south-west": "hollow_knight/animations/idle__south-west.webp",
-        "west": "hollow_knight/animations/idle__west.webp"
+        "west": "hollow_knight/animations/idle__west.webp",
+        "north-west": "hollow_knight/animations/idle__north-west.webp"
       }
     }
   }
