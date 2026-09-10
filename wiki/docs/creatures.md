@@ -185,8 +185,8 @@ verdict comes BEFORE the five states are spent on it.
   2026-09-10: "I like the old monsters sort in the animation buttons").
   It carries `pending: true` and `candidate: <path>`: the
   card shows "in the making", the Animations panel says "more coming", the page
-  links back to the 8 directions, and the sort row grows an "in the making
-  first" chip. The nav count is the whole list — a design being animated is a
+  links back to the 8 directions, and the filter row grows an "in the making"
+  chip. The nav count is the whole list — a design being animated is a
   creature he can review.
 - Gate: `wiki/tools/check-candidates.mjs` (the two tabs and that the head does
   not move between them, an in-the-making creature opening as an ordinary
@@ -234,6 +234,26 @@ Gate: `wiki/tools/check-facet.mjs` (light details under the Light row, one
 row called Light on an unlit state, a three-chip animation radio, no control
 smaller than the page's others).
 ## "Which ones have I already done?" — the shadow queue
+
+ONE FILTER ROW, ONE SORT ROW, and "in the making" belongs to the FILTER one
+(maintainer 2026-09-10: "If I press in the making you still say 'all 94'. With
+that filter it can't be 94."). It was a sort chip in the row above, so pressing
+it left "all 94" selected in this row and the page claimed both at once. Every
+chip HERE answers "which creatures" — all, in the making, no shadow, shadow set
+— and a chip nothing can fill is not drawn. A filter also follows him onto a
+creature page, which a sort cannot.
+
+‹ › WALKS THE LIST HE IS LOOKING AT: `monsterNav()` applies the filter AND the
+sort (`monsterSort`, the one comparator the overview uses), so "next" means what
+the last screen showed. An empty filter never strands him — the pager falls back
+to the whole roster.
+
+THE ANIMATION HE IS REVIEWING SURVIVES THE PAGE (maintainer 2026-09-10: "going
+to the next page should still show the attack animation if I was on the attack
+animation"). `makePlayer` opens on the last state he picked, remembered per KIND
+(`wiki-viewer-state-<kind>`; a scenery piece's states are not a creature's) and
+only when the entity actually has it — else idle, else its first state.
+
 
 Maintainer 2026-08-22: *"If I login with admin the monster page should make it
 possible to filter by 'no shadow set'. This is to be able to know what I have
