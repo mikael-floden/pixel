@@ -148,6 +148,8 @@ TOO_MUCH = ("too much", "drifts", "walks across")
 # not a painted-effect failure — the flash gate is relaxed for it.
 CLAW_SLASH = ("Claw Swipe - Raises one front paw and performs one quick swipe forward, "
               "white swoosh lines following the claws")
+SIMPLE_LUNGE = ("Lunge Attack - Throws its whole body forward in one fast lunge, "
+                "white swoosh lines trailing behind it")
 MAX_TRIES = 10          # "keep retrying maybe 10 times before you give up the entire animation"
 CLAW_AFTER = 3          # rolls of the logical attack before falling back to the simple claw
 ESCALATE_AFTER = 6      # rolls before the whole monster is redone one notch louder
@@ -512,10 +514,11 @@ def generate_state(client, cid, state, dirs, version, verbose=True, pin=False):
         # must not reset it or the sweep flip-flops between the two wordings
         same_dial = old.get("intensity", 0) == intensity_of(man, state)
         tries[d] = (old.get("rolls", 0) + 1) if (same_dial and old.get("status") == "fail") else 1
-        if base_state(state) == "attack" and tries[d] >= CLAW_AFTER and design_flag(cid, "claws"):
-            # maintainer 2026-09-09: "if the monster has claws, a claw slash
-            # usually works" — the worded strike failed twice, use that
-            action = CLAW_SLASH
+        if base_state(state) == "attack" and tries[d] >= CLAW_AFTER:
+            # the logical attack has had its rolls; go SIMPLER (maintainer).
+            # A clawed design gets the claw swipe, anything else a plain
+            # whole-body lunge — both with the swoosh lines he says work.
+            action = CLAW_SLASH if design_flag(cid, "claws") else SIMPLE_LUNGE
         actions[d] = action
         job = client.animate_v3(man["pixellab_id"], state, action, d,
                                 frame_count=spec["frames"], end_frame=end, seed=seed,
@@ -568,7 +571,8 @@ def collect_state(client, cid, state, dirs, version, verbose=True, pin=False, ac
         pinned = spec.get("keep_first", True) or pin
         frames, pad = align_to_base(frames, rotation(cid, d), pinned=pinned)
         save_frames(cid, state, d, frames)
-        qa = qa_clip(cid, state, d, frames, pinned=pinned, claw_take=(actions[d] == CLAW_SLASH))
+        qa = qa_clip(cid, state, d, frames, pinned=pinned,
+                     claw_take=actions[d] in (CLAW_SLASH, SIMPLE_LUNGE))
         if pin:
             qa["pinned"] = True
             qa["reasons"].append("PINNED fallback: base → walk → base, not a seamless loop (maintainer's last resort)")
