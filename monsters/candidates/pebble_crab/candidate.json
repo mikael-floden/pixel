@@ -928,36 +928,36 @@
         },
         "south-east": {
           "status": "fail",
-          "step_mean": 0.105,
-          "step_max": 0.1379,
-          "drift": 0.48,
-          "loop": 0.1244,
-          "loop_ratio": 1.18,
+          "step_mean": 0.1062,
+          "step_max": 0.1538,
+          "drift": 0.38,
+          "loop": 0.2027,
+          "loop_ratio": 1.91,
           "travel": 0.13,
           "pin": 1.0,
           "pad": 0,
-          "flash": 0.021,
-          "peak": 0.2032,
-          "reach": 0.121,
+          "flash": 0.002,
+          "peak": 0.2027,
+          "reach": 0.091,
           "canvas": [
             40,
             40
           ],
           "reasons": [
-            "no strike, just a lean: nothing reaches past 0.12 of the body"
+            "no strike, just a lean: nothing reaches past 0.09 of the body"
           ],
-          "sub": "4476f8b9-6401-43b0-a3bb-cdd4d90ccb3b",
-          "group": "fe62881c-b302-4e1d-a220-529413c2102b",
+          "sub": "af196c1b-0d19-4b64-942c-b04fd5897bf2",
+          "group": "3240e04c-5153-4d73-91db-4fca53a1ffa4",
           "takes": 1,
-          "version": 5,
+          "version": 6,
           "mirrored": false,
-          "action": "Claw Pinch - Darts forward and snaps both small claws shut hard",
+          "action": "Claw Pinch - Darts forward and snaps both small claws shut hard, a big aggressive swing",
           "intensity": 1,
-          "rolls": 1,
+          "rolls": 2,
           "frames": 5,
-          "rung": 0,
-          "tries": 1,
-          "generated_at": "2026-09-10T21:43:24+00:00"
+          "rung": 1,
+          "tries": 2,
+          "generated_at": "2026-09-10T22:07:32+00:00"
         },
         "east": {
           "status": "warn",
@@ -994,37 +994,37 @@
           "generated_at": "2026-09-10T21:43:25+00:00"
         },
         "north-east": {
-          "status": "fail",
-          "step_mean": 0.1295,
-          "step_max": 0.1523,
-          "drift": 1.33,
-          "loop": 0.1232,
-          "loop_ratio": 0.95,
-          "travel": 0.3,
+          "status": "warn",
+          "step_mean": 0.1769,
+          "step_max": 0.2346,
+          "drift": 1.48,
+          "loop": 0.1075,
+          "loop_ratio": 0.61,
+          "travel": 1.1,
           "pin": 1.0,
           "pad": 0,
-          "flash": 0.004,
-          "peak": 0.196,
-          "reach": 0.112,
+          "flash": 0.008,
+          "peak": 0.1966,
+          "reach": 0.193,
           "canvas": [
             40,
             40
           ],
           "reasons": [
-            "no strike, just a lean: nothing reaches past 0.11 of the body"
+            "shallow strike: reach 0.19 — eyeball it"
           ],
-          "sub": "3045ccaf-ee84-495a-afd3-9aceb16a8f8d",
-          "group": "92787701-6b25-4f32-991a-f86b958a6900",
+          "sub": "4dbf3a03-b2ac-4364-b3bc-43837b06c7f0",
+          "group": "b4fabc19-3168-4c71-9d81-6c673179f0ae",
           "takes": 1,
-          "version": 5,
+          "version": 6,
           "mirrored": false,
-          "action": "Rock Burst - The crab launches its whole body up off the ground, both claws thrown wide, stone shards bursting out beneath it",
+          "action": "Rock Burst - The crab launches its whole body up off the ground, both claws thrown wide, stone shards bursting out beneath it, a huge aggressive attack with the whole body behind it, wide exaggerated motion",
           "intensity": 1,
-          "rolls": 1,
+          "rolls": 2,
           "frames": 5,
-          "rung": 3,
-          "tries": 1,
-          "generated_at": "2026-09-10T21:43:25+00:00"
+          "rung": 4,
+          "tries": 2,
+          "generated_at": "2026-09-10T22:07:33+00:00"
         },
         "north": {
           "status": "pass",
@@ -1132,37 +1132,36 @@
         },
         "north-west": {
           "status": "warn",
-          "step_mean": 0.1593,
-          "step_max": 0.2118,
-          "drift": 1.45,
-          "loop": 0.0902,
-          "loop_ratio": 0.57,
-          "travel": 0.64,
+          "step_mean": 0.1769,
+          "step_max": 0.2346,
+          "drift": 1.48,
+          "loop": 0.1075,
+          "loop_ratio": 0.61,
+          "travel": 1.1,
           "pin": 1.0,
-          "pad": 2,
-          "flash": 0.106,
-          "peak": 0.2562,
-          "reach": 0.206,
+          "pad": 0,
+          "flash": 0.008,
+          "peak": 0.1966,
+          "reach": 0.193,
           "canvas": [
-            44,
-            44
+            40,
+            40
           ],
           "reasons": [
-            "shallow strike: reach 0.21 — eyeball it",
-            "canvas grown by 2 px a side to hold the motion"
+            "shallow strike: reach 0.19 — eyeball it"
           ],
-          "sub": "898989b6-f8d1-42c2-95ad-aaa4df28cae3",
-          "group": "53640227-16cf-4110-abdd-6ef731e1292c",
+          "sub": "4dbf3a03-b2ac-4364-b3bc-43837b06c7f0",
+          "group": "b4fabc19-3168-4c71-9d81-6c673179f0ae",
           "takes": 1,
-          "version": 4,
+          "version": 6,
           "mirrored": true,
-          "generated_at": "2026-09-10T21:14:15+00:00",
-          "action": "Claw Swipe - Raises one front paw and performs one quick swipe forward, white swoosh lines following the claws",
-          "tries": 4,
-          "rolls": 4,
+          "action": "Rock Burst - The crab launches its whole body up off the ground, both claws thrown wide, stone shards bursting out beneath it, a huge aggressive attack with the whole body behind it, wide exaggerated motion",
           "intensity": 1,
-          "frames": 9,
-          "rung": 3,
+          "rolls": 2,
+          "frames": 5,
+          "rung": 4,
+          "tries": 2,
+          "generated_at": "2026-09-10T22:07:33+00:00",
           "source": "north-east"
         }
       },
@@ -1226,11 +1225,7 @@
           "pebble_crab/animations/attack_try/north-west/01.webp",
           "pebble_crab/animations/attack_try/north-west/02.webp",
           "pebble_crab/animations/attack_try/north-west/03.webp",
-          "pebble_crab/animations/attack_try/north-west/04.webp",
-          "pebble_crab/animations/attack_try/north-west/05.webp",
-          "pebble_crab/animations/attack_try/north-west/06.webp",
-          "pebble_crab/animations/attack_try/north-west/07.webp",
-          "pebble_crab/animations/attack_try/north-west/08.webp"
+          "pebble_crab/animations/attack_try/north-west/04.webp"
         ]
       },
       "strips": {

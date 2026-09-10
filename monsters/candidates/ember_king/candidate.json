@@ -909,36 +909,39 @@
       "directions": {
         "south": {
           "status": "fail",
-          "step_mean": 0.2074,
-          "step_max": 0.4049,
-          "drift": 4.91,
-          "loop": 0.4337,
-          "loop_ratio": 2.09,
+          "step_mean": 0.332,
+          "step_max": 0.6746,
+          "drift": 17.64,
+          "loop": 0.488,
+          "loop_ratio": 1.47,
           "travel": 0.36,
           "pin": 1.0,
-          "pad": 0,
-          "flash": 0.086,
-          "peak": 0.4337,
-          "reach": 0.131,
+          "pad": 6,
+          "flash": 0.133,
+          "peak": 0.5374,
+          "reach": 0.277,
           "canvas": [
-            176,
-            176
+            188,
+            188
           ],
           "reasons": [
-            "no strike, just a lean: nothing reaches past 0.13 of the body"
+            "drifts 17.6 px — eyeball it",
+            "wrapped around the canvas edge: the body is drawn in two pieces",
+            "shallow strike: reach 0.28 — eyeball it",
+            "canvas grown by 6 px a side to hold the motion"
           ],
-          "sub": "9006e30c-7018-4dce-82d5-436561aa1244",
-          "group": "45bcac05-abc1-4350-ba77-aed20a9720d6",
+          "sub": "823acf72-cb15-4b85-b0f2-6503ba78dfde",
+          "group": "b8fea7b5-e2a3-459a-b3da-9dbee3d0aa06",
           "takes": 1,
-          "version": 5,
+          "version": 6,
           "mirrored": false,
-          "action": "Molten Crush - The king raises both burning fists overhead and smashes them down, embers bursting outward",
+          "action": "Molten Crush - The king raises both burning fists overhead and smashes them down, embers bursting outward, a huge aggressive attack with the whole body behind it, wide exaggerated motion",
           "intensity": 2,
-          "rolls": 1,
+          "rolls": 2,
           "frames": 5,
-          "rung": 3,
-          "tries": 1,
-          "generated_at": "2026-09-10T21:39:53+00:00"
+          "rung": 4,
+          "tries": 2,
+          "generated_at": "2026-09-10T22:05:47+00:00"
         },
         "south-east": {
           "status": "warn",
@@ -1038,37 +1041,37 @@
           "generated_at": "2026-09-10T21:39:54+00:00"
         },
         "north": {
-          "status": "fail",
-          "step_mean": 0.0877,
-          "step_max": 0.128,
-          "drift": 6.38,
-          "loop": 0.1488,
-          "loop_ratio": 1.7,
-          "travel": 0.22,
+          "status": "warn",
+          "step_mean": 0.1746,
+          "step_max": 0.3264,
+          "drift": 10.86,
+          "loop": 0.4145,
+          "loop_ratio": 2.37,
+          "travel": 7.74,
           "pin": 1.0,
           "pad": 0,
-          "flash": -0.002,
-          "peak": 0.1806,
-          "reach": 0.037,
+          "flash": 0.021,
+          "peak": 0.4145,
+          "reach": 0.153,
           "canvas": [
             176,
             176
           ],
           "reasons": [
-            "no strike, just a lean: nothing reaches past 0.04 of the body"
+            "shallow strike: reach 0.15 — eyeball it"
           ],
-          "sub": "3d5999e6-a632-4564-8a0b-3025cf3044dd",
-          "group": "5ac7a5a9-d979-450a-9b59-ba92016a8b3c",
+          "sub": "65094ad0-68bf-4b5b-ba0b-dcfc2e1016ec",
+          "group": "c4b2d429-01bc-4c43-acde-752bf4aee1a6",
           "takes": 1,
-          "version": 5,
+          "version": 6,
           "mirrored": false,
-          "action": "Claw Slam - Raises one massive clawed hand high and slams it straight down",
+          "action": "Claw Slam - Raises one massive clawed hand high and slams it straight down, a big aggressive swing",
           "intensity": 2,
-          "rolls": 1,
+          "rolls": 2,
           "frames": 5,
-          "rung": 0,
-          "tries": 1,
-          "generated_at": "2026-09-10T21:39:55+00:00"
+          "rung": 1,
+          "tries": 2,
+          "generated_at": "2026-09-10T22:05:48+00:00"
         },
         "west": {
           "status": "pass",

@@ -935,84 +935,17 @@
         },
         "south-east": {
           "status": "fail",
-          "step_mean": 0.0603,
-          "step_max": 0.0834,
-          "drift": 2.61,
-          "loop": 0.1523,
-          "loop_ratio": 2.53,
-          "travel": 0.47,
+          "step_mean": 0.2063,
+          "step_max": 0.2695,
+          "drift": 5.19,
+          "loop": 0.3314,
+          "loop_ratio": 1.61,
+          "travel": 5.19,
           "pin": 1.0,
           "pad": 0,
-          "flash": 0.001,
-          "peak": 0.1523,
-          "reach": 0.056,
-          "canvas": [
-            136,
-            136
-          ],
-          "reasons": [
-            "motion 0.060 outside the calm band 0.08–0.9 — eyeball it",
-            "no strike, just a lean: nothing reaches past 0.06 of the body"
-          ],
-          "sub": "cdb11095-bfc1-4215-8f5f-ebbba1e51108",
-          "group": "786289cb-1961-4545-ad24-2cece2165678",
-          "takes": 1,
-          "version": 5,
-          "mirrored": false,
-          "action": "Bite - Lunges forward with its jaws wide open and bites hard",
-          "intensity": 1,
-          "rolls": 1,
-          "frames": 5,
-          "rung": 0,
-          "tries": 1,
-          "generated_at": "2026-09-10T21:41:50+00:00"
-        },
-        "east": {
-          "status": "fail",
-          "step_mean": 0.0913,
-          "step_max": 0.1278,
-          "drift": 1.47,
-          "loop": 0.2415,
-          "loop_ratio": 2.64,
-          "travel": 0.28,
-          "pin": 1.0,
-          "pad": 0,
-          "flash": 0.0,
-          "peak": 0.2415,
-          "reach": 0.094,
-          "canvas": [
-            136,
-            136
-          ],
-          "reasons": [
-            "no strike, just a lean: nothing reaches past 0.09 of the body"
-          ],
-          "sub": "f0701823-fd25-4282-9c23-d8c315bc3b39",
-          "group": "8ed84cc4-cc36-40d4-9b9a-eed1afc4a9b0",
-          "takes": 1,
-          "version": 5,
-          "mirrored": false,
-          "action": "Killing Bite - The basilisk hurls its whole body forward, jaws thrown wide open, crest flared, teeth bared, a huge aggressive attack with the whole body behind it, wide exaggerated motion",
-          "intensity": 1,
-          "rolls": 5,
-          "frames": 5,
-          "rung": 4,
-          "tries": 5,
-          "generated_at": "2026-09-10T21:41:50+00:00"
-        },
-        "north-east": {
-          "status": "fail",
-          "step_mean": 0.0841,
-          "step_max": 0.1101,
-          "drift": 2.85,
-          "loop": 0.1765,
-          "loop_ratio": 2.1,
-          "travel": 0.94,
-          "pin": 1.0,
-          "pad": 0,
-          "flash": 0.0,
-          "peak": 0.198,
-          "reach": 0.113,
+          "flash": -0.0,
+          "peak": 0.3855,
+          "reach": 0.111,
           "canvas": [
             136,
             136
@@ -1020,18 +953,84 @@
           "reasons": [
             "no strike, just a lean: nothing reaches past 0.11 of the body"
           ],
-          "sub": "6d3e077f-bcde-426d-8dae-fc3737a6c73d",
-          "group": "a363ee41-e51b-41ac-9c1b-d016c9167a7d",
+          "sub": "000ba86c-6885-47ab-8ed1-5fc231579ff4",
+          "group": "e0e4890b-0ef8-40f2-a7b8-b2b157c78c05",
           "takes": 1,
-          "version": 5,
+          "version": 6,
           "mirrored": false,
-          "action": "Bite - Lunges forward with its jaws wide open and bites hard",
+          "action": "Bite - Lunges forward with its jaws wide open and bites hard, a big aggressive swing",
           "intensity": 1,
-          "rolls": 1,
+          "rolls": 2,
           "frames": 5,
-          "rung": 0,
-          "tries": 1,
-          "generated_at": "2026-09-10T21:41:51+00:00"
+          "rung": 1,
+          "tries": 2,
+          "generated_at": "2026-09-10T22:05:31+00:00"
+        },
+        "east": {
+          "status": "warn",
+          "step_mean": 0.1363,
+          "step_max": 0.1615,
+          "drift": 1.55,
+          "loop": 0.3161,
+          "loop_ratio": 2.32,
+          "travel": 1.55,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": 0.0,
+          "peak": 0.3161,
+          "reach": 0.145,
+          "canvas": [
+            136,
+            136
+          ],
+          "reasons": [
+            "shallow strike: reach 0.15 — eyeball it"
+          ],
+          "sub": "69e10b7c-5500-490e-abee-3c95ce2094ca",
+          "group": "426305ae-ec82-44b9-b5d3-1d6a270378f3",
+          "takes": 1,
+          "version": 6,
+          "mirrored": false,
+          "action": "Killing Bite - The basilisk hurls its whole body forward, jaws thrown wide open, crest flared, teeth bared, an extremely violent attack, huge exaggerated motion, the limb thrown far out",
+          "intensity": 1,
+          "rolls": 6,
+          "frames": 5,
+          "rung": 5,
+          "tries": 6,
+          "generated_at": "2026-09-10T22:05:32+00:00"
+        },
+        "north-east": {
+          "status": "warn",
+          "step_mean": 0.1769,
+          "step_max": 0.2244,
+          "drift": 1.69,
+          "loop": 0.3885,
+          "loop_ratio": 2.2,
+          "travel": 1.99,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": 0.0,
+          "peak": 0.3885,
+          "reach": 0.227,
+          "canvas": [
+            136,
+            136
+          ],
+          "reasons": [
+            "shallow strike: reach 0.23 — eyeball it"
+          ],
+          "sub": "ccc93c75-5982-45b2-9798-08dd0250d518",
+          "group": "847f521f-52d2-4f2c-abd2-e6cefe89f062",
+          "takes": 1,
+          "version": 6,
+          "mirrored": false,
+          "action": "Bite - Lunges forward with its jaws wide open and bites hard, a big aggressive swing",
+          "intensity": 1,
+          "rolls": 2,
+          "frames": 5,
+          "rung": 1,
+          "tries": 2,
+          "generated_at": "2026-09-10T22:05:32+00:00"
         },
         "north": {
           "status": "warn",
@@ -1067,35 +1066,36 @@
         },
         "north-west": {
           "status": "warn",
-          "step_mean": 0.21,
-          "step_max": 0.2827,
-          "drift": 3.12,
-          "loop": 0.3681,
-          "loop_ratio": 1.75,
-          "travel": 3.81,
+          "step_mean": 0.1769,
+          "step_max": 0.2244,
+          "drift": 1.69,
+          "loop": 0.3885,
+          "loop_ratio": 2.2,
+          "travel": 1.99,
           "pin": 1.0,
           "pad": 0,
           "flash": 0.0,
-          "peak": 0.3681,
-          "reach": 0.258,
+          "peak": 0.3885,
+          "reach": 0.227,
           "canvas": [
             136,
             136
           ],
           "reasons": [
-            "shallow strike: reach 0.26 — eyeball it"
+            "shallow strike: reach 0.23 — eyeball it"
           ],
-          "sub": "329bdb1d-0b87-4b29-932f-cc8c348356da",
-          "group": "47700068-d44c-4ac6-9bd4-a50ec0266f54",
+          "sub": "ccc93c75-5982-45b2-9798-08dd0250d518",
+          "group": "847f521f-52d2-4f2c-abd2-e6cefe89f062",
           "takes": 1,
-          "version": 2,
+          "version": 6,
           "mirrored": true,
-          "generated_at": "2026-09-10T20:16:24+00:00",
           "action": "Bite - Lunges forward with its jaws wide open and bites hard, a big aggressive swing",
-          "tries": 1,
-          "rolls": 2,
           "intensity": 1,
-          "rung": 0,
+          "rolls": 2,
+          "frames": 5,
+          "rung": 1,
+          "tries": 2,
+          "generated_at": "2026-09-10T22:05:32+00:00",
           "source": "north-east"
         },
         "south-west": {
@@ -1133,6 +1133,40 @@
           "frames": 5,
           "rung": 0,
           "source": "south-east"
+        },
+        "west": {
+          "status": "warn",
+          "step_mean": 0.1363,
+          "step_max": 0.1615,
+          "drift": 1.55,
+          "loop": 0.3161,
+          "loop_ratio": 2.32,
+          "travel": 1.55,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": 0.0,
+          "peak": 0.3161,
+          "reach": 0.145,
+          "canvas": [
+            136,
+            136
+          ],
+          "reasons": [
+            "shallow strike: reach 0.15 — eyeball it"
+          ],
+          "sub": "69e10b7c-5500-490e-abee-3c95ce2094ca",
+          "group": "426305ae-ec82-44b9-b5d3-1d6a270378f3",
+          "takes": 1,
+          "version": 6,
+          "mirrored": true,
+          "action": "Killing Bite - The basilisk hurls its whole body forward, jaws thrown wide open, crest flared, teeth bared, an extremely violent attack, huge exaggerated motion, the limb thrown far out",
+          "intensity": 1,
+          "rolls": 6,
+          "frames": 5,
+          "rung": 5,
+          "tries": 6,
+          "generated_at": "2026-09-10T22:05:32+00:00",
+          "source": "east"
         }
       },
       "action": "Bite - Lunges forward with its jaws wide open and bites hard",
@@ -1185,6 +1219,13 @@
           "basilisk/animations/attack_try/south-west/02.webp",
           "basilisk/animations/attack_try/south-west/03.webp",
           "basilisk/animations/attack_try/south-west/04.webp"
+        ],
+        "west": [
+          "basilisk/animations/attack_try/west/00.webp",
+          "basilisk/animations/attack_try/west/01.webp",
+          "basilisk/animations/attack_try/west/02.webp",
+          "basilisk/animations/attack_try/west/03.webp",
+          "basilisk/animations/attack_try/west/04.webp"
         ]
       },
       "strips": {
@@ -1194,7 +1235,8 @@
         "north-east": "basilisk/animations/attack_try__north-east.webp",
         "north": "basilisk/animations/attack_try__north.webp",
         "north-west": "basilisk/animations/attack_try__north-west.webp",
-        "south-west": "basilisk/animations/attack_try__south-west.webp"
+        "south-west": "basilisk/animations/attack_try__south-west.webp",
+        "west": "basilisk/animations/attack_try__west.webp"
       },
       "intensity": 1
     }

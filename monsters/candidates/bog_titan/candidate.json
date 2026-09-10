@@ -902,36 +902,37 @@
       "directions": {
         "south": {
           "status": "fail",
-          "step_mean": 0.1625,
-          "step_max": 0.2272,
-          "drift": 6.56,
-          "loop": 0.2596,
-          "loop_ratio": 1.6,
-          "travel": 0.25,
+          "step_mean": 0.2954,
+          "step_max": 0.4087,
+          "drift": 2.95,
+          "loop": 0.2511,
+          "loop_ratio": 0.85,
+          "travel": 2.41,
           "pin": 1.0,
           "pad": 0,
-          "flash": 0.001,
-          "peak": 0.2596,
-          "reach": 0.043,
+          "flash": 0.141,
+          "peak": 0.3936,
+          "reach": 0.099,
           "canvas": [
             224,
             224
           ],
           "reasons": [
-            "no strike, just a lean: nothing reaches past 0.04 of the body"
+            "no strike, just a lean: nothing reaches past 0.10 of the body",
+            "painted effect: 0.14 of the body in new bright pixels (flare/slash arc)"
           ],
-          "sub": "25e8430e-3a4d-4232-b3f9-3c8e24888046",
-          "group": "778b54d6-db0a-4b43-8319-56c764fb5276",
+          "sub": "87cf71ed-d154-4729-b156-432ad63c42b8",
+          "group": "ac4e83a0-d3b6-40e6-9c74-ea6aceb66751",
           "takes": 1,
-          "version": 5,
+          "version": 6,
           "mirrored": false,
-          "action": "Double Slam - Raises both arms high overhead and slams them down together",
+          "action": "Double Slam - Raises both arms high overhead and slams them down together, a big aggressive swing",
           "intensity": 1,
-          "rolls": 1,
+          "rolls": 2,
           "frames": 5,
-          "rung": 0,
-          "tries": 1,
-          "generated_at": "2026-09-10T21:39:37+00:00"
+          "rung": 1,
+          "tries": 2,
+          "generated_at": "2026-09-10T22:05:33+00:00"
         },
         "south-east": {
           "status": "warn",

@@ -914,36 +914,36 @@
       "directions": {
         "south": {
           "status": "fail",
-          "step_mean": 0.2084,
-          "step_max": 0.2878,
-          "drift": 8.41,
-          "loop": 0.3669,
-          "loop_ratio": 1.76,
-          "travel": 3.29,
+          "step_mean": 0.1169,
+          "step_max": 0.2027,
+          "drift": 6.91,
+          "loop": 0.3176,
+          "loop_ratio": 2.72,
+          "travel": 8.25,
           "pin": 1.0,
           "pad": 0,
-          "flash": 0.131,
-          "peak": 0.3669,
-          "reach": 0.136,
+          "flash": 0.089,
+          "peak": 0.3176,
+          "reach": 0.089,
           "canvas": [
             232,
             232
           ],
           "reasons": [
-            "no strike, just a lean: nothing reaches past 0.14 of the body"
+            "no strike, just a lean: nothing reaches past 0.09 of the body"
           ],
-          "sub": "7ded8ba0-52fb-4958-ba9f-3e2d840c89a5",
-          "group": "b6c59cdc-fdca-4426-8ec7-c76031cdbafc",
+          "sub": "945f3e8e-9ce8-465e-95a3-cce94821d13e",
+          "group": "bc8a157d-f1fa-4a19-9cb9-305bdf466e7b",
           "takes": 1,
-          "version": 5,
+          "version": 6,
           "mirrored": false,
-          "action": "Crystal Shatter - The titan swings its crystal arm through a huge arc, shards bursting off the blade, a huge aggressive attack with the whole body behind it, wide exaggerated motion",
+          "action": "Crystal Shatter - The titan swings its crystal arm through a huge arc, shards bursting off the blade, an extremely violent attack, huge exaggerated motion, the limb thrown far out",
           "intensity": 1,
-          "rolls": 5,
+          "rolls": 6,
           "frames": 5,
-          "rung": 4,
-          "tries": 5,
-          "generated_at": "2026-09-10T21:41:50+00:00"
+          "rung": 5,
+          "tries": 6,
+          "generated_at": "2026-09-10T22:07:46+00:00"
         },
         "south-east": {
           "status": "warn",
