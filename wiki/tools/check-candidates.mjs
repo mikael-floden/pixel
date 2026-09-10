@@ -105,6 +105,16 @@ const det = await p.evaluate(() => {
     wide: document.documentElement.scrollWidth > document.documentElement.clientWidth
       || (() => { const g = document.querySelector(".cand-dirs"); return g.scrollWidth > g.clientWidth; })(),
     cols: getComputedStyle(document.querySelector(".cand-dirs")).getPropertyValue("--cand-cols").trim(),
+    // THE PICTURE IS NEVER SMALL AND THE LABEL IS NEVER ON IT (maintainer
+    // 2026-09-10: "when I click on a monster the preview is so small the text
+    // is covering the monster" — a 32px design was a 64px stamp under its own
+    // caption).
+    shot: (() => {
+      const f = document.querySelector(".cand-dir"), img = f?.querySelector("img"), cap = f?.querySelector("figcaption");
+      const ir = img?.getBoundingClientRect(), cr = cap?.getBoundingClientRect();
+      return { w: Math.round(ir?.width ?? 0), over: !!(ir && cr) && !(cr.top >= ir.bottom - 0.5 || cr.bottom <= ir.top + 0.5), capH: Math.round(cr?.height ?? 0) };
+    })(),
+    zooms: [...document.querySelectorAll(".cand-zoom button")].map((b) => b.textContent.trim() + (b.classList.contains("on") ? "*" : "")),
     buttons: [...document.querySelectorAll(".cand-judge .verdict button")].map((x) => x.textContent.trim()),
     stars: document.querySelectorAll(".cand-judge .stars button, .cand-judge .star").length,
   };
@@ -114,6 +124,8 @@ ok(det.n === 8 && det.loaded === 8, `all 8 facings are on the page and loaded ($
 ok(det.cols === "2" ? det.rows === 4 : det.rows === 8, `mirror pairs side by side when two fit, stacked when they don't (${det.cols} column(s), ${det.rows} rows, ${det.w}px each)`);
 ok(det.dirs.join(",") === "south,north,east,west,south-east,south-west,north-east,north-west", `in mirror-pair order (${det.dirs.join(" ")})`);
 ok(!det.wide, "the facings never poke past a 393px phone");
+ok(det.shot.w >= 200, `a facing is big enough to judge on a phone, whatever the design's canvas is (${det.shot.w}px, zooms ${det.zooms.join(" ")})`);
+ok(!det.shot.over && det.shot.capH > 0 && det.shot.capH < 30, `and its label sits UNDER the art, one line, never over it (${det.shot.capH}px)`);
 ok(det.buttons.length === 3 && /approve/.test(det.buttons[0]) && /remove/.test(det.buttons[1]) && /redo/.test(det.buttons[2]), `approve / remove / redo on the row (${det.buttons.join(" | ")})`);
 if (shot) await p.screenshot({ path: `${shot}/cand-detail.png` });
 

@@ -4828,32 +4828,56 @@ function viewCandidate(id) {
   const list = candList();
   const walk = list.some((x) => x.id === id) ? list : candList("all");
   const size = c.size?.[0] ?? 128;
-  // The biggest whole zoom at which the PAIR still fits the screen — two 136px
-  // sprites at 1×, two 80px at 2× — unless he picked one himself.
-  let zoom = 0;
-  try { zoom = Number(localStorage.getItem(CAND_ZOOM_KEY)) || 0; } catch { /* private mode */ }
-  // The room is the content column's inner width — measured, not assumed:
-  // 26px of padding a side on a 393px phone leaves 341px, which two 176px
-  // sprites do not fit even at 1×. Then the pair stacks (S over N) rather than
-  // overflowing or shrinking to a blur.
+  // THE FACING FILLS THE COLUMN, whatever the design's canvas is (maintainer
+  // 2026-09-10, on a 32px design: "when I click on a monster the preview is so
+  // small the text is covering the monster"). The overview is where sizes
+  // COMPARE — one zoom for every card there, true scale. This page judges the
+  // eight facings of ONE design, where the only thing that matters is seeing
+  // them, so the zoom starts at the largest WHOLE multiple at which the pair
+  // still fits the measured column: 5× for a 32px grub, 1× for a 240px warden.
+  // (A fixed 1×/2×/3× ladder was the bug: it made a 32px design a 64px stamp
+  // with its own caption over it, and left the caption nothing to sit on.)
   const col = $("#content"), cs = col ? getComputedStyle(col) : null;
   const room = col ? col.clientWidth - parseFloat(cs.paddingLeft) - parseFloat(cs.paddingRight) : 341;
   const gap = 8;
-  const fit = Math.max(1, Math.floor((room - gap) / 2 / size));
-  const z = zoom || Math.min(fit, 3);
+  // Three sizes, all whole multiples (pixel art is never scaled by a fraction):
+  // the pair side by side, the single facing filling the column — the default,
+  // because seeing it is the whole job — and double that to inspect, which
+  // scrolls. The MODE is what is remembered, not the number: 10× is huge on a
+  // 32px grub and impossible on a 240px warden, so a remembered number would
+  // mean something different on every design.
+  const pairZ = Math.max(1, Math.floor((room - gap) / 2 / size));
+  // 256px is the facing size the default aims at: big enough to judge on a
+  // phone, small enough that the next facing is on the same screen. The
+  // absolute maximum (11× on a 32px grub) fills the screen with one picture and
+  // turns eight facings into eight screens of scrolling.
+  const fitZ = Math.max(1, Math.min(Math.round(256 / size) || 1, Math.floor(room / size) || 1));
+  const ZOOMS = { pair: Math.min(pairZ, fitZ), fit: fitZ, big: fitZ * 2 };
+  let mode = "fit";
+  try { mode = ZOOMS[localStorage.getItem(CAND_ZOOM_KEY)] ? localStorage.getItem(CAND_ZOOM_KEY) : "fit"; } catch { /* private mode */ }
+  const z = ZOOMS[mode];
+  // A pair that no longer fits STACKS (S over N) rather than overflowing or
+  // shrinking to a blur; past the column the grid scrolls sideways on its own.
   const cols = 2 * size * z + gap <= room ? 2 : 1;
   const grid = h("div", { class: "cand-dirs" });
   grid.style.setProperty("--cand-w", `${size * z}px`);
   grid.style.setProperty("--cand-cols", String(cols));
   for (const pair of CAND_PAIRS) for (const d of pair) {
     const src = c.rotations[d];
-    grid.append(h("figure", { class: "cand-dir checker", "data-dir": d },
-      src ? h("img", { src: assetUrl(src), alt: `${c.name}, facing ${d}`, width: size * z, height: size * z }) : h("span", { class: "pill err" }, "missing"),
+    grid.append(h("figure", { class: "cand-dir", "data-dir": d },
+      h("div", { class: "cand-shot checker" },
+        src ? h("img", { src: assetUrl(src), alt: `${c.name}, facing ${d}`, width: size * z, height: size * z }) : h("span", { class: "pill err" }, "missing")),
+      // UNDER THE PICTURE, NEVER ON IT. A label floating on the art covered a
+      // small design completely, and it is the art he is judging.
       h("figcaption", {}, h("b", {}, DIR_LABEL[d] ?? d), " ", d.replace("-", " "))));
   }
+  const ZOOM_TITLE = { pair: "Small enough that the mirror pair sits side by side", fit: "As big as one facing fits the screen", big: "Twice that — scroll to inspect" };
+  const seen = new Set();
   const zoomSeg = h("div", { class: "seg cand-zoom", role: "radiogroup" },
-    ...[1, 2, 3].map((n) => h("button", { class: n === z ? "on" : "", type: "button", "aria-checked": n === z ? "true" : "false", role: "radio",
-      onclick: () => { try { localStorage.setItem(CAND_ZOOM_KEY, String(n)); } catch { /* private mode */ } route(); } }, `${n}×`)));
+    ...Object.entries(ZOOMS).filter(([, n]) => !seen.has(n) && seen.add(n)).map(([k, n]) => h("button", {
+      class: k === mode ? "on" : "", type: "button", "aria-checked": k === mode ? "true" : "false", role: "radio",
+      title: ZOOM_TITLE[k], "data-zoom": k,
+      onclick: () => { try { localStorage.setItem(CAND_ZOOM_KEY, k); } catch { /* private mode */ } route(); } }, `${n}×`)));
   return h("div", {},
     crumbRow("#/monsters/candidates", "← Candidates", "monsters/candidates", walk, id),
     h("div", { class: "sect-head" }, sectionIcon("monsters"), h("h1", {}, c.name)),

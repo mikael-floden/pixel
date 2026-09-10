@@ -116,13 +116,22 @@ verdict comes BEFORE the five states are spent on it.
   removed | all` with counts, "to judge" by default, newest first; the cards
   are the CREATURE SHOWCASE (below), same grid, same measured spans, same
   marks-on-the-art. `#/monsters/candidates/
-  <id>` — the 8 facings in MIRROR PAIRS, two per row (S|N, E|W, SE|SW, NE|NW),
-  so the twin the generator gets wrong (a SE drawn as SW) sits beside its
-  mirror; zoom 1×/2×/3× (`wiki-cand-zoom`), default the largest whole zoom at
-  which the pair fits the measured content column, and the pair STACKS when
-  even 1× does not fit rather than shrinking pixel art to a blur. The verdict
-  row sits UNDER the pictures, where his thumb is after reading them. ‹ ›
-  walks the current chip's list.
+  <id>` — the 8 facings in MIRROR-PAIR order (S, N, E, W, SE, SW, NE, NW), so
+  the twin the generator gets wrong (a SE drawn as SW) is the next picture
+  down, or beside it when two fit. The verdict row sits UNDER the pictures,
+  where his thumb is after reading them. ‹ › walks the current chip's list.
+- **A FACING IS ~256px WHATEVER THE CANVAS IS** (maintainer 2026-09-10, on a
+  32px design: "when I click on a monster the preview is so small the text is
+  covering the monster"). The detail page is not where sizes compare — that is
+  the overview — so it aims each facing at 256px and scales by the whole
+  multiple nearest it, bounded by the measured column: 8× on a 32px grub, 3× on
+  a 96px slug, 1× on a 240px warden. Three chips remember a MODE, never a
+  number (`wiki-cand-zoom`: `pair` = small enough that the mirror pair sits side
+  by side, `fit` = the default, `big` = double it and scroll); 10× means
+  something different on every design, a mode does not. NOT the absolute
+  maximum the column allows — 11× on a grub makes eight facings eight screens.
+- **The label sits UNDER its facing.** Floating it on the art covered a small
+  design completely, and the art is the thing being judged.
 - **ONE ZOOM FOR THE WHOLE GRID, and the card is what varies** (maintainer
   2026-09-10: "It's important when I scroll the candidates overview I can see
   the monster in the correct scale. So I was thinking the cards could be the
@@ -145,7 +154,8 @@ verdict comes BEFORE the five states are spent on it.
   your verdict on their 8 directions →". The nav count stays the shipped
   creatures — a candidate is not in the game.
 - Gate: `wiki/tools/check-candidates.mjs` (door, chips, one shared zoom with
-  true size ratios and bigger spans for bigger designs, 8 loaded facings,
+  true size ratios and bigger spans for bigger designs, 8 loaded facings, a
+  facing at least 200px with its label under it,
   approve stamps `version` and leaves the queue, an older-version verdict
   reads as judge-again). Runs in `wiki-guard.yml`.
 
