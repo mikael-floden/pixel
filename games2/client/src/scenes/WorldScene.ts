@@ -12096,7 +12096,8 @@ export class WorldScene extends Phaser.Scene {
    *  the map view so I can distinguish between them").
    *
    *  TWO THINGS, and the whole point of the overlay is telling them apart:
-   *   - every internal BORDER, amber, A BARE LINE — crossing one is a hand-off,
+   *   - every internal BORDER, the spawn overlay's blue, A BARE LINE —
+   *     crossing one is a hand-off,
    *     a fresh join into the next zone's room;
    *   - MY zone's INNER edge, red, drawn AS A SPAWN AREA IS — a thin line with
    *     one flat low-alpha fill covering everything inside it. It sits
@@ -12156,7 +12157,11 @@ export class WorldScene extends Phaser.Scene {
     const zw = grid.zw / CELL_WU; // zone size in CELLS
     const zh = grid.zh / CELL_WU;
     const band = INTEREST_LEAVE_WU / CELL_WU;
-    const BORDER = 0xffbe50; // amber, as on the map
+    // THE SPAWN OVERLAY'S OWN BLUE for the border (maintainer 2026-09-10:
+    // "the outer zone area has a yellow border and I wanted the same blue we
+    // have for spawn zones"). Kept at the border's own weight, 2 px — this is
+    // a hard boundary and has to be seen from across a field.
+    const BORDER = 0x8fd6ff;
     // RED for the inner edge — the spawn overlay's cyan pair, hue-shifted
     // (maintainer 2026-09-10, of the dashed cyan first cut: "I see you have
     // used dotted lines for the inner zone. Why don't you change it to a more
@@ -12165,6 +12170,12 @@ export class WorldScene extends Phaser.Scene {
     // lighter than the fill, exactly as spawn areas do it.
     const INNER_FILL = 0xff5a4a;
     const INNER_LINE = 0xff8f80;
+    // α .14, NOT the spawn overlay's .05: that alpha reads because a spawn
+    // area sits on grey cave stone, and the same value in red over grass and
+    // dark water was invisible on his screen ("the inner zone area has a nice
+    // red border, but I can't see the fade at all", 2026-09-10, of e62145396).
+    // Same number as the map's own zone fill, which does read.
+    const INNER_ALPHA = 0.14;
     const at = (fixed: number, t: number, vertical: boolean) =>
       vertical ? this.projectZoneCorner(fixed, t) : this.projectZoneCorner(t, fixed);
 
@@ -12223,7 +12234,7 @@ export class WorldScene extends Phaser.Scene {
     const right = walk(ix1, iy0, iy1, true);
     const bottom = walk(iy1, ix1, ix0, false);
     const left = walk(ix0, iy1, iy0, true);
-    g.fillStyle(INNER_FILL, 0.05);
+    g.fillStyle(INNER_FILL, INNER_ALPHA);
     g.fillPoints([...top, ...right, ...bottom, ...left], true);
     g.lineStyle(1, INNER_LINE, 0.45);
     if (y0 > 0) g.strokePoints(top, false);

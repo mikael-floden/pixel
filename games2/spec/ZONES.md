@@ -124,7 +124,7 @@ The **Map tab's layer row** draws the grid over the minimap: a chip per layer
 above the map, `zones` first (`client/src/maplayers.ts`). Each rectangle is
 one room, projected through the SAME arithmetic as the "you are here" dot
 (`minimapCellPct`) so it can never drift from it; the zone you stand in is
-filled amber and its red inset is the hand-off band (`INTEREST_LEAVE_WU`),
+filled blue and its red inset is the hand-off band (`INTEREST_LEAVE_WU`),
 which is the strip where the neighbouring room mirrors you as a ghost. The
 numbers are the ids the server logs and `__ml.zone()` reports.
 
@@ -144,20 +144,23 @@ running around with the map shut (maintainer 2026-09-10: "I might not always
 have the map open when running around — so having them on the screen like
 spawn areas work would help me a lot"). Two marks, and the split is the point:
 
-- every internal **border** is a bare amber line, no tint on either side —
+- every internal **border** is a bare line in the spawn overlay's own blue
+  ("I wanted the same blue we have for spawn zones"), no tint on either side —
   both sides of a border are somebody's inside, so a fade there would claim a
   direction that does not exist ("at the border between zones we need no fade.
   Just a single line — there is no inside/outside");
 - **my zone's inner edge** — `INTEREST_LEAVE_WU` in from the border, the line
   where the neighbour starts mirroring me — is drawn EXACTLY AS A SPAWN AREA
-  IS, hue-shifted to red: a 1 px line at α .45 over one flat α .05 fill
-  covering everything inside it. The one-sided fill is the whole signal
+  IS, hue-shifted to red: a 1 px line at α .45 over one flat fill covering
+  everything inside it. The fill is α **.14**, not the spawn overlay's .05 —
+  that value reads because a spawn area lies on grey cave stone, and in red
+  over grass and dark water it was invisible on his screen. The one-sided fill is the whole signal
   ("the fade only exist in one direction ... so I know if I walk out of this
   zone or into this zone"). A four-step gradient hem and a dashed line were
   both tried and rejected: "I want you to not invent something new here. The
   spawn area border looks fantastic."
 
-The Map tab's `zones` layer uses the same legend — amber rectangle = the room,
+The Map tab's `zones` layer uses the same legend — blue rectangle = the room,
 red inside = the core, between them = the hand-off band.
 
 The overlay is drawn ON TOP of everything (depth 900_002.4, beside the

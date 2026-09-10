@@ -76,7 +76,7 @@ const LAYERS: Layer[] = [
   {
     id: "zones",
     label: "zones",
-    note: "amber: one room per rectangle. red: the hand-off band",
+    note: "blue: one room per rectangle. red: the hand-off band",
     draw: (ctx) => {
       const z = ml()?.zones?.();
       if (!z) return;
@@ -85,8 +85,9 @@ const LAYERS: Layer[] = [
         ctx.svg.appendChild(
           ctx.el("path", {
             d: quad(ctx, r.x0, r.y0, r.x1, r.y1),
-            fill: mine ? "rgba(255,190,80,0.13)" : "none",
-            stroke: mine ? "rgba(255,190,80,0.95)" : "rgba(255,255,255,0.5)",
+            // The spawn overlay's blue, the same as the in-world border.
+            fill: mine ? "rgba(143,214,255,0.13)" : "none",
+            stroke: mine ? "rgba(143,214,255,0.95)" : "rgba(255,255,255,0.5)",
             "stroke-width": mine ? 0.55 : 0.3,
             "vector-effect": "non-scaling-stroke",
           }),
@@ -96,7 +97,7 @@ const LAYERS: Layer[] = [
         // where I am. Inset by `band` cells on every side. A RED LINE OVER A
         // RED FILL, the same pair the in-world overlay uses (settings "zone
         // borders", itself the spawn overlay's recipe hue-shifted), so the two
-        // views read as one legend: amber rectangle = the room, red inside =
+        // views read as one legend: blue rectangle = the room, red inside =
         // the core, between them = the hand-off band.
         if (mine && z.band > 0 && r.x1 - r.x0 > z.band * 2 && r.y1 - r.y0 > z.band * 2) {
           ctx.svg.appendChild(
@@ -173,7 +174,7 @@ function styleOnce() {
   .${MARK_CLS} b{position:absolute;transform:translate(-50%,-50%);white-space:nowrap;
     font:600 10px/1 var(--sans);color:rgba(255,255,255,0.62);
     text-shadow:0 1px 2px rgba(0,0,0,0.85)}
-  .${MARK_CLS} b.on{font-weight:800;color:rgba(255,214,130,0.98)}`;
+  .${MARK_CLS} b.on{font-weight:800;color:rgba(170,222,255,0.98)}`;
   document.head.appendChild(st);
 }
 
