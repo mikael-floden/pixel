@@ -12166,25 +12166,22 @@ export class WorldScene extends Phaser.Scene {
     // (maintainer 2026-09-10, of the dashed cyan first cut: "I see you have
     // used dotted lines for the inner zone. Why don't you change it to a more
     // red looking color instead? ... I say red but I of course don't mean
-    // #ff0000, just more red looking"). So: a soft red, and the line one shade
-    // lighter than the fill, exactly as spawn areas do it.
-    const INNER_FILL = 0xff5a4a;
+    // #ff0000, just more red looking"). A soft red, one shade lighter than
+    // pure so it sits on dark ground as well as sand.
     const INNER_LINE = 0xff8f80;
-    // A FADE, NOT A FILL, and only a couple of cells deep. Filling the whole
-    // inside was measured invisible at the spawn overlay's α .05 over grass
-    // and dark water, and at the α .14 that fixed that it painted the zone
-    // (maintainer 2026-09-10, of dfbb6507b: "you didn't fade it, you painted
-    // the entire inner zone red-ish. I just need to know what direction the
-    // border transition is at"). So: four steps decaying inwards from the
-    // line, strongest where the line is, nothing two cells in. Near a zone
-    // CORNER two of these meet and their alphas add, which is why the first
-    // step stops at .14 rather than going louder.
-    const FADE_CELLS = 2;
-    const FADE_ALPHA = [0.14, 0.1, 0.06, 0.03];
-    const lvl = (c: number, r: number) =>
-      this.world?.rows[Math.max(0, Math.min(H - 1, Math.floor(r)))]?.[
-        Math.max(0, Math.min(W - 1, Math.floor(c)))
-      ]?.l ?? 0;
+    // WHICH WAY IS IN IS SAID WITH TICKS, NOT WITH A TINT. Three tints were
+    // tried and all three were wrong: the spawn overlay's α .05 fill over the
+    // whole inside was invisible in red over grass and dark water, α .14
+    // "painted the entire inner zone red-ish", and a four-step hem two cells
+    // deep was "an ugly fade" that also landed on the WRONG SIDE — a strip has
+    // WIDTH, so it samples the ground level of the cell it steps into, and at a
+    // cliff it jumps a storey and comes out above its own line (maintainer
+    // 2026-09-10, of 1aaf808e2: "some fade is also on the wrong side of the
+    // border"). Ticks have no width in the world: each one hangs off a point OF
+    // the line and points inward in SCREEN space, so it cannot flip, cannot
+    // stack at a corner, and covers no ground at all.
+    const TICK_CELLS = 0.45; // tick length, as a fraction of a cell on screen
+    const TICK_EVERY = 2; // cells between ticks
     const at = (fixed: number, t: number, vertical: boolean) =>
       vertical ? this.projectZoneCorner(fixed, t) : this.projectZoneCorner(t, fixed);
 
@@ -12212,43 +12209,18 @@ export class WorldScene extends Phaser.Scene {
       line(y, 0, W, false);
     }
 
-    // THE FADE: FADE_ALPHA.length strips stepping `dir` cells inwards from a
-    // line, each strip a run of quads merged over cells of EQUAL ground level.
-    // A zone edge is flat for tens of cells at a time, and one quad per cell
-    // was thousands of fills for the same picture.
-    const hem = (fixed: number, from: number, to: number, vertical: boolean, dir: number) => {
-      const lim = vertical ? W : H;
-      const step = FADE_CELLS / FADE_ALPHA.length;
-      for (let i = 0; i < FADE_ALPHA.length; i++) {
-        const o1 = fixed + dir * step * i;
-        const o2 = fixed + dir * step * (i + 1);
-        if (Math.min(o1, o2) < 0 || Math.max(o1, o2) > lim) continue;
-        g.fillStyle(INNER_FILL, FADE_ALPHA[i]);
-        let runFrom = from;
-        const key = (t: number) => (vertical ? `${lvl(o1, t)},${lvl(o2, t)}` : `${lvl(t, o1)},${lvl(t, o2)}`);
-        let k = key(from);
-        const flush = (runTo: number) => {
-          if (runTo <= runFrom) return;
-          g.fillPoints(
-            [at(o1, runFrom, vertical), at(o1, runTo, vertical), at(o2, runTo, vertical), at(o2, runFrom, vertical)],
-            true,
-          );
-        };
-        for (let t = from + 1; t <= to; t++) {
-          const kt = key(t);
-          if (kt === k) continue;
-          flush(t);
-          runFrom = t - 1; // overlap by a cell so the runs meet across the step
-          k = kt;
-        }
-        flush(to);
-      }
-    };
+    // THE INWARD SCREEN DIRECTION of one cell, taken at a FIXED level so no
+    // terrain enters it: +1 col and +1 row as screen vectors off the same
+    // origin. This is what makes a tick unflippable.
+    const o = this.projectCellCorner(0, 0, 0);
+    const c1 = this.projectCellCorner(1, 0, 0);
+    const r1 = this.projectCellCorner(0, 1, 0);
+    const dCol = { x: c1.x - o.x, y: c1.y - o.y };
+    const dRow = { x: r1.x - o.x, y: r1.y - o.y };
 
-    // MY ZONE'S INNER EDGE, in red: the thin line he liked, plus the fade
-    // running INWARDS from it. Nothing outside the line and nothing deeper in
-    // than the fade, so the tint is a direction rather than a colour over the
-    // whole zone.
+    // MY ZONE'S INNER EDGE, in red: the thin line, and a comb of short ticks
+    // hanging off its INSIDE every TICK_EVERY cells. Nothing is painted over
+    // the ground.
     const rect = this.zone >= 0 && this.zone < grid.cols * grid.rows ? zoneRect(grid, this.zone) : null;
     if (!rect) return;
     const x0 = rect.x0 / CELL_WU;
@@ -12271,12 +12243,14 @@ export class WorldScene extends Phaser.Scene {
       if (inner <= 0 || inner >= lim) continue;
       const from = Math.max(0, s.vertical ? y0 : x0);
       const to = Math.min(s.vertical ? y1 : x1, lim);
-      hem(inner, from, to, s.vertical, s.dir);
-      g.lineStyle(1, INNER_LINE, 0.45);
+      const d = s.vertical ? dCol : dRow;
+      const tick = { x: d.x * TICK_CELLS * s.dir, y: d.y * TICK_CELLS * s.dir };
+      g.lineStyle(1, INNER_LINE, 0.7);
       let prev = at(inner, from, s.vertical);
       for (let t = from + 1; t <= to; t++) {
         const p = at(inner, t, s.vertical);
         g.lineBetween(prev.x, prev.y, p.x, p.y);
+        if (t % TICK_EVERY === 0) g.lineBetween(p.x, p.y, p.x + tick.x, p.y + tick.y);
         prev = p;
       }
     }
