@@ -900,6 +900,308 @@
         "west": "goblin_shaman/animations/attack__west.webp",
         "north-west": "goblin_shaman/animations/attack__north-west.webp"
       }
+    },
+    "attack_try": {
+      "directions": {
+        "south": {
+          "status": "fail",
+          "step_mean": 0.2036,
+          "step_max": 0.3294,
+          "drift": 8.55,
+          "loop": 0.387,
+          "loop_ratio": 1.9,
+          "travel": 9.07,
+          "pin": 1.0,
+          "pad": 1,
+          "flash": 0.135,
+          "peak": 0.387,
+          "reach": 0.186,
+          "canvas": [
+            90,
+            90
+          ],
+          "reasons": [
+            "no strike, just a lean: nothing reaches past 0.19 of the body",
+            "canvas grown by 1 px a side to hold the motion"
+          ],
+          "sub": "4caef2cd-d17e-407c-b73e-2da0614056e8",
+          "group": "ae0bf8a3-3c11-4307-8fe3-ffff3d093dd1",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "action": "Skull Curse - Thrusts the skull staff out at arm's length and the skull flares",
+          "tries": 1,
+          "generated_at": "2026-09-10T20:01:41+00:00"
+        },
+        "south-east": {
+          "status": "pass",
+          "step_mean": 0.2174,
+          "step_max": 0.3759,
+          "drift": 7.16,
+          "loop": 0.3498,
+          "loop_ratio": 1.61,
+          "travel": 9.04,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": 0.187,
+          "peak": 0.3632,
+          "reach": 0.365,
+          "canvas": [
+            88,
+            88
+          ],
+          "reasons": [],
+          "sub": "96013fe4-de93-4e87-875e-db91301876bc",
+          "group": "e6311150-fa9e-4984-a5d2-88a89f9336fa",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "action": "Skull Curse - Thrusts the skull staff out at arm's length and the skull flares",
+          "tries": 1,
+          "generated_at": "2026-09-10T20:01:42+00:00"
+        },
+        "east": {
+          "status": "pass",
+          "step_mean": 0.1643,
+          "step_max": 0.3319,
+          "drift": 3.94,
+          "loop": 0.386,
+          "loop_ratio": 2.35,
+          "travel": 3.94,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": 0.096,
+          "peak": 0.386,
+          "reach": 0.806,
+          "canvas": [
+            88,
+            88
+          ],
+          "reasons": [],
+          "sub": "4d7051f4-f05e-45e9-a972-a77a19d985b2",
+          "group": "206d8bc2-0987-4af5-9f75-6c69d03e2419",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "action": "Skull Curse - Thrusts the skull staff out at arm's length and the skull flares",
+          "tries": 1,
+          "generated_at": "2026-09-10T20:01:42+00:00"
+        },
+        "north-east": {
+          "status": "pass",
+          "step_mean": 0.2497,
+          "step_max": 0.3913,
+          "drift": 5.26,
+          "loop": 0.5344,
+          "loop_ratio": 2.14,
+          "travel": 5.26,
+          "pin": 1.0,
+          "pad": 4,
+          "flash": 0.065,
+          "peak": 0.5344,
+          "reach": 0.39,
+          "canvas": [
+            96,
+            96
+          ],
+          "reasons": [
+            "canvas grown by 4 px a side to hold the motion"
+          ],
+          "sub": "8c177711-ea58-43ae-b23f-fa5069ac8468",
+          "group": "6b0f776a-ca05-4f0a-8ce8-a6ea3cebb8e8",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "action": "Skull Curse - Thrusts the skull staff out at arm's length and the skull flares",
+          "tries": 1,
+          "generated_at": "2026-09-10T20:01:43+00:00"
+        },
+        "north": {
+          "status": "warn",
+          "step_mean": 0.23,
+          "step_max": 0.3272,
+          "drift": 4.05,
+          "loop": 0.3753,
+          "loop_ratio": 1.63,
+          "travel": 2.8,
+          "pin": 1.0,
+          "pad": 2,
+          "flash": 0.039,
+          "peak": 0.3753,
+          "reach": 0.258,
+          "canvas": [
+            92,
+            92
+          ],
+          "reasons": [
+            "shallow strike: reach 0.26 — eyeball it",
+            "canvas grown by 2 px a side to hold the motion"
+          ],
+          "sub": "a19914ee-515f-437b-88ca-12fa1bbc27dc",
+          "group": "ce1c2319-2f7d-4d1a-b5eb-9f74f002b410",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "action": "Skull Curse - Thrusts the skull staff out at arm's length and the skull flares",
+          "tries": 1,
+          "generated_at": "2026-09-10T20:01:43+00:00"
+        },
+        "south-west": {
+          "status": "pass",
+          "step_mean": 0.2174,
+          "step_max": 0.3759,
+          "drift": 7.16,
+          "loop": 0.3498,
+          "loop_ratio": 1.61,
+          "travel": 9.04,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": 0.187,
+          "peak": 0.3632,
+          "reach": 0.365,
+          "canvas": [
+            88,
+            88
+          ],
+          "reasons": [],
+          "sub": "96013fe4-de93-4e87-875e-db91301876bc",
+          "group": "e6311150-fa9e-4984-a5d2-88a89f9336fa",
+          "takes": 1,
+          "version": 1,
+          "mirrored": true,
+          "action": "Skull Curse - Thrusts the skull staff out at arm's length and the skull flares",
+          "tries": 1,
+          "generated_at": "2026-09-10T20:01:42+00:00",
+          "source": "south-east"
+        },
+        "west": {
+          "status": "pass",
+          "step_mean": 0.1643,
+          "step_max": 0.3319,
+          "drift": 3.94,
+          "loop": 0.386,
+          "loop_ratio": 2.35,
+          "travel": 3.94,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": 0.096,
+          "peak": 0.386,
+          "reach": 0.806,
+          "canvas": [
+            88,
+            88
+          ],
+          "reasons": [],
+          "sub": "4d7051f4-f05e-45e9-a972-a77a19d985b2",
+          "group": "206d8bc2-0987-4af5-9f75-6c69d03e2419",
+          "takes": 1,
+          "version": 1,
+          "mirrored": true,
+          "action": "Skull Curse - Thrusts the skull staff out at arm's length and the skull flares",
+          "tries": 1,
+          "generated_at": "2026-09-10T20:01:42+00:00",
+          "source": "east"
+        },
+        "north-west": {
+          "status": "pass",
+          "step_mean": 0.2497,
+          "step_max": 0.3913,
+          "drift": 5.26,
+          "loop": 0.5344,
+          "loop_ratio": 2.14,
+          "travel": 5.26,
+          "pin": 1.0,
+          "pad": 4,
+          "flash": 0.065,
+          "peak": 0.5344,
+          "reach": 0.39,
+          "canvas": [
+            96,
+            96
+          ],
+          "reasons": [
+            "canvas grown by 4 px a side to hold the motion"
+          ],
+          "sub": "8c177711-ea58-43ae-b23f-fa5069ac8468",
+          "group": "6b0f776a-ca05-4f0a-8ce8-a6ea3cebb8e8",
+          "takes": 1,
+          "version": 1,
+          "mirrored": true,
+          "action": "Skull Curse - Thrusts the skull staff out at arm's length and the skull flares",
+          "tries": 1,
+          "generated_at": "2026-09-10T20:01:43+00:00",
+          "source": "north-east"
+        }
+      },
+      "action": "Skull Curse - Thrusts the skull staff out at arm's length and the skull flares",
+      "frame_paths": {
+        "south": [
+          "goblin_shaman/animations/attack_try/south/00.webp",
+          "goblin_shaman/animations/attack_try/south/01.webp",
+          "goblin_shaman/animations/attack_try/south/02.webp",
+          "goblin_shaman/animations/attack_try/south/03.webp",
+          "goblin_shaman/animations/attack_try/south/04.webp"
+        ],
+        "south-east": [
+          "goblin_shaman/animations/attack_try/south-east/00.webp",
+          "goblin_shaman/animations/attack_try/south-east/01.webp",
+          "goblin_shaman/animations/attack_try/south-east/02.webp",
+          "goblin_shaman/animations/attack_try/south-east/03.webp",
+          "goblin_shaman/animations/attack_try/south-east/04.webp"
+        ],
+        "east": [
+          "goblin_shaman/animations/attack_try/east/00.webp",
+          "goblin_shaman/animations/attack_try/east/01.webp",
+          "goblin_shaman/animations/attack_try/east/02.webp",
+          "goblin_shaman/animations/attack_try/east/03.webp",
+          "goblin_shaman/animations/attack_try/east/04.webp"
+        ],
+        "north-east": [
+          "goblin_shaman/animations/attack_try/north-east/00.webp",
+          "goblin_shaman/animations/attack_try/north-east/01.webp",
+          "goblin_shaman/animations/attack_try/north-east/02.webp",
+          "goblin_shaman/animations/attack_try/north-east/03.webp",
+          "goblin_shaman/animations/attack_try/north-east/04.webp"
+        ],
+        "north": [
+          "goblin_shaman/animations/attack_try/north/00.webp",
+          "goblin_shaman/animations/attack_try/north/01.webp",
+          "goblin_shaman/animations/attack_try/north/02.webp",
+          "goblin_shaman/animations/attack_try/north/03.webp",
+          "goblin_shaman/animations/attack_try/north/04.webp"
+        ],
+        "south-west": [
+          "goblin_shaman/animations/attack_try/south-west/00.webp",
+          "goblin_shaman/animations/attack_try/south-west/01.webp",
+          "goblin_shaman/animations/attack_try/south-west/02.webp",
+          "goblin_shaman/animations/attack_try/south-west/03.webp",
+          "goblin_shaman/animations/attack_try/south-west/04.webp"
+        ],
+        "west": [
+          "goblin_shaman/animations/attack_try/west/00.webp",
+          "goblin_shaman/animations/attack_try/west/01.webp",
+          "goblin_shaman/animations/attack_try/west/02.webp",
+          "goblin_shaman/animations/attack_try/west/03.webp",
+          "goblin_shaman/animations/attack_try/west/04.webp"
+        ],
+        "north-west": [
+          "goblin_shaman/animations/attack_try/north-west/00.webp",
+          "goblin_shaman/animations/attack_try/north-west/01.webp",
+          "goblin_shaman/animations/attack_try/north-west/02.webp",
+          "goblin_shaman/animations/attack_try/north-west/03.webp",
+          "goblin_shaman/animations/attack_try/north-west/04.webp"
+        ]
+      },
+      "strips": {
+        "south": "goblin_shaman/animations/attack_try__south.webp",
+        "south-east": "goblin_shaman/animations/attack_try__south-east.webp",
+        "east": "goblin_shaman/animations/attack_try__east.webp",
+        "north-east": "goblin_shaman/animations/attack_try__north-east.webp",
+        "north": "goblin_shaman/animations/attack_try__north.webp",
+        "south-west": "goblin_shaman/animations/attack_try__south-west.webp",
+        "west": "goblin_shaman/animations/attack_try__west.webp",
+        "north-west": "goblin_shaman/animations/attack_try__north-west.webp"
+      }
     }
   }
 }
