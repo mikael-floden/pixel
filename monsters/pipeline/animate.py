@@ -159,7 +159,8 @@ SIMPLE_LUNGE = ("Lunge Attack - Throws its whole body forward in one fast lunge,
 FRAME_LADDER = [4, 6, 4, 8, 4, 6, 4, 8, 6, 4]
 MAX_TRIES = 10          # "keep retrying maybe 10 times before you give up the entire animation"
 CLAW_AFTER = 3          # rolls of the logical attack before falling back to the simple claw
-ESCALATE_AFTER = 6      # rolls before the whole monster is redone one notch louder
+EXTREME_AFTER = 5       # rolls before the design's EXTREME attack is used
+ESCALATE_AFTER = 7      # rolls before the whole monster is redone one notch louder
 APPROVED_TAG = "APPROVED"
 MIN_USD = 5.0
 
@@ -526,7 +527,17 @@ def generate_state(client, cid, state, dirs, version, verbose=True, pin=False):
         # must not reset it or the sweep flip-flops between the two wordings
         same_dial = old.get("intensity", 0) == intensity_of(man, state)
         tries[d] = (old.get("rolls", 0) + 1) if (same_dial and old.get("status") == "fail") else 1
-        if base_state(state) == "attack" and tries[d] >= CLAW_AFTER:
+        if base_state(state) == "attack" and tries[d] >= EXTREME_AFTER and design_flag(cid, "attack_extreme"):
+            # nothing subtle has worked: describe an EVENT the model cannot
+            # render passively — the shell bursts, the ground erupts, the whole
+            # body is thrown forward (maintainer 2026-09-10: "what happens if
+            # you go even more extreme? 'The crab's shell explodes in a
+            # powerful attack'. You can always step up the prompt a notch.
+            # Think outside the box and try to generate something the AI can't
+            # stay passive anymore. This is very monster to monster
+            # individual."). One dramatic line per design, hand written.
+            action = design_flag(cid, "attack_extreme")
+        elif base_state(state) == "attack" and tries[d] >= CLAW_AFTER:
             # the logical attack has had its rolls; go SIMPLER (maintainer).
             # A clawed design gets the claw swipe, anything else a plain
             # whole-body lunge — both with the swoosh lines he says work.
@@ -586,7 +597,8 @@ def collect_state(client, cid, state, dirs, version, verbose=True, pin=False, ac
         frames, pad = align_to_base(frames, rotation(cid, d), pinned=pinned)
         save_frames(cid, state, d, frames)
         qa = qa_clip(cid, state, d, frames, pinned=pinned,
-                     claw_take=actions[d] in (CLAW_SLASH, SIMPLE_LUNGE),
+                     claw_take=(actions[d] in (CLAW_SLASH, SIMPLE_LUNGE)
+                                or actions[d] == design_flag(cid, "attack_extreme")),
                      want_frames=(counts or {}).get(d))
         if pin:
             qa["pinned"] = True
@@ -765,7 +777,8 @@ def cmd_requal(args):
                 continue
             new = qa_clip(cid, args.state, d, frames,
                           pinned=(True if q.get("pinned") else None),
-                          claw_take=q.get("action") in (CLAW_SLASH, SIMPLE_LUNGE),
+                          claw_take=(q.get("action") in (CLAW_SLASH, SIMPLE_LUNGE)
+                                     or q.get("action") == design_flag(cid, "attack_extreme")),
                           want_frames=(len(frames) - (1 if STATES[base_state(args.state)].get("keep_first", True) else 0)))
             if q.get("pinned"):
                 new["pinned"] = True

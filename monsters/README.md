@@ -287,10 +287,22 @@ The rules that produce a real strike:
   logical attack on a new seed; from 3 a clawed design switches to the
   SIMPLER `CLAW_SLASH` ("often you need to try something simpler, and a
   'claw' attack with swoosh lines often works" — its white swoosh is wanted,
-  so the flash gate opens to 0.45 for it); from 6 the monster's intensity
-  dial goes up, which redoes all its directions; at 10 the direction stops
-  being rolled, because what is wrong is the attack CONCEPT, not the dice —
-  reword it in the config and the whole slot regenerates.
+  so the flash gate opens to 0.45 for it); from 5 the design's **EXTREME**
+  attack; from 7 the monster's intensity dial goes up, which redoes all its
+  directions; at 10 the direction stops being rolled, because what is wrong
+  is the attack CONCEPT, not the dice — reword it in the config and the
+  whole slot regenerates.
+- **`attack_extreme`: an EVENT the model cannot render passively.** Maintainer
+  2026-09-10: "what happens if you go even more extreme? 'The crab's shell
+  explodes in a powerful attack'. You can always step up the prompt a notch.
+  Think outside the box and try to generate something the AI can't stay
+  passive anymore. This is very monster to monster individual." Every design
+  carries one hand-written dramatic line — the crab's shell cracks open and
+  throws shards, the elephant hurls itself forward with dust exploding under
+  it, the bog titan drives both arms into the ground and erupts mud. Adverbs
+  ("aggressive", "huge exaggerated motion") move the needle far less than
+  changing WHAT HAPPENS. Its debris is exempt from the flash gate, like the
+  claw swoosh.
 - **Write the attack that feels LOGICAL for the creature first** (maintainer:
   "that will usually generate the correct attack"). The simple claw is the
   fallback, not the opening move.
