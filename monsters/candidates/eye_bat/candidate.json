@@ -1029,38 +1029,38 @@
           "rung": 0
         },
         "north": {
-          "status": "fail",
-          "step_mean": 0.2432,
-          "step_max": 0.7251,
-          "drift": 7.98,
-          "loop": 0.6722,
-          "loop_ratio": 2.76,
-          "travel": 1.73,
+          "status": "warn",
+          "step_mean": 0.1861,
+          "step_max": 0.2501,
+          "drift": 0.52,
+          "loop": 0.0925,
+          "loop_ratio": 0.5,
+          "travel": 0.18,
           "pin": 1.0,
-          "pad": 2,
-          "flash": 0.084,
-          "peak": 0.716,
-          "reach": 0.12,
+          "pad": 1,
+          "flash": 0.376,
+          "peak": 0.4061,
+          "reach": 0.376,
           "canvas": [
-            68,
-            68
+            66,
+            66
           ],
           "reasons": [
-            "no strike, just a lean: nothing reaches past 0.12 of the body",
-            "canvas grown by 2 px a side to hold the motion"
+            "some bright effect pixels (0.38) — eyeball it",
+            "canvas grown by 1 px a side to hold the motion"
           ],
-          "sub": "960aff8a-de08-4bf5-b883-a5302aa26705",
-          "group": "34f08902-c5ed-4a6d-a142-57c12794e43e",
+          "sub": "3d2d7482-7800-42ce-84c2-2ad3cf71202b",
+          "group": "7916924b-c58e-4908-b27c-50e2d91935be",
           "takes": 1,
-          "version": 7,
+          "version": 8,
           "mirrored": false,
-          "action": "Lunge Attack - Throws its whole body forward in one fast lunge, white swoosh lines trailing behind it, a big aggressive swing",
+          "action": "Beam Burst - The eye flares wide open and fires a blinding beam, wings thrown wide",
           "intensity": 1,
-          "rolls": 3,
+          "rolls": 4,
           "frames": 9,
-          "rung": 2,
-          "tries": 3,
-          "generated_at": "2026-09-10T22:33:29+00:00"
+          "rung": 3,
+          "tries": 4,
+          "generated_at": "2026-09-10T22:45:37+00:00"
         },
         "west": {
           "status": "warn",

@@ -908,37 +908,37 @@
     "attack_try": {
       "directions": {
         "south": {
-          "status": "fail",
-          "step_mean": 0.2356,
-          "step_max": 0.4799,
-          "drift": 2.86,
-          "loop": 0.5086,
-          "loop_ratio": 2.16,
-          "travel": 0.56,
+          "status": "warn",
+          "step_mean": 0.282,
+          "step_max": 0.3786,
+          "drift": 5.96,
+          "loop": 0.45,
+          "loop_ratio": 1.6,
+          "travel": 1.16,
           "pin": 1.0,
           "pad": 0,
-          "flash": 0.037,
-          "peak": 0.5086,
-          "reach": 0.071,
+          "flash": 0.104,
+          "peak": 0.4932,
+          "reach": 0.182,
           "canvas": [
             224,
             224
           ],
           "reasons": [
-            "no strike, just a lean: nothing reaches past 0.07 of the body"
+            "shallow strike: reach 0.18 — eyeball it"
           ],
-          "sub": "b2d949ab-c181-482b-bb02-ffecaab27aa3",
-          "group": "8673c7ac-cd74-4473-98f8-22d42969eaf0",
+          "sub": "ee2b973f-c57a-4c77-a2b0-802c5b096356",
+          "group": "c9e4bc90-1373-40a7-a35e-35555747cf29",
           "takes": 1,
-          "version": 7,
+          "version": 8,
           "mirrored": false,
-          "action": "Root Sweep - The treant swings both branch arms down in a huge arc, leaves and splinters bursting off, an extremely violent attack, huge exaggerated motion, the limb thrown far out",
+          "action": "Root Sweep - The treant swings both branch arms down in a huge arc, leaves and splinters bursting off, an explosively violent attack, the whole body thrown into it, debris and swoosh lines flying",
           "intensity": 1,
-          "rolls": 6,
+          "rolls": 7,
           "frames": 5,
-          "rung": 5,
-          "tries": 6,
-          "generated_at": "2026-09-10T22:33:55+00:00"
+          "rung": 6,
+          "tries": 7,
+          "generated_at": "2026-09-10T22:47:32+00:00"
         },
         "south-east": {
           "status": "pass",

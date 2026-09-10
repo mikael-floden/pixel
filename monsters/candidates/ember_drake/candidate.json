@@ -905,36 +905,36 @@
       "directions": {
         "south": {
           "status": "fail",
-          "step_mean": 0.1411,
-          "step_max": 0.1867,
-          "drift": 6.42,
-          "loop": 0.2149,
-          "loop_ratio": 1.52,
-          "travel": 5.95,
+          "step_mean": 0.103,
+          "step_max": 0.1309,
+          "drift": 4.13,
+          "loop": 0.1918,
+          "loop_ratio": 1.86,
+          "travel": 4.13,
           "pin": 1.0,
           "pad": 0,
-          "flash": 0.115,
-          "peak": 0.2219,
-          "reach": 0.115,
+          "flash": 0.013,
+          "peak": 0.1918,
+          "reach": 0.133,
           "canvas": [
             240,
             240
           ],
           "reasons": [
-            "no strike, just a lean: nothing reaches past 0.11 of the body"
+            "no strike, just a lean: nothing reaches past 0.13 of the body"
           ],
-          "sub": "794d8cb9-b7d3-4ad9-9ff2-beea2c83a949",
-          "group": "e8b14f9d-45e6-4344-9292-50c7d6843e3a",
+          "sub": "41a0d0df-028c-4ef0-8a88-add8aaa7dc17",
+          "group": "18052d66-f272-406a-a052-13634311b0bc",
           "takes": 1,
-          "version": 7,
+          "version": 8,
           "mirrored": false,
-          "action": "Claw Swipe - Raises one front paw and performs one quick swipe forward, white swoosh lines following the claws, a big aggressive swing",
+          "action": "Inferno Breath - The drake rears its head far back and unleashes a long roaring jet of fire, wings thrown wide",
           "intensity": 1,
-          "rolls": 6,
+          "rolls": 7,
           "frames": 5,
-          "rung": 2,
-          "tries": 6,
-          "generated_at": "2026-09-10T22:38:46+00:00"
+          "rung": 3,
+          "tries": 7,
+          "generated_at": "2026-09-10T22:49:16+00:00"
         },
         "south-east": {
           "status": "warn",
@@ -1001,37 +1001,37 @@
           "rung": 0
         },
         "north-east": {
-          "status": "fail",
-          "step_mean": 0.0827,
-          "step_max": 0.1131,
-          "drift": 0.7,
-          "loop": 0.1743,
-          "loop_ratio": 2.11,
-          "travel": 1.32,
+          "status": "warn",
+          "step_mean": 0.1531,
+          "step_max": 0.2122,
+          "drift": 3.99,
+          "loop": 0.2268,
+          "loop_ratio": 1.48,
+          "travel": 3.69,
           "pin": 1.0,
           "pad": 0,
-          "flash": 0.141,
-          "peak": 0.1743,
-          "reach": 0.065,
+          "flash": 0.194,
+          "peak": 0.2268,
+          "reach": 0.194,
           "canvas": [
             240,
             240
           ],
           "reasons": [
-            "no strike, just a lean: nothing reaches past 0.07 of the body"
+            "shallow strike: reach 0.19 — eyeball it"
           ],
-          "sub": "49be3ea6-39b4-490c-867f-d73f1df33497",
-          "group": "86224de3-a96c-44c9-9202-088b92c114cf",
+          "sub": "d054597f-cd0d-461e-aa6e-edbbf0a05ee3",
+          "group": "15d34d83-4683-4883-bae9-202f3f2c4eaa",
           "takes": 1,
-          "version": 7,
+          "version": 8,
           "mirrored": false,
-          "action": "Fire Breath - Rears its head back and breathes a long jet of fire forward, a big aggressive swing",
+          "action": "Claw Swipe - Raises one front paw and performs one quick swipe forward, white swoosh lines following the claws, a big aggressive swing",
           "intensity": 1,
-          "rolls": 2,
+          "rolls": 3,
           "frames": 5,
-          "rung": 1,
-          "tries": 2,
-          "generated_at": "2026-09-10T22:38:47+00:00"
+          "rung": 2,
+          "tries": 3,
+          "generated_at": "2026-09-10T22:49:16+00:00"
         },
         "north": {
           "status": "warn",
@@ -1134,35 +1134,36 @@
         },
         "north-west": {
           "status": "warn",
-          "step_mean": 0.0971,
-          "step_max": 0.1646,
-          "drift": 3.32,
-          "loop": 0.1346,
-          "loop_ratio": 1.39,
-          "travel": 4.65,
+          "step_mean": 0.1531,
+          "step_max": 0.2122,
+          "drift": 3.99,
+          "loop": 0.2268,
+          "loop_ratio": 1.48,
+          "travel": 3.69,
           "pin": 1.0,
           "pad": 0,
-          "flash": 0.009,
-          "peak": 0.2361,
-          "reach": 0.175,
+          "flash": 0.194,
+          "peak": 0.2268,
+          "reach": 0.194,
           "canvas": [
             240,
             240
           ],
           "reasons": [
-            "shallow strike: reach 0.17 — eyeball it"
+            "shallow strike: reach 0.19 — eyeball it"
           ],
-          "sub": "075f2268-fa56-4ab2-8e62-4c5447122f65",
-          "group": "02b5d0ce-eb9f-4481-93ed-15fc415b093d",
+          "sub": "d054597f-cd0d-461e-aa6e-edbbf0a05ee3",
+          "group": "15d34d83-4683-4883-bae9-202f3f2c4eaa",
           "takes": 1,
-          "version": 4,
+          "version": 8,
           "mirrored": true,
-          "generated_at": "2026-09-10T21:28:24+00:00",
-          "action": "Claw Swipe - Raises one front paw and performs one quick swipe forward, white swoosh lines following the claws",
-          "tries": 4,
-          "rolls": 4,
+          "action": "Claw Swipe - Raises one front paw and performs one quick swipe forward, white swoosh lines following the claws, a big aggressive swing",
           "intensity": 1,
-          "frames": 9,
+          "rolls": 3,
+          "frames": 5,
+          "rung": 2,
+          "tries": 3,
+          "generated_at": "2026-09-10T22:49:16+00:00",
           "source": "north-east"
         }
       },
@@ -1222,11 +1223,7 @@
           "ember_drake/animations/attack_try/north-west/01.webp",
           "ember_drake/animations/attack_try/north-west/02.webp",
           "ember_drake/animations/attack_try/north-west/03.webp",
-          "ember_drake/animations/attack_try/north-west/04.webp",
-          "ember_drake/animations/attack_try/north-west/05.webp",
-          "ember_drake/animations/attack_try/north-west/06.webp",
-          "ember_drake/animations/attack_try/north-west/07.webp",
-          "ember_drake/animations/attack_try/north-west/08.webp"
+          "ember_drake/animations/attack_try/north-west/04.webp"
         ]
       },
       "strips": {

@@ -896,37 +896,37 @@
     "attack_try": {
       "directions": {
         "south": {
-          "status": "fail",
-          "step_mean": 0.1993,
-          "step_max": 0.2737,
-          "drift": 2.7,
-          "loop": 0.3544,
-          "loop_ratio": 1.78,
-          "travel": 1.53,
+          "status": "warn",
+          "step_mean": 0.1887,
+          "step_max": 0.2473,
+          "drift": 3.42,
+          "loop": 0.3105,
+          "loop_ratio": 1.64,
+          "travel": 0.26,
           "pin": 1.0,
           "pad": 0,
-          "flash": 0.137,
-          "peak": 0.3544,
-          "reach": 0.137,
+          "flash": 0.263,
+          "peak": 0.3105,
+          "reach": 0.263,
           "canvas": [
             112,
             112
           ],
           "reasons": [
-            "no strike, just a lean: nothing reaches past 0.14 of the body"
+            "shallow strike: reach 0.26 — eyeball it"
           ],
-          "sub": "68dc55a6-1c04-4820-a62f-5947d818fabb",
-          "group": "24f7ea6b-55b7-4ced-8f67-ca8c4ed9587a",
+          "sub": "815b472e-b5c8-40d3-a2b9-b00c113775a6",
+          "group": "e9f6ed50-2793-432d-a284-c8cb28864637",
           "takes": 1,
-          "version": 7,
+          "version": 8,
           "mirrored": false,
-          "action": "Claw Swipe - Raises one front paw and performs one quick swipe forward, white swoosh lines following the claws, a big aggressive swing",
+          "action": "Shell Burst - The crab's shell cracks open with a burst of force as it hurls both claws wide and slams them down, shards and spray flying",
           "intensity": 2,
-          "rolls": 3,
+          "rolls": 4,
           "frames": 5,
-          "rung": 2,
-          "tries": 3,
-          "generated_at": "2026-09-10T22:27:14+00:00"
+          "rung": 3,
+          "tries": 4,
+          "generated_at": "2026-09-10T22:44:06+00:00"
         },
         "south-east": {
           "status": "warn",

@@ -1029,37 +1029,37 @@
           "generated_at": "2026-09-10T21:58:45+00:00"
         },
         "north": {
-          "status": "fail",
-          "step_mean": 0.1404,
-          "step_max": 0.1585,
-          "drift": 2.32,
-          "loop": 0.2307,
-          "loop_ratio": 1.64,
-          "travel": 0.31,
+          "status": "pass",
+          "step_mean": 0.2332,
+          "step_max": 0.362,
+          "drift": 6.64,
+          "loop": 0.1851,
+          "loop_ratio": 0.79,
+          "travel": 6.64,
           "pin": 1.0,
-          "pad": 0,
-          "flash": -0.004,
-          "peak": 0.2338,
-          "reach": 0.072,
+          "pad": 2,
+          "flash": 0.302,
+          "peak": 0.2902,
+          "reach": 0.333,
           "canvas": [
-            104,
-            104
+            108,
+            108
           ],
           "reasons": [
-            "no strike, just a lean: nothing reaches past 0.07 of the body"
+            "canvas grown by 2 px a side to hold the motion"
           ],
-          "sub": "182c8bf9-0f6c-4af9-8a98-319158ad694c",
-          "group": "3a564e92-6a1b-4a7a-8470-90962c650903",
+          "sub": "79c169a7-408c-4df3-8b43-f2ab67e2d9ed",
+          "group": "e0ffcbc8-08be-415c-b45f-675526b7462f",
           "takes": 1,
-          "version": 7,
+          "version": 8,
           "mirrored": false,
-          "action": "Double Claw - Rakes forward with both claws in two fast alternating swipes, a big aggressive swing",
+          "action": "Claw Swipe - Raises one front paw and performs one quick swipe forward, white swoosh lines following the claws, a big aggressive swing",
           "intensity": 1,
-          "rolls": 2,
+          "rolls": 3,
           "frames": 5,
-          "rung": 1,
-          "tries": 2,
-          "generated_at": "2026-09-10T22:36:05+00:00"
+          "rung": 2,
+          "tries": 3,
+          "generated_at": "2026-09-10T22:48:49+00:00"
         },
         "west": {
           "status": "pass",

@@ -910,38 +910,38 @@
     "attack_try": {
       "directions": {
         "south": {
-          "status": "fail",
-          "step_mean": 0.1541,
-          "step_max": 0.2031,
-          "drift": 1.85,
-          "loop": 0.0408,
-          "loop_ratio": 0.26,
-          "travel": 0.46,
+          "status": "warn",
+          "step_mean": 0.1575,
+          "step_max": 0.2137,
+          "drift": 1.72,
+          "loop": 0.0559,
+          "loop_ratio": 0.35,
+          "travel": 0.38,
           "pin": 1.0,
-          "pad": 5,
-          "flash": 0.47,
-          "peak": 0.2065,
-          "reach": 0.47,
+          "pad": 3,
+          "flash": 0.445,
+          "peak": 0.244,
+          "reach": 0.445,
           "canvas": [
-            106,
-            106
+            102,
+            102
           ],
           "reasons": [
-            "painted effect: 0.47 of the body in new bright pixels (flare/slash arc)",
-            "canvas grown by 5 px a side to hold the motion"
+            "some bright effect pixels (0.45) — eyeball it",
+            "canvas grown by 3 px a side to hold the motion"
           ],
-          "sub": "8f571475-d6f3-4f6a-9f14-699d485e078f",
-          "group": "7f973ba4-9886-4221-b0ea-f2816c5b16e3",
+          "sub": "d25cd8e6-05a3-4d07-bf6c-df5a399d21cc",
+          "group": "18360b16-420f-454c-872d-5e7aa01fce93",
           "takes": 1,
-          "version": 7,
+          "version": 8,
           "mirrored": false,
-          "action": "Tentacle Storm - The octopus rears its whole mantle up and hurls every tentacle forward at once, water bursting out, a huge aggressive attack with the whole body behind it, wide exaggerated motion",
+          "action": "Tentacle Storm - The octopus rears its whole mantle up and hurls every tentacle forward at once, water bursting out, an extremely violent attack, huge exaggerated motion, the limb thrown far out",
           "intensity": 1,
-          "rolls": 5,
+          "rolls": 6,
           "frames": 5,
-          "rung": 4,
-          "tries": 5,
-          "generated_at": "2026-09-10T22:29:43+00:00"
+          "rung": 5,
+          "tries": 6,
+          "generated_at": "2026-09-10T22:44:00+00:00"
         },
         "south-east": {
           "status": "warn",

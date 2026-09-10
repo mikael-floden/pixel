@@ -901,37 +901,39 @@
     "attack_try": {
       "directions": {
         "south": {
-          "status": "fail",
-          "step_mean": 0.1737,
-          "step_max": 0.2698,
-          "drift": 6.31,
-          "loop": 0.3768,
-          "loop_ratio": 2.17,
-          "travel": 6.31,
+          "status": "warn",
+          "step_mean": 0.1812,
+          "step_max": 0.2469,
+          "drift": 23.11,
+          "loop": 0.4212,
+          "loop_ratio": 2.32,
+          "travel": 1.42,
           "pin": 1.0,
-          "pad": 0,
-          "flash": 0.111,
-          "peak": 0.3768,
-          "reach": 0.111,
+          "pad": 8,
+          "flash": 0.0,
+          "peak": 0.4212,
+          "reach": 0.261,
           "canvas": [
-            224,
-            224
+            240,
+            240
           ],
           "reasons": [
-            "no strike, just a lean: nothing reaches past 0.11 of the body"
+            "drifts 23.1 px — eyeball it",
+            "shallow strike: reach 0.26 — eyeball it",
+            "canvas grown by 8 px a side to hold the motion"
           ],
-          "sub": "5cebb367-4e80-47b7-9311-e18ab3841497",
-          "group": "aa3b7bc4-d59d-4eb1-b5b9-9b48744bb8f6",
+          "sub": "643be064-19c6-403e-a41b-2abbd486a33a",
+          "group": "463da939-a186-4786-b8dc-8c5e5f354092",
           "takes": 1,
-          "version": 7,
+          "version": 8,
           "mirrored": false,
-          "action": "Claw Swipe - Raises one front paw and performs one quick swipe forward, white swoosh lines following the claws, a big aggressive swing",
+          "action": "Mud Eruption - The titan hurls both arms down into the ground, mud and water erupting upward",
           "intensity": 1,
-          "rolls": 3,
+          "rolls": 4,
           "frames": 5,
-          "rung": 2,
-          "tries": 3,
-          "generated_at": "2026-09-10T22:29:02+00:00"
+          "rung": 3,
+          "tries": 4,
+          "generated_at": "2026-09-10T22:45:25+00:00"
         },
         "south-east": {
           "status": "warn",
