@@ -144,23 +144,26 @@ running around with the map shut (maintainer 2026-09-10: "I might not always
 have the map open when running around — so having them on the screen like
 spawn areas work would help me a lot"). Two marks, and the split is the point:
 
-- every internal **border** is a bare line in the spawn overlay's own blue
-  ("I wanted the same blue we have for spawn zones"), no tint on either side —
-  both sides of a border are somebody's inside, so a fade there would claim a
-  direction that does not exist ("at the border between zones we need no fade.
-  Just a single line — there is no inside/outside");
-- **my zone's inner edge** — `INTEREST_LEAVE_WU` in from the border, the line
-  where the neighbour starts mirroring me — is drawn EXACTLY AS A SPAWN AREA
-  IS, hue-shifted to red — a 1 px line — with short **TICKS on its inside**
-  every other cell, drawn in SCREEN space off points of the line itself.
-  NOT A TINT: three were tried and all three failed. The spawn overlay's own
-  α .05 fill over the whole inside is invisible in red over grass and dark
-  water; α .14 fixes that by "painting the entire inner zone red-ish"; and a
-  four-step hem two cells deep was "an ugly fade" that also landed on the
-  WRONG SIDE of its own line — anything with WIDTH samples the ground level of
-  the cell it steps into, so at a cliff it jumps a storey and comes out above
-  the line. A tick has no width in the world: it cannot flip, cannot stack at
-  a corner where two inner edges meet, and covers no ground at all. The one-sided fill is the whole signal
+- every internal **border** is ONE SHARED LINE running the width of the world,
+  in the spawn overlay's own blue ("I wanted the same blue we have for spawn
+  zones"). It carries no direction and no tint, because it has none to carry:
+  "from one zone this is the end and from the other it is the beginning".
+- **my zone's inner boundary** — `INTEREST_LEAVE_WU` in from the border, where
+  the neighbour starts mirroring me — is a **CLOSED RECTANGLE** in red, each
+  side clipped to the rectangle's own corners, inset only on the sides that
+  have a neighbour (the world's rim has no band).
+
+Nothing is painted over the ground and nothing hangs off the lines. Four
+things were tried on his screen and all four rejected: the spawn overlay's own
+α .05 fill over the whole inside (invisible in red over grass and dark water);
+α .14, which "painted the entire inner zone red-ish"; a four-step gradient hem
+two cells deep, "an ugly fade" that also landed on the WRONG SIDE of its own
+line (anything with WIDTH samples the ground level of the cell it steps into,
+so at a cliff it jumps a storey and is drawn above the line); and inward ticks
+("what is the perpendicular lines! So confusing!"). Running each side of the
+inner boundary across the whole zone, rather than clipping it to the corners,
+is what put a four-way cross on the screen near a corner — a rectangle says
+inside and outside by being closed. The one-sided fill is the whole signal
   ("the fade only exist in one direction ... so I know if I walk out of this
   zone or into this zone"). A four-step gradient hem and a dashed line were
   both tried and rejected: "I want you to not invent something new here. The

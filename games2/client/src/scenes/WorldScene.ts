@@ -5486,6 +5486,24 @@ export class WorldScene extends Phaser.Scene {
       // The input vector actually predicted+sent this frame (AFTER the
       // monster-dodge deflection) — dodge QA reads the deflection live.
       lastInput: () => this.lastInput,
+      /** THE PREDICTION BACKLOG — how far the server's acks trail my sends,
+       *  in windows and in the SECONDS of input it still owes. This is the
+       *  instrument for input lag: the server integrates the queue against a
+       *  real-time budget (`INPUT_TIME_SLACK`), so a backlog bigger than that
+       *  never drains and every later input waits behind it. */
+      predict: () => {
+        let owedMs = 0;
+        for (const p of this.pending) owedMs += p.dt * 1000;
+        const me = (this.room?.state as { players?: { get(k: string): { seq?: number } | undefined } } | undefined)
+          ?.players?.get(this.myId);
+        return {
+          pending: this.pending.length,
+          owedMs: Math.round(owedMs),
+          sent: this.inputSeq,
+          acked: me?.seq ?? -1,
+          logged: this.sentLog.length,
+        };
+      },
       // Monster render-state probe (shared body pipeline QA): per monster the
       // resolved depth, cover line, shadow anchor and lit-copy state.
       /** MICRO-BENCH: force one full ground redraw right now — the latch
@@ -12096,14 +12114,23 @@ export class WorldScene extends Phaser.Scene {
    *  the map view so I can distinguish between them").
    *
    *  TWO THINGS, and the whole point of the overlay is telling them apart:
-   *   - every internal BORDER, the spawn overlay's blue, A BARE LINE —
-   *     crossing one is a hand-off,
-   *     a fresh join into the next zone's room;
-   *   - MY zone's INNER edge, red, drawn AS A SPAWN AREA IS — a thin line with
-   *     one flat low-alpha fill covering everything inside it. It sits
-   *     `INTEREST_LEAVE_WU` in from the border; between it and the border the
-   *     neighbouring room mirrors me as a ghost and its monsters can reach me
-   *     (spec/ZONES.md).
+   *   - every internal BORDER, the spawn overlay's blue: ONE SHARED LINE that
+   *     runs the width of the world. It needs no direction — "from one zone
+   *     this is the end and from the other it is the beginning" (maintainer
+   *     2026-09-10) — and crossing it is a hand-off, a fresh join into the
+   *     next zone's room.
+   *   - MY zone's INNER BOUNDARY, red: A CLOSED RECTANGLE, inset
+   *     `INTEREST_LEAVE_WU` from the border on every side that has a
+   *     neighbour. Between it and the border the neighbouring room mirrors me
+   *     as a ghost and its monsters can reach me (spec/ZONES.md).
+   *
+   *  THE INNER BOUNDARY IS A RECTANGLE, NOT FOUR LINES. Drawing each side
+   *  across the whole zone made them cross at the corners and run on past each
+   *  other, so standing near a corner put a four-way X on the screen — "how
+   *  can an inner zone boundary even have a 4 way cross? This is super
+   *  confusing!" A closed rectangle says inside and outside by being closed,
+   *  which is also why the inward TICKS are gone with it ("and what is the
+   *  perpendicular lines! So confusing!").
    *
    *  THE TINT IS ONE-SIDED, AND THAT IS THE FEATURE (maintainer 2026-09-10, of
    *  the spawn-area overlay: "it's easy for me to know what is the inside of
@@ -12169,19 +12196,15 @@ export class WorldScene extends Phaser.Scene {
     // #ff0000, just more red looking"). A soft red, one shade lighter than
     // pure so it sits on dark ground as well as sand.
     const INNER_LINE = 0xff8f80;
-    // WHICH WAY IS IN IS SAID WITH TICKS, NOT WITH A TINT. Three tints were
-    // tried and all three were wrong: the spawn overlay's α .05 fill over the
-    // whole inside was invisible in red over grass and dark water, α .14
-    // "painted the entire inner zone red-ish", and a four-step hem two cells
-    // deep was "an ugly fade" that also landed on the WRONG SIDE — a strip has
-    // WIDTH, so it samples the ground level of the cell it steps into, and at a
-    // cliff it jumps a storey and comes out above its own line (maintainer
-    // 2026-09-10, of 1aaf808e2: "some fade is also on the wrong side of the
-    // border"). Ticks have no width in the world: each one hangs off a point OF
-    // the line and points inward in SCREEN space, so it cannot flip, cannot
-    // stack at a corner, and covers no ground at all.
-    const TICK_CELLS = 0.45; // tick length, as a fraction of a cell on screen
-    const TICK_EVERY = 2; // cells between ticks
+    // NOTHING IS PAINTED OVER THE GROUND, and nothing hangs off the lines.
+    // Rejected in order, all four on his screen: the spawn overlay's α .05
+    // fill over the whole inside (invisible in red over grass and dark water),
+    // α .14 (that "painted the entire inner zone red-ish"), a four-step
+    // gradient hem two cells deep ("an ugly fade" that also landed on the
+    // WRONG SIDE — a strip has WIDTH, so it samples the ground level of the
+    // cell it steps into and at a cliff jumps a storey above its own line),
+    // and inward ticks ("what is the perpendicular lines! So confusing!").
+    // The closed rectangle below is what says which side is which.
     const at = (fixed: number, t: number, vertical: boolean) =>
       vertical ? this.projectZoneCorner(fixed, t) : this.projectZoneCorner(t, fixed);
 
@@ -12209,51 +12232,36 @@ export class WorldScene extends Phaser.Scene {
       line(y, 0, W, false);
     }
 
-    // THE INWARD SCREEN DIRECTION of one cell, taken at a FIXED level so no
-    // terrain enters it: +1 col and +1 row as screen vectors off the same
-    // origin. This is what makes a tick unflippable.
-    const o = this.projectCellCorner(0, 0, 0);
-    const c1 = this.projectCellCorner(1, 0, 0);
-    const r1 = this.projectCellCorner(0, 1, 0);
-    const dCol = { x: c1.x - o.x, y: c1.y - o.y };
-    const dRow = { x: r1.x - o.x, y: r1.y - o.y };
-
-    // MY ZONE'S INNER EDGE, in red: the thin line, and a comb of short ticks
-    // hanging off its INSIDE every TICK_EVERY cells. Nothing is painted over
-    // the ground.
+    // MY ZONE'S INNER BOUNDARY: one closed rectangle in red.
     const rect = this.zone >= 0 && this.zone < grid.cols * grid.rows ? zoneRect(grid, this.zone) : null;
     if (!rect) return;
     const x0 = rect.x0 / CELL_WU;
     const y0 = rect.y0 / CELL_WU;
     const x1 = rect.x1 / CELL_WU;
     const y1 = rect.y1 / CELL_WU;
-    // Only where there is a NEIGHBOUR. On the world's rim there is no hand-off
-    // and no band, so there is no inner edge either — a line there would claim
-    // a boundary that does not exist.
-    const sides: { fixed: number; vertical: boolean; dir: number }[] = [
-      { fixed: x0, vertical: true, dir: 1 },
-      { fixed: x1, vertical: true, dir: -1 },
-      { fixed: y0, vertical: false, dir: 1 },
-      { fixed: y1, vertical: false, dir: -1 },
-    ];
-    for (const s of sides) {
-      const lim = s.vertical ? W : H;
-      if (s.fixed <= 0 || s.fixed >= lim) continue;
-      const inner = s.fixed + s.dir * band;
-      if (inner <= 0 || inner >= lim) continue;
-      const from = Math.max(0, s.vertical ? y0 : x0);
-      const to = Math.min(s.vertical ? y1 : x1, lim);
-      const d = s.vertical ? dCol : dRow;
-      const tick = { x: d.x * TICK_CELLS * s.dir, y: d.y * TICK_CELLS * s.dir };
-      g.lineStyle(1, INNER_LINE, 0.7);
-      let prev = at(inner, from, s.vertical);
+    // Inset only on a side that HAS a neighbour. The world's rim has no
+    // hand-off and no band, so the boundary runs out to the edge of the world
+    // there rather than claiming a border that does not exist.
+    const ix0 = x0 > 0 ? x0 + band : 0;
+    const iy0 = y0 > 0 ? y0 + band : 0;
+    const ix1 = x1 < W ? x1 - band : W;
+    const iy1 = y1 < H ? y1 - band : H;
+    if (ix1 - ix0 < 2 || iy1 - iy0 < 2) return; // a zone thinner than two bands
+    // EACH SIDE IS CLIPPED TO THE RECTANGLE'S OWN CORNERS. Running a side
+    // across the whole zone instead is what put a four-way cross on his screen.
+    g.lineStyle(2, INNER_LINE, 0.8);
+    const edge = (fixed: number, from: number, to: number, vertical: boolean) => {
+      let prev = at(fixed, from, vertical);
       for (let t = from + 1; t <= to; t++) {
-        const p = at(inner, t, s.vertical);
+        const p = at(fixed, t, vertical);
         g.lineBetween(prev.x, prev.y, p.x, p.y);
-        if (t % TICK_EVERY === 0) g.lineBetween(p.x, p.y, p.x + tick.x, p.y + tick.y);
         prev = p;
       }
-    }
+    };
+    if (x0 > 0) edge(ix0, iy0, iy1, true);
+    if (x1 < W) edge(ix1, iy0, iy1, true);
+    if (y0 > 0) edge(iy0, ix0, ix1, false);
+    if (y1 < H) edge(iy1, ix0, ix1, false);
   }
 
   /** The spawn bonfire on/off — its firelight drowns nearby tiles'
