@@ -1318,7 +1318,7 @@ export class WorldRoom extends Room<WorldState> {
       this.savePlayer(player); // they still earned whatever the account arrived with
       return;
     }
-    this.adoptPlayer(client, client.sessionId, player);
+    this.adoptPlayer(client, client.sessionId, player, !!options.noAggro);
     // The backpack is PRIVATE — targeted message, never schema-synced.
     client.send("inv", { items: player.inv });
     // Every arrival in Nangijala is announced by a shooting star crossing
@@ -2663,9 +2663,16 @@ export class WorldRoom extends Room<WorldState> {
 
   /** A body enters this room under its stable id: the map key, the session
    *  link, its view, its private backpack and the world presence. */
-  private adoptPlayer(client: Client, pid: string, player: Player) {
+  private adoptPlayer(client: Client, pid: string, player: Player, noAggro = false) {
     player.pid = pid;
     player.sid = client.sessionId;
+    /* THE AMBUSH SWITCH BEFORE THE FIRST SCAN. The client's `noaggro` message
+     * arrives a round trip after the body is in state, and the 450 ms scan does
+     * not wait: logging in beside a predator was a death with the switch
+     * showing ON in Settings, and toggling it off and on again was the only way
+     * to make it bite (maintainer 2026-09-10). The join call carries it now
+     * (JoinOptions.noAggro) and a hand-off carries it in the hot state. */
+    if (noAggro) this.noAggro.add(pid);
     this.sidPid.set(client.sessionId, pid);
     this.pidSid.set(pid, client.sessionId);
     this.state.ghosts.delete(pid); // it may have been a neighbour's ghost a moment ago
@@ -2885,12 +2892,11 @@ export class WorldRoom extends Room<WorldState> {
     player.lastHitAt = hot.lastHitAt;
     player.lastCombatAt = hot.lastCombatAt;
     player.dirty = hot.dirty;
-    if (hot.noAggro) this.noAggro.add(hot.pid);
     if (client.state === ClientState.LEAVING || client.state === ClientState.CLOSED) {
       this.savePlayer(player);
       return;
     }
-    this.adoptPlayer(client, hot.pid, player);
+    this.adoptPlayer(client, hot.pid, player, !!hot.noAggro);
     // The old room saved nothing for this body and this room would not
     // until its flush or the leave: a link dropped mid-hop that fails its
     // seat reclaim then rejoins from the LAST SAVED spot — minutes old, in a

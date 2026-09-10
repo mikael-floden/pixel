@@ -7242,6 +7242,15 @@ export class WorldScene extends Phaser.Scene {
       // ~100 ms before the ghost of me arrives there and before this client
       // is bound to the new room: never drop my sprite mid-hop (measured: a
       // 300 ms hole where the avatar and camera target vanished).
+      /* A REMOVAL FROM A ROOM I HAVE ALREADY LEFT IS NOT NEWS. The old zone
+       * room deletes my body the instant the new one adopts it, and that patch
+       * can land AFTER this client is bound to the new room and `zoneSwapping`
+       * is back to false — the removal then took the avatar the new room had
+       * just created and the body vanished mid-stride, camera and all
+       * (maintainer 2026-09-10: "I was running and my character just
+       * disappeared", 1.3 cells past a zone border). The flag cannot see that;
+       * the room a callback belongs to can. */
+      if (room !== this.room) return;
       if (id === this.myId && this.zoneSwapping) return;
       if (!room.state.ghosts?.has(id)) this.removeAvatar(id);
       this.refreshRoster();

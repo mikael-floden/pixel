@@ -2991,6 +2991,14 @@ export interface JoinOptions {
   /** Debug: when the client received zone:go (Date.now()), so the server can
    *  log the hop's latency at onJoin entry. */
   t0?: number;
+  /** Settings "disable aggro", ON THE JOIN CALL. The client also sends the
+   *  `noaggro` message, but that is one round trip LATE: the body is already
+   *  in the room and the 450 ms proximity scan has already run, so logging in
+   *  beside a predator was a death before the switch had been heard of
+   *  (maintainer 2026-09-10: "I died as soon as I logged in with disable
+   *  aggro ... I need to toggle the switch on and off each time I login").
+   *  Carried here, the room knows before the player exists. */
+  noAggro?: boolean;
 }
 
 // --- Chat --------------------------------------------------------------------
