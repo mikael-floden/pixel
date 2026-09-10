@@ -899,6 +899,310 @@
         "west": "skeleton_archer/animations/attack__west.webp",
         "north-west": "skeleton_archer/animations/attack__north-west.webp"
       }
+    },
+    "attack_try": {
+      "directions": {
+        "south": {
+          "status": "fail",
+          "step_mean": 0.1266,
+          "step_max": 0.1638,
+          "drift": 0.53,
+          "loop": 0.2822,
+          "loop_ratio": 2.23,
+          "travel": 0.53,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": 0.003,
+          "peak": 0.2822,
+          "reach": 0.14,
+          "canvas": [
+            112,
+            112
+          ],
+          "reasons": [
+            "no strike, just a lean: nothing reaches past 0.14 of the body"
+          ],
+          "sub": "e4b3ddc6-cb4b-4500-a74a-3154bd357ac0",
+          "group": "15d885cf-56f2-4982-aae6-f29fffe04aab",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "action": "Bow Shot - Draws the bowstring back to its cheek and looses an arrow",
+          "tries": 1,
+          "generated_at": "2026-09-10T20:03:46+00:00"
+        },
+        "south-east": {
+          "status": "warn",
+          "step_mean": 0.1053,
+          "step_max": 0.1567,
+          "drift": 1.06,
+          "loop": 0.2445,
+          "loop_ratio": 2.32,
+          "travel": 1.06,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": -0.002,
+          "peak": 0.2548,
+          "reach": 0.258,
+          "canvas": [
+            112,
+            112
+          ],
+          "reasons": [
+            "shallow strike: reach 0.26 — eyeball it"
+          ],
+          "sub": "85e28b82-b6bc-4cca-9c34-ea67e0a88759",
+          "group": "22c54f75-6d39-450d-9b35-e221a90c257d",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "action": "Bow Shot - Draws the bowstring back to its cheek and looses an arrow",
+          "tries": 1,
+          "generated_at": "2026-09-10T20:03:47+00:00"
+        },
+        "east": {
+          "status": "pass",
+          "step_mean": 0.1814,
+          "step_max": 0.2618,
+          "drift": 2.19,
+          "loop": 0.3915,
+          "loop_ratio": 2.16,
+          "travel": 1.99,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": 0.0,
+          "peak": 0.3915,
+          "reach": 0.42,
+          "canvas": [
+            112,
+            112
+          ],
+          "reasons": [],
+          "sub": "366d4712-94e9-4b5a-be03-43e71b699ac3",
+          "group": "5f1370b3-b0a4-4768-b891-1ba09cdc1aca",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "action": "Bow Shot - Draws the bowstring back to its cheek and looses an arrow",
+          "tries": 1,
+          "generated_at": "2026-09-10T20:03:47+00:00"
+        },
+        "north-east": {
+          "status": "warn",
+          "step_mean": 0.2125,
+          "step_max": 0.2662,
+          "drift": 0.82,
+          "loop": 0.3611,
+          "loop_ratio": 1.7,
+          "travel": 0.68,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": 0.0,
+          "peak": 0.3611,
+          "reach": 0.262,
+          "canvas": [
+            112,
+            112
+          ],
+          "reasons": [
+            "shallow strike: reach 0.26 — eyeball it"
+          ],
+          "sub": "236aa034-1467-4dd7-a3dc-d21631676776",
+          "group": "05e0a8d7-a97c-40ec-b021-f42cc6819b50",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "action": "Bow Shot - Draws the bowstring back to its cheek and looses an arrow",
+          "tries": 1,
+          "generated_at": "2026-09-10T20:03:48+00:00"
+        },
+        "north": {
+          "status": "fail",
+          "step_mean": 0.1027,
+          "step_max": 0.109,
+          "drift": 0.54,
+          "loop": 0.2773,
+          "loop_ratio": 2.7,
+          "travel": 0.22,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": 0.001,
+          "peak": 0.2773,
+          "reach": 0.096,
+          "canvas": [
+            112,
+            112
+          ],
+          "reasons": [
+            "no strike, just a lean: nothing reaches past 0.10 of the body"
+          ],
+          "sub": "08c34e93-e9b2-41d5-8fd1-320ef194a4b4",
+          "group": "18b140bc-5a29-4d5b-962a-8704170b1f42",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "action": "Bow Shot - Draws the bowstring back to its cheek and looses an arrow",
+          "tries": 1,
+          "generated_at": "2026-09-10T20:03:48+00:00"
+        },
+        "south-west": {
+          "status": "warn",
+          "step_mean": 0.1053,
+          "step_max": 0.1567,
+          "drift": 1.06,
+          "loop": 0.2445,
+          "loop_ratio": 2.32,
+          "travel": 1.06,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": -0.002,
+          "peak": 0.2548,
+          "reach": 0.258,
+          "canvas": [
+            112,
+            112
+          ],
+          "reasons": [
+            "shallow strike: reach 0.26 — eyeball it"
+          ],
+          "sub": "85e28b82-b6bc-4cca-9c34-ea67e0a88759",
+          "group": "22c54f75-6d39-450d-9b35-e221a90c257d",
+          "takes": 1,
+          "version": 1,
+          "mirrored": true,
+          "action": "Bow Shot - Draws the bowstring back to its cheek and looses an arrow",
+          "tries": 1,
+          "generated_at": "2026-09-10T20:03:47+00:00",
+          "source": "south-east"
+        },
+        "west": {
+          "status": "pass",
+          "step_mean": 0.1814,
+          "step_max": 0.2618,
+          "drift": 2.19,
+          "loop": 0.3915,
+          "loop_ratio": 2.16,
+          "travel": 1.99,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": 0.0,
+          "peak": 0.3915,
+          "reach": 0.42,
+          "canvas": [
+            112,
+            112
+          ],
+          "reasons": [],
+          "sub": "366d4712-94e9-4b5a-be03-43e71b699ac3",
+          "group": "5f1370b3-b0a4-4768-b891-1ba09cdc1aca",
+          "takes": 1,
+          "version": 1,
+          "mirrored": true,
+          "action": "Bow Shot - Draws the bowstring back to its cheek and looses an arrow",
+          "tries": 1,
+          "generated_at": "2026-09-10T20:03:47+00:00",
+          "source": "east"
+        },
+        "north-west": {
+          "status": "warn",
+          "step_mean": 0.2125,
+          "step_max": 0.2662,
+          "drift": 0.82,
+          "loop": 0.3611,
+          "loop_ratio": 1.7,
+          "travel": 0.68,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": 0.0,
+          "peak": 0.3611,
+          "reach": 0.262,
+          "canvas": [
+            112,
+            112
+          ],
+          "reasons": [
+            "shallow strike: reach 0.26 — eyeball it"
+          ],
+          "sub": "236aa034-1467-4dd7-a3dc-d21631676776",
+          "group": "05e0a8d7-a97c-40ec-b021-f42cc6819b50",
+          "takes": 1,
+          "version": 1,
+          "mirrored": true,
+          "action": "Bow Shot - Draws the bowstring back to its cheek and looses an arrow",
+          "tries": 1,
+          "generated_at": "2026-09-10T20:03:48+00:00",
+          "source": "north-east"
+        }
+      },
+      "action": "Bow Shot - Draws the bowstring back to its cheek and looses an arrow",
+      "frame_paths": {
+        "south": [
+          "skeleton_archer/animations/attack_try/south/00.webp",
+          "skeleton_archer/animations/attack_try/south/01.webp",
+          "skeleton_archer/animations/attack_try/south/02.webp",
+          "skeleton_archer/animations/attack_try/south/03.webp",
+          "skeleton_archer/animations/attack_try/south/04.webp"
+        ],
+        "south-east": [
+          "skeleton_archer/animations/attack_try/south-east/00.webp",
+          "skeleton_archer/animations/attack_try/south-east/01.webp",
+          "skeleton_archer/animations/attack_try/south-east/02.webp",
+          "skeleton_archer/animations/attack_try/south-east/03.webp",
+          "skeleton_archer/animations/attack_try/south-east/04.webp"
+        ],
+        "east": [
+          "skeleton_archer/animations/attack_try/east/00.webp",
+          "skeleton_archer/animations/attack_try/east/01.webp",
+          "skeleton_archer/animations/attack_try/east/02.webp",
+          "skeleton_archer/animations/attack_try/east/03.webp",
+          "skeleton_archer/animations/attack_try/east/04.webp"
+        ],
+        "north-east": [
+          "skeleton_archer/animations/attack_try/north-east/00.webp",
+          "skeleton_archer/animations/attack_try/north-east/01.webp",
+          "skeleton_archer/animations/attack_try/north-east/02.webp",
+          "skeleton_archer/animations/attack_try/north-east/03.webp",
+          "skeleton_archer/animations/attack_try/north-east/04.webp"
+        ],
+        "north": [
+          "skeleton_archer/animations/attack_try/north/00.webp",
+          "skeleton_archer/animations/attack_try/north/01.webp",
+          "skeleton_archer/animations/attack_try/north/02.webp",
+          "skeleton_archer/animations/attack_try/north/03.webp",
+          "skeleton_archer/animations/attack_try/north/04.webp"
+        ],
+        "south-west": [
+          "skeleton_archer/animations/attack_try/south-west/00.webp",
+          "skeleton_archer/animations/attack_try/south-west/01.webp",
+          "skeleton_archer/animations/attack_try/south-west/02.webp",
+          "skeleton_archer/animations/attack_try/south-west/03.webp",
+          "skeleton_archer/animations/attack_try/south-west/04.webp"
+        ],
+        "west": [
+          "skeleton_archer/animations/attack_try/west/00.webp",
+          "skeleton_archer/animations/attack_try/west/01.webp",
+          "skeleton_archer/animations/attack_try/west/02.webp",
+          "skeleton_archer/animations/attack_try/west/03.webp",
+          "skeleton_archer/animations/attack_try/west/04.webp"
+        ],
+        "north-west": [
+          "skeleton_archer/animations/attack_try/north-west/00.webp",
+          "skeleton_archer/animations/attack_try/north-west/01.webp",
+          "skeleton_archer/animations/attack_try/north-west/02.webp",
+          "skeleton_archer/animations/attack_try/north-west/03.webp",
+          "skeleton_archer/animations/attack_try/north-west/04.webp"
+        ]
+      },
+      "strips": {
+        "south": "skeleton_archer/animations/attack_try__south.webp",
+        "south-east": "skeleton_archer/animations/attack_try__south-east.webp",
+        "east": "skeleton_archer/animations/attack_try__east.webp",
+        "north-east": "skeleton_archer/animations/attack_try__north-east.webp",
+        "north": "skeleton_archer/animations/attack_try__north.webp",
+        "south-west": "skeleton_archer/animations/attack_try__south-west.webp",
+        "west": "skeleton_archer/animations/attack_try__west.webp",
+        "north-west": "skeleton_archer/animations/attack_try__north-west.webp"
+      }
     }
   }
 }

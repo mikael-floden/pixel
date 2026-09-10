@@ -901,6 +901,238 @@
         "west": "bridge_troll/animations/attack__west.webp",
         "north-west": "bridge_troll/animations/attack__north-west.webp"
       }
+    },
+    "attack_try": {
+      "directions": {
+        "south": {
+          "status": "fail",
+          "step_mean": 0.091,
+          "step_max": 0.1087,
+          "drift": 4.32,
+          "loop": 0.2441,
+          "loop_ratio": 2.68,
+          "travel": 0.34,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": -0.0,
+          "peak": 0.2441,
+          "reach": 0.066,
+          "canvas": [
+            136,
+            136
+          ],
+          "reasons": [
+            "no strike, just a lean: nothing reaches past 0.07 of the body"
+          ],
+          "sub": "01a60ad4-7276-4682-b101-39fe11dd829b",
+          "group": "5a8bdfa7-24ba-4c6e-b7c0-50e1f1df8514",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "action": "Chain Lash - Whips the iron chain out forward in one heavy lash",
+          "tries": 1,
+          "generated_at": "2026-09-10T20:03:52+00:00"
+        },
+        "south-east": {
+          "status": "fail",
+          "step_mean": 0.0865,
+          "step_max": 0.1045,
+          "drift": 4.49,
+          "loop": 0.2674,
+          "loop_ratio": 3.09,
+          "travel": 2.56,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": -0.001,
+          "peak": 0.2674,
+          "reach": 0.066,
+          "canvas": [
+            136,
+            136
+          ],
+          "reasons": [
+            "no strike, just a lean: nothing reaches past 0.07 of the body"
+          ],
+          "sub": "486bd617-54ea-40db-bf42-e11113c38272",
+          "group": "457e70fb-98d8-426f-8480-faab4203f015",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "action": "Chain Lash - Whips the iron chain out forward in one heavy lash",
+          "tries": 1,
+          "generated_at": "2026-09-10T20:03:52+00:00"
+        },
+        "east": {
+          "status": "warn",
+          "step_mean": 0.0938,
+          "step_max": 0.1225,
+          "drift": 3.23,
+          "loop": 0.2878,
+          "loop_ratio": 3.07,
+          "travel": 3.23,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": -0.001,
+          "peak": 0.2878,
+          "reach": 0.225,
+          "canvas": [
+            136,
+            136
+          ],
+          "reasons": [
+            "shallow strike: reach 0.23 — eyeball it"
+          ],
+          "sub": "9f4305e3-9176-4b4f-b6c6-bdb69c73c842",
+          "group": "cf75c8b2-2b3b-4300-812e-efacb81d313e",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "action": "Chain Lash - Whips the iron chain out forward in one heavy lash",
+          "tries": 1,
+          "generated_at": "2026-09-10T20:03:53+00:00"
+        },
+        "north-east": {
+          "status": "fail",
+          "step_mean": 0.1281,
+          "step_max": 0.2238,
+          "drift": 1.59,
+          "loop": 0.3069,
+          "loop_ratio": 2.4,
+          "travel": 0.79,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": 0.0,
+          "peak": 0.3069,
+          "reach": 0.19,
+          "canvas": [
+            136,
+            136
+          ],
+          "reasons": [
+            "no strike, just a lean: nothing reaches past 0.19 of the body"
+          ],
+          "sub": "de3d0189-2af8-4144-9994-5be637f9680d",
+          "group": "48fefcbf-a23a-46a5-b045-07ef631356c4",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "action": "Chain Lash - Whips the iron chain out forward in one heavy lash",
+          "tries": 1,
+          "generated_at": "2026-09-10T20:03:53+00:00"
+        },
+        "north": {
+          "status": "fail",
+          "step_mean": 0.1206,
+          "step_max": 0.1646,
+          "drift": 3.77,
+          "loop": 0.1888,
+          "loop_ratio": 1.57,
+          "travel": 0.46,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": 0.0,
+          "peak": 0.2307,
+          "reach": 0.059,
+          "canvas": [
+            136,
+            136
+          ],
+          "reasons": [
+            "no strike, just a lean: nothing reaches past 0.06 of the body"
+          ],
+          "sub": "bbddcdd1-7d40-4911-ba13-92681331b2ca",
+          "group": "4ab7f317-3aea-451b-b407-c04f9d5488b2",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "action": "Chain Lash - Whips the iron chain out forward in one heavy lash",
+          "tries": 1,
+          "generated_at": "2026-09-10T20:03:54+00:00"
+        },
+        "west": {
+          "status": "warn",
+          "step_mean": 0.0938,
+          "step_max": 0.1225,
+          "drift": 3.23,
+          "loop": 0.2878,
+          "loop_ratio": 3.07,
+          "travel": 3.23,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": -0.001,
+          "peak": 0.2878,
+          "reach": 0.225,
+          "canvas": [
+            136,
+            136
+          ],
+          "reasons": [
+            "shallow strike: reach 0.23 — eyeball it"
+          ],
+          "sub": "9f4305e3-9176-4b4f-b6c6-bdb69c73c842",
+          "group": "cf75c8b2-2b3b-4300-812e-efacb81d313e",
+          "takes": 1,
+          "version": 1,
+          "mirrored": true,
+          "action": "Chain Lash - Whips the iron chain out forward in one heavy lash",
+          "tries": 1,
+          "generated_at": "2026-09-10T20:03:53+00:00",
+          "source": "east"
+        }
+      },
+      "action": "Chain Lash - Whips the iron chain out forward in one heavy lash",
+      "frame_paths": {
+        "south": [
+          "bridge_troll/animations/attack_try/south/00.webp",
+          "bridge_troll/animations/attack_try/south/01.webp",
+          "bridge_troll/animations/attack_try/south/02.webp",
+          "bridge_troll/animations/attack_try/south/03.webp",
+          "bridge_troll/animations/attack_try/south/04.webp"
+        ],
+        "south-east": [
+          "bridge_troll/animations/attack_try/south-east/00.webp",
+          "bridge_troll/animations/attack_try/south-east/01.webp",
+          "bridge_troll/animations/attack_try/south-east/02.webp",
+          "bridge_troll/animations/attack_try/south-east/03.webp",
+          "bridge_troll/animations/attack_try/south-east/04.webp"
+        ],
+        "east": [
+          "bridge_troll/animations/attack_try/east/00.webp",
+          "bridge_troll/animations/attack_try/east/01.webp",
+          "bridge_troll/animations/attack_try/east/02.webp",
+          "bridge_troll/animations/attack_try/east/03.webp",
+          "bridge_troll/animations/attack_try/east/04.webp"
+        ],
+        "north-east": [
+          "bridge_troll/animations/attack_try/north-east/00.webp",
+          "bridge_troll/animations/attack_try/north-east/01.webp",
+          "bridge_troll/animations/attack_try/north-east/02.webp",
+          "bridge_troll/animations/attack_try/north-east/03.webp",
+          "bridge_troll/animations/attack_try/north-east/04.webp"
+        ],
+        "north": [
+          "bridge_troll/animations/attack_try/north/00.webp",
+          "bridge_troll/animations/attack_try/north/01.webp",
+          "bridge_troll/animations/attack_try/north/02.webp",
+          "bridge_troll/animations/attack_try/north/03.webp",
+          "bridge_troll/animations/attack_try/north/04.webp"
+        ],
+        "west": [
+          "bridge_troll/animations/attack_try/west/00.webp",
+          "bridge_troll/animations/attack_try/west/01.webp",
+          "bridge_troll/animations/attack_try/west/02.webp",
+          "bridge_troll/animations/attack_try/west/03.webp",
+          "bridge_troll/animations/attack_try/west/04.webp"
+        ]
+      },
+      "strips": {
+        "south": "bridge_troll/animations/attack_try__south.webp",
+        "south-east": "bridge_troll/animations/attack_try__south-east.webp",
+        "east": "bridge_troll/animations/attack_try__east.webp",
+        "north-east": "bridge_troll/animations/attack_try__north-east.webp",
+        "north": "bridge_troll/animations/attack_try__north.webp",
+        "west": "bridge_troll/animations/attack_try__west.webp"
+      }
     }
   }
 }
