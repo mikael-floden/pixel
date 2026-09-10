@@ -904,37 +904,37 @@
     "attack_try": {
       "directions": {
         "south": {
-          "status": "fail",
-          "step_mean": 0.103,
-          "step_max": 0.1309,
-          "drift": 4.13,
-          "loop": 0.1918,
-          "loop_ratio": 1.86,
-          "travel": 4.13,
+          "status": "warn",
+          "step_mean": 0.1296,
+          "step_max": 0.1616,
+          "drift": 4.37,
+          "loop": 0.2163,
+          "loop_ratio": 1.67,
+          "travel": 5.21,
           "pin": 1.0,
           "pad": 0,
-          "flash": 0.013,
-          "peak": 0.1918,
-          "reach": 0.133,
+          "flash": 0.219,
+          "peak": 0.2163,
+          "reach": 0.219,
           "canvas": [
             240,
             240
           ],
           "reasons": [
-            "no strike, just a lean: nothing reaches past 0.13 of the body"
+            "shallow strike: reach 0.22 — eyeball it"
           ],
-          "sub": "41a0d0df-028c-4ef0-8a88-add8aaa7dc17",
-          "group": "18052d66-f272-406a-a052-13634311b0bc",
+          "sub": "e3cc23ed-700d-4ab5-b001-72d1964f83f9",
+          "group": "dfdcefac-f7ff-4a54-b83f-06313bd0b932",
           "takes": 1,
-          "version": 8,
+          "version": 9,
           "mirrored": false,
-          "action": "Inferno Breath - The drake rears its head far back and unleashes a long roaring jet of fire, wings thrown wide",
+          "action": "Inferno Breath - The drake rears its head far back and unleashes a long roaring jet of fire, wings thrown wide, a huge aggressive attack with the whole body behind it, wide exaggerated motion",
           "intensity": 1,
-          "rolls": 7,
+          "rolls": 8,
           "frames": 5,
-          "rung": 3,
-          "tries": 7,
-          "generated_at": "2026-09-10T22:49:16+00:00"
+          "rung": 4,
+          "tries": 8,
+          "generated_at": "2026-09-10T22:50:36+00:00"
         },
         "south-east": {
           "status": "warn",
