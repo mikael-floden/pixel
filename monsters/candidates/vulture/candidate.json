@@ -1,888 +1,885 @@
 {
- "id": "vulture",
- "name": "Carrionwing",
- "tier": "mid",
- "scale": "standard",
- "lore": "It circles the road for days and lands only when it is certain. It has never once been wrong.",
- "biome": [
-  "light_soil",
-  "grey_stone"
- ],
- "items": [],
- "prompt": "Large vulture standing upright shown full body from head to feet, realistic proportions, ragged dark brown feathers, wings folded tightly against its body, a bald wrinkled pink head and neck, a hooked pale beak and grey talons.",
- "size": [
-  96,
-  96
- ],
- "template_id": "mannequin",
- "directions": [
-  "south",
-  "south-east",
-  "east",
-  "north-east",
-  "north",
-  "north-west",
-  "west",
-  "south-west"
- ],
- "rotations": {
-  "south": "vulture/rotations/south.webp",
-  "south-east": "vulture/rotations/south-east.webp",
-  "east": "vulture/rotations/east.webp",
-  "north-east": "vulture/rotations/north-east.webp",
-  "north": "vulture/rotations/north.webp",
-  "north-west": "vulture/rotations/north-west.webp",
-  "west": "vulture/rotations/west.webp",
-  "south-west": "vulture/rotations/south-west.webp"
- },
- "sheet": "vulture/sheet.webp",
- "review": "approved",
- "pixellab_id": "199502f4-62c5-4618-90e5-502328a3f524",
- "seed": 1757989919,
- "version": 1,
- "usage": null,
- "generated_at": "2026-09-09T19:04:35+00:00",
- "elapsed_s": 205.0,
- "qa": {
-  "status": "pass",
-  "min_run1": 0.685,
-  "reasons": [],
-  "directions": {
-   "south": {
-    "run1": 0.685,
-    "bbox": [
-     16,
-     4,
-     80,
-     92
-    ],
-    "fill": 0.611,
-    "touches_edge": false
-   },
-   "south-east": {
-    "run1": 0.77,
-    "bbox": [
-     18,
-     5,
-     76,
-     92
-    ],
-    "fill": 0.548,
-    "touches_edge": false
-   },
-   "east": {
-    "run1": 0.779,
-    "bbox": [
-     14,
-     5,
-     85,
-     93
-    ],
-    "fill": 0.678,
-    "touches_edge": false
-   },
-   "north-east": {
-    "run1": 0.8,
-    "bbox": [
-     19,
-     4,
-     77,
-     89
-    ],
-    "fill": 0.535,
-    "touches_edge": false
-   },
-   "north": {
-    "run1": 0.769,
-    "bbox": [
-     19,
-     3,
-     77,
-     91
-    ],
-    "fill": 0.554,
-    "touches_edge": false
-   },
-   "north-west": {
-    "run1": 0.799,
-    "bbox": [
-     18,
-     4,
-     77,
-     89
-    ],
-    "fill": 0.544,
-    "touches_edge": false
-   },
-   "west": {
-    "run1": 0.791,
-    "bbox": [
-     10,
-     5,
-     81,
-     93
-    ],
-    "fill": 0.678,
-    "touches_edge": false
-   },
-   "south-west": {
-    "run1": 0.765,
-    "bbox": [
-     20,
-     5,
-     78,
-     92
-    ],
-    "fill": 0.548,
-    "touches_edge": false
-   }
-  }
- },
- "approved_at": "2026-09-09T19:59:26+00:00",
- "animations": {
-  "idle": {
-   "directions": {
-    "south": {
-     "status": "pass",
-     "step_mean": 0.0298,
-     "step_max": 0.0332,
-     "drift": 1.11,
-     "loop": 0.0,
-     "pin": 1.0,
-     "reasons": [],
-     "sub": "b5547b4e-a9ec-4994-8f58-094c66e908e6",
-     "takes": 1,
-     "version": 1,
-     "mirrored": false,
-     "generated_at": "2026-09-09T20:25:02+00:00",
-     "cut": 0
-    },
-    "south-east": {
-     "status": "pass",
-     "step_mean": 0.0418,
-     "step_max": 0.0562,
-     "drift": 0.86,
-     "loop": 0.0,
-     "pin": 1.0,
-     "reasons": [],
-     "sub": "033ab8d5-183c-43a9-b853-7a00ab0c07f1",
-     "takes": 1,
-     "version": 1,
-     "mirrored": false,
-     "generated_at": "2026-09-09T20:25:03+00:00",
-     "cut": 0
-    },
-    "east": {
-     "status": "pass",
-     "step_mean": 0.0499,
-     "step_max": 0.0564,
-     "drift": 0.7,
-     "loop": 0.0003,
-     "pin": 1.0,
-     "reasons": [],
-     "sub": "9d92b843-cf74-46ab-87c0-6f518b4ef834",
-     "takes": 1,
-     "version": 1,
-     "mirrored": false,
-     "generated_at": "2026-09-09T20:25:03+00:00",
-     "cut": 0
-    },
-    "north-east": {
-     "status": "pass",
-     "step_mean": 0.0487,
-     "step_max": 0.0808,
-     "drift": 0.96,
-     "loop": 0.0,
-     "pin": 1.0,
-     "reasons": [],
-     "sub": "dbf9203e-7f0e-4b62-a3f0-0d937d544948",
-     "takes": 1,
-     "version": 1,
-     "mirrored": false,
-     "generated_at": "2026-09-09T20:25:04+00:00",
-     "cut": 0
-    },
-    "north": {
-     "status": "pass",
-     "step_mean": 0.0118,
-     "step_max": 0.0235,
-     "drift": 0.61,
-     "loop": 0.0,
-     "pin": 1.0,
-     "reasons": [],
-     "sub": "9433e5f7-becd-4c5a-b6c7-3927296b54ec",
-     "takes": 1,
-     "version": 1,
-     "mirrored": false,
-     "generated_at": "2026-09-09T20:25:04+00:00",
-     "cut": 0
-    },
-    "south-west": {
-     "status": "pass",
-     "step_mean": 0.0418,
-     "step_max": 0.0562,
-     "drift": 0.86,
-     "loop": 0.0,
-     "pin": 1.0,
-     "reasons": [],
-     "sub": "033ab8d5-183c-43a9-b853-7a00ab0c07f1",
-     "takes": 1,
-     "version": 1,
-     "mirrored": true,
-     "generated_at": "2026-09-09T20:25:03+00:00",
-     "cut": 0,
-     "source": "south-east"
-    },
-    "west": {
-     "status": "pass",
-     "step_mean": 0.0499,
-     "step_max": 0.0564,
-     "drift": 0.7,
-     "loop": 0.0003,
-     "pin": 1.0,
-     "reasons": [],
-     "sub": "9d92b843-cf74-46ab-87c0-6f518b4ef834",
-     "takes": 1,
-     "version": 1,
-     "mirrored": true,
-     "generated_at": "2026-09-09T20:25:03+00:00",
-     "cut": 0,
-     "source": "east"
-    },
-    "north-west": {
-     "status": "pass",
-     "step_mean": 0.0487,
-     "step_max": 0.0808,
-     "drift": 0.96,
-     "loop": 0.0,
-     "pin": 1.0,
-     "reasons": [],
-     "sub": "dbf9203e-7f0e-4b62-a3f0-0d937d544948",
-     "takes": 1,
-     "version": 1,
-     "mirrored": true,
-     "generated_at": "2026-09-09T20:25:04+00:00",
-     "cut": 0,
-     "source": "north-east"
-    }
-   },
-   "action": "Calm still idle, breathing very slowly and subtly, chest and shoulders rise and fall a little, feet planted, no other movement, ends in the same neutral pose it started in",
-   "frame_paths": {
-    "south": [
-     "vulture/animations/idle/south/00.webp",
-     "vulture/animations/idle/south/01.webp",
-     "vulture/animations/idle/south/02.webp",
-     "vulture/animations/idle/south/03.webp",
-     "vulture/animations/idle/south/04.webp"
-    ],
-    "south-east": [
-     "vulture/animations/idle/south-east/00.webp",
-     "vulture/animations/idle/south-east/01.webp",
-     "vulture/animations/idle/south-east/02.webp",
-     "vulture/animations/idle/south-east/03.webp",
-     "vulture/animations/idle/south-east/04.webp"
-    ],
-    "east": [
-     "vulture/animations/idle/east/00.webp",
-     "vulture/animations/idle/east/01.webp",
-     "vulture/animations/idle/east/02.webp",
-     "vulture/animations/idle/east/03.webp",
-     "vulture/animations/idle/east/04.webp"
-    ],
-    "north-east": [
-     "vulture/animations/idle/north-east/00.webp",
-     "vulture/animations/idle/north-east/01.webp",
-     "vulture/animations/idle/north-east/02.webp",
-     "vulture/animations/idle/north-east/03.webp",
-     "vulture/animations/idle/north-east/04.webp"
-    ],
-    "north": [
-     "vulture/animations/idle/north/00.webp",
-     "vulture/animations/idle/north/01.webp",
-     "vulture/animations/idle/north/02.webp",
-     "vulture/animations/idle/north/03.webp",
-     "vulture/animations/idle/north/04.webp"
-    ],
-    "south-west": [
-     "vulture/animations/idle/south-west/00.webp",
-     "vulture/animations/idle/south-west/01.webp",
-     "vulture/animations/idle/south-west/02.webp",
-     "vulture/animations/idle/south-west/03.webp",
-     "vulture/animations/idle/south-west/04.webp"
-    ],
-    "west": [
-     "vulture/animations/idle/west/00.webp",
-     "vulture/animations/idle/west/01.webp",
-     "vulture/animations/idle/west/02.webp",
-     "vulture/animations/idle/west/03.webp",
-     "vulture/animations/idle/west/04.webp"
-    ],
-    "north-west": [
-     "vulture/animations/idle/north-west/00.webp",
-     "vulture/animations/idle/north-west/01.webp",
-     "vulture/animations/idle/north-west/02.webp",
-     "vulture/animations/idle/north-west/03.webp",
-     "vulture/animations/idle/north-west/04.webp"
-    ]
-   },
-   "strips": {
-    "south": "vulture/animations/idle__south.webp",
-    "south-east": "vulture/animations/idle__south-east.webp",
-    "east": "vulture/animations/idle__east.webp",
-    "north-east": "vulture/animations/idle__north-east.webp",
-    "north": "vulture/animations/idle__north.webp",
-    "south-west": "vulture/animations/idle__south-west.webp",
-    "west": "vulture/animations/idle__west.webp",
-    "north-west": "vulture/animations/idle__north-west.webp"
-   }
+  "id": "vulture",
+  "name": "Carrionwing",
+  "tier": "mid",
+  "scale": "standard",
+  "lore": "It circles the road for days and lands only when it is certain. It has never once been wrong.",
+  "biome": [
+    "light_soil",
+    "grey_stone"
+  ],
+  "items": [],
+  "prompt": "Large vulture standing upright shown full body from head to feet, realistic proportions, ragged dark brown feathers, wings folded tightly against its body, a bald wrinkled pink head and neck, a hooked pale beak and grey talons.",
+  "size": [
+    96,
+    96
+  ],
+  "template_id": "mannequin",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "vulture/rotations/south.webp",
+    "south-east": "vulture/rotations/south-east.webp",
+    "east": "vulture/rotations/east.webp",
+    "north-east": "vulture/rotations/north-east.webp",
+    "north": "vulture/rotations/north.webp",
+    "north-west": "vulture/rotations/north-west.webp",
+    "west": "vulture/rotations/west.webp",
+    "south-west": "vulture/rotations/south-west.webp"
   },
-  "walk": {
-   "directions": {
-    "south": {
-     "status": "warn",
-     "step_mean": 0.1234,
-     "step_max": 0.1446,
-     "drift": 5.32,
-     "loop": 0.1281,
-     "loop_ratio": 1.04,
-     "travel": 0.17,
-     "pin": 0.944,
-     "pad": 0,
-     "canvas": [
-      96,
-      96
-     ],
-     "reasons": [
-      "drifts 5.3 px — eyeball it"
-     ],
-     "sub": "396e00ca-167c-469e-8628-18001d5b9931",
-     "group": "78dc5126-20b8-4928-82cf-ff70b3dd02f2",
-     "takes": 1,
-     "version": 1,
-     "mirrored": false,
-     "generated_at": "2026-09-09T21:16:56+00:00"
-    },
-    "south-east": {
-     "status": "pass",
-     "step_mean": 0.102,
-     "step_max": 0.1414,
-     "drift": 2.96,
-     "loop": 0.1029,
-     "loop_ratio": 1.01,
-     "travel": 1.41,
-     "pin": 0.893,
-     "pad": 0,
-     "canvas": [
-      96,
-      96
-     ],
-     "reasons": [],
-     "sub": "f5339760-8dda-4f42-8a43-b545bd719f1b",
-     "group": "fb8186fa-8609-4bca-80d5-18fb0c390f1f",
-     "takes": 1,
-     "version": 1,
-     "mirrored": false,
-     "generated_at": "2026-09-09T21:16:57+00:00"
-    },
-    "east": {
-     "status": "pass",
-     "step_mean": 0.1779,
-     "step_max": 0.197,
-     "drift": 2.19,
-     "loop": 0.2185,
-     "loop_ratio": 1.23,
-     "travel": 2.82,
-     "pin": 0.916,
-     "pad": 0,
-     "canvas": [
-      96,
-      96
-     ],
-     "reasons": [],
-     "sub": "f41e4d9c-99ef-4617-af1a-1f15228c4253",
-     "group": "75e153ac-1acc-43f9-ac87-429ecff0e04c",
-     "takes": 1,
-     "version": 1,
-     "mirrored": false,
-     "generated_at": "2026-09-09T21:16:58+00:00"
-    },
-    "north-east": {
-     "status": "warn",
-     "step_mean": 0.0911,
-     "step_max": 0.1051,
-     "drift": 1.18,
-     "loop": 0.1016,
-     "loop_ratio": 1.11,
-     "travel": 0.58,
-     "pin": 0.923,
-     "pad": 0,
-     "canvas": [
-      96,
-      96
-     ],
-     "reasons": [
-      "motion 0.091 outside the calm band 0.1–0.4 — eyeball it"
-     ],
-     "sub": "cbdeada0-1ead-48f7-8f11-19c99d1cff61",
-     "group": "75baaa16-5e29-4811-8a9a-cab6c846f0c2",
-     "takes": 1,
-     "version": 1,
-     "mirrored": false,
-     "generated_at": "2026-09-09T21:16:59+00:00"
-    },
-    "north": {
-     "status": "warn",
-     "step_mean": 0.1696,
-     "step_max": 0.3197,
-     "drift": 3.06,
-     "loop": 0.3546,
-     "loop_ratio": 2.09,
-     "travel": 0.46,
-     "pin": 0.959,
-     "pad": 0,
-     "canvas": [
-      96,
-      96
-     ],
-     "reasons": [
-      "last→first hand-off 2.1× a step — eyeball the loop"
-     ],
-     "sub": "d5371747-b97b-4267-8d20-c5a82055d10e",
-     "group": "044d8831-764c-4b86-b7fe-a681768fcd7c",
-     "takes": 1,
-     "version": 1,
-     "mirrored": false,
-     "generated_at": "2026-09-09T21:17:00+00:00"
-    },
-    "south-west": {
-     "status": "pass",
-     "step_mean": 0.102,
-     "step_max": 0.1414,
-     "drift": 2.96,
-     "loop": 0.1029,
-     "loop_ratio": 1.01,
-     "travel": 1.41,
-     "pin": 0.893,
-     "pad": 0,
-     "canvas": [
-      96,
-      96
-     ],
-     "reasons": [],
-     "sub": "f5339760-8dda-4f42-8a43-b545bd719f1b",
-     "group": "fb8186fa-8609-4bca-80d5-18fb0c390f1f",
-     "takes": 1,
-     "version": 1,
-     "mirrored": true,
-     "generated_at": "2026-09-09T21:16:57+00:00",
-     "source": "south-east"
-    },
-    "west": {
-     "status": "pass",
-     "step_mean": 0.1779,
-     "step_max": 0.197,
-     "drift": 2.19,
-     "loop": 0.2185,
-     "loop_ratio": 1.23,
-     "travel": 2.82,
-     "pin": 0.916,
-     "pad": 0,
-     "canvas": [
-      96,
-      96
-     ],
-     "reasons": [],
-     "sub": "f41e4d9c-99ef-4617-af1a-1f15228c4253",
-     "group": "75e153ac-1acc-43f9-ac87-429ecff0e04c",
-     "takes": 1,
-     "version": 1,
-     "mirrored": true,
-     "generated_at": "2026-09-09T21:16:58+00:00",
-     "source": "east"
-    },
-    "north-west": {
-     "status": "warn",
-     "step_mean": 0.0911,
-     "step_max": 0.1051,
-     "drift": 1.18,
-     "loop": 0.1016,
-     "loop_ratio": 1.11,
-     "travel": 0.58,
-     "pin": 0.923,
-     "pad": 0,
-     "canvas": [
-      96,
-      96
-     ],
-     "reasons": [
-      "motion 0.091 outside the calm band 0.1–0.4 — eyeball it"
-     ],
-     "sub": "cbdeada0-1ead-48f7-8f11-19c99d1cff61",
-     "group": "75baaa16-5e29-4811-8a9a-cab6c846f0c2",
-     "takes": 1,
-     "version": 1,
-     "mirrored": true,
-     "generated_at": "2026-09-09T21:16:59+00:00",
-     "source": "north-east"
+  "sheet": "vulture/sheet.webp",
+  "review": "approved",
+  "pixellab_id": "199502f4-62c5-4618-90e5-502328a3f524",
+  "seed": 1757989919,
+  "version": 1,
+  "usage": null,
+  "generated_at": "2026-09-09T19:04:35+00:00",
+  "elapsed_s": 205.0,
+  "qa": {
+    "status": "pass",
+    "min_run1": 0.685,
+    "reasons": [],
+    "directions": {
+      "south": {
+        "run1": 0.685,
+        "bbox": [
+          16,
+          4,
+          80,
+          92
+        ],
+        "fill": 0.611,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.77,
+        "bbox": [
+          18,
+          5,
+          76,
+          92
+        ],
+        "fill": 0.548,
+        "touches_edge": false
+      },
+      "east": {
+        "run1": 0.779,
+        "bbox": [
+          14,
+          5,
+          85,
+          93
+        ],
+        "fill": 0.678,
+        "touches_edge": false
+      },
+      "north-east": {
+        "run1": 0.8,
+        "bbox": [
+          19,
+          4,
+          77,
+          89
+        ],
+        "fill": 0.535,
+        "touches_edge": false
+      },
+      "north": {
+        "run1": 0.769,
+        "bbox": [
+          19,
+          3,
+          77,
+          91
+        ],
+        "fill": 0.554,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.799,
+        "bbox": [
+          18,
+          4,
+          77,
+          89
+        ],
+        "fill": 0.544,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.791,
+        "bbox": [
+          10,
+          5,
+          81,
+          93
+        ],
+        "fill": 0.678,
+        "touches_edge": false
+      },
+      "south-west": {
+        "run1": 0.765,
+        "bbox": [
+          20,
+          5,
+          78,
+          92
+        ],
+        "fill": 0.548,
+        "touches_edge": false
+      }
     }
-   },
-   "action": "walk loop, full walk cycle in place, legs alternate naturally, normal calm walking pace, body stays centered, seamless loop whose last frame leads straight back into the first, no turning",
-   "frame_paths": {
-    "south": [
-     "vulture/animations/walk/south/00.webp",
-     "vulture/animations/walk/south/01.webp",
-     "vulture/animations/walk/south/02.webp",
-     "vulture/animations/walk/south/03.webp",
-     "vulture/animations/walk/south/04.webp",
-     "vulture/animations/walk/south/05.webp"
-    ],
-    "south-east": [
-     "vulture/animations/walk/south-east/00.webp",
-     "vulture/animations/walk/south-east/01.webp",
-     "vulture/animations/walk/south-east/02.webp",
-     "vulture/animations/walk/south-east/03.webp",
-     "vulture/animations/walk/south-east/04.webp",
-     "vulture/animations/walk/south-east/05.webp"
-    ],
-    "east": [
-     "vulture/animations/walk/east/00.webp",
-     "vulture/animations/walk/east/01.webp",
-     "vulture/animations/walk/east/02.webp",
-     "vulture/animations/walk/east/03.webp",
-     "vulture/animations/walk/east/04.webp",
-     "vulture/animations/walk/east/05.webp"
-    ],
-    "north-east": [
-     "vulture/animations/walk/north-east/00.webp",
-     "vulture/animations/walk/north-east/01.webp",
-     "vulture/animations/walk/north-east/02.webp",
-     "vulture/animations/walk/north-east/03.webp",
-     "vulture/animations/walk/north-east/04.webp",
-     "vulture/animations/walk/north-east/05.webp"
-    ],
-    "north": [
-     "vulture/animations/walk/north/00.webp",
-     "vulture/animations/walk/north/01.webp",
-     "vulture/animations/walk/north/02.webp",
-     "vulture/animations/walk/north/03.webp",
-     "vulture/animations/walk/north/04.webp",
-     "vulture/animations/walk/north/05.webp"
-    ],
-    "south-west": [
-     "vulture/animations/walk/south-west/00.webp",
-     "vulture/animations/walk/south-west/01.webp",
-     "vulture/animations/walk/south-west/02.webp",
-     "vulture/animations/walk/south-west/03.webp",
-     "vulture/animations/walk/south-west/04.webp",
-     "vulture/animations/walk/south-west/05.webp"
-    ],
-    "west": [
-     "vulture/animations/walk/west/00.webp",
-     "vulture/animations/walk/west/01.webp",
-     "vulture/animations/walk/west/02.webp",
-     "vulture/animations/walk/west/03.webp",
-     "vulture/animations/walk/west/04.webp",
-     "vulture/animations/walk/west/05.webp"
-    ],
-    "north-west": [
-     "vulture/animations/walk/north-west/00.webp",
-     "vulture/animations/walk/north-west/01.webp",
-     "vulture/animations/walk/north-west/02.webp",
-     "vulture/animations/walk/north-west/03.webp",
-     "vulture/animations/walk/north-west/04.webp",
-     "vulture/animations/walk/north-west/05.webp"
-    ]
-   },
-   "strips": {
-    "south": "vulture/animations/walk__south.webp",
-    "south-east": "vulture/animations/walk__south-east.webp",
-    "east": "vulture/animations/walk__east.webp",
-    "north-east": "vulture/animations/walk__north-east.webp",
-    "north": "vulture/animations/walk__north.webp",
-    "south-west": "vulture/animations/walk__south-west.webp",
-    "west": "vulture/animations/walk__west.webp",
-    "north-west": "vulture/animations/walk__north-west.webp"
-   }
   },
-  "attack": {
-   "directions": {
-    "south": {
-     "status": "pass",
-     "step_mean": 0.1083,
-     "step_max": 0.1571,
-     "drift": 1.05,
-     "loop": 0.0,
-     "loop_ratio": 0.0,
-     "travel": 0.14,
-     "pin": 1.0,
-     "pad": 0,
-     "flash": 0.001,
-     "peak": 0.1915,
-     "canvas": [
-      96,
-      96
-     ],
-     "reasons": [],
-     "sub": "19214279-e783-4007-b848-cd421c965e1a",
-     "group": "ca3eb976-3535-4fc7-a2e6-60cc67d12611",
-     "takes": 1,
-     "version": 2,
-     "mirrored": false,
-     "generated_at": "2026-09-09T22:43:34+00:00",
-     "action": "Beak Stab - Lunges forward with one stabbing peck of its hooked beak, wings half raised, then returns to idle stance"
+  "approved_at": "2026-09-09T19:59:26+00:00",
+  "animations": {
+    "idle": {
+      "directions": {
+        "south": {
+          "status": "pass",
+          "step_mean": 0.0298,
+          "step_max": 0.0332,
+          "drift": 1.11,
+          "loop": 0.0,
+          "pin": 1.0,
+          "reasons": [],
+          "sub": "b5547b4e-a9ec-4994-8f58-094c66e908e6",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "generated_at": "2026-09-09T20:25:02+00:00",
+          "cut": 0
+        },
+        "south-east": {
+          "status": "pass",
+          "step_mean": 0.0418,
+          "step_max": 0.0562,
+          "drift": 0.86,
+          "loop": 0.0,
+          "pin": 1.0,
+          "reasons": [],
+          "sub": "033ab8d5-183c-43a9-b853-7a00ab0c07f1",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "generated_at": "2026-09-09T20:25:03+00:00",
+          "cut": 0
+        },
+        "east": {
+          "status": "pass",
+          "step_mean": 0.0499,
+          "step_max": 0.0564,
+          "drift": 0.7,
+          "loop": 0.0003,
+          "pin": 1.0,
+          "reasons": [],
+          "sub": "9d92b843-cf74-46ab-87c0-6f518b4ef834",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "generated_at": "2026-09-09T20:25:03+00:00",
+          "cut": 0
+        },
+        "north-east": {
+          "status": "pass",
+          "step_mean": 0.0487,
+          "step_max": 0.0808,
+          "drift": 0.96,
+          "loop": 0.0,
+          "pin": 1.0,
+          "reasons": [],
+          "sub": "dbf9203e-7f0e-4b62-a3f0-0d937d544948",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "generated_at": "2026-09-09T20:25:04+00:00",
+          "cut": 0
+        },
+        "north": {
+          "status": "pass",
+          "step_mean": 0.0118,
+          "step_max": 0.0235,
+          "drift": 0.61,
+          "loop": 0.0,
+          "pin": 1.0,
+          "reasons": [],
+          "sub": "9433e5f7-becd-4c5a-b6c7-3927296b54ec",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "generated_at": "2026-09-09T20:25:04+00:00",
+          "cut": 0
+        },
+        "south-west": {
+          "status": "pass",
+          "step_mean": 0.0418,
+          "step_max": 0.0562,
+          "drift": 0.86,
+          "loop": 0.0,
+          "pin": 1.0,
+          "reasons": [],
+          "sub": "033ab8d5-183c-43a9-b853-7a00ab0c07f1",
+          "takes": 1,
+          "version": 1,
+          "mirrored": true,
+          "generated_at": "2026-09-09T20:25:03+00:00",
+          "cut": 0,
+          "source": "south-east"
+        },
+        "west": {
+          "status": "pass",
+          "step_mean": 0.0499,
+          "step_max": 0.0564,
+          "drift": 0.7,
+          "loop": 0.0003,
+          "pin": 1.0,
+          "reasons": [],
+          "sub": "9d92b843-cf74-46ab-87c0-6f518b4ef834",
+          "takes": 1,
+          "version": 1,
+          "mirrored": true,
+          "generated_at": "2026-09-09T20:25:03+00:00",
+          "cut": 0,
+          "source": "east"
+        },
+        "north-west": {
+          "status": "pass",
+          "step_mean": 0.0487,
+          "step_max": 0.0808,
+          "drift": 0.96,
+          "loop": 0.0,
+          "pin": 1.0,
+          "reasons": [],
+          "sub": "dbf9203e-7f0e-4b62-a3f0-0d937d544948",
+          "takes": 1,
+          "version": 1,
+          "mirrored": true,
+          "generated_at": "2026-09-09T20:25:04+00:00",
+          "cut": 0,
+          "source": "north-east"
+        }
+      },
+      "action": "Calm still idle, breathing very slowly and subtly, chest and shoulders rise and fall a little, feet planted, no other movement, ends in the same neutral pose it started in",
+      "frame_paths": {
+        "south": [
+          "vulture/animations/idle/south/00.webp",
+          "vulture/animations/idle/south/01.webp",
+          "vulture/animations/idle/south/02.webp",
+          "vulture/animations/idle/south/03.webp",
+          "vulture/animations/idle/south/04.webp"
+        ],
+        "south-east": [
+          "vulture/animations/idle/south-east/00.webp",
+          "vulture/animations/idle/south-east/01.webp",
+          "vulture/animations/idle/south-east/02.webp",
+          "vulture/animations/idle/south-east/03.webp",
+          "vulture/animations/idle/south-east/04.webp"
+        ],
+        "east": [
+          "vulture/animations/idle/east/00.webp",
+          "vulture/animations/idle/east/01.webp",
+          "vulture/animations/idle/east/02.webp",
+          "vulture/animations/idle/east/03.webp",
+          "vulture/animations/idle/east/04.webp"
+        ],
+        "north-east": [
+          "vulture/animations/idle/north-east/00.webp",
+          "vulture/animations/idle/north-east/01.webp",
+          "vulture/animations/idle/north-east/02.webp",
+          "vulture/animations/idle/north-east/03.webp",
+          "vulture/animations/idle/north-east/04.webp"
+        ],
+        "north": [
+          "vulture/animations/idle/north/00.webp",
+          "vulture/animations/idle/north/01.webp",
+          "vulture/animations/idle/north/02.webp",
+          "vulture/animations/idle/north/03.webp",
+          "vulture/animations/idle/north/04.webp"
+        ],
+        "south-west": [
+          "vulture/animations/idle/south-west/00.webp",
+          "vulture/animations/idle/south-west/01.webp",
+          "vulture/animations/idle/south-west/02.webp",
+          "vulture/animations/idle/south-west/03.webp",
+          "vulture/animations/idle/south-west/04.webp"
+        ],
+        "west": [
+          "vulture/animations/idle/west/00.webp",
+          "vulture/animations/idle/west/01.webp",
+          "vulture/animations/idle/west/02.webp",
+          "vulture/animations/idle/west/03.webp",
+          "vulture/animations/idle/west/04.webp"
+        ],
+        "north-west": [
+          "vulture/animations/idle/north-west/00.webp",
+          "vulture/animations/idle/north-west/01.webp",
+          "vulture/animations/idle/north-west/02.webp",
+          "vulture/animations/idle/north-west/03.webp",
+          "vulture/animations/idle/north-west/04.webp"
+        ]
+      },
+      "strips": {
+        "south": "vulture/animations/idle__south.webp",
+        "south-east": "vulture/animations/idle__south-east.webp",
+        "east": "vulture/animations/idle__east.webp",
+        "north-east": "vulture/animations/idle__north-east.webp",
+        "north": "vulture/animations/idle__north.webp",
+        "south-west": "vulture/animations/idle__south-west.webp",
+        "west": "vulture/animations/idle__west.webp",
+        "north-west": "vulture/animations/idle__north-west.webp"
+      }
     },
-    "south-east": {
-     "status": "pass",
-     "step_mean": 0.1003,
-     "step_max": 0.1283,
-     "drift": 1.46,
-     "loop": 0.0,
-     "loop_ratio": 0.0,
-     "travel": 0.38,
-     "pin": 1.0,
-     "pad": 0,
-     "flash": 0.0,
-     "peak": 0.1861,
-     "canvas": [
-      96,
-      96
-     ],
-     "reasons": [],
-     "sub": "b4aaea2f-18ab-4eca-9c57-f4a04b81b0fb",
-     "group": "560c585d-4499-4800-b9dc-19e579388f4a",
-     "takes": 1,
-     "version": 2,
-     "mirrored": false,
-     "generated_at": "2026-09-09T22:43:34+00:00",
-     "action": "Beak Stab - Lunges forward with one stabbing peck of its hooked beak, wings half raised, then returns to idle stance"
+    "walk": {
+      "directions": {
+        "south": {
+          "status": "warn",
+          "step_mean": 0.1234,
+          "step_max": 0.1446,
+          "drift": 5.32,
+          "loop": 0.1281,
+          "loop_ratio": 1.04,
+          "travel": 0.17,
+          "pin": 0.944,
+          "pad": 0,
+          "canvas": [
+            96,
+            96
+          ],
+          "reasons": [
+            "drifts 5.3 px — eyeball it"
+          ],
+          "sub": "396e00ca-167c-469e-8628-18001d5b9931",
+          "group": "78dc5126-20b8-4928-82cf-ff70b3dd02f2",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "generated_at": "2026-09-09T21:16:56+00:00"
+        },
+        "south-east": {
+          "status": "pass",
+          "step_mean": 0.102,
+          "step_max": 0.1414,
+          "drift": 2.96,
+          "loop": 0.1029,
+          "loop_ratio": 1.01,
+          "travel": 1.41,
+          "pin": 0.893,
+          "pad": 0,
+          "canvas": [
+            96,
+            96
+          ],
+          "reasons": [],
+          "sub": "f5339760-8dda-4f42-8a43-b545bd719f1b",
+          "group": "fb8186fa-8609-4bca-80d5-18fb0c390f1f",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "generated_at": "2026-09-09T21:16:57+00:00"
+        },
+        "east": {
+          "status": "pass",
+          "step_mean": 0.1779,
+          "step_max": 0.197,
+          "drift": 2.19,
+          "loop": 0.2185,
+          "loop_ratio": 1.23,
+          "travel": 2.82,
+          "pin": 0.916,
+          "pad": 0,
+          "canvas": [
+            96,
+            96
+          ],
+          "reasons": [],
+          "sub": "f41e4d9c-99ef-4617-af1a-1f15228c4253",
+          "group": "75e153ac-1acc-43f9-ac87-429ecff0e04c",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "generated_at": "2026-09-09T21:16:58+00:00"
+        },
+        "north-east": {
+          "status": "warn",
+          "step_mean": 0.0911,
+          "step_max": 0.1051,
+          "drift": 1.18,
+          "loop": 0.1016,
+          "loop_ratio": 1.11,
+          "travel": 0.58,
+          "pin": 0.923,
+          "pad": 0,
+          "canvas": [
+            96,
+            96
+          ],
+          "reasons": [
+            "motion 0.091 outside the calm band 0.1–0.4 — eyeball it"
+          ],
+          "sub": "cbdeada0-1ead-48f7-8f11-19c99d1cff61",
+          "group": "75baaa16-5e29-4811-8a9a-cab6c846f0c2",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "generated_at": "2026-09-09T21:16:59+00:00"
+        },
+        "north": {
+          "status": "warn",
+          "step_mean": 0.1696,
+          "step_max": 0.3197,
+          "drift": 3.06,
+          "loop": 0.3546,
+          "loop_ratio": 2.09,
+          "travel": 0.46,
+          "pin": 0.959,
+          "pad": 0,
+          "canvas": [
+            96,
+            96
+          ],
+          "reasons": [
+            "last→first hand-off 2.1× a step — eyeball the loop"
+          ],
+          "sub": "d5371747-b97b-4267-8d20-c5a82055d10e",
+          "group": "044d8831-764c-4b86-b7fe-a681768fcd7c",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "generated_at": "2026-09-09T21:17:00+00:00"
+        },
+        "south-west": {
+          "status": "pass",
+          "step_mean": 0.102,
+          "step_max": 0.1414,
+          "drift": 2.96,
+          "loop": 0.1029,
+          "loop_ratio": 1.01,
+          "travel": 1.41,
+          "pin": 0.893,
+          "pad": 0,
+          "canvas": [
+            96,
+            96
+          ],
+          "reasons": [],
+          "sub": "f5339760-8dda-4f42-8a43-b545bd719f1b",
+          "group": "fb8186fa-8609-4bca-80d5-18fb0c390f1f",
+          "takes": 1,
+          "version": 1,
+          "mirrored": true,
+          "generated_at": "2026-09-09T21:16:57+00:00",
+          "source": "south-east"
+        },
+        "west": {
+          "status": "pass",
+          "step_mean": 0.1779,
+          "step_max": 0.197,
+          "drift": 2.19,
+          "loop": 0.2185,
+          "loop_ratio": 1.23,
+          "travel": 2.82,
+          "pin": 0.916,
+          "pad": 0,
+          "canvas": [
+            96,
+            96
+          ],
+          "reasons": [],
+          "sub": "f41e4d9c-99ef-4617-af1a-1f15228c4253",
+          "group": "75e153ac-1acc-43f9-ac87-429ecff0e04c",
+          "takes": 1,
+          "version": 1,
+          "mirrored": true,
+          "generated_at": "2026-09-09T21:16:58+00:00",
+          "source": "east"
+        },
+        "north-west": {
+          "status": "warn",
+          "step_mean": 0.0911,
+          "step_max": 0.1051,
+          "drift": 1.18,
+          "loop": 0.1016,
+          "loop_ratio": 1.11,
+          "travel": 0.58,
+          "pin": 0.923,
+          "pad": 0,
+          "canvas": [
+            96,
+            96
+          ],
+          "reasons": [
+            "motion 0.091 outside the calm band 0.1–0.4 — eyeball it"
+          ],
+          "sub": "cbdeada0-1ead-48f7-8f11-19c99d1cff61",
+          "group": "75baaa16-5e29-4811-8a9a-cab6c846f0c2",
+          "takes": 1,
+          "version": 1,
+          "mirrored": true,
+          "generated_at": "2026-09-09T21:16:59+00:00",
+          "source": "north-east"
+        }
+      },
+      "action": "walk loop, full walk cycle in place, legs alternate naturally, normal calm walking pace, body stays centered, seamless loop whose last frame leads straight back into the first, no turning",
+      "frame_paths": {
+        "south": [
+          "vulture/animations/walk/south/00.webp",
+          "vulture/animations/walk/south/01.webp",
+          "vulture/animations/walk/south/02.webp",
+          "vulture/animations/walk/south/03.webp",
+          "vulture/animations/walk/south/04.webp",
+          "vulture/animations/walk/south/05.webp"
+        ],
+        "south-east": [
+          "vulture/animations/walk/south-east/00.webp",
+          "vulture/animations/walk/south-east/01.webp",
+          "vulture/animations/walk/south-east/02.webp",
+          "vulture/animations/walk/south-east/03.webp",
+          "vulture/animations/walk/south-east/04.webp",
+          "vulture/animations/walk/south-east/05.webp"
+        ],
+        "east": [
+          "vulture/animations/walk/east/00.webp",
+          "vulture/animations/walk/east/01.webp",
+          "vulture/animations/walk/east/02.webp",
+          "vulture/animations/walk/east/03.webp",
+          "vulture/animations/walk/east/04.webp",
+          "vulture/animations/walk/east/05.webp"
+        ],
+        "north-east": [
+          "vulture/animations/walk/north-east/00.webp",
+          "vulture/animations/walk/north-east/01.webp",
+          "vulture/animations/walk/north-east/02.webp",
+          "vulture/animations/walk/north-east/03.webp",
+          "vulture/animations/walk/north-east/04.webp",
+          "vulture/animations/walk/north-east/05.webp"
+        ],
+        "north": [
+          "vulture/animations/walk/north/00.webp",
+          "vulture/animations/walk/north/01.webp",
+          "vulture/animations/walk/north/02.webp",
+          "vulture/animations/walk/north/03.webp",
+          "vulture/animations/walk/north/04.webp",
+          "vulture/animations/walk/north/05.webp"
+        ],
+        "south-west": [
+          "vulture/animations/walk/south-west/00.webp",
+          "vulture/animations/walk/south-west/01.webp",
+          "vulture/animations/walk/south-west/02.webp",
+          "vulture/animations/walk/south-west/03.webp",
+          "vulture/animations/walk/south-west/04.webp",
+          "vulture/animations/walk/south-west/05.webp"
+        ],
+        "west": [
+          "vulture/animations/walk/west/00.webp",
+          "vulture/animations/walk/west/01.webp",
+          "vulture/animations/walk/west/02.webp",
+          "vulture/animations/walk/west/03.webp",
+          "vulture/animations/walk/west/04.webp",
+          "vulture/animations/walk/west/05.webp"
+        ],
+        "north-west": [
+          "vulture/animations/walk/north-west/00.webp",
+          "vulture/animations/walk/north-west/01.webp",
+          "vulture/animations/walk/north-west/02.webp",
+          "vulture/animations/walk/north-west/03.webp",
+          "vulture/animations/walk/north-west/04.webp",
+          "vulture/animations/walk/north-west/05.webp"
+        ]
+      },
+      "strips": {
+        "south": "vulture/animations/walk__south.webp",
+        "south-east": "vulture/animations/walk__south-east.webp",
+        "east": "vulture/animations/walk__east.webp",
+        "north-east": "vulture/animations/walk__north-east.webp",
+        "north": "vulture/animations/walk__north.webp",
+        "south-west": "vulture/animations/walk__south-west.webp",
+        "west": "vulture/animations/walk__west.webp",
+        "north-west": "vulture/animations/walk__north-west.webp"
+      }
     },
-    "east": {
-     "status": "pass",
-     "step_mean": 0.1093,
-     "step_max": 0.128,
-     "drift": 2.14,
-     "loop": 0.0003,
-     "loop_ratio": 0.0,
-     "travel": 2.14,
-     "pin": 1.0,
-     "pad": 0,
-     "flash": 0.0,
-     "peak": 0.2077,
-     "canvas": [
-      96,
-      96
-     ],
-     "reasons": [],
-     "sub": "6fc4b995-8794-48c2-a9c6-c7d7f85a2a72",
-     "group": "c0e6871d-f2f7-4c16-9f1a-bfee75942249",
-     "takes": 1,
-     "version": 2,
-     "mirrored": false,
-     "generated_at": "2026-09-09T22:43:35+00:00",
-     "action": "Beak Stab - Lunges forward with one stabbing peck of its hooked beak, wings half raised, then returns to idle stance"
-    },
-    "north-east": {
-     "status": "pass",
-     "step_mean": 0.107,
-     "step_max": 0.1459,
-     "drift": 0.61,
-     "loop": 0.0,
-     "loop_ratio": 0.0,
-     "travel": 0.4,
-     "pin": 1.0,
-     "pad": 0,
-     "flash": 0.004,
-     "peak": 0.1616,
-     "canvas": [
-      96,
-      96
-     ],
-     "reasons": [],
-     "sub": "54b12543-22c1-40ab-a13a-b355c47c5ea1",
-     "group": "f87547ed-40d9-4f3c-8d44-dbb7f8eee04d",
-     "takes": 1,
-     "version": 2,
-     "mirrored": false,
-     "generated_at": "2026-09-09T22:43:35+00:00",
-     "action": "Beak Stab - Lunges forward with one stabbing peck of its hooked beak, wings half raised, then returns to idle stance"
-    },
-    "north": {
-     "status": "fail",
-     "step_mean": 0.1318,
-     "step_max": 0.1611,
-     "drift": 0.52,
-     "loop": 0.0,
-     "loop_ratio": 0.0,
-     "travel": 0.1,
-     "pin": 1.0,
-     "pad": 0,
-     "flash": 0.065,
-     "peak": 0.2027,
-     "canvas": [
-      96,
-      96
-     ],
-     "reasons": [
-      "some bright effect pixels (0.06) — eyeball it",
-      "eyeballed: painted swoosh on the strike"
-     ],
-     "sub": "75d36ff8-224d-4983-b6ae-625159bc664b",
-     "group": "9b3e0696-14ec-4393-805b-35595e81dc9b",
-     "takes": 1,
-     "version": 2,
-     "mirrored": false,
-     "generated_at": "2026-09-09T22:43:36+00:00",
-     "action": "Beak Stab - Lunges forward with one stabbing peck of its hooked beak, wings half raised, then returns to idle stance",
-     "manual": true
-    },
-    "south-west": {
-     "status": "pass",
-     "step_mean": 0.1003,
-     "step_max": 0.1283,
-     "drift": 1.46,
-     "loop": 0.0,
-     "loop_ratio": 0.0,
-     "travel": 0.38,
-     "pin": 1.0,
-     "pad": 0,
-     "flash": 0.0,
-     "peak": 0.1861,
-     "canvas": [
-      96,
-      96
-     ],
-     "reasons": [],
-     "sub": "b4aaea2f-18ab-4eca-9c57-f4a04b81b0fb",
-     "group": "560c585d-4499-4800-b9dc-19e579388f4a",
-     "takes": 1,
-     "version": 2,
-     "mirrored": true,
-     "generated_at": "2026-09-09T22:43:34+00:00",
-     "action": "Beak Stab - Lunges forward with one stabbing peck of its hooked beak, wings half raised, then returns to idle stance",
-     "source": "south-east"
-    },
-    "west": {
-     "status": "pass",
-     "step_mean": 0.1093,
-     "step_max": 0.128,
-     "drift": 2.14,
-     "loop": 0.0003,
-     "loop_ratio": 0.0,
-     "travel": 2.14,
-     "pin": 1.0,
-     "pad": 0,
-     "flash": 0.0,
-     "peak": 0.2077,
-     "canvas": [
-      96,
-      96
-     ],
-     "reasons": [],
-     "sub": "6fc4b995-8794-48c2-a9c6-c7d7f85a2a72",
-     "group": "c0e6871d-f2f7-4c16-9f1a-bfee75942249",
-     "takes": 1,
-     "version": 2,
-     "mirrored": true,
-     "generated_at": "2026-09-09T22:43:35+00:00",
-     "action": "Beak Stab - Lunges forward with one stabbing peck of its hooked beak, wings half raised, then returns to idle stance",
-     "source": "east"
-    },
-    "north-west": {
-     "status": "pass",
-     "step_mean": 0.107,
-     "step_max": 0.1459,
-     "drift": 0.61,
-     "loop": 0.0,
-     "loop_ratio": 0.0,
-     "travel": 0.4,
-     "pin": 1.0,
-     "pad": 0,
-     "flash": 0.004,
-     "peak": 0.1616,
-     "canvas": [
-      96,
-      96
-     ],
-     "reasons": [],
-     "sub": "54b12543-22c1-40ab-a13a-b355c47c5ea1",
-     "group": "f87547ed-40d9-4f3c-8d44-dbb7f8eee04d",
-     "takes": 1,
-     "version": 2,
-     "mirrored": true,
-     "generated_at": "2026-09-09T22:43:35+00:00",
-     "action": "Beak Stab - Lunges forward with one stabbing peck of its hooked beak, wings half raised, then returns to idle stance",
-     "source": "north-east"
+    "attack": {
+      "directions": {
+        "south": {
+          "status": "pass",
+          "step_mean": 0.1083,
+          "step_max": 0.1571,
+          "drift": 1.05,
+          "loop": 0.0,
+          "loop_ratio": 0.0,
+          "travel": 0.14,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": 0.001,
+          "peak": 0.1915,
+          "canvas": [
+            96,
+            96
+          ],
+          "reasons": [],
+          "sub": "19214279-e783-4007-b848-cd421c965e1a",
+          "group": "ca3eb976-3535-4fc7-a2e6-60cc67d12611",
+          "takes": 1,
+          "version": 2,
+          "mirrored": false,
+          "generated_at": "2026-09-09T22:43:34+00:00",
+          "action": "Beak Stab - Lunges forward with one stabbing peck of its hooked beak, wings half raised, then returns to idle stance"
+        },
+        "south-east": {
+          "status": "pass",
+          "step_mean": 0.1003,
+          "step_max": 0.1283,
+          "drift": 1.46,
+          "loop": 0.0,
+          "loop_ratio": 0.0,
+          "travel": 0.38,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": 0.0,
+          "peak": 0.1861,
+          "canvas": [
+            96,
+            96
+          ],
+          "reasons": [],
+          "sub": "b4aaea2f-18ab-4eca-9c57-f4a04b81b0fb",
+          "group": "560c585d-4499-4800-b9dc-19e579388f4a",
+          "takes": 1,
+          "version": 2,
+          "mirrored": false,
+          "generated_at": "2026-09-09T22:43:34+00:00",
+          "action": "Beak Stab - Lunges forward with one stabbing peck of its hooked beak, wings half raised, then returns to idle stance"
+        },
+        "east": {
+          "status": "pass",
+          "step_mean": 0.1093,
+          "step_max": 0.128,
+          "drift": 2.14,
+          "loop": 0.0003,
+          "loop_ratio": 0.0,
+          "travel": 2.14,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": 0.0,
+          "peak": 0.2077,
+          "canvas": [
+            96,
+            96
+          ],
+          "reasons": [],
+          "sub": "6fc4b995-8794-48c2-a9c6-c7d7f85a2a72",
+          "group": "c0e6871d-f2f7-4c16-9f1a-bfee75942249",
+          "takes": 1,
+          "version": 2,
+          "mirrored": false,
+          "generated_at": "2026-09-09T22:43:35+00:00",
+          "action": "Beak Stab - Lunges forward with one stabbing peck of its hooked beak, wings half raised, then returns to idle stance"
+        },
+        "north-east": {
+          "status": "pass",
+          "step_mean": 0.107,
+          "step_max": 0.1459,
+          "drift": 0.61,
+          "loop": 0.0,
+          "loop_ratio": 0.0,
+          "travel": 0.4,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": 0.004,
+          "peak": 0.1616,
+          "canvas": [
+            96,
+            96
+          ],
+          "reasons": [],
+          "sub": "54b12543-22c1-40ab-a13a-b355c47c5ea1",
+          "group": "f87547ed-40d9-4f3c-8d44-dbb7f8eee04d",
+          "takes": 1,
+          "version": 2,
+          "mirrored": false,
+          "generated_at": "2026-09-09T22:43:35+00:00",
+          "action": "Beak Stab - Lunges forward with one stabbing peck of its hooked beak, wings half raised, then returns to idle stance"
+        },
+        "north": {
+          "status": "pass",
+          "step_mean": 0.0977,
+          "step_max": 0.1318,
+          "drift": 1.24,
+          "loop": 0.0,
+          "loop_ratio": 0.0,
+          "travel": 0.14,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": 0.001,
+          "peak": 0.1834,
+          "canvas": [
+            96,
+            96
+          ],
+          "reasons": [],
+          "sub": "db1933e9-1066-47dc-ba5f-550d6ac4639b",
+          "group": "652e1877-bd33-401f-abe2-5d36fe5c8753",
+          "takes": 1,
+          "version": 3,
+          "mirrored": false,
+          "action": "Beak Stab - Lunges forward with one stabbing peck of its hooked beak, wings half raised, then returns to idle stance",
+          "tries": 2,
+          "generated_at": "2026-09-09T23:52:26+00:00"
+        },
+        "south-west": {
+          "status": "pass",
+          "step_mean": 0.1003,
+          "step_max": 0.1283,
+          "drift": 1.46,
+          "loop": 0.0,
+          "loop_ratio": 0.0,
+          "travel": 0.38,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": 0.0,
+          "peak": 0.1861,
+          "canvas": [
+            96,
+            96
+          ],
+          "reasons": [],
+          "sub": "b4aaea2f-18ab-4eca-9c57-f4a04b81b0fb",
+          "group": "560c585d-4499-4800-b9dc-19e579388f4a",
+          "takes": 1,
+          "version": 2,
+          "mirrored": true,
+          "generated_at": "2026-09-09T22:43:34+00:00",
+          "action": "Beak Stab - Lunges forward with one stabbing peck of its hooked beak, wings half raised, then returns to idle stance",
+          "source": "south-east"
+        },
+        "west": {
+          "status": "pass",
+          "step_mean": 0.1093,
+          "step_max": 0.128,
+          "drift": 2.14,
+          "loop": 0.0003,
+          "loop_ratio": 0.0,
+          "travel": 2.14,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": 0.0,
+          "peak": 0.2077,
+          "canvas": [
+            96,
+            96
+          ],
+          "reasons": [],
+          "sub": "6fc4b995-8794-48c2-a9c6-c7d7f85a2a72",
+          "group": "c0e6871d-f2f7-4c16-9f1a-bfee75942249",
+          "takes": 1,
+          "version": 2,
+          "mirrored": true,
+          "generated_at": "2026-09-09T22:43:35+00:00",
+          "action": "Beak Stab - Lunges forward with one stabbing peck of its hooked beak, wings half raised, then returns to idle stance",
+          "source": "east"
+        },
+        "north-west": {
+          "status": "pass",
+          "step_mean": 0.107,
+          "step_max": 0.1459,
+          "drift": 0.61,
+          "loop": 0.0,
+          "loop_ratio": 0.0,
+          "travel": 0.4,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": 0.004,
+          "peak": 0.1616,
+          "canvas": [
+            96,
+            96
+          ],
+          "reasons": [],
+          "sub": "54b12543-22c1-40ab-a13a-b355c47c5ea1",
+          "group": "f87547ed-40d9-4f3c-8d44-dbb7f8eee04d",
+          "takes": 1,
+          "version": 2,
+          "mirrored": true,
+          "generated_at": "2026-09-09T22:43:35+00:00",
+          "action": "Beak Stab - Lunges forward with one stabbing peck of its hooked beak, wings half raised, then returns to idle stance",
+          "source": "north-east"
+        }
+      },
+      "action": "Beak Stab - Lunges forward with one stabbing peck of its hooked beak, wings half raised, then returns to idle stance",
+      "frame_paths": {
+        "south": [
+          "vulture/animations/attack/south/00.webp",
+          "vulture/animations/attack/south/01.webp",
+          "vulture/animations/attack/south/02.webp",
+          "vulture/animations/attack/south/03.webp",
+          "vulture/animations/attack/south/04.webp"
+        ],
+        "south-east": [
+          "vulture/animations/attack/south-east/00.webp",
+          "vulture/animations/attack/south-east/01.webp",
+          "vulture/animations/attack/south-east/02.webp",
+          "vulture/animations/attack/south-east/03.webp",
+          "vulture/animations/attack/south-east/04.webp"
+        ],
+        "east": [
+          "vulture/animations/attack/east/00.webp",
+          "vulture/animations/attack/east/01.webp",
+          "vulture/animations/attack/east/02.webp",
+          "vulture/animations/attack/east/03.webp",
+          "vulture/animations/attack/east/04.webp"
+        ],
+        "north-east": [
+          "vulture/animations/attack/north-east/00.webp",
+          "vulture/animations/attack/north-east/01.webp",
+          "vulture/animations/attack/north-east/02.webp",
+          "vulture/animations/attack/north-east/03.webp",
+          "vulture/animations/attack/north-east/04.webp"
+        ],
+        "north": [
+          "vulture/animations/attack/north/00.webp",
+          "vulture/animations/attack/north/01.webp",
+          "vulture/animations/attack/north/02.webp",
+          "vulture/animations/attack/north/03.webp",
+          "vulture/animations/attack/north/04.webp"
+        ],
+        "south-west": [
+          "vulture/animations/attack/south-west/00.webp",
+          "vulture/animations/attack/south-west/01.webp",
+          "vulture/animations/attack/south-west/02.webp",
+          "vulture/animations/attack/south-west/03.webp",
+          "vulture/animations/attack/south-west/04.webp"
+        ],
+        "west": [
+          "vulture/animations/attack/west/00.webp",
+          "vulture/animations/attack/west/01.webp",
+          "vulture/animations/attack/west/02.webp",
+          "vulture/animations/attack/west/03.webp",
+          "vulture/animations/attack/west/04.webp"
+        ],
+        "north-west": [
+          "vulture/animations/attack/north-west/00.webp",
+          "vulture/animations/attack/north-west/01.webp",
+          "vulture/animations/attack/north-west/02.webp",
+          "vulture/animations/attack/north-west/03.webp",
+          "vulture/animations/attack/north-west/04.webp"
+        ]
+      },
+      "strips": {
+        "south": "vulture/animations/attack__south.webp",
+        "south-east": "vulture/animations/attack__south-east.webp",
+        "east": "vulture/animations/attack__east.webp",
+        "north-east": "vulture/animations/attack__north-east.webp",
+        "north": "vulture/animations/attack__north.webp",
+        "south-west": "vulture/animations/attack__south-west.webp",
+        "west": "vulture/animations/attack__west.webp",
+        "north-west": "vulture/animations/attack__north-west.webp"
+      }
     }
-   },
-   "action": "Beak Stab - Lunges forward with one stabbing peck of its hooked beak, wings half raised, then returns to idle stance",
-   "frame_paths": {
-    "south": [
-     "vulture/animations/attack/south/00.webp",
-     "vulture/animations/attack/south/01.webp",
-     "vulture/animations/attack/south/02.webp",
-     "vulture/animations/attack/south/03.webp",
-     "vulture/animations/attack/south/04.webp"
-    ],
-    "south-east": [
-     "vulture/animations/attack/south-east/00.webp",
-     "vulture/animations/attack/south-east/01.webp",
-     "vulture/animations/attack/south-east/02.webp",
-     "vulture/animations/attack/south-east/03.webp",
-     "vulture/animations/attack/south-east/04.webp"
-    ],
-    "east": [
-     "vulture/animations/attack/east/00.webp",
-     "vulture/animations/attack/east/01.webp",
-     "vulture/animations/attack/east/02.webp",
-     "vulture/animations/attack/east/03.webp",
-     "vulture/animations/attack/east/04.webp"
-    ],
-    "north-east": [
-     "vulture/animations/attack/north-east/00.webp",
-     "vulture/animations/attack/north-east/01.webp",
-     "vulture/animations/attack/north-east/02.webp",
-     "vulture/animations/attack/north-east/03.webp",
-     "vulture/animations/attack/north-east/04.webp"
-    ],
-    "north": [
-     "vulture/animations/attack/north/00.webp",
-     "vulture/animations/attack/north/01.webp",
-     "vulture/animations/attack/north/02.webp",
-     "vulture/animations/attack/north/03.webp",
-     "vulture/animations/attack/north/04.webp"
-    ],
-    "south-west": [
-     "vulture/animations/attack/south-west/00.webp",
-     "vulture/animations/attack/south-west/01.webp",
-     "vulture/animations/attack/south-west/02.webp",
-     "vulture/animations/attack/south-west/03.webp",
-     "vulture/animations/attack/south-west/04.webp"
-    ],
-    "west": [
-     "vulture/animations/attack/west/00.webp",
-     "vulture/animations/attack/west/01.webp",
-     "vulture/animations/attack/west/02.webp",
-     "vulture/animations/attack/west/03.webp",
-     "vulture/animations/attack/west/04.webp"
-    ],
-    "north-west": [
-     "vulture/animations/attack/north-west/00.webp",
-     "vulture/animations/attack/north-west/01.webp",
-     "vulture/animations/attack/north-west/02.webp",
-     "vulture/animations/attack/north-west/03.webp",
-     "vulture/animations/attack/north-west/04.webp"
-    ]
-   },
-   "strips": {
-    "south": "vulture/animations/attack__south.webp",
-    "south-east": "vulture/animations/attack__south-east.webp",
-    "east": "vulture/animations/attack__east.webp",
-    "north-east": "vulture/animations/attack__north-east.webp",
-    "north": "vulture/animations/attack__north.webp",
-    "south-west": "vulture/animations/attack__south-west.webp",
-    "west": "vulture/animations/attack__west.webp",
-    "north-west": "vulture/animations/attack__north-west.webp"
-   }
   }
- }
 }

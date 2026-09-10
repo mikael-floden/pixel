@@ -1,893 +1,891 @@
 {
- "id": "spider_queen",
- "name": "Broodmother",
- "tier": "boss",
- "scale": "big",
- "lore": "Every spider in the dark is hers and every dark is a nursery. She does not hunt; she waits, and the dark brings supper.",
- "biome": [
-  "dark_mud",
-  "black_rock"
- ],
- "items": [],
- "prompt": "Gigantic fantasy spider queen with a bloated black abdomen covered in pale egg sacs, eight short thick armored legs folded tightly beneath her body, a crown of bone spikes, eight glowing violet eyes, and huge dripping fangs.",
- "size": [
-  240,
-  240
- ],
- "template_id": "bear",
- "directions": [
-  "south",
-  "south-east",
-  "east",
-  "north-east",
-  "north",
-  "north-west",
-  "west",
-  "south-west"
- ],
- "rotations": {
-  "south": "spider_queen/rotations/south.webp",
-  "south-east": "spider_queen/rotations/south-east.webp",
-  "east": "spider_queen/rotations/east.webp",
-  "north-east": "spider_queen/rotations/north-east.webp",
-  "north": "spider_queen/rotations/north.webp",
-  "north-west": "spider_queen/rotations/north-west.webp",
-  "west": "spider_queen/rotations/west.webp",
-  "south-west": "spider_queen/rotations/south-west.webp"
- },
- "sheet": "spider_queen/sheet.webp",
- "review": "approved",
- "pixellab_id": "7adc3e9d-b204-4b47-b2da-35a10264340a",
- "seed": 1653408030,
- "version": 2,
- "usage": null,
- "generated_at": "2026-09-09T18:46:48+00:00",
- "elapsed_s": 183.3,
- "qa": {
-  "status": "pass",
-  "min_run1": 0.569,
-  "reasons": [],
-  "directions": {
-   "south": {
-    "run1": 0.569,
-    "bbox": [
-     18,
-     11,
-     222,
-     228
-    ],
-    "fill": 0.769,
-    "touches_edge": false
-   },
-   "south-east": {
-    "run1": 0.672,
-    "bbox": [
-     31,
-     11,
-     226,
-     230
-    ],
-    "fill": 0.741,
-    "touches_edge": false
-   },
-   "east": {
-    "run1": 0.648,
-    "bbox": [
-     25,
-     31,
-     217,
-     232
-    ],
-    "fill": 0.67,
-    "touches_edge": false
-   },
-   "north-east": {
-    "run1": 0.653,
-    "bbox": [
-     21,
-     29,
-     224,
-     225
-    ],
-    "fill": 0.691,
-    "touches_edge": false
-   },
-   "north": {
-    "run1": 0.651,
-    "bbox": [
-     17,
-     16,
-     226,
-     198
-    ],
-    "fill": 0.66,
-    "touches_edge": false
-   },
-   "north-west": {
-    "run1": 0.658,
-    "bbox": [
-     15,
-     29,
-     218,
-     225
-    ],
-    "fill": 0.691,
-    "touches_edge": false
-   },
-   "west": {
-    "run1": 0.643,
-    "bbox": [
-     23,
-     31,
-     216,
-     232
-    ],
-    "fill": 0.673,
-    "touches_edge": false
-   },
-   "south-west": {
-    "run1": 0.658,
-    "bbox": [
-     15,
-     11,
-     214,
-     229
-    ],
-    "fill": 0.753,
-    "touches_edge": false
-   }
-  }
- },
- "approved_at": "2026-09-09T19:59:23+00:00",
- "animations": {
-  "idle": {
-   "directions": {
-    "south": {
-     "status": "pass",
-     "step_mean": 0.0456,
-     "step_max": 0.0758,
-     "drift": 2.54,
-     "loop": 0.0001,
-     "pin": 1.0,
-     "reasons": [],
-     "sub": "837fb0fa-3692-417b-a355-f86294460f46",
-     "takes": 1,
-     "version": 1,
-     "mirrored": false,
-     "generated_at": "2026-09-09T20:17:25+00:00",
-     "cut": 0
-    },
-    "south-east": {
-     "status": "pass",
-     "step_mean": 0.1243,
-     "step_max": 0.1439,
-     "drift": 0.94,
-     "loop": 0.0007,
-     "pin": 1.0,
-     "reasons": [],
-     "sub": "61a84bdf-f2a2-4c64-8af8-300417d7b9d6",
-     "takes": 1,
-     "version": 1,
-     "mirrored": false,
-     "generated_at": "2026-09-09T20:17:26+00:00",
-     "cut": 0
-    },
-    "east": {
-     "status": "pass",
-     "step_mean": 0.1285,
-     "step_max": 0.1878,
-     "drift": 3.65,
-     "loop": 0.0,
-     "pin": 1.0,
-     "reasons": [],
-     "sub": "238400b4-d669-4ab9-b344-a5ca34d0b453",
-     "takes": 1,
-     "version": 1,
-     "mirrored": false,
-     "generated_at": "2026-09-09T20:17:26+00:00",
-     "cut": 0
-    },
-    "north-east": {
-     "status": "pass",
-     "step_mean": 0.0457,
-     "step_max": 0.0828,
-     "drift": 2.55,
-     "loop": 0.0002,
-     "pin": 1.0,
-     "reasons": [],
-     "sub": "aa267fb3-fd0c-4c2c-9df8-23c4dcdd2558",
-     "takes": 1,
-     "version": 1,
-     "mirrored": false,
-     "generated_at": "2026-09-09T20:17:27+00:00",
-     "cut": 0
-    },
-    "north": {
-     "status": "warn",
-     "step_mean": 0.0934,
-     "step_max": 0.1059,
-     "drift": 4.94,
-     "loop": 0.0001,
-     "pin": 1.0,
-     "reasons": [
-      "drifts 4.9 px — eyeball it"
-     ],
-     "sub": "ef51836a-b9da-497f-8a06-8866e57576a1",
-     "takes": 1,
-     "version": 1,
-     "mirrored": false,
-     "generated_at": "2026-09-09T20:17:28+00:00",
-     "cut": 0
-    },
-    "south-west": {
-     "status": "pass",
-     "step_mean": 0.1243,
-     "step_max": 0.1439,
-     "drift": 0.94,
-     "loop": 0.0007,
-     "pin": 1.0,
-     "reasons": [],
-     "sub": "61a84bdf-f2a2-4c64-8af8-300417d7b9d6",
-     "takes": 1,
-     "version": 1,
-     "mirrored": true,
-     "generated_at": "2026-09-09T20:17:26+00:00",
-     "cut": 0,
-     "source": "south-east"
-    },
-    "west": {
-     "status": "pass",
-     "step_mean": 0.1285,
-     "step_max": 0.1878,
-     "drift": 3.65,
-     "loop": 0.0,
-     "pin": 1.0,
-     "reasons": [],
-     "sub": "238400b4-d669-4ab9-b344-a5ca34d0b453",
-     "takes": 1,
-     "version": 1,
-     "mirrored": true,
-     "generated_at": "2026-09-09T20:17:26+00:00",
-     "cut": 0,
-     "source": "east"
-    },
-    "north-west": {
-     "status": "pass",
-     "step_mean": 0.0457,
-     "step_max": 0.0828,
-     "drift": 2.55,
-     "loop": 0.0002,
-     "pin": 1.0,
-     "reasons": [],
-     "sub": "aa267fb3-fd0c-4c2c-9df8-23c4dcdd2558",
-     "takes": 1,
-     "version": 1,
-     "mirrored": true,
-     "generated_at": "2026-09-09T20:17:27+00:00",
-     "cut": 0,
-     "source": "north-east"
-    }
-   },
-   "action": "Calm still idle, breathing very slowly and subtly, chest and shoulders rise and fall a little, feet planted, no other movement, ends in the same neutral pose it started in",
-   "frame_paths": {
-    "south": [
-     "spider_queen/animations/idle/south/00.webp",
-     "spider_queen/animations/idle/south/01.webp",
-     "spider_queen/animations/idle/south/02.webp",
-     "spider_queen/animations/idle/south/03.webp",
-     "spider_queen/animations/idle/south/04.webp"
-    ],
-    "south-east": [
-     "spider_queen/animations/idle/south-east/00.webp",
-     "spider_queen/animations/idle/south-east/01.webp",
-     "spider_queen/animations/idle/south-east/02.webp",
-     "spider_queen/animations/idle/south-east/03.webp",
-     "spider_queen/animations/idle/south-east/04.webp"
-    ],
-    "east": [
-     "spider_queen/animations/idle/east/00.webp",
-     "spider_queen/animations/idle/east/01.webp",
-     "spider_queen/animations/idle/east/02.webp",
-     "spider_queen/animations/idle/east/03.webp",
-     "spider_queen/animations/idle/east/04.webp"
-    ],
-    "north-east": [
-     "spider_queen/animations/idle/north-east/00.webp",
-     "spider_queen/animations/idle/north-east/01.webp",
-     "spider_queen/animations/idle/north-east/02.webp",
-     "spider_queen/animations/idle/north-east/03.webp",
-     "spider_queen/animations/idle/north-east/04.webp"
-    ],
-    "north": [
-     "spider_queen/animations/idle/north/00.webp",
-     "spider_queen/animations/idle/north/01.webp",
-     "spider_queen/animations/idle/north/02.webp",
-     "spider_queen/animations/idle/north/03.webp",
-     "spider_queen/animations/idle/north/04.webp"
-    ],
-    "south-west": [
-     "spider_queen/animations/idle/south-west/00.webp",
-     "spider_queen/animations/idle/south-west/01.webp",
-     "spider_queen/animations/idle/south-west/02.webp",
-     "spider_queen/animations/idle/south-west/03.webp",
-     "spider_queen/animations/idle/south-west/04.webp"
-    ],
-    "west": [
-     "spider_queen/animations/idle/west/00.webp",
-     "spider_queen/animations/idle/west/01.webp",
-     "spider_queen/animations/idle/west/02.webp",
-     "spider_queen/animations/idle/west/03.webp",
-     "spider_queen/animations/idle/west/04.webp"
-    ],
-    "north-west": [
-     "spider_queen/animations/idle/north-west/00.webp",
-     "spider_queen/animations/idle/north-west/01.webp",
-     "spider_queen/animations/idle/north-west/02.webp",
-     "spider_queen/animations/idle/north-west/03.webp",
-     "spider_queen/animations/idle/north-west/04.webp"
-    ]
-   },
-   "strips": {
-    "south": "spider_queen/animations/idle__south.webp",
-    "south-east": "spider_queen/animations/idle__south-east.webp",
-    "east": "spider_queen/animations/idle__east.webp",
-    "north-east": "spider_queen/animations/idle__north-east.webp",
-    "north": "spider_queen/animations/idle__north.webp",
-    "south-west": "spider_queen/animations/idle__south-west.webp",
-    "west": "spider_queen/animations/idle__west.webp",
-    "north-west": "spider_queen/animations/idle__north-west.webp"
-   }
+  "id": "spider_queen",
+  "name": "Broodmother",
+  "tier": "boss",
+  "scale": "big",
+  "lore": "Every spider in the dark is hers and every dark is a nursery. She does not hunt; she waits, and the dark brings supper.",
+  "biome": [
+    "dark_mud",
+    "black_rock"
+  ],
+  "items": [],
+  "prompt": "Gigantic fantasy spider queen with a bloated black abdomen covered in pale egg sacs, eight short thick armored legs folded tightly beneath her body, a crown of bone spikes, eight glowing violet eyes, and huge dripping fangs.",
+  "size": [
+    240,
+    240
+  ],
+  "template_id": "bear",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "spider_queen/rotations/south.webp",
+    "south-east": "spider_queen/rotations/south-east.webp",
+    "east": "spider_queen/rotations/east.webp",
+    "north-east": "spider_queen/rotations/north-east.webp",
+    "north": "spider_queen/rotations/north.webp",
+    "north-west": "spider_queen/rotations/north-west.webp",
+    "west": "spider_queen/rotations/west.webp",
+    "south-west": "spider_queen/rotations/south-west.webp"
   },
-  "walk": {
-   "directions": {
-    "south": {
-     "status": "pass",
-     "step_mean": 0.1168,
-     "step_max": 0.1649,
-     "drift": 1.95,
-     "loop": 0.1932,
-     "loop_ratio": 1.65,
-     "travel": 1.23,
-     "pin": 0.881,
-     "pad": 0,
-     "canvas": [
-      240,
-      240
-     ],
-     "reasons": [],
-     "sub": "40ae1639-972b-43f6-903e-9c176c64171e",
-     "group": "3e80cc17-0fec-4499-a339-784c7cd64c55",
-     "takes": 1,
-     "version": 1,
-     "mirrored": false,
-     "generated_at": "2026-09-09T21:16:20+00:00"
-    },
-    "south-east": {
-     "status": "pass",
-     "step_mean": 0.1429,
-     "step_max": 0.1725,
-     "drift": 3.5,
-     "loop": 0.2399,
-     "loop_ratio": 1.68,
-     "travel": 3.61,
-     "pin": 0.89,
-     "pad": 0,
-     "canvas": [
-      240,
-      240
-     ],
-     "reasons": [],
-     "sub": "02bc7135-f398-4c9c-9c47-0c3827a44d86",
-     "group": "8c085224-a64d-44c5-b92d-336afb902571",
-     "takes": 1,
-     "version": 1,
-     "mirrored": false,
-     "generated_at": "2026-09-09T21:16:20+00:00"
-    },
-    "east": {
-     "status": "warn",
-     "step_mean": 0.2084,
-     "step_max": 0.2416,
-     "drift": 7.4,
-     "loop": 0.2225,
-     "loop_ratio": 1.07,
-     "travel": 1.53,
-     "pin": 0.862,
-     "pad": 0,
-     "canvas": [
-      240,
-      240
-     ],
-     "reasons": [
-      "drifts 7.4 px — eyeball it"
-     ],
-     "sub": "a6d75123-8289-49e9-95b8-6a2c3d580a80",
-     "group": "6be81d8c-b09c-47ea-87a1-f347fb61725d",
-     "takes": 1,
-     "version": 1,
-     "mirrored": false,
-     "generated_at": "2026-09-09T21:16:21+00:00"
-    },
-    "north-east": {
-     "status": "pass",
-     "step_mean": 0.1341,
-     "step_max": 0.1597,
-     "drift": 6.13,
-     "loop": 0.1352,
-     "loop_ratio": 1.01,
-     "travel": 3.14,
-     "pin": 0.889,
-     "pad": 0,
-     "canvas": [
-      240,
-      240
-     ],
-     "reasons": [],
-     "sub": "b44eaab0-5635-4bcc-b6e4-8f72f32263a4",
-     "group": "f6c53127-d834-47fe-8f9b-bd72706b2a00",
-     "takes": 1,
-     "version": 1,
-     "mirrored": false,
-     "generated_at": "2026-09-09T21:16:22+00:00"
-    },
-    "north": {
-     "status": "warn",
-     "step_mean": 0.2037,
-     "step_max": 0.2473,
-     "drift": 8.89,
-     "loop": 0.3255,
-     "loop_ratio": 1.6,
-     "travel": 1.01,
-     "pin": 0.847,
-     "pad": 0,
-     "canvas": [
-      240,
-      240
-     ],
-     "reasons": [
-      "drifts 8.9 px — eyeball it"
-     ],
-     "sub": "8f88d720-cd78-4e2c-907b-fbd775876361",
-     "group": "66f5dcbd-6193-4466-9a9d-7f786860cb06",
-     "takes": 1,
-     "version": 1,
-     "mirrored": false,
-     "generated_at": "2026-09-09T21:16:23+00:00"
-    },
-    "south-west": {
-     "status": "pass",
-     "step_mean": 0.1429,
-     "step_max": 0.1725,
-     "drift": 3.5,
-     "loop": 0.2399,
-     "loop_ratio": 1.68,
-     "travel": 3.61,
-     "pin": 0.89,
-     "pad": 0,
-     "canvas": [
-      240,
-      240
-     ],
-     "reasons": [],
-     "sub": "02bc7135-f398-4c9c-9c47-0c3827a44d86",
-     "group": "8c085224-a64d-44c5-b92d-336afb902571",
-     "takes": 1,
-     "version": 1,
-     "mirrored": true,
-     "generated_at": "2026-09-09T21:16:20+00:00",
-     "source": "south-east"
-    },
-    "west": {
-     "status": "warn",
-     "step_mean": 0.2084,
-     "step_max": 0.2416,
-     "drift": 7.4,
-     "loop": 0.2225,
-     "loop_ratio": 1.07,
-     "travel": 1.53,
-     "pin": 0.862,
-     "pad": 0,
-     "canvas": [
-      240,
-      240
-     ],
-     "reasons": [
-      "drifts 7.4 px — eyeball it"
-     ],
-     "sub": "a6d75123-8289-49e9-95b8-6a2c3d580a80",
-     "group": "6be81d8c-b09c-47ea-87a1-f347fb61725d",
-     "takes": 1,
-     "version": 1,
-     "mirrored": true,
-     "generated_at": "2026-09-09T21:16:21+00:00",
-     "source": "east"
-    },
-    "north-west": {
-     "status": "pass",
-     "step_mean": 0.1341,
-     "step_max": 0.1597,
-     "drift": 6.13,
-     "loop": 0.1352,
-     "loop_ratio": 1.01,
-     "travel": 3.14,
-     "pin": 0.889,
-     "pad": 0,
-     "canvas": [
-      240,
-      240
-     ],
-     "reasons": [],
-     "sub": "b44eaab0-5635-4bcc-b6e4-8f72f32263a4",
-     "group": "f6c53127-d834-47fe-8f9b-bd72706b2a00",
-     "takes": 1,
-     "version": 1,
-     "mirrored": true,
-     "generated_at": "2026-09-09T21:16:22+00:00",
-     "source": "north-east"
+  "sheet": "spider_queen/sheet.webp",
+  "review": "approved",
+  "pixellab_id": "7adc3e9d-b204-4b47-b2da-35a10264340a",
+  "seed": 1653408030,
+  "version": 2,
+  "usage": null,
+  "generated_at": "2026-09-09T18:46:48+00:00",
+  "elapsed_s": 183.3,
+  "qa": {
+    "status": "pass",
+    "min_run1": 0.569,
+    "reasons": [],
+    "directions": {
+      "south": {
+        "run1": 0.569,
+        "bbox": [
+          18,
+          11,
+          222,
+          228
+        ],
+        "fill": 0.769,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.672,
+        "bbox": [
+          31,
+          11,
+          226,
+          230
+        ],
+        "fill": 0.741,
+        "touches_edge": false
+      },
+      "east": {
+        "run1": 0.648,
+        "bbox": [
+          25,
+          31,
+          217,
+          232
+        ],
+        "fill": 0.67,
+        "touches_edge": false
+      },
+      "north-east": {
+        "run1": 0.653,
+        "bbox": [
+          21,
+          29,
+          224,
+          225
+        ],
+        "fill": 0.691,
+        "touches_edge": false
+      },
+      "north": {
+        "run1": 0.651,
+        "bbox": [
+          17,
+          16,
+          226,
+          198
+        ],
+        "fill": 0.66,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.658,
+        "bbox": [
+          15,
+          29,
+          218,
+          225
+        ],
+        "fill": 0.691,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.643,
+        "bbox": [
+          23,
+          31,
+          216,
+          232
+        ],
+        "fill": 0.673,
+        "touches_edge": false
+      },
+      "south-west": {
+        "run1": 0.658,
+        "bbox": [
+          15,
+          11,
+          214,
+          229
+        ],
+        "fill": 0.753,
+        "touches_edge": false
+      }
     }
-   },
-   "action": "walk loop, full walk cycle in place, legs alternate naturally, normal calm walking pace, body stays centered, seamless loop whose last frame leads straight back into the first, no turning",
-   "frame_paths": {
-    "south": [
-     "spider_queen/animations/walk/south/00.webp",
-     "spider_queen/animations/walk/south/01.webp",
-     "spider_queen/animations/walk/south/02.webp",
-     "spider_queen/animations/walk/south/03.webp",
-     "spider_queen/animations/walk/south/04.webp",
-     "spider_queen/animations/walk/south/05.webp"
-    ],
-    "south-east": [
-     "spider_queen/animations/walk/south-east/00.webp",
-     "spider_queen/animations/walk/south-east/01.webp",
-     "spider_queen/animations/walk/south-east/02.webp",
-     "spider_queen/animations/walk/south-east/03.webp",
-     "spider_queen/animations/walk/south-east/04.webp",
-     "spider_queen/animations/walk/south-east/05.webp"
-    ],
-    "east": [
-     "spider_queen/animations/walk/east/00.webp",
-     "spider_queen/animations/walk/east/01.webp",
-     "spider_queen/animations/walk/east/02.webp",
-     "spider_queen/animations/walk/east/03.webp",
-     "spider_queen/animations/walk/east/04.webp",
-     "spider_queen/animations/walk/east/05.webp"
-    ],
-    "north-east": [
-     "spider_queen/animations/walk/north-east/00.webp",
-     "spider_queen/animations/walk/north-east/01.webp",
-     "spider_queen/animations/walk/north-east/02.webp",
-     "spider_queen/animations/walk/north-east/03.webp",
-     "spider_queen/animations/walk/north-east/04.webp",
-     "spider_queen/animations/walk/north-east/05.webp"
-    ],
-    "north": [
-     "spider_queen/animations/walk/north/00.webp",
-     "spider_queen/animations/walk/north/01.webp",
-     "spider_queen/animations/walk/north/02.webp",
-     "spider_queen/animations/walk/north/03.webp",
-     "spider_queen/animations/walk/north/04.webp",
-     "spider_queen/animations/walk/north/05.webp"
-    ],
-    "south-west": [
-     "spider_queen/animations/walk/south-west/00.webp",
-     "spider_queen/animations/walk/south-west/01.webp",
-     "spider_queen/animations/walk/south-west/02.webp",
-     "spider_queen/animations/walk/south-west/03.webp",
-     "spider_queen/animations/walk/south-west/04.webp",
-     "spider_queen/animations/walk/south-west/05.webp"
-    ],
-    "west": [
-     "spider_queen/animations/walk/west/00.webp",
-     "spider_queen/animations/walk/west/01.webp",
-     "spider_queen/animations/walk/west/02.webp",
-     "spider_queen/animations/walk/west/03.webp",
-     "spider_queen/animations/walk/west/04.webp",
-     "spider_queen/animations/walk/west/05.webp"
-    ],
-    "north-west": [
-     "spider_queen/animations/walk/north-west/00.webp",
-     "spider_queen/animations/walk/north-west/01.webp",
-     "spider_queen/animations/walk/north-west/02.webp",
-     "spider_queen/animations/walk/north-west/03.webp",
-     "spider_queen/animations/walk/north-west/04.webp",
-     "spider_queen/animations/walk/north-west/05.webp"
-    ]
-   },
-   "strips": {
-    "south": "spider_queen/animations/walk__south.webp",
-    "south-east": "spider_queen/animations/walk__south-east.webp",
-    "east": "spider_queen/animations/walk__east.webp",
-    "north-east": "spider_queen/animations/walk__north-east.webp",
-    "north": "spider_queen/animations/walk__north.webp",
-    "south-west": "spider_queen/animations/walk__south-west.webp",
-    "west": "spider_queen/animations/walk__west.webp",
-    "north-west": "spider_queen/animations/walk__north-west.webp"
-   }
   },
-  "attack": {
-   "directions": {
-    "south": {
-     "status": "pass",
-     "step_mean": 0.3119,
-     "step_max": 0.3242,
-     "drift": 4.6,
-     "loop": 0.0001,
-     "loop_ratio": 0.0,
-     "travel": 0.46,
-     "pin": 1.0,
-     "pad": 0,
-     "flash": 0.001,
-     "peak": 0.4364,
-     "canvas": [
-      240,
-      240
-     ],
-     "reasons": [],
-     "sub": "69245756-7125-43be-bcb7-2032648316cb",
-     "group": "c0bf1a08-0610-4b33-9c87-15f2504a3114",
-     "takes": 1,
-     "version": 2,
-     "mirrored": false,
-     "generated_at": "2026-09-09T22:39:15+00:00",
-     "action": "Fang Stab - Rears up on her back legs and stabs down once with both front legs and fangs, then returns to idle stance"
+  "approved_at": "2026-09-09T19:59:23+00:00",
+  "animations": {
+    "idle": {
+      "directions": {
+        "south": {
+          "status": "pass",
+          "step_mean": 0.0456,
+          "step_max": 0.0758,
+          "drift": 2.54,
+          "loop": 0.0001,
+          "pin": 1.0,
+          "reasons": [],
+          "sub": "837fb0fa-3692-417b-a355-f86294460f46",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "generated_at": "2026-09-09T20:17:25+00:00",
+          "cut": 0
+        },
+        "south-east": {
+          "status": "pass",
+          "step_mean": 0.1243,
+          "step_max": 0.1439,
+          "drift": 0.94,
+          "loop": 0.0007,
+          "pin": 1.0,
+          "reasons": [],
+          "sub": "61a84bdf-f2a2-4c64-8af8-300417d7b9d6",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "generated_at": "2026-09-09T20:17:26+00:00",
+          "cut": 0
+        },
+        "east": {
+          "status": "pass",
+          "step_mean": 0.1285,
+          "step_max": 0.1878,
+          "drift": 3.65,
+          "loop": 0.0,
+          "pin": 1.0,
+          "reasons": [],
+          "sub": "238400b4-d669-4ab9-b344-a5ca34d0b453",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "generated_at": "2026-09-09T20:17:26+00:00",
+          "cut": 0
+        },
+        "north-east": {
+          "status": "pass",
+          "step_mean": 0.0457,
+          "step_max": 0.0828,
+          "drift": 2.55,
+          "loop": 0.0002,
+          "pin": 1.0,
+          "reasons": [],
+          "sub": "aa267fb3-fd0c-4c2c-9df8-23c4dcdd2558",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "generated_at": "2026-09-09T20:17:27+00:00",
+          "cut": 0
+        },
+        "north": {
+          "status": "warn",
+          "step_mean": 0.0934,
+          "step_max": 0.1059,
+          "drift": 4.94,
+          "loop": 0.0001,
+          "pin": 1.0,
+          "reasons": [
+            "drifts 4.9 px — eyeball it"
+          ],
+          "sub": "ef51836a-b9da-497f-8a06-8866e57576a1",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "generated_at": "2026-09-09T20:17:28+00:00",
+          "cut": 0
+        },
+        "south-west": {
+          "status": "pass",
+          "step_mean": 0.1243,
+          "step_max": 0.1439,
+          "drift": 0.94,
+          "loop": 0.0007,
+          "pin": 1.0,
+          "reasons": [],
+          "sub": "61a84bdf-f2a2-4c64-8af8-300417d7b9d6",
+          "takes": 1,
+          "version": 1,
+          "mirrored": true,
+          "generated_at": "2026-09-09T20:17:26+00:00",
+          "cut": 0,
+          "source": "south-east"
+        },
+        "west": {
+          "status": "pass",
+          "step_mean": 0.1285,
+          "step_max": 0.1878,
+          "drift": 3.65,
+          "loop": 0.0,
+          "pin": 1.0,
+          "reasons": [],
+          "sub": "238400b4-d669-4ab9-b344-a5ca34d0b453",
+          "takes": 1,
+          "version": 1,
+          "mirrored": true,
+          "generated_at": "2026-09-09T20:17:26+00:00",
+          "cut": 0,
+          "source": "east"
+        },
+        "north-west": {
+          "status": "pass",
+          "step_mean": 0.0457,
+          "step_max": 0.0828,
+          "drift": 2.55,
+          "loop": 0.0002,
+          "pin": 1.0,
+          "reasons": [],
+          "sub": "aa267fb3-fd0c-4c2c-9df8-23c4dcdd2558",
+          "takes": 1,
+          "version": 1,
+          "mirrored": true,
+          "generated_at": "2026-09-09T20:17:27+00:00",
+          "cut": 0,
+          "source": "north-east"
+        }
+      },
+      "action": "Calm still idle, breathing very slowly and subtly, chest and shoulders rise and fall a little, feet planted, no other movement, ends in the same neutral pose it started in",
+      "frame_paths": {
+        "south": [
+          "spider_queen/animations/idle/south/00.webp",
+          "spider_queen/animations/idle/south/01.webp",
+          "spider_queen/animations/idle/south/02.webp",
+          "spider_queen/animations/idle/south/03.webp",
+          "spider_queen/animations/idle/south/04.webp"
+        ],
+        "south-east": [
+          "spider_queen/animations/idle/south-east/00.webp",
+          "spider_queen/animations/idle/south-east/01.webp",
+          "spider_queen/animations/idle/south-east/02.webp",
+          "spider_queen/animations/idle/south-east/03.webp",
+          "spider_queen/animations/idle/south-east/04.webp"
+        ],
+        "east": [
+          "spider_queen/animations/idle/east/00.webp",
+          "spider_queen/animations/idle/east/01.webp",
+          "spider_queen/animations/idle/east/02.webp",
+          "spider_queen/animations/idle/east/03.webp",
+          "spider_queen/animations/idle/east/04.webp"
+        ],
+        "north-east": [
+          "spider_queen/animations/idle/north-east/00.webp",
+          "spider_queen/animations/idle/north-east/01.webp",
+          "spider_queen/animations/idle/north-east/02.webp",
+          "spider_queen/animations/idle/north-east/03.webp",
+          "spider_queen/animations/idle/north-east/04.webp"
+        ],
+        "north": [
+          "spider_queen/animations/idle/north/00.webp",
+          "spider_queen/animations/idle/north/01.webp",
+          "spider_queen/animations/idle/north/02.webp",
+          "spider_queen/animations/idle/north/03.webp",
+          "spider_queen/animations/idle/north/04.webp"
+        ],
+        "south-west": [
+          "spider_queen/animations/idle/south-west/00.webp",
+          "spider_queen/animations/idle/south-west/01.webp",
+          "spider_queen/animations/idle/south-west/02.webp",
+          "spider_queen/animations/idle/south-west/03.webp",
+          "spider_queen/animations/idle/south-west/04.webp"
+        ],
+        "west": [
+          "spider_queen/animations/idle/west/00.webp",
+          "spider_queen/animations/idle/west/01.webp",
+          "spider_queen/animations/idle/west/02.webp",
+          "spider_queen/animations/idle/west/03.webp",
+          "spider_queen/animations/idle/west/04.webp"
+        ],
+        "north-west": [
+          "spider_queen/animations/idle/north-west/00.webp",
+          "spider_queen/animations/idle/north-west/01.webp",
+          "spider_queen/animations/idle/north-west/02.webp",
+          "spider_queen/animations/idle/north-west/03.webp",
+          "spider_queen/animations/idle/north-west/04.webp"
+        ]
+      },
+      "strips": {
+        "south": "spider_queen/animations/idle__south.webp",
+        "south-east": "spider_queen/animations/idle__south-east.webp",
+        "east": "spider_queen/animations/idle__east.webp",
+        "north-east": "spider_queen/animations/idle__north-east.webp",
+        "north": "spider_queen/animations/idle__north.webp",
+        "south-west": "spider_queen/animations/idle__south-west.webp",
+        "west": "spider_queen/animations/idle__west.webp",
+        "north-west": "spider_queen/animations/idle__north-west.webp"
+      }
     },
-    "south-east": {
-     "status": "fail",
-     "step_mean": 0.3141,
-     "step_max": 0.4105,
-     "drift": 10.38,
-     "loop": 0.0002,
-     "loop_ratio": 0.0,
-     "travel": 8.5,
-     "pin": 1.0,
-     "pad": 0,
-     "flash": 0.082,
-     "peak": 0.4948,
-     "canvas": [
-      240,
-      240
-     ],
-     "reasons": [
-      "some bright effect pixels (0.08) — eyeball it",
-      "eyeballed: painted swoosh on the strike"
-     ],
-     "sub": "d05d1336-e4be-4ede-adc4-63621db51a15",
-     "group": "b5da9dac-e5b7-4b6a-827e-9f93c03f335b",
-     "takes": 3,
-     "version": 4,
-     "mirrored": false,
-     "generated_at": "2026-09-09T23:01:09+00:00",
-     "action": "Fang Stab - Rears up on her back legs and stabs down once with both front legs and fangs, then returns to idle stance",
-     "tries": 2,
-     "manual": true
+    "walk": {
+      "directions": {
+        "south": {
+          "status": "pass",
+          "step_mean": 0.1168,
+          "step_max": 0.1649,
+          "drift": 1.95,
+          "loop": 0.1932,
+          "loop_ratio": 1.65,
+          "travel": 1.23,
+          "pin": 0.881,
+          "pad": 0,
+          "canvas": [
+            240,
+            240
+          ],
+          "reasons": [],
+          "sub": "40ae1639-972b-43f6-903e-9c176c64171e",
+          "group": "3e80cc17-0fec-4499-a339-784c7cd64c55",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "generated_at": "2026-09-09T21:16:20+00:00"
+        },
+        "south-east": {
+          "status": "pass",
+          "step_mean": 0.1429,
+          "step_max": 0.1725,
+          "drift": 3.5,
+          "loop": 0.2399,
+          "loop_ratio": 1.68,
+          "travel": 3.61,
+          "pin": 0.89,
+          "pad": 0,
+          "canvas": [
+            240,
+            240
+          ],
+          "reasons": [],
+          "sub": "02bc7135-f398-4c9c-9c47-0c3827a44d86",
+          "group": "8c085224-a64d-44c5-b92d-336afb902571",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "generated_at": "2026-09-09T21:16:20+00:00"
+        },
+        "east": {
+          "status": "warn",
+          "step_mean": 0.2084,
+          "step_max": 0.2416,
+          "drift": 7.4,
+          "loop": 0.2225,
+          "loop_ratio": 1.07,
+          "travel": 1.53,
+          "pin": 0.862,
+          "pad": 0,
+          "canvas": [
+            240,
+            240
+          ],
+          "reasons": [
+            "drifts 7.4 px — eyeball it"
+          ],
+          "sub": "a6d75123-8289-49e9-95b8-6a2c3d580a80",
+          "group": "6be81d8c-b09c-47ea-87a1-f347fb61725d",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "generated_at": "2026-09-09T21:16:21+00:00"
+        },
+        "north-east": {
+          "status": "pass",
+          "step_mean": 0.1341,
+          "step_max": 0.1597,
+          "drift": 6.13,
+          "loop": 0.1352,
+          "loop_ratio": 1.01,
+          "travel": 3.14,
+          "pin": 0.889,
+          "pad": 0,
+          "canvas": [
+            240,
+            240
+          ],
+          "reasons": [],
+          "sub": "b44eaab0-5635-4bcc-b6e4-8f72f32263a4",
+          "group": "f6c53127-d834-47fe-8f9b-bd72706b2a00",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "generated_at": "2026-09-09T21:16:22+00:00"
+        },
+        "north": {
+          "status": "warn",
+          "step_mean": 0.2037,
+          "step_max": 0.2473,
+          "drift": 8.89,
+          "loop": 0.3255,
+          "loop_ratio": 1.6,
+          "travel": 1.01,
+          "pin": 0.847,
+          "pad": 0,
+          "canvas": [
+            240,
+            240
+          ],
+          "reasons": [
+            "drifts 8.9 px — eyeball it"
+          ],
+          "sub": "8f88d720-cd78-4e2c-907b-fbd775876361",
+          "group": "66f5dcbd-6193-4466-9a9d-7f786860cb06",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "generated_at": "2026-09-09T21:16:23+00:00"
+        },
+        "south-west": {
+          "status": "pass",
+          "step_mean": 0.1429,
+          "step_max": 0.1725,
+          "drift": 3.5,
+          "loop": 0.2399,
+          "loop_ratio": 1.68,
+          "travel": 3.61,
+          "pin": 0.89,
+          "pad": 0,
+          "canvas": [
+            240,
+            240
+          ],
+          "reasons": [],
+          "sub": "02bc7135-f398-4c9c-9c47-0c3827a44d86",
+          "group": "8c085224-a64d-44c5-b92d-336afb902571",
+          "takes": 1,
+          "version": 1,
+          "mirrored": true,
+          "generated_at": "2026-09-09T21:16:20+00:00",
+          "source": "south-east"
+        },
+        "west": {
+          "status": "warn",
+          "step_mean": 0.2084,
+          "step_max": 0.2416,
+          "drift": 7.4,
+          "loop": 0.2225,
+          "loop_ratio": 1.07,
+          "travel": 1.53,
+          "pin": 0.862,
+          "pad": 0,
+          "canvas": [
+            240,
+            240
+          ],
+          "reasons": [
+            "drifts 7.4 px — eyeball it"
+          ],
+          "sub": "a6d75123-8289-49e9-95b8-6a2c3d580a80",
+          "group": "6be81d8c-b09c-47ea-87a1-f347fb61725d",
+          "takes": 1,
+          "version": 1,
+          "mirrored": true,
+          "generated_at": "2026-09-09T21:16:21+00:00",
+          "source": "east"
+        },
+        "north-west": {
+          "status": "pass",
+          "step_mean": 0.1341,
+          "step_max": 0.1597,
+          "drift": 6.13,
+          "loop": 0.1352,
+          "loop_ratio": 1.01,
+          "travel": 3.14,
+          "pin": 0.889,
+          "pad": 0,
+          "canvas": [
+            240,
+            240
+          ],
+          "reasons": [],
+          "sub": "b44eaab0-5635-4bcc-b6e4-8f72f32263a4",
+          "group": "f6c53127-d834-47fe-8f9b-bd72706b2a00",
+          "takes": 1,
+          "version": 1,
+          "mirrored": true,
+          "generated_at": "2026-09-09T21:16:22+00:00",
+          "source": "north-east"
+        }
+      },
+      "action": "walk loop, full walk cycle in place, legs alternate naturally, normal calm walking pace, body stays centered, seamless loop whose last frame leads straight back into the first, no turning",
+      "frame_paths": {
+        "south": [
+          "spider_queen/animations/walk/south/00.webp",
+          "spider_queen/animations/walk/south/01.webp",
+          "spider_queen/animations/walk/south/02.webp",
+          "spider_queen/animations/walk/south/03.webp",
+          "spider_queen/animations/walk/south/04.webp",
+          "spider_queen/animations/walk/south/05.webp"
+        ],
+        "south-east": [
+          "spider_queen/animations/walk/south-east/00.webp",
+          "spider_queen/animations/walk/south-east/01.webp",
+          "spider_queen/animations/walk/south-east/02.webp",
+          "spider_queen/animations/walk/south-east/03.webp",
+          "spider_queen/animations/walk/south-east/04.webp",
+          "spider_queen/animations/walk/south-east/05.webp"
+        ],
+        "east": [
+          "spider_queen/animations/walk/east/00.webp",
+          "spider_queen/animations/walk/east/01.webp",
+          "spider_queen/animations/walk/east/02.webp",
+          "spider_queen/animations/walk/east/03.webp",
+          "spider_queen/animations/walk/east/04.webp",
+          "spider_queen/animations/walk/east/05.webp"
+        ],
+        "north-east": [
+          "spider_queen/animations/walk/north-east/00.webp",
+          "spider_queen/animations/walk/north-east/01.webp",
+          "spider_queen/animations/walk/north-east/02.webp",
+          "spider_queen/animations/walk/north-east/03.webp",
+          "spider_queen/animations/walk/north-east/04.webp",
+          "spider_queen/animations/walk/north-east/05.webp"
+        ],
+        "north": [
+          "spider_queen/animations/walk/north/00.webp",
+          "spider_queen/animations/walk/north/01.webp",
+          "spider_queen/animations/walk/north/02.webp",
+          "spider_queen/animations/walk/north/03.webp",
+          "spider_queen/animations/walk/north/04.webp",
+          "spider_queen/animations/walk/north/05.webp"
+        ],
+        "south-west": [
+          "spider_queen/animations/walk/south-west/00.webp",
+          "spider_queen/animations/walk/south-west/01.webp",
+          "spider_queen/animations/walk/south-west/02.webp",
+          "spider_queen/animations/walk/south-west/03.webp",
+          "spider_queen/animations/walk/south-west/04.webp",
+          "spider_queen/animations/walk/south-west/05.webp"
+        ],
+        "west": [
+          "spider_queen/animations/walk/west/00.webp",
+          "spider_queen/animations/walk/west/01.webp",
+          "spider_queen/animations/walk/west/02.webp",
+          "spider_queen/animations/walk/west/03.webp",
+          "spider_queen/animations/walk/west/04.webp",
+          "spider_queen/animations/walk/west/05.webp"
+        ],
+        "north-west": [
+          "spider_queen/animations/walk/north-west/00.webp",
+          "spider_queen/animations/walk/north-west/01.webp",
+          "spider_queen/animations/walk/north-west/02.webp",
+          "spider_queen/animations/walk/north-west/03.webp",
+          "spider_queen/animations/walk/north-west/04.webp",
+          "spider_queen/animations/walk/north-west/05.webp"
+        ]
+      },
+      "strips": {
+        "south": "spider_queen/animations/walk__south.webp",
+        "south-east": "spider_queen/animations/walk__south-east.webp",
+        "east": "spider_queen/animations/walk__east.webp",
+        "north-east": "spider_queen/animations/walk__north-east.webp",
+        "north": "spider_queen/animations/walk__north.webp",
+        "south-west": "spider_queen/animations/walk__south-west.webp",
+        "west": "spider_queen/animations/walk__west.webp",
+        "north-west": "spider_queen/animations/walk__north-west.webp"
+      }
     },
-    "east": {
-     "status": "pass",
-     "step_mean": 0.3182,
-     "step_max": 0.3689,
-     "drift": 5.77,
-     "loop": 0.0001,
-     "loop_ratio": 0.0,
-     "travel": 1.05,
-     "pin": 1.0,
-     "pad": 0,
-     "flash": 0.0,
-     "peak": 0.5177,
-     "canvas": [
-      240,
-      240
-     ],
-     "reasons": [],
-     "sub": "ad23fbcc-e949-4735-bbb6-d6b02419719e",
-     "group": "322c8f0c-9c49-499f-8182-29493e66a673",
-     "takes": 1,
-     "version": 2,
-     "mirrored": false,
-     "generated_at": "2026-09-09T22:39:16+00:00",
-     "action": "Fang Stab - Rears up on her back legs and stabs down once with both front legs and fangs, then returns to idle stance"
-    },
-    "north-east": {
-     "status": "pass",
-     "step_mean": 0.2313,
-     "step_max": 0.291,
-     "drift": 6.15,
-     "loop": 0.0003,
-     "loop_ratio": 0.0,
-     "travel": 0.47,
-     "pin": 1.0,
-     "pad": 0,
-     "flash": 0.0,
-     "peak": 0.3989,
-     "canvas": [
-      240,
-      240
-     ],
-     "reasons": [],
-     "sub": "e90f4cdc-b1a9-45ca-91b3-d64a72efd048",
-     "group": "469103aa-30d0-45f7-a640-d50ccebf6068",
-     "takes": 1,
-     "version": 2,
-     "mirrored": false,
-     "generated_at": "2026-09-09T22:39:17+00:00",
-     "action": "Fang Stab - Rears up on her back legs and stabs down once with both front legs and fangs, then returns to idle stance"
-    },
-    "north": {
-     "status": "pass",
-     "step_mean": 0.3162,
-     "step_max": 0.3814,
-     "drift": 9.58,
-     "loop": 0.0,
-     "loop_ratio": 0.0,
-     "travel": 0.56,
-     "pin": 1.0,
-     "pad": 0,
-     "flash": 0.0,
-     "peak": 0.4951,
-     "canvas": [
-      240,
-      240
-     ],
-     "reasons": [],
-     "sub": "512f3f21-5420-4e1f-aefd-081af1e95b70",
-     "group": "3d21253d-3a56-4f5a-976f-70bb4e8e1dbf",
-     "takes": 1,
-     "version": 9,
-     "mirrored": false,
-     "generated_at": "2026-09-09T23:36:31+00:00",
-     "action": "Fang Stab - Rears up on her back legs and stabs down once with both front legs and fangs, then returns to idle stance",
-     "tries": 1
-    },
-    "south-west": {
-     "status": "warn",
-     "step_mean": 0.3141,
-     "step_max": 0.4105,
-     "drift": 10.38,
-     "loop": 0.0002,
-     "loop_ratio": 0.0,
-     "travel": 8.5,
-     "pin": 1.0,
-     "pad": 0,
-     "flash": 0.082,
-     "peak": 0.4948,
-     "canvas": [
-      240,
-      240
-     ],
-     "reasons": [
-      "some bright effect pixels (0.08) — eyeball it"
-     ],
-     "sub": "d05d1336-e4be-4ede-adc4-63621db51a15",
-     "group": "b5da9dac-e5b7-4b6a-827e-9f93c03f335b",
-     "takes": 3,
-     "version": 4,
-     "mirrored": true,
-     "generated_at": "2026-09-09T23:01:09+00:00",
-     "action": "Fang Stab - Rears up on her back legs and stabs down once with both front legs and fangs, then returns to idle stance",
-     "tries": 2,
-     "source": "south-east"
-    },
-    "west": {
-     "status": "pass",
-     "step_mean": 0.3182,
-     "step_max": 0.3689,
-     "drift": 5.77,
-     "loop": 0.0001,
-     "loop_ratio": 0.0,
-     "travel": 1.05,
-     "pin": 1.0,
-     "pad": 0,
-     "flash": 0.0,
-     "peak": 0.5177,
-     "canvas": [
-      240,
-      240
-     ],
-     "reasons": [],
-     "sub": "ad23fbcc-e949-4735-bbb6-d6b02419719e",
-     "group": "322c8f0c-9c49-499f-8182-29493e66a673",
-     "takes": 1,
-     "version": 2,
-     "mirrored": true,
-     "generated_at": "2026-09-09T22:39:16+00:00",
-     "action": "Fang Stab - Rears up on her back legs and stabs down once with both front legs and fangs, then returns to idle stance",
-     "source": "east"
-    },
-    "north-west": {
-     "status": "pass",
-     "step_mean": 0.2313,
-     "step_max": 0.291,
-     "drift": 6.15,
-     "loop": 0.0003,
-     "loop_ratio": 0.0,
-     "travel": 0.47,
-     "pin": 1.0,
-     "pad": 0,
-     "flash": 0.0,
-     "peak": 0.3989,
-     "canvas": [
-      240,
-      240
-     ],
-     "reasons": [],
-     "sub": "e90f4cdc-b1a9-45ca-91b3-d64a72efd048",
-     "group": "469103aa-30d0-45f7-a640-d50ccebf6068",
-     "takes": 1,
-     "version": 2,
-     "mirrored": true,
-     "generated_at": "2026-09-09T22:39:17+00:00",
-     "action": "Fang Stab - Rears up on her back legs and stabs down once with both front legs and fangs, then returns to idle stance",
-     "source": "north-east"
+    "attack": {
+      "directions": {
+        "south": {
+          "status": "pass",
+          "step_mean": 0.3119,
+          "step_max": 0.3242,
+          "drift": 4.6,
+          "loop": 0.0001,
+          "loop_ratio": 0.0,
+          "travel": 0.46,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": 0.001,
+          "peak": 0.4364,
+          "canvas": [
+            240,
+            240
+          ],
+          "reasons": [],
+          "sub": "69245756-7125-43be-bcb7-2032648316cb",
+          "group": "c0bf1a08-0610-4b33-9c87-15f2504a3114",
+          "takes": 1,
+          "version": 2,
+          "mirrored": false,
+          "generated_at": "2026-09-09T22:39:15+00:00",
+          "action": "Fang Stab - Rears up on her back legs and stabs down once with both front legs and fangs, then returns to idle stance"
+        },
+        "south-east": {
+          "status": "warn",
+          "step_mean": 0.243,
+          "step_max": 0.2821,
+          "drift": 8.78,
+          "loop": 0.0002,
+          "loop_ratio": 0.0,
+          "travel": 4.23,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": 0.073,
+          "peak": 0.4086,
+          "canvas": [
+            240,
+            240
+          ],
+          "reasons": [
+            "some bright effect pixels (0.07) — eyeball it"
+          ],
+          "sub": "57351629-9e2e-4a05-9137-cba25a7cdadc",
+          "group": "bb80b7d6-2a3c-4122-8b88-092032f8ba69",
+          "takes": 1,
+          "version": 10,
+          "mirrored": false,
+          "action": "Claw Swipe - Raises one front paw and performs one quick swipe forward, then returns to idle stance",
+          "tries": 3,
+          "generated_at": "2026-09-09T23:48:03+00:00"
+        },
+        "east": {
+          "status": "pass",
+          "step_mean": 0.3182,
+          "step_max": 0.3689,
+          "drift": 5.77,
+          "loop": 0.0001,
+          "loop_ratio": 0.0,
+          "travel": 1.05,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": 0.0,
+          "peak": 0.5177,
+          "canvas": [
+            240,
+            240
+          ],
+          "reasons": [],
+          "sub": "ad23fbcc-e949-4735-bbb6-d6b02419719e",
+          "group": "322c8f0c-9c49-499f-8182-29493e66a673",
+          "takes": 1,
+          "version": 2,
+          "mirrored": false,
+          "generated_at": "2026-09-09T22:39:16+00:00",
+          "action": "Fang Stab - Rears up on her back legs and stabs down once with both front legs and fangs, then returns to idle stance"
+        },
+        "north-east": {
+          "status": "pass",
+          "step_mean": 0.2313,
+          "step_max": 0.291,
+          "drift": 6.15,
+          "loop": 0.0003,
+          "loop_ratio": 0.0,
+          "travel": 0.47,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": 0.0,
+          "peak": 0.3989,
+          "canvas": [
+            240,
+            240
+          ],
+          "reasons": [],
+          "sub": "e90f4cdc-b1a9-45ca-91b3-d64a72efd048",
+          "group": "469103aa-30d0-45f7-a640-d50ccebf6068",
+          "takes": 1,
+          "version": 2,
+          "mirrored": false,
+          "generated_at": "2026-09-09T22:39:17+00:00",
+          "action": "Fang Stab - Rears up on her back legs and stabs down once with both front legs and fangs, then returns to idle stance"
+        },
+        "north": {
+          "status": "pass",
+          "step_mean": 0.3162,
+          "step_max": 0.3814,
+          "drift": 9.58,
+          "loop": 0.0,
+          "loop_ratio": 0.0,
+          "travel": 0.56,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": 0.0,
+          "peak": 0.4951,
+          "canvas": [
+            240,
+            240
+          ],
+          "reasons": [],
+          "sub": "512f3f21-5420-4e1f-aefd-081af1e95b70",
+          "group": "3d21253d-3a56-4f5a-976f-70bb4e8e1dbf",
+          "takes": 1,
+          "version": 9,
+          "mirrored": false,
+          "generated_at": "2026-09-09T23:36:31+00:00",
+          "action": "Fang Stab - Rears up on her back legs and stabs down once with both front legs and fangs, then returns to idle stance",
+          "tries": 1
+        },
+        "south-west": {
+          "status": "warn",
+          "step_mean": 0.243,
+          "step_max": 0.2821,
+          "drift": 8.78,
+          "loop": 0.0002,
+          "loop_ratio": 0.0,
+          "travel": 4.23,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": 0.073,
+          "peak": 0.4086,
+          "canvas": [
+            240,
+            240
+          ],
+          "reasons": [
+            "some bright effect pixels (0.07) — eyeball it"
+          ],
+          "sub": "57351629-9e2e-4a05-9137-cba25a7cdadc",
+          "group": "bb80b7d6-2a3c-4122-8b88-092032f8ba69",
+          "takes": 1,
+          "version": 10,
+          "mirrored": true,
+          "action": "Claw Swipe - Raises one front paw and performs one quick swipe forward, then returns to idle stance",
+          "tries": 3,
+          "generated_at": "2026-09-09T23:48:03+00:00",
+          "source": "south-east"
+        },
+        "west": {
+          "status": "pass",
+          "step_mean": 0.3182,
+          "step_max": 0.3689,
+          "drift": 5.77,
+          "loop": 0.0001,
+          "loop_ratio": 0.0,
+          "travel": 1.05,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": 0.0,
+          "peak": 0.5177,
+          "canvas": [
+            240,
+            240
+          ],
+          "reasons": [],
+          "sub": "ad23fbcc-e949-4735-bbb6-d6b02419719e",
+          "group": "322c8f0c-9c49-499f-8182-29493e66a673",
+          "takes": 1,
+          "version": 2,
+          "mirrored": true,
+          "generated_at": "2026-09-09T22:39:16+00:00",
+          "action": "Fang Stab - Rears up on her back legs and stabs down once with both front legs and fangs, then returns to idle stance",
+          "source": "east"
+        },
+        "north-west": {
+          "status": "pass",
+          "step_mean": 0.2313,
+          "step_max": 0.291,
+          "drift": 6.15,
+          "loop": 0.0003,
+          "loop_ratio": 0.0,
+          "travel": 0.47,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": 0.0,
+          "peak": 0.3989,
+          "canvas": [
+            240,
+            240
+          ],
+          "reasons": [],
+          "sub": "e90f4cdc-b1a9-45ca-91b3-d64a72efd048",
+          "group": "469103aa-30d0-45f7-a640-d50ccebf6068",
+          "takes": 1,
+          "version": 2,
+          "mirrored": true,
+          "generated_at": "2026-09-09T22:39:17+00:00",
+          "action": "Fang Stab - Rears up on her back legs and stabs down once with both front legs and fangs, then returns to idle stance",
+          "source": "north-east"
+        }
+      },
+      "action": "Fang Stab - Rears up on her back legs and stabs down once with both front legs and fangs, then returns to idle stance",
+      "frame_paths": {
+        "south": [
+          "spider_queen/animations/attack/south/00.webp",
+          "spider_queen/animations/attack/south/01.webp",
+          "spider_queen/animations/attack/south/02.webp",
+          "spider_queen/animations/attack/south/03.webp",
+          "spider_queen/animations/attack/south/04.webp"
+        ],
+        "south-east": [
+          "spider_queen/animations/attack/south-east/00.webp",
+          "spider_queen/animations/attack/south-east/01.webp",
+          "spider_queen/animations/attack/south-east/02.webp",
+          "spider_queen/animations/attack/south-east/03.webp",
+          "spider_queen/animations/attack/south-east/04.webp"
+        ],
+        "east": [
+          "spider_queen/animations/attack/east/00.webp",
+          "spider_queen/animations/attack/east/01.webp",
+          "spider_queen/animations/attack/east/02.webp",
+          "spider_queen/animations/attack/east/03.webp",
+          "spider_queen/animations/attack/east/04.webp"
+        ],
+        "north-east": [
+          "spider_queen/animations/attack/north-east/00.webp",
+          "spider_queen/animations/attack/north-east/01.webp",
+          "spider_queen/animations/attack/north-east/02.webp",
+          "spider_queen/animations/attack/north-east/03.webp",
+          "spider_queen/animations/attack/north-east/04.webp"
+        ],
+        "north": [
+          "spider_queen/animations/attack/north/00.webp",
+          "spider_queen/animations/attack/north/01.webp",
+          "spider_queen/animations/attack/north/02.webp",
+          "spider_queen/animations/attack/north/03.webp",
+          "spider_queen/animations/attack/north/04.webp"
+        ],
+        "south-west": [
+          "spider_queen/animations/attack/south-west/00.webp",
+          "spider_queen/animations/attack/south-west/01.webp",
+          "spider_queen/animations/attack/south-west/02.webp",
+          "spider_queen/animations/attack/south-west/03.webp",
+          "spider_queen/animations/attack/south-west/04.webp"
+        ],
+        "west": [
+          "spider_queen/animations/attack/west/00.webp",
+          "spider_queen/animations/attack/west/01.webp",
+          "spider_queen/animations/attack/west/02.webp",
+          "spider_queen/animations/attack/west/03.webp",
+          "spider_queen/animations/attack/west/04.webp"
+        ],
+        "north-west": [
+          "spider_queen/animations/attack/north-west/00.webp",
+          "spider_queen/animations/attack/north-west/01.webp",
+          "spider_queen/animations/attack/north-west/02.webp",
+          "spider_queen/animations/attack/north-west/03.webp",
+          "spider_queen/animations/attack/north-west/04.webp"
+        ]
+      },
+      "strips": {
+        "south": "spider_queen/animations/attack__south.webp",
+        "south-east": "spider_queen/animations/attack__south-east.webp",
+        "east": "spider_queen/animations/attack__east.webp",
+        "north-east": "spider_queen/animations/attack__north-east.webp",
+        "north": "spider_queen/animations/attack__north.webp",
+        "south-west": "spider_queen/animations/attack__south-west.webp",
+        "west": "spider_queen/animations/attack__west.webp",
+        "north-west": "spider_queen/animations/attack__north-west.webp"
+      }
     }
-   },
-   "action": "Fang Stab - Rears up on her back legs and stabs down once with both front legs and fangs, then returns to idle stance",
-   "frame_paths": {
-    "south": [
-     "spider_queen/animations/attack/south/00.webp",
-     "spider_queen/animations/attack/south/01.webp",
-     "spider_queen/animations/attack/south/02.webp",
-     "spider_queen/animations/attack/south/03.webp",
-     "spider_queen/animations/attack/south/04.webp"
-    ],
-    "south-east": [
-     "spider_queen/animations/attack/south-east/00.webp",
-     "spider_queen/animations/attack/south-east/01.webp",
-     "spider_queen/animations/attack/south-east/02.webp",
-     "spider_queen/animations/attack/south-east/03.webp",
-     "spider_queen/animations/attack/south-east/04.webp"
-    ],
-    "east": [
-     "spider_queen/animations/attack/east/00.webp",
-     "spider_queen/animations/attack/east/01.webp",
-     "spider_queen/animations/attack/east/02.webp",
-     "spider_queen/animations/attack/east/03.webp",
-     "spider_queen/animations/attack/east/04.webp"
-    ],
-    "north-east": [
-     "spider_queen/animations/attack/north-east/00.webp",
-     "spider_queen/animations/attack/north-east/01.webp",
-     "spider_queen/animations/attack/north-east/02.webp",
-     "spider_queen/animations/attack/north-east/03.webp",
-     "spider_queen/animations/attack/north-east/04.webp"
-    ],
-    "north": [
-     "spider_queen/animations/attack/north/00.webp",
-     "spider_queen/animations/attack/north/01.webp",
-     "spider_queen/animations/attack/north/02.webp",
-     "spider_queen/animations/attack/north/03.webp",
-     "spider_queen/animations/attack/north/04.webp"
-    ],
-    "south-west": [
-     "spider_queen/animations/attack/south-west/00.webp",
-     "spider_queen/animations/attack/south-west/01.webp",
-     "spider_queen/animations/attack/south-west/02.webp",
-     "spider_queen/animations/attack/south-west/03.webp",
-     "spider_queen/animations/attack/south-west/04.webp"
-    ],
-    "west": [
-     "spider_queen/animations/attack/west/00.webp",
-     "spider_queen/animations/attack/west/01.webp",
-     "spider_queen/animations/attack/west/02.webp",
-     "spider_queen/animations/attack/west/03.webp",
-     "spider_queen/animations/attack/west/04.webp"
-    ],
-    "north-west": [
-     "spider_queen/animations/attack/north-west/00.webp",
-     "spider_queen/animations/attack/north-west/01.webp",
-     "spider_queen/animations/attack/north-west/02.webp",
-     "spider_queen/animations/attack/north-west/03.webp",
-     "spider_queen/animations/attack/north-west/04.webp"
-    ]
-   },
-   "strips": {
-    "south": "spider_queen/animations/attack__south.webp",
-    "south-east": "spider_queen/animations/attack__south-east.webp",
-    "east": "spider_queen/animations/attack__east.webp",
-    "north-east": "spider_queen/animations/attack__north-east.webp",
-    "north": "spider_queen/animations/attack__north.webp",
-    "south-west": "spider_queen/animations/attack__south-west.webp",
-    "west": "spider_queen/animations/attack__west.webp",
-    "north-west": "spider_queen/animations/attack__north-west.webp"
-   }
   }
- }
 }
