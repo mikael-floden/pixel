@@ -37,6 +37,7 @@ from __future__ import annotations
 import argparse
 import json
 import os
+import shutil
 import sys
 import time
 import zlib
@@ -50,8 +51,23 @@ import candidates as cand  # noqa: E402
 import mirror  # noqa: E402
 from pixellab_client import DIRECTIONS_8, PixelLabClient, PixelLabError  # noqa: E402
 
+# A state has a LIVE record (`attack`) and, while a new take on that state is
+# being tried, a CANDIDATE record (`attack_try`) that is generated alongside it
+# and never shown to the game. Maintainer 2026-09-10: "it's possible to start
+# generating an attack v2 without deleting v1 and only switch to v2 once v2 has
+# proven it can generate the attack for all directions. Doing it this way can
+# make you go back to v1 and try again if you see v2 was not easier at all."
+TRY = "_try"
+
+
+def base_state(slot):
+    """The state a slot belongs to ('attack_try' -> 'attack')."""
+    return slot[:-len(TRY)] if slot.endswith(TRY) else slot
+
+
 GEN_DIRS = ["south", "south-east", "east", "north-east", "north"]
 MIRRORED = {"south-west": "south-east", "west": "east", "north-west": "north-east"}
+ALL_DIRS = GEN_DIRS + list(MIRRORED)
 OPPOSITE = {"east": "west", "west": "east", "south-east": "south-west", "south-west": "south-east",
             "north-east": "north-west", "north-west": "north-east"}
 
@@ -258,9 +274,9 @@ def _reach(ops, base_op, cap=48):
 
 def qa_clip(cid, state, d, frames, pinned=None):
     """Machine verdict for one direction's clip. See module docstring."""
-    band = STATES[state]["band"]
+    band = STATES[base_state(state)]["band"]
     reasons = []
-    spec = STATES[state]
+    spec = STATES[base_state(state)]
     if pinned is None:
         pinned = spec.get("keep_first", True)
     want = spec["frames"] + (1 if pinned else 0)
@@ -298,7 +314,7 @@ def qa_clip(cid, state, d, frames, pinned=None):
     status = "pass"
     lo, hi = band["step_pass"]
     wlo, whi = band["step_warn"]
-    if design_flag(cid, f"{state}_slow"):
+    if design_flag(cid, f"{base_state(state)}_slow"):
         # a crawl or a ripple moves less silhouette than a stride (the
         # maintainer's own tree_stump walk: 0.008 per frame, accepted)
         lo, wlo = lo * 0.4, wlo * 0.4
@@ -380,6 +396,7 @@ def design_flag(cid, key):
 
 
 def state_action(cid, state):
+    state = base_state(state)
     """The action text for this monster's state: the design's `<state>_action`
     override if it has one (a cobra slithers, a crab scuttles, a wraith
     glides — the maintainer words per creature, "jumps like a frog"), else
@@ -390,9 +407,14 @@ def state_action(cid, state):
     return STATES[state]["action"]
 
 
-def _anim_record(man, state):
-    rec = man.setdefault("animations", {}).setdefault(state, {"directions": {}})
-    rec["action"] = state_action(man["id"], state)
+def _anim_record(man, slot):
+    """The live record keeps the wording it was GENERATED with — a config
+    reword must not silently invalidate art the maintainer already approved.
+    Only a `_try` record tracks the current config text; promoting it is what
+    moves the new wording into the live state."""
+    rec = man.setdefault("animations", {}).setdefault(slot, {"directions": {}})
+    if slot.endswith(TRY) or not rec.get("action"):
+        rec["action"] = state_action(man["id"], slot)
     return rec
 
 
@@ -420,7 +442,7 @@ def generate_state(client, cid, state, dirs, version, verbose=True, pin=False):
     twins. Returns {direction: qa}."""
     man = cand.load_manifest(cid)
     rec = _anim_record(man, state)
-    spec = STATES[state]
+    spec = STATES[base_state(state)]
     jobs, actions, tries = {}, {}, {}
     for d in dirs:
         seed = seed_for(cid, state, d, version)
@@ -429,7 +451,7 @@ def generate_state(client, cid, state, dirs, version, verbose=True, pin=False):
         action = rec["action"]
         old = rec["directions"].get(d, {})
         tries[d] = (old.get("tries", 1) + 1) if (old.get("action") == action and old.get("status") == "fail") else 1
-        if state == "attack" and tries[d] >= 3 and design_flag(cid, "claws"):
+        if base_state(state) == "attack" and tries[d] >= 3 and design_flag(cid, "claws"):
             # maintainer 2026-09-09: "if the monster has claws, a claw slash
             # usually works" — the worded strike failed twice, use that
             action = CLAW_SLASH
@@ -463,7 +485,7 @@ def collect_state(client, cid, state, dirs, version, verbose=True, pin=False, ac
     clips never looked at); `[-1]` is only the fallback for `fetch`."""
     man = cand.load_manifest(cid)
     rec = _anim_record(man, state)
-    spec = STATES[state]
+    spec = STATES[base_state(state)]
     actions = dict(actions or {})
     for d in dirs:
         actions.setdefault(d, rec["directions"].get(d, {}).get("action") or rec["action"])
@@ -510,13 +532,14 @@ def collect_state(client, cid, state, dirs, version, verbose=True, pin=False, ac
     return out
 
 
-def needed_dirs(man, state, redo=None):
-    rec = (man.get("animations") or {}).get(state) or {"directions": {}}
+def needed_dirs(man, slot, redo=None):
+    rec = (man.get("animations") or {}).get(slot) or {"directions": {}}
     if redo:
         return list(redo)
-    # a changed action text means the clips on disk were made from other
-    # words — regenerate the whole state (the takes are keyed by that text)
-    if rec["directions"] and rec.get("action") and rec["action"] != state_action(man["id"], state):
+    # a changed action text means the clips on disk were made from other words
+    # — regenerate the whole slot (the takes are keyed by that text). A state
+    # is ONE take across all eight directions, never a mix of wordings.
+    if rec["directions"] and rec.get("action") and rec["action"] != state_action(man["id"], slot):
         return [d for d in GEN_DIRS if rec["directions"].get(d, {}).get("action") in (None, rec["action"])] or list(GEN_DIRS)
     return [d for d in GEN_DIRS if rec["directions"].get(d, {}).get("status") in (None, "fail")]
 
@@ -526,14 +549,27 @@ def cmd_state(args, state):
     ids = args.only.split(",") if args.only else [c["id"] for c in cfg["candidates"]
                                                   if (cand.load_manifest(c["id"]) or {}).get("review") == "approved"]
     redo = args.dirs.split(",") if getattr(args, "dirs", None) else None
-    plan = []
+    plan, reworded = [], []
     for cid in ids:
         man = cand.load_manifest(cid)
         if not man:
             print(f"{cid}: no candidate"); continue
+        rec_now = (man.get("animations") or {}).get(state) or {}
+        if (not state.endswith(TRY) and rec_now.get("directions")
+                and rec_now.get("action") and rec_now["action"] != state_action(cid, state)):
+            # the config asks for a DIFFERENT take on a state that already has
+            # art. Rewriting the live state in place would leave it half old
+            # wording, half new until the sweep finished — build it in the try
+            # slot and promote it when every direction is there (maintainer).
+            reworded.append(cid); continue
         dirs = needed_dirs(man, state, redo)
         if dirs:
             plan.append((cid, dirs))
+    if reworded:
+        print(f"{len(reworded)} monster(s) have live {state} art made from other words "
+              f"({', '.join(reworded[:4])}{'…' if len(reworded) > 4 else ''}).\n"
+              f"  Build the new take alongside it:  animate.py {state} --try\n"
+              f"  then, once every direction is there:  animate.py promote --state {state}")
     print(f"{state}: {sum(len(d) for _, d in plan)} direction(s) over {len(plan)} monster(s)")
     for cid, dirs in plan:
         print(f"  {cid}: {dirs}")
@@ -644,6 +680,105 @@ def cmd_requal(args):
     cand.rebuild_index(cfg)
 
 
+def _slot_takes_delete(client, man, rec, verbose=True):
+    """Delete every PixelLab take a record points at (its own wording per
+    direction). Approved art is NOT sacred: when a state is replaced by a
+    different attack, the directions it replaces have to go, or the character
+    carries two contradictory attacks and sync cannot tell which is the state
+    (maintainer 2026-09-10)."""
+    n = 0
+    for d, q in list((rec.get("directions") or {}).items()):
+        gid = q.get("group")
+        if not gid or q.get("mirrored"):
+            continue
+        try:
+            client.delete_animation(man["pixellab_id"], group_id=gid, direction=d); n += 1
+        except PixelLabError as e:
+            print(f"  {man['id']} {d}: take not deleted ({e})")
+    if verbose:
+        print(f"  {man['id']}: deleted {n} take(s) on PixelLab")
+    return n
+
+
+def _slot_files_delete(cid, slot, dirs):
+    for d in dirs:
+        p = anim_dir(cid, slot, d)
+        if os.path.isdir(p):
+            shutil.rmtree(p)
+        strip = os.path.join(cand.cdir(cid), "animations", f"{slot}__{d}{mirror.ART_EXT}")
+        if os.path.exists(strip):
+            os.remove(strip)
+
+
+def cmd_promote(args):
+    """The _try variant becomes the state. Refuses anything incomplete: a state
+    must be ONE take across all eight directions, never a mix of wordings."""
+    cfg = cand.load_cfg()
+    state, slot = args.state, args.state + TRY
+    ids = args.only.split(",") if args.only else [c["id"] for c in cfg["candidates"]
+                                                  if (cand.load_manifest(c["id"]) or {}).get("review") == "approved"]
+    ok = [c["id"] for c in cfg["candidates"] if c["id"] in ids]
+    ready, blocked = [], []
+    for cid in ok:
+        man = cand.load_manifest(cid) or {}
+        tr = (man.get("animations") or {}).get(slot)
+        if not tr:
+            blocked.append((cid, "no try variant")); continue
+        bad = [d for d in ALL_DIRS if (tr["directions"].get(d) or {}).get("status") not in
+               (("pass", "warn") if args.allow_warn else ("pass",))]
+        if bad:
+            blocked.append((cid, f"{len(bad)} direction(s) not ready: {','.join(bad)}")); continue
+        ready.append(cid)
+    for cid, why in blocked:
+        print(f"  SKIP {cid}: {why}")
+    print(f"promote {state}: {len(ready)} ready, {len(blocked)} blocked")
+    if not ready:
+        return
+    client = PixelLabClient(); client.require_key()
+    for cid in ready:
+        man = cand.load_manifest(cid)
+        live = (man.get("animations") or {}).get(state) or {"directions": {}}
+        _slot_takes_delete(client, man, live)
+        _slot_files_delete(cid, state, list(live.get("directions") or ALL_DIRS))
+        for d in ALL_DIRS:                       # try frames + strips take the live names
+            src, dst = anim_dir(cid, slot, d), anim_dir(cid, state, d)
+            if os.path.isdir(src):
+                os.makedirs(os.path.dirname(dst), exist_ok=True); shutil.move(src, dst)
+            ss = os.path.join(cand.cdir(cid), "animations", f"{slot}__{d}{mirror.ART_EXT}")
+            if os.path.exists(ss):
+                shutil.move(ss, os.path.join(cand.cdir(cid), "animations", f"{state}__{d}{mirror.ART_EXT}"))
+        tr = man["animations"].pop(slot)
+        nfr = STATES[state]["frames"] + (1 if STATES[state].get("keep_first", True) else 0)
+        tr["frame_paths"] = {d: [os.path.join(cid, "animations", state, d, f"{i:02d}{mirror.ART_EXT}")
+                                 for i in range(nfr)] for d in tr["directions"]}
+        tr["strips"] = {d: os.path.join(cid, "animations", f"{state}__{d}{mirror.ART_EXT}") for d in tr["directions"]}
+        tr["promoted_at"] = datetime.now(timezone.utc).isoformat(timespec="seconds")
+        man["animations"][state] = tr
+        write_manifest(cid, man)
+        print(f"  {cid}: {state} <- try ({tr['action'][:48]})", flush=True)
+    cand.rebuild_index(cfg)
+
+
+def cmd_discard(args):
+    """Throw the _try variant away; the live state is untouched."""
+    cfg = cand.load_cfg()
+    state, slot = args.state, args.state + TRY
+    ids = args.only.split(",") if args.only else [c["id"] for c in cfg["candidates"]]
+    client = PixelLabClient(); client.require_key()
+    n = 0
+    for cid in ids:
+        man = cand.load_manifest(cid) or {}
+        tr = (man.get("animations") or {}).get(slot)
+        if not tr:
+            continue
+        _slot_takes_delete(client, man, tr)
+        _slot_files_delete(cid, slot, list(tr.get("directions") or ALL_DIRS))
+        man["animations"].pop(slot); write_manifest(cid, man); n += 1
+        print(f"  {cid}: discarded {slot}")
+    print(f"discarded {n} try variant(s)")
+    cand.rebuild_index(cfg)
+
+
 def cmd_status(args):
     cfg = cand.load_cfg()
     state = args.state
@@ -671,16 +806,25 @@ def main():
         g = sub.add_parser(st, help=f"generate {st} for approved monsters (resumable)")
         g.add_argument("--only"); g.add_argument("--dry-run", action="store_true")
         g.add_argument("--min-usd", type=float, default=MIN_USD)
-        g.set_defaults(func=lambda a, st=st: cmd_state(a, st))
+        g.add_argument("--try", dest="use_try", action="store_true",
+                       help="build a NEW take on this state alongside the live one (never shown to the game); promote or discard it later")
+        g.set_defaults(func=lambda a, st=st: cmd_state(a, st + (TRY if a.use_try else "")))
     r = sub.add_parser("redo"); r.add_argument("--state", default="idle"); r.add_argument("--only", required=True)
     r.add_argument("--dirs", required=True); r.add_argument("--min-usd", type=float, default=MIN_USD)
     r.add_argument("--pin", action="store_true", help="pin start+end to the base (the maintainer's fallback for a clip that never loops)")
-    r.set_defaults(func=lambda a: cmd_state(a, a.state), dry_run=False)
+    r.add_argument("--try", dest="use_try", action="store_true")
+    r.set_defaults(func=lambda a: cmd_state(a, a.state + (TRY if a.use_try else "")), dry_run=False)
     f = sub.add_parser("fetch", help="re-download + re-QA the last takes already on PixelLab (no generation)")
     f.add_argument("--state", default="idle"); f.add_argument("--only", required=True); f.add_argument("--dirs")
     f.set_defaults(func=cmd_fetch)
     q = sub.add_parser("requal", help="re-run the machine verdict from disk"); q.add_argument("--state", default="idle"); q.add_argument("--only"); q.set_defaults(func=cmd_requal)
     s = sub.add_parser("status"); s.add_argument("--state", default="idle"); s.set_defaults(func=cmd_status)
+    pr = sub.add_parser("promote", help="a complete _try variant REPLACES the live state: the old directions are deleted on PixelLab and on disk")
+    pr.add_argument("--state", required=True); pr.add_argument("--only")
+    pr.add_argument("--allow-warn", action="store_true", help="promote when every direction is pass or warn (default: no fails, no gaps)")
+    pr.set_defaults(func=cmd_promote)
+    dc = sub.add_parser("discard", help="throw the _try variant away and keep the live state")
+    dc.add_argument("--state", required=True); dc.add_argument("--only"); dc.set_defaults(func=cmd_discard)
     args = ap.parse_args()
     args.func(args)
 

@@ -281,6 +281,46 @@ The rules that produce a real strike:
 - **Painted effects and shallow strikes are a dice roll, so the sweep is a
   LOOP**: run `attack` until `--dry-run` reports nothing.
 
+### Approved art is not frozen — replace a state as a WHOLE, in a try slot
+
+Maintainer 2026-09-10, after approving part of a round: "sometimes it's
+extremely hard to generate the last unsuccessful direction and you might have
+to redo the entire prompt (all directions) in order to get a full 8 set that
+is valid. So I don't want you to see the animations I have accepted as
+something you can't delete. If you have to generate a completely different
+type of attack of course you need to remove the directions in the old attack
+I have already approved!"
+
+- **A state is ONE take across all eight directions.** Never half the old
+  wording and half the new: the character would carry two contradictory
+  attacks and nothing downstream could tell which one IS the state. When a
+  new take replaces a state, the directions it replaces are DELETED — on
+  PixelLab and on disk — approved or not.
+- **Build the replacement in a try slot, switch only when it is complete**
+  (his second instruction: "it's also possible to start generating an attack
+  v2 without deleting v1 and only switch to v2 once v2 has proven it can
+  generate the attack for all directions. Doing it this way can make you go
+  back to v1 and try again if you see v2 was not easier at all"):
+
+```bash
+python monsters/pipeline/animate.py attack --try            # v2, alongside the live v1
+python monsters/pipeline/animate.py status --state attack_try
+python monsters/pipeline/animate.py promote --state attack  # v2 replaces v1, v1's takes deleted
+python monsters/pipeline/animate.py discard --state attack  # v2 thrown away, v1 untouched
+```
+
+- `promote` refuses anything incomplete — every one of the eight directions
+  must be `pass` (`--allow-warn` to accept warns). That is the whole point:
+  the live state is never left mid-swap.
+- **The live record's wording is frozen at what its art was made from.** A
+  reword in `config/candidates.json` no longer invalidates live art: the
+  plain `attack` command reports which monsters have live art from other
+  words and tells you to use `--try`. Only `promote` moves new wording in.
+- Frames: live at `candidates/<id>/animations/<state>/<dir>/NN.webp`, the
+  try variant at `animations/<state>_try/<dir>/NN.webp`; both carry strips.
+  The review page takes a slot name, so `attack_try` can be reviewed before
+  it is promoted.
+
 ### Skeleton template animations (`mode: "template"`)
 
 PixelLab also animates from a library of SKELETON-driven templates, 1
