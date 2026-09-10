@@ -118,6 +118,7 @@ STATES = {
         "band": {"step_pass": (0.080, 0.900), "step_warn": (0.040, 1.200),
                  "peak_pass": 0.15, "peak_warn": 0.08,
                  "reach_pass": 0.30, "reach_warn": 0.14,
+                 "travel_pass": 0.12, "travel_warn": 0.20,
                  "drift_pass": 12.0, "drift_warn": 24.0,
                  "flash_warn": 0.04, "flash_max": 0.10},
     },
@@ -318,6 +319,16 @@ def _dilate(m):
     return o
 
 
+def _wrapped(op):
+    """True when the silhouette touches both opposite edges with a gap between:
+    PixelLab drew past the canvas and the overflow reappeared on the other side
+    (maintainer 2026-09-09: "pixels rendered outside the frame will pop up in
+    the next frame on the other side")."""
+    def split(o):
+        return bool(len(o) and o[0] and o[-1] and (~o).any())
+    return split(op.any(0)) or split(op.any(1))
+
+
 def _reach(ops, base_op, cap=48):
     """Does it STRIKE or just lean? A strike puts pixels FAR outside the base
     silhouette (a limb or weapon extends); a lean translates the whole body,
@@ -418,6 +429,8 @@ def qa_clip(cid, state, d, frames, pinned=None, claw_take=False, want_frames=Non
         elif peak < band["peak_pass"]:
             reasons.append(f"weak strike: peak {peak:.3f} — eyeball it"); status = "warn" if status != "fail" else status
     flash = _flash(frames) if "flash_max" in band else 0.0
+    if any(_wrapped(o) for o in ops):
+        reasons.append("wrapped around the canvas edge: the body is drawn in two pieces"); status = "fail"
     if "reach_pass" in band:
         rch = _reach(ops, _sil(base))
         if claw_take:
@@ -456,7 +469,16 @@ def qa_clip(cid, state, d, frames, pinned=None, claw_take=False, want_frames=Non
             reasons.append(f"last→first hand-off is {loop_ratio:.1f}× a normal step — the loop hitches"); status = "fail"
         elif loop_ratio > band["loop_ratio_pass"]:
             reasons.append(f"last→first hand-off {loop_ratio:.1f}× a step — eyeball the loop"); status = "warn" if status != "fail" else status
-    if "travel_pass" in band:
+    if "travel_pass" in band and "reach_pass" in band:
+        # an attack does not travel: the game moves the sprite, the clip does
+        # not. His own 57 accepted attacks move the body a median 4% of its
+        # width, 10% at the 90th, 16% at the very worst (Plague Hound's dash).
+        t_pass, t_warn = band["travel_pass"] * W0, band["travel_warn"] * W0
+        if travel > t_warn:
+            reasons.append(f"slides across the canvas: {travel:.0f} px of travel, not a strike"); status = "fail"
+        elif travel > t_pass:
+            reasons.append(f"{travel:.0f} px of travel — eyeball it"); status = "warn" if status != "fail" else status
+    elif "travel_pass" in band:
         t_pass, t_warn = max(band["travel_pass"], 0.03 * W0), max(band["travel_warn"], 0.05 * W0)
         if travel > t_warn:
             reasons.append(f"walks across the canvas: {travel:.1f} px of x-travel (should be in place)"); status = "fail"
@@ -539,6 +561,14 @@ def generate_state(client, cid, state, dirs, version, verbose=True, pin=False):
     rec = _anim_record(man, state)
     spec = STATES[base_state(state)]
     jobs, actions, tries, counts, rungs = {}, {}, {}, {}, {}
+    # ONE frame count for the whole monster's state. A state whose directions
+    # disagree about their length is not one animation: every viewer that
+    # slices the strip by a single count draws two monsters sliding past each
+    # other (measured 2026-09-10 — 21 of 39 monsters, straight into the wiki).
+    # The ladder still walks the count, but it walks it for the whole monster.
+    _prev = [(q.get("rolls") or 1) for d, q in (rec.get("directions") or {}).items()
+             if d in dirs and q.get("status") == "fail" and not q.get("mirrored")]
+    nf = frames_for(max(_prev) + 1 if _prev else 1) if base_state(state) == "attack" else spec["frames"]
     for d in dirs:
         seed = seed_for(cid, state, d, version)
         pinned = spec["pin_end"] or pin
@@ -554,7 +584,6 @@ def generate_state(client, cid, state, dirs, version, verbose=True, pin=False):
         tries[d] = (old.get("rolls", 0) + 1) if old.get("status") == "fail" else 1
         action = ladder_action(cid, rung, rec["action"])
         actions[d] = action
-        nf = frames_for(tries[d]) if base_state(state) == "attack" else spec["frames"]
         counts[d] = nf
         job = client.animate_v3(man["pixellab_id"], state, action, d,
                                 frame_count=nf, end_frame=end, seed=seed,
@@ -637,10 +666,24 @@ def collect_state(client, cid, state, dirs, version, verbose=True, pin=False, ac
     return out
 
 
+def frame_counts(cid, slot):
+    """{direction: frames on disk} for a slot."""
+    out = {}
+    for d in ALL_DIRS:
+        p = anim_dir(cid, slot, d)
+        if os.path.isdir(p):
+            out[d] = len([f for f in os.listdir(p) if f.endswith(mirror.ART_EXT)])
+    return out
+
+
 def needed_dirs(man, slot, redo=None):
     rec = (man.get("animations") or {}).get(slot) or {"directions": {}}
     if redo:
         return list(redo)
+    # directions that disagree about their length are not one animation
+    counts = set(frame_counts(man["id"], slot).values())
+    if len(counts) > 1:
+        return list(GEN_DIRS)
     # a changed action text means the clips on disk were made from other words
     # — regenerate the whole slot (the takes are keyed by that text). A state
     # is ONE take across all eight directions, never a mix of wordings.

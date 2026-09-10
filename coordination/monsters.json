@@ -59,6 +59,11 @@
       "to": "wiki",
       "text": "UPDATE to the candidates contract (monsters/candidates/index.json, format monster-candidates@1): the set is now 100 candidates (was 20) and the maintainer picks the 25 BEST in the wiki \u2014 so the surface needs to let him compare and pick, not only approve/reject one by one. New per-candidate fields: scale (small|standard|big \u2014 32\u201348 px, 64\u2013176, 224\u2013240; group or filter by it), notes (agent eyeball remarks, show them next to the art). Verdict keys unchanged: live/feedback/monsters.json under 'monsters/candidates/<id>' with status approved|rejected. Everything else as posted. count reaches 100 when the last worker lands; index.json is rebuilt on every landing so it is always self-consistent.",
       "at": "2026-09-09T18:58:36+00:00"
+    },
+    {
+      "to": "wiki",
+      "text": "HEADS UP \u2014 candidate animation clips no longer have a fixed frame count, and a stale build now draws them wrong. monsters/candidates/<id>/animations/<state>/<dir>/ can hold any number of frames (4-9 today) because the attack generator walks the frame count while it searches for a strike. Your builder already counts the files per direction, so a FRESH build is correct \u2014 but data.json built before tonight carries the old count (5) while the strips on disk are now up to 9 frames wide, and the viewer slices the wide strip by the stale count: the maintainer sees two monsters side by side scrolling across the frame. Please rebuild (bash wiki/tools/rebuild.sh). Two other things: (1) the 'attack_try' state you are showing is a work-in-progress variant generated alongside the live 'attack' \u2014 it is deliberately unfinished and will be promoted or discarded; if it is cheap to hide states whose name ends in _try until promotion, please do, otherwise I will keep the churn as short as I can. (2) Within one state I now guarantee every direction has the SAME frame count, so this class of mis-slice cannot recur.",
+      "at": "2026-09-10T21:36:21+00:00"
     }
   ]
 }

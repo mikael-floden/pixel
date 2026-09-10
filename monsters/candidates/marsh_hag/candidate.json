@@ -1,1225 +1,1228 @@
 {
- "id": "marsh_hag",
- "name": "Hexcrone",
- "tier": "evil",
- "scale": "standard",
- "lore": "She trades in wishes and collects in years. Every village has one story about her, and every story ends the same.",
- "biome": [
-  "dark_mud",
-  "water"
- ],
- "items": [],
- "prompt": "Hunched fantasy swamp hag shown full body from head to feet, green-grey warty skin, a long crooked nose, wild grey hair with bones tied in it, a ragged patchwork shawl, a twisted staff hung with dead frogs held upright, and bare clawed feet.",
- "size": [
-  112,
-  112
- ],
- "template_id": "mannequin",
- "directions": [
-  "south",
-  "south-east",
-  "east",
-  "north-east",
-  "north",
-  "north-west",
-  "west",
-  "south-west"
- ],
- "rotations": {
-  "south": "marsh_hag/rotations/south.webp",
-  "south-east": "marsh_hag/rotations/south-east.webp",
-  "east": "marsh_hag/rotations/east.webp",
-  "north-east": "marsh_hag/rotations/north-east.webp",
-  "north": "marsh_hag/rotations/north.webp",
-  "north-west": "marsh_hag/rotations/north-west.webp",
-  "west": "marsh_hag/rotations/west.webp",
-  "south-west": "marsh_hag/rotations/south-west.webp"
- },
- "sheet": "marsh_hag/sheet.webp",
- "review": "approved",
- "pixellab_id": "2901a05b-9ba9-4fd2-9854-1c52f53192f4",
- "seed": 1446037736,
- "version": 1,
- "usage": null,
- "generated_at": "2026-09-09T18:23:14+00:00",
- "elapsed_s": 304.8,
- "qa": {
-  "status": "pass",
-  "min_run1": 0.729,
-  "reasons": [],
-  "directions": {
-   "south": {
-    "run1": 0.744,
-    "bbox": [
-     17,
-     3,
-     103,
-     108
-    ],
-    "fill": 0.72,
-    "touches_edge": false
-   },
-   "south-east": {
-    "run1": 0.825,
-    "bbox": [
-     23,
-     5,
-     98,
-     109
-    ],
-    "fill": 0.622,
-    "touches_edge": false
-   },
-   "east": {
-    "run1": 0.787,
-    "bbox": [
-     27,
-     5,
-     77,
-     108
-    ],
-    "fill": 0.411,
-    "touches_edge": false
-   },
-   "north-east": {
-    "run1": 0.743,
-    "bbox": [
-     24,
-     5,
-     85,
-     107
-    ],
-    "fill": 0.496,
-    "touches_edge": false
-   },
-   "north": {
-    "run1": 0.729,
-    "bbox": [
-     9,
-     3,
-     90,
-     107
-    ],
-    "fill": 0.672,
-    "touches_edge": false
-   },
-   "north-west": {
-    "run1": 0.756,
-    "bbox": [
-     10,
-     4,
-     85,
-     107
-    ],
-    "fill": 0.616,
-    "touches_edge": false
-   },
-   "west": {
-    "run1": 0.784,
-    "bbox": [
-     28,
-     3,
-     79,
-     109
-    ],
-    "fill": 0.431,
-    "touches_edge": false
-   },
-   "south-west": {
-    "run1": 0.814,
-    "bbox": [
-     24,
-     5,
-     87,
-     109
-    ],
-    "fill": 0.522,
-    "touches_edge": false
-   }
+  "id": "marsh_hag",
+  "name": "Hexcrone",
+  "tier": "evil",
+  "scale": "standard",
+  "lore": "She trades in wishes and collects in years. Every village has one story about her, and every story ends the same.",
+  "biome": [
+    "dark_mud",
+    "water"
+  ],
+  "items": [],
+  "prompt": "Hunched fantasy swamp hag shown full body from head to feet, green-grey warty skin, a long crooked nose, wild grey hair with bones tied in it, a ragged patchwork shawl, a twisted staff hung with dead frogs held upright, and bare clawed feet.",
+  "size": [
+    112,
+    112
+  ],
+  "template_id": "mannequin",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "marsh_hag/rotations/south.webp",
+    "south-east": "marsh_hag/rotations/south-east.webp",
+    "east": "marsh_hag/rotations/east.webp",
+    "north-east": "marsh_hag/rotations/north-east.webp",
+    "north": "marsh_hag/rotations/north.webp",
+    "north-west": "marsh_hag/rotations/north-west.webp",
+    "west": "marsh_hag/rotations/west.webp",
+    "south-west": "marsh_hag/rotations/south-west.webp"
+  },
+  "sheet": "marsh_hag/sheet.webp",
+  "review": "approved",
+  "pixellab_id": "2901a05b-9ba9-4fd2-9854-1c52f53192f4",
+  "seed": 1446037736,
+  "version": 1,
+  "usage": null,
+  "generated_at": "2026-09-09T18:23:14+00:00",
+  "elapsed_s": 304.8,
+  "qa": {
+    "status": "pass",
+    "min_run1": 0.729,
+    "reasons": [],
+    "directions": {
+      "south": {
+        "run1": 0.744,
+        "bbox": [
+          17,
+          3,
+          103,
+          108
+        ],
+        "fill": 0.72,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.825,
+        "bbox": [
+          23,
+          5,
+          98,
+          109
+        ],
+        "fill": 0.622,
+        "touches_edge": false
+      },
+      "east": {
+        "run1": 0.787,
+        "bbox": [
+          27,
+          5,
+          77,
+          108
+        ],
+        "fill": 0.411,
+        "touches_edge": false
+      },
+      "north-east": {
+        "run1": 0.743,
+        "bbox": [
+          24,
+          5,
+          85,
+          107
+        ],
+        "fill": 0.496,
+        "touches_edge": false
+      },
+      "north": {
+        "run1": 0.729,
+        "bbox": [
+          9,
+          3,
+          90,
+          107
+        ],
+        "fill": 0.672,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.756,
+        "bbox": [
+          10,
+          4,
+          85,
+          107
+        ],
+        "fill": 0.616,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.784,
+        "bbox": [
+          28,
+          3,
+          79,
+          109
+        ],
+        "fill": 0.431,
+        "touches_edge": false
+      },
+      "south-west": {
+        "run1": 0.814,
+        "bbox": [
+          24,
+          5,
+          87,
+          109
+        ],
+        "fill": 0.522,
+        "touches_edge": false
+      }
+    }
+  },
+  "approved_at": "2026-09-09T19:59:21+00:00",
+  "animations": {
+    "idle": {
+      "directions": {
+        "south": {
+          "status": "pass",
+          "step_mean": 0.0794,
+          "step_max": 0.0926,
+          "drift": 1.44,
+          "loop": 0.0002,
+          "pin": 1.0,
+          "reasons": [],
+          "sub": "f45d2932-a7ff-4818-9ece-7aa1ef309fc4",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "generated_at": "2026-09-09T20:13:56+00:00",
+          "cut": 0
+        },
+        "south-east": {
+          "status": "pass",
+          "step_mean": 0.0672,
+          "step_max": 0.0794,
+          "drift": 1.22,
+          "loop": 0.0,
+          "pin": 1.0,
+          "reasons": [],
+          "sub": "feffbc71-6aa7-448b-919c-8f812332b532",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "generated_at": "2026-09-09T20:13:56+00:00",
+          "cut": 0
+        },
+        "east": {
+          "status": "pass",
+          "step_mean": 0.1022,
+          "step_max": 0.1337,
+          "drift": 0.88,
+          "loop": 0.0,
+          "pin": 1.0,
+          "reasons": [],
+          "sub": "3e241615-74dd-4d91-b394-ff697e1ded9f",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "generated_at": "2026-09-09T20:13:57+00:00",
+          "cut": 0
+        },
+        "north-east": {
+          "status": "pass",
+          "step_mean": 0.0414,
+          "step_max": 0.0825,
+          "drift": 1.1,
+          "loop": 0.0,
+          "pin": 1.0,
+          "reasons": [],
+          "sub": "9d321b07-28b5-4ae7-9fd2-28d78580f5ba",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "generated_at": "2026-09-09T20:13:57+00:00",
+          "cut": 0
+        },
+        "north": {
+          "status": "pass",
+          "step_mean": 0.0847,
+          "step_max": 0.1223,
+          "drift": 1.0,
+          "loop": 0.0015,
+          "pin": 1.0,
+          "reasons": [],
+          "sub": "9339dae7-4dab-4306-ade3-9ccd7efd6bf9",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "generated_at": "2026-09-09T20:13:58+00:00",
+          "cut": 0
+        },
+        "south-west": {
+          "status": "pass",
+          "step_mean": 0.0672,
+          "step_max": 0.0794,
+          "drift": 1.22,
+          "loop": 0.0,
+          "pin": 1.0,
+          "reasons": [],
+          "sub": "feffbc71-6aa7-448b-919c-8f812332b532",
+          "takes": 1,
+          "version": 1,
+          "mirrored": true,
+          "generated_at": "2026-09-09T20:13:56+00:00",
+          "cut": 0,
+          "source": "south-east"
+        },
+        "west": {
+          "status": "pass",
+          "step_mean": 0.1022,
+          "step_max": 0.1337,
+          "drift": 0.88,
+          "loop": 0.0,
+          "pin": 1.0,
+          "reasons": [],
+          "sub": "3e241615-74dd-4d91-b394-ff697e1ded9f",
+          "takes": 1,
+          "version": 1,
+          "mirrored": true,
+          "generated_at": "2026-09-09T20:13:57+00:00",
+          "cut": 0,
+          "source": "east"
+        },
+        "north-west": {
+          "status": "pass",
+          "step_mean": 0.0414,
+          "step_max": 0.0825,
+          "drift": 1.1,
+          "loop": 0.0,
+          "pin": 1.0,
+          "reasons": [],
+          "sub": "9d321b07-28b5-4ae7-9fd2-28d78580f5ba",
+          "takes": 1,
+          "version": 1,
+          "mirrored": true,
+          "generated_at": "2026-09-09T20:13:57+00:00",
+          "cut": 0,
+          "source": "north-east"
+        }
+      },
+      "action": "Calm still idle, breathing very slowly and subtly, chest and shoulders rise and fall a little, feet planted, no other movement, ends in the same neutral pose it started in",
+      "frame_paths": {
+        "south": [
+          "marsh_hag/animations/idle/south/00.webp",
+          "marsh_hag/animations/idle/south/01.webp",
+          "marsh_hag/animations/idle/south/02.webp",
+          "marsh_hag/animations/idle/south/03.webp",
+          "marsh_hag/animations/idle/south/04.webp"
+        ],
+        "south-east": [
+          "marsh_hag/animations/idle/south-east/00.webp",
+          "marsh_hag/animations/idle/south-east/01.webp",
+          "marsh_hag/animations/idle/south-east/02.webp",
+          "marsh_hag/animations/idle/south-east/03.webp",
+          "marsh_hag/animations/idle/south-east/04.webp"
+        ],
+        "east": [
+          "marsh_hag/animations/idle/east/00.webp",
+          "marsh_hag/animations/idle/east/01.webp",
+          "marsh_hag/animations/idle/east/02.webp",
+          "marsh_hag/animations/idle/east/03.webp",
+          "marsh_hag/animations/idle/east/04.webp"
+        ],
+        "north-east": [
+          "marsh_hag/animations/idle/north-east/00.webp",
+          "marsh_hag/animations/idle/north-east/01.webp",
+          "marsh_hag/animations/idle/north-east/02.webp",
+          "marsh_hag/animations/idle/north-east/03.webp",
+          "marsh_hag/animations/idle/north-east/04.webp"
+        ],
+        "north": [
+          "marsh_hag/animations/idle/north/00.webp",
+          "marsh_hag/animations/idle/north/01.webp",
+          "marsh_hag/animations/idle/north/02.webp",
+          "marsh_hag/animations/idle/north/03.webp",
+          "marsh_hag/animations/idle/north/04.webp"
+        ],
+        "south-west": [
+          "marsh_hag/animations/idle/south-west/00.webp",
+          "marsh_hag/animations/idle/south-west/01.webp",
+          "marsh_hag/animations/idle/south-west/02.webp",
+          "marsh_hag/animations/idle/south-west/03.webp",
+          "marsh_hag/animations/idle/south-west/04.webp"
+        ],
+        "west": [
+          "marsh_hag/animations/idle/west/00.webp",
+          "marsh_hag/animations/idle/west/01.webp",
+          "marsh_hag/animations/idle/west/02.webp",
+          "marsh_hag/animations/idle/west/03.webp",
+          "marsh_hag/animations/idle/west/04.webp"
+        ],
+        "north-west": [
+          "marsh_hag/animations/idle/north-west/00.webp",
+          "marsh_hag/animations/idle/north-west/01.webp",
+          "marsh_hag/animations/idle/north-west/02.webp",
+          "marsh_hag/animations/idle/north-west/03.webp",
+          "marsh_hag/animations/idle/north-west/04.webp"
+        ]
+      },
+      "strips": {
+        "south": "marsh_hag/animations/idle__south.webp",
+        "south-east": "marsh_hag/animations/idle__south-east.webp",
+        "east": "marsh_hag/animations/idle__east.webp",
+        "north-east": "marsh_hag/animations/idle__north-east.webp",
+        "north": "marsh_hag/animations/idle__north.webp",
+        "south-west": "marsh_hag/animations/idle__south-west.webp",
+        "west": "marsh_hag/animations/idle__west.webp",
+        "north-west": "marsh_hag/animations/idle__north-west.webp"
+      }
+    },
+    "walk": {
+      "directions": {
+        "south": {
+          "status": "pass",
+          "step_mean": 0.1438,
+          "step_max": 0.167,
+          "drift": 1.85,
+          "loop": 0.2282,
+          "loop_ratio": 1.59,
+          "travel": 3.01,
+          "pin": 0.873,
+          "pad": 0,
+          "canvas": [
+            112,
+            112
+          ],
+          "reasons": [],
+          "sub": "ee1368e3-2bf5-4378-987d-f648cdad0adf",
+          "group": "5bc67fd4-00c9-464a-8634-321ef1797375",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "generated_at": "2026-09-09T21:15:49+00:00"
+        },
+        "south-east": {
+          "status": "pass",
+          "step_mean": 0.1774,
+          "step_max": 0.2038,
+          "drift": 3.04,
+          "loop": 0.3451,
+          "loop_ratio": 1.95,
+          "travel": 1.52,
+          "pin": 0.884,
+          "pad": 0,
+          "canvas": [
+            112,
+            112
+          ],
+          "reasons": [],
+          "sub": "3b4c5937-1754-4e46-8c64-a44109573231",
+          "group": "0e7cbb41-9d01-436d-91a2-29354acb67b0",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "generated_at": "2026-09-09T21:15:50+00:00"
+        },
+        "east": {
+          "status": "pass",
+          "step_mean": 0.2038,
+          "step_max": 0.2646,
+          "drift": 2.81,
+          "loop": 0.2059,
+          "loop_ratio": 1.01,
+          "travel": 2.27,
+          "pin": 0.873,
+          "pad": 0,
+          "canvas": [
+            112,
+            112
+          ],
+          "reasons": [],
+          "sub": "4fcc4be9-b1a2-4894-b17d-4d984edb9a84",
+          "group": "43f5a035-8da8-4ab8-a397-07fc70cf8eac",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "generated_at": "2026-09-09T21:15:50+00:00"
+        },
+        "north-east": {
+          "status": "pass",
+          "step_mean": 0.1404,
+          "step_max": 0.1806,
+          "drift": 2.24,
+          "loop": 0.1733,
+          "loop_ratio": 1.23,
+          "travel": 0.98,
+          "pin": 0.885,
+          "pad": 0,
+          "canvas": [
+            112,
+            112
+          ],
+          "reasons": [],
+          "sub": "52330a8f-a885-492f-aff5-ef8b4660eab7",
+          "group": "fcab38c6-3f08-4662-a6ad-3f38fff58785",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "generated_at": "2026-09-09T21:15:51+00:00"
+        },
+        "north": {
+          "status": "warn",
+          "step_mean": 0.1493,
+          "step_max": 0.1748,
+          "drift": 2.41,
+          "loop": 0.3228,
+          "loop_ratio": 2.16,
+          "travel": 2.41,
+          "pin": 0.878,
+          "pad": 0,
+          "canvas": [
+            112,
+            112
+          ],
+          "reasons": [
+            "last→first hand-off 2.2× a step — eyeball the loop"
+          ],
+          "sub": "5d7e3364-7a43-4509-8368-2c19eedbd5c4",
+          "group": "886ec136-720f-4a42-a4ad-7e3e98fa6aae",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "generated_at": "2026-09-09T21:15:52+00:00"
+        },
+        "south-west": {
+          "status": "pass",
+          "step_mean": 0.1774,
+          "step_max": 0.2038,
+          "drift": 3.04,
+          "loop": 0.3451,
+          "loop_ratio": 1.95,
+          "travel": 1.52,
+          "pin": 0.884,
+          "pad": 0,
+          "canvas": [
+            112,
+            112
+          ],
+          "reasons": [],
+          "sub": "3b4c5937-1754-4e46-8c64-a44109573231",
+          "group": "0e7cbb41-9d01-436d-91a2-29354acb67b0",
+          "takes": 1,
+          "version": 1,
+          "mirrored": true,
+          "generated_at": "2026-09-09T21:15:50+00:00",
+          "source": "south-east"
+        },
+        "west": {
+          "status": "pass",
+          "step_mean": 0.2038,
+          "step_max": 0.2646,
+          "drift": 2.81,
+          "loop": 0.2059,
+          "loop_ratio": 1.01,
+          "travel": 2.27,
+          "pin": 0.873,
+          "pad": 0,
+          "canvas": [
+            112,
+            112
+          ],
+          "reasons": [],
+          "sub": "4fcc4be9-b1a2-4894-b17d-4d984edb9a84",
+          "group": "43f5a035-8da8-4ab8-a397-07fc70cf8eac",
+          "takes": 1,
+          "version": 1,
+          "mirrored": true,
+          "generated_at": "2026-09-09T21:15:50+00:00",
+          "source": "east"
+        },
+        "north-west": {
+          "status": "pass",
+          "step_mean": 0.1404,
+          "step_max": 0.1806,
+          "drift": 2.24,
+          "loop": 0.1733,
+          "loop_ratio": 1.23,
+          "travel": 0.98,
+          "pin": 0.885,
+          "pad": 0,
+          "canvas": [
+            112,
+            112
+          ],
+          "reasons": [],
+          "sub": "52330a8f-a885-492f-aff5-ef8b4660eab7",
+          "group": "fcab38c6-3f08-4662-a6ad-3f38fff58785",
+          "takes": 1,
+          "version": 1,
+          "mirrored": true,
+          "generated_at": "2026-09-09T21:15:51+00:00",
+          "source": "north-east"
+        }
+      },
+      "action": "walk loop, full walk cycle in place, legs alternate naturally, normal calm walking pace, body stays centered, seamless loop whose last frame leads straight back into the first, no turning",
+      "frame_paths": {
+        "south": [
+          "marsh_hag/animations/walk/south/00.webp",
+          "marsh_hag/animations/walk/south/01.webp",
+          "marsh_hag/animations/walk/south/02.webp",
+          "marsh_hag/animations/walk/south/03.webp",
+          "marsh_hag/animations/walk/south/04.webp",
+          "marsh_hag/animations/walk/south/05.webp"
+        ],
+        "south-east": [
+          "marsh_hag/animations/walk/south-east/00.webp",
+          "marsh_hag/animations/walk/south-east/01.webp",
+          "marsh_hag/animations/walk/south-east/02.webp",
+          "marsh_hag/animations/walk/south-east/03.webp",
+          "marsh_hag/animations/walk/south-east/04.webp",
+          "marsh_hag/animations/walk/south-east/05.webp"
+        ],
+        "east": [
+          "marsh_hag/animations/walk/east/00.webp",
+          "marsh_hag/animations/walk/east/01.webp",
+          "marsh_hag/animations/walk/east/02.webp",
+          "marsh_hag/animations/walk/east/03.webp",
+          "marsh_hag/animations/walk/east/04.webp",
+          "marsh_hag/animations/walk/east/05.webp"
+        ],
+        "north-east": [
+          "marsh_hag/animations/walk/north-east/00.webp",
+          "marsh_hag/animations/walk/north-east/01.webp",
+          "marsh_hag/animations/walk/north-east/02.webp",
+          "marsh_hag/animations/walk/north-east/03.webp",
+          "marsh_hag/animations/walk/north-east/04.webp",
+          "marsh_hag/animations/walk/north-east/05.webp"
+        ],
+        "north": [
+          "marsh_hag/animations/walk/north/00.webp",
+          "marsh_hag/animations/walk/north/01.webp",
+          "marsh_hag/animations/walk/north/02.webp",
+          "marsh_hag/animations/walk/north/03.webp",
+          "marsh_hag/animations/walk/north/04.webp",
+          "marsh_hag/animations/walk/north/05.webp"
+        ],
+        "south-west": [
+          "marsh_hag/animations/walk/south-west/00.webp",
+          "marsh_hag/animations/walk/south-west/01.webp",
+          "marsh_hag/animations/walk/south-west/02.webp",
+          "marsh_hag/animations/walk/south-west/03.webp",
+          "marsh_hag/animations/walk/south-west/04.webp",
+          "marsh_hag/animations/walk/south-west/05.webp"
+        ],
+        "west": [
+          "marsh_hag/animations/walk/west/00.webp",
+          "marsh_hag/animations/walk/west/01.webp",
+          "marsh_hag/animations/walk/west/02.webp",
+          "marsh_hag/animations/walk/west/03.webp",
+          "marsh_hag/animations/walk/west/04.webp",
+          "marsh_hag/animations/walk/west/05.webp"
+        ],
+        "north-west": [
+          "marsh_hag/animations/walk/north-west/00.webp",
+          "marsh_hag/animations/walk/north-west/01.webp",
+          "marsh_hag/animations/walk/north-west/02.webp",
+          "marsh_hag/animations/walk/north-west/03.webp",
+          "marsh_hag/animations/walk/north-west/04.webp",
+          "marsh_hag/animations/walk/north-west/05.webp"
+        ]
+      },
+      "strips": {
+        "south": "marsh_hag/animations/walk__south.webp",
+        "south-east": "marsh_hag/animations/walk__south-east.webp",
+        "east": "marsh_hag/animations/walk__east.webp",
+        "north-east": "marsh_hag/animations/walk__north-east.webp",
+        "north": "marsh_hag/animations/walk__north.webp",
+        "south-west": "marsh_hag/animations/walk__south-west.webp",
+        "west": "marsh_hag/animations/walk__west.webp",
+        "north-west": "marsh_hag/animations/walk__north-west.webp"
+      }
+    },
+    "attack": {
+      "directions": {
+        "south": {
+          "status": "fail",
+          "step_mean": 0.2635,
+          "step_max": 0.3387,
+          "drift": 7.38,
+          "loop": 0.0005,
+          "loop_ratio": 0.0,
+          "travel": 4.63,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": 0.081,
+          "peak": 0.3522,
+          "reach": 0.14,
+          "canvas": [
+            112,
+            112
+          ],
+          "reasons": [
+            "no strike, just a lean: nothing reaches past 0.14 of the body"
+          ],
+          "sub": "efc7ddf8-f5a1-4ce2-9293-0552b7cda7dc",
+          "group": "8304655f-8ac2-4e5f-aca1-7c1f0deedd0d",
+          "takes": 1,
+          "version": 2,
+          "mirrored": false,
+          "generated_at": "2026-09-09T22:33:07+00:00",
+          "action": "Staff Curse - Raises the staff and jabs it forward once, green magic flashing at the tip, then returns to idle stance"
+        },
+        "south-east": {
+          "status": "fail",
+          "step_mean": 0.3241,
+          "step_max": 0.4726,
+          "drift": 9.09,
+          "loop": 0.0,
+          "loop_ratio": 0.0,
+          "travel": 2.32,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": 0.046,
+          "peak": 0.4553,
+          "reach": 0.213,
+          "canvas": [
+            112,
+            112
+          ],
+          "reasons": [
+            "no strike, just a lean: nothing reaches past 0.21 of the body"
+          ],
+          "sub": "972b50a5-fe54-4d9e-a9dc-723225600f0b",
+          "group": "abc6bf28-bafe-423b-b7ea-25a1ba389f6f",
+          "takes": 1,
+          "version": 2,
+          "mirrored": false,
+          "generated_at": "2026-09-09T22:33:07+00:00",
+          "action": "Staff Curse - Raises the staff and jabs it forward once, green magic flashing at the tip, then returns to idle stance"
+        },
+        "east": {
+          "status": "pass",
+          "step_mean": 0.1883,
+          "step_max": 0.2628,
+          "drift": 2.85,
+          "loop": 0.0,
+          "loop_ratio": 0.0,
+          "travel": 2.85,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": 0.001,
+          "peak": 0.2519,
+          "reach": 0.52,
+          "canvas": [
+            112,
+            112
+          ],
+          "reasons": [],
+          "sub": "f3fe60c4-a29e-4973-a3e5-2c7c75f44799",
+          "group": "4f957e06-3355-42f2-8dbd-d23f85b0fcac",
+          "takes": 1,
+          "version": 2,
+          "mirrored": false,
+          "generated_at": "2026-09-09T22:33:07+00:00",
+          "action": "Staff Curse - Raises the staff and jabs it forward once, green magic flashing at the tip, then returns to idle stance"
+        },
+        "north-east": {
+          "status": "warn",
+          "step_mean": 0.1241,
+          "step_max": 0.1878,
+          "drift": 1.56,
+          "loop": 0.0002,
+          "loop_ratio": 0.0,
+          "travel": 2.04,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": 0.057,
+          "peak": 0.2143,
+          "reach": 0.295,
+          "canvas": [
+            112,
+            112
+          ],
+          "reasons": [
+            "shallow strike: reach 0.30 — eyeball it"
+          ],
+          "sub": "2d910890-b342-4acd-80f0-0c69bb451cf6",
+          "group": "affa34a3-3f24-47c5-a510-a60471d33439",
+          "takes": 1,
+          "version": 2,
+          "mirrored": false,
+          "generated_at": "2026-09-09T22:33:09+00:00",
+          "action": "Staff Curse - Raises the staff and jabs it forward once, green magic flashing at the tip, then returns to idle stance"
+        },
+        "north": {
+          "status": "fail",
+          "step_mean": 0.1446,
+          "step_max": 0.1788,
+          "drift": 1.26,
+          "loop": 0.0025,
+          "loop_ratio": 0.02,
+          "travel": 1.89,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": 0.001,
+          "peak": 0.2333,
+          "reach": 0.074,
+          "canvas": [
+            112,
+            112
+          ],
+          "reasons": [
+            "no strike, just a lean: nothing reaches past 0.07 of the body"
+          ],
+          "sub": "23e8b6a8-7ec8-486d-b1f8-017b29a86775",
+          "group": "55ad2a96-4fa1-4d10-8677-3c10c960d6d1",
+          "takes": 1,
+          "version": 2,
+          "mirrored": false,
+          "generated_at": "2026-09-09T22:33:10+00:00",
+          "action": "Staff Curse - Raises the staff and jabs it forward once, green magic flashing at the tip, then returns to idle stance"
+        },
+        "south-west": {
+          "status": "pass",
+          "step_mean": 0.3241,
+          "step_max": 0.4726,
+          "drift": 9.09,
+          "loop": 0.0,
+          "loop_ratio": 0.0,
+          "travel": 2.32,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": 0.046,
+          "peak": 0.4553,
+          "canvas": [
+            112,
+            112
+          ],
+          "reasons": [],
+          "sub": "972b50a5-fe54-4d9e-a9dc-723225600f0b",
+          "group": "abc6bf28-bafe-423b-b7ea-25a1ba389f6f",
+          "takes": 1,
+          "version": 2,
+          "mirrored": true,
+          "generated_at": "2026-09-09T22:33:07+00:00",
+          "action": "Staff Curse - Raises the staff and jabs it forward once, green magic flashing at the tip, then returns to idle stance",
+          "source": "south-east"
+        },
+        "west": {
+          "status": "pass",
+          "step_mean": 0.1883,
+          "step_max": 0.2628,
+          "drift": 2.85,
+          "loop": 0.0,
+          "loop_ratio": 0.0,
+          "travel": 2.85,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": 0.001,
+          "peak": 0.2519,
+          "reach": 0.52,
+          "canvas": [
+            112,
+            112
+          ],
+          "reasons": [],
+          "sub": "f3fe60c4-a29e-4973-a3e5-2c7c75f44799",
+          "group": "4f957e06-3355-42f2-8dbd-d23f85b0fcac",
+          "takes": 1,
+          "version": 2,
+          "mirrored": true,
+          "generated_at": "2026-09-09T22:33:07+00:00",
+          "action": "Staff Curse - Raises the staff and jabs it forward once, green magic flashing at the tip, then returns to idle stance",
+          "source": "east"
+        },
+        "north-west": {
+          "status": "warn",
+          "step_mean": 0.1241,
+          "step_max": 0.1878,
+          "drift": 1.56,
+          "loop": 0.0002,
+          "loop_ratio": 0.0,
+          "travel": 2.04,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": 0.057,
+          "peak": 0.2143,
+          "reach": 0.295,
+          "canvas": [
+            112,
+            112
+          ],
+          "reasons": [
+            "shallow strike: reach 0.30 — eyeball it"
+          ],
+          "sub": "2d910890-b342-4acd-80f0-0c69bb451cf6",
+          "group": "affa34a3-3f24-47c5-a510-a60471d33439",
+          "takes": 1,
+          "version": 2,
+          "mirrored": true,
+          "generated_at": "2026-09-09T22:33:09+00:00",
+          "action": "Staff Curse - Raises the staff and jabs it forward once, green magic flashing at the tip, then returns to idle stance",
+          "source": "north-east"
+        }
+      },
+      "action": "Staff Curse - Raises the staff and jabs it forward once, green magic flashing at the tip, then returns to idle stance",
+      "frame_paths": {
+        "south": [
+          "marsh_hag/animations/attack/south/00.webp",
+          "marsh_hag/animations/attack/south/01.webp",
+          "marsh_hag/animations/attack/south/02.webp",
+          "marsh_hag/animations/attack/south/03.webp",
+          "marsh_hag/animations/attack/south/04.webp"
+        ],
+        "south-east": [
+          "marsh_hag/animations/attack/south-east/00.webp",
+          "marsh_hag/animations/attack/south-east/01.webp",
+          "marsh_hag/animations/attack/south-east/02.webp",
+          "marsh_hag/animations/attack/south-east/03.webp",
+          "marsh_hag/animations/attack/south-east/04.webp"
+        ],
+        "east": [
+          "marsh_hag/animations/attack/east/00.webp",
+          "marsh_hag/animations/attack/east/01.webp",
+          "marsh_hag/animations/attack/east/02.webp",
+          "marsh_hag/animations/attack/east/03.webp",
+          "marsh_hag/animations/attack/east/04.webp"
+        ],
+        "north-east": [
+          "marsh_hag/animations/attack/north-east/00.webp",
+          "marsh_hag/animations/attack/north-east/01.webp",
+          "marsh_hag/animations/attack/north-east/02.webp",
+          "marsh_hag/animations/attack/north-east/03.webp",
+          "marsh_hag/animations/attack/north-east/04.webp"
+        ],
+        "north": [
+          "marsh_hag/animations/attack/north/00.webp",
+          "marsh_hag/animations/attack/north/01.webp",
+          "marsh_hag/animations/attack/north/02.webp",
+          "marsh_hag/animations/attack/north/03.webp",
+          "marsh_hag/animations/attack/north/04.webp"
+        ],
+        "south-west": [
+          "marsh_hag/animations/attack/south-west/00.webp",
+          "marsh_hag/animations/attack/south-west/01.webp",
+          "marsh_hag/animations/attack/south-west/02.webp",
+          "marsh_hag/animations/attack/south-west/03.webp",
+          "marsh_hag/animations/attack/south-west/04.webp"
+        ],
+        "west": [
+          "marsh_hag/animations/attack/west/00.webp",
+          "marsh_hag/animations/attack/west/01.webp",
+          "marsh_hag/animations/attack/west/02.webp",
+          "marsh_hag/animations/attack/west/03.webp",
+          "marsh_hag/animations/attack/west/04.webp"
+        ],
+        "north-west": [
+          "marsh_hag/animations/attack/north-west/00.webp",
+          "marsh_hag/animations/attack/north-west/01.webp",
+          "marsh_hag/animations/attack/north-west/02.webp",
+          "marsh_hag/animations/attack/north-west/03.webp",
+          "marsh_hag/animations/attack/north-west/04.webp"
+        ]
+      },
+      "strips": {
+        "south": "marsh_hag/animations/attack__south.webp",
+        "south-east": "marsh_hag/animations/attack__south-east.webp",
+        "east": "marsh_hag/animations/attack__east.webp",
+        "north-east": "marsh_hag/animations/attack__north-east.webp",
+        "north": "marsh_hag/animations/attack__north.webp",
+        "south-west": "marsh_hag/animations/attack__south-west.webp",
+        "west": "marsh_hag/animations/attack__west.webp",
+        "north-west": "marsh_hag/animations/attack__north-west.webp"
+      }
+    },
+    "attack_try": {
+      "directions": {
+        "south": {
+          "status": "warn",
+          "step_mean": 0.2895,
+          "step_max": 0.4415,
+          "drift": 13.22,
+          "loop": 0.4821,
+          "loop_ratio": 1.67,
+          "travel": 6.05,
+          "pin": 1.0,
+          "pad": 2,
+          "flash": 0.256,
+          "peak": 0.4821,
+          "reach": 0.267,
+          "canvas": [
+            116,
+            116
+          ],
+          "reasons": [
+            "drifts 13.2 px — eyeball it",
+            "shallow strike: reach 0.27 — eyeball it",
+            "some bright effect pixels (0.26) — eyeball it",
+            "canvas grown by 2 px a side to hold the motion"
+          ],
+          "sub": "439401e8-d319-4ad4-af80-4742978fb09e",
+          "group": "442725e4-29a2-4875-a586-800f520e3b79",
+          "takes": 1,
+          "version": 2,
+          "mirrored": false,
+          "generated_at": "2026-09-10T20:11:34+00:00",
+          "action": "Staff Curse - Jabs the staff out and green swamp magic bursts from the tip, a big aggressive swing",
+          "tries": 1,
+          "rolls": 2,
+          "intensity": 1,
+          "rung": 0
+        },
+        "south-east": {
+          "status": "pass",
+          "step_mean": 0.246,
+          "step_max": 0.4758,
+          "drift": 6.64,
+          "loop": 0.5021,
+          "loop_ratio": 2.04,
+          "travel": 4.45,
+          "pin": 1.0,
+          "pad": 3,
+          "flash": 0.189,
+          "peak": 0.505,
+          "reach": 0.36,
+          "canvas": [
+            118,
+            118
+          ],
+          "reasons": [
+            "canvas grown by 3 px a side to hold the motion"
+          ],
+          "sub": "f9693872-d176-480f-9b7a-bd98cf0fb816",
+          "group": "27ee1bfd-7b0a-4f5c-9642-2b20f4285eae",
+          "takes": 1,
+          "version": 2,
+          "mirrored": false,
+          "generated_at": "2026-09-10T20:11:35+00:00",
+          "action": "Staff Curse - Jabs the staff out and green swamp magic bursts from the tip, a big aggressive swing",
+          "tries": 1,
+          "rolls": 2,
+          "intensity": 1,
+          "rung": 0
+        },
+        "east": {
+          "status": "pass",
+          "step_mean": 0.1432,
+          "step_max": 0.2086,
+          "drift": 3.43,
+          "loop": 0.1906,
+          "loop_ratio": 1.33,
+          "travel": 2.68,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": 0.095,
+          "peak": 0.1955,
+          "reach": 0.32,
+          "canvas": [
+            112,
+            112
+          ],
+          "reasons": [],
+          "sub": "7861cbc5-20a7-4d2c-9674-8e8b62f0b57f",
+          "group": "4fbc7357-8c7f-4196-b649-d2189b40cc6f",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "generated_at": "2026-09-10T19:43:44+00:00",
+          "action": "Staff Curse - Jabs the staff out and green swamp magic bursts from the tip",
+          "tries": 1,
+          "rolls": 1,
+          "intensity": 1,
+          "rung": 0
+        },
+        "north-east": {
+          "status": "pass",
+          "step_mean": 0.2249,
+          "step_max": 0.4041,
+          "drift": 5.26,
+          "loop": 0.3707,
+          "loop_ratio": 1.65,
+          "travel": 6.32,
+          "pin": 1.0,
+          "pad": 2,
+          "flash": 0.013,
+          "peak": 0.4612,
+          "reach": 0.443,
+          "canvas": [
+            116,
+            116
+          ],
+          "reasons": [
+            "canvas grown by 2 px a side to hold the motion"
+          ],
+          "sub": "1913f9cd-0606-41bf-9ace-d71fe733f79e",
+          "group": "e6381ec3-abb0-4c71-a890-7aa8e9418858",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "generated_at": "2026-09-10T19:43:45+00:00",
+          "action": "Staff Curse - Jabs the staff out and green swamp magic bursts from the tip",
+          "tries": 1,
+          "rolls": 1,
+          "intensity": 1,
+          "rung": 0
+        },
+        "north": {
+          "status": "warn",
+          "step_mean": 0.1159,
+          "step_max": 0.2022,
+          "drift": 4.9,
+          "loop": 0.114,
+          "loop_ratio": 0.98,
+          "travel": 5.21,
+          "pin": 1.0,
+          "pad": 1,
+          "flash": 0.072,
+          "peak": 0.2496,
+          "reach": 0.227,
+          "canvas": [
+            114,
+            114
+          ],
+          "reasons": [
+            "shallow strike: reach 0.23 — eyeball it",
+            "canvas grown by 1 px a side to hold the motion"
+          ],
+          "sub": "f61a296f-3ca9-4100-a06d-8ab9d4b01041",
+          "group": "7d7bd9f3-9b3e-4954-bcff-bdd8ce07c913",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "generated_at": "2026-09-10T19:43:45+00:00",
+          "action": "Staff Curse - Jabs the staff out and green swamp magic bursts from the tip",
+          "tries": 1,
+          "rolls": 1,
+          "intensity": 1,
+          "rung": 0
+        },
+        "west": {
+          "status": "pass",
+          "step_mean": 0.1432,
+          "step_max": 0.2086,
+          "drift": 3.43,
+          "loop": 0.1906,
+          "loop_ratio": 1.33,
+          "travel": 2.68,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": 0.095,
+          "peak": 0.1955,
+          "reach": 0.32,
+          "canvas": [
+            112,
+            112
+          ],
+          "reasons": [],
+          "sub": "7861cbc5-20a7-4d2c-9674-8e8b62f0b57f",
+          "group": "4fbc7357-8c7f-4196-b649-d2189b40cc6f",
+          "takes": 1,
+          "version": 1,
+          "mirrored": true,
+          "generated_at": "2026-09-10T19:43:44+00:00",
+          "action": "Staff Curse - Jabs the staff out and green swamp magic bursts from the tip",
+          "tries": 1,
+          "rolls": 1,
+          "intensity": 1,
+          "rung": 0,
+          "source": "east"
+        },
+        "north-west": {
+          "status": "pass",
+          "step_mean": 0.2249,
+          "step_max": 0.4041,
+          "drift": 5.26,
+          "loop": 0.3707,
+          "loop_ratio": 1.65,
+          "travel": 6.32,
+          "pin": 1.0,
+          "pad": 2,
+          "flash": 0.013,
+          "peak": 0.4612,
+          "reach": 0.443,
+          "canvas": [
+            116,
+            116
+          ],
+          "reasons": [
+            "canvas grown by 2 px a side to hold the motion"
+          ],
+          "sub": "1913f9cd-0606-41bf-9ace-d71fe733f79e",
+          "group": "e6381ec3-abb0-4c71-a890-7aa8e9418858",
+          "takes": 1,
+          "version": 1,
+          "mirrored": true,
+          "generated_at": "2026-09-10T19:43:45+00:00",
+          "action": "Staff Curse - Jabs the staff out and green swamp magic bursts from the tip",
+          "tries": 1,
+          "rolls": 1,
+          "intensity": 1,
+          "rung": 0,
+          "source": "north-east"
+        },
+        "south-west": {
+          "status": "pass",
+          "step_mean": 0.246,
+          "step_max": 0.4758,
+          "drift": 6.64,
+          "loop": 0.5021,
+          "loop_ratio": 2.04,
+          "travel": 4.45,
+          "pin": 1.0,
+          "pad": 3,
+          "flash": 0.189,
+          "peak": 0.505,
+          "reach": 0.36,
+          "canvas": [
+            118,
+            118
+          ],
+          "reasons": [
+            "canvas grown by 3 px a side to hold the motion"
+          ],
+          "sub": "f9693872-d176-480f-9b7a-bd98cf0fb816",
+          "group": "27ee1bfd-7b0a-4f5c-9642-2b20f4285eae",
+          "takes": 1,
+          "version": 2,
+          "mirrored": true,
+          "generated_at": "2026-09-10T20:11:35+00:00",
+          "action": "Staff Curse - Jabs the staff out and green swamp magic bursts from the tip, a big aggressive swing",
+          "tries": 1,
+          "rolls": 2,
+          "intensity": 1,
+          "rung": 0,
+          "source": "south-east"
+        }
+      },
+      "action": "Staff Curse - Jabs the staff out and green swamp magic bursts from the tip, a big aggressive swing",
+      "frame_paths": {
+        "south": [
+          "marsh_hag/animations/attack_try/south/00.webp",
+          "marsh_hag/animations/attack_try/south/01.webp",
+          "marsh_hag/animations/attack_try/south/02.webp",
+          "marsh_hag/animations/attack_try/south/03.webp",
+          "marsh_hag/animations/attack_try/south/04.webp"
+        ],
+        "south-east": [
+          "marsh_hag/animations/attack_try/south-east/00.webp",
+          "marsh_hag/animations/attack_try/south-east/01.webp",
+          "marsh_hag/animations/attack_try/south-east/02.webp",
+          "marsh_hag/animations/attack_try/south-east/03.webp",
+          "marsh_hag/animations/attack_try/south-east/04.webp"
+        ],
+        "east": [
+          "marsh_hag/animations/attack_try/east/00.webp",
+          "marsh_hag/animations/attack_try/east/01.webp",
+          "marsh_hag/animations/attack_try/east/02.webp",
+          "marsh_hag/animations/attack_try/east/03.webp",
+          "marsh_hag/animations/attack_try/east/04.webp"
+        ],
+        "north-east": [
+          "marsh_hag/animations/attack_try/north-east/00.webp",
+          "marsh_hag/animations/attack_try/north-east/01.webp",
+          "marsh_hag/animations/attack_try/north-east/02.webp",
+          "marsh_hag/animations/attack_try/north-east/03.webp",
+          "marsh_hag/animations/attack_try/north-east/04.webp"
+        ],
+        "north": [
+          "marsh_hag/animations/attack_try/north/00.webp",
+          "marsh_hag/animations/attack_try/north/01.webp",
+          "marsh_hag/animations/attack_try/north/02.webp",
+          "marsh_hag/animations/attack_try/north/03.webp",
+          "marsh_hag/animations/attack_try/north/04.webp"
+        ],
+        "west": [
+          "marsh_hag/animations/attack_try/west/00.webp",
+          "marsh_hag/animations/attack_try/west/01.webp",
+          "marsh_hag/animations/attack_try/west/02.webp",
+          "marsh_hag/animations/attack_try/west/03.webp",
+          "marsh_hag/animations/attack_try/west/04.webp"
+        ],
+        "north-west": [
+          "marsh_hag/animations/attack_try/north-west/00.webp",
+          "marsh_hag/animations/attack_try/north-west/01.webp",
+          "marsh_hag/animations/attack_try/north-west/02.webp",
+          "marsh_hag/animations/attack_try/north-west/03.webp",
+          "marsh_hag/animations/attack_try/north-west/04.webp"
+        ],
+        "south-west": [
+          "marsh_hag/animations/attack_try/south-west/00.webp",
+          "marsh_hag/animations/attack_try/south-west/01.webp",
+          "marsh_hag/animations/attack_try/south-west/02.webp",
+          "marsh_hag/animations/attack_try/south-west/03.webp",
+          "marsh_hag/animations/attack_try/south-west/04.webp"
+        ]
+      },
+      "strips": {
+        "south": "marsh_hag/animations/attack_try__south.webp",
+        "south-east": "marsh_hag/animations/attack_try__south-east.webp",
+        "east": "marsh_hag/animations/attack_try__east.webp",
+        "north-east": "marsh_hag/animations/attack_try__north-east.webp",
+        "north": "marsh_hag/animations/attack_try__north.webp",
+        "west": "marsh_hag/animations/attack_try__west.webp",
+        "north-west": "marsh_hag/animations/attack_try__north-west.webp",
+        "south-west": "marsh_hag/animations/attack_try__south-west.webp"
+      },
+      "intensity": 1
+    }
   }
- },
- "approved_at": "2026-09-09T19:59:21+00:00",
- "animations": {
-  "idle": {
-   "directions": {
-    "south": {
-     "status": "pass",
-     "step_mean": 0.0794,
-     "step_max": 0.0926,
-     "drift": 1.44,
-     "loop": 0.0002,
-     "pin": 1.0,
-     "reasons": [],
-     "sub": "f45d2932-a7ff-4818-9ece-7aa1ef309fc4",
-     "takes": 1,
-     "version": 1,
-     "mirrored": false,
-     "generated_at": "2026-09-09T20:13:56+00:00",
-     "cut": 0
-    },
-    "south-east": {
-     "status": "pass",
-     "step_mean": 0.0672,
-     "step_max": 0.0794,
-     "drift": 1.22,
-     "loop": 0.0,
-     "pin": 1.0,
-     "reasons": [],
-     "sub": "feffbc71-6aa7-448b-919c-8f812332b532",
-     "takes": 1,
-     "version": 1,
-     "mirrored": false,
-     "generated_at": "2026-09-09T20:13:56+00:00",
-     "cut": 0
-    },
-    "east": {
-     "status": "pass",
-     "step_mean": 0.1022,
-     "step_max": 0.1337,
-     "drift": 0.88,
-     "loop": 0.0,
-     "pin": 1.0,
-     "reasons": [],
-     "sub": "3e241615-74dd-4d91-b394-ff697e1ded9f",
-     "takes": 1,
-     "version": 1,
-     "mirrored": false,
-     "generated_at": "2026-09-09T20:13:57+00:00",
-     "cut": 0
-    },
-    "north-east": {
-     "status": "pass",
-     "step_mean": 0.0414,
-     "step_max": 0.0825,
-     "drift": 1.1,
-     "loop": 0.0,
-     "pin": 1.0,
-     "reasons": [],
-     "sub": "9d321b07-28b5-4ae7-9fd2-28d78580f5ba",
-     "takes": 1,
-     "version": 1,
-     "mirrored": false,
-     "generated_at": "2026-09-09T20:13:57+00:00",
-     "cut": 0
-    },
-    "north": {
-     "status": "pass",
-     "step_mean": 0.0847,
-     "step_max": 0.1223,
-     "drift": 1.0,
-     "loop": 0.0015,
-     "pin": 1.0,
-     "reasons": [],
-     "sub": "9339dae7-4dab-4306-ade3-9ccd7efd6bf9",
-     "takes": 1,
-     "version": 1,
-     "mirrored": false,
-     "generated_at": "2026-09-09T20:13:58+00:00",
-     "cut": 0
-    },
-    "south-west": {
-     "status": "pass",
-     "step_mean": 0.0672,
-     "step_max": 0.0794,
-     "drift": 1.22,
-     "loop": 0.0,
-     "pin": 1.0,
-     "reasons": [],
-     "sub": "feffbc71-6aa7-448b-919c-8f812332b532",
-     "takes": 1,
-     "version": 1,
-     "mirrored": true,
-     "generated_at": "2026-09-09T20:13:56+00:00",
-     "cut": 0,
-     "source": "south-east"
-    },
-    "west": {
-     "status": "pass",
-     "step_mean": 0.1022,
-     "step_max": 0.1337,
-     "drift": 0.88,
-     "loop": 0.0,
-     "pin": 1.0,
-     "reasons": [],
-     "sub": "3e241615-74dd-4d91-b394-ff697e1ded9f",
-     "takes": 1,
-     "version": 1,
-     "mirrored": true,
-     "generated_at": "2026-09-09T20:13:57+00:00",
-     "cut": 0,
-     "source": "east"
-    },
-    "north-west": {
-     "status": "pass",
-     "step_mean": 0.0414,
-     "step_max": 0.0825,
-     "drift": 1.1,
-     "loop": 0.0,
-     "pin": 1.0,
-     "reasons": [],
-     "sub": "9d321b07-28b5-4ae7-9fd2-28d78580f5ba",
-     "takes": 1,
-     "version": 1,
-     "mirrored": true,
-     "generated_at": "2026-09-09T20:13:57+00:00",
-     "cut": 0,
-     "source": "north-east"
-    }
-   },
-   "action": "Calm still idle, breathing very slowly and subtly, chest and shoulders rise and fall a little, feet planted, no other movement, ends in the same neutral pose it started in",
-   "frame_paths": {
-    "south": [
-     "marsh_hag/animations/idle/south/00.webp",
-     "marsh_hag/animations/idle/south/01.webp",
-     "marsh_hag/animations/idle/south/02.webp",
-     "marsh_hag/animations/idle/south/03.webp",
-     "marsh_hag/animations/idle/south/04.webp"
-    ],
-    "south-east": [
-     "marsh_hag/animations/idle/south-east/00.webp",
-     "marsh_hag/animations/idle/south-east/01.webp",
-     "marsh_hag/animations/idle/south-east/02.webp",
-     "marsh_hag/animations/idle/south-east/03.webp",
-     "marsh_hag/animations/idle/south-east/04.webp"
-    ],
-    "east": [
-     "marsh_hag/animations/idle/east/00.webp",
-     "marsh_hag/animations/idle/east/01.webp",
-     "marsh_hag/animations/idle/east/02.webp",
-     "marsh_hag/animations/idle/east/03.webp",
-     "marsh_hag/animations/idle/east/04.webp"
-    ],
-    "north-east": [
-     "marsh_hag/animations/idle/north-east/00.webp",
-     "marsh_hag/animations/idle/north-east/01.webp",
-     "marsh_hag/animations/idle/north-east/02.webp",
-     "marsh_hag/animations/idle/north-east/03.webp",
-     "marsh_hag/animations/idle/north-east/04.webp"
-    ],
-    "north": [
-     "marsh_hag/animations/idle/north/00.webp",
-     "marsh_hag/animations/idle/north/01.webp",
-     "marsh_hag/animations/idle/north/02.webp",
-     "marsh_hag/animations/idle/north/03.webp",
-     "marsh_hag/animations/idle/north/04.webp"
-    ],
-    "south-west": [
-     "marsh_hag/animations/idle/south-west/00.webp",
-     "marsh_hag/animations/idle/south-west/01.webp",
-     "marsh_hag/animations/idle/south-west/02.webp",
-     "marsh_hag/animations/idle/south-west/03.webp",
-     "marsh_hag/animations/idle/south-west/04.webp"
-    ],
-    "west": [
-     "marsh_hag/animations/idle/west/00.webp",
-     "marsh_hag/animations/idle/west/01.webp",
-     "marsh_hag/animations/idle/west/02.webp",
-     "marsh_hag/animations/idle/west/03.webp",
-     "marsh_hag/animations/idle/west/04.webp"
-    ],
-    "north-west": [
-     "marsh_hag/animations/idle/north-west/00.webp",
-     "marsh_hag/animations/idle/north-west/01.webp",
-     "marsh_hag/animations/idle/north-west/02.webp",
-     "marsh_hag/animations/idle/north-west/03.webp",
-     "marsh_hag/animations/idle/north-west/04.webp"
-    ]
-   },
-   "strips": {
-    "south": "marsh_hag/animations/idle__south.webp",
-    "south-east": "marsh_hag/animations/idle__south-east.webp",
-    "east": "marsh_hag/animations/idle__east.webp",
-    "north-east": "marsh_hag/animations/idle__north-east.webp",
-    "north": "marsh_hag/animations/idle__north.webp",
-    "south-west": "marsh_hag/animations/idle__south-west.webp",
-    "west": "marsh_hag/animations/idle__west.webp",
-    "north-west": "marsh_hag/animations/idle__north-west.webp"
-   }
-  },
-  "walk": {
-   "directions": {
-    "south": {
-     "status": "pass",
-     "step_mean": 0.1438,
-     "step_max": 0.167,
-     "drift": 1.85,
-     "loop": 0.2282,
-     "loop_ratio": 1.59,
-     "travel": 3.01,
-     "pin": 0.873,
-     "pad": 0,
-     "canvas": [
-      112,
-      112
-     ],
-     "reasons": [],
-     "sub": "ee1368e3-2bf5-4378-987d-f648cdad0adf",
-     "group": "5bc67fd4-00c9-464a-8634-321ef1797375",
-     "takes": 1,
-     "version": 1,
-     "mirrored": false,
-     "generated_at": "2026-09-09T21:15:49+00:00"
-    },
-    "south-east": {
-     "status": "pass",
-     "step_mean": 0.1774,
-     "step_max": 0.2038,
-     "drift": 3.04,
-     "loop": 0.3451,
-     "loop_ratio": 1.95,
-     "travel": 1.52,
-     "pin": 0.884,
-     "pad": 0,
-     "canvas": [
-      112,
-      112
-     ],
-     "reasons": [],
-     "sub": "3b4c5937-1754-4e46-8c64-a44109573231",
-     "group": "0e7cbb41-9d01-436d-91a2-29354acb67b0",
-     "takes": 1,
-     "version": 1,
-     "mirrored": false,
-     "generated_at": "2026-09-09T21:15:50+00:00"
-    },
-    "east": {
-     "status": "pass",
-     "step_mean": 0.2038,
-     "step_max": 0.2646,
-     "drift": 2.81,
-     "loop": 0.2059,
-     "loop_ratio": 1.01,
-     "travel": 2.27,
-     "pin": 0.873,
-     "pad": 0,
-     "canvas": [
-      112,
-      112
-     ],
-     "reasons": [],
-     "sub": "4fcc4be9-b1a2-4894-b17d-4d984edb9a84",
-     "group": "43f5a035-8da8-4ab8-a397-07fc70cf8eac",
-     "takes": 1,
-     "version": 1,
-     "mirrored": false,
-     "generated_at": "2026-09-09T21:15:50+00:00"
-    },
-    "north-east": {
-     "status": "pass",
-     "step_mean": 0.1404,
-     "step_max": 0.1806,
-     "drift": 2.24,
-     "loop": 0.1733,
-     "loop_ratio": 1.23,
-     "travel": 0.98,
-     "pin": 0.885,
-     "pad": 0,
-     "canvas": [
-      112,
-      112
-     ],
-     "reasons": [],
-     "sub": "52330a8f-a885-492f-aff5-ef8b4660eab7",
-     "group": "fcab38c6-3f08-4662-a6ad-3f38fff58785",
-     "takes": 1,
-     "version": 1,
-     "mirrored": false,
-     "generated_at": "2026-09-09T21:15:51+00:00"
-    },
-    "north": {
-     "status": "warn",
-     "step_mean": 0.1493,
-     "step_max": 0.1748,
-     "drift": 2.41,
-     "loop": 0.3228,
-     "loop_ratio": 2.16,
-     "travel": 2.41,
-     "pin": 0.878,
-     "pad": 0,
-     "canvas": [
-      112,
-      112
-     ],
-     "reasons": [
-      "last→first hand-off 2.2× a step — eyeball the loop"
-     ],
-     "sub": "5d7e3364-7a43-4509-8368-2c19eedbd5c4",
-     "group": "886ec136-720f-4a42-a4ad-7e3e98fa6aae",
-     "takes": 1,
-     "version": 1,
-     "mirrored": false,
-     "generated_at": "2026-09-09T21:15:52+00:00"
-    },
-    "south-west": {
-     "status": "pass",
-     "step_mean": 0.1774,
-     "step_max": 0.2038,
-     "drift": 3.04,
-     "loop": 0.3451,
-     "loop_ratio": 1.95,
-     "travel": 1.52,
-     "pin": 0.884,
-     "pad": 0,
-     "canvas": [
-      112,
-      112
-     ],
-     "reasons": [],
-     "sub": "3b4c5937-1754-4e46-8c64-a44109573231",
-     "group": "0e7cbb41-9d01-436d-91a2-29354acb67b0",
-     "takes": 1,
-     "version": 1,
-     "mirrored": true,
-     "generated_at": "2026-09-09T21:15:50+00:00",
-     "source": "south-east"
-    },
-    "west": {
-     "status": "pass",
-     "step_mean": 0.2038,
-     "step_max": 0.2646,
-     "drift": 2.81,
-     "loop": 0.2059,
-     "loop_ratio": 1.01,
-     "travel": 2.27,
-     "pin": 0.873,
-     "pad": 0,
-     "canvas": [
-      112,
-      112
-     ],
-     "reasons": [],
-     "sub": "4fcc4be9-b1a2-4894-b17d-4d984edb9a84",
-     "group": "43f5a035-8da8-4ab8-a397-07fc70cf8eac",
-     "takes": 1,
-     "version": 1,
-     "mirrored": true,
-     "generated_at": "2026-09-09T21:15:50+00:00",
-     "source": "east"
-    },
-    "north-west": {
-     "status": "pass",
-     "step_mean": 0.1404,
-     "step_max": 0.1806,
-     "drift": 2.24,
-     "loop": 0.1733,
-     "loop_ratio": 1.23,
-     "travel": 0.98,
-     "pin": 0.885,
-     "pad": 0,
-     "canvas": [
-      112,
-      112
-     ],
-     "reasons": [],
-     "sub": "52330a8f-a885-492f-aff5-ef8b4660eab7",
-     "group": "fcab38c6-3f08-4662-a6ad-3f38fff58785",
-     "takes": 1,
-     "version": 1,
-     "mirrored": true,
-     "generated_at": "2026-09-09T21:15:51+00:00",
-     "source": "north-east"
-    }
-   },
-   "action": "walk loop, full walk cycle in place, legs alternate naturally, normal calm walking pace, body stays centered, seamless loop whose last frame leads straight back into the first, no turning",
-   "frame_paths": {
-    "south": [
-     "marsh_hag/animations/walk/south/00.webp",
-     "marsh_hag/animations/walk/south/01.webp",
-     "marsh_hag/animations/walk/south/02.webp",
-     "marsh_hag/animations/walk/south/03.webp",
-     "marsh_hag/animations/walk/south/04.webp",
-     "marsh_hag/animations/walk/south/05.webp"
-    ],
-    "south-east": [
-     "marsh_hag/animations/walk/south-east/00.webp",
-     "marsh_hag/animations/walk/south-east/01.webp",
-     "marsh_hag/animations/walk/south-east/02.webp",
-     "marsh_hag/animations/walk/south-east/03.webp",
-     "marsh_hag/animations/walk/south-east/04.webp",
-     "marsh_hag/animations/walk/south-east/05.webp"
-    ],
-    "east": [
-     "marsh_hag/animations/walk/east/00.webp",
-     "marsh_hag/animations/walk/east/01.webp",
-     "marsh_hag/animations/walk/east/02.webp",
-     "marsh_hag/animations/walk/east/03.webp",
-     "marsh_hag/animations/walk/east/04.webp",
-     "marsh_hag/animations/walk/east/05.webp"
-    ],
-    "north-east": [
-     "marsh_hag/animations/walk/north-east/00.webp",
-     "marsh_hag/animations/walk/north-east/01.webp",
-     "marsh_hag/animations/walk/north-east/02.webp",
-     "marsh_hag/animations/walk/north-east/03.webp",
-     "marsh_hag/animations/walk/north-east/04.webp",
-     "marsh_hag/animations/walk/north-east/05.webp"
-    ],
-    "north": [
-     "marsh_hag/animations/walk/north/00.webp",
-     "marsh_hag/animations/walk/north/01.webp",
-     "marsh_hag/animations/walk/north/02.webp",
-     "marsh_hag/animations/walk/north/03.webp",
-     "marsh_hag/animations/walk/north/04.webp",
-     "marsh_hag/animations/walk/north/05.webp"
-    ],
-    "south-west": [
-     "marsh_hag/animations/walk/south-west/00.webp",
-     "marsh_hag/animations/walk/south-west/01.webp",
-     "marsh_hag/animations/walk/south-west/02.webp",
-     "marsh_hag/animations/walk/south-west/03.webp",
-     "marsh_hag/animations/walk/south-west/04.webp",
-     "marsh_hag/animations/walk/south-west/05.webp"
-    ],
-    "west": [
-     "marsh_hag/animations/walk/west/00.webp",
-     "marsh_hag/animations/walk/west/01.webp",
-     "marsh_hag/animations/walk/west/02.webp",
-     "marsh_hag/animations/walk/west/03.webp",
-     "marsh_hag/animations/walk/west/04.webp",
-     "marsh_hag/animations/walk/west/05.webp"
-    ],
-    "north-west": [
-     "marsh_hag/animations/walk/north-west/00.webp",
-     "marsh_hag/animations/walk/north-west/01.webp",
-     "marsh_hag/animations/walk/north-west/02.webp",
-     "marsh_hag/animations/walk/north-west/03.webp",
-     "marsh_hag/animations/walk/north-west/04.webp",
-     "marsh_hag/animations/walk/north-west/05.webp"
-    ]
-   },
-   "strips": {
-    "south": "marsh_hag/animations/walk__south.webp",
-    "south-east": "marsh_hag/animations/walk__south-east.webp",
-    "east": "marsh_hag/animations/walk__east.webp",
-    "north-east": "marsh_hag/animations/walk__north-east.webp",
-    "north": "marsh_hag/animations/walk__north.webp",
-    "south-west": "marsh_hag/animations/walk__south-west.webp",
-    "west": "marsh_hag/animations/walk__west.webp",
-    "north-west": "marsh_hag/animations/walk__north-west.webp"
-   }
-  },
-  "attack": {
-   "directions": {
-    "south": {
-     "status": "fail",
-     "step_mean": 0.2635,
-     "step_max": 0.3387,
-     "drift": 7.38,
-     "loop": 0.0005,
-     "loop_ratio": 0.0,
-     "travel": 4.63,
-     "pin": 1.0,
-     "pad": 0,
-     "flash": 0.081,
-     "peak": 0.3522,
-     "reach": 0.14,
-     "canvas": [
-      112,
-      112
-     ],
-     "reasons": [
-      "no strike, just a lean: nothing reaches past 0.14 of the body"
-     ],
-     "sub": "efc7ddf8-f5a1-4ce2-9293-0552b7cda7dc",
-     "group": "8304655f-8ac2-4e5f-aca1-7c1f0deedd0d",
-     "takes": 1,
-     "version": 2,
-     "mirrored": false,
-     "generated_at": "2026-09-09T22:33:07+00:00",
-     "action": "Staff Curse - Raises the staff and jabs it forward once, green magic flashing at the tip, then returns to idle stance"
-    },
-    "south-east": {
-     "status": "fail",
-     "step_mean": 0.3241,
-     "step_max": 0.4726,
-     "drift": 9.09,
-     "loop": 0.0,
-     "loop_ratio": 0.0,
-     "travel": 2.32,
-     "pin": 1.0,
-     "pad": 0,
-     "flash": 0.046,
-     "peak": 0.4553,
-     "reach": 0.213,
-     "canvas": [
-      112,
-      112
-     ],
-     "reasons": [
-      "no strike, just a lean: nothing reaches past 0.21 of the body"
-     ],
-     "sub": "972b50a5-fe54-4d9e-a9dc-723225600f0b",
-     "group": "abc6bf28-bafe-423b-b7ea-25a1ba389f6f",
-     "takes": 1,
-     "version": 2,
-     "mirrored": false,
-     "generated_at": "2026-09-09T22:33:07+00:00",
-     "action": "Staff Curse - Raises the staff and jabs it forward once, green magic flashing at the tip, then returns to idle stance"
-    },
-    "east": {
-     "status": "pass",
-     "step_mean": 0.1883,
-     "step_max": 0.2628,
-     "drift": 2.85,
-     "loop": 0.0,
-     "loop_ratio": 0.0,
-     "travel": 2.85,
-     "pin": 1.0,
-     "pad": 0,
-     "flash": 0.001,
-     "peak": 0.2519,
-     "reach": 0.52,
-     "canvas": [
-      112,
-      112
-     ],
-     "reasons": [],
-     "sub": "f3fe60c4-a29e-4973-a3e5-2c7c75f44799",
-     "group": "4f957e06-3355-42f2-8dbd-d23f85b0fcac",
-     "takes": 1,
-     "version": 2,
-     "mirrored": false,
-     "generated_at": "2026-09-09T22:33:07+00:00",
-     "action": "Staff Curse - Raises the staff and jabs it forward once, green magic flashing at the tip, then returns to idle stance"
-    },
-    "north-east": {
-     "status": "warn",
-     "step_mean": 0.1241,
-     "step_max": 0.1878,
-     "drift": 1.56,
-     "loop": 0.0002,
-     "loop_ratio": 0.0,
-     "travel": 2.04,
-     "pin": 1.0,
-     "pad": 0,
-     "flash": 0.057,
-     "peak": 0.2143,
-     "reach": 0.295,
-     "canvas": [
-      112,
-      112
-     ],
-     "reasons": [
-      "shallow strike: reach 0.30 — eyeball it"
-     ],
-     "sub": "2d910890-b342-4acd-80f0-0c69bb451cf6",
-     "group": "affa34a3-3f24-47c5-a510-a60471d33439",
-     "takes": 1,
-     "version": 2,
-     "mirrored": false,
-     "generated_at": "2026-09-09T22:33:09+00:00",
-     "action": "Staff Curse - Raises the staff and jabs it forward once, green magic flashing at the tip, then returns to idle stance"
-    },
-    "north": {
-     "status": "fail",
-     "step_mean": 0.1446,
-     "step_max": 0.1788,
-     "drift": 1.26,
-     "loop": 0.0025,
-     "loop_ratio": 0.02,
-     "travel": 1.89,
-     "pin": 1.0,
-     "pad": 0,
-     "flash": 0.001,
-     "peak": 0.2333,
-     "reach": 0.074,
-     "canvas": [
-      112,
-      112
-     ],
-     "reasons": [
-      "no strike, just a lean: nothing reaches past 0.07 of the body"
-     ],
-     "sub": "23e8b6a8-7ec8-486d-b1f8-017b29a86775",
-     "group": "55ad2a96-4fa1-4d10-8677-3c10c960d6d1",
-     "takes": 1,
-     "version": 2,
-     "mirrored": false,
-     "generated_at": "2026-09-09T22:33:10+00:00",
-     "action": "Staff Curse - Raises the staff and jabs it forward once, green magic flashing at the tip, then returns to idle stance"
-    },
-    "south-west": {
-     "status": "pass",
-     "step_mean": 0.3241,
-     "step_max": 0.4726,
-     "drift": 9.09,
-     "loop": 0.0,
-     "loop_ratio": 0.0,
-     "travel": 2.32,
-     "pin": 1.0,
-     "pad": 0,
-     "flash": 0.046,
-     "peak": 0.4553,
-     "canvas": [
-      112,
-      112
-     ],
-     "reasons": [],
-     "sub": "972b50a5-fe54-4d9e-a9dc-723225600f0b",
-     "group": "abc6bf28-bafe-423b-b7ea-25a1ba389f6f",
-     "takes": 1,
-     "version": 2,
-     "mirrored": true,
-     "generated_at": "2026-09-09T22:33:07+00:00",
-     "action": "Staff Curse - Raises the staff and jabs it forward once, green magic flashing at the tip, then returns to idle stance",
-     "source": "south-east"
-    },
-    "west": {
-     "status": "pass",
-     "step_mean": 0.1883,
-     "step_max": 0.2628,
-     "drift": 2.85,
-     "loop": 0.0,
-     "loop_ratio": 0.0,
-     "travel": 2.85,
-     "pin": 1.0,
-     "pad": 0,
-     "flash": 0.001,
-     "peak": 0.2519,
-     "reach": 0.52,
-     "canvas": [
-      112,
-      112
-     ],
-     "reasons": [],
-     "sub": "f3fe60c4-a29e-4973-a3e5-2c7c75f44799",
-     "group": "4f957e06-3355-42f2-8dbd-d23f85b0fcac",
-     "takes": 1,
-     "version": 2,
-     "mirrored": true,
-     "generated_at": "2026-09-09T22:33:07+00:00",
-     "action": "Staff Curse - Raises the staff and jabs it forward once, green magic flashing at the tip, then returns to idle stance",
-     "source": "east"
-    },
-    "north-west": {
-     "status": "warn",
-     "step_mean": 0.1241,
-     "step_max": 0.1878,
-     "drift": 1.56,
-     "loop": 0.0002,
-     "loop_ratio": 0.0,
-     "travel": 2.04,
-     "pin": 1.0,
-     "pad": 0,
-     "flash": 0.057,
-     "peak": 0.2143,
-     "reach": 0.295,
-     "canvas": [
-      112,
-      112
-     ],
-     "reasons": [
-      "shallow strike: reach 0.30 — eyeball it"
-     ],
-     "sub": "2d910890-b342-4acd-80f0-0c69bb451cf6",
-     "group": "affa34a3-3f24-47c5-a510-a60471d33439",
-     "takes": 1,
-     "version": 2,
-     "mirrored": true,
-     "generated_at": "2026-09-09T22:33:09+00:00",
-     "action": "Staff Curse - Raises the staff and jabs it forward once, green magic flashing at the tip, then returns to idle stance",
-     "source": "north-east"
-    }
-   },
-   "action": "Staff Curse - Raises the staff and jabs it forward once, green magic flashing at the tip, then returns to idle stance",
-   "frame_paths": {
-    "south": [
-     "marsh_hag/animations/attack/south/00.webp",
-     "marsh_hag/animations/attack/south/01.webp",
-     "marsh_hag/animations/attack/south/02.webp",
-     "marsh_hag/animations/attack/south/03.webp",
-     "marsh_hag/animations/attack/south/04.webp"
-    ],
-    "south-east": [
-     "marsh_hag/animations/attack/south-east/00.webp",
-     "marsh_hag/animations/attack/south-east/01.webp",
-     "marsh_hag/animations/attack/south-east/02.webp",
-     "marsh_hag/animations/attack/south-east/03.webp",
-     "marsh_hag/animations/attack/south-east/04.webp"
-    ],
-    "east": [
-     "marsh_hag/animations/attack/east/00.webp",
-     "marsh_hag/animations/attack/east/01.webp",
-     "marsh_hag/animations/attack/east/02.webp",
-     "marsh_hag/animations/attack/east/03.webp",
-     "marsh_hag/animations/attack/east/04.webp"
-    ],
-    "north-east": [
-     "marsh_hag/animations/attack/north-east/00.webp",
-     "marsh_hag/animations/attack/north-east/01.webp",
-     "marsh_hag/animations/attack/north-east/02.webp",
-     "marsh_hag/animations/attack/north-east/03.webp",
-     "marsh_hag/animations/attack/north-east/04.webp"
-    ],
-    "north": [
-     "marsh_hag/animations/attack/north/00.webp",
-     "marsh_hag/animations/attack/north/01.webp",
-     "marsh_hag/animations/attack/north/02.webp",
-     "marsh_hag/animations/attack/north/03.webp",
-     "marsh_hag/animations/attack/north/04.webp"
-    ],
-    "south-west": [
-     "marsh_hag/animations/attack/south-west/00.webp",
-     "marsh_hag/animations/attack/south-west/01.webp",
-     "marsh_hag/animations/attack/south-west/02.webp",
-     "marsh_hag/animations/attack/south-west/03.webp",
-     "marsh_hag/animations/attack/south-west/04.webp"
-    ],
-    "west": [
-     "marsh_hag/animations/attack/west/00.webp",
-     "marsh_hag/animations/attack/west/01.webp",
-     "marsh_hag/animations/attack/west/02.webp",
-     "marsh_hag/animations/attack/west/03.webp",
-     "marsh_hag/animations/attack/west/04.webp"
-    ],
-    "north-west": [
-     "marsh_hag/animations/attack/north-west/00.webp",
-     "marsh_hag/animations/attack/north-west/01.webp",
-     "marsh_hag/animations/attack/north-west/02.webp",
-     "marsh_hag/animations/attack/north-west/03.webp",
-     "marsh_hag/animations/attack/north-west/04.webp"
-    ]
-   },
-   "strips": {
-    "south": "marsh_hag/animations/attack__south.webp",
-    "south-east": "marsh_hag/animations/attack__south-east.webp",
-    "east": "marsh_hag/animations/attack__east.webp",
-    "north-east": "marsh_hag/animations/attack__north-east.webp",
-    "north": "marsh_hag/animations/attack__north.webp",
-    "south-west": "marsh_hag/animations/attack__south-west.webp",
-    "west": "marsh_hag/animations/attack__west.webp",
-    "north-west": "marsh_hag/animations/attack__north-west.webp"
-   }
-  },
-  "attack_try": {
-   "directions": {
-    "south": {
-     "status": "warn",
-     "step_mean": 0.2895,
-     "step_max": 0.4415,
-     "drift": 13.22,
-     "loop": 0.4821,
-     "loop_ratio": 1.67,
-     "travel": 6.05,
-     "pin": 1.0,
-     "pad": 2,
-     "flash": 0.256,
-     "peak": 0.4821,
-     "reach": 0.267,
-     "canvas": [
-      116,
-      116
-     ],
-     "reasons": [
-      "drifts 13.2 px — eyeball it",
-      "shallow strike: reach 0.27 — eyeball it",
-      "some bright effect pixels (0.26) — eyeball it",
-      "canvas grown by 2 px a side to hold the motion"
-     ],
-     "sub": "439401e8-d319-4ad4-af80-4742978fb09e",
-     "group": "442725e4-29a2-4875-a586-800f520e3b79",
-     "takes": 1,
-     "version": 2,
-     "mirrored": false,
-     "generated_at": "2026-09-10T20:11:34+00:00",
-     "action": "Staff Curse - Jabs the staff out and green swamp magic bursts from the tip, a big aggressive swing",
-     "tries": 1,
-     "rolls": 2,
-     "intensity": 1,
-     "rung": 0
-    },
-    "south-east": {
-     "status": "pass",
-     "step_mean": 0.246,
-     "step_max": 0.4758,
-     "drift": 6.64,
-     "loop": 0.5021,
-     "loop_ratio": 2.04,
-     "travel": 4.45,
-     "pin": 1.0,
-     "pad": 3,
-     "flash": 0.189,
-     "peak": 0.505,
-     "reach": 0.36,
-     "canvas": [
-      118,
-      118
-     ],
-     "reasons": [
-      "canvas grown by 3 px a side to hold the motion"
-     ],
-     "sub": "f9693872-d176-480f-9b7a-bd98cf0fb816",
-     "group": "27ee1bfd-7b0a-4f5c-9642-2b20f4285eae",
-     "takes": 1,
-     "version": 2,
-     "mirrored": false,
-     "generated_at": "2026-09-10T20:11:35+00:00",
-     "action": "Staff Curse - Jabs the staff out and green swamp magic bursts from the tip, a big aggressive swing",
-     "tries": 1,
-     "rolls": 2,
-     "intensity": 1,
-     "rung": 0
-    },
-    "east": {
-     "status": "pass",
-     "step_mean": 0.1432,
-     "step_max": 0.2086,
-     "drift": 3.43,
-     "loop": 0.1906,
-     "loop_ratio": 1.33,
-     "travel": 2.68,
-     "pin": 1.0,
-     "pad": 0,
-     "flash": 0.095,
-     "peak": 0.1955,
-     "reach": 0.32,
-     "canvas": [
-      112,
-      112
-     ],
-     "reasons": [],
-     "sub": "7861cbc5-20a7-4d2c-9674-8e8b62f0b57f",
-     "group": "4fbc7357-8c7f-4196-b649-d2189b40cc6f",
-     "takes": 1,
-     "version": 1,
-     "mirrored": false,
-     "generated_at": "2026-09-10T19:43:44+00:00",
-     "action": "Staff Curse - Jabs the staff out and green swamp magic bursts from the tip",
-     "tries": 1,
-     "rolls": 1,
-     "intensity": 1,
-     "rung": 0
-    },
-    "north-east": {
-     "status": "pass",
-     "step_mean": 0.2249,
-     "step_max": 0.4041,
-     "drift": 5.26,
-     "loop": 0.3707,
-     "loop_ratio": 1.65,
-     "travel": 6.32,
-     "pin": 1.0,
-     "pad": 2,
-     "flash": 0.013,
-     "peak": 0.4612,
-     "reach": 0.443,
-     "canvas": [
-      116,
-      116
-     ],
-     "reasons": [
-      "canvas grown by 2 px a side to hold the motion"
-     ],
-     "sub": "1913f9cd-0606-41bf-9ace-d71fe733f79e",
-     "group": "e6381ec3-abb0-4c71-a890-7aa8e9418858",
-     "takes": 1,
-     "version": 1,
-     "mirrored": false,
-     "generated_at": "2026-09-10T19:43:45+00:00",
-     "action": "Staff Curse - Jabs the staff out and green swamp magic bursts from the tip",
-     "tries": 1,
-     "rolls": 1,
-     "intensity": 1,
-     "rung": 0
-    },
-    "north": {
-     "status": "warn",
-     "step_mean": 0.1159,
-     "step_max": 0.2022,
-     "drift": 4.9,
-     "loop": 0.114,
-     "loop_ratio": 0.98,
-     "travel": 5.21,
-     "pin": 1.0,
-     "pad": 1,
-     "flash": 0.072,
-     "peak": 0.2496,
-     "reach": 0.227,
-     "canvas": [
-      114,
-      114
-     ],
-     "reasons": [
-      "shallow strike: reach 0.23 — eyeball it",
-      "canvas grown by 1 px a side to hold the motion"
-     ],
-     "sub": "f61a296f-3ca9-4100-a06d-8ab9d4b01041",
-     "group": "7d7bd9f3-9b3e-4954-bcff-bdd8ce07c913",
-     "takes": 1,
-     "version": 1,
-     "mirrored": false,
-     "generated_at": "2026-09-10T19:43:45+00:00",
-     "action": "Staff Curse - Jabs the staff out and green swamp magic bursts from the tip",
-     "tries": 1,
-     "rolls": 1,
-     "intensity": 1,
-     "rung": 0
-    },
-    "west": {
-     "status": "pass",
-     "step_mean": 0.1432,
-     "step_max": 0.2086,
-     "drift": 3.43,
-     "loop": 0.1906,
-     "loop_ratio": 1.33,
-     "travel": 2.68,
-     "pin": 1.0,
-     "pad": 0,
-     "flash": 0.095,
-     "peak": 0.1955,
-     "reach": 0.32,
-     "canvas": [
-      112,
-      112
-     ],
-     "reasons": [],
-     "sub": "7861cbc5-20a7-4d2c-9674-8e8b62f0b57f",
-     "group": "4fbc7357-8c7f-4196-b649-d2189b40cc6f",
-     "takes": 1,
-     "version": 1,
-     "mirrored": true,
-     "generated_at": "2026-09-10T19:43:44+00:00",
-     "action": "Staff Curse - Jabs the staff out and green swamp magic bursts from the tip",
-     "tries": 1,
-     "rolls": 1,
-     "intensity": 1,
-     "source": "east"
-    },
-    "north-west": {
-     "status": "pass",
-     "step_mean": 0.2249,
-     "step_max": 0.4041,
-     "drift": 5.26,
-     "loop": 0.3707,
-     "loop_ratio": 1.65,
-     "travel": 6.32,
-     "pin": 1.0,
-     "pad": 2,
-     "flash": 0.013,
-     "peak": 0.4612,
-     "reach": 0.443,
-     "canvas": [
-      116,
-      116
-     ],
-     "reasons": [
-      "canvas grown by 2 px a side to hold the motion"
-     ],
-     "sub": "1913f9cd-0606-41bf-9ace-d71fe733f79e",
-     "group": "e6381ec3-abb0-4c71-a890-7aa8e9418858",
-     "takes": 1,
-     "version": 1,
-     "mirrored": true,
-     "generated_at": "2026-09-10T19:43:45+00:00",
-     "action": "Staff Curse - Jabs the staff out and green swamp magic bursts from the tip",
-     "tries": 1,
-     "rolls": 1,
-     "intensity": 1,
-     "source": "north-east"
-    },
-    "south-west": {
-     "status": "pass",
-     "step_mean": 0.246,
-     "step_max": 0.4758,
-     "drift": 6.64,
-     "loop": 0.5021,
-     "loop_ratio": 2.04,
-     "travel": 4.45,
-     "pin": 1.0,
-     "pad": 3,
-     "flash": 0.189,
-     "peak": 0.505,
-     "reach": 0.36,
-     "canvas": [
-      118,
-      118
-     ],
-     "reasons": [
-      "canvas grown by 3 px a side to hold the motion"
-     ],
-     "sub": "f9693872-d176-480f-9b7a-bd98cf0fb816",
-     "group": "27ee1bfd-7b0a-4f5c-9642-2b20f4285eae",
-     "takes": 1,
-     "version": 2,
-     "mirrored": true,
-     "generated_at": "2026-09-10T20:11:35+00:00",
-     "action": "Staff Curse - Jabs the staff out and green swamp magic bursts from the tip, a big aggressive swing",
-     "tries": 1,
-     "rolls": 2,
-     "intensity": 1,
-     "source": "south-east"
-    }
-   },
-   "action": "Staff Curse - Jabs the staff out and green swamp magic bursts from the tip, a big aggressive swing",
-   "frame_paths": {
-    "south": [
-     "marsh_hag/animations/attack_try/south/00.webp",
-     "marsh_hag/animations/attack_try/south/01.webp",
-     "marsh_hag/animations/attack_try/south/02.webp",
-     "marsh_hag/animations/attack_try/south/03.webp",
-     "marsh_hag/animations/attack_try/south/04.webp"
-    ],
-    "south-east": [
-     "marsh_hag/animations/attack_try/south-east/00.webp",
-     "marsh_hag/animations/attack_try/south-east/01.webp",
-     "marsh_hag/animations/attack_try/south-east/02.webp",
-     "marsh_hag/animations/attack_try/south-east/03.webp",
-     "marsh_hag/animations/attack_try/south-east/04.webp"
-    ],
-    "east": [
-     "marsh_hag/animations/attack_try/east/00.webp",
-     "marsh_hag/animations/attack_try/east/01.webp",
-     "marsh_hag/animations/attack_try/east/02.webp",
-     "marsh_hag/animations/attack_try/east/03.webp",
-     "marsh_hag/animations/attack_try/east/04.webp"
-    ],
-    "north-east": [
-     "marsh_hag/animations/attack_try/north-east/00.webp",
-     "marsh_hag/animations/attack_try/north-east/01.webp",
-     "marsh_hag/animations/attack_try/north-east/02.webp",
-     "marsh_hag/animations/attack_try/north-east/03.webp",
-     "marsh_hag/animations/attack_try/north-east/04.webp"
-    ],
-    "north": [
-     "marsh_hag/animations/attack_try/north/00.webp",
-     "marsh_hag/animations/attack_try/north/01.webp",
-     "marsh_hag/animations/attack_try/north/02.webp",
-     "marsh_hag/animations/attack_try/north/03.webp",
-     "marsh_hag/animations/attack_try/north/04.webp"
-    ],
-    "west": [
-     "marsh_hag/animations/attack_try/west/00.webp",
-     "marsh_hag/animations/attack_try/west/01.webp",
-     "marsh_hag/animations/attack_try/west/02.webp",
-     "marsh_hag/animations/attack_try/west/03.webp",
-     "marsh_hag/animations/attack_try/west/04.webp"
-    ],
-    "north-west": [
-     "marsh_hag/animations/attack_try/north-west/00.webp",
-     "marsh_hag/animations/attack_try/north-west/01.webp",
-     "marsh_hag/animations/attack_try/north-west/02.webp",
-     "marsh_hag/animations/attack_try/north-west/03.webp",
-     "marsh_hag/animations/attack_try/north-west/04.webp"
-    ],
-    "south-west": [
-     "marsh_hag/animations/attack_try/south-west/00.webp",
-     "marsh_hag/animations/attack_try/south-west/01.webp",
-     "marsh_hag/animations/attack_try/south-west/02.webp",
-     "marsh_hag/animations/attack_try/south-west/03.webp",
-     "marsh_hag/animations/attack_try/south-west/04.webp"
-    ]
-   },
-   "strips": {
-    "south": "marsh_hag/animations/attack_try__south.webp",
-    "south-east": "marsh_hag/animations/attack_try__south-east.webp",
-    "east": "marsh_hag/animations/attack_try__east.webp",
-    "north-east": "marsh_hag/animations/attack_try__north-east.webp",
-    "north": "marsh_hag/animations/attack_try__north.webp",
-    "west": "marsh_hag/animations/attack_try__west.webp",
-    "north-west": "marsh_hag/animations/attack_try__north-west.webp",
-    "south-west": "marsh_hag/animations/attack_try__south-west.webp"
-   },
-   "intensity": 1
-  }
- }
 }

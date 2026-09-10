@@ -938,7 +938,7 @@
           "rung": 0
         },
         "south-east": {
-          "status": "fail",
+          "status": "warn",
           "step_mean": 0.1751,
           "step_max": 0.3186,
           "drift": 6.92,
@@ -955,19 +955,19 @@
             136
           ],
           "reasons": [
-            "no strike, just a lean: nothing reaches past 0.22 of the body"
+            "shallow strike: reach 0.22 — eyeball it"
           ],
           "sub": "76477de4-2f8a-4067-bc82-56ec4875e752",
           "group": "33aff21f-518f-4042-9d1a-c6b677a6cc2c",
           "takes": 1,
           "version": 4,
           "mirrored": false,
+          "generated_at": "2026-09-10T21:29:59+00:00",
           "action": "Claw Swipe - Raises one front paw and performs one quick swipe forward, white swoosh lines following the claws",
-          "intensity": 1,
-          "rolls": 4,
-          "frames": 9,
           "tries": 4,
-          "generated_at": "2026-09-10T21:29:59+00:00"
+          "rolls": 4,
+          "intensity": 1,
+          "frames": 9
         },
         "east": {
           "status": "warn",
@@ -1027,12 +1027,12 @@
           "takes": 1,
           "version": 4,
           "mirrored": false,
+          "generated_at": "2026-09-10T21:30:00+00:00",
           "action": "Chain Lash - Whips the iron chain out forward in one heavy lash, a big aggressive swing",
-          "intensity": 1,
-          "rolls": 1,
-          "frames": 5,
           "tries": 1,
-          "generated_at": "2026-09-10T21:30:00+00:00"
+          "rolls": 1,
+          "intensity": 1,
+          "frames": 5
         },
         "north": {
           "status": "fail",
@@ -1060,12 +1060,12 @@
           "takes": 1,
           "version": 4,
           "mirrored": false,
+          "generated_at": "2026-09-10T21:30:01+00:00",
           "action": "Claw Swipe - Raises one front paw and performs one quick swipe forward, white swoosh lines following the claws",
-          "intensity": 1,
-          "rolls": 4,
-          "frames": 9,
           "tries": 4,
-          "generated_at": "2026-09-10T21:30:01+00:00"
+          "rolls": 4,
+          "intensity": 1,
+          "frames": 9
         },
         "west": {
           "status": "warn",
@@ -1097,6 +1097,7 @@
           "tries": 1,
           "rolls": 1,
           "intensity": 1,
+          "rung": 0,
           "source": "east"
         },
         "north-west": {
@@ -1131,6 +1132,39 @@
           "intensity": 1,
           "frames": 5,
           "source": "north-east"
+        },
+        "south-west": {
+          "status": "warn",
+          "step_mean": 0.1751,
+          "step_max": 0.3186,
+          "drift": 6.92,
+          "loop": 0.2802,
+          "loop_ratio": 1.6,
+          "travel": 8.58,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": 0.011,
+          "peak": 0.4917,
+          "reach": 0.216,
+          "canvas": [
+            136,
+            136
+          ],
+          "reasons": [
+            "shallow strike: reach 0.22 — eyeball it"
+          ],
+          "sub": "76477de4-2f8a-4067-bc82-56ec4875e752",
+          "group": "33aff21f-518f-4042-9d1a-c6b677a6cc2c",
+          "takes": 1,
+          "version": 4,
+          "mirrored": true,
+          "generated_at": "2026-09-10T21:29:59+00:00",
+          "action": "Claw Swipe - Raises one front paw and performs one quick swipe forward, white swoosh lines following the claws",
+          "tries": 4,
+          "rolls": 4,
+          "intensity": 1,
+          "frames": 9,
+          "source": "south-east"
         }
       },
       "action": "Chain Lash - Whips the iron chain out forward in one heavy lash, a big aggressive swing",
@@ -1191,6 +1225,17 @@
           "bridge_troll/animations/attack_try/north-west/02.webp",
           "bridge_troll/animations/attack_try/north-west/03.webp",
           "bridge_troll/animations/attack_try/north-west/04.webp"
+        ],
+        "south-west": [
+          "bridge_troll/animations/attack_try/south-west/00.webp",
+          "bridge_troll/animations/attack_try/south-west/01.webp",
+          "bridge_troll/animations/attack_try/south-west/02.webp",
+          "bridge_troll/animations/attack_try/south-west/03.webp",
+          "bridge_troll/animations/attack_try/south-west/04.webp",
+          "bridge_troll/animations/attack_try/south-west/05.webp",
+          "bridge_troll/animations/attack_try/south-west/06.webp",
+          "bridge_troll/animations/attack_try/south-west/07.webp",
+          "bridge_troll/animations/attack_try/south-west/08.webp"
         ]
       },
       "strips": {
@@ -1200,7 +1245,8 @@
         "north-east": "bridge_troll/animations/attack_try__north-east.webp",
         "north": "bridge_troll/animations/attack_try__north.webp",
         "west": "bridge_troll/animations/attack_try__west.webp",
-        "north-west": "bridge_troll/animations/attack_try__north-west.webp"
+        "north-west": "bridge_troll/animations/attack_try__north-west.webp",
+        "south-west": "bridge_troll/animations/attack_try__south-west.webp"
       },
       "intensity": 1
     }

@@ -928,12 +928,12 @@
           "takes": 1,
           "version": 4,
           "mirrored": false,
+          "generated_at": "2026-09-10T21:28:23+00:00",
           "action": "Claw Swipe - Raises one front paw and performs one quick swipe forward, white swoosh lines following the claws",
-          "intensity": 1,
-          "rolls": 4,
-          "frames": 9,
           "tries": 4,
-          "generated_at": "2026-09-10T21:28:23+00:00"
+          "rolls": 4,
+          "intensity": 1,
+          "frames": 9
         },
         "south-east": {
           "status": "warn",
@@ -1000,7 +1000,7 @@
           "rung": 0
         },
         "north-east": {
-          "status": "fail",
+          "status": "warn",
           "step_mean": 0.0971,
           "step_max": 0.1646,
           "drift": 3.32,
@@ -1017,22 +1017,22 @@
             240
           ],
           "reasons": [
-            "no strike, just a lean: nothing reaches past 0.17 of the body"
+            "shallow strike: reach 0.17 — eyeball it"
           ],
           "sub": "075f2268-fa56-4ab2-8e62-4c5447122f65",
           "group": "02b5d0ce-eb9f-4481-93ed-15fc415b093d",
           "takes": 1,
           "version": 4,
           "mirrored": false,
+          "generated_at": "2026-09-10T21:28:24+00:00",
           "action": "Claw Swipe - Raises one front paw and performs one quick swipe forward, white swoosh lines following the claws",
-          "intensity": 1,
-          "rolls": 4,
-          "frames": 9,
           "tries": 4,
-          "generated_at": "2026-09-10T21:28:24+00:00"
+          "rolls": 4,
+          "intensity": 1,
+          "frames": 9
         },
         "north": {
-          "status": "fail",
+          "status": "warn",
           "step_mean": 0.1159,
           "step_max": 0.1407,
           "drift": 6.62,
@@ -1049,19 +1049,19 @@
             240
           ],
           "reasons": [
-            "no strike, just a lean: nothing reaches past 0.21 of the body"
+            "shallow strike: reach 0.21 — eyeball it"
           ],
           "sub": "7d88f021-b44b-4a17-ae5e-1b41947f07cb",
           "group": "6549b1f2-90b9-4452-bcc1-66559bd799c1",
           "takes": 1,
           "version": 4,
           "mirrored": false,
+          "generated_at": "2026-09-10T21:28:25+00:00",
           "action": "Fire Breath - Rears its head back and breathes a long jet of fire forward, a big aggressive swing",
-          "intensity": 1,
-          "rolls": 1,
-          "frames": 5,
           "tries": 1,
-          "generated_at": "2026-09-10T21:28:25+00:00"
+          "rolls": 1,
+          "intensity": 1,
+          "frames": 5
         },
         "south-west": {
           "status": "warn",
@@ -1093,6 +1093,7 @@
           "tries": 1,
           "rolls": 1,
           "intensity": 1,
+          "rung": 0,
           "source": "south-east"
         },
         "west": {
@@ -1125,7 +1126,41 @@
           "tries": 1,
           "rolls": 1,
           "intensity": 1,
+          "rung": 0,
           "source": "east"
+        },
+        "north-west": {
+          "status": "warn",
+          "step_mean": 0.0971,
+          "step_max": 0.1646,
+          "drift": 3.32,
+          "loop": 0.1346,
+          "loop_ratio": 1.39,
+          "travel": 4.65,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": 0.009,
+          "peak": 0.2361,
+          "reach": 0.175,
+          "canvas": [
+            240,
+            240
+          ],
+          "reasons": [
+            "shallow strike: reach 0.17 — eyeball it"
+          ],
+          "sub": "075f2268-fa56-4ab2-8e62-4c5447122f65",
+          "group": "02b5d0ce-eb9f-4481-93ed-15fc415b093d",
+          "takes": 1,
+          "version": 4,
+          "mirrored": true,
+          "generated_at": "2026-09-10T21:28:24+00:00",
+          "action": "Claw Swipe - Raises one front paw and performs one quick swipe forward, white swoosh lines following the claws",
+          "tries": 4,
+          "rolls": 4,
+          "intensity": 1,
+          "frames": 9,
+          "source": "north-east"
         }
       },
       "action": "Fire Breath - Rears its head back and breathes a long jet of fire forward, a big aggressive swing",
@@ -1186,6 +1221,17 @@
           "ember_drake/animations/attack_try/west/02.webp",
           "ember_drake/animations/attack_try/west/03.webp",
           "ember_drake/animations/attack_try/west/04.webp"
+        ],
+        "north-west": [
+          "ember_drake/animations/attack_try/north-west/00.webp",
+          "ember_drake/animations/attack_try/north-west/01.webp",
+          "ember_drake/animations/attack_try/north-west/02.webp",
+          "ember_drake/animations/attack_try/north-west/03.webp",
+          "ember_drake/animations/attack_try/north-west/04.webp",
+          "ember_drake/animations/attack_try/north-west/05.webp",
+          "ember_drake/animations/attack_try/north-west/06.webp",
+          "ember_drake/animations/attack_try/north-west/07.webp",
+          "ember_drake/animations/attack_try/north-west/08.webp"
         ]
       },
       "strips": {
@@ -1195,7 +1241,8 @@
         "north-east": "ember_drake/animations/attack_try__north-east.webp",
         "north": "ember_drake/animations/attack_try__north.webp",
         "south-west": "ember_drake/animations/attack_try__south-west.webp",
-        "west": "ember_drake/animations/attack_try__west.webp"
+        "west": "ember_drake/animations/attack_try__west.webp",
+        "north-west": "ember_drake/animations/attack_try__north-west.webp"
       },
       "intensity": 1
     }

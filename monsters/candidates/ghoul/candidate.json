@@ -900,7 +900,7 @@
     "attack_try": {
       "directions": {
         "south": {
-          "status": "fail",
+          "status": "warn",
           "step_mean": 0.1527,
           "step_max": 0.2816,
           "drift": 1.98,
@@ -917,19 +917,19 @@
             104
           ],
           "reasons": [
-            "no strike, just a lean: nothing reaches past 0.17 of the body"
+            "shallow strike: reach 0.17 — eyeball it"
           ],
           "sub": "301aaa87-c5f4-468e-b4e5-b71835d2e250",
           "group": "7d44c3bc-cc85-49c7-85ac-b5bd48d57612",
           "takes": 1,
           "version": 4,
           "mirrored": false,
+          "generated_at": "2026-09-10T21:26:49+00:00",
           "action": "Double Claw - Rakes forward with both claws in two fast alternating swipes, a big aggressive swing",
-          "intensity": 1,
-          "rolls": 1,
-          "frames": 5,
           "tries": 1,
-          "generated_at": "2026-09-10T21:26:49+00:00"
+          "rolls": 1,
+          "intensity": 1,
+          "frames": 5
         },
         "south-east": {
           "status": "warn",
@@ -1048,12 +1048,12 @@
           "takes": 1,
           "version": 4,
           "mirrored": false,
+          "generated_at": "2026-09-10T21:26:50+00:00",
           "action": "Claw Swipe - Raises one front paw and performs one quick swipe forward, white swoosh lines following the claws",
-          "intensity": 1,
-          "rolls": 4,
-          "frames": 9,
           "tries": 4,
-          "generated_at": "2026-09-10T21:26:50+00:00"
+          "rolls": 4,
+          "intensity": 1,
+          "frames": 9
         },
         "west": {
           "status": "pass",
@@ -1083,6 +1083,7 @@
           "tries": 1,
           "rolls": 1,
           "intensity": 1,
+          "rung": 0,
           "source": "east"
         },
         "south-west": {
@@ -1115,6 +1116,7 @@
           "tries": 1,
           "rolls": 2,
           "intensity": 1,
+          "rung": 0,
           "source": "south-east"
         },
         "north-west": {
@@ -1145,6 +1147,7 @@
           "tries": 1,
           "rolls": 2,
           "intensity": 1,
+          "rung": 0,
           "source": "north-east"
         }
       },
