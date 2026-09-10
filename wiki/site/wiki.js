@@ -1605,11 +1605,23 @@ function facetMark(domain, path, state, dirs, entity) {
   return { cls: "", title: "not reviewed yet" };
 }
 
+/* THE ANIMATION HE IS REVIEWING SURVIVES THE PAGE (maintainer 2026-09-10:
+ * "after I click on a monster and click 'next next next' ... going to the next
+ * page should still show the attack animation if I was on the attack
+ * animation"). Reviewing is one state across many creatures — attack after
+ * attack after attack — and every page opening on idle made that four taps per
+ * creature. Remembered per KIND, because a scenery piece's states are not a
+ * creature's, and only honoured when the creature actually HAS that state. */
+const VIEWER_STATE_KEY = (kind) => `wiki-viewer-state-${kind}`;
+const lastViewerState = (kind) => { try { return localStorage.getItem(VIEWER_STATE_KEY(kind)); } catch { return null; } };
+const rememberViewerState = (kind, st) => { try { localStorage.setItem(VIEWER_STATE_KEY(kind), st); } catch { /* private mode */ } };
 function makePlayer(entity, kind, opts = {}) {
   const anims = entity.animations;
   const stateNames = Object.keys(anims);
+  const kept = lastViewerState(kind);
   let cur = {
-    state: stateNames.includes("idle") ? "idle" : stateNames[0],
+    state: kept && stateNames.includes(kept) ? kept
+      : stateNames.includes("idle") ? "idle" : stateNames[0],
     dir: "south", frame: 0, playing: true, speed: 1, zoom: 0 /* 0 = auto */,
     shadow: kind === "monster",
     editShadow: false,
@@ -2264,6 +2276,7 @@ function makePlayer(entity, kind, opts = {}) {
         class: [s === cur.state ? "on" : "", mark.cls].filter(Boolean).join(" "),
         onclick: () => {
           cur.state = s;
+          rememberViewerState(kind, s);
           // Direction availability differs per state (e.g. stone_golem's
           // angry ships 5/8 dirs) — refresh the pad and hop to an available
           // direction if the current one has no clip in this state.
@@ -4191,8 +4204,20 @@ const MONSTER_SORT_KEY = "wiki-monster-sort";
  * hit on tiles ("I use your code to filter on NOT reviewed. I then click on
  * that tile set, but can't navigate further"). */
 const MONSTER_SHADOW_KEY = "wiki-monster-shadow";
+/* ONE FILTER ROW, ONE SORT ROW (maintainer 2026-09-10: "If I press in the
+ * making you still say 'all 94'. With that filter it can't be 94."). "In the
+ * making" was a SORT chip in the row above, so pressing it left "all 94"
+ * selected here and the page claimed both at once. It is a filter — it answers
+ * "which creatures", the question every chip in THIS row answers — and the
+ * shadow chips are the others. A filter also follows him onto a creature page,
+ * which a sort could not: ‹ › then walks only what he filtered to. */
 const MONSTER_SHADOWS = {
   all: { label: "all", title: "Every creature", hit: () => true },
+  making: {
+    label: "in the making",
+    title: "Approved designs the monsters agent is still animating — their states arrive one at a time",
+    hit: (m) => !!m.pending,
+  },
   none: {
     label: "no shadow",
     title: "Creatures still drawing the art-derived default — these are the ones left to do",
@@ -4209,14 +4234,30 @@ const shadowFilter = () => {
   try { return MONSTER_SHADOWS[localStorage.getItem(MONSTER_SHADOW_KEY)] ? localStorage.getItem(MONSTER_SHADOW_KEY) : "all"; }
   catch { return "all"; }
 };
-/** The creatures the current filter keeps, in the page's own order — the list
- *  ‹ › walks on a creature page. */
+/** The sort the overview is showing, as a comparator — so the page and the
+ *  ‹ › pager cannot disagree about what "next" means. */
+function monsterSort(list) {
+  let sort = "name";
+  try { sort = localStorage.getItem(MONSTER_SORT_KEY) || "name"; } catch { /* private mode */ }
+  const stat = new Map(list.map((m) => [m.id, monsterStats(m.id)]));
+  const byName = (a, b) => a.name.localeCompare(b.name);
+  const lvl = (m) => Number(stat.get(m.id)?.level ?? 0);
+  const CMP = {
+    name: byName,
+    level: (a, b) => lvl(b) - lvl(a) || byName(a, b),
+    // Aggressive first, and hardest first within each half — "what can come
+    // for me, worst first" is the question this sort answers.
+    threat: (a, b) => (isAggressive(stat.get(b.id)) - isAggressive(stat.get(a.id))) || lvl(b) - lvl(a) || byName(a, b),
+  };
+  return [...list].sort(CMP[sort] ?? byName);
+}
+/** The creatures the current filter keeps, in the order the overview shows
+ *  them — the list ‹ › walks on a creature page. */
 function monsterNav() {
   const mode = shadowFilter();
   const all = state.data.domains.monsters;
-  if (mode === "all") return all;
-  const kept = all.filter((m) => MONSTER_SHADOWS[mode].hit(m));
-  return kept.length ? kept : all;   // never strand him on an empty pager
+  const kept = mode === "all" ? all : all.filter((m) => MONSTER_SHADOWS[mode].hit(m));
+  return monsterSort(kept.length ? kept : all);   // never strand him on an empty pager
 }
 /* ---- THE CREATURES OVERVIEW IS A SHOWCASE ----
  * Maintainer 2026-08-18, round 1: "some big monsters are displayed with 0.5x
@@ -4525,21 +4566,9 @@ function viewMonsters() {
   let sort = "name";
   try { sort = localStorage.getItem(MONSTER_SORT_KEY) || "name"; } catch { /* private mode */ }
   const stat = new Map(list.map((m) => [m.id, monsterStats(m.id)]));
-  const byName = (a, b) => a.name.localeCompare(b.name);
-  const lvl = (m) => Number(stat.get(m.id).level ?? 0);
-  const CMP = {
-    name: byName,
-    level: (a, b) => lvl(b) - lvl(a) || byName(a, b),
-    // Aggressive first, and hardest first within each half — "what can come
-    // for me, worst first" is the question this sort answers.
-    threat: (a, b) => (isAggressive(stat.get(b.id)) - isAggressive(stat.get(a.id))) || lvl(b) - lvl(a) || byName(a, b),
-    // The ones being animated right now, first: their states arrive one at a
-    // time and they are what there is new to review.
-    making: (a, b) => (!!b.pending - !!a.pending) || byName(a, b),
-  };
   const mode = shadowFilter();
   const shown = list.filter((m) => MONSTER_SHADOWS[mode].hit(m));
-  const sorted = [...shown].sort(CMP[sort] ?? byName);
+  const sorted = monsterSort(shown);
   const nAggro = list.filter((m) => isAggressive(stat.get(m.id))).length;
   const nPending = list.filter((m) => m.pending).length;
   const nNone = list.filter((m) => !shadowRaw(m)).length;
@@ -4553,13 +4582,15 @@ function viewMonsters() {
       ["name", "by name", "Alphabetical"],
       ["level", "by level", "Hardest first"],
       ["threat", "aggressive first", "The ones that attack on sight, hardest first"],
-      ...(list.some((m) => m.pending) ? [["making", "in the making first", "The approved designs the monsters agent is still animating"]] : []),
     ], sort, () => route()),
     // HIS SHADOW QUEUE. Counts on the control itself, so "what is left" is
     // answered before a single card is read.
     state.admin ? sortBar(MONSTER_SHADOW_KEY,
-      Object.entries(MONSTER_SHADOWS).map(([id, f]) => [id,
-        `${f.label} ${id === "all" ? list.length : list.filter((m) => f.hit(m)).length}`, f.title]),
+      Object.entries(MONSTER_SHADOWS)
+        // A chip nothing can fill is not an option — "in the making 0" the day
+        // the agent finishes them all would just be a dead button.
+        .filter(([id, f]) => id === "all" || list.some((m) => f.hit(m)))
+        .map(([id, f]) => [id, `${f.label} ${id === "all" ? list.length : list.filter((m) => f.hit(m)).length}`, f.title]),
       mode, () => route()) : null,
     state.admin && mode !== "all" ? h("p", { class: "muted" },
       shown.length

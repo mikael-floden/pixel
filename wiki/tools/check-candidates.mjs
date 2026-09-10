@@ -231,6 +231,43 @@ if (pend.length) {
   ok(rank.length > 1 && mine.every((i) => i >= 0) && mine.every((v, i, a) => !i || a[i - 1] < v),
     `and in the same order a shipped creature uses (${Object.keys(one.animations).join(", ")} against ${rank.join(", ")})`);
   ok(page.verdict >= 2 && page.note, "it can be judged like any other creature, and says the rest of its animations are coming");
+
+  // "IN THE MAKING" IS A FILTER, AND IT FOLLOWS HIM (maintainer 2026-09-10:
+  // "If I press in the making you still say 'all 94'. With that filter it
+  // can't be 94." / "after I click on a monster and click 'next next next' the
+  // filter should be active and going to the next page should still show the
+  // attack animation if I was on the attack animation").
+  await p.evaluate(() => { localStorage.removeItem("wiki-viewer-state-monster"); location.hash = "#/monsters"; });
+  await p.waitForTimeout(1800);
+  await p.evaluate(() => [...document.querySelectorAll('[data-bar="wiki-monster-shadow"] .sortbar-btn')].find((b) => /in the making/.test(b.textContent))?.click());
+  await p.waitForTimeout(1200);
+  const filt = await p.evaluate(() => ({
+    sel: [...document.querySelectorAll('[data-bar="wiki-monster-shadow"] .sortbar-btn')].filter((b) => b.classList.contains("sel")).map((b) => b.textContent.trim()),
+    cards: document.querySelectorAll(".showcase-card").length,
+    sorts: [...document.querySelectorAll('[data-bar="wiki-monster-sort"] .sortbar-btn')].map((b) => b.textContent.trim()),
+  }));
+  console.log("filter:", JSON.stringify(filt));
+  ok(filt.sel.length === 1 && /^in the making \d+$/.test(filt.sel[0]) && filt.cards === pend.length,
+    `"in the making" is the only selected chip and shows exactly those ${filt.cards} (${filt.sel.join("|")})`);
+  ok(!filt.sorts.some((t) => /making/.test(t)), `and it is not also a sort chip (${filt.sorts.join(" | ")})`);
+
+  await p.evaluate(() => document.querySelector(".showcase-card").click());
+  await p.waitForTimeout(2600);
+  await p.evaluate(() => [...document.querySelectorAll(".seg button")].find((b) => /^attack$/i.test(b.textContent.trim()))?.click());
+  await p.waitForTimeout(800);
+  const walk = [];
+  for (let i = 0; i < 3; i++) {
+    await p.evaluate(() => document.querySelectorAll(".nav-btn")[1]?.click());
+    await p.waitForTimeout(1700);
+    walk.push(await p.evaluate(() => ({
+      on: [...document.querySelectorAll(".seg button.on")].map((b) => b.textContent.trim())[0],
+      count: document.querySelector(".detail-count")?.textContent.trim(),
+      pending: [...document.querySelectorAll(".pill")].some((x) => /more coming/.test(x.textContent)),
+    })));
+  }
+  console.log("walk:", JSON.stringify(walk));
+  ok(walk.every((w) => /^Attack$/i.test(w.on ?? "")), `‹ › keeps the animation he is reviewing (${walk.map((w) => w.on).join(" → ")})`);
+  ok(walk.every((w) => w.pending && w.count.endsWith(`/ ${pend.length}`)), `and walks only the filtered ones (${walk.map((w) => w.count).join(" → ")})`);
 }
 
 console.log(`page errors: ${errors.length ? errors.join(" | ").slice(0, 300) : "none"}`);
