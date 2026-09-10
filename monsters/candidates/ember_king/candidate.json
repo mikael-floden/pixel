@@ -909,61 +909,65 @@
       "directions": {
         "south": {
           "status": "fail",
-          "step_mean": 0.1171,
-          "step_max": 0.2045,
-          "drift": 4.1,
-          "loop": 0.2284,
-          "loop_ratio": 1.95,
-          "travel": 4.1,
+          "step_mean": 0.2009,
+          "step_max": 0.4956,
+          "drift": 12.03,
+          "loop": 0.4701,
+          "loop_ratio": 2.34,
+          "travel": 0.52,
           "pin": 1.0,
-          "pad": 0,
-          "flash": 0.054,
-          "peak": 0.2566,
-          "reach": 0.054,
+          "pad": 8,
+          "flash": 0.323,
+          "peak": 0.4701,
+          "reach": 0.2,
           "canvas": [
-            176,
-            176
+            192,
+            192
           ],
           "reasons": [
-            "no strike, just a lean: nothing reaches past 0.05 of the body"
+            "no strike, just a lean: nothing reaches past 0.20 of the body",
+            "some bright effect pixels (0.32) — eyeball it",
+            "canvas grown by 8 px a side to hold the motion"
           ],
-          "sub": "7cf17a1d-1579-48a5-af2f-714733fa7197",
-          "group": "5c495da3-43af-4005-a42d-af84b823cbcd",
+          "sub": "a2155e78-3629-47b6-a5f0-77264891c496",
+          "group": "977f232b-c9f3-49bf-a599-abbf372aa46a",
           "takes": 1,
-          "version": 1,
+          "version": 2,
           "mirrored": false,
-          "action": "Claw Slam - Raises one massive clawed hand high and slams it straight down",
+          "action": "Claw Slam - Raises one massive clawed hand high and slams it straight down, a big aggressive attack with the whole body behind it, wide exaggerated motion",
+          "intensity": 2,
           "tries": 1,
-          "generated_at": "2026-09-10T19:44:16+00:00"
+          "generated_at": "2026-09-10T20:13:32+00:00"
         },
         "south-east": {
-          "status": "fail",
-          "step_mean": 0.1374,
-          "step_max": 0.192,
-          "drift": 2.39,
-          "loop": 0.2273,
-          "loop_ratio": 1.65,
-          "travel": 1.87,
+          "status": "pass",
+          "step_mean": 0.2524,
+          "step_max": 0.5956,
+          "drift": 6.52,
+          "loop": 0.5765,
+          "loop_ratio": 2.28,
+          "travel": 7.53,
           "pin": 1.0,
-          "pad": 0,
-          "flash": 0.109,
-          "peak": 0.2653,
-          "reach": 0.177,
+          "pad": 6,
+          "flash": 0.169,
+          "peak": 0.6285,
+          "reach": 0.327,
           "canvas": [
-            176,
-            176
+            188,
+            188
           ],
           "reasons": [
-            "no strike, just a lean: nothing reaches past 0.18 of the body"
+            "canvas grown by 6 px a side to hold the motion"
           ],
-          "sub": "6d4c2f15-3b0f-4b0e-aef8-9227f09e0d7d",
-          "group": "5e0cf761-7801-448b-82ff-17994140bb3f",
+          "sub": "fe236cfa-eac3-4a75-860a-81eb26b9ea11",
+          "group": "6b3d73f1-e97f-4d1e-a73f-62ba131b069a",
           "takes": 1,
-          "version": 1,
+          "version": 2,
           "mirrored": false,
-          "action": "Claw Slam - Raises one massive clawed hand high and slams it straight down",
+          "action": "Claw Slam - Raises one massive clawed hand high and slams it straight down, a big aggressive attack with the whole body behind it, wide exaggerated motion",
+          "intensity": 2,
           "tries": 1,
-          "generated_at": "2026-09-10T19:44:17+00:00"
+          "generated_at": "2026-09-10T20:13:33+00:00"
         },
         "east": {
           "status": "pass",
@@ -994,62 +998,64 @@
         },
         "north-east": {
           "status": "fail",
-          "step_mean": 0.1133,
-          "step_max": 0.1798,
-          "drift": 2.6,
-          "loop": 0.2929,
-          "loop_ratio": 2.59,
-          "travel": 2.14,
+          "step_mean": 0.09,
+          "step_max": 0.1556,
+          "drift": 5.04,
+          "loop": 0.185,
+          "loop_ratio": 2.05,
+          "travel": 0.78,
           "pin": 1.0,
           "pad": 0,
-          "flash": -0.001,
-          "peak": 0.2929,
-          "reach": 0.1,
+          "flash": 0.022,
+          "peak": 0.185,
+          "reach": 0.15,
           "canvas": [
             176,
             176
           ],
           "reasons": [
-            "no strike, just a lean: nothing reaches past 0.10 of the body"
+            "no strike, just a lean: nothing reaches past 0.15 of the body"
           ],
-          "sub": "87f5ea57-3b40-4e58-9c38-4ce98ac6813f",
-          "group": "b4eabe18-24f3-4d80-b042-aace60159906",
+          "sub": "a501c152-f889-4d88-9426-ba5bd990d3c4",
+          "group": "ff1a4ebc-79aa-437c-a66b-a0007d110112",
           "takes": 1,
-          "version": 1,
+          "version": 2,
           "mirrored": false,
-          "action": "Claw Slam - Raises one massive clawed hand high and slams it straight down",
+          "action": "Claw Slam - Raises one massive clawed hand high and slams it straight down, a big aggressive attack with the whole body behind it, wide exaggerated motion",
+          "intensity": 2,
           "tries": 1,
-          "generated_at": "2026-09-10T19:44:18+00:00"
+          "generated_at": "2026-09-10T20:13:33+00:00"
         },
         "north": {
           "status": "fail",
-          "step_mean": 0.1258,
-          "step_max": 0.1462,
-          "drift": 2.89,
-          "loop": 0.2091,
-          "loop_ratio": 1.66,
-          "travel": 0.6,
+          "step_mean": 0.242,
+          "step_max": 0.4393,
+          "drift": 11.28,
+          "loop": 0.3217,
+          "loop_ratio": 1.33,
+          "travel": 3.94,
           "pin": 1.0,
-          "pad": 6,
-          "flash": 0.056,
-          "peak": 0.2091,
-          "reach": 0.056,
+          "pad": 1,
+          "flash": 0.151,
+          "peak": 0.3282,
+          "reach": 0.137,
           "canvas": [
-            188,
-            188
+            178,
+            178
           ],
           "reasons": [
-            "no strike, just a lean: nothing reaches past 0.06 of the body",
-            "canvas grown by 6 px a side to hold the motion"
+            "no strike, just a lean: nothing reaches past 0.14 of the body",
+            "canvas grown by 1 px a side to hold the motion"
           ],
-          "sub": "fceb9189-7422-4a61-b67f-0a1cdccce48a",
-          "group": "7a882036-4963-48ba-a03d-6f6e2723a540",
+          "sub": "69e22f7f-a3ee-40a7-910f-a890e76f7ddb",
+          "group": "df7614dd-aa57-4c80-857a-2757207b69c6",
           "takes": 1,
-          "version": 1,
+          "version": 2,
           "mirrored": false,
-          "action": "Claw Slam - Raises one massive clawed hand high and slams it straight down",
+          "action": "Claw Slam - Raises one massive clawed hand high and slams it straight down, a big aggressive attack with the whole body behind it, wide exaggerated motion",
+          "intensity": 2,
           "tries": 1,
-          "generated_at": "2026-09-10T19:44:18+00:00"
+          "generated_at": "2026-09-10T20:13:34+00:00"
         },
         "west": {
           "status": "pass",
@@ -1078,6 +1084,37 @@
           "tries": 1,
           "generated_at": "2026-09-10T19:44:17+00:00",
           "source": "east"
+        },
+        "south-west": {
+          "status": "pass",
+          "step_mean": 0.2524,
+          "step_max": 0.5956,
+          "drift": 6.52,
+          "loop": 0.5765,
+          "loop_ratio": 2.28,
+          "travel": 7.53,
+          "pin": 1.0,
+          "pad": 6,
+          "flash": 0.169,
+          "peak": 0.6285,
+          "reach": 0.327,
+          "canvas": [
+            188,
+            188
+          ],
+          "reasons": [
+            "canvas grown by 6 px a side to hold the motion"
+          ],
+          "sub": "fe236cfa-eac3-4a75-860a-81eb26b9ea11",
+          "group": "6b3d73f1-e97f-4d1e-a73f-62ba131b069a",
+          "takes": 1,
+          "version": 2,
+          "mirrored": true,
+          "action": "Claw Slam - Raises one massive clawed hand high and slams it straight down, a big aggressive attack with the whole body behind it, wide exaggerated motion",
+          "intensity": 2,
+          "tries": 1,
+          "generated_at": "2026-09-10T20:13:33+00:00",
+          "source": "south-east"
         }
       },
       "action": "Claw Slam - Raises one massive clawed hand high and slams it straight down, a big aggressive attack with the whole body behind it, wide exaggerated motion",
@@ -1123,6 +1160,13 @@
           "ember_king/animations/attack_try/west/02.webp",
           "ember_king/animations/attack_try/west/03.webp",
           "ember_king/animations/attack_try/west/04.webp"
+        ],
+        "south-west": [
+          "ember_king/animations/attack_try/south-west/00.webp",
+          "ember_king/animations/attack_try/south-west/01.webp",
+          "ember_king/animations/attack_try/south-west/02.webp",
+          "ember_king/animations/attack_try/south-west/03.webp",
+          "ember_king/animations/attack_try/south-west/04.webp"
         ]
       },
       "strips": {
@@ -1131,7 +1175,8 @@
         "east": "ember_king/animations/attack_try__east.webp",
         "north-east": "ember_king/animations/attack_try__north-east.webp",
         "north": "ember_king/animations/attack_try__north.webp",
-        "west": "ember_king/animations/attack_try__west.webp"
+        "west": "ember_king/animations/attack_try__west.webp",
+        "south-west": "ember_king/animations/attack_try__south-west.webp"
       },
       "intensity": 2
     }

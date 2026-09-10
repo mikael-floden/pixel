@@ -897,104 +897,47 @@
       "directions": {
         "south": {
           "status": "fail",
-          "step_mean": 0.1453,
-          "step_max": 0.2237,
-          "drift": 1.76,
-          "loop": 0.2109,
-          "loop_ratio": 1.45,
-          "travel": 0.25,
+          "step_mean": 0.2052,
+          "step_max": 0.431,
+          "drift": 4.38,
+          "loop": 0.4757,
+          "loop_ratio": 2.32,
+          "travel": 0.44,
           "pin": 1.0,
           "pad": 0,
           "flash": -0.003,
-          "peak": 0.2664,
-          "reach": 0.109,
+          "peak": 0.4764,
+          "reach": 0.141,
           "canvas": [
             112,
             112
           ],
           "reasons": [
-            "no strike, just a lean: nothing reaches past 0.11 of the body"
+            "no strike, just a lean: nothing reaches past 0.14 of the body"
           ],
-          "sub": "6c3309f6-de9b-4be2-9d19-b052569e934a",
-          "group": "251962b0-0299-42b6-938f-80f250441bcc",
+          "sub": "a0480a81-8683-4646-aba8-6d4f7def96a3",
+          "group": "252107fe-189b-440f-904a-eee3889c5abf",
           "takes": 1,
-          "version": 1,
+          "version": 2,
           "mirrored": false,
-          "action": "Claw Snap - Lunges forward and snaps its big claw shut hard",
+          "action": "Claw Snap - Lunges forward and snaps its big claw shut hard, a big aggressive attack with the whole body behind it, wide exaggerated motion",
+          "intensity": 2,
           "tries": 1,
-          "generated_at": "2026-09-10T19:42:05+00:00"
+          "generated_at": "2026-09-10T20:11:45+00:00"
         },
         "south-east": {
           "status": "fail",
-          "step_mean": 0.1416,
-          "step_max": 0.1785,
-          "drift": 1.87,
-          "loop": 0.1524,
-          "loop_ratio": 1.08,
-          "travel": 1.87,
-          "pin": 1.0,
-          "pad": 0,
-          "flash": 0.001,
-          "peak": 0.2494,
-          "reach": 0.053,
-          "canvas": [
-            112,
-            112
-          ],
-          "reasons": [
-            "no strike, just a lean: nothing reaches past 0.05 of the body"
-          ],
-          "sub": "9731e818-bce1-4b4f-b61a-c7d8208dafb9",
-          "group": "36bdecef-7763-4d0e-be71-68c808b8168f",
-          "takes": 1,
-          "version": 1,
-          "mirrored": false,
-          "action": "Claw Snap - Lunges forward and snaps its big claw shut hard",
-          "tries": 1,
-          "generated_at": "2026-09-10T19:42:06+00:00"
-        },
-        "east": {
-          "status": "fail",
-          "step_mean": 0.1637,
-          "step_max": 0.1919,
-          "drift": 2.2,
-          "loop": 0.3577,
-          "loop_ratio": 2.18,
-          "travel": 1.06,
-          "pin": 1.0,
-          "pad": 0,
-          "flash": 0.004,
-          "peak": 0.4158,
-          "reach": 0.079,
-          "canvas": [
-            112,
-            112
-          ],
-          "reasons": [
-            "no strike, just a lean: nothing reaches past 0.08 of the body"
-          ],
-          "sub": "1002ae7d-aee7-495a-934b-6e6e9c140ed2",
-          "group": "7e7ee3ae-1c96-49aa-b877-ea4798d1a801",
-          "takes": 1,
-          "version": 1,
-          "mirrored": false,
-          "action": "Claw Snap - Lunges forward and snaps its big claw shut hard",
-          "tries": 1,
-          "generated_at": "2026-09-10T19:42:06+00:00"
-        },
-        "north": {
-          "status": "fail",
-          "step_mean": 0.1327,
-          "step_max": 0.166,
-          "drift": 2.77,
-          "loop": 0.2306,
-          "loop_ratio": 1.74,
-          "travel": 0.15,
+          "step_mean": 0.1903,
+          "step_max": 0.21,
+          "drift": 1.9,
+          "loop": 0.1759,
+          "loop_ratio": 0.92,
+          "travel": 1.17,
           "pin": 1.0,
           "pad": 0,
           "flash": 0.0,
-          "peak": 0.2511,
-          "reach": 0.07,
+          "peak": 0.3475,
+          "reach": 0.074,
           "canvas": [
             112,
             112
@@ -1002,14 +945,105 @@
           "reasons": [
             "no strike, just a lean: nothing reaches past 0.07 of the body"
           ],
-          "sub": "f60e7480-902f-4922-a684-021d25feb121",
-          "group": "118cb3fe-6eb2-4d30-9823-05a60c83c0b6",
+          "sub": "31197bdf-794d-4289-8266-bb8ec15d5fab",
+          "group": "c6d39ad6-8e17-455b-a760-82cdb3179c32",
           "takes": 1,
-          "version": 1,
+          "version": 2,
           "mirrored": false,
-          "action": "Claw Snap - Lunges forward and snaps its big claw shut hard",
+          "action": "Claw Snap - Lunges forward and snaps its big claw shut hard, a big aggressive attack with the whole body behind it, wide exaggerated motion",
+          "intensity": 2,
           "tries": 1,
-          "generated_at": "2026-09-10T19:42:07+00:00"
+          "generated_at": "2026-09-10T20:11:46+00:00"
+        },
+        "east": {
+          "status": "fail",
+          "step_mean": 0.2411,
+          "step_max": 0.3306,
+          "drift": 3.61,
+          "loop": 0.5129,
+          "loop_ratio": 2.13,
+          "travel": 2.28,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": 0.001,
+          "peak": 0.5129,
+          "reach": 0.09,
+          "canvas": [
+            112,
+            112
+          ],
+          "reasons": [
+            "no strike, just a lean: nothing reaches past 0.09 of the body"
+          ],
+          "sub": "2080a748-b73d-4322-b474-b9d4bfb9fbeb",
+          "group": "f41c4bf4-392b-464a-a716-511bee5b0d58",
+          "takes": 1,
+          "version": 2,
+          "mirrored": false,
+          "action": "Claw Snap - Lunges forward and snaps its big claw shut hard, a big aggressive attack with the whole body behind it, wide exaggerated motion",
+          "intensity": 2,
+          "tries": 1,
+          "generated_at": "2026-09-10T20:11:47+00:00"
+        },
+        "north": {
+          "status": "fail",
+          "step_mean": 0.1436,
+          "step_max": 0.1635,
+          "drift": 3.01,
+          "loop": 0.2251,
+          "loop_ratio": 1.57,
+          "travel": 0.16,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": 0.017,
+          "peak": 0.2559,
+          "reach": 0.081,
+          "canvas": [
+            112,
+            112
+          ],
+          "reasons": [
+            "no strike, just a lean: nothing reaches past 0.08 of the body"
+          ],
+          "sub": "29f376b8-b116-40d2-8590-17f847cf3853",
+          "group": "085d0e1b-1aeb-4202-b78b-c3d2e14fa21a",
+          "takes": 1,
+          "version": 2,
+          "mirrored": false,
+          "action": "Claw Snap - Lunges forward and snaps its big claw shut hard, a big aggressive attack with the whole body behind it, wide exaggerated motion",
+          "intensity": 2,
+          "tries": 1,
+          "generated_at": "2026-09-10T20:11:49+00:00"
+        },
+        "north-east": {
+          "status": "fail",
+          "step_mean": 0.2099,
+          "step_max": 0.2839,
+          "drift": 4.42,
+          "loop": 0.3948,
+          "loop_ratio": 1.88,
+          "travel": 1.12,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": -0.001,
+          "peak": 0.3948,
+          "reach": 0.101,
+          "canvas": [
+            112,
+            112
+          ],
+          "reasons": [
+            "no strike, just a lean: nothing reaches past 0.10 of the body"
+          ],
+          "sub": "5746e46d-63d0-4e47-88b3-5af626ea53c1",
+          "group": "e27398f7-782d-4b51-b06e-dd097334337c",
+          "takes": 1,
+          "version": 2,
+          "mirrored": false,
+          "action": "Claw Snap - Lunges forward and snaps its big claw shut hard, a big aggressive attack with the whole body behind it, wide exaggerated motion",
+          "intensity": 2,
+          "tries": 1,
+          "generated_at": "2026-09-10T20:11:47+00:00"
         }
       },
       "action": "Claw Snap - Lunges forward and snaps its big claw shut hard, a big aggressive attack with the whole body behind it, wide exaggerated motion",
@@ -1041,13 +1075,21 @@
           "tide_crab/animations/attack_try/north/02.webp",
           "tide_crab/animations/attack_try/north/03.webp",
           "tide_crab/animations/attack_try/north/04.webp"
+        ],
+        "north-east": [
+          "tide_crab/animations/attack_try/north-east/00.webp",
+          "tide_crab/animations/attack_try/north-east/01.webp",
+          "tide_crab/animations/attack_try/north-east/02.webp",
+          "tide_crab/animations/attack_try/north-east/03.webp",
+          "tide_crab/animations/attack_try/north-east/04.webp"
         ]
       },
       "strips": {
         "south": "tide_crab/animations/attack_try__south.webp",
         "south-east": "tide_crab/animations/attack_try__south-east.webp",
         "east": "tide_crab/animations/attack_try__east.webp",
-        "north": "tide_crab/animations/attack_try__north.webp"
+        "north": "tide_crab/animations/attack_try__north.webp",
+        "north-east": "tide_crab/animations/attack_try__north-east.webp"
       },
       "intensity": 2
     }

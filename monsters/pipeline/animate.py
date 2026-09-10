@@ -768,6 +768,38 @@ def _slot_files_delete(cid, slot, dirs):
             os.remove(strip)
 
 
+def cmd_settle(args):
+    """When the intensity dial is maxed and a direction still only scores
+    SHALLOW (reach above the maintainer's own accepted floor of 0.15 but under
+    the pass line), stop burning rolls on it: downgrade the fail to a warn so
+    the state can complete and HE can judge it on the review page. His own
+    accepted set goes as low as 0.14 (Gray Brute) and 0.24 (Stone Turtle) —
+    compact bodies with short limbs cannot reach as far as a club swing."""
+    cfg = cand.load_cfg()
+    slot = args.state
+    ids = args.only.split(",") if args.only else [c["id"] for c in cfg["candidates"]]
+    n = 0
+    for cid in ids:
+        man = cand.load_manifest(cid) or {}
+        rec = (man.get("animations") or {}).get(slot)
+        if not rec or intensity_of(man, slot) < max(INTENSITY):
+            continue
+        for d, q in (rec.get("directions") or {}).items():
+            if q.get("status") != "fail" or q.get("mirrored"):
+                continue
+            hard = [r for r in (q.get("reasons") or [])
+                    if not r.startswith(("no strike, just a lean", "shallow strike"))
+                    and ("eyeball" not in r) and ("canvas grown" not in r)]
+            if hard or (q.get("reach") or 0) < args.min_reach:
+                continue
+            q["status"] = "warn"; q["manual"] = True
+            q["reasons"].append(f"settled: dial maxed, reach {q.get('reach')} is above the accepted floor {args.min_reach} — maintainer's call")
+            n += 1
+        write_manifest(cid, man)
+    print(f"settled {n} shallow direction(s) to warn")
+    cand.rebuild_index(cfg)
+
+
 def cmd_promote(args):
     """The _try variant becomes the state. Refuses anything incomplete: a state
     must be ONE take across all eight directions, never a mix of wordings."""
@@ -881,6 +913,10 @@ def main():
     pr.add_argument("--state", required=True); pr.add_argument("--only")
     pr.add_argument("--allow-warn", action="store_true", help="promote when every direction is pass or warn (default: no fails, no gaps)")
     pr.set_defaults(func=cmd_promote)
+    se = sub.add_parser("settle", help="a maxed-out dial stops the loop: shallow-but-real strikes become warns for the maintainer to judge")
+    se.add_argument("--state", required=True); se.add_argument("--only")
+    se.add_argument("--min-reach", type=float, default=0.15, help="the maintainer's own accepted floor")
+    se.set_defaults(func=cmd_settle)
     dc = sub.add_parser("discard", help="throw the _try variant away and keep the live state")
     dc.add_argument("--state", required=True); dc.add_argument("--only"); dc.set_defaults(func=cmd_discard)
     args = ap.parse_args()

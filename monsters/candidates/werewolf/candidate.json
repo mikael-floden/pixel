@@ -919,63 +919,64 @@
       "directions": {
         "south": {
           "status": "fail",
-          "step_mean": 0.1955,
-          "step_max": 0.214,
-          "drift": 3.65,
-          "loop": 0.2721,
-          "loop_ratio": 1.39,
-          "travel": 3.65,
+          "step_mean": 0.1642,
+          "step_max": 0.2008,
+          "drift": 3.77,
+          "loop": 0.4273,
+          "loop_ratio": 2.6,
+          "travel": 2.98,
           "pin": 1.0,
           "pad": 0,
-          "flash": 0.003,
-          "peak": 0.3253,
-          "reach": 0.103,
+          "flash": 0.014,
+          "peak": 0.4273,
+          "reach": 0.196,
           "canvas": [
             128,
             128
           ],
           "reasons": [
-            "no strike, just a lean: nothing reaches past 0.10 of the body"
+            "no strike, just a lean: nothing reaches past 0.20 of the body"
           ],
-          "sub": "c5bfffcb-8043-47af-8a63-7f1ec25a0206",
-          "group": "25e8f6c9-519e-444e-9e18-17d0a4806b38",
+          "sub": "3b14c044-25db-4fa2-89f5-f0fc2d2f5eb4",
+          "group": "76c5ed0a-49d6-4c70-a022-14d32f0ef635",
           "takes": 1,
-          "version": 1,
+          "version": 2,
           "mirrored": false,
-          "action": "Claw Swipe - Rears up and swipes one clawed paw hard across",
+          "action": "Claw Swipe - Rears up and swipes one clawed paw hard across, a big aggressive swing",
+          "intensity": 1,
           "tries": 1,
-          "generated_at": "2026-09-10T19:47:17+00:00"
+          "generated_at": "2026-09-10T20:14:50+00:00"
         },
         "south-east": {
           "status": "fail",
-          "step_mean": 0.1969,
-          "step_max": 0.3692,
-          "drift": 5.93,
-          "loop": 0.4243,
-          "loop_ratio": 2.15,
-          "travel": 3.63,
+          "step_mean": 0.3142,
+          "step_max": 0.4166,
+          "drift": 8.57,
+          "loop": 0.2831,
+          "loop_ratio": 0.9,
+          "travel": 14.36,
           "pin": 1.0,
-          "pad": 1,
-          "flash": 0.284,
-          "peak": 0.4243,
-          "reach": 0.291,
+          "pad": 5,
+          "flash": 0.13,
+          "peak": 0.4347,
+          "reach": 0.374,
           "canvas": [
-            130,
-            130
+            138,
+            138
           ],
           "reasons": [
-            "shallow strike: reach 0.29 — eyeball it",
-            "painted effect: 0.28 of the body in new bright pixels (flare/slash arc)",
-            "canvas grown by 1 px a side to hold the motion"
+            "painted effect: 0.13 of the body in new bright pixels (flare/slash arc)",
+            "canvas grown by 5 px a side to hold the motion"
           ],
-          "sub": "fe17451d-b67c-492f-810e-e0cd4e9680f9",
-          "group": "37644ea0-5b0f-4060-ac97-51c6f5168eb1",
+          "sub": "4bee80b4-b5ef-4231-a529-592c93ee81c8",
+          "group": "04c60712-18c6-4089-b158-dd20931ef895",
           "takes": 1,
-          "version": 1,
+          "version": 2,
           "mirrored": false,
-          "action": "Claw Swipe - Rears up and swipes one clawed paw hard across",
+          "action": "Claw Swipe - Rears up and swipes one clawed paw hard across, a big aggressive swing",
+          "intensity": 1,
           "tries": 1,
-          "generated_at": "2026-09-10T19:47:17+00:00"
+          "generated_at": "2026-09-10T20:14:51+00:00"
         },
         "east": {
           "status": "pass",
@@ -1037,32 +1038,34 @@
         },
         "north": {
           "status": "fail",
-          "step_mean": 0.1977,
-          "step_max": 0.2944,
-          "drift": 1.79,
-          "loop": 0.2944,
-          "loop_ratio": 1.49,
-          "travel": 2.07,
+          "step_mean": 0.2265,
+          "step_max": 0.3132,
+          "drift": 8.1,
+          "loop": 0.1766,
+          "loop_ratio": 0.78,
+          "travel": 5.47,
           "pin": 1.0,
           "pad": 0,
-          "flash": 0.0,
-          "peak": 0.3205,
-          "reach": 0.133,
+          "flash": 0.393,
+          "peak": 0.3668,
+          "reach": 0.205,
           "canvas": [
             128,
             128
           ],
           "reasons": [
-            "no strike, just a lean: nothing reaches past 0.13 of the body"
+            "no strike, just a lean: nothing reaches past 0.20 of the body",
+            "painted effect: 0.39 of the body in new bright pixels (flare/slash arc)"
           ],
-          "sub": "ef1b7b51-efef-4b71-8501-e5feda1f3d6a",
-          "group": "7f46888a-2434-47d4-9ee5-3326721a8bf3",
+          "sub": "83edc60d-1cf7-4caa-ac98-018fcbfc25f7",
+          "group": "7a14eb71-1b23-4488-a78d-6b261e17e26e",
           "takes": 1,
-          "version": 1,
+          "version": 2,
           "mirrored": false,
-          "action": "Claw Swipe - Rears up and swipes one clawed paw hard across",
+          "action": "Claw Swipe - Rears up and swipes one clawed paw hard across, a big aggressive swing",
+          "intensity": 1,
           "tries": 1,
-          "generated_at": "2026-09-10T19:47:19+00:00"
+          "generated_at": "2026-09-10T20:14:51+00:00"
         },
         "west": {
           "status": "pass",

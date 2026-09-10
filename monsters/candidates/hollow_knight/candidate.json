@@ -905,62 +905,65 @@
       "directions": {
         "south": {
           "status": "fail",
-          "step_mean": 0.1976,
-          "step_max": 0.2719,
-          "drift": 4.82,
-          "loop": 0.3105,
-          "loop_ratio": 1.57,
-          "travel": 3.25,
+          "step_mean": 0.2873,
+          "step_max": 0.5419,
+          "drift": 6.55,
+          "loop": 0.5883,
+          "loop_ratio": 2.05,
+          "travel": 2.86,
           "pin": 1.0,
-          "pad": 6,
-          "flash": 0.009,
-          "peak": 0.3105,
-          "reach": 0.124,
+          "pad": 9,
+          "flash": 0.011,
+          "peak": 0.5883,
+          "reach": 0.219,
           "canvas": [
-            124,
-            124
+            130,
+            130
           ],
           "reasons": [
-            "no strike, just a lean: nothing reaches past 0.12 of the body",
-            "canvas grown by 6 px a side to hold the motion"
+            "no strike, just a lean: nothing reaches past 0.22 of the body",
+            "canvas grown by 9 px a side to hold the motion"
           ],
-          "sub": "80cf1bf5-21bf-4a1c-8d40-56b2904362b8",
-          "group": "29cf366f-dde2-46c5-b42e-af98e42c95fb",
+          "sub": "d00a2ee8-d79c-45ea-b5b0-7e03a1d88b93",
+          "group": "6c450c16-11c0-4f0a-b8fb-a5429e5d6513",
           "takes": 1,
-          "version": 1,
+          "version": 2,
           "mirrored": false,
-          "action": "Overhead Chop - Raises the greatsword high overhead and chops it down hard",
+          "action": "Overhead Chop - Raises the greatsword high overhead and chops it down hard, a big aggressive swing",
+          "intensity": 1,
           "tries": 1,
-          "generated_at": "2026-09-10T19:46:43+00:00"
+          "generated_at": "2026-09-10T20:15:09+00:00"
         },
         "south-east": {
-          "status": "fail",
-          "step_mean": 0.1309,
-          "step_max": 0.2164,
-          "drift": 3.68,
-          "loop": 0.3078,
-          "loop_ratio": 2.35,
-          "travel": 3.99,
+          "status": "warn",
+          "step_mean": 0.261,
+          "step_max": 0.4037,
+          "drift": 5.08,
+          "loop": 0.3534,
+          "loop_ratio": 1.35,
+          "travel": 5.77,
           "pin": 1.0,
-          "pad": 0,
-          "flash": 0.006,
-          "peak": 0.3078,
-          "reach": 0.205,
+          "pad": 4,
+          "flash": 0.004,
+          "peak": 0.4014,
+          "reach": 0.25,
           "canvas": [
-            112,
-            112
+            120,
+            120
           ],
           "reasons": [
-            "no strike, just a lean: nothing reaches past 0.20 of the body"
+            "shallow strike: reach 0.25 — eyeball it",
+            "canvas grown by 4 px a side to hold the motion"
           ],
-          "sub": "e8ea2e10-5ece-4592-91dc-648cfee0e678",
-          "group": "49482978-ce13-4c41-9c75-7cec8e817c2b",
+          "sub": "b5b03ff1-5ae2-409a-a75c-c3e52340b88e",
+          "group": "dd0d0665-5893-4227-bafb-2750390af5d9",
           "takes": 1,
-          "version": 1,
+          "version": 2,
           "mirrored": false,
-          "action": "Overhead Chop - Raises the greatsword high overhead and chops it down hard",
+          "action": "Overhead Chop - Raises the greatsword high overhead and chops it down hard, a big aggressive swing",
+          "intensity": 1,
           "tries": 1,
-          "generated_at": "2026-09-10T19:46:43+00:00"
+          "generated_at": "2026-09-10T20:15:09+00:00"
         },
         "east": {
           "status": "pass",
@@ -1107,6 +1110,38 @@
           "tries": 1,
           "generated_at": "2026-09-10T19:46:44+00:00",
           "source": "north-east"
+        },
+        "south-west": {
+          "status": "warn",
+          "step_mean": 0.261,
+          "step_max": 0.4037,
+          "drift": 5.08,
+          "loop": 0.3534,
+          "loop_ratio": 1.35,
+          "travel": 5.77,
+          "pin": 1.0,
+          "pad": 4,
+          "flash": 0.004,
+          "peak": 0.4014,
+          "reach": 0.25,
+          "canvas": [
+            120,
+            120
+          ],
+          "reasons": [
+            "shallow strike: reach 0.25 — eyeball it",
+            "canvas grown by 4 px a side to hold the motion"
+          ],
+          "sub": "b5b03ff1-5ae2-409a-a75c-c3e52340b88e",
+          "group": "dd0d0665-5893-4227-bafb-2750390af5d9",
+          "takes": 1,
+          "version": 2,
+          "mirrored": true,
+          "action": "Overhead Chop - Raises the greatsword high overhead and chops it down hard, a big aggressive swing",
+          "intensity": 1,
+          "tries": 1,
+          "generated_at": "2026-09-10T20:15:09+00:00",
+          "source": "south-east"
         }
       },
       "action": "Overhead Chop - Raises the greatsword high overhead and chops it down hard, a big aggressive swing",
@@ -1159,6 +1194,13 @@
           "hollow_knight/animations/attack_try/north-west/02.webp",
           "hollow_knight/animations/attack_try/north-west/03.webp",
           "hollow_knight/animations/attack_try/north-west/04.webp"
+        ],
+        "south-west": [
+          "hollow_knight/animations/attack_try/south-west/00.webp",
+          "hollow_knight/animations/attack_try/south-west/01.webp",
+          "hollow_knight/animations/attack_try/south-west/02.webp",
+          "hollow_knight/animations/attack_try/south-west/03.webp",
+          "hollow_knight/animations/attack_try/south-west/04.webp"
         ]
       },
       "strips": {
@@ -1168,7 +1210,8 @@
         "north-east": "hollow_knight/animations/attack_try__north-east.webp",
         "north": "hollow_knight/animations/attack_try__north.webp",
         "west": "hollow_knight/animations/attack_try__west.webp",
-        "north-west": "hollow_knight/animations/attack_try__north-west.webp"
+        "north-west": "hollow_knight/animations/attack_try__north-west.webp",
+        "south-west": "hollow_knight/animations/attack_try__south-west.webp"
       },
       "intensity": 1
     }

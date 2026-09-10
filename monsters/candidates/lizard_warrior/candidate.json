@@ -910,32 +910,34 @@
       "directions": {
         "south": {
           "status": "fail",
-          "step_mean": 0.2219,
-          "step_max": 0.3605,
-          "drift": 5.34,
-          "loop": 0.4126,
-          "loop_ratio": 1.86,
-          "travel": 2.78,
+          "step_mean": 0.2734,
+          "step_max": 0.5065,
+          "drift": 4.68,
+          "loop": 0.406,
+          "loop_ratio": 1.48,
+          "travel": 2.24,
           "pin": 1.0,
-          "pad": 0,
+          "pad": 9,
           "flash": 0.001,
-          "peak": 0.4215,
-          "reach": 0.092,
+          "peak": 0.4493,
+          "reach": 0.184,
           "canvas": [
-            128,
-            128
+            146,
+            146
           ],
           "reasons": [
-            "no strike, just a lean: nothing reaches past 0.09 of the body"
+            "no strike, just a lean: nothing reaches past 0.18 of the body",
+            "canvas grown by 9 px a side to hold the motion"
           ],
-          "sub": "e8da75ce-3db5-40f7-b3a1-325859261164",
-          "group": "f64cf46b-843d-4b9c-9298-cf7150cc14c8",
+          "sub": "0f9a6371-a452-4d90-a382-23cb175717e9",
+          "group": "c8d7e3a4-af83-437a-98c1-0540118c8d87",
           "takes": 1,
-          "version": 1,
+          "version": 2,
           "mirrored": false,
-          "action": "Spear Thrust - Lunges forward and drives the spear out in one fast stab",
+          "action": "Spear Thrust - Lunges forward and drives the spear out in one fast stab, a big aggressive swing",
+          "intensity": 1,
           "tries": 1,
-          "generated_at": "2026-09-10T19:45:08+00:00"
+          "generated_at": "2026-09-10T20:13:01+00:00"
         },
         "south-east": {
           "status": "pass",
@@ -1026,34 +1028,35 @@
           "generated_at": "2026-09-10T19:45:10+00:00"
         },
         "north": {
-          "status": "fail",
-          "step_mean": 0.2423,
-          "step_max": 0.3747,
-          "drift": 4.28,
-          "loop": 0.4321,
-          "loop_ratio": 1.78,
-          "travel": 4.41,
+          "status": "warn",
+          "step_mean": 0.2793,
+          "step_max": 0.5652,
+          "drift": 4.08,
+          "loop": 0.505,
+          "loop_ratio": 1.81,
+          "travel": 3.86,
           "pin": 1.0,
-          "pad": 2,
-          "flash": 0.038,
-          "peak": 0.4321,
-          "reach": 0.181,
+          "pad": 9,
+          "flash": -0.003,
+          "peak": 0.5556,
+          "reach": 0.266,
           "canvas": [
-            132,
-            132
+            146,
+            146
           ],
           "reasons": [
-            "no strike, just a lean: nothing reaches past 0.18 of the body",
-            "canvas grown by 2 px a side to hold the motion"
+            "shallow strike: reach 0.27 — eyeball it",
+            "canvas grown by 9 px a side to hold the motion"
           ],
-          "sub": "0b446559-be07-4d89-86f2-4239895fc976",
-          "group": "5933cac7-c3a0-4b3a-92bf-c621cfbdf056",
+          "sub": "b411dd65-98c4-482e-bfb2-e517e78627df",
+          "group": "f039c6ec-ab67-403f-b977-05cdcdab8706",
           "takes": 1,
-          "version": 1,
+          "version": 2,
           "mirrored": false,
-          "action": "Spear Thrust - Lunges forward and drives the spear out in one fast stab",
+          "action": "Spear Thrust - Lunges forward and drives the spear out in one fast stab, a big aggressive swing",
+          "intensity": 1,
           "tries": 1,
-          "generated_at": "2026-09-10T19:45:10+00:00"
+          "generated_at": "2026-09-10T20:13:01+00:00"
         },
         "south-west": {
           "status": "pass",
