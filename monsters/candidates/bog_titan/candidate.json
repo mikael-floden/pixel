@@ -1,1166 +1,1178 @@
 {
-  "id": "bog_titan",
-  "name": "Fenfather",
-  "tier": "boss",
-  "scale": "big",
-  "lore": "The fen itself, when the fen stands up. Villages built on it are carried off when it turns.",
-  "biome": [
-    "dark_mud",
-    "water"
-  ],
-  "items": [],
-  "prompt": "Gigantic fantasy swamp titan shown full body from head to feet, a hulking body of black peat and tangled roots, reeds and moss growing on its shoulders, a face of two glowing green lamps in the mud, huge dripping arms, and legs like sunken tree trunks.",
-  "size": [
-    224,
-    224
-  ],
-  "template_id": "mannequin",
-  "directions": [
-    "south",
-    "south-east",
-    "east",
-    "north-east",
-    "north",
-    "north-west",
-    "west",
-    "south-west"
-  ],
-  "rotations": {
-    "south": "bog_titan/rotations/south.webp",
-    "south-east": "bog_titan/rotations/south-east.webp",
-    "east": "bog_titan/rotations/east.webp",
-    "north-east": "bog_titan/rotations/north-east.webp",
-    "north": "bog_titan/rotations/north.webp",
-    "north-west": "bog_titan/rotations/north-west.webp",
-    "west": "bog_titan/rotations/west.webp",
-    "south-west": "bog_titan/rotations/south-west.webp"
-  },
-  "sheet": "bog_titan/sheet.webp",
-  "review": "approved",
-  "pixellab_id": "83b4bbfd-d8d1-40ca-8a91-08fb033241a3",
-  "seed": 975929058,
-  "version": 1,
-  "usage": null,
-  "generated_at": "2026-09-09T18:50:54+00:00",
-  "elapsed_s": 199.7,
-  "qa": {
-    "status": "pass",
-    "min_run1": 0.549,
-    "reasons": [],
-    "directions": {
-      "south": {
-        "run1": 0.549,
-        "bbox": [
-          31,
-          10,
-          192,
-          209
-        ],
-        "fill": 0.639,
-        "touches_edge": false
-      },
-      "south-east": {
-        "run1": 0.642,
-        "bbox": [
-          38,
-          11,
-          182,
-          215
-        ],
-        "fill": 0.585,
-        "touches_edge": false
-      },
-      "east": {
-        "run1": 0.646,
-        "bbox": [
-          72,
-          8,
-          153,
-          216
-        ],
-        "fill": 0.336,
-        "touches_edge": false
-      },
-      "north-east": {
-        "run1": 0.605,
-        "bbox": [
-          50,
-          8,
-          172,
-          214
-        ],
-        "fill": 0.501,
-        "touches_edge": false
-      },
-      "north": {
-        "run1": 0.586,
-        "bbox": [
-          33,
-          10,
-          189,
-          209
-        ],
-        "fill": 0.619,
-        "touches_edge": false
-      },
-      "north-west": {
-        "run1": 0.602,
-        "bbox": [
-          47,
-          8,
-          173,
-          214
-        ],
-        "fill": 0.517,
-        "touches_edge": false
-      },
-      "west": {
-        "run1": 0.646,
-        "bbox": [
-          68,
-          8,
-          148,
-          216
-        ],
-        "fill": 0.332,
-        "touches_edge": false
-      },
-      "south-west": {
-        "run1": 0.634,
-        "bbox": [
-          42,
-          10,
-          182,
-          215
-        ],
-        "fill": 0.572,
-        "touches_edge": false
-      }
-    }
-  },
-  "approved_at": "2026-09-09T19:59:23+00:00",
-  "animations": {
-    "idle": {
-      "directions": {
-        "south": {
-          "status": "pass",
-          "step_mean": 0.0349,
-          "step_max": 0.0571,
-          "drift": 1.72,
-          "loop": 0.0001,
-          "pin": 1.0,
-          "reasons": [],
-          "sub": "ae944878-b84f-47b5-82f4-ad4f814bc77c",
-          "takes": 1,
-          "version": 1,
-          "mirrored": false,
-          "generated_at": "2026-09-09T20:20:22+00:00",
-          "cut": 0
-        },
-        "south-east": {
-          "status": "pass",
-          "step_mean": 0.0317,
-          "step_max": 0.0451,
-          "drift": 1.0,
-          "loop": 0.0001,
-          "pin": 1.0,
-          "reasons": [],
-          "sub": "c23fd72b-46f6-46fd-bd9c-97c39395796e",
-          "takes": 1,
-          "version": 1,
-          "mirrored": false,
-          "generated_at": "2026-09-09T20:20:23+00:00",
-          "cut": 0
-        },
-        "east": {
-          "status": "pass",
-          "step_mean": 0.0202,
-          "step_max": 0.0336,
-          "drift": 0.75,
-          "loop": 0.0007,
-          "pin": 1.0,
-          "reasons": [],
-          "sub": "35015c6f-2848-4840-a91b-36e536ee303c",
-          "takes": 1,
-          "version": 1,
-          "mirrored": false,
-          "generated_at": "2026-09-09T20:20:24+00:00",
-          "cut": 0
-        },
-        "north-east": {
-          "status": "pass",
-          "step_mean": 0.0628,
-          "step_max": 0.0758,
-          "drift": 1.94,
-          "loop": 0.0001,
-          "pin": 1.0,
-          "reasons": [],
-          "sub": "9aa43094-d283-4e18-98e9-0518a6921231",
-          "takes": 1,
-          "version": 1,
-          "mirrored": false,
-          "generated_at": "2026-09-09T20:20:24+00:00",
-          "cut": 0
-        },
-        "north": {
-          "status": "pass",
-          "step_mean": 0.071,
-          "step_max": 0.0807,
-          "drift": 2.77,
-          "loop": 0.0,
-          "pin": 1.0,
-          "reasons": [],
-          "sub": "4f6e9c35-e045-44b3-b82b-4bce1e20f077",
-          "takes": 1,
-          "version": 1,
-          "mirrored": false,
-          "generated_at": "2026-09-09T20:20:25+00:00",
-          "cut": 0
-        },
-        "south-west": {
-          "status": "pass",
-          "step_mean": 0.0317,
-          "step_max": 0.0451,
-          "drift": 1.0,
-          "loop": 0.0001,
-          "pin": 1.0,
-          "reasons": [],
-          "sub": "c23fd72b-46f6-46fd-bd9c-97c39395796e",
-          "takes": 1,
-          "version": 1,
-          "mirrored": true,
-          "generated_at": "2026-09-09T20:20:23+00:00",
-          "cut": 0,
-          "source": "south-east"
-        },
-        "west": {
-          "status": "pass",
-          "step_mean": 0.0202,
-          "step_max": 0.0336,
-          "drift": 0.75,
-          "loop": 0.0007,
-          "pin": 1.0,
-          "reasons": [],
-          "sub": "35015c6f-2848-4840-a91b-36e536ee303c",
-          "takes": 1,
-          "version": 1,
-          "mirrored": true,
-          "generated_at": "2026-09-09T20:20:24+00:00",
-          "cut": 0,
-          "source": "east"
-        },
-        "north-west": {
-          "status": "pass",
-          "step_mean": 0.0628,
-          "step_max": 0.0758,
-          "drift": 1.94,
-          "loop": 0.0001,
-          "pin": 1.0,
-          "reasons": [],
-          "sub": "9aa43094-d283-4e18-98e9-0518a6921231",
-          "takes": 1,
-          "version": 1,
-          "mirrored": true,
-          "generated_at": "2026-09-09T20:20:24+00:00",
-          "cut": 0,
-          "source": "north-east"
-        }
-      },
-      "action": "Calm still idle, breathing very slowly and subtly, chest and shoulders rise and fall a little, feet planted, no other movement, ends in the same neutral pose it started in",
-      "frame_paths": {
-        "south": [
-          "bog_titan/animations/idle/south/00.webp",
-          "bog_titan/animations/idle/south/01.webp",
-          "bog_titan/animations/idle/south/02.webp",
-          "bog_titan/animations/idle/south/03.webp",
-          "bog_titan/animations/idle/south/04.webp"
-        ],
-        "south-east": [
-          "bog_titan/animations/idle/south-east/00.webp",
-          "bog_titan/animations/idle/south-east/01.webp",
-          "bog_titan/animations/idle/south-east/02.webp",
-          "bog_titan/animations/idle/south-east/03.webp",
-          "bog_titan/animations/idle/south-east/04.webp"
-        ],
-        "east": [
-          "bog_titan/animations/idle/east/00.webp",
-          "bog_titan/animations/idle/east/01.webp",
-          "bog_titan/animations/idle/east/02.webp",
-          "bog_titan/animations/idle/east/03.webp",
-          "bog_titan/animations/idle/east/04.webp"
-        ],
-        "north-east": [
-          "bog_titan/animations/idle/north-east/00.webp",
-          "bog_titan/animations/idle/north-east/01.webp",
-          "bog_titan/animations/idle/north-east/02.webp",
-          "bog_titan/animations/idle/north-east/03.webp",
-          "bog_titan/animations/idle/north-east/04.webp"
-        ],
-        "north": [
-          "bog_titan/animations/idle/north/00.webp",
-          "bog_titan/animations/idle/north/01.webp",
-          "bog_titan/animations/idle/north/02.webp",
-          "bog_titan/animations/idle/north/03.webp",
-          "bog_titan/animations/idle/north/04.webp"
-        ],
-        "south-west": [
-          "bog_titan/animations/idle/south-west/00.webp",
-          "bog_titan/animations/idle/south-west/01.webp",
-          "bog_titan/animations/idle/south-west/02.webp",
-          "bog_titan/animations/idle/south-west/03.webp",
-          "bog_titan/animations/idle/south-west/04.webp"
-        ],
-        "west": [
-          "bog_titan/animations/idle/west/00.webp",
-          "bog_titan/animations/idle/west/01.webp",
-          "bog_titan/animations/idle/west/02.webp",
-          "bog_titan/animations/idle/west/03.webp",
-          "bog_titan/animations/idle/west/04.webp"
-        ],
-        "north-west": [
-          "bog_titan/animations/idle/north-west/00.webp",
-          "bog_titan/animations/idle/north-west/01.webp",
-          "bog_titan/animations/idle/north-west/02.webp",
-          "bog_titan/animations/idle/north-west/03.webp",
-          "bog_titan/animations/idle/north-west/04.webp"
-        ]
-      },
-      "strips": {
-        "south": "bog_titan/animations/idle__south.webp",
-        "south-east": "bog_titan/animations/idle__south-east.webp",
-        "east": "bog_titan/animations/idle__east.webp",
-        "north-east": "bog_titan/animations/idle__north-east.webp",
-        "north": "bog_titan/animations/idle__north.webp",
-        "south-west": "bog_titan/animations/idle__south-west.webp",
-        "west": "bog_titan/animations/idle__west.webp",
-        "north-west": "bog_titan/animations/idle__north-west.webp"
-      }
-    },
-    "walk": {
-      "directions": {
-        "south": {
-          "status": "warn",
-          "step_mean": 0.1775,
-          "step_max": 0.2071,
-          "drift": 7.38,
-          "loop": 0.2834,
-          "loop_ratio": 1.6,
-          "travel": 2.27,
-          "pin": 0.881,
-          "pad": 0,
-          "canvas": [
-            224,
-            224
-          ],
-          "reasons": [
-            "drifts 7.4 px — eyeball it"
-          ],
-          "sub": "e6956bdb-c455-4c72-8d08-49691ffe1e11",
-          "group": "0736a937-1442-4b63-a19f-3a7f7bfa6a8c",
-          "takes": 1,
-          "version": 1,
-          "mirrored": false,
-          "generated_at": "2026-09-09T21:16:34+00:00"
-        },
-        "south-east": {
-          "status": "warn",
-          "step_mean": 0.2087,
-          "step_max": 0.2384,
-          "drift": 8.21,
-          "loop": 0.5452,
-          "loop_ratio": 2.61,
-          "travel": 2.2,
-          "pin": 0.861,
-          "pad": 0,
-          "canvas": [
-            224,
-            224
-          ],
-          "reasons": [
-            "drifts 8.2 px — eyeball it",
-            "last→first hand-off 2.6× a step — eyeball the loop"
-          ],
-          "sub": "3ec3f6dc-bea5-471a-9b84-0d4fb456e0c8",
-          "group": "ae8f6de5-197e-49eb-9a2a-45d9475e5933",
-          "takes": 2,
-          "version": 2,
-          "mirrored": false,
-          "generated_at": "2026-09-09T21:28:37+00:00"
-        },
-        "east": {
-          "status": "pass",
-          "step_mean": 0.2441,
-          "step_max": 0.294,
-          "drift": 5.37,
-          "loop": 0.3319,
-          "loop_ratio": 1.36,
-          "travel": 4.35,
-          "pin": 0.769,
-          "pad": 0,
-          "canvas": [
-            224,
-            224
-          ],
-          "reasons": [],
-          "sub": "e253ef5c-f47b-4896-a2f4-1090048a34fd",
-          "group": "396cb703-6fb9-4797-8739-6cf466f5c74a",
-          "takes": 1,
-          "version": 1,
-          "mirrored": false,
-          "generated_at": "2026-09-09T21:16:36+00:00"
-        },
-        "north-east": {
-          "status": "warn",
-          "step_mean": 0.1847,
-          "step_max": 0.2068,
-          "drift": 6.9,
-          "loop": 0.3263,
-          "loop_ratio": 1.77,
-          "travel": 1.47,
-          "pin": 0.818,
-          "pad": 0,
-          "canvas": [
-            224,
-            224
-          ],
-          "reasons": [
-            "drifts 6.9 px — eyeball it"
-          ],
-          "sub": "0120a716-b18a-49fa-99ae-8807f12f019e",
-          "group": "fe22bdbf-c1d0-4a8e-9209-9facf2a31b78",
-          "takes": 1,
-          "version": 1,
-          "mirrored": false,
-          "generated_at": "2026-09-09T21:16:36+00:00"
-        },
-        "north": {
-          "status": "pass",
-          "step_mean": 0.1728,
-          "step_max": 0.1999,
-          "drift": 5.06,
-          "loop": 0.2946,
-          "loop_ratio": 1.7,
-          "travel": 3.32,
-          "pin": 0.865,
-          "pad": 0,
-          "canvas": [
-            224,
-            224
-          ],
-          "reasons": [],
-          "sub": "c279b13b-eef3-45d3-a585-438315fa00a8",
-          "group": "daceec57-a037-45de-afde-c0acfa9e62c5",
-          "takes": 1,
-          "version": 1,
-          "mirrored": false,
-          "generated_at": "2026-09-09T21:16:37+00:00"
-        },
-        "west": {
-          "status": "pass",
-          "step_mean": 0.2441,
-          "step_max": 0.294,
-          "drift": 5.37,
-          "loop": 0.3319,
-          "loop_ratio": 1.36,
-          "travel": 4.35,
-          "pin": 0.769,
-          "pad": 0,
-          "canvas": [
-            224,
-            224
-          ],
-          "reasons": [],
-          "sub": "e253ef5c-f47b-4896-a2f4-1090048a34fd",
-          "group": "396cb703-6fb9-4797-8739-6cf466f5c74a",
-          "takes": 1,
-          "version": 1,
-          "mirrored": true,
-          "generated_at": "2026-09-09T21:16:36+00:00",
-          "source": "east"
-        },
-        "north-west": {
-          "status": "warn",
-          "step_mean": 0.1847,
-          "step_max": 0.2068,
-          "drift": 6.9,
-          "loop": 0.3263,
-          "loop_ratio": 1.77,
-          "travel": 1.47,
-          "pin": 0.818,
-          "pad": 0,
-          "canvas": [
-            224,
-            224
-          ],
-          "reasons": [
-            "drifts 6.9 px — eyeball it"
-          ],
-          "sub": "0120a716-b18a-49fa-99ae-8807f12f019e",
-          "group": "fe22bdbf-c1d0-4a8e-9209-9facf2a31b78",
-          "takes": 1,
-          "version": 1,
-          "mirrored": true,
-          "generated_at": "2026-09-09T21:16:36+00:00",
-          "source": "north-east"
-        },
-        "south-west": {
-          "status": "warn",
-          "step_mean": 0.2087,
-          "step_max": 0.2384,
-          "drift": 8.21,
-          "loop": 0.5452,
-          "loop_ratio": 2.61,
-          "travel": 2.2,
-          "pin": 0.861,
-          "pad": 0,
-          "canvas": [
-            224,
-            224
-          ],
-          "reasons": [
-            "drifts 8.2 px — eyeball it",
-            "last→first hand-off 2.6× a step — eyeball the loop"
-          ],
-          "sub": "3ec3f6dc-bea5-471a-9b84-0d4fb456e0c8",
-          "group": "ae8f6de5-197e-49eb-9a2a-45d9475e5933",
-          "takes": 2,
-          "version": 2,
-          "mirrored": true,
-          "generated_at": "2026-09-09T21:28:37+00:00",
-          "source": "south-east"
-        }
-      },
-      "action": "walk loop, full walk cycle in place, legs alternate naturally, normal calm walking pace, body stays centered, seamless loop whose last frame leads straight back into the first, no turning",
-      "frame_paths": {
-        "south": [
-          "bog_titan/animations/walk/south/00.webp",
-          "bog_titan/animations/walk/south/01.webp",
-          "bog_titan/animations/walk/south/02.webp",
-          "bog_titan/animations/walk/south/03.webp",
-          "bog_titan/animations/walk/south/04.webp",
-          "bog_titan/animations/walk/south/05.webp"
-        ],
-        "south-east": [
-          "bog_titan/animations/walk/south-east/00.webp",
-          "bog_titan/animations/walk/south-east/01.webp",
-          "bog_titan/animations/walk/south-east/02.webp",
-          "bog_titan/animations/walk/south-east/03.webp",
-          "bog_titan/animations/walk/south-east/04.webp",
-          "bog_titan/animations/walk/south-east/05.webp"
-        ],
-        "east": [
-          "bog_titan/animations/walk/east/00.webp",
-          "bog_titan/animations/walk/east/01.webp",
-          "bog_titan/animations/walk/east/02.webp",
-          "bog_titan/animations/walk/east/03.webp",
-          "bog_titan/animations/walk/east/04.webp",
-          "bog_titan/animations/walk/east/05.webp"
-        ],
-        "north-east": [
-          "bog_titan/animations/walk/north-east/00.webp",
-          "bog_titan/animations/walk/north-east/01.webp",
-          "bog_titan/animations/walk/north-east/02.webp",
-          "bog_titan/animations/walk/north-east/03.webp",
-          "bog_titan/animations/walk/north-east/04.webp",
-          "bog_titan/animations/walk/north-east/05.webp"
-        ],
-        "north": [
-          "bog_titan/animations/walk/north/00.webp",
-          "bog_titan/animations/walk/north/01.webp",
-          "bog_titan/animations/walk/north/02.webp",
-          "bog_titan/animations/walk/north/03.webp",
-          "bog_titan/animations/walk/north/04.webp",
-          "bog_titan/animations/walk/north/05.webp"
-        ],
-        "west": [
-          "bog_titan/animations/walk/west/00.webp",
-          "bog_titan/animations/walk/west/01.webp",
-          "bog_titan/animations/walk/west/02.webp",
-          "bog_titan/animations/walk/west/03.webp",
-          "bog_titan/animations/walk/west/04.webp",
-          "bog_titan/animations/walk/west/05.webp"
-        ],
-        "north-west": [
-          "bog_titan/animations/walk/north-west/00.webp",
-          "bog_titan/animations/walk/north-west/01.webp",
-          "bog_titan/animations/walk/north-west/02.webp",
-          "bog_titan/animations/walk/north-west/03.webp",
-          "bog_titan/animations/walk/north-west/04.webp",
-          "bog_titan/animations/walk/north-west/05.webp"
-        ],
-        "south-west": [
-          "bog_titan/animations/walk/south-west/00.webp",
-          "bog_titan/animations/walk/south-west/01.webp",
-          "bog_titan/animations/walk/south-west/02.webp",
-          "bog_titan/animations/walk/south-west/03.webp",
-          "bog_titan/animations/walk/south-west/04.webp",
-          "bog_titan/animations/walk/south-west/05.webp"
-        ]
-      },
-      "strips": {
-        "south": "bog_titan/animations/walk__south.webp",
-        "south-east": "bog_titan/animations/walk__south-east.webp",
-        "east": "bog_titan/animations/walk__east.webp",
-        "north-east": "bog_titan/animations/walk__north-east.webp",
-        "north": "bog_titan/animations/walk__north.webp",
-        "west": "bog_titan/animations/walk__west.webp",
-        "north-west": "bog_titan/animations/walk__north-west.webp",
-        "south-west": "bog_titan/animations/walk__south-west.webp"
-      }
-    },
-    "attack": {
-      "directions": {
-        "south": {
-          "status": "fail",
-          "step_mean": 0.1667,
-          "step_max": 0.2337,
-          "drift": 2.14,
-          "loop": 0.0001,
-          "loop_ratio": 0.0,
-          "travel": 0.44,
-          "pin": 1.0,
-          "pad": 0,
-          "flash": 0.0,
-          "peak": 0.3003,
-          "reach": 0.043,
-          "canvas": [
-            224,
-            224
-          ],
-          "reasons": [
-            "no strike, just a lean: nothing reaches past 0.04 of the body"
-          ],
-          "sub": "9099993f-5a40-4ec3-9a28-00e37bd15652",
-          "group": "a7ae25c8-b87a-45ae-b755-a12d97e76bfe",
-          "takes": 1,
-          "version": 2,
-          "mirrored": false,
-          "generated_at": "2026-09-09T22:41:36+00:00",
-          "action": "Double Slam - Raises both arms and slams them down together once, then returns to idle stance"
-        },
-        "south-east": {
-          "status": "fail",
-          "step_mean": 0.1579,
-          "step_max": 0.2002,
-          "drift": 2.65,
-          "loop": 0.0001,
-          "loop_ratio": 0.0,
-          "travel": 0.22,
-          "pin": 1.0,
-          "pad": 0,
-          "flash": 0.0,
-          "peak": 0.2662,
-          "reach": 0.076,
-          "canvas": [
-            224,
-            224
-          ],
-          "reasons": [
-            "no strike, just a lean: nothing reaches past 0.08 of the body"
-          ],
-          "sub": "88903a69-0c96-4105-b6ba-facbb5f67660",
-          "group": "9685ad7c-e94e-4a26-9ba9-2a7b2276714a",
-          "takes": 1,
-          "version": 2,
-          "mirrored": false,
-          "generated_at": "2026-09-09T22:41:37+00:00",
-          "action": "Double Slam - Raises both arms and slams them down together once, then returns to idle stance"
-        },
-        "east": {
-          "status": "pass",
-          "step_mean": 0.2341,
-          "step_max": 0.3423,
-          "drift": 4.52,
-          "loop": 0.0,
-          "loop_ratio": 0.0,
-          "travel": 1.33,
-          "pin": 1.0,
-          "pad": 0,
-          "flash": 0.0,
-          "peak": 0.3606,
-          "reach": 0.531,
-          "canvas": [
-            224,
-            224
-          ],
-          "reasons": [],
-          "sub": "b437e0a0-b539-4cc1-86c9-b1a50e565bb9",
-          "group": "8edd176f-d727-47c9-b955-89c9f4e485c1",
-          "takes": 1,
-          "version": 2,
-          "mirrored": false,
-          "generated_at": "2026-09-09T22:41:37+00:00",
-          "action": "Double Slam - Raises both arms and slams them down together once, then returns to idle stance"
-        },
-        "north-east": {
-          "status": "fail",
-          "step_mean": 0.122,
-          "step_max": 0.1479,
-          "drift": 1.47,
-          "loop": 0.0003,
-          "loop_ratio": 0.0,
-          "travel": 1.48,
-          "pin": 1.0,
-          "pad": 0,
-          "flash": 0.0,
-          "peak": 0.207,
-          "reach": 0.049,
-          "canvas": [
-            224,
-            224
-          ],
-          "reasons": [
-            "no strike, just a lean: nothing reaches past 0.05 of the body"
-          ],
-          "sub": "62b2e706-3709-45ad-9b96-8d6f6c7d8cb7",
-          "group": "787c2ed2-fd31-4e0e-a5f4-184e64ba2844",
-          "takes": 1,
-          "version": 2,
-          "mirrored": false,
-          "generated_at": "2026-09-09T22:41:38+00:00",
-          "action": "Double Slam - Raises both arms and slams them down together once, then returns to idle stance"
-        },
-        "north": {
-          "status": "fail",
-          "step_mean": 0.2484,
-          "step_max": 0.2906,
-          "drift": 1.71,
-          "loop": 0.0006,
-          "loop_ratio": 0.0,
-          "travel": 1.74,
-          "pin": 1.0,
-          "pad": 0,
-          "flash": 0.0,
-          "peak": 0.3568,
-          "reach": 0.045,
-          "canvas": [
-            224,
-            224
-          ],
-          "reasons": [
-            "no strike, just a lean: nothing reaches past 0.04 of the body"
-          ],
-          "sub": "0be17cf4-aa7e-4107-85ed-b8c3c2fad054",
-          "group": "f07dfa24-9b0f-49ae-9ca8-2d6ef9ce1252",
-          "takes": 1,
-          "version": 2,
-          "mirrored": false,
-          "generated_at": "2026-09-09T22:41:39+00:00",
-          "action": "Double Slam - Raises both arms and slams them down together once, then returns to idle stance"
-        },
-        "south-west": {
-          "status": "pass",
-          "step_mean": 0.1579,
-          "step_max": 0.2002,
-          "drift": 2.65,
-          "loop": 0.0001,
-          "loop_ratio": 0.0,
-          "travel": 0.22,
-          "pin": 1.0,
-          "pad": 0,
-          "flash": 0.0,
-          "peak": 0.2662,
-          "canvas": [
-            224,
-            224
-          ],
-          "reasons": [],
-          "sub": "88903a69-0c96-4105-b6ba-facbb5f67660",
-          "group": "9685ad7c-e94e-4a26-9ba9-2a7b2276714a",
-          "takes": 1,
-          "version": 2,
-          "mirrored": true,
-          "generated_at": "2026-09-09T22:41:37+00:00",
-          "action": "Double Slam - Raises both arms and slams them down together once, then returns to idle stance",
-          "source": "south-east"
-        },
-        "west": {
-          "status": "pass",
-          "step_mean": 0.2341,
-          "step_max": 0.3423,
-          "drift": 4.52,
-          "loop": 0.0,
-          "loop_ratio": 0.0,
-          "travel": 1.33,
-          "pin": 1.0,
-          "pad": 0,
-          "flash": 0.0,
-          "peak": 0.3606,
-          "reach": 0.531,
-          "canvas": [
-            224,
-            224
-          ],
-          "reasons": [],
-          "sub": "b437e0a0-b539-4cc1-86c9-b1a50e565bb9",
-          "group": "8edd176f-d727-47c9-b955-89c9f4e485c1",
-          "takes": 1,
-          "version": 2,
-          "mirrored": true,
-          "generated_at": "2026-09-09T22:41:37+00:00",
-          "action": "Double Slam - Raises both arms and slams them down together once, then returns to idle stance",
-          "source": "east"
-        },
-        "north-west": {
-          "status": "pass",
-          "step_mean": 0.122,
-          "step_max": 0.1479,
-          "drift": 1.47,
-          "loop": 0.0003,
-          "loop_ratio": 0.0,
-          "travel": 1.48,
-          "pin": 1.0,
-          "pad": 0,
-          "flash": 0.0,
-          "peak": 0.207,
-          "canvas": [
-            224,
-            224
-          ],
-          "reasons": [],
-          "sub": "62b2e706-3709-45ad-9b96-8d6f6c7d8cb7",
-          "group": "787c2ed2-fd31-4e0e-a5f4-184e64ba2844",
-          "takes": 1,
-          "version": 2,
-          "mirrored": true,
-          "generated_at": "2026-09-09T22:41:38+00:00",
-          "action": "Double Slam - Raises both arms and slams them down together once, then returns to idle stance",
-          "source": "north-east"
-        }
-      },
-      "action": "Double Slam - Raises both arms and slams them down together once, then returns to idle stance",
-      "frame_paths": {
-        "south": [
-          "bog_titan/animations/attack/south/00.webp",
-          "bog_titan/animations/attack/south/01.webp",
-          "bog_titan/animations/attack/south/02.webp",
-          "bog_titan/animations/attack/south/03.webp",
-          "bog_titan/animations/attack/south/04.webp"
-        ],
-        "south-east": [
-          "bog_titan/animations/attack/south-east/00.webp",
-          "bog_titan/animations/attack/south-east/01.webp",
-          "bog_titan/animations/attack/south-east/02.webp",
-          "bog_titan/animations/attack/south-east/03.webp",
-          "bog_titan/animations/attack/south-east/04.webp"
-        ],
-        "east": [
-          "bog_titan/animations/attack/east/00.webp",
-          "bog_titan/animations/attack/east/01.webp",
-          "bog_titan/animations/attack/east/02.webp",
-          "bog_titan/animations/attack/east/03.webp",
-          "bog_titan/animations/attack/east/04.webp"
-        ],
-        "north-east": [
-          "bog_titan/animations/attack/north-east/00.webp",
-          "bog_titan/animations/attack/north-east/01.webp",
-          "bog_titan/animations/attack/north-east/02.webp",
-          "bog_titan/animations/attack/north-east/03.webp",
-          "bog_titan/animations/attack/north-east/04.webp"
-        ],
-        "north": [
-          "bog_titan/animations/attack/north/00.webp",
-          "bog_titan/animations/attack/north/01.webp",
-          "bog_titan/animations/attack/north/02.webp",
-          "bog_titan/animations/attack/north/03.webp",
-          "bog_titan/animations/attack/north/04.webp"
-        ],
-        "south-west": [
-          "bog_titan/animations/attack/south-west/00.webp",
-          "bog_titan/animations/attack/south-west/01.webp",
-          "bog_titan/animations/attack/south-west/02.webp",
-          "bog_titan/animations/attack/south-west/03.webp",
-          "bog_titan/animations/attack/south-west/04.webp"
-        ],
-        "west": [
-          "bog_titan/animations/attack/west/00.webp",
-          "bog_titan/animations/attack/west/01.webp",
-          "bog_titan/animations/attack/west/02.webp",
-          "bog_titan/animations/attack/west/03.webp",
-          "bog_titan/animations/attack/west/04.webp"
-        ],
-        "north-west": [
-          "bog_titan/animations/attack/north-west/00.webp",
-          "bog_titan/animations/attack/north-west/01.webp",
-          "bog_titan/animations/attack/north-west/02.webp",
-          "bog_titan/animations/attack/north-west/03.webp",
-          "bog_titan/animations/attack/north-west/04.webp"
-        ]
-      },
-      "strips": {
-        "south": "bog_titan/animations/attack__south.webp",
-        "south-east": "bog_titan/animations/attack__south-east.webp",
-        "east": "bog_titan/animations/attack__east.webp",
-        "north-east": "bog_titan/animations/attack__north-east.webp",
-        "north": "bog_titan/animations/attack__north.webp",
-        "south-west": "bog_titan/animations/attack__south-west.webp",
-        "west": "bog_titan/animations/attack__west.webp",
-        "north-west": "bog_titan/animations/attack__north-west.webp"
-      }
-    },
-    "attack_try": {
-      "directions": {
-        "south": {
-          "status": "fail",
-          "step_mean": 0.2329,
-          "step_max": 0.3788,
-          "drift": 13.28,
-          "loop": 0.4075,
-          "loop_ratio": 1.75,
-          "travel": 1.68,
-          "pin": 1.0,
-          "pad": 0,
-          "flash": 0.0,
-          "peak": 0.4075,
-          "reach": 0.093,
-          "canvas": [
-            224,
-            224
-          ],
-          "reasons": [
-            "no strike, just a lean: nothing reaches past 0.09 of the body"
-          ],
-          "sub": "ae064e21-6cae-425e-b02d-008da3971819",
-          "group": "ab9b15c4-8484-4d2a-a1b5-e1fe6cc6c658",
-          "takes": 1,
-          "version": 2,
-          "mirrored": false,
-          "generated_at": "2026-09-10T20:14:49+00:00",
-          "action": "Double Slam - Raises both arms high overhead and slams them down together, a big aggressive swing",
-          "tries": 1
-        },
-        "south-east": {
-          "status": "fail",
-          "step_mean": 0.1815,
-          "step_max": 0.2522,
-          "drift": 3.36,
-          "loop": 0.3828,
-          "loop_ratio": 2.11,
-          "travel": 5.17,
-          "pin": 1.0,
-          "pad": 0,
-          "flash": 0.173,
-          "peak": 0.3828,
-          "reach": 0.215,
-          "canvas": [
-            224,
-            224
-          ],
-          "reasons": [
-            "no strike, just a lean: nothing reaches past 0.21 of the body",
-            "painted effect: 0.17 of the body in new bright pixels (flare/slash arc)"
-          ],
-          "sub": "48f27d18-6d20-4a5e-93c3-4826d8b61e3c",
-          "group": "05432dfb-06a9-4f1b-951a-64a417fbbaad",
-          "takes": 1,
-          "version": 2,
-          "mirrored": false,
-          "generated_at": "2026-09-10T20:14:50+00:00",
-          "action": "Double Slam - Raises both arms high overhead and slams them down together, a big aggressive swing",
-          "tries": 1
-        },
-        "east": {
-          "status": "pass",
-          "step_mean": 0.1571,
-          "step_max": 0.2894,
-          "drift": 6.14,
-          "loop": 0.4132,
-          "loop_ratio": 2.63,
-          "travel": 4.08,
-          "pin": 1.0,
-          "pad": 0,
-          "flash": 0.0,
-          "peak": 0.4132,
-          "reach": 0.58,
-          "canvas": [
-            224,
-            224
-          ],
-          "reasons": [],
-          "sub": "d7cb6113-c882-4798-8bab-3394479e9305",
-          "group": "1414f481-c445-4af5-b3b4-674c598d6ffc",
-          "takes": 1,
-          "version": 1,
-          "mirrored": false,
-          "generated_at": "2026-09-10T19:44:30+00:00",
-          "action": "Double Slam - Raises both arms high overhead and slams them down together",
-          "tries": 1
-        },
-        "north-east": {
-          "status": "pass",
-          "step_mean": 0.1786,
-          "step_max": 0.2886,
-          "drift": 8.34,
-          "loop": 0.4409,
-          "loop_ratio": 2.47,
-          "travel": 5.56,
-          "pin": 1.0,
-          "pad": 0,
-          "flash": 0.0,
-          "peak": 0.4409,
-          "reach": 0.328,
-          "canvas": [
-            224,
-            224
-          ],
-          "reasons": [],
-          "sub": "90a71bc6-36bb-4cec-8326-f5ed86b3a415",
-          "group": "2cbb6c9b-0038-4ea9-8974-a7137a674393",
-          "takes": 1,
-          "version": 1,
-          "mirrored": false,
-          "generated_at": "2026-09-10T19:44:31+00:00",
-          "action": "Double Slam - Raises both arms high overhead and slams them down together",
-          "tries": 1
-        },
-        "north": {
-          "status": "fail",
-          "step_mean": 0.1857,
-          "step_max": 0.3477,
-          "drift": 9.22,
-          "loop": 0.3401,
-          "loop_ratio": 1.83,
-          "travel": 0.53,
-          "pin": 1.0,
-          "pad": 0,
-          "flash": 0.0,
-          "peak": 0.3909,
-          "reach": 0.032,
-          "canvas": [
-            224,
-            224
-          ],
-          "reasons": [
-            "no strike, just a lean: nothing reaches past 0.03 of the body"
-          ],
-          "sub": "9f453806-ca28-4767-b649-631507ca7c0c",
-          "group": "dabd1280-7211-48e4-a291-d4e7269b4fa5",
-          "takes": 1,
-          "version": 2,
-          "mirrored": false,
-          "generated_at": "2026-09-10T20:14:50+00:00",
-          "action": "Double Slam - Raises both arms high overhead and slams them down together, a big aggressive swing",
-          "tries": 1
-        },
-        "west": {
-          "status": "pass",
-          "step_mean": 0.1571,
-          "step_max": 0.2894,
-          "drift": 6.14,
-          "loop": 0.4132,
-          "loop_ratio": 2.63,
-          "travel": 4.08,
-          "pin": 1.0,
-          "pad": 0,
-          "flash": 0.0,
-          "peak": 0.4132,
-          "reach": 0.58,
-          "canvas": [
-            224,
-            224
-          ],
-          "reasons": [],
-          "sub": "d7cb6113-c882-4798-8bab-3394479e9305",
-          "group": "1414f481-c445-4af5-b3b4-674c598d6ffc",
-          "takes": 1,
-          "version": 1,
-          "mirrored": true,
-          "generated_at": "2026-09-10T19:44:30+00:00",
-          "action": "Double Slam - Raises both arms high overhead and slams them down together",
-          "tries": 1,
-          "source": "east"
-        },
-        "north-west": {
-          "status": "pass",
-          "step_mean": 0.1786,
-          "step_max": 0.2886,
-          "drift": 8.34,
-          "loop": 0.4409,
-          "loop_ratio": 2.47,
-          "travel": 5.56,
-          "pin": 1.0,
-          "pad": 0,
-          "flash": 0.0,
-          "peak": 0.4409,
-          "reach": 0.328,
-          "canvas": [
-            224,
-            224
-          ],
-          "reasons": [],
-          "sub": "90a71bc6-36bb-4cec-8326-f5ed86b3a415",
-          "group": "2cbb6c9b-0038-4ea9-8974-a7137a674393",
-          "takes": 1,
-          "version": 1,
-          "mirrored": true,
-          "generated_at": "2026-09-10T19:44:31+00:00",
-          "action": "Double Slam - Raises both arms high overhead and slams them down together",
-          "tries": 1,
-          "source": "north-east"
-        }
-      },
-      "action": "Double Slam - Raises both arms high overhead and slams them down together, a big aggressive swing",
-      "frame_paths": {
-        "south": [
-          "bog_titan/animations/attack_try/south/00.webp",
-          "bog_titan/animations/attack_try/south/01.webp",
-          "bog_titan/animations/attack_try/south/02.webp",
-          "bog_titan/animations/attack_try/south/03.webp",
-          "bog_titan/animations/attack_try/south/04.webp"
-        ],
-        "south-east": [
-          "bog_titan/animations/attack_try/south-east/00.webp",
-          "bog_titan/animations/attack_try/south-east/01.webp",
-          "bog_titan/animations/attack_try/south-east/02.webp",
-          "bog_titan/animations/attack_try/south-east/03.webp",
-          "bog_titan/animations/attack_try/south-east/04.webp"
-        ],
-        "east": [
-          "bog_titan/animations/attack_try/east/00.webp",
-          "bog_titan/animations/attack_try/east/01.webp",
-          "bog_titan/animations/attack_try/east/02.webp",
-          "bog_titan/animations/attack_try/east/03.webp",
-          "bog_titan/animations/attack_try/east/04.webp"
-        ],
-        "north-east": [
-          "bog_titan/animations/attack_try/north-east/00.webp",
-          "bog_titan/animations/attack_try/north-east/01.webp",
-          "bog_titan/animations/attack_try/north-east/02.webp",
-          "bog_titan/animations/attack_try/north-east/03.webp",
-          "bog_titan/animations/attack_try/north-east/04.webp"
-        ],
-        "north": [
-          "bog_titan/animations/attack_try/north/00.webp",
-          "bog_titan/animations/attack_try/north/01.webp",
-          "bog_titan/animations/attack_try/north/02.webp",
-          "bog_titan/animations/attack_try/north/03.webp",
-          "bog_titan/animations/attack_try/north/04.webp"
-        ],
-        "west": [
-          "bog_titan/animations/attack_try/west/00.webp",
-          "bog_titan/animations/attack_try/west/01.webp",
-          "bog_titan/animations/attack_try/west/02.webp",
-          "bog_titan/animations/attack_try/west/03.webp",
-          "bog_titan/animations/attack_try/west/04.webp"
-        ],
-        "north-west": [
-          "bog_titan/animations/attack_try/north-west/00.webp",
-          "bog_titan/animations/attack_try/north-west/01.webp",
-          "bog_titan/animations/attack_try/north-west/02.webp",
-          "bog_titan/animations/attack_try/north-west/03.webp",
-          "bog_titan/animations/attack_try/north-west/04.webp"
-        ]
-      },
-      "strips": {
-        "south": "bog_titan/animations/attack_try__south.webp",
-        "south-east": "bog_titan/animations/attack_try__south-east.webp",
-        "east": "bog_titan/animations/attack_try__east.webp",
-        "north-east": "bog_titan/animations/attack_try__north-east.webp",
-        "north": "bog_titan/animations/attack_try__north.webp",
-        "west": "bog_titan/animations/attack_try__west.webp",
-        "north-west": "bog_titan/animations/attack_try__north-west.webp"
-      },
-      "intensity": 1
-    }
+ "id": "bog_titan",
+ "name": "Fenfather",
+ "tier": "boss",
+ "scale": "big",
+ "lore": "The fen itself, when the fen stands up. Villages built on it are carried off when it turns.",
+ "biome": [
+  "dark_mud",
+  "water"
+ ],
+ "items": [],
+ "prompt": "Gigantic fantasy swamp titan shown full body from head to feet, a hulking body of black peat and tangled roots, reeds and moss growing on its shoulders, a face of two glowing green lamps in the mud, huge dripping arms, and legs like sunken tree trunks.",
+ "size": [
+  224,
+  224
+ ],
+ "template_id": "mannequin",
+ "directions": [
+  "south",
+  "south-east",
+  "east",
+  "north-east",
+  "north",
+  "north-west",
+  "west",
+  "south-west"
+ ],
+ "rotations": {
+  "south": "bog_titan/rotations/south.webp",
+  "south-east": "bog_titan/rotations/south-east.webp",
+  "east": "bog_titan/rotations/east.webp",
+  "north-east": "bog_titan/rotations/north-east.webp",
+  "north": "bog_titan/rotations/north.webp",
+  "north-west": "bog_titan/rotations/north-west.webp",
+  "west": "bog_titan/rotations/west.webp",
+  "south-west": "bog_titan/rotations/south-west.webp"
+ },
+ "sheet": "bog_titan/sheet.webp",
+ "review": "approved",
+ "pixellab_id": "83b4bbfd-d8d1-40ca-8a91-08fb033241a3",
+ "seed": 975929058,
+ "version": 1,
+ "usage": null,
+ "generated_at": "2026-09-09T18:50:54+00:00",
+ "elapsed_s": 199.7,
+ "qa": {
+  "status": "pass",
+  "min_run1": 0.549,
+  "reasons": [],
+  "directions": {
+   "south": {
+    "run1": 0.549,
+    "bbox": [
+     31,
+     10,
+     192,
+     209
+    ],
+    "fill": 0.639,
+    "touches_edge": false
+   },
+   "south-east": {
+    "run1": 0.642,
+    "bbox": [
+     38,
+     11,
+     182,
+     215
+    ],
+    "fill": 0.585,
+    "touches_edge": false
+   },
+   "east": {
+    "run1": 0.646,
+    "bbox": [
+     72,
+     8,
+     153,
+     216
+    ],
+    "fill": 0.336,
+    "touches_edge": false
+   },
+   "north-east": {
+    "run1": 0.605,
+    "bbox": [
+     50,
+     8,
+     172,
+     214
+    ],
+    "fill": 0.501,
+    "touches_edge": false
+   },
+   "north": {
+    "run1": 0.586,
+    "bbox": [
+     33,
+     10,
+     189,
+     209
+    ],
+    "fill": 0.619,
+    "touches_edge": false
+   },
+   "north-west": {
+    "run1": 0.602,
+    "bbox": [
+     47,
+     8,
+     173,
+     214
+    ],
+    "fill": 0.517,
+    "touches_edge": false
+   },
+   "west": {
+    "run1": 0.646,
+    "bbox": [
+     68,
+     8,
+     148,
+     216
+    ],
+    "fill": 0.332,
+    "touches_edge": false
+   },
+   "south-west": {
+    "run1": 0.634,
+    "bbox": [
+     42,
+     10,
+     182,
+     215
+    ],
+    "fill": 0.572,
+    "touches_edge": false
+   }
   }
+ },
+ "approved_at": "2026-09-09T19:59:23+00:00",
+ "animations": {
+  "idle": {
+   "directions": {
+    "south": {
+     "status": "pass",
+     "step_mean": 0.0349,
+     "step_max": 0.0571,
+     "drift": 1.72,
+     "loop": 0.0001,
+     "pin": 1.0,
+     "reasons": [],
+     "sub": "ae944878-b84f-47b5-82f4-ad4f814bc77c",
+     "takes": 1,
+     "version": 1,
+     "mirrored": false,
+     "generated_at": "2026-09-09T20:20:22+00:00",
+     "cut": 0
+    },
+    "south-east": {
+     "status": "pass",
+     "step_mean": 0.0317,
+     "step_max": 0.0451,
+     "drift": 1.0,
+     "loop": 0.0001,
+     "pin": 1.0,
+     "reasons": [],
+     "sub": "c23fd72b-46f6-46fd-bd9c-97c39395796e",
+     "takes": 1,
+     "version": 1,
+     "mirrored": false,
+     "generated_at": "2026-09-09T20:20:23+00:00",
+     "cut": 0
+    },
+    "east": {
+     "status": "pass",
+     "step_mean": 0.0202,
+     "step_max": 0.0336,
+     "drift": 0.75,
+     "loop": 0.0007,
+     "pin": 1.0,
+     "reasons": [],
+     "sub": "35015c6f-2848-4840-a91b-36e536ee303c",
+     "takes": 1,
+     "version": 1,
+     "mirrored": false,
+     "generated_at": "2026-09-09T20:20:24+00:00",
+     "cut": 0
+    },
+    "north-east": {
+     "status": "pass",
+     "step_mean": 0.0628,
+     "step_max": 0.0758,
+     "drift": 1.94,
+     "loop": 0.0001,
+     "pin": 1.0,
+     "reasons": [],
+     "sub": "9aa43094-d283-4e18-98e9-0518a6921231",
+     "takes": 1,
+     "version": 1,
+     "mirrored": false,
+     "generated_at": "2026-09-09T20:20:24+00:00",
+     "cut": 0
+    },
+    "north": {
+     "status": "pass",
+     "step_mean": 0.071,
+     "step_max": 0.0807,
+     "drift": 2.77,
+     "loop": 0.0,
+     "pin": 1.0,
+     "reasons": [],
+     "sub": "4f6e9c35-e045-44b3-b82b-4bce1e20f077",
+     "takes": 1,
+     "version": 1,
+     "mirrored": false,
+     "generated_at": "2026-09-09T20:20:25+00:00",
+     "cut": 0
+    },
+    "south-west": {
+     "status": "pass",
+     "step_mean": 0.0317,
+     "step_max": 0.0451,
+     "drift": 1.0,
+     "loop": 0.0001,
+     "pin": 1.0,
+     "reasons": [],
+     "sub": "c23fd72b-46f6-46fd-bd9c-97c39395796e",
+     "takes": 1,
+     "version": 1,
+     "mirrored": true,
+     "generated_at": "2026-09-09T20:20:23+00:00",
+     "cut": 0,
+     "source": "south-east"
+    },
+    "west": {
+     "status": "pass",
+     "step_mean": 0.0202,
+     "step_max": 0.0336,
+     "drift": 0.75,
+     "loop": 0.0007,
+     "pin": 1.0,
+     "reasons": [],
+     "sub": "35015c6f-2848-4840-a91b-36e536ee303c",
+     "takes": 1,
+     "version": 1,
+     "mirrored": true,
+     "generated_at": "2026-09-09T20:20:24+00:00",
+     "cut": 0,
+     "source": "east"
+    },
+    "north-west": {
+     "status": "pass",
+     "step_mean": 0.0628,
+     "step_max": 0.0758,
+     "drift": 1.94,
+     "loop": 0.0001,
+     "pin": 1.0,
+     "reasons": [],
+     "sub": "9aa43094-d283-4e18-98e9-0518a6921231",
+     "takes": 1,
+     "version": 1,
+     "mirrored": true,
+     "generated_at": "2026-09-09T20:20:24+00:00",
+     "cut": 0,
+     "source": "north-east"
+    }
+   },
+   "action": "Calm still idle, breathing very slowly and subtly, chest and shoulders rise and fall a little, feet planted, no other movement, ends in the same neutral pose it started in",
+   "frame_paths": {
+    "south": [
+     "bog_titan/animations/idle/south/00.webp",
+     "bog_titan/animations/idle/south/01.webp",
+     "bog_titan/animations/idle/south/02.webp",
+     "bog_titan/animations/idle/south/03.webp",
+     "bog_titan/animations/idle/south/04.webp"
+    ],
+    "south-east": [
+     "bog_titan/animations/idle/south-east/00.webp",
+     "bog_titan/animations/idle/south-east/01.webp",
+     "bog_titan/animations/idle/south-east/02.webp",
+     "bog_titan/animations/idle/south-east/03.webp",
+     "bog_titan/animations/idle/south-east/04.webp"
+    ],
+    "east": [
+     "bog_titan/animations/idle/east/00.webp",
+     "bog_titan/animations/idle/east/01.webp",
+     "bog_titan/animations/idle/east/02.webp",
+     "bog_titan/animations/idle/east/03.webp",
+     "bog_titan/animations/idle/east/04.webp"
+    ],
+    "north-east": [
+     "bog_titan/animations/idle/north-east/00.webp",
+     "bog_titan/animations/idle/north-east/01.webp",
+     "bog_titan/animations/idle/north-east/02.webp",
+     "bog_titan/animations/idle/north-east/03.webp",
+     "bog_titan/animations/idle/north-east/04.webp"
+    ],
+    "north": [
+     "bog_titan/animations/idle/north/00.webp",
+     "bog_titan/animations/idle/north/01.webp",
+     "bog_titan/animations/idle/north/02.webp",
+     "bog_titan/animations/idle/north/03.webp",
+     "bog_titan/animations/idle/north/04.webp"
+    ],
+    "south-west": [
+     "bog_titan/animations/idle/south-west/00.webp",
+     "bog_titan/animations/idle/south-west/01.webp",
+     "bog_titan/animations/idle/south-west/02.webp",
+     "bog_titan/animations/idle/south-west/03.webp",
+     "bog_titan/animations/idle/south-west/04.webp"
+    ],
+    "west": [
+     "bog_titan/animations/idle/west/00.webp",
+     "bog_titan/animations/idle/west/01.webp",
+     "bog_titan/animations/idle/west/02.webp",
+     "bog_titan/animations/idle/west/03.webp",
+     "bog_titan/animations/idle/west/04.webp"
+    ],
+    "north-west": [
+     "bog_titan/animations/idle/north-west/00.webp",
+     "bog_titan/animations/idle/north-west/01.webp",
+     "bog_titan/animations/idle/north-west/02.webp",
+     "bog_titan/animations/idle/north-west/03.webp",
+     "bog_titan/animations/idle/north-west/04.webp"
+    ]
+   },
+   "strips": {
+    "south": "bog_titan/animations/idle__south.webp",
+    "south-east": "bog_titan/animations/idle__south-east.webp",
+    "east": "bog_titan/animations/idle__east.webp",
+    "north-east": "bog_titan/animations/idle__north-east.webp",
+    "north": "bog_titan/animations/idle__north.webp",
+    "south-west": "bog_titan/animations/idle__south-west.webp",
+    "west": "bog_titan/animations/idle__west.webp",
+    "north-west": "bog_titan/animations/idle__north-west.webp"
+   }
+  },
+  "walk": {
+   "directions": {
+    "south": {
+     "status": "warn",
+     "step_mean": 0.1775,
+     "step_max": 0.2071,
+     "drift": 7.38,
+     "loop": 0.2834,
+     "loop_ratio": 1.6,
+     "travel": 2.27,
+     "pin": 0.881,
+     "pad": 0,
+     "canvas": [
+      224,
+      224
+     ],
+     "reasons": [
+      "drifts 7.4 px — eyeball it"
+     ],
+     "sub": "e6956bdb-c455-4c72-8d08-49691ffe1e11",
+     "group": "0736a937-1442-4b63-a19f-3a7f7bfa6a8c",
+     "takes": 1,
+     "version": 1,
+     "mirrored": false,
+     "generated_at": "2026-09-09T21:16:34+00:00"
+    },
+    "south-east": {
+     "status": "warn",
+     "step_mean": 0.2087,
+     "step_max": 0.2384,
+     "drift": 8.21,
+     "loop": 0.5452,
+     "loop_ratio": 2.61,
+     "travel": 2.2,
+     "pin": 0.861,
+     "pad": 0,
+     "canvas": [
+      224,
+      224
+     ],
+     "reasons": [
+      "drifts 8.2 px — eyeball it",
+      "last→first hand-off 2.6× a step — eyeball the loop"
+     ],
+     "sub": "3ec3f6dc-bea5-471a-9b84-0d4fb456e0c8",
+     "group": "ae8f6de5-197e-49eb-9a2a-45d9475e5933",
+     "takes": 2,
+     "version": 2,
+     "mirrored": false,
+     "generated_at": "2026-09-09T21:28:37+00:00"
+    },
+    "east": {
+     "status": "pass",
+     "step_mean": 0.2441,
+     "step_max": 0.294,
+     "drift": 5.37,
+     "loop": 0.3319,
+     "loop_ratio": 1.36,
+     "travel": 4.35,
+     "pin": 0.769,
+     "pad": 0,
+     "canvas": [
+      224,
+      224
+     ],
+     "reasons": [],
+     "sub": "e253ef5c-f47b-4896-a2f4-1090048a34fd",
+     "group": "396cb703-6fb9-4797-8739-6cf466f5c74a",
+     "takes": 1,
+     "version": 1,
+     "mirrored": false,
+     "generated_at": "2026-09-09T21:16:36+00:00"
+    },
+    "north-east": {
+     "status": "warn",
+     "step_mean": 0.1847,
+     "step_max": 0.2068,
+     "drift": 6.9,
+     "loop": 0.3263,
+     "loop_ratio": 1.77,
+     "travel": 1.47,
+     "pin": 0.818,
+     "pad": 0,
+     "canvas": [
+      224,
+      224
+     ],
+     "reasons": [
+      "drifts 6.9 px — eyeball it"
+     ],
+     "sub": "0120a716-b18a-49fa-99ae-8807f12f019e",
+     "group": "fe22bdbf-c1d0-4a8e-9209-9facf2a31b78",
+     "takes": 1,
+     "version": 1,
+     "mirrored": false,
+     "generated_at": "2026-09-09T21:16:36+00:00"
+    },
+    "north": {
+     "status": "pass",
+     "step_mean": 0.1728,
+     "step_max": 0.1999,
+     "drift": 5.06,
+     "loop": 0.2946,
+     "loop_ratio": 1.7,
+     "travel": 3.32,
+     "pin": 0.865,
+     "pad": 0,
+     "canvas": [
+      224,
+      224
+     ],
+     "reasons": [],
+     "sub": "c279b13b-eef3-45d3-a585-438315fa00a8",
+     "group": "daceec57-a037-45de-afde-c0acfa9e62c5",
+     "takes": 1,
+     "version": 1,
+     "mirrored": false,
+     "generated_at": "2026-09-09T21:16:37+00:00"
+    },
+    "west": {
+     "status": "pass",
+     "step_mean": 0.2441,
+     "step_max": 0.294,
+     "drift": 5.37,
+     "loop": 0.3319,
+     "loop_ratio": 1.36,
+     "travel": 4.35,
+     "pin": 0.769,
+     "pad": 0,
+     "canvas": [
+      224,
+      224
+     ],
+     "reasons": [],
+     "sub": "e253ef5c-f47b-4896-a2f4-1090048a34fd",
+     "group": "396cb703-6fb9-4797-8739-6cf466f5c74a",
+     "takes": 1,
+     "version": 1,
+     "mirrored": true,
+     "generated_at": "2026-09-09T21:16:36+00:00",
+     "source": "east"
+    },
+    "north-west": {
+     "status": "warn",
+     "step_mean": 0.1847,
+     "step_max": 0.2068,
+     "drift": 6.9,
+     "loop": 0.3263,
+     "loop_ratio": 1.77,
+     "travel": 1.47,
+     "pin": 0.818,
+     "pad": 0,
+     "canvas": [
+      224,
+      224
+     ],
+     "reasons": [
+      "drifts 6.9 px — eyeball it"
+     ],
+     "sub": "0120a716-b18a-49fa-99ae-8807f12f019e",
+     "group": "fe22bdbf-c1d0-4a8e-9209-9facf2a31b78",
+     "takes": 1,
+     "version": 1,
+     "mirrored": true,
+     "generated_at": "2026-09-09T21:16:36+00:00",
+     "source": "north-east"
+    },
+    "south-west": {
+     "status": "warn",
+     "step_mean": 0.2087,
+     "step_max": 0.2384,
+     "drift": 8.21,
+     "loop": 0.5452,
+     "loop_ratio": 2.61,
+     "travel": 2.2,
+     "pin": 0.861,
+     "pad": 0,
+     "canvas": [
+      224,
+      224
+     ],
+     "reasons": [
+      "drifts 8.2 px — eyeball it",
+      "last→first hand-off 2.6× a step — eyeball the loop"
+     ],
+     "sub": "3ec3f6dc-bea5-471a-9b84-0d4fb456e0c8",
+     "group": "ae8f6de5-197e-49eb-9a2a-45d9475e5933",
+     "takes": 2,
+     "version": 2,
+     "mirrored": true,
+     "generated_at": "2026-09-09T21:28:37+00:00",
+     "source": "south-east"
+    }
+   },
+   "action": "walk loop, full walk cycle in place, legs alternate naturally, normal calm walking pace, body stays centered, seamless loop whose last frame leads straight back into the first, no turning",
+   "frame_paths": {
+    "south": [
+     "bog_titan/animations/walk/south/00.webp",
+     "bog_titan/animations/walk/south/01.webp",
+     "bog_titan/animations/walk/south/02.webp",
+     "bog_titan/animations/walk/south/03.webp",
+     "bog_titan/animations/walk/south/04.webp",
+     "bog_titan/animations/walk/south/05.webp"
+    ],
+    "south-east": [
+     "bog_titan/animations/walk/south-east/00.webp",
+     "bog_titan/animations/walk/south-east/01.webp",
+     "bog_titan/animations/walk/south-east/02.webp",
+     "bog_titan/animations/walk/south-east/03.webp",
+     "bog_titan/animations/walk/south-east/04.webp",
+     "bog_titan/animations/walk/south-east/05.webp"
+    ],
+    "east": [
+     "bog_titan/animations/walk/east/00.webp",
+     "bog_titan/animations/walk/east/01.webp",
+     "bog_titan/animations/walk/east/02.webp",
+     "bog_titan/animations/walk/east/03.webp",
+     "bog_titan/animations/walk/east/04.webp",
+     "bog_titan/animations/walk/east/05.webp"
+    ],
+    "north-east": [
+     "bog_titan/animations/walk/north-east/00.webp",
+     "bog_titan/animations/walk/north-east/01.webp",
+     "bog_titan/animations/walk/north-east/02.webp",
+     "bog_titan/animations/walk/north-east/03.webp",
+     "bog_titan/animations/walk/north-east/04.webp",
+     "bog_titan/animations/walk/north-east/05.webp"
+    ],
+    "north": [
+     "bog_titan/animations/walk/north/00.webp",
+     "bog_titan/animations/walk/north/01.webp",
+     "bog_titan/animations/walk/north/02.webp",
+     "bog_titan/animations/walk/north/03.webp",
+     "bog_titan/animations/walk/north/04.webp",
+     "bog_titan/animations/walk/north/05.webp"
+    ],
+    "west": [
+     "bog_titan/animations/walk/west/00.webp",
+     "bog_titan/animations/walk/west/01.webp",
+     "bog_titan/animations/walk/west/02.webp",
+     "bog_titan/animations/walk/west/03.webp",
+     "bog_titan/animations/walk/west/04.webp",
+     "bog_titan/animations/walk/west/05.webp"
+    ],
+    "north-west": [
+     "bog_titan/animations/walk/north-west/00.webp",
+     "bog_titan/animations/walk/north-west/01.webp",
+     "bog_titan/animations/walk/north-west/02.webp",
+     "bog_titan/animations/walk/north-west/03.webp",
+     "bog_titan/animations/walk/north-west/04.webp",
+     "bog_titan/animations/walk/north-west/05.webp"
+    ],
+    "south-west": [
+     "bog_titan/animations/walk/south-west/00.webp",
+     "bog_titan/animations/walk/south-west/01.webp",
+     "bog_titan/animations/walk/south-west/02.webp",
+     "bog_titan/animations/walk/south-west/03.webp",
+     "bog_titan/animations/walk/south-west/04.webp",
+     "bog_titan/animations/walk/south-west/05.webp"
+    ]
+   },
+   "strips": {
+    "south": "bog_titan/animations/walk__south.webp",
+    "south-east": "bog_titan/animations/walk__south-east.webp",
+    "east": "bog_titan/animations/walk__east.webp",
+    "north-east": "bog_titan/animations/walk__north-east.webp",
+    "north": "bog_titan/animations/walk__north.webp",
+    "west": "bog_titan/animations/walk__west.webp",
+    "north-west": "bog_titan/animations/walk__north-west.webp",
+    "south-west": "bog_titan/animations/walk__south-west.webp"
+   }
+  },
+  "attack": {
+   "directions": {
+    "south": {
+     "status": "fail",
+     "step_mean": 0.1667,
+     "step_max": 0.2337,
+     "drift": 2.14,
+     "loop": 0.0001,
+     "loop_ratio": 0.0,
+     "travel": 0.44,
+     "pin": 1.0,
+     "pad": 0,
+     "flash": 0.0,
+     "peak": 0.3003,
+     "reach": 0.043,
+     "canvas": [
+      224,
+      224
+     ],
+     "reasons": [
+      "no strike, just a lean: nothing reaches past 0.04 of the body"
+     ],
+     "sub": "9099993f-5a40-4ec3-9a28-00e37bd15652",
+     "group": "a7ae25c8-b87a-45ae-b755-a12d97e76bfe",
+     "takes": 1,
+     "version": 2,
+     "mirrored": false,
+     "generated_at": "2026-09-09T22:41:36+00:00",
+     "action": "Double Slam - Raises both arms and slams them down together once, then returns to idle stance"
+    },
+    "south-east": {
+     "status": "fail",
+     "step_mean": 0.1579,
+     "step_max": 0.2002,
+     "drift": 2.65,
+     "loop": 0.0001,
+     "loop_ratio": 0.0,
+     "travel": 0.22,
+     "pin": 1.0,
+     "pad": 0,
+     "flash": 0.0,
+     "peak": 0.2662,
+     "reach": 0.076,
+     "canvas": [
+      224,
+      224
+     ],
+     "reasons": [
+      "no strike, just a lean: nothing reaches past 0.08 of the body"
+     ],
+     "sub": "88903a69-0c96-4105-b6ba-facbb5f67660",
+     "group": "9685ad7c-e94e-4a26-9ba9-2a7b2276714a",
+     "takes": 1,
+     "version": 2,
+     "mirrored": false,
+     "generated_at": "2026-09-09T22:41:37+00:00",
+     "action": "Double Slam - Raises both arms and slams them down together once, then returns to idle stance"
+    },
+    "east": {
+     "status": "pass",
+     "step_mean": 0.2341,
+     "step_max": 0.3423,
+     "drift": 4.52,
+     "loop": 0.0,
+     "loop_ratio": 0.0,
+     "travel": 1.33,
+     "pin": 1.0,
+     "pad": 0,
+     "flash": 0.0,
+     "peak": 0.3606,
+     "reach": 0.531,
+     "canvas": [
+      224,
+      224
+     ],
+     "reasons": [],
+     "sub": "b437e0a0-b539-4cc1-86c9-b1a50e565bb9",
+     "group": "8edd176f-d727-47c9-b955-89c9f4e485c1",
+     "takes": 1,
+     "version": 2,
+     "mirrored": false,
+     "generated_at": "2026-09-09T22:41:37+00:00",
+     "action": "Double Slam - Raises both arms and slams them down together once, then returns to idle stance"
+    },
+    "north-east": {
+     "status": "fail",
+     "step_mean": 0.122,
+     "step_max": 0.1479,
+     "drift": 1.47,
+     "loop": 0.0003,
+     "loop_ratio": 0.0,
+     "travel": 1.48,
+     "pin": 1.0,
+     "pad": 0,
+     "flash": 0.0,
+     "peak": 0.207,
+     "reach": 0.049,
+     "canvas": [
+      224,
+      224
+     ],
+     "reasons": [
+      "no strike, just a lean: nothing reaches past 0.05 of the body"
+     ],
+     "sub": "62b2e706-3709-45ad-9b96-8d6f6c7d8cb7",
+     "group": "787c2ed2-fd31-4e0e-a5f4-184e64ba2844",
+     "takes": 1,
+     "version": 2,
+     "mirrored": false,
+     "generated_at": "2026-09-09T22:41:38+00:00",
+     "action": "Double Slam - Raises both arms and slams them down together once, then returns to idle stance"
+    },
+    "north": {
+     "status": "fail",
+     "step_mean": 0.2484,
+     "step_max": 0.2906,
+     "drift": 1.71,
+     "loop": 0.0006,
+     "loop_ratio": 0.0,
+     "travel": 1.74,
+     "pin": 1.0,
+     "pad": 0,
+     "flash": 0.0,
+     "peak": 0.3568,
+     "reach": 0.045,
+     "canvas": [
+      224,
+      224
+     ],
+     "reasons": [
+      "no strike, just a lean: nothing reaches past 0.04 of the body"
+     ],
+     "sub": "0be17cf4-aa7e-4107-85ed-b8c3c2fad054",
+     "group": "f07dfa24-9b0f-49ae-9ca8-2d6ef9ce1252",
+     "takes": 1,
+     "version": 2,
+     "mirrored": false,
+     "generated_at": "2026-09-09T22:41:39+00:00",
+     "action": "Double Slam - Raises both arms and slams them down together once, then returns to idle stance"
+    },
+    "south-west": {
+     "status": "pass",
+     "step_mean": 0.1579,
+     "step_max": 0.2002,
+     "drift": 2.65,
+     "loop": 0.0001,
+     "loop_ratio": 0.0,
+     "travel": 0.22,
+     "pin": 1.0,
+     "pad": 0,
+     "flash": 0.0,
+     "peak": 0.2662,
+     "canvas": [
+      224,
+      224
+     ],
+     "reasons": [],
+     "sub": "88903a69-0c96-4105-b6ba-facbb5f67660",
+     "group": "9685ad7c-e94e-4a26-9ba9-2a7b2276714a",
+     "takes": 1,
+     "version": 2,
+     "mirrored": true,
+     "generated_at": "2026-09-09T22:41:37+00:00",
+     "action": "Double Slam - Raises both arms and slams them down together once, then returns to idle stance",
+     "source": "south-east"
+    },
+    "west": {
+     "status": "pass",
+     "step_mean": 0.2341,
+     "step_max": 0.3423,
+     "drift": 4.52,
+     "loop": 0.0,
+     "loop_ratio": 0.0,
+     "travel": 1.33,
+     "pin": 1.0,
+     "pad": 0,
+     "flash": 0.0,
+     "peak": 0.3606,
+     "reach": 0.531,
+     "canvas": [
+      224,
+      224
+     ],
+     "reasons": [],
+     "sub": "b437e0a0-b539-4cc1-86c9-b1a50e565bb9",
+     "group": "8edd176f-d727-47c9-b955-89c9f4e485c1",
+     "takes": 1,
+     "version": 2,
+     "mirrored": true,
+     "generated_at": "2026-09-09T22:41:37+00:00",
+     "action": "Double Slam - Raises both arms and slams them down together once, then returns to idle stance",
+     "source": "east"
+    },
+    "north-west": {
+     "status": "pass",
+     "step_mean": 0.122,
+     "step_max": 0.1479,
+     "drift": 1.47,
+     "loop": 0.0003,
+     "loop_ratio": 0.0,
+     "travel": 1.48,
+     "pin": 1.0,
+     "pad": 0,
+     "flash": 0.0,
+     "peak": 0.207,
+     "canvas": [
+      224,
+      224
+     ],
+     "reasons": [],
+     "sub": "62b2e706-3709-45ad-9b96-8d6f6c7d8cb7",
+     "group": "787c2ed2-fd31-4e0e-a5f4-184e64ba2844",
+     "takes": 1,
+     "version": 2,
+     "mirrored": true,
+     "generated_at": "2026-09-09T22:41:38+00:00",
+     "action": "Double Slam - Raises both arms and slams them down together once, then returns to idle stance",
+     "source": "north-east"
+    }
+   },
+   "action": "Double Slam - Raises both arms and slams them down together once, then returns to idle stance",
+   "frame_paths": {
+    "south": [
+     "bog_titan/animations/attack/south/00.webp",
+     "bog_titan/animations/attack/south/01.webp",
+     "bog_titan/animations/attack/south/02.webp",
+     "bog_titan/animations/attack/south/03.webp",
+     "bog_titan/animations/attack/south/04.webp"
+    ],
+    "south-east": [
+     "bog_titan/animations/attack/south-east/00.webp",
+     "bog_titan/animations/attack/south-east/01.webp",
+     "bog_titan/animations/attack/south-east/02.webp",
+     "bog_titan/animations/attack/south-east/03.webp",
+     "bog_titan/animations/attack/south-east/04.webp"
+    ],
+    "east": [
+     "bog_titan/animations/attack/east/00.webp",
+     "bog_titan/animations/attack/east/01.webp",
+     "bog_titan/animations/attack/east/02.webp",
+     "bog_titan/animations/attack/east/03.webp",
+     "bog_titan/animations/attack/east/04.webp"
+    ],
+    "north-east": [
+     "bog_titan/animations/attack/north-east/00.webp",
+     "bog_titan/animations/attack/north-east/01.webp",
+     "bog_titan/animations/attack/north-east/02.webp",
+     "bog_titan/animations/attack/north-east/03.webp",
+     "bog_titan/animations/attack/north-east/04.webp"
+    ],
+    "north": [
+     "bog_titan/animations/attack/north/00.webp",
+     "bog_titan/animations/attack/north/01.webp",
+     "bog_titan/animations/attack/north/02.webp",
+     "bog_titan/animations/attack/north/03.webp",
+     "bog_titan/animations/attack/north/04.webp"
+    ],
+    "south-west": [
+     "bog_titan/animations/attack/south-west/00.webp",
+     "bog_titan/animations/attack/south-west/01.webp",
+     "bog_titan/animations/attack/south-west/02.webp",
+     "bog_titan/animations/attack/south-west/03.webp",
+     "bog_titan/animations/attack/south-west/04.webp"
+    ],
+    "west": [
+     "bog_titan/animations/attack/west/00.webp",
+     "bog_titan/animations/attack/west/01.webp",
+     "bog_titan/animations/attack/west/02.webp",
+     "bog_titan/animations/attack/west/03.webp",
+     "bog_titan/animations/attack/west/04.webp"
+    ],
+    "north-west": [
+     "bog_titan/animations/attack/north-west/00.webp",
+     "bog_titan/animations/attack/north-west/01.webp",
+     "bog_titan/animations/attack/north-west/02.webp",
+     "bog_titan/animations/attack/north-west/03.webp",
+     "bog_titan/animations/attack/north-west/04.webp"
+    ]
+   },
+   "strips": {
+    "south": "bog_titan/animations/attack__south.webp",
+    "south-east": "bog_titan/animations/attack__south-east.webp",
+    "east": "bog_titan/animations/attack__east.webp",
+    "north-east": "bog_titan/animations/attack__north-east.webp",
+    "north": "bog_titan/animations/attack__north.webp",
+    "south-west": "bog_titan/animations/attack__south-west.webp",
+    "west": "bog_titan/animations/attack__west.webp",
+    "north-west": "bog_titan/animations/attack__north-west.webp"
+   }
+  },
+  "attack_try": {
+   "directions": {
+    "south": {
+     "status": "fail",
+     "step_mean": 0.1838,
+     "step_max": 0.3873,
+     "drift": 3.61,
+     "loop": 0.264,
+     "loop_ratio": 1.44,
+     "travel": 0.88,
+     "pin": 1.0,
+     "pad": 0,
+     "flash": 0.0,
+     "peak": 0.264,
+     "reach": 0.099,
+     "canvas": [
+      224,
+      224
+     ],
+     "reasons": [
+      "no strike, just a lean: nothing reaches past 0.10 of the body"
+     ],
+     "sub": "bf1e0e54-a347-4516-85ea-fe066ccd440b",
+     "group": "4fa9f12d-4c24-4cf4-bb73-ec2649971e52",
+     "takes": 1,
+     "version": 3,
+     "mirrored": false,
+     "action": "Double Slam - Raises both arms high overhead and slams them down together, a big aggressive swing",
+     "intensity": 1,
+     "rolls": 3,
+     "frames": 5,
+     "tries": 1,
+     "generated_at": "2026-09-10T20:50:09+00:00"
+    },
+    "south-east": {
+     "status": "fail",
+     "step_mean": 0.1771,
+     "step_max": 0.259,
+     "drift": 5.49,
+     "loop": 0.3278,
+     "loop_ratio": 1.85,
+     "travel": 4.67,
+     "pin": 1.0,
+     "pad": 0,
+     "flash": 0.0,
+     "peak": 0.3278,
+     "reach": 0.132,
+     "canvas": [
+      224,
+      224
+     ],
+     "reasons": [
+      "no strike, just a lean: nothing reaches past 0.13 of the body"
+     ],
+     "sub": "dfa07361-a6e1-4078-9d4b-366d5a6fe676",
+     "group": "5bfc0c61-4c33-434b-b8a4-cde06af79ad3",
+     "takes": 1,
+     "version": 3,
+     "mirrored": false,
+     "action": "Double Slam - Raises both arms high overhead and slams them down together, a big aggressive swing",
+     "intensity": 1,
+     "rolls": 3,
+     "frames": 5,
+     "tries": 1,
+     "generated_at": "2026-09-10T20:50:10+00:00"
+    },
+    "east": {
+     "status": "pass",
+     "step_mean": 0.1571,
+     "step_max": 0.2894,
+     "drift": 6.14,
+     "loop": 0.4132,
+     "loop_ratio": 2.63,
+     "travel": 4.08,
+     "pin": 1.0,
+     "pad": 0,
+     "flash": 0.0,
+     "peak": 0.4132,
+     "reach": 0.58,
+     "canvas": [
+      224,
+      224
+     ],
+     "reasons": [],
+     "sub": "d7cb6113-c882-4798-8bab-3394479e9305",
+     "group": "1414f481-c445-4af5-b3b4-674c598d6ffc",
+     "takes": 1,
+     "version": 1,
+     "mirrored": false,
+     "generated_at": "2026-09-10T19:44:30+00:00",
+     "action": "Double Slam - Raises both arms high overhead and slams them down together",
+     "tries": 1,
+     "rolls": 1,
+     "intensity": 1
+    },
+    "north-east": {
+     "status": "pass",
+     "step_mean": 0.1786,
+     "step_max": 0.2886,
+     "drift": 8.34,
+     "loop": 0.4409,
+     "loop_ratio": 2.47,
+     "travel": 5.56,
+     "pin": 1.0,
+     "pad": 0,
+     "flash": 0.0,
+     "peak": 0.4409,
+     "reach": 0.328,
+     "canvas": [
+      224,
+      224
+     ],
+     "reasons": [],
+     "sub": "90a71bc6-36bb-4cec-8326-f5ed86b3a415",
+     "group": "2cbb6c9b-0038-4ea9-8974-a7137a674393",
+     "takes": 1,
+     "version": 1,
+     "mirrored": false,
+     "generated_at": "2026-09-10T19:44:31+00:00",
+     "action": "Double Slam - Raises both arms high overhead and slams them down together",
+     "tries": 1,
+     "rolls": 1,
+     "intensity": 1
+    },
+    "north": {
+     "status": "fail",
+     "step_mean": 0.1593,
+     "step_max": 0.3172,
+     "drift": 5.23,
+     "loop": 0.3305,
+     "loop_ratio": 2.08,
+     "travel": 0.76,
+     "pin": 1.0,
+     "pad": 0,
+     "flash": 0.0,
+     "peak": 0.3564,
+     "reach": 0.032,
+     "canvas": [
+      224,
+      224
+     ],
+     "reasons": [
+      "no strike, just a lean: nothing reaches past 0.03 of the body"
+     ],
+     "sub": "9ad8ae8a-a1a5-4f80-a3eb-b79482c6736f",
+     "group": "72fd36a8-a658-40f3-a6a8-c4dfc938fb11",
+     "takes": 1,
+     "version": 3,
+     "mirrored": false,
+     "action": "Double Slam - Raises both arms high overhead and slams them down together, a big aggressive swing",
+     "intensity": 1,
+     "rolls": 3,
+     "frames": 5,
+     "tries": 1,
+     "generated_at": "2026-09-10T20:50:11+00:00"
+    },
+    "west": {
+     "status": "pass",
+     "step_mean": 0.1571,
+     "step_max": 0.2894,
+     "drift": 6.14,
+     "loop": 0.4132,
+     "loop_ratio": 2.63,
+     "travel": 4.08,
+     "pin": 1.0,
+     "pad": 0,
+     "flash": 0.0,
+     "peak": 0.4132,
+     "reach": 0.58,
+     "canvas": [
+      224,
+      224
+     ],
+     "reasons": [],
+     "sub": "d7cb6113-c882-4798-8bab-3394479e9305",
+     "group": "1414f481-c445-4af5-b3b4-674c598d6ffc",
+     "takes": 1,
+     "version": 1,
+     "mirrored": true,
+     "generated_at": "2026-09-10T19:44:30+00:00",
+     "action": "Double Slam - Raises both arms high overhead and slams them down together",
+     "tries": 1,
+     "source": "east"
+    },
+    "north-west": {
+     "status": "pass",
+     "step_mean": 0.1786,
+     "step_max": 0.2886,
+     "drift": 8.34,
+     "loop": 0.4409,
+     "loop_ratio": 2.47,
+     "travel": 5.56,
+     "pin": 1.0,
+     "pad": 0,
+     "flash": 0.0,
+     "peak": 0.4409,
+     "reach": 0.328,
+     "canvas": [
+      224,
+      224
+     ],
+     "reasons": [],
+     "sub": "90a71bc6-36bb-4cec-8326-f5ed86b3a415",
+     "group": "2cbb6c9b-0038-4ea9-8974-a7137a674393",
+     "takes": 1,
+     "version": 1,
+     "mirrored": true,
+     "generated_at": "2026-09-10T19:44:31+00:00",
+     "action": "Double Slam - Raises both arms high overhead and slams them down together",
+     "tries": 1,
+     "source": "north-east"
+    }
+   },
+   "action": "Double Slam - Raises both arms high overhead and slams them down together, a big aggressive swing",
+   "frame_paths": {
+    "south": [
+     "bog_titan/animations/attack_try/south/00.webp",
+     "bog_titan/animations/attack_try/south/01.webp",
+     "bog_titan/animations/attack_try/south/02.webp",
+     "bog_titan/animations/attack_try/south/03.webp",
+     "bog_titan/animations/attack_try/south/04.webp"
+    ],
+    "south-east": [
+     "bog_titan/animations/attack_try/south-east/00.webp",
+     "bog_titan/animations/attack_try/south-east/01.webp",
+     "bog_titan/animations/attack_try/south-east/02.webp",
+     "bog_titan/animations/attack_try/south-east/03.webp",
+     "bog_titan/animations/attack_try/south-east/04.webp"
+    ],
+    "east": [
+     "bog_titan/animations/attack_try/east/00.webp",
+     "bog_titan/animations/attack_try/east/01.webp",
+     "bog_titan/animations/attack_try/east/02.webp",
+     "bog_titan/animations/attack_try/east/03.webp",
+     "bog_titan/animations/attack_try/east/04.webp"
+    ],
+    "north-east": [
+     "bog_titan/animations/attack_try/north-east/00.webp",
+     "bog_titan/animations/attack_try/north-east/01.webp",
+     "bog_titan/animations/attack_try/north-east/02.webp",
+     "bog_titan/animations/attack_try/north-east/03.webp",
+     "bog_titan/animations/attack_try/north-east/04.webp"
+    ],
+    "north": [
+     "bog_titan/animations/attack_try/north/00.webp",
+     "bog_titan/animations/attack_try/north/01.webp",
+     "bog_titan/animations/attack_try/north/02.webp",
+     "bog_titan/animations/attack_try/north/03.webp",
+     "bog_titan/animations/attack_try/north/04.webp"
+    ],
+    "west": [
+     "bog_titan/animations/attack_try/west/00.webp",
+     "bog_titan/animations/attack_try/west/01.webp",
+     "bog_titan/animations/attack_try/west/02.webp",
+     "bog_titan/animations/attack_try/west/03.webp",
+     "bog_titan/animations/attack_try/west/04.webp"
+    ],
+    "north-west": [
+     "bog_titan/animations/attack_try/north-west/00.webp",
+     "bog_titan/animations/attack_try/north-west/01.webp",
+     "bog_titan/animations/attack_try/north-west/02.webp",
+     "bog_titan/animations/attack_try/north-west/03.webp",
+     "bog_titan/animations/attack_try/north-west/04.webp"
+    ]
+   },
+   "strips": {
+    "south": "bog_titan/animations/attack_try__south.webp",
+    "south-east": "bog_titan/animations/attack_try__south-east.webp",
+    "east": "bog_titan/animations/attack_try__east.webp",
+    "north-east": "bog_titan/animations/attack_try__north-east.webp",
+    "north": "bog_titan/animations/attack_try__north.webp",
+    "west": "bog_titan/animations/attack_try__west.webp",
+    "north-west": "bog_titan/animations/attack_try__north-west.webp"
+   },
+   "intensity": 1
+  }
+ }
 }

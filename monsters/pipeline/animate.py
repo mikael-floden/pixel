@@ -770,7 +770,11 @@ def cmd_requal(args):
             if q.get("pinned"):
                 new["pinned"] = True
                 new["reasons"].append("PINNED fallback: base → walk → base, not a seamless loop (maintainer's last resort)")
-            keep = {k: q[k] for k in ("sub", "group", "takes", "version", "mirrored", "generated_at", "action", "tries") if k in q}
+            # the ladder's state lives on the verdict — a re-QA must never drop
+            # it, or every sweep restarts at rung one with the same wording
+            keep = {k: q[k] for k in ("sub", "group", "takes", "version", "mirrored",
+                                      "generated_at", "action", "tries", "rolls",
+                                      "intensity", "frames", "manual") if k in q}
             rec["directions"][d] = {**new, **keep}
             for md, src in MIRRORED.items():
                 if src == d and rec["directions"][d]["status"] != "fail":
