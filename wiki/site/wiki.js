@@ -4312,6 +4312,11 @@ function showcaseArt(m) {
   // LAZY BY OBSERVATION. 57 strips is 296 KB, but a phone should still not
   // fetch the bottom of the list to show the top of it — and an animation
   // nobody can see is work nobody asked for.
+  observeShowcase(art);
+  return stage;
+}
+/** Fetch and animate a card's art only while it is near the screen. */
+function observeShowcase(art) {
   showcaseWatch ??= new IntersectionObserver((entries) => {
     for (const e of entries) {
       const el = e.target;
@@ -4320,7 +4325,6 @@ function showcaseArt(m) {
     }
   }, { rootMargin: "300px 0px" });
   showcaseWatch.observe(art);
-  return stage;
 }
 /* ---- A BACKGROUND IMAGE CANNOT REPORT A 404, so this one asks first ----
  *
@@ -4477,8 +4481,8 @@ function fitShowcase(grid) {
   grid.dataset.over = String(over);
 }
 let showcaseFit = null;
-function watchShowcase(grid) {
-  const run = () => fitShowcase(grid);
+function watchShowcase(grid, fit = fitShowcase) {
+  const run = () => fit(grid);
   requestAnimationFrame(run);
   if (showcaseFit) window.removeEventListener("resize", showcaseFit);
   showcaseFit = () => { if (!grid.isConnected) { window.removeEventListener("resize", showcaseFit); showcaseFit = null; return; } run(); };
@@ -4487,12 +4491,12 @@ function watchShowcase(grid) {
 
 /** The grid itself — built here so the fit pass is armed the moment it exists,
  *  and never forgotten at a call site. */
-function showcaseGrid(...cards) {
+function showcaseGrid(cards, fit = fitShowcase) {
   const grid = h("div", { class: "showcase-grid" }, ...cards);
   grid.style.setProperty("--sc-row", `${SHOWCASE_ROW}px`);
   grid.style.setProperty("--sc-gap", `${SHOWCASE_GAP}px`);
   grid.style.setProperty("--sc-min", `${SHOWCASE_MINCELL}px`);
-  watchShowcase(grid);
+  watchShowcase(grid, fit);
   return grid;
 }
 
@@ -4547,7 +4551,7 @@ function viewMonsters() {
           : "No creature has a tuned shadow yet.") : null,
     state.admin && mode === "all" && nNone ? h("p", { class: "muted" },
       `${nNone} of ${list.length} still draw the default shadow.`) : null,
-    showcaseGrid(...sorted.map((m) => {
+    showcaseGrid(sorted.map((m) => {
       // The card leads with what matters to a PLAYER — the creature's stats
       // (live/tuning/monsters.json), not image resolution (maintainer
       // 2026-07-30). "not in game yet" is dev info → admin only.
@@ -4643,12 +4647,25 @@ const candList = (mode = candFilter()) => candidates().filter(CAND_FILTERS[mode]
 const candSizeLine = (c) => [c.tier, c.scale && c.scale !== "standard" ? c.scale : null, c.size ? `${c.size[0]}px` : null, `v${c.version}`].filter(Boolean).join(" · ");
 /** The marks that ride on a card or head the page: his verdict (or that it is
  *  stale), the machine QA, and whether the agent has acted on the verdict. */
+/** The agent's own `review` in HIS vocabulary; its defaults (pending,
+ *  not_picked) say nothing and map to nothing. */
+const CAND_AGENT = { approved: "approved", rejected: "rejected", dropped: "rejected" };
 function candMarks(c) {
   const out = [];
   if (candStale(c)) out.push(h("span", { class: "pill warn", title: "You judged an earlier version of these 8 directions — the agent has rolled a new seed since. Judge this one." }, "regenerated — judge again"));
   else out.push(...entityBadge("monsters", c.path));
   if (c.qa?.status && c.qa.status !== "pass") out.push(h("span", { class: `pill ${c.qa.status === "fail" ? "err" : "warn"}`, title: (c.qa.reasons ?? []).join("; ") || "The agent's own density/clipping checks" }, `qa ${c.qa.status}`));
-  if (c.review && c.review !== "pending") out.push(h("span", { class: "pill", title: "The monsters agent's own record of this candidate — what it has acted on" }, `agent: ${c.review}`));
+  // THE AGENT'S OWN RECORD IS SHOWN ONLY WHERE IT DIFFERS FROM HIS. It mirrors
+  // his verdict within the run, so once it has read the board every card would
+  // otherwise carry "agent: approved" under his own "approved" — 100 pills
+  // saying what the pill above them says. What is worth a pill is the gap: an
+  // approval it has not acted on yet, or a state he never gave it.
+  const mine = candStatus(c), theirs = CAND_AGENT[c.review] ?? null;
+  if (mine === "approved" && theirs !== "approved") {
+    out.push(h("span", { class: "pill warn", title: "You approved these 8 directions — the monsters agent has not recorded it yet. Its animations come on its next run." }, "waiting for the agent"));
+  } else if (theirs && theirs !== mine) {
+    out.push(h("span", { class: "pill", title: "The monsters agent's own record of this candidate — what it has acted on" }, `agent: ${theirs}`));
+  }
   return out;
 }
 function candFeedback(c) {
@@ -4659,6 +4676,118 @@ function candFeedback(c) {
     rejectedLabel: "dropped",
     redo: { label: "↻ redo", title: "Keep the design, roll the next seed — the agent regenerates all 8 directions", doneLabel: "next seed requested" },
   });
+}
+/* ---- THE OVERVIEW IS TRUE SCALE, and the card is what varies ----
+ * Maintainer 2026-09-10, scrolling the candidates: "It's important when I
+ * scroll the candidates overview I can see the monster in the correct scale.
+ * So I was thinking the cards could be the same as in the monster overview. In
+ * the monster overview we get bigger cards for bigger monsters."
+ *
+ * So this is the creature showcase, cell for cell — `.showcase-card` in the
+ * same grid, spans measured after layout, dense packing — with ONE difference
+ * that the designs force: the candidates span 32px to 240px of native art,
+ * nearly twice the shipped roster's range, and the biggest at the game's own 2×
+ * is 456px of art against a 386px double stage. So the grid picks ONE zoom for
+ * every card on it — the largest on the ladder at which the BIGGEST candidate
+ * still fits a 2×2 — instead of fitting each picture to its box. One shared
+ * zoom is the whole point: ratios between cards are then exactly the ratios
+ * between the designs, and a 32px sandsting really is a seventh of a 240px
+ * warden. (Per-card fitting is what he was looking at when he wrote the note:
+ * every thumbnail 150px, every creature the same size, the scale unreadable.)
+ *
+ * The zoom is capped at the game's 2× — a candidate is never drawn BIGGER than
+ * the game would draw it — and the page says which zoom it landed on, because
+ * "is this its real size" must have an answer on screen. */
+const CAND_ZOOMS = [2, 1.5, 1, 0.75, 0.5];
+/** One candidate's art: the south facing, cropped to its measured ink box, at
+ *  the grid's shared zoom (set by fitCandidates once the layout is known). */
+function candArt(c) {
+  const stage = h("div", { class: "showcase checker" });
+  const src = c.rotations?.south ?? Object.values(c.rotations ?? {})[0] ?? null;
+  if (!src) return stage;
+  const fw = c.size?.[0] ?? null, fh = c.size?.[1] ?? fw;
+  // No measured box (a candidate the agent's QA could not read): fall back to
+  // the plain contained preview rather than inventing a crop.
+  if (!c.bb || !fw) {
+    stage.append(h("img", { class: "showcase-plain", src: assetUrl(src), alt: c.name, loading: "lazy" }));
+    return stage;
+  }
+  const [x0, y0, x1, y1] = c.bb;
+  const art = h("div", { class: "showcase-art" });
+  art.dataset.raw = `${Math.max(1, x1 - x0)}x${Math.max(1, y1 - y0)}`;
+  art.dataset.box = `${x0},${y0},${fw},${fh}`;
+  art.dataset.strip = assetUrl(src);
+  art.dataset.preview = assetUrl(src);
+  art.style.setProperty("--frames", "1");
+  stage.append(art);
+  observeShowcase(art);
+  return stage;
+}
+/** The grid's ONE zoom, then every card's span — both from the geometry the
+ *  browser really laid out, never from arithmetic over the stylesheet. */
+function fitCandidates(grid) {
+  if (!grid?.isConnected) return;
+  const cards = [...grid.querySelectorAll(".showcase-card")];
+  if (!cards.length) return;
+  const gw = grid.getBoundingClientRect().width;
+  if (!gw) return;
+  const cols = Math.max(1, Math.floor((gw + SHOWCASE_GAP) / (SHOWCASE_MINCELL + SHOWCASE_GAP)));
+  const cell = (gw - (cols - 1) * SHOWCASE_GAP) / cols;
+  // Measure the single-cell stage off a card that IS one (borrowing one for a
+  // frame if none is), exactly as the creature grid does.
+  let probe = cards.find((c) => (c.dataset.span ?? "1x1") === "1x1");
+  let restore = null;
+  if (!probe) {
+    probe = cards[0];
+    restore = { c: probe.style.getPropertyValue("--c"), r: probe.style.getPropertyValue("--r") };
+    probe.style.setProperty("--c", "1");
+    probe.style.setProperty("--r", "1");
+  }
+  const el = probe.querySelector(".showcase");
+  const pad = el && getComputedStyle(el);
+  const w1 = el ? el.clientWidth - parseFloat(pad.paddingLeft) - parseFloat(pad.paddingRight) : 0;
+  const h1 = el ? el.clientHeight - parseFloat(pad.paddingTop) - parseFloat(pad.paddingBottom) : 0;
+  if (restore) { probe.style.setProperty("--c", restore.c || "1"); probe.style.setProperty("--r", restore.r || "1"); }
+  if (!(h1 > 0)) return;
+  const w2 = cols > 1 ? w1 + cell + SHOWCASE_GAP : w1, h2 = h1 + SHOWCASE_ROW + SHOWCASE_GAP;
+  const arts = cards.map((c) => c.querySelector(".showcase-art")).filter(Boolean);
+  if (!arts.length) return;
+  let maxW = 1, maxH = 1;
+  for (const a of arts) {
+    const [w, hgt] = (a.dataset.raw ?? "1x1").split("x").map(Number);
+    maxW = Math.max(maxW, w); maxH = Math.max(maxH, hgt);
+  }
+  // The biggest design decides for all of them. Below the ladder's last rung
+  // the exact ratio is used rather than clipping — a design that large is a
+  // tripwire, not a layout to design for.
+  const z = CAND_ZOOMS.find((k) => maxW * k <= w2 && maxH * k <= h2) ?? Math.min(w2 / maxW, h2 / maxH);
+  for (const card of cards) {
+    const art = card.querySelector(".showcase-art");
+    let c = 1, r = 1;
+    if (art) {
+      const [w, hgt] = (art.dataset.raw ?? "1x1").split("x").map(Number);
+      const [x0, y0, fw, fh] = (art.dataset.box ?? "0,0,1,1").split(",").map(Number);
+      art.style.width = `${Math.round(w * z)}px`;
+      art.style.height = `${Math.round(hgt * z)}px`;
+      art.style.backgroundSize = `${fw * z}px ${fh * z}px`;
+      art.style.backgroundPositionX = `${-x0 * z}px`;
+      art.style.backgroundPositionY = `${-y0 * z}px`;
+      // A one-frame sweep is a no-op, but the shared keyframe still reads them.
+      art.style.setProperty("--f0", `${-x0 * z}px`);
+      art.style.setProperty("--fn", `${-x0 * z}px`);
+      art.dataset.zoom = String(z);
+      art.dataset.drawn = `${Math.round(w * z)}x${Math.round(hgt * z)}`;
+      c = w * z > w1 && cols > 1 ? 2 : 1;
+      r = hgt * z > h1 ? 2 : 1;
+    }
+    card.style.setProperty("--c", String(c));
+    card.style.setProperty("--r", String(r));
+    card.dataset.span = `${c}x${r}`;
+  }
+  grid.dataset.cols = String(cols);
+  grid.dataset.zoom = String(z);
+  const note = document.querySelector(".cand-scale-note");
+  if (note) note.textContent = `Every card at ${z}× — one scale for all of them, so a big design really looks big.`;
 }
 function viewCandidates() {
   const mode = candFilter();
@@ -4673,14 +4802,23 @@ function viewCandidates() {
     all.length ? sortBar(CAND_FILTER_KEY,
       Object.entries(CAND_FILTERS).map(([id, f]) => [id, `${f.label} ${all.filter(f.hit).length}`, f.title]),
       mode, () => route()) : null,
-    shown.length ? h("div", { class: "grid cand-grid" }, ...shown.map((c) => {
-      const south = c.rotations.south ?? Object.values(c.rotations)[0];
-      return h("a", { class: "card cand-card", href: `#/monsters/candidates/${c.id}` },
-        h("div", { class: "cand-thumb checker" }, south ? h("img", { src: assetUrl(south), alt: `${c.name}, facing south`, loading: "lazy" }) : null),
-        h("div", { class: "card-name" }, c.name),
-        h("div", { class: "card-sub" }, candSizeLine(c)),
-        h("div", { class: "cand-marks" }, ...candMarks(c)));
-    })) : h("p", { class: "muted" }, all.length
+    shown.length ? h("p", { class: "muted cand-scale-note" }, "") : null,
+    shown.length ? showcaseGrid(shown.map((c) => {
+      const stage = candArt(c);
+      // EVERYTHING THAT IS NOT THE PICTURE RIDES ON THE PICTURE, in the top
+      // corner — a 1×1 cell is 150px wide and a row per pill would letterbox
+      // the design (the creature grid's law, and the same corners are empty
+      // here because a creature stands centred).
+      const marks = candMarks(c);
+      if (marks.length) stage.append(h("div", { class: "showcase-marks" }, ...marks));
+      return h("a", { class: "card showcase-card cand-card", href: `#/monsters/candidates/${c.id}` },
+        stage,
+        // EXACTLY TWO LINES, ALWAYS: every row is one height, so anything that
+        // appears on some cards only rides on the art instead.
+        h("div", { class: "showcase-text" },
+          h("div", { class: "card-name" }, c.name),
+          h("div", { class: "card-sub" }, candSizeLine(c))));
+    }), fitCandidates) : h("p", { class: "muted" }, all.length
       ? (mode === "pending" ? "Every candidate has a verdict. Nothing left to judge." : "No candidate in this state.")
       : "The monsters agent has not generated a candidate yet."));
 }

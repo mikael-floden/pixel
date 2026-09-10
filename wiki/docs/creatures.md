@@ -113,8 +113,9 @@ verdict comes BEFORE the five states are spent on it.
   "regenerated — judge again", the queue counts it as unjudged, and the agent
   must ignore it. (Same rule the scenery states use with their art hash.)
 - **Pages:** `#/monsters/candidates` — chips `to judge | approved | redo |
-  removed | all` with counts, "to judge" by default, newest first; a card is
-  the south facing + name + tier/size/version + marks. `#/monsters/candidates/
+  removed | all` with counts, "to judge" by default, newest first; the cards
+  are the CREATURE SHOWCASE (below), same grid, same measured spans, same
+  marks-on-the-art. `#/monsters/candidates/
   <id>` — the 8 facings in MIRROR PAIRS, two per row (S|N, E|W, SE|SW, NE|NW),
   so the twin the generator gets wrong (a SE drawn as SW) sits beside its
   mirror; zoom 1×/2×/3× (`wiki-cand-zoom`), default the largest whole zoom at
@@ -122,10 +123,29 @@ verdict comes BEFORE the five states are spent on it.
   even 1× does not fit rather than shrinking pixel art to a blur. The verdict
   row sits UNDER the pictures, where his thumb is after reading them. ‹ ›
   walks the current chip's list.
+- **ONE ZOOM FOR THE WHOLE GRID, and the card is what varies** (maintainer
+  2026-09-10: "It's important when I scroll the candidates overview I can see
+  the monster in the correct scale. So I was thinking the cards could be the
+  same as in the monster overview. In the monster overview we get bigger cards
+  for bigger monsters."). The designs run 32px to 240px of native art — nearly
+  twice the shipped roster's range — and the biggest at the game's own 2× is
+  456px against a 386px double stage, so the grid picks the largest zoom on the
+  ladder `2 · 1.5 · 1 · 0.75 · 0.5` at which the BIGGEST card still fits a 2×2
+  (1.5× on a 393px phone: 56 designs take one cell, 33 the full four). Every
+  card shares that zoom, so ratios between cards are ratios between designs; the
+  cap is the game's 2×, and the page says which zoom it landed on. NOT
+  per-card fitting — that is what he was looking at when he wrote the note:
+  every thumbnail 150px, every creature the same size, the scale unreadable.
+- **The agent's own `review` is a pill only where it DIFFERS from his verdict.**
+  It mirrors his verdicts within the run, so an unconditional pill put "agent:
+  approved" under his own "approved" on every judged card, and its idle values
+  (`pending`, `not_picked`) say nothing at all. What earns a pill is the gap:
+  an approval it has not acted on yet reads "waiting for the agent".
 - **The door** is on the Creatures page (admin): "N of M new designs wait for
   your verdict on their 8 directions →". The nav count stays the shipped
   creatures — a candidate is not in the game.
-- Gate: `wiki/tools/check-candidates.mjs` (door, chips, 8 loaded facings,
+- Gate: `wiki/tools/check-candidates.mjs` (door, chips, one shared zoom with
+  true size ratios and bigger spans for bigger designs, 8 loaded facings,
   approve stamps `version` and leaves the queue, an older-version verdict
   reads as judge-again). Runs in `wiki-guard.yml`.
 

@@ -60,7 +60,36 @@ await p.waitForTimeout(600);
 const nAll = await p.evaluate(() => document.querySelectorAll(".cand-card").length);
 ok(nAll === CANDS.length, `"all" shows every candidate (${nAll} of ${CANDS.length})`);
 
-// The first card the page lists is the one he would tap.
+// TRUE SCALE IS THE POINT OF THIS GRID (maintainer 2026-09-10: "It's important
+// when I scroll the candidates overview I can see the monster in the correct
+// scale ... In the monster overview we get bigger cards for bigger monsters").
+// One zoom for every card, so the ratio between two cards IS the ratio between
+// the two designs — and the big ones claim more cells.
+const grid = await p.evaluate(() => {
+  const g = document.querySelector(".showcase-grid");
+  const arts = [...document.querySelectorAll(".cand-card .showcase-art")];
+  const size = (a, k) => (a.dataset[k] ?? "0x0").split("x").map(Number);
+  const rows = arts.map((a) => ({ raw: size(a, "raw"), drawn: size(a, "drawn"), zoom: a.dataset.zoom }));
+  const spans = {};
+  for (const c of document.querySelectorAll(".cand-card")) spans[c.dataset.span] = (spans[c.dataset.span] ?? 0) + 1;
+  rows.sort((x, y) => x.raw[1] - y.raw[1]);
+  return { zoom: g?.dataset.zoom, zooms: [...new Set(rows.map((r) => r.zoom))], spans, n: rows.length,
+    small: rows[0], big: rows[rows.length - 1],
+    wide: document.documentElement.scrollWidth > document.documentElement.clientWidth };
+});
+console.log("grid:", JSON.stringify(grid));
+ok(grid.zooms.length === 1 && Number(grid.zoom) > 0 && Number(grid.zoom) <= 2,
+  `every card on the grid is drawn at ONE zoom, never above the game's 2× (${grid.zoom}×)`);
+const ratio = (a) => a.drawn[1] / a.raw[1];
+ok(Math.abs(ratio(grid.small) - ratio(grid.big)) < 0.001 && grid.big.drawn[1] > grid.small.drawn[1] * 2,
+  `so the biggest design really draws bigger than the smallest (${grid.small.raw.join("×")}→${grid.small.drawn.join("×")} vs ${grid.big.raw.join("×")}→${grid.big.drawn.join("×")})`);
+ok((grid.spans["1x1"] ?? 0) > 0 && Object.keys(grid.spans).some((k) => k !== "1x1"),
+  `and a bigger design claims more cells (${JSON.stringify(grid.spans)})`);
+ok(!grid.wide, "the overview never scrolls sideways on a 393px phone");
+
+// He judges from the queue, so the gate does: the first card still to judge.
+await p.evaluate(() => [...document.querySelectorAll('[data-bar="wiki-cand-filter"] .sortbar-btn')].find((x) => x.dataset.sort === "pending")?.click());
+await p.waitForTimeout(600);
 const firstId = await p.evaluate(() => document.querySelector(".cand-card")?.getAttribute("href")?.split("/").pop());
 const cand = CANDS.find((c) => c.id === firstId);
 ok(!!cand, `the first card opens a candidate the registry knows (${firstId})`);
@@ -73,9 +102,8 @@ const det = await p.evaluate(() => {
     n: imgs.length, loaded: imgs.filter((i) => i.complete && i.naturalWidth > 0).length,
     dirs: [...document.querySelectorAll(".cand-dir")].map((f) => f.dataset.dir),
     rows: rows.size, w: imgs[0]?.getBoundingClientRect().width,
-    // The GRID stays inside the phone; the document's own width is not this
-    // page's to answer (the footer stamp already pokes 4px past it).
-    wide: (() => { const g = document.querySelector(".cand-dirs"); return g.getBoundingClientRect().right > document.documentElement.clientWidth + 1 || g.scrollWidth > g.clientWidth; })(),
+    wide: document.documentElement.scrollWidth > document.documentElement.clientWidth
+      || (() => { const g = document.querySelector(".cand-dirs"); return g.scrollWidth > g.clientWidth; })(),
     cols: getComputedStyle(document.querySelector(".cand-dirs")).getPropertyValue("--cand-cols").trim(),
     buttons: [...document.querySelectorAll(".cand-judge .verdict button")].map((x) => x.textContent.trim()),
     stars: document.querySelectorAll(".cand-judge .stars button, .cand-judge .star").length,

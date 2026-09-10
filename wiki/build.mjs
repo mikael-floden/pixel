@@ -2799,6 +2799,10 @@ function buildMonsterCandidates() {
     pixellab: c.pixellab_id ?? null,
     sheet: rel(c.sheet),
     rotations: Object.fromEntries(dirs.map((d) => [d, rel(c.rotations?.[d])]).filter(([, v]) => v)),
+    // The MEASURED ink box of the south facing, in frame pixels — the wiki's
+    // overview crops the padding away with it and draws every candidate at one
+    // shared scale, so a 32px design really looks a seventh of a 240px one.
+    bb: c.qa?.directions?.south?.bbox ?? null,
     qa: c.qa ? { status: c.qa.status ?? null, minRun1: c.qa.min_run1 ?? null, reasons: c.qa.reasons ?? [] } : null,
     review: c.review ?? "pending",
   }));
