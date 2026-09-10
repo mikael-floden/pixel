@@ -16,12 +16,18 @@
  *
  *   2. THE WALL FOOT — a liquid cell whose up-left / up-right / straight-up
  *      neighbour is a higher wall whose lowest front is this cell's level. The
- *      game paints a band there (tiles3draw `footBand`): two rows under the
- *      face, then TWO CREST ROWS lifted toward white, then the wall sinking
- *      through the water. `crestPixels` is that loop ported verbatim so the
- *      foam lands on the game's own crest; `server/test/foam.test.ts` composes
- *      the game's band and asserts the two agree pixel for pixel, so if the
- *      games agent moves the line, the test — not the maintainer — says so.
+ *      game paints a band there (tiles3draw `footBand`): FOOT_UNDER rows that
+ *      the face sprite covers, then the CREST lifted toward white, then the
+ *      wall sinking through the water. `crestPixels` is that loop ported, and
+ *      it keeps only the rows the face does not cover.
+ *      `server/test/foam.test.ts` composes the game's own band and asserts the
+ *      foam's crest is the bottom of it, column by column — if the games agent
+ *      moves the line, the test says so, and it already has (2026-09-10: the
+ *      covered rows became crest-coloured too and each wall now brings its own
+ *      material, so the old pixel-for-pixel equality was wrong twice over).
+ *      FOOT_UNDER CANCELS OUT here — it shifts the band's start and the kept
+ *      rows by the same amount — so changing it alone cannot move the foam;
+ *      WALL and CREST_ROWS can, and the test fails on both.
  *
  * Every pixel of the foam is a function of (distance from the nearest edge,
  * whether that edge is a wall, the pixel's WORLD position, the loop time).
