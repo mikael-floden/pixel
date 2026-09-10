@@ -666,20 +666,15 @@ const FOOT_UNDER = 2;
 const FOOT_DARKEN = 0.82;
 /** Under water: crest, second crest, then the submerged wall's alpha by depth. */
 const FOOT_CREST = [0.5, 0.22]; // how far each crest row is lifted toward white
-/* HOW MUCH OF THE WATER'S COLOUR THE SUNK WALL TAKES, at the surface and at the
- * deepest drawn row, plus how far it dims. A flat 0.35 was the first cut and it
- * is why a sand-topped cliff going into the sea read as a BEACH lying on the
- * water: the_game's coast cliffs are `light_beach`, so the band's own material
- * is bright sand, and at 35% water over an alpha of 0.95 the top rows were
- * still sand (maintainer 2026-09-10, photographed twice: "someone rendered a
- * sand transition/boundary at the wall water intersection ... I want the wall
- * to look as if it was continuing down the water surface as before"). Water
- * absorbs with depth, so the mix and the dimming both RUN with it: the wall is
- * still there and still descending — which is the effect he wants kept — but
- * every row of it is water first and wall second. */
-const FOOT_SUNK_MIX0 = 0.62; // the water's colour taken on the first sunk row
-const FOOT_SUNK_MIX1 = 0.92; // ...and on the last
-const FOOT_SUNK_DARK = 0.72; // and how far the last row is dimmed
+/* HOW MUCH OF THE WATER'S COLOUR THE SUNK WALL TAKES. 0.35 is his approved
+ * look and it is BACK: running the mix and a dimming with depth (0.62 to 0.92,
+ * dim to 0.72) was tried to stop a sand-topped cliff reading as a beach on the
+ * water, and it went too far the other way — "can't see any effect at all where
+ * the wall enters the water" (maintainer 2026-09-10). The sand read is not
+ * fixed by sinking the wall out of sight; what is misplaced is the CREST, and
+ * that is arithmetic, not colour. Do not re-tune this without fixing the crest
+ * first, or the effect just disappears again. */
+const FOOT_SUNK_MIX = 0.35;
 const FOOT_SUNK = [0.95, 0.9, 0.8, 0.7, 0.58, 0.46, 0.34, 0.24, 0.15, 0.08];
 
 const mix = (a: number, b: number, t: number) => Math.round(a + (b - a) * t);
@@ -762,18 +757,7 @@ export function footBand(
       } else {
         const j = row - FOOT_UNDER - FOOT_CREST.length;
         if (j >= FOOT_SUNK.length) continue;
-        // Deeper = more of the water's own colour, and dimmer with it.
-        const t = FOOT_SUNK.length > 1 ? j / (FOOT_SUNK.length - 1) : 0;
-        const m = FOOT_SUNK_MIX0 + (FOOT_SUNK_MIX1 - FOOT_SUNK_MIX0) * t;
-        const dk = 1 - (1 - FOOT_SUNK_DARK) * t;
-        put(
-          px,
-          py,
-          Math.round(mix(wr, water[0], m) * dk),
-          Math.round(mix(wg, water[1], m) * dk),
-          Math.round(mix(wb, water[2], m) * dk),
-          FOOT_SUNK[j],
-        );
+        put(px, py, mix(wr, water[0], FOOT_SUNK_MIX), mix(wg, water[1], FOOT_SUNK_MIX), mix(wb, water[2], FOOT_SUNK_MIX), FOOT_SUNK[j]);
       }
     }
   }
