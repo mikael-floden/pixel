@@ -237,54 +237,69 @@ full cycle. The monster should walk completely normal." Rules:
   metrics never settle but the eye is satisfied: Crystal Titan SE after six
   rolls. `requal` leaves manual verdicts alone and recreates their mirrors.
 
-### Attack — once through, BOTH ends pinned, preset-style wording
+### Attack — it must STRIKE: frame 0 pinned, the END FREE
 
-Maintainer: "This one is hardest! Same tricks as before! Forcing the
-first/last frame can give you control!" Rules:
-- **`keep_first` + `end_frame` = base: base → wind-up → strike → base**, four
-  generated frames, five stored. The game paces an attack to ~700 ms
-  whatever the count and cuts back to idle, so the clip should land on the
-  base pose; the pin does that most of the time (at 4 frames the model
-  sometimes stops short — loop 0.15–0.40 is a warn, not a fail: the
-  maintainer's own accepted attacks return only partly, loop up to 0.79).
-- **Every strike is worded as a PRESET-STYLE move**: `"Move Name -
-  mechanical body description, then returns to idle stance"` ("Claw Swipe -
-  Raises one front paw and performs one quick swipe forward, then returns
-  to idle stance"), the exact shape of the maintainer's 57 accepted attacks
-  (`attack_action` in each design). Free prose ("swings its stone club in
-  one heavy sideways smash…", 6 frames) made PixelLab paint an impact
-  effect — yellow club flare, slash arcs, sparks, a blue explosion — on
-  most physical strikes: flash 0.044 median, 40 of 179 directions over
-  0.15, against 0.001 median on the maintainer's. No negative wording
-  ("plain pixel art, no glow, no sparks, no motion lines") suppressed it;
-  the preset format did in 15 of 16 probes. Changing a state's wording
-  regenerates that state and deletes the old takes on PixelLab.
-- **Flash gate**: `_flash` = the largest gain of near-white or bright-yellow
-  opaque pixels in any frame over frame 0, as a share of the body. Fail
-  > 0.10, warn > 0.04, skipped for designs flagged `fx: true` (elementals,
-  sprites, breath and spell casters — 14 of 39 — whose effect IS the
-  attack). A design's own glow (Hollow Knight's green sword flame) reads as
-  an effect; flag it `fx` rather than fight the model.
+Maintainer's verdict on a full 39-monster round that passed every metric:
+"95% look like idle animations. No strike/attack at all. The monster just
+moves slowly forward and back again." The cause was the second pin — v3 with
+`end_frame` = the base interpolates from the base pose back to the base
+pose, and the only motion it can invent in between is a lean out and back.
+The rules that produce a real strike:
+- **Frame 0 is the base (`keep_first`), the end is FREE (no `end_frame`).**
+  The game paces an attack to ~700 ms and cuts back to idle afterwards, so
+  the clip does not have to return, and the maintainer's own 57 accepted
+  attacks mostly do not (loop up to 0.79). He does want the first frame
+  pinned: "at least you didn't generate any buggy attack that didn't animate
+  well from the idle position at the first frame".
+- **4 generated frames**, 5 stored — the shape of his own set. Six frames
+  spread a small motion thinner; four force the model to commit.
+- **`reach` is the gate that catches a lean.** It is the 95th-percentile
+  distance of NEW pixels from the base silhouette over the body's short
+  side: a strike throws a limb or a weapon far outside the outline, a lean
+  translates the whole body so every new pixel hugs it. His 57 (east):
+  median 0.45, p25 0.34, p10 0.23, min 0.14. The rejected round: median
+  0.26. Pass ≥ 0.30, warn ≥ 0.22 — which failed 173 of those 195 shipped
+  directions, the same call he made by eye. Silhouette step, peak and drift
+  do NOT separate the two (a lean scores as well as a swing); reach is the
+  metric that does.
+- **Preset-style wording that COMMITS**: `"Move Name - <body doing one
+  decisive thing>"` ("Club Smash - Raises the stone club overhead and
+  smashes it straight down"). No "then returns to idle stance" tail — with
+  a free end that clause spends half the frames coming back and reads as
+  the lean again. Free prose instead of this format makes PixelLab paint an
+  impact effect (flash 0.044 median vs 0.001 on his set), and no negative
+  wording suppresses it.
+- **Flash gate** unchanged: new near-white, yellow or cyan pixels over
+  frame 0 fail at > 0.10 of the body, warn at > 0.04, relaxed 5× for
+  designs flagged `fx` (elementals, breath, spells — 14 of 39) whose effect
+  IS the attack. Eyeball the sheets too: pale arcs slip under it, and a
+  direction set `status: fail, manual: true` is re-rolled by the next sweep.
 - **Claws → claw swipe on the third roll** (maintainer: "if it looks like
-  the monster has claws, a claw slash attack usually works"). Designs
-  flagged `claws: true` (20 of 39) fall back to `CLAW_SLASH` once a
-  direction has failed twice under its own wording (`tries` in the verdict
-  counts rolls under the current text).
-- **Bands from the maintainer's 42 accepted 4-frame attacks** (east): strike
-  peak (max silhouette XOR vs frame 0) 0.15–0.83 (median 0.50), step median
-  0.38, drift median 5.6 px, a lunge reaching 24. Pass: peak ≥ 0.12, step
-  0.06–0.90, drift ≤ max(12 px, 8 % of width); warn: peak ≥ 0.06, step to
-  1.2, drift ≤ max(24 px, 15 %); fail below — a frozen "attack" is the
-  model's usual failure and a warn is a small strike, not a broken one.
-- **Painted effects are a dice roll, so the sweep is a LOOP**: under the
-  preset wording about a third of physical strikes still get a swoosh
-  (measured: 195 first rolls → 22 fails, nearly all flash; the claw-swipe
-  fallback flashes at the same rate). Re-rolling is $0.013 a direction, so
-  `attack` is run until `--dry-run` reports nothing — the 39-set took five
-  rounds for the last four directions (Spider Queen N and Elder Treant S
-  needed nine and seven rolls). Eyeball the sheets as well: pale cyan arcs
-  and thin white rings slip under the detector; set such a direction
-  `status: fail, manual: true` and the next sweep re-rolls it.
+  the monster has claws, a claw slash attack usually works"): designs
+  flagged `claws` (20 of 39) fall back to `CLAW_SLASH` once a direction has
+  failed twice under its own wording (`tries` counts rolls).
+- **Painted effects and shallow strikes are a dice roll, so the sweep is a
+  LOOP**: run `attack` until `--dry-run` reports nothing.
+
+### Skeleton template animations (`mode: "template"`)
+
+PixelLab also animates from a library of SKELETON-driven templates, 1
+generation per direction, no prompt. The library is **per skeleton**, not
+global — the character's `template_id` decides it:
+
+| skeleton | of the 39 | attack-ish templates |
+|---|---|---|
+| `mannequin` | 23 | `cross-punch`, `high-kick`, `flying-kick`, `hurricane-kick`, `fireball` |
+| `bear` | 15 | `attack-left`, `attack-right`, `jump-attack` |
+| `dog` | 1 (Ghost Hound) | none — v3 only |
+
+An invalid id is rejected with that skeleton's valid list, which is how the
+list is read (the generic list in the API docs is neither complete nor
+right for a given character). **Never probe with a fake direction**: a valid
+template with a bad direction starts a job that never finishes, there is no
+cancel endpoint, deleting its animation group does not release it, and 20
+such jobs exhaust the account's concurrency for everything (measured
+2026-09-10, cost: ~40 minutes of a blocked pipeline).
 
 Cost: walk (6 frames) and attack (5) bill the same ≈ $0.013 per direction
 as idle; the full 39-set is ≈ 195 directions ≈ $2.5 per state, and a full

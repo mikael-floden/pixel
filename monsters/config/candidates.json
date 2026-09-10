@@ -50,7 +50,7 @@
    "prompt": "Large fantasy shore crab with a barnacle-crusted orange-red shell, one enormous curved pincer with a pale bone-white edge and a smaller pincer, six jointed legs with dark tips, stalked black eyes, and clumps of green seaweed and small sea shells stuck to its back.",
    "lore": "The tide brings it up and forgets to take it back. It holds the beach with one great claw and never learned to let go.",
    "scale": "standard",
-   "attack_action": "Claw Snap - Lunges slightly forward and snaps the big claw shut once, then returns to idle stance",
+   "attack_action": "Claw Snap - Lunges forward and snaps its big claw shut hard",
    "claws": true
   },
   {
@@ -124,7 +124,7 @@
    "prompt": "Hulking fantasy fire demon lord shown full body from horns to feet, standing on thick clawed legs, with a body of black volcanic rock split by glowing orange magma cracks, a crown of jagged obsidian horns wreathed in flames, burning white-hot eyes, massive clawed hands, a molten glowing chain draped across its chest, and flames rising from its shoulders.",
    "lore": "The mountain's first king and its only one. Every eruption since has been his voice.",
    "scale": "standard",
-   "attack_action": "Claw Slam - Raises one massive clawed hand and slams it down once, then returns to idle stance",
+   "attack_action": "Claw Slam - Raises one massive clawed hand high and slams it straight down",
    "claws": true,
    "fx": true
   },
@@ -175,7 +175,7 @@
    "prompt": "Fantasy hollow suit of rusted plate armor animated by green witchfire, nothing inside it, green flames burning in the empty helmet visor, a chipped greatsword held in one gauntlet, a torn dark cape, and cracks in the armor leaking green light.",
    "lore": "The knight left long ago. The armor kept the vigil, and the fire that keeps it standing has forgotten whose it was.",
    "scale": "standard",
-   "attack_action": "Overhead Chop - Raises the greatsword and brings it down in one heavy chop, then returns to idle stance",
+   "attack_action": "Overhead Chop - Raises the greatsword high overhead and chops it down hard",
    "claws": true,
    "fx": true
   },
@@ -197,7 +197,7 @@
    "lore": "She searches every cradle in the valley and finds none of them hers. The cold that follows her is the closest she gets to company.",
    "scale": "standard",
    "walk_action": "floats forward in place, drifting slowly up and down, veil and dress swaying, arms still, seamless loop, no turning",
-   "attack_action": "Clawing Grab - Lunges forward with both long-fingered hands reaching in one clawing grab, then returns to idle stance",
+   "attack_action": "Clawing Grab - Surges forward with both long-fingered hands out in a clawing grab",
    "claws": true,
    "fx": true
   },
@@ -237,7 +237,7 @@
    "prompt": "Tiny fantasy hermit crab living inside a round speckled grey pebble, two small orange pincers, four thin legs, two black eyes on short stalks, and a patch of wet green algae on the pebble.",
    "lore": "A pebble that pinches. The beach is full of stones, and some of them are waiting.",
    "walk_slow": true,
-   "attack_action": "Claw Pinch - Darts forward and pinches once with both small claws, then returns to idle stance",
+   "attack_action": "Claw Pinch - Darts forward and snaps both small claws shut hard",
    "claws": true
   },
   {
@@ -256,7 +256,7 @@
    "lore": "Too slow to chase and too stubborn to yield. Its shell is a garden, and it defends the garden.",
    "walk_action": "glides forward in place on its foot with a slow ripple, shell rocking very slightly, eyestalks steady, seamless loop, no turning",
    "walk_slow": true,
-   "attack_action": "Shell Butt - Rears its head up and butts forward once with its shell, then returns to idle stance"
+   "attack_action": "Shell Butt - Rears its head high and rams forward with its shell"
   },
   {
    "id": "elder_treant",
@@ -272,7 +272,7 @@
    "items": [],
    "prompt": "Enormous ancient fantasy treant shown full body from crown to roots, a thick gnarled oak trunk for a torso with a hollow glowing amber face, a wide crown of dense green leaves, two massive branch arms with clawed twig fingers, and two sturdy root-bundle legs planted on the ground.",
    "lore": "Older than the road that was cut around it. It has forgiven the axe once, and says so, and will not do it twice.",
-   "attack_action": "Arm Swing - Raises one huge branch arm and swings it down once, then returns to idle stance",
+   "attack_action": "Branch Smash - Swings one huge branch arm down in a wide overhead smash",
    "claws": true
   },
   {
@@ -290,7 +290,7 @@
    "items": [],
    "prompt": "Hulking fantasy mountain troll shown full body from head to feet, thick warty grey-green skin, a heavy brow and underbite with two lower tusks, a broad hunched back with lichen and small boulders growing on it, huge hands dragging a rough stone club, and wide flat feet.",
    "lore": "It sleeps as a hillside and wakes as a landslide. Travellers who camp on it are the reason it wakes.",
-   "attack_action": "Club Smash - Raises the stone club and swings it down in one heavy blow, then returns to idle stance",
+   "attack_action": "Club Smash - Raises the stone club overhead and smashes it straight down",
    "claws": true
   },
   {
@@ -337,7 +337,7 @@
    "prompt": "Fat fantasy slug with a body of dark cooled rock split by glowing orange magma seams, two short thick eyestalks with ember eyes held close to its body, a trail of molten drips beneath it, and small vents on its back puffing smoke.",
    "lore": "It moves a hand's width a day and melts the road behind it. Patient things kill the most travellers.",
    "walk_slow": true,
-   "attack_action": "Magma Spit - Rears up and spits one gout of magma forward, then returns to idle stance",
+   "attack_action": "Magma Spit - Rears its front up high and spits a gout of magma forward",
    "fx": true
   },
   {
@@ -384,7 +384,7 @@
    "items": [],
    "prompt": "Small fantasy goblin shaman shown full body from head to feet, green skin, a bone skull mask over its face, a feathered cloak, a gnarled staff topped with a glowing green skull held upright, and bone charms hanging from its belt.",
    "lore": "It reads omens in the bog-gas and believes them. The curses it throws are old, and some of them still hold.",
-   "attack_action": "Skull Curse - Thrusts the skull staff forward once, the skull flaring green, then returns to idle stance",
+   "attack_action": "Skull Curse - Thrusts the skull staff out at arm's length and the skull flares",
    "fx": true
   },
   {
@@ -401,7 +401,7 @@
    "items": [],
    "prompt": "Fantasy skeleton archer shown full body from head to feet, yellowed bones, a cracked skull with glowing blue eye sockets, a tattered leather jerkin, a short unstrung bow held upright close against its body, and a quiver of black arrows on its back.",
    "lore": "It cannot see and does not miss. The arrows are older than the bow, and the bow is older than the wall.",
-   "attack_action": "Bow Shot - Draws the bowstring back and releases one arrow, then returns to idle stance"
+   "attack_action": "Bow Shot - Draws the bowstring back to its cheek and looses an arrow"
   },
   {
    "id": "zombie_farmer",
@@ -432,7 +432,7 @@
    "items": [],
    "prompt": "Hunched fantasy ghoul shown full body from head to feet, pale grey mottled skin stretched over a bony frame, a wide mouth of needle teeth, sunken white eyes, long clawed fingers, and rags of a burial shroud.",
    "lore": "It eats what the graves give up and waits for more. Its patience is only hunger, drawn out.",
-   "attack_action": "Double Claw - Performs two quick alternating front claw swipes, then returns to idle stance",
+   "attack_action": "Double Claw - Rakes forward with both claws in two fast alternating swipes",
    "claws": true
   },
   {
@@ -479,7 +479,7 @@
    "items": [],
    "prompt": "Fantasy fire elemental shown full body from head to feet, a humanoid figure of living orange and yellow flame with a dark ember core, two blazing white eyes, arms tapering into licks of fire, and sparks drifting off its shoulders.",
    "lore": "It burns because it is, not because it must. It follows travellers for the company and leaves them as ash.",
-   "attack_action": "Flame Burst - Thrusts both hands forward and hurls one burst of flame, then returns to idle stance",
+   "attack_action": "Flame Burst - Throws both hands forward and hurls a burst of flame",
    "fx": true
   },
   {
@@ -496,7 +496,7 @@
    "items": [],
    "prompt": "Fantasy water elemental shown full body from head to feet, a humanoid figure of clear blue rushing water with white foam edges, a glowing pearl-like core in its chest, two bright cyan eyes, and small fish visible swimming inside it.",
    "lore": "A river that stood up to see what it had been carrying. It is not angry, but it has never learned to be gentle.",
-   "attack_action": "Water Whip - Lashes forward once with a whip of water from one arm, then returns to idle stance",
+   "attack_action": "Water Whip - Lashes a long whip of water forward from one arm",
    "fx": true
   },
   {
@@ -528,7 +528,7 @@
    "items": [],
    "prompt": "Hunched fantasy swamp hag shown full body from head to feet, green-grey warty skin, a long crooked nose, wild grey hair with bones tied in it, a ragged patchwork shawl, a twisted staff hung with dead frogs held upright, and bare clawed feet.",
    "lore": "She trades in wishes and collects in years. Every village has one story about her, and every story ends the same.",
-   "attack_action": "Staff Curse - Raises the staff and jabs it forward once, green magic flashing at the tip, then returns to idle stance",
+   "attack_action": "Staff Curse - Jabs the staff out and green swamp magic bursts from the tip",
    "fx": true
   },
   {
@@ -560,7 +560,7 @@
    "items": [],
    "prompt": "Fantasy lizardman warrior shown full body from head to feet, dark green scaled skin with a pale belly, a crested head with yellow slit eyes, a bone-and-hide shield, a jagged bronze spear held upright, and a short thick tail held close behind its legs.",
    "lore": "Its people ruled the marsh before the marsh drowned them. It still patrols the borders of a country that is gone.",
-   "attack_action": "Spear Thrust - Thrusts the spear forward in one fast stab, shield held up, then returns to idle stance",
+   "attack_action": "Spear Thrust - Lunges forward and drives the spear out in one fast stab",
    "claws": true
   },
   {
@@ -592,7 +592,7 @@
    "items": [],
    "prompt": "Fantasy werewolf shown full body from head to feet, a broad bipedal wolf with dark grey fur, a heavy muzzle of white fangs, glowing amber eyes, massive clawed hands, torn trousers, and a thick ruff of fur at the neck.",
    "lore": "It runs the ridge under every full moon and comes back fed. The village no longer asks what it ate.",
-   "attack_action": "Claw Swipe - Raises one front paw and performs one quick swipe forward, then returns to idle stance",
+   "attack_action": "Claw Swipe - Rears up and swipes one clawed paw hard across",
    "claws": true
   },
   {
@@ -624,7 +624,7 @@
    "items": [],
    "prompt": "Fantasy basilisk with a stocky six-legged lizard body of dull green scales, a heavy head with a crest of spines, glowing pale green eyes, a wide fanged mouth, and a short thick tail tucked close against its body.",
    "lore": "Meet its eyes and become a landmark. The roadside is lined with people who did, still pointing the way.",
-   "attack_action": "Bite - Quickly lunges forward, bites once, then returns to idle stance",
+   "attack_action": "Bite - Lunges forward with its jaws wide open and bites hard",
    "claws": true
   },
   {
@@ -688,7 +688,7 @@
    "lore": "It has three hearts and holds a grudge in each. The ink is how it says goodbye.",
    "walk_action": "crawls forward on its tentacles in place, tentacles reaching and pulling in turn, mantle swaying slightly, seamless loop, no turning",
    "walk_slow": true,
-   "attack_action": "Tentacle Slam - Raises two front tentacles high, then brings them down once, then returns to idle stance"
+   "attack_action": "Tentacle Lash - Rears up high and whips two tentacles forward"
   },
   {
    "id": "angler_walker",
@@ -762,7 +762,7 @@
    "items": [],
    "prompt": "Fantasy mummy shown full body from head to feet, a shambling figure wrapped in yellowed stained linen bandages, some loose and trailing, glowing green eyes through the wrappings, a golden pectoral, and dust puffing off its shoulders.",
    "lore": "Its name was carved off the tomb, so it went looking for it. It checks every face and none of them fit.",
-   "attack_action": "Grasping Swipe - Lunges forward with both bandaged arms in one grasping swipe, then returns to idle stance"
+   "attack_action": "Grasping Swipe - Lunges forward with both bandaged arms out in a grasping swipe"
   },
   {
    "id": "cobra",
@@ -780,7 +780,7 @@
    "lore": "It sways so you will watch the hood. The bite comes from where you were not watching.",
    "walk_action": "slithers forward in place, body undulating in a smooth S-curve, hood and head held raised and steady, seamless loop, no turning",
    "walk_slow": true,
-   "attack_action": "Strike - Pulls its head back, then strikes forward once with fangs bared, then returns to idle stance"
+   "attack_action": "Strike - Coils its head back, then strikes forward with fangs bared"
   },
   {
    "id": "fox_spirit",
@@ -811,7 +811,7 @@
    "items": [],
    "prompt": "Fantasy floating eyeball monster, a single large bloodshot eyeball with a green iris, two small leathery bat wings folded at its sides, thin trailing nerve tendrils beneath it, and a tiny fanged mouth.",
    "lore": "It watches for something bigger. What it sees, the something bigger sees too.",
-   "attack_action": "Eye Beam - Darts forward and fires one short beam of light from its pupil, then returns to idle stance",
+   "attack_action": "Eye Beam - Flares its pupil wide and fires a beam of light forward",
    "fx": true
   },
   {
@@ -830,7 +830,7 @@
    "lore": "It is a pebble until it isn't. Cairns are made of them, and cairns move at night.",
    "walk_action": "scuttles forward in place on its tiny legs, legs alternating quickly, body steady, seamless loop, no turning",
    "walk_slow": true,
-   "attack_action": "Headbutt - Pulls back slightly, then quickly rams forward once with its stone body, then returns to idle stance"
+   "attack_action": "Headbutt - Rocks back, then rams forward hard with its stone body"
   },
   {
    "id": "frost_mite",
@@ -846,7 +846,7 @@
    "items": [],
    "prompt": "Tiny fantasy ice tick, a round body of frosted blue crystal with six small legs, two pale glowing eyes, and a few snowflakes clinging to its back.",
    "lore": "It bites once and the bite never thaws. Snow-walkers check their boots every night for good reason.",
-   "attack_action": "Bite - Hops forward and bites once with its small mandibles, then returns to idle stance"
+   "attack_action": "Bite - Hops forward and bites hard with its mandibles wide"
   },
   {
    "id": "hill_giant",
@@ -877,7 +877,7 @@
    "items": [],
    "prompt": "Gigantic fantasy spider queen with a bloated black abdomen covered in pale egg sacs, eight short thick armored legs folded tightly beneath her body, a crown of bone spikes, eight glowing violet eyes, and huge dripping fangs.",
    "lore": "Every spider in the dark is hers and every dark is a nursery. She does not hunt; she waits, and the dark brings supper.",
-   "attack_action": "Fang Stab - Rears up on her back legs and stabs down once with both front legs and fangs, then returns to idle stance",
+   "attack_action": "Fang Stab - Rears high on her back legs and stabs down with fangs and front legs",
    "claws": true
   },
   {
@@ -939,7 +939,7 @@
    "items": [],
    "prompt": "Gigantic fantasy wingless fire drake with a heavy four-legged body of dark red scales, glowing orange plates down its back, a broad horned head with a mouth leaking flame, thick clawed legs, and a short thick tail curled around its feet.",
    "lore": "A drake that never grew wings and never needed them. It walks the lava fields and the lava parts for it.",
-   "attack_action": "Fire Breath - Rears its head back and breathes one short jet of fire forward, then returns to idle stance",
+   "attack_action": "Fire Breath - Rears its head back and breathes a long jet of fire forward",
    "claws": true,
    "fx": true
   },
@@ -972,7 +972,7 @@
    "items": [],
    "prompt": "Gigantic fantasy armored war elephant with wrinkled grey hide, riveted iron plates on its brow and flanks, capped brass tusks, a short curled trunk, small wise eyes, and a howdah-tower of wood strapped to its back.",
    "lore": "It carried a king to war and carried him home dead. It still wears the tower, and it still wants a war.",
-   "attack_action": "Tusk Gore - Lowers head and thrusts forward once with both tusks, then returns to idle stance"
+   "attack_action": "Tusk Gore - Lowers its head and drives both tusks forward in a heavy gore"
   },
   {
    "id": "bog_titan",
@@ -988,7 +988,7 @@
    "items": [],
    "prompt": "Gigantic fantasy swamp titan shown full body from head to feet, a hulking body of black peat and tangled roots, reeds and moss growing on its shoulders, a face of two glowing green lamps in the mud, huge dripping arms, and legs like sunken tree trunks.",
    "lore": "The fen itself, when the fen stands up. Villages built on it are carried off when it turns.",
-   "attack_action": "Double Slam - Raises both arms and slams them down together once, then returns to idle stance",
+   "attack_action": "Double Slam - Raises both arms high overhead and slams them down together",
    "claws": true
   },
   {
@@ -1005,7 +1005,7 @@
    "items": [],
    "prompt": "Gigantic fantasy crystal titan shown full body from head to feet, a body of jagged translucent amethyst and quartz crystal over dark stone, light refracting inside it, a faceted head with two glowing white eyes, huge crystal-bladed arms, and pillar legs.",
    "lore": "Light goes into it and comes out wrong. Miners follow the rainbows down and are found as rainbows themselves.",
-   "attack_action": "Arm Sweep - Swings one crystal-bladed arm in one wide sweeping slash, then returns to idle stance",
+   "attack_action": "Arm Sweep - Swings one crystal-bladed arm across in a wide sweep",
    "claws": true
   },
   {
@@ -1022,7 +1022,7 @@
    "items": [],
    "prompt": "Gigantic fantasy cave troll shown full body from head to feet, pale hairless grey skin, tiny blind white eyes, an enormous underbite with broken tusks, a hunched back covered in fungus, huge knuckle-dragging arms, and a stalactite club resting on one shoulder.",
    "lore": "It has never seen the sun and hates it on principle. Anything with a torch gets the club first.",
-   "attack_action": "Club Smash - Raises the stalactite club overhead and smashes it down once, then returns to idle stance",
+   "attack_action": "Club Smash - Heaves the stalactite club overhead and smashes it down",
    "claws": true
   },
   {
@@ -1086,7 +1086,7 @@
    "lore": "The first of the clutch to reach the water, and the only one. It has been careful ever since.",
    "walk_action": "crawls forward in place, flippers alternating in a slow paddling stride, shell steady, seamless loop, no turning",
    "walk_slow": true,
-   "attack_action": "Beak Snap - Lunges forward and snaps once with its small beak, then returns to idle stance"
+   "attack_action": "Beak Snap - Stretches its neck right out and snaps its beak shut"
   },
   {
    "id": "sand_kit",
@@ -1118,7 +1118,7 @@
    "lore": "The only light in the deep galleries. Miners follow it, and it leads them where it feeds.",
    "walk_action": "crawls forward in place, body segments rippling in a wave, stubby legs alternating, seamless loop, no turning",
    "walk_slow": true,
-   "attack_action": "Bite - Rears up and bites forward once with its mandibles, then returns to idle stance",
+   "attack_action": "Bite - Rears its front half up and bites forward with its mandibles",
    "fx": true
   },
   {
@@ -1135,7 +1135,7 @@
    "items": [],
    "prompt": "Small fantasy ice spirit with a slender body of pale translucent ice, a faceted crystal head with two glowing white eyes, thin arms, and a faint haze of frost around it, nothing dark behind it, no shadow of any kind.",
    "lore": "A splinter of the glacier that walks ahead of the cold. Where it stands, the frost arrives early.",
-   "attack_action": "Frost Burst - Thrusts both hands forward and releases one burst of frost crystals, then returns to idle stance",
+   "attack_action": "Frost Burst - Throws both hands forward and releases a burst of frost",
    "fx": true
   },
   {
@@ -1167,7 +1167,7 @@
    "items": [],
    "prompt": "Small fantasy salamander hatchling with dark ash-grey scales, glowing ember-orange eyes, a short thick tail curled around it, small clawed feet, and faint heat glow between its scales.",
    "lore": "Hatched in the cinder beds beneath the caldera. It will grow into a mouthful of flame; for now it only glows.",
-   "attack_action": "Bite - Quickly lunges forward, bites once, a small puff of embers, then returns to idle stance",
+   "attack_action": "Bite - Lunges forward and bites hard, embers puffing",
    "claws": true,
    "fx": true
   },
@@ -1245,7 +1245,7 @@
    "items": [],
    "prompt": "Large vulture standing upright shown full body from head to feet, realistic proportions, ragged dark brown feathers, wings folded tightly against its body, a bald wrinkled pink head and neck, a hooked pale beak and grey talons.",
    "lore": "It circles the road for days and lands only when it is certain. It has never once been wrong.",
-   "attack_action": "Beak Stab - Lunges forward with one stabbing peck of its hooked beak, wings half raised, then returns to idle stance",
+   "attack_action": "Beak Stab - Spreads its wings wide and stabs forward with its hooked beak",
    "claws": true
   },
   {
@@ -1292,7 +1292,7 @@
    "items": [],
    "prompt": "Orc warrior shown full body from head to feet, realistic proportions, grey-green skin over heavy muscle, a jutting jaw with lower tusks, small red eyes under a heavy brow, crude iron shoulder plates and a hide kilt, and a notched battle axe held low at its side.",
    "lore": "It fights for whoever pays in iron and eats whoever does not. The axe has a name; it will not say it.",
-   "attack_action": "Axe Cleave - Swings the battle axe in one heavy sideways cleave, then returns to idle stance"
+   "attack_action": "Axe Cleave - Swings the battle axe across in one heavy cleave"
   },
   {
    "id": "cultist",
@@ -1383,7 +1383,7 @@
    "items": [],
    "prompt": "River troll shown full body from head to feet, realistic proportions, mottled grey-green skin, a long hooked nose, small deep-set eyes, a hunched back, long arms with heavy knuckles, ragged trousers, and a rusted iron chain wrapped around one fist.",
    "lore": "The bridge is older than the town and the troll is older than the bridge. The toll has never once been coin.",
-   "attack_action": "Chain Lash - Whips the iron chain forward in one heavy lash, then returns to idle stance",
+   "attack_action": "Chain Lash - Whips the iron chain out forward in one heavy lash",
    "claws": true
   },
   {
@@ -1519,7 +1519,7 @@
    "items": [],
    "prompt": "Small seed-pod creature with a hard ridged brown husk for a body split open at the front, two pale green eyes glowing inside the split, a single dark green shoot rising from its top, and short knotted root legs.",
    "lore": "It fell from a tree nobody has found. Where it roots, the ground goes hard and the crops go quiet.",
-   "attack_action": "Headbutt - Pulls back slightly, then quickly rams forward once with its hard husk, then returns to idle stance"
+   "attack_action": "Headbutt - Rocks back, then rams forward hard with its hard husk"
   },
   {
    "id": "black_ooze",
@@ -1625,7 +1625,7 @@
    "items": [],
    "prompt": "Spectral hound with realistic proportions, a gaunt greyhound-like body of translucent pale blue-white mist over faint bones, hollow glowing white eyes, a long muzzle with bared teeth, thin legs, and cold vapor trailing from its flanks.",
    "lore": "It runs the old road at the hour its master died. Travellers who hear it do not see it; the ones who see it do not travel again.",
-   "attack_action": "Bite - Quickly lunges forward, bites once, mist trailing, then returns to idle stance",
+   "attack_action": "Bite - Lunges forward with its jaws wide open and bites",
    "claws": true,
    "fx": true
   }
