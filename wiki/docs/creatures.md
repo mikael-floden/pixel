@@ -5,15 +5,21 @@ The shadow editor, the animation viewer, the showcase, usage stats and the revie
 ## One animation is REDONE, never removed
 
 The per-animation row — one state in one direction, the unit the agent
-regenerates — is **approve + redo**. There is no remove on it (maintainer
-2026-09-10: "The individual animations should only have a REDO. Not a
-remove!"): you do not delete one facing of a creature's walk, you ask for
-another take of it. Removal is a verdict about the WHOLE creature and lives on
-the row beside its name, which still carries it.
+regenerates — is **approve + redo**. There is no remove on it, and the reason
+is a rule about the game, not about the row (maintainer 2026-09-10): *"we never
+want a monster to 'not have an attack'. Redo is the only option. If we can't
+generate the attack we need to remove the entire monster."* A creature ships
+with all five states in all eight directions or it does not ship. So a bad clip
+has exactly two ends: another take, or the whole creature goes. Removal is
+therefore a verdict about the WHOLE creature and lives on the row beside its
+name, which still carries it — and the redo button says so, for the day a state
+simply cannot be generated.
 
 - `redo` on `<path>#<state>#<dir>` in `live/feedback/<domain>.json`, stamped
   with that clip's own art hash, is the producing agent's cue to regenerate
-  exactly that clip and nothing else.
+  exactly that clip and nothing else. A creature can never be left with a state
+  missing: an agent that cannot produce one asks for the creature to be
+  removed rather than shipping it incomplete.
 - A row whose verdict ALREADY says `rejected` still shows its remove button, so
   an old removal can be cleared rather than stranded on a row that can no
   longer set one.

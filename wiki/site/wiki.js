@@ -6150,7 +6150,7 @@ function viewMonster(id) {
       reject: false,
       rejectTitle: `Slated for removal — clear it here; this row only asks for redos now`,
       rejectedLabel: "slated for removal",
-      redo: { label: "↻ redo", title: `Ask the monsters agent for another take of just this one — ${stateLabel(st)} facing ${dir}. Nothing is deleted.`, doneLabel: "another take requested" },
+      redo: { label: "↻ redo", title: `Ask the monsters agent for another take of just this one — ${stateLabel(st)} facing ${dir}. Nothing is deleted. If this state can never be made right, remove the whole creature instead — it must not ship without it.`, doneLabel: "another take requested" },
     }));
   };
   player.onFacetChange = renderFacet;
@@ -6378,7 +6378,7 @@ function viewCharacter(id) {
       reject: false,
       rejectTitle: `Slated for removal — clear it here; this row only asks for redos now`,
       rejectedLabel: "slated for removal",
-      redo: { label: "↻ redo", title: `Ask the characters agent for another take of just this one — ${stateLabel(st)} facing ${dir}. Nothing is deleted.`, doneLabel: "another take requested" },
+      redo: { label: "↻ redo", title: `Ask the characters agent for another take of just this one — ${stateLabel(st)} facing ${dir}. Nothing is deleted. If this state can never be made right, remove the whole creature instead — it must not ship without it.`, doneLabel: "another take requested" },
     }));
   };
   player.onFacetChange = renderFacet;
