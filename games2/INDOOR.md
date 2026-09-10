@@ -118,12 +118,12 @@ Probes: `__ml.indoorWall(v?)` / `__ml.indoor()`.
     (entry done by mix ⅓; exit by ⅔); `indoorGrade()` — the eased mix at
     1.5×, clamped — is what every LIGHT half rides (`night.indoorMix`, every
     CPU light gain: fireRoomK, torch enable, outside fade, sealed fires,
-    ambEff/sunIn/fogScale). The raw `indoorMix` stays the 0.35s easing
+    ambEff/sunIn/fogScale). The raw `indoorMix` stays the 0.45s easing
     substrate (what `indoor().mix` reports and the pin targets); consumers
     take the grade or the alpha, never the raw mix.
   - **The exit swap lands WITH the light grade (mix ⅓), not at mix 0**: the
     debris is view-culled to the FLIP frame's camera, so the old mix-0
-    landing ~1.9s later exposed cut-state cells the walking player had
+    landing ~2.4s later (5.4 tau) exposed cut-state cells the walking player had
     dragged the camera onto. The grade lands ~0.39s in (≤~60px drift vs
     OCC_CULL_PAD ~360) and the swap frame is pixel-identical — LOCK THE
     CAMERA before trusting any screenshot diff (an unlocked run's

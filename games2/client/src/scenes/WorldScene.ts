@@ -1217,10 +1217,18 @@ const IN_WALL = 2; // the building itself: any solid cell of the enclosure
  * — a half-faded roof is just a wrong roof — but the grade must not, or a
  * doorstep reads as a camera cut. Same exponential-roll idiom as the cloud /
  * mist / aurora eases (frame-rate independent, and retarget-safe: turn round in
- * the doorway and it simply reverses from wherever it is). 0.35s is ~93% of the
+ * the doorway and it simply reverses from wherever it is). 0.45s is ~89% of the
  * way in 1s — an eye adapting, and finished before you have walked one cell in.
- * The weather roll's 4s is far too slow for a doorway. */
-const INDOOR_TAU = 0.35;
+ * The weather roll's 4s is far too slow for a doorway.
+ *
+ * 0.45, NOT 0.35, and it is HIS notch: with a storey drawn as its own room, a
+ * staircase crossing runs this fade every time — the chamber you leave seals
+ * and the one you enter opens — and he asked for exactly one step slower on
+ * seeing it ("can you make the fade a bit slower (not much just a notch) and it
+ * will look even better", 2026-09-10, four photographs up the dungeon stairs).
+ * The BASE is what moved, so the debris' 3x and the grade's 1.5x keep the
+ * ratios he approved; do not slow those instead. */
+const INDOOR_TAU = 0.45;
 // The transition's two speeds, as multiples of the eased indoor mix. The
 // GEOMETRY crossfade (debris) runs hot — hiding the repaint seams is its whole
 // job, and they hide better the less time they get (maintainer: 2× was not

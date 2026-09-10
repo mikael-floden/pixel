@@ -36,13 +36,16 @@
  * and back again when you go out. The snapping is gone. ... please fade the
  * ambient effects in/out as well."
  *
- * 1050 IS NOT A TASTE NUMBER — it is that same roll, expressed in this class's
+ * 1350 IS NOT A TASTE NUMBER — it is that same roll, expressed in this class's
  * units. step() uses `k = 1 - exp(-(dt_ms / fadeMs) * 3)`, so fadeMs / 3 is the
- * time constant in ms: 3 * 0.35 * 1000 = 1050 makes the two curves IDENTICAL,
+ * time constant in ms: 3 * 0.45 * 1000 = 1350 makes the two curves IDENTICAL,
  * frame for frame. Both also step on the same boolean flip (the geometry
  * verdict, not the light blend), so the ambience and the world it hangs in can
- * never drift apart. If INDOOR_TAU ever moves, move this with it. */
-export const OUTDOOR_FADE_MS = 1050;
+ * never drift apart. If INDOOR_TAU ever moves, move this with it — it moved
+ * from 0.35 to 0.45 on 2026-09-10, when a storey became its own room and the
+ * maintainer asked the staircase crossing to run "a notch" slower. The gate is
+ * `server/test/outdoor.test.ts`, which asserts this pair frame for frame. */
+export const OUTDOOR_FADE_MS = 1350;
 
 /** Below this the gain is treated as fully off: effects skip their simulation
  * and hide their objects rather than drawing invisible ones every frame. */
