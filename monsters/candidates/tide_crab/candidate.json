@@ -897,16 +897,16 @@
       "directions": {
         "south": {
           "status": "fail",
-          "step_mean": 0.1428,
-          "step_max": 0.1932,
-          "drift": 1.21,
-          "loop": 0.279,
-          "loop_ratio": 1.95,
-          "travel": 0.25,
+          "step_mean": 0.2316,
+          "step_max": 0.2589,
+          "drift": 1.45,
+          "loop": 0.2185,
+          "loop_ratio": 0.94,
+          "travel": 0.35,
           "pin": 1.0,
           "pad": 0,
-          "flash": 0.001,
-          "peak": 0.3018,
+          "flash": -0.002,
+          "peak": 0.35,
           "reach": 0.109,
           "canvas": [
             112,
@@ -915,52 +915,51 @@
           "reasons": [
             "no strike, just a lean: nothing reaches past 0.11 of the body"
           ],
-          "sub": "29c92edf-a36b-41fe-8c9e-c61bf8031341",
-          "group": "a467e82a-fb8f-4761-ba3e-b56fb9691e44",
+          "sub": "352e512d-1ca7-4f3d-b5b0-e86b3824305c",
+          "group": "c5a236eb-bfc0-42cc-a119-d54a0454ed3f",
           "takes": 1,
-          "version": 5,
+          "version": 6,
           "mirrored": false,
-          "action": "Claw Snap - Lunges forward and snaps its big claw shut hard",
+          "action": "Claw Snap - Lunges forward and snaps its big claw shut hard, a big aggressive swing",
           "intensity": 2,
-          "rolls": 1,
+          "rolls": 2,
           "frames": 5,
-          "rung": 0,
-          "tries": 1,
-          "generated_at": "2026-09-10T21:37:33+00:00"
+          "rung": 1,
+          "tries": 2,
+          "generated_at": "2026-09-10T22:02:30+00:00"
         },
         "south-east": {
-          "status": "fail",
-          "step_mean": 0.2059,
-          "step_max": 0.2473,
-          "drift": 2.32,
-          "loop": 0.3016,
-          "loop_ratio": 1.46,
-          "travel": 1.89,
+          "status": "warn",
+          "step_mean": 0.176,
+          "step_max": 0.2036,
+          "drift": 2.55,
+          "loop": 0.1348,
+          "loop_ratio": 0.77,
+          "travel": 2.15,
           "pin": 1.0,
-          "pad": 3,
-          "flash": 0.002,
-          "peak": 0.3986,
-          "reach": 0.117,
+          "pad": 0,
+          "flash": 0.19,
+          "peak": 0.2919,
+          "reach": 0.19,
           "canvas": [
-            118,
-            118
+            112,
+            112
           ],
           "reasons": [
-            "no strike, just a lean: nothing reaches past 0.12 of the body",
-            "canvas grown by 3 px a side to hold the motion"
+            "shallow strike: reach 0.19 — eyeball it"
           ],
-          "sub": "c9ff2e80-90f2-4b35-ba3b-430a6dbc4dd3",
-          "group": "43f79f20-e892-461b-8322-bbedc0b93e3f",
+          "sub": "a9534282-3bd8-4c88-8c4c-3821e6e99e16",
+          "group": "cd9ba21d-faf9-4879-9322-8fcb0e630b18",
           "takes": 1,
-          "version": 5,
+          "version": 6,
           "mirrored": false,
-          "action": "Shell Burst - The crab's shell cracks open with a burst of force as it hurls both claws wide and slams them down, shards and spray flying, a huge aggressive attack with the whole body behind it, wide exaggerated motion",
+          "action": "Shell Burst - The crab's shell cracks open with a burst of force as it hurls both claws wide and slams them down, shards and spray flying, an extremely violent attack, huge exaggerated motion, the limb thrown far out",
           "intensity": 2,
-          "rolls": 5,
+          "rolls": 6,
           "frames": 5,
-          "rung": 4,
-          "tries": 5,
-          "generated_at": "2026-09-10T21:37:34+00:00"
+          "rung": 5,
+          "tries": 6,
+          "generated_at": "2026-09-10T22:02:41+00:00"
         },
         "east": {
           "status": "warn",
@@ -1130,6 +1129,40 @@
           "tries": 5,
           "generated_at": "2026-09-10T21:37:35+00:00",
           "source": "east"
+        },
+        "south-west": {
+          "status": "warn",
+          "step_mean": 0.176,
+          "step_max": 0.2036,
+          "drift": 2.55,
+          "loop": 0.1348,
+          "loop_ratio": 0.77,
+          "travel": 2.15,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": 0.19,
+          "peak": 0.2919,
+          "reach": 0.19,
+          "canvas": [
+            112,
+            112
+          ],
+          "reasons": [
+            "shallow strike: reach 0.19 — eyeball it"
+          ],
+          "sub": "a9534282-3bd8-4c88-8c4c-3821e6e99e16",
+          "group": "cd9ba21d-faf9-4879-9322-8fcb0e630b18",
+          "takes": 1,
+          "version": 6,
+          "mirrored": true,
+          "action": "Shell Burst - The crab's shell cracks open with a burst of force as it hurls both claws wide and slams them down, shards and spray flying, an extremely violent attack, huge exaggerated motion, the limb thrown far out",
+          "intensity": 2,
+          "rolls": 6,
+          "frames": 5,
+          "rung": 5,
+          "tries": 6,
+          "generated_at": "2026-09-10T22:02:41+00:00",
+          "source": "south-east"
         }
       },
       "action": "Claw Snap - Lunges forward and snaps its big claw shut hard",
@@ -1182,6 +1215,13 @@
           "tide_crab/animations/attack_try/west/02.webp",
           "tide_crab/animations/attack_try/west/03.webp",
           "tide_crab/animations/attack_try/west/04.webp"
+        ],
+        "south-west": [
+          "tide_crab/animations/attack_try/south-west/00.webp",
+          "tide_crab/animations/attack_try/south-west/01.webp",
+          "tide_crab/animations/attack_try/south-west/02.webp",
+          "tide_crab/animations/attack_try/south-west/03.webp",
+          "tide_crab/animations/attack_try/south-west/04.webp"
         ]
       },
       "strips": {
@@ -1191,7 +1231,8 @@
         "north": "tide_crab/animations/attack_try__north.webp",
         "north-east": "tide_crab/animations/attack_try__north-east.webp",
         "north-west": "tide_crab/animations/attack_try__north-west.webp",
-        "west": "tide_crab/animations/attack_try__west.webp"
+        "west": "tide_crab/animations/attack_try__west.webp",
+        "south-west": "tide_crab/animations/attack_try__south-west.webp"
       },
       "intensity": 2
     }
