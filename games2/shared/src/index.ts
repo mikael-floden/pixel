@@ -3153,6 +3153,28 @@ export function startBestTrip(
    * that both fail, "how close did it get" is not a preference about which
    * spot he meant. The slider that sets it is his to tune. */
   drawnBias = 1,
+  /* HOW MUCH DEEPER BEHIND THE HILL MAKES IT STRONGER (maintainer 2026-09-10:
+   * "I now want a different expo slider that makes this effect more extreme if
+   * you try to navigate to a tile that is precisely covered by an 8 storey tall
+   * hill VS ... the root of an 8 storey tall hill. The closer further down a
+   * covered area your click suggests, the more expo").
+   *
+   * The DEPTH of a hidden reading is HOW FAR UP-SCREEN OF THE DRAWN ONE IT IS,
+   * in cells: both readings are the same pixel, so the hidden cell sits `k`
+   * steps up-screen and the hill between them is `k` × the iso ratio (0.9375)
+   * storeys tall. Taken from the POSITIONS, not from `goalLevel`, because a
+   * candidate's level is optional and the separation is the thing that is
+   * always true of two readings of one pixel. At the hill's root k is ~1 and
+   * the click is barely ambiguous; on the face of an 8-level hill it is ~8.5
+   * and the hidden area behind is enormous. So the handicap is
+   *
+   *     drawnBias * depth^(expo - 1)
+   *
+   * which is exactly `drawnBias` at expo 1 (the flat rule, whatever the depth)
+   * and exactly `drawnBias` at the root (depth 1, whatever the expo). Never
+   * below 1: the expo may only ever make the visible spot harder to displace,
+   * which is why its slider stops at 1.0. */
+  drawnExpo = 1,
 ): AutopilotTrip | null {
   let best: AutopilotTrip | null = null;
   let bestArrived = false;
@@ -3167,7 +3189,13 @@ export function startBestTrip(
       goalLevel === undefined || trip.endLevel === undefined
         ? true
         : Math.abs(trip.endLevel - goalLevel) < 0.5;
-    const len = tripLength(fromX, fromY, trip.path) * (isDrawn ? 1 : Math.max(1, drawnBias));
+    // Up-screen distance from the DRAWN reading, in cells, never under 1 — at
+    // the root the expo must not bite (1 to any power is 1).
+    const depth = isDrawn
+      ? 0
+      : Math.max(1, (candidates[0].x + candidates[0].y - toX - toY) / CELL_WU);
+    const bias = isDrawn ? 1 : Math.max(1, drawnBias * Math.pow(depth, Math.max(1, drawnExpo) - 1));
+    const len = tripLength(fromX, fromY, trip.path) * bias;
     // HOW FAR SHORT IT GAVE UP. Among routes that DON'T arrive, "shorter walk"
     // is not just meaningless, it is backwards: a candidate that gives up after
     // three steps has the shortest path of all and wins every time. Measured on

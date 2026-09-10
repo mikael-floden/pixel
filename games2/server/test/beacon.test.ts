@@ -244,3 +244,52 @@ test("the uphill bias: the visible reading wins until the hidden one is enough s
   assert.equal(pick(ratio * 1.5), "drawn", "a bias past the ratio must take the visible spot");
   assert.equal(pick(ratio * 0.5), "hidden", "a bias short of the ratio must not");
 });
+
+test("the uphill EXPO: the deeper behind the hill, the stronger the bias", () => {
+  const W = 40;
+  const rows = Array.from({ length: W }, () => Array.from({ length: W }, () => ({ t: "grass", v: 0, l: 0 })));
+  const flat = buildTerrainGrid(W, W, rows, [], []);
+  const from: [number, number] = [wu(20.5), wu(20.5)];
+  const lenOf = (x: number, y: number) => {
+    const t = startTrip(flat, from[0], from[1], wu(x), wu(y), false, 0, 0, 0);
+    assert.ok(t, "the flat fixture must route to both candidates");
+    return tripLength(from[0], from[1], t!.path) / CELL_WU;
+  };
+  // THE DRAWN reading is the far one; the HIDDEN one is close and UP-SCREEN of
+  // it, which is what a hidden reading always is (same pixel, a cell up-screen
+  // per 0.9375 storeys of hill). `deep` is 12 cells up-screen of the drawn
+  // reading — an 8-level hill's worth — and `root` is 1, the hill's foot.
+  const drawn = { x: wu(30.5), y: wu(30.5), goalLevel: 0 };
+  const deep = { x: wu(24.5), y: wu(24.5), goalLevel: 0 };   // 12 cells up-screen
+  const root = { x: wu(30.0), y: wu(30.0), goalLevel: 0 };   // 1 cell up-screen
+  const ratioOf = (c: { x: number; y: number }) =>
+    lenOf(drawn.x / CELL_WU, drawn.y / CELL_WU) / lenOf(c.x / CELL_WU, c.y / CELL_WU);
+  const pick = (c: { x: number; y: number; goalLevel: number }, bias: number, expo: number) => {
+    const t = startBestTrip(flat, from[0], from[1], false, 0, 0, [drawn, c], bias, expo);
+    assert.ok(t, `no route at bias ${bias} expo ${expo}`);
+    const dd = Math.hypot(t!.target.x - drawn.x, t!.target.y - drawn.y);
+    const dc = Math.hypot(t!.target.x - c.x, t!.target.y - c.y);
+    return dd < dc ? "drawn" : "hidden";
+  };
+  const deepRatio = ratioOf(deep);
+  assert.ok(deepRatio > 1.4, `the deep fixture is not lopsided enough (${deepRatio})`);
+  const under = deepRatio * 0.5; // a bias that is NOT enough on its own
+
+  // EXPO 1 IS THE FLAT RULE, whatever the depth — that is what makes it the
+  // default and what lets him tune from a known place.
+  assert.equal(pick(deep, under, 1), "hidden", "expo 1, twelve cells deep: unchanged");
+  assert.equal(pick(deep, deepRatio * 1.5, 1), "drawn", "…and a big enough flat bias still wins");
+
+  // AT THE ROOT THE EXPO CANNOT BITE (depth 1, and 1 to any power is 1) — "VS
+  // you try to navigate to the root of a 8 story tall hill".
+  const rootRatio = ratioOf(root);
+  assert.equal(pick(root, rootRatio * 0.5, 4), "hidden", "expo 4 at the root: still the flat bias");
+
+  // DEEP BEHIND THE HILL IT DOES: depth 12 at expo 2 multiplies the bias by 12.
+  assert.equal(pick(deep, under, 2), "drawn", "expo 2, twelve cells deep: the visible spot wins");
+  assert.ok(under * Math.pow(12, 2 - 1) > deepRatio, "…and the arithmetic says why");
+
+  // MONOTONIC in the expo, and never inverted below 1.
+  assert.equal(pick(deep, under, 0), "hidden", "an expo below 1 is clamped to 1, never inverted");
+  assert.equal(pick(deep, under, 1.5), "drawn", `expo 1.5 already clears it (${under * Math.pow(12, 0.5)})`);
+});

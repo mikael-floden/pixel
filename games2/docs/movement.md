@@ -401,7 +401,22 @@ clip, no tint.
     preference about which spot he meant. 1 = off. THE NUMBER IS HIS — a
     Settings slider, and **2.7 is his verdict** off it ("a good value for
     Uphill bias (tap) default is 2.7x", 2026-09-10); do not "restore" the 2
-    it shipped with while he was still trying it. Gate:
+    it shipped with while he was still trying it.
+  - **AND THE DEEPER BEHIND THE HILL, THE STRONGER** (`drawnExpo`, a second
+    slider "Uphill bias expo (depth)", 2026-09-10). The handicap is
+    `navUphill() * depth^(navExpo() - 1)`, where `depth` is how many cells
+    UP-SCREEN of the drawn reading the hidden one sits — both are the same
+    pixel, so that separation IS the hill between them (× the 0.9375 iso
+    ratio). Taken from the candidate POSITIONS, never `goalLevel`, which is
+    optional. It is `navUphill()` exactly at expo 1 whatever the depth, and
+    exactly `navUphill()` at the hill's root whatever the expo (depth 1, and 1
+    to any power is 1) — so tapping the root of an 8-level hill behaves as it
+    always did while tapping its face is weighted hard. His words: "makes this
+    effect more extreme if you try to navigate to a tile that is precisely
+    covered by an 8 story tall hill VS ... the root of an 8 story tall hill".
+    The slider stops at **1.0** on purpose ("this expo will be 1.0 or more so
+    don't make it possible to have an expo less than 1.0"); MAX 4, DEFAULT 1.0
+    awaiting his verdict. Gate:
     `server/test/beacon.test.ts`, a flat synthetic plane where the two lengths
     are the whole story.
   - **Never "fix" the symptom by moving the beacon to meet the walk** —

@@ -92,7 +92,10 @@ import {
 import { CharacterDef, Manifest, frameUrl, frameKey, BOOT_ANIM_STATES } from "../manifest";
 import { indoorAmbient, indoorLight, indoorLightLit, setIndoorLight, setIndoorLightLit } from "../indoorlight";
 import { ensureMapLayers, mapLayers } from "../maplayers";
-import { ensureNavDial, navUphill, setNavUphill, NAV_UPHILL_DEFAULT } from "../navbias";
+import {
+  ensureNavDial, navUphill, setNavUphill, NAV_UPHILL_DEFAULT,
+  navExpo, setNavExpo, NAV_EXPO_DEFAULT,
+} from "../navbias";
 import { hiddenRing, setHiddenRing } from "../hiddenring";
 import { indoorWall, setIndoorWall, INDOOR_WALL_MIN, INDOOR_WALL_MAX } from "../indoorwall";
 import { withV, assetIndexInfo } from "../assetver";
@@ -6948,6 +6951,11 @@ export class WorldScene extends Phaser.Scene {
         if (v !== undefined) setNavUphill(v);
         return { value: navUphill(), def: NAV_UPHILL_DEFAULT };
       },
+      /** The tap router's DEPTH EXPO (navbias.ts): read it, or set it. */
+      navExpo: (v?: number) => {
+        if (v !== undefined) setNavExpo(v);
+        return { value: navExpo(), def: NAV_EXPO_DEFAULT };
+      },
       /** The Map tab's layer chips: read them, or toggle one by id. */
       mapLayers: (id?: string, on?: boolean) => mapLayers(id, on),
       zones: () => {
@@ -13151,8 +13159,11 @@ export class WorldScene extends Phaser.Scene {
     // under it". The marker's pixel is the contract; a destination that is not
     // at that pixel is not what was clicked, however close it looks in plan.
     // ...and the VISIBLE reading carries his handicap: a candidate hidden
-    // behind the hill must be `navUphill()` times shorter to win (navbias.ts).
-    const trip = startBestTrip(this.terrain, me.fx, me.fy, run, this.time.now, fromElev, cands, navUphill());
+    // behind the hill must be `navUphill() * depth^(navExpo() - 1)` times
+    // shorter to win — the deeper behind the hill, the stronger (navbias.ts).
+    const trip = startBestTrip(
+      this.terrain, me.fx, me.fy, run, this.time.now, fromElev, cands, navUphill(), navExpo(),
+    );
     if (!trip) return;
     // THE BEACON DOES NOT MOVE — and now it cannot, because every candidate is
     // the SAME PIXEL. It is drawn from the winner's cell AND the winner's level,
