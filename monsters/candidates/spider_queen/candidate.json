@@ -607,7 +607,7 @@
     "attack": {
       "directions": {
         "south": {
-          "status": "pass",
+          "status": "fail",
           "step_mean": 0.3119,
           "step_max": 0.3242,
           "drift": 4.6,
@@ -618,11 +618,14 @@
           "pad": 0,
           "flash": 0.001,
           "peak": 0.4364,
+          "reach": 0.142,
           "canvas": [
             240,
             240
           ],
-          "reasons": [],
+          "reasons": [
+            "no strike, just a lean: nothing reaches past 0.14 of the body"
+          ],
           "sub": "69245756-7125-43be-bcb7-2032648316cb",
           "group": "c0bf1a08-0610-4b33-9c87-15f2504a3114",
           "takes": 1,
@@ -632,7 +635,7 @@
           "action": "Fang Stab - Rears up on her back legs and stabs down once with both front legs and fangs, then returns to idle stance"
         },
         "south-east": {
-          "status": "warn",
+          "status": "fail",
           "step_mean": 0.2596,
           "step_max": 0.2862,
           "drift": 3.38,
@@ -643,11 +646,13 @@
           "pad": 0,
           "flash": 0.054,
           "peak": 0.3566,
+          "reach": 0.103,
           "canvas": [
             240,
             240
           ],
           "reasons": [
+            "no strike, just a lean: nothing reaches past 0.10 of the body",
             "some bright effect pixels (0.05) — eyeball it"
           ],
           "sub": "1a9d1df4-1f91-49cb-82dc-f4d6498e2254",
@@ -655,12 +660,12 @@
           "takes": 1,
           "version": 11,
           "mirrored": false,
+          "generated_at": "2026-09-10T00:06:03+00:00",
           "action": "Fang Stab - Rears up on her back legs and stabs down once with both front legs and fangs, then returns to idle stance",
-          "tries": 1,
-          "generated_at": "2026-09-10T00:06:03+00:00"
+          "tries": 1
         },
         "east": {
-          "status": "pass",
+          "status": "fail",
           "step_mean": 0.3182,
           "step_max": 0.3689,
           "drift": 5.77,
@@ -671,11 +676,14 @@
           "pad": 0,
           "flash": 0.0,
           "peak": 0.5177,
+          "reach": 0.104,
           "canvas": [
             240,
             240
           ],
-          "reasons": [],
+          "reasons": [
+            "no strike, just a lean: nothing reaches past 0.10 of the body"
+          ],
           "sub": "ad23fbcc-e949-4735-bbb6-d6b02419719e",
           "group": "322c8f0c-9c49-499f-8182-29493e66a673",
           "takes": 1,
@@ -685,7 +693,7 @@
           "action": "Fang Stab - Rears up on her back legs and stabs down once with both front legs and fangs, then returns to idle stance"
         },
         "north-east": {
-          "status": "pass",
+          "status": "fail",
           "step_mean": 0.2313,
           "step_max": 0.291,
           "drift": 6.15,
@@ -696,11 +704,14 @@
           "pad": 0,
           "flash": 0.0,
           "peak": 0.3989,
+          "reach": 0.071,
           "canvas": [
             240,
             240
           ],
-          "reasons": [],
+          "reasons": [
+            "no strike, just a lean: nothing reaches past 0.07 of the body"
+          ],
           "sub": "e90f4cdc-b1a9-45ca-91b3-d64a72efd048",
           "group": "469103aa-30d0-45f7-a640-d50ccebf6068",
           "takes": 1,
@@ -710,7 +721,7 @@
           "action": "Fang Stab - Rears up on her back legs and stabs down once with both front legs and fangs, then returns to idle stance"
         },
         "north": {
-          "status": "pass",
+          "status": "warn",
           "step_mean": 0.3162,
           "step_max": 0.3814,
           "drift": 9.58,
@@ -721,11 +732,14 @@
           "pad": 0,
           "flash": 0.0,
           "peak": 0.4951,
+          "reach": 0.225,
           "canvas": [
             240,
             240
           ],
-          "reasons": [],
+          "reasons": [
+            "shallow strike: reach 0.23 — eyeball it"
+          ],
           "sub": "512f3f21-5420-4e1f-aefd-081af1e95b70",
           "group": "3d21253d-3a56-4f5a-976f-70bb4e8e1dbf",
           "takes": 1,

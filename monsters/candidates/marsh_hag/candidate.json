@@ -601,7 +601,7 @@
     "attack": {
       "directions": {
         "south": {
-          "status": "pass",
+          "status": "fail",
           "step_mean": 0.2635,
           "step_max": 0.3387,
           "drift": 7.38,
@@ -612,11 +612,14 @@
           "pad": 0,
           "flash": 0.081,
           "peak": 0.3522,
+          "reach": 0.14,
           "canvas": [
             112,
             112
           ],
-          "reasons": [],
+          "reasons": [
+            "no strike, just a lean: nothing reaches past 0.14 of the body"
+          ],
           "sub": "efc7ddf8-f5a1-4ce2-9293-0552b7cda7dc",
           "group": "8304655f-8ac2-4e5f-aca1-7c1f0deedd0d",
           "takes": 1,
@@ -626,7 +629,7 @@
           "action": "Staff Curse - Raises the staff and jabs it forward once, green magic flashing at the tip, then returns to idle stance"
         },
         "south-east": {
-          "status": "pass",
+          "status": "fail",
           "step_mean": 0.3241,
           "step_max": 0.4726,
           "drift": 9.09,
@@ -637,11 +640,14 @@
           "pad": 0,
           "flash": 0.046,
           "peak": 0.4553,
+          "reach": 0.213,
           "canvas": [
             112,
             112
           ],
-          "reasons": [],
+          "reasons": [
+            "no strike, just a lean: nothing reaches past 0.21 of the body"
+          ],
           "sub": "972b50a5-fe54-4d9e-a9dc-723225600f0b",
           "group": "abc6bf28-bafe-423b-b7ea-25a1ba389f6f",
           "takes": 1,
@@ -662,6 +668,7 @@
           "pad": 0,
           "flash": 0.001,
           "peak": 0.2519,
+          "reach": 0.52,
           "canvas": [
             112,
             112
@@ -676,7 +683,7 @@
           "action": "Staff Curse - Raises the staff and jabs it forward once, green magic flashing at the tip, then returns to idle stance"
         },
         "north-east": {
-          "status": "pass",
+          "status": "warn",
           "step_mean": 0.1241,
           "step_max": 0.1878,
           "drift": 1.56,
@@ -687,11 +694,14 @@
           "pad": 0,
           "flash": 0.057,
           "peak": 0.2143,
+          "reach": 0.295,
           "canvas": [
             112,
             112
           ],
-          "reasons": [],
+          "reasons": [
+            "shallow strike: reach 0.30 — eyeball it"
+          ],
           "sub": "2d910890-b342-4acd-80f0-0c69bb451cf6",
           "group": "affa34a3-3f24-47c5-a510-a60471d33439",
           "takes": 1,
@@ -701,7 +711,7 @@
           "action": "Staff Curse - Raises the staff and jabs it forward once, green magic flashing at the tip, then returns to idle stance"
         },
         "north": {
-          "status": "pass",
+          "status": "fail",
           "step_mean": 0.1446,
           "step_max": 0.1788,
           "drift": 1.26,
@@ -712,11 +722,14 @@
           "pad": 0,
           "flash": 0.001,
           "peak": 0.2333,
+          "reach": 0.074,
           "canvas": [
             112,
             112
           ],
-          "reasons": [],
+          "reasons": [
+            "no strike, just a lean: nothing reaches past 0.07 of the body"
+          ],
           "sub": "23e8b6a8-7ec8-486d-b1f8-017b29a86775",
           "group": "55ad2a96-4fa1-4d10-8677-3c10c960d6d1",
           "takes": 1,
@@ -763,6 +776,7 @@
           "pad": 0,
           "flash": 0.001,
           "peak": 0.2519,
+          "reach": 0.52,
           "canvas": [
             112,
             112
@@ -778,7 +792,7 @@
           "source": "east"
         },
         "north-west": {
-          "status": "pass",
+          "status": "warn",
           "step_mean": 0.1241,
           "step_max": 0.1878,
           "drift": 1.56,
@@ -789,11 +803,14 @@
           "pad": 0,
           "flash": 0.057,
           "peak": 0.2143,
+          "reach": 0.295,
           "canvas": [
             112,
             112
           ],
-          "reasons": [],
+          "reasons": [
+            "shallow strike: reach 0.30 — eyeball it"
+          ],
           "sub": "2d910890-b342-4acd-80f0-0c69bb451cf6",
           "group": "affa34a3-3f24-47c5-a510-a60471d33439",
           "takes": 1,

@@ -599,7 +599,7 @@
     "attack": {
       "directions": {
         "south": {
-          "status": "warn",
+          "status": "fail",
           "step_mean": 0.237,
           "step_max": 0.2946,
           "drift": 3.25,
@@ -610,11 +610,13 @@
           "pad": 0,
           "flash": 0.303,
           "peak": 0.3628,
+          "reach": 0.128,
           "canvas": [
             104,
             104
           ],
           "reasons": [
+            "no strike, just a lean: nothing reaches past 0.13 of the body",
             "some bright effect pixels (0.30) — eyeball it"
           ],
           "sub": "cc10b827-b92d-4c75-b07b-244c144b552b",
@@ -637,6 +639,7 @@
           "pad": 0,
           "flash": 0.14,
           "peak": 0.2957,
+          "reach": 0.385,
           "canvas": [
             104,
             104
@@ -651,7 +654,7 @@
           "action": "Bite - Quickly lunges forward, bites once, mist trailing, then returns to idle stance"
         },
         "east": {
-          "status": "pass",
+          "status": "fail",
           "step_mean": 0.0945,
           "step_max": 0.1245,
           "drift": 1.74,
@@ -662,11 +665,14 @@
           "pad": 0,
           "flash": 0.004,
           "peak": 0.1667,
+          "reach": 0.145,
           "canvas": [
             104,
             104
           ],
-          "reasons": [],
+          "reasons": [
+            "no strike, just a lean: nothing reaches past 0.14 of the body"
+          ],
           "sub": "ecac6aa3-9aa8-464c-8f36-c338d94aa73d",
           "group": "c3ce05b2-63ca-4b63-89cf-c2864435a897",
           "takes": 1,
@@ -676,7 +682,7 @@
           "action": "Bite - Quickly lunges forward, bites once, mist trailing, then returns to idle stance"
         },
         "north-east": {
-          "status": "pass",
+          "status": "fail",
           "step_mean": 0.1872,
           "step_max": 0.2404,
           "drift": 2.92,
@@ -687,11 +693,13 @@
           "pad": 9,
           "flash": 0.119,
           "peak": 0.3234,
+          "reach": 0.144,
           "canvas": [
             122,
             122
           ],
           "reasons": [
+            "no strike, just a lean: nothing reaches past 0.14 of the body",
             "canvas grown by 9 px a side to hold the motion"
           ],
           "sub": "aea439ef-7b20-4a50-a092-0bbb74fc371a",
@@ -703,7 +711,7 @@
           "action": "Bite - Quickly lunges forward, bites once, mist trailing, then returns to idle stance"
         },
         "north": {
-          "status": "pass",
+          "status": "fail",
           "step_mean": 0.1439,
           "step_max": 0.2067,
           "drift": 2.0,
@@ -714,19 +722,22 @@
           "pad": 0,
           "flash": 0.0,
           "peak": 0.2719,
+          "reach": 0.061,
           "canvas": [
             104,
             104
           ],
-          "reasons": [],
+          "reasons": [
+            "no strike, just a lean: nothing reaches past 0.06 of the body"
+          ],
           "sub": "d5bfabb1-fdb5-4243-8ec3-119e1f135031",
           "group": "0860d5dc-8819-4890-9a81-febc4fc4319c",
           "takes": 1,
           "version": 4,
           "mirrored": false,
+          "generated_at": "2026-09-09T23:53:43+00:00",
           "action": "Bite - Quickly lunges forward, bites once, mist trailing, then returns to idle stance",
-          "tries": 2,
-          "generated_at": "2026-09-09T23:53:43+00:00"
+          "tries": 2
         },
         "south-west": {
           "status": "pass",
@@ -740,6 +751,7 @@
           "pad": 0,
           "flash": 0.14,
           "peak": 0.2957,
+          "reach": 0.385,
           "canvas": [
             104,
             104

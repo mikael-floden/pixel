@@ -615,7 +615,7 @@
     "attack": {
       "directions": {
         "south": {
-          "status": "pass",
+          "status": "fail",
           "step_mean": 0.1357,
           "step_max": 0.1671,
           "drift": 6.65,
@@ -626,22 +626,25 @@
           "pad": 0,
           "flash": 0.0,
           "peak": 0.2254,
+          "reach": 0.043,
           "canvas": [
             232,
             232
           ],
-          "reasons": [],
+          "reasons": [
+            "no strike, just a lean: nothing reaches past 0.04 of the body"
+          ],
           "sub": "297aa5c1-468f-4b03-8805-c3de9da84e90",
           "group": "521e4710-c779-4e14-aaf0-9b40d22f4927",
           "takes": 1,
           "version": 6,
           "mirrored": false,
+          "generated_at": "2026-09-09T23:50:19+00:00",
           "action": "Claw Swipe - Raises one front paw and performs one quick swipe forward, then returns to idle stance",
-          "tries": 3,
-          "generated_at": "2026-09-09T23:50:19+00:00"
+          "tries": 3
         },
         "south-east": {
-          "status": "pass",
+          "status": "fail",
           "step_mean": 0.1028,
           "step_max": 0.1327,
           "drift": 2.36,
@@ -652,11 +655,14 @@
           "pad": 0,
           "flash": 0.0,
           "peak": 0.1918,
+          "reach": 0.041,
           "canvas": [
             232,
             232
           ],
-          "reasons": [],
+          "reasons": [
+            "no strike, just a lean: nothing reaches past 0.04 of the body"
+          ],
           "sub": "c470845a-e5d8-4d45-9717-b8729bf950b8",
           "group": "468ff0b0-8e56-4959-bb8a-e53b05f989f6",
           "takes": 1,
@@ -678,6 +684,7 @@
           "pad": 0,
           "flash": 0.0,
           "peak": 0.2036,
+          "reach": 0.581,
           "canvas": [
             232,
             232
@@ -693,7 +700,7 @@
           "tries": 3
         },
         "north-east": {
-          "status": "pass",
+          "status": "fail",
           "step_mean": 0.1818,
           "step_max": 0.2139,
           "drift": 4.97,
@@ -704,11 +711,14 @@
           "pad": 0,
           "flash": 0.023,
           "peak": 0.3122,
+          "reach": 0.18,
           "canvas": [
             232,
             232
           ],
-          "reasons": [],
+          "reasons": [
+            "no strike, just a lean: nothing reaches past 0.18 of the body"
+          ],
           "sub": "916aa3e2-f2d0-46d5-a423-e2ff21f0da9f",
           "group": "fd3dc55e-da8c-438b-a12b-55c20aaa69ac",
           "takes": 1,
@@ -719,7 +729,7 @@
           "tries": 3
         },
         "north": {
-          "status": "pass",
+          "status": "fail",
           "step_mean": 0.1009,
           "step_max": 0.1215,
           "drift": 2.66,
@@ -730,19 +740,22 @@
           "pad": 0,
           "flash": 0.0,
           "peak": 0.192,
+          "reach": 0.041,
           "canvas": [
             232,
             232
           ],
-          "reasons": [],
+          "reasons": [
+            "no strike, just a lean: nothing reaches past 0.04 of the body"
+          ],
           "sub": "7a71fa20-4025-4c1b-877e-9df8202520a6",
           "group": "5cb1b382-8b5f-4eac-9139-35486f497eb2",
           "takes": 1,
           "version": 7,
           "mirrored": false,
+          "generated_at": "2026-09-09T23:56:40+00:00",
           "action": "Claw Swipe - Raises one front paw and performs one quick swipe forward, then returns to idle stance",
-          "tries": 3,
-          "generated_at": "2026-09-09T23:56:40+00:00"
+          "tries": 3
         },
         "south-west": {
           "status": "pass",
@@ -783,6 +796,7 @@
           "pad": 0,
           "flash": 0.0,
           "peak": 0.2036,
+          "reach": 0.581,
           "canvas": [
             232,
             232

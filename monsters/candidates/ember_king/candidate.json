@@ -617,7 +617,7 @@
     "attack": {
       "directions": {
         "south": {
-          "status": "pass",
+          "status": "fail",
           "step_mean": 0.1725,
           "step_max": 0.2249,
           "drift": 2.5,
@@ -628,11 +628,14 @@
           "pad": 0,
           "flash": 0.054,
           "peak": 0.2841,
+          "reach": 0.046,
           "canvas": [
             176,
             176
           ],
-          "reasons": [],
+          "reasons": [
+            "no strike, just a lean: nothing reaches past 0.05 of the body"
+          ],
           "sub": "6b083609-cec9-4c63-a450-f79959efaa14",
           "group": "74b25012-547e-4380-b111-e0a321354491",
           "takes": 1,
@@ -643,7 +646,7 @@
           "tries": 3
         },
         "south-east": {
-          "status": "pass",
+          "status": "fail",
           "step_mean": 0.1202,
           "step_max": 0.1613,
           "drift": 4.99,
@@ -654,11 +657,14 @@
           "pad": 0,
           "flash": 0.133,
           "peak": 0.1892,
+          "reach": 0.08,
           "canvas": [
             176,
             176
           ],
-          "reasons": [],
+          "reasons": [
+            "no strike, just a lean: nothing reaches past 0.08 of the body"
+          ],
           "sub": "4b993723-7462-4884-9df3-13707a650aab",
           "group": "2f2aea75-d904-4057-b06c-075f933b08dc",
           "takes": 1,
@@ -679,6 +685,7 @@
           "pad": 0,
           "flash": 0.111,
           "peak": 0.444,
+          "reach": 0.419,
           "canvas": [
             176,
             176
@@ -693,7 +700,7 @@
           "action": "Claw Slam - Raises one massive clawed hand and slams it down once, then returns to idle stance"
         },
         "north-east": {
-          "status": "pass",
+          "status": "fail",
           "step_mean": 0.1761,
           "step_max": 0.2266,
           "drift": 3.13,
@@ -704,11 +711,14 @@
           "pad": 0,
           "flash": 0.013,
           "peak": 0.2837,
+          "reach": 0.13,
           "canvas": [
             176,
             176
           ],
-          "reasons": [],
+          "reasons": [
+            "no strike, just a lean: nothing reaches past 0.13 of the body"
+          ],
           "sub": "49985401-e80a-4c54-830e-33c91cc91dae",
           "group": "b84b51ae-623b-49c7-8053-5d16bf2368f3",
           "takes": 1,
@@ -718,7 +728,7 @@
           "action": "Claw Slam - Raises one massive clawed hand and slams it down once, then returns to idle stance"
         },
         "north": {
-          "status": "pass",
+          "status": "fail",
           "step_mean": 0.1082,
           "step_max": 0.1608,
           "drift": 0.51,
@@ -729,11 +739,14 @@
           "pad": 0,
           "flash": 0.099,
           "peak": 0.1875,
+          "reach": 0.04,
           "canvas": [
             176,
             176
           ],
-          "reasons": [],
+          "reasons": [
+            "no strike, just a lean: nothing reaches past 0.04 of the body"
+          ],
           "sub": "e5580811-6745-4fc1-82d6-ea725e4ec379",
           "group": "dbffa373-853b-4b02-b7c8-3e6b43d23f73",
           "takes": 1,
@@ -780,6 +793,7 @@
           "pad": 0,
           "flash": 0.111,
           "peak": 0.444,
+          "reach": 0.419,
           "canvas": [
             176,
             176

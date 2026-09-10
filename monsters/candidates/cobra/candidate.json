@@ -610,7 +610,7 @@
     "attack": {
       "directions": {
         "south": {
-          "status": "pass",
+          "status": "fail",
           "step_mean": 0.069,
           "step_max": 0.0994,
           "drift": 1.43,
@@ -621,11 +621,16 @@
           "pad": 0,
           "flash": 0.017,
           "peak": 0.1321,
+          "reach": 0.042,
           "canvas": [
             88,
             88
           ],
-          "reasons": [],
+          "reasons": [
+            "motion 0.069 outside the calm band 0.08–0.9 — eyeball it",
+            "weak strike: peak 0.132 — eyeball it",
+            "no strike, just a lean: nothing reaches past 0.04 of the body"
+          ],
           "sub": "26ba325c-e65e-4a92-9ae8-4e01edd1e5ad",
           "group": "9eed30e9-5631-4601-8ecd-94380393f387",
           "takes": 2,
@@ -635,7 +640,7 @@
           "action": "Strike - Pulls its head back, then strikes forward once with fangs bared, then returns to idle stance"
         },
         "south-east": {
-          "status": "pass",
+          "status": "fail",
           "step_mean": 0.1325,
           "step_max": 0.1631,
           "drift": 2.61,
@@ -646,11 +651,14 @@
           "pad": 0,
           "flash": 0.004,
           "peak": 0.2389,
+          "reach": 0.182,
           "canvas": [
             88,
             88
           ],
-          "reasons": [],
+          "reasons": [
+            "no strike, just a lean: nothing reaches past 0.18 of the body"
+          ],
           "sub": "83c042d6-e4db-4260-9913-729c8f3d4e4f",
           "group": "0ac0d09b-6636-4e51-88b8-f8e863cba488",
           "takes": 1,
@@ -660,7 +668,7 @@
           "action": "Strike - Pulls its head back, then strikes forward once with fangs bared, then returns to idle stance"
         },
         "east": {
-          "status": "pass",
+          "status": "fail",
           "step_mean": 0.1803,
           "step_max": 0.2353,
           "drift": 0.99,
@@ -671,11 +679,14 @@
           "pad": 0,
           "flash": 0.0,
           "peak": 0.3303,
+          "reach": 0.095,
           "canvas": [
             88,
             88
           ],
-          "reasons": [],
+          "reasons": [
+            "no strike, just a lean: nothing reaches past 0.10 of the body"
+          ],
           "sub": "2b2ea556-b628-42b7-9473-2c24b332bdc7",
           "group": "030313ed-73e5-4da6-8ce2-5cd7bf6e56a0",
           "takes": 1,
@@ -685,7 +696,7 @@
           "action": "Strike - Pulls its head back, then strikes forward once with fangs bared, then returns to idle stance"
         },
         "north-east": {
-          "status": "warn",
+          "status": "fail",
           "step_mean": 0.1748,
           "step_max": 0.2556,
           "drift": 3.82,
@@ -696,11 +707,13 @@
           "pad": 0,
           "flash": 0.051,
           "peak": 0.274,
+          "reach": 0.21,
           "canvas": [
             88,
             88
           ],
           "reasons": [
+            "no strike, just a lean: nothing reaches past 0.21 of the body",
             "some bright effect pixels (0.05) — eyeball it"
           ],
           "sub": "40079277-733a-4768-b2fa-179ffbbece11",
@@ -712,7 +725,7 @@
           "action": "Strike - Pulls its head back, then strikes forward once with fangs bared, then returns to idle stance"
         },
         "north": {
-          "status": "pass",
+          "status": "fail",
           "step_mean": 0.1312,
           "step_max": 0.2143,
           "drift": 1.25,
@@ -723,11 +736,14 @@
           "pad": 0,
           "flash": 0.002,
           "peak": 0.246,
+          "reach": 0.114,
           "canvas": [
             88,
             88
           ],
-          "reasons": [],
+          "reasons": [
+            "no strike, just a lean: nothing reaches past 0.11 of the body"
+          ],
           "sub": "347dde92-81f4-4edb-8dc9-6bbd802a462c",
           "group": "09bda525-f0f8-43ab-b303-0af1cd132aff",
           "takes": 1,

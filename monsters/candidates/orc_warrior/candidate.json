@@ -613,7 +613,7 @@
     "attack": {
       "directions": {
         "south": {
-          "status": "pass",
+          "status": "fail",
           "step_mean": 0.0971,
           "step_max": 0.1601,
           "drift": 1.85,
@@ -624,11 +624,14 @@
           "pad": 0,
           "flash": 0.0,
           "peak": 0.1748,
+          "reach": 0.061,
           "canvas": [
             128,
             128
           ],
-          "reasons": [],
+          "reasons": [
+            "no strike, just a lean: nothing reaches past 0.06 of the body"
+          ],
           "sub": "75b3efd6-2805-4446-9a8d-720a2f091d93",
           "group": "20d06827-5500-4119-a0e9-081ea363e8db",
           "takes": 1,
@@ -638,7 +641,7 @@
           "action": "Axe Cleave - Swings the battle axe in one heavy sideways cleave, then returns to idle stance"
         },
         "south-east": {
-          "status": "pass",
+          "status": "fail",
           "step_mean": 0.1588,
           "step_max": 0.2074,
           "drift": 1.82,
@@ -649,11 +652,14 @@
           "pad": 0,
           "flash": 0.0,
           "peak": 0.2239,
+          "reach": 0.08,
           "canvas": [
             128,
             128
           ],
-          "reasons": [],
+          "reasons": [
+            "no strike, just a lean: nothing reaches past 0.08 of the body"
+          ],
           "sub": "79280514-9fa2-457a-af9a-81e41a54c734",
           "group": "9fa2bbab-7fb7-423e-b144-b848620019a2",
           "takes": 1,
@@ -674,6 +680,7 @@
           "pad": 0,
           "flash": 0.009,
           "peak": 0.3329,
+          "reach": 0.462,
           "canvas": [
             128,
             128
@@ -688,7 +695,7 @@
           "action": "Axe Cleave - Swings the battle axe in one heavy sideways cleave, then returns to idle stance"
         },
         "north-east": {
-          "status": "pass",
+          "status": "warn",
           "step_mean": 0.1646,
           "step_max": 0.2541,
           "drift": 6.14,
@@ -699,11 +706,14 @@
           "pad": 0,
           "flash": 0.005,
           "peak": 0.2429,
+          "reach": 0.28,
           "canvas": [
             128,
             128
           ],
-          "reasons": [],
+          "reasons": [
+            "shallow strike: reach 0.28 — eyeball it"
+          ],
           "sub": "c8235adb-3184-43bb-ab05-aabbd3549c9d",
           "group": "ccb23bf5-ff54-453f-a949-f0c9616acaed",
           "takes": 1,
@@ -713,7 +723,7 @@
           "action": "Axe Cleave - Swings the battle axe in one heavy sideways cleave, then returns to idle stance"
         },
         "north": {
-          "status": "pass",
+          "status": "fail",
           "step_mean": 0.1519,
           "step_max": 0.2792,
           "drift": 3.54,
@@ -724,11 +734,14 @@
           "pad": 0,
           "flash": 0.0,
           "peak": 0.2366,
+          "reach": 0.065,
           "canvas": [
             128,
             128
           ],
-          "reasons": [],
+          "reasons": [
+            "no strike, just a lean: nothing reaches past 0.06 of the body"
+          ],
           "sub": "58ac9b07-a15b-4553-83d9-bea3163ce47f",
           "group": "2ba8dafd-2016-4ac8-8a24-0a7b4032d469",
           "takes": 1,
@@ -775,6 +788,7 @@
           "pad": 0,
           "flash": 0.009,
           "peak": 0.3329,
+          "reach": 0.462,
           "canvas": [
             128,
             128
@@ -790,7 +804,7 @@
           "source": "east"
         },
         "north-west": {
-          "status": "pass",
+          "status": "warn",
           "step_mean": 0.1646,
           "step_max": 0.2541,
           "drift": 6.14,
@@ -801,11 +815,14 @@
           "pad": 0,
           "flash": 0.005,
           "peak": 0.2429,
+          "reach": 0.28,
           "canvas": [
             128,
             128
           ],
-          "reasons": [],
+          "reasons": [
+            "shallow strike: reach 0.28 — eyeball it"
+          ],
           "sub": "c8235adb-3184-43bb-ab05-aabbd3549c9d",
           "group": "ccb23bf5-ff54-453f-a949-f0c9616acaed",
           "takes": 1,

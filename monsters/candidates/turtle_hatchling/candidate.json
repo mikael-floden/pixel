@@ -610,6 +610,7 @@
           "pad": 2,
           "flash": 0.056,
           "peak": 0.2674,
+          "reach": 0.387,
           "canvas": [
             44,
             44
@@ -627,7 +628,7 @@
           "action": "Beak Snap - Lunges forward and snaps once with its small beak, then returns to idle stance"
         },
         "south-east": {
-          "status": "pass",
+          "status": "fail",
           "step_mean": 0.1013,
           "step_max": 0.1307,
           "drift": 0.46,
@@ -638,11 +639,14 @@
           "pad": 0,
           "flash": 0.0,
           "peak": 0.1573,
+          "reach": 0.094,
           "canvas": [
             40,
             40
           ],
-          "reasons": [],
+          "reasons": [
+            "no strike, just a lean: nothing reaches past 0.09 of the body"
+          ],
           "sub": "8e1c7261-8b8a-457e-b71e-aa5529889a75",
           "group": "df3c49ef-3c64-491f-b373-8f8ec8b63991",
           "takes": 1,
@@ -652,7 +656,7 @@
           "action": "Beak Snap - Lunges forward and snaps once with its small beak, then returns to idle stance"
         },
         "east": {
-          "status": "pass",
+          "status": "fail",
           "step_mean": 0.1366,
           "step_max": 0.1778,
           "drift": 1.88,
@@ -663,11 +667,14 @@
           "pad": 0,
           "flash": 0.007,
           "peak": 0.2471,
+          "reach": 0.065,
           "canvas": [
             40,
             40
           ],
-          "reasons": [],
+          "reasons": [
+            "no strike, just a lean: nothing reaches past 0.06 of the body"
+          ],
           "sub": "1bc15a44-ffc9-4c4f-8477-4e1124cdefb6",
           "group": "3a886ef0-bcfc-4174-8a6e-aaaad775c919",
           "takes": 1,
@@ -677,7 +684,7 @@
           "action": "Beak Snap - Lunges forward and snaps once with its small beak, then returns to idle stance"
         },
         "north-east": {
-          "status": "pass",
+          "status": "fail",
           "step_mean": 0.1218,
           "step_max": 0.1742,
           "drift": 1.27,
@@ -688,11 +695,14 @@
           "pad": 0,
           "flash": 0.003,
           "peak": 0.1898,
+          "reach": 0.103,
           "canvas": [
             40,
             40
           ],
-          "reasons": [],
+          "reasons": [
+            "no strike, just a lean: nothing reaches past 0.10 of the body"
+          ],
           "sub": "f8796a82-7018-49e4-ac52-c7ec7ebfa493",
           "group": "fb0109af-8d4a-41c8-98c2-5cbcae011d98",
           "takes": 1,
@@ -702,7 +712,7 @@
           "action": "Beak Snap - Lunges forward and snaps once with its small beak, then returns to idle stance"
         },
         "north": {
-          "status": "pass",
+          "status": "fail",
           "step_mean": 0.0739,
           "step_max": 0.1203,
           "drift": 0.94,
@@ -713,11 +723,16 @@
           "pad": 0,
           "flash": 0.0,
           "peak": 0.1391,
+          "reach": 0.065,
           "canvas": [
             40,
             40
           ],
-          "reasons": [],
+          "reasons": [
+            "motion 0.074 outside the calm band 0.08–0.9 — eyeball it",
+            "weak strike: peak 0.139 — eyeball it",
+            "no strike, just a lean: nothing reaches past 0.06 of the body"
+          ],
           "sub": "41eb99d2-e416-44ba-88c4-3f62e1049114",
           "group": "905026a4-2148-487a-84c6-552e7442a61a",
           "takes": 1,

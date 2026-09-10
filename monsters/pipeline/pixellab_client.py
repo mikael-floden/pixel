@@ -393,6 +393,44 @@ class PixelLabClient:
         jobs = resp.get("background_job_ids") or []
         return jobs[0] if jobs else None
 
+    def animate_template(self, character_id, template_animation_id, directions, seed=None):
+        """SKELETON-DRIVEN animation from PixelLab's template library (mode
+        "template", 1 generation per direction). The templates are per
+        SKELETON (`template_id` on the character), not global — mannequin has
+        cross-punch/high-kick/flying-kick/hurricane-kick/fireball, bear has
+        attack-left/attack-right/jump-attack, dog has none. An invalid id is
+        rejected with the valid list for that skeleton, which is how the list
+        is discovered — but a request with a valid id and a bad DIRECTION
+        starts a job that never finishes and holds a concurrency slot (20 per
+        account, no cancel endpoint, deleting the animation group does not
+        free it). Probe with a real direction or not at all."""
+        payload = {"character_id": character_id, "mode": "template",
+                   "template_animation_id": template_animation_id,
+                   "directions": list(directions)}
+        if seed is not None:
+            payload["seed"] = int(seed)
+        resp = self._request("POST", "characters/animations", json=payload)
+        return resp.get("background_job_ids") or []
+
+    def template_takes(self, character_id, template_animation_id):
+        """{direction: [{"urls": [...], "group": gid}, ...]} for a template
+        animation (stored under the template id, no "custom-" prefix)."""
+        out = {}
+        for a in self.get_character(character_id).get("animations") or []:
+            if (a.get("animation_type") or "") != template_animation_id:
+                continue
+            for x in a.get("directions") or []:
+                urls = [u for u in (x.get("frames") or []) if u]
+                if x.get("direction") and urls:
+                    out.setdefault(x["direction"], []).append(
+                        {"urls": urls, "group": a.get("animation_group_id")})
+        return out
+
+    def skeleton_template(self, character_id):
+        """The character's SKELETON id (mannequin, bear, dog, cat…) — decides
+        which animation templates exist for it."""
+        return (self.get_character(character_id) or {}).get("template_id")
+
     def animation_takes(self, character_id, action):
         """{direction: [[urls], ...]} — EVERY take of every direction of the
         v3 animations made from `action`. PixelLab ignores animation_name and

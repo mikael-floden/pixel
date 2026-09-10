@@ -614,7 +614,7 @@
     "attack": {
       "directions": {
         "south": {
-          "status": "pass",
+          "status": "fail",
           "step_mean": 0.3136,
           "step_max": 0.4325,
           "drift": 3.76,
@@ -625,11 +625,14 @@
           "pad": 0,
           "flash": 0.001,
           "peak": 0.4652,
+          "reach": 0.071,
           "canvas": [
             224,
             224
           ],
-          "reasons": [],
+          "reasons": [
+            "no strike, just a lean: nothing reaches past 0.07 of the body"
+          ],
           "sub": "0c7ad7d0-0809-44e9-8734-b3114da211a0",
           "group": "6c2b9e51-0c89-49b9-98ab-3bc1db0e325c",
           "takes": 1,
@@ -640,7 +643,7 @@
           "tries": 2
         },
         "south-east": {
-          "status": "pass",
+          "status": "fail",
           "step_mean": 0.2815,
           "step_max": 0.3895,
           "drift": 5.48,
@@ -651,11 +654,14 @@
           "pad": 0,
           "flash": 0.001,
           "peak": 0.3895,
+          "reach": 0.115,
           "canvas": [
             224,
             224
           ],
-          "reasons": [],
+          "reasons": [
+            "no strike, just a lean: nothing reaches past 0.12 of the body"
+          ],
           "sub": "2ad2ee58-541b-4875-a33d-5f559cce2892",
           "group": "a09d691c-8c42-46ec-ad9b-647d9577cfc7",
           "takes": 1,
@@ -676,6 +682,7 @@
           "pad": 0,
           "flash": 0.0,
           "peak": 0.3101,
+          "reach": 0.545,
           "canvas": [
             224,
             224
@@ -690,7 +697,7 @@
           "action": "Arm Swing - Raises one huge branch arm and swings it down once, then returns to idle stance"
         },
         "north-east": {
-          "status": "pass",
+          "status": "warn",
           "step_mean": 0.2631,
           "step_max": 0.3855,
           "drift": 8.32,
@@ -701,11 +708,14 @@
           "pad": 0,
           "flash": 0.0,
           "peak": 0.4496,
+          "reach": 0.25,
           "canvas": [
             224,
             224
           ],
-          "reasons": [],
+          "reasons": [
+            "shallow strike: reach 0.25 — eyeball it"
+          ],
           "sub": "1180c597-baea-456a-b40e-106c8f712c10",
           "group": "d4d302cc-4727-40d5-9598-c6ae2287ceec",
           "takes": 1,
@@ -715,7 +725,7 @@
           "action": "Arm Swing - Raises one huge branch arm and swings it down once, then returns to idle stance"
         },
         "north": {
-          "status": "pass",
+          "status": "fail",
           "step_mean": 0.2758,
           "step_max": 0.4821,
           "drift": 6.29,
@@ -726,11 +736,14 @@
           "pad": 0,
           "flash": 0.027,
           "peak": 0.5106,
+          "reach": 0.076,
           "canvas": [
             224,
             224
           ],
-          "reasons": [],
+          "reasons": [
+            "no strike, just a lean: nothing reaches past 0.08 of the body"
+          ],
           "sub": "fbd73fb9-a544-4fec-b5ad-414cf94501a2",
           "group": "0c469e4f-b2d5-4fd2-979a-1eb51970d0e0",
           "takes": 1,
@@ -777,6 +790,7 @@
           "pad": 0,
           "flash": 0.0,
           "peak": 0.3101,
+          "reach": 0.545,
           "canvas": [
             224,
             224
@@ -792,7 +806,7 @@
           "source": "east"
         },
         "north-west": {
-          "status": "pass",
+          "status": "warn",
           "step_mean": 0.2631,
           "step_max": 0.3855,
           "drift": 8.32,
@@ -803,11 +817,14 @@
           "pad": 0,
           "flash": 0.0,
           "peak": 0.4496,
+          "reach": 0.25,
           "canvas": [
             224,
             224
           ],
-          "reasons": [],
+          "reasons": [
+            "shallow strike: reach 0.25 — eyeball it"
+          ],
           "sub": "1180c597-baea-456a-b40e-106c8f712c10",
           "group": "d4d302cc-4727-40d5-9598-c6ae2287ceec",
           "takes": 1,

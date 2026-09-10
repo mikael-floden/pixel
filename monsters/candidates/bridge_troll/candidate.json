@@ -614,7 +614,7 @@
     "attack": {
       "directions": {
         "south": {
-          "status": "pass",
+          "status": "fail",
           "step_mean": 0.1434,
           "step_max": 0.1953,
           "drift": 5.63,
@@ -625,11 +625,14 @@
           "pad": 0,
           "flash": 0.0,
           "peak": 0.2622,
+          "reach": 0.047,
           "canvas": [
             136,
             136
           ],
-          "reasons": [],
+          "reasons": [
+            "no strike, just a lean: nothing reaches past 0.05 of the body"
+          ],
           "sub": "72907b7d-0997-460e-850a-7cbb16ee59b4",
           "group": "040d44e1-a938-41b7-b3f0-a579814da282",
           "takes": 1,
@@ -640,7 +643,7 @@
           "tries": 1
         },
         "south-east": {
-          "status": "pass",
+          "status": "fail",
           "step_mean": 0.1404,
           "step_max": 0.1793,
           "drift": 5.53,
@@ -651,11 +654,14 @@
           "pad": 0,
           "flash": 0.0,
           "peak": 0.2686,
+          "reach": 0.066,
           "canvas": [
             136,
             136
           ],
-          "reasons": [],
+          "reasons": [
+            "no strike, just a lean: nothing reaches past 0.07 of the body"
+          ],
           "sub": "2f14cf3b-3bc4-4f25-b1a9-7934f8344088",
           "group": "d784f0b7-0120-4884-9d22-3a872e724f11",
           "takes": 1,
@@ -676,6 +682,7 @@
           "pad": 0,
           "flash": 0.0,
           "peak": 0.2685,
+          "reach": 0.324,
           "canvas": [
             136,
             136
@@ -690,7 +697,7 @@
           "action": "Chain Lash - Whips the iron chain forward in one heavy lash, then returns to idle stance"
         },
         "north-east": {
-          "status": "pass",
+          "status": "fail",
           "step_mean": 0.1705,
           "step_max": 0.2184,
           "drift": 0.59,
@@ -701,11 +708,14 @@
           "pad": 0,
           "flash": 0.0,
           "peak": 0.2863,
+          "reach": 0.203,
           "canvas": [
             136,
             136
           ],
-          "reasons": [],
+          "reasons": [
+            "no strike, just a lean: nothing reaches past 0.20 of the body"
+          ],
           "sub": "c6cbee24-28d7-4231-997e-b04e3d2ef37d",
           "group": "f1f545d4-a166-4a04-884a-0a853efb3b06",
           "takes": 1,
@@ -715,7 +725,7 @@
           "action": "Chain Lash - Whips the iron chain forward in one heavy lash, then returns to idle stance"
         },
         "north": {
-          "status": "pass",
+          "status": "fail",
           "step_mean": 0.0965,
           "step_max": 0.1461,
           "drift": 0.59,
@@ -726,11 +736,14 @@
           "pad": 0,
           "flash": 0.0,
           "peak": 0.1845,
+          "reach": 0.039,
           "canvas": [
             136,
             136
           ],
-          "reasons": [],
+          "reasons": [
+            "no strike, just a lean: nothing reaches past 0.04 of the body"
+          ],
           "sub": "f7ff94a0-f1fd-4d60-aab9-1ba761fbbec2",
           "group": "d04783e2-f056-4109-b32f-175a2d56e9e8",
           "takes": 1,
@@ -777,6 +790,7 @@
           "pad": 0,
           "flash": 0.0,
           "peak": 0.2685,
+          "reach": 0.324,
           "canvas": [
             136,
             136

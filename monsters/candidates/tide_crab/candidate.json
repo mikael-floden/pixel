@@ -605,7 +605,7 @@
     "attack": {
       "directions": {
         "south": {
-          "status": "pass",
+          "status": "fail",
           "step_mean": 0.1273,
           "step_max": 0.231,
           "drift": 0.32,
@@ -616,11 +616,14 @@
           "pad": 0,
           "flash": 0.0,
           "peak": 0.2404,
+          "reach": 0.076,
           "canvas": [
             112,
             112
           ],
-          "reasons": [],
+          "reasons": [
+            "no strike, just a lean: nothing reaches past 0.08 of the body"
+          ],
           "sub": "fe0bcd34-60a8-4617-99fd-1b93fcefc4c0",
           "group": "057b6ab7-6c76-495e-acce-be8baf36e4b6",
           "takes": 1,
@@ -630,7 +633,7 @@
           "action": "Claw Snap - Lunges slightly forward and snaps the big claw shut once, then returns to idle stance"
         },
         "south-east": {
-          "status": "pass",
+          "status": "fail",
           "step_mean": 0.1613,
           "step_max": 0.1918,
           "drift": 2.35,
@@ -641,11 +644,14 @@
           "pad": 0,
           "flash": 0.003,
           "peak": 0.2725,
+          "reach": 0.085,
           "canvas": [
             112,
             112
           ],
-          "reasons": [],
+          "reasons": [
+            "no strike, just a lean: nothing reaches past 0.09 of the body"
+          ],
           "sub": "3a1f2751-c63b-47b2-a68d-1d3a95735102",
           "group": "78cf750d-40d6-4b67-9fc1-6ed4540df313",
           "takes": 1,
@@ -655,7 +661,7 @@
           "action": "Claw Snap - Lunges slightly forward and snaps the big claw shut once, then returns to idle stance"
         },
         "east": {
-          "status": "pass",
+          "status": "fail",
           "step_mean": 0.1961,
           "step_max": 0.2136,
           "drift": 2.27,
@@ -666,11 +672,14 @@
           "pad": 0,
           "flash": 0.0,
           "peak": 0.3596,
+          "reach": 0.067,
           "canvas": [
             112,
             112
           ],
-          "reasons": [],
+          "reasons": [
+            "no strike, just a lean: nothing reaches past 0.07 of the body"
+          ],
           "sub": "d73614a5-fcb4-4921-9e27-c38c43cdb934",
           "group": "bf3d04e7-8e2f-4487-94ee-df664be374c4",
           "takes": 1,
@@ -680,7 +689,7 @@
           "action": "Claw Snap - Lunges slightly forward and snaps the big claw shut once, then returns to idle stance"
         },
         "north-east": {
-          "status": "pass",
+          "status": "fail",
           "step_mean": 0.1964,
           "step_max": 0.2857,
           "drift": 5.16,
@@ -691,11 +700,14 @@
           "pad": 0,
           "flash": 0.0,
           "peak": 0.3041,
+          "reach": 0.079,
           "canvas": [
             112,
             112
           ],
-          "reasons": [],
+          "reasons": [
+            "no strike, just a lean: nothing reaches past 0.08 of the body"
+          ],
           "sub": "f1f6ff43-ea6d-43f5-9679-d8ddec9952e8",
           "group": "ee832836-3bd1-4abc-b788-8c0429761eba",
           "takes": 1,
@@ -705,7 +717,7 @@
           "action": "Claw Snap - Lunges slightly forward and snaps the big claw shut once, then returns to idle stance"
         },
         "north": {
-          "status": "pass",
+          "status": "fail",
           "step_mean": 0.1644,
           "step_max": 0.2053,
           "drift": 3.64,
@@ -716,11 +728,14 @@
           "pad": 0,
           "flash": 0.0,
           "peak": 0.2676,
+          "reach": 0.058,
           "canvas": [
             112,
             112
           ],
-          "reasons": [],
+          "reasons": [
+            "no strike, just a lean: nothing reaches past 0.06 of the body"
+          ],
           "sub": "4640b626-98ee-4eb3-ab8c-2ec2083ca8e1",
           "group": "b15e6491-06c9-4c79-867c-090226428be7",
           "takes": 1,

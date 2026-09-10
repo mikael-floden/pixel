@@ -611,7 +611,7 @@
     "attack": {
       "directions": {
         "south": {
-          "status": "pass",
+          "status": "fail",
           "step_mean": 0.1667,
           "step_max": 0.2337,
           "drift": 2.14,
@@ -622,11 +622,14 @@
           "pad": 0,
           "flash": 0.0,
           "peak": 0.3003,
+          "reach": 0.043,
           "canvas": [
             224,
             224
           ],
-          "reasons": [],
+          "reasons": [
+            "no strike, just a lean: nothing reaches past 0.04 of the body"
+          ],
           "sub": "9099993f-5a40-4ec3-9a28-00e37bd15652",
           "group": "a7ae25c8-b87a-45ae-b755-a12d97e76bfe",
           "takes": 1,
@@ -636,7 +639,7 @@
           "action": "Double Slam - Raises both arms and slams them down together once, then returns to idle stance"
         },
         "south-east": {
-          "status": "pass",
+          "status": "fail",
           "step_mean": 0.1579,
           "step_max": 0.2002,
           "drift": 2.65,
@@ -647,11 +650,14 @@
           "pad": 0,
           "flash": 0.0,
           "peak": 0.2662,
+          "reach": 0.076,
           "canvas": [
             224,
             224
           ],
-          "reasons": [],
+          "reasons": [
+            "no strike, just a lean: nothing reaches past 0.08 of the body"
+          ],
           "sub": "88903a69-0c96-4105-b6ba-facbb5f67660",
           "group": "9685ad7c-e94e-4a26-9ba9-2a7b2276714a",
           "takes": 1,
@@ -672,6 +678,7 @@
           "pad": 0,
           "flash": 0.0,
           "peak": 0.3606,
+          "reach": 0.531,
           "canvas": [
             224,
             224
@@ -686,7 +693,7 @@
           "action": "Double Slam - Raises both arms and slams them down together once, then returns to idle stance"
         },
         "north-east": {
-          "status": "pass",
+          "status": "fail",
           "step_mean": 0.122,
           "step_max": 0.1479,
           "drift": 1.47,
@@ -697,11 +704,14 @@
           "pad": 0,
           "flash": 0.0,
           "peak": 0.207,
+          "reach": 0.049,
           "canvas": [
             224,
             224
           ],
-          "reasons": [],
+          "reasons": [
+            "no strike, just a lean: nothing reaches past 0.05 of the body"
+          ],
           "sub": "62b2e706-3709-45ad-9b96-8d6f6c7d8cb7",
           "group": "787c2ed2-fd31-4e0e-a5f4-184e64ba2844",
           "takes": 1,
@@ -711,7 +721,7 @@
           "action": "Double Slam - Raises both arms and slams them down together once, then returns to idle stance"
         },
         "north": {
-          "status": "pass",
+          "status": "fail",
           "step_mean": 0.2484,
           "step_max": 0.2906,
           "drift": 1.71,
@@ -722,11 +732,14 @@
           "pad": 0,
           "flash": 0.0,
           "peak": 0.3568,
+          "reach": 0.045,
           "canvas": [
             224,
             224
           ],
-          "reasons": [],
+          "reasons": [
+            "no strike, just a lean: nothing reaches past 0.04 of the body"
+          ],
           "sub": "0be17cf4-aa7e-4107-85ed-b8c3c2fad054",
           "group": "f07dfa24-9b0f-49ae-9ca8-2d6ef9ce1252",
           "takes": 1,
@@ -773,6 +786,7 @@
           "pad": 0,
           "flash": 0.0,
           "peak": 0.3606,
+          "reach": 0.531,
           "canvas": [
             224,
             224

@@ -605,7 +605,7 @@
     "attack": {
       "directions": {
         "south": {
-          "status": "pass",
+          "status": "fail",
           "step_mean": 0.1128,
           "step_max": 0.1368,
           "drift": 1.17,
@@ -616,11 +616,14 @@
           "pad": 0,
           "flash": 0.002,
           "peak": 0.216,
+          "reach": 0.051,
           "canvas": [
             48,
             48
           ],
-          "reasons": [],
+          "reasons": [
+            "no strike, just a lean: nothing reaches past 0.05 of the body"
+          ],
           "sub": "20720748-1e65-4eda-a1f0-0e752e81c455",
           "group": "68924e79-29db-4f5b-aac4-817564dba9bc",
           "takes": 1,
@@ -630,7 +633,7 @@
           "action": "Headbutt - Pulls back slightly, then quickly rams forward once with its hard husk, then returns to idle stance"
         },
         "south-east": {
-          "status": "pass",
+          "status": "fail",
           "step_mean": 0.1139,
           "step_max": 0.1295,
           "drift": 1.15,
@@ -641,11 +644,14 @@
           "pad": 0,
           "flash": 0.0,
           "peak": 0.1512,
+          "reach": 0.056,
           "canvas": [
             48,
             48
           ],
-          "reasons": [],
+          "reasons": [
+            "no strike, just a lean: nothing reaches past 0.06 of the body"
+          ],
           "sub": "c3c6a361-9bf9-4a24-b522-a3dda1dc0b42",
           "group": "f08a3f16-b85d-4da4-8703-2b8914a97e26",
           "takes": 1,
@@ -655,7 +661,7 @@
           "action": "Headbutt - Pulls back slightly, then quickly rams forward once with its hard husk, then returns to idle stance"
         },
         "east": {
-          "status": "pass",
+          "status": "fail",
           "step_mean": 0.1303,
           "step_max": 0.1444,
           "drift": 1.55,
@@ -666,11 +672,14 @@
           "pad": 0,
           "flash": 0.0,
           "peak": 0.2162,
+          "reach": 0.086,
           "canvas": [
             48,
             48
           ],
-          "reasons": [],
+          "reasons": [
+            "no strike, just a lean: nothing reaches past 0.09 of the body"
+          ],
           "sub": "59b82cc2-7cee-4e24-b548-cc5f96c08d6d",
           "group": "79e62b30-02aa-4b68-b93c-10401f8a7ccb",
           "takes": 1,
@@ -680,7 +689,7 @@
           "action": "Headbutt - Pulls back slightly, then quickly rams forward once with its hard husk, then returns to idle stance"
         },
         "north-east": {
-          "status": "pass",
+          "status": "fail",
           "step_mean": 0.1416,
           "step_max": 0.1715,
           "drift": 1.91,
@@ -691,11 +700,14 @@
           "pad": 0,
           "flash": 0.0,
           "peak": 0.2332,
+          "reach": 0.091,
           "canvas": [
             48,
             48
           ],
-          "reasons": [],
+          "reasons": [
+            "no strike, just a lean: nothing reaches past 0.09 of the body"
+          ],
           "sub": "72483e7a-57c8-4d4f-81b3-f90e1322006c",
           "group": "f665fd12-fa24-4647-884d-074a34873699",
           "takes": 1,
@@ -705,7 +717,7 @@
           "action": "Headbutt - Pulls back slightly, then quickly rams forward once with its hard husk, then returns to idle stance"
         },
         "north": {
-          "status": "pass",
+          "status": "fail",
           "step_mean": 0.0724,
           "step_max": 0.0824,
           "drift": 1.2,
@@ -716,11 +728,16 @@
           "pad": 0,
           "flash": 0.0,
           "peak": 0.1256,
+          "reach": 0.056,
           "canvas": [
             48,
             48
           ],
-          "reasons": [],
+          "reasons": [
+            "motion 0.072 outside the calm band 0.08–0.9 — eyeball it",
+            "weak strike: peak 0.126 — eyeball it",
+            "no strike, just a lean: nothing reaches past 0.06 of the body"
+          ],
           "sub": "2d9ae2a6-d880-4847-8f9a-1249be26f8b7",
           "group": "b5ea6f07-ffa9-40cd-b3c6-142d7df809a5",
           "takes": 1,

@@ -606,7 +606,7 @@
     "attack": {
       "directions": {
         "south": {
-          "status": "pass",
+          "status": "fail",
           "step_mean": 0.0893,
           "step_max": 0.1014,
           "drift": 0.57,
@@ -617,11 +617,14 @@
           "pad": 0,
           "flash": 0.0,
           "peak": 0.1602,
+          "reach": 0.081,
           "canvas": [
             96,
             96
           ],
-          "reasons": [],
+          "reasons": [
+            "no strike, just a lean: nothing reaches past 0.08 of the body"
+          ],
           "sub": "fe63514f-ba97-40e8-9a1e-3d2c1540304e",
           "group": "69f86693-a9a5-41c6-82f7-ed026379851f",
           "takes": 1,
@@ -631,7 +634,7 @@
           "action": "Tentacle Slam - Raises two front tentacles high, then brings them down once, then returns to idle stance"
         },
         "south-east": {
-          "status": "warn",
+          "status": "fail",
           "step_mean": 0.0802,
           "step_max": 0.1067,
           "drift": 1.18,
@@ -642,12 +645,14 @@
           "pad": 0,
           "flash": 0.0,
           "peak": 0.116,
+          "reach": 0.072,
           "canvas": [
             96,
             96
           ],
           "reasons": [
-            "weak strike: peak 0.116 — eyeball it"
+            "weak strike: peak 0.116 — eyeball it",
+            "no strike, just a lean: nothing reaches past 0.07 of the body"
           ],
           "sub": "f4b92347-bb66-4a97-a5bd-afa7913c3d98",
           "group": "09bbcdc5-a057-4216-b475-7fcd02d60c80",
@@ -658,7 +663,7 @@
           "action": "Tentacle Slam - Raises two front tentacles high, then brings them down once, then returns to idle stance"
         },
         "east": {
-          "status": "warn",
+          "status": "fail",
           "step_mean": 0.0582,
           "step_max": 0.0695,
           "drift": 1.46,
@@ -669,13 +674,15 @@
           "pad": 0,
           "flash": 0.0,
           "peak": 0.0885,
+          "reach": 0.084,
           "canvas": [
             96,
             96
           ],
           "reasons": [
-            "motion 0.058 outside the calm band 0.06–0.9 — eyeball it",
-            "weak strike: peak 0.089 — eyeball it"
+            "motion 0.058 outside the calm band 0.08–0.9 — eyeball it",
+            "weak strike: peak 0.089 — eyeball it",
+            "no strike, just a lean: nothing reaches past 0.08 of the body"
           ],
           "sub": "7180d95e-1042-47dd-a046-fbe7ebf5e2e2",
           "group": "550518cd-61b3-4dec-9ddd-77d11691b434",
@@ -686,7 +693,7 @@
           "action": "Tentacle Slam - Raises two front tentacles high, then brings them down once, then returns to idle stance"
         },
         "north-east": {
-          "status": "warn",
+          "status": "fail",
           "step_mean": 0.0516,
           "step_max": 0.0742,
           "drift": 1.39,
@@ -697,13 +704,15 @@
           "pad": 0,
           "flash": 0.0,
           "peak": 0.0685,
+          "reach": 0.076,
           "canvas": [
             96,
             96
           ],
           "reasons": [
-            "motion 0.052 outside the calm band 0.06–0.9 — eyeball it",
-            "weak strike: peak 0.069 — eyeball it"
+            "motion 0.052 outside the calm band 0.08–0.9 — eyeball it",
+            "no strike: peak 0.069 of the silhouette away from the base",
+            "no strike, just a lean: nothing reaches past 0.08 of the body"
           ],
           "sub": "3b0a9fa7-c718-4f4e-b179-85be2ce850a0",
           "group": "a351c76c-67bb-480d-9ea3-a14030eab0f5",
@@ -714,7 +723,7 @@
           "action": "Tentacle Slam - Raises two front tentacles high, then brings them down once, then returns to idle stance"
         },
         "north": {
-          "status": "pass",
+          "status": "warn",
           "step_mean": 0.1417,
           "step_max": 0.1536,
           "drift": 4.02,
@@ -725,11 +734,14 @@
           "pad": 0,
           "flash": 0.0,
           "peak": 0.2023,
+          "reach": 0.295,
           "canvas": [
             96,
             96
           ],
-          "reasons": [],
+          "reasons": [
+            "shallow strike: reach 0.29 — eyeball it"
+          ],
           "sub": "cce2dfd7-b462-4e27-bf4e-8ca8644b1c7a",
           "group": "f8e3ec9a-bfab-4153-a546-1c070ef7f456",
           "takes": 1,

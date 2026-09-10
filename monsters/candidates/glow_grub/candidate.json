@@ -599,7 +599,7 @@
     "attack": {
       "directions": {
         "south": {
-          "status": "pass",
+          "status": "fail",
           "step_mean": 0.1383,
           "step_max": 0.1523,
           "drift": 1.81,
@@ -610,11 +610,14 @@
           "pad": 0,
           "flash": 0.0,
           "peak": 0.2386,
+          "reach": 0.091,
           "canvas": [
             32,
             32
           ],
-          "reasons": [],
+          "reasons": [
+            "no strike, just a lean: nothing reaches past 0.09 of the body"
+          ],
           "sub": "77b469b1-1291-4c50-aed5-6b56c34169fd",
           "group": "4e5b5330-290c-453c-878e-f6a02f6a8f52",
           "takes": 1,
@@ -624,7 +627,7 @@
           "action": "Bite - Rears up and bites forward once with its mandibles, then returns to idle stance"
         },
         "south-east": {
-          "status": "pass",
+          "status": "fail",
           "step_mean": 0.1176,
           "step_max": 0.1797,
           "drift": 1.68,
@@ -635,11 +638,14 @@
           "pad": 0,
           "flash": 0.01,
           "peak": 0.2059,
+          "reach": 0.118,
           "canvas": [
             32,
             32
           ],
-          "reasons": [],
+          "reasons": [
+            "no strike, just a lean: nothing reaches past 0.12 of the body"
+          ],
           "sub": "81b1c81f-4870-4153-a4fc-95d2637a69d4",
           "group": "44b9e82a-4165-4e92-a769-d730d5090018",
           "takes": 1,
@@ -649,7 +655,7 @@
           "action": "Bite - Rears up and bites forward once with its mandibles, then returns to idle stance"
         },
         "east": {
-          "status": "pass",
+          "status": "fail",
           "step_mean": 0.1059,
           "step_max": 0.1367,
           "drift": 1.19,
@@ -660,11 +666,14 @@
           "pad": 0,
           "flash": 0.02,
           "peak": 0.2011,
+          "reach": 0.136,
           "canvas": [
             32,
             32
           ],
-          "reasons": [],
+          "reasons": [
+            "no strike, just a lean: nothing reaches past 0.14 of the body"
+          ],
           "sub": "f43d2cb0-bcc6-4429-b7e5-697626ca49ce",
           "group": "5a98ddb5-7e29-4dd6-81ce-768ff2b792fa",
           "takes": 1,
@@ -674,7 +683,7 @@
           "action": "Bite - Rears up and bites forward once with its mandibles, then returns to idle stance"
         },
         "north-east": {
-          "status": "pass",
+          "status": "fail",
           "step_mean": 0.1501,
           "step_max": 0.1807,
           "drift": 0.96,
@@ -685,11 +694,14 @@
           "pad": 0,
           "flash": 0.023,
           "peak": 0.1858,
+          "reach": 0.087,
           "canvas": [
             32,
             32
           ],
-          "reasons": [],
+          "reasons": [
+            "no strike, just a lean: nothing reaches past 0.09 of the body"
+          ],
           "sub": "f4e47d84-b7ca-4265-99e0-15186655d99a",
           "group": "8881305b-645a-4854-8002-1f4051bb8e6a",
           "takes": 1,
@@ -699,7 +711,7 @@
           "action": "Bite - Rears up and bites forward once with its mandibles, then returns to idle stance"
         },
         "north": {
-          "status": "pass",
+          "status": "fail",
           "step_mean": 0.1168,
           "step_max": 0.1522,
           "drift": 0.45,
@@ -710,11 +722,14 @@
           "pad": 0,
           "flash": 0.01,
           "peak": 0.1654,
+          "reach": 0.125,
           "canvas": [
             32,
             32
           ],
-          "reasons": [],
+          "reasons": [
+            "no strike, just a lean: nothing reaches past 0.12 of the body"
+          ],
           "sub": "60b46ccf-bf18-4e25-8d6b-d265aebc062d",
           "group": "86baa56d-b38c-40e8-809d-67c2a37adb9c",
           "takes": 1,

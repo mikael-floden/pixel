@@ -599,7 +599,7 @@
     "attack": {
       "directions": {
         "south": {
-          "status": "pass",
+          "status": "fail",
           "step_mean": 0.1114,
           "step_max": 0.1837,
           "drift": 0.97,
@@ -610,11 +610,14 @@
           "pad": 0,
           "flash": 0.003,
           "peak": 0.2098,
+          "reach": 0.077,
           "canvas": [
             40,
             40
           ],
-          "reasons": [],
+          "reasons": [
+            "no strike, just a lean: nothing reaches past 0.08 of the body"
+          ],
           "sub": "8a66d488-fa3f-40b5-9bd6-29c461122059",
           "group": "117a7a9a-0c38-4ade-8d44-e87ff5bacdea",
           "takes": 1,
@@ -624,7 +627,7 @@
           "action": "Headbutt - Pulls back slightly, then quickly rams forward once with its stone body, then returns to idle stance"
         },
         "south-east": {
-          "status": "pass",
+          "status": "fail",
           "step_mean": 0.1163,
           "step_max": 0.1246,
           "drift": 2.2,
@@ -635,11 +638,14 @@
           "pad": 0,
           "flash": 0.037,
           "peak": 0.2243,
+          "reach": 0.107,
           "canvas": [
             40,
             40
           ],
-          "reasons": [],
+          "reasons": [
+            "no strike, just a lean: nothing reaches past 0.11 of the body"
+          ],
           "sub": "24ddad57-19f9-4272-a00b-32df3b366a68",
           "group": "a4174d37-9088-4445-87a4-db4043bb7829",
           "takes": 1,
@@ -649,7 +655,7 @@
           "action": "Headbutt - Pulls back slightly, then quickly rams forward once with its stone body, then returns to idle stance"
         },
         "east": {
-          "status": "pass",
+          "status": "fail",
           "step_mean": 0.1134,
           "step_max": 0.1598,
           "drift": 0.94,
@@ -660,11 +666,14 @@
           "pad": 0,
           "flash": 0.0,
           "peak": 0.1598,
+          "reach": 0.111,
           "canvas": [
             40,
             40
           ],
-          "reasons": [],
+          "reasons": [
+            "no strike, just a lean: nothing reaches past 0.11 of the body"
+          ],
           "sub": "9603b1ec-b4f2-423b-b049-267dbaf3e67f",
           "group": "450975d0-6381-4174-a11c-79e68b268334",
           "takes": 1,
@@ -674,7 +683,7 @@
           "action": "Headbutt - Pulls back slightly, then quickly rams forward once with its stone body, then returns to idle stance"
         },
         "north-east": {
-          "status": "pass",
+          "status": "fail",
           "step_mean": 0.1248,
           "step_max": 0.1431,
           "drift": 1.68,
@@ -685,11 +694,14 @@
           "pad": 0,
           "flash": 0.002,
           "peak": 0.2182,
+          "reach": 0.143,
           "canvas": [
             40,
             40
           ],
-          "reasons": [],
+          "reasons": [
+            "no strike, just a lean: nothing reaches past 0.14 of the body"
+          ],
           "sub": "43dcc8c7-b3c0-450a-bce8-3c222e2ca99f",
           "group": "cbfebf49-2c10-4da8-9652-13299a5f679b",
           "takes": 1,
@@ -699,7 +711,7 @@
           "action": "Headbutt - Pulls back slightly, then quickly rams forward once with its stone body, then returns to idle stance"
         },
         "north": {
-          "status": "pass",
+          "status": "fail",
           "step_mean": 0.1045,
           "step_max": 0.1237,
           "drift": 1.89,
@@ -710,11 +722,14 @@
           "pad": 0,
           "flash": 0.0,
           "peak": 0.1973,
+          "reach": 0.111,
           "canvas": [
             40,
             40
           ],
-          "reasons": [],
+          "reasons": [
+            "no strike, just a lean: nothing reaches past 0.11 of the body"
+          ],
           "sub": "97a3f4df-e29e-4846-9727-da227bb2763a",
           "group": "408a7e3c-4f5c-43d9-a748-3a1c7e1c66f8",
           "takes": 1,

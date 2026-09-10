@@ -613,7 +613,7 @@
     "attack": {
       "directions": {
         "south": {
-          "status": "pass",
+          "status": "fail",
           "step_mean": 0.184,
           "step_max": 0.2131,
           "drift": 2.3,
@@ -624,11 +624,14 @@
           "pad": 0,
           "flash": 0.003,
           "peak": 0.2722,
+          "reach": 0.162,
           "canvas": [
             112,
             112
           ],
-          "reasons": [],
+          "reasons": [
+            "no strike, just a lean: nothing reaches past 0.16 of the body"
+          ],
           "sub": "57fe00ef-703c-42ca-9e04-cebce17a0d40",
           "group": "51c6e605-1971-4465-aab1-124b2d6da916",
           "takes": 1,
@@ -638,7 +641,7 @@
           "action": "Overhead Chop - Raises the greatsword and brings it down in one heavy chop, then returns to idle stance"
         },
         "south-east": {
-          "status": "pass",
+          "status": "fail",
           "step_mean": 0.1501,
           "step_max": 0.2074,
           "drift": 3.74,
@@ -649,11 +652,14 @@
           "pad": 0,
           "flash": 0.0,
           "peak": 0.2446,
+          "reach": 0.139,
           "canvas": [
             112,
             112
           ],
-          "reasons": [],
+          "reasons": [
+            "no strike, just a lean: nothing reaches past 0.14 of the body"
+          ],
           "sub": "9bdc49cf-e3b7-4367-aede-3d3f93db5a9f",
           "group": "dc6eb3e7-d1bc-4f93-a322-c95e84efd0ab",
           "takes": 1,
@@ -674,6 +680,7 @@
           "pad": 0,
           "flash": 0.039,
           "peak": 0.3418,
+          "reach": 0.369,
           "canvas": [
             112,
             112
@@ -688,7 +695,7 @@
           "action": "Overhead Chop - Raises the greatsword and brings it down in one heavy chop, then returns to idle stance"
         },
         "north-east": {
-          "status": "pass",
+          "status": "fail",
           "step_mean": 0.1268,
           "step_max": 0.1383,
           "drift": 1.87,
@@ -699,11 +706,14 @@
           "pad": 0,
           "flash": 0.002,
           "peak": 0.2036,
+          "reach": 0.095,
           "canvas": [
             112,
             112
           ],
-          "reasons": [],
+          "reasons": [
+            "no strike, just a lean: nothing reaches past 0.09 of the body"
+          ],
           "sub": "fb986bdf-be06-4cfa-a249-318f197ea5cd",
           "group": "daf05b35-7ec2-454a-a3da-7451ff515d8c",
           "takes": 1,
@@ -713,7 +723,7 @@
           "action": "Overhead Chop - Raises the greatsword and brings it down in one heavy chop, then returns to idle stance"
         },
         "north": {
-          "status": "pass",
+          "status": "fail",
           "step_mean": 0.1813,
           "step_max": 0.229,
           "drift": 2.61,
@@ -724,11 +734,13 @@
           "pad": 1,
           "flash": 0.094,
           "peak": 0.2731,
+          "reach": 0.146,
           "canvas": [
             114,
             114
           ],
           "reasons": [
+            "no strike, just a lean: nothing reaches past 0.15 of the body",
             "canvas grown by 1 px a side to hold the motion"
           ],
           "sub": "bc029242-9765-4c30-8b7e-67f0da79f1ce",
@@ -777,6 +789,7 @@
           "pad": 0,
           "flash": 0.039,
           "peak": 0.3418,
+          "reach": 0.369,
           "canvas": [
             112,
             112

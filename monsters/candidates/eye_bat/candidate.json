@@ -603,7 +603,7 @@
     "attack": {
       "directions": {
         "south": {
-          "status": "pass",
+          "status": "fail",
           "step_mean": 0.2095,
           "step_max": 0.2579,
           "drift": 1.7,
@@ -614,11 +614,14 @@
           "pad": 0,
           "flash": 0.132,
           "peak": 0.352,
+          "reach": 0.096,
           "canvas": [
             64,
             64
           ],
-          "reasons": [],
+          "reasons": [
+            "no strike, just a lean: nothing reaches past 0.10 of the body"
+          ],
           "sub": "4d832698-1be2-4da6-bc59-28436525044d",
           "group": "626bd18b-57e9-4412-89a0-1af45aa299fe",
           "takes": 1,
@@ -628,7 +631,7 @@
           "action": "Eye Beam - Darts forward and fires one short beam of light from its pupil, then returns to idle stance"
         },
         "south-east": {
-          "status": "pass",
+          "status": "fail",
           "step_mean": 0.1188,
           "step_max": 0.1276,
           "drift": 1.83,
@@ -639,11 +642,14 @@
           "pad": 0,
           "flash": 0.037,
           "peak": 0.212,
+          "reach": 0.042,
           "canvas": [
             64,
             64
           ],
-          "reasons": [],
+          "reasons": [
+            "no strike, just a lean: nothing reaches past 0.04 of the body"
+          ],
           "sub": "0d2db14c-c35a-4b54-8a47-82e6be8f8fb6",
           "group": "736e5ff7-1e61-443e-9c76-ec9542e9401f",
           "takes": 1,
@@ -653,7 +659,7 @@
           "action": "Eye Beam - Darts forward and fires one short beam of light from its pupil, then returns to idle stance"
         },
         "east": {
-          "status": "pass",
+          "status": "fail",
           "step_mean": 0.1767,
           "step_max": 0.1865,
           "drift": 0.93,
@@ -664,11 +670,14 @@
           "pad": 0,
           "flash": 0.028,
           "peak": 0.2839,
+          "reach": 0.2,
           "canvas": [
             64,
             64
           ],
-          "reasons": [],
+          "reasons": [
+            "no strike, just a lean: nothing reaches past 0.20 of the body"
+          ],
           "sub": "619896ef-6c38-41b2-a37c-331617533ba7",
           "group": "9f46d2a2-5406-4fca-91a9-0ee0910ae39c",
           "takes": 1,
@@ -678,7 +687,7 @@
           "action": "Eye Beam - Darts forward and fires one short beam of light from its pupil, then returns to idle stance"
         },
         "north-east": {
-          "status": "pass",
+          "status": "fail",
           "step_mean": 0.2509,
           "step_max": 0.2679,
           "drift": 1.31,
@@ -689,11 +698,14 @@
           "pad": 0,
           "flash": 0.0,
           "peak": 0.4226,
+          "reach": 0.091,
           "canvas": [
             64,
             64
           ],
-          "reasons": [],
+          "reasons": [
+            "no strike, just a lean: nothing reaches past 0.09 of the body"
+          ],
           "sub": "4afcfe1d-ac77-4e64-8be7-e112df4db894",
           "group": "c7d71bd0-60d9-4a51-8f0a-f9825f751690",
           "takes": 1,
@@ -703,7 +715,7 @@
           "action": "Eye Beam - Darts forward and fires one short beam of light from its pupil, then returns to idle stance"
         },
         "north": {
-          "status": "pass",
+          "status": "fail",
           "step_mean": 0.2462,
           "step_max": 0.2809,
           "drift": 2.09,
@@ -714,11 +726,14 @@
           "pad": 0,
           "flash": 0.11,
           "peak": 0.4211,
+          "reach": 0.08,
           "canvas": [
             64,
             64
           ],
-          "reasons": [],
+          "reasons": [
+            "no strike, just a lean: nothing reaches past 0.08 of the body"
+          ],
           "sub": "0dc8734b-56f2-4f54-b0eb-b5ef8fbb25d4",
           "group": "39a2d70e-696c-4da4-b8a7-28f10d2ae02c",
           "takes": 1,

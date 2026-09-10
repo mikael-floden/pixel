@@ -604,7 +604,7 @@
     "attack": {
       "directions": {
         "south": {
-          "status": "pass",
+          "status": "fail",
           "step_mean": 0.0839,
           "step_max": 0.1082,
           "drift": 1.13,
@@ -615,11 +615,15 @@
           "pad": 0,
           "flash": 0.0,
           "peak": 0.1405,
+          "reach": 0.067,
           "canvas": [
             128,
             128
           ],
-          "reasons": [],
+          "reasons": [
+            "weak strike: peak 0.140 — eyeball it",
+            "no strike, just a lean: nothing reaches past 0.07 of the body"
+          ],
           "sub": "af4a0198-fb91-4576-97a8-9b6748cdd4b8",
           "group": "a31a7453-8890-44b3-a478-8f4a1e09f289",
           "takes": 1,
@@ -629,7 +633,7 @@
           "action": "Clawing Grab - Lunges forward with both long-fingered hands reaching in one clawing grab, then returns to idle stance"
         },
         "south-east": {
-          "status": "pass",
+          "status": "warn",
           "step_mean": 0.1695,
           "step_max": 0.2043,
           "drift": 2.96,
@@ -640,11 +644,14 @@
           "pad": 0,
           "flash": 0.0,
           "peak": 0.2608,
+          "reach": 0.254,
           "canvas": [
             128,
             128
           ],
-          "reasons": [],
+          "reasons": [
+            "shallow strike: reach 0.25 — eyeball it"
+          ],
           "sub": "723cf64e-f7a9-4ecf-b40e-451f828a71da",
           "group": "c6ce1634-94b1-40bc-a288-308e499ec511",
           "takes": 1,
@@ -654,7 +661,7 @@
           "action": "Clawing Grab - Lunges forward with both long-fingered hands reaching in one clawing grab, then returns to idle stance"
         },
         "east": {
-          "status": "pass",
+          "status": "warn",
           "step_mean": 0.1127,
           "step_max": 0.1254,
           "drift": 1.78,
@@ -665,11 +672,14 @@
           "pad": 0,
           "flash": 0.0,
           "peak": 0.133,
+          "reach": 0.488,
           "canvas": [
             128,
             128
           ],
-          "reasons": [],
+          "reasons": [
+            "weak strike: peak 0.133 — eyeball it"
+          ],
           "sub": "180e2ef3-6c48-4edf-8cde-78a3602983e5",
           "group": "852401a0-df49-46a8-899b-dd1db93e3c76",
           "takes": 1,
@@ -679,7 +689,7 @@
           "action": "Clawing Grab - Lunges forward with both long-fingered hands reaching in one clawing grab, then returns to idle stance"
         },
         "north-east": {
-          "status": "pass",
+          "status": "fail",
           "step_mean": 0.1507,
           "step_max": 0.1709,
           "drift": 1.56,
@@ -690,11 +700,14 @@
           "pad": 0,
           "flash": 0.001,
           "peak": 0.2641,
+          "reach": 0.121,
           "canvas": [
             128,
             128
           ],
-          "reasons": [],
+          "reasons": [
+            "no strike, just a lean: nothing reaches past 0.12 of the body"
+          ],
           "sub": "7ec44996-485f-43b4-bc67-4ae9cf096b7c",
           "group": "a33c4543-caca-478c-afb8-1ad8d9bdc8ae",
           "takes": 1,
@@ -704,7 +717,7 @@
           "action": "Clawing Grab - Lunges forward with both long-fingered hands reaching in one clawing grab, then returns to idle stance"
         },
         "north": {
-          "status": "pass",
+          "status": "fail",
           "step_mean": 0.1987,
           "step_max": 0.2369,
           "drift": 5.15,
@@ -715,11 +728,14 @@
           "pad": 0,
           "flash": 0.0,
           "peak": 0.3383,
+          "reach": 0.129,
           "canvas": [
             128,
             128
           ],
-          "reasons": [],
+          "reasons": [
+            "no strike, just a lean: nothing reaches past 0.13 of the body"
+          ],
           "sub": "96f0dff9-e812-4274-8b69-80aac54b4c5c",
           "group": "3279ec48-20a3-45b7-a2e2-34a6b8e4fd54",
           "takes": 1,
@@ -729,7 +745,7 @@
           "action": "Clawing Grab - Lunges forward with both long-fingered hands reaching in one clawing grab, then returns to idle stance"
         },
         "south-west": {
-          "status": "pass",
+          "status": "warn",
           "step_mean": 0.1695,
           "step_max": 0.2043,
           "drift": 2.96,
@@ -740,11 +756,14 @@
           "pad": 0,
           "flash": 0.0,
           "peak": 0.2608,
+          "reach": 0.254,
           "canvas": [
             128,
             128
           ],
-          "reasons": [],
+          "reasons": [
+            "shallow strike: reach 0.25 — eyeball it"
+          ],
           "sub": "723cf64e-f7a9-4ecf-b40e-451f828a71da",
           "group": "c6ce1634-94b1-40bc-a288-308e499ec511",
           "takes": 1,
@@ -755,7 +774,7 @@
           "source": "south-east"
         },
         "west": {
-          "status": "pass",
+          "status": "warn",
           "step_mean": 0.1127,
           "step_max": 0.1254,
           "drift": 1.78,
@@ -766,11 +785,14 @@
           "pad": 0,
           "flash": 0.0,
           "peak": 0.133,
+          "reach": 0.488,
           "canvas": [
             128,
             128
           ],
-          "reasons": [],
+          "reasons": [
+            "weak strike: peak 0.133 — eyeball it"
+          ],
           "sub": "180e2ef3-6c48-4edf-8cde-78a3602983e5",
           "group": "852401a0-df49-46a8-899b-dd1db93e3c76",
           "takes": 1,

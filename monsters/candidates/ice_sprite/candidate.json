@@ -599,7 +599,7 @@
     "attack": {
       "directions": {
         "south": {
-          "status": "pass",
+          "status": "warn",
           "step_mean": 0.2615,
           "step_max": 0.3968,
           "drift": 1.05,
@@ -610,11 +610,14 @@
           "pad": 0,
           "flash": 0.207,
           "peak": 0.3968,
+          "reach": 0.273,
           "canvas": [
             40,
             40
           ],
-          "reasons": [],
+          "reasons": [
+            "shallow strike: reach 0.27 — eyeball it"
+          ],
           "sub": "9134d7d1-cf75-4d1b-b64b-b18fc90b1242",
           "group": "c70781df-9dd3-43be-9ccf-f52b6def9b3f",
           "takes": 1,
@@ -635,6 +638,7 @@
           "pad": 0,
           "flash": 0.308,
           "peak": 0.3868,
+          "reach": 0.389,
           "canvas": [
             40,
             40
@@ -662,6 +666,7 @@
           "pad": 0,
           "flash": 0.242,
           "peak": 0.5542,
+          "reach": 0.714,
           "canvas": [
             40,
             40
@@ -690,6 +695,7 @@
           "pad": 0,
           "flash": 0.146,
           "peak": 0.4027,
+          "reach": 0.353,
           "canvas": [
             40,
             40
@@ -715,6 +721,7 @@
           "pad": 0,
           "flash": 0.221,
           "peak": 0.4471,
+          "reach": 0.318,
           "canvas": [
             40,
             40
@@ -740,6 +747,7 @@
           "pad": 0,
           "flash": 0.308,
           "peak": 0.3868,
+          "reach": 0.389,
           "canvas": [
             40,
             40
@@ -768,6 +776,7 @@
           "pad": 0,
           "flash": 0.242,
           "peak": 0.5542,
+          "reach": 0.714,
           "canvas": [
             40,
             40
@@ -797,6 +806,7 @@
           "pad": 0,
           "flash": 0.146,
           "peak": 0.4027,
+          "reach": 0.353,
           "canvas": [
             40,
             40

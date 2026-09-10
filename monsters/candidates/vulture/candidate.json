@@ -607,7 +607,7 @@
     "attack": {
       "directions": {
         "south": {
-          "status": "pass",
+          "status": "fail",
           "step_mean": 0.1083,
           "step_max": 0.1571,
           "drift": 1.05,
@@ -618,11 +618,14 @@
           "pad": 0,
           "flash": 0.001,
           "peak": 0.1915,
+          "reach": 0.094,
           "canvas": [
             96,
             96
           ],
-          "reasons": [],
+          "reasons": [
+            "no strike, just a lean: nothing reaches past 0.09 of the body"
+          ],
           "sub": "19214279-e783-4007-b848-cd421c965e1a",
           "group": "ca3eb976-3535-4fc7-a2e6-60cc67d12611",
           "takes": 1,
@@ -632,7 +635,7 @@
           "action": "Beak Stab - Lunges forward with one stabbing peck of its hooked beak, wings half raised, then returns to idle stance"
         },
         "south-east": {
-          "status": "pass",
+          "status": "fail",
           "step_mean": 0.1003,
           "step_max": 0.1283,
           "drift": 1.46,
@@ -643,11 +646,14 @@
           "pad": 0,
           "flash": 0.0,
           "peak": 0.1861,
+          "reach": 0.103,
           "canvas": [
             96,
             96
           ],
-          "reasons": [],
+          "reasons": [
+            "no strike, just a lean: nothing reaches past 0.10 of the body"
+          ],
           "sub": "b4aaea2f-18ab-4eca-9c57-f4a04b81b0fb",
           "group": "560c585d-4499-4800-b9dc-19e579388f4a",
           "takes": 1,
@@ -657,7 +663,7 @@
           "action": "Beak Stab - Lunges forward with one stabbing peck of its hooked beak, wings half raised, then returns to idle stance"
         },
         "east": {
-          "status": "pass",
+          "status": "fail",
           "step_mean": 0.1093,
           "step_max": 0.128,
           "drift": 2.14,
@@ -668,11 +674,14 @@
           "pad": 0,
           "flash": 0.0,
           "peak": 0.2077,
+          "reach": 0.056,
           "canvas": [
             96,
             96
           ],
-          "reasons": [],
+          "reasons": [
+            "no strike, just a lean: nothing reaches past 0.06 of the body"
+          ],
           "sub": "6fc4b995-8794-48c2-a9c6-c7d7f85a2a72",
           "group": "c0e6871d-f2f7-4c16-9f1a-bfee75942249",
           "takes": 1,
@@ -682,7 +691,7 @@
           "action": "Beak Stab - Lunges forward with one stabbing peck of its hooked beak, wings half raised, then returns to idle stance"
         },
         "north-east": {
-          "status": "pass",
+          "status": "fail",
           "step_mean": 0.107,
           "step_max": 0.1459,
           "drift": 0.61,
@@ -693,11 +702,14 @@
           "pad": 0,
           "flash": 0.004,
           "peak": 0.1616,
+          "reach": 0.172,
           "canvas": [
             96,
             96
           ],
-          "reasons": [],
+          "reasons": [
+            "no strike, just a lean: nothing reaches past 0.17 of the body"
+          ],
           "sub": "54b12543-22c1-40ab-a13a-b355c47c5ea1",
           "group": "f87547ed-40d9-4f3c-8d44-dbb7f8eee04d",
           "takes": 1,
@@ -707,7 +719,7 @@
           "action": "Beak Stab - Lunges forward with one stabbing peck of its hooked beak, wings half raised, then returns to idle stance"
         },
         "north": {
-          "status": "pass",
+          "status": "fail",
           "step_mean": 0.0977,
           "step_max": 0.1318,
           "drift": 1.24,
@@ -718,19 +730,22 @@
           "pad": 0,
           "flash": 0.001,
           "peak": 0.1834,
+          "reach": 0.086,
           "canvas": [
             96,
             96
           ],
-          "reasons": [],
+          "reasons": [
+            "no strike, just a lean: nothing reaches past 0.09 of the body"
+          ],
           "sub": "db1933e9-1066-47dc-ba5f-550d6ac4639b",
           "group": "652e1877-bd33-401f-abe2-5d36fe5c8753",
           "takes": 1,
           "version": 3,
           "mirrored": false,
+          "generated_at": "2026-09-09T23:52:26+00:00",
           "action": "Beak Stab - Lunges forward with one stabbing peck of its hooked beak, wings half raised, then returns to idle stance",
-          "tries": 2,
-          "generated_at": "2026-09-09T23:52:26+00:00"
+          "tries": 2
         },
         "south-west": {
           "status": "pass",

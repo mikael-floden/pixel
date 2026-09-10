@@ -85,26 +85,24 @@ STATES = {
                  "loop_ratio_pass": 2.0, "loop_ratio_warn": 2.7,
                  "travel_pass": 4.0, "travel_warn": 7.0},
     },
-    # An attack is ONCE-THROUGH (the game paces it to ~700 ms whatever the
-    # count) and must land back on the base pose — so BOTH ends are pinned:
-    # base → wind-up → strike → base. Every monster words its own strike as a
-    # PRESET-STYLE move: "Move Name - mechanical body description, then returns
-    # to idle stance", 4 frames — the exact shape of the maintainer's 57
-    # accepted attacks (measured: their flash metric is 0.001 median, 51 of 57
-    # under 0.15). Free prose ("swings its club in one heavy blow…", 6 frames)
-    # got a painted impact effect — yellow club flare, slash arcs, sparks — on
-    # most physical strikes (flash median 0.044, 40 of 179 over 0.15) and no
-    # negative wording ("plain pixel art, no glow, no sparks…") suppressed it;
-    # the preset format did in 15 of 16 probes.
+    # An attack must STRIKE. Pinning BOTH ends (end_frame = the base) makes
+    # v3 interpolate base → … → base, and what comes back is a slow lean out
+    # and back — the maintainer, on 39 monsters of it: "95% look like idle
+    # animations. No strike/attack at all. The monster just moves slowly
+    # forward and back again." So: frame 0 stays pinned to the base (he liked
+    # that every clip starts from the idle pose) and THE END IS FREE — the
+    # game cuts back to idle after ~700 ms, so the clip does not have to
+    # return, and his own 57 accepted attacks mostly do not (loop up to 0.79).
+    # 4 generated frames + the base = 5 stored, the shape of his own set.
     "attack": {
-        "action": "Strike - Quickly lunges forward, strikes once, then returns to idle stance",
+        "action": "Strike - Quickly lunges forward and strikes once",
         "frames": 4,
-        "pin_end": True,
-        "keep_first": True,
-        "band": {"step_pass": (0.060, 0.900), "step_warn": (0.030, 1.200),
-                 "peak_pass": 0.12, "peak_warn": 0.06,
+        "pin_end": False,       # THE fix: no end_frame — a pinned end is a lean
+        "keep_first": True,     # frame 0 IS the base rotation
+        "band": {"step_pass": (0.080, 0.900), "step_warn": (0.040, 1.200),
+                 "peak_pass": 0.15, "peak_warn": 0.08,
+                 "reach_pass": 0.30, "reach_warn": 0.22,
                  "drift_pass": 12.0, "drift_warn": 24.0,
-                 "loop_warn": 0.15, "loop_max": 0.40,
                  "flash_warn": 0.04, "flash_max": 0.10},
     },
 }
@@ -229,6 +227,35 @@ def _flash(frames):
     return float(max((bright(x) - b0) / area for x in a[1:])) if len(a) > 1 else 0.0
 
 
+def _dilate(m):
+    o = m.copy()
+    o[1:, :] |= m[:-1, :]; o[:-1, :] |= m[1:, :]
+    o[:, 1:] |= m[:, :-1]; o[:, :-1] |= m[:, 1:]
+    return o
+
+
+def _reach(ops, base_op, cap=48):
+    """Does it STRIKE or just lean? A strike puts pixels FAR outside the base
+    silhouette (a limb or weapon extends); a lean translates the whole body,
+    so every new pixel hugs the base outline. reach = the 95th-percentile
+    distance of new pixels from the base, over the base's short side.
+    Measured on the maintainer's 57 accepted attacks (east): median 0.45,
+    p25 0.34, p10 0.23, minimum 0.14 — against 0.26 median for the 39
+    lean-shaped ones he rejected. Distance by successive dilation (no scipy)."""
+    d = np.full(base_op.shape, cap, np.int16); cur = base_op.copy(); d[base_op] = 0
+    for k in range(1, cap):
+        nxt = _dilate(cur); ring = nxt & ~cur
+        if not ring.any():
+            break
+        d[ring] = k; cur = nxt
+    ys, xs = np.where(base_op)
+    if not len(ys):
+        return 0.0
+    scale = min(ys.max() - ys.min() + 1, xs.max() - xs.min() + 1) or 1
+    out = [float(np.percentile(d[o & ~base_op], 95)) if (o & ~base_op).any() else 0.0 for o in ops[1:]]
+    return (max(out) / scale) if out else 0.0
+
+
 def qa_clip(cid, state, d, frames, pinned=None):
     """Machine verdict for one direction's clip. See module docstring."""
     band = STATES[state]["band"]
@@ -297,6 +324,14 @@ def qa_clip(cid, state, d, frames, pinned=None):
             reasons.append(f"no strike: peak {peak:.3f} of the silhouette away from the base"); status = "fail"
         elif peak < band["peak_pass"]:
             reasons.append(f"weak strike: peak {peak:.3f} — eyeball it"); status = "warn" if status != "fail" else status
+    if "reach_pass" in band:
+        rch = _reach(ops, _sil(base))
+        if rch < band["reach_warn"]:
+            reasons.append(f"no strike, just a lean: nothing reaches past {rch:.2f} of the body"); status = "fail"
+        elif rch < band["reach_pass"]:
+            reasons.append(f"shallow strike: reach {rch:.2f} — eyeball it"); status = "warn" if status != "fail" else status
+    else:
+        rch = None
     if "loop_max" in band and loop > band["loop_max"]:
         reasons.append(f"loop does not close (last vs first {loop:.3f})"); status = "fail"
     elif "loop_warn" in band and loop > band["loop_warn"]:
@@ -331,6 +366,7 @@ def qa_clip(cid, state, d, frames, pinned=None):
             "drift": round(drift, 2), "loop": round(loop, 4), "loop_ratio": round(loop_ratio, 2),
             "travel": round(travel, 2), "pin": round(float(pin), 3), "pad": pad, "flash": round(flash, 3),
             "peak": (round(peak, 4) if "peak_pass" in band else None),
+            "reach": (round(rch, 3) if rch is not None else None),
             "canvas": list(frames[0].size), "reasons": reasons}
 
 

@@ -607,7 +607,7 @@
     "attack": {
       "directions": {
         "south": {
-          "status": "pass",
+          "status": "warn",
           "step_mean": 0.2074,
           "step_max": 0.2485,
           "drift": 1.37,
@@ -618,11 +618,14 @@
           "pad": 0,
           "flash": 0.075,
           "peak": 0.3132,
+          "reach": 0.227,
           "canvas": [
             96,
             96
           ],
-          "reasons": [],
+          "reasons": [
+            "shallow strike: reach 0.23 — eyeball it"
+          ],
           "sub": "0beb8b3d-1a98-45ae-ab58-0d3dac7b87a6",
           "group": "f87e16c7-8dcb-429d-b0c0-f96dbb3fc950",
           "takes": 1,
@@ -632,7 +635,7 @@
           "action": "Flame Burst - Thrusts both hands forward and hurls one burst of flame, then returns to idle stance"
         },
         "south-east": {
-          "status": "pass",
+          "status": "fail",
           "step_mean": 0.2388,
           "step_max": 0.2754,
           "drift": 1.45,
@@ -643,11 +646,14 @@
           "pad": 0,
           "flash": 0.088,
           "peak": 0.3933,
+          "reach": 0.123,
           "canvas": [
             96,
             96
           ],
-          "reasons": [],
+          "reasons": [
+            "no strike, just a lean: nothing reaches past 0.12 of the body"
+          ],
           "sub": "ac5fbea4-50ad-4008-a514-78060b7aa34c",
           "group": "87b32ee7-4093-4bd1-808a-ed8901ecf051",
           "takes": 1,
@@ -668,6 +674,7 @@
           "pad": 0,
           "flash": 0.046,
           "peak": 0.5061,
+          "reach": 0.514,
           "canvas": [
             96,
             96
@@ -682,7 +689,7 @@
           "action": "Flame Burst - Thrusts both hands forward and hurls one burst of flame, then returns to idle stance"
         },
         "north": {
-          "status": "pass",
+          "status": "fail",
           "step_mean": 0.1803,
           "step_max": 0.2557,
           "drift": 1.61,
@@ -693,11 +700,14 @@
           "pad": 0,
           "flash": 0.0,
           "peak": 0.2831,
+          "reach": 0.052,
           "canvas": [
             96,
             96
           ],
-          "reasons": [],
+          "reasons": [
+            "no strike, just a lean: nothing reaches past 0.05 of the body"
+          ],
           "sub": "bcd94d32-5b30-4270-a3fb-ce4d9a0e79ac",
           "group": "5513aabf-708d-41c5-8fde-55f4065c4af7",
           "takes": 1,
@@ -744,6 +754,7 @@
           "pad": 0,
           "flash": 0.046,
           "peak": 0.5061,
+          "reach": 0.514,
           "canvas": [
             96,
             96
@@ -759,7 +770,7 @@
           "source": "east"
         },
         "north-east": {
-          "status": "pass",
+          "status": "warn",
           "step_mean": 0.3075,
           "step_max": 0.3869,
           "drift": 2.26,
@@ -770,11 +781,14 @@
           "pad": 0,
           "flash": 0.097,
           "peak": 0.4704,
+          "reach": 0.283,
           "canvas": [
             96,
             96
           ],
-          "reasons": [],
+          "reasons": [
+            "shallow strike: reach 0.28 — eyeball it"
+          ],
           "sub": "52efb1fa-ca14-4993-affa-c61a7e57660d",
           "group": "b878286b-b57f-4182-a23b-3f96493c2d45",
           "takes": 1,
@@ -784,7 +798,7 @@
           "action": "Flame Burst - Thrusts both hands forward and hurls one burst of flame, then returns to idle stance"
         },
         "north-west": {
-          "status": "pass",
+          "status": "warn",
           "step_mean": 0.3075,
           "step_max": 0.3869,
           "drift": 2.26,
@@ -795,11 +809,14 @@
           "pad": 0,
           "flash": 0.097,
           "peak": 0.4704,
+          "reach": 0.283,
           "canvas": [
             96,
             96
           ],
-          "reasons": [],
+          "reasons": [
+            "shallow strike: reach 0.28 — eyeball it"
+          ],
           "sub": "52efb1fa-ca14-4993-affa-c61a7e57660d",
           "group": "b878286b-b57f-4182-a23b-3f96493c2d45",
           "takes": 1,

@@ -613,7 +613,7 @@
     "attack": {
       "directions": {
         "south": {
-          "status": "pass",
+          "status": "fail",
           "step_mean": 0.0677,
           "step_max": 0.1331,
           "drift": 1.48,
@@ -624,11 +624,16 @@
           "pad": 0,
           "flash": 0.001,
           "peak": 0.1333,
+          "reach": 0.02,
           "canvas": [
             128,
             128
           ],
-          "reasons": [],
+          "reasons": [
+            "motion 0.068 outside the calm band 0.08–0.9 — eyeball it",
+            "weak strike: peak 0.133 — eyeball it",
+            "no strike, just a lean: nothing reaches past 0.02 of the body"
+          ],
           "sub": "596e18e5-de79-48f1-8f72-2d8c46042577",
           "group": "bde2695d-4dc7-412b-a768-3ceb1ba96e47",
           "takes": 1,
@@ -638,7 +643,7 @@
           "action": "Spear Thrust - Thrusts the spear forward in one fast stab, shield held up, then returns to idle stance"
         },
         "south-east": {
-          "status": "pass",
+          "status": "fail",
           "step_mean": 0.2988,
           "step_max": 0.3295,
           "drift": 6.61,
@@ -649,11 +654,14 @@
           "pad": 0,
           "flash": 0.001,
           "peak": 0.4568,
+          "reach": 0.126,
           "canvas": [
             128,
             128
           ],
-          "reasons": [],
+          "reasons": [
+            "no strike, just a lean: nothing reaches past 0.13 of the body"
+          ],
           "sub": "d0249d33-ec35-4cbd-94cf-73c3615851e5",
           "group": "ba40fdef-74a8-4474-94c3-d396872b9835",
           "takes": 1,
@@ -674,6 +682,7 @@
           "pad": 5,
           "flash": 0.009,
           "peak": 0.4709,
+          "reach": 0.442,
           "canvas": [
             138,
             138
@@ -690,7 +699,7 @@
           "action": "Spear Thrust - Thrusts the spear forward in one fast stab, shield held up, then returns to idle stance"
         },
         "north-east": {
-          "status": "pass",
+          "status": "fail",
           "step_mean": 0.1958,
           "step_max": 0.2628,
           "drift": 1.31,
@@ -701,11 +710,14 @@
           "pad": 0,
           "flash": 0.0,
           "peak": 0.2628,
+          "reach": 0.071,
           "canvas": [
             128,
             128
           ],
-          "reasons": [],
+          "reasons": [
+            "no strike, just a lean: nothing reaches past 0.07 of the body"
+          ],
           "sub": "e78f73b4-1a19-4c3d-9b69-380caa686ddd",
           "group": "f58b0376-3412-4fd7-aa21-644eb170ee2a",
           "takes": 1,
@@ -715,7 +727,7 @@
           "action": "Spear Thrust - Thrusts the spear forward in one fast stab, shield held up, then returns to idle stance"
         },
         "north": {
-          "status": "pass",
+          "status": "fail",
           "step_mean": 0.2064,
           "step_max": 0.2648,
           "drift": 7.87,
@@ -726,11 +738,14 @@
           "pad": 0,
           "flash": 0.0,
           "peak": 0.2993,
+          "reach": 0.074,
           "canvas": [
             128,
             128
           ],
-          "reasons": [],
+          "reasons": [
+            "no strike, just a lean: nothing reaches past 0.07 of the body"
+          ],
           "sub": "2ec64f85-06ff-4e9f-93c5-9270d975b48c",
           "group": "2f864571-7018-4b3b-b1ca-52c3bbae173b",
           "takes": 1,
@@ -777,6 +792,7 @@
           "pad": 5,
           "flash": 0.009,
           "peak": 0.4709,
+          "reach": 0.442,
           "canvas": [
             138,
             138

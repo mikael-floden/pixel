@@ -618,7 +618,7 @@
     "attack": {
       "directions": {
         "south": {
-          "status": "pass",
+          "status": "fail",
           "step_mean": 0.2323,
           "step_max": 0.2431,
           "drift": 4.19,
@@ -629,11 +629,14 @@
           "pad": 0,
           "flash": 0.001,
           "peak": 0.321,
+          "reach": 0.134,
           "canvas": [
             240,
             240
           ],
-          "reasons": [],
+          "reasons": [
+            "no strike, just a lean: nothing reaches past 0.13 of the body"
+          ],
           "sub": "e4a36e28-af78-4775-ba27-f0a777478c56",
           "group": "a930a421-5201-4d13-8afa-97ed5163f153",
           "takes": 1,
@@ -644,7 +647,7 @@
           "tries": 1
         },
         "south-east": {
-          "status": "pass",
+          "status": "fail",
           "step_mean": 0.1506,
           "step_max": 0.2154,
           "drift": 4.51,
@@ -655,11 +658,14 @@
           "pad": 0,
           "flash": 0.023,
           "peak": 0.2447,
+          "reach": 0.162,
           "canvas": [
             240,
             240
           ],
-          "reasons": [],
+          "reasons": [
+            "no strike, just a lean: nothing reaches past 0.16 of the body"
+          ],
           "sub": "0f6a138a-651f-4683-a55b-ae40db28b231",
           "group": "538dbba7-c2a1-4e40-9ea1-9b9b5c273194",
           "takes": 1,
@@ -681,6 +687,7 @@
           "pad": 0,
           "flash": 0.03,
           "peak": 0.3024,
+          "reach": 0.33,
           "canvas": [
             240,
             240
@@ -696,7 +703,7 @@
           "tries": 3
         },
         "north-east": {
-          "status": "pass",
+          "status": "fail",
           "step_mean": 0.135,
           "step_max": 0.1545,
           "drift": 3.21,
@@ -707,11 +714,14 @@
           "pad": 0,
           "flash": 0.0,
           "peak": 0.2571,
+          "reach": 0.077,
           "canvas": [
             240,
             240
           ],
-          "reasons": [],
+          "reasons": [
+            "no strike, just a lean: nothing reaches past 0.08 of the body"
+          ],
           "sub": "2a7cdb5f-5e2f-4734-93a0-89aad24c1dad",
           "group": "3a4da3b5-fa53-4f9a-a9ad-d0baf0ec65f1",
           "takes": 1,
@@ -721,7 +731,7 @@
           "action": "Club Smash - Raises the stalactite club overhead and smashes it down once, then returns to idle stance"
         },
         "north": {
-          "status": "warn",
+          "status": "fail",
           "step_mean": 0.062,
           "step_max": 0.0849,
           "drift": 0.38,
@@ -732,12 +742,15 @@
           "pad": 0,
           "flash": 0.0,
           "peak": 0.1113,
+          "reach": 0.021,
           "canvas": [
             240,
             240
           ],
           "reasons": [
-            "weak strike: peak 0.111 — eyeball it"
+            "motion 0.062 outside the calm band 0.08–0.9 — eyeball it",
+            "weak strike: peak 0.111 — eyeball it",
+            "no strike, just a lean: nothing reaches past 0.02 of the body"
           ],
           "sub": "d3b4992d-239f-4f66-9f40-12ae9b1bced6",
           "group": "06c361a6-f161-4694-86dc-0bb5bb1238db",
@@ -786,6 +799,7 @@
           "pad": 0,
           "flash": 0.03,
           "peak": 0.3024,
+          "reach": 0.33,
           "canvas": [
             240,
             240

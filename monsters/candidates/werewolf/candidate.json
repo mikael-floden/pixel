@@ -617,7 +617,7 @@
     "attack": {
       "directions": {
         "south": {
-          "status": "pass",
+          "status": "fail",
           "step_mean": 0.1785,
           "step_max": 0.2866,
           "drift": 3.92,
@@ -628,11 +628,14 @@
           "pad": 0,
           "flash": 0.001,
           "peak": 0.3311,
+          "reach": 0.082,
           "canvas": [
             128,
             128
           ],
-          "reasons": [],
+          "reasons": [
+            "no strike, just a lean: nothing reaches past 0.08 of the body"
+          ],
           "sub": "e72f3fc0-d093-4fa0-b10b-bb2535ae12d5",
           "group": "5c1c842c-981e-40d1-9d55-213182202078",
           "takes": 1,
@@ -642,7 +645,7 @@
           "action": "Claw Swipe - Raises one front paw and performs one quick swipe forward, then returns to idle stance"
         },
         "south-east": {
-          "status": "pass",
+          "status": "fail",
           "step_mean": 0.1051,
           "step_max": 0.1583,
           "drift": 2.43,
@@ -653,11 +656,14 @@
           "pad": 0,
           "flash": 0.003,
           "peak": 0.1762,
+          "reach": 0.063,
           "canvas": [
             128,
             128
           ],
-          "reasons": [],
+          "reasons": [
+            "no strike, just a lean: nothing reaches past 0.06 of the body"
+          ],
           "sub": "d7ab1759-5c34-40ce-9564-763710ea3419",
           "group": "38a10acb-9dd3-45a2-8943-3771ad756bc2",
           "takes": 2,
@@ -679,6 +685,7 @@
           "pad": 0,
           "flash": 0.002,
           "peak": 0.2518,
+          "reach": 0.318,
           "canvas": [
             128,
             128
@@ -693,7 +700,7 @@
           "action": "Claw Swipe - Raises one front paw and performs one quick swipe forward, then returns to idle stance"
         },
         "north-east": {
-          "status": "pass",
+          "status": "warn",
           "step_mean": 0.2591,
           "step_max": 0.2715,
           "drift": 3.33,
@@ -704,11 +711,13 @@
           "pad": 2,
           "flash": 0.0,
           "peak": 0.3611,
+          "reach": 0.269,
           "canvas": [
             132,
             132
           ],
           "reasons": [
+            "shallow strike: reach 0.27 — eyeball it",
             "canvas grown by 2 px a side to hold the motion"
           ],
           "sub": "45119480-af84-424a-b200-adf0cd5083c4",
@@ -721,7 +730,7 @@
           "tries": 2
         },
         "north": {
-          "status": "warn",
+          "status": "fail",
           "step_mean": 0.0904,
           "step_max": 0.1046,
           "drift": 2.02,
@@ -732,12 +741,14 @@
           "pad": 0,
           "flash": 0.0,
           "peak": 0.1192,
+          "reach": 0.048,
           "canvas": [
             128,
             128
           ],
           "reasons": [
-            "weak strike: peak 0.119 — eyeball it"
+            "weak strike: peak 0.119 — eyeball it",
+            "no strike, just a lean: nothing reaches past 0.05 of the body"
           ],
           "sub": "bdb7f4ac-a7c2-4776-8021-479fd1235570",
           "group": "287a9ed1-089a-4bef-81b1-d4231157dc86",
@@ -787,6 +798,7 @@
           "pad": 0,
           "flash": 0.002,
           "peak": 0.2518,
+          "reach": 0.318,
           "canvas": [
             128,
             128
@@ -802,7 +814,7 @@
           "source": "east"
         },
         "north-west": {
-          "status": "pass",
+          "status": "warn",
           "step_mean": 0.2591,
           "step_max": 0.2715,
           "drift": 3.33,
@@ -813,11 +825,13 @@
           "pad": 2,
           "flash": 0.0,
           "peak": 0.3611,
+          "reach": 0.269,
           "canvas": [
             132,
             132
           ],
           "reasons": [
+            "shallow strike: reach 0.27 — eyeball it",
             "canvas grown by 2 px a side to hold the motion"
           ],
           "sub": "45119480-af84-424a-b200-adf0cd5083c4",

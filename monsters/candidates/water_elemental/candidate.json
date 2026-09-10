@@ -611,7 +611,7 @@
     "attack": {
       "directions": {
         "south": {
-          "status": "warn",
+          "status": "fail",
           "step_mean": 0.1786,
           "step_max": 0.2343,
           "drift": 3.94,
@@ -622,11 +622,13 @@
           "pad": 0,
           "flash": 0.283,
           "peak": 0.2762,
+          "reach": 0.107,
           "canvas": [
             96,
             96
           ],
           "reasons": [
+            "no strike, just a lean: nothing reaches past 0.11 of the body",
             "some bright effect pixels (0.28) — eyeball it"
           ],
           "sub": "d0654e08-fcb6-4b88-b344-45e4209b9c44",
@@ -638,7 +640,7 @@
           "action": "Water Whip - Lashes forward once with a whip of water from one arm, then returns to idle stance"
         },
         "south-east": {
-          "status": "pass",
+          "status": "fail",
           "step_mean": 0.2357,
           "step_max": 0.382,
           "drift": 5.95,
@@ -649,11 +651,14 @@
           "pad": 0,
           "flash": 0.069,
           "peak": 0.382,
+          "reach": 0.184,
           "canvas": [
             96,
             96
           ],
-          "reasons": [],
+          "reasons": [
+            "no strike, just a lean: nothing reaches past 0.18 of the body"
+          ],
           "sub": "946bb50f-838f-4bcc-9fd8-65d01eda85b9",
           "group": "29ae3d42-ec3b-4a3d-a2cf-5374725b5cbb",
           "takes": 1,
@@ -674,6 +679,7 @@
           "pad": 0,
           "flash": 0.218,
           "peak": 0.4671,
+          "reach": 0.742,
           "canvas": [
             96,
             96
@@ -700,6 +706,7 @@
           "pad": 0,
           "flash": 0.236,
           "peak": 0.3121,
+          "reach": 0.302,
           "canvas": [
             96,
             96
@@ -714,7 +721,7 @@
           "action": "Water Whip - Lashes forward once with a whip of water from one arm, then returns to idle stance"
         },
         "north": {
-          "status": "pass",
+          "status": "fail",
           "step_mean": 0.1219,
           "step_max": 0.1468,
           "drift": 0.99,
@@ -725,11 +732,14 @@
           "pad": 0,
           "flash": 0.0,
           "peak": 0.2024,
+          "reach": 0.058,
           "canvas": [
             96,
             96
           ],
-          "reasons": [],
+          "reasons": [
+            "no strike, just a lean: nothing reaches past 0.06 of the body"
+          ],
           "sub": "e4b7d525-1830-4e30-a262-dacff6fce3f6",
           "group": "7b6cc2ba-671e-4c69-aa08-ef20f162f321",
           "takes": 1,
@@ -776,6 +786,7 @@
           "pad": 0,
           "flash": 0.218,
           "peak": 0.4671,
+          "reach": 0.742,
           "canvas": [
             96,
             96
@@ -803,6 +814,7 @@
           "pad": 0,
           "flash": 0.236,
           "peak": 0.3121,
+          "reach": 0.302,
           "canvas": [
             96,
             96

@@ -605,7 +605,7 @@
     "attack": {
       "directions": {
         "south": {
-          "status": "pass",
+          "status": "fail",
           "step_mean": 0.1214,
           "step_max": 0.1836,
           "drift": 0.58,
@@ -616,11 +616,14 @@
           "pad": 0,
           "flash": 0.002,
           "peak": 0.2358,
+          "reach": 0.109,
           "canvas": [
             40,
             40
           ],
-          "reasons": [],
+          "reasons": [
+            "no strike, just a lean: nothing reaches past 0.11 of the body"
+          ],
           "sub": "27fa4dab-95d2-4706-acc6-d63d8ed55de2",
           "group": "f8d9e81d-a496-44ef-8ec6-54fbd6be9a22",
           "takes": 1,
@@ -630,7 +633,7 @@
           "action": "Shell Butt - Rears its head up and butts forward once with its shell, then returns to idle stance"
         },
         "south-east": {
-          "status": "pass",
+          "status": "fail",
           "step_mean": 0.0785,
           "step_max": 0.1034,
           "drift": 0.77,
@@ -641,11 +644,15 @@
           "pad": 0,
           "flash": 0.008,
           "peak": 0.1532,
+          "reach": 0.088,
           "canvas": [
             40,
             40
           ],
-          "reasons": [],
+          "reasons": [
+            "motion 0.078 outside the calm band 0.08–0.9 — eyeball it",
+            "no strike, just a lean: nothing reaches past 0.09 of the body"
+          ],
           "sub": "a1069203-d62b-4762-babb-095093a642de",
           "group": "f7482b9e-4466-4083-8ea3-7136c5bd7cea",
           "takes": 1,
@@ -655,7 +662,7 @@
           "action": "Shell Butt - Rears its head up and butts forward once with its shell, then returns to idle stance"
         },
         "east": {
-          "status": "pass",
+          "status": "fail",
           "step_mean": 0.1597,
           "step_max": 0.2159,
           "drift": 1.97,
@@ -666,11 +673,14 @@
           "pad": 0,
           "flash": 0.008,
           "peak": 0.2753,
+          "reach": 0.129,
           "canvas": [
             40,
             40
           ],
-          "reasons": [],
+          "reasons": [
+            "no strike, just a lean: nothing reaches past 0.13 of the body"
+          ],
           "sub": "d3e1d8bd-7c4b-4288-aa7b-d06baf3541a0",
           "group": "a9579d61-8a29-4316-b28f-258d62b964b3",
           "takes": 1,
@@ -680,7 +690,7 @@
           "action": "Shell Butt - Rears its head up and butts forward once with its shell, then returns to idle stance"
         },
         "north-east": {
-          "status": "pass",
+          "status": "fail",
           "step_mean": 0.1241,
           "step_max": 0.1831,
           "drift": 2.15,
@@ -691,11 +701,14 @@
           "pad": 0,
           "flash": 0.009,
           "peak": 0.2254,
+          "reach": 0.171,
           "canvas": [
             40,
             40
           ],
-          "reasons": [],
+          "reasons": [
+            "no strike, just a lean: nothing reaches past 0.17 of the body"
+          ],
           "sub": "afc85c12-d511-419a-8486-df55dc10a9c3",
           "group": "42675a80-9b91-47c2-b263-7aade94cef41",
           "takes": 1,
@@ -705,7 +718,7 @@
           "action": "Shell Butt - Rears its head up and butts forward once with its shell, then returns to idle stance"
         },
         "north": {
-          "status": "pass",
+          "status": "fail",
           "step_mean": 0.0865,
           "step_max": 0.1301,
           "drift": 0.87,
@@ -716,11 +729,14 @@
           "pad": 0,
           "flash": 0.004,
           "peak": 0.1515,
+          "reach": 0.062,
           "canvas": [
             40,
             40
           ],
-          "reasons": [],
+          "reasons": [
+            "no strike, just a lean: nothing reaches past 0.06 of the body"
+          ],
           "sub": "faf41753-2e38-4a4f-bfb4-04267ed40020",
           "group": "d9e33621-9244-48af-a0f7-ee5a74b156e7",
           "takes": 1,

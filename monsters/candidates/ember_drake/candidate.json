@@ -603,7 +603,7 @@
     "attack": {
       "directions": {
         "south": {
-          "status": "pass",
+          "status": "fail",
           "step_mean": 0.0793,
           "step_max": 0.1158,
           "drift": 4.25,
@@ -614,11 +614,16 @@
           "pad": 0,
           "flash": 0.009,
           "peak": 0.1366,
+          "reach": 0.177,
           "canvas": [
             240,
             240
           ],
-          "reasons": [],
+          "reasons": [
+            "motion 0.079 outside the calm band 0.08–0.9 — eyeball it",
+            "weak strike: peak 0.137 — eyeball it",
+            "no strike, just a lean: nothing reaches past 0.18 of the body"
+          ],
           "sub": "a98d8840-6ddd-457c-aa15-b35cc2da7d10",
           "group": "a8e70e31-9388-4329-91c4-9bbf69eeb7ef",
           "takes": 1,
@@ -639,11 +644,13 @@
           "pad": 0,
           "flash": 0.293,
           "peak": 0.2534,
+          "reach": 0.271,
           "canvas": [
             240,
             240
           ],
           "reasons": [
+            "shallow strike: reach 0.27 — eyeball it",
             "some bright effect pixels (0.29) — eyeball it"
           ],
           "sub": "fe0cb1d5-fad7-42e5-8ffb-d4be9a04f40b",
@@ -655,7 +662,7 @@
           "action": "Fire Breath - Rears its head back and breathes one short jet of fire forward, then returns to idle stance"
         },
         "east": {
-          "status": "pass",
+          "status": "fail",
           "step_mean": 0.105,
           "step_max": 0.1218,
           "drift": 4.48,
@@ -666,11 +673,14 @@
           "pad": 0,
           "flash": 0.017,
           "peak": 0.1863,
+          "reach": 0.178,
           "canvas": [
             240,
             240
           ],
-          "reasons": [],
+          "reasons": [
+            "no strike, just a lean: nothing reaches past 0.18 of the body"
+          ],
           "sub": "ac710383-6b9c-4921-9d1e-8fb114aad063",
           "group": "9c1040e3-620f-4d2e-8cd4-ba309ed46a75",
           "takes": 1,
@@ -680,7 +690,7 @@
           "action": "Fire Breath - Rears its head back and breathes one short jet of fire forward, then returns to idle stance"
         },
         "north-east": {
-          "status": "pass",
+          "status": "fail",
           "step_mean": 0.0716,
           "step_max": 0.0811,
           "drift": 1.74,
@@ -691,11 +701,16 @@
           "pad": 0,
           "flash": 0.0,
           "peak": 0.1267,
+          "reach": 0.02,
           "canvas": [
             240,
             240
           ],
-          "reasons": [],
+          "reasons": [
+            "motion 0.072 outside the calm band 0.08–0.9 — eyeball it",
+            "weak strike: peak 0.127 — eyeball it",
+            "no strike, just a lean: nothing reaches past 0.02 of the body"
+          ],
           "sub": "054ec414-3d2e-49d3-b411-6f9f85f0f969",
           "group": "c4e68f02-f5f2-4341-9ead-5987970c8778",
           "takes": 1,
@@ -705,7 +720,7 @@
           "action": "Fire Breath - Rears its head back and breathes one short jet of fire forward, then returns to idle stance"
         },
         "north": {
-          "status": "pass",
+          "status": "fail",
           "step_mean": 0.084,
           "step_max": 0.124,
           "drift": 3.43,
@@ -716,11 +731,15 @@
           "pad": 0,
           "flash": 0.009,
           "peak": 0.1408,
+          "reach": 0.136,
           "canvas": [
             240,
             240
           ],
-          "reasons": [],
+          "reasons": [
+            "weak strike: peak 0.141 — eyeball it",
+            "no strike, just a lean: nothing reaches past 0.14 of the body"
+          ],
           "sub": "aa59d55f-c380-4c97-884b-5becce3f8721",
           "group": "b237f9bd-803b-4a8b-a815-4a13e5d3e829",
           "takes": 1,
@@ -741,11 +760,13 @@
           "pad": 0,
           "flash": 0.293,
           "peak": 0.2534,
+          "reach": 0.271,
           "canvas": [
             240,
             240
           ],
           "reasons": [
+            "shallow strike: reach 0.27 — eyeball it",
             "some bright effect pixels (0.29) — eyeball it"
           ],
           "sub": "fe0cb1d5-fad7-42e5-8ffb-d4be9a04f40b",

@@ -602,7 +602,7 @@
     "attack": {
       "directions": {
         "south": {
-          "status": "pass",
+          "status": "fail",
           "step_mean": 0.1117,
           "step_max": 0.1612,
           "drift": 0.4,
@@ -613,11 +613,14 @@
           "pad": 0,
           "flash": 0.0,
           "peak": 0.1939,
+          "reach": 0.091,
           "canvas": [
             40,
             40
           ],
-          "reasons": [],
+          "reasons": [
+            "no strike, just a lean: nothing reaches past 0.09 of the body"
+          ],
           "sub": "c90b9248-991b-4566-8f9d-04fa0ade8452",
           "group": "22aaebb0-30bc-4f7b-bd72-9168012bbe64",
           "takes": 1,
@@ -627,7 +630,7 @@
           "action": "Claw Pinch - Darts forward and pinches once with both small claws, then returns to idle stance"
         },
         "south-east": {
-          "status": "pass",
+          "status": "fail",
           "step_mean": 0.1002,
           "step_max": 0.1399,
           "drift": 0.6,
@@ -638,11 +641,14 @@
           "pad": 0,
           "flash": 0.0,
           "peak": 0.1757,
+          "reach": 0.091,
           "canvas": [
             40,
             40
           ],
-          "reasons": [],
+          "reasons": [
+            "no strike, just a lean: nothing reaches past 0.09 of the body"
+          ],
           "sub": "087b3baa-d965-42ce-8ea5-bd5e74562080",
           "group": "d944c8a2-8b23-4bfa-bc76-e99ca3cd6705",
           "takes": 1,
@@ -652,7 +658,7 @@
           "action": "Claw Pinch - Darts forward and pinches once with both small claws, then returns to idle stance"
         },
         "east": {
-          "status": "pass",
+          "status": "fail",
           "step_mean": 0.1555,
           "step_max": 0.1903,
           "drift": 1.0,
@@ -663,11 +669,14 @@
           "pad": 0,
           "flash": 0.0,
           "peak": 0.2578,
+          "reach": 0.116,
           "canvas": [
             40,
             40
           ],
-          "reasons": [],
+          "reasons": [
+            "no strike, just a lean: nothing reaches past 0.12 of the body"
+          ],
           "sub": "a47d013b-3c37-4ab1-80cf-b8550953fa99",
           "group": "50a0be54-6fbe-45e9-bab3-a9f33cd4c1fb",
           "takes": 1,
@@ -677,7 +686,7 @@
           "action": "Claw Pinch - Darts forward and pinches once with both small claws, then returns to idle stance"
         },
         "north-east": {
-          "status": "pass",
+          "status": "fail",
           "step_mean": 0.1119,
           "step_max": 0.1487,
           "drift": 1.16,
@@ -688,11 +697,14 @@
           "pad": 0,
           "flash": 0.004,
           "peak": 0.1678,
+          "reach": 0.088,
           "canvas": [
             40,
             40
           ],
-          "reasons": [],
+          "reasons": [
+            "no strike, just a lean: nothing reaches past 0.09 of the body"
+          ],
           "sub": "dc6a0aee-d775-43b4-a6c5-c5be53b724a2",
           "group": "3891aa6c-df91-4bc9-8111-aa8f6f79f251",
           "takes": 1,
@@ -702,7 +714,7 @@
           "action": "Claw Pinch - Darts forward and pinches once with both small claws, then returns to idle stance"
         },
         "north": {
-          "status": "pass",
+          "status": "fail",
           "step_mean": 0.1187,
           "step_max": 0.1805,
           "drift": 1.13,
@@ -713,11 +725,14 @@
           "pad": 0,
           "flash": 0.0,
           "peak": 0.2089,
+          "reach": 0.129,
           "canvas": [
             40,
             40
           ],
-          "reasons": [],
+          "reasons": [
+            "no strike, just a lean: nothing reaches past 0.13 of the body"
+          ],
           "sub": "17fa2991-e931-4b28-baf7-0898aac8bb05",
           "group": "281d99f0-1682-4a57-8bf9-98bd22008127",
           "takes": 1,

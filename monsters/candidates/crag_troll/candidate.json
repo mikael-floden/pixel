@@ -621,7 +621,7 @@
     "attack": {
       "directions": {
         "south": {
-          "status": "pass",
+          "status": "fail",
           "step_mean": 0.119,
           "step_max": 0.159,
           "drift": 6.51,
@@ -632,11 +632,14 @@
           "pad": 0,
           "flash": 0.0,
           "peak": 0.2116,
+          "reach": 0.089,
           "canvas": [
             232,
             232
           ],
-          "reasons": [],
+          "reasons": [
+            "no strike, just a lean: nothing reaches past 0.09 of the body"
+          ],
           "sub": "76a7d357-326b-4285-af29-4a20f48fb167",
           "group": "95dda4a9-2384-486a-a8b1-d410ebb1f17f",
           "takes": 3,
@@ -647,7 +650,7 @@
           "tries": 2
         },
         "south-east": {
-          "status": "pass",
+          "status": "fail",
           "step_mean": 0.1909,
           "step_max": 0.2303,
           "drift": 12.4,
@@ -658,11 +661,14 @@
           "pad": 0,
           "flash": 0.0,
           "peak": 0.3214,
+          "reach": 0.169,
           "canvas": [
             232,
             232
           ],
-          "reasons": [],
+          "reasons": [
+            "no strike, just a lean: nothing reaches past 0.17 of the body"
+          ],
           "sub": "b4f8f9c8-92cc-4259-b570-4bece398b631",
           "group": "62e3945c-92d0-4952-8a4e-67e4f7acfca3",
           "takes": 1,
@@ -683,6 +689,7 @@
           "pad": 0,
           "flash": 0.0,
           "peak": 0.155,
+          "reach": 0.349,
           "canvas": [
             232,
             232
@@ -693,12 +700,12 @@
           "takes": 1,
           "version": 5,
           "mirrored": false,
+          "generated_at": "2026-09-09T23:45:40+00:00",
           "action": "Club Smash - Raises the stone club and swings it down in one heavy blow, then returns to idle stance",
-          "tries": 2,
-          "generated_at": "2026-09-09T23:45:40+00:00"
+          "tries": 2
         },
         "north-east": {
-          "status": "pass",
+          "status": "fail",
           "step_mean": 0.1199,
           "step_max": 0.137,
           "drift": 5.9,
@@ -709,11 +716,14 @@
           "pad": 0,
           "flash": 0.0,
           "peak": 0.1971,
+          "reach": 0.121,
           "canvas": [
             232,
             232
           ],
-          "reasons": [],
+          "reasons": [
+            "no strike, just a lean: nothing reaches past 0.12 of the body"
+          ],
           "sub": "e3cc59b8-ce8f-4617-9760-86b80456ff72",
           "group": "1c956204-d11a-4007-aaab-db1fe0dfbb31",
           "takes": 1,
@@ -723,7 +733,7 @@
           "action": "Club Smash - Raises the stone club and swings it down in one heavy blow, then returns to idle stance"
         },
         "north": {
-          "status": "pass",
+          "status": "warn",
           "step_mean": 0.1495,
           "step_max": 0.1874,
           "drift": 9.82,
@@ -734,11 +744,13 @@
           "pad": 12,
           "flash": 0.0,
           "peak": 0.21,
+          "reach": 0.23,
           "canvas": [
             256,
             256
           ],
           "reasons": [
+            "shallow strike: reach 0.23 — eyeball it",
             "canvas grown by 12 px a side to hold the motion"
           ],
           "sub": "9d772767-8fc4-4331-8a2c-b24724962cb0",
@@ -787,6 +799,7 @@
           "pad": 0,
           "flash": 0.0,
           "peak": 0.155,
+          "reach": 0.349,
           "canvas": [
             232,
             232
@@ -797,9 +810,9 @@
           "takes": 1,
           "version": 5,
           "mirrored": true,
+          "generated_at": "2026-09-09T23:45:40+00:00",
           "action": "Club Smash - Raises the stone club and swings it down in one heavy blow, then returns to idle stance",
           "tries": 2,
-          "generated_at": "2026-09-09T23:45:40+00:00",
           "source": "east"
         },
         "north-west": {

@@ -613,7 +613,7 @@
     "attack": {
       "directions": {
         "south": {
-          "status": "pass",
+          "status": "fail",
           "step_mean": 0.1451,
           "step_max": 0.1765,
           "drift": 1.8,
@@ -624,11 +624,14 @@
           "pad": 0,
           "flash": 0.0,
           "peak": 0.2373,
+          "reach": 0.081,
           "canvas": [
             112,
             112
           ],
-          "reasons": [],
+          "reasons": [
+            "no strike, just a lean: nothing reaches past 0.08 of the body"
+          ],
           "sub": "e246606c-b75a-499c-8e42-d6f6304150ac",
           "group": "9cb2d045-fa02-461a-8ec6-41f37690d99f",
           "takes": 1,
@@ -638,7 +641,7 @@
           "action": "Bow Shot - Draws the bowstring back and releases one arrow, then returns to idle stance"
         },
         "south-east": {
-          "status": "pass",
+          "status": "fail",
           "step_mean": 0.083,
           "step_max": 0.1039,
           "drift": 1.34,
@@ -649,11 +652,14 @@
           "pad": 0,
           "flash": 0.0,
           "peak": 0.1508,
+          "reach": 0.045,
           "canvas": [
             112,
             112
           ],
-          "reasons": [],
+          "reasons": [
+            "no strike, just a lean: nothing reaches past 0.05 of the body"
+          ],
           "sub": "8b1314d0-53b7-4d0b-a969-65d2c69441b8",
           "group": "35300041-4ead-4b1f-a5f1-b73f14148043",
           "takes": 1,
@@ -674,6 +680,7 @@
           "pad": 0,
           "flash": 0.001,
           "peak": 0.3531,
+          "reach": 0.646,
           "canvas": [
             112,
             112
@@ -688,7 +695,7 @@
           "action": "Bow Shot - Draws the bowstring back and releases one arrow, then returns to idle stance"
         },
         "north-east": {
-          "status": "pass",
+          "status": "fail",
           "step_mean": 0.1869,
           "step_max": 0.2005,
           "drift": 0.92,
@@ -699,11 +706,14 @@
           "pad": 0,
           "flash": 0.001,
           "peak": 0.247,
+          "reach": 0.155,
           "canvas": [
             112,
             112
           ],
-          "reasons": [],
+          "reasons": [
+            "no strike, just a lean: nothing reaches past 0.15 of the body"
+          ],
           "sub": "4e20c8b2-d5fd-4668-a6e6-7a358a408850",
           "group": "09127d3c-401b-4a8a-b195-8a48cfd5631e",
           "takes": 1,
@@ -713,7 +723,7 @@
           "action": "Bow Shot - Draws the bowstring back and releases one arrow, then returns to idle stance"
         },
         "north": {
-          "status": "pass",
+          "status": "fail",
           "step_mean": 0.1529,
           "step_max": 0.2363,
           "drift": 0.93,
@@ -724,11 +734,14 @@
           "pad": 0,
           "flash": 0.0,
           "peak": 0.2677,
+          "reach": 0.074,
           "canvas": [
             112,
             112
           ],
-          "reasons": [],
+          "reasons": [
+            "no strike, just a lean: nothing reaches past 0.07 of the body"
+          ],
           "sub": "f6d01d47-99f6-49d5-9c3c-2f59f14222ed",
           "group": "b98c9b39-f96f-4aa8-9174-7fc61cdf73ea",
           "takes": 1,
@@ -775,6 +788,7 @@
           "pad": 0,
           "flash": 0.001,
           "peak": 0.3531,
+          "reach": 0.646,
           "canvas": [
             112,
             112
