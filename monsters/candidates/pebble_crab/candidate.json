@@ -889,6 +889,200 @@
         "west": "pebble_crab/animations/attack__west.webp",
         "north-west": "pebble_crab/animations/attack__north-west.webp"
       }
+    },
+    "attack_try": {
+      "directions": {
+        "south": {
+          "status": "fail",
+          "step_mean": 0.1112,
+          "step_max": 0.1238,
+          "drift": 0.23,
+          "loop": 0.086,
+          "loop_ratio": 0.77,
+          "travel": 0.11,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": 0.0,
+          "peak": 0.1815,
+          "reach": 0.069,
+          "canvas": [
+            40,
+            40
+          ],
+          "reasons": [
+            "no strike, just a lean: nothing reaches past 0.07 of the body"
+          ],
+          "sub": "a3a7caab-e298-4745-b5d5-54a002f19a8a",
+          "group": "696cf541-fdd8-4fb3-822d-a63007c09b6c",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "action": "Claw Pinch - Darts forward and snaps both small claws shut hard",
+          "tries": 1,
+          "generated_at": "2026-09-10T19:50:40+00:00"
+        },
+        "south-east": {
+          "status": "fail",
+          "step_mean": 0.1211,
+          "step_max": 0.143,
+          "drift": 0.96,
+          "loop": 0.131,
+          "loop_ratio": 1.08,
+          "travel": 0.63,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": 0.001,
+          "peak": 0.1935,
+          "reach": 0.091,
+          "canvas": [
+            40,
+            40
+          ],
+          "reasons": [
+            "no strike, just a lean: nothing reaches past 0.09 of the body"
+          ],
+          "sub": "8b1ef6f0-cd67-4789-90a4-55e992944faf",
+          "group": "a512349f-01ac-4248-a5fb-28d5d2ab4ae1",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "action": "Claw Pinch - Darts forward and snaps both small claws shut hard",
+          "tries": 1,
+          "generated_at": "2026-09-10T19:50:40+00:00"
+        },
+        "east": {
+          "status": "fail",
+          "step_mean": 0.1272,
+          "step_max": 0.1883,
+          "drift": 1.46,
+          "loop": 0.2844,
+          "loop_ratio": 2.24,
+          "travel": 1.46,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": 0.003,
+          "peak": 0.287,
+          "reach": 0.129,
+          "canvas": [
+            40,
+            40
+          ],
+          "reasons": [
+            "no strike, just a lean: nothing reaches past 0.13 of the body"
+          ],
+          "sub": "4d9f12fd-007e-4a40-9a2f-d0254bccd9a6",
+          "group": "d2886018-7dce-42fd-9f6d-b97c6b0c4af7",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "action": "Claw Pinch - Darts forward and snaps both small claws shut hard",
+          "tries": 1,
+          "generated_at": "2026-09-10T19:50:41+00:00"
+        },
+        "north-east": {
+          "status": "fail",
+          "step_mean": 0.1542,
+          "step_max": 0.1976,
+          "drift": 1.76,
+          "loop": 0.1304,
+          "loop_ratio": 0.85,
+          "travel": 0.95,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": 0.001,
+          "peak": 0.2245,
+          "reach": 0.088,
+          "canvas": [
+            40,
+            40
+          ],
+          "reasons": [
+            "no strike, just a lean: nothing reaches past 0.09 of the body"
+          ],
+          "sub": "ac648fc4-f5d8-4e54-84ae-8c3605b63222",
+          "group": "28cb226b-001a-4f5a-aaf4-003fa9077c02",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "action": "Claw Pinch - Darts forward and snaps both small claws shut hard",
+          "tries": 1,
+          "generated_at": "2026-09-10T19:50:41+00:00"
+        },
+        "north": {
+          "status": "fail",
+          "step_mean": 0.1282,
+          "step_max": 0.1585,
+          "drift": 2.12,
+          "loop": 0.1164,
+          "loop_ratio": 0.91,
+          "travel": 0.12,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": 0.001,
+          "peak": 0.2293,
+          "reach": 0.119,
+          "canvas": [
+            40,
+            40
+          ],
+          "reasons": [
+            "no strike, just a lean: nothing reaches past 0.12 of the body"
+          ],
+          "sub": "5bfb450b-31f7-4376-be27-aa52afa447f4",
+          "group": "4ce81c45-1e12-4643-adce-1ed8f888a722",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "action": "Claw Pinch - Darts forward and snaps both small claws shut hard",
+          "tries": 1,
+          "generated_at": "2026-09-10T19:50:42+00:00"
+        }
+      },
+      "action": "Claw Pinch - Darts forward and snaps both small claws shut hard",
+      "frame_paths": {
+        "south": [
+          "pebble_crab/animations/attack_try/south/00.webp",
+          "pebble_crab/animations/attack_try/south/01.webp",
+          "pebble_crab/animations/attack_try/south/02.webp",
+          "pebble_crab/animations/attack_try/south/03.webp",
+          "pebble_crab/animations/attack_try/south/04.webp"
+        ],
+        "south-east": [
+          "pebble_crab/animations/attack_try/south-east/00.webp",
+          "pebble_crab/animations/attack_try/south-east/01.webp",
+          "pebble_crab/animations/attack_try/south-east/02.webp",
+          "pebble_crab/animations/attack_try/south-east/03.webp",
+          "pebble_crab/animations/attack_try/south-east/04.webp"
+        ],
+        "east": [
+          "pebble_crab/animations/attack_try/east/00.webp",
+          "pebble_crab/animations/attack_try/east/01.webp",
+          "pebble_crab/animations/attack_try/east/02.webp",
+          "pebble_crab/animations/attack_try/east/03.webp",
+          "pebble_crab/animations/attack_try/east/04.webp"
+        ],
+        "north-east": [
+          "pebble_crab/animations/attack_try/north-east/00.webp",
+          "pebble_crab/animations/attack_try/north-east/01.webp",
+          "pebble_crab/animations/attack_try/north-east/02.webp",
+          "pebble_crab/animations/attack_try/north-east/03.webp",
+          "pebble_crab/animations/attack_try/north-east/04.webp"
+        ],
+        "north": [
+          "pebble_crab/animations/attack_try/north/00.webp",
+          "pebble_crab/animations/attack_try/north/01.webp",
+          "pebble_crab/animations/attack_try/north/02.webp",
+          "pebble_crab/animations/attack_try/north/03.webp",
+          "pebble_crab/animations/attack_try/north/04.webp"
+        ]
+      },
+      "strips": {
+        "south": "pebble_crab/animations/attack_try__south.webp",
+        "south-east": "pebble_crab/animations/attack_try__south-east.webp",
+        "east": "pebble_crab/animations/attack_try__east.webp",
+        "north-east": "pebble_crab/animations/attack_try__north-east.webp",
+        "north": "pebble_crab/animations/attack_try__north.webp"
+      }
     }
   }
 }

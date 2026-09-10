@@ -903,6 +903,205 @@
         "west": "cobra/animations/attack__west.webp",
         "north-west": "cobra/animations/attack__north-west.webp"
       }
+    },
+    "attack_try": {
+      "directions": {
+        "south": {
+          "status": "fail",
+          "step_mean": 0.0857,
+          "step_max": 0.1141,
+          "drift": 1.79,
+          "loop": 0.1002,
+          "loop_ratio": 1.17,
+          "travel": 0.26,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": 0.029,
+          "peak": 0.1197,
+          "reach": 0.056,
+          "canvas": [
+            88,
+            88
+          ],
+          "reasons": [
+            "weak strike: peak 0.120 — eyeball it",
+            "no strike, just a lean: nothing reaches past 0.06 of the body"
+          ],
+          "sub": "e205dc5f-e663-440f-aea2-1d12fe27bcae",
+          "group": "6f5c7011-b4c4-4d13-9e4b-8dfeedc8fa28",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "action": "Strike - Coils its head back, then strikes forward with fangs bared",
+          "tries": 1,
+          "generated_at": "2026-09-10T19:54:37+00:00"
+        },
+        "south-east": {
+          "status": "fail",
+          "step_mean": 0.1013,
+          "step_max": 0.117,
+          "drift": 1.49,
+          "loop": 0.0681,
+          "loop_ratio": 0.67,
+          "travel": 1.1,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": 0.007,
+          "peak": 0.1223,
+          "reach": 0.061,
+          "canvas": [
+            88,
+            88
+          ],
+          "reasons": [
+            "weak strike: peak 0.122 — eyeball it",
+            "no strike, just a lean: nothing reaches past 0.06 of the body"
+          ],
+          "sub": "4264409f-763f-4ca4-92d1-6f48f88eb429",
+          "group": "dd2cc24c-30b5-48a2-9e0e-ee161579c32f",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "action": "Strike - Coils its head back, then strikes forward with fangs bared",
+          "tries": 1,
+          "generated_at": "2026-09-10T19:54:38+00:00"
+        },
+        "east": {
+          "status": "fail",
+          "step_mean": 0.0686,
+          "step_max": 0.1022,
+          "drift": 1.08,
+          "loop": 0.189,
+          "loop_ratio": 2.75,
+          "travel": 1.08,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": 0.009,
+          "peak": 0.189,
+          "reach": 0.079,
+          "canvas": [
+            88,
+            88
+          ],
+          "reasons": [
+            "motion 0.069 outside the calm band 0.08–0.9 — eyeball it",
+            "no strike, just a lean: nothing reaches past 0.08 of the body"
+          ],
+          "sub": "df5e8436-f076-4fce-9dc6-5d1fb301f339",
+          "group": "9d95f587-6cce-471d-9c63-2a15b5759bb4",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "action": "Strike - Coils its head back, then strikes forward with fangs bared",
+          "tries": 1,
+          "generated_at": "2026-09-10T19:54:40+00:00"
+        },
+        "north-east": {
+          "status": "fail",
+          "step_mean": 0.0403,
+          "step_max": 0.052,
+          "drift": 1.49,
+          "loop": 0.0572,
+          "loop_ratio": 1.42,
+          "travel": 0.74,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": 0.004,
+          "peak": 0.0842,
+          "reach": 0.065,
+          "canvas": [
+            88,
+            88
+          ],
+          "reasons": [
+            "motion 0.040 outside the calm band 0.08–0.9 — eyeball it",
+            "weak strike: peak 0.084 — eyeball it",
+            "no strike, just a lean: nothing reaches past 0.06 of the body"
+          ],
+          "sub": "8db5c6f5-577c-478a-8588-810d4f501cfc",
+          "group": "6e62b096-6ccd-4d77-91fa-7b6605ccd5ae",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "action": "Strike - Coils its head back, then strikes forward with fangs bared",
+          "tries": 1,
+          "generated_at": "2026-09-10T19:54:41+00:00"
+        },
+        "north": {
+          "status": "fail",
+          "step_mean": 0.0867,
+          "step_max": 0.1006,
+          "drift": 2.5,
+          "loop": 0.1064,
+          "loop_ratio": 1.23,
+          "travel": 0.1,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": 0.002,
+          "peak": 0.171,
+          "reach": 0.12,
+          "canvas": [
+            88,
+            88
+          ],
+          "reasons": [
+            "no strike, just a lean: nothing reaches past 0.12 of the body"
+          ],
+          "sub": "b85521a9-0608-4411-be0f-151338e75c5a",
+          "group": "6f659564-f3cf-45da-baf3-9dbd7ba7aa59",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "action": "Strike - Coils its head back, then strikes forward with fangs bared",
+          "tries": 1,
+          "generated_at": "2026-09-10T19:54:42+00:00"
+        }
+      },
+      "action": "Strike - Coils its head back, then strikes forward with fangs bared",
+      "frame_paths": {
+        "south": [
+          "cobra/animations/attack_try/south/00.webp",
+          "cobra/animations/attack_try/south/01.webp",
+          "cobra/animations/attack_try/south/02.webp",
+          "cobra/animations/attack_try/south/03.webp",
+          "cobra/animations/attack_try/south/04.webp"
+        ],
+        "south-east": [
+          "cobra/animations/attack_try/south-east/00.webp",
+          "cobra/animations/attack_try/south-east/01.webp",
+          "cobra/animations/attack_try/south-east/02.webp",
+          "cobra/animations/attack_try/south-east/03.webp",
+          "cobra/animations/attack_try/south-east/04.webp"
+        ],
+        "east": [
+          "cobra/animations/attack_try/east/00.webp",
+          "cobra/animations/attack_try/east/01.webp",
+          "cobra/animations/attack_try/east/02.webp",
+          "cobra/animations/attack_try/east/03.webp",
+          "cobra/animations/attack_try/east/04.webp"
+        ],
+        "north-east": [
+          "cobra/animations/attack_try/north-east/00.webp",
+          "cobra/animations/attack_try/north-east/01.webp",
+          "cobra/animations/attack_try/north-east/02.webp",
+          "cobra/animations/attack_try/north-east/03.webp",
+          "cobra/animations/attack_try/north-east/04.webp"
+        ],
+        "north": [
+          "cobra/animations/attack_try/north/00.webp",
+          "cobra/animations/attack_try/north/01.webp",
+          "cobra/animations/attack_try/north/02.webp",
+          "cobra/animations/attack_try/north/03.webp",
+          "cobra/animations/attack_try/north/04.webp"
+        ]
+      },
+      "strips": {
+        "south": "cobra/animations/attack_try__south.webp",
+        "south-east": "cobra/animations/attack_try__south-east.webp",
+        "east": "cobra/animations/attack_try__east.webp",
+        "north-east": "cobra/animations/attack_try__north-east.webp",
+        "north": "cobra/animations/attack_try__north.webp"
+      }
     }
   }
 }

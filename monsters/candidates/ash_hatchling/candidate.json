@@ -905,6 +905,200 @@
         "west": "ash_hatchling/animations/attack__west.webp",
         "north-west": "ash_hatchling/animations/attack__north-west.webp"
       }
+    },
+    "attack_try": {
+      "directions": {
+        "south": {
+          "status": "fail",
+          "step_mean": 0.1511,
+          "step_max": 0.18,
+          "drift": 2.2,
+          "loop": 0.0545,
+          "loop_ratio": 0.36,
+          "travel": 0.18,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": 0.0,
+          "peak": 0.2611,
+          "reach": 0.063,
+          "canvas": [
+            40,
+            40
+          ],
+          "reasons": [
+            "no strike, just a lean: nothing reaches past 0.06 of the body"
+          ],
+          "sub": "8baa4c9b-0762-4b85-9bee-807e274d8d33",
+          "group": "5681aa74-5efa-4eb8-9f6b-128445f588d6",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "action": "Bite - Lunges forward and bites hard, embers puffing",
+          "tries": 1,
+          "generated_at": "2026-09-10T19:57:33+00:00"
+        },
+        "south-east": {
+          "status": "fail",
+          "step_mean": 0.1657,
+          "step_max": 0.1942,
+          "drift": 1.0,
+          "loop": 0.2664,
+          "loop_ratio": 1.61,
+          "travel": 0.81,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": 0.0,
+          "peak": 0.3898,
+          "reach": 0.114,
+          "canvas": [
+            40,
+            40
+          ],
+          "reasons": [
+            "no strike, just a lean: nothing reaches past 0.11 of the body"
+          ],
+          "sub": "50546711-5ce0-4dc9-ab8d-1390926574c9",
+          "group": "c41811bc-8475-4136-9e4e-ab36d7582e50",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "action": "Bite - Lunges forward and bites hard, embers puffing",
+          "tries": 1,
+          "generated_at": "2026-09-10T19:57:34+00:00"
+        },
+        "east": {
+          "status": "fail",
+          "step_mean": 0.1773,
+          "step_max": 0.2153,
+          "drift": 2.04,
+          "loop": 0.2651,
+          "loop_ratio": 1.5,
+          "travel": 0.52,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": 0.0,
+          "peak": 0.3499,
+          "reach": 0.111,
+          "canvas": [
+            40,
+            40
+          ],
+          "reasons": [
+            "no strike, just a lean: nothing reaches past 0.11 of the body"
+          ],
+          "sub": "a4ada1bf-2851-4686-adda-1d7111762222",
+          "group": "ae56843b-794b-4461-a7a8-20b15e35cf11",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "action": "Bite - Lunges forward and bites hard, embers puffing",
+          "tries": 1,
+          "generated_at": "2026-09-10T19:57:34+00:00"
+        },
+        "north-east": {
+          "status": "fail",
+          "step_mean": 0.163,
+          "step_max": 0.188,
+          "drift": 2.66,
+          "loop": 0.3454,
+          "loop_ratio": 2.12,
+          "travel": 1.59,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": 0.0,
+          "peak": 0.3858,
+          "reach": 0.152,
+          "canvas": [
+            40,
+            40
+          ],
+          "reasons": [
+            "no strike, just a lean: nothing reaches past 0.15 of the body"
+          ],
+          "sub": "df686fc7-9cf2-459a-883c-064774436ee7",
+          "group": "57ac166d-f26d-46ad-b47d-43587288df24",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "action": "Bite - Lunges forward and bites hard, embers puffing",
+          "tries": 1,
+          "generated_at": "2026-09-10T19:57:35+00:00"
+        },
+        "north": {
+          "status": "warn",
+          "step_mean": 0.1704,
+          "step_max": 0.2,
+          "drift": 1.7,
+          "loop": 0.0939,
+          "loop_ratio": 0.55,
+          "travel": 1.42,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": 0.019,
+          "peak": 0.2449,
+          "reach": 0.286,
+          "canvas": [
+            40,
+            40
+          ],
+          "reasons": [
+            "shallow strike: reach 0.29 — eyeball it"
+          ],
+          "sub": "ec35ec14-5a3e-41ad-8750-2de6857746c9",
+          "group": "f34be38e-94f9-4594-97de-54f17e862201",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "action": "Bite - Lunges forward and bites hard, embers puffing",
+          "tries": 1,
+          "generated_at": "2026-09-10T19:57:35+00:00"
+        }
+      },
+      "action": "Bite - Lunges forward and bites hard, embers puffing",
+      "frame_paths": {
+        "south": [
+          "ash_hatchling/animations/attack_try/south/00.webp",
+          "ash_hatchling/animations/attack_try/south/01.webp",
+          "ash_hatchling/animations/attack_try/south/02.webp",
+          "ash_hatchling/animations/attack_try/south/03.webp",
+          "ash_hatchling/animations/attack_try/south/04.webp"
+        ],
+        "south-east": [
+          "ash_hatchling/animations/attack_try/south-east/00.webp",
+          "ash_hatchling/animations/attack_try/south-east/01.webp",
+          "ash_hatchling/animations/attack_try/south-east/02.webp",
+          "ash_hatchling/animations/attack_try/south-east/03.webp",
+          "ash_hatchling/animations/attack_try/south-east/04.webp"
+        ],
+        "east": [
+          "ash_hatchling/animations/attack_try/east/00.webp",
+          "ash_hatchling/animations/attack_try/east/01.webp",
+          "ash_hatchling/animations/attack_try/east/02.webp",
+          "ash_hatchling/animations/attack_try/east/03.webp",
+          "ash_hatchling/animations/attack_try/east/04.webp"
+        ],
+        "north-east": [
+          "ash_hatchling/animations/attack_try/north-east/00.webp",
+          "ash_hatchling/animations/attack_try/north-east/01.webp",
+          "ash_hatchling/animations/attack_try/north-east/02.webp",
+          "ash_hatchling/animations/attack_try/north-east/03.webp",
+          "ash_hatchling/animations/attack_try/north-east/04.webp"
+        ],
+        "north": [
+          "ash_hatchling/animations/attack_try/north/00.webp",
+          "ash_hatchling/animations/attack_try/north/01.webp",
+          "ash_hatchling/animations/attack_try/north/02.webp",
+          "ash_hatchling/animations/attack_try/north/03.webp",
+          "ash_hatchling/animations/attack_try/north/04.webp"
+        ]
+      },
+      "strips": {
+        "south": "ash_hatchling/animations/attack_try__south.webp",
+        "south-east": "ash_hatchling/animations/attack_try__south-east.webp",
+        "east": "ash_hatchling/animations/attack_try__east.webp",
+        "north-east": "ash_hatchling/animations/attack_try__north-east.webp",
+        "north": "ash_hatchling/animations/attack_try__north.webp"
+      }
     }
   }
 }

@@ -890,6 +890,202 @@
         "west": "eye_bat/animations/attack__west.webp",
         "north-west": "eye_bat/animations/attack__north-west.webp"
       }
+    },
+    "attack_try": {
+      "directions": {
+        "south": {
+          "status": "fail",
+          "step_mean": 0.123,
+          "step_max": 0.1545,
+          "drift": 0.82,
+          "loop": 0.1527,
+          "loop_ratio": 1.24,
+          "travel": 0.2,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": 0.099,
+          "peak": 0.2212,
+          "reach": 0.096,
+          "canvas": [
+            64,
+            64
+          ],
+          "reasons": [
+            "no strike, just a lean: nothing reaches past 0.10 of the body"
+          ],
+          "sub": "facb67d5-d22c-46fb-a63d-6b7f59f48e61",
+          "group": "670cb7ed-e4fb-4c63-addf-a0b45d9044db",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "action": "Eye Beam - Flares its pupil wide and fires a beam of light forward",
+          "tries": 1,
+          "generated_at": "2026-09-10T19:57:06+00:00"
+        },
+        "south-east": {
+          "status": "fail",
+          "step_mean": 0.1515,
+          "step_max": 0.2058,
+          "drift": 1.22,
+          "loop": 0.312,
+          "loop_ratio": 2.06,
+          "travel": 0.64,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": 0.035,
+          "peak": 0.3223,
+          "reach": 0.083,
+          "canvas": [
+            64,
+            64
+          ],
+          "reasons": [
+            "no strike, just a lean: nothing reaches past 0.08 of the body"
+          ],
+          "sub": "5b995a7f-389b-4f43-bc98-d8e685bb4638",
+          "group": "76f14f04-6c02-4274-a1dd-caae32bd2a51",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "action": "Eye Beam - Flares its pupil wide and fires a beam of light forward",
+          "tries": 1,
+          "generated_at": "2026-09-10T19:57:08+00:00"
+        },
+        "east": {
+          "status": "fail",
+          "step_mean": 0.1724,
+          "step_max": 0.2314,
+          "drift": 1.52,
+          "loop": 0.1853,
+          "loop_ratio": 1.08,
+          "travel": 0.82,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": 0.01,
+          "peak": 0.2568,
+          "reach": 0.143,
+          "canvas": [
+            64,
+            64
+          ],
+          "reasons": [
+            "no strike, just a lean: nothing reaches past 0.14 of the body"
+          ],
+          "sub": "936608d4-a36c-4129-becf-2bb6458d5060",
+          "group": "40998592-d67b-413a-80f0-0d43a199075a",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "action": "Eye Beam - Flares its pupil wide and fires a beam of light forward",
+          "tries": 1,
+          "generated_at": "2026-09-10T19:57:09+00:00"
+        },
+        "north-east": {
+          "status": "fail",
+          "step_mean": 0.16,
+          "step_max": 0.2039,
+          "drift": 1.33,
+          "loop": 0.3005,
+          "loop_ratio": 1.88,
+          "travel": 1.33,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": 0.325,
+          "peak": 0.3371,
+          "reach": 0.068,
+          "canvas": [
+            64,
+            64
+          ],
+          "reasons": [
+            "no strike, just a lean: nothing reaches past 0.07 of the body",
+            "some bright effect pixels (0.33) — eyeball it"
+          ],
+          "sub": "6f5b7a86-2114-463f-bda1-69ba3c2ecce6",
+          "group": "56daa068-1aab-4db6-a055-ef53b938e205",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "action": "Eye Beam - Flares its pupil wide and fires a beam of light forward",
+          "tries": 1,
+          "generated_at": "2026-09-10T19:57:09+00:00"
+        },
+        "north": {
+          "status": "fail",
+          "step_mean": 0.1784,
+          "step_max": 0.2227,
+          "drift": 1.19,
+          "loop": 0.2255,
+          "loop_ratio": 1.26,
+          "travel": 0.11,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": 0.312,
+          "peak": 0.2458,
+          "reach": 0.06,
+          "canvas": [
+            64,
+            64
+          ],
+          "reasons": [
+            "no strike, just a lean: nothing reaches past 0.06 of the body",
+            "some bright effect pixels (0.31) — eyeball it"
+          ],
+          "sub": "88490fd2-327d-4e21-b701-79d7356204f0",
+          "group": "64717727-c4ac-4602-9095-566195eb7bfb",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "action": "Eye Beam - Flares its pupil wide and fires a beam of light forward",
+          "tries": 1,
+          "generated_at": "2026-09-10T19:57:10+00:00"
+        }
+      },
+      "action": "Eye Beam - Flares its pupil wide and fires a beam of light forward",
+      "frame_paths": {
+        "south": [
+          "eye_bat/animations/attack_try/south/00.webp",
+          "eye_bat/animations/attack_try/south/01.webp",
+          "eye_bat/animations/attack_try/south/02.webp",
+          "eye_bat/animations/attack_try/south/03.webp",
+          "eye_bat/animations/attack_try/south/04.webp"
+        ],
+        "south-east": [
+          "eye_bat/animations/attack_try/south-east/00.webp",
+          "eye_bat/animations/attack_try/south-east/01.webp",
+          "eye_bat/animations/attack_try/south-east/02.webp",
+          "eye_bat/animations/attack_try/south-east/03.webp",
+          "eye_bat/animations/attack_try/south-east/04.webp"
+        ],
+        "east": [
+          "eye_bat/animations/attack_try/east/00.webp",
+          "eye_bat/animations/attack_try/east/01.webp",
+          "eye_bat/animations/attack_try/east/02.webp",
+          "eye_bat/animations/attack_try/east/03.webp",
+          "eye_bat/animations/attack_try/east/04.webp"
+        ],
+        "north-east": [
+          "eye_bat/animations/attack_try/north-east/00.webp",
+          "eye_bat/animations/attack_try/north-east/01.webp",
+          "eye_bat/animations/attack_try/north-east/02.webp",
+          "eye_bat/animations/attack_try/north-east/03.webp",
+          "eye_bat/animations/attack_try/north-east/04.webp"
+        ],
+        "north": [
+          "eye_bat/animations/attack_try/north/00.webp",
+          "eye_bat/animations/attack_try/north/01.webp",
+          "eye_bat/animations/attack_try/north/02.webp",
+          "eye_bat/animations/attack_try/north/03.webp",
+          "eye_bat/animations/attack_try/north/04.webp"
+        ]
+      },
+      "strips": {
+        "south": "eye_bat/animations/attack_try__south.webp",
+        "south-east": "eye_bat/animations/attack_try__south-east.webp",
+        "east": "eye_bat/animations/attack_try__east.webp",
+        "north-east": "eye_bat/animations/attack_try__north-east.webp",
+        "north": "eye_bat/animations/attack_try__north.webp"
+      }
     }
   }
 }

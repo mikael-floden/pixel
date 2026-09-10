@@ -906,6 +906,210 @@
         "west": "octopus/animations/attack__west.webp",
         "north-west": "octopus/animations/attack__north-west.webp"
       }
+    },
+    "attack_try": {
+      "directions": {
+        "south": {
+          "status": "fail",
+          "step_mean": 0.0638,
+          "step_max": 0.0709,
+          "drift": 1.34,
+          "loop": 0.0613,
+          "loop_ratio": 0.96,
+          "travel": 0.26,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": -0.0,
+          "peak": 0.1108,
+          "reach": 0.061,
+          "canvas": [
+            96,
+            96
+          ],
+          "reasons": [
+            "motion 0.064 outside the calm band 0.08–0.9 — eyeball it",
+            "weak strike: peak 0.111 — eyeball it",
+            "no strike, just a lean: nothing reaches past 0.06 of the body"
+          ],
+          "sub": "3a5bbb96-1a54-44aa-97d7-e1efd4d65d75",
+          "group": "091c4138-2261-4168-8dda-5036d1796d08",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "action": "Tentacle Lash - Rears up high and whips two tentacles forward",
+          "tries": 1,
+          "generated_at": "2026-09-10T19:50:43+00:00"
+        },
+        "south-east": {
+          "status": "fail",
+          "step_mean": 0.0544,
+          "step_max": 0.0648,
+          "drift": 0.93,
+          "loop": 0.0762,
+          "loop_ratio": 1.4,
+          "travel": 1.59,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": -0.0,
+          "peak": 0.1007,
+          "reach": 0.06,
+          "canvas": [
+            96,
+            96
+          ],
+          "reasons": [
+            "motion 0.054 outside the calm band 0.08–0.9 — eyeball it",
+            "weak strike: peak 0.101 — eyeball it",
+            "no strike, just a lean: nothing reaches past 0.06 of the body"
+          ],
+          "sub": "cb9d25c3-2b09-4468-b26d-644e668b5a2c",
+          "group": "514a33b5-c916-4176-adf4-4553a344ee61",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "action": "Tentacle Lash - Rears up high and whips two tentacles forward",
+          "tries": 1,
+          "generated_at": "2026-09-10T19:50:44+00:00"
+        },
+        "east": {
+          "status": "fail",
+          "step_mean": 0.045,
+          "step_max": 0.0538,
+          "drift": 1.01,
+          "loop": 0.0914,
+          "loop_ratio": 2.03,
+          "travel": 0.46,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": -0.001,
+          "peak": 0.0914,
+          "reach": 0.084,
+          "canvas": [
+            96,
+            96
+          ],
+          "reasons": [
+            "motion 0.045 outside the calm band 0.08–0.9 — eyeball it",
+            "weak strike: peak 0.091 — eyeball it",
+            "no strike, just a lean: nothing reaches past 0.08 of the body"
+          ],
+          "sub": "284f22a7-16fb-4afb-8d66-b489dc8b52fe",
+          "group": "0188a252-697e-4da1-854b-8054c1690386",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "action": "Tentacle Lash - Rears up high and whips two tentacles forward",
+          "tries": 1,
+          "generated_at": "2026-09-10T19:50:44+00:00"
+        },
+        "north-east": {
+          "status": "fail",
+          "step_mean": 0.0308,
+          "step_max": 0.0343,
+          "drift": 1.45,
+          "loop": 0.0568,
+          "loop_ratio": 1.84,
+          "travel": 0.49,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": 0.0,
+          "peak": 0.0783,
+          "reach": 0.063,
+          "canvas": [
+            96,
+            96
+          ],
+          "reasons": [
+            "frozen: silhouette moves 0.031 per frame",
+            "no strike: peak 0.078 of the silhouette away from the base",
+            "no strike, just a lean: nothing reaches past 0.06 of the body"
+          ],
+          "sub": "47e3a3b2-31b1-422b-9360-462df0863d45",
+          "group": "d5f48d8d-4a99-424c-8927-b2698250eb06",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "action": "Tentacle Lash - Rears up high and whips two tentacles forward",
+          "tries": 1,
+          "generated_at": "2026-09-10T19:50:44+00:00"
+        },
+        "north": {
+          "status": "fail",
+          "step_mean": 0.0537,
+          "step_max": 0.0661,
+          "drift": 1.58,
+          "loop": 0.0885,
+          "loop_ratio": 1.65,
+          "travel": 0.29,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": 0.0,
+          "peak": 0.1092,
+          "reach": 0.051,
+          "canvas": [
+            96,
+            96
+          ],
+          "reasons": [
+            "motion 0.054 outside the calm band 0.08–0.9 — eyeball it",
+            "weak strike: peak 0.109 — eyeball it",
+            "no strike, just a lean: nothing reaches past 0.05 of the body"
+          ],
+          "sub": "943269a2-7995-47da-b796-5d74403248b2",
+          "group": "e0633298-4fd5-4643-b801-e0b4d8e1ae99",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "action": "Tentacle Lash - Rears up high and whips two tentacles forward",
+          "tries": 1,
+          "generated_at": "2026-09-10T19:50:45+00:00"
+        }
+      },
+      "action": "Tentacle Lash - Rears up high and whips two tentacles forward",
+      "frame_paths": {
+        "south": [
+          "octopus/animations/attack_try/south/00.webp",
+          "octopus/animations/attack_try/south/01.webp",
+          "octopus/animations/attack_try/south/02.webp",
+          "octopus/animations/attack_try/south/03.webp",
+          "octopus/animations/attack_try/south/04.webp"
+        ],
+        "south-east": [
+          "octopus/animations/attack_try/south-east/00.webp",
+          "octopus/animations/attack_try/south-east/01.webp",
+          "octopus/animations/attack_try/south-east/02.webp",
+          "octopus/animations/attack_try/south-east/03.webp",
+          "octopus/animations/attack_try/south-east/04.webp"
+        ],
+        "east": [
+          "octopus/animations/attack_try/east/00.webp",
+          "octopus/animations/attack_try/east/01.webp",
+          "octopus/animations/attack_try/east/02.webp",
+          "octopus/animations/attack_try/east/03.webp",
+          "octopus/animations/attack_try/east/04.webp"
+        ],
+        "north-east": [
+          "octopus/animations/attack_try/north-east/00.webp",
+          "octopus/animations/attack_try/north-east/01.webp",
+          "octopus/animations/attack_try/north-east/02.webp",
+          "octopus/animations/attack_try/north-east/03.webp",
+          "octopus/animations/attack_try/north-east/04.webp"
+        ],
+        "north": [
+          "octopus/animations/attack_try/north/00.webp",
+          "octopus/animations/attack_try/north/01.webp",
+          "octopus/animations/attack_try/north/02.webp",
+          "octopus/animations/attack_try/north/03.webp",
+          "octopus/animations/attack_try/north/04.webp"
+        ]
+      },
+      "strips": {
+        "south": "octopus/animations/attack_try__south.webp",
+        "south-east": "octopus/animations/attack_try__south-east.webp",
+        "east": "octopus/animations/attack_try__east.webp",
+        "north-east": "octopus/animations/attack_try__north-east.webp",
+        "north": "octopus/animations/attack_try__north.webp"
+      }
     }
   }
 }

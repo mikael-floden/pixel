@@ -911,6 +911,238 @@
         "west": "cave_troll_boss/animations/attack__west.webp",
         "north-west": "cave_troll_boss/animations/attack__north-west.webp"
       }
+    },
+    "attack_try": {
+      "directions": {
+        "south": {
+          "status": "fail",
+          "step_mean": 0.118,
+          "step_max": 0.2468,
+          "drift": 7.28,
+          "loop": 0.2977,
+          "loop_ratio": 2.52,
+          "travel": 4.37,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": 0.011,
+          "peak": 0.2977,
+          "reach": 0.119,
+          "canvas": [
+            240,
+            240
+          ],
+          "reasons": [
+            "no strike, just a lean: nothing reaches past 0.12 of the body"
+          ],
+          "sub": "3cd4edf3-4684-494d-a753-c923529f502d",
+          "group": "b433384f-7b9c-4a1c-b348-09f1f0d05601",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "action": "Club Smash - Heaves the stalactite club overhead and smashes it down",
+          "tries": 1,
+          "generated_at": "2026-09-10T19:49:41+00:00"
+        },
+        "south-east": {
+          "status": "fail",
+          "step_mean": 0.1239,
+          "step_max": 0.26,
+          "drift": 19.69,
+          "loop": 0.3467,
+          "loop_ratio": 2.8,
+          "travel": 1.51,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": 0.094,
+          "peak": 0.3467,
+          "reach": 0.123,
+          "canvas": [
+            240,
+            240
+          ],
+          "reasons": [
+            "drifts 19.7 px — eyeball it",
+            "no strike, just a lean: nothing reaches past 0.12 of the body",
+            "some bright effect pixels (0.09) — eyeball it"
+          ],
+          "sub": "8cce4905-6b7d-4633-ba19-028396970f50",
+          "group": "af2693e1-306b-459d-be60-0a0737e5f73d",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "action": "Club Smash - Heaves the stalactite club overhead and smashes it down",
+          "tries": 1,
+          "generated_at": "2026-09-10T19:49:42+00:00"
+        },
+        "east": {
+          "status": "pass",
+          "step_mean": 0.1443,
+          "step_max": 0.2685,
+          "drift": 18.12,
+          "loop": 0.3396,
+          "loop_ratio": 2.35,
+          "travel": 9.4,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": 0.003,
+          "peak": 0.3396,
+          "reach": 0.527,
+          "canvas": [
+            240,
+            240
+          ],
+          "reasons": [],
+          "sub": "20dae103-d120-4fdf-b82a-3b6f9119911d",
+          "group": "44b40314-5027-4458-ac05-3b4a8bf7a18c",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "action": "Club Smash - Heaves the stalactite club overhead and smashes it down",
+          "tries": 1,
+          "generated_at": "2026-09-10T19:49:42+00:00"
+        },
+        "north-east": {
+          "status": "fail",
+          "step_mean": 0.1166,
+          "step_max": 0.1392,
+          "drift": 3.52,
+          "loop": 0.2138,
+          "loop_ratio": 1.83,
+          "travel": 5.52,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": 0.198,
+          "peak": 0.2138,
+          "reach": 0.167,
+          "canvas": [
+            240,
+            240
+          ],
+          "reasons": [
+            "no strike, just a lean: nothing reaches past 0.17 of the body",
+            "painted effect: 0.20 of the body in new bright pixels (flare/slash arc)"
+          ],
+          "sub": "f9a2e018-a1f5-428e-b866-ca04549b5f68",
+          "group": "906fa48a-5c49-458e-abc4-a30c70d9f47f",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "action": "Club Smash - Heaves the stalactite club overhead and smashes it down",
+          "tries": 1,
+          "generated_at": "2026-09-10T19:49:43+00:00"
+        },
+        "north": {
+          "status": "fail",
+          "step_mean": 0.1638,
+          "step_max": 0.334,
+          "drift": 5.24,
+          "loop": 0.4175,
+          "loop_ratio": 2.55,
+          "travel": 4.12,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": 0.121,
+          "peak": 0.4175,
+          "reach": 0.135,
+          "canvas": [
+            240,
+            240
+          ],
+          "reasons": [
+            "no strike, just a lean: nothing reaches past 0.14 of the body",
+            "painted effect: 0.12 of the body in new bright pixels (flare/slash arc)"
+          ],
+          "sub": "b5733291-4228-4882-a1f8-3dfaf8eab308",
+          "group": "ea9ee54a-1ded-4e62-b3b9-55643a2c1e74",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "action": "Club Smash - Heaves the stalactite club overhead and smashes it down",
+          "tries": 1,
+          "generated_at": "2026-09-10T19:49:44+00:00"
+        },
+        "west": {
+          "status": "pass",
+          "step_mean": 0.1443,
+          "step_max": 0.2685,
+          "drift": 18.12,
+          "loop": 0.3396,
+          "loop_ratio": 2.35,
+          "travel": 9.4,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": 0.003,
+          "peak": 0.3396,
+          "reach": 0.527,
+          "canvas": [
+            240,
+            240
+          ],
+          "reasons": [],
+          "sub": "20dae103-d120-4fdf-b82a-3b6f9119911d",
+          "group": "44b40314-5027-4458-ac05-3b4a8bf7a18c",
+          "takes": 1,
+          "version": 1,
+          "mirrored": true,
+          "action": "Club Smash - Heaves the stalactite club overhead and smashes it down",
+          "tries": 1,
+          "generated_at": "2026-09-10T19:49:42+00:00",
+          "source": "east"
+        }
+      },
+      "action": "Club Smash - Heaves the stalactite club overhead and smashes it down",
+      "frame_paths": {
+        "south": [
+          "cave_troll_boss/animations/attack_try/south/00.webp",
+          "cave_troll_boss/animations/attack_try/south/01.webp",
+          "cave_troll_boss/animations/attack_try/south/02.webp",
+          "cave_troll_boss/animations/attack_try/south/03.webp",
+          "cave_troll_boss/animations/attack_try/south/04.webp"
+        ],
+        "south-east": [
+          "cave_troll_boss/animations/attack_try/south-east/00.webp",
+          "cave_troll_boss/animations/attack_try/south-east/01.webp",
+          "cave_troll_boss/animations/attack_try/south-east/02.webp",
+          "cave_troll_boss/animations/attack_try/south-east/03.webp",
+          "cave_troll_boss/animations/attack_try/south-east/04.webp"
+        ],
+        "east": [
+          "cave_troll_boss/animations/attack_try/east/00.webp",
+          "cave_troll_boss/animations/attack_try/east/01.webp",
+          "cave_troll_boss/animations/attack_try/east/02.webp",
+          "cave_troll_boss/animations/attack_try/east/03.webp",
+          "cave_troll_boss/animations/attack_try/east/04.webp"
+        ],
+        "north-east": [
+          "cave_troll_boss/animations/attack_try/north-east/00.webp",
+          "cave_troll_boss/animations/attack_try/north-east/01.webp",
+          "cave_troll_boss/animations/attack_try/north-east/02.webp",
+          "cave_troll_boss/animations/attack_try/north-east/03.webp",
+          "cave_troll_boss/animations/attack_try/north-east/04.webp"
+        ],
+        "north": [
+          "cave_troll_boss/animations/attack_try/north/00.webp",
+          "cave_troll_boss/animations/attack_try/north/01.webp",
+          "cave_troll_boss/animations/attack_try/north/02.webp",
+          "cave_troll_boss/animations/attack_try/north/03.webp",
+          "cave_troll_boss/animations/attack_try/north/04.webp"
+        ],
+        "west": [
+          "cave_troll_boss/animations/attack_try/west/00.webp",
+          "cave_troll_boss/animations/attack_try/west/01.webp",
+          "cave_troll_boss/animations/attack_try/west/02.webp",
+          "cave_troll_boss/animations/attack_try/west/03.webp",
+          "cave_troll_boss/animations/attack_try/west/04.webp"
+        ]
+      },
+      "strips": {
+        "south": "cave_troll_boss/animations/attack_try__south.webp",
+        "south-east": "cave_troll_boss/animations/attack_try__south-east.webp",
+        "east": "cave_troll_boss/animations/attack_try__east.webp",
+        "north-east": "cave_troll_boss/animations/attack_try__north-east.webp",
+        "north": "cave_troll_boss/animations/attack_try__north.webp",
+        "west": "cave_troll_boss/animations/attack_try__west.webp"
+      }
     }
   }
 }

@@ -898,6 +898,300 @@
         "west": "veil_wraith/animations/attack__west.webp",
         "north-west": "veil_wraith/animations/attack__north-west.webp"
       }
+    },
+    "attack_try": {
+      "directions": {
+        "south": {
+          "status": "warn",
+          "step_mean": 0.1383,
+          "step_max": 0.206,
+          "drift": 2.08,
+          "loop": 0.2735,
+          "loop_ratio": 1.98,
+          "travel": 0.35,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": -0.011,
+          "peak": 0.2735,
+          "reach": 0.24,
+          "canvas": [
+            128,
+            128
+          ],
+          "reasons": [
+            "shallow strike: reach 0.24 — eyeball it"
+          ],
+          "sub": "6240b9df-ae3b-4f3b-b8ba-4a74c6f84ed2",
+          "group": "e5660efc-07b1-4a98-ac26-f30ec72747b3",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "action": "Clawing Grab - Surges forward with both long-fingered hands out in a clawing grab",
+          "tries": 1,
+          "generated_at": "2026-09-10T19:48:29+00:00"
+        },
+        "south-east": {
+          "status": "pass",
+          "step_mean": 0.2584,
+          "step_max": 0.4596,
+          "drift": 2.02,
+          "loop": 0.6448,
+          "loop_ratio": 2.5,
+          "travel": 1.59,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": -0.004,
+          "peak": 0.6448,
+          "reach": 0.508,
+          "canvas": [
+            128,
+            128
+          ],
+          "reasons": [],
+          "sub": "fcd5e963-b94f-4aef-a7ed-576e591f24a9",
+          "group": "dce27396-e559-46b1-a4dd-16ddb47918be",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "action": "Clawing Grab - Surges forward with both long-fingered hands out in a clawing grab",
+          "tries": 1,
+          "generated_at": "2026-09-10T19:48:29+00:00"
+        },
+        "east": {
+          "status": "pass",
+          "step_mean": 0.3435,
+          "step_max": 0.5011,
+          "drift": 5.52,
+          "loop": 0.7472,
+          "loop_ratio": 2.18,
+          "travel": 1.9,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": 0.016,
+          "peak": 0.7472,
+          "reach": 0.829,
+          "canvas": [
+            128,
+            128
+          ],
+          "reasons": [],
+          "sub": "204ed649-738e-45e1-95b1-d3913ed58fa5",
+          "group": "f78e6d22-0226-479e-8607-07b2104a41b8",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "action": "Clawing Grab - Surges forward with both long-fingered hands out in a clawing grab",
+          "tries": 1,
+          "generated_at": "2026-09-10T19:48:30+00:00"
+        },
+        "north-east": {
+          "status": "pass",
+          "step_mean": 0.1531,
+          "step_max": 0.1641,
+          "drift": 1.75,
+          "loop": 0.2421,
+          "loop_ratio": 1.58,
+          "travel": 1.01,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": 0.001,
+          "peak": 0.2421,
+          "reach": 0.31,
+          "canvas": [
+            128,
+            128
+          ],
+          "reasons": [],
+          "sub": "1088d43b-629d-4d5b-9887-b9210db76fd5",
+          "group": "01182c34-578e-4601-af44-3a9251467c02",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "action": "Clawing Grab - Surges forward with both long-fingered hands out in a clawing grab",
+          "tries": 1,
+          "generated_at": "2026-09-10T19:48:30+00:00"
+        },
+        "north": {
+          "status": "pass",
+          "step_mean": 0.2462,
+          "step_max": 0.3468,
+          "drift": 5.82,
+          "loop": 0.4094,
+          "loop_ratio": 1.66,
+          "travel": 0.44,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": 0.011,
+          "peak": 0.4094,
+          "reach": 0.357,
+          "canvas": [
+            128,
+            128
+          ],
+          "reasons": [],
+          "sub": "f4897b5e-8dd4-4a5e-b1d5-dcd391346eec",
+          "group": "228a9aed-111d-4bbf-98c4-4d70143d4c8d",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "action": "Clawing Grab - Surges forward with both long-fingered hands out in a clawing grab",
+          "tries": 1,
+          "generated_at": "2026-09-10T19:48:31+00:00"
+        },
+        "south-west": {
+          "status": "pass",
+          "step_mean": 0.2584,
+          "step_max": 0.4596,
+          "drift": 2.02,
+          "loop": 0.6448,
+          "loop_ratio": 2.5,
+          "travel": 1.59,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": -0.004,
+          "peak": 0.6448,
+          "reach": 0.508,
+          "canvas": [
+            128,
+            128
+          ],
+          "reasons": [],
+          "sub": "fcd5e963-b94f-4aef-a7ed-576e591f24a9",
+          "group": "dce27396-e559-46b1-a4dd-16ddb47918be",
+          "takes": 1,
+          "version": 1,
+          "mirrored": true,
+          "action": "Clawing Grab - Surges forward with both long-fingered hands out in a clawing grab",
+          "tries": 1,
+          "generated_at": "2026-09-10T19:48:29+00:00",
+          "source": "south-east"
+        },
+        "west": {
+          "status": "pass",
+          "step_mean": 0.3435,
+          "step_max": 0.5011,
+          "drift": 5.52,
+          "loop": 0.7472,
+          "loop_ratio": 2.18,
+          "travel": 1.9,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": 0.016,
+          "peak": 0.7472,
+          "reach": 0.829,
+          "canvas": [
+            128,
+            128
+          ],
+          "reasons": [],
+          "sub": "204ed649-738e-45e1-95b1-d3913ed58fa5",
+          "group": "f78e6d22-0226-479e-8607-07b2104a41b8",
+          "takes": 1,
+          "version": 1,
+          "mirrored": true,
+          "action": "Clawing Grab - Surges forward with both long-fingered hands out in a clawing grab",
+          "tries": 1,
+          "generated_at": "2026-09-10T19:48:30+00:00",
+          "source": "east"
+        },
+        "north-west": {
+          "status": "pass",
+          "step_mean": 0.1531,
+          "step_max": 0.1641,
+          "drift": 1.75,
+          "loop": 0.2421,
+          "loop_ratio": 1.58,
+          "travel": 1.01,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": 0.001,
+          "peak": 0.2421,
+          "reach": 0.31,
+          "canvas": [
+            128,
+            128
+          ],
+          "reasons": [],
+          "sub": "1088d43b-629d-4d5b-9887-b9210db76fd5",
+          "group": "01182c34-578e-4601-af44-3a9251467c02",
+          "takes": 1,
+          "version": 1,
+          "mirrored": true,
+          "action": "Clawing Grab - Surges forward with both long-fingered hands out in a clawing grab",
+          "tries": 1,
+          "generated_at": "2026-09-10T19:48:30+00:00",
+          "source": "north-east"
+        }
+      },
+      "action": "Clawing Grab - Surges forward with both long-fingered hands out in a clawing grab",
+      "frame_paths": {
+        "south": [
+          "veil_wraith/animations/attack_try/south/00.webp",
+          "veil_wraith/animations/attack_try/south/01.webp",
+          "veil_wraith/animations/attack_try/south/02.webp",
+          "veil_wraith/animations/attack_try/south/03.webp",
+          "veil_wraith/animations/attack_try/south/04.webp"
+        ],
+        "south-east": [
+          "veil_wraith/animations/attack_try/south-east/00.webp",
+          "veil_wraith/animations/attack_try/south-east/01.webp",
+          "veil_wraith/animations/attack_try/south-east/02.webp",
+          "veil_wraith/animations/attack_try/south-east/03.webp",
+          "veil_wraith/animations/attack_try/south-east/04.webp"
+        ],
+        "east": [
+          "veil_wraith/animations/attack_try/east/00.webp",
+          "veil_wraith/animations/attack_try/east/01.webp",
+          "veil_wraith/animations/attack_try/east/02.webp",
+          "veil_wraith/animations/attack_try/east/03.webp",
+          "veil_wraith/animations/attack_try/east/04.webp"
+        ],
+        "north-east": [
+          "veil_wraith/animations/attack_try/north-east/00.webp",
+          "veil_wraith/animations/attack_try/north-east/01.webp",
+          "veil_wraith/animations/attack_try/north-east/02.webp",
+          "veil_wraith/animations/attack_try/north-east/03.webp",
+          "veil_wraith/animations/attack_try/north-east/04.webp"
+        ],
+        "north": [
+          "veil_wraith/animations/attack_try/north/00.webp",
+          "veil_wraith/animations/attack_try/north/01.webp",
+          "veil_wraith/animations/attack_try/north/02.webp",
+          "veil_wraith/animations/attack_try/north/03.webp",
+          "veil_wraith/animations/attack_try/north/04.webp"
+        ],
+        "south-west": [
+          "veil_wraith/animations/attack_try/south-west/00.webp",
+          "veil_wraith/animations/attack_try/south-west/01.webp",
+          "veil_wraith/animations/attack_try/south-west/02.webp",
+          "veil_wraith/animations/attack_try/south-west/03.webp",
+          "veil_wraith/animations/attack_try/south-west/04.webp"
+        ],
+        "west": [
+          "veil_wraith/animations/attack_try/west/00.webp",
+          "veil_wraith/animations/attack_try/west/01.webp",
+          "veil_wraith/animations/attack_try/west/02.webp",
+          "veil_wraith/animations/attack_try/west/03.webp",
+          "veil_wraith/animations/attack_try/west/04.webp"
+        ],
+        "north-west": [
+          "veil_wraith/animations/attack_try/north-west/00.webp",
+          "veil_wraith/animations/attack_try/north-west/01.webp",
+          "veil_wraith/animations/attack_try/north-west/02.webp",
+          "veil_wraith/animations/attack_try/north-west/03.webp",
+          "veil_wraith/animations/attack_try/north-west/04.webp"
+        ]
+      },
+      "strips": {
+        "south": "veil_wraith/animations/attack_try__south.webp",
+        "south-east": "veil_wraith/animations/attack_try__south-east.webp",
+        "east": "veil_wraith/animations/attack_try__east.webp",
+        "north-east": "veil_wraith/animations/attack_try__north-east.webp",
+        "north": "veil_wraith/animations/attack_try__north.webp",
+        "south-west": "veil_wraith/animations/attack_try__south-west.webp",
+        "west": "veil_wraith/animations/attack_try__west.webp",
+        "north-west": "veil_wraith/animations/attack_try__north-west.webp"
+      }
     }
   }
 }

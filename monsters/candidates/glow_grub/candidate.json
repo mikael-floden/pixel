@@ -886,6 +886,200 @@
         "west": "glow_grub/animations/attack__west.webp",
         "north-west": "glow_grub/animations/attack__north-west.webp"
       }
+    },
+    "attack_try": {
+      "directions": {
+        "south": {
+          "status": "fail",
+          "step_mean": 0.105,
+          "step_max": 0.185,
+          "drift": 1.47,
+          "loop": 0.115,
+          "loop_ratio": 1.1,
+          "travel": 0.35,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": 0.005,
+          "peak": 0.235,
+          "reach": 0.091,
+          "canvas": [
+            32,
+            32
+          ],
+          "reasons": [
+            "no strike, just a lean: nothing reaches past 0.09 of the body"
+          ],
+          "sub": "1af887e8-530c-4f52-9045-a735dc473176",
+          "group": "b79bb619-a363-40a5-87d8-a006e88f586c",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "action": "Bite - Rears its front half up and bites forward with its mandibles",
+          "tries": 1,
+          "generated_at": "2026-09-10T19:53:38+00:00"
+        },
+        "south-east": {
+          "status": "fail",
+          "step_mean": 0.117,
+          "step_max": 0.1376,
+          "drift": 1.86,
+          "loop": 0.1865,
+          "loop_ratio": 1.59,
+          "travel": 0.21,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": 0.007,
+          "peak": 0.2385,
+          "reach": 0.176,
+          "canvas": [
+            32,
+            32
+          ],
+          "reasons": [
+            "no strike, just a lean: nothing reaches past 0.18 of the body"
+          ],
+          "sub": "7c0f02f7-4b5d-4c47-9695-e377ae52c2f7",
+          "group": "e3e2b284-84d0-4ffa-9b8a-73c23f9bc120",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "action": "Bite - Rears its front half up and bites forward with its mandibles",
+          "tries": 1,
+          "generated_at": "2026-09-10T19:53:38+00:00"
+        },
+        "east": {
+          "status": "fail",
+          "step_mean": 0.1079,
+          "step_max": 0.1309,
+          "drift": 1.37,
+          "loop": 0.0864,
+          "loop_ratio": 0.8,
+          "travel": 0.45,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": 0.032,
+          "peak": 0.2117,
+          "reach": 0.091,
+          "canvas": [
+            32,
+            32
+          ],
+          "reasons": [
+            "no strike, just a lean: nothing reaches past 0.09 of the body"
+          ],
+          "sub": "a2bf1964-1e5f-4fbf-b457-b661a06cdfa5",
+          "group": "5b03e637-d3af-4242-bf2d-8d7bf0c5a288",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "action": "Bite - Rears its front half up and bites forward with its mandibles",
+          "tries": 1,
+          "generated_at": "2026-09-10T19:53:39+00:00"
+        },
+        "north-east": {
+          "status": "fail",
+          "step_mean": 0.1495,
+          "step_max": 0.1934,
+          "drift": 1.53,
+          "loop": 0.1094,
+          "loop_ratio": 0.73,
+          "travel": 0.25,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": -0.01,
+          "peak": 0.2697,
+          "reach": 0.089,
+          "canvas": [
+            32,
+            32
+          ],
+          "reasons": [
+            "no strike, just a lean: nothing reaches past 0.09 of the body"
+          ],
+          "sub": "305e6677-e5f5-4c14-bff4-f8cf99c69a19",
+          "group": "b2d5b516-8473-4f1b-a5fa-9efdf34fe1c7",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "action": "Bite - Rears its front half up and bites forward with its mandibles",
+          "tries": 1,
+          "generated_at": "2026-09-10T19:53:39+00:00"
+        },
+        "north": {
+          "status": "fail",
+          "step_mean": 0.1083,
+          "step_max": 0.1103,
+          "drift": 0.63,
+          "loop": 0.0795,
+          "loop_ratio": 0.73,
+          "travel": 0.78,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": 0.045,
+          "peak": 0.1667,
+          "reach": 0.083,
+          "canvas": [
+            32,
+            32
+          ],
+          "reasons": [
+            "no strike, just a lean: nothing reaches past 0.08 of the body"
+          ],
+          "sub": "fdffa936-da1a-4aab-a559-ee15b6cad695",
+          "group": "a0b0ab2f-ecd2-4831-b510-f63fa5eca7ab",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "action": "Bite - Rears its front half up and bites forward with its mandibles",
+          "tries": 1,
+          "generated_at": "2026-09-10T19:53:40+00:00"
+        }
+      },
+      "action": "Bite - Rears its front half up and bites forward with its mandibles",
+      "frame_paths": {
+        "south": [
+          "glow_grub/animations/attack_try/south/00.webp",
+          "glow_grub/animations/attack_try/south/01.webp",
+          "glow_grub/animations/attack_try/south/02.webp",
+          "glow_grub/animations/attack_try/south/03.webp",
+          "glow_grub/animations/attack_try/south/04.webp"
+        ],
+        "south-east": [
+          "glow_grub/animations/attack_try/south-east/00.webp",
+          "glow_grub/animations/attack_try/south-east/01.webp",
+          "glow_grub/animations/attack_try/south-east/02.webp",
+          "glow_grub/animations/attack_try/south-east/03.webp",
+          "glow_grub/animations/attack_try/south-east/04.webp"
+        ],
+        "east": [
+          "glow_grub/animations/attack_try/east/00.webp",
+          "glow_grub/animations/attack_try/east/01.webp",
+          "glow_grub/animations/attack_try/east/02.webp",
+          "glow_grub/animations/attack_try/east/03.webp",
+          "glow_grub/animations/attack_try/east/04.webp"
+        ],
+        "north-east": [
+          "glow_grub/animations/attack_try/north-east/00.webp",
+          "glow_grub/animations/attack_try/north-east/01.webp",
+          "glow_grub/animations/attack_try/north-east/02.webp",
+          "glow_grub/animations/attack_try/north-east/03.webp",
+          "glow_grub/animations/attack_try/north-east/04.webp"
+        ],
+        "north": [
+          "glow_grub/animations/attack_try/north/00.webp",
+          "glow_grub/animations/attack_try/north/01.webp",
+          "glow_grub/animations/attack_try/north/02.webp",
+          "glow_grub/animations/attack_try/north/03.webp",
+          "glow_grub/animations/attack_try/north/04.webp"
+        ]
+      },
+      "strips": {
+        "south": "glow_grub/animations/attack_try__south.webp",
+        "south-east": "glow_grub/animations/attack_try__south-east.webp",
+        "east": "glow_grub/animations/attack_try__east.webp",
+        "north-east": "glow_grub/animations/attack_try__north-east.webp",
+        "north": "glow_grub/animations/attack_try__north.webp"
+      }
     }
   }
 }
