@@ -909,38 +909,37 @@
     "attack_try": {
       "directions": {
         "south": {
-          "status": "fail",
-          "step_mean": 0.17,
-          "step_max": 0.2838,
-          "drift": 5.98,
-          "loop": 0.3723,
-          "loop_ratio": 2.19,
-          "travel": 6.79,
+          "status": "warn",
+          "step_mean": 0.1759,
+          "step_max": 0.293,
+          "drift": 5.16,
+          "loop": 0.3058,
+          "loop_ratio": 1.74,
+          "travel": 5.16,
           "pin": 1.0,
-          "pad": 1,
-          "flash": 0.003,
-          "peak": 0.3723,
-          "reach": 0.102,
+          "pad": 0,
+          "flash": 0.002,
+          "peak": 0.3076,
+          "reach": 0.194,
           "canvas": [
-            130,
-            130
+            128,
+            128
           ],
           "reasons": [
-            "no strike, just a lean: nothing reaches past 0.10 of the body",
-            "canvas grown by 1 px a side to hold the motion"
+            "shallow strike: reach 0.19 — eyeball it"
           ],
-          "sub": "0f8d209a-88cd-4c55-b9f2-3ecdb786ece1",
-          "group": "f28ac830-df6b-403f-88f5-b726232a38d6",
+          "sub": "35fa1abb-54bb-42b7-ab07-c8138763df95",
+          "group": "4e50c4ed-2c1d-48df-9657-db9e65a6674f",
           "takes": 1,
-          "version": 4,
+          "version": 5,
           "mirrored": false,
-          "generated_at": "2026-09-10T21:06:18+00:00",
-          "action": "Spear Thrust - Lunges forward and drives the spear out in one fast stab, a big aggressive swing",
-          "tries": 2,
-          "rolls": 4,
+          "action": "Spear Charge - The lizard hurls its whole body forward behind the spear in one committed charge, a huge aggressive attack with the whole body behind it, wide exaggerated motion",
           "intensity": 1,
-          "frames": 7,
-          "rung": 3
+          "rolls": 5,
+          "frames": 5,
+          "rung": 4,
+          "tries": 5,
+          "generated_at": "2026-09-10T21:38:32+00:00"
         },
         "south-east": {
           "status": "pass",
@@ -1041,36 +1040,36 @@
         },
         "north": {
           "status": "warn",
-          "step_mean": 0.2793,
-          "step_max": 0.5652,
-          "drift": 4.08,
-          "loop": 0.505,
-          "loop_ratio": 1.81,
-          "travel": 3.86,
+          "step_mean": 0.1928,
+          "step_max": 0.3114,
+          "drift": 2.99,
+          "loop": 0.4277,
+          "loop_ratio": 2.22,
+          "travel": 3.17,
           "pin": 1.0,
-          "pad": 9,
-          "flash": -0.003,
-          "peak": 0.5556,
-          "reach": 0.266,
+          "pad": 0,
+          "flash": 0.001,
+          "peak": 0.4659,
+          "reach": 0.17,
           "canvas": [
-            146,
-            146
+            128,
+            128
           ],
           "reasons": [
-            "shallow strike: reach 0.27 — eyeball it",
-            "canvas grown by 9 px a side to hold the motion"
+            "shallow strike: reach 0.17 — eyeball it"
           ],
-          "sub": "b411dd65-98c4-482e-bfb2-e517e78627df",
-          "group": "f039c6ec-ab67-403f-b977-05cdcdab8706",
+          "sub": "a7f4be51-7354-47cb-a15c-5e5e9846987c",
+          "group": "759be75f-4922-4576-b8c8-0e247f5b8205",
           "takes": 1,
-          "version": 2,
+          "version": 5,
           "mirrored": false,
-          "generated_at": "2026-09-10T20:13:01+00:00",
-          "action": "Spear Thrust - Lunges forward and drives the spear out in one fast stab, a big aggressive swing",
-          "tries": 1,
-          "rolls": 2,
+          "action": "Spear Thrust - Lunges forward and drives the spear out in one fast stab",
           "intensity": 1,
-          "rung": 0
+          "rolls": 1,
+          "frames": 5,
+          "rung": 0,
+          "tries": 1,
+          "generated_at": "2026-09-10T21:38:33+00:00"
         },
         "south-west": {
           "status": "pass",
@@ -1173,16 +1172,14 @@
           "source": "north-east"
         }
       },
-      "action": "Spear Thrust - Lunges forward and drives the spear out in one fast stab, a big aggressive swing",
+      "action": "Spear Thrust - Lunges forward and drives the spear out in one fast stab",
       "frame_paths": {
         "south": [
           "lizard_warrior/animations/attack_try/south/00.webp",
           "lizard_warrior/animations/attack_try/south/01.webp",
           "lizard_warrior/animations/attack_try/south/02.webp",
           "lizard_warrior/animations/attack_try/south/03.webp",
-          "lizard_warrior/animations/attack_try/south/04.webp",
-          "lizard_warrior/animations/attack_try/south/05.webp",
-          "lizard_warrior/animations/attack_try/south/06.webp"
+          "lizard_warrior/animations/attack_try/south/04.webp"
         ],
         "south-east": [
           "lizard_warrior/animations/attack_try/south-east/00.webp",

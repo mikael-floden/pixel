@@ -918,70 +918,71 @@
     "attack_try": {
       "directions": {
         "south": {
-          "status": "fail",
-          "step_mean": 0.1778,
-          "step_max": 0.3018,
-          "drift": 6.54,
-          "loop": 0.2421,
-          "loop_ratio": 1.36,
-          "travel": 6.6,
+          "status": "warn",
+          "step_mean": 0.2734,
+          "step_max": 0.4087,
+          "drift": 3.93,
+          "loop": 0.3636,
+          "loop_ratio": 1.33,
+          "travel": 1.56,
           "pin": 1.0,
-          "pad": 0,
+          "pad": 2,
           "flash": 0.001,
-          "peak": 0.4441,
-          "reach": 0.134,
+          "peak": 0.399,
+          "reach": 0.206,
           "canvas": [
-            128,
-            128
+            132,
+            132
           ],
           "reasons": [
-            "no strike, just a lean: nothing reaches past 0.13 of the body"
+            "shallow strike: reach 0.21 — eyeball it",
+            "canvas grown by 2 px a side to hold the motion"
           ],
-          "sub": "e1de2f5c-147b-4c92-a964-acc0ecda7815",
-          "group": "234e7120-7ad2-4356-97a3-f7cd1a6603d8",
+          "sub": "9625f073-3d44-4dcc-a606-acb9f34ad55f",
+          "group": "d12f864f-a558-4a80-90f9-0f52516987f1",
           "takes": 1,
-          "version": 4,
+          "version": 5,
           "mirrored": false,
-          "generated_at": "2026-09-10T21:07:46+00:00",
-          "action": "Claw Swipe - Rears up and swipes one clawed paw hard across, a big aggressive swing",
-          "tries": 2,
-          "rolls": 4,
+          "action": "Savage Rend - The werewolf throws itself forward on its hind legs, both clawed arms swung wide in a rending slash, a huge aggressive attack with the whole body behind it, wide exaggerated motion",
           "intensity": 1,
-          "frames": 7,
-          "rung": 3
+          "rolls": 5,
+          "frames": 5,
+          "rung": 4,
+          "tries": 5,
+          "generated_at": "2026-09-10T21:39:32+00:00"
         },
         "south-east": {
-          "status": "warn",
-          "step_mean": 0.2272,
-          "step_max": 0.4291,
-          "drift": 7.66,
-          "loop": 0.1599,
-          "loop_ratio": 0.7,
-          "travel": 14.08,
+          "status": "fail",
+          "step_mean": 0.1988,
+          "step_max": 0.2358,
+          "drift": 4.2,
+          "loop": 0.3326,
+          "loop_ratio": 1.67,
+          "travel": 0.82,
           "pin": 1.0,
           "pad": 0,
-          "flash": 0.036,
-          "peak": 0.3944,
-          "reach": 0.278,
+          "flash": 0.027,
+          "peak": 0.3326,
+          "reach": 0.139,
           "canvas": [
             128,
             128
           ],
           "reasons": [
-            "shallow strike: reach 0.28 — eyeball it"
+            "no strike, just a lean: nothing reaches past 0.14 of the body"
           ],
-          "sub": "93fe48ab-a007-461a-911f-bb7b8f80334d",
-          "group": "053fa383-a90f-41fb-b298-618fb3d11495",
+          "sub": "d00c9bc9-902a-4f16-8521-de5579003b86",
+          "group": "85fa5411-90b3-4e2c-bb51-d60abad51ee7",
           "takes": 1,
-          "version": 4,
+          "version": 5,
           "mirrored": false,
-          "generated_at": "2026-09-10T21:07:47+00:00",
-          "action": "Claw Swipe - Rears up and swipes one clawed paw hard across, a big aggressive swing",
-          "tries": 2,
-          "rolls": 4,
+          "action": "Claw Swipe - Rears up and swipes one clawed paw hard across",
           "intensity": 1,
-          "frames": 7,
-          "rung": 0
+          "rolls": 1,
+          "frames": 5,
+          "rung": 0,
+          "tries": 1,
+          "generated_at": "2026-09-10T21:39:33+00:00"
         },
         "east": {
           "status": "pass",
@@ -1048,37 +1049,37 @@
           "rung": 0
         },
         "north": {
-          "status": "fail",
-          "step_mean": 0.2529,
-          "step_max": 0.4395,
-          "drift": 7.3,
-          "loop": 0.3152,
-          "loop_ratio": 1.25,
-          "travel": 7.36,
+          "status": "pass",
+          "step_mean": 0.2424,
+          "step_max": 0.3631,
+          "drift": 3.5,
+          "loop": 0.528,
+          "loop_ratio": 2.18,
+          "travel": 1.35,
           "pin": 1.0,
-          "pad": 0,
-          "flash": 0.714,
-          "peak": 0.5438,
-          "reach": 0.714,
+          "pad": 2,
+          "flash": 0.143,
+          "peak": 0.528,
+          "reach": 0.325,
           "canvas": [
-            128,
-            128
+            132,
+            132
           ],
           "reasons": [
-            "painted effect: 0.71 of the body in new bright pixels (flare/slash arc)"
+            "canvas grown by 2 px a side to hold the motion"
           ],
-          "sub": "718f69dc-b2da-4380-b64d-d96d08639fb4",
-          "group": "2a870c3f-3235-4389-a8cc-ef14c417d0bb",
+          "sub": "8ab3c56e-1e7b-47aa-af62-a3b6d82cb4a9",
+          "group": "15b5a473-cfd1-400b-9a59-64e1572b4280",
           "takes": 1,
-          "version": 4,
+          "version": 5,
           "mirrored": false,
-          "generated_at": "2026-09-10T21:07:47+00:00",
-          "action": "Claw Swipe - Rears up and swipes one clawed paw hard across, a big aggressive swing",
-          "tries": 2,
-          "rolls": 4,
+          "action": "Savage Rend - The werewolf throws itself forward on its hind legs, both clawed arms swung wide in a rending slash, a huge aggressive attack with the whole body behind it, wide exaggerated motion",
           "intensity": 1,
-          "frames": 7,
-          "rung": 3
+          "rolls": 5,
+          "frames": 5,
+          "rung": 4,
+          "tries": 5,
+          "generated_at": "2026-09-10T21:39:34+00:00"
         },
         "west": {
           "status": "pass",
@@ -1181,25 +1182,21 @@
           "source": "south-east"
         }
       },
-      "action": "Claw Swipe - Rears up and swipes one clawed paw hard across, a big aggressive swing",
+      "action": "Claw Swipe - Rears up and swipes one clawed paw hard across",
       "frame_paths": {
         "south": [
           "werewolf/animations/attack_try/south/00.webp",
           "werewolf/animations/attack_try/south/01.webp",
           "werewolf/animations/attack_try/south/02.webp",
           "werewolf/animations/attack_try/south/03.webp",
-          "werewolf/animations/attack_try/south/04.webp",
-          "werewolf/animations/attack_try/south/05.webp",
-          "werewolf/animations/attack_try/south/06.webp"
+          "werewolf/animations/attack_try/south/04.webp"
         ],
         "south-east": [
           "werewolf/animations/attack_try/south-east/00.webp",
           "werewolf/animations/attack_try/south-east/01.webp",
           "werewolf/animations/attack_try/south-east/02.webp",
           "werewolf/animations/attack_try/south-east/03.webp",
-          "werewolf/animations/attack_try/south-east/04.webp",
-          "werewolf/animations/attack_try/south-east/05.webp",
-          "werewolf/animations/attack_try/south-east/06.webp"
+          "werewolf/animations/attack_try/south-east/04.webp"
         ],
         "east": [
           "werewolf/animations/attack_try/east/00.webp",
@@ -1220,9 +1217,7 @@
           "werewolf/animations/attack_try/north/01.webp",
           "werewolf/animations/attack_try/north/02.webp",
           "werewolf/animations/attack_try/north/03.webp",
-          "werewolf/animations/attack_try/north/04.webp",
-          "werewolf/animations/attack_try/north/05.webp",
-          "werewolf/animations/attack_try/north/06.webp"
+          "werewolf/animations/attack_try/north/04.webp"
         ],
         "west": [
           "werewolf/animations/attack_try/west/00.webp",
