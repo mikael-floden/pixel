@@ -907,7 +907,7 @@
     "attack_try": {
       "directions": {
         "south": {
-          "status": "fail",
+          "status": "warn",
           "step_mean": 0.0626,
           "step_max": 0.1116,
           "drift": 2.59,
@@ -926,19 +926,19 @@
           "reasons": [
             "motion 0.063 outside the calm band 0.08–0.9 — eyeball it",
             "weak strike: peak 0.147 — eyeball it",
-            "no strike, just a lean: nothing reaches past 0.18 of the body"
+            "shallow strike: reach 0.18 — eyeball it"
           ],
           "sub": "645f6b60-b2ea-4b43-aaca-f6fa36c8b2ef",
           "group": "f6e8209c-6d2b-465f-b7a9-bae5e0827ecf",
           "takes": 1,
           "version": 4,
           "mirrored": false,
+          "generated_at": "2026-09-10T21:15:07+00:00",
           "action": "Lunge Attack - Throws its whole body forward in one fast lunge, white swoosh lines trailing behind it",
-          "intensity": 1,
-          "rolls": 4,
-          "frames": 9,
           "tries": 4,
-          "generated_at": "2026-09-10T21:15:07+00:00"
+          "rolls": 4,
+          "intensity": 1,
+          "frames": 9
         },
         "south-east": {
           "status": "warn",
@@ -965,12 +965,12 @@
           "takes": 1,
           "version": 4,
           "mirrored": false,
+          "generated_at": "2026-09-10T21:15:08+00:00",
           "action": "Lunge Attack - Throws its whole body forward in one fast lunge, white swoosh lines trailing behind it",
-          "intensity": 1,
-          "rolls": 4,
-          "frames": 9,
           "tries": 4,
-          "generated_at": "2026-09-10T21:15:08+00:00"
+          "rolls": 4,
+          "intensity": 1,
+          "frames": 9
         },
         "east": {
           "status": "pass",
@@ -997,12 +997,12 @@
           "takes": 1,
           "version": 4,
           "mirrored": false,
+          "generated_at": "2026-09-10T21:15:08+00:00",
           "action": "Lunge Attack - Throws its whole body forward in one fast lunge, white swoosh lines trailing behind it",
-          "intensity": 1,
-          "rolls": 4,
-          "frames": 9,
           "tries": 4,
-          "generated_at": "2026-09-10T21:15:08+00:00"
+          "rolls": 4,
+          "intensity": 1,
+          "frames": 9
         },
         "north-east": {
           "status": "warn",
@@ -1029,15 +1029,15 @@
           "takes": 1,
           "version": 3,
           "mirrored": false,
+          "generated_at": "2026-09-10T20:52:09+00:00",
           "action": "Strike - Coils its head back, then strikes forward with fangs bared, a big aggressive swing",
-          "intensity": 1,
-          "rolls": 3,
-          "frames": 5,
           "tries": 1,
-          "generated_at": "2026-09-10T20:52:09+00:00"
+          "rolls": 3,
+          "intensity": 1,
+          "frames": 5
         },
         "north": {
-          "status": "fail",
+          "status": "warn",
           "step_mean": 0.1441,
           "step_max": 0.3244,
           "drift": 11.21,
@@ -1054,19 +1054,19 @@
             88
           ],
           "reasons": [
-            "no strike, just a lean: nothing reaches past 0.16 of the body"
+            "shallow strike: reach 0.16 — eyeball it"
           ],
           "sub": "7018b6a1-8b12-4cfd-a355-3f7304c03e49",
           "group": "f09e06eb-f8ac-4f72-91bc-661204d67a20",
           "takes": 1,
           "version": 4,
           "mirrored": false,
+          "generated_at": "2026-09-10T21:15:09+00:00",
           "action": "Lunge Attack - Throws its whole body forward in one fast lunge, white swoosh lines trailing behind it",
-          "intensity": 1,
-          "rolls": 4,
-          "frames": 9,
           "tries": 4,
-          "generated_at": "2026-09-10T21:15:09+00:00"
+          "rolls": 4,
+          "intensity": 1,
+          "frames": 9
         },
         "north-west": {
           "status": "warn",
@@ -1093,12 +1093,12 @@
           "takes": 1,
           "version": 3,
           "mirrored": true,
-          "action": "Strike - Coils its head back, then strikes forward with fangs bared, a big aggressive swing",
-          "intensity": 1,
-          "rolls": 1,
-          "frames": 5,
-          "tries": 1,
           "generated_at": "2026-09-10T20:52:09+00:00",
+          "action": "Strike - Coils its head back, then strikes forward with fangs bared, a big aggressive swing",
+          "tries": 1,
+          "rolls": 3,
+          "intensity": 1,
+          "frames": 5,
           "source": "north-east"
         },
         "south-west": {
@@ -1126,12 +1126,12 @@
           "takes": 1,
           "version": 4,
           "mirrored": true,
-          "action": "Lunge Attack - Throws its whole body forward in one fast lunge, white swoosh lines trailing behind it",
-          "intensity": 1,
-          "rolls": 4,
-          "frames": 9,
-          "tries": 4,
           "generated_at": "2026-09-10T21:15:08+00:00",
+          "action": "Lunge Attack - Throws its whole body forward in one fast lunge, white swoosh lines trailing behind it",
+          "tries": 4,
+          "rolls": 4,
+          "intensity": 1,
+          "frames": 9,
           "source": "south-east"
         },
         "west": {
@@ -1159,12 +1159,12 @@
           "takes": 1,
           "version": 4,
           "mirrored": true,
-          "action": "Lunge Attack - Throws its whole body forward in one fast lunge, white swoosh lines trailing behind it",
-          "intensity": 1,
-          "rolls": 4,
-          "frames": 9,
-          "tries": 4,
           "generated_at": "2026-09-10T21:15:08+00:00",
+          "action": "Lunge Attack - Throws its whole body forward in one fast lunge, white swoosh lines trailing behind it",
+          "tries": 4,
+          "rolls": 4,
+          "intensity": 1,
+          "frames": 9,
           "source": "east"
         }
       },

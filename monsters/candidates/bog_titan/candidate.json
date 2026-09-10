@@ -901,7 +901,7 @@
     "attack_try": {
       "directions": {
         "south": {
-          "status": "fail",
+          "status": "warn",
           "step_mean": 0.2923,
           "step_max": 0.5202,
           "drift": 17.09,
@@ -918,19 +918,19 @@
             224
           ],
           "reasons": [
-            "no strike, just a lean: nothing reaches past 0.19 of the body"
+            "shallow strike: reach 0.19 — eyeball it"
           ],
           "sub": "eabe6a0f-8850-415e-884c-6b7b00483b46",
           "group": "7194c099-9079-4406-a561-52d49a24f13a",
           "takes": 1,
           "version": 4,
           "mirrored": false,
+          "generated_at": "2026-09-10T21:11:29+00:00",
           "action": "Double Slam - Raises both arms high overhead and slams them down together, a big aggressive swing",
-          "intensity": 1,
-          "rolls": 2,
-          "frames": 7,
           "tries": 2,
-          "generated_at": "2026-09-10T21:11:29+00:00"
+          "rolls": 2,
+          "intensity": 1,
+          "frames": 7
         },
         "south-east": {
           "status": "pass",
@@ -955,12 +955,12 @@
           "takes": 1,
           "version": 4,
           "mirrored": false,
+          "generated_at": "2026-09-10T21:11:30+00:00",
           "action": "Double Slam - Raises both arms high overhead and slams them down together, a big aggressive swing",
-          "intensity": 1,
-          "rolls": 2,
-          "frames": 7,
           "tries": 2,
-          "generated_at": "2026-09-10T21:11:30+00:00"
+          "rolls": 2,
+          "intensity": 1,
+          "frames": 7
         },
         "east": {
           "status": "pass",
@@ -1045,12 +1045,12 @@
           "takes": 1,
           "version": 4,
           "mirrored": false,
+          "generated_at": "2026-09-10T21:11:31+00:00",
           "action": "Double Slam - Raises both arms high overhead and slams them down together, a big aggressive swing",
-          "intensity": 1,
-          "rolls": 2,
-          "frames": 7,
           "tries": 2,
-          "generated_at": "2026-09-10T21:11:31+00:00"
+          "rolls": 2,
+          "intensity": 1,
+          "frames": 7
         },
         "west": {
           "status": "pass",
@@ -1078,6 +1078,8 @@
           "generated_at": "2026-09-10T19:44:30+00:00",
           "action": "Double Slam - Raises both arms high overhead and slams them down together",
           "tries": 1,
+          "rolls": 1,
+          "intensity": 1,
           "source": "east"
         },
         "north-west": {
@@ -1106,6 +1108,8 @@
           "generated_at": "2026-09-10T19:44:31+00:00",
           "action": "Double Slam - Raises both arms high overhead and slams them down together",
           "tries": 1,
+          "rolls": 1,
+          "intensity": 1,
           "source": "north-east"
         },
         "south-west": {
@@ -1131,12 +1135,12 @@
           "takes": 1,
           "version": 4,
           "mirrored": true,
-          "action": "Double Slam - Raises both arms high overhead and slams them down together, a big aggressive swing",
-          "intensity": 1,
-          "rolls": 2,
-          "frames": 7,
-          "tries": 2,
           "generated_at": "2026-09-10T21:11:30+00:00",
+          "action": "Double Slam - Raises both arms high overhead and slams them down together, a big aggressive swing",
+          "tries": 2,
+          "rolls": 2,
+          "intensity": 1,
+          "frames": 7,
           "source": "south-east"
         }
       },

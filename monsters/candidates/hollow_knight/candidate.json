@@ -904,7 +904,7 @@
     "attack_try": {
       "directions": {
         "south": {
-          "status": "fail",
+          "status": "warn",
           "step_mean": 0.255,
           "step_max": 0.3644,
           "drift": 5.05,
@@ -921,7 +921,7 @@
             122
           ],
           "reasons": [
-            "no strike, just a lean: nothing reaches past 0.22 of the body",
+            "shallow strike: reach 0.22 — eyeball it",
             "canvas grown by 5 px a side to hold the motion"
           ],
           "sub": "31332633-5bd0-40b9-bf03-a6835577289b",
@@ -929,12 +929,12 @@
           "takes": 1,
           "version": 4,
           "mirrored": false,
+          "generated_at": "2026-09-10T21:11:32+00:00",
           "action": "Overhead Chop - Raises the greatsword high overhead and chops it down hard, a big aggressive swing",
-          "intensity": 1,
-          "rolls": 2,
-          "frames": 7,
           "tries": 2,
-          "generated_at": "2026-09-10T21:11:32+00:00"
+          "rolls": 2,
+          "intensity": 1,
+          "frames": 7
         },
         "south-east": {
           "status": "warn",
@@ -1030,7 +1030,7 @@
           "intensity": 1
         },
         "north": {
-          "status": "fail",
+          "status": "warn",
           "step_mean": 0.1459,
           "step_max": 0.2023,
           "drift": 2.97,
@@ -1047,7 +1047,7 @@
             114
           ],
           "reasons": [
-            "no strike, just a lean: nothing reaches past 0.18 of the body",
+            "shallow strike: reach 0.18 — eyeball it",
             "canvas grown by 1 px a side to hold the motion"
           ],
           "sub": "2b6844d0-b685-4471-8886-53bd2618203f",
@@ -1055,12 +1055,12 @@
           "takes": 1,
           "version": 4,
           "mirrored": false,
+          "generated_at": "2026-09-10T21:11:34+00:00",
           "action": "Overhead Chop - Raises the greatsword high overhead and chops it down hard, a big aggressive swing",
-          "intensity": 1,
-          "rolls": 2,
-          "frames": 7,
           "tries": 2,
-          "generated_at": "2026-09-10T21:11:34+00:00"
+          "rolls": 2,
+          "intensity": 1,
+          "frames": 7
         },
         "west": {
           "status": "pass",
@@ -1088,6 +1088,8 @@
           "generated_at": "2026-09-10T19:46:44+00:00",
           "action": "Overhead Chop - Raises the greatsword high overhead and chops it down hard",
           "tries": 1,
+          "rolls": 1,
+          "intensity": 1,
           "source": "east"
         },
         "north-west": {
@@ -1119,6 +1121,8 @@
           "generated_at": "2026-09-10T19:46:44+00:00",
           "action": "Overhead Chop - Raises the greatsword high overhead and chops it down hard",
           "tries": 1,
+          "rolls": 1,
+          "intensity": 1,
           "source": "north-east"
         },
         "south-west": {
@@ -1150,6 +1154,8 @@
           "generated_at": "2026-09-10T20:15:09+00:00",
           "action": "Overhead Chop - Raises the greatsword high overhead and chops it down hard, a big aggressive swing",
           "tries": 1,
+          "rolls": 2,
+          "intensity": 1,
           "source": "south-east"
         }
       },

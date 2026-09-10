@@ -1,1232 +1,1236 @@
 {
- "id": "ember_king",
- "name": "Pyrelord",
- "tier": "boss",
- "lore": "The mountain's first king, and its only one. Every eruption since has been him clearing his throat.",
- "biome": [
-  "lava",
-  "black_rock"
- ],
- "items": [
-  "fire soulstone"
- ],
- "prompt": "Hulking fantasy fire demon lord shown full body from horns to feet, standing on thick clawed legs, with a body of black volcanic rock split by glowing orange magma cracks, a crown of jagged obsidian horns wreathed in flames, burning white-hot eyes, massive clawed hands, a molten glowing chain draped across its chest, and flames rising from its shoulders.",
- "size": [
-  176,
-  176
- ],
- "template_id": "mannequin",
- "directions": [
-  "south",
-  "south-east",
-  "east",
-  "north-east",
-  "north",
-  "north-west",
-  "west",
-  "south-west"
- ],
- "rotations": {
-  "south": "ember_king/rotations/south.webp",
-  "south-east": "ember_king/rotations/south-east.webp",
-  "east": "ember_king/rotations/east.webp",
-  "north-east": "ember_king/rotations/north-east.webp",
-  "north": "ember_king/rotations/north.webp",
-  "north-west": "ember_king/rotations/north-west.webp",
-  "west": "ember_king/rotations/west.webp",
-  "south-west": "ember_king/rotations/south-west.webp"
- },
- "sheet": "ember_king/sheet.webp",
- "review": "approved",
- "pixellab_id": "e31ae5b5-a1eb-4692-afe3-aa6c4fae398f",
- "seed": 2038892400,
- "version": 2,
- "usage": null,
- "generated_at": "2026-09-09T17:43:57+00:00",
- "elapsed_s": 200.1,
- "qa": {
-  "status": "pass",
-  "min_run1": 0.678,
-  "reasons": [],
-  "directions": {
-   "south": {
-    "run1": 0.678,
-    "bbox": [
-     23,
-     5,
-     153,
-     170
-    ],
-    "fill": 0.692,
-    "touches_edge": false
-   },
-   "south-east": {
-    "run1": 0.778,
-    "bbox": [
-     30,
-     6,
-     143,
-     174
-    ],
-    "fill": 0.613,
-    "touches_edge": false
-   },
-   "east": {
-    "run1": 0.773,
-    "bbox": [
-     56,
-     3,
-     118,
-     173
-    ],
-    "fill": 0.34,
-    "touches_edge": false
-   },
-   "north-east": {
-    "run1": 0.731,
-    "bbox": [
-     39,
-     3,
-     139,
-     171
-    ],
-    "fill": 0.542,
-    "touches_edge": false
-   },
-   "north": {
-    "run1": 0.724,
-    "bbox": [
-     26,
-     3,
-     150,
-     169
-    ],
-    "fill": 0.665,
-    "touches_edge": false
-   },
-   "north-west": {
-    "run1": 0.732,
-    "bbox": [
-     35,
-     3,
-     140,
-     171
-    ],
-    "fill": 0.569,
-    "touches_edge": false
-   },
-   "west": {
-    "run1": 0.769,
-    "bbox": [
-     58,
-     3,
-     114,
-     173
-    ],
-    "fill": 0.307,
-    "touches_edge": false
-   },
-   "south-west": {
-    "run1": 0.769,
-    "bbox": [
-     34,
-     6,
-     146,
-     174
-    ],
-    "fill": 0.607,
-    "touches_edge": false
-   }
+  "id": "ember_king",
+  "name": "Pyrelord",
+  "tier": "boss",
+  "lore": "The mountain's first king, and its only one. Every eruption since has been him clearing his throat.",
+  "biome": [
+    "lava",
+    "black_rock"
+  ],
+  "items": [
+    "fire soulstone"
+  ],
+  "prompt": "Hulking fantasy fire demon lord shown full body from horns to feet, standing on thick clawed legs, with a body of black volcanic rock split by glowing orange magma cracks, a crown of jagged obsidian horns wreathed in flames, burning white-hot eyes, massive clawed hands, a molten glowing chain draped across its chest, and flames rising from its shoulders.",
+  "size": [
+    176,
+    176
+  ],
+  "template_id": "mannequin",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "ember_king/rotations/south.webp",
+    "south-east": "ember_king/rotations/south-east.webp",
+    "east": "ember_king/rotations/east.webp",
+    "north-east": "ember_king/rotations/north-east.webp",
+    "north": "ember_king/rotations/north.webp",
+    "north-west": "ember_king/rotations/north-west.webp",
+    "west": "ember_king/rotations/west.webp",
+    "south-west": "ember_king/rotations/south-west.webp"
+  },
+  "sheet": "ember_king/sheet.webp",
+  "review": "approved",
+  "pixellab_id": "e31ae5b5-a1eb-4692-afe3-aa6c4fae398f",
+  "seed": 2038892400,
+  "version": 2,
+  "usage": null,
+  "generated_at": "2026-09-09T17:43:57+00:00",
+  "elapsed_s": 200.1,
+  "qa": {
+    "status": "pass",
+    "min_run1": 0.678,
+    "reasons": [],
+    "directions": {
+      "south": {
+        "run1": 0.678,
+        "bbox": [
+          23,
+          5,
+          153,
+          170
+        ],
+        "fill": 0.692,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.778,
+        "bbox": [
+          30,
+          6,
+          143,
+          174
+        ],
+        "fill": 0.613,
+        "touches_edge": false
+      },
+      "east": {
+        "run1": 0.773,
+        "bbox": [
+          56,
+          3,
+          118,
+          173
+        ],
+        "fill": 0.34,
+        "touches_edge": false
+      },
+      "north-east": {
+        "run1": 0.731,
+        "bbox": [
+          39,
+          3,
+          139,
+          171
+        ],
+        "fill": 0.542,
+        "touches_edge": false
+      },
+      "north": {
+        "run1": 0.724,
+        "bbox": [
+          26,
+          3,
+          150,
+          169
+        ],
+        "fill": 0.665,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.732,
+        "bbox": [
+          35,
+          3,
+          140,
+          171
+        ],
+        "fill": 0.569,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.769,
+        "bbox": [
+          58,
+          3,
+          114,
+          173
+        ],
+        "fill": 0.307,
+        "touches_edge": false
+      },
+      "south-west": {
+        "run1": 0.769,
+        "bbox": [
+          34,
+          6,
+          146,
+          174
+        ],
+        "fill": 0.607,
+        "touches_edge": false
+      }
+    }
+  },
+  "approved_at": "2026-09-09T19:59:19+00:00",
+  "animations": {
+    "idle": {
+      "directions": {
+        "south": {
+          "status": "pass",
+          "step_mean": 0.0608,
+          "step_max": 0.0712,
+          "drift": 2.36,
+          "loop": 0.0001,
+          "pin": 1.0,
+          "reasons": [],
+          "sub": "59c8856c-f103-455e-aedb-efce36e31c9f",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "generated_at": "2026-09-09T20:06:32+00:00",
+          "cut": 0
+        },
+        "south-east": {
+          "status": "pass",
+          "step_mean": 0.068,
+          "step_max": 0.0764,
+          "drift": 3.5,
+          "loop": 0.0004,
+          "pin": 1.0,
+          "reasons": [],
+          "sub": "a74ea878-8774-41f9-b7c0-f605431cc0d6",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "generated_at": "2026-09-09T20:06:33+00:00",
+          "cut": 0
+        },
+        "east": {
+          "status": "pass",
+          "step_mean": 0.0541,
+          "step_max": 0.0837,
+          "drift": 1.48,
+          "loop": 0.0001,
+          "pin": 1.0,
+          "reasons": [],
+          "sub": "63391a0c-7963-4fa0-86c8-027c4c0eb518",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "generated_at": "2026-09-09T20:06:33+00:00",
+          "cut": 0
+        },
+        "north-east": {
+          "status": "pass",
+          "step_mean": 0.0611,
+          "step_max": 0.0989,
+          "drift": 2.37,
+          "loop": 0.0,
+          "pin": 1.0,
+          "reasons": [],
+          "sub": "7af9a872-b8b4-4eea-8032-241929d4338d",
+          "takes": 2,
+          "version": 2,
+          "mirrored": false,
+          "generated_at": "2026-09-09T20:29:01+00:00",
+          "cut": 0
+        },
+        "north": {
+          "status": "pass",
+          "step_mean": 0.0777,
+          "step_max": 0.085,
+          "drift": 1.03,
+          "loop": 0.0,
+          "pin": 1.0,
+          "reasons": [],
+          "sub": "dbbb84f2-2602-4e9a-a891-a41b70ea248d",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "generated_at": "2026-09-09T20:06:35+00:00",
+          "cut": 0
+        },
+        "south-west": {
+          "status": "pass",
+          "step_mean": 0.068,
+          "step_max": 0.0764,
+          "drift": 3.5,
+          "loop": 0.0004,
+          "pin": 1.0,
+          "reasons": [],
+          "sub": "a74ea878-8774-41f9-b7c0-f605431cc0d6",
+          "takes": 1,
+          "version": 1,
+          "mirrored": true,
+          "generated_at": "2026-09-09T20:06:33+00:00",
+          "cut": 0,
+          "source": "south-east"
+        },
+        "west": {
+          "status": "pass",
+          "step_mean": 0.0541,
+          "step_max": 0.0837,
+          "drift": 1.48,
+          "loop": 0.0001,
+          "pin": 1.0,
+          "reasons": [],
+          "sub": "63391a0c-7963-4fa0-86c8-027c4c0eb518",
+          "takes": 1,
+          "version": 1,
+          "mirrored": true,
+          "generated_at": "2026-09-09T20:06:33+00:00",
+          "cut": 0,
+          "source": "east"
+        },
+        "north-west": {
+          "status": "pass",
+          "step_mean": 0.0611,
+          "step_max": 0.0989,
+          "drift": 2.37,
+          "loop": 0.0,
+          "pin": 1.0,
+          "reasons": [],
+          "sub": "7af9a872-b8b4-4eea-8032-241929d4338d",
+          "takes": 2,
+          "version": 2,
+          "mirrored": true,
+          "generated_at": "2026-09-09T20:29:01+00:00",
+          "cut": 0,
+          "source": "north-east"
+        }
+      },
+      "action": "Calm still idle, breathing very slowly and subtly, chest and shoulders rise and fall a little, feet planted, no other movement, ends in the same neutral pose it started in",
+      "frame_paths": {
+        "south": [
+          "ember_king/animations/idle/south/00.webp",
+          "ember_king/animations/idle/south/01.webp",
+          "ember_king/animations/idle/south/02.webp",
+          "ember_king/animations/idle/south/03.webp",
+          "ember_king/animations/idle/south/04.webp"
+        ],
+        "south-east": [
+          "ember_king/animations/idle/south-east/00.webp",
+          "ember_king/animations/idle/south-east/01.webp",
+          "ember_king/animations/idle/south-east/02.webp",
+          "ember_king/animations/idle/south-east/03.webp",
+          "ember_king/animations/idle/south-east/04.webp"
+        ],
+        "east": [
+          "ember_king/animations/idle/east/00.webp",
+          "ember_king/animations/idle/east/01.webp",
+          "ember_king/animations/idle/east/02.webp",
+          "ember_king/animations/idle/east/03.webp",
+          "ember_king/animations/idle/east/04.webp"
+        ],
+        "north-east": [
+          "ember_king/animations/idle/north-east/00.webp",
+          "ember_king/animations/idle/north-east/01.webp",
+          "ember_king/animations/idle/north-east/02.webp",
+          "ember_king/animations/idle/north-east/03.webp",
+          "ember_king/animations/idle/north-east/04.webp"
+        ],
+        "north": [
+          "ember_king/animations/idle/north/00.webp",
+          "ember_king/animations/idle/north/01.webp",
+          "ember_king/animations/idle/north/02.webp",
+          "ember_king/animations/idle/north/03.webp",
+          "ember_king/animations/idle/north/04.webp"
+        ],
+        "south-west": [
+          "ember_king/animations/idle/south-west/00.webp",
+          "ember_king/animations/idle/south-west/01.webp",
+          "ember_king/animations/idle/south-west/02.webp",
+          "ember_king/animations/idle/south-west/03.webp",
+          "ember_king/animations/idle/south-west/04.webp"
+        ],
+        "west": [
+          "ember_king/animations/idle/west/00.webp",
+          "ember_king/animations/idle/west/01.webp",
+          "ember_king/animations/idle/west/02.webp",
+          "ember_king/animations/idle/west/03.webp",
+          "ember_king/animations/idle/west/04.webp"
+        ],
+        "north-west": [
+          "ember_king/animations/idle/north-west/00.webp",
+          "ember_king/animations/idle/north-west/01.webp",
+          "ember_king/animations/idle/north-west/02.webp",
+          "ember_king/animations/idle/north-west/03.webp",
+          "ember_king/animations/idle/north-west/04.webp"
+        ]
+      },
+      "strips": {
+        "south": "ember_king/animations/idle__south.webp",
+        "south-east": "ember_king/animations/idle__south-east.webp",
+        "east": "ember_king/animations/idle__east.webp",
+        "north-east": "ember_king/animations/idle__north-east.webp",
+        "north": "ember_king/animations/idle__north.webp",
+        "south-west": "ember_king/animations/idle__south-west.webp",
+        "west": "ember_king/animations/idle__west.webp",
+        "north-west": "ember_king/animations/idle__north-west.webp"
+      }
+    },
+    "walk": {
+      "directions": {
+        "south": {
+          "status": "warn",
+          "step_mean": 0.1411,
+          "step_max": 0.1729,
+          "drift": 6.21,
+          "loop": 0.2272,
+          "loop_ratio": 1.61,
+          "travel": 2.43,
+          "pin": 0.879,
+          "pad": 1,
+          "canvas": [
+            178,
+            178
+          ],
+          "reasons": [
+            "drifts 6.2 px — eyeball it",
+            "canvas grown by 1 px a side to hold the motion"
+          ],
+          "sub": "fae5fb44-ce93-4230-9b48-d2485de07da4",
+          "group": "ee25a881-5812-4d9f-bfdd-82f22ec664c5",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "generated_at": "2026-09-09T21:14:53+00:00"
+        },
+        "south-east": {
+          "status": "warn",
+          "step_mean": 0.2066,
+          "step_max": 0.2519,
+          "drift": 7.57,
+          "loop": 0.4024,
+          "loop_ratio": 1.95,
+          "travel": 1.23,
+          "pin": 0.82,
+          "pad": 4,
+          "canvas": [
+            184,
+            184
+          ],
+          "reasons": [
+            "drifts 7.6 px — eyeball it",
+            "canvas grown by 4 px a side to hold the motion"
+          ],
+          "sub": "2535fe34-0e8e-4d99-9183-a83e142f05d6",
+          "group": "f2029a75-4f34-4997-876b-15c226f84652",
+          "takes": 3,
+          "version": 3,
+          "mirrored": false,
+          "generated_at": "2026-09-09T21:36:01+00:00"
+        },
+        "east": {
+          "status": "pass",
+          "step_mean": 0.1912,
+          "step_max": 0.2651,
+          "drift": 5.28,
+          "loop": 0.2937,
+          "loop_ratio": 1.54,
+          "travel": 2.1,
+          "pin": 0.81,
+          "pad": 0,
+          "canvas": [
+            176,
+            176
+          ],
+          "reasons": [],
+          "sub": "21ed23de-f35a-4d1e-8d9b-c6220404e29f",
+          "group": "d7be1abf-dcc0-46dc-a83d-d8b670268428",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "generated_at": "2026-09-09T21:14:54+00:00"
+        },
+        "north-east": {
+          "status": "warn",
+          "step_mean": 0.2008,
+          "step_max": 0.2542,
+          "drift": 6.89,
+          "loop": 0.3521,
+          "loop_ratio": 1.75,
+          "travel": 0.87,
+          "pin": 0.806,
+          "pad": 2,
+          "canvas": [
+            180,
+            180
+          ],
+          "reasons": [
+            "drifts 6.9 px — eyeball it",
+            "canvas grown by 2 px a side to hold the motion"
+          ],
+          "sub": "afb6d48a-82ec-49bb-a843-b4cf09015c91",
+          "group": "db7d3f0c-8929-4de8-ab83-0ff5c7ab19a6",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "generated_at": "2026-09-09T21:14:55+00:00"
+        },
+        "north": {
+          "status": "warn",
+          "step_mean": 0.1484,
+          "step_max": 0.1768,
+          "drift": 8.18,
+          "loop": 0.2468,
+          "loop_ratio": 1.66,
+          "travel": 0.69,
+          "pin": 0.899,
+          "pad": 0,
+          "canvas": [
+            176,
+            176
+          ],
+          "reasons": [
+            "drifts 8.2 px — eyeball it"
+          ],
+          "sub": "d2a5b67e-ac82-4973-a037-cfbd3eb6435d",
+          "group": "ed59b216-076f-4cb8-aa20-751ac59f64e8",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "generated_at": "2026-09-09T21:14:56+00:00"
+        },
+        "west": {
+          "status": "pass",
+          "step_mean": 0.1912,
+          "step_max": 0.2651,
+          "drift": 5.28,
+          "loop": 0.2937,
+          "loop_ratio": 1.54,
+          "travel": 2.1,
+          "pin": 0.81,
+          "pad": 0,
+          "canvas": [
+            176,
+            176
+          ],
+          "reasons": [],
+          "sub": "21ed23de-f35a-4d1e-8d9b-c6220404e29f",
+          "group": "d7be1abf-dcc0-46dc-a83d-d8b670268428",
+          "takes": 1,
+          "version": 1,
+          "mirrored": true,
+          "generated_at": "2026-09-09T21:14:54+00:00",
+          "source": "east"
+        },
+        "north-west": {
+          "status": "warn",
+          "step_mean": 0.2008,
+          "step_max": 0.2542,
+          "drift": 6.89,
+          "loop": 0.3521,
+          "loop_ratio": 1.75,
+          "travel": 0.87,
+          "pin": 0.806,
+          "pad": 2,
+          "canvas": [
+            180,
+            180
+          ],
+          "reasons": [
+            "drifts 6.9 px — eyeball it",
+            "canvas grown by 2 px a side to hold the motion"
+          ],
+          "sub": "afb6d48a-82ec-49bb-a843-b4cf09015c91",
+          "group": "db7d3f0c-8929-4de8-ab83-0ff5c7ab19a6",
+          "takes": 1,
+          "version": 1,
+          "mirrored": true,
+          "generated_at": "2026-09-09T21:14:55+00:00",
+          "source": "north-east"
+        },
+        "south-west": {
+          "status": "warn",
+          "step_mean": 0.2066,
+          "step_max": 0.2519,
+          "drift": 7.57,
+          "loop": 0.4024,
+          "loop_ratio": 1.95,
+          "travel": 1.23,
+          "pin": 0.82,
+          "pad": 4,
+          "canvas": [
+            184,
+            184
+          ],
+          "reasons": [
+            "drifts 7.6 px — eyeball it",
+            "canvas grown by 4 px a side to hold the motion"
+          ],
+          "sub": "2535fe34-0e8e-4d99-9183-a83e142f05d6",
+          "group": "f2029a75-4f34-4997-876b-15c226f84652",
+          "takes": 3,
+          "version": 3,
+          "mirrored": true,
+          "generated_at": "2026-09-09T21:36:01+00:00",
+          "source": "south-east"
+        }
+      },
+      "action": "walk loop, full walk cycle in place, legs alternate naturally, normal calm walking pace, body stays centered, seamless loop whose last frame leads straight back into the first, no turning",
+      "frame_paths": {
+        "south": [
+          "ember_king/animations/walk/south/00.webp",
+          "ember_king/animations/walk/south/01.webp",
+          "ember_king/animations/walk/south/02.webp",
+          "ember_king/animations/walk/south/03.webp",
+          "ember_king/animations/walk/south/04.webp",
+          "ember_king/animations/walk/south/05.webp"
+        ],
+        "south-east": [
+          "ember_king/animations/walk/south-east/00.webp",
+          "ember_king/animations/walk/south-east/01.webp",
+          "ember_king/animations/walk/south-east/02.webp",
+          "ember_king/animations/walk/south-east/03.webp",
+          "ember_king/animations/walk/south-east/04.webp",
+          "ember_king/animations/walk/south-east/05.webp"
+        ],
+        "east": [
+          "ember_king/animations/walk/east/00.webp",
+          "ember_king/animations/walk/east/01.webp",
+          "ember_king/animations/walk/east/02.webp",
+          "ember_king/animations/walk/east/03.webp",
+          "ember_king/animations/walk/east/04.webp",
+          "ember_king/animations/walk/east/05.webp"
+        ],
+        "north-east": [
+          "ember_king/animations/walk/north-east/00.webp",
+          "ember_king/animations/walk/north-east/01.webp",
+          "ember_king/animations/walk/north-east/02.webp",
+          "ember_king/animations/walk/north-east/03.webp",
+          "ember_king/animations/walk/north-east/04.webp",
+          "ember_king/animations/walk/north-east/05.webp"
+        ],
+        "north": [
+          "ember_king/animations/walk/north/00.webp",
+          "ember_king/animations/walk/north/01.webp",
+          "ember_king/animations/walk/north/02.webp",
+          "ember_king/animations/walk/north/03.webp",
+          "ember_king/animations/walk/north/04.webp",
+          "ember_king/animations/walk/north/05.webp"
+        ],
+        "west": [
+          "ember_king/animations/walk/west/00.webp",
+          "ember_king/animations/walk/west/01.webp",
+          "ember_king/animations/walk/west/02.webp",
+          "ember_king/animations/walk/west/03.webp",
+          "ember_king/animations/walk/west/04.webp",
+          "ember_king/animations/walk/west/05.webp"
+        ],
+        "north-west": [
+          "ember_king/animations/walk/north-west/00.webp",
+          "ember_king/animations/walk/north-west/01.webp",
+          "ember_king/animations/walk/north-west/02.webp",
+          "ember_king/animations/walk/north-west/03.webp",
+          "ember_king/animations/walk/north-west/04.webp",
+          "ember_king/animations/walk/north-west/05.webp"
+        ],
+        "south-west": [
+          "ember_king/animations/walk/south-west/00.webp",
+          "ember_king/animations/walk/south-west/01.webp",
+          "ember_king/animations/walk/south-west/02.webp",
+          "ember_king/animations/walk/south-west/03.webp",
+          "ember_king/animations/walk/south-west/04.webp",
+          "ember_king/animations/walk/south-west/05.webp"
+        ]
+      },
+      "strips": {
+        "south": "ember_king/animations/walk__south.webp",
+        "south-east": "ember_king/animations/walk__south-east.webp",
+        "east": "ember_king/animations/walk__east.webp",
+        "north-east": "ember_king/animations/walk__north-east.webp",
+        "north": "ember_king/animations/walk__north.webp",
+        "west": "ember_king/animations/walk__west.webp",
+        "north-west": "ember_king/animations/walk__north-west.webp",
+        "south-west": "ember_king/animations/walk__south-west.webp"
+      }
+    },
+    "attack": {
+      "directions": {
+        "south": {
+          "status": "fail",
+          "step_mean": 0.1725,
+          "step_max": 0.2249,
+          "drift": 2.5,
+          "loop": 0.0001,
+          "loop_ratio": 0.0,
+          "travel": 2.5,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": 0.054,
+          "peak": 0.2841,
+          "reach": 0.046,
+          "canvas": [
+            176,
+            176
+          ],
+          "reasons": [
+            "no strike, just a lean: nothing reaches past 0.05 of the body"
+          ],
+          "sub": "6b083609-cec9-4c63-a450-f79959efaa14",
+          "group": "74b25012-547e-4380-b111-e0a321354491",
+          "takes": 1,
+          "version": 6,
+          "mirrored": false,
+          "generated_at": "2026-09-09T23:08:31+00:00",
+          "action": "Claw Swipe - Raises one front paw and performs one quick swipe forward, then returns to idle stance",
+          "tries": 3
+        },
+        "south-east": {
+          "status": "fail",
+          "step_mean": 0.1202,
+          "step_max": 0.1613,
+          "drift": 4.99,
+          "loop": 0.0002,
+          "loop_ratio": 0.0,
+          "travel": 3.47,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": 0.133,
+          "peak": 0.1892,
+          "reach": 0.08,
+          "canvas": [
+            176,
+            176
+          ],
+          "reasons": [
+            "no strike, just a lean: nothing reaches past 0.08 of the body"
+          ],
+          "sub": "4b993723-7462-4884-9df3-13707a650aab",
+          "group": "2f2aea75-d904-4057-b06c-075f933b08dc",
+          "takes": 1,
+          "version": 3,
+          "mirrored": false,
+          "generated_at": "2026-09-09T22:29:00+00:00",
+          "action": "Claw Slam - Raises one massive clawed hand and slams it down once, then returns to idle stance"
+        },
+        "east": {
+          "status": "pass",
+          "step_mean": 0.2519,
+          "step_max": 0.3134,
+          "drift": 10.11,
+          "loop": 0.0001,
+          "loop_ratio": 0.0,
+          "travel": 5.49,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": 0.111,
+          "peak": 0.444,
+          "reach": 0.419,
+          "canvas": [
+            176,
+            176
+          ],
+          "reasons": [],
+          "sub": "fd4507dd-d4df-41ec-b578-4038b96f3725",
+          "group": "f6b1aa68-1543-466e-ba40-e8665f3e9f87",
+          "takes": 1,
+          "version": 3,
+          "mirrored": false,
+          "generated_at": "2026-09-09T22:29:01+00:00",
+          "action": "Claw Slam - Raises one massive clawed hand and slams it down once, then returns to idle stance"
+        },
+        "north-east": {
+          "status": "fail",
+          "step_mean": 0.1761,
+          "step_max": 0.2266,
+          "drift": 3.13,
+          "loop": 0.0,
+          "loop_ratio": 0.0,
+          "travel": 2.05,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": 0.013,
+          "peak": 0.2837,
+          "reach": 0.13,
+          "canvas": [
+            176,
+            176
+          ],
+          "reasons": [
+            "no strike, just a lean: nothing reaches past 0.13 of the body"
+          ],
+          "sub": "49985401-e80a-4c54-830e-33c91cc91dae",
+          "group": "b84b51ae-623b-49c7-8053-5d16bf2368f3",
+          "takes": 1,
+          "version": 3,
+          "mirrored": false,
+          "generated_at": "2026-09-09T22:29:01+00:00",
+          "action": "Claw Slam - Raises one massive clawed hand and slams it down once, then returns to idle stance"
+        },
+        "north": {
+          "status": "fail",
+          "step_mean": 0.1082,
+          "step_max": 0.1608,
+          "drift": 0.51,
+          "loop": 0.0002,
+          "loop_ratio": 0.0,
+          "travel": 0.18,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": 0.099,
+          "peak": 0.1875,
+          "reach": 0.04,
+          "canvas": [
+            176,
+            176
+          ],
+          "reasons": [
+            "no strike, just a lean: nothing reaches past 0.04 of the body"
+          ],
+          "sub": "e5580811-6745-4fc1-82d6-ea725e4ec379",
+          "group": "dbffa373-853b-4b02-b7c8-3e6b43d23f73",
+          "takes": 1,
+          "version": 3,
+          "mirrored": false,
+          "generated_at": "2026-09-09T22:29:02+00:00",
+          "action": "Claw Slam - Raises one massive clawed hand and slams it down once, then returns to idle stance"
+        },
+        "south-west": {
+          "status": "pass",
+          "step_mean": 0.1202,
+          "step_max": 0.1613,
+          "drift": 4.99,
+          "loop": 0.0002,
+          "loop_ratio": 0.0,
+          "travel": 3.47,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": 0.133,
+          "peak": 0.1892,
+          "canvas": [
+            176,
+            176
+          ],
+          "reasons": [],
+          "sub": "4b993723-7462-4884-9df3-13707a650aab",
+          "group": "2f2aea75-d904-4057-b06c-075f933b08dc",
+          "takes": 1,
+          "version": 3,
+          "mirrored": true,
+          "generated_at": "2026-09-09T22:29:00+00:00",
+          "action": "Claw Slam - Raises one massive clawed hand and slams it down once, then returns to idle stance",
+          "source": "south-east"
+        },
+        "west": {
+          "status": "pass",
+          "step_mean": 0.2519,
+          "step_max": 0.3134,
+          "drift": 10.11,
+          "loop": 0.0001,
+          "loop_ratio": 0.0,
+          "travel": 5.49,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": 0.111,
+          "peak": 0.444,
+          "reach": 0.419,
+          "canvas": [
+            176,
+            176
+          ],
+          "reasons": [],
+          "sub": "fd4507dd-d4df-41ec-b578-4038b96f3725",
+          "group": "f6b1aa68-1543-466e-ba40-e8665f3e9f87",
+          "takes": 1,
+          "version": 3,
+          "mirrored": true,
+          "generated_at": "2026-09-09T22:29:01+00:00",
+          "action": "Claw Slam - Raises one massive clawed hand and slams it down once, then returns to idle stance",
+          "source": "east"
+        },
+        "north-west": {
+          "status": "pass",
+          "step_mean": 0.1761,
+          "step_max": 0.2266,
+          "drift": 3.13,
+          "loop": 0.0,
+          "loop_ratio": 0.0,
+          "travel": 2.05,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": 0.013,
+          "peak": 0.2837,
+          "canvas": [
+            176,
+            176
+          ],
+          "reasons": [],
+          "sub": "49985401-e80a-4c54-830e-33c91cc91dae",
+          "group": "b84b51ae-623b-49c7-8053-5d16bf2368f3",
+          "takes": 1,
+          "version": 3,
+          "mirrored": true,
+          "generated_at": "2026-09-09T22:29:01+00:00",
+          "action": "Claw Slam - Raises one massive clawed hand and slams it down once, then returns to idle stance",
+          "source": "north-east"
+        }
+      },
+      "action": "Claw Slam - Raises one massive clawed hand and slams it down once, then returns to idle stance",
+      "frame_paths": {
+        "south": [
+          "ember_king/animations/attack/south/00.webp",
+          "ember_king/animations/attack/south/01.webp",
+          "ember_king/animations/attack/south/02.webp",
+          "ember_king/animations/attack/south/03.webp",
+          "ember_king/animations/attack/south/04.webp"
+        ],
+        "south-east": [
+          "ember_king/animations/attack/south-east/00.webp",
+          "ember_king/animations/attack/south-east/01.webp",
+          "ember_king/animations/attack/south-east/02.webp",
+          "ember_king/animations/attack/south-east/03.webp",
+          "ember_king/animations/attack/south-east/04.webp"
+        ],
+        "east": [
+          "ember_king/animations/attack/east/00.webp",
+          "ember_king/animations/attack/east/01.webp",
+          "ember_king/animations/attack/east/02.webp",
+          "ember_king/animations/attack/east/03.webp",
+          "ember_king/animations/attack/east/04.webp"
+        ],
+        "north-east": [
+          "ember_king/animations/attack/north-east/00.webp",
+          "ember_king/animations/attack/north-east/01.webp",
+          "ember_king/animations/attack/north-east/02.webp",
+          "ember_king/animations/attack/north-east/03.webp",
+          "ember_king/animations/attack/north-east/04.webp"
+        ],
+        "north": [
+          "ember_king/animations/attack/north/00.webp",
+          "ember_king/animations/attack/north/01.webp",
+          "ember_king/animations/attack/north/02.webp",
+          "ember_king/animations/attack/north/03.webp",
+          "ember_king/animations/attack/north/04.webp"
+        ],
+        "south-west": [
+          "ember_king/animations/attack/south-west/00.webp",
+          "ember_king/animations/attack/south-west/01.webp",
+          "ember_king/animations/attack/south-west/02.webp",
+          "ember_king/animations/attack/south-west/03.webp",
+          "ember_king/animations/attack/south-west/04.webp"
+        ],
+        "west": [
+          "ember_king/animations/attack/west/00.webp",
+          "ember_king/animations/attack/west/01.webp",
+          "ember_king/animations/attack/west/02.webp",
+          "ember_king/animations/attack/west/03.webp",
+          "ember_king/animations/attack/west/04.webp"
+        ],
+        "north-west": [
+          "ember_king/animations/attack/north-west/00.webp",
+          "ember_king/animations/attack/north-west/01.webp",
+          "ember_king/animations/attack/north-west/02.webp",
+          "ember_king/animations/attack/north-west/03.webp",
+          "ember_king/animations/attack/north-west/04.webp"
+        ]
+      },
+      "strips": {
+        "south": "ember_king/animations/attack__south.webp",
+        "south-east": "ember_king/animations/attack__south-east.webp",
+        "east": "ember_king/animations/attack__east.webp",
+        "north-east": "ember_king/animations/attack__north-east.webp",
+        "north": "ember_king/animations/attack__north.webp",
+        "south-west": "ember_king/animations/attack__south-west.webp",
+        "west": "ember_king/animations/attack__west.webp",
+        "north-west": "ember_king/animations/attack__north-west.webp"
+      }
+    },
+    "attack_try": {
+      "directions": {
+        "south": {
+          "status": "fail",
+          "step_mean": 0.1835,
+          "step_max": 0.3635,
+          "drift": 5.35,
+          "loop": 0.4017,
+          "loop_ratio": 2.19,
+          "travel": 1.57,
+          "pin": 1.0,
+          "pad": 2,
+          "flash": 0.381,
+          "peak": 0.4017,
+          "reach": 0.138,
+          "canvas": [
+            180,
+            180
+          ],
+          "reasons": [
+            "no strike, just a lean: nothing reaches past 0.14 of the body",
+            "some bright effect pixels (0.38) — eyeball it",
+            "canvas grown by 2 px a side to hold the motion"
+          ],
+          "sub": "6acc06eb-fa27-453e-86a8-86198d4600e3",
+          "group": "ad513d60-20ba-4a18-831f-d5c62601b37b",
+          "takes": 1,
+          "version": 4,
+          "mirrored": false,
+          "generated_at": "2026-09-10T21:09:41+00:00",
+          "action": "Claw Slam - Raises one massive clawed hand high and slams it straight down, a big aggressive attack with the whole body behind it, wide exaggerated motion",
+          "tries": 2,
+          "rolls": 4,
+          "intensity": 2,
+          "frames": 7
+        },
+        "south-east": {
+          "status": "pass",
+          "step_mean": 0.2524,
+          "step_max": 0.5956,
+          "drift": 6.52,
+          "loop": 0.5765,
+          "loop_ratio": 2.28,
+          "travel": 7.53,
+          "pin": 1.0,
+          "pad": 6,
+          "flash": 0.169,
+          "peak": 0.6285,
+          "reach": 0.327,
+          "canvas": [
+            188,
+            188
+          ],
+          "reasons": [
+            "canvas grown by 6 px a side to hold the motion"
+          ],
+          "sub": "fe236cfa-eac3-4a75-860a-81eb26b9ea11",
+          "group": "6b3d73f1-e97f-4d1e-a73f-62ba131b069a",
+          "takes": 1,
+          "version": 2,
+          "mirrored": false,
+          "generated_at": "2026-09-10T20:13:33+00:00",
+          "action": "Claw Slam - Raises one massive clawed hand high and slams it straight down, a big aggressive attack with the whole body behind it, wide exaggerated motion",
+          "tries": 1,
+          "rolls": 2,
+          "intensity": 2
+        },
+        "east": {
+          "status": "pass",
+          "step_mean": 0.1797,
+          "step_max": 0.3341,
+          "drift": 10.46,
+          "loop": 0.4427,
+          "loop_ratio": 2.46,
+          "travel": 4.96,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": -0.005,
+          "peak": 0.4427,
+          "reach": 0.339,
+          "canvas": [
+            176,
+            176
+          ],
+          "reasons": [],
+          "sub": "0426690a-3b09-445b-84fe-d0c317883cfe",
+          "group": "c1084731-17f5-48b4-8000-0b45ed90f89f",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "generated_at": "2026-09-10T19:44:17+00:00",
+          "action": "Claw Slam - Raises one massive clawed hand high and slams it straight down",
+          "tries": 1,
+          "rolls": 1,
+          "intensity": 2
+        },
+        "north-east": {
+          "status": "pass",
+          "step_mean": 0.2975,
+          "step_max": 0.506,
+          "drift": 11.02,
+          "loop": 0.6134,
+          "loop_ratio": 2.06,
+          "travel": 11.84,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": 0.167,
+          "peak": 0.6134,
+          "reach": 0.44,
+          "canvas": [
+            176,
+            176
+          ],
+          "reasons": [],
+          "sub": "32d3be89-5282-436b-b97e-7cd0bf4d4e88",
+          "group": "7295df8a-8b9e-45a5-bb49-e7b3a9005f5a",
+          "takes": 1,
+          "version": 3,
+          "mirrored": false,
+          "generated_at": "2026-09-10T20:45:05+00:00",
+          "action": "Claw Slam - Raises one massive clawed hand high and slams it straight down, a big aggressive attack with the whole body behind it, wide exaggerated motion",
+          "tries": 1,
+          "rolls": 3,
+          "intensity": 2,
+          "frames": 5
+        },
+        "north": {
+          "status": "warn",
+          "step_mean": 0.2414,
+          "step_max": 0.4055,
+          "drift": 8.72,
+          "loop": 0.4345,
+          "loop_ratio": 1.8,
+          "travel": 0.27,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": 0.012,
+          "peak": 0.4345,
+          "reach": 0.145,
+          "canvas": [
+            176,
+            176
+          ],
+          "reasons": [
+            "shallow strike: reach 0.15 — eyeball it"
+          ],
+          "sub": "be64cfaa-2f7d-4a80-8092-1e39ada3a42e",
+          "group": "244ef7e5-0afd-4911-b456-f9677b41124e",
+          "takes": 1,
+          "version": 4,
+          "mirrored": false,
+          "generated_at": "2026-09-10T21:09:41+00:00",
+          "action": "Claw Slam - Raises one massive clawed hand high and slams it straight down, a big aggressive attack with the whole body behind it, wide exaggerated motion",
+          "tries": 2,
+          "rolls": 4,
+          "intensity": 2,
+          "frames": 7
+        },
+        "west": {
+          "status": "pass",
+          "step_mean": 0.1797,
+          "step_max": 0.3341,
+          "drift": 10.46,
+          "loop": 0.4427,
+          "loop_ratio": 2.46,
+          "travel": 4.96,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": -0.005,
+          "peak": 0.4427,
+          "reach": 0.339,
+          "canvas": [
+            176,
+            176
+          ],
+          "reasons": [],
+          "sub": "0426690a-3b09-445b-84fe-d0c317883cfe",
+          "group": "c1084731-17f5-48b4-8000-0b45ed90f89f",
+          "takes": 1,
+          "version": 1,
+          "mirrored": true,
+          "generated_at": "2026-09-10T19:44:17+00:00",
+          "action": "Claw Slam - Raises one massive clawed hand high and slams it straight down",
+          "tries": 1,
+          "rolls": 1,
+          "intensity": 2,
+          "source": "east"
+        },
+        "south-west": {
+          "status": "pass",
+          "step_mean": 0.2524,
+          "step_max": 0.5956,
+          "drift": 6.52,
+          "loop": 0.5765,
+          "loop_ratio": 2.28,
+          "travel": 7.53,
+          "pin": 1.0,
+          "pad": 6,
+          "flash": 0.169,
+          "peak": 0.6285,
+          "reach": 0.327,
+          "canvas": [
+            188,
+            188
+          ],
+          "reasons": [
+            "canvas grown by 6 px a side to hold the motion"
+          ],
+          "sub": "fe236cfa-eac3-4a75-860a-81eb26b9ea11",
+          "group": "6b3d73f1-e97f-4d1e-a73f-62ba131b069a",
+          "takes": 1,
+          "version": 2,
+          "mirrored": true,
+          "generated_at": "2026-09-10T20:13:33+00:00",
+          "action": "Claw Slam - Raises one massive clawed hand high and slams it straight down, a big aggressive attack with the whole body behind it, wide exaggerated motion",
+          "tries": 1,
+          "rolls": 2,
+          "intensity": 2,
+          "source": "south-east"
+        },
+        "north-west": {
+          "status": "pass",
+          "step_mean": 0.2975,
+          "step_max": 0.506,
+          "drift": 11.02,
+          "loop": 0.6134,
+          "loop_ratio": 2.06,
+          "travel": 11.84,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": 0.167,
+          "peak": 0.6134,
+          "reach": 0.44,
+          "canvas": [
+            176,
+            176
+          ],
+          "reasons": [],
+          "sub": "32d3be89-5282-436b-b97e-7cd0bf4d4e88",
+          "group": "7295df8a-8b9e-45a5-bb49-e7b3a9005f5a",
+          "takes": 1,
+          "version": 3,
+          "mirrored": true,
+          "generated_at": "2026-09-10T20:45:05+00:00",
+          "action": "Claw Slam - Raises one massive clawed hand high and slams it straight down, a big aggressive attack with the whole body behind it, wide exaggerated motion",
+          "tries": 1,
+          "rolls": 3,
+          "intensity": 2,
+          "frames": 5,
+          "source": "north-east"
+        }
+      },
+      "action": "Claw Slam - Raises one massive clawed hand high and slams it straight down, a big aggressive attack with the whole body behind it, wide exaggerated motion",
+      "frame_paths": {
+        "south": [
+          "ember_king/animations/attack_try/south/00.webp",
+          "ember_king/animations/attack_try/south/01.webp",
+          "ember_king/animations/attack_try/south/02.webp",
+          "ember_king/animations/attack_try/south/03.webp",
+          "ember_king/animations/attack_try/south/04.webp",
+          "ember_king/animations/attack_try/south/05.webp",
+          "ember_king/animations/attack_try/south/06.webp"
+        ],
+        "south-east": [
+          "ember_king/animations/attack_try/south-east/00.webp",
+          "ember_king/animations/attack_try/south-east/01.webp",
+          "ember_king/animations/attack_try/south-east/02.webp",
+          "ember_king/animations/attack_try/south-east/03.webp",
+          "ember_king/animations/attack_try/south-east/04.webp"
+        ],
+        "east": [
+          "ember_king/animations/attack_try/east/00.webp",
+          "ember_king/animations/attack_try/east/01.webp",
+          "ember_king/animations/attack_try/east/02.webp",
+          "ember_king/animations/attack_try/east/03.webp",
+          "ember_king/animations/attack_try/east/04.webp"
+        ],
+        "north-east": [
+          "ember_king/animations/attack_try/north-east/00.webp",
+          "ember_king/animations/attack_try/north-east/01.webp",
+          "ember_king/animations/attack_try/north-east/02.webp",
+          "ember_king/animations/attack_try/north-east/03.webp",
+          "ember_king/animations/attack_try/north-east/04.webp"
+        ],
+        "north": [
+          "ember_king/animations/attack_try/north/00.webp",
+          "ember_king/animations/attack_try/north/01.webp",
+          "ember_king/animations/attack_try/north/02.webp",
+          "ember_king/animations/attack_try/north/03.webp",
+          "ember_king/animations/attack_try/north/04.webp",
+          "ember_king/animations/attack_try/north/05.webp",
+          "ember_king/animations/attack_try/north/06.webp"
+        ],
+        "west": [
+          "ember_king/animations/attack_try/west/00.webp",
+          "ember_king/animations/attack_try/west/01.webp",
+          "ember_king/animations/attack_try/west/02.webp",
+          "ember_king/animations/attack_try/west/03.webp",
+          "ember_king/animations/attack_try/west/04.webp"
+        ],
+        "south-west": [
+          "ember_king/animations/attack_try/south-west/00.webp",
+          "ember_king/animations/attack_try/south-west/01.webp",
+          "ember_king/animations/attack_try/south-west/02.webp",
+          "ember_king/animations/attack_try/south-west/03.webp",
+          "ember_king/animations/attack_try/south-west/04.webp"
+        ],
+        "north-west": [
+          "ember_king/animations/attack_try/north-west/00.webp",
+          "ember_king/animations/attack_try/north-west/01.webp",
+          "ember_king/animations/attack_try/north-west/02.webp",
+          "ember_king/animations/attack_try/north-west/03.webp",
+          "ember_king/animations/attack_try/north-west/04.webp"
+        ]
+      },
+      "strips": {
+        "south": "ember_king/animations/attack_try__south.webp",
+        "south-east": "ember_king/animations/attack_try__south-east.webp",
+        "east": "ember_king/animations/attack_try__east.webp",
+        "north-east": "ember_king/animations/attack_try__north-east.webp",
+        "north": "ember_king/animations/attack_try__north.webp",
+        "west": "ember_king/animations/attack_try__west.webp",
+        "south-west": "ember_king/animations/attack_try__south-west.webp",
+        "north-west": "ember_king/animations/attack_try__north-west.webp"
+      },
+      "intensity": 2
+    }
   }
- },
- "approved_at": "2026-09-09T19:59:19+00:00",
- "animations": {
-  "idle": {
-   "directions": {
-    "south": {
-     "status": "pass",
-     "step_mean": 0.0608,
-     "step_max": 0.0712,
-     "drift": 2.36,
-     "loop": 0.0001,
-     "pin": 1.0,
-     "reasons": [],
-     "sub": "59c8856c-f103-455e-aedb-efce36e31c9f",
-     "takes": 1,
-     "version": 1,
-     "mirrored": false,
-     "generated_at": "2026-09-09T20:06:32+00:00",
-     "cut": 0
-    },
-    "south-east": {
-     "status": "pass",
-     "step_mean": 0.068,
-     "step_max": 0.0764,
-     "drift": 3.5,
-     "loop": 0.0004,
-     "pin": 1.0,
-     "reasons": [],
-     "sub": "a74ea878-8774-41f9-b7c0-f605431cc0d6",
-     "takes": 1,
-     "version": 1,
-     "mirrored": false,
-     "generated_at": "2026-09-09T20:06:33+00:00",
-     "cut": 0
-    },
-    "east": {
-     "status": "pass",
-     "step_mean": 0.0541,
-     "step_max": 0.0837,
-     "drift": 1.48,
-     "loop": 0.0001,
-     "pin": 1.0,
-     "reasons": [],
-     "sub": "63391a0c-7963-4fa0-86c8-027c4c0eb518",
-     "takes": 1,
-     "version": 1,
-     "mirrored": false,
-     "generated_at": "2026-09-09T20:06:33+00:00",
-     "cut": 0
-    },
-    "north-east": {
-     "status": "pass",
-     "step_mean": 0.0611,
-     "step_max": 0.0989,
-     "drift": 2.37,
-     "loop": 0.0,
-     "pin": 1.0,
-     "reasons": [],
-     "sub": "7af9a872-b8b4-4eea-8032-241929d4338d",
-     "takes": 2,
-     "version": 2,
-     "mirrored": false,
-     "generated_at": "2026-09-09T20:29:01+00:00",
-     "cut": 0
-    },
-    "north": {
-     "status": "pass",
-     "step_mean": 0.0777,
-     "step_max": 0.085,
-     "drift": 1.03,
-     "loop": 0.0,
-     "pin": 1.0,
-     "reasons": [],
-     "sub": "dbbb84f2-2602-4e9a-a891-a41b70ea248d",
-     "takes": 1,
-     "version": 1,
-     "mirrored": false,
-     "generated_at": "2026-09-09T20:06:35+00:00",
-     "cut": 0
-    },
-    "south-west": {
-     "status": "pass",
-     "step_mean": 0.068,
-     "step_max": 0.0764,
-     "drift": 3.5,
-     "loop": 0.0004,
-     "pin": 1.0,
-     "reasons": [],
-     "sub": "a74ea878-8774-41f9-b7c0-f605431cc0d6",
-     "takes": 1,
-     "version": 1,
-     "mirrored": true,
-     "generated_at": "2026-09-09T20:06:33+00:00",
-     "cut": 0,
-     "source": "south-east"
-    },
-    "west": {
-     "status": "pass",
-     "step_mean": 0.0541,
-     "step_max": 0.0837,
-     "drift": 1.48,
-     "loop": 0.0001,
-     "pin": 1.0,
-     "reasons": [],
-     "sub": "63391a0c-7963-4fa0-86c8-027c4c0eb518",
-     "takes": 1,
-     "version": 1,
-     "mirrored": true,
-     "generated_at": "2026-09-09T20:06:33+00:00",
-     "cut": 0,
-     "source": "east"
-    },
-    "north-west": {
-     "status": "pass",
-     "step_mean": 0.0611,
-     "step_max": 0.0989,
-     "drift": 2.37,
-     "loop": 0.0,
-     "pin": 1.0,
-     "reasons": [],
-     "sub": "7af9a872-b8b4-4eea-8032-241929d4338d",
-     "takes": 2,
-     "version": 2,
-     "mirrored": true,
-     "generated_at": "2026-09-09T20:29:01+00:00",
-     "cut": 0,
-     "source": "north-east"
-    }
-   },
-   "action": "Calm still idle, breathing very slowly and subtly, chest and shoulders rise and fall a little, feet planted, no other movement, ends in the same neutral pose it started in",
-   "frame_paths": {
-    "south": [
-     "ember_king/animations/idle/south/00.webp",
-     "ember_king/animations/idle/south/01.webp",
-     "ember_king/animations/idle/south/02.webp",
-     "ember_king/animations/idle/south/03.webp",
-     "ember_king/animations/idle/south/04.webp"
-    ],
-    "south-east": [
-     "ember_king/animations/idle/south-east/00.webp",
-     "ember_king/animations/idle/south-east/01.webp",
-     "ember_king/animations/idle/south-east/02.webp",
-     "ember_king/animations/idle/south-east/03.webp",
-     "ember_king/animations/idle/south-east/04.webp"
-    ],
-    "east": [
-     "ember_king/animations/idle/east/00.webp",
-     "ember_king/animations/idle/east/01.webp",
-     "ember_king/animations/idle/east/02.webp",
-     "ember_king/animations/idle/east/03.webp",
-     "ember_king/animations/idle/east/04.webp"
-    ],
-    "north-east": [
-     "ember_king/animations/idle/north-east/00.webp",
-     "ember_king/animations/idle/north-east/01.webp",
-     "ember_king/animations/idle/north-east/02.webp",
-     "ember_king/animations/idle/north-east/03.webp",
-     "ember_king/animations/idle/north-east/04.webp"
-    ],
-    "north": [
-     "ember_king/animations/idle/north/00.webp",
-     "ember_king/animations/idle/north/01.webp",
-     "ember_king/animations/idle/north/02.webp",
-     "ember_king/animations/idle/north/03.webp",
-     "ember_king/animations/idle/north/04.webp"
-    ],
-    "south-west": [
-     "ember_king/animations/idle/south-west/00.webp",
-     "ember_king/animations/idle/south-west/01.webp",
-     "ember_king/animations/idle/south-west/02.webp",
-     "ember_king/animations/idle/south-west/03.webp",
-     "ember_king/animations/idle/south-west/04.webp"
-    ],
-    "west": [
-     "ember_king/animations/idle/west/00.webp",
-     "ember_king/animations/idle/west/01.webp",
-     "ember_king/animations/idle/west/02.webp",
-     "ember_king/animations/idle/west/03.webp",
-     "ember_king/animations/idle/west/04.webp"
-    ],
-    "north-west": [
-     "ember_king/animations/idle/north-west/00.webp",
-     "ember_king/animations/idle/north-west/01.webp",
-     "ember_king/animations/idle/north-west/02.webp",
-     "ember_king/animations/idle/north-west/03.webp",
-     "ember_king/animations/idle/north-west/04.webp"
-    ]
-   },
-   "strips": {
-    "south": "ember_king/animations/idle__south.webp",
-    "south-east": "ember_king/animations/idle__south-east.webp",
-    "east": "ember_king/animations/idle__east.webp",
-    "north-east": "ember_king/animations/idle__north-east.webp",
-    "north": "ember_king/animations/idle__north.webp",
-    "south-west": "ember_king/animations/idle__south-west.webp",
-    "west": "ember_king/animations/idle__west.webp",
-    "north-west": "ember_king/animations/idle__north-west.webp"
-   }
-  },
-  "walk": {
-   "directions": {
-    "south": {
-     "status": "warn",
-     "step_mean": 0.1411,
-     "step_max": 0.1729,
-     "drift": 6.21,
-     "loop": 0.2272,
-     "loop_ratio": 1.61,
-     "travel": 2.43,
-     "pin": 0.879,
-     "pad": 1,
-     "canvas": [
-      178,
-      178
-     ],
-     "reasons": [
-      "drifts 6.2 px — eyeball it",
-      "canvas grown by 1 px a side to hold the motion"
-     ],
-     "sub": "fae5fb44-ce93-4230-9b48-d2485de07da4",
-     "group": "ee25a881-5812-4d9f-bfdd-82f22ec664c5",
-     "takes": 1,
-     "version": 1,
-     "mirrored": false,
-     "generated_at": "2026-09-09T21:14:53+00:00"
-    },
-    "south-east": {
-     "status": "warn",
-     "step_mean": 0.2066,
-     "step_max": 0.2519,
-     "drift": 7.57,
-     "loop": 0.4024,
-     "loop_ratio": 1.95,
-     "travel": 1.23,
-     "pin": 0.82,
-     "pad": 4,
-     "canvas": [
-      184,
-      184
-     ],
-     "reasons": [
-      "drifts 7.6 px — eyeball it",
-      "canvas grown by 4 px a side to hold the motion"
-     ],
-     "sub": "2535fe34-0e8e-4d99-9183-a83e142f05d6",
-     "group": "f2029a75-4f34-4997-876b-15c226f84652",
-     "takes": 3,
-     "version": 3,
-     "mirrored": false,
-     "generated_at": "2026-09-09T21:36:01+00:00"
-    },
-    "east": {
-     "status": "pass",
-     "step_mean": 0.1912,
-     "step_max": 0.2651,
-     "drift": 5.28,
-     "loop": 0.2937,
-     "loop_ratio": 1.54,
-     "travel": 2.1,
-     "pin": 0.81,
-     "pad": 0,
-     "canvas": [
-      176,
-      176
-     ],
-     "reasons": [],
-     "sub": "21ed23de-f35a-4d1e-8d9b-c6220404e29f",
-     "group": "d7be1abf-dcc0-46dc-a83d-d8b670268428",
-     "takes": 1,
-     "version": 1,
-     "mirrored": false,
-     "generated_at": "2026-09-09T21:14:54+00:00"
-    },
-    "north-east": {
-     "status": "warn",
-     "step_mean": 0.2008,
-     "step_max": 0.2542,
-     "drift": 6.89,
-     "loop": 0.3521,
-     "loop_ratio": 1.75,
-     "travel": 0.87,
-     "pin": 0.806,
-     "pad": 2,
-     "canvas": [
-      180,
-      180
-     ],
-     "reasons": [
-      "drifts 6.9 px — eyeball it",
-      "canvas grown by 2 px a side to hold the motion"
-     ],
-     "sub": "afb6d48a-82ec-49bb-a843-b4cf09015c91",
-     "group": "db7d3f0c-8929-4de8-ab83-0ff5c7ab19a6",
-     "takes": 1,
-     "version": 1,
-     "mirrored": false,
-     "generated_at": "2026-09-09T21:14:55+00:00"
-    },
-    "north": {
-     "status": "warn",
-     "step_mean": 0.1484,
-     "step_max": 0.1768,
-     "drift": 8.18,
-     "loop": 0.2468,
-     "loop_ratio": 1.66,
-     "travel": 0.69,
-     "pin": 0.899,
-     "pad": 0,
-     "canvas": [
-      176,
-      176
-     ],
-     "reasons": [
-      "drifts 8.2 px — eyeball it"
-     ],
-     "sub": "d2a5b67e-ac82-4973-a037-cfbd3eb6435d",
-     "group": "ed59b216-076f-4cb8-aa20-751ac59f64e8",
-     "takes": 1,
-     "version": 1,
-     "mirrored": false,
-     "generated_at": "2026-09-09T21:14:56+00:00"
-    },
-    "west": {
-     "status": "pass",
-     "step_mean": 0.1912,
-     "step_max": 0.2651,
-     "drift": 5.28,
-     "loop": 0.2937,
-     "loop_ratio": 1.54,
-     "travel": 2.1,
-     "pin": 0.81,
-     "pad": 0,
-     "canvas": [
-      176,
-      176
-     ],
-     "reasons": [],
-     "sub": "21ed23de-f35a-4d1e-8d9b-c6220404e29f",
-     "group": "d7be1abf-dcc0-46dc-a83d-d8b670268428",
-     "takes": 1,
-     "version": 1,
-     "mirrored": true,
-     "generated_at": "2026-09-09T21:14:54+00:00",
-     "source": "east"
-    },
-    "north-west": {
-     "status": "warn",
-     "step_mean": 0.2008,
-     "step_max": 0.2542,
-     "drift": 6.89,
-     "loop": 0.3521,
-     "loop_ratio": 1.75,
-     "travel": 0.87,
-     "pin": 0.806,
-     "pad": 2,
-     "canvas": [
-      180,
-      180
-     ],
-     "reasons": [
-      "drifts 6.9 px — eyeball it",
-      "canvas grown by 2 px a side to hold the motion"
-     ],
-     "sub": "afb6d48a-82ec-49bb-a843-b4cf09015c91",
-     "group": "db7d3f0c-8929-4de8-ab83-0ff5c7ab19a6",
-     "takes": 1,
-     "version": 1,
-     "mirrored": true,
-     "generated_at": "2026-09-09T21:14:55+00:00",
-     "source": "north-east"
-    },
-    "south-west": {
-     "status": "warn",
-     "step_mean": 0.2066,
-     "step_max": 0.2519,
-     "drift": 7.57,
-     "loop": 0.4024,
-     "loop_ratio": 1.95,
-     "travel": 1.23,
-     "pin": 0.82,
-     "pad": 4,
-     "canvas": [
-      184,
-      184
-     ],
-     "reasons": [
-      "drifts 7.6 px — eyeball it",
-      "canvas grown by 4 px a side to hold the motion"
-     ],
-     "sub": "2535fe34-0e8e-4d99-9183-a83e142f05d6",
-     "group": "f2029a75-4f34-4997-876b-15c226f84652",
-     "takes": 3,
-     "version": 3,
-     "mirrored": true,
-     "generated_at": "2026-09-09T21:36:01+00:00",
-     "source": "south-east"
-    }
-   },
-   "action": "walk loop, full walk cycle in place, legs alternate naturally, normal calm walking pace, body stays centered, seamless loop whose last frame leads straight back into the first, no turning",
-   "frame_paths": {
-    "south": [
-     "ember_king/animations/walk/south/00.webp",
-     "ember_king/animations/walk/south/01.webp",
-     "ember_king/animations/walk/south/02.webp",
-     "ember_king/animations/walk/south/03.webp",
-     "ember_king/animations/walk/south/04.webp",
-     "ember_king/animations/walk/south/05.webp"
-    ],
-    "south-east": [
-     "ember_king/animations/walk/south-east/00.webp",
-     "ember_king/animations/walk/south-east/01.webp",
-     "ember_king/animations/walk/south-east/02.webp",
-     "ember_king/animations/walk/south-east/03.webp",
-     "ember_king/animations/walk/south-east/04.webp",
-     "ember_king/animations/walk/south-east/05.webp"
-    ],
-    "east": [
-     "ember_king/animations/walk/east/00.webp",
-     "ember_king/animations/walk/east/01.webp",
-     "ember_king/animations/walk/east/02.webp",
-     "ember_king/animations/walk/east/03.webp",
-     "ember_king/animations/walk/east/04.webp",
-     "ember_king/animations/walk/east/05.webp"
-    ],
-    "north-east": [
-     "ember_king/animations/walk/north-east/00.webp",
-     "ember_king/animations/walk/north-east/01.webp",
-     "ember_king/animations/walk/north-east/02.webp",
-     "ember_king/animations/walk/north-east/03.webp",
-     "ember_king/animations/walk/north-east/04.webp",
-     "ember_king/animations/walk/north-east/05.webp"
-    ],
-    "north": [
-     "ember_king/animations/walk/north/00.webp",
-     "ember_king/animations/walk/north/01.webp",
-     "ember_king/animations/walk/north/02.webp",
-     "ember_king/animations/walk/north/03.webp",
-     "ember_king/animations/walk/north/04.webp",
-     "ember_king/animations/walk/north/05.webp"
-    ],
-    "west": [
-     "ember_king/animations/walk/west/00.webp",
-     "ember_king/animations/walk/west/01.webp",
-     "ember_king/animations/walk/west/02.webp",
-     "ember_king/animations/walk/west/03.webp",
-     "ember_king/animations/walk/west/04.webp",
-     "ember_king/animations/walk/west/05.webp"
-    ],
-    "north-west": [
-     "ember_king/animations/walk/north-west/00.webp",
-     "ember_king/animations/walk/north-west/01.webp",
-     "ember_king/animations/walk/north-west/02.webp",
-     "ember_king/animations/walk/north-west/03.webp",
-     "ember_king/animations/walk/north-west/04.webp",
-     "ember_king/animations/walk/north-west/05.webp"
-    ],
-    "south-west": [
-     "ember_king/animations/walk/south-west/00.webp",
-     "ember_king/animations/walk/south-west/01.webp",
-     "ember_king/animations/walk/south-west/02.webp",
-     "ember_king/animations/walk/south-west/03.webp",
-     "ember_king/animations/walk/south-west/04.webp",
-     "ember_king/animations/walk/south-west/05.webp"
-    ]
-   },
-   "strips": {
-    "south": "ember_king/animations/walk__south.webp",
-    "south-east": "ember_king/animations/walk__south-east.webp",
-    "east": "ember_king/animations/walk__east.webp",
-    "north-east": "ember_king/animations/walk__north-east.webp",
-    "north": "ember_king/animations/walk__north.webp",
-    "west": "ember_king/animations/walk__west.webp",
-    "north-west": "ember_king/animations/walk__north-west.webp",
-    "south-west": "ember_king/animations/walk__south-west.webp"
-   }
-  },
-  "attack": {
-   "directions": {
-    "south": {
-     "status": "fail",
-     "step_mean": 0.1725,
-     "step_max": 0.2249,
-     "drift": 2.5,
-     "loop": 0.0001,
-     "loop_ratio": 0.0,
-     "travel": 2.5,
-     "pin": 1.0,
-     "pad": 0,
-     "flash": 0.054,
-     "peak": 0.2841,
-     "reach": 0.046,
-     "canvas": [
-      176,
-      176
-     ],
-     "reasons": [
-      "no strike, just a lean: nothing reaches past 0.05 of the body"
-     ],
-     "sub": "6b083609-cec9-4c63-a450-f79959efaa14",
-     "group": "74b25012-547e-4380-b111-e0a321354491",
-     "takes": 1,
-     "version": 6,
-     "mirrored": false,
-     "generated_at": "2026-09-09T23:08:31+00:00",
-     "action": "Claw Swipe - Raises one front paw and performs one quick swipe forward, then returns to idle stance",
-     "tries": 3
-    },
-    "south-east": {
-     "status": "fail",
-     "step_mean": 0.1202,
-     "step_max": 0.1613,
-     "drift": 4.99,
-     "loop": 0.0002,
-     "loop_ratio": 0.0,
-     "travel": 3.47,
-     "pin": 1.0,
-     "pad": 0,
-     "flash": 0.133,
-     "peak": 0.1892,
-     "reach": 0.08,
-     "canvas": [
-      176,
-      176
-     ],
-     "reasons": [
-      "no strike, just a lean: nothing reaches past 0.08 of the body"
-     ],
-     "sub": "4b993723-7462-4884-9df3-13707a650aab",
-     "group": "2f2aea75-d904-4057-b06c-075f933b08dc",
-     "takes": 1,
-     "version": 3,
-     "mirrored": false,
-     "generated_at": "2026-09-09T22:29:00+00:00",
-     "action": "Claw Slam - Raises one massive clawed hand and slams it down once, then returns to idle stance"
-    },
-    "east": {
-     "status": "pass",
-     "step_mean": 0.2519,
-     "step_max": 0.3134,
-     "drift": 10.11,
-     "loop": 0.0001,
-     "loop_ratio": 0.0,
-     "travel": 5.49,
-     "pin": 1.0,
-     "pad": 0,
-     "flash": 0.111,
-     "peak": 0.444,
-     "reach": 0.419,
-     "canvas": [
-      176,
-      176
-     ],
-     "reasons": [],
-     "sub": "fd4507dd-d4df-41ec-b578-4038b96f3725",
-     "group": "f6b1aa68-1543-466e-ba40-e8665f3e9f87",
-     "takes": 1,
-     "version": 3,
-     "mirrored": false,
-     "generated_at": "2026-09-09T22:29:01+00:00",
-     "action": "Claw Slam - Raises one massive clawed hand and slams it down once, then returns to idle stance"
-    },
-    "north-east": {
-     "status": "fail",
-     "step_mean": 0.1761,
-     "step_max": 0.2266,
-     "drift": 3.13,
-     "loop": 0.0,
-     "loop_ratio": 0.0,
-     "travel": 2.05,
-     "pin": 1.0,
-     "pad": 0,
-     "flash": 0.013,
-     "peak": 0.2837,
-     "reach": 0.13,
-     "canvas": [
-      176,
-      176
-     ],
-     "reasons": [
-      "no strike, just a lean: nothing reaches past 0.13 of the body"
-     ],
-     "sub": "49985401-e80a-4c54-830e-33c91cc91dae",
-     "group": "b84b51ae-623b-49c7-8053-5d16bf2368f3",
-     "takes": 1,
-     "version": 3,
-     "mirrored": false,
-     "generated_at": "2026-09-09T22:29:01+00:00",
-     "action": "Claw Slam - Raises one massive clawed hand and slams it down once, then returns to idle stance"
-    },
-    "north": {
-     "status": "fail",
-     "step_mean": 0.1082,
-     "step_max": 0.1608,
-     "drift": 0.51,
-     "loop": 0.0002,
-     "loop_ratio": 0.0,
-     "travel": 0.18,
-     "pin": 1.0,
-     "pad": 0,
-     "flash": 0.099,
-     "peak": 0.1875,
-     "reach": 0.04,
-     "canvas": [
-      176,
-      176
-     ],
-     "reasons": [
-      "no strike, just a lean: nothing reaches past 0.04 of the body"
-     ],
-     "sub": "e5580811-6745-4fc1-82d6-ea725e4ec379",
-     "group": "dbffa373-853b-4b02-b7c8-3e6b43d23f73",
-     "takes": 1,
-     "version": 3,
-     "mirrored": false,
-     "generated_at": "2026-09-09T22:29:02+00:00",
-     "action": "Claw Slam - Raises one massive clawed hand and slams it down once, then returns to idle stance"
-    },
-    "south-west": {
-     "status": "pass",
-     "step_mean": 0.1202,
-     "step_max": 0.1613,
-     "drift": 4.99,
-     "loop": 0.0002,
-     "loop_ratio": 0.0,
-     "travel": 3.47,
-     "pin": 1.0,
-     "pad": 0,
-     "flash": 0.133,
-     "peak": 0.1892,
-     "canvas": [
-      176,
-      176
-     ],
-     "reasons": [],
-     "sub": "4b993723-7462-4884-9df3-13707a650aab",
-     "group": "2f2aea75-d904-4057-b06c-075f933b08dc",
-     "takes": 1,
-     "version": 3,
-     "mirrored": true,
-     "generated_at": "2026-09-09T22:29:00+00:00",
-     "action": "Claw Slam - Raises one massive clawed hand and slams it down once, then returns to idle stance",
-     "source": "south-east"
-    },
-    "west": {
-     "status": "pass",
-     "step_mean": 0.2519,
-     "step_max": 0.3134,
-     "drift": 10.11,
-     "loop": 0.0001,
-     "loop_ratio": 0.0,
-     "travel": 5.49,
-     "pin": 1.0,
-     "pad": 0,
-     "flash": 0.111,
-     "peak": 0.444,
-     "reach": 0.419,
-     "canvas": [
-      176,
-      176
-     ],
-     "reasons": [],
-     "sub": "fd4507dd-d4df-41ec-b578-4038b96f3725",
-     "group": "f6b1aa68-1543-466e-ba40-e8665f3e9f87",
-     "takes": 1,
-     "version": 3,
-     "mirrored": true,
-     "generated_at": "2026-09-09T22:29:01+00:00",
-     "action": "Claw Slam - Raises one massive clawed hand and slams it down once, then returns to idle stance",
-     "source": "east"
-    },
-    "north-west": {
-     "status": "pass",
-     "step_mean": 0.1761,
-     "step_max": 0.2266,
-     "drift": 3.13,
-     "loop": 0.0,
-     "loop_ratio": 0.0,
-     "travel": 2.05,
-     "pin": 1.0,
-     "pad": 0,
-     "flash": 0.013,
-     "peak": 0.2837,
-     "canvas": [
-      176,
-      176
-     ],
-     "reasons": [],
-     "sub": "49985401-e80a-4c54-830e-33c91cc91dae",
-     "group": "b84b51ae-623b-49c7-8053-5d16bf2368f3",
-     "takes": 1,
-     "version": 3,
-     "mirrored": true,
-     "generated_at": "2026-09-09T22:29:01+00:00",
-     "action": "Claw Slam - Raises one massive clawed hand and slams it down once, then returns to idle stance",
-     "source": "north-east"
-    }
-   },
-   "action": "Claw Slam - Raises one massive clawed hand and slams it down once, then returns to idle stance",
-   "frame_paths": {
-    "south": [
-     "ember_king/animations/attack/south/00.webp",
-     "ember_king/animations/attack/south/01.webp",
-     "ember_king/animations/attack/south/02.webp",
-     "ember_king/animations/attack/south/03.webp",
-     "ember_king/animations/attack/south/04.webp"
-    ],
-    "south-east": [
-     "ember_king/animations/attack/south-east/00.webp",
-     "ember_king/animations/attack/south-east/01.webp",
-     "ember_king/animations/attack/south-east/02.webp",
-     "ember_king/animations/attack/south-east/03.webp",
-     "ember_king/animations/attack/south-east/04.webp"
-    ],
-    "east": [
-     "ember_king/animations/attack/east/00.webp",
-     "ember_king/animations/attack/east/01.webp",
-     "ember_king/animations/attack/east/02.webp",
-     "ember_king/animations/attack/east/03.webp",
-     "ember_king/animations/attack/east/04.webp"
-    ],
-    "north-east": [
-     "ember_king/animations/attack/north-east/00.webp",
-     "ember_king/animations/attack/north-east/01.webp",
-     "ember_king/animations/attack/north-east/02.webp",
-     "ember_king/animations/attack/north-east/03.webp",
-     "ember_king/animations/attack/north-east/04.webp"
-    ],
-    "north": [
-     "ember_king/animations/attack/north/00.webp",
-     "ember_king/animations/attack/north/01.webp",
-     "ember_king/animations/attack/north/02.webp",
-     "ember_king/animations/attack/north/03.webp",
-     "ember_king/animations/attack/north/04.webp"
-    ],
-    "south-west": [
-     "ember_king/animations/attack/south-west/00.webp",
-     "ember_king/animations/attack/south-west/01.webp",
-     "ember_king/animations/attack/south-west/02.webp",
-     "ember_king/animations/attack/south-west/03.webp",
-     "ember_king/animations/attack/south-west/04.webp"
-    ],
-    "west": [
-     "ember_king/animations/attack/west/00.webp",
-     "ember_king/animations/attack/west/01.webp",
-     "ember_king/animations/attack/west/02.webp",
-     "ember_king/animations/attack/west/03.webp",
-     "ember_king/animations/attack/west/04.webp"
-    ],
-    "north-west": [
-     "ember_king/animations/attack/north-west/00.webp",
-     "ember_king/animations/attack/north-west/01.webp",
-     "ember_king/animations/attack/north-west/02.webp",
-     "ember_king/animations/attack/north-west/03.webp",
-     "ember_king/animations/attack/north-west/04.webp"
-    ]
-   },
-   "strips": {
-    "south": "ember_king/animations/attack__south.webp",
-    "south-east": "ember_king/animations/attack__south-east.webp",
-    "east": "ember_king/animations/attack__east.webp",
-    "north-east": "ember_king/animations/attack__north-east.webp",
-    "north": "ember_king/animations/attack__north.webp",
-    "south-west": "ember_king/animations/attack__south-west.webp",
-    "west": "ember_king/animations/attack__west.webp",
-    "north-west": "ember_king/animations/attack__north-west.webp"
-   }
-  },
-  "attack_try": {
-   "directions": {
-    "south": {
-     "status": "fail",
-     "step_mean": 0.1835,
-     "step_max": 0.3635,
-     "drift": 5.35,
-     "loop": 0.4017,
-     "loop_ratio": 2.19,
-     "travel": 1.57,
-     "pin": 1.0,
-     "pad": 2,
-     "flash": 0.381,
-     "peak": 0.4017,
-     "reach": 0.138,
-     "canvas": [
-      180,
-      180
-     ],
-     "reasons": [
-      "no strike, just a lean: nothing reaches past 0.14 of the body",
-      "some bright effect pixels (0.38) — eyeball it",
-      "canvas grown by 2 px a side to hold the motion"
-     ],
-     "sub": "6acc06eb-fa27-453e-86a8-86198d4600e3",
-     "group": "ad513d60-20ba-4a18-831f-d5c62601b37b",
-     "takes": 1,
-     "version": 4,
-     "mirrored": false,
-     "action": "Claw Slam - Raises one massive clawed hand high and slams it straight down, a big aggressive attack with the whole body behind it, wide exaggerated motion",
-     "intensity": 2,
-     "rolls": 4,
-     "frames": 7,
-     "tries": 2,
-     "generated_at": "2026-09-10T21:09:41+00:00"
-    },
-    "south-east": {
-     "status": "pass",
-     "step_mean": 0.2524,
-     "step_max": 0.5956,
-     "drift": 6.52,
-     "loop": 0.5765,
-     "loop_ratio": 2.28,
-     "travel": 7.53,
-     "pin": 1.0,
-     "pad": 6,
-     "flash": 0.169,
-     "peak": 0.6285,
-     "reach": 0.327,
-     "canvas": [
-      188,
-      188
-     ],
-     "reasons": [
-      "canvas grown by 6 px a side to hold the motion"
-     ],
-     "sub": "fe236cfa-eac3-4a75-860a-81eb26b9ea11",
-     "group": "6b3d73f1-e97f-4d1e-a73f-62ba131b069a",
-     "takes": 1,
-     "version": 2,
-     "mirrored": false,
-     "generated_at": "2026-09-10T20:13:33+00:00",
-     "action": "Claw Slam - Raises one massive clawed hand high and slams it straight down, a big aggressive attack with the whole body behind it, wide exaggerated motion",
-     "tries": 1,
-     "rolls": 2,
-     "intensity": 2
-    },
-    "east": {
-     "status": "pass",
-     "step_mean": 0.1797,
-     "step_max": 0.3341,
-     "drift": 10.46,
-     "loop": 0.4427,
-     "loop_ratio": 2.46,
-     "travel": 4.96,
-     "pin": 1.0,
-     "pad": 0,
-     "flash": -0.005,
-     "peak": 0.4427,
-     "reach": 0.339,
-     "canvas": [
-      176,
-      176
-     ],
-     "reasons": [],
-     "sub": "0426690a-3b09-445b-84fe-d0c317883cfe",
-     "group": "c1084731-17f5-48b4-8000-0b45ed90f89f",
-     "takes": 1,
-     "version": 1,
-     "mirrored": false,
-     "generated_at": "2026-09-10T19:44:17+00:00",
-     "action": "Claw Slam - Raises one massive clawed hand high and slams it straight down",
-     "tries": 1,
-     "rolls": 1,
-     "intensity": 2
-    },
-    "north-east": {
-     "status": "pass",
-     "step_mean": 0.2975,
-     "step_max": 0.506,
-     "drift": 11.02,
-     "loop": 0.6134,
-     "loop_ratio": 2.06,
-     "travel": 11.84,
-     "pin": 1.0,
-     "pad": 0,
-     "flash": 0.167,
-     "peak": 0.6134,
-     "reach": 0.44,
-     "canvas": [
-      176,
-      176
-     ],
-     "reasons": [],
-     "sub": "32d3be89-5282-436b-b97e-7cd0bf4d4e88",
-     "group": "7295df8a-8b9e-45a5-bb49-e7b3a9005f5a",
-     "takes": 1,
-     "version": 3,
-     "mirrored": false,
-     "action": "Claw Slam - Raises one massive clawed hand high and slams it straight down, a big aggressive attack with the whole body behind it, wide exaggerated motion",
-     "intensity": 2,
-     "rolls": 3,
-     "frames": 5,
-     "tries": 1,
-     "generated_at": "2026-09-10T20:45:05+00:00"
-    },
-    "north": {
-     "status": "fail",
-     "step_mean": 0.2414,
-     "step_max": 0.4055,
-     "drift": 8.72,
-     "loop": 0.4345,
-     "loop_ratio": 1.8,
-     "travel": 0.27,
-     "pin": 1.0,
-     "pad": 0,
-     "flash": 0.012,
-     "peak": 0.4345,
-     "reach": 0.145,
-     "canvas": [
-      176,
-      176
-     ],
-     "reasons": [
-      "no strike, just a lean: nothing reaches past 0.15 of the body"
-     ],
-     "sub": "be64cfaa-2f7d-4a80-8092-1e39ada3a42e",
-     "group": "244ef7e5-0afd-4911-b456-f9677b41124e",
-     "takes": 1,
-     "version": 4,
-     "mirrored": false,
-     "action": "Claw Slam - Raises one massive clawed hand high and slams it straight down, a big aggressive attack with the whole body behind it, wide exaggerated motion",
-     "intensity": 2,
-     "rolls": 4,
-     "frames": 7,
-     "tries": 2,
-     "generated_at": "2026-09-10T21:09:41+00:00"
-    },
-    "west": {
-     "status": "pass",
-     "step_mean": 0.1797,
-     "step_max": 0.3341,
-     "drift": 10.46,
-     "loop": 0.4427,
-     "loop_ratio": 2.46,
-     "travel": 4.96,
-     "pin": 1.0,
-     "pad": 0,
-     "flash": -0.005,
-     "peak": 0.4427,
-     "reach": 0.339,
-     "canvas": [
-      176,
-      176
-     ],
-     "reasons": [],
-     "sub": "0426690a-3b09-445b-84fe-d0c317883cfe",
-     "group": "c1084731-17f5-48b4-8000-0b45ed90f89f",
-     "takes": 1,
-     "version": 1,
-     "mirrored": true,
-     "generated_at": "2026-09-10T19:44:17+00:00",
-     "action": "Claw Slam - Raises one massive clawed hand high and slams it straight down",
-     "tries": 1,
-     "source": "east"
-    },
-    "south-west": {
-     "status": "pass",
-     "step_mean": 0.2524,
-     "step_max": 0.5956,
-     "drift": 6.52,
-     "loop": 0.5765,
-     "loop_ratio": 2.28,
-     "travel": 7.53,
-     "pin": 1.0,
-     "pad": 6,
-     "flash": 0.169,
-     "peak": 0.6285,
-     "reach": 0.327,
-     "canvas": [
-      188,
-      188
-     ],
-     "reasons": [
-      "canvas grown by 6 px a side to hold the motion"
-     ],
-     "sub": "fe236cfa-eac3-4a75-860a-81eb26b9ea11",
-     "group": "6b3d73f1-e97f-4d1e-a73f-62ba131b069a",
-     "takes": 1,
-     "version": 2,
-     "mirrored": true,
-     "generated_at": "2026-09-10T20:13:33+00:00",
-     "action": "Claw Slam - Raises one massive clawed hand high and slams it straight down, a big aggressive attack with the whole body behind it, wide exaggerated motion",
-     "tries": 1,
-     "source": "south-east"
-    },
-    "north-west": {
-     "status": "pass",
-     "step_mean": 0.2975,
-     "step_max": 0.506,
-     "drift": 11.02,
-     "loop": 0.6134,
-     "loop_ratio": 2.06,
-     "travel": 11.84,
-     "pin": 1.0,
-     "pad": 0,
-     "flash": 0.167,
-     "peak": 0.6134,
-     "reach": 0.44,
-     "canvas": [
-      176,
-      176
-     ],
-     "reasons": [],
-     "sub": "32d3be89-5282-436b-b97e-7cd0bf4d4e88",
-     "group": "7295df8a-8b9e-45a5-bb49-e7b3a9005f5a",
-     "takes": 1,
-     "version": 3,
-     "mirrored": true,
-     "action": "Claw Slam - Raises one massive clawed hand high and slams it straight down, a big aggressive attack with the whole body behind it, wide exaggerated motion",
-     "intensity": 2,
-     "rolls": 1,
-     "frames": 5,
-     "tries": 1,
-     "generated_at": "2026-09-10T20:45:05+00:00",
-     "source": "north-east"
-    }
-   },
-   "action": "Claw Slam - Raises one massive clawed hand high and slams it straight down, a big aggressive attack with the whole body behind it, wide exaggerated motion",
-   "frame_paths": {
-    "south": [
-     "ember_king/animations/attack_try/south/00.webp",
-     "ember_king/animations/attack_try/south/01.webp",
-     "ember_king/animations/attack_try/south/02.webp",
-     "ember_king/animations/attack_try/south/03.webp",
-     "ember_king/animations/attack_try/south/04.webp",
-     "ember_king/animations/attack_try/south/05.webp",
-     "ember_king/animations/attack_try/south/06.webp"
-    ],
-    "south-east": [
-     "ember_king/animations/attack_try/south-east/00.webp",
-     "ember_king/animations/attack_try/south-east/01.webp",
-     "ember_king/animations/attack_try/south-east/02.webp",
-     "ember_king/animations/attack_try/south-east/03.webp",
-     "ember_king/animations/attack_try/south-east/04.webp"
-    ],
-    "east": [
-     "ember_king/animations/attack_try/east/00.webp",
-     "ember_king/animations/attack_try/east/01.webp",
-     "ember_king/animations/attack_try/east/02.webp",
-     "ember_king/animations/attack_try/east/03.webp",
-     "ember_king/animations/attack_try/east/04.webp"
-    ],
-    "north-east": [
-     "ember_king/animations/attack_try/north-east/00.webp",
-     "ember_king/animations/attack_try/north-east/01.webp",
-     "ember_king/animations/attack_try/north-east/02.webp",
-     "ember_king/animations/attack_try/north-east/03.webp",
-     "ember_king/animations/attack_try/north-east/04.webp"
-    ],
-    "north": [
-     "ember_king/animations/attack_try/north/00.webp",
-     "ember_king/animations/attack_try/north/01.webp",
-     "ember_king/animations/attack_try/north/02.webp",
-     "ember_king/animations/attack_try/north/03.webp",
-     "ember_king/animations/attack_try/north/04.webp",
-     "ember_king/animations/attack_try/north/05.webp",
-     "ember_king/animations/attack_try/north/06.webp"
-    ],
-    "west": [
-     "ember_king/animations/attack_try/west/00.webp",
-     "ember_king/animations/attack_try/west/01.webp",
-     "ember_king/animations/attack_try/west/02.webp",
-     "ember_king/animations/attack_try/west/03.webp",
-     "ember_king/animations/attack_try/west/04.webp"
-    ],
-    "south-west": [
-     "ember_king/animations/attack_try/south-west/00.webp",
-     "ember_king/animations/attack_try/south-west/01.webp",
-     "ember_king/animations/attack_try/south-west/02.webp",
-     "ember_king/animations/attack_try/south-west/03.webp",
-     "ember_king/animations/attack_try/south-west/04.webp"
-    ],
-    "north-west": [
-     "ember_king/animations/attack_try/north-west/00.webp",
-     "ember_king/animations/attack_try/north-west/01.webp",
-     "ember_king/animations/attack_try/north-west/02.webp",
-     "ember_king/animations/attack_try/north-west/03.webp",
-     "ember_king/animations/attack_try/north-west/04.webp"
-    ]
-   },
-   "strips": {
-    "south": "ember_king/animations/attack_try__south.webp",
-    "south-east": "ember_king/animations/attack_try__south-east.webp",
-    "east": "ember_king/animations/attack_try__east.webp",
-    "north-east": "ember_king/animations/attack_try__north-east.webp",
-    "north": "ember_king/animations/attack_try__north.webp",
-    "west": "ember_king/animations/attack_try__west.webp",
-    "south-west": "ember_king/animations/attack_try__south-west.webp",
-    "north-west": "ember_king/animations/attack_try__north-west.webp"
-   },
-   "intensity": 2
-  }
- }
 }

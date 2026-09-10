@@ -904,7 +904,7 @@
           "pad": 0,
           "flash": 0.089,
           "peak": 0.2425,
-          "reach": 0.088,
+          "reach": 0.089,
           "canvas": [
             40,
             40
@@ -917,15 +917,15 @@
           "takes": 1,
           "version": 4,
           "mirrored": false,
+          "generated_at": "2026-09-10T21:14:13+00:00",
           "action": "Claw Swipe - Raises one front paw and performs one quick swipe forward, white swoosh lines following the claws",
-          "intensity": 1,
-          "rolls": 4,
-          "frames": 9,
           "tries": 4,
-          "generated_at": "2026-09-10T21:14:13+00:00"
+          "rolls": 4,
+          "intensity": 1,
+          "frames": 9
         },
         "south-east": {
-          "status": "fail",
+          "status": "warn",
           "step_mean": 0.097,
           "step_max": 0.1786,
           "drift": 1.35,
@@ -942,7 +942,7 @@
             42
           ],
           "reasons": [
-            "no strike, just a lean: nothing reaches past 0.15 of the body",
+            "shallow strike: reach 0.15 — eyeball it",
             "canvas grown by 1 px a side to hold the motion"
           ],
           "sub": "8daf4f24-d8c5-455b-b4df-574b6b0ee65b",
@@ -950,15 +950,15 @@
           "takes": 1,
           "version": 4,
           "mirrored": false,
+          "generated_at": "2026-09-10T21:14:14+00:00",
           "action": "Claw Swipe - Raises one front paw and performs one quick swipe forward, white swoosh lines following the claws",
-          "intensity": 1,
-          "rolls": 4,
-          "frames": 9,
           "tries": 4,
-          "generated_at": "2026-09-10T21:14:14+00:00"
+          "rolls": 4,
+          "intensity": 1,
+          "frames": 9
         },
         "east": {
-          "status": "fail",
+          "status": "warn",
           "step_mean": 0.1085,
           "step_max": 0.1612,
           "drift": 1.33,
@@ -975,22 +975,22 @@
             40
           ],
           "reasons": [
-            "no strike, just a lean: nothing reaches past 0.19 of the body"
+            "shallow strike: reach 0.19 — eyeball it"
           ],
           "sub": "bff1b07d-9494-464f-8e6c-d6933d3a145d",
           "group": "249cceb9-daf4-4198-a236-acdff903efed",
           "takes": 1,
           "version": 4,
           "mirrored": false,
+          "generated_at": "2026-09-10T21:14:15+00:00",
           "action": "Claw Swipe - Raises one front paw and performs one quick swipe forward, white swoosh lines following the claws",
-          "intensity": 1,
-          "rolls": 4,
-          "frames": 9,
           "tries": 4,
-          "generated_at": "2026-09-10T21:14:15+00:00"
+          "rolls": 4,
+          "intensity": 1,
+          "frames": 9
         },
         "north-east": {
-          "status": "fail",
+          "status": "warn",
           "step_mean": 0.1593,
           "step_max": 0.2118,
           "drift": 1.45,
@@ -1007,7 +1007,7 @@
             44
           ],
           "reasons": [
-            "no strike, just a lean: nothing reaches past 0.21 of the body",
+            "shallow strike: reach 0.21 — eyeball it",
             "canvas grown by 2 px a side to hold the motion"
           ],
           "sub": "898989b6-f8d1-42c2-95ad-aaa4df28cae3",
@@ -1015,12 +1015,12 @@
           "takes": 1,
           "version": 4,
           "mirrored": false,
+          "generated_at": "2026-09-10T21:14:15+00:00",
           "action": "Claw Swipe - Raises one front paw and performs one quick swipe forward, white swoosh lines following the claws",
-          "intensity": 1,
-          "rolls": 4,
-          "frames": 9,
           "tries": 4,
-          "generated_at": "2026-09-10T21:14:15+00:00"
+          "rolls": 4,
+          "intensity": 1,
+          "frames": 9
         },
         "north": {
           "status": "fail",
@@ -1047,12 +1047,113 @@
           "takes": 1,
           "version": 4,
           "mirrored": false,
+          "generated_at": "2026-09-10T21:14:16+00:00",
           "action": "Claw Swipe - Raises one front paw and performs one quick swipe forward, white swoosh lines following the claws",
-          "intensity": 1,
-          "rolls": 4,
-          "frames": 9,
           "tries": 4,
-          "generated_at": "2026-09-10T21:14:16+00:00"
+          "rolls": 4,
+          "intensity": 1,
+          "frames": 9
+        },
+        "south-west": {
+          "status": "warn",
+          "step_mean": 0.097,
+          "step_max": 0.1786,
+          "drift": 1.35,
+          "loop": 0.0468,
+          "loop_ratio": 0.48,
+          "travel": 0.52,
+          "pin": 1.0,
+          "pad": 1,
+          "flash": 0.048,
+          "peak": 0.25,
+          "reach": 0.152,
+          "canvas": [
+            42,
+            42
+          ],
+          "reasons": [
+            "shallow strike: reach 0.15 — eyeball it",
+            "canvas grown by 1 px a side to hold the motion"
+          ],
+          "sub": "8daf4f24-d8c5-455b-b4df-574b6b0ee65b",
+          "group": "d08b8107-12ab-4175-822d-291a2f27ac43",
+          "takes": 1,
+          "version": 4,
+          "mirrored": true,
+          "generated_at": "2026-09-10T21:14:14+00:00",
+          "action": "Claw Swipe - Raises one front paw and performs one quick swipe forward, white swoosh lines following the claws",
+          "tries": 4,
+          "rolls": 4,
+          "intensity": 1,
+          "frames": 9,
+          "source": "south-east"
+        },
+        "west": {
+          "status": "warn",
+          "step_mean": 0.1085,
+          "step_max": 0.1612,
+          "drift": 1.33,
+          "loop": 0.1121,
+          "loop_ratio": 1.03,
+          "travel": 1.33,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": 0.165,
+          "peak": 0.2632,
+          "reach": 0.194,
+          "canvas": [
+            40,
+            40
+          ],
+          "reasons": [
+            "shallow strike: reach 0.19 — eyeball it"
+          ],
+          "sub": "bff1b07d-9494-464f-8e6c-d6933d3a145d",
+          "group": "249cceb9-daf4-4198-a236-acdff903efed",
+          "takes": 1,
+          "version": 4,
+          "mirrored": true,
+          "generated_at": "2026-09-10T21:14:15+00:00",
+          "action": "Claw Swipe - Raises one front paw and performs one quick swipe forward, white swoosh lines following the claws",
+          "tries": 4,
+          "rolls": 4,
+          "intensity": 1,
+          "frames": 9,
+          "source": "east"
+        },
+        "north-west": {
+          "status": "warn",
+          "step_mean": 0.1593,
+          "step_max": 0.2118,
+          "drift": 1.45,
+          "loop": 0.0902,
+          "loop_ratio": 0.57,
+          "travel": 0.64,
+          "pin": 1.0,
+          "pad": 2,
+          "flash": 0.106,
+          "peak": 0.2562,
+          "reach": 0.206,
+          "canvas": [
+            44,
+            44
+          ],
+          "reasons": [
+            "shallow strike: reach 0.21 — eyeball it",
+            "canvas grown by 2 px a side to hold the motion"
+          ],
+          "sub": "898989b6-f8d1-42c2-95ad-aaa4df28cae3",
+          "group": "53640227-16cf-4110-abdd-6ef731e1292c",
+          "takes": 1,
+          "version": 4,
+          "mirrored": true,
+          "generated_at": "2026-09-10T21:14:15+00:00",
+          "action": "Claw Swipe - Raises one front paw and performs one quick swipe forward, white swoosh lines following the claws",
+          "tries": 4,
+          "rolls": 4,
+          "intensity": 1,
+          "frames": 9,
+          "source": "north-east"
         }
       },
       "action": "Claw Pinch - Darts forward and snaps both small claws shut hard, a big aggressive swing",
@@ -1111,6 +1212,39 @@
           "pebble_crab/animations/attack_try/north/06.webp",
           "pebble_crab/animations/attack_try/north/07.webp",
           "pebble_crab/animations/attack_try/north/08.webp"
+        ],
+        "south-west": [
+          "pebble_crab/animations/attack_try/south-west/00.webp",
+          "pebble_crab/animations/attack_try/south-west/01.webp",
+          "pebble_crab/animations/attack_try/south-west/02.webp",
+          "pebble_crab/animations/attack_try/south-west/03.webp",
+          "pebble_crab/animations/attack_try/south-west/04.webp",
+          "pebble_crab/animations/attack_try/south-west/05.webp",
+          "pebble_crab/animations/attack_try/south-west/06.webp",
+          "pebble_crab/animations/attack_try/south-west/07.webp",
+          "pebble_crab/animations/attack_try/south-west/08.webp"
+        ],
+        "west": [
+          "pebble_crab/animations/attack_try/west/00.webp",
+          "pebble_crab/animations/attack_try/west/01.webp",
+          "pebble_crab/animations/attack_try/west/02.webp",
+          "pebble_crab/animations/attack_try/west/03.webp",
+          "pebble_crab/animations/attack_try/west/04.webp",
+          "pebble_crab/animations/attack_try/west/05.webp",
+          "pebble_crab/animations/attack_try/west/06.webp",
+          "pebble_crab/animations/attack_try/west/07.webp",
+          "pebble_crab/animations/attack_try/west/08.webp"
+        ],
+        "north-west": [
+          "pebble_crab/animations/attack_try/north-west/00.webp",
+          "pebble_crab/animations/attack_try/north-west/01.webp",
+          "pebble_crab/animations/attack_try/north-west/02.webp",
+          "pebble_crab/animations/attack_try/north-west/03.webp",
+          "pebble_crab/animations/attack_try/north-west/04.webp",
+          "pebble_crab/animations/attack_try/north-west/05.webp",
+          "pebble_crab/animations/attack_try/north-west/06.webp",
+          "pebble_crab/animations/attack_try/north-west/07.webp",
+          "pebble_crab/animations/attack_try/north-west/08.webp"
         ]
       },
       "strips": {
@@ -1118,7 +1252,10 @@
         "south-east": "pebble_crab/animations/attack_try__south-east.webp",
         "east": "pebble_crab/animations/attack_try__east.webp",
         "north-east": "pebble_crab/animations/attack_try__north-east.webp",
-        "north": "pebble_crab/animations/attack_try__north.webp"
+        "north": "pebble_crab/animations/attack_try__north.webp",
+        "south-west": "pebble_crab/animations/attack_try__south-west.webp",
+        "west": "pebble_crab/animations/attack_try__west.webp",
+        "north-west": "pebble_crab/animations/attack_try__north-west.webp"
       },
       "intensity": 1
     }

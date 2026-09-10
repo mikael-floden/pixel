@@ -932,12 +932,12 @@
           "takes": 1,
           "version": 4,
           "mirrored": false,
+          "generated_at": "2026-09-10T21:19:17+00:00",
           "action": "Claw Swipe - Raises one front paw and performs one quick swipe forward, white swoosh lines following the claws",
-          "intensity": 1,
-          "rolls": 4,
-          "frames": 9,
           "tries": 4,
-          "generated_at": "2026-09-10T21:19:17+00:00"
+          "rolls": 4,
+          "intensity": 1,
+          "frames": 9
         },
         "south-east": {
           "status": "pass",
@@ -1084,6 +1084,8 @@
           "generated_at": "2026-09-10T19:55:20+00:00",
           "action": "Branch Smash - Swings one huge branch arm down in a wide overhead smash",
           "tries": 1,
+          "rolls": 1,
+          "intensity": 1,
           "source": "south-east"
         },
         "west": {
@@ -1112,6 +1114,8 @@
           "generated_at": "2026-09-10T19:55:21+00:00",
           "action": "Branch Smash - Swings one huge branch arm down in a wide overhead smash",
           "tries": 1,
+          "rolls": 1,
+          "intensity": 1,
           "source": "east"
         },
         "north-west": {
@@ -1140,6 +1144,8 @@
           "generated_at": "2026-09-10T19:55:22+00:00",
           "action": "Branch Smash - Swings one huge branch arm down in a wide overhead smash",
           "tries": 1,
+          "rolls": 1,
+          "intensity": 1,
           "source": "north-east"
         }
       },

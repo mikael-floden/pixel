@@ -926,12 +926,12 @@
           "takes": 1,
           "version": 4,
           "mirrored": false,
+          "generated_at": "2026-09-10T21:12:58+00:00",
           "action": "Lunge Attack - Throws its whole body forward in one fast lunge, white swoosh lines trailing behind it",
-          "intensity": 1,
-          "rolls": 4,
-          "frames": 9,
           "tries": 4,
-          "generated_at": "2026-09-10T21:12:58+00:00"
+          "rolls": 4,
+          "intensity": 1,
+          "frames": 9
         },
         "east": {
           "status": "pass",
@@ -1016,12 +1016,12 @@
           "takes": 1,
           "version": 4,
           "mirrored": false,
+          "generated_at": "2026-09-10T21:12:59+00:00",
           "action": "Lunge Attack - Throws its whole body forward in one fast lunge, white swoosh lines trailing behind it",
-          "intensity": 1,
-          "rolls": 4,
-          "frames": 9,
           "tries": 4,
-          "generated_at": "2026-09-10T21:12:59+00:00"
+          "rolls": 4,
+          "intensity": 1,
+          "frames": 9
         },
         "west": {
           "status": "pass",
@@ -1049,6 +1049,8 @@
           "generated_at": "2026-09-10T19:52:43+00:00",
           "action": "Grasping Swipe - Lunges forward with both bandaged arms out in a grasping swipe",
           "tries": 1,
+          "rolls": 1,
+          "intensity": 1,
           "source": "east"
         },
         "north-west": {
@@ -1077,6 +1079,8 @@
           "generated_at": "2026-09-10T19:52:44+00:00",
           "action": "Grasping Swipe - Lunges forward with both bandaged arms out in a grasping swipe",
           "tries": 1,
+          "rolls": 1,
+          "intensity": 1,
           "source": "north-east"
         },
         "south-east": {
@@ -1104,12 +1108,12 @@
           "takes": 1,
           "version": 3,
           "mirrored": false,
+          "generated_at": "2026-09-10T20:50:08+00:00",
           "action": "Grasping Swipe - Lunges forward with both bandaged arms out in a grasping swipe, a big aggressive swing",
-          "intensity": 1,
-          "rolls": 3,
-          "frames": 5,
           "tries": 1,
-          "generated_at": "2026-09-10T20:50:08+00:00"
+          "rolls": 3,
+          "intensity": 1,
+          "frames": 5
         },
         "south-west": {
           "status": "pass",
@@ -1136,12 +1140,12 @@
           "takes": 1,
           "version": 3,
           "mirrored": true,
-          "action": "Grasping Swipe - Lunges forward with both bandaged arms out in a grasping swipe, a big aggressive swing",
-          "intensity": 1,
-          "rolls": 1,
-          "frames": 5,
-          "tries": 1,
           "generated_at": "2026-09-10T20:50:08+00:00",
+          "action": "Grasping Swipe - Lunges forward with both bandaged arms out in a grasping swipe, a big aggressive swing",
+          "tries": 1,
+          "rolls": 3,
+          "intensity": 1,
+          "frames": 5,
           "source": "south-east"
         }
       },

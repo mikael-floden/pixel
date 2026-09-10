@@ -117,7 +117,7 @@ STATES = {
         "keep_first": True,     # frame 0 IS the base rotation
         "band": {"step_pass": (0.080, 0.900), "step_warn": (0.040, 1.200),
                  "peak_pass": 0.15, "peak_warn": 0.08,
-                 "reach_pass": 0.30, "reach_warn": 0.22,
+                 "reach_pass": 0.30, "reach_warn": 0.14,
                  "drift_pass": 12.0, "drift_warn": 24.0,
                  "flash_warn": 0.04, "flash_max": 0.10},
     },
@@ -294,7 +294,11 @@ def _reach(ops, base_op, cap=48):
     distance of new pixels from the base, over the base's short side.
     Measured on the maintainer's 57 accepted attacks (east): median 0.45,
     p25 0.34, p10 0.23, minimum 0.14 — against 0.26 median for the 39
-    lean-shaped ones he rejected. Distance by successive dilation (no scipy)."""
+    lean-shaped ones he rejected. FAIL is set at his floor of 0.14, not at
+    his p10: between there and the 0.30 pass line the clip is a real but
+    modest strike (an armoured elephant driving its head down is not going to
+    reach like a club swing) and the call is his on the review page, not the
+    machine's. Distance by successive dilation (no scipy)."""
     d = np.full(base_op.shape, cap, np.int16); cur = base_op.copy(); d[base_op] = 0
     for k in range(1, cap):
         nxt = _dilate(cur); ring = nxt & ~cur
@@ -382,8 +386,18 @@ def qa_clip(cid, state, d, frames, pinned=None, claw_take=False, want_frames=Non
             reasons.append(f"no strike: peak {peak:.3f} of the silhouette away from the base"); status = "fail"
         elif peak < band["peak_pass"]:
             reasons.append(f"weak strike: peak {peak:.3f} — eyeball it"); status = "warn" if status != "fail" else status
+    flash = _flash(frames) if "flash_max" in band else 0.0
     if "reach_pass" in band:
         rch = _reach(ops, _sil(base))
+        if claw_take:
+            # the maintainer asks for these takes: "a claw attack with swoosh
+            # lines often works", "the crab's shell explodes in a powerful
+            # attack". Their drama is drawn AT the body — a burst, a swoosh,
+            # flying shards — so the limb-extension measure undervalues them
+            # (Tide Crab's bursting shell reads as a real attack and scores
+            # 0.08). For these wordings the effect IS the strike, so whichever
+            # is larger stands.
+            rch = max(rch, flash)
         if rch < band["reach_warn"]:
             reasons.append(f"no strike, just a lean: nothing reaches past {rch:.2f} of the body"); status = "fail"
         elif rch < band["reach_pass"]:
@@ -396,7 +410,6 @@ def qa_clip(cid, state, d, frames, pinned=None, claw_take=False, want_frames=Non
         # the game cuts back to idle after an attack; the maintainer's own
         # accepted attacks return only partly (loop up to 0.79) — eyeball it
         reasons.append(f"does not quite return (last vs first {loop:.3f}) — eyeball it"); status = "warn" if status != "fail" else status
-    flash = _flash(frames) if "flash_max" in band else 0.0
     if "flash_max" in band:
         fmax, fwarn = band["flash_max"], band["flash_warn"]
         if claw_take:

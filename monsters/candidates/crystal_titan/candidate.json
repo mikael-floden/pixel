@@ -937,12 +937,12 @@
           "takes": 1,
           "version": 4,
           "mirrored": false,
+          "generated_at": "2026-09-10T21:14:12+00:00",
           "action": "Claw Swipe - Raises one front paw and performs one quick swipe forward, white swoosh lines following the claws",
-          "intensity": 1,
-          "rolls": 4,
-          "frames": 9,
           "tries": 4,
-          "generated_at": "2026-09-10T21:14:12+00:00"
+          "rolls": 4,
+          "intensity": 1,
+          "frames": 9
         },
         "south-east": {
           "status": "warn",
@@ -1048,26 +1048,26 @@
           "pad": 0,
           "flash": 0.084,
           "peak": 0.2535,
-          "reach": 0.059,
+          "reach": 0.084,
           "canvas": [
             232,
             232
           ],
           "reasons": [
             "motion 0.076 outside the calm band 0.08–0.9 — eyeball it",
-            "no strike, just a lean: nothing reaches past 0.06 of the body"
+            "no strike, just a lean: nothing reaches past 0.08 of the body"
           ],
           "sub": "24a65f6c-8323-4158-ab03-0a4c90d550dd",
           "group": "f382104c-002f-459c-a7a6-961613225877",
           "takes": 1,
           "version": 4,
           "mirrored": false,
+          "generated_at": "2026-09-10T21:14:13+00:00",
           "action": "Claw Swipe - Raises one front paw and performs one quick swipe forward, white swoosh lines following the claws",
-          "intensity": 1,
-          "rolls": 4,
-          "frames": 9,
           "tries": 4,
-          "generated_at": "2026-09-10T21:14:13+00:00"
+          "rolls": 4,
+          "intensity": 1,
+          "frames": 9
         },
         "south-west": {
           "status": "warn",
@@ -1098,6 +1098,8 @@
           "generated_at": "2026-09-10T19:47:32+00:00",
           "action": "Arm Sweep - Swings one crystal-bladed arm across in a wide sweep",
           "tries": 1,
+          "rolls": 1,
+          "intensity": 1,
           "source": "south-east"
         },
         "west": {
@@ -1126,6 +1128,8 @@
           "generated_at": "2026-09-10T19:47:32+00:00",
           "action": "Arm Sweep - Swings one crystal-bladed arm across in a wide sweep",
           "tries": 1,
+          "rolls": 1,
+          "intensity": 1,
           "source": "east"
         },
         "north-west": {
@@ -1156,6 +1160,8 @@
           "generated_at": "2026-09-10T19:47:33+00:00",
           "action": "Arm Sweep - Swings one crystal-bladed arm across in a wide sweep",
           "tries": 1,
+          "rolls": 1,
+          "intensity": 1,
           "source": "north-east"
         }
       },
