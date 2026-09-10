@@ -825,7 +825,7 @@ test("every shipped deck: no bridge cell is indoors, every roof/cave space is", 
   for (const [key, want] of Object.entries({
     "the_game/bridge": 28, // the two river crossings; the mountain spans sit at base level
     "the_game/roof": 430, // eleven houses
-    "the_game/cave": 598, // the one connected cave under twelve slabs
+    "the_game/cave": 740, // the massif's cave under twelve slabs (598) + the dungeon under the field (142)
   })) {
     assert.equal(counts[key], want, `${key}: cells swept (measured)`);
   }

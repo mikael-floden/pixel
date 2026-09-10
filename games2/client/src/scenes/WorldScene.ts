@@ -14988,7 +14988,28 @@ export class WorldScene extends Phaser.Scene {
     // wanted". From the floor, 2 is 2 everywhere.
     // All three numbers go in the signature: turning the Settings slider must
     // rebuild the mask exactly the way walking into a different room does.
-    const top = Math.max(0, Math.min(ceil, floor + indoorWall()));
+    /* ...BUT NEVER BELOW THE FLOOR UNDER MY OWN FEET.
+     *
+     * The minimum above is right for ONE room with ledges and wrong the moment
+     * a space spans STOREYS. the_game's dungeon puts three floors — levels 6,
+     * 3 and 0 — under ONE lid (deck at level 12), joined by stair strips that
+     * step ONE level at a time, and `interiorFloor` caps how far the fill may
+     * climb but not how far it may DESCEND (`level <= elev + climb`), so from
+     * the top floor the fill takes all 142 cells and the minimum is 0. The cut
+     * then landed at 1: the storey you were standing on was not drawn, and
+     * your own body, six levels above the cut, was not drawn either — you
+     * walked into a black hole with a coordinate readout in it (maintainer
+     * 2026-09-10, three photographs of the same spot before and after a trip
+     * to the bottom floor: "the entrance ... is very very black").
+     *
+     * Anchoring the cut to my feet instead is the thing the minimum exists to
+     * avoid, so it is a FLOOR under the answer, not a replacement: a ledge up
+     * to `indoorWall()` levels high still leaves the cut where the room's own
+     * minimum put it (step on and off a 1-level shelf with the dial at 1 and
+     * `top` does not move), and only a storey the cut would otherwise erase
+     * pushes it up. The far walls still rise past it wherever they can — that
+     * is `indoorCut`, the per-column raise. */
+    const top = Math.max(0, Math.min(ceil, Math.max(floor + indoorWall(), this.indoorAtElev)));
     // The raise flag is part of the signature: flipping the QA switch must
     // rebuild the mask exactly the way a dial turn does.
     const sig = `${this.indoorKey}:${ceil}:${floor}:${top}:${this.indoorRaiseOn ? "r" : "f"}`;
