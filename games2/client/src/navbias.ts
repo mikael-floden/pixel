@@ -20,8 +20,12 @@
 // and this is the games agent's setting. Same pattern as the ambient agent's
 // settings button and the map layer row: find the page, add to it, and re-add
 // when the HudBar has thrown everything away on a rejoin. It wears the HUD's
-// OWN slider classes, so it is the same widget to look at, and it carries the
-// "default" button he asked every slider to have.
+// OWN slider classes — including .ml-slider-row and the .ml-slider-def button,
+// which hud.ts now gives EVERY dial (maintainer 2026-09-10: the button belongs
+// to the RIGHT of the track, in the scroll gutter) — so there is one recipe and
+// this dial cannot drift away from the ones beside it. hud.ts also MOVES this
+// wrap into its dial group after we append it; wrap.isConnected stays true
+// through that, so ensureNavDial keeps returning early.
 const KEY = "ml-nav-uphill";
 
 export const NAV_UPHILL_MIN = 1;
@@ -80,24 +84,6 @@ let valEl: HTMLElement | null = null;
 let track: HTMLElement | null = null;
 let reset: HTMLButtonElement | null = null;
 
-function styleOnce() {
-  if (document.getElementById("ml-navdial-css")) return;
-  const st = document.createElement("style");
-  st.id = "ml-navdial-css";
-  // THE DEFAULT BUTTON GOES BESIDE THE TRACK (maintainer 2026-09-10: "we have
-  // some space to the left of the sliders ... place a default button that is
-  // disabled if the current value is already default"). Everything else is the
-  // HUD's own slider recipe, reused by class so the two look identical.
-  st.textContent = `
-  .${CLS}-row{display:flex;align-items:center;gap:8px;width:100%}
-  .${CLS}-row .ml-slider{flex:1 1 auto;min-width:0}
-  .${CLS}-def{flex:0 0 auto;min-height:26px;padding:3px 9px;font:600 11px/1 var(--sans);
-    border-radius:7px;cursor:pointer;background:var(--surface);color:var(--ink);
-    border:1px solid var(--border);touch-action:manipulation;-webkit-tap-highlight-color:transparent}
-  .${CLS}-def:disabled{opacity:0.42;cursor:default}`;
-  document.head.appendChild(st);
-}
-
 function paint() {
   if (!fill || !knob || !valEl || !track || !reset) return;
   const p = sliderFromUphill(value);
@@ -110,7 +96,6 @@ function paint() {
 }
 
 function build(host: HTMLElement) {
-  styleOnce();
   const mk = (tag: string, cls: string) => {
     const e = document.createElement(tag);
     if (cls) e.className = cls;
@@ -122,16 +107,17 @@ function build(host: HTMLElement) {
   label.textContent = "Uphill bias (tap)";
   valEl = mk("span", "ml-amb-slider-val");
   head.append(label, valEl);
-  const row = mk("div", `${CLS}-row`);
-  reset = mk("button", `${CLS}-def`) as HTMLButtonElement;
+  const row = mk("div", "ml-slider-row");
+  reset = mk("button", "ml-slider-def") as HTMLButtonElement;
   reset.type = "button";
   reset.textContent = "default";
+  reset.title = "back to the default";
   reset.addEventListener("click", () => setNavUphill(NAV_UPHILL_DEFAULT));
   track = mk("div", "ml-slider");
   fill = mk("div", "ml-slider-fill");
   knob = mk("div", "ml-slider-knob");
   track.append(fill, knob);
-  row.append(reset, track);
+  row.append(track, reset);
   wrap.append(head, row);
   host.appendChild(wrap);
 

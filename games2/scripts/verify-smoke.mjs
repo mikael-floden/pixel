@@ -272,6 +272,85 @@ try {
       fail(`buttons were narrowed too (${Math.round(gutter.btnMin)}px gutter) — only SLIDERS give up the width`);
     else
       console.log(`Settings slider gutter OK (${gutter.n} tracks, ${Math.round(gutter.worst)}px clear; buttons still reach ${Math.round(gutter.btnMin)}px)`);
+
+    // EVERY DIAL CARRIES A "default" BUTTON, IN THE GUTTER, TO THE RIGHT OF
+    // ITS TRACK (maintainer 2026-09-10). Two things are gated: the button is
+    // on every slider ON THE PAGE — including the ones injected from outside
+    // this domain, which is the case that silently regresses — and it sits
+    // right of the track rather than left of it, which is the placement he
+    // rejected.
+    const defs = await page.evaluate(() => {
+      const rows = [...document.querySelectorAll(".ml-amb-slider")];
+      const bad = [];
+      let leftOfTrack = 0;
+      for (const r of rows) {
+        const name = r.querySelector(".ml-amb-slider-label")?.textContent ?? "?";
+        const btn = r.querySelector(".ml-slider-def");
+        const track = r.querySelector(".ml-slider");
+        if (!btn || !track) {
+          bad.push(name);
+          continue;
+        }
+        if (btn.getBoundingClientRect().left < track.getBoundingClientRect().right) leftOfTrack++;
+      }
+      return { n: rows.length, bad, leftOfTrack };
+    });
+    if (!defs.n) fail("no sliders on the Settings page to check the default button on");
+    else if (defs.bad.length) fail(`sliders with no "default" button: ${JSON.stringify(defs.bad)}`);
+    else if (defs.leftOfTrack)
+      fail(`${defs.leftOfTrack} "default" button(s) sit LEFT of their track — the gutter is on the right`);
+
+    // ALL THE DIALS IN ONE BLOCK: a slider that lands outside the dial group
+    // is the bug he reported ("two settings sliders at the bottom of the page
+    // and the rest in the middle"), and an outside injector appending to the
+    // settings column is exactly how it happens again.
+    const grouped = await page.evaluate(() =>
+      [...document.querySelectorAll(".ml-amb-slider")]
+        .filter((r) => !r.parentElement?.classList.contains("ml-dials"))
+        .map((r) => r.querySelector(".ml-amb-slider-label")?.textContent ?? "?"),
+    );
+    if (grouped.length) fail(`sliders outside the dial group: ${JSON.stringify(grouped)}`);
+
+    // …AND THE BUTTON WORKS BOTH WAYS: disabled means "already at the default"
+    // (his words), so it must go live when the value moves and dead again the
+    // moment it is back. Hidden outline is the harmless dial to prove it on —
+    // it changes nothing the rest of this smoke measures.
+    const cycle = await page.evaluate(() => {
+      const row = [...document.querySelectorAll(".ml-amb-slider")].find(
+        (r) => r.querySelector(".ml-amb-slider-label")?.textContent === "Hidden outline",
+      );
+      if (!row) return { err: "no Hidden outline dial to test the reset on" };
+      const track = row.querySelector(".ml-slider");
+      const btn = row.querySelector(".ml-slider-def");
+      const val = () => row.querySelector(".ml-amb-slider-val")?.textContent ?? "";
+      const before = { v: val(), off: btn.disabled };
+      const r = track.getBoundingClientRect();
+      // synthetic pointer, not a real click: this harness viewport is 480x320
+      // and the HUD column is ~120px wide, so the track is half-clipped —
+      // that is not what this step is judging. setPointerCapture on an
+      // untrusted pointerId throws and the widget already catches it.
+      const at = (type, x) =>
+        track.dispatchEvent(
+          new PointerEvent(type, { bubbles: true, pointerId: 1, clientX: x, clientY: r.top + r.height / 2 }),
+        );
+      at("pointerdown", r.left + r.width * 0.12);
+      at("pointerup", r.left + r.width * 0.12);
+      const moved = { v: val(), off: btn.disabled };
+      btn.click();
+      return { before, moved, after: { v: val(), off: btn.disabled } };
+    });
+    if (cycle.err) fail(cycle.err);
+    else if (!cycle.before.off)
+      fail(`a fresh profile shows Hidden outline at ${cycle.before.v} with its default button LIVE — either the shipped value or the button's idea of it is wrong`);
+    else if (cycle.moved.v === cycle.before.v) fail("dragging the Hidden outline dial changed nothing");
+    else if (cycle.moved.off) fail("the default button stayed disabled after the value moved off its default");
+    else if (cycle.after.v !== cycle.before.v)
+      fail(`"default" left Hidden outline at ${cycle.after.v}, not its shipped ${cycle.before.v}`);
+    else if (!cycle.after.off) fail("the default button stayed live after restoring the default");
+    else
+      console.log(
+        `Settings default buttons OK (${defs.n} dials, all in one group; Hidden outline ${cycle.before.v} → ${cycle.moved.v} → ${cycle.after.v})`,
+      );
   }
 
   // ---- keyboard cancels the trip ----

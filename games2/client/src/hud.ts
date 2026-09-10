@@ -21,8 +21,15 @@ import { mountWikiButton } from "./wikibtn";
 import { mountWikiNearButton } from "./wikinear";
 import { mountTheme, toggleTheme, currentTheme } from "./theme";
 import { getHand, toggleHand, handLabel } from "./controls";
-import { indoorLight, indoorLightLit, setIndoorLight, setIndoorLightLit } from "./indoorlight";
-import { hiddenRing, setHiddenRing } from "./hiddenring";
+import {
+  indoorLight,
+  indoorLightLit,
+  setIndoorLight,
+  setIndoorLightLit,
+  INDOOR_LIGHT_DEFAULT,
+  INDOOR_LIGHT_LIT_DEFAULT,
+} from "./indoorlight";
+import { hiddenRing, setHiddenRing, HIDDEN_RING_DEFAULT } from "./hiddenring";
 import {
   fadeTune,
   setFadeTune,
@@ -32,6 +39,7 @@ import {
   sliderFromAmount,
   falloffFromSlider,
   sliderFromFalloff,
+  FADE_TUNE_DEFAULT,
 } from "./fadetune";
 import {
   SCENERY_ANIM_CLASSES,
@@ -39,16 +47,30 @@ import {
   SCENERY_SLEEP_MAX,
   sceneryAnimTune,
   setSceneryAnimTune,
+  SCENERY_ANIM_DEFAULT,
 } from "./sceneryanim";
-import { lightAnimTune, setLightAnimTune, ratioFromSlider, sliderFromRatio } from "./lightanim";
+import {
+  lightAnimTune,
+  setLightAnimTune,
+  ratioFromSlider,
+  sliderFromRatio,
+  LIGHT_ANIM_DEFAULT,
+} from "./lightanim";
 import {
   lightScale,
   setLightScale,
   lightScaleLabel,
   lightScaleFromSlider,
   sliderFromLightScale,
+  LIGHT_SCALE_DEFAULT,
 } from "./lightscale";
-import { indoorWall, setIndoorWall, INDOOR_WALL_MIN, INDOOR_WALL_MAX } from "./indoorwall";
+import {
+  indoorWall,
+  setIndoorWall,
+  INDOOR_WALL_MIN,
+  INDOOR_WALL_MAX,
+  INDOOR_WALL_DEFAULT,
+} from "./indoorwall";
 import { withV } from "./assetver";
 import { minimapDotPct, mapImageUrls, loadMinimapMeta, type MinimapFeed, type MinimapMeta } from "./maps";
 import { gameAudio } from "../../composer/index";
@@ -374,6 +396,12 @@ export class HudBar {
   private tabs = new Map<TabId, HTMLButtonElement>();
   private switches: [HTMLButtonElement, () => boolean][] = [];
   private stateful: [HTMLButtonElement, HudActions["settings"][number]][] = [];
+  /** The dial group: EVERY slider on the Settings page, in one block in the
+   * middle of the column (maintainer 2026-09-10: "we have two settings sliders
+   * at the bottom of the page and the rest in the middle. Put all in the
+   * middle."). Sliders injected from OUTSIDE this file land here too — see the
+   * observer in buildSettings. */
+  private dials: HTMLElement | null = null;
   // ambient-effect checklist (populated once window.__mlAmbient is up)
   private ambSection: HTMLElement | null = null;
   private ambList: HTMLElement | null = null;
@@ -641,12 +669,14 @@ export class HudBar {
     // then one row per effect in registry order.
     this.ambAuto = this.ambRow(null, "Auto");
     for (const e of effects) this.ambRow(e.name, capWords(e.name));
-    // Bird-density slider under the checklist — scales BOTH bird flocks 0.1×–10×
-    // (maintainer 2026-07-25). Only when the ambient layer exposes birdDensity
-    // (older layers degrade to no slider).
+    // Bird-density slider — scales BOTH bird flocks 0.1×–10× (maintainer
+    // 2026-07-25). Only when the ambient layer exposes birdDensity (older
+    // layers degrade to no slider).
     const bd = api.birdDensity;
-    if (this.ambSection && typeof bd === "function") {
-      this.ambSection.appendChild(birdSlider(() => bd(), (v) => bd(v)));
+    if (this.dials && typeof bd === "function") {
+      // …and it joins the DIAL GROUP up the page, not the checklist it is
+      // registered by: every slider sits together (maintainer 2026-09-10).
+      this.dials.appendChild(birdSlider(() => bd(), (v) => bd(v)));
     }
     this.refreshAmbient();
   }
@@ -822,14 +852,40 @@ export class HudBar {
       });
     }).observe(row, { childList: true });
 
+    /* THE DIAL GROUP — every slider on this page, in one block, above the
+     * ambient checklist (maintainer 2026-09-10: "we have two settings sliders
+     * at the bottom of the page and the rest in the middle. Put all in the
+     * middle."). The two strays were the bird-density dial, which the ambient
+     * checklist built into ITSELF, and the games agent's Uphill bias, injected
+     * from client/src/navbias.ts onto the end of the column.
+     * A slider dropped anywhere else in this column is MOVED here rather than
+     * asked to know about this container: outside injectors (navbias.ts, the
+     * ambient layer) find the page by class and append, and they re-inject
+     * after every HudBar rebuild, so the rule has to live on the receiving
+     * side to stay true. Moving a node out of `wrap` only fires records we
+     * ignore, so this cannot loop. */
+    const dials = mk("div", "ml-dials");
+    this.dials = dials;
+    wrap.appendChild(dials);
+    new MutationObserver((recs) => {
+      for (const r of recs)
+        for (const n of r.addedNodes)
+          if (n instanceof HTMLElement && n.classList.contains("ml-amb-slider")) dials.appendChild(n);
+    }).observe(wrap, { childList: true });
+
     // INDOOR LIGHT: the base ambient inside houses and caves (maintainer
     // 2026-08-06: "a slider on the settings page … 0% = BLACK, 100% = THE TILE
     // WILL LOOK JUST LIKE THE PNG"). Lives on the Settings page proper, NOT in
     // the Ambient-effects section below — that section is the ambient agent's
     // and is built lazily from its registry. indoorlight.ts owns the value and
     // its persistence; the scene listens for "ml-indoor-light".
-    wrap.appendChild(
-      pctSlider("Indoor light (dark room)", () => indoorLight(), (v) => setIndoorLight(v)),
+    dials.appendChild(
+      pctSlider(
+        "Indoor light (dark room)",
+        () => indoorLight(),
+        (v) => setIndoorLight(v),
+        INDOOR_LIGHT_DEFAULT,
+      ),
     );
     /* TWO DIALS, ONE FOR EACH KIND OF ROOM (maintainer 2026-09-07, on walking
      * into a house with a lit fireplace: "the old indoor ambient light at 40%
@@ -837,15 +893,20 @@ export class HudBar {
      * a room with NO light of its own needs to read as stone; the second is
      * what a room that lights itself gets, where the base only has to keep the
      * far corners off black. Both live so he can tune each by eye in-game. */
-    wrap.appendChild(
-      pctSlider("Indoor light (lit room)", () => indoorLightLit(), (v) => setIndoorLightLit(v)),
+    dials.appendChild(
+      pctSlider(
+        "Indoor light (lit room)",
+        () => indoorLightLit(),
+        (v) => setIndoorLightLit(v),
+        INDOOR_LIGHT_LIT_DEFAULT,
+      ),
     );
     /* HIDDEN OUTLINE: how loud the wall-hack silhouette is. The line draws
      * above the darkness overlay, so at full opacity a body behind a wall is
      * the most legible thing on screen — being hidden reads as an advantage.
      * hiddenring.ts owns the value and its persistence. */
-    wrap.appendChild(
-      pctSlider("Hidden outline", () => hiddenRing(), (v) => setHiddenRing(v)),
+    dials.appendChild(
+      pctSlider("Hidden outline", () => hiddenRing(), (v) => setHiddenRing(v), HIDDEN_RING_DEFAULT),
     );
 
     /* THE THREE FADE DIALS (games agent, at the maintainer's request 2026-09-09
@@ -856,30 +917,33 @@ export class HudBar {
      * fadetune.ts owns the values; the scene re-resolves the world on
      * "ml-fade-tune" once the thumb rests. The fourth control, whether a fade
      * may sit on a transition tile, is a button in the scene's Settings list. */
-    wrap.appendChild(
+    dials.appendChild(
       pctSlider(
         "Fade reach",
         () => sliderFromReach(fadeTune().reach),
         (p) => setFadeTune({ reach: reachFromSlider(p) }),
+        sliderFromReach(FADE_TUNE_DEFAULT.reach),
         {
           snap: (p) => sliderFromReach(reachFromSlider(p)),
           format: (p) => `${reachFromSlider(p)} cells`,
         },
       ),
     );
-    wrap.appendChild(
+    dials.appendChild(
       pctSlider(
         "Fade amount",
         () => sliderFromAmount(fadeTune().amount),
         (p) => setFadeTune({ amount: amountFromSlider(p) }),
+        sliderFromAmount(FADE_TUNE_DEFAULT.amount),
         { format: (p) => `${amountFromSlider(p).toFixed(2)}x` },
       ),
     );
-    wrap.appendChild(
+    dials.appendChild(
       pctSlider(
         "Fade falloff",
         () => sliderFromFalloff(fadeTune().falloff),
         (p) => setFadeTune({ falloff: falloffFromSlider(p) }),
+        sliderFromFalloff(FADE_TUNE_DEFAULT.falloff),
         { format: (p) => `exp ${falloffFromSlider(p).toFixed(2)}` },
       ),
     );
@@ -890,7 +954,7 @@ export class HudBar {
      * fire on repeat is fine and a tree on repeat is not. sceneryanim.ts owns
      * the values; the scene reads the range at each sleep it schedules. */
     for (const cls of SCENERY_ANIM_CLASSES) {
-      wrap.appendChild(
+      dials.appendChild(
         rangeSlider(
           `${SCENERY_ANIM_LABEL[cls]} sleep`,
           () => {
@@ -898,6 +962,10 @@ export class HudBar {
             return [lo / SCENERY_SLEEP_MAX, hi / SCENERY_SLEEP_MAX];
           },
           ([lo, hi]) => setSceneryAnimTune(cls, [Math.round(lo * SCENERY_SLEEP_MAX), Math.round(hi * SCENERY_SLEEP_MAX)]),
+          [
+            SCENERY_ANIM_DEFAULT[cls][0] / SCENERY_SLEEP_MAX,
+            SCENERY_ANIM_DEFAULT[cls][1] / SCENERY_SLEEP_MAX,
+          ],
           { format: ([lo, hi]) => `${Math.round(lo * SCENERY_SLEEP_MAX)}–${Math.round(hi * SCENERY_SLEEP_MAX)} s` },
         ),
       );
@@ -909,19 +977,21 @@ export class HudBar {
      * and 2.0 means twice the effect ... 0.05 to 20x. This is for me to test
      * what looks best." Log dials; lightanim.ts owns the values; the scene
      * reads them every frame. */
-    wrap.appendChild(
+    dials.appendChild(
       pctSlider(
         "Light intensity swing",
         () => sliderFromRatio(lightAnimTune().intensity),
         (p) => setLightAnimTune({ intensity: ratioFromSlider(p) }),
+        sliderFromRatio(LIGHT_ANIM_DEFAULT.intensity),
         { format: (p) => `${ratioFromSlider(p).toFixed(2)}x` },
       ),
     );
-    wrap.appendChild(
+    dials.appendChild(
       pctSlider(
         "Light centre swing",
         () => sliderFromRatio(lightAnimTune().position),
         (p) => setLightAnimTune({ position: ratioFromSlider(p) }),
+        sliderFromRatio(LIGHT_ANIM_DEFAULT.position),
         { format: (p) => `${ratioFromSlider(p).toFixed(2)}x` },
       ),
     );
@@ -936,11 +1006,12 @@ export class HudBar {
      * SQUARE of the dial, so 50% is a quarter of the work and reads like half.
      * lightscale.ts owns the value; nightlight.ts rebuilds all three render
      * targets on "ml-light-scale", so it takes effect without a reload. */
-    wrap.appendChild(
+    dials.appendChild(
       pctSlider(
         "Light resolution",
         () => sliderFromLightScale(lightScale()),
         (p) => setLightScale(lightScaleFromSlider(p)),
+        sliderFromLightScale(LIGHT_SCALE_DEFAULT),
         {
           snap: (p) => sliderFromLightScale(lightScaleFromSlider(p)),
           format: (p) => lightScaleLabel(lightScaleFromSlider(p)),
@@ -959,8 +1030,8 @@ export class HudBar {
     const wallSpan = INDOOR_WALL_MAX - INDOOR_WALL_MIN;
     const p2wall = (p: number) => INDOOR_WALL_MIN + Math.round(p * wallSpan);
     const wall2p = (v: number) => (v - INDOOR_WALL_MIN) / wallSpan;
-    wrap.appendChild(
-      pctSlider("Indoor wall height", () => wall2p(indoorWall()), (p) => setIndoorWall(p2wall(p)), {
+    dials.appendChild(
+      pctSlider("Indoor wall height", () => wall2p(indoorWall()), (p) => setIndoorWall(p2wall(p)), wall2p(INDOOR_WALL_DEFAULT), {
         snap: (p) => wall2p(p2wall(p)),
         format: (p) => `${p2wall(p)} level${p2wall(p) === 1 ? "" : "s"}`,
       }),
@@ -1344,6 +1415,35 @@ function plateButton(label: string, onPress: () => void): HTMLButtonElement {
   return b;
 }
 
+/** THE "default" BUTTON EVERY SLIDER CARRIES, riding in the scroll gutter to
+ * the RIGHT of its track (maintainer 2026-09-10: "I want it to the right of
+ * the slider. We already have extra room there because the slider doesn't take
+ * up 100%" — and on what disabled means: "disabled 'default' meant we are
+ * already at default"). It is the one control that tells him what the shipped
+ * value even IS: these dials exist so he can find a number by eye, and without
+ * this there is no way back from a hand he did not like.
+ * `atDefault` is asked the CURRENT STORED value, never the drag's raw
+ * position — a drag that lands on the default must disable the button, and a
+ * raw pointer fraction never equals a stored number exactly.
+ * A button is not draggable, so the gutter it fills is still a place a scroll
+ * can safely start; that is why it could go here at all. */
+function sliderRow(
+  track: HTMLElement,
+  atDefault: () => boolean,
+  reset: () => void,
+): { row: HTMLElement; sync: () => void } {
+  const row = mk("div", "ml-slider-row");
+  const btn = mk("button", "ml-slider-def") as HTMLButtonElement;
+  btn.type = "button";
+  btn.textContent = "default";
+  btn.title = "back to the default";
+  btn.addEventListener("click", reset);
+  row.append(track, btn);
+  // NOT called here: the sliders declare `atDefault` before their own state
+  // exists, and the first paint runs it once everything is up.
+  return { row, sync: () => (btn.disabled = atDefault()) };
+}
+
 /** A Settings slider for the bird-density ratio — wiki style: a slim rounded
  * track (surface-2 well), an accent fill, and a round draggable knob. LOG
  * scale 0.1×–10× with 1× centred and a soft detent that snaps to exactly 1×.
@@ -1369,7 +1469,14 @@ function birdSlider(get: () => number, set: (v: number) => void): HTMLElement {
   const fill = mk("div", "ml-slider-fill");
   const knob = mk("div", "ml-slider-knob");
   track.append(fill, knob);
-  wrap.append(head, track);
+  // ×1 is the default — "today's amount" (ambient/runtime/density.ts), and the
+  // value the log axis is centred on and detents to.
+  const { row, sync } = sliderRow(
+    track,
+    () => Math.abs(get() - 1) < 1e-4,
+    () => applyP(0.5),
+  );
+  wrap.append(head, row);
 
   let curP = toP(get());
   const render = (p: number) => {
@@ -1394,6 +1501,7 @@ function birdSlider(get: () => number, set: (v: number) => void): HTMLElement {
     if (Math.abs(p - 0.5) < 0.03) p = 0.5; // soft detent → exactly 1×
     render(p);
     set(toV(p));
+    sync();
   };
   let dragging = false;
   track.addEventListener("pointerdown", (e) => {
@@ -1423,6 +1531,7 @@ function birdSlider(get: () => number, set: (v: number) => void): HTMLElement {
     });
 
   render(curP);
+  sync();
   return wrap;
 }
 
@@ -1435,6 +1544,11 @@ function pctSlider(
   labelText: string,
   get: () => number,
   set: (v: number) => void,
+  // THE DEFAULT, in the same 0..1 axis as `get`/`set` — not the setting's own
+  // units, so a dial with a log or stepped axis converts it exactly the way it
+  // converts everything else. REQUIRED: every dial has a default button, and a
+  // call site that had to think of one cannot forget to name it.
+  def: number,
   // A STEPPED slider is the same widget with two hooks: `snap` pulls a raw
   // 0..1 drag onto the nearest legal position, and `format` writes the readout
   // in the setting's own units. Defaults give the plain percent slider back,
@@ -1454,7 +1568,13 @@ function pctSlider(
   const fill = mk("div", "ml-slider-fill");
   const knob = mk("div", "ml-slider-knob");
   track.append(fill, knob);
-  wrap.append(head, track);
+  const defP = snap(clamp01(def));
+  const { row, sync } = sliderRow(
+    track,
+    () => Math.abs(snap(clamp01(get())) - defP) < 1e-4,
+    () => applyP(defP),
+  );
+  wrap.append(head, row);
 
   let curP = snap(clamp01(get()));
   const render = (p: number) => {
@@ -1475,6 +1595,7 @@ function pctSlider(
     const p = snap(raw);
     render(p);
     set(p);
+    sync();
   };
   let dragging = false;
   track.addEventListener("pointerdown", (e) => {
@@ -1504,6 +1625,7 @@ function pctSlider(
     });
 
   render(curP);
+  sync();
   return wrap;
 }
 
@@ -1515,6 +1637,8 @@ function rangeSlider(
   labelText: string,
   get: () => [number, number],
   set: (v: [number, number]) => void,
+  /** The default pair, in the same 0..1 axis as `get`/`set` (see pctSlider). */
+  def: [number, number],
   opts: { format?: (v: [number, number]) => string } = {},
 ): HTMLElement {
   const clamp01 = (p: number) => Math.max(0, Math.min(1, p));
@@ -1530,7 +1654,20 @@ function rangeSlider(
   const knobLo = mk("div", "ml-slider-knob lo");
   const knobHi = mk("div", "ml-slider-knob hi");
   track.append(fill, knobLo, knobHi);
-  wrap.append(head, track);
+  const defV: [number, number] = [clamp01(def[0]), clamp01(def[1])];
+  const { row, sync } = sliderRow(
+    track,
+    () => {
+      const v = get();
+      return Math.abs(v[0] - defV[0]) < 1e-4 && Math.abs(v[1] - defV[1]) < 1e-4;
+    },
+    () => {
+      render(defV);
+      set(defV);
+      sync();
+    },
+  );
+  wrap.append(head, row);
 
   let cur: [number, number] = get().map(clamp01) as [number, number];
   if (cur[0] > cur[1]) cur = [cur[1], cur[0]];
@@ -1560,6 +1697,7 @@ function rangeSlider(
     v[dragging] = dragging === 0 ? Math.min(raw, cur[1]) : Math.max(raw, cur[0]);
     render(v);
     set(v);
+    sync();
   };
   track.addEventListener("pointerdown", (e) => {
     const p = clientToP(e.clientX);
@@ -1594,6 +1732,7 @@ function rangeSlider(
     });
 
   render(cur);
+  sync();
   return wrap;
 }
 
@@ -2090,6 +2229,29 @@ function injectStyles() {
      viewport. At his 393px width it leaves the track 259px, which is still
      ample for a percentage. */
   :root{--ml-slider-gutter:100px}
+  /* THE GUTTER IS THE "default" BUTTON'S LANE (maintainer 2026-09-10: "I want
+     it to the right of the slider. We already have extra room there because
+     the slider doesn't take up 100%"). A button is not draggable — a touch
+     that moves becomes a scroll and never fires a click — so the strip does
+     both jobs at once and the track keeps exactly the width it had.
+     The button OWNS the gutter width (flex-basis = gutter − gap), so the two
+     numbers can never drift apart: widen --ml-slider-gutter and the button
+     grows with it. The .ml-slider margin is the fallback for a track that
+     arrives without a row of its own. */
+  .ml-slider-row{display:flex;align-items:center;gap:8px;width:100%}
+  .ml-slider-row>.ml-slider{flex:1 1 auto;min-width:0;margin-right:0}
+  .ml-slider-def{flex:0 0 calc(var(--ml-slider-gutter) - 8px);min-height:26px;padding:3px 6px;
+    background:var(--surface);color:var(--ink);border:1px solid var(--border);border-radius:8px;
+    font:600 11px/1 var(--sans);cursor:pointer;
+    touch-action:manipulation;-webkit-tap-highlight-color:transparent;
+    user-select:none;-webkit-user-select:none}
+  .ml-slider-def:hover:not(:disabled){background:var(--surface-2)}
+  /* DISABLED MEANS "you are already at the default" (his words) — the state
+     is information, not a dead control, so it stays legible rather than
+     fading to nothing. */
+  .ml-slider-def:disabled{opacity:.42;cursor:default}
+  /* the dial group: one block, same rhythm as the column it sits in */
+  .ml-dials{display:flex;flex-direction:column;gap:14px;width:100%}
   .ml-amb-slider{display:flex;flex-direction:column;gap:6px;width:100%;padding:0 2px 6px}
   .ml-amb-slider-head{display:flex;justify-content:space-between;align-items:baseline;
     font:600 13px/1.2 var(--sans);color:var(--ink)}
@@ -2173,6 +2335,7 @@ function injectStyles() {
     .ml-plate-btn{padding:6px 8px;font-size:12px}
   }
   @media (max-height:640px){
+    .ml-dials{gap:10px}
     .ml-tabrow{padding:8px 14px 8px}
     .ml-tab{height:48px}
     .ml-page{gap:8px;padding:8px 14px 12px}
