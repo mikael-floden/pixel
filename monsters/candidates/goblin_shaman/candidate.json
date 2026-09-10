@@ -1,1210 +1,1215 @@
 {
-  "id": "goblin_shaman",
-  "name": "Hexgob",
-  "tier": "mid",
-  "scale": "standard",
-  "lore": "It reads the future in bog-gas and finds it favorable. Its curses work about half the time, which is enough.",
-  "biome": [
-    "dark_mud",
-    "black_rock"
-  ],
-  "items": [],
-  "prompt": "Small fantasy goblin shaman shown full body from head to feet, green skin, a bone skull mask over its face, a feathered cloak, a gnarled staff topped with a glowing green skull held upright, and bone charms hanging from its belt.",
-  "size": [
-    88,
-    88
-  ],
-  "template_id": "mannequin",
-  "directions": [
-    "south",
-    "south-east",
-    "east",
-    "north-east",
-    "north",
-    "north-west",
-    "west",
-    "south-west"
-  ],
-  "rotations": {
-    "south": "goblin_shaman/rotations/south.webp",
-    "south-east": "goblin_shaman/rotations/south-east.webp",
-    "east": "goblin_shaman/rotations/east.webp",
-    "north-east": "goblin_shaman/rotations/north-east.webp",
-    "north": "goblin_shaman/rotations/north.webp",
-    "north-west": "goblin_shaman/rotations/north-west.webp",
-    "west": "goblin_shaman/rotations/west.webp",
-    "south-west": "goblin_shaman/rotations/south-west.webp"
-  },
-  "sheet": "goblin_shaman/sheet.webp",
-  "review": "approved",
-  "pixellab_id": "72e6fcb8-85ea-437c-a683-120c37d724f4",
-  "seed": 359586192,
-  "version": 1,
-  "usage": null,
-  "generated_at": "2026-09-09T18:08:20+00:00",
-  "elapsed_s": 181.2,
-  "qa": {
-    "status": "pass",
-    "min_run1": 0.708,
-    "reasons": [],
-    "directions": {
-      "south": {
-        "run1": 0.77,
-        "bbox": [
-          5,
-          2,
-          75,
-          84
-        ],
-        "fill": 0.741,
-        "touches_edge": false
-      },
-      "south-east": {
-        "run1": 0.821,
-        "bbox": [
-          18,
-          4,
-          70,
-          86
-        ],
-        "fill": 0.551,
-        "touches_edge": false
-      },
-      "east": {
-        "run1": 0.795,
-        "bbox": [
-          23,
-          4,
-          59,
-          86
-        ],
-        "fill": 0.381,
-        "touches_edge": false
-      },
-      "north-east": {
-        "run1": 0.747,
-        "bbox": [
-          19,
-          3,
-          78,
-          84
-        ],
-        "fill": 0.617,
-        "touches_edge": false
-      },
-      "north": {
-        "run1": 0.722,
-        "bbox": [
-          14,
-          2,
-          83,
-          83
-        ],
-        "fill": 0.722,
-        "touches_edge": false
-      },
-      "north-west": {
-        "run1": 0.708,
-        "bbox": [
-          21,
-          2,
-          71,
-          84
-        ],
-        "fill": 0.529,
-        "touches_edge": false
-      },
-      "west": {
-        "run1": 0.789,
-        "bbox": [
-          29,
-          2,
-          64,
-          85
-        ],
-        "fill": 0.375,
-        "touches_edge": false
-      },
-      "south-west": {
-        "run1": 0.834,
-        "bbox": [
-          11,
-          2,
-          70,
-          86
-        ],
-        "fill": 0.64,
-        "touches_edge": false
-      }
-    }
-  },
-  "approved_at": "2026-09-09T19:59:20+00:00",
-  "animations": {
-    "idle": {
-      "directions": {
-        "south": {
-          "status": "pass",
-          "step_mean": 0.1129,
-          "step_max": 0.1247,
-          "drift": 1.01,
-          "loop": 0.0,
-          "pin": 1.0,
-          "reasons": [],
-          "sub": "fc478a4a-5ea0-4eec-8402-a979539b5350",
-          "takes": 1,
-          "version": 1,
-          "mirrored": false,
-          "generated_at": "2026-09-09T20:10:49+00:00",
-          "cut": 0
-        },
-        "south-east": {
-          "status": "pass",
-          "step_mean": 0.0292,
-          "step_max": 0.0491,
-          "drift": 0.77,
-          "loop": 0.0,
-          "pin": 1.0,
-          "reasons": [],
-          "sub": "c0fb8124-4c39-4d42-a48e-48a4b4cc0042",
-          "takes": 1,
-          "version": 1,
-          "mirrored": false,
-          "generated_at": "2026-09-09T20:10:50+00:00",
-          "cut": 0
-        },
-        "east": {
-          "status": "pass",
-          "step_mean": 0.0208,
-          "step_max": 0.0415,
-          "drift": 0.79,
-          "loop": 0.001,
-          "pin": 1.0,
-          "reasons": [],
-          "sub": "e090e798-10a8-4aea-907f-d2849f326b5e",
-          "takes": 1,
-          "version": 1,
-          "mirrored": false,
-          "generated_at": "2026-09-09T20:10:50+00:00",
-          "cut": 0
-        },
-        "north-east": {
-          "status": "pass",
-          "step_mean": 0.0466,
-          "step_max": 0.0663,
-          "drift": 1.12,
-          "loop": 0.0007,
-          "pin": 1.0,
-          "reasons": [],
-          "sub": "09f97502-fe65-49bc-89ec-3f7d51a9ca08",
-          "takes": 1,
-          "version": 1,
-          "mirrored": false,
-          "generated_at": "2026-09-09T20:10:51+00:00",
-          "cut": 0
-        },
-        "north": {
-          "status": "pass",
-          "step_mean": 0.0279,
-          "step_max": 0.0484,
-          "drift": 0.71,
-          "loop": 0.0009,
-          "pin": 1.0,
-          "reasons": [],
-          "sub": "18929afd-87f0-485b-a145-128af73fce62",
-          "takes": 1,
-          "version": 1,
-          "mirrored": false,
-          "generated_at": "2026-09-09T20:10:51+00:00",
-          "cut": 0
-        },
-        "south-west": {
-          "status": "pass",
-          "step_mean": 0.0292,
-          "step_max": 0.0491,
-          "drift": 0.77,
-          "loop": 0.0,
-          "pin": 1.0,
-          "reasons": [],
-          "sub": "c0fb8124-4c39-4d42-a48e-48a4b4cc0042",
-          "takes": 1,
-          "version": 1,
-          "mirrored": true,
-          "generated_at": "2026-09-09T20:10:50+00:00",
-          "cut": 0,
-          "source": "south-east"
-        },
-        "west": {
-          "status": "pass",
-          "step_mean": 0.0208,
-          "step_max": 0.0415,
-          "drift": 0.79,
-          "loop": 0.001,
-          "pin": 1.0,
-          "reasons": [],
-          "sub": "e090e798-10a8-4aea-907f-d2849f326b5e",
-          "takes": 1,
-          "version": 1,
-          "mirrored": true,
-          "generated_at": "2026-09-09T20:10:50+00:00",
-          "cut": 0,
-          "source": "east"
-        },
-        "north-west": {
-          "status": "pass",
-          "step_mean": 0.0466,
-          "step_max": 0.0663,
-          "drift": 1.12,
-          "loop": 0.0007,
-          "pin": 1.0,
-          "reasons": [],
-          "sub": "09f97502-fe65-49bc-89ec-3f7d51a9ca08",
-          "takes": 1,
-          "version": 1,
-          "mirrored": true,
-          "generated_at": "2026-09-09T20:10:51+00:00",
-          "cut": 0,
-          "source": "north-east"
-        }
-      },
-      "action": "Calm still idle, breathing very slowly and subtly, chest and shoulders rise and fall a little, feet planted, no other movement, ends in the same neutral pose it started in",
-      "frame_paths": {
-        "south": [
-          "goblin_shaman/animations/idle/south/00.webp",
-          "goblin_shaman/animations/idle/south/01.webp",
-          "goblin_shaman/animations/idle/south/02.webp",
-          "goblin_shaman/animations/idle/south/03.webp",
-          "goblin_shaman/animations/idle/south/04.webp"
-        ],
-        "south-east": [
-          "goblin_shaman/animations/idle/south-east/00.webp",
-          "goblin_shaman/animations/idle/south-east/01.webp",
-          "goblin_shaman/animations/idle/south-east/02.webp",
-          "goblin_shaman/animations/idle/south-east/03.webp",
-          "goblin_shaman/animations/idle/south-east/04.webp"
-        ],
-        "east": [
-          "goblin_shaman/animations/idle/east/00.webp",
-          "goblin_shaman/animations/idle/east/01.webp",
-          "goblin_shaman/animations/idle/east/02.webp",
-          "goblin_shaman/animations/idle/east/03.webp",
-          "goblin_shaman/animations/idle/east/04.webp"
-        ],
-        "north-east": [
-          "goblin_shaman/animations/idle/north-east/00.webp",
-          "goblin_shaman/animations/idle/north-east/01.webp",
-          "goblin_shaman/animations/idle/north-east/02.webp",
-          "goblin_shaman/animations/idle/north-east/03.webp",
-          "goblin_shaman/animations/idle/north-east/04.webp"
-        ],
-        "north": [
-          "goblin_shaman/animations/idle/north/00.webp",
-          "goblin_shaman/animations/idle/north/01.webp",
-          "goblin_shaman/animations/idle/north/02.webp",
-          "goblin_shaman/animations/idle/north/03.webp",
-          "goblin_shaman/animations/idle/north/04.webp"
-        ],
-        "south-west": [
-          "goblin_shaman/animations/idle/south-west/00.webp",
-          "goblin_shaman/animations/idle/south-west/01.webp",
-          "goblin_shaman/animations/idle/south-west/02.webp",
-          "goblin_shaman/animations/idle/south-west/03.webp",
-          "goblin_shaman/animations/idle/south-west/04.webp"
-        ],
-        "west": [
-          "goblin_shaman/animations/idle/west/00.webp",
-          "goblin_shaman/animations/idle/west/01.webp",
-          "goblin_shaman/animations/idle/west/02.webp",
-          "goblin_shaman/animations/idle/west/03.webp",
-          "goblin_shaman/animations/idle/west/04.webp"
-        ],
-        "north-west": [
-          "goblin_shaman/animations/idle/north-west/00.webp",
-          "goblin_shaman/animations/idle/north-west/01.webp",
-          "goblin_shaman/animations/idle/north-west/02.webp",
-          "goblin_shaman/animations/idle/north-west/03.webp",
-          "goblin_shaman/animations/idle/north-west/04.webp"
-        ]
-      },
-      "strips": {
-        "south": "goblin_shaman/animations/idle__south.webp",
-        "south-east": "goblin_shaman/animations/idle__south-east.webp",
-        "east": "goblin_shaman/animations/idle__east.webp",
-        "north-east": "goblin_shaman/animations/idle__north-east.webp",
-        "north": "goblin_shaman/animations/idle__north.webp",
-        "south-west": "goblin_shaman/animations/idle__south-west.webp",
-        "west": "goblin_shaman/animations/idle__west.webp",
-        "north-west": "goblin_shaman/animations/idle__north-west.webp"
-      }
-    },
-    "walk": {
-      "directions": {
-        "south": {
-          "status": "pass",
-          "step_mean": 0.1276,
-          "step_max": 0.1588,
-          "drift": 1.95,
-          "loop": 0.1668,
-          "loop_ratio": 1.31,
-          "travel": 0.74,
-          "pin": 0.943,
-          "pad": 0,
-          "canvas": [
-            88,
-            88
-          ],
-          "reasons": [],
-          "sub": "ef16fef3-0972-48c8-83d3-232a3578cb62",
-          "group": "44b937ce-240b-4f7a-9e1d-74a6e51e2d15",
-          "takes": 1,
-          "version": 2,
-          "mirrored": false,
-          "generated_at": "2026-09-09T21:15:20+00:00"
-        },
-        "south-east": {
-          "status": "warn",
-          "step_mean": 0.142,
-          "step_max": 0.1726,
-          "drift": 2.48,
-          "loop": 0.3129,
-          "loop_ratio": 2.2,
-          "travel": 2.05,
-          "pin": 0.864,
-          "pad": 0,
-          "canvas": [
-            88,
-            88
-          ],
-          "reasons": [
-            "last→first hand-off 2.2× a step — eyeball the loop"
-          ],
-          "sub": "80501362-2919-4378-86ca-78c001c8cb41",
-          "group": "768b6608-6a68-4ecf-a0d4-1236c450bb91",
-          "takes": 1,
-          "version": 2,
-          "mirrored": false,
-          "generated_at": "2026-09-09T21:15:21+00:00"
-        },
-        "east": {
-          "status": "pass",
-          "step_mean": 0.1567,
-          "step_max": 0.1753,
-          "drift": 2.2,
-          "loop": 0.2092,
-          "loop_ratio": 1.34,
-          "travel": 1.77,
-          "pin": 0.878,
-          "pad": 0,
-          "canvas": [
-            88,
-            88
-          ],
-          "reasons": [],
-          "sub": "cf66d5c5-00e1-464b-9b9f-724f7978ea0e",
-          "group": "fa663fa2-186a-4b4c-8668-19a5aaa27f88",
-          "takes": 1,
-          "version": 2,
-          "mirrored": false,
-          "generated_at": "2026-09-09T21:15:21+00:00"
-        },
-        "north-east": {
-          "status": "pass",
-          "step_mean": 0.1354,
-          "step_max": 0.1571,
-          "drift": 1.4,
-          "loop": 0.2416,
-          "loop_ratio": 1.78,
-          "travel": 0.28,
-          "pin": 0.845,
-          "pad": 1,
-          "canvas": [
-            90,
-            90
-          ],
-          "reasons": [
-            "canvas grown by 1 px a side to hold the motion"
-          ],
-          "sub": "ecdd9046-1146-4e88-8f8a-23cf698e5e18",
-          "group": "445c9afa-692e-4909-883c-bd39f491c589",
-          "takes": 2,
-          "version": 2,
-          "mirrored": false,
-          "generated_at": "2026-09-09T21:15:22+00:00"
-        },
-        "north": {
-          "status": "pass",
-          "step_mean": 0.1145,
-          "step_max": 0.1281,
-          "drift": 1.68,
-          "loop": 0.1515,
-          "loop_ratio": 1.32,
-          "travel": 1.68,
-          "pin": 0.894,
-          "pad": 0,
-          "canvas": [
-            88,
-            88
-          ],
-          "reasons": [],
-          "sub": "a5208a30-66f5-46bd-88ff-0d9329220b31",
-          "group": "a647ff71-77d7-49b5-b6fa-6e1cb893da18",
-          "takes": 1,
-          "version": 2,
-          "mirrored": false,
-          "generated_at": "2026-09-09T21:15:23+00:00"
-        },
-        "south-west": {
-          "status": "warn",
-          "step_mean": 0.142,
-          "step_max": 0.1726,
-          "drift": 2.48,
-          "loop": 0.3129,
-          "loop_ratio": 2.2,
-          "travel": 2.05,
-          "pin": 0.864,
-          "pad": 0,
-          "canvas": [
-            88,
-            88
-          ],
-          "reasons": [
-            "last→first hand-off 2.2× a step — eyeball the loop"
-          ],
-          "sub": "80501362-2919-4378-86ca-78c001c8cb41",
-          "group": "768b6608-6a68-4ecf-a0d4-1236c450bb91",
-          "takes": 1,
-          "version": 2,
-          "mirrored": true,
-          "generated_at": "2026-09-09T21:15:21+00:00",
-          "source": "south-east"
-        },
-        "west": {
-          "status": "pass",
-          "step_mean": 0.1567,
-          "step_max": 0.1753,
-          "drift": 2.2,
-          "loop": 0.2092,
-          "loop_ratio": 1.34,
-          "travel": 1.77,
-          "pin": 0.878,
-          "pad": 0,
-          "canvas": [
-            88,
-            88
-          ],
-          "reasons": [],
-          "sub": "cf66d5c5-00e1-464b-9b9f-724f7978ea0e",
-          "group": "fa663fa2-186a-4b4c-8668-19a5aaa27f88",
-          "takes": 1,
-          "version": 2,
-          "mirrored": true,
-          "generated_at": "2026-09-09T21:15:21+00:00",
-          "source": "east"
-        },
-        "north-west": {
-          "status": "pass",
-          "step_mean": 0.1354,
-          "step_max": 0.1571,
-          "drift": 1.4,
-          "loop": 0.2416,
-          "loop_ratio": 1.78,
-          "travel": 0.28,
-          "pin": 0.845,
-          "pad": 1,
-          "canvas": [
-            90,
-            90
-          ],
-          "reasons": [
-            "canvas grown by 1 px a side to hold the motion"
-          ],
-          "sub": "ecdd9046-1146-4e88-8f8a-23cf698e5e18",
-          "group": "445c9afa-692e-4909-883c-bd39f491c589",
-          "takes": 2,
-          "version": 2,
-          "mirrored": true,
-          "generated_at": "2026-09-09T21:15:22+00:00",
-          "source": "north-east"
-        }
-      },
-      "action": "walk loop, full walk cycle in place, legs alternate naturally, normal calm walking pace, body stays centered, seamless loop whose last frame leads straight back into the first, no turning",
-      "frame_paths": {
-        "south": [
-          "goblin_shaman/animations/walk/south/00.webp",
-          "goblin_shaman/animations/walk/south/01.webp",
-          "goblin_shaman/animations/walk/south/02.webp",
-          "goblin_shaman/animations/walk/south/03.webp",
-          "goblin_shaman/animations/walk/south/04.webp",
-          "goblin_shaman/animations/walk/south/05.webp"
-        ],
-        "south-east": [
-          "goblin_shaman/animations/walk/south-east/00.webp",
-          "goblin_shaman/animations/walk/south-east/01.webp",
-          "goblin_shaman/animations/walk/south-east/02.webp",
-          "goblin_shaman/animations/walk/south-east/03.webp",
-          "goblin_shaman/animations/walk/south-east/04.webp",
-          "goblin_shaman/animations/walk/south-east/05.webp"
-        ],
-        "east": [
-          "goblin_shaman/animations/walk/east/00.webp",
-          "goblin_shaman/animations/walk/east/01.webp",
-          "goblin_shaman/animations/walk/east/02.webp",
-          "goblin_shaman/animations/walk/east/03.webp",
-          "goblin_shaman/animations/walk/east/04.webp",
-          "goblin_shaman/animations/walk/east/05.webp"
-        ],
-        "north-east": [
-          "goblin_shaman/animations/walk/north-east/00.webp",
-          "goblin_shaman/animations/walk/north-east/01.webp",
-          "goblin_shaman/animations/walk/north-east/02.webp",
-          "goblin_shaman/animations/walk/north-east/03.webp",
-          "goblin_shaman/animations/walk/north-east/04.webp",
-          "goblin_shaman/animations/walk/north-east/05.webp"
-        ],
-        "north": [
-          "goblin_shaman/animations/walk/north/00.webp",
-          "goblin_shaman/animations/walk/north/01.webp",
-          "goblin_shaman/animations/walk/north/02.webp",
-          "goblin_shaman/animations/walk/north/03.webp",
-          "goblin_shaman/animations/walk/north/04.webp",
-          "goblin_shaman/animations/walk/north/05.webp"
-        ],
-        "south-west": [
-          "goblin_shaman/animations/walk/south-west/00.webp",
-          "goblin_shaman/animations/walk/south-west/01.webp",
-          "goblin_shaman/animations/walk/south-west/02.webp",
-          "goblin_shaman/animations/walk/south-west/03.webp",
-          "goblin_shaman/animations/walk/south-west/04.webp",
-          "goblin_shaman/animations/walk/south-west/05.webp"
-        ],
-        "west": [
-          "goblin_shaman/animations/walk/west/00.webp",
-          "goblin_shaman/animations/walk/west/01.webp",
-          "goblin_shaman/animations/walk/west/02.webp",
-          "goblin_shaman/animations/walk/west/03.webp",
-          "goblin_shaman/animations/walk/west/04.webp",
-          "goblin_shaman/animations/walk/west/05.webp"
-        ],
-        "north-west": [
-          "goblin_shaman/animations/walk/north-west/00.webp",
-          "goblin_shaman/animations/walk/north-west/01.webp",
-          "goblin_shaman/animations/walk/north-west/02.webp",
-          "goblin_shaman/animations/walk/north-west/03.webp",
-          "goblin_shaman/animations/walk/north-west/04.webp",
-          "goblin_shaman/animations/walk/north-west/05.webp"
-        ]
-      },
-      "strips": {
-        "south": "goblin_shaman/animations/walk__south.webp",
-        "south-east": "goblin_shaman/animations/walk__south-east.webp",
-        "east": "goblin_shaman/animations/walk__east.webp",
-        "north-east": "goblin_shaman/animations/walk__north-east.webp",
-        "north": "goblin_shaman/animations/walk__north.webp",
-        "south-west": "goblin_shaman/animations/walk__south-west.webp",
-        "west": "goblin_shaman/animations/walk__west.webp",
-        "north-west": "goblin_shaman/animations/walk__north-west.webp"
-      }
-    },
-    "attack": {
-      "directions": {
-        "south": {
-          "status": "fail",
-          "step_mean": 0.156,
-          "step_max": 0.1978,
-          "drift": 1.25,
-          "loop": 0.0,
-          "loop_ratio": 0.0,
-          "travel": 1.25,
-          "pin": 1.0,
-          "pad": 0,
-          "flash": 0.0,
-          "peak": 0.2702,
-          "reach": 0.071,
-          "canvas": [
-            88,
-            88
-          ],
-          "reasons": [
-            "no strike, just a lean: nothing reaches past 0.07 of the body"
-          ],
-          "sub": "bcd4d5bd-946b-4617-9254-e7bfb52d78c7",
-          "group": "b3e898ef-cc47-425c-9628-d6f9f45b0f3a",
-          "takes": 1,
-          "version": 2,
-          "mirrored": false,
-          "generated_at": "2026-09-09T22:31:04+00:00",
-          "action": "Skull Curse - Thrusts the skull staff forward once, the skull flaring green, then returns to idle stance"
-        },
-        "south-east": {
-          "status": "fail",
-          "step_mean": 0.1197,
-          "step_max": 0.131,
-          "drift": 0.73,
-          "loop": 0.0,
-          "loop_ratio": 0.0,
-          "travel": 0.93,
-          "pin": 1.0,
-          "pad": 1,
-          "flash": 0.082,
-          "peak": 0.2082,
-          "reach": 0.192,
-          "canvas": [
-            90,
-            90
-          ],
-          "reasons": [
-            "no strike, just a lean: nothing reaches past 0.19 of the body",
-            "canvas grown by 1 px a side to hold the motion"
-          ],
-          "sub": "73806076-cfdd-4977-9279-484420cdf6b1",
-          "group": "67c2dd29-cce2-4008-b076-2f8f5784569b",
-          "takes": 1,
-          "version": 2,
-          "mirrored": false,
-          "generated_at": "2026-09-09T22:31:05+00:00",
-          "action": "Skull Curse - Thrusts the skull staff forward once, the skull flaring green, then returns to idle stance"
-        },
-        "east": {
-          "status": "pass",
-          "step_mean": 0.2105,
-          "step_max": 0.2829,
-          "drift": 3.41,
-          "loop": 0.0,
-          "loop_ratio": 0.0,
-          "travel": 3.41,
-          "pin": 1.0,
-          "pad": 0,
-          "flash": 0.0,
-          "peak": 0.3234,
-          "reach": 0.306,
-          "canvas": [
-            88,
-            88
-          ],
-          "reasons": [],
-          "sub": "034b98d7-1ee6-4721-8d44-f090dfa04e3f",
-          "group": "ef671a29-4c34-40e4-93bb-ae503f6b7198",
-          "takes": 1,
-          "version": 2,
-          "mirrored": false,
-          "generated_at": "2026-09-09T22:31:06+00:00",
-          "action": "Skull Curse - Thrusts the skull staff forward once, the skull flaring green, then returns to idle stance"
-        },
-        "north-east": {
-          "status": "fail",
-          "step_mean": 0.099,
-          "step_max": 0.1285,
-          "drift": 0.94,
-          "loop": 0.0,
-          "loop_ratio": 0.0,
-          "travel": 1.1,
-          "pin": 1.0,
-          "pad": 0,
-          "flash": 0.118,
-          "peak": 0.1148,
-          "reach": 0.034,
-          "canvas": [
-            88,
-            88
-          ],
-          "reasons": [
-            "weak strike: peak 0.115 — eyeball it",
-            "no strike, just a lean: nothing reaches past 0.03 of the body"
-          ],
-          "sub": "1a29a267-540c-4a71-bc26-ac390254305c",
-          "group": "8c16ea6e-160f-402e-b681-8c16eb123f7e",
-          "takes": 1,
-          "version": 2,
-          "mirrored": false,
-          "generated_at": "2026-09-09T22:31:06+00:00",
-          "action": "Skull Curse - Thrusts the skull staff forward once, the skull flaring green, then returns to idle stance"
-        },
-        "north": {
-          "status": "fail",
-          "step_mean": 0.1959,
-          "step_max": 0.2581,
-          "drift": 1.59,
-          "loop": 0.0,
-          "loop_ratio": 0.0,
-          "travel": 1.59,
-          "pin": 1.0,
-          "pad": 4,
-          "flash": 0.015,
-          "peak": 0.3193,
-          "reach": 0.145,
-          "canvas": [
-            96,
-            96
-          ],
-          "reasons": [
-            "no strike, just a lean: nothing reaches past 0.14 of the body",
-            "canvas grown by 4 px a side to hold the motion"
-          ],
-          "sub": "cc0405e6-8619-42da-bea4-db79b790a1ca",
-          "group": "3c856959-1fae-41f0-9dd9-5e8d1012aa59",
-          "takes": 1,
-          "version": 2,
-          "mirrored": false,
-          "generated_at": "2026-09-09T22:31:07+00:00",
-          "action": "Skull Curse - Thrusts the skull staff forward once, the skull flaring green, then returns to idle stance"
-        },
-        "south-west": {
-          "status": "pass",
-          "step_mean": 0.1197,
-          "step_max": 0.131,
-          "drift": 0.73,
-          "loop": 0.0,
-          "loop_ratio": 0.0,
-          "travel": 0.93,
-          "pin": 1.0,
-          "pad": 1,
-          "flash": 0.082,
-          "peak": 0.2082,
-          "canvas": [
-            90,
-            90
-          ],
-          "reasons": [
-            "canvas grown by 1 px a side to hold the motion"
-          ],
-          "sub": "73806076-cfdd-4977-9279-484420cdf6b1",
-          "group": "67c2dd29-cce2-4008-b076-2f8f5784569b",
-          "takes": 1,
-          "version": 2,
-          "mirrored": true,
-          "generated_at": "2026-09-09T22:31:05+00:00",
-          "action": "Skull Curse - Thrusts the skull staff forward once, the skull flaring green, then returns to idle stance",
-          "source": "south-east"
-        },
-        "west": {
-          "status": "pass",
-          "step_mean": 0.2105,
-          "step_max": 0.2829,
-          "drift": 3.41,
-          "loop": 0.0,
-          "loop_ratio": 0.0,
-          "travel": 3.41,
-          "pin": 1.0,
-          "pad": 0,
-          "flash": 0.0,
-          "peak": 0.3234,
-          "reach": 0.306,
-          "canvas": [
-            88,
-            88
-          ],
-          "reasons": [],
-          "sub": "034b98d7-1ee6-4721-8d44-f090dfa04e3f",
-          "group": "ef671a29-4c34-40e4-93bb-ae503f6b7198",
-          "takes": 1,
-          "version": 2,
-          "mirrored": true,
-          "generated_at": "2026-09-09T22:31:06+00:00",
-          "action": "Skull Curse - Thrusts the skull staff forward once, the skull flaring green, then returns to idle stance",
-          "source": "east"
-        },
-        "north-west": {
-          "status": "warn",
-          "step_mean": 0.099,
-          "step_max": 0.1285,
-          "drift": 0.94,
-          "loop": 0.0,
-          "loop_ratio": 0.0,
-          "travel": 1.1,
-          "pin": 1.0,
-          "pad": 0,
-          "flash": 0.118,
-          "peak": 0.1148,
-          "canvas": [
-            88,
-            88
-          ],
-          "reasons": [
-            "weak strike: peak 0.115 — eyeball it"
-          ],
-          "sub": "1a29a267-540c-4a71-bc26-ac390254305c",
-          "group": "8c16ea6e-160f-402e-b681-8c16eb123f7e",
-          "takes": 1,
-          "version": 2,
-          "mirrored": true,
-          "generated_at": "2026-09-09T22:31:06+00:00",
-          "action": "Skull Curse - Thrusts the skull staff forward once, the skull flaring green, then returns to idle stance",
-          "source": "north-east"
-        }
-      },
-      "action": "Skull Curse - Thrusts the skull staff forward once, the skull flaring green, then returns to idle stance",
-      "frame_paths": {
-        "south": [
-          "goblin_shaman/animations/attack/south/00.webp",
-          "goblin_shaman/animations/attack/south/01.webp",
-          "goblin_shaman/animations/attack/south/02.webp",
-          "goblin_shaman/animations/attack/south/03.webp",
-          "goblin_shaman/animations/attack/south/04.webp"
-        ],
-        "south-east": [
-          "goblin_shaman/animations/attack/south-east/00.webp",
-          "goblin_shaman/animations/attack/south-east/01.webp",
-          "goblin_shaman/animations/attack/south-east/02.webp",
-          "goblin_shaman/animations/attack/south-east/03.webp",
-          "goblin_shaman/animations/attack/south-east/04.webp"
-        ],
-        "east": [
-          "goblin_shaman/animations/attack/east/00.webp",
-          "goblin_shaman/animations/attack/east/01.webp",
-          "goblin_shaman/animations/attack/east/02.webp",
-          "goblin_shaman/animations/attack/east/03.webp",
-          "goblin_shaman/animations/attack/east/04.webp"
-        ],
-        "north-east": [
-          "goblin_shaman/animations/attack/north-east/00.webp",
-          "goblin_shaman/animations/attack/north-east/01.webp",
-          "goblin_shaman/animations/attack/north-east/02.webp",
-          "goblin_shaman/animations/attack/north-east/03.webp",
-          "goblin_shaman/animations/attack/north-east/04.webp"
-        ],
-        "north": [
-          "goblin_shaman/animations/attack/north/00.webp",
-          "goblin_shaman/animations/attack/north/01.webp",
-          "goblin_shaman/animations/attack/north/02.webp",
-          "goblin_shaman/animations/attack/north/03.webp",
-          "goblin_shaman/animations/attack/north/04.webp"
-        ],
-        "south-west": [
-          "goblin_shaman/animations/attack/south-west/00.webp",
-          "goblin_shaman/animations/attack/south-west/01.webp",
-          "goblin_shaman/animations/attack/south-west/02.webp",
-          "goblin_shaman/animations/attack/south-west/03.webp",
-          "goblin_shaman/animations/attack/south-west/04.webp"
-        ],
-        "west": [
-          "goblin_shaman/animations/attack/west/00.webp",
-          "goblin_shaman/animations/attack/west/01.webp",
-          "goblin_shaman/animations/attack/west/02.webp",
-          "goblin_shaman/animations/attack/west/03.webp",
-          "goblin_shaman/animations/attack/west/04.webp"
-        ],
-        "north-west": [
-          "goblin_shaman/animations/attack/north-west/00.webp",
-          "goblin_shaman/animations/attack/north-west/01.webp",
-          "goblin_shaman/animations/attack/north-west/02.webp",
-          "goblin_shaman/animations/attack/north-west/03.webp",
-          "goblin_shaman/animations/attack/north-west/04.webp"
-        ]
-      },
-      "strips": {
-        "south": "goblin_shaman/animations/attack__south.webp",
-        "south-east": "goblin_shaman/animations/attack__south-east.webp",
-        "east": "goblin_shaman/animations/attack__east.webp",
-        "north-east": "goblin_shaman/animations/attack__north-east.webp",
-        "north": "goblin_shaman/animations/attack__north.webp",
-        "south-west": "goblin_shaman/animations/attack__south-west.webp",
-        "west": "goblin_shaman/animations/attack__west.webp",
-        "north-west": "goblin_shaman/animations/attack__north-west.webp"
-      }
-    },
-    "attack_try": {
-      "directions": {
-        "south": {
-          "status": "warn",
-          "step_mean": 0.1776,
-          "step_max": 0.3138,
-          "drift": 7.55,
-          "loop": 0.4432,
-          "loop_ratio": 2.5,
-          "travel": 8.29,
-          "pin": 1.0,
-          "pad": 6,
-          "flash": 0.251,
-          "peak": 0.4432,
-          "reach": 0.243,
-          "canvas": [
-            100,
-            100
-          ],
-          "reasons": [
-            "shallow strike: reach 0.24 — eyeball it",
-            "some bright effect pixels (0.25) — eyeball it",
-            "canvas grown by 6 px a side to hold the motion"
-          ],
-          "sub": "eb691164-9a2b-45af-ac8e-5d4503c56f5e",
-          "group": "95b00d9f-b5a5-483d-8fa5-bc601551cbfb",
-          "takes": 1,
-          "version": 2,
-          "mirrored": false,
-          "action": "Skull Curse - Thrusts the skull staff out at arm's length and the skull flares, a big aggressive swing",
-          "intensity": 1,
-          "tries": 1,
-          "generated_at": "2026-09-10T20:28:47+00:00"
-        },
-        "south-east": {
-          "status": "pass",
-          "step_mean": 0.2174,
-          "step_max": 0.3759,
-          "drift": 7.16,
-          "loop": 0.3498,
-          "loop_ratio": 1.61,
-          "travel": 9.04,
-          "pin": 1.0,
-          "pad": 0,
-          "flash": 0.187,
-          "peak": 0.3632,
-          "reach": 0.365,
-          "canvas": [
-            88,
-            88
-          ],
-          "reasons": [],
-          "sub": "96013fe4-de93-4e87-875e-db91301876bc",
-          "group": "e6311150-fa9e-4984-a5d2-88a89f9336fa",
-          "takes": 1,
-          "version": 1,
-          "mirrored": false,
-          "action": "Skull Curse - Thrusts the skull staff out at arm's length and the skull flares",
-          "tries": 1,
-          "generated_at": "2026-09-10T20:01:42+00:00"
-        },
-        "east": {
-          "status": "pass",
-          "step_mean": 0.1643,
-          "step_max": 0.3319,
-          "drift": 3.94,
-          "loop": 0.386,
-          "loop_ratio": 2.35,
-          "travel": 3.94,
-          "pin": 1.0,
-          "pad": 0,
-          "flash": 0.096,
-          "peak": 0.386,
-          "reach": 0.806,
-          "canvas": [
-            88,
-            88
-          ],
-          "reasons": [],
-          "sub": "4d7051f4-f05e-45e9-a972-a77a19d985b2",
-          "group": "206d8bc2-0987-4af5-9f75-6c69d03e2419",
-          "takes": 1,
-          "version": 1,
-          "mirrored": false,
-          "action": "Skull Curse - Thrusts the skull staff out at arm's length and the skull flares",
-          "tries": 1,
-          "generated_at": "2026-09-10T20:01:42+00:00"
-        },
-        "north-east": {
-          "status": "pass",
-          "step_mean": 0.2497,
-          "step_max": 0.3913,
-          "drift": 5.26,
-          "loop": 0.5344,
-          "loop_ratio": 2.14,
-          "travel": 5.26,
-          "pin": 1.0,
-          "pad": 4,
-          "flash": 0.065,
-          "peak": 0.5344,
-          "reach": 0.39,
-          "canvas": [
-            96,
-            96
-          ],
-          "reasons": [
-            "canvas grown by 4 px a side to hold the motion"
-          ],
-          "sub": "8c177711-ea58-43ae-b23f-fa5069ac8468",
-          "group": "6b0f776a-ca05-4f0a-8ce8-a6ea3cebb8e8",
-          "takes": 1,
-          "version": 1,
-          "mirrored": false,
-          "action": "Skull Curse - Thrusts the skull staff out at arm's length and the skull flares",
-          "tries": 1,
-          "generated_at": "2026-09-10T20:01:43+00:00"
-        },
-        "north": {
-          "status": "warn",
-          "step_mean": 0.23,
-          "step_max": 0.3272,
-          "drift": 4.05,
-          "loop": 0.3753,
-          "loop_ratio": 1.63,
-          "travel": 2.8,
-          "pin": 1.0,
-          "pad": 2,
-          "flash": 0.039,
-          "peak": 0.3753,
-          "reach": 0.258,
-          "canvas": [
-            92,
-            92
-          ],
-          "reasons": [
-            "shallow strike: reach 0.26 — eyeball it",
-            "canvas grown by 2 px a side to hold the motion"
-          ],
-          "sub": "a19914ee-515f-437b-88ca-12fa1bbc27dc",
-          "group": "ce1c2319-2f7d-4d1a-b5eb-9f74f002b410",
-          "takes": 1,
-          "version": 1,
-          "mirrored": false,
-          "action": "Skull Curse - Thrusts the skull staff out at arm's length and the skull flares",
-          "tries": 1,
-          "generated_at": "2026-09-10T20:01:43+00:00"
-        },
-        "south-west": {
-          "status": "pass",
-          "step_mean": 0.2174,
-          "step_max": 0.3759,
-          "drift": 7.16,
-          "loop": 0.3498,
-          "loop_ratio": 1.61,
-          "travel": 9.04,
-          "pin": 1.0,
-          "pad": 0,
-          "flash": 0.187,
-          "peak": 0.3632,
-          "reach": 0.365,
-          "canvas": [
-            88,
-            88
-          ],
-          "reasons": [],
-          "sub": "96013fe4-de93-4e87-875e-db91301876bc",
-          "group": "e6311150-fa9e-4984-a5d2-88a89f9336fa",
-          "takes": 1,
-          "version": 1,
-          "mirrored": true,
-          "action": "Skull Curse - Thrusts the skull staff out at arm's length and the skull flares",
-          "tries": 1,
-          "generated_at": "2026-09-10T20:01:42+00:00",
-          "source": "south-east"
-        },
-        "west": {
-          "status": "pass",
-          "step_mean": 0.1643,
-          "step_max": 0.3319,
-          "drift": 3.94,
-          "loop": 0.386,
-          "loop_ratio": 2.35,
-          "travel": 3.94,
-          "pin": 1.0,
-          "pad": 0,
-          "flash": 0.096,
-          "peak": 0.386,
-          "reach": 0.806,
-          "canvas": [
-            88,
-            88
-          ],
-          "reasons": [],
-          "sub": "4d7051f4-f05e-45e9-a972-a77a19d985b2",
-          "group": "206d8bc2-0987-4af5-9f75-6c69d03e2419",
-          "takes": 1,
-          "version": 1,
-          "mirrored": true,
-          "action": "Skull Curse - Thrusts the skull staff out at arm's length and the skull flares",
-          "tries": 1,
-          "generated_at": "2026-09-10T20:01:42+00:00",
-          "source": "east"
-        },
-        "north-west": {
-          "status": "pass",
-          "step_mean": 0.2497,
-          "step_max": 0.3913,
-          "drift": 5.26,
-          "loop": 0.5344,
-          "loop_ratio": 2.14,
-          "travel": 5.26,
-          "pin": 1.0,
-          "pad": 4,
-          "flash": 0.065,
-          "peak": 0.5344,
-          "reach": 0.39,
-          "canvas": [
-            96,
-            96
-          ],
-          "reasons": [
-            "canvas grown by 4 px a side to hold the motion"
-          ],
-          "sub": "8c177711-ea58-43ae-b23f-fa5069ac8468",
-          "group": "6b0f776a-ca05-4f0a-8ce8-a6ea3cebb8e8",
-          "takes": 1,
-          "version": 1,
-          "mirrored": true,
-          "action": "Skull Curse - Thrusts the skull staff out at arm's length and the skull flares",
-          "tries": 1,
-          "generated_at": "2026-09-10T20:01:43+00:00",
-          "source": "north-east"
-        }
-      },
-      "action": "Skull Curse - Thrusts the skull staff out at arm's length and the skull flares, a big aggressive swing",
-      "frame_paths": {
-        "south": [
-          "goblin_shaman/animations/attack_try/south/00.webp",
-          "goblin_shaman/animations/attack_try/south/01.webp",
-          "goblin_shaman/animations/attack_try/south/02.webp",
-          "goblin_shaman/animations/attack_try/south/03.webp",
-          "goblin_shaman/animations/attack_try/south/04.webp"
-        ],
-        "south-east": [
-          "goblin_shaman/animations/attack_try/south-east/00.webp",
-          "goblin_shaman/animations/attack_try/south-east/01.webp",
-          "goblin_shaman/animations/attack_try/south-east/02.webp",
-          "goblin_shaman/animations/attack_try/south-east/03.webp",
-          "goblin_shaman/animations/attack_try/south-east/04.webp"
-        ],
-        "east": [
-          "goblin_shaman/animations/attack_try/east/00.webp",
-          "goblin_shaman/animations/attack_try/east/01.webp",
-          "goblin_shaman/animations/attack_try/east/02.webp",
-          "goblin_shaman/animations/attack_try/east/03.webp",
-          "goblin_shaman/animations/attack_try/east/04.webp"
-        ],
-        "north-east": [
-          "goblin_shaman/animations/attack_try/north-east/00.webp",
-          "goblin_shaman/animations/attack_try/north-east/01.webp",
-          "goblin_shaman/animations/attack_try/north-east/02.webp",
-          "goblin_shaman/animations/attack_try/north-east/03.webp",
-          "goblin_shaman/animations/attack_try/north-east/04.webp"
-        ],
-        "north": [
-          "goblin_shaman/animations/attack_try/north/00.webp",
-          "goblin_shaman/animations/attack_try/north/01.webp",
-          "goblin_shaman/animations/attack_try/north/02.webp",
-          "goblin_shaman/animations/attack_try/north/03.webp",
-          "goblin_shaman/animations/attack_try/north/04.webp"
-        ],
-        "south-west": [
-          "goblin_shaman/animations/attack_try/south-west/00.webp",
-          "goblin_shaman/animations/attack_try/south-west/01.webp",
-          "goblin_shaman/animations/attack_try/south-west/02.webp",
-          "goblin_shaman/animations/attack_try/south-west/03.webp",
-          "goblin_shaman/animations/attack_try/south-west/04.webp"
-        ],
-        "west": [
-          "goblin_shaman/animations/attack_try/west/00.webp",
-          "goblin_shaman/animations/attack_try/west/01.webp",
-          "goblin_shaman/animations/attack_try/west/02.webp",
-          "goblin_shaman/animations/attack_try/west/03.webp",
-          "goblin_shaman/animations/attack_try/west/04.webp"
-        ],
-        "north-west": [
-          "goblin_shaman/animations/attack_try/north-west/00.webp",
-          "goblin_shaman/animations/attack_try/north-west/01.webp",
-          "goblin_shaman/animations/attack_try/north-west/02.webp",
-          "goblin_shaman/animations/attack_try/north-west/03.webp",
-          "goblin_shaman/animations/attack_try/north-west/04.webp"
-        ]
-      },
-      "strips": {
-        "south": "goblin_shaman/animations/attack_try__south.webp",
-        "south-east": "goblin_shaman/animations/attack_try__south-east.webp",
-        "east": "goblin_shaman/animations/attack_try__east.webp",
-        "north-east": "goblin_shaman/animations/attack_try__north-east.webp",
-        "north": "goblin_shaman/animations/attack_try__north.webp",
-        "south-west": "goblin_shaman/animations/attack_try__south-west.webp",
-        "west": "goblin_shaman/animations/attack_try__west.webp",
-        "north-west": "goblin_shaman/animations/attack_try__north-west.webp"
-      },
-      "intensity": 1
-    }
+ "id": "goblin_shaman",
+ "name": "Hexgob",
+ "tier": "mid",
+ "scale": "standard",
+ "lore": "It reads the future in bog-gas and finds it favorable. Its curses work about half the time, which is enough.",
+ "biome": [
+  "dark_mud",
+  "black_rock"
+ ],
+ "items": [],
+ "prompt": "Small fantasy goblin shaman shown full body from head to feet, green skin, a bone skull mask over its face, a feathered cloak, a gnarled staff topped with a glowing green skull held upright, and bone charms hanging from its belt.",
+ "size": [
+  88,
+  88
+ ],
+ "template_id": "mannequin",
+ "directions": [
+  "south",
+  "south-east",
+  "east",
+  "north-east",
+  "north",
+  "north-west",
+  "west",
+  "south-west"
+ ],
+ "rotations": {
+  "south": "goblin_shaman/rotations/south.webp",
+  "south-east": "goblin_shaman/rotations/south-east.webp",
+  "east": "goblin_shaman/rotations/east.webp",
+  "north-east": "goblin_shaman/rotations/north-east.webp",
+  "north": "goblin_shaman/rotations/north.webp",
+  "north-west": "goblin_shaman/rotations/north-west.webp",
+  "west": "goblin_shaman/rotations/west.webp",
+  "south-west": "goblin_shaman/rotations/south-west.webp"
+ },
+ "sheet": "goblin_shaman/sheet.webp",
+ "review": "approved",
+ "pixellab_id": "72e6fcb8-85ea-437c-a683-120c37d724f4",
+ "seed": 359586192,
+ "version": 1,
+ "usage": null,
+ "generated_at": "2026-09-09T18:08:20+00:00",
+ "elapsed_s": 181.2,
+ "qa": {
+  "status": "pass",
+  "min_run1": 0.708,
+  "reasons": [],
+  "directions": {
+   "south": {
+    "run1": 0.77,
+    "bbox": [
+     5,
+     2,
+     75,
+     84
+    ],
+    "fill": 0.741,
+    "touches_edge": false
+   },
+   "south-east": {
+    "run1": 0.821,
+    "bbox": [
+     18,
+     4,
+     70,
+     86
+    ],
+    "fill": 0.551,
+    "touches_edge": false
+   },
+   "east": {
+    "run1": 0.795,
+    "bbox": [
+     23,
+     4,
+     59,
+     86
+    ],
+    "fill": 0.381,
+    "touches_edge": false
+   },
+   "north-east": {
+    "run1": 0.747,
+    "bbox": [
+     19,
+     3,
+     78,
+     84
+    ],
+    "fill": 0.617,
+    "touches_edge": false
+   },
+   "north": {
+    "run1": 0.722,
+    "bbox": [
+     14,
+     2,
+     83,
+     83
+    ],
+    "fill": 0.722,
+    "touches_edge": false
+   },
+   "north-west": {
+    "run1": 0.708,
+    "bbox": [
+     21,
+     2,
+     71,
+     84
+    ],
+    "fill": 0.529,
+    "touches_edge": false
+   },
+   "west": {
+    "run1": 0.789,
+    "bbox": [
+     29,
+     2,
+     64,
+     85
+    ],
+    "fill": 0.375,
+    "touches_edge": false
+   },
+   "south-west": {
+    "run1": 0.834,
+    "bbox": [
+     11,
+     2,
+     70,
+     86
+    ],
+    "fill": 0.64,
+    "touches_edge": false
+   }
   }
+ },
+ "approved_at": "2026-09-09T19:59:20+00:00",
+ "animations": {
+  "idle": {
+   "directions": {
+    "south": {
+     "status": "pass",
+     "step_mean": 0.1129,
+     "step_max": 0.1247,
+     "drift": 1.01,
+     "loop": 0.0,
+     "pin": 1.0,
+     "reasons": [],
+     "sub": "fc478a4a-5ea0-4eec-8402-a979539b5350",
+     "takes": 1,
+     "version": 1,
+     "mirrored": false,
+     "generated_at": "2026-09-09T20:10:49+00:00",
+     "cut": 0
+    },
+    "south-east": {
+     "status": "pass",
+     "step_mean": 0.0292,
+     "step_max": 0.0491,
+     "drift": 0.77,
+     "loop": 0.0,
+     "pin": 1.0,
+     "reasons": [],
+     "sub": "c0fb8124-4c39-4d42-a48e-48a4b4cc0042",
+     "takes": 1,
+     "version": 1,
+     "mirrored": false,
+     "generated_at": "2026-09-09T20:10:50+00:00",
+     "cut": 0
+    },
+    "east": {
+     "status": "pass",
+     "step_mean": 0.0208,
+     "step_max": 0.0415,
+     "drift": 0.79,
+     "loop": 0.001,
+     "pin": 1.0,
+     "reasons": [],
+     "sub": "e090e798-10a8-4aea-907f-d2849f326b5e",
+     "takes": 1,
+     "version": 1,
+     "mirrored": false,
+     "generated_at": "2026-09-09T20:10:50+00:00",
+     "cut": 0
+    },
+    "north-east": {
+     "status": "pass",
+     "step_mean": 0.0466,
+     "step_max": 0.0663,
+     "drift": 1.12,
+     "loop": 0.0007,
+     "pin": 1.0,
+     "reasons": [],
+     "sub": "09f97502-fe65-49bc-89ec-3f7d51a9ca08",
+     "takes": 1,
+     "version": 1,
+     "mirrored": false,
+     "generated_at": "2026-09-09T20:10:51+00:00",
+     "cut": 0
+    },
+    "north": {
+     "status": "pass",
+     "step_mean": 0.0279,
+     "step_max": 0.0484,
+     "drift": 0.71,
+     "loop": 0.0009,
+     "pin": 1.0,
+     "reasons": [],
+     "sub": "18929afd-87f0-485b-a145-128af73fce62",
+     "takes": 1,
+     "version": 1,
+     "mirrored": false,
+     "generated_at": "2026-09-09T20:10:51+00:00",
+     "cut": 0
+    },
+    "south-west": {
+     "status": "pass",
+     "step_mean": 0.0292,
+     "step_max": 0.0491,
+     "drift": 0.77,
+     "loop": 0.0,
+     "pin": 1.0,
+     "reasons": [],
+     "sub": "c0fb8124-4c39-4d42-a48e-48a4b4cc0042",
+     "takes": 1,
+     "version": 1,
+     "mirrored": true,
+     "generated_at": "2026-09-09T20:10:50+00:00",
+     "cut": 0,
+     "source": "south-east"
+    },
+    "west": {
+     "status": "pass",
+     "step_mean": 0.0208,
+     "step_max": 0.0415,
+     "drift": 0.79,
+     "loop": 0.001,
+     "pin": 1.0,
+     "reasons": [],
+     "sub": "e090e798-10a8-4aea-907f-d2849f326b5e",
+     "takes": 1,
+     "version": 1,
+     "mirrored": true,
+     "generated_at": "2026-09-09T20:10:50+00:00",
+     "cut": 0,
+     "source": "east"
+    },
+    "north-west": {
+     "status": "pass",
+     "step_mean": 0.0466,
+     "step_max": 0.0663,
+     "drift": 1.12,
+     "loop": 0.0007,
+     "pin": 1.0,
+     "reasons": [],
+     "sub": "09f97502-fe65-49bc-89ec-3f7d51a9ca08",
+     "takes": 1,
+     "version": 1,
+     "mirrored": true,
+     "generated_at": "2026-09-09T20:10:51+00:00",
+     "cut": 0,
+     "source": "north-east"
+    }
+   },
+   "action": "Calm still idle, breathing very slowly and subtly, chest and shoulders rise and fall a little, feet planted, no other movement, ends in the same neutral pose it started in",
+   "frame_paths": {
+    "south": [
+     "goblin_shaman/animations/idle/south/00.webp",
+     "goblin_shaman/animations/idle/south/01.webp",
+     "goblin_shaman/animations/idle/south/02.webp",
+     "goblin_shaman/animations/idle/south/03.webp",
+     "goblin_shaman/animations/idle/south/04.webp"
+    ],
+    "south-east": [
+     "goblin_shaman/animations/idle/south-east/00.webp",
+     "goblin_shaman/animations/idle/south-east/01.webp",
+     "goblin_shaman/animations/idle/south-east/02.webp",
+     "goblin_shaman/animations/idle/south-east/03.webp",
+     "goblin_shaman/animations/idle/south-east/04.webp"
+    ],
+    "east": [
+     "goblin_shaman/animations/idle/east/00.webp",
+     "goblin_shaman/animations/idle/east/01.webp",
+     "goblin_shaman/animations/idle/east/02.webp",
+     "goblin_shaman/animations/idle/east/03.webp",
+     "goblin_shaman/animations/idle/east/04.webp"
+    ],
+    "north-east": [
+     "goblin_shaman/animations/idle/north-east/00.webp",
+     "goblin_shaman/animations/idle/north-east/01.webp",
+     "goblin_shaman/animations/idle/north-east/02.webp",
+     "goblin_shaman/animations/idle/north-east/03.webp",
+     "goblin_shaman/animations/idle/north-east/04.webp"
+    ],
+    "north": [
+     "goblin_shaman/animations/idle/north/00.webp",
+     "goblin_shaman/animations/idle/north/01.webp",
+     "goblin_shaman/animations/idle/north/02.webp",
+     "goblin_shaman/animations/idle/north/03.webp",
+     "goblin_shaman/animations/idle/north/04.webp"
+    ],
+    "south-west": [
+     "goblin_shaman/animations/idle/south-west/00.webp",
+     "goblin_shaman/animations/idle/south-west/01.webp",
+     "goblin_shaman/animations/idle/south-west/02.webp",
+     "goblin_shaman/animations/idle/south-west/03.webp",
+     "goblin_shaman/animations/idle/south-west/04.webp"
+    ],
+    "west": [
+     "goblin_shaman/animations/idle/west/00.webp",
+     "goblin_shaman/animations/idle/west/01.webp",
+     "goblin_shaman/animations/idle/west/02.webp",
+     "goblin_shaman/animations/idle/west/03.webp",
+     "goblin_shaman/animations/idle/west/04.webp"
+    ],
+    "north-west": [
+     "goblin_shaman/animations/idle/north-west/00.webp",
+     "goblin_shaman/animations/idle/north-west/01.webp",
+     "goblin_shaman/animations/idle/north-west/02.webp",
+     "goblin_shaman/animations/idle/north-west/03.webp",
+     "goblin_shaman/animations/idle/north-west/04.webp"
+    ]
+   },
+   "strips": {
+    "south": "goblin_shaman/animations/idle__south.webp",
+    "south-east": "goblin_shaman/animations/idle__south-east.webp",
+    "east": "goblin_shaman/animations/idle__east.webp",
+    "north-east": "goblin_shaman/animations/idle__north-east.webp",
+    "north": "goblin_shaman/animations/idle__north.webp",
+    "south-west": "goblin_shaman/animations/idle__south-west.webp",
+    "west": "goblin_shaman/animations/idle__west.webp",
+    "north-west": "goblin_shaman/animations/idle__north-west.webp"
+   }
+  },
+  "walk": {
+   "directions": {
+    "south": {
+     "status": "pass",
+     "step_mean": 0.1276,
+     "step_max": 0.1588,
+     "drift": 1.95,
+     "loop": 0.1668,
+     "loop_ratio": 1.31,
+     "travel": 0.74,
+     "pin": 0.943,
+     "pad": 0,
+     "canvas": [
+      88,
+      88
+     ],
+     "reasons": [],
+     "sub": "ef16fef3-0972-48c8-83d3-232a3578cb62",
+     "group": "44b937ce-240b-4f7a-9e1d-74a6e51e2d15",
+     "takes": 1,
+     "version": 2,
+     "mirrored": false,
+     "generated_at": "2026-09-09T21:15:20+00:00"
+    },
+    "south-east": {
+     "status": "warn",
+     "step_mean": 0.142,
+     "step_max": 0.1726,
+     "drift": 2.48,
+     "loop": 0.3129,
+     "loop_ratio": 2.2,
+     "travel": 2.05,
+     "pin": 0.864,
+     "pad": 0,
+     "canvas": [
+      88,
+      88
+     ],
+     "reasons": [
+      "last→first hand-off 2.2× a step — eyeball the loop"
+     ],
+     "sub": "80501362-2919-4378-86ca-78c001c8cb41",
+     "group": "768b6608-6a68-4ecf-a0d4-1236c450bb91",
+     "takes": 1,
+     "version": 2,
+     "mirrored": false,
+     "generated_at": "2026-09-09T21:15:21+00:00"
+    },
+    "east": {
+     "status": "pass",
+     "step_mean": 0.1567,
+     "step_max": 0.1753,
+     "drift": 2.2,
+     "loop": 0.2092,
+     "loop_ratio": 1.34,
+     "travel": 1.77,
+     "pin": 0.878,
+     "pad": 0,
+     "canvas": [
+      88,
+      88
+     ],
+     "reasons": [],
+     "sub": "cf66d5c5-00e1-464b-9b9f-724f7978ea0e",
+     "group": "fa663fa2-186a-4b4c-8668-19a5aaa27f88",
+     "takes": 1,
+     "version": 2,
+     "mirrored": false,
+     "generated_at": "2026-09-09T21:15:21+00:00"
+    },
+    "north-east": {
+     "status": "pass",
+     "step_mean": 0.1354,
+     "step_max": 0.1571,
+     "drift": 1.4,
+     "loop": 0.2416,
+     "loop_ratio": 1.78,
+     "travel": 0.28,
+     "pin": 0.845,
+     "pad": 1,
+     "canvas": [
+      90,
+      90
+     ],
+     "reasons": [
+      "canvas grown by 1 px a side to hold the motion"
+     ],
+     "sub": "ecdd9046-1146-4e88-8f8a-23cf698e5e18",
+     "group": "445c9afa-692e-4909-883c-bd39f491c589",
+     "takes": 2,
+     "version": 2,
+     "mirrored": false,
+     "generated_at": "2026-09-09T21:15:22+00:00"
+    },
+    "north": {
+     "status": "pass",
+     "step_mean": 0.1145,
+     "step_max": 0.1281,
+     "drift": 1.68,
+     "loop": 0.1515,
+     "loop_ratio": 1.32,
+     "travel": 1.68,
+     "pin": 0.894,
+     "pad": 0,
+     "canvas": [
+      88,
+      88
+     ],
+     "reasons": [],
+     "sub": "a5208a30-66f5-46bd-88ff-0d9329220b31",
+     "group": "a647ff71-77d7-49b5-b6fa-6e1cb893da18",
+     "takes": 1,
+     "version": 2,
+     "mirrored": false,
+     "generated_at": "2026-09-09T21:15:23+00:00"
+    },
+    "south-west": {
+     "status": "warn",
+     "step_mean": 0.142,
+     "step_max": 0.1726,
+     "drift": 2.48,
+     "loop": 0.3129,
+     "loop_ratio": 2.2,
+     "travel": 2.05,
+     "pin": 0.864,
+     "pad": 0,
+     "canvas": [
+      88,
+      88
+     ],
+     "reasons": [
+      "last→first hand-off 2.2× a step — eyeball the loop"
+     ],
+     "sub": "80501362-2919-4378-86ca-78c001c8cb41",
+     "group": "768b6608-6a68-4ecf-a0d4-1236c450bb91",
+     "takes": 1,
+     "version": 2,
+     "mirrored": true,
+     "generated_at": "2026-09-09T21:15:21+00:00",
+     "source": "south-east"
+    },
+    "west": {
+     "status": "pass",
+     "step_mean": 0.1567,
+     "step_max": 0.1753,
+     "drift": 2.2,
+     "loop": 0.2092,
+     "loop_ratio": 1.34,
+     "travel": 1.77,
+     "pin": 0.878,
+     "pad": 0,
+     "canvas": [
+      88,
+      88
+     ],
+     "reasons": [],
+     "sub": "cf66d5c5-00e1-464b-9b9f-724f7978ea0e",
+     "group": "fa663fa2-186a-4b4c-8668-19a5aaa27f88",
+     "takes": 1,
+     "version": 2,
+     "mirrored": true,
+     "generated_at": "2026-09-09T21:15:21+00:00",
+     "source": "east"
+    },
+    "north-west": {
+     "status": "pass",
+     "step_mean": 0.1354,
+     "step_max": 0.1571,
+     "drift": 1.4,
+     "loop": 0.2416,
+     "loop_ratio": 1.78,
+     "travel": 0.28,
+     "pin": 0.845,
+     "pad": 1,
+     "canvas": [
+      90,
+      90
+     ],
+     "reasons": [
+      "canvas grown by 1 px a side to hold the motion"
+     ],
+     "sub": "ecdd9046-1146-4e88-8f8a-23cf698e5e18",
+     "group": "445c9afa-692e-4909-883c-bd39f491c589",
+     "takes": 2,
+     "version": 2,
+     "mirrored": true,
+     "generated_at": "2026-09-09T21:15:22+00:00",
+     "source": "north-east"
+    }
+   },
+   "action": "walk loop, full walk cycle in place, legs alternate naturally, normal calm walking pace, body stays centered, seamless loop whose last frame leads straight back into the first, no turning",
+   "frame_paths": {
+    "south": [
+     "goblin_shaman/animations/walk/south/00.webp",
+     "goblin_shaman/animations/walk/south/01.webp",
+     "goblin_shaman/animations/walk/south/02.webp",
+     "goblin_shaman/animations/walk/south/03.webp",
+     "goblin_shaman/animations/walk/south/04.webp",
+     "goblin_shaman/animations/walk/south/05.webp"
+    ],
+    "south-east": [
+     "goblin_shaman/animations/walk/south-east/00.webp",
+     "goblin_shaman/animations/walk/south-east/01.webp",
+     "goblin_shaman/animations/walk/south-east/02.webp",
+     "goblin_shaman/animations/walk/south-east/03.webp",
+     "goblin_shaman/animations/walk/south-east/04.webp",
+     "goblin_shaman/animations/walk/south-east/05.webp"
+    ],
+    "east": [
+     "goblin_shaman/animations/walk/east/00.webp",
+     "goblin_shaman/animations/walk/east/01.webp",
+     "goblin_shaman/animations/walk/east/02.webp",
+     "goblin_shaman/animations/walk/east/03.webp",
+     "goblin_shaman/animations/walk/east/04.webp",
+     "goblin_shaman/animations/walk/east/05.webp"
+    ],
+    "north-east": [
+     "goblin_shaman/animations/walk/north-east/00.webp",
+     "goblin_shaman/animations/walk/north-east/01.webp",
+     "goblin_shaman/animations/walk/north-east/02.webp",
+     "goblin_shaman/animations/walk/north-east/03.webp",
+     "goblin_shaman/animations/walk/north-east/04.webp",
+     "goblin_shaman/animations/walk/north-east/05.webp"
+    ],
+    "north": [
+     "goblin_shaman/animations/walk/north/00.webp",
+     "goblin_shaman/animations/walk/north/01.webp",
+     "goblin_shaman/animations/walk/north/02.webp",
+     "goblin_shaman/animations/walk/north/03.webp",
+     "goblin_shaman/animations/walk/north/04.webp",
+     "goblin_shaman/animations/walk/north/05.webp"
+    ],
+    "south-west": [
+     "goblin_shaman/animations/walk/south-west/00.webp",
+     "goblin_shaman/animations/walk/south-west/01.webp",
+     "goblin_shaman/animations/walk/south-west/02.webp",
+     "goblin_shaman/animations/walk/south-west/03.webp",
+     "goblin_shaman/animations/walk/south-west/04.webp",
+     "goblin_shaman/animations/walk/south-west/05.webp"
+    ],
+    "west": [
+     "goblin_shaman/animations/walk/west/00.webp",
+     "goblin_shaman/animations/walk/west/01.webp",
+     "goblin_shaman/animations/walk/west/02.webp",
+     "goblin_shaman/animations/walk/west/03.webp",
+     "goblin_shaman/animations/walk/west/04.webp",
+     "goblin_shaman/animations/walk/west/05.webp"
+    ],
+    "north-west": [
+     "goblin_shaman/animations/walk/north-west/00.webp",
+     "goblin_shaman/animations/walk/north-west/01.webp",
+     "goblin_shaman/animations/walk/north-west/02.webp",
+     "goblin_shaman/animations/walk/north-west/03.webp",
+     "goblin_shaman/animations/walk/north-west/04.webp",
+     "goblin_shaman/animations/walk/north-west/05.webp"
+    ]
+   },
+   "strips": {
+    "south": "goblin_shaman/animations/walk__south.webp",
+    "south-east": "goblin_shaman/animations/walk__south-east.webp",
+    "east": "goblin_shaman/animations/walk__east.webp",
+    "north-east": "goblin_shaman/animations/walk__north-east.webp",
+    "north": "goblin_shaman/animations/walk__north.webp",
+    "south-west": "goblin_shaman/animations/walk__south-west.webp",
+    "west": "goblin_shaman/animations/walk__west.webp",
+    "north-west": "goblin_shaman/animations/walk__north-west.webp"
+   }
+  },
+  "attack": {
+   "directions": {
+    "south": {
+     "status": "fail",
+     "step_mean": 0.156,
+     "step_max": 0.1978,
+     "drift": 1.25,
+     "loop": 0.0,
+     "loop_ratio": 0.0,
+     "travel": 1.25,
+     "pin": 1.0,
+     "pad": 0,
+     "flash": 0.0,
+     "peak": 0.2702,
+     "reach": 0.071,
+     "canvas": [
+      88,
+      88
+     ],
+     "reasons": [
+      "no strike, just a lean: nothing reaches past 0.07 of the body"
+     ],
+     "sub": "bcd4d5bd-946b-4617-9254-e7bfb52d78c7",
+     "group": "b3e898ef-cc47-425c-9628-d6f9f45b0f3a",
+     "takes": 1,
+     "version": 2,
+     "mirrored": false,
+     "generated_at": "2026-09-09T22:31:04+00:00",
+     "action": "Skull Curse - Thrusts the skull staff forward once, the skull flaring green, then returns to idle stance"
+    },
+    "south-east": {
+     "status": "fail",
+     "step_mean": 0.1197,
+     "step_max": 0.131,
+     "drift": 0.73,
+     "loop": 0.0,
+     "loop_ratio": 0.0,
+     "travel": 0.93,
+     "pin": 1.0,
+     "pad": 1,
+     "flash": 0.082,
+     "peak": 0.2082,
+     "reach": 0.192,
+     "canvas": [
+      90,
+      90
+     ],
+     "reasons": [
+      "no strike, just a lean: nothing reaches past 0.19 of the body",
+      "canvas grown by 1 px a side to hold the motion"
+     ],
+     "sub": "73806076-cfdd-4977-9279-484420cdf6b1",
+     "group": "67c2dd29-cce2-4008-b076-2f8f5784569b",
+     "takes": 1,
+     "version": 2,
+     "mirrored": false,
+     "generated_at": "2026-09-09T22:31:05+00:00",
+     "action": "Skull Curse - Thrusts the skull staff forward once, the skull flaring green, then returns to idle stance"
+    },
+    "east": {
+     "status": "pass",
+     "step_mean": 0.2105,
+     "step_max": 0.2829,
+     "drift": 3.41,
+     "loop": 0.0,
+     "loop_ratio": 0.0,
+     "travel": 3.41,
+     "pin": 1.0,
+     "pad": 0,
+     "flash": 0.0,
+     "peak": 0.3234,
+     "reach": 0.306,
+     "canvas": [
+      88,
+      88
+     ],
+     "reasons": [],
+     "sub": "034b98d7-1ee6-4721-8d44-f090dfa04e3f",
+     "group": "ef671a29-4c34-40e4-93bb-ae503f6b7198",
+     "takes": 1,
+     "version": 2,
+     "mirrored": false,
+     "generated_at": "2026-09-09T22:31:06+00:00",
+     "action": "Skull Curse - Thrusts the skull staff forward once, the skull flaring green, then returns to idle stance"
+    },
+    "north-east": {
+     "status": "fail",
+     "step_mean": 0.099,
+     "step_max": 0.1285,
+     "drift": 0.94,
+     "loop": 0.0,
+     "loop_ratio": 0.0,
+     "travel": 1.1,
+     "pin": 1.0,
+     "pad": 0,
+     "flash": 0.118,
+     "peak": 0.1148,
+     "reach": 0.034,
+     "canvas": [
+      88,
+      88
+     ],
+     "reasons": [
+      "weak strike: peak 0.115 — eyeball it",
+      "no strike, just a lean: nothing reaches past 0.03 of the body"
+     ],
+     "sub": "1a29a267-540c-4a71-bc26-ac390254305c",
+     "group": "8c16ea6e-160f-402e-b681-8c16eb123f7e",
+     "takes": 1,
+     "version": 2,
+     "mirrored": false,
+     "generated_at": "2026-09-09T22:31:06+00:00",
+     "action": "Skull Curse - Thrusts the skull staff forward once, the skull flaring green, then returns to idle stance"
+    },
+    "north": {
+     "status": "fail",
+     "step_mean": 0.1959,
+     "step_max": 0.2581,
+     "drift": 1.59,
+     "loop": 0.0,
+     "loop_ratio": 0.0,
+     "travel": 1.59,
+     "pin": 1.0,
+     "pad": 4,
+     "flash": 0.015,
+     "peak": 0.3193,
+     "reach": 0.145,
+     "canvas": [
+      96,
+      96
+     ],
+     "reasons": [
+      "no strike, just a lean: nothing reaches past 0.14 of the body",
+      "canvas grown by 4 px a side to hold the motion"
+     ],
+     "sub": "cc0405e6-8619-42da-bea4-db79b790a1ca",
+     "group": "3c856959-1fae-41f0-9dd9-5e8d1012aa59",
+     "takes": 1,
+     "version": 2,
+     "mirrored": false,
+     "generated_at": "2026-09-09T22:31:07+00:00",
+     "action": "Skull Curse - Thrusts the skull staff forward once, the skull flaring green, then returns to idle stance"
+    },
+    "south-west": {
+     "status": "pass",
+     "step_mean": 0.1197,
+     "step_max": 0.131,
+     "drift": 0.73,
+     "loop": 0.0,
+     "loop_ratio": 0.0,
+     "travel": 0.93,
+     "pin": 1.0,
+     "pad": 1,
+     "flash": 0.082,
+     "peak": 0.2082,
+     "canvas": [
+      90,
+      90
+     ],
+     "reasons": [
+      "canvas grown by 1 px a side to hold the motion"
+     ],
+     "sub": "73806076-cfdd-4977-9279-484420cdf6b1",
+     "group": "67c2dd29-cce2-4008-b076-2f8f5784569b",
+     "takes": 1,
+     "version": 2,
+     "mirrored": true,
+     "generated_at": "2026-09-09T22:31:05+00:00",
+     "action": "Skull Curse - Thrusts the skull staff forward once, the skull flaring green, then returns to idle stance",
+     "source": "south-east"
+    },
+    "west": {
+     "status": "pass",
+     "step_mean": 0.2105,
+     "step_max": 0.2829,
+     "drift": 3.41,
+     "loop": 0.0,
+     "loop_ratio": 0.0,
+     "travel": 3.41,
+     "pin": 1.0,
+     "pad": 0,
+     "flash": 0.0,
+     "peak": 0.3234,
+     "reach": 0.306,
+     "canvas": [
+      88,
+      88
+     ],
+     "reasons": [],
+     "sub": "034b98d7-1ee6-4721-8d44-f090dfa04e3f",
+     "group": "ef671a29-4c34-40e4-93bb-ae503f6b7198",
+     "takes": 1,
+     "version": 2,
+     "mirrored": true,
+     "generated_at": "2026-09-09T22:31:06+00:00",
+     "action": "Skull Curse - Thrusts the skull staff forward once, the skull flaring green, then returns to idle stance",
+     "source": "east"
+    },
+    "north-west": {
+     "status": "warn",
+     "step_mean": 0.099,
+     "step_max": 0.1285,
+     "drift": 0.94,
+     "loop": 0.0,
+     "loop_ratio": 0.0,
+     "travel": 1.1,
+     "pin": 1.0,
+     "pad": 0,
+     "flash": 0.118,
+     "peak": 0.1148,
+     "canvas": [
+      88,
+      88
+     ],
+     "reasons": [
+      "weak strike: peak 0.115 — eyeball it"
+     ],
+     "sub": "1a29a267-540c-4a71-bc26-ac390254305c",
+     "group": "8c16ea6e-160f-402e-b681-8c16eb123f7e",
+     "takes": 1,
+     "version": 2,
+     "mirrored": true,
+     "generated_at": "2026-09-09T22:31:06+00:00",
+     "action": "Skull Curse - Thrusts the skull staff forward once, the skull flaring green, then returns to idle stance",
+     "source": "north-east"
+    }
+   },
+   "action": "Skull Curse - Thrusts the skull staff forward once, the skull flaring green, then returns to idle stance",
+   "frame_paths": {
+    "south": [
+     "goblin_shaman/animations/attack/south/00.webp",
+     "goblin_shaman/animations/attack/south/01.webp",
+     "goblin_shaman/animations/attack/south/02.webp",
+     "goblin_shaman/animations/attack/south/03.webp",
+     "goblin_shaman/animations/attack/south/04.webp"
+    ],
+    "south-east": [
+     "goblin_shaman/animations/attack/south-east/00.webp",
+     "goblin_shaman/animations/attack/south-east/01.webp",
+     "goblin_shaman/animations/attack/south-east/02.webp",
+     "goblin_shaman/animations/attack/south-east/03.webp",
+     "goblin_shaman/animations/attack/south-east/04.webp"
+    ],
+    "east": [
+     "goblin_shaman/animations/attack/east/00.webp",
+     "goblin_shaman/animations/attack/east/01.webp",
+     "goblin_shaman/animations/attack/east/02.webp",
+     "goblin_shaman/animations/attack/east/03.webp",
+     "goblin_shaman/animations/attack/east/04.webp"
+    ],
+    "north-east": [
+     "goblin_shaman/animations/attack/north-east/00.webp",
+     "goblin_shaman/animations/attack/north-east/01.webp",
+     "goblin_shaman/animations/attack/north-east/02.webp",
+     "goblin_shaman/animations/attack/north-east/03.webp",
+     "goblin_shaman/animations/attack/north-east/04.webp"
+    ],
+    "north": [
+     "goblin_shaman/animations/attack/north/00.webp",
+     "goblin_shaman/animations/attack/north/01.webp",
+     "goblin_shaman/animations/attack/north/02.webp",
+     "goblin_shaman/animations/attack/north/03.webp",
+     "goblin_shaman/animations/attack/north/04.webp"
+    ],
+    "south-west": [
+     "goblin_shaman/animations/attack/south-west/00.webp",
+     "goblin_shaman/animations/attack/south-west/01.webp",
+     "goblin_shaman/animations/attack/south-west/02.webp",
+     "goblin_shaman/animations/attack/south-west/03.webp",
+     "goblin_shaman/animations/attack/south-west/04.webp"
+    ],
+    "west": [
+     "goblin_shaman/animations/attack/west/00.webp",
+     "goblin_shaman/animations/attack/west/01.webp",
+     "goblin_shaman/animations/attack/west/02.webp",
+     "goblin_shaman/animations/attack/west/03.webp",
+     "goblin_shaman/animations/attack/west/04.webp"
+    ],
+    "north-west": [
+     "goblin_shaman/animations/attack/north-west/00.webp",
+     "goblin_shaman/animations/attack/north-west/01.webp",
+     "goblin_shaman/animations/attack/north-west/02.webp",
+     "goblin_shaman/animations/attack/north-west/03.webp",
+     "goblin_shaman/animations/attack/north-west/04.webp"
+    ]
+   },
+   "strips": {
+    "south": "goblin_shaman/animations/attack__south.webp",
+    "south-east": "goblin_shaman/animations/attack__south-east.webp",
+    "east": "goblin_shaman/animations/attack__east.webp",
+    "north-east": "goblin_shaman/animations/attack__north-east.webp",
+    "north": "goblin_shaman/animations/attack__north.webp",
+    "south-west": "goblin_shaman/animations/attack__south-west.webp",
+    "west": "goblin_shaman/animations/attack__west.webp",
+    "north-west": "goblin_shaman/animations/attack__north-west.webp"
+   }
+  },
+  "attack_try": {
+   "directions": {
+    "south": {
+     "status": "warn",
+     "step_mean": 0.1776,
+     "step_max": 0.3138,
+     "drift": 7.55,
+     "loop": 0.4432,
+     "loop_ratio": 2.5,
+     "travel": 8.29,
+     "pin": 1.0,
+     "pad": 6,
+     "flash": 0.251,
+     "peak": 0.4432,
+     "reach": 0.243,
+     "canvas": [
+      100,
+      100
+     ],
+     "reasons": [
+      "shallow strike: reach 0.24 — eyeball it",
+      "some bright effect pixels (0.25) — eyeball it",
+      "canvas grown by 6 px a side to hold the motion"
+     ],
+     "sub": "eb691164-9a2b-45af-ac8e-5d4503c56f5e",
+     "group": "95b00d9f-b5a5-483d-8fa5-bc601551cbfb",
+     "takes": 1,
+     "version": 2,
+     "mirrored": false,
+     "action": "Skull Curse - Thrusts the skull staff out at arm's length and the skull flares, a big aggressive swing",
+     "intensity": 1,
+     "tries": 1,
+     "generated_at": "2026-09-10T20:28:47+00:00",
+     "rolls": 2
+    },
+    "south-east": {
+     "status": "pass",
+     "step_mean": 0.2174,
+     "step_max": 0.3759,
+     "drift": 7.16,
+     "loop": 0.3498,
+     "loop_ratio": 1.61,
+     "travel": 9.04,
+     "pin": 1.0,
+     "pad": 0,
+     "flash": 0.187,
+     "peak": 0.3632,
+     "reach": 0.365,
+     "canvas": [
+      88,
+      88
+     ],
+     "reasons": [],
+     "sub": "96013fe4-de93-4e87-875e-db91301876bc",
+     "group": "e6311150-fa9e-4984-a5d2-88a89f9336fa",
+     "takes": 1,
+     "version": 1,
+     "mirrored": false,
+     "action": "Skull Curse - Thrusts the skull staff out at arm's length and the skull flares",
+     "tries": 1,
+     "generated_at": "2026-09-10T20:01:42+00:00",
+     "rolls": 1
+    },
+    "east": {
+     "status": "pass",
+     "step_mean": 0.1643,
+     "step_max": 0.3319,
+     "drift": 3.94,
+     "loop": 0.386,
+     "loop_ratio": 2.35,
+     "travel": 3.94,
+     "pin": 1.0,
+     "pad": 0,
+     "flash": 0.096,
+     "peak": 0.386,
+     "reach": 0.806,
+     "canvas": [
+      88,
+      88
+     ],
+     "reasons": [],
+     "sub": "4d7051f4-f05e-45e9-a972-a77a19d985b2",
+     "group": "206d8bc2-0987-4af5-9f75-6c69d03e2419",
+     "takes": 1,
+     "version": 1,
+     "mirrored": false,
+     "action": "Skull Curse - Thrusts the skull staff out at arm's length and the skull flares",
+     "tries": 1,
+     "generated_at": "2026-09-10T20:01:42+00:00",
+     "rolls": 1
+    },
+    "north-east": {
+     "status": "pass",
+     "step_mean": 0.2497,
+     "step_max": 0.3913,
+     "drift": 5.26,
+     "loop": 0.5344,
+     "loop_ratio": 2.14,
+     "travel": 5.26,
+     "pin": 1.0,
+     "pad": 4,
+     "flash": 0.065,
+     "peak": 0.5344,
+     "reach": 0.39,
+     "canvas": [
+      96,
+      96
+     ],
+     "reasons": [
+      "canvas grown by 4 px a side to hold the motion"
+     ],
+     "sub": "8c177711-ea58-43ae-b23f-fa5069ac8468",
+     "group": "6b0f776a-ca05-4f0a-8ce8-a6ea3cebb8e8",
+     "takes": 1,
+     "version": 1,
+     "mirrored": false,
+     "action": "Skull Curse - Thrusts the skull staff out at arm's length and the skull flares",
+     "tries": 1,
+     "generated_at": "2026-09-10T20:01:43+00:00",
+     "rolls": 1
+    },
+    "north": {
+     "status": "warn",
+     "step_mean": 0.23,
+     "step_max": 0.3272,
+     "drift": 4.05,
+     "loop": 0.3753,
+     "loop_ratio": 1.63,
+     "travel": 2.8,
+     "pin": 1.0,
+     "pad": 2,
+     "flash": 0.039,
+     "peak": 0.3753,
+     "reach": 0.258,
+     "canvas": [
+      92,
+      92
+     ],
+     "reasons": [
+      "shallow strike: reach 0.26 — eyeball it",
+      "canvas grown by 2 px a side to hold the motion"
+     ],
+     "sub": "a19914ee-515f-437b-88ca-12fa1bbc27dc",
+     "group": "ce1c2319-2f7d-4d1a-b5eb-9f74f002b410",
+     "takes": 1,
+     "version": 1,
+     "mirrored": false,
+     "action": "Skull Curse - Thrusts the skull staff out at arm's length and the skull flares",
+     "tries": 1,
+     "generated_at": "2026-09-10T20:01:43+00:00",
+     "rolls": 1
+    },
+    "south-west": {
+     "status": "pass",
+     "step_mean": 0.2174,
+     "step_max": 0.3759,
+     "drift": 7.16,
+     "loop": 0.3498,
+     "loop_ratio": 1.61,
+     "travel": 9.04,
+     "pin": 1.0,
+     "pad": 0,
+     "flash": 0.187,
+     "peak": 0.3632,
+     "reach": 0.365,
+     "canvas": [
+      88,
+      88
+     ],
+     "reasons": [],
+     "sub": "96013fe4-de93-4e87-875e-db91301876bc",
+     "group": "e6311150-fa9e-4984-a5d2-88a89f9336fa",
+     "takes": 1,
+     "version": 1,
+     "mirrored": true,
+     "action": "Skull Curse - Thrusts the skull staff out at arm's length and the skull flares",
+     "tries": 1,
+     "generated_at": "2026-09-10T20:01:42+00:00",
+     "source": "south-east"
+    },
+    "west": {
+     "status": "pass",
+     "step_mean": 0.1643,
+     "step_max": 0.3319,
+     "drift": 3.94,
+     "loop": 0.386,
+     "loop_ratio": 2.35,
+     "travel": 3.94,
+     "pin": 1.0,
+     "pad": 0,
+     "flash": 0.096,
+     "peak": 0.386,
+     "reach": 0.806,
+     "canvas": [
+      88,
+      88
+     ],
+     "reasons": [],
+     "sub": "4d7051f4-f05e-45e9-a972-a77a19d985b2",
+     "group": "206d8bc2-0987-4af5-9f75-6c69d03e2419",
+     "takes": 1,
+     "version": 1,
+     "mirrored": true,
+     "action": "Skull Curse - Thrusts the skull staff out at arm's length and the skull flares",
+     "tries": 1,
+     "generated_at": "2026-09-10T20:01:42+00:00",
+     "source": "east"
+    },
+    "north-west": {
+     "status": "pass",
+     "step_mean": 0.2497,
+     "step_max": 0.3913,
+     "drift": 5.26,
+     "loop": 0.5344,
+     "loop_ratio": 2.14,
+     "travel": 5.26,
+     "pin": 1.0,
+     "pad": 4,
+     "flash": 0.065,
+     "peak": 0.5344,
+     "reach": 0.39,
+     "canvas": [
+      96,
+      96
+     ],
+     "reasons": [
+      "canvas grown by 4 px a side to hold the motion"
+     ],
+     "sub": "8c177711-ea58-43ae-b23f-fa5069ac8468",
+     "group": "6b0f776a-ca05-4f0a-8ce8-a6ea3cebb8e8",
+     "takes": 1,
+     "version": 1,
+     "mirrored": true,
+     "action": "Skull Curse - Thrusts the skull staff out at arm's length and the skull flares",
+     "tries": 1,
+     "generated_at": "2026-09-10T20:01:43+00:00",
+     "source": "north-east"
+    }
+   },
+   "action": "Skull Curse - Thrusts the skull staff out at arm's length and the skull flares, a big aggressive swing",
+   "frame_paths": {
+    "south": [
+     "goblin_shaman/animations/attack_try/south/00.webp",
+     "goblin_shaman/animations/attack_try/south/01.webp",
+     "goblin_shaman/animations/attack_try/south/02.webp",
+     "goblin_shaman/animations/attack_try/south/03.webp",
+     "goblin_shaman/animations/attack_try/south/04.webp"
+    ],
+    "south-east": [
+     "goblin_shaman/animations/attack_try/south-east/00.webp",
+     "goblin_shaman/animations/attack_try/south-east/01.webp",
+     "goblin_shaman/animations/attack_try/south-east/02.webp",
+     "goblin_shaman/animations/attack_try/south-east/03.webp",
+     "goblin_shaman/animations/attack_try/south-east/04.webp"
+    ],
+    "east": [
+     "goblin_shaman/animations/attack_try/east/00.webp",
+     "goblin_shaman/animations/attack_try/east/01.webp",
+     "goblin_shaman/animations/attack_try/east/02.webp",
+     "goblin_shaman/animations/attack_try/east/03.webp",
+     "goblin_shaman/animations/attack_try/east/04.webp"
+    ],
+    "north-east": [
+     "goblin_shaman/animations/attack_try/north-east/00.webp",
+     "goblin_shaman/animations/attack_try/north-east/01.webp",
+     "goblin_shaman/animations/attack_try/north-east/02.webp",
+     "goblin_shaman/animations/attack_try/north-east/03.webp",
+     "goblin_shaman/animations/attack_try/north-east/04.webp"
+    ],
+    "north": [
+     "goblin_shaman/animations/attack_try/north/00.webp",
+     "goblin_shaman/animations/attack_try/north/01.webp",
+     "goblin_shaman/animations/attack_try/north/02.webp",
+     "goblin_shaman/animations/attack_try/north/03.webp",
+     "goblin_shaman/animations/attack_try/north/04.webp"
+    ],
+    "south-west": [
+     "goblin_shaman/animations/attack_try/south-west/00.webp",
+     "goblin_shaman/animations/attack_try/south-west/01.webp",
+     "goblin_shaman/animations/attack_try/south-west/02.webp",
+     "goblin_shaman/animations/attack_try/south-west/03.webp",
+     "goblin_shaman/animations/attack_try/south-west/04.webp"
+    ],
+    "west": [
+     "goblin_shaman/animations/attack_try/west/00.webp",
+     "goblin_shaman/animations/attack_try/west/01.webp",
+     "goblin_shaman/animations/attack_try/west/02.webp",
+     "goblin_shaman/animations/attack_try/west/03.webp",
+     "goblin_shaman/animations/attack_try/west/04.webp"
+    ],
+    "north-west": [
+     "goblin_shaman/animations/attack_try/north-west/00.webp",
+     "goblin_shaman/animations/attack_try/north-west/01.webp",
+     "goblin_shaman/animations/attack_try/north-west/02.webp",
+     "goblin_shaman/animations/attack_try/north-west/03.webp",
+     "goblin_shaman/animations/attack_try/north-west/04.webp"
+    ]
+   },
+   "strips": {
+    "south": "goblin_shaman/animations/attack_try__south.webp",
+    "south-east": "goblin_shaman/animations/attack_try__south-east.webp",
+    "east": "goblin_shaman/animations/attack_try__east.webp",
+    "north-east": "goblin_shaman/animations/attack_try__north-east.webp",
+    "north": "goblin_shaman/animations/attack_try__north.webp",
+    "south-west": "goblin_shaman/animations/attack_try__south-west.webp",
+    "west": "goblin_shaman/animations/attack_try__west.webp",
+    "north-west": "goblin_shaman/animations/attack_try__north-west.webp"
+   },
+   "intensity": 1
+  }
+ }
 }

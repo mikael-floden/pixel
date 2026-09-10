@@ -1,1197 +1,1202 @@
 {
-  "id": "veil_wraith",
-  "name": "Veilmother",
-  "tier": "evil",
-  "lore": "She searches every cradle in the valley and finds none of them hers. The cold that follows her is the closest she gets to company.",
-  "biome": [
-    "snow",
-    "grey_stone",
-    "grey_paving_stone"
-  ],
-  "items": [
-    "mist soulstone"
-  ],
-  "prompt": "Tall floating fantasy wraith with a gaunt pale face, hollow black eyes weeping dark tears, a long tattered veil and dress of gray-white cloth fading into mist at the bottom, long thin arms with elongated fingers, and a faint cold blue glow around its body.",
-  "size": [
-    128,
-    128
-  ],
-  "template_id": "mannequin",
-  "directions": [
-    "south",
-    "south-east",
-    "east",
-    "north-east",
-    "north",
-    "north-west",
-    "west",
-    "south-west"
-  ],
-  "rotations": {
-    "south": "veil_wraith/rotations/south.webp",
-    "south-east": "veil_wraith/rotations/south-east.webp",
-    "east": "veil_wraith/rotations/east.webp",
-    "north-east": "veil_wraith/rotations/north-east.webp",
-    "north": "veil_wraith/rotations/north.webp",
-    "north-west": "veil_wraith/rotations/north-west.webp",
-    "west": "veil_wraith/rotations/west.webp",
-    "south-west": "veil_wraith/rotations/south-west.webp"
-  },
-  "sheet": "veil_wraith/sheet.webp",
-  "review": "approved",
-  "pixellab_id": "8a296245-c8b0-4c17-8701-918116bd828e",
-  "seed": 2095735047,
-  "version": 1,
-  "usage": null,
-  "generated_at": "2026-09-09T17:40:26+00:00",
-  "elapsed_s": 182.1,
-  "qa": {
-    "status": "pass",
-    "min_run1": 0.694,
-    "reasons": [],
-    "directions": {
-      "south": {
-        "run1": 0.712,
-        "bbox": [
-          26,
-          3,
-          101,
-          125
-        ],
-        "fill": 0.558,
-        "touches_edge": false
-      },
-      "south-east": {
-        "run1": 0.794,
-        "bbox": [
-          35,
-          4,
-          98,
-          125
-        ],
-        "fill": 0.465,
-        "touches_edge": false
-      },
-      "east": {
-        "run1": 0.779,
-        "bbox": [
-          42,
-          4,
-          83,
-          125
-        ],
-        "fill": 0.303,
-        "touches_edge": false
-      },
-      "north-east": {
-        "run1": 0.758,
-        "bbox": [
-          37,
-          4,
-          95,
-          124
-        ],
-        "fill": 0.425,
-        "touches_edge": false
-      },
-      "north": {
-        "run1": 0.694,
-        "bbox": [
-          29,
-          3,
-          99,
-          123
-        ],
-        "fill": 0.513,
-        "touches_edge": false
-      },
-      "north-west": {
-        "run1": 0.749,
-        "bbox": [
-          32,
-          4,
-          90,
-          124
-        ],
-        "fill": 0.425,
-        "touches_edge": false
-      },
-      "west": {
-        "run1": 0.768,
-        "bbox": [
-          50,
-          4,
-          85,
-          125
-        ],
-        "fill": 0.258,
-        "touches_edge": false
-      },
-      "south-west": {
-        "run1": 0.801,
-        "bbox": [
-          33,
-          4,
-          92,
-          125
-        ],
-        "fill": 0.436,
-        "touches_edge": false
-      }
-    }
-  },
-  "approved_at": "2026-09-09T19:59:19+00:00",
-  "animations": {
-    "idle": {
-      "directions": {
-        "south": {
-          "status": "pass",
-          "step_mean": 0.0394,
-          "step_max": 0.0485,
-          "drift": 1.35,
-          "loop": 0.0,
-          "pin": 1.0,
-          "reasons": [],
-          "sub": "cafd935c-b08e-473e-b725-30c38b99549e",
-          "takes": 1,
-          "version": 1,
-          "mirrored": false,
-          "generated_at": "2026-09-09T20:07:09+00:00",
-          "cut": 0
-        },
-        "south-east": {
-          "status": "pass",
-          "step_mean": 0.0327,
-          "step_max": 0.0583,
-          "drift": 1.26,
-          "loop": 0.0,
-          "pin": 1.0,
-          "reasons": [],
-          "sub": "25c7359a-daa4-42bb-b579-9eca7aac82a9",
-          "takes": 1,
-          "version": 1,
-          "mirrored": false,
-          "generated_at": "2026-09-09T20:07:10+00:00",
-          "cut": 0
-        },
-        "east": {
-          "status": "pass",
-          "step_mean": 0.0248,
-          "step_max": 0.0471,
-          "drift": 1.36,
-          "loop": 0.0,
-          "pin": 1.0,
-          "reasons": [],
-          "sub": "22397930-d94b-492b-a32c-48a1ff69ff29",
-          "takes": 1,
-          "version": 1,
-          "mirrored": false,
-          "generated_at": "2026-09-09T20:07:10+00:00",
-          "cut": 0
-        },
-        "north-east": {
-          "status": "pass",
-          "step_mean": 0.0477,
-          "step_max": 0.078,
-          "drift": 1.25,
-          "loop": 0.0,
-          "pin": 1.0,
-          "reasons": [],
-          "sub": "25a804c8-98bd-426c-b6f1-4dad50e9fa19",
-          "takes": 1,
-          "version": 1,
-          "mirrored": false,
-          "generated_at": "2026-09-09T20:07:11+00:00",
-          "cut": 0
-        },
-        "north": {
-          "status": "pass",
-          "step_mean": 0.023,
-          "step_max": 0.039,
-          "drift": 1.06,
-          "loop": 0.0,
-          "pin": 1.0,
-          "reasons": [],
-          "sub": "479baee9-2fee-49b9-ac58-03f6da646367",
-          "takes": 1,
-          "version": 1,
-          "mirrored": false,
-          "generated_at": "2026-09-09T20:07:11+00:00",
-          "cut": 0
-        },
-        "south-west": {
-          "status": "pass",
-          "step_mean": 0.0327,
-          "step_max": 0.0583,
-          "drift": 1.26,
-          "loop": 0.0,
-          "pin": 1.0,
-          "reasons": [],
-          "sub": "25c7359a-daa4-42bb-b579-9eca7aac82a9",
-          "takes": 1,
-          "version": 1,
-          "mirrored": true,
-          "generated_at": "2026-09-09T20:07:10+00:00",
-          "cut": 0,
-          "source": "south-east"
-        },
-        "west": {
-          "status": "pass",
-          "step_mean": 0.0248,
-          "step_max": 0.0471,
-          "drift": 1.36,
-          "loop": 0.0,
-          "pin": 1.0,
-          "reasons": [],
-          "sub": "22397930-d94b-492b-a32c-48a1ff69ff29",
-          "takes": 1,
-          "version": 1,
-          "mirrored": true,
-          "generated_at": "2026-09-09T20:07:10+00:00",
-          "cut": 0,
-          "source": "east"
-        },
-        "north-west": {
-          "status": "pass",
-          "step_mean": 0.0477,
-          "step_max": 0.078,
-          "drift": 1.25,
-          "loop": 0.0,
-          "pin": 1.0,
-          "reasons": [],
-          "sub": "25a804c8-98bd-426c-b6f1-4dad50e9fa19",
-          "takes": 1,
-          "version": 1,
-          "mirrored": true,
-          "generated_at": "2026-09-09T20:07:11+00:00",
-          "cut": 0,
-          "source": "north-east"
-        }
-      },
-      "action": "Calm still idle, breathing very slowly and subtly, chest and shoulders rise and fall a little, feet planted, no other movement, ends in the same neutral pose it started in",
-      "frame_paths": {
-        "south": [
-          "veil_wraith/animations/idle/south/00.webp",
-          "veil_wraith/animations/idle/south/01.webp",
-          "veil_wraith/animations/idle/south/02.webp",
-          "veil_wraith/animations/idle/south/03.webp",
-          "veil_wraith/animations/idle/south/04.webp"
-        ],
-        "south-east": [
-          "veil_wraith/animations/idle/south-east/00.webp",
-          "veil_wraith/animations/idle/south-east/01.webp",
-          "veil_wraith/animations/idle/south-east/02.webp",
-          "veil_wraith/animations/idle/south-east/03.webp",
-          "veil_wraith/animations/idle/south-east/04.webp"
-        ],
-        "east": [
-          "veil_wraith/animations/idle/east/00.webp",
-          "veil_wraith/animations/idle/east/01.webp",
-          "veil_wraith/animations/idle/east/02.webp",
-          "veil_wraith/animations/idle/east/03.webp",
-          "veil_wraith/animations/idle/east/04.webp"
-        ],
-        "north-east": [
-          "veil_wraith/animations/idle/north-east/00.webp",
-          "veil_wraith/animations/idle/north-east/01.webp",
-          "veil_wraith/animations/idle/north-east/02.webp",
-          "veil_wraith/animations/idle/north-east/03.webp",
-          "veil_wraith/animations/idle/north-east/04.webp"
-        ],
-        "north": [
-          "veil_wraith/animations/idle/north/00.webp",
-          "veil_wraith/animations/idle/north/01.webp",
-          "veil_wraith/animations/idle/north/02.webp",
-          "veil_wraith/animations/idle/north/03.webp",
-          "veil_wraith/animations/idle/north/04.webp"
-        ],
-        "south-west": [
-          "veil_wraith/animations/idle/south-west/00.webp",
-          "veil_wraith/animations/idle/south-west/01.webp",
-          "veil_wraith/animations/idle/south-west/02.webp",
-          "veil_wraith/animations/idle/south-west/03.webp",
-          "veil_wraith/animations/idle/south-west/04.webp"
-        ],
-        "west": [
-          "veil_wraith/animations/idle/west/00.webp",
-          "veil_wraith/animations/idle/west/01.webp",
-          "veil_wraith/animations/idle/west/02.webp",
-          "veil_wraith/animations/idle/west/03.webp",
-          "veil_wraith/animations/idle/west/04.webp"
-        ],
-        "north-west": [
-          "veil_wraith/animations/idle/north-west/00.webp",
-          "veil_wraith/animations/idle/north-west/01.webp",
-          "veil_wraith/animations/idle/north-west/02.webp",
-          "veil_wraith/animations/idle/north-west/03.webp",
-          "veil_wraith/animations/idle/north-west/04.webp"
-        ]
-      },
-      "strips": {
-        "south": "veil_wraith/animations/idle__south.webp",
-        "south-east": "veil_wraith/animations/idle__south-east.webp",
-        "east": "veil_wraith/animations/idle__east.webp",
-        "north-east": "veil_wraith/animations/idle__north-east.webp",
-        "north": "veil_wraith/animations/idle__north.webp",
-        "south-west": "veil_wraith/animations/idle__south-west.webp",
-        "west": "veil_wraith/animations/idle__west.webp",
-        "north-west": "veil_wraith/animations/idle__north-west.webp"
-      }
-    },
-    "walk": {
-      "directions": {
-        "south": {
-          "status": "warn",
-          "step_mean": 0.0784,
-          "step_max": 0.0956,
-          "drift": 2.6,
-          "loop": 0.1939,
-          "loop_ratio": 2.47,
-          "travel": 0.17,
-          "pin": 0.934,
-          "pad": 0,
-          "canvas": [
-            128,
-            128
-          ],
-          "reasons": [
-            "motion 0.078 outside the calm band 0.1–0.4 — eyeball it",
-            "last→first hand-off 2.5× a step — eyeball the loop"
-          ],
-          "sub": "5a108f4f-40d5-49ae-a4ae-cdd6519311c8",
-          "group": "5c973ead-2e47-4e29-8c8e-edf6bcc5fa8e",
-          "takes": 1,
-          "version": 2,
-          "mirrored": false,
-          "generated_at": "2026-09-09T21:16:33+00:00"
-        },
-        "south-east": {
-          "status": "pass",
-          "step_mean": 0.1819,
-          "step_max": 0.2211,
-          "drift": 1.77,
-          "loop": 0.1977,
-          "loop_ratio": 1.09,
-          "travel": 1.4,
-          "pin": 0.893,
-          "pad": 0,
-          "canvas": [
-            128,
-            128
-          ],
-          "reasons": [],
-          "sub": "8059009d-6e05-4a24-bcb0-aa2b5481eb48",
-          "group": "c8606de8-936f-4976-92c3-f2f8f055cdd7",
-          "takes": 1,
-          "version": 2,
-          "mirrored": false,
-          "generated_at": "2026-09-09T21:16:34+00:00"
-        },
-        "east": {
-          "status": "pass",
-          "step_mean": 0.1555,
-          "step_max": 0.2095,
-          "drift": 2.04,
-          "loop": 0.1474,
-          "loop_ratio": 0.95,
-          "travel": 0.5,
-          "pin": 0.915,
-          "pad": 0,
-          "canvas": [
-            128,
-            128
-          ],
-          "reasons": [],
-          "sub": "6e2e64c4-b7c4-4c67-8725-d7d0c28aa66c",
-          "group": "c946f209-8ca2-4e99-84e7-a2c6b0fbec08",
-          "takes": 1,
-          "version": 2,
-          "mirrored": false,
-          "generated_at": "2026-09-09T21:16:34+00:00"
-        },
-        "north-east": {
-          "status": "pass",
-          "step_mean": 0.1128,
-          "step_max": 0.1431,
-          "drift": 1.49,
-          "loop": 0.1958,
-          "loop_ratio": 1.74,
-          "travel": 1.15,
-          "pin": 0.866,
-          "pad": 0,
-          "canvas": [
-            128,
-            128
-          ],
-          "reasons": [],
-          "sub": "61001f27-7e50-4587-be8e-485a3b31713b",
-          "group": "bfad1ba5-bb38-4c02-92aa-ad64334e870a",
-          "takes": 1,
-          "version": 2,
-          "mirrored": false,
-          "generated_at": "2026-09-09T21:16:35+00:00"
-        },
-        "north": {
-          "status": "pass",
-          "step_mean": 0.1199,
-          "step_max": 0.16,
-          "drift": 1.91,
-          "loop": 0.211,
-          "loop_ratio": 1.76,
-          "travel": 0.1,
-          "pin": 0.878,
-          "pad": 0,
-          "canvas": [
-            128,
-            128
-          ],
-          "reasons": [],
-          "sub": "3e86dbb2-4641-4a00-bd17-c755c2e0c08a",
-          "group": "b222b0aa-263a-4dfa-8205-036184d0a9fc",
-          "takes": 1,
-          "version": 2,
-          "mirrored": false,
-          "generated_at": "2026-09-09T21:16:35+00:00"
-        },
-        "south-west": {
-          "status": "pass",
-          "step_mean": 0.1819,
-          "step_max": 0.2211,
-          "drift": 1.77,
-          "loop": 0.1977,
-          "loop_ratio": 1.09,
-          "travel": 1.4,
-          "pin": 0.893,
-          "pad": 0,
-          "canvas": [
-            128,
-            128
-          ],
-          "reasons": [],
-          "sub": "8059009d-6e05-4a24-bcb0-aa2b5481eb48",
-          "group": "c8606de8-936f-4976-92c3-f2f8f055cdd7",
-          "takes": 1,
-          "version": 2,
-          "mirrored": true,
-          "generated_at": "2026-09-09T21:16:34+00:00",
-          "source": "south-east"
-        },
-        "west": {
-          "status": "pass",
-          "step_mean": 0.1555,
-          "step_max": 0.2095,
-          "drift": 2.04,
-          "loop": 0.1474,
-          "loop_ratio": 0.95,
-          "travel": 0.5,
-          "pin": 0.915,
-          "pad": 0,
-          "canvas": [
-            128,
-            128
-          ],
-          "reasons": [],
-          "sub": "6e2e64c4-b7c4-4c67-8725-d7d0c28aa66c",
-          "group": "c946f209-8ca2-4e99-84e7-a2c6b0fbec08",
-          "takes": 1,
-          "version": 2,
-          "mirrored": true,
-          "generated_at": "2026-09-09T21:16:34+00:00",
-          "source": "east"
-        },
-        "north-west": {
-          "status": "pass",
-          "step_mean": 0.1128,
-          "step_max": 0.1431,
-          "drift": 1.49,
-          "loop": 0.1958,
-          "loop_ratio": 1.74,
-          "travel": 1.15,
-          "pin": 0.866,
-          "pad": 0,
-          "canvas": [
-            128,
-            128
-          ],
-          "reasons": [],
-          "sub": "61001f27-7e50-4587-be8e-485a3b31713b",
-          "group": "bfad1ba5-bb38-4c02-92aa-ad64334e870a",
-          "takes": 1,
-          "version": 2,
-          "mirrored": true,
-          "generated_at": "2026-09-09T21:16:35+00:00",
-          "source": "north-east"
-        }
-      },
-      "action": "floats forward in place, drifting slowly up and down, veil and dress swaying, arms still, seamless loop, no turning",
-      "frame_paths": {
-        "south": [
-          "veil_wraith/animations/walk/south/00.webp",
-          "veil_wraith/animations/walk/south/01.webp",
-          "veil_wraith/animations/walk/south/02.webp",
-          "veil_wraith/animations/walk/south/03.webp",
-          "veil_wraith/animations/walk/south/04.webp",
-          "veil_wraith/animations/walk/south/05.webp"
-        ],
-        "south-east": [
-          "veil_wraith/animations/walk/south-east/00.webp",
-          "veil_wraith/animations/walk/south-east/01.webp",
-          "veil_wraith/animations/walk/south-east/02.webp",
-          "veil_wraith/animations/walk/south-east/03.webp",
-          "veil_wraith/animations/walk/south-east/04.webp",
-          "veil_wraith/animations/walk/south-east/05.webp"
-        ],
-        "east": [
-          "veil_wraith/animations/walk/east/00.webp",
-          "veil_wraith/animations/walk/east/01.webp",
-          "veil_wraith/animations/walk/east/02.webp",
-          "veil_wraith/animations/walk/east/03.webp",
-          "veil_wraith/animations/walk/east/04.webp",
-          "veil_wraith/animations/walk/east/05.webp"
-        ],
-        "north-east": [
-          "veil_wraith/animations/walk/north-east/00.webp",
-          "veil_wraith/animations/walk/north-east/01.webp",
-          "veil_wraith/animations/walk/north-east/02.webp",
-          "veil_wraith/animations/walk/north-east/03.webp",
-          "veil_wraith/animations/walk/north-east/04.webp",
-          "veil_wraith/animations/walk/north-east/05.webp"
-        ],
-        "north": [
-          "veil_wraith/animations/walk/north/00.webp",
-          "veil_wraith/animations/walk/north/01.webp",
-          "veil_wraith/animations/walk/north/02.webp",
-          "veil_wraith/animations/walk/north/03.webp",
-          "veil_wraith/animations/walk/north/04.webp",
-          "veil_wraith/animations/walk/north/05.webp"
-        ],
-        "south-west": [
-          "veil_wraith/animations/walk/south-west/00.webp",
-          "veil_wraith/animations/walk/south-west/01.webp",
-          "veil_wraith/animations/walk/south-west/02.webp",
-          "veil_wraith/animations/walk/south-west/03.webp",
-          "veil_wraith/animations/walk/south-west/04.webp",
-          "veil_wraith/animations/walk/south-west/05.webp"
-        ],
-        "west": [
-          "veil_wraith/animations/walk/west/00.webp",
-          "veil_wraith/animations/walk/west/01.webp",
-          "veil_wraith/animations/walk/west/02.webp",
-          "veil_wraith/animations/walk/west/03.webp",
-          "veil_wraith/animations/walk/west/04.webp",
-          "veil_wraith/animations/walk/west/05.webp"
-        ],
-        "north-west": [
-          "veil_wraith/animations/walk/north-west/00.webp",
-          "veil_wraith/animations/walk/north-west/01.webp",
-          "veil_wraith/animations/walk/north-west/02.webp",
-          "veil_wraith/animations/walk/north-west/03.webp",
-          "veil_wraith/animations/walk/north-west/04.webp",
-          "veil_wraith/animations/walk/north-west/05.webp"
-        ]
-      },
-      "strips": {
-        "south": "veil_wraith/animations/walk__south.webp",
-        "south-east": "veil_wraith/animations/walk__south-east.webp",
-        "east": "veil_wraith/animations/walk__east.webp",
-        "north-east": "veil_wraith/animations/walk__north-east.webp",
-        "north": "veil_wraith/animations/walk__north.webp",
-        "south-west": "veil_wraith/animations/walk__south-west.webp",
-        "west": "veil_wraith/animations/walk__west.webp",
-        "north-west": "veil_wraith/animations/walk__north-west.webp"
-      }
-    },
-    "attack": {
-      "directions": {
-        "south": {
-          "status": "fail",
-          "step_mean": 0.0839,
-          "step_max": 0.1082,
-          "drift": 1.13,
-          "loop": 0.0,
-          "loop_ratio": 0.0,
-          "travel": 0.16,
-          "pin": 1.0,
-          "pad": 0,
-          "flash": 0.0,
-          "peak": 0.1405,
-          "reach": 0.067,
-          "canvas": [
-            128,
-            128
-          ],
-          "reasons": [
-            "weak strike: peak 0.140 — eyeball it",
-            "no strike, just a lean: nothing reaches past 0.07 of the body"
-          ],
-          "sub": "af4a0198-fb91-4576-97a8-9b6748cdd4b8",
-          "group": "a31a7453-8890-44b3-a478-8f4a1e09f289",
-          "takes": 1,
-          "version": 2,
-          "mirrored": false,
-          "generated_at": "2026-09-09T22:27:49+00:00",
-          "action": "Clawing Grab - Lunges forward with both long-fingered hands reaching in one clawing grab, then returns to idle stance"
-        },
-        "south-east": {
-          "status": "warn",
-          "step_mean": 0.1695,
-          "step_max": 0.2043,
-          "drift": 2.96,
-          "loop": 0.0,
-          "loop_ratio": 0.0,
-          "travel": 2.96,
-          "pin": 1.0,
-          "pad": 0,
-          "flash": 0.0,
-          "peak": 0.2608,
-          "reach": 0.254,
-          "canvas": [
-            128,
-            128
-          ],
-          "reasons": [
-            "shallow strike: reach 0.25 — eyeball it"
-          ],
-          "sub": "723cf64e-f7a9-4ecf-b40e-451f828a71da",
-          "group": "c6ce1634-94b1-40bc-a288-308e499ec511",
-          "takes": 1,
-          "version": 2,
-          "mirrored": false,
-          "generated_at": "2026-09-09T22:27:50+00:00",
-          "action": "Clawing Grab - Lunges forward with both long-fingered hands reaching in one clawing grab, then returns to idle stance"
-        },
-        "east": {
-          "status": "warn",
-          "step_mean": 0.1127,
-          "step_max": 0.1254,
-          "drift": 1.78,
-          "loop": 0.0,
-          "loop_ratio": 0.0,
-          "travel": 1.12,
-          "pin": 1.0,
-          "pad": 0,
-          "flash": 0.0,
-          "peak": 0.133,
-          "reach": 0.488,
-          "canvas": [
-            128,
-            128
-          ],
-          "reasons": [
-            "weak strike: peak 0.133 — eyeball it"
-          ],
-          "sub": "180e2ef3-6c48-4edf-8cde-78a3602983e5",
-          "group": "852401a0-df49-46a8-899b-dd1db93e3c76",
-          "takes": 1,
-          "version": 2,
-          "mirrored": false,
-          "generated_at": "2026-09-09T22:27:50+00:00",
-          "action": "Clawing Grab - Lunges forward with both long-fingered hands reaching in one clawing grab, then returns to idle stance"
-        },
-        "north-east": {
-          "status": "fail",
-          "step_mean": 0.1507,
-          "step_max": 0.1709,
-          "drift": 1.56,
-          "loop": 0.0,
-          "loop_ratio": 0.0,
-          "travel": 1.56,
-          "pin": 1.0,
-          "pad": 0,
-          "flash": 0.001,
-          "peak": 0.2641,
-          "reach": 0.121,
-          "canvas": [
-            128,
-            128
-          ],
-          "reasons": [
-            "no strike, just a lean: nothing reaches past 0.12 of the body"
-          ],
-          "sub": "7ec44996-485f-43b4-bc67-4ae9cf096b7c",
-          "group": "a33c4543-caca-478c-afb8-1ad8d9bdc8ae",
-          "takes": 1,
-          "version": 2,
-          "mirrored": false,
-          "generated_at": "2026-09-09T22:27:51+00:00",
-          "action": "Clawing Grab - Lunges forward with both long-fingered hands reaching in one clawing grab, then returns to idle stance"
-        },
-        "north": {
-          "status": "fail",
-          "step_mean": 0.1987,
-          "step_max": 0.2369,
-          "drift": 5.15,
-          "loop": 0.0,
-          "loop_ratio": 0.0,
-          "travel": 0.13,
-          "pin": 1.0,
-          "pad": 0,
-          "flash": 0.0,
-          "peak": 0.3383,
-          "reach": 0.129,
-          "canvas": [
-            128,
-            128
-          ],
-          "reasons": [
-            "no strike, just a lean: nothing reaches past 0.13 of the body"
-          ],
-          "sub": "96f0dff9-e812-4274-8b69-80aac54b4c5c",
-          "group": "3279ec48-20a3-45b7-a2e2-34a6b8e4fd54",
-          "takes": 1,
-          "version": 2,
-          "mirrored": false,
-          "generated_at": "2026-09-09T22:27:51+00:00",
-          "action": "Clawing Grab - Lunges forward with both long-fingered hands reaching in one clawing grab, then returns to idle stance"
-        },
-        "south-west": {
-          "status": "warn",
-          "step_mean": 0.1695,
-          "step_max": 0.2043,
-          "drift": 2.96,
-          "loop": 0.0,
-          "loop_ratio": 0.0,
-          "travel": 2.96,
-          "pin": 1.0,
-          "pad": 0,
-          "flash": 0.0,
-          "peak": 0.2608,
-          "reach": 0.254,
-          "canvas": [
-            128,
-            128
-          ],
-          "reasons": [
-            "shallow strike: reach 0.25 — eyeball it"
-          ],
-          "sub": "723cf64e-f7a9-4ecf-b40e-451f828a71da",
-          "group": "c6ce1634-94b1-40bc-a288-308e499ec511",
-          "takes": 1,
-          "version": 2,
-          "mirrored": true,
-          "generated_at": "2026-09-09T22:27:50+00:00",
-          "action": "Clawing Grab - Lunges forward with both long-fingered hands reaching in one clawing grab, then returns to idle stance",
-          "source": "south-east"
-        },
-        "west": {
-          "status": "warn",
-          "step_mean": 0.1127,
-          "step_max": 0.1254,
-          "drift": 1.78,
-          "loop": 0.0,
-          "loop_ratio": 0.0,
-          "travel": 1.12,
-          "pin": 1.0,
-          "pad": 0,
-          "flash": 0.0,
-          "peak": 0.133,
-          "reach": 0.488,
-          "canvas": [
-            128,
-            128
-          ],
-          "reasons": [
-            "weak strike: peak 0.133 — eyeball it"
-          ],
-          "sub": "180e2ef3-6c48-4edf-8cde-78a3602983e5",
-          "group": "852401a0-df49-46a8-899b-dd1db93e3c76",
-          "takes": 1,
-          "version": 2,
-          "mirrored": true,
-          "generated_at": "2026-09-09T22:27:50+00:00",
-          "action": "Clawing Grab - Lunges forward with both long-fingered hands reaching in one clawing grab, then returns to idle stance",
-          "source": "east"
-        },
-        "north-west": {
-          "status": "pass",
-          "step_mean": 0.1507,
-          "step_max": 0.1709,
-          "drift": 1.56,
-          "loop": 0.0,
-          "loop_ratio": 0.0,
-          "travel": 1.56,
-          "pin": 1.0,
-          "pad": 0,
-          "flash": 0.001,
-          "peak": 0.2641,
-          "canvas": [
-            128,
-            128
-          ],
-          "reasons": [],
-          "sub": "7ec44996-485f-43b4-bc67-4ae9cf096b7c",
-          "group": "a33c4543-caca-478c-afb8-1ad8d9bdc8ae",
-          "takes": 1,
-          "version": 2,
-          "mirrored": true,
-          "generated_at": "2026-09-09T22:27:51+00:00",
-          "action": "Clawing Grab - Lunges forward with both long-fingered hands reaching in one clawing grab, then returns to idle stance",
-          "source": "north-east"
-        }
-      },
-      "action": "Clawing Grab - Lunges forward with both long-fingered hands reaching in one clawing grab, then returns to idle stance",
-      "frame_paths": {
-        "south": [
-          "veil_wraith/animations/attack/south/00.webp",
-          "veil_wraith/animations/attack/south/01.webp",
-          "veil_wraith/animations/attack/south/02.webp",
-          "veil_wraith/animations/attack/south/03.webp",
-          "veil_wraith/animations/attack/south/04.webp"
-        ],
-        "south-east": [
-          "veil_wraith/animations/attack/south-east/00.webp",
-          "veil_wraith/animations/attack/south-east/01.webp",
-          "veil_wraith/animations/attack/south-east/02.webp",
-          "veil_wraith/animations/attack/south-east/03.webp",
-          "veil_wraith/animations/attack/south-east/04.webp"
-        ],
-        "east": [
-          "veil_wraith/animations/attack/east/00.webp",
-          "veil_wraith/animations/attack/east/01.webp",
-          "veil_wraith/animations/attack/east/02.webp",
-          "veil_wraith/animations/attack/east/03.webp",
-          "veil_wraith/animations/attack/east/04.webp"
-        ],
-        "north-east": [
-          "veil_wraith/animations/attack/north-east/00.webp",
-          "veil_wraith/animations/attack/north-east/01.webp",
-          "veil_wraith/animations/attack/north-east/02.webp",
-          "veil_wraith/animations/attack/north-east/03.webp",
-          "veil_wraith/animations/attack/north-east/04.webp"
-        ],
-        "north": [
-          "veil_wraith/animations/attack/north/00.webp",
-          "veil_wraith/animations/attack/north/01.webp",
-          "veil_wraith/animations/attack/north/02.webp",
-          "veil_wraith/animations/attack/north/03.webp",
-          "veil_wraith/animations/attack/north/04.webp"
-        ],
-        "south-west": [
-          "veil_wraith/animations/attack/south-west/00.webp",
-          "veil_wraith/animations/attack/south-west/01.webp",
-          "veil_wraith/animations/attack/south-west/02.webp",
-          "veil_wraith/animations/attack/south-west/03.webp",
-          "veil_wraith/animations/attack/south-west/04.webp"
-        ],
-        "west": [
-          "veil_wraith/animations/attack/west/00.webp",
-          "veil_wraith/animations/attack/west/01.webp",
-          "veil_wraith/animations/attack/west/02.webp",
-          "veil_wraith/animations/attack/west/03.webp",
-          "veil_wraith/animations/attack/west/04.webp"
-        ],
-        "north-west": [
-          "veil_wraith/animations/attack/north-west/00.webp",
-          "veil_wraith/animations/attack/north-west/01.webp",
-          "veil_wraith/animations/attack/north-west/02.webp",
-          "veil_wraith/animations/attack/north-west/03.webp",
-          "veil_wraith/animations/attack/north-west/04.webp"
-        ]
-      },
-      "strips": {
-        "south": "veil_wraith/animations/attack__south.webp",
-        "south-east": "veil_wraith/animations/attack__south-east.webp",
-        "east": "veil_wraith/animations/attack__east.webp",
-        "north-east": "veil_wraith/animations/attack__north-east.webp",
-        "north": "veil_wraith/animations/attack__north.webp",
-        "south-west": "veil_wraith/animations/attack__south-west.webp",
-        "west": "veil_wraith/animations/attack__west.webp",
-        "north-west": "veil_wraith/animations/attack__north-west.webp"
-      }
-    },
-    "attack_try": {
-      "directions": {
-        "south": {
-          "status": "warn",
-          "step_mean": 0.1383,
-          "step_max": 0.206,
-          "drift": 2.08,
-          "loop": 0.2735,
-          "loop_ratio": 1.98,
-          "travel": 0.35,
-          "pin": 1.0,
-          "pad": 0,
-          "flash": -0.011,
-          "peak": 0.2735,
-          "reach": 0.24,
-          "canvas": [
-            128,
-            128
-          ],
-          "reasons": [
-            "shallow strike: reach 0.24 — eyeball it"
-          ],
-          "sub": "6240b9df-ae3b-4f3b-b8ba-4a74c6f84ed2",
-          "group": "e5660efc-07b1-4a98-ac26-f30ec72747b3",
-          "takes": 1,
-          "version": 1,
-          "mirrored": false,
-          "action": "Clawing Grab - Surges forward with both long-fingered hands out in a clawing grab",
-          "tries": 1,
-          "generated_at": "2026-09-10T19:48:29+00:00"
-        },
-        "south-east": {
-          "status": "pass",
-          "step_mean": 0.2584,
-          "step_max": 0.4596,
-          "drift": 2.02,
-          "loop": 0.6448,
-          "loop_ratio": 2.5,
-          "travel": 1.59,
-          "pin": 1.0,
-          "pad": 0,
-          "flash": -0.004,
-          "peak": 0.6448,
-          "reach": 0.508,
-          "canvas": [
-            128,
-            128
-          ],
-          "reasons": [],
-          "sub": "fcd5e963-b94f-4aef-a7ed-576e591f24a9",
-          "group": "dce27396-e559-46b1-a4dd-16ddb47918be",
-          "takes": 1,
-          "version": 1,
-          "mirrored": false,
-          "action": "Clawing Grab - Surges forward with both long-fingered hands out in a clawing grab",
-          "tries": 1,
-          "generated_at": "2026-09-10T19:48:29+00:00"
-        },
-        "east": {
-          "status": "pass",
-          "step_mean": 0.3435,
-          "step_max": 0.5011,
-          "drift": 5.52,
-          "loop": 0.7472,
-          "loop_ratio": 2.18,
-          "travel": 1.9,
-          "pin": 1.0,
-          "pad": 0,
-          "flash": 0.016,
-          "peak": 0.7472,
-          "reach": 0.829,
-          "canvas": [
-            128,
-            128
-          ],
-          "reasons": [],
-          "sub": "204ed649-738e-45e1-95b1-d3913ed58fa5",
-          "group": "f78e6d22-0226-479e-8607-07b2104a41b8",
-          "takes": 1,
-          "version": 1,
-          "mirrored": false,
-          "action": "Clawing Grab - Surges forward with both long-fingered hands out in a clawing grab",
-          "tries": 1,
-          "generated_at": "2026-09-10T19:48:30+00:00"
-        },
-        "north-east": {
-          "status": "pass",
-          "step_mean": 0.1531,
-          "step_max": 0.1641,
-          "drift": 1.75,
-          "loop": 0.2421,
-          "loop_ratio": 1.58,
-          "travel": 1.01,
-          "pin": 1.0,
-          "pad": 0,
-          "flash": 0.001,
-          "peak": 0.2421,
-          "reach": 0.31,
-          "canvas": [
-            128,
-            128
-          ],
-          "reasons": [],
-          "sub": "1088d43b-629d-4d5b-9887-b9210db76fd5",
-          "group": "01182c34-578e-4601-af44-3a9251467c02",
-          "takes": 1,
-          "version": 1,
-          "mirrored": false,
-          "action": "Clawing Grab - Surges forward with both long-fingered hands out in a clawing grab",
-          "tries": 1,
-          "generated_at": "2026-09-10T19:48:30+00:00"
-        },
-        "north": {
-          "status": "pass",
-          "step_mean": 0.2462,
-          "step_max": 0.3468,
-          "drift": 5.82,
-          "loop": 0.4094,
-          "loop_ratio": 1.66,
-          "travel": 0.44,
-          "pin": 1.0,
-          "pad": 0,
-          "flash": 0.011,
-          "peak": 0.4094,
-          "reach": 0.357,
-          "canvas": [
-            128,
-            128
-          ],
-          "reasons": [],
-          "sub": "f4897b5e-8dd4-4a5e-b1d5-dcd391346eec",
-          "group": "228a9aed-111d-4bbf-98c4-4d70143d4c8d",
-          "takes": 1,
-          "version": 1,
-          "mirrored": false,
-          "action": "Clawing Grab - Surges forward with both long-fingered hands out in a clawing grab",
-          "tries": 1,
-          "generated_at": "2026-09-10T19:48:31+00:00"
-        },
-        "south-west": {
-          "status": "pass",
-          "step_mean": 0.2584,
-          "step_max": 0.4596,
-          "drift": 2.02,
-          "loop": 0.6448,
-          "loop_ratio": 2.5,
-          "travel": 1.59,
-          "pin": 1.0,
-          "pad": 0,
-          "flash": -0.004,
-          "peak": 0.6448,
-          "reach": 0.508,
-          "canvas": [
-            128,
-            128
-          ],
-          "reasons": [],
-          "sub": "fcd5e963-b94f-4aef-a7ed-576e591f24a9",
-          "group": "dce27396-e559-46b1-a4dd-16ddb47918be",
-          "takes": 1,
-          "version": 1,
-          "mirrored": true,
-          "action": "Clawing Grab - Surges forward with both long-fingered hands out in a clawing grab",
-          "tries": 1,
-          "generated_at": "2026-09-10T19:48:29+00:00",
-          "source": "south-east"
-        },
-        "west": {
-          "status": "pass",
-          "step_mean": 0.3435,
-          "step_max": 0.5011,
-          "drift": 5.52,
-          "loop": 0.7472,
-          "loop_ratio": 2.18,
-          "travel": 1.9,
-          "pin": 1.0,
-          "pad": 0,
-          "flash": 0.016,
-          "peak": 0.7472,
-          "reach": 0.829,
-          "canvas": [
-            128,
-            128
-          ],
-          "reasons": [],
-          "sub": "204ed649-738e-45e1-95b1-d3913ed58fa5",
-          "group": "f78e6d22-0226-479e-8607-07b2104a41b8",
-          "takes": 1,
-          "version": 1,
-          "mirrored": true,
-          "action": "Clawing Grab - Surges forward with both long-fingered hands out in a clawing grab",
-          "tries": 1,
-          "generated_at": "2026-09-10T19:48:30+00:00",
-          "source": "east"
-        },
-        "north-west": {
-          "status": "pass",
-          "step_mean": 0.1531,
-          "step_max": 0.1641,
-          "drift": 1.75,
-          "loop": 0.2421,
-          "loop_ratio": 1.58,
-          "travel": 1.01,
-          "pin": 1.0,
-          "pad": 0,
-          "flash": 0.001,
-          "peak": 0.2421,
-          "reach": 0.31,
-          "canvas": [
-            128,
-            128
-          ],
-          "reasons": [],
-          "sub": "1088d43b-629d-4d5b-9887-b9210db76fd5",
-          "group": "01182c34-578e-4601-af44-3a9251467c02",
-          "takes": 1,
-          "version": 1,
-          "mirrored": true,
-          "action": "Clawing Grab - Surges forward with both long-fingered hands out in a clawing grab",
-          "tries": 1,
-          "generated_at": "2026-09-10T19:48:30+00:00",
-          "source": "north-east"
-        }
-      },
-      "action": "Clawing Grab - Surges forward with both long-fingered hands out in a clawing grab",
-      "frame_paths": {
-        "south": [
-          "veil_wraith/animations/attack_try/south/00.webp",
-          "veil_wraith/animations/attack_try/south/01.webp",
-          "veil_wraith/animations/attack_try/south/02.webp",
-          "veil_wraith/animations/attack_try/south/03.webp",
-          "veil_wraith/animations/attack_try/south/04.webp"
-        ],
-        "south-east": [
-          "veil_wraith/animations/attack_try/south-east/00.webp",
-          "veil_wraith/animations/attack_try/south-east/01.webp",
-          "veil_wraith/animations/attack_try/south-east/02.webp",
-          "veil_wraith/animations/attack_try/south-east/03.webp",
-          "veil_wraith/animations/attack_try/south-east/04.webp"
-        ],
-        "east": [
-          "veil_wraith/animations/attack_try/east/00.webp",
-          "veil_wraith/animations/attack_try/east/01.webp",
-          "veil_wraith/animations/attack_try/east/02.webp",
-          "veil_wraith/animations/attack_try/east/03.webp",
-          "veil_wraith/animations/attack_try/east/04.webp"
-        ],
-        "north-east": [
-          "veil_wraith/animations/attack_try/north-east/00.webp",
-          "veil_wraith/animations/attack_try/north-east/01.webp",
-          "veil_wraith/animations/attack_try/north-east/02.webp",
-          "veil_wraith/animations/attack_try/north-east/03.webp",
-          "veil_wraith/animations/attack_try/north-east/04.webp"
-        ],
-        "north": [
-          "veil_wraith/animations/attack_try/north/00.webp",
-          "veil_wraith/animations/attack_try/north/01.webp",
-          "veil_wraith/animations/attack_try/north/02.webp",
-          "veil_wraith/animations/attack_try/north/03.webp",
-          "veil_wraith/animations/attack_try/north/04.webp"
-        ],
-        "south-west": [
-          "veil_wraith/animations/attack_try/south-west/00.webp",
-          "veil_wraith/animations/attack_try/south-west/01.webp",
-          "veil_wraith/animations/attack_try/south-west/02.webp",
-          "veil_wraith/animations/attack_try/south-west/03.webp",
-          "veil_wraith/animations/attack_try/south-west/04.webp"
-        ],
-        "west": [
-          "veil_wraith/animations/attack_try/west/00.webp",
-          "veil_wraith/animations/attack_try/west/01.webp",
-          "veil_wraith/animations/attack_try/west/02.webp",
-          "veil_wraith/animations/attack_try/west/03.webp",
-          "veil_wraith/animations/attack_try/west/04.webp"
-        ],
-        "north-west": [
-          "veil_wraith/animations/attack_try/north-west/00.webp",
-          "veil_wraith/animations/attack_try/north-west/01.webp",
-          "veil_wraith/animations/attack_try/north-west/02.webp",
-          "veil_wraith/animations/attack_try/north-west/03.webp",
-          "veil_wraith/animations/attack_try/north-west/04.webp"
-        ]
-      },
-      "strips": {
-        "south": "veil_wraith/animations/attack_try__south.webp",
-        "south-east": "veil_wraith/animations/attack_try__south-east.webp",
-        "east": "veil_wraith/animations/attack_try__east.webp",
-        "north-east": "veil_wraith/animations/attack_try__north-east.webp",
-        "north": "veil_wraith/animations/attack_try__north.webp",
-        "south-west": "veil_wraith/animations/attack_try__south-west.webp",
-        "west": "veil_wraith/animations/attack_try__west.webp",
-        "north-west": "veil_wraith/animations/attack_try__north-west.webp"
-      }
-    }
+ "id": "veil_wraith",
+ "name": "Veilmother",
+ "tier": "evil",
+ "lore": "She searches every cradle in the valley and finds none of them hers. The cold that follows her is the closest she gets to company.",
+ "biome": [
+  "snow",
+  "grey_stone",
+  "grey_paving_stone"
+ ],
+ "items": [
+  "mist soulstone"
+ ],
+ "prompt": "Tall floating fantasy wraith with a gaunt pale face, hollow black eyes weeping dark tears, a long tattered veil and dress of gray-white cloth fading into mist at the bottom, long thin arms with elongated fingers, and a faint cold blue glow around its body.",
+ "size": [
+  128,
+  128
+ ],
+ "template_id": "mannequin",
+ "directions": [
+  "south",
+  "south-east",
+  "east",
+  "north-east",
+  "north",
+  "north-west",
+  "west",
+  "south-west"
+ ],
+ "rotations": {
+  "south": "veil_wraith/rotations/south.webp",
+  "south-east": "veil_wraith/rotations/south-east.webp",
+  "east": "veil_wraith/rotations/east.webp",
+  "north-east": "veil_wraith/rotations/north-east.webp",
+  "north": "veil_wraith/rotations/north.webp",
+  "north-west": "veil_wraith/rotations/north-west.webp",
+  "west": "veil_wraith/rotations/west.webp",
+  "south-west": "veil_wraith/rotations/south-west.webp"
+ },
+ "sheet": "veil_wraith/sheet.webp",
+ "review": "approved",
+ "pixellab_id": "8a296245-c8b0-4c17-8701-918116bd828e",
+ "seed": 2095735047,
+ "version": 1,
+ "usage": null,
+ "generated_at": "2026-09-09T17:40:26+00:00",
+ "elapsed_s": 182.1,
+ "qa": {
+  "status": "pass",
+  "min_run1": 0.694,
+  "reasons": [],
+  "directions": {
+   "south": {
+    "run1": 0.712,
+    "bbox": [
+     26,
+     3,
+     101,
+     125
+    ],
+    "fill": 0.558,
+    "touches_edge": false
+   },
+   "south-east": {
+    "run1": 0.794,
+    "bbox": [
+     35,
+     4,
+     98,
+     125
+    ],
+    "fill": 0.465,
+    "touches_edge": false
+   },
+   "east": {
+    "run1": 0.779,
+    "bbox": [
+     42,
+     4,
+     83,
+     125
+    ],
+    "fill": 0.303,
+    "touches_edge": false
+   },
+   "north-east": {
+    "run1": 0.758,
+    "bbox": [
+     37,
+     4,
+     95,
+     124
+    ],
+    "fill": 0.425,
+    "touches_edge": false
+   },
+   "north": {
+    "run1": 0.694,
+    "bbox": [
+     29,
+     3,
+     99,
+     123
+    ],
+    "fill": 0.513,
+    "touches_edge": false
+   },
+   "north-west": {
+    "run1": 0.749,
+    "bbox": [
+     32,
+     4,
+     90,
+     124
+    ],
+    "fill": 0.425,
+    "touches_edge": false
+   },
+   "west": {
+    "run1": 0.768,
+    "bbox": [
+     50,
+     4,
+     85,
+     125
+    ],
+    "fill": 0.258,
+    "touches_edge": false
+   },
+   "south-west": {
+    "run1": 0.801,
+    "bbox": [
+     33,
+     4,
+     92,
+     125
+    ],
+    "fill": 0.436,
+    "touches_edge": false
+   }
   }
+ },
+ "approved_at": "2026-09-09T19:59:19+00:00",
+ "animations": {
+  "idle": {
+   "directions": {
+    "south": {
+     "status": "pass",
+     "step_mean": 0.0394,
+     "step_max": 0.0485,
+     "drift": 1.35,
+     "loop": 0.0,
+     "pin": 1.0,
+     "reasons": [],
+     "sub": "cafd935c-b08e-473e-b725-30c38b99549e",
+     "takes": 1,
+     "version": 1,
+     "mirrored": false,
+     "generated_at": "2026-09-09T20:07:09+00:00",
+     "cut": 0
+    },
+    "south-east": {
+     "status": "pass",
+     "step_mean": 0.0327,
+     "step_max": 0.0583,
+     "drift": 1.26,
+     "loop": 0.0,
+     "pin": 1.0,
+     "reasons": [],
+     "sub": "25c7359a-daa4-42bb-b579-9eca7aac82a9",
+     "takes": 1,
+     "version": 1,
+     "mirrored": false,
+     "generated_at": "2026-09-09T20:07:10+00:00",
+     "cut": 0
+    },
+    "east": {
+     "status": "pass",
+     "step_mean": 0.0248,
+     "step_max": 0.0471,
+     "drift": 1.36,
+     "loop": 0.0,
+     "pin": 1.0,
+     "reasons": [],
+     "sub": "22397930-d94b-492b-a32c-48a1ff69ff29",
+     "takes": 1,
+     "version": 1,
+     "mirrored": false,
+     "generated_at": "2026-09-09T20:07:10+00:00",
+     "cut": 0
+    },
+    "north-east": {
+     "status": "pass",
+     "step_mean": 0.0477,
+     "step_max": 0.078,
+     "drift": 1.25,
+     "loop": 0.0,
+     "pin": 1.0,
+     "reasons": [],
+     "sub": "25a804c8-98bd-426c-b6f1-4dad50e9fa19",
+     "takes": 1,
+     "version": 1,
+     "mirrored": false,
+     "generated_at": "2026-09-09T20:07:11+00:00",
+     "cut": 0
+    },
+    "north": {
+     "status": "pass",
+     "step_mean": 0.023,
+     "step_max": 0.039,
+     "drift": 1.06,
+     "loop": 0.0,
+     "pin": 1.0,
+     "reasons": [],
+     "sub": "479baee9-2fee-49b9-ac58-03f6da646367",
+     "takes": 1,
+     "version": 1,
+     "mirrored": false,
+     "generated_at": "2026-09-09T20:07:11+00:00",
+     "cut": 0
+    },
+    "south-west": {
+     "status": "pass",
+     "step_mean": 0.0327,
+     "step_max": 0.0583,
+     "drift": 1.26,
+     "loop": 0.0,
+     "pin": 1.0,
+     "reasons": [],
+     "sub": "25c7359a-daa4-42bb-b579-9eca7aac82a9",
+     "takes": 1,
+     "version": 1,
+     "mirrored": true,
+     "generated_at": "2026-09-09T20:07:10+00:00",
+     "cut": 0,
+     "source": "south-east"
+    },
+    "west": {
+     "status": "pass",
+     "step_mean": 0.0248,
+     "step_max": 0.0471,
+     "drift": 1.36,
+     "loop": 0.0,
+     "pin": 1.0,
+     "reasons": [],
+     "sub": "22397930-d94b-492b-a32c-48a1ff69ff29",
+     "takes": 1,
+     "version": 1,
+     "mirrored": true,
+     "generated_at": "2026-09-09T20:07:10+00:00",
+     "cut": 0,
+     "source": "east"
+    },
+    "north-west": {
+     "status": "pass",
+     "step_mean": 0.0477,
+     "step_max": 0.078,
+     "drift": 1.25,
+     "loop": 0.0,
+     "pin": 1.0,
+     "reasons": [],
+     "sub": "25a804c8-98bd-426c-b6f1-4dad50e9fa19",
+     "takes": 1,
+     "version": 1,
+     "mirrored": true,
+     "generated_at": "2026-09-09T20:07:11+00:00",
+     "cut": 0,
+     "source": "north-east"
+    }
+   },
+   "action": "Calm still idle, breathing very slowly and subtly, chest and shoulders rise and fall a little, feet planted, no other movement, ends in the same neutral pose it started in",
+   "frame_paths": {
+    "south": [
+     "veil_wraith/animations/idle/south/00.webp",
+     "veil_wraith/animations/idle/south/01.webp",
+     "veil_wraith/animations/idle/south/02.webp",
+     "veil_wraith/animations/idle/south/03.webp",
+     "veil_wraith/animations/idle/south/04.webp"
+    ],
+    "south-east": [
+     "veil_wraith/animations/idle/south-east/00.webp",
+     "veil_wraith/animations/idle/south-east/01.webp",
+     "veil_wraith/animations/idle/south-east/02.webp",
+     "veil_wraith/animations/idle/south-east/03.webp",
+     "veil_wraith/animations/idle/south-east/04.webp"
+    ],
+    "east": [
+     "veil_wraith/animations/idle/east/00.webp",
+     "veil_wraith/animations/idle/east/01.webp",
+     "veil_wraith/animations/idle/east/02.webp",
+     "veil_wraith/animations/idle/east/03.webp",
+     "veil_wraith/animations/idle/east/04.webp"
+    ],
+    "north-east": [
+     "veil_wraith/animations/idle/north-east/00.webp",
+     "veil_wraith/animations/idle/north-east/01.webp",
+     "veil_wraith/animations/idle/north-east/02.webp",
+     "veil_wraith/animations/idle/north-east/03.webp",
+     "veil_wraith/animations/idle/north-east/04.webp"
+    ],
+    "north": [
+     "veil_wraith/animations/idle/north/00.webp",
+     "veil_wraith/animations/idle/north/01.webp",
+     "veil_wraith/animations/idle/north/02.webp",
+     "veil_wraith/animations/idle/north/03.webp",
+     "veil_wraith/animations/idle/north/04.webp"
+    ],
+    "south-west": [
+     "veil_wraith/animations/idle/south-west/00.webp",
+     "veil_wraith/animations/idle/south-west/01.webp",
+     "veil_wraith/animations/idle/south-west/02.webp",
+     "veil_wraith/animations/idle/south-west/03.webp",
+     "veil_wraith/animations/idle/south-west/04.webp"
+    ],
+    "west": [
+     "veil_wraith/animations/idle/west/00.webp",
+     "veil_wraith/animations/idle/west/01.webp",
+     "veil_wraith/animations/idle/west/02.webp",
+     "veil_wraith/animations/idle/west/03.webp",
+     "veil_wraith/animations/idle/west/04.webp"
+    ],
+    "north-west": [
+     "veil_wraith/animations/idle/north-west/00.webp",
+     "veil_wraith/animations/idle/north-west/01.webp",
+     "veil_wraith/animations/idle/north-west/02.webp",
+     "veil_wraith/animations/idle/north-west/03.webp",
+     "veil_wraith/animations/idle/north-west/04.webp"
+    ]
+   },
+   "strips": {
+    "south": "veil_wraith/animations/idle__south.webp",
+    "south-east": "veil_wraith/animations/idle__south-east.webp",
+    "east": "veil_wraith/animations/idle__east.webp",
+    "north-east": "veil_wraith/animations/idle__north-east.webp",
+    "north": "veil_wraith/animations/idle__north.webp",
+    "south-west": "veil_wraith/animations/idle__south-west.webp",
+    "west": "veil_wraith/animations/idle__west.webp",
+    "north-west": "veil_wraith/animations/idle__north-west.webp"
+   }
+  },
+  "walk": {
+   "directions": {
+    "south": {
+     "status": "warn",
+     "step_mean": 0.0784,
+     "step_max": 0.0956,
+     "drift": 2.6,
+     "loop": 0.1939,
+     "loop_ratio": 2.47,
+     "travel": 0.17,
+     "pin": 0.934,
+     "pad": 0,
+     "canvas": [
+      128,
+      128
+     ],
+     "reasons": [
+      "motion 0.078 outside the calm band 0.1–0.4 — eyeball it",
+      "last→first hand-off 2.5× a step — eyeball the loop"
+     ],
+     "sub": "5a108f4f-40d5-49ae-a4ae-cdd6519311c8",
+     "group": "5c973ead-2e47-4e29-8c8e-edf6bcc5fa8e",
+     "takes": 1,
+     "version": 2,
+     "mirrored": false,
+     "generated_at": "2026-09-09T21:16:33+00:00"
+    },
+    "south-east": {
+     "status": "pass",
+     "step_mean": 0.1819,
+     "step_max": 0.2211,
+     "drift": 1.77,
+     "loop": 0.1977,
+     "loop_ratio": 1.09,
+     "travel": 1.4,
+     "pin": 0.893,
+     "pad": 0,
+     "canvas": [
+      128,
+      128
+     ],
+     "reasons": [],
+     "sub": "8059009d-6e05-4a24-bcb0-aa2b5481eb48",
+     "group": "c8606de8-936f-4976-92c3-f2f8f055cdd7",
+     "takes": 1,
+     "version": 2,
+     "mirrored": false,
+     "generated_at": "2026-09-09T21:16:34+00:00"
+    },
+    "east": {
+     "status": "pass",
+     "step_mean": 0.1555,
+     "step_max": 0.2095,
+     "drift": 2.04,
+     "loop": 0.1474,
+     "loop_ratio": 0.95,
+     "travel": 0.5,
+     "pin": 0.915,
+     "pad": 0,
+     "canvas": [
+      128,
+      128
+     ],
+     "reasons": [],
+     "sub": "6e2e64c4-b7c4-4c67-8725-d7d0c28aa66c",
+     "group": "c946f209-8ca2-4e99-84e7-a2c6b0fbec08",
+     "takes": 1,
+     "version": 2,
+     "mirrored": false,
+     "generated_at": "2026-09-09T21:16:34+00:00"
+    },
+    "north-east": {
+     "status": "pass",
+     "step_mean": 0.1128,
+     "step_max": 0.1431,
+     "drift": 1.49,
+     "loop": 0.1958,
+     "loop_ratio": 1.74,
+     "travel": 1.15,
+     "pin": 0.866,
+     "pad": 0,
+     "canvas": [
+      128,
+      128
+     ],
+     "reasons": [],
+     "sub": "61001f27-7e50-4587-be8e-485a3b31713b",
+     "group": "bfad1ba5-bb38-4c02-92aa-ad64334e870a",
+     "takes": 1,
+     "version": 2,
+     "mirrored": false,
+     "generated_at": "2026-09-09T21:16:35+00:00"
+    },
+    "north": {
+     "status": "pass",
+     "step_mean": 0.1199,
+     "step_max": 0.16,
+     "drift": 1.91,
+     "loop": 0.211,
+     "loop_ratio": 1.76,
+     "travel": 0.1,
+     "pin": 0.878,
+     "pad": 0,
+     "canvas": [
+      128,
+      128
+     ],
+     "reasons": [],
+     "sub": "3e86dbb2-4641-4a00-bd17-c755c2e0c08a",
+     "group": "b222b0aa-263a-4dfa-8205-036184d0a9fc",
+     "takes": 1,
+     "version": 2,
+     "mirrored": false,
+     "generated_at": "2026-09-09T21:16:35+00:00"
+    },
+    "south-west": {
+     "status": "pass",
+     "step_mean": 0.1819,
+     "step_max": 0.2211,
+     "drift": 1.77,
+     "loop": 0.1977,
+     "loop_ratio": 1.09,
+     "travel": 1.4,
+     "pin": 0.893,
+     "pad": 0,
+     "canvas": [
+      128,
+      128
+     ],
+     "reasons": [],
+     "sub": "8059009d-6e05-4a24-bcb0-aa2b5481eb48",
+     "group": "c8606de8-936f-4976-92c3-f2f8f055cdd7",
+     "takes": 1,
+     "version": 2,
+     "mirrored": true,
+     "generated_at": "2026-09-09T21:16:34+00:00",
+     "source": "south-east"
+    },
+    "west": {
+     "status": "pass",
+     "step_mean": 0.1555,
+     "step_max": 0.2095,
+     "drift": 2.04,
+     "loop": 0.1474,
+     "loop_ratio": 0.95,
+     "travel": 0.5,
+     "pin": 0.915,
+     "pad": 0,
+     "canvas": [
+      128,
+      128
+     ],
+     "reasons": [],
+     "sub": "6e2e64c4-b7c4-4c67-8725-d7d0c28aa66c",
+     "group": "c946f209-8ca2-4e99-84e7-a2c6b0fbec08",
+     "takes": 1,
+     "version": 2,
+     "mirrored": true,
+     "generated_at": "2026-09-09T21:16:34+00:00",
+     "source": "east"
+    },
+    "north-west": {
+     "status": "pass",
+     "step_mean": 0.1128,
+     "step_max": 0.1431,
+     "drift": 1.49,
+     "loop": 0.1958,
+     "loop_ratio": 1.74,
+     "travel": 1.15,
+     "pin": 0.866,
+     "pad": 0,
+     "canvas": [
+      128,
+      128
+     ],
+     "reasons": [],
+     "sub": "61001f27-7e50-4587-be8e-485a3b31713b",
+     "group": "bfad1ba5-bb38-4c02-92aa-ad64334e870a",
+     "takes": 1,
+     "version": 2,
+     "mirrored": true,
+     "generated_at": "2026-09-09T21:16:35+00:00",
+     "source": "north-east"
+    }
+   },
+   "action": "floats forward in place, drifting slowly up and down, veil and dress swaying, arms still, seamless loop, no turning",
+   "frame_paths": {
+    "south": [
+     "veil_wraith/animations/walk/south/00.webp",
+     "veil_wraith/animations/walk/south/01.webp",
+     "veil_wraith/animations/walk/south/02.webp",
+     "veil_wraith/animations/walk/south/03.webp",
+     "veil_wraith/animations/walk/south/04.webp",
+     "veil_wraith/animations/walk/south/05.webp"
+    ],
+    "south-east": [
+     "veil_wraith/animations/walk/south-east/00.webp",
+     "veil_wraith/animations/walk/south-east/01.webp",
+     "veil_wraith/animations/walk/south-east/02.webp",
+     "veil_wraith/animations/walk/south-east/03.webp",
+     "veil_wraith/animations/walk/south-east/04.webp",
+     "veil_wraith/animations/walk/south-east/05.webp"
+    ],
+    "east": [
+     "veil_wraith/animations/walk/east/00.webp",
+     "veil_wraith/animations/walk/east/01.webp",
+     "veil_wraith/animations/walk/east/02.webp",
+     "veil_wraith/animations/walk/east/03.webp",
+     "veil_wraith/animations/walk/east/04.webp",
+     "veil_wraith/animations/walk/east/05.webp"
+    ],
+    "north-east": [
+     "veil_wraith/animations/walk/north-east/00.webp",
+     "veil_wraith/animations/walk/north-east/01.webp",
+     "veil_wraith/animations/walk/north-east/02.webp",
+     "veil_wraith/animations/walk/north-east/03.webp",
+     "veil_wraith/animations/walk/north-east/04.webp",
+     "veil_wraith/animations/walk/north-east/05.webp"
+    ],
+    "north": [
+     "veil_wraith/animations/walk/north/00.webp",
+     "veil_wraith/animations/walk/north/01.webp",
+     "veil_wraith/animations/walk/north/02.webp",
+     "veil_wraith/animations/walk/north/03.webp",
+     "veil_wraith/animations/walk/north/04.webp",
+     "veil_wraith/animations/walk/north/05.webp"
+    ],
+    "south-west": [
+     "veil_wraith/animations/walk/south-west/00.webp",
+     "veil_wraith/animations/walk/south-west/01.webp",
+     "veil_wraith/animations/walk/south-west/02.webp",
+     "veil_wraith/animations/walk/south-west/03.webp",
+     "veil_wraith/animations/walk/south-west/04.webp",
+     "veil_wraith/animations/walk/south-west/05.webp"
+    ],
+    "west": [
+     "veil_wraith/animations/walk/west/00.webp",
+     "veil_wraith/animations/walk/west/01.webp",
+     "veil_wraith/animations/walk/west/02.webp",
+     "veil_wraith/animations/walk/west/03.webp",
+     "veil_wraith/animations/walk/west/04.webp",
+     "veil_wraith/animations/walk/west/05.webp"
+    ],
+    "north-west": [
+     "veil_wraith/animations/walk/north-west/00.webp",
+     "veil_wraith/animations/walk/north-west/01.webp",
+     "veil_wraith/animations/walk/north-west/02.webp",
+     "veil_wraith/animations/walk/north-west/03.webp",
+     "veil_wraith/animations/walk/north-west/04.webp",
+     "veil_wraith/animations/walk/north-west/05.webp"
+    ]
+   },
+   "strips": {
+    "south": "veil_wraith/animations/walk__south.webp",
+    "south-east": "veil_wraith/animations/walk__south-east.webp",
+    "east": "veil_wraith/animations/walk__east.webp",
+    "north-east": "veil_wraith/animations/walk__north-east.webp",
+    "north": "veil_wraith/animations/walk__north.webp",
+    "south-west": "veil_wraith/animations/walk__south-west.webp",
+    "west": "veil_wraith/animations/walk__west.webp",
+    "north-west": "veil_wraith/animations/walk__north-west.webp"
+   }
+  },
+  "attack": {
+   "directions": {
+    "south": {
+     "status": "fail",
+     "step_mean": 0.0839,
+     "step_max": 0.1082,
+     "drift": 1.13,
+     "loop": 0.0,
+     "loop_ratio": 0.0,
+     "travel": 0.16,
+     "pin": 1.0,
+     "pad": 0,
+     "flash": 0.0,
+     "peak": 0.1405,
+     "reach": 0.067,
+     "canvas": [
+      128,
+      128
+     ],
+     "reasons": [
+      "weak strike: peak 0.140 — eyeball it",
+      "no strike, just a lean: nothing reaches past 0.07 of the body"
+     ],
+     "sub": "af4a0198-fb91-4576-97a8-9b6748cdd4b8",
+     "group": "a31a7453-8890-44b3-a478-8f4a1e09f289",
+     "takes": 1,
+     "version": 2,
+     "mirrored": false,
+     "generated_at": "2026-09-09T22:27:49+00:00",
+     "action": "Clawing Grab - Lunges forward with both long-fingered hands reaching in one clawing grab, then returns to idle stance"
+    },
+    "south-east": {
+     "status": "warn",
+     "step_mean": 0.1695,
+     "step_max": 0.2043,
+     "drift": 2.96,
+     "loop": 0.0,
+     "loop_ratio": 0.0,
+     "travel": 2.96,
+     "pin": 1.0,
+     "pad": 0,
+     "flash": 0.0,
+     "peak": 0.2608,
+     "reach": 0.254,
+     "canvas": [
+      128,
+      128
+     ],
+     "reasons": [
+      "shallow strike: reach 0.25 — eyeball it"
+     ],
+     "sub": "723cf64e-f7a9-4ecf-b40e-451f828a71da",
+     "group": "c6ce1634-94b1-40bc-a288-308e499ec511",
+     "takes": 1,
+     "version": 2,
+     "mirrored": false,
+     "generated_at": "2026-09-09T22:27:50+00:00",
+     "action": "Clawing Grab - Lunges forward with both long-fingered hands reaching in one clawing grab, then returns to idle stance"
+    },
+    "east": {
+     "status": "warn",
+     "step_mean": 0.1127,
+     "step_max": 0.1254,
+     "drift": 1.78,
+     "loop": 0.0,
+     "loop_ratio": 0.0,
+     "travel": 1.12,
+     "pin": 1.0,
+     "pad": 0,
+     "flash": 0.0,
+     "peak": 0.133,
+     "reach": 0.488,
+     "canvas": [
+      128,
+      128
+     ],
+     "reasons": [
+      "weak strike: peak 0.133 — eyeball it"
+     ],
+     "sub": "180e2ef3-6c48-4edf-8cde-78a3602983e5",
+     "group": "852401a0-df49-46a8-899b-dd1db93e3c76",
+     "takes": 1,
+     "version": 2,
+     "mirrored": false,
+     "generated_at": "2026-09-09T22:27:50+00:00",
+     "action": "Clawing Grab - Lunges forward with both long-fingered hands reaching in one clawing grab, then returns to idle stance"
+    },
+    "north-east": {
+     "status": "fail",
+     "step_mean": 0.1507,
+     "step_max": 0.1709,
+     "drift": 1.56,
+     "loop": 0.0,
+     "loop_ratio": 0.0,
+     "travel": 1.56,
+     "pin": 1.0,
+     "pad": 0,
+     "flash": 0.001,
+     "peak": 0.2641,
+     "reach": 0.121,
+     "canvas": [
+      128,
+      128
+     ],
+     "reasons": [
+      "no strike, just a lean: nothing reaches past 0.12 of the body"
+     ],
+     "sub": "7ec44996-485f-43b4-bc67-4ae9cf096b7c",
+     "group": "a33c4543-caca-478c-afb8-1ad8d9bdc8ae",
+     "takes": 1,
+     "version": 2,
+     "mirrored": false,
+     "generated_at": "2026-09-09T22:27:51+00:00",
+     "action": "Clawing Grab - Lunges forward with both long-fingered hands reaching in one clawing grab, then returns to idle stance"
+    },
+    "north": {
+     "status": "fail",
+     "step_mean": 0.1987,
+     "step_max": 0.2369,
+     "drift": 5.15,
+     "loop": 0.0,
+     "loop_ratio": 0.0,
+     "travel": 0.13,
+     "pin": 1.0,
+     "pad": 0,
+     "flash": 0.0,
+     "peak": 0.3383,
+     "reach": 0.129,
+     "canvas": [
+      128,
+      128
+     ],
+     "reasons": [
+      "no strike, just a lean: nothing reaches past 0.13 of the body"
+     ],
+     "sub": "96f0dff9-e812-4274-8b69-80aac54b4c5c",
+     "group": "3279ec48-20a3-45b7-a2e2-34a6b8e4fd54",
+     "takes": 1,
+     "version": 2,
+     "mirrored": false,
+     "generated_at": "2026-09-09T22:27:51+00:00",
+     "action": "Clawing Grab - Lunges forward with both long-fingered hands reaching in one clawing grab, then returns to idle stance"
+    },
+    "south-west": {
+     "status": "warn",
+     "step_mean": 0.1695,
+     "step_max": 0.2043,
+     "drift": 2.96,
+     "loop": 0.0,
+     "loop_ratio": 0.0,
+     "travel": 2.96,
+     "pin": 1.0,
+     "pad": 0,
+     "flash": 0.0,
+     "peak": 0.2608,
+     "reach": 0.254,
+     "canvas": [
+      128,
+      128
+     ],
+     "reasons": [
+      "shallow strike: reach 0.25 — eyeball it"
+     ],
+     "sub": "723cf64e-f7a9-4ecf-b40e-451f828a71da",
+     "group": "c6ce1634-94b1-40bc-a288-308e499ec511",
+     "takes": 1,
+     "version": 2,
+     "mirrored": true,
+     "generated_at": "2026-09-09T22:27:50+00:00",
+     "action": "Clawing Grab - Lunges forward with both long-fingered hands reaching in one clawing grab, then returns to idle stance",
+     "source": "south-east"
+    },
+    "west": {
+     "status": "warn",
+     "step_mean": 0.1127,
+     "step_max": 0.1254,
+     "drift": 1.78,
+     "loop": 0.0,
+     "loop_ratio": 0.0,
+     "travel": 1.12,
+     "pin": 1.0,
+     "pad": 0,
+     "flash": 0.0,
+     "peak": 0.133,
+     "reach": 0.488,
+     "canvas": [
+      128,
+      128
+     ],
+     "reasons": [
+      "weak strike: peak 0.133 — eyeball it"
+     ],
+     "sub": "180e2ef3-6c48-4edf-8cde-78a3602983e5",
+     "group": "852401a0-df49-46a8-899b-dd1db93e3c76",
+     "takes": 1,
+     "version": 2,
+     "mirrored": true,
+     "generated_at": "2026-09-09T22:27:50+00:00",
+     "action": "Clawing Grab - Lunges forward with both long-fingered hands reaching in one clawing grab, then returns to idle stance",
+     "source": "east"
+    },
+    "north-west": {
+     "status": "pass",
+     "step_mean": 0.1507,
+     "step_max": 0.1709,
+     "drift": 1.56,
+     "loop": 0.0,
+     "loop_ratio": 0.0,
+     "travel": 1.56,
+     "pin": 1.0,
+     "pad": 0,
+     "flash": 0.001,
+     "peak": 0.2641,
+     "canvas": [
+      128,
+      128
+     ],
+     "reasons": [],
+     "sub": "7ec44996-485f-43b4-bc67-4ae9cf096b7c",
+     "group": "a33c4543-caca-478c-afb8-1ad8d9bdc8ae",
+     "takes": 1,
+     "version": 2,
+     "mirrored": true,
+     "generated_at": "2026-09-09T22:27:51+00:00",
+     "action": "Clawing Grab - Lunges forward with both long-fingered hands reaching in one clawing grab, then returns to idle stance",
+     "source": "north-east"
+    }
+   },
+   "action": "Clawing Grab - Lunges forward with both long-fingered hands reaching in one clawing grab, then returns to idle stance",
+   "frame_paths": {
+    "south": [
+     "veil_wraith/animations/attack/south/00.webp",
+     "veil_wraith/animations/attack/south/01.webp",
+     "veil_wraith/animations/attack/south/02.webp",
+     "veil_wraith/animations/attack/south/03.webp",
+     "veil_wraith/animations/attack/south/04.webp"
+    ],
+    "south-east": [
+     "veil_wraith/animations/attack/south-east/00.webp",
+     "veil_wraith/animations/attack/south-east/01.webp",
+     "veil_wraith/animations/attack/south-east/02.webp",
+     "veil_wraith/animations/attack/south-east/03.webp",
+     "veil_wraith/animations/attack/south-east/04.webp"
+    ],
+    "east": [
+     "veil_wraith/animations/attack/east/00.webp",
+     "veil_wraith/animations/attack/east/01.webp",
+     "veil_wraith/animations/attack/east/02.webp",
+     "veil_wraith/animations/attack/east/03.webp",
+     "veil_wraith/animations/attack/east/04.webp"
+    ],
+    "north-east": [
+     "veil_wraith/animations/attack/north-east/00.webp",
+     "veil_wraith/animations/attack/north-east/01.webp",
+     "veil_wraith/animations/attack/north-east/02.webp",
+     "veil_wraith/animations/attack/north-east/03.webp",
+     "veil_wraith/animations/attack/north-east/04.webp"
+    ],
+    "north": [
+     "veil_wraith/animations/attack/north/00.webp",
+     "veil_wraith/animations/attack/north/01.webp",
+     "veil_wraith/animations/attack/north/02.webp",
+     "veil_wraith/animations/attack/north/03.webp",
+     "veil_wraith/animations/attack/north/04.webp"
+    ],
+    "south-west": [
+     "veil_wraith/animations/attack/south-west/00.webp",
+     "veil_wraith/animations/attack/south-west/01.webp",
+     "veil_wraith/animations/attack/south-west/02.webp",
+     "veil_wraith/animations/attack/south-west/03.webp",
+     "veil_wraith/animations/attack/south-west/04.webp"
+    ],
+    "west": [
+     "veil_wraith/animations/attack/west/00.webp",
+     "veil_wraith/animations/attack/west/01.webp",
+     "veil_wraith/animations/attack/west/02.webp",
+     "veil_wraith/animations/attack/west/03.webp",
+     "veil_wraith/animations/attack/west/04.webp"
+    ],
+    "north-west": [
+     "veil_wraith/animations/attack/north-west/00.webp",
+     "veil_wraith/animations/attack/north-west/01.webp",
+     "veil_wraith/animations/attack/north-west/02.webp",
+     "veil_wraith/animations/attack/north-west/03.webp",
+     "veil_wraith/animations/attack/north-west/04.webp"
+    ]
+   },
+   "strips": {
+    "south": "veil_wraith/animations/attack__south.webp",
+    "south-east": "veil_wraith/animations/attack__south-east.webp",
+    "east": "veil_wraith/animations/attack__east.webp",
+    "north-east": "veil_wraith/animations/attack__north-east.webp",
+    "north": "veil_wraith/animations/attack__north.webp",
+    "south-west": "veil_wraith/animations/attack__south-west.webp",
+    "west": "veil_wraith/animations/attack__west.webp",
+    "north-west": "veil_wraith/animations/attack__north-west.webp"
+   }
+  },
+  "attack_try": {
+   "directions": {
+    "south": {
+     "status": "warn",
+     "step_mean": 0.1383,
+     "step_max": 0.206,
+     "drift": 2.08,
+     "loop": 0.2735,
+     "loop_ratio": 1.98,
+     "travel": 0.35,
+     "pin": 1.0,
+     "pad": 0,
+     "flash": -0.011,
+     "peak": 0.2735,
+     "reach": 0.24,
+     "canvas": [
+      128,
+      128
+     ],
+     "reasons": [
+      "shallow strike: reach 0.24 — eyeball it"
+     ],
+     "sub": "6240b9df-ae3b-4f3b-b8ba-4a74c6f84ed2",
+     "group": "e5660efc-07b1-4a98-ac26-f30ec72747b3",
+     "takes": 1,
+     "version": 1,
+     "mirrored": false,
+     "action": "Clawing Grab - Surges forward with both long-fingered hands out in a clawing grab",
+     "tries": 1,
+     "generated_at": "2026-09-10T19:48:29+00:00",
+     "rolls": 1
+    },
+    "south-east": {
+     "status": "pass",
+     "step_mean": 0.2584,
+     "step_max": 0.4596,
+     "drift": 2.02,
+     "loop": 0.6448,
+     "loop_ratio": 2.5,
+     "travel": 1.59,
+     "pin": 1.0,
+     "pad": 0,
+     "flash": -0.004,
+     "peak": 0.6448,
+     "reach": 0.508,
+     "canvas": [
+      128,
+      128
+     ],
+     "reasons": [],
+     "sub": "fcd5e963-b94f-4aef-a7ed-576e591f24a9",
+     "group": "dce27396-e559-46b1-a4dd-16ddb47918be",
+     "takes": 1,
+     "version": 1,
+     "mirrored": false,
+     "action": "Clawing Grab - Surges forward with both long-fingered hands out in a clawing grab",
+     "tries": 1,
+     "generated_at": "2026-09-10T19:48:29+00:00",
+     "rolls": 1
+    },
+    "east": {
+     "status": "pass",
+     "step_mean": 0.3435,
+     "step_max": 0.5011,
+     "drift": 5.52,
+     "loop": 0.7472,
+     "loop_ratio": 2.18,
+     "travel": 1.9,
+     "pin": 1.0,
+     "pad": 0,
+     "flash": 0.016,
+     "peak": 0.7472,
+     "reach": 0.829,
+     "canvas": [
+      128,
+      128
+     ],
+     "reasons": [],
+     "sub": "204ed649-738e-45e1-95b1-d3913ed58fa5",
+     "group": "f78e6d22-0226-479e-8607-07b2104a41b8",
+     "takes": 1,
+     "version": 1,
+     "mirrored": false,
+     "action": "Clawing Grab - Surges forward with both long-fingered hands out in a clawing grab",
+     "tries": 1,
+     "generated_at": "2026-09-10T19:48:30+00:00",
+     "rolls": 1
+    },
+    "north-east": {
+     "status": "pass",
+     "step_mean": 0.1531,
+     "step_max": 0.1641,
+     "drift": 1.75,
+     "loop": 0.2421,
+     "loop_ratio": 1.58,
+     "travel": 1.01,
+     "pin": 1.0,
+     "pad": 0,
+     "flash": 0.001,
+     "peak": 0.2421,
+     "reach": 0.31,
+     "canvas": [
+      128,
+      128
+     ],
+     "reasons": [],
+     "sub": "1088d43b-629d-4d5b-9887-b9210db76fd5",
+     "group": "01182c34-578e-4601-af44-3a9251467c02",
+     "takes": 1,
+     "version": 1,
+     "mirrored": false,
+     "action": "Clawing Grab - Surges forward with both long-fingered hands out in a clawing grab",
+     "tries": 1,
+     "generated_at": "2026-09-10T19:48:30+00:00",
+     "rolls": 1
+    },
+    "north": {
+     "status": "pass",
+     "step_mean": 0.2462,
+     "step_max": 0.3468,
+     "drift": 5.82,
+     "loop": 0.4094,
+     "loop_ratio": 1.66,
+     "travel": 0.44,
+     "pin": 1.0,
+     "pad": 0,
+     "flash": 0.011,
+     "peak": 0.4094,
+     "reach": 0.357,
+     "canvas": [
+      128,
+      128
+     ],
+     "reasons": [],
+     "sub": "f4897b5e-8dd4-4a5e-b1d5-dcd391346eec",
+     "group": "228a9aed-111d-4bbf-98c4-4d70143d4c8d",
+     "takes": 1,
+     "version": 1,
+     "mirrored": false,
+     "action": "Clawing Grab - Surges forward with both long-fingered hands out in a clawing grab",
+     "tries": 1,
+     "generated_at": "2026-09-10T19:48:31+00:00",
+     "rolls": 1
+    },
+    "south-west": {
+     "status": "pass",
+     "step_mean": 0.2584,
+     "step_max": 0.4596,
+     "drift": 2.02,
+     "loop": 0.6448,
+     "loop_ratio": 2.5,
+     "travel": 1.59,
+     "pin": 1.0,
+     "pad": 0,
+     "flash": -0.004,
+     "peak": 0.6448,
+     "reach": 0.508,
+     "canvas": [
+      128,
+      128
+     ],
+     "reasons": [],
+     "sub": "fcd5e963-b94f-4aef-a7ed-576e591f24a9",
+     "group": "dce27396-e559-46b1-a4dd-16ddb47918be",
+     "takes": 1,
+     "version": 1,
+     "mirrored": true,
+     "action": "Clawing Grab - Surges forward with both long-fingered hands out in a clawing grab",
+     "tries": 1,
+     "generated_at": "2026-09-10T19:48:29+00:00",
+     "source": "south-east"
+    },
+    "west": {
+     "status": "pass",
+     "step_mean": 0.3435,
+     "step_max": 0.5011,
+     "drift": 5.52,
+     "loop": 0.7472,
+     "loop_ratio": 2.18,
+     "travel": 1.9,
+     "pin": 1.0,
+     "pad": 0,
+     "flash": 0.016,
+     "peak": 0.7472,
+     "reach": 0.829,
+     "canvas": [
+      128,
+      128
+     ],
+     "reasons": [],
+     "sub": "204ed649-738e-45e1-95b1-d3913ed58fa5",
+     "group": "f78e6d22-0226-479e-8607-07b2104a41b8",
+     "takes": 1,
+     "version": 1,
+     "mirrored": true,
+     "action": "Clawing Grab - Surges forward with both long-fingered hands out in a clawing grab",
+     "tries": 1,
+     "generated_at": "2026-09-10T19:48:30+00:00",
+     "source": "east"
+    },
+    "north-west": {
+     "status": "pass",
+     "step_mean": 0.1531,
+     "step_max": 0.1641,
+     "drift": 1.75,
+     "loop": 0.2421,
+     "loop_ratio": 1.58,
+     "travel": 1.01,
+     "pin": 1.0,
+     "pad": 0,
+     "flash": 0.001,
+     "peak": 0.2421,
+     "reach": 0.31,
+     "canvas": [
+      128,
+      128
+     ],
+     "reasons": [],
+     "sub": "1088d43b-629d-4d5b-9887-b9210db76fd5",
+     "group": "01182c34-578e-4601-af44-3a9251467c02",
+     "takes": 1,
+     "version": 1,
+     "mirrored": true,
+     "action": "Clawing Grab - Surges forward with both long-fingered hands out in a clawing grab",
+     "tries": 1,
+     "generated_at": "2026-09-10T19:48:30+00:00",
+     "source": "north-east"
+    }
+   },
+   "action": "Clawing Grab - Surges forward with both long-fingered hands out in a clawing grab",
+   "frame_paths": {
+    "south": [
+     "veil_wraith/animations/attack_try/south/00.webp",
+     "veil_wraith/animations/attack_try/south/01.webp",
+     "veil_wraith/animations/attack_try/south/02.webp",
+     "veil_wraith/animations/attack_try/south/03.webp",
+     "veil_wraith/animations/attack_try/south/04.webp"
+    ],
+    "south-east": [
+     "veil_wraith/animations/attack_try/south-east/00.webp",
+     "veil_wraith/animations/attack_try/south-east/01.webp",
+     "veil_wraith/animations/attack_try/south-east/02.webp",
+     "veil_wraith/animations/attack_try/south-east/03.webp",
+     "veil_wraith/animations/attack_try/south-east/04.webp"
+    ],
+    "east": [
+     "veil_wraith/animations/attack_try/east/00.webp",
+     "veil_wraith/animations/attack_try/east/01.webp",
+     "veil_wraith/animations/attack_try/east/02.webp",
+     "veil_wraith/animations/attack_try/east/03.webp",
+     "veil_wraith/animations/attack_try/east/04.webp"
+    ],
+    "north-east": [
+     "veil_wraith/animations/attack_try/north-east/00.webp",
+     "veil_wraith/animations/attack_try/north-east/01.webp",
+     "veil_wraith/animations/attack_try/north-east/02.webp",
+     "veil_wraith/animations/attack_try/north-east/03.webp",
+     "veil_wraith/animations/attack_try/north-east/04.webp"
+    ],
+    "north": [
+     "veil_wraith/animations/attack_try/north/00.webp",
+     "veil_wraith/animations/attack_try/north/01.webp",
+     "veil_wraith/animations/attack_try/north/02.webp",
+     "veil_wraith/animations/attack_try/north/03.webp",
+     "veil_wraith/animations/attack_try/north/04.webp"
+    ],
+    "south-west": [
+     "veil_wraith/animations/attack_try/south-west/00.webp",
+     "veil_wraith/animations/attack_try/south-west/01.webp",
+     "veil_wraith/animations/attack_try/south-west/02.webp",
+     "veil_wraith/animations/attack_try/south-west/03.webp",
+     "veil_wraith/animations/attack_try/south-west/04.webp"
+    ],
+    "west": [
+     "veil_wraith/animations/attack_try/west/00.webp",
+     "veil_wraith/animations/attack_try/west/01.webp",
+     "veil_wraith/animations/attack_try/west/02.webp",
+     "veil_wraith/animations/attack_try/west/03.webp",
+     "veil_wraith/animations/attack_try/west/04.webp"
+    ],
+    "north-west": [
+     "veil_wraith/animations/attack_try/north-west/00.webp",
+     "veil_wraith/animations/attack_try/north-west/01.webp",
+     "veil_wraith/animations/attack_try/north-west/02.webp",
+     "veil_wraith/animations/attack_try/north-west/03.webp",
+     "veil_wraith/animations/attack_try/north-west/04.webp"
+    ]
+   },
+   "strips": {
+    "south": "veil_wraith/animations/attack_try__south.webp",
+    "south-east": "veil_wraith/animations/attack_try__south-east.webp",
+    "east": "veil_wraith/animations/attack_try__east.webp",
+    "north-east": "veil_wraith/animations/attack_try__north-east.webp",
+    "north": "veil_wraith/animations/attack_try__north.webp",
+    "south-west": "veil_wraith/animations/attack_try__south-west.webp",
+    "west": "veil_wraith/animations/attack_try__west.webp",
+    "north-west": "veil_wraith/animations/attack_try__north-west.webp"
+   }
+  }
+ }
 }

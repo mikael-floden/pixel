@@ -1,1132 +1,1137 @@
 {
-  "id": "eye_bat",
-  "name": "Glareling",
-  "tier": "mid",
-  "scale": "standard",
-  "lore": "It watches for something bigger. What it sees, the something bigger sees too.",
-  "biome": [
-    "black_rock",
-    "grey_paving_stone"
-  ],
-  "items": [],
-  "prompt": "Fantasy floating eyeball monster, a single large bloodshot eyeball with a green iris, two small leathery bat wings folded at its sides, thin trailing nerve tendrils beneath it, and a tiny fanged mouth.",
-  "size": [
-    64,
-    64
-  ],
-  "template_id": "mannequin",
-  "directions": [
-    "south",
-    "south-east",
-    "east",
-    "north-east",
-    "north",
-    "north-west",
-    "west",
-    "south-west"
-  ],
-  "rotations": {
-    "south": "eye_bat/rotations/south.webp",
-    "south-east": "eye_bat/rotations/south-east.webp",
-    "east": "eye_bat/rotations/east.webp",
-    "north-east": "eye_bat/rotations/north-east.webp",
-    "north": "eye_bat/rotations/north.webp",
-    "north-west": "eye_bat/rotations/north-west.webp",
-    "west": "eye_bat/rotations/west.webp",
-    "south-west": "eye_bat/rotations/south-west.webp"
-  },
-  "sheet": "eye_bat/sheet.webp",
-  "review": "approved",
-  "pixellab_id": "1c245303-0d67-44ac-a7c6-ae619fdf9401",
-  "seed": 1101437990,
-  "version": 1,
-  "usage": null,
-  "generated_at": "2026-09-09T18:41:50+00:00",
-  "elapsed_s": 206.0,
-  "qa": {
-    "status": "pass",
-    "min_run1": 0.728,
-    "reasons": [],
-    "directions": {
-      "south": {
-        "run1": 0.79,
-        "bbox": [
-          3,
-          6,
-          61,
-          58
-        ],
-        "fill": 0.736,
-        "touches_edge": false
-      },
-      "south-east": {
-        "run1": 0.793,
-        "bbox": [
-          8,
-          4,
-          56,
-          56
-        ],
-        "fill": 0.609,
-        "touches_edge": false
-      },
-      "east": {
-        "run1": 0.743,
-        "bbox": [
-          15,
-          4,
-          50,
-          59
-        ],
-        "fill": 0.47,
-        "touches_edge": false
-      },
-      "north-east": {
-        "run1": 0.764,
-        "bbox": [
-          8,
-          4,
-          52,
-          58
-        ],
-        "fill": 0.58,
-        "touches_edge": false
-      },
-      "north": {
-        "run1": 0.728,
-        "bbox": [
-          3,
-          6,
-          61,
-          56
-        ],
-        "fill": 0.708,
-        "touches_edge": false
-      },
-      "north-west": {
-        "run1": 0.747,
-        "bbox": [
-          12,
-          4,
-          56,
-          58
-        ],
-        "fill": 0.58,
-        "touches_edge": false
-      },
-      "west": {
-        "run1": 0.753,
-        "bbox": [
-          14,
-          4,
-          49,
-          59
-        ],
-        "fill": 0.47,
-        "touches_edge": false
-      },
-      "south-west": {
-        "run1": 0.795,
-        "bbox": [
-          9,
-          4,
-          56,
-          57
-        ],
-        "fill": 0.608,
-        "touches_edge": false
-      }
-    }
-  },
-  "approved_at": "2026-09-09T19:59:22+00:00",
-  "animations": {
-    "idle": {
-      "directions": {
-        "south": {
-          "status": "pass",
-          "step_mean": 0.1777,
-          "step_max": 0.2054,
-          "drift": 1.2,
-          "loop": 0.0018,
-          "pin": 1.0,
-          "reasons": [],
-          "sub": "ea5f8d04-d027-4af1-9d35-b66a011075f2",
-          "takes": 1,
-          "version": 1,
-          "mirrored": false,
-          "generated_at": "2026-09-09T20:16:37+00:00",
-          "cut": 0
-        },
-        "south-east": {
-          "status": "pass",
-          "step_mean": 0.1829,
-          "step_max": 0.2167,
-          "drift": 1.79,
-          "loop": 0.0,
-          "pin": 1.0,
-          "reasons": [],
-          "sub": "fc47cfc2-ca23-49e8-a58c-709301390046",
-          "takes": 1,
-          "version": 1,
-          "mirrored": false,
-          "generated_at": "2026-09-09T20:16:37+00:00",
-          "cut": 0
-        },
-        "east": {
-          "status": "pass",
-          "step_mean": 0.1894,
-          "step_max": 0.2188,
-          "drift": 2.02,
-          "loop": 0.0,
-          "pin": 1.0,
-          "reasons": [],
-          "sub": "6b0f8b5e-0fba-4ec8-9186-c4dde24eae15",
-          "takes": 1,
-          "version": 1,
-          "mirrored": false,
-          "generated_at": "2026-09-09T20:16:38+00:00",
-          "cut": 0
-        },
-        "north-east": {
-          "status": "warn",
-          "step_mean": 0.2511,
-          "step_max": 0.2823,
-          "drift": 2.53,
-          "loop": 0.0,
-          "pin": 1.0,
-          "reasons": [
-            "motion 0.251 outside the calm band 0.01–0.2 — eyeball it"
-          ],
-          "sub": "9660981d-551a-4252-8be5-bb8ae98f0b68",
-          "takes": 1,
-          "version": 1,
-          "mirrored": false,
-          "generated_at": "2026-09-09T20:16:39+00:00",
-          "cut": 0
-        },
-        "north": {
-          "status": "pass",
-          "step_mean": 0.1793,
-          "step_max": 0.1935,
-          "drift": 1.16,
-          "loop": 0.0,
-          "pin": 1.0,
-          "reasons": [],
-          "sub": "6be9bb5f-05a4-452c-8b80-246527eb39ad",
-          "takes": 1,
-          "version": 1,
-          "mirrored": false,
-          "generated_at": "2026-09-09T20:16:39+00:00",
-          "cut": 0
-        },
-        "south-west": {
-          "status": "pass",
-          "step_mean": 0.1829,
-          "step_max": 0.2167,
-          "drift": 1.79,
-          "loop": 0.0,
-          "pin": 1.0,
-          "reasons": [],
-          "sub": "fc47cfc2-ca23-49e8-a58c-709301390046",
-          "takes": 1,
-          "version": 1,
-          "mirrored": true,
-          "generated_at": "2026-09-09T20:16:37+00:00",
-          "cut": 0,
-          "source": "south-east"
-        },
-        "west": {
-          "status": "pass",
-          "step_mean": 0.1894,
-          "step_max": 0.2188,
-          "drift": 2.02,
-          "loop": 0.0,
-          "pin": 1.0,
-          "reasons": [],
-          "sub": "6b0f8b5e-0fba-4ec8-9186-c4dde24eae15",
-          "takes": 1,
-          "version": 1,
-          "mirrored": true,
-          "generated_at": "2026-09-09T20:16:38+00:00",
-          "cut": 0,
-          "source": "east"
-        },
-        "north-west": {
-          "status": "warn",
-          "step_mean": 0.2511,
-          "step_max": 0.2823,
-          "drift": 2.53,
-          "loop": 0.0,
-          "pin": 1.0,
-          "reasons": [
-            "motion 0.251 outside the calm band 0.01–0.2 — eyeball it"
-          ],
-          "sub": "9660981d-551a-4252-8be5-bb8ae98f0b68",
-          "takes": 1,
-          "version": 1,
-          "mirrored": true,
-          "generated_at": "2026-09-09T20:16:39+00:00",
-          "cut": 0,
-          "source": "north-east"
-        }
-      },
-      "action": "Calm still idle, breathing very slowly and subtly, chest and shoulders rise and fall a little, feet planted, no other movement, ends in the same neutral pose it started in",
-      "frame_paths": {
-        "south": [
-          "eye_bat/animations/idle/south/00.webp",
-          "eye_bat/animations/idle/south/01.webp",
-          "eye_bat/animations/idle/south/02.webp",
-          "eye_bat/animations/idle/south/03.webp",
-          "eye_bat/animations/idle/south/04.webp"
-        ],
-        "south-east": [
-          "eye_bat/animations/idle/south-east/00.webp",
-          "eye_bat/animations/idle/south-east/01.webp",
-          "eye_bat/animations/idle/south-east/02.webp",
-          "eye_bat/animations/idle/south-east/03.webp",
-          "eye_bat/animations/idle/south-east/04.webp"
-        ],
-        "east": [
-          "eye_bat/animations/idle/east/00.webp",
-          "eye_bat/animations/idle/east/01.webp",
-          "eye_bat/animations/idle/east/02.webp",
-          "eye_bat/animations/idle/east/03.webp",
-          "eye_bat/animations/idle/east/04.webp"
-        ],
-        "north-east": [
-          "eye_bat/animations/idle/north-east/00.webp",
-          "eye_bat/animations/idle/north-east/01.webp",
-          "eye_bat/animations/idle/north-east/02.webp",
-          "eye_bat/animations/idle/north-east/03.webp",
-          "eye_bat/animations/idle/north-east/04.webp"
-        ],
-        "north": [
-          "eye_bat/animations/idle/north/00.webp",
-          "eye_bat/animations/idle/north/01.webp",
-          "eye_bat/animations/idle/north/02.webp",
-          "eye_bat/animations/idle/north/03.webp",
-          "eye_bat/animations/idle/north/04.webp"
-        ],
-        "south-west": [
-          "eye_bat/animations/idle/south-west/00.webp",
-          "eye_bat/animations/idle/south-west/01.webp",
-          "eye_bat/animations/idle/south-west/02.webp",
-          "eye_bat/animations/idle/south-west/03.webp",
-          "eye_bat/animations/idle/south-west/04.webp"
-        ],
-        "west": [
-          "eye_bat/animations/idle/west/00.webp",
-          "eye_bat/animations/idle/west/01.webp",
-          "eye_bat/animations/idle/west/02.webp",
-          "eye_bat/animations/idle/west/03.webp",
-          "eye_bat/animations/idle/west/04.webp"
-        ],
-        "north-west": [
-          "eye_bat/animations/idle/north-west/00.webp",
-          "eye_bat/animations/idle/north-west/01.webp",
-          "eye_bat/animations/idle/north-west/02.webp",
-          "eye_bat/animations/idle/north-west/03.webp",
-          "eye_bat/animations/idle/north-west/04.webp"
-        ]
-      },
-      "strips": {
-        "south": "eye_bat/animations/idle__south.webp",
-        "south-east": "eye_bat/animations/idle__south-east.webp",
-        "east": "eye_bat/animations/idle__east.webp",
-        "north-east": "eye_bat/animations/idle__north-east.webp",
-        "north": "eye_bat/animations/idle__north.webp",
-        "south-west": "eye_bat/animations/idle__south-west.webp",
-        "west": "eye_bat/animations/idle__west.webp",
-        "north-west": "eye_bat/animations/idle__north-west.webp"
-      }
-    },
-    "walk": {
-      "directions": {
-        "south": {
-          "status": "pass",
-          "step_mean": 0.2096,
-          "step_max": 0.2501,
-          "drift": 2.59,
-          "loop": 0.2261,
-          "loop_ratio": 1.08,
-          "travel": 0.16,
-          "pin": 0.851,
-          "pad": 0,
-          "canvas": [
-            64,
-            64
-          ],
-          "reasons": [],
-          "sub": "3b92e065-4b0a-4092-8c39-3c81b2992f42",
-          "group": "709c17aa-9573-40f1-abe9-c12fdb1d2880",
-          "takes": 1,
-          "version": 1,
-          "mirrored": false,
-          "generated_at": "2026-09-09T21:16:10+00:00"
-        },
-        "south-east": {
-          "status": "pass",
-          "step_mean": 0.2014,
-          "step_max": 0.256,
-          "drift": 0.83,
-          "loop": 0.2434,
-          "loop_ratio": 1.21,
-          "travel": 0.6,
-          "pin": 0.822,
-          "pad": 0,
-          "canvas": [
-            64,
-            64
-          ],
-          "reasons": [],
-          "sub": "dfaf8829-5483-4ce5-b62a-24e4fc2a6d69",
-          "group": "9700c344-aa9f-4120-af53-10fba915145d",
-          "takes": 1,
-          "version": 1,
-          "mirrored": false,
-          "generated_at": "2026-09-09T21:16:10+00:00"
-        },
-        "east": {
-          "status": "pass",
-          "step_mean": 0.154,
-          "step_max": 0.185,
-          "drift": 1.8,
-          "loop": 0.2234,
-          "loop_ratio": 1.45,
-          "travel": 0.18,
-          "pin": 0.846,
-          "pad": 0,
-          "canvas": [
-            64,
-            64
-          ],
-          "reasons": [],
-          "sub": "e11a44e8-9477-4e01-b4e2-85b69121f12f",
-          "group": "8f826437-5dfb-4d7a-a682-31624a6b9b83",
-          "takes": 1,
-          "version": 1,
-          "mirrored": false,
-          "generated_at": "2026-09-09T21:16:11+00:00"
-        },
-        "north-east": {
-          "status": "pass",
-          "step_mean": 0.2185,
-          "step_max": 0.2743,
-          "drift": 1.36,
-          "loop": 0.3085,
-          "loop_ratio": 1.41,
-          "travel": 0.66,
-          "pin": 0.798,
-          "pad": 0,
-          "canvas": [
-            64,
-            64
-          ],
-          "reasons": [],
-          "sub": "f1f961ae-b6e7-4700-b8c1-65cfe7b891f3",
-          "group": "9108f9e0-0cd0-4636-87fd-19af3a905012",
-          "takes": 1,
-          "version": 1,
-          "mirrored": false,
-          "generated_at": "2026-09-09T21:16:14+00:00"
-        },
-        "north": {
-          "status": "pass",
-          "step_mean": 0.1641,
-          "step_max": 0.2012,
-          "drift": 2.3,
-          "loop": 0.0738,
-          "loop_ratio": 0.45,
-          "travel": 0.08,
-          "pin": 0.827,
-          "pad": 0,
-          "canvas": [
-            64,
-            64
-          ],
-          "reasons": [],
-          "sub": "1615645f-1bf1-4ee1-bf9c-a9cdc6ea4f45",
-          "group": "408ea430-7771-4b63-9b74-f6ecf017413a",
-          "takes": 1,
-          "version": 1,
-          "mirrored": false,
-          "generated_at": "2026-09-09T21:16:14+00:00"
-        },
-        "south-west": {
-          "status": "pass",
-          "step_mean": 0.2014,
-          "step_max": 0.256,
-          "drift": 0.83,
-          "loop": 0.2434,
-          "loop_ratio": 1.21,
-          "travel": 0.6,
-          "pin": 0.822,
-          "pad": 0,
-          "canvas": [
-            64,
-            64
-          ],
-          "reasons": [],
-          "sub": "dfaf8829-5483-4ce5-b62a-24e4fc2a6d69",
-          "group": "9700c344-aa9f-4120-af53-10fba915145d",
-          "takes": 1,
-          "version": 1,
-          "mirrored": true,
-          "generated_at": "2026-09-09T21:16:10+00:00",
-          "source": "south-east"
-        },
-        "west": {
-          "status": "pass",
-          "step_mean": 0.154,
-          "step_max": 0.185,
-          "drift": 1.8,
-          "loop": 0.2234,
-          "loop_ratio": 1.45,
-          "travel": 0.18,
-          "pin": 0.846,
-          "pad": 0,
-          "canvas": [
-            64,
-            64
-          ],
-          "reasons": [],
-          "sub": "e11a44e8-9477-4e01-b4e2-85b69121f12f",
-          "group": "8f826437-5dfb-4d7a-a682-31624a6b9b83",
-          "takes": 1,
-          "version": 1,
-          "mirrored": true,
-          "generated_at": "2026-09-09T21:16:11+00:00",
-          "source": "east"
-        },
-        "north-west": {
-          "status": "pass",
-          "step_mean": 0.2185,
-          "step_max": 0.2743,
-          "drift": 1.36,
-          "loop": 0.3085,
-          "loop_ratio": 1.41,
-          "travel": 0.66,
-          "pin": 0.798,
-          "pad": 0,
-          "canvas": [
-            64,
-            64
-          ],
-          "reasons": [],
-          "sub": "f1f961ae-b6e7-4700-b8c1-65cfe7b891f3",
-          "group": "9108f9e0-0cd0-4636-87fd-19af3a905012",
-          "takes": 1,
-          "version": 1,
-          "mirrored": true,
-          "generated_at": "2026-09-09T21:16:14+00:00",
-          "source": "north-east"
-        }
-      },
-      "action": "walk loop, full walk cycle in place, legs alternate naturally, normal calm walking pace, body stays centered, seamless loop whose last frame leads straight back into the first, no turning",
-      "frame_paths": {
-        "south": [
-          "eye_bat/animations/walk/south/00.webp",
-          "eye_bat/animations/walk/south/01.webp",
-          "eye_bat/animations/walk/south/02.webp",
-          "eye_bat/animations/walk/south/03.webp",
-          "eye_bat/animations/walk/south/04.webp",
-          "eye_bat/animations/walk/south/05.webp"
-        ],
-        "south-east": [
-          "eye_bat/animations/walk/south-east/00.webp",
-          "eye_bat/animations/walk/south-east/01.webp",
-          "eye_bat/animations/walk/south-east/02.webp",
-          "eye_bat/animations/walk/south-east/03.webp",
-          "eye_bat/animations/walk/south-east/04.webp",
-          "eye_bat/animations/walk/south-east/05.webp"
-        ],
-        "east": [
-          "eye_bat/animations/walk/east/00.webp",
-          "eye_bat/animations/walk/east/01.webp",
-          "eye_bat/animations/walk/east/02.webp",
-          "eye_bat/animations/walk/east/03.webp",
-          "eye_bat/animations/walk/east/04.webp",
-          "eye_bat/animations/walk/east/05.webp"
-        ],
-        "north-east": [
-          "eye_bat/animations/walk/north-east/00.webp",
-          "eye_bat/animations/walk/north-east/01.webp",
-          "eye_bat/animations/walk/north-east/02.webp",
-          "eye_bat/animations/walk/north-east/03.webp",
-          "eye_bat/animations/walk/north-east/04.webp",
-          "eye_bat/animations/walk/north-east/05.webp"
-        ],
-        "north": [
-          "eye_bat/animations/walk/north/00.webp",
-          "eye_bat/animations/walk/north/01.webp",
-          "eye_bat/animations/walk/north/02.webp",
-          "eye_bat/animations/walk/north/03.webp",
-          "eye_bat/animations/walk/north/04.webp",
-          "eye_bat/animations/walk/north/05.webp"
-        ],
-        "south-west": [
-          "eye_bat/animations/walk/south-west/00.webp",
-          "eye_bat/animations/walk/south-west/01.webp",
-          "eye_bat/animations/walk/south-west/02.webp",
-          "eye_bat/animations/walk/south-west/03.webp",
-          "eye_bat/animations/walk/south-west/04.webp",
-          "eye_bat/animations/walk/south-west/05.webp"
-        ],
-        "west": [
-          "eye_bat/animations/walk/west/00.webp",
-          "eye_bat/animations/walk/west/01.webp",
-          "eye_bat/animations/walk/west/02.webp",
-          "eye_bat/animations/walk/west/03.webp",
-          "eye_bat/animations/walk/west/04.webp",
-          "eye_bat/animations/walk/west/05.webp"
-        ],
-        "north-west": [
-          "eye_bat/animations/walk/north-west/00.webp",
-          "eye_bat/animations/walk/north-west/01.webp",
-          "eye_bat/animations/walk/north-west/02.webp",
-          "eye_bat/animations/walk/north-west/03.webp",
-          "eye_bat/animations/walk/north-west/04.webp",
-          "eye_bat/animations/walk/north-west/05.webp"
-        ]
-      },
-      "strips": {
-        "south": "eye_bat/animations/walk__south.webp",
-        "south-east": "eye_bat/animations/walk__south-east.webp",
-        "east": "eye_bat/animations/walk__east.webp",
-        "north-east": "eye_bat/animations/walk__north-east.webp",
-        "north": "eye_bat/animations/walk__north.webp",
-        "south-west": "eye_bat/animations/walk__south-west.webp",
-        "west": "eye_bat/animations/walk__west.webp",
-        "north-west": "eye_bat/animations/walk__north-west.webp"
-      }
-    },
-    "attack": {
-      "directions": {
-        "south": {
-          "status": "fail",
-          "step_mean": 0.2095,
-          "step_max": 0.2579,
-          "drift": 1.7,
-          "loop": 0.0006,
-          "loop_ratio": 0.0,
-          "travel": 0.24,
-          "pin": 1.0,
-          "pad": 0,
-          "flash": 0.132,
-          "peak": 0.352,
-          "reach": 0.096,
-          "canvas": [
-            64,
-            64
-          ],
-          "reasons": [
-            "no strike, just a lean: nothing reaches past 0.10 of the body"
-          ],
-          "sub": "4d832698-1be2-4da6-bc59-28436525044d",
-          "group": "626bd18b-57e9-4412-89a0-1af45aa299fe",
-          "takes": 1,
-          "version": 2,
-          "mirrored": false,
-          "generated_at": "2026-09-09T22:37:29+00:00",
-          "action": "Eye Beam - Darts forward and fires one short beam of light from its pupil, then returns to idle stance"
-        },
-        "south-east": {
-          "status": "fail",
-          "step_mean": 0.1188,
-          "step_max": 0.1276,
-          "drift": 1.83,
-          "loop": 0.0,
-          "loop_ratio": 0.0,
-          "travel": 0.07,
-          "pin": 1.0,
-          "pad": 0,
-          "flash": 0.037,
-          "peak": 0.212,
-          "reach": 0.042,
-          "canvas": [
-            64,
-            64
-          ],
-          "reasons": [
-            "no strike, just a lean: nothing reaches past 0.04 of the body"
-          ],
-          "sub": "0d2db14c-c35a-4b54-8a47-82e6be8f8fb6",
-          "group": "736e5ff7-1e61-443e-9c76-ec9542e9401f",
-          "takes": 1,
-          "version": 2,
-          "mirrored": false,
-          "generated_at": "2026-09-09T22:37:29+00:00",
-          "action": "Eye Beam - Darts forward and fires one short beam of light from its pupil, then returns to idle stance"
-        },
-        "east": {
-          "status": "fail",
-          "step_mean": 0.1767,
-          "step_max": 0.1865,
-          "drift": 0.93,
-          "loop": 0.0,
-          "loop_ratio": 0.0,
-          "travel": 1.61,
-          "pin": 1.0,
-          "pad": 0,
-          "flash": 0.028,
-          "peak": 0.2839,
-          "reach": 0.2,
-          "canvas": [
-            64,
-            64
-          ],
-          "reasons": [
-            "no strike, just a lean: nothing reaches past 0.20 of the body"
-          ],
-          "sub": "619896ef-6c38-41b2-a37c-331617533ba7",
-          "group": "9f46d2a2-5406-4fca-91a9-0ee0910ae39c",
-          "takes": 1,
-          "version": 2,
-          "mirrored": false,
-          "generated_at": "2026-09-09T22:37:30+00:00",
-          "action": "Eye Beam - Darts forward and fires one short beam of light from its pupil, then returns to idle stance"
-        },
-        "north-east": {
-          "status": "fail",
-          "step_mean": 0.2509,
-          "step_max": 0.2679,
-          "drift": 1.31,
-          "loop": 0.0,
-          "loop_ratio": 0.0,
-          "travel": 0.67,
-          "pin": 1.0,
-          "pad": 0,
-          "flash": 0.0,
-          "peak": 0.4226,
-          "reach": 0.091,
-          "canvas": [
-            64,
-            64
-          ],
-          "reasons": [
-            "no strike, just a lean: nothing reaches past 0.09 of the body"
-          ],
-          "sub": "4afcfe1d-ac77-4e64-8be7-e112df4db894",
-          "group": "c7d71bd0-60d9-4a51-8f0a-f9825f751690",
-          "takes": 1,
-          "version": 2,
-          "mirrored": false,
-          "generated_at": "2026-09-09T22:37:30+00:00",
-          "action": "Eye Beam - Darts forward and fires one short beam of light from its pupil, then returns to idle stance"
-        },
-        "north": {
-          "status": "fail",
-          "step_mean": 0.2462,
-          "step_max": 0.2809,
-          "drift": 2.09,
-          "loop": 0.0,
-          "loop_ratio": 0.0,
-          "travel": 0.15,
-          "pin": 1.0,
-          "pad": 0,
-          "flash": 0.11,
-          "peak": 0.4211,
-          "reach": 0.08,
-          "canvas": [
-            64,
-            64
-          ],
-          "reasons": [
-            "no strike, just a lean: nothing reaches past 0.08 of the body"
-          ],
-          "sub": "0dc8734b-56f2-4f54-b0eb-b5ef8fbb25d4",
-          "group": "39a2d70e-696c-4da4-b8a7-28f10d2ae02c",
-          "takes": 1,
-          "version": 2,
-          "mirrored": false,
-          "generated_at": "2026-09-09T22:37:31+00:00",
-          "action": "Eye Beam - Darts forward and fires one short beam of light from its pupil, then returns to idle stance"
-        },
-        "south-west": {
-          "status": "pass",
-          "step_mean": 0.1188,
-          "step_max": 0.1276,
-          "drift": 1.83,
-          "loop": 0.0,
-          "loop_ratio": 0.0,
-          "travel": 0.07,
-          "pin": 1.0,
-          "pad": 0,
-          "flash": 0.037,
-          "peak": 0.212,
-          "canvas": [
-            64,
-            64
-          ],
-          "reasons": [],
-          "sub": "0d2db14c-c35a-4b54-8a47-82e6be8f8fb6",
-          "group": "736e5ff7-1e61-443e-9c76-ec9542e9401f",
-          "takes": 1,
-          "version": 2,
-          "mirrored": true,
-          "generated_at": "2026-09-09T22:37:29+00:00",
-          "action": "Eye Beam - Darts forward and fires one short beam of light from its pupil, then returns to idle stance",
-          "source": "south-east"
-        },
-        "west": {
-          "status": "pass",
-          "step_mean": 0.1767,
-          "step_max": 0.1865,
-          "drift": 0.93,
-          "loop": 0.0,
-          "loop_ratio": 0.0,
-          "travel": 1.61,
-          "pin": 1.0,
-          "pad": 0,
-          "flash": 0.028,
-          "peak": 0.2839,
-          "canvas": [
-            64,
-            64
-          ],
-          "reasons": [],
-          "sub": "619896ef-6c38-41b2-a37c-331617533ba7",
-          "group": "9f46d2a2-5406-4fca-91a9-0ee0910ae39c",
-          "takes": 1,
-          "version": 2,
-          "mirrored": true,
-          "generated_at": "2026-09-09T22:37:30+00:00",
-          "action": "Eye Beam - Darts forward and fires one short beam of light from its pupil, then returns to idle stance",
-          "source": "east"
-        },
-        "north-west": {
-          "status": "pass",
-          "step_mean": 0.2509,
-          "step_max": 0.2679,
-          "drift": 1.31,
-          "loop": 0.0,
-          "loop_ratio": 0.0,
-          "travel": 0.67,
-          "pin": 1.0,
-          "pad": 0,
-          "flash": 0.0,
-          "peak": 0.4226,
-          "canvas": [
-            64,
-            64
-          ],
-          "reasons": [],
-          "sub": "4afcfe1d-ac77-4e64-8be7-e112df4db894",
-          "group": "c7d71bd0-60d9-4a51-8f0a-f9825f751690",
-          "takes": 1,
-          "version": 2,
-          "mirrored": true,
-          "generated_at": "2026-09-09T22:37:30+00:00",
-          "action": "Eye Beam - Darts forward and fires one short beam of light from its pupil, then returns to idle stance",
-          "source": "north-east"
-        }
-      },
-      "action": "Eye Beam - Darts forward and fires one short beam of light from its pupil, then returns to idle stance",
-      "frame_paths": {
-        "south": [
-          "eye_bat/animations/attack/south/00.webp",
-          "eye_bat/animations/attack/south/01.webp",
-          "eye_bat/animations/attack/south/02.webp",
-          "eye_bat/animations/attack/south/03.webp",
-          "eye_bat/animations/attack/south/04.webp"
-        ],
-        "south-east": [
-          "eye_bat/animations/attack/south-east/00.webp",
-          "eye_bat/animations/attack/south-east/01.webp",
-          "eye_bat/animations/attack/south-east/02.webp",
-          "eye_bat/animations/attack/south-east/03.webp",
-          "eye_bat/animations/attack/south-east/04.webp"
-        ],
-        "east": [
-          "eye_bat/animations/attack/east/00.webp",
-          "eye_bat/animations/attack/east/01.webp",
-          "eye_bat/animations/attack/east/02.webp",
-          "eye_bat/animations/attack/east/03.webp",
-          "eye_bat/animations/attack/east/04.webp"
-        ],
-        "north-east": [
-          "eye_bat/animations/attack/north-east/00.webp",
-          "eye_bat/animations/attack/north-east/01.webp",
-          "eye_bat/animations/attack/north-east/02.webp",
-          "eye_bat/animations/attack/north-east/03.webp",
-          "eye_bat/animations/attack/north-east/04.webp"
-        ],
-        "north": [
-          "eye_bat/animations/attack/north/00.webp",
-          "eye_bat/animations/attack/north/01.webp",
-          "eye_bat/animations/attack/north/02.webp",
-          "eye_bat/animations/attack/north/03.webp",
-          "eye_bat/animations/attack/north/04.webp"
-        ],
-        "south-west": [
-          "eye_bat/animations/attack/south-west/00.webp",
-          "eye_bat/animations/attack/south-west/01.webp",
-          "eye_bat/animations/attack/south-west/02.webp",
-          "eye_bat/animations/attack/south-west/03.webp",
-          "eye_bat/animations/attack/south-west/04.webp"
-        ],
-        "west": [
-          "eye_bat/animations/attack/west/00.webp",
-          "eye_bat/animations/attack/west/01.webp",
-          "eye_bat/animations/attack/west/02.webp",
-          "eye_bat/animations/attack/west/03.webp",
-          "eye_bat/animations/attack/west/04.webp"
-        ],
-        "north-west": [
-          "eye_bat/animations/attack/north-west/00.webp",
-          "eye_bat/animations/attack/north-west/01.webp",
-          "eye_bat/animations/attack/north-west/02.webp",
-          "eye_bat/animations/attack/north-west/03.webp",
-          "eye_bat/animations/attack/north-west/04.webp"
-        ]
-      },
-      "strips": {
-        "south": "eye_bat/animations/attack__south.webp",
-        "south-east": "eye_bat/animations/attack__south-east.webp",
-        "east": "eye_bat/animations/attack__east.webp",
-        "north-east": "eye_bat/animations/attack__north-east.webp",
-        "north": "eye_bat/animations/attack__north.webp",
-        "south-west": "eye_bat/animations/attack__south-west.webp",
-        "west": "eye_bat/animations/attack__west.webp",
-        "north-west": "eye_bat/animations/attack__north-west.webp"
-      }
-    },
-    "attack_try": {
-      "directions": {
-        "south": {
-          "status": "fail",
-          "step_mean": 0.1744,
-          "step_max": 0.2253,
-          "drift": 1.56,
-          "loop": 0.1732,
-          "loop_ratio": 0.99,
-          "travel": 0.06,
-          "pin": 1.0,
-          "pad": 0,
-          "flash": 0.221,
-          "peak": 0.3037,
-          "reach": 0.096,
-          "canvas": [
-            64,
-            64
-          ],
-          "reasons": [
-            "no strike, just a lean: nothing reaches past 0.10 of the body"
-          ],
-          "sub": "9f89bf08-228d-4fdc-9fca-31da4b778f86",
-          "group": "ad7aad76-2e6e-489e-94cf-5166fc68b172",
-          "takes": 1,
-          "version": 2,
-          "mirrored": false,
-          "action": "Eye Beam - Flares its pupil wide and fires a beam of light forward, a big aggressive swing",
-          "intensity": 1,
-          "tries": 1,
-          "generated_at": "2026-09-10T20:25:49+00:00"
-        },
-        "south-east": {
-          "status": "fail",
-          "step_mean": 0.1569,
-          "step_max": 0.1816,
-          "drift": 2.51,
-          "loop": 0.2606,
-          "loop_ratio": 1.66,
-          "travel": 0.13,
-          "pin": 1.0,
-          "pad": 0,
-          "flash": 0.327,
-          "peak": 0.3481,
-          "reach": 0.062,
-          "canvas": [
-            64,
-            64
-          ],
-          "reasons": [
-            "no strike, just a lean: nothing reaches past 0.06 of the body",
-            "some bright effect pixels (0.33) — eyeball it"
-          ],
-          "sub": "ef57858f-05e3-461d-ae5c-16315ff3383f",
-          "group": "80d83fd1-a538-45db-8ec5-c443b1566594",
-          "takes": 1,
-          "version": 2,
-          "mirrored": false,
-          "action": "Eye Beam - Flares its pupil wide and fires a beam of light forward, a big aggressive swing",
-          "intensity": 1,
-          "tries": 1,
-          "generated_at": "2026-09-10T20:25:50+00:00"
-        },
-        "east": {
-          "status": "pass",
-          "step_mean": 0.1851,
-          "step_max": 0.2017,
-          "drift": 1.02,
-          "loop": 0.1727,
-          "loop_ratio": 0.93,
-          "travel": 1.86,
-          "pin": 1.0,
-          "pad": 0,
-          "flash": 0.076,
-          "peak": 0.2876,
-          "reach": 0.341,
-          "canvas": [
-            64,
-            64
-          ],
-          "reasons": [],
-          "sub": "2545e10d-a501-4dfa-aade-107ca73cdc4a",
-          "group": "b3503b33-a373-4e35-a452-7fb9bd49d771",
-          "takes": 1,
-          "version": 2,
-          "mirrored": false,
-          "action": "Eye Beam - Flares its pupil wide and fires a beam of light forward, a big aggressive swing",
-          "intensity": 1,
-          "tries": 1,
-          "generated_at": "2026-09-10T20:25:50+00:00"
-        },
-        "north-east": {
-          "status": "fail",
-          "step_mean": 0.1706,
-          "step_max": 0.227,
-          "drift": 1.05,
-          "loop": 0.3546,
-          "loop_ratio": 2.08,
-          "travel": 0.64,
-          "pin": 1.0,
-          "pad": 0,
-          "flash": 0.108,
-          "peak": 0.361,
-          "reach": 0.091,
-          "canvas": [
-            64,
-            64
-          ],
-          "reasons": [
-            "no strike, just a lean: nothing reaches past 0.09 of the body"
-          ],
-          "sub": "0d56d218-5870-4ec8-9478-a5e89ad6be73",
-          "group": "c1b9afc1-1f3e-4924-afc5-83ff296b735e",
-          "takes": 1,
-          "version": 2,
-          "mirrored": false,
-          "action": "Eye Beam - Flares its pupil wide and fires a beam of light forward, a big aggressive swing",
-          "intensity": 1,
-          "tries": 1,
-          "generated_at": "2026-09-10T20:25:51+00:00"
-        },
-        "north": {
-          "status": "fail",
-          "step_mean": 0.1858,
-          "step_max": 0.206,
-          "drift": 1.4,
-          "loop": 0.2813,
-          "loop_ratio": 1.51,
-          "travel": 0.68,
-          "pin": 1.0,
-          "pad": 0,
-          "flash": 0.241,
-          "peak": 0.3701,
-          "reach": 0.066,
-          "canvas": [
-            64,
-            64
-          ],
-          "reasons": [
-            "no strike, just a lean: nothing reaches past 0.07 of the body",
-            "some bright effect pixels (0.24) — eyeball it"
-          ],
-          "sub": "f3aae652-2299-43a9-9e11-59ac1ea55ad4",
-          "group": "c6314ca2-299a-4f4c-845c-772cb6042d5c",
-          "takes": 1,
-          "version": 2,
-          "mirrored": false,
-          "action": "Eye Beam - Flares its pupil wide and fires a beam of light forward, a big aggressive swing",
-          "intensity": 1,
-          "tries": 1,
-          "generated_at": "2026-09-10T20:25:51+00:00"
-        },
-        "west": {
-          "status": "pass",
-          "step_mean": 0.1851,
-          "step_max": 0.2017,
-          "drift": 1.02,
-          "loop": 0.1727,
-          "loop_ratio": 0.93,
-          "travel": 1.86,
-          "pin": 1.0,
-          "pad": 0,
-          "flash": 0.076,
-          "peak": 0.2876,
-          "reach": 0.341,
-          "canvas": [
-            64,
-            64
-          ],
-          "reasons": [],
-          "sub": "2545e10d-a501-4dfa-aade-107ca73cdc4a",
-          "group": "b3503b33-a373-4e35-a452-7fb9bd49d771",
-          "takes": 1,
-          "version": 2,
-          "mirrored": true,
-          "action": "Eye Beam - Flares its pupil wide and fires a beam of light forward, a big aggressive swing",
-          "intensity": 1,
-          "tries": 1,
-          "generated_at": "2026-09-10T20:25:50+00:00",
-          "source": "east"
-        }
-      },
-      "action": "Eye Beam - Flares its pupil wide and fires a beam of light forward, a big aggressive swing",
-      "frame_paths": {
-        "south": [
-          "eye_bat/animations/attack_try/south/00.webp",
-          "eye_bat/animations/attack_try/south/01.webp",
-          "eye_bat/animations/attack_try/south/02.webp",
-          "eye_bat/animations/attack_try/south/03.webp",
-          "eye_bat/animations/attack_try/south/04.webp"
-        ],
-        "south-east": [
-          "eye_bat/animations/attack_try/south-east/00.webp",
-          "eye_bat/animations/attack_try/south-east/01.webp",
-          "eye_bat/animations/attack_try/south-east/02.webp",
-          "eye_bat/animations/attack_try/south-east/03.webp",
-          "eye_bat/animations/attack_try/south-east/04.webp"
-        ],
-        "east": [
-          "eye_bat/animations/attack_try/east/00.webp",
-          "eye_bat/animations/attack_try/east/01.webp",
-          "eye_bat/animations/attack_try/east/02.webp",
-          "eye_bat/animations/attack_try/east/03.webp",
-          "eye_bat/animations/attack_try/east/04.webp"
-        ],
-        "north-east": [
-          "eye_bat/animations/attack_try/north-east/00.webp",
-          "eye_bat/animations/attack_try/north-east/01.webp",
-          "eye_bat/animations/attack_try/north-east/02.webp",
-          "eye_bat/animations/attack_try/north-east/03.webp",
-          "eye_bat/animations/attack_try/north-east/04.webp"
-        ],
-        "north": [
-          "eye_bat/animations/attack_try/north/00.webp",
-          "eye_bat/animations/attack_try/north/01.webp",
-          "eye_bat/animations/attack_try/north/02.webp",
-          "eye_bat/animations/attack_try/north/03.webp",
-          "eye_bat/animations/attack_try/north/04.webp"
-        ],
-        "west": [
-          "eye_bat/animations/attack_try/west/00.webp",
-          "eye_bat/animations/attack_try/west/01.webp",
-          "eye_bat/animations/attack_try/west/02.webp",
-          "eye_bat/animations/attack_try/west/03.webp",
-          "eye_bat/animations/attack_try/west/04.webp"
-        ]
-      },
-      "strips": {
-        "south": "eye_bat/animations/attack_try__south.webp",
-        "south-east": "eye_bat/animations/attack_try__south-east.webp",
-        "east": "eye_bat/animations/attack_try__east.webp",
-        "north-east": "eye_bat/animations/attack_try__north-east.webp",
-        "north": "eye_bat/animations/attack_try__north.webp",
-        "west": "eye_bat/animations/attack_try__west.webp"
-      },
-      "intensity": 1
-    }
+ "id": "eye_bat",
+ "name": "Glareling",
+ "tier": "mid",
+ "scale": "standard",
+ "lore": "It watches for something bigger. What it sees, the something bigger sees too.",
+ "biome": [
+  "black_rock",
+  "grey_paving_stone"
+ ],
+ "items": [],
+ "prompt": "Fantasy floating eyeball monster, a single large bloodshot eyeball with a green iris, two small leathery bat wings folded at its sides, thin trailing nerve tendrils beneath it, and a tiny fanged mouth.",
+ "size": [
+  64,
+  64
+ ],
+ "template_id": "mannequin",
+ "directions": [
+  "south",
+  "south-east",
+  "east",
+  "north-east",
+  "north",
+  "north-west",
+  "west",
+  "south-west"
+ ],
+ "rotations": {
+  "south": "eye_bat/rotations/south.webp",
+  "south-east": "eye_bat/rotations/south-east.webp",
+  "east": "eye_bat/rotations/east.webp",
+  "north-east": "eye_bat/rotations/north-east.webp",
+  "north": "eye_bat/rotations/north.webp",
+  "north-west": "eye_bat/rotations/north-west.webp",
+  "west": "eye_bat/rotations/west.webp",
+  "south-west": "eye_bat/rotations/south-west.webp"
+ },
+ "sheet": "eye_bat/sheet.webp",
+ "review": "approved",
+ "pixellab_id": "1c245303-0d67-44ac-a7c6-ae619fdf9401",
+ "seed": 1101437990,
+ "version": 1,
+ "usage": null,
+ "generated_at": "2026-09-09T18:41:50+00:00",
+ "elapsed_s": 206.0,
+ "qa": {
+  "status": "pass",
+  "min_run1": 0.728,
+  "reasons": [],
+  "directions": {
+   "south": {
+    "run1": 0.79,
+    "bbox": [
+     3,
+     6,
+     61,
+     58
+    ],
+    "fill": 0.736,
+    "touches_edge": false
+   },
+   "south-east": {
+    "run1": 0.793,
+    "bbox": [
+     8,
+     4,
+     56,
+     56
+    ],
+    "fill": 0.609,
+    "touches_edge": false
+   },
+   "east": {
+    "run1": 0.743,
+    "bbox": [
+     15,
+     4,
+     50,
+     59
+    ],
+    "fill": 0.47,
+    "touches_edge": false
+   },
+   "north-east": {
+    "run1": 0.764,
+    "bbox": [
+     8,
+     4,
+     52,
+     58
+    ],
+    "fill": 0.58,
+    "touches_edge": false
+   },
+   "north": {
+    "run1": 0.728,
+    "bbox": [
+     3,
+     6,
+     61,
+     56
+    ],
+    "fill": 0.708,
+    "touches_edge": false
+   },
+   "north-west": {
+    "run1": 0.747,
+    "bbox": [
+     12,
+     4,
+     56,
+     58
+    ],
+    "fill": 0.58,
+    "touches_edge": false
+   },
+   "west": {
+    "run1": 0.753,
+    "bbox": [
+     14,
+     4,
+     49,
+     59
+    ],
+    "fill": 0.47,
+    "touches_edge": false
+   },
+   "south-west": {
+    "run1": 0.795,
+    "bbox": [
+     9,
+     4,
+     56,
+     57
+    ],
+    "fill": 0.608,
+    "touches_edge": false
+   }
   }
+ },
+ "approved_at": "2026-09-09T19:59:22+00:00",
+ "animations": {
+  "idle": {
+   "directions": {
+    "south": {
+     "status": "pass",
+     "step_mean": 0.1777,
+     "step_max": 0.2054,
+     "drift": 1.2,
+     "loop": 0.0018,
+     "pin": 1.0,
+     "reasons": [],
+     "sub": "ea5f8d04-d027-4af1-9d35-b66a011075f2",
+     "takes": 1,
+     "version": 1,
+     "mirrored": false,
+     "generated_at": "2026-09-09T20:16:37+00:00",
+     "cut": 0
+    },
+    "south-east": {
+     "status": "pass",
+     "step_mean": 0.1829,
+     "step_max": 0.2167,
+     "drift": 1.79,
+     "loop": 0.0,
+     "pin": 1.0,
+     "reasons": [],
+     "sub": "fc47cfc2-ca23-49e8-a58c-709301390046",
+     "takes": 1,
+     "version": 1,
+     "mirrored": false,
+     "generated_at": "2026-09-09T20:16:37+00:00",
+     "cut": 0
+    },
+    "east": {
+     "status": "pass",
+     "step_mean": 0.1894,
+     "step_max": 0.2188,
+     "drift": 2.02,
+     "loop": 0.0,
+     "pin": 1.0,
+     "reasons": [],
+     "sub": "6b0f8b5e-0fba-4ec8-9186-c4dde24eae15",
+     "takes": 1,
+     "version": 1,
+     "mirrored": false,
+     "generated_at": "2026-09-09T20:16:38+00:00",
+     "cut": 0
+    },
+    "north-east": {
+     "status": "warn",
+     "step_mean": 0.2511,
+     "step_max": 0.2823,
+     "drift": 2.53,
+     "loop": 0.0,
+     "pin": 1.0,
+     "reasons": [
+      "motion 0.251 outside the calm band 0.01–0.2 — eyeball it"
+     ],
+     "sub": "9660981d-551a-4252-8be5-bb8ae98f0b68",
+     "takes": 1,
+     "version": 1,
+     "mirrored": false,
+     "generated_at": "2026-09-09T20:16:39+00:00",
+     "cut": 0
+    },
+    "north": {
+     "status": "pass",
+     "step_mean": 0.1793,
+     "step_max": 0.1935,
+     "drift": 1.16,
+     "loop": 0.0,
+     "pin": 1.0,
+     "reasons": [],
+     "sub": "6be9bb5f-05a4-452c-8b80-246527eb39ad",
+     "takes": 1,
+     "version": 1,
+     "mirrored": false,
+     "generated_at": "2026-09-09T20:16:39+00:00",
+     "cut": 0
+    },
+    "south-west": {
+     "status": "pass",
+     "step_mean": 0.1829,
+     "step_max": 0.2167,
+     "drift": 1.79,
+     "loop": 0.0,
+     "pin": 1.0,
+     "reasons": [],
+     "sub": "fc47cfc2-ca23-49e8-a58c-709301390046",
+     "takes": 1,
+     "version": 1,
+     "mirrored": true,
+     "generated_at": "2026-09-09T20:16:37+00:00",
+     "cut": 0,
+     "source": "south-east"
+    },
+    "west": {
+     "status": "pass",
+     "step_mean": 0.1894,
+     "step_max": 0.2188,
+     "drift": 2.02,
+     "loop": 0.0,
+     "pin": 1.0,
+     "reasons": [],
+     "sub": "6b0f8b5e-0fba-4ec8-9186-c4dde24eae15",
+     "takes": 1,
+     "version": 1,
+     "mirrored": true,
+     "generated_at": "2026-09-09T20:16:38+00:00",
+     "cut": 0,
+     "source": "east"
+    },
+    "north-west": {
+     "status": "warn",
+     "step_mean": 0.2511,
+     "step_max": 0.2823,
+     "drift": 2.53,
+     "loop": 0.0,
+     "pin": 1.0,
+     "reasons": [
+      "motion 0.251 outside the calm band 0.01–0.2 — eyeball it"
+     ],
+     "sub": "9660981d-551a-4252-8be5-bb8ae98f0b68",
+     "takes": 1,
+     "version": 1,
+     "mirrored": true,
+     "generated_at": "2026-09-09T20:16:39+00:00",
+     "cut": 0,
+     "source": "north-east"
+    }
+   },
+   "action": "Calm still idle, breathing very slowly and subtly, chest and shoulders rise and fall a little, feet planted, no other movement, ends in the same neutral pose it started in",
+   "frame_paths": {
+    "south": [
+     "eye_bat/animations/idle/south/00.webp",
+     "eye_bat/animations/idle/south/01.webp",
+     "eye_bat/animations/idle/south/02.webp",
+     "eye_bat/animations/idle/south/03.webp",
+     "eye_bat/animations/idle/south/04.webp"
+    ],
+    "south-east": [
+     "eye_bat/animations/idle/south-east/00.webp",
+     "eye_bat/animations/idle/south-east/01.webp",
+     "eye_bat/animations/idle/south-east/02.webp",
+     "eye_bat/animations/idle/south-east/03.webp",
+     "eye_bat/animations/idle/south-east/04.webp"
+    ],
+    "east": [
+     "eye_bat/animations/idle/east/00.webp",
+     "eye_bat/animations/idle/east/01.webp",
+     "eye_bat/animations/idle/east/02.webp",
+     "eye_bat/animations/idle/east/03.webp",
+     "eye_bat/animations/idle/east/04.webp"
+    ],
+    "north-east": [
+     "eye_bat/animations/idle/north-east/00.webp",
+     "eye_bat/animations/idle/north-east/01.webp",
+     "eye_bat/animations/idle/north-east/02.webp",
+     "eye_bat/animations/idle/north-east/03.webp",
+     "eye_bat/animations/idle/north-east/04.webp"
+    ],
+    "north": [
+     "eye_bat/animations/idle/north/00.webp",
+     "eye_bat/animations/idle/north/01.webp",
+     "eye_bat/animations/idle/north/02.webp",
+     "eye_bat/animations/idle/north/03.webp",
+     "eye_bat/animations/idle/north/04.webp"
+    ],
+    "south-west": [
+     "eye_bat/animations/idle/south-west/00.webp",
+     "eye_bat/animations/idle/south-west/01.webp",
+     "eye_bat/animations/idle/south-west/02.webp",
+     "eye_bat/animations/idle/south-west/03.webp",
+     "eye_bat/animations/idle/south-west/04.webp"
+    ],
+    "west": [
+     "eye_bat/animations/idle/west/00.webp",
+     "eye_bat/animations/idle/west/01.webp",
+     "eye_bat/animations/idle/west/02.webp",
+     "eye_bat/animations/idle/west/03.webp",
+     "eye_bat/animations/idle/west/04.webp"
+    ],
+    "north-west": [
+     "eye_bat/animations/idle/north-west/00.webp",
+     "eye_bat/animations/idle/north-west/01.webp",
+     "eye_bat/animations/idle/north-west/02.webp",
+     "eye_bat/animations/idle/north-west/03.webp",
+     "eye_bat/animations/idle/north-west/04.webp"
+    ]
+   },
+   "strips": {
+    "south": "eye_bat/animations/idle__south.webp",
+    "south-east": "eye_bat/animations/idle__south-east.webp",
+    "east": "eye_bat/animations/idle__east.webp",
+    "north-east": "eye_bat/animations/idle__north-east.webp",
+    "north": "eye_bat/animations/idle__north.webp",
+    "south-west": "eye_bat/animations/idle__south-west.webp",
+    "west": "eye_bat/animations/idle__west.webp",
+    "north-west": "eye_bat/animations/idle__north-west.webp"
+   }
+  },
+  "walk": {
+   "directions": {
+    "south": {
+     "status": "pass",
+     "step_mean": 0.2096,
+     "step_max": 0.2501,
+     "drift": 2.59,
+     "loop": 0.2261,
+     "loop_ratio": 1.08,
+     "travel": 0.16,
+     "pin": 0.851,
+     "pad": 0,
+     "canvas": [
+      64,
+      64
+     ],
+     "reasons": [],
+     "sub": "3b92e065-4b0a-4092-8c39-3c81b2992f42",
+     "group": "709c17aa-9573-40f1-abe9-c12fdb1d2880",
+     "takes": 1,
+     "version": 1,
+     "mirrored": false,
+     "generated_at": "2026-09-09T21:16:10+00:00"
+    },
+    "south-east": {
+     "status": "pass",
+     "step_mean": 0.2014,
+     "step_max": 0.256,
+     "drift": 0.83,
+     "loop": 0.2434,
+     "loop_ratio": 1.21,
+     "travel": 0.6,
+     "pin": 0.822,
+     "pad": 0,
+     "canvas": [
+      64,
+      64
+     ],
+     "reasons": [],
+     "sub": "dfaf8829-5483-4ce5-b62a-24e4fc2a6d69",
+     "group": "9700c344-aa9f-4120-af53-10fba915145d",
+     "takes": 1,
+     "version": 1,
+     "mirrored": false,
+     "generated_at": "2026-09-09T21:16:10+00:00"
+    },
+    "east": {
+     "status": "pass",
+     "step_mean": 0.154,
+     "step_max": 0.185,
+     "drift": 1.8,
+     "loop": 0.2234,
+     "loop_ratio": 1.45,
+     "travel": 0.18,
+     "pin": 0.846,
+     "pad": 0,
+     "canvas": [
+      64,
+      64
+     ],
+     "reasons": [],
+     "sub": "e11a44e8-9477-4e01-b4e2-85b69121f12f",
+     "group": "8f826437-5dfb-4d7a-a682-31624a6b9b83",
+     "takes": 1,
+     "version": 1,
+     "mirrored": false,
+     "generated_at": "2026-09-09T21:16:11+00:00"
+    },
+    "north-east": {
+     "status": "pass",
+     "step_mean": 0.2185,
+     "step_max": 0.2743,
+     "drift": 1.36,
+     "loop": 0.3085,
+     "loop_ratio": 1.41,
+     "travel": 0.66,
+     "pin": 0.798,
+     "pad": 0,
+     "canvas": [
+      64,
+      64
+     ],
+     "reasons": [],
+     "sub": "f1f961ae-b6e7-4700-b8c1-65cfe7b891f3",
+     "group": "9108f9e0-0cd0-4636-87fd-19af3a905012",
+     "takes": 1,
+     "version": 1,
+     "mirrored": false,
+     "generated_at": "2026-09-09T21:16:14+00:00"
+    },
+    "north": {
+     "status": "pass",
+     "step_mean": 0.1641,
+     "step_max": 0.2012,
+     "drift": 2.3,
+     "loop": 0.0738,
+     "loop_ratio": 0.45,
+     "travel": 0.08,
+     "pin": 0.827,
+     "pad": 0,
+     "canvas": [
+      64,
+      64
+     ],
+     "reasons": [],
+     "sub": "1615645f-1bf1-4ee1-bf9c-a9cdc6ea4f45",
+     "group": "408ea430-7771-4b63-9b74-f6ecf017413a",
+     "takes": 1,
+     "version": 1,
+     "mirrored": false,
+     "generated_at": "2026-09-09T21:16:14+00:00"
+    },
+    "south-west": {
+     "status": "pass",
+     "step_mean": 0.2014,
+     "step_max": 0.256,
+     "drift": 0.83,
+     "loop": 0.2434,
+     "loop_ratio": 1.21,
+     "travel": 0.6,
+     "pin": 0.822,
+     "pad": 0,
+     "canvas": [
+      64,
+      64
+     ],
+     "reasons": [],
+     "sub": "dfaf8829-5483-4ce5-b62a-24e4fc2a6d69",
+     "group": "9700c344-aa9f-4120-af53-10fba915145d",
+     "takes": 1,
+     "version": 1,
+     "mirrored": true,
+     "generated_at": "2026-09-09T21:16:10+00:00",
+     "source": "south-east"
+    },
+    "west": {
+     "status": "pass",
+     "step_mean": 0.154,
+     "step_max": 0.185,
+     "drift": 1.8,
+     "loop": 0.2234,
+     "loop_ratio": 1.45,
+     "travel": 0.18,
+     "pin": 0.846,
+     "pad": 0,
+     "canvas": [
+      64,
+      64
+     ],
+     "reasons": [],
+     "sub": "e11a44e8-9477-4e01-b4e2-85b69121f12f",
+     "group": "8f826437-5dfb-4d7a-a682-31624a6b9b83",
+     "takes": 1,
+     "version": 1,
+     "mirrored": true,
+     "generated_at": "2026-09-09T21:16:11+00:00",
+     "source": "east"
+    },
+    "north-west": {
+     "status": "pass",
+     "step_mean": 0.2185,
+     "step_max": 0.2743,
+     "drift": 1.36,
+     "loop": 0.3085,
+     "loop_ratio": 1.41,
+     "travel": 0.66,
+     "pin": 0.798,
+     "pad": 0,
+     "canvas": [
+      64,
+      64
+     ],
+     "reasons": [],
+     "sub": "f1f961ae-b6e7-4700-b8c1-65cfe7b891f3",
+     "group": "9108f9e0-0cd0-4636-87fd-19af3a905012",
+     "takes": 1,
+     "version": 1,
+     "mirrored": true,
+     "generated_at": "2026-09-09T21:16:14+00:00",
+     "source": "north-east"
+    }
+   },
+   "action": "walk loop, full walk cycle in place, legs alternate naturally, normal calm walking pace, body stays centered, seamless loop whose last frame leads straight back into the first, no turning",
+   "frame_paths": {
+    "south": [
+     "eye_bat/animations/walk/south/00.webp",
+     "eye_bat/animations/walk/south/01.webp",
+     "eye_bat/animations/walk/south/02.webp",
+     "eye_bat/animations/walk/south/03.webp",
+     "eye_bat/animations/walk/south/04.webp",
+     "eye_bat/animations/walk/south/05.webp"
+    ],
+    "south-east": [
+     "eye_bat/animations/walk/south-east/00.webp",
+     "eye_bat/animations/walk/south-east/01.webp",
+     "eye_bat/animations/walk/south-east/02.webp",
+     "eye_bat/animations/walk/south-east/03.webp",
+     "eye_bat/animations/walk/south-east/04.webp",
+     "eye_bat/animations/walk/south-east/05.webp"
+    ],
+    "east": [
+     "eye_bat/animations/walk/east/00.webp",
+     "eye_bat/animations/walk/east/01.webp",
+     "eye_bat/animations/walk/east/02.webp",
+     "eye_bat/animations/walk/east/03.webp",
+     "eye_bat/animations/walk/east/04.webp",
+     "eye_bat/animations/walk/east/05.webp"
+    ],
+    "north-east": [
+     "eye_bat/animations/walk/north-east/00.webp",
+     "eye_bat/animations/walk/north-east/01.webp",
+     "eye_bat/animations/walk/north-east/02.webp",
+     "eye_bat/animations/walk/north-east/03.webp",
+     "eye_bat/animations/walk/north-east/04.webp",
+     "eye_bat/animations/walk/north-east/05.webp"
+    ],
+    "north": [
+     "eye_bat/animations/walk/north/00.webp",
+     "eye_bat/animations/walk/north/01.webp",
+     "eye_bat/animations/walk/north/02.webp",
+     "eye_bat/animations/walk/north/03.webp",
+     "eye_bat/animations/walk/north/04.webp",
+     "eye_bat/animations/walk/north/05.webp"
+    ],
+    "south-west": [
+     "eye_bat/animations/walk/south-west/00.webp",
+     "eye_bat/animations/walk/south-west/01.webp",
+     "eye_bat/animations/walk/south-west/02.webp",
+     "eye_bat/animations/walk/south-west/03.webp",
+     "eye_bat/animations/walk/south-west/04.webp",
+     "eye_bat/animations/walk/south-west/05.webp"
+    ],
+    "west": [
+     "eye_bat/animations/walk/west/00.webp",
+     "eye_bat/animations/walk/west/01.webp",
+     "eye_bat/animations/walk/west/02.webp",
+     "eye_bat/animations/walk/west/03.webp",
+     "eye_bat/animations/walk/west/04.webp",
+     "eye_bat/animations/walk/west/05.webp"
+    ],
+    "north-west": [
+     "eye_bat/animations/walk/north-west/00.webp",
+     "eye_bat/animations/walk/north-west/01.webp",
+     "eye_bat/animations/walk/north-west/02.webp",
+     "eye_bat/animations/walk/north-west/03.webp",
+     "eye_bat/animations/walk/north-west/04.webp",
+     "eye_bat/animations/walk/north-west/05.webp"
+    ]
+   },
+   "strips": {
+    "south": "eye_bat/animations/walk__south.webp",
+    "south-east": "eye_bat/animations/walk__south-east.webp",
+    "east": "eye_bat/animations/walk__east.webp",
+    "north-east": "eye_bat/animations/walk__north-east.webp",
+    "north": "eye_bat/animations/walk__north.webp",
+    "south-west": "eye_bat/animations/walk__south-west.webp",
+    "west": "eye_bat/animations/walk__west.webp",
+    "north-west": "eye_bat/animations/walk__north-west.webp"
+   }
+  },
+  "attack": {
+   "directions": {
+    "south": {
+     "status": "fail",
+     "step_mean": 0.2095,
+     "step_max": 0.2579,
+     "drift": 1.7,
+     "loop": 0.0006,
+     "loop_ratio": 0.0,
+     "travel": 0.24,
+     "pin": 1.0,
+     "pad": 0,
+     "flash": 0.132,
+     "peak": 0.352,
+     "reach": 0.096,
+     "canvas": [
+      64,
+      64
+     ],
+     "reasons": [
+      "no strike, just a lean: nothing reaches past 0.10 of the body"
+     ],
+     "sub": "4d832698-1be2-4da6-bc59-28436525044d",
+     "group": "626bd18b-57e9-4412-89a0-1af45aa299fe",
+     "takes": 1,
+     "version": 2,
+     "mirrored": false,
+     "generated_at": "2026-09-09T22:37:29+00:00",
+     "action": "Eye Beam - Darts forward and fires one short beam of light from its pupil, then returns to idle stance"
+    },
+    "south-east": {
+     "status": "fail",
+     "step_mean": 0.1188,
+     "step_max": 0.1276,
+     "drift": 1.83,
+     "loop": 0.0,
+     "loop_ratio": 0.0,
+     "travel": 0.07,
+     "pin": 1.0,
+     "pad": 0,
+     "flash": 0.037,
+     "peak": 0.212,
+     "reach": 0.042,
+     "canvas": [
+      64,
+      64
+     ],
+     "reasons": [
+      "no strike, just a lean: nothing reaches past 0.04 of the body"
+     ],
+     "sub": "0d2db14c-c35a-4b54-8a47-82e6be8f8fb6",
+     "group": "736e5ff7-1e61-443e-9c76-ec9542e9401f",
+     "takes": 1,
+     "version": 2,
+     "mirrored": false,
+     "generated_at": "2026-09-09T22:37:29+00:00",
+     "action": "Eye Beam - Darts forward and fires one short beam of light from its pupil, then returns to idle stance"
+    },
+    "east": {
+     "status": "fail",
+     "step_mean": 0.1767,
+     "step_max": 0.1865,
+     "drift": 0.93,
+     "loop": 0.0,
+     "loop_ratio": 0.0,
+     "travel": 1.61,
+     "pin": 1.0,
+     "pad": 0,
+     "flash": 0.028,
+     "peak": 0.2839,
+     "reach": 0.2,
+     "canvas": [
+      64,
+      64
+     ],
+     "reasons": [
+      "no strike, just a lean: nothing reaches past 0.20 of the body"
+     ],
+     "sub": "619896ef-6c38-41b2-a37c-331617533ba7",
+     "group": "9f46d2a2-5406-4fca-91a9-0ee0910ae39c",
+     "takes": 1,
+     "version": 2,
+     "mirrored": false,
+     "generated_at": "2026-09-09T22:37:30+00:00",
+     "action": "Eye Beam - Darts forward and fires one short beam of light from its pupil, then returns to idle stance"
+    },
+    "north-east": {
+     "status": "fail",
+     "step_mean": 0.2509,
+     "step_max": 0.2679,
+     "drift": 1.31,
+     "loop": 0.0,
+     "loop_ratio": 0.0,
+     "travel": 0.67,
+     "pin": 1.0,
+     "pad": 0,
+     "flash": 0.0,
+     "peak": 0.4226,
+     "reach": 0.091,
+     "canvas": [
+      64,
+      64
+     ],
+     "reasons": [
+      "no strike, just a lean: nothing reaches past 0.09 of the body"
+     ],
+     "sub": "4afcfe1d-ac77-4e64-8be7-e112df4db894",
+     "group": "c7d71bd0-60d9-4a51-8f0a-f9825f751690",
+     "takes": 1,
+     "version": 2,
+     "mirrored": false,
+     "generated_at": "2026-09-09T22:37:30+00:00",
+     "action": "Eye Beam - Darts forward and fires one short beam of light from its pupil, then returns to idle stance"
+    },
+    "north": {
+     "status": "fail",
+     "step_mean": 0.2462,
+     "step_max": 0.2809,
+     "drift": 2.09,
+     "loop": 0.0,
+     "loop_ratio": 0.0,
+     "travel": 0.15,
+     "pin": 1.0,
+     "pad": 0,
+     "flash": 0.11,
+     "peak": 0.4211,
+     "reach": 0.08,
+     "canvas": [
+      64,
+      64
+     ],
+     "reasons": [
+      "no strike, just a lean: nothing reaches past 0.08 of the body"
+     ],
+     "sub": "0dc8734b-56f2-4f54-b0eb-b5ef8fbb25d4",
+     "group": "39a2d70e-696c-4da4-b8a7-28f10d2ae02c",
+     "takes": 1,
+     "version": 2,
+     "mirrored": false,
+     "generated_at": "2026-09-09T22:37:31+00:00",
+     "action": "Eye Beam - Darts forward and fires one short beam of light from its pupil, then returns to idle stance"
+    },
+    "south-west": {
+     "status": "pass",
+     "step_mean": 0.1188,
+     "step_max": 0.1276,
+     "drift": 1.83,
+     "loop": 0.0,
+     "loop_ratio": 0.0,
+     "travel": 0.07,
+     "pin": 1.0,
+     "pad": 0,
+     "flash": 0.037,
+     "peak": 0.212,
+     "canvas": [
+      64,
+      64
+     ],
+     "reasons": [],
+     "sub": "0d2db14c-c35a-4b54-8a47-82e6be8f8fb6",
+     "group": "736e5ff7-1e61-443e-9c76-ec9542e9401f",
+     "takes": 1,
+     "version": 2,
+     "mirrored": true,
+     "generated_at": "2026-09-09T22:37:29+00:00",
+     "action": "Eye Beam - Darts forward and fires one short beam of light from its pupil, then returns to idle stance",
+     "source": "south-east"
+    },
+    "west": {
+     "status": "pass",
+     "step_mean": 0.1767,
+     "step_max": 0.1865,
+     "drift": 0.93,
+     "loop": 0.0,
+     "loop_ratio": 0.0,
+     "travel": 1.61,
+     "pin": 1.0,
+     "pad": 0,
+     "flash": 0.028,
+     "peak": 0.2839,
+     "canvas": [
+      64,
+      64
+     ],
+     "reasons": [],
+     "sub": "619896ef-6c38-41b2-a37c-331617533ba7",
+     "group": "9f46d2a2-5406-4fca-91a9-0ee0910ae39c",
+     "takes": 1,
+     "version": 2,
+     "mirrored": true,
+     "generated_at": "2026-09-09T22:37:30+00:00",
+     "action": "Eye Beam - Darts forward and fires one short beam of light from its pupil, then returns to idle stance",
+     "source": "east"
+    },
+    "north-west": {
+     "status": "pass",
+     "step_mean": 0.2509,
+     "step_max": 0.2679,
+     "drift": 1.31,
+     "loop": 0.0,
+     "loop_ratio": 0.0,
+     "travel": 0.67,
+     "pin": 1.0,
+     "pad": 0,
+     "flash": 0.0,
+     "peak": 0.4226,
+     "canvas": [
+      64,
+      64
+     ],
+     "reasons": [],
+     "sub": "4afcfe1d-ac77-4e64-8be7-e112df4db894",
+     "group": "c7d71bd0-60d9-4a51-8f0a-f9825f751690",
+     "takes": 1,
+     "version": 2,
+     "mirrored": true,
+     "generated_at": "2026-09-09T22:37:30+00:00",
+     "action": "Eye Beam - Darts forward and fires one short beam of light from its pupil, then returns to idle stance",
+     "source": "north-east"
+    }
+   },
+   "action": "Eye Beam - Darts forward and fires one short beam of light from its pupil, then returns to idle stance",
+   "frame_paths": {
+    "south": [
+     "eye_bat/animations/attack/south/00.webp",
+     "eye_bat/animations/attack/south/01.webp",
+     "eye_bat/animations/attack/south/02.webp",
+     "eye_bat/animations/attack/south/03.webp",
+     "eye_bat/animations/attack/south/04.webp"
+    ],
+    "south-east": [
+     "eye_bat/animations/attack/south-east/00.webp",
+     "eye_bat/animations/attack/south-east/01.webp",
+     "eye_bat/animations/attack/south-east/02.webp",
+     "eye_bat/animations/attack/south-east/03.webp",
+     "eye_bat/animations/attack/south-east/04.webp"
+    ],
+    "east": [
+     "eye_bat/animations/attack/east/00.webp",
+     "eye_bat/animations/attack/east/01.webp",
+     "eye_bat/animations/attack/east/02.webp",
+     "eye_bat/animations/attack/east/03.webp",
+     "eye_bat/animations/attack/east/04.webp"
+    ],
+    "north-east": [
+     "eye_bat/animations/attack/north-east/00.webp",
+     "eye_bat/animations/attack/north-east/01.webp",
+     "eye_bat/animations/attack/north-east/02.webp",
+     "eye_bat/animations/attack/north-east/03.webp",
+     "eye_bat/animations/attack/north-east/04.webp"
+    ],
+    "north": [
+     "eye_bat/animations/attack/north/00.webp",
+     "eye_bat/animations/attack/north/01.webp",
+     "eye_bat/animations/attack/north/02.webp",
+     "eye_bat/animations/attack/north/03.webp",
+     "eye_bat/animations/attack/north/04.webp"
+    ],
+    "south-west": [
+     "eye_bat/animations/attack/south-west/00.webp",
+     "eye_bat/animations/attack/south-west/01.webp",
+     "eye_bat/animations/attack/south-west/02.webp",
+     "eye_bat/animations/attack/south-west/03.webp",
+     "eye_bat/animations/attack/south-west/04.webp"
+    ],
+    "west": [
+     "eye_bat/animations/attack/west/00.webp",
+     "eye_bat/animations/attack/west/01.webp",
+     "eye_bat/animations/attack/west/02.webp",
+     "eye_bat/animations/attack/west/03.webp",
+     "eye_bat/animations/attack/west/04.webp"
+    ],
+    "north-west": [
+     "eye_bat/animations/attack/north-west/00.webp",
+     "eye_bat/animations/attack/north-west/01.webp",
+     "eye_bat/animations/attack/north-west/02.webp",
+     "eye_bat/animations/attack/north-west/03.webp",
+     "eye_bat/animations/attack/north-west/04.webp"
+    ]
+   },
+   "strips": {
+    "south": "eye_bat/animations/attack__south.webp",
+    "south-east": "eye_bat/animations/attack__south-east.webp",
+    "east": "eye_bat/animations/attack__east.webp",
+    "north-east": "eye_bat/animations/attack__north-east.webp",
+    "north": "eye_bat/animations/attack__north.webp",
+    "south-west": "eye_bat/animations/attack__south-west.webp",
+    "west": "eye_bat/animations/attack__west.webp",
+    "north-west": "eye_bat/animations/attack__north-west.webp"
+   }
+  },
+  "attack_try": {
+   "directions": {
+    "south": {
+     "status": "fail",
+     "step_mean": 0.1744,
+     "step_max": 0.2253,
+     "drift": 1.56,
+     "loop": 0.1732,
+     "loop_ratio": 0.99,
+     "travel": 0.06,
+     "pin": 1.0,
+     "pad": 0,
+     "flash": 0.221,
+     "peak": 0.3037,
+     "reach": 0.096,
+     "canvas": [
+      64,
+      64
+     ],
+     "reasons": [
+      "no strike, just a lean: nothing reaches past 0.10 of the body"
+     ],
+     "sub": "9f89bf08-228d-4fdc-9fca-31da4b778f86",
+     "group": "ad7aad76-2e6e-489e-94cf-5166fc68b172",
+     "takes": 1,
+     "version": 2,
+     "mirrored": false,
+     "action": "Eye Beam - Flares its pupil wide and fires a beam of light forward, a big aggressive swing",
+     "intensity": 1,
+     "tries": 1,
+     "generated_at": "2026-09-10T20:25:49+00:00",
+     "rolls": 2
+    },
+    "south-east": {
+     "status": "fail",
+     "step_mean": 0.1569,
+     "step_max": 0.1816,
+     "drift": 2.51,
+     "loop": 0.2606,
+     "loop_ratio": 1.66,
+     "travel": 0.13,
+     "pin": 1.0,
+     "pad": 0,
+     "flash": 0.327,
+     "peak": 0.3481,
+     "reach": 0.062,
+     "canvas": [
+      64,
+      64
+     ],
+     "reasons": [
+      "no strike, just a lean: nothing reaches past 0.06 of the body",
+      "some bright effect pixels (0.33) — eyeball it"
+     ],
+     "sub": "ef57858f-05e3-461d-ae5c-16315ff3383f",
+     "group": "80d83fd1-a538-45db-8ec5-c443b1566594",
+     "takes": 1,
+     "version": 2,
+     "mirrored": false,
+     "action": "Eye Beam - Flares its pupil wide and fires a beam of light forward, a big aggressive swing",
+     "intensity": 1,
+     "tries": 1,
+     "generated_at": "2026-09-10T20:25:50+00:00",
+     "rolls": 2
+    },
+    "east": {
+     "status": "pass",
+     "step_mean": 0.1851,
+     "step_max": 0.2017,
+     "drift": 1.02,
+     "loop": 0.1727,
+     "loop_ratio": 0.93,
+     "travel": 1.86,
+     "pin": 1.0,
+     "pad": 0,
+     "flash": 0.076,
+     "peak": 0.2876,
+     "reach": 0.341,
+     "canvas": [
+      64,
+      64
+     ],
+     "reasons": [],
+     "sub": "2545e10d-a501-4dfa-aade-107ca73cdc4a",
+     "group": "b3503b33-a373-4e35-a452-7fb9bd49d771",
+     "takes": 1,
+     "version": 2,
+     "mirrored": false,
+     "action": "Eye Beam - Flares its pupil wide and fires a beam of light forward, a big aggressive swing",
+     "intensity": 1,
+     "tries": 1,
+     "generated_at": "2026-09-10T20:25:50+00:00",
+     "rolls": 2
+    },
+    "north-east": {
+     "status": "fail",
+     "step_mean": 0.1706,
+     "step_max": 0.227,
+     "drift": 1.05,
+     "loop": 0.3546,
+     "loop_ratio": 2.08,
+     "travel": 0.64,
+     "pin": 1.0,
+     "pad": 0,
+     "flash": 0.108,
+     "peak": 0.361,
+     "reach": 0.091,
+     "canvas": [
+      64,
+      64
+     ],
+     "reasons": [
+      "no strike, just a lean: nothing reaches past 0.09 of the body"
+     ],
+     "sub": "0d56d218-5870-4ec8-9478-a5e89ad6be73",
+     "group": "c1b9afc1-1f3e-4924-afc5-83ff296b735e",
+     "takes": 1,
+     "version": 2,
+     "mirrored": false,
+     "action": "Eye Beam - Flares its pupil wide and fires a beam of light forward, a big aggressive swing",
+     "intensity": 1,
+     "tries": 1,
+     "generated_at": "2026-09-10T20:25:51+00:00",
+     "rolls": 2
+    },
+    "north": {
+     "status": "fail",
+     "step_mean": 0.1858,
+     "step_max": 0.206,
+     "drift": 1.4,
+     "loop": 0.2813,
+     "loop_ratio": 1.51,
+     "travel": 0.68,
+     "pin": 1.0,
+     "pad": 0,
+     "flash": 0.241,
+     "peak": 0.3701,
+     "reach": 0.066,
+     "canvas": [
+      64,
+      64
+     ],
+     "reasons": [
+      "no strike, just a lean: nothing reaches past 0.07 of the body",
+      "some bright effect pixels (0.24) — eyeball it"
+     ],
+     "sub": "f3aae652-2299-43a9-9e11-59ac1ea55ad4",
+     "group": "c6314ca2-299a-4f4c-845c-772cb6042d5c",
+     "takes": 1,
+     "version": 2,
+     "mirrored": false,
+     "action": "Eye Beam - Flares its pupil wide and fires a beam of light forward, a big aggressive swing",
+     "intensity": 1,
+     "tries": 1,
+     "generated_at": "2026-09-10T20:25:51+00:00",
+     "rolls": 2
+    },
+    "west": {
+     "status": "pass",
+     "step_mean": 0.1851,
+     "step_max": 0.2017,
+     "drift": 1.02,
+     "loop": 0.1727,
+     "loop_ratio": 0.93,
+     "travel": 1.86,
+     "pin": 1.0,
+     "pad": 0,
+     "flash": 0.076,
+     "peak": 0.2876,
+     "reach": 0.341,
+     "canvas": [
+      64,
+      64
+     ],
+     "reasons": [],
+     "sub": "2545e10d-a501-4dfa-aade-107ca73cdc4a",
+     "group": "b3503b33-a373-4e35-a452-7fb9bd49d771",
+     "takes": 1,
+     "version": 2,
+     "mirrored": true,
+     "action": "Eye Beam - Flares its pupil wide and fires a beam of light forward, a big aggressive swing",
+     "intensity": 1,
+     "tries": 1,
+     "generated_at": "2026-09-10T20:25:50+00:00",
+     "source": "east"
+    }
+   },
+   "action": "Eye Beam - Flares its pupil wide and fires a beam of light forward, a big aggressive swing",
+   "frame_paths": {
+    "south": [
+     "eye_bat/animations/attack_try/south/00.webp",
+     "eye_bat/animations/attack_try/south/01.webp",
+     "eye_bat/animations/attack_try/south/02.webp",
+     "eye_bat/animations/attack_try/south/03.webp",
+     "eye_bat/animations/attack_try/south/04.webp"
+    ],
+    "south-east": [
+     "eye_bat/animations/attack_try/south-east/00.webp",
+     "eye_bat/animations/attack_try/south-east/01.webp",
+     "eye_bat/animations/attack_try/south-east/02.webp",
+     "eye_bat/animations/attack_try/south-east/03.webp",
+     "eye_bat/animations/attack_try/south-east/04.webp"
+    ],
+    "east": [
+     "eye_bat/animations/attack_try/east/00.webp",
+     "eye_bat/animations/attack_try/east/01.webp",
+     "eye_bat/animations/attack_try/east/02.webp",
+     "eye_bat/animations/attack_try/east/03.webp",
+     "eye_bat/animations/attack_try/east/04.webp"
+    ],
+    "north-east": [
+     "eye_bat/animations/attack_try/north-east/00.webp",
+     "eye_bat/animations/attack_try/north-east/01.webp",
+     "eye_bat/animations/attack_try/north-east/02.webp",
+     "eye_bat/animations/attack_try/north-east/03.webp",
+     "eye_bat/animations/attack_try/north-east/04.webp"
+    ],
+    "north": [
+     "eye_bat/animations/attack_try/north/00.webp",
+     "eye_bat/animations/attack_try/north/01.webp",
+     "eye_bat/animations/attack_try/north/02.webp",
+     "eye_bat/animations/attack_try/north/03.webp",
+     "eye_bat/animations/attack_try/north/04.webp"
+    ],
+    "west": [
+     "eye_bat/animations/attack_try/west/00.webp",
+     "eye_bat/animations/attack_try/west/01.webp",
+     "eye_bat/animations/attack_try/west/02.webp",
+     "eye_bat/animations/attack_try/west/03.webp",
+     "eye_bat/animations/attack_try/west/04.webp"
+    ]
+   },
+   "strips": {
+    "south": "eye_bat/animations/attack_try__south.webp",
+    "south-east": "eye_bat/animations/attack_try__south-east.webp",
+    "east": "eye_bat/animations/attack_try__east.webp",
+    "north-east": "eye_bat/animations/attack_try__north-east.webp",
+    "north": "eye_bat/animations/attack_try__north.webp",
+    "west": "eye_bat/animations/attack_try__west.webp"
+   },
+   "intensity": 1
+  }
+ }
 }

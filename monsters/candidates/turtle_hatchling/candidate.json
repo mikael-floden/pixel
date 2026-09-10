@@ -1,1097 +1,1102 @@
 {
-  "id": "turtle_hatchling",
-  "name": "Shellet",
-  "tier": "cute",
-  "scale": "small",
-  "lore": "The first of the clutch to reach the water, and the only one. It has been careful ever since.",
-  "biome": [
-    "light_beach",
-    "water"
-  ],
-  "items": [],
-  "prompt": "Small fantasy sea turtle hatchling with a domed dark green shell patterned with pale hexagons, small flippers, large dark eyes, and sand on its shell.",
-  "size": [
-    40,
-    40
-  ],
-  "template_id": "bear",
-  "directions": [
-    "south",
-    "south-east",
-    "east",
-    "north-east",
-    "north",
-    "north-west",
-    "west",
-    "south-west"
-  ],
-  "rotations": {
-    "south": "turtle_hatchling/rotations/south.webp",
-    "south-east": "turtle_hatchling/rotations/south-east.webp",
-    "east": "turtle_hatchling/rotations/east.webp",
-    "north-east": "turtle_hatchling/rotations/north-east.webp",
-    "north": "turtle_hatchling/rotations/north.webp",
-    "north-west": "turtle_hatchling/rotations/north-west.webp",
-    "west": "turtle_hatchling/rotations/west.webp",
-    "south-west": "turtle_hatchling/rotations/south-west.webp"
-  },
-  "sheet": "turtle_hatchling/sheet.webp",
-  "review": "approved",
-  "pixellab_id": "fd162650-47e9-4699-ac47-9e5d3f6c8050",
-  "seed": 951283235,
-  "version": 1,
-  "usage": null,
-  "generated_at": "2026-09-09T18:56:11+00:00",
-  "elapsed_s": 168.7,
-  "qa": {
-    "status": "pass",
-    "min_run1": 0.655,
-    "reasons": [],
-    "directions": {
-      "south": {
-        "run1": 0.665,
-        "bbox": [
-          2,
-          4,
-          38,
-          35
-        ],
-        "fill": 0.698,
-        "touches_edge": false
-      },
-      "south-east": {
-        "run1": 0.74,
-        "bbox": [
-          2,
-          4,
-          39,
-          36
-        ],
-        "fill": 0.74,
-        "touches_edge": false
-      },
-      "east": {
-        "run1": 0.689,
-        "bbox": [
-          2,
-          5,
-          38,
-          36
-        ],
-        "fill": 0.698,
-        "touches_edge": false
-      },
-      "north-east": {
-        "run1": 0.733,
-        "bbox": [
-          3,
-          6,
-          34,
-          35
-        ],
-        "fill": 0.562,
-        "touches_edge": false
-      },
-      "north": {
-        "run1": 0.655,
-        "bbox": [
-          5,
-          3,
-          35,
-          36
-        ],
-        "fill": 0.619,
-        "touches_edge": false
-      },
-      "north-west": {
-        "run1": 0.709,
-        "bbox": [
-          6,
-          6,
-          37,
-          35
-        ],
-        "fill": 0.562,
-        "touches_edge": false
-      },
-      "west": {
-        "run1": 0.69,
-        "bbox": [
-          2,
-          5,
-          38,
-          36
-        ],
-        "fill": 0.698,
-        "touches_edge": false
-      },
-      "south-west": {
-        "run1": 0.724,
-        "bbox": [
-          1,
-          4,
-          38,
-          36
-        ],
-        "fill": 0.74,
-        "touches_edge": false
-      }
-    }
-  },
-  "approved_at": "2026-09-09T19:59:25+00:00",
-  "animations": {
-    "idle": {
-      "directions": {
-        "south": {
-          "status": "pass",
-          "step_mean": 0.0842,
-          "step_max": 0.094,
-          "drift": 1.1,
-          "loop": 0.0,
-          "pin": 1.0,
-          "reasons": [],
-          "sub": "c615e38d-0f28-43c8-bf00-c3bfb856e1f9",
-          "takes": 1,
-          "version": 1,
-          "mirrored": false,
-          "generated_at": "2026-09-09T20:23:02+00:00",
-          "cut": 0
-        },
-        "south-east": {
-          "status": "pass",
-          "step_mean": 0.05,
-          "step_max": 0.056,
-          "drift": 0.38,
-          "loop": 0.0,
-          "pin": 1.0,
-          "reasons": [],
-          "sub": "c9e33179-7299-4e87-8033-7aa2b6cc393f",
-          "takes": 1,
-          "version": 1,
-          "mirrored": false,
-          "generated_at": "2026-09-09T20:23:02+00:00",
-          "cut": 0
-        },
-        "east": {
-          "status": "pass",
-          "step_mean": 0.0794,
-          "step_max": 0.1058,
-          "drift": 1.43,
-          "loop": 0.0,
-          "pin": 1.0,
-          "reasons": [],
-          "sub": "0e14a90c-146d-475d-a0c8-6a75a2c75339",
-          "takes": 1,
-          "version": 1,
-          "mirrored": false,
-          "generated_at": "2026-09-09T20:23:03+00:00",
-          "cut": 0
-        },
-        "north-east": {
-          "status": "pass",
-          "step_mean": 0.1061,
-          "step_max": 0.1146,
-          "drift": 1.12,
-          "loop": 0.0,
-          "pin": 1.0,
-          "reasons": [],
-          "sub": "e5344c20-203b-4696-8622-c1fa27095aef",
-          "takes": 1,
-          "version": 1,
-          "mirrored": false,
-          "generated_at": "2026-09-09T20:23:03+00:00",
-          "cut": 0
-        },
-        "north": {
-          "status": "pass",
-          "step_mean": 0.0621,
-          "step_max": 0.0983,
-          "drift": 0.57,
-          "loop": 0.0,
-          "pin": 1.0,
-          "reasons": [],
-          "sub": "3a09892e-6510-4932-a4bf-d14f0e777768",
-          "takes": 1,
-          "version": 1,
-          "mirrored": false,
-          "generated_at": "2026-09-09T20:23:04+00:00",
-          "cut": 0
-        },
-        "south-west": {
-          "status": "pass",
-          "step_mean": 0.05,
-          "step_max": 0.056,
-          "drift": 0.38,
-          "loop": 0.0,
-          "pin": 1.0,
-          "reasons": [],
-          "sub": "c9e33179-7299-4e87-8033-7aa2b6cc393f",
-          "takes": 1,
-          "version": 1,
-          "mirrored": true,
-          "generated_at": "2026-09-09T20:23:02+00:00",
-          "cut": 0,
-          "source": "south-east"
-        },
-        "west": {
-          "status": "pass",
-          "step_mean": 0.0794,
-          "step_max": 0.1058,
-          "drift": 1.43,
-          "loop": 0.0,
-          "pin": 1.0,
-          "reasons": [],
-          "sub": "0e14a90c-146d-475d-a0c8-6a75a2c75339",
-          "takes": 1,
-          "version": 1,
-          "mirrored": true,
-          "generated_at": "2026-09-09T20:23:03+00:00",
-          "cut": 0,
-          "source": "east"
-        },
-        "north-west": {
-          "status": "pass",
-          "step_mean": 0.1061,
-          "step_max": 0.1146,
-          "drift": 1.12,
-          "loop": 0.0,
-          "pin": 1.0,
-          "reasons": [],
-          "sub": "e5344c20-203b-4696-8622-c1fa27095aef",
-          "takes": 1,
-          "version": 1,
-          "mirrored": true,
-          "generated_at": "2026-09-09T20:23:03+00:00",
-          "cut": 0,
-          "source": "north-east"
-        }
-      },
-      "action": "Calm still idle, breathing very slowly and subtly, chest and shoulders rise and fall a little, feet planted, no other movement, ends in the same neutral pose it started in",
-      "frame_paths": {
-        "south": [
-          "turtle_hatchling/animations/idle/south/00.webp",
-          "turtle_hatchling/animations/idle/south/01.webp",
-          "turtle_hatchling/animations/idle/south/02.webp",
-          "turtle_hatchling/animations/idle/south/03.webp",
-          "turtle_hatchling/animations/idle/south/04.webp"
-        ],
-        "south-east": [
-          "turtle_hatchling/animations/idle/south-east/00.webp",
-          "turtle_hatchling/animations/idle/south-east/01.webp",
-          "turtle_hatchling/animations/idle/south-east/02.webp",
-          "turtle_hatchling/animations/idle/south-east/03.webp",
-          "turtle_hatchling/animations/idle/south-east/04.webp"
-        ],
-        "east": [
-          "turtle_hatchling/animations/idle/east/00.webp",
-          "turtle_hatchling/animations/idle/east/01.webp",
-          "turtle_hatchling/animations/idle/east/02.webp",
-          "turtle_hatchling/animations/idle/east/03.webp",
-          "turtle_hatchling/animations/idle/east/04.webp"
-        ],
-        "north-east": [
-          "turtle_hatchling/animations/idle/north-east/00.webp",
-          "turtle_hatchling/animations/idle/north-east/01.webp",
-          "turtle_hatchling/animations/idle/north-east/02.webp",
-          "turtle_hatchling/animations/idle/north-east/03.webp",
-          "turtle_hatchling/animations/idle/north-east/04.webp"
-        ],
-        "north": [
-          "turtle_hatchling/animations/idle/north/00.webp",
-          "turtle_hatchling/animations/idle/north/01.webp",
-          "turtle_hatchling/animations/idle/north/02.webp",
-          "turtle_hatchling/animations/idle/north/03.webp",
-          "turtle_hatchling/animations/idle/north/04.webp"
-        ],
-        "south-west": [
-          "turtle_hatchling/animations/idle/south-west/00.webp",
-          "turtle_hatchling/animations/idle/south-west/01.webp",
-          "turtle_hatchling/animations/idle/south-west/02.webp",
-          "turtle_hatchling/animations/idle/south-west/03.webp",
-          "turtle_hatchling/animations/idle/south-west/04.webp"
-        ],
-        "west": [
-          "turtle_hatchling/animations/idle/west/00.webp",
-          "turtle_hatchling/animations/idle/west/01.webp",
-          "turtle_hatchling/animations/idle/west/02.webp",
-          "turtle_hatchling/animations/idle/west/03.webp",
-          "turtle_hatchling/animations/idle/west/04.webp"
-        ],
-        "north-west": [
-          "turtle_hatchling/animations/idle/north-west/00.webp",
-          "turtle_hatchling/animations/idle/north-west/01.webp",
-          "turtle_hatchling/animations/idle/north-west/02.webp",
-          "turtle_hatchling/animations/idle/north-west/03.webp",
-          "turtle_hatchling/animations/idle/north-west/04.webp"
-        ]
-      },
-      "strips": {
-        "south": "turtle_hatchling/animations/idle__south.webp",
-        "south-east": "turtle_hatchling/animations/idle__south-east.webp",
-        "east": "turtle_hatchling/animations/idle__east.webp",
-        "north-east": "turtle_hatchling/animations/idle__north-east.webp",
-        "north": "turtle_hatchling/animations/idle__north.webp",
-        "south-west": "turtle_hatchling/animations/idle__south-west.webp",
-        "west": "turtle_hatchling/animations/idle__west.webp",
-        "north-west": "turtle_hatchling/animations/idle__north-west.webp"
-      }
-    },
-    "walk": {
-      "directions": {
-        "south": {
-          "status": "pass",
-          "step_mean": 0.09,
-          "step_max": 0.1107,
-          "drift": 2.05,
-          "loop": 0.0448,
-          "loop_ratio": 0.5,
-          "travel": 0.12,
-          "pin": 0.907,
-          "pad": 0,
-          "canvas": [
-            40,
-            40
-          ],
-          "reasons": [],
-          "sub": "89051216-36e3-427e-85e8-e476c83c1094",
-          "group": "b839e57e-fb14-4f13-aa11-9faede9ab57d",
-          "takes": 1,
-          "version": 1,
-          "mirrored": false,
-          "generated_at": "2026-09-09T21:28:25+00:00"
-        },
-        "south-east": {
-          "status": "pass",
-          "step_mean": 0.1121,
-          "step_max": 0.124,
-          "drift": 1.03,
-          "loop": 0.1159,
-          "loop_ratio": 1.03,
-          "travel": 0.88,
-          "pin": 0.955,
-          "pad": 0,
-          "canvas": [
-            40,
-            40
-          ],
-          "reasons": [],
-          "sub": "5272b402-3656-4060-9c8c-8efffcbe8a13",
-          "group": "fec927c4-1237-470e-8415-1a52c4c31bc8",
-          "takes": 1,
-          "version": 1,
-          "mirrored": false,
-          "generated_at": "2026-09-09T21:28:26+00:00"
-        },
-        "east": {
-          "status": "pass",
-          "step_mean": 0.0822,
-          "step_max": 0.0927,
-          "drift": 0.69,
-          "loop": 0.1527,
-          "loop_ratio": 1.86,
-          "travel": 0.36,
-          "pin": 0.928,
-          "pad": 0,
-          "canvas": [
-            40,
-            40
-          ],
-          "reasons": [],
-          "sub": "a7955a82-7861-4070-aa3e-494bc63cf9c7",
-          "group": "c3e69754-120c-47e9-bf44-ae8fca6361f0",
-          "takes": 1,
-          "version": 1,
-          "mirrored": false,
-          "generated_at": "2026-09-09T21:28:26+00:00"
-        },
-        "north-east": {
-          "status": "pass",
-          "step_mean": 0.0781,
-          "step_max": 0.1067,
-          "drift": 0.89,
-          "loop": 0.0899,
-          "loop_ratio": 1.15,
-          "travel": 0.39,
-          "pin": 0.955,
-          "pad": 0,
-          "canvas": [
-            40,
-            40
-          ],
-          "reasons": [],
-          "sub": "39aa88dc-cc57-47c1-8679-f67273fd6001",
-          "group": "f8ff455c-a52c-4dc5-9f91-56e1217abe44",
-          "takes": 1,
-          "version": 1,
-          "mirrored": false,
-          "generated_at": "2026-09-09T21:28:27+00:00"
-        },
-        "north": {
-          "status": "pass",
-          "step_mean": 0.0761,
-          "step_max": 0.103,
-          "drift": 1.08,
-          "loop": 0.119,
-          "loop_ratio": 1.56,
-          "travel": 0.05,
-          "pin": 0.937,
-          "pad": 0,
-          "canvas": [
-            40,
-            40
-          ],
-          "reasons": [],
-          "sub": "decea888-f2c9-4f37-b584-100e4119368d",
-          "group": "91671504-ff2e-45a3-bc04-cd1d308bf8a5",
-          "takes": 1,
-          "version": 1,
-          "mirrored": false,
-          "generated_at": "2026-09-09T21:28:27+00:00"
-        },
-        "south-west": {
-          "status": "pass",
-          "step_mean": 0.1121,
-          "step_max": 0.124,
-          "drift": 1.03,
-          "loop": 0.1159,
-          "loop_ratio": 1.03,
-          "travel": 0.88,
-          "pin": 0.955,
-          "pad": 0,
-          "canvas": [
-            40,
-            40
-          ],
-          "reasons": [],
-          "sub": "5272b402-3656-4060-9c8c-8efffcbe8a13",
-          "group": "fec927c4-1237-470e-8415-1a52c4c31bc8",
-          "takes": 1,
-          "version": 1,
-          "mirrored": true,
-          "generated_at": "2026-09-09T21:28:26+00:00",
-          "source": "south-east"
-        },
-        "west": {
-          "status": "pass",
-          "step_mean": 0.0822,
-          "step_max": 0.0927,
-          "drift": 0.69,
-          "loop": 0.1527,
-          "loop_ratio": 1.86,
-          "travel": 0.36,
-          "pin": 0.928,
-          "pad": 0,
-          "canvas": [
-            40,
-            40
-          ],
-          "reasons": [],
-          "sub": "a7955a82-7861-4070-aa3e-494bc63cf9c7",
-          "group": "c3e69754-120c-47e9-bf44-ae8fca6361f0",
-          "takes": 1,
-          "version": 1,
-          "mirrored": true,
-          "generated_at": "2026-09-09T21:28:26+00:00",
-          "source": "east"
-        },
-        "north-west": {
-          "status": "pass",
-          "step_mean": 0.0781,
-          "step_max": 0.1067,
-          "drift": 0.89,
-          "loop": 0.0899,
-          "loop_ratio": 1.15,
-          "travel": 0.39,
-          "pin": 0.955,
-          "pad": 0,
-          "canvas": [
-            40,
-            40
-          ],
-          "reasons": [],
-          "sub": "39aa88dc-cc57-47c1-8679-f67273fd6001",
-          "group": "f8ff455c-a52c-4dc5-9f91-56e1217abe44",
-          "takes": 1,
-          "version": 1,
-          "mirrored": true,
-          "generated_at": "2026-09-09T21:28:27+00:00",
-          "source": "north-east"
-        }
-      },
-      "action": "crawls forward in place, flippers alternating in a slow paddling stride, shell steady, seamless loop, no turning",
-      "frame_paths": {
-        "south": [
-          "turtle_hatchling/animations/walk/south/00.webp",
-          "turtle_hatchling/animations/walk/south/01.webp",
-          "turtle_hatchling/animations/walk/south/02.webp",
-          "turtle_hatchling/animations/walk/south/03.webp",
-          "turtle_hatchling/animations/walk/south/04.webp",
-          "turtle_hatchling/animations/walk/south/05.webp"
-        ],
-        "south-east": [
-          "turtle_hatchling/animations/walk/south-east/00.webp",
-          "turtle_hatchling/animations/walk/south-east/01.webp",
-          "turtle_hatchling/animations/walk/south-east/02.webp",
-          "turtle_hatchling/animations/walk/south-east/03.webp",
-          "turtle_hatchling/animations/walk/south-east/04.webp",
-          "turtle_hatchling/animations/walk/south-east/05.webp"
-        ],
-        "east": [
-          "turtle_hatchling/animations/walk/east/00.webp",
-          "turtle_hatchling/animations/walk/east/01.webp",
-          "turtle_hatchling/animations/walk/east/02.webp",
-          "turtle_hatchling/animations/walk/east/03.webp",
-          "turtle_hatchling/animations/walk/east/04.webp",
-          "turtle_hatchling/animations/walk/east/05.webp"
-        ],
-        "north-east": [
-          "turtle_hatchling/animations/walk/north-east/00.webp",
-          "turtle_hatchling/animations/walk/north-east/01.webp",
-          "turtle_hatchling/animations/walk/north-east/02.webp",
-          "turtle_hatchling/animations/walk/north-east/03.webp",
-          "turtle_hatchling/animations/walk/north-east/04.webp",
-          "turtle_hatchling/animations/walk/north-east/05.webp"
-        ],
-        "north": [
-          "turtle_hatchling/animations/walk/north/00.webp",
-          "turtle_hatchling/animations/walk/north/01.webp",
-          "turtle_hatchling/animations/walk/north/02.webp",
-          "turtle_hatchling/animations/walk/north/03.webp",
-          "turtle_hatchling/animations/walk/north/04.webp",
-          "turtle_hatchling/animations/walk/north/05.webp"
-        ],
-        "south-west": [
-          "turtle_hatchling/animations/walk/south-west/00.webp",
-          "turtle_hatchling/animations/walk/south-west/01.webp",
-          "turtle_hatchling/animations/walk/south-west/02.webp",
-          "turtle_hatchling/animations/walk/south-west/03.webp",
-          "turtle_hatchling/animations/walk/south-west/04.webp",
-          "turtle_hatchling/animations/walk/south-west/05.webp"
-        ],
-        "west": [
-          "turtle_hatchling/animations/walk/west/00.webp",
-          "turtle_hatchling/animations/walk/west/01.webp",
-          "turtle_hatchling/animations/walk/west/02.webp",
-          "turtle_hatchling/animations/walk/west/03.webp",
-          "turtle_hatchling/animations/walk/west/04.webp",
-          "turtle_hatchling/animations/walk/west/05.webp"
-        ],
-        "north-west": [
-          "turtle_hatchling/animations/walk/north-west/00.webp",
-          "turtle_hatchling/animations/walk/north-west/01.webp",
-          "turtle_hatchling/animations/walk/north-west/02.webp",
-          "turtle_hatchling/animations/walk/north-west/03.webp",
-          "turtle_hatchling/animations/walk/north-west/04.webp",
-          "turtle_hatchling/animations/walk/north-west/05.webp"
-        ]
-      },
-      "strips": {
-        "south": "turtle_hatchling/animations/walk__south.webp",
-        "south-east": "turtle_hatchling/animations/walk__south-east.webp",
-        "east": "turtle_hatchling/animations/walk__east.webp",
-        "north-east": "turtle_hatchling/animations/walk__north-east.webp",
-        "north": "turtle_hatchling/animations/walk__north.webp",
-        "south-west": "turtle_hatchling/animations/walk__south-west.webp",
-        "west": "turtle_hatchling/animations/walk__west.webp",
-        "north-west": "turtle_hatchling/animations/walk__north-west.webp"
-      }
-    },
-    "attack": {
-      "directions": {
-        "south": {
-          "status": "warn",
-          "step_mean": 0.1422,
-          "step_max": 0.1954,
-          "drift": 0.88,
-          "loop": 0.0,
-          "loop_ratio": 0.0,
-          "travel": 0.17,
-          "pin": 1.0,
-          "pad": 2,
-          "flash": 0.056,
-          "peak": 0.2674,
-          "reach": 0.387,
-          "canvas": [
-            44,
-            44
-          ],
-          "reasons": [
-            "some bright effect pixels (0.06) — eyeball it",
-            "canvas grown by 2 px a side to hold the motion"
-          ],
-          "sub": "421722fc-7cd1-4f9d-8711-d264cf07a09b",
-          "group": "1c995073-cbf6-4874-887b-4dc4419553a4",
-          "takes": 1,
-          "version": 2,
-          "mirrored": false,
-          "generated_at": "2026-09-09T22:41:18+00:00",
-          "action": "Beak Snap - Lunges forward and snaps once with its small beak, then returns to idle stance"
-        },
-        "south-east": {
-          "status": "fail",
-          "step_mean": 0.1013,
-          "step_max": 0.1307,
-          "drift": 0.46,
-          "loop": 0.0,
-          "loop_ratio": 0.0,
-          "travel": 0.58,
-          "pin": 1.0,
-          "pad": 0,
-          "flash": 0.0,
-          "peak": 0.1573,
-          "reach": 0.094,
-          "canvas": [
-            40,
-            40
-          ],
-          "reasons": [
-            "no strike, just a lean: nothing reaches past 0.09 of the body"
-          ],
-          "sub": "8e1c7261-8b8a-457e-b71e-aa5529889a75",
-          "group": "df3c49ef-3c64-491f-b373-8f8ec8b63991",
-          "takes": 1,
-          "version": 2,
-          "mirrored": false,
-          "generated_at": "2026-09-09T22:41:18+00:00",
-          "action": "Beak Snap - Lunges forward and snaps once with its small beak, then returns to idle stance"
-        },
-        "east": {
-          "status": "fail",
-          "step_mean": 0.1366,
-          "step_max": 0.1778,
-          "drift": 1.88,
-          "loop": 0.0,
-          "loop_ratio": 0.0,
-          "travel": 0.61,
-          "pin": 1.0,
-          "pad": 0,
-          "flash": 0.007,
-          "peak": 0.2471,
-          "reach": 0.065,
-          "canvas": [
-            40,
-            40
-          ],
-          "reasons": [
-            "no strike, just a lean: nothing reaches past 0.06 of the body"
-          ],
-          "sub": "1bc15a44-ffc9-4c4f-8477-4e1124cdefb6",
-          "group": "3a886ef0-bcfc-4174-8a6e-aaaad775c919",
-          "takes": 1,
-          "version": 2,
-          "mirrored": false,
-          "generated_at": "2026-09-09T22:41:19+00:00",
-          "action": "Beak Snap - Lunges forward and snaps once with its small beak, then returns to idle stance"
-        },
-        "north-east": {
-          "status": "fail",
-          "step_mean": 0.1218,
-          "step_max": 0.1742,
-          "drift": 1.27,
-          "loop": 0.0,
-          "loop_ratio": 0.0,
-          "travel": 1.27,
-          "pin": 1.0,
-          "pad": 0,
-          "flash": 0.003,
-          "peak": 0.1898,
-          "reach": 0.103,
-          "canvas": [
-            40,
-            40
-          ],
-          "reasons": [
-            "no strike, just a lean: nothing reaches past 0.10 of the body"
-          ],
-          "sub": "f8796a82-7018-49e4-ac52-c7ec7ebfa493",
-          "group": "fb0109af-8d4a-41c8-98c2-5cbcae011d98",
-          "takes": 1,
-          "version": 2,
-          "mirrored": false,
-          "generated_at": "2026-09-09T22:41:19+00:00",
-          "action": "Beak Snap - Lunges forward and snaps once with its small beak, then returns to idle stance"
-        },
-        "north": {
-          "status": "fail",
-          "step_mean": 0.0739,
-          "step_max": 0.1203,
-          "drift": 0.94,
-          "loop": 0.0,
-          "loop_ratio": 0.0,
-          "travel": 0.05,
-          "pin": 1.0,
-          "pad": 0,
-          "flash": 0.0,
-          "peak": 0.1391,
-          "reach": 0.065,
-          "canvas": [
-            40,
-            40
-          ],
-          "reasons": [
-            "motion 0.074 outside the calm band 0.08–0.9 — eyeball it",
-            "weak strike: peak 0.139 — eyeball it",
-            "no strike, just a lean: nothing reaches past 0.06 of the body"
-          ],
-          "sub": "41eb99d2-e416-44ba-88c4-3f62e1049114",
-          "group": "905026a4-2148-487a-84c6-552e7442a61a",
-          "takes": 1,
-          "version": 2,
-          "mirrored": false,
-          "generated_at": "2026-09-09T22:41:20+00:00",
-          "action": "Beak Snap - Lunges forward and snaps once with its small beak, then returns to idle stance"
-        },
-        "south-west": {
-          "status": "pass",
-          "step_mean": 0.1013,
-          "step_max": 0.1307,
-          "drift": 0.46,
-          "loop": 0.0,
-          "loop_ratio": 0.0,
-          "travel": 0.58,
-          "pin": 1.0,
-          "pad": 0,
-          "flash": 0.0,
-          "peak": 0.1573,
-          "canvas": [
-            40,
-            40
-          ],
-          "reasons": [],
-          "sub": "8e1c7261-8b8a-457e-b71e-aa5529889a75",
-          "group": "df3c49ef-3c64-491f-b373-8f8ec8b63991",
-          "takes": 1,
-          "version": 2,
-          "mirrored": true,
-          "generated_at": "2026-09-09T22:41:18+00:00",
-          "action": "Beak Snap - Lunges forward and snaps once with its small beak, then returns to idle stance",
-          "source": "south-east"
-        },
-        "west": {
-          "status": "pass",
-          "step_mean": 0.1366,
-          "step_max": 0.1778,
-          "drift": 1.88,
-          "loop": 0.0,
-          "loop_ratio": 0.0,
-          "travel": 0.61,
-          "pin": 1.0,
-          "pad": 0,
-          "flash": 0.007,
-          "peak": 0.2471,
-          "canvas": [
-            40,
-            40
-          ],
-          "reasons": [],
-          "sub": "1bc15a44-ffc9-4c4f-8477-4e1124cdefb6",
-          "group": "3a886ef0-bcfc-4174-8a6e-aaaad775c919",
-          "takes": 1,
-          "version": 2,
-          "mirrored": true,
-          "generated_at": "2026-09-09T22:41:19+00:00",
-          "action": "Beak Snap - Lunges forward and snaps once with its small beak, then returns to idle stance",
-          "source": "east"
-        },
-        "north-west": {
-          "status": "pass",
-          "step_mean": 0.1218,
-          "step_max": 0.1742,
-          "drift": 1.27,
-          "loop": 0.0,
-          "loop_ratio": 0.0,
-          "travel": 1.27,
-          "pin": 1.0,
-          "pad": 0,
-          "flash": 0.003,
-          "peak": 0.1898,
-          "canvas": [
-            40,
-            40
-          ],
-          "reasons": [],
-          "sub": "f8796a82-7018-49e4-ac52-c7ec7ebfa493",
-          "group": "fb0109af-8d4a-41c8-98c2-5cbcae011d98",
-          "takes": 1,
-          "version": 2,
-          "mirrored": true,
-          "generated_at": "2026-09-09T22:41:19+00:00",
-          "action": "Beak Snap - Lunges forward and snaps once with its small beak, then returns to idle stance",
-          "source": "north-east"
-        }
-      },
-      "action": "Beak Snap - Lunges forward and snaps once with its small beak, then returns to idle stance",
-      "frame_paths": {
-        "south": [
-          "turtle_hatchling/animations/attack/south/00.webp",
-          "turtle_hatchling/animations/attack/south/01.webp",
-          "turtle_hatchling/animations/attack/south/02.webp",
-          "turtle_hatchling/animations/attack/south/03.webp",
-          "turtle_hatchling/animations/attack/south/04.webp"
-        ],
-        "south-east": [
-          "turtle_hatchling/animations/attack/south-east/00.webp",
-          "turtle_hatchling/animations/attack/south-east/01.webp",
-          "turtle_hatchling/animations/attack/south-east/02.webp",
-          "turtle_hatchling/animations/attack/south-east/03.webp",
-          "turtle_hatchling/animations/attack/south-east/04.webp"
-        ],
-        "east": [
-          "turtle_hatchling/animations/attack/east/00.webp",
-          "turtle_hatchling/animations/attack/east/01.webp",
-          "turtle_hatchling/animations/attack/east/02.webp",
-          "turtle_hatchling/animations/attack/east/03.webp",
-          "turtle_hatchling/animations/attack/east/04.webp"
-        ],
-        "north-east": [
-          "turtle_hatchling/animations/attack/north-east/00.webp",
-          "turtle_hatchling/animations/attack/north-east/01.webp",
-          "turtle_hatchling/animations/attack/north-east/02.webp",
-          "turtle_hatchling/animations/attack/north-east/03.webp",
-          "turtle_hatchling/animations/attack/north-east/04.webp"
-        ],
-        "north": [
-          "turtle_hatchling/animations/attack/north/00.webp",
-          "turtle_hatchling/animations/attack/north/01.webp",
-          "turtle_hatchling/animations/attack/north/02.webp",
-          "turtle_hatchling/animations/attack/north/03.webp",
-          "turtle_hatchling/animations/attack/north/04.webp"
-        ],
-        "south-west": [
-          "turtle_hatchling/animations/attack/south-west/00.webp",
-          "turtle_hatchling/animations/attack/south-west/01.webp",
-          "turtle_hatchling/animations/attack/south-west/02.webp",
-          "turtle_hatchling/animations/attack/south-west/03.webp",
-          "turtle_hatchling/animations/attack/south-west/04.webp"
-        ],
-        "west": [
-          "turtle_hatchling/animations/attack/west/00.webp",
-          "turtle_hatchling/animations/attack/west/01.webp",
-          "turtle_hatchling/animations/attack/west/02.webp",
-          "turtle_hatchling/animations/attack/west/03.webp",
-          "turtle_hatchling/animations/attack/west/04.webp"
-        ],
-        "north-west": [
-          "turtle_hatchling/animations/attack/north-west/00.webp",
-          "turtle_hatchling/animations/attack/north-west/01.webp",
-          "turtle_hatchling/animations/attack/north-west/02.webp",
-          "turtle_hatchling/animations/attack/north-west/03.webp",
-          "turtle_hatchling/animations/attack/north-west/04.webp"
-        ]
-      },
-      "strips": {
-        "south": "turtle_hatchling/animations/attack__south.webp",
-        "south-east": "turtle_hatchling/animations/attack__south-east.webp",
-        "east": "turtle_hatchling/animations/attack__east.webp",
-        "north-east": "turtle_hatchling/animations/attack__north-east.webp",
-        "north": "turtle_hatchling/animations/attack__north.webp",
-        "south-west": "turtle_hatchling/animations/attack__south-west.webp",
-        "west": "turtle_hatchling/animations/attack__west.webp",
-        "north-west": "turtle_hatchling/animations/attack__north-west.webp"
-      }
-    },
-    "attack_try": {
-      "directions": {
-        "south": {
-          "status": "fail",
-          "step_mean": 0.1236,
-          "step_max": 0.138,
-          "drift": 0.97,
-          "loop": 0.0916,
-          "loop_ratio": 0.74,
-          "travel": 0.17,
-          "pin": 1.0,
-          "pad": 0,
-          "flash": 0.005,
-          "peak": 0.2393,
-          "reach": 0.097,
-          "canvas": [
-            40,
-            40
-          ],
-          "reasons": [
-            "no strike, just a lean: nothing reaches past 0.10 of the body"
-          ],
-          "sub": "84f74164-e300-4ede-8318-83dfe438a715",
-          "group": "38155431-e4f6-4c3d-b96e-e0a16ea6f072",
-          "takes": 1,
-          "version": 2,
-          "mirrored": false,
-          "action": "Beak Snap - Stretches its neck right out and snaps its beak shut, a big aggressive swing",
-          "intensity": 1,
-          "tries": 1,
-          "generated_at": "2026-09-10T20:20:45+00:00"
-        },
-        "south-east": {
-          "status": "fail",
-          "step_mean": 0.0755,
-          "step_max": 0.1037,
-          "drift": 1.34,
-          "loop": 0.1822,
-          "loop_ratio": 2.41,
-          "travel": 0.47,
-          "pin": 1.0,
-          "pad": 0,
-          "flash": 0.003,
-          "peak": 0.1822,
-          "reach": 0.094,
-          "canvas": [
-            40,
-            40
-          ],
-          "reasons": [
-            "motion 0.075 outside the calm band 0.08–0.9 — eyeball it",
-            "no strike, just a lean: nothing reaches past 0.09 of the body"
-          ],
-          "sub": "8ba0d512-8a6f-470d-ba07-0ea51f5ac917",
-          "group": "171b385a-0123-4d59-8b9f-056265b8d052",
-          "takes": 1,
-          "version": 2,
-          "mirrored": false,
-          "action": "Beak Snap - Stretches its neck right out and snaps its beak shut, a big aggressive swing",
-          "intensity": 1,
-          "tries": 1,
-          "generated_at": "2026-09-10T20:20:46+00:00"
-        },
-        "east": {
-          "status": "fail",
-          "step_mean": 0.1389,
-          "step_max": 0.1665,
-          "drift": 2.29,
-          "loop": 0.0896,
-          "loop_ratio": 0.65,
-          "travel": 0.42,
-          "pin": 1.0,
-          "pad": 0,
-          "flash": 0.0,
-          "peak": 0.2625,
-          "reach": 0.161,
-          "canvas": [
-            40,
-            40
-          ],
-          "reasons": [
-            "no strike, just a lean: nothing reaches past 0.16 of the body"
-          ],
-          "sub": "ae412b1c-2efc-4f64-b543-72c3ec8f0ab2",
-          "group": "202ca805-dadf-47f7-847c-c7b8358bbf99",
-          "takes": 1,
-          "version": 2,
-          "mirrored": false,
-          "action": "Beak Snap - Stretches its neck right out and snaps its beak shut, a big aggressive swing",
-          "intensity": 1,
-          "tries": 1,
-          "generated_at": "2026-09-10T20:20:46+00:00"
-        },
-        "north-east": {
-          "status": "fail",
-          "step_mean": 0.1061,
-          "step_max": 0.134,
-          "drift": 2.1,
-          "loop": 0.1001,
-          "loop_ratio": 0.94,
-          "travel": 0.43,
-          "pin": 1.0,
-          "pad": 0,
-          "flash": 0.001,
-          "peak": 0.2087,
-          "reach": 0.097,
-          "canvas": [
-            40,
-            40
-          ],
-          "reasons": [
-            "no strike, just a lean: nothing reaches past 0.10 of the body"
-          ],
-          "sub": "6aa5859d-edf9-4e9f-85f9-7292e8ab2451",
-          "group": "668530fb-94e2-4776-9c25-fcccff4eeccc",
-          "takes": 1,
-          "version": 2,
-          "mirrored": false,
-          "action": "Beak Snap - Stretches its neck right out and snaps its beak shut, a big aggressive swing",
-          "intensity": 1,
-          "tries": 1,
-          "generated_at": "2026-09-10T20:20:46+00:00"
-        },
-        "north": {
-          "status": "fail",
-          "step_mean": 0.0728,
-          "step_max": 0.1058,
-          "drift": 0.41,
-          "loop": 0.0971,
-          "loop_ratio": 1.33,
-          "travel": 0.28,
-          "pin": 1.0,
-          "pad": 0,
-          "flash": 0.0,
-          "peak": 0.1406,
-          "reach": 0.1,
-          "canvas": [
-            40,
-            40
-          ],
-          "reasons": [
-            "motion 0.073 outside the calm band 0.08–0.9 — eyeball it",
-            "weak strike: peak 0.141 — eyeball it",
-            "no strike, just a lean: nothing reaches past 0.10 of the body"
-          ],
-          "sub": "51a75ca4-d7fd-4449-bfc0-6b814305de4b",
-          "group": "08ae36b4-51fd-49ae-9418-7d427f4b46b6",
-          "takes": 1,
-          "version": 2,
-          "mirrored": false,
-          "action": "Beak Snap - Stretches its neck right out and snaps its beak shut, a big aggressive swing",
-          "intensity": 1,
-          "tries": 1,
-          "generated_at": "2026-09-10T20:20:47+00:00"
-        }
-      },
-      "action": "Beak Snap - Stretches its neck right out and snaps its beak shut, a big aggressive swing",
-      "frame_paths": {
-        "south": [
-          "turtle_hatchling/animations/attack_try/south/00.webp",
-          "turtle_hatchling/animations/attack_try/south/01.webp",
-          "turtle_hatchling/animations/attack_try/south/02.webp",
-          "turtle_hatchling/animations/attack_try/south/03.webp",
-          "turtle_hatchling/animations/attack_try/south/04.webp"
-        ],
-        "south-east": [
-          "turtle_hatchling/animations/attack_try/south-east/00.webp",
-          "turtle_hatchling/animations/attack_try/south-east/01.webp",
-          "turtle_hatchling/animations/attack_try/south-east/02.webp",
-          "turtle_hatchling/animations/attack_try/south-east/03.webp",
-          "turtle_hatchling/animations/attack_try/south-east/04.webp"
-        ],
-        "east": [
-          "turtle_hatchling/animations/attack_try/east/00.webp",
-          "turtle_hatchling/animations/attack_try/east/01.webp",
-          "turtle_hatchling/animations/attack_try/east/02.webp",
-          "turtle_hatchling/animations/attack_try/east/03.webp",
-          "turtle_hatchling/animations/attack_try/east/04.webp"
-        ],
-        "north-east": [
-          "turtle_hatchling/animations/attack_try/north-east/00.webp",
-          "turtle_hatchling/animations/attack_try/north-east/01.webp",
-          "turtle_hatchling/animations/attack_try/north-east/02.webp",
-          "turtle_hatchling/animations/attack_try/north-east/03.webp",
-          "turtle_hatchling/animations/attack_try/north-east/04.webp"
-        ],
-        "north": [
-          "turtle_hatchling/animations/attack_try/north/00.webp",
-          "turtle_hatchling/animations/attack_try/north/01.webp",
-          "turtle_hatchling/animations/attack_try/north/02.webp",
-          "turtle_hatchling/animations/attack_try/north/03.webp",
-          "turtle_hatchling/animations/attack_try/north/04.webp"
-        ]
-      },
-      "strips": {
-        "south": "turtle_hatchling/animations/attack_try__south.webp",
-        "south-east": "turtle_hatchling/animations/attack_try__south-east.webp",
-        "east": "turtle_hatchling/animations/attack_try__east.webp",
-        "north-east": "turtle_hatchling/animations/attack_try__north-east.webp",
-        "north": "turtle_hatchling/animations/attack_try__north.webp"
-      },
-      "intensity": 1
-    }
+ "id": "turtle_hatchling",
+ "name": "Shellet",
+ "tier": "cute",
+ "scale": "small",
+ "lore": "The first of the clutch to reach the water, and the only one. It has been careful ever since.",
+ "biome": [
+  "light_beach",
+  "water"
+ ],
+ "items": [],
+ "prompt": "Small fantasy sea turtle hatchling with a domed dark green shell patterned with pale hexagons, small flippers, large dark eyes, and sand on its shell.",
+ "size": [
+  40,
+  40
+ ],
+ "template_id": "bear",
+ "directions": [
+  "south",
+  "south-east",
+  "east",
+  "north-east",
+  "north",
+  "north-west",
+  "west",
+  "south-west"
+ ],
+ "rotations": {
+  "south": "turtle_hatchling/rotations/south.webp",
+  "south-east": "turtle_hatchling/rotations/south-east.webp",
+  "east": "turtle_hatchling/rotations/east.webp",
+  "north-east": "turtle_hatchling/rotations/north-east.webp",
+  "north": "turtle_hatchling/rotations/north.webp",
+  "north-west": "turtle_hatchling/rotations/north-west.webp",
+  "west": "turtle_hatchling/rotations/west.webp",
+  "south-west": "turtle_hatchling/rotations/south-west.webp"
+ },
+ "sheet": "turtle_hatchling/sheet.webp",
+ "review": "approved",
+ "pixellab_id": "fd162650-47e9-4699-ac47-9e5d3f6c8050",
+ "seed": 951283235,
+ "version": 1,
+ "usage": null,
+ "generated_at": "2026-09-09T18:56:11+00:00",
+ "elapsed_s": 168.7,
+ "qa": {
+  "status": "pass",
+  "min_run1": 0.655,
+  "reasons": [],
+  "directions": {
+   "south": {
+    "run1": 0.665,
+    "bbox": [
+     2,
+     4,
+     38,
+     35
+    ],
+    "fill": 0.698,
+    "touches_edge": false
+   },
+   "south-east": {
+    "run1": 0.74,
+    "bbox": [
+     2,
+     4,
+     39,
+     36
+    ],
+    "fill": 0.74,
+    "touches_edge": false
+   },
+   "east": {
+    "run1": 0.689,
+    "bbox": [
+     2,
+     5,
+     38,
+     36
+    ],
+    "fill": 0.698,
+    "touches_edge": false
+   },
+   "north-east": {
+    "run1": 0.733,
+    "bbox": [
+     3,
+     6,
+     34,
+     35
+    ],
+    "fill": 0.562,
+    "touches_edge": false
+   },
+   "north": {
+    "run1": 0.655,
+    "bbox": [
+     5,
+     3,
+     35,
+     36
+    ],
+    "fill": 0.619,
+    "touches_edge": false
+   },
+   "north-west": {
+    "run1": 0.709,
+    "bbox": [
+     6,
+     6,
+     37,
+     35
+    ],
+    "fill": 0.562,
+    "touches_edge": false
+   },
+   "west": {
+    "run1": 0.69,
+    "bbox": [
+     2,
+     5,
+     38,
+     36
+    ],
+    "fill": 0.698,
+    "touches_edge": false
+   },
+   "south-west": {
+    "run1": 0.724,
+    "bbox": [
+     1,
+     4,
+     38,
+     36
+    ],
+    "fill": 0.74,
+    "touches_edge": false
+   }
   }
+ },
+ "approved_at": "2026-09-09T19:59:25+00:00",
+ "animations": {
+  "idle": {
+   "directions": {
+    "south": {
+     "status": "pass",
+     "step_mean": 0.0842,
+     "step_max": 0.094,
+     "drift": 1.1,
+     "loop": 0.0,
+     "pin": 1.0,
+     "reasons": [],
+     "sub": "c615e38d-0f28-43c8-bf00-c3bfb856e1f9",
+     "takes": 1,
+     "version": 1,
+     "mirrored": false,
+     "generated_at": "2026-09-09T20:23:02+00:00",
+     "cut": 0
+    },
+    "south-east": {
+     "status": "pass",
+     "step_mean": 0.05,
+     "step_max": 0.056,
+     "drift": 0.38,
+     "loop": 0.0,
+     "pin": 1.0,
+     "reasons": [],
+     "sub": "c9e33179-7299-4e87-8033-7aa2b6cc393f",
+     "takes": 1,
+     "version": 1,
+     "mirrored": false,
+     "generated_at": "2026-09-09T20:23:02+00:00",
+     "cut": 0
+    },
+    "east": {
+     "status": "pass",
+     "step_mean": 0.0794,
+     "step_max": 0.1058,
+     "drift": 1.43,
+     "loop": 0.0,
+     "pin": 1.0,
+     "reasons": [],
+     "sub": "0e14a90c-146d-475d-a0c8-6a75a2c75339",
+     "takes": 1,
+     "version": 1,
+     "mirrored": false,
+     "generated_at": "2026-09-09T20:23:03+00:00",
+     "cut": 0
+    },
+    "north-east": {
+     "status": "pass",
+     "step_mean": 0.1061,
+     "step_max": 0.1146,
+     "drift": 1.12,
+     "loop": 0.0,
+     "pin": 1.0,
+     "reasons": [],
+     "sub": "e5344c20-203b-4696-8622-c1fa27095aef",
+     "takes": 1,
+     "version": 1,
+     "mirrored": false,
+     "generated_at": "2026-09-09T20:23:03+00:00",
+     "cut": 0
+    },
+    "north": {
+     "status": "pass",
+     "step_mean": 0.0621,
+     "step_max": 0.0983,
+     "drift": 0.57,
+     "loop": 0.0,
+     "pin": 1.0,
+     "reasons": [],
+     "sub": "3a09892e-6510-4932-a4bf-d14f0e777768",
+     "takes": 1,
+     "version": 1,
+     "mirrored": false,
+     "generated_at": "2026-09-09T20:23:04+00:00",
+     "cut": 0
+    },
+    "south-west": {
+     "status": "pass",
+     "step_mean": 0.05,
+     "step_max": 0.056,
+     "drift": 0.38,
+     "loop": 0.0,
+     "pin": 1.0,
+     "reasons": [],
+     "sub": "c9e33179-7299-4e87-8033-7aa2b6cc393f",
+     "takes": 1,
+     "version": 1,
+     "mirrored": true,
+     "generated_at": "2026-09-09T20:23:02+00:00",
+     "cut": 0,
+     "source": "south-east"
+    },
+    "west": {
+     "status": "pass",
+     "step_mean": 0.0794,
+     "step_max": 0.1058,
+     "drift": 1.43,
+     "loop": 0.0,
+     "pin": 1.0,
+     "reasons": [],
+     "sub": "0e14a90c-146d-475d-a0c8-6a75a2c75339",
+     "takes": 1,
+     "version": 1,
+     "mirrored": true,
+     "generated_at": "2026-09-09T20:23:03+00:00",
+     "cut": 0,
+     "source": "east"
+    },
+    "north-west": {
+     "status": "pass",
+     "step_mean": 0.1061,
+     "step_max": 0.1146,
+     "drift": 1.12,
+     "loop": 0.0,
+     "pin": 1.0,
+     "reasons": [],
+     "sub": "e5344c20-203b-4696-8622-c1fa27095aef",
+     "takes": 1,
+     "version": 1,
+     "mirrored": true,
+     "generated_at": "2026-09-09T20:23:03+00:00",
+     "cut": 0,
+     "source": "north-east"
+    }
+   },
+   "action": "Calm still idle, breathing very slowly and subtly, chest and shoulders rise and fall a little, feet planted, no other movement, ends in the same neutral pose it started in",
+   "frame_paths": {
+    "south": [
+     "turtle_hatchling/animations/idle/south/00.webp",
+     "turtle_hatchling/animations/idle/south/01.webp",
+     "turtle_hatchling/animations/idle/south/02.webp",
+     "turtle_hatchling/animations/idle/south/03.webp",
+     "turtle_hatchling/animations/idle/south/04.webp"
+    ],
+    "south-east": [
+     "turtle_hatchling/animations/idle/south-east/00.webp",
+     "turtle_hatchling/animations/idle/south-east/01.webp",
+     "turtle_hatchling/animations/idle/south-east/02.webp",
+     "turtle_hatchling/animations/idle/south-east/03.webp",
+     "turtle_hatchling/animations/idle/south-east/04.webp"
+    ],
+    "east": [
+     "turtle_hatchling/animations/idle/east/00.webp",
+     "turtle_hatchling/animations/idle/east/01.webp",
+     "turtle_hatchling/animations/idle/east/02.webp",
+     "turtle_hatchling/animations/idle/east/03.webp",
+     "turtle_hatchling/animations/idle/east/04.webp"
+    ],
+    "north-east": [
+     "turtle_hatchling/animations/idle/north-east/00.webp",
+     "turtle_hatchling/animations/idle/north-east/01.webp",
+     "turtle_hatchling/animations/idle/north-east/02.webp",
+     "turtle_hatchling/animations/idle/north-east/03.webp",
+     "turtle_hatchling/animations/idle/north-east/04.webp"
+    ],
+    "north": [
+     "turtle_hatchling/animations/idle/north/00.webp",
+     "turtle_hatchling/animations/idle/north/01.webp",
+     "turtle_hatchling/animations/idle/north/02.webp",
+     "turtle_hatchling/animations/idle/north/03.webp",
+     "turtle_hatchling/animations/idle/north/04.webp"
+    ],
+    "south-west": [
+     "turtle_hatchling/animations/idle/south-west/00.webp",
+     "turtle_hatchling/animations/idle/south-west/01.webp",
+     "turtle_hatchling/animations/idle/south-west/02.webp",
+     "turtle_hatchling/animations/idle/south-west/03.webp",
+     "turtle_hatchling/animations/idle/south-west/04.webp"
+    ],
+    "west": [
+     "turtle_hatchling/animations/idle/west/00.webp",
+     "turtle_hatchling/animations/idle/west/01.webp",
+     "turtle_hatchling/animations/idle/west/02.webp",
+     "turtle_hatchling/animations/idle/west/03.webp",
+     "turtle_hatchling/animations/idle/west/04.webp"
+    ],
+    "north-west": [
+     "turtle_hatchling/animations/idle/north-west/00.webp",
+     "turtle_hatchling/animations/idle/north-west/01.webp",
+     "turtle_hatchling/animations/idle/north-west/02.webp",
+     "turtle_hatchling/animations/idle/north-west/03.webp",
+     "turtle_hatchling/animations/idle/north-west/04.webp"
+    ]
+   },
+   "strips": {
+    "south": "turtle_hatchling/animations/idle__south.webp",
+    "south-east": "turtle_hatchling/animations/idle__south-east.webp",
+    "east": "turtle_hatchling/animations/idle__east.webp",
+    "north-east": "turtle_hatchling/animations/idle__north-east.webp",
+    "north": "turtle_hatchling/animations/idle__north.webp",
+    "south-west": "turtle_hatchling/animations/idle__south-west.webp",
+    "west": "turtle_hatchling/animations/idle__west.webp",
+    "north-west": "turtle_hatchling/animations/idle__north-west.webp"
+   }
+  },
+  "walk": {
+   "directions": {
+    "south": {
+     "status": "pass",
+     "step_mean": 0.09,
+     "step_max": 0.1107,
+     "drift": 2.05,
+     "loop": 0.0448,
+     "loop_ratio": 0.5,
+     "travel": 0.12,
+     "pin": 0.907,
+     "pad": 0,
+     "canvas": [
+      40,
+      40
+     ],
+     "reasons": [],
+     "sub": "89051216-36e3-427e-85e8-e476c83c1094",
+     "group": "b839e57e-fb14-4f13-aa11-9faede9ab57d",
+     "takes": 1,
+     "version": 1,
+     "mirrored": false,
+     "generated_at": "2026-09-09T21:28:25+00:00"
+    },
+    "south-east": {
+     "status": "pass",
+     "step_mean": 0.1121,
+     "step_max": 0.124,
+     "drift": 1.03,
+     "loop": 0.1159,
+     "loop_ratio": 1.03,
+     "travel": 0.88,
+     "pin": 0.955,
+     "pad": 0,
+     "canvas": [
+      40,
+      40
+     ],
+     "reasons": [],
+     "sub": "5272b402-3656-4060-9c8c-8efffcbe8a13",
+     "group": "fec927c4-1237-470e-8415-1a52c4c31bc8",
+     "takes": 1,
+     "version": 1,
+     "mirrored": false,
+     "generated_at": "2026-09-09T21:28:26+00:00"
+    },
+    "east": {
+     "status": "pass",
+     "step_mean": 0.0822,
+     "step_max": 0.0927,
+     "drift": 0.69,
+     "loop": 0.1527,
+     "loop_ratio": 1.86,
+     "travel": 0.36,
+     "pin": 0.928,
+     "pad": 0,
+     "canvas": [
+      40,
+      40
+     ],
+     "reasons": [],
+     "sub": "a7955a82-7861-4070-aa3e-494bc63cf9c7",
+     "group": "c3e69754-120c-47e9-bf44-ae8fca6361f0",
+     "takes": 1,
+     "version": 1,
+     "mirrored": false,
+     "generated_at": "2026-09-09T21:28:26+00:00"
+    },
+    "north-east": {
+     "status": "pass",
+     "step_mean": 0.0781,
+     "step_max": 0.1067,
+     "drift": 0.89,
+     "loop": 0.0899,
+     "loop_ratio": 1.15,
+     "travel": 0.39,
+     "pin": 0.955,
+     "pad": 0,
+     "canvas": [
+      40,
+      40
+     ],
+     "reasons": [],
+     "sub": "39aa88dc-cc57-47c1-8679-f67273fd6001",
+     "group": "f8ff455c-a52c-4dc5-9f91-56e1217abe44",
+     "takes": 1,
+     "version": 1,
+     "mirrored": false,
+     "generated_at": "2026-09-09T21:28:27+00:00"
+    },
+    "north": {
+     "status": "pass",
+     "step_mean": 0.0761,
+     "step_max": 0.103,
+     "drift": 1.08,
+     "loop": 0.119,
+     "loop_ratio": 1.56,
+     "travel": 0.05,
+     "pin": 0.937,
+     "pad": 0,
+     "canvas": [
+      40,
+      40
+     ],
+     "reasons": [],
+     "sub": "decea888-f2c9-4f37-b584-100e4119368d",
+     "group": "91671504-ff2e-45a3-bc04-cd1d308bf8a5",
+     "takes": 1,
+     "version": 1,
+     "mirrored": false,
+     "generated_at": "2026-09-09T21:28:27+00:00"
+    },
+    "south-west": {
+     "status": "pass",
+     "step_mean": 0.1121,
+     "step_max": 0.124,
+     "drift": 1.03,
+     "loop": 0.1159,
+     "loop_ratio": 1.03,
+     "travel": 0.88,
+     "pin": 0.955,
+     "pad": 0,
+     "canvas": [
+      40,
+      40
+     ],
+     "reasons": [],
+     "sub": "5272b402-3656-4060-9c8c-8efffcbe8a13",
+     "group": "fec927c4-1237-470e-8415-1a52c4c31bc8",
+     "takes": 1,
+     "version": 1,
+     "mirrored": true,
+     "generated_at": "2026-09-09T21:28:26+00:00",
+     "source": "south-east"
+    },
+    "west": {
+     "status": "pass",
+     "step_mean": 0.0822,
+     "step_max": 0.0927,
+     "drift": 0.69,
+     "loop": 0.1527,
+     "loop_ratio": 1.86,
+     "travel": 0.36,
+     "pin": 0.928,
+     "pad": 0,
+     "canvas": [
+      40,
+      40
+     ],
+     "reasons": [],
+     "sub": "a7955a82-7861-4070-aa3e-494bc63cf9c7",
+     "group": "c3e69754-120c-47e9-bf44-ae8fca6361f0",
+     "takes": 1,
+     "version": 1,
+     "mirrored": true,
+     "generated_at": "2026-09-09T21:28:26+00:00",
+     "source": "east"
+    },
+    "north-west": {
+     "status": "pass",
+     "step_mean": 0.0781,
+     "step_max": 0.1067,
+     "drift": 0.89,
+     "loop": 0.0899,
+     "loop_ratio": 1.15,
+     "travel": 0.39,
+     "pin": 0.955,
+     "pad": 0,
+     "canvas": [
+      40,
+      40
+     ],
+     "reasons": [],
+     "sub": "39aa88dc-cc57-47c1-8679-f67273fd6001",
+     "group": "f8ff455c-a52c-4dc5-9f91-56e1217abe44",
+     "takes": 1,
+     "version": 1,
+     "mirrored": true,
+     "generated_at": "2026-09-09T21:28:27+00:00",
+     "source": "north-east"
+    }
+   },
+   "action": "crawls forward in place, flippers alternating in a slow paddling stride, shell steady, seamless loop, no turning",
+   "frame_paths": {
+    "south": [
+     "turtle_hatchling/animations/walk/south/00.webp",
+     "turtle_hatchling/animations/walk/south/01.webp",
+     "turtle_hatchling/animations/walk/south/02.webp",
+     "turtle_hatchling/animations/walk/south/03.webp",
+     "turtle_hatchling/animations/walk/south/04.webp",
+     "turtle_hatchling/animations/walk/south/05.webp"
+    ],
+    "south-east": [
+     "turtle_hatchling/animations/walk/south-east/00.webp",
+     "turtle_hatchling/animations/walk/south-east/01.webp",
+     "turtle_hatchling/animations/walk/south-east/02.webp",
+     "turtle_hatchling/animations/walk/south-east/03.webp",
+     "turtle_hatchling/animations/walk/south-east/04.webp",
+     "turtle_hatchling/animations/walk/south-east/05.webp"
+    ],
+    "east": [
+     "turtle_hatchling/animations/walk/east/00.webp",
+     "turtle_hatchling/animations/walk/east/01.webp",
+     "turtle_hatchling/animations/walk/east/02.webp",
+     "turtle_hatchling/animations/walk/east/03.webp",
+     "turtle_hatchling/animations/walk/east/04.webp",
+     "turtle_hatchling/animations/walk/east/05.webp"
+    ],
+    "north-east": [
+     "turtle_hatchling/animations/walk/north-east/00.webp",
+     "turtle_hatchling/animations/walk/north-east/01.webp",
+     "turtle_hatchling/animations/walk/north-east/02.webp",
+     "turtle_hatchling/animations/walk/north-east/03.webp",
+     "turtle_hatchling/animations/walk/north-east/04.webp",
+     "turtle_hatchling/animations/walk/north-east/05.webp"
+    ],
+    "north": [
+     "turtle_hatchling/animations/walk/north/00.webp",
+     "turtle_hatchling/animations/walk/north/01.webp",
+     "turtle_hatchling/animations/walk/north/02.webp",
+     "turtle_hatchling/animations/walk/north/03.webp",
+     "turtle_hatchling/animations/walk/north/04.webp",
+     "turtle_hatchling/animations/walk/north/05.webp"
+    ],
+    "south-west": [
+     "turtle_hatchling/animations/walk/south-west/00.webp",
+     "turtle_hatchling/animations/walk/south-west/01.webp",
+     "turtle_hatchling/animations/walk/south-west/02.webp",
+     "turtle_hatchling/animations/walk/south-west/03.webp",
+     "turtle_hatchling/animations/walk/south-west/04.webp",
+     "turtle_hatchling/animations/walk/south-west/05.webp"
+    ],
+    "west": [
+     "turtle_hatchling/animations/walk/west/00.webp",
+     "turtle_hatchling/animations/walk/west/01.webp",
+     "turtle_hatchling/animations/walk/west/02.webp",
+     "turtle_hatchling/animations/walk/west/03.webp",
+     "turtle_hatchling/animations/walk/west/04.webp",
+     "turtle_hatchling/animations/walk/west/05.webp"
+    ],
+    "north-west": [
+     "turtle_hatchling/animations/walk/north-west/00.webp",
+     "turtle_hatchling/animations/walk/north-west/01.webp",
+     "turtle_hatchling/animations/walk/north-west/02.webp",
+     "turtle_hatchling/animations/walk/north-west/03.webp",
+     "turtle_hatchling/animations/walk/north-west/04.webp",
+     "turtle_hatchling/animations/walk/north-west/05.webp"
+    ]
+   },
+   "strips": {
+    "south": "turtle_hatchling/animations/walk__south.webp",
+    "south-east": "turtle_hatchling/animations/walk__south-east.webp",
+    "east": "turtle_hatchling/animations/walk__east.webp",
+    "north-east": "turtle_hatchling/animations/walk__north-east.webp",
+    "north": "turtle_hatchling/animations/walk__north.webp",
+    "south-west": "turtle_hatchling/animations/walk__south-west.webp",
+    "west": "turtle_hatchling/animations/walk__west.webp",
+    "north-west": "turtle_hatchling/animations/walk__north-west.webp"
+   }
+  },
+  "attack": {
+   "directions": {
+    "south": {
+     "status": "warn",
+     "step_mean": 0.1422,
+     "step_max": 0.1954,
+     "drift": 0.88,
+     "loop": 0.0,
+     "loop_ratio": 0.0,
+     "travel": 0.17,
+     "pin": 1.0,
+     "pad": 2,
+     "flash": 0.056,
+     "peak": 0.2674,
+     "reach": 0.387,
+     "canvas": [
+      44,
+      44
+     ],
+     "reasons": [
+      "some bright effect pixels (0.06) — eyeball it",
+      "canvas grown by 2 px a side to hold the motion"
+     ],
+     "sub": "421722fc-7cd1-4f9d-8711-d264cf07a09b",
+     "group": "1c995073-cbf6-4874-887b-4dc4419553a4",
+     "takes": 1,
+     "version": 2,
+     "mirrored": false,
+     "generated_at": "2026-09-09T22:41:18+00:00",
+     "action": "Beak Snap - Lunges forward and snaps once with its small beak, then returns to idle stance"
+    },
+    "south-east": {
+     "status": "fail",
+     "step_mean": 0.1013,
+     "step_max": 0.1307,
+     "drift": 0.46,
+     "loop": 0.0,
+     "loop_ratio": 0.0,
+     "travel": 0.58,
+     "pin": 1.0,
+     "pad": 0,
+     "flash": 0.0,
+     "peak": 0.1573,
+     "reach": 0.094,
+     "canvas": [
+      40,
+      40
+     ],
+     "reasons": [
+      "no strike, just a lean: nothing reaches past 0.09 of the body"
+     ],
+     "sub": "8e1c7261-8b8a-457e-b71e-aa5529889a75",
+     "group": "df3c49ef-3c64-491f-b373-8f8ec8b63991",
+     "takes": 1,
+     "version": 2,
+     "mirrored": false,
+     "generated_at": "2026-09-09T22:41:18+00:00",
+     "action": "Beak Snap - Lunges forward and snaps once with its small beak, then returns to idle stance"
+    },
+    "east": {
+     "status": "fail",
+     "step_mean": 0.1366,
+     "step_max": 0.1778,
+     "drift": 1.88,
+     "loop": 0.0,
+     "loop_ratio": 0.0,
+     "travel": 0.61,
+     "pin": 1.0,
+     "pad": 0,
+     "flash": 0.007,
+     "peak": 0.2471,
+     "reach": 0.065,
+     "canvas": [
+      40,
+      40
+     ],
+     "reasons": [
+      "no strike, just a lean: nothing reaches past 0.06 of the body"
+     ],
+     "sub": "1bc15a44-ffc9-4c4f-8477-4e1124cdefb6",
+     "group": "3a886ef0-bcfc-4174-8a6e-aaaad775c919",
+     "takes": 1,
+     "version": 2,
+     "mirrored": false,
+     "generated_at": "2026-09-09T22:41:19+00:00",
+     "action": "Beak Snap - Lunges forward and snaps once with its small beak, then returns to idle stance"
+    },
+    "north-east": {
+     "status": "fail",
+     "step_mean": 0.1218,
+     "step_max": 0.1742,
+     "drift": 1.27,
+     "loop": 0.0,
+     "loop_ratio": 0.0,
+     "travel": 1.27,
+     "pin": 1.0,
+     "pad": 0,
+     "flash": 0.003,
+     "peak": 0.1898,
+     "reach": 0.103,
+     "canvas": [
+      40,
+      40
+     ],
+     "reasons": [
+      "no strike, just a lean: nothing reaches past 0.10 of the body"
+     ],
+     "sub": "f8796a82-7018-49e4-ac52-c7ec7ebfa493",
+     "group": "fb0109af-8d4a-41c8-98c2-5cbcae011d98",
+     "takes": 1,
+     "version": 2,
+     "mirrored": false,
+     "generated_at": "2026-09-09T22:41:19+00:00",
+     "action": "Beak Snap - Lunges forward and snaps once with its small beak, then returns to idle stance"
+    },
+    "north": {
+     "status": "fail",
+     "step_mean": 0.0739,
+     "step_max": 0.1203,
+     "drift": 0.94,
+     "loop": 0.0,
+     "loop_ratio": 0.0,
+     "travel": 0.05,
+     "pin": 1.0,
+     "pad": 0,
+     "flash": 0.0,
+     "peak": 0.1391,
+     "reach": 0.065,
+     "canvas": [
+      40,
+      40
+     ],
+     "reasons": [
+      "motion 0.074 outside the calm band 0.08–0.9 — eyeball it",
+      "weak strike: peak 0.139 — eyeball it",
+      "no strike, just a lean: nothing reaches past 0.06 of the body"
+     ],
+     "sub": "41eb99d2-e416-44ba-88c4-3f62e1049114",
+     "group": "905026a4-2148-487a-84c6-552e7442a61a",
+     "takes": 1,
+     "version": 2,
+     "mirrored": false,
+     "generated_at": "2026-09-09T22:41:20+00:00",
+     "action": "Beak Snap - Lunges forward and snaps once with its small beak, then returns to idle stance"
+    },
+    "south-west": {
+     "status": "pass",
+     "step_mean": 0.1013,
+     "step_max": 0.1307,
+     "drift": 0.46,
+     "loop": 0.0,
+     "loop_ratio": 0.0,
+     "travel": 0.58,
+     "pin": 1.0,
+     "pad": 0,
+     "flash": 0.0,
+     "peak": 0.1573,
+     "canvas": [
+      40,
+      40
+     ],
+     "reasons": [],
+     "sub": "8e1c7261-8b8a-457e-b71e-aa5529889a75",
+     "group": "df3c49ef-3c64-491f-b373-8f8ec8b63991",
+     "takes": 1,
+     "version": 2,
+     "mirrored": true,
+     "generated_at": "2026-09-09T22:41:18+00:00",
+     "action": "Beak Snap - Lunges forward and snaps once with its small beak, then returns to idle stance",
+     "source": "south-east"
+    },
+    "west": {
+     "status": "pass",
+     "step_mean": 0.1366,
+     "step_max": 0.1778,
+     "drift": 1.88,
+     "loop": 0.0,
+     "loop_ratio": 0.0,
+     "travel": 0.61,
+     "pin": 1.0,
+     "pad": 0,
+     "flash": 0.007,
+     "peak": 0.2471,
+     "canvas": [
+      40,
+      40
+     ],
+     "reasons": [],
+     "sub": "1bc15a44-ffc9-4c4f-8477-4e1124cdefb6",
+     "group": "3a886ef0-bcfc-4174-8a6e-aaaad775c919",
+     "takes": 1,
+     "version": 2,
+     "mirrored": true,
+     "generated_at": "2026-09-09T22:41:19+00:00",
+     "action": "Beak Snap - Lunges forward and snaps once with its small beak, then returns to idle stance",
+     "source": "east"
+    },
+    "north-west": {
+     "status": "pass",
+     "step_mean": 0.1218,
+     "step_max": 0.1742,
+     "drift": 1.27,
+     "loop": 0.0,
+     "loop_ratio": 0.0,
+     "travel": 1.27,
+     "pin": 1.0,
+     "pad": 0,
+     "flash": 0.003,
+     "peak": 0.1898,
+     "canvas": [
+      40,
+      40
+     ],
+     "reasons": [],
+     "sub": "f8796a82-7018-49e4-ac52-c7ec7ebfa493",
+     "group": "fb0109af-8d4a-41c8-98c2-5cbcae011d98",
+     "takes": 1,
+     "version": 2,
+     "mirrored": true,
+     "generated_at": "2026-09-09T22:41:19+00:00",
+     "action": "Beak Snap - Lunges forward and snaps once with its small beak, then returns to idle stance",
+     "source": "north-east"
+    }
+   },
+   "action": "Beak Snap - Lunges forward and snaps once with its small beak, then returns to idle stance",
+   "frame_paths": {
+    "south": [
+     "turtle_hatchling/animations/attack/south/00.webp",
+     "turtle_hatchling/animations/attack/south/01.webp",
+     "turtle_hatchling/animations/attack/south/02.webp",
+     "turtle_hatchling/animations/attack/south/03.webp",
+     "turtle_hatchling/animations/attack/south/04.webp"
+    ],
+    "south-east": [
+     "turtle_hatchling/animations/attack/south-east/00.webp",
+     "turtle_hatchling/animations/attack/south-east/01.webp",
+     "turtle_hatchling/animations/attack/south-east/02.webp",
+     "turtle_hatchling/animations/attack/south-east/03.webp",
+     "turtle_hatchling/animations/attack/south-east/04.webp"
+    ],
+    "east": [
+     "turtle_hatchling/animations/attack/east/00.webp",
+     "turtle_hatchling/animations/attack/east/01.webp",
+     "turtle_hatchling/animations/attack/east/02.webp",
+     "turtle_hatchling/animations/attack/east/03.webp",
+     "turtle_hatchling/animations/attack/east/04.webp"
+    ],
+    "north-east": [
+     "turtle_hatchling/animations/attack/north-east/00.webp",
+     "turtle_hatchling/animations/attack/north-east/01.webp",
+     "turtle_hatchling/animations/attack/north-east/02.webp",
+     "turtle_hatchling/animations/attack/north-east/03.webp",
+     "turtle_hatchling/animations/attack/north-east/04.webp"
+    ],
+    "north": [
+     "turtle_hatchling/animations/attack/north/00.webp",
+     "turtle_hatchling/animations/attack/north/01.webp",
+     "turtle_hatchling/animations/attack/north/02.webp",
+     "turtle_hatchling/animations/attack/north/03.webp",
+     "turtle_hatchling/animations/attack/north/04.webp"
+    ],
+    "south-west": [
+     "turtle_hatchling/animations/attack/south-west/00.webp",
+     "turtle_hatchling/animations/attack/south-west/01.webp",
+     "turtle_hatchling/animations/attack/south-west/02.webp",
+     "turtle_hatchling/animations/attack/south-west/03.webp",
+     "turtle_hatchling/animations/attack/south-west/04.webp"
+    ],
+    "west": [
+     "turtle_hatchling/animations/attack/west/00.webp",
+     "turtle_hatchling/animations/attack/west/01.webp",
+     "turtle_hatchling/animations/attack/west/02.webp",
+     "turtle_hatchling/animations/attack/west/03.webp",
+     "turtle_hatchling/animations/attack/west/04.webp"
+    ],
+    "north-west": [
+     "turtle_hatchling/animations/attack/north-west/00.webp",
+     "turtle_hatchling/animations/attack/north-west/01.webp",
+     "turtle_hatchling/animations/attack/north-west/02.webp",
+     "turtle_hatchling/animations/attack/north-west/03.webp",
+     "turtle_hatchling/animations/attack/north-west/04.webp"
+    ]
+   },
+   "strips": {
+    "south": "turtle_hatchling/animations/attack__south.webp",
+    "south-east": "turtle_hatchling/animations/attack__south-east.webp",
+    "east": "turtle_hatchling/animations/attack__east.webp",
+    "north-east": "turtle_hatchling/animations/attack__north-east.webp",
+    "north": "turtle_hatchling/animations/attack__north.webp",
+    "south-west": "turtle_hatchling/animations/attack__south-west.webp",
+    "west": "turtle_hatchling/animations/attack__west.webp",
+    "north-west": "turtle_hatchling/animations/attack__north-west.webp"
+   }
+  },
+  "attack_try": {
+   "directions": {
+    "south": {
+     "status": "fail",
+     "step_mean": 0.1236,
+     "step_max": 0.138,
+     "drift": 0.97,
+     "loop": 0.0916,
+     "loop_ratio": 0.74,
+     "travel": 0.17,
+     "pin": 1.0,
+     "pad": 0,
+     "flash": 0.005,
+     "peak": 0.2393,
+     "reach": 0.097,
+     "canvas": [
+      40,
+      40
+     ],
+     "reasons": [
+      "no strike, just a lean: nothing reaches past 0.10 of the body"
+     ],
+     "sub": "84f74164-e300-4ede-8318-83dfe438a715",
+     "group": "38155431-e4f6-4c3d-b96e-e0a16ea6f072",
+     "takes": 1,
+     "version": 2,
+     "mirrored": false,
+     "action": "Beak Snap - Stretches its neck right out and snaps its beak shut, a big aggressive swing",
+     "intensity": 1,
+     "tries": 1,
+     "generated_at": "2026-09-10T20:20:45+00:00",
+     "rolls": 2
+    },
+    "south-east": {
+     "status": "fail",
+     "step_mean": 0.0755,
+     "step_max": 0.1037,
+     "drift": 1.34,
+     "loop": 0.1822,
+     "loop_ratio": 2.41,
+     "travel": 0.47,
+     "pin": 1.0,
+     "pad": 0,
+     "flash": 0.003,
+     "peak": 0.1822,
+     "reach": 0.094,
+     "canvas": [
+      40,
+      40
+     ],
+     "reasons": [
+      "motion 0.075 outside the calm band 0.08–0.9 — eyeball it",
+      "no strike, just a lean: nothing reaches past 0.09 of the body"
+     ],
+     "sub": "8ba0d512-8a6f-470d-ba07-0ea51f5ac917",
+     "group": "171b385a-0123-4d59-8b9f-056265b8d052",
+     "takes": 1,
+     "version": 2,
+     "mirrored": false,
+     "action": "Beak Snap - Stretches its neck right out and snaps its beak shut, a big aggressive swing",
+     "intensity": 1,
+     "tries": 1,
+     "generated_at": "2026-09-10T20:20:46+00:00",
+     "rolls": 2
+    },
+    "east": {
+     "status": "fail",
+     "step_mean": 0.1389,
+     "step_max": 0.1665,
+     "drift": 2.29,
+     "loop": 0.0896,
+     "loop_ratio": 0.65,
+     "travel": 0.42,
+     "pin": 1.0,
+     "pad": 0,
+     "flash": 0.0,
+     "peak": 0.2625,
+     "reach": 0.161,
+     "canvas": [
+      40,
+      40
+     ],
+     "reasons": [
+      "no strike, just a lean: nothing reaches past 0.16 of the body"
+     ],
+     "sub": "ae412b1c-2efc-4f64-b543-72c3ec8f0ab2",
+     "group": "202ca805-dadf-47f7-847c-c7b8358bbf99",
+     "takes": 1,
+     "version": 2,
+     "mirrored": false,
+     "action": "Beak Snap - Stretches its neck right out and snaps its beak shut, a big aggressive swing",
+     "intensity": 1,
+     "tries": 1,
+     "generated_at": "2026-09-10T20:20:46+00:00",
+     "rolls": 2
+    },
+    "north-east": {
+     "status": "fail",
+     "step_mean": 0.1061,
+     "step_max": 0.134,
+     "drift": 2.1,
+     "loop": 0.1001,
+     "loop_ratio": 0.94,
+     "travel": 0.43,
+     "pin": 1.0,
+     "pad": 0,
+     "flash": 0.001,
+     "peak": 0.2087,
+     "reach": 0.097,
+     "canvas": [
+      40,
+      40
+     ],
+     "reasons": [
+      "no strike, just a lean: nothing reaches past 0.10 of the body"
+     ],
+     "sub": "6aa5859d-edf9-4e9f-85f9-7292e8ab2451",
+     "group": "668530fb-94e2-4776-9c25-fcccff4eeccc",
+     "takes": 1,
+     "version": 2,
+     "mirrored": false,
+     "action": "Beak Snap - Stretches its neck right out and snaps its beak shut, a big aggressive swing",
+     "intensity": 1,
+     "tries": 1,
+     "generated_at": "2026-09-10T20:20:46+00:00",
+     "rolls": 2
+    },
+    "north": {
+     "status": "fail",
+     "step_mean": 0.0728,
+     "step_max": 0.1058,
+     "drift": 0.41,
+     "loop": 0.0971,
+     "loop_ratio": 1.33,
+     "travel": 0.28,
+     "pin": 1.0,
+     "pad": 0,
+     "flash": 0.0,
+     "peak": 0.1406,
+     "reach": 0.1,
+     "canvas": [
+      40,
+      40
+     ],
+     "reasons": [
+      "motion 0.073 outside the calm band 0.08–0.9 — eyeball it",
+      "weak strike: peak 0.141 — eyeball it",
+      "no strike, just a lean: nothing reaches past 0.10 of the body"
+     ],
+     "sub": "51a75ca4-d7fd-4449-bfc0-6b814305de4b",
+     "group": "08ae36b4-51fd-49ae-9418-7d427f4b46b6",
+     "takes": 1,
+     "version": 2,
+     "mirrored": false,
+     "action": "Beak Snap - Stretches its neck right out and snaps its beak shut, a big aggressive swing",
+     "intensity": 1,
+     "tries": 1,
+     "generated_at": "2026-09-10T20:20:47+00:00",
+     "rolls": 2
+    }
+   },
+   "action": "Beak Snap - Stretches its neck right out and snaps its beak shut, a big aggressive swing",
+   "frame_paths": {
+    "south": [
+     "turtle_hatchling/animations/attack_try/south/00.webp",
+     "turtle_hatchling/animations/attack_try/south/01.webp",
+     "turtle_hatchling/animations/attack_try/south/02.webp",
+     "turtle_hatchling/animations/attack_try/south/03.webp",
+     "turtle_hatchling/animations/attack_try/south/04.webp"
+    ],
+    "south-east": [
+     "turtle_hatchling/animations/attack_try/south-east/00.webp",
+     "turtle_hatchling/animations/attack_try/south-east/01.webp",
+     "turtle_hatchling/animations/attack_try/south-east/02.webp",
+     "turtle_hatchling/animations/attack_try/south-east/03.webp",
+     "turtle_hatchling/animations/attack_try/south-east/04.webp"
+    ],
+    "east": [
+     "turtle_hatchling/animations/attack_try/east/00.webp",
+     "turtle_hatchling/animations/attack_try/east/01.webp",
+     "turtle_hatchling/animations/attack_try/east/02.webp",
+     "turtle_hatchling/animations/attack_try/east/03.webp",
+     "turtle_hatchling/animations/attack_try/east/04.webp"
+    ],
+    "north-east": [
+     "turtle_hatchling/animations/attack_try/north-east/00.webp",
+     "turtle_hatchling/animations/attack_try/north-east/01.webp",
+     "turtle_hatchling/animations/attack_try/north-east/02.webp",
+     "turtle_hatchling/animations/attack_try/north-east/03.webp",
+     "turtle_hatchling/animations/attack_try/north-east/04.webp"
+    ],
+    "north": [
+     "turtle_hatchling/animations/attack_try/north/00.webp",
+     "turtle_hatchling/animations/attack_try/north/01.webp",
+     "turtle_hatchling/animations/attack_try/north/02.webp",
+     "turtle_hatchling/animations/attack_try/north/03.webp",
+     "turtle_hatchling/animations/attack_try/north/04.webp"
+    ]
+   },
+   "strips": {
+    "south": "turtle_hatchling/animations/attack_try__south.webp",
+    "south-east": "turtle_hatchling/animations/attack_try__south-east.webp",
+    "east": "turtle_hatchling/animations/attack_try__east.webp",
+    "north-east": "turtle_hatchling/animations/attack_try__north-east.webp",
+    "north": "turtle_hatchling/animations/attack_try__north.webp"
+   },
+   "intensity": 1
+  }
+ }
 }

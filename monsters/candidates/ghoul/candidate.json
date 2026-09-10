@@ -1,1132 +1,1137 @@
 {
-  "id": "ghoul",
-  "name": "Gravemaw",
-  "tier": "evil",
-  "scale": "standard",
-  "lore": "It eats what the graves give up and waits for more. Its patience is only hunger, drawn out.",
-  "biome": [
-    "grey_paving_stone",
-    "dark_mud"
-  ],
-  "items": [],
-  "prompt": "Hunched fantasy ghoul shown full body from head to feet, pale grey mottled skin stretched over a bony frame, a wide mouth of needle teeth, sunken white eyes, long clawed fingers, and rags of a burial shroud.",
-  "size": [
-    104,
-    104
-  ],
-  "template_id": "mannequin",
-  "directions": [
-    "south",
-    "south-east",
-    "east",
-    "north-east",
-    "north",
-    "north-west",
-    "west",
-    "south-west"
-  ],
-  "rotations": {
-    "south": "ghoul/rotations/south.webp",
-    "south-east": "ghoul/rotations/south-east.webp",
-    "east": "ghoul/rotations/east.webp",
-    "north-east": "ghoul/rotations/north-east.webp",
-    "north": "ghoul/rotations/north.webp",
-    "north-west": "ghoul/rotations/north-west.webp",
-    "west": "ghoul/rotations/west.webp",
-    "south-west": "ghoul/rotations/south-west.webp"
-  },
-  "sheet": "ghoul/sheet.webp",
-  "review": "approved",
-  "pixellab_id": "ef31bc2a-533d-4538-86a7-425ba828d177",
-  "seed": 1064456398,
-  "version": 1,
-  "usage": null,
-  "generated_at": "2026-09-09T18:17:58+00:00",
-  "elapsed_s": 189.8,
-  "qa": {
-    "status": "pass",
-    "min_run1": 0.75,
-    "reasons": [],
-    "directions": {
-      "south": {
-        "run1": 0.759,
-        "bbox": [
-          16,
-          5,
-          87,
-          100
-        ],
-        "fill": 0.624,
-        "touches_edge": false
-      },
-      "south-east": {
-        "run1": 0.844,
-        "bbox": [
-          23,
-          5,
-          86,
-          101
-        ],
-        "fill": 0.559,
-        "touches_edge": false
-      },
-      "east": {
-        "run1": 0.83,
-        "bbox": [
-          32,
-          4,
-          75,
-          100
-        ],
-        "fill": 0.382,
-        "touches_edge": false
-      },
-      "north-east": {
-        "run1": 0.759,
-        "bbox": [
-          25,
-          4,
-          79,
-          98
-        ],
-        "fill": 0.469,
-        "touches_edge": false
-      },
-      "north": {
-        "run1": 0.75,
-        "bbox": [
-          17,
-          4,
-          86,
-          98
-        ],
-        "fill": 0.6,
-        "touches_edge": false
-      },
-      "north-west": {
-        "run1": 0.751,
-        "bbox": [
-          25,
-          4,
-          79,
-          98
-        ],
-        "fill": 0.469,
-        "touches_edge": false
-      },
-      "west": {
-        "run1": 0.822,
-        "bbox": [
-          29,
-          4,
-          71,
-          100
-        ],
-        "fill": 0.373,
-        "touches_edge": false
-      },
-      "south-west": {
-        "run1": 0.84,
-        "bbox": [
-          19,
-          5,
-          79,
-          101
-        ],
-        "fill": 0.533,
-        "touches_edge": false
-      }
-    }
-  },
-  "approved_at": "2026-09-09T19:59:21+00:00",
-  "animations": {
-    "idle": {
-      "directions": {
-        "south": {
-          "status": "pass",
-          "step_mean": 0.0428,
-          "step_max": 0.0453,
-          "drift": 1.38,
-          "loop": 0.0,
-          "pin": 1.0,
-          "reasons": [],
-          "sub": "41114c1d-c505-4c7c-9c78-d23d261bbb16",
-          "takes": 1,
-          "version": 1,
-          "mirrored": false,
-          "generated_at": "2026-09-09T20:11:19+00:00",
-          "cut": 0
-        },
-        "south-east": {
-          "status": "pass",
-          "step_mean": 0.0223,
-          "step_max": 0.0412,
-          "drift": 0.75,
-          "loop": 0.0,
-          "pin": 1.0,
-          "reasons": [],
-          "sub": "1c57d96d-b721-4c0c-8fb2-fd4643be775a",
-          "takes": 1,
-          "version": 1,
-          "mirrored": false,
-          "generated_at": "2026-09-09T20:11:20+00:00",
-          "cut": 0
-        },
-        "east": {
-          "status": "pass",
-          "step_mean": 0.0432,
-          "step_max": 0.078,
-          "drift": 0.87,
-          "loop": 0.0007,
-          "pin": 1.0,
-          "reasons": [],
-          "sub": "799ba254-af89-4973-bfb4-3efcab463f51",
-          "takes": 1,
-          "version": 1,
-          "mirrored": false,
-          "generated_at": "2026-09-09T20:11:20+00:00",
-          "cut": 0
-        },
-        "north-east": {
-          "status": "pass",
-          "step_mean": 0.0296,
-          "step_max": 0.0472,
-          "drift": 0.73,
-          "loop": 0.0,
-          "pin": 1.0,
-          "reasons": [],
-          "sub": "e055240b-2687-4fba-96d3-654eb9d918c1",
-          "takes": 1,
-          "version": 1,
-          "mirrored": false,
-          "generated_at": "2026-09-09T20:11:21+00:00",
-          "cut": 0
-        },
-        "north": {
-          "status": "pass",
-          "step_mean": 0.0422,
-          "step_max": 0.0553,
-          "drift": 0.36,
-          "loop": 0.0,
-          "pin": 1.0,
-          "reasons": [],
-          "sub": "8f98b222-16a7-4ad3-b9fe-863fe041c726",
-          "takes": 1,
-          "version": 1,
-          "mirrored": false,
-          "generated_at": "2026-09-09T20:11:21+00:00",
-          "cut": 0
-        },
-        "south-west": {
-          "status": "pass",
-          "step_mean": 0.0223,
-          "step_max": 0.0412,
-          "drift": 0.75,
-          "loop": 0.0,
-          "pin": 1.0,
-          "reasons": [],
-          "sub": "1c57d96d-b721-4c0c-8fb2-fd4643be775a",
-          "takes": 1,
-          "version": 1,
-          "mirrored": true,
-          "generated_at": "2026-09-09T20:11:20+00:00",
-          "cut": 0,
-          "source": "south-east"
-        },
-        "west": {
-          "status": "pass",
-          "step_mean": 0.0432,
-          "step_max": 0.078,
-          "drift": 0.87,
-          "loop": 0.0007,
-          "pin": 1.0,
-          "reasons": [],
-          "sub": "799ba254-af89-4973-bfb4-3efcab463f51",
-          "takes": 1,
-          "version": 1,
-          "mirrored": true,
-          "generated_at": "2026-09-09T20:11:20+00:00",
-          "cut": 0,
-          "source": "east"
-        },
-        "north-west": {
-          "status": "pass",
-          "step_mean": 0.0296,
-          "step_max": 0.0472,
-          "drift": 0.73,
-          "loop": 0.0,
-          "pin": 1.0,
-          "reasons": [],
-          "sub": "e055240b-2687-4fba-96d3-654eb9d918c1",
-          "takes": 1,
-          "version": 1,
-          "mirrored": true,
-          "generated_at": "2026-09-09T20:11:21+00:00",
-          "cut": 0,
-          "source": "north-east"
-        }
-      },
-      "action": "Calm still idle, breathing very slowly and subtly, chest and shoulders rise and fall a little, feet planted, no other movement, ends in the same neutral pose it started in",
-      "frame_paths": {
-        "south": [
-          "ghoul/animations/idle/south/00.webp",
-          "ghoul/animations/idle/south/01.webp",
-          "ghoul/animations/idle/south/02.webp",
-          "ghoul/animations/idle/south/03.webp",
-          "ghoul/animations/idle/south/04.webp"
-        ],
-        "south-east": [
-          "ghoul/animations/idle/south-east/00.webp",
-          "ghoul/animations/idle/south-east/01.webp",
-          "ghoul/animations/idle/south-east/02.webp",
-          "ghoul/animations/idle/south-east/03.webp",
-          "ghoul/animations/idle/south-east/04.webp"
-        ],
-        "east": [
-          "ghoul/animations/idle/east/00.webp",
-          "ghoul/animations/idle/east/01.webp",
-          "ghoul/animations/idle/east/02.webp",
-          "ghoul/animations/idle/east/03.webp",
-          "ghoul/animations/idle/east/04.webp"
-        ],
-        "north-east": [
-          "ghoul/animations/idle/north-east/00.webp",
-          "ghoul/animations/idle/north-east/01.webp",
-          "ghoul/animations/idle/north-east/02.webp",
-          "ghoul/animations/idle/north-east/03.webp",
-          "ghoul/animations/idle/north-east/04.webp"
-        ],
-        "north": [
-          "ghoul/animations/idle/north/00.webp",
-          "ghoul/animations/idle/north/01.webp",
-          "ghoul/animations/idle/north/02.webp",
-          "ghoul/animations/idle/north/03.webp",
-          "ghoul/animations/idle/north/04.webp"
-        ],
-        "south-west": [
-          "ghoul/animations/idle/south-west/00.webp",
-          "ghoul/animations/idle/south-west/01.webp",
-          "ghoul/animations/idle/south-west/02.webp",
-          "ghoul/animations/idle/south-west/03.webp",
-          "ghoul/animations/idle/south-west/04.webp"
-        ],
-        "west": [
-          "ghoul/animations/idle/west/00.webp",
-          "ghoul/animations/idle/west/01.webp",
-          "ghoul/animations/idle/west/02.webp",
-          "ghoul/animations/idle/west/03.webp",
-          "ghoul/animations/idle/west/04.webp"
-        ],
-        "north-west": [
-          "ghoul/animations/idle/north-west/00.webp",
-          "ghoul/animations/idle/north-west/01.webp",
-          "ghoul/animations/idle/north-west/02.webp",
-          "ghoul/animations/idle/north-west/03.webp",
-          "ghoul/animations/idle/north-west/04.webp"
-        ]
-      },
-      "strips": {
-        "south": "ghoul/animations/idle__south.webp",
-        "south-east": "ghoul/animations/idle__south-east.webp",
-        "east": "ghoul/animations/idle__east.webp",
-        "north-east": "ghoul/animations/idle__north-east.webp",
-        "north": "ghoul/animations/idle__north.webp",
-        "south-west": "ghoul/animations/idle__south-west.webp",
-        "west": "ghoul/animations/idle__west.webp",
-        "north-west": "ghoul/animations/idle__north-west.webp"
-      }
-    },
-    "walk": {
-      "directions": {
-        "south": {
-          "status": "pass",
-          "step_mean": 0.1352,
-          "step_max": 0.1461,
-          "drift": 1.7,
-          "loop": 0.184,
-          "loop_ratio": 1.36,
-          "travel": 1.19,
-          "pin": 0.887,
-          "pad": 0,
-          "canvas": [
-            104,
-            104
-          ],
-          "reasons": [],
-          "sub": "273e9d57-3e79-4b47-9ed1-baef5eaeca6a",
-          "group": "b9c90ac3-cddf-4f3c-b39b-a483027e48bb",
-          "takes": 1,
-          "version": 1,
-          "mirrored": false,
-          "generated_at": "2026-09-09T21:15:36+00:00"
-        },
-        "south-east": {
-          "status": "warn",
-          "step_mean": 0.1741,
-          "step_max": 0.2245,
-          "drift": 2.28,
-          "loop": 0.388,
-          "loop_ratio": 2.23,
-          "travel": 0.63,
-          "pin": 0.887,
-          "pad": 0,
-          "canvas": [
-            104,
-            104
-          ],
-          "reasons": [
-            "last→first hand-off 2.2× a step — eyeball the loop"
-          ],
-          "sub": "d52a19a3-c9f4-440c-84af-ab890ad65aeb",
-          "group": "94a1524d-47f4-4449-b9df-a79a2b376c8e",
-          "takes": 2,
-          "version": 2,
-          "mirrored": false,
-          "generated_at": "2026-09-09T21:24:15+00:00"
-        },
-        "east": {
-          "status": "pass",
-          "step_mean": 0.2171,
-          "step_max": 0.2515,
-          "drift": 3.76,
-          "loop": 0.3584,
-          "loop_ratio": 1.65,
-          "travel": 3.76,
-          "pin": 0.791,
-          "pad": 0,
-          "canvas": [
-            104,
-            104
-          ],
-          "reasons": [],
-          "sub": "bf378747-a177-4440-82be-9a2e3fc27a59",
-          "group": "df72806b-d9ea-444a-bb5a-2f0d3c226b42",
-          "takes": 1,
-          "version": 1,
-          "mirrored": false,
-          "generated_at": "2026-09-09T21:15:37+00:00"
-        },
-        "north-east": {
-          "status": "pass",
-          "step_mean": 0.1792,
-          "step_max": 0.2348,
-          "drift": 2.15,
-          "loop": 0.2625,
-          "loop_ratio": 1.46,
-          "travel": 1.24,
-          "pin": 0.816,
-          "pad": 0,
-          "canvas": [
-            104,
-            104
-          ],
-          "reasons": [],
-          "sub": "47a4c707-e74c-4168-8852-6f269975524f",
-          "group": "43c82aae-4b80-4145-ae27-fa6875a658f0",
-          "takes": 1,
-          "version": 1,
-          "mirrored": false,
-          "generated_at": "2026-09-09T21:15:38+00:00"
-        },
-        "north": {
-          "status": "warn",
-          "step_mean": 0.106,
-          "step_max": 0.1356,
-          "drift": 4.22,
-          "loop": 0.2618,
-          "loop_ratio": 2.47,
-          "travel": 1.57,
-          "pin": 0.946,
-          "pad": 0,
-          "canvas": [
-            104,
-            104
-          ],
-          "reasons": [
-            "last→first hand-off 2.5× a step — eyeball the loop"
-          ],
-          "sub": "ffb09c89-d0b9-4ed4-a795-db5b9bd8d700",
-          "group": "6f77cc5c-a55e-4422-a4ff-75a3bb0793c6",
-          "takes": 3,
-          "version": 3,
-          "mirrored": false,
-          "generated_at": "2026-09-09T21:40:08+00:00"
-        },
-        "west": {
-          "status": "pass",
-          "step_mean": 0.2171,
-          "step_max": 0.2515,
-          "drift": 3.76,
-          "loop": 0.3584,
-          "loop_ratio": 1.65,
-          "travel": 3.76,
-          "pin": 0.791,
-          "pad": 0,
-          "canvas": [
-            104,
-            104
-          ],
-          "reasons": [],
-          "sub": "bf378747-a177-4440-82be-9a2e3fc27a59",
-          "group": "df72806b-d9ea-444a-bb5a-2f0d3c226b42",
-          "takes": 1,
-          "version": 1,
-          "mirrored": true,
-          "generated_at": "2026-09-09T21:15:37+00:00",
-          "source": "east"
-        },
-        "north-west": {
-          "status": "pass",
-          "step_mean": 0.1792,
-          "step_max": 0.2348,
-          "drift": 2.15,
-          "loop": 0.2625,
-          "loop_ratio": 1.46,
-          "travel": 1.24,
-          "pin": 0.816,
-          "pad": 0,
-          "canvas": [
-            104,
-            104
-          ],
-          "reasons": [],
-          "sub": "47a4c707-e74c-4168-8852-6f269975524f",
-          "group": "43c82aae-4b80-4145-ae27-fa6875a658f0",
-          "takes": 1,
-          "version": 1,
-          "mirrored": true,
-          "generated_at": "2026-09-09T21:15:38+00:00",
-          "source": "north-east"
-        },
-        "south-west": {
-          "status": "warn",
-          "step_mean": 0.1741,
-          "step_max": 0.2245,
-          "drift": 2.28,
-          "loop": 0.388,
-          "loop_ratio": 2.23,
-          "travel": 0.63,
-          "pin": 0.887,
-          "pad": 0,
-          "canvas": [
-            104,
-            104
-          ],
-          "reasons": [
-            "last→first hand-off 2.2× a step — eyeball the loop"
-          ],
-          "sub": "d52a19a3-c9f4-440c-84af-ab890ad65aeb",
-          "group": "94a1524d-47f4-4449-b9df-a79a2b376c8e",
-          "takes": 2,
-          "version": 2,
-          "mirrored": true,
-          "generated_at": "2026-09-09T21:24:15+00:00",
-          "source": "south-east"
-        }
-      },
-      "action": "walk loop, full walk cycle in place, legs alternate naturally, normal calm walking pace, body stays centered, seamless loop whose last frame leads straight back into the first, no turning",
-      "frame_paths": {
-        "south": [
-          "ghoul/animations/walk/south/00.webp",
-          "ghoul/animations/walk/south/01.webp",
-          "ghoul/animations/walk/south/02.webp",
-          "ghoul/animations/walk/south/03.webp",
-          "ghoul/animations/walk/south/04.webp",
-          "ghoul/animations/walk/south/05.webp"
-        ],
-        "south-east": [
-          "ghoul/animations/walk/south-east/00.webp",
-          "ghoul/animations/walk/south-east/01.webp",
-          "ghoul/animations/walk/south-east/02.webp",
-          "ghoul/animations/walk/south-east/03.webp",
-          "ghoul/animations/walk/south-east/04.webp",
-          "ghoul/animations/walk/south-east/05.webp"
-        ],
-        "east": [
-          "ghoul/animations/walk/east/00.webp",
-          "ghoul/animations/walk/east/01.webp",
-          "ghoul/animations/walk/east/02.webp",
-          "ghoul/animations/walk/east/03.webp",
-          "ghoul/animations/walk/east/04.webp",
-          "ghoul/animations/walk/east/05.webp"
-        ],
-        "north-east": [
-          "ghoul/animations/walk/north-east/00.webp",
-          "ghoul/animations/walk/north-east/01.webp",
-          "ghoul/animations/walk/north-east/02.webp",
-          "ghoul/animations/walk/north-east/03.webp",
-          "ghoul/animations/walk/north-east/04.webp",
-          "ghoul/animations/walk/north-east/05.webp"
-        ],
-        "north": [
-          "ghoul/animations/walk/north/00.webp",
-          "ghoul/animations/walk/north/01.webp",
-          "ghoul/animations/walk/north/02.webp",
-          "ghoul/animations/walk/north/03.webp",
-          "ghoul/animations/walk/north/04.webp",
-          "ghoul/animations/walk/north/05.webp"
-        ],
-        "west": [
-          "ghoul/animations/walk/west/00.webp",
-          "ghoul/animations/walk/west/01.webp",
-          "ghoul/animations/walk/west/02.webp",
-          "ghoul/animations/walk/west/03.webp",
-          "ghoul/animations/walk/west/04.webp",
-          "ghoul/animations/walk/west/05.webp"
-        ],
-        "north-west": [
-          "ghoul/animations/walk/north-west/00.webp",
-          "ghoul/animations/walk/north-west/01.webp",
-          "ghoul/animations/walk/north-west/02.webp",
-          "ghoul/animations/walk/north-west/03.webp",
-          "ghoul/animations/walk/north-west/04.webp",
-          "ghoul/animations/walk/north-west/05.webp"
-        ],
-        "south-west": [
-          "ghoul/animations/walk/south-west/00.webp",
-          "ghoul/animations/walk/south-west/01.webp",
-          "ghoul/animations/walk/south-west/02.webp",
-          "ghoul/animations/walk/south-west/03.webp",
-          "ghoul/animations/walk/south-west/04.webp",
-          "ghoul/animations/walk/south-west/05.webp"
-        ]
-      },
-      "strips": {
-        "south": "ghoul/animations/walk__south.webp",
-        "south-east": "ghoul/animations/walk__south-east.webp",
-        "east": "ghoul/animations/walk__east.webp",
-        "north-east": "ghoul/animations/walk__north-east.webp",
-        "north": "ghoul/animations/walk__north.webp",
-        "west": "ghoul/animations/walk__west.webp",
-        "north-west": "ghoul/animations/walk__north-west.webp",
-        "south-west": "ghoul/animations/walk__south-west.webp"
-      }
-    },
-    "attack": {
-      "directions": {
-        "south": {
-          "status": "pass",
-          "step_mean": 0.1502,
-          "step_max": 0.192,
-          "drift": 1.57,
-          "loop": 0.0,
-          "loop_ratio": 0.0,
-          "travel": 0.53,
-          "pin": 1.0,
-          "pad": 6,
-          "flash": 0.039,
-          "peak": 0.2844,
-          "reach": 0.466,
-          "canvas": [
-            116,
-            116
-          ],
-          "reasons": [
-            "canvas grown by 6 px a side to hold the motion"
-          ],
-          "sub": "421debbf-dc11-4616-b5a7-a0020156ec76",
-          "group": "82c5af68-5955-4e1a-8d8c-8ae10b5b843b",
-          "takes": 1,
-          "version": 2,
-          "mirrored": false,
-          "generated_at": "2026-09-09T22:32:35+00:00",
-          "action": "Double Claw - Performs two quick alternating front claw swipes, then returns to idle stance"
-        },
-        "south-east": {
-          "status": "warn",
-          "step_mean": 0.1568,
-          "step_max": 0.229,
-          "drift": 1.17,
-          "loop": 0.0,
-          "loop_ratio": 0.0,
-          "travel": 0.17,
-          "pin": 1.0,
-          "pad": 0,
-          "flash": 0.0,
-          "peak": 0.2623,
-          "reach": 0.238,
-          "canvas": [
-            104,
-            104
-          ],
-          "reasons": [
-            "shallow strike: reach 0.24 — eyeball it"
-          ],
-          "sub": "948a15d4-02cc-46d4-a5f9-2477b3709cf5",
-          "group": "7c8b5a1a-1ee7-4c39-840a-f4fe0284b96b",
-          "takes": 1,
-          "version": 2,
-          "mirrored": false,
-          "generated_at": "2026-09-09T22:32:35+00:00",
-          "action": "Double Claw - Performs two quick alternating front claw swipes, then returns to idle stance"
-        },
-        "east": {
-          "status": "pass",
-          "step_mean": 0.1748,
-          "step_max": 0.2443,
-          "drift": 2.96,
-          "loop": 0.0,
-          "loop_ratio": 0.0,
-          "travel": 0.21,
-          "pin": 1.0,
-          "pad": 0,
-          "flash": 0.0,
-          "peak": 0.2843,
-          "reach": 0.326,
-          "canvas": [
-            104,
-            104
-          ],
-          "reasons": [],
-          "sub": "84068f42-322c-4485-87ff-4c4719dd7fa6",
-          "group": "b16f6d84-785d-4539-b308-0458c59b0fa0",
-          "takes": 1,
-          "version": 2,
-          "mirrored": false,
-          "generated_at": "2026-09-09T22:32:36+00:00",
-          "action": "Double Claw - Performs two quick alternating front claw swipes, then returns to idle stance"
-        },
-        "north-east": {
-          "status": "fail",
-          "step_mean": 0.146,
-          "step_max": 0.1834,
-          "drift": 0.43,
-          "loop": 0.0,
-          "loop_ratio": 0.0,
-          "travel": 0.43,
-          "pin": 1.0,
-          "pad": 0,
-          "flash": 0.0,
-          "peak": 0.2821,
-          "reach": 0.148,
-          "canvas": [
-            104,
-            104
-          ],
-          "reasons": [
-            "no strike, just a lean: nothing reaches past 0.15 of the body"
-          ],
-          "sub": "dc0c0f57-f8c9-4f29-bc5f-7209bea295e0",
-          "group": "fb282cf0-983e-4442-bd1e-97069b427efc",
-          "takes": 1,
-          "version": 2,
-          "mirrored": false,
-          "generated_at": "2026-09-09T22:32:36+00:00",
-          "action": "Double Claw - Performs two quick alternating front claw swipes, then returns to idle stance"
-        },
-        "north": {
-          "status": "fail",
-          "step_mean": 0.08,
-          "step_max": 0.131,
-          "drift": 0.2,
-          "loop": 0.0,
-          "loop_ratio": 0.0,
-          "travel": 0.2,
-          "pin": 1.0,
-          "pad": 0,
-          "flash": 0.0,
-          "peak": 0.1483,
-          "reach": 0.058,
-          "canvas": [
-            104,
-            104
-          ],
-          "reasons": [
-            "motion 0.080 outside the calm band 0.08–0.9 — eyeball it",
-            "weak strike: peak 0.148 — eyeball it",
-            "no strike, just a lean: nothing reaches past 0.06 of the body"
-          ],
-          "sub": "2e62911c-647d-4b19-8790-dc7fd0d921b7",
-          "group": "4b3c699a-7677-4d99-8a7b-d98e5fb99fbb",
-          "takes": 1,
-          "version": 2,
-          "mirrored": false,
-          "generated_at": "2026-09-09T22:32:37+00:00",
-          "action": "Double Claw - Performs two quick alternating front claw swipes, then returns to idle stance"
-        },
-        "south-west": {
-          "status": "warn",
-          "step_mean": 0.1568,
-          "step_max": 0.229,
-          "drift": 1.17,
-          "loop": 0.0,
-          "loop_ratio": 0.0,
-          "travel": 0.17,
-          "pin": 1.0,
-          "pad": 0,
-          "flash": 0.0,
-          "peak": 0.2623,
-          "reach": 0.238,
-          "canvas": [
-            104,
-            104
-          ],
-          "reasons": [
-            "shallow strike: reach 0.24 — eyeball it"
-          ],
-          "sub": "948a15d4-02cc-46d4-a5f9-2477b3709cf5",
-          "group": "7c8b5a1a-1ee7-4c39-840a-f4fe0284b96b",
-          "takes": 1,
-          "version": 2,
-          "mirrored": true,
-          "generated_at": "2026-09-09T22:32:35+00:00",
-          "action": "Double Claw - Performs two quick alternating front claw swipes, then returns to idle stance",
-          "source": "south-east"
-        },
-        "west": {
-          "status": "pass",
-          "step_mean": 0.1748,
-          "step_max": 0.2443,
-          "drift": 2.96,
-          "loop": 0.0,
-          "loop_ratio": 0.0,
-          "travel": 0.21,
-          "pin": 1.0,
-          "pad": 0,
-          "flash": 0.0,
-          "peak": 0.2843,
-          "reach": 0.326,
-          "canvas": [
-            104,
-            104
-          ],
-          "reasons": [],
-          "sub": "84068f42-322c-4485-87ff-4c4719dd7fa6",
-          "group": "b16f6d84-785d-4539-b308-0458c59b0fa0",
-          "takes": 1,
-          "version": 2,
-          "mirrored": true,
-          "generated_at": "2026-09-09T22:32:36+00:00",
-          "action": "Double Claw - Performs two quick alternating front claw swipes, then returns to idle stance",
-          "source": "east"
-        },
-        "north-west": {
-          "status": "pass",
-          "step_mean": 0.146,
-          "step_max": 0.1834,
-          "drift": 0.43,
-          "loop": 0.0,
-          "loop_ratio": 0.0,
-          "travel": 0.43,
-          "pin": 1.0,
-          "pad": 0,
-          "flash": 0.0,
-          "peak": 0.2821,
-          "canvas": [
-            104,
-            104
-          ],
-          "reasons": [],
-          "sub": "dc0c0f57-f8c9-4f29-bc5f-7209bea295e0",
-          "group": "fb282cf0-983e-4442-bd1e-97069b427efc",
-          "takes": 1,
-          "version": 2,
-          "mirrored": true,
-          "generated_at": "2026-09-09T22:32:36+00:00",
-          "action": "Double Claw - Performs two quick alternating front claw swipes, then returns to idle stance",
-          "source": "north-east"
-        }
-      },
-      "action": "Double Claw - Performs two quick alternating front claw swipes, then returns to idle stance",
-      "frame_paths": {
-        "south": [
-          "ghoul/animations/attack/south/00.webp",
-          "ghoul/animations/attack/south/01.webp",
-          "ghoul/animations/attack/south/02.webp",
-          "ghoul/animations/attack/south/03.webp",
-          "ghoul/animations/attack/south/04.webp"
-        ],
-        "south-east": [
-          "ghoul/animations/attack/south-east/00.webp",
-          "ghoul/animations/attack/south-east/01.webp",
-          "ghoul/animations/attack/south-east/02.webp",
-          "ghoul/animations/attack/south-east/03.webp",
-          "ghoul/animations/attack/south-east/04.webp"
-        ],
-        "east": [
-          "ghoul/animations/attack/east/00.webp",
-          "ghoul/animations/attack/east/01.webp",
-          "ghoul/animations/attack/east/02.webp",
-          "ghoul/animations/attack/east/03.webp",
-          "ghoul/animations/attack/east/04.webp"
-        ],
-        "north-east": [
-          "ghoul/animations/attack/north-east/00.webp",
-          "ghoul/animations/attack/north-east/01.webp",
-          "ghoul/animations/attack/north-east/02.webp",
-          "ghoul/animations/attack/north-east/03.webp",
-          "ghoul/animations/attack/north-east/04.webp"
-        ],
-        "north": [
-          "ghoul/animations/attack/north/00.webp",
-          "ghoul/animations/attack/north/01.webp",
-          "ghoul/animations/attack/north/02.webp",
-          "ghoul/animations/attack/north/03.webp",
-          "ghoul/animations/attack/north/04.webp"
-        ],
-        "south-west": [
-          "ghoul/animations/attack/south-west/00.webp",
-          "ghoul/animations/attack/south-west/01.webp",
-          "ghoul/animations/attack/south-west/02.webp",
-          "ghoul/animations/attack/south-west/03.webp",
-          "ghoul/animations/attack/south-west/04.webp"
-        ],
-        "west": [
-          "ghoul/animations/attack/west/00.webp",
-          "ghoul/animations/attack/west/01.webp",
-          "ghoul/animations/attack/west/02.webp",
-          "ghoul/animations/attack/west/03.webp",
-          "ghoul/animations/attack/west/04.webp"
-        ],
-        "north-west": [
-          "ghoul/animations/attack/north-west/00.webp",
-          "ghoul/animations/attack/north-west/01.webp",
-          "ghoul/animations/attack/north-west/02.webp",
-          "ghoul/animations/attack/north-west/03.webp",
-          "ghoul/animations/attack/north-west/04.webp"
-        ]
-      },
-      "strips": {
-        "south": "ghoul/animations/attack__south.webp",
-        "south-east": "ghoul/animations/attack__south-east.webp",
-        "east": "ghoul/animations/attack__east.webp",
-        "north-east": "ghoul/animations/attack__north-east.webp",
-        "north": "ghoul/animations/attack__north.webp",
-        "south-west": "ghoul/animations/attack__south-west.webp",
-        "west": "ghoul/animations/attack__west.webp",
-        "north-west": "ghoul/animations/attack__north-west.webp"
-      }
-    },
-    "attack_try": {
-      "directions": {
-        "south": {
-          "status": "fail",
-          "step_mean": 0.123,
-          "step_max": 0.1858,
-          "drift": 1.51,
-          "loop": 0.3319,
-          "loop_ratio": 2.7,
-          "travel": 0.19,
-          "pin": 1.0,
-          "pad": 0,
-          "flash": -0.012,
-          "peak": 0.3319,
-          "reach": 0.141,
-          "canvas": [
-            104,
-            104
-          ],
-          "reasons": [
-            "no strike, just a lean: nothing reaches past 0.14 of the body"
-          ],
-          "sub": "3eddbc04-c22c-4d0d-9c67-0b6402ae848a",
-          "group": "d75c395a-3cbf-49f3-8bb2-86530ae30a20",
-          "takes": 1,
-          "version": 1,
-          "mirrored": false,
-          "action": "Double Claw - Rakes forward with both claws in two fast alternating swipes",
-          "tries": 1,
-          "generated_at": "2026-09-10T20:05:52+00:00"
-        },
-        "south-east": {
-          "status": "fail",
-          "step_mean": 0.109,
-          "step_max": 0.2336,
-          "drift": 2.13,
-          "loop": 0.2824,
-          "loop_ratio": 2.59,
-          "travel": 0.46,
-          "pin": 1.0,
-          "pad": 0,
-          "flash": 0.002,
-          "peak": 0.2824,
-          "reach": 0.143,
-          "canvas": [
-            104,
-            104
-          ],
-          "reasons": [
-            "no strike, just a lean: nothing reaches past 0.14 of the body"
-          ],
-          "sub": "15405cf6-8fc0-4dad-bc94-d1e8b1623a2f",
-          "group": "b15c14b2-9130-4bf3-9546-da1d0188e71e",
-          "takes": 1,
-          "version": 1,
-          "mirrored": false,
-          "action": "Double Claw - Rakes forward with both claws in two fast alternating swipes",
-          "tries": 1,
-          "generated_at": "2026-09-10T20:05:54+00:00"
-        },
-        "east": {
-          "status": "pass",
-          "step_mean": 0.1756,
-          "step_max": 0.3601,
-          "drift": 2.24,
-          "loop": 0.3463,
-          "loop_ratio": 1.97,
-          "travel": 1.1,
-          "pin": 1.0,
-          "pad": 0,
-          "flash": -0.005,
-          "peak": 0.3463,
-          "reach": 0.535,
-          "canvas": [
-            104,
-            104
-          ],
-          "reasons": [],
-          "sub": "ae90a01c-35ff-4007-9419-cbc45f71cdbc",
-          "group": "10b09dac-906c-48f3-ad91-3421dcc1b255",
-          "takes": 1,
-          "version": 1,
-          "mirrored": false,
-          "action": "Double Claw - Rakes forward with both claws in two fast alternating swipes",
-          "tries": 1,
-          "generated_at": "2026-09-10T20:05:54+00:00"
-        },
-        "north-east": {
-          "status": "fail",
-          "step_mean": 0.0533,
-          "step_max": 0.0675,
-          "drift": 2.41,
-          "loop": 0.1948,
-          "loop_ratio": 3.66,
-          "travel": 2.41,
-          "pin": 1.0,
-          "pad": 0,
-          "flash": -0.001,
-          "peak": 0.1948,
-          "reach": 0.167,
-          "canvas": [
-            104,
-            104
-          ],
-          "reasons": [
-            "motion 0.053 outside the calm band 0.08–0.9 — eyeball it",
-            "no strike, just a lean: nothing reaches past 0.17 of the body"
-          ],
-          "sub": "08231c23-f890-4f46-9314-37fddfbdce8a",
-          "group": "6672a2dd-1c73-4d27-9e64-c25f4e0fc458",
-          "takes": 1,
-          "version": 1,
-          "mirrored": false,
-          "action": "Double Claw - Rakes forward with both claws in two fast alternating swipes",
-          "tries": 1,
-          "generated_at": "2026-09-10T20:05:55+00:00"
-        },
-        "north": {
-          "status": "fail",
-          "step_mean": 0.0734,
-          "step_max": 0.1215,
-          "drift": 0.89,
-          "loop": 0.1705,
-          "loop_ratio": 2.32,
-          "travel": 0.26,
-          "pin": 1.0,
-          "pad": 0,
-          "flash": -0.005,
-          "peak": 0.1773,
-          "reach": 0.058,
-          "canvas": [
-            104,
-            104
-          ],
-          "reasons": [
-            "motion 0.073 outside the calm band 0.08–0.9 — eyeball it",
-            "no strike, just a lean: nothing reaches past 0.06 of the body"
-          ],
-          "sub": "3e0dc4c4-b7f3-4f9b-9829-d3d464fe81d6",
-          "group": "e0dc751f-c980-4cd3-850e-91baf5bb9433",
-          "takes": 1,
-          "version": 1,
-          "mirrored": false,
-          "action": "Double Claw - Rakes forward with both claws in two fast alternating swipes",
-          "tries": 1,
-          "generated_at": "2026-09-10T20:05:55+00:00"
-        },
-        "west": {
-          "status": "pass",
-          "step_mean": 0.1756,
-          "step_max": 0.3601,
-          "drift": 2.24,
-          "loop": 0.3463,
-          "loop_ratio": 1.97,
-          "travel": 1.1,
-          "pin": 1.0,
-          "pad": 0,
-          "flash": -0.005,
-          "peak": 0.3463,
-          "reach": 0.535,
-          "canvas": [
-            104,
-            104
-          ],
-          "reasons": [],
-          "sub": "ae90a01c-35ff-4007-9419-cbc45f71cdbc",
-          "group": "10b09dac-906c-48f3-ad91-3421dcc1b255",
-          "takes": 1,
-          "version": 1,
-          "mirrored": true,
-          "action": "Double Claw - Rakes forward with both claws in two fast alternating swipes",
-          "tries": 1,
-          "generated_at": "2026-09-10T20:05:54+00:00",
-          "source": "east"
-        }
-      },
-      "action": "Double Claw - Rakes forward with both claws in two fast alternating swipes, a big aggressive swing",
-      "frame_paths": {
-        "south": [
-          "ghoul/animations/attack_try/south/00.webp",
-          "ghoul/animations/attack_try/south/01.webp",
-          "ghoul/animations/attack_try/south/02.webp",
-          "ghoul/animations/attack_try/south/03.webp",
-          "ghoul/animations/attack_try/south/04.webp"
-        ],
-        "south-east": [
-          "ghoul/animations/attack_try/south-east/00.webp",
-          "ghoul/animations/attack_try/south-east/01.webp",
-          "ghoul/animations/attack_try/south-east/02.webp",
-          "ghoul/animations/attack_try/south-east/03.webp",
-          "ghoul/animations/attack_try/south-east/04.webp"
-        ],
-        "east": [
-          "ghoul/animations/attack_try/east/00.webp",
-          "ghoul/animations/attack_try/east/01.webp",
-          "ghoul/animations/attack_try/east/02.webp",
-          "ghoul/animations/attack_try/east/03.webp",
-          "ghoul/animations/attack_try/east/04.webp"
-        ],
-        "north-east": [
-          "ghoul/animations/attack_try/north-east/00.webp",
-          "ghoul/animations/attack_try/north-east/01.webp",
-          "ghoul/animations/attack_try/north-east/02.webp",
-          "ghoul/animations/attack_try/north-east/03.webp",
-          "ghoul/animations/attack_try/north-east/04.webp"
-        ],
-        "north": [
-          "ghoul/animations/attack_try/north/00.webp",
-          "ghoul/animations/attack_try/north/01.webp",
-          "ghoul/animations/attack_try/north/02.webp",
-          "ghoul/animations/attack_try/north/03.webp",
-          "ghoul/animations/attack_try/north/04.webp"
-        ],
-        "west": [
-          "ghoul/animations/attack_try/west/00.webp",
-          "ghoul/animations/attack_try/west/01.webp",
-          "ghoul/animations/attack_try/west/02.webp",
-          "ghoul/animations/attack_try/west/03.webp",
-          "ghoul/animations/attack_try/west/04.webp"
-        ]
-      },
-      "strips": {
-        "south": "ghoul/animations/attack_try__south.webp",
-        "south-east": "ghoul/animations/attack_try__south-east.webp",
-        "east": "ghoul/animations/attack_try__east.webp",
-        "north-east": "ghoul/animations/attack_try__north-east.webp",
-        "north": "ghoul/animations/attack_try__north.webp",
-        "west": "ghoul/animations/attack_try__west.webp"
-      },
-      "intensity": 1
-    }
+ "id": "ghoul",
+ "name": "Gravemaw",
+ "tier": "evil",
+ "scale": "standard",
+ "lore": "It eats what the graves give up and waits for more. Its patience is only hunger, drawn out.",
+ "biome": [
+  "grey_paving_stone",
+  "dark_mud"
+ ],
+ "items": [],
+ "prompt": "Hunched fantasy ghoul shown full body from head to feet, pale grey mottled skin stretched over a bony frame, a wide mouth of needle teeth, sunken white eyes, long clawed fingers, and rags of a burial shroud.",
+ "size": [
+  104,
+  104
+ ],
+ "template_id": "mannequin",
+ "directions": [
+  "south",
+  "south-east",
+  "east",
+  "north-east",
+  "north",
+  "north-west",
+  "west",
+  "south-west"
+ ],
+ "rotations": {
+  "south": "ghoul/rotations/south.webp",
+  "south-east": "ghoul/rotations/south-east.webp",
+  "east": "ghoul/rotations/east.webp",
+  "north-east": "ghoul/rotations/north-east.webp",
+  "north": "ghoul/rotations/north.webp",
+  "north-west": "ghoul/rotations/north-west.webp",
+  "west": "ghoul/rotations/west.webp",
+  "south-west": "ghoul/rotations/south-west.webp"
+ },
+ "sheet": "ghoul/sheet.webp",
+ "review": "approved",
+ "pixellab_id": "ef31bc2a-533d-4538-86a7-425ba828d177",
+ "seed": 1064456398,
+ "version": 1,
+ "usage": null,
+ "generated_at": "2026-09-09T18:17:58+00:00",
+ "elapsed_s": 189.8,
+ "qa": {
+  "status": "pass",
+  "min_run1": 0.75,
+  "reasons": [],
+  "directions": {
+   "south": {
+    "run1": 0.759,
+    "bbox": [
+     16,
+     5,
+     87,
+     100
+    ],
+    "fill": 0.624,
+    "touches_edge": false
+   },
+   "south-east": {
+    "run1": 0.844,
+    "bbox": [
+     23,
+     5,
+     86,
+     101
+    ],
+    "fill": 0.559,
+    "touches_edge": false
+   },
+   "east": {
+    "run1": 0.83,
+    "bbox": [
+     32,
+     4,
+     75,
+     100
+    ],
+    "fill": 0.382,
+    "touches_edge": false
+   },
+   "north-east": {
+    "run1": 0.759,
+    "bbox": [
+     25,
+     4,
+     79,
+     98
+    ],
+    "fill": 0.469,
+    "touches_edge": false
+   },
+   "north": {
+    "run1": 0.75,
+    "bbox": [
+     17,
+     4,
+     86,
+     98
+    ],
+    "fill": 0.6,
+    "touches_edge": false
+   },
+   "north-west": {
+    "run1": 0.751,
+    "bbox": [
+     25,
+     4,
+     79,
+     98
+    ],
+    "fill": 0.469,
+    "touches_edge": false
+   },
+   "west": {
+    "run1": 0.822,
+    "bbox": [
+     29,
+     4,
+     71,
+     100
+    ],
+    "fill": 0.373,
+    "touches_edge": false
+   },
+   "south-west": {
+    "run1": 0.84,
+    "bbox": [
+     19,
+     5,
+     79,
+     101
+    ],
+    "fill": 0.533,
+    "touches_edge": false
+   }
   }
+ },
+ "approved_at": "2026-09-09T19:59:21+00:00",
+ "animations": {
+  "idle": {
+   "directions": {
+    "south": {
+     "status": "pass",
+     "step_mean": 0.0428,
+     "step_max": 0.0453,
+     "drift": 1.38,
+     "loop": 0.0,
+     "pin": 1.0,
+     "reasons": [],
+     "sub": "41114c1d-c505-4c7c-9c78-d23d261bbb16",
+     "takes": 1,
+     "version": 1,
+     "mirrored": false,
+     "generated_at": "2026-09-09T20:11:19+00:00",
+     "cut": 0
+    },
+    "south-east": {
+     "status": "pass",
+     "step_mean": 0.0223,
+     "step_max": 0.0412,
+     "drift": 0.75,
+     "loop": 0.0,
+     "pin": 1.0,
+     "reasons": [],
+     "sub": "1c57d96d-b721-4c0c-8fb2-fd4643be775a",
+     "takes": 1,
+     "version": 1,
+     "mirrored": false,
+     "generated_at": "2026-09-09T20:11:20+00:00",
+     "cut": 0
+    },
+    "east": {
+     "status": "pass",
+     "step_mean": 0.0432,
+     "step_max": 0.078,
+     "drift": 0.87,
+     "loop": 0.0007,
+     "pin": 1.0,
+     "reasons": [],
+     "sub": "799ba254-af89-4973-bfb4-3efcab463f51",
+     "takes": 1,
+     "version": 1,
+     "mirrored": false,
+     "generated_at": "2026-09-09T20:11:20+00:00",
+     "cut": 0
+    },
+    "north-east": {
+     "status": "pass",
+     "step_mean": 0.0296,
+     "step_max": 0.0472,
+     "drift": 0.73,
+     "loop": 0.0,
+     "pin": 1.0,
+     "reasons": [],
+     "sub": "e055240b-2687-4fba-96d3-654eb9d918c1",
+     "takes": 1,
+     "version": 1,
+     "mirrored": false,
+     "generated_at": "2026-09-09T20:11:21+00:00",
+     "cut": 0
+    },
+    "north": {
+     "status": "pass",
+     "step_mean": 0.0422,
+     "step_max": 0.0553,
+     "drift": 0.36,
+     "loop": 0.0,
+     "pin": 1.0,
+     "reasons": [],
+     "sub": "8f98b222-16a7-4ad3-b9fe-863fe041c726",
+     "takes": 1,
+     "version": 1,
+     "mirrored": false,
+     "generated_at": "2026-09-09T20:11:21+00:00",
+     "cut": 0
+    },
+    "south-west": {
+     "status": "pass",
+     "step_mean": 0.0223,
+     "step_max": 0.0412,
+     "drift": 0.75,
+     "loop": 0.0,
+     "pin": 1.0,
+     "reasons": [],
+     "sub": "1c57d96d-b721-4c0c-8fb2-fd4643be775a",
+     "takes": 1,
+     "version": 1,
+     "mirrored": true,
+     "generated_at": "2026-09-09T20:11:20+00:00",
+     "cut": 0,
+     "source": "south-east"
+    },
+    "west": {
+     "status": "pass",
+     "step_mean": 0.0432,
+     "step_max": 0.078,
+     "drift": 0.87,
+     "loop": 0.0007,
+     "pin": 1.0,
+     "reasons": [],
+     "sub": "799ba254-af89-4973-bfb4-3efcab463f51",
+     "takes": 1,
+     "version": 1,
+     "mirrored": true,
+     "generated_at": "2026-09-09T20:11:20+00:00",
+     "cut": 0,
+     "source": "east"
+    },
+    "north-west": {
+     "status": "pass",
+     "step_mean": 0.0296,
+     "step_max": 0.0472,
+     "drift": 0.73,
+     "loop": 0.0,
+     "pin": 1.0,
+     "reasons": [],
+     "sub": "e055240b-2687-4fba-96d3-654eb9d918c1",
+     "takes": 1,
+     "version": 1,
+     "mirrored": true,
+     "generated_at": "2026-09-09T20:11:21+00:00",
+     "cut": 0,
+     "source": "north-east"
+    }
+   },
+   "action": "Calm still idle, breathing very slowly and subtly, chest and shoulders rise and fall a little, feet planted, no other movement, ends in the same neutral pose it started in",
+   "frame_paths": {
+    "south": [
+     "ghoul/animations/idle/south/00.webp",
+     "ghoul/animations/idle/south/01.webp",
+     "ghoul/animations/idle/south/02.webp",
+     "ghoul/animations/idle/south/03.webp",
+     "ghoul/animations/idle/south/04.webp"
+    ],
+    "south-east": [
+     "ghoul/animations/idle/south-east/00.webp",
+     "ghoul/animations/idle/south-east/01.webp",
+     "ghoul/animations/idle/south-east/02.webp",
+     "ghoul/animations/idle/south-east/03.webp",
+     "ghoul/animations/idle/south-east/04.webp"
+    ],
+    "east": [
+     "ghoul/animations/idle/east/00.webp",
+     "ghoul/animations/idle/east/01.webp",
+     "ghoul/animations/idle/east/02.webp",
+     "ghoul/animations/idle/east/03.webp",
+     "ghoul/animations/idle/east/04.webp"
+    ],
+    "north-east": [
+     "ghoul/animations/idle/north-east/00.webp",
+     "ghoul/animations/idle/north-east/01.webp",
+     "ghoul/animations/idle/north-east/02.webp",
+     "ghoul/animations/idle/north-east/03.webp",
+     "ghoul/animations/idle/north-east/04.webp"
+    ],
+    "north": [
+     "ghoul/animations/idle/north/00.webp",
+     "ghoul/animations/idle/north/01.webp",
+     "ghoul/animations/idle/north/02.webp",
+     "ghoul/animations/idle/north/03.webp",
+     "ghoul/animations/idle/north/04.webp"
+    ],
+    "south-west": [
+     "ghoul/animations/idle/south-west/00.webp",
+     "ghoul/animations/idle/south-west/01.webp",
+     "ghoul/animations/idle/south-west/02.webp",
+     "ghoul/animations/idle/south-west/03.webp",
+     "ghoul/animations/idle/south-west/04.webp"
+    ],
+    "west": [
+     "ghoul/animations/idle/west/00.webp",
+     "ghoul/animations/idle/west/01.webp",
+     "ghoul/animations/idle/west/02.webp",
+     "ghoul/animations/idle/west/03.webp",
+     "ghoul/animations/idle/west/04.webp"
+    ],
+    "north-west": [
+     "ghoul/animations/idle/north-west/00.webp",
+     "ghoul/animations/idle/north-west/01.webp",
+     "ghoul/animations/idle/north-west/02.webp",
+     "ghoul/animations/idle/north-west/03.webp",
+     "ghoul/animations/idle/north-west/04.webp"
+    ]
+   },
+   "strips": {
+    "south": "ghoul/animations/idle__south.webp",
+    "south-east": "ghoul/animations/idle__south-east.webp",
+    "east": "ghoul/animations/idle__east.webp",
+    "north-east": "ghoul/animations/idle__north-east.webp",
+    "north": "ghoul/animations/idle__north.webp",
+    "south-west": "ghoul/animations/idle__south-west.webp",
+    "west": "ghoul/animations/idle__west.webp",
+    "north-west": "ghoul/animations/idle__north-west.webp"
+   }
+  },
+  "walk": {
+   "directions": {
+    "south": {
+     "status": "pass",
+     "step_mean": 0.1352,
+     "step_max": 0.1461,
+     "drift": 1.7,
+     "loop": 0.184,
+     "loop_ratio": 1.36,
+     "travel": 1.19,
+     "pin": 0.887,
+     "pad": 0,
+     "canvas": [
+      104,
+      104
+     ],
+     "reasons": [],
+     "sub": "273e9d57-3e79-4b47-9ed1-baef5eaeca6a",
+     "group": "b9c90ac3-cddf-4f3c-b39b-a483027e48bb",
+     "takes": 1,
+     "version": 1,
+     "mirrored": false,
+     "generated_at": "2026-09-09T21:15:36+00:00"
+    },
+    "south-east": {
+     "status": "warn",
+     "step_mean": 0.1741,
+     "step_max": 0.2245,
+     "drift": 2.28,
+     "loop": 0.388,
+     "loop_ratio": 2.23,
+     "travel": 0.63,
+     "pin": 0.887,
+     "pad": 0,
+     "canvas": [
+      104,
+      104
+     ],
+     "reasons": [
+      "last→first hand-off 2.2× a step — eyeball the loop"
+     ],
+     "sub": "d52a19a3-c9f4-440c-84af-ab890ad65aeb",
+     "group": "94a1524d-47f4-4449-b9df-a79a2b376c8e",
+     "takes": 2,
+     "version": 2,
+     "mirrored": false,
+     "generated_at": "2026-09-09T21:24:15+00:00"
+    },
+    "east": {
+     "status": "pass",
+     "step_mean": 0.2171,
+     "step_max": 0.2515,
+     "drift": 3.76,
+     "loop": 0.3584,
+     "loop_ratio": 1.65,
+     "travel": 3.76,
+     "pin": 0.791,
+     "pad": 0,
+     "canvas": [
+      104,
+      104
+     ],
+     "reasons": [],
+     "sub": "bf378747-a177-4440-82be-9a2e3fc27a59",
+     "group": "df72806b-d9ea-444a-bb5a-2f0d3c226b42",
+     "takes": 1,
+     "version": 1,
+     "mirrored": false,
+     "generated_at": "2026-09-09T21:15:37+00:00"
+    },
+    "north-east": {
+     "status": "pass",
+     "step_mean": 0.1792,
+     "step_max": 0.2348,
+     "drift": 2.15,
+     "loop": 0.2625,
+     "loop_ratio": 1.46,
+     "travel": 1.24,
+     "pin": 0.816,
+     "pad": 0,
+     "canvas": [
+      104,
+      104
+     ],
+     "reasons": [],
+     "sub": "47a4c707-e74c-4168-8852-6f269975524f",
+     "group": "43c82aae-4b80-4145-ae27-fa6875a658f0",
+     "takes": 1,
+     "version": 1,
+     "mirrored": false,
+     "generated_at": "2026-09-09T21:15:38+00:00"
+    },
+    "north": {
+     "status": "warn",
+     "step_mean": 0.106,
+     "step_max": 0.1356,
+     "drift": 4.22,
+     "loop": 0.2618,
+     "loop_ratio": 2.47,
+     "travel": 1.57,
+     "pin": 0.946,
+     "pad": 0,
+     "canvas": [
+      104,
+      104
+     ],
+     "reasons": [
+      "last→first hand-off 2.5× a step — eyeball the loop"
+     ],
+     "sub": "ffb09c89-d0b9-4ed4-a795-db5b9bd8d700",
+     "group": "6f77cc5c-a55e-4422-a4ff-75a3bb0793c6",
+     "takes": 3,
+     "version": 3,
+     "mirrored": false,
+     "generated_at": "2026-09-09T21:40:08+00:00"
+    },
+    "west": {
+     "status": "pass",
+     "step_mean": 0.2171,
+     "step_max": 0.2515,
+     "drift": 3.76,
+     "loop": 0.3584,
+     "loop_ratio": 1.65,
+     "travel": 3.76,
+     "pin": 0.791,
+     "pad": 0,
+     "canvas": [
+      104,
+      104
+     ],
+     "reasons": [],
+     "sub": "bf378747-a177-4440-82be-9a2e3fc27a59",
+     "group": "df72806b-d9ea-444a-bb5a-2f0d3c226b42",
+     "takes": 1,
+     "version": 1,
+     "mirrored": true,
+     "generated_at": "2026-09-09T21:15:37+00:00",
+     "source": "east"
+    },
+    "north-west": {
+     "status": "pass",
+     "step_mean": 0.1792,
+     "step_max": 0.2348,
+     "drift": 2.15,
+     "loop": 0.2625,
+     "loop_ratio": 1.46,
+     "travel": 1.24,
+     "pin": 0.816,
+     "pad": 0,
+     "canvas": [
+      104,
+      104
+     ],
+     "reasons": [],
+     "sub": "47a4c707-e74c-4168-8852-6f269975524f",
+     "group": "43c82aae-4b80-4145-ae27-fa6875a658f0",
+     "takes": 1,
+     "version": 1,
+     "mirrored": true,
+     "generated_at": "2026-09-09T21:15:38+00:00",
+     "source": "north-east"
+    },
+    "south-west": {
+     "status": "warn",
+     "step_mean": 0.1741,
+     "step_max": 0.2245,
+     "drift": 2.28,
+     "loop": 0.388,
+     "loop_ratio": 2.23,
+     "travel": 0.63,
+     "pin": 0.887,
+     "pad": 0,
+     "canvas": [
+      104,
+      104
+     ],
+     "reasons": [
+      "last→first hand-off 2.2× a step — eyeball the loop"
+     ],
+     "sub": "d52a19a3-c9f4-440c-84af-ab890ad65aeb",
+     "group": "94a1524d-47f4-4449-b9df-a79a2b376c8e",
+     "takes": 2,
+     "version": 2,
+     "mirrored": true,
+     "generated_at": "2026-09-09T21:24:15+00:00",
+     "source": "south-east"
+    }
+   },
+   "action": "walk loop, full walk cycle in place, legs alternate naturally, normal calm walking pace, body stays centered, seamless loop whose last frame leads straight back into the first, no turning",
+   "frame_paths": {
+    "south": [
+     "ghoul/animations/walk/south/00.webp",
+     "ghoul/animations/walk/south/01.webp",
+     "ghoul/animations/walk/south/02.webp",
+     "ghoul/animations/walk/south/03.webp",
+     "ghoul/animations/walk/south/04.webp",
+     "ghoul/animations/walk/south/05.webp"
+    ],
+    "south-east": [
+     "ghoul/animations/walk/south-east/00.webp",
+     "ghoul/animations/walk/south-east/01.webp",
+     "ghoul/animations/walk/south-east/02.webp",
+     "ghoul/animations/walk/south-east/03.webp",
+     "ghoul/animations/walk/south-east/04.webp",
+     "ghoul/animations/walk/south-east/05.webp"
+    ],
+    "east": [
+     "ghoul/animations/walk/east/00.webp",
+     "ghoul/animations/walk/east/01.webp",
+     "ghoul/animations/walk/east/02.webp",
+     "ghoul/animations/walk/east/03.webp",
+     "ghoul/animations/walk/east/04.webp",
+     "ghoul/animations/walk/east/05.webp"
+    ],
+    "north-east": [
+     "ghoul/animations/walk/north-east/00.webp",
+     "ghoul/animations/walk/north-east/01.webp",
+     "ghoul/animations/walk/north-east/02.webp",
+     "ghoul/animations/walk/north-east/03.webp",
+     "ghoul/animations/walk/north-east/04.webp",
+     "ghoul/animations/walk/north-east/05.webp"
+    ],
+    "north": [
+     "ghoul/animations/walk/north/00.webp",
+     "ghoul/animations/walk/north/01.webp",
+     "ghoul/animations/walk/north/02.webp",
+     "ghoul/animations/walk/north/03.webp",
+     "ghoul/animations/walk/north/04.webp",
+     "ghoul/animations/walk/north/05.webp"
+    ],
+    "west": [
+     "ghoul/animations/walk/west/00.webp",
+     "ghoul/animations/walk/west/01.webp",
+     "ghoul/animations/walk/west/02.webp",
+     "ghoul/animations/walk/west/03.webp",
+     "ghoul/animations/walk/west/04.webp",
+     "ghoul/animations/walk/west/05.webp"
+    ],
+    "north-west": [
+     "ghoul/animations/walk/north-west/00.webp",
+     "ghoul/animations/walk/north-west/01.webp",
+     "ghoul/animations/walk/north-west/02.webp",
+     "ghoul/animations/walk/north-west/03.webp",
+     "ghoul/animations/walk/north-west/04.webp",
+     "ghoul/animations/walk/north-west/05.webp"
+    ],
+    "south-west": [
+     "ghoul/animations/walk/south-west/00.webp",
+     "ghoul/animations/walk/south-west/01.webp",
+     "ghoul/animations/walk/south-west/02.webp",
+     "ghoul/animations/walk/south-west/03.webp",
+     "ghoul/animations/walk/south-west/04.webp",
+     "ghoul/animations/walk/south-west/05.webp"
+    ]
+   },
+   "strips": {
+    "south": "ghoul/animations/walk__south.webp",
+    "south-east": "ghoul/animations/walk__south-east.webp",
+    "east": "ghoul/animations/walk__east.webp",
+    "north-east": "ghoul/animations/walk__north-east.webp",
+    "north": "ghoul/animations/walk__north.webp",
+    "west": "ghoul/animations/walk__west.webp",
+    "north-west": "ghoul/animations/walk__north-west.webp",
+    "south-west": "ghoul/animations/walk__south-west.webp"
+   }
+  },
+  "attack": {
+   "directions": {
+    "south": {
+     "status": "pass",
+     "step_mean": 0.1502,
+     "step_max": 0.192,
+     "drift": 1.57,
+     "loop": 0.0,
+     "loop_ratio": 0.0,
+     "travel": 0.53,
+     "pin": 1.0,
+     "pad": 6,
+     "flash": 0.039,
+     "peak": 0.2844,
+     "reach": 0.466,
+     "canvas": [
+      116,
+      116
+     ],
+     "reasons": [
+      "canvas grown by 6 px a side to hold the motion"
+     ],
+     "sub": "421debbf-dc11-4616-b5a7-a0020156ec76",
+     "group": "82c5af68-5955-4e1a-8d8c-8ae10b5b843b",
+     "takes": 1,
+     "version": 2,
+     "mirrored": false,
+     "generated_at": "2026-09-09T22:32:35+00:00",
+     "action": "Double Claw - Performs two quick alternating front claw swipes, then returns to idle stance"
+    },
+    "south-east": {
+     "status": "warn",
+     "step_mean": 0.1568,
+     "step_max": 0.229,
+     "drift": 1.17,
+     "loop": 0.0,
+     "loop_ratio": 0.0,
+     "travel": 0.17,
+     "pin": 1.0,
+     "pad": 0,
+     "flash": 0.0,
+     "peak": 0.2623,
+     "reach": 0.238,
+     "canvas": [
+      104,
+      104
+     ],
+     "reasons": [
+      "shallow strike: reach 0.24 — eyeball it"
+     ],
+     "sub": "948a15d4-02cc-46d4-a5f9-2477b3709cf5",
+     "group": "7c8b5a1a-1ee7-4c39-840a-f4fe0284b96b",
+     "takes": 1,
+     "version": 2,
+     "mirrored": false,
+     "generated_at": "2026-09-09T22:32:35+00:00",
+     "action": "Double Claw - Performs two quick alternating front claw swipes, then returns to idle stance"
+    },
+    "east": {
+     "status": "pass",
+     "step_mean": 0.1748,
+     "step_max": 0.2443,
+     "drift": 2.96,
+     "loop": 0.0,
+     "loop_ratio": 0.0,
+     "travel": 0.21,
+     "pin": 1.0,
+     "pad": 0,
+     "flash": 0.0,
+     "peak": 0.2843,
+     "reach": 0.326,
+     "canvas": [
+      104,
+      104
+     ],
+     "reasons": [],
+     "sub": "84068f42-322c-4485-87ff-4c4719dd7fa6",
+     "group": "b16f6d84-785d-4539-b308-0458c59b0fa0",
+     "takes": 1,
+     "version": 2,
+     "mirrored": false,
+     "generated_at": "2026-09-09T22:32:36+00:00",
+     "action": "Double Claw - Performs two quick alternating front claw swipes, then returns to idle stance"
+    },
+    "north-east": {
+     "status": "fail",
+     "step_mean": 0.146,
+     "step_max": 0.1834,
+     "drift": 0.43,
+     "loop": 0.0,
+     "loop_ratio": 0.0,
+     "travel": 0.43,
+     "pin": 1.0,
+     "pad": 0,
+     "flash": 0.0,
+     "peak": 0.2821,
+     "reach": 0.148,
+     "canvas": [
+      104,
+      104
+     ],
+     "reasons": [
+      "no strike, just a lean: nothing reaches past 0.15 of the body"
+     ],
+     "sub": "dc0c0f57-f8c9-4f29-bc5f-7209bea295e0",
+     "group": "fb282cf0-983e-4442-bd1e-97069b427efc",
+     "takes": 1,
+     "version": 2,
+     "mirrored": false,
+     "generated_at": "2026-09-09T22:32:36+00:00",
+     "action": "Double Claw - Performs two quick alternating front claw swipes, then returns to idle stance"
+    },
+    "north": {
+     "status": "fail",
+     "step_mean": 0.08,
+     "step_max": 0.131,
+     "drift": 0.2,
+     "loop": 0.0,
+     "loop_ratio": 0.0,
+     "travel": 0.2,
+     "pin": 1.0,
+     "pad": 0,
+     "flash": 0.0,
+     "peak": 0.1483,
+     "reach": 0.058,
+     "canvas": [
+      104,
+      104
+     ],
+     "reasons": [
+      "motion 0.080 outside the calm band 0.08–0.9 — eyeball it",
+      "weak strike: peak 0.148 — eyeball it",
+      "no strike, just a lean: nothing reaches past 0.06 of the body"
+     ],
+     "sub": "2e62911c-647d-4b19-8790-dc7fd0d921b7",
+     "group": "4b3c699a-7677-4d99-8a7b-d98e5fb99fbb",
+     "takes": 1,
+     "version": 2,
+     "mirrored": false,
+     "generated_at": "2026-09-09T22:32:37+00:00",
+     "action": "Double Claw - Performs two quick alternating front claw swipes, then returns to idle stance"
+    },
+    "south-west": {
+     "status": "warn",
+     "step_mean": 0.1568,
+     "step_max": 0.229,
+     "drift": 1.17,
+     "loop": 0.0,
+     "loop_ratio": 0.0,
+     "travel": 0.17,
+     "pin": 1.0,
+     "pad": 0,
+     "flash": 0.0,
+     "peak": 0.2623,
+     "reach": 0.238,
+     "canvas": [
+      104,
+      104
+     ],
+     "reasons": [
+      "shallow strike: reach 0.24 — eyeball it"
+     ],
+     "sub": "948a15d4-02cc-46d4-a5f9-2477b3709cf5",
+     "group": "7c8b5a1a-1ee7-4c39-840a-f4fe0284b96b",
+     "takes": 1,
+     "version": 2,
+     "mirrored": true,
+     "generated_at": "2026-09-09T22:32:35+00:00",
+     "action": "Double Claw - Performs two quick alternating front claw swipes, then returns to idle stance",
+     "source": "south-east"
+    },
+    "west": {
+     "status": "pass",
+     "step_mean": 0.1748,
+     "step_max": 0.2443,
+     "drift": 2.96,
+     "loop": 0.0,
+     "loop_ratio": 0.0,
+     "travel": 0.21,
+     "pin": 1.0,
+     "pad": 0,
+     "flash": 0.0,
+     "peak": 0.2843,
+     "reach": 0.326,
+     "canvas": [
+      104,
+      104
+     ],
+     "reasons": [],
+     "sub": "84068f42-322c-4485-87ff-4c4719dd7fa6",
+     "group": "b16f6d84-785d-4539-b308-0458c59b0fa0",
+     "takes": 1,
+     "version": 2,
+     "mirrored": true,
+     "generated_at": "2026-09-09T22:32:36+00:00",
+     "action": "Double Claw - Performs two quick alternating front claw swipes, then returns to idle stance",
+     "source": "east"
+    },
+    "north-west": {
+     "status": "pass",
+     "step_mean": 0.146,
+     "step_max": 0.1834,
+     "drift": 0.43,
+     "loop": 0.0,
+     "loop_ratio": 0.0,
+     "travel": 0.43,
+     "pin": 1.0,
+     "pad": 0,
+     "flash": 0.0,
+     "peak": 0.2821,
+     "canvas": [
+      104,
+      104
+     ],
+     "reasons": [],
+     "sub": "dc0c0f57-f8c9-4f29-bc5f-7209bea295e0",
+     "group": "fb282cf0-983e-4442-bd1e-97069b427efc",
+     "takes": 1,
+     "version": 2,
+     "mirrored": true,
+     "generated_at": "2026-09-09T22:32:36+00:00",
+     "action": "Double Claw - Performs two quick alternating front claw swipes, then returns to idle stance",
+     "source": "north-east"
+    }
+   },
+   "action": "Double Claw - Performs two quick alternating front claw swipes, then returns to idle stance",
+   "frame_paths": {
+    "south": [
+     "ghoul/animations/attack/south/00.webp",
+     "ghoul/animations/attack/south/01.webp",
+     "ghoul/animations/attack/south/02.webp",
+     "ghoul/animations/attack/south/03.webp",
+     "ghoul/animations/attack/south/04.webp"
+    ],
+    "south-east": [
+     "ghoul/animations/attack/south-east/00.webp",
+     "ghoul/animations/attack/south-east/01.webp",
+     "ghoul/animations/attack/south-east/02.webp",
+     "ghoul/animations/attack/south-east/03.webp",
+     "ghoul/animations/attack/south-east/04.webp"
+    ],
+    "east": [
+     "ghoul/animations/attack/east/00.webp",
+     "ghoul/animations/attack/east/01.webp",
+     "ghoul/animations/attack/east/02.webp",
+     "ghoul/animations/attack/east/03.webp",
+     "ghoul/animations/attack/east/04.webp"
+    ],
+    "north-east": [
+     "ghoul/animations/attack/north-east/00.webp",
+     "ghoul/animations/attack/north-east/01.webp",
+     "ghoul/animations/attack/north-east/02.webp",
+     "ghoul/animations/attack/north-east/03.webp",
+     "ghoul/animations/attack/north-east/04.webp"
+    ],
+    "north": [
+     "ghoul/animations/attack/north/00.webp",
+     "ghoul/animations/attack/north/01.webp",
+     "ghoul/animations/attack/north/02.webp",
+     "ghoul/animations/attack/north/03.webp",
+     "ghoul/animations/attack/north/04.webp"
+    ],
+    "south-west": [
+     "ghoul/animations/attack/south-west/00.webp",
+     "ghoul/animations/attack/south-west/01.webp",
+     "ghoul/animations/attack/south-west/02.webp",
+     "ghoul/animations/attack/south-west/03.webp",
+     "ghoul/animations/attack/south-west/04.webp"
+    ],
+    "west": [
+     "ghoul/animations/attack/west/00.webp",
+     "ghoul/animations/attack/west/01.webp",
+     "ghoul/animations/attack/west/02.webp",
+     "ghoul/animations/attack/west/03.webp",
+     "ghoul/animations/attack/west/04.webp"
+    ],
+    "north-west": [
+     "ghoul/animations/attack/north-west/00.webp",
+     "ghoul/animations/attack/north-west/01.webp",
+     "ghoul/animations/attack/north-west/02.webp",
+     "ghoul/animations/attack/north-west/03.webp",
+     "ghoul/animations/attack/north-west/04.webp"
+    ]
+   },
+   "strips": {
+    "south": "ghoul/animations/attack__south.webp",
+    "south-east": "ghoul/animations/attack__south-east.webp",
+    "east": "ghoul/animations/attack__east.webp",
+    "north-east": "ghoul/animations/attack__north-east.webp",
+    "north": "ghoul/animations/attack__north.webp",
+    "south-west": "ghoul/animations/attack__south-west.webp",
+    "west": "ghoul/animations/attack__west.webp",
+    "north-west": "ghoul/animations/attack__north-west.webp"
+   }
+  },
+  "attack_try": {
+   "directions": {
+    "south": {
+     "status": "fail",
+     "step_mean": 0.123,
+     "step_max": 0.1858,
+     "drift": 1.51,
+     "loop": 0.3319,
+     "loop_ratio": 2.7,
+     "travel": 0.19,
+     "pin": 1.0,
+     "pad": 0,
+     "flash": -0.012,
+     "peak": 0.3319,
+     "reach": 0.141,
+     "canvas": [
+      104,
+      104
+     ],
+     "reasons": [
+      "no strike, just a lean: nothing reaches past 0.14 of the body"
+     ],
+     "sub": "3eddbc04-c22c-4d0d-9c67-0b6402ae848a",
+     "group": "d75c395a-3cbf-49f3-8bb2-86530ae30a20",
+     "takes": 1,
+     "version": 1,
+     "mirrored": false,
+     "action": "Double Claw - Rakes forward with both claws in two fast alternating swipes",
+     "tries": 1,
+     "generated_at": "2026-09-10T20:05:52+00:00",
+     "rolls": 1
+    },
+    "south-east": {
+     "status": "fail",
+     "step_mean": 0.109,
+     "step_max": 0.2336,
+     "drift": 2.13,
+     "loop": 0.2824,
+     "loop_ratio": 2.59,
+     "travel": 0.46,
+     "pin": 1.0,
+     "pad": 0,
+     "flash": 0.002,
+     "peak": 0.2824,
+     "reach": 0.143,
+     "canvas": [
+      104,
+      104
+     ],
+     "reasons": [
+      "no strike, just a lean: nothing reaches past 0.14 of the body"
+     ],
+     "sub": "15405cf6-8fc0-4dad-bc94-d1e8b1623a2f",
+     "group": "b15c14b2-9130-4bf3-9546-da1d0188e71e",
+     "takes": 1,
+     "version": 1,
+     "mirrored": false,
+     "action": "Double Claw - Rakes forward with both claws in two fast alternating swipes",
+     "tries": 1,
+     "generated_at": "2026-09-10T20:05:54+00:00",
+     "rolls": 1
+    },
+    "east": {
+     "status": "pass",
+     "step_mean": 0.1756,
+     "step_max": 0.3601,
+     "drift": 2.24,
+     "loop": 0.3463,
+     "loop_ratio": 1.97,
+     "travel": 1.1,
+     "pin": 1.0,
+     "pad": 0,
+     "flash": -0.005,
+     "peak": 0.3463,
+     "reach": 0.535,
+     "canvas": [
+      104,
+      104
+     ],
+     "reasons": [],
+     "sub": "ae90a01c-35ff-4007-9419-cbc45f71cdbc",
+     "group": "10b09dac-906c-48f3-ad91-3421dcc1b255",
+     "takes": 1,
+     "version": 1,
+     "mirrored": false,
+     "action": "Double Claw - Rakes forward with both claws in two fast alternating swipes",
+     "tries": 1,
+     "generated_at": "2026-09-10T20:05:54+00:00",
+     "rolls": 1
+    },
+    "north-east": {
+     "status": "fail",
+     "step_mean": 0.0533,
+     "step_max": 0.0675,
+     "drift": 2.41,
+     "loop": 0.1948,
+     "loop_ratio": 3.66,
+     "travel": 2.41,
+     "pin": 1.0,
+     "pad": 0,
+     "flash": -0.001,
+     "peak": 0.1948,
+     "reach": 0.167,
+     "canvas": [
+      104,
+      104
+     ],
+     "reasons": [
+      "motion 0.053 outside the calm band 0.08–0.9 — eyeball it",
+      "no strike, just a lean: nothing reaches past 0.17 of the body"
+     ],
+     "sub": "08231c23-f890-4f46-9314-37fddfbdce8a",
+     "group": "6672a2dd-1c73-4d27-9e64-c25f4e0fc458",
+     "takes": 1,
+     "version": 1,
+     "mirrored": false,
+     "action": "Double Claw - Rakes forward with both claws in two fast alternating swipes",
+     "tries": 1,
+     "generated_at": "2026-09-10T20:05:55+00:00",
+     "rolls": 1
+    },
+    "north": {
+     "status": "fail",
+     "step_mean": 0.0734,
+     "step_max": 0.1215,
+     "drift": 0.89,
+     "loop": 0.1705,
+     "loop_ratio": 2.32,
+     "travel": 0.26,
+     "pin": 1.0,
+     "pad": 0,
+     "flash": -0.005,
+     "peak": 0.1773,
+     "reach": 0.058,
+     "canvas": [
+      104,
+      104
+     ],
+     "reasons": [
+      "motion 0.073 outside the calm band 0.08–0.9 — eyeball it",
+      "no strike, just a lean: nothing reaches past 0.06 of the body"
+     ],
+     "sub": "3e0dc4c4-b7f3-4f9b-9829-d3d464fe81d6",
+     "group": "e0dc751f-c980-4cd3-850e-91baf5bb9433",
+     "takes": 1,
+     "version": 1,
+     "mirrored": false,
+     "action": "Double Claw - Rakes forward with both claws in two fast alternating swipes",
+     "tries": 1,
+     "generated_at": "2026-09-10T20:05:55+00:00",
+     "rolls": 1
+    },
+    "west": {
+     "status": "pass",
+     "step_mean": 0.1756,
+     "step_max": 0.3601,
+     "drift": 2.24,
+     "loop": 0.3463,
+     "loop_ratio": 1.97,
+     "travel": 1.1,
+     "pin": 1.0,
+     "pad": 0,
+     "flash": -0.005,
+     "peak": 0.3463,
+     "reach": 0.535,
+     "canvas": [
+      104,
+      104
+     ],
+     "reasons": [],
+     "sub": "ae90a01c-35ff-4007-9419-cbc45f71cdbc",
+     "group": "10b09dac-906c-48f3-ad91-3421dcc1b255",
+     "takes": 1,
+     "version": 1,
+     "mirrored": true,
+     "action": "Double Claw - Rakes forward with both claws in two fast alternating swipes",
+     "tries": 1,
+     "generated_at": "2026-09-10T20:05:54+00:00",
+     "source": "east"
+    }
+   },
+   "action": "Double Claw - Rakes forward with both claws in two fast alternating swipes, a big aggressive swing",
+   "frame_paths": {
+    "south": [
+     "ghoul/animations/attack_try/south/00.webp",
+     "ghoul/animations/attack_try/south/01.webp",
+     "ghoul/animations/attack_try/south/02.webp",
+     "ghoul/animations/attack_try/south/03.webp",
+     "ghoul/animations/attack_try/south/04.webp"
+    ],
+    "south-east": [
+     "ghoul/animations/attack_try/south-east/00.webp",
+     "ghoul/animations/attack_try/south-east/01.webp",
+     "ghoul/animations/attack_try/south-east/02.webp",
+     "ghoul/animations/attack_try/south-east/03.webp",
+     "ghoul/animations/attack_try/south-east/04.webp"
+    ],
+    "east": [
+     "ghoul/animations/attack_try/east/00.webp",
+     "ghoul/animations/attack_try/east/01.webp",
+     "ghoul/animations/attack_try/east/02.webp",
+     "ghoul/animations/attack_try/east/03.webp",
+     "ghoul/animations/attack_try/east/04.webp"
+    ],
+    "north-east": [
+     "ghoul/animations/attack_try/north-east/00.webp",
+     "ghoul/animations/attack_try/north-east/01.webp",
+     "ghoul/animations/attack_try/north-east/02.webp",
+     "ghoul/animations/attack_try/north-east/03.webp",
+     "ghoul/animations/attack_try/north-east/04.webp"
+    ],
+    "north": [
+     "ghoul/animations/attack_try/north/00.webp",
+     "ghoul/animations/attack_try/north/01.webp",
+     "ghoul/animations/attack_try/north/02.webp",
+     "ghoul/animations/attack_try/north/03.webp",
+     "ghoul/animations/attack_try/north/04.webp"
+    ],
+    "west": [
+     "ghoul/animations/attack_try/west/00.webp",
+     "ghoul/animations/attack_try/west/01.webp",
+     "ghoul/animations/attack_try/west/02.webp",
+     "ghoul/animations/attack_try/west/03.webp",
+     "ghoul/animations/attack_try/west/04.webp"
+    ]
+   },
+   "strips": {
+    "south": "ghoul/animations/attack_try__south.webp",
+    "south-east": "ghoul/animations/attack_try__south-east.webp",
+    "east": "ghoul/animations/attack_try__east.webp",
+    "north-east": "ghoul/animations/attack_try__north-east.webp",
+    "north": "ghoul/animations/attack_try__north.webp",
+    "west": "ghoul/animations/attack_try__west.webp"
+   },
+   "intensity": 1
+  }
+ }
 }
