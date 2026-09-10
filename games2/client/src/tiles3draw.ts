@@ -666,7 +666,20 @@ const FOOT_UNDER = 2;
 const FOOT_DARKEN = 0.82;
 /** Under water: crest, second crest, then the submerged wall's alpha by depth. */
 const FOOT_CREST = [0.5, 0.22]; // how far each crest row is lifted toward white
-const FOOT_SUNK_MIX = 0.35; // how much of the water's colour the sunk wall takes
+/* HOW MUCH OF THE WATER'S COLOUR THE SUNK WALL TAKES, at the surface and at the
+ * deepest drawn row, plus how far it dims. A flat 0.35 was the first cut and it
+ * is why a sand-topped cliff going into the sea read as a BEACH lying on the
+ * water: the_game's coast cliffs are `light_beach`, so the band's own material
+ * is bright sand, and at 35% water over an alpha of 0.95 the top rows were
+ * still sand (maintainer 2026-09-10, photographed twice: "someone rendered a
+ * sand transition/boundary at the wall water intersection ... I want the wall
+ * to look as if it was continuing down the water surface as before"). Water
+ * absorbs with depth, so the mix and the dimming both RUN with it: the wall is
+ * still there and still descending — which is the effect he wants kept — but
+ * every row of it is water first and wall second. */
+const FOOT_SUNK_MIX0 = 0.62; // the water's colour taken on the first sunk row
+const FOOT_SUNK_MIX1 = 0.92; // ...and on the last
+const FOOT_SUNK_DARK = 0.72; // and how far the last row is dimmed
 const FOOT_SUNK = [0.95, 0.9, 0.8, 0.7, 0.58, 0.46, 0.34, 0.24, 0.15, 0.08];
 
 const mix = (a: number, b: number, t: number) => Math.round(a + (b - a) * t);
@@ -749,7 +762,18 @@ export function footBand(
       } else {
         const j = row - FOOT_UNDER - FOOT_CREST.length;
         if (j >= FOOT_SUNK.length) continue;
-        put(px, py, mix(wr, water[0], FOOT_SUNK_MIX), mix(wg, water[1], FOOT_SUNK_MIX), mix(wb, water[2], FOOT_SUNK_MIX), FOOT_SUNK[j]);
+        // Deeper = more of the water's own colour, and dimmer with it.
+        const t = FOOT_SUNK.length > 1 ? j / (FOOT_SUNK.length - 1) : 0;
+        const m = FOOT_SUNK_MIX0 + (FOOT_SUNK_MIX1 - FOOT_SUNK_MIX0) * t;
+        const dk = 1 - (1 - FOOT_SUNK_DARK) * t;
+        put(
+          px,
+          py,
+          Math.round(mix(wr, water[0], m) * dk),
+          Math.round(mix(wg, water[1], m) * dk),
+          Math.round(mix(wb, water[2], m) * dk),
+          FOOT_SUNK[j],
+        );
       }
     }
   }
@@ -1011,7 +1035,7 @@ function pushFoot(cell: Tiles3Cell, ops: Tiles3Blit[]): void {
   let water: string | null = LIQUID_SET.has(cell.ground) ? cell.ground : null;
   let mask = "";
   const b = cell.boundary;
-  if (b && b.maskFrame !== null) {
+  if (water && b && b.maskFrame !== null) {
     const aL = LIQUID_SET.has(b.a);
     const bL = LIQUID_SET.has(b.b);
     if (aL !== bL) {
@@ -1019,6 +1043,16 @@ function pushFoot(cell: Tiles3Cell, ops: Tiles3Blit[]): void {
       mask = `m${b.maskFrame}${bL ? "b" : "a"}`;
     }
   }
+  /* ONLY A CELL THAT IS ITSELF WATER, never a shore tile that merely draws
+   * some. A transition tile carries its OWN cell's level, and the_game has
+   * `dark_mud` at level 1 blending to water beside a level-0 sea: its water
+   * side is drawn a whole storey above the sea, so the band on it — crest rows
+   * and all — floated out in the open with no wall beside it to explain the
+   * shape (maintainer 2026-09-10: "the water foam effect is not even close to
+   * the wall water intersection", of cell 277,269 exactly). A full water cell
+   * is at the water's real level, so the band meets the surface it is drawing
+   * the wall into. The mask above still clips a full water cell's own boundary
+   * to its water side — "part of the tile is water, but not the entire tile". */
   if (!water) return;
   const walls = dirs.map((d) => `${d}:${f[d]}`).join("+");
   ops.push({ key: footKey(walls, water, mask), x: cell.sx, y: cell.pasteY ?? cell.sy, sx: 0, sy: 0, sw: TILE, sh: PLATE_H, role: "foot" });
