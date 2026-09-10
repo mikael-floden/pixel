@@ -30,10 +30,12 @@ const KEY = "ml-nav-uphill";
 
 export const NAV_UPHILL_MIN = 1;
 export const NAV_UPHILL_MAX = 8;
-/** PLACEHOLDER, not a verdict: the visible spot wins unless the hidden one is
- *  less than half the walk. Enough to feel the rule on the hill he reported;
- *  he replaces it once the slider has told him the right number. */
-export const NAV_UPHILL_DEFAULT = 2;
+/** HIS NUMBER, from the slider (maintainer 2026-09-10: "a good value for
+ *  Uphill bias (tap) default is 2.7x"). A hidden reading has to be under
+ *  0.37 of the visible one's walk to win, so the stairs in front of you take a
+ *  tap unless going round the back really is far shorter. Not a placeholder —
+ *  do not "restore" 2. */
+export const NAV_UPHILL_DEFAULT = 2.7;
 
 const clamp = (v: number) => Math.max(NAV_UPHILL_MIN, Math.min(NAV_UPHILL_MAX, v));
 

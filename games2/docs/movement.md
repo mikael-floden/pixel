@@ -399,7 +399,9 @@ clip, no tint.
     arrived-vs-arrived comparison is weighted: arriving still beats giving up
     short, and between two failing routes "how close did it get" is not a
     preference about which spot he meant. 1 = off. THE NUMBER IS HIS — a
-    Settings slider (default 2 is a PLACEHOLDER awaiting his verdict). Gate:
+    Settings slider, and **2.7 is his verdict** off it ("a good value for
+    Uphill bias (tap) default is 2.7x", 2026-09-10); do not "restore" the 2
+    it shipped with while he was still trying it. Gate:
     `server/test/beacon.test.ts`, a flat synthetic plane where the two lengths
     are the whole story.
   - **Never "fix" the symptom by moving the beacon to meet the walk** —

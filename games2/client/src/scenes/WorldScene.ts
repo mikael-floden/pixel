@@ -12128,9 +12128,10 @@ export class WorldScene extends Phaser.Scene {
    *  across the whole zone made them cross at the corners and run on past each
    *  other, so standing near a corner put a four-way X on the screen — "how
    *  can an inner zone boundary even have a 4 way cross? This is super
-   *  confusing!" A closed rectangle says inside and outside by being closed,
-   *  which is also why the inward TICKS are gone with it ("and what is the
-   *  perpendicular lines! So confusing!").
+   *  confusing!" Its sides are clipped to its own corners now, and the inward
+   *  TICKS ride on it: they were confusing only while there were crossing
+   *  lines to be confused about ("where is the fade or perpendicular lines
+   *  showing me what is the inside/outside?!").
    *
    *  THE TINT IS ONE-SIDED, AND THAT IS THE FEATURE (maintainer 2026-09-10, of
    *  the spawn-area overlay: "it's easy for me to know what is the inside of
@@ -12196,15 +12197,27 @@ export class WorldScene extends Phaser.Scene {
     // #ff0000, just more red looking"). A soft red, one shade lighter than
     // pure so it sits on dark ground as well as sand.
     const INNER_LINE = 0xff8f80;
-    // NOTHING IS PAINTED OVER THE GROUND, and nothing hangs off the lines.
-    // Rejected in order, all four on his screen: the spawn overlay's α .05
-    // fill over the whole inside (invisible in red over grass and dark water),
-    // α .14 (that "painted the entire inner zone red-ish"), a four-step
-    // gradient hem two cells deep ("an ugly fade" that also landed on the
-    // WRONG SIDE — a strip has WIDTH, so it samples the ground level of the
-    // cell it steps into and at a cliff jumps a storey above its own line),
-    // and inward ticks ("what is the perpendicular lines! So confusing!").
-    // The closed rectangle below is what says which side is which.
+    // WHICH SIDE IS INSIDE IS SAID WITH TICKS, and nothing is ever painted over
+    // the ground. Three tints were tried and all three failed: the spawn
+    // overlay's α .05 fill over the whole inside (invisible in red over grass
+    // and dark water), α .14 (that "painted the entire inner zone red-ish"),
+    // and a four-step gradient hem two cells deep ("an ugly fade" that also
+    // landed on the WRONG SIDE — a strip has WIDTH, so it samples the ground
+    // level of the cell it steps into and at a cliff jumps a storey above its
+    // own line). A tick has no width in the world: it hangs off a point OF the
+    // line and points inward in SCREEN space, so it cannot flip and covers no
+    // ground. They read as confusing only while the four sides ran the length
+    // of the zone and crossed each other; on the closed rectangle below every
+    // tick on screen points into the same rectangle.
+    const TICK_CELLS = 0.45; // tick length, as a fraction of a cell on screen
+    const TICK_EVERY = 2; // cells between ticks
+    // The inward screen direction of one cell, taken at a FIXED level so no
+    // terrain enters it: +1 col and +1 row as screen vectors off one origin.
+    const o = this.projectCellCorner(0, 0, 0);
+    const c1 = this.projectCellCorner(1, 0, 0);
+    const r1 = this.projectCellCorner(0, 1, 0);
+    const dCol = { x: c1.x - o.x, y: c1.y - o.y };
+    const dRow = { x: r1.x - o.x, y: r1.y - o.y };
     const at = (fixed: number, t: number, vertical: boolean) =>
       vertical ? this.projectZoneCorner(fixed, t) : this.projectZoneCorner(t, fixed);
 
@@ -12250,18 +12263,24 @@ export class WorldScene extends Phaser.Scene {
     // EACH SIDE IS CLIPPED TO THE RECTANGLE'S OWN CORNERS. Running a side
     // across the whole zone instead is what put a four-way cross on his screen.
     g.lineStyle(2, INNER_LINE, 0.8);
-    const edge = (fixed: number, from: number, to: number, vertical: boolean) => {
+    // `dir` is +1/-1 along the side's own axis, pointing INTO the rectangle.
+    const edge = (fixed: number, from: number, to: number, vertical: boolean, dir: number) => {
+      const d = vertical ? dCol : dRow;
+      const tick = { x: d.x * TICK_CELLS * dir, y: d.y * TICK_CELLS * dir };
       let prev = at(fixed, from, vertical);
       for (let t = from + 1; t <= to; t++) {
         const p = at(fixed, t, vertical);
         g.lineBetween(prev.x, prev.y, p.x, p.y);
+        // Never at a corner: a tick there runs along the adjoining side and
+        // reads as the overshoot the rectangle exists to have got rid of.
+        if (t % TICK_EVERY === 0 && t < to) g.lineBetween(p.x, p.y, p.x + tick.x, p.y + tick.y);
         prev = p;
       }
     };
-    if (x0 > 0) edge(ix0, iy0, iy1, true);
-    if (x1 < W) edge(ix1, iy0, iy1, true);
-    if (y0 > 0) edge(iy0, ix0, ix1, false);
-    if (y1 < H) edge(iy1, ix0, ix1, false);
+    if (x0 > 0) edge(ix0, iy0, iy1, true, 1);
+    if (x1 < W) edge(ix1, iy0, iy1, true, -1);
+    if (y0 > 0) edge(iy0, ix0, ix1, false, 1);
+    if (y1 < H) edge(iy1, ix0, ix1, false, -1);
   }
 
   /** The spawn bonfire on/off — its firelight drowns nearby tiles'
