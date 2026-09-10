@@ -905,37 +905,38 @@
     "attack_try": {
       "directions": {
         "south": {
-          "status": "warn",
-          "step_mean": 0.1583,
-          "step_max": 0.2095,
-          "drift": 4.29,
-          "loop": 0.2227,
-          "loop_ratio": 1.41,
-          "travel": 6.96,
+          "status": "fail",
+          "step_mean": 0.0774,
+          "step_max": 0.0999,
+          "drift": 1.45,
+          "loop": 0.1582,
+          "loop_ratio": 2.04,
+          "travel": 1.5,
           "pin": 1.0,
-          "pad": 1,
-          "flash": -0.001,
-          "peak": 0.2356,
-          "reach": 0.232,
+          "pad": 0,
+          "flash": -0.0,
+          "peak": 0.1582,
+          "reach": 0.099,
           "canvas": [
-            138,
-            138
+            136,
+            136
           ],
           "reasons": [
-            "shallow strike: reach 0.23 — eyeball it",
-            "canvas grown by 1 px a side to hold the motion"
+            "motion 0.077 outside the calm band 0.08–0.9 — eyeball it",
+            "no strike, just a lean: nothing reaches past 0.10 of the body"
           ],
-          "sub": "d35d8290-97d7-4b2b-89eb-7c48861a15de",
-          "group": "64bca5a7-4f67-468d-be4b-ad09e02ad27e",
+          "sub": "b1dce0a9-449e-43f8-9a1f-89b24fdb7af5",
+          "group": "0d9dc17b-c1a1-4a4c-a8f9-ce1a117fac87",
           "takes": 1,
-          "version": 2,
+          "version": 5,
           "mirrored": false,
-          "generated_at": "2026-09-10T20:32:48+00:00",
-          "action": "Chain Lash - Whips the iron chain out forward in one heavy lash, a big aggressive swing",
-          "tries": 1,
-          "rolls": 2,
+          "action": "Chain Lash - Whips the iron chain out forward in one heavy lash",
           "intensity": 1,
-          "rung": 0
+          "rolls": 1,
+          "frames": 5,
+          "rung": 0,
+          "tries": 1,
+          "generated_at": "2026-09-10T21:53:38+00:00"
         },
         "south-east": {
           "status": "warn",
@@ -1002,37 +1003,37 @@
           "rung": 0
         },
         "north-east": {
-          "status": "fail",
-          "step_mean": 0.1445,
-          "step_max": 0.2279,
-          "drift": 1.35,
-          "loop": 0.3696,
-          "loop_ratio": 2.56,
-          "travel": 1.38,
+          "status": "warn",
+          "step_mean": 0.137,
+          "step_max": 0.1879,
+          "drift": 1.63,
+          "loop": 0.3879,
+          "loop_ratio": 2.83,
+          "travel": 1.63,
           "pin": 1.0,
           "pad": 0,
-          "flash": 0.132,
-          "peak": 0.3696,
-          "reach": 0.228,
+          "flash": 0.0,
+          "peak": 0.4328,
+          "reach": 0.291,
           "canvas": [
             136,
             136
           ],
           "reasons": [
-            "shallow strike: reach 0.23 — eyeball it",
-            "painted effect: 0.13 of the body in new bright pixels (flare/slash arc)"
+            "shallow strike: reach 0.29 — eyeball it"
           ],
-          "sub": "d41ec3a3-da74-4e01-9f0a-83696ea3139b",
-          "group": "57bea59a-fed7-492d-85e8-2b31b788b43b",
+          "sub": "bf4b2db5-4fb6-416a-bf07-d020485b37e7",
+          "group": "dd785673-5ff3-4d18-98d7-93427683fe15",
           "takes": 1,
-          "version": 4,
+          "version": 5,
           "mirrored": false,
-          "generated_at": "2026-09-10T21:30:00+00:00",
           "action": "Chain Lash - Whips the iron chain out forward in one heavy lash, a big aggressive swing",
-          "tries": 1,
-          "rolls": 1,
           "intensity": 1,
-          "frames": 5
+          "rolls": 2,
+          "frames": 7,
+          "rung": 1,
+          "tries": 2,
+          "generated_at": "2026-09-10T21:53:46+00:00"
         },
         "north": {
           "status": "fail",
@@ -1102,35 +1103,36 @@
         },
         "north-west": {
           "status": "warn",
-          "step_mean": 0.1755,
-          "step_max": 0.2484,
-          "drift": 6.5,
-          "loop": 0.3672,
-          "loop_ratio": 2.09,
-          "travel": 6.5,
+          "step_mean": 0.137,
+          "step_max": 0.1879,
+          "drift": 1.63,
+          "loop": 0.3879,
+          "loop_ratio": 2.83,
+          "travel": 1.63,
           "pin": 1.0,
           "pad": 0,
           "flash": 0.0,
-          "peak": 0.3672,
-          "reach": 0.203,
+          "peak": 0.4328,
+          "reach": 0.291,
           "canvas": [
             136,
             136
           ],
           "reasons": [
-            "shallow strike: reach 0.20 — eyeball it"
+            "shallow strike: reach 0.29 — eyeball it"
           ],
-          "sub": "e06ef377-ba8b-4692-b6b8-4027a849bdec",
-          "group": "1badf219-2607-498d-b5ba-60ba142346ae",
+          "sub": "bf4b2db5-4fb6-416a-bf07-d020485b37e7",
+          "group": "dd785673-5ff3-4d18-98d7-93427683fe15",
           "takes": 1,
-          "version": 3,
+          "version": 5,
           "mirrored": true,
-          "generated_at": "2026-09-10T21:01:52+00:00",
           "action": "Chain Lash - Whips the iron chain out forward in one heavy lash, a big aggressive swing",
-          "tries": 1,
-          "rolls": 3,
           "intensity": 1,
-          "frames": 5,
+          "rolls": 2,
+          "frames": 7,
+          "rung": 1,
+          "tries": 2,
+          "generated_at": "2026-09-10T21:53:46+00:00",
           "source": "north-east"
         },
         "south-west": {
@@ -1167,7 +1169,7 @@
           "source": "south-east"
         }
       },
-      "action": "Chain Lash - Whips the iron chain out forward in one heavy lash, a big aggressive swing",
+      "action": "Chain Lash - Whips the iron chain out forward in one heavy lash",
       "frame_paths": {
         "south": [
           "bridge_troll/animations/attack_try/south/00.webp",
@@ -1199,7 +1201,9 @@
           "bridge_troll/animations/attack_try/north-east/01.webp",
           "bridge_troll/animations/attack_try/north-east/02.webp",
           "bridge_troll/animations/attack_try/north-east/03.webp",
-          "bridge_troll/animations/attack_try/north-east/04.webp"
+          "bridge_troll/animations/attack_try/north-east/04.webp",
+          "bridge_troll/animations/attack_try/north-east/05.webp",
+          "bridge_troll/animations/attack_try/north-east/06.webp"
         ],
         "north": [
           "bridge_troll/animations/attack_try/north/00.webp",
@@ -1224,7 +1228,9 @@
           "bridge_troll/animations/attack_try/north-west/01.webp",
           "bridge_troll/animations/attack_try/north-west/02.webp",
           "bridge_troll/animations/attack_try/north-west/03.webp",
-          "bridge_troll/animations/attack_try/north-west/04.webp"
+          "bridge_troll/animations/attack_try/north-west/04.webp",
+          "bridge_troll/animations/attack_try/north-west/05.webp",
+          "bridge_troll/animations/attack_try/north-west/06.webp"
         ],
         "south-west": [
           "bridge_troll/animations/attack_try/south-west/00.webp",

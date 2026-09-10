@@ -890,175 +890,172 @@
     "attack_try": {
       "directions": {
         "south": {
-          "status": "warn",
-          "step_mean": 0.1499,
-          "step_max": 0.2982,
-          "drift": 2.4,
-          "loop": 0.0542,
-          "loop_ratio": 0.36,
-          "travel": 0.26,
-          "pin": 1.0,
-          "pad": 1,
-          "flash": 0.07,
-          "peak": 0.2504,
-          "reach": 0.269,
-          "canvas": [
-            42,
-            42
-          ],
-          "reasons": [
-            "shallow strike: reach 0.27 — eyeball it",
-            "some bright effect pixels (0.07) — eyeball it",
-            "canvas grown by 1 px a side to hold the motion"
-          ],
-          "sub": "68ef2f3d-9e3c-4d6d-a72a-f769ec8df4c6",
-          "group": "b08833dc-4ed0-40f3-86bc-d5d4d48aa353",
-          "takes": 1,
-          "version": 4,
-          "mirrored": false,
-          "generated_at": "2026-09-10T21:19:47+00:00",
-          "action": "Lunge Attack - Throws its whole body forward in one fast lunge, white swoosh lines trailing behind it",
-          "tries": 4,
-          "rolls": 4,
-          "intensity": 1,
-          "frames": 9,
-          "rung": 0
-        },
-        "south-east": {
-          "status": "warn",
-          "step_mean": 0.0707,
-          "step_max": 0.1198,
-          "drift": 0.65,
-          "loop": 0.1331,
-          "loop_ratio": 1.88,
-          "travel": 0.73,
+          "status": "fail",
+          "step_mean": 0.0565,
+          "step_max": 0.1065,
+          "drift": 1.15,
+          "loop": 0.1129,
+          "loop_ratio": 2.0,
+          "travel": 0.07,
           "pin": 1.0,
           "pad": 0,
-          "flash": 0.062,
-          "peak": 0.2013,
-          "reach": 0.159,
+          "flash": 0.002,
+          "peak": 0.1565,
+          "reach": 0.077,
           "canvas": [
             40,
             40
           ],
           "reasons": [
-            "motion 0.071 outside the calm band 0.08–0.9 — eyeball it",
-            "shallow strike: reach 0.16 — eyeball it",
-            "some bright effect pixels (0.06) — eyeball it"
+            "motion 0.056 outside the calm band 0.08–0.9 — eyeball it",
+            "no strike, just a lean: nothing reaches past 0.08 of the body"
           ],
-          "sub": "fbf0ff28-6ed8-429d-8e67-44462297ea09",
-          "group": "882c12d2-6258-4e32-b403-c379613e591a",
+          "sub": "a74c6aef-099f-43ed-82a9-26bb2265e69b",
+          "group": "0c897a05-aaa2-4844-bf16-933ea7078ebf",
           "takes": 1,
-          "version": 4,
+          "version": 5,
           "mirrored": false,
-          "generated_at": "2026-09-10T21:19:48+00:00",
-          "action": "Lunge Attack - Throws its whole body forward in one fast lunge, white swoosh lines trailing behind it",
-          "tries": 4,
-          "rolls": 4,
+          "action": "Headbutt - Rocks back, then rams forward hard with its stone body",
           "intensity": 1,
-          "frames": 9,
-          "rung": 0
+          "rolls": 1,
+          "frames": 5,
+          "rung": 0,
+          "tries": 1,
+          "generated_at": "2026-09-10T21:54:03+00:00"
         },
-        "east": {
+        "south-east": {
           "status": "fail",
-          "step_mean": 0.0596,
-          "step_max": 0.0915,
-          "drift": 1.63,
-          "loop": 0.2038,
-          "loop_ratio": 3.42,
-          "travel": 0.82,
+          "step_mean": 0.1006,
+          "step_max": 0.1341,
+          "drift": 1.11,
+          "loop": 0.0546,
+          "loop_ratio": 0.54,
+          "travel": 1.31,
           "pin": 1.0,
           "pad": 0,
-          "flash": 0.009,
-          "peak": 0.247,
+          "flash": 0.007,
+          "peak": 0.1606,
+          "reach": 0.071,
+          "canvas": [
+            40,
+            40
+          ],
+          "reasons": [
+            "no strike, just a lean: nothing reaches past 0.07 of the body"
+          ],
+          "sub": "e3bca4d6-611a-4dc2-ad76-dd73e3fb3a70",
+          "group": "00b1e427-9788-40e6-b146-53d32919ffcf",
+          "takes": 1,
+          "version": 5,
+          "mirrored": false,
+          "action": "Headbutt - Rocks back, then rams forward hard with its stone body",
+          "intensity": 1,
+          "rolls": 1,
+          "frames": 5,
+          "rung": 0,
+          "tries": 1,
+          "generated_at": "2026-09-10T21:54:03+00:00"
+        },
+        "east": {
+          "status": "warn",
+          "step_mean": 0.1265,
+          "step_max": 0.1619,
+          "drift": 1.45,
+          "loop": 0.172,
+          "loop_ratio": 1.36,
+          "travel": 0.57,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": 0.012,
+          "peak": 0.172,
+          "reach": 0.272,
+          "canvas": [
+            40,
+            40
+          ],
+          "reasons": [
+            "shallow strike: reach 0.27 — eyeball it"
+          ],
+          "sub": "77303acd-019a-4006-a5e5-31fed92de00a",
+          "group": "8e77c11d-221b-44d4-99d7-f3d8039fb26b",
+          "takes": 1,
+          "version": 5,
+          "mirrored": false,
+          "action": "Stone Burst - The mite's rocky shell splits with a burst as it launches itself forward, stone shards flying, a huge aggressive attack with the whole body behind it, wide exaggerated motion",
+          "intensity": 1,
+          "rolls": 5,
+          "frames": 5,
+          "rung": 4,
+          "tries": 5,
+          "generated_at": "2026-09-10T21:54:04+00:00"
+        },
+        "north-east": {
+          "status": "fail",
+          "step_mean": 0.0674,
+          "step_max": 0.0864,
+          "drift": 0.99,
+          "loop": 0.1002,
+          "loop_ratio": 1.49,
+          "travel": 0.16,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": 0.002,
+          "peak": 0.1468,
+          "reach": 0.071,
+          "canvas": [
+            40,
+            40
+          ],
+          "reasons": [
+            "motion 0.067 outside the calm band 0.08–0.9 — eyeball it",
+            "weak strike: peak 0.147 — eyeball it",
+            "no strike, just a lean: nothing reaches past 0.07 of the body"
+          ],
+          "sub": "512d7300-076e-4a32-96da-17ef1cb0edba",
+          "group": "d1f94707-6ae4-4b49-aeed-abd7f5c01a0d",
+          "takes": 1,
+          "version": 5,
+          "mirrored": false,
+          "action": "Headbutt - Rocks back, then rams forward hard with its stone body",
+          "intensity": 1,
+          "rolls": 1,
+          "frames": 5,
+          "rung": 0,
+          "tries": 1,
+          "generated_at": "2026-09-10T21:54:05+00:00"
+        },
+        "north": {
+          "status": "fail",
+          "step_mean": 0.133,
+          "step_max": 0.1414,
+          "drift": 2.58,
+          "loop": 0.1044,
+          "loop_ratio": 0.78,
+          "travel": 0.19,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": 0.0,
+          "peak": 0.2609,
           "reach": 0.111,
           "canvas": [
             40,
             40
           ],
           "reasons": [
-            "motion 0.060 outside the calm band 0.08–0.9 — eyeball it",
             "no strike, just a lean: nothing reaches past 0.11 of the body"
           ],
-          "sub": "8b4324f5-ba18-4fb7-a3d3-a02b16978f19",
-          "group": "20e9fd66-7c1e-46e9-a257-f929063ef4b9",
+          "sub": "ef767661-1272-4962-97f0-5a249ebb7a16",
+          "group": "761cbb84-c514-4eab-863f-9065b1be6724",
           "takes": 1,
-          "version": 4,
+          "version": 5,
           "mirrored": false,
-          "generated_at": "2026-09-10T21:19:49+00:00",
-          "action": "Lunge Attack - Throws its whole body forward in one fast lunge, white swoosh lines trailing behind it",
-          "tries": 4,
-          "rolls": 4,
+          "action": "Headbutt - Rocks back, then rams forward hard with its stone body",
           "intensity": 1,
-          "frames": 9,
-          "rung": 3
-        },
-        "north-east": {
-          "status": "warn",
-          "step_mean": 0.0905,
-          "step_max": 0.1501,
-          "drift": 1.89,
-          "loop": 0.2356,
-          "loop_ratio": 2.6,
-          "travel": 1.89,
-          "pin": 1.0,
-          "pad": 0,
-          "flash": 0.002,
-          "peak": 0.2496,
-          "reach": 0.143,
-          "canvas": [
-            40,
-            40
-          ],
-          "reasons": [
-            "shallow strike: reach 0.14 — eyeball it"
-          ],
-          "sub": "3fa85c3e-a29e-47eb-ab30-468299922846",
-          "group": "e94ac533-5fe8-4c9e-aea4-efa05773fb87",
-          "takes": 1,
-          "version": 4,
-          "mirrored": false,
-          "generated_at": "2026-09-10T21:19:51+00:00",
-          "action": "Lunge Attack - Throws its whole body forward in one fast lunge, white swoosh lines trailing behind it",
-          "tries": 4,
-          "rolls": 4,
-          "intensity": 1,
-          "frames": 9,
-          "rung": 0
-        },
-        "north": {
-          "status": "warn",
-          "step_mean": 0.1221,
-          "step_max": 0.3199,
-          "drift": 2.77,
-          "loop": 0.202,
-          "loop_ratio": 1.66,
-          "travel": 0.23,
-          "pin": 1.0,
-          "pad": 0,
-          "flash": 0.062,
-          "peak": 0.2795,
-          "reach": 0.185,
-          "canvas": [
-            40,
-            40
-          ],
-          "reasons": [
-            "shallow strike: reach 0.19 — eyeball it",
-            "some bright effect pixels (0.06) — eyeball it"
-          ],
-          "sub": "31545a5d-495f-432c-907e-3d103cf0508c",
-          "group": "ad0a8031-b785-4c06-9b75-3c3c49c674fe",
-          "takes": 1,
-          "version": 4,
-          "mirrored": false,
-          "generated_at": "2026-09-10T21:19:52+00:00",
-          "action": "Lunge Attack - Throws its whole body forward in one fast lunge, white swoosh lines trailing behind it",
-          "tries": 4,
-          "rolls": 4,
-          "intensity": 1,
-          "frames": 9,
-          "rung": 0
+          "rolls": 1,
+          "frames": 5,
+          "rung": 0,
+          "tries": 1,
+          "generated_at": "2026-09-10T21:54:05+00:00"
         },
         "south-west": {
           "status": "warn",
@@ -1129,64 +1126,78 @@
           "frames": 9,
           "rung": 0,
           "source": "north-east"
+        },
+        "west": {
+          "status": "warn",
+          "step_mean": 0.1265,
+          "step_max": 0.1619,
+          "drift": 1.45,
+          "loop": 0.172,
+          "loop_ratio": 1.36,
+          "travel": 0.57,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": 0.012,
+          "peak": 0.172,
+          "reach": 0.272,
+          "canvas": [
+            40,
+            40
+          ],
+          "reasons": [
+            "shallow strike: reach 0.27 — eyeball it"
+          ],
+          "sub": "77303acd-019a-4006-a5e5-31fed92de00a",
+          "group": "8e77c11d-221b-44d4-99d7-f3d8039fb26b",
+          "takes": 1,
+          "version": 5,
+          "mirrored": true,
+          "action": "Stone Burst - The mite's rocky shell splits with a burst as it launches itself forward, stone shards flying, a huge aggressive attack with the whole body behind it, wide exaggerated motion",
+          "intensity": 1,
+          "rolls": 5,
+          "frames": 5,
+          "rung": 4,
+          "tries": 5,
+          "generated_at": "2026-09-10T21:54:04+00:00",
+          "source": "east"
         }
       },
-      "action": "Headbutt - Rocks back, then rams forward hard with its stone body, a big aggressive swing",
+      "action": "Headbutt - Rocks back, then rams forward hard with its stone body",
       "frame_paths": {
         "south": [
           "rock_mite/animations/attack_try/south/00.webp",
           "rock_mite/animations/attack_try/south/01.webp",
           "rock_mite/animations/attack_try/south/02.webp",
           "rock_mite/animations/attack_try/south/03.webp",
-          "rock_mite/animations/attack_try/south/04.webp",
-          "rock_mite/animations/attack_try/south/05.webp",
-          "rock_mite/animations/attack_try/south/06.webp",
-          "rock_mite/animations/attack_try/south/07.webp",
-          "rock_mite/animations/attack_try/south/08.webp"
+          "rock_mite/animations/attack_try/south/04.webp"
         ],
         "south-east": [
           "rock_mite/animations/attack_try/south-east/00.webp",
           "rock_mite/animations/attack_try/south-east/01.webp",
           "rock_mite/animations/attack_try/south-east/02.webp",
           "rock_mite/animations/attack_try/south-east/03.webp",
-          "rock_mite/animations/attack_try/south-east/04.webp",
-          "rock_mite/animations/attack_try/south-east/05.webp",
-          "rock_mite/animations/attack_try/south-east/06.webp",
-          "rock_mite/animations/attack_try/south-east/07.webp",
-          "rock_mite/animations/attack_try/south-east/08.webp"
+          "rock_mite/animations/attack_try/south-east/04.webp"
         ],
         "east": [
           "rock_mite/animations/attack_try/east/00.webp",
           "rock_mite/animations/attack_try/east/01.webp",
           "rock_mite/animations/attack_try/east/02.webp",
           "rock_mite/animations/attack_try/east/03.webp",
-          "rock_mite/animations/attack_try/east/04.webp",
-          "rock_mite/animations/attack_try/east/05.webp",
-          "rock_mite/animations/attack_try/east/06.webp",
-          "rock_mite/animations/attack_try/east/07.webp",
-          "rock_mite/animations/attack_try/east/08.webp"
+          "rock_mite/animations/attack_try/east/04.webp"
         ],
         "north-east": [
           "rock_mite/animations/attack_try/north-east/00.webp",
           "rock_mite/animations/attack_try/north-east/01.webp",
           "rock_mite/animations/attack_try/north-east/02.webp",
           "rock_mite/animations/attack_try/north-east/03.webp",
-          "rock_mite/animations/attack_try/north-east/04.webp",
-          "rock_mite/animations/attack_try/north-east/05.webp",
-          "rock_mite/animations/attack_try/north-east/06.webp",
-          "rock_mite/animations/attack_try/north-east/07.webp",
-          "rock_mite/animations/attack_try/north-east/08.webp"
+          "rock_mite/animations/attack_try/north-east/04.webp"
         ],
         "north": [
           "rock_mite/animations/attack_try/north/00.webp",
           "rock_mite/animations/attack_try/north/01.webp",
           "rock_mite/animations/attack_try/north/02.webp",
           "rock_mite/animations/attack_try/north/03.webp",
-          "rock_mite/animations/attack_try/north/04.webp",
-          "rock_mite/animations/attack_try/north/05.webp",
-          "rock_mite/animations/attack_try/north/06.webp",
-          "rock_mite/animations/attack_try/north/07.webp",
-          "rock_mite/animations/attack_try/north/08.webp"
+          "rock_mite/animations/attack_try/north/04.webp"
         ],
         "south-west": [
           "rock_mite/animations/attack_try/south-west/00.webp",
@@ -1209,6 +1220,13 @@
           "rock_mite/animations/attack_try/north-west/06.webp",
           "rock_mite/animations/attack_try/north-west/07.webp",
           "rock_mite/animations/attack_try/north-west/08.webp"
+        ],
+        "west": [
+          "rock_mite/animations/attack_try/west/00.webp",
+          "rock_mite/animations/attack_try/west/01.webp",
+          "rock_mite/animations/attack_try/west/02.webp",
+          "rock_mite/animations/attack_try/west/03.webp",
+          "rock_mite/animations/attack_try/west/04.webp"
         ]
       },
       "strips": {
@@ -1218,7 +1236,8 @@
         "north-east": "rock_mite/animations/attack_try__north-east.webp",
         "north": "rock_mite/animations/attack_try__north.webp",
         "south-west": "rock_mite/animations/attack_try__south-west.webp",
-        "north-west": "rock_mite/animations/attack_try__north-west.webp"
+        "north-west": "rock_mite/animations/attack_try__north-west.webp",
+        "west": "rock_mite/animations/attack_try__west.webp"
       },
       "intensity": 1
     }

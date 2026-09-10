@@ -35,6 +35,7 @@ How that becomes code:
 from __future__ import annotations
 
 import argparse
+import collections
 import json
 import os
 import shutil
@@ -568,7 +569,18 @@ def generate_state(client, cid, state, dirs, version, verbose=True, pin=False):
     # The ladder still walks the count, but it walks it for the whole monster.
     _prev = [(q.get("rolls") or 1) for d, q in (rec.get("directions") or {}).items()
              if d in dirs and q.get("status") == "fail" and not q.get("mirrored")]
-    nf = frames_for(max(_prev) + 1 if _prev else 1) if base_state(state) == "attack" else spec["frames"]
+    if base_state(state) == "attack":
+        # the count is LOCKED to whatever this monster's already-good
+        # directions use: re-rolling a stubborn direction must never invalidate
+        # a sibling that already works (measured 2026-09-10 — unifying counts
+        # blind re-rolled passing directions and lost nine of them). Only a
+        # monster with nothing to protect lets the ladder pick the count.
+        keep = collections.Counter(
+            n for d, n in frame_counts(cid, state).items()
+            if d in GEN_DIRS and (rec.get("directions", {}).get(d, {}).get("status") in ("pass", "warn")))
+        nf = keep.most_common(1)[0][0] - 1 if keep else frames_for(max(_prev) + 1 if _prev else 1)
+    else:
+        nf = spec["frames"]
     for d in dirs:
         seed = seed_for(cid, state, d, version)
         pinned = spec["pin_end"] or pin
@@ -680,10 +692,18 @@ def needed_dirs(man, slot, redo=None):
     rec = (man.get("animations") or {}).get(slot) or {"directions": {}}
     if redo:
         return list(redo)
-    # directions that disagree about their length are not one animation
-    counts = set(frame_counts(man["id"], slot).values())
-    if len(counts) > 1:
-        return list(GEN_DIRS)
+    # directions that disagree about their length are not one animation — but
+    # only the odd ones out are redone, at the count the working ones use
+    counts = frame_counts(man["id"], slot)
+    gen = {d: n for d, n in counts.items() if d in GEN_DIRS}
+    if len(set(gen.values())) > 1:
+        good = collections.Counter(n for d, n in gen.items()
+                                   if rec["directions"].get(d, {}).get("status") in ("pass", "warn"))
+        target = (good or collections.Counter(gen.values())).most_common(1)[0][0]
+        odd = [d for d in GEN_DIRS if gen.get(d) not in (None, target)]
+        missing = [d for d in GEN_DIRS if d not in gen]
+        failing = [d for d in GEN_DIRS if rec["directions"].get(d, {}).get("status") == "fail"]
+        return sorted(set(odd + missing + failing), key=GEN_DIRS.index)
     # a changed action text means the clips on disk were made from other words
     # — regenerate the whole slot (the takes are keyed by that text). A state
     # is ONE take across all eight directions, never a mix of wordings.

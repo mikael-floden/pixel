@@ -1008,37 +1008,39 @@
           "rung": 3
         },
         "north-east": {
-          "status": "warn",
-          "step_mean": 0.1613,
-          "step_max": 0.2921,
-          "drift": 3.56,
-          "loop": 0.5712,
-          "loop_ratio": 3.54,
-          "travel": 3.56,
+          "status": "fail",
+          "step_mean": 0.0626,
+          "step_max": 0.0788,
+          "drift": 2.09,
+          "loop": 0.089,
+          "loop_ratio": 1.42,
+          "travel": 2.09,
           "pin": 1.0,
           "pad": 0,
-          "flash": 0.003,
-          "peak": 0.5712,
-          "reach": 0.258,
+          "flash": 0.005,
+          "peak": 0.1385,
+          "reach": 0.081,
           "canvas": [
             88,
             88
           ],
           "reasons": [
-            "shallow strike: reach 0.26 — eyeball it"
+            "motion 0.063 outside the calm band 0.08–0.9 — eyeball it",
+            "weak strike: peak 0.139 — eyeball it",
+            "no strike, just a lean: nothing reaches past 0.08 of the body"
           ],
-          "sub": "24121d30-ddb8-4273-b07d-6496828c62c2",
-          "group": "18059f2f-b3a9-4f37-a608-75f54b91d861",
+          "sub": "712c2b50-e255-450c-96cd-95f00ac891c4",
+          "group": "6d6017ed-9c81-4f7e-8799-db3bb0126dbb",
           "takes": 1,
-          "version": 3,
+          "version": 5,
           "mirrored": false,
-          "generated_at": "2026-09-10T20:52:09+00:00",
-          "action": "Strike - Coils its head back, then strikes forward with fangs bared, a big aggressive swing",
-          "tries": 1,
-          "rolls": 3,
+          "action": "Strike - Coils its head back, then strikes forward with fangs bared",
           "intensity": 1,
+          "rolls": 1,
           "frames": 5,
-          "rung": 0
+          "rung": 0,
+          "tries": 1,
+          "generated_at": "2026-09-10T21:50:20+00:00"
         },
         "north": {
           "status": "warn",
@@ -1177,7 +1179,7 @@
           "source": "east"
         }
       },
-      "action": "Strike - Coils its head back, then strikes forward with fangs bared, a big aggressive swing",
+      "action": "Strike - Coils its head back, then strikes forward with fangs bared",
       "frame_paths": {
         "south": [
           "cobra/animations/attack_try/south/00.webp",

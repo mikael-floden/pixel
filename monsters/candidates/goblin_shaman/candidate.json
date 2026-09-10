@@ -905,37 +905,37 @@
       "directions": {
         "south": {
           "status": "warn",
-          "step_mean": 0.1776,
-          "step_max": 0.3138,
-          "drift": 7.55,
-          "loop": 0.4432,
-          "loop_ratio": 2.5,
-          "travel": 8.29,
+          "step_mean": 0.2164,
+          "step_max": 0.3222,
+          "drift": 8.14,
+          "loop": 0.3599,
+          "loop_ratio": 1.66,
+          "travel": 9.57,
           "pin": 1.0,
-          "pad": 6,
-          "flash": 0.251,
-          "peak": 0.4432,
-          "reach": 0.243,
+          "pad": 2,
+          "flash": 0.125,
+          "peak": 0.3599,
+          "reach": 0.171,
           "canvas": [
-            100,
-            100
+            92,
+            92
           ],
           "reasons": [
-            "shallow strike: reach 0.24 — eyeball it",
-            "some bright effect pixels (0.25) — eyeball it",
-            "canvas grown by 6 px a side to hold the motion"
+            "shallow strike: reach 0.17 — eyeball it",
+            "canvas grown by 2 px a side to hold the motion"
           ],
-          "sub": "eb691164-9a2b-45af-ac8e-5d4503c56f5e",
-          "group": "95b00d9f-b5a5-483d-8fa5-bc601551cbfb",
+          "sub": "85d9f678-31a5-4e80-baa4-7fa2f713c6ff",
+          "group": "33e53857-f5df-44bf-a552-3546b06056b9",
           "takes": 1,
-          "version": 2,
+          "version": 3,
           "mirrored": false,
-          "generated_at": "2026-09-10T20:28:47+00:00",
-          "action": "Skull Curse - Thrusts the skull staff out at arm's length and the skull flares, a big aggressive swing",
-          "tries": 1,
-          "rolls": 2,
+          "action": "Skull Curse - Thrusts the skull staff out at arm's length and the skull flares",
           "intensity": 1,
-          "rung": 0
+          "rolls": 1,
+          "frames": 5,
+          "rung": 0,
+          "tries": 1,
+          "generated_at": "2026-09-10T21:55:17+00:00"
         },
         "south-east": {
           "status": "pass",
@@ -1158,7 +1158,7 @@
           "source": "north-east"
         }
       },
-      "action": "Skull Curse - Thrusts the skull staff out at arm's length and the skull flares, a big aggressive swing",
+      "action": "Skull Curse - Thrusts the skull staff out at arm's length and the skull flares",
       "frame_paths": {
         "south": [
           "goblin_shaman/animations/attack_try/south/00.webp",
