@@ -904,36 +904,36 @@
       "directions": {
         "south": {
           "status": "fail",
-          "step_mean": 0.1562,
-          "step_max": 0.2425,
-          "drift": 0.91,
-          "loop": 0.2767,
-          "loop_ratio": 1.77,
-          "travel": 1.16,
+          "step_mean": 0.1935,
+          "step_max": 0.254,
+          "drift": 1.8,
+          "loop": 0.422,
+          "loop_ratio": 2.18,
+          "travel": 1.7,
           "pin": 1.0,
           "pad": 0,
-          "flash": 0.0,
-          "peak": 0.2767,
-          "reach": 0.081,
+          "flash": 0.001,
+          "peak": 0.422,
+          "reach": 0.093,
           "canvas": [
             112,
             112
           ],
           "reasons": [
-            "no strike, just a lean: nothing reaches past 0.08 of the body"
+            "no strike, just a lean: nothing reaches past 0.09 of the body"
           ],
-          "sub": "71a8a863-802f-4c46-8bd6-4c9b3844a62c",
-          "group": "31b8339c-eef8-4ca1-93c1-813165a0fd97",
+          "sub": "bd19c171-54a7-4045-b9aa-2a8ad74955a1",
+          "group": "d9741fcb-8772-4fc1-b743-7dacccef0198",
           "takes": 1,
-          "version": 3,
+          "version": 4,
           "mirrored": false,
-          "action": "Bow Shot - Draws the bowstring back to its cheek and looses an arrow",
+          "action": "Bow Shot - Draws the bowstring back to its cheek and looses an arrow, a big aggressive swing",
           "intensity": 1,
-          "rolls": 1,
+          "rolls": 2,
           "frames": 5,
-          "rung": 0,
-          "tries": 1,
-          "generated_at": "2026-09-10T21:57:10+00:00"
+          "rung": 1,
+          "tries": 2,
+          "generated_at": "2026-09-10T22:18:40+00:00"
         },
         "south-east": {
           "status": "warn",
@@ -1030,37 +1030,37 @@
           "rung": 0
         },
         "north": {
-          "status": "fail",
-          "step_mean": 0.0868,
-          "step_max": 0.1176,
-          "drift": 0.53,
-          "loop": 0.2247,
-          "loop_ratio": 2.59,
-          "travel": 0.53,
+          "status": "warn",
+          "step_mean": 0.2198,
+          "step_max": 0.2602,
+          "drift": 2.53,
+          "loop": 0.3551,
+          "loop_ratio": 1.62,
+          "travel": 2.02,
           "pin": 1.0,
           "pad": 0,
-          "flash": 0.001,
-          "peak": 0.2247,
-          "reach": 0.096,
+          "flash": 0.009,
+          "peak": 0.3551,
+          "reach": 0.191,
           "canvas": [
             112,
             112
           ],
           "reasons": [
-            "no strike, just a lean: nothing reaches past 0.10 of the body"
+            "shallow strike: reach 0.19 — eyeball it"
           ],
-          "sub": "a545eea7-edc1-45ee-ba91-28aafad2c6f9",
-          "group": "54adcb84-9eb6-401c-a0f8-78b2f3f6a3b1",
+          "sub": "2680d30f-9837-42f4-bb44-0770fd07f14c",
+          "group": "5e65d3cf-2ad9-4df9-b0d7-d9fb632cffa3",
           "takes": 1,
-          "version": 3,
+          "version": 4,
           "mirrored": false,
-          "action": "Bow Shot - Draws the bowstring back to its cheek and looses an arrow",
+          "action": "Bow Shot - Draws the bowstring back to its cheek and looses an arrow, a big aggressive swing",
           "intensity": 1,
-          "rolls": 1,
+          "rolls": 2,
           "frames": 5,
-          "rung": 0,
-          "tries": 1,
-          "generated_at": "2026-09-10T21:57:10+00:00"
+          "rung": 1,
+          "tries": 2,
+          "generated_at": "2026-09-10T22:18:40+00:00"
         },
         "south-west": {
           "status": "warn",

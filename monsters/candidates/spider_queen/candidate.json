@@ -904,70 +904,70 @@
     "attack_try": {
       "directions": {
         "south": {
-          "status": "fail",
-          "step_mean": 0.2759,
-          "step_max": 0.4469,
-          "drift": 11.27,
-          "loop": 0.4328,
-          "loop_ratio": 1.57,
-          "travel": 2.56,
+          "status": "warn",
+          "step_mean": 0.3323,
+          "step_max": 0.6036,
+          "drift": 2.81,
+          "loop": 0.641,
+          "loop_ratio": 1.93,
+          "travel": 1.83,
           "pin": 1.0,
           "pad": 0,
-          "flash": 0.004,
-          "peak": 0.4376,
-          "reach": 0.113,
+          "flash": 0.034,
+          "peak": 0.677,
+          "reach": 0.176,
           "canvas": [
             240,
             240
           ],
           "reasons": [
-            "no strike, just a lean: nothing reaches past 0.11 of the body"
+            "shallow strike: reach 0.18 — eyeball it"
           ],
-          "sub": "ad6d7660-893d-4fcd-89ec-698da21f04ee",
-          "group": "3641b806-2d97-4dbf-a8c6-70b86e1eca6a",
+          "sub": "aa8079cf-f8fe-4c87-b611-41d51cb04d04",
+          "group": "5b3eee78-6293-4adc-b8cc-75f357a0a1a6",
           "takes": 1,
-          "version": 5,
+          "version": 6,
           "mirrored": false,
-          "action": "Fang Plunge - The queen rears up to full height on her back legs and plunges down, fangs and front legs stabbing, a huge aggressive attack with the whole body behind it, wide exaggerated motion",
+          "action": "Fang Plunge - The queen rears up to full height on her back legs and plunges down, fangs and front legs stabbing, an extremely violent attack, huge exaggerated motion, the limb thrown far out",
           "intensity": 1,
-          "rolls": 5,
+          "rolls": 6,
           "frames": 5,
-          "rung": 4,
-          "tries": 5,
-          "generated_at": "2026-09-10T21:58:41+00:00"
+          "rung": 5,
+          "tries": 6,
+          "generated_at": "2026-09-10T22:22:57+00:00"
         },
         "south-east": {
-          "status": "fail",
-          "step_mean": 0.1751,
-          "step_max": 0.2142,
-          "drift": 3.86,
-          "loop": 0.3716,
-          "loop_ratio": 2.12,
-          "travel": 3.86,
+          "status": "warn",
+          "step_mean": 0.3444,
+          "step_max": 0.499,
+          "drift": 7.94,
+          "loop": 0.507,
+          "loop_ratio": 1.47,
+          "travel": 9.53,
           "pin": 1.0,
           "pad": 0,
           "flash": 0.001,
-          "peak": 0.3716,
-          "reach": 0.077,
+          "peak": 0.507,
+          "reach": 0.154,
           "canvas": [
             240,
             240
           ],
           "reasons": [
-            "no strike, just a lean: nothing reaches past 0.08 of the body"
+            "shallow strike: reach 0.15 — eyeball it"
           ],
-          "sub": "8d7cd7e0-a2c3-4642-9979-d2586bd92c60",
-          "group": "e07fe28d-905e-40cc-ad1d-c2bae43c21b5",
+          "sub": "14b5df05-432a-44e4-a7f0-621780c0147b",
+          "group": "a1aea674-ba97-4eec-ae5d-6de1286738bc",
           "takes": 1,
-          "version": 5,
+          "version": 6,
           "mirrored": false,
-          "action": "Fang Plunge - The queen rears up to full height on her back legs and plunges down, fangs and front legs stabbing, a huge aggressive attack with the whole body behind it, wide exaggerated motion",
+          "action": "Fang Plunge - The queen rears up to full height on her back legs and plunges down, fangs and front legs stabbing, an extremely violent attack, huge exaggerated motion, the limb thrown far out",
           "intensity": 1,
-          "rolls": 5,
+          "rolls": 6,
           "frames": 5,
-          "rung": 4,
-          "tries": 5,
-          "generated_at": "2026-09-10T21:58:42+00:00"
+          "rung": 5,
+          "tries": 6,
+          "generated_at": "2026-09-10T22:23:00+00:00"
         },
         "east": {
           "status": "warn",
@@ -1003,37 +1003,37 @@
           "generated_at": "2026-09-10T21:58:42+00:00"
         },
         "north-east": {
-          "status": "fail",
-          "step_mean": 0.1172,
-          "step_max": 0.1338,
-          "drift": 2.58,
-          "loop": 0.2634,
-          "loop_ratio": 2.25,
-          "travel": 2.58,
+          "status": "warn",
+          "step_mean": 0.2839,
+          "step_max": 0.4016,
+          "drift": 7.87,
+          "loop": 0.463,
+          "loop_ratio": 1.63,
+          "travel": 5.06,
           "pin": 1.0,
           "pad": 0,
-          "flash": -0.0,
-          "peak": 0.2634,
-          "reach": 0.046,
+          "flash": 0.003,
+          "peak": 0.5146,
+          "reach": 0.189,
           "canvas": [
             240,
             240
           ],
           "reasons": [
-            "no strike, just a lean: nothing reaches past 0.05 of the body"
+            "shallow strike: reach 0.19 — eyeball it"
           ],
-          "sub": "6b1c2889-4c5c-4726-9e1d-87d6eb5f2962",
-          "group": "d4cb7a58-c3e6-458e-9329-d28f75cdf690",
+          "sub": "77a38c05-3625-4854-a45d-4733e9e3c2b0",
+          "group": "1799f9df-9259-410d-b34f-a098f8f9177c",
           "takes": 1,
-          "version": 5,
+          "version": 6,
           "mirrored": false,
-          "action": "Fang Stab - Rears high on her back legs and stabs down with fangs and front legs",
+          "action": "Fang Stab - Rears high on her back legs and stabs down with fangs and front legs, a big aggressive swing",
           "intensity": 1,
-          "rolls": 1,
+          "rolls": 2,
           "frames": 5,
-          "rung": 0,
-          "tries": 1,
-          "generated_at": "2026-09-10T21:58:43+00:00"
+          "rung": 1,
+          "tries": 2,
+          "generated_at": "2026-09-10T22:23:01+00:00"
         },
         "north": {
           "status": "warn",
@@ -1105,38 +1105,71 @@
         },
         "north-west": {
           "status": "warn",
-          "step_mean": 0.2119,
-          "step_max": 0.3107,
-          "drift": 5.42,
-          "loop": 0.1315,
-          "loop_ratio": 0.62,
-          "travel": 3.33,
+          "step_mean": 0.2839,
+          "step_max": 0.4016,
+          "drift": 7.87,
+          "loop": 0.463,
+          "loop_ratio": 1.63,
+          "travel": 5.06,
           "pin": 1.0,
           "pad": 0,
-          "flash": 0.079,
-          "peak": 0.3935,
-          "reach": 0.184,
+          "flash": 0.003,
+          "peak": 0.5146,
+          "reach": 0.189,
           "canvas": [
             240,
             240
           ],
           "reasons": [
-            "shallow strike: reach 0.18 — eyeball it",
-            "some bright effect pixels (0.08) — eyeball it"
+            "shallow strike: reach 0.19 — eyeball it"
           ],
-          "sub": "fd75fc3b-dece-4135-a8ff-4472c137b15b",
-          "group": "45c935be-3861-463f-848e-bef0342d93f2",
+          "sub": "77a38c05-3625-4854-a45d-4733e9e3c2b0",
+          "group": "1799f9df-9259-410d-b34f-a098f8f9177c",
           "takes": 1,
-          "version": 4,
+          "version": 6,
           "mirrored": true,
-          "generated_at": "2026-09-10T21:25:27+00:00",
-          "action": "Claw Swipe - Raises one front paw and performs one quick swipe forward, white swoosh lines following the claws",
-          "tries": 4,
-          "rolls": 4,
+          "action": "Fang Stab - Rears high on her back legs and stabs down with fangs and front legs, a big aggressive swing",
           "intensity": 1,
-          "frames": 9,
-          "rung": 0,
+          "rolls": 2,
+          "frames": 5,
+          "rung": 1,
+          "tries": 2,
+          "generated_at": "2026-09-10T22:23:01+00:00",
           "source": "north-east"
+        },
+        "south-west": {
+          "status": "warn",
+          "step_mean": 0.3444,
+          "step_max": 0.499,
+          "drift": 7.94,
+          "loop": 0.507,
+          "loop_ratio": 1.47,
+          "travel": 9.53,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": 0.001,
+          "peak": 0.507,
+          "reach": 0.154,
+          "canvas": [
+            240,
+            240
+          ],
+          "reasons": [
+            "shallow strike: reach 0.15 — eyeball it"
+          ],
+          "sub": "14b5df05-432a-44e4-a7f0-621780c0147b",
+          "group": "a1aea674-ba97-4eec-ae5d-6de1286738bc",
+          "takes": 1,
+          "version": 6,
+          "mirrored": true,
+          "action": "Fang Plunge - The queen rears up to full height on her back legs and plunges down, fangs and front legs stabbing, an extremely violent attack, huge exaggerated motion, the limb thrown far out",
+          "intensity": 1,
+          "rolls": 6,
+          "frames": 5,
+          "rung": 5,
+          "tries": 6,
+          "generated_at": "2026-09-10T22:23:00+00:00",
+          "source": "south-east"
         }
       },
       "action": "Fang Stab - Rears high on her back legs and stabs down with fangs and front legs",
@@ -1188,11 +1221,14 @@
           "spider_queen/animations/attack_try/north-west/01.webp",
           "spider_queen/animations/attack_try/north-west/02.webp",
           "spider_queen/animations/attack_try/north-west/03.webp",
-          "spider_queen/animations/attack_try/north-west/04.webp",
-          "spider_queen/animations/attack_try/north-west/05.webp",
-          "spider_queen/animations/attack_try/north-west/06.webp",
-          "spider_queen/animations/attack_try/north-west/07.webp",
-          "spider_queen/animations/attack_try/north-west/08.webp"
+          "spider_queen/animations/attack_try/north-west/04.webp"
+        ],
+        "south-west": [
+          "spider_queen/animations/attack_try/south-west/00.webp",
+          "spider_queen/animations/attack_try/south-west/01.webp",
+          "spider_queen/animations/attack_try/south-west/02.webp",
+          "spider_queen/animations/attack_try/south-west/03.webp",
+          "spider_queen/animations/attack_try/south-west/04.webp"
         ]
       },
       "strips": {
@@ -1202,7 +1238,8 @@
         "north-east": "spider_queen/animations/attack_try__north-east.webp",
         "north": "spider_queen/animations/attack_try__north.webp",
         "west": "spider_queen/animations/attack_try__west.webp",
-        "north-west": "spider_queen/animations/attack_try__north-west.webp"
+        "north-west": "spider_queen/animations/attack_try__north-west.webp",
+        "south-west": "spider_queen/animations/attack_try__south-west.webp"
       },
       "intensity": 1
     }

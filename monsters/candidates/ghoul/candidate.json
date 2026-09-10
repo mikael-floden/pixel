@@ -1029,36 +1029,37 @@
           "generated_at": "2026-09-10T21:58:45+00:00"
         },
         "north": {
-          "status": "warn",
-          "step_mean": 0.1295,
-          "step_max": 0.2285,
-          "drift": 2.23,
-          "loop": 0.0643,
-          "loop_ratio": 0.5,
-          "travel": 1.29,
+          "status": "fail",
+          "step_mean": 0.0804,
+          "step_max": 0.1215,
+          "drift": 1.77,
+          "loop": 0.2039,
+          "loop_ratio": 2.53,
+          "travel": 0.41,
           "pin": 1.0,
           "pad": 0,
-          "flash": 0.004,
-          "peak": 0.3052,
-          "reach": 0.246,
+          "flash": -0.004,
+          "peak": 0.2039,
+          "reach": 0.043,
           "canvas": [
             104,
             104
           ],
           "reasons": [
-            "shallow strike: reach 0.25 — eyeball it"
+            "no strike, just a lean: nothing reaches past 0.04 of the body"
           ],
-          "sub": "02623745-1b38-40fd-b611-bca21e2a1fc4",
-          "group": "7644c500-4256-486f-9e17-b8929ce736f7",
+          "sub": "3b0e4b4f-be46-445b-8c6d-fca6df422f04",
+          "group": "c6ec7b05-63f2-4f1b-a05d-febaa20c47de",
           "takes": 1,
-          "version": 4,
+          "version": 6,
           "mirrored": false,
-          "generated_at": "2026-09-10T21:26:50+00:00",
-          "action": "Claw Swipe - Raises one front paw and performs one quick swipe forward, white swoosh lines following the claws",
-          "tries": 4,
-          "rolls": 4,
+          "action": "Double Claw - Rakes forward with both claws in two fast alternating swipes",
           "intensity": 1,
-          "frames": 9
+          "rolls": 1,
+          "frames": 5,
+          "rung": 0,
+          "tries": 1,
+          "generated_at": "2026-09-10T22:19:51+00:00"
         },
         "west": {
           "status": "pass",
@@ -1195,11 +1196,7 @@
           "ghoul/animations/attack_try/north/01.webp",
           "ghoul/animations/attack_try/north/02.webp",
           "ghoul/animations/attack_try/north/03.webp",
-          "ghoul/animations/attack_try/north/04.webp",
-          "ghoul/animations/attack_try/north/05.webp",
-          "ghoul/animations/attack_try/north/06.webp",
-          "ghoul/animations/attack_try/north/07.webp",
-          "ghoul/animations/attack_try/north/08.webp"
+          "ghoul/animations/attack_try/north/04.webp"
         ],
         "west": [
           "ghoul/animations/attack_try/west/00.webp",
