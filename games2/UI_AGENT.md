@@ -252,7 +252,7 @@ from the games agent), #18 (title/landing screen).
   landing, and the samples above replaced it because a cropped render has no
   such relationship to the grid.
 - **SLIDER ROWS LEAVE A SCROLL GUTTER; BUTTONS DO NOT** (`--ml-slider-gutter`,
-  80px, maintainer 2026-09-08 with the strip circled on a screenshot: "when
+  100px, maintainer 2026-09-08 with the strip circled on a screenshot: "when
   scrolling in settings it's hard to not by mistake edit a slider … this is
   because the sliders spawn 100% width"). A track takes its value on
   POINTERDOWN — a tap anywhere on it jumps there, which is deliberate — so the
@@ -275,6 +275,31 @@ from the games agent), #18 (title/landing screen).
   thumb is the same size on every screen, so this must never become a
   fraction of the viewport. The gate's floor is that number rather than the
   44px generic touch target, so shrinking it back toward a guideline fails.
+  THE GUTTER IS ALSO THE "default" BUTTON'S LANE (`.ml-slider-def`, maintainer
+  2026-09-10: "I want it to the right of the slider. We already have extra room
+  there because the slider doesn't take up 100%"). The two uses do not fight: a
+  button is not draggable — a touch that moves becomes a scroll and never fires
+  a click — so the strip still starts scrolls and the track keeps its width. The
+  button's flex-basis IS `--ml-slider-gutter` minus the row gap, so widening the
+  gutter widens the button and the two numbers can never drift apart.
+- **EVERY DIAL CARRIES A "default", AND DISABLED MEANS "already there"** (his
+  words). `pctSlider`/`rangeSlider` take the default as a REQUIRED argument, in
+  the same 0..1 axis as `get`/`set`, so a log or stepped dial converts it the
+  way it converts everything else — and a new dial cannot forget to name one.
+  The button asks the STORED value, never the drag's raw position: a drag that
+  lands on the default must go dead, and a pointer fraction never equals a
+  stored number exactly. These dials exist so he can find a number by eye, so
+  the way back from a hand he did not like is part of the widget, not a nicety.
+- **EVERY SLIDER SITS IN ONE BLOCK** (`.ml-dials`, maintainer 2026-09-10: "we
+  have two settings sliders at the bottom of the page and the rest in the
+  middle. Put all in the middle."). The two strays were the bird-density dial,
+  which the ambient checklist built into ITSELF, and the games agent's Uphill
+  bias, injected onto the end of the column from `navbias.ts`. A slider dropped
+  anywhere else in `.ml-set` is MOVED into the group by an observer rather than
+  asked to know about it: outside injectors find the page by class and re-inject
+  after every HudBar rebuild, so the rule only stays true if it lives on the
+  receiving side. Moving a node out of `.ml-set` fires only records the observer
+  ignores, so it cannot loop.
 - **A UI ICON IS THE MAINTAINER'S ART AT ITS AUTHORED GRID, NEVER AN EMOJI.**
   The 🔍 button shipped with the `&#128269;` glyph and he replaced it with his
   own PixelLab piece (2026-09-03) — an emoji is whatever the phone's font
