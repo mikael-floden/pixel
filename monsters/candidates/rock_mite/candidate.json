@@ -886,6 +886,201 @@
         "west": "rock_mite/animations/attack__west.webp",
         "north-west": "rock_mite/animations/attack__north-west.webp"
       }
+    },
+    "attack_try": {
+      "directions": {
+        "south": {
+          "status": "fail",
+          "step_mean": 0.1133,
+          "step_max": 0.1495,
+          "drift": 1.34,
+          "loop": 0.0579,
+          "loop_ratio": 0.51,
+          "travel": 0.02,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": 0.002,
+          "peak": 0.1543,
+          "reach": 0.077,
+          "canvas": [
+            40,
+            40
+          ],
+          "reasons": [
+            "no strike, just a lean: nothing reaches past 0.08 of the body"
+          ],
+          "sub": "50b22990-d730-43fa-9c70-d31a9e776eb5",
+          "group": "31eb8010-cbb5-4deb-bbad-e230fd754343",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "action": "Headbutt - Rocks back, then rams forward hard with its stone body",
+          "tries": 1,
+          "generated_at": "2026-09-10T19:59:12+00:00"
+        },
+        "south-east": {
+          "status": "fail",
+          "step_mean": 0.1377,
+          "step_max": 0.2047,
+          "drift": 1.79,
+          "loop": 0.0982,
+          "loop_ratio": 0.71,
+          "travel": 0.77,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": 0.002,
+          "peak": 0.2146,
+          "reach": 0.107,
+          "canvas": [
+            40,
+            40
+          ],
+          "reasons": [
+            "no strike, just a lean: nothing reaches past 0.11 of the body"
+          ],
+          "sub": "fa32c00f-0f8f-4432-a05f-0d4c84d49f91",
+          "group": "ce66c03f-2097-4385-8b0c-15638c54a91a",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "action": "Headbutt - Rocks back, then rams forward hard with its stone body",
+          "tries": 1,
+          "generated_at": "2026-09-10T19:59:13+00:00"
+        },
+        "east": {
+          "status": "fail",
+          "step_mean": 0.0842,
+          "step_max": 0.1123,
+          "drift": 1.3,
+          "loop": 0.1192,
+          "loop_ratio": 1.42,
+          "travel": 0.26,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": -0.002,
+          "peak": 0.1865,
+          "reach": 0.111,
+          "canvas": [
+            40,
+            40
+          ],
+          "reasons": [
+            "no strike, just a lean: nothing reaches past 0.11 of the body"
+          ],
+          "sub": "925ac1b8-b620-4f17-aa82-3f4ffb9f1ad1",
+          "group": "1cec0117-ebe0-439a-810d-3d9678d1bd70",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "action": "Headbutt - Rocks back, then rams forward hard with its stone body",
+          "tries": 1,
+          "generated_at": "2026-09-10T19:59:13+00:00"
+        },
+        "north-east": {
+          "status": "fail",
+          "step_mean": 0.1322,
+          "step_max": 0.2059,
+          "drift": 1.87,
+          "loop": 0.2251,
+          "loop_ratio": 1.7,
+          "travel": 0.3,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": 0.0,
+          "peak": 0.2304,
+          "reach": 0.143,
+          "canvas": [
+            40,
+            40
+          ],
+          "reasons": [
+            "no strike, just a lean: nothing reaches past 0.14 of the body"
+          ],
+          "sub": "54e59d5c-4beb-4ca7-8400-364a657e2c05",
+          "group": "5be19989-0e7c-49b1-b485-9ef443be0d1d",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "action": "Headbutt - Rocks back, then rams forward hard with its stone body",
+          "tries": 1,
+          "generated_at": "2026-09-10T19:59:14+00:00"
+        },
+        "north": {
+          "status": "fail",
+          "step_mean": 0.0753,
+          "step_max": 0.229,
+          "drift": 2.08,
+          "loop": 0.2037,
+          "loop_ratio": 2.7,
+          "travel": 0.1,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": 0.0,
+          "peak": 0.229,
+          "reach": 0.111,
+          "canvas": [
+            40,
+            40
+          ],
+          "reasons": [
+            "motion 0.075 outside the calm band 0.08–0.9 — eyeball it",
+            "no strike, just a lean: nothing reaches past 0.11 of the body"
+          ],
+          "sub": "93b65e2a-c595-402a-9fbc-9178850b7e79",
+          "group": "e941c282-c0c5-40ac-b72d-5850f50c6300",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "action": "Headbutt - Rocks back, then rams forward hard with its stone body",
+          "tries": 1,
+          "generated_at": "2026-09-10T19:59:14+00:00"
+        }
+      },
+      "action": "Headbutt - Rocks back, then rams forward hard with its stone body",
+      "frame_paths": {
+        "south": [
+          "rock_mite/animations/attack_try/south/00.webp",
+          "rock_mite/animations/attack_try/south/01.webp",
+          "rock_mite/animations/attack_try/south/02.webp",
+          "rock_mite/animations/attack_try/south/03.webp",
+          "rock_mite/animations/attack_try/south/04.webp"
+        ],
+        "south-east": [
+          "rock_mite/animations/attack_try/south-east/00.webp",
+          "rock_mite/animations/attack_try/south-east/01.webp",
+          "rock_mite/animations/attack_try/south-east/02.webp",
+          "rock_mite/animations/attack_try/south-east/03.webp",
+          "rock_mite/animations/attack_try/south-east/04.webp"
+        ],
+        "east": [
+          "rock_mite/animations/attack_try/east/00.webp",
+          "rock_mite/animations/attack_try/east/01.webp",
+          "rock_mite/animations/attack_try/east/02.webp",
+          "rock_mite/animations/attack_try/east/03.webp",
+          "rock_mite/animations/attack_try/east/04.webp"
+        ],
+        "north-east": [
+          "rock_mite/animations/attack_try/north-east/00.webp",
+          "rock_mite/animations/attack_try/north-east/01.webp",
+          "rock_mite/animations/attack_try/north-east/02.webp",
+          "rock_mite/animations/attack_try/north-east/03.webp",
+          "rock_mite/animations/attack_try/north-east/04.webp"
+        ],
+        "north": [
+          "rock_mite/animations/attack_try/north/00.webp",
+          "rock_mite/animations/attack_try/north/01.webp",
+          "rock_mite/animations/attack_try/north/02.webp",
+          "rock_mite/animations/attack_try/north/03.webp",
+          "rock_mite/animations/attack_try/north/04.webp"
+        ]
+      },
+      "strips": {
+        "south": "rock_mite/animations/attack_try__south.webp",
+        "south-east": "rock_mite/animations/attack_try__south-east.webp",
+        "east": "rock_mite/animations/attack_try__east.webp",
+        "north-east": "rock_mite/animations/attack_try__north-east.webp",
+        "north": "rock_mite/animations/attack_try__north.webp"
+      }
     }
   }
 }
