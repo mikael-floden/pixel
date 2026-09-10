@@ -298,3 +298,59 @@ test("cross-border combat: a player fights, is hit by, kills and loots a monster
     useBus(null);
   }
 });
+
+/* A DROPPED LINK MUST NOT LEAVE A TWIN OF YOU STANDING IN THE WORLD
+ * (maintainer 2026-09-10: "sometimes when I login I see another version of
+ * myself at the exact same spot I was spawned at").
+ *
+ * A non-consented leave parks that session's onLeave inside
+ * `allowReconnection` with the BODY STILL IN STATE — right for a reconnect.
+ * The newcomer's kick then reached for `this.clients`, and ACROSS ROOMS that
+ * find came up empty, so the `?.` swallowed the kick and the old body stood
+ * there. Cross-room is the shipped path, not an edge case: a fresh login joins
+ * the world's SPAWN zone and is handed off to wherever you saved, so the room
+ * that kicks is almost never the room holding the body. Measured in the
+ * browser before the fix: two bodies for ~10 s.
+ *
+ * The kick rejects the parked grace now, which runs the ONE removal path there
+ * is (onLeave's own tail) rather than a second copy of it. */
+test("a login in another zone evicts a body whose link merely dropped", async (t) => {
+  if (!HAVE_WORLD) return t.skip(SKIP);
+  const port = 2963; // unique per test FILE — see test/ports.test.ts
+  useBus(new FakeBus());
+  resetWorldClocks();
+  const gameServer = new Server({ transport: new WebSocketTransport({ server: createServer() }) });
+  gameServer.define(ROOM_NAME, WorldRoom).filterBy(["world", "zone"]);
+  await gameServer.listen(port);
+  const base = { world: "the_game", zonesCfg: CFG, monsterCount: 0, interestRadius: 0 };
+  try {
+    const c1 = new Client(`ws://localhost:${port}`);
+    const r1: any = await c1.joinOrCreate(ROOM_NAME, { ...base, zone: 0, name: "Twin", character: "default_boy" });
+    const pair = await new Promise<{ id: string; secret: string }>((res) => { r1.onMessage("account", res); r1.send("account:want"); });
+    await waitFor(() => r1.state.players.size === 1, 5000, "the first session in zone 0");
+    const zone0 = r1.roomId;
+    const bodies = () => matchMaker.getLocalRoomById(zone0)?.state?.players?.size ?? -1;
+    assert.equal(bodies(), 1, "zone 0 holds the body");
+
+    // THE LINK DIES WITH NO LEAVE: the body stays, parked on a reconnect grace.
+    await r1.leave(false);
+    await new Promise((res) => setTimeout(res, 300));
+    assert.equal(bodies(), 1, "a dropped link keeps the body — that is the reconnect grace, and it is correct");
+
+    // ...and he logs in again, landing in ANOTHER zone (a fresh login joins the
+    // spawn zone, not the one he saved in).
+    const c2 = new Client(`ws://localhost:${port}`);
+    const r2: any = await c2.joinOrCreate(ROOM_NAME, { ...base, zone: 1, name: "Twin", character: "default_boy", account: pair });
+    await waitFor(() => r2.state.players.size === 1, 5000, "the second session in zone 1");
+
+    // The body in zone 0 is gone — asserted from zone 0's own state, well
+    // inside the 45 s grace so a pass cannot come from it expiring.
+    const started = Date.now();
+    await waitFor(() => bodies() === 0, 8000, "the dropped body is still standing in zone 0");
+    assert.ok(Date.now() - started < 30_000, "the grace expired on its own — this proved nothing");
+    r2.leave();
+  } finally {
+    await gameServer.gracefullyShutdown(false);
+    useBus(null);
+  }
+});

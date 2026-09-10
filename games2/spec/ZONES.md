@@ -100,6 +100,24 @@ Kubernetes). Rules here are present tense; the measurements land in
    Memorystore, the load balancer, a second service. The code does not
    change for it; the table does.
 
+## One live session, and no twin
+
+A newcomer on an account kicks the older login: in-room first, then world-wide
+through the presence hash (`kickOtherSession` → the zone's `ctl`). **A KICK MUST
+REJECT A PARKED RECONNECT GRACE**, not merely leave the client. A non-consented
+leave parks `onLeave` inside `allowReconnection` with the body still in state —
+right for a dropped link — and `kickPid` reaching for `this.clients` came up
+empty ACROSS ROOMS, so the `?.` swallowed the kick and the old body stood in the
+world (maintainer 2026-09-10: "sometimes when I login I see another version of
+myself at the exact same spot I was spawned at"; measured in the browser, two
+bodies for ~10 s). Cross-room is the shipped path, not an edge case: a fresh
+login joins the world's SPAWN zone and is handed off to wherever it saved, so
+the room that kicks is almost never the room holding the body. The room keeps
+its parked graces by session id (`reconnects`) and the kick rejects one, which
+lands in onLeave's own catch and runs the single removal path there is.
+Gate: `server/test/zones.test.ts`, asserted from zone 0's own state well
+inside the 45 s grace so a pass cannot come from it expiring.
+
 ## Seeing the zones
 
 The **Map tab's layer row** draws the grid over the minimap: a chip per layer

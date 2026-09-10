@@ -1357,11 +1357,25 @@ export class WorldRoom extends Room<WorldState> {
     if (player) this.savePlayer(player);
     const wasKicked = this.kicked.delete(client.sessionId);
     if (!consented && !wasKicked && player) {
+      /* THE PARKED SEAT IS CANCELLABLE, and it has to be. A dropped link waits
+       * here with the BODY STILL IN STATE, which is right for a reconnect and
+       * wrong for a second login: the newcomer's kick could not reach a client
+       * that is no longer in `this.clients`, so his old body stood at the spawn
+       * spot beside him for the whole grace (maintainer 2026-09-10: "sometimes
+       * when I login I see another version of myself at the exact same spot I
+       * was spawned at"). Keeping the deferred lets `kickPid` reject it, which
+       * lands in the catch below and runs the ONE removal path there is —
+       * rather than a second copy of it, which would drift. */
+      const grace = this.allowReconnection(client, RECONNECT_GRACE_S);
+      this.reconnects.set(client.sessionId, grace);
       try {
-        await this.allowReconnection(client, RECONNECT_GRACE_S);
+        await grace;
         return; // reclaimed — the body never moved and nothing was rebuilt
       } catch {
-        /* the grace ran out, or the room is shutting down: fall through */
+        /* the grace ran out, the room is shutting down, or a newcomer on this
+         * account rejected it: fall through and drop the body */
+      } finally {
+        this.reconnects.delete(client.sessionId);
       }
     }
     this.state.players.delete(pid);
@@ -2645,6 +2659,10 @@ export class WorldRoom extends Room<WorldState> {
   /** session id → stable player id (the map key) and back. */
   private sidPid = new Map<string, string>();
   private pidSid = new Map<string, string>();
+  /** Parked reconnection graces by session id, so a newcomer on the same
+   *  account can REJECT one (see kickPid) instead of leaving a twin standing
+   *  in the world for the whole grace. */
+  private reconnects = new Map<string, { reject: Function }>();
   /** Sessions whose body was handed to another zone: their leave saves nothing. */
   private handed = new Set<string>();
   private ghostOwner = new Map<string, number>(); // ghost id → the zone that owns the body
@@ -2721,7 +2739,20 @@ export class WorldRoom extends Room<WorldState> {
      * is that ONE token means one live session, and a reclaimable ghost
      * would leave two. Marked before the leave, read inside it. */
     this.kicked.add(oldSid);
-    this.clients.find((c) => c.sessionId === oldSid)?.leave(4001); // its onLeave re-saves the same values
+    const live = this.clients.find((c) => c.sessionId === oldSid);
+    if (live) {
+      live.leave(4001); // its onLeave re-saves the same values
+      return;
+    }
+    /* NOBODY BEHIND IT: the link dropped and that session's onLeave is parked
+     * in `allowReconnection` with the body still in state. Reject the grace —
+     * onLeave then falls through to its own removal, so the twin goes and the
+     * seat can never be reclaimed by the session we just kicked. Without this
+     * the `?.` swallowed the kick and the old body stood there for the whole
+     * grace window. */
+    const grace = this.reconnects.get(oldSid);
+    if (grace) grace.reject(new Error("kicked"));
+    else this.kicked.delete(oldSid); // nothing to kick; don't poison a future leave
   }
 
   /** The spawn cells of a maps2 zone that lie inside THIS room's rectangle
