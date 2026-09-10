@@ -15,6 +15,7 @@ import {
   buildTerrainGrid,
   parseWorld,
   findIndoorSpace,
+  indoorCutLevel,
   roofAbove,
   canEnterElev,
   CELL_WU,
@@ -1159,5 +1160,60 @@ test("shell: an interior partition's T-junction is drawn (the multi-room case)",
   for (let c = 0; c < W; c++) {
     const j = at(g, c, 0);
     assert.ok(s.roof.has(j) || s.shell.has(j) || s.entrances.has(j), `north wall (${c},0) is drawn`);
+  }
+});
+
+/* THE CUT AND THE STOREY TRAP (`indoorCutLevel`, 2026-09-10).
+ *
+ * A space's floor is the LOWEST level under its roof so the walls hold still
+ * as you step around a room's ledges. A space that spans STOREYS breaks that:
+ * the_game's dungeon puts three floors under ONE lid, joined by stairs that
+ * step a level at a time, and the room fill caps how far it may climb but not
+ * how far it may DESCEND — so from the top floor the minimum is the BOTTOM
+ * floor's, and the cut erased the storey the player was standing on, and the
+ * player with it. */
+test("the indoor cut holds still over a ledge and never erases the floor underfoot", () => {
+  // A flat room: the dial measures UP from the floor.
+  assert.equal(indoorCutLevel(0, 0, 1, 12), 1);
+  assert.equal(indoorCutLevel(0, 0, 3, 12), 3);
+  // ...clamped by the ceiling — a wall taller than its room would reseal it.
+  assert.equal(indoorCutLevel(0, 0, 9, 6), 6);
+  // A LEDGE up to the dial's height does not move the cut: step on and off a
+  // 1-level shelf with the dial at 1 and the walls hold still. This is what
+  // the space minimum is for, and it still wins.
+  assert.equal(indoorCutLevel(0, 1, 1, 12), 1);
+  assert.equal(indoorCutLevel(0, 0, 1, 12), 1);
+  assert.equal(indoorCutLevel(0, 2, 3, 12), 3);
+  // A STOREY the cut would otherwise erase pushes it up to the floor you are
+  // standing on — never below it, whatever the space minimum says.
+  assert.equal(indoorCutLevel(0, 6, 1, 12), 6);
+  assert.equal(indoorCutLevel(0, 3, 1, 12), 3);
+  // ...and the ceiling still clamps that.
+  assert.equal(indoorCutLevel(0, 9, 1, 6), 6);
+  assert.ok(indoorCutLevel(0, 6, 1, 12) >= 6, "the floor underfoot is drawn");
+});
+
+test("the_game dungeon: one lid, three storeys — the cut keeps each storey drawn", (t) => {
+  const world = loadWorld("the_game");
+  if (!world) return t.skip("maps2/worlds3/the_game missing");
+  const grid = gridOf(world);
+  // The entrance floor and the bottom floor, from the maintainer's own
+  // screenshots (2026-09-10). Their levels are what makes this a storey trap.
+  const top = { col: 212, row: 277 };
+  const bottom = { col: 224, row: 288 };
+  const lvl = (c: { col: number; row: number }) => grid.level[c.row * grid.width + c.col];
+  assert.equal(lvl(top), 6, "the entrance floor");
+  assert.equal(lvl(bottom), 0, "the bottom floor");
+
+  const space = findIndoorSpace(grid, top.col, top.row, lvl(top));
+  assert.ok(space, "the entrance is indoors");
+  let floor = Infinity;
+  for (const i of space!.roof) if (grid.level[i] < floor) floor = grid.level[i];
+  assert.equal(floor, 0, "the fill descends the stairs: one space, three storeys");
+
+  const ceil = grid.deckBot[top.row * grid.width + top.col];
+  for (const wall of [1, 2, 3]) {
+    const cut = indoorCutLevel(floor, lvl(top), wall, ceil);
+    assert.ok(cut >= lvl(top), `wall ${wall}: the storey underfoot is drawn (cut ${cut})`);
   }
 });

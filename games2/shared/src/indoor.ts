@@ -527,6 +527,39 @@ function roofAboveIndex(grid: TerrainGrid, i: number, elev: number): number | nu
  *    a 2-cell arch over a 2-cell gully scores a perfect 1.00. See all three
  *    constants; each carries the measured numbers it was chosen from.
  */
+/** THE INDOOR CUT — the highest level any column of the world still draws
+ *  while you are inside, i.e. what takes the roof off and shortens the walls
+ *  in one rule. Pure, so it can be gated: the renderer holds the inputs, this
+ *  holds the arithmetic.
+ *
+ *  `spaceFloor` is the LOWEST level under the room's roof, not the level you
+ *  happen to stand on: a cave floor is not flat, and anchoring the cut to your
+ *  feet makes every wall in the room jump 16px each time you step onto a
+ *  ledge. The minimum also keeps the whole floor plan below the cut, so a
+ *  raised shelf reads as a shelf you look over rather than as a wall.
+ *
+ *  `myFloor` IS THE FLOOR UNDER YOUR FEET, and it is a floor under the answer
+ *  rather than the answer. The minimum is right for one room with ledges and
+ *  wrong the moment a space spans STOREYS: the_game's dungeon puts three
+ *  floors — levels 6, 3 and 0 — under ONE lid, joined by stair strips that
+ *  step a level at a time, and `interiorFloor` caps how far the fill may climb
+ *  but not how far it may DESCEND, so from the top floor the fill takes all
+ *  142 cells and the minimum is 0. Without this the cut landed at 1: the
+ *  storey you stood on was not drawn, and your body six levels above the cut
+ *  was not drawn either (maintainer 2026-09-10, three photographs of one spot
+ *  before and after a trip to the bottom floor: "the entrance ... is very very
+ *  black"). It only showed on the way BACK — the first descent is still
+ *  crossfading, which is why the same spot looked right on the way in.
+ *
+ *  A ledge up to `wall` levels high therefore leaves the cut exactly where the
+ *  room's own minimum put it; only a storey the cut would otherwise erase
+ *  pushes it up. `ceil` (the slab's underside) clamps it — a wall taller than
+ *  its own room would just seal the box again — and the far walls still rise
+ *  past the result wherever they can, which is the per-column raise. */
+export function indoorCutLevel(spaceFloor: number, myFloor: number, wall: number, ceil: number): number {
+  return Math.max(0, Math.min(ceil, Math.max(spaceFloor + wall, myFloor)));
+}
+
 export function findIndoorSpace(
   grid: TerrainGrid,
   col: number,
