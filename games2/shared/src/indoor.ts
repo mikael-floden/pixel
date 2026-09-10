@@ -241,10 +241,38 @@ function standingOpen(grid: TerrainGrid, i: number, elev: number): boolean {
 }
 
 /** Could the player under this roof actually BE on cell `i` — is it interior
- * FLOOR? Standing-open, and not a step UP bigger than `climb`: a cell whose own
- * terrain rises above the player's standing elevation is the room's WALL, even
- * when the roof deck also covers it. (Downward is free — gravity always is —
- * so a sunken floor is still floor.) */
+ * FLOOR? Standing-open, and within `climb` levels of the player's own standing
+ * elevation EITHER WAY: terrain that rises that much above them is the room's
+ * WALL even when the roof deck covers it, and terrain that drops that far below
+ * them is THE STOREY UNDER THIS ONE.
+ *
+ * A STOREY IS A ROOM, and the downward bound is what says so. It used to be
+ * free ("gravity always is"), and the_game's dungeon is what that cost: three
+ * floors at levels 0, 3 and 6 under ONE lid, joined by stair strips that step a
+ * level at a time. From the bottom the fill could not climb past 2 and took 176
+ * cells; from the top it descended for free and took all 352 — so the same cave
+ * was a different room from each of its floors, and every wall of the chambers
+ * he had left was redrawn to a new height each time he climbed (maintainer
+ * 2026-09-10, four photographs up one staircase: "we still have this bug, the
+ * cave looks different depending on what level/elevation the player is at").
+ *
+ * REJECTED — MAKING IT ONE ROOM instead, so that there is nothing to differ.
+ * Both routes were tried: a step measured RELATIVE to the cell the fill came
+ * from, and a straight symmetric widening. Both take all 352 cells from
+ * anywhere in the cave, and both are against the design rather than merely
+ * ugly: `INDOOR.md` says a cut-away, NOT an x-ray, and a merged space opens
+ * every storey at once — you would stand on the bottom floor looking into two
+ * chambers you are not in, which is the same thing as seeing into house_b.
+ * It also puts the whole enclosure inside the mask (measured at his own spot:
+ * 88 mask cells with the bound, 352 without), so the surrounding rock is
+ * truncated to parapets across the entire dungeon. Restricting the
+ * covering-cone sweep to each floor's own storey does not rescue that; the
+ * flatness is the truncated SHELL, not the cone.
+ *
+ * A sunken floor up to `climb` down is still floor; deeper than that is a
+ * different storey and is drawn as one — sealed, with its own roof on, until
+ * you walk down into it. Walking the stairs between two storeys is a room
+ * change like a doorway, and crossfades like one. */
 function interiorFloor(grid: TerrainGrid, i: number, elev: number, climb: number): boolean {
   /* A ROOM IS TERRAIN AND ROOF, NOT FURNITURE. `standingOpen` refuses a cell no
    * body fits in, which is right for a doorway — you cannot leave through a
@@ -267,7 +295,12 @@ function interiorFloor(grid: TerrainGrid, i: number, elev: number, climb: number
   const t = grid.type[i];
   const s = t ? surfaceFor(t) : VOID_SURFACE;
   const onOwnFloor = grid.deck[i] < 0 || elev < grid.deckBot[i] - EPS;
-  return (s.standable || s.swimmable) && onOwnFloor && grid.level[i] <= elev + climb + EPS;
+  return (
+    (s.standable || s.swimmable) &&
+    onOwnFloor &&
+    grid.level[i] <= elev + climb + EPS &&
+    grid.level[i] >= elev - climb - EPS
+  );
 }
 
 /** Could the player LEAVE through fringe cell `j`? Standing-open (a solid slab

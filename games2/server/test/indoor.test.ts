@@ -269,14 +269,17 @@ test("the flood fill is bounded by the visited cap", () => {
 // (1) the wall-dominance bar sits in the MEASURED gap between bridges and rooms
 // ---------------------------------------------------------------------------
 
-test("the wall bar sits mid-gap: 0.37 over the worst bridge, 0.23 under the lowest room", () => {
+test("the wall bar sits mid-gap: 0.37 over the worst bridge, 0.20 under the lowest room", () => {
   assert.equal(INDOOR_WALL_RATIO, 0.7, "the bar itself");
   // The two ends of the measured gap, from the whole-world sweep at the bottom
   // of this file. If either of these ever moves, re-centre the constant.
   const HIGHEST_BRIDGE = 1 / 3; // the_game's river crossing over the dry bed
-  const LOWEST_ROOM = 13 / 14; // the_game's spawn house
+  // 0.9 since the fill got its DOWNWARD bound (a storey is a room): the
+  // loosest shipped space is a storey rather than a whole cave, so its fringe
+  // is a little more open.
+  const LOWEST_ROOM = 0.9;
   assert.ok(INDOOR_WALL_RATIO - HIGHEST_BRIDGE >= 0.36, "clear of every shipped bridge");
-  assert.ok(LOWEST_ROOM - INDOOR_WALL_RATIO >= 0.22, "under every shipped room");
+  assert.ok(LOWEST_ROOM - INDOOR_WALL_RATIO >= 0.19, "under every shipped room");
 
   // The pier the old 0.5 bar was pinned to: it is now 0.20 clear, not one
   // fringe cell clear, so the strict comparison is no longer load-bearing here.
@@ -835,9 +838,9 @@ test("every shipped deck: no bridge cell is indoors, every roof/cave space is", 
   const roomMin = Math.min(...[...seen].filter(([k]) => !k.endsWith("/bridge")).map(([, v]) => v.worst));
   // The worst shipped bridge: the river crossing over the dry bed, 6 of 18.
   assert.ok(Math.abs(bridgeMax - 1 / 3) < 1e-9, "the worst shipped bridge (measured)");
-  assert.ok(Math.abs(roomMin - 13 / 14) < 1e-9, "the best-open shipped room (measured)");
+  assert.ok(Math.abs(roomMin - 0.9) < 1e-9, "the best-open shipped room (measured)");
   assert.ok(bridgeMax < INDOOR_WALL_RATIO && INDOOR_WALL_RATIO < roomMin, "the bar is inside the gap");
-  assert.ok(INDOOR_WALL_RATIO - bridgeMax > 0.36 && roomMin - INDOOR_WALL_RATIO > 0.22, "…with margin on both sides");
+  assert.ok(INDOOR_WALL_RATIO - bridgeMax > 0.36 && roomMin - INDOOR_WALL_RATIO > 0.19, "…with margin on both sides");
 });
 
 // ---------------------------------------------------------------------------
@@ -1193,27 +1196,48 @@ test("the indoor cut holds still over a ledge and never erases the floor underfo
   assert.ok(indoorCutLevel(0, 6, 1, 12) >= 6, "the floor underfoot is drawn");
 });
 
-test("the_game dungeon: one lid, three storeys — the cut keeps each storey drawn", (t) => {
+test("the_game dungeon: one lid, three storeys — each storey is its OWN room", (t) => {
   const world = loadWorld("the_game");
   if (!world) return t.skip("maps2/worlds3/the_game missing");
   const grid = gridOf(world);
   // The entrance floor and the bottom floor, from the maintainer's own
-  // screenshots (2026-09-10). Their levels are what makes this a storey trap.
+  // screenshots (2026-09-10). Their levels are what makes this a storey trap:
+  // one lid over three floors, joined by stair strips that step a level at a
+  // time, so a fill with a free DESCENT takes the lot from the top and only the
+  // bottom chamber from the bottom.
   const top = { col: 212, row: 277 };
   const bottom = { col: 224, row: 288 };
   const lvl = (c: { col: number; row: number }) => grid.level[c.row * grid.width + c.col];
   assert.equal(lvl(top), 6, "the entrance floor");
   assert.equal(lvl(bottom), 0, "the bottom floor");
 
-  const space = findIndoorSpace(grid, top.col, top.row, lvl(top));
-  assert.ok(space, "the entrance is indoors");
-  let floor = Infinity;
-  for (const i of space!.roof) if (grid.level[i] < floor) floor = grid.level[i];
-  assert.equal(floor, 0, "the fill descends the stairs: one space, three storeys");
+  const span = (c: { col: number; row: number }) => {
+    const space = findIndoorSpace(grid, c.col, c.row, lvl(c));
+    assert.ok(space, `(${c.col},${c.row}) is indoors`);
+    let lo = Infinity;
+    let hi = -Infinity;
+    for (const i of space!.roof) {
+      if (grid.level[i] < lo) lo = grid.level[i];
+      if (grid.level[i] > hi) hi = grid.level[i];
+    }
+    return { lo, hi, cells: space!.roof.size, indoor: space!.indoor };
+  };
+  const a = span(top);
+  const b = span(bottom);
+  // Each fill keeps to the storey it starts on, BOTH ways — that is what stops
+  // the chambers you have left being redrawn as you climb.
+  assert.ok(a.lo >= lvl(top) - ENTRANCE_CLIMB, `from the top the fill keeps to its storey (floor ${a.lo})`);
+  assert.ok(b.hi <= lvl(bottom) + ENTRANCE_CLIMB, `from the bottom the fill keeps to its storey (top ${b.hi})`);
+  assert.ok(a.lo > b.hi, `the two storeys do not overlap (${b.hi} then ${a.lo})`);
+  assert.ok(a.indoor && b.indoor, "and each storey is still a room");
 
+  // ...and the cut then keeps the storey underfoot drawn on the space's own
+  // minimum, without needing myFloor to rescue it.
   const ceil = grid.deckBot[top.row * grid.width + top.col];
   for (const wall of [1, 2, 3]) {
-    const cut = indoorCutLevel(floor, lvl(top), wall, ceil);
+    const cut = indoorCutLevel(a.lo, lvl(top), wall, ceil);
     assert.ok(cut >= lvl(top), `wall ${wall}: the storey underfoot is drawn (cut ${cut})`);
   }
 });
+
+

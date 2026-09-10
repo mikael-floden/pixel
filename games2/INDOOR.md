@@ -27,6 +27,27 @@ Probes: `__ml.indoorWall(v?)` / `__ml.indoor()`.
   twice as tall in the caves. From the floor, 2 is 2 in a cottage and a
   cathedral. The ceiling survives as a CLAMP and as the "am I above the
   room?" line (`indoorCeil`, still `deckBot`, never `roofLevel`).
+- **A STOREY IS A ROOM.** The fill keeps to the floor you are standing on:
+  `interiorFloor` accepts a cell within `ENTRANCE_CLIMB` of your elevation
+  EITHER WAY, so terrain that rises that much is the room's wall and terrain
+  that drops that far is the storey below. The downward half used to be free,
+  and the_game's dungeon (three floors at 0/3/6 under one lid, joined by stair
+  strips that step a level at a time) then read as 176 cells from the bottom
+  and all 352 from the top — the same cave, a different room from each of its
+  floors, every wall of the chambers you had left redrawn each time you
+  climbed. Rejected: merging the storeys into one space (either by a
+  step-relative or a symmetric fill) — that is the x-ray this whole feature is
+  not, and it puts the entire enclosure in the mask (88 mask cells → 352),
+  truncating the surrounding rock to parapets across the dungeon.
+- **Every column is cut over ITS OWN chamber**, never over yours: a floor cell
+  measures from its own level, a wall from the highest chamber floor it borders
+  (it holds that floor up), and the deck over THAT column is the clamp. The
+  space-wide scalar had to pick a storey and got the others wrong — lifted to
+  your feet it grew the walls of the chamber you had left, dropped to the
+  space's lowest floor it truncated the storey underfoot. The scalar
+  (`indoorTop`, `indoorCutLevel`) survives for the QA kill switch, the body
+  cull and the room texture's fallback, and is not part of the mask signature
+  while the per-cell cuts are on — so climbing does not repaint the world.
 - **The floor is the ROOM'S MINIMUM**, not the cell underfoot (anchoring to
   the feet made every wall jump 16px per ledge step; the minimum keeps a
   raised shelf below the cut). The MAX is 6 = the tallest shipped room
