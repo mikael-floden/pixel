@@ -919,13 +919,13 @@
           "takes": 1,
           "version": 6,
           "mirrored": false,
+          "generated_at": "2026-09-10T22:20:44+00:00",
           "action": "Ice Burst - The mite rears up and bursts forward in a spray of ice shards, mandibles thrown wide, an extremely violent attack, huge exaggerated motion, the limb thrown far out",
-          "intensity": 1,
-          "rolls": 6,
-          "frames": 5,
-          "rung": 5,
           "tries": 6,
-          "generated_at": "2026-09-10T22:20:44+00:00"
+          "rolls": 6,
+          "intensity": 1,
+          "frames": 5,
+          "rung": 5
         },
         "south-east": {
           "status": "warn",
@@ -952,13 +952,13 @@
           "takes": 1,
           "version": 7,
           "mirrored": false,
+          "generated_at": "2026-09-10T22:36:41+00:00",
           "action": "Lunge Attack - Throws its whole body forward in one fast lunge, white swoosh lines trailing behind it, a big aggressive swing",
-          "intensity": 1,
-          "rolls": 3,
-          "frames": 5,
-          "rung": 2,
           "tries": 3,
-          "generated_at": "2026-09-10T22:36:41+00:00"
+          "rolls": 3,
+          "intensity": 1,
+          "frames": 5,
+          "rung": 2
         },
         "east": {
           "status": "warn",
@@ -985,13 +985,13 @@
           "takes": 1,
           "version": 7,
           "mirrored": false,
+          "generated_at": "2026-09-10T22:36:42+00:00",
           "action": "Ice Burst - The mite rears up and bursts forward in a spray of ice shards, mandibles thrown wide, an explosively violent attack, the whole body thrown into it, debris and swoosh lines flying",
-          "intensity": 1,
-          "rolls": 7,
-          "frames": 5,
-          "rung": 6,
           "tries": 7,
-          "generated_at": "2026-09-10T22:36:42+00:00"
+          "rolls": 7,
+          "intensity": 1,
+          "frames": 5,
+          "rung": 6
         },
         "north-east": {
           "status": "warn",
@@ -1018,13 +1018,13 @@
           "takes": 1,
           "version": 7,
           "mirrored": false,
+          "generated_at": "2026-09-10T22:36:42+00:00",
           "action": "Lunge Attack - Throws its whole body forward in one fast lunge, white swoosh lines trailing behind it, a big aggressive swing",
-          "intensity": 1,
-          "rolls": 3,
-          "frames": 5,
-          "rung": 2,
           "tries": 3,
-          "generated_at": "2026-09-10T22:36:42+00:00"
+          "rolls": 3,
+          "intensity": 1,
+          "frames": 5,
+          "rung": 2
         },
         "north": {
           "status": "pass",
@@ -1051,13 +1051,13 @@
           "takes": 1,
           "version": 5,
           "mirrored": false,
+          "generated_at": "2026-09-10T21:56:08+00:00",
           "action": "Ice Burst - The mite rears up and bursts forward in a spray of ice shards, mandibles thrown wide",
-          "intensity": 1,
-          "rolls": 1,
-          "frames": 5,
-          "rung": 3,
           "tries": 1,
-          "generated_at": "2026-09-10T21:56:08+00:00"
+          "rolls": 1,
+          "intensity": 1,
+          "frames": 5,
+          "rung": 3
         },
         "south-west": {
           "status": "warn",
@@ -1084,13 +1084,13 @@
           "takes": 1,
           "version": 7,
           "mirrored": true,
+          "generated_at": "2026-09-10T22:36:41+00:00",
           "action": "Lunge Attack - Throws its whole body forward in one fast lunge, white swoosh lines trailing behind it, a big aggressive swing",
-          "intensity": 1,
+          "tries": 3,
           "rolls": 3,
+          "intensity": 1,
           "frames": 5,
           "rung": 2,
-          "tries": 3,
-          "generated_at": "2026-09-10T22:36:41+00:00",
           "source": "south-east"
         },
         "north-west": {
@@ -1118,13 +1118,13 @@
           "takes": 1,
           "version": 7,
           "mirrored": true,
+          "generated_at": "2026-09-10T22:36:42+00:00",
           "action": "Lunge Attack - Throws its whole body forward in one fast lunge, white swoosh lines trailing behind it, a big aggressive swing",
-          "intensity": 1,
+          "tries": 3,
           "rolls": 3,
+          "intensity": 1,
           "frames": 5,
           "rung": 2,
-          "tries": 3,
-          "generated_at": "2026-09-10T22:36:42+00:00",
           "source": "north-east"
         },
         "west": {
@@ -1152,13 +1152,13 @@
           "takes": 1,
           "version": 7,
           "mirrored": true,
+          "generated_at": "2026-09-10T22:36:42+00:00",
           "action": "Ice Burst - The mite rears up and bursts forward in a spray of ice shards, mandibles thrown wide, an explosively violent attack, the whole body thrown into it, debris and swoosh lines flying",
-          "intensity": 1,
+          "tries": 7,
           "rolls": 7,
+          "intensity": 1,
           "frames": 5,
           "rung": 6,
-          "tries": 7,
-          "generated_at": "2026-09-10T22:36:42+00:00",
           "source": "east"
         }
       },

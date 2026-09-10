@@ -939,13 +939,13 @@
           "takes": 1,
           "version": 6,
           "mirrored": false,
+          "generated_at": "2026-09-10T22:14:52+00:00",
           "action": "Overhead Crush - The troll heaves the stone club far over its head and smashes it into the ground, rock shards flying, a huge aggressive attack with the whole body behind it, wide exaggerated motion",
-          "intensity": 1,
-          "rolls": 5,
-          "frames": 9,
-          "rung": 4,
           "tries": 5,
-          "generated_at": "2026-09-10T22:14:52+00:00"
+          "rolls": 5,
+          "intensity": 1,
+          "frames": 9,
+          "rung": 4
         },
         "south-east": {
           "status": "warn",
@@ -1005,13 +1005,13 @@
           "takes": 1,
           "version": 6,
           "mirrored": false,
+          "generated_at": "2026-09-10T22:14:53+00:00",
           "action": "Club Smash - Raises the stone club overhead and smashes it straight down",
-          "intensity": 1,
-          "rolls": 1,
-          "frames": 9,
-          "rung": 0,
           "tries": 1,
-          "generated_at": "2026-09-10T22:14:53+00:00"
+          "rolls": 1,
+          "intensity": 1,
+          "frames": 9,
+          "rung": 0
         },
         "north-east": {
           "status": "pass",
@@ -1036,13 +1036,13 @@
           "takes": 1,
           "version": 6,
           "mirrored": false,
+          "generated_at": "2026-09-10T22:14:54+00:00",
           "action": "Club Smash - Raises the stone club overhead and smashes it straight down, a big aggressive swing",
-          "intensity": 1,
-          "rolls": 2,
-          "frames": 9,
-          "rung": 1,
           "tries": 2,
-          "generated_at": "2026-09-10T22:14:54+00:00"
+          "rolls": 2,
+          "intensity": 1,
+          "frames": 9,
+          "rung": 1
         },
         "north": {
           "status": "warn",
@@ -1070,13 +1070,13 @@
           "takes": 1,
           "version": 6,
           "mirrored": false,
+          "generated_at": "2026-09-10T22:14:56+00:00",
           "action": "Overhead Crush - The troll heaves the stone club far over its head and smashes it into the ground, rock shards flying, a huge aggressive attack with the whole body behind it, wide exaggerated motion",
-          "intensity": 1,
-          "rolls": 5,
-          "frames": 9,
-          "rung": 4,
           "tries": 5,
-          "generated_at": "2026-09-10T22:14:56+00:00"
+          "rolls": 5,
+          "intensity": 1,
+          "frames": 9,
+          "rung": 4
         },
         "west": {
           "status": "warn",
@@ -1103,13 +1103,13 @@
           "takes": 1,
           "version": 6,
           "mirrored": true,
+          "generated_at": "2026-09-10T22:14:53+00:00",
           "action": "Club Smash - Raises the stone club overhead and smashes it straight down",
-          "intensity": 1,
+          "tries": 1,
           "rolls": 1,
+          "intensity": 1,
           "frames": 9,
           "rung": 0,
-          "tries": 1,
-          "generated_at": "2026-09-10T22:14:53+00:00",
           "source": "east"
         },
         "north-west": {
@@ -1135,13 +1135,13 @@
           "takes": 1,
           "version": 6,
           "mirrored": true,
+          "generated_at": "2026-09-10T22:14:54+00:00",
           "action": "Club Smash - Raises the stone club overhead and smashes it straight down, a big aggressive swing",
-          "intensity": 1,
+          "tries": 2,
           "rolls": 2,
+          "intensity": 1,
           "frames": 9,
           "rung": 1,
-          "tries": 2,
-          "generated_at": "2026-09-10T22:14:54+00:00",
           "source": "north-east"
         },
         "south-west": {

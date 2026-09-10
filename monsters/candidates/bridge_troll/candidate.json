@@ -930,13 +930,13 @@
           "takes": 1,
           "version": 7,
           "mirrored": false,
+          "generated_at": "2026-09-10T22:37:42+00:00",
           "action": "Claw Swipe - Raises one front paw and performs one quick swipe forward, white swoosh lines following the claws, a big aggressive swing",
-          "intensity": 1,
-          "rolls": 3,
-          "frames": 9,
-          "rung": 2,
           "tries": 3,
-          "generated_at": "2026-09-10T22:37:42+00:00"
+          "rolls": 3,
+          "intensity": 1,
+          "frames": 9,
+          "rung": 2
         },
         "south-east": {
           "status": "warn",
@@ -996,13 +996,13 @@
           "takes": 1,
           "version": 6,
           "mirrored": false,
+          "generated_at": "2026-09-10T22:17:36+00:00",
           "action": "Chain Lash - Whips the iron chain out forward in one heavy lash",
-          "intensity": 1,
-          "rolls": 1,
-          "frames": 9,
-          "rung": 0,
           "tries": 1,
-          "generated_at": "2026-09-10T22:17:36+00:00"
+          "rolls": 1,
+          "intensity": 1,
+          "frames": 9,
+          "rung": 0
         },
         "north-east": {
           "status": "pass",
@@ -1027,13 +1027,13 @@
           "takes": 1,
           "version": 6,
           "mirrored": false,
+          "generated_at": "2026-09-10T22:17:37+00:00",
           "action": "Chain Lash - Whips the iron chain out forward in one heavy lash, a big aggressive swing",
-          "intensity": 1,
-          "rolls": 1,
-          "frames": 9,
-          "rung": 1,
           "tries": 1,
-          "generated_at": "2026-09-10T22:17:37+00:00"
+          "rolls": 1,
+          "intensity": 1,
+          "frames": 9,
+          "rung": 1
         },
         "north": {
           "status": "warn",
@@ -1060,13 +1060,13 @@
           "takes": 1,
           "version": 7,
           "mirrored": false,
+          "generated_at": "2026-09-10T22:37:42+00:00",
           "action": "Claw Swipe - Raises one front paw and performs one quick swipe forward, white swoosh lines following the claws, a big aggressive swing",
-          "intensity": 1,
-          "rolls": 6,
-          "frames": 9,
-          "rung": 2,
           "tries": 6,
-          "generated_at": "2026-09-10T22:37:42+00:00"
+          "rolls": 6,
+          "intensity": 1,
+          "frames": 9,
+          "rung": 2
         },
         "west": {
           "status": "warn",
@@ -1094,13 +1094,13 @@
           "takes": 1,
           "version": 6,
           "mirrored": true,
+          "generated_at": "2026-09-10T22:17:36+00:00",
           "action": "Chain Lash - Whips the iron chain out forward in one heavy lash",
-          "intensity": 1,
+          "tries": 1,
           "rolls": 1,
+          "intensity": 1,
           "frames": 9,
           "rung": 0,
-          "tries": 1,
-          "generated_at": "2026-09-10T22:17:36+00:00",
           "source": "east"
         },
         "north-west": {
@@ -1126,13 +1126,13 @@
           "takes": 1,
           "version": 6,
           "mirrored": true,
+          "generated_at": "2026-09-10T22:17:37+00:00",
           "action": "Chain Lash - Whips the iron chain out forward in one heavy lash, a big aggressive swing",
-          "intensity": 1,
+          "tries": 1,
           "rolls": 1,
+          "intensity": 1,
           "frames": 9,
           "rung": 1,
-          "tries": 1,
-          "generated_at": "2026-09-10T22:17:37+00:00",
           "source": "north-east"
         },
         "south-west": {

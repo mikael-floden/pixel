@@ -986,13 +986,13 @@
           "takes": 1,
           "version": 6,
           "mirrored": false,
+          "generated_at": "2026-09-10T22:17:03+00:00",
           "action": "Eye Beam - Flares its pupil wide and fires a beam of light forward",
-          "intensity": 1,
-          "rolls": 1,
-          "frames": 9,
-          "rung": 0,
           "tries": 1,
-          "generated_at": "2026-09-10T22:17:03+00:00"
+          "rolls": 1,
+          "intensity": 1,
+          "frames": 9,
+          "rung": 0
         },
         "north-east": {
           "status": "warn",
@@ -1054,13 +1054,13 @@
           "takes": 1,
           "version": 8,
           "mirrored": false,
+          "generated_at": "2026-09-10T22:45:37+00:00",
           "action": "Beam Burst - The eye flares wide open and fires a blinding beam, wings thrown wide",
-          "intensity": 1,
-          "rolls": 4,
-          "frames": 9,
-          "rung": 3,
           "tries": 4,
-          "generated_at": "2026-09-10T22:45:37+00:00"
+          "rolls": 4,
+          "intensity": 1,
+          "frames": 9,
+          "rung": 3
         },
         "west": {
           "status": "warn",
@@ -1087,13 +1087,13 @@
           "takes": 1,
           "version": 6,
           "mirrored": true,
+          "generated_at": "2026-09-10T22:17:03+00:00",
           "action": "Eye Beam - Flares its pupil wide and fires a beam of light forward",
-          "intensity": 1,
+          "tries": 1,
           "rolls": 1,
+          "intensity": 1,
           "frames": 9,
           "rung": 0,
-          "tries": 1,
-          "generated_at": "2026-09-10T22:17:03+00:00",
           "source": "east"
         },
         "south-west": {

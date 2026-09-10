@@ -950,13 +950,13 @@
           "takes": 1,
           "version": 7,
           "mirrored": false,
+          "generated_at": "2026-09-10T22:42:28+00:00",
           "action": "Spectral Lunge - The hound hurls its whole body forward, jaws thrown wide, mist exploding off its flanks",
-          "intensity": 1,
-          "rolls": 4,
-          "frames": 9,
-          "rung": 3,
           "tries": 4,
-          "generated_at": "2026-09-10T22:42:28+00:00"
+          "rolls": 4,
+          "intensity": 1,
+          "frames": 9,
+          "rung": 3
         },
         "east": {
           "status": "warn",
@@ -983,13 +983,13 @@
           "takes": 1,
           "version": 6,
           "mirrored": false,
+          "generated_at": "2026-09-10T22:22:37+00:00",
           "action": "Bite - Lunges forward with its jaws wide open and bites",
-          "intensity": 1,
-          "rolls": 1,
-          "frames": 9,
-          "rung": 0,
           "tries": 1,
-          "generated_at": "2026-09-10T22:22:37+00:00"
+          "rolls": 1,
+          "intensity": 1,
+          "frames": 9,
+          "rung": 0
         },
         "north-east": {
           "status": "pass",
@@ -1046,13 +1046,13 @@
           "takes": 1,
           "version": 6,
           "mirrored": false,
+          "generated_at": "2026-09-10T22:22:38+00:00",
           "action": "Bite - Lunges forward with its jaws wide open and bites",
-          "intensity": 1,
-          "rolls": 1,
-          "frames": 9,
-          "rung": 0,
           "tries": 1,
-          "generated_at": "2026-09-10T22:22:38+00:00"
+          "rolls": 1,
+          "intensity": 1,
+          "frames": 9,
+          "rung": 0
         },
         "south-west": {
           "status": "pass",
@@ -1079,13 +1079,13 @@
           "takes": 1,
           "version": 7,
           "mirrored": true,
+          "generated_at": "2026-09-10T22:42:28+00:00",
           "action": "Spectral Lunge - The hound hurls its whole body forward, jaws thrown wide, mist exploding off its flanks",
-          "intensity": 1,
+          "tries": 4,
           "rolls": 4,
+          "intensity": 1,
           "frames": 9,
           "rung": 3,
-          "tries": 4,
-          "generated_at": "2026-09-10T22:42:28+00:00",
           "source": "south-east"
         },
         "west": {
@@ -1113,13 +1113,13 @@
           "takes": 1,
           "version": 6,
           "mirrored": true,
+          "generated_at": "2026-09-10T22:22:37+00:00",
           "action": "Bite - Lunges forward with its jaws wide open and bites",
-          "intensity": 1,
+          "tries": 1,
           "rolls": 1,
+          "intensity": 1,
           "frames": 9,
           "rung": 0,
-          "tries": 1,
-          "generated_at": "2026-09-10T22:22:37+00:00",
           "source": "east"
         },
         "north-west": {

@@ -956,13 +956,13 @@
           "takes": 1,
           "version": 4,
           "mirrored": false,
+          "generated_at": "2026-09-10T22:15:28+00:00",
           "action": "Beak Stab - Spreads its wings wide and stabs forward with its hooked beak, a big aggressive swing",
-          "intensity": 1,
-          "rolls": 2,
-          "frames": 5,
-          "rung": 1,
           "tries": 2,
-          "generated_at": "2026-09-10T22:15:28+00:00"
+          "rolls": 2,
+          "intensity": 1,
+          "frames": 5,
+          "rung": 1
         },
         "east": {
           "status": "pass",
@@ -989,13 +989,13 @@
           "takes": 1,
           "version": 3,
           "mirrored": false,
+          "generated_at": "2026-09-10T21:51:52+00:00",
           "action": "Beak Stab - Spreads its wings wide and stabs forward with its hooked beak",
-          "intensity": 1,
-          "rolls": 1,
-          "frames": 5,
-          "rung": 0,
           "tries": 1,
-          "generated_at": "2026-09-10T21:51:52+00:00"
+          "rolls": 1,
+          "intensity": 1,
+          "frames": 5,
+          "rung": 0
         },
         "north-east": {
           "status": "warn",
@@ -1022,13 +1022,13 @@
           "takes": 1,
           "version": 3,
           "mirrored": false,
+          "generated_at": "2026-09-10T21:51:53+00:00",
           "action": "Beak Stab - Spreads its wings wide and stabs forward with its hooked beak",
-          "intensity": 1,
-          "rolls": 1,
-          "frames": 5,
-          "rung": 0,
           "tries": 1,
-          "generated_at": "2026-09-10T21:51:53+00:00"
+          "rolls": 1,
+          "intensity": 1,
+          "frames": 5,
+          "rung": 0
         },
         "north": {
           "status": "pass",
@@ -1085,13 +1085,13 @@
           "takes": 1,
           "version": 4,
           "mirrored": true,
+          "generated_at": "2026-09-10T22:15:28+00:00",
           "action": "Beak Stab - Spreads its wings wide and stabs forward with its hooked beak, a big aggressive swing",
-          "intensity": 1,
+          "tries": 2,
           "rolls": 2,
+          "intensity": 1,
           "frames": 5,
           "rung": 1,
-          "tries": 2,
-          "generated_at": "2026-09-10T22:15:28+00:00",
           "source": "south-east"
         },
         "west": {
@@ -1119,13 +1119,13 @@
           "takes": 1,
           "version": 3,
           "mirrored": true,
+          "generated_at": "2026-09-10T21:51:52+00:00",
           "action": "Beak Stab - Spreads its wings wide and stabs forward with its hooked beak",
-          "intensity": 1,
+          "tries": 1,
           "rolls": 1,
+          "intensity": 1,
           "frames": 5,
           "rung": 0,
-          "tries": 1,
-          "generated_at": "2026-09-10T21:51:52+00:00",
           "source": "east"
         },
         "north-west": {
@@ -1153,13 +1153,13 @@
           "takes": 1,
           "version": 3,
           "mirrored": true,
+          "generated_at": "2026-09-10T21:51:53+00:00",
           "action": "Beak Stab - Spreads its wings wide and stabs forward with its hooked beak",
-          "intensity": 1,
+          "tries": 1,
           "rolls": 1,
+          "intensity": 1,
           "frames": 5,
           "rung": 0,
-          "tries": 1,
-          "generated_at": "2026-09-10T21:51:53+00:00",
           "source": "north-east"
         }
       },

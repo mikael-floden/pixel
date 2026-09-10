@@ -925,13 +925,13 @@
           "takes": 1,
           "version": 5,
           "mirrored": false,
+          "generated_at": "2026-09-10T21:41:49+00:00",
           "action": "Killing Bite - The basilisk hurls its whole body forward, jaws thrown wide open, crest flared, teeth bared, a huge aggressive attack with the whole body behind it, wide exaggerated motion",
-          "intensity": 1,
-          "rolls": 5,
-          "frames": 5,
-          "rung": 4,
           "tries": 5,
-          "generated_at": "2026-09-10T21:41:49+00:00"
+          "rolls": 5,
+          "intensity": 1,
+          "frames": 5,
+          "rung": 4
         },
         "south-east": {
           "status": "warn",
@@ -959,13 +959,13 @@
           "takes": 1,
           "version": 7,
           "mirrored": false,
+          "generated_at": "2026-09-10T22:28:38+00:00",
           "action": "Claw Swipe - Raises one front paw and performs one quick swipe forward, white swoosh lines following the claws, a big aggressive swing",
-          "intensity": 1,
-          "rolls": 3,
-          "frames": 5,
-          "rung": 2,
           "tries": 3,
-          "generated_at": "2026-09-10T22:28:38+00:00"
+          "rolls": 3,
+          "intensity": 1,
+          "frames": 5,
+          "rung": 2
         },
         "east": {
           "status": "warn",
@@ -992,13 +992,13 @@
           "takes": 1,
           "version": 6,
           "mirrored": false,
+          "generated_at": "2026-09-10T22:05:32+00:00",
           "action": "Killing Bite - The basilisk hurls its whole body forward, jaws thrown wide open, crest flared, teeth bared, an extremely violent attack, huge exaggerated motion, the limb thrown far out",
-          "intensity": 1,
-          "rolls": 6,
-          "frames": 5,
-          "rung": 5,
           "tries": 6,
-          "generated_at": "2026-09-10T22:05:32+00:00"
+          "rolls": 6,
+          "intensity": 1,
+          "frames": 5,
+          "rung": 5
         },
         "north-east": {
           "status": "warn",
@@ -1025,13 +1025,13 @@
           "takes": 1,
           "version": 6,
           "mirrored": false,
+          "generated_at": "2026-09-10T22:05:32+00:00",
           "action": "Bite - Lunges forward with its jaws wide open and bites hard, a big aggressive swing",
-          "intensity": 1,
-          "rolls": 2,
-          "frames": 5,
-          "rung": 1,
           "tries": 2,
-          "generated_at": "2026-09-10T22:05:32+00:00"
+          "rolls": 2,
+          "intensity": 1,
+          "frames": 5,
+          "rung": 1
         },
         "north": {
           "status": "warn",
@@ -1090,13 +1090,13 @@
           "takes": 1,
           "version": 6,
           "mirrored": true,
+          "generated_at": "2026-09-10T22:05:32+00:00",
           "action": "Bite - Lunges forward with its jaws wide open and bites hard, a big aggressive swing",
-          "intensity": 1,
+          "tries": 2,
           "rolls": 2,
+          "intensity": 1,
           "frames": 5,
           "rung": 1,
-          "tries": 2,
-          "generated_at": "2026-09-10T22:05:32+00:00",
           "source": "north-east"
         },
         "south-west": {
@@ -1125,13 +1125,13 @@
           "takes": 1,
           "version": 7,
           "mirrored": true,
+          "generated_at": "2026-09-10T22:28:38+00:00",
           "action": "Claw Swipe - Raises one front paw and performs one quick swipe forward, white swoosh lines following the claws, a big aggressive swing",
-          "intensity": 1,
+          "tries": 3,
           "rolls": 3,
+          "intensity": 1,
           "frames": 5,
           "rung": 2,
-          "tries": 3,
-          "generated_at": "2026-09-10T22:28:38+00:00",
           "source": "south-east"
         },
         "west": {
@@ -1159,13 +1159,13 @@
           "takes": 1,
           "version": 6,
           "mirrored": true,
+          "generated_at": "2026-09-10T22:05:32+00:00",
           "action": "Killing Bite - The basilisk hurls its whole body forward, jaws thrown wide open, crest flared, teeth bared, an extremely violent attack, huge exaggerated motion, the limb thrown far out",
-          "intensity": 1,
+          "tries": 6,
           "rolls": 6,
+          "intensity": 1,
           "frames": 5,
           "rung": 5,
-          "tries": 6,
-          "generated_at": "2026-09-10T22:05:32+00:00",
           "source": "east"
         }
       },
