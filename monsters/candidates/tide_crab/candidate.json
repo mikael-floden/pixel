@@ -892,6 +892,163 @@
         "west": "tide_crab/animations/attack__west.webp",
         "north-west": "tide_crab/animations/attack__north-west.webp"
       }
+    },
+    "attack_try": {
+      "directions": {
+        "south": {
+          "status": "fail",
+          "step_mean": 0.1453,
+          "step_max": 0.2237,
+          "drift": 1.76,
+          "loop": 0.2109,
+          "loop_ratio": 1.45,
+          "travel": 0.25,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": -0.003,
+          "peak": 0.2664,
+          "reach": 0.109,
+          "canvas": [
+            112,
+            112
+          ],
+          "reasons": [
+            "no strike, just a lean: nothing reaches past 0.11 of the body"
+          ],
+          "sub": "6c3309f6-de9b-4be2-9d19-b052569e934a",
+          "group": "251962b0-0299-42b6-938f-80f250441bcc",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "action": "Claw Snap - Lunges forward and snaps its big claw shut hard",
+          "tries": 1,
+          "generated_at": "2026-09-10T19:42:05+00:00"
+        },
+        "south-east": {
+          "status": "fail",
+          "step_mean": 0.1416,
+          "step_max": 0.1785,
+          "drift": 1.87,
+          "loop": 0.1524,
+          "loop_ratio": 1.08,
+          "travel": 1.87,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": 0.001,
+          "peak": 0.2494,
+          "reach": 0.053,
+          "canvas": [
+            112,
+            112
+          ],
+          "reasons": [
+            "no strike, just a lean: nothing reaches past 0.05 of the body"
+          ],
+          "sub": "9731e818-bce1-4b4f-b61a-c7d8208dafb9",
+          "group": "36bdecef-7763-4d0e-be71-68c808b8168f",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "action": "Claw Snap - Lunges forward and snaps its big claw shut hard",
+          "tries": 1,
+          "generated_at": "2026-09-10T19:42:06+00:00"
+        },
+        "east": {
+          "status": "fail",
+          "step_mean": 0.1637,
+          "step_max": 0.1919,
+          "drift": 2.2,
+          "loop": 0.3577,
+          "loop_ratio": 2.18,
+          "travel": 1.06,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": 0.004,
+          "peak": 0.4158,
+          "reach": 0.079,
+          "canvas": [
+            112,
+            112
+          ],
+          "reasons": [
+            "no strike, just a lean: nothing reaches past 0.08 of the body"
+          ],
+          "sub": "1002ae7d-aee7-495a-934b-6e6e9c140ed2",
+          "group": "7e7ee3ae-1c96-49aa-b877-ea4798d1a801",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "action": "Claw Snap - Lunges forward and snaps its big claw shut hard",
+          "tries": 1,
+          "generated_at": "2026-09-10T19:42:06+00:00"
+        },
+        "north": {
+          "status": "fail",
+          "step_mean": 0.1327,
+          "step_max": 0.166,
+          "drift": 2.77,
+          "loop": 0.2306,
+          "loop_ratio": 1.74,
+          "travel": 0.15,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": 0.0,
+          "peak": 0.2511,
+          "reach": 0.07,
+          "canvas": [
+            112,
+            112
+          ],
+          "reasons": [
+            "no strike, just a lean: nothing reaches past 0.07 of the body"
+          ],
+          "sub": "f60e7480-902f-4922-a684-021d25feb121",
+          "group": "118cb3fe-6eb2-4d30-9823-05a60c83c0b6",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "action": "Claw Snap - Lunges forward and snaps its big claw shut hard",
+          "tries": 1,
+          "generated_at": "2026-09-10T19:42:07+00:00"
+        }
+      },
+      "action": "Claw Snap - Lunges forward and snaps its big claw shut hard",
+      "frame_paths": {
+        "south": [
+          "tide_crab/animations/attack_try/south/00.webp",
+          "tide_crab/animations/attack_try/south/01.webp",
+          "tide_crab/animations/attack_try/south/02.webp",
+          "tide_crab/animations/attack_try/south/03.webp",
+          "tide_crab/animations/attack_try/south/04.webp"
+        ],
+        "south-east": [
+          "tide_crab/animations/attack_try/south-east/00.webp",
+          "tide_crab/animations/attack_try/south-east/01.webp",
+          "tide_crab/animations/attack_try/south-east/02.webp",
+          "tide_crab/animations/attack_try/south-east/03.webp",
+          "tide_crab/animations/attack_try/south-east/04.webp"
+        ],
+        "east": [
+          "tide_crab/animations/attack_try/east/00.webp",
+          "tide_crab/animations/attack_try/east/01.webp",
+          "tide_crab/animations/attack_try/east/02.webp",
+          "tide_crab/animations/attack_try/east/03.webp",
+          "tide_crab/animations/attack_try/east/04.webp"
+        ],
+        "north": [
+          "tide_crab/animations/attack_try/north/00.webp",
+          "tide_crab/animations/attack_try/north/01.webp",
+          "tide_crab/animations/attack_try/north/02.webp",
+          "tide_crab/animations/attack_try/north/03.webp",
+          "tide_crab/animations/attack_try/north/04.webp"
+        ]
+      },
+      "strips": {
+        "south": "tide_crab/animations/attack_try__south.webp",
+        "south-east": "tide_crab/animations/attack_try__south-east.webp",
+        "east": "tide_crab/animations/attack_try__east.webp",
+        "north": "tide_crab/animations/attack_try__north.webp"
+      }
     }
   }
 }

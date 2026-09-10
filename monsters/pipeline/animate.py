@@ -122,6 +122,25 @@ STATES = {
                  "flash_warn": 0.04, "flash_max": 0.10},
     },
 }
+# Maintainer 2026-09-10: "on some monsters you have to give a more and more
+# extreme prompt until you get the movement you want. It's different for
+# different monsters. Some need a prompt telling them to not move so much,
+# some need a prompt telling them to swing in an aggressive attack!" So the
+# wording is a DIAL, not a constant: every re-roll of a monster that came back
+# limp turns it up, every re-roll that came back wild turns it down, and the
+# whole monster (all its generated directions) is regenerated at the new
+# setting so the eight directions stay one coherent take.
+INTENSITY = {
+    -2: ", a small tight strike, the body barely moves",
+    -1: ", a controlled strike, only the striking limb moves and the body stays planted",
+    0: "",
+    1: ", a big aggressive swing",
+    2: ", a big aggressive attack with the whole body behind it, wide exaggerated motion",
+    3: ", an extremely aggressive attack, huge exaggerated motion, the limb thrown far out",
+}
+TOO_LITTLE = ("no strike", "just a lean", "weak strike", "frozen", "shallow strike", "outside the calm band")
+TOO_MUCH = ("too much", "drifts", "walks across")
+
 CLAW_SLASH = ("Claw Swipe - Raises one front paw and performs one quick swipe forward, "
               "then returns to idle stance")
 APPROVED_TAG = "APPROVED"
@@ -395,16 +414,44 @@ def design_flag(cid, key):
     return None
 
 
-def state_action(cid, state):
-    state = base_state(state)
+def intensity_of(man, slot):
+    return int(((man.get("animations") or {}).get(slot) or {}).get("intensity", 0))
+
+
+def bump_intensity(man, slot):
+    """Turn the wording dial from the last round's verdicts: limp -> louder,
+    wild -> quieter. Returns the new level (unchanged when nothing failed)."""
+    rec = (man.get("animations") or {}).get(slot) or {}
+    bad = [q for q in (rec.get("directions") or {}).values()
+           if q.get("status") == "fail" and not q.get("mirrored")]
+    if not bad:
+        return intensity_of(man, slot)
+    text = " ".join(r for q in bad for r in (q.get("reasons") or []))
+    up = sum(k in text for k in TOO_LITTLE)
+    down = sum(k in text for k in TOO_MUCH)
+    if up == down:
+        return intensity_of(man, slot)
+    lvl = intensity_of(man, slot) + (1 if up > down else -1)
+    lvl = max(min(lvl, max(INTENSITY)), min(INTENSITY))
+    rec["intensity"] = lvl
+    return lvl
+
+
+def state_action(cid, state, man=None):
     """The action text for this monster's state: the design's `<state>_action`
     override if it has one (a cobra slithers, a crab scuttles, a wraith
-    glides — the maintainer words per creature, "jumps like a frog"), else
-    the state's default."""
+    glides — the maintainer words per creature, "jumps like a frog"), else the
+    state's default — PLUS the slot's intensity suffix, the dial that gets
+    turned up on a monster that came back limp and down on one that came back
+    wild."""
+    slot, state = state, base_state(state)
+    base = STATES[state]["action"]
     for c in cand.load_cfg()["candidates"]:
         if c["id"] == cid and c.get(f"{state}_action"):
-            return c[f"{state}_action"]
-    return STATES[state]["action"]
+            base = c[f"{state}_action"]; break
+    if man is None:
+        man = cand.load_manifest(cid) or {}
+    return base + INTENSITY[intensity_of(man, slot)]
 
 
 def _anim_record(man, slot):
@@ -414,7 +461,7 @@ def _anim_record(man, slot):
     moves the new wording into the live state."""
     rec = man.setdefault("animations", {}).setdefault(slot, {"directions": {}})
     if slot.endswith(TRY) or not rec.get("action"):
-        rec["action"] = state_action(man["id"], slot)
+        rec["action"] = state_action(man["id"], slot, man)
     return rec
 
 
@@ -512,7 +559,7 @@ def collect_state(client, cid, state, dirs, version, verbose=True, pin=False, ac
             qa["pinned"] = True
             qa["reasons"].append("PINNED fallback: base → walk → base, not a seamless loop (maintainer's last resort)")
         qa.update({"sub": client.sub_id(urls[0]), "group": group, "takes": len(cands), "version": version, "mirrored": False,
-                   "action": actions[d], "tries": (tries or {}).get(d, rec["directions"].get(d, {}).get("tries", 1)),
+                   "action": actions[d], "intensity": intensity_of(man, state), "tries": (tries or {}).get(d, rec["directions"].get(d, {}).get("tries", 1)),
                    "generated_at": datetime.now(timezone.utc).isoformat(timespec="seconds")})
         rec["directions"][d] = qa
         out[d] = qa
@@ -554,6 +601,17 @@ def cmd_state(args, state):
         man = cand.load_manifest(cid)
         if not man:
             print(f"{cid}: no candidate"); continue
+        # turn the wording dial before deciding what to regenerate: a monster
+        # whose last round came back limp asks louder this time (and the whole
+        # monster is redone at the new setting, so its eight directions stay
+        # one take — maintainer: "you might have to redo the entire prompt
+        # (all directions) in order to get a full 8 set that is valid")
+        lvl0 = intensity_of(man, state)
+        lvl = bump_intensity(man, state)
+        if lvl != lvl0:
+            man["animations"][state]["action"] = state_action(cid, state, man)
+            write_manifest(cid, man)
+            print(f"  {cid}: intensity {lvl0:+d} -> {lvl:+d}  ({INTENSITY[lvl].strip(', ') or 'plain wording'})")
         rec_now = (man.get("animations") or {}).get(state) or {}
         if (not state.endswith(TRY) and rec_now.get("directions")
                 and rec_now.get("action") and rec_now["action"] != state_action(cid, state)):

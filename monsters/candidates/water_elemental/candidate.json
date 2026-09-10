@@ -899,6 +899,312 @@
         "west": "water_elemental/animations/attack__west.webp",
         "north-west": "water_elemental/animations/attack__north-west.webp"
       }
+    },
+    "attack_try": {
+      "directions": {
+        "south": {
+          "status": "warn",
+          "step_mean": 0.2126,
+          "step_max": 0.3446,
+          "drift": 4.89,
+          "loop": 0.2762,
+          "loop_ratio": 1.3,
+          "travel": 2.39,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": 0.402,
+          "peak": 0.382,
+          "reach": 0.339,
+          "canvas": [
+            96,
+            96
+          ],
+          "reasons": [
+            "some bright effect pixels (0.40) — eyeball it"
+          ],
+          "sub": "eb6fba7a-aa91-4624-8191-07dcc8b36ba5",
+          "group": "89833a47-882a-4364-8812-814be2340d47",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "action": "Water Whip - Lashes a long whip of water forward from one arm",
+          "tries": 1,
+          "generated_at": "2026-09-10T19:41:37+00:00"
+        },
+        "south-east": {
+          "status": "pass",
+          "step_mean": 0.3409,
+          "step_max": 0.4848,
+          "drift": 5.75,
+          "loop": 0.3829,
+          "loop_ratio": 1.12,
+          "travel": 5.79,
+          "pin": 1.0,
+          "pad": 1,
+          "flash": 0.007,
+          "peak": 0.4769,
+          "reach": 0.51,
+          "canvas": [
+            98,
+            98
+          ],
+          "reasons": [
+            "canvas grown by 1 px a side to hold the motion"
+          ],
+          "sub": "81c3c83a-4104-435f-b241-12d0d2a3d8d7",
+          "group": "dcf70b01-1f40-442c-85e9-dc2f5a9eee33",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "action": "Water Whip - Lashes a long whip of water forward from one arm",
+          "tries": 1,
+          "generated_at": "2026-09-10T19:41:38+00:00"
+        },
+        "east": {
+          "status": "pass",
+          "step_mean": 0.2772,
+          "step_max": 0.3842,
+          "drift": 5.82,
+          "loop": 0.2965,
+          "loop_ratio": 1.07,
+          "travel": 9.63,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": 0.049,
+          "peak": 0.357,
+          "reach": 1.194,
+          "canvas": [
+            96,
+            96
+          ],
+          "reasons": [],
+          "sub": "9980c63e-e6af-4f47-8ef9-16a4eccd04b4",
+          "group": "e1598b68-efb1-429d-a51a-e69f5119bd6a",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "action": "Water Whip - Lashes a long whip of water forward from one arm",
+          "tries": 1,
+          "generated_at": "2026-09-10T19:41:38+00:00"
+        },
+        "north-east": {
+          "status": "warn",
+          "step_mean": 0.2955,
+          "step_max": 0.4528,
+          "drift": 6.56,
+          "loop": 0.2533,
+          "loop_ratio": 0.86,
+          "travel": 11.78,
+          "pin": 1.0,
+          "pad": 2,
+          "flash": 0.263,
+          "peak": 0.3947,
+          "reach": 0.767,
+          "canvas": [
+            100,
+            100
+          ],
+          "reasons": [
+            "some bright effect pixels (0.26) — eyeball it",
+            "canvas grown by 2 px a side to hold the motion"
+          ],
+          "sub": "7371fd5d-12fd-4743-a0c2-58a69614d54f",
+          "group": "32a076d4-8762-4c4f-a8a9-0c4111a933d5",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "action": "Water Whip - Lashes a long whip of water forward from one arm",
+          "tries": 1,
+          "generated_at": "2026-09-10T19:41:39+00:00"
+        },
+        "north": {
+          "status": "warn",
+          "step_mean": 0.3236,
+          "step_max": 0.4627,
+          "drift": 7.35,
+          "loop": 0.4484,
+          "loop_ratio": 1.39,
+          "travel": 11.05,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": 0.328,
+          "peak": 0.4484,
+          "reach": 0.442,
+          "canvas": [
+            96,
+            96
+          ],
+          "reasons": [
+            "some bright effect pixels (0.33) — eyeball it"
+          ],
+          "sub": "3d283888-dc9d-4516-be09-696215a9edd1",
+          "group": "94e29fa8-c925-49c8-8f67-f36c7116e269",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "action": "Water Whip - Lashes a long whip of water forward from one arm",
+          "tries": 1,
+          "generated_at": "2026-09-10T19:41:39+00:00"
+        },
+        "south-west": {
+          "status": "pass",
+          "step_mean": 0.3409,
+          "step_max": 0.4848,
+          "drift": 5.75,
+          "loop": 0.3829,
+          "loop_ratio": 1.12,
+          "travel": 5.79,
+          "pin": 1.0,
+          "pad": 1,
+          "flash": 0.007,
+          "peak": 0.4769,
+          "reach": 0.51,
+          "canvas": [
+            98,
+            98
+          ],
+          "reasons": [
+            "canvas grown by 1 px a side to hold the motion"
+          ],
+          "sub": "81c3c83a-4104-435f-b241-12d0d2a3d8d7",
+          "group": "dcf70b01-1f40-442c-85e9-dc2f5a9eee33",
+          "takes": 1,
+          "version": 1,
+          "mirrored": true,
+          "action": "Water Whip - Lashes a long whip of water forward from one arm",
+          "tries": 1,
+          "generated_at": "2026-09-10T19:41:38+00:00",
+          "source": "south-east"
+        },
+        "west": {
+          "status": "pass",
+          "step_mean": 0.2772,
+          "step_max": 0.3842,
+          "drift": 5.82,
+          "loop": 0.2965,
+          "loop_ratio": 1.07,
+          "travel": 9.63,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": 0.049,
+          "peak": 0.357,
+          "reach": 1.194,
+          "canvas": [
+            96,
+            96
+          ],
+          "reasons": [],
+          "sub": "9980c63e-e6af-4f47-8ef9-16a4eccd04b4",
+          "group": "e1598b68-efb1-429d-a51a-e69f5119bd6a",
+          "takes": 1,
+          "version": 1,
+          "mirrored": true,
+          "action": "Water Whip - Lashes a long whip of water forward from one arm",
+          "tries": 1,
+          "generated_at": "2026-09-10T19:41:38+00:00",
+          "source": "east"
+        },
+        "north-west": {
+          "status": "warn",
+          "step_mean": 0.2955,
+          "step_max": 0.4528,
+          "drift": 6.56,
+          "loop": 0.2533,
+          "loop_ratio": 0.86,
+          "travel": 11.78,
+          "pin": 1.0,
+          "pad": 2,
+          "flash": 0.263,
+          "peak": 0.3947,
+          "reach": 0.767,
+          "canvas": [
+            100,
+            100
+          ],
+          "reasons": [
+            "some bright effect pixels (0.26) — eyeball it",
+            "canvas grown by 2 px a side to hold the motion"
+          ],
+          "sub": "7371fd5d-12fd-4743-a0c2-58a69614d54f",
+          "group": "32a076d4-8762-4c4f-a8a9-0c4111a933d5",
+          "takes": 1,
+          "version": 1,
+          "mirrored": true,
+          "action": "Water Whip - Lashes a long whip of water forward from one arm",
+          "tries": 1,
+          "generated_at": "2026-09-10T19:41:39+00:00",
+          "source": "north-east"
+        }
+      },
+      "action": "Water Whip - Lashes a long whip of water forward from one arm",
+      "frame_paths": {
+        "south": [
+          "water_elemental/animations/attack_try/south/00.webp",
+          "water_elemental/animations/attack_try/south/01.webp",
+          "water_elemental/animations/attack_try/south/02.webp",
+          "water_elemental/animations/attack_try/south/03.webp",
+          "water_elemental/animations/attack_try/south/04.webp"
+        ],
+        "south-east": [
+          "water_elemental/animations/attack_try/south-east/00.webp",
+          "water_elemental/animations/attack_try/south-east/01.webp",
+          "water_elemental/animations/attack_try/south-east/02.webp",
+          "water_elemental/animations/attack_try/south-east/03.webp",
+          "water_elemental/animations/attack_try/south-east/04.webp"
+        ],
+        "east": [
+          "water_elemental/animations/attack_try/east/00.webp",
+          "water_elemental/animations/attack_try/east/01.webp",
+          "water_elemental/animations/attack_try/east/02.webp",
+          "water_elemental/animations/attack_try/east/03.webp",
+          "water_elemental/animations/attack_try/east/04.webp"
+        ],
+        "north-east": [
+          "water_elemental/animations/attack_try/north-east/00.webp",
+          "water_elemental/animations/attack_try/north-east/01.webp",
+          "water_elemental/animations/attack_try/north-east/02.webp",
+          "water_elemental/animations/attack_try/north-east/03.webp",
+          "water_elemental/animations/attack_try/north-east/04.webp"
+        ],
+        "north": [
+          "water_elemental/animations/attack_try/north/00.webp",
+          "water_elemental/animations/attack_try/north/01.webp",
+          "water_elemental/animations/attack_try/north/02.webp",
+          "water_elemental/animations/attack_try/north/03.webp",
+          "water_elemental/animations/attack_try/north/04.webp"
+        ],
+        "south-west": [
+          "water_elemental/animations/attack_try/south-west/00.webp",
+          "water_elemental/animations/attack_try/south-west/01.webp",
+          "water_elemental/animations/attack_try/south-west/02.webp",
+          "water_elemental/animations/attack_try/south-west/03.webp",
+          "water_elemental/animations/attack_try/south-west/04.webp"
+        ],
+        "west": [
+          "water_elemental/animations/attack_try/west/00.webp",
+          "water_elemental/animations/attack_try/west/01.webp",
+          "water_elemental/animations/attack_try/west/02.webp",
+          "water_elemental/animations/attack_try/west/03.webp",
+          "water_elemental/animations/attack_try/west/04.webp"
+        ],
+        "north-west": [
+          "water_elemental/animations/attack_try/north-west/00.webp",
+          "water_elemental/animations/attack_try/north-west/01.webp",
+          "water_elemental/animations/attack_try/north-west/02.webp",
+          "water_elemental/animations/attack_try/north-west/03.webp",
+          "water_elemental/animations/attack_try/north-west/04.webp"
+        ]
+      },
+      "strips": {
+        "south": "water_elemental/animations/attack_try__south.webp",
+        "south-east": "water_elemental/animations/attack_try__south-east.webp",
+        "east": "water_elemental/animations/attack_try__east.webp",
+        "north-east": "water_elemental/animations/attack_try__north-east.webp",
+        "north": "water_elemental/animations/attack_try__north.webp",
+        "south-west": "water_elemental/animations/attack_try__south-west.webp",
+        "west": "water_elemental/animations/attack_try__west.webp",
+        "north-west": "water_elemental/animations/attack_try__north-west.webp"
+      }
     }
   }
 }

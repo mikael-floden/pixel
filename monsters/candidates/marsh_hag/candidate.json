@@ -890,6 +890,274 @@
         "west": "marsh_hag/animations/attack__west.webp",
         "north-west": "marsh_hag/animations/attack__north-west.webp"
       }
+    },
+    "attack_try": {
+      "directions": {
+        "south": {
+          "status": "fail",
+          "step_mean": 0.1239,
+          "step_max": 0.1784,
+          "drift": 2.51,
+          "loop": 0.1684,
+          "loop_ratio": 1.36,
+          "travel": 2.74,
+          "pin": 1.0,
+          "pad": 3,
+          "flash": 0.036,
+          "peak": 0.2128,
+          "reach": 0.186,
+          "canvas": [
+            118,
+            118
+          ],
+          "reasons": [
+            "no strike, just a lean: nothing reaches past 0.19 of the body",
+            "canvas grown by 3 px a side to hold the motion"
+          ],
+          "sub": "f8b0215b-167c-4a1d-bbbe-13b7f3a461b3",
+          "group": "3938a8bf-3e96-4d71-92d9-255f8fd1f2b4",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "action": "Staff Curse - Jabs the staff out and green swamp magic bursts from the tip",
+          "tries": 1,
+          "generated_at": "2026-09-10T19:43:43+00:00"
+        },
+        "south-east": {
+          "status": "fail",
+          "step_mean": 0.1737,
+          "step_max": 0.2375,
+          "drift": 2.45,
+          "loop": 0.1872,
+          "loop_ratio": 1.08,
+          "travel": 2.45,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": 0.006,
+          "peak": 0.3501,
+          "reach": 0.147,
+          "canvas": [
+            112,
+            112
+          ],
+          "reasons": [
+            "no strike, just a lean: nothing reaches past 0.15 of the body"
+          ],
+          "sub": "4588df7c-827c-4c99-b4c2-bb7bbf0a6bd1",
+          "group": "a37dbeac-5c3c-483f-a1f1-27d4e4d6c672",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "action": "Staff Curse - Jabs the staff out and green swamp magic bursts from the tip",
+          "tries": 1,
+          "generated_at": "2026-09-10T19:43:44+00:00"
+        },
+        "east": {
+          "status": "pass",
+          "step_mean": 0.1432,
+          "step_max": 0.2086,
+          "drift": 3.43,
+          "loop": 0.1906,
+          "loop_ratio": 1.33,
+          "travel": 2.68,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": 0.095,
+          "peak": 0.1955,
+          "reach": 0.32,
+          "canvas": [
+            112,
+            112
+          ],
+          "reasons": [],
+          "sub": "7861cbc5-20a7-4d2c-9674-8e8b62f0b57f",
+          "group": "4fbc7357-8c7f-4196-b649-d2189b40cc6f",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "action": "Staff Curse - Jabs the staff out and green swamp magic bursts from the tip",
+          "tries": 1,
+          "generated_at": "2026-09-10T19:43:44+00:00"
+        },
+        "north-east": {
+          "status": "pass",
+          "step_mean": 0.2249,
+          "step_max": 0.4041,
+          "drift": 5.26,
+          "loop": 0.3707,
+          "loop_ratio": 1.65,
+          "travel": 6.32,
+          "pin": 1.0,
+          "pad": 2,
+          "flash": 0.013,
+          "peak": 0.4612,
+          "reach": 0.443,
+          "canvas": [
+            116,
+            116
+          ],
+          "reasons": [
+            "canvas grown by 2 px a side to hold the motion"
+          ],
+          "sub": "1913f9cd-0606-41bf-9ace-d71fe733f79e",
+          "group": "e6381ec3-abb0-4c71-a890-7aa8e9418858",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "action": "Staff Curse - Jabs the staff out and green swamp magic bursts from the tip",
+          "tries": 1,
+          "generated_at": "2026-09-10T19:43:45+00:00"
+        },
+        "north": {
+          "status": "warn",
+          "step_mean": 0.1159,
+          "step_max": 0.2022,
+          "drift": 4.9,
+          "loop": 0.114,
+          "loop_ratio": 0.98,
+          "travel": 5.21,
+          "pin": 1.0,
+          "pad": 1,
+          "flash": 0.072,
+          "peak": 0.2496,
+          "reach": 0.227,
+          "canvas": [
+            114,
+            114
+          ],
+          "reasons": [
+            "shallow strike: reach 0.23 — eyeball it",
+            "canvas grown by 1 px a side to hold the motion"
+          ],
+          "sub": "f61a296f-3ca9-4100-a06d-8ab9d4b01041",
+          "group": "7d7bd9f3-9b3e-4954-bcff-bdd8ce07c913",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "action": "Staff Curse - Jabs the staff out and green swamp magic bursts from the tip",
+          "tries": 1,
+          "generated_at": "2026-09-10T19:43:45+00:00"
+        },
+        "west": {
+          "status": "pass",
+          "step_mean": 0.1432,
+          "step_max": 0.2086,
+          "drift": 3.43,
+          "loop": 0.1906,
+          "loop_ratio": 1.33,
+          "travel": 2.68,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": 0.095,
+          "peak": 0.1955,
+          "reach": 0.32,
+          "canvas": [
+            112,
+            112
+          ],
+          "reasons": [],
+          "sub": "7861cbc5-20a7-4d2c-9674-8e8b62f0b57f",
+          "group": "4fbc7357-8c7f-4196-b649-d2189b40cc6f",
+          "takes": 1,
+          "version": 1,
+          "mirrored": true,
+          "action": "Staff Curse - Jabs the staff out and green swamp magic bursts from the tip",
+          "tries": 1,
+          "generated_at": "2026-09-10T19:43:44+00:00",
+          "source": "east"
+        },
+        "north-west": {
+          "status": "pass",
+          "step_mean": 0.2249,
+          "step_max": 0.4041,
+          "drift": 5.26,
+          "loop": 0.3707,
+          "loop_ratio": 1.65,
+          "travel": 6.32,
+          "pin": 1.0,
+          "pad": 2,
+          "flash": 0.013,
+          "peak": 0.4612,
+          "reach": 0.443,
+          "canvas": [
+            116,
+            116
+          ],
+          "reasons": [
+            "canvas grown by 2 px a side to hold the motion"
+          ],
+          "sub": "1913f9cd-0606-41bf-9ace-d71fe733f79e",
+          "group": "e6381ec3-abb0-4c71-a890-7aa8e9418858",
+          "takes": 1,
+          "version": 1,
+          "mirrored": true,
+          "action": "Staff Curse - Jabs the staff out and green swamp magic bursts from the tip",
+          "tries": 1,
+          "generated_at": "2026-09-10T19:43:45+00:00",
+          "source": "north-east"
+        }
+      },
+      "action": "Staff Curse - Jabs the staff out and green swamp magic bursts from the tip",
+      "frame_paths": {
+        "south": [
+          "marsh_hag/animations/attack_try/south/00.webp",
+          "marsh_hag/animations/attack_try/south/01.webp",
+          "marsh_hag/animations/attack_try/south/02.webp",
+          "marsh_hag/animations/attack_try/south/03.webp",
+          "marsh_hag/animations/attack_try/south/04.webp"
+        ],
+        "south-east": [
+          "marsh_hag/animations/attack_try/south-east/00.webp",
+          "marsh_hag/animations/attack_try/south-east/01.webp",
+          "marsh_hag/animations/attack_try/south-east/02.webp",
+          "marsh_hag/animations/attack_try/south-east/03.webp",
+          "marsh_hag/animations/attack_try/south-east/04.webp"
+        ],
+        "east": [
+          "marsh_hag/animations/attack_try/east/00.webp",
+          "marsh_hag/animations/attack_try/east/01.webp",
+          "marsh_hag/animations/attack_try/east/02.webp",
+          "marsh_hag/animations/attack_try/east/03.webp",
+          "marsh_hag/animations/attack_try/east/04.webp"
+        ],
+        "north-east": [
+          "marsh_hag/animations/attack_try/north-east/00.webp",
+          "marsh_hag/animations/attack_try/north-east/01.webp",
+          "marsh_hag/animations/attack_try/north-east/02.webp",
+          "marsh_hag/animations/attack_try/north-east/03.webp",
+          "marsh_hag/animations/attack_try/north-east/04.webp"
+        ],
+        "north": [
+          "marsh_hag/animations/attack_try/north/00.webp",
+          "marsh_hag/animations/attack_try/north/01.webp",
+          "marsh_hag/animations/attack_try/north/02.webp",
+          "marsh_hag/animations/attack_try/north/03.webp",
+          "marsh_hag/animations/attack_try/north/04.webp"
+        ],
+        "west": [
+          "marsh_hag/animations/attack_try/west/00.webp",
+          "marsh_hag/animations/attack_try/west/01.webp",
+          "marsh_hag/animations/attack_try/west/02.webp",
+          "marsh_hag/animations/attack_try/west/03.webp",
+          "marsh_hag/animations/attack_try/west/04.webp"
+        ],
+        "north-west": [
+          "marsh_hag/animations/attack_try/north-west/00.webp",
+          "marsh_hag/animations/attack_try/north-west/01.webp",
+          "marsh_hag/animations/attack_try/north-west/02.webp",
+          "marsh_hag/animations/attack_try/north-west/03.webp",
+          "marsh_hag/animations/attack_try/north-west/04.webp"
+        ]
+      },
+      "strips": {
+        "south": "marsh_hag/animations/attack_try__south.webp",
+        "south-east": "marsh_hag/animations/attack_try__south-east.webp",
+        "east": "marsh_hag/animations/attack_try__east.webp",
+        "north-east": "marsh_hag/animations/attack_try__north-east.webp",
+        "north": "marsh_hag/animations/attack_try__north.webp",
+        "west": "marsh_hag/animations/attack_try__west.webp",
+        "north-west": "marsh_hag/animations/attack_try__north-west.webp"
+      }
     }
   }
 }

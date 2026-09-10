@@ -914,6 +914,278 @@
         "west": "werewolf/animations/attack__west.webp",
         "north-west": "werewolf/animations/attack__north-west.webp"
       }
+    },
+    "attack_try": {
+      "directions": {
+        "south": {
+          "status": "fail",
+          "step_mean": 0.1955,
+          "step_max": 0.214,
+          "drift": 3.65,
+          "loop": 0.2721,
+          "loop_ratio": 1.39,
+          "travel": 3.65,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": 0.003,
+          "peak": 0.3253,
+          "reach": 0.103,
+          "canvas": [
+            128,
+            128
+          ],
+          "reasons": [
+            "no strike, just a lean: nothing reaches past 0.10 of the body"
+          ],
+          "sub": "c5bfffcb-8043-47af-8a63-7f1ec25a0206",
+          "group": "25e8f6c9-519e-444e-9e18-17d0a4806b38",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "action": "Claw Swipe - Rears up and swipes one clawed paw hard across",
+          "tries": 1,
+          "generated_at": "2026-09-10T19:47:17+00:00"
+        },
+        "south-east": {
+          "status": "fail",
+          "step_mean": 0.1969,
+          "step_max": 0.3692,
+          "drift": 5.93,
+          "loop": 0.4243,
+          "loop_ratio": 2.15,
+          "travel": 3.63,
+          "pin": 1.0,
+          "pad": 1,
+          "flash": 0.284,
+          "peak": 0.4243,
+          "reach": 0.291,
+          "canvas": [
+            130,
+            130
+          ],
+          "reasons": [
+            "shallow strike: reach 0.29 — eyeball it",
+            "painted effect: 0.28 of the body in new bright pixels (flare/slash arc)",
+            "canvas grown by 1 px a side to hold the motion"
+          ],
+          "sub": "fe17451d-b67c-492f-810e-e0cd4e9680f9",
+          "group": "37644ea0-5b0f-4060-ac97-51c6f5168eb1",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "action": "Claw Swipe - Rears up and swipes one clawed paw hard across",
+          "tries": 1,
+          "generated_at": "2026-09-10T19:47:17+00:00"
+        },
+        "east": {
+          "status": "pass",
+          "step_mean": 0.2085,
+          "step_max": 0.2623,
+          "drift": 3.38,
+          "loop": 0.2708,
+          "loop_ratio": 1.3,
+          "travel": 3.38,
+          "pin": 1.0,
+          "pad": 3,
+          "flash": 0.0,
+          "peak": 0.2963,
+          "reach": 0.447,
+          "canvas": [
+            134,
+            134
+          ],
+          "reasons": [
+            "canvas grown by 3 px a side to hold the motion"
+          ],
+          "sub": "7e5e5747-2b75-429c-99d4-7875aeec887c",
+          "group": "0eee7a3c-9743-4afe-af5a-2a4f291b0e91",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "action": "Claw Swipe - Rears up and swipes one clawed paw hard across",
+          "tries": 1,
+          "generated_at": "2026-09-10T19:47:18+00:00"
+        },
+        "north-east": {
+          "status": "pass",
+          "step_mean": 0.2194,
+          "step_max": 0.2589,
+          "drift": 4.22,
+          "loop": 0.459,
+          "loop_ratio": 2.09,
+          "travel": 4.22,
+          "pin": 1.0,
+          "pad": 8,
+          "flash": 0.0,
+          "peak": 0.459,
+          "reach": 0.387,
+          "canvas": [
+            144,
+            144
+          ],
+          "reasons": [
+            "canvas grown by 8 px a side to hold the motion"
+          ],
+          "sub": "22eac7db-ac47-4e1b-a479-85fd78f8a1d6",
+          "group": "97f67247-95db-4891-b47a-34d866e6b7a9",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "action": "Claw Swipe - Rears up and swipes one clawed paw hard across",
+          "tries": 1,
+          "generated_at": "2026-09-10T19:47:18+00:00"
+        },
+        "north": {
+          "status": "fail",
+          "step_mean": 0.1977,
+          "step_max": 0.2944,
+          "drift": 1.79,
+          "loop": 0.2944,
+          "loop_ratio": 1.49,
+          "travel": 2.07,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": 0.0,
+          "peak": 0.3205,
+          "reach": 0.133,
+          "canvas": [
+            128,
+            128
+          ],
+          "reasons": [
+            "no strike, just a lean: nothing reaches past 0.13 of the body"
+          ],
+          "sub": "ef1b7b51-efef-4b71-8501-e5feda1f3d6a",
+          "group": "7f46888a-2434-47d4-9ee5-3326721a8bf3",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "action": "Claw Swipe - Rears up and swipes one clawed paw hard across",
+          "tries": 1,
+          "generated_at": "2026-09-10T19:47:19+00:00"
+        },
+        "west": {
+          "status": "pass",
+          "step_mean": 0.2085,
+          "step_max": 0.2623,
+          "drift": 3.38,
+          "loop": 0.2708,
+          "loop_ratio": 1.3,
+          "travel": 3.38,
+          "pin": 1.0,
+          "pad": 3,
+          "flash": 0.0,
+          "peak": 0.2963,
+          "reach": 0.447,
+          "canvas": [
+            134,
+            134
+          ],
+          "reasons": [
+            "canvas grown by 3 px a side to hold the motion"
+          ],
+          "sub": "7e5e5747-2b75-429c-99d4-7875aeec887c",
+          "group": "0eee7a3c-9743-4afe-af5a-2a4f291b0e91",
+          "takes": 1,
+          "version": 1,
+          "mirrored": true,
+          "action": "Claw Swipe - Rears up and swipes one clawed paw hard across",
+          "tries": 1,
+          "generated_at": "2026-09-10T19:47:18+00:00",
+          "source": "east"
+        },
+        "north-west": {
+          "status": "pass",
+          "step_mean": 0.2194,
+          "step_max": 0.2589,
+          "drift": 4.22,
+          "loop": 0.459,
+          "loop_ratio": 2.09,
+          "travel": 4.22,
+          "pin": 1.0,
+          "pad": 8,
+          "flash": 0.0,
+          "peak": 0.459,
+          "reach": 0.387,
+          "canvas": [
+            144,
+            144
+          ],
+          "reasons": [
+            "canvas grown by 8 px a side to hold the motion"
+          ],
+          "sub": "22eac7db-ac47-4e1b-a479-85fd78f8a1d6",
+          "group": "97f67247-95db-4891-b47a-34d866e6b7a9",
+          "takes": 1,
+          "version": 1,
+          "mirrored": true,
+          "action": "Claw Swipe - Rears up and swipes one clawed paw hard across",
+          "tries": 1,
+          "generated_at": "2026-09-10T19:47:18+00:00",
+          "source": "north-east"
+        }
+      },
+      "action": "Claw Swipe - Rears up and swipes one clawed paw hard across",
+      "frame_paths": {
+        "south": [
+          "werewolf/animations/attack_try/south/00.webp",
+          "werewolf/animations/attack_try/south/01.webp",
+          "werewolf/animations/attack_try/south/02.webp",
+          "werewolf/animations/attack_try/south/03.webp",
+          "werewolf/animations/attack_try/south/04.webp"
+        ],
+        "south-east": [
+          "werewolf/animations/attack_try/south-east/00.webp",
+          "werewolf/animations/attack_try/south-east/01.webp",
+          "werewolf/animations/attack_try/south-east/02.webp",
+          "werewolf/animations/attack_try/south-east/03.webp",
+          "werewolf/animations/attack_try/south-east/04.webp"
+        ],
+        "east": [
+          "werewolf/animations/attack_try/east/00.webp",
+          "werewolf/animations/attack_try/east/01.webp",
+          "werewolf/animations/attack_try/east/02.webp",
+          "werewolf/animations/attack_try/east/03.webp",
+          "werewolf/animations/attack_try/east/04.webp"
+        ],
+        "north-east": [
+          "werewolf/animations/attack_try/north-east/00.webp",
+          "werewolf/animations/attack_try/north-east/01.webp",
+          "werewolf/animations/attack_try/north-east/02.webp",
+          "werewolf/animations/attack_try/north-east/03.webp",
+          "werewolf/animations/attack_try/north-east/04.webp"
+        ],
+        "north": [
+          "werewolf/animations/attack_try/north/00.webp",
+          "werewolf/animations/attack_try/north/01.webp",
+          "werewolf/animations/attack_try/north/02.webp",
+          "werewolf/animations/attack_try/north/03.webp",
+          "werewolf/animations/attack_try/north/04.webp"
+        ],
+        "west": [
+          "werewolf/animations/attack_try/west/00.webp",
+          "werewolf/animations/attack_try/west/01.webp",
+          "werewolf/animations/attack_try/west/02.webp",
+          "werewolf/animations/attack_try/west/03.webp",
+          "werewolf/animations/attack_try/west/04.webp"
+        ],
+        "north-west": [
+          "werewolf/animations/attack_try/north-west/00.webp",
+          "werewolf/animations/attack_try/north-west/01.webp",
+          "werewolf/animations/attack_try/north-west/02.webp",
+          "werewolf/animations/attack_try/north-west/03.webp",
+          "werewolf/animations/attack_try/north-west/04.webp"
+        ]
+      },
+      "strips": {
+        "south": "werewolf/animations/attack_try__south.webp",
+        "south-east": "werewolf/animations/attack_try__south-east.webp",
+        "east": "werewolf/animations/attack_try__east.webp",
+        "north-east": "werewolf/animations/attack_try__north-east.webp",
+        "north": "werewolf/animations/attack_try__north.webp",
+        "west": "werewolf/animations/attack_try__west.webp",
+        "north-west": "werewolf/animations/attack_try__north-west.webp"
+      }
     }
   }
 }

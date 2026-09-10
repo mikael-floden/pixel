@@ -897,6 +897,268 @@
         "west": "bog_titan/animations/attack__west.webp",
         "north-west": "bog_titan/animations/attack__north-west.webp"
       }
+    },
+    "attack_try": {
+      "directions": {
+        "south": {
+          "status": "fail",
+          "step_mean": 0.1662,
+          "step_max": 0.2242,
+          "drift": 2.04,
+          "loop": 0.3044,
+          "loop_ratio": 1.83,
+          "travel": 1.35,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": 0.0,
+          "peak": 0.3044,
+          "reach": 0.05,
+          "canvas": [
+            224,
+            224
+          ],
+          "reasons": [
+            "no strike, just a lean: nothing reaches past 0.05 of the body"
+          ],
+          "sub": "caed6c88-05e6-4b1c-9ba0-d99f9747d32a",
+          "group": "3e351ee1-38ae-4b18-9b8c-f9463857f4c5",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "action": "Double Slam - Raises both arms high overhead and slams them down together",
+          "tries": 1,
+          "generated_at": "2026-09-10T19:44:29+00:00"
+        },
+        "south-east": {
+          "status": "fail",
+          "step_mean": 0.1676,
+          "step_max": 0.2582,
+          "drift": 2.72,
+          "loop": 0.329,
+          "loop_ratio": 1.96,
+          "travel": 2.72,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": 0.0,
+          "peak": 0.329,
+          "reach": 0.181,
+          "canvas": [
+            224,
+            224
+          ],
+          "reasons": [
+            "no strike, just a lean: nothing reaches past 0.18 of the body"
+          ],
+          "sub": "2c72a982-08b4-4139-9fe2-d0d839a0be9f",
+          "group": "e3a9fde4-76d7-4e51-a57b-31ede0592854",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "action": "Double Slam - Raises both arms high overhead and slams them down together",
+          "tries": 1,
+          "generated_at": "2026-09-10T19:44:29+00:00"
+        },
+        "east": {
+          "status": "pass",
+          "step_mean": 0.1571,
+          "step_max": 0.2894,
+          "drift": 6.14,
+          "loop": 0.4132,
+          "loop_ratio": 2.63,
+          "travel": 4.08,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": 0.0,
+          "peak": 0.4132,
+          "reach": 0.58,
+          "canvas": [
+            224,
+            224
+          ],
+          "reasons": [],
+          "sub": "d7cb6113-c882-4798-8bab-3394479e9305",
+          "group": "1414f481-c445-4af5-b3b4-674c598d6ffc",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "action": "Double Slam - Raises both arms high overhead and slams them down together",
+          "tries": 1,
+          "generated_at": "2026-09-10T19:44:30+00:00"
+        },
+        "north-east": {
+          "status": "pass",
+          "step_mean": 0.1786,
+          "step_max": 0.2886,
+          "drift": 8.34,
+          "loop": 0.4409,
+          "loop_ratio": 2.47,
+          "travel": 5.56,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": 0.0,
+          "peak": 0.4409,
+          "reach": 0.328,
+          "canvas": [
+            224,
+            224
+          ],
+          "reasons": [],
+          "sub": "90a71bc6-36bb-4cec-8326-f5ed86b3a415",
+          "group": "2cbb6c9b-0038-4ea9-8974-a7137a674393",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "action": "Double Slam - Raises both arms high overhead and slams them down together",
+          "tries": 1,
+          "generated_at": "2026-09-10T19:44:31+00:00"
+        },
+        "north": {
+          "status": "fail",
+          "step_mean": 0.1648,
+          "step_max": 0.2581,
+          "drift": 5.08,
+          "loop": 0.3784,
+          "loop_ratio": 2.3,
+          "travel": 0.32,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": 0.0,
+          "peak": 0.3784,
+          "reach": 0.051,
+          "canvas": [
+            224,
+            224
+          ],
+          "reasons": [
+            "no strike, just a lean: nothing reaches past 0.05 of the body"
+          ],
+          "sub": "40fc889b-dc64-4da3-b198-23fd2f48c727",
+          "group": "bdcffeb4-bdcd-41e3-b46b-5282a281d58c",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "action": "Double Slam - Raises both arms high overhead and slams them down together",
+          "tries": 1,
+          "generated_at": "2026-09-10T19:44:31+00:00"
+        },
+        "west": {
+          "status": "pass",
+          "step_mean": 0.1571,
+          "step_max": 0.2894,
+          "drift": 6.14,
+          "loop": 0.4132,
+          "loop_ratio": 2.63,
+          "travel": 4.08,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": 0.0,
+          "peak": 0.4132,
+          "reach": 0.58,
+          "canvas": [
+            224,
+            224
+          ],
+          "reasons": [],
+          "sub": "d7cb6113-c882-4798-8bab-3394479e9305",
+          "group": "1414f481-c445-4af5-b3b4-674c598d6ffc",
+          "takes": 1,
+          "version": 1,
+          "mirrored": true,
+          "action": "Double Slam - Raises both arms high overhead and slams them down together",
+          "tries": 1,
+          "generated_at": "2026-09-10T19:44:30+00:00",
+          "source": "east"
+        },
+        "north-west": {
+          "status": "pass",
+          "step_mean": 0.1786,
+          "step_max": 0.2886,
+          "drift": 8.34,
+          "loop": 0.4409,
+          "loop_ratio": 2.47,
+          "travel": 5.56,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": 0.0,
+          "peak": 0.4409,
+          "reach": 0.328,
+          "canvas": [
+            224,
+            224
+          ],
+          "reasons": [],
+          "sub": "90a71bc6-36bb-4cec-8326-f5ed86b3a415",
+          "group": "2cbb6c9b-0038-4ea9-8974-a7137a674393",
+          "takes": 1,
+          "version": 1,
+          "mirrored": true,
+          "action": "Double Slam - Raises both arms high overhead and slams them down together",
+          "tries": 1,
+          "generated_at": "2026-09-10T19:44:31+00:00",
+          "source": "north-east"
+        }
+      },
+      "action": "Double Slam - Raises both arms high overhead and slams them down together",
+      "frame_paths": {
+        "south": [
+          "bog_titan/animations/attack_try/south/00.webp",
+          "bog_titan/animations/attack_try/south/01.webp",
+          "bog_titan/animations/attack_try/south/02.webp",
+          "bog_titan/animations/attack_try/south/03.webp",
+          "bog_titan/animations/attack_try/south/04.webp"
+        ],
+        "south-east": [
+          "bog_titan/animations/attack_try/south-east/00.webp",
+          "bog_titan/animations/attack_try/south-east/01.webp",
+          "bog_titan/animations/attack_try/south-east/02.webp",
+          "bog_titan/animations/attack_try/south-east/03.webp",
+          "bog_titan/animations/attack_try/south-east/04.webp"
+        ],
+        "east": [
+          "bog_titan/animations/attack_try/east/00.webp",
+          "bog_titan/animations/attack_try/east/01.webp",
+          "bog_titan/animations/attack_try/east/02.webp",
+          "bog_titan/animations/attack_try/east/03.webp",
+          "bog_titan/animations/attack_try/east/04.webp"
+        ],
+        "north-east": [
+          "bog_titan/animations/attack_try/north-east/00.webp",
+          "bog_titan/animations/attack_try/north-east/01.webp",
+          "bog_titan/animations/attack_try/north-east/02.webp",
+          "bog_titan/animations/attack_try/north-east/03.webp",
+          "bog_titan/animations/attack_try/north-east/04.webp"
+        ],
+        "north": [
+          "bog_titan/animations/attack_try/north/00.webp",
+          "bog_titan/animations/attack_try/north/01.webp",
+          "bog_titan/animations/attack_try/north/02.webp",
+          "bog_titan/animations/attack_try/north/03.webp",
+          "bog_titan/animations/attack_try/north/04.webp"
+        ],
+        "west": [
+          "bog_titan/animations/attack_try/west/00.webp",
+          "bog_titan/animations/attack_try/west/01.webp",
+          "bog_titan/animations/attack_try/west/02.webp",
+          "bog_titan/animations/attack_try/west/03.webp",
+          "bog_titan/animations/attack_try/west/04.webp"
+        ],
+        "north-west": [
+          "bog_titan/animations/attack_try/north-west/00.webp",
+          "bog_titan/animations/attack_try/north-west/01.webp",
+          "bog_titan/animations/attack_try/north-west/02.webp",
+          "bog_titan/animations/attack_try/north-west/03.webp",
+          "bog_titan/animations/attack_try/north-west/04.webp"
+        ]
+      },
+      "strips": {
+        "south": "bog_titan/animations/attack_try__south.webp",
+        "south-east": "bog_titan/animations/attack_try__south-east.webp",
+        "east": "bog_titan/animations/attack_try__east.webp",
+        "north-east": "bog_titan/animations/attack_try__north-east.webp",
+        "north": "bog_titan/animations/attack_try__north.webp",
+        "west": "bog_titan/animations/attack_try__west.webp",
+        "north-west": "bog_titan/animations/attack_try__north-west.webp"
+      }
     }
   }
 }

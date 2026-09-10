@@ -905,6 +905,317 @@
         "west": "lizard_warrior/animations/attack__west.webp",
         "north-west": "lizard_warrior/animations/attack__north-west.webp"
       }
+    },
+    "attack_try": {
+      "directions": {
+        "south": {
+          "status": "fail",
+          "step_mean": 0.2219,
+          "step_max": 0.3605,
+          "drift": 5.34,
+          "loop": 0.4126,
+          "loop_ratio": 1.86,
+          "travel": 2.78,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": 0.001,
+          "peak": 0.4215,
+          "reach": 0.092,
+          "canvas": [
+            128,
+            128
+          ],
+          "reasons": [
+            "no strike, just a lean: nothing reaches past 0.09 of the body"
+          ],
+          "sub": "e8da75ce-3db5-40f7-b3a1-325859261164",
+          "group": "f64cf46b-843d-4b9c-9298-cf7150cc14c8",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "action": "Spear Thrust - Lunges forward and drives the spear out in one fast stab",
+          "tries": 1,
+          "generated_at": "2026-09-10T19:45:08+00:00"
+        },
+        "south-east": {
+          "status": "pass",
+          "step_mean": 0.3349,
+          "step_max": 0.5429,
+          "drift": 5.28,
+          "loop": 0.6271,
+          "loop_ratio": 1.87,
+          "travel": 5.52,
+          "pin": 1.0,
+          "pad": 13,
+          "flash": 0.0,
+          "peak": 0.6271,
+          "reach": 0.347,
+          "canvas": [
+            154,
+            154
+          ],
+          "reasons": [
+            "canvas grown by 13 px a side to hold the motion"
+          ],
+          "sub": "32a86409-f227-4750-b461-168cfee0d9f1",
+          "group": "40228f14-5a74-4e40-9d13-b77343c12d04",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "action": "Spear Thrust - Lunges forward and drives the spear out in one fast stab",
+          "tries": 1,
+          "generated_at": "2026-09-10T19:45:09+00:00"
+        },
+        "east": {
+          "status": "pass",
+          "step_mean": 0.2222,
+          "step_max": 0.3686,
+          "drift": 1.94,
+          "loop": 0.5712,
+          "loop_ratio": 2.57,
+          "travel": 3.47,
+          "pin": 1.0,
+          "pad": 8,
+          "flash": 0.002,
+          "peak": 0.5712,
+          "reach": 0.547,
+          "canvas": [
+            144,
+            144
+          ],
+          "reasons": [
+            "canvas grown by 8 px a side to hold the motion"
+          ],
+          "sub": "a26b2774-6a61-4310-9cbd-a5704516fc18",
+          "group": "9006e9d3-f8fb-4289-b46b-55c0d9a19268",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "action": "Spear Thrust - Lunges forward and drives the spear out in one fast stab",
+          "tries": 1,
+          "generated_at": "2026-09-10T19:45:09+00:00"
+        },
+        "north-east": {
+          "status": "warn",
+          "step_mean": 0.2843,
+          "step_max": 0.4329,
+          "drift": 4.62,
+          "loop": 0.6799,
+          "loop_ratio": 2.39,
+          "travel": 2.51,
+          "pin": 1.0,
+          "pad": 11,
+          "flash": 0.052,
+          "peak": 0.6799,
+          "reach": 0.464,
+          "canvas": [
+            150,
+            150
+          ],
+          "reasons": [
+            "some bright effect pixels (0.05) — eyeball it",
+            "canvas grown by 11 px a side to hold the motion"
+          ],
+          "sub": "13a52e54-ab84-491f-8111-87ad248c85bc",
+          "group": "f02dfa21-8eb9-4fb5-8de9-3830c64eb08a",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "action": "Spear Thrust - Lunges forward and drives the spear out in one fast stab",
+          "tries": 1,
+          "generated_at": "2026-09-10T19:45:10+00:00"
+        },
+        "north": {
+          "status": "fail",
+          "step_mean": 0.2423,
+          "step_max": 0.3747,
+          "drift": 4.28,
+          "loop": 0.4321,
+          "loop_ratio": 1.78,
+          "travel": 4.41,
+          "pin": 1.0,
+          "pad": 2,
+          "flash": 0.038,
+          "peak": 0.4321,
+          "reach": 0.181,
+          "canvas": [
+            132,
+            132
+          ],
+          "reasons": [
+            "no strike, just a lean: nothing reaches past 0.18 of the body",
+            "canvas grown by 2 px a side to hold the motion"
+          ],
+          "sub": "0b446559-be07-4d89-86f2-4239895fc976",
+          "group": "5933cac7-c3a0-4b3a-92bf-c621cfbdf056",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "action": "Spear Thrust - Lunges forward and drives the spear out in one fast stab",
+          "tries": 1,
+          "generated_at": "2026-09-10T19:45:10+00:00"
+        },
+        "south-west": {
+          "status": "pass",
+          "step_mean": 0.3349,
+          "step_max": 0.5429,
+          "drift": 5.28,
+          "loop": 0.6271,
+          "loop_ratio": 1.87,
+          "travel": 5.52,
+          "pin": 1.0,
+          "pad": 13,
+          "flash": 0.0,
+          "peak": 0.6271,
+          "reach": 0.347,
+          "canvas": [
+            154,
+            154
+          ],
+          "reasons": [
+            "canvas grown by 13 px a side to hold the motion"
+          ],
+          "sub": "32a86409-f227-4750-b461-168cfee0d9f1",
+          "group": "40228f14-5a74-4e40-9d13-b77343c12d04",
+          "takes": 1,
+          "version": 1,
+          "mirrored": true,
+          "action": "Spear Thrust - Lunges forward and drives the spear out in one fast stab",
+          "tries": 1,
+          "generated_at": "2026-09-10T19:45:09+00:00",
+          "source": "south-east"
+        },
+        "west": {
+          "status": "pass",
+          "step_mean": 0.2222,
+          "step_max": 0.3686,
+          "drift": 1.94,
+          "loop": 0.5712,
+          "loop_ratio": 2.57,
+          "travel": 3.47,
+          "pin": 1.0,
+          "pad": 8,
+          "flash": 0.002,
+          "peak": 0.5712,
+          "reach": 0.547,
+          "canvas": [
+            144,
+            144
+          ],
+          "reasons": [
+            "canvas grown by 8 px a side to hold the motion"
+          ],
+          "sub": "a26b2774-6a61-4310-9cbd-a5704516fc18",
+          "group": "9006e9d3-f8fb-4289-b46b-55c0d9a19268",
+          "takes": 1,
+          "version": 1,
+          "mirrored": true,
+          "action": "Spear Thrust - Lunges forward and drives the spear out in one fast stab",
+          "tries": 1,
+          "generated_at": "2026-09-10T19:45:09+00:00",
+          "source": "east"
+        },
+        "north-west": {
+          "status": "warn",
+          "step_mean": 0.2843,
+          "step_max": 0.4329,
+          "drift": 4.62,
+          "loop": 0.6799,
+          "loop_ratio": 2.39,
+          "travel": 2.51,
+          "pin": 1.0,
+          "pad": 11,
+          "flash": 0.052,
+          "peak": 0.6799,
+          "reach": 0.464,
+          "canvas": [
+            150,
+            150
+          ],
+          "reasons": [
+            "some bright effect pixels (0.05) — eyeball it",
+            "canvas grown by 11 px a side to hold the motion"
+          ],
+          "sub": "13a52e54-ab84-491f-8111-87ad248c85bc",
+          "group": "f02dfa21-8eb9-4fb5-8de9-3830c64eb08a",
+          "takes": 1,
+          "version": 1,
+          "mirrored": true,
+          "action": "Spear Thrust - Lunges forward and drives the spear out in one fast stab",
+          "tries": 1,
+          "generated_at": "2026-09-10T19:45:10+00:00",
+          "source": "north-east"
+        }
+      },
+      "action": "Spear Thrust - Lunges forward and drives the spear out in one fast stab",
+      "frame_paths": {
+        "south": [
+          "lizard_warrior/animations/attack_try/south/00.webp",
+          "lizard_warrior/animations/attack_try/south/01.webp",
+          "lizard_warrior/animations/attack_try/south/02.webp",
+          "lizard_warrior/animations/attack_try/south/03.webp",
+          "lizard_warrior/animations/attack_try/south/04.webp"
+        ],
+        "south-east": [
+          "lizard_warrior/animations/attack_try/south-east/00.webp",
+          "lizard_warrior/animations/attack_try/south-east/01.webp",
+          "lizard_warrior/animations/attack_try/south-east/02.webp",
+          "lizard_warrior/animations/attack_try/south-east/03.webp",
+          "lizard_warrior/animations/attack_try/south-east/04.webp"
+        ],
+        "east": [
+          "lizard_warrior/animations/attack_try/east/00.webp",
+          "lizard_warrior/animations/attack_try/east/01.webp",
+          "lizard_warrior/animations/attack_try/east/02.webp",
+          "lizard_warrior/animations/attack_try/east/03.webp",
+          "lizard_warrior/animations/attack_try/east/04.webp"
+        ],
+        "north-east": [
+          "lizard_warrior/animations/attack_try/north-east/00.webp",
+          "lizard_warrior/animations/attack_try/north-east/01.webp",
+          "lizard_warrior/animations/attack_try/north-east/02.webp",
+          "lizard_warrior/animations/attack_try/north-east/03.webp",
+          "lizard_warrior/animations/attack_try/north-east/04.webp"
+        ],
+        "north": [
+          "lizard_warrior/animations/attack_try/north/00.webp",
+          "lizard_warrior/animations/attack_try/north/01.webp",
+          "lizard_warrior/animations/attack_try/north/02.webp",
+          "lizard_warrior/animations/attack_try/north/03.webp",
+          "lizard_warrior/animations/attack_try/north/04.webp"
+        ],
+        "south-west": [
+          "lizard_warrior/animations/attack_try/south-west/00.webp",
+          "lizard_warrior/animations/attack_try/south-west/01.webp",
+          "lizard_warrior/animations/attack_try/south-west/02.webp",
+          "lizard_warrior/animations/attack_try/south-west/03.webp",
+          "lizard_warrior/animations/attack_try/south-west/04.webp"
+        ],
+        "west": [
+          "lizard_warrior/animations/attack_try/west/00.webp",
+          "lizard_warrior/animations/attack_try/west/01.webp",
+          "lizard_warrior/animations/attack_try/west/02.webp",
+          "lizard_warrior/animations/attack_try/west/03.webp",
+          "lizard_warrior/animations/attack_try/west/04.webp"
+        ],
+        "north-west": [
+          "lizard_warrior/animations/attack_try/north-west/00.webp",
+          "lizard_warrior/animations/attack_try/north-west/01.webp",
+          "lizard_warrior/animations/attack_try/north-west/02.webp",
+          "lizard_warrior/animations/attack_try/north-west/03.webp",
+          "lizard_warrior/animations/attack_try/north-west/04.webp"
+        ]
+      },
+      "strips": {
+        "south": "lizard_warrior/animations/attack_try__south.webp",
+        "south-east": "lizard_warrior/animations/attack_try__south-east.webp",
+        "east": "lizard_warrior/animations/attack_try__east.webp",
+        "north-east": "lizard_warrior/animations/attack_try__north-east.webp",
+        "north": "lizard_warrior/animations/attack_try__north.webp",
+        "south-west": "lizard_warrior/animations/attack_try__south-west.webp",
+        "west": "lizard_warrior/animations/attack_try__west.webp",
+        "north-west": "lizard_warrior/animations/attack_try__north-west.webp"
+      }
     }
   }
 }

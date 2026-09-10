@@ -908,6 +908,206 @@
         "west": "war_elephant/animations/attack__west.webp",
         "north-west": "war_elephant/animations/attack__north-west.webp"
       }
+    },
+    "attack_try": {
+      "directions": {
+        "south": {
+          "status": "fail",
+          "step_mean": 0.0519,
+          "step_max": 0.0662,
+          "drift": 2.55,
+          "loop": 0.1233,
+          "loop_ratio": 2.37,
+          "travel": 1.48,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": 0.0,
+          "peak": 0.1233,
+          "reach": 0.057,
+          "canvas": [
+            240,
+            240
+          ],
+          "reasons": [
+            "motion 0.052 outside the calm band 0.08–0.9 — eyeball it",
+            "weak strike: peak 0.123 — eyeball it",
+            "no strike, just a lean: nothing reaches past 0.06 of the body"
+          ],
+          "sub": "e33f298b-1e9d-49df-912d-9dc04503f007",
+          "group": "aad2ee48-df66-4c15-b270-f796cd17c40f",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "action": "Tusk Gore - Lowers its head and drives both tusks forward in a heavy gore",
+          "tries": 1,
+          "generated_at": "2026-09-10T19:42:18+00:00"
+        },
+        "south-east": {
+          "status": "fail",
+          "step_mean": 0.0805,
+          "step_max": 0.117,
+          "drift": 8.36,
+          "loop": 0.1813,
+          "loop_ratio": 2.25,
+          "travel": 1.41,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": 0.0,
+          "peak": 0.2204,
+          "reach": 0.095,
+          "canvas": [
+            240,
+            240
+          ],
+          "reasons": [
+            "no strike, just a lean: nothing reaches past 0.09 of the body"
+          ],
+          "sub": "68735114-63f1-4b86-9085-4fa49f1763dd",
+          "group": "31160bb4-33e4-4045-88a1-cdb914e0c573",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "action": "Tusk Gore - Lowers its head and drives both tusks forward in a heavy gore",
+          "tries": 1,
+          "generated_at": "2026-09-10T19:42:19+00:00"
+        },
+        "east": {
+          "status": "fail",
+          "step_mean": 0.0543,
+          "step_max": 0.0695,
+          "drift": 4.9,
+          "loop": 0.1575,
+          "loop_ratio": 2.9,
+          "travel": 0.71,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": 0.0,
+          "peak": 0.1575,
+          "reach": 0.089,
+          "canvas": [
+            240,
+            240
+          ],
+          "reasons": [
+            "motion 0.054 outside the calm band 0.08–0.9 — eyeball it",
+            "no strike, just a lean: nothing reaches past 0.09 of the body"
+          ],
+          "sub": "627930ba-c120-4c1b-b2b8-e290ef9ab46b",
+          "group": "c77e61f0-91c4-4bba-9cfe-ac55902c2fbc",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "action": "Tusk Gore - Lowers its head and drives both tusks forward in a heavy gore",
+          "tries": 1,
+          "generated_at": "2026-09-10T19:42:20+00:00"
+        },
+        "north-east": {
+          "status": "fail",
+          "step_mean": 0.0828,
+          "step_max": 0.0984,
+          "drift": 4.22,
+          "loop": 0.112,
+          "loop_ratio": 1.35,
+          "travel": 4.84,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": 0.005,
+          "peak": 0.1323,
+          "reach": 0.034,
+          "canvas": [
+            240,
+            240
+          ],
+          "reasons": [
+            "weak strike: peak 0.132 — eyeball it",
+            "no strike, just a lean: nothing reaches past 0.03 of the body"
+          ],
+          "sub": "4d5c7a34-88f9-44ed-9de9-b858f774ab3f",
+          "group": "e1e26cb8-a56f-42b5-8a5e-76303dffb0ae",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "action": "Tusk Gore - Lowers its head and drives both tusks forward in a heavy gore",
+          "tries": 1,
+          "generated_at": "2026-09-10T19:42:20+00:00"
+        },
+        "north": {
+          "status": "fail",
+          "step_mean": 0.0506,
+          "step_max": 0.0767,
+          "drift": 1.68,
+          "loop": 0.0931,
+          "loop_ratio": 1.84,
+          "travel": 1.39,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": 0.0,
+          "peak": 0.0931,
+          "reach": 0.092,
+          "canvas": [
+            240,
+            240
+          ],
+          "reasons": [
+            "motion 0.051 outside the calm band 0.08–0.9 — eyeball it",
+            "weak strike: peak 0.093 — eyeball it",
+            "no strike, just a lean: nothing reaches past 0.09 of the body"
+          ],
+          "sub": "78e7a08b-3bb5-4c89-b497-4ab6364890a2",
+          "group": "8ab90402-0666-45ae-a70a-f0edd25d5862",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "action": "Tusk Gore - Lowers its head and drives both tusks forward in a heavy gore",
+          "tries": 1,
+          "generated_at": "2026-09-10T19:42:21+00:00"
+        }
+      },
+      "action": "Tusk Gore - Lowers its head and drives both tusks forward in a heavy gore",
+      "frame_paths": {
+        "south": [
+          "war_elephant/animations/attack_try/south/00.webp",
+          "war_elephant/animations/attack_try/south/01.webp",
+          "war_elephant/animations/attack_try/south/02.webp",
+          "war_elephant/animations/attack_try/south/03.webp",
+          "war_elephant/animations/attack_try/south/04.webp"
+        ],
+        "south-east": [
+          "war_elephant/animations/attack_try/south-east/00.webp",
+          "war_elephant/animations/attack_try/south-east/01.webp",
+          "war_elephant/animations/attack_try/south-east/02.webp",
+          "war_elephant/animations/attack_try/south-east/03.webp",
+          "war_elephant/animations/attack_try/south-east/04.webp"
+        ],
+        "east": [
+          "war_elephant/animations/attack_try/east/00.webp",
+          "war_elephant/animations/attack_try/east/01.webp",
+          "war_elephant/animations/attack_try/east/02.webp",
+          "war_elephant/animations/attack_try/east/03.webp",
+          "war_elephant/animations/attack_try/east/04.webp"
+        ],
+        "north-east": [
+          "war_elephant/animations/attack_try/north-east/00.webp",
+          "war_elephant/animations/attack_try/north-east/01.webp",
+          "war_elephant/animations/attack_try/north-east/02.webp",
+          "war_elephant/animations/attack_try/north-east/03.webp",
+          "war_elephant/animations/attack_try/north-east/04.webp"
+        ],
+        "north": [
+          "war_elephant/animations/attack_try/north/00.webp",
+          "war_elephant/animations/attack_try/north/01.webp",
+          "war_elephant/animations/attack_try/north/02.webp",
+          "war_elephant/animations/attack_try/north/03.webp",
+          "war_elephant/animations/attack_try/north/04.webp"
+        ]
+      },
+      "strips": {
+        "south": "war_elephant/animations/attack_try__south.webp",
+        "south-east": "war_elephant/animations/attack_try__south-east.webp",
+        "east": "war_elephant/animations/attack_try__east.webp",
+        "north-east": "war_elephant/animations/attack_try__north-east.webp",
+        "north": "war_elephant/animations/attack_try__north.webp"
+      }
     }
   }
 }

@@ -904,6 +904,235 @@
         "west": "ember_king/animations/attack__west.webp",
         "north-west": "ember_king/animations/attack__north-west.webp"
       }
+    },
+    "attack_try": {
+      "directions": {
+        "south": {
+          "status": "fail",
+          "step_mean": 0.1171,
+          "step_max": 0.2045,
+          "drift": 4.1,
+          "loop": 0.2284,
+          "loop_ratio": 1.95,
+          "travel": 4.1,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": 0.054,
+          "peak": 0.2566,
+          "reach": 0.054,
+          "canvas": [
+            176,
+            176
+          ],
+          "reasons": [
+            "no strike, just a lean: nothing reaches past 0.05 of the body"
+          ],
+          "sub": "7cf17a1d-1579-48a5-af2f-714733fa7197",
+          "group": "5c495da3-43af-4005-a42d-af84b823cbcd",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "action": "Claw Slam - Raises one massive clawed hand high and slams it straight down",
+          "tries": 1,
+          "generated_at": "2026-09-10T19:44:16+00:00"
+        },
+        "south-east": {
+          "status": "fail",
+          "step_mean": 0.1374,
+          "step_max": 0.192,
+          "drift": 2.39,
+          "loop": 0.2273,
+          "loop_ratio": 1.65,
+          "travel": 1.87,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": 0.109,
+          "peak": 0.2653,
+          "reach": 0.177,
+          "canvas": [
+            176,
+            176
+          ],
+          "reasons": [
+            "no strike, just a lean: nothing reaches past 0.18 of the body"
+          ],
+          "sub": "6d4c2f15-3b0f-4b0e-aef8-9227f09e0d7d",
+          "group": "5e0cf761-7801-448b-82ff-17994140bb3f",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "action": "Claw Slam - Raises one massive clawed hand high and slams it straight down",
+          "tries": 1,
+          "generated_at": "2026-09-10T19:44:17+00:00"
+        },
+        "east": {
+          "status": "pass",
+          "step_mean": 0.1797,
+          "step_max": 0.3341,
+          "drift": 10.46,
+          "loop": 0.4427,
+          "loop_ratio": 2.46,
+          "travel": 4.96,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": -0.005,
+          "peak": 0.4427,
+          "reach": 0.339,
+          "canvas": [
+            176,
+            176
+          ],
+          "reasons": [],
+          "sub": "0426690a-3b09-445b-84fe-d0c317883cfe",
+          "group": "c1084731-17f5-48b4-8000-0b45ed90f89f",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "action": "Claw Slam - Raises one massive clawed hand high and slams it straight down",
+          "tries": 1,
+          "generated_at": "2026-09-10T19:44:17+00:00"
+        },
+        "north-east": {
+          "status": "fail",
+          "step_mean": 0.1133,
+          "step_max": 0.1798,
+          "drift": 2.6,
+          "loop": 0.2929,
+          "loop_ratio": 2.59,
+          "travel": 2.14,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": -0.001,
+          "peak": 0.2929,
+          "reach": 0.1,
+          "canvas": [
+            176,
+            176
+          ],
+          "reasons": [
+            "no strike, just a lean: nothing reaches past 0.10 of the body"
+          ],
+          "sub": "87f5ea57-3b40-4e58-9c38-4ce98ac6813f",
+          "group": "b4eabe18-24f3-4d80-b042-aace60159906",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "action": "Claw Slam - Raises one massive clawed hand high and slams it straight down",
+          "tries": 1,
+          "generated_at": "2026-09-10T19:44:18+00:00"
+        },
+        "north": {
+          "status": "fail",
+          "step_mean": 0.1258,
+          "step_max": 0.1462,
+          "drift": 2.89,
+          "loop": 0.2091,
+          "loop_ratio": 1.66,
+          "travel": 0.6,
+          "pin": 1.0,
+          "pad": 6,
+          "flash": 0.056,
+          "peak": 0.2091,
+          "reach": 0.056,
+          "canvas": [
+            188,
+            188
+          ],
+          "reasons": [
+            "no strike, just a lean: nothing reaches past 0.06 of the body",
+            "canvas grown by 6 px a side to hold the motion"
+          ],
+          "sub": "fceb9189-7422-4a61-b67f-0a1cdccce48a",
+          "group": "7a882036-4963-48ba-a03d-6f6e2723a540",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "action": "Claw Slam - Raises one massive clawed hand high and slams it straight down",
+          "tries": 1,
+          "generated_at": "2026-09-10T19:44:18+00:00"
+        },
+        "west": {
+          "status": "pass",
+          "step_mean": 0.1797,
+          "step_max": 0.3341,
+          "drift": 10.46,
+          "loop": 0.4427,
+          "loop_ratio": 2.46,
+          "travel": 4.96,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": -0.005,
+          "peak": 0.4427,
+          "reach": 0.339,
+          "canvas": [
+            176,
+            176
+          ],
+          "reasons": [],
+          "sub": "0426690a-3b09-445b-84fe-d0c317883cfe",
+          "group": "c1084731-17f5-48b4-8000-0b45ed90f89f",
+          "takes": 1,
+          "version": 1,
+          "mirrored": true,
+          "action": "Claw Slam - Raises one massive clawed hand high and slams it straight down",
+          "tries": 1,
+          "generated_at": "2026-09-10T19:44:17+00:00",
+          "source": "east"
+        }
+      },
+      "action": "Claw Slam - Raises one massive clawed hand high and slams it straight down",
+      "frame_paths": {
+        "south": [
+          "ember_king/animations/attack_try/south/00.webp",
+          "ember_king/animations/attack_try/south/01.webp",
+          "ember_king/animations/attack_try/south/02.webp",
+          "ember_king/animations/attack_try/south/03.webp",
+          "ember_king/animations/attack_try/south/04.webp"
+        ],
+        "south-east": [
+          "ember_king/animations/attack_try/south-east/00.webp",
+          "ember_king/animations/attack_try/south-east/01.webp",
+          "ember_king/animations/attack_try/south-east/02.webp",
+          "ember_king/animations/attack_try/south-east/03.webp",
+          "ember_king/animations/attack_try/south-east/04.webp"
+        ],
+        "east": [
+          "ember_king/animations/attack_try/east/00.webp",
+          "ember_king/animations/attack_try/east/01.webp",
+          "ember_king/animations/attack_try/east/02.webp",
+          "ember_king/animations/attack_try/east/03.webp",
+          "ember_king/animations/attack_try/east/04.webp"
+        ],
+        "north-east": [
+          "ember_king/animations/attack_try/north-east/00.webp",
+          "ember_king/animations/attack_try/north-east/01.webp",
+          "ember_king/animations/attack_try/north-east/02.webp",
+          "ember_king/animations/attack_try/north-east/03.webp",
+          "ember_king/animations/attack_try/north-east/04.webp"
+        ],
+        "north": [
+          "ember_king/animations/attack_try/north/00.webp",
+          "ember_king/animations/attack_try/north/01.webp",
+          "ember_king/animations/attack_try/north/02.webp",
+          "ember_king/animations/attack_try/north/03.webp",
+          "ember_king/animations/attack_try/north/04.webp"
+        ],
+        "west": [
+          "ember_king/animations/attack_try/west/00.webp",
+          "ember_king/animations/attack_try/west/01.webp",
+          "ember_king/animations/attack_try/west/02.webp",
+          "ember_king/animations/attack_try/west/03.webp",
+          "ember_king/animations/attack_try/west/04.webp"
+        ]
+      },
+      "strips": {
+        "south": "ember_king/animations/attack_try__south.webp",
+        "south-east": "ember_king/animations/attack_try__south-east.webp",
+        "east": "ember_king/animations/attack_try__east.webp",
+        "north-east": "ember_king/animations/attack_try__north-east.webp",
+        "north": "ember_king/animations/attack_try__north.webp",
+        "west": "ember_king/animations/attack_try__west.webp"
+      }
     }
   }
 }

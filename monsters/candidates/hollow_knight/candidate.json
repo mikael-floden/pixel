@@ -900,6 +900,276 @@
         "west": "hollow_knight/animations/attack__west.webp",
         "north-west": "hollow_knight/animations/attack__north-west.webp"
       }
+    },
+    "attack_try": {
+      "directions": {
+        "south": {
+          "status": "fail",
+          "step_mean": 0.1976,
+          "step_max": 0.2719,
+          "drift": 4.82,
+          "loop": 0.3105,
+          "loop_ratio": 1.57,
+          "travel": 3.25,
+          "pin": 1.0,
+          "pad": 6,
+          "flash": 0.009,
+          "peak": 0.3105,
+          "reach": 0.124,
+          "canvas": [
+            124,
+            124
+          ],
+          "reasons": [
+            "no strike, just a lean: nothing reaches past 0.12 of the body",
+            "canvas grown by 6 px a side to hold the motion"
+          ],
+          "sub": "80cf1bf5-21bf-4a1c-8d40-56b2904362b8",
+          "group": "29cf366f-dde2-46c5-b42e-af98e42c95fb",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "action": "Overhead Chop - Raises the greatsword high overhead and chops it down hard",
+          "tries": 1,
+          "generated_at": "2026-09-10T19:46:43+00:00"
+        },
+        "south-east": {
+          "status": "fail",
+          "step_mean": 0.1309,
+          "step_max": 0.2164,
+          "drift": 3.68,
+          "loop": 0.3078,
+          "loop_ratio": 2.35,
+          "travel": 3.99,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": 0.006,
+          "peak": 0.3078,
+          "reach": 0.205,
+          "canvas": [
+            112,
+            112
+          ],
+          "reasons": [
+            "no strike, just a lean: nothing reaches past 0.20 of the body"
+          ],
+          "sub": "e8ea2e10-5ece-4592-91dc-648cfee0e678",
+          "group": "49482978-ce13-4c41-9c75-7cec8e817c2b",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "action": "Overhead Chop - Raises the greatsword high overhead and chops it down hard",
+          "tries": 1,
+          "generated_at": "2026-09-10T19:46:43+00:00"
+        },
+        "east": {
+          "status": "pass",
+          "step_mean": 0.1566,
+          "step_max": 0.2579,
+          "drift": 1.33,
+          "loop": 0.2327,
+          "loop_ratio": 1.49,
+          "travel": 2.06,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": 0.013,
+          "peak": 0.2403,
+          "reach": 0.354,
+          "canvas": [
+            112,
+            112
+          ],
+          "reasons": [],
+          "sub": "4c073f66-3469-4e8d-97c0-d7e022dabb96",
+          "group": "73eb143b-c725-48d6-a71b-94043c42c282",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "action": "Overhead Chop - Raises the greatsword high overhead and chops it down hard",
+          "tries": 1,
+          "generated_at": "2026-09-10T19:46:44+00:00"
+        },
+        "north-east": {
+          "status": "warn",
+          "step_mean": 0.2135,
+          "step_max": 0.3309,
+          "drift": 6.09,
+          "loop": 0.4065,
+          "loop_ratio": 1.9,
+          "travel": 2.71,
+          "pin": 1.0,
+          "pad": 1,
+          "flash": -0.003,
+          "peak": 0.4065,
+          "reach": 0.284,
+          "canvas": [
+            114,
+            114
+          ],
+          "reasons": [
+            "shallow strike: reach 0.28 — eyeball it",
+            "canvas grown by 1 px a side to hold the motion"
+          ],
+          "sub": "2aea503f-55fc-4d94-b711-ba16f0e45d79",
+          "group": "cf8b2dcf-4757-4199-95b1-5df994260e67",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "action": "Overhead Chop - Raises the greatsword high overhead and chops it down hard",
+          "tries": 1,
+          "generated_at": "2026-09-10T19:46:44+00:00"
+        },
+        "north": {
+          "status": "fail",
+          "step_mean": 0.1794,
+          "step_max": 0.2493,
+          "drift": 4.47,
+          "loop": 0.2679,
+          "loop_ratio": 1.49,
+          "travel": 4.47,
+          "pin": 1.0,
+          "pad": 3,
+          "flash": 0.008,
+          "peak": 0.2774,
+          "reach": 0.126,
+          "canvas": [
+            118,
+            118
+          ],
+          "reasons": [
+            "no strike, just a lean: nothing reaches past 0.13 of the body",
+            "canvas grown by 3 px a side to hold the motion"
+          ],
+          "sub": "52c1c0f5-eda9-40b3-bb91-2c7dcf9b8ba4",
+          "group": "8d4e74e4-f644-4479-b184-ef7b4db6cf84",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "action": "Overhead Chop - Raises the greatsword high overhead and chops it down hard",
+          "tries": 1,
+          "generated_at": "2026-09-10T19:46:46+00:00"
+        },
+        "west": {
+          "status": "pass",
+          "step_mean": 0.1566,
+          "step_max": 0.2579,
+          "drift": 1.33,
+          "loop": 0.2327,
+          "loop_ratio": 1.49,
+          "travel": 2.06,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": 0.013,
+          "peak": 0.2403,
+          "reach": 0.354,
+          "canvas": [
+            112,
+            112
+          ],
+          "reasons": [],
+          "sub": "4c073f66-3469-4e8d-97c0-d7e022dabb96",
+          "group": "73eb143b-c725-48d6-a71b-94043c42c282",
+          "takes": 1,
+          "version": 1,
+          "mirrored": true,
+          "action": "Overhead Chop - Raises the greatsword high overhead and chops it down hard",
+          "tries": 1,
+          "generated_at": "2026-09-10T19:46:44+00:00",
+          "source": "east"
+        },
+        "north-west": {
+          "status": "warn",
+          "step_mean": 0.2135,
+          "step_max": 0.3309,
+          "drift": 6.09,
+          "loop": 0.4065,
+          "loop_ratio": 1.9,
+          "travel": 2.71,
+          "pin": 1.0,
+          "pad": 1,
+          "flash": -0.003,
+          "peak": 0.4065,
+          "reach": 0.284,
+          "canvas": [
+            114,
+            114
+          ],
+          "reasons": [
+            "shallow strike: reach 0.28 — eyeball it",
+            "canvas grown by 1 px a side to hold the motion"
+          ],
+          "sub": "2aea503f-55fc-4d94-b711-ba16f0e45d79",
+          "group": "cf8b2dcf-4757-4199-95b1-5df994260e67",
+          "takes": 1,
+          "version": 1,
+          "mirrored": true,
+          "action": "Overhead Chop - Raises the greatsword high overhead and chops it down hard",
+          "tries": 1,
+          "generated_at": "2026-09-10T19:46:44+00:00",
+          "source": "north-east"
+        }
+      },
+      "action": "Overhead Chop - Raises the greatsword high overhead and chops it down hard",
+      "frame_paths": {
+        "south": [
+          "hollow_knight/animations/attack_try/south/00.webp",
+          "hollow_knight/animations/attack_try/south/01.webp",
+          "hollow_knight/animations/attack_try/south/02.webp",
+          "hollow_knight/animations/attack_try/south/03.webp",
+          "hollow_knight/animations/attack_try/south/04.webp"
+        ],
+        "south-east": [
+          "hollow_knight/animations/attack_try/south-east/00.webp",
+          "hollow_knight/animations/attack_try/south-east/01.webp",
+          "hollow_knight/animations/attack_try/south-east/02.webp",
+          "hollow_knight/animations/attack_try/south-east/03.webp",
+          "hollow_knight/animations/attack_try/south-east/04.webp"
+        ],
+        "east": [
+          "hollow_knight/animations/attack_try/east/00.webp",
+          "hollow_knight/animations/attack_try/east/01.webp",
+          "hollow_knight/animations/attack_try/east/02.webp",
+          "hollow_knight/animations/attack_try/east/03.webp",
+          "hollow_knight/animations/attack_try/east/04.webp"
+        ],
+        "north-east": [
+          "hollow_knight/animations/attack_try/north-east/00.webp",
+          "hollow_knight/animations/attack_try/north-east/01.webp",
+          "hollow_knight/animations/attack_try/north-east/02.webp",
+          "hollow_knight/animations/attack_try/north-east/03.webp",
+          "hollow_knight/animations/attack_try/north-east/04.webp"
+        ],
+        "north": [
+          "hollow_knight/animations/attack_try/north/00.webp",
+          "hollow_knight/animations/attack_try/north/01.webp",
+          "hollow_knight/animations/attack_try/north/02.webp",
+          "hollow_knight/animations/attack_try/north/03.webp",
+          "hollow_knight/animations/attack_try/north/04.webp"
+        ],
+        "west": [
+          "hollow_knight/animations/attack_try/west/00.webp",
+          "hollow_knight/animations/attack_try/west/01.webp",
+          "hollow_knight/animations/attack_try/west/02.webp",
+          "hollow_knight/animations/attack_try/west/03.webp",
+          "hollow_knight/animations/attack_try/west/04.webp"
+        ],
+        "north-west": [
+          "hollow_knight/animations/attack_try/north-west/00.webp",
+          "hollow_knight/animations/attack_try/north-west/01.webp",
+          "hollow_knight/animations/attack_try/north-west/02.webp",
+          "hollow_knight/animations/attack_try/north-west/03.webp",
+          "hollow_knight/animations/attack_try/north-west/04.webp"
+        ]
+      },
+      "strips": {
+        "south": "hollow_knight/animations/attack_try__south.webp",
+        "south-east": "hollow_knight/animations/attack_try__south-east.webp",
+        "east": "hollow_knight/animations/attack_try__east.webp",
+        "north-east": "hollow_knight/animations/attack_try__north-east.webp",
+        "north": "hollow_knight/animations/attack_try__north.webp",
+        "west": "hollow_knight/animations/attack_try__west.webp",
+        "north-west": "hollow_knight/animations/attack_try__north-west.webp"
+      }
     }
   }
 }
