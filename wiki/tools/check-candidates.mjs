@@ -116,7 +116,7 @@ const det = await p.evaluate(() => {
       return { w: Math.round(ir?.width ?? 0), over: !!(ir && cr) && !(cr.top >= ir.bottom - 0.5 || cr.bottom <= ir.top + 0.5), capH: Math.round(cr?.height ?? 0),
         box: Math.round(shot?.getBoundingClientRect().width ?? 0),
         room: col ? Math.round(col.clientWidth - parseFloat(ccs.paddingLeft) - parseFloat(ccs.paddingRight)) : 0,
-        z: Number(document.querySelector(".cand-zoom button.on")?.title.match(/same ([\d.]+)×/)?.[1] ?? 0) };
+        z: Number(document.querySelector(".cand-zoom button.on")?.title.match(/at ([\d.]+)×/)?.[1] ?? 0) };
     })(),
     zooms: [...document.querySelectorAll(".cand-zoom button")].map((b) => b.textContent.trim() + (b.classList.contains("on") ? "*" : "")),
     size: (() => { const t = document.querySelector("p.muted")?.textContent.match(/(\d+)px/); return t ? Number(t[1]) : 0; })(),
@@ -129,6 +129,8 @@ ok(det.n === 8 && det.loaded === 8, `all 8 facings are on the page and loaded ($
 ok(det.cols === "2" ? det.rows === 4 : det.rows === 8, `mirror pairs side by side when two fit, stacked when they don't (${det.cols} column(s), ${det.rows} rows, ${det.w}px each)`);
 ok(det.dirs.join(",") === "south,north,east,west,south-east,south-west,north-east,north-west", `in mirror-pair order (${det.dirs.join(" ")})`);
 ok(!det.wide, "the facings never poke past a 393px phone");
+ok(det.zooms.map((x) => x.replace("*", "")).join(" ") === "same 1× 2× 4×",
+  `the zoom chips are the creature page's own — same 1× 2× 4×, "same" selected (${det.zooms.join(" ")})`);
 ok(det.shot.box >= 200 && det.shot.box <= det.shot.room + 1,
   `the facing box is big and never wider than the column (${det.shot.box}px in ${det.shot.room}px, zooms ${det.zooms.join(" ")})`);
 ok(Math.abs(det.shot.w / det.size - det.shot.z) < 0.001,
@@ -168,7 +170,7 @@ const small = [...CANDS].sort((a, b) => (a.size?.[0] ?? 0) - (b.size?.[0] ?? 0))
 const big = [...CANDS].sort((a, b) => (b.size?.[0] ?? 0) - (a.size?.[0] ?? 0))[0];
 const seen = {};
 for (const c of [small, big]) {
-  await p.evaluate((id) => { localStorage.setItem("wiki-cand-zoom", "true"); location.hash = `#/monsters/candidates/${id}`; }, c.id);
+  await p.evaluate((id) => { localStorage.setItem("wiki-cand-zoom", "same"); location.hash = `#/monsters/candidates/${id}`; }, c.id);
   await p.waitForTimeout(1600);
   seen[c.id] = await p.evaluate(() => {
     const f = document.querySelector(".cand-dir"), img = f.querySelector("img"), shot = f.querySelector(".cand-shot");

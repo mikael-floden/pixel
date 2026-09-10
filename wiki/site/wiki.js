@@ -4852,9 +4852,17 @@ function viewCandidate(id) {
   // The game's own 2× if it fits, else the largest step down that does. Whole
   // and half steps only: pixel art is never scaled by an arbitrary fraction.
   const trueZ = CAND_ZOOMS.find((k) => maxCanvas * k <= room) ?? room / maxCanvas;
-  const ZOOMS = { true: trueZ, x2: trueZ * 2, x4: trueZ * 4 };
-  let mode = "true";
-  try { mode = ZOOMS[localStorage.getItem(CAND_ZOOM_KEY)] ? localStorage.getItem(CAND_ZOOM_KEY) : "true"; } catch { /* private mode */ }
+  // THE SAME FOUR CHIPS THE CREATURE PAGE HAS (maintainer 2026-09-10: "See how
+  // monsters is displayed on their details page. I think we have 1x 2x or 4x"),
+  // with "same" meaning exactly what it means there — every design at one
+  // scale, so sizes are comparable between pages — and 1× / 2× / 4× the
+  // design's own pixels.
+  // An ARRAY, not an object: integer-like keys sort themselves to the front of
+  // an object, which put "same" last in the row.
+  const ZOOM_STEPS = [["same", trueZ], ["1", 1], ["2", 2], ["4", 4]];
+  const ZOOMS = Object.fromEntries(ZOOM_STEPS);
+  let mode = "same";
+  try { mode = ZOOMS[localStorage.getItem(CAND_ZOOM_KEY)] ? localStorage.getItem(CAND_ZOOM_KEY) : "same"; } catch { /* private mode */ }
   const z = ZOOMS[mode];
   // The box never outgrows the column: magnifying grows the CREATURE inside it,
   // and a magnified big design scrolls INSIDE its box — the same rule the
@@ -4878,18 +4886,13 @@ function viewCandidate(id) {
       // small design completely, and it is the art he is judging.
       h("figcaption", {}, h("b", {}, DIR_LABEL[d] ?? d), " ", d.replace("-", " "))));
   }
-  // The default is the TRUE size and says so; the other two are magnification,
-  // labelled as multiples of it so no number on this row can lie about scale.
-  const ZOOM_LABEL = { true: "true size", x2: "×2", x4: "×4" };
-  const ZOOM_TITLE = {
-    true: `Every design at the same ${trueZ}× — a small one really is small`,
-    x2: "Twice true size, to inspect — the strip scrolls",
-    x4: "Four times true size, to inspect — the strip scrolls",
-  };
-  const zoomSeg = h("div", { class: "seg cand-zoom", role: "radiogroup" },
-    ...Object.keys(ZOOMS).map((k) => h("button", {
+  const ZOOM_LABEL = { same: "same", "1": "1×", "2": "2×", "4": "4×" };
+  const zoomSeg = h("div", { class: "seg cand-zoom", role: "radiogroup",
+    title: `“same” draws every design at one scale (${trueZ}× here), so sizes are comparable between pages` },
+    ...ZOOM_STEPS.map(([k]) => h("button", {
       class: k === mode ? "on" : "", type: "button", "aria-checked": k === mode ? "true" : "false", role: "radio",
-      title: ZOOM_TITLE[k], "data-zoom": k,
+      title: k === "same" ? `Every design at ${trueZ}× — a small one really is small` : `${k}× the design's own pixels`,
+      "data-zoom": k,
       onclick: () => { try { localStorage.setItem(CAND_ZOOM_KEY, k); } catch { /* private mode */ } route(); } }, ZOOM_LABEL[k])));
   return h("div", {},
     crumbRow("#/monsters/candidates", "← Candidates", "monsters/candidates", walk, id),

@@ -131,10 +131,12 @@ verdict comes BEFORE the five states are spent on it.
   240px warden fills edge to edge. Both per-design zooms are rejected and both
   were shipped and rejected by him: a fixed 1×/2×/3× ladder made the grub a
   64px stamp, and fitting each design to the column made it an 11× monster
-  bigger on screen than the warden. The chips are `true size` (default),
-  `×2`, `×4` — magnification, labelled as multiples so no number lies about
-  scale — and the mode is what is remembered (`wiki-cand-zoom`), never a
-  number. Magnifying grows the CREATURE, not the box: the box stops at the
+  bigger on screen than the warden. The chips are the CREATURE PAGE'S OWN — `same`
+  (default) `1×` `2×` `4×`, where "same" means there what it means here, every
+  design at one scale so sizes compare between pages (maintainer 2026-09-10:
+  "See how monsters is displayed on their details page. I think we have 1x 2x
+  or 4x"). The chip is remembered (`wiki-cand-zoom`), and the steps are an
+  ARRAY: integer-like object keys sort to the front and put "same" last. Magnifying grows the CREATURE, not the box: the box stops at the
   column and a magnified big design scrolls inside it, the preview-stage rule.
 - **The label sits UNDER its facing.** Floating it on the art covered a small
   design completely, and the art is the thing being judged.
@@ -162,7 +164,7 @@ verdict comes BEFORE the five states are spent on it.
 - Gate: `wiki/tools/check-candidates.mjs` (door, chips, one shared zoom with
   true size ratios and bigger spans for bigger designs, 8 loaded facings, one
   box the smallest and biggest design share with their art at one zoom inside
-  it, the label under the art,
+  it, the same/1×/2×/4× chips in that order, the label under the art,
   approve stamps `version` and leaves the queue, an older-version verdict
   reads as judge-again). Runs in `wiki-guard.yml`.
 
