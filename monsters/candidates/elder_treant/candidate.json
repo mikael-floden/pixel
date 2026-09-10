@@ -909,36 +909,36 @@
       "directions": {
         "south": {
           "status": "fail",
-          "step_mean": 0.1357,
-          "step_max": 0.217,
-          "drift": 3.14,
-          "loop": 0.0735,
-          "loop_ratio": 0.54,
-          "travel": 3.14,
+          "step_mean": 0.2734,
+          "step_max": 0.4167,
+          "drift": 4.7,
+          "loop": 0.5286,
+          "loop_ratio": 1.93,
+          "travel": 0.25,
           "pin": 1.0,
           "pad": 0,
-          "flash": 0.039,
-          "peak": 0.3142,
-          "reach": 0.059,
+          "flash": 0.104,
+          "peak": 0.5286,
+          "reach": 0.124,
           "canvas": [
             224,
             224
           ],
           "reasons": [
-            "no strike, just a lean: nothing reaches past 0.06 of the body"
+            "no strike, just a lean: nothing reaches past 0.12 of the body"
           ],
-          "sub": "be3cd675-922f-44c6-b588-1457d32d4464",
-          "group": "284485d9-a2c2-4f71-a249-a0e308b31727",
+          "sub": "d994f25e-5561-49df-b2f3-2746c4960574",
+          "group": "2919ad52-a3e9-4af4-9c53-84ed5ec24b48",
           "takes": 1,
-          "version": 4,
+          "version": 6,
           "mirrored": false,
-          "generated_at": "2026-09-10T21:19:17+00:00",
-          "action": "Claw Swipe - Raises one front paw and performs one quick swipe forward, white swoosh lines following the claws",
-          "tries": 4,
-          "rolls": 4,
+          "action": "Root Sweep - The treant swings both branch arms down in a huge arc, leaves and splinters bursting off, a huge aggressive attack with the whole body behind it, wide exaggerated motion",
           "intensity": 1,
-          "frames": 9,
-          "rung": 3
+          "rolls": 5,
+          "frames": 5,
+          "rung": 4,
+          "tries": 5,
+          "generated_at": "2026-09-10T22:11:23+00:00"
         },
         "south-east": {
           "status": "pass",
@@ -1164,11 +1164,7 @@
           "elder_treant/animations/attack_try/south/01.webp",
           "elder_treant/animations/attack_try/south/02.webp",
           "elder_treant/animations/attack_try/south/03.webp",
-          "elder_treant/animations/attack_try/south/04.webp",
-          "elder_treant/animations/attack_try/south/05.webp",
-          "elder_treant/animations/attack_try/south/06.webp",
-          "elder_treant/animations/attack_try/south/07.webp",
-          "elder_treant/animations/attack_try/south/08.webp"
+          "elder_treant/animations/attack_try/south/04.webp"
         ],
         "south-east": [
           "elder_treant/animations/attack_try/south-east/00.webp",

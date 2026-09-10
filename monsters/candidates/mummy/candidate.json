@@ -902,37 +902,38 @@
     "attack_try": {
       "directions": {
         "south": {
-          "status": "fail",
-          "step_mean": 0.1591,
-          "step_max": 0.2475,
-          "drift": 1.99,
-          "loop": 0.2122,
-          "loop_ratio": 1.33,
-          "travel": 0.34,
+          "status": "warn",
+          "step_mean": 0.2766,
+          "step_max": 0.3917,
+          "drift": 2.14,
+          "loop": 0.5856,
+          "loop_ratio": 2.12,
+          "travel": 0.95,
           "pin": 1.0,
-          "pad": 0,
-          "flash": 0.001,
-          "peak": 0.4155,
-          "reach": 0.071,
+          "pad": 3,
+          "flash": 0.004,
+          "peak": 0.5856,
+          "reach": 0.179,
           "canvas": [
-            104,
-            104
+            110,
+            110
           ],
           "reasons": [
-            "no strike, just a lean: nothing reaches past 0.07 of the body"
+            "shallow strike: reach 0.18 — eyeball it",
+            "canvas grown by 3 px a side to hold the motion"
           ],
-          "sub": "6f82ae32-01a7-45b5-8a89-1ad7c2de6072",
-          "group": "3ccff401-a392-48c6-b7f8-7225fbb3bd7b",
+          "sub": "d611eac8-fc3f-48cf-91c4-8ba8f807f779",
+          "group": "5436eb07-5de0-46b3-a81b-552c08154d46",
           "takes": 1,
-          "version": 4,
+          "version": 6,
           "mirrored": false,
-          "generated_at": "2026-09-10T21:12:58+00:00",
-          "action": "Lunge Attack - Throws its whole body forward in one fast lunge, white swoosh lines trailing behind it",
-          "tries": 4,
-          "rolls": 4,
+          "action": "Bandage Storm - The mummy throws both arms wide and lunges, bandages whipping out around it, a huge aggressive attack with the whole body behind it, wide exaggerated motion",
           "intensity": 1,
-          "frames": 9,
-          "rung": 3
+          "rolls": 5,
+          "frames": 5,
+          "rung": 4,
+          "tries": 5,
+          "generated_at": "2026-09-10T22:12:03+00:00"
         },
         "east": {
           "status": "pass",
@@ -995,37 +996,38 @@
           "rung": 0
         },
         "north": {
-          "status": "fail",
-          "step_mean": 0.1257,
-          "step_max": 0.2969,
-          "drift": 3.73,
-          "loop": 0.514,
-          "loop_ratio": 4.09,
-          "travel": 2.06,
+          "status": "warn",
+          "step_mean": 0.3678,
+          "step_max": 0.5157,
+          "drift": 6.18,
+          "loop": 0.7313,
+          "loop_ratio": 1.99,
+          "travel": 2.55,
           "pin": 1.0,
-          "pad": 0,
-          "flash": 0.001,
-          "peak": 0.514,
-          "reach": 0.1,
+          "pad": 4,
+          "flash": 0.0,
+          "peak": 0.7413,
+          "reach": 0.225,
           "canvas": [
-            104,
-            104
+            112,
+            112
           ],
           "reasons": [
-            "no strike, just a lean: nothing reaches past 0.10 of the body"
+            "shallow strike: reach 0.23 — eyeball it",
+            "canvas grown by 4 px a side to hold the motion"
           ],
-          "sub": "4c9fa213-065b-492a-9fcc-5f7ac47cb023",
-          "group": "c8fc3aaf-ba1a-4aff-9134-073838680c1c",
+          "sub": "5d34df0f-06a2-4289-a6e0-e19dca4610fc",
+          "group": "f8e0a1e8-f7a3-4b56-ab61-a223e99edbb7",
           "takes": 1,
-          "version": 4,
+          "version": 6,
           "mirrored": false,
-          "generated_at": "2026-09-10T21:12:59+00:00",
-          "action": "Lunge Attack - Throws its whole body forward in one fast lunge, white swoosh lines trailing behind it",
-          "tries": 4,
-          "rolls": 4,
+          "action": "Bandage Storm - The mummy throws both arms wide and lunges, bandages whipping out around it, a huge aggressive attack with the whole body behind it, wide exaggerated motion",
           "intensity": 1,
-          "frames": 9,
-          "rung": 3
+          "rolls": 5,
+          "frames": 5,
+          "rung": 4,
+          "tries": 5,
+          "generated_at": "2026-09-10T22:12:03+00:00"
         },
         "west": {
           "status": "pass",
@@ -1164,11 +1166,7 @@
           "mummy/animations/attack_try/south/01.webp",
           "mummy/animations/attack_try/south/02.webp",
           "mummy/animations/attack_try/south/03.webp",
-          "mummy/animations/attack_try/south/04.webp",
-          "mummy/animations/attack_try/south/05.webp",
-          "mummy/animations/attack_try/south/06.webp",
-          "mummy/animations/attack_try/south/07.webp",
-          "mummy/animations/attack_try/south/08.webp"
+          "mummy/animations/attack_try/south/04.webp"
         ],
         "east": [
           "mummy/animations/attack_try/east/00.webp",
@@ -1189,11 +1187,7 @@
           "mummy/animations/attack_try/north/01.webp",
           "mummy/animations/attack_try/north/02.webp",
           "mummy/animations/attack_try/north/03.webp",
-          "mummy/animations/attack_try/north/04.webp",
-          "mummy/animations/attack_try/north/05.webp",
-          "mummy/animations/attack_try/north/06.webp",
-          "mummy/animations/attack_try/north/07.webp",
-          "mummy/animations/attack_try/north/08.webp"
+          "mummy/animations/attack_try/north/04.webp"
         ],
         "west": [
           "mummy/animations/attack_try/west/00.webp",

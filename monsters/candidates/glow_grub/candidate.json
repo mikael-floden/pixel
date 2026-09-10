@@ -922,16 +922,16 @@
         },
         "south-east": {
           "status": "warn",
-          "step_mean": 0.1423,
-          "step_max": 0.1961,
-          "drift": 2.16,
-          "loop": 0.0868,
-          "loop_ratio": 0.61,
-          "travel": 0.34,
+          "step_mean": 0.0831,
+          "step_max": 0.1257,
+          "drift": 1.68,
+          "loop": 0.1677,
+          "loop_ratio": 2.02,
+          "travel": 0.28,
           "pin": 1.0,
           "pad": 0,
-          "flash": 0.017,
-          "peak": 0.2444,
+          "flash": 0.045,
+          "peak": 0.2006,
           "reach": 0.176,
           "canvas": [
             32,
@@ -940,18 +940,18 @@
           "reasons": [
             "shallow strike: reach 0.18 — eyeball it"
           ],
-          "sub": "edaf3708-f39d-4331-86cc-f43e7f63f703",
-          "group": "bd0ed63b-d92d-48ae-9976-50a786c0225c",
+          "sub": "2d20c992-c483-474d-9762-1ddc08021a8e",
+          "group": "4159d394-56db-46ee-897e-6ac2a2845ced",
           "takes": 1,
-          "version": 5,
+          "version": 6,
           "mirrored": false,
           "action": "Bite - Rears its front half up and bites forward with its mandibles",
           "intensity": 1,
           "rolls": 1,
-          "frames": 5,
+          "frames": 9,
           "rung": 0,
           "tries": 1,
-          "generated_at": "2026-09-10T21:47:17+00:00"
+          "generated_at": "2026-09-10T22:12:28+00:00"
         },
         "east": {
           "status": "pass",
@@ -1052,16 +1052,16 @@
         },
         "south-west": {
           "status": "warn",
-          "step_mean": 0.1423,
-          "step_max": 0.1961,
-          "drift": 2.16,
-          "loop": 0.0868,
-          "loop_ratio": 0.61,
-          "travel": 0.34,
+          "step_mean": 0.0831,
+          "step_max": 0.1257,
+          "drift": 1.68,
+          "loop": 0.1677,
+          "loop_ratio": 2.02,
+          "travel": 0.28,
           "pin": 1.0,
           "pad": 0,
-          "flash": 0.017,
-          "peak": 0.2444,
+          "flash": 0.045,
+          "peak": 0.2006,
           "reach": 0.176,
           "canvas": [
             32,
@@ -1070,18 +1070,18 @@
           "reasons": [
             "shallow strike: reach 0.18 — eyeball it"
           ],
-          "sub": "edaf3708-f39d-4331-86cc-f43e7f63f703",
-          "group": "bd0ed63b-d92d-48ae-9976-50a786c0225c",
+          "sub": "2d20c992-c483-474d-9762-1ddc08021a8e",
+          "group": "4159d394-56db-46ee-897e-6ac2a2845ced",
           "takes": 1,
-          "version": 5,
+          "version": 6,
           "mirrored": true,
           "action": "Bite - Rears its front half up and bites forward with its mandibles",
           "intensity": 1,
           "rolls": 1,
-          "frames": 5,
+          "frames": 9,
           "rung": 0,
           "tries": 1,
-          "generated_at": "2026-09-10T21:47:17+00:00",
+          "generated_at": "2026-09-10T22:12:28+00:00",
           "source": "south-east"
         },
         "west": {
@@ -1169,7 +1169,11 @@
           "glow_grub/animations/attack_try/south-east/01.webp",
           "glow_grub/animations/attack_try/south-east/02.webp",
           "glow_grub/animations/attack_try/south-east/03.webp",
-          "glow_grub/animations/attack_try/south-east/04.webp"
+          "glow_grub/animations/attack_try/south-east/04.webp",
+          "glow_grub/animations/attack_try/south-east/05.webp",
+          "glow_grub/animations/attack_try/south-east/06.webp",
+          "glow_grub/animations/attack_try/south-east/07.webp",
+          "glow_grub/animations/attack_try/south-east/08.webp"
         ],
         "east": [
           "glow_grub/animations/attack_try/east/00.webp",
@@ -1209,7 +1213,11 @@
           "glow_grub/animations/attack_try/south-west/01.webp",
           "glow_grub/animations/attack_try/south-west/02.webp",
           "glow_grub/animations/attack_try/south-west/03.webp",
-          "glow_grub/animations/attack_try/south-west/04.webp"
+          "glow_grub/animations/attack_try/south-west/04.webp",
+          "glow_grub/animations/attack_try/south-west/05.webp",
+          "glow_grub/animations/attack_try/south-west/06.webp",
+          "glow_grub/animations/attack_try/south-west/07.webp",
+          "glow_grub/animations/attack_try/south-west/08.webp"
         ],
         "west": [
           "glow_grub/animations/attack_try/west/00.webp",
