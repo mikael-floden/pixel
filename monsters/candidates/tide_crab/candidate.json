@@ -897,36 +897,36 @@
       "directions": {
         "south": {
           "status": "fail",
-          "step_mean": 0.2316,
-          "step_max": 0.2589,
-          "drift": 1.45,
-          "loop": 0.2185,
-          "loop_ratio": 0.94,
-          "travel": 0.35,
+          "step_mean": 0.1993,
+          "step_max": 0.2737,
+          "drift": 2.7,
+          "loop": 0.3544,
+          "loop_ratio": 1.78,
+          "travel": 1.53,
           "pin": 1.0,
           "pad": 0,
-          "flash": -0.002,
-          "peak": 0.35,
-          "reach": 0.109,
+          "flash": 0.137,
+          "peak": 0.3544,
+          "reach": 0.137,
           "canvas": [
             112,
             112
           ],
           "reasons": [
-            "no strike, just a lean: nothing reaches past 0.11 of the body"
+            "no strike, just a lean: nothing reaches past 0.14 of the body"
           ],
-          "sub": "352e512d-1ca7-4f3d-b5b0-e86b3824305c",
-          "group": "c5a236eb-bfc0-42cc-a119-d54a0454ed3f",
+          "sub": "68dc55a6-1c04-4820-a62f-5947d818fabb",
+          "group": "24f7ea6b-55b7-4ced-8f67-ca8c4ed9587a",
           "takes": 1,
-          "version": 6,
+          "version": 7,
           "mirrored": false,
-          "action": "Claw Snap - Lunges forward and snaps its big claw shut hard, a big aggressive swing",
+          "action": "Claw Swipe - Raises one front paw and performs one quick swipe forward, white swoosh lines following the claws, a big aggressive swing",
           "intensity": 2,
-          "rolls": 2,
+          "rolls": 3,
           "frames": 5,
-          "rung": 1,
-          "tries": 2,
-          "generated_at": "2026-09-10T22:02:30+00:00"
+          "rung": 2,
+          "tries": 3,
+          "generated_at": "2026-09-10T22:27:14+00:00"
         },
         "south-east": {
           "status": "warn",

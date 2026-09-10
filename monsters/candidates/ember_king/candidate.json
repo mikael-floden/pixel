@@ -908,40 +908,38 @@
     "attack_try": {
       "directions": {
         "south": {
-          "status": "fail",
-          "step_mean": 0.332,
-          "step_max": 0.6746,
-          "drift": 17.64,
-          "loop": 0.488,
-          "loop_ratio": 1.47,
-          "travel": 0.36,
+          "status": "warn",
+          "step_mean": 0.3692,
+          "step_max": 0.6062,
+          "drift": 9.72,
+          "loop": 0.2872,
+          "loop_ratio": 0.78,
+          "travel": 1.52,
           "pin": 1.0,
-          "pad": 6,
-          "flash": 0.133,
-          "peak": 0.5374,
-          "reach": 0.277,
+          "pad": 4,
+          "flash": 0.012,
+          "peak": 0.5044,
+          "reach": 0.246,
           "canvas": [
-            188,
-            188
+            184,
+            184
           ],
           "reasons": [
-            "drifts 17.6 px — eyeball it",
-            "wrapped around the canvas edge: the body is drawn in two pieces",
-            "shallow strike: reach 0.28 — eyeball it",
-            "canvas grown by 6 px a side to hold the motion"
+            "shallow strike: reach 0.25 — eyeball it",
+            "canvas grown by 4 px a side to hold the motion"
           ],
-          "sub": "823acf72-cb15-4b85-b0f2-6503ba78dfde",
-          "group": "b8fea7b5-e2a3-459a-b3da-9dbee3d0aa06",
+          "sub": "aabca966-567a-4e4c-a6a5-86873c6ca0c3",
+          "group": "3f265557-43db-4b19-9885-d360a77c648e",
           "takes": 1,
-          "version": 6,
+          "version": 7,
           "mirrored": false,
-          "action": "Molten Crush - The king raises both burning fists overhead and smashes them down, embers bursting outward, a huge aggressive attack with the whole body behind it, wide exaggerated motion",
+          "action": "Molten Crush - The king raises both burning fists overhead and smashes them down, embers bursting outward, an extremely violent attack, huge exaggerated motion, the limb thrown far out",
           "intensity": 2,
-          "rolls": 2,
+          "rolls": 3,
           "frames": 5,
-          "rung": 4,
-          "tries": 2,
-          "generated_at": "2026-09-10T22:05:47+00:00"
+          "rung": 5,
+          "tries": 3,
+          "generated_at": "2026-09-10T22:29:21+00:00"
         },
         "south-east": {
           "status": "warn",

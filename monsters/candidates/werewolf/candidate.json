@@ -952,38 +952,37 @@
           "generated_at": "2026-09-10T21:39:32+00:00"
         },
         "south-east": {
-          "status": "fail",
-          "step_mean": 0.1895,
-          "step_max": 0.3081,
-          "drift": 7.2,
-          "loop": 0.2148,
-          "loop_ratio": 1.13,
-          "travel": 1.71,
+          "status": "warn",
+          "step_mean": 0.2531,
+          "step_max": 0.412,
+          "drift": 5.69,
+          "loop": 0.3694,
+          "loop_ratio": 1.46,
+          "travel": 8.3,
           "pin": 1.0,
           "pad": 0,
-          "flash": 0.567,
-          "peak": 0.3949,
-          "reach": 0.253,
+          "flash": 0.232,
+          "peak": 0.3694,
+          "reach": 0.291,
           "canvas": [
             128,
             128
           ],
           "reasons": [
-            "shallow strike: reach 0.25 — eyeball it",
-            "painted effect: 0.57 of the body in new bright pixels (flare/slash arc)"
+            "shallow strike: reach 0.29 — eyeball it"
           ],
-          "sub": "e0b493bd-f3a9-4328-99c2-325211c494a4",
-          "group": "ffafd3ab-a858-4dde-951b-1db6e80bcbae",
+          "sub": "d11f607a-d309-4af4-8572-6fc61ec5c6a4",
+          "group": "f348c97a-0558-4a63-add1-651782dcfb58",
           "takes": 1,
-          "version": 6,
+          "version": 7,
           "mirrored": false,
-          "action": "Claw Swipe - Rears up and swipes one clawed paw hard across, a big aggressive swing",
+          "action": "Claw Swipe - Raises one front paw and performs one quick swipe forward, white swoosh lines following the claws, a big aggressive swing",
           "intensity": 1,
-          "rolls": 2,
+          "rolls": 3,
           "frames": 5,
-          "rung": 1,
-          "tries": 2,
-          "generated_at": "2026-09-10T22:02:33+00:00"
+          "rung": 2,
+          "tries": 3,
+          "generated_at": "2026-09-10T22:27:20+00:00"
         },
         "east": {
           "status": "pass",
@@ -1150,36 +1149,36 @@
         },
         "south-west": {
           "status": "warn",
-          "step_mean": 0.2272,
-          "step_max": 0.4291,
-          "drift": 7.66,
-          "loop": 0.1599,
-          "loop_ratio": 0.7,
-          "travel": 14.08,
+          "step_mean": 0.2531,
+          "step_max": 0.412,
+          "drift": 5.69,
+          "loop": 0.3694,
+          "loop_ratio": 1.46,
+          "travel": 8.3,
           "pin": 1.0,
           "pad": 0,
-          "flash": 0.036,
-          "peak": 0.3944,
-          "reach": 0.278,
+          "flash": 0.232,
+          "peak": 0.3694,
+          "reach": 0.291,
           "canvas": [
             128,
             128
           ],
           "reasons": [
-            "shallow strike: reach 0.28 — eyeball it"
+            "shallow strike: reach 0.29 — eyeball it"
           ],
-          "sub": "93fe48ab-a007-461a-911f-bb7b8f80334d",
-          "group": "053fa383-a90f-41fb-b298-618fb3d11495",
+          "sub": "d11f607a-d309-4af4-8572-6fc61ec5c6a4",
+          "group": "f348c97a-0558-4a63-add1-651782dcfb58",
           "takes": 1,
-          "version": 4,
+          "version": 7,
           "mirrored": true,
-          "generated_at": "2026-09-10T21:07:47+00:00",
-          "action": "Claw Swipe - Rears up and swipes one clawed paw hard across, a big aggressive swing",
-          "tries": 2,
-          "rolls": 4,
+          "action": "Claw Swipe - Raises one front paw and performs one quick swipe forward, white swoosh lines following the claws, a big aggressive swing",
           "intensity": 1,
-          "frames": 7,
-          "rung": 0,
+          "rolls": 3,
+          "frames": 5,
+          "rung": 2,
+          "tries": 3,
+          "generated_at": "2026-09-10T22:27:20+00:00",
           "source": "south-east"
         }
       },
@@ -1239,9 +1238,7 @@
           "werewolf/animations/attack_try/south-west/01.webp",
           "werewolf/animations/attack_try/south-west/02.webp",
           "werewolf/animations/attack_try/south-west/03.webp",
-          "werewolf/animations/attack_try/south-west/04.webp",
-          "werewolf/animations/attack_try/south-west/05.webp",
-          "werewolf/animations/attack_try/south-west/06.webp"
+          "werewolf/animations/attack_try/south-west/04.webp"
         ]
       },
       "strips": {

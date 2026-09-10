@@ -902,37 +902,36 @@
       "directions": {
         "south": {
           "status": "fail",
-          "step_mean": 0.2954,
-          "step_max": 0.4087,
-          "drift": 2.95,
-          "loop": 0.2511,
-          "loop_ratio": 0.85,
-          "travel": 2.41,
+          "step_mean": 0.1737,
+          "step_max": 0.2698,
+          "drift": 6.31,
+          "loop": 0.3768,
+          "loop_ratio": 2.17,
+          "travel": 6.31,
           "pin": 1.0,
           "pad": 0,
-          "flash": 0.141,
-          "peak": 0.3936,
-          "reach": 0.099,
+          "flash": 0.111,
+          "peak": 0.3768,
+          "reach": 0.111,
           "canvas": [
             224,
             224
           ],
           "reasons": [
-            "no strike, just a lean: nothing reaches past 0.10 of the body",
-            "painted effect: 0.14 of the body in new bright pixels (flare/slash arc)"
+            "no strike, just a lean: nothing reaches past 0.11 of the body"
           ],
-          "sub": "87cf71ed-d154-4729-b156-432ad63c42b8",
-          "group": "ac4e83a0-d3b6-40e6-9c74-ea6aceb66751",
+          "sub": "5cebb367-4e80-47b7-9311-e18ab3841497",
+          "group": "aa3b7bc4-d59d-4eb1-b5b9-9b48744bb8f6",
           "takes": 1,
-          "version": 6,
+          "version": 7,
           "mirrored": false,
-          "action": "Double Slam - Raises both arms high overhead and slams them down together, a big aggressive swing",
+          "action": "Claw Swipe - Raises one front paw and performs one quick swipe forward, white swoosh lines following the claws, a big aggressive swing",
           "intensity": 1,
-          "rolls": 2,
+          "rolls": 3,
           "frames": 5,
-          "rung": 1,
-          "tries": 2,
-          "generated_at": "2026-09-10T22:05:33+00:00"
+          "rung": 2,
+          "tries": 3,
+          "generated_at": "2026-09-10T22:29:02+00:00"
         },
         "south-east": {
           "status": "warn",
