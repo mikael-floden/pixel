@@ -909,32 +909,34 @@
       "directions": {
         "south": {
           "status": "fail",
-          "step_mean": 0.2173,
-          "step_max": 0.2904,
-          "drift": 2.3,
-          "loop": 0.4792,
-          "loop_ratio": 2.21,
-          "travel": 0.5,
+          "step_mean": 0.2407,
+          "step_max": 0.3891,
+          "drift": 11.4,
+          "loop": 0.5155,
+          "loop_ratio": 2.14,
+          "travel": 5.14,
           "pin": 1.0,
-          "pad": 0,
-          "flash": 0.0,
-          "peak": 0.4838,
-          "reach": 0.071,
+          "pad": 3,
+          "flash": 0.015,
+          "peak": 0.5155,
+          "reach": 0.124,
           "canvas": [
-            224,
-            224
+            230,
+            230
           ],
           "reasons": [
-            "no strike, just a lean: nothing reaches past 0.07 of the body"
+            "no strike, just a lean: nothing reaches past 0.12 of the body",
+            "canvas grown by 3 px a side to hold the motion"
           ],
-          "sub": "5dd12d7b-e112-40d6-899f-048719bc0370",
-          "group": "e4ee867f-7b29-4a08-86ed-c717e8be53dc",
+          "sub": "647f52ef-2db6-4cc4-9367-66c6ba797001",
+          "group": "21b97390-5be3-44b7-86ba-10ba9e9a6c48",
           "takes": 1,
-          "version": 1,
+          "version": 2,
           "mirrored": false,
-          "action": "Branch Smash - Swings one huge branch arm down in a wide overhead smash",
+          "action": "Branch Smash - Swings one huge branch arm down in a wide overhead smash, a big aggressive swing",
+          "intensity": 1,
           "tries": 1,
-          "generated_at": "2026-09-10T19:55:20+00:00"
+          "generated_at": "2026-09-10T20:21:07+00:00"
         },
         "south-east": {
           "status": "pass",
@@ -1018,33 +1020,35 @@
           "generated_at": "2026-09-10T19:55:22+00:00"
         },
         "north": {
-          "status": "fail",
-          "step_mean": 0.2827,
-          "step_max": 0.5843,
-          "drift": 12.56,
-          "loop": 0.697,
-          "loop_ratio": 2.47,
-          "travel": 12.63,
+          "status": "warn",
+          "step_mean": 0.2961,
+          "step_max": 0.7199,
+          "drift": 5.01,
+          "loop": 0.7996,
+          "loop_ratio": 2.7,
+          "travel": 5.45,
           "pin": 1.0,
-          "pad": 0,
+          "pad": 5,
           "flash": 0.0,
-          "peak": 0.697,
-          "reach": 0.192,
+          "peak": 0.7996,
+          "reach": 0.238,
           "canvas": [
-            224,
-            224
+            234,
+            234
           ],
           "reasons": [
-            "no strike, just a lean: nothing reaches past 0.19 of the body"
+            "shallow strike: reach 0.24 — eyeball it",
+            "canvas grown by 5 px a side to hold the motion"
           ],
-          "sub": "e69faec4-59fa-4299-b198-3065072d93e2",
-          "group": "968013fa-d0fc-45d8-bd0c-0c20b03615cd",
+          "sub": "8bb03aaa-f458-4bd8-9705-3552b9ae8128",
+          "group": "8ec70fb5-30fb-4754-b7fe-7639ad3504e5",
           "takes": 1,
-          "version": 1,
+          "version": 2,
           "mirrored": false,
-          "action": "Branch Smash - Swings one huge branch arm down in a wide overhead smash",
+          "action": "Branch Smash - Swings one huge branch arm down in a wide overhead smash, a big aggressive swing",
+          "intensity": 1,
           "tries": 1,
-          "generated_at": "2026-09-10T19:55:22+00:00"
+          "generated_at": "2026-09-10T20:21:08+00:00"
         },
         "south-west": {
           "status": "pass",

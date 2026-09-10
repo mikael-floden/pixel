@@ -963,33 +963,32 @@
           "generated_at": "2026-09-10T20:01:57+00:00"
         },
         "east": {
-          "status": "fail",
-          "step_mean": 0.2894,
-          "step_max": 0.3982,
-          "drift": 10.43,
-          "loop": 0.3608,
-          "loop_ratio": 1.25,
-          "travel": 14.19,
+          "status": "pass",
+          "step_mean": 0.1373,
+          "step_max": 0.3055,
+          "drift": 4.84,
+          "loop": 0.3318,
+          "loop_ratio": 2.42,
+          "travel": 5.3,
           "pin": 1.0,
           "pad": 0,
-          "flash": 0.101,
-          "peak": 0.3711,
-          "reach": 0.731,
+          "flash": 0.001,
+          "peak": 0.3318,
+          "reach": 0.327,
           "canvas": [
             128,
             128
           ],
-          "reasons": [
-            "painted effect: 0.10 of the body in new bright pixels (flare/slash arc)"
-          ],
-          "sub": "0e249d8a-070f-4af3-bb84-7c06ffb6c15e",
-          "group": "c464e98e-36df-46ac-84f7-60e31610f4e8",
+          "reasons": [],
+          "sub": "e74d2bde-fe5f-4095-9dea-f9d9ff9a2419",
+          "group": "1fd71c38-979a-4a7c-b6f8-7bbc4c350ac0",
           "takes": 1,
-          "version": 1,
+          "version": 2,
           "mirrored": false,
           "action": "Axe Cleave - Swings the battle axe across in one heavy cleave",
-          "tries": 1,
-          "generated_at": "2026-09-10T20:01:57+00:00"
+          "intensity": 0,
+          "tries": 2,
+          "generated_at": "2026-09-10T20:29:55+00:00"
         },
         "north-east": {
           "status": "pass",
@@ -1100,6 +1099,35 @@
           "tries": 1,
           "generated_at": "2026-09-10T20:01:58+00:00",
           "source": "north-east"
+        },
+        "west": {
+          "status": "pass",
+          "step_mean": 0.1373,
+          "step_max": 0.3055,
+          "drift": 4.84,
+          "loop": 0.3318,
+          "loop_ratio": 2.42,
+          "travel": 5.3,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": 0.001,
+          "peak": 0.3318,
+          "reach": 0.327,
+          "canvas": [
+            128,
+            128
+          ],
+          "reasons": [],
+          "sub": "e74d2bde-fe5f-4095-9dea-f9d9ff9a2419",
+          "group": "1fd71c38-979a-4a7c-b6f8-7bbc4c350ac0",
+          "takes": 1,
+          "version": 2,
+          "mirrored": true,
+          "action": "Axe Cleave - Swings the battle axe across in one heavy cleave",
+          "intensity": 0,
+          "tries": 2,
+          "generated_at": "2026-09-10T20:29:55+00:00",
+          "source": "east"
         }
       },
       "action": "Axe Cleave - Swings the battle axe across in one heavy cleave",
@@ -1152,6 +1180,13 @@
           "orc_warrior/animations/attack_try/north-west/02.webp",
           "orc_warrior/animations/attack_try/north-west/03.webp",
           "orc_warrior/animations/attack_try/north-west/04.webp"
+        ],
+        "west": [
+          "orc_warrior/animations/attack_try/west/00.webp",
+          "orc_warrior/animations/attack_try/west/01.webp",
+          "orc_warrior/animations/attack_try/west/02.webp",
+          "orc_warrior/animations/attack_try/west/03.webp",
+          "orc_warrior/animations/attack_try/west/04.webp"
         ]
       },
       "strips": {
@@ -1161,7 +1196,8 @@
         "north-east": "orc_warrior/animations/attack_try__north-east.webp",
         "north": "orc_warrior/animations/attack_try__north.webp",
         "south-west": "orc_warrior/animations/attack_try__south-west.webp",
-        "north-west": "orc_warrior/animations/attack_try__north-west.webp"
+        "north-west": "orc_warrior/animations/attack_try__north-west.webp",
+        "west": "orc_warrior/animations/attack_try__west.webp"
       }
     }
   }

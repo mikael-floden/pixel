@@ -141,8 +141,16 @@ INTENSITY = {
 TOO_LITTLE = ("no strike", "just a lean", "weak strike", "frozen", "shallow strike", "outside the calm band")
 TOO_MUCH = ("too much", "drifts", "walks across")
 
+# Maintainer 2026-09-10: "often you should try with an attack that feels
+# logical — that will usually generate the correct attack. But often you need
+# to try something simpler, and a 'claw' attack with swoosh lines often works."
+# So the claw swipe is the SIMPLER fallback, and its swoosh lines are wanted,
+# not a painted-effect failure — the flash gate is relaxed for it.
 CLAW_SLASH = ("Claw Swipe - Raises one front paw and performs one quick swipe forward, "
-              "then returns to idle stance")
+              "white swoosh lines following the claws")
+MAX_TRIES = 10          # "keep retrying maybe 10 times before you give up the entire animation"
+CLAW_AFTER = 3          # rolls of the logical attack before falling back to the simple claw
+ESCALATE_AFTER = 6      # rolls before the whole monster is redone one notch louder
 APPROVED_TAG = "APPROVED"
 MIN_USD = 5.0
 
@@ -291,7 +299,7 @@ def _reach(ops, base_op, cap=48):
     return (max(out) / scale) if out else 0.0
 
 
-def qa_clip(cid, state, d, frames, pinned=None):
+def qa_clip(cid, state, d, frames, pinned=None, claw_take=False):
     """Machine verdict for one direction's clip. See module docstring."""
     band = STATES[base_state(state)]["band"]
     reasons = []
@@ -376,7 +384,9 @@ def qa_clip(cid, state, d, frames, pinned=None):
     flash = _flash(frames) if "flash_max" in band else 0.0
     if "flash_max" in band:
         fmax, fwarn = band["flash_max"], band["flash_warn"]
-        if design_flag(cid, "fx"):
+        if claw_take:
+            fmax, fwarn = 0.45, 0.35   # the swoosh IS the attack he asked for
+        elif design_flag(cid, "fx"):
             fmax, fwarn = fmax * 5, fwarn * 6   # the effect IS the attack; only an explosion fails
         if flash > fmax:
             reasons.append(f"painted effect: {flash:.2f} of the body in new bright pixels (flare/slash arc)"); status = "fail"
@@ -497,8 +507,12 @@ def generate_state(client, cid, state, dirs, version, verbose=True, pin=False):
         end = rotation(cid, d) if pinned else None
         action = rec["action"]
         old = rec["directions"].get(d, {})
-        tries[d] = (old.get("tries", 1) + 1) if (old.get("action") == action and old.get("status") == "fail") else 1
-        if base_state(state) == "attack" and tries[d] >= 3 and design_flag(cid, "claws"):
+        # rolls counts how many times THIS direction has been rolled at the
+        # current intensity, whatever wording was used — the claw fallback
+        # must not reset it or the sweep flip-flops between the two wordings
+        same_dial = old.get("intensity", 0) == intensity_of(man, state)
+        tries[d] = (old.get("rolls", 0) + 1) if (same_dial and old.get("status") == "fail") else 1
+        if base_state(state) == "attack" and tries[d] >= CLAW_AFTER and design_flag(cid, "claws"):
             # maintainer 2026-09-09: "if the monster has claws, a claw slash
             # usually works" — the worded strike failed twice, use that
             action = CLAW_SLASH
@@ -554,12 +568,13 @@ def collect_state(client, cid, state, dirs, version, verbose=True, pin=False, ac
         pinned = spec.get("keep_first", True) or pin
         frames, pad = align_to_base(frames, rotation(cid, d), pinned=pinned)
         save_frames(cid, state, d, frames)
-        qa = qa_clip(cid, state, d, frames, pinned=pinned)
+        qa = qa_clip(cid, state, d, frames, pinned=pinned, claw_take=(actions[d] == CLAW_SLASH))
         if pin:
             qa["pinned"] = True
             qa["reasons"].append("PINNED fallback: base → walk → base, not a seamless loop (maintainer's last resort)")
         qa.update({"sub": client.sub_id(urls[0]), "group": group, "takes": len(cands), "version": version, "mirrored": False,
-                   "action": actions[d], "intensity": intensity_of(man, state), "tries": (tries or {}).get(d, rec["directions"].get(d, {}).get("tries", 1)),
+                   "action": actions[d], "intensity": intensity_of(man, state),
+                   "rolls": (tries or {}).get(d, 1), "tries": (tries or {}).get(d, rec["directions"].get(d, {}).get("tries", 1)),
                    "generated_at": datetime.now(timezone.utc).isoformat(timespec="seconds")})
         rec["directions"][d] = qa
         out[d] = qa
@@ -588,7 +603,12 @@ def needed_dirs(man, slot, redo=None):
     # is ONE take across all eight directions, never a mix of wordings.
     if rec["directions"] and rec.get("action") and rec["action"] != state_action(man["id"], slot):
         return [d for d in GEN_DIRS if rec["directions"].get(d, {}).get("action") in (None, rec["action"])] or list(GEN_DIRS)
-    return [d for d in GEN_DIRS if rec["directions"].get(d, {}).get("status") in (None, "fail")]
+    # a direction that has already been rolled MAX_TRIES times is not worth
+    # another roll — the attack CONCEPT is wrong, not the dice (maintainer:
+    # "keep retrying maybe 10 times before you give up the entire animation")
+    return [d for d in GEN_DIRS
+            if rec["directions"].get(d, {}).get("status") in (None, "fail")
+            and (rec["directions"].get(d, {}).get("rolls") or 0) < MAX_TRIES]
 
 
 def cmd_state(args, state):
@@ -606,8 +626,11 @@ def cmd_state(args, state):
         # monster is redone at the new setting, so its eight directions stay
         # one take — maintainer: "you might have to redo the entire prompt
         # (all directions) in order to get a full 8 set that is valid")
+        rolled = max([(q.get("rolls") or 1) for q in ((man.get("animations") or {}).get(state, {}).get("directions") or {}).values()
+                      if q.get("status") == "fail" and not q.get("mirrored")] or [0])
         lvl0 = intensity_of(man, state)
-        lvl = intensity_of(man, state) if args.dry_run else bump_intensity(man, state)
+        lvl = (bump_intensity(man, state) if (rolled >= ESCALATE_AFTER and not args.dry_run)
+               else intensity_of(man, state))
         if lvl != lvl0:
             man["animations"][state]["action"] = state_action(cid, state, man)
             write_manifest(cid, man)

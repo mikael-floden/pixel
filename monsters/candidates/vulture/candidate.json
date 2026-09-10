@@ -958,62 +958,64 @@
           "generated_at": "2026-09-10T20:00:09+00:00"
         },
         "east": {
-          "status": "fail",
-          "step_mean": 0.1778,
-          "step_max": 0.2397,
-          "drift": 2.66,
-          "loop": 0.3169,
-          "loop_ratio": 1.78,
-          "travel": 1.06,
+          "status": "warn",
+          "step_mean": 0.1849,
+          "step_max": 0.2599,
+          "drift": 3.75,
+          "loop": 0.3181,
+          "loop_ratio": 1.72,
+          "travel": 3.24,
           "pin": 1.0,
           "pad": 0,
-          "flash": 0.001,
-          "peak": 0.3573,
-          "reach": 0.183,
+          "flash": 0.006,
+          "peak": 0.3792,
+          "reach": 0.254,
           "canvas": [
             96,
             96
           ],
           "reasons": [
-            "no strike, just a lean: nothing reaches past 0.18 of the body"
+            "shallow strike: reach 0.25 — eyeball it"
           ],
-          "sub": "deeaf121-24df-43af-b330-960381c69ee6",
-          "group": "cccc3e2e-480f-4edc-95b8-a6606204ad49",
+          "sub": "0468dcc0-9adf-47e4-a63f-2a29f692b22c",
+          "group": "0288928c-cae2-40c0-8a35-88031fe7230d",
           "takes": 1,
-          "version": 1,
+          "version": 2,
           "mirrored": false,
-          "action": "Beak Stab - Spreads its wings wide and stabs forward with its hooked beak",
+          "action": "Beak Stab - Spreads its wings wide and stabs forward with its hooked beak, a big aggressive swing",
+          "intensity": 1,
           "tries": 1,
-          "generated_at": "2026-09-10T20:00:09+00:00"
+          "generated_at": "2026-09-10T20:28:12+00:00"
         },
         "north-east": {
-          "status": "fail",
-          "step_mean": 0.0806,
-          "step_max": 0.1158,
-          "drift": 0.71,
-          "loop": 0.1759,
-          "loop_ratio": 2.18,
-          "travel": 0.71,
+          "status": "pass",
+          "step_mean": 0.2302,
+          "step_max": 0.3718,
+          "drift": 2.9,
+          "loop": 0.2324,
+          "loop_ratio": 1.01,
+          "travel": 1.17,
           "pin": 1.0,
-          "pad": 0,
-          "flash": 0.001,
-          "peak": 0.1891,
-          "reach": 0.19,
+          "pad": 5,
+          "flash": 0.004,
+          "peak": 0.2909,
+          "reach": 0.483,
           "canvas": [
-            96,
-            96
+            106,
+            106
           ],
           "reasons": [
-            "no strike, just a lean: nothing reaches past 0.19 of the body"
+            "canvas grown by 5 px a side to hold the motion"
           ],
-          "sub": "f8f2ef37-c929-4ef6-bed8-43beba3031e6",
-          "group": "c64ec839-991d-468f-91de-3a379be23f00",
+          "sub": "71841d38-452e-4fc6-9635-20d857a1d18d",
+          "group": "eff0316f-5730-4405-81e5-083a524c21f6",
           "takes": 1,
-          "version": 1,
+          "version": 2,
           "mirrored": false,
-          "action": "Beak Stab - Spreads its wings wide and stabs forward with its hooked beak",
+          "action": "Beak Stab - Spreads its wings wide and stabs forward with its hooked beak, a big aggressive swing",
+          "intensity": 1,
           "tries": 1,
-          "generated_at": "2026-09-10T20:00:10+00:00"
+          "generated_at": "2026-09-10T20:28:13+00:00"
         },
         "north": {
           "status": "pass",
@@ -1071,6 +1073,68 @@
           "tries": 1,
           "generated_at": "2026-09-10T20:00:09+00:00",
           "source": "south-east"
+        },
+        "west": {
+          "status": "warn",
+          "step_mean": 0.1849,
+          "step_max": 0.2599,
+          "drift": 3.75,
+          "loop": 0.3181,
+          "loop_ratio": 1.72,
+          "travel": 3.24,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": 0.006,
+          "peak": 0.3792,
+          "reach": 0.254,
+          "canvas": [
+            96,
+            96
+          ],
+          "reasons": [
+            "shallow strike: reach 0.25 — eyeball it"
+          ],
+          "sub": "0468dcc0-9adf-47e4-a63f-2a29f692b22c",
+          "group": "0288928c-cae2-40c0-8a35-88031fe7230d",
+          "takes": 1,
+          "version": 2,
+          "mirrored": true,
+          "action": "Beak Stab - Spreads its wings wide and stabs forward with its hooked beak, a big aggressive swing",
+          "intensity": 1,
+          "tries": 1,
+          "generated_at": "2026-09-10T20:28:12+00:00",
+          "source": "east"
+        },
+        "north-west": {
+          "status": "pass",
+          "step_mean": 0.2302,
+          "step_max": 0.3718,
+          "drift": 2.9,
+          "loop": 0.2324,
+          "loop_ratio": 1.01,
+          "travel": 1.17,
+          "pin": 1.0,
+          "pad": 5,
+          "flash": 0.004,
+          "peak": 0.2909,
+          "reach": 0.483,
+          "canvas": [
+            106,
+            106
+          ],
+          "reasons": [
+            "canvas grown by 5 px a side to hold the motion"
+          ],
+          "sub": "71841d38-452e-4fc6-9635-20d857a1d18d",
+          "group": "eff0316f-5730-4405-81e5-083a524c21f6",
+          "takes": 1,
+          "version": 2,
+          "mirrored": true,
+          "action": "Beak Stab - Spreads its wings wide and stabs forward with its hooked beak, a big aggressive swing",
+          "intensity": 1,
+          "tries": 1,
+          "generated_at": "2026-09-10T20:28:13+00:00",
+          "source": "north-east"
         }
       },
       "action": "Beak Stab - Spreads its wings wide and stabs forward with its hooked beak, a big aggressive swing",
@@ -1116,6 +1180,20 @@
           "vulture/animations/attack_try/south-west/02.webp",
           "vulture/animations/attack_try/south-west/03.webp",
           "vulture/animations/attack_try/south-west/04.webp"
+        ],
+        "west": [
+          "vulture/animations/attack_try/west/00.webp",
+          "vulture/animations/attack_try/west/01.webp",
+          "vulture/animations/attack_try/west/02.webp",
+          "vulture/animations/attack_try/west/03.webp",
+          "vulture/animations/attack_try/west/04.webp"
+        ],
+        "north-west": [
+          "vulture/animations/attack_try/north-west/00.webp",
+          "vulture/animations/attack_try/north-west/01.webp",
+          "vulture/animations/attack_try/north-west/02.webp",
+          "vulture/animations/attack_try/north-west/03.webp",
+          "vulture/animations/attack_try/north-west/04.webp"
         ]
       },
       "strips": {
@@ -1124,7 +1202,9 @@
         "east": "vulture/animations/attack_try__east.webp",
         "north-east": "vulture/animations/attack_try__north-east.webp",
         "north": "vulture/animations/attack_try__north.webp",
-        "south-west": "vulture/animations/attack_try__south-west.webp"
+        "south-west": "vulture/animations/attack_try__south-west.webp",
+        "west": "vulture/animations/attack_try__west.webp",
+        "north-west": "vulture/animations/attack_try__north-west.webp"
       },
       "intensity": 1
     }

@@ -914,32 +914,33 @@
       "directions": {
         "south": {
           "status": "fail",
-          "step_mean": 0.105,
-          "step_max": 0.1504,
-          "drift": 2.07,
-          "loop": 0.265,
-          "loop_ratio": 2.52,
-          "travel": 0.84,
+          "step_mean": 0.156,
+          "step_max": 0.1763,
+          "drift": 6.54,
+          "loop": 0.3139,
+          "loop_ratio": 2.01,
+          "travel": 11.33,
           "pin": 1.0,
           "pad": 0,
-          "flash": 0.0,
-          "peak": 0.2798,
-          "reach": 0.043,
+          "flash": 0.017,
+          "peak": 0.3139,
+          "reach": 0.049,
           "canvas": [
             232,
             232
           ],
           "reasons": [
-            "no strike, just a lean: nothing reaches past 0.04 of the body"
+            "no strike, just a lean: nothing reaches past 0.05 of the body"
           ],
-          "sub": "460978c1-2e97-43df-946b-71fa0430cbeb",
-          "group": "2cb704ed-46f5-40d9-b4d9-608f100c956c",
+          "sub": "89aa368c-a609-4dd2-9100-b2f9419ae6fa",
+          "group": "88b58b76-f80b-4d03-b6fa-b96400d7adc6",
           "takes": 1,
-          "version": 1,
+          "version": 2,
           "mirrored": false,
-          "action": "Arm Sweep - Swings one crystal-bladed arm across in a wide sweep",
+          "action": "Arm Sweep - Swings one crystal-bladed arm across in a wide sweep, a big aggressive swing",
+          "intensity": 1,
           "tries": 1,
-          "generated_at": "2026-09-10T19:47:31+00:00"
+          "generated_at": "2026-09-10T20:16:54+00:00"
         },
         "south-east": {
           "status": "warn",
@@ -1029,33 +1030,33 @@
         },
         "north": {
           "status": "fail",
-          "step_mean": 0.1653,
-          "step_max": 0.2161,
-          "drift": 7.23,
-          "loop": 0.2826,
-          "loop_ratio": 1.71,
-          "travel": 7.23,
+          "step_mean": 0.1954,
+          "step_max": 0.2936,
+          "drift": 11.9,
+          "loop": 0.3451,
+          "loop_ratio": 1.77,
+          "travel": 0.95,
           "pin": 1.0,
           "pad": 0,
-          "flash": 0.073,
-          "peak": 0.3276,
-          "reach": 0.135,
+          "flash": 0.0,
+          "peak": 0.403,
+          "reach": 0.047,
           "canvas": [
             232,
             232
           ],
           "reasons": [
-            "no strike, just a lean: nothing reaches past 0.14 of the body",
-            "some bright effect pixels (0.07) — eyeball it"
+            "no strike, just a lean: nothing reaches past 0.05 of the body"
           ],
-          "sub": "671a733a-c7a3-42eb-8c99-a771faa1defe",
-          "group": "028ba3ad-5f11-4dc6-a947-64b4f9a47b7b",
+          "sub": "b4517702-2fcd-4d81-a39f-76e9538be6ea",
+          "group": "d4897322-e14f-4dd2-b08c-c7cde2cb9e8b",
           "takes": 1,
-          "version": 1,
+          "version": 2,
           "mirrored": false,
-          "action": "Arm Sweep - Swings one crystal-bladed arm across in a wide sweep",
+          "action": "Arm Sweep - Swings one crystal-bladed arm across in a wide sweep, a big aggressive swing",
+          "intensity": 1,
           "tries": 1,
-          "generated_at": "2026-09-10T19:47:33+00:00"
+          "generated_at": "2026-09-10T20:16:54+00:00"
         },
         "south-west": {
           "status": "warn",

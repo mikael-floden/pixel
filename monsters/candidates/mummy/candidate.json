@@ -903,32 +903,33 @@
       "directions": {
         "south": {
           "status": "fail",
-          "step_mean": 0.1326,
-          "step_max": 0.177,
-          "drift": 2.85,
-          "loop": 0.2942,
-          "loop_ratio": 2.22,
-          "travel": 0.22,
+          "step_mean": 0.238,
+          "step_max": 0.3503,
+          "drift": 6.13,
+          "loop": 0.5664,
+          "loop_ratio": 2.38,
+          "travel": 0.44,
           "pin": 1.0,
           "pad": 0,
-          "flash": 0.005,
-          "peak": 0.3208,
-          "reach": 0.071,
+          "flash": 0.006,
+          "peak": 0.5664,
+          "reach": 0.167,
           "canvas": [
             104,
             104
           ],
           "reasons": [
-            "no strike, just a lean: nothing reaches past 0.07 of the body"
+            "no strike, just a lean: nothing reaches past 0.17 of the body"
           ],
-          "sub": "fe0604a8-711c-4818-a569-c6ac53e63cfb",
-          "group": "e3935a75-bc6a-4109-9599-075849638428",
+          "sub": "e2aefaf6-d500-4f2d-a449-405b4a3dff8c",
+          "group": "dc257c7c-1e18-48d8-b609-0ce817703123",
           "takes": 1,
-          "version": 1,
+          "version": 2,
           "mirrored": false,
-          "action": "Grasping Swipe - Lunges forward with both bandaged arms out in a grasping swipe",
+          "action": "Grasping Swipe - Lunges forward with both bandaged arms out in a grasping swipe, a big aggressive swing",
+          "intensity": 1,
           "tries": 1,
-          "generated_at": "2026-09-10T19:52:43+00:00"
+          "generated_at": "2026-09-10T20:19:40+00:00"
         },
         "east": {
           "status": "pass",
@@ -986,32 +987,33 @@
         },
         "north": {
           "status": "fail",
-          "step_mean": 0.1715,
-          "step_max": 0.2967,
-          "drift": 2.06,
-          "loop": 0.5135,
-          "loop_ratio": 3.0,
-          "travel": 0.94,
+          "step_mean": 0.26,
+          "step_max": 0.4695,
+          "drift": 6.71,
+          "loop": 0.6113,
+          "loop_ratio": 2.35,
+          "travel": 3.09,
           "pin": 1.0,
           "pad": 0,
-          "flash": 0.0,
-          "peak": 0.5135,
-          "reach": 0.088,
+          "flash": 0.001,
+          "peak": 0.6113,
+          "reach": 0.112,
           "canvas": [
             104,
             104
           ],
           "reasons": [
-            "no strike, just a lean: nothing reaches past 0.09 of the body"
+            "no strike, just a lean: nothing reaches past 0.11 of the body"
           ],
-          "sub": "8e4c34e3-09a6-4096-927e-a7ef6c190b20",
-          "group": "09f41040-519b-4562-bb65-fed5b8916e3b",
+          "sub": "dc975dc4-ee65-4cd6-bb41-7f890f6353a6",
+          "group": "a4460c51-4011-4e43-81f6-92acabe1d6c5",
           "takes": 1,
-          "version": 1,
+          "version": 2,
           "mirrored": false,
-          "action": "Grasping Swipe - Lunges forward with both bandaged arms out in a grasping swipe",
+          "action": "Grasping Swipe - Lunges forward with both bandaged arms out in a grasping swipe, a big aggressive swing",
+          "intensity": 1,
           "tries": 1,
-          "generated_at": "2026-09-10T19:52:44+00:00"
+          "generated_at": "2026-09-10T20:19:41+00:00"
         },
         "west": {
           "status": "pass",
@@ -1068,6 +1070,36 @@
           "tries": 1,
           "generated_at": "2026-09-10T19:52:44+00:00",
           "source": "north-east"
+        },
+        "south-east": {
+          "status": "fail",
+          "step_mean": 0.2719,
+          "step_max": 0.384,
+          "drift": 8.05,
+          "loop": 0.6183,
+          "loop_ratio": 2.27,
+          "travel": 3.64,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": 0.002,
+          "peak": 0.6183,
+          "reach": 0.157,
+          "canvas": [
+            104,
+            104
+          ],
+          "reasons": [
+            "no strike, just a lean: nothing reaches past 0.16 of the body"
+          ],
+          "sub": "a6063768-6a16-48fc-b01b-20407aa217de",
+          "group": "5afa029c-cc92-4a1a-85d4-fef4926d3499",
+          "takes": 1,
+          "version": 2,
+          "mirrored": false,
+          "action": "Grasping Swipe - Lunges forward with both bandaged arms out in a grasping swipe, a big aggressive swing",
+          "intensity": 1,
+          "tries": 1,
+          "generated_at": "2026-09-10T20:19:40+00:00"
         }
       },
       "action": "Grasping Swipe - Lunges forward with both bandaged arms out in a grasping swipe, a big aggressive swing",
@@ -1113,6 +1145,13 @@
           "mummy/animations/attack_try/north-west/02.webp",
           "mummy/animations/attack_try/north-west/03.webp",
           "mummy/animations/attack_try/north-west/04.webp"
+        ],
+        "south-east": [
+          "mummy/animations/attack_try/south-east/00.webp",
+          "mummy/animations/attack_try/south-east/01.webp",
+          "mummy/animations/attack_try/south-east/02.webp",
+          "mummy/animations/attack_try/south-east/03.webp",
+          "mummy/animations/attack_try/south-east/04.webp"
         ]
       },
       "strips": {
@@ -1121,7 +1160,8 @@
         "north-east": "mummy/animations/attack_try__north-east.webp",
         "north": "mummy/animations/attack_try__north.webp",
         "west": "mummy/animations/attack_try__west.webp",
-        "north-west": "mummy/animations/attack_try__north-west.webp"
+        "north-west": "mummy/animations/attack_try__north-west.webp",
+        "south-east": "mummy/animations/attack_try__south-east.webp"
       },
       "intensity": 1
     }

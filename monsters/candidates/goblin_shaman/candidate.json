@@ -904,34 +904,36 @@
     "attack_try": {
       "directions": {
         "south": {
-          "status": "fail",
-          "step_mean": 0.2036,
-          "step_max": 0.3294,
-          "drift": 8.55,
-          "loop": 0.387,
-          "loop_ratio": 1.9,
-          "travel": 9.07,
+          "status": "warn",
+          "step_mean": 0.1776,
+          "step_max": 0.3138,
+          "drift": 7.55,
+          "loop": 0.4432,
+          "loop_ratio": 2.5,
+          "travel": 8.29,
           "pin": 1.0,
-          "pad": 1,
-          "flash": 0.135,
-          "peak": 0.387,
-          "reach": 0.186,
+          "pad": 6,
+          "flash": 0.251,
+          "peak": 0.4432,
+          "reach": 0.243,
           "canvas": [
-            90,
-            90
+            100,
+            100
           ],
           "reasons": [
-            "no strike, just a lean: nothing reaches past 0.19 of the body",
-            "canvas grown by 1 px a side to hold the motion"
+            "shallow strike: reach 0.24 — eyeball it",
+            "some bright effect pixels (0.25) — eyeball it",
+            "canvas grown by 6 px a side to hold the motion"
           ],
-          "sub": "4caef2cd-d17e-407c-b73e-2da0614056e8",
-          "group": "ae0bf8a3-3c11-4307-8fe3-ffff3d093dd1",
+          "sub": "eb691164-9a2b-45af-ac8e-5d4503c56f5e",
+          "group": "95b00d9f-b5a5-483d-8fa5-bc601551cbfb",
           "takes": 1,
-          "version": 1,
+          "version": 2,
           "mirrored": false,
-          "action": "Skull Curse - Thrusts the skull staff out at arm's length and the skull flares",
+          "action": "Skull Curse - Thrusts the skull staff out at arm's length and the skull flares, a big aggressive swing",
+          "intensity": 1,
           "tries": 1,
-          "generated_at": "2026-09-10T20:01:41+00:00"
+          "generated_at": "2026-09-10T20:28:47+00:00"
         },
         "south-east": {
           "status": "pass",

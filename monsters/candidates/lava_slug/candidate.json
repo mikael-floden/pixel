@@ -901,61 +901,65 @@
       "directions": {
         "south": {
           "status": "fail",
-          "step_mean": 0.1544,
-          "step_max": 0.1943,
-          "drift": 4.67,
-          "loop": 0.3021,
-          "loop_ratio": 1.96,
-          "travel": 5.31,
+          "step_mean": 0.2257,
+          "step_max": 0.2671,
+          "drift": 5.92,
+          "loop": 0.3287,
+          "loop_ratio": 1.46,
+          "travel": 5.92,
           "pin": 1.0,
           "pad": 0,
-          "flash": 0.043,
-          "peak": 0.3094,
-          "reach": 0.205,
+          "flash": 0.109,
+          "peak": 0.4452,
+          "reach": 0.154,
           "canvas": [
             96,
             96
           ],
           "reasons": [
-            "no strike, just a lean: nothing reaches past 0.21 of the body"
+            "no strike, just a lean: nothing reaches past 0.15 of the body"
           ],
-          "sub": "c79712d4-b5b3-4f56-b7fd-93dbffd92a5c",
-          "group": "4108ef7b-fd8d-4a1e-916c-f87ad1a2d41e",
+          "sub": "382bb2bc-2baf-428a-bc90-853466d639d4",
+          "group": "fa515d24-e1f3-491b-b07e-9890133ec5c8",
           "takes": 1,
-          "version": 1,
+          "version": 2,
           "mirrored": false,
-          "action": "Magma Spit - Rears its front up high and spits a gout of magma forward",
+          "action": "Magma Spit - Rears its front up high and spits a gout of magma forward, a big aggressive swing",
+          "intensity": 1,
           "tries": 1,
-          "generated_at": "2026-09-10T19:59:22+00:00"
+          "generated_at": "2026-09-10T20:27:19+00:00"
         },
         "south-east": {
           "status": "fail",
-          "step_mean": 0.1768,
-          "step_max": 0.2528,
-          "drift": 2.63,
-          "loop": 0.2699,
-          "loop_ratio": 1.53,
-          "travel": 2.63,
+          "step_mean": 0.263,
+          "step_max": 0.3728,
+          "drift": 4.48,
+          "loop": 0.1807,
+          "loop_ratio": 0.69,
+          "travel": 0.96,
           "pin": 1.0,
-          "pad": 0,
-          "flash": 0.118,
-          "peak": 0.3162,
-          "reach": 0.218,
+          "pad": 5,
+          "flash": 0.672,
+          "peak": 0.4138,
+          "reach": 0.205,
           "canvas": [
-            96,
-            96
+            106,
+            106
           ],
           "reasons": [
-            "no strike, just a lean: nothing reaches past 0.22 of the body"
+            "no strike, just a lean: nothing reaches past 0.21 of the body",
+            "painted effect: 0.67 of the body in new bright pixels (flare/slash arc)",
+            "canvas grown by 5 px a side to hold the motion"
           ],
-          "sub": "ce2e96d7-f3b1-41ba-b765-19b1dd98602f",
-          "group": "6c1de2fe-1cc9-4974-97b5-de660c6b02d1",
+          "sub": "ff022da8-20e7-4eb4-aaaa-7ac45a8f1e30",
+          "group": "5fc1c1c0-3abc-4016-978b-48843ccc9d55",
           "takes": 1,
-          "version": 1,
+          "version": 2,
           "mirrored": false,
-          "action": "Magma Spit - Rears its front up high and spits a gout of magma forward",
+          "action": "Magma Spit - Rears its front up high and spits a gout of magma forward, a big aggressive swing",
+          "intensity": 1,
           "tries": 1,
-          "generated_at": "2026-09-10T19:59:23+00:00"
+          "generated_at": "2026-09-10T20:27:20+00:00"
         },
         "east": {
           "status": "pass",
@@ -986,61 +990,63 @@
         },
         "north-east": {
           "status": "fail",
-          "step_mean": 0.1495,
-          "step_max": 0.1948,
-          "drift": 2.51,
-          "loop": 0.218,
-          "loop_ratio": 1.46,
-          "travel": 2.05,
+          "step_mean": 0.1547,
+          "step_max": 0.1952,
+          "drift": 2.91,
+          "loop": 0.2166,
+          "loop_ratio": 1.4,
+          "travel": 2.91,
           "pin": 1.0,
           "pad": 0,
-          "flash": 0.008,
-          "peak": 0.2505,
-          "reach": 0.116,
+          "flash": 0.014,
+          "peak": 0.2267,
+          "reach": 0.152,
           "canvas": [
             96,
             96
           ],
           "reasons": [
-            "no strike, just a lean: nothing reaches past 0.12 of the body"
+            "no strike, just a lean: nothing reaches past 0.15 of the body"
           ],
-          "sub": "827b3c17-e26c-4c42-90ef-487a4cdd325b",
-          "group": "6796a021-ce03-4864-b8a9-67907f178834",
+          "sub": "aa35338f-6843-47bc-88b7-10597999930a",
+          "group": "47508a8a-de3a-4e3e-bce9-e90f9cfac844",
           "takes": 1,
-          "version": 1,
+          "version": 2,
           "mirrored": false,
-          "action": "Magma Spit - Rears its front up high and spits a gout of magma forward",
+          "action": "Magma Spit - Rears its front up high and spits a gout of magma forward, a big aggressive swing",
+          "intensity": 1,
           "tries": 1,
-          "generated_at": "2026-09-10T19:59:24+00:00"
+          "generated_at": "2026-09-10T20:27:20+00:00"
         },
         "north": {
           "status": "fail",
-          "step_mean": 0.137,
-          "step_max": 0.1707,
-          "drift": 2.22,
-          "loop": 0.1312,
-          "loop_ratio": 0.96,
-          "travel": 2.22,
+          "step_mean": 0.1407,
+          "step_max": 0.1601,
+          "drift": 3.03,
+          "loop": 0.2337,
+          "loop_ratio": 1.66,
+          "travel": 2.6,
           "pin": 1.0,
           "pad": 0,
-          "flash": 0.095,
-          "peak": 0.2137,
-          "reach": 0.174,
+          "flash": 0.132,
+          "peak": 0.2804,
+          "reach": 0.203,
           "canvas": [
             96,
             96
           ],
           "reasons": [
-            "no strike, just a lean: nothing reaches past 0.17 of the body"
+            "no strike, just a lean: nothing reaches past 0.20 of the body"
           ],
-          "sub": "5c3456d9-01c5-4282-ad32-84de9625687a",
-          "group": "9c875041-e324-4647-913e-04c258924bd9",
+          "sub": "95d2165f-8194-4f80-b439-6cd4679cb5a4",
+          "group": "5c8b08b6-c1a4-43c0-b2f9-38d67a530da2",
           "takes": 1,
-          "version": 1,
+          "version": 2,
           "mirrored": false,
-          "action": "Magma Spit - Rears its front up high and spits a gout of magma forward",
+          "action": "Magma Spit - Rears its front up high and spits a gout of magma forward, a big aggressive swing",
+          "intensity": 1,
           "tries": 1,
-          "generated_at": "2026-09-10T19:59:24+00:00"
+          "generated_at": "2026-09-10T20:27:20+00:00"
         },
         "west": {
           "status": "pass",

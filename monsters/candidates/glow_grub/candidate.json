@@ -891,132 +891,136 @@
       "directions": {
         "south": {
           "status": "fail",
-          "step_mean": 0.105,
-          "step_max": 0.185,
-          "drift": 1.47,
-          "loop": 0.115,
-          "loop_ratio": 1.1,
-          "travel": 0.35,
+          "step_mean": 0.103,
+          "step_max": 0.1382,
+          "drift": 1.38,
+          "loop": 0.1156,
+          "loop_ratio": 1.12,
+          "travel": 0.68,
           "pin": 1.0,
           "pad": 0,
-          "flash": 0.005,
-          "peak": 0.235,
-          "reach": 0.091,
+          "flash": 0.013,
+          "peak": 0.201,
+          "reach": 0.136,
           "canvas": [
             32,
             32
           ],
           "reasons": [
-            "no strike, just a lean: nothing reaches past 0.09 of the body"
+            "no strike, just a lean: nothing reaches past 0.14 of the body"
           ],
-          "sub": "1af887e8-530c-4f52-9045-a735dc473176",
-          "group": "b79bb619-a363-40a5-87d8-a006e88f586c",
+          "sub": "cfea7edb-f91c-4193-83fe-fee4056b5866",
+          "group": "0f61fad6-07a6-4486-90f7-dad22a2176d3",
           "takes": 1,
-          "version": 1,
+          "version": 2,
           "mirrored": false,
-          "action": "Bite - Rears its front half up and bites forward with its mandibles",
+          "action": "Bite - Rears its front half up and bites forward with its mandibles, a big aggressive swing",
+          "intensity": 1,
           "tries": 1,
-          "generated_at": "2026-09-10T19:53:38+00:00"
+          "generated_at": "2026-09-10T20:23:13+00:00"
         },
         "south-east": {
-          "status": "fail",
-          "step_mean": 0.117,
-          "step_max": 0.1376,
-          "drift": 1.86,
-          "loop": 0.1865,
-          "loop_ratio": 1.59,
-          "travel": 0.21,
+          "status": "warn",
+          "step_mean": 0.1691,
+          "step_max": 0.2288,
+          "drift": 2.68,
+          "loop": 0.0817,
+          "loop_ratio": 0.48,
+          "travel": 0.92,
           "pin": 1.0,
           "pad": 0,
-          "flash": 0.007,
-          "peak": 0.2385,
-          "reach": 0.176,
+          "flash": 0.003,
+          "peak": 0.3366,
+          "reach": 0.235,
           "canvas": [
             32,
             32
           ],
           "reasons": [
-            "no strike, just a lean: nothing reaches past 0.18 of the body"
+            "shallow strike: reach 0.24 — eyeball it"
           ],
-          "sub": "7c0f02f7-4b5d-4c47-9695-e377ae52c2f7",
-          "group": "e3e2b284-84d0-4ffa-9b8a-73c23f9bc120",
+          "sub": "60733db0-4bf1-4f70-a181-d5852d9c0556",
+          "group": "46b6965d-8ead-4661-8ad5-6d0a68a2bc1d",
           "takes": 1,
-          "version": 1,
+          "version": 2,
           "mirrored": false,
-          "action": "Bite - Rears its front half up and bites forward with its mandibles",
+          "action": "Bite - Rears its front half up and bites forward with its mandibles, a big aggressive swing",
+          "intensity": 1,
           "tries": 1,
-          "generated_at": "2026-09-10T19:53:38+00:00"
+          "generated_at": "2026-09-10T20:23:14+00:00"
         },
         "east": {
           "status": "fail",
-          "step_mean": 0.1079,
-          "step_max": 0.1309,
-          "drift": 1.37,
-          "loop": 0.0864,
-          "loop_ratio": 0.8,
-          "travel": 0.45,
+          "step_mean": 0.1261,
+          "step_max": 0.1662,
+          "drift": 1.15,
+          "loop": 0.1718,
+          "loop_ratio": 1.36,
+          "travel": 0.91,
           "pin": 1.0,
           "pad": 0,
-          "flash": 0.032,
-          "peak": 0.2117,
-          "reach": 0.091,
+          "flash": 0.035,
+          "peak": 0.2704,
+          "reach": 0.136,
           "canvas": [
             32,
             32
           ],
           "reasons": [
-            "no strike, just a lean: nothing reaches past 0.09 of the body"
+            "no strike, just a lean: nothing reaches past 0.14 of the body"
           ],
-          "sub": "a2bf1964-1e5f-4fbf-b457-b661a06cdfa5",
-          "group": "5b03e637-d3af-4242-bf2d-8d7bf0c5a288",
+          "sub": "874a2bfc-62ec-4adf-8465-65bacbc82c92",
+          "group": "79db3a0a-10bc-4fad-a4ff-623473c8377a",
           "takes": 1,
-          "version": 1,
+          "version": 2,
           "mirrored": false,
-          "action": "Bite - Rears its front half up and bites forward with its mandibles",
+          "action": "Bite - Rears its front half up and bites forward with its mandibles, a big aggressive swing",
+          "intensity": 1,
           "tries": 1,
-          "generated_at": "2026-09-10T19:53:39+00:00"
+          "generated_at": "2026-09-10T20:23:14+00:00"
         },
         "north-east": {
           "status": "fail",
-          "step_mean": 0.1495,
-          "step_max": 0.1934,
-          "drift": 1.53,
-          "loop": 0.1094,
-          "loop_ratio": 0.73,
-          "travel": 0.25,
+          "step_mean": 0.119,
+          "step_max": 0.198,
+          "drift": 0.77,
+          "loop": 0.1754,
+          "loop_ratio": 1.47,
+          "travel": 0.28,
           "pin": 1.0,
           "pad": 0,
-          "flash": -0.01,
-          "peak": 0.2697,
-          "reach": 0.089,
+          "flash": 0.013,
+          "peak": 0.1754,
+          "reach": 0.13,
           "canvas": [
             32,
             32
           ],
           "reasons": [
-            "no strike, just a lean: nothing reaches past 0.09 of the body"
+            "no strike, just a lean: nothing reaches past 0.13 of the body"
           ],
-          "sub": "305e6677-e5f5-4c14-bff4-f8cf99c69a19",
-          "group": "b2d5b516-8473-4f1b-a5fa-9efdf34fe1c7",
+          "sub": "4f64d0de-c5c2-49f4-ad73-c2b8f178735b",
+          "group": "b5e8533f-95ef-475e-b737-6f922678dac1",
           "takes": 1,
-          "version": 1,
+          "version": 2,
           "mirrored": false,
-          "action": "Bite - Rears its front half up and bites forward with its mandibles",
+          "action": "Bite - Rears its front half up and bites forward with its mandibles, a big aggressive swing",
+          "intensity": 1,
           "tries": 1,
-          "generated_at": "2026-09-10T19:53:39+00:00"
+          "generated_at": "2026-09-10T20:23:15+00:00"
         },
         "north": {
           "status": "fail",
-          "step_mean": 0.1083,
-          "step_max": 0.1103,
-          "drift": 0.63,
-          "loop": 0.0795,
-          "loop_ratio": 0.73,
-          "travel": 0.78,
+          "step_mean": 0.1293,
+          "step_max": 0.1627,
+          "drift": 0.76,
+          "loop": 0.1286,
+          "loop_ratio": 0.99,
+          "travel": 1.06,
           "pin": 1.0,
           "pad": 0,
-          "flash": 0.045,
-          "peak": 0.1667,
+          "flash": 0.003,
+          "peak": 0.1916,
           "reach": 0.083,
           "canvas": [
             32,
@@ -1025,14 +1029,46 @@
           "reasons": [
             "no strike, just a lean: nothing reaches past 0.08 of the body"
           ],
-          "sub": "fdffa936-da1a-4aab-a559-ee15b6cad695",
-          "group": "a0b0ab2f-ecd2-4831-b510-f63fa5eca7ab",
+          "sub": "31989036-6f17-4553-a45c-ac2e3e1f0d9e",
+          "group": "3d50a0ae-2264-4a21-89be-4aa4ca70ad5f",
           "takes": 1,
-          "version": 1,
+          "version": 2,
           "mirrored": false,
-          "action": "Bite - Rears its front half up and bites forward with its mandibles",
+          "action": "Bite - Rears its front half up and bites forward with its mandibles, a big aggressive swing",
+          "intensity": 1,
           "tries": 1,
-          "generated_at": "2026-09-10T19:53:40+00:00"
+          "generated_at": "2026-09-10T20:23:15+00:00"
+        },
+        "south-west": {
+          "status": "warn",
+          "step_mean": 0.1691,
+          "step_max": 0.2288,
+          "drift": 2.68,
+          "loop": 0.0817,
+          "loop_ratio": 0.48,
+          "travel": 0.92,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": 0.003,
+          "peak": 0.3366,
+          "reach": 0.235,
+          "canvas": [
+            32,
+            32
+          ],
+          "reasons": [
+            "shallow strike: reach 0.24 — eyeball it"
+          ],
+          "sub": "60733db0-4bf1-4f70-a181-d5852d9c0556",
+          "group": "46b6965d-8ead-4661-8ad5-6d0a68a2bc1d",
+          "takes": 1,
+          "version": 2,
+          "mirrored": true,
+          "action": "Bite - Rears its front half up and bites forward with its mandibles, a big aggressive swing",
+          "intensity": 1,
+          "tries": 1,
+          "generated_at": "2026-09-10T20:23:14+00:00",
+          "source": "south-east"
         }
       },
       "action": "Bite - Rears its front half up and bites forward with its mandibles, a big aggressive swing",
@@ -1071,6 +1107,13 @@
           "glow_grub/animations/attack_try/north/02.webp",
           "glow_grub/animations/attack_try/north/03.webp",
           "glow_grub/animations/attack_try/north/04.webp"
+        ],
+        "south-west": [
+          "glow_grub/animations/attack_try/south-west/00.webp",
+          "glow_grub/animations/attack_try/south-west/01.webp",
+          "glow_grub/animations/attack_try/south-west/02.webp",
+          "glow_grub/animations/attack_try/south-west/03.webp",
+          "glow_grub/animations/attack_try/south-west/04.webp"
         ]
       },
       "strips": {
@@ -1078,7 +1121,8 @@
         "south-east": "glow_grub/animations/attack_try__south-east.webp",
         "east": "glow_grub/animations/attack_try__east.webp",
         "north-east": "glow_grub/animations/attack_try__north-east.webp",
-        "north": "glow_grub/animations/attack_try__north.webp"
+        "north": "glow_grub/animations/attack_try__north.webp",
+        "south-west": "glow_grub/animations/attack_try__south-west.webp"
       },
       "intensity": 1
     }

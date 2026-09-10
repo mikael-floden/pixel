@@ -916,149 +916,215 @@
       "directions": {
         "south": {
           "status": "fail",
-          "step_mean": 0.0999,
-          "step_max": 0.1449,
-          "drift": 10.73,
-          "loop": 0.2025,
-          "loop_ratio": 2.03,
-          "travel": 10.73,
+          "step_mean": 0.1091,
+          "step_max": 0.2091,
+          "drift": 11.95,
+          "loop": 0.3035,
+          "loop_ratio": 2.78,
+          "travel": 12.26,
           "pin": 1.0,
           "pad": 0,
           "flash": 0.0,
-          "peak": 0.2025,
-          "reach": 0.163,
+          "peak": 0.3035,
+          "reach": 0.116,
           "canvas": [
             232,
             232
           ],
           "reasons": [
-            "no strike, just a lean: nothing reaches past 0.16 of the body"
+            "no strike, just a lean: nothing reaches past 0.12 of the body"
           ],
-          "sub": "3f5c3208-9eec-4ebb-976e-e315ebb29275",
-          "group": "6a80d2ed-0ab8-4436-befe-eefd4debe245",
+          "sub": "9195ad1b-e41d-4c50-8718-0dabac3469d4",
+          "group": "54718c79-defe-46db-ae86-5b7b6674f6a1",
           "takes": 1,
-          "version": 1,
+          "version": 2,
           "mirrored": false,
-          "action": "Club Smash - Raises the stone club overhead and smashes it straight down",
+          "action": "Club Smash - Raises the stone club overhead and smashes it straight down, a big aggressive swing",
+          "intensity": 1,
           "tries": 1,
-          "generated_at": "2026-09-10T19:57:18+00:00"
+          "generated_at": "2026-09-10T20:25:08+00:00"
         },
         "south-east": {
           "status": "fail",
-          "step_mean": 0.1307,
-          "step_max": 0.2356,
-          "drift": 8.58,
-          "loop": 0.3453,
-          "loop_ratio": 2.64,
-          "travel": 8.58,
+          "step_mean": 0.1511,
+          "step_max": 0.236,
+          "drift": 12.89,
+          "loop": 0.2854,
+          "loop_ratio": 1.89,
+          "travel": 12.89,
           "pin": 1.0,
           "pad": 0,
           "flash": 0.0,
-          "peak": 0.3453,
-          "reach": 0.203,
+          "peak": 0.299,
+          "reach": 0.174,
           "canvas": [
             232,
             232
           ],
           "reasons": [
-            "no strike, just a lean: nothing reaches past 0.20 of the body"
+            "no strike, just a lean: nothing reaches past 0.17 of the body"
           ],
-          "sub": "ab58a842-560f-4152-91f0-87b45ce29ffc",
-          "group": "55df9a32-a204-478d-83b3-3f17c6627a1d",
+          "sub": "334fce68-b93f-411c-bbc0-1a72271432bd",
+          "group": "12e67093-fa75-48c9-a924-7f9221a7c03d",
           "takes": 1,
-          "version": 1,
+          "version": 2,
           "mirrored": false,
-          "action": "Club Smash - Raises the stone club overhead and smashes it straight down",
+          "action": "Club Smash - Raises the stone club overhead and smashes it straight down, a big aggressive swing",
+          "intensity": 1,
           "tries": 1,
-          "generated_at": "2026-09-10T19:57:19+00:00"
+          "generated_at": "2026-09-10T20:25:09+00:00"
         },
         "east": {
-          "status": "fail",
-          "step_mean": 0.1561,
-          "step_max": 0.2619,
-          "drift": 9.51,
-          "loop": 0.2648,
-          "loop_ratio": 1.7,
-          "travel": 16.54,
+          "status": "warn",
+          "step_mean": 0.2343,
+          "step_max": 0.3788,
+          "drift": 15.84,
+          "loop": 0.2523,
+          "loop_ratio": 1.08,
+          "travel": 26.05,
           "pin": 1.0,
           "pad": 0,
-          "flash": 0.109,
-          "peak": 0.2648,
+          "flash": 0.056,
+          "peak": 0.2824,
           "reach": 0.453,
           "canvas": [
             232,
             232
           ],
           "reasons": [
-            "painted effect: 0.11 of the body in new bright pixels (flare/slash arc)"
+            "some bright effect pixels (0.06) — eyeball it"
           ],
-          "sub": "592ab3d0-3b6a-48fc-be6d-aa732f808bcb",
-          "group": "bbf072bc-c807-4e2c-9b77-f1150d032fb6",
+          "sub": "0442a831-a35d-48ae-a380-200c5490256b",
+          "group": "c4506baf-e446-4994-afdf-e377aa698449",
           "takes": 1,
-          "version": 1,
+          "version": 2,
           "mirrored": false,
-          "action": "Club Smash - Raises the stone club overhead and smashes it straight down",
+          "action": "Club Smash - Raises the stone club overhead and smashes it straight down, a big aggressive swing",
+          "intensity": 1,
           "tries": 1,
-          "generated_at": "2026-09-10T19:57:19+00:00"
+          "generated_at": "2026-09-10T20:25:10+00:00"
         },
         "north-east": {
-          "status": "fail",
-          "step_mean": 0.0731,
-          "step_max": 0.1573,
-          "drift": 3.84,
-          "loop": 0.2238,
-          "loop_ratio": 3.06,
-          "travel": 3.84,
+          "status": "warn",
+          "step_mean": 0.1084,
+          "step_max": 0.2191,
+          "drift": 4.64,
+          "loop": 0.187,
+          "loop_ratio": 1.72,
+          "travel": 2.73,
           "pin": 1.0,
           "pad": 0,
           "flash": 0.0,
-          "peak": 0.2238,
-          "reach": 0.144,
+          "peak": 0.187,
+          "reach": 0.273,
           "canvas": [
             232,
             232
           ],
           "reasons": [
-            "motion 0.073 outside the calm band 0.08–0.9 — eyeball it",
-            "no strike, just a lean: nothing reaches past 0.14 of the body"
+            "shallow strike: reach 0.27 — eyeball it"
           ],
-          "sub": "ee30fa45-734d-4c38-94f0-f8e8e94c926e",
-          "group": "e08b66ea-10b9-4519-ae23-4bcc44cff361",
+          "sub": "3de1a77f-4dd7-4d14-b81c-de8ee62d1978",
+          "group": "f84e93b7-4091-4f2c-aae6-6e4847654a32",
           "takes": 1,
-          "version": 1,
+          "version": 2,
           "mirrored": false,
-          "action": "Club Smash - Raises the stone club overhead and smashes it straight down",
+          "action": "Club Smash - Raises the stone club overhead and smashes it straight down, a big aggressive swing",
+          "intensity": 1,
           "tries": 1,
-          "generated_at": "2026-09-10T19:57:20+00:00"
+          "generated_at": "2026-09-10T20:25:10+00:00"
         },
         "north": {
           "status": "fail",
-          "step_mean": 0.099,
-          "step_max": 0.1562,
-          "drift": 7.17,
-          "loop": 0.1416,
-          "loop_ratio": 1.43,
-          "travel": 7.94,
+          "step_mean": 0.1679,
+          "step_max": 0.2994,
+          "drift": 11.54,
+          "loop": 0.2482,
+          "loop_ratio": 1.48,
+          "travel": 3.46,
           "pin": 1.0,
           "pad": 0,
           "flash": 0.0,
-          "peak": 0.1538,
-          "reach": 0.16,
+          "peak": 0.336,
+          "reach": 0.15,
           "canvas": [
             232,
             232
           ],
           "reasons": [
-            "no strike, just a lean: nothing reaches past 0.16 of the body"
+            "no strike, just a lean: nothing reaches past 0.15 of the body"
           ],
-          "sub": "c4b61e67-ec22-43bf-a5e5-37f95c38f7eb",
-          "group": "454eab52-4b22-4013-865c-25ea100200bf",
+          "sub": "8f9a75f4-c13a-45f9-9e44-0c2e95d652e7",
+          "group": "90ad0329-1267-4ded-944a-0c91059c1a46",
           "takes": 1,
-          "version": 1,
+          "version": 2,
           "mirrored": false,
-          "action": "Club Smash - Raises the stone club overhead and smashes it straight down",
+          "action": "Club Smash - Raises the stone club overhead and smashes it straight down, a big aggressive swing",
+          "intensity": 1,
           "tries": 1,
-          "generated_at": "2026-09-10T19:57:21+00:00"
+          "generated_at": "2026-09-10T20:25:11+00:00"
+        },
+        "west": {
+          "status": "warn",
+          "step_mean": 0.2343,
+          "step_max": 0.3788,
+          "drift": 15.84,
+          "loop": 0.2523,
+          "loop_ratio": 1.08,
+          "travel": 26.05,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": 0.056,
+          "peak": 0.2824,
+          "reach": 0.453,
+          "canvas": [
+            232,
+            232
+          ],
+          "reasons": [
+            "some bright effect pixels (0.06) — eyeball it"
+          ],
+          "sub": "0442a831-a35d-48ae-a380-200c5490256b",
+          "group": "c4506baf-e446-4994-afdf-e377aa698449",
+          "takes": 1,
+          "version": 2,
+          "mirrored": true,
+          "action": "Club Smash - Raises the stone club overhead and smashes it straight down, a big aggressive swing",
+          "intensity": 1,
+          "tries": 1,
+          "generated_at": "2026-09-10T20:25:10+00:00",
+          "source": "east"
+        },
+        "north-west": {
+          "status": "warn",
+          "step_mean": 0.1084,
+          "step_max": 0.2191,
+          "drift": 4.64,
+          "loop": 0.187,
+          "loop_ratio": 1.72,
+          "travel": 2.73,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": 0.0,
+          "peak": 0.187,
+          "reach": 0.273,
+          "canvas": [
+            232,
+            232
+          ],
+          "reasons": [
+            "shallow strike: reach 0.27 — eyeball it"
+          ],
+          "sub": "3de1a77f-4dd7-4d14-b81c-de8ee62d1978",
+          "group": "f84e93b7-4091-4f2c-aae6-6e4847654a32",
+          "takes": 1,
+          "version": 2,
+          "mirrored": true,
+          "action": "Club Smash - Raises the stone club overhead and smashes it straight down, a big aggressive swing",
+          "intensity": 1,
+          "tries": 1,
+          "generated_at": "2026-09-10T20:25:10+00:00",
+          "source": "north-east"
         }
       },
       "action": "Club Smash - Raises the stone club overhead and smashes it straight down, a big aggressive swing",
@@ -1097,6 +1163,20 @@
           "crag_troll/animations/attack_try/north/02.webp",
           "crag_troll/animations/attack_try/north/03.webp",
           "crag_troll/animations/attack_try/north/04.webp"
+        ],
+        "west": [
+          "crag_troll/animations/attack_try/west/00.webp",
+          "crag_troll/animations/attack_try/west/01.webp",
+          "crag_troll/animations/attack_try/west/02.webp",
+          "crag_troll/animations/attack_try/west/03.webp",
+          "crag_troll/animations/attack_try/west/04.webp"
+        ],
+        "north-west": [
+          "crag_troll/animations/attack_try/north-west/00.webp",
+          "crag_troll/animations/attack_try/north-west/01.webp",
+          "crag_troll/animations/attack_try/north-west/02.webp",
+          "crag_troll/animations/attack_try/north-west/03.webp",
+          "crag_troll/animations/attack_try/north-west/04.webp"
         ]
       },
       "strips": {
@@ -1104,7 +1184,9 @@
         "south-east": "crag_troll/animations/attack_try__south-east.webp",
         "east": "crag_troll/animations/attack_try__east.webp",
         "north-east": "crag_troll/animations/attack_try__north-east.webp",
-        "north": "crag_troll/animations/attack_try__north.webp"
+        "north": "crag_troll/animations/attack_try__north.webp",
+        "west": "crag_troll/animations/attack_try__west.webp",
+        "north-west": "crag_troll/animations/attack_try__north-west.webp"
       },
       "intensity": 1
     }

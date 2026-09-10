@@ -274,10 +274,20 @@ The rules that produce a real strike:
   designs flagged `fx` (elementals, breath, spells — 14 of 39) whose effect
   IS the attack. Eyeball the sheets too: pale arcs slip under it, and a
   direction set `status: fail, manual: true` is re-rolled by the next sweep.
-- **Claws → claw swipe on the third roll** (maintainer: "if it looks like
-  the monster has claws, a claw slash attack usually works"): designs
-  flagged `claws` (20 of 39) fall back to `CLAW_SLASH` once a direction has
-  failed twice under its own wording (`tries` counts rolls).
+- **Roll the same direction before changing anything.** Maintainer: "if
+  you're stuck on a single direction generating a garbage animation, keep
+  retrying maybe 10 times before you give up the entire animation." The
+  ladder per direction, counted by `rolls` on its verdict: 1–2 re-roll the
+  logical attack on a new seed; from 3 a clawed design switches to the
+  SIMPLER `CLAW_SLASH` ("often you need to try something simpler, and a
+  'claw' attack with swoosh lines often works" — its white swoosh is wanted,
+  so the flash gate opens to 0.45 for it); from 6 the monster's intensity
+  dial goes up, which redoes all its directions; at 10 the direction stops
+  being rolled, because what is wrong is the attack CONCEPT, not the dice —
+  reword it in the config and the whole slot regenerates.
+- **Write the attack that feels LOGICAL for the creature first** (maintainer:
+  "that will usually generate the correct attack"). The simple claw is the
+  fallback, not the opening move.
 - **Painted effects and shallow strikes are a dice roll, so the sweep is a
   LOOP**: run `attack` until `--dry-run` reports nothing.
 

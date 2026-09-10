@@ -895,16 +895,16 @@
       "directions": {
         "south": {
           "status": "fail",
-          "step_mean": 0.123,
-          "step_max": 0.1545,
-          "drift": 0.82,
-          "loop": 0.1527,
-          "loop_ratio": 1.24,
-          "travel": 0.2,
+          "step_mean": 0.1744,
+          "step_max": 0.2253,
+          "drift": 1.56,
+          "loop": 0.1732,
+          "loop_ratio": 0.99,
+          "travel": 0.06,
           "pin": 1.0,
           "pad": 0,
-          "flash": 0.099,
-          "peak": 0.2212,
+          "flash": 0.221,
+          "peak": 0.3037,
           "reach": 0.096,
           "canvas": [
             64,
@@ -913,132 +913,164 @@
           "reasons": [
             "no strike, just a lean: nothing reaches past 0.10 of the body"
           ],
-          "sub": "facb67d5-d22c-46fb-a63d-6b7f59f48e61",
-          "group": "670cb7ed-e4fb-4c63-addf-a0b45d9044db",
+          "sub": "9f89bf08-228d-4fdc-9fca-31da4b778f86",
+          "group": "ad7aad76-2e6e-489e-94cf-5166fc68b172",
           "takes": 1,
-          "version": 1,
+          "version": 2,
           "mirrored": false,
-          "action": "Eye Beam - Flares its pupil wide and fires a beam of light forward",
+          "action": "Eye Beam - Flares its pupil wide and fires a beam of light forward, a big aggressive swing",
+          "intensity": 1,
           "tries": 1,
-          "generated_at": "2026-09-10T19:57:06+00:00"
+          "generated_at": "2026-09-10T20:25:49+00:00"
         },
         "south-east": {
           "status": "fail",
-          "step_mean": 0.1515,
-          "step_max": 0.2058,
-          "drift": 1.22,
-          "loop": 0.312,
-          "loop_ratio": 2.06,
-          "travel": 0.64,
+          "step_mean": 0.1569,
+          "step_max": 0.1816,
+          "drift": 2.51,
+          "loop": 0.2606,
+          "loop_ratio": 1.66,
+          "travel": 0.13,
           "pin": 1.0,
           "pad": 0,
-          "flash": 0.035,
-          "peak": 0.3223,
-          "reach": 0.083,
-          "canvas": [
-            64,
-            64
-          ],
-          "reasons": [
-            "no strike, just a lean: nothing reaches past 0.08 of the body"
-          ],
-          "sub": "5b995a7f-389b-4f43-bc98-d8e685bb4638",
-          "group": "76f14f04-6c02-4274-a1dd-caae32bd2a51",
-          "takes": 1,
-          "version": 1,
-          "mirrored": false,
-          "action": "Eye Beam - Flares its pupil wide and fires a beam of light forward",
-          "tries": 1,
-          "generated_at": "2026-09-10T19:57:08+00:00"
-        },
-        "east": {
-          "status": "fail",
-          "step_mean": 0.1724,
-          "step_max": 0.2314,
-          "drift": 1.52,
-          "loop": 0.1853,
-          "loop_ratio": 1.08,
-          "travel": 0.82,
-          "pin": 1.0,
-          "pad": 0,
-          "flash": 0.01,
-          "peak": 0.2568,
-          "reach": 0.143,
-          "canvas": [
-            64,
-            64
-          ],
-          "reasons": [
-            "no strike, just a lean: nothing reaches past 0.14 of the body"
-          ],
-          "sub": "936608d4-a36c-4129-becf-2bb6458d5060",
-          "group": "40998592-d67b-413a-80f0-0d43a199075a",
-          "takes": 1,
-          "version": 1,
-          "mirrored": false,
-          "action": "Eye Beam - Flares its pupil wide and fires a beam of light forward",
-          "tries": 1,
-          "generated_at": "2026-09-10T19:57:09+00:00"
-        },
-        "north-east": {
-          "status": "fail",
-          "step_mean": 0.16,
-          "step_max": 0.2039,
-          "drift": 1.33,
-          "loop": 0.3005,
-          "loop_ratio": 1.88,
-          "travel": 1.33,
-          "pin": 1.0,
-          "pad": 0,
-          "flash": 0.325,
-          "peak": 0.3371,
-          "reach": 0.068,
-          "canvas": [
-            64,
-            64
-          ],
-          "reasons": [
-            "no strike, just a lean: nothing reaches past 0.07 of the body",
-            "some bright effect pixels (0.33) — eyeball it"
-          ],
-          "sub": "6f5b7a86-2114-463f-bda1-69ba3c2ecce6",
-          "group": "56daa068-1aab-4db6-a055-ef53b938e205",
-          "takes": 1,
-          "version": 1,
-          "mirrored": false,
-          "action": "Eye Beam - Flares its pupil wide and fires a beam of light forward",
-          "tries": 1,
-          "generated_at": "2026-09-10T19:57:09+00:00"
-        },
-        "north": {
-          "status": "fail",
-          "step_mean": 0.1784,
-          "step_max": 0.2227,
-          "drift": 1.19,
-          "loop": 0.2255,
-          "loop_ratio": 1.26,
-          "travel": 0.11,
-          "pin": 1.0,
-          "pad": 0,
-          "flash": 0.312,
-          "peak": 0.2458,
-          "reach": 0.06,
+          "flash": 0.327,
+          "peak": 0.3481,
+          "reach": 0.062,
           "canvas": [
             64,
             64
           ],
           "reasons": [
             "no strike, just a lean: nothing reaches past 0.06 of the body",
-            "some bright effect pixels (0.31) — eyeball it"
+            "some bright effect pixels (0.33) — eyeball it"
           ],
-          "sub": "88490fd2-327d-4e21-b701-79d7356204f0",
-          "group": "64717727-c4ac-4602-9095-566195eb7bfb",
+          "sub": "ef57858f-05e3-461d-ae5c-16315ff3383f",
+          "group": "80d83fd1-a538-45db-8ec5-c443b1566594",
           "takes": 1,
-          "version": 1,
+          "version": 2,
           "mirrored": false,
-          "action": "Eye Beam - Flares its pupil wide and fires a beam of light forward",
+          "action": "Eye Beam - Flares its pupil wide and fires a beam of light forward, a big aggressive swing",
+          "intensity": 1,
           "tries": 1,
-          "generated_at": "2026-09-10T19:57:10+00:00"
+          "generated_at": "2026-09-10T20:25:50+00:00"
+        },
+        "east": {
+          "status": "pass",
+          "step_mean": 0.1851,
+          "step_max": 0.2017,
+          "drift": 1.02,
+          "loop": 0.1727,
+          "loop_ratio": 0.93,
+          "travel": 1.86,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": 0.076,
+          "peak": 0.2876,
+          "reach": 0.341,
+          "canvas": [
+            64,
+            64
+          ],
+          "reasons": [],
+          "sub": "2545e10d-a501-4dfa-aade-107ca73cdc4a",
+          "group": "b3503b33-a373-4e35-a452-7fb9bd49d771",
+          "takes": 1,
+          "version": 2,
+          "mirrored": false,
+          "action": "Eye Beam - Flares its pupil wide and fires a beam of light forward, a big aggressive swing",
+          "intensity": 1,
+          "tries": 1,
+          "generated_at": "2026-09-10T20:25:50+00:00"
+        },
+        "north-east": {
+          "status": "fail",
+          "step_mean": 0.1706,
+          "step_max": 0.227,
+          "drift": 1.05,
+          "loop": 0.3546,
+          "loop_ratio": 2.08,
+          "travel": 0.64,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": 0.108,
+          "peak": 0.361,
+          "reach": 0.091,
+          "canvas": [
+            64,
+            64
+          ],
+          "reasons": [
+            "no strike, just a lean: nothing reaches past 0.09 of the body"
+          ],
+          "sub": "0d56d218-5870-4ec8-9478-a5e89ad6be73",
+          "group": "c1b9afc1-1f3e-4924-afc5-83ff296b735e",
+          "takes": 1,
+          "version": 2,
+          "mirrored": false,
+          "action": "Eye Beam - Flares its pupil wide and fires a beam of light forward, a big aggressive swing",
+          "intensity": 1,
+          "tries": 1,
+          "generated_at": "2026-09-10T20:25:51+00:00"
+        },
+        "north": {
+          "status": "fail",
+          "step_mean": 0.1858,
+          "step_max": 0.206,
+          "drift": 1.4,
+          "loop": 0.2813,
+          "loop_ratio": 1.51,
+          "travel": 0.68,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": 0.241,
+          "peak": 0.3701,
+          "reach": 0.066,
+          "canvas": [
+            64,
+            64
+          ],
+          "reasons": [
+            "no strike, just a lean: nothing reaches past 0.07 of the body",
+            "some bright effect pixels (0.24) — eyeball it"
+          ],
+          "sub": "f3aae652-2299-43a9-9e11-59ac1ea55ad4",
+          "group": "c6314ca2-299a-4f4c-845c-772cb6042d5c",
+          "takes": 1,
+          "version": 2,
+          "mirrored": false,
+          "action": "Eye Beam - Flares its pupil wide and fires a beam of light forward, a big aggressive swing",
+          "intensity": 1,
+          "tries": 1,
+          "generated_at": "2026-09-10T20:25:51+00:00"
+        },
+        "west": {
+          "status": "pass",
+          "step_mean": 0.1851,
+          "step_max": 0.2017,
+          "drift": 1.02,
+          "loop": 0.1727,
+          "loop_ratio": 0.93,
+          "travel": 1.86,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": 0.076,
+          "peak": 0.2876,
+          "reach": 0.341,
+          "canvas": [
+            64,
+            64
+          ],
+          "reasons": [],
+          "sub": "2545e10d-a501-4dfa-aade-107ca73cdc4a",
+          "group": "b3503b33-a373-4e35-a452-7fb9bd49d771",
+          "takes": 1,
+          "version": 2,
+          "mirrored": true,
+          "action": "Eye Beam - Flares its pupil wide and fires a beam of light forward, a big aggressive swing",
+          "intensity": 1,
+          "tries": 1,
+          "generated_at": "2026-09-10T20:25:50+00:00",
+          "source": "east"
         }
       },
       "action": "Eye Beam - Flares its pupil wide and fires a beam of light forward, a big aggressive swing",
@@ -1077,6 +1109,13 @@
           "eye_bat/animations/attack_try/north/02.webp",
           "eye_bat/animations/attack_try/north/03.webp",
           "eye_bat/animations/attack_try/north/04.webp"
+        ],
+        "west": [
+          "eye_bat/animations/attack_try/west/00.webp",
+          "eye_bat/animations/attack_try/west/01.webp",
+          "eye_bat/animations/attack_try/west/02.webp",
+          "eye_bat/animations/attack_try/west/03.webp",
+          "eye_bat/animations/attack_try/west/04.webp"
         ]
       },
       "strips": {
@@ -1084,7 +1123,8 @@
         "south-east": "eye_bat/animations/attack_try__south-east.webp",
         "east": "eye_bat/animations/attack_try__east.webp",
         "north-east": "eye_bat/animations/attack_try__north-east.webp",
-        "north": "eye_bat/animations/attack_try__north.webp"
+        "north": "eye_bat/animations/attack_try__north.webp",
+        "west": "eye_bat/animations/attack_try__west.webp"
       },
       "intensity": 1
     }
