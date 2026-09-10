@@ -124,43 +124,74 @@ STATES = {
 }
 # Maintainer 2026-09-10: "on some monsters you have to give a more and more
 # extreme prompt until you get the movement you want. It's different for
-# different monsters. Some need a prompt telling them to not move so much,
-# some need a prompt telling them to swing in an aggressive attack!" So the
-# wording is a DIAL, not a constant: every re-roll of a monster that came back
-# limp turns it up, every re-roll that came back wild turns it down, and the
-# whole monster (all its generated directions) is regenerated at the new
-# setting so the eight directions stay one coherent take.
-INTENSITY = {
-    -2: ", a small tight strike, the body barely moves",
-    -1: ", a controlled strike, only the striking limb moves and the body stays planted",
-    0: "",
-    1: ", a big aggressive swing",
-    2: ", a big aggressive attack with the whole body behind it, wide exaggerated motion",
-    3: ", an extremely aggressive attack, huge exaggerated motion, the limb thrown far out",
-}
-TOO_LITTLE = ("no strike", "just a lean", "weak strike", "frozen", "shallow strike", "outside the calm band")
-TOO_MUCH = ("too much", "drifts", "walks across")
-
-# Maintainer 2026-09-10: "often you should try with an attack that feels
-# logical — that will usually generate the correct attack. But often you need
-# to try something simpler, and a 'claw' attack with swoosh lines often works."
-# So the claw swipe is the SIMPLER fallback, and its swoosh lines are wanted,
-# not a painted-effect failure — the flash gate is relaxed for it.
+# different monsters. Some need a prompt telling them to not move so much, some
+# need a prompt telling them to swing in an aggressive attack!" and, when a
+# fixed set of rungs still left creatures passive: "I said INCREASE the
+# extremeness UNTIL you get the animation/movement you want."
+#
+# So the ladder has no ceiling worth reaching: every failed roll of a direction
+# climbs it, and each rung is more extreme than the last — first the creature's
+# own logical attack, then a simpler swooshing one, then the hand-written
+# EVENT (`attack_extreme`: the shell bursts, the ground erupts), and from there
+# the same event amplified further and further. A roll that failed for TOO MUCH
+# motion goes the other way instead, into the calm rungs.
+AMPLIFY = [
+    "",
+    ", a big aggressive swing",
+    ", a huge aggressive attack with the whole body behind it, wide exaggerated motion",
+    ", an extremely violent attack, huge exaggerated motion, the limb thrown far out",
+    ", an explosively violent attack, the whole body thrown into it, debris and swoosh lines flying",
+    ", the most violent attack imaginable, enormous exaggerated motion, the whole creature launching itself into it, debris exploding outward",
+    ", an absurdly over-the-top attack, the creature contorting with the force of it, a huge burst of debris and swoosh lines filling the frame",
+]
+CALM = [
+    "",
+    ", a controlled strike, only the striking limb moves and the body stays planted",
+    ", a small tight strike, the body barely moves",
+]
 CLAW_SLASH = ("Claw Swipe - Raises one front paw and performs one quick swipe forward, "
               "white swoosh lines following the claws")
 SIMPLE_LUNGE = ("Lunge Attack - Throws its whole body forward in one fast lunge, "
                 "white swoosh lines trailing behind it")
-# Maintainer 2026-09-10: "sometimes you have to play with the number of frames
-# an animation can do so the generator has enough frames to perform an attack!
-# But often more frames leads to garbage." Measured on Cragtroll east: 4 frames
-# gave a full overhead swing (reach 0.45), 6 frames the same club barely moving
-# (0.21). So the count is a DIAL too, walked per roll of a stubborn direction —
-# 4 first and most often, 6 and 8 tried in between rather than committed to.
 FRAME_LADDER = [4, 6, 4, 8, 4, 6, 4, 8, 6, 4]
 MAX_TRIES = 10          # "keep retrying maybe 10 times before you give up the entire animation"
-CLAW_AFTER = 3          # rolls of the logical attack before falling back to the simple claw
-EXTREME_AFTER = 5       # rolls before the design's EXTREME attack is used
-ESCALATE_AFTER = 7      # rolls before the whole monster is redone one notch louder
+TOO_LITTLE = ("no strike", "just a lean", "weak strike", "frozen", "shallow strike", "outside the calm band")
+TOO_MUCH = ("too much", "drifts", "walks across")
+
+
+def rung_for(prev_rung, reasons):
+    """Which way the ladder moves after a failed roll: a passive clip climbs,
+    a wild one steps down into the calm rungs."""
+    text = " ".join(reasons or [])
+    up = sum(k in text for k in TOO_LITTLE)
+    down = sum(k in text for k in TOO_MUCH)
+    if down > up:
+        return max(prev_rung - 1, -len(CALM) + 1)
+    return min(prev_rung + 1, len(AMPLIFY) - 1 + 3)
+
+
+def ladder_action(cid, rung, base_action):
+    """The wording for a rung. Climbing goes: the creature's own attack, the
+    same amplified, a SIMPLER swooshing attack, then its hand-written EXTREME
+    event, and from there that event amplified without end. Negative rungs
+    calm the creature's own attack down instead."""
+    extreme = design_flag(cid, "attack_extreme")
+    simple = CLAW_SLASH if design_flag(cid, "claws") else SIMPLE_LUNGE
+    if rung < 0:
+        return base_action + CALM[min(-rung, len(CALM) - 1)]
+    if rung == 0:
+        return base_action
+    if rung == 1:
+        return base_action + AMPLIFY[1]
+    if rung == 2:
+        return simple + AMPLIFY[1]
+    if not extreme:
+        return base_action + AMPLIFY[min(rung - 1, len(AMPLIFY) - 1)]
+    if rung == 3:
+        return extreme
+    return extreme + AMPLIFY[min(rung - 2, len(AMPLIFY) - 1)]
+
+
 APPROVED_TAG = "APPROVED"
 MIN_USD = 5.0
 
@@ -453,43 +484,22 @@ def design_flag(cid, key):
 
 
 def intensity_of(man, slot):
+    """Deprecated monster-level dial, kept so old manifests still read."""
     return int(((man.get("animations") or {}).get(slot) or {}).get("intensity", 0))
-
-
-def bump_intensity(man, slot):
-    """Turn the wording dial from the last round's verdicts: limp -> louder,
-    wild -> quieter. Returns the new level (unchanged when nothing failed)."""
-    rec = (man.get("animations") or {}).get(slot) or {}
-    bad = [q for q in (rec.get("directions") or {}).values()
-           if q.get("status") == "fail" and not q.get("mirrored")]
-    if not bad:
-        return intensity_of(man, slot)
-    text = " ".join(r for q in bad for r in (q.get("reasons") or []))
-    up = sum(k in text for k in TOO_LITTLE)
-    down = sum(k in text for k in TOO_MUCH)
-    if up == down:
-        return intensity_of(man, slot)
-    lvl = intensity_of(man, slot) + (1 if up > down else -1)
-    lvl = max(min(lvl, max(INTENSITY)), min(INTENSITY))
-    rec["intensity"] = lvl
-    return lvl
 
 
 def state_action(cid, state, man=None):
     """The action text for this monster's state: the design's `<state>_action`
     override if it has one (a cobra slithers, a crab scuttles, a wraith
     glides — the maintainer words per creature, "jumps like a frog"), else the
-    state's default — PLUS the slot's intensity suffix, the dial that gets
-    turned up on a monster that came back limp and down on one that came back
-    wild."""
+    state's default. The ESCALATION lives in `ladder_action`, per direction,
+    not here — this is rung 0."""
     slot, state = state, base_state(state)
     base = STATES[state]["action"]
     for c in cand.load_cfg()["candidates"]:
         if c["id"] == cid and c.get(f"{state}_action"):
             base = c[f"{state}_action"]; break
-    if man is None:
-        man = cand.load_manifest(cid) or {}
-    return base + INTENSITY[intensity_of(man, slot)]
+    return base
 
 
 def _anim_record(man, slot):
@@ -528,33 +538,21 @@ def generate_state(client, cid, state, dirs, version, verbose=True, pin=False):
     man = cand.load_manifest(cid)
     rec = _anim_record(man, state)
     spec = STATES[base_state(state)]
-    jobs, actions, tries, counts = {}, {}, {}, {}
+    jobs, actions, tries, counts, rungs = {}, {}, {}, {}, {}
     for d in dirs:
         seed = seed_for(cid, state, d, version)
         pinned = spec["pin_end"] or pin
         end = rotation(cid, d) if pinned else None
-        action = rec["action"]
         old = rec["directions"].get(d, {})
-        # rolls counts how many times THIS direction has been rolled at the
-        # current intensity, whatever wording was used — the claw fallback
-        # must not reset it or the sweep flip-flops between the two wordings
-        same_dial = old.get("intensity", 0) == intensity_of(man, state)
-        tries[d] = (old.get("rolls", 0) + 1) if (same_dial and old.get("status") == "fail") else 1
-        if base_state(state) == "attack" and tries[d] >= EXTREME_AFTER and design_flag(cid, "attack_extreme"):
-            # nothing subtle has worked: describe an EVENT the model cannot
-            # render passively — the shell bursts, the ground erupts, the whole
-            # body is thrown forward (maintainer 2026-09-10: "what happens if
-            # you go even more extreme? 'The crab's shell explodes in a
-            # powerful attack'. You can always step up the prompt a notch.
-            # Think outside the box and try to generate something the AI can't
-            # stay passive anymore. This is very monster to monster
-            # individual."). One dramatic line per design, hand written.
-            action = design_flag(cid, "attack_extreme")
-        elif base_state(state) == "attack" and tries[d] >= CLAW_AFTER:
-            # the logical attack has had its rolls; go SIMPLER (maintainer).
-            # A clawed design gets the claw swipe, anything else a plain
-            # whole-body lunge — both with the swoosh lines he says work.
-            action = CLAW_SLASH if design_flag(cid, "claws") else SIMPLE_LUNGE
+        # every failed roll of THIS direction climbs the ladder one rung —
+        # more extreme until the movement is there (or calmer, if the last
+        # roll was wild). The rung, not a monster-wide dial, is the escalation.
+        rung = old.get("rung", 0)
+        if old.get("status") == "fail":
+            rung = rung_for(rung, old.get("reasons"))
+        rungs[d] = rung
+        tries[d] = (old.get("rolls", 0) + 1) if old.get("status") == "fail" else 1
+        action = ladder_action(cid, rung, rec["action"])
         actions[d] = action
         nf = frames_for(tries[d]) if base_state(state) == "attack" else spec["frames"]
         counts[d] = nf
@@ -563,7 +561,7 @@ def generate_state(client, cid, state, dirs, version, verbose=True, pin=False):
                                 keep_first=spec.get("keep_first", True) or pin)
         jobs[d] = job
         if verbose:
-            print(f"  {cid:16s} {state} {d:11s} job {job} seed {seed} {nf}f roll {tries[d]}", flush=True)
+            print(f"  {cid:16s} {state} {d:11s} job {job} {nf}f roll {tries[d]} rung {rungs[d]:+d}", flush=True)
     groups = {}
     for d, job in jobs.items():
         if job:
@@ -572,10 +570,10 @@ def generate_state(client, cid, state, dirs, version, verbose=True, pin=False):
                 groups[d] = (j.get("last_response") or {}).get("animation_group_id")
             except PixelLabError as e:
                 print(f"  {cid} {d}: {e}")
-    return collect_state(client, cid, state, dirs, version, verbose, pin=pin, actions=actions, tries=tries, groups=groups, counts=counts)
+    return collect_state(client, cid, state, dirs, version, verbose, pin=pin, actions=actions, tries=tries, groups=groups, counts=counts, rungs=rungs)
 
 
-def collect_state(client, cid, state, dirs, version, verbose=True, pin=False, actions=None, tries=None, groups=None, counts=None):
+def collect_state(client, cid, state, dirs, version, verbose=True, pin=False, actions=None, tries=None, groups=None, counts=None, rungs=None):
     """Download the LAST take of each direction from PixelLab, align it to the
     base canvas, QA, save, mirror. Used after generation and by `fetch`.
     `actions` = {direction: action text} when a direction was made from other
@@ -610,15 +608,15 @@ def collect_state(client, cid, state, dirs, version, verbose=True, pin=False, ac
         frames, pad = align_to_base(frames, rotation(cid, d), pinned=pinned)
         save_frames(cid, state, d, frames)
         qa = qa_clip(cid, state, d, frames, pinned=pinned,
-                     claw_take=(actions[d] in (CLAW_SLASH, SIMPLE_LUNGE)
-                                or actions[d] == design_flag(cid, "attack_extreme")),
+                     claw_take=(rungs or {}).get(d, 0) >= 2,
                      want_frames=(counts or {}).get(d))
         if pin:
             qa["pinned"] = True
             qa["reasons"].append("PINNED fallback: base → walk → base, not a seamless loop (maintainer's last resort)")
         qa.update({"sub": client.sub_id(urls[0]), "group": group, "takes": len(cands), "version": version, "mirrored": False,
                    "action": actions[d], "intensity": intensity_of(man, state),
-                   "rolls": (tries or {}).get(d, 1), "frames": len(frames), "tries": (tries or {}).get(d, rec["directions"].get(d, {}).get("tries", 1)),
+                   "rolls": (tries or {}).get(d, 1), "frames": len(frames),
+                   "rung": (rungs or {}).get(d, 0), "tries": (tries or {}).get(d, rec["directions"].get(d, {}).get("tries", 1)),
                    "generated_at": datetime.now(timezone.utc).isoformat(timespec="seconds")})
         rec["directions"][d] = qa
         out[d] = qa
@@ -671,15 +669,6 @@ def cmd_state(args, state):
         # monster is redone at the new setting, so its eight directions stay
         # one take — maintainer: "you might have to redo the entire prompt
         # (all directions) in order to get a full 8 set that is valid")
-        rolled = max([(q.get("rolls") or 1) for q in ((man.get("animations") or {}).get(state, {}).get("directions") or {}).values()
-                      if q.get("status") == "fail" and not q.get("mirrored")] or [0])
-        lvl0 = intensity_of(man, state)
-        lvl = (bump_intensity(man, state) if (rolled >= ESCALATE_AFTER and not args.dry_run)
-               else intensity_of(man, state))
-        if lvl != lvl0:
-            man["animations"][state]["action"] = state_action(cid, state, man)
-            write_manifest(cid, man)
-            print(f"  {cid}: intensity {lvl0:+d} -> {lvl:+d}  ({INTENSITY[lvl].strip(', ') or 'plain wording'})")
         rec_now = (man.get("animations") or {}).get(state) or {}
         if (not state.endswith(TRY) and rec_now.get("directions")
                 and rec_now.get("action") and rec_now["action"] != state_action(cid, state)):
@@ -790,8 +779,7 @@ def cmd_requal(args):
                 continue
             new = qa_clip(cid, args.state, d, frames,
                           pinned=(True if q.get("pinned") else None),
-                          claw_take=(q.get("action") in (CLAW_SLASH, SIMPLE_LUNGE)
-                                     or q.get("action") == design_flag(cid, "attack_extreme")),
+                          claw_take=(q.get("rung") or 0) >= 2,
                           want_frames=(len(frames) - (1 if STATES[base_state(args.state)].get("keep_first", True) else 0)))
             if q.get("pinned"):
                 new["pinned"] = True
@@ -800,7 +788,7 @@ def cmd_requal(args):
             # it, or every sweep restarts at rung one with the same wording
             keep = {k: q[k] for k in ("sub", "group", "takes", "version", "mirrored",
                                       "generated_at", "action", "tries", "rolls",
-                                      "intensity", "frames", "manual") if k in q}
+                                      "intensity", "frames", "manual", "rung") if k in q}
             rec["directions"][d] = {**new, **keep}
             for md, src in MIRRORED.items():
                 if src == d and rec["directions"][d]["status"] != "fail":

@@ -1,1263 +1,1273 @@
 {
-  "id": "pebble_crab",
-  "name": "Pebblet",
-  "tier": "cute",
-  "scale": "small",
-  "lore": "A pebble that pinches. Beachcombers learn which stones to skip the hard way.",
-  "biome": [
-    "light_beach",
-    "grey_stone"
-  ],
-  "items": [
-    "sea shells",
-    "curved pincer"
-  ],
-  "prompt": "Tiny fantasy hermit crab living inside a round speckled grey pebble, two small orange pincers, four thin legs, two black eyes on short stalks, and a patch of wet green algae on the pebble.",
-  "size": [
-    40,
-    40
-  ],
-  "template_id": "bear",
-  "directions": [
-    "south",
-    "south-east",
-    "east",
-    "north-east",
-    "north",
-    "north-west",
-    "west",
-    "south-west"
-  ],
-  "rotations": {
-    "south": "pebble_crab/rotations/south.webp",
-    "south-east": "pebble_crab/rotations/south-east.webp",
-    "east": "pebble_crab/rotations/east.webp",
-    "north-east": "pebble_crab/rotations/north-east.webp",
-    "north": "pebble_crab/rotations/north.webp",
-    "north-west": "pebble_crab/rotations/north-west.webp",
-    "west": "pebble_crab/rotations/west.webp",
-    "south-west": "pebble_crab/rotations/south-west.webp"
-  },
-  "sheet": "pebble_crab/sheet.webp",
-  "review": "approved",
-  "pixellab_id": "18c91c91-e3c9-41a0-a1aa-fe76b922c7f8",
-  "seed": 2105448981,
-  "version": 1,
-  "usage": null,
-  "generated_at": "2026-09-09T18:02:13+00:00",
-  "elapsed_s": 192.1,
-  "qa": {
-    "status": "pass",
-    "min_run1": 0.678,
-    "reasons": [],
-    "directions": {
-      "south": {
-        "run1": 0.703,
-        "bbox": [
-          1,
-          2,
-          39,
-          36
-        ],
-        "fill": 0.807,
-        "touches_edge": false
-      },
-      "south-east": {
-        "run1": 0.779,
-        "bbox": [
-          4,
-          2,
-          37,
-          37
-        ],
-        "fill": 0.722,
-        "touches_edge": false
-      },
-      "east": {
-        "run1": 0.753,
-        "bbox": [
-          6,
-          2,
-          37,
-          37
-        ],
-        "fill": 0.678,
-        "touches_edge": false
-      },
-      "north-east": {
-        "run1": 0.723,
-        "bbox": [
-          3,
-          3,
-          37,
-          38
-        ],
-        "fill": 0.744,
-        "touches_edge": false
-      },
-      "north": {
-        "run1": 0.678,
-        "bbox": [
-          2,
-          5,
-          38,
-          36
-        ],
-        "fill": 0.698,
-        "touches_edge": false
-      },
-      "north-west": {
-        "run1": 0.715,
-        "bbox": [
-          3,
-          3,
-          36,
-          38
-        ],
-        "fill": 0.722,
-        "touches_edge": false
-      },
-      "west": {
-        "run1": 0.766,
-        "bbox": [
-          3,
-          2,
-          34,
-          37
-        ],
-        "fill": 0.678,
-        "touches_edge": false
-      },
-      "south-west": {
-        "run1": 0.779,
-        "bbox": [
-          3,
-          2,
-          36,
-          37
-        ],
-        "fill": 0.722,
-        "touches_edge": false
-      }
-    }
-  },
-  "approved_at": "2026-09-09T19:59:19+00:00",
-  "animations": {
-    "idle": {
-      "directions": {
-        "south": {
-          "status": "pass",
-          "step_mean": 0.0904,
-          "step_max": 0.1138,
-          "drift": 0.43,
-          "loop": 0.0,
-          "pin": 1.0,
-          "reasons": [],
-          "sub": "d1f82e7c-835a-46c1-8484-6c06899fa30b",
-          "takes": 1,
-          "version": 1,
-          "mirrored": false,
-          "generated_at": "2026-09-09T20:06:43+00:00",
-          "cut": 0
-        },
-        "south-east": {
-          "status": "pass",
-          "step_mean": 0.0991,
-          "step_max": 0.1165,
-          "drift": 0.54,
-          "loop": 0.0,
-          "pin": 1.0,
-          "reasons": [],
-          "sub": "6764f7ae-c396-4141-93cd-fcc62122b35a",
-          "takes": 1,
-          "version": 1,
-          "mirrored": false,
-          "generated_at": "2026-09-09T20:06:44+00:00",
-          "cut": 0
-        },
-        "east": {
-          "status": "pass",
-          "step_mean": 0.1888,
-          "step_max": 0.2842,
-          "drift": 1.18,
-          "loop": 0.0,
-          "pin": 1.0,
-          "reasons": [],
-          "sub": "40e95878-50dc-4a9e-afae-e49fff7754c3",
-          "takes": 1,
-          "version": 1,
-          "mirrored": false,
-          "generated_at": "2026-09-09T20:06:44+00:00",
-          "cut": 0
-        },
-        "north-east": {
-          "status": "pass",
-          "step_mean": 0.106,
-          "step_max": 0.1522,
-          "drift": 1.24,
-          "loop": 0.0,
-          "pin": 1.0,
-          "reasons": [],
-          "sub": "02a4c294-3269-4afa-ae55-d72928ad4be5",
-          "takes": 1,
-          "version": 1,
-          "mirrored": false,
-          "generated_at": "2026-09-09T20:06:45+00:00",
-          "cut": 0
-        },
-        "north": {
-          "status": "pass",
-          "step_mean": 0.133,
-          "step_max": 0.158,
-          "drift": 1.54,
-          "loop": 0.0,
-          "pin": 1.0,
-          "reasons": [],
-          "sub": "baf11d89-4291-427f-aefb-6f0997ed979b",
-          "takes": 1,
-          "version": 1,
-          "mirrored": false,
-          "generated_at": "2026-09-09T20:06:46+00:00",
-          "cut": 0
-        },
-        "south-west": {
-          "status": "pass",
-          "step_mean": 0.0991,
-          "step_max": 0.1165,
-          "drift": 0.54,
-          "loop": 0.0,
-          "pin": 1.0,
-          "reasons": [],
-          "sub": "6764f7ae-c396-4141-93cd-fcc62122b35a",
-          "takes": 1,
-          "version": 1,
-          "mirrored": true,
-          "generated_at": "2026-09-09T20:06:44+00:00",
-          "cut": 0,
-          "source": "south-east"
-        },
-        "west": {
-          "status": "pass",
-          "step_mean": 0.1888,
-          "step_max": 0.2842,
-          "drift": 1.18,
-          "loop": 0.0,
-          "pin": 1.0,
-          "reasons": [],
-          "sub": "40e95878-50dc-4a9e-afae-e49fff7754c3",
-          "takes": 1,
-          "version": 1,
-          "mirrored": true,
-          "generated_at": "2026-09-09T20:06:44+00:00",
-          "cut": 0,
-          "source": "east"
-        },
-        "north-west": {
-          "status": "pass",
-          "step_mean": 0.106,
-          "step_max": 0.1522,
-          "drift": 1.24,
-          "loop": 0.0,
-          "pin": 1.0,
-          "reasons": [],
-          "sub": "02a4c294-3269-4afa-ae55-d72928ad4be5",
-          "takes": 1,
-          "version": 1,
-          "mirrored": true,
-          "generated_at": "2026-09-09T20:06:45+00:00",
-          "cut": 0,
-          "source": "north-east"
-        }
-      },
-      "action": "Calm still idle, breathing very slowly and subtly, chest and shoulders rise and fall a little, feet planted, no other movement, ends in the same neutral pose it started in",
-      "frame_paths": {
-        "south": [
-          "pebble_crab/animations/idle/south/00.webp",
-          "pebble_crab/animations/idle/south/01.webp",
-          "pebble_crab/animations/idle/south/02.webp",
-          "pebble_crab/animations/idle/south/03.webp",
-          "pebble_crab/animations/idle/south/04.webp"
-        ],
-        "south-east": [
-          "pebble_crab/animations/idle/south-east/00.webp",
-          "pebble_crab/animations/idle/south-east/01.webp",
-          "pebble_crab/animations/idle/south-east/02.webp",
-          "pebble_crab/animations/idle/south-east/03.webp",
-          "pebble_crab/animations/idle/south-east/04.webp"
-        ],
-        "east": [
-          "pebble_crab/animations/idle/east/00.webp",
-          "pebble_crab/animations/idle/east/01.webp",
-          "pebble_crab/animations/idle/east/02.webp",
-          "pebble_crab/animations/idle/east/03.webp",
-          "pebble_crab/animations/idle/east/04.webp"
-        ],
-        "north-east": [
-          "pebble_crab/animations/idle/north-east/00.webp",
-          "pebble_crab/animations/idle/north-east/01.webp",
-          "pebble_crab/animations/idle/north-east/02.webp",
-          "pebble_crab/animations/idle/north-east/03.webp",
-          "pebble_crab/animations/idle/north-east/04.webp"
-        ],
-        "north": [
-          "pebble_crab/animations/idle/north/00.webp",
-          "pebble_crab/animations/idle/north/01.webp",
-          "pebble_crab/animations/idle/north/02.webp",
-          "pebble_crab/animations/idle/north/03.webp",
-          "pebble_crab/animations/idle/north/04.webp"
-        ],
-        "south-west": [
-          "pebble_crab/animations/idle/south-west/00.webp",
-          "pebble_crab/animations/idle/south-west/01.webp",
-          "pebble_crab/animations/idle/south-west/02.webp",
-          "pebble_crab/animations/idle/south-west/03.webp",
-          "pebble_crab/animations/idle/south-west/04.webp"
-        ],
-        "west": [
-          "pebble_crab/animations/idle/west/00.webp",
-          "pebble_crab/animations/idle/west/01.webp",
-          "pebble_crab/animations/idle/west/02.webp",
-          "pebble_crab/animations/idle/west/03.webp",
-          "pebble_crab/animations/idle/west/04.webp"
-        ],
-        "north-west": [
-          "pebble_crab/animations/idle/north-west/00.webp",
-          "pebble_crab/animations/idle/north-west/01.webp",
-          "pebble_crab/animations/idle/north-west/02.webp",
-          "pebble_crab/animations/idle/north-west/03.webp",
-          "pebble_crab/animations/idle/north-west/04.webp"
-        ]
-      },
-      "strips": {
-        "south": "pebble_crab/animations/idle__south.webp",
-        "south-east": "pebble_crab/animations/idle__south-east.webp",
-        "east": "pebble_crab/animations/idle__east.webp",
-        "north-east": "pebble_crab/animations/idle__north-east.webp",
-        "north": "pebble_crab/animations/idle__north.webp",
-        "south-west": "pebble_crab/animations/idle__south-west.webp",
-        "west": "pebble_crab/animations/idle__west.webp",
-        "north-west": "pebble_crab/animations/idle__north-west.webp"
-      }
-    },
-    "walk": {
-      "directions": {
-        "south": {
-          "status": "pass",
-          "step_mean": 0.0947,
-          "step_max": 0.1332,
-          "drift": 1.19,
-          "loop": 0.1247,
-          "loop_ratio": 1.32,
-          "travel": 0.17,
-          "pin": 0.898,
-          "pad": 0,
-          "canvas": [
-            40,
-            40
-          ],
-          "reasons": [],
-          "sub": "1c2ca49e-cecf-435e-990a-12423a37a325",
-          "group": "ec24f6d6-0428-428c-89cc-21ea9855334c",
-          "takes": 1,
-          "version": 1,
-          "mirrored": false,
-          "generated_at": "2026-09-09T21:15:02+00:00"
-        },
-        "south-east": {
-          "status": "pass",
-          "step_mean": 0.132,
-          "step_max": 0.1506,
-          "drift": 0.86,
-          "loop": 0.1506,
-          "loop_ratio": 1.14,
-          "travel": 0.42,
-          "pin": 0.86,
-          "pad": 0,
-          "canvas": [
-            40,
-            40
-          ],
-          "reasons": [],
-          "sub": "b3a2ca8a-f14e-447c-a548-4619a0fcc295",
-          "group": "7cc96d63-f69a-480c-bf20-1d1c05ff1ffc",
-          "takes": 1,
-          "version": 1,
-          "mirrored": false,
-          "generated_at": "2026-09-09T21:15:02+00:00"
-        },
-        "east": {
-          "status": "pass",
-          "step_mean": 0.1036,
-          "step_max": 0.1421,
-          "drift": 0.5,
-          "loop": 0.1248,
-          "loop_ratio": 1.21,
-          "travel": 0.28,
-          "pin": 0.949,
-          "pad": 0,
-          "canvas": [
-            40,
-            40
-          ],
-          "reasons": [],
-          "sub": "e5622a7f-cb0d-4c57-a3aa-97e3bb0ad1bc",
-          "group": "36c2307c-d368-443e-aeb1-8f61942e552b",
-          "takes": 1,
-          "version": 1,
-          "mirrored": false,
-          "generated_at": "2026-09-09T21:15:03+00:00"
-        },
-        "north-east": {
-          "status": "pass",
-          "step_mean": 0.1482,
-          "step_max": 0.1541,
-          "drift": 1.63,
-          "loop": 0.178,
-          "loop_ratio": 1.2,
-          "travel": 0.77,
-          "pin": 0.851,
-          "pad": 0,
-          "canvas": [
-            40,
-            40
-          ],
-          "reasons": [],
-          "sub": "71080d7c-97cd-4359-8af4-b5f337699ec3",
-          "group": "67219fae-9b3f-468c-bb16-de5f703b96d4",
-          "takes": 1,
-          "version": 1,
-          "mirrored": false,
-          "generated_at": "2026-09-09T21:15:04+00:00"
-        },
-        "north": {
-          "status": "pass",
-          "step_mean": 0.1324,
-          "step_max": 0.1565,
-          "drift": 1.05,
-          "loop": 0.123,
-          "loop_ratio": 0.93,
-          "travel": 0.1,
-          "pin": 0.868,
-          "pad": 0,
-          "canvas": [
-            40,
-            40
-          ],
-          "reasons": [],
-          "sub": "34a897af-7609-44c6-ae6a-5c7d29538876",
-          "group": "7b9d7df0-227f-486a-8832-530d3f2c8732",
-          "takes": 1,
-          "version": 1,
-          "mirrored": false,
-          "generated_at": "2026-09-09T21:15:04+00:00"
-        },
-        "south-west": {
-          "status": "pass",
-          "step_mean": 0.132,
-          "step_max": 0.1506,
-          "drift": 0.86,
-          "loop": 0.1506,
-          "loop_ratio": 1.14,
-          "travel": 0.42,
-          "pin": 0.86,
-          "pad": 0,
-          "canvas": [
-            40,
-            40
-          ],
-          "reasons": [],
-          "sub": "b3a2ca8a-f14e-447c-a548-4619a0fcc295",
-          "group": "7cc96d63-f69a-480c-bf20-1d1c05ff1ffc",
-          "takes": 1,
-          "version": 1,
-          "mirrored": true,
-          "generated_at": "2026-09-09T21:15:02+00:00",
-          "source": "south-east"
-        },
-        "west": {
-          "status": "pass",
-          "step_mean": 0.1036,
-          "step_max": 0.1421,
-          "drift": 0.5,
-          "loop": 0.1248,
-          "loop_ratio": 1.21,
-          "travel": 0.28,
-          "pin": 0.949,
-          "pad": 0,
-          "canvas": [
-            40,
-            40
-          ],
-          "reasons": [],
-          "sub": "e5622a7f-cb0d-4c57-a3aa-97e3bb0ad1bc",
-          "group": "36c2307c-d368-443e-aeb1-8f61942e552b",
-          "takes": 1,
-          "version": 1,
-          "mirrored": true,
-          "generated_at": "2026-09-09T21:15:03+00:00",
-          "source": "east"
-        },
-        "north-west": {
-          "status": "pass",
-          "step_mean": 0.1482,
-          "step_max": 0.1541,
-          "drift": 1.63,
-          "loop": 0.178,
-          "loop_ratio": 1.2,
-          "travel": 0.77,
-          "pin": 0.851,
-          "pad": 0,
-          "canvas": [
-            40,
-            40
-          ],
-          "reasons": [],
-          "sub": "71080d7c-97cd-4359-8af4-b5f337699ec3",
-          "group": "67219fae-9b3f-468c-bb16-de5f703b96d4",
-          "takes": 1,
-          "version": 1,
-          "mirrored": true,
-          "generated_at": "2026-09-09T21:15:04+00:00",
-          "source": "north-east"
-        }
-      },
-      "action": "walk loop, full walk cycle in place, legs alternate naturally, normal calm walking pace, body stays centered, seamless loop whose last frame leads straight back into the first, no turning",
-      "frame_paths": {
-        "south": [
-          "pebble_crab/animations/walk/south/00.webp",
-          "pebble_crab/animations/walk/south/01.webp",
-          "pebble_crab/animations/walk/south/02.webp",
-          "pebble_crab/animations/walk/south/03.webp",
-          "pebble_crab/animations/walk/south/04.webp",
-          "pebble_crab/animations/walk/south/05.webp"
-        ],
-        "south-east": [
-          "pebble_crab/animations/walk/south-east/00.webp",
-          "pebble_crab/animations/walk/south-east/01.webp",
-          "pebble_crab/animations/walk/south-east/02.webp",
-          "pebble_crab/animations/walk/south-east/03.webp",
-          "pebble_crab/animations/walk/south-east/04.webp",
-          "pebble_crab/animations/walk/south-east/05.webp"
-        ],
-        "east": [
-          "pebble_crab/animations/walk/east/00.webp",
-          "pebble_crab/animations/walk/east/01.webp",
-          "pebble_crab/animations/walk/east/02.webp",
-          "pebble_crab/animations/walk/east/03.webp",
-          "pebble_crab/animations/walk/east/04.webp",
-          "pebble_crab/animations/walk/east/05.webp"
-        ],
-        "north-east": [
-          "pebble_crab/animations/walk/north-east/00.webp",
-          "pebble_crab/animations/walk/north-east/01.webp",
-          "pebble_crab/animations/walk/north-east/02.webp",
-          "pebble_crab/animations/walk/north-east/03.webp",
-          "pebble_crab/animations/walk/north-east/04.webp",
-          "pebble_crab/animations/walk/north-east/05.webp"
-        ],
-        "north": [
-          "pebble_crab/animations/walk/north/00.webp",
-          "pebble_crab/animations/walk/north/01.webp",
-          "pebble_crab/animations/walk/north/02.webp",
-          "pebble_crab/animations/walk/north/03.webp",
-          "pebble_crab/animations/walk/north/04.webp",
-          "pebble_crab/animations/walk/north/05.webp"
-        ],
-        "south-west": [
-          "pebble_crab/animations/walk/south-west/00.webp",
-          "pebble_crab/animations/walk/south-west/01.webp",
-          "pebble_crab/animations/walk/south-west/02.webp",
-          "pebble_crab/animations/walk/south-west/03.webp",
-          "pebble_crab/animations/walk/south-west/04.webp",
-          "pebble_crab/animations/walk/south-west/05.webp"
-        ],
-        "west": [
-          "pebble_crab/animations/walk/west/00.webp",
-          "pebble_crab/animations/walk/west/01.webp",
-          "pebble_crab/animations/walk/west/02.webp",
-          "pebble_crab/animations/walk/west/03.webp",
-          "pebble_crab/animations/walk/west/04.webp",
-          "pebble_crab/animations/walk/west/05.webp"
-        ],
-        "north-west": [
-          "pebble_crab/animations/walk/north-west/00.webp",
-          "pebble_crab/animations/walk/north-west/01.webp",
-          "pebble_crab/animations/walk/north-west/02.webp",
-          "pebble_crab/animations/walk/north-west/03.webp",
-          "pebble_crab/animations/walk/north-west/04.webp",
-          "pebble_crab/animations/walk/north-west/05.webp"
-        ]
-      },
-      "strips": {
-        "south": "pebble_crab/animations/walk__south.webp",
-        "south-east": "pebble_crab/animations/walk__south-east.webp",
-        "east": "pebble_crab/animations/walk__east.webp",
-        "north-east": "pebble_crab/animations/walk__north-east.webp",
-        "north": "pebble_crab/animations/walk__north.webp",
-        "south-west": "pebble_crab/animations/walk__south-west.webp",
-        "west": "pebble_crab/animations/walk__west.webp",
-        "north-west": "pebble_crab/animations/walk__north-west.webp"
-      }
-    },
-    "attack": {
-      "directions": {
-        "south": {
-          "status": "fail",
-          "step_mean": 0.1117,
-          "step_max": 0.1612,
-          "drift": 0.4,
-          "loop": 0.0,
-          "loop_ratio": 0.0,
-          "travel": 0.06,
-          "pin": 1.0,
-          "pad": 0,
-          "flash": 0.0,
-          "peak": 0.1939,
-          "reach": 0.091,
-          "canvas": [
-            40,
-            40
-          ],
-          "reasons": [
-            "no strike, just a lean: nothing reaches past 0.09 of the body"
-          ],
-          "sub": "c90b9248-991b-4566-8f9d-04fa0ade8452",
-          "group": "22aaebb0-30bc-4f7b-bd72-9168012bbe64",
-          "takes": 1,
-          "version": 2,
-          "mirrored": false,
-          "generated_at": "2026-09-09T22:28:49+00:00",
-          "action": "Claw Pinch - Darts forward and pinches once with both small claws, then returns to idle stance"
-        },
-        "south-east": {
-          "status": "fail",
-          "step_mean": 0.1002,
-          "step_max": 0.1399,
-          "drift": 0.6,
-          "loop": 0.0,
-          "loop_ratio": 0.0,
-          "travel": 0.23,
-          "pin": 1.0,
-          "pad": 0,
-          "flash": 0.0,
-          "peak": 0.1757,
-          "reach": 0.091,
-          "canvas": [
-            40,
-            40
-          ],
-          "reasons": [
-            "no strike, just a lean: nothing reaches past 0.09 of the body"
-          ],
-          "sub": "087b3baa-d965-42ce-8ea5-bd5e74562080",
-          "group": "d944c8a2-8b23-4bfa-bc76-e99ca3cd6705",
-          "takes": 1,
-          "version": 2,
-          "mirrored": false,
-          "generated_at": "2026-09-09T22:28:49+00:00",
-          "action": "Claw Pinch - Darts forward and pinches once with both small claws, then returns to idle stance"
-        },
-        "east": {
-          "status": "fail",
-          "step_mean": 0.1555,
-          "step_max": 0.1903,
-          "drift": 1.0,
-          "loop": 0.0013,
-          "loop_ratio": 0.01,
-          "travel": 1.0,
-          "pin": 1.0,
-          "pad": 0,
-          "flash": 0.0,
-          "peak": 0.2578,
-          "reach": 0.116,
-          "canvas": [
-            40,
-            40
-          ],
-          "reasons": [
-            "no strike, just a lean: nothing reaches past 0.12 of the body"
-          ],
-          "sub": "a47d013b-3c37-4ab1-80cf-b8550953fa99",
-          "group": "50a0be54-6fbe-45e9-bab3-a9f33cd4c1fb",
-          "takes": 1,
-          "version": 2,
-          "mirrored": false,
-          "generated_at": "2026-09-09T22:28:50+00:00",
-          "action": "Claw Pinch - Darts forward and pinches once with both small claws, then returns to idle stance"
-        },
-        "north-east": {
-          "status": "fail",
-          "step_mean": 0.1119,
-          "step_max": 0.1487,
-          "drift": 1.16,
-          "loop": 0.0,
-          "loop_ratio": 0.0,
-          "travel": 0.24,
-          "pin": 1.0,
-          "pad": 0,
-          "flash": 0.004,
-          "peak": 0.1678,
-          "reach": 0.088,
-          "canvas": [
-            40,
-            40
-          ],
-          "reasons": [
-            "no strike, just a lean: nothing reaches past 0.09 of the body"
-          ],
-          "sub": "dc6a0aee-d775-43b4-a6c5-c5be53b724a2",
-          "group": "3891aa6c-df91-4bc9-8111-aa8f6f79f251",
-          "takes": 1,
-          "version": 2,
-          "mirrored": false,
-          "generated_at": "2026-09-09T22:28:50+00:00",
-          "action": "Claw Pinch - Darts forward and pinches once with both small claws, then returns to idle stance"
-        },
-        "north": {
-          "status": "fail",
-          "step_mean": 0.1187,
-          "step_max": 0.1805,
-          "drift": 1.13,
-          "loop": 0.0,
-          "loop_ratio": 0.0,
-          "travel": 0.08,
-          "pin": 1.0,
-          "pad": 0,
-          "flash": 0.0,
-          "peak": 0.2089,
-          "reach": 0.129,
-          "canvas": [
-            40,
-            40
-          ],
-          "reasons": [
-            "no strike, just a lean: nothing reaches past 0.13 of the body"
-          ],
-          "sub": "17fa2991-e931-4b28-baf7-0898aac8bb05",
-          "group": "281d99f0-1682-4a57-8bf9-98bd22008127",
-          "takes": 1,
-          "version": 2,
-          "mirrored": false,
-          "generated_at": "2026-09-09T22:28:51+00:00",
-          "action": "Claw Pinch - Darts forward and pinches once with both small claws, then returns to idle stance"
-        },
-        "south-west": {
-          "status": "pass",
-          "step_mean": 0.1002,
-          "step_max": 0.1399,
-          "drift": 0.6,
-          "loop": 0.0,
-          "loop_ratio": 0.0,
-          "travel": 0.23,
-          "pin": 1.0,
-          "pad": 0,
-          "flash": 0.0,
-          "peak": 0.1757,
-          "canvas": [
-            40,
-            40
-          ],
-          "reasons": [],
-          "sub": "087b3baa-d965-42ce-8ea5-bd5e74562080",
-          "group": "d944c8a2-8b23-4bfa-bc76-e99ca3cd6705",
-          "takes": 1,
-          "version": 2,
-          "mirrored": true,
-          "generated_at": "2026-09-09T22:28:49+00:00",
-          "action": "Claw Pinch - Darts forward and pinches once with both small claws, then returns to idle stance",
-          "source": "south-east"
-        },
-        "west": {
-          "status": "pass",
-          "step_mean": 0.1555,
-          "step_max": 0.1903,
-          "drift": 1.0,
-          "loop": 0.0013,
-          "loop_ratio": 0.01,
-          "travel": 1.0,
-          "pin": 1.0,
-          "pad": 0,
-          "flash": 0.0,
-          "peak": 0.2578,
-          "canvas": [
-            40,
-            40
-          ],
-          "reasons": [],
-          "sub": "a47d013b-3c37-4ab1-80cf-b8550953fa99",
-          "group": "50a0be54-6fbe-45e9-bab3-a9f33cd4c1fb",
-          "takes": 1,
-          "version": 2,
-          "mirrored": true,
-          "generated_at": "2026-09-09T22:28:50+00:00",
-          "action": "Claw Pinch - Darts forward and pinches once with both small claws, then returns to idle stance",
-          "source": "east"
-        },
-        "north-west": {
-          "status": "pass",
-          "step_mean": 0.1119,
-          "step_max": 0.1487,
-          "drift": 1.16,
-          "loop": 0.0,
-          "loop_ratio": 0.0,
-          "travel": 0.24,
-          "pin": 1.0,
-          "pad": 0,
-          "flash": 0.004,
-          "peak": 0.1678,
-          "canvas": [
-            40,
-            40
-          ],
-          "reasons": [],
-          "sub": "dc6a0aee-d775-43b4-a6c5-c5be53b724a2",
-          "group": "3891aa6c-df91-4bc9-8111-aa8f6f79f251",
-          "takes": 1,
-          "version": 2,
-          "mirrored": true,
-          "generated_at": "2026-09-09T22:28:50+00:00",
-          "action": "Claw Pinch - Darts forward and pinches once with both small claws, then returns to idle stance",
-          "source": "north-east"
-        }
-      },
-      "action": "Claw Pinch - Darts forward and pinches once with both small claws, then returns to idle stance",
-      "frame_paths": {
-        "south": [
-          "pebble_crab/animations/attack/south/00.webp",
-          "pebble_crab/animations/attack/south/01.webp",
-          "pebble_crab/animations/attack/south/02.webp",
-          "pebble_crab/animations/attack/south/03.webp",
-          "pebble_crab/animations/attack/south/04.webp"
-        ],
-        "south-east": [
-          "pebble_crab/animations/attack/south-east/00.webp",
-          "pebble_crab/animations/attack/south-east/01.webp",
-          "pebble_crab/animations/attack/south-east/02.webp",
-          "pebble_crab/animations/attack/south-east/03.webp",
-          "pebble_crab/animations/attack/south-east/04.webp"
-        ],
-        "east": [
-          "pebble_crab/animations/attack/east/00.webp",
-          "pebble_crab/animations/attack/east/01.webp",
-          "pebble_crab/animations/attack/east/02.webp",
-          "pebble_crab/animations/attack/east/03.webp",
-          "pebble_crab/animations/attack/east/04.webp"
-        ],
-        "north-east": [
-          "pebble_crab/animations/attack/north-east/00.webp",
-          "pebble_crab/animations/attack/north-east/01.webp",
-          "pebble_crab/animations/attack/north-east/02.webp",
-          "pebble_crab/animations/attack/north-east/03.webp",
-          "pebble_crab/animations/attack/north-east/04.webp"
-        ],
-        "north": [
-          "pebble_crab/animations/attack/north/00.webp",
-          "pebble_crab/animations/attack/north/01.webp",
-          "pebble_crab/animations/attack/north/02.webp",
-          "pebble_crab/animations/attack/north/03.webp",
-          "pebble_crab/animations/attack/north/04.webp"
-        ],
-        "south-west": [
-          "pebble_crab/animations/attack/south-west/00.webp",
-          "pebble_crab/animations/attack/south-west/01.webp",
-          "pebble_crab/animations/attack/south-west/02.webp",
-          "pebble_crab/animations/attack/south-west/03.webp",
-          "pebble_crab/animations/attack/south-west/04.webp"
-        ],
-        "west": [
-          "pebble_crab/animations/attack/west/00.webp",
-          "pebble_crab/animations/attack/west/01.webp",
-          "pebble_crab/animations/attack/west/02.webp",
-          "pebble_crab/animations/attack/west/03.webp",
-          "pebble_crab/animations/attack/west/04.webp"
-        ],
-        "north-west": [
-          "pebble_crab/animations/attack/north-west/00.webp",
-          "pebble_crab/animations/attack/north-west/01.webp",
-          "pebble_crab/animations/attack/north-west/02.webp",
-          "pebble_crab/animations/attack/north-west/03.webp",
-          "pebble_crab/animations/attack/north-west/04.webp"
-        ]
-      },
-      "strips": {
-        "south": "pebble_crab/animations/attack__south.webp",
-        "south-east": "pebble_crab/animations/attack__south-east.webp",
-        "east": "pebble_crab/animations/attack__east.webp",
-        "north-east": "pebble_crab/animations/attack__north-east.webp",
-        "north": "pebble_crab/animations/attack__north.webp",
-        "south-west": "pebble_crab/animations/attack__south-west.webp",
-        "west": "pebble_crab/animations/attack__west.webp",
-        "north-west": "pebble_crab/animations/attack__north-west.webp"
-      }
-    },
-    "attack_try": {
-      "directions": {
-        "south": {
-          "status": "fail",
-          "step_mean": 0.0848,
-          "step_max": 0.1509,
-          "drift": 2.25,
-          "loop": 0.0916,
-          "loop_ratio": 1.08,
-          "travel": 0.12,
-          "pin": 1.0,
-          "pad": 0,
-          "flash": 0.089,
-          "peak": 0.2425,
-          "reach": 0.089,
-          "canvas": [
-            40,
-            40
-          ],
-          "reasons": [
-            "no strike, just a lean: nothing reaches past 0.09 of the body"
-          ],
-          "sub": "2e9f7a6b-82e4-47c3-bf9b-808178fb4e24",
-          "group": "338b1156-e7d7-4302-aad1-c09e7dccef14",
-          "takes": 1,
-          "version": 4,
-          "mirrored": false,
-          "generated_at": "2026-09-10T21:14:13+00:00",
-          "action": "Claw Swipe - Raises one front paw and performs one quick swipe forward, white swoosh lines following the claws",
-          "tries": 4,
-          "rolls": 4,
-          "intensity": 1,
-          "frames": 9
-        },
-        "south-east": {
-          "status": "warn",
-          "step_mean": 0.097,
-          "step_max": 0.1786,
-          "drift": 1.35,
-          "loop": 0.0468,
-          "loop_ratio": 0.48,
-          "travel": 0.52,
-          "pin": 1.0,
-          "pad": 1,
-          "flash": 0.048,
-          "peak": 0.25,
-          "reach": 0.152,
-          "canvas": [
-            42,
-            42
-          ],
-          "reasons": [
-            "shallow strike: reach 0.15 — eyeball it",
-            "canvas grown by 1 px a side to hold the motion"
-          ],
-          "sub": "8daf4f24-d8c5-455b-b4df-574b6b0ee65b",
-          "group": "d08b8107-12ab-4175-822d-291a2f27ac43",
-          "takes": 1,
-          "version": 4,
-          "mirrored": false,
-          "generated_at": "2026-09-10T21:14:14+00:00",
-          "action": "Claw Swipe - Raises one front paw and performs one quick swipe forward, white swoosh lines following the claws",
-          "tries": 4,
-          "rolls": 4,
-          "intensity": 1,
-          "frames": 9
-        },
-        "east": {
-          "status": "warn",
-          "step_mean": 0.1085,
-          "step_max": 0.1612,
-          "drift": 1.33,
-          "loop": 0.1121,
-          "loop_ratio": 1.03,
-          "travel": 1.33,
-          "pin": 1.0,
-          "pad": 0,
-          "flash": 0.165,
-          "peak": 0.2632,
-          "reach": 0.194,
-          "canvas": [
-            40,
-            40
-          ],
-          "reasons": [
-            "shallow strike: reach 0.19 — eyeball it"
-          ],
-          "sub": "bff1b07d-9494-464f-8e6c-d6933d3a145d",
-          "group": "249cceb9-daf4-4198-a236-acdff903efed",
-          "takes": 1,
-          "version": 4,
-          "mirrored": false,
-          "generated_at": "2026-09-10T21:14:15+00:00",
-          "action": "Claw Swipe - Raises one front paw and performs one quick swipe forward, white swoosh lines following the claws",
-          "tries": 4,
-          "rolls": 4,
-          "intensity": 1,
-          "frames": 9
-        },
-        "north-east": {
-          "status": "warn",
-          "step_mean": 0.1593,
-          "step_max": 0.2118,
-          "drift": 1.45,
-          "loop": 0.0902,
-          "loop_ratio": 0.57,
-          "travel": 0.64,
-          "pin": 1.0,
-          "pad": 2,
-          "flash": 0.106,
-          "peak": 0.2562,
-          "reach": 0.206,
-          "canvas": [
-            44,
-            44
-          ],
-          "reasons": [
-            "shallow strike: reach 0.21 — eyeball it",
-            "canvas grown by 2 px a side to hold the motion"
-          ],
-          "sub": "898989b6-f8d1-42c2-95ad-aaa4df28cae3",
-          "group": "53640227-16cf-4110-abdd-6ef731e1292c",
-          "takes": 1,
-          "version": 4,
-          "mirrored": false,
-          "generated_at": "2026-09-10T21:14:15+00:00",
-          "action": "Claw Swipe - Raises one front paw and performs one quick swipe forward, white swoosh lines following the claws",
-          "tries": 4,
-          "rolls": 4,
-          "intensity": 1,
-          "frames": 9
-        },
-        "north": {
-          "status": "fail",
-          "step_mean": 0.1039,
-          "step_max": 0.1956,
-          "drift": 1.95,
-          "loop": 0.2214,
-          "loop_ratio": 2.13,
-          "travel": 0.43,
-          "pin": 1.0,
-          "pad": 0,
-          "flash": 0.01,
-          "peak": 0.2214,
-          "reach": 0.097,
-          "canvas": [
-            40,
-            40
-          ],
-          "reasons": [
-            "no strike, just a lean: nothing reaches past 0.10 of the body"
-          ],
-          "sub": "662909ff-0fe4-4de3-af0a-e38dd5b4f0d8",
-          "group": "4f10fc98-5935-4821-976b-326a62f6c376",
-          "takes": 1,
-          "version": 4,
-          "mirrored": false,
-          "generated_at": "2026-09-10T21:14:16+00:00",
-          "action": "Claw Swipe - Raises one front paw and performs one quick swipe forward, white swoosh lines following the claws",
-          "tries": 4,
-          "rolls": 4,
-          "intensity": 1,
-          "frames": 9
-        },
-        "south-west": {
-          "status": "warn",
-          "step_mean": 0.097,
-          "step_max": 0.1786,
-          "drift": 1.35,
-          "loop": 0.0468,
-          "loop_ratio": 0.48,
-          "travel": 0.52,
-          "pin": 1.0,
-          "pad": 1,
-          "flash": 0.048,
-          "peak": 0.25,
-          "reach": 0.152,
-          "canvas": [
-            42,
-            42
-          ],
-          "reasons": [
-            "shallow strike: reach 0.15 — eyeball it",
-            "canvas grown by 1 px a side to hold the motion"
-          ],
-          "sub": "8daf4f24-d8c5-455b-b4df-574b6b0ee65b",
-          "group": "d08b8107-12ab-4175-822d-291a2f27ac43",
-          "takes": 1,
-          "version": 4,
-          "mirrored": true,
-          "generated_at": "2026-09-10T21:14:14+00:00",
-          "action": "Claw Swipe - Raises one front paw and performs one quick swipe forward, white swoosh lines following the claws",
-          "tries": 4,
-          "rolls": 4,
-          "intensity": 1,
-          "frames": 9,
-          "source": "south-east"
-        },
-        "west": {
-          "status": "warn",
-          "step_mean": 0.1085,
-          "step_max": 0.1612,
-          "drift": 1.33,
-          "loop": 0.1121,
-          "loop_ratio": 1.03,
-          "travel": 1.33,
-          "pin": 1.0,
-          "pad": 0,
-          "flash": 0.165,
-          "peak": 0.2632,
-          "reach": 0.194,
-          "canvas": [
-            40,
-            40
-          ],
-          "reasons": [
-            "shallow strike: reach 0.19 — eyeball it"
-          ],
-          "sub": "bff1b07d-9494-464f-8e6c-d6933d3a145d",
-          "group": "249cceb9-daf4-4198-a236-acdff903efed",
-          "takes": 1,
-          "version": 4,
-          "mirrored": true,
-          "generated_at": "2026-09-10T21:14:15+00:00",
-          "action": "Claw Swipe - Raises one front paw and performs one quick swipe forward, white swoosh lines following the claws",
-          "tries": 4,
-          "rolls": 4,
-          "intensity": 1,
-          "frames": 9,
-          "source": "east"
-        },
-        "north-west": {
-          "status": "warn",
-          "step_mean": 0.1593,
-          "step_max": 0.2118,
-          "drift": 1.45,
-          "loop": 0.0902,
-          "loop_ratio": 0.57,
-          "travel": 0.64,
-          "pin": 1.0,
-          "pad": 2,
-          "flash": 0.106,
-          "peak": 0.2562,
-          "reach": 0.206,
-          "canvas": [
-            44,
-            44
-          ],
-          "reasons": [
-            "shallow strike: reach 0.21 — eyeball it",
-            "canvas grown by 2 px a side to hold the motion"
-          ],
-          "sub": "898989b6-f8d1-42c2-95ad-aaa4df28cae3",
-          "group": "53640227-16cf-4110-abdd-6ef731e1292c",
-          "takes": 1,
-          "version": 4,
-          "mirrored": true,
-          "generated_at": "2026-09-10T21:14:15+00:00",
-          "action": "Claw Swipe - Raises one front paw and performs one quick swipe forward, white swoosh lines following the claws",
-          "tries": 4,
-          "rolls": 4,
-          "intensity": 1,
-          "frames": 9,
-          "source": "north-east"
-        }
-      },
-      "action": "Claw Pinch - Darts forward and snaps both small claws shut hard, a big aggressive swing",
-      "frame_paths": {
-        "south": [
-          "pebble_crab/animations/attack_try/south/00.webp",
-          "pebble_crab/animations/attack_try/south/01.webp",
-          "pebble_crab/animations/attack_try/south/02.webp",
-          "pebble_crab/animations/attack_try/south/03.webp",
-          "pebble_crab/animations/attack_try/south/04.webp",
-          "pebble_crab/animations/attack_try/south/05.webp",
-          "pebble_crab/animations/attack_try/south/06.webp",
-          "pebble_crab/animations/attack_try/south/07.webp",
-          "pebble_crab/animations/attack_try/south/08.webp"
-        ],
-        "south-east": [
-          "pebble_crab/animations/attack_try/south-east/00.webp",
-          "pebble_crab/animations/attack_try/south-east/01.webp",
-          "pebble_crab/animations/attack_try/south-east/02.webp",
-          "pebble_crab/animations/attack_try/south-east/03.webp",
-          "pebble_crab/animations/attack_try/south-east/04.webp",
-          "pebble_crab/animations/attack_try/south-east/05.webp",
-          "pebble_crab/animations/attack_try/south-east/06.webp",
-          "pebble_crab/animations/attack_try/south-east/07.webp",
-          "pebble_crab/animations/attack_try/south-east/08.webp"
-        ],
-        "east": [
-          "pebble_crab/animations/attack_try/east/00.webp",
-          "pebble_crab/animations/attack_try/east/01.webp",
-          "pebble_crab/animations/attack_try/east/02.webp",
-          "pebble_crab/animations/attack_try/east/03.webp",
-          "pebble_crab/animations/attack_try/east/04.webp",
-          "pebble_crab/animations/attack_try/east/05.webp",
-          "pebble_crab/animations/attack_try/east/06.webp",
-          "pebble_crab/animations/attack_try/east/07.webp",
-          "pebble_crab/animations/attack_try/east/08.webp"
-        ],
-        "north-east": [
-          "pebble_crab/animations/attack_try/north-east/00.webp",
-          "pebble_crab/animations/attack_try/north-east/01.webp",
-          "pebble_crab/animations/attack_try/north-east/02.webp",
-          "pebble_crab/animations/attack_try/north-east/03.webp",
-          "pebble_crab/animations/attack_try/north-east/04.webp",
-          "pebble_crab/animations/attack_try/north-east/05.webp",
-          "pebble_crab/animations/attack_try/north-east/06.webp",
-          "pebble_crab/animations/attack_try/north-east/07.webp",
-          "pebble_crab/animations/attack_try/north-east/08.webp"
-        ],
-        "north": [
-          "pebble_crab/animations/attack_try/north/00.webp",
-          "pebble_crab/animations/attack_try/north/01.webp",
-          "pebble_crab/animations/attack_try/north/02.webp",
-          "pebble_crab/animations/attack_try/north/03.webp",
-          "pebble_crab/animations/attack_try/north/04.webp",
-          "pebble_crab/animations/attack_try/north/05.webp",
-          "pebble_crab/animations/attack_try/north/06.webp",
-          "pebble_crab/animations/attack_try/north/07.webp",
-          "pebble_crab/animations/attack_try/north/08.webp"
-        ],
-        "south-west": [
-          "pebble_crab/animations/attack_try/south-west/00.webp",
-          "pebble_crab/animations/attack_try/south-west/01.webp",
-          "pebble_crab/animations/attack_try/south-west/02.webp",
-          "pebble_crab/animations/attack_try/south-west/03.webp",
-          "pebble_crab/animations/attack_try/south-west/04.webp",
-          "pebble_crab/animations/attack_try/south-west/05.webp",
-          "pebble_crab/animations/attack_try/south-west/06.webp",
-          "pebble_crab/animations/attack_try/south-west/07.webp",
-          "pebble_crab/animations/attack_try/south-west/08.webp"
-        ],
-        "west": [
-          "pebble_crab/animations/attack_try/west/00.webp",
-          "pebble_crab/animations/attack_try/west/01.webp",
-          "pebble_crab/animations/attack_try/west/02.webp",
-          "pebble_crab/animations/attack_try/west/03.webp",
-          "pebble_crab/animations/attack_try/west/04.webp",
-          "pebble_crab/animations/attack_try/west/05.webp",
-          "pebble_crab/animations/attack_try/west/06.webp",
-          "pebble_crab/animations/attack_try/west/07.webp",
-          "pebble_crab/animations/attack_try/west/08.webp"
-        ],
-        "north-west": [
-          "pebble_crab/animations/attack_try/north-west/00.webp",
-          "pebble_crab/animations/attack_try/north-west/01.webp",
-          "pebble_crab/animations/attack_try/north-west/02.webp",
-          "pebble_crab/animations/attack_try/north-west/03.webp",
-          "pebble_crab/animations/attack_try/north-west/04.webp",
-          "pebble_crab/animations/attack_try/north-west/05.webp",
-          "pebble_crab/animations/attack_try/north-west/06.webp",
-          "pebble_crab/animations/attack_try/north-west/07.webp",
-          "pebble_crab/animations/attack_try/north-west/08.webp"
-        ]
-      },
-      "strips": {
-        "south": "pebble_crab/animations/attack_try__south.webp",
-        "south-east": "pebble_crab/animations/attack_try__south-east.webp",
-        "east": "pebble_crab/animations/attack_try__east.webp",
-        "north-east": "pebble_crab/animations/attack_try__north-east.webp",
-        "north": "pebble_crab/animations/attack_try__north.webp",
-        "south-west": "pebble_crab/animations/attack_try__south-west.webp",
-        "west": "pebble_crab/animations/attack_try__west.webp",
-        "north-west": "pebble_crab/animations/attack_try__north-west.webp"
-      },
-      "intensity": 1
-    }
+ "id": "pebble_crab",
+ "name": "Pebblet",
+ "tier": "cute",
+ "scale": "small",
+ "lore": "A pebble that pinches. Beachcombers learn which stones to skip the hard way.",
+ "biome": [
+  "light_beach",
+  "grey_stone"
+ ],
+ "items": [
+  "sea shells",
+  "curved pincer"
+ ],
+ "prompt": "Tiny fantasy hermit crab living inside a round speckled grey pebble, two small orange pincers, four thin legs, two black eyes on short stalks, and a patch of wet green algae on the pebble.",
+ "size": [
+  40,
+  40
+ ],
+ "template_id": "bear",
+ "directions": [
+  "south",
+  "south-east",
+  "east",
+  "north-east",
+  "north",
+  "north-west",
+  "west",
+  "south-west"
+ ],
+ "rotations": {
+  "south": "pebble_crab/rotations/south.webp",
+  "south-east": "pebble_crab/rotations/south-east.webp",
+  "east": "pebble_crab/rotations/east.webp",
+  "north-east": "pebble_crab/rotations/north-east.webp",
+  "north": "pebble_crab/rotations/north.webp",
+  "north-west": "pebble_crab/rotations/north-west.webp",
+  "west": "pebble_crab/rotations/west.webp",
+  "south-west": "pebble_crab/rotations/south-west.webp"
+ },
+ "sheet": "pebble_crab/sheet.webp",
+ "review": "approved",
+ "pixellab_id": "18c91c91-e3c9-41a0-a1aa-fe76b922c7f8",
+ "seed": 2105448981,
+ "version": 1,
+ "usage": null,
+ "generated_at": "2026-09-09T18:02:13+00:00",
+ "elapsed_s": 192.1,
+ "qa": {
+  "status": "pass",
+  "min_run1": 0.678,
+  "reasons": [],
+  "directions": {
+   "south": {
+    "run1": 0.703,
+    "bbox": [
+     1,
+     2,
+     39,
+     36
+    ],
+    "fill": 0.807,
+    "touches_edge": false
+   },
+   "south-east": {
+    "run1": 0.779,
+    "bbox": [
+     4,
+     2,
+     37,
+     37
+    ],
+    "fill": 0.722,
+    "touches_edge": false
+   },
+   "east": {
+    "run1": 0.753,
+    "bbox": [
+     6,
+     2,
+     37,
+     37
+    ],
+    "fill": 0.678,
+    "touches_edge": false
+   },
+   "north-east": {
+    "run1": 0.723,
+    "bbox": [
+     3,
+     3,
+     37,
+     38
+    ],
+    "fill": 0.744,
+    "touches_edge": false
+   },
+   "north": {
+    "run1": 0.678,
+    "bbox": [
+     2,
+     5,
+     38,
+     36
+    ],
+    "fill": 0.698,
+    "touches_edge": false
+   },
+   "north-west": {
+    "run1": 0.715,
+    "bbox": [
+     3,
+     3,
+     36,
+     38
+    ],
+    "fill": 0.722,
+    "touches_edge": false
+   },
+   "west": {
+    "run1": 0.766,
+    "bbox": [
+     3,
+     2,
+     34,
+     37
+    ],
+    "fill": 0.678,
+    "touches_edge": false
+   },
+   "south-west": {
+    "run1": 0.779,
+    "bbox": [
+     3,
+     2,
+     36,
+     37
+    ],
+    "fill": 0.722,
+    "touches_edge": false
+   }
   }
+ },
+ "approved_at": "2026-09-09T19:59:19+00:00",
+ "animations": {
+  "idle": {
+   "directions": {
+    "south": {
+     "status": "pass",
+     "step_mean": 0.0904,
+     "step_max": 0.1138,
+     "drift": 0.43,
+     "loop": 0.0,
+     "pin": 1.0,
+     "reasons": [],
+     "sub": "d1f82e7c-835a-46c1-8484-6c06899fa30b",
+     "takes": 1,
+     "version": 1,
+     "mirrored": false,
+     "generated_at": "2026-09-09T20:06:43+00:00",
+     "cut": 0
+    },
+    "south-east": {
+     "status": "pass",
+     "step_mean": 0.0991,
+     "step_max": 0.1165,
+     "drift": 0.54,
+     "loop": 0.0,
+     "pin": 1.0,
+     "reasons": [],
+     "sub": "6764f7ae-c396-4141-93cd-fcc62122b35a",
+     "takes": 1,
+     "version": 1,
+     "mirrored": false,
+     "generated_at": "2026-09-09T20:06:44+00:00",
+     "cut": 0
+    },
+    "east": {
+     "status": "pass",
+     "step_mean": 0.1888,
+     "step_max": 0.2842,
+     "drift": 1.18,
+     "loop": 0.0,
+     "pin": 1.0,
+     "reasons": [],
+     "sub": "40e95878-50dc-4a9e-afae-e49fff7754c3",
+     "takes": 1,
+     "version": 1,
+     "mirrored": false,
+     "generated_at": "2026-09-09T20:06:44+00:00",
+     "cut": 0
+    },
+    "north-east": {
+     "status": "pass",
+     "step_mean": 0.106,
+     "step_max": 0.1522,
+     "drift": 1.24,
+     "loop": 0.0,
+     "pin": 1.0,
+     "reasons": [],
+     "sub": "02a4c294-3269-4afa-ae55-d72928ad4be5",
+     "takes": 1,
+     "version": 1,
+     "mirrored": false,
+     "generated_at": "2026-09-09T20:06:45+00:00",
+     "cut": 0
+    },
+    "north": {
+     "status": "pass",
+     "step_mean": 0.133,
+     "step_max": 0.158,
+     "drift": 1.54,
+     "loop": 0.0,
+     "pin": 1.0,
+     "reasons": [],
+     "sub": "baf11d89-4291-427f-aefb-6f0997ed979b",
+     "takes": 1,
+     "version": 1,
+     "mirrored": false,
+     "generated_at": "2026-09-09T20:06:46+00:00",
+     "cut": 0
+    },
+    "south-west": {
+     "status": "pass",
+     "step_mean": 0.0991,
+     "step_max": 0.1165,
+     "drift": 0.54,
+     "loop": 0.0,
+     "pin": 1.0,
+     "reasons": [],
+     "sub": "6764f7ae-c396-4141-93cd-fcc62122b35a",
+     "takes": 1,
+     "version": 1,
+     "mirrored": true,
+     "generated_at": "2026-09-09T20:06:44+00:00",
+     "cut": 0,
+     "source": "south-east"
+    },
+    "west": {
+     "status": "pass",
+     "step_mean": 0.1888,
+     "step_max": 0.2842,
+     "drift": 1.18,
+     "loop": 0.0,
+     "pin": 1.0,
+     "reasons": [],
+     "sub": "40e95878-50dc-4a9e-afae-e49fff7754c3",
+     "takes": 1,
+     "version": 1,
+     "mirrored": true,
+     "generated_at": "2026-09-09T20:06:44+00:00",
+     "cut": 0,
+     "source": "east"
+    },
+    "north-west": {
+     "status": "pass",
+     "step_mean": 0.106,
+     "step_max": 0.1522,
+     "drift": 1.24,
+     "loop": 0.0,
+     "pin": 1.0,
+     "reasons": [],
+     "sub": "02a4c294-3269-4afa-ae55-d72928ad4be5",
+     "takes": 1,
+     "version": 1,
+     "mirrored": true,
+     "generated_at": "2026-09-09T20:06:45+00:00",
+     "cut": 0,
+     "source": "north-east"
+    }
+   },
+   "action": "Calm still idle, breathing very slowly and subtly, chest and shoulders rise and fall a little, feet planted, no other movement, ends in the same neutral pose it started in",
+   "frame_paths": {
+    "south": [
+     "pebble_crab/animations/idle/south/00.webp",
+     "pebble_crab/animations/idle/south/01.webp",
+     "pebble_crab/animations/idle/south/02.webp",
+     "pebble_crab/animations/idle/south/03.webp",
+     "pebble_crab/animations/idle/south/04.webp"
+    ],
+    "south-east": [
+     "pebble_crab/animations/idle/south-east/00.webp",
+     "pebble_crab/animations/idle/south-east/01.webp",
+     "pebble_crab/animations/idle/south-east/02.webp",
+     "pebble_crab/animations/idle/south-east/03.webp",
+     "pebble_crab/animations/idle/south-east/04.webp"
+    ],
+    "east": [
+     "pebble_crab/animations/idle/east/00.webp",
+     "pebble_crab/animations/idle/east/01.webp",
+     "pebble_crab/animations/idle/east/02.webp",
+     "pebble_crab/animations/idle/east/03.webp",
+     "pebble_crab/animations/idle/east/04.webp"
+    ],
+    "north-east": [
+     "pebble_crab/animations/idle/north-east/00.webp",
+     "pebble_crab/animations/idle/north-east/01.webp",
+     "pebble_crab/animations/idle/north-east/02.webp",
+     "pebble_crab/animations/idle/north-east/03.webp",
+     "pebble_crab/animations/idle/north-east/04.webp"
+    ],
+    "north": [
+     "pebble_crab/animations/idle/north/00.webp",
+     "pebble_crab/animations/idle/north/01.webp",
+     "pebble_crab/animations/idle/north/02.webp",
+     "pebble_crab/animations/idle/north/03.webp",
+     "pebble_crab/animations/idle/north/04.webp"
+    ],
+    "south-west": [
+     "pebble_crab/animations/idle/south-west/00.webp",
+     "pebble_crab/animations/idle/south-west/01.webp",
+     "pebble_crab/animations/idle/south-west/02.webp",
+     "pebble_crab/animations/idle/south-west/03.webp",
+     "pebble_crab/animations/idle/south-west/04.webp"
+    ],
+    "west": [
+     "pebble_crab/animations/idle/west/00.webp",
+     "pebble_crab/animations/idle/west/01.webp",
+     "pebble_crab/animations/idle/west/02.webp",
+     "pebble_crab/animations/idle/west/03.webp",
+     "pebble_crab/animations/idle/west/04.webp"
+    ],
+    "north-west": [
+     "pebble_crab/animations/idle/north-west/00.webp",
+     "pebble_crab/animations/idle/north-west/01.webp",
+     "pebble_crab/animations/idle/north-west/02.webp",
+     "pebble_crab/animations/idle/north-west/03.webp",
+     "pebble_crab/animations/idle/north-west/04.webp"
+    ]
+   },
+   "strips": {
+    "south": "pebble_crab/animations/idle__south.webp",
+    "south-east": "pebble_crab/animations/idle__south-east.webp",
+    "east": "pebble_crab/animations/idle__east.webp",
+    "north-east": "pebble_crab/animations/idle__north-east.webp",
+    "north": "pebble_crab/animations/idle__north.webp",
+    "south-west": "pebble_crab/animations/idle__south-west.webp",
+    "west": "pebble_crab/animations/idle__west.webp",
+    "north-west": "pebble_crab/animations/idle__north-west.webp"
+   }
+  },
+  "walk": {
+   "directions": {
+    "south": {
+     "status": "pass",
+     "step_mean": 0.0947,
+     "step_max": 0.1332,
+     "drift": 1.19,
+     "loop": 0.1247,
+     "loop_ratio": 1.32,
+     "travel": 0.17,
+     "pin": 0.898,
+     "pad": 0,
+     "canvas": [
+      40,
+      40
+     ],
+     "reasons": [],
+     "sub": "1c2ca49e-cecf-435e-990a-12423a37a325",
+     "group": "ec24f6d6-0428-428c-89cc-21ea9855334c",
+     "takes": 1,
+     "version": 1,
+     "mirrored": false,
+     "generated_at": "2026-09-09T21:15:02+00:00"
+    },
+    "south-east": {
+     "status": "pass",
+     "step_mean": 0.132,
+     "step_max": 0.1506,
+     "drift": 0.86,
+     "loop": 0.1506,
+     "loop_ratio": 1.14,
+     "travel": 0.42,
+     "pin": 0.86,
+     "pad": 0,
+     "canvas": [
+      40,
+      40
+     ],
+     "reasons": [],
+     "sub": "b3a2ca8a-f14e-447c-a548-4619a0fcc295",
+     "group": "7cc96d63-f69a-480c-bf20-1d1c05ff1ffc",
+     "takes": 1,
+     "version": 1,
+     "mirrored": false,
+     "generated_at": "2026-09-09T21:15:02+00:00"
+    },
+    "east": {
+     "status": "pass",
+     "step_mean": 0.1036,
+     "step_max": 0.1421,
+     "drift": 0.5,
+     "loop": 0.1248,
+     "loop_ratio": 1.21,
+     "travel": 0.28,
+     "pin": 0.949,
+     "pad": 0,
+     "canvas": [
+      40,
+      40
+     ],
+     "reasons": [],
+     "sub": "e5622a7f-cb0d-4c57-a3aa-97e3bb0ad1bc",
+     "group": "36c2307c-d368-443e-aeb1-8f61942e552b",
+     "takes": 1,
+     "version": 1,
+     "mirrored": false,
+     "generated_at": "2026-09-09T21:15:03+00:00"
+    },
+    "north-east": {
+     "status": "pass",
+     "step_mean": 0.1482,
+     "step_max": 0.1541,
+     "drift": 1.63,
+     "loop": 0.178,
+     "loop_ratio": 1.2,
+     "travel": 0.77,
+     "pin": 0.851,
+     "pad": 0,
+     "canvas": [
+      40,
+      40
+     ],
+     "reasons": [],
+     "sub": "71080d7c-97cd-4359-8af4-b5f337699ec3",
+     "group": "67219fae-9b3f-468c-bb16-de5f703b96d4",
+     "takes": 1,
+     "version": 1,
+     "mirrored": false,
+     "generated_at": "2026-09-09T21:15:04+00:00"
+    },
+    "north": {
+     "status": "pass",
+     "step_mean": 0.1324,
+     "step_max": 0.1565,
+     "drift": 1.05,
+     "loop": 0.123,
+     "loop_ratio": 0.93,
+     "travel": 0.1,
+     "pin": 0.868,
+     "pad": 0,
+     "canvas": [
+      40,
+      40
+     ],
+     "reasons": [],
+     "sub": "34a897af-7609-44c6-ae6a-5c7d29538876",
+     "group": "7b9d7df0-227f-486a-8832-530d3f2c8732",
+     "takes": 1,
+     "version": 1,
+     "mirrored": false,
+     "generated_at": "2026-09-09T21:15:04+00:00"
+    },
+    "south-west": {
+     "status": "pass",
+     "step_mean": 0.132,
+     "step_max": 0.1506,
+     "drift": 0.86,
+     "loop": 0.1506,
+     "loop_ratio": 1.14,
+     "travel": 0.42,
+     "pin": 0.86,
+     "pad": 0,
+     "canvas": [
+      40,
+      40
+     ],
+     "reasons": [],
+     "sub": "b3a2ca8a-f14e-447c-a548-4619a0fcc295",
+     "group": "7cc96d63-f69a-480c-bf20-1d1c05ff1ffc",
+     "takes": 1,
+     "version": 1,
+     "mirrored": true,
+     "generated_at": "2026-09-09T21:15:02+00:00",
+     "source": "south-east"
+    },
+    "west": {
+     "status": "pass",
+     "step_mean": 0.1036,
+     "step_max": 0.1421,
+     "drift": 0.5,
+     "loop": 0.1248,
+     "loop_ratio": 1.21,
+     "travel": 0.28,
+     "pin": 0.949,
+     "pad": 0,
+     "canvas": [
+      40,
+      40
+     ],
+     "reasons": [],
+     "sub": "e5622a7f-cb0d-4c57-a3aa-97e3bb0ad1bc",
+     "group": "36c2307c-d368-443e-aeb1-8f61942e552b",
+     "takes": 1,
+     "version": 1,
+     "mirrored": true,
+     "generated_at": "2026-09-09T21:15:03+00:00",
+     "source": "east"
+    },
+    "north-west": {
+     "status": "pass",
+     "step_mean": 0.1482,
+     "step_max": 0.1541,
+     "drift": 1.63,
+     "loop": 0.178,
+     "loop_ratio": 1.2,
+     "travel": 0.77,
+     "pin": 0.851,
+     "pad": 0,
+     "canvas": [
+      40,
+      40
+     ],
+     "reasons": [],
+     "sub": "71080d7c-97cd-4359-8af4-b5f337699ec3",
+     "group": "67219fae-9b3f-468c-bb16-de5f703b96d4",
+     "takes": 1,
+     "version": 1,
+     "mirrored": true,
+     "generated_at": "2026-09-09T21:15:04+00:00",
+     "source": "north-east"
+    }
+   },
+   "action": "walk loop, full walk cycle in place, legs alternate naturally, normal calm walking pace, body stays centered, seamless loop whose last frame leads straight back into the first, no turning",
+   "frame_paths": {
+    "south": [
+     "pebble_crab/animations/walk/south/00.webp",
+     "pebble_crab/animations/walk/south/01.webp",
+     "pebble_crab/animations/walk/south/02.webp",
+     "pebble_crab/animations/walk/south/03.webp",
+     "pebble_crab/animations/walk/south/04.webp",
+     "pebble_crab/animations/walk/south/05.webp"
+    ],
+    "south-east": [
+     "pebble_crab/animations/walk/south-east/00.webp",
+     "pebble_crab/animations/walk/south-east/01.webp",
+     "pebble_crab/animations/walk/south-east/02.webp",
+     "pebble_crab/animations/walk/south-east/03.webp",
+     "pebble_crab/animations/walk/south-east/04.webp",
+     "pebble_crab/animations/walk/south-east/05.webp"
+    ],
+    "east": [
+     "pebble_crab/animations/walk/east/00.webp",
+     "pebble_crab/animations/walk/east/01.webp",
+     "pebble_crab/animations/walk/east/02.webp",
+     "pebble_crab/animations/walk/east/03.webp",
+     "pebble_crab/animations/walk/east/04.webp",
+     "pebble_crab/animations/walk/east/05.webp"
+    ],
+    "north-east": [
+     "pebble_crab/animations/walk/north-east/00.webp",
+     "pebble_crab/animations/walk/north-east/01.webp",
+     "pebble_crab/animations/walk/north-east/02.webp",
+     "pebble_crab/animations/walk/north-east/03.webp",
+     "pebble_crab/animations/walk/north-east/04.webp",
+     "pebble_crab/animations/walk/north-east/05.webp"
+    ],
+    "north": [
+     "pebble_crab/animations/walk/north/00.webp",
+     "pebble_crab/animations/walk/north/01.webp",
+     "pebble_crab/animations/walk/north/02.webp",
+     "pebble_crab/animations/walk/north/03.webp",
+     "pebble_crab/animations/walk/north/04.webp",
+     "pebble_crab/animations/walk/north/05.webp"
+    ],
+    "south-west": [
+     "pebble_crab/animations/walk/south-west/00.webp",
+     "pebble_crab/animations/walk/south-west/01.webp",
+     "pebble_crab/animations/walk/south-west/02.webp",
+     "pebble_crab/animations/walk/south-west/03.webp",
+     "pebble_crab/animations/walk/south-west/04.webp",
+     "pebble_crab/animations/walk/south-west/05.webp"
+    ],
+    "west": [
+     "pebble_crab/animations/walk/west/00.webp",
+     "pebble_crab/animations/walk/west/01.webp",
+     "pebble_crab/animations/walk/west/02.webp",
+     "pebble_crab/animations/walk/west/03.webp",
+     "pebble_crab/animations/walk/west/04.webp",
+     "pebble_crab/animations/walk/west/05.webp"
+    ],
+    "north-west": [
+     "pebble_crab/animations/walk/north-west/00.webp",
+     "pebble_crab/animations/walk/north-west/01.webp",
+     "pebble_crab/animations/walk/north-west/02.webp",
+     "pebble_crab/animations/walk/north-west/03.webp",
+     "pebble_crab/animations/walk/north-west/04.webp",
+     "pebble_crab/animations/walk/north-west/05.webp"
+    ]
+   },
+   "strips": {
+    "south": "pebble_crab/animations/walk__south.webp",
+    "south-east": "pebble_crab/animations/walk__south-east.webp",
+    "east": "pebble_crab/animations/walk__east.webp",
+    "north-east": "pebble_crab/animations/walk__north-east.webp",
+    "north": "pebble_crab/animations/walk__north.webp",
+    "south-west": "pebble_crab/animations/walk__south-west.webp",
+    "west": "pebble_crab/animations/walk__west.webp",
+    "north-west": "pebble_crab/animations/walk__north-west.webp"
+   }
+  },
+  "attack": {
+   "directions": {
+    "south": {
+     "status": "fail",
+     "step_mean": 0.1117,
+     "step_max": 0.1612,
+     "drift": 0.4,
+     "loop": 0.0,
+     "loop_ratio": 0.0,
+     "travel": 0.06,
+     "pin": 1.0,
+     "pad": 0,
+     "flash": 0.0,
+     "peak": 0.1939,
+     "reach": 0.091,
+     "canvas": [
+      40,
+      40
+     ],
+     "reasons": [
+      "no strike, just a lean: nothing reaches past 0.09 of the body"
+     ],
+     "sub": "c90b9248-991b-4566-8f9d-04fa0ade8452",
+     "group": "22aaebb0-30bc-4f7b-bd72-9168012bbe64",
+     "takes": 1,
+     "version": 2,
+     "mirrored": false,
+     "generated_at": "2026-09-09T22:28:49+00:00",
+     "action": "Claw Pinch - Darts forward and pinches once with both small claws, then returns to idle stance"
+    },
+    "south-east": {
+     "status": "fail",
+     "step_mean": 0.1002,
+     "step_max": 0.1399,
+     "drift": 0.6,
+     "loop": 0.0,
+     "loop_ratio": 0.0,
+     "travel": 0.23,
+     "pin": 1.0,
+     "pad": 0,
+     "flash": 0.0,
+     "peak": 0.1757,
+     "reach": 0.091,
+     "canvas": [
+      40,
+      40
+     ],
+     "reasons": [
+      "no strike, just a lean: nothing reaches past 0.09 of the body"
+     ],
+     "sub": "087b3baa-d965-42ce-8ea5-bd5e74562080",
+     "group": "d944c8a2-8b23-4bfa-bc76-e99ca3cd6705",
+     "takes": 1,
+     "version": 2,
+     "mirrored": false,
+     "generated_at": "2026-09-09T22:28:49+00:00",
+     "action": "Claw Pinch - Darts forward and pinches once with both small claws, then returns to idle stance"
+    },
+    "east": {
+     "status": "fail",
+     "step_mean": 0.1555,
+     "step_max": 0.1903,
+     "drift": 1.0,
+     "loop": 0.0013,
+     "loop_ratio": 0.01,
+     "travel": 1.0,
+     "pin": 1.0,
+     "pad": 0,
+     "flash": 0.0,
+     "peak": 0.2578,
+     "reach": 0.116,
+     "canvas": [
+      40,
+      40
+     ],
+     "reasons": [
+      "no strike, just a lean: nothing reaches past 0.12 of the body"
+     ],
+     "sub": "a47d013b-3c37-4ab1-80cf-b8550953fa99",
+     "group": "50a0be54-6fbe-45e9-bab3-a9f33cd4c1fb",
+     "takes": 1,
+     "version": 2,
+     "mirrored": false,
+     "generated_at": "2026-09-09T22:28:50+00:00",
+     "action": "Claw Pinch - Darts forward and pinches once with both small claws, then returns to idle stance"
+    },
+    "north-east": {
+     "status": "fail",
+     "step_mean": 0.1119,
+     "step_max": 0.1487,
+     "drift": 1.16,
+     "loop": 0.0,
+     "loop_ratio": 0.0,
+     "travel": 0.24,
+     "pin": 1.0,
+     "pad": 0,
+     "flash": 0.004,
+     "peak": 0.1678,
+     "reach": 0.088,
+     "canvas": [
+      40,
+      40
+     ],
+     "reasons": [
+      "no strike, just a lean: nothing reaches past 0.09 of the body"
+     ],
+     "sub": "dc6a0aee-d775-43b4-a6c5-c5be53b724a2",
+     "group": "3891aa6c-df91-4bc9-8111-aa8f6f79f251",
+     "takes": 1,
+     "version": 2,
+     "mirrored": false,
+     "generated_at": "2026-09-09T22:28:50+00:00",
+     "action": "Claw Pinch - Darts forward and pinches once with both small claws, then returns to idle stance"
+    },
+    "north": {
+     "status": "fail",
+     "step_mean": 0.1187,
+     "step_max": 0.1805,
+     "drift": 1.13,
+     "loop": 0.0,
+     "loop_ratio": 0.0,
+     "travel": 0.08,
+     "pin": 1.0,
+     "pad": 0,
+     "flash": 0.0,
+     "peak": 0.2089,
+     "reach": 0.129,
+     "canvas": [
+      40,
+      40
+     ],
+     "reasons": [
+      "no strike, just a lean: nothing reaches past 0.13 of the body"
+     ],
+     "sub": "17fa2991-e931-4b28-baf7-0898aac8bb05",
+     "group": "281d99f0-1682-4a57-8bf9-98bd22008127",
+     "takes": 1,
+     "version": 2,
+     "mirrored": false,
+     "generated_at": "2026-09-09T22:28:51+00:00",
+     "action": "Claw Pinch - Darts forward and pinches once with both small claws, then returns to idle stance"
+    },
+    "south-west": {
+     "status": "pass",
+     "step_mean": 0.1002,
+     "step_max": 0.1399,
+     "drift": 0.6,
+     "loop": 0.0,
+     "loop_ratio": 0.0,
+     "travel": 0.23,
+     "pin": 1.0,
+     "pad": 0,
+     "flash": 0.0,
+     "peak": 0.1757,
+     "canvas": [
+      40,
+      40
+     ],
+     "reasons": [],
+     "sub": "087b3baa-d965-42ce-8ea5-bd5e74562080",
+     "group": "d944c8a2-8b23-4bfa-bc76-e99ca3cd6705",
+     "takes": 1,
+     "version": 2,
+     "mirrored": true,
+     "generated_at": "2026-09-09T22:28:49+00:00",
+     "action": "Claw Pinch - Darts forward and pinches once with both small claws, then returns to idle stance",
+     "source": "south-east"
+    },
+    "west": {
+     "status": "pass",
+     "step_mean": 0.1555,
+     "step_max": 0.1903,
+     "drift": 1.0,
+     "loop": 0.0013,
+     "loop_ratio": 0.01,
+     "travel": 1.0,
+     "pin": 1.0,
+     "pad": 0,
+     "flash": 0.0,
+     "peak": 0.2578,
+     "canvas": [
+      40,
+      40
+     ],
+     "reasons": [],
+     "sub": "a47d013b-3c37-4ab1-80cf-b8550953fa99",
+     "group": "50a0be54-6fbe-45e9-bab3-a9f33cd4c1fb",
+     "takes": 1,
+     "version": 2,
+     "mirrored": true,
+     "generated_at": "2026-09-09T22:28:50+00:00",
+     "action": "Claw Pinch - Darts forward and pinches once with both small claws, then returns to idle stance",
+     "source": "east"
+    },
+    "north-west": {
+     "status": "pass",
+     "step_mean": 0.1119,
+     "step_max": 0.1487,
+     "drift": 1.16,
+     "loop": 0.0,
+     "loop_ratio": 0.0,
+     "travel": 0.24,
+     "pin": 1.0,
+     "pad": 0,
+     "flash": 0.004,
+     "peak": 0.1678,
+     "canvas": [
+      40,
+      40
+     ],
+     "reasons": [],
+     "sub": "dc6a0aee-d775-43b4-a6c5-c5be53b724a2",
+     "group": "3891aa6c-df91-4bc9-8111-aa8f6f79f251",
+     "takes": 1,
+     "version": 2,
+     "mirrored": true,
+     "generated_at": "2026-09-09T22:28:50+00:00",
+     "action": "Claw Pinch - Darts forward and pinches once with both small claws, then returns to idle stance",
+     "source": "north-east"
+    }
+   },
+   "action": "Claw Pinch - Darts forward and pinches once with both small claws, then returns to idle stance",
+   "frame_paths": {
+    "south": [
+     "pebble_crab/animations/attack/south/00.webp",
+     "pebble_crab/animations/attack/south/01.webp",
+     "pebble_crab/animations/attack/south/02.webp",
+     "pebble_crab/animations/attack/south/03.webp",
+     "pebble_crab/animations/attack/south/04.webp"
+    ],
+    "south-east": [
+     "pebble_crab/animations/attack/south-east/00.webp",
+     "pebble_crab/animations/attack/south-east/01.webp",
+     "pebble_crab/animations/attack/south-east/02.webp",
+     "pebble_crab/animations/attack/south-east/03.webp",
+     "pebble_crab/animations/attack/south-east/04.webp"
+    ],
+    "east": [
+     "pebble_crab/animations/attack/east/00.webp",
+     "pebble_crab/animations/attack/east/01.webp",
+     "pebble_crab/animations/attack/east/02.webp",
+     "pebble_crab/animations/attack/east/03.webp",
+     "pebble_crab/animations/attack/east/04.webp"
+    ],
+    "north-east": [
+     "pebble_crab/animations/attack/north-east/00.webp",
+     "pebble_crab/animations/attack/north-east/01.webp",
+     "pebble_crab/animations/attack/north-east/02.webp",
+     "pebble_crab/animations/attack/north-east/03.webp",
+     "pebble_crab/animations/attack/north-east/04.webp"
+    ],
+    "north": [
+     "pebble_crab/animations/attack/north/00.webp",
+     "pebble_crab/animations/attack/north/01.webp",
+     "pebble_crab/animations/attack/north/02.webp",
+     "pebble_crab/animations/attack/north/03.webp",
+     "pebble_crab/animations/attack/north/04.webp"
+    ],
+    "south-west": [
+     "pebble_crab/animations/attack/south-west/00.webp",
+     "pebble_crab/animations/attack/south-west/01.webp",
+     "pebble_crab/animations/attack/south-west/02.webp",
+     "pebble_crab/animations/attack/south-west/03.webp",
+     "pebble_crab/animations/attack/south-west/04.webp"
+    ],
+    "west": [
+     "pebble_crab/animations/attack/west/00.webp",
+     "pebble_crab/animations/attack/west/01.webp",
+     "pebble_crab/animations/attack/west/02.webp",
+     "pebble_crab/animations/attack/west/03.webp",
+     "pebble_crab/animations/attack/west/04.webp"
+    ],
+    "north-west": [
+     "pebble_crab/animations/attack/north-west/00.webp",
+     "pebble_crab/animations/attack/north-west/01.webp",
+     "pebble_crab/animations/attack/north-west/02.webp",
+     "pebble_crab/animations/attack/north-west/03.webp",
+     "pebble_crab/animations/attack/north-west/04.webp"
+    ]
+   },
+   "strips": {
+    "south": "pebble_crab/animations/attack__south.webp",
+    "south-east": "pebble_crab/animations/attack__south-east.webp",
+    "east": "pebble_crab/animations/attack__east.webp",
+    "north-east": "pebble_crab/animations/attack__north-east.webp",
+    "north": "pebble_crab/animations/attack__north.webp",
+    "south-west": "pebble_crab/animations/attack__south-west.webp",
+    "west": "pebble_crab/animations/attack__west.webp",
+    "north-west": "pebble_crab/animations/attack__north-west.webp"
+   }
+  },
+  "attack_try": {
+   "directions": {
+    "south": {
+     "status": "fail",
+     "step_mean": 0.0848,
+     "step_max": 0.1509,
+     "drift": 2.25,
+     "loop": 0.0916,
+     "loop_ratio": 1.08,
+     "travel": 0.12,
+     "pin": 1.0,
+     "pad": 0,
+     "flash": 0.089,
+     "peak": 0.2425,
+     "reach": 0.088,
+     "canvas": [
+      40,
+      40
+     ],
+     "reasons": [
+      "no strike, just a lean: nothing reaches past 0.09 of the body",
+      "some bright effect pixels (0.09) — eyeball it"
+     ],
+     "sub": "2e9f7a6b-82e4-47c3-bf9b-808178fb4e24",
+     "group": "338b1156-e7d7-4302-aad1-c09e7dccef14",
+     "takes": 1,
+     "version": 4,
+     "mirrored": false,
+     "generated_at": "2026-09-10T21:14:13+00:00",
+     "action": "Claw Swipe - Raises one front paw and performs one quick swipe forward, white swoosh lines following the claws",
+     "tries": 4,
+     "rolls": 4,
+     "intensity": 1,
+     "frames": 9,
+     "rung": 3
+    },
+    "south-east": {
+     "status": "warn",
+     "step_mean": 0.097,
+     "step_max": 0.1786,
+     "drift": 1.35,
+     "loop": 0.0468,
+     "loop_ratio": 0.48,
+     "travel": 0.52,
+     "pin": 1.0,
+     "pad": 1,
+     "flash": 0.048,
+     "peak": 0.25,
+     "reach": 0.152,
+     "canvas": [
+      42,
+      42
+     ],
+     "reasons": [
+      "shallow strike: reach 0.15 — eyeball it",
+      "some bright effect pixels (0.05) — eyeball it",
+      "canvas grown by 1 px a side to hold the motion"
+     ],
+     "sub": "8daf4f24-d8c5-455b-b4df-574b6b0ee65b",
+     "group": "d08b8107-12ab-4175-822d-291a2f27ac43",
+     "takes": 1,
+     "version": 4,
+     "mirrored": false,
+     "generated_at": "2026-09-10T21:14:14+00:00",
+     "action": "Claw Swipe - Raises one front paw and performs one quick swipe forward, white swoosh lines following the claws",
+     "tries": 4,
+     "rolls": 4,
+     "intensity": 1,
+     "frames": 9,
+     "rung": 0
+    },
+    "east": {
+     "status": "fail",
+     "step_mean": 0.1085,
+     "step_max": 0.1612,
+     "drift": 1.33,
+     "loop": 0.1121,
+     "loop_ratio": 1.03,
+     "travel": 1.33,
+     "pin": 1.0,
+     "pad": 0,
+     "flash": 0.165,
+     "peak": 0.2632,
+     "reach": 0.194,
+     "canvas": [
+      40,
+      40
+     ],
+     "reasons": [
+      "shallow strike: reach 0.19 — eyeball it",
+      "painted effect: 0.17 of the body in new bright pixels (flare/slash arc)"
+     ],
+     "sub": "bff1b07d-9494-464f-8e6c-d6933d3a145d",
+     "group": "249cceb9-daf4-4198-a236-acdff903efed",
+     "takes": 1,
+     "version": 4,
+     "mirrored": false,
+     "generated_at": "2026-09-10T21:14:15+00:00",
+     "action": "Claw Swipe - Raises one front paw and performs one quick swipe forward, white swoosh lines following the claws",
+     "tries": 4,
+     "rolls": 4,
+     "intensity": 1,
+     "frames": 9,
+     "rung": 3
+    },
+    "north-east": {
+     "status": "fail",
+     "step_mean": 0.1593,
+     "step_max": 0.2118,
+     "drift": 1.45,
+     "loop": 0.0902,
+     "loop_ratio": 0.57,
+     "travel": 0.64,
+     "pin": 1.0,
+     "pad": 2,
+     "flash": 0.106,
+     "peak": 0.2562,
+     "reach": 0.206,
+     "canvas": [
+      44,
+      44
+     ],
+     "reasons": [
+      "shallow strike: reach 0.21 — eyeball it",
+      "painted effect: 0.11 of the body in new bright pixels (flare/slash arc)",
+      "canvas grown by 2 px a side to hold the motion"
+     ],
+     "sub": "898989b6-f8d1-42c2-95ad-aaa4df28cae3",
+     "group": "53640227-16cf-4110-abdd-6ef731e1292c",
+     "takes": 1,
+     "version": 4,
+     "mirrored": false,
+     "generated_at": "2026-09-10T21:14:15+00:00",
+     "action": "Claw Swipe - Raises one front paw and performs one quick swipe forward, white swoosh lines following the claws",
+     "tries": 4,
+     "rolls": 4,
+     "intensity": 1,
+     "frames": 9,
+     "rung": 3
+    },
+    "north": {
+     "status": "fail",
+     "step_mean": 0.1039,
+     "step_max": 0.1956,
+     "drift": 1.95,
+     "loop": 0.2214,
+     "loop_ratio": 2.13,
+     "travel": 0.43,
+     "pin": 1.0,
+     "pad": 0,
+     "flash": 0.01,
+     "peak": 0.2214,
+     "reach": 0.097,
+     "canvas": [
+      40,
+      40
+     ],
+     "reasons": [
+      "no strike, just a lean: nothing reaches past 0.10 of the body"
+     ],
+     "sub": "662909ff-0fe4-4de3-af0a-e38dd5b4f0d8",
+     "group": "4f10fc98-5935-4821-976b-326a62f6c376",
+     "takes": 1,
+     "version": 4,
+     "mirrored": false,
+     "generated_at": "2026-09-10T21:14:16+00:00",
+     "action": "Claw Swipe - Raises one front paw and performs one quick swipe forward, white swoosh lines following the claws",
+     "tries": 4,
+     "rolls": 4,
+     "intensity": 1,
+     "frames": 9,
+     "rung": 3
+    },
+    "south-west": {
+     "status": "warn",
+     "step_mean": 0.097,
+     "step_max": 0.1786,
+     "drift": 1.35,
+     "loop": 0.0468,
+     "loop_ratio": 0.48,
+     "travel": 0.52,
+     "pin": 1.0,
+     "pad": 1,
+     "flash": 0.048,
+     "peak": 0.25,
+     "reach": 0.152,
+     "canvas": [
+      42,
+      42
+     ],
+     "reasons": [
+      "shallow strike: reach 0.15 — eyeball it",
+      "some bright effect pixels (0.05) — eyeball it",
+      "canvas grown by 1 px a side to hold the motion"
+     ],
+     "sub": "8daf4f24-d8c5-455b-b4df-574b6b0ee65b",
+     "group": "d08b8107-12ab-4175-822d-291a2f27ac43",
+     "takes": 1,
+     "version": 4,
+     "mirrored": true,
+     "generated_at": "2026-09-10T21:14:14+00:00",
+     "action": "Claw Swipe - Raises one front paw and performs one quick swipe forward, white swoosh lines following the claws",
+     "tries": 4,
+     "rolls": 4,
+     "intensity": 1,
+     "frames": 9,
+     "source": "south-east"
+    },
+    "west": {
+     "status": "warn",
+     "step_mean": 0.1085,
+     "step_max": 0.1612,
+     "drift": 1.33,
+     "loop": 0.1121,
+     "loop_ratio": 1.03,
+     "travel": 1.33,
+     "pin": 1.0,
+     "pad": 0,
+     "flash": 0.165,
+     "peak": 0.2632,
+     "reach": 0.194,
+     "canvas": [
+      40,
+      40
+     ],
+     "reasons": [
+      "shallow strike: reach 0.19 — eyeball it"
+     ],
+     "sub": "bff1b07d-9494-464f-8e6c-d6933d3a145d",
+     "group": "249cceb9-daf4-4198-a236-acdff903efed",
+     "takes": 1,
+     "version": 4,
+     "mirrored": true,
+     "generated_at": "2026-09-10T21:14:15+00:00",
+     "action": "Claw Swipe - Raises one front paw and performs one quick swipe forward, white swoosh lines following the claws",
+     "tries": 4,
+     "rolls": 4,
+     "intensity": 1,
+     "frames": 9,
+     "source": "east"
+    },
+    "north-west": {
+     "status": "warn",
+     "step_mean": 0.1593,
+     "step_max": 0.2118,
+     "drift": 1.45,
+     "loop": 0.0902,
+     "loop_ratio": 0.57,
+     "travel": 0.64,
+     "pin": 1.0,
+     "pad": 2,
+     "flash": 0.106,
+     "peak": 0.2562,
+     "reach": 0.206,
+     "canvas": [
+      44,
+      44
+     ],
+     "reasons": [
+      "shallow strike: reach 0.21 — eyeball it",
+      "canvas grown by 2 px a side to hold the motion"
+     ],
+     "sub": "898989b6-f8d1-42c2-95ad-aaa4df28cae3",
+     "group": "53640227-16cf-4110-abdd-6ef731e1292c",
+     "takes": 1,
+     "version": 4,
+     "mirrored": true,
+     "generated_at": "2026-09-10T21:14:15+00:00",
+     "action": "Claw Swipe - Raises one front paw and performs one quick swipe forward, white swoosh lines following the claws",
+     "tries": 4,
+     "rolls": 4,
+     "intensity": 1,
+     "frames": 9,
+     "source": "north-east"
+    }
+   },
+   "action": "Claw Pinch - Darts forward and snaps both small claws shut hard, a big aggressive swing",
+   "frame_paths": {
+    "south": [
+     "pebble_crab/animations/attack_try/south/00.webp",
+     "pebble_crab/animations/attack_try/south/01.webp",
+     "pebble_crab/animations/attack_try/south/02.webp",
+     "pebble_crab/animations/attack_try/south/03.webp",
+     "pebble_crab/animations/attack_try/south/04.webp",
+     "pebble_crab/animations/attack_try/south/05.webp",
+     "pebble_crab/animations/attack_try/south/06.webp",
+     "pebble_crab/animations/attack_try/south/07.webp",
+     "pebble_crab/animations/attack_try/south/08.webp"
+    ],
+    "south-east": [
+     "pebble_crab/animations/attack_try/south-east/00.webp",
+     "pebble_crab/animations/attack_try/south-east/01.webp",
+     "pebble_crab/animations/attack_try/south-east/02.webp",
+     "pebble_crab/animations/attack_try/south-east/03.webp",
+     "pebble_crab/animations/attack_try/south-east/04.webp",
+     "pebble_crab/animations/attack_try/south-east/05.webp",
+     "pebble_crab/animations/attack_try/south-east/06.webp",
+     "pebble_crab/animations/attack_try/south-east/07.webp",
+     "pebble_crab/animations/attack_try/south-east/08.webp"
+    ],
+    "east": [
+     "pebble_crab/animations/attack_try/east/00.webp",
+     "pebble_crab/animations/attack_try/east/01.webp",
+     "pebble_crab/animations/attack_try/east/02.webp",
+     "pebble_crab/animations/attack_try/east/03.webp",
+     "pebble_crab/animations/attack_try/east/04.webp",
+     "pebble_crab/animations/attack_try/east/05.webp",
+     "pebble_crab/animations/attack_try/east/06.webp",
+     "pebble_crab/animations/attack_try/east/07.webp",
+     "pebble_crab/animations/attack_try/east/08.webp"
+    ],
+    "north-east": [
+     "pebble_crab/animations/attack_try/north-east/00.webp",
+     "pebble_crab/animations/attack_try/north-east/01.webp",
+     "pebble_crab/animations/attack_try/north-east/02.webp",
+     "pebble_crab/animations/attack_try/north-east/03.webp",
+     "pebble_crab/animations/attack_try/north-east/04.webp",
+     "pebble_crab/animations/attack_try/north-east/05.webp",
+     "pebble_crab/animations/attack_try/north-east/06.webp",
+     "pebble_crab/animations/attack_try/north-east/07.webp",
+     "pebble_crab/animations/attack_try/north-east/08.webp"
+    ],
+    "north": [
+     "pebble_crab/animations/attack_try/north/00.webp",
+     "pebble_crab/animations/attack_try/north/01.webp",
+     "pebble_crab/animations/attack_try/north/02.webp",
+     "pebble_crab/animations/attack_try/north/03.webp",
+     "pebble_crab/animations/attack_try/north/04.webp",
+     "pebble_crab/animations/attack_try/north/05.webp",
+     "pebble_crab/animations/attack_try/north/06.webp",
+     "pebble_crab/animations/attack_try/north/07.webp",
+     "pebble_crab/animations/attack_try/north/08.webp"
+    ],
+    "south-west": [
+     "pebble_crab/animations/attack_try/south-west/00.webp",
+     "pebble_crab/animations/attack_try/south-west/01.webp",
+     "pebble_crab/animations/attack_try/south-west/02.webp",
+     "pebble_crab/animations/attack_try/south-west/03.webp",
+     "pebble_crab/animations/attack_try/south-west/04.webp",
+     "pebble_crab/animations/attack_try/south-west/05.webp",
+     "pebble_crab/animations/attack_try/south-west/06.webp",
+     "pebble_crab/animations/attack_try/south-west/07.webp",
+     "pebble_crab/animations/attack_try/south-west/08.webp"
+    ],
+    "west": [
+     "pebble_crab/animations/attack_try/west/00.webp",
+     "pebble_crab/animations/attack_try/west/01.webp",
+     "pebble_crab/animations/attack_try/west/02.webp",
+     "pebble_crab/animations/attack_try/west/03.webp",
+     "pebble_crab/animations/attack_try/west/04.webp",
+     "pebble_crab/animations/attack_try/west/05.webp",
+     "pebble_crab/animations/attack_try/west/06.webp",
+     "pebble_crab/animations/attack_try/west/07.webp",
+     "pebble_crab/animations/attack_try/west/08.webp"
+    ],
+    "north-west": [
+     "pebble_crab/animations/attack_try/north-west/00.webp",
+     "pebble_crab/animations/attack_try/north-west/01.webp",
+     "pebble_crab/animations/attack_try/north-west/02.webp",
+     "pebble_crab/animations/attack_try/north-west/03.webp",
+     "pebble_crab/animations/attack_try/north-west/04.webp",
+     "pebble_crab/animations/attack_try/north-west/05.webp",
+     "pebble_crab/animations/attack_try/north-west/06.webp",
+     "pebble_crab/animations/attack_try/north-west/07.webp",
+     "pebble_crab/animations/attack_try/north-west/08.webp"
+    ]
+   },
+   "strips": {
+    "south": "pebble_crab/animations/attack_try__south.webp",
+    "south-east": "pebble_crab/animations/attack_try__south-east.webp",
+    "east": "pebble_crab/animations/attack_try__east.webp",
+    "north-east": "pebble_crab/animations/attack_try__north-east.webp",
+    "north": "pebble_crab/animations/attack_try__north.webp",
+    "south-west": "pebble_crab/animations/attack_try__south-west.webp",
+    "west": "pebble_crab/animations/attack_try__west.webp",
+    "north-west": "pebble_crab/animations/attack_try__north-west.webp"
+   },
+   "intensity": 1
+  }
+ }
 }

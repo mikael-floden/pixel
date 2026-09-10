@@ -1,1232 +1,1237 @@
 {
-  "id": "mummy",
-  "name": "Wrapwarden",
-  "tier": "evil",
-  "scale": "standard",
-  "lore": "Its name was carved off the tomb, so it went looking for it. It checks every face and none of them fit.",
-  "biome": [
-    "light_soil",
-    "grey_paving_stone"
-  ],
-  "items": [],
-  "prompt": "Fantasy mummy shown full body from head to feet, a shambling figure wrapped in yellowed stained linen bandages, some loose and trailing, glowing green eyes through the wrappings, a golden pectoral, and dust puffing off its shoulders.",
-  "size": [
-    104,
-    104
-  ],
-  "template_id": "mannequin",
-  "directions": [
-    "south",
-    "south-east",
-    "east",
-    "north-east",
-    "north",
-    "north-west",
-    "west",
-    "south-west"
-  ],
-  "rotations": {
-    "south": "mummy/rotations/south.webp",
-    "south-east": "mummy/rotations/south-east.webp",
-    "east": "mummy/rotations/east.webp",
-    "north-east": "mummy/rotations/north-east.webp",
-    "north": "mummy/rotations/north.webp",
-    "north-west": "mummy/rotations/north-west.webp",
-    "west": "mummy/rotations/west.webp",
-    "south-west": "mummy/rotations/south-west.webp"
-  },
-  "sheet": "mummy/sheet.webp",
-  "review": "approved",
-  "pixellab_id": "968db5e3-3077-4a39-b88a-811f7aa91eb0",
-  "seed": 1378118637,
-  "version": 1,
-  "usage": null,
-  "generated_at": "2026-09-09T18:36:29+00:00",
-  "elapsed_s": 144.1,
-  "qa": {
-    "status": "pass",
-    "min_run1": 0.772,
-    "reasons": [],
-    "directions": {
-      "south": {
-        "run1": 0.772,
-        "bbox": [
-          9,
-          4,
-          93,
-          99
-        ],
-        "fill": 0.738,
-        "touches_edge": false
-      },
-      "south-east": {
-        "run1": 0.842,
-        "bbox": [
-          17,
-          4,
-          87,
-          101
-        ],
-        "fill": 0.628,
-        "touches_edge": false
-      },
-      "east": {
-        "run1": 0.84,
-        "bbox": [
-          26,
-          4,
-          72,
-          102
-        ],
-        "fill": 0.417,
-        "touches_edge": false
-      },
-      "north-east": {
-        "run1": 0.802,
-        "bbox": [
-          20,
-          3,
-          77,
-          99
-        ],
-        "fill": 0.506,
-        "touches_edge": false
-      },
-      "north": {
-        "run1": 0.777,
-        "bbox": [
-          12,
-          3,
-          92,
-          99
-        ],
-        "fill": 0.71,
-        "touches_edge": false
-      },
-      "north-west": {
-        "run1": 0.796,
-        "bbox": [
-          24,
-          3,
-          86,
-          99
-        ],
-        "fill": 0.55,
-        "touches_edge": false
-      },
-      "west": {
-        "run1": 0.84,
-        "bbox": [
-          32,
-          4,
-          75,
-          102
-        ],
-        "fill": 0.39,
-        "touches_edge": false
-      },
-      "south-west": {
-        "run1": 0.854,
-        "bbox": [
-          19,
-          4,
-          86,
-          101
-        ],
-        "fill": 0.601,
-        "touches_edge": false
-      }
-    }
-  },
-  "approved_at": "2026-09-09T19:59:22+00:00",
-  "animations": {
-    "idle": {
-      "directions": {
-        "south": {
-          "status": "pass",
-          "step_mean": 0.0901,
-          "step_max": 0.143,
-          "drift": 1.54,
-          "loop": 0.0007,
-          "pin": 1.0,
-          "reasons": [],
-          "sub": "becbdfbf-bf9c-4378-92a8-e8d1a1217204",
-          "takes": 1,
-          "version": 1,
-          "mirrored": false,
-          "generated_at": "2026-09-09T20:15:20+00:00",
-          "cut": 0
-        },
-        "south-east": {
-          "status": "pass",
-          "step_mean": 0.0788,
-          "step_max": 0.0845,
-          "drift": 1.65,
-          "loop": 0.0013,
-          "pin": 1.0,
-          "reasons": [],
-          "sub": "6cb79e62-44c8-4904-aa84-10e45566174c",
-          "takes": 1,
-          "version": 1,
-          "mirrored": false,
-          "generated_at": "2026-09-09T20:15:20+00:00",
-          "cut": 0
-        },
-        "east": {
-          "status": "pass",
-          "step_mean": 0.0385,
-          "step_max": 0.0677,
-          "drift": 0.85,
-          "loop": 0.0004,
-          "pin": 1.0,
-          "reasons": [],
-          "sub": "19f500d7-8ec3-4031-b6de-46ea25264562",
-          "takes": 1,
-          "version": 1,
-          "mirrored": false,
-          "generated_at": "2026-09-09T20:15:21+00:00",
-          "cut": 0
-        },
-        "north-east": {
-          "status": "pass",
-          "step_mean": 0.0922,
-          "step_max": 0.1314,
-          "drift": 1.16,
-          "loop": 0.0,
-          "pin": 1.0,
-          "reasons": [],
-          "sub": "3d4cfe08-79ee-433c-988b-5b8ac66a8a80",
-          "takes": 1,
-          "version": 1,
-          "mirrored": false,
-          "generated_at": "2026-09-09T20:15:22+00:00",
-          "cut": 0
-        },
-        "north": {
-          "status": "pass",
-          "step_mean": 0.0987,
-          "step_max": 0.1263,
-          "drift": 1.21,
-          "loop": 0.0002,
-          "pin": 1.0,
-          "reasons": [],
-          "sub": "43abe401-cb41-4b5e-a4f3-86cf91ccda8d",
-          "takes": 1,
-          "version": 1,
-          "mirrored": false,
-          "generated_at": "2026-09-09T20:15:22+00:00",
-          "cut": 0
-        },
-        "south-west": {
-          "status": "pass",
-          "step_mean": 0.0788,
-          "step_max": 0.0845,
-          "drift": 1.65,
-          "loop": 0.0013,
-          "pin": 1.0,
-          "reasons": [],
-          "sub": "6cb79e62-44c8-4904-aa84-10e45566174c",
-          "takes": 1,
-          "version": 1,
-          "mirrored": true,
-          "generated_at": "2026-09-09T20:15:20+00:00",
-          "cut": 0,
-          "source": "south-east"
-        },
-        "west": {
-          "status": "pass",
-          "step_mean": 0.0385,
-          "step_max": 0.0677,
-          "drift": 0.85,
-          "loop": 0.0004,
-          "pin": 1.0,
-          "reasons": [],
-          "sub": "19f500d7-8ec3-4031-b6de-46ea25264562",
-          "takes": 1,
-          "version": 1,
-          "mirrored": true,
-          "generated_at": "2026-09-09T20:15:21+00:00",
-          "cut": 0,
-          "source": "east"
-        },
-        "north-west": {
-          "status": "pass",
-          "step_mean": 0.0922,
-          "step_max": 0.1314,
-          "drift": 1.16,
-          "loop": 0.0,
-          "pin": 1.0,
-          "reasons": [],
-          "sub": "3d4cfe08-79ee-433c-988b-5b8ac66a8a80",
-          "takes": 1,
-          "version": 1,
-          "mirrored": true,
-          "generated_at": "2026-09-09T20:15:22+00:00",
-          "cut": 0,
-          "source": "north-east"
-        }
-      },
-      "action": "Calm still idle, breathing very slowly and subtly, chest and shoulders rise and fall a little, feet planted, no other movement, ends in the same neutral pose it started in",
-      "frame_paths": {
-        "south": [
-          "mummy/animations/idle/south/00.webp",
-          "mummy/animations/idle/south/01.webp",
-          "mummy/animations/idle/south/02.webp",
-          "mummy/animations/idle/south/03.webp",
-          "mummy/animations/idle/south/04.webp"
-        ],
-        "south-east": [
-          "mummy/animations/idle/south-east/00.webp",
-          "mummy/animations/idle/south-east/01.webp",
-          "mummy/animations/idle/south-east/02.webp",
-          "mummy/animations/idle/south-east/03.webp",
-          "mummy/animations/idle/south-east/04.webp"
-        ],
-        "east": [
-          "mummy/animations/idle/east/00.webp",
-          "mummy/animations/idle/east/01.webp",
-          "mummy/animations/idle/east/02.webp",
-          "mummy/animations/idle/east/03.webp",
-          "mummy/animations/idle/east/04.webp"
-        ],
-        "north-east": [
-          "mummy/animations/idle/north-east/00.webp",
-          "mummy/animations/idle/north-east/01.webp",
-          "mummy/animations/idle/north-east/02.webp",
-          "mummy/animations/idle/north-east/03.webp",
-          "mummy/animations/idle/north-east/04.webp"
-        ],
-        "north": [
-          "mummy/animations/idle/north/00.webp",
-          "mummy/animations/idle/north/01.webp",
-          "mummy/animations/idle/north/02.webp",
-          "mummy/animations/idle/north/03.webp",
-          "mummy/animations/idle/north/04.webp"
-        ],
-        "south-west": [
-          "mummy/animations/idle/south-west/00.webp",
-          "mummy/animations/idle/south-west/01.webp",
-          "mummy/animations/idle/south-west/02.webp",
-          "mummy/animations/idle/south-west/03.webp",
-          "mummy/animations/idle/south-west/04.webp"
-        ],
-        "west": [
-          "mummy/animations/idle/west/00.webp",
-          "mummy/animations/idle/west/01.webp",
-          "mummy/animations/idle/west/02.webp",
-          "mummy/animations/idle/west/03.webp",
-          "mummy/animations/idle/west/04.webp"
-        ],
-        "north-west": [
-          "mummy/animations/idle/north-west/00.webp",
-          "mummy/animations/idle/north-west/01.webp",
-          "mummy/animations/idle/north-west/02.webp",
-          "mummy/animations/idle/north-west/03.webp",
-          "mummy/animations/idle/north-west/04.webp"
-        ]
-      },
-      "strips": {
-        "south": "mummy/animations/idle__south.webp",
-        "south-east": "mummy/animations/idle__south-east.webp",
-        "east": "mummy/animations/idle__east.webp",
-        "north-east": "mummy/animations/idle__north-east.webp",
-        "north": "mummy/animations/idle__north.webp",
-        "south-west": "mummy/animations/idle__south-west.webp",
-        "west": "mummy/animations/idle__west.webp",
-        "north-west": "mummy/animations/idle__north-west.webp"
-      }
-    },
-    "walk": {
-      "directions": {
-        "south": {
-          "status": "pass",
-          "step_mean": 0.2249,
-          "step_max": 0.2533,
-          "drift": 3.76,
-          "loop": 0.3379,
-          "loop_ratio": 1.5,
-          "travel": 3.76,
-          "pin": 0.842,
-          "pad": 0,
-          "canvas": [
-            104,
-            104
-          ],
-          "reasons": [],
-          "sub": "4269d19f-c3e3-43c9-b701-280913a91554",
-          "group": "d172a31b-37e0-4f22-bb49-745edbfbf41c",
-          "takes": 1,
-          "version": 1,
-          "mirrored": false,
-          "generated_at": "2026-09-09T21:16:06+00:00"
-        },
-        "south-east": {
-          "status": "pass",
-          "step_mean": 0.2732,
-          "step_max": 0.3423,
-          "drift": 2.8,
-          "loop": 0.5052,
-          "loop_ratio": 1.85,
-          "travel": 1.93,
-          "pin": 0.734,
-          "pad": 0,
-          "canvas": [
-            104,
-            104
-          ],
-          "reasons": [],
-          "sub": "8ec9b19f-94da-4d9b-96a0-4a0585737311",
-          "group": "7b7e2c18-9859-46a5-a165-a027a59a3dea",
-          "takes": 1,
-          "version": 1,
-          "mirrored": false,
-          "generated_at": "2026-09-09T21:16:06+00:00"
-        },
-        "east": {
-          "status": "pass",
-          "step_mean": 0.2109,
-          "step_max": 0.2469,
-          "drift": 2.37,
-          "loop": 0.3445,
-          "loop_ratio": 1.63,
-          "travel": 2.2,
-          "pin": 0.765,
-          "pad": 0,
-          "canvas": [
-            104,
-            104
-          ],
-          "reasons": [],
-          "sub": "58f62e65-dd01-49f3-9a76-9e669fd6158c",
-          "group": "3e66edab-bf5f-4696-9605-46177af9c1e2",
-          "takes": 1,
-          "version": 1,
-          "mirrored": false,
-          "generated_at": "2026-09-09T21:16:07+00:00"
-        },
-        "north-east": {
-          "status": "warn",
-          "step_mean": 0.2025,
-          "step_max": 0.2488,
-          "drift": 1.82,
-          "loop": 0.4176,
-          "loop_ratio": 2.06,
-          "travel": 0.78,
-          "pin": 0.758,
-          "pad": 0,
-          "canvas": [
-            104,
-            104
-          ],
-          "reasons": [
-            "last→first hand-off 2.1× a step — eyeball the loop"
-          ],
-          "sub": "e3ee4770-2181-4c39-8be1-5896a1b6fa28",
-          "group": "4799be2b-50d8-4ef4-8020-efbcabc9d5c7",
-          "takes": 1,
-          "version": 1,
-          "mirrored": false,
-          "generated_at": "2026-09-09T21:16:08+00:00"
-        },
-        "north": {
-          "status": "warn",
-          "step_mean": 0.2059,
-          "step_max": 0.2819,
-          "drift": 4.13,
-          "loop": 0.503,
-          "loop_ratio": 2.44,
-          "travel": 1.82,
-          "pin": 0.835,
-          "pad": 0,
-          "canvas": [
-            104,
-            104
-          ],
-          "reasons": [
-            "last→first hand-off 2.4× a step — eyeball the loop"
-          ],
-          "sub": "9e7a41e5-4cfd-462e-b1d2-1e291bf50ee6",
-          "group": "feefc1b7-a6f6-48c0-a149-8ed3541d7688",
-          "takes": 1,
-          "version": 1,
-          "mirrored": false,
-          "generated_at": "2026-09-09T21:16:09+00:00"
-        },
-        "south-west": {
-          "status": "pass",
-          "step_mean": 0.2732,
-          "step_max": 0.3423,
-          "drift": 2.8,
-          "loop": 0.5052,
-          "loop_ratio": 1.85,
-          "travel": 1.93,
-          "pin": 0.734,
-          "pad": 0,
-          "canvas": [
-            104,
-            104
-          ],
-          "reasons": [],
-          "sub": "8ec9b19f-94da-4d9b-96a0-4a0585737311",
-          "group": "7b7e2c18-9859-46a5-a165-a027a59a3dea",
-          "takes": 1,
-          "version": 1,
-          "mirrored": true,
-          "generated_at": "2026-09-09T21:16:06+00:00",
-          "source": "south-east"
-        },
-        "west": {
-          "status": "pass",
-          "step_mean": 0.2109,
-          "step_max": 0.2469,
-          "drift": 2.37,
-          "loop": 0.3445,
-          "loop_ratio": 1.63,
-          "travel": 2.2,
-          "pin": 0.765,
-          "pad": 0,
-          "canvas": [
-            104,
-            104
-          ],
-          "reasons": [],
-          "sub": "58f62e65-dd01-49f3-9a76-9e669fd6158c",
-          "group": "3e66edab-bf5f-4696-9605-46177af9c1e2",
-          "takes": 1,
-          "version": 1,
-          "mirrored": true,
-          "generated_at": "2026-09-09T21:16:07+00:00",
-          "source": "east"
-        },
-        "north-west": {
-          "status": "warn",
-          "step_mean": 0.2025,
-          "step_max": 0.2488,
-          "drift": 1.82,
-          "loop": 0.4176,
-          "loop_ratio": 2.06,
-          "travel": 0.78,
-          "pin": 0.758,
-          "pad": 0,
-          "canvas": [
-            104,
-            104
-          ],
-          "reasons": [
-            "last→first hand-off 2.1× a step — eyeball the loop"
-          ],
-          "sub": "e3ee4770-2181-4c39-8be1-5896a1b6fa28",
-          "group": "4799be2b-50d8-4ef4-8020-efbcabc9d5c7",
-          "takes": 1,
-          "version": 1,
-          "mirrored": true,
-          "generated_at": "2026-09-09T21:16:08+00:00",
-          "source": "north-east"
-        }
-      },
-      "action": "walk loop, full walk cycle in place, legs alternate naturally, normal calm walking pace, body stays centered, seamless loop whose last frame leads straight back into the first, no turning",
-      "frame_paths": {
-        "south": [
-          "mummy/animations/walk/south/00.webp",
-          "mummy/animations/walk/south/01.webp",
-          "mummy/animations/walk/south/02.webp",
-          "mummy/animations/walk/south/03.webp",
-          "mummy/animations/walk/south/04.webp",
-          "mummy/animations/walk/south/05.webp"
-        ],
-        "south-east": [
-          "mummy/animations/walk/south-east/00.webp",
-          "mummy/animations/walk/south-east/01.webp",
-          "mummy/animations/walk/south-east/02.webp",
-          "mummy/animations/walk/south-east/03.webp",
-          "mummy/animations/walk/south-east/04.webp",
-          "mummy/animations/walk/south-east/05.webp"
-        ],
-        "east": [
-          "mummy/animations/walk/east/00.webp",
-          "mummy/animations/walk/east/01.webp",
-          "mummy/animations/walk/east/02.webp",
-          "mummy/animations/walk/east/03.webp",
-          "mummy/animations/walk/east/04.webp",
-          "mummy/animations/walk/east/05.webp"
-        ],
-        "north-east": [
-          "mummy/animations/walk/north-east/00.webp",
-          "mummy/animations/walk/north-east/01.webp",
-          "mummy/animations/walk/north-east/02.webp",
-          "mummy/animations/walk/north-east/03.webp",
-          "mummy/animations/walk/north-east/04.webp",
-          "mummy/animations/walk/north-east/05.webp"
-        ],
-        "north": [
-          "mummy/animations/walk/north/00.webp",
-          "mummy/animations/walk/north/01.webp",
-          "mummy/animations/walk/north/02.webp",
-          "mummy/animations/walk/north/03.webp",
-          "mummy/animations/walk/north/04.webp",
-          "mummy/animations/walk/north/05.webp"
-        ],
-        "south-west": [
-          "mummy/animations/walk/south-west/00.webp",
-          "mummy/animations/walk/south-west/01.webp",
-          "mummy/animations/walk/south-west/02.webp",
-          "mummy/animations/walk/south-west/03.webp",
-          "mummy/animations/walk/south-west/04.webp",
-          "mummy/animations/walk/south-west/05.webp"
-        ],
-        "west": [
-          "mummy/animations/walk/west/00.webp",
-          "mummy/animations/walk/west/01.webp",
-          "mummy/animations/walk/west/02.webp",
-          "mummy/animations/walk/west/03.webp",
-          "mummy/animations/walk/west/04.webp",
-          "mummy/animations/walk/west/05.webp"
-        ],
-        "north-west": [
-          "mummy/animations/walk/north-west/00.webp",
-          "mummy/animations/walk/north-west/01.webp",
-          "mummy/animations/walk/north-west/02.webp",
-          "mummy/animations/walk/north-west/03.webp",
-          "mummy/animations/walk/north-west/04.webp",
-          "mummy/animations/walk/north-west/05.webp"
-        ]
-      },
-      "strips": {
-        "south": "mummy/animations/walk__south.webp",
-        "south-east": "mummy/animations/walk__south-east.webp",
-        "east": "mummy/animations/walk__east.webp",
-        "north-east": "mummy/animations/walk__north-east.webp",
-        "north": "mummy/animations/walk__north.webp",
-        "south-west": "mummy/animations/walk__south-west.webp",
-        "west": "mummy/animations/walk__west.webp",
-        "north-west": "mummy/animations/walk__north-west.webp"
-      }
-    },
-    "attack": {
-      "directions": {
-        "south": {
-          "status": "fail",
-          "step_mean": 0.1998,
-          "step_max": 0.2601,
-          "drift": 1.57,
-          "loop": 0.0004,
-          "loop_ratio": 0.0,
-          "travel": 0.21,
-          "pin": 1.0,
-          "pad": 0,
-          "flash": 0.003,
-          "peak": 0.342,
-          "reach": 0.048,
-          "canvas": [
-            104,
-            104
-          ],
-          "reasons": [
-            "no strike, just a lean: nothing reaches past 0.05 of the body"
-          ],
-          "sub": "519a3bf8-81ef-4208-89d5-75f2a08d5191",
-          "group": "73e74a54-a020-4d23-a621-dfb5526ac38d",
-          "takes": 1,
-          "version": 2,
-          "mirrored": false,
-          "generated_at": "2026-09-09T22:36:25+00:00",
-          "action": "Grasping Swipe - Lunges forward with both bandaged arms in one grasping swipe, then returns to idle stance"
-        },
-        "south-east": {
-          "status": "fail",
-          "step_mean": 0.1518,
-          "step_max": 0.2192,
-          "drift": 2.03,
-          "loop": 0.0023,
-          "loop_ratio": 0.02,
-          "travel": 2.03,
-          "pin": 1.0,
-          "pad": 0,
-          "flash": 0.0,
-          "peak": 0.2675,
-          "reach": 0.057,
-          "canvas": [
-            104,
-            104
-          ],
-          "reasons": [
-            "no strike, just a lean: nothing reaches past 0.06 of the body"
-          ],
-          "sub": "7956a0ad-326b-45e8-82ef-298f5a1cc2d1",
-          "group": "3e49e96a-6a16-4ebd-aac2-ed5ffd4ddebc",
-          "takes": 1,
-          "version": 2,
-          "mirrored": false,
-          "generated_at": "2026-09-09T22:36:25+00:00",
-          "action": "Grasping Swipe - Lunges forward with both bandaged arms in one grasping swipe, then returns to idle stance"
-        },
-        "east": {
-          "status": "warn",
-          "step_mean": 0.239,
-          "step_max": 0.2907,
-          "drift": 2.29,
-          "loop": 0.0003,
-          "loop_ratio": 0.0,
-          "travel": 0.7,
-          "pin": 1.0,
-          "pad": 0,
-          "flash": 0.0,
-          "peak": 0.3565,
-          "reach": 0.262,
-          "canvas": [
-            104,
-            104
-          ],
-          "reasons": [
-            "shallow strike: reach 0.26 — eyeball it"
-          ],
-          "sub": "67f4ea17-535f-4865-82bf-ed897d1a438f",
-          "group": "adb8ad16-8c76-475d-ad09-0c44cc441cbc",
-          "takes": 1,
-          "version": 2,
-          "mirrored": false,
-          "generated_at": "2026-09-09T22:36:26+00:00",
-          "action": "Grasping Swipe - Lunges forward with both bandaged arms in one grasping swipe, then returns to idle stance"
-        },
-        "north-east": {
-          "status": "warn",
-          "step_mean": 0.2178,
-          "step_max": 0.2782,
-          "drift": 1.74,
-          "loop": 0.0003,
-          "loop_ratio": 0.0,
-          "travel": 2.59,
-          "pin": 1.0,
-          "pad": 0,
-          "flash": 0.0,
-          "peak": 0.2644,
-          "reach": 0.298,
-          "canvas": [
-            104,
-            104
-          ],
-          "reasons": [
-            "shallow strike: reach 0.30 — eyeball it"
-          ],
-          "sub": "320f3753-fd95-41da-ba48-4284d8976885",
-          "group": "4c47e6cd-7f2a-4278-b5fe-d65ad0b0ffeb",
-          "takes": 1,
-          "version": 2,
-          "mirrored": false,
-          "generated_at": "2026-09-09T22:36:26+00:00",
-          "action": "Grasping Swipe - Lunges forward with both bandaged arms in one grasping swipe, then returns to idle stance"
-        },
-        "north": {
-          "status": "fail",
-          "step_mean": 0.2184,
-          "step_max": 0.3698,
-          "drift": 3.58,
-          "loop": 0.0,
-          "loop_ratio": 0.0,
-          "travel": 0.34,
-          "pin": 1.0,
-          "pad": 0,
-          "flash": 0.0,
-          "peak": 0.3698,
-          "reach": 0.062,
-          "canvas": [
-            104,
-            104
-          ],
-          "reasons": [
-            "no strike, just a lean: nothing reaches past 0.06 of the body"
-          ],
-          "sub": "1953296e-8776-4fe1-b2b1-38c35d00bc98",
-          "group": "6eb61285-5b3b-45b4-bad9-f383b0a7c0de",
-          "takes": 1,
-          "version": 2,
-          "mirrored": false,
-          "generated_at": "2026-09-09T22:36:27+00:00",
-          "action": "Grasping Swipe - Lunges forward with both bandaged arms in one grasping swipe, then returns to idle stance"
-        },
-        "south-west": {
-          "status": "pass",
-          "step_mean": 0.1518,
-          "step_max": 0.2192,
-          "drift": 2.03,
-          "loop": 0.0023,
-          "loop_ratio": 0.02,
-          "travel": 2.03,
-          "pin": 1.0,
-          "pad": 0,
-          "flash": 0.0,
-          "peak": 0.2675,
-          "canvas": [
-            104,
-            104
-          ],
-          "reasons": [],
-          "sub": "7956a0ad-326b-45e8-82ef-298f5a1cc2d1",
-          "group": "3e49e96a-6a16-4ebd-aac2-ed5ffd4ddebc",
-          "takes": 1,
-          "version": 2,
-          "mirrored": true,
-          "generated_at": "2026-09-09T22:36:25+00:00",
-          "action": "Grasping Swipe - Lunges forward with both bandaged arms in one grasping swipe, then returns to idle stance",
-          "source": "south-east"
-        },
-        "west": {
-          "status": "warn",
-          "step_mean": 0.239,
-          "step_max": 0.2907,
-          "drift": 2.29,
-          "loop": 0.0003,
-          "loop_ratio": 0.0,
-          "travel": 0.7,
-          "pin": 1.0,
-          "pad": 0,
-          "flash": 0.0,
-          "peak": 0.3565,
-          "reach": 0.262,
-          "canvas": [
-            104,
-            104
-          ],
-          "reasons": [
-            "shallow strike: reach 0.26 — eyeball it"
-          ],
-          "sub": "67f4ea17-535f-4865-82bf-ed897d1a438f",
-          "group": "adb8ad16-8c76-475d-ad09-0c44cc441cbc",
-          "takes": 1,
-          "version": 2,
-          "mirrored": true,
-          "generated_at": "2026-09-09T22:36:26+00:00",
-          "action": "Grasping Swipe - Lunges forward with both bandaged arms in one grasping swipe, then returns to idle stance",
-          "source": "east"
-        },
-        "north-west": {
-          "status": "warn",
-          "step_mean": 0.2178,
-          "step_max": 0.2782,
-          "drift": 1.74,
-          "loop": 0.0003,
-          "loop_ratio": 0.0,
-          "travel": 2.59,
-          "pin": 1.0,
-          "pad": 0,
-          "flash": 0.0,
-          "peak": 0.2644,
-          "reach": 0.298,
-          "canvas": [
-            104,
-            104
-          ],
-          "reasons": [
-            "shallow strike: reach 0.30 — eyeball it"
-          ],
-          "sub": "320f3753-fd95-41da-ba48-4284d8976885",
-          "group": "4c47e6cd-7f2a-4278-b5fe-d65ad0b0ffeb",
-          "takes": 1,
-          "version": 2,
-          "mirrored": true,
-          "generated_at": "2026-09-09T22:36:26+00:00",
-          "action": "Grasping Swipe - Lunges forward with both bandaged arms in one grasping swipe, then returns to idle stance",
-          "source": "north-east"
-        }
-      },
-      "action": "Grasping Swipe - Lunges forward with both bandaged arms in one grasping swipe, then returns to idle stance",
-      "frame_paths": {
-        "south": [
-          "mummy/animations/attack/south/00.webp",
-          "mummy/animations/attack/south/01.webp",
-          "mummy/animations/attack/south/02.webp",
-          "mummy/animations/attack/south/03.webp",
-          "mummy/animations/attack/south/04.webp"
-        ],
-        "south-east": [
-          "mummy/animations/attack/south-east/00.webp",
-          "mummy/animations/attack/south-east/01.webp",
-          "mummy/animations/attack/south-east/02.webp",
-          "mummy/animations/attack/south-east/03.webp",
-          "mummy/animations/attack/south-east/04.webp"
-        ],
-        "east": [
-          "mummy/animations/attack/east/00.webp",
-          "mummy/animations/attack/east/01.webp",
-          "mummy/animations/attack/east/02.webp",
-          "mummy/animations/attack/east/03.webp",
-          "mummy/animations/attack/east/04.webp"
-        ],
-        "north-east": [
-          "mummy/animations/attack/north-east/00.webp",
-          "mummy/animations/attack/north-east/01.webp",
-          "mummy/animations/attack/north-east/02.webp",
-          "mummy/animations/attack/north-east/03.webp",
-          "mummy/animations/attack/north-east/04.webp"
-        ],
-        "north": [
-          "mummy/animations/attack/north/00.webp",
-          "mummy/animations/attack/north/01.webp",
-          "mummy/animations/attack/north/02.webp",
-          "mummy/animations/attack/north/03.webp",
-          "mummy/animations/attack/north/04.webp"
-        ],
-        "south-west": [
-          "mummy/animations/attack/south-west/00.webp",
-          "mummy/animations/attack/south-west/01.webp",
-          "mummy/animations/attack/south-west/02.webp",
-          "mummy/animations/attack/south-west/03.webp",
-          "mummy/animations/attack/south-west/04.webp"
-        ],
-        "west": [
-          "mummy/animations/attack/west/00.webp",
-          "mummy/animations/attack/west/01.webp",
-          "mummy/animations/attack/west/02.webp",
-          "mummy/animations/attack/west/03.webp",
-          "mummy/animations/attack/west/04.webp"
-        ],
-        "north-west": [
-          "mummy/animations/attack/north-west/00.webp",
-          "mummy/animations/attack/north-west/01.webp",
-          "mummy/animations/attack/north-west/02.webp",
-          "mummy/animations/attack/north-west/03.webp",
-          "mummy/animations/attack/north-west/04.webp"
-        ]
-      },
-      "strips": {
-        "south": "mummy/animations/attack__south.webp",
-        "south-east": "mummy/animations/attack__south-east.webp",
-        "east": "mummy/animations/attack__east.webp",
-        "north-east": "mummy/animations/attack__north-east.webp",
-        "north": "mummy/animations/attack__north.webp",
-        "south-west": "mummy/animations/attack__south-west.webp",
-        "west": "mummy/animations/attack__west.webp",
-        "north-west": "mummy/animations/attack__north-west.webp"
-      }
-    },
-    "attack_try": {
-      "directions": {
-        "south": {
-          "status": "fail",
-          "step_mean": 0.1591,
-          "step_max": 0.2475,
-          "drift": 1.99,
-          "loop": 0.2122,
-          "loop_ratio": 1.33,
-          "travel": 0.34,
-          "pin": 1.0,
-          "pad": 0,
-          "flash": 0.001,
-          "peak": 0.4155,
-          "reach": 0.071,
-          "canvas": [
-            104,
-            104
-          ],
-          "reasons": [
-            "no strike, just a lean: nothing reaches past 0.07 of the body"
-          ],
-          "sub": "6f82ae32-01a7-45b5-8a89-1ad7c2de6072",
-          "group": "3ccff401-a392-48c6-b7f8-7225fbb3bd7b",
-          "takes": 1,
-          "version": 4,
-          "mirrored": false,
-          "generated_at": "2026-09-10T21:12:58+00:00",
-          "action": "Lunge Attack - Throws its whole body forward in one fast lunge, white swoosh lines trailing behind it",
-          "tries": 4,
-          "rolls": 4,
-          "intensity": 1,
-          "frames": 9
-        },
-        "east": {
-          "status": "pass",
-          "step_mean": 0.3312,
-          "step_max": 0.5596,
-          "drift": 4.15,
-          "loop": 0.7496,
-          "loop_ratio": 2.26,
-          "travel": 3.17,
-          "pin": 1.0,
-          "pad": 0,
-          "flash": 0.0,
-          "peak": 0.7496,
-          "reach": 0.652,
-          "canvas": [
-            104,
-            104
-          ],
-          "reasons": [],
-          "sub": "12e62aa2-af32-41ad-8853-f53702a284c2",
-          "group": "1a56ad15-e3f9-4133-971b-d3e633fc5fe8",
-          "takes": 1,
-          "version": 1,
-          "mirrored": false,
-          "generated_at": "2026-09-10T19:52:43+00:00",
-          "action": "Grasping Swipe - Lunges forward with both bandaged arms out in a grasping swipe",
-          "tries": 1,
-          "rolls": 1,
-          "intensity": 1
-        },
-        "north-east": {
-          "status": "pass",
-          "step_mean": 0.1707,
-          "step_max": 0.2359,
-          "drift": 3.63,
-          "loop": 0.3706,
-          "loop_ratio": 2.17,
-          "travel": 3.63,
-          "pin": 1.0,
-          "pad": 0,
-          "flash": 0.0,
-          "peak": 0.3706,
-          "reach": 0.451,
-          "canvas": [
-            104,
-            104
-          ],
-          "reasons": [],
-          "sub": "1d132cf3-d694-4e60-8ee1-73e44d6da5a2",
-          "group": "1b0a9546-501a-494b-9637-2f0ccb2f2891",
-          "takes": 1,
-          "version": 1,
-          "mirrored": false,
-          "generated_at": "2026-09-10T19:52:44+00:00",
-          "action": "Grasping Swipe - Lunges forward with both bandaged arms out in a grasping swipe",
-          "tries": 1,
-          "rolls": 1,
-          "intensity": 1
-        },
-        "north": {
-          "status": "fail",
-          "step_mean": 0.1257,
-          "step_max": 0.2969,
-          "drift": 3.73,
-          "loop": 0.514,
-          "loop_ratio": 4.09,
-          "travel": 2.06,
-          "pin": 1.0,
-          "pad": 0,
-          "flash": 0.001,
-          "peak": 0.514,
-          "reach": 0.1,
-          "canvas": [
-            104,
-            104
-          ],
-          "reasons": [
-            "no strike, just a lean: nothing reaches past 0.10 of the body"
-          ],
-          "sub": "4c9fa213-065b-492a-9fcc-5f7ac47cb023",
-          "group": "c8fc3aaf-ba1a-4aff-9134-073838680c1c",
-          "takes": 1,
-          "version": 4,
-          "mirrored": false,
-          "generated_at": "2026-09-10T21:12:59+00:00",
-          "action": "Lunge Attack - Throws its whole body forward in one fast lunge, white swoosh lines trailing behind it",
-          "tries": 4,
-          "rolls": 4,
-          "intensity": 1,
-          "frames": 9
-        },
-        "west": {
-          "status": "pass",
-          "step_mean": 0.3312,
-          "step_max": 0.5596,
-          "drift": 4.15,
-          "loop": 0.7496,
-          "loop_ratio": 2.26,
-          "travel": 3.17,
-          "pin": 1.0,
-          "pad": 0,
-          "flash": 0.0,
-          "peak": 0.7496,
-          "reach": 0.652,
-          "canvas": [
-            104,
-            104
-          ],
-          "reasons": [],
-          "sub": "12e62aa2-af32-41ad-8853-f53702a284c2",
-          "group": "1a56ad15-e3f9-4133-971b-d3e633fc5fe8",
-          "takes": 1,
-          "version": 1,
-          "mirrored": true,
-          "generated_at": "2026-09-10T19:52:43+00:00",
-          "action": "Grasping Swipe - Lunges forward with both bandaged arms out in a grasping swipe",
-          "tries": 1,
-          "rolls": 1,
-          "intensity": 1,
-          "source": "east"
-        },
-        "north-west": {
-          "status": "pass",
-          "step_mean": 0.1707,
-          "step_max": 0.2359,
-          "drift": 3.63,
-          "loop": 0.3706,
-          "loop_ratio": 2.17,
-          "travel": 3.63,
-          "pin": 1.0,
-          "pad": 0,
-          "flash": 0.0,
-          "peak": 0.3706,
-          "reach": 0.451,
-          "canvas": [
-            104,
-            104
-          ],
-          "reasons": [],
-          "sub": "1d132cf3-d694-4e60-8ee1-73e44d6da5a2",
-          "group": "1b0a9546-501a-494b-9637-2f0ccb2f2891",
-          "takes": 1,
-          "version": 1,
-          "mirrored": true,
-          "generated_at": "2026-09-10T19:52:44+00:00",
-          "action": "Grasping Swipe - Lunges forward with both bandaged arms out in a grasping swipe",
-          "tries": 1,
-          "rolls": 1,
-          "intensity": 1,
-          "source": "north-east"
-        },
-        "south-east": {
-          "status": "pass",
-          "step_mean": 0.3211,
-          "step_max": 0.509,
-          "drift": 4.91,
-          "loop": 0.6559,
-          "loop_ratio": 2.04,
-          "travel": 0.81,
-          "pin": 1.0,
-          "pad": 3,
-          "flash": 0.0,
-          "peak": 0.6559,
-          "reach": 0.3,
-          "canvas": [
-            110,
-            110
-          ],
-          "reasons": [
-            "canvas grown by 3 px a side to hold the motion"
-          ],
-          "sub": "0fc3075c-197b-4db3-aa1a-41d76c0d8bbd",
-          "group": "33984243-bee1-4902-872e-f7b931ab2eb6",
-          "takes": 1,
-          "version": 3,
-          "mirrored": false,
-          "generated_at": "2026-09-10T20:50:08+00:00",
-          "action": "Grasping Swipe - Lunges forward with both bandaged arms out in a grasping swipe, a big aggressive swing",
-          "tries": 1,
-          "rolls": 3,
-          "intensity": 1,
-          "frames": 5
-        },
-        "south-west": {
-          "status": "pass",
-          "step_mean": 0.3211,
-          "step_max": 0.509,
-          "drift": 4.91,
-          "loop": 0.6559,
-          "loop_ratio": 2.04,
-          "travel": 0.81,
-          "pin": 1.0,
-          "pad": 3,
-          "flash": 0.0,
-          "peak": 0.6559,
-          "reach": 0.3,
-          "canvas": [
-            110,
-            110
-          ],
-          "reasons": [
-            "canvas grown by 3 px a side to hold the motion"
-          ],
-          "sub": "0fc3075c-197b-4db3-aa1a-41d76c0d8bbd",
-          "group": "33984243-bee1-4902-872e-f7b931ab2eb6",
-          "takes": 1,
-          "version": 3,
-          "mirrored": true,
-          "generated_at": "2026-09-10T20:50:08+00:00",
-          "action": "Grasping Swipe - Lunges forward with both bandaged arms out in a grasping swipe, a big aggressive swing",
-          "tries": 1,
-          "rolls": 3,
-          "intensity": 1,
-          "frames": 5,
-          "source": "south-east"
-        }
-      },
-      "action": "Grasping Swipe - Lunges forward with both bandaged arms out in a grasping swipe, a big aggressive swing",
-      "frame_paths": {
-        "south": [
-          "mummy/animations/attack_try/south/00.webp",
-          "mummy/animations/attack_try/south/01.webp",
-          "mummy/animations/attack_try/south/02.webp",
-          "mummy/animations/attack_try/south/03.webp",
-          "mummy/animations/attack_try/south/04.webp",
-          "mummy/animations/attack_try/south/05.webp",
-          "mummy/animations/attack_try/south/06.webp",
-          "mummy/animations/attack_try/south/07.webp",
-          "mummy/animations/attack_try/south/08.webp"
-        ],
-        "east": [
-          "mummy/animations/attack_try/east/00.webp",
-          "mummy/animations/attack_try/east/01.webp",
-          "mummy/animations/attack_try/east/02.webp",
-          "mummy/animations/attack_try/east/03.webp",
-          "mummy/animations/attack_try/east/04.webp"
-        ],
-        "north-east": [
-          "mummy/animations/attack_try/north-east/00.webp",
-          "mummy/animations/attack_try/north-east/01.webp",
-          "mummy/animations/attack_try/north-east/02.webp",
-          "mummy/animations/attack_try/north-east/03.webp",
-          "mummy/animations/attack_try/north-east/04.webp"
-        ],
-        "north": [
-          "mummy/animations/attack_try/north/00.webp",
-          "mummy/animations/attack_try/north/01.webp",
-          "mummy/animations/attack_try/north/02.webp",
-          "mummy/animations/attack_try/north/03.webp",
-          "mummy/animations/attack_try/north/04.webp",
-          "mummy/animations/attack_try/north/05.webp",
-          "mummy/animations/attack_try/north/06.webp",
-          "mummy/animations/attack_try/north/07.webp",
-          "mummy/animations/attack_try/north/08.webp"
-        ],
-        "west": [
-          "mummy/animations/attack_try/west/00.webp",
-          "mummy/animations/attack_try/west/01.webp",
-          "mummy/animations/attack_try/west/02.webp",
-          "mummy/animations/attack_try/west/03.webp",
-          "mummy/animations/attack_try/west/04.webp"
-        ],
-        "north-west": [
-          "mummy/animations/attack_try/north-west/00.webp",
-          "mummy/animations/attack_try/north-west/01.webp",
-          "mummy/animations/attack_try/north-west/02.webp",
-          "mummy/animations/attack_try/north-west/03.webp",
-          "mummy/animations/attack_try/north-west/04.webp"
-        ],
-        "south-east": [
-          "mummy/animations/attack_try/south-east/00.webp",
-          "mummy/animations/attack_try/south-east/01.webp",
-          "mummy/animations/attack_try/south-east/02.webp",
-          "mummy/animations/attack_try/south-east/03.webp",
-          "mummy/animations/attack_try/south-east/04.webp"
-        ],
-        "south-west": [
-          "mummy/animations/attack_try/south-west/00.webp",
-          "mummy/animations/attack_try/south-west/01.webp",
-          "mummy/animations/attack_try/south-west/02.webp",
-          "mummy/animations/attack_try/south-west/03.webp",
-          "mummy/animations/attack_try/south-west/04.webp"
-        ]
-      },
-      "strips": {
-        "south": "mummy/animations/attack_try__south.webp",
-        "east": "mummy/animations/attack_try__east.webp",
-        "north-east": "mummy/animations/attack_try__north-east.webp",
-        "north": "mummy/animations/attack_try__north.webp",
-        "west": "mummy/animations/attack_try__west.webp",
-        "north-west": "mummy/animations/attack_try__north-west.webp",
-        "south-east": "mummy/animations/attack_try__south-east.webp",
-        "south-west": "mummy/animations/attack_try__south-west.webp"
-      },
-      "intensity": 1
-    }
+ "id": "mummy",
+ "name": "Wrapwarden",
+ "tier": "evil",
+ "scale": "standard",
+ "lore": "Its name was carved off the tomb, so it went looking for it. It checks every face and none of them fit.",
+ "biome": [
+  "light_soil",
+  "grey_paving_stone"
+ ],
+ "items": [],
+ "prompt": "Fantasy mummy shown full body from head to feet, a shambling figure wrapped in yellowed stained linen bandages, some loose and trailing, glowing green eyes through the wrappings, a golden pectoral, and dust puffing off its shoulders.",
+ "size": [
+  104,
+  104
+ ],
+ "template_id": "mannequin",
+ "directions": [
+  "south",
+  "south-east",
+  "east",
+  "north-east",
+  "north",
+  "north-west",
+  "west",
+  "south-west"
+ ],
+ "rotations": {
+  "south": "mummy/rotations/south.webp",
+  "south-east": "mummy/rotations/south-east.webp",
+  "east": "mummy/rotations/east.webp",
+  "north-east": "mummy/rotations/north-east.webp",
+  "north": "mummy/rotations/north.webp",
+  "north-west": "mummy/rotations/north-west.webp",
+  "west": "mummy/rotations/west.webp",
+  "south-west": "mummy/rotations/south-west.webp"
+ },
+ "sheet": "mummy/sheet.webp",
+ "review": "approved",
+ "pixellab_id": "968db5e3-3077-4a39-b88a-811f7aa91eb0",
+ "seed": 1378118637,
+ "version": 1,
+ "usage": null,
+ "generated_at": "2026-09-09T18:36:29+00:00",
+ "elapsed_s": 144.1,
+ "qa": {
+  "status": "pass",
+  "min_run1": 0.772,
+  "reasons": [],
+  "directions": {
+   "south": {
+    "run1": 0.772,
+    "bbox": [
+     9,
+     4,
+     93,
+     99
+    ],
+    "fill": 0.738,
+    "touches_edge": false
+   },
+   "south-east": {
+    "run1": 0.842,
+    "bbox": [
+     17,
+     4,
+     87,
+     101
+    ],
+    "fill": 0.628,
+    "touches_edge": false
+   },
+   "east": {
+    "run1": 0.84,
+    "bbox": [
+     26,
+     4,
+     72,
+     102
+    ],
+    "fill": 0.417,
+    "touches_edge": false
+   },
+   "north-east": {
+    "run1": 0.802,
+    "bbox": [
+     20,
+     3,
+     77,
+     99
+    ],
+    "fill": 0.506,
+    "touches_edge": false
+   },
+   "north": {
+    "run1": 0.777,
+    "bbox": [
+     12,
+     3,
+     92,
+     99
+    ],
+    "fill": 0.71,
+    "touches_edge": false
+   },
+   "north-west": {
+    "run1": 0.796,
+    "bbox": [
+     24,
+     3,
+     86,
+     99
+    ],
+    "fill": 0.55,
+    "touches_edge": false
+   },
+   "west": {
+    "run1": 0.84,
+    "bbox": [
+     32,
+     4,
+     75,
+     102
+    ],
+    "fill": 0.39,
+    "touches_edge": false
+   },
+   "south-west": {
+    "run1": 0.854,
+    "bbox": [
+     19,
+     4,
+     86,
+     101
+    ],
+    "fill": 0.601,
+    "touches_edge": false
+   }
   }
+ },
+ "approved_at": "2026-09-09T19:59:22+00:00",
+ "animations": {
+  "idle": {
+   "directions": {
+    "south": {
+     "status": "pass",
+     "step_mean": 0.0901,
+     "step_max": 0.143,
+     "drift": 1.54,
+     "loop": 0.0007,
+     "pin": 1.0,
+     "reasons": [],
+     "sub": "becbdfbf-bf9c-4378-92a8-e8d1a1217204",
+     "takes": 1,
+     "version": 1,
+     "mirrored": false,
+     "generated_at": "2026-09-09T20:15:20+00:00",
+     "cut": 0
+    },
+    "south-east": {
+     "status": "pass",
+     "step_mean": 0.0788,
+     "step_max": 0.0845,
+     "drift": 1.65,
+     "loop": 0.0013,
+     "pin": 1.0,
+     "reasons": [],
+     "sub": "6cb79e62-44c8-4904-aa84-10e45566174c",
+     "takes": 1,
+     "version": 1,
+     "mirrored": false,
+     "generated_at": "2026-09-09T20:15:20+00:00",
+     "cut": 0
+    },
+    "east": {
+     "status": "pass",
+     "step_mean": 0.0385,
+     "step_max": 0.0677,
+     "drift": 0.85,
+     "loop": 0.0004,
+     "pin": 1.0,
+     "reasons": [],
+     "sub": "19f500d7-8ec3-4031-b6de-46ea25264562",
+     "takes": 1,
+     "version": 1,
+     "mirrored": false,
+     "generated_at": "2026-09-09T20:15:21+00:00",
+     "cut": 0
+    },
+    "north-east": {
+     "status": "pass",
+     "step_mean": 0.0922,
+     "step_max": 0.1314,
+     "drift": 1.16,
+     "loop": 0.0,
+     "pin": 1.0,
+     "reasons": [],
+     "sub": "3d4cfe08-79ee-433c-988b-5b8ac66a8a80",
+     "takes": 1,
+     "version": 1,
+     "mirrored": false,
+     "generated_at": "2026-09-09T20:15:22+00:00",
+     "cut": 0
+    },
+    "north": {
+     "status": "pass",
+     "step_mean": 0.0987,
+     "step_max": 0.1263,
+     "drift": 1.21,
+     "loop": 0.0002,
+     "pin": 1.0,
+     "reasons": [],
+     "sub": "43abe401-cb41-4b5e-a4f3-86cf91ccda8d",
+     "takes": 1,
+     "version": 1,
+     "mirrored": false,
+     "generated_at": "2026-09-09T20:15:22+00:00",
+     "cut": 0
+    },
+    "south-west": {
+     "status": "pass",
+     "step_mean": 0.0788,
+     "step_max": 0.0845,
+     "drift": 1.65,
+     "loop": 0.0013,
+     "pin": 1.0,
+     "reasons": [],
+     "sub": "6cb79e62-44c8-4904-aa84-10e45566174c",
+     "takes": 1,
+     "version": 1,
+     "mirrored": true,
+     "generated_at": "2026-09-09T20:15:20+00:00",
+     "cut": 0,
+     "source": "south-east"
+    },
+    "west": {
+     "status": "pass",
+     "step_mean": 0.0385,
+     "step_max": 0.0677,
+     "drift": 0.85,
+     "loop": 0.0004,
+     "pin": 1.0,
+     "reasons": [],
+     "sub": "19f500d7-8ec3-4031-b6de-46ea25264562",
+     "takes": 1,
+     "version": 1,
+     "mirrored": true,
+     "generated_at": "2026-09-09T20:15:21+00:00",
+     "cut": 0,
+     "source": "east"
+    },
+    "north-west": {
+     "status": "pass",
+     "step_mean": 0.0922,
+     "step_max": 0.1314,
+     "drift": 1.16,
+     "loop": 0.0,
+     "pin": 1.0,
+     "reasons": [],
+     "sub": "3d4cfe08-79ee-433c-988b-5b8ac66a8a80",
+     "takes": 1,
+     "version": 1,
+     "mirrored": true,
+     "generated_at": "2026-09-09T20:15:22+00:00",
+     "cut": 0,
+     "source": "north-east"
+    }
+   },
+   "action": "Calm still idle, breathing very slowly and subtly, chest and shoulders rise and fall a little, feet planted, no other movement, ends in the same neutral pose it started in",
+   "frame_paths": {
+    "south": [
+     "mummy/animations/idle/south/00.webp",
+     "mummy/animations/idle/south/01.webp",
+     "mummy/animations/idle/south/02.webp",
+     "mummy/animations/idle/south/03.webp",
+     "mummy/animations/idle/south/04.webp"
+    ],
+    "south-east": [
+     "mummy/animations/idle/south-east/00.webp",
+     "mummy/animations/idle/south-east/01.webp",
+     "mummy/animations/idle/south-east/02.webp",
+     "mummy/animations/idle/south-east/03.webp",
+     "mummy/animations/idle/south-east/04.webp"
+    ],
+    "east": [
+     "mummy/animations/idle/east/00.webp",
+     "mummy/animations/idle/east/01.webp",
+     "mummy/animations/idle/east/02.webp",
+     "mummy/animations/idle/east/03.webp",
+     "mummy/animations/idle/east/04.webp"
+    ],
+    "north-east": [
+     "mummy/animations/idle/north-east/00.webp",
+     "mummy/animations/idle/north-east/01.webp",
+     "mummy/animations/idle/north-east/02.webp",
+     "mummy/animations/idle/north-east/03.webp",
+     "mummy/animations/idle/north-east/04.webp"
+    ],
+    "north": [
+     "mummy/animations/idle/north/00.webp",
+     "mummy/animations/idle/north/01.webp",
+     "mummy/animations/idle/north/02.webp",
+     "mummy/animations/idle/north/03.webp",
+     "mummy/animations/idle/north/04.webp"
+    ],
+    "south-west": [
+     "mummy/animations/idle/south-west/00.webp",
+     "mummy/animations/idle/south-west/01.webp",
+     "mummy/animations/idle/south-west/02.webp",
+     "mummy/animations/idle/south-west/03.webp",
+     "mummy/animations/idle/south-west/04.webp"
+    ],
+    "west": [
+     "mummy/animations/idle/west/00.webp",
+     "mummy/animations/idle/west/01.webp",
+     "mummy/animations/idle/west/02.webp",
+     "mummy/animations/idle/west/03.webp",
+     "mummy/animations/idle/west/04.webp"
+    ],
+    "north-west": [
+     "mummy/animations/idle/north-west/00.webp",
+     "mummy/animations/idle/north-west/01.webp",
+     "mummy/animations/idle/north-west/02.webp",
+     "mummy/animations/idle/north-west/03.webp",
+     "mummy/animations/idle/north-west/04.webp"
+    ]
+   },
+   "strips": {
+    "south": "mummy/animations/idle__south.webp",
+    "south-east": "mummy/animations/idle__south-east.webp",
+    "east": "mummy/animations/idle__east.webp",
+    "north-east": "mummy/animations/idle__north-east.webp",
+    "north": "mummy/animations/idle__north.webp",
+    "south-west": "mummy/animations/idle__south-west.webp",
+    "west": "mummy/animations/idle__west.webp",
+    "north-west": "mummy/animations/idle__north-west.webp"
+   }
+  },
+  "walk": {
+   "directions": {
+    "south": {
+     "status": "pass",
+     "step_mean": 0.2249,
+     "step_max": 0.2533,
+     "drift": 3.76,
+     "loop": 0.3379,
+     "loop_ratio": 1.5,
+     "travel": 3.76,
+     "pin": 0.842,
+     "pad": 0,
+     "canvas": [
+      104,
+      104
+     ],
+     "reasons": [],
+     "sub": "4269d19f-c3e3-43c9-b701-280913a91554",
+     "group": "d172a31b-37e0-4f22-bb49-745edbfbf41c",
+     "takes": 1,
+     "version": 1,
+     "mirrored": false,
+     "generated_at": "2026-09-09T21:16:06+00:00"
+    },
+    "south-east": {
+     "status": "pass",
+     "step_mean": 0.2732,
+     "step_max": 0.3423,
+     "drift": 2.8,
+     "loop": 0.5052,
+     "loop_ratio": 1.85,
+     "travel": 1.93,
+     "pin": 0.734,
+     "pad": 0,
+     "canvas": [
+      104,
+      104
+     ],
+     "reasons": [],
+     "sub": "8ec9b19f-94da-4d9b-96a0-4a0585737311",
+     "group": "7b7e2c18-9859-46a5-a165-a027a59a3dea",
+     "takes": 1,
+     "version": 1,
+     "mirrored": false,
+     "generated_at": "2026-09-09T21:16:06+00:00"
+    },
+    "east": {
+     "status": "pass",
+     "step_mean": 0.2109,
+     "step_max": 0.2469,
+     "drift": 2.37,
+     "loop": 0.3445,
+     "loop_ratio": 1.63,
+     "travel": 2.2,
+     "pin": 0.765,
+     "pad": 0,
+     "canvas": [
+      104,
+      104
+     ],
+     "reasons": [],
+     "sub": "58f62e65-dd01-49f3-9a76-9e669fd6158c",
+     "group": "3e66edab-bf5f-4696-9605-46177af9c1e2",
+     "takes": 1,
+     "version": 1,
+     "mirrored": false,
+     "generated_at": "2026-09-09T21:16:07+00:00"
+    },
+    "north-east": {
+     "status": "warn",
+     "step_mean": 0.2025,
+     "step_max": 0.2488,
+     "drift": 1.82,
+     "loop": 0.4176,
+     "loop_ratio": 2.06,
+     "travel": 0.78,
+     "pin": 0.758,
+     "pad": 0,
+     "canvas": [
+      104,
+      104
+     ],
+     "reasons": [
+      "last→first hand-off 2.1× a step — eyeball the loop"
+     ],
+     "sub": "e3ee4770-2181-4c39-8be1-5896a1b6fa28",
+     "group": "4799be2b-50d8-4ef4-8020-efbcabc9d5c7",
+     "takes": 1,
+     "version": 1,
+     "mirrored": false,
+     "generated_at": "2026-09-09T21:16:08+00:00"
+    },
+    "north": {
+     "status": "warn",
+     "step_mean": 0.2059,
+     "step_max": 0.2819,
+     "drift": 4.13,
+     "loop": 0.503,
+     "loop_ratio": 2.44,
+     "travel": 1.82,
+     "pin": 0.835,
+     "pad": 0,
+     "canvas": [
+      104,
+      104
+     ],
+     "reasons": [
+      "last→first hand-off 2.4× a step — eyeball the loop"
+     ],
+     "sub": "9e7a41e5-4cfd-462e-b1d2-1e291bf50ee6",
+     "group": "feefc1b7-a6f6-48c0-a149-8ed3541d7688",
+     "takes": 1,
+     "version": 1,
+     "mirrored": false,
+     "generated_at": "2026-09-09T21:16:09+00:00"
+    },
+    "south-west": {
+     "status": "pass",
+     "step_mean": 0.2732,
+     "step_max": 0.3423,
+     "drift": 2.8,
+     "loop": 0.5052,
+     "loop_ratio": 1.85,
+     "travel": 1.93,
+     "pin": 0.734,
+     "pad": 0,
+     "canvas": [
+      104,
+      104
+     ],
+     "reasons": [],
+     "sub": "8ec9b19f-94da-4d9b-96a0-4a0585737311",
+     "group": "7b7e2c18-9859-46a5-a165-a027a59a3dea",
+     "takes": 1,
+     "version": 1,
+     "mirrored": true,
+     "generated_at": "2026-09-09T21:16:06+00:00",
+     "source": "south-east"
+    },
+    "west": {
+     "status": "pass",
+     "step_mean": 0.2109,
+     "step_max": 0.2469,
+     "drift": 2.37,
+     "loop": 0.3445,
+     "loop_ratio": 1.63,
+     "travel": 2.2,
+     "pin": 0.765,
+     "pad": 0,
+     "canvas": [
+      104,
+      104
+     ],
+     "reasons": [],
+     "sub": "58f62e65-dd01-49f3-9a76-9e669fd6158c",
+     "group": "3e66edab-bf5f-4696-9605-46177af9c1e2",
+     "takes": 1,
+     "version": 1,
+     "mirrored": true,
+     "generated_at": "2026-09-09T21:16:07+00:00",
+     "source": "east"
+    },
+    "north-west": {
+     "status": "warn",
+     "step_mean": 0.2025,
+     "step_max": 0.2488,
+     "drift": 1.82,
+     "loop": 0.4176,
+     "loop_ratio": 2.06,
+     "travel": 0.78,
+     "pin": 0.758,
+     "pad": 0,
+     "canvas": [
+      104,
+      104
+     ],
+     "reasons": [
+      "last→first hand-off 2.1× a step — eyeball the loop"
+     ],
+     "sub": "e3ee4770-2181-4c39-8be1-5896a1b6fa28",
+     "group": "4799be2b-50d8-4ef4-8020-efbcabc9d5c7",
+     "takes": 1,
+     "version": 1,
+     "mirrored": true,
+     "generated_at": "2026-09-09T21:16:08+00:00",
+     "source": "north-east"
+    }
+   },
+   "action": "walk loop, full walk cycle in place, legs alternate naturally, normal calm walking pace, body stays centered, seamless loop whose last frame leads straight back into the first, no turning",
+   "frame_paths": {
+    "south": [
+     "mummy/animations/walk/south/00.webp",
+     "mummy/animations/walk/south/01.webp",
+     "mummy/animations/walk/south/02.webp",
+     "mummy/animations/walk/south/03.webp",
+     "mummy/animations/walk/south/04.webp",
+     "mummy/animations/walk/south/05.webp"
+    ],
+    "south-east": [
+     "mummy/animations/walk/south-east/00.webp",
+     "mummy/animations/walk/south-east/01.webp",
+     "mummy/animations/walk/south-east/02.webp",
+     "mummy/animations/walk/south-east/03.webp",
+     "mummy/animations/walk/south-east/04.webp",
+     "mummy/animations/walk/south-east/05.webp"
+    ],
+    "east": [
+     "mummy/animations/walk/east/00.webp",
+     "mummy/animations/walk/east/01.webp",
+     "mummy/animations/walk/east/02.webp",
+     "mummy/animations/walk/east/03.webp",
+     "mummy/animations/walk/east/04.webp",
+     "mummy/animations/walk/east/05.webp"
+    ],
+    "north-east": [
+     "mummy/animations/walk/north-east/00.webp",
+     "mummy/animations/walk/north-east/01.webp",
+     "mummy/animations/walk/north-east/02.webp",
+     "mummy/animations/walk/north-east/03.webp",
+     "mummy/animations/walk/north-east/04.webp",
+     "mummy/animations/walk/north-east/05.webp"
+    ],
+    "north": [
+     "mummy/animations/walk/north/00.webp",
+     "mummy/animations/walk/north/01.webp",
+     "mummy/animations/walk/north/02.webp",
+     "mummy/animations/walk/north/03.webp",
+     "mummy/animations/walk/north/04.webp",
+     "mummy/animations/walk/north/05.webp"
+    ],
+    "south-west": [
+     "mummy/animations/walk/south-west/00.webp",
+     "mummy/animations/walk/south-west/01.webp",
+     "mummy/animations/walk/south-west/02.webp",
+     "mummy/animations/walk/south-west/03.webp",
+     "mummy/animations/walk/south-west/04.webp",
+     "mummy/animations/walk/south-west/05.webp"
+    ],
+    "west": [
+     "mummy/animations/walk/west/00.webp",
+     "mummy/animations/walk/west/01.webp",
+     "mummy/animations/walk/west/02.webp",
+     "mummy/animations/walk/west/03.webp",
+     "mummy/animations/walk/west/04.webp",
+     "mummy/animations/walk/west/05.webp"
+    ],
+    "north-west": [
+     "mummy/animations/walk/north-west/00.webp",
+     "mummy/animations/walk/north-west/01.webp",
+     "mummy/animations/walk/north-west/02.webp",
+     "mummy/animations/walk/north-west/03.webp",
+     "mummy/animations/walk/north-west/04.webp",
+     "mummy/animations/walk/north-west/05.webp"
+    ]
+   },
+   "strips": {
+    "south": "mummy/animations/walk__south.webp",
+    "south-east": "mummy/animations/walk__south-east.webp",
+    "east": "mummy/animations/walk__east.webp",
+    "north-east": "mummy/animations/walk__north-east.webp",
+    "north": "mummy/animations/walk__north.webp",
+    "south-west": "mummy/animations/walk__south-west.webp",
+    "west": "mummy/animations/walk__west.webp",
+    "north-west": "mummy/animations/walk__north-west.webp"
+   }
+  },
+  "attack": {
+   "directions": {
+    "south": {
+     "status": "fail",
+     "step_mean": 0.1998,
+     "step_max": 0.2601,
+     "drift": 1.57,
+     "loop": 0.0004,
+     "loop_ratio": 0.0,
+     "travel": 0.21,
+     "pin": 1.0,
+     "pad": 0,
+     "flash": 0.003,
+     "peak": 0.342,
+     "reach": 0.048,
+     "canvas": [
+      104,
+      104
+     ],
+     "reasons": [
+      "no strike, just a lean: nothing reaches past 0.05 of the body"
+     ],
+     "sub": "519a3bf8-81ef-4208-89d5-75f2a08d5191",
+     "group": "73e74a54-a020-4d23-a621-dfb5526ac38d",
+     "takes": 1,
+     "version": 2,
+     "mirrored": false,
+     "generated_at": "2026-09-09T22:36:25+00:00",
+     "action": "Grasping Swipe - Lunges forward with both bandaged arms in one grasping swipe, then returns to idle stance"
+    },
+    "south-east": {
+     "status": "fail",
+     "step_mean": 0.1518,
+     "step_max": 0.2192,
+     "drift": 2.03,
+     "loop": 0.0023,
+     "loop_ratio": 0.02,
+     "travel": 2.03,
+     "pin": 1.0,
+     "pad": 0,
+     "flash": 0.0,
+     "peak": 0.2675,
+     "reach": 0.057,
+     "canvas": [
+      104,
+      104
+     ],
+     "reasons": [
+      "no strike, just a lean: nothing reaches past 0.06 of the body"
+     ],
+     "sub": "7956a0ad-326b-45e8-82ef-298f5a1cc2d1",
+     "group": "3e49e96a-6a16-4ebd-aac2-ed5ffd4ddebc",
+     "takes": 1,
+     "version": 2,
+     "mirrored": false,
+     "generated_at": "2026-09-09T22:36:25+00:00",
+     "action": "Grasping Swipe - Lunges forward with both bandaged arms in one grasping swipe, then returns to idle stance"
+    },
+    "east": {
+     "status": "warn",
+     "step_mean": 0.239,
+     "step_max": 0.2907,
+     "drift": 2.29,
+     "loop": 0.0003,
+     "loop_ratio": 0.0,
+     "travel": 0.7,
+     "pin": 1.0,
+     "pad": 0,
+     "flash": 0.0,
+     "peak": 0.3565,
+     "reach": 0.262,
+     "canvas": [
+      104,
+      104
+     ],
+     "reasons": [
+      "shallow strike: reach 0.26 — eyeball it"
+     ],
+     "sub": "67f4ea17-535f-4865-82bf-ed897d1a438f",
+     "group": "adb8ad16-8c76-475d-ad09-0c44cc441cbc",
+     "takes": 1,
+     "version": 2,
+     "mirrored": false,
+     "generated_at": "2026-09-09T22:36:26+00:00",
+     "action": "Grasping Swipe - Lunges forward with both bandaged arms in one grasping swipe, then returns to idle stance"
+    },
+    "north-east": {
+     "status": "warn",
+     "step_mean": 0.2178,
+     "step_max": 0.2782,
+     "drift": 1.74,
+     "loop": 0.0003,
+     "loop_ratio": 0.0,
+     "travel": 2.59,
+     "pin": 1.0,
+     "pad": 0,
+     "flash": 0.0,
+     "peak": 0.2644,
+     "reach": 0.298,
+     "canvas": [
+      104,
+      104
+     ],
+     "reasons": [
+      "shallow strike: reach 0.30 — eyeball it"
+     ],
+     "sub": "320f3753-fd95-41da-ba48-4284d8976885",
+     "group": "4c47e6cd-7f2a-4278-b5fe-d65ad0b0ffeb",
+     "takes": 1,
+     "version": 2,
+     "mirrored": false,
+     "generated_at": "2026-09-09T22:36:26+00:00",
+     "action": "Grasping Swipe - Lunges forward with both bandaged arms in one grasping swipe, then returns to idle stance"
+    },
+    "north": {
+     "status": "fail",
+     "step_mean": 0.2184,
+     "step_max": 0.3698,
+     "drift": 3.58,
+     "loop": 0.0,
+     "loop_ratio": 0.0,
+     "travel": 0.34,
+     "pin": 1.0,
+     "pad": 0,
+     "flash": 0.0,
+     "peak": 0.3698,
+     "reach": 0.062,
+     "canvas": [
+      104,
+      104
+     ],
+     "reasons": [
+      "no strike, just a lean: nothing reaches past 0.06 of the body"
+     ],
+     "sub": "1953296e-8776-4fe1-b2b1-38c35d00bc98",
+     "group": "6eb61285-5b3b-45b4-bad9-f383b0a7c0de",
+     "takes": 1,
+     "version": 2,
+     "mirrored": false,
+     "generated_at": "2026-09-09T22:36:27+00:00",
+     "action": "Grasping Swipe - Lunges forward with both bandaged arms in one grasping swipe, then returns to idle stance"
+    },
+    "south-west": {
+     "status": "pass",
+     "step_mean": 0.1518,
+     "step_max": 0.2192,
+     "drift": 2.03,
+     "loop": 0.0023,
+     "loop_ratio": 0.02,
+     "travel": 2.03,
+     "pin": 1.0,
+     "pad": 0,
+     "flash": 0.0,
+     "peak": 0.2675,
+     "canvas": [
+      104,
+      104
+     ],
+     "reasons": [],
+     "sub": "7956a0ad-326b-45e8-82ef-298f5a1cc2d1",
+     "group": "3e49e96a-6a16-4ebd-aac2-ed5ffd4ddebc",
+     "takes": 1,
+     "version": 2,
+     "mirrored": true,
+     "generated_at": "2026-09-09T22:36:25+00:00",
+     "action": "Grasping Swipe - Lunges forward with both bandaged arms in one grasping swipe, then returns to idle stance",
+     "source": "south-east"
+    },
+    "west": {
+     "status": "warn",
+     "step_mean": 0.239,
+     "step_max": 0.2907,
+     "drift": 2.29,
+     "loop": 0.0003,
+     "loop_ratio": 0.0,
+     "travel": 0.7,
+     "pin": 1.0,
+     "pad": 0,
+     "flash": 0.0,
+     "peak": 0.3565,
+     "reach": 0.262,
+     "canvas": [
+      104,
+      104
+     ],
+     "reasons": [
+      "shallow strike: reach 0.26 — eyeball it"
+     ],
+     "sub": "67f4ea17-535f-4865-82bf-ed897d1a438f",
+     "group": "adb8ad16-8c76-475d-ad09-0c44cc441cbc",
+     "takes": 1,
+     "version": 2,
+     "mirrored": true,
+     "generated_at": "2026-09-09T22:36:26+00:00",
+     "action": "Grasping Swipe - Lunges forward with both bandaged arms in one grasping swipe, then returns to idle stance",
+     "source": "east"
+    },
+    "north-west": {
+     "status": "warn",
+     "step_mean": 0.2178,
+     "step_max": 0.2782,
+     "drift": 1.74,
+     "loop": 0.0003,
+     "loop_ratio": 0.0,
+     "travel": 2.59,
+     "pin": 1.0,
+     "pad": 0,
+     "flash": 0.0,
+     "peak": 0.2644,
+     "reach": 0.298,
+     "canvas": [
+      104,
+      104
+     ],
+     "reasons": [
+      "shallow strike: reach 0.30 — eyeball it"
+     ],
+     "sub": "320f3753-fd95-41da-ba48-4284d8976885",
+     "group": "4c47e6cd-7f2a-4278-b5fe-d65ad0b0ffeb",
+     "takes": 1,
+     "version": 2,
+     "mirrored": true,
+     "generated_at": "2026-09-09T22:36:26+00:00",
+     "action": "Grasping Swipe - Lunges forward with both bandaged arms in one grasping swipe, then returns to idle stance",
+     "source": "north-east"
+    }
+   },
+   "action": "Grasping Swipe - Lunges forward with both bandaged arms in one grasping swipe, then returns to idle stance",
+   "frame_paths": {
+    "south": [
+     "mummy/animations/attack/south/00.webp",
+     "mummy/animations/attack/south/01.webp",
+     "mummy/animations/attack/south/02.webp",
+     "mummy/animations/attack/south/03.webp",
+     "mummy/animations/attack/south/04.webp"
+    ],
+    "south-east": [
+     "mummy/animations/attack/south-east/00.webp",
+     "mummy/animations/attack/south-east/01.webp",
+     "mummy/animations/attack/south-east/02.webp",
+     "mummy/animations/attack/south-east/03.webp",
+     "mummy/animations/attack/south-east/04.webp"
+    ],
+    "east": [
+     "mummy/animations/attack/east/00.webp",
+     "mummy/animations/attack/east/01.webp",
+     "mummy/animations/attack/east/02.webp",
+     "mummy/animations/attack/east/03.webp",
+     "mummy/animations/attack/east/04.webp"
+    ],
+    "north-east": [
+     "mummy/animations/attack/north-east/00.webp",
+     "mummy/animations/attack/north-east/01.webp",
+     "mummy/animations/attack/north-east/02.webp",
+     "mummy/animations/attack/north-east/03.webp",
+     "mummy/animations/attack/north-east/04.webp"
+    ],
+    "north": [
+     "mummy/animations/attack/north/00.webp",
+     "mummy/animations/attack/north/01.webp",
+     "mummy/animations/attack/north/02.webp",
+     "mummy/animations/attack/north/03.webp",
+     "mummy/animations/attack/north/04.webp"
+    ],
+    "south-west": [
+     "mummy/animations/attack/south-west/00.webp",
+     "mummy/animations/attack/south-west/01.webp",
+     "mummy/animations/attack/south-west/02.webp",
+     "mummy/animations/attack/south-west/03.webp",
+     "mummy/animations/attack/south-west/04.webp"
+    ],
+    "west": [
+     "mummy/animations/attack/west/00.webp",
+     "mummy/animations/attack/west/01.webp",
+     "mummy/animations/attack/west/02.webp",
+     "mummy/animations/attack/west/03.webp",
+     "mummy/animations/attack/west/04.webp"
+    ],
+    "north-west": [
+     "mummy/animations/attack/north-west/00.webp",
+     "mummy/animations/attack/north-west/01.webp",
+     "mummy/animations/attack/north-west/02.webp",
+     "mummy/animations/attack/north-west/03.webp",
+     "mummy/animations/attack/north-west/04.webp"
+    ]
+   },
+   "strips": {
+    "south": "mummy/animations/attack__south.webp",
+    "south-east": "mummy/animations/attack__south-east.webp",
+    "east": "mummy/animations/attack__east.webp",
+    "north-east": "mummy/animations/attack__north-east.webp",
+    "north": "mummy/animations/attack__north.webp",
+    "south-west": "mummy/animations/attack__south-west.webp",
+    "west": "mummy/animations/attack__west.webp",
+    "north-west": "mummy/animations/attack__north-west.webp"
+   }
+  },
+  "attack_try": {
+   "directions": {
+    "south": {
+     "status": "fail",
+     "step_mean": 0.1591,
+     "step_max": 0.2475,
+     "drift": 1.99,
+     "loop": 0.2122,
+     "loop_ratio": 1.33,
+     "travel": 0.34,
+     "pin": 1.0,
+     "pad": 0,
+     "flash": 0.001,
+     "peak": 0.4155,
+     "reach": 0.071,
+     "canvas": [
+      104,
+      104
+     ],
+     "reasons": [
+      "no strike, just a lean: nothing reaches past 0.07 of the body"
+     ],
+     "sub": "6f82ae32-01a7-45b5-8a89-1ad7c2de6072",
+     "group": "3ccff401-a392-48c6-b7f8-7225fbb3bd7b",
+     "takes": 1,
+     "version": 4,
+     "mirrored": false,
+     "generated_at": "2026-09-10T21:12:58+00:00",
+     "action": "Lunge Attack - Throws its whole body forward in one fast lunge, white swoosh lines trailing behind it",
+     "tries": 4,
+     "rolls": 4,
+     "intensity": 1,
+     "frames": 9,
+     "rung": 3
+    },
+    "east": {
+     "status": "pass",
+     "step_mean": 0.3312,
+     "step_max": 0.5596,
+     "drift": 4.15,
+     "loop": 0.7496,
+     "loop_ratio": 2.26,
+     "travel": 3.17,
+     "pin": 1.0,
+     "pad": 0,
+     "flash": 0.0,
+     "peak": 0.7496,
+     "reach": 0.652,
+     "canvas": [
+      104,
+      104
+     ],
+     "reasons": [],
+     "sub": "12e62aa2-af32-41ad-8853-f53702a284c2",
+     "group": "1a56ad15-e3f9-4133-971b-d3e633fc5fe8",
+     "takes": 1,
+     "version": 1,
+     "mirrored": false,
+     "generated_at": "2026-09-10T19:52:43+00:00",
+     "action": "Grasping Swipe - Lunges forward with both bandaged arms out in a grasping swipe",
+     "tries": 1,
+     "rolls": 1,
+     "intensity": 1,
+     "rung": 0
+    },
+    "north-east": {
+     "status": "pass",
+     "step_mean": 0.1707,
+     "step_max": 0.2359,
+     "drift": 3.63,
+     "loop": 0.3706,
+     "loop_ratio": 2.17,
+     "travel": 3.63,
+     "pin": 1.0,
+     "pad": 0,
+     "flash": 0.0,
+     "peak": 0.3706,
+     "reach": 0.451,
+     "canvas": [
+      104,
+      104
+     ],
+     "reasons": [],
+     "sub": "1d132cf3-d694-4e60-8ee1-73e44d6da5a2",
+     "group": "1b0a9546-501a-494b-9637-2f0ccb2f2891",
+     "takes": 1,
+     "version": 1,
+     "mirrored": false,
+     "generated_at": "2026-09-10T19:52:44+00:00",
+     "action": "Grasping Swipe - Lunges forward with both bandaged arms out in a grasping swipe",
+     "tries": 1,
+     "rolls": 1,
+     "intensity": 1,
+     "rung": 0
+    },
+    "north": {
+     "status": "fail",
+     "step_mean": 0.1257,
+     "step_max": 0.2969,
+     "drift": 3.73,
+     "loop": 0.514,
+     "loop_ratio": 4.09,
+     "travel": 2.06,
+     "pin": 1.0,
+     "pad": 0,
+     "flash": 0.001,
+     "peak": 0.514,
+     "reach": 0.1,
+     "canvas": [
+      104,
+      104
+     ],
+     "reasons": [
+      "no strike, just a lean: nothing reaches past 0.10 of the body"
+     ],
+     "sub": "4c9fa213-065b-492a-9fcc-5f7ac47cb023",
+     "group": "c8fc3aaf-ba1a-4aff-9134-073838680c1c",
+     "takes": 1,
+     "version": 4,
+     "mirrored": false,
+     "generated_at": "2026-09-10T21:12:59+00:00",
+     "action": "Lunge Attack - Throws its whole body forward in one fast lunge, white swoosh lines trailing behind it",
+     "tries": 4,
+     "rolls": 4,
+     "intensity": 1,
+     "frames": 9,
+     "rung": 3
+    },
+    "west": {
+     "status": "pass",
+     "step_mean": 0.3312,
+     "step_max": 0.5596,
+     "drift": 4.15,
+     "loop": 0.7496,
+     "loop_ratio": 2.26,
+     "travel": 3.17,
+     "pin": 1.0,
+     "pad": 0,
+     "flash": 0.0,
+     "peak": 0.7496,
+     "reach": 0.652,
+     "canvas": [
+      104,
+      104
+     ],
+     "reasons": [],
+     "sub": "12e62aa2-af32-41ad-8853-f53702a284c2",
+     "group": "1a56ad15-e3f9-4133-971b-d3e633fc5fe8",
+     "takes": 1,
+     "version": 1,
+     "mirrored": true,
+     "generated_at": "2026-09-10T19:52:43+00:00",
+     "action": "Grasping Swipe - Lunges forward with both bandaged arms out in a grasping swipe",
+     "tries": 1,
+     "rolls": 1,
+     "intensity": 1,
+     "source": "east"
+    },
+    "north-west": {
+     "status": "pass",
+     "step_mean": 0.1707,
+     "step_max": 0.2359,
+     "drift": 3.63,
+     "loop": 0.3706,
+     "loop_ratio": 2.17,
+     "travel": 3.63,
+     "pin": 1.0,
+     "pad": 0,
+     "flash": 0.0,
+     "peak": 0.3706,
+     "reach": 0.451,
+     "canvas": [
+      104,
+      104
+     ],
+     "reasons": [],
+     "sub": "1d132cf3-d694-4e60-8ee1-73e44d6da5a2",
+     "group": "1b0a9546-501a-494b-9637-2f0ccb2f2891",
+     "takes": 1,
+     "version": 1,
+     "mirrored": true,
+     "generated_at": "2026-09-10T19:52:44+00:00",
+     "action": "Grasping Swipe - Lunges forward with both bandaged arms out in a grasping swipe",
+     "tries": 1,
+     "rolls": 1,
+     "intensity": 1,
+     "source": "north-east"
+    },
+    "south-east": {
+     "status": "pass",
+     "step_mean": 0.3211,
+     "step_max": 0.509,
+     "drift": 4.91,
+     "loop": 0.6559,
+     "loop_ratio": 2.04,
+     "travel": 0.81,
+     "pin": 1.0,
+     "pad": 3,
+     "flash": 0.0,
+     "peak": 0.6559,
+     "reach": 0.3,
+     "canvas": [
+      110,
+      110
+     ],
+     "reasons": [
+      "canvas grown by 3 px a side to hold the motion"
+     ],
+     "sub": "0fc3075c-197b-4db3-aa1a-41d76c0d8bbd",
+     "group": "33984243-bee1-4902-872e-f7b931ab2eb6",
+     "takes": 1,
+     "version": 3,
+     "mirrored": false,
+     "generated_at": "2026-09-10T20:50:08+00:00",
+     "action": "Grasping Swipe - Lunges forward with both bandaged arms out in a grasping swipe, a big aggressive swing",
+     "tries": 1,
+     "rolls": 3,
+     "intensity": 1,
+     "frames": 5,
+     "rung": 0
+    },
+    "south-west": {
+     "status": "pass",
+     "step_mean": 0.3211,
+     "step_max": 0.509,
+     "drift": 4.91,
+     "loop": 0.6559,
+     "loop_ratio": 2.04,
+     "travel": 0.81,
+     "pin": 1.0,
+     "pad": 3,
+     "flash": 0.0,
+     "peak": 0.6559,
+     "reach": 0.3,
+     "canvas": [
+      110,
+      110
+     ],
+     "reasons": [
+      "canvas grown by 3 px a side to hold the motion"
+     ],
+     "sub": "0fc3075c-197b-4db3-aa1a-41d76c0d8bbd",
+     "group": "33984243-bee1-4902-872e-f7b931ab2eb6",
+     "takes": 1,
+     "version": 3,
+     "mirrored": true,
+     "generated_at": "2026-09-10T20:50:08+00:00",
+     "action": "Grasping Swipe - Lunges forward with both bandaged arms out in a grasping swipe, a big aggressive swing",
+     "tries": 1,
+     "rolls": 3,
+     "intensity": 1,
+     "frames": 5,
+     "source": "south-east"
+    }
+   },
+   "action": "Grasping Swipe - Lunges forward with both bandaged arms out in a grasping swipe, a big aggressive swing",
+   "frame_paths": {
+    "south": [
+     "mummy/animations/attack_try/south/00.webp",
+     "mummy/animations/attack_try/south/01.webp",
+     "mummy/animations/attack_try/south/02.webp",
+     "mummy/animations/attack_try/south/03.webp",
+     "mummy/animations/attack_try/south/04.webp",
+     "mummy/animations/attack_try/south/05.webp",
+     "mummy/animations/attack_try/south/06.webp",
+     "mummy/animations/attack_try/south/07.webp",
+     "mummy/animations/attack_try/south/08.webp"
+    ],
+    "east": [
+     "mummy/animations/attack_try/east/00.webp",
+     "mummy/animations/attack_try/east/01.webp",
+     "mummy/animations/attack_try/east/02.webp",
+     "mummy/animations/attack_try/east/03.webp",
+     "mummy/animations/attack_try/east/04.webp"
+    ],
+    "north-east": [
+     "mummy/animations/attack_try/north-east/00.webp",
+     "mummy/animations/attack_try/north-east/01.webp",
+     "mummy/animations/attack_try/north-east/02.webp",
+     "mummy/animations/attack_try/north-east/03.webp",
+     "mummy/animations/attack_try/north-east/04.webp"
+    ],
+    "north": [
+     "mummy/animations/attack_try/north/00.webp",
+     "mummy/animations/attack_try/north/01.webp",
+     "mummy/animations/attack_try/north/02.webp",
+     "mummy/animations/attack_try/north/03.webp",
+     "mummy/animations/attack_try/north/04.webp",
+     "mummy/animations/attack_try/north/05.webp",
+     "mummy/animations/attack_try/north/06.webp",
+     "mummy/animations/attack_try/north/07.webp",
+     "mummy/animations/attack_try/north/08.webp"
+    ],
+    "west": [
+     "mummy/animations/attack_try/west/00.webp",
+     "mummy/animations/attack_try/west/01.webp",
+     "mummy/animations/attack_try/west/02.webp",
+     "mummy/animations/attack_try/west/03.webp",
+     "mummy/animations/attack_try/west/04.webp"
+    ],
+    "north-west": [
+     "mummy/animations/attack_try/north-west/00.webp",
+     "mummy/animations/attack_try/north-west/01.webp",
+     "mummy/animations/attack_try/north-west/02.webp",
+     "mummy/animations/attack_try/north-west/03.webp",
+     "mummy/animations/attack_try/north-west/04.webp"
+    ],
+    "south-east": [
+     "mummy/animations/attack_try/south-east/00.webp",
+     "mummy/animations/attack_try/south-east/01.webp",
+     "mummy/animations/attack_try/south-east/02.webp",
+     "mummy/animations/attack_try/south-east/03.webp",
+     "mummy/animations/attack_try/south-east/04.webp"
+    ],
+    "south-west": [
+     "mummy/animations/attack_try/south-west/00.webp",
+     "mummy/animations/attack_try/south-west/01.webp",
+     "mummy/animations/attack_try/south-west/02.webp",
+     "mummy/animations/attack_try/south-west/03.webp",
+     "mummy/animations/attack_try/south-west/04.webp"
+    ]
+   },
+   "strips": {
+    "south": "mummy/animations/attack_try__south.webp",
+    "east": "mummy/animations/attack_try__east.webp",
+    "north-east": "mummy/animations/attack_try__north-east.webp",
+    "north": "mummy/animations/attack_try__north.webp",
+    "west": "mummy/animations/attack_try__west.webp",
+    "north-west": "mummy/animations/attack_try__north-west.webp",
+    "south-east": "mummy/animations/attack_try__south-east.webp",
+    "south-west": "mummy/animations/attack_try__south-west.webp"
+   },
+   "intensity": 1
+  }
+ }
 }

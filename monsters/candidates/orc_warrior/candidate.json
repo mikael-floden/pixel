@@ -1,1218 +1,1223 @@
 {
-  "id": "orc_warrior",
-  "name": "Warmaul",
-  "tier": "evil",
-  "scale": "standard",
-  "lore": "It fights for whoever pays in iron and eats whoever does not. The axe has a name; it will not say it.",
-  "biome": [
-    "grass",
-    "grey_stone"
-  ],
-  "items": [],
-  "prompt": "Orc warrior shown full body from head to feet, realistic proportions, grey-green skin over heavy muscle, a jutting jaw with lower tusks, small red eyes under a heavy brow, crude iron shoulder plates and a hide kilt, and a notched battle axe held low at its side.",
-  "size": [
-    128,
-    128
-  ],
-  "template_id": "mannequin",
-  "directions": [
-    "south",
-    "south-east",
-    "east",
-    "north-east",
-    "north",
-    "north-west",
-    "west",
-    "south-west"
-  ],
-  "rotations": {
-    "south": "orc_warrior/rotations/south.webp",
-    "south-east": "orc_warrior/rotations/south-east.webp",
-    "east": "orc_warrior/rotations/east.webp",
-    "north-east": "orc_warrior/rotations/north-east.webp",
-    "north": "orc_warrior/rotations/north.webp",
-    "north-west": "orc_warrior/rotations/north-west.webp",
-    "west": "orc_warrior/rotations/west.webp",
-    "south-west": "orc_warrior/rotations/south-west.webp"
-  },
-  "sheet": "orc_warrior/sheet.webp",
-  "review": "approved",
-  "pixellab_id": "d7067157-1e5b-409e-bb72-651036edd596",
-  "seed": 1111390603,
-  "version": 2,
-  "usage": null,
-  "generated_at": "2026-09-09T19:08:50+00:00",
-  "elapsed_s": 166.2,
-  "qa": {
-    "status": "pass",
-    "min_run1": 0.701,
-    "reasons": [],
-    "directions": {
-      "south": {
-        "run1": 0.701,
-        "bbox": [
-          15,
-          6,
-          113,
-          122
-        ],
-        "fill": 0.694,
-        "touches_edge": false
-      },
-      "south-east": {
-        "run1": 0.812,
-        "bbox": [
-          26,
-          7,
-          113,
-          123
-        ],
-        "fill": 0.616,
-        "touches_edge": false
-      },
-      "east": {
-        "run1": 0.804,
-        "bbox": [
-          42,
-          6,
-          94,
-          122
-        ],
-        "fill": 0.368,
-        "touches_edge": false
-      },
-      "north-east": {
-        "run1": 0.77,
-        "bbox": [
-          21,
-          5,
-          96,
-          121
-        ],
-        "fill": 0.531,
-        "touches_edge": false
-      },
-      "north": {
-        "run1": 0.765,
-        "bbox": [
-          10,
-          6,
-          103,
-          120
-        ],
-        "fill": 0.647,
-        "touches_edge": false
-      },
-      "north-west": {
-        "run1": 0.766,
-        "bbox": [
-          15,
-          5,
-          94,
-          121
-        ],
-        "fill": 0.559,
-        "touches_edge": false
-      },
-      "west": {
-        "run1": 0.796,
-        "bbox": [
-          41,
-          6,
-          80,
-          121
-        ],
-        "fill": 0.274,
-        "touches_edge": false
-      },
-      "south-west": {
-        "run1": 0.806,
-        "bbox": [
-          23,
-          7,
-          95,
-          123
-        ],
-        "fill": 0.51,
-        "touches_edge": false
-      }
-    }
-  },
-  "approved_at": "2026-09-09T19:59:26+00:00",
-  "animations": {
-    "idle": {
-      "directions": {
-        "south": {
-          "status": "pass",
-          "step_mean": 0.0558,
-          "step_max": 0.0701,
-          "drift": 0.73,
-          "loop": 0.0003,
-          "pin": 1.0,
-          "reasons": [],
-          "sub": "00f923f6-952b-47aa-bd0a-5a08c22fb7b8",
-          "takes": 1,
-          "version": 1,
-          "mirrored": false,
-          "generated_at": "2026-09-09T20:24:07+00:00",
-          "cut": 0
-        },
-        "south-east": {
-          "status": "pass",
-          "step_mean": 0.0127,
-          "step_max": 0.0222,
-          "drift": 0.22,
-          "loop": 0.002,
-          "pin": 1.0,
-          "reasons": [],
-          "sub": "6c4c310f-cc12-4f82-9500-285eaa70cab7",
-          "takes": 1,
-          "version": 1,
-          "mirrored": false,
-          "generated_at": "2026-09-09T20:24:07+00:00",
-          "cut": 0
-        },
-        "east": {
-          "status": "pass",
-          "step_mean": 0.0654,
-          "step_max": 0.1147,
-          "drift": 1.17,
-          "loop": 0.0,
-          "pin": 1.0,
-          "reasons": [],
-          "sub": "71569607-093a-4f14-9b5c-e4bcd7ae837c",
-          "takes": 1,
-          "version": 1,
-          "mirrored": false,
-          "generated_at": "2026-09-09T20:24:08+00:00",
-          "cut": 0
-        },
-        "north-east": {
-          "status": "pass",
-          "step_mean": 0.0728,
-          "step_max": 0.1017,
-          "drift": 1.03,
-          "loop": 0.0,
-          "pin": 1.0,
-          "reasons": [],
-          "sub": "09d33f48-b390-4262-886a-ec64318b371c",
-          "takes": 1,
-          "version": 1,
-          "mirrored": false,
-          "generated_at": "2026-09-09T20:24:09+00:00",
-          "cut": 0
-        },
-        "north": {
-          "status": "pass",
-          "step_mean": 0.0373,
-          "step_max": 0.0728,
-          "drift": 0.53,
-          "loop": 0.0,
-          "pin": 1.0,
-          "reasons": [],
-          "sub": "b82e61e1-6ebb-4d8a-ad60-cb27998139e6",
-          "takes": 1,
-          "version": 1,
-          "mirrored": false,
-          "generated_at": "2026-09-09T20:24:10+00:00",
-          "cut": 0
-        },
-        "south-west": {
-          "status": "pass",
-          "step_mean": 0.0127,
-          "step_max": 0.0222,
-          "drift": 0.22,
-          "loop": 0.002,
-          "pin": 1.0,
-          "reasons": [],
-          "sub": "6c4c310f-cc12-4f82-9500-285eaa70cab7",
-          "takes": 1,
-          "version": 1,
-          "mirrored": true,
-          "generated_at": "2026-09-09T20:24:07+00:00",
-          "cut": 0,
-          "source": "south-east"
-        },
-        "west": {
-          "status": "pass",
-          "step_mean": 0.0654,
-          "step_max": 0.1147,
-          "drift": 1.17,
-          "loop": 0.0,
-          "pin": 1.0,
-          "reasons": [],
-          "sub": "71569607-093a-4f14-9b5c-e4bcd7ae837c",
-          "takes": 1,
-          "version": 1,
-          "mirrored": true,
-          "generated_at": "2026-09-09T20:24:08+00:00",
-          "cut": 0,
-          "source": "east"
-        },
-        "north-west": {
-          "status": "pass",
-          "step_mean": 0.0728,
-          "step_max": 0.1017,
-          "drift": 1.03,
-          "loop": 0.0,
-          "pin": 1.0,
-          "reasons": [],
-          "sub": "09d33f48-b390-4262-886a-ec64318b371c",
-          "takes": 1,
-          "version": 1,
-          "mirrored": true,
-          "generated_at": "2026-09-09T20:24:09+00:00",
-          "cut": 0,
-          "source": "north-east"
-        }
-      },
-      "action": "Calm still idle, breathing very slowly and subtly, chest and shoulders rise and fall a little, feet planted, no other movement, ends in the same neutral pose it started in",
-      "frame_paths": {
-        "south": [
-          "orc_warrior/animations/idle/south/00.webp",
-          "orc_warrior/animations/idle/south/01.webp",
-          "orc_warrior/animations/idle/south/02.webp",
-          "orc_warrior/animations/idle/south/03.webp",
-          "orc_warrior/animations/idle/south/04.webp"
-        ],
-        "south-east": [
-          "orc_warrior/animations/idle/south-east/00.webp",
-          "orc_warrior/animations/idle/south-east/01.webp",
-          "orc_warrior/animations/idle/south-east/02.webp",
-          "orc_warrior/animations/idle/south-east/03.webp",
-          "orc_warrior/animations/idle/south-east/04.webp"
-        ],
-        "east": [
-          "orc_warrior/animations/idle/east/00.webp",
-          "orc_warrior/animations/idle/east/01.webp",
-          "orc_warrior/animations/idle/east/02.webp",
-          "orc_warrior/animations/idle/east/03.webp",
-          "orc_warrior/animations/idle/east/04.webp"
-        ],
-        "north-east": [
-          "orc_warrior/animations/idle/north-east/00.webp",
-          "orc_warrior/animations/idle/north-east/01.webp",
-          "orc_warrior/animations/idle/north-east/02.webp",
-          "orc_warrior/animations/idle/north-east/03.webp",
-          "orc_warrior/animations/idle/north-east/04.webp"
-        ],
-        "north": [
-          "orc_warrior/animations/idle/north/00.webp",
-          "orc_warrior/animations/idle/north/01.webp",
-          "orc_warrior/animations/idle/north/02.webp",
-          "orc_warrior/animations/idle/north/03.webp",
-          "orc_warrior/animations/idle/north/04.webp"
-        ],
-        "south-west": [
-          "orc_warrior/animations/idle/south-west/00.webp",
-          "orc_warrior/animations/idle/south-west/01.webp",
-          "orc_warrior/animations/idle/south-west/02.webp",
-          "orc_warrior/animations/idle/south-west/03.webp",
-          "orc_warrior/animations/idle/south-west/04.webp"
-        ],
-        "west": [
-          "orc_warrior/animations/idle/west/00.webp",
-          "orc_warrior/animations/idle/west/01.webp",
-          "orc_warrior/animations/idle/west/02.webp",
-          "orc_warrior/animations/idle/west/03.webp",
-          "orc_warrior/animations/idle/west/04.webp"
-        ],
-        "north-west": [
-          "orc_warrior/animations/idle/north-west/00.webp",
-          "orc_warrior/animations/idle/north-west/01.webp",
-          "orc_warrior/animations/idle/north-west/02.webp",
-          "orc_warrior/animations/idle/north-west/03.webp",
-          "orc_warrior/animations/idle/north-west/04.webp"
-        ]
-      },
-      "strips": {
-        "south": "orc_warrior/animations/idle__south.webp",
-        "south-east": "orc_warrior/animations/idle__south-east.webp",
-        "east": "orc_warrior/animations/idle__east.webp",
-        "north-east": "orc_warrior/animations/idle__north-east.webp",
-        "north": "orc_warrior/animations/idle__north.webp",
-        "south-west": "orc_warrior/animations/idle__south-west.webp",
-        "west": "orc_warrior/animations/idle__west.webp",
-        "north-west": "orc_warrior/animations/idle__north-west.webp"
-      }
-    },
-    "walk": {
-      "directions": {
-        "south": {
-          "status": "warn",
-          "step_mean": 0.1473,
-          "step_max": 0.1917,
-          "drift": 6.4,
-          "loop": 0.3291,
-          "loop_ratio": 2.23,
-          "travel": 2.12,
-          "pin": 0.863,
-          "pad": 0,
-          "canvas": [
-            128,
-            128
-          ],
-          "reasons": [
-            "drifts 6.4 px — eyeball it",
-            "last→first hand-off 2.2× a step — eyeball the loop"
-          ],
-          "sub": "534b9722-71ac-47f9-a9cc-068bcdb89aa9",
-          "group": "f2699cd5-da1b-428e-83af-58132f904a7a",
-          "takes": 1,
-          "version": 1,
-          "mirrored": false,
-          "generated_at": "2026-09-09T21:17:01+00:00"
-        },
-        "south-east": {
-          "status": "warn",
-          "step_mean": 0.1791,
-          "step_max": 0.2097,
-          "drift": 2.05,
-          "loop": 0.3727,
-          "loop_ratio": 2.08,
-          "travel": 1.43,
-          "pin": 0.859,
-          "pad": 0,
-          "canvas": [
-            128,
-            128
-          ],
-          "reasons": [
-            "last→first hand-off 2.1× a step — eyeball the loop"
-          ],
-          "sub": "ab9cab4b-2db5-41d0-8248-ccc3217f6efd",
-          "group": "020dd113-e516-42d0-89fb-10a9fbe9690d",
-          "takes": 1,
-          "version": 1,
-          "mirrored": false,
-          "generated_at": "2026-09-09T21:17:01+00:00"
-        },
-        "east": {
-          "status": "warn",
-          "step_mean": 0.2329,
-          "step_max": 0.3639,
-          "drift": 2.24,
-          "loop": 0.467,
-          "loop_ratio": 2.01,
-          "travel": 2.15,
-          "pin": 0.818,
-          "pad": 0,
-          "canvas": [
-            128,
-            128
-          ],
-          "reasons": [
-            "last→first hand-off 2.0× a step — eyeball the loop"
-          ],
-          "sub": "1c13d536-09e0-4e39-8d96-ec99cb032ff1",
-          "group": "72e8851e-f4a4-4e7b-b161-3a7fff417a48",
-          "takes": 1,
-          "version": 1,
-          "mirrored": false,
-          "generated_at": "2026-09-09T21:17:02+00:00"
-        },
-        "north-east": {
-          "status": "pass",
-          "step_mean": 0.1861,
-          "step_max": 0.2353,
-          "drift": 1.72,
-          "loop": 0.2245,
-          "loop_ratio": 1.21,
-          "travel": 1.65,
-          "pin": 0.816,
-          "pad": 0,
-          "canvas": [
-            128,
-            128
-          ],
-          "reasons": [],
-          "sub": "8c669de1-b0fd-478a-a483-9687b4491ebf",
-          "group": "24c1d456-ffda-4a1c-a790-f5e802dd7f94",
-          "takes": 1,
-          "version": 1,
-          "mirrored": false,
-          "generated_at": "2026-09-09T21:17:03+00:00"
-        },
-        "north": {
-          "status": "warn",
-          "step_mean": 0.0998,
-          "step_max": 0.1171,
-          "drift": 1.56,
-          "loop": 0.2429,
-          "loop_ratio": 2.43,
-          "travel": 1.63,
-          "pin": 0.863,
-          "pad": 0,
-          "canvas": [
-            128,
-            128
-          ],
-          "reasons": [
-            "motion 0.100 outside the calm band 0.1–0.4 — eyeball it",
-            "last→first hand-off 2.4× a step — eyeball the loop"
-          ],
-          "sub": "c0d68b9e-cdd0-4065-a4f9-8920d3f72802",
-          "group": "5ed49f20-3d39-4071-9855-bb560ec88be5",
-          "takes": 1,
-          "version": 1,
-          "mirrored": false,
-          "generated_at": "2026-09-09T21:17:04+00:00"
-        },
-        "south-west": {
-          "status": "warn",
-          "step_mean": 0.1791,
-          "step_max": 0.2097,
-          "drift": 2.05,
-          "loop": 0.3727,
-          "loop_ratio": 2.08,
-          "travel": 1.43,
-          "pin": 0.859,
-          "pad": 0,
-          "canvas": [
-            128,
-            128
-          ],
-          "reasons": [
-            "last→first hand-off 2.1× a step — eyeball the loop"
-          ],
-          "sub": "ab9cab4b-2db5-41d0-8248-ccc3217f6efd",
-          "group": "020dd113-e516-42d0-89fb-10a9fbe9690d",
-          "takes": 1,
-          "version": 1,
-          "mirrored": true,
-          "generated_at": "2026-09-09T21:17:01+00:00",
-          "source": "south-east"
-        },
-        "west": {
-          "status": "warn",
-          "step_mean": 0.2329,
-          "step_max": 0.3639,
-          "drift": 2.24,
-          "loop": 0.467,
-          "loop_ratio": 2.01,
-          "travel": 2.15,
-          "pin": 0.818,
-          "pad": 0,
-          "canvas": [
-            128,
-            128
-          ],
-          "reasons": [
-            "last→first hand-off 2.0× a step — eyeball the loop"
-          ],
-          "sub": "1c13d536-09e0-4e39-8d96-ec99cb032ff1",
-          "group": "72e8851e-f4a4-4e7b-b161-3a7fff417a48",
-          "takes": 1,
-          "version": 1,
-          "mirrored": true,
-          "generated_at": "2026-09-09T21:17:02+00:00",
-          "source": "east"
-        },
-        "north-west": {
-          "status": "pass",
-          "step_mean": 0.1861,
-          "step_max": 0.2353,
-          "drift": 1.72,
-          "loop": 0.2245,
-          "loop_ratio": 1.21,
-          "travel": 1.65,
-          "pin": 0.816,
-          "pad": 0,
-          "canvas": [
-            128,
-            128
-          ],
-          "reasons": [],
-          "sub": "8c669de1-b0fd-478a-a483-9687b4491ebf",
-          "group": "24c1d456-ffda-4a1c-a790-f5e802dd7f94",
-          "takes": 1,
-          "version": 1,
-          "mirrored": true,
-          "generated_at": "2026-09-09T21:17:03+00:00",
-          "source": "north-east"
-        }
-      },
-      "action": "walk loop, full walk cycle in place, legs alternate naturally, normal calm walking pace, body stays centered, seamless loop whose last frame leads straight back into the first, no turning",
-      "frame_paths": {
-        "south": [
-          "orc_warrior/animations/walk/south/00.webp",
-          "orc_warrior/animations/walk/south/01.webp",
-          "orc_warrior/animations/walk/south/02.webp",
-          "orc_warrior/animations/walk/south/03.webp",
-          "orc_warrior/animations/walk/south/04.webp",
-          "orc_warrior/animations/walk/south/05.webp"
-        ],
-        "south-east": [
-          "orc_warrior/animations/walk/south-east/00.webp",
-          "orc_warrior/animations/walk/south-east/01.webp",
-          "orc_warrior/animations/walk/south-east/02.webp",
-          "orc_warrior/animations/walk/south-east/03.webp",
-          "orc_warrior/animations/walk/south-east/04.webp",
-          "orc_warrior/animations/walk/south-east/05.webp"
-        ],
-        "east": [
-          "orc_warrior/animations/walk/east/00.webp",
-          "orc_warrior/animations/walk/east/01.webp",
-          "orc_warrior/animations/walk/east/02.webp",
-          "orc_warrior/animations/walk/east/03.webp",
-          "orc_warrior/animations/walk/east/04.webp",
-          "orc_warrior/animations/walk/east/05.webp"
-        ],
-        "north-east": [
-          "orc_warrior/animations/walk/north-east/00.webp",
-          "orc_warrior/animations/walk/north-east/01.webp",
-          "orc_warrior/animations/walk/north-east/02.webp",
-          "orc_warrior/animations/walk/north-east/03.webp",
-          "orc_warrior/animations/walk/north-east/04.webp",
-          "orc_warrior/animations/walk/north-east/05.webp"
-        ],
-        "north": [
-          "orc_warrior/animations/walk/north/00.webp",
-          "orc_warrior/animations/walk/north/01.webp",
-          "orc_warrior/animations/walk/north/02.webp",
-          "orc_warrior/animations/walk/north/03.webp",
-          "orc_warrior/animations/walk/north/04.webp",
-          "orc_warrior/animations/walk/north/05.webp"
-        ],
-        "south-west": [
-          "orc_warrior/animations/walk/south-west/00.webp",
-          "orc_warrior/animations/walk/south-west/01.webp",
-          "orc_warrior/animations/walk/south-west/02.webp",
-          "orc_warrior/animations/walk/south-west/03.webp",
-          "orc_warrior/animations/walk/south-west/04.webp",
-          "orc_warrior/animations/walk/south-west/05.webp"
-        ],
-        "west": [
-          "orc_warrior/animations/walk/west/00.webp",
-          "orc_warrior/animations/walk/west/01.webp",
-          "orc_warrior/animations/walk/west/02.webp",
-          "orc_warrior/animations/walk/west/03.webp",
-          "orc_warrior/animations/walk/west/04.webp",
-          "orc_warrior/animations/walk/west/05.webp"
-        ],
-        "north-west": [
-          "orc_warrior/animations/walk/north-west/00.webp",
-          "orc_warrior/animations/walk/north-west/01.webp",
-          "orc_warrior/animations/walk/north-west/02.webp",
-          "orc_warrior/animations/walk/north-west/03.webp",
-          "orc_warrior/animations/walk/north-west/04.webp",
-          "orc_warrior/animations/walk/north-west/05.webp"
-        ]
-      },
-      "strips": {
-        "south": "orc_warrior/animations/walk__south.webp",
-        "south-east": "orc_warrior/animations/walk__south-east.webp",
-        "east": "orc_warrior/animations/walk__east.webp",
-        "north-east": "orc_warrior/animations/walk__north-east.webp",
-        "north": "orc_warrior/animations/walk__north.webp",
-        "south-west": "orc_warrior/animations/walk__south-west.webp",
-        "west": "orc_warrior/animations/walk__west.webp",
-        "north-west": "orc_warrior/animations/walk__north-west.webp"
-      }
-    },
-    "attack": {
-      "directions": {
-        "south": {
-          "status": "fail",
-          "step_mean": 0.0971,
-          "step_max": 0.1601,
-          "drift": 1.85,
-          "loop": 0.0005,
-          "loop_ratio": 0.0,
-          "travel": 1.86,
-          "pin": 1.0,
-          "pad": 0,
-          "flash": 0.0,
-          "peak": 0.1748,
-          "reach": 0.061,
-          "canvas": [
-            128,
-            128
-          ],
-          "reasons": [
-            "no strike, just a lean: nothing reaches past 0.06 of the body"
-          ],
-          "sub": "75b3efd6-2805-4446-9a8d-720a2f091d93",
-          "group": "20d06827-5500-4119-a0e9-081ea363e8db",
-          "takes": 1,
-          "version": 3,
-          "mirrored": false,
-          "generated_at": "2026-09-09T22:45:09+00:00",
-          "action": "Axe Cleave - Swings the battle axe in one heavy sideways cleave, then returns to idle stance"
-        },
-        "south-east": {
-          "status": "fail",
-          "step_mean": 0.1588,
-          "step_max": 0.2074,
-          "drift": 1.82,
-          "loop": 0.0019,
-          "loop_ratio": 0.01,
-          "travel": 2.12,
-          "pin": 1.0,
-          "pad": 0,
-          "flash": 0.0,
-          "peak": 0.2239,
-          "reach": 0.08,
-          "canvas": [
-            128,
-            128
-          ],
-          "reasons": [
-            "no strike, just a lean: nothing reaches past 0.08 of the body"
-          ],
-          "sub": "79280514-9fa2-457a-af9a-81e41a54c734",
-          "group": "9fa2bbab-7fb7-423e-b144-b848620019a2",
-          "takes": 1,
-          "version": 3,
-          "mirrored": false,
-          "generated_at": "2026-09-09T22:45:10+00:00",
-          "action": "Axe Cleave - Swings the battle axe in one heavy sideways cleave, then returns to idle stance"
-        },
-        "east": {
-          "status": "pass",
-          "step_mean": 0.2024,
-          "step_max": 0.2305,
-          "drift": 8.05,
-          "loop": 0.0,
-          "loop_ratio": 0.0,
-          "travel": 5.37,
-          "pin": 1.0,
-          "pad": 0,
-          "flash": 0.009,
-          "peak": 0.3329,
-          "reach": 0.462,
-          "canvas": [
-            128,
-            128
-          ],
-          "reasons": [],
-          "sub": "057f35ce-99a9-408d-a87c-0461e48a7b16",
-          "group": "2bae7fb3-1ecc-45dd-ab5b-ad9e712c4e34",
-          "takes": 1,
-          "version": 3,
-          "mirrored": false,
-          "generated_at": "2026-09-09T22:45:10+00:00",
-          "action": "Axe Cleave - Swings the battle axe in one heavy sideways cleave, then returns to idle stance"
-        },
-        "north-east": {
-          "status": "warn",
-          "step_mean": 0.1646,
-          "step_max": 0.2541,
-          "drift": 6.14,
-          "loop": 0.0,
-          "loop_ratio": 0.0,
-          "travel": 6.51,
-          "pin": 1.0,
-          "pad": 0,
-          "flash": 0.005,
-          "peak": 0.2429,
-          "reach": 0.28,
-          "canvas": [
-            128,
-            128
-          ],
-          "reasons": [
-            "shallow strike: reach 0.28 — eyeball it"
-          ],
-          "sub": "c8235adb-3184-43bb-ab05-aabbd3549c9d",
-          "group": "ccb23bf5-ff54-453f-a949-f0c9616acaed",
-          "takes": 1,
-          "version": 3,
-          "mirrored": false,
-          "generated_at": "2026-09-09T22:45:11+00:00",
-          "action": "Axe Cleave - Swings the battle axe in one heavy sideways cleave, then returns to idle stance"
-        },
-        "north": {
-          "status": "fail",
-          "step_mean": 0.1519,
-          "step_max": 0.2792,
-          "drift": 3.54,
-          "loop": 0.0,
-          "loop_ratio": 0.0,
-          "travel": 4.15,
-          "pin": 1.0,
-          "pad": 0,
-          "flash": 0.0,
-          "peak": 0.2366,
-          "reach": 0.065,
-          "canvas": [
-            128,
-            128
-          ],
-          "reasons": [
-            "no strike, just a lean: nothing reaches past 0.06 of the body"
-          ],
-          "sub": "58ac9b07-a15b-4553-83d9-bea3163ce47f",
-          "group": "2ba8dafd-2016-4ac8-8a24-0a7b4032d469",
-          "takes": 1,
-          "version": 4,
-          "mirrored": false,
-          "generated_at": "2026-09-09T22:50:22+00:00",
-          "action": "Axe Cleave - Swings the battle axe in one heavy sideways cleave, then returns to idle stance"
-        },
-        "south-west": {
-          "status": "pass",
-          "step_mean": 0.1588,
-          "step_max": 0.2074,
-          "drift": 1.82,
-          "loop": 0.0019,
-          "loop_ratio": 0.01,
-          "travel": 2.12,
-          "pin": 1.0,
-          "pad": 0,
-          "flash": 0.0,
-          "peak": 0.2239,
-          "canvas": [
-            128,
-            128
-          ],
-          "reasons": [],
-          "sub": "79280514-9fa2-457a-af9a-81e41a54c734",
-          "group": "9fa2bbab-7fb7-423e-b144-b848620019a2",
-          "takes": 1,
-          "version": 3,
-          "mirrored": true,
-          "generated_at": "2026-09-09T22:45:10+00:00",
-          "action": "Axe Cleave - Swings the battle axe in one heavy sideways cleave, then returns to idle stance",
-          "source": "south-east"
-        },
-        "west": {
-          "status": "pass",
-          "step_mean": 0.2024,
-          "step_max": 0.2305,
-          "drift": 8.05,
-          "loop": 0.0,
-          "loop_ratio": 0.0,
-          "travel": 5.37,
-          "pin": 1.0,
-          "pad": 0,
-          "flash": 0.009,
-          "peak": 0.3329,
-          "reach": 0.462,
-          "canvas": [
-            128,
-            128
-          ],
-          "reasons": [],
-          "sub": "057f35ce-99a9-408d-a87c-0461e48a7b16",
-          "group": "2bae7fb3-1ecc-45dd-ab5b-ad9e712c4e34",
-          "takes": 1,
-          "version": 3,
-          "mirrored": true,
-          "generated_at": "2026-09-09T22:45:10+00:00",
-          "action": "Axe Cleave - Swings the battle axe in one heavy sideways cleave, then returns to idle stance",
-          "source": "east"
-        },
-        "north-west": {
-          "status": "warn",
-          "step_mean": 0.1646,
-          "step_max": 0.2541,
-          "drift": 6.14,
-          "loop": 0.0,
-          "loop_ratio": 0.0,
-          "travel": 6.51,
-          "pin": 1.0,
-          "pad": 0,
-          "flash": 0.005,
-          "peak": 0.2429,
-          "reach": 0.28,
-          "canvas": [
-            128,
-            128
-          ],
-          "reasons": [
-            "shallow strike: reach 0.28 — eyeball it"
-          ],
-          "sub": "c8235adb-3184-43bb-ab05-aabbd3549c9d",
-          "group": "ccb23bf5-ff54-453f-a949-f0c9616acaed",
-          "takes": 1,
-          "version": 3,
-          "mirrored": true,
-          "generated_at": "2026-09-09T22:45:11+00:00",
-          "action": "Axe Cleave - Swings the battle axe in one heavy sideways cleave, then returns to idle stance",
-          "source": "north-east"
-        }
-      },
-      "action": "Axe Cleave - Swings the battle axe in one heavy sideways cleave, then returns to idle stance",
-      "frame_paths": {
-        "south": [
-          "orc_warrior/animations/attack/south/00.webp",
-          "orc_warrior/animations/attack/south/01.webp",
-          "orc_warrior/animations/attack/south/02.webp",
-          "orc_warrior/animations/attack/south/03.webp",
-          "orc_warrior/animations/attack/south/04.webp"
-        ],
-        "south-east": [
-          "orc_warrior/animations/attack/south-east/00.webp",
-          "orc_warrior/animations/attack/south-east/01.webp",
-          "orc_warrior/animations/attack/south-east/02.webp",
-          "orc_warrior/animations/attack/south-east/03.webp",
-          "orc_warrior/animations/attack/south-east/04.webp"
-        ],
-        "east": [
-          "orc_warrior/animations/attack/east/00.webp",
-          "orc_warrior/animations/attack/east/01.webp",
-          "orc_warrior/animations/attack/east/02.webp",
-          "orc_warrior/animations/attack/east/03.webp",
-          "orc_warrior/animations/attack/east/04.webp"
-        ],
-        "north-east": [
-          "orc_warrior/animations/attack/north-east/00.webp",
-          "orc_warrior/animations/attack/north-east/01.webp",
-          "orc_warrior/animations/attack/north-east/02.webp",
-          "orc_warrior/animations/attack/north-east/03.webp",
-          "orc_warrior/animations/attack/north-east/04.webp"
-        ],
-        "north": [
-          "orc_warrior/animations/attack/north/00.webp",
-          "orc_warrior/animations/attack/north/01.webp",
-          "orc_warrior/animations/attack/north/02.webp",
-          "orc_warrior/animations/attack/north/03.webp",
-          "orc_warrior/animations/attack/north/04.webp"
-        ],
-        "south-west": [
-          "orc_warrior/animations/attack/south-west/00.webp",
-          "orc_warrior/animations/attack/south-west/01.webp",
-          "orc_warrior/animations/attack/south-west/02.webp",
-          "orc_warrior/animations/attack/south-west/03.webp",
-          "orc_warrior/animations/attack/south-west/04.webp"
-        ],
-        "west": [
-          "orc_warrior/animations/attack/west/00.webp",
-          "orc_warrior/animations/attack/west/01.webp",
-          "orc_warrior/animations/attack/west/02.webp",
-          "orc_warrior/animations/attack/west/03.webp",
-          "orc_warrior/animations/attack/west/04.webp"
-        ],
-        "north-west": [
-          "orc_warrior/animations/attack/north-west/00.webp",
-          "orc_warrior/animations/attack/north-west/01.webp",
-          "orc_warrior/animations/attack/north-west/02.webp",
-          "orc_warrior/animations/attack/north-west/03.webp",
-          "orc_warrior/animations/attack/north-west/04.webp"
-        ]
-      },
-      "strips": {
-        "south": "orc_warrior/animations/attack__south.webp",
-        "south-east": "orc_warrior/animations/attack__south-east.webp",
-        "east": "orc_warrior/animations/attack__east.webp",
-        "north-east": "orc_warrior/animations/attack__north-east.webp",
-        "north": "orc_warrior/animations/attack__north.webp",
-        "south-west": "orc_warrior/animations/attack__south-west.webp",
-        "west": "orc_warrior/animations/attack__west.webp",
-        "north-west": "orc_warrior/animations/attack__north-west.webp"
-      }
-    },
-    "attack_try": {
-      "directions": {
-        "south": {
-          "status": "warn",
-          "step_mean": 0.2314,
-          "step_max": 0.3162,
-          "drift": 8.34,
-          "loop": 0.3575,
-          "loop_ratio": 1.54,
-          "travel": 8.75,
-          "pin": 1.0,
-          "pad": 2,
-          "flash": 0.002,
-          "peak": 0.3575,
-          "reach": 0.245,
-          "canvas": [
-            132,
-            132
-          ],
-          "reasons": [
-            "shallow strike: reach 0.24 — eyeball it",
-            "canvas grown by 2 px a side to hold the motion"
-          ],
-          "sub": "3b5f4e2d-49e7-446d-8abd-94925255df62",
-          "group": "150d3528-734f-4088-9c0d-fd068fab662d",
-          "takes": 1,
-          "version": 1,
-          "mirrored": false,
-          "generated_at": "2026-09-10T20:01:56+00:00",
-          "action": "Axe Cleave - Swings the battle axe across in one heavy cleave",
-          "tries": 1,
-          "rolls": 1,
-          "intensity": 0
-        },
-        "south-east": {
-          "status": "pass",
-          "step_mean": 0.1607,
-          "step_max": 0.267,
-          "drift": 5.44,
-          "loop": 0.2845,
-          "loop_ratio": 1.77,
-          "travel": 3.05,
-          "pin": 1.0,
-          "pad": 0,
-          "flash": 0.002,
-          "peak": 0.2845,
-          "reach": 0.322,
-          "canvas": [
-            128,
-            128
-          ],
-          "reasons": [],
-          "sub": "0d0dffab-ce36-4c4a-8285-0310ca63a975",
-          "group": "b9240c3b-0d2e-4bd8-a6f7-70132c15ad0c",
-          "takes": 1,
-          "version": 1,
-          "mirrored": false,
-          "generated_at": "2026-09-10T20:01:57+00:00",
-          "action": "Axe Cleave - Swings the battle axe across in one heavy cleave",
-          "tries": 1,
-          "rolls": 1,
-          "intensity": 0
-        },
-        "east": {
-          "status": "pass",
-          "step_mean": 0.1373,
-          "step_max": 0.3055,
-          "drift": 4.84,
-          "loop": 0.3318,
-          "loop_ratio": 2.42,
-          "travel": 5.3,
-          "pin": 1.0,
-          "pad": 0,
-          "flash": 0.001,
-          "peak": 0.3318,
-          "reach": 0.327,
-          "canvas": [
-            128,
-            128
-          ],
-          "reasons": [],
-          "sub": "e74d2bde-fe5f-4095-9dea-f9d9ff9a2419",
-          "group": "1fd71c38-979a-4a7c-b6f8-7bbc4c350ac0",
-          "takes": 1,
-          "version": 2,
-          "mirrored": false,
-          "generated_at": "2026-09-10T20:29:55+00:00",
-          "action": "Axe Cleave - Swings the battle axe across in one heavy cleave",
-          "tries": 2,
-          "rolls": 2,
-          "intensity": 0
-        },
-        "north-east": {
-          "status": "pass",
-          "step_mean": 0.1066,
-          "step_max": 0.1829,
-          "drift": 6.02,
-          "loop": 0.3094,
-          "loop_ratio": 2.9,
-          "travel": 6.19,
-          "pin": 1.0,
-          "pad": 0,
-          "flash": -0.002,
-          "peak": 0.3094,
-          "reach": 0.32,
-          "canvas": [
-            128,
-            128
-          ],
-          "reasons": [],
-          "sub": "17f57aa6-88e3-4721-8080-2cb7a3b4e622",
-          "group": "9add62c3-cc79-4355-b33d-01ac4be81224",
-          "takes": 1,
-          "version": 1,
-          "mirrored": false,
-          "generated_at": "2026-09-10T20:01:58+00:00",
-          "action": "Axe Cleave - Swings the battle axe across in one heavy cleave",
-          "tries": 1,
-          "rolls": 1,
-          "intensity": 0
-        },
-        "north": {
-          "status": "pass",
-          "step_mean": 0.1436,
-          "step_max": 0.1767,
-          "drift": 6.68,
-          "loop": 0.23,
-          "loop_ratio": 1.6,
-          "travel": 6.68,
-          "pin": 1.0,
-          "pad": 0,
-          "flash": 0.004,
-          "peak": 0.23,
-          "reach": 0.344,
-          "canvas": [
-            128,
-            128
-          ],
-          "reasons": [],
-          "sub": "12d5ceed-4d45-467f-94dc-02d399b295db",
-          "group": "5351a8b5-9883-4a2a-80a8-bf2e3ae2656c",
-          "takes": 1,
-          "version": 1,
-          "mirrored": false,
-          "generated_at": "2026-09-10T20:01:59+00:00",
-          "action": "Axe Cleave - Swings the battle axe across in one heavy cleave",
-          "tries": 1,
-          "rolls": 1,
-          "intensity": 0
-        },
-        "south-west": {
-          "status": "pass",
-          "step_mean": 0.1607,
-          "step_max": 0.267,
-          "drift": 5.44,
-          "loop": 0.2845,
-          "loop_ratio": 1.77,
-          "travel": 3.05,
-          "pin": 1.0,
-          "pad": 0,
-          "flash": 0.002,
-          "peak": 0.2845,
-          "reach": 0.322,
-          "canvas": [
-            128,
-            128
-          ],
-          "reasons": [],
-          "sub": "0d0dffab-ce36-4c4a-8285-0310ca63a975",
-          "group": "b9240c3b-0d2e-4bd8-a6f7-70132c15ad0c",
-          "takes": 1,
-          "version": 1,
-          "mirrored": true,
-          "generated_at": "2026-09-10T20:01:57+00:00",
-          "action": "Axe Cleave - Swings the battle axe across in one heavy cleave",
-          "tries": 1,
-          "rolls": 1,
-          "intensity": 0,
-          "source": "south-east"
-        },
-        "north-west": {
-          "status": "pass",
-          "step_mean": 0.1066,
-          "step_max": 0.1829,
-          "drift": 6.02,
-          "loop": 0.3094,
-          "loop_ratio": 2.9,
-          "travel": 6.19,
-          "pin": 1.0,
-          "pad": 0,
-          "flash": -0.002,
-          "peak": 0.3094,
-          "reach": 0.32,
-          "canvas": [
-            128,
-            128
-          ],
-          "reasons": [],
-          "sub": "17f57aa6-88e3-4721-8080-2cb7a3b4e622",
-          "group": "9add62c3-cc79-4355-b33d-01ac4be81224",
-          "takes": 1,
-          "version": 1,
-          "mirrored": true,
-          "generated_at": "2026-09-10T20:01:58+00:00",
-          "action": "Axe Cleave - Swings the battle axe across in one heavy cleave",
-          "tries": 1,
-          "rolls": 1,
-          "intensity": 0,
-          "source": "north-east"
-        },
-        "west": {
-          "status": "pass",
-          "step_mean": 0.1373,
-          "step_max": 0.3055,
-          "drift": 4.84,
-          "loop": 0.3318,
-          "loop_ratio": 2.42,
-          "travel": 5.3,
-          "pin": 1.0,
-          "pad": 0,
-          "flash": 0.001,
-          "peak": 0.3318,
-          "reach": 0.327,
-          "canvas": [
-            128,
-            128
-          ],
-          "reasons": [],
-          "sub": "e74d2bde-fe5f-4095-9dea-f9d9ff9a2419",
-          "group": "1fd71c38-979a-4a7c-b6f8-7bbc4c350ac0",
-          "takes": 1,
-          "version": 2,
-          "mirrored": true,
-          "generated_at": "2026-09-10T20:29:55+00:00",
-          "action": "Axe Cleave - Swings the battle axe across in one heavy cleave",
-          "tries": 2,
-          "rolls": 2,
-          "intensity": 0,
-          "source": "east"
-        }
-      },
-      "action": "Axe Cleave - Swings the battle axe across in one heavy cleave",
-      "frame_paths": {
-        "south": [
-          "orc_warrior/animations/attack_try/south/00.webp",
-          "orc_warrior/animations/attack_try/south/01.webp",
-          "orc_warrior/animations/attack_try/south/02.webp",
-          "orc_warrior/animations/attack_try/south/03.webp",
-          "orc_warrior/animations/attack_try/south/04.webp"
-        ],
-        "south-east": [
-          "orc_warrior/animations/attack_try/south-east/00.webp",
-          "orc_warrior/animations/attack_try/south-east/01.webp",
-          "orc_warrior/animations/attack_try/south-east/02.webp",
-          "orc_warrior/animations/attack_try/south-east/03.webp",
-          "orc_warrior/animations/attack_try/south-east/04.webp"
-        ],
-        "east": [
-          "orc_warrior/animations/attack_try/east/00.webp",
-          "orc_warrior/animations/attack_try/east/01.webp",
-          "orc_warrior/animations/attack_try/east/02.webp",
-          "orc_warrior/animations/attack_try/east/03.webp",
-          "orc_warrior/animations/attack_try/east/04.webp"
-        ],
-        "north-east": [
-          "orc_warrior/animations/attack_try/north-east/00.webp",
-          "orc_warrior/animations/attack_try/north-east/01.webp",
-          "orc_warrior/animations/attack_try/north-east/02.webp",
-          "orc_warrior/animations/attack_try/north-east/03.webp",
-          "orc_warrior/animations/attack_try/north-east/04.webp"
-        ],
-        "north": [
-          "orc_warrior/animations/attack_try/north/00.webp",
-          "orc_warrior/animations/attack_try/north/01.webp",
-          "orc_warrior/animations/attack_try/north/02.webp",
-          "orc_warrior/animations/attack_try/north/03.webp",
-          "orc_warrior/animations/attack_try/north/04.webp"
-        ],
-        "south-west": [
-          "orc_warrior/animations/attack_try/south-west/00.webp",
-          "orc_warrior/animations/attack_try/south-west/01.webp",
-          "orc_warrior/animations/attack_try/south-west/02.webp",
-          "orc_warrior/animations/attack_try/south-west/03.webp",
-          "orc_warrior/animations/attack_try/south-west/04.webp"
-        ],
-        "north-west": [
-          "orc_warrior/animations/attack_try/north-west/00.webp",
-          "orc_warrior/animations/attack_try/north-west/01.webp",
-          "orc_warrior/animations/attack_try/north-west/02.webp",
-          "orc_warrior/animations/attack_try/north-west/03.webp",
-          "orc_warrior/animations/attack_try/north-west/04.webp"
-        ],
-        "west": [
-          "orc_warrior/animations/attack_try/west/00.webp",
-          "orc_warrior/animations/attack_try/west/01.webp",
-          "orc_warrior/animations/attack_try/west/02.webp",
-          "orc_warrior/animations/attack_try/west/03.webp",
-          "orc_warrior/animations/attack_try/west/04.webp"
-        ]
-      },
-      "strips": {
-        "south": "orc_warrior/animations/attack_try__south.webp",
-        "south-east": "orc_warrior/animations/attack_try__south-east.webp",
-        "east": "orc_warrior/animations/attack_try__east.webp",
-        "north-east": "orc_warrior/animations/attack_try__north-east.webp",
-        "north": "orc_warrior/animations/attack_try__north.webp",
-        "south-west": "orc_warrior/animations/attack_try__south-west.webp",
-        "north-west": "orc_warrior/animations/attack_try__north-west.webp",
-        "west": "orc_warrior/animations/attack_try__west.webp"
-      }
-    }
+ "id": "orc_warrior",
+ "name": "Warmaul",
+ "tier": "evil",
+ "scale": "standard",
+ "lore": "It fights for whoever pays in iron and eats whoever does not. The axe has a name; it will not say it.",
+ "biome": [
+  "grass",
+  "grey_stone"
+ ],
+ "items": [],
+ "prompt": "Orc warrior shown full body from head to feet, realistic proportions, grey-green skin over heavy muscle, a jutting jaw with lower tusks, small red eyes under a heavy brow, crude iron shoulder plates and a hide kilt, and a notched battle axe held low at its side.",
+ "size": [
+  128,
+  128
+ ],
+ "template_id": "mannequin",
+ "directions": [
+  "south",
+  "south-east",
+  "east",
+  "north-east",
+  "north",
+  "north-west",
+  "west",
+  "south-west"
+ ],
+ "rotations": {
+  "south": "orc_warrior/rotations/south.webp",
+  "south-east": "orc_warrior/rotations/south-east.webp",
+  "east": "orc_warrior/rotations/east.webp",
+  "north-east": "orc_warrior/rotations/north-east.webp",
+  "north": "orc_warrior/rotations/north.webp",
+  "north-west": "orc_warrior/rotations/north-west.webp",
+  "west": "orc_warrior/rotations/west.webp",
+  "south-west": "orc_warrior/rotations/south-west.webp"
+ },
+ "sheet": "orc_warrior/sheet.webp",
+ "review": "approved",
+ "pixellab_id": "d7067157-1e5b-409e-bb72-651036edd596",
+ "seed": 1111390603,
+ "version": 2,
+ "usage": null,
+ "generated_at": "2026-09-09T19:08:50+00:00",
+ "elapsed_s": 166.2,
+ "qa": {
+  "status": "pass",
+  "min_run1": 0.701,
+  "reasons": [],
+  "directions": {
+   "south": {
+    "run1": 0.701,
+    "bbox": [
+     15,
+     6,
+     113,
+     122
+    ],
+    "fill": 0.694,
+    "touches_edge": false
+   },
+   "south-east": {
+    "run1": 0.812,
+    "bbox": [
+     26,
+     7,
+     113,
+     123
+    ],
+    "fill": 0.616,
+    "touches_edge": false
+   },
+   "east": {
+    "run1": 0.804,
+    "bbox": [
+     42,
+     6,
+     94,
+     122
+    ],
+    "fill": 0.368,
+    "touches_edge": false
+   },
+   "north-east": {
+    "run1": 0.77,
+    "bbox": [
+     21,
+     5,
+     96,
+     121
+    ],
+    "fill": 0.531,
+    "touches_edge": false
+   },
+   "north": {
+    "run1": 0.765,
+    "bbox": [
+     10,
+     6,
+     103,
+     120
+    ],
+    "fill": 0.647,
+    "touches_edge": false
+   },
+   "north-west": {
+    "run1": 0.766,
+    "bbox": [
+     15,
+     5,
+     94,
+     121
+    ],
+    "fill": 0.559,
+    "touches_edge": false
+   },
+   "west": {
+    "run1": 0.796,
+    "bbox": [
+     41,
+     6,
+     80,
+     121
+    ],
+    "fill": 0.274,
+    "touches_edge": false
+   },
+   "south-west": {
+    "run1": 0.806,
+    "bbox": [
+     23,
+     7,
+     95,
+     123
+    ],
+    "fill": 0.51,
+    "touches_edge": false
+   }
   }
+ },
+ "approved_at": "2026-09-09T19:59:26+00:00",
+ "animations": {
+  "idle": {
+   "directions": {
+    "south": {
+     "status": "pass",
+     "step_mean": 0.0558,
+     "step_max": 0.0701,
+     "drift": 0.73,
+     "loop": 0.0003,
+     "pin": 1.0,
+     "reasons": [],
+     "sub": "00f923f6-952b-47aa-bd0a-5a08c22fb7b8",
+     "takes": 1,
+     "version": 1,
+     "mirrored": false,
+     "generated_at": "2026-09-09T20:24:07+00:00",
+     "cut": 0
+    },
+    "south-east": {
+     "status": "pass",
+     "step_mean": 0.0127,
+     "step_max": 0.0222,
+     "drift": 0.22,
+     "loop": 0.002,
+     "pin": 1.0,
+     "reasons": [],
+     "sub": "6c4c310f-cc12-4f82-9500-285eaa70cab7",
+     "takes": 1,
+     "version": 1,
+     "mirrored": false,
+     "generated_at": "2026-09-09T20:24:07+00:00",
+     "cut": 0
+    },
+    "east": {
+     "status": "pass",
+     "step_mean": 0.0654,
+     "step_max": 0.1147,
+     "drift": 1.17,
+     "loop": 0.0,
+     "pin": 1.0,
+     "reasons": [],
+     "sub": "71569607-093a-4f14-9b5c-e4bcd7ae837c",
+     "takes": 1,
+     "version": 1,
+     "mirrored": false,
+     "generated_at": "2026-09-09T20:24:08+00:00",
+     "cut": 0
+    },
+    "north-east": {
+     "status": "pass",
+     "step_mean": 0.0728,
+     "step_max": 0.1017,
+     "drift": 1.03,
+     "loop": 0.0,
+     "pin": 1.0,
+     "reasons": [],
+     "sub": "09d33f48-b390-4262-886a-ec64318b371c",
+     "takes": 1,
+     "version": 1,
+     "mirrored": false,
+     "generated_at": "2026-09-09T20:24:09+00:00",
+     "cut": 0
+    },
+    "north": {
+     "status": "pass",
+     "step_mean": 0.0373,
+     "step_max": 0.0728,
+     "drift": 0.53,
+     "loop": 0.0,
+     "pin": 1.0,
+     "reasons": [],
+     "sub": "b82e61e1-6ebb-4d8a-ad60-cb27998139e6",
+     "takes": 1,
+     "version": 1,
+     "mirrored": false,
+     "generated_at": "2026-09-09T20:24:10+00:00",
+     "cut": 0
+    },
+    "south-west": {
+     "status": "pass",
+     "step_mean": 0.0127,
+     "step_max": 0.0222,
+     "drift": 0.22,
+     "loop": 0.002,
+     "pin": 1.0,
+     "reasons": [],
+     "sub": "6c4c310f-cc12-4f82-9500-285eaa70cab7",
+     "takes": 1,
+     "version": 1,
+     "mirrored": true,
+     "generated_at": "2026-09-09T20:24:07+00:00",
+     "cut": 0,
+     "source": "south-east"
+    },
+    "west": {
+     "status": "pass",
+     "step_mean": 0.0654,
+     "step_max": 0.1147,
+     "drift": 1.17,
+     "loop": 0.0,
+     "pin": 1.0,
+     "reasons": [],
+     "sub": "71569607-093a-4f14-9b5c-e4bcd7ae837c",
+     "takes": 1,
+     "version": 1,
+     "mirrored": true,
+     "generated_at": "2026-09-09T20:24:08+00:00",
+     "cut": 0,
+     "source": "east"
+    },
+    "north-west": {
+     "status": "pass",
+     "step_mean": 0.0728,
+     "step_max": 0.1017,
+     "drift": 1.03,
+     "loop": 0.0,
+     "pin": 1.0,
+     "reasons": [],
+     "sub": "09d33f48-b390-4262-886a-ec64318b371c",
+     "takes": 1,
+     "version": 1,
+     "mirrored": true,
+     "generated_at": "2026-09-09T20:24:09+00:00",
+     "cut": 0,
+     "source": "north-east"
+    }
+   },
+   "action": "Calm still idle, breathing very slowly and subtly, chest and shoulders rise and fall a little, feet planted, no other movement, ends in the same neutral pose it started in",
+   "frame_paths": {
+    "south": [
+     "orc_warrior/animations/idle/south/00.webp",
+     "orc_warrior/animations/idle/south/01.webp",
+     "orc_warrior/animations/idle/south/02.webp",
+     "orc_warrior/animations/idle/south/03.webp",
+     "orc_warrior/animations/idle/south/04.webp"
+    ],
+    "south-east": [
+     "orc_warrior/animations/idle/south-east/00.webp",
+     "orc_warrior/animations/idle/south-east/01.webp",
+     "orc_warrior/animations/idle/south-east/02.webp",
+     "orc_warrior/animations/idle/south-east/03.webp",
+     "orc_warrior/animations/idle/south-east/04.webp"
+    ],
+    "east": [
+     "orc_warrior/animations/idle/east/00.webp",
+     "orc_warrior/animations/idle/east/01.webp",
+     "orc_warrior/animations/idle/east/02.webp",
+     "orc_warrior/animations/idle/east/03.webp",
+     "orc_warrior/animations/idle/east/04.webp"
+    ],
+    "north-east": [
+     "orc_warrior/animations/idle/north-east/00.webp",
+     "orc_warrior/animations/idle/north-east/01.webp",
+     "orc_warrior/animations/idle/north-east/02.webp",
+     "orc_warrior/animations/idle/north-east/03.webp",
+     "orc_warrior/animations/idle/north-east/04.webp"
+    ],
+    "north": [
+     "orc_warrior/animations/idle/north/00.webp",
+     "orc_warrior/animations/idle/north/01.webp",
+     "orc_warrior/animations/idle/north/02.webp",
+     "orc_warrior/animations/idle/north/03.webp",
+     "orc_warrior/animations/idle/north/04.webp"
+    ],
+    "south-west": [
+     "orc_warrior/animations/idle/south-west/00.webp",
+     "orc_warrior/animations/idle/south-west/01.webp",
+     "orc_warrior/animations/idle/south-west/02.webp",
+     "orc_warrior/animations/idle/south-west/03.webp",
+     "orc_warrior/animations/idle/south-west/04.webp"
+    ],
+    "west": [
+     "orc_warrior/animations/idle/west/00.webp",
+     "orc_warrior/animations/idle/west/01.webp",
+     "orc_warrior/animations/idle/west/02.webp",
+     "orc_warrior/animations/idle/west/03.webp",
+     "orc_warrior/animations/idle/west/04.webp"
+    ],
+    "north-west": [
+     "orc_warrior/animations/idle/north-west/00.webp",
+     "orc_warrior/animations/idle/north-west/01.webp",
+     "orc_warrior/animations/idle/north-west/02.webp",
+     "orc_warrior/animations/idle/north-west/03.webp",
+     "orc_warrior/animations/idle/north-west/04.webp"
+    ]
+   },
+   "strips": {
+    "south": "orc_warrior/animations/idle__south.webp",
+    "south-east": "orc_warrior/animations/idle__south-east.webp",
+    "east": "orc_warrior/animations/idle__east.webp",
+    "north-east": "orc_warrior/animations/idle__north-east.webp",
+    "north": "orc_warrior/animations/idle__north.webp",
+    "south-west": "orc_warrior/animations/idle__south-west.webp",
+    "west": "orc_warrior/animations/idle__west.webp",
+    "north-west": "orc_warrior/animations/idle__north-west.webp"
+   }
+  },
+  "walk": {
+   "directions": {
+    "south": {
+     "status": "warn",
+     "step_mean": 0.1473,
+     "step_max": 0.1917,
+     "drift": 6.4,
+     "loop": 0.3291,
+     "loop_ratio": 2.23,
+     "travel": 2.12,
+     "pin": 0.863,
+     "pad": 0,
+     "canvas": [
+      128,
+      128
+     ],
+     "reasons": [
+      "drifts 6.4 px — eyeball it",
+      "last→first hand-off 2.2× a step — eyeball the loop"
+     ],
+     "sub": "534b9722-71ac-47f9-a9cc-068bcdb89aa9",
+     "group": "f2699cd5-da1b-428e-83af-58132f904a7a",
+     "takes": 1,
+     "version": 1,
+     "mirrored": false,
+     "generated_at": "2026-09-09T21:17:01+00:00"
+    },
+    "south-east": {
+     "status": "warn",
+     "step_mean": 0.1791,
+     "step_max": 0.2097,
+     "drift": 2.05,
+     "loop": 0.3727,
+     "loop_ratio": 2.08,
+     "travel": 1.43,
+     "pin": 0.859,
+     "pad": 0,
+     "canvas": [
+      128,
+      128
+     ],
+     "reasons": [
+      "last→first hand-off 2.1× a step — eyeball the loop"
+     ],
+     "sub": "ab9cab4b-2db5-41d0-8248-ccc3217f6efd",
+     "group": "020dd113-e516-42d0-89fb-10a9fbe9690d",
+     "takes": 1,
+     "version": 1,
+     "mirrored": false,
+     "generated_at": "2026-09-09T21:17:01+00:00"
+    },
+    "east": {
+     "status": "warn",
+     "step_mean": 0.2329,
+     "step_max": 0.3639,
+     "drift": 2.24,
+     "loop": 0.467,
+     "loop_ratio": 2.01,
+     "travel": 2.15,
+     "pin": 0.818,
+     "pad": 0,
+     "canvas": [
+      128,
+      128
+     ],
+     "reasons": [
+      "last→first hand-off 2.0× a step — eyeball the loop"
+     ],
+     "sub": "1c13d536-09e0-4e39-8d96-ec99cb032ff1",
+     "group": "72e8851e-f4a4-4e7b-b161-3a7fff417a48",
+     "takes": 1,
+     "version": 1,
+     "mirrored": false,
+     "generated_at": "2026-09-09T21:17:02+00:00"
+    },
+    "north-east": {
+     "status": "pass",
+     "step_mean": 0.1861,
+     "step_max": 0.2353,
+     "drift": 1.72,
+     "loop": 0.2245,
+     "loop_ratio": 1.21,
+     "travel": 1.65,
+     "pin": 0.816,
+     "pad": 0,
+     "canvas": [
+      128,
+      128
+     ],
+     "reasons": [],
+     "sub": "8c669de1-b0fd-478a-a483-9687b4491ebf",
+     "group": "24c1d456-ffda-4a1c-a790-f5e802dd7f94",
+     "takes": 1,
+     "version": 1,
+     "mirrored": false,
+     "generated_at": "2026-09-09T21:17:03+00:00"
+    },
+    "north": {
+     "status": "warn",
+     "step_mean": 0.0998,
+     "step_max": 0.1171,
+     "drift": 1.56,
+     "loop": 0.2429,
+     "loop_ratio": 2.43,
+     "travel": 1.63,
+     "pin": 0.863,
+     "pad": 0,
+     "canvas": [
+      128,
+      128
+     ],
+     "reasons": [
+      "motion 0.100 outside the calm band 0.1–0.4 — eyeball it",
+      "last→first hand-off 2.4× a step — eyeball the loop"
+     ],
+     "sub": "c0d68b9e-cdd0-4065-a4f9-8920d3f72802",
+     "group": "5ed49f20-3d39-4071-9855-bb560ec88be5",
+     "takes": 1,
+     "version": 1,
+     "mirrored": false,
+     "generated_at": "2026-09-09T21:17:04+00:00"
+    },
+    "south-west": {
+     "status": "warn",
+     "step_mean": 0.1791,
+     "step_max": 0.2097,
+     "drift": 2.05,
+     "loop": 0.3727,
+     "loop_ratio": 2.08,
+     "travel": 1.43,
+     "pin": 0.859,
+     "pad": 0,
+     "canvas": [
+      128,
+      128
+     ],
+     "reasons": [
+      "last→first hand-off 2.1× a step — eyeball the loop"
+     ],
+     "sub": "ab9cab4b-2db5-41d0-8248-ccc3217f6efd",
+     "group": "020dd113-e516-42d0-89fb-10a9fbe9690d",
+     "takes": 1,
+     "version": 1,
+     "mirrored": true,
+     "generated_at": "2026-09-09T21:17:01+00:00",
+     "source": "south-east"
+    },
+    "west": {
+     "status": "warn",
+     "step_mean": 0.2329,
+     "step_max": 0.3639,
+     "drift": 2.24,
+     "loop": 0.467,
+     "loop_ratio": 2.01,
+     "travel": 2.15,
+     "pin": 0.818,
+     "pad": 0,
+     "canvas": [
+      128,
+      128
+     ],
+     "reasons": [
+      "last→first hand-off 2.0× a step — eyeball the loop"
+     ],
+     "sub": "1c13d536-09e0-4e39-8d96-ec99cb032ff1",
+     "group": "72e8851e-f4a4-4e7b-b161-3a7fff417a48",
+     "takes": 1,
+     "version": 1,
+     "mirrored": true,
+     "generated_at": "2026-09-09T21:17:02+00:00",
+     "source": "east"
+    },
+    "north-west": {
+     "status": "pass",
+     "step_mean": 0.1861,
+     "step_max": 0.2353,
+     "drift": 1.72,
+     "loop": 0.2245,
+     "loop_ratio": 1.21,
+     "travel": 1.65,
+     "pin": 0.816,
+     "pad": 0,
+     "canvas": [
+      128,
+      128
+     ],
+     "reasons": [],
+     "sub": "8c669de1-b0fd-478a-a483-9687b4491ebf",
+     "group": "24c1d456-ffda-4a1c-a790-f5e802dd7f94",
+     "takes": 1,
+     "version": 1,
+     "mirrored": true,
+     "generated_at": "2026-09-09T21:17:03+00:00",
+     "source": "north-east"
+    }
+   },
+   "action": "walk loop, full walk cycle in place, legs alternate naturally, normal calm walking pace, body stays centered, seamless loop whose last frame leads straight back into the first, no turning",
+   "frame_paths": {
+    "south": [
+     "orc_warrior/animations/walk/south/00.webp",
+     "orc_warrior/animations/walk/south/01.webp",
+     "orc_warrior/animations/walk/south/02.webp",
+     "orc_warrior/animations/walk/south/03.webp",
+     "orc_warrior/animations/walk/south/04.webp",
+     "orc_warrior/animations/walk/south/05.webp"
+    ],
+    "south-east": [
+     "orc_warrior/animations/walk/south-east/00.webp",
+     "orc_warrior/animations/walk/south-east/01.webp",
+     "orc_warrior/animations/walk/south-east/02.webp",
+     "orc_warrior/animations/walk/south-east/03.webp",
+     "orc_warrior/animations/walk/south-east/04.webp",
+     "orc_warrior/animations/walk/south-east/05.webp"
+    ],
+    "east": [
+     "orc_warrior/animations/walk/east/00.webp",
+     "orc_warrior/animations/walk/east/01.webp",
+     "orc_warrior/animations/walk/east/02.webp",
+     "orc_warrior/animations/walk/east/03.webp",
+     "orc_warrior/animations/walk/east/04.webp",
+     "orc_warrior/animations/walk/east/05.webp"
+    ],
+    "north-east": [
+     "orc_warrior/animations/walk/north-east/00.webp",
+     "orc_warrior/animations/walk/north-east/01.webp",
+     "orc_warrior/animations/walk/north-east/02.webp",
+     "orc_warrior/animations/walk/north-east/03.webp",
+     "orc_warrior/animations/walk/north-east/04.webp",
+     "orc_warrior/animations/walk/north-east/05.webp"
+    ],
+    "north": [
+     "orc_warrior/animations/walk/north/00.webp",
+     "orc_warrior/animations/walk/north/01.webp",
+     "orc_warrior/animations/walk/north/02.webp",
+     "orc_warrior/animations/walk/north/03.webp",
+     "orc_warrior/animations/walk/north/04.webp",
+     "orc_warrior/animations/walk/north/05.webp"
+    ],
+    "south-west": [
+     "orc_warrior/animations/walk/south-west/00.webp",
+     "orc_warrior/animations/walk/south-west/01.webp",
+     "orc_warrior/animations/walk/south-west/02.webp",
+     "orc_warrior/animations/walk/south-west/03.webp",
+     "orc_warrior/animations/walk/south-west/04.webp",
+     "orc_warrior/animations/walk/south-west/05.webp"
+    ],
+    "west": [
+     "orc_warrior/animations/walk/west/00.webp",
+     "orc_warrior/animations/walk/west/01.webp",
+     "orc_warrior/animations/walk/west/02.webp",
+     "orc_warrior/animations/walk/west/03.webp",
+     "orc_warrior/animations/walk/west/04.webp",
+     "orc_warrior/animations/walk/west/05.webp"
+    ],
+    "north-west": [
+     "orc_warrior/animations/walk/north-west/00.webp",
+     "orc_warrior/animations/walk/north-west/01.webp",
+     "orc_warrior/animations/walk/north-west/02.webp",
+     "orc_warrior/animations/walk/north-west/03.webp",
+     "orc_warrior/animations/walk/north-west/04.webp",
+     "orc_warrior/animations/walk/north-west/05.webp"
+    ]
+   },
+   "strips": {
+    "south": "orc_warrior/animations/walk__south.webp",
+    "south-east": "orc_warrior/animations/walk__south-east.webp",
+    "east": "orc_warrior/animations/walk__east.webp",
+    "north-east": "orc_warrior/animations/walk__north-east.webp",
+    "north": "orc_warrior/animations/walk__north.webp",
+    "south-west": "orc_warrior/animations/walk__south-west.webp",
+    "west": "orc_warrior/animations/walk__west.webp",
+    "north-west": "orc_warrior/animations/walk__north-west.webp"
+   }
+  },
+  "attack": {
+   "directions": {
+    "south": {
+     "status": "fail",
+     "step_mean": 0.0971,
+     "step_max": 0.1601,
+     "drift": 1.85,
+     "loop": 0.0005,
+     "loop_ratio": 0.0,
+     "travel": 1.86,
+     "pin": 1.0,
+     "pad": 0,
+     "flash": 0.0,
+     "peak": 0.1748,
+     "reach": 0.061,
+     "canvas": [
+      128,
+      128
+     ],
+     "reasons": [
+      "no strike, just a lean: nothing reaches past 0.06 of the body"
+     ],
+     "sub": "75b3efd6-2805-4446-9a8d-720a2f091d93",
+     "group": "20d06827-5500-4119-a0e9-081ea363e8db",
+     "takes": 1,
+     "version": 3,
+     "mirrored": false,
+     "generated_at": "2026-09-09T22:45:09+00:00",
+     "action": "Axe Cleave - Swings the battle axe in one heavy sideways cleave, then returns to idle stance"
+    },
+    "south-east": {
+     "status": "fail",
+     "step_mean": 0.1588,
+     "step_max": 0.2074,
+     "drift": 1.82,
+     "loop": 0.0019,
+     "loop_ratio": 0.01,
+     "travel": 2.12,
+     "pin": 1.0,
+     "pad": 0,
+     "flash": 0.0,
+     "peak": 0.2239,
+     "reach": 0.08,
+     "canvas": [
+      128,
+      128
+     ],
+     "reasons": [
+      "no strike, just a lean: nothing reaches past 0.08 of the body"
+     ],
+     "sub": "79280514-9fa2-457a-af9a-81e41a54c734",
+     "group": "9fa2bbab-7fb7-423e-b144-b848620019a2",
+     "takes": 1,
+     "version": 3,
+     "mirrored": false,
+     "generated_at": "2026-09-09T22:45:10+00:00",
+     "action": "Axe Cleave - Swings the battle axe in one heavy sideways cleave, then returns to idle stance"
+    },
+    "east": {
+     "status": "pass",
+     "step_mean": 0.2024,
+     "step_max": 0.2305,
+     "drift": 8.05,
+     "loop": 0.0,
+     "loop_ratio": 0.0,
+     "travel": 5.37,
+     "pin": 1.0,
+     "pad": 0,
+     "flash": 0.009,
+     "peak": 0.3329,
+     "reach": 0.462,
+     "canvas": [
+      128,
+      128
+     ],
+     "reasons": [],
+     "sub": "057f35ce-99a9-408d-a87c-0461e48a7b16",
+     "group": "2bae7fb3-1ecc-45dd-ab5b-ad9e712c4e34",
+     "takes": 1,
+     "version": 3,
+     "mirrored": false,
+     "generated_at": "2026-09-09T22:45:10+00:00",
+     "action": "Axe Cleave - Swings the battle axe in one heavy sideways cleave, then returns to idle stance"
+    },
+    "north-east": {
+     "status": "warn",
+     "step_mean": 0.1646,
+     "step_max": 0.2541,
+     "drift": 6.14,
+     "loop": 0.0,
+     "loop_ratio": 0.0,
+     "travel": 6.51,
+     "pin": 1.0,
+     "pad": 0,
+     "flash": 0.005,
+     "peak": 0.2429,
+     "reach": 0.28,
+     "canvas": [
+      128,
+      128
+     ],
+     "reasons": [
+      "shallow strike: reach 0.28 — eyeball it"
+     ],
+     "sub": "c8235adb-3184-43bb-ab05-aabbd3549c9d",
+     "group": "ccb23bf5-ff54-453f-a949-f0c9616acaed",
+     "takes": 1,
+     "version": 3,
+     "mirrored": false,
+     "generated_at": "2026-09-09T22:45:11+00:00",
+     "action": "Axe Cleave - Swings the battle axe in one heavy sideways cleave, then returns to idle stance"
+    },
+    "north": {
+     "status": "fail",
+     "step_mean": 0.1519,
+     "step_max": 0.2792,
+     "drift": 3.54,
+     "loop": 0.0,
+     "loop_ratio": 0.0,
+     "travel": 4.15,
+     "pin": 1.0,
+     "pad": 0,
+     "flash": 0.0,
+     "peak": 0.2366,
+     "reach": 0.065,
+     "canvas": [
+      128,
+      128
+     ],
+     "reasons": [
+      "no strike, just a lean: nothing reaches past 0.06 of the body"
+     ],
+     "sub": "58ac9b07-a15b-4553-83d9-bea3163ce47f",
+     "group": "2ba8dafd-2016-4ac8-8a24-0a7b4032d469",
+     "takes": 1,
+     "version": 4,
+     "mirrored": false,
+     "generated_at": "2026-09-09T22:50:22+00:00",
+     "action": "Axe Cleave - Swings the battle axe in one heavy sideways cleave, then returns to idle stance"
+    },
+    "south-west": {
+     "status": "pass",
+     "step_mean": 0.1588,
+     "step_max": 0.2074,
+     "drift": 1.82,
+     "loop": 0.0019,
+     "loop_ratio": 0.01,
+     "travel": 2.12,
+     "pin": 1.0,
+     "pad": 0,
+     "flash": 0.0,
+     "peak": 0.2239,
+     "canvas": [
+      128,
+      128
+     ],
+     "reasons": [],
+     "sub": "79280514-9fa2-457a-af9a-81e41a54c734",
+     "group": "9fa2bbab-7fb7-423e-b144-b848620019a2",
+     "takes": 1,
+     "version": 3,
+     "mirrored": true,
+     "generated_at": "2026-09-09T22:45:10+00:00",
+     "action": "Axe Cleave - Swings the battle axe in one heavy sideways cleave, then returns to idle stance",
+     "source": "south-east"
+    },
+    "west": {
+     "status": "pass",
+     "step_mean": 0.2024,
+     "step_max": 0.2305,
+     "drift": 8.05,
+     "loop": 0.0,
+     "loop_ratio": 0.0,
+     "travel": 5.37,
+     "pin": 1.0,
+     "pad": 0,
+     "flash": 0.009,
+     "peak": 0.3329,
+     "reach": 0.462,
+     "canvas": [
+      128,
+      128
+     ],
+     "reasons": [],
+     "sub": "057f35ce-99a9-408d-a87c-0461e48a7b16",
+     "group": "2bae7fb3-1ecc-45dd-ab5b-ad9e712c4e34",
+     "takes": 1,
+     "version": 3,
+     "mirrored": true,
+     "generated_at": "2026-09-09T22:45:10+00:00",
+     "action": "Axe Cleave - Swings the battle axe in one heavy sideways cleave, then returns to idle stance",
+     "source": "east"
+    },
+    "north-west": {
+     "status": "warn",
+     "step_mean": 0.1646,
+     "step_max": 0.2541,
+     "drift": 6.14,
+     "loop": 0.0,
+     "loop_ratio": 0.0,
+     "travel": 6.51,
+     "pin": 1.0,
+     "pad": 0,
+     "flash": 0.005,
+     "peak": 0.2429,
+     "reach": 0.28,
+     "canvas": [
+      128,
+      128
+     ],
+     "reasons": [
+      "shallow strike: reach 0.28 — eyeball it"
+     ],
+     "sub": "c8235adb-3184-43bb-ab05-aabbd3549c9d",
+     "group": "ccb23bf5-ff54-453f-a949-f0c9616acaed",
+     "takes": 1,
+     "version": 3,
+     "mirrored": true,
+     "generated_at": "2026-09-09T22:45:11+00:00",
+     "action": "Axe Cleave - Swings the battle axe in one heavy sideways cleave, then returns to idle stance",
+     "source": "north-east"
+    }
+   },
+   "action": "Axe Cleave - Swings the battle axe in one heavy sideways cleave, then returns to idle stance",
+   "frame_paths": {
+    "south": [
+     "orc_warrior/animations/attack/south/00.webp",
+     "orc_warrior/animations/attack/south/01.webp",
+     "orc_warrior/animations/attack/south/02.webp",
+     "orc_warrior/animations/attack/south/03.webp",
+     "orc_warrior/animations/attack/south/04.webp"
+    ],
+    "south-east": [
+     "orc_warrior/animations/attack/south-east/00.webp",
+     "orc_warrior/animations/attack/south-east/01.webp",
+     "orc_warrior/animations/attack/south-east/02.webp",
+     "orc_warrior/animations/attack/south-east/03.webp",
+     "orc_warrior/animations/attack/south-east/04.webp"
+    ],
+    "east": [
+     "orc_warrior/animations/attack/east/00.webp",
+     "orc_warrior/animations/attack/east/01.webp",
+     "orc_warrior/animations/attack/east/02.webp",
+     "orc_warrior/animations/attack/east/03.webp",
+     "orc_warrior/animations/attack/east/04.webp"
+    ],
+    "north-east": [
+     "orc_warrior/animations/attack/north-east/00.webp",
+     "orc_warrior/animations/attack/north-east/01.webp",
+     "orc_warrior/animations/attack/north-east/02.webp",
+     "orc_warrior/animations/attack/north-east/03.webp",
+     "orc_warrior/animations/attack/north-east/04.webp"
+    ],
+    "north": [
+     "orc_warrior/animations/attack/north/00.webp",
+     "orc_warrior/animations/attack/north/01.webp",
+     "orc_warrior/animations/attack/north/02.webp",
+     "orc_warrior/animations/attack/north/03.webp",
+     "orc_warrior/animations/attack/north/04.webp"
+    ],
+    "south-west": [
+     "orc_warrior/animations/attack/south-west/00.webp",
+     "orc_warrior/animations/attack/south-west/01.webp",
+     "orc_warrior/animations/attack/south-west/02.webp",
+     "orc_warrior/animations/attack/south-west/03.webp",
+     "orc_warrior/animations/attack/south-west/04.webp"
+    ],
+    "west": [
+     "orc_warrior/animations/attack/west/00.webp",
+     "orc_warrior/animations/attack/west/01.webp",
+     "orc_warrior/animations/attack/west/02.webp",
+     "orc_warrior/animations/attack/west/03.webp",
+     "orc_warrior/animations/attack/west/04.webp"
+    ],
+    "north-west": [
+     "orc_warrior/animations/attack/north-west/00.webp",
+     "orc_warrior/animations/attack/north-west/01.webp",
+     "orc_warrior/animations/attack/north-west/02.webp",
+     "orc_warrior/animations/attack/north-west/03.webp",
+     "orc_warrior/animations/attack/north-west/04.webp"
+    ]
+   },
+   "strips": {
+    "south": "orc_warrior/animations/attack__south.webp",
+    "south-east": "orc_warrior/animations/attack__south-east.webp",
+    "east": "orc_warrior/animations/attack__east.webp",
+    "north-east": "orc_warrior/animations/attack__north-east.webp",
+    "north": "orc_warrior/animations/attack__north.webp",
+    "south-west": "orc_warrior/animations/attack__south-west.webp",
+    "west": "orc_warrior/animations/attack__west.webp",
+    "north-west": "orc_warrior/animations/attack__north-west.webp"
+   }
+  },
+  "attack_try": {
+   "directions": {
+    "south": {
+     "status": "warn",
+     "step_mean": 0.2314,
+     "step_max": 0.3162,
+     "drift": 8.34,
+     "loop": 0.3575,
+     "loop_ratio": 1.54,
+     "travel": 8.75,
+     "pin": 1.0,
+     "pad": 2,
+     "flash": 0.002,
+     "peak": 0.3575,
+     "reach": 0.245,
+     "canvas": [
+      132,
+      132
+     ],
+     "reasons": [
+      "shallow strike: reach 0.24 — eyeball it",
+      "canvas grown by 2 px a side to hold the motion"
+     ],
+     "sub": "3b5f4e2d-49e7-446d-8abd-94925255df62",
+     "group": "150d3528-734f-4088-9c0d-fd068fab662d",
+     "takes": 1,
+     "version": 1,
+     "mirrored": false,
+     "generated_at": "2026-09-10T20:01:56+00:00",
+     "action": "Axe Cleave - Swings the battle axe across in one heavy cleave",
+     "tries": 1,
+     "rolls": 1,
+     "intensity": 0,
+     "rung": 0
+    },
+    "south-east": {
+     "status": "pass",
+     "step_mean": 0.1607,
+     "step_max": 0.267,
+     "drift": 5.44,
+     "loop": 0.2845,
+     "loop_ratio": 1.77,
+     "travel": 3.05,
+     "pin": 1.0,
+     "pad": 0,
+     "flash": 0.002,
+     "peak": 0.2845,
+     "reach": 0.322,
+     "canvas": [
+      128,
+      128
+     ],
+     "reasons": [],
+     "sub": "0d0dffab-ce36-4c4a-8285-0310ca63a975",
+     "group": "b9240c3b-0d2e-4bd8-a6f7-70132c15ad0c",
+     "takes": 1,
+     "version": 1,
+     "mirrored": false,
+     "generated_at": "2026-09-10T20:01:57+00:00",
+     "action": "Axe Cleave - Swings the battle axe across in one heavy cleave",
+     "tries": 1,
+     "rolls": 1,
+     "intensity": 0,
+     "rung": 0
+    },
+    "east": {
+     "status": "pass",
+     "step_mean": 0.1373,
+     "step_max": 0.3055,
+     "drift": 4.84,
+     "loop": 0.3318,
+     "loop_ratio": 2.42,
+     "travel": 5.3,
+     "pin": 1.0,
+     "pad": 0,
+     "flash": 0.001,
+     "peak": 0.3318,
+     "reach": 0.327,
+     "canvas": [
+      128,
+      128
+     ],
+     "reasons": [],
+     "sub": "e74d2bde-fe5f-4095-9dea-f9d9ff9a2419",
+     "group": "1fd71c38-979a-4a7c-b6f8-7bbc4c350ac0",
+     "takes": 1,
+     "version": 2,
+     "mirrored": false,
+     "generated_at": "2026-09-10T20:29:55+00:00",
+     "action": "Axe Cleave - Swings the battle axe across in one heavy cleave",
+     "tries": 2,
+     "rolls": 2,
+     "intensity": 0,
+     "rung": 0
+    },
+    "north-east": {
+     "status": "pass",
+     "step_mean": 0.1066,
+     "step_max": 0.1829,
+     "drift": 6.02,
+     "loop": 0.3094,
+     "loop_ratio": 2.9,
+     "travel": 6.19,
+     "pin": 1.0,
+     "pad": 0,
+     "flash": -0.002,
+     "peak": 0.3094,
+     "reach": 0.32,
+     "canvas": [
+      128,
+      128
+     ],
+     "reasons": [],
+     "sub": "17f57aa6-88e3-4721-8080-2cb7a3b4e622",
+     "group": "9add62c3-cc79-4355-b33d-01ac4be81224",
+     "takes": 1,
+     "version": 1,
+     "mirrored": false,
+     "generated_at": "2026-09-10T20:01:58+00:00",
+     "action": "Axe Cleave - Swings the battle axe across in one heavy cleave",
+     "tries": 1,
+     "rolls": 1,
+     "intensity": 0,
+     "rung": 0
+    },
+    "north": {
+     "status": "pass",
+     "step_mean": 0.1436,
+     "step_max": 0.1767,
+     "drift": 6.68,
+     "loop": 0.23,
+     "loop_ratio": 1.6,
+     "travel": 6.68,
+     "pin": 1.0,
+     "pad": 0,
+     "flash": 0.004,
+     "peak": 0.23,
+     "reach": 0.344,
+     "canvas": [
+      128,
+      128
+     ],
+     "reasons": [],
+     "sub": "12d5ceed-4d45-467f-94dc-02d399b295db",
+     "group": "5351a8b5-9883-4a2a-80a8-bf2e3ae2656c",
+     "takes": 1,
+     "version": 1,
+     "mirrored": false,
+     "generated_at": "2026-09-10T20:01:59+00:00",
+     "action": "Axe Cleave - Swings the battle axe across in one heavy cleave",
+     "tries": 1,
+     "rolls": 1,
+     "intensity": 0,
+     "rung": 0
+    },
+    "south-west": {
+     "status": "pass",
+     "step_mean": 0.1607,
+     "step_max": 0.267,
+     "drift": 5.44,
+     "loop": 0.2845,
+     "loop_ratio": 1.77,
+     "travel": 3.05,
+     "pin": 1.0,
+     "pad": 0,
+     "flash": 0.002,
+     "peak": 0.2845,
+     "reach": 0.322,
+     "canvas": [
+      128,
+      128
+     ],
+     "reasons": [],
+     "sub": "0d0dffab-ce36-4c4a-8285-0310ca63a975",
+     "group": "b9240c3b-0d2e-4bd8-a6f7-70132c15ad0c",
+     "takes": 1,
+     "version": 1,
+     "mirrored": true,
+     "generated_at": "2026-09-10T20:01:57+00:00",
+     "action": "Axe Cleave - Swings the battle axe across in one heavy cleave",
+     "tries": 1,
+     "rolls": 1,
+     "intensity": 0,
+     "source": "south-east"
+    },
+    "north-west": {
+     "status": "pass",
+     "step_mean": 0.1066,
+     "step_max": 0.1829,
+     "drift": 6.02,
+     "loop": 0.3094,
+     "loop_ratio": 2.9,
+     "travel": 6.19,
+     "pin": 1.0,
+     "pad": 0,
+     "flash": -0.002,
+     "peak": 0.3094,
+     "reach": 0.32,
+     "canvas": [
+      128,
+      128
+     ],
+     "reasons": [],
+     "sub": "17f57aa6-88e3-4721-8080-2cb7a3b4e622",
+     "group": "9add62c3-cc79-4355-b33d-01ac4be81224",
+     "takes": 1,
+     "version": 1,
+     "mirrored": true,
+     "generated_at": "2026-09-10T20:01:58+00:00",
+     "action": "Axe Cleave - Swings the battle axe across in one heavy cleave",
+     "tries": 1,
+     "rolls": 1,
+     "intensity": 0,
+     "source": "north-east"
+    },
+    "west": {
+     "status": "pass",
+     "step_mean": 0.1373,
+     "step_max": 0.3055,
+     "drift": 4.84,
+     "loop": 0.3318,
+     "loop_ratio": 2.42,
+     "travel": 5.3,
+     "pin": 1.0,
+     "pad": 0,
+     "flash": 0.001,
+     "peak": 0.3318,
+     "reach": 0.327,
+     "canvas": [
+      128,
+      128
+     ],
+     "reasons": [],
+     "sub": "e74d2bde-fe5f-4095-9dea-f9d9ff9a2419",
+     "group": "1fd71c38-979a-4a7c-b6f8-7bbc4c350ac0",
+     "takes": 1,
+     "version": 2,
+     "mirrored": true,
+     "generated_at": "2026-09-10T20:29:55+00:00",
+     "action": "Axe Cleave - Swings the battle axe across in one heavy cleave",
+     "tries": 2,
+     "rolls": 2,
+     "intensity": 0,
+     "source": "east"
+    }
+   },
+   "action": "Axe Cleave - Swings the battle axe across in one heavy cleave",
+   "frame_paths": {
+    "south": [
+     "orc_warrior/animations/attack_try/south/00.webp",
+     "orc_warrior/animations/attack_try/south/01.webp",
+     "orc_warrior/animations/attack_try/south/02.webp",
+     "orc_warrior/animations/attack_try/south/03.webp",
+     "orc_warrior/animations/attack_try/south/04.webp"
+    ],
+    "south-east": [
+     "orc_warrior/animations/attack_try/south-east/00.webp",
+     "orc_warrior/animations/attack_try/south-east/01.webp",
+     "orc_warrior/animations/attack_try/south-east/02.webp",
+     "orc_warrior/animations/attack_try/south-east/03.webp",
+     "orc_warrior/animations/attack_try/south-east/04.webp"
+    ],
+    "east": [
+     "orc_warrior/animations/attack_try/east/00.webp",
+     "orc_warrior/animations/attack_try/east/01.webp",
+     "orc_warrior/animations/attack_try/east/02.webp",
+     "orc_warrior/animations/attack_try/east/03.webp",
+     "orc_warrior/animations/attack_try/east/04.webp"
+    ],
+    "north-east": [
+     "orc_warrior/animations/attack_try/north-east/00.webp",
+     "orc_warrior/animations/attack_try/north-east/01.webp",
+     "orc_warrior/animations/attack_try/north-east/02.webp",
+     "orc_warrior/animations/attack_try/north-east/03.webp",
+     "orc_warrior/animations/attack_try/north-east/04.webp"
+    ],
+    "north": [
+     "orc_warrior/animations/attack_try/north/00.webp",
+     "orc_warrior/animations/attack_try/north/01.webp",
+     "orc_warrior/animations/attack_try/north/02.webp",
+     "orc_warrior/animations/attack_try/north/03.webp",
+     "orc_warrior/animations/attack_try/north/04.webp"
+    ],
+    "south-west": [
+     "orc_warrior/animations/attack_try/south-west/00.webp",
+     "orc_warrior/animations/attack_try/south-west/01.webp",
+     "orc_warrior/animations/attack_try/south-west/02.webp",
+     "orc_warrior/animations/attack_try/south-west/03.webp",
+     "orc_warrior/animations/attack_try/south-west/04.webp"
+    ],
+    "north-west": [
+     "orc_warrior/animations/attack_try/north-west/00.webp",
+     "orc_warrior/animations/attack_try/north-west/01.webp",
+     "orc_warrior/animations/attack_try/north-west/02.webp",
+     "orc_warrior/animations/attack_try/north-west/03.webp",
+     "orc_warrior/animations/attack_try/north-west/04.webp"
+    ],
+    "west": [
+     "orc_warrior/animations/attack_try/west/00.webp",
+     "orc_warrior/animations/attack_try/west/01.webp",
+     "orc_warrior/animations/attack_try/west/02.webp",
+     "orc_warrior/animations/attack_try/west/03.webp",
+     "orc_warrior/animations/attack_try/west/04.webp"
+    ]
+   },
+   "strips": {
+    "south": "orc_warrior/animations/attack_try__south.webp",
+    "south-east": "orc_warrior/animations/attack_try__south-east.webp",
+    "east": "orc_warrior/animations/attack_try__east.webp",
+    "north-east": "orc_warrior/animations/attack_try__north-east.webp",
+    "north": "orc_warrior/animations/attack_try__north.webp",
+    "south-west": "orc_warrior/animations/attack_try__south-west.webp",
+    "north-west": "orc_warrior/animations/attack_try__north-west.webp",
+    "west": "orc_warrior/animations/attack_try__west.webp"
+   }
+  }
+ }
 }

@@ -1,1240 +1,1245 @@
 {
-  "id": "glow_grub",
-  "name": "Glowgrub",
-  "tier": "cute",
-  "scale": "small",
-  "lore": "The only light in the deep galleries. Miners follow it, and it leads them where it feeds.",
-  "biome": [
-    "black_rock",
-    "grey_stone"
-  ],
-  "items": [],
-  "prompt": "Small fantasy cave grub with a plump segmented pale body, soft blue bioluminescent spots along its sides, a small dark head with tiny mandibles, and short stubby legs.",
-  "size": [
-    32,
-    32
-  ],
-  "template_id": "bear",
-  "directions": [
-    "south",
-    "south-east",
-    "east",
-    "north-east",
-    "north",
-    "north-west",
-    "west",
-    "south-west"
-  ],
-  "rotations": {
-    "south": "glow_grub/rotations/south.webp",
-    "south-east": "glow_grub/rotations/south-east.webp",
-    "east": "glow_grub/rotations/east.webp",
-    "north-east": "glow_grub/rotations/north-east.webp",
-    "north": "glow_grub/rotations/north.webp",
-    "north-west": "glow_grub/rotations/north-west.webp",
-    "west": "glow_grub/rotations/west.webp",
-    "south-west": "glow_grub/rotations/south-west.webp"
-  },
-  "sheet": "glow_grub/sheet.webp",
-  "review": "approved",
-  "pixellab_id": "841e4352-bb75-414d-b149-e215a819d9a7",
-  "seed": 1817732870,
-  "version": 1,
-  "usage": null,
-  "generated_at": "2026-09-09T18:55:22+00:00",
-  "elapsed_s": 150.1,
-  "qa": {
-    "status": "pass",
-    "min_run1": 0.73,
-    "reasons": [],
-    "directions": {
-      "south": {
-        "run1": 0.754,
-        "bbox": [
-          2,
-          6,
-          30,
-          28
-        ],
-        "fill": 0.602,
-        "touches_edge": false
-      },
-      "south-east": {
-        "run1": 0.738,
-        "bbox": [
-          7,
-          6,
-          24,
-          28
-        ],
-        "fill": 0.365,
-        "touches_edge": false
-      },
-      "east": {
-        "run1": 0.761,
-        "bbox": [
-          4,
-          6,
-          28,
-          28
-        ],
-        "fill": 0.516,
-        "touches_edge": false
-      },
-      "north-east": {
-        "run1": 0.789,
-        "bbox": [
-          2,
-          5,
-          30,
-          28
-        ],
-        "fill": 0.629,
-        "touches_edge": false
-      },
-      "north": {
-        "run1": 0.73,
-        "bbox": [
-          3,
-          4,
-          28,
-          28
-        ],
-        "fill": 0.586,
-        "touches_edge": false
-      },
-      "north-west": {
-        "run1": 0.749,
-        "bbox": [
-          7,
-          3,
-          25,
-          28
-        ],
-        "fill": 0.439,
-        "touches_edge": false
-      },
-      "west": {
-        "run1": 0.783,
-        "bbox": [
-          3,
-          4,
-          30,
-          28
-        ],
-        "fill": 0.633,
-        "touches_edge": false
-      },
-      "south-west": {
-        "run1": 0.767,
-        "bbox": [
-          2,
-          5,
-          30,
-          28
-        ],
-        "fill": 0.629,
-        "touches_edge": false
-      }
-    }
-  },
-  "approved_at": "2026-09-09T19:59:25+00:00",
-  "animations": {
-    "idle": {
-      "directions": {
-        "south": {
-          "status": "pass",
-          "step_mean": 0.1333,
-          "step_max": 0.1487,
-          "drift": 1.69,
-          "loop": 0.0,
-          "pin": 1.0,
-          "reasons": [],
-          "sub": "b6357b94-c34b-4d10-8503-a0bdd69095bc",
-          "takes": 1,
-          "version": 1,
-          "mirrored": false,
-          "generated_at": "2026-09-09T20:22:16+00:00",
-          "cut": 0
-        },
-        "south-east": {
-          "status": "pass",
-          "step_mean": 0.1169,
-          "step_max": 0.1331,
-          "drift": 1.43,
-          "loop": 0.0,
-          "pin": 1.0,
-          "reasons": [],
-          "sub": "8dabc476-07ba-41d7-a79d-d891c43914b5",
-          "takes": 1,
-          "version": 1,
-          "mirrored": false,
-          "generated_at": "2026-09-09T20:22:17+00:00",
-          "cut": 0
-        },
-        "east": {
-          "status": "pass",
-          "step_mean": 0.1335,
-          "step_max": 0.2074,
-          "drift": 1.47,
-          "loop": 0.0,
-          "pin": 1.0,
-          "reasons": [],
-          "sub": "6dea8e50-2b3f-40d3-b019-1e14cbb5ed6f",
-          "takes": 1,
-          "version": 1,
-          "mirrored": false,
-          "generated_at": "2026-09-09T20:22:19+00:00",
-          "cut": 0
-        },
-        "north-east": {
-          "status": "pass",
-          "step_mean": 0.1399,
-          "step_max": 0.1527,
-          "drift": 0.97,
-          "loop": 0.0,
-          "pin": 1.0,
-          "reasons": [],
-          "sub": "b7bd8247-19bd-4c5a-93ea-916525036f0e",
-          "takes": 1,
-          "version": 1,
-          "mirrored": false,
-          "generated_at": "2026-09-09T20:22:20+00:00",
-          "cut": 0
-        },
-        "north": {
-          "status": "pass",
-          "step_mean": 0.1273,
-          "step_max": 0.168,
-          "drift": 0.41,
-          "loop": 0.0,
-          "pin": 1.0,
-          "reasons": [],
-          "sub": "7b0a0686-ada0-4b38-ac6b-1dfa7b0aa81d",
-          "takes": 1,
-          "version": 1,
-          "mirrored": false,
-          "generated_at": "2026-09-09T20:22:21+00:00",
-          "cut": 0
-        },
-        "south-west": {
-          "status": "pass",
-          "step_mean": 0.1169,
-          "step_max": 0.1331,
-          "drift": 1.43,
-          "loop": 0.0,
-          "pin": 1.0,
-          "reasons": [],
-          "sub": "8dabc476-07ba-41d7-a79d-d891c43914b5",
-          "takes": 1,
-          "version": 1,
-          "mirrored": true,
-          "generated_at": "2026-09-09T20:22:17+00:00",
-          "cut": 0,
-          "source": "south-east"
-        },
-        "west": {
-          "status": "pass",
-          "step_mean": 0.1335,
-          "step_max": 0.2074,
-          "drift": 1.47,
-          "loop": 0.0,
-          "pin": 1.0,
-          "reasons": [],
-          "sub": "6dea8e50-2b3f-40d3-b019-1e14cbb5ed6f",
-          "takes": 1,
-          "version": 1,
-          "mirrored": true,
-          "generated_at": "2026-09-09T20:22:19+00:00",
-          "cut": 0,
-          "source": "east"
-        },
-        "north-west": {
-          "status": "pass",
-          "step_mean": 0.1399,
-          "step_max": 0.1527,
-          "drift": 0.97,
-          "loop": 0.0,
-          "pin": 1.0,
-          "reasons": [],
-          "sub": "b7bd8247-19bd-4c5a-93ea-916525036f0e",
-          "takes": 1,
-          "version": 1,
-          "mirrored": true,
-          "generated_at": "2026-09-09T20:22:20+00:00",
-          "cut": 0,
-          "source": "north-east"
-        }
-      },
-      "action": "Calm still idle, breathing very slowly and subtly, chest and shoulders rise and fall a little, feet planted, no other movement, ends in the same neutral pose it started in",
-      "frame_paths": {
-        "south": [
-          "glow_grub/animations/idle/south/00.webp",
-          "glow_grub/animations/idle/south/01.webp",
-          "glow_grub/animations/idle/south/02.webp",
-          "glow_grub/animations/idle/south/03.webp",
-          "glow_grub/animations/idle/south/04.webp"
-        ],
-        "south-east": [
-          "glow_grub/animations/idle/south-east/00.webp",
-          "glow_grub/animations/idle/south-east/01.webp",
-          "glow_grub/animations/idle/south-east/02.webp",
-          "glow_grub/animations/idle/south-east/03.webp",
-          "glow_grub/animations/idle/south-east/04.webp"
-        ],
-        "east": [
-          "glow_grub/animations/idle/east/00.webp",
-          "glow_grub/animations/idle/east/01.webp",
-          "glow_grub/animations/idle/east/02.webp",
-          "glow_grub/animations/idle/east/03.webp",
-          "glow_grub/animations/idle/east/04.webp"
-        ],
-        "north-east": [
-          "glow_grub/animations/idle/north-east/00.webp",
-          "glow_grub/animations/idle/north-east/01.webp",
-          "glow_grub/animations/idle/north-east/02.webp",
-          "glow_grub/animations/idle/north-east/03.webp",
-          "glow_grub/animations/idle/north-east/04.webp"
-        ],
-        "north": [
-          "glow_grub/animations/idle/north/00.webp",
-          "glow_grub/animations/idle/north/01.webp",
-          "glow_grub/animations/idle/north/02.webp",
-          "glow_grub/animations/idle/north/03.webp",
-          "glow_grub/animations/idle/north/04.webp"
-        ],
-        "south-west": [
-          "glow_grub/animations/idle/south-west/00.webp",
-          "glow_grub/animations/idle/south-west/01.webp",
-          "glow_grub/animations/idle/south-west/02.webp",
-          "glow_grub/animations/idle/south-west/03.webp",
-          "glow_grub/animations/idle/south-west/04.webp"
-        ],
-        "west": [
-          "glow_grub/animations/idle/west/00.webp",
-          "glow_grub/animations/idle/west/01.webp",
-          "glow_grub/animations/idle/west/02.webp",
-          "glow_grub/animations/idle/west/03.webp",
-          "glow_grub/animations/idle/west/04.webp"
-        ],
-        "north-west": [
-          "glow_grub/animations/idle/north-west/00.webp",
-          "glow_grub/animations/idle/north-west/01.webp",
-          "glow_grub/animations/idle/north-west/02.webp",
-          "glow_grub/animations/idle/north-west/03.webp",
-          "glow_grub/animations/idle/north-west/04.webp"
-        ]
-      },
-      "strips": {
-        "south": "glow_grub/animations/idle__south.webp",
-        "south-east": "glow_grub/animations/idle__south-east.webp",
-        "east": "glow_grub/animations/idle__east.webp",
-        "north-east": "glow_grub/animations/idle__north-east.webp",
-        "north": "glow_grub/animations/idle__north.webp",
-        "south-west": "glow_grub/animations/idle__south-west.webp",
-        "west": "glow_grub/animations/idle__west.webp",
-        "north-west": "glow_grub/animations/idle__north-west.webp"
-      }
-    },
-    "walk": {
-      "directions": {
-        "south": {
-          "status": "pass",
-          "step_mean": 0.0763,
-          "step_max": 0.101,
-          "drift": 0.62,
-          "loop": 0.1136,
-          "loop_ratio": 1.49,
-          "travel": 0.33,
-          "pin": 0.876,
-          "pad": 0,
-          "canvas": [
-            32,
-            32
-          ],
-          "reasons": [],
-          "sub": "c24d537f-a44a-45f4-b58b-0a13a8a14d70",
-          "group": "24a1e330-1cc7-4df2-b7e4-41e7e12aa895",
-          "takes": 1,
-          "version": 2,
-          "mirrored": false,
-          "generated_at": "2026-09-09T21:31:19+00:00"
-        },
-        "south-east": {
-          "status": "pass",
-          "step_mean": 0.148,
-          "step_max": 0.21,
-          "drift": 1.49,
-          "loop": 0.1505,
-          "loop_ratio": 1.02,
-          "travel": 0.42,
-          "pin": 0.871,
-          "pad": 0,
-          "canvas": [
-            32,
-            32
-          ],
-          "reasons": [],
-          "sub": "3144d6de-ff97-4323-a0af-aea4e23b703b",
-          "group": "43558752-d4dd-46de-a8e6-ed8a2eb0cd6e",
-          "takes": 1,
-          "version": 2,
-          "mirrored": false,
-          "generated_at": "2026-09-09T21:31:19+00:00"
-        },
-        "east": {
-          "status": "pass",
-          "step_mean": 0.1164,
-          "step_max": 0.156,
-          "drift": 0.46,
-          "loop": 0.1253,
-          "loop_ratio": 1.08,
-          "travel": 0.35,
-          "pin": 0.878,
-          "pad": 0,
-          "canvas": [
-            32,
-            32
-          ],
-          "reasons": [],
-          "sub": "39c9d4b6-f3a7-4303-87d4-02809f7989e3",
-          "group": "a2980993-82bb-4aec-827e-489fb1140d0e",
-          "takes": 1,
-          "version": 2,
-          "mirrored": false,
-          "generated_at": "2026-09-09T21:31:20+00:00"
-        },
-        "north-east": {
-          "status": "pass",
-          "step_mean": 0.0906,
-          "step_max": 0.1178,
-          "drift": 0.68,
-          "loop": 0.1073,
-          "loop_ratio": 1.18,
-          "travel": 0.43,
-          "pin": 0.897,
-          "pad": 0,
-          "canvas": [
-            32,
-            32
-          ],
-          "reasons": [],
-          "sub": "24c0ad69-0da9-4e50-878b-339c2812e04a",
-          "group": "4fd55ae0-e7b0-4039-9fa9-57a5a0395a74",
-          "takes": 1,
-          "version": 2,
-          "mirrored": false,
-          "generated_at": "2026-09-09T21:31:20+00:00"
-        },
-        "north": {
-          "status": "pass",
-          "step_mean": 0.0653,
-          "step_max": 0.0921,
-          "drift": 0.45,
-          "loop": 0.1053,
-          "loop_ratio": 1.61,
-          "travel": 0.23,
-          "pin": 0.956,
-          "pad": 0,
-          "canvas": [
-            32,
-            32
-          ],
-          "reasons": [],
-          "sub": "4dcb7bba-d617-4b53-9142-5509cf759933",
-          "group": "16373dfd-ede7-4a23-8323-4e43277f44ab",
-          "takes": 1,
-          "version": 2,
-          "mirrored": false,
-          "generated_at": "2026-09-09T21:31:21+00:00"
-        },
-        "south-west": {
-          "status": "pass",
-          "step_mean": 0.148,
-          "step_max": 0.21,
-          "drift": 1.49,
-          "loop": 0.1505,
-          "loop_ratio": 1.02,
-          "travel": 0.42,
-          "pin": 0.871,
-          "pad": 0,
-          "canvas": [
-            32,
-            32
-          ],
-          "reasons": [],
-          "sub": "3144d6de-ff97-4323-a0af-aea4e23b703b",
-          "group": "43558752-d4dd-46de-a8e6-ed8a2eb0cd6e",
-          "takes": 1,
-          "version": 2,
-          "mirrored": true,
-          "generated_at": "2026-09-09T21:31:19+00:00",
-          "source": "south-east"
-        },
-        "west": {
-          "status": "pass",
-          "step_mean": 0.1164,
-          "step_max": 0.156,
-          "drift": 0.46,
-          "loop": 0.1253,
-          "loop_ratio": 1.08,
-          "travel": 0.35,
-          "pin": 0.878,
-          "pad": 0,
-          "canvas": [
-            32,
-            32
-          ],
-          "reasons": [],
-          "sub": "39c9d4b6-f3a7-4303-87d4-02809f7989e3",
-          "group": "a2980993-82bb-4aec-827e-489fb1140d0e",
-          "takes": 1,
-          "version": 2,
-          "mirrored": true,
-          "generated_at": "2026-09-09T21:31:20+00:00",
-          "source": "east"
-        },
-        "north-west": {
-          "status": "pass",
-          "step_mean": 0.0906,
-          "step_max": 0.1178,
-          "drift": 0.68,
-          "loop": 0.1073,
-          "loop_ratio": 1.18,
-          "travel": 0.43,
-          "pin": 0.897,
-          "pad": 0,
-          "canvas": [
-            32,
-            32
-          ],
-          "reasons": [],
-          "sub": "24c0ad69-0da9-4e50-878b-339c2812e04a",
-          "group": "4fd55ae0-e7b0-4039-9fa9-57a5a0395a74",
-          "takes": 1,
-          "version": 2,
-          "mirrored": true,
-          "generated_at": "2026-09-09T21:31:20+00:00",
-          "source": "north-east"
-        }
-      },
-      "action": "crawls forward in place, body segments rippling in a wave, stubby legs alternating, seamless loop, no turning",
-      "frame_paths": {
-        "south": [
-          "glow_grub/animations/walk/south/00.webp",
-          "glow_grub/animations/walk/south/01.webp",
-          "glow_grub/animations/walk/south/02.webp",
-          "glow_grub/animations/walk/south/03.webp",
-          "glow_grub/animations/walk/south/04.webp",
-          "glow_grub/animations/walk/south/05.webp"
-        ],
-        "south-east": [
-          "glow_grub/animations/walk/south-east/00.webp",
-          "glow_grub/animations/walk/south-east/01.webp",
-          "glow_grub/animations/walk/south-east/02.webp",
-          "glow_grub/animations/walk/south-east/03.webp",
-          "glow_grub/animations/walk/south-east/04.webp",
-          "glow_grub/animations/walk/south-east/05.webp"
-        ],
-        "east": [
-          "glow_grub/animations/walk/east/00.webp",
-          "glow_grub/animations/walk/east/01.webp",
-          "glow_grub/animations/walk/east/02.webp",
-          "glow_grub/animations/walk/east/03.webp",
-          "glow_grub/animations/walk/east/04.webp",
-          "glow_grub/animations/walk/east/05.webp"
-        ],
-        "north-east": [
-          "glow_grub/animations/walk/north-east/00.webp",
-          "glow_grub/animations/walk/north-east/01.webp",
-          "glow_grub/animations/walk/north-east/02.webp",
-          "glow_grub/animations/walk/north-east/03.webp",
-          "glow_grub/animations/walk/north-east/04.webp",
-          "glow_grub/animations/walk/north-east/05.webp"
-        ],
-        "north": [
-          "glow_grub/animations/walk/north/00.webp",
-          "glow_grub/animations/walk/north/01.webp",
-          "glow_grub/animations/walk/north/02.webp",
-          "glow_grub/animations/walk/north/03.webp",
-          "glow_grub/animations/walk/north/04.webp",
-          "glow_grub/animations/walk/north/05.webp"
-        ],
-        "south-west": [
-          "glow_grub/animations/walk/south-west/00.webp",
-          "glow_grub/animations/walk/south-west/01.webp",
-          "glow_grub/animations/walk/south-west/02.webp",
-          "glow_grub/animations/walk/south-west/03.webp",
-          "glow_grub/animations/walk/south-west/04.webp",
-          "glow_grub/animations/walk/south-west/05.webp"
-        ],
-        "west": [
-          "glow_grub/animations/walk/west/00.webp",
-          "glow_grub/animations/walk/west/01.webp",
-          "glow_grub/animations/walk/west/02.webp",
-          "glow_grub/animations/walk/west/03.webp",
-          "glow_grub/animations/walk/west/04.webp",
-          "glow_grub/animations/walk/west/05.webp"
-        ],
-        "north-west": [
-          "glow_grub/animations/walk/north-west/00.webp",
-          "glow_grub/animations/walk/north-west/01.webp",
-          "glow_grub/animations/walk/north-west/02.webp",
-          "glow_grub/animations/walk/north-west/03.webp",
-          "glow_grub/animations/walk/north-west/04.webp",
-          "glow_grub/animations/walk/north-west/05.webp"
-        ]
-      },
-      "strips": {
-        "south": "glow_grub/animations/walk__south.webp",
-        "south-east": "glow_grub/animations/walk__south-east.webp",
-        "east": "glow_grub/animations/walk__east.webp",
-        "north-east": "glow_grub/animations/walk__north-east.webp",
-        "north": "glow_grub/animations/walk__north.webp",
-        "south-west": "glow_grub/animations/walk__south-west.webp",
-        "west": "glow_grub/animations/walk__west.webp",
-        "north-west": "glow_grub/animations/walk__north-west.webp"
-      }
-    },
-    "attack": {
-      "directions": {
-        "south": {
-          "status": "fail",
-          "step_mean": 0.1383,
-          "step_max": 0.1523,
-          "drift": 1.81,
-          "loop": 0.0,
-          "loop_ratio": 0.0,
-          "travel": 0.56,
-          "pin": 1.0,
-          "pad": 0,
-          "flash": 0.0,
-          "peak": 0.2386,
-          "reach": 0.091,
-          "canvas": [
-            32,
-            32
-          ],
-          "reasons": [
-            "no strike, just a lean: nothing reaches past 0.09 of the body"
-          ],
-          "sub": "77b469b1-1291-4c50-aed5-6b56c34169fd",
-          "group": "4e5b5330-290c-453c-878e-f6a02f6a8f52",
-          "takes": 1,
-          "version": 2,
-          "mirrored": false,
-          "generated_at": "2026-09-09T22:43:06+00:00",
-          "action": "Bite - Rears up and bites forward once with its mandibles, then returns to idle stance"
-        },
-        "south-east": {
-          "status": "fail",
-          "step_mean": 0.1176,
-          "step_max": 0.1797,
-          "drift": 1.68,
-          "loop": 0.0,
-          "loop_ratio": 0.0,
-          "travel": 0.13,
-          "pin": 1.0,
-          "pad": 0,
-          "flash": 0.01,
-          "peak": 0.2059,
-          "reach": 0.118,
-          "canvas": [
-            32,
-            32
-          ],
-          "reasons": [
-            "no strike, just a lean: nothing reaches past 0.12 of the body"
-          ],
-          "sub": "81b1c81f-4870-4153-a4fc-95d2637a69d4",
-          "group": "44b9e82a-4165-4e92-a769-d730d5090018",
-          "takes": 1,
-          "version": 2,
-          "mirrored": false,
-          "generated_at": "2026-09-09T22:43:07+00:00",
-          "action": "Bite - Rears up and bites forward once with its mandibles, then returns to idle stance"
-        },
-        "east": {
-          "status": "fail",
-          "step_mean": 0.1059,
-          "step_max": 0.1367,
-          "drift": 1.19,
-          "loop": 0.0,
-          "loop_ratio": 0.0,
-          "travel": 0.23,
-          "pin": 1.0,
-          "pad": 0,
-          "flash": 0.02,
-          "peak": 0.2011,
-          "reach": 0.136,
-          "canvas": [
-            32,
-            32
-          ],
-          "reasons": [
-            "no strike, just a lean: nothing reaches past 0.14 of the body"
-          ],
-          "sub": "f43d2cb0-bcc6-4429-b7e5-697626ca49ce",
-          "group": "5a98ddb5-7e29-4dd6-81ce-768ff2b792fa",
-          "takes": 1,
-          "version": 2,
-          "mirrored": false,
-          "generated_at": "2026-09-09T22:43:07+00:00",
-          "action": "Bite - Rears up and bites forward once with its mandibles, then returns to idle stance"
-        },
-        "north-east": {
-          "status": "fail",
-          "step_mean": 0.1501,
-          "step_max": 0.1807,
-          "drift": 0.96,
-          "loop": 0.0,
-          "loop_ratio": 0.0,
-          "travel": 0.55,
-          "pin": 1.0,
-          "pad": 0,
-          "flash": 0.023,
-          "peak": 0.1858,
-          "reach": 0.087,
-          "canvas": [
-            32,
-            32
-          ],
-          "reasons": [
-            "no strike, just a lean: nothing reaches past 0.09 of the body"
-          ],
-          "sub": "f4e47d84-b7ca-4265-99e0-15186655d99a",
-          "group": "8881305b-645a-4854-8002-1f4051bb8e6a",
-          "takes": 1,
-          "version": 2,
-          "mirrored": false,
-          "generated_at": "2026-09-09T22:43:08+00:00",
-          "action": "Bite - Rears up and bites forward once with its mandibles, then returns to idle stance"
-        },
-        "north": {
-          "status": "fail",
-          "step_mean": 0.1168,
-          "step_max": 0.1522,
-          "drift": 0.45,
-          "loop": 0.0,
-          "loop_ratio": 0.0,
-          "travel": 0.45,
-          "pin": 1.0,
-          "pad": 0,
-          "flash": 0.01,
-          "peak": 0.1654,
-          "reach": 0.125,
-          "canvas": [
-            32,
-            32
-          ],
-          "reasons": [
-            "no strike, just a lean: nothing reaches past 0.12 of the body"
-          ],
-          "sub": "60b46ccf-bf18-4e25-8d6b-d265aebc062d",
-          "group": "86baa56d-b38c-40e8-809d-67c2a37adb9c",
-          "takes": 1,
-          "version": 2,
-          "mirrored": false,
-          "generated_at": "2026-09-09T22:43:08+00:00",
-          "action": "Bite - Rears up and bites forward once with its mandibles, then returns to idle stance"
-        },
-        "south-west": {
-          "status": "pass",
-          "step_mean": 0.1176,
-          "step_max": 0.1797,
-          "drift": 1.68,
-          "loop": 0.0,
-          "loop_ratio": 0.0,
-          "travel": 0.13,
-          "pin": 1.0,
-          "pad": 0,
-          "flash": 0.01,
-          "peak": 0.2059,
-          "canvas": [
-            32,
-            32
-          ],
-          "reasons": [],
-          "sub": "81b1c81f-4870-4153-a4fc-95d2637a69d4",
-          "group": "44b9e82a-4165-4e92-a769-d730d5090018",
-          "takes": 1,
-          "version": 2,
-          "mirrored": true,
-          "generated_at": "2026-09-09T22:43:07+00:00",
-          "action": "Bite - Rears up and bites forward once with its mandibles, then returns to idle stance",
-          "source": "south-east"
-        },
-        "west": {
-          "status": "pass",
-          "step_mean": 0.1059,
-          "step_max": 0.1367,
-          "drift": 1.19,
-          "loop": 0.0,
-          "loop_ratio": 0.0,
-          "travel": 0.23,
-          "pin": 1.0,
-          "pad": 0,
-          "flash": 0.02,
-          "peak": 0.2011,
-          "canvas": [
-            32,
-            32
-          ],
-          "reasons": [],
-          "sub": "f43d2cb0-bcc6-4429-b7e5-697626ca49ce",
-          "group": "5a98ddb5-7e29-4dd6-81ce-768ff2b792fa",
-          "takes": 1,
-          "version": 2,
-          "mirrored": true,
-          "generated_at": "2026-09-09T22:43:07+00:00",
-          "action": "Bite - Rears up and bites forward once with its mandibles, then returns to idle stance",
-          "source": "east"
-        },
-        "north-west": {
-          "status": "pass",
-          "step_mean": 0.1501,
-          "step_max": 0.1807,
-          "drift": 0.96,
-          "loop": 0.0,
-          "loop_ratio": 0.0,
-          "travel": 0.55,
-          "pin": 1.0,
-          "pad": 0,
-          "flash": 0.023,
-          "peak": 0.1858,
-          "canvas": [
-            32,
-            32
-          ],
-          "reasons": [],
-          "sub": "f4e47d84-b7ca-4265-99e0-15186655d99a",
-          "group": "8881305b-645a-4854-8002-1f4051bb8e6a",
-          "takes": 1,
-          "version": 2,
-          "mirrored": true,
-          "generated_at": "2026-09-09T22:43:08+00:00",
-          "action": "Bite - Rears up and bites forward once with its mandibles, then returns to idle stance",
-          "source": "north-east"
-        }
-      },
-      "action": "Bite - Rears up and bites forward once with its mandibles, then returns to idle stance",
-      "frame_paths": {
-        "south": [
-          "glow_grub/animations/attack/south/00.webp",
-          "glow_grub/animations/attack/south/01.webp",
-          "glow_grub/animations/attack/south/02.webp",
-          "glow_grub/animations/attack/south/03.webp",
-          "glow_grub/animations/attack/south/04.webp"
-        ],
-        "south-east": [
-          "glow_grub/animations/attack/south-east/00.webp",
-          "glow_grub/animations/attack/south-east/01.webp",
-          "glow_grub/animations/attack/south-east/02.webp",
-          "glow_grub/animations/attack/south-east/03.webp",
-          "glow_grub/animations/attack/south-east/04.webp"
-        ],
-        "east": [
-          "glow_grub/animations/attack/east/00.webp",
-          "glow_grub/animations/attack/east/01.webp",
-          "glow_grub/animations/attack/east/02.webp",
-          "glow_grub/animations/attack/east/03.webp",
-          "glow_grub/animations/attack/east/04.webp"
-        ],
-        "north-east": [
-          "glow_grub/animations/attack/north-east/00.webp",
-          "glow_grub/animations/attack/north-east/01.webp",
-          "glow_grub/animations/attack/north-east/02.webp",
-          "glow_grub/animations/attack/north-east/03.webp",
-          "glow_grub/animations/attack/north-east/04.webp"
-        ],
-        "north": [
-          "glow_grub/animations/attack/north/00.webp",
-          "glow_grub/animations/attack/north/01.webp",
-          "glow_grub/animations/attack/north/02.webp",
-          "glow_grub/animations/attack/north/03.webp",
-          "glow_grub/animations/attack/north/04.webp"
-        ],
-        "south-west": [
-          "glow_grub/animations/attack/south-west/00.webp",
-          "glow_grub/animations/attack/south-west/01.webp",
-          "glow_grub/animations/attack/south-west/02.webp",
-          "glow_grub/animations/attack/south-west/03.webp",
-          "glow_grub/animations/attack/south-west/04.webp"
-        ],
-        "west": [
-          "glow_grub/animations/attack/west/00.webp",
-          "glow_grub/animations/attack/west/01.webp",
-          "glow_grub/animations/attack/west/02.webp",
-          "glow_grub/animations/attack/west/03.webp",
-          "glow_grub/animations/attack/west/04.webp"
-        ],
-        "north-west": [
-          "glow_grub/animations/attack/north-west/00.webp",
-          "glow_grub/animations/attack/north-west/01.webp",
-          "glow_grub/animations/attack/north-west/02.webp",
-          "glow_grub/animations/attack/north-west/03.webp",
-          "glow_grub/animations/attack/north-west/04.webp"
-        ]
-      },
-      "strips": {
-        "south": "glow_grub/animations/attack__south.webp",
-        "south-east": "glow_grub/animations/attack__south-east.webp",
-        "east": "glow_grub/animations/attack__east.webp",
-        "north-east": "glow_grub/animations/attack__north-east.webp",
-        "north": "glow_grub/animations/attack__north.webp",
-        "south-west": "glow_grub/animations/attack__south-west.webp",
-        "west": "glow_grub/animations/attack__west.webp",
-        "north-west": "glow_grub/animations/attack__north-west.webp"
-      }
-    },
-    "attack_try": {
-      "directions": {
-        "south": {
-          "status": "pass",
-          "step_mean": 0.2223,
-          "step_max": 0.267,
-          "drift": 1.7,
-          "loop": 0.1584,
-          "loop_ratio": 0.71,
-          "travel": 1.22,
-          "pin": 1.0,
-          "pad": 0,
-          "flash": 0.226,
-          "peak": 0.2986,
-          "reach": 0.334,
-          "canvas": [
-            32,
-            32
-          ],
-          "reasons": [],
-          "sub": "536e58e5-ad40-425f-90e0-8feb2d352378",
-          "group": "3d74b756-dbfe-4a69-a835-a490ec7eacd0",
-          "takes": 1,
-          "version": 4,
-          "mirrored": false,
-          "generated_at": "2026-09-10T21:22:47+00:00",
-          "action": "Lunge Attack - Throws its whole body forward in one fast lunge, white swoosh lines trailing behind it",
-          "tries": 4,
-          "rolls": 4,
-          "intensity": 1,
-          "frames": 9
-        },
-        "south-east": {
-          "status": "warn",
-          "step_mean": 0.1691,
-          "step_max": 0.2288,
-          "drift": 2.68,
-          "loop": 0.0817,
-          "loop_ratio": 0.48,
-          "travel": 0.92,
-          "pin": 1.0,
-          "pad": 0,
-          "flash": 0.003,
-          "peak": 0.3366,
-          "reach": 0.235,
-          "canvas": [
-            32,
-            32
-          ],
-          "reasons": [
-            "shallow strike: reach 0.24 — eyeball it"
-          ],
-          "sub": "60733db0-4bf1-4f70-a181-d5852d9c0556",
-          "group": "46b6965d-8ead-4661-8ad5-6d0a68a2bc1d",
-          "takes": 1,
-          "version": 2,
-          "mirrored": false,
-          "generated_at": "2026-09-10T20:23:14+00:00",
-          "action": "Bite - Rears its front half up and bites forward with its mandibles, a big aggressive swing",
-          "tries": 1,
-          "rolls": 2,
-          "intensity": 1
-        },
-        "east": {
-          "status": "pass",
-          "step_mean": 0.1181,
-          "step_max": 0.1908,
-          "drift": 1.31,
-          "loop": 0.2746,
-          "loop_ratio": 2.32,
-          "travel": 0.87,
-          "pin": 1.0,
-          "pad": 0,
-          "flash": 0.075,
-          "peak": 0.4046,
-          "reach": 0.339,
-          "canvas": [
-            32,
-            32
-          ],
-          "reasons": [],
-          "sub": "fd2b5778-6b5b-4f38-a0a9-fe92c5f9ae2b",
-          "group": "d9fb9882-45da-4490-92a7-cc3a76e71bc6",
-          "takes": 1,
-          "version": 4,
-          "mirrored": false,
-          "generated_at": "2026-09-10T21:22:48+00:00",
-          "action": "Lunge Attack - Throws its whole body forward in one fast lunge, white swoosh lines trailing behind it",
-          "tries": 4,
-          "rolls": 4,
-          "intensity": 1,
-          "frames": 9
-        },
-        "north-east": {
-          "status": "warn",
-          "step_mean": 0.1161,
-          "step_max": 0.1501,
-          "drift": 1.1,
-          "loop": 0.2316,
-          "loop_ratio": 1.99,
-          "travel": 0.76,
-          "pin": 1.0,
-          "pad": 0,
-          "flash": 0.053,
-          "peak": 0.3079,
-          "reach": 0.261,
-          "canvas": [
-            32,
-            32
-          ],
-          "reasons": [
-            "shallow strike: reach 0.26 — eyeball it"
-          ],
-          "sub": "211b23fc-fe8b-4ed9-955e-d26ba0a1eb4b",
-          "group": "3398b911-dc26-475d-88f6-250a27f3f17a",
-          "takes": 1,
-          "version": 4,
-          "mirrored": false,
-          "generated_at": "2026-09-10T21:22:48+00:00",
-          "action": "Lunge Attack - Throws its whole body forward in one fast lunge, white swoosh lines trailing behind it",
-          "tries": 4,
-          "rolls": 4,
-          "intensity": 1,
-          "frames": 9
-        },
-        "north": {
-          "status": "warn",
-          "step_mean": 0.1145,
-          "step_max": 0.1378,
-          "drift": 0.87,
-          "loop": 0.1658,
-          "loop_ratio": 1.45,
-          "travel": 0.96,
-          "pin": 1.0,
-          "pad": 0,
-          "flash": 0.081,
-          "peak": 0.2832,
-          "reach": 0.292,
-          "canvas": [
-            32,
-            32
-          ],
-          "reasons": [
-            "shallow strike: reach 0.29 — eyeball it"
-          ],
-          "sub": "141848e7-8cb2-44e6-8b29-1a1bffe9285e",
-          "group": "8579da98-7550-4cf8-8f7c-37d1d60b7149",
-          "takes": 1,
-          "version": 4,
-          "mirrored": false,
-          "generated_at": "2026-09-10T21:22:49+00:00",
-          "action": "Lunge Attack - Throws its whole body forward in one fast lunge, white swoosh lines trailing behind it",
-          "tries": 4,
-          "rolls": 4,
-          "intensity": 1,
-          "frames": 9
-        },
-        "south-west": {
-          "status": "warn",
-          "step_mean": 0.1691,
-          "step_max": 0.2288,
-          "drift": 2.68,
-          "loop": 0.0817,
-          "loop_ratio": 0.48,
-          "travel": 0.92,
-          "pin": 1.0,
-          "pad": 0,
-          "flash": 0.003,
-          "peak": 0.3366,
-          "reach": 0.235,
-          "canvas": [
-            32,
-            32
-          ],
-          "reasons": [
-            "shallow strike: reach 0.24 — eyeball it"
-          ],
-          "sub": "60733db0-4bf1-4f70-a181-d5852d9c0556",
-          "group": "46b6965d-8ead-4661-8ad5-6d0a68a2bc1d",
-          "takes": 1,
-          "version": 2,
-          "mirrored": true,
-          "generated_at": "2026-09-10T20:23:14+00:00",
-          "action": "Bite - Rears its front half up and bites forward with its mandibles, a big aggressive swing",
-          "tries": 1,
-          "rolls": 2,
-          "intensity": 1,
-          "source": "south-east"
-        },
-        "west": {
-          "status": "pass",
-          "step_mean": 0.1181,
-          "step_max": 0.1908,
-          "drift": 1.31,
-          "loop": 0.2746,
-          "loop_ratio": 2.32,
-          "travel": 0.87,
-          "pin": 1.0,
-          "pad": 0,
-          "flash": 0.075,
-          "peak": 0.4046,
-          "reach": 0.339,
-          "canvas": [
-            32,
-            32
-          ],
-          "reasons": [],
-          "sub": "fd2b5778-6b5b-4f38-a0a9-fe92c5f9ae2b",
-          "group": "d9fb9882-45da-4490-92a7-cc3a76e71bc6",
-          "takes": 1,
-          "version": 4,
-          "mirrored": true,
-          "generated_at": "2026-09-10T21:22:48+00:00",
-          "action": "Lunge Attack - Throws its whole body forward in one fast lunge, white swoosh lines trailing behind it",
-          "tries": 4,
-          "rolls": 4,
-          "intensity": 1,
-          "frames": 9,
-          "source": "east"
-        },
-        "north-west": {
-          "status": "warn",
-          "step_mean": 0.1161,
-          "step_max": 0.1501,
-          "drift": 1.1,
-          "loop": 0.2316,
-          "loop_ratio": 1.99,
-          "travel": 0.76,
-          "pin": 1.0,
-          "pad": 0,
-          "flash": 0.053,
-          "peak": 0.3079,
-          "reach": 0.261,
-          "canvas": [
-            32,
-            32
-          ],
-          "reasons": [
-            "shallow strike: reach 0.26 — eyeball it"
-          ],
-          "sub": "211b23fc-fe8b-4ed9-955e-d26ba0a1eb4b",
-          "group": "3398b911-dc26-475d-88f6-250a27f3f17a",
-          "takes": 1,
-          "version": 4,
-          "mirrored": true,
-          "generated_at": "2026-09-10T21:22:48+00:00",
-          "action": "Lunge Attack - Throws its whole body forward in one fast lunge, white swoosh lines trailing behind it",
-          "tries": 4,
-          "rolls": 4,
-          "intensity": 1,
-          "frames": 9,
-          "source": "north-east"
-        }
-      },
-      "action": "Bite - Rears its front half up and bites forward with its mandibles, a big aggressive swing",
-      "frame_paths": {
-        "south": [
-          "glow_grub/animations/attack_try/south/00.webp",
-          "glow_grub/animations/attack_try/south/01.webp",
-          "glow_grub/animations/attack_try/south/02.webp",
-          "glow_grub/animations/attack_try/south/03.webp",
-          "glow_grub/animations/attack_try/south/04.webp",
-          "glow_grub/animations/attack_try/south/05.webp",
-          "glow_grub/animations/attack_try/south/06.webp",
-          "glow_grub/animations/attack_try/south/07.webp",
-          "glow_grub/animations/attack_try/south/08.webp"
-        ],
-        "south-east": [
-          "glow_grub/animations/attack_try/south-east/00.webp",
-          "glow_grub/animations/attack_try/south-east/01.webp",
-          "glow_grub/animations/attack_try/south-east/02.webp",
-          "glow_grub/animations/attack_try/south-east/03.webp",
-          "glow_grub/animations/attack_try/south-east/04.webp"
-        ],
-        "east": [
-          "glow_grub/animations/attack_try/east/00.webp",
-          "glow_grub/animations/attack_try/east/01.webp",
-          "glow_grub/animations/attack_try/east/02.webp",
-          "glow_grub/animations/attack_try/east/03.webp",
-          "glow_grub/animations/attack_try/east/04.webp",
-          "glow_grub/animations/attack_try/east/05.webp",
-          "glow_grub/animations/attack_try/east/06.webp",
-          "glow_grub/animations/attack_try/east/07.webp",
-          "glow_grub/animations/attack_try/east/08.webp"
-        ],
-        "north-east": [
-          "glow_grub/animations/attack_try/north-east/00.webp",
-          "glow_grub/animations/attack_try/north-east/01.webp",
-          "glow_grub/animations/attack_try/north-east/02.webp",
-          "glow_grub/animations/attack_try/north-east/03.webp",
-          "glow_grub/animations/attack_try/north-east/04.webp",
-          "glow_grub/animations/attack_try/north-east/05.webp",
-          "glow_grub/animations/attack_try/north-east/06.webp",
-          "glow_grub/animations/attack_try/north-east/07.webp",
-          "glow_grub/animations/attack_try/north-east/08.webp"
-        ],
-        "north": [
-          "glow_grub/animations/attack_try/north/00.webp",
-          "glow_grub/animations/attack_try/north/01.webp",
-          "glow_grub/animations/attack_try/north/02.webp",
-          "glow_grub/animations/attack_try/north/03.webp",
-          "glow_grub/animations/attack_try/north/04.webp",
-          "glow_grub/animations/attack_try/north/05.webp",
-          "glow_grub/animations/attack_try/north/06.webp",
-          "glow_grub/animations/attack_try/north/07.webp",
-          "glow_grub/animations/attack_try/north/08.webp"
-        ],
-        "south-west": [
-          "glow_grub/animations/attack_try/south-west/00.webp",
-          "glow_grub/animations/attack_try/south-west/01.webp",
-          "glow_grub/animations/attack_try/south-west/02.webp",
-          "glow_grub/animations/attack_try/south-west/03.webp",
-          "glow_grub/animations/attack_try/south-west/04.webp"
-        ],
-        "west": [
-          "glow_grub/animations/attack_try/west/00.webp",
-          "glow_grub/animations/attack_try/west/01.webp",
-          "glow_grub/animations/attack_try/west/02.webp",
-          "glow_grub/animations/attack_try/west/03.webp",
-          "glow_grub/animations/attack_try/west/04.webp",
-          "glow_grub/animations/attack_try/west/05.webp",
-          "glow_grub/animations/attack_try/west/06.webp",
-          "glow_grub/animations/attack_try/west/07.webp",
-          "glow_grub/animations/attack_try/west/08.webp"
-        ],
-        "north-west": [
-          "glow_grub/animations/attack_try/north-west/00.webp",
-          "glow_grub/animations/attack_try/north-west/01.webp",
-          "glow_grub/animations/attack_try/north-west/02.webp",
-          "glow_grub/animations/attack_try/north-west/03.webp",
-          "glow_grub/animations/attack_try/north-west/04.webp",
-          "glow_grub/animations/attack_try/north-west/05.webp",
-          "glow_grub/animations/attack_try/north-west/06.webp",
-          "glow_grub/animations/attack_try/north-west/07.webp",
-          "glow_grub/animations/attack_try/north-west/08.webp"
-        ]
-      },
-      "strips": {
-        "south": "glow_grub/animations/attack_try__south.webp",
-        "south-east": "glow_grub/animations/attack_try__south-east.webp",
-        "east": "glow_grub/animations/attack_try__east.webp",
-        "north-east": "glow_grub/animations/attack_try__north-east.webp",
-        "north": "glow_grub/animations/attack_try__north.webp",
-        "south-west": "glow_grub/animations/attack_try__south-west.webp",
-        "west": "glow_grub/animations/attack_try__west.webp",
-        "north-west": "glow_grub/animations/attack_try__north-west.webp"
-      },
-      "intensity": 1
-    }
+ "id": "glow_grub",
+ "name": "Glowgrub",
+ "tier": "cute",
+ "scale": "small",
+ "lore": "The only light in the deep galleries. Miners follow it, and it leads them where it feeds.",
+ "biome": [
+  "black_rock",
+  "grey_stone"
+ ],
+ "items": [],
+ "prompt": "Small fantasy cave grub with a plump segmented pale body, soft blue bioluminescent spots along its sides, a small dark head with tiny mandibles, and short stubby legs.",
+ "size": [
+  32,
+  32
+ ],
+ "template_id": "bear",
+ "directions": [
+  "south",
+  "south-east",
+  "east",
+  "north-east",
+  "north",
+  "north-west",
+  "west",
+  "south-west"
+ ],
+ "rotations": {
+  "south": "glow_grub/rotations/south.webp",
+  "south-east": "glow_grub/rotations/south-east.webp",
+  "east": "glow_grub/rotations/east.webp",
+  "north-east": "glow_grub/rotations/north-east.webp",
+  "north": "glow_grub/rotations/north.webp",
+  "north-west": "glow_grub/rotations/north-west.webp",
+  "west": "glow_grub/rotations/west.webp",
+  "south-west": "glow_grub/rotations/south-west.webp"
+ },
+ "sheet": "glow_grub/sheet.webp",
+ "review": "approved",
+ "pixellab_id": "841e4352-bb75-414d-b149-e215a819d9a7",
+ "seed": 1817732870,
+ "version": 1,
+ "usage": null,
+ "generated_at": "2026-09-09T18:55:22+00:00",
+ "elapsed_s": 150.1,
+ "qa": {
+  "status": "pass",
+  "min_run1": 0.73,
+  "reasons": [],
+  "directions": {
+   "south": {
+    "run1": 0.754,
+    "bbox": [
+     2,
+     6,
+     30,
+     28
+    ],
+    "fill": 0.602,
+    "touches_edge": false
+   },
+   "south-east": {
+    "run1": 0.738,
+    "bbox": [
+     7,
+     6,
+     24,
+     28
+    ],
+    "fill": 0.365,
+    "touches_edge": false
+   },
+   "east": {
+    "run1": 0.761,
+    "bbox": [
+     4,
+     6,
+     28,
+     28
+    ],
+    "fill": 0.516,
+    "touches_edge": false
+   },
+   "north-east": {
+    "run1": 0.789,
+    "bbox": [
+     2,
+     5,
+     30,
+     28
+    ],
+    "fill": 0.629,
+    "touches_edge": false
+   },
+   "north": {
+    "run1": 0.73,
+    "bbox": [
+     3,
+     4,
+     28,
+     28
+    ],
+    "fill": 0.586,
+    "touches_edge": false
+   },
+   "north-west": {
+    "run1": 0.749,
+    "bbox": [
+     7,
+     3,
+     25,
+     28
+    ],
+    "fill": 0.439,
+    "touches_edge": false
+   },
+   "west": {
+    "run1": 0.783,
+    "bbox": [
+     3,
+     4,
+     30,
+     28
+    ],
+    "fill": 0.633,
+    "touches_edge": false
+   },
+   "south-west": {
+    "run1": 0.767,
+    "bbox": [
+     2,
+     5,
+     30,
+     28
+    ],
+    "fill": 0.629,
+    "touches_edge": false
+   }
   }
+ },
+ "approved_at": "2026-09-09T19:59:25+00:00",
+ "animations": {
+  "idle": {
+   "directions": {
+    "south": {
+     "status": "pass",
+     "step_mean": 0.1333,
+     "step_max": 0.1487,
+     "drift": 1.69,
+     "loop": 0.0,
+     "pin": 1.0,
+     "reasons": [],
+     "sub": "b6357b94-c34b-4d10-8503-a0bdd69095bc",
+     "takes": 1,
+     "version": 1,
+     "mirrored": false,
+     "generated_at": "2026-09-09T20:22:16+00:00",
+     "cut": 0
+    },
+    "south-east": {
+     "status": "pass",
+     "step_mean": 0.1169,
+     "step_max": 0.1331,
+     "drift": 1.43,
+     "loop": 0.0,
+     "pin": 1.0,
+     "reasons": [],
+     "sub": "8dabc476-07ba-41d7-a79d-d891c43914b5",
+     "takes": 1,
+     "version": 1,
+     "mirrored": false,
+     "generated_at": "2026-09-09T20:22:17+00:00",
+     "cut": 0
+    },
+    "east": {
+     "status": "pass",
+     "step_mean": 0.1335,
+     "step_max": 0.2074,
+     "drift": 1.47,
+     "loop": 0.0,
+     "pin": 1.0,
+     "reasons": [],
+     "sub": "6dea8e50-2b3f-40d3-b019-1e14cbb5ed6f",
+     "takes": 1,
+     "version": 1,
+     "mirrored": false,
+     "generated_at": "2026-09-09T20:22:19+00:00",
+     "cut": 0
+    },
+    "north-east": {
+     "status": "pass",
+     "step_mean": 0.1399,
+     "step_max": 0.1527,
+     "drift": 0.97,
+     "loop": 0.0,
+     "pin": 1.0,
+     "reasons": [],
+     "sub": "b7bd8247-19bd-4c5a-93ea-916525036f0e",
+     "takes": 1,
+     "version": 1,
+     "mirrored": false,
+     "generated_at": "2026-09-09T20:22:20+00:00",
+     "cut": 0
+    },
+    "north": {
+     "status": "pass",
+     "step_mean": 0.1273,
+     "step_max": 0.168,
+     "drift": 0.41,
+     "loop": 0.0,
+     "pin": 1.0,
+     "reasons": [],
+     "sub": "7b0a0686-ada0-4b38-ac6b-1dfa7b0aa81d",
+     "takes": 1,
+     "version": 1,
+     "mirrored": false,
+     "generated_at": "2026-09-09T20:22:21+00:00",
+     "cut": 0
+    },
+    "south-west": {
+     "status": "pass",
+     "step_mean": 0.1169,
+     "step_max": 0.1331,
+     "drift": 1.43,
+     "loop": 0.0,
+     "pin": 1.0,
+     "reasons": [],
+     "sub": "8dabc476-07ba-41d7-a79d-d891c43914b5",
+     "takes": 1,
+     "version": 1,
+     "mirrored": true,
+     "generated_at": "2026-09-09T20:22:17+00:00",
+     "cut": 0,
+     "source": "south-east"
+    },
+    "west": {
+     "status": "pass",
+     "step_mean": 0.1335,
+     "step_max": 0.2074,
+     "drift": 1.47,
+     "loop": 0.0,
+     "pin": 1.0,
+     "reasons": [],
+     "sub": "6dea8e50-2b3f-40d3-b019-1e14cbb5ed6f",
+     "takes": 1,
+     "version": 1,
+     "mirrored": true,
+     "generated_at": "2026-09-09T20:22:19+00:00",
+     "cut": 0,
+     "source": "east"
+    },
+    "north-west": {
+     "status": "pass",
+     "step_mean": 0.1399,
+     "step_max": 0.1527,
+     "drift": 0.97,
+     "loop": 0.0,
+     "pin": 1.0,
+     "reasons": [],
+     "sub": "b7bd8247-19bd-4c5a-93ea-916525036f0e",
+     "takes": 1,
+     "version": 1,
+     "mirrored": true,
+     "generated_at": "2026-09-09T20:22:20+00:00",
+     "cut": 0,
+     "source": "north-east"
+    }
+   },
+   "action": "Calm still idle, breathing very slowly and subtly, chest and shoulders rise and fall a little, feet planted, no other movement, ends in the same neutral pose it started in",
+   "frame_paths": {
+    "south": [
+     "glow_grub/animations/idle/south/00.webp",
+     "glow_grub/animations/idle/south/01.webp",
+     "glow_grub/animations/idle/south/02.webp",
+     "glow_grub/animations/idle/south/03.webp",
+     "glow_grub/animations/idle/south/04.webp"
+    ],
+    "south-east": [
+     "glow_grub/animations/idle/south-east/00.webp",
+     "glow_grub/animations/idle/south-east/01.webp",
+     "glow_grub/animations/idle/south-east/02.webp",
+     "glow_grub/animations/idle/south-east/03.webp",
+     "glow_grub/animations/idle/south-east/04.webp"
+    ],
+    "east": [
+     "glow_grub/animations/idle/east/00.webp",
+     "glow_grub/animations/idle/east/01.webp",
+     "glow_grub/animations/idle/east/02.webp",
+     "glow_grub/animations/idle/east/03.webp",
+     "glow_grub/animations/idle/east/04.webp"
+    ],
+    "north-east": [
+     "glow_grub/animations/idle/north-east/00.webp",
+     "glow_grub/animations/idle/north-east/01.webp",
+     "glow_grub/animations/idle/north-east/02.webp",
+     "glow_grub/animations/idle/north-east/03.webp",
+     "glow_grub/animations/idle/north-east/04.webp"
+    ],
+    "north": [
+     "glow_grub/animations/idle/north/00.webp",
+     "glow_grub/animations/idle/north/01.webp",
+     "glow_grub/animations/idle/north/02.webp",
+     "glow_grub/animations/idle/north/03.webp",
+     "glow_grub/animations/idle/north/04.webp"
+    ],
+    "south-west": [
+     "glow_grub/animations/idle/south-west/00.webp",
+     "glow_grub/animations/idle/south-west/01.webp",
+     "glow_grub/animations/idle/south-west/02.webp",
+     "glow_grub/animations/idle/south-west/03.webp",
+     "glow_grub/animations/idle/south-west/04.webp"
+    ],
+    "west": [
+     "glow_grub/animations/idle/west/00.webp",
+     "glow_grub/animations/idle/west/01.webp",
+     "glow_grub/animations/idle/west/02.webp",
+     "glow_grub/animations/idle/west/03.webp",
+     "glow_grub/animations/idle/west/04.webp"
+    ],
+    "north-west": [
+     "glow_grub/animations/idle/north-west/00.webp",
+     "glow_grub/animations/idle/north-west/01.webp",
+     "glow_grub/animations/idle/north-west/02.webp",
+     "glow_grub/animations/idle/north-west/03.webp",
+     "glow_grub/animations/idle/north-west/04.webp"
+    ]
+   },
+   "strips": {
+    "south": "glow_grub/animations/idle__south.webp",
+    "south-east": "glow_grub/animations/idle__south-east.webp",
+    "east": "glow_grub/animations/idle__east.webp",
+    "north-east": "glow_grub/animations/idle__north-east.webp",
+    "north": "glow_grub/animations/idle__north.webp",
+    "south-west": "glow_grub/animations/idle__south-west.webp",
+    "west": "glow_grub/animations/idle__west.webp",
+    "north-west": "glow_grub/animations/idle__north-west.webp"
+   }
+  },
+  "walk": {
+   "directions": {
+    "south": {
+     "status": "pass",
+     "step_mean": 0.0763,
+     "step_max": 0.101,
+     "drift": 0.62,
+     "loop": 0.1136,
+     "loop_ratio": 1.49,
+     "travel": 0.33,
+     "pin": 0.876,
+     "pad": 0,
+     "canvas": [
+      32,
+      32
+     ],
+     "reasons": [],
+     "sub": "c24d537f-a44a-45f4-b58b-0a13a8a14d70",
+     "group": "24a1e330-1cc7-4df2-b7e4-41e7e12aa895",
+     "takes": 1,
+     "version": 2,
+     "mirrored": false,
+     "generated_at": "2026-09-09T21:31:19+00:00"
+    },
+    "south-east": {
+     "status": "pass",
+     "step_mean": 0.148,
+     "step_max": 0.21,
+     "drift": 1.49,
+     "loop": 0.1505,
+     "loop_ratio": 1.02,
+     "travel": 0.42,
+     "pin": 0.871,
+     "pad": 0,
+     "canvas": [
+      32,
+      32
+     ],
+     "reasons": [],
+     "sub": "3144d6de-ff97-4323-a0af-aea4e23b703b",
+     "group": "43558752-d4dd-46de-a8e6-ed8a2eb0cd6e",
+     "takes": 1,
+     "version": 2,
+     "mirrored": false,
+     "generated_at": "2026-09-09T21:31:19+00:00"
+    },
+    "east": {
+     "status": "pass",
+     "step_mean": 0.1164,
+     "step_max": 0.156,
+     "drift": 0.46,
+     "loop": 0.1253,
+     "loop_ratio": 1.08,
+     "travel": 0.35,
+     "pin": 0.878,
+     "pad": 0,
+     "canvas": [
+      32,
+      32
+     ],
+     "reasons": [],
+     "sub": "39c9d4b6-f3a7-4303-87d4-02809f7989e3",
+     "group": "a2980993-82bb-4aec-827e-489fb1140d0e",
+     "takes": 1,
+     "version": 2,
+     "mirrored": false,
+     "generated_at": "2026-09-09T21:31:20+00:00"
+    },
+    "north-east": {
+     "status": "pass",
+     "step_mean": 0.0906,
+     "step_max": 0.1178,
+     "drift": 0.68,
+     "loop": 0.1073,
+     "loop_ratio": 1.18,
+     "travel": 0.43,
+     "pin": 0.897,
+     "pad": 0,
+     "canvas": [
+      32,
+      32
+     ],
+     "reasons": [],
+     "sub": "24c0ad69-0da9-4e50-878b-339c2812e04a",
+     "group": "4fd55ae0-e7b0-4039-9fa9-57a5a0395a74",
+     "takes": 1,
+     "version": 2,
+     "mirrored": false,
+     "generated_at": "2026-09-09T21:31:20+00:00"
+    },
+    "north": {
+     "status": "pass",
+     "step_mean": 0.0653,
+     "step_max": 0.0921,
+     "drift": 0.45,
+     "loop": 0.1053,
+     "loop_ratio": 1.61,
+     "travel": 0.23,
+     "pin": 0.956,
+     "pad": 0,
+     "canvas": [
+      32,
+      32
+     ],
+     "reasons": [],
+     "sub": "4dcb7bba-d617-4b53-9142-5509cf759933",
+     "group": "16373dfd-ede7-4a23-8323-4e43277f44ab",
+     "takes": 1,
+     "version": 2,
+     "mirrored": false,
+     "generated_at": "2026-09-09T21:31:21+00:00"
+    },
+    "south-west": {
+     "status": "pass",
+     "step_mean": 0.148,
+     "step_max": 0.21,
+     "drift": 1.49,
+     "loop": 0.1505,
+     "loop_ratio": 1.02,
+     "travel": 0.42,
+     "pin": 0.871,
+     "pad": 0,
+     "canvas": [
+      32,
+      32
+     ],
+     "reasons": [],
+     "sub": "3144d6de-ff97-4323-a0af-aea4e23b703b",
+     "group": "43558752-d4dd-46de-a8e6-ed8a2eb0cd6e",
+     "takes": 1,
+     "version": 2,
+     "mirrored": true,
+     "generated_at": "2026-09-09T21:31:19+00:00",
+     "source": "south-east"
+    },
+    "west": {
+     "status": "pass",
+     "step_mean": 0.1164,
+     "step_max": 0.156,
+     "drift": 0.46,
+     "loop": 0.1253,
+     "loop_ratio": 1.08,
+     "travel": 0.35,
+     "pin": 0.878,
+     "pad": 0,
+     "canvas": [
+      32,
+      32
+     ],
+     "reasons": [],
+     "sub": "39c9d4b6-f3a7-4303-87d4-02809f7989e3",
+     "group": "a2980993-82bb-4aec-827e-489fb1140d0e",
+     "takes": 1,
+     "version": 2,
+     "mirrored": true,
+     "generated_at": "2026-09-09T21:31:20+00:00",
+     "source": "east"
+    },
+    "north-west": {
+     "status": "pass",
+     "step_mean": 0.0906,
+     "step_max": 0.1178,
+     "drift": 0.68,
+     "loop": 0.1073,
+     "loop_ratio": 1.18,
+     "travel": 0.43,
+     "pin": 0.897,
+     "pad": 0,
+     "canvas": [
+      32,
+      32
+     ],
+     "reasons": [],
+     "sub": "24c0ad69-0da9-4e50-878b-339c2812e04a",
+     "group": "4fd55ae0-e7b0-4039-9fa9-57a5a0395a74",
+     "takes": 1,
+     "version": 2,
+     "mirrored": true,
+     "generated_at": "2026-09-09T21:31:20+00:00",
+     "source": "north-east"
+    }
+   },
+   "action": "crawls forward in place, body segments rippling in a wave, stubby legs alternating, seamless loop, no turning",
+   "frame_paths": {
+    "south": [
+     "glow_grub/animations/walk/south/00.webp",
+     "glow_grub/animations/walk/south/01.webp",
+     "glow_grub/animations/walk/south/02.webp",
+     "glow_grub/animations/walk/south/03.webp",
+     "glow_grub/animations/walk/south/04.webp",
+     "glow_grub/animations/walk/south/05.webp"
+    ],
+    "south-east": [
+     "glow_grub/animations/walk/south-east/00.webp",
+     "glow_grub/animations/walk/south-east/01.webp",
+     "glow_grub/animations/walk/south-east/02.webp",
+     "glow_grub/animations/walk/south-east/03.webp",
+     "glow_grub/animations/walk/south-east/04.webp",
+     "glow_grub/animations/walk/south-east/05.webp"
+    ],
+    "east": [
+     "glow_grub/animations/walk/east/00.webp",
+     "glow_grub/animations/walk/east/01.webp",
+     "glow_grub/animations/walk/east/02.webp",
+     "glow_grub/animations/walk/east/03.webp",
+     "glow_grub/animations/walk/east/04.webp",
+     "glow_grub/animations/walk/east/05.webp"
+    ],
+    "north-east": [
+     "glow_grub/animations/walk/north-east/00.webp",
+     "glow_grub/animations/walk/north-east/01.webp",
+     "glow_grub/animations/walk/north-east/02.webp",
+     "glow_grub/animations/walk/north-east/03.webp",
+     "glow_grub/animations/walk/north-east/04.webp",
+     "glow_grub/animations/walk/north-east/05.webp"
+    ],
+    "north": [
+     "glow_grub/animations/walk/north/00.webp",
+     "glow_grub/animations/walk/north/01.webp",
+     "glow_grub/animations/walk/north/02.webp",
+     "glow_grub/animations/walk/north/03.webp",
+     "glow_grub/animations/walk/north/04.webp",
+     "glow_grub/animations/walk/north/05.webp"
+    ],
+    "south-west": [
+     "glow_grub/animations/walk/south-west/00.webp",
+     "glow_grub/animations/walk/south-west/01.webp",
+     "glow_grub/animations/walk/south-west/02.webp",
+     "glow_grub/animations/walk/south-west/03.webp",
+     "glow_grub/animations/walk/south-west/04.webp",
+     "glow_grub/animations/walk/south-west/05.webp"
+    ],
+    "west": [
+     "glow_grub/animations/walk/west/00.webp",
+     "glow_grub/animations/walk/west/01.webp",
+     "glow_grub/animations/walk/west/02.webp",
+     "glow_grub/animations/walk/west/03.webp",
+     "glow_grub/animations/walk/west/04.webp",
+     "glow_grub/animations/walk/west/05.webp"
+    ],
+    "north-west": [
+     "glow_grub/animations/walk/north-west/00.webp",
+     "glow_grub/animations/walk/north-west/01.webp",
+     "glow_grub/animations/walk/north-west/02.webp",
+     "glow_grub/animations/walk/north-west/03.webp",
+     "glow_grub/animations/walk/north-west/04.webp",
+     "glow_grub/animations/walk/north-west/05.webp"
+    ]
+   },
+   "strips": {
+    "south": "glow_grub/animations/walk__south.webp",
+    "south-east": "glow_grub/animations/walk__south-east.webp",
+    "east": "glow_grub/animations/walk__east.webp",
+    "north-east": "glow_grub/animations/walk__north-east.webp",
+    "north": "glow_grub/animations/walk__north.webp",
+    "south-west": "glow_grub/animations/walk__south-west.webp",
+    "west": "glow_grub/animations/walk__west.webp",
+    "north-west": "glow_grub/animations/walk__north-west.webp"
+   }
+  },
+  "attack": {
+   "directions": {
+    "south": {
+     "status": "fail",
+     "step_mean": 0.1383,
+     "step_max": 0.1523,
+     "drift": 1.81,
+     "loop": 0.0,
+     "loop_ratio": 0.0,
+     "travel": 0.56,
+     "pin": 1.0,
+     "pad": 0,
+     "flash": 0.0,
+     "peak": 0.2386,
+     "reach": 0.091,
+     "canvas": [
+      32,
+      32
+     ],
+     "reasons": [
+      "no strike, just a lean: nothing reaches past 0.09 of the body"
+     ],
+     "sub": "77b469b1-1291-4c50-aed5-6b56c34169fd",
+     "group": "4e5b5330-290c-453c-878e-f6a02f6a8f52",
+     "takes": 1,
+     "version": 2,
+     "mirrored": false,
+     "generated_at": "2026-09-09T22:43:06+00:00",
+     "action": "Bite - Rears up and bites forward once with its mandibles, then returns to idle stance"
+    },
+    "south-east": {
+     "status": "fail",
+     "step_mean": 0.1176,
+     "step_max": 0.1797,
+     "drift": 1.68,
+     "loop": 0.0,
+     "loop_ratio": 0.0,
+     "travel": 0.13,
+     "pin": 1.0,
+     "pad": 0,
+     "flash": 0.01,
+     "peak": 0.2059,
+     "reach": 0.118,
+     "canvas": [
+      32,
+      32
+     ],
+     "reasons": [
+      "no strike, just a lean: nothing reaches past 0.12 of the body"
+     ],
+     "sub": "81b1c81f-4870-4153-a4fc-95d2637a69d4",
+     "group": "44b9e82a-4165-4e92-a769-d730d5090018",
+     "takes": 1,
+     "version": 2,
+     "mirrored": false,
+     "generated_at": "2026-09-09T22:43:07+00:00",
+     "action": "Bite - Rears up and bites forward once with its mandibles, then returns to idle stance"
+    },
+    "east": {
+     "status": "fail",
+     "step_mean": 0.1059,
+     "step_max": 0.1367,
+     "drift": 1.19,
+     "loop": 0.0,
+     "loop_ratio": 0.0,
+     "travel": 0.23,
+     "pin": 1.0,
+     "pad": 0,
+     "flash": 0.02,
+     "peak": 0.2011,
+     "reach": 0.136,
+     "canvas": [
+      32,
+      32
+     ],
+     "reasons": [
+      "no strike, just a lean: nothing reaches past 0.14 of the body"
+     ],
+     "sub": "f43d2cb0-bcc6-4429-b7e5-697626ca49ce",
+     "group": "5a98ddb5-7e29-4dd6-81ce-768ff2b792fa",
+     "takes": 1,
+     "version": 2,
+     "mirrored": false,
+     "generated_at": "2026-09-09T22:43:07+00:00",
+     "action": "Bite - Rears up and bites forward once with its mandibles, then returns to idle stance"
+    },
+    "north-east": {
+     "status": "fail",
+     "step_mean": 0.1501,
+     "step_max": 0.1807,
+     "drift": 0.96,
+     "loop": 0.0,
+     "loop_ratio": 0.0,
+     "travel": 0.55,
+     "pin": 1.0,
+     "pad": 0,
+     "flash": 0.023,
+     "peak": 0.1858,
+     "reach": 0.087,
+     "canvas": [
+      32,
+      32
+     ],
+     "reasons": [
+      "no strike, just a lean: nothing reaches past 0.09 of the body"
+     ],
+     "sub": "f4e47d84-b7ca-4265-99e0-15186655d99a",
+     "group": "8881305b-645a-4854-8002-1f4051bb8e6a",
+     "takes": 1,
+     "version": 2,
+     "mirrored": false,
+     "generated_at": "2026-09-09T22:43:08+00:00",
+     "action": "Bite - Rears up and bites forward once with its mandibles, then returns to idle stance"
+    },
+    "north": {
+     "status": "fail",
+     "step_mean": 0.1168,
+     "step_max": 0.1522,
+     "drift": 0.45,
+     "loop": 0.0,
+     "loop_ratio": 0.0,
+     "travel": 0.45,
+     "pin": 1.0,
+     "pad": 0,
+     "flash": 0.01,
+     "peak": 0.1654,
+     "reach": 0.125,
+     "canvas": [
+      32,
+      32
+     ],
+     "reasons": [
+      "no strike, just a lean: nothing reaches past 0.12 of the body"
+     ],
+     "sub": "60b46ccf-bf18-4e25-8d6b-d265aebc062d",
+     "group": "86baa56d-b38c-40e8-809d-67c2a37adb9c",
+     "takes": 1,
+     "version": 2,
+     "mirrored": false,
+     "generated_at": "2026-09-09T22:43:08+00:00",
+     "action": "Bite - Rears up and bites forward once with its mandibles, then returns to idle stance"
+    },
+    "south-west": {
+     "status": "pass",
+     "step_mean": 0.1176,
+     "step_max": 0.1797,
+     "drift": 1.68,
+     "loop": 0.0,
+     "loop_ratio": 0.0,
+     "travel": 0.13,
+     "pin": 1.0,
+     "pad": 0,
+     "flash": 0.01,
+     "peak": 0.2059,
+     "canvas": [
+      32,
+      32
+     ],
+     "reasons": [],
+     "sub": "81b1c81f-4870-4153-a4fc-95d2637a69d4",
+     "group": "44b9e82a-4165-4e92-a769-d730d5090018",
+     "takes": 1,
+     "version": 2,
+     "mirrored": true,
+     "generated_at": "2026-09-09T22:43:07+00:00",
+     "action": "Bite - Rears up and bites forward once with its mandibles, then returns to idle stance",
+     "source": "south-east"
+    },
+    "west": {
+     "status": "pass",
+     "step_mean": 0.1059,
+     "step_max": 0.1367,
+     "drift": 1.19,
+     "loop": 0.0,
+     "loop_ratio": 0.0,
+     "travel": 0.23,
+     "pin": 1.0,
+     "pad": 0,
+     "flash": 0.02,
+     "peak": 0.2011,
+     "canvas": [
+      32,
+      32
+     ],
+     "reasons": [],
+     "sub": "f43d2cb0-bcc6-4429-b7e5-697626ca49ce",
+     "group": "5a98ddb5-7e29-4dd6-81ce-768ff2b792fa",
+     "takes": 1,
+     "version": 2,
+     "mirrored": true,
+     "generated_at": "2026-09-09T22:43:07+00:00",
+     "action": "Bite - Rears up and bites forward once with its mandibles, then returns to idle stance",
+     "source": "east"
+    },
+    "north-west": {
+     "status": "pass",
+     "step_mean": 0.1501,
+     "step_max": 0.1807,
+     "drift": 0.96,
+     "loop": 0.0,
+     "loop_ratio": 0.0,
+     "travel": 0.55,
+     "pin": 1.0,
+     "pad": 0,
+     "flash": 0.023,
+     "peak": 0.1858,
+     "canvas": [
+      32,
+      32
+     ],
+     "reasons": [],
+     "sub": "f4e47d84-b7ca-4265-99e0-15186655d99a",
+     "group": "8881305b-645a-4854-8002-1f4051bb8e6a",
+     "takes": 1,
+     "version": 2,
+     "mirrored": true,
+     "generated_at": "2026-09-09T22:43:08+00:00",
+     "action": "Bite - Rears up and bites forward once with its mandibles, then returns to idle stance",
+     "source": "north-east"
+    }
+   },
+   "action": "Bite - Rears up and bites forward once with its mandibles, then returns to idle stance",
+   "frame_paths": {
+    "south": [
+     "glow_grub/animations/attack/south/00.webp",
+     "glow_grub/animations/attack/south/01.webp",
+     "glow_grub/animations/attack/south/02.webp",
+     "glow_grub/animations/attack/south/03.webp",
+     "glow_grub/animations/attack/south/04.webp"
+    ],
+    "south-east": [
+     "glow_grub/animations/attack/south-east/00.webp",
+     "glow_grub/animations/attack/south-east/01.webp",
+     "glow_grub/animations/attack/south-east/02.webp",
+     "glow_grub/animations/attack/south-east/03.webp",
+     "glow_grub/animations/attack/south-east/04.webp"
+    ],
+    "east": [
+     "glow_grub/animations/attack/east/00.webp",
+     "glow_grub/animations/attack/east/01.webp",
+     "glow_grub/animations/attack/east/02.webp",
+     "glow_grub/animations/attack/east/03.webp",
+     "glow_grub/animations/attack/east/04.webp"
+    ],
+    "north-east": [
+     "glow_grub/animations/attack/north-east/00.webp",
+     "glow_grub/animations/attack/north-east/01.webp",
+     "glow_grub/animations/attack/north-east/02.webp",
+     "glow_grub/animations/attack/north-east/03.webp",
+     "glow_grub/animations/attack/north-east/04.webp"
+    ],
+    "north": [
+     "glow_grub/animations/attack/north/00.webp",
+     "glow_grub/animations/attack/north/01.webp",
+     "glow_grub/animations/attack/north/02.webp",
+     "glow_grub/animations/attack/north/03.webp",
+     "glow_grub/animations/attack/north/04.webp"
+    ],
+    "south-west": [
+     "glow_grub/animations/attack/south-west/00.webp",
+     "glow_grub/animations/attack/south-west/01.webp",
+     "glow_grub/animations/attack/south-west/02.webp",
+     "glow_grub/animations/attack/south-west/03.webp",
+     "glow_grub/animations/attack/south-west/04.webp"
+    ],
+    "west": [
+     "glow_grub/animations/attack/west/00.webp",
+     "glow_grub/animations/attack/west/01.webp",
+     "glow_grub/animations/attack/west/02.webp",
+     "glow_grub/animations/attack/west/03.webp",
+     "glow_grub/animations/attack/west/04.webp"
+    ],
+    "north-west": [
+     "glow_grub/animations/attack/north-west/00.webp",
+     "glow_grub/animations/attack/north-west/01.webp",
+     "glow_grub/animations/attack/north-west/02.webp",
+     "glow_grub/animations/attack/north-west/03.webp",
+     "glow_grub/animations/attack/north-west/04.webp"
+    ]
+   },
+   "strips": {
+    "south": "glow_grub/animations/attack__south.webp",
+    "south-east": "glow_grub/animations/attack__south-east.webp",
+    "east": "glow_grub/animations/attack__east.webp",
+    "north-east": "glow_grub/animations/attack__north-east.webp",
+    "north": "glow_grub/animations/attack__north.webp",
+    "south-west": "glow_grub/animations/attack__south-west.webp",
+    "west": "glow_grub/animations/attack__west.webp",
+    "north-west": "glow_grub/animations/attack__north-west.webp"
+   }
+  },
+  "attack_try": {
+   "directions": {
+    "south": {
+     "status": "pass",
+     "step_mean": 0.2223,
+     "step_max": 0.267,
+     "drift": 1.7,
+     "loop": 0.1584,
+     "loop_ratio": 0.71,
+     "travel": 1.22,
+     "pin": 1.0,
+     "pad": 0,
+     "flash": 0.226,
+     "peak": 0.2986,
+     "reach": 0.334,
+     "canvas": [
+      32,
+      32
+     ],
+     "reasons": [],
+     "sub": "536e58e5-ad40-425f-90e0-8feb2d352378",
+     "group": "3d74b756-dbfe-4a69-a835-a490ec7eacd0",
+     "takes": 1,
+     "version": 4,
+     "mirrored": false,
+     "generated_at": "2026-09-10T21:22:47+00:00",
+     "action": "Lunge Attack - Throws its whole body forward in one fast lunge, white swoosh lines trailing behind it",
+     "tries": 4,
+     "rolls": 4,
+     "intensity": 1,
+     "frames": 9,
+     "rung": 0
+    },
+    "south-east": {
+     "status": "warn",
+     "step_mean": 0.1691,
+     "step_max": 0.2288,
+     "drift": 2.68,
+     "loop": 0.0817,
+     "loop_ratio": 0.48,
+     "travel": 0.92,
+     "pin": 1.0,
+     "pad": 0,
+     "flash": 0.003,
+     "peak": 0.3366,
+     "reach": 0.235,
+     "canvas": [
+      32,
+      32
+     ],
+     "reasons": [
+      "shallow strike: reach 0.24 — eyeball it"
+     ],
+     "sub": "60733db0-4bf1-4f70-a181-d5852d9c0556",
+     "group": "46b6965d-8ead-4661-8ad5-6d0a68a2bc1d",
+     "takes": 1,
+     "version": 2,
+     "mirrored": false,
+     "generated_at": "2026-09-10T20:23:14+00:00",
+     "action": "Bite - Rears its front half up and bites forward with its mandibles, a big aggressive swing",
+     "tries": 1,
+     "rolls": 2,
+     "intensity": 1,
+     "rung": 0
+    },
+    "east": {
+     "status": "pass",
+     "step_mean": 0.1181,
+     "step_max": 0.1908,
+     "drift": 1.31,
+     "loop": 0.2746,
+     "loop_ratio": 2.32,
+     "travel": 0.87,
+     "pin": 1.0,
+     "pad": 0,
+     "flash": 0.075,
+     "peak": 0.4046,
+     "reach": 0.339,
+     "canvas": [
+      32,
+      32
+     ],
+     "reasons": [],
+     "sub": "fd2b5778-6b5b-4f38-a0a9-fe92c5f9ae2b",
+     "group": "d9fb9882-45da-4490-92a7-cc3a76e71bc6",
+     "takes": 1,
+     "version": 4,
+     "mirrored": false,
+     "generated_at": "2026-09-10T21:22:48+00:00",
+     "action": "Lunge Attack - Throws its whole body forward in one fast lunge, white swoosh lines trailing behind it",
+     "tries": 4,
+     "rolls": 4,
+     "intensity": 1,
+     "frames": 9,
+     "rung": 0
+    },
+    "north-east": {
+     "status": "warn",
+     "step_mean": 0.1161,
+     "step_max": 0.1501,
+     "drift": 1.1,
+     "loop": 0.2316,
+     "loop_ratio": 1.99,
+     "travel": 0.76,
+     "pin": 1.0,
+     "pad": 0,
+     "flash": 0.053,
+     "peak": 0.3079,
+     "reach": 0.261,
+     "canvas": [
+      32,
+      32
+     ],
+     "reasons": [
+      "shallow strike: reach 0.26 — eyeball it"
+     ],
+     "sub": "211b23fc-fe8b-4ed9-955e-d26ba0a1eb4b",
+     "group": "3398b911-dc26-475d-88f6-250a27f3f17a",
+     "takes": 1,
+     "version": 4,
+     "mirrored": false,
+     "generated_at": "2026-09-10T21:22:48+00:00",
+     "action": "Lunge Attack - Throws its whole body forward in one fast lunge, white swoosh lines trailing behind it",
+     "tries": 4,
+     "rolls": 4,
+     "intensity": 1,
+     "frames": 9,
+     "rung": 0
+    },
+    "north": {
+     "status": "warn",
+     "step_mean": 0.1145,
+     "step_max": 0.1378,
+     "drift": 0.87,
+     "loop": 0.1658,
+     "loop_ratio": 1.45,
+     "travel": 0.96,
+     "pin": 1.0,
+     "pad": 0,
+     "flash": 0.081,
+     "peak": 0.2832,
+     "reach": 0.292,
+     "canvas": [
+      32,
+      32
+     ],
+     "reasons": [
+      "shallow strike: reach 0.29 — eyeball it"
+     ],
+     "sub": "141848e7-8cb2-44e6-8b29-1a1bffe9285e",
+     "group": "8579da98-7550-4cf8-8f7c-37d1d60b7149",
+     "takes": 1,
+     "version": 4,
+     "mirrored": false,
+     "generated_at": "2026-09-10T21:22:49+00:00",
+     "action": "Lunge Attack - Throws its whole body forward in one fast lunge, white swoosh lines trailing behind it",
+     "tries": 4,
+     "rolls": 4,
+     "intensity": 1,
+     "frames": 9,
+     "rung": 0
+    },
+    "south-west": {
+     "status": "warn",
+     "step_mean": 0.1691,
+     "step_max": 0.2288,
+     "drift": 2.68,
+     "loop": 0.0817,
+     "loop_ratio": 0.48,
+     "travel": 0.92,
+     "pin": 1.0,
+     "pad": 0,
+     "flash": 0.003,
+     "peak": 0.3366,
+     "reach": 0.235,
+     "canvas": [
+      32,
+      32
+     ],
+     "reasons": [
+      "shallow strike: reach 0.24 — eyeball it"
+     ],
+     "sub": "60733db0-4bf1-4f70-a181-d5852d9c0556",
+     "group": "46b6965d-8ead-4661-8ad5-6d0a68a2bc1d",
+     "takes": 1,
+     "version": 2,
+     "mirrored": true,
+     "generated_at": "2026-09-10T20:23:14+00:00",
+     "action": "Bite - Rears its front half up and bites forward with its mandibles, a big aggressive swing",
+     "tries": 1,
+     "rolls": 2,
+     "intensity": 1,
+     "source": "south-east"
+    },
+    "west": {
+     "status": "pass",
+     "step_mean": 0.1181,
+     "step_max": 0.1908,
+     "drift": 1.31,
+     "loop": 0.2746,
+     "loop_ratio": 2.32,
+     "travel": 0.87,
+     "pin": 1.0,
+     "pad": 0,
+     "flash": 0.075,
+     "peak": 0.4046,
+     "reach": 0.339,
+     "canvas": [
+      32,
+      32
+     ],
+     "reasons": [],
+     "sub": "fd2b5778-6b5b-4f38-a0a9-fe92c5f9ae2b",
+     "group": "d9fb9882-45da-4490-92a7-cc3a76e71bc6",
+     "takes": 1,
+     "version": 4,
+     "mirrored": true,
+     "generated_at": "2026-09-10T21:22:48+00:00",
+     "action": "Lunge Attack - Throws its whole body forward in one fast lunge, white swoosh lines trailing behind it",
+     "tries": 4,
+     "rolls": 4,
+     "intensity": 1,
+     "frames": 9,
+     "source": "east"
+    },
+    "north-west": {
+     "status": "warn",
+     "step_mean": 0.1161,
+     "step_max": 0.1501,
+     "drift": 1.1,
+     "loop": 0.2316,
+     "loop_ratio": 1.99,
+     "travel": 0.76,
+     "pin": 1.0,
+     "pad": 0,
+     "flash": 0.053,
+     "peak": 0.3079,
+     "reach": 0.261,
+     "canvas": [
+      32,
+      32
+     ],
+     "reasons": [
+      "shallow strike: reach 0.26 — eyeball it"
+     ],
+     "sub": "211b23fc-fe8b-4ed9-955e-d26ba0a1eb4b",
+     "group": "3398b911-dc26-475d-88f6-250a27f3f17a",
+     "takes": 1,
+     "version": 4,
+     "mirrored": true,
+     "generated_at": "2026-09-10T21:22:48+00:00",
+     "action": "Lunge Attack - Throws its whole body forward in one fast lunge, white swoosh lines trailing behind it",
+     "tries": 4,
+     "rolls": 4,
+     "intensity": 1,
+     "frames": 9,
+     "source": "north-east"
+    }
+   },
+   "action": "Bite - Rears its front half up and bites forward with its mandibles, a big aggressive swing",
+   "frame_paths": {
+    "south": [
+     "glow_grub/animations/attack_try/south/00.webp",
+     "glow_grub/animations/attack_try/south/01.webp",
+     "glow_grub/animations/attack_try/south/02.webp",
+     "glow_grub/animations/attack_try/south/03.webp",
+     "glow_grub/animations/attack_try/south/04.webp",
+     "glow_grub/animations/attack_try/south/05.webp",
+     "glow_grub/animations/attack_try/south/06.webp",
+     "glow_grub/animations/attack_try/south/07.webp",
+     "glow_grub/animations/attack_try/south/08.webp"
+    ],
+    "south-east": [
+     "glow_grub/animations/attack_try/south-east/00.webp",
+     "glow_grub/animations/attack_try/south-east/01.webp",
+     "glow_grub/animations/attack_try/south-east/02.webp",
+     "glow_grub/animations/attack_try/south-east/03.webp",
+     "glow_grub/animations/attack_try/south-east/04.webp"
+    ],
+    "east": [
+     "glow_grub/animations/attack_try/east/00.webp",
+     "glow_grub/animations/attack_try/east/01.webp",
+     "glow_grub/animations/attack_try/east/02.webp",
+     "glow_grub/animations/attack_try/east/03.webp",
+     "glow_grub/animations/attack_try/east/04.webp",
+     "glow_grub/animations/attack_try/east/05.webp",
+     "glow_grub/animations/attack_try/east/06.webp",
+     "glow_grub/animations/attack_try/east/07.webp",
+     "glow_grub/animations/attack_try/east/08.webp"
+    ],
+    "north-east": [
+     "glow_grub/animations/attack_try/north-east/00.webp",
+     "glow_grub/animations/attack_try/north-east/01.webp",
+     "glow_grub/animations/attack_try/north-east/02.webp",
+     "glow_grub/animations/attack_try/north-east/03.webp",
+     "glow_grub/animations/attack_try/north-east/04.webp",
+     "glow_grub/animations/attack_try/north-east/05.webp",
+     "glow_grub/animations/attack_try/north-east/06.webp",
+     "glow_grub/animations/attack_try/north-east/07.webp",
+     "glow_grub/animations/attack_try/north-east/08.webp"
+    ],
+    "north": [
+     "glow_grub/animations/attack_try/north/00.webp",
+     "glow_grub/animations/attack_try/north/01.webp",
+     "glow_grub/animations/attack_try/north/02.webp",
+     "glow_grub/animations/attack_try/north/03.webp",
+     "glow_grub/animations/attack_try/north/04.webp",
+     "glow_grub/animations/attack_try/north/05.webp",
+     "glow_grub/animations/attack_try/north/06.webp",
+     "glow_grub/animations/attack_try/north/07.webp",
+     "glow_grub/animations/attack_try/north/08.webp"
+    ],
+    "south-west": [
+     "glow_grub/animations/attack_try/south-west/00.webp",
+     "glow_grub/animations/attack_try/south-west/01.webp",
+     "glow_grub/animations/attack_try/south-west/02.webp",
+     "glow_grub/animations/attack_try/south-west/03.webp",
+     "glow_grub/animations/attack_try/south-west/04.webp"
+    ],
+    "west": [
+     "glow_grub/animations/attack_try/west/00.webp",
+     "glow_grub/animations/attack_try/west/01.webp",
+     "glow_grub/animations/attack_try/west/02.webp",
+     "glow_grub/animations/attack_try/west/03.webp",
+     "glow_grub/animations/attack_try/west/04.webp",
+     "glow_grub/animations/attack_try/west/05.webp",
+     "glow_grub/animations/attack_try/west/06.webp",
+     "glow_grub/animations/attack_try/west/07.webp",
+     "glow_grub/animations/attack_try/west/08.webp"
+    ],
+    "north-west": [
+     "glow_grub/animations/attack_try/north-west/00.webp",
+     "glow_grub/animations/attack_try/north-west/01.webp",
+     "glow_grub/animations/attack_try/north-west/02.webp",
+     "glow_grub/animations/attack_try/north-west/03.webp",
+     "glow_grub/animations/attack_try/north-west/04.webp",
+     "glow_grub/animations/attack_try/north-west/05.webp",
+     "glow_grub/animations/attack_try/north-west/06.webp",
+     "glow_grub/animations/attack_try/north-west/07.webp",
+     "glow_grub/animations/attack_try/north-west/08.webp"
+    ]
+   },
+   "strips": {
+    "south": "glow_grub/animations/attack_try__south.webp",
+    "south-east": "glow_grub/animations/attack_try__south-east.webp",
+    "east": "glow_grub/animations/attack_try__east.webp",
+    "north-east": "glow_grub/animations/attack_try__north-east.webp",
+    "north": "glow_grub/animations/attack_try__north.webp",
+    "south-west": "glow_grub/animations/attack_try__south-west.webp",
+    "west": "glow_grub/animations/attack_try__west.webp",
+    "north-west": "glow_grub/animations/attack_try__north-west.webp"
+   },
+   "intensity": 1
+  }
+ }
 }

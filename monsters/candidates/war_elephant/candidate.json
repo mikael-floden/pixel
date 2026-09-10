@@ -1,1225 +1,1230 @@
 {
-  "id": "war_elephant",
-  "name": "Ironbrow",
-  "tier": "boss",
-  "scale": "big",
-  "lore": "It carried a king to war and carried him home dead. It still wears the tower, and it still wants a war.",
-  "biome": [
-    "light_soil",
-    "grass"
-  ],
-  "items": [],
-  "prompt": "Gigantic fantasy armored war elephant with wrinkled grey hide, riveted iron plates on its brow and flanks, capped brass tusks, a short curled trunk, small wise eyes, and a howdah-tower of wood strapped to its back.",
-  "size": [
-    240,
-    240
-  ],
-  "template_id": "bear",
-  "directions": [
-    "south",
-    "south-east",
-    "east",
-    "north-east",
-    "north",
-    "north-west",
-    "west",
-    "south-west"
-  ],
-  "rotations": {
-    "south": "war_elephant/rotations/south.webp",
-    "south-east": "war_elephant/rotations/south-east.webp",
-    "east": "war_elephant/rotations/east.webp",
-    "north-east": "war_elephant/rotations/north-east.webp",
-    "north": "war_elephant/rotations/north.webp",
-    "north-west": "war_elephant/rotations/north-west.webp",
-    "west": "war_elephant/rotations/west.webp",
-    "south-west": "war_elephant/rotations/south-west.webp"
-  },
-  "sheet": "war_elephant/sheet.webp",
-  "review": "approved",
-  "pixellab_id": "9a645c87-6da7-4d45-9bb2-a725e7493778",
-  "seed": 655270357,
-  "version": 1,
-  "usage": null,
-  "generated_at": "2026-09-09T18:49:12+00:00",
-  "elapsed_s": 243.0,
-  "qa": {
-    "status": "pass",
-    "min_run1": 0.579,
-    "reasons": [],
-    "directions": {
-      "south": {
-        "run1": 0.579,
-        "bbox": [
-          13,
-          9,
-          225,
-          229
-        ],
-        "fill": 0.81,
-        "touches_edge": false
-      },
-      "south-east": {
-        "run1": 0.665,
-        "bbox": [
-          39,
-          9,
-          197,
-          225
-        ],
-        "fill": 0.593,
-        "touches_edge": false
-      },
-      "east": {
-        "run1": 0.688,
-        "bbox": [
-          45,
-          8,
-          214,
-          231
-        ],
-        "fill": 0.654,
-        "touches_edge": false
-      },
-      "north-east": {
-        "run1": 0.678,
-        "bbox": [
-          19,
-          14,
-          232,
-          222
-        ],
-        "fill": 0.769,
-        "touches_edge": false
-      },
-      "north": {
-        "run1": 0.648,
-        "bbox": [
-          29,
-          17,
-          225,
-          231
-        ],
-        "fill": 0.728,
-        "touches_edge": false
-      },
-      "north-west": {
-        "run1": 0.664,
-        "bbox": [
-          44,
-          11,
-          194,
-          231
-        ],
-        "fill": 0.573,
-        "touches_edge": false
-      },
-      "west": {
-        "run1": 0.665,
-        "bbox": [
-          18,
-          17,
-          206,
-          231
-        ],
-        "fill": 0.698,
-        "touches_edge": false
-      },
-      "south-west": {
-        "run1": 0.677,
-        "bbox": [
-          6,
-          14,
-          225,
-          223
-        ],
-        "fill": 0.795,
-        "touches_edge": false
-      }
-    }
-  },
-  "approved_at": "2026-09-09T19:59:23+00:00",
-  "animations": {
-    "idle": {
-      "directions": {
-        "south": {
-          "status": "pass",
-          "step_mean": 0.0171,
-          "step_max": 0.0332,
-          "drift": 1.35,
-          "loop": 0.0,
-          "pin": 1.0,
-          "reasons": [],
-          "sub": "efecc54b-395a-427f-9c67-be00762956ea",
-          "takes": 1,
-          "version": 1,
-          "mirrored": false,
-          "generated_at": "2026-09-09T20:21:06+00:00",
-          "cut": 0
-        },
-        "south-east": {
-          "status": "warn",
-          "step_mean": 0.0492,
-          "step_max": 0.0604,
-          "drift": 5.3,
-          "loop": 0.0001,
-          "pin": 1.0,
-          "reasons": [
-            "drifts 5.3 px — eyeball it"
-          ],
-          "sub": "967f36cc-fd5d-4b09-89ac-26172b8e2f3c",
-          "takes": 1,
-          "version": 1,
-          "mirrored": false,
-          "generated_at": "2026-09-09T20:21:07+00:00",
-          "cut": 0
-        },
-        "east": {
-          "status": "pass",
-          "step_mean": 0.0259,
-          "step_max": 0.0333,
-          "drift": 1.68,
-          "loop": 0.0,
-          "pin": 1.0,
-          "reasons": [],
-          "sub": "91b412b1-3dfa-4c13-90a6-b9046a290fcb",
-          "takes": 1,
-          "version": 1,
-          "mirrored": false,
-          "generated_at": "2026-09-09T20:21:08+00:00",
-          "cut": 0
-        },
-        "north-east": {
-          "status": "pass",
-          "step_mean": 0.0354,
-          "step_max": 0.0438,
-          "drift": 1.42,
-          "loop": 0.0,
-          "pin": 1.0,
-          "reasons": [],
-          "sub": "ff845bf4-17f0-4c57-9df0-764ad8a4994f",
-          "takes": 1,
-          "version": 1,
-          "mirrored": false,
-          "generated_at": "2026-09-09T20:21:09+00:00",
-          "cut": 0
-        },
-        "north": {
-          "status": "pass",
-          "step_mean": 0.0345,
-          "step_max": 0.049,
-          "drift": 2.13,
-          "loop": 0.0001,
-          "pin": 1.0,
-          "reasons": [],
-          "sub": "e0d9e25e-e538-418d-adf3-8beeabdfb680",
-          "takes": 1,
-          "version": 1,
-          "mirrored": false,
-          "generated_at": "2026-09-09T20:21:10+00:00",
-          "cut": 0
-        },
-        "south-west": {
-          "status": "warn",
-          "step_mean": 0.0492,
-          "step_max": 0.0604,
-          "drift": 5.3,
-          "loop": 0.0001,
-          "pin": 1.0,
-          "reasons": [
-            "drifts 5.3 px — eyeball it"
-          ],
-          "sub": "967f36cc-fd5d-4b09-89ac-26172b8e2f3c",
-          "takes": 1,
-          "version": 1,
-          "mirrored": true,
-          "generated_at": "2026-09-09T20:21:07+00:00",
-          "cut": 0,
-          "source": "south-east"
-        },
-        "west": {
-          "status": "pass",
-          "step_mean": 0.0259,
-          "step_max": 0.0333,
-          "drift": 1.68,
-          "loop": 0.0,
-          "pin": 1.0,
-          "reasons": [],
-          "sub": "91b412b1-3dfa-4c13-90a6-b9046a290fcb",
-          "takes": 1,
-          "version": 1,
-          "mirrored": true,
-          "generated_at": "2026-09-09T20:21:08+00:00",
-          "cut": 0,
-          "source": "east"
-        },
-        "north-west": {
-          "status": "pass",
-          "step_mean": 0.0354,
-          "step_max": 0.0438,
-          "drift": 1.42,
-          "loop": 0.0,
-          "pin": 1.0,
-          "reasons": [],
-          "sub": "ff845bf4-17f0-4c57-9df0-764ad8a4994f",
-          "takes": 1,
-          "version": 1,
-          "mirrored": true,
-          "generated_at": "2026-09-09T20:21:09+00:00",
-          "cut": 0,
-          "source": "north-east"
-        }
-      },
-      "action": "Calm still idle, breathing very slowly and subtly, chest and shoulders rise and fall a little, feet planted, no other movement, ends in the same neutral pose it started in",
-      "frame_paths": {
-        "south": [
-          "war_elephant/animations/idle/south/00.webp",
-          "war_elephant/animations/idle/south/01.webp",
-          "war_elephant/animations/idle/south/02.webp",
-          "war_elephant/animations/idle/south/03.webp",
-          "war_elephant/animations/idle/south/04.webp"
-        ],
-        "south-east": [
-          "war_elephant/animations/idle/south-east/00.webp",
-          "war_elephant/animations/idle/south-east/01.webp",
-          "war_elephant/animations/idle/south-east/02.webp",
-          "war_elephant/animations/idle/south-east/03.webp",
-          "war_elephant/animations/idle/south-east/04.webp"
-        ],
-        "east": [
-          "war_elephant/animations/idle/east/00.webp",
-          "war_elephant/animations/idle/east/01.webp",
-          "war_elephant/animations/idle/east/02.webp",
-          "war_elephant/animations/idle/east/03.webp",
-          "war_elephant/animations/idle/east/04.webp"
-        ],
-        "north-east": [
-          "war_elephant/animations/idle/north-east/00.webp",
-          "war_elephant/animations/idle/north-east/01.webp",
-          "war_elephant/animations/idle/north-east/02.webp",
-          "war_elephant/animations/idle/north-east/03.webp",
-          "war_elephant/animations/idle/north-east/04.webp"
-        ],
-        "north": [
-          "war_elephant/animations/idle/north/00.webp",
-          "war_elephant/animations/idle/north/01.webp",
-          "war_elephant/animations/idle/north/02.webp",
-          "war_elephant/animations/idle/north/03.webp",
-          "war_elephant/animations/idle/north/04.webp"
-        ],
-        "south-west": [
-          "war_elephant/animations/idle/south-west/00.webp",
-          "war_elephant/animations/idle/south-west/01.webp",
-          "war_elephant/animations/idle/south-west/02.webp",
-          "war_elephant/animations/idle/south-west/03.webp",
-          "war_elephant/animations/idle/south-west/04.webp"
-        ],
-        "west": [
-          "war_elephant/animations/idle/west/00.webp",
-          "war_elephant/animations/idle/west/01.webp",
-          "war_elephant/animations/idle/west/02.webp",
-          "war_elephant/animations/idle/west/03.webp",
-          "war_elephant/animations/idle/west/04.webp"
-        ],
-        "north-west": [
-          "war_elephant/animations/idle/north-west/00.webp",
-          "war_elephant/animations/idle/north-west/01.webp",
-          "war_elephant/animations/idle/north-west/02.webp",
-          "war_elephant/animations/idle/north-west/03.webp",
-          "war_elephant/animations/idle/north-west/04.webp"
-        ]
-      },
-      "strips": {
-        "south": "war_elephant/animations/idle__south.webp",
-        "south-east": "war_elephant/animations/idle__south-east.webp",
-        "east": "war_elephant/animations/idle__east.webp",
-        "north-east": "war_elephant/animations/idle__north-east.webp",
-        "north": "war_elephant/animations/idle__north.webp",
-        "south-west": "war_elephant/animations/idle__south-west.webp",
-        "west": "war_elephant/animations/idle__west.webp",
-        "north-west": "war_elephant/animations/idle__north-west.webp"
-      }
-    },
-    "walk": {
-      "directions": {
-        "south": {
-          "status": "pass",
-          "step_mean": 0.1013,
-          "step_max": 0.1156,
-          "drift": 5.04,
-          "loop": 0.1806,
-          "loop_ratio": 1.78,
-          "travel": 3.08,
-          "pin": 0.9,
-          "pad": 0,
-          "canvas": [
-            240,
-            240
-          ],
-          "reasons": [],
-          "sub": "e78fbfa1-ee28-45f4-a700-95384ba420aa",
-          "group": "07ebd7e1-444b-42bf-afec-535e7449128c",
-          "takes": 1,
-          "version": 1,
-          "mirrored": false,
-          "generated_at": "2026-09-09T21:16:29+00:00"
-        },
-        "south-east": {
-          "status": "warn",
-          "step_mean": 0.0788,
-          "step_max": 0.11,
-          "drift": 1.68,
-          "loop": 0.1331,
-          "loop_ratio": 1.69,
-          "travel": 1.77,
-          "pin": 0.942,
-          "pad": 0,
-          "canvas": [
-            240,
-            240
-          ],
-          "reasons": [
-            "motion 0.079 outside the calm band 0.1–0.4 — eyeball it"
-          ],
-          "sub": "6ab1348c-68a4-44fb-9cdc-aa847fa89eb6",
-          "group": "eb29a57c-3df7-43f0-a64e-23ea65e0a445",
-          "takes": 1,
-          "version": 1,
-          "mirrored": false,
-          "generated_at": "2026-09-09T21:16:30+00:00"
-        },
-        "east": {
-          "status": "pass",
-          "step_mean": 0.1082,
-          "step_max": 0.1472,
-          "drift": 2.21,
-          "loop": 0.1958,
-          "loop_ratio": 1.81,
-          "travel": 2.01,
-          "pin": 0.933,
-          "pad": 0,
-          "canvas": [
-            240,
-            240
-          ],
-          "reasons": [],
-          "sub": "9ea39eb8-f314-466f-b879-c1094a9697be",
-          "group": "49ffbbcf-2e38-42f2-ae4b-f7bbc185aa73",
-          "takes": 1,
-          "version": 1,
-          "mirrored": false,
-          "generated_at": "2026-09-09T21:16:31+00:00"
-        },
-        "north-east": {
-          "status": "warn",
-          "step_mean": 0.0798,
-          "step_max": 0.0985,
-          "drift": 2.77,
-          "loop": 0.1488,
-          "loop_ratio": 1.86,
-          "travel": 2.49,
-          "pin": 0.92,
-          "pad": 0,
-          "canvas": [
-            240,
-            240
-          ],
-          "reasons": [
-            "motion 0.080 outside the calm band 0.1–0.4 — eyeball it"
-          ],
-          "sub": "55aaa63b-0cc0-4db3-a920-4416af77127c",
-          "group": "61f7e356-7209-40f7-84a7-b81d64f9573e",
-          "takes": 1,
-          "version": 1,
-          "mirrored": false,
-          "generated_at": "2026-09-09T21:16:31+00:00"
-        },
-        "north": {
-          "status": "warn",
-          "step_mean": 0.0839,
-          "step_max": 0.1116,
-          "drift": 7.81,
-          "loop": 0.1907,
-          "loop_ratio": 2.27,
-          "travel": 1.42,
-          "pin": 0.924,
-          "pad": 0,
-          "canvas": [
-            240,
-            240
-          ],
-          "reasons": [
-            "motion 0.084 outside the calm band 0.1–0.4 — eyeball it",
-            "drifts 7.8 px — eyeball it",
-            "last→first hand-off 2.3× a step — eyeball the loop"
-          ],
-          "sub": "e287219e-7b17-47d8-ad8e-413abe3ee232",
-          "group": "33b9e9f7-ffe6-4046-9e15-fed4f2440228",
-          "takes": 1,
-          "version": 1,
-          "mirrored": false,
-          "generated_at": "2026-09-09T21:16:32+00:00"
-        },
-        "south-west": {
-          "status": "warn",
-          "step_mean": 0.0788,
-          "step_max": 0.11,
-          "drift": 1.68,
-          "loop": 0.1331,
-          "loop_ratio": 1.69,
-          "travel": 1.77,
-          "pin": 0.942,
-          "pad": 0,
-          "canvas": [
-            240,
-            240
-          ],
-          "reasons": [
-            "motion 0.079 outside the calm band 0.1–0.4 — eyeball it"
-          ],
-          "sub": "6ab1348c-68a4-44fb-9cdc-aa847fa89eb6",
-          "group": "eb29a57c-3df7-43f0-a64e-23ea65e0a445",
-          "takes": 1,
-          "version": 1,
-          "mirrored": true,
-          "generated_at": "2026-09-09T21:16:30+00:00",
-          "source": "south-east"
-        },
-        "west": {
-          "status": "pass",
-          "step_mean": 0.1082,
-          "step_max": 0.1472,
-          "drift": 2.21,
-          "loop": 0.1958,
-          "loop_ratio": 1.81,
-          "travel": 2.01,
-          "pin": 0.933,
-          "pad": 0,
-          "canvas": [
-            240,
-            240
-          ],
-          "reasons": [],
-          "sub": "9ea39eb8-f314-466f-b879-c1094a9697be",
-          "group": "49ffbbcf-2e38-42f2-ae4b-f7bbc185aa73",
-          "takes": 1,
-          "version": 1,
-          "mirrored": true,
-          "generated_at": "2026-09-09T21:16:31+00:00",
-          "source": "east"
-        },
-        "north-west": {
-          "status": "warn",
-          "step_mean": 0.0798,
-          "step_max": 0.0985,
-          "drift": 2.77,
-          "loop": 0.1488,
-          "loop_ratio": 1.86,
-          "travel": 2.49,
-          "pin": 0.92,
-          "pad": 0,
-          "canvas": [
-            240,
-            240
-          ],
-          "reasons": [
-            "motion 0.080 outside the calm band 0.1–0.4 — eyeball it"
-          ],
-          "sub": "55aaa63b-0cc0-4db3-a920-4416af77127c",
-          "group": "61f7e356-7209-40f7-84a7-b81d64f9573e",
-          "takes": 1,
-          "version": 1,
-          "mirrored": true,
-          "generated_at": "2026-09-09T21:16:31+00:00",
-          "source": "north-east"
-        }
-      },
-      "action": "walk loop, full walk cycle in place, legs alternate naturally, normal calm walking pace, body stays centered, seamless loop whose last frame leads straight back into the first, no turning",
-      "frame_paths": {
-        "south": [
-          "war_elephant/animations/walk/south/00.webp",
-          "war_elephant/animations/walk/south/01.webp",
-          "war_elephant/animations/walk/south/02.webp",
-          "war_elephant/animations/walk/south/03.webp",
-          "war_elephant/animations/walk/south/04.webp",
-          "war_elephant/animations/walk/south/05.webp"
-        ],
-        "south-east": [
-          "war_elephant/animations/walk/south-east/00.webp",
-          "war_elephant/animations/walk/south-east/01.webp",
-          "war_elephant/animations/walk/south-east/02.webp",
-          "war_elephant/animations/walk/south-east/03.webp",
-          "war_elephant/animations/walk/south-east/04.webp",
-          "war_elephant/animations/walk/south-east/05.webp"
-        ],
-        "east": [
-          "war_elephant/animations/walk/east/00.webp",
-          "war_elephant/animations/walk/east/01.webp",
-          "war_elephant/animations/walk/east/02.webp",
-          "war_elephant/animations/walk/east/03.webp",
-          "war_elephant/animations/walk/east/04.webp",
-          "war_elephant/animations/walk/east/05.webp"
-        ],
-        "north-east": [
-          "war_elephant/animations/walk/north-east/00.webp",
-          "war_elephant/animations/walk/north-east/01.webp",
-          "war_elephant/animations/walk/north-east/02.webp",
-          "war_elephant/animations/walk/north-east/03.webp",
-          "war_elephant/animations/walk/north-east/04.webp",
-          "war_elephant/animations/walk/north-east/05.webp"
-        ],
-        "north": [
-          "war_elephant/animations/walk/north/00.webp",
-          "war_elephant/animations/walk/north/01.webp",
-          "war_elephant/animations/walk/north/02.webp",
-          "war_elephant/animations/walk/north/03.webp",
-          "war_elephant/animations/walk/north/04.webp",
-          "war_elephant/animations/walk/north/05.webp"
-        ],
-        "south-west": [
-          "war_elephant/animations/walk/south-west/00.webp",
-          "war_elephant/animations/walk/south-west/01.webp",
-          "war_elephant/animations/walk/south-west/02.webp",
-          "war_elephant/animations/walk/south-west/03.webp",
-          "war_elephant/animations/walk/south-west/04.webp",
-          "war_elephant/animations/walk/south-west/05.webp"
-        ],
-        "west": [
-          "war_elephant/animations/walk/west/00.webp",
-          "war_elephant/animations/walk/west/01.webp",
-          "war_elephant/animations/walk/west/02.webp",
-          "war_elephant/animations/walk/west/03.webp",
-          "war_elephant/animations/walk/west/04.webp",
-          "war_elephant/animations/walk/west/05.webp"
-        ],
-        "north-west": [
-          "war_elephant/animations/walk/north-west/00.webp",
-          "war_elephant/animations/walk/north-west/01.webp",
-          "war_elephant/animations/walk/north-west/02.webp",
-          "war_elephant/animations/walk/north-west/03.webp",
-          "war_elephant/animations/walk/north-west/04.webp",
-          "war_elephant/animations/walk/north-west/05.webp"
-        ]
-      },
-      "strips": {
-        "south": "war_elephant/animations/walk__south.webp",
-        "south-east": "war_elephant/animations/walk__south-east.webp",
-        "east": "war_elephant/animations/walk__east.webp",
-        "north-east": "war_elephant/animations/walk__north-east.webp",
-        "north": "war_elephant/animations/walk__north.webp",
-        "south-west": "war_elephant/animations/walk__south-west.webp",
-        "west": "war_elephant/animations/walk__west.webp",
-        "north-west": "war_elephant/animations/walk__north-west.webp"
-      }
-    },
-    "attack": {
-      "directions": {
-        "south": {
-          "status": "fail",
-          "step_mean": 0.0601,
-          "step_max": 0.0827,
-          "drift": 2.32,
-          "loop": 0.0,
-          "loop_ratio": 0.0,
-          "travel": 1.3,
-          "pin": 1.0,
-          "pad": 0,
-          "flash": 0.001,
-          "peak": 0.1039,
-          "reach": 0.075,
-          "canvas": [
-            240,
-            240
-          ],
-          "reasons": [
-            "motion 0.060 outside the calm band 0.08–0.9 — eyeball it",
-            "weak strike: peak 0.104 — eyeball it",
-            "no strike, just a lean: nothing reaches past 0.08 of the body"
-          ],
-          "sub": "3a3e9c54-733a-440e-981a-7aebac3c6f8c",
-          "group": "4f0ce940-cd64-4bee-a612-f1c00983b542",
-          "takes": 1,
-          "version": 2,
-          "mirrored": false,
-          "generated_at": "2026-09-09T22:39:05+00:00",
-          "action": "Tusk Gore - Lowers head and thrusts forward once with both tusks, then returns to idle stance"
-        },
-        "south-east": {
-          "status": "fail",
-          "step_mean": 0.1105,
-          "step_max": 0.1312,
-          "drift": 6.73,
-          "loop": 0.0,
-          "loop_ratio": 0.0,
-          "travel": 0.44,
-          "pin": 1.0,
-          "pad": 0,
-          "flash": 0.0,
-          "peak": 0.1915,
-          "reach": 0.095,
-          "canvas": [
-            240,
-            240
-          ],
-          "reasons": [
-            "no strike, just a lean: nothing reaches past 0.09 of the body"
-          ],
-          "sub": "7be868be-0c5d-4acf-b41c-707b890ff81d",
-          "group": "95267151-42f6-4b9f-be83-b1b3c2dc1d10",
-          "takes": 2,
-          "version": 3,
-          "mirrored": false,
-          "generated_at": "2026-09-09T22:48:34+00:00",
-          "action": "Tusk Gore - Lowers head and thrusts forward once with both tusks, then returns to idle stance"
-        },
-        "east": {
-          "status": "fail",
-          "step_mean": 0.0928,
-          "step_max": 0.1096,
-          "drift": 3.82,
-          "loop": 0.0,
-          "loop_ratio": 0.0,
-          "travel": 1.39,
-          "pin": 1.0,
-          "pad": 0,
-          "flash": 0.0,
-          "peak": 0.1589,
-          "reach": 0.13,
-          "canvas": [
-            240,
-            240
-          ],
-          "reasons": [
-            "no strike, just a lean: nothing reaches past 0.13 of the body"
-          ],
-          "sub": "26236dee-85c4-4341-80bf-04ebdac02e21",
-          "group": "6c460341-4819-4e86-9a15-4503e362c937",
-          "takes": 1,
-          "version": 2,
-          "mirrored": false,
-          "generated_at": "2026-09-09T22:39:08+00:00",
-          "action": "Tusk Gore - Lowers head and thrusts forward once with both tusks, then returns to idle stance"
-        },
-        "north-east": {
-          "status": "fail",
-          "step_mean": 0.0789,
-          "step_max": 0.1,
-          "drift": 2.72,
-          "loop": 0.0,
-          "loop_ratio": 0.0,
-          "travel": 0.74,
-          "pin": 1.0,
-          "pad": 0,
-          "flash": 0.0,
-          "peak": 0.1328,
-          "reach": 0.043,
-          "canvas": [
-            240,
-            240
-          ],
-          "reasons": [
-            "motion 0.079 outside the calm band 0.08–0.9 — eyeball it",
-            "weak strike: peak 0.133 — eyeball it",
-            "no strike, just a lean: nothing reaches past 0.04 of the body"
-          ],
-          "sub": "a21099dc-55fe-4357-9a93-d8e9bf044dc9",
-          "group": "a7c3419a-f383-4b60-a745-84c8d177d241",
-          "takes": 1,
-          "version": 2,
-          "mirrored": false,
-          "generated_at": "2026-09-09T22:39:08+00:00",
-          "action": "Tusk Gore - Lowers head and thrusts forward once with both tusks, then returns to idle stance"
-        },
-        "north": {
-          "status": "fail",
-          "step_mean": 0.0753,
-          "step_max": 0.0813,
-          "drift": 5.23,
-          "loop": 0.0001,
-          "loop_ratio": 0.0,
-          "travel": 1.03,
-          "pin": 1.0,
-          "pad": 0,
-          "flash": 0.0,
-          "peak": 0.131,
-          "reach": 0.061,
-          "canvas": [
-            240,
-            240
-          ],
-          "reasons": [
-            "motion 0.075 outside the calm band 0.08–0.9 — eyeball it",
-            "weak strike: peak 0.131 — eyeball it",
-            "no strike, just a lean: nothing reaches past 0.06 of the body"
-          ],
-          "sub": "cefecfed-8e41-4b45-9467-461920c4c6a3",
-          "group": "857e9daf-97ed-4d58-86cd-4d33996dd7c8",
-          "takes": 1,
-          "version": 2,
-          "mirrored": false,
-          "generated_at": "2026-09-09T22:39:09+00:00",
-          "action": "Tusk Gore - Lowers head and thrusts forward once with both tusks, then returns to idle stance"
-        },
-        "south-west": {
-          "status": "pass",
-          "step_mean": 0.1105,
-          "step_max": 0.1312,
-          "drift": 6.73,
-          "loop": 0.0,
-          "loop_ratio": 0.0,
-          "travel": 0.44,
-          "pin": 1.0,
-          "pad": 0,
-          "flash": 0.0,
-          "peak": 0.1915,
-          "canvas": [
-            240,
-            240
-          ],
-          "reasons": [],
-          "sub": "7be868be-0c5d-4acf-b41c-707b890ff81d",
-          "group": "95267151-42f6-4b9f-be83-b1b3c2dc1d10",
-          "takes": 2,
-          "version": 3,
-          "mirrored": true,
-          "generated_at": "2026-09-09T22:48:34+00:00",
-          "action": "Tusk Gore - Lowers head and thrusts forward once with both tusks, then returns to idle stance",
-          "source": "south-east"
-        },
-        "west": {
-          "status": "pass",
-          "step_mean": 0.0928,
-          "step_max": 0.1096,
-          "drift": 3.82,
-          "loop": 0.0,
-          "loop_ratio": 0.0,
-          "travel": 1.39,
-          "pin": 1.0,
-          "pad": 0,
-          "flash": 0.0,
-          "peak": 0.1589,
-          "canvas": [
-            240,
-            240
-          ],
-          "reasons": [],
-          "sub": "26236dee-85c4-4341-80bf-04ebdac02e21",
-          "group": "6c460341-4819-4e86-9a15-4503e362c937",
-          "takes": 1,
-          "version": 2,
-          "mirrored": true,
-          "generated_at": "2026-09-09T22:39:08+00:00",
-          "action": "Tusk Gore - Lowers head and thrusts forward once with both tusks, then returns to idle stance",
-          "source": "east"
-        },
-        "north-west": {
-          "status": "pass",
-          "step_mean": 0.0789,
-          "step_max": 0.1,
-          "drift": 2.72,
-          "loop": 0.0,
-          "loop_ratio": 0.0,
-          "travel": 0.74,
-          "pin": 1.0,
-          "pad": 0,
-          "flash": 0.0,
-          "peak": 0.1328,
-          "canvas": [
-            240,
-            240
-          ],
-          "reasons": [],
-          "sub": "a21099dc-55fe-4357-9a93-d8e9bf044dc9",
-          "group": "a7c3419a-f383-4b60-a745-84c8d177d241",
-          "takes": 1,
-          "version": 2,
-          "mirrored": true,
-          "generated_at": "2026-09-09T22:39:08+00:00",
-          "action": "Tusk Gore - Lowers head and thrusts forward once with both tusks, then returns to idle stance",
-          "source": "north-east"
-        }
-      },
-      "action": "Tusk Gore - Lowers head and thrusts forward once with both tusks, then returns to idle stance",
-      "frame_paths": {
-        "south": [
-          "war_elephant/animations/attack/south/00.webp",
-          "war_elephant/animations/attack/south/01.webp",
-          "war_elephant/animations/attack/south/02.webp",
-          "war_elephant/animations/attack/south/03.webp",
-          "war_elephant/animations/attack/south/04.webp"
-        ],
-        "south-east": [
-          "war_elephant/animations/attack/south-east/00.webp",
-          "war_elephant/animations/attack/south-east/01.webp",
-          "war_elephant/animations/attack/south-east/02.webp",
-          "war_elephant/animations/attack/south-east/03.webp",
-          "war_elephant/animations/attack/south-east/04.webp"
-        ],
-        "east": [
-          "war_elephant/animations/attack/east/00.webp",
-          "war_elephant/animations/attack/east/01.webp",
-          "war_elephant/animations/attack/east/02.webp",
-          "war_elephant/animations/attack/east/03.webp",
-          "war_elephant/animations/attack/east/04.webp"
-        ],
-        "north-east": [
-          "war_elephant/animations/attack/north-east/00.webp",
-          "war_elephant/animations/attack/north-east/01.webp",
-          "war_elephant/animations/attack/north-east/02.webp",
-          "war_elephant/animations/attack/north-east/03.webp",
-          "war_elephant/animations/attack/north-east/04.webp"
-        ],
-        "north": [
-          "war_elephant/animations/attack/north/00.webp",
-          "war_elephant/animations/attack/north/01.webp",
-          "war_elephant/animations/attack/north/02.webp",
-          "war_elephant/animations/attack/north/03.webp",
-          "war_elephant/animations/attack/north/04.webp"
-        ],
-        "south-west": [
-          "war_elephant/animations/attack/south-west/00.webp",
-          "war_elephant/animations/attack/south-west/01.webp",
-          "war_elephant/animations/attack/south-west/02.webp",
-          "war_elephant/animations/attack/south-west/03.webp",
-          "war_elephant/animations/attack/south-west/04.webp"
-        ],
-        "west": [
-          "war_elephant/animations/attack/west/00.webp",
-          "war_elephant/animations/attack/west/01.webp",
-          "war_elephant/animations/attack/west/02.webp",
-          "war_elephant/animations/attack/west/03.webp",
-          "war_elephant/animations/attack/west/04.webp"
-        ],
-        "north-west": [
-          "war_elephant/animations/attack/north-west/00.webp",
-          "war_elephant/animations/attack/north-west/01.webp",
-          "war_elephant/animations/attack/north-west/02.webp",
-          "war_elephant/animations/attack/north-west/03.webp",
-          "war_elephant/animations/attack/north-west/04.webp"
-        ]
-      },
-      "strips": {
-        "south": "war_elephant/animations/attack__south.webp",
-        "south-east": "war_elephant/animations/attack__south-east.webp",
-        "east": "war_elephant/animations/attack__east.webp",
-        "north-east": "war_elephant/animations/attack__north-east.webp",
-        "north": "war_elephant/animations/attack__north.webp",
-        "south-west": "war_elephant/animations/attack__south-west.webp",
-        "west": "war_elephant/animations/attack__west.webp",
-        "north-west": "war_elephant/animations/attack__north-west.webp"
-      }
-    },
-    "attack_try": {
-      "directions": {
-        "south": {
-          "status": "fail",
-          "step_mean": 0.053,
-          "step_max": 0.0784,
-          "drift": 3.88,
-          "loop": 0.1064,
-          "loop_ratio": 2.01,
-          "travel": 3.88,
-          "pin": 1.0,
-          "pad": 0,
-          "flash": 0.0,
-          "peak": 0.1438,
-          "reach": 0.061,
-          "canvas": [
-            240,
-            240
-          ],
-          "reasons": [
-            "motion 0.053 outside the calm band 0.08–0.9 — eyeball it",
-            "weak strike: peak 0.144 — eyeball it",
-            "no strike, just a lean: nothing reaches past 0.06 of the body"
-          ],
-          "sub": "571460c9-c4d0-4fd7-9883-10a5c3af5cf7",
-          "group": "ff26448e-021f-47b1-a84c-50daba07b835",
-          "takes": 1,
-          "version": 4,
-          "mirrored": false,
-          "generated_at": "2026-09-10T21:08:17+00:00",
-          "action": "Tusk Gore - Lowers its head and drives both tusks forward in a heavy gore, a big aggressive swing",
-          "tries": 2,
-          "rolls": 4,
-          "intensity": 1,
-          "frames": 7
-        },
-        "south-east": {
-          "status": "warn",
-          "step_mean": 0.1178,
-          "step_max": 0.1637,
-          "drift": 4.36,
-          "loop": 0.2893,
-          "loop_ratio": 2.45,
-          "travel": 1.25,
-          "pin": 1.0,
-          "pad": 0,
-          "flash": 0.002,
-          "peak": 0.3771,
-          "reach": 0.171,
-          "canvas": [
-            240,
-            240
-          ],
-          "reasons": [
-            "shallow strike: reach 0.17 — eyeball it"
-          ],
-          "sub": "5a7f5a03-24df-4a7e-9765-30fff78db87d",
-          "group": "4de7809f-cdbf-41c9-af28-ac1ca2e91cef",
-          "takes": 1,
-          "version": 4,
-          "mirrored": false,
-          "generated_at": "2026-09-10T21:08:18+00:00",
-          "action": "Tusk Gore - Lowers its head and drives both tusks forward in a heavy gore, a big aggressive swing",
-          "tries": 2,
-          "rolls": 4,
-          "intensity": 1,
-          "frames": 7
-        },
-        "east": {
-          "status": "warn",
-          "step_mean": 0.1285,
-          "step_max": 0.1602,
-          "drift": 4.11,
-          "loop": 0.2742,
-          "loop_ratio": 2.13,
-          "travel": 4.28,
-          "pin": 1.0,
-          "pad": 0,
-          "flash": 0.004,
-          "peak": 0.3534,
-          "reach": 0.148,
-          "canvas": [
-            240,
-            240
-          ],
-          "reasons": [
-            "shallow strike: reach 0.15 — eyeball it"
-          ],
-          "sub": "82781713-4c30-435e-8215-bf5ddbbada04",
-          "group": "25973bfc-3b7c-4ffd-94fd-f253e7a8dbfd",
-          "takes": 1,
-          "version": 4,
-          "mirrored": false,
-          "generated_at": "2026-09-10T21:08:19+00:00",
-          "action": "Tusk Gore - Lowers its head and drives both tusks forward in a heavy gore, a big aggressive swing",
-          "tries": 2,
-          "rolls": 4,
-          "intensity": 1,
-          "frames": 7
-        },
-        "north-east": {
-          "status": "fail",
-          "step_mean": 0.0608,
-          "step_max": 0.0839,
-          "drift": 2.85,
-          "loop": 0.0722,
-          "loop_ratio": 1.19,
-          "travel": 1.66,
-          "pin": 1.0,
-          "pad": 0,
-          "flash": -0.0,
-          "peak": 0.1487,
-          "reach": 0.058,
-          "canvas": [
-            240,
-            240
-          ],
-          "reasons": [
-            "motion 0.061 outside the calm band 0.08–0.9 — eyeball it",
-            "weak strike: peak 0.149 — eyeball it",
-            "no strike, just a lean: nothing reaches past 0.06 of the body"
-          ],
-          "sub": "e56dc7f7-f6ed-45f4-86dc-6b0336b07ad7",
-          "group": "675e63e8-c56e-49c7-a8ce-0ca0e5676b5c",
-          "takes": 1,
-          "version": 4,
-          "mirrored": false,
-          "generated_at": "2026-09-10T21:08:20+00:00",
-          "action": "Tusk Gore - Lowers its head and drives both tusks forward in a heavy gore, a big aggressive swing",
-          "tries": 2,
-          "rolls": 4,
-          "intensity": 1,
-          "frames": 7
-        },
-        "north": {
-          "status": "fail",
-          "step_mean": 0.055,
-          "step_max": 0.0675,
-          "drift": 3.3,
-          "loop": 0.0789,
-          "loop_ratio": 1.43,
-          "travel": 3.3,
-          "pin": 1.0,
-          "pad": 0,
-          "flash": 0.001,
-          "peak": 0.0928,
-          "reach": 0.097,
-          "canvas": [
-            240,
-            240
-          ],
-          "reasons": [
-            "motion 0.055 outside the calm band 0.08–0.9 — eyeball it",
-            "weak strike: peak 0.093 — eyeball it",
-            "no strike, just a lean: nothing reaches past 0.10 of the body"
-          ],
-          "sub": "334b84e4-680b-4eee-be10-5332c75032f6",
-          "group": "1fa8358a-33ff-44ad-8e8e-e05a8174fefd",
-          "takes": 1,
-          "version": 4,
-          "mirrored": false,
-          "generated_at": "2026-09-10T21:08:21+00:00",
-          "action": "Tusk Gore - Lowers its head and drives both tusks forward in a heavy gore, a big aggressive swing",
-          "tries": 2,
-          "rolls": 4,
-          "intensity": 1,
-          "frames": 7
-        },
-        "south-west": {
-          "status": "warn",
-          "step_mean": 0.1178,
-          "step_max": 0.1637,
-          "drift": 4.36,
-          "loop": 0.2893,
-          "loop_ratio": 2.45,
-          "travel": 1.25,
-          "pin": 1.0,
-          "pad": 0,
-          "flash": 0.002,
-          "peak": 0.3771,
-          "reach": 0.171,
-          "canvas": [
-            240,
-            240
-          ],
-          "reasons": [
-            "shallow strike: reach 0.17 — eyeball it"
-          ],
-          "sub": "5a7f5a03-24df-4a7e-9765-30fff78db87d",
-          "group": "4de7809f-cdbf-41c9-af28-ac1ca2e91cef",
-          "takes": 1,
-          "version": 4,
-          "mirrored": true,
-          "generated_at": "2026-09-10T21:08:18+00:00",
-          "action": "Tusk Gore - Lowers its head and drives both tusks forward in a heavy gore, a big aggressive swing",
-          "tries": 2,
-          "rolls": 4,
-          "intensity": 1,
-          "frames": 7,
-          "source": "south-east"
-        },
-        "west": {
-          "status": "warn",
-          "step_mean": 0.1285,
-          "step_max": 0.1602,
-          "drift": 4.11,
-          "loop": 0.2742,
-          "loop_ratio": 2.13,
-          "travel": 4.28,
-          "pin": 1.0,
-          "pad": 0,
-          "flash": 0.004,
-          "peak": 0.3534,
-          "reach": 0.148,
-          "canvas": [
-            240,
-            240
-          ],
-          "reasons": [
-            "shallow strike: reach 0.15 — eyeball it"
-          ],
-          "sub": "82781713-4c30-435e-8215-bf5ddbbada04",
-          "group": "25973bfc-3b7c-4ffd-94fd-f253e7a8dbfd",
-          "takes": 1,
-          "version": 4,
-          "mirrored": true,
-          "generated_at": "2026-09-10T21:08:19+00:00",
-          "action": "Tusk Gore - Lowers its head and drives both tusks forward in a heavy gore, a big aggressive swing",
-          "tries": 2,
-          "rolls": 4,
-          "intensity": 1,
-          "frames": 7,
-          "source": "east"
-        }
-      },
-      "action": "Tusk Gore - Lowers its head and drives both tusks forward in a heavy gore, a big aggressive swing",
-      "frame_paths": {
-        "south": [
-          "war_elephant/animations/attack_try/south/00.webp",
-          "war_elephant/animations/attack_try/south/01.webp",
-          "war_elephant/animations/attack_try/south/02.webp",
-          "war_elephant/animations/attack_try/south/03.webp",
-          "war_elephant/animations/attack_try/south/04.webp",
-          "war_elephant/animations/attack_try/south/05.webp",
-          "war_elephant/animations/attack_try/south/06.webp"
-        ],
-        "south-east": [
-          "war_elephant/animations/attack_try/south-east/00.webp",
-          "war_elephant/animations/attack_try/south-east/01.webp",
-          "war_elephant/animations/attack_try/south-east/02.webp",
-          "war_elephant/animations/attack_try/south-east/03.webp",
-          "war_elephant/animations/attack_try/south-east/04.webp",
-          "war_elephant/animations/attack_try/south-east/05.webp",
-          "war_elephant/animations/attack_try/south-east/06.webp"
-        ],
-        "east": [
-          "war_elephant/animations/attack_try/east/00.webp",
-          "war_elephant/animations/attack_try/east/01.webp",
-          "war_elephant/animations/attack_try/east/02.webp",
-          "war_elephant/animations/attack_try/east/03.webp",
-          "war_elephant/animations/attack_try/east/04.webp",
-          "war_elephant/animations/attack_try/east/05.webp",
-          "war_elephant/animations/attack_try/east/06.webp"
-        ],
-        "north-east": [
-          "war_elephant/animations/attack_try/north-east/00.webp",
-          "war_elephant/animations/attack_try/north-east/01.webp",
-          "war_elephant/animations/attack_try/north-east/02.webp",
-          "war_elephant/animations/attack_try/north-east/03.webp",
-          "war_elephant/animations/attack_try/north-east/04.webp",
-          "war_elephant/animations/attack_try/north-east/05.webp",
-          "war_elephant/animations/attack_try/north-east/06.webp"
-        ],
-        "north": [
-          "war_elephant/animations/attack_try/north/00.webp",
-          "war_elephant/animations/attack_try/north/01.webp",
-          "war_elephant/animations/attack_try/north/02.webp",
-          "war_elephant/animations/attack_try/north/03.webp",
-          "war_elephant/animations/attack_try/north/04.webp",
-          "war_elephant/animations/attack_try/north/05.webp",
-          "war_elephant/animations/attack_try/north/06.webp"
-        ],
-        "south-west": [
-          "war_elephant/animations/attack_try/south-west/00.webp",
-          "war_elephant/animations/attack_try/south-west/01.webp",
-          "war_elephant/animations/attack_try/south-west/02.webp",
-          "war_elephant/animations/attack_try/south-west/03.webp",
-          "war_elephant/animations/attack_try/south-west/04.webp",
-          "war_elephant/animations/attack_try/south-west/05.webp",
-          "war_elephant/animations/attack_try/south-west/06.webp"
-        ],
-        "west": [
-          "war_elephant/animations/attack_try/west/00.webp",
-          "war_elephant/animations/attack_try/west/01.webp",
-          "war_elephant/animations/attack_try/west/02.webp",
-          "war_elephant/animations/attack_try/west/03.webp",
-          "war_elephant/animations/attack_try/west/04.webp",
-          "war_elephant/animations/attack_try/west/05.webp",
-          "war_elephant/animations/attack_try/west/06.webp"
-        ]
-      },
-      "strips": {
-        "south": "war_elephant/animations/attack_try__south.webp",
-        "south-east": "war_elephant/animations/attack_try__south-east.webp",
-        "east": "war_elephant/animations/attack_try__east.webp",
-        "north-east": "war_elephant/animations/attack_try__north-east.webp",
-        "north": "war_elephant/animations/attack_try__north.webp",
-        "south-west": "war_elephant/animations/attack_try__south-west.webp",
-        "west": "war_elephant/animations/attack_try__west.webp"
-      },
-      "intensity": 1
-    }
+ "id": "war_elephant",
+ "name": "Ironbrow",
+ "tier": "boss",
+ "scale": "big",
+ "lore": "It carried a king to war and carried him home dead. It still wears the tower, and it still wants a war.",
+ "biome": [
+  "light_soil",
+  "grass"
+ ],
+ "items": [],
+ "prompt": "Gigantic fantasy armored war elephant with wrinkled grey hide, riveted iron plates on its brow and flanks, capped brass tusks, a short curled trunk, small wise eyes, and a howdah-tower of wood strapped to its back.",
+ "size": [
+  240,
+  240
+ ],
+ "template_id": "bear",
+ "directions": [
+  "south",
+  "south-east",
+  "east",
+  "north-east",
+  "north",
+  "north-west",
+  "west",
+  "south-west"
+ ],
+ "rotations": {
+  "south": "war_elephant/rotations/south.webp",
+  "south-east": "war_elephant/rotations/south-east.webp",
+  "east": "war_elephant/rotations/east.webp",
+  "north-east": "war_elephant/rotations/north-east.webp",
+  "north": "war_elephant/rotations/north.webp",
+  "north-west": "war_elephant/rotations/north-west.webp",
+  "west": "war_elephant/rotations/west.webp",
+  "south-west": "war_elephant/rotations/south-west.webp"
+ },
+ "sheet": "war_elephant/sheet.webp",
+ "review": "approved",
+ "pixellab_id": "9a645c87-6da7-4d45-9bb2-a725e7493778",
+ "seed": 655270357,
+ "version": 1,
+ "usage": null,
+ "generated_at": "2026-09-09T18:49:12+00:00",
+ "elapsed_s": 243.0,
+ "qa": {
+  "status": "pass",
+  "min_run1": 0.579,
+  "reasons": [],
+  "directions": {
+   "south": {
+    "run1": 0.579,
+    "bbox": [
+     13,
+     9,
+     225,
+     229
+    ],
+    "fill": 0.81,
+    "touches_edge": false
+   },
+   "south-east": {
+    "run1": 0.665,
+    "bbox": [
+     39,
+     9,
+     197,
+     225
+    ],
+    "fill": 0.593,
+    "touches_edge": false
+   },
+   "east": {
+    "run1": 0.688,
+    "bbox": [
+     45,
+     8,
+     214,
+     231
+    ],
+    "fill": 0.654,
+    "touches_edge": false
+   },
+   "north-east": {
+    "run1": 0.678,
+    "bbox": [
+     19,
+     14,
+     232,
+     222
+    ],
+    "fill": 0.769,
+    "touches_edge": false
+   },
+   "north": {
+    "run1": 0.648,
+    "bbox": [
+     29,
+     17,
+     225,
+     231
+    ],
+    "fill": 0.728,
+    "touches_edge": false
+   },
+   "north-west": {
+    "run1": 0.664,
+    "bbox": [
+     44,
+     11,
+     194,
+     231
+    ],
+    "fill": 0.573,
+    "touches_edge": false
+   },
+   "west": {
+    "run1": 0.665,
+    "bbox": [
+     18,
+     17,
+     206,
+     231
+    ],
+    "fill": 0.698,
+    "touches_edge": false
+   },
+   "south-west": {
+    "run1": 0.677,
+    "bbox": [
+     6,
+     14,
+     225,
+     223
+    ],
+    "fill": 0.795,
+    "touches_edge": false
+   }
   }
+ },
+ "approved_at": "2026-09-09T19:59:23+00:00",
+ "animations": {
+  "idle": {
+   "directions": {
+    "south": {
+     "status": "pass",
+     "step_mean": 0.0171,
+     "step_max": 0.0332,
+     "drift": 1.35,
+     "loop": 0.0,
+     "pin": 1.0,
+     "reasons": [],
+     "sub": "efecc54b-395a-427f-9c67-be00762956ea",
+     "takes": 1,
+     "version": 1,
+     "mirrored": false,
+     "generated_at": "2026-09-09T20:21:06+00:00",
+     "cut": 0
+    },
+    "south-east": {
+     "status": "warn",
+     "step_mean": 0.0492,
+     "step_max": 0.0604,
+     "drift": 5.3,
+     "loop": 0.0001,
+     "pin": 1.0,
+     "reasons": [
+      "drifts 5.3 px — eyeball it"
+     ],
+     "sub": "967f36cc-fd5d-4b09-89ac-26172b8e2f3c",
+     "takes": 1,
+     "version": 1,
+     "mirrored": false,
+     "generated_at": "2026-09-09T20:21:07+00:00",
+     "cut": 0
+    },
+    "east": {
+     "status": "pass",
+     "step_mean": 0.0259,
+     "step_max": 0.0333,
+     "drift": 1.68,
+     "loop": 0.0,
+     "pin": 1.0,
+     "reasons": [],
+     "sub": "91b412b1-3dfa-4c13-90a6-b9046a290fcb",
+     "takes": 1,
+     "version": 1,
+     "mirrored": false,
+     "generated_at": "2026-09-09T20:21:08+00:00",
+     "cut": 0
+    },
+    "north-east": {
+     "status": "pass",
+     "step_mean": 0.0354,
+     "step_max": 0.0438,
+     "drift": 1.42,
+     "loop": 0.0,
+     "pin": 1.0,
+     "reasons": [],
+     "sub": "ff845bf4-17f0-4c57-9df0-764ad8a4994f",
+     "takes": 1,
+     "version": 1,
+     "mirrored": false,
+     "generated_at": "2026-09-09T20:21:09+00:00",
+     "cut": 0
+    },
+    "north": {
+     "status": "pass",
+     "step_mean": 0.0345,
+     "step_max": 0.049,
+     "drift": 2.13,
+     "loop": 0.0001,
+     "pin": 1.0,
+     "reasons": [],
+     "sub": "e0d9e25e-e538-418d-adf3-8beeabdfb680",
+     "takes": 1,
+     "version": 1,
+     "mirrored": false,
+     "generated_at": "2026-09-09T20:21:10+00:00",
+     "cut": 0
+    },
+    "south-west": {
+     "status": "warn",
+     "step_mean": 0.0492,
+     "step_max": 0.0604,
+     "drift": 5.3,
+     "loop": 0.0001,
+     "pin": 1.0,
+     "reasons": [
+      "drifts 5.3 px — eyeball it"
+     ],
+     "sub": "967f36cc-fd5d-4b09-89ac-26172b8e2f3c",
+     "takes": 1,
+     "version": 1,
+     "mirrored": true,
+     "generated_at": "2026-09-09T20:21:07+00:00",
+     "cut": 0,
+     "source": "south-east"
+    },
+    "west": {
+     "status": "pass",
+     "step_mean": 0.0259,
+     "step_max": 0.0333,
+     "drift": 1.68,
+     "loop": 0.0,
+     "pin": 1.0,
+     "reasons": [],
+     "sub": "91b412b1-3dfa-4c13-90a6-b9046a290fcb",
+     "takes": 1,
+     "version": 1,
+     "mirrored": true,
+     "generated_at": "2026-09-09T20:21:08+00:00",
+     "cut": 0,
+     "source": "east"
+    },
+    "north-west": {
+     "status": "pass",
+     "step_mean": 0.0354,
+     "step_max": 0.0438,
+     "drift": 1.42,
+     "loop": 0.0,
+     "pin": 1.0,
+     "reasons": [],
+     "sub": "ff845bf4-17f0-4c57-9df0-764ad8a4994f",
+     "takes": 1,
+     "version": 1,
+     "mirrored": true,
+     "generated_at": "2026-09-09T20:21:09+00:00",
+     "cut": 0,
+     "source": "north-east"
+    }
+   },
+   "action": "Calm still idle, breathing very slowly and subtly, chest and shoulders rise and fall a little, feet planted, no other movement, ends in the same neutral pose it started in",
+   "frame_paths": {
+    "south": [
+     "war_elephant/animations/idle/south/00.webp",
+     "war_elephant/animations/idle/south/01.webp",
+     "war_elephant/animations/idle/south/02.webp",
+     "war_elephant/animations/idle/south/03.webp",
+     "war_elephant/animations/idle/south/04.webp"
+    ],
+    "south-east": [
+     "war_elephant/animations/idle/south-east/00.webp",
+     "war_elephant/animations/idle/south-east/01.webp",
+     "war_elephant/animations/idle/south-east/02.webp",
+     "war_elephant/animations/idle/south-east/03.webp",
+     "war_elephant/animations/idle/south-east/04.webp"
+    ],
+    "east": [
+     "war_elephant/animations/idle/east/00.webp",
+     "war_elephant/animations/idle/east/01.webp",
+     "war_elephant/animations/idle/east/02.webp",
+     "war_elephant/animations/idle/east/03.webp",
+     "war_elephant/animations/idle/east/04.webp"
+    ],
+    "north-east": [
+     "war_elephant/animations/idle/north-east/00.webp",
+     "war_elephant/animations/idle/north-east/01.webp",
+     "war_elephant/animations/idle/north-east/02.webp",
+     "war_elephant/animations/idle/north-east/03.webp",
+     "war_elephant/animations/idle/north-east/04.webp"
+    ],
+    "north": [
+     "war_elephant/animations/idle/north/00.webp",
+     "war_elephant/animations/idle/north/01.webp",
+     "war_elephant/animations/idle/north/02.webp",
+     "war_elephant/animations/idle/north/03.webp",
+     "war_elephant/animations/idle/north/04.webp"
+    ],
+    "south-west": [
+     "war_elephant/animations/idle/south-west/00.webp",
+     "war_elephant/animations/idle/south-west/01.webp",
+     "war_elephant/animations/idle/south-west/02.webp",
+     "war_elephant/animations/idle/south-west/03.webp",
+     "war_elephant/animations/idle/south-west/04.webp"
+    ],
+    "west": [
+     "war_elephant/animations/idle/west/00.webp",
+     "war_elephant/animations/idle/west/01.webp",
+     "war_elephant/animations/idle/west/02.webp",
+     "war_elephant/animations/idle/west/03.webp",
+     "war_elephant/animations/idle/west/04.webp"
+    ],
+    "north-west": [
+     "war_elephant/animations/idle/north-west/00.webp",
+     "war_elephant/animations/idle/north-west/01.webp",
+     "war_elephant/animations/idle/north-west/02.webp",
+     "war_elephant/animations/idle/north-west/03.webp",
+     "war_elephant/animations/idle/north-west/04.webp"
+    ]
+   },
+   "strips": {
+    "south": "war_elephant/animations/idle__south.webp",
+    "south-east": "war_elephant/animations/idle__south-east.webp",
+    "east": "war_elephant/animations/idle__east.webp",
+    "north-east": "war_elephant/animations/idle__north-east.webp",
+    "north": "war_elephant/animations/idle__north.webp",
+    "south-west": "war_elephant/animations/idle__south-west.webp",
+    "west": "war_elephant/animations/idle__west.webp",
+    "north-west": "war_elephant/animations/idle__north-west.webp"
+   }
+  },
+  "walk": {
+   "directions": {
+    "south": {
+     "status": "pass",
+     "step_mean": 0.1013,
+     "step_max": 0.1156,
+     "drift": 5.04,
+     "loop": 0.1806,
+     "loop_ratio": 1.78,
+     "travel": 3.08,
+     "pin": 0.9,
+     "pad": 0,
+     "canvas": [
+      240,
+      240
+     ],
+     "reasons": [],
+     "sub": "e78fbfa1-ee28-45f4-a700-95384ba420aa",
+     "group": "07ebd7e1-444b-42bf-afec-535e7449128c",
+     "takes": 1,
+     "version": 1,
+     "mirrored": false,
+     "generated_at": "2026-09-09T21:16:29+00:00"
+    },
+    "south-east": {
+     "status": "warn",
+     "step_mean": 0.0788,
+     "step_max": 0.11,
+     "drift": 1.68,
+     "loop": 0.1331,
+     "loop_ratio": 1.69,
+     "travel": 1.77,
+     "pin": 0.942,
+     "pad": 0,
+     "canvas": [
+      240,
+      240
+     ],
+     "reasons": [
+      "motion 0.079 outside the calm band 0.1–0.4 — eyeball it"
+     ],
+     "sub": "6ab1348c-68a4-44fb-9cdc-aa847fa89eb6",
+     "group": "eb29a57c-3df7-43f0-a64e-23ea65e0a445",
+     "takes": 1,
+     "version": 1,
+     "mirrored": false,
+     "generated_at": "2026-09-09T21:16:30+00:00"
+    },
+    "east": {
+     "status": "pass",
+     "step_mean": 0.1082,
+     "step_max": 0.1472,
+     "drift": 2.21,
+     "loop": 0.1958,
+     "loop_ratio": 1.81,
+     "travel": 2.01,
+     "pin": 0.933,
+     "pad": 0,
+     "canvas": [
+      240,
+      240
+     ],
+     "reasons": [],
+     "sub": "9ea39eb8-f314-466f-b879-c1094a9697be",
+     "group": "49ffbbcf-2e38-42f2-ae4b-f7bbc185aa73",
+     "takes": 1,
+     "version": 1,
+     "mirrored": false,
+     "generated_at": "2026-09-09T21:16:31+00:00"
+    },
+    "north-east": {
+     "status": "warn",
+     "step_mean": 0.0798,
+     "step_max": 0.0985,
+     "drift": 2.77,
+     "loop": 0.1488,
+     "loop_ratio": 1.86,
+     "travel": 2.49,
+     "pin": 0.92,
+     "pad": 0,
+     "canvas": [
+      240,
+      240
+     ],
+     "reasons": [
+      "motion 0.080 outside the calm band 0.1–0.4 — eyeball it"
+     ],
+     "sub": "55aaa63b-0cc0-4db3-a920-4416af77127c",
+     "group": "61f7e356-7209-40f7-84a7-b81d64f9573e",
+     "takes": 1,
+     "version": 1,
+     "mirrored": false,
+     "generated_at": "2026-09-09T21:16:31+00:00"
+    },
+    "north": {
+     "status": "warn",
+     "step_mean": 0.0839,
+     "step_max": 0.1116,
+     "drift": 7.81,
+     "loop": 0.1907,
+     "loop_ratio": 2.27,
+     "travel": 1.42,
+     "pin": 0.924,
+     "pad": 0,
+     "canvas": [
+      240,
+      240
+     ],
+     "reasons": [
+      "motion 0.084 outside the calm band 0.1–0.4 — eyeball it",
+      "drifts 7.8 px — eyeball it",
+      "last→first hand-off 2.3× a step — eyeball the loop"
+     ],
+     "sub": "e287219e-7b17-47d8-ad8e-413abe3ee232",
+     "group": "33b9e9f7-ffe6-4046-9e15-fed4f2440228",
+     "takes": 1,
+     "version": 1,
+     "mirrored": false,
+     "generated_at": "2026-09-09T21:16:32+00:00"
+    },
+    "south-west": {
+     "status": "warn",
+     "step_mean": 0.0788,
+     "step_max": 0.11,
+     "drift": 1.68,
+     "loop": 0.1331,
+     "loop_ratio": 1.69,
+     "travel": 1.77,
+     "pin": 0.942,
+     "pad": 0,
+     "canvas": [
+      240,
+      240
+     ],
+     "reasons": [
+      "motion 0.079 outside the calm band 0.1–0.4 — eyeball it"
+     ],
+     "sub": "6ab1348c-68a4-44fb-9cdc-aa847fa89eb6",
+     "group": "eb29a57c-3df7-43f0-a64e-23ea65e0a445",
+     "takes": 1,
+     "version": 1,
+     "mirrored": true,
+     "generated_at": "2026-09-09T21:16:30+00:00",
+     "source": "south-east"
+    },
+    "west": {
+     "status": "pass",
+     "step_mean": 0.1082,
+     "step_max": 0.1472,
+     "drift": 2.21,
+     "loop": 0.1958,
+     "loop_ratio": 1.81,
+     "travel": 2.01,
+     "pin": 0.933,
+     "pad": 0,
+     "canvas": [
+      240,
+      240
+     ],
+     "reasons": [],
+     "sub": "9ea39eb8-f314-466f-b879-c1094a9697be",
+     "group": "49ffbbcf-2e38-42f2-ae4b-f7bbc185aa73",
+     "takes": 1,
+     "version": 1,
+     "mirrored": true,
+     "generated_at": "2026-09-09T21:16:31+00:00",
+     "source": "east"
+    },
+    "north-west": {
+     "status": "warn",
+     "step_mean": 0.0798,
+     "step_max": 0.0985,
+     "drift": 2.77,
+     "loop": 0.1488,
+     "loop_ratio": 1.86,
+     "travel": 2.49,
+     "pin": 0.92,
+     "pad": 0,
+     "canvas": [
+      240,
+      240
+     ],
+     "reasons": [
+      "motion 0.080 outside the calm band 0.1–0.4 — eyeball it"
+     ],
+     "sub": "55aaa63b-0cc0-4db3-a920-4416af77127c",
+     "group": "61f7e356-7209-40f7-84a7-b81d64f9573e",
+     "takes": 1,
+     "version": 1,
+     "mirrored": true,
+     "generated_at": "2026-09-09T21:16:31+00:00",
+     "source": "north-east"
+    }
+   },
+   "action": "walk loop, full walk cycle in place, legs alternate naturally, normal calm walking pace, body stays centered, seamless loop whose last frame leads straight back into the first, no turning",
+   "frame_paths": {
+    "south": [
+     "war_elephant/animations/walk/south/00.webp",
+     "war_elephant/animations/walk/south/01.webp",
+     "war_elephant/animations/walk/south/02.webp",
+     "war_elephant/animations/walk/south/03.webp",
+     "war_elephant/animations/walk/south/04.webp",
+     "war_elephant/animations/walk/south/05.webp"
+    ],
+    "south-east": [
+     "war_elephant/animations/walk/south-east/00.webp",
+     "war_elephant/animations/walk/south-east/01.webp",
+     "war_elephant/animations/walk/south-east/02.webp",
+     "war_elephant/animations/walk/south-east/03.webp",
+     "war_elephant/animations/walk/south-east/04.webp",
+     "war_elephant/animations/walk/south-east/05.webp"
+    ],
+    "east": [
+     "war_elephant/animations/walk/east/00.webp",
+     "war_elephant/animations/walk/east/01.webp",
+     "war_elephant/animations/walk/east/02.webp",
+     "war_elephant/animations/walk/east/03.webp",
+     "war_elephant/animations/walk/east/04.webp",
+     "war_elephant/animations/walk/east/05.webp"
+    ],
+    "north-east": [
+     "war_elephant/animations/walk/north-east/00.webp",
+     "war_elephant/animations/walk/north-east/01.webp",
+     "war_elephant/animations/walk/north-east/02.webp",
+     "war_elephant/animations/walk/north-east/03.webp",
+     "war_elephant/animations/walk/north-east/04.webp",
+     "war_elephant/animations/walk/north-east/05.webp"
+    ],
+    "north": [
+     "war_elephant/animations/walk/north/00.webp",
+     "war_elephant/animations/walk/north/01.webp",
+     "war_elephant/animations/walk/north/02.webp",
+     "war_elephant/animations/walk/north/03.webp",
+     "war_elephant/animations/walk/north/04.webp",
+     "war_elephant/animations/walk/north/05.webp"
+    ],
+    "south-west": [
+     "war_elephant/animations/walk/south-west/00.webp",
+     "war_elephant/animations/walk/south-west/01.webp",
+     "war_elephant/animations/walk/south-west/02.webp",
+     "war_elephant/animations/walk/south-west/03.webp",
+     "war_elephant/animations/walk/south-west/04.webp",
+     "war_elephant/animations/walk/south-west/05.webp"
+    ],
+    "west": [
+     "war_elephant/animations/walk/west/00.webp",
+     "war_elephant/animations/walk/west/01.webp",
+     "war_elephant/animations/walk/west/02.webp",
+     "war_elephant/animations/walk/west/03.webp",
+     "war_elephant/animations/walk/west/04.webp",
+     "war_elephant/animations/walk/west/05.webp"
+    ],
+    "north-west": [
+     "war_elephant/animations/walk/north-west/00.webp",
+     "war_elephant/animations/walk/north-west/01.webp",
+     "war_elephant/animations/walk/north-west/02.webp",
+     "war_elephant/animations/walk/north-west/03.webp",
+     "war_elephant/animations/walk/north-west/04.webp",
+     "war_elephant/animations/walk/north-west/05.webp"
+    ]
+   },
+   "strips": {
+    "south": "war_elephant/animations/walk__south.webp",
+    "south-east": "war_elephant/animations/walk__south-east.webp",
+    "east": "war_elephant/animations/walk__east.webp",
+    "north-east": "war_elephant/animations/walk__north-east.webp",
+    "north": "war_elephant/animations/walk__north.webp",
+    "south-west": "war_elephant/animations/walk__south-west.webp",
+    "west": "war_elephant/animations/walk__west.webp",
+    "north-west": "war_elephant/animations/walk__north-west.webp"
+   }
+  },
+  "attack": {
+   "directions": {
+    "south": {
+     "status": "fail",
+     "step_mean": 0.0601,
+     "step_max": 0.0827,
+     "drift": 2.32,
+     "loop": 0.0,
+     "loop_ratio": 0.0,
+     "travel": 1.3,
+     "pin": 1.0,
+     "pad": 0,
+     "flash": 0.001,
+     "peak": 0.1039,
+     "reach": 0.075,
+     "canvas": [
+      240,
+      240
+     ],
+     "reasons": [
+      "motion 0.060 outside the calm band 0.08–0.9 — eyeball it",
+      "weak strike: peak 0.104 — eyeball it",
+      "no strike, just a lean: nothing reaches past 0.08 of the body"
+     ],
+     "sub": "3a3e9c54-733a-440e-981a-7aebac3c6f8c",
+     "group": "4f0ce940-cd64-4bee-a612-f1c00983b542",
+     "takes": 1,
+     "version": 2,
+     "mirrored": false,
+     "generated_at": "2026-09-09T22:39:05+00:00",
+     "action": "Tusk Gore - Lowers head and thrusts forward once with both tusks, then returns to idle stance"
+    },
+    "south-east": {
+     "status": "fail",
+     "step_mean": 0.1105,
+     "step_max": 0.1312,
+     "drift": 6.73,
+     "loop": 0.0,
+     "loop_ratio": 0.0,
+     "travel": 0.44,
+     "pin": 1.0,
+     "pad": 0,
+     "flash": 0.0,
+     "peak": 0.1915,
+     "reach": 0.095,
+     "canvas": [
+      240,
+      240
+     ],
+     "reasons": [
+      "no strike, just a lean: nothing reaches past 0.09 of the body"
+     ],
+     "sub": "7be868be-0c5d-4acf-b41c-707b890ff81d",
+     "group": "95267151-42f6-4b9f-be83-b1b3c2dc1d10",
+     "takes": 2,
+     "version": 3,
+     "mirrored": false,
+     "generated_at": "2026-09-09T22:48:34+00:00",
+     "action": "Tusk Gore - Lowers head and thrusts forward once with both tusks, then returns to idle stance"
+    },
+    "east": {
+     "status": "fail",
+     "step_mean": 0.0928,
+     "step_max": 0.1096,
+     "drift": 3.82,
+     "loop": 0.0,
+     "loop_ratio": 0.0,
+     "travel": 1.39,
+     "pin": 1.0,
+     "pad": 0,
+     "flash": 0.0,
+     "peak": 0.1589,
+     "reach": 0.13,
+     "canvas": [
+      240,
+      240
+     ],
+     "reasons": [
+      "no strike, just a lean: nothing reaches past 0.13 of the body"
+     ],
+     "sub": "26236dee-85c4-4341-80bf-04ebdac02e21",
+     "group": "6c460341-4819-4e86-9a15-4503e362c937",
+     "takes": 1,
+     "version": 2,
+     "mirrored": false,
+     "generated_at": "2026-09-09T22:39:08+00:00",
+     "action": "Tusk Gore - Lowers head and thrusts forward once with both tusks, then returns to idle stance"
+    },
+    "north-east": {
+     "status": "fail",
+     "step_mean": 0.0789,
+     "step_max": 0.1,
+     "drift": 2.72,
+     "loop": 0.0,
+     "loop_ratio": 0.0,
+     "travel": 0.74,
+     "pin": 1.0,
+     "pad": 0,
+     "flash": 0.0,
+     "peak": 0.1328,
+     "reach": 0.043,
+     "canvas": [
+      240,
+      240
+     ],
+     "reasons": [
+      "motion 0.079 outside the calm band 0.08–0.9 — eyeball it",
+      "weak strike: peak 0.133 — eyeball it",
+      "no strike, just a lean: nothing reaches past 0.04 of the body"
+     ],
+     "sub": "a21099dc-55fe-4357-9a93-d8e9bf044dc9",
+     "group": "a7c3419a-f383-4b60-a745-84c8d177d241",
+     "takes": 1,
+     "version": 2,
+     "mirrored": false,
+     "generated_at": "2026-09-09T22:39:08+00:00",
+     "action": "Tusk Gore - Lowers head and thrusts forward once with both tusks, then returns to idle stance"
+    },
+    "north": {
+     "status": "fail",
+     "step_mean": 0.0753,
+     "step_max": 0.0813,
+     "drift": 5.23,
+     "loop": 0.0001,
+     "loop_ratio": 0.0,
+     "travel": 1.03,
+     "pin": 1.0,
+     "pad": 0,
+     "flash": 0.0,
+     "peak": 0.131,
+     "reach": 0.061,
+     "canvas": [
+      240,
+      240
+     ],
+     "reasons": [
+      "motion 0.075 outside the calm band 0.08–0.9 — eyeball it",
+      "weak strike: peak 0.131 — eyeball it",
+      "no strike, just a lean: nothing reaches past 0.06 of the body"
+     ],
+     "sub": "cefecfed-8e41-4b45-9467-461920c4c6a3",
+     "group": "857e9daf-97ed-4d58-86cd-4d33996dd7c8",
+     "takes": 1,
+     "version": 2,
+     "mirrored": false,
+     "generated_at": "2026-09-09T22:39:09+00:00",
+     "action": "Tusk Gore - Lowers head and thrusts forward once with both tusks, then returns to idle stance"
+    },
+    "south-west": {
+     "status": "pass",
+     "step_mean": 0.1105,
+     "step_max": 0.1312,
+     "drift": 6.73,
+     "loop": 0.0,
+     "loop_ratio": 0.0,
+     "travel": 0.44,
+     "pin": 1.0,
+     "pad": 0,
+     "flash": 0.0,
+     "peak": 0.1915,
+     "canvas": [
+      240,
+      240
+     ],
+     "reasons": [],
+     "sub": "7be868be-0c5d-4acf-b41c-707b890ff81d",
+     "group": "95267151-42f6-4b9f-be83-b1b3c2dc1d10",
+     "takes": 2,
+     "version": 3,
+     "mirrored": true,
+     "generated_at": "2026-09-09T22:48:34+00:00",
+     "action": "Tusk Gore - Lowers head and thrusts forward once with both tusks, then returns to idle stance",
+     "source": "south-east"
+    },
+    "west": {
+     "status": "pass",
+     "step_mean": 0.0928,
+     "step_max": 0.1096,
+     "drift": 3.82,
+     "loop": 0.0,
+     "loop_ratio": 0.0,
+     "travel": 1.39,
+     "pin": 1.0,
+     "pad": 0,
+     "flash": 0.0,
+     "peak": 0.1589,
+     "canvas": [
+      240,
+      240
+     ],
+     "reasons": [],
+     "sub": "26236dee-85c4-4341-80bf-04ebdac02e21",
+     "group": "6c460341-4819-4e86-9a15-4503e362c937",
+     "takes": 1,
+     "version": 2,
+     "mirrored": true,
+     "generated_at": "2026-09-09T22:39:08+00:00",
+     "action": "Tusk Gore - Lowers head and thrusts forward once with both tusks, then returns to idle stance",
+     "source": "east"
+    },
+    "north-west": {
+     "status": "pass",
+     "step_mean": 0.0789,
+     "step_max": 0.1,
+     "drift": 2.72,
+     "loop": 0.0,
+     "loop_ratio": 0.0,
+     "travel": 0.74,
+     "pin": 1.0,
+     "pad": 0,
+     "flash": 0.0,
+     "peak": 0.1328,
+     "canvas": [
+      240,
+      240
+     ],
+     "reasons": [],
+     "sub": "a21099dc-55fe-4357-9a93-d8e9bf044dc9",
+     "group": "a7c3419a-f383-4b60-a745-84c8d177d241",
+     "takes": 1,
+     "version": 2,
+     "mirrored": true,
+     "generated_at": "2026-09-09T22:39:08+00:00",
+     "action": "Tusk Gore - Lowers head and thrusts forward once with both tusks, then returns to idle stance",
+     "source": "north-east"
+    }
+   },
+   "action": "Tusk Gore - Lowers head and thrusts forward once with both tusks, then returns to idle stance",
+   "frame_paths": {
+    "south": [
+     "war_elephant/animations/attack/south/00.webp",
+     "war_elephant/animations/attack/south/01.webp",
+     "war_elephant/animations/attack/south/02.webp",
+     "war_elephant/animations/attack/south/03.webp",
+     "war_elephant/animations/attack/south/04.webp"
+    ],
+    "south-east": [
+     "war_elephant/animations/attack/south-east/00.webp",
+     "war_elephant/animations/attack/south-east/01.webp",
+     "war_elephant/animations/attack/south-east/02.webp",
+     "war_elephant/animations/attack/south-east/03.webp",
+     "war_elephant/animations/attack/south-east/04.webp"
+    ],
+    "east": [
+     "war_elephant/animations/attack/east/00.webp",
+     "war_elephant/animations/attack/east/01.webp",
+     "war_elephant/animations/attack/east/02.webp",
+     "war_elephant/animations/attack/east/03.webp",
+     "war_elephant/animations/attack/east/04.webp"
+    ],
+    "north-east": [
+     "war_elephant/animations/attack/north-east/00.webp",
+     "war_elephant/animations/attack/north-east/01.webp",
+     "war_elephant/animations/attack/north-east/02.webp",
+     "war_elephant/animations/attack/north-east/03.webp",
+     "war_elephant/animations/attack/north-east/04.webp"
+    ],
+    "north": [
+     "war_elephant/animations/attack/north/00.webp",
+     "war_elephant/animations/attack/north/01.webp",
+     "war_elephant/animations/attack/north/02.webp",
+     "war_elephant/animations/attack/north/03.webp",
+     "war_elephant/animations/attack/north/04.webp"
+    ],
+    "south-west": [
+     "war_elephant/animations/attack/south-west/00.webp",
+     "war_elephant/animations/attack/south-west/01.webp",
+     "war_elephant/animations/attack/south-west/02.webp",
+     "war_elephant/animations/attack/south-west/03.webp",
+     "war_elephant/animations/attack/south-west/04.webp"
+    ],
+    "west": [
+     "war_elephant/animations/attack/west/00.webp",
+     "war_elephant/animations/attack/west/01.webp",
+     "war_elephant/animations/attack/west/02.webp",
+     "war_elephant/animations/attack/west/03.webp",
+     "war_elephant/animations/attack/west/04.webp"
+    ],
+    "north-west": [
+     "war_elephant/animations/attack/north-west/00.webp",
+     "war_elephant/animations/attack/north-west/01.webp",
+     "war_elephant/animations/attack/north-west/02.webp",
+     "war_elephant/animations/attack/north-west/03.webp",
+     "war_elephant/animations/attack/north-west/04.webp"
+    ]
+   },
+   "strips": {
+    "south": "war_elephant/animations/attack__south.webp",
+    "south-east": "war_elephant/animations/attack__south-east.webp",
+    "east": "war_elephant/animations/attack__east.webp",
+    "north-east": "war_elephant/animations/attack__north-east.webp",
+    "north": "war_elephant/animations/attack__north.webp",
+    "south-west": "war_elephant/animations/attack__south-west.webp",
+    "west": "war_elephant/animations/attack__west.webp",
+    "north-west": "war_elephant/animations/attack__north-west.webp"
+   }
+  },
+  "attack_try": {
+   "directions": {
+    "south": {
+     "status": "fail",
+     "step_mean": 0.053,
+     "step_max": 0.0784,
+     "drift": 3.88,
+     "loop": 0.1064,
+     "loop_ratio": 2.01,
+     "travel": 3.88,
+     "pin": 1.0,
+     "pad": 0,
+     "flash": 0.0,
+     "peak": 0.1438,
+     "reach": 0.061,
+     "canvas": [
+      240,
+      240
+     ],
+     "reasons": [
+      "motion 0.053 outside the calm band 0.08–0.9 — eyeball it",
+      "weak strike: peak 0.144 — eyeball it",
+      "no strike, just a lean: nothing reaches past 0.06 of the body"
+     ],
+     "sub": "571460c9-c4d0-4fd7-9883-10a5c3af5cf7",
+     "group": "ff26448e-021f-47b1-a84c-50daba07b835",
+     "takes": 1,
+     "version": 4,
+     "mirrored": false,
+     "generated_at": "2026-09-10T21:08:17+00:00",
+     "action": "Tusk Gore - Lowers its head and drives both tusks forward in a heavy gore, a big aggressive swing",
+     "tries": 2,
+     "rolls": 4,
+     "intensity": 1,
+     "frames": 7,
+     "rung": 3
+    },
+    "south-east": {
+     "status": "warn",
+     "step_mean": 0.1178,
+     "step_max": 0.1637,
+     "drift": 4.36,
+     "loop": 0.2893,
+     "loop_ratio": 2.45,
+     "travel": 1.25,
+     "pin": 1.0,
+     "pad": 0,
+     "flash": 0.002,
+     "peak": 0.3771,
+     "reach": 0.171,
+     "canvas": [
+      240,
+      240
+     ],
+     "reasons": [
+      "shallow strike: reach 0.17 — eyeball it"
+     ],
+     "sub": "5a7f5a03-24df-4a7e-9765-30fff78db87d",
+     "group": "4de7809f-cdbf-41c9-af28-ac1ca2e91cef",
+     "takes": 1,
+     "version": 4,
+     "mirrored": false,
+     "generated_at": "2026-09-10T21:08:18+00:00",
+     "action": "Tusk Gore - Lowers its head and drives both tusks forward in a heavy gore, a big aggressive swing",
+     "tries": 2,
+     "rolls": 4,
+     "intensity": 1,
+     "frames": 7,
+     "rung": 0
+    },
+    "east": {
+     "status": "warn",
+     "step_mean": 0.1285,
+     "step_max": 0.1602,
+     "drift": 4.11,
+     "loop": 0.2742,
+     "loop_ratio": 2.13,
+     "travel": 4.28,
+     "pin": 1.0,
+     "pad": 0,
+     "flash": 0.004,
+     "peak": 0.3534,
+     "reach": 0.148,
+     "canvas": [
+      240,
+      240
+     ],
+     "reasons": [
+      "shallow strike: reach 0.15 — eyeball it"
+     ],
+     "sub": "82781713-4c30-435e-8215-bf5ddbbada04",
+     "group": "25973bfc-3b7c-4ffd-94fd-f253e7a8dbfd",
+     "takes": 1,
+     "version": 4,
+     "mirrored": false,
+     "generated_at": "2026-09-10T21:08:19+00:00",
+     "action": "Tusk Gore - Lowers its head and drives both tusks forward in a heavy gore, a big aggressive swing",
+     "tries": 2,
+     "rolls": 4,
+     "intensity": 1,
+     "frames": 7,
+     "rung": 0
+    },
+    "north-east": {
+     "status": "fail",
+     "step_mean": 0.0608,
+     "step_max": 0.0839,
+     "drift": 2.85,
+     "loop": 0.0722,
+     "loop_ratio": 1.19,
+     "travel": 1.66,
+     "pin": 1.0,
+     "pad": 0,
+     "flash": -0.0,
+     "peak": 0.1487,
+     "reach": 0.058,
+     "canvas": [
+      240,
+      240
+     ],
+     "reasons": [
+      "motion 0.061 outside the calm band 0.08–0.9 — eyeball it",
+      "weak strike: peak 0.149 — eyeball it",
+      "no strike, just a lean: nothing reaches past 0.06 of the body"
+     ],
+     "sub": "e56dc7f7-f6ed-45f4-86dc-6b0336b07ad7",
+     "group": "675e63e8-c56e-49c7-a8ce-0ca0e5676b5c",
+     "takes": 1,
+     "version": 4,
+     "mirrored": false,
+     "generated_at": "2026-09-10T21:08:20+00:00",
+     "action": "Tusk Gore - Lowers its head and drives both tusks forward in a heavy gore, a big aggressive swing",
+     "tries": 2,
+     "rolls": 4,
+     "intensity": 1,
+     "frames": 7,
+     "rung": 3
+    },
+    "north": {
+     "status": "fail",
+     "step_mean": 0.055,
+     "step_max": 0.0675,
+     "drift": 3.3,
+     "loop": 0.0789,
+     "loop_ratio": 1.43,
+     "travel": 3.3,
+     "pin": 1.0,
+     "pad": 0,
+     "flash": 0.001,
+     "peak": 0.0928,
+     "reach": 0.097,
+     "canvas": [
+      240,
+      240
+     ],
+     "reasons": [
+      "motion 0.055 outside the calm band 0.08–0.9 — eyeball it",
+      "weak strike: peak 0.093 — eyeball it",
+      "no strike, just a lean: nothing reaches past 0.10 of the body"
+     ],
+     "sub": "334b84e4-680b-4eee-be10-5332c75032f6",
+     "group": "1fa8358a-33ff-44ad-8e8e-e05a8174fefd",
+     "takes": 1,
+     "version": 4,
+     "mirrored": false,
+     "generated_at": "2026-09-10T21:08:21+00:00",
+     "action": "Tusk Gore - Lowers its head and drives both tusks forward in a heavy gore, a big aggressive swing",
+     "tries": 2,
+     "rolls": 4,
+     "intensity": 1,
+     "frames": 7,
+     "rung": 3
+    },
+    "south-west": {
+     "status": "warn",
+     "step_mean": 0.1178,
+     "step_max": 0.1637,
+     "drift": 4.36,
+     "loop": 0.2893,
+     "loop_ratio": 2.45,
+     "travel": 1.25,
+     "pin": 1.0,
+     "pad": 0,
+     "flash": 0.002,
+     "peak": 0.3771,
+     "reach": 0.171,
+     "canvas": [
+      240,
+      240
+     ],
+     "reasons": [
+      "shallow strike: reach 0.17 — eyeball it"
+     ],
+     "sub": "5a7f5a03-24df-4a7e-9765-30fff78db87d",
+     "group": "4de7809f-cdbf-41c9-af28-ac1ca2e91cef",
+     "takes": 1,
+     "version": 4,
+     "mirrored": true,
+     "generated_at": "2026-09-10T21:08:18+00:00",
+     "action": "Tusk Gore - Lowers its head and drives both tusks forward in a heavy gore, a big aggressive swing",
+     "tries": 2,
+     "rolls": 4,
+     "intensity": 1,
+     "frames": 7,
+     "source": "south-east"
+    },
+    "west": {
+     "status": "warn",
+     "step_mean": 0.1285,
+     "step_max": 0.1602,
+     "drift": 4.11,
+     "loop": 0.2742,
+     "loop_ratio": 2.13,
+     "travel": 4.28,
+     "pin": 1.0,
+     "pad": 0,
+     "flash": 0.004,
+     "peak": 0.3534,
+     "reach": 0.148,
+     "canvas": [
+      240,
+      240
+     ],
+     "reasons": [
+      "shallow strike: reach 0.15 — eyeball it"
+     ],
+     "sub": "82781713-4c30-435e-8215-bf5ddbbada04",
+     "group": "25973bfc-3b7c-4ffd-94fd-f253e7a8dbfd",
+     "takes": 1,
+     "version": 4,
+     "mirrored": true,
+     "generated_at": "2026-09-10T21:08:19+00:00",
+     "action": "Tusk Gore - Lowers its head and drives both tusks forward in a heavy gore, a big aggressive swing",
+     "tries": 2,
+     "rolls": 4,
+     "intensity": 1,
+     "frames": 7,
+     "source": "east"
+    }
+   },
+   "action": "Tusk Gore - Lowers its head and drives both tusks forward in a heavy gore, a big aggressive swing",
+   "frame_paths": {
+    "south": [
+     "war_elephant/animations/attack_try/south/00.webp",
+     "war_elephant/animations/attack_try/south/01.webp",
+     "war_elephant/animations/attack_try/south/02.webp",
+     "war_elephant/animations/attack_try/south/03.webp",
+     "war_elephant/animations/attack_try/south/04.webp",
+     "war_elephant/animations/attack_try/south/05.webp",
+     "war_elephant/animations/attack_try/south/06.webp"
+    ],
+    "south-east": [
+     "war_elephant/animations/attack_try/south-east/00.webp",
+     "war_elephant/animations/attack_try/south-east/01.webp",
+     "war_elephant/animations/attack_try/south-east/02.webp",
+     "war_elephant/animations/attack_try/south-east/03.webp",
+     "war_elephant/animations/attack_try/south-east/04.webp",
+     "war_elephant/animations/attack_try/south-east/05.webp",
+     "war_elephant/animations/attack_try/south-east/06.webp"
+    ],
+    "east": [
+     "war_elephant/animations/attack_try/east/00.webp",
+     "war_elephant/animations/attack_try/east/01.webp",
+     "war_elephant/animations/attack_try/east/02.webp",
+     "war_elephant/animations/attack_try/east/03.webp",
+     "war_elephant/animations/attack_try/east/04.webp",
+     "war_elephant/animations/attack_try/east/05.webp",
+     "war_elephant/animations/attack_try/east/06.webp"
+    ],
+    "north-east": [
+     "war_elephant/animations/attack_try/north-east/00.webp",
+     "war_elephant/animations/attack_try/north-east/01.webp",
+     "war_elephant/animations/attack_try/north-east/02.webp",
+     "war_elephant/animations/attack_try/north-east/03.webp",
+     "war_elephant/animations/attack_try/north-east/04.webp",
+     "war_elephant/animations/attack_try/north-east/05.webp",
+     "war_elephant/animations/attack_try/north-east/06.webp"
+    ],
+    "north": [
+     "war_elephant/animations/attack_try/north/00.webp",
+     "war_elephant/animations/attack_try/north/01.webp",
+     "war_elephant/animations/attack_try/north/02.webp",
+     "war_elephant/animations/attack_try/north/03.webp",
+     "war_elephant/animations/attack_try/north/04.webp",
+     "war_elephant/animations/attack_try/north/05.webp",
+     "war_elephant/animations/attack_try/north/06.webp"
+    ],
+    "south-west": [
+     "war_elephant/animations/attack_try/south-west/00.webp",
+     "war_elephant/animations/attack_try/south-west/01.webp",
+     "war_elephant/animations/attack_try/south-west/02.webp",
+     "war_elephant/animations/attack_try/south-west/03.webp",
+     "war_elephant/animations/attack_try/south-west/04.webp",
+     "war_elephant/animations/attack_try/south-west/05.webp",
+     "war_elephant/animations/attack_try/south-west/06.webp"
+    ],
+    "west": [
+     "war_elephant/animations/attack_try/west/00.webp",
+     "war_elephant/animations/attack_try/west/01.webp",
+     "war_elephant/animations/attack_try/west/02.webp",
+     "war_elephant/animations/attack_try/west/03.webp",
+     "war_elephant/animations/attack_try/west/04.webp",
+     "war_elephant/animations/attack_try/west/05.webp",
+     "war_elephant/animations/attack_try/west/06.webp"
+    ]
+   },
+   "strips": {
+    "south": "war_elephant/animations/attack_try__south.webp",
+    "south-east": "war_elephant/animations/attack_try__south-east.webp",
+    "east": "war_elephant/animations/attack_try__east.webp",
+    "north-east": "war_elephant/animations/attack_try__north-east.webp",
+    "north": "war_elephant/animations/attack_try__north.webp",
+    "south-west": "war_elephant/animations/attack_try__south-west.webp",
+    "west": "war_elephant/animations/attack_try__west.webp"
+   },
+   "intensity": 1
+  }
+ }
 }
