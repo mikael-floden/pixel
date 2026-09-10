@@ -76,7 +76,7 @@ const LAYERS: Layer[] = [
   {
     id: "zones",
     label: "zones",
-    note: "one room per rectangle; the inner line is the hand-off band",
+    note: "amber: one room per rectangle. red: the hand-off band",
     draw: (ctx) => {
       const z = ml()?.zones?.();
       if (!z) return;
@@ -93,15 +93,18 @@ const LAYERS: Layer[] = [
         );
         // THE BAND, on my own zone only: drawing it on all sixteen would be a
         // hatch, and the question it answers ("am I near a border?") is about
-        // where I am. Inset by `band` cells on every side.
+        // where I am. Inset by `band` cells on every side. A RED LINE OVER A
+        // RED FILL, the same pair the in-world overlay uses (settings "zone
+        // borders", itself the spawn overlay's recipe hue-shifted), so the two
+        // views read as one legend: amber rectangle = the room, red inside =
+        // the core, between them = the hand-off band.
         if (mine && z.band > 0 && r.x1 - r.x0 > z.band * 2 && r.y1 - r.y0 > z.band * 2) {
           ctx.svg.appendChild(
             ctx.el("path", {
               d: quad(ctx, r.x0 + z.band, r.y0 + z.band, r.x1 - z.band, r.y1 - z.band),
-              fill: "none",
-              stroke: "rgba(255,190,80,0.5)",
-              "stroke-width": 0.3,
-              "stroke-dasharray": "1.5 1.5",
+              fill: "rgba(255,90,74,0.12)",
+              stroke: "rgba(255,143,128,0.9)",
+              "stroke-width": 0.4,
               "vector-effect": "non-scaling-stroke",
             }),
           );

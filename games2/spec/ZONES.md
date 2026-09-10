@@ -124,9 +124,9 @@ The **Map tab's layer row** draws the grid over the minimap: a chip per layer
 above the map, `zones` first (`client/src/maplayers.ts`). Each rectangle is
 one room, projected through the SAME arithmetic as the "you are here" dot
 (`minimapCellPct`) so it can never drift from it; the zone you stand in is
-filled and its dashed inset is the hand-off band (`INTEREST_LEAVE_WU`), which
-is the strip where the neighbouring room mirrors you as a ghost. The numbers
-are the ids the server logs and `__ml.zone()` reports.
+filled amber and its red inset is the hand-off band (`INTEREST_LEAVE_WU`),
+which is the strip where the neighbouring room mirrors you as a ghost. The
+numbers are the ids the server logs and `__ml.zone()` reports.
 
 Maintainer 2026-09-10, asking for it: "In order for me to better understand
 the new zone system ... I want at the top of the Map tab to have small buttons
@@ -138,6 +138,36 @@ to do with this zone boundary or not." Adding a layer is one entry in `LAYERS`
 persistence (`ml-map-layers`) and the redraw are generic. Data comes from
 `__ml.zones()`, which derives the rectangles from the server's own
 `zoneGrid`/`zoneRect` rather than a second copy of the arithmetic.
+
+The **"zone borders" settings switch** draws the same grid IN THE WORLD, for
+running around with the map shut (maintainer 2026-09-10: "I might not always
+have the map open when running around — so having them on the screen like
+spawn areas work would help me a lot"). Two marks, and the split is the point:
+
+- every internal **border** is a bare amber line, no tint on either side —
+  both sides of a border are somebody's inside, so a fade there would claim a
+  direction that does not exist ("at the border between zones we need no fade.
+  Just a single line — there is no inside/outside");
+- **my zone's inner edge** — `INTEREST_LEAVE_WU` in from the border, the line
+  where the neighbour starts mirroring me — is drawn EXACTLY AS A SPAWN AREA
+  IS, hue-shifted to red: a 1 px line at α .45 over one flat α .05 fill
+  covering everything inside it. The one-sided fill is the whole signal
+  ("the fade only exist in one direction ... so I know if I walk out of this
+  zone or into this zone"). A four-step gradient hem and a dashed line were
+  both tried and rejected: "I want you to not invent something new here. The
+  spawn area border looks fantastic."
+
+The Map tab's `zones` layer uses the same legend — amber rectangle = the room,
+red inside = the core, between them = the hand-off band.
+
+The overlay is drawn ON TOP of everything (depth 900_002.4, beside the
+collision overlay) and NOT at the spawn overlay's ground depth: a zone edge
+runs across the whole world, so terrain between you and it ate the line and the
+border stopped at the nearest hill. Lines are sampled per CELL so an edge
+climbs a hill with the ground, through `projectZoneCorner` — never
+`projectFlat`. It is redrawn on the toggle and on a zone hop (the fill is
+one-sided and points into MY zone, so a hop must repaint it); `ml-zone-lines`
+persists it, `__ml.zoneLines()` reads and sets it.
 
 Both the row and the overlay are INJECTED into the Map page from outside,
 because games-ui owns `hud.ts` — the same pattern the ambient agent's settings

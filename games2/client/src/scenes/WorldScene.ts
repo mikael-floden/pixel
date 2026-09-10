@@ -1545,6 +1545,16 @@ export class WorldScene extends Phaser.Scene {
   // Faint debug outline of each fake SPAWN_AREA rectangle (WIP placeholder,
   // later the maps agent owns real areas). World-anchored via this.project.
   private spawnAreaGfx?: Phaser.GameObjects.Graphics;
+  /** Settings "zone borders": the zone grid drawn IN THE WORLD, so a border
+   *  can be seen while running rather than only on the Map tab (maintainer
+   *  2026-09-10: "I might not always have the map open when running around").
+   *  World-space graphics like the spawn overlay — drawn once per toggle, the
+   *  camera moves over them. */
+  private zoneLinesOn = localStorage.getItem("ml-zone-lines") === "1";
+  private zoneLineGfx?: Phaser.GameObjects.Graphics;
+  /** Which zone the overlay was last drawn for — the hem is one-sided and
+   *  points into MY zone, so a hop has to redraw it. */
+  private zoneLinesFor = -2;
   // Monster spawn-zone overlay: DEBUG, off by default and persisted like the
   // other switches (maintainer 2026-07-30 — the zones are map data, not part
   // of the played world).
@@ -3921,6 +3931,8 @@ export class WorldScene extends Phaser.Scene {
         // Monster spawn zones (maps2 spawns@1) — a DEBUG overlay, off by
         // default (maintainer 2026-07-30: "not visible by default").
         { label: "spawn areas", act: () => this.toggleSpawnAreas(), get: () => this.spawnAreasOn },
+        // The zone grid in the world, same shape of switch as spawn areas.
+        { label: "zone borders", act: () => this.toggleZoneLines(), get: () => this.zoneLinesOn },
         // Aggro radii (combat round 2) — DEBUG rings, off by default: red =
         // a predator's proximity radius, gold = the provoke radius on the
         // sword-marked target.
@@ -6911,6 +6923,8 @@ export class WorldScene extends Phaser.Scene {
        *  strip inside a border where the neighbouring room mirrors you and the
        *  hand-off happens — the thing you want to see when asking "is this bug
        *  about the boundary?". Null until the world and the config are in. */
+      /** Settings "zone borders" — the zone grid drawn in the world. */
+      zoneLines: (on?: boolean) => (on === undefined ? this.zoneLinesOn : this.toggleZoneLines(on)),
       /** The tap router's uphill bias (navbias.ts): read it, or set it. */
       navUphill: (v?: number) => {
         if (v !== undefined) setNavUphill(v);
@@ -12064,6 +12078,160 @@ export class WorldScene extends Phaser.Scene {
     return this.spawnAreasOn;
   }
 
+  private toggleZoneLines(on = !this.zoneLinesOn) {
+    this.zoneLinesOn = on;
+    try {
+      localStorage.setItem("ml-zone-lines", on ? "1" : "0");
+    } catch {}
+    this.drawZoneLines();
+    this.chat.addLog("—", `Zone borders: ${on ? "on" : "off"}`);
+    return this.zoneLinesOn;
+  }
+
+  /** THE ZONE GRID, IN THE WORLD (settings switch "zone borders", off by
+   *  default). The Map tab draws the same thing from above; this is for
+   *  running around, where the question is "am I about to cross?" (maintainer
+   *  2026-09-10: "I might not always have the map open when running around ...
+   *  The inner and outer zones must have different color or style similar to
+   *  the map view so I can distinguish between them").
+   *
+   *  TWO THINGS, and the whole point of the overlay is telling them apart:
+   *   - every internal BORDER, amber, A BARE LINE — crossing one is a hand-off,
+   *     a fresh join into the next zone's room;
+   *   - MY zone's INNER edge, red, drawn AS A SPAWN AREA IS — a thin line with
+   *     one flat low-alpha fill covering everything inside it. It sits
+   *     `INTEREST_LEAVE_WU` in from the border; between it and the border the
+   *     neighbouring room mirrors me as a ghost and its monsters can reach me
+   *     (spec/ZONES.md).
+   *
+   *  THE TINT IS ONE-SIDED, AND THAT IS THE FEATURE (maintainer 2026-09-10, of
+   *  the spawn-area overlay: "it's easy for me to know what is the inside of
+   *  the spawn area and what is the outside. The fade only exist in one
+   *  direction. So when you do the inner zone make sure to add a fade inwards
+   *  so I know if I walk out of this zone or into this zone"). A line alone
+   *  says where the edge is; the fill on one side of it says which side I am
+   *  standing on. A four-step gradient hem and a dashed line were both tried
+   *  and both rejected — "I want you to not invent something new here. The
+   *  spawn area border looks fantastic" — so this is `drawSpawnAreas`'s recipe
+   *  with the hue changed, and it stays that way.
+   *
+   *  THE BORDER GETS NO TINT, and that is the same rule read the other way
+   *  (maintainer, same day: "at the border between zones we need no fade. Just
+   *  a single line — there is no inside/outside"). Both sides of a border are
+   *  somebody's inside, so a tint there would claim a direction that does not
+   *  exist; the inner edge is the only line here with a real inside.
+   *
+   *  ON TOP OF EVERYTHING, beside the collision overlay (900_002.4) and NOT
+   *  at the spawn overlay's ground depth, where the first cut of this drew it:
+   *  a zone edge runs across the whole world, so the terrain between me and it
+   *  ate both the line and its hem and the border simply stopped at the nearest
+   *  hill (maintainer 2026-09-10, of that screenshot: "it looks like the zone
+   *  line you draw is not being drawn at the top (z-order)"). A boundary I am
+   *  asking about is a question about the WORLD, not something standing in it,
+   *  so nothing occludes it — the cost is that the hem tints a body walking
+   *  through it, which reads as "you are inside" and is welcome.
+   *
+   *  Drawn ONCE per toggle and per zone hop, in WORLD space. Sampled per cell
+   *  along its span so an edge climbs
+   *  a hill with the terrain instead of cutting through it, and the fade's
+   *  quads are MERGED over runs of equal ground level — a border is flat for
+   *  tens of cells at a time, and one quad per cell was thousands of fills for
+   *  the same picture. Corners go through `projectZoneCorner` — never
+   *  `projectFlat`, which would drop every line half a cell down-screen (the
+   *  mistake this file has now made twice; see projectCellCorner).
+   *
+   *  Only INTERNAL edges are drawn: the world's rim has no neighbour, so it
+   *  has neither a hand-off nor a band, and drawing one there would claim a
+   *  boundary that does not exist. */
+  private drawZoneLines() {
+    if (!this.world) return;
+    if (!this.zoneLineGfx) this.zoneLineGfx = this.add.graphics().setDepth(900_002.4);
+    const g = this.zoneLineGfx;
+    g.clear();
+    this.zoneLinesFor = this.zone;
+    if (!this.zoneLinesOn || !this.zonesCfg) return;
+    const W = this.world.width;
+    const H = this.world.height;
+    const grid = zoneGrid(this.zonesCfg, W, H, CELL_WU);
+    const zw = grid.zw / CELL_WU; // zone size in CELLS
+    const zh = grid.zh / CELL_WU;
+    const band = INTEREST_LEAVE_WU / CELL_WU;
+    const BORDER = 0xffbe50; // amber, as on the map
+    // RED for the inner edge — the spawn overlay's cyan pair, hue-shifted
+    // (maintainer 2026-09-10, of the dashed cyan first cut: "I see you have
+    // used dotted lines for the inner zone. Why don't you change it to a more
+    // red looking color instead? ... I say red but I of course don't mean
+    // #ff0000, just more red looking"). So: a soft red, and the line one shade
+    // lighter than the fill, exactly as spawn areas do it.
+    const INNER_FILL = 0xff5a4a;
+    const INNER_LINE = 0xff8f80;
+    const at = (fixed: number, t: number, vertical: boolean) =>
+      vertical ? this.projectZoneCorner(fixed, t) : this.projectZoneCorner(t, fixed);
+
+    // A polyline along a constant-column (or constant-row) corner line,
+    // sampled every cell so it follows the ground.
+    const line = (fixed: number, from: number, to: number, vertical: boolean) => {
+      if (fixed < 0 || fixed > (vertical ? W : H)) return;
+      g.lineStyle(2, BORDER, 0.85);
+      let prev = at(fixed, from, vertical);
+      for (let t = from + 1; t <= to; t++) {
+        const p = at(fixed, t, vertical);
+        g.lineBetween(prev.x, prev.y, p.x, p.y);
+        prev = p;
+      }
+    };
+
+    for (let c = 1; c < grid.cols; c++) {
+      const x = c * zw;
+      if (x >= W) break;
+      line(x, 0, H, true);
+    }
+    for (let r = 1; r < grid.rows; r++) {
+      const y = r * zh;
+      if (y >= H) break;
+      line(y, 0, W, false);
+    }
+
+    // MY ZONE'S INNER EDGE — THE SPAWN OVERLAY'S OWN RECIPE, IN RED. A thin
+    // line plus one flat low-alpha fill over everything INSIDE it, nothing
+    // else: no gradient, no dashes (maintainer 2026-09-10, having tried both:
+    // "do you see how nice looking the spawn area is. I want you to not invent
+    // something new here. The spawn area border looks fantastic"). The fill is
+    // the whole reason it reads — tinted ground means inside, plain ground
+    // means you have stepped out into the band.
+    const rect = this.zone >= 0 && this.zone < grid.cols * grid.rows ? zoneRect(grid, this.zone) : null;
+    if (!rect) return;
+    const x0 = rect.x0 / CELL_WU;
+    const y0 = rect.y0 / CELL_WU;
+    const x1 = rect.x1 / CELL_WU;
+    const y1 = rect.y1 / CELL_WU;
+    // Inset only where there is a NEIGHBOUR. On the world's rim there is no
+    // hand-off and no band, so the inside reaches the edge of the world and
+    // gets no line — a line there would claim a boundary that does not exist.
+    const ix0 = x0 > 0 ? x0 + band : 0;
+    const iy0 = y0 > 0 ? y0 + band : 0;
+    const ix1 = x1 < W ? x1 - band : W;
+    const iy1 = y1 < H ? y1 - band : H;
+    if (ix1 - ix0 < 2 || iy1 - iy0 < 2) return; // a zone thinner than two bands
+    const walk = (fixed: number, from: number, to: number, vertical: boolean) => {
+      const pts: { x: number; y: number }[] = [];
+      const step = to >= from ? 1 : -1;
+      for (let t = from; step > 0 ? t <= to : t >= to; t += step) pts.push(at(fixed, t, vertical));
+      return pts;
+    };
+    const top = walk(iy0, ix0, ix1, false);
+    const right = walk(ix1, iy0, iy1, true);
+    const bottom = walk(iy1, ix1, ix0, false);
+    const left = walk(ix0, iy1, iy0, true);
+    g.fillStyle(INNER_FILL, 0.05);
+    g.fillPoints([...top, ...right, ...bottom, ...left], true);
+    g.lineStyle(1, INNER_LINE, 0.45);
+    if (y0 > 0) g.strokePoints(top, false);
+    if (x1 < W) g.strokePoints(right, false);
+    if (y1 < H) g.strokePoints(bottom, false);
+    if (x0 > 0) g.strokePoints(left, false);
+  }
+
   /** The spawn bonfire on/off — its firelight drowns nearby tiles'
    * self-emission, so QA next to it needs the fire quiet. */
   private toggleBonfire() {
@@ -14229,6 +14397,7 @@ export class WorldScene extends Phaser.Scene {
     // Fake debug spawn-area rectangles depend on the iso origin — (re)draw them
     // now that this.iso is set.
     this.drawSpawnAreas();
+    this.drawZoneLines();
   }
 
   /** Iso outline of each maps2 monster SPAWN ZONE — a DEBUG overlay, off by
@@ -15213,7 +15382,8 @@ export class WorldScene extends Phaser.Scene {
     if (this.time.now >= this.mapLayersAt) {
       this.mapLayersAt = this.time.now + 250;
       ensureMapLayers();
-      ensureNavDial(); // the uphill-bias slider, injected the same way
+      ensureNavDial();
+      if (this.zoneLinesOn && this.zoneLinesFor !== this.zone) this.drawZoneLines(); // the uphill-bias slider, injected the same way
     }
     // The room's LIGHT rules outlive the geometry by exactly one GRADE. The
     // grade landing on 0 means the outside has finished fading up from black
