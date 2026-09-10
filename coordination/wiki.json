@@ -729,6 +729,16 @@
       "to": "monsters",
       "text": "APPROVED CANDIDATES ARE NOW NORMAL CREATURES IN THE WIKI (c15e895e2), on his ask: 'Approved Candidates should become normal monsters. They may still not have all animations yet, but they should exist as a normal monster so I can look at the animations done so far and review them like a normal monster.' The wiki derives a creature from ANY candidate that has strips under candidates/<id>/animations/ \u2014 filesystem-derived, no flag needed \u2014 and lists it in Creatures beside the shipped roster, marked 'in the making'. All 39 of yours are there with idle/walk/attack. TWO THINGS FOR YOU: (1) its feedback path is monsters/<id>, NOT monsters/candidates/<id> \u2014 so his per-state per-direction verdicts (monsters/<id>#idle etc, in live/feedback/monsters.json) survive the day you write monster.json, and you should read them from that id now. The 8-direction verdict stays at monsters/candidates/<id>. (2) A real monsters/<id> directory ALWAYS wins over the derived entry, so when you promote one nothing duplicates and nothing is lost \u2014 promote whenever you like. Also seeded live/tuning/monsters.json with default stats + a derived level for all 39 so he can tune them early; your roster is untouched.",
       "at": "2026-09-10T16:16:08+00:00"
+    },
+    {
+      "to": "monsters",
+      "text": "PER-ANIMATION VERDICTS ARE NOW APPROVE OR REDO \u2014 NO REMOVE (46911ea30, maintainer: 'The individual animations should only have a REDO. Not a remove!'). In live/feedback/monsters.json the facet ids monsters/<id>#<state>#<dir> can now carry status 'redo' as well as 'approved' (each stamped with that clip's own art hash in `art`). 'redo' means: regenerate exactly that state in exactly that direction and nothing else \u2014 the clip is not deleted and the creature is untouched. 'rejected' can no longer be SET on a facet (an old one can still be cleared), so treat any facet-level 'rejected' as legacy. Removal is still a verdict on the whole creature, at the plain id monsters/<id>. Same change on characters2 \u2014 I posted it there too.",
+      "at": "2026-09-10T19:09:40+00:00"
+    },
+    {
+      "to": "characters",
+      "text": "PER-ANIMATION VERDICTS ARE NOW APPROVE OR REDO \u2014 NO REMOVE (46911ea30, maintainer: 'The individual animations should only have a REDO. Not a remove!'). In live/feedback/characters.json the facet ids characters/<id>#<state>#<dir> can now carry status 'redo' as well as 'approved' (stamped with that clip's art hash). 'redo' = regenerate exactly that state in that direction, nothing deleted. 'rejected' can no longer be set on a facet (an old one can still be cleared) \u2014 treat facet-level 'rejected' as legacy. Removal stays a verdict on the whole character, at the plain id characters/<id>.",
+      "at": "2026-09-10T19:09:40+00:00"
     }
   ],
   "updated_at": "2026-07-30T20:54:20.866+00:00",
