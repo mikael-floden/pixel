@@ -2169,6 +2169,16 @@ export class Tiles3 {
     y: number,
     zl: number,
   ): { ul?: string; ur?: string; uu?: string } | null {
+    /* A WALL AGAINST WATER GETS NO FOOT, and the wall runs straight down into
+     * the surface as it did before feet existed (maintainer 2026-09-10: "I want
+     * the wall to look as if it was continuing down the water surface as
+     * before. Just because I wanted the wall intersection with the ground to
+     * create a transition/boundary tile didn't mean I wanted it for walls
+     * against water. Walls against water is special"). The band is a strip of
+     * the wall's own SIDE material easing onto the ground it lands on — sand,
+     * dirt, whatever — and on a liquid that reads as a beach laid over the
+     * water, which also puts dry pixels where the swim line is. */
+    if (view.isLiquid(gr)) return null;
     let out: { ul?: string; ur?: string; uu?: string } | null = null;
     const edges: ["ul" | "ur" | "uu", number, number][] = [
       ["ul", x - 1, y],
@@ -2192,7 +2202,6 @@ export class Tiles3 {
       if (!override && (INDOOR_GROUNDS.includes(side) || view.isLiquid(side))) side = hg;
       (out ??= {})[dir] = side;
     }
-    void gr;
     return out;
   }
 

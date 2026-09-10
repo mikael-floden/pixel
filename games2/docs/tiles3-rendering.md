@@ -634,39 +634,28 @@ dressing). `this.maps3` gates every terrain branch (false only for a hand-built
   `tileBlit` honours it. render3's deck block is the same rule, held by the
   parity fixture.
 
-- **A WALL'S FOOT CONTINUES INTO THE GROUND IT STANDS ON** (`Tiles3Cell.foot`,
-  resolver `wallFoot`; `footBand` + the `foot` op role in tiles3draw). The
-  overhang eases a cliff's TOP into its face; the foot had nothing, and the
-  shader's seam AO (0.75 over ~5 px) is a lighting cue, not a material one, so
-  face-meets-water was a hard staircase (maintainer 2026-09-08, photographed:
-  "when a wall intersects the ground I often feel the line/edge is kinda
-  instant"). Every lower cell whose up-left, up-right or straight-up
-  neighbour is a higher wall WHOSE LOWEST FRONT IS THIS CELL'S LEVEL wears one
-  band op, drawn last in its slot (on a composed-boundary cell too, via
-  `overlayOps`), clipped to the cell's diamond. ON LAND: the face's own
-  palette-wall colour (x0.82) continues solid for 6 texels, then fades in 6
-  flat steps. IN WATER: a WATERLINE first — one crest texel lifted halfway to
-  white from the liquid's top colour, one lifted a quarter — then the wall
-  seen through the water, its colour pulled 35% toward the water's and fading
-  over 10 texels of depth (maintainer: "I want the edge to be more water so
-  you clearly see this is the line where the wall starts to go down under the
-  water"). WHERE THE FACE ENDS is the load-bearing number: the occluder pass
-  draws the lowest exposed course one storey up (`stackFrom`: frontLow + 1)
-  at `geom.lh` px per storey as 64x64 review art whose band hangs WALL (17)
-  rows under its diamond, so the face's last row is about `WALL - pitch` rows
-  below the shared edge. The band starts FOOT_UNDER (2) rows ABOVE that and
-  the face sprite covers the overlap — his zoom found a 1 px line of water
-  between face and band (the face ends a row earlier than the arithmetic says
-  on his device), and an overlap under a sprite is free while a gap is what
-  he sees. Everything above the face's end is invisible: the first version
-  painted there and showed nothing (it also used the review tile's TOP_Y in a
-  PLATE frame, which has none). One texture per (walls, side material, own
-  ground), keyed by name because `cellOps` is pure and has no palette. He
-  ASKED for a transition tile at the foot (a boundary tile, not a new
-  mechanism); this is the games-side stand-in and the look he approved off
-  the test images ("it kinda looks like the wall is extended down into the
-  water ... please continue"). A liquid never casts a foot; a wall whose other
-  front is lower ends its face down there and casts none here.
+- **A WALL AGAINST WATER GETS NO FOOT BAND** (`Tiles3Cell.foot`, resolver
+  `wallFoot`; `footBand` + the `foot` op role in tiles3draw). The band eased a
+  wall's face into the surface it lands on, and `pushFoot` only ever pushed it
+  on a LIQUID target ("land wears none"), masked to the water side of a shore
+  transition tile — so every band the game drew was a strip of the WALL's own
+  side material lying on water. On the_game's tan cliffs that reads as a beach
+  laid over the sea, and it put dry pixels exactly where the swim line is
+  (maintainer 2026-09-10, three reports in one message: the sand transition at
+  the wall/water intersection, an odd water tile at a corner inside it, and
+  "this looks like the player is swimming in the sand" — all one bug). The
+  resolver refuses `foot` on a liquid cell, which turns the whole band off,
+  because water is the only place it was ever drawn.
+  THIS SUPERSEDES the waterline treatment he asked for on 2026-09-08 ("I want
+  the edge to be more water so you clearly see this is the line where the wall
+  starts to go down under the water"): one crest texel lifted halfway to white,
+  one a quarter, then the wall seen through the water pulled 35% toward it over
+  10 texels of depth. That cue is gone with the band. `footBand` and the draw
+  op are kept, unreached, for the land case if he ever wants one — a wall's foot
+  on LAND has never had a band and does not need the water arithmetic.
+  Gate: "a wall against WATER gets no foot band, world-wide" (tiles3.test.ts) —
+  not one liquid cell of the shipped world may carry a `foot`. render3.py has
+  no foot pass at all, so nothing here is under the parity contract.
 
 - **Contract for new tile categories**: unknown categories default to plain
   walkable ground AND terrain lighting; every new solid/decor category needs

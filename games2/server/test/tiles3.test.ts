@@ -784,6 +784,31 @@ test("the iso frame and the plate/tile offsets are render3's", { skip: !!MISSING
 
 /* -- the whole world, not just the sampled windows -------------------------- */
 
+test("a wall against WATER gets no foot band, world-wide", { skip: !!MISSING.length }, () => {
+  const { t } = build();
+  const out = t.resolveWindow(viewFromDoc(doc));
+  const liquids = new Set(doc.liquids ?? []);
+  assert.ok(liquids.size > 0, "the world declares its liquids");
+  // A FOOT IS A STRIP OF THE WALL'S OWN SIDE MATERIAL easing onto the ground it
+  // lands on, and on a liquid that reads as a beach laid over the water — it
+  // put sand where the swim line is (maintainer 2026-09-10, swimming at a cliff
+  // foot: "this looks like the player is swimming in the sand"; and of the wall
+  // itself: "walls against water is special"). Not one liquid cell may carry
+  // one. `wallFoot` skips them; this is what keeps it that way.
+  const offenders: string[] = [];
+  let liquidCells = 0;
+  let feet = 0;
+  for (const c of out.cells) {
+    if (c.foot) feet++;
+    if (!liquids.has(c.ground)) continue;
+    liquidCells++;
+    if (c.foot) offenders.push(`${c.x},${c.y} ${c.ground} ${JSON.stringify(c.foot)}`);
+  }
+  assert.ok(liquidCells > 1000, `the world has plenty of water to get this wrong on (${liquidCells})`);
+  assert.ok(feet > 100, `and plenty of real wall feet elsewhere (${feet})`);
+  assert.deepEqual(offenders.slice(0, 8), [], "a liquid cell carries a wall foot");
+});
+
 test("the entire 394x394 world resolves with no fallback and no missing art", { skip: !!MISSING.length }, () => {
   const { t } = build();
   const started = Date.now();
