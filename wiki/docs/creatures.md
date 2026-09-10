@@ -120,16 +120,22 @@ verdict comes BEFORE the five states are spent on it.
   the twin the generator gets wrong (a SE drawn as SW) is the next picture
   down, or beside it when two fit. The verdict row sits UNDER the pictures,
   where his thumb is after reading them. ‹ › walks the current chip's list.
-- **A FACING IS ~256px WHATEVER THE CANVAS IS** (maintainer 2026-09-10, on a
-  32px design: "when I click on a monster the preview is so small the text is
-  covering the monster"). The detail page is not where sizes compare — that is
-  the overview — so it aims each facing at 256px and scales by the whole
-  multiple nearest it, bounded by the measured column: 8× on a 32px grub, 3× on
-  a 96px slug, 1× on a 240px warden. Three chips remember a MODE, never a
-  number (`wiki-cand-zoom`: `pair` = small enough that the mirror pair sits side
-  by side, `fit` = the default, `big` = double it and scroll); 10× means
-  something different on every design, a mode does not. NOT the absolute
-  maximum the column allows — 11× on a grub makes eight facings eight screens.
+- **TRUE SIZE ALWAYS — the BOX gets bigger, never the creature** (maintainer
+  2026-09-10, on a grub scaled 11× to fill the screen: "11x zoom? WTF. I want
+  to see it in the true size always! You just had todo the preview bigger and
+  centered the monster!"). One zoom for every candidate, from the same ladder
+  the overview uses — the largest of `2 · 1.5 · 1 · 0.75 · 0.5` at which the
+  LARGEST canvas in the whole set fits the measured column (1.5× on a 393px
+  phone) — and an IDENTICAL box on every design, its side that largest canvas
+  at that zoom. A 32px grub is then 48px of art centred in the 360px box a
+  240px warden fills edge to edge. Both per-design zooms are rejected and both
+  were shipped and rejected by him: a fixed 1×/2×/3× ladder made the grub a
+  64px stamp, and fitting each design to the column made it an 11× monster
+  bigger on screen than the warden. The chips are `true size` (default),
+  `×2`, `×4` — magnification, labelled as multiples so no number lies about
+  scale — and the mode is what is remembered (`wiki-cand-zoom`), never a
+  number. Magnifying grows the CREATURE, not the box: the box stops at the
+  column and a magnified big design scrolls inside it, the preview-stage rule.
 - **The label sits UNDER its facing.** Floating it on the art covered a small
   design completely, and the art is the thing being judged.
 - **ONE ZOOM FOR THE WHOLE GRID, and the card is what varies** (maintainer
@@ -154,8 +160,9 @@ verdict comes BEFORE the five states are spent on it.
   your verdict on their 8 directions →". The nav count stays the shipped
   creatures — a candidate is not in the game.
 - Gate: `wiki/tools/check-candidates.mjs` (door, chips, one shared zoom with
-  true size ratios and bigger spans for bigger designs, 8 loaded facings, a
-  facing at least 200px with its label under it,
+  true size ratios and bigger spans for bigger designs, 8 loaded facings, one
+  box the smallest and biggest design share with their art at one zoom inside
+  it, the label under the art,
   approve stamps `version` and leaves the queue, an older-version verdict
   reads as judge-again). Runs in `wiki-guard.yml`.
 

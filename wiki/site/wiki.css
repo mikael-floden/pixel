@@ -1929,8 +1929,12 @@ input[type="range"] { accent-color: var(--accent); }
 .cand-hint { margin: 0 0 6px; }
 .cand-dirs { display: grid; grid-template-columns: repeat(var(--cand-cols, 2), var(--cand-w, 136px)); gap: 8px; justify-content: start; max-width: 100%; overflow-x: auto; padding-bottom: 8px; }
 .cand-dir { margin: 0; width: var(--cand-w, 136px); }
-.cand-shot { border-radius: 8px; overflow: hidden; }
-.cand-dir img { display: block; width: var(--cand-w, 136px); height: var(--cand-w, 136px); image-rendering: pixelated; }
+/* THE BOX IS THE SAME ON EVERY DESIGN and the creature is centred in it, both
+   axes — true size then reads off the box (maintainer 2026-09-10: "I want to
+   see it in the true size always ... the preview bigger and centered"). */
+.cand-shot { width: var(--cand-w, 136px); height: var(--cand-w, 136px); border-radius: 8px; overflow: auto;
+  display: flex; align-items: safe center; justify-content: safe center; }
+.cand-dir img { display: block; image-rendering: pixelated; }
 /* UNDER the art, never over it: a label floating on a 64px design covered the
    design (maintainer 2026-09-10). One line, and it is the art that is judged. */
 .cand-dir figcaption { margin-top: 4px; font-size: 12px; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }

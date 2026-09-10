@@ -112,9 +112,14 @@ const det = await p.evaluate(() => {
     shot: (() => {
       const f = document.querySelector(".cand-dir"), img = f?.querySelector("img"), cap = f?.querySelector("figcaption");
       const ir = img?.getBoundingClientRect(), cr = cap?.getBoundingClientRect();
-      return { w: Math.round(ir?.width ?? 0), over: !!(ir && cr) && !(cr.top >= ir.bottom - 0.5 || cr.bottom <= ir.top + 0.5), capH: Math.round(cr?.height ?? 0) };
+      const shot = f?.querySelector(".cand-shot"), col = document.querySelector("#content"), ccs = col && getComputedStyle(col);
+      return { w: Math.round(ir?.width ?? 0), over: !!(ir && cr) && !(cr.top >= ir.bottom - 0.5 || cr.bottom <= ir.top + 0.5), capH: Math.round(cr?.height ?? 0),
+        box: Math.round(shot?.getBoundingClientRect().width ?? 0),
+        room: col ? Math.round(col.clientWidth - parseFloat(ccs.paddingLeft) - parseFloat(ccs.paddingRight)) : 0,
+        z: Number(document.querySelector(".cand-zoom button.on")?.title.match(/same ([\d.]+)×/)?.[1] ?? 0) };
     })(),
     zooms: [...document.querySelectorAll(".cand-zoom button")].map((b) => b.textContent.trim() + (b.classList.contains("on") ? "*" : "")),
+    size: (() => { const t = document.querySelector("p.muted")?.textContent.match(/(\d+)px/); return t ? Number(t[1]) : 0; })(),
     buttons: [...document.querySelectorAll(".cand-judge .verdict button")].map((x) => x.textContent.trim()),
     stars: document.querySelectorAll(".cand-judge .stars button, .cand-judge .star").length,
   };
@@ -124,7 +129,10 @@ ok(det.n === 8 && det.loaded === 8, `all 8 facings are on the page and loaded ($
 ok(det.cols === "2" ? det.rows === 4 : det.rows === 8, `mirror pairs side by side when two fit, stacked when they don't (${det.cols} column(s), ${det.rows} rows, ${det.w}px each)`);
 ok(det.dirs.join(",") === "south,north,east,west,south-east,south-west,north-east,north-west", `in mirror-pair order (${det.dirs.join(" ")})`);
 ok(!det.wide, "the facings never poke past a 393px phone");
-ok(det.shot.w >= 200, `a facing is big enough to judge on a phone, whatever the design's canvas is (${det.shot.w}px, zooms ${det.zooms.join(" ")})`);
+ok(det.shot.box >= 200 && det.shot.box <= det.shot.room + 1,
+  `the facing box is big and never wider than the column (${det.shot.box}px in ${det.shot.room}px, zooms ${det.zooms.join(" ")})`);
+ok(Math.abs(det.shot.w / det.size - det.shot.z) < 0.001,
+  `and the creature is drawn at the page's ONE true zoom, never fitted to its box (${det.size}px canvas → ${det.shot.w}px at ${det.shot.z}×)`);
 ok(!det.shot.over && det.shot.capH > 0 && det.shot.capH < 30, `and its label sits UNDER the art, one line, never over it (${det.shot.capH}px)`);
 ok(det.buttons.length === 3 && /approve/.test(det.buttons[0]) && /remove/.test(det.buttons[1]) && /redo/.test(det.buttons[2]), `approve / remove / redo on the row (${det.buttons.join(" | ")})`);
 if (shot) await p.screenshot({ path: `${shot}/cand-detail.png` });
@@ -152,6 +160,26 @@ const stale = await p.evaluate(() => ({
   approved: !!document.querySelector(".cand-judge .verdict button.approved"),
 }));
 ok(stale.pill && !stale.approved, `an older-version verdict reads as "judge again" and the approve button is not lit (${JSON.stringify(stale)})`);
+
+// THE SMALLEST DESIGN IS THE CASE HE HIT: at true size it must stay small, in
+// the same box a big one fills (maintainer 2026-09-10: "11x zoom? WTF. I want
+// to see it in the true size always!").
+const small = [...CANDS].sort((a, b) => (a.size?.[0] ?? 0) - (b.size?.[0] ?? 0))[0];
+const big = [...CANDS].sort((a, b) => (b.size?.[0] ?? 0) - (a.size?.[0] ?? 0))[0];
+const seen = {};
+for (const c of [small, big]) {
+  await p.evaluate((id) => { localStorage.setItem("wiki-cand-zoom", "true"); location.hash = `#/monsters/candidates/${id}`; }, c.id);
+  await p.waitForTimeout(1600);
+  seen[c.id] = await p.evaluate(() => {
+    const f = document.querySelector(".cand-dir"), img = f.querySelector("img"), shot = f.querySelector(".cand-shot");
+    return { art: Math.round(img.getBoundingClientRect().width), box: Math.round(shot.getBoundingClientRect().width) };
+  });
+}
+console.log("true size:", JSON.stringify(seen));
+ok(seen[small.id].box === seen[big.id].box,
+  `the box is the SAME on the smallest and the biggest design (${seen[small.id].box}px both)`);
+ok(Math.abs(seen[small.id].art / small.size[0] - seen[big.id].art / big.size[0]) < 0.001 && seen[small.id].art < seen[big.id].art / 2,
+  `and inside it a ${small.size[0]}px design draws ${seen[small.id].art}px against a ${big.size[0]}px design's ${seen[big.id].art}px — one scale, no fitting`);
 
 console.log(`page errors: ${errors.length ? errors.join(" | ").slice(0, 300) : "none"}`);
 ok(!errors.length, "no page errors");

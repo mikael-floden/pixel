@@ -4828,56 +4828,69 @@ function viewCandidate(id) {
   const list = candList();
   const walk = list.some((x) => x.id === id) ? list : candList("all");
   const size = c.size?.[0] ?? 128;
-  // THE FACING FILLS THE COLUMN, whatever the design's canvas is (maintainer
-  // 2026-09-10, on a 32px design: "when I click on a monster the preview is so
-  // small the text is covering the monster"). The overview is where sizes
-  // COMPARE — one zoom for every card there, true scale. This page judges the
-  // eight facings of ONE design, where the only thing that matters is seeing
-  // them, so the zoom starts at the largest WHOLE multiple at which the pair
-  // still fits the measured column: 5× for a 32px grub, 1× for a 240px warden.
-  // (A fixed 1×/2×/3× ladder was the bug: it made a 32px design a 64px stamp
-  // with its own caption over it, and left the caption nothing to sit on.)
+  /* TRUE SIZE, ALWAYS — the box is what gets bigger, never the creature
+   * (maintainer 2026-09-10, on a grub scaled 11× to fill the screen: "11x
+   * zoom? WTF. I want to see it in the true size always! You just had todo the
+   * preview bigger and centered the monster!").
+   *
+   * So ONE zoom for every candidate on this page and the last, and an
+   * IDENTICAL box on every design: its side is the LARGEST canvas any
+   * candidate has, at that zoom. A 32px grub is then 32px of art centred in
+   * the same box a 240px warden fills edge to edge — which is what true size
+   * looks like, and it reads at a glance because the box does not move.
+   *
+   * Per-design zoom is the rejected idea, twice over: a fixed 1×/2×/3× ladder
+   * made the grub a 64px stamp, and fitting each design to the column made it
+   * an 11× monster bigger than the warden. Both lie about the size. */
   const col = $("#content"), cs = col ? getComputedStyle(col) : null;
   const room = col ? col.clientWidth - parseFloat(cs.paddingLeft) - parseFloat(cs.paddingRight) : 341;
   const gap = 8;
-  // Three sizes, all whole multiples (pixel art is never scaled by a fraction):
-  // the pair side by side, the single facing filling the column — the default,
-  // because seeing it is the whole job — and double that to inspect, which
-  // scrolls. The MODE is what is remembered, not the number: 10× is huge on a
-  // 32px grub and impossible on a 240px warden, so a remembered number would
-  // mean something different on every design.
-  const pairZ = Math.max(1, Math.floor((room - gap) / 2 / size));
-  // 256px is the facing size the default aims at: big enough to judge on a
-  // phone, small enough that the next facing is on the same screen. The
-  // absolute maximum (11× on a 32px grub) fills the screen with one picture and
-  // turns eight facings into eight screens of scrolling.
-  const fitZ = Math.max(1, Math.min(Math.round(256 / size) || 1, Math.floor(room / size) || 1));
-  const ZOOMS = { pair: Math.min(pairZ, fitZ), fit: fitZ, big: fitZ * 2 };
-  let mode = "fit";
-  try { mode = ZOOMS[localStorage.getItem(CAND_ZOOM_KEY)] ? localStorage.getItem(CAND_ZOOM_KEY) : "fit"; } catch { /* private mode */ }
+  // The biggest canvas in the whole set decides the box, so the box is the same
+  // on every candidate page — not the biggest in the current filter, which
+  // would resize the box as he changes chips.
+  const maxCanvas = candidates().reduce((m, x) => Math.max(m, x.size?.[0] ?? 0), 0) || size;
+  // The game's own 2× if it fits, else the largest step down that does. Whole
+  // and half steps only: pixel art is never scaled by an arbitrary fraction.
+  const trueZ = CAND_ZOOMS.find((k) => maxCanvas * k <= room) ?? room / maxCanvas;
+  const ZOOMS = { true: trueZ, x2: trueZ * 2, x4: trueZ * 4 };
+  let mode = "true";
+  try { mode = ZOOMS[localStorage.getItem(CAND_ZOOM_KEY)] ? localStorage.getItem(CAND_ZOOM_KEY) : "true"; } catch { /* private mode */ }
   const z = ZOOMS[mode];
-  // A pair that no longer fits STACKS (S over N) rather than overflowing or
-  // shrinking to a blur; past the column the grid scrolls sideways on its own.
-  const cols = 2 * size * z + gap <= room ? 2 : 1;
+  // The box never outgrows the column: magnifying grows the CREATURE inside it,
+  // and a magnified big design scrolls INSIDE its box — the same rule the
+  // scenery preview stage settled on, for the same reason (a box wider than the
+  // screen slides its own content out of reach).
+  const box = Math.round(Math.min(maxCanvas * z, room));
+  // Two boxes side by side when they fit (a desktop, or a magnified phone is
+  // one); past the column the strip scrolls sideways rather than shrinking.
+  const cols = 2 * box + gap <= room ? 2 : 1;
   const grid = h("div", { class: "cand-dirs" });
-  grid.style.setProperty("--cand-w", `${size * z}px`);
+  grid.style.setProperty("--cand-w", `${box}px`);
   grid.style.setProperty("--cand-cols", String(cols));
   for (const pair of CAND_PAIRS) for (const d of pair) {
     const src = c.rotations[d];
     grid.append(h("figure", { class: "cand-dir", "data-dir": d },
+      // THE CREATURE IS CENTRED IN THE BOX, both axes — the box is a frame, not
+      // a diorama (the same rule the creature showcase settled on).
       h("div", { class: "cand-shot checker" },
-        src ? h("img", { src: assetUrl(src), alt: `${c.name}, facing ${d}`, width: size * z, height: size * z }) : h("span", { class: "pill err" }, "missing")),
+        src ? h("img", { src: assetUrl(src), alt: `${c.name}, facing ${d}`, width: Math.round(size * z), height: Math.round(size * z) }) : h("span", { class: "pill err" }, "missing")),
       // UNDER THE PICTURE, NEVER ON IT. A label floating on the art covered a
       // small design completely, and it is the art he is judging.
       h("figcaption", {}, h("b", {}, DIR_LABEL[d] ?? d), " ", d.replace("-", " "))));
   }
-  const ZOOM_TITLE = { pair: "Small enough that the mirror pair sits side by side", fit: "As big as one facing fits the screen", big: "Twice that — scroll to inspect" };
-  const seen = new Set();
+  // The default is the TRUE size and says so; the other two are magnification,
+  // labelled as multiples of it so no number on this row can lie about scale.
+  const ZOOM_LABEL = { true: "true size", x2: "×2", x4: "×4" };
+  const ZOOM_TITLE = {
+    true: `Every design at the same ${trueZ}× — a small one really is small`,
+    x2: "Twice true size, to inspect — the strip scrolls",
+    x4: "Four times true size, to inspect — the strip scrolls",
+  };
   const zoomSeg = h("div", { class: "seg cand-zoom", role: "radiogroup" },
-    ...Object.entries(ZOOMS).filter(([, n]) => !seen.has(n) && seen.add(n)).map(([k, n]) => h("button", {
+    ...Object.keys(ZOOMS).map((k) => h("button", {
       class: k === mode ? "on" : "", type: "button", "aria-checked": k === mode ? "true" : "false", role: "radio",
       title: ZOOM_TITLE[k], "data-zoom": k,
-      onclick: () => { try { localStorage.setItem(CAND_ZOOM_KEY, k); } catch { /* private mode */ } route(); } }, `${n}×`)));
+      onclick: () => { try { localStorage.setItem(CAND_ZOOM_KEY, k); } catch { /* private mode */ } route(); } }, ZOOM_LABEL[k])));
   return h("div", {},
     crumbRow("#/monsters/candidates", "← Candidates", "monsters/candidates", walk, id),
     h("div", { class: "sect-head" }, sectionIcon("monsters"), h("h1", {}, c.name)),
