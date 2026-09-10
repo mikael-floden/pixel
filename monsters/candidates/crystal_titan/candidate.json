@@ -913,37 +913,37 @@
     "attack_try": {
       "directions": {
         "south": {
-          "status": "fail",
-          "step_mean": 0.1169,
-          "step_max": 0.2027,
-          "drift": 6.91,
-          "loop": 0.3176,
-          "loop_ratio": 2.72,
-          "travel": 8.25,
+          "status": "pass",
+          "step_mean": 0.1916,
+          "step_max": 0.2924,
+          "drift": 7.27,
+          "loop": 0.4235,
+          "loop_ratio": 2.21,
+          "travel": 8.78,
           "pin": 1.0,
-          "pad": 0,
-          "flash": 0.089,
-          "peak": 0.3176,
-          "reach": 0.089,
+          "pad": 5,
+          "flash": 0.316,
+          "peak": 0.4235,
+          "reach": 0.316,
           "canvas": [
-            232,
-            232
+            242,
+            242
           ],
           "reasons": [
-            "no strike, just a lean: nothing reaches past 0.09 of the body"
+            "canvas grown by 5 px a side to hold the motion"
           ],
-          "sub": "945f3e8e-9ce8-465e-95a3-cce94821d13e",
-          "group": "bc8a157d-f1fa-4a19-9cb9-305bdf466e7b",
+          "sub": "cb5d8c79-4575-45a1-8419-01b6d9f7d815",
+          "group": "809df411-8217-44df-abdc-42d6d7dc6161",
           "takes": 1,
-          "version": 6,
+          "version": 7,
           "mirrored": false,
-          "action": "Crystal Shatter - The titan swings its crystal arm through a huge arc, shards bursting off the blade, an extremely violent attack, huge exaggerated motion, the limb thrown far out",
+          "action": "Crystal Shatter - The titan swings its crystal arm through a huge arc, shards bursting off the blade, an explosively violent attack, the whole body thrown into it, debris and swoosh lines flying",
           "intensity": 1,
-          "rolls": 6,
+          "rolls": 7,
           "frames": 5,
-          "rung": 5,
-          "tries": 6,
-          "generated_at": "2026-09-10T22:07:46+00:00"
+          "rung": 6,
+          "tries": 7,
+          "generated_at": "2026-09-10T22:31:09+00:00"
         },
         "south-east": {
           "status": "warn",

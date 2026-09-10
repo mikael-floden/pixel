@@ -911,36 +911,37 @@
       "directions": {
         "south": {
           "status": "fail",
-          "step_mean": 0.114,
-          "step_max": 0.1256,
-          "drift": 0.87,
-          "loop": 0.0853,
-          "loop_ratio": 0.75,
-          "travel": 0.17,
+          "step_mean": 0.1541,
+          "step_max": 0.2031,
+          "drift": 1.85,
+          "loop": 0.0408,
+          "loop_ratio": 0.26,
+          "travel": 0.46,
           "pin": 1.0,
-          "pad": 0,
-          "flash": -0.0,
-          "peak": 0.1549,
-          "reach": 0.035,
+          "pad": 5,
+          "flash": 0.47,
+          "peak": 0.2065,
+          "reach": 0.47,
           "canvas": [
-            96,
-            96
+            106,
+            106
           ],
           "reasons": [
-            "no strike, just a lean: nothing reaches past 0.03 of the body"
+            "painted effect: 0.47 of the body in new bright pixels (flare/slash arc)",
+            "canvas grown by 5 px a side to hold the motion"
           ],
-          "sub": "ccb7c036-d13a-42de-a755-b9096166dd0f",
-          "group": "745a620a-3bfa-4aac-b4da-d6b0779c0f06",
+          "sub": "8f571475-d6f3-4f6a-9f14-699d485e078f",
+          "group": "7f973ba4-9886-4221-b0ea-f2816c5b16e3",
           "takes": 1,
-          "version": 6,
+          "version": 7,
           "mirrored": false,
-          "action": "Tentacle Storm - The octopus rears its whole mantle up and hurls every tentacle forward at once, water bursting out",
+          "action": "Tentacle Storm - The octopus rears its whole mantle up and hurls every tentacle forward at once, water bursting out, a huge aggressive attack with the whole body behind it, wide exaggerated motion",
           "intensity": 1,
-          "rolls": 4,
+          "rolls": 5,
           "frames": 5,
-          "rung": 3,
-          "tries": 4,
-          "generated_at": "2026-09-10T22:10:05+00:00"
+          "rung": 4,
+          "tries": 5,
+          "generated_at": "2026-09-10T22:29:43+00:00"
         },
         "south-east": {
           "status": "warn",
