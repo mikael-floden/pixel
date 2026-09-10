@@ -15219,19 +15219,34 @@ export class WorldScene extends Phaser.Scene {
     // over the same level-0 floor, so the roof−4 that gave him the 2-level wall
     // he liked gave FOUR in the cave — "the walls are higher than what I
     // wanted". From the floor, 2 is 2 everywhere.
-    // All three numbers go in the signature: turning the Settings slider must
-    // rebuild the mask exactly the way walking into a different room does.
     // THE CUT-AWAY: walls stand `indoorWall()` levels above the room's floor,
     // never below the floor under my own feet, clamped by the ceiling. Rule,
     // reasons and the storey trap: `indoorCutLevel` in shared/src/indoor.ts.
+    // This is the SCALAR cut, and with the per-cell cuts on (the default) the
+    // only things left reading it are the QA kill switch's world-wide
+    // truncation, the body cull and the room texture's unused fallback.
     const top = indoorCutLevel(floor, this.indoorAtElev, indoorWall(), ceil);
-    // The raise flag is part of the signature: flipping the QA switch must
-    // rebuild the mask exactly the way a dial turn does.
-    const sig = `${this.indoorKey}:${ceil}:${floor}:${top}:${this.indoorRaiseOn ? "r" : "f"}`;
-    if (sig === this.indoorMaskSig && this.indoorMask) return false;
-    this.indoorMaskSig = sig;
+    // Set BEFORE the signature test: these two are read by the body cull and
+    // the darkness every frame, and they follow my feet even on the frames
+    // where the DRAWN geometry does not move.
     this.indoorCeil = ceil;
     this.indoorTop = top;
+    // THE SIGNATURE IS WHAT THE PICTURE DEPENDS ON, AND NOT MY ELEVATION.
+    // A MULTI-STOREY CAVE IS ONE SPACE: its chambers are joined by stairs, so
+    // the fill spans levels 0, 3 and 6 and the scalar cut above is lifted to
+    // whichever storey I am standing on — which redrew every wall in every
+    // OTHER chamber each time I climbed (maintainer 2026-09-10, four
+    // screenshots up one staircase: "we still have this bug, the cave looks
+    // different depending on what level/elevation the player is at"). The
+    // per-cell cuts below take each column's OWN chamber floor instead, so the
+    // picture is a pure function of the space and the dial. `top` stays out of
+    // the signature while they are on, and goes back in when the kill switch
+    // turns them off and the scalar is the geometry again.
+    const sig = `${this.indoorKey}:${floor}:${indoorWall()}:${
+      this.indoorRaiseOn ? "r" : `f${ceil}:${top}`
+    }`;
+    if (sig === this.indoorMaskSig && this.indoorMask) return false;
+    this.indoorMaskSig = sig;
     const m = new Map<number, number>();
     for (const ci of s.roof) m.set(ci, IN_ROOF);
     // THE WHOLE BUILDING, with no attempt to work out which of its faces the
@@ -15242,7 +15257,9 @@ export class WorldScene extends Phaser.Scene {
     for (const ci of s.shell) m.set(ci, (m.get(ci) ?? 0) | IN_WALL);
     this.indoorMask = m;
     this.roomMask = m;
-    this.indoorCut = this.indoorRaiseOn ? this.computeIndoorCuts(m, s, ceil, top) : null;
+    this.indoorCut = this.indoorRaiseOn
+      ? this.computeIndoorCuts(m, s, Math.min(ceil, floor + indoorWall()))
+      : null;
     // Publish the room to the LIGHT. This is what makes the outside black:
     // the renderer draws it like any other terrain, and the shader gives every
     // cell outside this set zero ambient — so a point light inside can still
@@ -15300,8 +15317,9 @@ export class WorldScene extends Phaser.Scene {
   private computeIndoorCuts(
     mask: Map<number, number>,
     s: IndoorSpace,
-    ceil: number,
-    top: number,
+    /** The floor under a CONE cut — a column outside the room, which has no
+     *  chamber of its own to measure from. Elevation-free on purpose. */
+    cone: number,
   ): Map<number, number> | null {
     const g = this.terrain;
     const w = this.world;
@@ -15311,7 +15329,39 @@ export class WorldScene extends Phaser.Scene {
     const MARGIN = 1; // levels a column's top stays below the burial line
     // 126 = the room texture's encoding budget (R packs the cut beside the
     // membership bit, 127 = the "unconstrained" sentinel).
-    const clampCut = (v: number) => Math.max(top, Math.min(v, 126));
+    const clampCut = (v: number, floorAt: number) => Math.max(floorAt, Math.min(v, 126));
+    const wall = indoorWall();
+    // EVERY COLUMN IS CUT OVER ITS OWN CHAMBER, NOT OVER MINE. A cave whose
+    // storeys are joined by stairs is ONE indoor space, so a space-wide cut
+    // level has to pick one storey and gets the others wrong: lifted to my
+    // feet it grew the walls of the chamber I had just left, and dropped to the
+    // space's lowest floor it truncated the storey I was standing on. Per
+    // column there is no choice to get wrong, and the picture stops depending
+    // on where I am.
+    //
+    // A FLOOR cell's chamber floor is its own level. A WALL cell borders one or
+    // more chambers and takes the HIGHEST of them: a wall between a level-0 and
+    // a level-3 chamber holds the level-3 floor up, and cutting it to 0 + wall
+    // would leave that floor hanging over nothing. From the low side it then
+    // reads as a real interior wall, which is what it is.
+    const floors = new Set(s.roof);
+    const lidOf = (ci: number) => (g.deckBot[ci] >= 0 ? g.deckBot[ci] : s.roofLevel);
+    const localFloor = (ci: number) => {
+      if (floors.has(ci)) return g.level[ci];
+      const c = ci % w.width;
+      const r = (ci - c) / w.width;
+      let b = -Infinity;
+      for (let dr = -1; dr <= 1; dr++)
+        for (let dc = -1; dc <= 1; dc++) {
+          if (!dc && !dr) continue;
+          const cc = c + dc;
+          const rr = r + dr;
+          if (cc < 0 || rr < 0 || cc >= w.width || rr >= w.height) continue;
+          const j = rr * w.width + cc;
+          if (floors.has(j) && g.level[j] > b) b = g.level[j];
+        }
+      return Number.isFinite(b) ? b : 0;
+    };
     // The tallest art any column can draw (terrain or a deck slab) bounds how
     // far down-screen a floor's protection has to reach.
     let maxCol = this.maxLevel;
@@ -15343,20 +15393,26 @@ export class WorldScene extends Phaser.Scene {
     for (const fi of s.roof) sweep(fi);
     for (const e of s.entrances) sweep(e);
     const cuts = new Map<number, number>();
-    // My building: always an entry (the raise, ceiling-clamped).
+    // My building: always an entry (the raise, clamped by the deck over THAT
+    // column and floored at that column's own chamber + the wall dial).
     for (const ci of mask.keys()) {
+      const lid = lidOf(ci);
+      const minCut = Math.max(0, Math.min(lid, localFloor(ci) + wall));
       const cap = floorCap.get(ci);
-      let cand = Math.min(g.level[ci], ceil);
+      let cand = Math.min(g.level[ci], lid);
       if (cap !== undefined && cap < cand) cand = cap;
-      cuts.set(ci, clampCut(cand));
+      cuts.set(ci, clampCut(cand, minCut));
     }
     // The cone: an entry only where full height would really bury a floor.
+    // Outside the room there is no chamber to floor it at, so it keeps the
+    // space-wide minimum — cutting a hillside to nothing would open a hole
+    // onto the void behind it.
     for (const [idx, cap] of floorCap) {
       if (mask.has(idx)) continue;
       const dk = this.deckIndex.get(idx);
       const colTop = Math.max(g.level[idx], dk ? dk.deck.level : -1);
       if (cap >= colTop) continue; // even drawn whole it cannot reach the floor
-      cuts.set(idx, clampCut(cap));
+      cuts.set(idx, clampCut(cap, cone));
     }
     return cuts;
   }
