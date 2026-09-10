@@ -12170,12 +12170,21 @@ export class WorldScene extends Phaser.Scene {
     // lighter than the fill, exactly as spawn areas do it.
     const INNER_FILL = 0xff5a4a;
     const INNER_LINE = 0xff8f80;
-    // α .14, NOT the spawn overlay's .05: that alpha reads because a spawn
-    // area sits on grey cave stone, and the same value in red over grass and
-    // dark water was invisible on his screen ("the inner zone area has a nice
-    // red border, but I can't see the fade at all", 2026-09-10, of e62145396).
-    // Same number as the map's own zone fill, which does read.
-    const INNER_ALPHA = 0.14;
+    // A FADE, NOT A FILL, and only a couple of cells deep. Filling the whole
+    // inside was measured invisible at the spawn overlay's α .05 over grass
+    // and dark water, and at the α .14 that fixed that it painted the zone
+    // (maintainer 2026-09-10, of dfbb6507b: "you didn't fade it, you painted
+    // the entire inner zone red-ish. I just need to know what direction the
+    // border transition is at"). So: four steps decaying inwards from the
+    // line, strongest where the line is, nothing two cells in. Near a zone
+    // CORNER two of these meet and their alphas add, which is why the first
+    // step stops at .14 rather than going louder.
+    const FADE_CELLS = 2;
+    const FADE_ALPHA = [0.14, 0.1, 0.06, 0.03];
+    const lvl = (c: number, r: number) =>
+      this.world?.rows[Math.max(0, Math.min(H - 1, Math.floor(r)))]?.[
+        Math.max(0, Math.min(W - 1, Math.floor(c)))
+      ]?.l ?? 0;
     const at = (fixed: number, t: number, vertical: boolean) =>
       vertical ? this.projectZoneCorner(fixed, t) : this.projectZoneCorner(t, fixed);
 
@@ -12203,44 +12212,74 @@ export class WorldScene extends Phaser.Scene {
       line(y, 0, W, false);
     }
 
-    // MY ZONE'S INNER EDGE — THE SPAWN OVERLAY'S OWN RECIPE, IN RED. A thin
-    // line plus one flat low-alpha fill over everything INSIDE it, nothing
-    // else: no gradient, no dashes (maintainer 2026-09-10, having tried both:
-    // "do you see how nice looking the spawn area is. I want you to not invent
-    // something new here. The spawn area border looks fantastic"). The fill is
-    // the whole reason it reads — tinted ground means inside, plain ground
-    // means you have stepped out into the band.
+    // THE FADE: FADE_ALPHA.length strips stepping `dir` cells inwards from a
+    // line, each strip a run of quads merged over cells of EQUAL ground level.
+    // A zone edge is flat for tens of cells at a time, and one quad per cell
+    // was thousands of fills for the same picture.
+    const hem = (fixed: number, from: number, to: number, vertical: boolean, dir: number) => {
+      const lim = vertical ? W : H;
+      const step = FADE_CELLS / FADE_ALPHA.length;
+      for (let i = 0; i < FADE_ALPHA.length; i++) {
+        const o1 = fixed + dir * step * i;
+        const o2 = fixed + dir * step * (i + 1);
+        if (Math.min(o1, o2) < 0 || Math.max(o1, o2) > lim) continue;
+        g.fillStyle(INNER_FILL, FADE_ALPHA[i]);
+        let runFrom = from;
+        const key = (t: number) => (vertical ? `${lvl(o1, t)},${lvl(o2, t)}` : `${lvl(t, o1)},${lvl(t, o2)}`);
+        let k = key(from);
+        const flush = (runTo: number) => {
+          if (runTo <= runFrom) return;
+          g.fillPoints(
+            [at(o1, runFrom, vertical), at(o1, runTo, vertical), at(o2, runTo, vertical), at(o2, runFrom, vertical)],
+            true,
+          );
+        };
+        for (let t = from + 1; t <= to; t++) {
+          const kt = key(t);
+          if (kt === k) continue;
+          flush(t);
+          runFrom = t - 1; // overlap by a cell so the runs meet across the step
+          k = kt;
+        }
+        flush(to);
+      }
+    };
+
+    // MY ZONE'S INNER EDGE, in red: the thin line he liked, plus the fade
+    // running INWARDS from it. Nothing outside the line and nothing deeper in
+    // than the fade, so the tint is a direction rather than a colour over the
+    // whole zone.
     const rect = this.zone >= 0 && this.zone < grid.cols * grid.rows ? zoneRect(grid, this.zone) : null;
     if (!rect) return;
     const x0 = rect.x0 / CELL_WU;
     const y0 = rect.y0 / CELL_WU;
     const x1 = rect.x1 / CELL_WU;
     const y1 = rect.y1 / CELL_WU;
-    // Inset only where there is a NEIGHBOUR. On the world's rim there is no
-    // hand-off and no band, so the inside reaches the edge of the world and
-    // gets no line — a line there would claim a boundary that does not exist.
-    const ix0 = x0 > 0 ? x0 + band : 0;
-    const iy0 = y0 > 0 ? y0 + band : 0;
-    const ix1 = x1 < W ? x1 - band : W;
-    const iy1 = y1 < H ? y1 - band : H;
-    if (ix1 - ix0 < 2 || iy1 - iy0 < 2) return; // a zone thinner than two bands
-    const walk = (fixed: number, from: number, to: number, vertical: boolean) => {
-      const pts: { x: number; y: number }[] = [];
-      const step = to >= from ? 1 : -1;
-      for (let t = from; step > 0 ? t <= to : t >= to; t += step) pts.push(at(fixed, t, vertical));
-      return pts;
-    };
-    const top = walk(iy0, ix0, ix1, false);
-    const right = walk(ix1, iy0, iy1, true);
-    const bottom = walk(iy1, ix1, ix0, false);
-    const left = walk(ix0, iy1, iy0, true);
-    g.fillStyle(INNER_FILL, INNER_ALPHA);
-    g.fillPoints([...top, ...right, ...bottom, ...left], true);
-    g.lineStyle(1, INNER_LINE, 0.45);
-    if (y0 > 0) g.strokePoints(top, false);
-    if (x1 < W) g.strokePoints(right, false);
-    if (y1 < H) g.strokePoints(bottom, false);
-    if (x0 > 0) g.strokePoints(left, false);
+    // Only where there is a NEIGHBOUR. On the world's rim there is no hand-off
+    // and no band, so there is no inner edge either — a line there would claim
+    // a boundary that does not exist.
+    const sides: { fixed: number; vertical: boolean; dir: number }[] = [
+      { fixed: x0, vertical: true, dir: 1 },
+      { fixed: x1, vertical: true, dir: -1 },
+      { fixed: y0, vertical: false, dir: 1 },
+      { fixed: y1, vertical: false, dir: -1 },
+    ];
+    for (const s of sides) {
+      const lim = s.vertical ? W : H;
+      if (s.fixed <= 0 || s.fixed >= lim) continue;
+      const inner = s.fixed + s.dir * band;
+      if (inner <= 0 || inner >= lim) continue;
+      const from = Math.max(0, s.vertical ? y0 : x0);
+      const to = Math.min(s.vertical ? y1 : x1, lim);
+      hem(inner, from, to, s.vertical, s.dir);
+      g.lineStyle(1, INNER_LINE, 0.45);
+      let prev = at(inner, from, s.vertical);
+      for (let t = from + 1; t <= to; t++) {
+        const p = at(inner, t, s.vertical);
+        g.lineBetween(prev.x, prev.y, p.x, p.y);
+        prev = p;
+      }
+    }
   }
 
   /** The spawn bonfire on/off — its firelight drowns nearby tiles'

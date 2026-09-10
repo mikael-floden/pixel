@@ -151,10 +151,14 @@ spawn areas work would help me a lot"). Two marks, and the split is the point:
   Just a single line — there is no inside/outside");
 - **my zone's inner edge** — `INTEREST_LEAVE_WU` in from the border, the line
   where the neighbour starts mirroring me — is drawn EXACTLY AS A SPAWN AREA
-  IS, hue-shifted to red: a 1 px line at α .45 over one flat fill covering
-  everything inside it. The fill is α **.14**, not the spawn overlay's .05 —
-  that value reads because a spawn area lies on grey cave stone, and in red
-  over grass and dark water it was invisible on his screen. The one-sided fill is the whole signal
+  IS, hue-shifted to red — a 1 px line at α .45 — with a **FADE running two
+  cells inwards** from it: four strips at α .14/.10/.06/.03, strongest at the
+  line and gone two cells in. Neither extreme works: the spawn overlay's own
+  α .05 fill over the whole inside was invisible in red over grass and dark
+  water, and raising it to α .14 "painted the entire inner zone red-ish" — the
+  question is only "which way is in", so the tint is a hem, not a colour over
+  the zone. The first step stops at .14 because two hems meet and add at a
+  zone corner. The one-sided fill is the whole signal
   ("the fade only exist in one direction ... so I know if I walk out of this
   zone or into this zone"). A four-step gradient hem and a dashed line were
   both tried and rejected: "I want you to not invent something new here. The
