@@ -92,7 +92,7 @@ class PixelLabClient:
         self.require_key()
         return {"Authorization": f"Bearer {self.api_key}", "Content-Type": "application/json"}
 
-    def _request(self, method, path, retries=5, **kw):
+    def _request(self, method, path, retries=8, **kw):
         """HTTP with retry on transient network errors and 5xx/429. 4xx (except
         429) are real request errors and raise immediately."""
         url = path if path.startswith("http") else f"{V2_BASE}/{path.lstrip('/')}"
@@ -107,7 +107,13 @@ class PixelLabClient:
                 continue
             if r.status_code in (429, 500, 502, 503, 504):
                 last = PixelLabError(f"{method} {path} -> {r.status_code}: {r.text[:200]}")
-                time.sleep(min(2 ** attempt, 30))
+                # 429 here is the ACCOUNT CONCURRENCY cap (20 background jobs,
+                # Tier 3), not a rate limit: it clears only when a running job
+                # finishes, which takes minutes. Back off in minutes, not
+                # seconds, so a sweep queues behind its own workers instead of
+                # burning its retries in half a minute and dying.
+                slow = r.status_code == 429 and "concurrent background jobs" in r.text
+                time.sleep(min(60 * (attempt + 1), 300) if slow else min(2 ** attempt, 30))
                 continue
             if r.status_code >= 400:
                 raise PixelLabError(f"{method} {path} -> {r.status_code}: {r.text[:300]}")
