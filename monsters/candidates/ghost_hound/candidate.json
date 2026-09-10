@@ -926,38 +926,37 @@
           "frames": 9
         },
         "south-east": {
-          "status": "fail",
-          "step_mean": 0.2857,
-          "step_max": 0.5981,
-          "drift": 7.05,
-          "loop": 0.1794,
-          "loop_ratio": 0.63,
-          "travel": 7.99,
+          "status": "pass",
+          "step_mean": 0.3793,
+          "step_max": 0.595,
+          "drift": 4.5,
+          "loop": 0.6925,
+          "loop_ratio": 1.83,
+          "travel": 4.5,
           "pin": 1.0,
-          "pad": 10,
-          "flash": 0.824,
-          "peak": 0.6355,
+          "pad": 3,
+          "flash": 0.058,
+          "peak": 0.7434,
           "reach": 0.846,
           "canvas": [
-            124,
-            124
+            110,
+            110
           ],
           "reasons": [
-            "painted effect: 0.82 of the body in new bright pixels (flare/slash arc)",
-            "canvas grown by 10 px a side to hold the motion"
+            "canvas grown by 3 px a side to hold the motion"
           ],
-          "sub": "94692e5d-77d5-42ee-b0e3-2d8c21f63ccd",
-          "group": "adf84e1e-f508-43ba-9e6b-9ebca69e83ca",
+          "sub": "de29bd6c-9e08-4617-95ba-4b7dbed03b5d",
+          "group": "17d33f70-f46a-4def-95b9-452fdf3ce3d4",
           "takes": 1,
-          "version": 6,
+          "version": 7,
           "mirrored": false,
-          "action": "Claw Swipe - Raises one front paw and performs one quick swipe forward, white swoosh lines following the claws, a big aggressive swing",
+          "action": "Spectral Lunge - The hound hurls its whole body forward, jaws thrown wide, mist exploding off its flanks",
           "intensity": 1,
-          "rolls": 3,
+          "rolls": 4,
           "frames": 9,
-          "rung": 2,
-          "tries": 3,
-          "generated_at": "2026-09-10T22:22:35+00:00"
+          "rung": 3,
+          "tries": 4,
+          "generated_at": "2026-09-10T22:42:28+00:00"
         },
         "east": {
           "status": "warn",
@@ -1056,36 +1055,37 @@
           "generated_at": "2026-09-10T22:22:38+00:00"
         },
         "south-west": {
-          "status": "warn",
-          "step_mean": 0.109,
-          "step_max": 0.1505,
-          "drift": 2.4,
-          "loop": 0.2723,
-          "loop_ratio": 2.5,
-          "travel": 2.4,
+          "status": "pass",
+          "step_mean": 0.3793,
+          "step_max": 0.595,
+          "drift": 4.5,
+          "loop": 0.6925,
+          "loop_ratio": 1.83,
+          "travel": 4.5,
           "pin": 1.0,
-          "pad": 0,
-          "flash": -0.007,
-          "peak": 0.2723,
-          "reach": 0.154,
+          "pad": 3,
+          "flash": 0.058,
+          "peak": 0.7434,
+          "reach": 0.846,
           "canvas": [
-            104,
-            104
+            110,
+            110
           ],
           "reasons": [
-            "shallow strike: reach 0.15 — eyeball it"
+            "canvas grown by 3 px a side to hold the motion"
           ],
-          "sub": "6cf88b60-a7a8-4d6a-8e3a-7f1d2b074564",
-          "group": "507e5545-47d9-421a-b08f-6b9b2297cf5c",
+          "sub": "de29bd6c-9e08-4617-95ba-4b7dbed03b5d",
+          "group": "17d33f70-f46a-4def-95b9-452fdf3ce3d4",
           "takes": 1,
-          "version": 3,
+          "version": 7,
           "mirrored": true,
-          "generated_at": "2026-09-10T21:04:50+00:00",
-          "action": "Bite - Lunges forward with its jaws wide open and bites, a big aggressive swing",
-          "tries": 1,
-          "rolls": 3,
+          "action": "Spectral Lunge - The hound hurls its whole body forward, jaws thrown wide, mist exploding off its flanks",
           "intensity": 1,
-          "frames": 5,
+          "rolls": 4,
+          "frames": 9,
+          "rung": 3,
+          "tries": 4,
+          "generated_at": "2026-09-10T22:42:28+00:00",
           "source": "south-east"
         },
         "west": {
@@ -1218,7 +1218,11 @@
           "ghost_hound/animations/attack_try/south-west/01.webp",
           "ghost_hound/animations/attack_try/south-west/02.webp",
           "ghost_hound/animations/attack_try/south-west/03.webp",
-          "ghost_hound/animations/attack_try/south-west/04.webp"
+          "ghost_hound/animations/attack_try/south-west/04.webp",
+          "ghost_hound/animations/attack_try/south-west/05.webp",
+          "ghost_hound/animations/attack_try/south-west/06.webp",
+          "ghost_hound/animations/attack_try/south-west/07.webp",
+          "ghost_hound/animations/attack_try/south-west/08.webp"
         ],
         "west": [
           "ghost_hound/animations/attack_try/west/00.webp",
