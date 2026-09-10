@@ -3470,10 +3470,10 @@ function sectionIcon(slug, size = 48) {
 // what every section page already opens with, so one crumb covers Creatures,
 // Races, World, Scenery, Sound Effects, Music, Items, Lore and Parameters —
 // and any section added later gets it without anyone remembering to.
-function sectionHead(slug) {
+function sectionHead(slug, title = null) {
   return h("div", {},
     h("a", { class: "crumb", href: "#/" }, "← Overview"),
-    h("div", { class: "sect-head" }, sectionIcon(slug), h("h1", {}, label(slug))));
+    h("div", { class: "sect-head" }, sectionIcon(slug), h("h1", {}, title ?? label(slug))));
 }
 function renderNav() {
   const cur = location.hash.replace(/^#\/?/, "").split("/")[0];
@@ -4500,6 +4500,23 @@ function showcaseGrid(cards, fit = fitShowcase) {
   return grid;
 }
 
+/* CREATURES AND CANDIDATES ARE TWO TABS OF ONE SECTION (maintainer 2026-09-10:
+ * "I also feel the Creatures/Candidates should be a tab and not a warning div.
+ * Also when clicking on Candidates now the breadcrumb 'jumps' compared to the
+ * Creatures page.")
+ *
+ * Both were true of the same thing: the door was an accent-bordered box that
+ * read as a warning, and the candidates page opened with a sticky `.crumb-row`
+ * where the creatures page has `sectionHead`, so the title moved as he
+ * switched. Now both pages are `sectionHead` + this row, in that order, and
+ * nothing on screen moves between them. */
+function creatureTabs(cur) {
+  const nCand = candidates().length;
+  return sortBar("wiki-creature-tab", [
+    ["monsters", `Creatures ${(state.data.domains.monsters ?? []).length}`, "Everything the monsters agent has animated"],
+    ...(nCand ? [["candidates", `Candidates ${nCand}`, "New designs, judged on their 8 directions before they earn animations"]] : []),
+  ], cur, (id) => { location.hash = id === "monsters" ? "#/monsters" : "#/monsters/candidates"; }, { persist: false });
+}
 function viewMonsters() {
   const q = state.query;
   const list = state.data.domains.monsters.filter((m) => matches(q, m.id, m.name, m.kind, monsterLore(m), ...(m.loreStory ?? [])));
@@ -4516,26 +4533,27 @@ function viewMonsters() {
     // Aggressive first, and hardest first within each half — "what can come
     // for me, worst first" is the question this sort answers.
     threat: (a, b) => (isAggressive(stat.get(b.id)) - isAggressive(stat.get(a.id))) || lvl(b) - lvl(a) || byName(a, b),
+    // The ones being animated right now, first: their states arrive one at a
+    // time and they are what there is new to review.
+    making: (a, b) => (!!b.pending - !!a.pending) || byName(a, b),
   };
   const mode = shadowFilter();
   const shown = list.filter((m) => MONSTER_SHADOWS[mode].hit(m));
   const sorted = [...shown].sort(CMP[sort] ?? byName);
   const nAggro = list.filter((m) => isAggressive(stat.get(m.id))).length;
+  const nPending = list.filter((m) => m.pending).length;
   const nNone = list.filter((m) => !shadowRaw(m)).length;
   return h("div", {},
     sectionHead("monsters"),
+    creatureTabs("monsters"),
     h("p", { class: "muted" }, state.admin
-      ? `${list.length} creatures from the monsters agent — ${nAggro} attack on sight. Click one to preview every animation, check its shadow, edit its stats and loot.`
+      ? `${list.length} creatures from the monsters agent — ${nAggro} attack on sight${nPending ? `, and ${nPending} are approved designs still being animated` : ""}. Click one to preview every animation, check its shadow, edit its stats and loot.`
       : `${list.length} creatures roam Nangijala, ${nAggro} of them aggressive. Click one to watch every animation and study its stats.`),
-    // THE CANDIDATES' DOOR. New designs are born as 8 directions only and wait
-    // for his verdict before any animation is generated — the count of the
-    // unjudged ones is the whole message.
-    state.admin && candidates().length ? h("a", { class: "cand-entry", href: "#/monsters/candidates" },
-      `${candList("pending").length} of ${candidates().length} new designs wait for your verdict on their 8 directions →`) : null,
     sortBar(MONSTER_SORT_KEY, [
       ["name", "by name", "Alphabetical"],
       ["level", "by level", "Hardest first"],
       ["threat", "aggressive first", "The ones that attack on sight, hardest first"],
+      ...(list.some((m) => m.pending) ? [["making", "in the making first", "The approved designs the monsters agent is still animating"]] : []),
     ], sort, () => route()),
     // HIS SHADOW QUEUE. Counts on the control itself, so "what is left" is
     // answered before a single card is read.
@@ -4578,7 +4596,8 @@ function viewMonsters() {
         // question this page answers at a glance, and a green "calm" chip on 48
         // of 57 cards answers it by shouting at everybody. Absence is the calm.
         ...(isAggressive(st) ? [h("span", { class: "pill err", title: "Attacks on sight" }, "aggressive")] : []),
-        ...(sp ? [] : [h("span", { class: "pill showcase-nospawn", title: "No world places this creature yet — you will not meet it in the wild." }, "not spawned")]),
+        ...(m.pending ? [h("span", { class: "pill warn", title: `An approved design the monsters agent is still animating — ${Object.keys(m.animations ?? {}).length} of its states are done. Open it to review them.` }, "in the making")] : []),
+        ...(sp || m.pending ? [] : [h("span", { class: "pill showcase-nospawn", title: "No world places this creature yet — you will not meet it in the wild." }, "not spawned")]),
         // THE REVIEW BADGES RIDE UP HERE TOO — ★★★ / approved / remove — and
         // that is a layout rule, not a taste: they appear only once the Game
         // Master has judged a creature, so left in the text block they would
@@ -4794,8 +4813,8 @@ function viewCandidates() {
   const all = candidates();
   const shown = candList(mode).filter((c) => matches(state.query, c.id, c.name, c.tier, c.lore));
   return h("div", {},
-    h("div", { class: "crumb-row" }, h("a", { class: "crumb", href: "#/monsters" }, "← Creatures")),
-    h("div", { class: "sect-head" }, sectionIcon("monsters"), h("h1", {}, "Candidates")),
+    sectionHead("monsters", "Candidates"),
+    creatureTabs("candidates"),
     h("p", { class: "muted" }, state.admin
       ? `${all.length} new creature designs from the monsters agent, born as 8 directions only. Approve one and it earns every animation; redo rolls the next seed; remove drops the design.`
       : `${all.length} creature designs the monsters agent is auditioning. None of these roam Nangijala yet.`),
@@ -6040,6 +6059,18 @@ function zoneMapPanel(monsterId) {
 function viewMonster(id) {
   const m = state.data.domains.monsters.find((x) => x.id === id);
   if (!m) return h("p", {}, "Unknown monster.");
+  // AN APPROVED DESIGN IS A CREATURE WHILE IT IS STILL BEING ANIMATED
+  // (maintainer 2026-09-10: "They may still not have all animations yet
+  // (that's a work in progress), but they should exist as a normal monster so
+  // I can look at the animations done so far and review them like a normal
+  // monster"). Everything on this page works on it — the viewer, the per-state
+  // per-direction verdicts, the shadow, the stats — so the only thing to say
+  // is that the missing states are coming, and where its 8 directions are.
+  const pendingNote = m.pending
+    ? h("p", { class: "muted" },
+        `Approved design, still being animated — ${Object.keys(m.animations ?? {}).length} state${Object.keys(m.animations ?? {}).length === 1 ? "" : "s"} done so far. Review them as usual; the rest arrive as the monsters agent finishes them. `,
+        h("a", { href: `#/monsters/candidates/${m.id}` }, "See the 8 directions you approved →"))
+    : null;
   const facetPill = h("span", {});
   const facetBox = h("div", {});
   const player = makePlayer(m, "monster", { headerEl: facetHead(facetPill, facetBox) });
@@ -6107,9 +6138,12 @@ function viewMonster(id) {
         // the shadows and foot anchors were being calibrated and noise ever
         // since; every number in it is still in data.json for whoever needs it.
         state.admin && m.pixellab ? h("p", {}, h("a", { href: m.pixellab, target: "_blank", rel: "noopener" }, "Open in PixelLab ↗")) : null,
+        pendingNote,
         feedbackRow("monsters", m.path))),
     h("div", { class: "panel" },
-      h("div", { class: "panel-title" }, "Animations", h("span", { class: "pill" }, `${Object.keys(m.animations).length} states × 8 directions`)),
+      h("div", { class: "panel-title" }, "Animations",
+        h("span", { class: "pill" }, `${Object.keys(m.animations).length} states × 8 directions`),
+        m.pending ? h("span", { class: "pill warn", title: "The monsters agent animates an approved design one state at a time — the rest are coming." }, "more coming") : null),
       player.el),
     zoneMapPanel(m.id),
     // What it drops, each row a link to that item's page.

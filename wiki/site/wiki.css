@@ -1919,7 +1919,6 @@ input[type="range"] { accent-color: var(--accent); }
 /* ---- MONSTER CANDIDATES: the 8 directions, judged before any animation ----
  * Facings sit in MIRROR PAIRS (S|N, E|W, SE|SW, NE|NW): the twin the generator
  * gets wrong is next to its mirror, and two sprites fit a phone at 1×. */
-.cand-entry { display: block; margin: 10px 0 4px; padding: 10px 14px; border: 1px solid var(--accent); border-radius: 10px; background: var(--accent-soft); color: var(--ink); font-weight: 600; text-decoration: none; }
 /* The overview IS the creature showcase (same grid, same spans, same marks) —
    only the zoom is the grid's own, shared by every card so the sizes compare. */
 .cand-card { text-decoration: none; color: inherit; }

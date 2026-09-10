@@ -2765,6 +2765,80 @@ function seedMonsterTuning(monsters, levels) {
   return { tuning: out, added, levelled };
 }
 
+// AN APPROVED CANDIDATE IS ALREADY A CREATURE (maintainer 2026-09-10):
+// "Approved Candidates should become normal monsters. They may still not have
+// all animations yet (that's a work in progress), but they should exist as a
+// normal monster so I can look at the animations done so far and review them
+// like a normal monster."
+//
+// The monsters agent animates an approved candidate one state at a time and
+// writes the strips under `candidates/<id>/animations/` in exactly the shipped
+// layout — it just has not written `monster.json` or a roster entry yet, which
+// is all `buildMonsters` was keying on. So the registry derives a creature from
+// any candidate that HAS animations on disk: derived from the filesystem, not
+// from a flag, because the animations only ever exist for one he approved.
+//
+// Its `path` is `monsters/<id>` — the identity it keeps once the agent
+// promotes it — so every verdict he leaves on an animation survives the
+// promotion. (Its 8-direction verdict stays at `monsters/candidates/<id>`;
+// they judge different things.) A real `monsters/<id>` folder always wins, so
+// the day the agent ships one there is never a duplicate.
+function buildCandidateMonsters(shippedIds) {
+  const base = join(ROOT, "monsters", "candidates");
+  const ix = readJson(join(base, "index.json"));
+  if (!ix || !Array.isArray(ix.candidates)) return [];
+  const out = [];
+  for (const c of ix.candidates) {
+    if (!c?.id || shippedIds.has(c.id)) continue;
+    const animRoot = join(base, c.id, "animations");
+    if (!isDir(animRoot)) continue;
+    const frameW = c.size?.[0] ?? null, frameH = c.size?.[1] ?? frameW;
+    const anims = {};
+    for (const state of listDirs(animRoot)) {
+      const dirs = {};
+      for (const dir of DIRS) {
+        const frameDir = join(animRoot, state, dir);
+        const frames = listFiles(frameDir, artRe("\\d+")).length;
+        if (!frames) continue;
+        const strip = art(`monsters/candidates/${c.id}/animations/${state}__${dir}`);
+        const dims = strip ? imageSize(join(ROOT, strip)) : null;
+        dirs[dir] = {
+          frames, strip,
+          fw: dims ? Math.round(dims.w / frames) : frameW,
+          fh: dims ? dims.h : frameH,
+          framesDir: `monsters/candidates/${c.id}/animations/${state}/${dir}`,
+          ...frameNaming(frameDir),
+        };
+      }
+      if (Object.keys(dirs).length) anims[state] = { folder: state, fallback: null, dirs };
+    }
+    if (!Object.keys(anims).length) continue;
+    out.push({
+      id: c.id,
+      name: c.name ?? titleCase(c.id),
+      lore: c.lore ?? null,
+      kind: "object",
+      path: `monsters/${c.id}`,
+      preview: art(`monsters/candidates/${c.id}/rotations/south`),
+      frameW, frameH,
+      nativeW: frameW, nativeH: frameH,
+      pad: { x: 0, y: 0 },
+      artBottom: 0.85,
+      footW: null, bodyW: null, hoverPx: 0,
+      shadow: null,
+      inGame: false,
+      pixellab: null,
+      // IN THE MAKING, and the page says so: the states it has are the states
+      // the agent has finished, and the rest are coming (`candidate` also
+      // points back at the 8 directions he approved).
+      pending: true,
+      candidate: `monsters/candidates/${c.id}`,
+      animations: anims,
+    });
+  }
+  return out;
+}
+
 // ------------------------------------------------------- monster candidates
 // A NEW MONSTER IS JUDGED ON ITS 8 DIRECTIONS BEFORE IT EARNS ANIMATIONS
 // (maintainer 2026-09-09: "if the initial 8 directions is not perfect — don't
@@ -2811,6 +2885,8 @@ function buildMonsterCandidates() {
 // -------------------------------------------------------------------- main
 const monsters = buildMonsters();
 const monsterCandidates = buildMonsterCandidates();
+// The approved-and-being-animated ones stand beside the shipped roster.
+if (monsters) monsters.push(...buildCandidateMonsters(new Set(monsters.map((m) => m.id))));
 const characters = buildCharacters();
 const tiles = buildTiles();
 const worldCells = buildWorld();

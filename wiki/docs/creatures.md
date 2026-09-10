@@ -158,10 +158,34 @@ verdict comes BEFORE the five states are spent on it.
   approved" under his own "approved" on every judged card, and its idle values
   (`pending`, `not_picked`) say nothing at all. What earns a pill is the gap:
   an approval it has not acted on yet reads "waiting for the agent".
-- **The door** is on the Creatures page (admin): "N of M new designs wait for
-  your verdict on their 8 directions →". The nav count stays the shipped
-  creatures — a candidate is not in the game.
-- Gate: `wiki/tools/check-candidates.mjs` (door, chips, one shared zoom with
+- **CREATURES AND CANDIDATES ARE TWO TABS OF ONE SECTION**, and nothing on
+  screen moves between them (maintainer 2026-09-10: "I also feel the
+  Creatures/Candidates should be a tab and not a warning div. Also when
+  clicking on Candidates now the breadcrumb 'jumps' compared to the Creatures
+  page"). Both pages open `sectionHead(...)` then `creatureTabs(...)`, in that
+  order, so the crumb, the title and the tab row land on the same pixel on
+  both. NOT an accent-bordered door on the Creatures page — a box in that
+  colour reads as a warning, and it moved the head down one line.
+- **An approved design that HAS animations is a normal creature** (maintainer
+  2026-09-10: "Approved Candidates should become normal monsters. They may
+  still not have all animations yet (that's a work in progress), but they
+  should exist as a normal monster so I can look at the animations done so far
+  and review them like a normal monster"). `buildCandidateMonsters` derives one
+  from any candidate with strips under `candidates/<id>/animations/` — from the
+  FILESYSTEM, not from a flag, because the agent only ever animates one he
+  approved — and pushes it into `domains.monsters` beside the shipped roster,
+  so the viewer, the per-state per-direction verdicts, the shadow editor and
+  the stats all work on it unchanged. Its `path` is `monsters/<id>`, the
+  identity it keeps once the agent writes `monster.json`, so no verdict is lost
+  in the promotion; a real `monsters/<id>` folder always wins, so there is
+  never a duplicate. It carries `pending: true` and `candidate: <path>`: the
+  card shows "in the making", the Animations panel says "more coming", the page
+  links back to the 8 directions, and the sort row grows an "in the making
+  first" chip. The nav count is the whole list — a design being animated is a
+  creature he can review.
+- Gate: `wiki/tools/check-candidates.mjs` (the two tabs and that the head does
+  not move between them, an in-the-making creature opening as an ordinary
+  creature page, chips, one shared zoom with
   true size ratios and bigger spans for bigger designs, 8 loaded facings, one
   box the smallest and biggest design share with their art at one zoom inside
   it, the same/1×/2×/4× chips in that order, the label under the art,

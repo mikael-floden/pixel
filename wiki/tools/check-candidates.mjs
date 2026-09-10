@@ -40,13 +40,30 @@ await p.addInitScript(() => {
 });
 const shot = process.env.SHOT_DIR;
 
+// CREATURES AND CANDIDATES ARE TWO TABS OF ONE SECTION, and nothing on screen
+// moves between them (maintainer 2026-09-10: "the Creatures/Candidates should
+// be a tab and not a warning div. Also when clicking on Candidates now the
+// breadcrumb 'jumps' compared to the Creatures page").
+const headOf = () => p.evaluate(() => {
+  const h1 = document.querySelector("h1"), crumb = document.querySelector(".crumb"), bar = document.querySelector('[data-bar="wiki-creature-tab"]');
+  return { title: h1?.textContent, h1y: Math.round(h1?.getBoundingClientRect().top ?? -1), crumbY: Math.round(crumb?.getBoundingClientRect().top ?? -1),
+    tabsY: bar ? Math.round(bar.getBoundingClientRect().top) : -1,
+    tabs: [...(bar?.querySelectorAll("button") ?? [])].map((b) => b.textContent.trim() + (b.classList.contains("sel") ? "*" : "")) };
+});
 await p.goto(`${W}#/monsters`, { waitUntil: "load" });
 await p.waitForTimeout(2500);
-const door = await p.evaluate(() => document.querySelector(".cand-entry")?.textContent ?? null);
-ok(door && /\d+ of \d+ new designs/.test(door), `the Creatures page carries the door: "${door}"`);
+const headA = await headOf();
+console.log("creatures head:", JSON.stringify(headA));
+ok(headA.tabs.length === 2 && /^Creatures \d+\*$/.test(headA.tabs[0]) && /^Candidates \d+$/.test(headA.tabs[1]),
+  `the Creatures page opens on a two-tab row (${headA.tabs.join(" | ")})`);
 
-await p.evaluate(() => { location.hash = "#/monsters/candidates"; });
-await p.waitForTimeout(1200);
+await p.evaluate(() => document.querySelector('[data-bar="wiki-creature-tab"] button:nth-child(2)')?.click());
+await p.waitForTimeout(1400);
+const headB = await headOf();
+console.log("candidates head:", JSON.stringify(headB));
+ok(headB.title === "Candidates" && headB.tabs[1].endsWith("*"), `the second tab opens Candidates (${headB.tabs.join(" | ")})`);
+ok(headA.crumbY === headB.crumbY && headA.h1y === headB.h1y && headA.tabsY === headB.tabsY,
+  `and the crumb, the title and the tabs do not move between the two (${headA.crumbY}/${headA.h1y}/${headA.tabsY} → ${headB.crumbY}/${headB.h1y}/${headB.tabsY})`);
 const list = await p.evaluate(() => ({
   chips: [...document.querySelectorAll('[data-bar="wiki-cand-filter"] .sortbar-btn')].map((x) => x.textContent.trim()),
   sel: document.querySelector('[data-bar="wiki-cand-filter"] .sortbar-btn.sel')?.dataset.sort,
@@ -182,6 +199,30 @@ ok(seen[small.id].box === seen[big.id].box,
   `the box is the SAME on the smallest and the biggest design (${seen[small.id].box}px both)`);
 ok(Math.abs(seen[small.id].art / small.size[0] - seen[big.id].art / big.size[0]) < 0.001 && seen[small.id].art < seen[big.id].art / 2,
   `and inside it a ${small.size[0]}px design draws ${seen[small.id].art}px against a ${big.size[0]}px design's ${seen[big.id].art}px — one scale, no fitting`);
+
+// AN APPROVED DESIGN THAT HAS ANIMATIONS IS A NORMAL CREATURE (maintainer
+// 2026-09-10: "Approved Candidates should become normal monsters ... so I can
+// look at the animations done so far and review them like a normal monster").
+const DATA_M = DATA.domains?.monsters ?? [];
+const pend = DATA_M.filter((m) => m.pending);
+ok(pend.length > 0, `the registry carries ${pend.length} approved design(s) still being animated, beside ${DATA_M.length - pend.length} shipped creature(s)`);
+if (pend.length) {
+  const one = pend[0];
+  await p.evaluate((id) => { location.hash = `#/monsters/${id}`; }, one.id);
+  await p.waitForTimeout(3000);
+  const page = await p.evaluate(() => ({
+    title: document.querySelector("h1")?.textContent,
+    canvas: !!document.querySelector(".player-stage canvas"),
+    states: [...document.querySelectorAll(".seg button")].map((b) => b.textContent.trim()),
+    verdict: document.querySelectorAll(".fb-row .verdict button").length,
+    note: [...document.querySelectorAll("p.muted")].some((x) => /still being animated/.test(x.textContent)),
+  }));
+  console.log("in the making:", JSON.stringify({ ...page, states: page.states.slice(0, 4) }));
+  ok(page.title === one.name && page.canvas, `${one.name} opens as an ordinary creature page with the animation viewer`);
+  ok(Object.keys(one.animations).every((st) => page.states.some((b) => b.toLowerCase() === st.toLowerCase())),
+    `every state it has so far is on the state row (${Object.keys(one.animations).join(", ")})`);
+  ok(page.verdict >= 2 && page.note, "it can be judged like any other creature, and says the rest of its animations are coming");
+}
 
 console.log(`page errors: ${errors.length ? errors.join(" | ").slice(0, 300) : "none"}`);
 ok(!errors.length, "no page errors");
