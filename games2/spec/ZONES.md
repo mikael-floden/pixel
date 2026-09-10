@@ -100,6 +100,34 @@ Kubernetes). Rules here are present tense; the measurements land in
    Memorystore, the load balancer, a second service. The code does not
    change for it; the table does.
 
+## Seeing the zones
+
+The **Map tab's layer row** draws the grid over the minimap: a chip per layer
+above the map, `zones` first (`client/src/maplayers.ts`). Each rectangle is
+one room, projected through the SAME arithmetic as the "you are here" dot
+(`minimapCellPct`) so it can never drift from it; the zone you stand in is
+filled and its dashed inset is the hand-off band (`INTEREST_LEAVE_WU`), which
+is the strip where the neighbouring room mirrors you as a ghost. The numbers
+are the ids the server logs and `__ml.zone()` reports.
+
+Maintainer 2026-09-10, asking for it: "In order for me to better understand
+the new zone system ... I want at the top of the Map tab to have small buttons
+that can be pressed to draw different things on the map. In the future this
+will be features like quests, dungeons, party members ... This will draw the
+zones/zone boundaries so I more easily will be able to understand if a bug has
+to do with this zone boundary or not." Adding a layer is one entry in `LAYERS`
+— an id, a label and a draw function handed the projection; the chip row, the
+persistence (`ml-map-layers`) and the redraw are generic. Data comes from
+`__ml.zones()`, which derives the rectangles from the server's own
+`zoneGrid`/`zoneRect` rather than a second copy of the arithmetic.
+
+Both the row and the overlay are INJECTED into the Map page from outside,
+because games-ui owns `hud.ts` — the same pattern the ambient agent's settings
+button uses, polled from the scene's update so it survives the HudBar being
+rebuilt on a rejoin. Overlay and marks are clipped to the image box: the
+render is cropped to the island, so outer zones project off the image and
+their lines and numbers would otherwise float over the game view.
+
 ## Rejected
 
 - Channels / instances of the world (maintainer: "I was not able to solve it

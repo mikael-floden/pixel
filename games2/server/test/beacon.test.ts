@@ -201,3 +201,46 @@ test("every waypoint carries the level of the surface it stands on", (t) => {
 // defensible than what it replaced, but every fixture tried on the shipped
 // world had both candidates missing by the same 40wu, so nothing here PROVES
 // it. Do not read its absence as coverage.
+
+/* THE UPHILL BIAS (maintainer 2026-09-10, clicking the stairs up an 8-level
+ * hill and being taken round the back of it: "even if the path is shorter to
+ * the location behind the hill we might still navigate up the hill, that is
+ * more likely what the player wanted"). candidates[0] is the surface DRAWN at
+ * the pixel — the one he can see — so a hidden candidate must be `drawnBias`
+ * times SHORTER to win. 1 is the old rule, unweighted.
+ *
+ * Synthetic and flat on purpose: the rule under test is the arithmetic that
+ * picks between two ARRIVING routes, and a flat plane is the only fixture where
+ * the two lengths are the whole story. No world tree, so this runs in CI. */
+test("the uphill bias: the visible reading wins until the hidden one is enough shorter", () => {
+  const W = 24;
+  const rows = Array.from({ length: W }, () => Array.from({ length: W }, () => ({ t: "grass", v: 0, l: 0 })));
+  const flat = buildTerrainGrid(W, W, rows, [], []);
+  const from: [number, number] = [wu(4.5), wu(4.5)];
+  // The DRAWN candidate is the far one; the hidden candidate is close. Their
+  // walks are ~14.1 and ~2.8 cells, a ratio of about 5.
+  const drawn = { x: wu(14.5), y: wu(14.5), goalLevel: 0 };
+  const hidden = { x: wu(6.5), y: wu(6.5), goalLevel: 0 };
+  const lenOf = (c: { x: number; y: number; goalLevel: number }) => {
+    const t = startTrip(flat, from[0], from[1], c.x, c.y, false, 0, 0, c.goalLevel);
+    assert.ok(t, "the flat fixture must route to both candidates");
+    return tripLength(from[0], from[1], t!.path) / CELL_WU;
+  };
+  const farLen = lenOf(drawn);
+  const nearLen = lenOf(hidden);
+  assert.ok(farLen > nearLen * 3, `the fixture is not lopsided enough (${farLen} vs ${nearLen})`);
+
+  const pick = (bias: number) => {
+    const t = startBestTrip(flat, from[0], from[1], false, 0, 0, [drawn, hidden], bias);
+    assert.ok(t, `no route at bias ${bias}`);
+    // Which candidate did it take? Compare the trip's own target.
+    const dd = Math.hypot(t!.target.x - drawn.x, t!.target.y - drawn.y);
+    const dh = Math.hypot(t!.target.x - hidden.x, t!.target.y - hidden.y);
+    return dd < dh ? "drawn" : "hidden";
+  };
+  assert.equal(pick(1), "hidden", "bias 1 must be the old rule: the shorter walk wins");
+  assert.equal(pick(0), "hidden", "a bias below 1 is clamped to 1, never inverted");
+  const ratio = farLen / nearLen;
+  assert.equal(pick(ratio * 1.5), "drawn", "a bias past the ratio must take the visible spot");
+  assert.equal(pick(ratio * 0.5), "hidden", "a bias short of the ratio must not");
+});

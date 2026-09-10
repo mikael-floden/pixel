@@ -387,6 +387,21 @@ clip, no tint.
   incumbent (drawn surface keeps ties; a single candidate is byte-for-byte
   `startTrip`). The winner's `goalLevel` draws the beacon — choice and marker
   come from ONE decision.
+  - **THE VISIBLE READING CARRIES A HANDICAP** (`drawnBias`, `navbias.ts`,
+    2026-09-10). candidates[0] is the surface actually DRAWN at the pixel; a
+    hidden candidate must be `navUphill()` times SHORTER to displace it. The
+    unweighted rule sent the maintainer round the back of an 8-level hill when
+    the stairs were in front of him: "it was kinda obvious I wanted to run up
+    the stairs right in front of me ... even if the path is shorter to the
+    location behind the hill we might still navigate up the hill, that is more
+    likely what the player wanted". The area behind a tall hill is large, so
+    the shorter walk is usually the one he did not mean. Only the
+    arrived-vs-arrived comparison is weighted: arriving still beats giving up
+    short, and between two failing routes "how close did it get" is not a
+    preference about which spot he meant. 1 = off. THE NUMBER IS HIS — a
+    Settings slider (default 2 is a PLACEHOLDER awaiting his verdict). Gate:
+    `server/test/beacon.test.ts`, a flat synthetic plane where the two lengths
+    are the whole story.
   - **Never "fix" the symptom by moving the beacon to meet the walk** —
     rejected TWICE by the maintainer ("I click where I click"; "now you move
     the marker to a spot I didn't click on"). Resolving between two readings

@@ -158,6 +158,25 @@ function maps3DotFrac(m: MinimapFeed): [number, number] {
   ];
 }
 
+/** ANY world cell -> [x%, y%] of the map image, UNCLAMPED. Same projection as
+ *  the "you are here" dot (one arithmetic for both, so an overlay can never
+ *  drift from the dot), minus the clamp: an overlay drawing world geometry —
+ *  the zone grid, say — has corners that fall outside a CROPPED render, and
+ *  clamping them would bend its straight edges along the image rim instead of
+ *  letting the overlay clip them. `level` 0 is the ground plane, which is what
+ *  a flat world-space overlay wants. */
+export function minimapCellPct(
+  m: MinimapFeed,
+  meta: MinimapMeta | null | undefined,
+  col: number,
+  row: number,
+  level = 0,
+): [number, number] {
+  const at = { ...m, col, row, level };
+  const [fx, fy] = meta ? metaDotFrac(at, meta) : maps3DotFrac(at);
+  return [fx * 100, fy * 100];
+}
+
 /** Player cell (col,row) at terrain `level` -> [x%, y%] of the world's map
  *  image. `meta` is the render's OWN projection when maps2 published one
  *  (minimap.json) and outranks both replicas — it is the only thing that knows

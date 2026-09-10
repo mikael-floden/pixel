@@ -3140,19 +3140,34 @@ export function startBestTrip(
   // candidate carries its own x/y as well as its level. That is also why the
   // beacon never moves between them: both are drawn at the pixel you clicked.
   candidates: Array<{ x: number; y: number; goalLevel?: number }>,
+  /* THE VISIBLE READING GETS A HANDICAP (maintainer 2026-09-10, clicking the
+   * stairs up an 8-level hill and running to the big hidden area behind it
+   * instead: "in situations like this I think the player almost always want to
+   * run up the stairs ... even if the path is shorter to the location behind
+   * the hill we might still navigate up the hill, that is more likely what the
+   * player wanted"). candidates[0] is the surface actually DRAWN at the pixel
+   * — the one he can see — and the others are the readings hidden behind it,
+   * so a hidden candidate must be `drawnBias` times SHORTER to win. 1 = off,
+   * the plain shorter-walk rule. Only the arrived-vs-arrived comparison is
+   * weighted: arriving still beats giving up short, and between two routes
+   * that both fail, "how close did it get" is not a preference about which
+   * spot he meant. The slider that sets it is his to tune. */
+  drawnBias = 1,
 ): AutopilotTrip | null {
   let best: AutopilotTrip | null = null;
   let bestArrived = false;
   let bestLen = Infinity;
   let bestMiss = Infinity;
-  for (const { x: toX, y: toY, goalLevel } of candidates) {
+  for (let ci = 0; ci < candidates.length; ci++) {
+    const { x: toX, y: toY, goalLevel } = candidates[ci];
+    const isDrawn = ci === 0;
     const trip = startTrip(grid, fromX, fromY, toX, toY, run, nowMs, fromElev, goalLevel);
     if (!trip) continue;
     const arrived =
       goalLevel === undefined || trip.endLevel === undefined
         ? true
         : Math.abs(trip.endLevel - goalLevel) < 0.5;
-    const len = tripLength(fromX, fromY, trip.path);
+    const len = tripLength(fromX, fromY, trip.path) * (isDrawn ? 1 : Math.max(1, drawnBias));
     // HOW FAR SHORT IT GAVE UP. Among routes that DON'T arrive, "shorter walk"
     // is not just meaningless, it is backwards: a candidate that gives up after
     // three steps has the shortest path of all and wins every time. Measured on

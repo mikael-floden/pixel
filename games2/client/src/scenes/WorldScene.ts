@@ -88,9 +88,11 @@ import {
   dodgePersonal,
   PROVOKE_RADIUS_WU,
   DROP_TTL_MS,
-  DROP_FLASH_MS, zoneRoute, WHOLE_WORLD, type ZoneCfg } from "@nangijala/shared";
+  DROP_FLASH_MS, zoneRoute, zoneGrid, zoneRect, INTEREST_LEAVE_WU, WHOLE_WORLD, type ZoneCfg } from "@nangijala/shared";
 import { CharacterDef, Manifest, frameUrl, frameKey, BOOT_ANIM_STATES } from "../manifest";
 import { indoorAmbient, indoorLight, indoorLightLit, setIndoorLight, setIndoorLightLit } from "../indoorlight";
+import { ensureMapLayers, mapLayers } from "../maplayers";
+import { ensureNavDial, navUphill, setNavUphill, NAV_UPHILL_DEFAULT } from "../navbias";
 import { hiddenRing, setHiddenRing } from "../hiddenring";
 import { indoorWall, setIndoorWall, INDOOR_WALL_MIN, INDOOR_WALL_MAX } from "../indoorwall";
 import { withV, assetIndexInfo } from "../assetver";
@@ -6902,6 +6904,31 @@ export class WorldScene extends Phaser.Scene {
       // Settings "disable aggro" — read with no argument, set with one.
       noAggro: (on?: boolean) => (on === undefined ? this.noAggroOn : this.toggleNoAggro(on)),
       mySid: () => this.myId,
+      /** THE ZONE GRID, IN CELLS — what the Map tab's "zones" layer draws.
+       *  Derived from the SAME `zoneGrid`/`zoneRect` the server cuts the world
+       *  with, never a second copy of the arithmetic, so a rectangle on the map
+       *  is the rectangle a room owns. `band` is the ghost/interest band, the
+       *  strip inside a border where the neighbouring room mirrors you and the
+       *  hand-off happens — the thing you want to see when asking "is this bug
+       *  about the boundary?". Null until the world and the config are in. */
+      /** The tap router's uphill bias (navbias.ts): read it, or set it. */
+      navUphill: (v?: number) => {
+        if (v !== undefined) setNavUphill(v);
+        return { value: navUphill(), def: NAV_UPHILL_DEFAULT };
+      },
+      /** The Map tab's layer chips: read them, or toggle one by id. */
+      mapLayers: (id?: string, on?: boolean) => mapLayers(id, on),
+      zones: () => {
+        const w = this.world;
+        if (!w || !this.zonesCfg) return null;
+        const g = zoneGrid(this.zonesCfg, w.width, w.height, CELL_WU);
+        const rects: { id: number; x0: number; y0: number; x1: number; y1: number }[] = [];
+        for (let id = 0; id < g.cols * g.rows; id++) {
+          const r = zoneRect(g, id);
+          rects.push({ id, x0: r.x0 / CELL_WU, y0: r.y0 / CELL_WU, x1: r.x1 / CELL_WU, y1: r.y1 / CELL_WU });
+        }
+        return { cols: g.cols, rows: g.rows, here: this.zone, band: INTEREST_LEAVE_WU / CELL_WU, rects };
+      },
       zone: () => ({ zone: this.zone, hops: this.zoneHops, swapping: this.zoneSwapping, room: this.room?.roomId ?? null, ghosts: (this.room?.state as any)?.ghosts?.size ?? 0, ghostMonsters: (this.room?.state as any)?.ghostMonsters?.size ?? 0, lastHop: this.zoneLastHop }),
       bloodFx: () => this.bloodSeen,
       graveCrosses: () =>
@@ -10222,6 +10249,7 @@ export class WorldScene extends Phaser.Scene {
       this.zoneSwapping = false;
     }
   }
+  private mapLayersAt = 0; // next ensureMapLayers() poll (see the update loop)
   private zoneHops = 0;
   private zoneLastHop: { goAt: number; joinMs: number; stateMs: number; boundMs: number; zone: number } | null = null;
 
@@ -12903,7 +12931,9 @@ export class WorldScene extends Phaser.Scene {
     // precisely the bug — "you don't walk to the marker, you walk the player
     // under it". The marker's pixel is the contract; a destination that is not
     // at that pixel is not what was clicked, however close it looks in plan.
-    const trip = startBestTrip(this.terrain, me.fx, me.fy, run, this.time.now, fromElev, cands);
+    // ...and the VISIBLE reading carries his handicap: a candidate hidden
+    // behind the hill must be `navUphill()` times shorter to win (navbias.ts).
+    const trip = startBestTrip(this.terrain, me.fx, me.fy, run, this.time.now, fromElev, cands, navUphill());
     if (!trip) return;
     // THE BEACON DOES NOT MOVE — and now it cannot, because every candidate is
     // the SAME PIXEL. It is drawn from the winner's cell AND the winner's level,
@@ -15174,6 +15204,17 @@ export class WorldScene extends Phaser.Scene {
       for (const img of this.sceneryRoofedImgs) img.setAlpha(rf);
     }
     this.stepSceneryWalls();
+    /* THE MAP TAB'S LAYER ROW, polled 4x a second. games-ui owns hud.ts, so the
+     * chips and the overlay inject themselves into the Map page from outside
+     * (maplayers.ts, the same pattern as the ambient agent's settings button)
+     * and the HudBar rebuilds itself on a rejoin — so something has to ask.
+     * The call is a DOM lookup and an early return unless the page is on
+     * screen and its inputs changed. */
+    if (this.time.now >= this.mapLayersAt) {
+      this.mapLayersAt = this.time.now + 250;
+      ensureMapLayers();
+      ensureNavDial(); // the uphill-bias slider, injected the same way
+    }
     // The room's LIGHT rules outlive the geometry by exactly one GRADE. The
     // grade landing on 0 means the outside has finished fading up from black
     // and the lights outside have finished fading in — everything keyed on
