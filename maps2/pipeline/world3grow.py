@@ -5763,7 +5763,16 @@ class Grow:
     # statement.") His shape is the WEIGHT, not the answer: two spans in
     # three are three cells wide on one course, and the rest still surprise.
     BRIDGE_WIDE = ((3, 6), (4, 2), (2, 1))   # cells across, weighted
-    BRIDGE_DEEP = ((0, 6), (1, 2))           # EXTRA face courses under the cap
+    # A SPAN OVER A GAP CARRIES AT LEAST ONE FULL COURSE. Thickness 0 is the
+    # cap alone, and a cap is a top diamond plus the band hanging under its
+    # lower V - so along a span's open edge those bands step cell by cell and
+    # leave notches between them: a sawtooth fringe that reads as a floating
+    # sheet with no side at all (maintainer 2026-09-10, on this renderer's
+    # own picture: "That tile is 0 levels thin and has no walls!"). One extra
+    # course fills the notches and the edge becomes a solid beam. 0 is sound
+    # only where a WALL stands under the cap, which is the roof deck's ring.
+    # A true half-storey beam would need a band tile the library has not got.
+    BRIDGE_DEEP = ((1, 6), (2, 2))           # EXTRA face courses under the cap
     BRIDGE_MIN = 2     # narrower than this is a plank, not a bridge
 
     def _components(self, ok, by_level=True):

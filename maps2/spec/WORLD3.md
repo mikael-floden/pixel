@@ -80,7 +80,7 @@ decoration, it breaks every interior in the running game — measured
   the entire world will look the same and that would destroy the game. So my
   input should nudge the rules in a direction and never create an if
   statement."*). His shape is the WEIGHT, not the answer: `BRIDGE_WIDE =
-  ((3,6), (4,2), (2,1))` cells across and `BRIDGE_DEEP = ((0,6), (1,2))`
+  ((3,6), (4,2), (2,1))` cells across and `BRIDGE_DEEP = ((1,6), (2,2))`
   EXTRA courses under the cap, drawn per span from the deck's own anchor. A
   lane is the whole deck offset one cell sideways — a straight bridge grows a
   parallel lane, the diagonal pier a parallel diagonal — over the gap it
@@ -88,11 +88,18 @@ decoration, it breaks every interior in the running game — measured
   alternating so a span widens about its own line instead of sliding off it.
   A lane that will not fit is not forced. Never below `BRIDGE_MIN = 2`, which
   is a plank; build-asserted, and no two spans share a cell. the_game: three
-  spans of three on one course, one causeway of four, one two-wide footbridge
-  on two courses high on the ice — his default two times in three, and the
-  world still surprises. **`thickness` 1 reads as TWO courses** (it is EXTRA
-  face below the cap): that hard `max(1, …)` floor is what made every span
-  two thick, the same trap already paid for on roofs.
+  spans of three, one causeway of four, one two-wide footbridge high on the
+  ice — his default two times in three, and the world still surprises.
+* **A SPAN OVER A GAP CARRIES AT LEAST ONE FULL COURSE.** `thickness` 0 is
+  the cap alone, and a cap is a top diamond plus the band hanging under its
+  lower V — so along a span's open edge those bands step cell by cell and
+  leave notches between them: a sawtooth fringe that reads as a floating
+  sheet with no side at all (maintainer 2026-09-10, on this renderer's own
+  picture: *"That tile is 0 levels thin and has no walls!"*). One extra
+  course fills the notches and the edge becomes a solid beam, and that is
+  the thinnest solid span the tile set can draw — a true half-storey beam
+  wants a band tile the library has not got. 0 is sound only where a WALL
+  stands under the cap, which is the roof deck's own ring.
 * Changing decks changes gameplay. Tell the games agent before it lands.
 
 ### `rooms` — where a room ends, stated rather than guessed
