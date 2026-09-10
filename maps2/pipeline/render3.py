@@ -53,6 +53,7 @@ semantics only — see world3.py):
 """
 from __future__ import annotations
 
+import collections
 import json
 import os
 import re
@@ -1104,6 +1105,17 @@ def render(doc, x0=0, y0=0, x1=None, y1=None, scale=1.0, log=print,
             if x0 <= x < x1 and y0 <= y < y1:
                 deck_at.setdefault((x, y), []).append((dk, dg, dl, th, cellset, danch))
 
+    # ...and drawn at the END OF ITS OWN DIAGONAL, not inside the cell body:
+    # a liquid cell and a level-0 cell each leave that body early, so a span
+    # over water or over flat ground was never drawn at all (measured: the
+    # pier and both river bridges vanished from the render). A diagonal's
+    # decks go down after that diagonal's terrain, which is the same painter
+    # depth and still lets the cells IN FRONT - the next diagonals - cover
+    # whatever hangs below the slab.
+    deck_diag = collections.defaultdict(list)
+    for (x, y) in deck_at:
+        deck_diag[x + y].append((x, y))
+
     def draw_deck(x, y):
         for (dk, dg, dl, th, cellset, danch) in deck_at.get((x, y), ()):
             front_covered = (x + 1, y) in cellset and (x, y + 1) in cellset
@@ -1200,7 +1212,6 @@ def render(doc, x0=0, y0=0, x1=None, y1=None, scale=1.0, log=print,
             y = s - x
             gr = g(x, y)
             if not gr:
-                draw_deck(x, y)      # a span over the void still draws
                 continue
             zl = L(x, y)
             bx = ox + (x - x0 - (y - y0)) * DX - DX
@@ -1404,7 +1415,8 @@ def render(doc, x0=0, y0=0, x1=None, y1=None, scale=1.0, log=print,
                     over_candidate(gr, side)["key"].strip("/")):
                 img.alpha_composite(top_face_only(wang_surface()),
                                     (bx, col_y(x, y, zl)))
-            draw_deck(x, y)
+        for (dx_, dy_) in sorted(deck_diag.get(s, ()), key=lambda c: c[1]):
+            draw_deck(dx_, dy_)
 
     # 2) transitions on the corner lattice, over the flats: a drawn tile at
     #    corner (x,y) blends cells (x,y),(x+1,y),(x,y+1),(x+1,y+1) when all
