@@ -927,16 +927,16 @@
         },
         "south-east": {
           "status": "fail",
-          "step_mean": 0.1665,
-          "step_max": 0.2018,
-          "drift": 2.56,
-          "loop": 0.22,
-          "loop_ratio": 1.32,
-          "travel": 0.86,
+          "step_mean": 0.1331,
+          "step_max": 0.2348,
+          "drift": 1.95,
+          "loop": 0.2472,
+          "loop_ratio": 1.86,
+          "travel": 1.32,
           "pin": 1.0,
           "pad": 0,
-          "flash": -0.011,
-          "peak": 0.3429,
+          "flash": -0.002,
+          "peak": 0.3014,
           "reach": 0.128,
           "canvas": [
             104,
@@ -945,49 +945,51 @@
           "reasons": [
             "no strike, just a lean: nothing reaches past 0.13 of the body"
           ],
-          "sub": "23e510a4-e19e-429d-8a06-b94b3e5ec123",
-          "group": "6a4c2703-1abf-442e-a3b3-a56e9183aa79",
+          "sub": "dd1d4a15-504c-4870-a44b-9110f636eb59",
+          "group": "1ce53f22-3b3b-4377-a629-cc36dda40271",
           "takes": 1,
-          "version": 4,
+          "version": 5,
           "mirrored": false,
-          "generated_at": "2026-09-10T21:35:19+00:00",
           "action": "Bite - Lunges forward with its jaws wide open and bites, a big aggressive swing",
-          "tries": 1,
-          "rolls": 1,
           "intensity": 1,
-          "frames": 5
+          "rolls": 2,
+          "frames": 7,
+          "rung": 1,
+          "tries": 2,
+          "generated_at": "2026-09-10T22:00:34+00:00"
         },
         "east": {
           "status": "warn",
-          "step_mean": 0.3574,
-          "step_max": 0.4294,
-          "drift": 2.05,
-          "loop": 0.3827,
-          "loop_ratio": 1.07,
-          "travel": 0.79,
+          "step_mean": 0.2451,
+          "step_max": 0.315,
+          "drift": 0.94,
+          "loop": 0.3933,
+          "loop_ratio": 1.6,
+          "travel": 0.71,
           "pin": 1.0,
           "pad": 0,
-          "flash": -0.001,
-          "peak": 0.4796,
-          "reach": 0.158,
+          "flash": 0.012,
+          "peak": 0.3933,
+          "reach": 0.171,
           "canvas": [
             104,
             104
           ],
           "reasons": [
-            "shallow strike: reach 0.16 — eyeball it"
+            "shallow strike: reach 0.17 — eyeball it"
           ],
-          "sub": "0aa62c26-a08c-4c43-9eb4-a3121db12efb",
-          "group": "f2b77115-398a-403d-8818-813b932fe8dc",
+          "sub": "f200a4d0-3236-49aa-9e0f-9550624bf6b4",
+          "group": "1cf12a98-cc37-4d33-8dd7-a1cfe9cbc7c5",
           "takes": 1,
-          "version": 4,
+          "version": 5,
           "mirrored": false,
-          "generated_at": "2026-09-10T21:35:19+00:00",
-          "action": "Bite - Lunges forward with its jaws wide open and bites, a big aggressive swing",
-          "tries": 1,
-          "rolls": 1,
+          "action": "Bite - Lunges forward with its jaws wide open and bites",
           "intensity": 1,
-          "frames": 5
+          "rolls": 1,
+          "frames": 5,
+          "rung": 0,
+          "tries": 1,
+          "generated_at": "2026-09-10T22:00:35+00:00"
         },
         "north-east": {
           "status": "pass",
@@ -1086,35 +1088,36 @@
         },
         "west": {
           "status": "warn",
-          "step_mean": 0.3574,
-          "step_max": 0.4294,
-          "drift": 2.05,
-          "loop": 0.3827,
-          "loop_ratio": 1.07,
-          "travel": 0.79,
+          "step_mean": 0.2451,
+          "step_max": 0.315,
+          "drift": 0.94,
+          "loop": 0.3933,
+          "loop_ratio": 1.6,
+          "travel": 0.71,
           "pin": 1.0,
           "pad": 0,
-          "flash": -0.001,
-          "peak": 0.4796,
-          "reach": 0.158,
+          "flash": 0.012,
+          "peak": 0.3933,
+          "reach": 0.171,
           "canvas": [
             104,
             104
           ],
           "reasons": [
-            "shallow strike: reach 0.16 — eyeball it"
+            "shallow strike: reach 0.17 — eyeball it"
           ],
-          "sub": "0aa62c26-a08c-4c43-9eb4-a3121db12efb",
-          "group": "f2b77115-398a-403d-8818-813b932fe8dc",
+          "sub": "f200a4d0-3236-49aa-9e0f-9550624bf6b4",
+          "group": "1cf12a98-cc37-4d33-8dd7-a1cfe9cbc7c5",
           "takes": 1,
-          "version": 4,
+          "version": 5,
           "mirrored": true,
-          "generated_at": "2026-09-10T21:35:19+00:00",
-          "action": "Bite - Lunges forward with its jaws wide open and bites, a big aggressive swing",
-          "tries": 1,
-          "rolls": 1,
+          "action": "Bite - Lunges forward with its jaws wide open and bites",
           "intensity": 1,
+          "rolls": 1,
           "frames": 5,
+          "rung": 0,
+          "tries": 1,
+          "generated_at": "2026-09-10T22:00:35+00:00",
           "source": "east"
         },
         "north-west": {
@@ -1151,7 +1154,7 @@
           "source": "north-east"
         }
       },
-      "action": "Bite - Lunges forward with its jaws wide open and bites, a big aggressive swing",
+      "action": "Bite - Lunges forward with its jaws wide open and bites",
       "frame_paths": {
         "south": [
           "ghost_hound/animations/attack_try/south/00.webp",
@@ -1169,7 +1172,9 @@
           "ghost_hound/animations/attack_try/south-east/01.webp",
           "ghost_hound/animations/attack_try/south-east/02.webp",
           "ghost_hound/animations/attack_try/south-east/03.webp",
-          "ghost_hound/animations/attack_try/south-east/04.webp"
+          "ghost_hound/animations/attack_try/south-east/04.webp",
+          "ghost_hound/animations/attack_try/south-east/05.webp",
+          "ghost_hound/animations/attack_try/south-east/06.webp"
         ],
         "east": [
           "ghost_hound/animations/attack_try/east/00.webp",

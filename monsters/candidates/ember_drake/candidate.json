@@ -1033,35 +1033,36 @@
         },
         "north": {
           "status": "warn",
-          "step_mean": 0.1159,
-          "step_max": 0.1407,
-          "drift": 6.62,
-          "loop": 0.2081,
-          "loop_ratio": 1.8,
-          "travel": 6.62,
+          "step_mean": 0.0845,
+          "step_max": 0.1255,
+          "drift": 7.45,
+          "loop": 0.177,
+          "loop_ratio": 2.1,
+          "travel": 7.45,
           "pin": 1.0,
           "pad": 0,
-          "flash": 0.208,
-          "peak": 0.2139,
-          "reach": 0.206,
+          "flash": 0.062,
+          "peak": 0.1858,
+          "reach": 0.173,
           "canvas": [
             240,
             240
           ],
           "reasons": [
-            "shallow strike: reach 0.21 — eyeball it"
+            "shallow strike: reach 0.17 — eyeball it"
           ],
-          "sub": "7d88f021-b44b-4a17-ae5e-1b41947f07cb",
-          "group": "6549b1f2-90b9-4452-bcc1-66559bd799c1",
+          "sub": "cad8bbcb-f9d4-4cd1-9cae-28aa987ef7da",
+          "group": "8a03862a-37fd-4a18-9411-c5af3ff21451",
           "takes": 1,
-          "version": 4,
+          "version": 5,
           "mirrored": false,
-          "generated_at": "2026-09-10T21:28:25+00:00",
-          "action": "Fire Breath - Rears its head back and breathes a long jet of fire forward, a big aggressive swing",
-          "tries": 1,
-          "rolls": 1,
+          "action": "Fire Breath - Rears its head back and breathes a long jet of fire forward",
           "intensity": 1,
-          "frames": 5
+          "rolls": 1,
+          "frames": 5,
+          "rung": 0,
+          "tries": 1,
+          "generated_at": "2026-09-10T22:00:33+00:00"
         },
         "south-west": {
           "status": "warn",
@@ -1163,7 +1164,7 @@
           "source": "north-east"
         }
       },
-      "action": "Fire Breath - Rears its head back and breathes a long jet of fire forward, a big aggressive swing",
+      "action": "Fire Breath - Rears its head back and breathes a long jet of fire forward",
       "frame_paths": {
         "south": [
           "ember_drake/animations/attack_try/south/00.webp",
