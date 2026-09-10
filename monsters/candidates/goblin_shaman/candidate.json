@@ -1133,7 +1133,7 @@
           "source": "north-east"
         }
       },
-      "action": "Skull Curse - Thrusts the skull staff out at arm's length and the skull flares",
+      "action": "Skull Curse - Thrusts the skull staff out at arm's length and the skull flares, a big aggressive swing",
       "frame_paths": {
         "south": [
           "goblin_shaman/animations/attack_try/south/00.webp",
@@ -1201,7 +1201,8 @@
         "south-west": "goblin_shaman/animations/attack_try__south-west.webp",
         "west": "goblin_shaman/animations/attack_try__west.webp",
         "north-west": "goblin_shaman/animations/attack_try__north-west.webp"
-      }
+      },
+      "intensity": 1
     }
   }
 }

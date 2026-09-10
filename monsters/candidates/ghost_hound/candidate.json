@@ -890,6 +890,201 @@
         "west": "ghost_hound/animations/attack__west.webp",
         "north-west": "ghost_hound/animations/attack__north-west.webp"
       }
+    },
+    "attack_try": {
+      "directions": {
+        "south": {
+          "status": "fail",
+          "step_mean": 0.1094,
+          "step_max": 0.1829,
+          "drift": 5.0,
+          "loop": 0.2023,
+          "loop_ratio": 1.85,
+          "travel": 2.37,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": 0.003,
+          "peak": 0.271,
+          "reach": 0.047,
+          "canvas": [
+            104,
+            104
+          ],
+          "reasons": [
+            "no strike, just a lean: nothing reaches past 0.05 of the body"
+          ],
+          "sub": "67966195-1575-4b8f-8eef-6f99c80cae46",
+          "group": "e93e3d38-d1ad-4b0c-8c65-9ccbdcd287f2",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "action": "Bite - Lunges forward with its jaws wide open and bites",
+          "tries": 1,
+          "generated_at": "2026-09-10T20:09:55+00:00"
+        },
+        "south-east": {
+          "status": "fail",
+          "step_mean": 0.0629,
+          "step_max": 0.1367,
+          "drift": 1.66,
+          "loop": 0.1845,
+          "loop_ratio": 2.93,
+          "travel": 1.37,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": 0.001,
+          "peak": 0.1875,
+          "reach": 0.179,
+          "canvas": [
+            104,
+            104
+          ],
+          "reasons": [
+            "motion 0.063 outside the calm band 0.08–0.9 — eyeball it",
+            "no strike, just a lean: nothing reaches past 0.18 of the body"
+          ],
+          "sub": "74343a3b-17f9-49d5-b1dd-9ec3ab3749e8",
+          "group": "a25961ca-ada9-43e1-960a-b6e68a7a9c7f",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "action": "Bite - Lunges forward with its jaws wide open and bites",
+          "tries": 1,
+          "generated_at": "2026-09-10T20:09:56+00:00"
+        },
+        "east": {
+          "status": "fail",
+          "step_mean": 0.2156,
+          "step_max": 0.2796,
+          "drift": 1.02,
+          "loop": 0.3759,
+          "loop_ratio": 1.74,
+          "travel": 0.7,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": 0.01,
+          "peak": 0.3759,
+          "reach": 0.197,
+          "canvas": [
+            104,
+            104
+          ],
+          "reasons": [
+            "no strike, just a lean: nothing reaches past 0.20 of the body"
+          ],
+          "sub": "baf91b82-bda4-4743-a5f4-6b84158194dc",
+          "group": "dc079dd9-e540-4b28-94c0-40dd9125e35d",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "action": "Bite - Lunges forward with its jaws wide open and bites",
+          "tries": 1,
+          "generated_at": "2026-09-10T20:09:56+00:00"
+        },
+        "north-east": {
+          "status": "fail",
+          "step_mean": 0.1577,
+          "step_max": 0.2264,
+          "drift": 3.58,
+          "loop": 0.3862,
+          "loop_ratio": 2.45,
+          "travel": 3.57,
+          "pin": 1.0,
+          "pad": 3,
+          "flash": 0.01,
+          "peak": 0.3862,
+          "reach": 0.111,
+          "canvas": [
+            110,
+            110
+          ],
+          "reasons": [
+            "no strike, just a lean: nothing reaches past 0.11 of the body",
+            "canvas grown by 3 px a side to hold the motion"
+          ],
+          "sub": "59a89c73-0e0a-483c-a27b-6b602762f73c",
+          "group": "19a76470-65ae-41c1-a640-be05010418a5",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "action": "Bite - Lunges forward with its jaws wide open and bites",
+          "tries": 1,
+          "generated_at": "2026-09-10T20:09:57+00:00"
+        },
+        "north": {
+          "status": "pass",
+          "step_mean": 0.1575,
+          "step_max": 0.2521,
+          "drift": 5.5,
+          "loop": 0.3989,
+          "loop_ratio": 2.53,
+          "travel": 5.5,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": 0.023,
+          "peak": 0.4533,
+          "reach": 0.394,
+          "canvas": [
+            104,
+            104
+          ],
+          "reasons": [],
+          "sub": "d8121fd5-6b63-45b6-bcca-565e73fc79eb",
+          "group": "88226b83-3051-4607-91b6-3d42365e49c5",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "action": "Bite - Lunges forward with its jaws wide open and bites",
+          "tries": 1,
+          "generated_at": "2026-09-10T20:09:57+00:00"
+        }
+      },
+      "action": "Bite - Lunges forward with its jaws wide open and bites, a big aggressive swing",
+      "frame_paths": {
+        "south": [
+          "ghost_hound/animations/attack_try/south/00.webp",
+          "ghost_hound/animations/attack_try/south/01.webp",
+          "ghost_hound/animations/attack_try/south/02.webp",
+          "ghost_hound/animations/attack_try/south/03.webp",
+          "ghost_hound/animations/attack_try/south/04.webp"
+        ],
+        "south-east": [
+          "ghost_hound/animations/attack_try/south-east/00.webp",
+          "ghost_hound/animations/attack_try/south-east/01.webp",
+          "ghost_hound/animations/attack_try/south-east/02.webp",
+          "ghost_hound/animations/attack_try/south-east/03.webp",
+          "ghost_hound/animations/attack_try/south-east/04.webp"
+        ],
+        "east": [
+          "ghost_hound/animations/attack_try/east/00.webp",
+          "ghost_hound/animations/attack_try/east/01.webp",
+          "ghost_hound/animations/attack_try/east/02.webp",
+          "ghost_hound/animations/attack_try/east/03.webp",
+          "ghost_hound/animations/attack_try/east/04.webp"
+        ],
+        "north-east": [
+          "ghost_hound/animations/attack_try/north-east/00.webp",
+          "ghost_hound/animations/attack_try/north-east/01.webp",
+          "ghost_hound/animations/attack_try/north-east/02.webp",
+          "ghost_hound/animations/attack_try/north-east/03.webp",
+          "ghost_hound/animations/attack_try/north-east/04.webp"
+        ],
+        "north": [
+          "ghost_hound/animations/attack_try/north/00.webp",
+          "ghost_hound/animations/attack_try/north/01.webp",
+          "ghost_hound/animations/attack_try/north/02.webp",
+          "ghost_hound/animations/attack_try/north/03.webp",
+          "ghost_hound/animations/attack_try/north/04.webp"
+        ]
+      },
+      "strips": {
+        "south": "ghost_hound/animations/attack_try__south.webp",
+        "south-east": "ghost_hound/animations/attack_try__south-east.webp",
+        "east": "ghost_hound/animations/attack_try__east.webp",
+        "north-east": "ghost_hound/animations/attack_try__north-east.webp",
+        "north": "ghost_hound/animations/attack_try__north.webp"
+      },
+      "intensity": 1
     }
   }
 }

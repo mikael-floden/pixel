@@ -1070,7 +1070,7 @@
           "source": "north-east"
         }
       },
-      "action": "Grasping Swipe - Lunges forward with both bandaged arms out in a grasping swipe",
+      "action": "Grasping Swipe - Lunges forward with both bandaged arms out in a grasping swipe, a big aggressive swing",
       "frame_paths": {
         "south": [
           "mummy/animations/attack_try/south/00.webp",
@@ -1122,7 +1122,8 @@
         "north": "mummy/animations/attack_try__north.webp",
         "west": "mummy/animations/attack_try__west.webp",
         "north-west": "mummy/animations/attack_try__north-west.webp"
-      }
+      },
+      "intensity": 1
     }
   }
 }

@@ -1071,7 +1071,7 @@
           "source": "east"
         }
       },
-      "action": "Magma Spit - Rears its front up high and spits a gout of magma forward",
+      "action": "Magma Spit - Rears its front up high and spits a gout of magma forward, a big aggressive swing",
       "frame_paths": {
         "south": [
           "lava_slug/animations/attack_try/south/00.webp",
@@ -1123,7 +1123,8 @@
         "north-east": "lava_slug/animations/attack_try__north-east.webp",
         "north": "lava_slug/animations/attack_try__north.webp",
         "west": "lava_slug/animations/attack_try__west.webp"
-      }
+      },
+      "intensity": 1
     }
   }
 }

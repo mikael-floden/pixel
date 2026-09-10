@@ -1080,7 +1080,7 @@
           "source": "east"
         }
       },
-      "action": "Chain Lash - Whips the iron chain out forward in one heavy lash",
+      "action": "Chain Lash - Whips the iron chain out forward in one heavy lash, a big aggressive swing",
       "frame_paths": {
         "south": [
           "bridge_troll/animations/attack_try/south/00.webp",
@@ -1132,7 +1132,8 @@
         "north-east": "bridge_troll/animations/attack_try__north-east.webp",
         "north": "bridge_troll/animations/attack_try__north.webp",
         "west": "bridge_troll/animations/attack_try__west.webp"
-      }
+      },
+      "intensity": 1
     }
   }
 }

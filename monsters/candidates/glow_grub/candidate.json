@@ -1035,7 +1035,7 @@
           "generated_at": "2026-09-10T19:53:40+00:00"
         }
       },
-      "action": "Bite - Rears its front half up and bites forward with its mandibles",
+      "action": "Bite - Rears its front half up and bites forward with its mandibles, a big aggressive swing",
       "frame_paths": {
         "south": [
           "glow_grub/animations/attack_try/south/00.webp",
@@ -1079,7 +1079,8 @@
         "east": "glow_grub/animations/attack_try__east.webp",
         "north-east": "glow_grub/animations/attack_try__north-east.webp",
         "north": "glow_grub/animations/attack_try__north.webp"
-      }
+      },
+      "intensity": 1
     }
   }
 }

@@ -1036,7 +1036,7 @@
           "generated_at": "2026-09-10T19:59:14+00:00"
         }
       },
-      "action": "Headbutt - Rocks back, then rams forward hard with its stone body",
+      "action": "Headbutt - Rocks back, then rams forward hard with its stone body, a big aggressive swing",
       "frame_paths": {
         "south": [
           "rock_mite/animations/attack_try/south/00.webp",
@@ -1080,7 +1080,8 @@
         "east": "rock_mite/animations/attack_try__east.webp",
         "north-east": "rock_mite/animations/attack_try__north-east.webp",
         "north": "rock_mite/animations/attack_try__north.webp"
-      }
+      },
+      "intensity": 1
     }
   }
 }

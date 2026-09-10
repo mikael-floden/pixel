@@ -1134,7 +1134,7 @@
           "source": "north-east"
         }
       },
-      "action": "Bow Shot - Draws the bowstring back to its cheek and looses an arrow",
+      "action": "Bow Shot - Draws the bowstring back to its cheek and looses an arrow, a big aggressive swing",
       "frame_paths": {
         "south": [
           "skeleton_archer/animations/attack_try/south/00.webp",
@@ -1202,7 +1202,8 @@
         "south-west": "skeleton_archer/animations/attack_try__south-west.webp",
         "west": "skeleton_archer/animations/attack_try__west.webp",
         "north-west": "skeleton_archer/animations/attack_try__north-west.webp"
-      }
+      },
+      "intensity": 1
     }
   }
 }

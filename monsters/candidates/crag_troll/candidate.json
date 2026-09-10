@@ -1061,7 +1061,7 @@
           "generated_at": "2026-09-10T19:57:21+00:00"
         }
       },
-      "action": "Club Smash - Raises the stone club overhead and smashes it straight down",
+      "action": "Club Smash - Raises the stone club overhead and smashes it straight down, a big aggressive swing",
       "frame_paths": {
         "south": [
           "crag_troll/animations/attack_try/south/00.webp",
@@ -1105,7 +1105,8 @@
         "east": "crag_troll/animations/attack_try__east.webp",
         "north-east": "crag_troll/animations/attack_try__north-east.webp",
         "north": "crag_troll/animations/attack_try__north.webp"
-      }
+      },
+      "intensity": 1
     }
   }
 }

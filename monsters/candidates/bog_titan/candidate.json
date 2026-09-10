@@ -1098,7 +1098,7 @@
           "source": "north-east"
         }
       },
-      "action": "Double Slam - Raises both arms high overhead and slams them down together",
+      "action": "Double Slam - Raises both arms high overhead and slams them down together, a big aggressive swing",
       "frame_paths": {
         "south": [
           "bog_titan/animations/attack_try/south/00.webp",
@@ -1158,7 +1158,8 @@
         "north": "bog_titan/animations/attack_try__north.webp",
         "west": "bog_titan/animations/attack_try__west.webp",
         "north-west": "bog_titan/animations/attack_try__north-west.webp"
-      }
+      },
+      "intensity": 1
     }
   }
 }

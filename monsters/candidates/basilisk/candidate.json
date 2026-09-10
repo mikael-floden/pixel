@@ -1051,7 +1051,7 @@
           "generated_at": "2026-09-10T19:49:12+00:00"
         }
       },
-      "action": "Bite - Lunges forward with its jaws wide open and bites hard",
+      "action": "Bite - Lunges forward with its jaws wide open and bites hard, a big aggressive swing",
       "frame_paths": {
         "south": [
           "basilisk/animations/attack_try/south/00.webp",
@@ -1095,7 +1095,8 @@
         "east": "basilisk/animations/attack_try__east.webp",
         "north-east": "basilisk/animations/attack_try__north-east.webp",
         "north": "basilisk/animations/attack_try__north.webp"
-      }
+      },
+      "intensity": 1
     }
   }
 }

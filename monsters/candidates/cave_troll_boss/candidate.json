@@ -1090,7 +1090,7 @@
           "source": "east"
         }
       },
-      "action": "Club Smash - Heaves the stalactite club overhead and smashes it down",
+      "action": "Club Smash - Heaves the stalactite club overhead and smashes it down, a big aggressive swing",
       "frame_paths": {
         "south": [
           "cave_troll_boss/animations/attack_try/south/00.webp",
@@ -1142,7 +1142,8 @@
         "north-east": "cave_troll_boss/animations/attack_try__north-east.webp",
         "north": "cave_troll_boss/animations/attack_try__north.webp",
         "west": "cave_troll_boss/animations/attack_try__west.webp"
-      }
+      },
+      "intensity": 1
     }
   }
 }

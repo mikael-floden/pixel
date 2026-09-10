@@ -1057,7 +1057,7 @@
           "generated_at": "2026-09-10T19:54:42+00:00"
         }
       },
-      "action": "Strike - Coils its head back, then strikes forward with fangs bared",
+      "action": "Strike - Coils its head back, then strikes forward with fangs bared, a big aggressive swing",
       "frame_paths": {
         "south": [
           "cobra/animations/attack_try/south/00.webp",
@@ -1101,7 +1101,8 @@
         "east": "cobra/animations/attack_try__east.webp",
         "north-east": "cobra/animations/attack_try__north-east.webp",
         "north": "cobra/animations/attack_try__north.webp"
-      }
+      },
+      "intensity": 1
     }
   }
 }

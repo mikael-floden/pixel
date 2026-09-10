@@ -1065,7 +1065,7 @@
           "generated_at": "2026-09-10T19:50:45+00:00"
         }
       },
-      "action": "Tentacle Lash - Rears up high and whips two tentacles forward",
+      "action": "Tentacle Lash - Rears up high and whips two tentacles forward, a big aggressive swing",
       "frame_paths": {
         "south": [
           "octopus/animations/attack_try/south/00.webp",
@@ -1109,7 +1109,8 @@
         "east": "octopus/animations/attack_try__east.webp",
         "north-east": "octopus/animations/attack_try__north-east.webp",
         "north": "octopus/animations/attack_try__north.webp"
-      }
+      },
+      "intensity": 1
     }
   }
 }

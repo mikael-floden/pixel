@@ -1097,7 +1097,7 @@
           "source": "north-east"
         }
       },
-      "action": "Staff Curse - Jabs the staff out and green swamp magic bursts from the tip",
+      "action": "Staff Curse - Jabs the staff out and green swamp magic bursts from the tip, a big aggressive swing",
       "frame_paths": {
         "south": [
           "marsh_hag/animations/attack_try/south/00.webp",
@@ -1157,7 +1157,8 @@
         "north": "marsh_hag/animations/attack_try__north.webp",
         "west": "marsh_hag/animations/attack_try__west.webp",
         "north-west": "marsh_hag/animations/attack_try__north-west.webp"
-      }
+      },
+      "intensity": 1
     }
   }
 }

@@ -1080,7 +1080,7 @@
           "source": "east"
         }
       },
-      "action": "Claw Slam - Raises one massive clawed hand high and slams it straight down",
+      "action": "Claw Slam - Raises one massive clawed hand high and slams it straight down, a big aggressive attack with the whole body behind it, wide exaggerated motion",
       "frame_paths": {
         "south": [
           "ember_king/animations/attack_try/south/00.webp",
@@ -1132,7 +1132,8 @@
         "north-east": "ember_king/animations/attack_try__north-east.webp",
         "north": "ember_king/animations/attack_try__north.webp",
         "west": "ember_king/animations/attack_try__west.webp"
-      }
+      },
+      "intensity": 2
     }
   }
 }

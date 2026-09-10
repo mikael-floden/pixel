@@ -1073,7 +1073,7 @@
           "source": "south-east"
         }
       },
-      "action": "Beak Stab - Spreads its wings wide and stabs forward with its hooked beak",
+      "action": "Beak Stab - Spreads its wings wide and stabs forward with its hooked beak, a big aggressive swing",
       "frame_paths": {
         "south": [
           "vulture/animations/attack_try/south/00.webp",
@@ -1125,7 +1125,8 @@
         "north-east": "vulture/animations/attack_try__north-east.webp",
         "north": "vulture/animations/attack_try__north.webp",
         "south-west": "vulture/animations/attack_try__south-west.webp"
-      }
+      },
+      "intensity": 1
     }
   }
 }

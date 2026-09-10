@@ -1109,7 +1109,7 @@
           "source": "north-east"
         }
       },
-      "action": "Overhead Chop - Raises the greatsword high overhead and chops it down hard",
+      "action": "Overhead Chop - Raises the greatsword high overhead and chops it down hard, a big aggressive swing",
       "frame_paths": {
         "south": [
           "hollow_knight/animations/attack_try/south/00.webp",
@@ -1169,7 +1169,8 @@
         "north": "hollow_knight/animations/attack_try__north.webp",
         "west": "hollow_knight/animations/attack_try__west.webp",
         "north-west": "hollow_knight/animations/attack_try__north-west.webp"
-      }
+      },
+      "intensity": 1
     }
   }
 }

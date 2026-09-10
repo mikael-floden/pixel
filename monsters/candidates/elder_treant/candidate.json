@@ -1131,7 +1131,7 @@
           "source": "north-east"
         }
       },
-      "action": "Branch Smash - Swings one huge branch arm down in a wide overhead smash",
+      "action": "Branch Smash - Swings one huge branch arm down in a wide overhead smash, a big aggressive swing",
       "frame_paths": {
         "south": [
           "elder_treant/animations/attack_try/south/00.webp",
@@ -1199,7 +1199,8 @@
         "south-west": "elder_treant/animations/attack_try__south-west.webp",
         "west": "elder_treant/animations/attack_try__west.webp",
         "north-west": "elder_treant/animations/attack_try__north-west.webp"
-      }
+      },
+      "intensity": 1
     }
   }
 }

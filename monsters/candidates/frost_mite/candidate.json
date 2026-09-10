@@ -1040,7 +1040,7 @@
           "generated_at": "2026-09-10T20:01:32+00:00"
         }
       },
-      "action": "Bite - Hops forward and bites hard with its mandibles wide",
+      "action": "Bite - Hops forward and bites hard with its mandibles wide, a big aggressive swing",
       "frame_paths": {
         "south": [
           "frost_mite/animations/attack_try/south/00.webp",
@@ -1084,7 +1084,8 @@
         "east": "frost_mite/animations/attack_try__east.webp",
         "north-east": "frost_mite/animations/attack_try__north-east.webp",
         "north": "frost_mite/animations/attack_try__north.webp"
-      }
+      },
+      "intensity": 1
     }
   }
 }

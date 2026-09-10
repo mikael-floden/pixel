@@ -1147,7 +1147,7 @@
           "source": "north-east"
         }
       },
-      "action": "Arm Sweep - Swings one crystal-bladed arm across in a wide sweep",
+      "action": "Arm Sweep - Swings one crystal-bladed arm across in a wide sweep, a big aggressive swing",
       "frame_paths": {
         "south": [
           "crystal_titan/animations/attack_try/south/00.webp",
@@ -1215,7 +1215,8 @@
         "south-west": "crystal_titan/animations/attack_try__south-west.webp",
         "west": "crystal_titan/animations/attack_try__west.webp",
         "north-west": "crystal_titan/animations/attack_try__north-west.webp"
-      }
+      },
+      "intensity": 1
     }
   }
 }

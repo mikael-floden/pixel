@@ -1041,7 +1041,7 @@
           "generated_at": "2026-09-10T19:57:10+00:00"
         }
       },
-      "action": "Eye Beam - Flares its pupil wide and fires a beam of light forward",
+      "action": "Eye Beam - Flares its pupil wide and fires a beam of light forward, a big aggressive swing",
       "frame_paths": {
         "south": [
           "eye_bat/animations/attack_try/south/00.webp",
@@ -1085,7 +1085,8 @@
         "east": "eye_bat/animations/attack_try__east.webp",
         "north-east": "eye_bat/animations/attack_try__north-east.webp",
         "north": "eye_bat/animations/attack_try__north.webp"
-      }
+      },
+      "intensity": 1
     }
   }
 }

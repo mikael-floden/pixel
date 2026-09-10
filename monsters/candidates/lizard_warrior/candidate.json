@@ -1147,7 +1147,7 @@
           "source": "north-east"
         }
       },
-      "action": "Spear Thrust - Lunges forward and drives the spear out in one fast stab",
+      "action": "Spear Thrust - Lunges forward and drives the spear out in one fast stab, a big aggressive swing",
       "frame_paths": {
         "south": [
           "lizard_warrior/animations/attack_try/south/00.webp",
@@ -1215,7 +1215,8 @@
         "south-west": "lizard_warrior/animations/attack_try__south-west.webp",
         "west": "lizard_warrior/animations/attack_try__west.webp",
         "north-west": "lizard_warrior/animations/attack_try__north-west.webp"
-      }
+      },
+      "intensity": 1
     }
   }
 }

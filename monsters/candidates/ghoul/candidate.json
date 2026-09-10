@@ -1073,7 +1073,7 @@
           "source": "east"
         }
       },
-      "action": "Double Claw - Rakes forward with both claws in two fast alternating swipes",
+      "action": "Double Claw - Rakes forward with both claws in two fast alternating swipes, a big aggressive swing",
       "frame_paths": {
         "south": [
           "ghoul/animations/attack_try/south/00.webp",
@@ -1125,7 +1125,8 @@
         "north-east": "ghoul/animations/attack_try__north-east.webp",
         "north": "ghoul/animations/attack_try__north.webp",
         "west": "ghoul/animations/attack_try__west.webp"
-      }
+      },
+      "intensity": 1
     }
   }
 }

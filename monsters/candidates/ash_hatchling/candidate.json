@@ -1054,7 +1054,7 @@
           "generated_at": "2026-09-10T19:57:35+00:00"
         }
       },
-      "action": "Bite - Lunges forward and bites hard, embers puffing",
+      "action": "Bite - Lunges forward and bites hard, embers puffing, a big aggressive swing",
       "frame_paths": {
         "south": [
           "ash_hatchling/animations/attack_try/south/00.webp",
@@ -1098,7 +1098,8 @@
         "east": "ash_hatchling/animations/attack_try__east.webp",
         "north-east": "ash_hatchling/animations/attack_try__north-east.webp",
         "north": "ash_hatchling/animations/attack_try__north.webp"
-      }
+      },
+      "intensity": 1
     }
   }
 }

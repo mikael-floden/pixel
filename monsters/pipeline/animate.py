@@ -607,7 +607,7 @@ def cmd_state(args, state):
         # one take — maintainer: "you might have to redo the entire prompt
         # (all directions) in order to get a full 8 set that is valid")
         lvl0 = intensity_of(man, state)
-        lvl = bump_intensity(man, state)
+        lvl = intensity_of(man, state) if args.dry_run else bump_intensity(man, state)
         if lvl != lvl0:
             man["animations"][state]["action"] = state_action(cid, state, man)
             write_manifest(cid, man)

@@ -1109,7 +1109,7 @@
           "source": "east"
         }
       },
-      "action": "Fire Breath - Rears its head back and breathes a long jet of fire forward",
+      "action": "Fire Breath - Rears its head back and breathes a long jet of fire forward, a big aggressive swing",
       "frame_paths": {
         "south": [
           "ember_drake/animations/attack_try/south/00.webp",
@@ -1169,7 +1169,8 @@
         "north": "ember_drake/animations/attack_try__north.webp",
         "south-west": "ember_drake/animations/attack_try__south-west.webp",
         "west": "ember_drake/animations/attack_try__west.webp"
-      }
+      },
+      "intensity": 1
     }
   }
 }
