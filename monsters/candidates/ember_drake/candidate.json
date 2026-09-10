@@ -900,6 +900,276 @@
         "west": "ember_drake/animations/attack__west.webp",
         "north-west": "ember_drake/animations/attack__north-west.webp"
       }
+    },
+    "attack_try": {
+      "directions": {
+        "south": {
+          "status": "fail",
+          "step_mean": 0.1053,
+          "step_max": 0.1259,
+          "drift": 2.99,
+          "loop": 0.1572,
+          "loop_ratio": 1.49,
+          "travel": 2.99,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": 0.07,
+          "peak": 0.1605,
+          "reach": 0.093,
+          "canvas": [
+            240,
+            240
+          ],
+          "reasons": [
+            "no strike, just a lean: nothing reaches past 0.09 of the body"
+          ],
+          "sub": "05bdbcc3-3174-446a-82aa-3d36254ba770",
+          "group": "2ce39488-fec1-4d14-b4ca-8393f6112175",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "action": "Fire Breath - Rears its head back and breathes a long jet of fire forward",
+          "tries": 1,
+          "generated_at": "2026-09-10T20:06:09+00:00"
+        },
+        "south-east": {
+          "status": "warn",
+          "step_mean": 0.1404,
+          "step_max": 0.2345,
+          "drift": 12.14,
+          "loop": 0.2903,
+          "loop_ratio": 2.07,
+          "travel": 11.05,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": 0.152,
+          "peak": 0.2903,
+          "reach": 0.22,
+          "canvas": [
+            240,
+            240
+          ],
+          "reasons": [
+            "shallow strike: reach 0.22 — eyeball it"
+          ],
+          "sub": "733c4b30-4549-48cc-8df3-57048e1dbdcd",
+          "group": "7d01b228-bd21-4c95-ab3b-26cfdb92c47c",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "action": "Fire Breath - Rears its head back and breathes a long jet of fire forward",
+          "tries": 1,
+          "generated_at": "2026-09-10T20:06:10+00:00"
+        },
+        "east": {
+          "status": "warn",
+          "step_mean": 0.093,
+          "step_max": 0.1381,
+          "drift": 6.91,
+          "loop": 0.13,
+          "loop_ratio": 1.4,
+          "travel": 6.91,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": 0.108,
+          "peak": 0.1534,
+          "reach": 0.236,
+          "canvas": [
+            240,
+            240
+          ],
+          "reasons": [
+            "shallow strike: reach 0.24 — eyeball it"
+          ],
+          "sub": "a41397d8-9e0e-43e3-86ca-ece8874417a2",
+          "group": "ea93b6e9-d50e-4bde-a668-7201c6f0dcc1",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "action": "Fire Breath - Rears its head back and breathes a long jet of fire forward",
+          "tries": 1,
+          "generated_at": "2026-09-10T20:06:10+00:00"
+        },
+        "north-east": {
+          "status": "fail",
+          "step_mean": 0.1017,
+          "step_max": 0.1487,
+          "drift": 3.93,
+          "loop": 0.1493,
+          "loop_ratio": 1.47,
+          "travel": 1.65,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": 0.019,
+          "peak": 0.1587,
+          "reach": 0.14,
+          "canvas": [
+            240,
+            240
+          ],
+          "reasons": [
+            "no strike, just a lean: nothing reaches past 0.14 of the body"
+          ],
+          "sub": "f49466f8-1498-4ba5-befe-d64392a439da",
+          "group": "345235dd-afca-4196-bfbd-3da6b6dcade0",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "action": "Fire Breath - Rears its head back and breathes a long jet of fire forward",
+          "tries": 1,
+          "generated_at": "2026-09-10T20:06:11+00:00"
+        },
+        "north": {
+          "status": "fail",
+          "step_mean": 0.114,
+          "step_max": 0.1464,
+          "drift": 5.56,
+          "loop": 0.1868,
+          "loop_ratio": 1.64,
+          "travel": 6.01,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": 0.065,
+          "peak": 0.2062,
+          "reach": 0.196,
+          "canvas": [
+            240,
+            240
+          ],
+          "reasons": [
+            "no strike, just a lean: nothing reaches past 0.20 of the body"
+          ],
+          "sub": "8f711530-a19d-4844-a6d7-e25740e600e6",
+          "group": "06375d13-f57c-45ed-ab13-d024d2529859",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "action": "Fire Breath - Rears its head back and breathes a long jet of fire forward",
+          "tries": 1,
+          "generated_at": "2026-09-10T20:06:12+00:00"
+        },
+        "south-west": {
+          "status": "warn",
+          "step_mean": 0.1404,
+          "step_max": 0.2345,
+          "drift": 12.14,
+          "loop": 0.2903,
+          "loop_ratio": 2.07,
+          "travel": 11.05,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": 0.152,
+          "peak": 0.2903,
+          "reach": 0.22,
+          "canvas": [
+            240,
+            240
+          ],
+          "reasons": [
+            "shallow strike: reach 0.22 — eyeball it"
+          ],
+          "sub": "733c4b30-4549-48cc-8df3-57048e1dbdcd",
+          "group": "7d01b228-bd21-4c95-ab3b-26cfdb92c47c",
+          "takes": 1,
+          "version": 1,
+          "mirrored": true,
+          "action": "Fire Breath - Rears its head back and breathes a long jet of fire forward",
+          "tries": 1,
+          "generated_at": "2026-09-10T20:06:10+00:00",
+          "source": "south-east"
+        },
+        "west": {
+          "status": "warn",
+          "step_mean": 0.093,
+          "step_max": 0.1381,
+          "drift": 6.91,
+          "loop": 0.13,
+          "loop_ratio": 1.4,
+          "travel": 6.91,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": 0.108,
+          "peak": 0.1534,
+          "reach": 0.236,
+          "canvas": [
+            240,
+            240
+          ],
+          "reasons": [
+            "shallow strike: reach 0.24 — eyeball it"
+          ],
+          "sub": "a41397d8-9e0e-43e3-86ca-ece8874417a2",
+          "group": "ea93b6e9-d50e-4bde-a668-7201c6f0dcc1",
+          "takes": 1,
+          "version": 1,
+          "mirrored": true,
+          "action": "Fire Breath - Rears its head back and breathes a long jet of fire forward",
+          "tries": 1,
+          "generated_at": "2026-09-10T20:06:10+00:00",
+          "source": "east"
+        }
+      },
+      "action": "Fire Breath - Rears its head back and breathes a long jet of fire forward",
+      "frame_paths": {
+        "south": [
+          "ember_drake/animations/attack_try/south/00.webp",
+          "ember_drake/animations/attack_try/south/01.webp",
+          "ember_drake/animations/attack_try/south/02.webp",
+          "ember_drake/animations/attack_try/south/03.webp",
+          "ember_drake/animations/attack_try/south/04.webp"
+        ],
+        "south-east": [
+          "ember_drake/animations/attack_try/south-east/00.webp",
+          "ember_drake/animations/attack_try/south-east/01.webp",
+          "ember_drake/animations/attack_try/south-east/02.webp",
+          "ember_drake/animations/attack_try/south-east/03.webp",
+          "ember_drake/animations/attack_try/south-east/04.webp"
+        ],
+        "east": [
+          "ember_drake/animations/attack_try/east/00.webp",
+          "ember_drake/animations/attack_try/east/01.webp",
+          "ember_drake/animations/attack_try/east/02.webp",
+          "ember_drake/animations/attack_try/east/03.webp",
+          "ember_drake/animations/attack_try/east/04.webp"
+        ],
+        "north-east": [
+          "ember_drake/animations/attack_try/north-east/00.webp",
+          "ember_drake/animations/attack_try/north-east/01.webp",
+          "ember_drake/animations/attack_try/north-east/02.webp",
+          "ember_drake/animations/attack_try/north-east/03.webp",
+          "ember_drake/animations/attack_try/north-east/04.webp"
+        ],
+        "north": [
+          "ember_drake/animations/attack_try/north/00.webp",
+          "ember_drake/animations/attack_try/north/01.webp",
+          "ember_drake/animations/attack_try/north/02.webp",
+          "ember_drake/animations/attack_try/north/03.webp",
+          "ember_drake/animations/attack_try/north/04.webp"
+        ],
+        "south-west": [
+          "ember_drake/animations/attack_try/south-west/00.webp",
+          "ember_drake/animations/attack_try/south-west/01.webp",
+          "ember_drake/animations/attack_try/south-west/02.webp",
+          "ember_drake/animations/attack_try/south-west/03.webp",
+          "ember_drake/animations/attack_try/south-west/04.webp"
+        ],
+        "west": [
+          "ember_drake/animations/attack_try/west/00.webp",
+          "ember_drake/animations/attack_try/west/01.webp",
+          "ember_drake/animations/attack_try/west/02.webp",
+          "ember_drake/animations/attack_try/west/03.webp",
+          "ember_drake/animations/attack_try/west/04.webp"
+        ]
+      },
+      "strips": {
+        "south": "ember_drake/animations/attack_try__south.webp",
+        "south-east": "ember_drake/animations/attack_try__south-east.webp",
+        "east": "ember_drake/animations/attack_try__east.webp",
+        "north-east": "ember_drake/animations/attack_try__north-east.webp",
+        "north": "ember_drake/animations/attack_try__north.webp",
+        "south-west": "ember_drake/animations/attack_try__south-west.webp",
+        "west": "ember_drake/animations/attack_try__west.webp"
+      }
     }
   }
 }
