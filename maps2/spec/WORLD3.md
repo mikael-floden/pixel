@@ -72,6 +72,27 @@ decoration, it breaks every interior in the running game — measured
   no `side` a deck draws same-over-same, which is the thick look. The game
   reads it (`Deck.side`, tiles3 `deckCell`) and draws the same body and cap as
   render3; the two are held equal by the game's parity fixture.
+* **A SPAN'S SHAPE IS DRAWN, NOT DECIDED** (`_shape_span`, maintainer
+  2026-09-10 on a two-wide, two-thick timber bridge: *"I feel a 2 tile wide
+  bridge is too small and a 2 tile thick bridge is too thick. A 3 tile wide
+  and 1 tile thick would have been better. Again this is not a hard rule!
+  Just a better default! If you change your script to always do what I say
+  the entire world will look the same and that would destroy the game. So my
+  input should nudge the rules in a direction and never create an if
+  statement."*). His shape is the WEIGHT, not the answer: `BRIDGE_WIDE =
+  ((3,6), (4,2), (2,1))` cells across and `BRIDGE_DEEP = ((0,6), (1,2))`
+  EXTRA courses under the cap, drawn per span from the deck's own anchor. A
+  lane is the whole deck offset one cell sideways — a straight bridge grows a
+  parallel lane, the diagonal pier a parallel diagonal — over the gap it
+  crosses or the bank it lands on, never over ground above it, sides
+  alternating so a span widens about its own line instead of sliding off it.
+  A lane that will not fit is not forced. Never below `BRIDGE_MIN = 2`, which
+  is a plank; build-asserted, and no two spans share a cell. the_game: three
+  spans of three on one course, one causeway of four, one two-wide footbridge
+  on two courses high on the ice — his default two times in three, and the
+  world still surprises. **`thickness` 1 reads as TWO courses** (it is EXTRA
+  face below the cap): that hard `max(1, …)` floor is what made every span
+  two thick, the same trap already paid for on roofs.
 * Changing decks changes gameplay. Tell the games agent before it lands.
 
 ### `rooms` — where a room ends, stated rather than guessed
@@ -360,6 +381,23 @@ bit random."* The 12 ported cave lids kept the mountain's own top as their
 floor (snow and ice floors underground) and their inner walls took whatever
 pool the terrace above happened to draw.
 
+**A CAVE'S CEILING STANDS THE SAME HEIGHT ABOVE ITS FLOOR EVERYWHERE IN THAT
+CAVE** (`_cave_ceilings`, maintainer 2026-09-10, walking the dungeon: *"When
+I'm inside a cave — the cave looks completely different depending on what
+parts of the cave I'm currently at!"*). A lid's UNDERSIDE — `level −
+thickness`, the game's `deckBot` — is the roof the player reads, and one lid
+at the field's own level over chambers dug to 6, 3 and 0 gave headroom 6, 9
+and 12: a low room, a hall and a canyon in one dungeon. The **tightest
+chamber sets the height** and every chamber of that cave matches it, so a lid
+covering floors at several levels becomes one deck per level, each with the
+thickness that puts its underside `head` above its own floor — down a
+staircase the ceiling follows the steps. The ported mountain cave already
+obeyed this (five lids at 24–40 whose thicknesses all put the underside at
+8), which is what says the rule is the cave's own geometry and not a taste
+call. the_game: headroom 8 through the mountain, 6 through the dungeon.
+Build-asserted, and `_merge_lids` keys on the SLAB — level AND thickness —
+so two ceilings at two heights are never flattened into one.
+
 `caves()` (right after `i2_cave`): first **one lid per chamber**
 (`_merge_lids`): cave lids of one level whose cells touch become one deck (the
 larger keeps its record, the top ground is the majority's) — the ported cave
@@ -460,16 +498,18 @@ pit   y 1..5, three lanes; banks two above a step  S-5 .. S-1
   stair of one-level steps (two lanes, published as `stair` ramp runs, foot
   first). So every chamber is reachable by reversible moves and the reach
   audit's trap rule (R − Rev) holds with no special case.
-* **The lid is one deck of thickness 0.** Its underside is then the field
-  itself (the game's `deckBot = S`) and nothing hangs below it. A thicker lid
-  draws its skirt over the field along its south and east edge, because both
-  renderers paint decks after every cell (measured with thickness 2: a
-  two-storey grey wall standing on the meadow). The doorway draws as a house
-  door: the lid's cap band reaches S−1, the floor is S−6, 5.7 levels open.
-  The lid wears the field (`dungeon_field`, after `terrace_grounds`, which
-  recolours the meadow after the dig and leaves anything under
-  `TERRACE_MIN` cells — the lid's recorded top, the banks, the jambs — in
-  the old ground).
+* **The lid is one deck per chamber**, each at the field's level S carrying
+  the thickness that puts its underside a fixed height over its own floor —
+  see "a cave's ceiling" below, which is what shapes it. The doorway draws
+  as a house door: the cap band reaches S−1, the hall's floor is S−6.
+* **The whole box wears the field** (`dungeon_field`, after
+  `terrace_grounds`): the dig cuts the meadow's terrace into fragments, the
+  recolouring pass only takes a terrace of `TERRACE_MIN` cells or more and
+  the ground audit only dissolves a speck of `SPECK_MAX` or fewer, so a
+  three-cell scrap of the old grass sat in the middle of a dark-mud field
+  and read as a painted green rectangle (measured at (214–216, 279)). Every
+  natural cell of the box that is not road, ramp or cave floor takes the
+  field's own ground; build-asserted.
 * **The floors never go below 0.** The game clamps an avatar's rendered
   elevation and a deck's underside at 0 (`games2/shared buildTerrainGrid`,
   `WorldScene Math.max(0, elev)`), so the field stands
@@ -1199,7 +1239,7 @@ a crop would move the dot off the player.
 | iso | `tiles/review/manifest.json` iso block | 64px tile, dx 32, **dy 14** (GEOMETRY.md: the pitch where the v3 lattice closes; 15 leaks a 1px wall grid), storey pitch **measured** per tile (`tiles/pipeline/render.py wall_height` — assuming 17 leaks a stripe of the floor below at every storey, the tiles agent's own paid-for bug) |
 | fields | `live/tuning/base_tile_sets.json` | **his base tile sets, on every cell — land, liquid, deck and raised alike.** A SET per region (a 24-cell chunk of one ground), a MEMBER per cell, his weights throughout, clean as a member. A member draws **its own art**: the review candidate's published `textured` pass, or the file itself for a `tops`/`base_candidates` path, conformed into plate geometry. **Never `tiles/plates/<g>/<key8>.webp`** — that is the same tile flattened to the clean colour, and reading it painted 236 of his 340 members flat. A member he later **rejected** is dropped, his rejection outranking his set. (`live/tuning/base_tiles.json` is the superseded one-tile-per-ground channel and is empty.) |
 | walls | `tiles/review` x-over-y matrix | **the only tiles that ever show a wall.** A column stacks whole tiles (the tiles agent's `plateau` model): same-over-same for every storey below, capped by `top__over__side` where `side` = the ground at the face's FOOT (down-screen lower neighbour) — never an indoor floor, never a liquid — overridable per pair via `live/tuning/tile_walls.json`. Candidate per cell = the wiki's own rule: maintainer-approved, else rank 0. |
-| decks | `decks` (roof, bridge, cave lid) | a slab whose top rides at its own level, drawn **in painter order with the cells** — each deck cell right after its own base cell — so the ground in front covers whatever hangs below it, the way a cell's own wall band is covered by the same-level cell in front. Drawn after every cell (the game's `windowOps` order, and this renderer's until 2026-09-09), a lid whose field continues at its own level beyond its south/east edge stood its skirt on the meadow: measured with a thickness-2 cave lid at 12 in a level-12 field, a two-storey grey wall along the edge, a one-storey band at thickness 0. The cap band still hangs where the front is open — that is the lintel over a doorway. Raised on the games2 board. |
+| decks | `decks` (roof, bridge, cave lid) | a slab whose top rides at its own level, drawn **at the end of its own DIAGONAL** — after that diagonal's terrain, before the next — so the cells in front cover whatever hangs below it, the way a cell's own wall band is covered by the same-level cell in front. Drawn after every cell in the window (the game's `windowOps` order, and this renderer's until 2026-09-09), a lid whose field continues at its own level beyond its south/east edge stood its skirt on the meadow: measured with a thickness-2 cave lid at 12 in a level-12 field, a two-storey grey wall along the edge, a one-storey band at thickness 0. Raised on the games2 board. **Per diagonal, not inside the cell body**: a liquid cell and a level-0 cell each leave that body early, so a first cut that called it there dropped every span over water or flat ground — the pier and both river bridges vanished from the render. The cap band still hangs where the front is open, which is the lintel over a doorway. |
 | boundaries | `tiles/patterns` x `tiles/plates` | patterns publishes the **material-independent** Wang boundary and nothing else; the two grounds it divides come from their own set members. So **every pair is covered**, including roads (`light_soil` beside `grass`, the 2nd most common boundary on the_game) — no per-pair set is required. Corner lattice, index `8*NW+4*NE+2*SW+1*SE`; each half asks for **its own ground's** region. Only where the quad shares one level. |
 | fades | `tiles/fades` (`tiles3/fade-tiles@1`) | top-only mix tiles that warm the player up for a ground change **before** the switch. Placed by `edge_ground`, never by area majority ("big rocks ON an ice sheet"). **APPROVED ONLY** — he rates this layer actively (480 approved, 345 rejected of 3,575), so an unjudged tile is not a candidate; survivors are weighted by his rating. A **scattered event** over a real Chebyshev distance band, never a coat of one tile. |
 | details | `live/feedback/tiles.json` `<key>#top` approvals | **478 approvals.** The wiki's roof glyph is "rating the TOP as a once-in-a-while ground detail", and a tile **rejected as a pair** (bad wall) can still be a top-approved detail — the two reviews are independent by design. Drawn from the `textured` pass and conformed, so a detail's foreign lava/ice/sand wall never leaks into a field. |

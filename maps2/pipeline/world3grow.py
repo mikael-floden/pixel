@@ -1238,11 +1238,24 @@ class Grow:
             return
         votes = collections.Counter(self.g(*c) for c in d["margin"] if self.g(*c) in self.NATURAL)
         field = votes.most_common(1)[0][0]
-        self.dungeon_deck["ground"] = field
+        for dk in self.doc["decks"]:
+            if dk.get("kind") == "cave" and any((c["x"], c["y"]) in d["floor"] for c in dk["cells"]):
+                dk["ground"] = field
         stair = {c for run in d["stairs"] for c in run}
+        lid = {(c["x"], c["y"]) for dk in self.doc["decks"]
+               if dk.get("kind") == "cave" for c in dk["cells"]}
         n = 0
-        for c in d["clear"] | set(d.get("torches", ())):
-            if c not in stair and c not in d["floor"] and self.g(*c) != field:
+        # THE WHOLE BOX WEARS THE FIELD, not just the pit: the dig cuts the
+        # meadow's terrace into fragments, terrace_grounds recolours only a
+        # terrace of TERRACE_MIN cells or more, and the ground audit dissolves
+        # a speck of SPECK_MAX or fewer - so a three-cell scrap of the old
+        # grass survived in the middle of a dark-mud field and read as a
+        # painted green rectangle (measured at (214-216, 279)). Roads, ramps
+        # and the cave floor keep their own ground.
+        for c in d["margin"] | d["clear"] | set(d.get("torches", ())):
+            if c in stair or c in d["floor"] or c in lid:
+                continue
+            if self.g(*c) in self.NATURAL and self.g(*c) != field:
                 self.grd[c[1]][c[0]] = self.gi[field]
                 n += 1
         for r in self.doc["ramps"]:
@@ -1260,11 +1273,18 @@ class Grow:
         S, cells, floor = d["S"], d["cells"], d["floor"]
         moved = [(c, l, self.lvl[c[1]][c[0]]) for c, l in cells.items() if self.lvl[c[1]][c[0]] != l]
         assert not moved, ("dungeon cells changed level", moved[:8])
-        dk = self.dungeon_deck
-        assert any(x is dk for x in self.doc["decks"]), "the dungeon lid is gone"
-        assert int(dk["level"]) == S and int(dk.get("thickness", 1)) == 0, ("dungeon lid", dk["level"], dk.get("thickness"))
-        lid = {(c["x"], c["y"]) for c in dk["cells"]}
+        lids = [dk for dk in self.doc["decks"] if dk.get("kind") == "cave"
+                and any((c["x"], c["y"]) in floor for c in dk["cells"])]
+        assert lids, "the dungeon lid is gone"
+        assert all(int(dk["level"]) == S for dk in lids), ("dungeon lid level", [dk["level"] for dk in lids])
+        lid = {(c["x"], c["y"]) for dk in lids for c in dk["cells"]}
         assert floor <= lid and not (lid & set(d["door"])), "the lid does not cover the floor, or covers the door"
+        # THE CEILING IS ONE HEIGHT ABOVE THE FLOOR, chamber by chamber
+        head = {(c["x"], c["y"]): int(dk["level"]) - int(dk.get("thickness", 1)) - self.lvl[c["y"]][c["x"]]
+                for dk in lids for c in dk["cells"]}
+        assert len(set(head.values())) == 1, \
+            ("the dungeon ceiling is not one height above its floor",
+             collections.Counter(head.values()).most_common(4))
         stair = {c for run in d["stairs"] for c in run}
         odd = [(c, self.g(*c)) for c in lid
                if self.lvl[c[1]][c[0]] >= S or self.lvl[c[1]][c[0]] < S - self.DUNGEON_MIN_FIELD
@@ -1272,14 +1292,17 @@ class Grow:
         assert not odd, ("lid cells that are not cave floor", odd[:8])
         for top, foot in d["ledges"]:
             assert self.lvl[top[1]][top[0]] - self.lvl[foot[1]][foot[0]] == self.DUNGEON_LEDGE, ("ledge", top, foot)
-        decked = {(c["x"], c["y"]) for x in self.doc["decks"] if x is not dk for c in x["cells"]}
+        decked = {(c["x"], c["y"]) for x in self.doc["decks"] if x not in lids for c in x["cells"]}
         # the widened passages are lid cells inside the ring: caves() dug them
         widened = {c for c in d["margin"] if c in lid and c not in cells}
         hurt = [c for c in d["margin"] - widened
                 if self.lvl[c[1]][c[0]] != S or c in lid or c in decked
                 or self.g(*c) not in self.NATURAL + ("light_soil",)]
         assert not hurt, ("the field around the dungeon was touched", hurt[:8])
-        assert dk["ground"] == collections.Counter(
+        speck = [(c, self.g(*c)) for c in d["margin"]
+                 if self.g(*c) in self.NATURAL and self.g(*c) != lids[0]["ground"]]
+        assert not speck, ("a scrap of the old ground survived in the field", speck[:6])
+        assert lids[0]["ground"] == collections.Counter(
             self.g(*c) for c in d["margin"] if self.g(*c) in self.NATURAL).most_common(1)[0][0], "the lid is not the field"
         R = self.reach_cells
         lost = [c for c in floor | set(d["door"]) if c not in R]
@@ -1334,11 +1357,95 @@ class Grow:
                "frozen_springs/", "dragon_ribcages/", "stones/", "gravel_piles/",
                "giant_skulls/", "puffballs/")
     ROCK_MIN = 24      # the mountain's body; a cave is dug into this
+    CAVE_HEAD_MIN = 2  # a ceiling closer than this is a crawlspace, not a cave
     CAVE_DRESS_PER = 7 # one piece per this many floor cells of a room
     CAVE_GAP = 3       # cells between pieces
 
+    def _cave_ceilings(self):
+        """A CAVE'S CEILING STANDS THE SAME HEIGHT ABOVE ITS FLOOR EVERYWHERE
+        IN THAT CAVE (maintainer 2026-09-10, walking the dungeon: "When I'm
+        inside a cave - the cave looks completely different depending on what
+        parts of the cave I'm currently at!").
+
+        A lid's UNDERSIDE - `level - thickness`, the game's `deckBot` - is
+        what the player reads as the roof over their head, and one lid at the
+        field's own level over chambers dug to 6, 3 and 0 gave headroom 6, 9
+        and 12: a low room, a hall and a canyon in one dungeon. The TIGHTEST
+        chamber sets the height and every chamber of that cave matches it, so
+        a lid covering floors at several levels becomes one deck per level,
+        each carrying the thickness that puts its underside `head` above its
+        own floor. The ported mountain cave already obeyed this - five lids
+        at 24..40 whose thicknesses all put the underside at 8 - which is
+        what says the rule is the cave's own geometry and not a taste call."""
+        decks = [(i, dk) for i, dk in enumerate(self.doc["decks"]) if dk.get("kind") == "cave"]
+        if not decks:
+            return
+        parent = {i: i for i, _ in decks}
+
+        def find(i):
+            while parent[i] != i:
+                parent[i] = parent[parent[i]]
+                i = parent[i]
+            return i
+        for (x, y), i in self.cave_floor.items():
+            for m in ((x + 1, y), (x, y + 1)):
+                j = self.cave_floor.get(m)
+                if j is not None and find(i) != find(j):
+                    parent[find(i)] = find(j)
+        head = {}
+        for i, dk in decks:
+            r = find(i)
+            for c in dk["cells"]:
+                h = int(dk["level"]) - int(dk.get("thickness", 1)) - self.lvl[c["y"]][c["x"]]
+                head[r] = h if r not in head else min(head[r], h)
+        for r in head:
+            head[r] = max(self.CAVE_HEAD_MIN, head[r])
+        # rebuilt in place: cave_floor, cave_side and cave_rock_min are keyed
+        # by DECK INDEX, so a split deck hands its own side and rock line to
+        # every chamber it becomes
+        out, split, side, rock = [], 0, {}, {}
+        for i, dk in enumerate(self.doc["decks"]):
+            if dk.get("kind") != "cave":
+                out.append(dk)
+                continue
+            h = head[find(i)]
+            by = collections.defaultdict(list)
+            for c in dk["cells"]:
+                by[self.lvl[c["y"]][c["x"]]].append(c)
+            if len(by) > 1:
+                split += 1
+            for fl, cs in sorted(by.items()):
+                e = dict(dk)
+                e["cells"] = cs
+                e["thickness"] = max(0, int(dk["level"]) - (fl + h))
+                side[len(out)] = self.cave_side.get(i, "grey_stone")
+                rock[len(out)] = self.cave_rock_min.get(i, self.ROCK_MIN)
+                out.append(e)
+        self.doc["decks"] = out
+        self.cave_side, self.cave_rock_min = side, rock
+        self.cave_floor = {(c["x"], c["y"]): i for i, dk in enumerate(out)
+                           if dk.get("kind") == "cave" for c in dk["cells"]}
+        heads = {r: h for r, h in head.items()}
+        # BUILD ASSERT: every cave floor cell has its ceiling exactly `head`
+        # above it - the whole point of the pass
+        under = {}
+        for dk in self.doc["decks"]:
+            if dk.get("kind") != "cave":
+                continue
+            for c in dk["cells"]:
+                under[(c["x"], c["y"])] = int(dk["level"]) - int(dk.get("thickness", 1))
+        bad = [(c, under[c] - self.lvl[c[1]][c[0]]) for c in under
+               if under[c] - self.lvl[c[1]][c[0]] < self.CAVE_HEAD_MIN]
+        assert not bad, ("a cave ceiling sits on the floor", bad[:6])
+        self.placed += [("cave ceilings levelled: lids split by floor", split),
+                        ("cave headroom per complex", ", ".join(str(h) for _, h in sorted(heads.items())))]
+
     def _merge_lids(self):
-        """ONE LID PER CHAMBER. The ported cave arrived as several lids per
+        """ONE LID PER SLAB: same level AND same underside - two decks whose
+        thicknesses differ are two ceilings at two heights (_cave_ceilings)
+        and merging them would flatten the headroom they carry.
+
+        ONE LID PER CHAMBER. The ported cave arrived as several lids per
         chamber, split where its top ground changed, and `rooms()` publishes
         every lid as a room - so the game, which lights and fogs THE ROOM
         YOU ARE IN, switched rooms as the player crossed the seam (maintainer
@@ -1364,7 +1471,8 @@ class Grow:
             for m in ((x + 1, y), (x, y + 1)):
                 j = at.get(m)
                 if j is not None and j != i and \
-                        self.doc["decks"][i]["level"] == self.doc["decks"][j]["level"]:
+                        self.doc["decks"][i]["level"] == self.doc["decks"][j]["level"] and \
+                        self.doc["decks"][i].get("thickness") == self.doc["decks"][j].get("thickness"):
                     parent[find(i)] = find(j)
         groups = collections.defaultdict(list)
         for i in decks:
@@ -1499,6 +1607,7 @@ class Grow:
                                if (int(p["x"]), int(p["y"])) not in self.cave_floor
                                or p["piece"].startswith(self.CAVE_OK)]
         self._reindex()
+        self._cave_ceilings()
         self.placed += [("cave floor cells", len(self.cave_floor)),
                         ("cave corridors widened by", widened),
                         ("cave: stray scenery evicted", gone - len(self.doc["scenery"]))]
@@ -2869,10 +2978,8 @@ class Grow:
             for m in n4(c):
                 if grade(m, cave[c]) and self.g(*m) in self.NATURAL and m not in clear:
                     outs[cave[c]].add(m)
-        dg = getattr(self, "dungeon_deck", None)
-        if dg is not None and any(dk is dg for dk in self.doc["decks"]):
-            di = next(i for i, dk in enumerate(self.doc["decks"]) if dk is dg)
-            outs[di] |= set(getattr(self, "mouth_torches", ()))
+        if getattr(self, "mouth_torches", None):
+            outs[-1] |= set(self.mouth_torches)      # the dungeon's pit rim
         if torches:
             for i, spots in sorted(outs.items()):
                 spots = sorted(spots)
@@ -3564,17 +3671,30 @@ class Grow:
             if self.liquid(x, y):
                 cells.append({"x": x, "y": y})
         assert 6 <= len(cells) <= 120, f"pier length {len(cells)} out of taste"
-        self.doc["decks"].append({"kind": "bridge", "level": 0, "thickness": 1,
-                                  "ground": "parquet_floor", "cells": cells})
+        dk = {"kind": "bridge", "level": 0, "thickness": 1,
+              "ground": "parquet_floor", "cells": cells}
+        self.doc["decks"].append(dk)
+        # A PIER IS A SPAN, and it is drawn from the same pools as a bridge -
+        # the walk out to the light was one cell wide on two courses, the
+        # shape he ruled too small and too thick.
+        taken = {(c["x"], c["y"]) for x in self.doc["decks"] if x is not dk
+                 for c in x["cells"]}
+        self._shape_span(dk, taken)
+        deck = {(c["x"], c["y"]) for c in dk["cells"]}
         pil = self.pool("dock_pilings")
         n = 0
         for i, c in enumerate(cells):
             if i % 3 == 1:
-                side = 0.55 if (i // 3) % 2 else -0.55
+                side = 1 if (i // 3) % 2 else -1
                 horiz = i < len(cells) - abs(ly - land[1])
-                px = c["x"] + (0 if horiz else side)
-                py = c["y"] + (side if horiz else 0)
-                if self.put(pil[(i // 3) % len(pil)], px + 0.5, py + 0.5):
+                u = (0, side) if horiz else (side, 0)
+                # OFF THE FINISHED EDGE, not off the spine: the pier is
+                # widened above, so a post at a fixed half-cell would stand
+                # on its planks instead of beside them
+                m = (c["x"], c["y"])
+                while m in deck:
+                    m = (m[0] + u[0], m[1] + u[1])
+                if self.put(pil[(i // 3) % len(pil)], m[0] + 0.5, m[1] + 0.5):
                     n += 1
         self.landing = land
         self.placed += [("pier cells", len(cells)), ("dock pilings", n)]
@@ -5633,6 +5753,18 @@ class Grow:
     POCKET_MAX = 60    # a pocket this small below its whole rim is a hole
     POCKET_DROP = 2    # ... when the rim stands this many levels above it
     BRIDGE_HIGH = 14   # a bridge up here is stone; below, timber like the pier
+    # A SPAN'S SHAPE IS DRAWN, NOT DECIDED (maintainer 2026-09-10, on a
+    # two-wide, two-thick timber bridge: "I feel a 2 tile wide bridge is too
+    # small and a 2 tile thick bridge is too thick. A 3 tile wide and 1 tile
+    # thick would have been better. Again this is not a hard rule! Just a
+    # better default! If you change your script to always do what I say the
+    # entire world will look the same and that would destroy the game. So my
+    # input should nudge the rules in a direction and never create an if
+    # statement.") His shape is the WEIGHT, not the answer: two spans in
+    # three are three cells wide on one course, and the rest still surprise.
+    BRIDGE_WIDE = ((3, 6), (4, 2), (2, 1))   # cells across, weighted
+    BRIDGE_DEEP = ((0, 6), (1, 2))           # EXTRA face courses under the cap
+    BRIDGE_MIN = 2     # narrower than this is a plank, not a bridge
 
     def _components(self, ok, by_level=True):
         """4-connected components of cells for which ok(x, y) holds, of one
@@ -5780,19 +5912,129 @@ class Grow:
                     n += 1
         return n
 
+    @staticmethod
+    def _span_width(cells):
+        """How wide a span READS: for each cell the shorter of its own row
+        run and its own column run, taken at the median. A 7x2 slab measures
+        2 and a 7x3 measures 3, and a diagonal pier one cell across measures
+        1 where a bounding box would call it five."""
+        cs = set(cells)
+
+        def run(c, dx, dy):
+            n, m = 1, (c[0] + dx, c[1] + dy)
+            while m in cs:
+                n += 1
+                m = (m[0] + dx, m[1] + dy)
+            m = (c[0] - dx, c[1] - dy)
+            while m in cs:
+                n += 1
+                m = (m[0] - dx, m[1] - dy)
+            return n
+        w = sorted(min(run(c, 1, 0), run(c, 0, 1)) for c in cs)
+        return w[len(w) // 2] if w else 0
+
+    def _spannable(self, c, lv, taken):
+        """A cell a span may be widened over: the gap it crosses (a liquid,
+        or ground below the slab) or the bank it lands on (ground at the
+        slab's own level) - never ground ABOVE it, which would bury the
+        slab, and never another deck, a house or the wild."""
+        x, y = c
+        if not (0 <= x < NEW and 0 <= y < NEW) or c in taken:
+            return False
+        if c in getattr(self, "floor_cells", {}) or c in getattr(self, "wild_cells", ()):
+            return False
+        g = self.g(x, y)
+        if not g:
+            return False                      # void: nothing to span
+        return self.liquid(x, y) or self.lvl[y][x] <= lv
+
+    def _shape_span(self, dk, taken):
+        """Draw this span's width from BRIDGE_WIDE and lay it: a lane is the
+        whole deck offset one cell sideways, so a straight bridge grows a
+        parallel lane and the diagonal pier grows a parallel diagonal. Sides
+        alternate, so a span widens about its own line instead of sliding
+        off it. A lane that will not fit is not forced - the span keeps the
+        width the ground allows."""
+        cells = {(c["x"], c["y"]) for c in dk["cells"]}
+        lv = int(dk["level"])
+        anchor = min(cells)
+        r = _rng32((anchor[0] * 2654435761 ^ anchor[1] * 40503 ^ 0xB21D6E) & 0xffffffff)
+        want = self._weighted(self.BRIDGE_WIDE, r)
+        dk["thickness"] = self._weighted(self.BRIDGE_DEEP, r)
+        have = self._span_width(cells)
+        order = [(1, 0), (0, 1), (-1, 0), (0, -1)]
+        if r() < 0.5:
+            order = order[2:] + order[:2]
+        grown = 0
+        while self._span_width(cells) < want and grown < 4:
+            best = None
+            for u in order:
+                lane = {(c[0] + u[0], c[1] + u[1]) for c in cells} - cells
+                if not lane or not all(self._spannable(c, lv, taken - cells) for c in lane):
+                    continue
+                wid = self._span_width(cells | lane)
+                if wid > self._span_width(cells):
+                    best = (u, lane)
+                    break
+            if not best:
+                break
+            order = order[1:] + order[:1]     # the far side gets the next lane
+            cells |= best[1]
+            grown += 1
+        while self._span_width(cells) > max(want, self.BRIDGE_MIN):
+            peeled = None
+            for u in order:
+                lane = {c for c in cells if (c[0] + u[0], c[1] + u[1]) not in cells}
+                rest = cells - lane
+                if rest and self._span_width(rest) < self._span_width(cells) \
+                        and self._connected(rest):
+                    peeled = rest
+                    break
+            if not peeled:
+                break
+            cells = peeled
+        dk["cells"] = [{"x": c[0], "y": c[1]} for c in sorted(cells)]
+        return have, self._span_width(cells)
+
+    @staticmethod
+    def _weighted(pool, r):
+        opts = [v for v, w in pool for _ in range(w)]
+        return opts[int(r() * len(opts)) % len(opts)]
+
+    @staticmethod
+    def _connected(cells):
+        cs = set(cells)
+        seen = {next(iter(cs))}
+        st = list(seen)
+        while st:
+            x, y = st.pop()
+            for m in ((x + 1, y), (x - 1, y), (x, y + 1), (x, y - 1)):
+                if m in cs and m not in seen:
+                    seen.add(m)
+                    st.append(m)
+        return len(seen) == len(cs)
+
     def _build_bridges(self):
         """A bridge is BUILT: timber planks (parquet_floor, the pier's own
-        deck) below BRIDGE_HIGH, dressed stone above, one course of face so
-        the slab reads as a slab. Both banks take the road for two cells so
-        the bridge is walked onto from a road, not from mud on one side and
-        soil on the other."""
+        deck) below BRIDGE_HIGH, dressed stone above, and its WIDTH and its
+        THICKNESS are drawn per span from BRIDGE_WIDE / BRIDGE_DEEP - his
+        three-wide, one-course span is the weight, never the rule. Both banks
+        take the road for two cells so the bridge is walked onto from a road,
+        not from mud on one side and soil on the other."""
         n = 0
+        taken = {(c["x"], c["y"]) for dk in self.doc["decks"]
+                 if dk.get("kind") != "bridge" for c in dk["cells"]}
+        taken |= {(c["x"], c["y"]) for w in self.doc["walls"]
+                  if w.get("kind") == "house" for c in w["cells"]}
+        shaped = collections.Counter()
         for dk in self.doc["decks"]:
             if dk.get("kind") != "bridge":
                 continue
             lv = int(dk["level"])
             dk["ground"] = "grey_paving_stone" if lv >= self.BRIDGE_HIGH else "parquet_floor"
-            dk["thickness"] = max(1, int(dk.get("thickness", 1)))
+            was, now = self._shape_span(dk, taken)
+            shaped[f"{was} -> {now} wide, {dk['thickness'] + 1} course(s)"] += 1
+            taken |= {(c["x"], c["y"]) for c in dk["cells"]}
             cells = {(c["x"], c["y"]) for c in dk["cells"]}
             if lv >= self.BRIDGE_HIGH:
                 n += 1
@@ -5808,6 +6050,17 @@ class Grow:
                         if self.g(nx, ny) in self.NATURAL:
                             self.grd[ny][nx] = self.gi["light_soil"]
             n += 1
+        # BUILD ASSERT: no span is a plank, and no two spans share a cell
+        seen = set()
+        for dk in self.doc["decks"]:
+            if dk.get("kind") != "bridge":
+                continue
+            cs = {(c["x"], c["y"]) for c in dk["cells"]}
+            assert self._span_width(cs) >= self.BRIDGE_MIN, \
+                ("a span narrower than a bridge", min(cs), self._span_width(cs))
+            assert not (cs & seen), ("two spans share a cell", sorted(cs & seen)[:4])
+            seen |= cs
+        self.placed += [(f"bridge {k}", v) for k, v in sorted(shaped.items())]
         return n
 
     def regroom(self):
