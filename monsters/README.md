@@ -276,6 +276,15 @@ first/last frame can give you control!" Rules:
   0.06–0.90, drift ≤ max(12 px, 8 % of width); warn: peak ≥ 0.06, step to
   1.2, drift ≤ max(24 px, 15 %); fail below — a frozen "attack" is the
   model's usual failure and a warn is a small strike, not a broken one.
+- **Painted effects are a dice roll, so the sweep is a LOOP**: under the
+  preset wording about a third of physical strikes still get a swoosh
+  (measured: 195 first rolls → 22 fails, nearly all flash; the claw-swipe
+  fallback flashes at the same rate). Re-rolling is $0.013 a direction, so
+  `attack` is run until `--dry-run` reports nothing — the 39-set took five
+  rounds for the last four directions (Spider Queen N and Elder Treant S
+  needed nine and seven rolls). Eyeball the sheets as well: pale cyan arcs
+  and thin white rings slip under the detector; set such a direction
+  `status: fail, manual: true` and the next sweep re-rolls it.
 
 Cost: walk (6 frames) and attack (5) bill the same ≈ $0.013 per direction
 as idle; the full 39-set is ≈ 195 directions ≈ $2.5 per state, and a full

@@ -633,31 +633,31 @@
         },
         "south-east": {
           "status": "warn",
-          "step_mean": 0.243,
-          "step_max": 0.2821,
-          "drift": 8.78,
-          "loop": 0.0002,
+          "step_mean": 0.2596,
+          "step_max": 0.2862,
+          "drift": 3.38,
+          "loop": 0.0007,
           "loop_ratio": 0.0,
-          "travel": 4.23,
+          "travel": 1.4,
           "pin": 1.0,
           "pad": 0,
-          "flash": 0.073,
-          "peak": 0.4086,
+          "flash": 0.054,
+          "peak": 0.3566,
           "canvas": [
             240,
             240
           ],
           "reasons": [
-            "some bright effect pixels (0.07) — eyeball it"
+            "some bright effect pixels (0.05) — eyeball it"
           ],
-          "sub": "57351629-9e2e-4a05-9137-cba25a7cdadc",
-          "group": "bb80b7d6-2a3c-4122-8b88-092032f8ba69",
+          "sub": "1a9d1df4-1f91-49cb-82dc-f4d6498e2254",
+          "group": "a9fa37db-d355-4ab4-afd1-38324a1900ac",
           "takes": 1,
-          "version": 10,
+          "version": 11,
           "mirrored": false,
-          "action": "Claw Swipe - Raises one front paw and performs one quick swipe forward, then returns to idle stance",
-          "tries": 3,
-          "generated_at": "2026-09-09T23:48:03+00:00"
+          "action": "Fang Stab - Rears up on her back legs and stabs down once with both front legs and fangs, then returns to idle stance",
+          "tries": 1,
+          "generated_at": "2026-09-10T00:06:03+00:00"
         },
         "east": {
           "status": "pass",
@@ -737,31 +737,31 @@
         },
         "south-west": {
           "status": "warn",
-          "step_mean": 0.243,
-          "step_max": 0.2821,
-          "drift": 8.78,
-          "loop": 0.0002,
+          "step_mean": 0.2596,
+          "step_max": 0.2862,
+          "drift": 3.38,
+          "loop": 0.0007,
           "loop_ratio": 0.0,
-          "travel": 4.23,
+          "travel": 1.4,
           "pin": 1.0,
           "pad": 0,
-          "flash": 0.073,
-          "peak": 0.4086,
+          "flash": 0.054,
+          "peak": 0.3566,
           "canvas": [
             240,
             240
           ],
           "reasons": [
-            "some bright effect pixels (0.07) — eyeball it"
+            "some bright effect pixels (0.05) — eyeball it"
           ],
-          "sub": "57351629-9e2e-4a05-9137-cba25a7cdadc",
-          "group": "bb80b7d6-2a3c-4122-8b88-092032f8ba69",
+          "sub": "1a9d1df4-1f91-49cb-82dc-f4d6498e2254",
+          "group": "a9fa37db-d355-4ab4-afd1-38324a1900ac",
           "takes": 1,
-          "version": 10,
+          "version": 11,
           "mirrored": true,
-          "action": "Claw Swipe - Raises one front paw and performs one quick swipe forward, then returns to idle stance",
-          "tries": 3,
-          "generated_at": "2026-09-09T23:48:03+00:00",
+          "action": "Fang Stab - Rears up on her back legs and stabs down once with both front legs and fangs, then returns to idle stance",
+          "tries": 1,
+          "generated_at": "2026-09-10T00:06:03+00:00",
           "source": "south-east"
         },
         "west": {
