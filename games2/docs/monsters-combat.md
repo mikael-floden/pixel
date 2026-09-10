@@ -385,16 +385,36 @@ The shared body pipeline, spawn zones, shadows, gait, the monster brain, escape 
   .ml-bars/.ml-bar-row classes for new HUD chrome — verify-bars counts them
   (2 chips, 3 rows). Debug switch "aggro radius" (`ml-aggro-radius`) draws
   each monster's synced radius (red; gold provoke ring on the marked target).
-- **"DISABLE AGGRO"** (Settings, off by default, `ml-no-aggro`) — a testing
-  switch so a cave can be walked and looked at. Enforced on the SERVER per
-  SESSION (the proximity scan runs there); the client re-sends it on every
-  join. Deliberately NOT a schema field (a synced field per player for a
-  debug flag); it is a `Set<sessionId>` on the room, cleared in `onLeave`.
-  Suppresses UNPROVOKED aggro only — a sword-marked monster still comes, a
-  hit one still fights. Flipping ON also RELEASES every unprovoked chase via
-  `disengageMonster` (else you'd have to outrun what already noticed you).
-  Gate: `server/test/noaggro.test.ts` — each step on a FRESH predator (a
-  monster whose hunt just ended is `returning`, scan suppressed by design).
+- **"DISABLE AGGRO"** (Settings, first button, off by default, `ml-no-aggro`)
+  — a testing switch so a cave can be walked and looked at. Enforced on the
+  SERVER (the proximity scan runs there); the client re-sends it on every
+  join. Deliberately NOT a schema field (a synced field per player for a debug
+  flag); it is a `Set<pid>` on the room, carried in the hand-off's hot state
+  and in the edge snapshot (`ghostNoAggro`), cleared in `onLeave`.
+  **THE INVARIANT, once it is on: the only monster that may be hunting you is
+  one you are MARKING RIGHT NOW.** The mark (`player.target`, a tap) is the
+  one bypass — raising your sword IS the provocation — so everything that
+  drops a mark also calls the hunt off (`clearMark` + `releaseHunts`, and
+  `releaseHuntsNextDoor` for the neighbour rooms that hunt your ghost).
+  Flipping it ON drops your own mark and releases EVERY hunt on you, provoked
+  ones included; with the switch OFF a provoked hunt is the monster's own
+  business and dropping the mark does not end it.
+  - **THE MARK WAS THE LEAK** (2026-09-10). Both places that break off a fight
+    — a ground tap and a nudge of the analog stick — cleared the client's
+    `engagedId` and told the server NOTHING, though the comment beside each
+    claimed they disengaged explicitly; the server keeps a mark across
+    movement on purpose (the attack icon hangs over the target, approach-aggro
+    reads it). So one tap, and the tap box is 26x48 px so often an accident,
+    left that monster hunting through the switch for the rest of the session
+    and the body auto-swung at it again whenever it came to rest in range.
+    Measured on the_game's cave: the scan logged the bypass every 450 ms,
+    indefinitely. Both callers go through `dropEngage()` now.
+  Gates: `server/test/noaggro.test.ts` (an untouched predator, and a running
+  hunt released) — each step on a FRESH predator, since a monster whose hunt
+  just ended is `returning` and its scan is suppressed by design; and
+  `server/test/combat.test.ts` "only a monster you are marking may hunt you"
+  (the mark, the drop, the re-arm, and the switch-off case) on a `dbgmonster`
+  PINNED predator, which is what lets one monster be re-marked repeatedly.
 
 - **WATER IS A PLAYER SANCTUARY** (maintainer: "no monster can enter/go on
   water … the player can always use the water to escape/hide"). Every layer:

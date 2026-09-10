@@ -3739,7 +3739,7 @@ export class WorldScene extends Phaser.Scene {
         return; // no hold armed: the walk-to is driven by driveCombatIntent
       }
       // A plain ground tap breaks off any fight/fetch (RO: moving cancels).
-      this.engagedId = null;
+      this.dropEngage();
       this.pendingPickupId = null;
       this.holdPointerId = p.id;
       const down = this.pickGround(p.worldX, p.worldY);
@@ -9002,6 +9002,24 @@ export class WorldScene extends Phaser.Scene {
    * it still fights back. Turning it ON also releases whatever is already
    * chasing you unprovoked — otherwise you would have to outrun the thing that
    * noticed you first, which is exactly the situation it exists for. */
+  /** DROP THE SWORD MARK, ON BOTH SIDES.
+   *
+   *  The server keeps a mark across movement ON PURPOSE — the attack icon
+   *  hangs over the target and approach-aggro reads it — so the two places
+   *  that break off a fight cleared `engagedId` and told the server nothing.
+   *  The mark then stood until that monster died or left its room, and a mark
+   *  is the ONE thing "disable aggro" does not stop: the monster kept hunting
+   *  through the switch, and the body auto-swung at it again whenever it came
+   *  to rest in range. (Maintainer 2026-09-10: "monsters still attack me
+   *  sometimes with disable aggro enabled" — the tap that armed it can be an
+   *  accident, the tap box is 26x48 px.) Both callers go through here now,
+   *  which is what the comment beside them already claimed they did. */
+  private dropEngage() {
+    if (!this.engagedId) return;
+    this.engagedId = null;
+    this.room?.send("engage", { id: null });
+  }
+
   private toggleNoAggro(on = !this.noAggroOn) {
     this.noAggroOn = on;
     try {
@@ -12324,7 +12342,7 @@ export class WorldScene extends Phaser.Scene {
     this.keysActive = ax !== 0 || ay !== 0;
     if (this.keysActive) {
       if (this.trip) this.clearMoveTarget();
-      this.engagedId = null; // RO: moving breaks the attack / the fetch
+      this.dropEngage(); // RO: moving breaks the attack / the fetch
       this.pendingPickupId = null;
       // STEER ASSIST: an accidental run into a solid prop's corner slips
       // around it when the tiles right beside the blocked cell allow it —

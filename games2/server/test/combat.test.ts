@@ -11,7 +11,7 @@ import { Client } from "colyseus.js";
 import { existsSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
-import { ROOM_NAME, SLOW_FACTOR, PICKUP_RADIUS_WU, PLAYER_RESPAWN_MS } from "@nangijala/shared";
+import { ROOM_NAME, SLOW_FACTOR, PICKUP_RADIUS_WU, PLAYER_RESPAWN_MS, CELL_WU } from "@nangijala/shared";
 import { WorldRoom } from "../src/rooms/WorldRoom.js";
 
 // The deploy's test job checks out no world tree: skip BEFORE the server
@@ -246,6 +246,87 @@ test("a monster kills a careless player; the player respawns", async (t) => {
     assert.equal(me().hp, me().hpMax);
     assert.ok(Math.hypot(me().x - spawnX, me().y - spawnY) < 12 * 32, "respawned near the world spawn");
     await r1.leave();
+  } finally {
+    await gameServer.gracefullyShutdown(false);
+  }
+});
+
+/* "DISABLE AGGRO" MEANS IT (maintainer 2026-09-10: "monsters still attack me
+ * sometimes with disable aggro enabled").
+ *
+ * THE INVARIANT, once the switch is on: THE ONLY MONSTER THAT MAY BE HUNTING
+ * YOU IS ONE YOU ARE MARKING RIGHT NOW. The mark is the switch's one bypass —
+ * raising your sword IS the provocation — and the mark was the leak: nothing
+ * ever cleared it. Both places that break off a fight (a ground tap, a nudge
+ * of the analog stick) cleared the client's `engagedId` and told the SERVER
+ * nothing, despite the comment beside them claiming they disengaged
+ * explicitly. So one tap — and the tap box is 26x48 px, so often an accident —
+ * left that monster hunting through the switch for the rest of the session,
+ * and the body auto-swung at it again whenever it came to rest in range.
+ * Measured before the fix on the_game's cave: the aggro scan logged the
+ * bypass every 450 ms, indefinitely, with the switch on. */
+test("disable aggro: only a monster you are marking may hunt you", async (t) => {
+  if (!HAVE_WORLD) return t.skip(SKIP);
+  const port = 2998; // ports are per FILE — this one is combat.test.ts's
+  const gameServer = new Server({ transport: new WebSocketTransport({ server: createServer() }) });
+  gameServer.define(ROOM_NAME, WorldRoom);
+  await gameServer.listen(port);
+  try {
+    const c = new Client(`ws://localhost:${port}`);
+    const r: any = await c.joinOrCreate(ROOM_NAME, {
+      interestRadius: 0, name: "Pacifist", character: "default_boy",
+      world: "the_game", monsterSeed: 4242, monsterCount: 1,
+    });
+    for (const m of ["chat", "levelup", "star", "live:update", "inv", "account"]) r.onMessage(m, () => {});
+    await waitFor(() => r.state.players.size === 1 && r.state.monsters.size > 0, 8000, "join");
+
+    const cands: { id: string; m: any }[] = [];
+    r.state.monsters.forEach((mm: any, mid: string) => {
+      if (mm.aggro > 0 && mm.mstate !== "die") cands.push({ id: mid, m: mm });
+    });
+    assert.ok(cands.length > 0, "a monster with an aggro radius to test against");
+    const { id, m } = cands[0];
+    const hunting = () => m.tsid === r.sessionId;
+    const me = () => r.state.players.get(r.sessionId);
+
+    r.send("noaggro", { on: true });
+    // Pinned, so an aggro it should never take cannot become a kill either.
+    r.send("dbgmonster", { id, pin: true });
+    await new Promise((res) => setTimeout(res, 300));
+    // Well inside its radius (aggro is in world units; a cell is CELL_WU).
+    r.send("teleport", { x: m.x + CELL_WU, y: m.y });
+    await new Promise((res) => setTimeout(res, 1500));
+    assert.equal(hunting(), false, "unmarked, the switch keeps it off me");
+
+    // The one bypass: marking it is the provocation.
+    r.send("engage", { id });
+    await waitFor(hunting, 5000, "a marked monster hunts me even with the switch on");
+
+    // Re-arming the switch drops my mark and calls the hunt off.
+    r.send("noaggro", { on: true });
+    await waitFor(() => !hunting(), 5000, "re-arming the switch ends the hunt");
+
+    // ...and so does dropping the mark, which is what a ground tap and a
+    // nudge of the stick send. THIS is the one that was never sent.
+    r.send("engage", { id });
+    await waitFor(hunting, 5000, "marked again");
+    r.send("engage", { id: null });
+    await waitFor(() => !hunting(), 5000, "dropping the mark ends the hunt");
+
+    // With the switch OFF a provoked hunt is nobody's business but the
+    // monster's: dropping the mark must NOT call it off.
+    r.send("noaggro", { on: false });
+    r.send("engage", { id });
+    await waitFor(hunting, 5000, "hunting with the switch off");
+    r.send("engage", { id: null });
+    // Short on purpose: a release is synchronous on the message, while the
+    // monster's OWN give-up (it is pinned, so it never closes) would end the
+    // hunt a few seconds later and read as a pass.
+    await new Promise((res) => setTimeout(res, 600));
+    assert.equal(hunting(), true, "switch off: the fight I started is still mine");
+
+    assert.equal(me().dead, false, "a pinned monster never reached me");
+    await r.leave();
   } finally {
     await gameServer.gracefullyShutdown(false);
   }

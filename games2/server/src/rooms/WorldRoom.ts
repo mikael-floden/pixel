@@ -262,7 +262,8 @@ type CtlMessage =
   | { type: "hurt"; pid: string; dmg: number } // my monster hit the ghost: hurt the real body
   | { type: "reward"; pid: string; xp: number } // the ghost killed my monster
   | { type: "pickup"; pid: string; id: string } // a ghost player picks my drop (id)
-  | { type: "give"; pid: string; item: string }; // the pickup went through: stack it at home
+  | { type: "give"; pid: string; item: string } // the pickup went through: stack it at home
+  | { type: "noaggro"; pid: string }; // a neighbour's ghost switched "disable aggro" ON
 interface EdgeSnapshot {
   from: number;
   t: number;
@@ -735,14 +736,15 @@ export class WorldRoom extends Room<WorldState> {
       else this.noAggro.delete(pid);
       if (!on) return;
       const now = Date.now();
-      this.state.monsters.forEach((m) => {
-        if (m.targetSid !== pid || m.provoked || m.mstate === "die") return;
-        // The SAME exit every other ended chase takes — it also clears the
-        // victim's flee slow and walks the monster home if the hunt carried it
-        // off its zone. Hand-clearing targetSid here would leave strays.
-        const z = this.zones.find((zz) => zz.zone.id === m.areaId);
-        if (z) this.disengageMonster(m, z, now);
-      });
+      /* MY OWN SWORD MARK GOES WITH IT. `marked` (player.target === the
+       * monster's id) is this switch's ONE bypass, so a mark left standing
+       * keeps that monster hunting through the switch and re-takes it the
+       * moment the release below lets go. Switching the ambush off IS "I am
+       * not fighting anything". */
+      const me = this.state.players.get(pid);
+      if (me) this.clearMark(me, pid);
+      this.releaseHunts(pid, now);
+      this.releaseHuntsNextDoor(pid);
     });
 
     // Respawn: send the player back to a fresh spawn point (settings button /
@@ -791,10 +793,12 @@ export class WorldRoom extends Room<WorldState> {
       const id = typeof message?.id === "string" ? message.id : "";
       const pid = this.pidOf(client);
       if (!id) {
-        const old = player.target;
-        player.target = "";
-        const owner = old ? this.ghostOwner.get(old) : undefined;
-        if (owner !== undefined) void bus().publish(this.chan.ctl(owner), { type: "engage", pid, id: "" } satisfies CtlMessage);
+        // With the ambush switch on, dropping the mark means nothing is
+        // hunting me: a chase the mark itself started must not outlive it.
+        if (this.clearMark(player, pid) && this.noAggro.has(pid)) {
+          this.releaseHunts(pid, Date.now());
+          this.releaseHuntsNextDoor(pid);
+        }
         return;
       }
       const m = this.state.monsters.get(id);
@@ -2465,6 +2469,47 @@ export class WorldRoom extends Room<WorldState> {
     }
   }
 
+  /** DROP A PLAYER'S SWORD MARK, telling the monster's own room when the
+   *  monster is a neighbour's (the ghost of this player carries the mark
+   *  there, and that room runs the fight — spec/ZONES.md phase 5). */
+  private clearMark(player: Player, pid: string): boolean {
+    const old = player.target;
+    if (!old) return false;
+    player.target = "";
+    const owner = this.ghostOwner.get(old);
+    if (owner !== undefined) void bus().publish(this.chan.ctl(owner), { type: "engage", pid, id: "" } satisfies CtlMessage);
+    return true;
+  }
+
+  /** CALL OFF EVERY HUNT ON THIS PLAYER, among this room's own monsters.
+   *
+   *  This is what "disable aggro" means once it is on: THE ONLY MONSTER THAT
+   *  MAY BE HUNTING YOU IS ONE YOU ARE MARKING RIGHT NOW. Provoked hunts go
+   *  with the rest — the button prints "nothing will jump you" and exists to
+   *  walk a cave and look at it (maintainer 2026-08-07) — and tapping a
+   *  monster marks it again, which provokes it again. The switch removes the
+   *  ambush, never the ability to pick a fight.
+   *
+   *  disengageMonster is the SAME exit every other ended chase takes: it lifts
+   *  the victim's flee slow and walks the monster home if the hunt carried it
+   *  off its zone. Hand-clearing targetSid here would leave strays. */
+  private releaseHunts(pid: string, now: number) {
+    this.state.monsters.forEach((m) => {
+      if (m.targetSid !== pid || m.mstate === "die") return;
+      const z = this.zones.find((zz) => zz.zone.id === m.areaId);
+      if (z) this.disengageMonster(m, z, now);
+    });
+  }
+
+  /** ...and ask the NEIGHBOURS to do the same to the ghost of this player.
+   *  Their next edge snapshot carries the flag (EDGE_TICKS), but that only
+   *  stops a NEW aggro — a chase already running is ended by its own room. */
+  private releaseHuntsNextDoor(pid: string) {
+    if (this.zoneId === WHOLE_WORLD || !this.grid) return;
+    for (const n of zoneNeighbours(this.grid, this.zoneId))
+      void bus().publish(this.chan.ctl(n), { type: "noaggro", pid } satisfies CtlMessage);
+  }
+
   /** A body by stable id: a player of this room, else a neighbour's ghost. */
   private bodyOf(pid: string): Player | undefined {
     return this.state.players.get(pid) ?? this.state.ghosts.get(pid);
@@ -2906,6 +2951,15 @@ export class WorldRoom extends Room<WorldState> {
       this.respawnQueue.push({ areaId: m.areaId, at: now + MONSTER_RESPAWN_MS });
     } else if (m.type === "kick") {
       this.kickPid(m.pid);
+    } else if (m.type === "noaggro") {
+      // A neighbour's player switched "disable aggro" ON: drop the mark its
+      // ghost carries here and call off every hunt my monsters have on it.
+      const g = this.state.ghosts.get(m.pid);
+      if (g) {
+        g.target = "";
+        g.ghostNoAggro = true;
+      }
+      this.releaseHunts(m.pid, now);
     } else if (m.type === "engage") {
       const g = this.state.ghosts.get(m.pid);
       if (g) g.target = m.id && this.state.monsters.get(m.id)?.mstate !== "die" ? m.id : "";
