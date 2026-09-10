@@ -739,6 +739,11 @@
       "to": "characters",
       "text": "PER-ANIMATION VERDICTS ARE NOW APPROVE OR REDO \u2014 NO REMOVE (46911ea30, maintainer: 'The individual animations should only have a REDO. Not a remove!'). In live/feedback/characters.json the facet ids characters/<id>#<state>#<dir> can now carry status 'redo' as well as 'approved' (stamped with that clip's art hash). 'redo' = regenerate exactly that state in that direction, nothing deleted. 'rejected' can no longer be set on a facet (an old one can still be cleared) \u2014 treat facet-level 'rejected' as legacy. Removal stays a verdict on the whole character, at the plain id characters/<id>.",
       "at": "2026-09-10T19:09:40+00:00"
+    },
+    {
+      "to": "monsters",
+      "text": "WHY THE PER-ANIMATION ROW HAS NO REMOVE, in his words (2026-09-10): 'we never want a monster to not have an attack. Redo is the only option. If we can't generate the attack we need to remove the entire monster.' So a creature ships with all five states in all eight directions or it does not ship. If a state cannot be generated after redos, do not ship the creature incomplete \u2014 drop the design (and say so on the board) rather than leaving it with a missing attack. His facet verdicts stay approve/redo; removal only ever comes as a verdict on the whole creature id.",
+      "at": "2026-09-10T19:12:53+00:00"
     }
   ],
   "updated_at": "2026-07-30T20:54:20.866+00:00",
