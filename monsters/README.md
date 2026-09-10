@@ -251,8 +251,14 @@ The rules that produce a real strike:
   attacks mostly do not (loop up to 0.79). He does want the first frame
   pinned: "at least you didn't generate any buggy attack that didn't animate
   well from the idle position at the first frame".
-- **4 generated frames**, 5 stored — the shape of his own set. Six frames
-  spread a small motion thinner; four force the model to commit.
+- **The FRAME COUNT is a dial too** (maintainer: "sometimes you have to play
+  with the number of frames so the generator has enough frames to perform an
+  attack, but often more frames leads to garbage"). Measured on Cragtroll
+  east: 4 frames gave a full overhead club swing (reach 0.45), 6 frames the
+  same club barely moving (0.21). So 4 is the default and the most-tried
+  rung, and a stubborn direction walks `FRAME_LADDER` (4, 6, 4, 8, 4, 6, 4,
+  8, 6, 4) across its rolls rather than committing to one count. Frame paths
+  are read from disk, never computed from the state's default count.
 - **`reach` is the gate that catches a lean.** It is the 95th-percentile
   distance of NEW pixels from the base silhouette over the body's short
   side: a strike throws a limb or a weapon far outside the outline, a lean

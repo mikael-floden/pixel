@@ -1,1098 +1,1088 @@
 {
- "id": "rock_mite",
- "name": "Pebblemite",
- "tier": "cute",
- "scale": "small",
- "lore": "It is a pebble until it isn't. Cairns are made of them, and cairns move at night.",
- "biome": [
-  "grey_stone",
-  "black_rock"
- ],
- "items": [],
- "prompt": "Tiny fantasy stone bug, a round pebble-shaped body of grey rock with six tiny legs, two glowing orange eyes, and a crack of light along its back.",
- "size": [
-  40,
-  40
- ],
- "template_id": "bear",
- "directions": [
-  "south",
-  "south-east",
-  "east",
-  "north-east",
-  "north",
-  "north-west",
-  "west",
-  "south-west"
- ],
- "rotations": {
-  "south": "rock_mite/rotations/south.webp",
-  "south-east": "rock_mite/rotations/south-east.webp",
-  "east": "rock_mite/rotations/east.webp",
-  "north-east": "rock_mite/rotations/north-east.webp",
-  "north": "rock_mite/rotations/north.webp",
-  "north-west": "rock_mite/rotations/north-west.webp",
-  "west": "rock_mite/rotations/west.webp",
-  "south-west": "rock_mite/rotations/south-west.webp"
- },
- "sheet": "rock_mite/sheet.webp",
- "review": "approved",
- "pixellab_id": "f2dda240-a7d7-400c-9e64-64028e54e507",
- "seed": 1159079845,
- "version": 2,
- "usage": null,
- "generated_at": "2026-09-09T18:44:32+00:00",
- "elapsed_s": 150.0,
- "qa": {
-  "status": "pass",
-  "min_run1": 0.693,
-  "reasons": [],
-  "directions": {
-   "south": {
-    "run1": 0.727,
-    "bbox": [
-     4,
-     7,
-     36,
-     33
-    ],
-    "fill": 0.52,
-    "touches_edge": false
-   },
-   "south-east": {
-    "run1": 0.743,
-    "bbox": [
-     6,
-     6,
-     36,
-     34
-    ],
-    "fill": 0.525,
-    "touches_edge": false
-   },
-   "east": {
-    "run1": 0.705,
-    "bbox": [
-     5,
-     6,
-     34,
-     33
-    ],
-    "fill": 0.489,
-    "touches_edge": false
-   },
-   "north-east": {
-    "run1": 0.722,
-    "bbox": [
-     6,
-     5,
-     34,
-     33
-    ],
-    "fill": 0.49,
-    "touches_edge": false
-   },
-   "north": {
-    "run1": 0.693,
-    "bbox": [
-     6,
-     5,
-     34,
-     32
-    ],
-    "fill": 0.472,
-    "touches_edge": false
-   },
-   "north-west": {
-    "run1": 0.716,
-    "bbox": [
-     6,
-     6,
-     34,
-     33
-    ],
-    "fill": 0.472,
-    "touches_edge": false
-   },
-   "west": {
-    "run1": 0.747,
-    "bbox": [
-     6,
-     6,
-     35,
-     33
-    ],
-    "fill": 0.489,
-    "touches_edge": false
-   },
-   "south-west": {
-    "run1": 0.737,
-    "bbox": [
-     4,
-     6,
-     34,
-     34
-    ],
-    "fill": 0.525,
-    "touches_edge": false
-   }
+  "id": "rock_mite",
+  "name": "Pebblemite",
+  "tier": "cute",
+  "scale": "small",
+  "lore": "It is a pebble until it isn't. Cairns are made of them, and cairns move at night.",
+  "biome": [
+    "grey_stone",
+    "black_rock"
+  ],
+  "items": [],
+  "prompt": "Tiny fantasy stone bug, a round pebble-shaped body of grey rock with six tiny legs, two glowing orange eyes, and a crack of light along its back.",
+  "size": [
+    40,
+    40
+  ],
+  "template_id": "bear",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "rock_mite/rotations/south.webp",
+    "south-east": "rock_mite/rotations/south-east.webp",
+    "east": "rock_mite/rotations/east.webp",
+    "north-east": "rock_mite/rotations/north-east.webp",
+    "north": "rock_mite/rotations/north.webp",
+    "north-west": "rock_mite/rotations/north-west.webp",
+    "west": "rock_mite/rotations/west.webp",
+    "south-west": "rock_mite/rotations/south-west.webp"
+  },
+  "sheet": "rock_mite/sheet.webp",
+  "review": "approved",
+  "pixellab_id": "f2dda240-a7d7-400c-9e64-64028e54e507",
+  "seed": 1159079845,
+  "version": 2,
+  "usage": null,
+  "generated_at": "2026-09-09T18:44:32+00:00",
+  "elapsed_s": 150.0,
+  "qa": {
+    "status": "pass",
+    "min_run1": 0.693,
+    "reasons": [],
+    "directions": {
+      "south": {
+        "run1": 0.727,
+        "bbox": [
+          4,
+          7,
+          36,
+          33
+        ],
+        "fill": 0.52,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.743,
+        "bbox": [
+          6,
+          6,
+          36,
+          34
+        ],
+        "fill": 0.525,
+        "touches_edge": false
+      },
+      "east": {
+        "run1": 0.705,
+        "bbox": [
+          5,
+          6,
+          34,
+          33
+        ],
+        "fill": 0.489,
+        "touches_edge": false
+      },
+      "north-east": {
+        "run1": 0.722,
+        "bbox": [
+          6,
+          5,
+          34,
+          33
+        ],
+        "fill": 0.49,
+        "touches_edge": false
+      },
+      "north": {
+        "run1": 0.693,
+        "bbox": [
+          6,
+          5,
+          34,
+          32
+        ],
+        "fill": 0.472,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.716,
+        "bbox": [
+          6,
+          6,
+          34,
+          33
+        ],
+        "fill": 0.472,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.747,
+        "bbox": [
+          6,
+          6,
+          35,
+          33
+        ],
+        "fill": 0.489,
+        "touches_edge": false
+      },
+      "south-west": {
+        "run1": 0.737,
+        "bbox": [
+          4,
+          6,
+          34,
+          34
+        ],
+        "fill": 0.525,
+        "touches_edge": false
+      }
+    }
+  },
+  "approved_at": "2026-09-09T19:59:22+00:00",
+  "animations": {
+    "idle": {
+      "directions": {
+        "south": {
+          "status": "pass",
+          "step_mean": 0.0585,
+          "step_max": 0.0927,
+          "drift": 0.75,
+          "loop": 0.0,
+          "pin": 1.0,
+          "reasons": [],
+          "sub": "ea4f7f78-ecd8-4a7a-b826-740a816129d2",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "generated_at": "2026-09-09T20:18:33+00:00",
+          "cut": 0
+        },
+        "south-east": {
+          "status": "pass",
+          "step_mean": 0.0899,
+          "step_max": 0.1215,
+          "drift": 0.77,
+          "loop": 0.0,
+          "pin": 1.0,
+          "reasons": [],
+          "sub": "8cc094fe-9205-4077-bf78-b07a9f170f1c",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "generated_at": "2026-09-09T20:18:34+00:00",
+          "cut": 0
+        },
+        "east": {
+          "status": "pass",
+          "step_mean": 0.0769,
+          "step_max": 0.1174,
+          "drift": 0.95,
+          "loop": 0.0,
+          "pin": 1.0,
+          "reasons": [],
+          "sub": "fd5a25b8-caa5-4dff-b3b4-0be9a8315913",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "generated_at": "2026-09-09T20:18:34+00:00",
+          "cut": 0
+        },
+        "north-east": {
+          "status": "pass",
+          "step_mean": 0.0934,
+          "step_max": 0.1815,
+          "drift": 1.78,
+          "loop": 0.0,
+          "pin": 1.0,
+          "reasons": [],
+          "sub": "13d553f6-73ce-4249-91e0-cb1dd314bd2e",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "generated_at": "2026-09-09T20:18:35+00:00",
+          "cut": 0
+        },
+        "north": {
+          "status": "pass",
+          "step_mean": 0.101,
+          "step_max": 0.1313,
+          "drift": 1.14,
+          "loop": 0.0,
+          "pin": 1.0,
+          "reasons": [],
+          "sub": "bf19d798-933a-4d76-af82-6756038826cb",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "generated_at": "2026-09-09T20:18:35+00:00",
+          "cut": 0
+        },
+        "south-west": {
+          "status": "pass",
+          "step_mean": 0.0899,
+          "step_max": 0.1215,
+          "drift": 0.77,
+          "loop": 0.0,
+          "pin": 1.0,
+          "reasons": [],
+          "sub": "8cc094fe-9205-4077-bf78-b07a9f170f1c",
+          "takes": 1,
+          "version": 1,
+          "mirrored": true,
+          "generated_at": "2026-09-09T20:18:34+00:00",
+          "cut": 0,
+          "source": "south-east"
+        },
+        "north-west": {
+          "status": "pass",
+          "step_mean": 0.0934,
+          "step_max": 0.1815,
+          "drift": 1.78,
+          "loop": 0.0,
+          "pin": 1.0,
+          "reasons": [],
+          "sub": "13d553f6-73ce-4249-91e0-cb1dd314bd2e",
+          "takes": 1,
+          "version": 1,
+          "mirrored": true,
+          "generated_at": "2026-09-09T20:18:35+00:00",
+          "cut": 0,
+          "source": "north-east"
+        },
+        "west": {
+          "status": "pass",
+          "step_mean": 0.0769,
+          "step_max": 0.1174,
+          "drift": 0.95,
+          "loop": 0.0,
+          "pin": 1.0,
+          "reasons": [],
+          "sub": "fd5a25b8-caa5-4dff-b3b4-0be9a8315913",
+          "takes": 1,
+          "version": 1,
+          "mirrored": true,
+          "generated_at": "2026-09-09T20:18:34+00:00",
+          "cut": 0,
+          "source": "east"
+        }
+      },
+      "action": "Calm still idle, breathing very slowly and subtly, chest and shoulders rise and fall a little, feet planted, no other movement, ends in the same neutral pose it started in",
+      "frame_paths": {
+        "south": [
+          "rock_mite/animations/idle/south/00.webp",
+          "rock_mite/animations/idle/south/01.webp",
+          "rock_mite/animations/idle/south/02.webp",
+          "rock_mite/animations/idle/south/03.webp",
+          "rock_mite/animations/idle/south/04.webp"
+        ],
+        "south-east": [
+          "rock_mite/animations/idle/south-east/00.webp",
+          "rock_mite/animations/idle/south-east/01.webp",
+          "rock_mite/animations/idle/south-east/02.webp",
+          "rock_mite/animations/idle/south-east/03.webp",
+          "rock_mite/animations/idle/south-east/04.webp"
+        ],
+        "east": [
+          "rock_mite/animations/idle/east/00.webp",
+          "rock_mite/animations/idle/east/01.webp",
+          "rock_mite/animations/idle/east/02.webp",
+          "rock_mite/animations/idle/east/03.webp",
+          "rock_mite/animations/idle/east/04.webp"
+        ],
+        "north-east": [
+          "rock_mite/animations/idle/north-east/00.webp",
+          "rock_mite/animations/idle/north-east/01.webp",
+          "rock_mite/animations/idle/north-east/02.webp",
+          "rock_mite/animations/idle/north-east/03.webp",
+          "rock_mite/animations/idle/north-east/04.webp"
+        ],
+        "north": [
+          "rock_mite/animations/idle/north/00.webp",
+          "rock_mite/animations/idle/north/01.webp",
+          "rock_mite/animations/idle/north/02.webp",
+          "rock_mite/animations/idle/north/03.webp",
+          "rock_mite/animations/idle/north/04.webp"
+        ],
+        "south-west": [
+          "rock_mite/animations/idle/south-west/00.webp",
+          "rock_mite/animations/idle/south-west/01.webp",
+          "rock_mite/animations/idle/south-west/02.webp",
+          "rock_mite/animations/idle/south-west/03.webp",
+          "rock_mite/animations/idle/south-west/04.webp"
+        ],
+        "north-west": [
+          "rock_mite/animations/idle/north-west/00.webp",
+          "rock_mite/animations/idle/north-west/01.webp",
+          "rock_mite/animations/idle/north-west/02.webp",
+          "rock_mite/animations/idle/north-west/03.webp",
+          "rock_mite/animations/idle/north-west/04.webp"
+        ],
+        "west": [
+          "rock_mite/animations/idle/west/00.webp",
+          "rock_mite/animations/idle/west/01.webp",
+          "rock_mite/animations/idle/west/02.webp",
+          "rock_mite/animations/idle/west/03.webp",
+          "rock_mite/animations/idle/west/04.webp"
+        ]
+      },
+      "strips": {
+        "south": "rock_mite/animations/idle__south.webp",
+        "south-east": "rock_mite/animations/idle__south-east.webp",
+        "east": "rock_mite/animations/idle__east.webp",
+        "north-east": "rock_mite/animations/idle__north-east.webp",
+        "north": "rock_mite/animations/idle__north.webp",
+        "south-west": "rock_mite/animations/idle__south-west.webp",
+        "north-west": "rock_mite/animations/idle__north-west.webp",
+        "west": "rock_mite/animations/idle__west.webp"
+      }
+    },
+    "walk": {
+      "directions": {
+        "south": {
+          "status": "pass",
+          "step_mean": 0.0768,
+          "step_max": 0.1084,
+          "drift": 1.04,
+          "loop": 0.0427,
+          "loop_ratio": 0.56,
+          "travel": 0.06,
+          "pin": 0.955,
+          "pad": 0,
+          "canvas": [
+            40,
+            40
+          ],
+          "reasons": [],
+          "sub": "3690fe58-f3d3-43e5-9cdf-9db94a9f007a",
+          "group": "465e05b3-6c55-4804-bb5c-1d50255e942d",
+          "takes": 1,
+          "version": 2,
+          "mirrored": false,
+          "generated_at": "2026-09-09T21:25:57+00:00"
+        },
+        "south-east": {
+          "status": "pass",
+          "step_mean": 0.1119,
+          "step_max": 0.1386,
+          "drift": 1.11,
+          "loop": 0.0413,
+          "loop_ratio": 0.37,
+          "travel": 0.54,
+          "pin": 0.879,
+          "pad": 0,
+          "canvas": [
+            40,
+            40
+          ],
+          "reasons": [],
+          "sub": "f0cee1ed-047f-4451-a65e-339bb0862e11",
+          "group": "cccfca65-ced5-43a0-b2f5-22f867b43ad6",
+          "takes": 1,
+          "version": 2,
+          "mirrored": false,
+          "generated_at": "2026-09-09T21:25:58+00:00"
+        },
+        "east": {
+          "status": "pass",
+          "step_mean": 0.0819,
+          "step_max": 0.1076,
+          "drift": 0.81,
+          "loop": 0.1181,
+          "loop_ratio": 1.44,
+          "travel": 0.26,
+          "pin": 0.956,
+          "pad": 0,
+          "canvas": [
+            40,
+            40
+          ],
+          "reasons": [],
+          "sub": "4af6a586-96f5-40da-8e61-88e3b72aa8cf",
+          "group": "d3281fd4-1341-49e7-88d8-b388cbf93380",
+          "takes": 1,
+          "version": 2,
+          "mirrored": false,
+          "generated_at": "2026-09-09T21:25:58+00:00"
+        },
+        "north-east": {
+          "status": "pass",
+          "step_mean": 0.1097,
+          "step_max": 0.1195,
+          "drift": 1.39,
+          "loop": 0.1054,
+          "loop_ratio": 0.96,
+          "travel": 0.21,
+          "pin": 0.875,
+          "pad": 0,
+          "canvas": [
+            40,
+            40
+          ],
+          "reasons": [],
+          "sub": "6aba1ec2-04a5-409a-95ec-70db1c485f6b",
+          "group": "6c7dcb4c-4809-4d23-bc08-8fd05b4e216a",
+          "takes": 1,
+          "version": 2,
+          "mirrored": false,
+          "generated_at": "2026-09-09T21:25:59+00:00"
+        },
+        "north": {
+          "status": "pass",
+          "step_mean": 0.0746,
+          "step_max": 0.1237,
+          "drift": 0.7,
+          "loop": 0.0508,
+          "loop_ratio": 0.68,
+          "travel": 0.23,
+          "pin": 0.902,
+          "pad": 0,
+          "canvas": [
+            40,
+            40
+          ],
+          "reasons": [],
+          "sub": "faf72cad-cc1c-4f9a-9d16-be2d12553e37",
+          "group": "40fca662-1110-4d36-91f9-a93d66f8e594",
+          "takes": 1,
+          "version": 2,
+          "mirrored": false,
+          "generated_at": "2026-09-09T21:25:59+00:00"
+        },
+        "south-west": {
+          "status": "pass",
+          "step_mean": 0.1119,
+          "step_max": 0.1386,
+          "drift": 1.11,
+          "loop": 0.0413,
+          "loop_ratio": 0.37,
+          "travel": 0.54,
+          "pin": 0.879,
+          "pad": 0,
+          "canvas": [
+            40,
+            40
+          ],
+          "reasons": [],
+          "sub": "f0cee1ed-047f-4451-a65e-339bb0862e11",
+          "group": "cccfca65-ced5-43a0-b2f5-22f867b43ad6",
+          "takes": 1,
+          "version": 2,
+          "mirrored": true,
+          "generated_at": "2026-09-09T21:25:58+00:00",
+          "source": "south-east"
+        },
+        "west": {
+          "status": "pass",
+          "step_mean": 0.0819,
+          "step_max": 0.1076,
+          "drift": 0.81,
+          "loop": 0.1181,
+          "loop_ratio": 1.44,
+          "travel": 0.26,
+          "pin": 0.956,
+          "pad": 0,
+          "canvas": [
+            40,
+            40
+          ],
+          "reasons": [],
+          "sub": "4af6a586-96f5-40da-8e61-88e3b72aa8cf",
+          "group": "d3281fd4-1341-49e7-88d8-b388cbf93380",
+          "takes": 1,
+          "version": 2,
+          "mirrored": true,
+          "generated_at": "2026-09-09T21:25:58+00:00",
+          "source": "east"
+        },
+        "north-west": {
+          "status": "pass",
+          "step_mean": 0.1097,
+          "step_max": 0.1195,
+          "drift": 1.39,
+          "loop": 0.1054,
+          "loop_ratio": 0.96,
+          "travel": 0.21,
+          "pin": 0.875,
+          "pad": 0,
+          "canvas": [
+            40,
+            40
+          ],
+          "reasons": [],
+          "sub": "6aba1ec2-04a5-409a-95ec-70db1c485f6b",
+          "group": "6c7dcb4c-4809-4d23-bc08-8fd05b4e216a",
+          "takes": 1,
+          "version": 2,
+          "mirrored": true,
+          "generated_at": "2026-09-09T21:25:59+00:00",
+          "source": "north-east"
+        }
+      },
+      "action": "scuttles forward in place on its tiny legs, legs alternating quickly, body steady, seamless loop, no turning",
+      "frame_paths": {
+        "south": [
+          "rock_mite/animations/walk/south/00.webp",
+          "rock_mite/animations/walk/south/01.webp",
+          "rock_mite/animations/walk/south/02.webp",
+          "rock_mite/animations/walk/south/03.webp",
+          "rock_mite/animations/walk/south/04.webp",
+          "rock_mite/animations/walk/south/05.webp"
+        ],
+        "south-east": [
+          "rock_mite/animations/walk/south-east/00.webp",
+          "rock_mite/animations/walk/south-east/01.webp",
+          "rock_mite/animations/walk/south-east/02.webp",
+          "rock_mite/animations/walk/south-east/03.webp",
+          "rock_mite/animations/walk/south-east/04.webp",
+          "rock_mite/animations/walk/south-east/05.webp"
+        ],
+        "east": [
+          "rock_mite/animations/walk/east/00.webp",
+          "rock_mite/animations/walk/east/01.webp",
+          "rock_mite/animations/walk/east/02.webp",
+          "rock_mite/animations/walk/east/03.webp",
+          "rock_mite/animations/walk/east/04.webp",
+          "rock_mite/animations/walk/east/05.webp"
+        ],
+        "north-east": [
+          "rock_mite/animations/walk/north-east/00.webp",
+          "rock_mite/animations/walk/north-east/01.webp",
+          "rock_mite/animations/walk/north-east/02.webp",
+          "rock_mite/animations/walk/north-east/03.webp",
+          "rock_mite/animations/walk/north-east/04.webp",
+          "rock_mite/animations/walk/north-east/05.webp"
+        ],
+        "north": [
+          "rock_mite/animations/walk/north/00.webp",
+          "rock_mite/animations/walk/north/01.webp",
+          "rock_mite/animations/walk/north/02.webp",
+          "rock_mite/animations/walk/north/03.webp",
+          "rock_mite/animations/walk/north/04.webp",
+          "rock_mite/animations/walk/north/05.webp"
+        ],
+        "south-west": [
+          "rock_mite/animations/walk/south-west/00.webp",
+          "rock_mite/animations/walk/south-west/01.webp",
+          "rock_mite/animations/walk/south-west/02.webp",
+          "rock_mite/animations/walk/south-west/03.webp",
+          "rock_mite/animations/walk/south-west/04.webp",
+          "rock_mite/animations/walk/south-west/05.webp"
+        ],
+        "west": [
+          "rock_mite/animations/walk/west/00.webp",
+          "rock_mite/animations/walk/west/01.webp",
+          "rock_mite/animations/walk/west/02.webp",
+          "rock_mite/animations/walk/west/03.webp",
+          "rock_mite/animations/walk/west/04.webp",
+          "rock_mite/animations/walk/west/05.webp"
+        ],
+        "north-west": [
+          "rock_mite/animations/walk/north-west/00.webp",
+          "rock_mite/animations/walk/north-west/01.webp",
+          "rock_mite/animations/walk/north-west/02.webp",
+          "rock_mite/animations/walk/north-west/03.webp",
+          "rock_mite/animations/walk/north-west/04.webp",
+          "rock_mite/animations/walk/north-west/05.webp"
+        ]
+      },
+      "strips": {
+        "south": "rock_mite/animations/walk__south.webp",
+        "south-east": "rock_mite/animations/walk__south-east.webp",
+        "east": "rock_mite/animations/walk__east.webp",
+        "north-east": "rock_mite/animations/walk__north-east.webp",
+        "north": "rock_mite/animations/walk__north.webp",
+        "south-west": "rock_mite/animations/walk__south-west.webp",
+        "west": "rock_mite/animations/walk__west.webp",
+        "north-west": "rock_mite/animations/walk__north-west.webp"
+      }
+    },
+    "attack": {
+      "directions": {
+        "south": {
+          "status": "fail",
+          "step_mean": 0.1114,
+          "step_max": 0.1837,
+          "drift": 0.97,
+          "loop": 0.0,
+          "loop_ratio": 0.0,
+          "travel": 0.02,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": 0.003,
+          "peak": 0.2098,
+          "reach": 0.077,
+          "canvas": [
+            40,
+            40
+          ],
+          "reasons": [
+            "no strike, just a lean: nothing reaches past 0.08 of the body"
+          ],
+          "sub": "8a66d488-fa3f-40b5-9bd6-29c461122059",
+          "group": "117a7a9a-0c38-4ade-8d44-e87ff5bacdea",
+          "takes": 1,
+          "version": 2,
+          "mirrored": false,
+          "generated_at": "2026-09-09T22:36:31+00:00",
+          "action": "Headbutt - Pulls back slightly, then quickly rams forward once with its stone body, then returns to idle stance"
+        },
+        "south-east": {
+          "status": "fail",
+          "step_mean": 0.1163,
+          "step_max": 0.1246,
+          "drift": 2.2,
+          "loop": 0.0,
+          "loop_ratio": 0.0,
+          "travel": 2.2,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": 0.037,
+          "peak": 0.2243,
+          "reach": 0.107,
+          "canvas": [
+            40,
+            40
+          ],
+          "reasons": [
+            "no strike, just a lean: nothing reaches past 0.11 of the body"
+          ],
+          "sub": "24ddad57-19f9-4272-a00b-32df3b366a68",
+          "group": "a4174d37-9088-4445-87a4-db4043bb7829",
+          "takes": 1,
+          "version": 2,
+          "mirrored": false,
+          "generated_at": "2026-09-09T22:36:31+00:00",
+          "action": "Headbutt - Pulls back slightly, then quickly rams forward once with its stone body, then returns to idle stance"
+        },
+        "east": {
+          "status": "fail",
+          "step_mean": 0.1134,
+          "step_max": 0.1598,
+          "drift": 0.94,
+          "loop": 0.0,
+          "loop_ratio": 0.0,
+          "travel": 0.81,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": 0.0,
+          "peak": 0.1598,
+          "reach": 0.111,
+          "canvas": [
+            40,
+            40
+          ],
+          "reasons": [
+            "no strike, just a lean: nothing reaches past 0.11 of the body"
+          ],
+          "sub": "9603b1ec-b4f2-423b-b049-267dbaf3e67f",
+          "group": "450975d0-6381-4174-a11c-79e68b268334",
+          "takes": 1,
+          "version": 2,
+          "mirrored": false,
+          "generated_at": "2026-09-09T22:36:32+00:00",
+          "action": "Headbutt - Pulls back slightly, then quickly rams forward once with its stone body, then returns to idle stance"
+        },
+        "north-east": {
+          "status": "fail",
+          "step_mean": 0.1248,
+          "step_max": 0.1431,
+          "drift": 1.68,
+          "loop": 0.0,
+          "loop_ratio": 0.0,
+          "travel": 0.09,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": 0.002,
+          "peak": 0.2182,
+          "reach": 0.143,
+          "canvas": [
+            40,
+            40
+          ],
+          "reasons": [
+            "no strike, just a lean: nothing reaches past 0.14 of the body"
+          ],
+          "sub": "43dcc8c7-b3c0-450a-bce8-3c222e2ca99f",
+          "group": "cbfebf49-2c10-4da8-9652-13299a5f679b",
+          "takes": 1,
+          "version": 2,
+          "mirrored": false,
+          "generated_at": "2026-09-09T22:36:32+00:00",
+          "action": "Headbutt - Pulls back slightly, then quickly rams forward once with its stone body, then returns to idle stance"
+        },
+        "north": {
+          "status": "fail",
+          "step_mean": 0.1045,
+          "step_max": 0.1237,
+          "drift": 1.89,
+          "loop": 0.0,
+          "loop_ratio": 0.0,
+          "travel": 0.06,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": 0.0,
+          "peak": 0.1973,
+          "reach": 0.111,
+          "canvas": [
+            40,
+            40
+          ],
+          "reasons": [
+            "no strike, just a lean: nothing reaches past 0.11 of the body"
+          ],
+          "sub": "97a3f4df-e29e-4846-9727-da227bb2763a",
+          "group": "408a7e3c-4f5c-43d9-a748-3a1c7e1c66f8",
+          "takes": 1,
+          "version": 2,
+          "mirrored": false,
+          "generated_at": "2026-09-09T22:36:33+00:00",
+          "action": "Headbutt - Pulls back slightly, then quickly rams forward once with its stone body, then returns to idle stance"
+        },
+        "south-west": {
+          "status": "pass",
+          "step_mean": 0.1163,
+          "step_max": 0.1246,
+          "drift": 2.2,
+          "loop": 0.0,
+          "loop_ratio": 0.0,
+          "travel": 2.2,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": 0.037,
+          "peak": 0.2243,
+          "canvas": [
+            40,
+            40
+          ],
+          "reasons": [],
+          "sub": "24ddad57-19f9-4272-a00b-32df3b366a68",
+          "group": "a4174d37-9088-4445-87a4-db4043bb7829",
+          "takes": 1,
+          "version": 2,
+          "mirrored": true,
+          "generated_at": "2026-09-09T22:36:31+00:00",
+          "action": "Headbutt - Pulls back slightly, then quickly rams forward once with its stone body, then returns to idle stance",
+          "source": "south-east"
+        },
+        "west": {
+          "status": "pass",
+          "step_mean": 0.1134,
+          "step_max": 0.1598,
+          "drift": 0.94,
+          "loop": 0.0,
+          "loop_ratio": 0.0,
+          "travel": 0.81,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": 0.0,
+          "peak": 0.1598,
+          "canvas": [
+            40,
+            40
+          ],
+          "reasons": [],
+          "sub": "9603b1ec-b4f2-423b-b049-267dbaf3e67f",
+          "group": "450975d0-6381-4174-a11c-79e68b268334",
+          "takes": 1,
+          "version": 2,
+          "mirrored": true,
+          "generated_at": "2026-09-09T22:36:32+00:00",
+          "action": "Headbutt - Pulls back slightly, then quickly rams forward once with its stone body, then returns to idle stance",
+          "source": "east"
+        },
+        "north-west": {
+          "status": "pass",
+          "step_mean": 0.1248,
+          "step_max": 0.1431,
+          "drift": 1.68,
+          "loop": 0.0,
+          "loop_ratio": 0.0,
+          "travel": 0.09,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": 0.002,
+          "peak": 0.2182,
+          "canvas": [
+            40,
+            40
+          ],
+          "reasons": [],
+          "sub": "43dcc8c7-b3c0-450a-bce8-3c222e2ca99f",
+          "group": "cbfebf49-2c10-4da8-9652-13299a5f679b",
+          "takes": 1,
+          "version": 2,
+          "mirrored": true,
+          "generated_at": "2026-09-09T22:36:32+00:00",
+          "action": "Headbutt - Pulls back slightly, then quickly rams forward once with its stone body, then returns to idle stance",
+          "source": "north-east"
+        }
+      },
+      "action": "Headbutt - Pulls back slightly, then quickly rams forward once with its stone body, then returns to idle stance",
+      "frame_paths": {
+        "south": [
+          "rock_mite/animations/attack/south/00.webp",
+          "rock_mite/animations/attack/south/01.webp",
+          "rock_mite/animations/attack/south/02.webp",
+          "rock_mite/animations/attack/south/03.webp",
+          "rock_mite/animations/attack/south/04.webp"
+        ],
+        "south-east": [
+          "rock_mite/animations/attack/south-east/00.webp",
+          "rock_mite/animations/attack/south-east/01.webp",
+          "rock_mite/animations/attack/south-east/02.webp",
+          "rock_mite/animations/attack/south-east/03.webp",
+          "rock_mite/animations/attack/south-east/04.webp"
+        ],
+        "east": [
+          "rock_mite/animations/attack/east/00.webp",
+          "rock_mite/animations/attack/east/01.webp",
+          "rock_mite/animations/attack/east/02.webp",
+          "rock_mite/animations/attack/east/03.webp",
+          "rock_mite/animations/attack/east/04.webp"
+        ],
+        "north-east": [
+          "rock_mite/animations/attack/north-east/00.webp",
+          "rock_mite/animations/attack/north-east/01.webp",
+          "rock_mite/animations/attack/north-east/02.webp",
+          "rock_mite/animations/attack/north-east/03.webp",
+          "rock_mite/animations/attack/north-east/04.webp"
+        ],
+        "north": [
+          "rock_mite/animations/attack/north/00.webp",
+          "rock_mite/animations/attack/north/01.webp",
+          "rock_mite/animations/attack/north/02.webp",
+          "rock_mite/animations/attack/north/03.webp",
+          "rock_mite/animations/attack/north/04.webp"
+        ],
+        "south-west": [
+          "rock_mite/animations/attack/south-west/00.webp",
+          "rock_mite/animations/attack/south-west/01.webp",
+          "rock_mite/animations/attack/south-west/02.webp",
+          "rock_mite/animations/attack/south-west/03.webp",
+          "rock_mite/animations/attack/south-west/04.webp"
+        ],
+        "west": [
+          "rock_mite/animations/attack/west/00.webp",
+          "rock_mite/animations/attack/west/01.webp",
+          "rock_mite/animations/attack/west/02.webp",
+          "rock_mite/animations/attack/west/03.webp",
+          "rock_mite/animations/attack/west/04.webp"
+        ],
+        "north-west": [
+          "rock_mite/animations/attack/north-west/00.webp",
+          "rock_mite/animations/attack/north-west/01.webp",
+          "rock_mite/animations/attack/north-west/02.webp",
+          "rock_mite/animations/attack/north-west/03.webp",
+          "rock_mite/animations/attack/north-west/04.webp"
+        ]
+      },
+      "strips": {
+        "south": "rock_mite/animations/attack__south.webp",
+        "south-east": "rock_mite/animations/attack__south-east.webp",
+        "east": "rock_mite/animations/attack__east.webp",
+        "north-east": "rock_mite/animations/attack__north-east.webp",
+        "north": "rock_mite/animations/attack__north.webp",
+        "south-west": "rock_mite/animations/attack__south-west.webp",
+        "west": "rock_mite/animations/attack__west.webp",
+        "north-west": "rock_mite/animations/attack__north-west.webp"
+      }
+    },
+    "attack_try": {
+      "directions": {
+        "south": {
+          "status": "fail",
+          "step_mean": 0.085,
+          "step_max": 0.1089,
+          "drift": 0.69,
+          "loop": 0.0569,
+          "loop_ratio": 0.67,
+          "travel": 0.04,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": -0.002,
+          "peak": 0.1577,
+          "reach": 0.077,
+          "canvas": [
+            40,
+            40
+          ],
+          "reasons": [
+            "no strike, just a lean: nothing reaches past 0.08 of the body"
+          ],
+          "sub": "114acfa0-121d-4eb9-b6f2-c344672f864e",
+          "group": "16f86fbc-044e-4d88-a0e4-2b0052385435",
+          "takes": 1,
+          "version": 2,
+          "mirrored": false,
+          "generated_at": "2026-09-10T20:28:02+00:00",
+          "action": "Headbutt - Rocks back, then rams forward hard with its stone body, a big aggressive swing",
+          "tries": 1
+        },
+        "south-east": {
+          "status": "fail",
+          "step_mean": 0.108,
+          "step_max": 0.144,
+          "drift": 0.85,
+          "loop": 0.089,
+          "loop_ratio": 0.82,
+          "travel": 1.04,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": 0.002,
+          "peak": 0.144,
+          "reach": 0.093,
+          "canvas": [
+            40,
+            40
+          ],
+          "reasons": [
+            "weak strike: peak 0.144 — eyeball it",
+            "no strike, just a lean: nothing reaches past 0.09 of the body"
+          ],
+          "sub": "3f20c867-8383-4a1a-a980-32cf99f34972",
+          "group": "81e0b728-0315-48f5-8397-49c425f31002",
+          "takes": 1,
+          "version": 2,
+          "mirrored": false,
+          "generated_at": "2026-09-10T20:28:02+00:00",
+          "action": "Headbutt - Rocks back, then rams forward hard with its stone body, a big aggressive swing",
+          "tries": 1
+        },
+        "east": {
+          "status": "fail",
+          "step_mean": 0.0962,
+          "step_max": 0.1177,
+          "drift": 1.46,
+          "loop": 0.2056,
+          "loop_ratio": 2.14,
+          "travel": 1.65,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": 0.002,
+          "peak": 0.2056,
+          "reach": 0.111,
+          "canvas": [
+            40,
+            40
+          ],
+          "reasons": [
+            "no strike, just a lean: nothing reaches past 0.11 of the body"
+          ],
+          "sub": "19682938-766b-4910-a724-52e14591be90",
+          "group": "ed1de429-4cd9-4d36-a589-6b5b1fd7cb72",
+          "takes": 1,
+          "version": 2,
+          "mirrored": false,
+          "generated_at": "2026-09-10T20:28:03+00:00",
+          "action": "Headbutt - Rocks back, then rams forward hard with its stone body, a big aggressive swing",
+          "tries": 1
+        },
+        "north-east": {
+          "status": "fail",
+          "step_mean": 0.0746,
+          "step_max": 0.1047,
+          "drift": 2.13,
+          "loop": 0.2461,
+          "loop_ratio": 3.3,
+          "travel": 0.18,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": 0.002,
+          "peak": 0.2461,
+          "reach": 0.107,
+          "canvas": [
+            40,
+            40
+          ],
+          "reasons": [
+            "motion 0.075 outside the calm band 0.08–0.9 — eyeball it",
+            "no strike, just a lean: nothing reaches past 0.11 of the body"
+          ],
+          "sub": "128cd272-c4b7-4d79-8f7b-fde64fc14b8d",
+          "group": "bf5fec54-4d5d-4359-bad7-d798c62a3f52",
+          "takes": 1,
+          "version": 2,
+          "mirrored": false,
+          "generated_at": "2026-09-10T20:28:03+00:00",
+          "action": "Headbutt - Rocks back, then rams forward hard with its stone body, a big aggressive swing",
+          "tries": 1
+        },
+        "north": {
+          "status": "fail",
+          "step_mean": 0.0842,
+          "step_max": 0.1145,
+          "drift": 1.72,
+          "loop": 0.1111,
+          "loop_ratio": 1.32,
+          "travel": 0.89,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": 0.0,
+          "peak": 0.165,
+          "reach": 0.111,
+          "canvas": [
+            40,
+            40
+          ],
+          "reasons": [
+            "no strike, just a lean: nothing reaches past 0.11 of the body"
+          ],
+          "sub": "db96b2ac-54a8-46cb-ad3a-3c54abf6f1cc",
+          "group": "9dee655c-2019-44e8-848f-463595770ba8",
+          "takes": 1,
+          "version": 2,
+          "mirrored": false,
+          "generated_at": "2026-09-10T20:28:03+00:00",
+          "action": "Headbutt - Rocks back, then rams forward hard with its stone body, a big aggressive swing",
+          "tries": 1
+        }
+      },
+      "action": "Headbutt - Rocks back, then rams forward hard with its stone body, a big aggressive swing",
+      "frame_paths": {
+        "south": [
+          "rock_mite/animations/attack_try/south/00.webp",
+          "rock_mite/animations/attack_try/south/01.webp",
+          "rock_mite/animations/attack_try/south/02.webp",
+          "rock_mite/animations/attack_try/south/03.webp",
+          "rock_mite/animations/attack_try/south/04.webp"
+        ],
+        "south-east": [
+          "rock_mite/animations/attack_try/south-east/00.webp",
+          "rock_mite/animations/attack_try/south-east/01.webp",
+          "rock_mite/animations/attack_try/south-east/02.webp",
+          "rock_mite/animations/attack_try/south-east/03.webp",
+          "rock_mite/animations/attack_try/south-east/04.webp"
+        ],
+        "east": [
+          "rock_mite/animations/attack_try/east/00.webp",
+          "rock_mite/animations/attack_try/east/01.webp",
+          "rock_mite/animations/attack_try/east/02.webp",
+          "rock_mite/animations/attack_try/east/03.webp",
+          "rock_mite/animations/attack_try/east/04.webp"
+        ],
+        "north-east": [
+          "rock_mite/animations/attack_try/north-east/00.webp",
+          "rock_mite/animations/attack_try/north-east/01.webp",
+          "rock_mite/animations/attack_try/north-east/02.webp",
+          "rock_mite/animations/attack_try/north-east/03.webp",
+          "rock_mite/animations/attack_try/north-east/04.webp"
+        ],
+        "north": [
+          "rock_mite/animations/attack_try/north/00.webp",
+          "rock_mite/animations/attack_try/north/01.webp",
+          "rock_mite/animations/attack_try/north/02.webp",
+          "rock_mite/animations/attack_try/north/03.webp",
+          "rock_mite/animations/attack_try/north/04.webp"
+        ]
+      },
+      "strips": {
+        "south": "rock_mite/animations/attack_try__south.webp",
+        "south-east": "rock_mite/animations/attack_try__south-east.webp",
+        "east": "rock_mite/animations/attack_try__east.webp",
+        "north-east": "rock_mite/animations/attack_try__north-east.webp",
+        "north": "rock_mite/animations/attack_try__north.webp"
+      },
+      "intensity": 1
+    }
   }
- },
- "approved_at": "2026-09-09T19:59:22+00:00",
- "animations": {
-  "idle": {
-   "directions": {
-    "south": {
-     "status": "pass",
-     "step_mean": 0.0585,
-     "step_max": 0.0927,
-     "drift": 0.75,
-     "loop": 0.0,
-     "pin": 1.0,
-     "reasons": [],
-     "sub": "ea4f7f78-ecd8-4a7a-b826-740a816129d2",
-     "takes": 1,
-     "version": 1,
-     "mirrored": false,
-     "generated_at": "2026-09-09T20:18:33+00:00",
-     "cut": 0
-    },
-    "south-east": {
-     "status": "pass",
-     "step_mean": 0.0899,
-     "step_max": 0.1215,
-     "drift": 0.77,
-     "loop": 0.0,
-     "pin": 1.0,
-     "reasons": [],
-     "sub": "8cc094fe-9205-4077-bf78-b07a9f170f1c",
-     "takes": 1,
-     "version": 1,
-     "mirrored": false,
-     "generated_at": "2026-09-09T20:18:34+00:00",
-     "cut": 0
-    },
-    "east": {
-     "status": "pass",
-     "step_mean": 0.0769,
-     "step_max": 0.1174,
-     "drift": 0.95,
-     "loop": 0.0,
-     "pin": 1.0,
-     "reasons": [],
-     "sub": "fd5a25b8-caa5-4dff-b3b4-0be9a8315913",
-     "takes": 1,
-     "version": 1,
-     "mirrored": false,
-     "generated_at": "2026-09-09T20:18:34+00:00",
-     "cut": 0
-    },
-    "north-east": {
-     "status": "pass",
-     "step_mean": 0.0934,
-     "step_max": 0.1815,
-     "drift": 1.78,
-     "loop": 0.0,
-     "pin": 1.0,
-     "reasons": [],
-     "sub": "13d553f6-73ce-4249-91e0-cb1dd314bd2e",
-     "takes": 1,
-     "version": 1,
-     "mirrored": false,
-     "generated_at": "2026-09-09T20:18:35+00:00",
-     "cut": 0
-    },
-    "north": {
-     "status": "pass",
-     "step_mean": 0.101,
-     "step_max": 0.1313,
-     "drift": 1.14,
-     "loop": 0.0,
-     "pin": 1.0,
-     "reasons": [],
-     "sub": "bf19d798-933a-4d76-af82-6756038826cb",
-     "takes": 1,
-     "version": 1,
-     "mirrored": false,
-     "generated_at": "2026-09-09T20:18:35+00:00",
-     "cut": 0
-    },
-    "south-west": {
-     "status": "pass",
-     "step_mean": 0.0899,
-     "step_max": 0.1215,
-     "drift": 0.77,
-     "loop": 0.0,
-     "pin": 1.0,
-     "reasons": [],
-     "sub": "8cc094fe-9205-4077-bf78-b07a9f170f1c",
-     "takes": 1,
-     "version": 1,
-     "mirrored": true,
-     "generated_at": "2026-09-09T20:18:34+00:00",
-     "cut": 0,
-     "source": "south-east"
-    },
-    "north-west": {
-     "status": "pass",
-     "step_mean": 0.0934,
-     "step_max": 0.1815,
-     "drift": 1.78,
-     "loop": 0.0,
-     "pin": 1.0,
-     "reasons": [],
-     "sub": "13d553f6-73ce-4249-91e0-cb1dd314bd2e",
-     "takes": 1,
-     "version": 1,
-     "mirrored": true,
-     "generated_at": "2026-09-09T20:18:35+00:00",
-     "cut": 0,
-     "source": "north-east"
-    },
-    "west": {
-     "status": "pass",
-     "step_mean": 0.0769,
-     "step_max": 0.1174,
-     "drift": 0.95,
-     "loop": 0.0,
-     "pin": 1.0,
-     "reasons": [],
-     "sub": "fd5a25b8-caa5-4dff-b3b4-0be9a8315913",
-     "takes": 1,
-     "version": 1,
-     "mirrored": true,
-     "generated_at": "2026-09-09T20:18:34+00:00",
-     "cut": 0,
-     "source": "east"
-    }
-   },
-   "action": "Calm still idle, breathing very slowly and subtly, chest and shoulders rise and fall a little, feet planted, no other movement, ends in the same neutral pose it started in",
-   "frame_paths": {
-    "south": [
-     "rock_mite/animations/idle/south/00.webp",
-     "rock_mite/animations/idle/south/01.webp",
-     "rock_mite/animations/idle/south/02.webp",
-     "rock_mite/animations/idle/south/03.webp",
-     "rock_mite/animations/idle/south/04.webp"
-    ],
-    "south-east": [
-     "rock_mite/animations/idle/south-east/00.webp",
-     "rock_mite/animations/idle/south-east/01.webp",
-     "rock_mite/animations/idle/south-east/02.webp",
-     "rock_mite/animations/idle/south-east/03.webp",
-     "rock_mite/animations/idle/south-east/04.webp"
-    ],
-    "east": [
-     "rock_mite/animations/idle/east/00.webp",
-     "rock_mite/animations/idle/east/01.webp",
-     "rock_mite/animations/idle/east/02.webp",
-     "rock_mite/animations/idle/east/03.webp",
-     "rock_mite/animations/idle/east/04.webp"
-    ],
-    "north-east": [
-     "rock_mite/animations/idle/north-east/00.webp",
-     "rock_mite/animations/idle/north-east/01.webp",
-     "rock_mite/animations/idle/north-east/02.webp",
-     "rock_mite/animations/idle/north-east/03.webp",
-     "rock_mite/animations/idle/north-east/04.webp"
-    ],
-    "north": [
-     "rock_mite/animations/idle/north/00.webp",
-     "rock_mite/animations/idle/north/01.webp",
-     "rock_mite/animations/idle/north/02.webp",
-     "rock_mite/animations/idle/north/03.webp",
-     "rock_mite/animations/idle/north/04.webp"
-    ],
-    "south-west": [
-     "rock_mite/animations/idle/south-west/00.webp",
-     "rock_mite/animations/idle/south-west/01.webp",
-     "rock_mite/animations/idle/south-west/02.webp",
-     "rock_mite/animations/idle/south-west/03.webp",
-     "rock_mite/animations/idle/south-west/04.webp"
-    ],
-    "north-west": [
-     "rock_mite/animations/idle/north-west/00.webp",
-     "rock_mite/animations/idle/north-west/01.webp",
-     "rock_mite/animations/idle/north-west/02.webp",
-     "rock_mite/animations/idle/north-west/03.webp",
-     "rock_mite/animations/idle/north-west/04.webp"
-    ],
-    "west": [
-     "rock_mite/animations/idle/west/00.webp",
-     "rock_mite/animations/idle/west/01.webp",
-     "rock_mite/animations/idle/west/02.webp",
-     "rock_mite/animations/idle/west/03.webp",
-     "rock_mite/animations/idle/west/04.webp"
-    ]
-   },
-   "strips": {
-    "south": "rock_mite/animations/idle__south.webp",
-    "south-east": "rock_mite/animations/idle__south-east.webp",
-    "east": "rock_mite/animations/idle__east.webp",
-    "north-east": "rock_mite/animations/idle__north-east.webp",
-    "north": "rock_mite/animations/idle__north.webp",
-    "south-west": "rock_mite/animations/idle__south-west.webp",
-    "north-west": "rock_mite/animations/idle__north-west.webp",
-    "west": "rock_mite/animations/idle__west.webp"
-   }
-  },
-  "walk": {
-   "directions": {
-    "south": {
-     "status": "pass",
-     "step_mean": 0.0768,
-     "step_max": 0.1084,
-     "drift": 1.04,
-     "loop": 0.0427,
-     "loop_ratio": 0.56,
-     "travel": 0.06,
-     "pin": 0.955,
-     "pad": 0,
-     "canvas": [
-      40,
-      40
-     ],
-     "reasons": [],
-     "sub": "3690fe58-f3d3-43e5-9cdf-9db94a9f007a",
-     "group": "465e05b3-6c55-4804-bb5c-1d50255e942d",
-     "takes": 1,
-     "version": 2,
-     "mirrored": false,
-     "generated_at": "2026-09-09T21:25:57+00:00"
-    },
-    "south-east": {
-     "status": "pass",
-     "step_mean": 0.1119,
-     "step_max": 0.1386,
-     "drift": 1.11,
-     "loop": 0.0413,
-     "loop_ratio": 0.37,
-     "travel": 0.54,
-     "pin": 0.879,
-     "pad": 0,
-     "canvas": [
-      40,
-      40
-     ],
-     "reasons": [],
-     "sub": "f0cee1ed-047f-4451-a65e-339bb0862e11",
-     "group": "cccfca65-ced5-43a0-b2f5-22f867b43ad6",
-     "takes": 1,
-     "version": 2,
-     "mirrored": false,
-     "generated_at": "2026-09-09T21:25:58+00:00"
-    },
-    "east": {
-     "status": "pass",
-     "step_mean": 0.0819,
-     "step_max": 0.1076,
-     "drift": 0.81,
-     "loop": 0.1181,
-     "loop_ratio": 1.44,
-     "travel": 0.26,
-     "pin": 0.956,
-     "pad": 0,
-     "canvas": [
-      40,
-      40
-     ],
-     "reasons": [],
-     "sub": "4af6a586-96f5-40da-8e61-88e3b72aa8cf",
-     "group": "d3281fd4-1341-49e7-88d8-b388cbf93380",
-     "takes": 1,
-     "version": 2,
-     "mirrored": false,
-     "generated_at": "2026-09-09T21:25:58+00:00"
-    },
-    "north-east": {
-     "status": "pass",
-     "step_mean": 0.1097,
-     "step_max": 0.1195,
-     "drift": 1.39,
-     "loop": 0.1054,
-     "loop_ratio": 0.96,
-     "travel": 0.21,
-     "pin": 0.875,
-     "pad": 0,
-     "canvas": [
-      40,
-      40
-     ],
-     "reasons": [],
-     "sub": "6aba1ec2-04a5-409a-95ec-70db1c485f6b",
-     "group": "6c7dcb4c-4809-4d23-bc08-8fd05b4e216a",
-     "takes": 1,
-     "version": 2,
-     "mirrored": false,
-     "generated_at": "2026-09-09T21:25:59+00:00"
-    },
-    "north": {
-     "status": "pass",
-     "step_mean": 0.0746,
-     "step_max": 0.1237,
-     "drift": 0.7,
-     "loop": 0.0508,
-     "loop_ratio": 0.68,
-     "travel": 0.23,
-     "pin": 0.902,
-     "pad": 0,
-     "canvas": [
-      40,
-      40
-     ],
-     "reasons": [],
-     "sub": "faf72cad-cc1c-4f9a-9d16-be2d12553e37",
-     "group": "40fca662-1110-4d36-91f9-a93d66f8e594",
-     "takes": 1,
-     "version": 2,
-     "mirrored": false,
-     "generated_at": "2026-09-09T21:25:59+00:00"
-    },
-    "south-west": {
-     "status": "pass",
-     "step_mean": 0.1119,
-     "step_max": 0.1386,
-     "drift": 1.11,
-     "loop": 0.0413,
-     "loop_ratio": 0.37,
-     "travel": 0.54,
-     "pin": 0.879,
-     "pad": 0,
-     "canvas": [
-      40,
-      40
-     ],
-     "reasons": [],
-     "sub": "f0cee1ed-047f-4451-a65e-339bb0862e11",
-     "group": "cccfca65-ced5-43a0-b2f5-22f867b43ad6",
-     "takes": 1,
-     "version": 2,
-     "mirrored": true,
-     "generated_at": "2026-09-09T21:25:58+00:00",
-     "source": "south-east"
-    },
-    "west": {
-     "status": "pass",
-     "step_mean": 0.0819,
-     "step_max": 0.1076,
-     "drift": 0.81,
-     "loop": 0.1181,
-     "loop_ratio": 1.44,
-     "travel": 0.26,
-     "pin": 0.956,
-     "pad": 0,
-     "canvas": [
-      40,
-      40
-     ],
-     "reasons": [],
-     "sub": "4af6a586-96f5-40da-8e61-88e3b72aa8cf",
-     "group": "d3281fd4-1341-49e7-88d8-b388cbf93380",
-     "takes": 1,
-     "version": 2,
-     "mirrored": true,
-     "generated_at": "2026-09-09T21:25:58+00:00",
-     "source": "east"
-    },
-    "north-west": {
-     "status": "pass",
-     "step_mean": 0.1097,
-     "step_max": 0.1195,
-     "drift": 1.39,
-     "loop": 0.1054,
-     "loop_ratio": 0.96,
-     "travel": 0.21,
-     "pin": 0.875,
-     "pad": 0,
-     "canvas": [
-      40,
-      40
-     ],
-     "reasons": [],
-     "sub": "6aba1ec2-04a5-409a-95ec-70db1c485f6b",
-     "group": "6c7dcb4c-4809-4d23-bc08-8fd05b4e216a",
-     "takes": 1,
-     "version": 2,
-     "mirrored": true,
-     "generated_at": "2026-09-09T21:25:59+00:00",
-     "source": "north-east"
-    }
-   },
-   "action": "scuttles forward in place on its tiny legs, legs alternating quickly, body steady, seamless loop, no turning",
-   "frame_paths": {
-    "south": [
-     "rock_mite/animations/walk/south/00.webp",
-     "rock_mite/animations/walk/south/01.webp",
-     "rock_mite/animations/walk/south/02.webp",
-     "rock_mite/animations/walk/south/03.webp",
-     "rock_mite/animations/walk/south/04.webp",
-     "rock_mite/animations/walk/south/05.webp"
-    ],
-    "south-east": [
-     "rock_mite/animations/walk/south-east/00.webp",
-     "rock_mite/animations/walk/south-east/01.webp",
-     "rock_mite/animations/walk/south-east/02.webp",
-     "rock_mite/animations/walk/south-east/03.webp",
-     "rock_mite/animations/walk/south-east/04.webp",
-     "rock_mite/animations/walk/south-east/05.webp"
-    ],
-    "east": [
-     "rock_mite/animations/walk/east/00.webp",
-     "rock_mite/animations/walk/east/01.webp",
-     "rock_mite/animations/walk/east/02.webp",
-     "rock_mite/animations/walk/east/03.webp",
-     "rock_mite/animations/walk/east/04.webp",
-     "rock_mite/animations/walk/east/05.webp"
-    ],
-    "north-east": [
-     "rock_mite/animations/walk/north-east/00.webp",
-     "rock_mite/animations/walk/north-east/01.webp",
-     "rock_mite/animations/walk/north-east/02.webp",
-     "rock_mite/animations/walk/north-east/03.webp",
-     "rock_mite/animations/walk/north-east/04.webp",
-     "rock_mite/animations/walk/north-east/05.webp"
-    ],
-    "north": [
-     "rock_mite/animations/walk/north/00.webp",
-     "rock_mite/animations/walk/north/01.webp",
-     "rock_mite/animations/walk/north/02.webp",
-     "rock_mite/animations/walk/north/03.webp",
-     "rock_mite/animations/walk/north/04.webp",
-     "rock_mite/animations/walk/north/05.webp"
-    ],
-    "south-west": [
-     "rock_mite/animations/walk/south-west/00.webp",
-     "rock_mite/animations/walk/south-west/01.webp",
-     "rock_mite/animations/walk/south-west/02.webp",
-     "rock_mite/animations/walk/south-west/03.webp",
-     "rock_mite/animations/walk/south-west/04.webp",
-     "rock_mite/animations/walk/south-west/05.webp"
-    ],
-    "west": [
-     "rock_mite/animations/walk/west/00.webp",
-     "rock_mite/animations/walk/west/01.webp",
-     "rock_mite/animations/walk/west/02.webp",
-     "rock_mite/animations/walk/west/03.webp",
-     "rock_mite/animations/walk/west/04.webp",
-     "rock_mite/animations/walk/west/05.webp"
-    ],
-    "north-west": [
-     "rock_mite/animations/walk/north-west/00.webp",
-     "rock_mite/animations/walk/north-west/01.webp",
-     "rock_mite/animations/walk/north-west/02.webp",
-     "rock_mite/animations/walk/north-west/03.webp",
-     "rock_mite/animations/walk/north-west/04.webp",
-     "rock_mite/animations/walk/north-west/05.webp"
-    ]
-   },
-   "strips": {
-    "south": "rock_mite/animations/walk__south.webp",
-    "south-east": "rock_mite/animations/walk__south-east.webp",
-    "east": "rock_mite/animations/walk__east.webp",
-    "north-east": "rock_mite/animations/walk__north-east.webp",
-    "north": "rock_mite/animations/walk__north.webp",
-    "south-west": "rock_mite/animations/walk__south-west.webp",
-    "west": "rock_mite/animations/walk__west.webp",
-    "north-west": "rock_mite/animations/walk__north-west.webp"
-   }
-  },
-  "attack": {
-   "directions": {
-    "south": {
-     "status": "fail",
-     "step_mean": 0.1114,
-     "step_max": 0.1837,
-     "drift": 0.97,
-     "loop": 0.0,
-     "loop_ratio": 0.0,
-     "travel": 0.02,
-     "pin": 1.0,
-     "pad": 0,
-     "flash": 0.003,
-     "peak": 0.2098,
-     "reach": 0.077,
-     "canvas": [
-      40,
-      40
-     ],
-     "reasons": [
-      "no strike, just a lean: nothing reaches past 0.08 of the body"
-     ],
-     "sub": "8a66d488-fa3f-40b5-9bd6-29c461122059",
-     "group": "117a7a9a-0c38-4ade-8d44-e87ff5bacdea",
-     "takes": 1,
-     "version": 2,
-     "mirrored": false,
-     "generated_at": "2026-09-09T22:36:31+00:00",
-     "action": "Headbutt - Pulls back slightly, then quickly rams forward once with its stone body, then returns to idle stance"
-    },
-    "south-east": {
-     "status": "fail",
-     "step_mean": 0.1163,
-     "step_max": 0.1246,
-     "drift": 2.2,
-     "loop": 0.0,
-     "loop_ratio": 0.0,
-     "travel": 2.2,
-     "pin": 1.0,
-     "pad": 0,
-     "flash": 0.037,
-     "peak": 0.2243,
-     "reach": 0.107,
-     "canvas": [
-      40,
-      40
-     ],
-     "reasons": [
-      "no strike, just a lean: nothing reaches past 0.11 of the body"
-     ],
-     "sub": "24ddad57-19f9-4272-a00b-32df3b366a68",
-     "group": "a4174d37-9088-4445-87a4-db4043bb7829",
-     "takes": 1,
-     "version": 2,
-     "mirrored": false,
-     "generated_at": "2026-09-09T22:36:31+00:00",
-     "action": "Headbutt - Pulls back slightly, then quickly rams forward once with its stone body, then returns to idle stance"
-    },
-    "east": {
-     "status": "fail",
-     "step_mean": 0.1134,
-     "step_max": 0.1598,
-     "drift": 0.94,
-     "loop": 0.0,
-     "loop_ratio": 0.0,
-     "travel": 0.81,
-     "pin": 1.0,
-     "pad": 0,
-     "flash": 0.0,
-     "peak": 0.1598,
-     "reach": 0.111,
-     "canvas": [
-      40,
-      40
-     ],
-     "reasons": [
-      "no strike, just a lean: nothing reaches past 0.11 of the body"
-     ],
-     "sub": "9603b1ec-b4f2-423b-b049-267dbaf3e67f",
-     "group": "450975d0-6381-4174-a11c-79e68b268334",
-     "takes": 1,
-     "version": 2,
-     "mirrored": false,
-     "generated_at": "2026-09-09T22:36:32+00:00",
-     "action": "Headbutt - Pulls back slightly, then quickly rams forward once with its stone body, then returns to idle stance"
-    },
-    "north-east": {
-     "status": "fail",
-     "step_mean": 0.1248,
-     "step_max": 0.1431,
-     "drift": 1.68,
-     "loop": 0.0,
-     "loop_ratio": 0.0,
-     "travel": 0.09,
-     "pin": 1.0,
-     "pad": 0,
-     "flash": 0.002,
-     "peak": 0.2182,
-     "reach": 0.143,
-     "canvas": [
-      40,
-      40
-     ],
-     "reasons": [
-      "no strike, just a lean: nothing reaches past 0.14 of the body"
-     ],
-     "sub": "43dcc8c7-b3c0-450a-bce8-3c222e2ca99f",
-     "group": "cbfebf49-2c10-4da8-9652-13299a5f679b",
-     "takes": 1,
-     "version": 2,
-     "mirrored": false,
-     "generated_at": "2026-09-09T22:36:32+00:00",
-     "action": "Headbutt - Pulls back slightly, then quickly rams forward once with its stone body, then returns to idle stance"
-    },
-    "north": {
-     "status": "fail",
-     "step_mean": 0.1045,
-     "step_max": 0.1237,
-     "drift": 1.89,
-     "loop": 0.0,
-     "loop_ratio": 0.0,
-     "travel": 0.06,
-     "pin": 1.0,
-     "pad": 0,
-     "flash": 0.0,
-     "peak": 0.1973,
-     "reach": 0.111,
-     "canvas": [
-      40,
-      40
-     ],
-     "reasons": [
-      "no strike, just a lean: nothing reaches past 0.11 of the body"
-     ],
-     "sub": "97a3f4df-e29e-4846-9727-da227bb2763a",
-     "group": "408a7e3c-4f5c-43d9-a748-3a1c7e1c66f8",
-     "takes": 1,
-     "version": 2,
-     "mirrored": false,
-     "generated_at": "2026-09-09T22:36:33+00:00",
-     "action": "Headbutt - Pulls back slightly, then quickly rams forward once with its stone body, then returns to idle stance"
-    },
-    "south-west": {
-     "status": "pass",
-     "step_mean": 0.1163,
-     "step_max": 0.1246,
-     "drift": 2.2,
-     "loop": 0.0,
-     "loop_ratio": 0.0,
-     "travel": 2.2,
-     "pin": 1.0,
-     "pad": 0,
-     "flash": 0.037,
-     "peak": 0.2243,
-     "canvas": [
-      40,
-      40
-     ],
-     "reasons": [],
-     "sub": "24ddad57-19f9-4272-a00b-32df3b366a68",
-     "group": "a4174d37-9088-4445-87a4-db4043bb7829",
-     "takes": 1,
-     "version": 2,
-     "mirrored": true,
-     "generated_at": "2026-09-09T22:36:31+00:00",
-     "action": "Headbutt - Pulls back slightly, then quickly rams forward once with its stone body, then returns to idle stance",
-     "source": "south-east"
-    },
-    "west": {
-     "status": "pass",
-     "step_mean": 0.1134,
-     "step_max": 0.1598,
-     "drift": 0.94,
-     "loop": 0.0,
-     "loop_ratio": 0.0,
-     "travel": 0.81,
-     "pin": 1.0,
-     "pad": 0,
-     "flash": 0.0,
-     "peak": 0.1598,
-     "canvas": [
-      40,
-      40
-     ],
-     "reasons": [],
-     "sub": "9603b1ec-b4f2-423b-b049-267dbaf3e67f",
-     "group": "450975d0-6381-4174-a11c-79e68b268334",
-     "takes": 1,
-     "version": 2,
-     "mirrored": true,
-     "generated_at": "2026-09-09T22:36:32+00:00",
-     "action": "Headbutt - Pulls back slightly, then quickly rams forward once with its stone body, then returns to idle stance",
-     "source": "east"
-    },
-    "north-west": {
-     "status": "pass",
-     "step_mean": 0.1248,
-     "step_max": 0.1431,
-     "drift": 1.68,
-     "loop": 0.0,
-     "loop_ratio": 0.0,
-     "travel": 0.09,
-     "pin": 1.0,
-     "pad": 0,
-     "flash": 0.002,
-     "peak": 0.2182,
-     "canvas": [
-      40,
-      40
-     ],
-     "reasons": [],
-     "sub": "43dcc8c7-b3c0-450a-bce8-3c222e2ca99f",
-     "group": "cbfebf49-2c10-4da8-9652-13299a5f679b",
-     "takes": 1,
-     "version": 2,
-     "mirrored": true,
-     "generated_at": "2026-09-09T22:36:32+00:00",
-     "action": "Headbutt - Pulls back slightly, then quickly rams forward once with its stone body, then returns to idle stance",
-     "source": "north-east"
-    }
-   },
-   "action": "Headbutt - Pulls back slightly, then quickly rams forward once with its stone body, then returns to idle stance",
-   "frame_paths": {
-    "south": [
-     "rock_mite/animations/attack/south/00.webp",
-     "rock_mite/animations/attack/south/01.webp",
-     "rock_mite/animations/attack/south/02.webp",
-     "rock_mite/animations/attack/south/03.webp",
-     "rock_mite/animations/attack/south/04.webp"
-    ],
-    "south-east": [
-     "rock_mite/animations/attack/south-east/00.webp",
-     "rock_mite/animations/attack/south-east/01.webp",
-     "rock_mite/animations/attack/south-east/02.webp",
-     "rock_mite/animations/attack/south-east/03.webp",
-     "rock_mite/animations/attack/south-east/04.webp"
-    ],
-    "east": [
-     "rock_mite/animations/attack/east/00.webp",
-     "rock_mite/animations/attack/east/01.webp",
-     "rock_mite/animations/attack/east/02.webp",
-     "rock_mite/animations/attack/east/03.webp",
-     "rock_mite/animations/attack/east/04.webp"
-    ],
-    "north-east": [
-     "rock_mite/animations/attack/north-east/00.webp",
-     "rock_mite/animations/attack/north-east/01.webp",
-     "rock_mite/animations/attack/north-east/02.webp",
-     "rock_mite/animations/attack/north-east/03.webp",
-     "rock_mite/animations/attack/north-east/04.webp"
-    ],
-    "north": [
-     "rock_mite/animations/attack/north/00.webp",
-     "rock_mite/animations/attack/north/01.webp",
-     "rock_mite/animations/attack/north/02.webp",
-     "rock_mite/animations/attack/north/03.webp",
-     "rock_mite/animations/attack/north/04.webp"
-    ],
-    "south-west": [
-     "rock_mite/animations/attack/south-west/00.webp",
-     "rock_mite/animations/attack/south-west/01.webp",
-     "rock_mite/animations/attack/south-west/02.webp",
-     "rock_mite/animations/attack/south-west/03.webp",
-     "rock_mite/animations/attack/south-west/04.webp"
-    ],
-    "west": [
-     "rock_mite/animations/attack/west/00.webp",
-     "rock_mite/animations/attack/west/01.webp",
-     "rock_mite/animations/attack/west/02.webp",
-     "rock_mite/animations/attack/west/03.webp",
-     "rock_mite/animations/attack/west/04.webp"
-    ],
-    "north-west": [
-     "rock_mite/animations/attack/north-west/00.webp",
-     "rock_mite/animations/attack/north-west/01.webp",
-     "rock_mite/animations/attack/north-west/02.webp",
-     "rock_mite/animations/attack/north-west/03.webp",
-     "rock_mite/animations/attack/north-west/04.webp"
-    ]
-   },
-   "strips": {
-    "south": "rock_mite/animations/attack__south.webp",
-    "south-east": "rock_mite/animations/attack__south-east.webp",
-    "east": "rock_mite/animations/attack__east.webp",
-    "north-east": "rock_mite/animations/attack__north-east.webp",
-    "north": "rock_mite/animations/attack__north.webp",
-    "south-west": "rock_mite/animations/attack__south-west.webp",
-    "west": "rock_mite/animations/attack__west.webp",
-    "north-west": "rock_mite/animations/attack__north-west.webp"
-   }
-  },
-  "attack_try": {
-   "directions": {
-    "south": {
-     "status": "fail",
-     "step_mean": 0.085,
-     "step_max": 0.1089,
-     "drift": 0.69,
-     "loop": 0.0569,
-     "loop_ratio": 0.67,
-     "travel": 0.04,
-     "pin": 1.0,
-     "pad": 0,
-     "flash": -0.002,
-     "peak": 0.1577,
-     "reach": 0.077,
-     "canvas": [
-      40,
-      40
-     ],
-     "reasons": [
-      "no strike, just a lean: nothing reaches past 0.08 of the body"
-     ],
-     "sub": "114acfa0-121d-4eb9-b6f2-c344672f864e",
-     "group": "16f86fbc-044e-4d88-a0e4-2b0052385435",
-     "takes": 1,
-     "version": 2,
-     "mirrored": false,
-     "action": "Headbutt - Rocks back, then rams forward hard with its stone body, a big aggressive swing",
-     "intensity": 1,
-     "tries": 1,
-     "generated_at": "2026-09-10T20:28:02+00:00",
-     "rolls": 2
-    },
-    "south-east": {
-     "status": "fail",
-     "step_mean": 0.108,
-     "step_max": 0.144,
-     "drift": 0.85,
-     "loop": 0.089,
-     "loop_ratio": 0.82,
-     "travel": 1.04,
-     "pin": 1.0,
-     "pad": 0,
-     "flash": 0.002,
-     "peak": 0.144,
-     "reach": 0.093,
-     "canvas": [
-      40,
-      40
-     ],
-     "reasons": [
-      "weak strike: peak 0.144 — eyeball it",
-      "no strike, just a lean: nothing reaches past 0.09 of the body"
-     ],
-     "sub": "3f20c867-8383-4a1a-a980-32cf99f34972",
-     "group": "81e0b728-0315-48f5-8397-49c425f31002",
-     "takes": 1,
-     "version": 2,
-     "mirrored": false,
-     "action": "Headbutt - Rocks back, then rams forward hard with its stone body, a big aggressive swing",
-     "intensity": 1,
-     "tries": 1,
-     "generated_at": "2026-09-10T20:28:02+00:00",
-     "rolls": 2
-    },
-    "east": {
-     "status": "fail",
-     "step_mean": 0.0962,
-     "step_max": 0.1177,
-     "drift": 1.46,
-     "loop": 0.2056,
-     "loop_ratio": 2.14,
-     "travel": 1.65,
-     "pin": 1.0,
-     "pad": 0,
-     "flash": 0.002,
-     "peak": 0.2056,
-     "reach": 0.111,
-     "canvas": [
-      40,
-      40
-     ],
-     "reasons": [
-      "no strike, just a lean: nothing reaches past 0.11 of the body"
-     ],
-     "sub": "19682938-766b-4910-a724-52e14591be90",
-     "group": "ed1de429-4cd9-4d36-a589-6b5b1fd7cb72",
-     "takes": 1,
-     "version": 2,
-     "mirrored": false,
-     "action": "Headbutt - Rocks back, then rams forward hard with its stone body, a big aggressive swing",
-     "intensity": 1,
-     "tries": 1,
-     "generated_at": "2026-09-10T20:28:03+00:00",
-     "rolls": 2
-    },
-    "north-east": {
-     "status": "fail",
-     "step_mean": 0.0746,
-     "step_max": 0.1047,
-     "drift": 2.13,
-     "loop": 0.2461,
-     "loop_ratio": 3.3,
-     "travel": 0.18,
-     "pin": 1.0,
-     "pad": 0,
-     "flash": 0.002,
-     "peak": 0.2461,
-     "reach": 0.107,
-     "canvas": [
-      40,
-      40
-     ],
-     "reasons": [
-      "motion 0.075 outside the calm band 0.08–0.9 — eyeball it",
-      "no strike, just a lean: nothing reaches past 0.11 of the body"
-     ],
-     "sub": "128cd272-c4b7-4d79-8f7b-fde64fc14b8d",
-     "group": "bf5fec54-4d5d-4359-bad7-d798c62a3f52",
-     "takes": 1,
-     "version": 2,
-     "mirrored": false,
-     "action": "Headbutt - Rocks back, then rams forward hard with its stone body, a big aggressive swing",
-     "intensity": 1,
-     "tries": 1,
-     "generated_at": "2026-09-10T20:28:03+00:00",
-     "rolls": 2
-    },
-    "north": {
-     "status": "fail",
-     "step_mean": 0.0842,
-     "step_max": 0.1145,
-     "drift": 1.72,
-     "loop": 0.1111,
-     "loop_ratio": 1.32,
-     "travel": 0.89,
-     "pin": 1.0,
-     "pad": 0,
-     "flash": 0.0,
-     "peak": 0.165,
-     "reach": 0.111,
-     "canvas": [
-      40,
-      40
-     ],
-     "reasons": [
-      "no strike, just a lean: nothing reaches past 0.11 of the body"
-     ],
-     "sub": "db96b2ac-54a8-46cb-ad3a-3c54abf6f1cc",
-     "group": "9dee655c-2019-44e8-848f-463595770ba8",
-     "takes": 1,
-     "version": 2,
-     "mirrored": false,
-     "action": "Headbutt - Rocks back, then rams forward hard with its stone body, a big aggressive swing",
-     "intensity": 1,
-     "tries": 1,
-     "generated_at": "2026-09-10T20:28:03+00:00",
-     "rolls": 2
-    }
-   },
-   "action": "Headbutt - Rocks back, then rams forward hard with its stone body, a big aggressive swing",
-   "frame_paths": {
-    "south": [
-     "rock_mite/animations/attack_try/south/00.webp",
-     "rock_mite/animations/attack_try/south/01.webp",
-     "rock_mite/animations/attack_try/south/02.webp",
-     "rock_mite/animations/attack_try/south/03.webp",
-     "rock_mite/animations/attack_try/south/04.webp"
-    ],
-    "south-east": [
-     "rock_mite/animations/attack_try/south-east/00.webp",
-     "rock_mite/animations/attack_try/south-east/01.webp",
-     "rock_mite/animations/attack_try/south-east/02.webp",
-     "rock_mite/animations/attack_try/south-east/03.webp",
-     "rock_mite/animations/attack_try/south-east/04.webp"
-    ],
-    "east": [
-     "rock_mite/animations/attack_try/east/00.webp",
-     "rock_mite/animations/attack_try/east/01.webp",
-     "rock_mite/animations/attack_try/east/02.webp",
-     "rock_mite/animations/attack_try/east/03.webp",
-     "rock_mite/animations/attack_try/east/04.webp"
-    ],
-    "north-east": [
-     "rock_mite/animations/attack_try/north-east/00.webp",
-     "rock_mite/animations/attack_try/north-east/01.webp",
-     "rock_mite/animations/attack_try/north-east/02.webp",
-     "rock_mite/animations/attack_try/north-east/03.webp",
-     "rock_mite/animations/attack_try/north-east/04.webp"
-    ],
-    "north": [
-     "rock_mite/animations/attack_try/north/00.webp",
-     "rock_mite/animations/attack_try/north/01.webp",
-     "rock_mite/animations/attack_try/north/02.webp",
-     "rock_mite/animations/attack_try/north/03.webp",
-     "rock_mite/animations/attack_try/north/04.webp"
-    ]
-   },
-   "strips": {
-    "south": "rock_mite/animations/attack_try__south.webp",
-    "south-east": "rock_mite/animations/attack_try__south-east.webp",
-    "east": "rock_mite/animations/attack_try__east.webp",
-    "north-east": "rock_mite/animations/attack_try__north-east.webp",
-    "north": "rock_mite/animations/attack_try__north.webp"
-   },
-   "intensity": 1
-  }
- }
 }

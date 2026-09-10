@@ -150,6 +150,13 @@ CLAW_SLASH = ("Claw Swipe - Raises one front paw and performs one quick swipe fo
               "white swoosh lines following the claws")
 SIMPLE_LUNGE = ("Lunge Attack - Throws its whole body forward in one fast lunge, "
                 "white swoosh lines trailing behind it")
+# Maintainer 2026-09-10: "sometimes you have to play with the number of frames
+# an animation can do so the generator has enough frames to perform an attack!
+# But often more frames leads to garbage." Measured on Cragtroll east: 4 frames
+# gave a full overhead swing (reach 0.45), 6 frames the same club barely moving
+# (0.21). So the count is a DIAL too, walked per roll of a stubborn direction —
+# 4 first and most often, 6 and 8 tried in between rather than committed to.
+FRAME_LADDER = [4, 6, 4, 8, 4, 6, 4, 8, 6, 4]
 MAX_TRIES = 10          # "keep retrying maybe 10 times before you give up the entire animation"
 CLAW_AFTER = 3          # rolls of the logical attack before falling back to the simple claw
 ESCALATE_AFTER = 6      # rolls before the whole monster is redone one notch louder
@@ -301,14 +308,19 @@ def _reach(ops, base_op, cap=48):
     return (max(out) / scale) if out else 0.0
 
 
-def qa_clip(cid, state, d, frames, pinned=None, claw_take=False):
+def frames_for(rolls):
+    """How many frames this roll asks PixelLab for (see FRAME_LADDER)."""
+    return FRAME_LADDER[(max(1, int(rolls or 1)) - 1) % len(FRAME_LADDER)]
+
+
+def qa_clip(cid, state, d, frames, pinned=None, claw_take=False, want_frames=None):
     """Machine verdict for one direction's clip. See module docstring."""
     band = STATES[base_state(state)]["band"]
     reasons = []
     spec = STATES[base_state(state)]
     if pinned is None:
         pinned = spec.get("keep_first", True)
-    want = spec["frames"] + (1 if pinned else 0)
+    want = (want_frames or spec["frames"]) + (1 if pinned else 0)
     if len(frames) != want:
         reasons.append(f"{len(frames)} frames, expected {want}")
     if not frames:
@@ -502,7 +514,7 @@ def generate_state(client, cid, state, dirs, version, verbose=True, pin=False):
     man = cand.load_manifest(cid)
     rec = _anim_record(man, state)
     spec = STATES[base_state(state)]
-    jobs, actions, tries = {}, {}, {}
+    jobs, actions, tries, counts = {}, {}, {}, {}
     for d in dirs:
         seed = seed_for(cid, state, d, version)
         pinned = spec["pin_end"] or pin
@@ -520,12 +532,14 @@ def generate_state(client, cid, state, dirs, version, verbose=True, pin=False):
             # whole-body lunge — both with the swoosh lines he says work.
             action = CLAW_SLASH if design_flag(cid, "claws") else SIMPLE_LUNGE
         actions[d] = action
+        nf = frames_for(tries[d]) if base_state(state) == "attack" else spec["frames"]
+        counts[d] = nf
         job = client.animate_v3(man["pixellab_id"], state, action, d,
-                                frame_count=spec["frames"], end_frame=end, seed=seed,
+                                frame_count=nf, end_frame=end, seed=seed,
                                 keep_first=spec.get("keep_first", True) or pin)
         jobs[d] = job
         if verbose:
-            print(f"  {cid:16s} {state} {d:11s} job {job} seed {seed}", flush=True)
+            print(f"  {cid:16s} {state} {d:11s} job {job} seed {seed} {nf}f roll {tries[d]}", flush=True)
     groups = {}
     for d, job in jobs.items():
         if job:
@@ -534,10 +548,10 @@ def generate_state(client, cid, state, dirs, version, verbose=True, pin=False):
                 groups[d] = (j.get("last_response") or {}).get("animation_group_id")
             except PixelLabError as e:
                 print(f"  {cid} {d}: {e}")
-    return collect_state(client, cid, state, dirs, version, verbose, pin=pin, actions=actions, tries=tries, groups=groups)
+    return collect_state(client, cid, state, dirs, version, verbose, pin=pin, actions=actions, tries=tries, groups=groups, counts=counts)
 
 
-def collect_state(client, cid, state, dirs, version, verbose=True, pin=False, actions=None, tries=None, groups=None):
+def collect_state(client, cid, state, dirs, version, verbose=True, pin=False, actions=None, tries=None, groups=None, counts=None):
     """Download the LAST take of each direction from PixelLab, align it to the
     base canvas, QA, save, mirror. Used after generation and by `fetch`.
     `actions` = {direction: action text} when a direction was made from other
@@ -572,13 +586,14 @@ def collect_state(client, cid, state, dirs, version, verbose=True, pin=False, ac
         frames, pad = align_to_base(frames, rotation(cid, d), pinned=pinned)
         save_frames(cid, state, d, frames)
         qa = qa_clip(cid, state, d, frames, pinned=pinned,
-                     claw_take=actions[d] in (CLAW_SLASH, SIMPLE_LUNGE))
+                     claw_take=actions[d] in (CLAW_SLASH, SIMPLE_LUNGE),
+                     want_frames=(counts or {}).get(d))
         if pin:
             qa["pinned"] = True
             qa["reasons"].append("PINNED fallback: base → walk → base, not a seamless loop (maintainer's last resort)")
         qa.update({"sub": client.sub_id(urls[0]), "group": group, "takes": len(cands), "version": version, "mirrored": False,
                    "action": actions[d], "intensity": intensity_of(man, state),
-                   "rolls": (tries or {}).get(d, 1), "tries": (tries or {}).get(d, rec["directions"].get(d, {}).get("tries", 1)),
+                   "rolls": (tries or {}).get(d, 1), "frames": len(frames), "tries": (tries or {}).get(d, rec["directions"].get(d, {}).get("tries", 1)),
                    "generated_at": datetime.now(timezone.utc).isoformat(timespec="seconds")})
         rec["directions"][d] = qa
         out[d] = qa
@@ -590,9 +605,10 @@ def collect_state(client, cid, state, dirs, version, verbose=True, pin=False, ac
             frames = mirror_direction(cid, state, d)
             if frames:
                 rec["directions"][d] = dict(rec["directions"][src], mirrored=True, source=src)
-    nfr = spec["frames"] + (1 if spec.get("keep_first", True) else 0)
-    rec["frame_paths"] = {d: [os.path.join(cid, "animations", state, d, f"{i:02d}{mirror.ART_EXT}")
-                              for i in range(nfr)] for d in rec["directions"]}
+    rec["frame_paths"] = {d: [os.path.join(cid, "animations", state, d, f)
+                              for f in sorted(os.listdir(anim_dir(cid, state, d)))
+                              if f.endswith(mirror.ART_EXT)]
+                          for d in rec["directions"] if os.path.isdir(anim_dir(cid, state, d))}
     rec["strips"] = {d: os.path.join(cid, "animations", f"{state}__{d}{mirror.ART_EXT}") for d in rec["directions"]}
     write_manifest(cid, man)
     return out
@@ -747,7 +763,10 @@ def cmd_requal(args):
             frames = load_frames(cid, args.state, d)
             if not frames:
                 continue
-            new = qa_clip(cid, args.state, d, frames, pinned=(True if q.get("pinned") else None))
+            new = qa_clip(cid, args.state, d, frames,
+                          pinned=(True if q.get("pinned") else None),
+                          claw_take=q.get("action") in (CLAW_SLASH, SIMPLE_LUNGE),
+                          want_frames=(len(frames) - (1 if STATES[base_state(args.state)].get("keep_first", True) else 0)))
             if q.get("pinned"):
                 new["pinned"] = True
                 new["reasons"].append("PINNED fallback: base → walk → base, not a seamless loop (maintainer's last resort)")
@@ -758,8 +777,10 @@ def cmd_requal(args):
                     # (re)create the mirror — it was skipped if the source failed at generation time
                     if mirror_direction(cid, args.state, md):
                         rec["directions"][md] = dict(rec["directions"][d], mirrored=True, source=src)
-                        nfr = STATES[args.state]["frames"] + (1 if STATES[args.state].get("keep_first", True) else 0)
-                        rec.setdefault("frame_paths", {})[md] = [os.path.join(cid, "animations", args.state, md, f"{i:02d}{mirror.ART_EXT}") for i in range(nfr)]
+                        rec.setdefault("frame_paths", {})[md] = [
+                            os.path.join(cid, "animations", args.state, md, f)
+                            for f in sorted(os.listdir(anim_dir(cid, args.state, md)))
+                            if f.endswith(mirror.ART_EXT)]
                         rec.setdefault("strips", {})[md] = os.path.join(cid, "animations", f"{args.state}__{md}{mirror.ART_EXT}")
         write_manifest(cid, man)
     cand.rebuild_index(cfg)
@@ -865,9 +886,10 @@ def cmd_promote(args):
             if os.path.exists(ss):
                 shutil.move(ss, os.path.join(cand.cdir(cid), "animations", f"{state}__{d}{mirror.ART_EXT}"))
         tr = man["animations"].pop(slot)
-        nfr = STATES[state]["frames"] + (1 if STATES[state].get("keep_first", True) else 0)
-        tr["frame_paths"] = {d: [os.path.join(cid, "animations", state, d, f"{i:02d}{mirror.ART_EXT}")
-                                 for i in range(nfr)] for d in tr["directions"]}
+        tr["frame_paths"] = {d: [os.path.join(cid, "animations", state, d, f)
+                                 for f in sorted(os.listdir(anim_dir(cid, state, d)))
+                                 if f.endswith(mirror.ART_EXT)]
+                             for d in tr["directions"] if os.path.isdir(anim_dir(cid, state, d))}
         tr["strips"] = {d: os.path.join(cid, "animations", f"{state}__{d}{mirror.ART_EXT}") for d in tr["directions"]}
         tr["promoted_at"] = datetime.now(timezone.utc).isoformat(timespec="seconds")
         man["animations"][state] = tr
