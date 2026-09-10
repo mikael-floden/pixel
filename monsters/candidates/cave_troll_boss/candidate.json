@@ -1048,37 +1048,37 @@
           "generated_at": "2026-09-10T21:44:04+00:00"
         },
         "north": {
-          "status": "fail",
-          "step_mean": 0.2045,
-          "step_max": 0.3595,
-          "drift": 11.88,
-          "loop": 0.4535,
-          "loop_ratio": 2.22,
-          "travel": 7.72,
+          "status": "warn",
+          "step_mean": 0.2108,
+          "step_max": 0.3753,
+          "drift": 5.21,
+          "loop": 0.4224,
+          "loop_ratio": 2.0,
+          "travel": 1.34,
           "pin": 1.0,
           "pad": 0,
-          "flash": 0.033,
-          "peak": 0.4535,
-          "reach": 0.094,
+          "flash": 0.164,
+          "peak": 0.4224,
+          "reach": 0.164,
           "canvas": [
             240,
             240
           ],
           "reasons": [
-            "no strike, just a lean: nothing reaches past 0.09 of the body"
+            "shallow strike: reach 0.16 — eyeball it"
           ],
-          "sub": "ee5d503d-b36a-455f-8d0b-08912b86c661",
-          "group": "5fc0d627-102c-49a2-ba7b-7a60c34a6c20",
+          "sub": "86cecccf-57ab-4c24-b675-a5f8d17c3625",
+          "group": "2760f6a1-7dcb-4bb5-a479-952dbced169f",
           "takes": 1,
-          "version": 6,
+          "version": 7,
           "mirrored": false,
-          "action": "Ground Smash - The troll hurls the stalactite club down into the ground with its whole weight, stone bursting up, an extremely violent attack, huge exaggerated motion, the limb thrown far out",
+          "action": "Ground Smash - The troll hurls the stalactite club down into the ground with its whole weight, stone bursting up, an explosively violent attack, the whole body thrown into it, debris and swoosh lines flying",
           "intensity": 1,
-          "rolls": 6,
+          "rolls": 7,
           "frames": 5,
-          "rung": 5,
-          "tries": 6,
-          "generated_at": "2026-09-10T22:08:57+00:00"
+          "rung": 6,
+          "tries": 7,
+          "generated_at": "2026-09-10T22:32:33+00:00"
         },
         "west": {
           "status": "warn",
