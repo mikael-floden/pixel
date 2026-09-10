@@ -1009,38 +1009,37 @@
         },
         "north-east": {
           "status": "fail",
-          "step_mean": 0.0626,
-          "step_max": 0.0788,
-          "drift": 2.09,
-          "loop": 0.089,
-          "loop_ratio": 1.42,
-          "travel": 2.09,
+          "step_mean": 0.1101,
+          "step_max": 0.2717,
+          "drift": 3.48,
+          "loop": 0.2473,
+          "loop_ratio": 2.24,
+          "travel": 6.09,
           "pin": 1.0,
           "pad": 0,
-          "flash": 0.005,
-          "peak": 0.1385,
-          "reach": 0.081,
+          "flash": 0.316,
+          "peak": 0.2633,
+          "reach": 0.177,
           "canvas": [
             88,
             88
           ],
           "reasons": [
-            "motion 0.063 outside the calm band 0.08–0.9 — eyeball it",
-            "weak strike: peak 0.139 — eyeball it",
-            "no strike, just a lean: nothing reaches past 0.08 of the body"
+            "shallow strike: reach 0.18 — eyeball it",
+            "painted effect: 0.32 of the body in new bright pixels (flare/slash arc)"
           ],
-          "sub": "712c2b50-e255-450c-96cd-95f00ac891c4",
-          "group": "6d6017ed-9c81-4f7e-8799-db3bb0126dbb",
+          "sub": "3dc9d1c6-7ea7-4fe8-858c-b9497359073e",
+          "group": "b8f08ff0-4888-4497-912a-af776e69c27a",
           "takes": 1,
-          "version": 5,
+          "version": 6,
           "mirrored": false,
-          "action": "Strike - Coils its head back, then strikes forward with fangs bared",
+          "action": "Strike - Coils its head back, then strikes forward with fangs bared, a big aggressive swing",
           "intensity": 1,
-          "rolls": 1,
-          "frames": 5,
-          "rung": 0,
-          "tries": 1,
-          "generated_at": "2026-09-10T21:50:20+00:00"
+          "rolls": 2,
+          "frames": 9,
+          "rung": 1,
+          "tries": 2,
+          "generated_at": "2026-09-10T22:15:19+00:00"
         },
         "north": {
           "status": "warn",
@@ -1219,7 +1218,11 @@
           "cobra/animations/attack_try/north-east/01.webp",
           "cobra/animations/attack_try/north-east/02.webp",
           "cobra/animations/attack_try/north-east/03.webp",
-          "cobra/animations/attack_try/north-east/04.webp"
+          "cobra/animations/attack_try/north-east/04.webp",
+          "cobra/animations/attack_try/north-east/05.webp",
+          "cobra/animations/attack_try/north-east/06.webp",
+          "cobra/animations/attack_try/north-east/07.webp",
+          "cobra/animations/attack_try/north-east/08.webp"
         ],
         "north": [
           "cobra/animations/attack_try/north/00.webp",
