@@ -1090,74 +1090,74 @@
           "source": "north-east"
         },
         "south-east": {
-          "status": "pass",
-          "step_mean": 0.3211,
-          "step_max": 0.509,
-          "drift": 4.91,
-          "loop": 0.6559,
-          "loop_ratio": 2.04,
-          "travel": 0.81,
+          "status": "warn",
+          "step_mean": 0.2107,
+          "step_max": 0.3138,
+          "drift": 3.86,
+          "loop": 0.4148,
+          "loop_ratio": 1.97,
+          "travel": 2.02,
           "pin": 1.0,
-          "pad": 3,
+          "pad": 0,
           "flash": 0.0,
-          "peak": 0.6559,
-          "reach": 0.3,
+          "peak": 0.4216,
+          "reach": 0.229,
           "canvas": [
-            110,
-            110
+            104,
+            104
           ],
           "reasons": [
-            "canvas grown by 3 px a side to hold the motion"
+            "shallow strike: reach 0.23 — eyeball it"
           ],
-          "sub": "0fc3075c-197b-4db3-aa1a-41d76c0d8bbd",
-          "group": "33984243-bee1-4902-872e-f7b931ab2eb6",
+          "sub": "ce31b47e-2e08-48aa-b6cc-9732a38c1bab",
+          "group": "47ec4b69-a808-41a0-9112-b9d654c00002",
           "takes": 1,
-          "version": 3,
+          "version": 5,
           "mirrored": false,
-          "generated_at": "2026-09-10T20:50:08+00:00",
-          "action": "Grasping Swipe - Lunges forward with both bandaged arms out in a grasping swipe, a big aggressive swing",
-          "tries": 1,
-          "rolls": 3,
+          "action": "Grasping Swipe - Lunges forward with both bandaged arms out in a grasping swipe",
           "intensity": 1,
-          "frames": 5,
-          "rung": 0
-        },
-        "south-west": {
-          "status": "pass",
-          "step_mean": 0.3211,
-          "step_max": 0.509,
-          "drift": 4.91,
-          "loop": 0.6559,
-          "loop_ratio": 2.04,
-          "travel": 0.81,
-          "pin": 1.0,
-          "pad": 3,
-          "flash": 0.0,
-          "peak": 0.6559,
-          "reach": 0.3,
-          "canvas": [
-            110,
-            110
-          ],
-          "reasons": [
-            "canvas grown by 3 px a side to hold the motion"
-          ],
-          "sub": "0fc3075c-197b-4db3-aa1a-41d76c0d8bbd",
-          "group": "33984243-bee1-4902-872e-f7b931ab2eb6",
-          "takes": 1,
-          "version": 3,
-          "mirrored": true,
-          "generated_at": "2026-09-10T20:50:08+00:00",
-          "action": "Grasping Swipe - Lunges forward with both bandaged arms out in a grasping swipe, a big aggressive swing",
-          "tries": 1,
-          "rolls": 3,
-          "intensity": 1,
+          "rolls": 1,
           "frames": 5,
           "rung": 0,
+          "tries": 1,
+          "generated_at": "2026-09-10T21:48:44+00:00"
+        },
+        "south-west": {
+          "status": "warn",
+          "step_mean": 0.2107,
+          "step_max": 0.3138,
+          "drift": 3.86,
+          "loop": 0.4148,
+          "loop_ratio": 1.97,
+          "travel": 2.02,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": 0.0,
+          "peak": 0.4216,
+          "reach": 0.229,
+          "canvas": [
+            104,
+            104
+          ],
+          "reasons": [
+            "shallow strike: reach 0.23 — eyeball it"
+          ],
+          "sub": "ce31b47e-2e08-48aa-b6cc-9732a38c1bab",
+          "group": "47ec4b69-a808-41a0-9112-b9d654c00002",
+          "takes": 1,
+          "version": 5,
+          "mirrored": true,
+          "action": "Grasping Swipe - Lunges forward with both bandaged arms out in a grasping swipe",
+          "intensity": 1,
+          "rolls": 1,
+          "frames": 5,
+          "rung": 0,
+          "tries": 1,
+          "generated_at": "2026-09-10T21:48:44+00:00",
           "source": "south-east"
         }
       },
-      "action": "Grasping Swipe - Lunges forward with both bandaged arms out in a grasping swipe, a big aggressive swing",
+      "action": "Grasping Swipe - Lunges forward with both bandaged arms out in a grasping swipe",
       "frame_paths": {
         "south": [
           "mummy/animations/attack_try/south/00.webp",

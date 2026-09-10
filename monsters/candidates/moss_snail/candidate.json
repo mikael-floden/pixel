@@ -997,34 +997,37 @@
           "rung": 3
         },
         "north-east": {
-          "status": "pass",
-          "step_mean": 0.1828,
-          "step_max": 0.209,
-          "drift": 1.65,
-          "loop": 0.1177,
-          "loop_ratio": 0.64,
-          "travel": 1.59,
+          "status": "warn",
+          "step_mean": 0.0908,
+          "step_max": 0.1481,
+          "drift": 2.57,
+          "loop": 0.127,
+          "loop_ratio": 1.4,
+          "travel": 0.06,
           "pin": 1.0,
           "pad": 0,
-          "flash": 0.009,
-          "peak": 0.2073,
-          "reach": 0.381,
+          "flash": -0.004,
+          "peak": 0.2116,
+          "reach": 0.143,
           "canvas": [
             40,
             40
           ],
-          "reasons": [],
-          "sub": "10b75b93-ac54-4784-b871-93b11b3f1075",
-          "group": "1ad93052-0982-406e-8f42-a3d885cdc2b8",
+          "reasons": [
+            "shallow strike: reach 0.14 — eyeball it"
+          ],
+          "sub": "2042fccc-5d45-497a-9043-8dbc88fb4c66",
+          "group": "1564a7af-c523-45d4-8b52-603e1a3cd03f",
           "takes": 1,
-          "version": 2,
+          "version": 5,
           "mirrored": false,
-          "generated_at": "2026-09-10T20:18:57+00:00",
-          "action": "Shell Butt - Rears its head high and rams forward with its shell, a big aggressive swing",
-          "tries": 1,
-          "rolls": 2,
+          "action": "Shell Butt - Rears its head high and rams forward with its shell",
           "intensity": 1,
-          "rung": 0
+          "rolls": 1,
+          "frames": 5,
+          "rung": 0,
+          "tries": 1,
+          "generated_at": "2026-09-10T21:44:46+00:00"
         },
         "north": {
           "status": "warn",
@@ -1061,34 +1064,37 @@
           "rung": 0
         },
         "north-west": {
-          "status": "pass",
-          "step_mean": 0.1828,
-          "step_max": 0.209,
-          "drift": 1.65,
-          "loop": 0.1177,
-          "loop_ratio": 0.64,
-          "travel": 1.59,
+          "status": "warn",
+          "step_mean": 0.0908,
+          "step_max": 0.1481,
+          "drift": 2.57,
+          "loop": 0.127,
+          "loop_ratio": 1.4,
+          "travel": 0.06,
           "pin": 1.0,
           "pad": 0,
-          "flash": 0.009,
-          "peak": 0.2073,
-          "reach": 0.381,
+          "flash": -0.004,
+          "peak": 0.2116,
+          "reach": 0.143,
           "canvas": [
             40,
             40
           ],
-          "reasons": [],
-          "sub": "10b75b93-ac54-4784-b871-93b11b3f1075",
-          "group": "1ad93052-0982-406e-8f42-a3d885cdc2b8",
+          "reasons": [
+            "shallow strike: reach 0.14 — eyeball it"
+          ],
+          "sub": "2042fccc-5d45-497a-9043-8dbc88fb4c66",
+          "group": "1564a7af-c523-45d4-8b52-603e1a3cd03f",
           "takes": 1,
-          "version": 2,
+          "version": 5,
           "mirrored": true,
-          "generated_at": "2026-09-10T20:18:57+00:00",
-          "action": "Shell Butt - Rears its head high and rams forward with its shell, a big aggressive swing",
-          "tries": 1,
-          "rolls": 2,
+          "action": "Shell Butt - Rears its head high and rams forward with its shell",
           "intensity": 1,
+          "rolls": 1,
+          "frames": 5,
           "rung": 0,
+          "tries": 1,
+          "generated_at": "2026-09-10T21:44:46+00:00",
           "source": "north-east"
         },
         "south-west": {
@@ -1126,7 +1132,7 @@
           "source": "south-east"
         }
       },
-      "action": "Shell Butt - Rears its head high and rams forward with its shell, a big aggressive swing",
+      "action": "Shell Butt - Rears its head high and rams forward with its shell",
       "frame_paths": {
         "south": [
           "moss_snail/animations/attack_try/south/00.webp",

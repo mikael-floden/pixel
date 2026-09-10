@@ -1032,36 +1032,36 @@
         },
         "north": {
           "status": "warn",
-          "step_mean": 0.2961,
-          "step_max": 0.7199,
-          "drift": 5.01,
-          "loop": 0.7996,
-          "loop_ratio": 2.7,
-          "travel": 5.45,
+          "step_mean": 0.3018,
+          "step_max": 0.567,
+          "drift": 10.05,
+          "loop": 0.7325,
+          "loop_ratio": 2.43,
+          "travel": 10.94,
           "pin": 1.0,
-          "pad": 5,
+          "pad": 0,
           "flash": 0.0,
-          "peak": 0.7996,
-          "reach": 0.238,
+          "peak": 0.7325,
+          "reach": 0.262,
           "canvas": [
-            234,
-            234
+            224,
+            224
           ],
           "reasons": [
-            "shallow strike: reach 0.24 — eyeball it",
-            "canvas grown by 5 px a side to hold the motion"
+            "shallow strike: reach 0.26 — eyeball it"
           ],
-          "sub": "8bb03aaa-f458-4bd8-9705-3552b9ae8128",
-          "group": "8ec70fb5-30fb-4754-b7fe-7639ad3504e5",
+          "sub": "3813f8fa-77d1-4059-924c-e39a1977533d",
+          "group": "892238de-e997-44e2-8688-cdb747ec0b0f",
           "takes": 1,
-          "version": 2,
+          "version": 5,
           "mirrored": false,
-          "generated_at": "2026-09-10T20:21:08+00:00",
-          "action": "Branch Smash - Swings one huge branch arm down in a wide overhead smash, a big aggressive swing",
-          "tries": 1,
-          "rolls": 2,
+          "action": "Branch Smash - Swings one huge branch arm down in a wide overhead smash",
           "intensity": 1,
-          "rung": 0
+          "rolls": 1,
+          "frames": 5,
+          "rung": 0,
+          "tries": 1,
+          "generated_at": "2026-09-10T21:46:41+00:00"
         },
         "south-west": {
           "status": "pass",
@@ -1157,7 +1157,7 @@
           "source": "north-east"
         }
       },
-      "action": "Branch Smash - Swings one huge branch arm down in a wide overhead smash, a big aggressive swing",
+      "action": "Branch Smash - Swings one huge branch arm down in a wide overhead smash",
       "frame_paths": {
         "south": [
           "elder_treant/animations/attack_try/south/00.webp",
