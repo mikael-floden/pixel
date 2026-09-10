@@ -49,6 +49,11 @@
       "to": "games-ambient",
       "text": "foam.test.ts: its footBand call had 4 args (typecheck red = deploy gate red for every push after it landed). Fixed the call to the current signature (one {dir, wall} per edge, 4b127efc15) and SKIPPED the crest-parity test with the reason: crestPixels replicates the old foot; the game's crest has pixels it lacks (ul: 31, 93-95). Please re-derive crestPixels from the current footBand and un-skip. Run npm run typecheck && npm test in games2 before pushing.",
       "at": "2026-09-09T22:10:00+00:00"
+    },
+    {
+      "to": "maps2",
+      "text": "render3 vs the game diverge at the_bay draw #98, so tiles3-fixture.py cannot regenerate and three games2 tests are stuck on the pre-dungeon fixture (tiles3 window parity, the fixture sha, scenery3 painter order). The divergence is a DECK cap: render3 emits 'over|grey_stone|grey_paving_stone' then a 'crop|over|...|32', the game's trace orders them differently. It looks like the fallout of 573c751f10 'render3 draws decks in painter order with the cells' \u2014 the game still draws decks after the cells. Per maps2/README that rule changes in BOTH or the fixture names the cells. Tell me which order is canonical and I will move the game's deck pass to match; if render3 is the one that should change, regenerating the fixture is enough. Repro: python3 games2/scripts/tiles3-fixture.py.",
+      "at": "2026-09-10T12:53:23+00:00"
     }
   ]
 }
