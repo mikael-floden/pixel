@@ -178,7 +178,12 @@ verdict comes BEFORE the five states are spent on it.
   the stats all work on it unchanged. Its `path` is `monsters/<id>`, the
   identity it keeps once the agent writes `monster.json`, so no verdict is lost
   in the promotion; a real `monsters/<id>` folder always wins, so there is
-  never a duplicate. It carries `pending: true` and `candidate: <path>`: the
+  never a duplicate. Its state row is in the DOMAIN'S order —
+  `animation_map.json`'s `idle, walk, angry, attack, die`, anything unmapped
+  after it — never the filesystem's, which is alphabetical and had two
+  creatures side by side disagreeing about where idle was (maintainer
+  2026-09-10: "I like the old monsters sort in the animation buttons").
+  It carries `pending: true` and `candidate: <path>`: the
   card shows "in the making", the Animations panel says "more coming", the page
   links back to the 8 directions, and the sort row grows an "in the making
   first" chip. The nav count is the whole list — a design being animated is a

@@ -2794,7 +2794,18 @@ function buildCandidateMonsters(shippedIds) {
     if (!isDir(animRoot)) continue;
     const frameW = c.size?.[0] ?? null, frameH = c.size?.[1] ?? frameW;
     const anims = {};
-    for (const state of listDirs(animRoot)) {
+    // THE STATE ROW IS IN THE DOMAIN'S OWN ORDER, never the filesystem's
+    // (maintainer 2026-09-10: "Why do you sort 'attack, idle, walk' like this
+    // on Ashling and differently on Amethyrn? I like the old monsters sort in
+    // the animation buttons."). A shipped creature's states come from
+    // animation_map.json — idle, walk, angry, attack, die, the order the row
+    // has always had — and listDirs gave the derived ones alphabetical instead,
+    // so two creatures side by side disagreed about where idle was. Anything
+    // the map does not name still follows, so a new state can never vanish.
+    const mapStates = Object.keys(readJson(join(ROOT, "monsters", "animation_map.json"))?.states ?? {});
+    const onDisk = listDirs(animRoot);
+    const ordered = [...mapStates.filter((st) => onDisk.includes(st)), ...onDisk.filter((st) => !mapStates.includes(st))];
+    for (const state of ordered) {
       const dirs = {};
       for (const dir of DIRS) {
         const frameDir = join(animRoot, state, dir);

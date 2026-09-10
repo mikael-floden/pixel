@@ -221,6 +221,15 @@ if (pend.length) {
   ok(page.title === one.name && page.canvas, `${one.name} opens as an ordinary creature page with the animation viewer`);
   ok(Object.keys(one.animations).every((st) => page.states.some((b) => b.toLowerCase() === st.toLowerCase())),
     `every state it has so far is on the state row (${Object.keys(one.animations).join(", ")})`);
+  // THE ROW IS IN THE DOMAIN'S ORDER, THE SAME ON EVERY CREATURE (maintainer
+  // 2026-09-10: "Why do you sort 'attack, idle, walk' like this on Ashling and
+  // differently on Amethyrn? I like the old monsters sort in the animation
+  // buttons."). Alphabetical from the filesystem is the bug this catches.
+  const shipped = DATA_M.find((m) => !m.pending && Object.keys(m.animations ?? {}).length > 1);
+  const rank = Object.keys(shipped?.animations ?? {});
+  const mine = Object.keys(one.animations).map((st) => rank.indexOf(st));
+  ok(rank.length > 1 && mine.every((i) => i >= 0) && mine.every((v, i, a) => !i || a[i - 1] < v),
+    `and in the same order a shipped creature uses (${Object.keys(one.animations).join(", ")} against ${rank.join(", ")})`);
   ok(page.verdict >= 2 && page.note, "it can be judged like any other creature, and says the rest of its animations are coming");
 }
 
