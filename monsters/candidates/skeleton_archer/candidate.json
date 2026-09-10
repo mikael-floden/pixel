@@ -903,37 +903,38 @@
     "attack_try": {
       "directions": {
         "south": {
-          "status": "fail",
-          "step_mean": 0.1935,
-          "step_max": 0.254,
-          "drift": 1.8,
-          "loop": 0.422,
-          "loop_ratio": 2.18,
-          "travel": 1.7,
+          "status": "warn",
+          "step_mean": 0.2895,
+          "step_max": 0.4322,
+          "drift": 5.0,
+          "loop": 0.5862,
+          "loop_ratio": 2.03,
+          "travel": 1.12,
           "pin": 1.0,
-          "pad": 0,
-          "flash": 0.001,
-          "peak": 0.422,
-          "reach": 0.093,
+          "pad": 1,
+          "flash": 0.295,
+          "peak": 0.5862,
+          "reach": 0.295,
           "canvas": [
-            112,
-            112
+            114,
+            114
           ],
           "reasons": [
-            "no strike, just a lean: nothing reaches past 0.09 of the body"
+            "shallow strike: reach 0.29 — eyeball it",
+            "canvas grown by 1 px a side to hold the motion"
           ],
-          "sub": "bd19c171-54a7-4045-b9aa-2a8ad74955a1",
-          "group": "d9741fcb-8772-4fc1-b743-7dacccef0198",
+          "sub": "495904d6-a3a1-4020-8665-95a6189040ed",
+          "group": "d83e465c-6762-4b21-bfad-0d899a3688ed",
           "takes": 1,
-          "version": 4,
+          "version": 5,
           "mirrored": false,
-          "action": "Bow Shot - Draws the bowstring back to its cheek and looses an arrow, a big aggressive swing",
+          "action": "Lunge Attack - Throws its whole body forward in one fast lunge, white swoosh lines trailing behind it, a big aggressive swing",
           "intensity": 1,
-          "rolls": 2,
+          "rolls": 3,
           "frames": 5,
-          "rung": 1,
-          "tries": 2,
-          "generated_at": "2026-09-10T22:18:40+00:00"
+          "rung": 2,
+          "tries": 3,
+          "generated_at": "2026-09-10T22:34:54+00:00"
         },
         "south-east": {
           "status": "warn",

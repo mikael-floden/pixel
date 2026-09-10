@@ -1043,37 +1043,37 @@
           "generated_at": "2026-09-10T21:49:47+00:00"
         },
         "north": {
-          "status": "fail",
-          "step_mean": 0.1029,
-          "step_max": 0.1189,
-          "drift": 1.32,
-          "loop": 0.0457,
-          "loop_ratio": 0.44,
-          "travel": 0.16,
+          "status": "warn",
+          "step_mean": 0.1263,
+          "step_max": 0.2192,
+          "drift": 1.13,
+          "loop": 0.1567,
+          "loop_ratio": 1.24,
+          "travel": 1.14,
           "pin": 1.0,
           "pad": 0,
-          "flash": 0.0,
-          "peak": 0.1723,
-          "reach": 0.107,
+          "flash": 0.182,
+          "peak": 0.1567,
+          "reach": 0.214,
           "canvas": [
             40,
             40
           ],
           "reasons": [
-            "no strike, just a lean: nothing reaches past 0.11 of the body"
+            "shallow strike: reach 0.21 — eyeball it"
           ],
-          "sub": "20a7f81c-15a8-46ce-bacd-2698f4d63e6c",
-          "group": "11a590ca-5df7-4e29-b44c-4900c6bc8069",
+          "sub": "f2690259-7d91-45e5-b79c-94f3b495e0f6",
+          "group": "8432a0c3-38ae-4f13-a165-11a525a43100",
           "takes": 1,
-          "version": 6,
+          "version": 7,
           "mirrored": false,
-          "action": "Bite - Lunges forward and bites hard, embers puffing, a big aggressive swing",
+          "action": "Claw Swipe - Raises one front paw and performs one quick swipe forward, white swoosh lines following the claws, a big aggressive swing",
           "intensity": 1,
-          "rolls": 2,
+          "rolls": 3,
           "frames": 5,
-          "rung": 1,
-          "tries": 2,
-          "generated_at": "2026-09-10T22:14:23+00:00"
+          "rung": 2,
+          "tries": 3,
+          "generated_at": "2026-09-10T22:35:39+00:00"
         },
         "south-west": {
           "status": "warn",

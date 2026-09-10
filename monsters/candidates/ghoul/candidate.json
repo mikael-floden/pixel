@@ -1030,36 +1030,36 @@
         },
         "north": {
           "status": "fail",
-          "step_mean": 0.0804,
-          "step_max": 0.1215,
-          "drift": 1.77,
-          "loop": 0.2039,
-          "loop_ratio": 2.53,
-          "travel": 0.41,
+          "step_mean": 0.1404,
+          "step_max": 0.1585,
+          "drift": 2.32,
+          "loop": 0.2307,
+          "loop_ratio": 1.64,
+          "travel": 0.31,
           "pin": 1.0,
           "pad": 0,
           "flash": -0.004,
-          "peak": 0.2039,
-          "reach": 0.043,
+          "peak": 0.2338,
+          "reach": 0.072,
           "canvas": [
             104,
             104
           ],
           "reasons": [
-            "no strike, just a lean: nothing reaches past 0.04 of the body"
+            "no strike, just a lean: nothing reaches past 0.07 of the body"
           ],
-          "sub": "3b0e4b4f-be46-445b-8c6d-fca6df422f04",
-          "group": "c6ec7b05-63f2-4f1b-a05d-febaa20c47de",
+          "sub": "182c8bf9-0f6c-4af9-8a98-319158ad694c",
+          "group": "3a564e92-6a1b-4a7a-8470-90962c650903",
           "takes": 1,
-          "version": 6,
+          "version": 7,
           "mirrored": false,
-          "action": "Double Claw - Rakes forward with both claws in two fast alternating swipes",
+          "action": "Double Claw - Rakes forward with both claws in two fast alternating swipes, a big aggressive swing",
           "intensity": 1,
-          "rolls": 1,
+          "rolls": 2,
           "frames": 5,
-          "rung": 0,
-          "tries": 1,
-          "generated_at": "2026-09-10T22:19:51+00:00"
+          "rung": 1,
+          "tries": 2,
+          "generated_at": "2026-09-10T22:36:05+00:00"
         },
         "west": {
           "status": "pass",

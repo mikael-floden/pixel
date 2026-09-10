@@ -909,36 +909,36 @@
       "directions": {
         "south": {
           "status": "fail",
-          "step_mean": 0.2734,
-          "step_max": 0.4167,
-          "drift": 4.7,
-          "loop": 0.5286,
-          "loop_ratio": 1.93,
-          "travel": 0.25,
+          "step_mean": 0.2356,
+          "step_max": 0.4799,
+          "drift": 2.86,
+          "loop": 0.5086,
+          "loop_ratio": 2.16,
+          "travel": 0.56,
           "pin": 1.0,
           "pad": 0,
-          "flash": 0.104,
-          "peak": 0.5286,
-          "reach": 0.124,
+          "flash": 0.037,
+          "peak": 0.5086,
+          "reach": 0.071,
           "canvas": [
             224,
             224
           ],
           "reasons": [
-            "no strike, just a lean: nothing reaches past 0.12 of the body"
+            "no strike, just a lean: nothing reaches past 0.07 of the body"
           ],
-          "sub": "d994f25e-5561-49df-b2f3-2746c4960574",
-          "group": "2919ad52-a3e9-4af4-9c53-84ed5ec24b48",
+          "sub": "b2d949ab-c181-482b-bb02-ffecaab27aa3",
+          "group": "8673c7ac-cd74-4473-98f8-22d42969eaf0",
           "takes": 1,
-          "version": 6,
+          "version": 7,
           "mirrored": false,
-          "action": "Root Sweep - The treant swings both branch arms down in a huge arc, leaves and splinters bursting off, a huge aggressive attack with the whole body behind it, wide exaggerated motion",
+          "action": "Root Sweep - The treant swings both branch arms down in a huge arc, leaves and splinters bursting off, an extremely violent attack, huge exaggerated motion, the limb thrown far out",
           "intensity": 1,
-          "rolls": 5,
+          "rolls": 6,
           "frames": 5,
-          "rung": 4,
-          "tries": 5,
-          "generated_at": "2026-09-10T22:11:23+00:00"
+          "rung": 5,
+          "tries": 6,
+          "generated_at": "2026-09-10T22:33:55+00:00"
         },
         "south-east": {
           "status": "pass",

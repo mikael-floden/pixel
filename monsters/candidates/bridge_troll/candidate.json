@@ -905,37 +905,38 @@
     "attack_try": {
       "directions": {
         "south": {
-          "status": "fail",
-          "step_mean": 0.1412,
-          "step_max": 0.3492,
-          "drift": 5.34,
-          "loop": 0.2502,
-          "loop_ratio": 1.77,
-          "travel": 5.92,
+          "status": "warn",
+          "step_mean": 0.0828,
+          "step_max": 0.2309,
+          "drift": 2.47,
+          "loop": 0.2129,
+          "loop_ratio": 2.57,
+          "travel": 4.27,
           "pin": 1.0,
-          "pad": 0,
-          "flash": -0.001,
-          "peak": 0.3385,
-          "reach": 0.084,
+          "pad": 7,
+          "flash": 0.385,
+          "peak": 0.2129,
+          "reach": 0.385,
           "canvas": [
-            136,
-            136
+            150,
+            150
           ],
           "reasons": [
-            "no strike, just a lean: nothing reaches past 0.08 of the body"
+            "some bright effect pixels (0.39) — eyeball it",
+            "canvas grown by 7 px a side to hold the motion"
           ],
-          "sub": "41ae7975-1657-4a70-bc50-29175eee303e",
-          "group": "f3ca4c4b-fbd3-4d06-af7e-139c21e0fd6e",
+          "sub": "ae3984aa-47fb-4920-ac0c-15d986dd255c",
+          "group": "618efe05-9d76-4320-9e0c-b1e4ff3bf7f1",
           "takes": 1,
-          "version": 6,
+          "version": 7,
           "mirrored": false,
-          "action": "Chain Lash - Whips the iron chain out forward in one heavy lash, a big aggressive swing",
+          "action": "Claw Swipe - Raises one front paw and performs one quick swipe forward, white swoosh lines following the claws, a big aggressive swing",
           "intensity": 1,
-          "rolls": 2,
+          "rolls": 3,
           "frames": 9,
-          "rung": 1,
-          "tries": 2,
-          "generated_at": "2026-09-10T22:17:36+00:00"
+          "rung": 2,
+          "tries": 3,
+          "generated_at": "2026-09-10T22:37:42+00:00"
         },
         "south-east": {
           "status": "warn",
@@ -1035,37 +1036,37 @@
           "generated_at": "2026-09-10T22:17:37+00:00"
         },
         "north": {
-          "status": "fail",
-          "step_mean": 0.1405,
-          "step_max": 0.2263,
-          "drift": 9.3,
-          "loop": 0.2872,
-          "loop_ratio": 2.04,
-          "travel": 10.79,
+          "status": "warn",
+          "step_mean": 0.1859,
+          "step_max": 0.3469,
+          "drift": 8.43,
+          "loop": 0.0933,
+          "loop_ratio": 0.5,
+          "travel": 11.97,
           "pin": 1.0,
           "pad": 0,
-          "flash": 0.0,
-          "peak": 0.3984,
-          "reach": 0.137,
+          "flash": 0.27,
+          "peak": 0.3376,
+          "reach": 0.27,
           "canvas": [
             136,
             136
           ],
           "reasons": [
-            "no strike, just a lean: nothing reaches past 0.14 of the body"
+            "shallow strike: reach 0.27 — eyeball it"
           ],
-          "sub": "81a734a1-bfa6-4574-b8a4-fac67058ad51",
-          "group": "7415e1a3-97bb-4fe1-acd4-aa9b195cd936",
+          "sub": "97e845ac-bf1d-40e0-9a61-f25f343bc302",
+          "group": "422675a3-dfde-45ef-9c72-f6a7955d9a42",
           "takes": 1,
-          "version": 6,
+          "version": 7,
           "mirrored": false,
-          "action": "Chain Lash - Whips the iron chain out forward in one heavy lash, a big aggressive swing",
+          "action": "Claw Swipe - Raises one front paw and performs one quick swipe forward, white swoosh lines following the claws, a big aggressive swing",
           "intensity": 1,
-          "rolls": 5,
+          "rolls": 6,
           "frames": 9,
-          "rung": 1,
-          "tries": 5,
-          "generated_at": "2026-09-10T22:17:38+00:00"
+          "rung": 2,
+          "tries": 6,
+          "generated_at": "2026-09-10T22:37:42+00:00"
         },
         "west": {
           "status": "warn",
