@@ -911,36 +911,36 @@
       "directions": {
         "south": {
           "status": "fail",
-          "step_mean": 0.1341,
-          "step_max": 0.1906,
-          "drift": 1.56,
-          "loop": 0.0592,
-          "loop_ratio": 0.44,
-          "travel": 0.36,
+          "step_mean": 0.114,
+          "step_max": 0.1256,
+          "drift": 0.87,
+          "loop": 0.0853,
+          "loop_ratio": 0.75,
+          "travel": 0.17,
           "pin": 1.0,
           "pad": 0,
-          "flash": 0.001,
-          "peak": 0.2383,
-          "reach": 0.047,
+          "flash": -0.0,
+          "peak": 0.1549,
+          "reach": 0.035,
           "canvas": [
             96,
             96
           ],
           "reasons": [
-            "no strike, just a lean: nothing reaches past 0.05 of the body"
+            "no strike, just a lean: nothing reaches past 0.03 of the body"
           ],
-          "sub": "9a5d3acf-31fb-41fa-be79-44a0d74b0499",
-          "group": "27c9a3a7-009a-4e97-b912-a06cb71ecdc2",
+          "sub": "ccb7c036-d13a-42de-a755-b9096166dd0f",
+          "group": "745a620a-3bfa-4aac-b4da-d6b0779c0f06",
           "takes": 1,
-          "version": 5,
+          "version": 6,
           "mirrored": false,
-          "action": "Lunge Attack - Throws its whole body forward in one fast lunge, white swoosh lines trailing behind it, a big aggressive swing",
+          "action": "Tentacle Storm - The octopus rears its whole mantle up and hurls every tentacle forward at once, water bursting out",
           "intensity": 1,
-          "rolls": 3,
+          "rolls": 4,
           "frames": 5,
-          "rung": 2,
-          "tries": 3,
-          "generated_at": "2026-09-10T21:46:33+00:00"
+          "rung": 3,
+          "tries": 4,
+          "generated_at": "2026-09-10T22:10:05+00:00"
         },
         "south-east": {
           "status": "warn",
@@ -977,37 +977,38 @@
           "generated_at": "2026-09-10T21:46:34+00:00"
         },
         "east": {
-          "status": "fail",
-          "step_mean": 0.1694,
-          "step_max": 0.2496,
-          "drift": 3.07,
-          "loop": 0.0634,
-          "loop_ratio": 0.37,
-          "travel": 2.96,
+          "status": "warn",
+          "step_mean": 0.0799,
+          "step_max": 0.1316,
+          "drift": 1.52,
+          "loop": 0.1706,
+          "loop_ratio": 2.14,
+          "travel": 1.48,
           "pin": 1.0,
           "pad": 0,
-          "flash": 0.016,
-          "peak": 0.248,
-          "reach": 0.072,
+          "flash": 0.235,
+          "peak": 0.1706,
+          "reach": 0.235,
           "canvas": [
             96,
             96
           ],
           "reasons": [
-            "no strike, just a lean: nothing reaches past 0.07 of the body"
+            "motion 0.080 outside the calm band 0.08–0.9 — eyeball it",
+            "shallow strike: reach 0.23 — eyeball it"
           ],
-          "sub": "b9fdb518-c408-4299-acfb-cb5fe0dc911f",
-          "group": "afef2d77-7c17-4ecd-83e3-670ebcb400e3",
+          "sub": "ab617592-afde-4824-88d5-1ec1387a61b2",
+          "group": "759427d5-3b63-4478-8445-744bb5b4e4cc",
           "takes": 1,
-          "version": 5,
+          "version": 6,
           "mirrored": false,
-          "action": "Lunge Attack - Throws its whole body forward in one fast lunge, white swoosh lines trailing behind it, a big aggressive swing",
+          "action": "Tentacle Storm - The octopus rears its whole mantle up and hurls every tentacle forward at once, water bursting out",
           "intensity": 1,
-          "rolls": 3,
+          "rolls": 4,
           "frames": 5,
-          "rung": 2,
-          "tries": 3,
-          "generated_at": "2026-09-10T21:46:35+00:00"
+          "rung": 3,
+          "tries": 4,
+          "generated_at": "2026-09-10T22:10:06+00:00"
         },
         "north-east": {
           "status": "warn",
@@ -1043,37 +1044,39 @@
           "generated_at": "2026-09-10T21:46:35+00:00"
         },
         "north": {
-          "status": "fail",
-          "step_mean": 0.1073,
-          "step_max": 0.1238,
-          "drift": 2.88,
-          "loop": 0.0949,
-          "loop_ratio": 0.88,
-          "travel": 0.52,
+          "status": "warn",
+          "step_mean": 0.0791,
+          "step_max": 0.0927,
+          "drift": 2.83,
+          "loop": 0.1032,
+          "loop_ratio": 1.3,
+          "travel": 0.39,
           "pin": 1.0,
           "pad": 0,
-          "flash": 0.065,
-          "peak": 0.1619,
-          "reach": 0.065,
+          "flash": 0.295,
+          "peak": 0.1142,
+          "reach": 0.295,
           "canvas": [
             96,
             96
           ],
           "reasons": [
-            "no strike, just a lean: nothing reaches past 0.07 of the body"
+            "motion 0.079 outside the calm band 0.08–0.9 — eyeball it",
+            "weak strike: peak 0.114 — eyeball it",
+            "shallow strike: reach 0.30 — eyeball it"
           ],
-          "sub": "a7a53261-a50d-4108-a9c0-5088c6f9dde2",
-          "group": "3c09dab8-77dc-4e0d-b83a-b3407fc9129f",
+          "sub": "21150047-13f0-43ec-9b09-39ace70b5c35",
+          "group": "bc10bd83-44a0-4215-8fc9-236b93abebc8",
           "takes": 1,
-          "version": 5,
+          "version": 6,
           "mirrored": false,
-          "action": "Lunge Attack - Throws its whole body forward in one fast lunge, white swoosh lines trailing behind it, a big aggressive swing",
+          "action": "Tentacle Storm - The octopus rears its whole mantle up and hurls every tentacle forward at once, water bursting out",
           "intensity": 1,
-          "rolls": 3,
+          "rolls": 4,
           "frames": 5,
-          "rung": 2,
-          "tries": 3,
-          "generated_at": "2026-09-10T21:46:36+00:00"
+          "rung": 3,
+          "tries": 4,
+          "generated_at": "2026-09-10T22:10:06+00:00"
         },
         "south-west": {
           "status": "warn",
@@ -1143,6 +1146,41 @@
           "tries": 3,
           "generated_at": "2026-09-10T21:46:35+00:00",
           "source": "north-east"
+        },
+        "west": {
+          "status": "warn",
+          "step_mean": 0.0799,
+          "step_max": 0.1316,
+          "drift": 1.52,
+          "loop": 0.1706,
+          "loop_ratio": 2.14,
+          "travel": 1.48,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": 0.235,
+          "peak": 0.1706,
+          "reach": 0.235,
+          "canvas": [
+            96,
+            96
+          ],
+          "reasons": [
+            "motion 0.080 outside the calm band 0.08–0.9 — eyeball it",
+            "shallow strike: reach 0.23 — eyeball it"
+          ],
+          "sub": "ab617592-afde-4824-88d5-1ec1387a61b2",
+          "group": "759427d5-3b63-4478-8445-744bb5b4e4cc",
+          "takes": 1,
+          "version": 6,
+          "mirrored": true,
+          "action": "Tentacle Storm - The octopus rears its whole mantle up and hurls every tentacle forward at once, water bursting out",
+          "intensity": 1,
+          "rolls": 4,
+          "frames": 5,
+          "rung": 3,
+          "tries": 4,
+          "generated_at": "2026-09-10T22:10:06+00:00",
+          "source": "east"
         }
       },
       "action": "Tentacle Lash - Rears up high and whips two tentacles forward",
@@ -1195,6 +1233,13 @@
           "octopus/animations/attack_try/north-west/02.webp",
           "octopus/animations/attack_try/north-west/03.webp",
           "octopus/animations/attack_try/north-west/04.webp"
+        ],
+        "west": [
+          "octopus/animations/attack_try/west/00.webp",
+          "octopus/animations/attack_try/west/01.webp",
+          "octopus/animations/attack_try/west/02.webp",
+          "octopus/animations/attack_try/west/03.webp",
+          "octopus/animations/attack_try/west/04.webp"
         ]
       },
       "strips": {
@@ -1204,7 +1249,8 @@
         "north-east": "octopus/animations/attack_try__north-east.webp",
         "north": "octopus/animations/attack_try__north.webp",
         "south-west": "octopus/animations/attack_try__south-west.webp",
-        "north-west": "octopus/animations/attack_try__north-west.webp"
+        "north-west": "octopus/animations/attack_try__north-west.webp",
+        "west": "octopus/animations/attack_try__west.webp"
       },
       "intensity": 1
     }
