@@ -362,15 +362,21 @@ for (const scheme of ["light", "dark"]) {
   ok(!/judged-ok/.test(one.cls), `${scheme}: one direction of eight does NOT turn the state green (${one.title})`);
   ok(/judged-ok/.test(one.dirCls), `${scheme}: but that DIRECTION goes green immediately (${one.dirCls})`);
   ok(contrast(one.dirColor, one.bg) >= 3, `${scheme}: and it is legible on this theme (contrast ${contrast(one.dirColor, one.bg).toFixed(1)}:1 against the page)`);
-  // Reject it — red outranks, because a rejection is the thing not to lose.
-  await tp.evaluate(() => [...document.querySelectorAll(".facet-head .fb-row button")].find((x) => /✕/.test(x.textContent)).click());
+  // REDO IT — the verdict an animation actually gets, since 2026-09-10 the
+  // per-animation row has no remove at all ("The individual animations should
+  // only have a REDO. Not a remove!"). It outranks an approval on the same
+  // chip: it is the one still owed.
+  await tp.evaluate(() => [...document.querySelectorAll(".facet-head .fb-row button")].find((x) => /↻/.test(x.textContent)).click());
   await tp.waitForTimeout(350);
   const no = await chip();
-  ok(/judged-no/.test(no.cls) && /judged-no/.test(no.dirCls), `${scheme}: a rejection shows on the state as well as the direction (${no.title})`);
-  ok(contrast(no.color, no.bg) >= 3, `${scheme}: red is legible too (contrast ${contrast(no.color, no.bg).toFixed(1)}:1)`);
+  ok(!/✕/.test(await tp.evaluate(() => [...document.querySelectorAll(".facet-head .fb-row button")].map((x) => x.textContent).join(" "))),
+    `${scheme}: one animation cannot be REMOVED — the row is approve + redo`);
+  ok(/judged-redo/.test(no.cls) && /judged-redo/.test(no.dirCls), `${scheme}: a redo shows on the state as well as the direction (${no.title})`);
+  ok(contrast(no.color, no.bg) >= 3, `${scheme}: and it is legible too (contrast ${contrast(no.color, no.bg).toFixed(1)}:1)`);
   ok(no.color !== plain.color && one.dirColor !== plain.color, `${scheme}: judged and unjudged really are different colours`);
   // Clearing it puts the chip back to plain — the mark tracks the verdict.
-  await tp.evaluate(() => [...document.querySelectorAll(".facet-head .fb-row button")].find((x) => /✕/.test(x.textContent)).click());
+  // (Pressing redo again is how it is cleared: the button toggles.)
+  await tp.evaluate(() => [...document.querySelectorAll(".facet-head .fb-row button")].find((x) => /↻/.test(x.textContent)).click());
   await tp.waitForTimeout(350);
   ok(!/judged/.test((await chip()).dirCls), `${scheme}: clearing the verdict clears the colour`);
   ok(terrs.length === 0, `${scheme}: no page errors${terrs.length ? ` — ${terrs[0]}` : ""}`);

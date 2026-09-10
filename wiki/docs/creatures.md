@@ -2,6 +2,27 @@
 
 The shadow editor, the animation viewer, the showcase, usage stats and the review idioms of the creature pages. Moved verbatim out of `wiki/README.md` (2026-09-09), which keeps the rules and points here; rewrite in place under the root doc law.
 
+## One animation is REDONE, never removed
+
+The per-animation row — one state in one direction, the unit the agent
+regenerates — is **approve + redo**. There is no remove on it (maintainer
+2026-09-10: "The individual animations should only have a REDO. Not a
+remove!"): you do not delete one facing of a creature's walk, you ask for
+another take of it. Removal is a verdict about the WHOLE creature and lives on
+the row beside its name, which still carries it.
+
+- `redo` on `<path>#<state>#<dir>` in `live/feedback/<domain>.json`, stamped
+  with that clip's own art hash, is the producing agent's cue to regenerate
+  exactly that clip and nothing else.
+- A row whose verdict ALREADY says `rejected` still shows its remove button, so
+  an old removal can be cleared rather than stranded on a row that can no
+  longer set one.
+- The chip carries it: a state or direction with a redo wears `judged-redo`
+  (the accent ink every warn pill uses), and a redo OUTRANKS an approval on the
+  same chip — it is the one still owed. Green means settled, red means gone.
+- The SCENERY state row is the one review that keeps both (maintainer
+  2026-09-03) — there, remove deletes a state the piece can do without.
+
 ## A deleted piece LEAVES the wiki — it does not become a tombstone
 
 **The admin reads ART from HEAD of main and the PIECE LIST from the deployed
@@ -250,9 +271,12 @@ to the whole roster.
 
 THE ANIMATION HE IS REVIEWING SURVIVES THE PAGE (maintainer 2026-09-10: "going
 to the next page should still show the attack animation if I was on the attack
-animation"). `makePlayer` opens on the last state he picked, remembered per KIND
-(`wiki-viewer-state-<kind>`; a scenery piece's states are not a creature's) and
-only when the entity actually has it — else idle, else its first state.
+animation"). `makePlayer` opens on the last state he picked, remembered per KIND and only for
+CREATURES (`wiki-viewer-state-monster` / `-character`), whose five states are
+one fixed vocabulary; a scenery piece's states are numbered per piece
+(`lit_2`, `not_lit_3`) so carrying one across pieces lands him somewhere else
+each time. Only honoured when the entity has that state — else idle, else its
+first.
 
 
 Maintainer 2026-08-22: *"If I login with admin the monster page should make it

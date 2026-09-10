@@ -232,6 +232,20 @@ if (pend.length) {
     `and in the same order a shipped creature uses (${Object.keys(one.animations).join(", ")} against ${rank.join(", ")})`);
   ok(page.verdict >= 2 && page.note, "it can be judged like any other creature, and says the rest of its animations are coming");
 
+  // ONE ANIMATION IS REDONE, NEVER REMOVED (maintainer 2026-09-10: "The
+  // individual animations should only have a REDO. Not a remove!"). Removal is
+  // a verdict about the whole creature and stays on the row beside its name.
+  const rows = await p.evaluate(() => [...document.querySelectorAll(".fb-row")].map((r) => ({
+    facet: !!r.closest(".facet-head"),
+    buttons: [...r.querySelectorAll(".verdict button")].map((b) => b.textContent.trim()),
+  })));
+  console.log("rows:", JSON.stringify(rows));
+  const facetRow = rows.find((r) => r.facet), wholeRow = rows.find((r) => !r.facet);
+  ok(facetRow && facetRow.buttons.some((b) => /redo/.test(b)) && !facetRow.buttons.some((b) => /remove/.test(b)),
+    `the per-animation row is approve + redo, with no remove (${facetRow?.buttons.join(" | ")})`);
+  ok(wholeRow && wholeRow.buttons.some((b) => /remove/.test(b)),
+    `while the creature as a whole can still be removed (${wholeRow?.buttons.join(" | ")})`);
+
   // "IN THE MAKING" IS A FILTER, AND IT FOLLOWS HIM (maintainer 2026-09-10:
   // "If I press in the making you still say 'all 94'. With that filter it
   // can't be 94." / "after I click on a monster and click 'next next next' the

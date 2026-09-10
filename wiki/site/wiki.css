@@ -575,6 +575,13 @@ button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 .seg button.on.judged-no, .dirpad button.on.judged-no { color: var(--bad); }
 .dirpad button.judged-ok { border-color: var(--good); }
 .dirpad button.judged-no { border-color: var(--bad); }
+/* REDO IS ITS OWN MARK. The per-animation row has no remove, so redo is the
+   verdict a bad clip gets, and it is neither settled (green) nor gone (red) —
+   it is the one still owed. The accent ink is the page's own "your attention"
+   colour, already carried by every warn pill. */
+.seg button.judged-redo, .dirpad button.judged-redo { color: var(--accent-ink); font-weight: 600; }
+.seg button.on.judged-redo, .dirpad button.on.judged-redo { color: var(--accent-ink); }
+.dirpad button.judged-redo { border-color: var(--accent); }
 
 /* ---- feedback controls ---- */
 /* BIG ENOUGH TO HIT (maintainer 2026-08-14: "I also want all stars in the

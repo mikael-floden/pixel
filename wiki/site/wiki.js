@@ -730,7 +730,14 @@ function verdictWidget(domain, id, { onchange, onStarChange = onchange, reject =
       // always 'unstar'"). Removing it is the last thing he will say about it,
       // so a rating left behind would outlive the thing it rated — and on the
       // star filters it would keep reading as a piece he liked.
-      h("button", { class: `reject-btn${st === "rejected" ? " rejected" : ""}`, title: rejectTitle, onclick: (e) => {
+      // REDO-ONLY ROWS HAVE NO REMOVE (maintainer 2026-09-10: "The individual
+      // animations should only have a REDO. Not a remove!"). You do not delete
+      // one animation of a creature — you ask for another take of it, and the
+      // creature as a whole is where removal lives. A verdict that ALREADY says
+      // rejected still shows its button, so an old removal can never be stuck
+      // on a row that can no longer set one.
+      reject === false && st !== "rejected" ? null
+      : h("button", { class: `reject-btn${st === "rejected" ? " rejected" : ""}`, title: rejectTitle, onclick: (e) => {
         e.stopPropagation();
         const on = st === "rejected";
         setFb(domain, id, on ? { status: null } : { status: "rejected", rating: null, ...(stamp ?? {}) });
@@ -1586,7 +1593,7 @@ function clearShadow(entity) {
 const FACET_DOMAIN = { monster: "monsters", character: "characters", object: "objects" };
 function facetMark(domain, path, state, dirs, entity) {
   if (!domain || !path || !dirs.length) return { cls: "", title: null };
-  let approved = 0, rejected = 0, stale = 0;
+  let approved = 0, rejected = 0, stale = 0, redo = 0;
   for (const d of dirs) {
     const e = fb(domain, `${path}#${state}#${d}`);
     // Regenerated since it was judged: it reads as unjudged, because that is
@@ -1595,10 +1602,16 @@ function facetMark(domain, path, state, dirs, entity) {
     if (entity && (e.status || e.rating) && facetStale(entity, state, d, e)) { stale++; continue; }
     if (e.status === "approved") approved++;
     else if (e.status === "rejected") rejected++;
+    // REDO IS THE VERDICT AN ANIMATION GETS (the row has no remove), so the
+    // chip has to carry it — otherwise the one thing he says about a bad walk
+    // leaves the state row looking untouched.
+    else if (e.status === "redo") redo++;
   }
   const of = dirs.length === 1 ? "" : ` of ${dirs.length} directions`;
   const note = stale ? ` — ${stale} regenerated since, needs another look` : "";
   if (rejected) return { cls: "judged-no", title: `${rejected}${of} rejected${note}` };
+  // A redo outranks an approval on the same chip: it is the one still owed.
+  if (redo) return { cls: "judged-redo", title: `${redo}${of} to be redone${note}` };
   if (approved === dirs.length) return { cls: "judged-ok", title: `approved${of ? ` (all ${dirs.length} directions)` : ""}` };
   if (stale) return { cls: "", title: `judged before the art was regenerated${of} — needs another look` };
   if (approved) return { cls: "", title: `${approved}${of} approved — not finished` };
@@ -1610,11 +1623,21 @@ function facetMark(domain, path, state, dirs, entity) {
  * page should still show the attack animation if I was on the attack
  * animation"). Reviewing is one state across many creatures — attack after
  * attack after attack — and every page opening on idle made that four taps per
- * creature. Remembered per KIND, because a scenery piece's states are not a
- * creature's, and only honoured when the creature actually HAS that state. */
+ * creature. Remembered per KIND and only for CREATURES, whose five states are
+ * one fixed vocabulary; a scenery piece's states are its own (lit_2, not_lit_3,
+ * numbered per piece), so carrying one across pieces would land him on a
+ * different thing each time rather than the same one. Only honoured when the
+ * entity actually has that state. */
+const VIEWER_STATE_KINDS = new Set(["monster", "character"]);
 const VIEWER_STATE_KEY = (kind) => `wiki-viewer-state-${kind}`;
-const lastViewerState = (kind) => { try { return localStorage.getItem(VIEWER_STATE_KEY(kind)); } catch { return null; } };
-const rememberViewerState = (kind, st) => { try { localStorage.setItem(VIEWER_STATE_KEY(kind), st); } catch { /* private mode */ } };
+const lastViewerState = (kind) => {
+  if (!VIEWER_STATE_KINDS.has(kind)) return null;
+  try { return localStorage.getItem(VIEWER_STATE_KEY(kind)); } catch { return null; }
+};
+const rememberViewerState = (kind, st) => {
+  if (!VIEWER_STATE_KINDS.has(kind)) return;
+  try { localStorage.setItem(VIEWER_STATE_KEY(kind), st); } catch { /* private mode */ }
+};
 function makePlayer(entity, kind, opts = {}) {
   const anims = entity.animations;
   const stateNames = Object.keys(anims);
@@ -6121,8 +6144,13 @@ function viewMonster(id) {
       // since regenerated.
       stamp: { art: m.animations?.[st]?.dirs?.[dir]?.h ?? null },
       stale: () => facetStale(m, st, dir, fb("monsters", `${m.path}#${st}#${dir}`)),
-      rejectTitle: `Reject just this one — ${stateLabel(st)} facing ${dir} — for the monsters agent to regenerate`,
+      // ONE ANIMATION IN ONE DIRECTION IS REDONE, NEVER REMOVED — see the
+      // widget. Removal is a verdict about the whole creature and lives on the
+      // row beside its name.
+      reject: false,
+      rejectTitle: `Slated for removal — clear it here; this row only asks for redos now`,
       rejectedLabel: "slated for removal",
+      redo: { label: "↻ redo", title: `Ask the monsters agent for another take of just this one — ${stateLabel(st)} facing ${dir}. Nothing is deleted.`, doneLabel: "another take requested" },
     }));
   };
   player.onFacetChange = renderFacet;
@@ -6344,8 +6372,13 @@ function viewCharacter(id) {
       // since regenerated.
       stamp: { art: c.animations?.[st]?.dirs?.[dir]?.h ?? null },
       stale: () => facetStale(c, st, dir, fb("characters", `${c.path}#${st}#${dir}`)),
-      rejectTitle: `Reject just this one — ${stateLabel(st)} facing ${dir} — for the characters agent to regenerate`,
+      // ONE ANIMATION IN ONE DIRECTION IS REDONE, NEVER REMOVED — see the
+      // widget. Removal is a verdict about the whole creature and lives on the
+      // row beside its name.
+      reject: false,
+      rejectTitle: `Slated for removal — clear it here; this row only asks for redos now`,
       rejectedLabel: "slated for removal",
+      redo: { label: "↻ redo", title: `Ask the characters agent for another take of just this one — ${stateLabel(st)} facing ${dir}. Nothing is deleted.`, doneLabel: "another take requested" },
     }));
   };
   player.onFacetChange = renderFacet;
