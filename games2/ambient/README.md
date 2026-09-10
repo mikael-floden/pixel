@@ -60,6 +60,14 @@ them; folder isolation beats DRY here).
   source — they sit above the darkness overlay — which is the wall-hack the
   cut-away exists to prevent. Everything that fills the air keeps the plain
   outdoor rule.
+- **`runtime/water.ts`** answers the two water questions no feature can derive:
+  is this point swimmable, and is it the OPEN SEA (`deepCurrentAtScreen`, a
+  non-null moving answer). `water` and `deep_water` carry identical Surface
+  records, so the split between the lake chop and the seaward current is a
+  contract, not a detail — anything new that draws on water inherits it.
+  `findLake` takes SEPARATE x and y margins: the projection squashes y by
+  14/32, so a mark reaching 15 px sideways reaches 7 down the screen, and one
+  symmetric margin refuses most of a real pond for clearance it never needed.
 - **The coast is in the artwork, not on the grid**, and `foam/` is the first
   feature that reads it: `__ml.t3at(col,row)` names a boundary tile's Wang
   index and mask frame, and the tiles domain's published mask sheet
@@ -193,7 +201,7 @@ decision; an earlier version that jumped the world to each effect's
 
   `AUTO → NONE → <each feature in registry order> → AUTO`
 
-  (currently fireflies, pollen, water, deepwater, foam, ants, spiders, moths,
+  (currently fireflies, pollen, water, deepwater, foam, fish, ants, spiders, moths,
   gnats, crabs, bubbles, embers, bats, birds,
   thunder, sandstorm, leaves — the ring is built from `index.ts`, so a new
   folder joins it automatically.)
@@ -264,6 +272,7 @@ controller (AUTO / NONE / solo-each).
 | `bubbles/` | field | A STRING FROM THE DEEP — bubbles climbing out of one spot on the open sea, growing and sharpening as they rise, bursting into a ring at the top, leaning downstream on the real current | Open sea only (`deepCurrentAtScreen`); nothing at all over land |
 | `embers/` | field | SPARKS OFF A FIRE — they leave the flame, rise on its heat and slow, cool from the fire's own colour toward deep red, and wink out; a blue flame throws blue sparks | Outdoor, unsealed sources whose published `light.embers` is true (a lantern is a fire and throws none); night-leaning, never off by day |
 | `foam/` | field | SEA FOAM — the white line where moving water meets land, alive: a one-pixel band hugging the coast seam and the wall's crest, a train of crest lines sliding in from a few pixels out, the band swelling as each arrives (onto the sand over a beach; thick and bright against a wall), in a slow sweep along the coast. Solid contours only, Wind Waker not grain (maintainer's picks) | Any water/land edge in view — the composed boundary seam (mask sheet) and the wall foot's crest (`footBand` replicated, parity-tested); outdoors |
+| `fish/` | field | THE RISE — a fish takes a fly: a dorsal fin breaks the surface, a tail flicks a beat later, and two or three rings leave the spot and widen until they fade; the harder takes throw a few specks of water. Rings are ISO ELLIPSES (a circle stands up out of the lake like a hoop) at whole-pixel radii, the lead ring big and the followers smaller so nested rings stay legible | Lakes and shallows only (`runtime/water.ts`; the open sea is `deepwater/`'s), outdoors. Peaks at dawn and dusk on a bump in the sun, never zero, hidden by heavy rain |
 | `water/` | field | Living water — pixel-art wavelets + sun/moon reflection glints (frame-animated, full-pixel, no sub-px slide) | LAKES AND SHALLOWS: water on screen (iso probe) MINUS anywhere the deep-sea current runs — the open sea is `deepwater/`'s |
 | `bats/` | episode | Night colony wheeling: boids in any direction (top-down), erratic jinking, scattering near the player (no landing) | base 1.0; day ×0.01 |
 | `birds/` | episode | Living day flock: boids over the world, landing on dry ground to peck, flushing near the player | base 1.0; night ×0.05 |
@@ -355,7 +364,13 @@ effect mid-flight. Always eyeball a new visual effect this way before
 shipping.
 
 Per-feature browser gates live in `games2/scripts/verify-<feature>.mjs`
-(embers, moths, foam, …). `verify-foam.mjs` judges the coast band and the wall
+(embers, moths, foam, fish, …). A pixel arm's BOX IS THE GAME AREA, never the
+screen: at the 480x320 QA viewport the camera shows 198 px of world and the
+rest is HUD, where the chat line rewrites itself while the gate runs — judging
+the whole screen measured that text and read 243.6 with the control at 243.6.
+Nor can an animation be judged in the PHONE viewport: a screenshot there takes
+about 8 s, so a 2 s effect is one frame. Shape and timing are shot at 480x320,
+framing at the phone size, as a still. `verify-foam.mjs` judges the coast band and the wall
 crest by the OFF-envelope pixel technique, with open-water and dry-sand
 controls, a depth check, motion, and the idle cost. `server/test/foam.test.ts`
 composes the game's own `footBand` and asserts the foam's crest is the same
