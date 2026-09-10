@@ -331,30 +331,33 @@ python monsters/pipeline/animate.py discard --state attack  # v2 thrown away, v1
   The review page takes a slot name, so `attack_try` can be reviewed before
   it is promoted.
 
-### Skeleton template animations (`mode: "template"`)
+### Skeleton template animations (`mode: "template"`) — measured, not used
 
 PixelLab also animates from a library of SKELETON-driven templates, 1
-generation per direction, no prompt. The library is **per skeleton**, not
-global — the character's `template_id` decides it:
+generation per direction, no prompt. The library is **per skeleton**: the
+character's `template_id` decides it, and the list in the API docs is neither
+complete nor right for a given character.
 
 | skeleton | of the 39 | attack-ish templates |
 |---|---|---|
 | `mannequin` | 23 | `cross-punch`, `high-kick`, `flying-kick`, `hurricane-kick`, `fireball` |
 | `bear` | 15 | `attack-left`, `attack-right`, `jump-attack` |
-| `dog` | 1 (Ghost Hound) | none — v3 only |
+| `dog` | 1 (Ghost Hound) | none |
 
-An invalid id is rejected with that skeleton's valid list, which is how the
-list is read (the generic list in the API docs is neither complete nor
-right for a given character). **Never probe with a fake direction**: a valid
-template with a bad direction starts a job that never finishes, there is no
-cancel endpoint, deleting its animation group does not release it, and 20
-such jobs exhaust the account's concurrency for everything (measured
-2026-09-10, cost: ~40 minutes of a blocked pipeline).
+**It does not solve the compact-creature problem** (measured 2026-09-10):
+`attack-right` on Tide Crab moved the body 5 px and never touched the claws,
+reach 0.056 — worse than the v3 prompt it was meant to rescue. The templates
+are rigged for the SKELETON, not the silhouette, so a crab on a bear rig gets
+a bear's weight shift. The maintainer's route is what works: the logical
+attack, then a simpler one with swoosh lines, rolled many times.
 
-Cost: walk (6 frames) and attack (5) bill the same ≈ $0.013 per direction
-as idle; the full 39-set is ≈ 195 directions ≈ $2.5 per state, and a full
-re-roll after a wording change costs the same again (the free-prose attack
-round was thrown away: $2.5 of tuition).
+**Never probe a template with a fake direction.** An invalid id is rejected
+with the valid list (that is how the list is read), but a valid id with a bad
+direction starts a job that never finishes: there is no cancel endpoint,
+deleting its animation group does not release it, and 20 of them exhaust the
+account's concurrency for everything until they time out — measured, ~25
+minutes of a fully blocked pipeline.
+
 
 ## Review gallery (chat artifact, NOT in git)
 
