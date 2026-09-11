@@ -20,8 +20,7 @@
 // how much the visible spot is preferred at all; the EXPO is how much that
 // depends on how far behind the hill the hidden reading is (maintainer: "the
 // closer further down a covered area your click suggest the more expo the
-// Uphill bias has"). Both numbers are HIS — bias 2.7 is his verdict, expo
-// starts at 1.0 (identical to the flat rule) for him to tune.
+// Uphill bias has"). BOTH NUMBERS ARE HIS: bias 2.7x and expo 1.1.
 //
 // THE DIALS ARE INJECTED FROM OUTSIDE, because games-ui owns hud.ts
 // (UI_AGENT.md) and these are the games agent's settings. Same pattern as the
@@ -48,8 +47,11 @@ export const NAV_UPHILL_DEFAULT = 2.7;
  *  make it possible to have an expo less than 1.0"). 1.0 is the flat rule. */
 export const NAV_EXPO_MIN = 1;
 export const NAV_EXPO_MAX = 4;
-/** 1.0 = exactly the flat bias, whatever the depth. Awaiting his verdict. */
-export const NAV_EXPO_DEFAULT = 1;
+/** HIS NUMBER (maintainer 2026-09-11: "the uphill bias expo should be 1.1 as
+ *  default"). A gentle lean: at the hill's root it is still exactly the flat
+ *  bias, and twelve cells behind an 8-level hill it multiplies it by 12^0.1 =
+ *  1.28. Not a placeholder — do not "restore" 1.0. */
+export const NAV_EXPO_DEFAULT = 1.1;
 
 /* -- the two values -------------------------------------------------------- */
 

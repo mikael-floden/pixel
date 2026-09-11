@@ -415,8 +415,10 @@ clip, no tint.
     effect more extreme if you try to navigate to a tile that is precisely
     covered by an 8 story tall hill VS ... the root of an 8 story tall hill".
     The slider stops at **1.0** on purpose ("this expo will be 1.0 or more so
-    don't make it possible to have an expo less than 1.0"); MAX 4, DEFAULT 1.0
-    awaiting his verdict. Gate:
+    don't make it possible to have an expo less than 1.0"); MAX 4, and **1.1 is
+    his verdict** ("the uphill bias expo should be 1.1 as default",
+    2026-09-11) — a gentle lean, 12^0.1 = 1.28x twelve cells behind a hill and
+    exactly the flat bias at its root. Gate:
     `server/test/beacon.test.ts`, a flat synthetic plane where the two lengths
     are the whole story.
   - **Never "fix" the symptom by moving the beacon to meet the walk** —
