@@ -1237,38 +1237,37 @@
     "attack_v3": {
       "directions": {
         "south": {
-          "status": "fail",
-          "step_mean": 0.2733,
-          "step_max": 0.3549,
-          "drift": 4.78,
-          "loop": 0.3194,
-          "loop_ratio": 1.17,
-          "travel": 1.18,
+          "status": "pass",
+          "step_mean": 0.3127,
+          "step_max": 0.4645,
+          "drift": 4.85,
+          "loop": 0.3735,
+          "loop_ratio": 1.19,
+          "travel": 1.81,
           "pin": 1.0,
           "pad": 0,
-          "flash": -0.001,
-          "peak": 0.4073,
-          "reach": 0.422,
+          "flash": -0.007,
+          "peak": 0.4703,
+          "reach": 0.469,
+          "turn": 0,
           "canvas": [
             96,
             96
           ],
-          "reasons": [
-            "HE says redo: The wings go outside the frame and is not saved in postprocess"
-          ],
-          "sub": "695b1b11-e721-4127-90a0-47a7b83442c8",
-          "group": "8807e774-e393-4e76-a6f0-ff730856678a",
+          "reasons": [],
+          "sub": "64a44574-a94c-4cd7-8bff-ea464440684c",
+          "group": "aa7a629e-c7b9-419f-8f7b-1a02665416e3",
           "takes": 1,
-          "version": 1,
+          "version": 2,
           "mirrored": false,
-          "generated_at": "2026-09-11T16:17:32+00:00",
           "action": "Beak Stab - Spreads its wings wide and stabs forward with its hooked beak",
-          "tries": 1,
-          "rolls": 1,
           "intensity": 0,
+          "rolls": 2,
           "frames": 4,
           "rung": 0,
-          "maintainer": "The wings go outside the frame and is not saved in postprocess"
+          "unwrapped": null,
+          "tries": 2,
+          "generated_at": "2026-09-11T20:21:30+00:00"
         },
         "south-east": {
           "status": "pass",
