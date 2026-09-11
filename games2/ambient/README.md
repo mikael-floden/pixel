@@ -60,6 +60,13 @@ them; folder isolation beats DRY here).
   source — they sit above the darkness overlay — which is the wall-hack the
   cut-away exists to prevent. Everything that fills the air keeps the plain
   outdoor rule.
+- **`plumageOf(scene, key)`** (`runtime/critters.ts`) samples a loaded
+  creature sheet for its dominant mid-tone colour, cached per sheet. Anything
+  a creature drops must be ITS colour and the art is the only honest source:
+  hand-picked feather tints made a white, a red and a green bird all shed
+  white (maintainer 2026-09-11), and they would drift again at the next art
+  regeneration. Measured over the eight birds: 5b9a42 green, e84940 red,
+  cbd1d9 white, and six more all distinct.
 - **`runtime/flush.ts`** carries one fact between two features: a flock has
   just panicked off the ground. `birds/` emits per spooked bird, `feathers/`
   listens, and neither imports the other — the flock runs identically whether
@@ -309,7 +316,7 @@ controller (AUTO / NONE / solo-each).
 | `foam/` | field | SEA FOAM — the white line where moving water meets land, alive: a one-pixel band hugging the coast seam and the wall's crest, a train of crest lines sliding in from a few pixels out, the band swelling as each arrives (onto the sand over a beach; thick and bright against a wall), in a slow sweep along the coast. Solid contours only, Wind Waker not grain (maintainer's picks) | Any water/land edge in view — the composed boundary seam (mask sheet) and the wall foot's crest (`footBand` replicated, parity-tested); outdoors |
 | `fish/` | field | THE RISE — a fish takes a fly: a dorsal fin breaks the surface, a tail flicks a beat later, and two or three rings leave the spot and widen until they fade; the harder takes throw a few specks of water. Rings are ISO ELLIPSES (a circle stands up out of the lake like a hoop) at whole-pixel radii, the lead ring big and the followers smaller so nested rings stay legible | Lakes and shallows only (`runtime/water.ts`; the open sea is `deepwater/`'s), outdoors. Peaks at dawn and dusk on a bump in the sun, never zero, hidden by heavy rain |
 | `water/` | field | Living water — pixel-art wavelets + sun/moon reflection glints (frame-animated, full-pixel, no sub-px slide) | LAKES AND SHALLOWS: water on screen (iso probe) MINUS anywhere the deep-sea current runs — the open sea is `deepwater/`'s |
-| `feathers/` | field | WHAT A FLUSH LEAVES BEHIND — spook a landed flock and each bird drops a feather or two: knocked loose by the wingbeat so it rises first, then sinks slowly, swinging side to side and LEANING into each slide, and lies on the ground a few seconds before it goes | Only when `birds/` announces a flush (`runtime/flush.ts`); outdoors. Selected ALONE in Settings there is no flock, so it sheds a demo feather then and only then |
+| `feathers/` | field | WHAT A FLUSH LEAVES BEHIND — spook a landed flock and each bird drops a feather or two: knocked loose by the wingbeat so it rises first, then sinks slowly, swinging side to side and LEANING into each slide, and lies on the ground a few seconds before it goes. TINTED FROM ITS OWN BIRD (`plumageOf`, lifted toward white): a red bird sheds a pink feather, a green one a pale green | Only when `birds/` announces a flush (`runtime/flush.ts`); outdoors. Selected ALONE in Settings there is no flock, so it sheds a demo feather then and only then |
 | `bats/` | episode | Night colony wheeling: boids in any direction (top-down), erratic jinking, scattering near the player (no landing) | base 1.0; day ×0.01 |
 | `birds/` | episode | Living day flock: boids over the world, landing on dry ground to peck, flushing near the player | base 1.0; night ×0.05 |
 | `thunder/` | episode | Distant sheet lightning beyond the horizon | base 0.35 × (1 + rain + night); cloud/mist as weak proxies |

@@ -13,6 +13,7 @@ import {
   featherAlpha,
   featherAt,
   featherLife,
+  featherTint,
 } from "./fall";
 
 /* FEATHERS AFTER A FLUSH — the evidence a flock leaves behind.
@@ -66,9 +67,10 @@ const DEMO_QUIET = 2500;
 
 const KEY_TILT = ["amb-feather-l", "amb-feather-f", "amb-feather-r"];
 const KEY_DOWN = "amb-feather-d";
-/** THREE PLUMAGES, one per bird design group. Pale, because a feather on the
- *  ground is the pale thing in the picture — but never white: white is the
- *  specular the water glints own. */
+/** THE FALLBACK ONLY, for a bird whose sheet could not be sampled. The real
+ *  colour is the BIRD'S OWN, carried on the flush event (`plumageOf`) — three
+ *  hand-picked pale tints made a red bird and a green bird both shed white
+ *  (maintainer 2026-09-11). */
 const VANE = [0xe9e3d3, 0xdfe3e8, 0xdac7a4];
 
 interface Feather {
@@ -84,7 +86,8 @@ interface Feather {
   rest: number;
   age: number;
   life: number;
-  hue: number;
+  /** The drawn colour: this bird's plumage, lifted (see `featherTint`). */
+  tint: number;
   a: number;
   /** Stable across frames so a gate can track ONE feather's fall. */
   id: number;
@@ -105,6 +108,8 @@ export function feathersFeature(): AmbientFeature {
   const rnd = () => (seed = (seed * 1664525 + 1013904223) >>> 0) / 0xffffffff;
   const stats = { flushes: 0, shed: 0, demo: 0, dropped: 0 };
   let nextId = 0;
+  /** Plumages this session has actually seen, for the demo shed. */
+  const seenColours: number[] = [];
 
   /* ---- art ---------------------------------------------------------------- */
 
@@ -164,7 +169,7 @@ export function feathersFeature(): AmbientFeature {
 
   /* ---- shedding ------------------------------------------------------------ */
 
-  const shed = (x: number, y: number, gy: number, type: number) => {
+  const shed = (x: number, y: number, gy: number, type: number, colour: number | null) => {
     if (feathers.length >= MAX_FEATHERS || !scene) {
       stats.dropped++;
       return;
@@ -174,7 +179,7 @@ export function feathersFeature(): AmbientFeature {
     const amp = SWING_AMP[0] + rnd() * (SWING_AMP[1] - SWING_AMP[0]);
     const period = SWING_MS[0] + rnd() * (SWING_MS[1] - SWING_MS[0]);
     const rest = REST_MS[0] + rnd() * (REST_MS[1] - REST_MS[0]);
-    const hue = type % VANE.length;
+    const tint = featherTint(colour, VANE[type % VANE.length]);
     const sprite = scene.add
       .image(0, 0, KEY_TILT[1])
       .setDepth(DEPTH)
@@ -192,7 +197,7 @@ export function feathersFeature(): AmbientFeature {
       rest,
       age: 0,
       life: featherLife(alt, kick, rest),
-      hue,
+      tint,
       a: 0,
       id: ++nextId,
     });
@@ -212,6 +217,7 @@ export function feathersFeature(): AmbientFeature {
       off = onFlush((e) => {
         stats.flushes++;
         lastFlushAt = clock;
+        if (e.colour !== null && !seenColours.includes(e.colour)) seenColours.push(e.colour);
         queued.push(e);
       });
     },
@@ -228,8 +234,8 @@ export function feathersFeature(): AmbientFeature {
       const take = queued.splice(0, queued.length);
       if (!suppressed && ctx.outdoor > 0.01)
         for (const e of take) {
-          shed(e.x, e.y, e.gy, e.type);
-          if (rnd() < SECOND_FEATHER) shed(e.x, e.y, e.gy, e.type);
+          shed(e.x, e.y, e.gy, e.type, e.colour);
+          if (rnd() < SECOND_FEATHER) shed(e.x, e.y, e.gy, e.type, e.colour);
         }
 
       /* DEMO-ONLY: selected alone in Settings there are no birds and so no
@@ -245,7 +251,9 @@ export function feathersFeature(): AmbientFeature {
           const p = findGround(ctx.view, rnd, 10, 8);
           if (p) {
             stats.demo++;
-            shed(p.x, p.y - (18 + rnd() * 20), p.y, (rnd() * 3) | 0);
+            // the demo has no bird to take a colour from; it cycles the seen
+            // plumages so the row still shows that a feather is its bird's
+            shed(p.x, p.y - (18 + rnd() * 20), p.y, (rnd() * 3) | 0, seenColours.length ? seenColours[(rnd() * seenColours.length) | 0] : null);
           }
         }
       }
@@ -265,7 +273,7 @@ export function feathersFeature(): AmbientFeature {
         const t: Tilt = at.tilt;
         f.sprite
           .setTexture(at.down ? KEY_DOWN : KEY_TILT[t])
-          .setTint(VANE[f.hue]) // one plumage tint; the dark shaft is in the ART, not the tint
+          .setTint(f.tint) // the bird's own plumage; the dark shaft is in the ART, not the tint
           .setPosition(f.x + at.dx, f.y + Math.round(at.dy))
           .setDepth(DEPTH + (f.y + at.dy) * DEPTH_BIAS)
           .setAlpha(a)
@@ -287,6 +295,7 @@ export function feathersFeature(): AmbientFeature {
         ...stats,
         queued: queued.length,
         source: hasFlushSource(),
+        plumages: seenColours.map((c) => c.toString(16)),
         feathers: feathers.length,
         maxAlt: MAX_ALT,
         fadeMs: FADE_MS,
@@ -303,6 +312,7 @@ export function feathersFeature(): AmbientFeature {
             tilt: at.tilt,
             down: at.down,
             a: +f.a.toFixed(3),
+            tint: f.tint,
             onGround: at.down ? landableAt(f.x + at.dx, f.y + at.dy) : null,
           };
         }),

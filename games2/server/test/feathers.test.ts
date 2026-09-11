@@ -16,10 +16,12 @@ import {
   TILT_FLAT,
   TILT_LEFT,
   TILT_RIGHT,
+  FEATHER_MIN_LUMA,
   fallen,
   featherAlpha,
   featherAt,
   featherLife,
+  featherTint,
   height,
   landAt,
   swing,
@@ -127,6 +129,36 @@ test("it is solid while it falls and lies, then fades out and stays gone", () =>
   }
 });
 
+test("A FEATHER IS ITS BIRD'S COLOUR: the hue survives, the brightness is lifted", () => {
+  // The bug: three hand-picked pale tints, so a white, a red and a green bird
+  // all shed white (maintainer 2026-09-11). The tint now comes from the
+  // bird's own art, and what this pins is that the conversion keeps the HUE.
+  const cases = [
+    { name: "red", c: 0xb03028 },
+    { name: "green", c: 0x3f7a35 },
+    { name: "blue", c: 0x2f4f8f },
+    { name: "white", c: 0xdedcd6 },
+    { name: "near-black", c: 0x14120f },
+  ];
+  const seen = new Set<number>();
+  for (const { name, c } of cases) {
+    const t = featherTint(c, 0x000000);
+    const [r, g, b] = [(t >> 16) & 255, (t >> 8) & 255, t & 255];
+    const [pr, pg, pb] = [(c >> 16) & 255, (c >> 8) & 255, c & 255];
+    seen.add(t);
+    // lighter than the bird, never darker
+    assert.ok(r >= pr && g >= pg && b >= pb, `${name}: the feather is not darker than the plumage`);
+    // the CHANNEL ORDER is the hue: whichever channel led in the bird leads here
+    const lead = (x: number[]) => x.indexOf(Math.max(...x));
+    assert.equal(lead([r, g, b]), lead([pr, pg, pb]), `${name}: the feather keeps the bird's hue`);
+    // and it is bright enough to be a feather at all
+    assert.ok(0.299 * r + 0.587 * g + 0.114 * b >= FEATHER_MIN_LUMA - 1, `${name}: visible (luma)`);
+  }
+  assert.equal(seen.size, cases.length, "five different birds give five different feathers");
+  // no sample: the caller's own fallback, untouched
+  assert.equal(featherTint(null, 0x123456), 0x123456);
+});
+
 test("the flush channel delivers, unsubscribes, and survives a throwing listener", () => {
   const before = flushListeners();
   const got: number[] = [];
@@ -136,12 +168,12 @@ test("the flush channel delivers, unsubscribes, and survives a throwing listener
   });
   assert.equal(flushListeners(), before + 2);
   // the flock must not be taken down by a listener that throws
-  assert.doesNotThrow(() => emitFlush({ x: 1, y: 2, gx: 1, gy: 9, alt: 7, type: 3 }));
+  assert.doesNotThrow(() => emitFlush({ x: 1, y: 2, gx: 1, gy: 9, alt: 7, type: 3, colour: 0x884422 }));
   assert.deepEqual(got, [3]);
   offBad();
   offA();
   assert.equal(flushListeners(), before);
   // and nothing is delivered after unsubscribing
-  emitFlush({ x: 0, y: 0, gx: 0, gy: 0, alt: 0, type: 5 });
+  emitFlush({ x: 0, y: 0, gx: 0, gy: 0, alt: 0, type: 5, colour: null });
   assert.deepEqual(got, [3]);
 });

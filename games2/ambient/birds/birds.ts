@@ -1,6 +1,6 @@
 import Phaser from "phaser";
 import { AmbientCtx, AmbientFeature, PHASE_DAY, WEATHER_CLEAR } from "../runtime/types";
-import { SheetSpec, applyFog, applyShadow, dirFromVel, flyCell, flyFrame, gradeCritter, nearestFacingDir, queueSheets, sheetsReady, stepFlapDir } from "../runtime/critters";
+import { SheetSpec, applyFog, applyShadow, dirFromVel, flyCell, flyFrame, gradeCritter, nearestFacingDir, plumageOf, queueSheets, sheetsReady, stepFlapDir } from "../runtime/critters";
 import { birdDensity } from "../runtime/density";
 // 8 hand-made PixelLab bird TYPES, each an 8-direction object with a flapping
 // fly animation and a still base (for perching). Packed one folder per type.
@@ -625,7 +625,8 @@ export function birdsFeature(): AmbientFeature {
              * were genuinely LOW: a cruising bird is not spooked and sheds
              * nothing. The channel is fire-and-forget with nobody required to
              * listen — the flock flies identically either way. */
-            if (b.alt < FEAR_ALT) emitFlush({ x: b.gx, y: b.gy - b.alt, gx: b.gx, gy: b.gy, alt: b.alt, type: b.type });
+            if (b.alt < FEAR_ALT)
+              emitFlush({ x: b.gx, y: b.gy - b.alt, gx: b.gx, gy: b.gy, alt: b.alt, type: b.type, colour: plumageOf(ctx.scene, stillKey(b.type)) });
             b.vx = (dx / d) * SPD_MAX; // burst away from the player
             b.vy = (dy / d) * SPD_MAX;
             if (b.state !== FLYING) b.state = TAKEOFF;

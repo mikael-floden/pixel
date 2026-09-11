@@ -25,6 +25,10 @@ export interface FlushEvent {
   alt: number;
   /** Which of the eight bird designs — a listener may colour by species. */
   type: number;
+  /** THE BIRD'S OWN PLUMAGE, sampled from its art (`plumageOf`), or null when
+   *  the sheet could not be read. Anything it drops is tinted from this: a
+   *  hand-picked palette made a red bird shed a white feather. */
+  colour: number | null;
 }
 
 type Listener = (e: FlushEvent) => void;

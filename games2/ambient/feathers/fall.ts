@@ -33,6 +33,34 @@ export const FADE_MS = 900;
  *  feather from the cruising altitude would fall for half a minute. */
 export const MAX_ALT = 46;
 
+/** HOW A FEATHER TAKES ITS BIRD'S COLOUR. Lifted toward white, because a
+ *  feather is the pale underside of the plumage and a feather in the bird's
+ *  full body colour reads as a scrap of bird; and floored in brightness, so a
+ *  near-black crow still drops something you can see. Hue is preserved either
+ *  way: that is the whole point of the change (maintainer 2026-09-11, "I run
+ *  into white, red and green birds and the feathers were all white"). */
+export const FEATHER_LIFT = 0.42;
+export const FEATHER_MIN_LUMA = 120;
+
+export function featherTint(plumage: number | null, fallback: number): number {
+  if (plumage === null) return fallback;
+  let r = (plumage >> 16) & 255;
+  let g = (plumage >> 8) & 255;
+  let b = plumage & 255;
+  r = Math.round(r + (255 - r) * FEATHER_LIFT);
+  g = Math.round(g + (255 - g) * FEATHER_LIFT);
+  b = Math.round(b + (255 - b) * FEATHER_LIFT);
+  const luma = 0.299 * r + 0.587 * g + 0.114 * b;
+  if (luma < FEATHER_MIN_LUMA && luma > 0) {
+    // brighten toward white along the same hue until it can be seen at all
+    const k = Math.min(1, (FEATHER_MIN_LUMA - luma) / Math.max(1, 255 - luma));
+    r = Math.round(r + (255 - r) * k);
+    g = Math.round(g + (255 - g) * k);
+    b = Math.round(b + (255 - b) * k);
+  }
+  return ((r & 255) << 16) | ((g & 255) << 8) | (b & 255);
+}
+
 export const TILT_LEFT = 0;
 export const TILT_FLAT = 1;
 export const TILT_RIGHT = 2;

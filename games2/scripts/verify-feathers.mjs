@@ -111,6 +111,15 @@ else {
   console.log(`flush: ${d.flushes} birds announced, ${d.shed} feathers shed, ${d.feathers} in flight, demo ${d.demo}`);
   if (d.shed < d.flushes) fail(`${d.flushes} birds flushed but only ${d.shed} feathers were shed`);
   if (d.demo > 0) fail(`${d.demo} DEMO feathers were shed while a real flock was running`);
+  /* THE FEATHER WEARS ITS BIRD'S COLOUR. Three hand-picked pale tints made a
+   * red bird and a green bird both shed white (maintainer 2026-09-11), so the
+   * tint is sampled from the bird's own sheet — and the check is that no
+   * feather is wearing the fallback palette any more. */
+  const FALLBACK = [0xe9e3d3, 0xdfe3e8, 0xdac7a4];
+  console.log(`plumage: sampled ${JSON.stringify(d.plumages)}, feather tints ${JSON.stringify([...new Set(d.all.map((f) => f.tint.toString(16)))])}`);
+  if (!d.plumages.length) fail("no bird plumage could be sampled from the art — every feather falls back to the pale palette");
+  const onFallback = d.all.filter((f) => FALLBACK.includes(f.tint));
+  if (onFallback.length) fail(`${onFallback.length} feathers are wearing the hand-picked fallback instead of their bird's colour`);
 }
 
 /* ---- IT FALLS, THEN LIES STILL --------------------------------------------- */
