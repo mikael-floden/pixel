@@ -109,6 +109,13 @@ const SCN_EXCL_R = 1.8;
  *  inside a piece's share cell is shaded by its own trunk only where the ray to
  *  the light (or the sun) passes through this core between them. */
 const SCN_CORE = 0.45;
+/** The half-width, in cells, the face Lambert gate credits a light with: the
+ *  cosine is measured from at least this far in front of the wall plane, so a
+ *  torch held against a wall still washes the wall around it (a point light
+ *  there lights only the pixels straight in front of it). 0.5 = a half-cell
+ *  flame; at the default wrap (0.7) the wall behind a body touching it reads
+ *  ~0.9 of full a half cell to either side, ~0.7 at wrap 0. */
+const FLAME_HALF_CELLS = "0.5";
 /** The CONTACT blob under a piece: radius (cells) and strength for the sun
  *  patch (a `m` share) and the torch march (an occ factor). Every direction —
  *  the ground beside and in front of a post read as bright spots against the
@@ -1184,7 +1191,18 @@ void main() {
       // the-plane, so a torch in front of a long wall washes the whole run
       // continuously (cosine taper + the normal distance attenuation), while
       // a light behind the plane still leaves the face dark.
-      float cosF = front / max(sqrt(front * front + lat * lat), 0.001);
+      // THE FLAME HAS A SIZE. A point light pressed against a wall lights
+      // nothing but the pixels straight in front of it (cos -> 0 a hair to
+      // either side), and with the lateral now per PIXEL that is exactly
+      // what a torch held against a wall did: the wall behind the body went
+      // black at the dial's hard end (maintainer 2026-09-11, "2 tiles under
+      // the player is lit up. The surrounding is completely dark"). The old
+      // per-cell lateral hid this by accident — the whole cell behind the
+      // light had lateral 0. So the cosine is taken from no closer than
+      // FLAME_HALF_CELLS in front of the plane: a half-cell flame, not a
+      // point. The back-face gate below still reads the true front.
+      float frontC = max(front, ${FLAME_HALF_CELLS});
+      float cosF = frontC / max(sqrt(frontC * frontC + lat * lat), 0.001);
       // THE WRAP: pow(cos, uWallWrap). A physical cosine (1.0) crushes
       // grazing light — a torch held close to a wall lights a cell of it
       // while its ground pool spreads 4+ cells, because the ground takes no

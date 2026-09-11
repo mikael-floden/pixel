@@ -283,7 +283,15 @@ The night shader and its CPU twins, the light slot ledger, scenery lights and sh
     the old hard-coded 0.45 exponent was "a bit too extreme"; 0 = a plain
     cosine, 1 = the light hugs the wall as far as it reaches on the ground).
     `front` keeps its own `smoothstep(0, 0.25)`; a light behind the plane
-    never lights the face at any wrap.
+    never lights the face at any wrap. THE FLAME HAS A SIZE: the cosine is
+    measured from no closer than `FLAME_HALF_CELLS` (0.5) in front of the
+    plane — with the lateral per pixel, a point light pressed against a wall
+    lit only the pixels straight in front of it and the wall behind a body
+    touching it went black at wrap 0 (his first night with the dial: "2
+    tiles under the player is lit up. The surrounding is completely dark").
+    The per-cell lateral had hidden that by accident (lateral 0 for the
+    whole cell behind the light). `scripts/nightshot.mjs COL= ROW= [WRAP=]
+    [FOG=] OUT=` shoots any spot at night with the torch for a look.
   - The LOS march never reads the wall's own column for a sample inside the
     wall's FRONT SKIRT: `heightAtSoft`/`groundAtSoft` are bilinear, so a
     sample within half a cell in front of the face plane blended the wall's
