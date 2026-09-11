@@ -49,6 +49,7 @@ from PIL import Image, ImageOps
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import candidates as cand  # noqa: E402
+import postprocess as pp  # noqa: E402
 import mirror  # noqa: E402
 from pixellab_client import DIRECTIONS_8, PixelLabClient, PixelLabError  # noqa: E402
 
@@ -242,6 +243,35 @@ def save_frames(cid, state, d, frames):
 
 
 # --- canvas ---------------------------------------------------------------------
+
+def unwrap_clip(frames, base_size):
+    """SAVE a clip that rendered past the canvas edge instead of failing it.
+    PixelLab wraps overflow to the opposite edge, usually on the next frame
+    (maintainer 2026-09-09: "pixels rendered outside the frame will pop up in
+    the next frame on the other side") — the shipped monsters have had a
+    repair pass for this since sync; candidates now get the same one. The
+    canvas grows, each wrapped strip is lifted off the frame it landed on and
+    pasted back beyond the true border of the frame it belongs to.
+    Returns (frames, pad, n_fixes)."""
+    arrs = [np.asarray(f.convert("RGBA")) for f in frames]
+    W, H = base_size
+    if any(a.shape[1] != W or a.shape[0] != H for a in arrs):
+        return frames, 0, 0                      # not on the native canvas
+    fixes = pp.detect(arrs, (W, H))
+    if not fixes:
+        return frames, 0, 0
+    pad = min(64, max(f["ext"] for f in fixes) + 2)
+    padded = [pp._recanvas(a.copy(), (W + 2 * pad, H + 2 * pad)) for a in arrs]
+    n = 0
+    for fx in fixes:
+        strip = pp._strip_mask(arrs[fx["frame"]], fx["side"], (W, H))
+        if strip is None:
+            continue
+        pp._apply_fix(padded[fx["frame"]], padded[fx["target"]], strip,
+                      fx["side"], (W, H), (pad, pad))
+        n += 1
+    return [Image.fromarray(a, "RGBA") for a in padded], pad, n
+
 
 def align_to_base(frames, base, pinned=True):
     """v3 returns each direction's clip on ITS OWN padded canvas (measured
@@ -674,7 +704,9 @@ def collect_state(client, cid, state, dirs, version, verbose=True, pin=False, ac
             out[d] = {"status": "fail", "reasons": [f"downloaded {len(frames)}/{len(urls)} frames"]}
             continue
         pinned = spec.get("keep_first", True) or pin
-        frames, pad = align_to_base(frames, rotation(cid, d), pinned=pinned)
+        base_img = rotation(cid, d)
+        frames, upad, nfix = unwrap_clip(frames, base_img.size)
+        frames, pad = align_to_base(frames, base_img, pinned=pinned)
         save_frames(cid, state, d, frames)
         qa = qa_clip(cid, state, d, frames, pinned=pinned,
                      claw_take=(rungs or {}).get(d, 0) >= 2,
@@ -685,7 +717,8 @@ def collect_state(client, cid, state, dirs, version, verbose=True, pin=False, ac
         qa.update({"sub": client.sub_id(urls[0]), "group": group, "takes": len(cands), "version": version, "mirrored": False,
                    "action": actions[d], "intensity": intensity_of(man, state),
                    "rolls": (tries or {}).get(d, 1), "frames": len(frames),
-                   "rung": (rungs or {}).get(d, 0), "tries": (tries or {}).get(d, rec["directions"].get(d, {}).get("tries", 1)),
+                   "rung": (rungs or {}).get(d, 0),
+                   "unwrapped": nfix or None, "tries": (tries or {}).get(d, rec["directions"].get(d, {}).get("tries", 1)),
                    "generated_at": datetime.now(timezone.utc).isoformat(timespec="seconds")})
         rec["directions"][d] = qa
         out[d] = qa
@@ -925,6 +958,56 @@ def _slot_files_delete(cid, slot, dirs):
             os.remove(strip)
 
 
+def cmd_unwrap(args):
+    """Repair wrap-around overflow on clips ALREADY on disk and re-verdict
+    them: a clip that rendered past the canvas is art worth saving, not a
+    reject (maintainer 2026-09-11: "we still need to try and save the
+    animations that did render outside"). Mirrors are rebuilt from the
+    repaired sources. No generation."""
+    cfg = cand.load_cfg()
+    slot = args.state
+    ids = args.only.split(",") if args.only else [c["id"] for c in cfg["candidates"]]
+    fixed = rescued = 0
+    for cid in ids:
+        man = cand.load_manifest(cid) or {}
+        rec = (man.get("animations") or {}).get(slot)
+        if not rec:
+            continue
+        touched = False
+        for d in GEN_DIRS:
+            q = rec["directions"].get(d)
+            frames = load_frames(cid, slot, d)
+            if not q or not frames:
+                continue
+            base = rotation(cid, d)
+            out, pad, n = unwrap_clip(frames, base.size)
+            if not n:
+                continue
+            was = q.get("status")
+            save_frames(cid, slot, d, out)
+            new = qa_clip(cid, slot, d, out, pinned=bool(q.get("pinned")),
+                          claw_take=(q.get("rung") or 0) >= 2)
+            new.update({k: q[k] for k in ("sub", "group", "takes", "version", "action",
+                                          "rung", "rolls", "generated_at") if k in q})
+            new["unwrapped"] = n
+            rec["directions"][d] = new
+            fixed += n
+            rescued += (was == "fail" and new["status"] != "fail")
+            print(f"  {cid} {d}: {n} wrap fix(es), canvas +{pad} px — {was} -> {new['status']}")
+            for md, src in MIRRORED.items():
+                if src == d and new["status"] != "fail" and mirror_direction(cid, slot, md):
+                    rec["directions"][md] = dict(new, mirrored=True, source=src)
+            touched = True
+        if touched:
+            rec["frame_paths"] = {d: [os.path.join(cid, "animations", slot, d, f)
+                                      for f in sorted(os.listdir(anim_dir(cid, slot, d)))
+                                      if f.endswith(mirror.ART_EXT)]
+                                  for d in rec["directions"] if os.path.isdir(anim_dir(cid, slot, d))}
+            write_manifest(cid, man)
+    print(f"{fixed} wrap fix(es); {rescued} direction(s) rescued from fail")
+    cand.rebuild_index(cfg)
+
+
 def cmd_settle(args):
     """When the intensity dial is maxed and a direction still only scores
     SHALLOW (reach above the maintainer's own accepted floor of 0.15 but under
@@ -1071,6 +1154,8 @@ def main():
     pr.add_argument("--state", required=True); pr.add_argument("--only")
     pr.add_argument("--allow-warn", action="store_true", help="promote when every direction is pass or warn (default: no fails, no gaps)")
     pr.set_defaults(func=cmd_promote)
+    uw = sub.add_parser("unwrap", help="repair clips that rendered past the canvas edge (no generation)")
+    uw.add_argument("--state", required=True); uw.add_argument("--only"); uw.set_defaults(func=cmd_unwrap)
     se = sub.add_parser("settle", help="a maxed-out dial stops the loop: shallow-but-real strikes become warns for the maintainer to judge")
     se.add_argument("--state", required=True); se.add_argument("--only")
     se.add_argument("--min-reach", type=float, default=0.15, help="the maintainer's own accepted floor")

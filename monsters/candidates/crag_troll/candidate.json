@@ -1,1286 +1,1617 @@
 {
- "id": "crag_troll",
- "name": "Cragtroll",
- "tier": "boss",
- "scale": "big",
- "lore": "It sleeps as a hillside and wakes as a landslide. Travellers who camp on it are the reason it wakes.",
- "biome": [
-  "grey_stone",
-  "snow",
-  "black_rock"
- ],
- "items": [],
- "prompt": "Hulking fantasy mountain troll shown full body from head to feet, thick warty grey-green skin, a heavy brow and underbite with two lower tusks, a broad hunched back with lichen and small boulders growing on it, huge hands dragging a rough stone club, and wide flat feet.",
- "size": [
-  232,
-  232
- ],
- "template_id": "mannequin",
- "directions": [
-  "south",
-  "south-east",
-  "east",
-  "north-east",
-  "north",
-  "north-west",
-  "west",
-  "south-west"
- ],
- "rotations": {
-  "south": "crag_troll/rotations/south.webp",
-  "south-east": "crag_troll/rotations/south-east.webp",
-  "east": "crag_troll/rotations/east.webp",
-  "north-east": "crag_troll/rotations/north-east.webp",
-  "north": "crag_troll/rotations/north.webp",
-  "north-west": "crag_troll/rotations/north-west.webp",
-  "west": "crag_troll/rotations/west.webp",
-  "south-west": "crag_troll/rotations/south-west.webp"
- },
- "sheet": "crag_troll/sheet.webp",
- "review": "approved",
- "pixellab_id": "63fa36e3-414f-4476-91b8-9527ddd1a011",
- "seed": 2106374195,
- "version": 1,
- "usage": null,
- "generated_at": "2026-09-09T18:05:45+00:00",
- "elapsed_s": 169.0,
- "qa": {
-  "status": "pass",
-  "min_run1": 0.621,
-  "reasons": [],
-  "directions": {
-   "south": {
-    "run1": 0.621,
-    "bbox": [
-     30,
-     17,
-     220,
-     216
-    ],
-    "fill": 0.702,
-    "touches_edge": false
-   },
-   "south-east": {
-    "run1": 0.682,
-    "bbox": [
-     46,
-     12,
-     218,
-     220
-    ],
-    "fill": 0.665,
-    "touches_edge": false
-   },
-   "east": {
-    "run1": 0.673,
-    "bbox": [
-     69,
-     12,
-     175,
-     223
-    ],
-    "fill": 0.416,
-    "touches_edge": false
-   },
-   "north-east": {
-    "run1": 0.631,
-    "bbox": [
-     46,
-     14,
-     178,
-     220
-    ],
-    "fill": 0.505,
-    "touches_edge": false
-   },
-   "north": {
-    "run1": 0.625,
-    "bbox": [
-     13,
-     13,
-     200,
-     215
-    ],
-    "fill": 0.702,
-    "touches_edge": false
-   },
-   "north-west": {
-    "run1": 0.633,
-    "bbox": [
-     12,
-     14,
-     185,
-     220
-    ],
-    "fill": 0.662,
-    "touches_edge": false
-   },
-   "west": {
-    "run1": 0.675,
-    "bbox": [
-     56,
-     12,
-     161,
-     223
-    ],
-    "fill": 0.412,
-    "touches_edge": false
-   },
-   "south-west": {
-    "run1": 0.678,
-    "bbox": [
-     37,
-     11,
-     179,
-     220
-    ],
-    "fill": 0.551,
-    "touches_edge": false
-   }
+  "id": "crag_troll",
+  "name": "Cragtroll",
+  "tier": "boss",
+  "scale": "big",
+  "lore": "It sleeps as a hillside and wakes as a landslide. Travellers who camp on it are the reason it wakes.",
+  "biome": [
+    "grey_stone",
+    "snow",
+    "black_rock"
+  ],
+  "items": [],
+  "prompt": "Hulking fantasy mountain troll shown full body from head to feet, thick warty grey-green skin, a heavy brow and underbite with two lower tusks, a broad hunched back with lichen and small boulders growing on it, huge hands dragging a rough stone club, and wide flat feet.",
+  "size": [
+    232,
+    232
+  ],
+  "template_id": "mannequin",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "crag_troll/rotations/south.webp",
+    "south-east": "crag_troll/rotations/south-east.webp",
+    "east": "crag_troll/rotations/east.webp",
+    "north-east": "crag_troll/rotations/north-east.webp",
+    "north": "crag_troll/rotations/north.webp",
+    "north-west": "crag_troll/rotations/north-west.webp",
+    "west": "crag_troll/rotations/west.webp",
+    "south-west": "crag_troll/rotations/south-west.webp"
+  },
+  "sheet": "crag_troll/sheet.webp",
+  "review": "approved",
+  "pixellab_id": "63fa36e3-414f-4476-91b8-9527ddd1a011",
+  "seed": 2106374195,
+  "version": 1,
+  "usage": null,
+  "generated_at": "2026-09-09T18:05:45+00:00",
+  "elapsed_s": 169.0,
+  "qa": {
+    "status": "pass",
+    "min_run1": 0.621,
+    "reasons": [],
+    "directions": {
+      "south": {
+        "run1": 0.621,
+        "bbox": [
+          30,
+          17,
+          220,
+          216
+        ],
+        "fill": 0.702,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.682,
+        "bbox": [
+          46,
+          12,
+          218,
+          220
+        ],
+        "fill": 0.665,
+        "touches_edge": false
+      },
+      "east": {
+        "run1": 0.673,
+        "bbox": [
+          69,
+          12,
+          175,
+          223
+        ],
+        "fill": 0.416,
+        "touches_edge": false
+      },
+      "north-east": {
+        "run1": 0.631,
+        "bbox": [
+          46,
+          14,
+          178,
+          220
+        ],
+        "fill": 0.505,
+        "touches_edge": false
+      },
+      "north": {
+        "run1": 0.625,
+        "bbox": [
+          13,
+          13,
+          200,
+          215
+        ],
+        "fill": 0.702,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.633,
+        "bbox": [
+          12,
+          14,
+          185,
+          220
+        ],
+        "fill": 0.662,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.675,
+        "bbox": [
+          56,
+          12,
+          161,
+          223
+        ],
+        "fill": 0.412,
+        "touches_edge": false
+      },
+      "south-west": {
+        "run1": 0.678,
+        "bbox": [
+          37,
+          11,
+          179,
+          220
+        ],
+        "fill": 0.551,
+        "touches_edge": false
+      }
+    }
+  },
+  "approved_at": "2026-09-09T19:59:20+00:00",
+  "animations": {
+    "idle": {
+      "directions": {
+        "south": {
+          "status": "pass",
+          "step_mean": 0.0243,
+          "step_max": 0.0433,
+          "drift": 1.34,
+          "loop": 0.0001,
+          "pin": 1.0,
+          "reasons": [],
+          "sub": "d4f56718-b869-4fe1-bf44-380a1b928ade",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "generated_at": "2026-09-09T20:09:22+00:00",
+          "cut": 0
+        },
+        "south-east": {
+          "status": "pass",
+          "step_mean": 0.0282,
+          "step_max": 0.0425,
+          "drift": 1.8,
+          "loop": 0.0,
+          "pin": 1.0,
+          "reasons": [],
+          "sub": "815c9407-de1f-4812-b0ee-e3e33a46e29d",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "generated_at": "2026-09-09T20:09:23+00:00",
+          "cut": 0
+        },
+        "east": {
+          "status": "pass",
+          "step_mean": 0.0244,
+          "step_max": 0.0332,
+          "drift": 1.2,
+          "loop": 0.0,
+          "pin": 1.0,
+          "reasons": [],
+          "sub": "386caf78-626e-4dbc-b0e7-06df19db7353",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "generated_at": "2026-09-09T20:09:23+00:00",
+          "cut": 0
+        },
+        "north-east": {
+          "status": "pass",
+          "step_mean": 0.0481,
+          "step_max": 0.0795,
+          "drift": 2.79,
+          "loop": 0.0001,
+          "pin": 1.0,
+          "reasons": [],
+          "sub": "bc35f245-0777-42f1-bfc8-a7f9a297d706",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "generated_at": "2026-09-09T20:09:24+00:00",
+          "cut": 0
+        },
+        "north": {
+          "status": "pass",
+          "step_mean": 0.0372,
+          "step_max": 0.0422,
+          "drift": 2.3,
+          "loop": 0.0,
+          "pin": 1.0,
+          "reasons": [],
+          "sub": "bf085642-a4fa-4e23-94c6-3ba25313b965",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "generated_at": "2026-09-09T20:09:25+00:00",
+          "cut": 0
+        },
+        "south-west": {
+          "status": "pass",
+          "step_mean": 0.0282,
+          "step_max": 0.0425,
+          "drift": 1.8,
+          "loop": 0.0,
+          "pin": 1.0,
+          "reasons": [],
+          "sub": "815c9407-de1f-4812-b0ee-e3e33a46e29d",
+          "takes": 1,
+          "version": 1,
+          "mirrored": true,
+          "generated_at": "2026-09-09T20:09:23+00:00",
+          "cut": 0,
+          "source": "south-east"
+        },
+        "west": {
+          "status": "pass",
+          "step_mean": 0.0244,
+          "step_max": 0.0332,
+          "drift": 1.2,
+          "loop": 0.0,
+          "pin": 1.0,
+          "reasons": [],
+          "sub": "386caf78-626e-4dbc-b0e7-06df19db7353",
+          "takes": 1,
+          "version": 1,
+          "mirrored": true,
+          "generated_at": "2026-09-09T20:09:23+00:00",
+          "cut": 0,
+          "source": "east"
+        },
+        "north-west": {
+          "status": "pass",
+          "step_mean": 0.0481,
+          "step_max": 0.0795,
+          "drift": 2.79,
+          "loop": 0.0001,
+          "pin": 1.0,
+          "reasons": [],
+          "sub": "bc35f245-0777-42f1-bfc8-a7f9a297d706",
+          "takes": 1,
+          "version": 1,
+          "mirrored": true,
+          "generated_at": "2026-09-09T20:09:24+00:00",
+          "cut": 0,
+          "source": "north-east"
+        }
+      },
+      "action": "Calm still idle, breathing very slowly and subtly, chest and shoulders rise and fall a little, feet planted, no other movement, ends in the same neutral pose it started in",
+      "frame_paths": {
+        "south": [
+          "crag_troll/animations/idle/south/00.webp",
+          "crag_troll/animations/idle/south/01.webp",
+          "crag_troll/animations/idle/south/02.webp",
+          "crag_troll/animations/idle/south/03.webp",
+          "crag_troll/animations/idle/south/04.webp"
+        ],
+        "south-east": [
+          "crag_troll/animations/idle/south-east/00.webp",
+          "crag_troll/animations/idle/south-east/01.webp",
+          "crag_troll/animations/idle/south-east/02.webp",
+          "crag_troll/animations/idle/south-east/03.webp",
+          "crag_troll/animations/idle/south-east/04.webp"
+        ],
+        "east": [
+          "crag_troll/animations/idle/east/00.webp",
+          "crag_troll/animations/idle/east/01.webp",
+          "crag_troll/animations/idle/east/02.webp",
+          "crag_troll/animations/idle/east/03.webp",
+          "crag_troll/animations/idle/east/04.webp"
+        ],
+        "north-east": [
+          "crag_troll/animations/idle/north-east/00.webp",
+          "crag_troll/animations/idle/north-east/01.webp",
+          "crag_troll/animations/idle/north-east/02.webp",
+          "crag_troll/animations/idle/north-east/03.webp",
+          "crag_troll/animations/idle/north-east/04.webp"
+        ],
+        "north": [
+          "crag_troll/animations/idle/north/00.webp",
+          "crag_troll/animations/idle/north/01.webp",
+          "crag_troll/animations/idle/north/02.webp",
+          "crag_troll/animations/idle/north/03.webp",
+          "crag_troll/animations/idle/north/04.webp"
+        ],
+        "south-west": [
+          "crag_troll/animations/idle/south-west/00.webp",
+          "crag_troll/animations/idle/south-west/01.webp",
+          "crag_troll/animations/idle/south-west/02.webp",
+          "crag_troll/animations/idle/south-west/03.webp",
+          "crag_troll/animations/idle/south-west/04.webp"
+        ],
+        "west": [
+          "crag_troll/animations/idle/west/00.webp",
+          "crag_troll/animations/idle/west/01.webp",
+          "crag_troll/animations/idle/west/02.webp",
+          "crag_troll/animations/idle/west/03.webp",
+          "crag_troll/animations/idle/west/04.webp"
+        ],
+        "north-west": [
+          "crag_troll/animations/idle/north-west/00.webp",
+          "crag_troll/animations/idle/north-west/01.webp",
+          "crag_troll/animations/idle/north-west/02.webp",
+          "crag_troll/animations/idle/north-west/03.webp",
+          "crag_troll/animations/idle/north-west/04.webp"
+        ]
+      },
+      "strips": {
+        "south": "crag_troll/animations/idle__south.webp",
+        "south-east": "crag_troll/animations/idle__south-east.webp",
+        "east": "crag_troll/animations/idle__east.webp",
+        "north-east": "crag_troll/animations/idle__north-east.webp",
+        "north": "crag_troll/animations/idle__north.webp",
+        "south-west": "crag_troll/animations/idle__south-west.webp",
+        "west": "crag_troll/animations/idle__west.webp",
+        "north-west": "crag_troll/animations/idle__north-west.webp"
+      }
+    },
+    "walk": {
+      "directions": {
+        "south": {
+          "status": "warn",
+          "step_mean": 0.082,
+          "step_max": 0.0999,
+          "drift": 8.46,
+          "loop": 0.2161,
+          "loop_ratio": 2.63,
+          "travel": 8.46,
+          "pin": 0.931,
+          "pad": 0,
+          "canvas": [
+            232,
+            232
+          ],
+          "reasons": [
+            "motion 0.082 outside the calm band 0.1–0.4 — eyeball it",
+            "drifts 8.5 px — eyeball it",
+            "last→first hand-off 2.6× a step — eyeball the loop",
+            "8.5 px of x-travel — eyeball it"
+          ],
+          "sub": "54ed9c4e-9569-432d-9b40-0935650fd373",
+          "group": "63049a6b-30ca-4b36-a5de-7851e57330a0",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "generated_at": "2026-09-09T21:15:11+00:00"
+        },
+        "south-east": {
+          "status": "pass",
+          "step_mean": 0.1102,
+          "step_max": 0.1292,
+          "drift": 5.34,
+          "loop": 0.0,
+          "loop_ratio": 0.0,
+          "travel": 1.25,
+          "pin": 1.0,
+          "pad": 0,
+          "canvas": [
+            232,
+            232
+          ],
+          "reasons": [
+            "PINNED fallback: base → walk → base, not a seamless loop (maintainer's last resort)"
+          ],
+          "pinned": true,
+          "sub": "c5b6be3f-d68b-4c78-979d-3ea9de645c6b",
+          "group": "9d3874c8-d670-440a-8ede-3f1ba9c96e11",
+          "takes": 3,
+          "version": 4,
+          "mirrored": false,
+          "generated_at": "2026-09-09T21:48:07+00:00"
+        },
+        "east": {
+          "status": "warn",
+          "step_mean": 0.1752,
+          "step_max": 0.1926,
+          "drift": 7.89,
+          "loop": 0.3416,
+          "loop_ratio": 1.95,
+          "travel": 5.32,
+          "pin": 0.853,
+          "pad": 0,
+          "canvas": [
+            232,
+            232
+          ],
+          "reasons": [
+            "drifts 7.9 px — eyeball it"
+          ],
+          "sub": "34c8ab0e-1e57-47f4-b63b-da47163fa0ba",
+          "group": "ac1597df-180b-4a71-9bb1-f71ab1371af0",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "generated_at": "2026-09-09T21:15:13+00:00"
+        },
+        "north-east": {
+          "status": "warn",
+          "step_mean": 0.1393,
+          "step_max": 0.183,
+          "drift": 7.19,
+          "loop": 0.174,
+          "loop_ratio": 1.25,
+          "travel": 4.27,
+          "pin": 0.89,
+          "pad": 0,
+          "canvas": [
+            232,
+            232
+          ],
+          "reasons": [
+            "drifts 7.2 px — eyeball it"
+          ],
+          "sub": "853da555-0944-4b22-b435-d504fef82cbe",
+          "group": "b6f1e1c9-0708-4a30-b87d-000d0c818e70",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "generated_at": "2026-09-09T21:15:14+00:00"
+        },
+        "north": {
+          "status": "warn",
+          "step_mean": 0.0791,
+          "step_max": 0.1021,
+          "drift": 2.95,
+          "loop": 0.1117,
+          "loop_ratio": 1.41,
+          "travel": 2.95,
+          "pin": 0.936,
+          "pad": 0,
+          "canvas": [
+            232,
+            232
+          ],
+          "reasons": [
+            "motion 0.079 outside the calm band 0.1–0.4 — eyeball it"
+          ],
+          "sub": "b314a2b0-6683-4bc9-ba65-7a8841f558f9",
+          "group": "a259c851-00bb-4946-8f81-47ef678dee6f",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "generated_at": "2026-09-09T21:15:15+00:00"
+        },
+        "west": {
+          "status": "warn",
+          "step_mean": 0.1752,
+          "step_max": 0.1926,
+          "drift": 7.89,
+          "loop": 0.3416,
+          "loop_ratio": 1.95,
+          "travel": 5.32,
+          "pin": 0.853,
+          "pad": 0,
+          "canvas": [
+            232,
+            232
+          ],
+          "reasons": [
+            "drifts 7.9 px — eyeball it"
+          ],
+          "sub": "34c8ab0e-1e57-47f4-b63b-da47163fa0ba",
+          "group": "ac1597df-180b-4a71-9bb1-f71ab1371af0",
+          "takes": 1,
+          "version": 1,
+          "mirrored": true,
+          "generated_at": "2026-09-09T21:15:13+00:00",
+          "source": "east"
+        },
+        "north-west": {
+          "status": "warn",
+          "step_mean": 0.1393,
+          "step_max": 0.183,
+          "drift": 7.19,
+          "loop": 0.174,
+          "loop_ratio": 1.25,
+          "travel": 4.27,
+          "pin": 0.89,
+          "pad": 0,
+          "canvas": [
+            232,
+            232
+          ],
+          "reasons": [
+            "drifts 7.2 px — eyeball it"
+          ],
+          "sub": "853da555-0944-4b22-b435-d504fef82cbe",
+          "group": "b6f1e1c9-0708-4a30-b87d-000d0c818e70",
+          "takes": 1,
+          "version": 1,
+          "mirrored": true,
+          "generated_at": "2026-09-09T21:15:14+00:00",
+          "source": "north-east"
+        },
+        "south-west": {
+          "status": "pass",
+          "step_mean": 0.1102,
+          "step_max": 0.1292,
+          "drift": 5.34,
+          "loop": 0.0,
+          "loop_ratio": 0.0,
+          "travel": 1.25,
+          "pin": 1.0,
+          "pad": 0,
+          "canvas": [
+            232,
+            232
+          ],
+          "reasons": [
+            "PINNED fallback: base → walk → base, not a seamless loop (maintainer's last resort)"
+          ],
+          "pinned": true,
+          "sub": "c5b6be3f-d68b-4c78-979d-3ea9de645c6b",
+          "group": "9d3874c8-d670-440a-8ede-3f1ba9c96e11",
+          "takes": 3,
+          "version": 4,
+          "mirrored": true,
+          "generated_at": "2026-09-09T21:48:07+00:00",
+          "source": "south-east"
+        }
+      },
+      "action": "walk loop, full walk cycle in place, legs alternate naturally, normal calm walking pace, body stays centered, seamless loop whose last frame leads straight back into the first, no turning",
+      "frame_paths": {
+        "south": [
+          "crag_troll/animations/walk/south/00.webp",
+          "crag_troll/animations/walk/south/01.webp",
+          "crag_troll/animations/walk/south/02.webp",
+          "crag_troll/animations/walk/south/03.webp",
+          "crag_troll/animations/walk/south/04.webp",
+          "crag_troll/animations/walk/south/05.webp"
+        ],
+        "south-east": [
+          "crag_troll/animations/walk/south-east/00.webp",
+          "crag_troll/animations/walk/south-east/01.webp",
+          "crag_troll/animations/walk/south-east/02.webp",
+          "crag_troll/animations/walk/south-east/03.webp",
+          "crag_troll/animations/walk/south-east/04.webp",
+          "crag_troll/animations/walk/south-east/05.webp"
+        ],
+        "east": [
+          "crag_troll/animations/walk/east/00.webp",
+          "crag_troll/animations/walk/east/01.webp",
+          "crag_troll/animations/walk/east/02.webp",
+          "crag_troll/animations/walk/east/03.webp",
+          "crag_troll/animations/walk/east/04.webp",
+          "crag_troll/animations/walk/east/05.webp"
+        ],
+        "north-east": [
+          "crag_troll/animations/walk/north-east/00.webp",
+          "crag_troll/animations/walk/north-east/01.webp",
+          "crag_troll/animations/walk/north-east/02.webp",
+          "crag_troll/animations/walk/north-east/03.webp",
+          "crag_troll/animations/walk/north-east/04.webp",
+          "crag_troll/animations/walk/north-east/05.webp"
+        ],
+        "north": [
+          "crag_troll/animations/walk/north/00.webp",
+          "crag_troll/animations/walk/north/01.webp",
+          "crag_troll/animations/walk/north/02.webp",
+          "crag_troll/animations/walk/north/03.webp",
+          "crag_troll/animations/walk/north/04.webp",
+          "crag_troll/animations/walk/north/05.webp"
+        ],
+        "west": [
+          "crag_troll/animations/walk/west/00.webp",
+          "crag_troll/animations/walk/west/01.webp",
+          "crag_troll/animations/walk/west/02.webp",
+          "crag_troll/animations/walk/west/03.webp",
+          "crag_troll/animations/walk/west/04.webp",
+          "crag_troll/animations/walk/west/05.webp"
+        ],
+        "north-west": [
+          "crag_troll/animations/walk/north-west/00.webp",
+          "crag_troll/animations/walk/north-west/01.webp",
+          "crag_troll/animations/walk/north-west/02.webp",
+          "crag_troll/animations/walk/north-west/03.webp",
+          "crag_troll/animations/walk/north-west/04.webp",
+          "crag_troll/animations/walk/north-west/05.webp"
+        ],
+        "south-west": [
+          "crag_troll/animations/walk/south-west/00.webp",
+          "crag_troll/animations/walk/south-west/01.webp",
+          "crag_troll/animations/walk/south-west/02.webp",
+          "crag_troll/animations/walk/south-west/03.webp",
+          "crag_troll/animations/walk/south-west/04.webp",
+          "crag_troll/animations/walk/south-west/05.webp"
+        ]
+      },
+      "strips": {
+        "south": "crag_troll/animations/walk__south.webp",
+        "south-east": "crag_troll/animations/walk__south-east.webp",
+        "east": "crag_troll/animations/walk__east.webp",
+        "north-east": "crag_troll/animations/walk__north-east.webp",
+        "north": "crag_troll/animations/walk__north.webp",
+        "west": "crag_troll/animations/walk__west.webp",
+        "north-west": "crag_troll/animations/walk__north-west.webp",
+        "south-west": "crag_troll/animations/walk__south-west.webp"
+      }
+    },
+    "attack": {
+      "directions": {
+        "south": {
+          "status": "fail",
+          "step_mean": 0.119,
+          "step_max": 0.159,
+          "drift": 6.51,
+          "loop": 0.0001,
+          "loop_ratio": 0.0,
+          "travel": 6.52,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": 0.0,
+          "peak": 0.2116,
+          "reach": 0.089,
+          "canvas": [
+            232,
+            232
+          ],
+          "reasons": [
+            "no strike, just a lean: nothing reaches past 0.09 of the body"
+          ],
+          "sub": "76a7d357-326b-4285-af29-4a20f48fb167",
+          "group": "95dda4a9-2384-486a-a8b1-d410ebb1f17f",
+          "takes": 3,
+          "version": 4,
+          "mirrored": false,
+          "generated_at": "2026-09-09T23:00:51+00:00",
+          "action": "Club Smash - Raises the stone club and swings it down in one heavy blow, then returns to idle stance",
+          "tries": 2
+        },
+        "south-east": {
+          "status": "fail",
+          "step_mean": 0.1909,
+          "step_max": 0.2303,
+          "drift": 12.4,
+          "loop": 0.0,
+          "loop_ratio": 0.0,
+          "travel": 12.4,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": 0.0,
+          "peak": 0.3214,
+          "reach": 0.169,
+          "canvas": [
+            232,
+            232
+          ],
+          "reasons": [
+            "no strike, just a lean: nothing reaches past 0.17 of the body"
+          ],
+          "sub": "b4f8f9c8-92cc-4259-b570-4bece398b631",
+          "group": "62e3945c-92d0-4952-8a4e-67e4f7acfca3",
+          "takes": 1,
+          "version": 2,
+          "mirrored": false,
+          "generated_at": "2026-09-09T22:30:26+00:00",
+          "action": "Club Smash - Raises the stone club and swings it down in one heavy blow, then returns to idle stance"
+        },
+        "east": {
+          "status": "pass",
+          "step_mean": 0.1189,
+          "step_max": 0.154,
+          "drift": 3.43,
+          "loop": 0.0002,
+          "loop_ratio": 0.0,
+          "travel": 5.29,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": 0.0,
+          "peak": 0.155,
+          "reach": 0.349,
+          "canvas": [
+            232,
+            232
+          ],
+          "reasons": [],
+          "sub": "d44f8c20-f4ba-46c1-9229-285dcd672060",
+          "group": "2160627d-bf94-424a-a887-79f3089205f5",
+          "takes": 1,
+          "version": 5,
+          "mirrored": false,
+          "generated_at": "2026-09-09T23:45:40+00:00",
+          "action": "Club Smash - Raises the stone club and swings it down in one heavy blow, then returns to idle stance",
+          "tries": 2
+        },
+        "north-east": {
+          "status": "fail",
+          "step_mean": 0.1199,
+          "step_max": 0.137,
+          "drift": 5.9,
+          "loop": 0.0001,
+          "loop_ratio": 0.0,
+          "travel": 5.9,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": 0.0,
+          "peak": 0.1971,
+          "reach": 0.121,
+          "canvas": [
+            232,
+            232
+          ],
+          "reasons": [
+            "no strike, just a lean: nothing reaches past 0.12 of the body"
+          ],
+          "sub": "e3cc59b8-ce8f-4617-9760-86b80456ff72",
+          "group": "1c956204-d11a-4007-aaab-db1fe0dfbb31",
+          "takes": 1,
+          "version": 2,
+          "mirrored": false,
+          "generated_at": "2026-09-09T22:30:27+00:00",
+          "action": "Club Smash - Raises the stone club and swings it down in one heavy blow, then returns to idle stance"
+        },
+        "north": {
+          "status": "warn",
+          "step_mean": 0.1495,
+          "step_max": 0.1874,
+          "drift": 9.82,
+          "loop": 0.0,
+          "loop_ratio": 0.0,
+          "travel": 9.82,
+          "pin": 1.0,
+          "pad": 12,
+          "flash": 0.0,
+          "peak": 0.21,
+          "reach": 0.23,
+          "canvas": [
+            256,
+            256
+          ],
+          "reasons": [
+            "shallow strike: reach 0.23 — eyeball it",
+            "canvas grown by 12 px a side to hold the motion"
+          ],
+          "sub": "9d772767-8fc4-4331-8a2c-b24724962cb0",
+          "group": "ba7507b1-b71f-4e7c-8f9d-5c29de3c6860",
+          "takes": 1,
+          "version": 2,
+          "mirrored": false,
+          "generated_at": "2026-09-09T22:30:28+00:00",
+          "action": "Club Smash - Raises the stone club and swings it down in one heavy blow, then returns to idle stance"
+        },
+        "south-west": {
+          "status": "pass",
+          "step_mean": 0.1909,
+          "step_max": 0.2303,
+          "drift": 12.4,
+          "loop": 0.0,
+          "loop_ratio": 0.0,
+          "travel": 12.4,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": 0.0,
+          "peak": 0.3214,
+          "canvas": [
+            232,
+            232
+          ],
+          "reasons": [],
+          "sub": "b4f8f9c8-92cc-4259-b570-4bece398b631",
+          "group": "62e3945c-92d0-4952-8a4e-67e4f7acfca3",
+          "takes": 1,
+          "version": 2,
+          "mirrored": true,
+          "generated_at": "2026-09-09T22:30:26+00:00",
+          "action": "Club Smash - Raises the stone club and swings it down in one heavy blow, then returns to idle stance",
+          "source": "south-east"
+        },
+        "west": {
+          "status": "pass",
+          "step_mean": 0.1189,
+          "step_max": 0.154,
+          "drift": 3.43,
+          "loop": 0.0002,
+          "loop_ratio": 0.0,
+          "travel": 5.29,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": 0.0,
+          "peak": 0.155,
+          "reach": 0.349,
+          "canvas": [
+            232,
+            232
+          ],
+          "reasons": [],
+          "sub": "d44f8c20-f4ba-46c1-9229-285dcd672060",
+          "group": "2160627d-bf94-424a-a887-79f3089205f5",
+          "takes": 1,
+          "version": 5,
+          "mirrored": true,
+          "generated_at": "2026-09-09T23:45:40+00:00",
+          "action": "Club Smash - Raises the stone club and swings it down in one heavy blow, then returns to idle stance",
+          "tries": 2,
+          "source": "east"
+        },
+        "north-west": {
+          "status": "pass",
+          "step_mean": 0.1199,
+          "step_max": 0.137,
+          "drift": 5.9,
+          "loop": 0.0001,
+          "loop_ratio": 0.0,
+          "travel": 5.9,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": 0.0,
+          "peak": 0.1971,
+          "canvas": [
+            232,
+            232
+          ],
+          "reasons": [],
+          "sub": "e3cc59b8-ce8f-4617-9760-86b80456ff72",
+          "group": "1c956204-d11a-4007-aaab-db1fe0dfbb31",
+          "takes": 1,
+          "version": 2,
+          "mirrored": true,
+          "generated_at": "2026-09-09T22:30:27+00:00",
+          "action": "Club Smash - Raises the stone club and swings it down in one heavy blow, then returns to idle stance",
+          "source": "north-east"
+        }
+      },
+      "action": "Club Smash - Raises the stone club and swings it down in one heavy blow, then returns to idle stance",
+      "frame_paths": {
+        "south": [
+          "crag_troll/animations/attack/south/00.webp",
+          "crag_troll/animations/attack/south/01.webp",
+          "crag_troll/animations/attack/south/02.webp",
+          "crag_troll/animations/attack/south/03.webp",
+          "crag_troll/animations/attack/south/04.webp"
+        ],
+        "south-east": [
+          "crag_troll/animations/attack/south-east/00.webp",
+          "crag_troll/animations/attack/south-east/01.webp",
+          "crag_troll/animations/attack/south-east/02.webp",
+          "crag_troll/animations/attack/south-east/03.webp",
+          "crag_troll/animations/attack/south-east/04.webp"
+        ],
+        "east": [
+          "crag_troll/animations/attack/east/00.webp",
+          "crag_troll/animations/attack/east/01.webp",
+          "crag_troll/animations/attack/east/02.webp",
+          "crag_troll/animations/attack/east/03.webp",
+          "crag_troll/animations/attack/east/04.webp"
+        ],
+        "north-east": [
+          "crag_troll/animations/attack/north-east/00.webp",
+          "crag_troll/animations/attack/north-east/01.webp",
+          "crag_troll/animations/attack/north-east/02.webp",
+          "crag_troll/animations/attack/north-east/03.webp",
+          "crag_troll/animations/attack/north-east/04.webp"
+        ],
+        "north": [
+          "crag_troll/animations/attack/north/00.webp",
+          "crag_troll/animations/attack/north/01.webp",
+          "crag_troll/animations/attack/north/02.webp",
+          "crag_troll/animations/attack/north/03.webp",
+          "crag_troll/animations/attack/north/04.webp"
+        ],
+        "south-west": [
+          "crag_troll/animations/attack/south-west/00.webp",
+          "crag_troll/animations/attack/south-west/01.webp",
+          "crag_troll/animations/attack/south-west/02.webp",
+          "crag_troll/animations/attack/south-west/03.webp",
+          "crag_troll/animations/attack/south-west/04.webp"
+        ],
+        "west": [
+          "crag_troll/animations/attack/west/00.webp",
+          "crag_troll/animations/attack/west/01.webp",
+          "crag_troll/animations/attack/west/02.webp",
+          "crag_troll/animations/attack/west/03.webp",
+          "crag_troll/animations/attack/west/04.webp"
+        ],
+        "north-west": [
+          "crag_troll/animations/attack/north-west/00.webp",
+          "crag_troll/animations/attack/north-west/01.webp",
+          "crag_troll/animations/attack/north-west/02.webp",
+          "crag_troll/animations/attack/north-west/03.webp",
+          "crag_troll/animations/attack/north-west/04.webp"
+        ]
+      },
+      "strips": {
+        "south": "crag_troll/animations/attack__south.webp",
+        "south-east": "crag_troll/animations/attack__south-east.webp",
+        "east": "crag_troll/animations/attack__east.webp",
+        "north-east": "crag_troll/animations/attack__north-east.webp",
+        "north": "crag_troll/animations/attack__north.webp",
+        "south-west": "crag_troll/animations/attack__south-west.webp",
+        "west": "crag_troll/animations/attack__west.webp",
+        "north-west": "crag_troll/animations/attack__north-west.webp"
+      }
+    },
+    "attack_v3try": {
+      "directions": {
+        "south": {
+          "status": "warn",
+          "step_mean": 0.1111,
+          "step_max": 0.2171,
+          "drift": 6.75,
+          "loop": 0.2687,
+          "loop_ratio": 2.42,
+          "travel": 6.64,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": 0.041,
+          "peak": 0.3153,
+          "reach": 0.142,
+          "canvas": [
+            232,
+            232
+          ],
+          "reasons": [
+            "shallow strike: reach 0.14 — eyeball it"
+          ],
+          "sub": "e94485d9-19e9-4bb8-81aa-8622835ce642",
+          "group": "068d1f7e-ba2e-4e01-946a-fe3e1cf5be88",
+          "takes": 1,
+          "version": 6,
+          "mirrored": false,
+          "generated_at": "2026-09-10T22:14:52+00:00",
+          "action": "Overhead Crush - The troll heaves the stone club far over its head and smashes it into the ground, rock shards flying, a huge aggressive attack with the whole body behind it, wide exaggerated motion",
+          "tries": 5,
+          "rolls": 5,
+          "intensity": 1,
+          "frames": 9,
+          "rung": 4
+        },
+        "south-east": {
+          "status": "warn",
+          "step_mean": 0.1014,
+          "step_max": 0.1668,
+          "drift": 6.84,
+          "loop": 0.0671,
+          "loop_ratio": 0.66,
+          "travel": 5.21,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": 0.127,
+          "peak": 0.2221,
+          "reach": 0.174,
+          "canvas": [
+            232,
+            232
+          ],
+          "reasons": [
+            "shallow strike: reach 0.17 — eyeball it"
+          ],
+          "sub": "94ff6585-1983-473a-b63e-6024574541ce",
+          "group": "cc767647-71f0-4c94-9069-e6061d88587c",
+          "takes": 1,
+          "version": 4,
+          "mirrored": false,
+          "generated_at": "2026-09-10T21:22:27+00:00",
+          "action": "Claw Swipe - Raises one front paw and performs one quick swipe forward, white swoosh lines following the claws",
+          "tries": 4,
+          "rolls": 4,
+          "intensity": 1,
+          "frames": 9,
+          "rung": 3
+        },
+        "east": {
+          "status": "warn",
+          "step_mean": 0.0703,
+          "step_max": 0.1577,
+          "drift": 8.72,
+          "loop": 0.1811,
+          "loop_ratio": 2.58,
+          "travel": 13.63,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": 0.0,
+          "peak": 0.1811,
+          "reach": 0.415,
+          "canvas": [
+            232,
+            232
+          ],
+          "reasons": [
+            "motion 0.070 outside the calm band 0.08–0.9 — eyeball it"
+          ],
+          "sub": "6c71e337-2238-4f6e-b97b-77fc7841ca39",
+          "group": "b7c99201-acd3-445b-8956-ba6a00cafa60",
+          "takes": 1,
+          "version": 6,
+          "mirrored": false,
+          "generated_at": "2026-09-10T22:14:53+00:00",
+          "action": "Club Smash - Raises the stone club overhead and smashes it straight down",
+          "tries": 1,
+          "rolls": 1,
+          "intensity": 1,
+          "frames": 9,
+          "rung": 0
+        },
+        "north-east": {
+          "status": "pass",
+          "step_mean": 0.1356,
+          "step_max": 0.3483,
+          "drift": 16.84,
+          "loop": 0.2799,
+          "loop_ratio": 2.06,
+          "travel": 24.41,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": 0.022,
+          "peak": 0.338,
+          "reach": 0.364,
+          "canvas": [
+            232,
+            232
+          ],
+          "reasons": [],
+          "sub": "6657f17b-3561-48a4-a017-5b3e6d5fcd9d",
+          "group": "a331e5a1-2924-44d1-8935-f83d378f8684",
+          "takes": 1,
+          "version": 6,
+          "mirrored": false,
+          "generated_at": "2026-09-10T22:14:54+00:00",
+          "action": "Club Smash - Raises the stone club overhead and smashes it straight down, a big aggressive swing",
+          "tries": 2,
+          "rolls": 2,
+          "intensity": 1,
+          "frames": 9,
+          "rung": 1
+        },
+        "north": {
+          "status": "warn",
+          "step_mean": 0.146,
+          "step_max": 0.2914,
+          "drift": 11.38,
+          "loop": 0.2061,
+          "loop_ratio": 1.41,
+          "travel": 2.95,
+          "pin": 1.0,
+          "pad": 7,
+          "flash": 0.166,
+          "peak": 0.2996,
+          "reach": 0.257,
+          "canvas": [
+            246,
+            246
+          ],
+          "reasons": [
+            "shallow strike: reach 0.26 — eyeball it",
+            "canvas grown by 7 px a side to hold the motion"
+          ],
+          "sub": "3ca85607-0725-4dc9-b4c5-eb2fe8a46f2c",
+          "group": "dd4b530c-95a1-4a05-96c8-312c2706a3b3",
+          "takes": 1,
+          "version": 6,
+          "mirrored": false,
+          "generated_at": "2026-09-10T22:14:56+00:00",
+          "action": "Overhead Crush - The troll heaves the stone club far over its head and smashes it into the ground, rock shards flying, a huge aggressive attack with the whole body behind it, wide exaggerated motion",
+          "tries": 5,
+          "rolls": 5,
+          "intensity": 1,
+          "frames": 9,
+          "rung": 4
+        },
+        "west": {
+          "status": "warn",
+          "step_mean": 0.0703,
+          "step_max": 0.1577,
+          "drift": 8.72,
+          "loop": 0.1811,
+          "loop_ratio": 2.58,
+          "travel": 13.63,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": 0.0,
+          "peak": 0.1811,
+          "reach": 0.415,
+          "canvas": [
+            232,
+            232
+          ],
+          "reasons": [
+            "motion 0.070 outside the calm band 0.08–0.9 — eyeball it"
+          ],
+          "sub": "6c71e337-2238-4f6e-b97b-77fc7841ca39",
+          "group": "b7c99201-acd3-445b-8956-ba6a00cafa60",
+          "takes": 1,
+          "version": 6,
+          "mirrored": true,
+          "generated_at": "2026-09-10T22:14:53+00:00",
+          "action": "Club Smash - Raises the stone club overhead and smashes it straight down",
+          "tries": 1,
+          "rolls": 1,
+          "intensity": 1,
+          "frames": 9,
+          "rung": 0,
+          "source": "east"
+        },
+        "north-west": {
+          "status": "pass",
+          "step_mean": 0.1356,
+          "step_max": 0.3483,
+          "drift": 16.84,
+          "loop": 0.2799,
+          "loop_ratio": 2.06,
+          "travel": 24.41,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": 0.022,
+          "peak": 0.338,
+          "reach": 0.364,
+          "canvas": [
+            232,
+            232
+          ],
+          "reasons": [],
+          "sub": "6657f17b-3561-48a4-a017-5b3e6d5fcd9d",
+          "group": "a331e5a1-2924-44d1-8935-f83d378f8684",
+          "takes": 1,
+          "version": 6,
+          "mirrored": true,
+          "generated_at": "2026-09-10T22:14:54+00:00",
+          "action": "Club Smash - Raises the stone club overhead and smashes it straight down, a big aggressive swing",
+          "tries": 2,
+          "rolls": 2,
+          "intensity": 1,
+          "frames": 9,
+          "rung": 1,
+          "source": "north-east"
+        },
+        "south-west": {
+          "status": "warn",
+          "step_mean": 0.1014,
+          "step_max": 0.1668,
+          "drift": 6.84,
+          "loop": 0.0671,
+          "loop_ratio": 0.66,
+          "travel": 5.21,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": 0.127,
+          "peak": 0.2221,
+          "reach": 0.174,
+          "canvas": [
+            232,
+            232
+          ],
+          "reasons": [
+            "shallow strike: reach 0.17 — eyeball it"
+          ],
+          "sub": "94ff6585-1983-473a-b63e-6024574541ce",
+          "group": "cc767647-71f0-4c94-9069-e6061d88587c",
+          "takes": 1,
+          "version": 4,
+          "mirrored": true,
+          "generated_at": "2026-09-10T21:22:27+00:00",
+          "action": "Claw Swipe - Raises one front paw and performs one quick swipe forward, white swoosh lines following the claws",
+          "tries": 4,
+          "rolls": 4,
+          "intensity": 1,
+          "frames": 9,
+          "rung": 3,
+          "source": "south-east"
+        }
+      },
+      "action": "Club Smash - Raises the stone club overhead and smashes it straight down",
+      "frame_paths": {
+        "south": [
+          "crag_troll/animations/attack_v3try/south/00.webp",
+          "crag_troll/animations/attack_v3try/south/01.webp",
+          "crag_troll/animations/attack_v3try/south/02.webp",
+          "crag_troll/animations/attack_v3try/south/03.webp",
+          "crag_troll/animations/attack_v3try/south/04.webp",
+          "crag_troll/animations/attack_v3try/south/05.webp",
+          "crag_troll/animations/attack_v3try/south/06.webp",
+          "crag_troll/animations/attack_v3try/south/07.webp",
+          "crag_troll/animations/attack_v3try/south/08.webp"
+        ],
+        "south-east": [
+          "crag_troll/animations/attack_v3try/south-east/00.webp",
+          "crag_troll/animations/attack_v3try/south-east/01.webp",
+          "crag_troll/animations/attack_v3try/south-east/02.webp",
+          "crag_troll/animations/attack_v3try/south-east/03.webp",
+          "crag_troll/animations/attack_v3try/south-east/04.webp",
+          "crag_troll/animations/attack_v3try/south-east/05.webp",
+          "crag_troll/animations/attack_v3try/south-east/06.webp",
+          "crag_troll/animations/attack_v3try/south-east/07.webp",
+          "crag_troll/animations/attack_v3try/south-east/08.webp"
+        ],
+        "east": [
+          "crag_troll/animations/attack_v3try/east/00.webp",
+          "crag_troll/animations/attack_v3try/east/01.webp",
+          "crag_troll/animations/attack_v3try/east/02.webp",
+          "crag_troll/animations/attack_v3try/east/03.webp",
+          "crag_troll/animations/attack_v3try/east/04.webp",
+          "crag_troll/animations/attack_v3try/east/05.webp",
+          "crag_troll/animations/attack_v3try/east/06.webp",
+          "crag_troll/animations/attack_v3try/east/07.webp",
+          "crag_troll/animations/attack_v3try/east/08.webp"
+        ],
+        "north-east": [
+          "crag_troll/animations/attack_v3try/north-east/00.webp",
+          "crag_troll/animations/attack_v3try/north-east/01.webp",
+          "crag_troll/animations/attack_v3try/north-east/02.webp",
+          "crag_troll/animations/attack_v3try/north-east/03.webp",
+          "crag_troll/animations/attack_v3try/north-east/04.webp",
+          "crag_troll/animations/attack_v3try/north-east/05.webp",
+          "crag_troll/animations/attack_v3try/north-east/06.webp",
+          "crag_troll/animations/attack_v3try/north-east/07.webp",
+          "crag_troll/animations/attack_v3try/north-east/08.webp"
+        ],
+        "north": [
+          "crag_troll/animations/attack_v3try/north/00.webp",
+          "crag_troll/animations/attack_v3try/north/01.webp",
+          "crag_troll/animations/attack_v3try/north/02.webp",
+          "crag_troll/animations/attack_v3try/north/03.webp",
+          "crag_troll/animations/attack_v3try/north/04.webp",
+          "crag_troll/animations/attack_v3try/north/05.webp",
+          "crag_troll/animations/attack_v3try/north/06.webp",
+          "crag_troll/animations/attack_v3try/north/07.webp",
+          "crag_troll/animations/attack_v3try/north/08.webp"
+        ],
+        "west": [
+          "crag_troll/animations/attack_v3try/west/00.webp",
+          "crag_troll/animations/attack_v3try/west/01.webp",
+          "crag_troll/animations/attack_v3try/west/02.webp",
+          "crag_troll/animations/attack_v3try/west/03.webp",
+          "crag_troll/animations/attack_v3try/west/04.webp",
+          "crag_troll/animations/attack_v3try/west/05.webp",
+          "crag_troll/animations/attack_v3try/west/06.webp",
+          "crag_troll/animations/attack_v3try/west/07.webp",
+          "crag_troll/animations/attack_v3try/west/08.webp"
+        ],
+        "north-west": [
+          "crag_troll/animations/attack_v3try/north-west/00.webp",
+          "crag_troll/animations/attack_v3try/north-west/01.webp",
+          "crag_troll/animations/attack_v3try/north-west/02.webp",
+          "crag_troll/animations/attack_v3try/north-west/03.webp",
+          "crag_troll/animations/attack_v3try/north-west/04.webp",
+          "crag_troll/animations/attack_v3try/north-west/05.webp",
+          "crag_troll/animations/attack_v3try/north-west/06.webp",
+          "crag_troll/animations/attack_v3try/north-west/07.webp",
+          "crag_troll/animations/attack_v3try/north-west/08.webp"
+        ],
+        "south-west": [
+          "crag_troll/animations/attack_v3try/south-west/00.webp",
+          "crag_troll/animations/attack_v3try/south-west/01.webp",
+          "crag_troll/animations/attack_v3try/south-west/02.webp",
+          "crag_troll/animations/attack_v3try/south-west/03.webp",
+          "crag_troll/animations/attack_v3try/south-west/04.webp",
+          "crag_troll/animations/attack_v3try/south-west/05.webp",
+          "crag_troll/animations/attack_v3try/south-west/06.webp",
+          "crag_troll/animations/attack_v3try/south-west/07.webp",
+          "crag_troll/animations/attack_v3try/south-west/08.webp"
+        ]
+      },
+      "strips": {
+        "south": "crag_troll/animations/attack_v3try__south.webp",
+        "south-east": "crag_troll/animations/attack_v3try__south-east.webp",
+        "east": "crag_troll/animations/attack_v3try__east.webp",
+        "north-east": "crag_troll/animations/attack_v3try__north-east.webp",
+        "north": "crag_troll/animations/attack_v3try__north.webp",
+        "west": "crag_troll/animations/attack_v3try__west.webp",
+        "north-west": "crag_troll/animations/attack_v3try__north-west.webp",
+        "south-west": "crag_troll/animations/attack_v3try__south-west.webp"
+      },
+      "intensity": 1
+    },
+    "attack_try": {
+      "directions": {
+        "south": {
+          "status": "warn",
+          "step_mean": 0.4941,
+          "step_max": 0.6297,
+          "drift": 28.19,
+          "loop": 0.4985,
+          "loop_ratio": 1.01,
+          "travel": 13.11,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": 0.0,
+          "peak": 0.5075,
+          "reach": 0.253,
+          "canvas": [
+            232,
+            232
+          ],
+          "reasons": [
+            "drifts 28.2 px — eyeball it",
+            "shallow strike: reach 0.25 — eyeball it"
+          ],
+          "sub": "4e92761b-044b-4323-aa92-4b4803efa0aa",
+          "group": "f54b5eb0-5b3d-409b-8ff4-1c452e61b023",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "action": "Club Smash - Raises the stone club overhead and smashes it straight down",
+          "intensity": 0,
+          "rolls": 1,
+          "frames": 4,
+          "rung": 0,
+          "tries": 1,
+          "generated_at": "2026-09-11T15:34:46+00:00"
+        },
+        "south-east": {
+          "status": "warn",
+          "step_mean": 0.4984,
+          "step_max": 0.6428,
+          "drift": 28.94,
+          "loop": 0.5072,
+          "loop_ratio": 1.02,
+          "travel": 13.76,
+          "pin": 0.705,
+          "pad": 0,
+          "flash": 0.0,
+          "peak": 0.5076,
+          "reach": 0.279,
+          "canvas": [
+            232,
+            232
+          ],
+          "reasons": [
+            "drifts 28.9 px — eyeball it",
+            "shallow strike: reach 0.28 — eyeball it"
+          ],
+          "sub": "a2f2f777-8ec1-4f75-8c3e-e7a2a375df95",
+          "group": "f54b5eb0-5b3d-409b-8ff4-1c452e61b023",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "action": "Club Smash - Raises the stone club overhead and smashes it straight down",
+          "intensity": 0,
+          "rolls": 1,
+          "frames": 4,
+          "rung": 0,
+          "tries": 1,
+          "generated_at": "2026-09-11T15:34:46+00:00"
+        },
+        "east": {
+          "status": "warn",
+          "step_mean": 0.5945,
+          "step_max": 0.7188,
+          "drift": 33.46,
+          "loop": 0.7056,
+          "loop_ratio": 1.19,
+          "travel": 17.65,
+          "pin": 0.902,
+          "pad": 0,
+          "flash": 0.0,
+          "peak": 0.7056,
+          "reach": 0.453,
+          "canvas": [
+            232,
+            232
+          ],
+          "reasons": [
+            "drifts 33.5 px — eyeball it"
+          ],
+          "sub": "df161f64-6f69-4901-9040-6d9a8d742a80",
+          "group": "f54b5eb0-5b3d-409b-8ff4-1c452e61b023",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "action": "Club Smash - Raises the stone club overhead and smashes it straight down",
+          "intensity": 0,
+          "rolls": 1,
+          "frames": 4,
+          "rung": 0,
+          "tries": 1,
+          "generated_at": "2026-09-11T15:34:47+00:00"
+        },
+        "north-east": {
+          "status": "pass",
+          "step_mean": 0.2808,
+          "step_max": 0.4235,
+          "drift": 14.22,
+          "loop": 0.4255,
+          "loop_ratio": 1.51,
+          "travel": 21.18,
+          "pin": 0.914,
+          "pad": 0,
+          "flash": 0.0,
+          "peak": 0.4255,
+          "reach": 0.364,
+          "canvas": [
+            232,
+            232
+          ],
+          "reasons": [],
+          "sub": "8f0c06fb-f7d4-421a-b00d-4280bf709ae6",
+          "group": "f54b5eb0-5b3d-409b-8ff4-1c452e61b023",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "action": "Club Smash - Raises the stone club overhead and smashes it straight down",
+          "intensity": 0,
+          "rolls": 1,
+          "frames": 4,
+          "rung": 0,
+          "tries": 1,
+          "generated_at": "2026-09-11T15:34:48+00:00"
+        },
+        "north": {
+          "status": "warn",
+          "step_mean": 0.3394,
+          "step_max": 0.4853,
+          "drift": 16.52,
+          "loop": 0.3181,
+          "loop_ratio": 0.94,
+          "travel": 13.27,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": 0.0,
+          "peak": 0.4149,
+          "reach": 0.257,
+          "canvas": [
+            232,
+            232
+          ],
+          "reasons": [
+            "shallow strike: reach 0.26 — eyeball it"
+          ],
+          "sub": "72b107ef-cddf-498c-a02b-541ff9f438f2",
+          "group": "f54b5eb0-5b3d-409b-8ff4-1c452e61b023",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "action": "Club Smash - Raises the stone club overhead and smashes it straight down",
+          "intensity": 0,
+          "rolls": 1,
+          "frames": 4,
+          "rung": 0,
+          "tries": 1,
+          "generated_at": "2026-09-11T15:34:49+00:00"
+        },
+        "south-west": {
+          "status": "warn",
+          "step_mean": 0.4984,
+          "step_max": 0.6428,
+          "drift": 28.94,
+          "loop": 0.5072,
+          "loop_ratio": 1.02,
+          "travel": 13.76,
+          "pin": 0.705,
+          "pad": 0,
+          "flash": 0.0,
+          "peak": 0.5076,
+          "reach": 0.279,
+          "canvas": [
+            232,
+            232
+          ],
+          "reasons": [
+            "drifts 28.9 px — eyeball it",
+            "shallow strike: reach 0.28 — eyeball it"
+          ],
+          "sub": "a2f2f777-8ec1-4f75-8c3e-e7a2a375df95",
+          "group": "f54b5eb0-5b3d-409b-8ff4-1c452e61b023",
+          "takes": 1,
+          "version": 1,
+          "mirrored": true,
+          "action": "Club Smash - Raises the stone club overhead and smashes it straight down",
+          "intensity": 0,
+          "rolls": 1,
+          "frames": 4,
+          "rung": 0,
+          "tries": 1,
+          "generated_at": "2026-09-11T15:34:46+00:00",
+          "source": "south-east"
+        },
+        "west": {
+          "status": "warn",
+          "step_mean": 0.5945,
+          "step_max": 0.7188,
+          "drift": 33.46,
+          "loop": 0.7056,
+          "loop_ratio": 1.19,
+          "travel": 17.65,
+          "pin": 0.902,
+          "pad": 0,
+          "flash": 0.0,
+          "peak": 0.7056,
+          "reach": 0.453,
+          "canvas": [
+            232,
+            232
+          ],
+          "reasons": [
+            "drifts 33.5 px — eyeball it"
+          ],
+          "sub": "df161f64-6f69-4901-9040-6d9a8d742a80",
+          "group": "f54b5eb0-5b3d-409b-8ff4-1c452e61b023",
+          "takes": 1,
+          "version": 1,
+          "mirrored": true,
+          "action": "Club Smash - Raises the stone club overhead and smashes it straight down",
+          "intensity": 0,
+          "rolls": 1,
+          "frames": 4,
+          "rung": 0,
+          "tries": 1,
+          "generated_at": "2026-09-11T15:34:47+00:00",
+          "source": "east"
+        },
+        "north-west": {
+          "status": "pass",
+          "step_mean": 0.2808,
+          "step_max": 0.4235,
+          "drift": 14.22,
+          "loop": 0.4255,
+          "loop_ratio": 1.51,
+          "travel": 21.18,
+          "pin": 0.914,
+          "pad": 0,
+          "flash": 0.0,
+          "peak": 0.4255,
+          "reach": 0.364,
+          "canvas": [
+            232,
+            232
+          ],
+          "reasons": [],
+          "sub": "8f0c06fb-f7d4-421a-b00d-4280bf709ae6",
+          "group": "f54b5eb0-5b3d-409b-8ff4-1c452e61b023",
+          "takes": 1,
+          "version": 1,
+          "mirrored": true,
+          "action": "Club Smash - Raises the stone club overhead and smashes it straight down",
+          "intensity": 0,
+          "rolls": 1,
+          "frames": 4,
+          "rung": 0,
+          "tries": 1,
+          "generated_at": "2026-09-11T15:34:48+00:00",
+          "source": "north-east"
+        }
+      },
+      "action": "Club Smash - Raises the stone club overhead and smashes it straight down",
+      "frame_paths": {
+        "south": [
+          "crag_troll/animations/attack_try/south/00.webp",
+          "crag_troll/animations/attack_try/south/01.webp",
+          "crag_troll/animations/attack_try/south/02.webp",
+          "crag_troll/animations/attack_try/south/03.webp"
+        ],
+        "south-east": [
+          "crag_troll/animations/attack_try/south-east/00.webp",
+          "crag_troll/animations/attack_try/south-east/01.webp",
+          "crag_troll/animations/attack_try/south-east/02.webp",
+          "crag_troll/animations/attack_try/south-east/03.webp"
+        ],
+        "east": [
+          "crag_troll/animations/attack_try/east/00.webp",
+          "crag_troll/animations/attack_try/east/01.webp",
+          "crag_troll/animations/attack_try/east/02.webp",
+          "crag_troll/animations/attack_try/east/03.webp"
+        ],
+        "north-east": [
+          "crag_troll/animations/attack_try/north-east/00.webp",
+          "crag_troll/animations/attack_try/north-east/01.webp",
+          "crag_troll/animations/attack_try/north-east/02.webp",
+          "crag_troll/animations/attack_try/north-east/03.webp"
+        ],
+        "north": [
+          "crag_troll/animations/attack_try/north/00.webp",
+          "crag_troll/animations/attack_try/north/01.webp",
+          "crag_troll/animations/attack_try/north/02.webp",
+          "crag_troll/animations/attack_try/north/03.webp"
+        ],
+        "south-west": [
+          "crag_troll/animations/attack_try/south-west/00.webp",
+          "crag_troll/animations/attack_try/south-west/01.webp",
+          "crag_troll/animations/attack_try/south-west/02.webp",
+          "crag_troll/animations/attack_try/south-west/03.webp"
+        ],
+        "west": [
+          "crag_troll/animations/attack_try/west/00.webp",
+          "crag_troll/animations/attack_try/west/01.webp",
+          "crag_troll/animations/attack_try/west/02.webp",
+          "crag_troll/animations/attack_try/west/03.webp"
+        ],
+        "north-west": [
+          "crag_troll/animations/attack_try/north-west/00.webp",
+          "crag_troll/animations/attack_try/north-west/01.webp",
+          "crag_troll/animations/attack_try/north-west/02.webp",
+          "crag_troll/animations/attack_try/north-west/03.webp"
+        ]
+      },
+      "strips": {
+        "south": "crag_troll/animations/attack_try__south.webp",
+        "south-east": "crag_troll/animations/attack_try__south-east.webp",
+        "east": "crag_troll/animations/attack_try__east.webp",
+        "north-east": "crag_troll/animations/attack_try__north-east.webp",
+        "north": "crag_troll/animations/attack_try__north.webp",
+        "south-west": "crag_troll/animations/attack_try__south-west.webp",
+        "west": "crag_troll/animations/attack_try__west.webp",
+        "north-west": "crag_troll/animations/attack_try__north-west.webp"
+      }
+    }
   }
- },
- "approved_at": "2026-09-09T19:59:20+00:00",
- "animations": {
-  "idle": {
-   "directions": {
-    "south": {
-     "status": "pass",
-     "step_mean": 0.0243,
-     "step_max": 0.0433,
-     "drift": 1.34,
-     "loop": 0.0001,
-     "pin": 1.0,
-     "reasons": [],
-     "sub": "d4f56718-b869-4fe1-bf44-380a1b928ade",
-     "takes": 1,
-     "version": 1,
-     "mirrored": false,
-     "generated_at": "2026-09-09T20:09:22+00:00",
-     "cut": 0
-    },
-    "south-east": {
-     "status": "pass",
-     "step_mean": 0.0282,
-     "step_max": 0.0425,
-     "drift": 1.8,
-     "loop": 0.0,
-     "pin": 1.0,
-     "reasons": [],
-     "sub": "815c9407-de1f-4812-b0ee-e3e33a46e29d",
-     "takes": 1,
-     "version": 1,
-     "mirrored": false,
-     "generated_at": "2026-09-09T20:09:23+00:00",
-     "cut": 0
-    },
-    "east": {
-     "status": "pass",
-     "step_mean": 0.0244,
-     "step_max": 0.0332,
-     "drift": 1.2,
-     "loop": 0.0,
-     "pin": 1.0,
-     "reasons": [],
-     "sub": "386caf78-626e-4dbc-b0e7-06df19db7353",
-     "takes": 1,
-     "version": 1,
-     "mirrored": false,
-     "generated_at": "2026-09-09T20:09:23+00:00",
-     "cut": 0
-    },
-    "north-east": {
-     "status": "pass",
-     "step_mean": 0.0481,
-     "step_max": 0.0795,
-     "drift": 2.79,
-     "loop": 0.0001,
-     "pin": 1.0,
-     "reasons": [],
-     "sub": "bc35f245-0777-42f1-bfc8-a7f9a297d706",
-     "takes": 1,
-     "version": 1,
-     "mirrored": false,
-     "generated_at": "2026-09-09T20:09:24+00:00",
-     "cut": 0
-    },
-    "north": {
-     "status": "pass",
-     "step_mean": 0.0372,
-     "step_max": 0.0422,
-     "drift": 2.3,
-     "loop": 0.0,
-     "pin": 1.0,
-     "reasons": [],
-     "sub": "bf085642-a4fa-4e23-94c6-3ba25313b965",
-     "takes": 1,
-     "version": 1,
-     "mirrored": false,
-     "generated_at": "2026-09-09T20:09:25+00:00",
-     "cut": 0
-    },
-    "south-west": {
-     "status": "pass",
-     "step_mean": 0.0282,
-     "step_max": 0.0425,
-     "drift": 1.8,
-     "loop": 0.0,
-     "pin": 1.0,
-     "reasons": [],
-     "sub": "815c9407-de1f-4812-b0ee-e3e33a46e29d",
-     "takes": 1,
-     "version": 1,
-     "mirrored": true,
-     "generated_at": "2026-09-09T20:09:23+00:00",
-     "cut": 0,
-     "source": "south-east"
-    },
-    "west": {
-     "status": "pass",
-     "step_mean": 0.0244,
-     "step_max": 0.0332,
-     "drift": 1.2,
-     "loop": 0.0,
-     "pin": 1.0,
-     "reasons": [],
-     "sub": "386caf78-626e-4dbc-b0e7-06df19db7353",
-     "takes": 1,
-     "version": 1,
-     "mirrored": true,
-     "generated_at": "2026-09-09T20:09:23+00:00",
-     "cut": 0,
-     "source": "east"
-    },
-    "north-west": {
-     "status": "pass",
-     "step_mean": 0.0481,
-     "step_max": 0.0795,
-     "drift": 2.79,
-     "loop": 0.0001,
-     "pin": 1.0,
-     "reasons": [],
-     "sub": "bc35f245-0777-42f1-bfc8-a7f9a297d706",
-     "takes": 1,
-     "version": 1,
-     "mirrored": true,
-     "generated_at": "2026-09-09T20:09:24+00:00",
-     "cut": 0,
-     "source": "north-east"
-    }
-   },
-   "action": "Calm still idle, breathing very slowly and subtly, chest and shoulders rise and fall a little, feet planted, no other movement, ends in the same neutral pose it started in",
-   "frame_paths": {
-    "south": [
-     "crag_troll/animations/idle/south/00.webp",
-     "crag_troll/animations/idle/south/01.webp",
-     "crag_troll/animations/idle/south/02.webp",
-     "crag_troll/animations/idle/south/03.webp",
-     "crag_troll/animations/idle/south/04.webp"
-    ],
-    "south-east": [
-     "crag_troll/animations/idle/south-east/00.webp",
-     "crag_troll/animations/idle/south-east/01.webp",
-     "crag_troll/animations/idle/south-east/02.webp",
-     "crag_troll/animations/idle/south-east/03.webp",
-     "crag_troll/animations/idle/south-east/04.webp"
-    ],
-    "east": [
-     "crag_troll/animations/idle/east/00.webp",
-     "crag_troll/animations/idle/east/01.webp",
-     "crag_troll/animations/idle/east/02.webp",
-     "crag_troll/animations/idle/east/03.webp",
-     "crag_troll/animations/idle/east/04.webp"
-    ],
-    "north-east": [
-     "crag_troll/animations/idle/north-east/00.webp",
-     "crag_troll/animations/idle/north-east/01.webp",
-     "crag_troll/animations/idle/north-east/02.webp",
-     "crag_troll/animations/idle/north-east/03.webp",
-     "crag_troll/animations/idle/north-east/04.webp"
-    ],
-    "north": [
-     "crag_troll/animations/idle/north/00.webp",
-     "crag_troll/animations/idle/north/01.webp",
-     "crag_troll/animations/idle/north/02.webp",
-     "crag_troll/animations/idle/north/03.webp",
-     "crag_troll/animations/idle/north/04.webp"
-    ],
-    "south-west": [
-     "crag_troll/animations/idle/south-west/00.webp",
-     "crag_troll/animations/idle/south-west/01.webp",
-     "crag_troll/animations/idle/south-west/02.webp",
-     "crag_troll/animations/idle/south-west/03.webp",
-     "crag_troll/animations/idle/south-west/04.webp"
-    ],
-    "west": [
-     "crag_troll/animations/idle/west/00.webp",
-     "crag_troll/animations/idle/west/01.webp",
-     "crag_troll/animations/idle/west/02.webp",
-     "crag_troll/animations/idle/west/03.webp",
-     "crag_troll/animations/idle/west/04.webp"
-    ],
-    "north-west": [
-     "crag_troll/animations/idle/north-west/00.webp",
-     "crag_troll/animations/idle/north-west/01.webp",
-     "crag_troll/animations/idle/north-west/02.webp",
-     "crag_troll/animations/idle/north-west/03.webp",
-     "crag_troll/animations/idle/north-west/04.webp"
-    ]
-   },
-   "strips": {
-    "south": "crag_troll/animations/idle__south.webp",
-    "south-east": "crag_troll/animations/idle__south-east.webp",
-    "east": "crag_troll/animations/idle__east.webp",
-    "north-east": "crag_troll/animations/idle__north-east.webp",
-    "north": "crag_troll/animations/idle__north.webp",
-    "south-west": "crag_troll/animations/idle__south-west.webp",
-    "west": "crag_troll/animations/idle__west.webp",
-    "north-west": "crag_troll/animations/idle__north-west.webp"
-   }
-  },
-  "walk": {
-   "directions": {
-    "south": {
-     "status": "warn",
-     "step_mean": 0.082,
-     "step_max": 0.0999,
-     "drift": 8.46,
-     "loop": 0.2161,
-     "loop_ratio": 2.63,
-     "travel": 8.46,
-     "pin": 0.931,
-     "pad": 0,
-     "canvas": [
-      232,
-      232
-     ],
-     "reasons": [
-      "motion 0.082 outside the calm band 0.1–0.4 — eyeball it",
-      "drifts 8.5 px — eyeball it",
-      "last→first hand-off 2.6× a step — eyeball the loop",
-      "8.5 px of x-travel — eyeball it"
-     ],
-     "sub": "54ed9c4e-9569-432d-9b40-0935650fd373",
-     "group": "63049a6b-30ca-4b36-a5de-7851e57330a0",
-     "takes": 1,
-     "version": 1,
-     "mirrored": false,
-     "generated_at": "2026-09-09T21:15:11+00:00"
-    },
-    "south-east": {
-     "status": "pass",
-     "step_mean": 0.1102,
-     "step_max": 0.1292,
-     "drift": 5.34,
-     "loop": 0.0,
-     "loop_ratio": 0.0,
-     "travel": 1.25,
-     "pin": 1.0,
-     "pad": 0,
-     "canvas": [
-      232,
-      232
-     ],
-     "reasons": [
-      "PINNED fallback: base → walk → base, not a seamless loop (maintainer's last resort)"
-     ],
-     "pinned": true,
-     "sub": "c5b6be3f-d68b-4c78-979d-3ea9de645c6b",
-     "group": "9d3874c8-d670-440a-8ede-3f1ba9c96e11",
-     "takes": 3,
-     "version": 4,
-     "mirrored": false,
-     "generated_at": "2026-09-09T21:48:07+00:00"
-    },
-    "east": {
-     "status": "warn",
-     "step_mean": 0.1752,
-     "step_max": 0.1926,
-     "drift": 7.89,
-     "loop": 0.3416,
-     "loop_ratio": 1.95,
-     "travel": 5.32,
-     "pin": 0.853,
-     "pad": 0,
-     "canvas": [
-      232,
-      232
-     ],
-     "reasons": [
-      "drifts 7.9 px — eyeball it"
-     ],
-     "sub": "34c8ab0e-1e57-47f4-b63b-da47163fa0ba",
-     "group": "ac1597df-180b-4a71-9bb1-f71ab1371af0",
-     "takes": 1,
-     "version": 1,
-     "mirrored": false,
-     "generated_at": "2026-09-09T21:15:13+00:00"
-    },
-    "north-east": {
-     "status": "warn",
-     "step_mean": 0.1393,
-     "step_max": 0.183,
-     "drift": 7.19,
-     "loop": 0.174,
-     "loop_ratio": 1.25,
-     "travel": 4.27,
-     "pin": 0.89,
-     "pad": 0,
-     "canvas": [
-      232,
-      232
-     ],
-     "reasons": [
-      "drifts 7.2 px — eyeball it"
-     ],
-     "sub": "853da555-0944-4b22-b435-d504fef82cbe",
-     "group": "b6f1e1c9-0708-4a30-b87d-000d0c818e70",
-     "takes": 1,
-     "version": 1,
-     "mirrored": false,
-     "generated_at": "2026-09-09T21:15:14+00:00"
-    },
-    "north": {
-     "status": "warn",
-     "step_mean": 0.0791,
-     "step_max": 0.1021,
-     "drift": 2.95,
-     "loop": 0.1117,
-     "loop_ratio": 1.41,
-     "travel": 2.95,
-     "pin": 0.936,
-     "pad": 0,
-     "canvas": [
-      232,
-      232
-     ],
-     "reasons": [
-      "motion 0.079 outside the calm band 0.1–0.4 — eyeball it"
-     ],
-     "sub": "b314a2b0-6683-4bc9-ba65-7a8841f558f9",
-     "group": "a259c851-00bb-4946-8f81-47ef678dee6f",
-     "takes": 1,
-     "version": 1,
-     "mirrored": false,
-     "generated_at": "2026-09-09T21:15:15+00:00"
-    },
-    "west": {
-     "status": "warn",
-     "step_mean": 0.1752,
-     "step_max": 0.1926,
-     "drift": 7.89,
-     "loop": 0.3416,
-     "loop_ratio": 1.95,
-     "travel": 5.32,
-     "pin": 0.853,
-     "pad": 0,
-     "canvas": [
-      232,
-      232
-     ],
-     "reasons": [
-      "drifts 7.9 px — eyeball it"
-     ],
-     "sub": "34c8ab0e-1e57-47f4-b63b-da47163fa0ba",
-     "group": "ac1597df-180b-4a71-9bb1-f71ab1371af0",
-     "takes": 1,
-     "version": 1,
-     "mirrored": true,
-     "generated_at": "2026-09-09T21:15:13+00:00",
-     "source": "east"
-    },
-    "north-west": {
-     "status": "warn",
-     "step_mean": 0.1393,
-     "step_max": 0.183,
-     "drift": 7.19,
-     "loop": 0.174,
-     "loop_ratio": 1.25,
-     "travel": 4.27,
-     "pin": 0.89,
-     "pad": 0,
-     "canvas": [
-      232,
-      232
-     ],
-     "reasons": [
-      "drifts 7.2 px — eyeball it"
-     ],
-     "sub": "853da555-0944-4b22-b435-d504fef82cbe",
-     "group": "b6f1e1c9-0708-4a30-b87d-000d0c818e70",
-     "takes": 1,
-     "version": 1,
-     "mirrored": true,
-     "generated_at": "2026-09-09T21:15:14+00:00",
-     "source": "north-east"
-    },
-    "south-west": {
-     "status": "pass",
-     "step_mean": 0.1102,
-     "step_max": 0.1292,
-     "drift": 5.34,
-     "loop": 0.0,
-     "loop_ratio": 0.0,
-     "travel": 1.25,
-     "pin": 1.0,
-     "pad": 0,
-     "canvas": [
-      232,
-      232
-     ],
-     "reasons": [
-      "PINNED fallback: base → walk → base, not a seamless loop (maintainer's last resort)"
-     ],
-     "pinned": true,
-     "sub": "c5b6be3f-d68b-4c78-979d-3ea9de645c6b",
-     "group": "9d3874c8-d670-440a-8ede-3f1ba9c96e11",
-     "takes": 3,
-     "version": 4,
-     "mirrored": true,
-     "generated_at": "2026-09-09T21:48:07+00:00",
-     "source": "south-east"
-    }
-   },
-   "action": "walk loop, full walk cycle in place, legs alternate naturally, normal calm walking pace, body stays centered, seamless loop whose last frame leads straight back into the first, no turning",
-   "frame_paths": {
-    "south": [
-     "crag_troll/animations/walk/south/00.webp",
-     "crag_troll/animations/walk/south/01.webp",
-     "crag_troll/animations/walk/south/02.webp",
-     "crag_troll/animations/walk/south/03.webp",
-     "crag_troll/animations/walk/south/04.webp",
-     "crag_troll/animations/walk/south/05.webp"
-    ],
-    "south-east": [
-     "crag_troll/animations/walk/south-east/00.webp",
-     "crag_troll/animations/walk/south-east/01.webp",
-     "crag_troll/animations/walk/south-east/02.webp",
-     "crag_troll/animations/walk/south-east/03.webp",
-     "crag_troll/animations/walk/south-east/04.webp",
-     "crag_troll/animations/walk/south-east/05.webp"
-    ],
-    "east": [
-     "crag_troll/animations/walk/east/00.webp",
-     "crag_troll/animations/walk/east/01.webp",
-     "crag_troll/animations/walk/east/02.webp",
-     "crag_troll/animations/walk/east/03.webp",
-     "crag_troll/animations/walk/east/04.webp",
-     "crag_troll/animations/walk/east/05.webp"
-    ],
-    "north-east": [
-     "crag_troll/animations/walk/north-east/00.webp",
-     "crag_troll/animations/walk/north-east/01.webp",
-     "crag_troll/animations/walk/north-east/02.webp",
-     "crag_troll/animations/walk/north-east/03.webp",
-     "crag_troll/animations/walk/north-east/04.webp",
-     "crag_troll/animations/walk/north-east/05.webp"
-    ],
-    "north": [
-     "crag_troll/animations/walk/north/00.webp",
-     "crag_troll/animations/walk/north/01.webp",
-     "crag_troll/animations/walk/north/02.webp",
-     "crag_troll/animations/walk/north/03.webp",
-     "crag_troll/animations/walk/north/04.webp",
-     "crag_troll/animations/walk/north/05.webp"
-    ],
-    "west": [
-     "crag_troll/animations/walk/west/00.webp",
-     "crag_troll/animations/walk/west/01.webp",
-     "crag_troll/animations/walk/west/02.webp",
-     "crag_troll/animations/walk/west/03.webp",
-     "crag_troll/animations/walk/west/04.webp",
-     "crag_troll/animations/walk/west/05.webp"
-    ],
-    "north-west": [
-     "crag_troll/animations/walk/north-west/00.webp",
-     "crag_troll/animations/walk/north-west/01.webp",
-     "crag_troll/animations/walk/north-west/02.webp",
-     "crag_troll/animations/walk/north-west/03.webp",
-     "crag_troll/animations/walk/north-west/04.webp",
-     "crag_troll/animations/walk/north-west/05.webp"
-    ],
-    "south-west": [
-     "crag_troll/animations/walk/south-west/00.webp",
-     "crag_troll/animations/walk/south-west/01.webp",
-     "crag_troll/animations/walk/south-west/02.webp",
-     "crag_troll/animations/walk/south-west/03.webp",
-     "crag_troll/animations/walk/south-west/04.webp",
-     "crag_troll/animations/walk/south-west/05.webp"
-    ]
-   },
-   "strips": {
-    "south": "crag_troll/animations/walk__south.webp",
-    "south-east": "crag_troll/animations/walk__south-east.webp",
-    "east": "crag_troll/animations/walk__east.webp",
-    "north-east": "crag_troll/animations/walk__north-east.webp",
-    "north": "crag_troll/animations/walk__north.webp",
-    "west": "crag_troll/animations/walk__west.webp",
-    "north-west": "crag_troll/animations/walk__north-west.webp",
-    "south-west": "crag_troll/animations/walk__south-west.webp"
-   }
-  },
-  "attack": {
-   "directions": {
-    "south": {
-     "status": "fail",
-     "step_mean": 0.119,
-     "step_max": 0.159,
-     "drift": 6.51,
-     "loop": 0.0001,
-     "loop_ratio": 0.0,
-     "travel": 6.52,
-     "pin": 1.0,
-     "pad": 0,
-     "flash": 0.0,
-     "peak": 0.2116,
-     "reach": 0.089,
-     "canvas": [
-      232,
-      232
-     ],
-     "reasons": [
-      "no strike, just a lean: nothing reaches past 0.09 of the body"
-     ],
-     "sub": "76a7d357-326b-4285-af29-4a20f48fb167",
-     "group": "95dda4a9-2384-486a-a8b1-d410ebb1f17f",
-     "takes": 3,
-     "version": 4,
-     "mirrored": false,
-     "generated_at": "2026-09-09T23:00:51+00:00",
-     "action": "Club Smash - Raises the stone club and swings it down in one heavy blow, then returns to idle stance",
-     "tries": 2
-    },
-    "south-east": {
-     "status": "fail",
-     "step_mean": 0.1909,
-     "step_max": 0.2303,
-     "drift": 12.4,
-     "loop": 0.0,
-     "loop_ratio": 0.0,
-     "travel": 12.4,
-     "pin": 1.0,
-     "pad": 0,
-     "flash": 0.0,
-     "peak": 0.3214,
-     "reach": 0.169,
-     "canvas": [
-      232,
-      232
-     ],
-     "reasons": [
-      "no strike, just a lean: nothing reaches past 0.17 of the body"
-     ],
-     "sub": "b4f8f9c8-92cc-4259-b570-4bece398b631",
-     "group": "62e3945c-92d0-4952-8a4e-67e4f7acfca3",
-     "takes": 1,
-     "version": 2,
-     "mirrored": false,
-     "generated_at": "2026-09-09T22:30:26+00:00",
-     "action": "Club Smash - Raises the stone club and swings it down in one heavy blow, then returns to idle stance"
-    },
-    "east": {
-     "status": "pass",
-     "step_mean": 0.1189,
-     "step_max": 0.154,
-     "drift": 3.43,
-     "loop": 0.0002,
-     "loop_ratio": 0.0,
-     "travel": 5.29,
-     "pin": 1.0,
-     "pad": 0,
-     "flash": 0.0,
-     "peak": 0.155,
-     "reach": 0.349,
-     "canvas": [
-      232,
-      232
-     ],
-     "reasons": [],
-     "sub": "d44f8c20-f4ba-46c1-9229-285dcd672060",
-     "group": "2160627d-bf94-424a-a887-79f3089205f5",
-     "takes": 1,
-     "version": 5,
-     "mirrored": false,
-     "generated_at": "2026-09-09T23:45:40+00:00",
-     "action": "Club Smash - Raises the stone club and swings it down in one heavy blow, then returns to idle stance",
-     "tries": 2
-    },
-    "north-east": {
-     "status": "fail",
-     "step_mean": 0.1199,
-     "step_max": 0.137,
-     "drift": 5.9,
-     "loop": 0.0001,
-     "loop_ratio": 0.0,
-     "travel": 5.9,
-     "pin": 1.0,
-     "pad": 0,
-     "flash": 0.0,
-     "peak": 0.1971,
-     "reach": 0.121,
-     "canvas": [
-      232,
-      232
-     ],
-     "reasons": [
-      "no strike, just a lean: nothing reaches past 0.12 of the body"
-     ],
-     "sub": "e3cc59b8-ce8f-4617-9760-86b80456ff72",
-     "group": "1c956204-d11a-4007-aaab-db1fe0dfbb31",
-     "takes": 1,
-     "version": 2,
-     "mirrored": false,
-     "generated_at": "2026-09-09T22:30:27+00:00",
-     "action": "Club Smash - Raises the stone club and swings it down in one heavy blow, then returns to idle stance"
-    },
-    "north": {
-     "status": "warn",
-     "step_mean": 0.1495,
-     "step_max": 0.1874,
-     "drift": 9.82,
-     "loop": 0.0,
-     "loop_ratio": 0.0,
-     "travel": 9.82,
-     "pin": 1.0,
-     "pad": 12,
-     "flash": 0.0,
-     "peak": 0.21,
-     "reach": 0.23,
-     "canvas": [
-      256,
-      256
-     ],
-     "reasons": [
-      "shallow strike: reach 0.23 — eyeball it",
-      "canvas grown by 12 px a side to hold the motion"
-     ],
-     "sub": "9d772767-8fc4-4331-8a2c-b24724962cb0",
-     "group": "ba7507b1-b71f-4e7c-8f9d-5c29de3c6860",
-     "takes": 1,
-     "version": 2,
-     "mirrored": false,
-     "generated_at": "2026-09-09T22:30:28+00:00",
-     "action": "Club Smash - Raises the stone club and swings it down in one heavy blow, then returns to idle stance"
-    },
-    "south-west": {
-     "status": "pass",
-     "step_mean": 0.1909,
-     "step_max": 0.2303,
-     "drift": 12.4,
-     "loop": 0.0,
-     "loop_ratio": 0.0,
-     "travel": 12.4,
-     "pin": 1.0,
-     "pad": 0,
-     "flash": 0.0,
-     "peak": 0.3214,
-     "canvas": [
-      232,
-      232
-     ],
-     "reasons": [],
-     "sub": "b4f8f9c8-92cc-4259-b570-4bece398b631",
-     "group": "62e3945c-92d0-4952-8a4e-67e4f7acfca3",
-     "takes": 1,
-     "version": 2,
-     "mirrored": true,
-     "generated_at": "2026-09-09T22:30:26+00:00",
-     "action": "Club Smash - Raises the stone club and swings it down in one heavy blow, then returns to idle stance",
-     "source": "south-east"
-    },
-    "west": {
-     "status": "pass",
-     "step_mean": 0.1189,
-     "step_max": 0.154,
-     "drift": 3.43,
-     "loop": 0.0002,
-     "loop_ratio": 0.0,
-     "travel": 5.29,
-     "pin": 1.0,
-     "pad": 0,
-     "flash": 0.0,
-     "peak": 0.155,
-     "reach": 0.349,
-     "canvas": [
-      232,
-      232
-     ],
-     "reasons": [],
-     "sub": "d44f8c20-f4ba-46c1-9229-285dcd672060",
-     "group": "2160627d-bf94-424a-a887-79f3089205f5",
-     "takes": 1,
-     "version": 5,
-     "mirrored": true,
-     "generated_at": "2026-09-09T23:45:40+00:00",
-     "action": "Club Smash - Raises the stone club and swings it down in one heavy blow, then returns to idle stance",
-     "tries": 2,
-     "source": "east"
-    },
-    "north-west": {
-     "status": "pass",
-     "step_mean": 0.1199,
-     "step_max": 0.137,
-     "drift": 5.9,
-     "loop": 0.0001,
-     "loop_ratio": 0.0,
-     "travel": 5.9,
-     "pin": 1.0,
-     "pad": 0,
-     "flash": 0.0,
-     "peak": 0.1971,
-     "canvas": [
-      232,
-      232
-     ],
-     "reasons": [],
-     "sub": "e3cc59b8-ce8f-4617-9760-86b80456ff72",
-     "group": "1c956204-d11a-4007-aaab-db1fe0dfbb31",
-     "takes": 1,
-     "version": 2,
-     "mirrored": true,
-     "generated_at": "2026-09-09T22:30:27+00:00",
-     "action": "Club Smash - Raises the stone club and swings it down in one heavy blow, then returns to idle stance",
-     "source": "north-east"
-    }
-   },
-   "action": "Club Smash - Raises the stone club and swings it down in one heavy blow, then returns to idle stance",
-   "frame_paths": {
-    "south": [
-     "crag_troll/animations/attack/south/00.webp",
-     "crag_troll/animations/attack/south/01.webp",
-     "crag_troll/animations/attack/south/02.webp",
-     "crag_troll/animations/attack/south/03.webp",
-     "crag_troll/animations/attack/south/04.webp"
-    ],
-    "south-east": [
-     "crag_troll/animations/attack/south-east/00.webp",
-     "crag_troll/animations/attack/south-east/01.webp",
-     "crag_troll/animations/attack/south-east/02.webp",
-     "crag_troll/animations/attack/south-east/03.webp",
-     "crag_troll/animations/attack/south-east/04.webp"
-    ],
-    "east": [
-     "crag_troll/animations/attack/east/00.webp",
-     "crag_troll/animations/attack/east/01.webp",
-     "crag_troll/animations/attack/east/02.webp",
-     "crag_troll/animations/attack/east/03.webp",
-     "crag_troll/animations/attack/east/04.webp"
-    ],
-    "north-east": [
-     "crag_troll/animations/attack/north-east/00.webp",
-     "crag_troll/animations/attack/north-east/01.webp",
-     "crag_troll/animations/attack/north-east/02.webp",
-     "crag_troll/animations/attack/north-east/03.webp",
-     "crag_troll/animations/attack/north-east/04.webp"
-    ],
-    "north": [
-     "crag_troll/animations/attack/north/00.webp",
-     "crag_troll/animations/attack/north/01.webp",
-     "crag_troll/animations/attack/north/02.webp",
-     "crag_troll/animations/attack/north/03.webp",
-     "crag_troll/animations/attack/north/04.webp"
-    ],
-    "south-west": [
-     "crag_troll/animations/attack/south-west/00.webp",
-     "crag_troll/animations/attack/south-west/01.webp",
-     "crag_troll/animations/attack/south-west/02.webp",
-     "crag_troll/animations/attack/south-west/03.webp",
-     "crag_troll/animations/attack/south-west/04.webp"
-    ],
-    "west": [
-     "crag_troll/animations/attack/west/00.webp",
-     "crag_troll/animations/attack/west/01.webp",
-     "crag_troll/animations/attack/west/02.webp",
-     "crag_troll/animations/attack/west/03.webp",
-     "crag_troll/animations/attack/west/04.webp"
-    ],
-    "north-west": [
-     "crag_troll/animations/attack/north-west/00.webp",
-     "crag_troll/animations/attack/north-west/01.webp",
-     "crag_troll/animations/attack/north-west/02.webp",
-     "crag_troll/animations/attack/north-west/03.webp",
-     "crag_troll/animations/attack/north-west/04.webp"
-    ]
-   },
-   "strips": {
-    "south": "crag_troll/animations/attack__south.webp",
-    "south-east": "crag_troll/animations/attack__south-east.webp",
-    "east": "crag_troll/animations/attack__east.webp",
-    "north-east": "crag_troll/animations/attack__north-east.webp",
-    "north": "crag_troll/animations/attack__north.webp",
-    "south-west": "crag_troll/animations/attack__south-west.webp",
-    "west": "crag_troll/animations/attack__west.webp",
-    "north-west": "crag_troll/animations/attack__north-west.webp"
-   }
-  },
-  "attack_v3try": {
-   "directions": {
-    "south": {
-     "status": "warn",
-     "step_mean": 0.1111,
-     "step_max": 0.2171,
-     "drift": 6.75,
-     "loop": 0.2687,
-     "loop_ratio": 2.42,
-     "travel": 6.64,
-     "pin": 1.0,
-     "pad": 0,
-     "flash": 0.041,
-     "peak": 0.3153,
-     "reach": 0.142,
-     "canvas": [
-      232,
-      232
-     ],
-     "reasons": [
-      "shallow strike: reach 0.14 — eyeball it"
-     ],
-     "sub": "e94485d9-19e9-4bb8-81aa-8622835ce642",
-     "group": "068d1f7e-ba2e-4e01-946a-fe3e1cf5be88",
-     "takes": 1,
-     "version": 6,
-     "mirrored": false,
-     "generated_at": "2026-09-10T22:14:52+00:00",
-     "action": "Overhead Crush - The troll heaves the stone club far over its head and smashes it into the ground, rock shards flying, a huge aggressive attack with the whole body behind it, wide exaggerated motion",
-     "tries": 5,
-     "rolls": 5,
-     "intensity": 1,
-     "frames": 9,
-     "rung": 4
-    },
-    "south-east": {
-     "status": "warn",
-     "step_mean": 0.1014,
-     "step_max": 0.1668,
-     "drift": 6.84,
-     "loop": 0.0671,
-     "loop_ratio": 0.66,
-     "travel": 5.21,
-     "pin": 1.0,
-     "pad": 0,
-     "flash": 0.127,
-     "peak": 0.2221,
-     "reach": 0.174,
-     "canvas": [
-      232,
-      232
-     ],
-     "reasons": [
-      "shallow strike: reach 0.17 — eyeball it"
-     ],
-     "sub": "94ff6585-1983-473a-b63e-6024574541ce",
-     "group": "cc767647-71f0-4c94-9069-e6061d88587c",
-     "takes": 1,
-     "version": 4,
-     "mirrored": false,
-     "generated_at": "2026-09-10T21:22:27+00:00",
-     "action": "Claw Swipe - Raises one front paw and performs one quick swipe forward, white swoosh lines following the claws",
-     "tries": 4,
-     "rolls": 4,
-     "intensity": 1,
-     "frames": 9,
-     "rung": 3
-    },
-    "east": {
-     "status": "warn",
-     "step_mean": 0.0703,
-     "step_max": 0.1577,
-     "drift": 8.72,
-     "loop": 0.1811,
-     "loop_ratio": 2.58,
-     "travel": 13.63,
-     "pin": 1.0,
-     "pad": 0,
-     "flash": 0.0,
-     "peak": 0.1811,
-     "reach": 0.415,
-     "canvas": [
-      232,
-      232
-     ],
-     "reasons": [
-      "motion 0.070 outside the calm band 0.08–0.9 — eyeball it"
-     ],
-     "sub": "6c71e337-2238-4f6e-b97b-77fc7841ca39",
-     "group": "b7c99201-acd3-445b-8956-ba6a00cafa60",
-     "takes": 1,
-     "version": 6,
-     "mirrored": false,
-     "generated_at": "2026-09-10T22:14:53+00:00",
-     "action": "Club Smash - Raises the stone club overhead and smashes it straight down",
-     "tries": 1,
-     "rolls": 1,
-     "intensity": 1,
-     "frames": 9,
-     "rung": 0
-    },
-    "north-east": {
-     "status": "pass",
-     "step_mean": 0.1356,
-     "step_max": 0.3483,
-     "drift": 16.84,
-     "loop": 0.2799,
-     "loop_ratio": 2.06,
-     "travel": 24.41,
-     "pin": 1.0,
-     "pad": 0,
-     "flash": 0.022,
-     "peak": 0.338,
-     "reach": 0.364,
-     "canvas": [
-      232,
-      232
-     ],
-     "reasons": [],
-     "sub": "6657f17b-3561-48a4-a017-5b3e6d5fcd9d",
-     "group": "a331e5a1-2924-44d1-8935-f83d378f8684",
-     "takes": 1,
-     "version": 6,
-     "mirrored": false,
-     "generated_at": "2026-09-10T22:14:54+00:00",
-     "action": "Club Smash - Raises the stone club overhead and smashes it straight down, a big aggressive swing",
-     "tries": 2,
-     "rolls": 2,
-     "intensity": 1,
-     "frames": 9,
-     "rung": 1
-    },
-    "north": {
-     "status": "warn",
-     "step_mean": 0.146,
-     "step_max": 0.2914,
-     "drift": 11.38,
-     "loop": 0.2061,
-     "loop_ratio": 1.41,
-     "travel": 2.95,
-     "pin": 1.0,
-     "pad": 7,
-     "flash": 0.166,
-     "peak": 0.2996,
-     "reach": 0.257,
-     "canvas": [
-      246,
-      246
-     ],
-     "reasons": [
-      "shallow strike: reach 0.26 — eyeball it",
-      "canvas grown by 7 px a side to hold the motion"
-     ],
-     "sub": "3ca85607-0725-4dc9-b4c5-eb2fe8a46f2c",
-     "group": "dd4b530c-95a1-4a05-96c8-312c2706a3b3",
-     "takes": 1,
-     "version": 6,
-     "mirrored": false,
-     "generated_at": "2026-09-10T22:14:56+00:00",
-     "action": "Overhead Crush - The troll heaves the stone club far over its head and smashes it into the ground, rock shards flying, a huge aggressive attack with the whole body behind it, wide exaggerated motion",
-     "tries": 5,
-     "rolls": 5,
-     "intensity": 1,
-     "frames": 9,
-     "rung": 4
-    },
-    "west": {
-     "status": "warn",
-     "step_mean": 0.0703,
-     "step_max": 0.1577,
-     "drift": 8.72,
-     "loop": 0.1811,
-     "loop_ratio": 2.58,
-     "travel": 13.63,
-     "pin": 1.0,
-     "pad": 0,
-     "flash": 0.0,
-     "peak": 0.1811,
-     "reach": 0.415,
-     "canvas": [
-      232,
-      232
-     ],
-     "reasons": [
-      "motion 0.070 outside the calm band 0.08–0.9 — eyeball it"
-     ],
-     "sub": "6c71e337-2238-4f6e-b97b-77fc7841ca39",
-     "group": "b7c99201-acd3-445b-8956-ba6a00cafa60",
-     "takes": 1,
-     "version": 6,
-     "mirrored": true,
-     "generated_at": "2026-09-10T22:14:53+00:00",
-     "action": "Club Smash - Raises the stone club overhead and smashes it straight down",
-     "tries": 1,
-     "rolls": 1,
-     "intensity": 1,
-     "frames": 9,
-     "rung": 0,
-     "source": "east"
-    },
-    "north-west": {
-     "status": "pass",
-     "step_mean": 0.1356,
-     "step_max": 0.3483,
-     "drift": 16.84,
-     "loop": 0.2799,
-     "loop_ratio": 2.06,
-     "travel": 24.41,
-     "pin": 1.0,
-     "pad": 0,
-     "flash": 0.022,
-     "peak": 0.338,
-     "reach": 0.364,
-     "canvas": [
-      232,
-      232
-     ],
-     "reasons": [],
-     "sub": "6657f17b-3561-48a4-a017-5b3e6d5fcd9d",
-     "group": "a331e5a1-2924-44d1-8935-f83d378f8684",
-     "takes": 1,
-     "version": 6,
-     "mirrored": true,
-     "generated_at": "2026-09-10T22:14:54+00:00",
-     "action": "Club Smash - Raises the stone club overhead and smashes it straight down, a big aggressive swing",
-     "tries": 2,
-     "rolls": 2,
-     "intensity": 1,
-     "frames": 9,
-     "rung": 1,
-     "source": "north-east"
-    },
-    "south-west": {
-     "status": "warn",
-     "step_mean": 0.1014,
-     "step_max": 0.1668,
-     "drift": 6.84,
-     "loop": 0.0671,
-     "loop_ratio": 0.66,
-     "travel": 5.21,
-     "pin": 1.0,
-     "pad": 0,
-     "flash": 0.127,
-     "peak": 0.2221,
-     "reach": 0.174,
-     "canvas": [
-      232,
-      232
-     ],
-     "reasons": [
-      "shallow strike: reach 0.17 — eyeball it"
-     ],
-     "sub": "94ff6585-1983-473a-b63e-6024574541ce",
-     "group": "cc767647-71f0-4c94-9069-e6061d88587c",
-     "takes": 1,
-     "version": 4,
-     "mirrored": true,
-     "generated_at": "2026-09-10T21:22:27+00:00",
-     "action": "Claw Swipe - Raises one front paw and performs one quick swipe forward, white swoosh lines following the claws",
-     "tries": 4,
-     "rolls": 4,
-     "intensity": 1,
-     "frames": 9,
-     "rung": 3,
-     "source": "south-east"
-    }
-   },
-   "action": "Club Smash - Raises the stone club overhead and smashes it straight down",
-   "frame_paths": {
-    "south": [
-     "crag_troll/animations/attack_v3try/south/00.webp",
-     "crag_troll/animations/attack_v3try/south/01.webp",
-     "crag_troll/animations/attack_v3try/south/02.webp",
-     "crag_troll/animations/attack_v3try/south/03.webp",
-     "crag_troll/animations/attack_v3try/south/04.webp",
-     "crag_troll/animations/attack_v3try/south/05.webp",
-     "crag_troll/animations/attack_v3try/south/06.webp",
-     "crag_troll/animations/attack_v3try/south/07.webp",
-     "crag_troll/animations/attack_v3try/south/08.webp"
-    ],
-    "south-east": [
-     "crag_troll/animations/attack_v3try/south-east/00.webp",
-     "crag_troll/animations/attack_v3try/south-east/01.webp",
-     "crag_troll/animations/attack_v3try/south-east/02.webp",
-     "crag_troll/animations/attack_v3try/south-east/03.webp",
-     "crag_troll/animations/attack_v3try/south-east/04.webp",
-     "crag_troll/animations/attack_v3try/south-east/05.webp",
-     "crag_troll/animations/attack_v3try/south-east/06.webp",
-     "crag_troll/animations/attack_v3try/south-east/07.webp",
-     "crag_troll/animations/attack_v3try/south-east/08.webp"
-    ],
-    "east": [
-     "crag_troll/animations/attack_v3try/east/00.webp",
-     "crag_troll/animations/attack_v3try/east/01.webp",
-     "crag_troll/animations/attack_v3try/east/02.webp",
-     "crag_troll/animations/attack_v3try/east/03.webp",
-     "crag_troll/animations/attack_v3try/east/04.webp",
-     "crag_troll/animations/attack_v3try/east/05.webp",
-     "crag_troll/animations/attack_v3try/east/06.webp",
-     "crag_troll/animations/attack_v3try/east/07.webp",
-     "crag_troll/animations/attack_v3try/east/08.webp"
-    ],
-    "north-east": [
-     "crag_troll/animations/attack_v3try/north-east/00.webp",
-     "crag_troll/animations/attack_v3try/north-east/01.webp",
-     "crag_troll/animations/attack_v3try/north-east/02.webp",
-     "crag_troll/animations/attack_v3try/north-east/03.webp",
-     "crag_troll/animations/attack_v3try/north-east/04.webp",
-     "crag_troll/animations/attack_v3try/north-east/05.webp",
-     "crag_troll/animations/attack_v3try/north-east/06.webp",
-     "crag_troll/animations/attack_v3try/north-east/07.webp",
-     "crag_troll/animations/attack_v3try/north-east/08.webp"
-    ],
-    "north": [
-     "crag_troll/animations/attack_v3try/north/00.webp",
-     "crag_troll/animations/attack_v3try/north/01.webp",
-     "crag_troll/animations/attack_v3try/north/02.webp",
-     "crag_troll/animations/attack_v3try/north/03.webp",
-     "crag_troll/animations/attack_v3try/north/04.webp",
-     "crag_troll/animations/attack_v3try/north/05.webp",
-     "crag_troll/animations/attack_v3try/north/06.webp",
-     "crag_troll/animations/attack_v3try/north/07.webp",
-     "crag_troll/animations/attack_v3try/north/08.webp"
-    ],
-    "west": [
-     "crag_troll/animations/attack_v3try/west/00.webp",
-     "crag_troll/animations/attack_v3try/west/01.webp",
-     "crag_troll/animations/attack_v3try/west/02.webp",
-     "crag_troll/animations/attack_v3try/west/03.webp",
-     "crag_troll/animations/attack_v3try/west/04.webp",
-     "crag_troll/animations/attack_v3try/west/05.webp",
-     "crag_troll/animations/attack_v3try/west/06.webp",
-     "crag_troll/animations/attack_v3try/west/07.webp",
-     "crag_troll/animations/attack_v3try/west/08.webp"
-    ],
-    "north-west": [
-     "crag_troll/animations/attack_v3try/north-west/00.webp",
-     "crag_troll/animations/attack_v3try/north-west/01.webp",
-     "crag_troll/animations/attack_v3try/north-west/02.webp",
-     "crag_troll/animations/attack_v3try/north-west/03.webp",
-     "crag_troll/animations/attack_v3try/north-west/04.webp",
-     "crag_troll/animations/attack_v3try/north-west/05.webp",
-     "crag_troll/animations/attack_v3try/north-west/06.webp",
-     "crag_troll/animations/attack_v3try/north-west/07.webp",
-     "crag_troll/animations/attack_v3try/north-west/08.webp"
-    ],
-    "south-west": [
-     "crag_troll/animations/attack_v3try/south-west/00.webp",
-     "crag_troll/animations/attack_v3try/south-west/01.webp",
-     "crag_troll/animations/attack_v3try/south-west/02.webp",
-     "crag_troll/animations/attack_v3try/south-west/03.webp",
-     "crag_troll/animations/attack_v3try/south-west/04.webp",
-     "crag_troll/animations/attack_v3try/south-west/05.webp",
-     "crag_troll/animations/attack_v3try/south-west/06.webp",
-     "crag_troll/animations/attack_v3try/south-west/07.webp",
-     "crag_troll/animations/attack_v3try/south-west/08.webp"
-    ]
-   },
-   "strips": {
-    "south": "crag_troll/animations/attack_v3try__south.webp",
-    "south-east": "crag_troll/animations/attack_v3try__south-east.webp",
-    "east": "crag_troll/animations/attack_v3try__east.webp",
-    "north-east": "crag_troll/animations/attack_v3try__north-east.webp",
-    "north": "crag_troll/animations/attack_v3try__north.webp",
-    "west": "crag_troll/animations/attack_v3try__west.webp",
-    "north-west": "crag_troll/animations/attack_v3try__north-west.webp",
-    "south-west": "crag_troll/animations/attack_v3try__south-west.webp"
-   },
-   "intensity": 1
-  }
- }
 }
