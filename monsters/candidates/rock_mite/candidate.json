@@ -1233,105 +1233,107 @@
       "directions": {
         "south": {
           "status": "fail",
-          "step_mean": 0.1094,
-          "step_max": 0.3355,
-          "drift": 2.94,
+          "step_mean": 0.0934,
+          "step_max": 0.2767,
+          "drift": 1.55,
           "loop": 0.0,
           "loop_ratio": 0.0,
-          "travel": 2.03,
+          "travel": 1.31,
           "pin": 1.0,
           "pad": 0,
-          "flash": 0.0,
-          "peak": 0.3355,
-          "reach": 0.196,
+          "flash": 0.002,
+          "peak": 0.2735,
+          "reach": 0.115,
           "canvas": [
             40,
             40
           ],
           "reasons": [
             "16 frames, expected 4",
-            "shallow strike: reach 0.20 — eyeball it"
+            "no strike, just a lean: nothing reaches past 0.12 of the body"
           ],
-          "sub": "96fc753a-4735-4b08-a93d-957f63c8d3dc",
-          "group": "2aeb1f2d-21a8-45e5-80d1-4c4cb0d0c535",
+          "sub": "b07571f2-78c0-4788-9672-48260ea40aec",
+          "group": "a67730d3-b74e-4eb2-ba12-a97b8712c75b",
           "takes": 1,
-          "version": 1,
+          "version": 2,
           "mirrored": false,
-          "action": "Headbutt - Rocks back, then rams forward hard with its stone body",
+          "action": "Headbutt - Rocks back, then rams forward hard with its stone body, a big aggressive swing",
           "intensity": 0,
-          "rolls": 1,
+          "rolls": 2,
           "frames": 16,
-          "rung": 0,
-          "tries": 1,
-          "generated_at": "2026-09-11T15:31:42+00:00"
+          "rung": 1,
+          "unwrapped": null,
+          "tries": 2,
+          "generated_at": "2026-09-11T16:54:29+00:00"
         },
         "south-east": {
           "status": "fail",
-          "step_mean": 0.1182,
-          "step_max": 0.2869,
-          "drift": 3.03,
-          "loop": 0.0705,
-          "loop_ratio": 0.6,
-          "travel": 3.03,
-          "pin": 0.93,
+          "step_mean": 0.1051,
+          "step_max": 0.246,
+          "drift": 2.97,
+          "loop": 0.0,
+          "loop_ratio": 0.0,
+          "travel": 2.25,
+          "pin": 1.0,
           "pad": 0,
-          "flash": 0.003,
-          "peak": 0.3814,
-          "reach": 0.25,
+          "flash": 0.005,
+          "peak": 0.3139,
+          "reach": 0.143,
           "canvas": [
             40,
             40
           ],
           "reasons": [
             "16 frames, expected 4",
-            "shallow strike: reach 0.25 — eyeball it"
+            "shallow strike: reach 0.14 — eyeball it"
           ],
-          "sub": "162638b4-b720-44e4-affb-f9003c0d9de2",
-          "group": "2aeb1f2d-21a8-45e5-80d1-4c4cb0d0c535",
+          "sub": "82ac4146-bb80-4674-8e83-8820dbc744a0",
+          "group": "a67730d3-b74e-4eb2-ba12-a97b8712c75b",
           "takes": 1,
-          "version": 1,
+          "version": 2,
           "mirrored": false,
-          "action": "Headbutt - Rocks back, then rams forward hard with its stone body",
+          "action": "Headbutt - Rocks back, then rams forward hard with its stone body, a big aggressive swing",
           "intensity": 0,
-          "rolls": 1,
+          "rolls": 2,
           "frames": 16,
-          "rung": 0,
-          "tries": 1,
-          "generated_at": "2026-09-11T15:31:44+00:00"
+          "rung": 1,
+          "unwrapped": null,
+          "tries": 2,
+          "generated_at": "2026-09-11T16:54:30+00:00"
         },
         "east": {
           "status": "fail",
-          "step_mean": 0.1408,
-          "step_max": 0.2837,
-          "drift": 2.61,
-          "loop": 0.0,
-          "loop_ratio": 0.0,
-          "travel": 2.65,
+          "step_mean": 0.1284,
+          "step_max": 0.2984,
+          "drift": 3.79,
+          "loop": 0.074,
+          "loop_ratio": 0.58,
+          "travel": 3.79,
           "pin": 1.0,
           "pad": 0,
-          "flash": -0.002,
-          "peak": 0.3093,
-          "reach": 0.185,
+          "flash": 0.036,
+          "peak": 0.4192,
+          "reach": 0.398,
           "canvas": [
             40,
             40
           ],
           "reasons": [
-            "16 frames, expected 4",
-            "shallow strike: reach 0.19 — eyeball it"
+            "16 frames, expected 4"
           ],
-          "sub": "27cb19e9-2eb8-4291-a2a9-de7100b52c32",
-          "group": "2aeb1f2d-21a8-45e5-80d1-4c4cb0d0c535",
+          "sub": "f70295f2-bc11-4932-9f32-ae365268a113",
+          "group": "a67730d3-b74e-4eb2-ba12-a97b8712c75b",
           "takes": 1,
-          "version": 1,
+          "version": 2,
           "mirrored": false,
-          "action": "Headbutt - Rocks back, then rams forward hard with its stone body",
+          "action": "Headbutt - Rocks back, then rams forward hard with its stone body, a big aggressive swing",
           "intensity": 0,
-          "rolls": 1,
+          "rolls": 2,
           "frames": 16,
-          "rung": 0,
-          "tries": 1,
-          "generated_at": "2026-09-11T15:31:45+00:00"
+          "rung": 1,
+          "unwrapped": null,
+          "tries": 2,
+          "generated_at": "2026-09-11T16:54:32+00:00"
         },
         "north-east": {
           "status": "fail",
@@ -1367,6 +1369,41 @@
           "rung": 0,
           "tries": 1,
           "generated_at": "2026-09-11T15:31:46+00:00"
+        },
+        "north": {
+          "status": "fail",
+          "step_mean": 0.187,
+          "step_max": 0.4814,
+          "drift": 4.83,
+          "loop": 0.0,
+          "loop_ratio": 0.0,
+          "travel": 2.3,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": 0.0,
+          "peak": 0.5174,
+          "reach": 0.296,
+          "canvas": [
+            40,
+            40
+          ],
+          "reasons": [
+            "16 frames, expected 4",
+            "shallow strike: reach 0.30 — eyeball it"
+          ],
+          "sub": "e025848b-a240-4162-9126-def86136c5b1",
+          "group": "a67730d3-b74e-4eb2-ba12-a97b8712c75b",
+          "takes": 1,
+          "version": 2,
+          "mirrored": false,
+          "action": "Headbutt - Rocks back, then rams forward hard with its stone body, a big aggressive swing",
+          "intensity": 0,
+          "rolls": 1,
+          "frames": 16,
+          "rung": 1,
+          "unwrapped": null,
+          "tries": 1,
+          "generated_at": "2026-09-11T16:54:33+00:00"
         }
       },
       "action": "Headbutt - Rocks back, then rams forward hard with its stone body",
@@ -1442,13 +1479,32 @@
           "rock_mite/animations/attack_try/north-east/13.webp",
           "rock_mite/animations/attack_try/north-east/14.webp",
           "rock_mite/animations/attack_try/north-east/15.webp"
+        ],
+        "north": [
+          "rock_mite/animations/attack_try/north/00.webp",
+          "rock_mite/animations/attack_try/north/01.webp",
+          "rock_mite/animations/attack_try/north/02.webp",
+          "rock_mite/animations/attack_try/north/03.webp",
+          "rock_mite/animations/attack_try/north/04.webp",
+          "rock_mite/animations/attack_try/north/05.webp",
+          "rock_mite/animations/attack_try/north/06.webp",
+          "rock_mite/animations/attack_try/north/07.webp",
+          "rock_mite/animations/attack_try/north/08.webp",
+          "rock_mite/animations/attack_try/north/09.webp",
+          "rock_mite/animations/attack_try/north/10.webp",
+          "rock_mite/animations/attack_try/north/11.webp",
+          "rock_mite/animations/attack_try/north/12.webp",
+          "rock_mite/animations/attack_try/north/13.webp",
+          "rock_mite/animations/attack_try/north/14.webp",
+          "rock_mite/animations/attack_try/north/15.webp"
         ]
       },
       "strips": {
         "south": "rock_mite/animations/attack_try__south.webp",
         "south-east": "rock_mite/animations/attack_try__south-east.webp",
         "east": "rock_mite/animations/attack_try__east.webp",
-        "north-east": "rock_mite/animations/attack_try__north-east.webp"
+        "north-east": "rock_mite/animations/attack_try__north-east.webp",
+        "north": "rock_mite/animations/attack_try__north.webp"
       }
     }
   }

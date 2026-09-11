@@ -1284,37 +1284,38 @@
       "directions": {
         "south": {
           "status": "fail",
-          "step_mean": 0.0881,
-          "step_max": 0.1138,
-          "drift": 3.0,
-          "loop": 0.0,
-          "loop_ratio": 0.0,
-          "travel": 1.27,
+          "step_mean": 0.1327,
+          "step_max": 0.1723,
+          "drift": 2.8,
+          "loop": 0.1488,
+          "loop_ratio": 1.12,
+          "travel": 1.29,
           "pin": 1.0,
           "pad": 0,
-          "flash": 0.001,
-          "peak": 0.1138,
-          "reach": 0.056,
+          "flash": 0.009,
+          "peak": 0.1488,
+          "reach": 0.07,
           "canvas": [
             88,
             88
           ],
           "reasons": [
-            "weak strike: peak 0.114 — eyeball it",
-            "no strike, just a lean: nothing reaches past 0.06 of the body"
+            "weak strike: peak 0.149 — eyeball it",
+            "no strike, just a lean: nothing reaches past 0.07 of the body"
           ],
-          "sub": "82b3d674-8e3b-4491-afbb-624f0277d5e7",
-          "group": "1a7c3947-9dfa-493a-985a-bfa76a76962d",
+          "sub": "5c7e5a5b-95c1-4147-9bc1-a5769664b6dc",
+          "group": "20b40054-c26b-4ed2-8998-4605b273df5e",
           "takes": 1,
-          "version": 1,
+          "version": 2,
           "mirrored": false,
-          "action": "Strike - Coils its head back, then strikes forward with fangs bared",
+          "action": "Strike - Coils its head back, then strikes forward with fangs bared, a big aggressive swing",
           "intensity": 0,
-          "rolls": 1,
+          "rolls": 2,
           "frames": 4,
-          "rung": 0,
-          "tries": 1,
-          "generated_at": "2026-09-11T16:10:27+00:00"
+          "rung": 1,
+          "unwrapped": null,
+          "tries": 2,
+          "generated_at": "2026-09-11T16:52:40+00:00"
         },
         "south-east": {
           "status": "warn",

@@ -1220,37 +1220,38 @@
     "attack_try": {
       "directions": {
         "south": {
-          "status": "fail",
-          "step_mean": 0.2468,
-          "step_max": 0.3089,
-          "drift": 3.17,
-          "loop": 0.0119,
-          "loop_ratio": 0.05,
-          "travel": 0.64,
+          "status": "warn",
+          "step_mean": 0.2918,
+          "step_max": 0.3825,
+          "drift": 4.91,
+          "loop": 0.1395,
+          "loop_ratio": 0.48,
+          "travel": 0.87,
           "pin": 1.0,
           "pad": 0,
-          "flash": -0.002,
-          "peak": 0.3089,
-          "reach": 0.107,
+          "flash": -0.015,
+          "peak": 0.3436,
+          "reach": 0.28,
           "canvas": [
             128,
             128
           ],
           "reasons": [
-            "no strike, just a lean: nothing reaches past 0.11 of the body"
+            "shallow strike: reach 0.28 — eyeball it"
           ],
-          "sub": "cc6d8b7a-e455-4320-8da9-3f53870b9c00",
-          "group": "071e4514-f3b9-4ac0-8993-b72754b71fd3",
+          "sub": "0d839236-466d-4d5e-8d89-19968ee27038",
+          "group": "a630cbcc-4a67-4076-a392-8e5043cd2c51",
           "takes": 1,
-          "version": 1,
+          "version": 2,
           "mirrored": false,
-          "action": "Clawing Grab - Surges forward with both long-fingered hands out in a clawing grab",
+          "action": "Clawing Grab - Surges forward with both long-fingered hands out in a clawing grab, a big aggressive swing",
           "intensity": 0,
-          "rolls": 1,
+          "rolls": 2,
           "frames": 4,
-          "rung": 0,
-          "tries": 1,
-          "generated_at": "2026-09-11T15:57:53+00:00"
+          "rung": 1,
+          "unwrapped": null,
+          "tries": 2,
+          "generated_at": "2026-09-11T16:52:09+00:00"
         },
         "south-east": {
           "status": "pass",
