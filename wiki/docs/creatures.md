@@ -2,6 +2,26 @@
 
 The shadow editor, the animation viewer, the showcase, usage stats and the review idioms of the creature pages. Moved verbatim out of `wiki/README.md` (2026-09-09), which keeps the rules and points here; rewrite in place under the root doc law.
 
+## The 8-direction base is a state called "static"
+
+Every creature's row opens with **static** — the eight rotations the animations
+were made from — and **idle is still what opens** (maintainer 2026-09-11: *"I
+should in the animation preview be able to select 'static' as a
+state/animation type. Yes I know the original 8 direction static images is not
+really an animation, but it's good for me to have a way to see them. I want
+them to the left of 'idle', but I still want idle to be pre-selected."*)
+
+- A rotation IS a one-frame clip, so it needs no special case in the viewer:
+  `staticState()` publishes `monsters/<id>/rotations/<dir>` (or a candidate's
+  `candidates/<id>/rotations/<dir>`) as `animations.static`, first in the
+  object, carrying `still: true`. The viewer's own rule — idle if idle exists —
+  keeps idle selected.
+- **It is looked at, not judged.** The facet row is replaced by one line: no
+  agent consumes a verdict on the base, and a rating nobody reads is worse than
+  none. A bad base means the design goes, which is the verdict beside the
+  creature's name; for a design still being animated the line points at its
+  candidate page, where the 8 directions are the whole review.
+
 ## Parallel takes of one state — live, try, v3
 
 The monsters agent builds a replacement beside the live animation instead of

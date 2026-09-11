@@ -273,6 +273,9 @@ function buildMonsters() {
     }
     const overrides = animMap.overrides?.[id] ?? {};
     const anims = {};
+    // FIRST in the row, always — the art every animation was rotated from.
+    const still = staticState(join(base, id, "rotations"), `monsters/${id}/rotations`);
+    if (still) anims.static = still;
     for (const state of states.length ? states : Object.keys(mj.animations ?? {})) {
       const folder = overrides[state] ?? animMap.states?.[state] ?? state;
       const dirs = {};
@@ -2765,6 +2768,26 @@ function seedMonsterTuning(monsters, levels) {
   return { tuning: out, added, levelled };
 }
 
+/* THE 8-DIRECTION BASE AS A STATE (maintainer 2026-09-11: "On the monster
+ * details page I should in the animation preview be able to select 'static' as
+ * a state/animation type. Yes I know the original 8 direction static images is
+ * not really an animation, but it's good for me to have a way to see them. I
+ * want them to the left of 'idle', but I still want idle to be pre-selected.")
+ *
+ * A rotation IS a one-frame clip, so it needs no special case in the viewer —
+ * it goes in as `static`, FIRST in the row, and the viewer's own rule keeps
+ * idle selected because idle exists. */
+function staticState(absDir, rel) {
+  const dirs = {};
+  for (const dir of DIRS) {
+    const a = art(`${rel}/${dir}`);
+    if (!a) continue;
+    const dims = imageSize(join(ROOT, a));
+    dirs[dir] = { frames: 1, strip: a, fw: dims?.w ?? null, fh: dims?.h ?? null, framesDir: null, frameExt: null, framePad: 0 };
+  }
+  return Object.keys(dirs).length ? { folder: "rotations", fallback: null, dirs, still: true } : null;
+}
+
 /* PARALLEL TAKES OF ONE STATE (maintainer 2026-09-11: "he might try to create a
  * different attack animation without deleting the old version in case the old
  * version in the end was better. He is now at 'v3' and I can only see a single
@@ -2823,6 +2846,8 @@ function buildCandidateMonsters(shippedIds) {
     if (!isDir(animRoot)) continue;
     const frameW = c.size?.[0] ?? null, frameH = c.size?.[1] ?? frameW;
     const anims = {};
+    const still = staticState(join(base, c.id, "rotations"), `monsters/candidates/${c.id}/rotations`);
+    if (still) anims.static = still;
     // THE STATE ROW IS THE DOMAIN'S OWN LIST, IN ITS OWN ORDER — exactly what
     // a shipped creature gets, which is `animation_map.json`: idle, walk,
     // angry, attack, die (maintainer 2026-09-10: "Why do you sort 'attack,

@@ -235,6 +235,31 @@ if (pend.length) {
     `and in the same order a shipped creature uses (${oneStates.join(", ")} against ${rank.join(", ")})`);
   ok(page.verdict >= 2 && page.note, "it can be judged like any other creature, and says the rest of its animations are coming");
 
+  // THE 8-DIRECTION BASE IS A STATE, FIRST, AND IDLE STILL OPENS (maintainer
+  // 2026-09-11: "I should in the animation preview be able to select 'static'
+  // as a state/animation type ... I want them to the left of 'idle', but I
+  // still want idle to be pre-selected.")
+  const base8 = await p.evaluate(() => ({
+    states: [...document.querySelectorAll(".seg-states button")].map((b) => b.textContent.trim()),
+    on: [...document.querySelectorAll(".seg-states button.on")].map((b) => b.textContent.trim())[0],
+  }));
+  console.log("static:", JSON.stringify(base8));
+  ok(base8.states[0]?.toLowerCase() === "static", `"static" is the first state on the row (${base8.states.join(" | ")})`);
+  ok(base8.on?.toLowerCase() === "idle", `and idle is still the one that opens (${base8.on})`);
+  await p.evaluate(() => [...document.querySelectorAll(".seg-states button")].find((b) => /static/i.test(b.textContent)).click());
+  await p.waitForTimeout(900);
+  const stat = await p.evaluate(() => ({
+    verdict: document.querySelectorAll(".facet-head .verdict button").length,
+    note: !!document.querySelector(".facet-head .muted:not(.facet-label)"),
+    ink: (() => { const c = document.querySelector(".player-stage canvas"); const px = c.getContext("2d").getImageData(0, 0, c.width, c.height).data; let n = 0; for (let i = 3; i < px.length; i += 4) if (px[i] > 8) n++; return n; })(),
+  }));
+  console.log("static shown:", JSON.stringify(stat));
+  ok(stat.ink > 100, `the base art draws (${stat.ink} opaque pixels)`);
+  ok(stat.verdict === 0 && stat.note, "and it is looked at, not judged — no verdict row, a line saying where the base is judged");
+  // ...and back to a real animation for the checks below.
+  await p.evaluate(() => [...document.querySelectorAll(".seg-states button")].find((b) => /^idle$/i.test(b.textContent.trim())).click());
+  await p.waitForTimeout(800);
+
   // ONE ANIMATION IS REDONE, NEVER REMOVED (maintainer 2026-09-10: "The
   // individual animations should only have a REDO. Not a remove!"). Removal is
   // a verdict about the whole creature and stays on the row beside its name.

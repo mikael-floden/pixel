@@ -6232,6 +6232,18 @@ function viewMonster(id) {
   const renderFacet = () => {
     const st = player.getState(), dir = player.getDir();
     facetPill.replaceChildren(facetName(st, dir, m));
+    // THE 8-DIRECTION BASE IS LOOKED AT, NOT JUDGED. It is the source art every
+    // animation was rotated from, not something the agent regenerates one
+    // facing of, and no verdict channel consumes it — a rating left here would
+    // be one nobody reads. A bad base means the design itself goes, which is
+    // the verdict beside the creature's name (and, for a design still being
+    // animated, the 8 directions on its candidate page).
+    if (m.animations?.[st]?.still) {
+      facetBox.replaceChildren(h("span", { class: "muted" },
+        m.pending ? "The 8 directions you approved — judged on its candidate page, not here."
+          : "The 8-direction base every animation was rotated from. Nothing to judge here."));
+      return;
+    }
     facetBox.replaceChildren(feedbackRow("monsters", `${m.path}#${st}#${dir}`, {
       // The chip the verdict belongs to turns green or red the moment it lands.
       onchange: () => player.refreshMarks(),
