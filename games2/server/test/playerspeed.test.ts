@@ -80,6 +80,13 @@ test("the player-speed dial is authoritative, clamped, and carried per input", a
       return Math.abs(me().x - x0);
     };
 
+    // WARM-UP, DISCARDED. The server integrates a claimed dt against a
+    // real-time budget that starts EMPTY on join, so the first run of the
+    // session is clipped and under-measures — measured, it made every later
+    // ratio read ~19% high, which sat exactly on this test's tolerance. Burn
+    // one run before the baseline and the bias is gone at its source rather
+    // than tolerated.
+    await runWith(PLAYER_SPEED_DEFAULT, -1);
     const base = await runWith(PLAYER_SPEED_DEFAULT, 1);
     assert.ok(base > 5, `the baseline walk covered only ${base.toFixed(1)}wu — the stream never integrated`);
     const twice = await runWith(2, -1);
@@ -87,36 +94,35 @@ test("the player-speed dial is authoritative, clamped, and carried per input", a
     const clamped = await runWith(99, -1);
     const slow = await runWith(PLAYER_SPEED_MIN, 1);
 
-    // 2x COVERS TWICE THE GROUND. Loose (the stream is real-time paced, so the
-    // integrated dt varies run to run) but far tighter than 1x vs 2x.
-    assert.ok(
-      twice / base > 1.6 && twice / base < 2.4,
-      `2x covered ${(twice / base).toFixed(2)}x the baseline (${twice.toFixed(1)} vs ${base.toFixed(1)}wu)`,
-    );
-    // AN INPUT WITH NO DIAL IS THE NORMAL WALK — an older client, or a message
+    // EVERY RUN IS ASSERTED AS A RATIO AGAINST THE DEFAULT, never as a pinned
+    // multiple of the baseline — the default is HIS dial to move (it went 1 ->
+    // 1.2 the day the slider shipped) and a test that hardcoded "2x is twice
+    // the baseline" would have gone red on his taste rather than on a bug.
+    // 20% tolerance: the stream is real-time paced, so the integrated dt
+    // varies run to run, and that is still far tighter than any two dials.
+    const ratio = (covered: number, sm: number) => {
+      const want = Math.min(PLAYER_SPEED_MAX, Math.max(PLAYER_SPEED_MIN, sm)) / PLAYER_SPEED_DEFAULT;
+      const got = covered / base;
+      assert.ok(
+        Math.abs(got / want - 1) < 0.2,
+        `sm=${sm} covered ${got.toFixed(2)}x the default walk, expected ${want.toFixed(2)}x`,
+      );
+      return got;
+    };
+    const r2 = ratio(twice, 2);
+    // AN INPUT WITH NO DIAL IS THE DEFAULT WALK — an older client, or a message
     // replayed from before the dial existed, must not change pace.
-    assert.ok(
-      Math.abs(absent / base - 1) < 0.25,
-      `an input without \`sm\` walked at ${(absent / base).toFixed(2)}x the baseline`,
-    );
-    // THE CEILING IS THE SERVER'S. 99 is not 99x.
-    assert.ok(
-      clamped / base < PLAYER_SPEED_MAX * 1.2,
-      `sm=99 covered ${(clamped / base).toFixed(2)}x the baseline — the clamp is not being applied`,
-    );
-    assert.ok(
-      clamped / base > PLAYER_SPEED_MAX * 0.8,
-      `sm=99 covered only ${(clamped / base).toFixed(2)}x — it should clamp UP TO ${PLAYER_SPEED_MAX}x`,
-    );
-    // …and the bottom of the range really is slower.
-    assert.ok(
-      slow / base < 0.75,
-      `${PLAYER_SPEED_MIN}x covered ${(slow / base).toFixed(2)}x the baseline`,
-    );
+    const rAbsent = ratio(absent, PLAYER_SPEED_DEFAULT);
+    // THE CEILING IS THE SERVER'S. 99 is not 99x — `ratio` clamps its own
+    // expectation the same way the input handler does.
+    const rCap = ratio(clamped, 99);
+    const rSlow = ratio(slow, PLAYER_SPEED_MIN);
+    assert.ok(rCap > r2, "the cap must still be faster than 2x");
+    assert.ok(rSlow < rAbsent, "the floor must still be slower than the default");
     console.log(
-      `player speed: base ${base.toFixed(1)}wu; 2x ${(twice / base).toFixed(2)}x, ` +
-        `no-dial ${(absent / base).toFixed(2)}x, sm=99 ${(clamped / base).toFixed(2)}x (cap ${PLAYER_SPEED_MAX}), ` +
-        `${PLAYER_SPEED_MIN}x ${(slow / base).toFixed(2)}x`,
+      `player speed: default ${PLAYER_SPEED_DEFAULT}x = ${base.toFixed(1)}wu; ` +
+        `2x ${r2.toFixed(2)}x, no-dial ${rAbsent.toFixed(2)}x, ` +
+        `sm=99 ${rCap.toFixed(2)}x (cap ${PLAYER_SPEED_MAX}), ${PLAYER_SPEED_MIN}x ${rSlow.toFixed(2)}x`,
     );
     await r.leave();
   } finally {

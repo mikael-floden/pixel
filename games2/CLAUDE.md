@@ -140,7 +140,10 @@ secrets; push to `main`, rebase on reject, no PRs unless asked; doc law.
   (`fallhurt.ts`).
 - Water is the player's sanctuary: no monster enters, swims or is hit there.
 - The player-speed dial rides PER INPUT (`InputMessage.sm`) and the SERVER
-  clamps it; default 1x (`playerspeed.ts`).
+  clamps it; default 1.2x IS HIS (`playerspeed.ts`).
+- The stick "almost" snaps: `leanHeading` leans the heading off its octant by
+  his dial (0 = snap, 1 = free 360; default 0), the FACING always snaps, and
+  the bearing is read additively off games-ui's stick (`stickdir.ts`).
 - A tap RUNS; the beacon is the pixel you touched and never moves to meet the
   walk (rejected twice); both readings of an ambiguous pixel are routed.
 - The body dodge is a manoeuvre: engage and hold on different thresholds,

@@ -191,9 +191,77 @@ export interface InputMessage {
  *  The AUTOPILOT needs nothing for this: `stepAutopilot`'s advance/arrive radii
  *  scale with the OBSERVED per-step distance (capped at a cell), so a 4x walk
  *  clips its waypoints instead of orbiting them. */
+/** ALMOST EIGHT DIRECTIONS — how far the stick may lean off the octant it
+ *  snapped to (maintainer 2026-09-11).
+ *
+ *  He keeps the snap, and for a good reason: "we only have animations in 8
+ *  directions and you will only be able to run in 8 directions on a keyboard".
+ *  What the snap costs is FEEDBACK — "this makes it hard to see if you are
+ *  close to snap to a new direction or not". So the heading leans toward where
+ *  the finger really points, by his own dial:
+ *
+ *      0.0  the exact 8-way snap we have today
+ *      0.5  "we can change the direction somewhat to NE, and when the
+ *           threshold is reached and we run NE instead we will run somewhat to
+ *           N. It still snaps (but we have some ability to move within that new
+ *           fixed direction)"
+ *      1.0  full 360 movement
+ *
+ *  THE FACING STILL SNAPS, at every setting, and nothing had to be done to
+ *  keep it: a lean is at most half a sector, so `vectorToDirection` of the
+ *  leaned vector is the SAME octant, and at 1.0 the heading IS the finger's
+ *  own angle whose nearest octant is the one it snapped to. Eight animations,
+ *  eight facings, a heading that breathes. */
+export const STICK_LEAN_MIN = 0;
+export const STICK_LEAN_MAX = 1;
+/** 0 — today's behaviour to the pixel, because the dial exists for him to find
+ *  the number and a default that changed the game before he had looked at it
+ *  would be my taste, not his. */
+export const STICK_LEAN_DEFAULT = 0;
+
+/** Half an octant: the most a snapped heading can ever be wrong by, and so the
+ *  most a lean can ever be asked to undo. */
+export const OCTANT_HALF_DEG = 22.5;
+
+/** Lean a SNAPPED screen heading toward the raw one the finger is holding.
+ *
+ *  `ax/ay` is the snapped 8-way vector (screen space, +y DOWN — the same frame
+ *  the stick's own `atan2(dy, dx)` uses, so no sign gymnastics). `rawDeg` is
+ *  the finger's angle in that frame. Returns a UNIT vector — `stepMovement`
+ *  normalises anyway, so the leaned heading walks at exactly the speed the
+ *  (1,1) diagonal did.
+ *
+ *  The residual is CLAMPED to half an octant. It cannot legitimately exceed
+ *  that — the snap is the nearest octant to the very same angle — but the
+ *  snapped vector arrives here from the synthesized KEYS while the angle is
+ *  read off the pointer, so a hair of disagreement at a boundary is possible.
+ *  Clamping makes the worst case "leans to the sector edge" instead of
+ *  "swings into the next sector", which would fight the facing. */
+export function leanHeading(
+  ax: number,
+  ay: number,
+  rawDeg: number,
+  amount: number,
+): { ax: number; ay: number } {
+  const len = Math.hypot(ax, ay);
+  if (len < 1e-6 || !Number.isFinite(rawDeg)) return { ax, ay };
+  const lean = Math.max(STICK_LEAN_MIN, Math.min(STICK_LEAN_MAX, amount));
+  if (lean <= 0) return { ax: ax / len, ay: ay / len };
+  const snapDeg = (Math.atan2(ay, ax) * 180) / Math.PI;
+  // Shortest signed way round, in (-180, 180].
+  const resid = ((rawDeg - snapDeg + 540) % 360) - 180;
+  const d = Math.max(-OCTANT_HALF_DEG, Math.min(OCTANT_HALF_DEG, resid));
+  const a = ((snapDeg + lean * d) * Math.PI) / 180;
+  return { ax: Math.cos(a), ay: Math.sin(a) };
+}
+
 export const PLAYER_SPEED_MIN = 0.5;
 export const PLAYER_SPEED_MAX = 4;
-export const PLAYER_SPEED_DEFAULT = 1;
+/** HIS NUMBER, off the slider (maintainer 2026-09-11: "the player speed 1.2x
+ *  should be the new default") — which is what the dial was built for. The
+ *  shipped walk is 1.2x of what it was this morning. Not a placeholder: do not
+ *  "restore" 1. */
+export const PLAYER_SPEED_DEFAULT = 1.2;
 
 // Anti-cheat bounds for input-stream integration: a single input may not claim
 // more than MAX_INPUT_DT, and a client can never accumulate more integration

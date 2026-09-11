@@ -209,10 +209,11 @@ Server-authoritative movement, decks, collision, steer assist, fall damage, tap/
     still the wind-up, and the clip outlasts its own lead.
 - **THE PLAYER-SPEED DIAL** (`client/src/playerspeed.ts`), his instrument for
   finding a default and for crossing the map (2026-09-11: "a way for me to
-  travel the map faster"). 0.5x-4x, default **1x** — the shipped walk, so the
-  dial changes nothing until he moves it; `localStorage`, with the "default"
-  button every slider carries, injected into the Settings page from outside
-  exactly like the nav dials (games-ui owns hud.ts).
+  travel the map faster"). 0.5x-4x, default **1.2x — HIS NUMBER off the
+  slider** the day it shipped ("the player speed 1.2x should be the new
+  default"); do not "restore" 1. `localStorage`, with the "default" button
+  every slider carries, injected into the Settings page from outside exactly
+  like the nav dials (games-ui owns hud.ts).
   - **IT RIDES PER INPUT** (`InputMessage.sm`), not as room state. Movement is
     server-authoritative and the client replays an RTT-deep pending buffer, so
     a factor that changed mid-flight would rewrite the history of every input
@@ -228,8 +229,51 @@ Server-authoritative movement, decks, collision, steer assist, fall damage, tap/
     orbiting them; and the gait's playback timeScale is `spdWu / base` clamped
     to 2.6x, so the legs run fast and never free-wheel.
   - Gate: `server/test/playerspeed.test.ts` — a live room integrating the same
-    input stream at each dial. Measured: 2x = 2.00x the ground, no dial =
-    1.00x, sm=99 = 3.94x (the cap), 0.5x = 0.47x. Probe: `__ml.speed()`.
+    input stream at each dial, asserted as RATIOS AGAINST THE DEFAULT rather
+    than pinned multiples, because the default is his to move and a hardcoded
+    "2x is twice the baseline" would go red on his taste instead of on a bug.
+    Measured against 1.2x: 2x = 1.65x, no dial = 0.99x, sm=99 = 3.25x (the cap
+    4/1.2), 0.5x = 0.40x. It BURNS A WARM-UP RUN first — the real-time input
+    budget starts empty on join, so the session's first run is clipped and made
+    every later ratio read ~19% high. Probe: `__ml.speed()`.
+- **ALMOST EIGHT DIRECTIONS** (`client/src/stickdir.ts`, `leanHeading` in
+  `shared/`), the stick's direction-freedom dial. He keeps the snap and said
+  why — "we only have animations in 8 directions and you will only be able to
+  run in 8 directions on a keyboard" — but the snap costs FEEDBACK: "it's hard
+  to see if you are close to snap to a new direction or not". So the heading
+  leans toward the finger's real bearing by his dial: **0 = today's snap
+  (the default), 0.5 = half the residual, 1 = free 360**.
+  `out = snapped + lean x (raw - snapped)`, residual clamped to half an
+  octant.
+  - **THE FACING STILL SNAPS AT EVERY SETTING**, and nothing was needed to
+    make it: `stepMovement` takes the facing from the vector, a lean is at most
+    half a sector, so `vectorToDirection` returns the SAME octant — and at 1.0
+    the heading is the bearing whose nearest octant is the one it snapped to.
+    Eight animations, eight facings, a heading that breathes. Swept over 1,680
+    (octant, dial, bearing) combinations. On the boundary itself the facing is
+    a genuine TIE between the two octants sharing it — and the stick's own
+    `Math.round` has already flipped by then, so that bearing arrives paired
+    with the other snapped vector.
+  - **THE BEARING IS READ ADDITIVELY, off games-ui's element.** Their
+    `gamepad.ts` snaps to 8 and SYNTHESIZES WASD by design ("no games-agent
+    file is touched"), so the finger's angle never reaches this agent's code.
+    `stickdir.ts` attaches its own PASSIVE pointer listeners to
+    `.ml-pad-stick` and computes `atan2(dy, dx)` off the same element rect
+    their `apply()` uses. Nothing of theirs is edited and EVERY THRESHOLD
+    STAYS THEIRS — dead zone, walk/run amplitude and which octant won all
+    still come from the synthesized keys; this adds an angle and nothing else.
+    No finger down, no lean, so a keyboard player is bit-for-bit unaffected.
+    The coupling is the class name; offered on the board for games-ui to
+    publish the bearing themselves instead.
+  - **APPLIED LAST, AND ONLY TO AN UNDEFLECTED HEADING.** Steer assist, the
+    monster dodge and the autopilot are deflections with their own reasons, so
+    the lean is skipped unless the vector still equals what the keys asked for
+    (`rawAx/rawAy`) — the residual is only meaningful while that vector is
+    what we are walking. The leaned vector is UNIT, so a lean can never change
+    pace; it goes into the input message like any heading, so the server
+    integrates exactly what the client predicted.
+  - Gate: `server/test/stickdir.test.ts` — his three settings in his own
+    words, the facing sweep, the clamp, and unit magnitude.
 - **Auto-jump**: walking INTO a 1-level wall auto-fires the jump
   (`maybeAutoJump`/`wouldAutoJump` from `predictAndSend`). Rule: exactly
   `!canEnter(walk) && canEnter(jump)` probed a leading-edge ahead — 2-level+

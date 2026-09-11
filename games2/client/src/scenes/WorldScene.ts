@@ -60,6 +60,7 @@ import {
   FALL_GRAVITY,
   FALL_DMG_MIN_LEVELS,
   fallDamageFrac,
+  leanHeading,
   isStandableAtWorld,
   isBlockedAtWorld,
   findSpawn,
@@ -100,6 +101,7 @@ import {
   navExpo, setNavExpo, NAV_EXPO_DEFAULT,
 } from "../navbias";
 import { ensureSpeedDial, playerSpeed } from "../playerspeed";
+import { ensureStickDial, ensureStickAngle, stickLean, stickHeading } from "../stickdir";
 import { hiddenRing, setHiddenRing } from "../hiddenring";
 import { indoorWall, setIndoorWall, INDOOR_WALL_MIN, INDOOR_WALL_MAX } from "../indoorwall";
 import {
@@ -12798,6 +12800,11 @@ export class WorldScene extends Phaser.Scene {
     let ax = (down(k.D) || down(k.RIGHT) ? 1 : 0) - (down(k.A) || down(k.LEFT) ? 1 : 0);
     let ay = (down(k.S) || down(k.DOWN) ? 1 : 0) - (down(k.W) || down(k.UP) ? 1 : 0);
     let running = down(k.SHIFT);
+    // THE VECTOR THE KEYS ASKED FOR, kept so the stick's lean can tell whether
+    // anything deflected the heading afterwards (steer assist, the monster
+    // dodge, the autopilot). The lean is only ever measured against this.
+    const rawAx = ax;
+    const rawAy = ay;
     // Tap-to-move autopilot: keyboard always wins (touching the keys cancels
     // the trip); otherwise steer toward the tapped target with the same 8-way
     // screen input a keyboard would produce.
@@ -12919,7 +12926,26 @@ export class WorldScene extends Phaser.Scene {
         } else this.dodgeState = undefined;
       }
     }
-    const sig = `${ax},${ay},${running ? 1 : 0}`;
+    // ALMOST EIGHT DIRECTIONS. Applied LAST, and only when nothing else has
+    // touched the heading this frame: steer assist and the monster dodge are
+    // deflections with their own reasons, and leaning THEIR vector toward the
+    // finger would be arguing with them mid-corner. The residual is measured
+    // against the vector the KEYS produced, so it is only ever meaningful while
+    // that vector is still what we are walking.
+    //
+    // No finger on the stick (keyboard, gamepad-less, autopilot) -> no bearing
+    // -> no lean, which is exactly right: "you will only be able to run in 8
+    // directions on a keyboard".
+    const lean = stickLean();
+    if (lean > 0 && ax === rawAx && ay === rawAy && (ax !== 0 || ay !== 0)) {
+      const bearing = stickHeading();
+      if (bearing !== null) {
+        const led = leanHeading(ax, ay, bearing, lean);
+        ax = led.ax;
+        ay = led.ay;
+      }
+    }
+    const sig = `${ax.toFixed(3)},${ay.toFixed(3)},${running ? 1 : 0}`;
     // If the input CHANGED, flush the elapsed window under the PREVIOUS input
     // first. Otherwise a quick tap gets re-attributed to the new vector (e.g.
     // idle) — the tap's movement evaporates and the player pops back.
@@ -15715,6 +15741,8 @@ export class WorldScene extends Phaser.Scene {
       ensureMapLayers();
       ensureNavDial();
       ensureSpeedDial(); // the player-speed slider, injected the same way
+      ensureStickDial(); // …and the stick's direction-freedom slider
+      ensureStickAngle(); // (re)bind the bearing listeners on games-ui's stick
       if (this.zoneLinesOn && this.zoneLinesFor !== this.zone) this.drawZoneLines(); // the uphill-bias slider, injected the same way
     }
     // The room's LIGHT rules outlive the geometry by exactly one GRADE. The
