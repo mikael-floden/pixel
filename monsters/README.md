@@ -307,7 +307,19 @@ The rules that produce a real strike:
   "that will usually generate the correct attack"). The simple claw is the
   fallback, not the opening move.
 - **Painted effects and shallow strikes are a dice roll, so the sweep is a
-  LOOP**: run `attack` until `--dry-run` reports nothing.
+  LOOP**: run `attack --try` until `--dry-run` reports nothing.
+- **A clip that rendered PAST the canvas is REPAIRED, not rejected**
+  (maintainer 2026-09-11: "we still need to try and save the animations that
+  did render outside, so it appeared on the other side the next frame"). The
+  shipped monsters have had `postprocess`'s wrap repair since sync;
+  candidates run the same pass on every landing before QA — the canvas grows,
+  each wrapped strip is lifted off the frame it landed on and pasted back
+  beyond the true border of the frame it belongs to. The Lava Slug's magma
+  jet was cut at the edge with a detached chunk on the far side; repaired, it
+  is whole and the direction went from fail to pass. `unwrap --state <slot>`
+  does the same for clips already on disk. Only a clip that STILL overflows
+  after repair steps the ladder down to calmer wording — overflow means too
+  much, never too little.
 
 ### Approved art is not frozen — replace a state as a WHOLE, in a try slot
 
