@@ -1246,38 +1246,36 @@
     "attack_try": {
       "directions": {
         "south": {
-          "status": "fail",
-          "step_mean": 0.3801,
-          "step_max": 0.4709,
-          "drift": 18.31,
-          "loop": 0.2945,
-          "loop_ratio": 0.77,
-          "travel": 7.67,
-          "pin": 0.737,
+          "status": "pass",
+          "step_mean": 0.4483,
+          "step_max": 0.6189,
+          "drift": 10.87,
+          "loop": 0.0001,
+          "loop_ratio": 0.0,
+          "travel": 3.47,
+          "pin": 1.0,
           "pad": 0,
-          "flash": 0.0,
-          "peak": 0.4617,
-          "reach": 0.123,
+          "flash": 0.013,
+          "peak": 0.4413,
+          "reach": 0.338,
           "canvas": [
             176,
             176
           ],
-          "reasons": [
-            "drifts 18.3 px — eyeball it",
-            "no strike, just a lean: nothing reaches past 0.12 of the body"
-          ],
-          "sub": "15553747-9dda-406d-accd-581bb285198a",
-          "group": "255e59f3-a67a-4e40-a687-6abae01b19b2",
+          "reasons": [],
+          "sub": "5eacaa5b-ab5c-4a5c-974a-e943478f338e",
+          "group": "6f33dbad-3632-42c1-b6bc-c40ba424ccc9",
           "takes": 1,
-          "version": 1,
+          "version": 2,
           "mirrored": false,
-          "action": "Claw Slam - Raises one massive clawed hand high and slams it straight down",
+          "action": "Claw Slam - Raises one massive clawed hand high and slams it straight down, a big aggressive swing",
           "intensity": 0,
-          "rolls": 1,
+          "rolls": 2,
           "frames": 4,
-          "rung": 0,
-          "tries": 1,
-          "generated_at": "2026-09-11T15:40:42+00:00"
+          "rung": 1,
+          "unwrapped": null,
+          "tries": 2,
+          "generated_at": "2026-09-11T16:49:21+00:00"
         },
         "south-east": {
           "status": "warn",
@@ -1441,6 +1439,71 @@
           "tries": 1,
           "generated_at": "2026-09-11T15:40:43+00:00",
           "source": "north-east"
+        },
+        "east": {
+          "status": "pass",
+          "step_mean": 0.6556,
+          "step_max": 0.7611,
+          "drift": 9.49,
+          "loop": 0.1767,
+          "loop_ratio": 0.27,
+          "travel": 6.52,
+          "pin": 0.419,
+          "pad": 0,
+          "flash": 0.001,
+          "peak": 0.6518,
+          "reach": 0.774,
+          "canvas": [
+            176,
+            176
+          ],
+          "reasons": [],
+          "sub": "a53d8b92-19d5-4b83-86f7-00b573c9668a",
+          "group": "6f33dbad-3632-42c1-b6bc-c40ba424ccc9",
+          "takes": 1,
+          "version": 2,
+          "mirrored": false,
+          "action": "Claw Slam - Raises one massive clawed hand high and slams it straight down, a big aggressive swing",
+          "intensity": 0,
+          "rolls": 1,
+          "frames": 4,
+          "rung": 1,
+          "unwrapped": null,
+          "tries": 1,
+          "generated_at": "2026-09-11T16:49:23+00:00"
+        },
+        "west": {
+          "status": "pass",
+          "step_mean": 0.6556,
+          "step_max": 0.7611,
+          "drift": 9.49,
+          "loop": 0.1767,
+          "loop_ratio": 0.27,
+          "travel": 6.52,
+          "pin": 0.419,
+          "pad": 0,
+          "flash": 0.001,
+          "peak": 0.6518,
+          "reach": 0.774,
+          "canvas": [
+            176,
+            176
+          ],
+          "reasons": [],
+          "sub": "a53d8b92-19d5-4b83-86f7-00b573c9668a",
+          "group": "6f33dbad-3632-42c1-b6bc-c40ba424ccc9",
+          "takes": 1,
+          "version": 2,
+          "mirrored": true,
+          "action": "Claw Slam - Raises one massive clawed hand high and slams it straight down, a big aggressive swing",
+          "intensity": 0,
+          "rolls": 1,
+          "frames": 4,
+          "rung": 1,
+          "unwrapped": null,
+          "tries": 1,
+          "generated_at": "2026-09-11T16:49:23+00:00",
+          "source": "east"
         }
       },
       "action": "Claw Slam - Raises one massive clawed hand high and slams it straight down",
@@ -1480,6 +1543,18 @@
           "ember_king/animations/attack_try/north-west/01.webp",
           "ember_king/animations/attack_try/north-west/02.webp",
           "ember_king/animations/attack_try/north-west/03.webp"
+        ],
+        "east": [
+          "ember_king/animations/attack_try/east/00.webp",
+          "ember_king/animations/attack_try/east/01.webp",
+          "ember_king/animations/attack_try/east/02.webp",
+          "ember_king/animations/attack_try/east/03.webp"
+        ],
+        "west": [
+          "ember_king/animations/attack_try/west/00.webp",
+          "ember_king/animations/attack_try/west/01.webp",
+          "ember_king/animations/attack_try/west/02.webp",
+          "ember_king/animations/attack_try/west/03.webp"
         ]
       },
       "strips": {
@@ -1488,7 +1563,9 @@
         "north-east": "ember_king/animations/attack_try__north-east.webp",
         "north": "ember_king/animations/attack_try__north.webp",
         "south-west": "ember_king/animations/attack_try__south-west.webp",
-        "north-west": "ember_king/animations/attack_try__north-west.webp"
+        "north-west": "ember_king/animations/attack_try__north-west.webp",
+        "east": "ember_king/animations/attack_try__east.webp",
+        "west": "ember_king/animations/attack_try__west.webp"
       }
     }
   }
