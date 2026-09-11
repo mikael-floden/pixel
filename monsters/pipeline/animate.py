@@ -880,6 +880,13 @@ def cmd_state(args, state):
         except PixelLabError as e:
             print(f"  {cid}: FAILED — {e}", flush=True)
         cand.rebuild_index(cfg)
+    # his notes are consumed by the regeneration they asked for — clear them
+    # here so he never reads an old comment under a new clip
+    try:
+        migrate_feedback_slots(verbose=False)
+        cmd_prune_feedback(argparse.Namespace(dry_run=False))
+    except Exception as e:
+        print(f"  feedback not tidied ({e})")
     print(f"credits left: ${client.usd_credits():.2f}")
 
 
@@ -1061,6 +1068,61 @@ def cmd_review(args):
     cand.rebuild_index(cfg)
 
 
+def _feedback_doc():
+    try:
+        return json.load(open(FEEDBACK))
+    except FileNotFoundError:
+        return None
+
+
+def _write_feedback(doc):
+    with open(FEEDBACK, "w") as f:
+        json.dump(doc, f, indent=1, ensure_ascii=False)
+        f.write("\n")
+
+
+def migrate_feedback_slots(verbose=True):
+    """A slot rename must carry HIS verdicts with it. Renaming `attack` to
+    `attack_v1` (2026-09-11) orphaned 49 of them — including approvals, which
+    are his picks and must never be lost — because the key holds the slot
+    name: `monsters/<id>#<slot>#<direction>`."""
+    doc = _feedback_doc()
+    if not doc:
+        return 0
+    entries = doc.get("entries") or {}
+    moved = 0
+    for key in list(entries):
+        if "#" not in key:
+            continue
+        path, _, rest = key.partition("#")
+        slot, _, d = rest.partition("#")
+        cid = path.split("/")[-1]
+        if slot not in STATES or d not in ALL_DIRS:
+            continue
+        if os.path.isdir(anim_dir(cid, slot, d)):
+            continue                              # the slot still exists as named
+        for n in range(1, 9):                     # find where that art went
+            cand_slot = f"{slot}_v{n}"
+            if os.path.isdir(anim_dir(cid, cand_slot, d)):
+                new = f"{path}#{cand_slot}#{d}"
+                if new not in entries:
+                    entries[new] = entries[key]
+                    if verbose:
+                        print(f"  moved {key} -> {cand_slot}")
+                    moved += 1
+                entries.pop(key, None)
+                break
+    if moved:
+        doc["entries"] = entries
+        _write_feedback(doc)
+    return moved
+
+
+def cmd_migrate_feedback(args):
+    n = migrate_feedback_slots()
+    print(f"{n} verdict(s) followed their slot's rename")
+
+
 def cmd_prune_feedback(args):
     """Delete a redo verdict once the art it judged HAS BEEN REGENERATED. His
     note has done its job at that point and only misleads: he sees his own old
@@ -1084,6 +1146,10 @@ def cmd_prune_feedback(args):
         man = cand.load_manifest(cid)
         q = (((man or {}).get("animations") or {}).get(slot, {}).get("directions") or {}).get(d)
         if not q:
+            # the art it judged is gone entirely (a discarded attempt): the
+            # note cannot mean anything any more
+            if man and not os.path.isdir(anim_dir(cid, slot, d)):
+                drop.append((key, "gone", v.get("updated_at") or ""))
             continue
         made, said = q.get("generated_at"), v.get("updated_at")
         if made and said and made > said:          # both ISO-8601 UTC
@@ -1298,6 +1364,8 @@ def main():
     pr.add_argument("--from", dest="src", help="the attempt to promote, e.g. attack_v3 (default: <state>_try)")
     pr.add_argument("--allow-warn", action="store_true", help="promote when every direction is pass or warn (default: no fails, no gaps)")
     pr.set_defaults(func=cmd_promote)
+    mf = sub.add_parser("migrate-feedback", help="carry his verdicts across a slot rename")
+    mf.set_defaults(func=cmd_migrate_feedback)
     pf = sub.add_parser("prune-feedback", help="drop his redo notes whose art has since been regenerated")
     pf.add_argument("--dry-run", action="store_true"); pf.set_defaults(func=cmd_prune_feedback)
     rv = sub.add_parser("review", help="apply HIS wiki verdicts to a slot (redo -> fail, with his note)")

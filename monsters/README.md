@@ -345,6 +345,16 @@ python monsters/pipeline/animate.py prune-feedback             # drop the notes 
   removed for one reason only: the art it judged no longer exists.
 - **An APPROVAL is never pruned.** That is his pick and it has to outlive the
   review.
+- **A SLOT RENAME must carry his verdicts with it** (`migrate-feedback`).
+  Renaming `attack` to `attack_v1` orphaned 49 of them — approvals included —
+  because the key holds the slot name. A verdict whose art cannot be found
+  under any `<state>_v<N>` is then dropped, since it judges something that no
+  longer exists.
+- **Both run automatically at the end of every generation**, so a note is
+  cleared by the regeneration it asked for rather than by someone remembering
+  to run a command.
+- **A verdict is never applied twice**: `review` skips any note older than the
+  art it judges, or the redo that produced a clip would fail that clip.
 
 ### A WRONG DIRECTION is the maintainer's call, never the agent's
 
