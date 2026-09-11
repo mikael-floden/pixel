@@ -72,14 +72,25 @@ const PICK_DY = 4;
 const GAIN_TAU = 900;
 const SCAN_MS = 280; // how often the view is re-walked for cells
 const PAD = 24; // px beyond the view a cell is still kept live
-/* `t3at` is 13.5 us on a cell the game has already resolved for its own
- * window and about a millisecond on one it has not (the first scan measured
- * 18 ms over 24 calls reaching past the drawn band), so the budget is small
- * and the scan reaches only the storeys the picker can see. */
-const RESOLVES_PER_SCAN = 10;
+/* THE WORK IS BUDGETED IN TIME AND ORDERED BY DISTANCE, and both halves of
+ * that are paid for (maintainer 2026-09-11, at 278,261: "why is the foam
+ * effect only on the left side here?").
+ *
+ * It was neither. A COUNT budget of 10 resolves per 280 ms scan is 36 cells a
+ * second however fast the device runs, and the lattice walk visits cells in
+ * grid order, which is LEFT TO RIGHT on screen. Measured at his spot: the
+ * near cliff's crest had 21 sprites by 33 s while the far bank had 3, and the
+ * view did not finish filling until 64 s. He photographed the middle of that.
+ *
+ * So: one prioritised queue, nearest to the middle of the view first, walked
+ * under a per-frame time budget that covers resolving AND baking. A fast
+ * device finishes a view in a second; a slow one still fills from the centre
+ * out, which is where he is looking. `t3at` is 13.5 us on a cell the game has
+ * already resolved for its own window and about a millisecond on one it has
+ * not, which is why the budget is TIME: a count cannot tell those apart. */
+const RESOLVE_MS = 1.2; // per frame, inside rec() so one bake cannot overrun it
+const WORK_MS = 2.2; // per frame, the whole resolve + bake pipeline
 const LEVEL_SAMPLES = 6; // picker samples per axis to learn which storeys are in view
-const BAKE_BUDGET_MS = 1.2; // bakes per frame stop once this much time is spent
-const BAKE_TRIES = 8; // pending cells looked at per frame while their neighbours resolve
 const CACHE_CELLS = 2400; // resolved cell records kept (a few screens' worth)
 const SHEET_KEEP = 160; // baked sheets kept alive past the view
 
@@ -131,6 +142,10 @@ interface Live {
   bake: Bake | null;
   key: string | null;
   sprite: Phaser.GameObjects.Image | null;
+  /** Out of view, sheet kept for the walk back. The DRAW LOOP MUST SKIP THESE:
+   *  it sets every live sprite visible, so without the flag it undid the
+   *  retire pass every frame and a warm sheet flickered back on. */
+  warm: boolean;
 }
 
 export function foamFeature(): AmbientFeature {
@@ -160,7 +175,9 @@ export function foamFeature(): AmbientFeature {
   const cellOrder: number[] = [];
   const liquidness = new Map<number, boolean>();
   const live = new Map<number, Live>();
-  const pending = new Set<number>();
+  /** The prioritised work queue for the current view, nearest first. */
+  let queue: { c: number; r: number; d2: number }[] = [];
+  let queueAt = 0;
   let scene: Phaser.Scene | null = null;
   let sprites = 0; // live sprites, kept as a count so the frame never walks the map to ask
   let drawnG = -1;
@@ -250,13 +267,16 @@ export function foamFeature(): AmbientFeature {
 
   /** Resolve one cell through `t3at`, or return the cached record. `null`
    *  once resolved as nothing; `undefined` while unresolved (budget). */
-  let resolveBudget = 0;
+  /** Time spent resolving THIS FRAME. The budget lives inside `rec` rather
+   *  than around the caller because a single bake resolves its whole 3x3
+   *  neighbourhood, and a caller-side check cannot stop that overrunning. */
+  let resolveMs = 0;
   const rec = (c: number, r: number): CellRec | null | undefined => {
     if (!world || c < 0 || r < 0 || c >= world.w || r >= world.h) return null;
     const i = idx(c, r);
     if (cells.has(i)) return cells.get(i);
-    if (resolveBudget <= 0) return undefined;
-    resolveBudget--;
+    if (resolveMs >= RESOLVE_MS) return undefined;
+    const tR = performance.now();
     stats.resolves++;
     const f = ml()?.t3at as undefined | ((c: number, r: number) => T3At | null);
     let t: T3At | null = null;
@@ -287,6 +307,7 @@ export function foamFeature(): AmbientFeature {
       if (out.liquid) liquidNames.add(out.ground);
     }
     cells.set(i, out);
+    resolveMs += performance.now() - tR;
     cellOrder.push(i);
     if (cellOrder.length > CACHE_CELLS) {
       const old = cellOrder.splice(0, cellOrder.length - CACHE_CELLS);
@@ -380,21 +401,22 @@ export function foamFeature(): AmbientFeature {
     };
   };
 
-  /** Bake one cell: needs its 3x3 neighbourhood resolved and derived. Returns
-   *  false when a dependency is still unresolved (try again next scan). */
-  const bake = (x: CellRec): boolean => {
+  /** Bake one cell: needs its 3x3 neighbourhood resolved and derived.
+   *  `undefined` when a dependency is still unresolved — the caller retries
+   *  next frame rather than recording a cell that never gets its sprite. */
+  const bake = (x: CellRec): Bake | null | undefined => {
     const edges: Edge[] = [];
     for (let dr = -1; dr <= 1; dr++)
       for (let dc = -1; dc <= 1; dc++) {
         const n = rec(x.c + dc, x.r + dr);
-        if (n === undefined) return false;
+        if (n === undefined) return undefined;
         if (!n) continue;
         // a neighbour on another storey draws elsewhere: its edges are not on this plane
         if (n.z !== x.z) continue;
-        if (!derive(n)) return false;
+        if (!derive(n)) return undefined;
         for (const e of n.edges!) edges.push(e);
       }
-    if (!derive(x)) return false;
+    if (!derive(x)) return undefined;
     const t0 = performance.now();
     const water = x.waterTop;
     let out: Bake | null = null;
@@ -404,10 +426,13 @@ export function foamFeature(): AmbientFeature {
     }
     stats.bakes++;
     stats.bakeMs += performance.now() - t0;
-    const i = idx(x.c, x.r);
-    const l = live.get(i);
-    if (!l) return true;
-    l.bake = out;
+    return out;
+  };
+
+  /** Install a baked cell: its sheet, its sprite, its place in the LRU. */
+  const install = (x: CellRec, out: Bake | null): void => {
+    const l: Live = { rec: x, bake: out, key: null, sprite: null, warm: false };
+    live.set(idx(x.c, x.r), l);
     if (out && scene) {
       const t1 = performance.now();
       const key = `amb-foam:${x.c},${x.r}`;
@@ -435,7 +460,6 @@ export function foamFeature(): AmbientFeature {
       stats.texMs += tm;
       if (tm > stats.texPeak) stats.texPeak = tm;
     }
-    return true;
   };
 
   const dropLive = (l: Live) => {
@@ -472,7 +496,6 @@ export function foamFeature(): AmbientFeature {
       }
     }
     const t0 = performance.now();
-    resolveBudget = RESOLVES_PER_SCAN;
     // Learn the lattice from any cell if we have none yet (a cheap first probe).
     if (Number.isNaN(ox)) {
       const f = ml()?.pickAt as undefined | ((wx: number, wy: number) => { x: number; y: number } | null);
@@ -507,6 +530,13 @@ export function foamFeature(): AmbientFeature {
     const sMin = Math.floor((x0 - ox) / DX) - 1;
     const sMax = Math.ceil((x1 - ox) / DX) + 1;
     const wanted = new Set<number>();
+    /* THE QUEUE, NEAREST TO THE MIDDLE OF THE VIEW FIRST. Nothing is resolved
+     * here — a candidate's plate position follows from the lattice alone, so
+     * the ordering costs no `t3at` at all, and the only per-cell work in the
+     * walk is the cheap liquid-quad test (`surfaceAt`, 0.1 us measured). */
+    const cx = view.x + view.width / 2;
+    const cy = view.y + view.height / 2;
+    const q: { c: number; r: number; d2: number }[] = [];
     for (const z of levels)
     for (let t = Math.floor((y0 - oy + z * pitch) / DY) - 3, tMax = Math.ceil((y1 - oy + z * pitch) / DY) + 1; t <= tMax; t++)
       for (let s = sMin; s <= sMax; s++) {
@@ -516,30 +546,32 @@ export function foamFeature(): AmbientFeature {
         if (c < 0 || r < 0 || c >= world.w || r >= world.h) continue;
         // cheap: a cell matters only when it or a quad partner is liquid
         if (!(isLiquidCell(c, r) || isLiquidCell(c + 1, r) || isLiquidCell(c, r + 1) || isLiquidCell(c + 1, r + 1))) continue;
-        const x = rec(c, r);
-        if (x === undefined) continue;
-        if (!x) continue;
-        // the drawn plate must touch the padded view
-        if (x.sx + TILE < x0 || x.sx > x1 || x.sy + TOP_ROWS < y0 || x.sy > y1) continue;
-        // only a cell with water on its top face can carry foam
-        if (!x.water && !(x.boundary && (FOAM_LIQUIDS.has(x.boundary.a) || FOAM_LIQUIDS.has(x.boundary.b)))) continue;
+        // where this cell's plate lands, straight off the lattice
+        const sx = ox + (c - r) * DX;
+        const sy = oy + (c + r) * DY - z * pitch;
+        if (sx + TILE < x0 || sx > x1 || sy + TOP_ROWS < y0 || sy > y1) continue;
         const i = idx(c, r);
+        if (wanted.has(i)) continue; // another storey already claimed this cell
         wanted.add(i);
-        if (!live.has(i)) {
-          live.set(i, { rec: x, bake: null, key: null, sprite: null });
-          pending.add(i);
-        }
+        const back = live.get(i);
+        if (back) back.warm = false; // in view again
+        const dx = sx + DX - cx;
+        const dy = (sy + DY - cy) * (DX / DY); // screen distance, not lattice distance
+        q.push({ c, r, d2: dx * dx + dy * dy });
       }
+    q.sort((a, b) => a.d2 - b.d2);
+    queue = q;
+    queueAt = 0;
     // retire what left the view
     for (const [i, l] of live) {
       if (wanted.has(i)) continue;
       if (l.key && sheetLRU.length <= SHEET_KEEP) {
+        l.warm = true;
         l.sprite?.setVisible(false);
         continue; // keep the sheet warm: it is likely to come back
       }
       dropLive(l);
       live.delete(i);
-      pending.delete(i);
     }
     while (sheetLRU.length > SHEET_KEEP) {
       const key = sheetLRU[0];
@@ -555,6 +587,40 @@ export function foamFeature(): AmbientFeature {
     if (stats.scanMs > stats.scanPeak) stats.scanPeak = stats.scanMs;
   };
 
+  /** Walk the queue nearest-first under a time budget: resolve, decide, bake,
+   *  install. At most ONE sheet upload a frame — an upload peaked at 9 ms on
+   *  the software-GL harness before the bounding box was trimmed, and one a
+   *  frame is the cap that kept it invisible. */
+  const work = (): void => {
+    const t0 = performance.now();
+    let uploaded = false;
+    while (queueAt < queue.length) {
+      if (performance.now() - t0 > WORK_MS) break;
+      const q = queue[queueAt];
+      const i = idx(q.c, q.r);
+      if (live.has(i)) {
+        queueAt++;
+        continue;
+      }
+      const x = rec(q.c, q.r);
+      if (x === undefined) break; // out of resolve time; the same cell is first next frame
+      queueAt++;
+      if (!x) continue;
+      // only a cell with water on its top face can carry foam
+      if (!x.water && !(x.boundary && (FOAM_LIQUIDS.has(x.boundary.a) || FOAM_LIQUIDS.has(x.boundary.b)))) continue;
+      const out = bake(x);
+      if (out === undefined) {
+        queueAt--; // a neighbour is still unresolved: retry this cell next frame
+        break;
+      }
+      install(x, out);
+      if (out) {
+        if (uploaded) break;
+        uploaded = true;
+      }
+    }
+  };
+
   /* ---- the feature ------------------------------------------------------- */
 
   return {
@@ -566,6 +632,7 @@ export function foamFeature(): AmbientFeature {
     },
     update(ctx, dt) {
       const dtc = Math.min(dt, 100);
+      resolveMs = 0; // the resolve budget is per FRAME
       clock += dtc;
       const k = Math.floor(clock / FRAME_MS) % FRAMES;
       const view = ctx.view;
@@ -579,24 +646,7 @@ export function foamFeature(): AmbientFeature {
         lastViewY = view.y;
         scan(view);
       }
-      // bake pending cells on a time budget; a neighbourhood still resolving
-      // is skipped this frame, not waited on
-      if (outdoorNow && !suppressed && !Number.isNaN(ox)) {
-        const t0 = performance.now();
-        let tries = 0;
-        const before = sprites;
-        for (const i of pending) {
-          if (tries++ >= BAKE_TRIES || performance.now() - t0 > BAKE_BUDGET_MS) break;
-          if (sprites !== before) break; // one sheet upload a frame: 9 ms each on a software GL
-          const l = live.get(i);
-          if (!l) {
-            pending.delete(i);
-            continue;
-          }
-          resolveBudget = Math.max(resolveBudget, 8);
-          if (bake(l.rec)) pending.delete(i);
-        }
-      }
+      if (outdoorNow && !suppressed && !Number.isNaN(ox)) work();
       const target = forced ? 1 : suppressed ? 0 : sprites > 0 ? 1 : 0;
       gain += (target - gain) * Math.min(1, (dtc / GAIN_TAU) * 3);
       const g = gain * ctx.outdoor;
@@ -609,6 +659,10 @@ export function foamFeature(): AmbientFeature {
       for (const l of live.values()) {
         const s = l.sprite;
         if (!s) continue;
+        if (l.warm) {
+          if (s.visible) s.setVisible(false);
+          continue;
+        }
         if (!drawnOn) {
           if (s.visible) s.setVisible(false);
           continue;
@@ -627,7 +681,7 @@ export function foamFeature(): AmbientFeature {
       const all: { c: number; r: number; z: number; a: number; px: number; bx: number; by: number; w: number; h: number; x: number; y: number }[] = [];
       let visible = 0;
       for (const l of live.values()) {
-        if (!l.sprite || !l.bake) continue;
+        if (!l.sprite || !l.bake || l.warm) continue; // a warm sheet is out of view
         if (l.sprite.visible) visible++;
         all.push({ c: l.rec.c, r: l.rec.r, z: l.rec.z, a: l.sprite.visible ? l.sprite.alpha : 0, px: l.bake.count, bx: l.bake.bx, by: l.bake.by, w: l.bake.w, h: l.bake.h, x: l.rec.sx, y: l.rec.sy });
       }
@@ -646,7 +700,8 @@ export function foamFeature(): AmbientFeature {
         lattice: { ox, oy },
         cells: cells.size,
         live: live.size,
-        pending: pending.size,
+        queued: queue.length - queueAt,
+        pending: queue.length - queueAt,
         sprites: all.length,
         visible,
         ...stats,
@@ -656,7 +711,8 @@ export function foamFeature(): AmbientFeature {
     dispose() {
       for (const l of live.values()) dropLive(l);
       live.clear();
-      pending.clear();
+      queue = [];
+      queueAt = 0;
       cells.clear();
       cellOrder.length = 0;
       liquidness.clear();

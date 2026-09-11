@@ -138,6 +138,27 @@ them; folder isolation beats DRY here).
     plate** (its diamond starts at iso.oy + dy, the plate at iso.oy + 10): on
     the quay at 280,235 the crest rows 7-8 picked as face and row 9 as the
     cell, so a query is shifted down by 4.
+  - **A SURFACE EFFECT IS A POPULATION, AND IT FILLS IN ORDER** (maintainer
+    2026-09-11, at 278,261: "why is the foam effect only on the left side
+    here?"). It was not: the near cliff had 21 sprites at 33 s and the far
+    bank 3, and the view did not finish until 64 s. Two causes, both in the
+    scheduling. A COUNT budget (10 resolves a scan) is a fixed number of cells
+    per second however fast the device runs, and a lattice walk visits cells
+    in grid order, which is LEFT TO RIGHT on screen. So the work is one queue
+    ordered by distance from the middle of the view, walked under a per-frame
+    TIME budget covering resolve and bake together (a count cannot tell a
+    cell the game has already resolved, 13.5 us, from one it has not, ~1 ms).
+    Measured after: a view completes in about 92 frames — two seconds on his
+    phone — and fills outward from where he stands.
+  - **Judge throughput at 480x320, never in the phone viewport**: the phone
+    geometry runs at 1-2 fps in this harness, so every per-frame budget is
+    starved there and the measurement says nothing about his device. The same
+    fill measured 8.7 s at 10.7 fps and 64 s at 1.5 fps — the frames are the
+    invariant, not the seconds.
+  - **The draw loop must skip a RETIRED sprite.** Cells leaving the view keep
+    their sheet warm and are hidden, and the per-frame draw pass then set
+    every live sprite visible again, undoing it. Off-screen, so nothing looked
+    wrong; it showed up as the debug population flickering by a third.
   - **The ground can show the plain plate where the resolver names a composed
     boundary.** After a teleport the coast at 335,255 was a hard diamond edge
     for 16 s while `t3at` reported boundary tiles (composed later, under the
