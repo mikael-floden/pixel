@@ -60,6 +60,20 @@ them; folder isolation beats DRY here).
   source — they sit above the darkness overlay — which is the wall-hack the
   cut-away exists to prevent. Everything that fills the air keeps the plain
   outdoor rule.
+- **`runtime/flush.ts`** carries one fact between two features: a flock has
+  just panicked off the ground. `birds/` emits per spooked bird, `feathers/`
+  listens, and neither imports the other — the flock runs identically whether
+  or not anything is listening, and a listener that throws cannot take it
+  down. It also carries `setFlushSource`, which is how a listener tells "no
+  flock exists" from "a flock exists and is quiet": MANUAL mode forces every
+  enabled field, so `forced` alone cannot, and `feathers/` was shedding demo
+  feathers over a live flock.
+- **A CRITTER'S `gx`/`gy` ARE DRAWN ISO PIXELS, NOT WORLD UNITS.** The player's
+  `__ml.me()` is world units (32 per cell) and a critter's position is the
+  projected drawing point; the two are different spaces and `teleport` takes a
+  CELL. Dividing a critter's gx by 32 put the test player 150 cells away and
+  nothing ever happened. `__ml.pickAt(gx, gy)` inverts the projection and is
+  the only correct way back.
 - **`runtime/water.ts`** answers the two water questions no feature can derive:
   is this point swimmable, and is it the OPEN SEA (`deepCurrentAtScreen`, a
   non-null moving answer). `water` and `deep_water` carry identical Surface
@@ -223,7 +237,7 @@ decision; an earlier version that jumped the world to each effect's
   `AUTO → NONE → <each feature in registry order> → AUTO`
 
   (currently fireflies, pollen, water, deepwater, foam, fish, ants, spiders, moths,
-  gnats, crabs, bubbles, embers, bats, birds,
+  gnats, crabs, bubbles, embers, bats, birds, feathers,
   thunder, sandstorm, leaves — the ring is built from `index.ts`, so a new
   folder joins it automatically.)
 
@@ -295,6 +309,7 @@ controller (AUTO / NONE / solo-each).
 | `foam/` | field | SEA FOAM — the white line where moving water meets land, alive: a one-pixel band hugging the coast seam and the wall's crest, a train of crest lines sliding in from a few pixels out, the band swelling as each arrives (onto the sand over a beach; thick and bright against a wall), in a slow sweep along the coast. Solid contours only, Wind Waker not grain (maintainer's picks) | Any water/land edge in view — the composed boundary seam (mask sheet) and the wall foot's crest (`footBand` replicated, parity-tested); outdoors |
 | `fish/` | field | THE RISE — a fish takes a fly: a dorsal fin breaks the surface, a tail flicks a beat later, and two or three rings leave the spot and widen until they fade; the harder takes throw a few specks of water. Rings are ISO ELLIPSES (a circle stands up out of the lake like a hoop) at whole-pixel radii, the lead ring big and the followers smaller so nested rings stay legible | Lakes and shallows only (`runtime/water.ts`; the open sea is `deepwater/`'s), outdoors. Peaks at dawn and dusk on a bump in the sun, never zero, hidden by heavy rain |
 | `water/` | field | Living water — pixel-art wavelets + sun/moon reflection glints (frame-animated, full-pixel, no sub-px slide) | LAKES AND SHALLOWS: water on screen (iso probe) MINUS anywhere the deep-sea current runs — the open sea is `deepwater/`'s |
+| `feathers/` | field | WHAT A FLUSH LEAVES BEHIND — spook a landed flock and each bird drops a feather or two: knocked loose by the wingbeat so it rises first, then sinks slowly, swinging side to side and LEANING into each slide, and lies on the ground a few seconds before it goes | Only when `birds/` announces a flush (`runtime/flush.ts`); outdoors. Selected ALONE in Settings there is no flock, so it sheds a demo feather then and only then |
 | `bats/` | episode | Night colony wheeling: boids in any direction (top-down), erratic jinking, scattering near the player (no landing) | base 1.0; day ×0.01 |
 | `birds/` | episode | Living day flock: boids over the world, landing on dry ground to peck, flushing near the player | base 1.0; night ×0.05 |
 | `thunder/` | episode | Distant sheet lightning beyond the horizon | base 0.35 × (1 + rain + night); cloud/mist as weak proxies |
@@ -385,7 +400,11 @@ effect mid-flight. Always eyeball a new visual effect this way before
 shipping.
 
 Per-feature browser gates live in `games2/scripts/verify-<feature>.mjs`
-(embers, moths, foam, fish, …). A pixel arm's BOX IS THE GAME AREA, never the
+(embers, moths, foam, fish, feathers, …). SPOOKING A FLOCK IS A PROTOCOL, not
+a lunge: a flock only SETTLES while the player is far away, so chasing it keeps
+it airborne and it never lands to be flushed — stand off, wait for `landed`,
+convert the bird's drawn position with `pickAt`, then close.
+A pixel arm's BOX IS THE GAME AREA, never the
 screen: at the 480x320 QA viewport the camera shows 198 px of world and the
 rest is HUD, where the chat line rewrites itself while the gate runs — judging
 the whole screen measured that text and read 243.6 with the control at 243.6.

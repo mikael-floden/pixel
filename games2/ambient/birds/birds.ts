@@ -21,6 +21,7 @@ import bird7Still from "./art/bird7/still.webp";
 import bird8Fly from "./art/bird8/fly.webp";
 import bird8Still from "./art/bird8/still.webp";
 import flapframes from "../runtime/flapframes.json";
+import { emitFlush, setFlushSource } from "../runtime/flush";
 
 // Birds — an EPISODE feature and the DAYTIME counterpart to bats. This is a
 // TOP-DOWN world (maintainer 2026-07-18: "stop thinking as if this is a
@@ -512,6 +513,7 @@ export function birdsFeature(): AmbientFeature {
       return BASE_WEIGHT * (NIGHT_MULT + (1 - NIGHT_MULT) * env.sun);
     },
     setActive(on) {
+      if (on !== active) setFlushSource(on); // anything waiting on a flush knows a flock exists
       active = on;
       if (on) {
         nextFlockIn = 1200 + Math.random() * 2000;
@@ -618,6 +620,12 @@ export function birdsFeature(): AmbientFeature {
             const dx = b.gx - player.x;
             const dy = b.gy - player.y;
             const d = Math.hypot(dx, dy) || 1;
+            /* ANNOUNCE THE PANIC, for anything that wants to drop something
+             * where this bird was standing (`feathers/`). Only the birds that
+             * were genuinely LOW: a cruising bird is not spooked and sheds
+             * nothing. The channel is fire-and-forget with nobody required to
+             * listen — the flock flies identically either way. */
+            if (b.alt < FEAR_ALT) emitFlush({ x: b.gx, y: b.gy - b.alt, gx: b.gx, gy: b.gy, alt: b.alt, type: b.type });
             b.vx = (dx / d) * SPD_MAX; // burst away from the player
             b.vy = (dy / d) * SPD_MAX;
             if (b.state !== FLYING) b.state = TAKEOFF;
