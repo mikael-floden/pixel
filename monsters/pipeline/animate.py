@@ -1044,7 +1044,7 @@ def cmd_promote(args):
     """The _try variant becomes the state. Refuses anything incomplete: a state
     must be ONE take across all eight directions, never a mix of wordings."""
     cfg = cand.load_cfg()
-    state, slot = args.state, args.state + TRY
+    state, slot = args.state, (getattr(args, "src", None) or args.state + TRY)
     ids = args.only.split(",") if args.only else [c["id"] for c in cfg["candidates"]
                                                   if (cand.load_manifest(c["id"]) or {}).get("review") == "approved"]
     ok = [c["id"] for c in cfg["candidates"] if c["id"] in ids]
@@ -1093,7 +1093,7 @@ def cmd_promote(args):
 def cmd_discard(args):
     """Throw the _try variant away; the live state is untouched."""
     cfg = cand.load_cfg()
-    state, slot = args.state, args.state + TRY
+    state, slot = args.state, (getattr(args, "src", None) or args.state + TRY)
     ids = args.only.split(",") if args.only else [c["id"] for c in cfg["candidates"]]
     client = PixelLabClient(); client.require_key()
     n = 0
@@ -1138,8 +1138,9 @@ def main():
         g.add_argument("--only"); g.add_argument("--dry-run", action="store_true")
         g.add_argument("--min-usd", type=float, default=MIN_USD)
         g.add_argument("--try", dest="use_try", action="store_true",
-                       help="build a NEW take on this state alongside the live one (never shown to the game); promote or discard it later")
-        g.set_defaults(func=lambda a, st=st: cmd_state(a, st + (TRY if a.use_try else "")))
+                       help="build the NEXT ATTEMPT at this state alongside the others (nothing in candidates is live; he picks)")
+        g.add_argument("--slot", help="write to this slot exactly, e.g. attack_v3")
+        g.set_defaults(func=lambda a, st=st: cmd_state(a, a.slot or (st + (TRY if a.use_try else ""))))
     r = sub.add_parser("redo"); r.add_argument("--state", default="idle"); r.add_argument("--only", required=True)
     r.add_argument("--dirs", required=True); r.add_argument("--min-usd", type=float, default=MIN_USD)
     r.add_argument("--pin", action="store_true", help="pin start+end to the base (the maintainer's fallback for a clip that never loops)")
@@ -1152,6 +1153,7 @@ def main():
     s = sub.add_parser("status"); s.add_argument("--state", default="idle"); s.set_defaults(func=cmd_status)
     pr = sub.add_parser("promote", help="a complete _try variant REPLACES the live state: the old directions are deleted on PixelLab and on disk")
     pr.add_argument("--state", required=True); pr.add_argument("--only")
+    pr.add_argument("--from", dest="src", help="the attempt to promote, e.g. attack_v3 (default: <state>_try)")
     pr.add_argument("--allow-warn", action="store_true", help="promote when every direction is pass or warn (default: no fails, no gaps)")
     pr.set_defaults(func=cmd_promote)
     uw = sub.add_parser("unwrap", help="repair clips that rendered past the canvas edge (no generation)")
@@ -1161,7 +1163,9 @@ def main():
     se.add_argument("--min-reach", type=float, default=0.15, help="the maintainer's own accepted floor")
     se.set_defaults(func=cmd_settle)
     dc = sub.add_parser("discard", help="throw the _try variant away and keep the live state")
-    dc.add_argument("--state", required=True); dc.add_argument("--only"); dc.set_defaults(func=cmd_discard)
+    dc.add_argument("--state", required=True); dc.add_argument("--only")
+    dc.add_argument("--from", dest="src", help="the attempt to discard, e.g. attack_v2")
+    dc.set_defaults(func=cmd_discard)
     args = ap.parse_args()
     args.func(args)
 
