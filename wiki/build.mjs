@@ -2765,6 +2765,28 @@ function seedMonsterTuning(monsters, levels) {
   return { tuning: out, added, levelled };
 }
 
+/* PARALLEL TAKES OF ONE STATE (maintainer 2026-09-11: "he might try to create a
+ * different attack animation without deleting the old version in case the old
+ * version in the end was better. He is now at 'v3' and I can only see a single
+ * attack animation on the wiki so I can't see his new attempts. So we need a
+ * way to ... see all different parallel versions (and review/rate all parallel
+ * versions). In the end we will only have a single attack animation ofc.")
+ *
+ * The monsters agent builds a replacement beside the live one and promotes it
+ * when all eight directions are there — `attack`, `attack_try`,
+ * `attack_v3try`. They are the SAME state, so the registry publishes each take
+ * as its own entry carrying `takeOf` (the state it belongs to) and `takeLabel`
+ * (what the chip says), and the viewer groups them: one chip per state, a
+ * version row under it. Each take keeps its own feedback id — `<path>#<slot>
+ * #<dir>` — so a verdict on v3 is never a verdict on the live one. */
+const takeSlots = (onDisk, st) => onDisk.filter((d) => d !== st && new RegExp(`^${st}[_-]`).test(d));
+function takeLabel(slot, st) {
+  const suffix = slot.slice(st.length).replace(/^[_-]+/, "");
+  const v = /^v(\d+)/.exec(suffix);
+  // "attack_v3try" is v3; the first try slot carries no number and is the try.
+  return v ? `v${v[1]}` : suffix.replace(/try$/i, "") || "try";
+}
+
 // AN APPROVED CANDIDATE IS ALREADY A CREATURE (maintainer 2026-09-10):
 // "Approved Candidates should become normal monsters. They may still not have
 // all animations yet (that's a work in progress), but they should exist as a
@@ -2809,8 +2831,12 @@ function buildCandidateMonsters(shippedIds) {
     // shipped creature has never shown one either.
     const mapStates = Object.keys(readJson(join(ROOT, "monsters", "animation_map.json"))?.states ?? {});
     const onDisk = listDirs(animRoot);
-    const ordered = mapStates.filter((st) => onDisk.includes(st));
+    // Each state, then its parallel takes right after it — the version row's
+    // order. A folder belonging to no mapped state is not a state at all.
+    const ordered = mapStates.filter((st) => onDisk.includes(st))
+      .flatMap((st) => [st, ...takeSlots(onDisk, st)]);
     for (const state of ordered) {
+      const base = mapStates.find((st) => st !== state && state.startsWith(st)) ?? null;
       const dirs = {};
       for (const dir of DIRS) {
         const frameDir = join(animRoot, state, dir);
@@ -2826,7 +2852,10 @@ function buildCandidateMonsters(shippedIds) {
           ...frameNaming(frameDir),
         };
       }
-      if (Object.keys(dirs).length) anims[state] = { folder: state, fallback: null, dirs };
+      if (Object.keys(dirs).length) {
+        anims[state] = { folder: state, fallback: null, dirs,
+          ...(base ? { takeOf: base, takeLabel: takeLabel(state, base) } : {}) };
+      }
     }
     if (!Object.keys(anims).length) continue;
     out.push({

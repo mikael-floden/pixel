@@ -1945,3 +1945,9 @@ input[type="range"] { accent-color: var(--accent); }
    design (maintainer 2026-09-10). One line, and it is the art that is judged. */
 .cand-dir figcaption { margin-top: 4px; font-size: 12px; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .cand-dir figcaption b { color: var(--ink); }
+
+/* THE VERSION ROW — parallel takes of one state (live, try, v3). It sits under
+   the state row and only exists while a state has more than one take. */
+.take-row { display: flex; align-items: center; gap: 10px; }
+.take-row .take-label { flex: 0 0 auto; font-size: 12px; }
+.seg-takes { min-width: 0; }

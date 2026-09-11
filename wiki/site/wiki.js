@@ -791,8 +791,14 @@ function facetHead(pillBox, box) {
     box);
 }
 /** The pill that says exactly which generated file is being judged. */
-const facetName = (st, dir) => h("span", { class: "pill", title: `${st} · ${dir}` },
-  `${stateLabel(st)} · ${DIR_LABEL[dir] ?? dir}`);
+/** The pill that says exactly which generated file is being judged. A parallel
+ *  take reads as its state and its version — "Attack v3", never the raw slot
+ *  name "Attack V3try". */
+const facetName = (st, dir, entity = null) => {
+  const a = entity?.animations?.[st];
+  const label = a?.takeOf ? `${stateLabel(a.takeOf)} ${a.takeLabel}` : stateLabel(st);
+  return h("span", { class: "pill", title: `${st} · ${dir}` }, `${label} · ${DIR_LABEL[dir] ?? dir}`);
+};
 function feedbackRow(domain, id, opts = {}) {
   return h("div", { class: "fb-row" },
     starsWidget(domain, id, opts.onStars, opts.glyph),
@@ -1641,10 +1647,12 @@ const rememberViewerState = (kind, st) => {
 function makePlayer(entity, kind, opts = {}) {
   const anims = entity.animations;
   const stateNames = Object.keys(anims);
+  // A take is not a state: one chip per state, versions on their own row.
+  const baseStates = stateNames.filter((s) => !anims[s]?.takeOf);
   const kept = lastViewerState(kind);
   let cur = {
-    state: kept && stateNames.includes(kept) ? kept
-      : stateNames.includes("idle") ? "idle" : stateNames[0],
+    state: kept && baseStates.includes(kept) ? kept
+      : baseStates.includes("idle") ? "idle" : baseStates[0],
     dir: "south", frame: 0, playing: true, speed: 1, zoom: 0 /* 0 = auto */,
     shadow: kind === "monster",
     editShadow: false,
@@ -2281,6 +2289,27 @@ function makePlayer(entity, kind, opts = {}) {
   // rows, which carry the same class and sit in the same panel. Styling still
   // comes from `.seg`.
   const stateSeg = h("span", { class: "seg seg-states" });
+  /* PARALLEL TAKES OF ONE STATE (maintainer 2026-09-11: "he might try to create
+   * a different attack animation without deleting the old version in case the
+   * old version in the end was better. He is now at 'v3' and I can only see a
+   * single attack animation on the wiki so I can't see his new attempts. So we
+   * need a way to ... see all different parallel versions (and review/rate all
+   * parallel versions). In the end we will only have a single attack animation
+   * ofc.")
+   *
+   * One chip per STATE in the row above, and — only when a state has more than
+   * one take — a version row under it: live, try, v3. `cur.state` stays the
+   * SLOT being shown, so every verdict, stamp, mark and clip lookup below keeps
+   * working on a plain animations key, and v3's verdict can never land on the
+   * live take. */
+  const takeOf = (s) => anims[s]?.takeOf ?? s;
+  const takesOf = (st) => [st, ...stateNames.filter((s) => anims[s]?.takeOf === st)];
+  const takeSeg = h("span", { class: "seg seg-takes" });
+  // The whole row disappears when a state has one take, which is every creature
+  // the agent has finished with — an empty control row is a question with no
+  // answer on a 393px screen.
+  const takeRow = h("div", { class: "player-controls take-row", hidden: "hidden" },
+    h("span", { class: "muted take-label" }, "Takes"), takeSeg);
   // Keep the ACTIVE state visible inside the pannable row — scrollLeft only,
   // never scrollIntoView: that can drag the whole page along with it.
   function revealActiveState() {
@@ -2293,10 +2322,12 @@ function makePlayer(entity, kind, opts = {}) {
   }
   const fbDomain = state.admin ? FACET_DOMAIN[kind] : null;
   function renderStateSeg() {
-    stateSeg.replaceChildren(...stateNames.map((s) => {
+    stateSeg.replaceChildren(...baseStates.map((s) => {
+      // A state's chip carries the LIVE take's verdicts — that is the one that
+      // ships; the version row carries each take's own.
       const mark = fbDomain ? facetMark(fbDomain, entity.path, s, Object.keys(anims[s]?.dirs ?? {}), entity) : { cls: "", title: null };
       return h("button", {
-        class: [s === cur.state ? "on" : "", mark.cls].filter(Boolean).join(" "),
+        class: [s === takeOf(cur.state) ? "on" : "", mark.cls].filter(Boolean).join(" "),
         onclick: () => {
           cur.state = s;
           rememberViewerState(kind, s);
@@ -2309,10 +2340,32 @@ function makePlayer(entity, kind, opts = {}) {
           // ...and the hitbox bar, which now shows THIS variation's own box
           // (2026-08-29): without this the rails kept driving the previous
           // variation's numbers while a different picture was on screen.
-          loadClip(); renderStateSeg(); revealActiveState(); renderDirPad(); refreshShadowBar(); refreshHitBar(); onFacetChange?.();
+          loadClip(); renderStateSeg(); renderTakeSeg(); revealActiveState(); renderDirPad(); refreshShadowBar(); refreshHitBar(); onFacetChange?.();
         },
         title: mark.title ? `${stateWords(s)} — ${mark.title}` : stateWords(s),
       }, stateLabel(s) + (anims[s].fallback ? ` (→${stateLabel(anims[s].fallback)})` : ""));
+    }));
+  }
+  /** The version row: one chip per take of the state on screen, or nothing at
+   *  all when there is only the one — which is every creature the agent has
+   *  finished with. */
+  function renderTakeSeg() {
+    const takes = takesOf(takeOf(cur.state));
+    takeRow.hidden = takes.length < 2;
+    if (takeRow.hidden) { takeSeg.replaceChildren(); return; }
+    takeSeg.replaceChildren(...takes.map((s) => {
+      const mark = fbDomain ? facetMark(fbDomain, entity.path, s, Object.keys(anims[s]?.dirs ?? {}), entity) : { cls: "", title: null };
+      const label = anims[s]?.takeLabel ?? "live";
+      const words = s === takeOf(s) ? "the take that ships" : `a parallel take of ${stateWords(takeOf(s))}, not in the game`;
+      return h("button", {
+        class: [s === cur.state ? "on" : "", mark.cls].filter(Boolean).join(" "),
+        title: mark.title ? `${label} — ${words} — ${mark.title}` : `${label} — ${words}`,
+        onclick: () => {
+          cur.state = s;
+          if (!anims[s]?.dirs?.[cur.dir]) cur.dir = state.data.directions.find((d) => anims[s]?.dirs?.[d]) ?? cur.dir;
+          loadClip(); renderStateSeg(); renderTakeSeg(); renderDirPad(); refreshShadowBar(); refreshHitBar(); onFacetChange?.();
+        },
+      }, label);
     }));
   }
 
@@ -2346,6 +2399,7 @@ function makePlayer(entity, kind, opts = {}) {
   }
   const clipForDir = (d) => anims[cur.state]?.dirs?.[d];
   renderStateSeg();
+  renderTakeSeg();
   requestAnimationFrame(revealActiveState);
   renderDirPad();
 
@@ -3099,6 +3153,7 @@ function makePlayer(entity, kind, opts = {}) {
     // maintainer reviews hundreds of pieces in a row and the art has to stay
     // put. A lone state reads "Static"; a lone direction shows just "S".
     h("div", { class: "player-controls" }, stateSeg),
+    takeRow,
     // ONE PLACE FOR THE DIRECTION PAD, whatever the entity (maintainer
     // 2026-08-14: "on monsters and players the direction is OVER the preview
     // — please make it similar looking"). A still's pad sat under the stage
@@ -3115,7 +3170,7 @@ function makePlayer(entity, kind, opts = {}) {
     getState: () => cur.state,
     getDir: () => cur.dir,
     /** Repaint the approved/rejected marks — call after a verdict changes. */
-    refreshMarks() { renderStateSeg(); revealActiveState(); renderDirPad(); },
+    refreshMarks() { renderStateSeg(); renderTakeSeg(); revealActiveState(); renderDirPad(); },
     /** Repaint the art alone — a mirror request changes the picture, nothing else. */
     redraw() { draw(); },
     /** Shadow editing: one record per monster (see shadowRec). */
@@ -6135,7 +6190,7 @@ function viewMonster(id) {
   // all eight directions at once.
   const renderFacet = () => {
     const st = player.getState(), dir = player.getDir();
-    facetPill.replaceChildren(facetName(st, dir));
+    facetPill.replaceChildren(facetName(st, dir, m));
     facetBox.replaceChildren(feedbackRow("monsters", `${m.path}#${st}#${dir}`, {
       // The chip the verdict belongs to turns green or red the moment it lands.
       onchange: () => player.refreshMarks(),
@@ -6201,7 +6256,13 @@ function viewMonster(id) {
         feedbackRow("monsters", m.path))),
     h("div", { class: "panel" },
       h("div", { class: "panel-title" }, "Animations",
-        h("span", { class: "pill" }, `${Object.keys(m.animations).length} states × 8 directions`),
+        h("span", { class: "pill" }, `${Object.values(m.animations).filter((a) => !a.takeOf).length} states × 8 directions`),
+        // Parallel takes are worth saying out loud — they are what the version
+        // row is for, and they are not extra states.
+        (() => {
+          const t = Object.values(m.animations).filter((a) => a.takeOf).length;
+          return t ? h("span", { class: "pill warn", title: "The monsters agent is trying a replacement beside the live take — pick a version under the state row to review it." }, `${t} parallel take${t === 1 ? "" : "s"}`) : null;
+        })(),
         m.pending ? h("span", { class: "pill warn", title: "The monsters agent animates an approved design one state at a time — the rest are coming." }, "more coming") : null),
       player.el),
     zoneMapPanel(m.id),
@@ -6363,7 +6424,7 @@ function viewCharacter(id) {
   // when facing north-west is regenerated for north-west alone.
   const renderFacet = () => {
     const st = player.getState(), dir = player.getDir();
-    facetPill.replaceChildren(facetName(st, dir));
+    facetPill.replaceChildren(facetName(st, dir, c));
     facetBox.replaceChildren(feedbackRow("characters", `${c.path}#${st}#${dir}`, {
       // The chip the verdict belongs to turns green or red the moment it lands.
       onchange: () => player.refreshMarks(),

@@ -2,6 +2,36 @@
 
 The shadow editor, the animation viewer, the showcase, usage stats and the review idioms of the creature pages. Moved verbatim out of `wiki/README.md` (2026-09-09), which keeps the rules and points here; rewrite in place under the root doc law.
 
+## Parallel takes of one state — live, try, v3
+
+The monsters agent builds a replacement beside the live animation instead of
+over it, so a state can have several takes at once: `attack`, `attack_try`,
+`attack_v3try`. He reviews them all (maintainer 2026-09-11: *"he might try to
+create a different attack animation without deleting the old version in case
+the old version in the end was better. He is now at 'v3' and I can only see a
+single attack animation on the wiki so I can't see his new attempts. So we need
+a way to ... see all different parallel versions (and review/rate all parallel
+versions). In the end we will only have a single attack animation ofc."*)
+
+- **A take is published as its own entry** carrying `takeOf` (the state it
+  belongs to) and `takeLabel` (`try`, `v3` — parsed from the slot name, so
+  `attack_v3try` is v3). Any folder matching `<state>_*` is a take of that
+  state; anything else on disk is not a state at all.
+- **One chip per STATE, versions on their own row.** The viewer's `takeRow`
+  appears only while the state on screen has more than one take, and reads
+  `live | try | v3`. A take is never a second state chip — it is the same
+  state.
+- **`cur.state` is the SLOT being shown**, so every verdict, art stamp, chip
+  mark and clip lookup keeps working on a plain `animations` key and a verdict
+  on v3 can never land on the live take: its feedback id is
+  `<path>#attack_v3try#<dir>`. The judging pill says "Attack v3", never the raw
+  slot.
+- The state chip carries the LIVE take's marks (that is the one that ships);
+  each version chip carries its own.
+- The Animations panel counts STATES and says "N parallel takes" beside it.
+- In the end only one survives: the agent promotes a take into the state and
+  deletes the rest, and the version row disappears on its own.
+
 ## One animation is REDONE, never removed
 
 The per-animation row — one state in one direction, the unit the agent
@@ -210,10 +240,7 @@ verdict comes BEFORE the five states are spent on it.
   filesystem's, which is alphabetical and had two creatures side by side
   disagreeing about where idle was (maintainer 2026-09-10: "I like the old
   monsters sort in the animation buttons"). A folder the map does not name is
-  not a state: the agent builds a new take in a try slot beside the live one
-  (`attack_try`, "generated alongside it and never shown to the game") and
-  promotes it when all eight directions are there, so a trial is not in the
-  registry — and a shipped creature has never shown one either.
+  not a state — it is a parallel TAKE of one (below).
   It carries `pending: true` and `candidate: <path>`: the
   card shows "in the making", the Animations panel says "more coming", the page
   links back to the 8 directions, and the filter row grows an "in the making"

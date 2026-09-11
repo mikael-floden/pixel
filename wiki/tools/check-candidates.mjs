@@ -219,17 +219,20 @@ if (pend.length) {
   }));
   console.log("in the making:", JSON.stringify({ ...page, states: page.states.slice(0, 4) }));
   ok(page.title === one.name && page.canvas, `${one.name} opens as an ordinary creature page with the animation viewer`);
-  ok(Object.keys(one.animations).every((st) => page.states.some((b) => b.toLowerCase() === st.toLowerCase())),
-    `every state it has so far is on the state row (${Object.keys(one.animations).join(", ")})`);
+  // Parallel takes ride the version row, not the state row — they are the same
+  // state, so only the base states are counted here.
+  const oneStates = Object.entries(one.animations).filter(([, a]) => !a.takeOf).map(([st]) => st);
+  ok(oneStates.every((st) => page.states.some((b) => b.toLowerCase() === st.toLowerCase())),
+    `every state it has so far is on the state row (${oneStates.join(", ")})`);
   // THE ROW IS IN THE DOMAIN'S ORDER, THE SAME ON EVERY CREATURE (maintainer
   // 2026-09-10: "Why do you sort 'attack, idle, walk' like this on Ashling and
   // differently on Amethyrn? I like the old monsters sort in the animation
   // buttons."). Alphabetical from the filesystem is the bug this catches.
   const shipped = DATA_M.find((m) => !m.pending && Object.keys(m.animations ?? {}).length > 1);
-  const rank = Object.keys(shipped?.animations ?? {});
-  const mine = Object.keys(one.animations).map((st) => rank.indexOf(st));
+  const rank = Object.entries(shipped?.animations ?? {}).filter(([, a]) => !a.takeOf).map(([st]) => st);
+  const mine = oneStates.map((st) => rank.indexOf(st));
   ok(rank.length > 1 && mine.every((i) => i >= 0) && mine.every((v, i, a) => !i || a[i - 1] < v),
-    `and in the same order a shipped creature uses (${Object.keys(one.animations).join(", ")} against ${rank.join(", ")})`);
+    `and in the same order a shipped creature uses (${oneStates.join(", ")} against ${rank.join(", ")})`);
   ok(page.verdict >= 2 && page.note, "it can be judged like any other creature, and says the rest of its animations are coming");
 
   // ONE ANIMATION IS REDONE, NEVER REMOVED (maintainer 2026-09-10: "The
@@ -245,6 +248,47 @@ if (pend.length) {
     `the per-animation row is approve + redo, with no remove (${facetRow?.buttons.join(" | ")})`);
   ok(wholeRow && wholeRow.buttons.some((b) => /remove/.test(b)),
     `while the creature as a whole can still be removed (${wholeRow?.buttons.join(" | ")})`);
+
+  // PARALLEL TAKES OF ONE STATE ARE ALL REVIEWABLE (maintainer 2026-09-11: "he
+  // might try to create a different attack animation without deleting the old
+  // version ... I can only see a single attack animation on the wiki so I can't
+  // see his new attempts. So we need a way to ... see all different parallel
+  // versions (and review/rate all parallel versions)").
+  const withTakes = DATA_M.find((m) => Object.values(m.animations ?? {}).some((a) => a.takeOf));
+  if (withTakes) {
+    const slots = Object.entries(withTakes.animations).filter(([, a]) => a.takeOf);
+    const base = slots[0][1].takeOf;
+    await p.evaluate((id) => { location.hash = `#/monsters/${id}`; }, withTakes.id);
+    await p.waitForTimeout(3000);
+    await p.evaluate((b) => [...document.querySelectorAll(".seg-states button")].find((x) => x.textContent.trim().toLowerCase() === b).click(), base);
+    await p.waitForTimeout(900);
+    const row = await p.evaluate(() => ({
+      states: [...document.querySelectorAll(".seg-states button")].map((b) => b.textContent.trim()),
+      takes: [...document.querySelectorAll(".seg-takes button")].map((b) => b.textContent.trim()),
+      hidden: document.querySelector(".take-row")?.hidden,
+    }));
+    console.log("takes:", JSON.stringify(row));
+    ok(!row.hidden && row.takes.length === slots.length + 1 && row.takes[0] === "live",
+      `${withTakes.name}: ${base} shows every parallel take, live first (${row.takes.join(" | ")})`);
+    ok(!row.states.some((t) => slots.some(([slot]) => t.toLowerCase() === slot.replace(/_/g, " "))),
+      `and a take is NOT a second state chip (${row.states.join(" | ")})`);
+
+    // A verdict on a take lands on THAT take, never on the live one.
+    const other = row.takes[row.takes.length - 1];
+    await p.evaluate((lbl) => [...document.querySelectorAll(".seg-takes button")].find((b) => b.textContent.trim() === lbl).click(), other);
+    await p.waitForTimeout(900);
+    const pill = await p.evaluate(() => document.querySelector(".facet-head .pill")?.textContent);
+    await p.evaluate(() => [...document.querySelectorAll(".facet-head .verdict button")].find((b) => /approve/.test(b.textContent)).click());
+    await p.waitForTimeout(500);
+    const landed = await p.evaluate((id) => Object.keys(window.__wiki.state.feedback.monsters.entries).filter((k) => k.startsWith(`monsters/${id}#`)), withTakes.id);
+    console.log("landed:", JSON.stringify({ pill, landed }));
+    ok(landed.some((k) => k.includes(`#${slots[slots.length - 1][0]}#`)),
+      `judging "${other}" writes a verdict against that take alone (${landed.join(", ")})`);
+    ok(/\bv?\d|try/i.test(pill ?? "") && !/try\b.*try/i.test(pill ?? ""),
+      `and the judging pill names the version in words, not the raw slot ("${pill}")`);
+  } else {
+    console.log("  (no parallel takes in the registry right now — nothing to drive)");
+  }
 
   // "IN THE MAKING" IS A FILTER, AND IT FOLLOWS HIM (maintainer 2026-09-10:
   // "If I press in the making you still say 'all 94'. With that filter it
