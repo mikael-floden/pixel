@@ -135,7 +135,8 @@ secrets; push to `main`, rebase on reject, no PRs unless asked; doc law.
   query that knows the surface level passes it.
 - The nav system avoids fall damage at any cost: ≥6 levels is not an edge; a
   fall bills on IMPACT (`fallPend`, `fallDurationS`), never at the edge, and
-  its flinch starts early so the got-hit frame lands with the feet
+  the client draws the whole impact — blood, number, flinch — on its own
+  predicted touchdown frame, swallowing the server's late copy
   (`fallhurt.ts`).
 - Water is the player's sanctuary: no monster enters, swims or is hit there.
 - A tap RUNS; the beacon is the pixel you touched and never moves to meet the
@@ -239,8 +240,8 @@ assigned it.
 `window.__ml` is the instrument: `tiles3()`, `t3at(col,row)`, `occDump()`,
 `groundHash()`, `hitch()`, `lightAt`, `lightSlots()`, `indoor()`,
 `sceneryAnims()`, `monsterInfo()`, `teleport(col,row)`, `lookAt(col,row)`,
-`nearby()`, `sealedAt(col,row,lvl)` — each doc names the ones for its
-subsystem. Counters over pixels:
+`nearby()`, `sealedAt(col,row,lvl)`, `fallHurt()` — each doc names the ones
+for its subsystem. Counters over pixels:
 a gate cannot tell a correct dark frame from a black one.
 
 ## Don't

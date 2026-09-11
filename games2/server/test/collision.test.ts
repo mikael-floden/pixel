@@ -40,6 +40,8 @@ import {
   hurtLeadMs,
   hurtFrameAt,
   hurtClipMs,
+  hurtFireSlackMs,
+  hurtSeekFrames,
 } from "../../client/src/fallhurt";
 
 // A 3×3 world. Centre column is grass; left column water; the right column is a
@@ -363,6 +365,49 @@ test("the fall flinch's 4th frame is the frame on screen at touchdown", () => {
     `fall flinch: ${FRAMES} frames at ${(BASE * FALL_HURT_RATE).toFixed(0)}fps = ${clip.toFixed(0)}ms, ` +
       `starting ${lead.toFixed(0)}ms before touchdown on frame ${HURT_IMPACT_FRAME + 1}`,
   );
+});
+
+// THE FIRING CHECK RUNS ONCE A FRAME, so "fire when the remaining fall is under
+// the lead" can only trigger at or AFTER the right instant — always late, by a
+// whole frame on a 30 fps phone, which is most of a clip frame at 24 fps. Two
+// corrections, and this pins what they are worth: half a frame of slack so the
+// error is CENTRED, and a seek past frames already missed so a late start does
+// not slide the whole clip. Measured worst case, per render rate.
+test("the flinch's residual error is bounded to half a frame, not a whole one", () => {
+  const FRAMES = 5;
+  const BASE = 16;
+  const per = 1000 / (BASE * FALL_HURT_RATE); // one clip frame: 41.67ms
+  const rows: string[] = [];
+  for (const fps of [60, 45, 30, 24]) {
+    const frameMs = 1000 / fps;
+    const slack = hurtFireSlackMs(frameMs);
+    // Sweep every sub-frame phase the fall can land on and take the worst
+    // got-hit-frame error the wiring can produce.
+    let worstNaive = 0;
+    let worst = 0;
+    for (let i = 0; i < 200; i++) {
+      const phase = (i / 200) * frameMs; // how far past the due moment this frame is
+      // NAIVE: no slack, no seek — the clip simply starts `phase` late.
+      worstNaive = Math.max(worstNaive, phase);
+      // SHIPPED: the slack lets the check fire up to `slack` early, and the
+      // seek then skips whole frames already missed.
+      const lateMs = phase - slack;
+      const err = lateMs - hurtSeekFrames(Math.max(0, lateMs), BASE) * per;
+      worst = Math.max(worst, Math.abs(err));
+    }
+    assert.ok(
+      worst <= per / 2 + 1e-6,
+      `${fps}fps: worst got-hit error ${worst.toFixed(1)}ms exceeds half a clip frame (${(per / 2).toFixed(1)}ms)`,
+    );
+    assert.ok(worst < worstNaive || fps >= 120, `${fps}fps: the corrections did not improve on ${worstNaive.toFixed(1)}ms`);
+    rows.push(`${fps}fps ${worstNaive.toFixed(0)}→${worst.toFixed(0)}ms`);
+  }
+  // Under half a frame of lateness skips nothing; a frame's worth skips one.
+  assert.equal(hurtSeekFrames(0, BASE), 0);
+  assert.equal(hurtSeekFrames(-5, BASE), 0, "an EARLY start never seeks");
+  assert.equal(hurtSeekFrames(per * 0.4, BASE), 0);
+  assert.equal(hurtSeekFrames(per * 1.1, BASE), 1);
+  console.log(`fall flinch worst-case sync error: ${rows.join(", ")}`);
 });
 
 test("integrateFall: up-steps EASE up (staircase step), gentle down-steps ease, no fall", () => {

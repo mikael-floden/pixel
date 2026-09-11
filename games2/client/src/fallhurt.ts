@@ -57,3 +57,22 @@ export function hurtFrameAt(ms: number, frames: number, baseFps: number, rate: n
 export function hurtClipMs(frames: number, baseFps: number, rate: number = FALL_HURT_RATE): number {
   return (Math.floor(frames) / (baseFps * rate)) * 1000;
 }
+
+/** THE SLACK THE FIRING CHECK NEEDS so it lands on the NEAREST frame instead of
+ *  the next one. The check runs once a frame, so "fire when the remaining fall
+ *  is under the lead" can only ever trigger at or AFTER the right instant —
+ *  systematically late, by a whole frame on a 30 fps phone. Half a frame of
+ *  slack splits that error instead of always paying it. */
+export function hurtFireSlackMs(frameMs: number): number {
+  return Math.max(0, frameMs) / 2;
+}
+
+/** Frames of the clip to SKIP when the firing frame still landed `lateMs` after
+ *  the clip was due — rounded, so under half a frame of lateness skips nothing.
+ *  Without this the whole clip slides late by whatever the frame boundary cost,
+ *  and the got-hit frame slides with it. */
+export function hurtSeekFrames(lateMs: number, baseFps: number, rate: number = FALL_HURT_RATE): number {
+  if (!(lateMs > 0)) return 0;
+  const per = 1000 / (baseFps * rate);
+  return Math.max(0, Math.round(lateMs / per));
+}
