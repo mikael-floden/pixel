@@ -15688,7 +15688,23 @@ export class WorldScene extends Phaser.Scene {
    *  Such a piece either has no cut entry or stands at or under its cut, so
    *  this is false for it. */
   private sceneryAboveCutAt(col: number, row: number, level: number): boolean {
-    if (!this.indoorMask) return false; // no cut drawn: everything stands
+    const w = this.world;
+    if (!this.indoorMask || !w) return false; // no cut drawn: everything stands
+    /* ITS ROOT MUST BE IN MY ROOM. The cut also truncates the COVERING CONE —
+     * columns outside the room that would bury my floor — and a tree rooted out
+     * there is not on my lid, it is beside the room with its canopy leaning in.
+     * That one stays (maintainer 2026-09-11, marking both in one photograph:
+     * "the tree marked in red should still exist since the root is
+     * dark/outside. The scenery in blue should be removed because its root is
+     * inside"). Testing the cut alone removed both. */
+    const c = Math.floor(col);
+    const r = Math.floor(row);
+    if (c < 0 || r < 0 || c >= w.width || r >= w.height) return false;
+    /* MY ROOM'S FLOOR, not its shell. The mask is floor PLUS enclosure, and a
+     * tree rooted on the rock of the enclosure is standing outside the room —
+     * which is exactly what he means by "the root is dark/outside": that ground
+     * is not lit as interior. Testing the mask removed his red tree too. */
+    if (!this.indoorSpace?.roof.has(r * w.width + c)) return false;
     const cut = this.cutAt(col, row);
     return Number.isFinite(cut) && level > cut;
   }
