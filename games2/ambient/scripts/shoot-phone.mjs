@@ -13,6 +13,7 @@
 //     phase    night|morning|day|evening           (default day)
 //     weather  a WEATHER index, e.g. 0 clear       (default 0)
 //     out.png  screenshot path            (default scratchpad/phone-<effect>.png)
+//   CELL=<col>,<row> in the environment stands the shot somewhere specific.
 // Example: node ambient/scripts/shoot-phone.mjs birds day 0 /tmp/birds.png
 import pw from "playwright-core";
 const { chromium } = pw;
@@ -39,6 +40,19 @@ try {
   await p.evaluate(() => window.__mlSelect.commit());
   await p.waitForFunction(() => window.__ml && window.__ml.players() >= 1, null, { timeout: 40000 });
   await p.waitForFunction(() => window.__mlAmbient, null, { timeout: 15000 });
+  // WAIT FOR THE WORLD, not just for the probes. A FIELD effect reaches its
+  // full population on its first update, so the "most in flight" poll below
+  // used to shoot frame one — which is the LOADING SPLASH, with the effect
+  // dutifully running behind it. Episodes hid this: they start empty.
+  await p.waitForFunction(() => !document.getElementById("ml-loading"), null, { timeout: 90000 });
+  // CELL=<col>,<row> stands the shot somewhere specific — a meadow, a quay, a
+  // shoreline. Without it the shot is wherever the player spawns, which is
+  // not where every effect lives.
+  if (process.env.CELL) {
+    const [c, r] = process.env.CELL.split(",").map(Number);
+    await p.evaluate(([c, r]) => window.__ml.teleport(c, r), [c, r]);
+    await p.waitForTimeout(4000);
+  }
   const geo = await p.evaluate(() => ({ innerWidth: window.innerWidth, screenWidth: window.screen.width, camZoom: window.__ml.camZoom?.() }));
   console.log("phone geometry:", JSON.stringify(geo)); // expect innerWidth 980, screenWidth 393, camZoom 2
 
@@ -56,6 +70,7 @@ try {
   let best = -1;
   for (let i = 0; i < 90; i++) {
     await p.waitForTimeout(350);
+    if (i === 0) await p.waitForTimeout(2500); // let the effect fade in first
     const dbg = await p.evaluate((n) => window.__mlAmbient.debug(n), effect);
     const n = dbg.inFlight ?? dbg.count ?? 0;
     if (n > best) {

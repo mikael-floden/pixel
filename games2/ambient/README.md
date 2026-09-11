@@ -67,6 +67,21 @@ them; folder isolation beats DRY here).
   white (maintainer 2026-09-11), and they would drift again at the next art
   regeneration. Measured over the eight birds: 5b9a42 green, e84940 red,
   cbd1d9 white, and six more all distinct.
+- **`groundSoundAt(wx, wy)`** (`runtime/ground.ts`) answers WHAT THE GROUND
+  UNDER A DRAWN POINT IS MADE OF — its surface `sound` ("grass", "sand",
+  "stone", "dirt", …) — for a feature that belongs over one kind of ground.
+  It is TWO probes (`pickAt` to leave drawn iso pixels for world units, then
+  `surfaceAt`), which is why it is a PLACEMENT call and never a per-frame one.
+  A feature that wants its creature to STAY on that ground does it with
+  behaviour instead: `butterflies/` gives each one the patch it was placed on
+  and bends its drift back at the edge (`homePull`), which costs nothing and
+  is what a butterfly does anyway.
+  The `sound` is the right axis because it is the one the art domains already
+  maintain per category (`shared/src/surfaces.ts`, gated by
+  `check-surfaces.mjs`): "grass" already covers meadow, flowers, forest,
+  jungle, savanna and wheat_field, so a feature keyed to it inherits every
+  grassy category the maps agent adds next without a second list to update.
+
 - **`runtime/flush.ts`** carries one fact between two features: a flock has
   just panicked off the ground. `birds/` emits per spooked bird, `feathers/`
   listens, and neither imports the other — the flock runs identically whether
@@ -244,7 +259,7 @@ decision; an earlier version that jumped the world to each effect's
   `AUTO → NONE → <each feature in registry order> → AUTO`
 
   (currently fireflies, pollen, water, deepwater, foam, fish, ants, spiders, moths,
-  gnats, crabs, bubbles, embers, bats, birds, feathers,
+  gnats, crabs, bubbles, embers, bats, birds, feathers, butterflies,
   thunder, sandstorm, leaves — the ring is built from `index.ts`, so a new
   folder joins it automatically.)
 
@@ -317,6 +332,7 @@ controller (AUTO / NONE / solo-each).
 | `fish/` | field | THE RISE — a fish takes a fly: a dorsal fin breaks the surface, a tail flicks a beat later, and two or three rings leave the spot and widen until they fade; the harder takes throw a few specks of water. Rings are ISO ELLIPSES (a circle stands up out of the lake like a hoop) at whole-pixel radii, the lead ring big and the followers smaller so nested rings stay legible | Lakes and shallows only (`runtime/water.ts`; the open sea is `deepwater/`'s), outdoors. Peaks at dawn and dusk on a bump in the sun, never zero, hidden by heavy rain |
 | `water/` | field | Living water — pixel-art wavelets + sun/moon reflection glints (frame-animated, full-pixel, no sub-px slide) | LAKES AND SHALLOWS: water on screen (iso probe) MINUS anywhere the deep-sea current runs — the open sea is `deepwater/`'s |
 | `feathers/` | field | WHAT A FLUSH LEAVES BEHIND — spook a landed flock and each bird drops a feather or two: knocked loose by the wingbeat so it rises first, then sinks slowly, swinging side to side and LEANING into each slide, and lies on the ground a few seconds before it goes. TINTED FROM ITS OWN BIRD (`plumageOf`, lifted toward white): a red bird sheds a pink feather, a green one a pale green | Only when `birds/` announces a flush (`runtime/flush.ts`); outdoors. Selected ALONE in Settings there is no flock, so it sheds a demo feather then and only then |
+| `butterflies/` | field | THE MEADOW IN SUMMER — at four pixels a butterfly is a WAY OF MOVING, not a shape: the body BOBS a whole pixel or three with every wingbeat (a mark that slides level reads as a bee), the path is short runs broken by hard turns (a smooth curve reads as a bird), and the beat is uneven so it does not tick. Wings change SILHOUETTE WIDTH, 5 px open / 3 half / 1 shut, on frames all the same height so only the wings move. Each one works the PATCH it was placed on and settles onto the grass now and then, wings shut, before lifting off | Grass (the surface's own `sound`, `groundSoundAt`), outdoors, by DAY: a ramp on sun strength, and gone in rain |
 | `bats/` | episode | Night colony wheeling: boids in any direction (top-down), erratic jinking, scattering near the player (no landing) | base 1.0; day ×0.01 |
 | `birds/` | episode | Living day flock: boids over the world, landing on dry ground to peck, flushing near the player | base 1.0; night ×0.05 |
 | `thunder/` | episode | Distant sheet lightning beyond the horizon | base 0.35 × (1 + rain + night); cloud/mist as weak proxies |
@@ -361,6 +377,14 @@ Gates: `server/test/outdoor.test.ts` (probe fencing + the fade path) and
 house and asserts the DRAWN alpha — a feature that forgot to multiply still
 typechecks and passes every unit test. Probe: `__mlAmbient.outdoor()` →
 `{ indoor, gain, fadeMs }`.
+
+**`debug().all[].a` IS THE DRAWN ALPHA ON EVERY PATH, including the ones that
+return early.** A feature that hides a sprite and `continue`s — parked while
+it waits for somewhere to go, off the view, out of budget — must zero `a`
+there too, not only where it draws. `butterflies/` kept the alpha each one had
+before it left, and over a sea with no grass within twenty cells the gate read
+four butterflies flying over open water that were not on screen at all. The
+indoor gate above reads the same field, so this is not just a QA nicety.
 
 ## Flap-frame cull (birds + bat)
 
@@ -407,7 +431,7 @@ effect mid-flight. Always eyeball a new visual effect this way before
 shipping.
 
 Per-feature browser gates live in `games2/scripts/verify-<feature>.mjs`
-(embers, moths, foam, fish, feathers, …). SPOOKING A FLOCK IS A PROTOCOL, not
+(embers, moths, foam, fish, feathers, butterflies, …). SPOOKING A FLOCK IS A PROTOCOL, not
 a lunge: a flock only SETTLES while the player is far away, so chasing it keeps
 it airborne and it never lands to be flushed — stand off, wait for `landed`,
 convert the bird's drawn position with `pickAt`, then close.
@@ -415,6 +439,32 @@ A pixel arm's BOX IS THE GAME AREA, never the
 screen: at the 480x320 QA viewport the camera shows 198 px of world and the
 rest is HUD, where the chat line rewrites itself while the gate runs — judging
 the whole screen measured that text and read 243.6 with the control at 243.6.
+**And for a SMALL mark the box is the MARK, not the game area.** An OFF
+envelope over a wide box also measures everything else alive in it — the
+player's idle and the scenery's sway are both bigger than a 5 px butterfly —
+so ask the feature where its mark is (`debug().all`), convert to screen, and
+judge a window a few pixels wider than the art, with the control taken in the
+SAME windows. Measured: a deliberately broken butterflies run "failed" on a
+swaying grass tuft (rise 199, noise 125) instead of on the thing being broken;
+the same run on per-mark windows read rise 222 against noise 0.0.
+**STAND WHERE THE THING COULD GO WRONG.** `verify-butterflies` first ran on a
+13x13 block of pure grass, where widening the accepted-ground set to every
+surface in the world still passed — there was no other surface to get it wrong
+on. Moved to a view that is 63% grass and 37% soil and paving, the same
+falsification fails two arms. A gate location is part of the gate.
+**AN IN-PAGE LOOP RUNS ON rAF WITH A WALL-CLOCK DEADLINE, never on a
+`setTimeout` count.** Chromium clamps timers hard in a headless page, so a
+gate arm written as "900 iterations of `await setTimeout(30)`" — 27 s on
+paper — ran past ten minutes and read as a hung gate with no output, because
+the arm's own `console.log` comes after the loop. Tick on
+`requestAnimationFrame` (the game's own clock, and it cannot be clamped below
+the frame rate) and bound the loop with `performance.now()`, so the arm
+reports what it found rather than never finishing.
+**TEST WHAT THE FEATURE CONTROLS.** The same gate first asked every DRAWN
+butterfly position to be grass and sat at 81% against an 80% bar, because a
+butterfly that flies for ten seconds crosses the path at the edge of the
+meadow — which is a butterfly, not a defect. What the feature decides is where
+it PLACES one; that arm is 100% or fail, with "never over water" beside it.
 Nor can an animation be judged in the PHONE viewport: a screenshot there takes
 about 8 s, so a 2 s effect is one frame. Shape and timing are shot at 480x320,
 framing at the phone size, as a still. `verify-foam.mjs` judges the coast band and the wall

@@ -133,6 +133,29 @@ export function levelAt(wx: number, wy: number): number | null {
   }
 }
 
+/** WHAT THE GROUND UNDER A DRAWN POINT IS MADE OF — its surface `sound`
+ *  ("grass", "sand", "stone", …), or null.
+ *
+ *  Two probes, because the two coordinate systems are different: `surfaceAt`
+ *  takes WORLD UNITS and everything an ambient feature holds is DRAWN ISO
+ *  PIXELS, so the point goes through the picker first. That also makes the
+ *  answer face-aware — it is the surface you can SEE at that pixel.
+ *
+ *  Two probes is why this is a PLACEMENT call, never a per-frame one. */
+export function groundSoundAt(wx: number, wy: number): string | null {
+  const ml = (window as unknown as { __ml?: Record<string, (...a: never[]) => unknown> }).__ml;
+  const pick = ml?.pickAt as undefined | ((x: number, y: number) => { x: number; y: number } | null);
+  const surf = ml?.surfaceAt as undefined | ((x: number, y: number) => { sound?: string } | null);
+  if (!pick || !surf) return null;
+  try {
+    const p = pick(wx, wy);
+    if (!p) return null;
+    return surf(p.x, p.y)?.sound ?? null;
+  } catch {
+    return null;
+  }
+}
+
 /** Is the drawn point walkable AND on the same terrace as `lvl`? A null `lvl`
  * (or no picker) means "level unknown", which must not block placement — the
  * feature degrades to the walkability test it had before. */
