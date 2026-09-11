@@ -1260,70 +1260,70 @@
       "directions": {
         "south": {
           "status": "fail",
-          "step_mean": 0.1821,
-          "step_max": 0.2296,
-          "drift": 3.95,
-          "loop": 0.0005,
-          "loop_ratio": 0.0,
-          "travel": 1.71,
-          "pin": 1.0,
+          "step_mean": 0.3664,
+          "step_max": 0.4424,
+          "drift": 25.58,
+          "loop": 0.4239,
+          "loop_ratio": 1.16,
+          "travel": 6.96,
+          "pin": 0.528,
           "pad": 0,
-          "flash": 0.028,
-          "peak": 0.2296,
-          "reach": 0.09,
+          "flash": 0.0,
+          "peak": 0.4352,
+          "reach": 0.104,
           "canvas": [
             240,
             240
           ],
           "reasons": [
-            "no strike, just a lean: nothing reaches past 0.09 of the body"
+            "drifts 25.6 px — eyeball it",
+            "no strike, just a lean: nothing reaches past 0.10 of the body"
           ],
-          "sub": "8fc3494b-5854-427a-9780-500d4ee24f01",
-          "group": "64b842f8-561f-4a91-8a25-dd9cea66cb91",
-          "takes": 1,
-          "version": 3,
+          "sub": "7a685008-9f95-4969-a8df-d935b3b1a612",
+          "group": "7ae604f7-7f83-4972-af57-68bd467f1c4e",
+          "takes": 2,
+          "version": 4,
           "mirrored": false,
-          "generated_at": "2026-09-11T17:55:03+00:00",
-          "action": "Lunge Attack - Throws its whole body forward in one fast lunge, white swoosh lines trailing behind it, a big aggressive swing",
-          "tries": 3,
-          "rolls": 3,
+          "action": "Trumpet Charge - The elephant rears its head back and hurls its whole body forward, tusks thrown wide, dust exploding under its feet",
           "intensity": 0,
+          "rolls": 4,
           "frames": 4,
-          "rung": 2
+          "rung": 3,
+          "unwrapped": null,
+          "tries": 4,
+          "generated_at": "2026-09-11T18:14:30+00:00"
         },
         "south-east": {
-          "status": "fail",
-          "step_mean": 0.2278,
-          "step_max": 0.289,
-          "drift": 5.59,
-          "loop": 0.0005,
-          "loop_ratio": 0.0,
-          "travel": 9.3,
-          "pin": 0.579,
-          "pad": 53,
-          "flash": 0.053,
-          "peak": 0.2888,
+          "status": "pass",
+          "step_mean": 0.2301,
+          "step_max": 0.4412,
+          "drift": 16.75,
+          "loop": 0.3273,
+          "loop_ratio": 1.42,
+          "travel": 5.82,
+          "pin": 0.605,
+          "pad": 0,
+          "flash": 0.173,
+          "peak": 0.3273,
           "reach": 0.304,
           "canvas": [
-            346,
-            346
+            240,
+            240
           ],
-          "reasons": [
-            "body turned the wrong way: matches mirrored south-west (0.63) better than south-east (0.57)",
-            "canvas grown by 53 px a side to hold the motion"
-          ],
-          "sub": "f18b0f7f-bf9f-4be0-9305-ad409d2afdd5",
-          "group": "64b842f8-561f-4a91-8a25-dd9cea66cb91",
+          "reasons": [],
+          "sub": "ad308546-d6f7-4e70-a1ee-4d4c8f86478f",
+          "group": "7ae604f7-7f83-4972-af57-68bd467f1c4e",
           "takes": 1,
-          "version": 3,
+          "version": 4,
           "mirrored": false,
-          "generated_at": "2026-09-11T17:55:07+00:00",
-          "action": "Lunge Attack - Throws its whole body forward in one fast lunge, white swoosh lines trailing behind it, a big aggressive swing",
-          "tries": 3,
-          "rolls": 3,
+          "action": "Trumpet Charge - The elephant rears its head back and hurls its whole body forward, tusks thrown wide, dust exploding under its feet",
           "intensity": 0,
+          "rolls": 4,
           "frames": 4,
-          "rung": 2
+          "rung": 3,
+          "unwrapped": null,
+          "tries": 4,
+          "generated_at": "2026-09-11T18:14:33+00:00"
         },
         "east": {
           "status": "warn",
@@ -1491,6 +1491,39 @@
           "frames": 4,
           "rung": 2,
           "source": "north-east"
+        },
+        "south-west": {
+          "status": "pass",
+          "step_mean": 0.2301,
+          "step_max": 0.4412,
+          "drift": 16.75,
+          "loop": 0.3273,
+          "loop_ratio": 1.42,
+          "travel": 5.82,
+          "pin": 0.605,
+          "pad": 0,
+          "flash": 0.173,
+          "peak": 0.3273,
+          "reach": 0.304,
+          "canvas": [
+            240,
+            240
+          ],
+          "reasons": [],
+          "sub": "ad308546-d6f7-4e70-a1ee-4d4c8f86478f",
+          "group": "7ae604f7-7f83-4972-af57-68bd467f1c4e",
+          "takes": 1,
+          "version": 4,
+          "mirrored": true,
+          "action": "Trumpet Charge - The elephant rears its head back and hurls its whole body forward, tusks thrown wide, dust exploding under its feet",
+          "intensity": 0,
+          "rolls": 4,
+          "frames": 4,
+          "rung": 3,
+          "unwrapped": null,
+          "tries": 4,
+          "generated_at": "2026-09-11T18:14:33+00:00",
+          "source": "south-east"
         }
       },
       "action": "Tusk Gore - Lowers its head and drives both tusks forward in a heavy gore",
@@ -1536,6 +1569,12 @@
           "war_elephant/animations/attack_v3/north-west/01.webp",
           "war_elephant/animations/attack_v3/north-west/02.webp",
           "war_elephant/animations/attack_v3/north-west/03.webp"
+        ],
+        "south-west": [
+          "war_elephant/animations/attack_v3/south-west/00.webp",
+          "war_elephant/animations/attack_v3/south-west/01.webp",
+          "war_elephant/animations/attack_v3/south-west/02.webp",
+          "war_elephant/animations/attack_v3/south-west/03.webp"
         ]
       },
       "strips": {
@@ -1545,7 +1584,8 @@
         "north-east": "war_elephant/animations/attack_v3__north-east.webp",
         "north": "war_elephant/animations/attack_v3__north.webp",
         "west": "war_elephant/animations/attack_v3__west.webp",
-        "north-west": "war_elephant/animations/attack_v3__north-west.webp"
+        "north-west": "war_elephant/animations/attack_v3__north-west.webp",
+        "south-west": "war_elephant/animations/attack_v3__south-west.webp"
       }
     }
   }

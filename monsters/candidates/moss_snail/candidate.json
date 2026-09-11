@@ -1275,37 +1275,38 @@
     "attack_v3": {
       "directions": {
         "south": {
-          "status": "fail",
-          "step_mean": 0.1072,
-          "step_max": 0.1952,
-          "drift": 2.49,
-          "loop": 0.2365,
-          "loop_ratio": 2.21,
-          "travel": 2.71,
-          "pin": 0.738,
+          "status": "warn",
+          "step_mean": 0.1333,
+          "step_max": 0.3322,
+          "drift": 4.5,
+          "loop": 0.3559,
+          "loop_ratio": 2.67,
+          "travel": 1.71,
+          "pin": 0.46,
           "pad": 0,
-          "flash": 0.133,
-          "peak": 0.3175,
-          "reach": 0.133,
+          "flash": 0.005,
+          "peak": 0.4729,
+          "reach": 0.176,
           "canvas": [
             40,
             40
           ],
           "reasons": [
-            "no strike, just a lean: nothing reaches past 0.13 of the body"
+            "shallow strike: reach 0.18 — eyeball it"
           ],
-          "sub": "2b178387-67aa-4526-b78c-e4f1cad6340c",
-          "group": "d9a418b6-0d49-4ecd-b144-e06c2d2ce7c7",
-          "takes": 1,
-          "version": 3,
+          "sub": "00f5bf25-b6c9-456b-b120-b5ebb56b39a2",
+          "group": "a9c24249-beac-4b1b-8338-a305d1e151c1",
+          "takes": 2,
+          "version": 4,
           "mirrored": false,
-          "generated_at": "2026-09-11T17:50:42+00:00",
-          "action": "Lunge Attack - Throws its whole body forward in one fast lunge, white swoosh lines trailing behind it, a big aggressive swing",
-          "tries": 3,
-          "rolls": 3,
+          "action": "Shell Ram - The snail rears its whole body high off the ground and hammers its shell straight down, moss and spray flying",
           "intensity": 0,
+          "rolls": 4,
           "frames": 16,
-          "rung": 2
+          "rung": 3,
+          "unwrapped": null,
+          "tries": 4,
+          "generated_at": "2026-09-11T18:14:52+00:00"
         },
         "south-east": {
           "status": "warn",
@@ -1341,38 +1342,38 @@
           "rung": 2
         },
         "east": {
-          "status": "fail",
-          "step_mean": 0.0846,
-          "step_max": 0.2826,
-          "drift": 2.23,
-          "loop": 0.0,
-          "loop_ratio": 0.0,
-          "travel": 1.38,
-          "pin": 1.0,
+          "status": "warn",
+          "step_mean": 0.1727,
+          "step_max": 0.3883,
+          "drift": 2.97,
+          "loop": 0.2256,
+          "loop_ratio": 1.31,
+          "travel": 1.78,
+          "pin": 0.543,
           "pad": 0,
-          "flash": 0.175,
-          "peak": 0.2406,
-          "reach": 0.226,
+          "flash": 0.078,
+          "peak": 0.4512,
+          "reach": 0.161,
           "canvas": [
             40,
             40
           ],
           "reasons": [
-            "wrapped around the canvas edge: the body is drawn in two pieces",
-            "shallow strike: reach 0.23 — eyeball it"
+            "shallow strike: reach 0.16 — eyeball it"
           ],
-          "sub": "73ea25db-ab56-48d0-b724-887074f5df9c",
-          "group": "d9a418b6-0d49-4ecd-b144-e06c2d2ce7c7",
-          "takes": 1,
-          "version": 3,
+          "sub": "74de7cab-9daf-4b23-8e69-d189d3520d90",
+          "group": "a9c24249-beac-4b1b-8338-a305d1e151c1",
+          "takes": 2,
+          "version": 4,
           "mirrored": false,
-          "generated_at": "2026-09-11T17:51:14+00:00",
-          "action": "Lunge Attack - Throws its whole body forward in one fast lunge, white swoosh lines trailing behind it, a big aggressive swing",
-          "tries": 3,
-          "rolls": 3,
+          "action": "Shell Ram - The snail rears its whole body high off the ground and hammers its shell straight down, moss and spray flying",
           "intensity": 0,
+          "rolls": 4,
           "frames": 16,
-          "rung": 2
+          "rung": 3,
+          "unwrapped": null,
+          "tries": 4,
+          "generated_at": "2026-09-11T18:14:53+00:00"
         },
         "north-east": {
           "status": "warn",
@@ -1508,6 +1509,41 @@
           "frames": 16,
           "rung": 2,
           "source": "north-east"
+        },
+        "west": {
+          "status": "warn",
+          "step_mean": 0.1727,
+          "step_max": 0.3883,
+          "drift": 2.97,
+          "loop": 0.2256,
+          "loop_ratio": 1.31,
+          "travel": 1.78,
+          "pin": 0.543,
+          "pad": 0,
+          "flash": 0.078,
+          "peak": 0.4512,
+          "reach": 0.161,
+          "canvas": [
+            40,
+            40
+          ],
+          "reasons": [
+            "shallow strike: reach 0.16 — eyeball it"
+          ],
+          "sub": "74de7cab-9daf-4b23-8e69-d189d3520d90",
+          "group": "a9c24249-beac-4b1b-8338-a305d1e151c1",
+          "takes": 2,
+          "version": 4,
+          "mirrored": true,
+          "action": "Shell Ram - The snail rears its whole body high off the ground and hammers its shell straight down, moss and spray flying",
+          "intensity": 0,
+          "rolls": 4,
+          "frames": 16,
+          "rung": 3,
+          "unwrapped": null,
+          "tries": 4,
+          "generated_at": "2026-09-11T18:14:53+00:00",
+          "source": "east"
         }
       },
       "action": "Shell Butt - Rears its head high and rams forward with its shell",
@@ -1637,6 +1673,24 @@
           "moss_snail/animations/attack_v3/north-west/13.webp",
           "moss_snail/animations/attack_v3/north-west/14.webp",
           "moss_snail/animations/attack_v3/north-west/15.webp"
+        ],
+        "west": [
+          "moss_snail/animations/attack_v3/west/00.webp",
+          "moss_snail/animations/attack_v3/west/01.webp",
+          "moss_snail/animations/attack_v3/west/02.webp",
+          "moss_snail/animations/attack_v3/west/03.webp",
+          "moss_snail/animations/attack_v3/west/04.webp",
+          "moss_snail/animations/attack_v3/west/05.webp",
+          "moss_snail/animations/attack_v3/west/06.webp",
+          "moss_snail/animations/attack_v3/west/07.webp",
+          "moss_snail/animations/attack_v3/west/08.webp",
+          "moss_snail/animations/attack_v3/west/09.webp",
+          "moss_snail/animations/attack_v3/west/10.webp",
+          "moss_snail/animations/attack_v3/west/11.webp",
+          "moss_snail/animations/attack_v3/west/12.webp",
+          "moss_snail/animations/attack_v3/west/13.webp",
+          "moss_snail/animations/attack_v3/west/14.webp",
+          "moss_snail/animations/attack_v3/west/15.webp"
         ]
       },
       "strips": {
@@ -1646,7 +1700,8 @@
         "north-east": "moss_snail/animations/attack_v3__north-east.webp",
         "north": "moss_snail/animations/attack_v3__north.webp",
         "south-west": "moss_snail/animations/attack_v3__south-west.webp",
-        "north-west": "moss_snail/animations/attack_v3__north-west.webp"
+        "north-west": "moss_snail/animations/attack_v3__north-west.webp",
+        "west": "moss_snail/animations/attack_v3__west.webp"
       }
     }
   }
