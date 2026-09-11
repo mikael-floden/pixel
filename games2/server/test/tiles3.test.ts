@@ -826,35 +826,47 @@ test("the entire 394x394 world resolves with no fallback and no missing art", { 
 });
 
 // ============================================================================
-// A SLAB IS ONE SURFACE
+// A BUILT SLAB IS ONE SURFACE; A CAVE LID IS GROUND
 // ============================================================================
 //
-// render3.py:1387 — "a roof, a bridge and a cave lid are GROUND too: the slab
-// top wears the maintainer's base tile set like any other surface - ONE set and
-// ONE member for the WHOLE slab, anchored at the deck's own first cell. See
-// plate_img: the room map must not reach a roof, and a 24-cell region border
-// must not cut one either (a house 15 cells wide straddles one)."
-//
+// render3.py — "a roof, a bridge and a cave lid are GROUND too: the slab top
+// wears the maintainer's base tile set like any other surface." For a ROOF or a
+// BRIDGE that is ONE set and ONE member for the whole of it, anchored at the
+// deck's own first cell: the room map must not reach a roof, and a 24-cell
+// region border must not cut one either (a house 15 cells wide straddles one).
 // The maintainer's rule, reported through the maps2 agent with his wording: the
 // whole house including wall tops is ONE roof; the rooms are something you
 // discover when you walk in.
 //
+// A CAVE LID IS THE OTHER HALF OF THE SAME SENTENCE. It is the ground you walk
+// on, so it asks at its OWN cell and comes out as the set and member the ground
+// pass picks there — you find a cave at its mouth, never from the dirt under
+// your feet. Anchored, the_game's one mud cave is SEVEN decks, and the lid read
+// as seven flat one-member patches against mud that varies cell to cell
+// (maintainer 2026-09-11, standing on it: "I can see there is a cave under me
+// because the dark_mud ground looks different and doesn't seem to use the 'base
+// tile set' the mud around it uses").
+//
 // THE CONTROL IS FREE AND EXACT: a ONE-CELL deck's anchor is that cell, so
 // resolving each cell as its own synthetic deck reproduces the per-cell answer
 // byte for byte — `plateAt` never reads the deck's cell set (only `cap`/`lo` do,
-// through `frontCovered`), so `surface` is faithful. That arm is what keeps this
-// gate honest: it must find the patchwork the anchor removes, or the assertion
-// below could pass on a world with nothing to get wrong.
-test("a deck is ONE set and ONE member, eave to eave", { skip: !!MISSING.length }, () => {
+// through `frontCovered`), so `surface` is faithful. That arm is what keeps the
+// roof assertion honest: it must find the patchwork the anchor removes, or the
+// assertion could pass on a world with nothing to get wrong.
+test("a built slab is ONE surface; a cave lid is the ground's own pick", { skip: !!MISSING.length }, () => {
   const { t, pitch } = build();
   const view: World3View = viewFromDoc(doc);
   const frame = isoFrame({ x0: 0, y0: 0, x1: view.width, y1: view.height }, view.maxLevel, pitch);
   const art = (dk: any, di: number, x: number, y: number) =>
     `${t.deckCell(view, frame, dk, di, x, y).surface?.path}`;
+  const built = (dk: any) => dk.kind !== "cave";
 
   const spread: string[] = [];
   let perCellSpread = 0;
+  let builtSlabs = 0;
   view.decks.forEach((dk: any, di: number) => {
+    if (!built(dk)) return;
+    builtSlabs++;
     const mine = new Set<string>();
     const sets = new Set<number>();
     const members = new Set<number>();
@@ -873,18 +885,20 @@ test("a deck is ONE set and ONE member, eave to eave", { skip: !!MISSING.length 
       );
     if (control.size > 1) perCellSpread++;
   });
-  assert.deepEqual(spread, [], "a slab wearing more than one surface");
+  assert.deepEqual(spread, [], "a built slab wearing more than one surface");
 
-  // NON-VACUOUS: the per-cell rule this replaced really does shatter this world's
-  // slabs (measured 22 of 28 on the_game, the 180-cell inn across 8 arts).
+  // NON-VACUOUS: the per-cell rule really does shatter this world's roofs
+  // (measured 22 of 28 decks on the_game, the 180-cell inn across 8 arts).
   assert.ok(
-    perCellSpread >= 10,
-    `the control found only ${perCellSpread} patchwork slabs — the gate cannot see the bug it exists for`,
+    perCellSpread >= 8,
+    `the control found only ${perCellSpread} patchwork roofs — the gate cannot see the bug it exists for`,
   );
 
-  // AND IT IS THE DECK'S OWN FIRST CELL — render3's min by (x + y), tie x.
+  // AND A BUILT SLAB IS ANCHORED AT ITS OWN FIRST CELL — render3's min by
+  // (x + y), tie x.
   for (let di = 0; di < view.decks.length; di++) {
     const dk: any = view.decks[di];
+    if (!built(dk)) continue;
     const a = dk.cells.reduce((b: any, c: any) =>
       c.x + c.y < b.x + b.y || (c.x + c.y === b.x + b.y && c.x < b.x) ? c : b,
     );
@@ -894,8 +908,45 @@ test("a deck is ONE set and ONE member, eave to eave", { skip: !!MISSING.length 
       `deck ${di} is not anchored at its own first cell (${a.x},${a.y})`,
     );
   }
+
+  // THE LID IS THE GROUND PASS, CELL FOR CELL. `plateFor` is the exact call
+  // `surface()` makes for a field cell, so this asserts the thing he can see:
+  // standing on the lid must look like standing beside it. (The lid resolves
+  // through `plateAt` at its own cell, not `plateFor`, so that a room under a
+  // lid can never print its floor plan on the hillside — the two agree because
+  // no room in the_game sits under one, and a world that put one there would
+  // fire this gate and get a decision rather than a silent floor plan.)
+  const lidOff: string[] = [];
+  const lidMembers = new Set<string>();
+  let lidCells = 0;
+  view.decks.forEach((dk: any, di: number) => {
+    if (built(dk)) return;
+    const dg = dk.ground || "grey_stone";
+    for (const c of dk.cells) {
+      const d = t.deckCell(view, frame, dk, di, c.x, c.y);
+      const p = t.plateFor(dg, c.x, c.y);
+      lidCells++;
+      lidMembers.add(`${dk.ground}|${d.surfaceSet}|${d.surfaceMember}`);
+      if (d.surfaceSet !== p.set.id || d.surfaceMember !== p.memberIndex || d.surface?.path !== p.art.path)
+        lidOff.push(
+          `deck ${di} (${dg}) at ${c.x},${c.y}: lid set ${d.surfaceSet} member ` +
+            `${d.surfaceMember} ${d.surface?.path} vs ground ${p.set.id}/${p.memberIndex} ${p.art.path}`,
+        );
+    }
+  });
+  assert.deepEqual(lidOff.slice(0, 8), [], `${lidOff.length} lid cells that do not match the ground beside them`);
+
+  // NON-VACUOUS THE OTHER WAY: a lid that came out as one member per deck would
+  // pass the equality above only if the ground were uniform too, so prove the
+  // ground here is not (the_game's lids span 7 decks over the mud alone).
+  assert.ok(
+    lidMembers.size >= 6,
+    `the lids resolve to only ${lidMembers.size} distinct picks over ${lidCells} cells — the ground is too uniform to gate on`,
+  );
+
   console.log(
-    `tiles3 decks: ${view.decks.length} slabs, each ONE set and ONE member; ` +
-      `${perCellSpread} of them were patchwork under the per-cell rule`,
+    `tiles3 decks: ${builtSlabs} built slabs, each ONE set and ONE member ` +
+      `(${perCellSpread} were patchwork under the per-cell rule); ` +
+      `${lidCells} cave-lid cells wearing ${lidMembers.size} of the ground's own picks`,
   );
 });

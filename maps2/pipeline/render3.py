@@ -1196,14 +1196,26 @@ def render(doc, x0=0, y0=0, x1=None, y1=None, scale=1.0, log=print,
                     t = t.crop((0, 0, t.width, TOP_Y + DY + 8))
                 img.alpha_composite(t, (bx, col_y(x, y, f) - TOP_Y))
             # a roof, a bridge and a cave lid are GROUND too: the slab top
-            # wears the maintainer's base tile set like any other surface -
-            # ONE set and ONE member for the WHOLE slab, anchored at the
-            # deck's own first cell. See plate_img: the room map must not
-            # reach a roof, and a 24-cell region border must not cut one
-            # either (a house 15 cells wide straddles one).
+            # wears the maintainer's base tile set like any other surface.
+            # A BUILT slab is ONE set and ONE member for the whole of it,
+            # anchored at the deck's own first cell. See plate_img: the room
+            # map must not reach a roof, and a 24-cell region border must not
+            # cut one either (a house 15 cells wide straddles one).
+            # A CAVE LID IS THE EXCEPTION - it is the ground you walk on, so it
+            # asks at its OWN cell and comes out as the same set and member the
+            # ground pass picks there. Anchored, the_game's one mud cave is
+            # seven decks and the lid read as seven flat one-member patches
+            # against mud that varies cell to cell (maintainer 2026-09-11,
+            # standing on it: "I can see there is a cave under me because the
+            # dark_mud ground looks different and doesn't seem to use the
+            # 'base tile set' the mud around it uses"). The `anchor=` argument
+            # still goes in, so the room map never reaches a slab either way -
+            # the room under a lid is the cave, and its floor plan belongs
+            # underground.
+            sanch = (x, y) if dk.get("kind") == "cave" else danch
             img.alpha_composite(
-                top_face_only(plate_img(dg, f"{dg}@{danch[0] // 24},{danch[1] // 24}",
-                                        x, y, anchor=danch)),
+                top_face_only(plate_img(dg, f"{dg}@{sanch[0] // 24},{sanch[1] // 24}",
+                                        x, y, anchor=sanch)),
                 (bx, col_y(x, y, dl)))
 
 

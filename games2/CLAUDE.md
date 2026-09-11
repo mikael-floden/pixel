@@ -84,9 +84,10 @@ secrets; push to `main`, rebase on reject, no PRs unless asked; doc law.
 - Every field art goes through `plate()`; a conformed plate fills every
   silhouette texel including holes inside a column.
 - A liquid diamond wears `sheets.libTop`, never a formula.
-- A slab wears ONE surface, anchored at the deck's first cell, and it is
-  drawn (ground pass AND occluder copy); `thickness` is the contract (0 = top
-  only); `side` is the body and the doorway crops the cap course.
+- A BUILT slab (roof, bridge) wears ONE surface, anchored at the deck's first
+  cell; a CAVE LID is ground and picks per cell, so it matches the terrain
+  beside it. Both are drawn (ground pass AND occluder copy); `thickness` is
+  the contract (0 = top only); `side` is the body, the doorway crops the cap.
 - The fade has three dials and a switch; THE DEFAULTS ARE HIS (reach 4,
   amount 0.46, falloff 4). Cliff-foot and lid transitions are on by default.
 - Regions are 24-cell chunks; a cell edit is bounded by its chunk plus a 5x5.

@@ -559,13 +559,23 @@ dressing). `this.maps3` gates every terrain branch (false only for a hand-built
   "not truncated", so its quad clause is gone and the two passes agree.
   Legacy kill switch (cuts null) still suppresses every boundary.
 
-- **A SLAB WEARS ONE SURFACE, AND IT IS DRAWN** (and, since 2026-09-09, its
-  transitions over it — see the nature-wall-foot bullet). A roof, a bridge and a cave
-  lid take ONE set and ONE member for the whole deck, anchored at the deck's own
-  first cell (min by `x + y`, tie on `x` — render3.py:1387 and its `danch`), and
-  `opsForDeck` pastes that plate TOP FACE ONLY over the cap at `surfaceY` —
-  render3's `top_face_only(plate_img(..., anchor=danch))` at `col_y(x, y, dl)`,
-  to the row. TWO DEFECTS SAT ON TOP OF EACH OTHER HERE (2026-09-05): `deckCell`
+- **A BUILT SLAB WEARS ONE SURFACE, A CAVE LID WEARS THE GROUND'S — AND BOTH
+  ARE DRAWN** (and, since 2026-09-09, their transitions over them — see the
+  nature-wall-foot bullet). A ROOF or a BRIDGE takes ONE set and ONE member for
+  the whole deck, anchored at the deck's own first cell (min by `x + y`, tie on
+  `x` — render3's `danch`). A CAVE LID is the ground you walk on, so it asks at
+  its OWN cell and resolves to the very set, member and art `plateFor` gives the
+  field cell beside it: you find a cave at its mouth, never from the dirt under
+  your feet. Anchored, the_game's one mud cave is SEVEN decks and the lid read
+  as seven flat one-member patches against mud that varies cell to cell
+  (maintainer 2026-09-11, standing on it: "I can see there is a cave under me
+  because the dark_mud ground looks different and doesn't seem to use the 'base
+  tile set' the mud around it uses"). Either way the anchor goes through
+  `plateAt`, never `plateFor`, so the ROOM map reaches no slab from either
+  direction — the room under a lid is the cave, and its floor plan belongs
+  underground. `opsForDeck` then pastes that plate TOP FACE ONLY over the cap at
+  `surfaceY` — render3's `top_face_only(plate_img(..., anchor=...))` at
+  `col_y(x, y, dl)`, to the row. TWO DEFECTS SAT ON TOP OF EACH OTHER HERE (2026-09-05): `deckCell`
   resolved the surface PER CELL (22 of the_game's 28 decks patchwork, the
   180-cell inn across 8 arts), and NOTHING DREW IT AT ALL — `Tiles3DeckCell
   .surface` was resolved, carried and parity-gated against render3, and no
@@ -584,10 +594,12 @@ dressing). `this.maps3` gates every terrain branch (false only for a hand-built
   the surface covers wall caps and inner walls alike; decks draw LAST, as in
   render3, so no down-screen cap can paint over it. NOTE: the room map never
   reached the_game's roofs — they are `brown_paving_stone`, not the room floor;
-  the visible seams were the cap tiles and the per-cell member. Gates: `a deck
-  is ONE set and ONE member, eave to eave` (control resolves each cell as a
-  synthetic ONE-CELL deck, which reproduces the per-cell answer exactly, and
-  must keep finding >=10 patchwork slabs) and the deck arm of `every op the
+  the visible seams were the cap tiles and the per-cell member. Gates: `a built
+  slab is ONE surface; a cave lid is the ground's own pick` (the control
+  resolves each cell as a synthetic ONE-CELL deck, which reproduces the per-cell
+  answer exactly, and must keep finding >=8 patchwork roofs; the lid arm asserts
+  every lid cell equals `plateFor` there and that those picks are not uniform)
+  and the deck arm of `every op the
   factory hands back is drawable` (the surface op exists, is `t3f:`-keyed, sits
   at `surfaceY` with role `deck`; an unloaded surface emits nothing).
   **AND THE OCCLUDER COPY MUST END WITH IT TOO** (`capDecks`, same day, from

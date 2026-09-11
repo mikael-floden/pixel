@@ -660,8 +660,9 @@ export interface Tiles3Data {
    *  OWN level — another deck at that level votes its ground, base ground
    *  within a storey votes its own, everything else votes the slab's — and
    *  wears the composed tile top-face-only over its surface; its own half
-   *  is the slab's one anchored member, so the transition matches the roof
-   *  it sits in. Off (default) a slab is the single surface render3 draws. */
+   *  is the slab's own member (a roof's one anchored pick, a cave lid's
+   *  per-cell one), so the transition matches the slab it sits in. Off
+   *  (default) a slab is the single surface render3 draws. */
   deckBoundary?: boolean;
   /** Where a stale index or an unresolvable member is reported. Defaults to
    *  console.warn; the counters in `stats` are always kept. */
@@ -2977,8 +2978,9 @@ export class Tiles3 {
         ...(f === dl && capH !== cap.h ? { h: capH } : {}),
       });
     const mid = this.storeyTile(body, x, y, lo < dl ? lo : dl);
-    /* A SLAB IS ONE SURFACE — ONE SET AND ONE MEMBER FOR THE WHOLE DECK,
-     * anchored at its own first cell, exactly as render3 does it (render3.py
+    /* A BUILT SLAB IS ONE SURFACE — ONE SET AND ONE MEMBER FOR THE WHOLE ROOF
+     * OR BRIDGE, anchored at its own first cell, exactly as render3 does it
+     * (a cave lid is the exception, see below) (render3.py
      * :1387 "a roof, a bridge and a cave lid are GROUND too ... ONE set and ONE
      * member for the WHOLE slab, anchored at the deck's own first cell").
      *
@@ -2997,7 +2999,18 @@ export class Tiles3 {
      * there. One bridge deck is `parquet_floor` and would take the room path.
      * The anchor fixes both, which is why it is the anchor and not a special
      * case for rooms.) */
-    const [dax, day] = this.deckAnchor(dk);
+    /* A CAVE LID IS NOT A BUILT SLAB — IT IS THE GROUND YOU WALK ON, and it
+     * asks at its OWN cell, which is the same set and the same member the
+     * ground pass picks there. The cave is something you find at the mouth,
+     * never from the dirt under your feet: anchored, the_game's one mud cave is
+     * SEVEN decks, so the lid read as seven flat one-member patches against mud
+     * that varies cell to cell (maintainer 2026-09-11, standing on it: "I can
+     * see there is a cave under me because the dark_mud ground looks different
+     * and doesn't seem to use the 'base tile set' the mud around it uses").
+     * STILL `plateAt`, NOT `plateFor`: the room map must not reach a slab from
+     * either direction — the room under a lid is the cave itself, and its floor
+     * plan belongs underground. */
+    const [dax, day] = dk.kind === "cave" ? [x, y] : this.deckAnchor(dk);
     const p = this.plateAt(dg, regionAt(dg, dax, day), x, y, dax, day);
     /* THE SLAB'S TRANSITION (Tiles3Data.deckBoundary): a corner lattice of the
      * slab's OWN level. A cell carrying a deck at this level votes that deck's
@@ -3005,8 +3018,9 @@ export class Tiles3 {
      * rock it is cut into), anything else votes the slab's — the same
      * `boundaryAt` the ground uses, so the masks, the seam, the three-ground
      * fold and the nature-wall foot are all the ground's. The slab's own half
-     * is its ONE anchored member, never a per-cell pick, so the transition
-     * tile and the roof around it are the same picture. */
+     * is whatever `p` above resolved — the roof's one anchored member, or a
+     * lid's own-cell pick — so the transition tile and the slab around it are
+     * always the same picture. */
     let boundary: Tiles3Boundary | undefined;
     if (this.data.deckBoundary) {
       const W = view.width;
