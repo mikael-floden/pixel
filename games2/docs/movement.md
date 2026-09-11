@@ -91,6 +91,31 @@ Server-authoritative movement, decks, collision, steer assist, fall damage, tap/
   the base level put a lid-walker back INSIDE the cave. KNOWN GAP: a piece
   placed ON a deck reads the base under it (none in the_game). Gate: the
   floor test in `server/test/footprint.test.ts`.
+- **NEVER-BACKWARDS IS A RULE, NOT AN ABSOLUTE: SECONDS OF NO PROGRESS
+  ESCALATE TO A COMMITTED ROUTE** (`walkHeading` rule 0, maintainer
+  2026-09-11: held down in the dungeon at 276.6,178.9 the body ran up and
+  down the wall for as long as he held — "like a fly flying into a window
+  ... the nav system should be smart enough to navigate the player around").
+  The local rules 1-6 are right for a tree and wrong for a pocket whose exit
+  BEGINS a little against the stick: the planner found the way out every tick
+  (one cell aside, then down the slot) and the no-retreat rule discarded it
+  every tick, the slide ran the body back up, the raw heading ran it down —
+  a 6 s oscillation with the exit in view. So the memo watches progress
+  ALONG THE ASK: the furthest point ever reached along it, and when it was
+  last bettered by `STUCK_PROGRESS_WU` (0.75 cell; oscillating never betters
+  it). After `STUCK_ESCALATE_MS` (1500) without, `startEscapeRoute` plans
+  with the detour's goal fan pushed out (5-12 cells), a pocket-sized corridor
+  (`ESCAPE_CORRIDOR_CELLS` 8, not the skirt's 3) and search (2500 nodes),
+  and marks the trip `committed`: it is followed to its end past the
+  no-retreat rule and the hold — a route re-litigated every tick is the
+  flapping those rules exist to stop, one level up — and dropped when the
+  stick changes or the route itself is held. One attempt per window, route
+  or no route, so a true dead end costs one search every 1.5 s. Replayed on
+  the real grid: out of the pocket to 281,184 in 7.5 s (escalation at 2 s).
+  Gate: the pocket fixture in `server/test/stickdetour.test.ts` (a copy of
+  the world's levels, so re-authoring cannot move it) and the open-ground
+  case that must never escalate. Probe: `scripts/holdtrace.ts` (COL ROW AX
+  AY) traces `walkHeading` at any spot of the real world, tick by tick.
 - **THE RESCUE NEVER CLIMBS** (`unstickFromSolids` with the body's elevation):
   a push that would step more than a walk can climb, or drop, onto a cell
   with no deck at the body's level is refused — a cupboard against a wall

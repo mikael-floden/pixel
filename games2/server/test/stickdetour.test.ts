@@ -3,7 +3,7 @@ import assert from "node:assert/strict";
 import {
   buildTerrainGrid, stepMovement, makeBlocked, makeSideBlocked, unstickFromSolids,
   steerAssist, walkHeading, bodyStalled, screenToWorldVector, type SlideMemo,
-  CELL_WU, WALK_CLIMB, WALK_SPEED, type AutopilotTrip,
+  CELL_WU, WALK_CLIMB, WALK_SPEED, type AutopilotTrip, makeBlockedElev, levelAtWorld,
 } from "@nangijala/shared";
 
 /* A scenery footprint is a BLOB, not a maps2 prop's single cell — a tree
@@ -132,4 +132,103 @@ test("a detour is only ever planned for a body that is actually stalled", () => 
     W * CELL_WU, H * CELL_WU,
     makeSideBlocked(grid, { maxClimb: WALK_CLIMB, canSwim: true }));
   assert.ok(Math.hypot(r.x - 3 * CELL_WU, r.y - 3 * CELL_WU) > WALK_SPEED * 0.08 * 0.35);
+});
+
+/* THE FLY AT THE WINDOW. The maintainer's dungeon at 276.6,178.9, held DOWN
+ * (2026-09-11): the way out is one cell to the side and then down a slot, so
+ * the planner finds it every tick — and every tick the no-retreat rule threw
+ * it away, because the route's first leg points a little AGAINST the stick.
+ * The slide then ran the body back up the wall, the raw heading ran it down
+ * again: "stuck running back and forth like a fly flying into a window". His
+ * rule: never-backwards is a good rule, not an absolute — after SECONDS of
+ * no progress the nav must route round. This is that pocket, copied from the
+ * world (levels; 24+ are walls to a level-0 body), so the invariant survives
+ * the world being re-authored. */
+const POCKET_ROWS = [
+  "32 32 32 32  0  0  0  0  0  0  0  0  0  0 28 28 28  0  0  0  0  0  0  0  0 28 28",
+  "32 32 28 28  0  0  0  0  0  0  0  0  0  0 28 28 28  0  0  0  0  0  0  0 28 28 28",
+  "32 28 28 28  0  0  0  0  0  0  0  0  0  0 28 27 27 28 28 28 28 28 28 28 28 28  0",
+  "28 28 28 28  0  0  0  0  0  0  0  0  0  0 28 26 26 28 28 28 28 28 28 28 28  0  0",
+  "28 28 28 28  0  0  0  0  0  0  0  0  0  0  0 25 25 27 28 28 28 28 28  0  0  0  0",
+  "28 28 28 28  0  0  0  0  0  0  0 24  0  0  0 24 24 24 24 24 24 24  0  0  0  0  0",
+  "28 28 28 28 28 28 28 28 28  0  0  0  0  0  0 24 24 24 24 24 24  0  0  0  0  0  0",
+  "28 28 28 28 28 28 28 24 24  0  0  0  0  0  0 24 24 24 24 24  0  0  0  0  0  0  0",
+  "28 28 28 28 28 26 26 24 24  0  0  0  0  0  0 24 24 24 24  0  0  0  0  0  0  0  0",
+  "28 28 28 26 26 26 26 26 24  0  0  0  0  0  0 24 24 24  0  0  0  0  0  0  0  0  0",
+  "28 27 27 26 25 25 25 24 24  0  0  0  0  0  0 24 24  0  0  0  0  0  0  0  0  0  0",
+  "27 27 24 24 24 24 24 24 24  0  0  0  0  0 24 24  0  0  0  0  0  0  0  0  0  0  0",
+  "24 24 24 24 24 24 24 24 24  0  0  0  0  0 24  0  0  0  0  0  0  0  0  0  0  0  0",
+  "24 24 24 24  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0",
+  "24 24 24 24  0  0  0  0  0  0 24  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0",
+  "24 24 24 24  0  0  0  0  0 24 24  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0",
+  " 0  0  0  0  0  0  0 24 24 24 24  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0",
+  " 0  0  0  0  0  0 24 24 24 24  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0",
+  " 0  0 24 24 24 24 24 24 24  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0",
+  "24 24 24 24  2  1  1  1  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0",
+  "24 24 24  2  1  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0",
+];
+function pocketWorld() {
+  const rows = POCKET_ROWS.map((line) => line.trim().split(/\s+/).map((l) => ({ t: "dark_mud", l: Number(l) })));
+  return buildTerrainGrid(rows[0].length, rows.length, rows, [], []);
+}
+/** Hold one direction from a spot, at the body's live elevation, exactly as
+ *  the client's tick does; report the advance ALONG THE ASK and the flapping. */
+function holdFrom(grid: ReturnType<typeof pocketWorld>, col: number, row: number, ax: number, ay: number, ticks: number) {
+  const walk = { maxClimb: WALK_CLIMB, canSwim: true };
+  const v = screenToWorldVector(ax, ay);
+  const l = Math.hypot(v.x, v.y);
+  const ux = v.x / l;
+  const uy = v.y / l;
+  const x0 = col * CELL_WU;
+  const y0 = row * CELL_WU;
+  let x = x0;
+  let y = y0;
+  let elev = levelAtWorld(grid, x, y);
+  let t = 0;
+  let trip: AutopilotTrip | null = null;
+  const hold: SlideMemo = { ax: 0, ay: 0 };
+  const ww = grid.width * CELL_WU;
+  const wh = grid.height * CELL_WU;
+  const hist: string[] = [];
+  let flapping = 0;
+  let firstAt = -1;
+  for (let i = 0; i < ticks; i++) {
+    t += 33;
+    const r = walkHeading(grid, x, y, ax, ay, hold, { nowMs: t, trip, fromElev: elev, worldW: ww, worldH: wh });
+    trip = r.trip;
+    hist.push(`${r.ax},${r.ay}`);
+    const n = hist.length;
+    if (n > 2 && hist[n - 1] === hist[n - 3] && hist[n - 1] !== hist[n - 2]) flapping++;
+    const ge = () => elev;
+    const u = unstickFromSolids(grid, x, y, 80 * 0.033);
+    x = u.x;
+    y = u.y;
+    const m = stepMovement(x, y, r.ax, r.ay, false, 0.033, makeBlockedElev(grid, walk, ge), 1, true, ww, wh, makeSideBlocked(grid, walk, ge));
+    x = m.x;
+    y = m.y;
+    elev = levelAtWorld(grid, x, y);
+    const adv = ((x - x0) * ux + (y - y0) * uy) / CELL_WU;
+    if (firstAt < 0 && adv >= 5) firstAt = i;
+  }
+  return { advanced: ((x - x0) * ux + (y - y0) * uy) / CELL_WU, flapping, firstAt, col: x / CELL_WU, row: y / CELL_WU };
+}
+
+test("held DOWN in the dungeon pocket, the body gets OUT — seconds of no progress escalate to a real route", () => {
+  const grid = pocketWorld();
+  // 276.6,178.9 in the world is 14.6,8.9 in this copy.
+  const r = holdFrom(grid, 14.6, 8.9, 0, 1, 600);
+  assert.ok(r.advanced >= 5, `after 20 s of holding down the body advanced only ${r.advanced.toFixed(2)} cells along the ask (at ${r.col.toFixed(1)},${r.row.toFixed(1)})`);
+  // Out within ten seconds, not merely eventually: he holds it "for a long
+  // time (we talk seconds)"; the escalation waits its window and then GOES.
+  assert.ok(r.firstAt >= 0 && r.firstAt < 300, `5 cells took ${r.firstAt < 0 ? "forever" : `${(r.firstAt * 33 / 1000).toFixed(1)} s`}`);
+  assert.ok(r.flapping < 20, `${r.flapping} A-B-A flaps on the way out`);
+});
+
+test("the escalation never fires while the stick is making progress", () => {
+  const grid = pocketWorld();
+  // Open floor to the right of the pocket, held right: no obstacle, so the
+  // ordinary rules carry the body and no route is ever planned.
+  const r = holdFrom(grid, 20.5, 14.5, 1, 0, 200);
+  assert.ok(r.advanced > 4, `open ground, held right: advanced ${r.advanced.toFixed(2)}`);
+  assert.equal(r.flapping, 0);
 });

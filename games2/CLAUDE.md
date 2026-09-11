@@ -141,9 +141,14 @@ secrets; push to `main`, rebase on reject, no PRs unless asked; doc law.
 - Water is the player's sanctuary: no monster enters, swims or is hit there.
 - The player-speed dial rides PER INPUT (`InputMessage.sm`) and the SERVER
   clamps it; default 1.2x IS HIS (`playerspeed.ts`).
-- The stick "almost" snaps: `leanHeading` leans the heading off its octant by
-  his dial (0 = snap, 1 = free 360; default 0), the FACING always snaps, and
-  the bearing is read additively off games-ui's stick (`stickdir.ts`).
+- The stick "almost" snaps: `leanHeading` leans the heading between the
+  octants' REAL run headings by his dial (0 = snap, 1 = continuous; default
+  0.85 IS HIS), the grid-axis lock locks EXACT diagonals only, the facing
+  follows the run, and the bearing is read additively off games-ui's stick
+  (`stickdir.ts`).
+- Never-backwards is a rule, not an absolute: `walkHeading` watches progress
+  along the ask and after `STUCK_ESCALATE_MS` (1.5 s) without any commits to
+  a planned escape route past the no-retreat rule and the hold (rule 0).
 - A tap RUNS; the beacon is the pixel you touched and never moves to meet the
   walk (rejected twice); both readings of an ambiguous pixel are routed.
 - The body dodge is a manoeuvre: engage and hold on different thresholds,

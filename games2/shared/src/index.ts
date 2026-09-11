@@ -3228,6 +3228,12 @@ export interface AutopilotTrip {
    * axis — their lateral components cancel and the player vibrates in place
    * at a gap's mouth forever (found by the trip simulator, 60fps frames). */
   steer: { ax: number; ay: number } | null;
+  /** AN ESCAPE ROUTE (walkHeading rule 0): planned after the progress window
+   *  ran out, followed to its end regardless of the no-retreat rule and the
+   *  hold — a route re-litigated every tick is the flapping those rules exist
+   *  to stop, one level up. Dropped when the stick changes or the route
+   *  itself is held. */
+  committed?: boolean;
   /** Sticky run→walk demotion: once one frame's displacement exceeds a CELL
    * the control rate can no longer steer a run (70wu per decision at 2.5fps
    * — two cells blind between choices). The rest of the trip walks; manual
@@ -3444,7 +3450,36 @@ export interface SlideMemo {
    *  two-tick alternation the hold exists to stop, just one level up. */
   fromX?: number;
   fromY?: number;
+  /** THE PROGRESS WINDOW (the fly at the window, see walkHeading rule 0): the
+   *  ask these marks belong to, the furthest point reached ALONG it, and when
+   *  that furthest point was last bettered. */
+  askAx?: number;
+  askAy?: number;
+  bestX?: number;
+  bestY?: number;
+  bestAt?: number;
 }
+
+/** How long a held direction may go without bettering its furthest point
+ *  before the walk stops trusting the local rules and commits to a planned
+ *  route — the maintainer's "we talk seconds" (2026-09-11). Short enough that
+ *  a player who is stuck feels rescued, long enough that the hold, the assist
+ *  and the slide have had their turn; a real opening is normally taken in
+ *  well under a second. */
+export const STUCK_ESCALATE_MS = 1500;
+/** Progress that restarts the window: three quarters of a cell further along
+ *  the ask than ever before. Oscillating up and down a wall never betters the
+ *  furthest point, so it never counts. */
+const STUCK_PROGRESS_WU = CELL_WU * 0.75;
+/** The escape route may bulge this far off the asked line — a pocket's exit is
+ *  a real detour, not a skirt (DETOUR_CORRIDOR_CELLS is 3). */
+const ESCAPE_CORRIDOR_CELLS = 8;
+const ESCAPE_NODES = 2500; // a pocket, not a map crossing
+/** Escape goals: farther first, so a short slot leads OUT of the pocket rather
+ *  than to its next wall; the fan is the detour's. */
+const ESCAPE_GOALS: readonly [number, number][] = [
+  [0, 8], [Q, 8], [-Q, 8], [0, 5], [Q, 5], [-Q, 5], [2 * Q, 6], [-2 * Q, 6], [0, 12],
+];
 
 /** How far ahead a heading is simulated when asking "is the way actually open,
  *  or open for exactly one step?". 12 probe steps of 0.08s is about a second of
@@ -3590,6 +3625,62 @@ export function walkHeading(
   }
   const worldW = opts.worldW ?? worldWidthOf(grid);
   const worldH = opts.worldH ?? worldHeightOf(grid);
+  /* 0. THE FLY AT THE WINDOW. Rules 1-6 are local and never retreat, which is
+   * right for a tree and wrong for a pocket whose only exit begins a little
+   * AGAINST the stick: the planner found the way out every tick (one cell to
+   * the side, then down the slot) and the no-retreat rule threw it away every
+   * tick, the slide ran the body back up the wall, the raw heading ran it
+   * down again — a six-second oscillation with the exit in view (maintainer
+   * 2026-09-11, the dungeon at 276.6,178.9 held down: "like a fly flying into
+   * a window ... the rule is good, but it is not an absolute"). So progress
+   * along the ask is watched: while the furthest point along it keeps being
+   * bettered, nothing here fires; once STUCK_ESCALATE_MS pass without, a
+   * route is planned with a pocket-sized corridor and COMMITTED — followed
+   * to its end past the retreat rule and the hold — and then the local rules
+   * resume. */
+  {
+    const w = screenToWorldVector(ax, ay);
+    const wl = Math.hypot(w.x, w.y) || 1;
+    const ux = w.x / wl;
+    const uy = w.y / wl;
+    if (hold.askAx !== ax || hold.askAy !== ay || hold.bestAt === undefined) {
+      hold.askAx = ax;
+      hold.askAy = ay;
+      hold.bestX = x;
+      hold.bestY = y;
+      hold.bestAt = opts.nowMs;
+    } else if ((x - hold.bestX!) * ux + (y - hold.bestY!) * uy >= STUCK_PROGRESS_WU) {
+      hold.bestX = x;
+      hold.bestY = y;
+      hold.bestAt = opts.nowMs;
+    }
+    if (trip && trip.committed) {
+      const d = stepAutopilot(grid, trip, x, y, opts.nowMs, worldW, worldH, opts.fromElev);
+      if (d.done) {
+        trip = null;
+        hold.bestX = x;
+        hold.bestY = y;
+        hold.bestAt = opts.nowMs;
+      } else if (!bodyStalled(grid, x, y, d.ax, d.ay, opts.fromElev)) {
+        hold.ax = 0;
+        hold.ay = 0;
+        return { ax: d.ax, ay: d.ay, trip };
+      } else {
+        trip = null; // the route itself is held: back to the local rules, the window still counting
+      }
+    } else if (!opts.noDetour && opts.nowMs - hold.bestAt! >= STUCK_ESCALATE_MS) {
+      hold.bestAt = opts.nowMs; // one attempt per window, route or no route
+      const esc = startEscapeRoute(grid, x, y, ax, ay, opts.nowMs, opts.fromElev);
+      if (esc) {
+        const d = stepAutopilot(grid, esc, x, y, opts.nowMs, worldW, worldH, opts.fromElev);
+        if (!d.done) {
+          hold.ax = 0;
+          hold.ay = 0;
+          return { ax: d.ax, ay: d.ay, trip: esc };
+        }
+      }
+    }
+  }
   const rawClear = headingClear(grid, x, y, ax, ay, opts.fromElev);
   const skirted = Math.hypot(x - (hold.fromX ?? x), y - (hold.fromY ?? y));
   /* THE HOLD IS RELEASED BY ITS OWN CONDITION, NOT RE-ASKED EVERY TICK. Gating
@@ -3708,21 +3799,53 @@ export function startStickDetour(
   nowMs: number,
   fromElev?: number,
 ): AutopilotTrip | null {
+  return planRoundTheStick(grid, x, y, ax, ay, nowMs, fromElev, STICK_DETOUR_GOALS, STICK_DETOUR_NODES, DETOUR_CORRIDOR_CELLS);
+}
+
+/** THE ESCAPE (walkHeading rule 0): the same fan of goals, farther out, with a
+ *  pocket-sized corridor and search, and the route marked COMMITTED so the
+ *  walk follows it to the end. Null when nothing within reach is walkable. */
+export function startEscapeRoute(
+  grid: TerrainGrid,
+  x: number,
+  y: number,
+  ax: number,
+  ay: number,
+  nowMs: number,
+  fromElev?: number,
+): AutopilotTrip | null {
+  const trip = planRoundTheStick(grid, x, y, ax, ay, nowMs, fromElev, ESCAPE_GOALS, ESCAPE_NODES, ESCAPE_CORRIDOR_CELLS);
+  if (trip) trip.committed = true;
+  return trip;
+}
+
+function planRoundTheStick(
+  grid: TerrainGrid,
+  x: number,
+  y: number,
+  ax: number,
+  ay: number,
+  nowMs: number,
+  fromElev: number | undefined,
+  goals: readonly [number, number][],
+  maxNodes: number,
+  corridorCells: number,
+): AutopilotTrip | null {
   const v = screenToWorldVector(ax, ay);
   const l = Math.hypot(v.x, v.y);
   if (l < 1e-6) return null;
   const ux = v.x / l;
   const uy = v.y / l;
-  for (const [rot, dist] of STICK_DETOUR_GOALS) {
+  for (const [rot, dist] of goals) {
     const cs = Math.cos(rot);
     const sn = Math.sin(rot);
     const gx = x + (ux * cs - uy * sn) * dist * CELL_WU;
     const gy = y + (ux * sn + uy * cs) * dist * CELL_WU;
     const trip = startTrip(
       grid, x, y, gx, gy,
-      false, nowMs, fromElev, undefined, STICK_DETOUR_NODES,
+      false, nowMs, fromElev, undefined, maxNodes,
     );
-    if (trip && withinCorridor(trip, x, y, gx, gy)) return trip;
+    if (trip && withinCorridor(trip, x, y, gx, gy, corridorCells)) return trip;
   }
   return null;
 }
@@ -3751,12 +3874,13 @@ function withinCorridor(
   y: number,
   gx: number,
   gy: number,
+  corridorCells: number = DETOUR_CORRIDOR_CELLS,
 ): boolean {
   const dx = gx - x;
   const dy = gy - y;
   const l2 = dx * dx + dy * dy;
   if (l2 < 1e-9) return false;
-  const max = DETOUR_CORRIDOR_CELLS * CELL_WU;
+  const max = corridorCells * CELL_WU;
   for (const p of trip.path) {
     const u = Math.max(0, Math.min(1, ((p.x - x) * dx + (p.y - y) * dy) / l2));
     if (Math.hypot(p.x - (x + dx * u), p.y - (y + dy * u)) > max) return false;
