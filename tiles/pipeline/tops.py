@@ -307,8 +307,8 @@ def write_index():
     os.makedirs(OUT, exist_ok=True)
     tmp = os.path.join(OUT, f"index.json.{os.getpid()}.tmp")
     with open(tmp, "w") as f:
-        json.dump(doc, f, indent=2)
-        f.write("\n")
+        json.dump(doc, f, indent=1)     # indent 1 like tops_post.py, so the two writers
+        f.write("\n")                   # never reformat 38k lines at each other
     os.replace(tmp, os.path.join(OUT, "index.json"))
     return doc
 

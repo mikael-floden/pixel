@@ -61,10 +61,10 @@ def _load(p, default):
         return default
 
 
-def _dump(p, doc):
+def _dump(p, doc, indent=2):
     tmp = f"{p}.{os.getpid()}.tmp"
     with open(tmp, "w") as f:
-        json.dump(doc, f, indent=2)
+        json.dump(doc, f, indent=indent)
         f.write("\n")
     os.replace(tmp, p)
 
@@ -143,7 +143,7 @@ def apply(idx, remove, revive, tomb):
     idx["counts"] = counts
     idx["n_sheets"] = len(idx["sheets"])
     idx["n_tiles"] = sum(len(s["tiles"]) for s in idx["sheets"])
-    _dump(INDEX, idx)
+    _dump(INDEX, idx, indent=1)     # tops_post.py's indent, so a rewrite is a real diff
     existing = [p for p in paths if os.path.isfile(p)]
     if existing:
         spec = os.path.join(TOPS, f"rm.{os.getpid()}.txt")

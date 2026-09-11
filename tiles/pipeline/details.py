@@ -84,14 +84,34 @@ def words(ground):
     return ground.replace("_", " ")
 
 
-def seed_for(ground, motif):
+def seed_for(ground, motif, attempt=0):
     """Deterministic from the motif itself, so re-running reproduces the sheet and a
-    re-ordered catalogue does not orphan and re-buy what is already on disk."""
-    h = hashlib.sha1(f"detail/{ground}/{motif}".encode()).hexdigest()
+    re-ordered catalogue does not orphan and re-buy what is already on disk. `attempt`
+    is the retry after a sheet the maintainer rejected in full: the same seed would
+    buy the same art again, so a retry salts it."""
+    salt = f" (attempt {attempt + 1})" if attempt else ""
+    h = hashlib.sha1(f"detail/{ground}/{motif}{salt}".encode()).hexdigest()
     return 10000 + int(h[:6], 16) % 90000
 
 
-def plan(only=None, limit=None):
+MAX_ATTEMPTS = 2   # a motif rejected in full twice is the motif, not the seed
+
+
+def sheets_of(ground, motif):
+    """(live, tombstoned) sheets already bought for this motif, by meta.json `motif`."""
+    live, dead = [], []
+    for m in glob.glob(os.path.join(ROOT, "tops", ground, f"sheet_*_{FLAVOUR}_*", "meta.json")):
+        try:
+            meta = json.load(open(m))
+        except (OSError, json.JSONDecodeError):
+            continue
+        if meta.get("motif") != motif:
+            continue
+        (dead if (meta.get("removed") and not meta.get("tiles")) else live).append(meta)
+    return live, dead
+
+
+def plan(only=None, limit=None, retry=False):
     c = cfg()
     tmpl = c["prompt_template"]
     out = []
@@ -99,11 +119,20 @@ def plan(only=None, limit=None):
         if only and g != only:
             continue
         for i, motif in enumerate(c["motifs"][g]):
-            seed = seed_for(g, motif)
+            # A sheet the maintainer rejected IN FULL is a tombstone (tops_review.py:
+            # meta.json with n_tiles 0). It is never re-bought under its seed, and NOT
+            # re-attempted unless asked: his standing order is that a rejection means
+            # delete, not generate a replacement (2026-09-11). With --retry-rejected the
+            # motif gets ONE fresh attempt with a salted seed, then rests.
+            live, dead = sheets_of(g, motif)
+            attempt = 0 if live else len(dead)
+            if not live and dead and (not retry or attempt >= MAX_ATTEMPTS):
+                continue
+            seed = seed_for(g, motif, attempt)
             d = tops.sheet_dir(g, FLAVOUR, INDEX_BASE + i, seed)
             out.append({
                 "ground": g, "motif": motif, "flavour": FLAVOUR,
-                "index": INDEX_BASE + i, "seed": seed,
+                "index": INDEX_BASE + i, "seed": seed, "attempt": attempt,
                 "prompt": tmpl.format(ground=words(g), motif=motif),
                 "palette_top": tops.palette()[g]["top"],
                 "dir": os.path.relpath(d, REPO),
@@ -144,6 +173,8 @@ def main():
     ap.add_argument("--min-usd", type=float, default=10.0)
     ap.add_argument("--dry-run", action="store_true")
     ap.add_argument("--reindex", action="store_true")
+    ap.add_argument("--retry-rejected", action="store_true",
+                    help="buy ONE salted-seed retry for a motif whose sheet he rejected in full")
     args = ap.parse_args()
 
     if args.reindex:
@@ -151,7 +182,7 @@ def main():
         print(f"tops index: {d['n_sheets']} sheets")
         return
 
-    jobs = plan(only=args.only)
+    jobs = plan(only=args.only, retry=args.retry_rejected)
     if args.grounds:
         jobs = [j for j in jobs if j["ground"] in set(args.grounds)]
     if args.limit:

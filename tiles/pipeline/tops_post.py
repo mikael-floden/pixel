@@ -471,10 +471,11 @@ def align(img, clean_rgb, protect_motif=False, spread=None):
     return Image.fromarray(out.astype(np.uint8), "RGBA"), bg, clipped
 
 
-def main(only_flavour=None):
+def main(only_flavour=None, only_dirs=None):
     """`only_flavour` limits the rewrite - a details fix must not re-hash the whole
     library, because every rewritten tile gets a new content-hashed name and the base
-    tile sets he has approved point at the old ones."""
+    tile sets he has approved point at the old ones. `only_dirs` (repo-relative sheet
+    dirs) posts just the sheets named - the new sheets a retry bought."""
     idx_path = os.path.join(TOPS, "index.json")
     idx = json.load(open(idx_path))
     wrote = misfits = 0
@@ -503,6 +504,8 @@ def main(only_flavour=None):
         # so a cache can only ever show a coherent old version or a missing image,
         # never a wrong-pixel mix. The class is gone, not patched.
         if only_flavour and sheet.get("flavour") != only_flavour:
+            continue
+        if only_dirs and sheet["dir"] not in only_dirs:
             continue
         post_files = []
         for name in sheet["tiles"]:
@@ -585,5 +588,6 @@ if __name__ == "__main__":
     import argparse
     _ap = argparse.ArgumentParser()
     _ap.add_argument("--only-flavour", help="rewrite only sheets of this flavour")
+    _ap.add_argument("--only-dir", action="append", help="post only this sheet dir (repeatable)")
     _a = _ap.parse_args()
-    main(only_flavour=_a.only_flavour)
+    main(only_flavour=_a.only_flavour, only_dirs=set(_a.only_dir or []) or None)
