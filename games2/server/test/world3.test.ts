@@ -84,7 +84,7 @@ test("grids are row-major [y][x] — measured on the wall cells", () => {
     }
     if (doc.level[x][y] === 0) atZeroXY++;
   }
-  assert.equal(cells.size, 5610, "distinct wall cells (measured; the cave ring is named whole, 2026-09-09)");
+  assert.equal(cells.size, 5609, "distinct wall cells (measured; the cave ring is named whole, 2026-09-09)");
   assert.equal(atZeroYX, 60, "read [y][x]: 60 wall cells sit at level 0 (measured)");
   assert.equal(zeroUnderCeiling, atZeroYX, "…and every one of them is a cave floor under its ceiling's face");
   assert.equal(atZeroXY, 1211, "read [x][y]: 1,211 wall cells land on the sea floor — that reading is wrong");
@@ -172,7 +172,7 @@ test("every cell's ground and level round-trip the whole grid, voids included", 
 
 test("decks carry ground→mat, kind verbatim, and lose no cell", () => {
   if (!world) return test.skip("maps2/worlds3/the_game missing");
-  assert.equal(doc.decks.length, 22, "decks (measured)");
+  assert.equal(doc.decks.length, 28, "decks (measured)");
   assert.equal(world.decks?.length, doc.decks.length);
   const kinds: Record<string, number> = {};
   let cells = 0;
@@ -180,8 +180,8 @@ test("decks carry ground→mat, kind verbatim, and lose no cell", () => {
     kinds[d.kind] = (kinds[d.kind] ?? 0) + 1;
     cells += d.cells.length;
   }
-  assert.deepEqual(kinds, { cave: 6, roof: 11, bridge: 5 }, "deck kinds (measured)");
-  assert.equal(cells, 1556, "deck cells (measured)");
+  assert.deepEqual(kinds, { cave: 12, roof: 11, bridge: 5 }, "deck kinds (measured)");
+  assert.equal(cells, 1570, "deck cells (measured)");
   assert.equal(world.decks!.reduce((n, d) => n + d.cells.length, 0), cells, "no deck cell may be dropped");
   for (let i = 0; i < doc.decks.length; i++) {
     const src = doc.decks[i];
@@ -199,7 +199,7 @@ test("decks carry ground→mat, kind verbatim, and lose no cell", () => {
   // overpass, and buildTerrainGrid keeps no deck there (1,198 of 1,556).
   const grid = buildTerrainGrid(world.width, world.height, world.rows, [], world.decks);
   const raised = grid.deck.filter((d) => d >= 0).length;
-  assert.equal(raised, 1198, `deck cells in terrain (measured): ${raised}`);
+  assert.equal(raised, 1205, `deck cells in terrain (measured): ${raised}`);
   assert.ok(raised > cells / 2 && raised < cells, "most, not all, deck cells float over their base");
   // Every deck material must be a classified surface — a bridge you cross reads
   // its speed/sound from deckType, not from the water underneath.
@@ -209,7 +209,7 @@ test("decks carry ground→mat, kind verbatim, and lose no cell", () => {
 test("walls override the face material per cell, and LATER WINS", () => {
   if (!world) return test.skip("maps2/worlds3/the_game missing");
   assert.equal(doc.walls.length, 21, "wall groups (measured)");
-  assert.equal(doc.walls.reduce((n: number, g: any) => n + g.cells.length, 0), 5617, "wall claims (measured; the cave ring is named whole, 2026-09-09)");
+  assert.equal(doc.walls.reduce((n: number, g: any) => n + g.cells.length, 0), 5616, "wall claims (measured; the cave ring is named whole, 2026-09-09)");
   const claims = new Map<string, string[]>();
   for (const g of doc.walls) {
     for (const c of g.cells) {
@@ -219,7 +219,7 @@ test("walls override the face material per cell, and LATER WINS", () => {
       claims.set(k, at);
     }
   }
-  assert.equal(claims.size, 5610, "5,617 claims over 5,610 distinct cells (measured)");
+  assert.equal(claims.size, 5609, "5,616 claims over 5,609 distinct cells (measured)");
   assert.equal([...claims.values()].filter((v) => v.length > 1).length, 7, "cells claimed twice (measured)");
   const contested = [...claims.entries()].filter(([, v]) => new Set(v).size > 1);
   assert.equal(contested.length, 2, "cells claimed by groups naming DIFFERENT materials (measured)");
@@ -245,11 +245,11 @@ test("walls override the face material per cell, and LATER WINS", () => {
 test("scenery is carried off-grid, and buildTerrainGrid alone blocks nothing", () => {
   if (!world) return test.skip("maps2/worlds3/the_game missing");
   assert.equal(world.scenery?.length, doc.scenery.length);
-  assert.equal(world.scenery!.length, 1330, "placements (measured)");
+  assert.equal(world.scenery!.length, 1340, "placements (measured)");
   assert.equal(world.scenery!.filter((p) => p.hflip).length, 244, "mirrored placements (measured)");
-  assert.equal(world.scenery!.filter((p) => p.lit).length, 137, "lit placements (measured)");
-  assert.equal(world.scenery!.filter((p) => p.state).length, 1288, "placements naming a variation (measured)");
-  assert.equal(world.scenery!.filter((p) => p.dir).length, 91, "placements naming a facing (measured)");
+  assert.equal(world.scenery!.filter((p) => p.lit).length, 147, "lit placements (measured)");
+  assert.equal(world.scenery!.filter((p) => p.state).length, 1298, "placements naming a variation (measured)");
+  assert.equal(world.scenery!.filter((p) => p.dir).length, 89, "placements naming a facing (measured)");
   assert.equal(world.scenery!.filter((p) => p.hflip).length, doc.scenery.filter((p: any) => p.hflip).length);
   assert.equal(world.scenery!.filter((p) => p.state).length, doc.scenery.filter((p: any) => p.state).length);
   assert.equal(world.scenery!.filter((p) => p.dir).length, doc.scenery.filter((p: any) => p.dir).length);
@@ -264,7 +264,7 @@ test("scenery is carried off-grid, and buildTerrainGrid alone blocks nothing", (
   assert.ok(world.scenery!.some((p) => !Number.isInteger(p.x)), "scenery is off the tile grid");
   // Collision is a SEPARATE stamp (stampSceneryCollision, from the hitbox docs)
   // that the server and client both run; the terrain grid itself never blocks
-  // a cell for a placement, so parsing 1,294 pieces walls nobody in.
+  // a cell for a placement, so parsing 1,340 pieces walls nobody in.
   const grid = buildTerrainGrid(world.width, world.height, world.rows, [], world.decks);
   assert.equal(grid.blocked.filter(Boolean).length, 0);
 });
