@@ -311,8 +311,20 @@ reproduces:
 |---|---|---|
 | highland | top is snow or ice | grey_stone 3, black_rock 2, ice 1 |
 | rock | top is grey_stone or black_rock | black_rock 2, grey_stone 2, dark_mud 1 |
-| shore | foot at water, beach, or within `SHORE_R = 2` of the sea | light_beach 2, grey_stone 1, black_rock 1 |
+| shore | foot at water, beach, or within `SHORE_R = 2` of the sea | light_beach 2, grey_stone 1, dark_mud 1 |
 | lowland | everything else (grass, mud, soil) | grey_stone 3, black_rock 3, dark_mud 2, light_soil 2 |
+
+**NOT BLACK AT THE WATERLINE**: `black_rock` is a flat near-black — the same
+reason it is not a roof — and against open water, at night, a face of it reads
+as a hole in the world rather than as rock (maintainer 2026-09-11, swimming
+beside a black step at (277,269): *"Wtf happened on this tile? Why black?"*).
+It keeps its weight in every pool that stands inland; the shore draws stone or
+earth. A weight, not a rule — which is the only kind of dial this table has.
+
+**`SHORE_R` IS CLIFF_FACES' OWN NAME.** The class is one namespace, so a later
+`SHORE_R` written for something else silently re-dressed every face within 8
+cells of water instead of 2 — 278 of 4,092 faces, measured, from a constant
+added for spans. The span pass calls its own radius `SPAN_SHORE_R`.
 
 The draw never equals the top when the pool has another choice (a grey_stone
 top over a grey_stone face is the invisible same-over-same column). **Not a

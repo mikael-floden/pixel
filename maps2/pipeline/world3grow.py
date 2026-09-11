@@ -5404,7 +5404,13 @@ class Grow:
         "rock":     (("black_rock", 2), ("grey_stone", 2), ("dark_mud", 1)),
         "lowland":  (("grey_stone", 3), ("black_rock", 3), ("dark_mud", 2),
                      ("light_soil", 2)),
-        "shore":    (("light_beach", 2), ("grey_stone", 1), ("black_rock", 1)),
+        # NOT BLACK AT THE WATERLINE (maintainer 2026-09-11, swimming beside a
+        # black step at (277,269): "Wtf happened on this tile? Why black?").
+        # black_rock is a flat near-black - the same reason it is not a roof -
+        # and against open water, at night, a face of it reads as a hole in
+        # the world rather than as rock. It keeps its weight in every pool
+        # that stands inland; the shore draws stone or sand.
+        "shore":    (("light_beach", 2), ("grey_stone", 1), ("dark_mud", 1)),
     }
     # THE SALTS ARE THE ONES PRODUCTION WAS BUILT WITH: recovered by brute force
     # over all 65,536 values per pool against the shipped world (shore 100%,
@@ -5969,7 +5975,11 @@ class Grow:
                     out.add(m)
         return out
 
-    SHORE_R = 8        # how far a shore is followed around a span
+    SPAN_SHORE_R = 8   # how far a shore is followed around a span (NOT
+                       # SHORE_R, which is cliff_faces' own "this face stands
+                       # near the sea" radius: one class, one namespace, and
+                       # reusing that name silently re-dressed every cliff
+                       # within 8 cells of water instead of 2)
 
     def _shore_map(self, cells, lv):
         """cell -> shore id, over the walkable ground at the span's own level
@@ -5979,7 +5989,7 @@ class Grow:
         different and refused every widening (measured: no span grew at all)."""
         xs = [c[0] for c in cells]
         ys = [c[1] for c in cells]
-        R = self.SHORE_R
+        R = self.SPAN_SHORE_R
         x0, x1 = min(xs) - R, max(xs) + R
         y0, y1 = min(ys) - R, max(ys) + R
 
