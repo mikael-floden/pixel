@@ -14,9 +14,17 @@ a way to ... see all different parallel versions (and review/rate all parallel
 versions). In the end we will only have a single attack animation ofc."*)
 
 - **A take is published as its own entry** carrying `takeOf` (the state it
-  belongs to) and `takeLabel` (`try`, `v2` — parsed from the slot name, so
+  belongs to) and `takeLabel` (`v1`, `v2`, `try` — parsed from the slot name, so
   `attack_v3try` and `attack_v3` both read v3). Any folder matching `<state>_*`
   is a take of that state; anything else on disk is not a state at all.
+- **A state can exist as VERSIONS ONLY.** The agent renamed its slots to
+  `attack_v1, attack_v2, attack_v3` and stopped writing a bare `attack` folder,
+  which dropped the state from the registry the hour the rename landed — both
+  the build and the viewer were keyed on the bare folder. A state is present
+  when its own folder OR any take of it is on disk; the bare folder, when there
+  is one, is the take that ships and leads the row as "live". The viewer's
+  state list is therefore derived from what each entry BELONGS to, never from
+  the entries that belong to nothing.
 - **The versions are sorted, live first, numbers in number order** — the agent
   is renaming them `v1, v2, v3`, so the row collates numerically and v10
   follows v9 rather than v1 (maintainer 2026-09-11).

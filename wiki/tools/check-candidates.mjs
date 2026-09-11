@@ -221,7 +221,7 @@ if (pend.length) {
   ok(page.title === one.name && page.canvas, `${one.name} opens as an ordinary creature page with the animation viewer`);
   // Parallel takes ride the version row, not the state row — they are the same
   // state, so only the base states are counted here.
-  const oneStates = Object.entries(one.animations).filter(([, a]) => !a.takeOf).map(([st]) => st);
+  const oneStates = [...new Set(Object.entries(one.animations).map(([st, a]) => a.takeOf ?? st))];
   ok(oneStates.every((st) => page.states.some((b) => b.toLowerCase() === st.toLowerCase())),
     `every state it has so far is on the state row (${oneStates.join(", ")})`);
   // THE ROW IS IN THE DOMAIN'S ORDER, THE SAME ON EVERY CREATURE (maintainer
@@ -229,7 +229,7 @@ if (pend.length) {
   // differently on Amethyrn? I like the old monsters sort in the animation
   // buttons."). Alphabetical from the filesystem is the bug this catches.
   const shipped = DATA_M.find((m) => !m.pending && Object.keys(m.animations ?? {}).length > 1);
-  const rank = Object.entries(shipped?.animations ?? {}).filter(([, a]) => !a.takeOf).map(([st]) => st);
+  const rank = [...new Set(Object.entries(shipped?.animations ?? {}).map(([st, a]) => a.takeOf ?? st))];
   const mine = oneStates.map((st) => rank.indexOf(st));
   ok(rank.length > 1 && mine.every((i) => i >= 0) && mine.every((v, i, a) => !i || a[i - 1] < v),
     `and in the same order a shipped creature uses (${oneStates.join(", ")} against ${rank.join(", ")})`);
@@ -274,8 +274,9 @@ if (pend.length) {
       hidden: document.querySelector(".take-row")?.hidden,
     }));
     console.log("takes:", JSON.stringify(row));
-    ok(!row.hidden && row.takes.length === slots.length + 1 && row.takes[0] === "live",
-      `${withTakes.name}: ${base} shows every parallel take, live first (${row.takes.join(" | ")})`);
+    const hasLive = !!withTakes.animations[base];
+    ok(!row.hidden && row.takes.length === slots.length + (hasLive ? 1 : 0) && (!hasLive || row.takes[0] === "live"),
+      `${withTakes.name}: ${base} shows every parallel take${hasLive ? ", live first" : " (no live take yet — versions only)"} (${row.takes.join(" | ")})`);
     ok(!row.states.some((t) => slots.some(([slot]) => t.toLowerCase() === slot.replace(/_/g, " "))),
       `and a take is NOT a second state chip (${row.states.join(" | ")})`);
 
@@ -314,9 +315,9 @@ if (pend.length) {
     // ...and the version row is sorted, live first (the agent is renaming them
     // v1, v2, v3 — v10 must follow v9, not v1).
     const order = walkTakes[0].takes;
-    const rest = order.slice(1);
+    const rest = order[0] === "live" ? order.slice(1) : order;
     const sorted = [...rest].sort((a, b) => a.localeCompare(b, undefined, { numeric: true, sensitivity: "base" }));
-    ok(order[0] === "live" && rest.join() === sorted.join(), `and the versions are sorted, live first (${order.join(" | ")})`);
+    ok(rest.join() === sorted.join(), `and the versions are sorted${order[0] === "live" ? ", live first" : ""} (${order.join(" | ")})`);
   } else {
     console.log("  (no parallel takes in the registry right now — nothing to drive)");
   }

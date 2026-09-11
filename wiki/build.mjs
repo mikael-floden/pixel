@@ -2840,8 +2840,17 @@ function buildCandidateMonsters(shippedIds) {
     const onDisk = listDirs(animRoot);
     // Each state, then its parallel takes right after it — the version row's
     // order. A folder belonging to no mapped state is not a state at all.
-    const ordered = mapStates.filter((st) => onDisk.includes(st))
-      .flatMap((st) => [st, ...takeSlots(onDisk, st)]);
+    //
+    // A STATE CAN EXIST AS VERSIONS ONLY. The agent renamed its slots to
+    // `attack_v1, attack_v2, attack_v3` and stopped writing a bare `attack`
+    // folder, which dropped the state from the registry the moment the rename
+    // landed — it was keyed on the bare folder. A state is now present when
+    // its own folder OR any take of it is on disk, and the bare folder, when
+    // there is one, is the take that ships.
+    const ordered = mapStates
+      .map((st) => [st, takeSlots(onDisk, st)])
+      .filter(([st, takes]) => onDisk.includes(st) || takes.length)
+      .flatMap(([st, takes]) => [...(onDisk.includes(st) ? [st] : []), ...takes]);
     for (const state of ordered) {
       const base = mapStates.find((st) => st !== state && state.startsWith(st)) ?? null;
       const dirs = {};

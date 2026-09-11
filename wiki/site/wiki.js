@@ -1664,14 +1664,20 @@ const rememberViewerTake = (kind, label) => {
 function makePlayer(entity, kind, opts = {}) {
   const anims = entity.animations;
   const stateNames = Object.keys(anims);
-  // A take is not a state: one chip per state, versions on their own row.
-  const baseStates = stateNames.filter((s) => !anims[s]?.takeOf);
+  // A take is not a state: one chip per state, versions on their own row. A
+  // state may exist as VERSIONS ONLY — the agent's rename to v1/v2/v3 stopped
+  // writing a bare `attack` folder — so the state list is derived from what
+  // each entry belongs to, not from the entries that belong to nothing.
   const takeOf = (s) => anims[s]?.takeOf ?? s;
-  const takesOf = (st) => [st, ...stateNames.filter((s) => anims[s]?.takeOf === st)];
+  const baseStates = [...new Set(stateNames.map(takeOf))];
+  const takesOf = (st) => [...(anims[st] ? [st] : []), ...stateNames.filter((s) => anims[s]?.takeOf === st)];
   const takeLabelOf = (s) => anims[s]?.takeLabel ?? "live";
   /** The slot to show for a state: the version he last picked when this state
-   *  has one, else the live take. */
-  const slotFor = (st, label) => (label ? takesOf(st).find((s) => takeLabelOf(s) === label) ?? st : st);
+   *  has one, else the take that ships, else its first version. */
+  const slotFor = (st, label) => {
+    const takes = takesOf(st);
+    return (label && takes.find((s) => takeLabelOf(s) === label)) || takes[0] || st;
+  };
   const kept = lastViewerState(kind);
   const keptTake = lastViewerTake(kind);
   const openState = kept && baseStates.includes(kept) ? kept
@@ -2348,7 +2354,10 @@ function makePlayer(entity, kind, opts = {}) {
     stateSeg.replaceChildren(...baseStates.map((s) => {
       // A state's chip carries the LIVE take's verdicts — that is the one that
       // ships; the version row carries each take's own.
-      const mark = fbDomain ? facetMark(fbDomain, entity.path, s, Object.keys(anims[s]?.dirs ?? {}), entity) : { cls: "", title: null };
+      // A state with no take of its own is marked by the take that ships, or
+      // by its first version when every take is a version.
+      const shown = anims[s] ? s : takesOf(s)[0];
+      const mark = fbDomain ? facetMark(fbDomain, entity.path, shown, Object.keys(anims[shown]?.dirs ?? {}), entity) : { cls: "", title: null };
       return h("button", {
         class: [s === takeOf(cur.state) ? "on" : "", mark.cls].filter(Boolean).join(" "),
         onclick: () => {
@@ -2374,7 +2383,7 @@ function makePlayer(entity, kind, opts = {}) {
           loadClip(); renderStateSeg(); renderTakeSeg(); revealActiveState(); renderDirPad(); refreshShadowBar(); refreshHitBar(); onFacetChange?.();
         },
         title: mark.title ? `${stateWords(s)} — ${mark.title}` : stateWords(s),
-      }, stateLabel(s) + (anims[s].fallback ? ` (→${stateLabel(anims[s].fallback)})` : ""));
+      }, stateLabel(s) + (anims[s]?.fallback ? ` (→${stateLabel(anims[s].fallback)})` : ""));
     }));
   }
   /** The version row: one chip per take of the state on screen, or nothing at
