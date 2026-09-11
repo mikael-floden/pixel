@@ -22,6 +22,9 @@ import {
   JUMP_CLIMB,
   PLAYER_RADIUS,
   integrateFall,
+  fallDurationS,
+  ISO_GEOMETRY_MAPS3,
+  FALL_DMG_MIN_LEVELS,
   parseWorld,
   MAX_STAMINA,
   SWIM_DRAIN,
@@ -279,6 +282,43 @@ test("integrateFall: a cliff drop falls under gravity (animated, not a snap)", (
   assert.equal(s.elev, 0);
   assert.equal(s.falling, false);
   assert.ok(frames < 30, `a 2-level fall should land quickly, took ${frames} frames`);
+});
+
+// THE SERVER BILLS A FALL WHEN THE BODY LANDS, and the only thing that tells it
+// when that is, is this function. It has to agree with the descent the client
+// actually draws — a closed form that ran short would put the hp back where the
+// bug was (maintainer 2026-09-11: "when I fall down a cliff I should take fall
+// damage when I hit the ground and not when I start falling"), and one that ran
+// long would leave you standing on the ground at full health for a beat.
+test("fallDurationS matches the drawn descent, and never lands the hit early", () => {
+  const lh = ISO_GEOMETRY_MAPS3.lh; // the pitch the game ships
+  const dt = 1 / 60;
+  const rows: string[] = [];
+  for (const levels of [FALL_DMG_MIN_LEVELS, 8, 12, 20, 32, 46]) {
+    let s = { elev: levels * lh, fallV: 0, falling: false };
+    let frames = 0;
+    while (s.elev > 0 && frames < 6000) {
+      s = integrateFall(s, 0, dt, lh);
+      frames++;
+    }
+    const drawn = frames * dt; // rounded UP to the frame the body first touches down
+    const t = fallDurationS(levels, lh);
+    // WITHIN ONE FRAME of the drawn descent, either way. Closer than that is
+    // not a thing anyone can observe: the server settles the hit on its 20 Hz
+    // tick, so the real granularity is 50 ms — three frames — and `drawn`
+    // itself is quantised to the client's own frame.
+    assert.ok(
+      Math.abs(t - drawn) <= dt + 1e-9,
+      `${levels} levels: clock ${t.toFixed(3)}s vs the ${drawn.toFixed(3)}s descent`,
+    );
+    rows.push(`${levels}lv ${(t * 1000).toFixed(0)}ms`);
+  }
+  // A fall worth billing is never instant: the shortest one the damage rule
+  // sees is still most of a second, which is the whole point of deferring it.
+  assert.ok(fallDurationS(FALL_DMG_MIN_LEVELS, lh) > 0.4, "the smallest damaging fall is still a visible descent");
+  assert.equal(fallDurationS(0, lh), 0, "no drop, no wait");
+  assert.equal(fallDurationS(-3, lh), 0, "a climb is not a fall");
+  console.log(`fall clock: ${rows.join(", ")}`);
 });
 
 test("integrateFall: up-steps EASE up (staircase step), gentle down-steps ease, no fall", () => {

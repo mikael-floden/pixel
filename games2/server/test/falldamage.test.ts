@@ -34,6 +34,8 @@ import {
   screenToWorldVector,
   FALL_DMG_MIN_LEVELS,
   FALL_DMG_MAX_LEVELS,
+  fallDurationS,
+  ISO_GEOMETRY_MAPS3,
 } from "@nangijala/shared";
 import { WorldRoom } from "../src/rooms/WorldRoom.js";
 
@@ -208,14 +210,36 @@ test("landing costs the curve's price, and water is a dive", async (t) => {
     await waitFor(() => me().elev >= cliff!.L - 0.5, 4000, "teleport onto the ledge");
     const expect = Math.round(fallDamageFrac(cliff!.drop) * hpMax);
     assert.ok(expect > 0 && expect < hpMax, `a ${cliff!.drop}-level fall must sting, not kill (${expect} of ${hpMax})`);
-    for (let i = 0; i < 30 && me().hp === hpMax; i++) {
+    // STOP WALKING THE MOMENT THE EDGE IS GONE, or the body keeps stepping
+    // during its own descent and a second ledge bills a second hit.
+    const stepped = () => me().elev <= cliff!.L - cliff!.drop + 0.5;
+    for (let i = 0; i < 30 && !stepped(); i++) {
       r1.send("input", { ax: cliff!.ax, ay: cliff!.ay, running: false, dt: 0.05, seq: i + 1 });
       await new Promise((r) => setTimeout(r, 40));
     }
-    await waitFor(() => me().hp < hpMax, 4000, "the landing to hurt");
+    assert.ok(stepped(), `never walked off ${cliff!.c},${cliff!.r}`);
+    // THE WHOLE POINT: the hp is still untouched the instant the ground goes.
+    // The server resolves all `drop` storeys in one tick, so before this fix
+    // the bar emptied, the flinch played and a fatal fall started its death
+    // animation in mid-air (maintainer 2026-09-11: "when I fall down a cliff I
+    // should take fall damage when I hit the ground and not when I start
+    // falling").
+    const tStep = Date.now();
+    assert.equal(me().hp, hpMax, "the hp is billed on impact, not on the step off the edge");
+    await waitFor(() => me().hp < hpMax, 6000, "the landing to hurt");
+    const waited = Date.now() - tStep;
+    const fall = fallDurationS(cliff!.drop, ISO_GEOMETRY_MAPS3.lh) * 1000;
+    // Loose on both sides on purpose — the settle runs on the 20 Hz tick and
+    // the patch carrying the hp takes its own trip — but far tighter than the
+    // whole fall, so an immediate hit cannot pass.
+    assert.ok(waited > fall * 0.5,
+      `the hit landed ${waited}ms after the step off a ${fall.toFixed(0)}ms fall — too early to be an impact`);
+    assert.ok(waited < fall + 1500,
+      `the hit landed ${waited}ms after the step off a ${fall.toFixed(0)}ms fall — too late`);
     assert.equal(me().hp, hpMax - expect,
       `a ${cliff!.drop}-level fall off ${cliff!.c},${cliff!.r} costs exactly ${expect}`);
     assert.ok(!me().dead, `a ${cliff!.drop}-level fall stings, it does not kill`);
+    console.log(`falldamage: ${cliff!.drop} levels billed ${waited}ms after the edge (clock says ${fall.toFixed(0)}ms)`);
 
     // A ledge over WATER: the same walk is a dive, no damage.
     const hpBefore = me().hp;

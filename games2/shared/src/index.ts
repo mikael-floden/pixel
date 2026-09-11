@@ -731,6 +731,31 @@ export function integrateFall(s: FallState, target: number, dt: number, lh: numb
   return { elev, fallV, falling: true };
 }
 
+/**
+ * HOW LONG A CLIFF FALL OF `levels` TAKES, in seconds — the same physics
+ * `integrateFall` runs, solved instead of stepped: a body released from rest
+ * covers `levels * lh` px at FALL_GRAVITY, so t = sqrt(2d/g).
+ *
+ * IT EXISTS SO THE SERVER CAN BILL THE FALL WHEN THE BODY LANDS. The drop is
+ * resolved in ONE tick — `resolveElevAt` returns the surface under the new
+ * cell, all ten storeys of it — so the server used to take the hp the frame
+ * the player stepped off the edge, while the client was still playing 1.5
+ * seconds of descent: the bar emptied, the flinch played and the death
+ * animation started in mid-air (maintainer 2026-09-11: "when I fall down a
+ * cliff I should take fall damage when I hit the ground and not when I start
+ * falling"). The server now schedules the hit this far ahead.
+ *
+ * `lh` is the storey pitch in px — ISO_GEOMETRY_MAPS3.lh (15) for the world
+ * the game ships; the client passes its own measured geom so the two agree.
+ * The closed form runs a hair long against the frame-stepped integration
+ * (semi-implicit Euler overshoots the last step), which is the right way to be
+ * wrong: land the hit a frame late rather than a frame early.
+ */
+export function fallDurationS(levels: number, lh: number = LEVEL_PX): number {
+  const d = Math.max(0, levels) * lh;
+  return d > 0 ? Math.sqrt((2 * d) / FALL_GRAVITY) : 0;
+}
+
 // Swimming: entering water starts a stamina drain; at zero you drown.
 export const MAX_STAMINA = 100;
 export const SWIM_DRAIN = 20; // stamina per second while swimming

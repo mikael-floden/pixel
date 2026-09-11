@@ -56,6 +56,7 @@ import {
   surfaceAtWorldElev,
   FALL_DMG_MIN_LEVELS,
   fallDamageFrac,
+  fallDurationS,
   isStandableAtWorld,
   findSpawn,
   WALK_CLIMB,
@@ -923,6 +924,7 @@ export class WorldRoom extends Room<WorldState> {
       player.inputQueue.length = 0;
       player.timeCredit = 0;
       player.jumpUntil = 0;
+      this.fallPend.delete(player.pid); // an ASSIGNED elevation ends the fall it was in
     });
 
     // Time-of-day is world state, and it RUNS: the server's world clock
@@ -1119,6 +1121,7 @@ export class WorldRoom extends Room<WorldState> {
       player.y = c.y + rand(-120, 120);
     }
     player.elev = this.terrain ? levelAtWorld(this.terrain, player.x, player.y) : 0;
+    this.fallPend.delete(player.pid); // an ASSIGNED elevation ends the fall it was in
   }
 
   /** Sessions this room ejected on purpose (the one-token-one-session rule).
@@ -1379,6 +1382,7 @@ export class WorldRoom extends Room<WorldState> {
       }
     }
     this.state.players.delete(pid);
+    this.fallPend.delete(pid);
     this.seen.delete(client.sessionId);
     this.sidPid.delete(client.sessionId);
     this.pidSid.delete(pid);
@@ -1462,6 +1466,9 @@ export class WorldRoom extends Room<WorldState> {
       if (m.provoked && m.targetSid && (m.mstate === "chase" || m.mstate === "combat"))
         hunted.add(m.targetSid);
     });
+    // A fall that has reached the ground bills FIRST — before the input that
+    // follows it — so the flinch and the death land on the frame of impact.
+    this.settleFalls(now);
     this.state.players.forEach((player, id) => {
       const jumping = now < player.jumpUntil;
       player.jumping = jumping;
@@ -1569,12 +1576,27 @@ export class WorldRoom extends Room<WorldState> {
           // never bill their elevation change as a fall. Routed navigation
           // refuses these drops outright (stepReach) — a damaging fall can
           // only be the player's own input walking off the edge.
+          //
+          // BILLED ON IMPACT, NOT ON THE STEP OFF. The whole drop resolves in
+          // ONE tick, but the body is drawn falling for `fallDurationS` of it
+          // — so taking the hp here emptied the bar, played the flinch and
+          // started the death animation in mid-air (maintainer 2026-09-11:
+          // "when I fall down a cliff I should take fall damage when I hit the
+          // ground and not when I start falling"). The hit is scheduled and
+          // `settleFalls` lands it. A second cliff caught mid-fall adds to the
+          // pending hit and pushes it out to ITS own landing.
           const drop = elevBefore - player.elev;
           if (drop >= FALL_DMG_MIN_LEVELS && !player.dead) {
             const landing = surfaceAtWorldElev(terrain, player.x, player.y, player.elev);
             if (!landing.swimmable) {
               const dmg = Math.round(fallDamageFrac(drop) * player.hpMax);
-              if (dmg > 0) this.hurtPlayer(player, dmg, now);
+              if (dmg > 0) {
+                const pend = this.fallPend.get(id);
+                this.fallPend.set(id, {
+                  dmg: (pend?.dmg ?? 0) + dmg,
+                  at: now + Math.round(fallDurationS(drop, this.storeyPx) * 1000),
+                });
+              }
             }
           }
         }
@@ -2124,6 +2146,30 @@ export class WorldRoom extends Room<WorldState> {
   /** Fractional HP owed by a harmful liquid (lava), per session — landed
    *  whole through hurtPlayer as it accrues. */
   private harmAcc = new Map<string, number>();
+  /** pid -> the fall hit waiting for the body to LAND: the hp it costs and the
+   *  wall clock it is due. Dropped whenever an elevation is ASSIGNED rather
+   *  than walked (spawn, teleport, revive, hand-off, leave) — the fall those
+   *  storeys belonged to is over, and a hit that outlived it would kill
+   *  someone standing somewhere else. */
+  private fallPend = new Map<string, { dmg: number; at: number }>();
+  /** The storey pitch in px the fall clock runs on, so the server's landing
+   *  and the client's drawn descent are the same fall. The maps3 constant for
+   *  the same reason the scenery stamp uses it: the game ships ONE world and
+   *  the loader does not carry its `iso` block this far. */
+  private storeyPx = ISO_GEOMETRY_MAPS3.lh;
+
+  /** LAND EVERY FALL THAT HAS REACHED THE GROUND. Runs before the player loop
+   *  so a hit due this tick is taken before the input that follows it. */
+  private settleFalls(now: number) {
+    if (!this.fallPend.size) return;
+    for (const [id, f] of [...this.fallPend]) {
+      if (now < f.at) continue;
+      this.fallPend.delete(id);
+      const p = this.state.players.get(id);
+      if (!p || p.dead) continue;
+      this.hurtPlayer(p, f.dmg, now);
+    }
+  }
   private hurtPlayer(player: Player, dmg: number, now: number) {
     player.hp = Math.max(0, player.hp - dmg);
     player.hitSeq++;
@@ -2944,6 +2990,7 @@ export class WorldRoom extends Room<WorldState> {
       if (!p?.handoff) return;
       const sid = this.pidSid.get(m.pid);
       this.state.players.delete(m.pid);
+      this.fallPend.delete(m.pid);
       if (sid) {
         this.handed.add(sid);
         this.seen.delete(sid);

@@ -137,8 +137,25 @@ Server-authoritative movement, decks, collision, steer assist, fall damage, tap/
     ≥ 6 levels costs `round(frac·hpMax)` through the standard `hurtPlayer`.
     Landing in SWIMMABLE water is a dive — free. Walking off a cliff manually
     is allowed; the damage is the price.
+  - **THE HIT LANDS WHEN THE BODY DOES**, not when it steps off. The server
+    resolves the whole drop in ONE tick while the client draws
+    `fallDurationS(drop, lh)` of descent (6 levels 671 ms, 32 levels 1.55 s),
+    so billing it at the resolve emptied the bar, played the flinch and
+    started a fatal fall's death animation in mid-air (maintainer 2026-09-11:
+    "I should take fall damage when I hit the ground and not when I start
+    falling"). `fallPend` (pid → hp + due time) is settled at the top of the
+    tick, before the input that follows it; a second cliff caught mid-fall
+    ADDS to the pending hit and pushes it to its own landing. An ASSIGNED
+    elevation drops it — spawn, teleport, revive, hand-off, leave — or the
+    hit outlives its fall and kills you somewhere else. `fallDurationS` is
+    the closed form of `integrateFall`'s own physics (t = √(2d/g)), so the
+    two cannot drift.
   - Gates: `server/test/falldamage.test.ts` (curve pins; the route law
-    verified failing on the pre-fix baseline; live-room cliff + dive).
+    verified failing on the pre-fix baseline; live-room cliff + dive, and the
+    cliff arm asserts hp is UNTOUCHED at the edge and billed 0.5–1× the fall
+    clock later — measured 822 ms on an 8-level ledge against a 775 ms
+    clock); `collision.test.ts` holds `fallDurationS` to within one frame of
+    the drawn descent at six drop heights.
 - **Auto-jump**: walking INTO a 1-level wall auto-fires the jump
   (`maybeAutoJump`/`wouldAutoJump` from `predictAndSend`). Rule: exactly
   `!canEnter(walk) && canEnter(jump)` probed a leading-edge ahead — 2-level+

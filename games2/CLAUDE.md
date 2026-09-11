@@ -133,7 +133,8 @@ secrets; push to `main`, rebase on reject, no PRs unless asked; doc law.
   the escape, and the rescue never climbs.
 - A footprint and a body belong to the FLOOR they stand on (`lvl`); every
   query that knows the surface level passes it.
-- The nav system avoids fall damage at any cost: ≥6 levels is not an edge.
+- The nav system avoids fall damage at any cost: ≥6 levels is not an edge; a
+  fall bills on IMPACT (`fallPend`, `fallDurationS`), never at the edge.
 - Water is the player's sanctuary: no monster enters, swims or is hit there.
 - A tap RUNS; the beacon is the pixel you touched and never moves to meet the
   walk (rejected twice); both readings of an ambiguous pixel are routed.
