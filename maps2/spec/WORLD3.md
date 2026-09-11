@@ -681,6 +681,21 @@ furniture already standing against that wall wins, and a wall with no clear
 cell gets nothing (a cupboard is as tall as the hanging is high). The old rule
 stood the hanging on the floor against the north wall like a chest.
 
+**Carpets** (`_lay_rug` / `_rug_spots`, maintainer 2026-09-11: *"When you
+place a carpet in a room can you please try to center it in the room. This is
+not a hard rule just a better default we still want variations."*): the middle
+is the WEIGHT. A ring is drawn per rug from `RUG_RING = ((0,6), (1,3), (2,1))`
+— dead centre six times in ten, a cell out three, two cells out one — and the
+room's cells are then tried from that ring outwards, so a rug the centre
+cannot take (a table stands there) lies near it rather than against a wall.
+The centre is the floor's own CENTROID, not its bounding box: an L-shaped room
+has no middle where the box says. **And not every room is carpeted**
+(`RUG_IN_ROOM = 0.6`): trying the centre and then outwards always finds a
+cell, where the old single shot at one fixed spot usually hit the furniture
+and dropped the rug — so centring alone took the_game from 3 carpets to one in
+every room, which is the sameness he keeps ruling out. the_game: 8 rugs in 13
+rooms, 0.25–1.52 cells off their centroids.
+
 ### `scenery` — a placement is centred on its HITBOX, not its art
 
 **The hitbox centre stands in the middle of a tile** (maintainer, 2026-08-30:

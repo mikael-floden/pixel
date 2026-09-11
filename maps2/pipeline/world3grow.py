@@ -4313,6 +4313,47 @@ class Grow:
             n += 1
         return n
 
+    # A CARPET BELONGS IN THE MIDDLE OF ITS ROOM (maintainer 2026-09-11:
+    # "When you place a carpet in a room can you please try to center it in
+    # the room. This is not a hard rule just a better default we still want
+    # variations."). So the middle is the WEIGHT: a ring is drawn per rug -
+    # dead centre six times in ten, one cell out three, two cells out one -
+    # and the candidates are then tried from that ring outwards, so a rug the
+    # centre cannot take (a table stands there) still lies near it instead of
+    # against a wall. The centre is the floor's own CENTROID, not its
+    # bounding box: an L-shaped room has no middle where the box says.
+    RUG_RING = ((0, 6), (1, 3), (2, 1))
+    # ...AND NOT EVERY ROOM HAS ONE. Trying the centre and then outwards
+    # always finds a cell, where the old single shot at one fixed spot
+    # usually hit the furniture and dropped the rug - so centring them alone
+    # took the_game from 3 carpets to one in every room, which is the
+    # sameness he keeps ruling out. Whether a room is carpeted is drawn too.
+    RUG_IN_ROOM = 0.6
+
+    def _rug_spots(self, cells, r):
+        """The room's cells, ordered centre-first by the ring drawn for this
+        rug — the caller walks them until one takes the piece."""
+        cs = sorted(cells)
+        ax = sum(c[0] + 0.5 for c in cs) / len(cs)
+        ay = sum(c[1] + 0.5 for c in cs) / len(cs)
+        want = self._weighted(self.RUG_RING, r)
+        scored = []
+        for c in cs:
+            d = max(abs(c[0] + 0.5 - ax), abs(c[1] + 0.5 - ay))
+            scored.append((abs(d - want), d, r(), c))
+        scored.sort()
+        return [c for *_rest, c in scored]
+
+    def _lay_rug(self, cells, r, pk, on):
+        """One rug, as near the middle as the room allows - in the rooms that
+        draw one at all."""
+        if r() >= self.RUG_IN_ROOM:
+            return 0
+        for (x, y) in self._rug_spots(cells, r)[:16]:
+            if self.put(pk("rugs_and_hides"), x + 0.5, y + 0.5, on=on):
+                return 1
+        return 0
+
     def interiors(self):
         self._against = []
         """Furnish EVERY parquet room (the indoor-scenery ask). The renderer
@@ -4544,14 +4585,18 @@ class Grow:
                                       tx, ty - 1.0, on=IN, dir="south-west")
             if len(cells) >= self.HANG_MIN:
                 n += self._hang(x0, y0, x1, y1, r, 1 + (len(cells) >= 24))
-                n += self.put(pk("rugs_and_hides"), cx, cy + 1.0, on=IN)
+                n += self._lay_rug(cells, r, pk, IN)
                 n += self.put(pk("house_clutter"), x1 + 0.5, y1 + 0.5, on=IN)
             for k in range(len(cells) // 20):
                 rx = x0 + 1 + int(r() * max(1, x1 - x0 - 1))
                 ry = y0 + 1 + int(r() * max(1, y1 - y0 - 1))
                 grp = ("barrels", "house_clutter", "tables",
                        "rugs_and_hides")[k % 4]
-                n += self.put(pk(grp), rx + 0.5, ry + 0.5, on=IN)
+                # the scattered pieces stay scattered; a rug goes to the middle
+                if grp == "rugs_and_hides":
+                    n += self._lay_rug(cells, r, pk, IN)
+                else:
+                    n += self.put(pk(grp), rx + 0.5, ry + 0.5, on=IN)
             self.placed += [(f"room {hi} furniture", n)]
             # BUILD ASSERT: a room the pass furnishes is never left empty -
             # eleven empty rooms shipped once without a word from the build
