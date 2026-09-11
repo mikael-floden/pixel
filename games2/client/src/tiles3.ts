@@ -2289,7 +2289,24 @@ export class Tiles3 {
     let feet: (string | null)[] | null = null;
     /* The data flag is the default so EVERY caller gets it — the streaming
      * runtime asks `boundaryAt` directly, not through `wangSurface`. */
-    if (opts?.foot ?? this.data.footBoundary) {
+    /* NOT ON WATER. The foot rule makes a corner at a higher wall vote the
+     * WALL'S SIDE material, so a water cell at a cliff foot composed
+     * water<->light_beach and drew a strip of BEACH on the sea — the pale band
+     * along every coast cliff, and the beaded chain further out where the
+     * lattice caught a corner on its own (maintainer 2026-09-10/11, four
+     * reports: "I don't like the transition tiles we added in the specific case
+     * that the ground is water", and of the wall itself, "I want the wall to
+     * look as if it was continuing down the water surface as before"). It is
+     * also what the foot BAND was getting lost in, which is why removing the
+     * band never removed the sand.
+     *
+     * THE SHORE ITSELF STILL COMPOSES: a water cell whose corners include a
+     * real beach still blends water<->beach below, which is his 2026-09-09
+     * verdict ("the transition tile is not 100% water or 100% beach"). Only the
+     * CLIFF-FOOT vote is refused here. render3.py carries the same footBoundary
+     * rule and is NOT changed — a noted divergence for maps2, not a silent one.
+     */
+    if ((opts?.foot ?? this.data.footBoundary) && !view.isLiquid(g0)) {
       const f0 = this.footSide(view, g, L, x, y, z0);
       const f1 = this.footSide(view, g, L, x + 1, y, z0);
       const f2 = this.footSide(view, g, L, x, y + 1, z0);
