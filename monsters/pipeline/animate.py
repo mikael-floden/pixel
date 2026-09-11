@@ -411,8 +411,12 @@ def qa_clip(cid, state, d, frames, pinned=None, claw_take=False, want_frames=Non
     spec = STATES[base_state(state)]
     if pinned is None:
         pinned = spec.get("keep_first", True)
+    # PRO picks its own length — the maintainer's own shipped attacks run 4, 6,
+    # 9 and 16 frames — so only a v3-mode clip has a count to check against.
+    # (Measured 2026-09-11: gating pro on 4 threw away 45 perfectly good clips
+    # in one round, the entire round's spend.)
     want = (want_frames or spec["frames"]) + (1 if pinned else 0)
-    if len(frames) != want:
+    if spec.get("mode") != "pro" and len(frames) != want:
         reasons.append(f"{len(frames)} frames, expected {want}")
     if not frames:
         return {"status": "fail", "reasons": reasons}

@@ -1272,7 +1272,6 @@
             48
           ],
           "reasons": [
-            "16 frames, expected 4",
             "no strike, just a lean: nothing reaches past 0.10 of the body"
           ],
           "sub": "9e4e404b-fb88-44d2-bf36-8ef5c5f4f903",
@@ -1280,17 +1279,16 @@
           "takes": 2,
           "version": 3,
           "mirrored": false,
+          "generated_at": "2026-09-11T17:40:25+00:00",
           "action": "Lunge Attack - Throws its whole body forward in one fast lunge, white swoosh lines trailing behind it, a big aggressive swing",
-          "intensity": 0,
-          "rolls": 3,
-          "frames": 16,
-          "rung": 2,
-          "unwrapped": null,
           "tries": 3,
-          "generated_at": "2026-09-11T17:40:25+00:00"
+          "rolls": 3,
+          "intensity": 0,
+          "frames": 16,
+          "rung": 2
         },
         "south-east": {
-          "status": "fail",
+          "status": "warn",
           "step_mean": 0.2096,
           "step_max": 0.4276,
           "drift": 7.13,
@@ -1307,7 +1305,6 @@
             48
           ],
           "reasons": [
-            "16 frames, expected 4",
             "7 px of travel — eyeball it"
           ],
           "sub": "56fdf0ff-d9cd-4485-a9d5-db7309fb3fef",
@@ -1315,17 +1312,16 @@
           "takes": 1,
           "version": 3,
           "mirrored": false,
+          "generated_at": "2026-09-11T17:40:26+00:00",
           "action": "Lunge Attack - Throws its whole body forward in one fast lunge, white swoosh lines trailing behind it, a big aggressive swing",
-          "intensity": 0,
-          "rolls": 3,
-          "frames": 16,
-          "rung": 2,
-          "unwrapped": null,
           "tries": 3,
-          "generated_at": "2026-09-11T17:40:26+00:00"
+          "rolls": 3,
+          "intensity": 0,
+          "frames": 16,
+          "rung": 2
         },
         "east": {
-          "status": "fail",
+          "status": "warn",
           "step_mean": 0.0859,
           "step_max": 0.239,
           "drift": 1.63,
@@ -1342,7 +1338,6 @@
             48
           ],
           "reasons": [
-            "16 frames, expected 4",
             "shallow strike: reach 0.25 — eyeball it"
           ],
           "sub": "fa729548-d52c-454d-858b-5f03835a7e95",
@@ -1350,17 +1345,16 @@
           "takes": 2,
           "version": 3,
           "mirrored": false,
+          "generated_at": "2026-09-11T17:40:27+00:00",
           "action": "Lunge Attack - Throws its whole body forward in one fast lunge, white swoosh lines trailing behind it, a big aggressive swing",
-          "intensity": 0,
-          "rolls": 3,
-          "frames": 16,
-          "rung": 2,
-          "unwrapped": null,
           "tries": 3,
-          "generated_at": "2026-09-11T17:40:27+00:00"
+          "rolls": 3,
+          "intensity": 0,
+          "frames": 16,
+          "rung": 2
         },
         "north-east": {
-          "status": "fail",
+          "status": "warn",
           "step_mean": 0.1688,
           "step_max": 0.4036,
           "drift": 5.04,
@@ -1377,7 +1371,6 @@
             48
           ],
           "reasons": [
-            "16 frames, expected 4",
             "shallow strike: reach 0.18 — eyeball it",
             "6 px of travel — eyeball it"
           ],
@@ -1386,17 +1379,16 @@
           "takes": 2,
           "version": 3,
           "mirrored": false,
+          "generated_at": "2026-09-11T17:40:29+00:00",
           "action": "Lunge Attack - Throws its whole body forward in one fast lunge, white swoosh lines trailing behind it, a big aggressive swing",
-          "intensity": 0,
-          "rolls": 3,
-          "frames": 16,
-          "rung": 2,
-          "unwrapped": null,
           "tries": 3,
-          "generated_at": "2026-09-11T17:40:29+00:00"
+          "rolls": 3,
+          "intensity": 0,
+          "frames": 16,
+          "rung": 2
         },
         "north": {
-          "status": "fail",
+          "status": "warn",
           "step_mean": 0.1706,
           "step_max": 0.5556,
           "drift": 3.89,
@@ -1413,7 +1405,6 @@
             48
           ],
           "reasons": [
-            "16 frames, expected 4",
             "shallow strike: reach 0.22 — eyeball it"
           ],
           "sub": "18f85691-65bf-4570-ab4f-947ef36ccb03",
@@ -1421,14 +1412,116 @@
           "takes": 1,
           "version": 3,
           "mirrored": false,
+          "generated_at": "2026-09-11T17:40:30+00:00",
           "action": "Lunge Attack - Throws its whole body forward in one fast lunge, white swoosh lines trailing behind it, a big aggressive swing",
-          "intensity": 0,
+          "tries": 3,
           "rolls": 3,
+          "intensity": 0,
+          "frames": 16,
+          "rung": 2
+        },
+        "south-west": {
+          "status": "warn",
+          "step_mean": 0.2096,
+          "step_max": 0.4276,
+          "drift": 7.13,
+          "loop": 0.1032,
+          "loop_ratio": 0.49,
+          "travel": 7.16,
+          "pin": 0.596,
+          "pad": 0,
+          "flash": 0.347,
+          "peak": 0.7225,
+          "reach": 0.347,
+          "canvas": [
+            48,
+            48
+          ],
+          "reasons": [
+            "7 px of travel — eyeball it"
+          ],
+          "sub": "56fdf0ff-d9cd-4485-a9d5-db7309fb3fef",
+          "group": "9c4c2e27-2e43-490e-8c51-a50f8d4469eb",
+          "takes": 1,
+          "version": 3,
+          "mirrored": true,
+          "generated_at": "2026-09-11T17:40:26+00:00",
+          "action": "Lunge Attack - Throws its whole body forward in one fast lunge, white swoosh lines trailing behind it, a big aggressive swing",
+          "tries": 3,
+          "rolls": 3,
+          "intensity": 0,
           "frames": 16,
           "rung": 2,
-          "unwrapped": null,
+          "source": "south-east"
+        },
+        "west": {
+          "status": "warn",
+          "step_mean": 0.0859,
+          "step_max": 0.239,
+          "drift": 1.63,
+          "loop": 0.0,
+          "loop_ratio": 0.0,
+          "travel": 1.66,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": 0.002,
+          "peak": 0.2169,
+          "reach": 0.246,
+          "canvas": [
+            48,
+            48
+          ],
+          "reasons": [
+            "shallow strike: reach 0.25 — eyeball it"
+          ],
+          "sub": "fa729548-d52c-454d-858b-5f03835a7e95",
+          "group": "9c4c2e27-2e43-490e-8c51-a50f8d4469eb",
+          "takes": 2,
+          "version": 3,
+          "mirrored": true,
+          "generated_at": "2026-09-11T17:40:27+00:00",
+          "action": "Lunge Attack - Throws its whole body forward in one fast lunge, white swoosh lines trailing behind it, a big aggressive swing",
           "tries": 3,
-          "generated_at": "2026-09-11T17:40:30+00:00"
+          "rolls": 3,
+          "intensity": 0,
+          "frames": 16,
+          "rung": 2,
+          "source": "east"
+        },
+        "north-west": {
+          "status": "warn",
+          "step_mean": 0.1688,
+          "step_max": 0.4036,
+          "drift": 5.04,
+          "loop": 0.3365,
+          "loop_ratio": 1.99,
+          "travel": 5.82,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": 0.003,
+          "peak": 0.6688,
+          "reach": 0.182,
+          "canvas": [
+            48,
+            48
+          ],
+          "reasons": [
+            "shallow strike: reach 0.18 — eyeball it",
+            "6 px of travel — eyeball it"
+          ],
+          "sub": "4a2f48e5-9b13-427f-986c-2099714abe1e",
+          "group": "9c4c2e27-2e43-490e-8c51-a50f8d4469eb",
+          "takes": 2,
+          "version": 3,
+          "mirrored": true,
+          "generated_at": "2026-09-11T17:40:29+00:00",
+          "action": "Lunge Attack - Throws its whole body forward in one fast lunge, white swoosh lines trailing behind it, a big aggressive swing",
+          "tries": 3,
+          "rolls": 3,
+          "intensity": 0,
+          "frames": 16,
+          "rung": 2,
+          "source": "north-east"
         }
       },
       "action": "Headbutt - Rocks back, then rams forward hard with its hard husk",
@@ -1522,6 +1615,60 @@
           "seed_husk/animations/attack_v3/north/13.webp",
           "seed_husk/animations/attack_v3/north/14.webp",
           "seed_husk/animations/attack_v3/north/15.webp"
+        ],
+        "south-west": [
+          "seed_husk/animations/attack_v3/south-west/00.webp",
+          "seed_husk/animations/attack_v3/south-west/01.webp",
+          "seed_husk/animations/attack_v3/south-west/02.webp",
+          "seed_husk/animations/attack_v3/south-west/03.webp",
+          "seed_husk/animations/attack_v3/south-west/04.webp",
+          "seed_husk/animations/attack_v3/south-west/05.webp",
+          "seed_husk/animations/attack_v3/south-west/06.webp",
+          "seed_husk/animations/attack_v3/south-west/07.webp",
+          "seed_husk/animations/attack_v3/south-west/08.webp",
+          "seed_husk/animations/attack_v3/south-west/09.webp",
+          "seed_husk/animations/attack_v3/south-west/10.webp",
+          "seed_husk/animations/attack_v3/south-west/11.webp",
+          "seed_husk/animations/attack_v3/south-west/12.webp",
+          "seed_husk/animations/attack_v3/south-west/13.webp",
+          "seed_husk/animations/attack_v3/south-west/14.webp",
+          "seed_husk/animations/attack_v3/south-west/15.webp"
+        ],
+        "west": [
+          "seed_husk/animations/attack_v3/west/00.webp",
+          "seed_husk/animations/attack_v3/west/01.webp",
+          "seed_husk/animations/attack_v3/west/02.webp",
+          "seed_husk/animations/attack_v3/west/03.webp",
+          "seed_husk/animations/attack_v3/west/04.webp",
+          "seed_husk/animations/attack_v3/west/05.webp",
+          "seed_husk/animations/attack_v3/west/06.webp",
+          "seed_husk/animations/attack_v3/west/07.webp",
+          "seed_husk/animations/attack_v3/west/08.webp",
+          "seed_husk/animations/attack_v3/west/09.webp",
+          "seed_husk/animations/attack_v3/west/10.webp",
+          "seed_husk/animations/attack_v3/west/11.webp",
+          "seed_husk/animations/attack_v3/west/12.webp",
+          "seed_husk/animations/attack_v3/west/13.webp",
+          "seed_husk/animations/attack_v3/west/14.webp",
+          "seed_husk/animations/attack_v3/west/15.webp"
+        ],
+        "north-west": [
+          "seed_husk/animations/attack_v3/north-west/00.webp",
+          "seed_husk/animations/attack_v3/north-west/01.webp",
+          "seed_husk/animations/attack_v3/north-west/02.webp",
+          "seed_husk/animations/attack_v3/north-west/03.webp",
+          "seed_husk/animations/attack_v3/north-west/04.webp",
+          "seed_husk/animations/attack_v3/north-west/05.webp",
+          "seed_husk/animations/attack_v3/north-west/06.webp",
+          "seed_husk/animations/attack_v3/north-west/07.webp",
+          "seed_husk/animations/attack_v3/north-west/08.webp",
+          "seed_husk/animations/attack_v3/north-west/09.webp",
+          "seed_husk/animations/attack_v3/north-west/10.webp",
+          "seed_husk/animations/attack_v3/north-west/11.webp",
+          "seed_husk/animations/attack_v3/north-west/12.webp",
+          "seed_husk/animations/attack_v3/north-west/13.webp",
+          "seed_husk/animations/attack_v3/north-west/14.webp",
+          "seed_husk/animations/attack_v3/north-west/15.webp"
         ]
       },
       "strips": {
@@ -1529,7 +1676,10 @@
         "south-east": "seed_husk/animations/attack_v3__south-east.webp",
         "east": "seed_husk/animations/attack_v3__east.webp",
         "north-east": "seed_husk/animations/attack_v3__north-east.webp",
-        "north": "seed_husk/animations/attack_v3__north.webp"
+        "north": "seed_husk/animations/attack_v3__north.webp",
+        "south-west": "seed_husk/animations/attack_v3__south-west.webp",
+        "west": "seed_husk/animations/attack_v3__west.webp",
+        "north-west": "seed_husk/animations/attack_v3__north-west.webp"
       }
     }
   }

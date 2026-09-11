@@ -1253,7 +1253,7 @@
     "attack_v3": {
       "directions": {
         "south": {
-          "status": "fail",
+          "status": "pass",
           "step_mean": 0.1353,
           "step_max": 0.2316,
           "drift": 1.55,
@@ -1269,25 +1269,22 @@
             40,
             40
           ],
-          "reasons": [
-            "16 frames, expected 4"
-          ],
+          "reasons": [],
           "sub": "07ccd8c2-bfed-4ae1-9b47-a89114b72830",
           "group": "9f391b5a-3ddf-411b-821b-f014aeb3320c",
           "takes": 1,
           "version": 2,
           "mirrored": false,
+          "generated_at": "2026-09-11T17:26:46+00:00",
           "action": "Bite - Lunges forward and bites hard, embers puffing, a big aggressive swing",
-          "intensity": 0,
-          "rolls": 2,
-          "frames": 16,
-          "rung": 1,
-          "unwrapped": null,
           "tries": 2,
-          "generated_at": "2026-09-11T17:26:46+00:00"
+          "rolls": 2,
+          "intensity": 0,
+          "frames": 16,
+          "rung": 1
         },
         "south-east": {
-          "status": "fail",
+          "status": "warn",
           "step_mean": 0.0841,
           "step_max": 0.2256,
           "drift": 1.66,
@@ -1304,7 +1301,6 @@
             40
           ],
           "reasons": [
-            "16 frames, expected 4",
             "shallow strike: reach 0.26 — eyeball it"
           ],
           "sub": "46a1c1ad-f2e1-4a36-b8b4-28948a09ca91",
@@ -1312,14 +1308,13 @@
           "takes": 1,
           "version": 2,
           "mirrored": false,
+          "generated_at": "2026-09-11T17:26:47+00:00",
           "action": "Bite - Lunges forward and bites hard, embers puffing, a big aggressive swing",
-          "intensity": 0,
-          "rolls": 2,
-          "frames": 16,
-          "rung": 1,
-          "unwrapped": null,
           "tries": 2,
-          "generated_at": "2026-09-11T17:26:47+00:00"
+          "rolls": 2,
+          "intensity": 0,
+          "frames": 16,
+          "rung": 1
         },
         "east": {
           "status": "fail",
@@ -1339,7 +1334,6 @@
             40
           ],
           "reasons": [
-            "16 frames, expected 4",
             "no strike, just a lean: nothing reaches past 0.14 of the body"
           ],
           "sub": "04911f93-f5f3-46c6-b592-7067de585178",
@@ -1347,17 +1341,16 @@
           "takes": 1,
           "version": 2,
           "mirrored": false,
+          "generated_at": "2026-09-11T17:26:49+00:00",
           "action": "Bite - Lunges forward and bites hard, embers puffing, a big aggressive swing",
-          "intensity": 0,
-          "rolls": 2,
-          "frames": 16,
-          "rung": 1,
-          "unwrapped": null,
           "tries": 2,
-          "generated_at": "2026-09-11T17:26:49+00:00"
+          "rolls": 2,
+          "intensity": 0,
+          "frames": 16,
+          "rung": 1
         },
         "north-east": {
-          "status": "fail",
+          "status": "warn",
           "step_mean": 0.1589,
           "step_max": 0.4197,
           "drift": 2.73,
@@ -1374,7 +1367,6 @@
             40
           ],
           "reasons": [
-            "16 frames, expected 4",
             "shallow strike: reach 0.25 — eyeball it"
           ],
           "sub": "0ab0835d-6561-4ae2-8a64-b6db28447e9e",
@@ -1382,17 +1374,16 @@
           "takes": 1,
           "version": 2,
           "mirrored": false,
+          "generated_at": "2026-09-11T17:26:50+00:00",
           "action": "Bite - Lunges forward and bites hard, embers puffing, a big aggressive swing",
-          "intensity": 0,
-          "rolls": 2,
-          "frames": 16,
-          "rung": 1,
-          "unwrapped": null,
           "tries": 2,
-          "generated_at": "2026-09-11T17:26:50+00:00"
+          "rolls": 2,
+          "intensity": 0,
+          "frames": 16,
+          "rung": 1
         },
         "north": {
-          "status": "fail",
+          "status": "warn",
           "step_mean": 0.1781,
           "step_max": 0.3567,
           "drift": 5.12,
@@ -1409,7 +1400,6 @@
             40
           ],
           "reasons": [
-            "16 frames, expected 4",
             "shallow strike: reach 0.26 — eyeball it"
           ],
           "sub": "17c551b8-b393-49e6-908e-e5fe6e12c302",
@@ -1417,14 +1407,81 @@
           "takes": 1,
           "version": 2,
           "mirrored": false,
+          "generated_at": "2026-09-11T17:26:51+00:00",
           "action": "Bite - Lunges forward and bites hard, embers puffing, a big aggressive swing",
-          "intensity": 0,
+          "tries": 2,
           "rolls": 2,
+          "intensity": 0,
+          "frames": 16,
+          "rung": 1
+        },
+        "south-west": {
+          "status": "warn",
+          "step_mean": 0.0841,
+          "step_max": 0.2256,
+          "drift": 1.66,
+          "loop": 0.0,
+          "loop_ratio": 0.0,
+          "travel": 1.94,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": 0.0,
+          "peak": 0.1737,
+          "reach": 0.257,
+          "canvas": [
+            40,
+            40
+          ],
+          "reasons": [
+            "shallow strike: reach 0.26 — eyeball it"
+          ],
+          "sub": "46a1c1ad-f2e1-4a36-b8b4-28948a09ca91",
+          "group": "9f391b5a-3ddf-411b-821b-f014aeb3320c",
+          "takes": 1,
+          "version": 2,
+          "mirrored": true,
+          "generated_at": "2026-09-11T17:26:47+00:00",
+          "action": "Bite - Lunges forward and bites hard, embers puffing, a big aggressive swing",
+          "tries": 2,
+          "rolls": 2,
+          "intensity": 0,
           "frames": 16,
           "rung": 1,
-          "unwrapped": null,
+          "source": "south-east"
+        },
+        "north-west": {
+          "status": "warn",
+          "step_mean": 0.1589,
+          "step_max": 0.4197,
+          "drift": 2.73,
+          "loop": 0.1738,
+          "loop_ratio": 1.09,
+          "travel": 2.76,
+          "pin": 0.996,
+          "pad": 0,
+          "flash": 0.131,
+          "peak": 0.6077,
+          "reach": 0.25,
+          "canvas": [
+            40,
+            40
+          ],
+          "reasons": [
+            "shallow strike: reach 0.25 — eyeball it"
+          ],
+          "sub": "0ab0835d-6561-4ae2-8a64-b6db28447e9e",
+          "group": "9f391b5a-3ddf-411b-821b-f014aeb3320c",
+          "takes": 1,
+          "version": 2,
+          "mirrored": true,
+          "generated_at": "2026-09-11T17:26:50+00:00",
+          "action": "Bite - Lunges forward and bites hard, embers puffing, a big aggressive swing",
           "tries": 2,
-          "generated_at": "2026-09-11T17:26:51+00:00"
+          "rolls": 2,
+          "intensity": 0,
+          "frames": 16,
+          "rung": 1,
+          "source": "north-east"
         }
       },
       "action": "Bite - Lunges forward and bites hard, embers puffing",
@@ -1518,6 +1575,42 @@
           "ash_hatchling/animations/attack_v3/north/13.webp",
           "ash_hatchling/animations/attack_v3/north/14.webp",
           "ash_hatchling/animations/attack_v3/north/15.webp"
+        ],
+        "south-west": [
+          "ash_hatchling/animations/attack_v3/south-west/00.webp",
+          "ash_hatchling/animations/attack_v3/south-west/01.webp",
+          "ash_hatchling/animations/attack_v3/south-west/02.webp",
+          "ash_hatchling/animations/attack_v3/south-west/03.webp",
+          "ash_hatchling/animations/attack_v3/south-west/04.webp",
+          "ash_hatchling/animations/attack_v3/south-west/05.webp",
+          "ash_hatchling/animations/attack_v3/south-west/06.webp",
+          "ash_hatchling/animations/attack_v3/south-west/07.webp",
+          "ash_hatchling/animations/attack_v3/south-west/08.webp",
+          "ash_hatchling/animations/attack_v3/south-west/09.webp",
+          "ash_hatchling/animations/attack_v3/south-west/10.webp",
+          "ash_hatchling/animations/attack_v3/south-west/11.webp",
+          "ash_hatchling/animations/attack_v3/south-west/12.webp",
+          "ash_hatchling/animations/attack_v3/south-west/13.webp",
+          "ash_hatchling/animations/attack_v3/south-west/14.webp",
+          "ash_hatchling/animations/attack_v3/south-west/15.webp"
+        ],
+        "north-west": [
+          "ash_hatchling/animations/attack_v3/north-west/00.webp",
+          "ash_hatchling/animations/attack_v3/north-west/01.webp",
+          "ash_hatchling/animations/attack_v3/north-west/02.webp",
+          "ash_hatchling/animations/attack_v3/north-west/03.webp",
+          "ash_hatchling/animations/attack_v3/north-west/04.webp",
+          "ash_hatchling/animations/attack_v3/north-west/05.webp",
+          "ash_hatchling/animations/attack_v3/north-west/06.webp",
+          "ash_hatchling/animations/attack_v3/north-west/07.webp",
+          "ash_hatchling/animations/attack_v3/north-west/08.webp",
+          "ash_hatchling/animations/attack_v3/north-west/09.webp",
+          "ash_hatchling/animations/attack_v3/north-west/10.webp",
+          "ash_hatchling/animations/attack_v3/north-west/11.webp",
+          "ash_hatchling/animations/attack_v3/north-west/12.webp",
+          "ash_hatchling/animations/attack_v3/north-west/13.webp",
+          "ash_hatchling/animations/attack_v3/north-west/14.webp",
+          "ash_hatchling/animations/attack_v3/north-west/15.webp"
         ]
       },
       "strips": {
@@ -1525,7 +1618,9 @@
         "south-east": "ash_hatchling/animations/attack_v3__south-east.webp",
         "east": "ash_hatchling/animations/attack_v3__east.webp",
         "north-east": "ash_hatchling/animations/attack_v3__north-east.webp",
-        "north": "ash_hatchling/animations/attack_v3__north.webp"
+        "north": "ash_hatchling/animations/attack_v3__north.webp",
+        "south-west": "ash_hatchling/animations/attack_v3__south-west.webp",
+        "north-west": "ash_hatchling/animations/attack_v3__north-west.webp"
       }
     }
   }

@@ -1301,13 +1301,13 @@
           "takes": 1,
           "version": 1,
           "mirrored": false,
+          "generated_at": "2026-09-11T15:18:27+00:00",
           "action": "Magma Spit - Rears its front up high and spits a gout of magma forward",
-          "intensity": 0,
-          "rolls": 1,
-          "frames": 4,
-          "rung": 0,
           "tries": 1,
-          "generated_at": "2026-09-11T15:18:27+00:00"
+          "rolls": 1,
+          "intensity": 0,
+          "frames": 4,
+          "rung": 0
         },
         "south-east": {
           "status": "pass",
@@ -1333,11 +1333,10 @@
           "group": "99bd4bc8-a4af-4a11-837c-bd68a87f64c9",
           "takes": 1,
           "version": 1,
-          "action": "Magma Spit - Rears its front up high and spits a gout of magma forward",
-          "rung": 0,
-          "rolls": 1,
           "generated_at": "2026-09-11T15:18:28+00:00",
-          "unwrapped": 1
+          "action": "Magma Spit - Rears its front up high and spits a gout of magma forward",
+          "rolls": 1,
+          "rung": 0
         },
         "east": {
           "status": "pass",
@@ -1362,13 +1361,13 @@
           "takes": 1,
           "version": 2,
           "mirrored": false,
+          "generated_at": "2026-09-11T15:59:56+00:00",
           "action": "Magma Spit - Rears its front up high and spits a gout of magma forward",
-          "intensity": 0,
-          "rolls": 1,
-          "frames": 4,
-          "rung": 0,
           "tries": 1,
-          "generated_at": "2026-09-11T15:59:56+00:00"
+          "rolls": 1,
+          "intensity": 0,
+          "frames": 4,
+          "rung": 0
         },
         "north-east": {
           "status": "warn",
@@ -1395,13 +1394,13 @@
           "takes": 1,
           "version": 1,
           "mirrored": false,
+          "generated_at": "2026-09-11T15:18:29+00:00",
           "action": "Magma Spit - Rears its front up high and spits a gout of magma forward",
-          "intensity": 0,
-          "rolls": 1,
-          "frames": 4,
-          "rung": 0,
           "tries": 1,
-          "generated_at": "2026-09-11T15:18:29+00:00"
+          "rolls": 1,
+          "intensity": 0,
+          "frames": 4,
+          "rung": 0
         },
         "north": {
           "status": "pass",
@@ -1426,13 +1425,13 @@
           "takes": 1,
           "version": 1,
           "mirrored": false,
+          "generated_at": "2026-09-11T15:18:29+00:00",
           "action": "Magma Spit - Rears its front up high and spits a gout of magma forward",
-          "intensity": 0,
-          "rolls": 1,
-          "frames": 4,
-          "rung": 0,
           "tries": 1,
-          "generated_at": "2026-09-11T15:18:29+00:00"
+          "rolls": 1,
+          "intensity": 0,
+          "frames": 4,
+          "rung": 0
         },
         "south-west": {
           "status": "pass",
@@ -1458,11 +1457,10 @@
           "group": "99bd4bc8-a4af-4a11-837c-bd68a87f64c9",
           "takes": 1,
           "version": 1,
-          "action": "Magma Spit - Rears its front up high and spits a gout of magma forward",
-          "rung": 0,
-          "rolls": 1,
           "generated_at": "2026-09-11T15:18:28+00:00",
-          "unwrapped": 1,
+          "action": "Magma Spit - Rears its front up high and spits a gout of magma forward",
+          "rolls": 1,
+          "rung": 0,
           "mirrored": true,
           "source": "south-east"
         },
@@ -1491,13 +1489,13 @@
           "takes": 1,
           "version": 1,
           "mirrored": true,
+          "generated_at": "2026-09-11T15:18:29+00:00",
           "action": "Magma Spit - Rears its front up high and spits a gout of magma forward",
-          "intensity": 0,
+          "tries": 1,
           "rolls": 1,
+          "intensity": 0,
           "frames": 4,
           "rung": 0,
-          "tries": 1,
-          "generated_at": "2026-09-11T15:18:29+00:00",
           "source": "north-east"
         },
         "west": {
@@ -1523,13 +1521,13 @@
           "takes": 1,
           "version": 2,
           "mirrored": true,
+          "generated_at": "2026-09-11T15:59:56+00:00",
           "action": "Magma Spit - Rears its front up high and spits a gout of magma forward",
-          "intensity": 0,
+          "tries": 1,
           "rolls": 1,
+          "intensity": 0,
           "frames": 4,
           "rung": 0,
-          "tries": 1,
-          "generated_at": "2026-09-11T15:59:56+00:00",
           "source": "east"
         }
       },

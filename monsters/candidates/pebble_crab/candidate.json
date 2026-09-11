@@ -1239,7 +1239,7 @@
     "attack_v3": {
       "directions": {
         "south": {
-          "status": "fail",
+          "status": "warn",
           "step_mean": 0.0839,
           "step_max": 0.2537,
           "drift": 2.7,
@@ -1256,7 +1256,6 @@
             40
           ],
           "reasons": [
-            "16 frames, expected 4",
             "shallow strike: reach 0.15 — eyeball it"
           ],
           "sub": "7e432673-c219-4c1b-9909-ac9dee010e67",
@@ -1264,14 +1263,13 @@
           "takes": 1,
           "version": 3,
           "mirrored": false,
+          "generated_at": "2026-09-11T17:39:46+00:00",
           "action": "Claw Swipe - Raises one front paw and performs one quick swipe forward, white swoosh lines following the claws, a big aggressive swing",
-          "intensity": 0,
-          "rolls": 3,
-          "frames": 16,
-          "rung": 2,
-          "unwrapped": null,
           "tries": 3,
-          "generated_at": "2026-09-11T17:39:46+00:00"
+          "rolls": 3,
+          "intensity": 0,
+          "frames": 16,
+          "rung": 2
         },
         "south-east": {
           "status": "fail",
@@ -1291,7 +1289,6 @@
             40
           ],
           "reasons": [
-            "16 frames, expected 4",
             "wrapped around the canvas edge: the body is drawn in two pieces",
             "shallow strike: reach 0.21 — eyeball it"
           ],
@@ -1300,14 +1297,13 @@
           "takes": 1,
           "version": 3,
           "mirrored": false,
+          "generated_at": "2026-09-11T17:39:49+00:00",
           "action": "Claw Swipe - Raises one front paw and performs one quick swipe forward, white swoosh lines following the claws, a big aggressive swing",
-          "intensity": 0,
-          "rolls": 3,
-          "frames": 16,
-          "rung": 2,
-          "unwrapped": null,
           "tries": 3,
-          "generated_at": "2026-09-11T17:39:49+00:00"
+          "rolls": 3,
+          "intensity": 0,
+          "frames": 16,
+          "rung": 2
         },
         "east": {
           "status": "fail",
@@ -1327,7 +1323,6 @@
             40
           ],
           "reasons": [
-            "16 frames, expected 4",
             "frozen: silhouette moves 0.040 per frame",
             "no strike, just a lean: nothing reaches past 0.09 of the body"
           ],
@@ -1336,17 +1331,16 @@
           "takes": 1,
           "version": 3,
           "mirrored": false,
+          "generated_at": "2026-09-11T17:39:50+00:00",
           "action": "Claw Swipe - Raises one front paw and performs one quick swipe forward, white swoosh lines following the claws, a big aggressive swing",
-          "intensity": 0,
-          "rolls": 3,
-          "frames": 16,
-          "rung": 2,
-          "unwrapped": null,
           "tries": 3,
-          "generated_at": "2026-09-11T17:39:50+00:00"
+          "rolls": 3,
+          "intensity": 0,
+          "frames": 16,
+          "rung": 2
         },
         "north-east": {
-          "status": "fail",
+          "status": "warn",
           "step_mean": 0.1529,
           "step_max": 0.3814,
           "drift": 2.18,
@@ -1363,7 +1357,6 @@
             40
           ],
           "reasons": [
-            "16 frames, expected 4",
             "shallow strike: reach 0.29 — eyeball it"
           ],
           "sub": "67a6eed8-305c-4137-9c2d-0ae18ffa917e",
@@ -1371,17 +1364,16 @@
           "takes": 1,
           "version": 3,
           "mirrored": false,
+          "generated_at": "2026-09-11T17:39:51+00:00",
           "action": "Claw Swipe - Raises one front paw and performs one quick swipe forward, white swoosh lines following the claws, a big aggressive swing",
-          "intensity": 0,
-          "rolls": 3,
-          "frames": 16,
-          "rung": 2,
-          "unwrapped": null,
           "tries": 3,
-          "generated_at": "2026-09-11T17:39:51+00:00"
+          "rolls": 3,
+          "intensity": 0,
+          "frames": 16,
+          "rung": 2
         },
         "north": {
-          "status": "fail",
+          "status": "warn",
           "step_mean": 0.0988,
           "step_max": 0.3083,
           "drift": 1.62,
@@ -1398,7 +1390,6 @@
             40
           ],
           "reasons": [
-            "16 frames, expected 4",
             "shallow strike: reach 0.23 — eyeball it"
           ],
           "sub": "7631645b-0371-43c5-af63-fda635a2b5f7",
@@ -1406,14 +1397,47 @@
           "takes": 1,
           "version": 3,
           "mirrored": false,
+          "generated_at": "2026-09-11T17:39:52+00:00",
           "action": "Claw Swipe - Raises one front paw and performs one quick swipe forward, white swoosh lines following the claws, a big aggressive swing",
-          "intensity": 0,
+          "tries": 3,
           "rolls": 3,
+          "intensity": 0,
+          "frames": 16,
+          "rung": 2
+        },
+        "north-west": {
+          "status": "warn",
+          "step_mean": 0.1529,
+          "step_max": 0.3814,
+          "drift": 2.18,
+          "loop": 0.1612,
+          "loop_ratio": 1.05,
+          "travel": 2.5,
+          "pin": 0.852,
+          "pad": 0,
+          "flash": 0.112,
+          "peak": 0.4041,
+          "reach": 0.294,
+          "canvas": [
+            40,
+            40
+          ],
+          "reasons": [
+            "shallow strike: reach 0.29 — eyeball it"
+          ],
+          "sub": "67a6eed8-305c-4137-9c2d-0ae18ffa917e",
+          "group": "7d3c603c-9fb8-4f72-9692-1d6599a5889d",
+          "takes": 1,
+          "version": 3,
+          "mirrored": true,
+          "generated_at": "2026-09-11T17:39:51+00:00",
+          "action": "Claw Swipe - Raises one front paw and performs one quick swipe forward, white swoosh lines following the claws, a big aggressive swing",
+          "tries": 3,
+          "rolls": 3,
+          "intensity": 0,
           "frames": 16,
           "rung": 2,
-          "unwrapped": null,
-          "tries": 3,
-          "generated_at": "2026-09-11T17:39:52+00:00"
+          "source": "north-east"
         }
       },
       "action": "Claw Pinch - Darts forward and snaps both small claws shut hard",
@@ -1507,6 +1531,24 @@
           "pebble_crab/animations/attack_v3/north/13.webp",
           "pebble_crab/animations/attack_v3/north/14.webp",
           "pebble_crab/animations/attack_v3/north/15.webp"
+        ],
+        "north-west": [
+          "pebble_crab/animations/attack_v3/north-west/00.webp",
+          "pebble_crab/animations/attack_v3/north-west/01.webp",
+          "pebble_crab/animations/attack_v3/north-west/02.webp",
+          "pebble_crab/animations/attack_v3/north-west/03.webp",
+          "pebble_crab/animations/attack_v3/north-west/04.webp",
+          "pebble_crab/animations/attack_v3/north-west/05.webp",
+          "pebble_crab/animations/attack_v3/north-west/06.webp",
+          "pebble_crab/animations/attack_v3/north-west/07.webp",
+          "pebble_crab/animations/attack_v3/north-west/08.webp",
+          "pebble_crab/animations/attack_v3/north-west/09.webp",
+          "pebble_crab/animations/attack_v3/north-west/10.webp",
+          "pebble_crab/animations/attack_v3/north-west/11.webp",
+          "pebble_crab/animations/attack_v3/north-west/12.webp",
+          "pebble_crab/animations/attack_v3/north-west/13.webp",
+          "pebble_crab/animations/attack_v3/north-west/14.webp",
+          "pebble_crab/animations/attack_v3/north-west/15.webp"
         ]
       },
       "strips": {
@@ -1514,7 +1556,8 @@
         "south-east": "pebble_crab/animations/attack_v3__south-east.webp",
         "east": "pebble_crab/animations/attack_v3__east.webp",
         "north-east": "pebble_crab/animations/attack_v3__north-east.webp",
-        "north": "pebble_crab/animations/attack_v3__north.webp"
+        "north": "pebble_crab/animations/attack_v3__north.webp",
+        "north-west": "pebble_crab/animations/attack_v3__north-west.webp"
       }
     }
   }
