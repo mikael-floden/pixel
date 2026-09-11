@@ -10,19 +10,12 @@
   "prompt": "black rock, a fallen splinter of rock in the middle, black rock all around the edge",
   "palette_top": "#1e1d1e",
   "tile_id": "5ba3fbd6-36a3-43fd-878c-eb14384f2934",
-  "n_tiles": 16,
+  "n_tiles": 9,
   "tiles": [
-    "tile_00.webp",
     "tile_01.webp",
-    "tile_02.webp",
-    "tile_03.webp",
-    "tile_04.webp",
-    "tile_05.webp",
-    "tile_06.webp",
     "tile_07.webp",
     "tile_08.webp",
     "tile_09.webp",
-    "tile_10.webp",
     "tile_11.webp",
     "tile_12.webp",
     "tile_13.webp",
@@ -128,5 +121,42 @@
   },
   "motif": "a fallen splinter of rock",
   "motif_source": "tiles/config/details.json",
-  "walkable": true
+  "walkable": true,
+  "removed": {
+    "tile_00.webp": {
+      "status": "rejected",
+      "at": "2026-09-11T22:08:48+00:00",
+      "record": "tiles/tops/removed.json"
+    },
+    "tile_02.webp": {
+      "status": "rejected",
+      "at": "2026-09-11T22:08:48+00:00",
+      "record": "tiles/tops/removed.json"
+    },
+    "tile_03.webp": {
+      "status": "rejected",
+      "at": "2026-09-11T22:08:48+00:00",
+      "record": "tiles/tops/removed.json"
+    },
+    "tile_04.webp": {
+      "status": "rejected",
+      "at": "2026-09-11T22:08:48+00:00",
+      "record": "tiles/tops/removed.json"
+    },
+    "tile_05.webp": {
+      "status": "rejected",
+      "at": "2026-09-11T22:08:48+00:00",
+      "record": "tiles/tops/removed.json"
+    },
+    "tile_06.webp": {
+      "status": "rejected",
+      "at": "2026-09-11T22:08:48+00:00",
+      "record": "tiles/tops/removed.json"
+    },
+    "tile_10.webp": {
+      "status": "rejected",
+      "at": "2026-09-11T22:08:48+00:00",
+      "record": "tiles/tops/removed.json"
+    }
+  }
 }

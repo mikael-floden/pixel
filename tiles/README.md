@@ -111,6 +111,8 @@ tiles/
     chase.py             roll a cell until it yields candidates; the prompt ladder
     publish.py           promote candidates into review/ with a manifest
     review.py            turn the maintainer's wiki verdicts into rejections
+    review_prune.py      remove x-over-y candidates rejected on EVERY face from manifest + git
+    tops_review.py       remove rejected top-only tiles (subtle/detail) from index + git
     tombstones.py        permanent rejections AND overrides
     restore.py           rebuild the matrix from PixelLab, free
     reference.py         derive a material's palette from a reference tile
@@ -217,6 +219,25 @@ transition was never drawn, and no amount of re-ranking will produce one.
 Paths are **repo-relative**, matching how the wiki addresses every other domain's art.
 Verdicts are read back from `live/feedback/tiles.json` in the `pixel-wiki-feedback@1`
 format the scenery domain already uses.
+
+**A rejected tile leaves git** (maintainer 2026-09-11: "remove tiles I have rejected
+everywhere and is not good enough for anything and never referenced"). `review_prune.py`
+drops an x-over-y candidate whose every voted face (`#top`, `#wall`) is rejected;
+`tops_review.py` drops a top-only tile whose `#top` is rejected. Both keep, and report,
+anything something still DRAWS: a base-set member (`live/tuning/base_tile_sets.json`,
+`tiles/resolve.json`), a wall donor in `live/tuning/top_walls.json` ("the wall might
+still have been accepted" - the game draws that wall under other tiles), a plate-pool
+member, a games2 fixture. `tile_walls.json` `top_only` is the wall's own rejection and
+never keeps. The bare-key verdict from before faces existed (2026-08-21, every
+candidate carries an approval there) counts only while no faced verdict is newer -
+read beside a later `#top` rejection it kept every rejected tile. A top-only sheet
+shrinks with the verdict (its `meta.json` lists the `removed` tiles, so `is_complete`
+stays true); a sheet that lost EVERY tile keeps `meta.json` as a tombstone with
+`n_tiles` 0 and leaves the index, so the seed is never bought again.
+`tiles/tops/removed.json` is the durable record - the wiki prunes a feedback entry
+once the tile leaves the index. A rejected candidate's source is deferred in
+`tombstones.json` so `publish.py` cannot bring it back; a cell left empty is flagged
+`needs_regeneration`.
 
 ## Art immutability (LAW, 2026-08-27)
 

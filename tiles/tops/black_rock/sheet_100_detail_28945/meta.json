@@ -10,10 +10,8 @@
   "prompt": "black rock, a jagged crack in the middle, black rock all around the edge",
   "palette_top": "#1e1d1e",
   "tile_id": "c54333f2-a1ee-4502-b1cf-9fd9a1a1d7f6",
-  "n_tiles": 16,
+  "n_tiles": 13,
   "tiles": [
-    "tile_00.webp",
-    "tile_01.webp",
     "tile_02.webp",
     "tile_03.webp",
     "tile_04.webp",
@@ -25,7 +23,6 @@
     "tile_10.webp",
     "tile_11.webp",
     "tile_12.webp",
-    "tile_13.webp",
     "tile_14.webp",
     "tile_15.webp"
   ],
@@ -128,5 +125,22 @@
   },
   "motif": "a jagged crack",
   "motif_source": "tiles/config/details.json",
-  "walkable": true
+  "walkable": true,
+  "removed": {
+    "tile_00.webp": {
+      "status": "rejected",
+      "at": "2026-09-11T22:08:48+00:00",
+      "record": "tiles/tops/removed.json"
+    },
+    "tile_01.webp": {
+      "status": "rejected",
+      "at": "2026-09-11T22:08:48+00:00",
+      "record": "tiles/tops/removed.json"
+    },
+    "tile_13.webp": {
+      "status": "rejected",
+      "at": "2026-09-11T22:08:48+00:00",
+      "record": "tiles/tops/removed.json"
+    }
+  }
 }

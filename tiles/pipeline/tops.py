@@ -119,6 +119,12 @@ def is_complete(d):
     except (json.JSONDecodeError, OSError):
         return False
     n = len(glob.glob(os.path.join(d, "tile_*.webp")))
+    # A sheet whose tiles the maintainer rejected shrinks with the verdict (tops_review.py
+    # rewrites meta.json and lists them under `removed`); one that lost EVERY tile keeps
+    # its meta.json as a tombstone with n_tiles 0. Both are DONE, not missing - re-buying
+    # the same seed would only resurrect art he already said no to.
+    if meta.get("removed") and n == meta.get("n_tiles"):
+        return True
     return n > 0 and n == meta.get("n_tiles")
 
 
@@ -236,6 +242,8 @@ def write_index():
         except (json.JSONDecodeError, OSError):
             continue
         d = os.path.dirname(m)
+        if not meta.get("tiles"):
+            continue        # every tile rejected: a tombstone on disk, not a listing
         sheets.append({
             "ground": meta.get("ground"), "flavour": meta.get("flavour"),
             "seed": meta.get("seed"), "prompt": meta.get("prompt"),
@@ -245,6 +253,26 @@ def write_index():
             "top_face": {k: meta.get("top_face", {}).get(k)
                          for k in ("mean_colours", "mean_dominant_share")},
         })
+    # The post pass (tops_post.py) owns `post`/`post_files`/`misfit_tiles`; a reindex
+    # carries them over for the tiles still listed rather than dropping them, which
+    # would send every consumer back to the raw art until the next post run.
+    prev = {}
+    try:
+        with open(os.path.join(OUT, "index.json")) as f:
+            prev = {s["dir"]: s for s in json.load(f).get("sheets", [])}
+    except (OSError, json.JSONDecodeError, KeyError):
+        prev = {}
+    for s in sheets:
+        p = prev.get(s["dir"])
+        if not p or not p.get("post_files"):
+            continue
+        by = dict(zip(p.get("tiles", []), p["post_files"]))
+        if all(t in by for t in s["tiles"]):
+            s["post"] = p.get("post", True)
+            s["post_files"] = [by[t] for t in s["tiles"]]
+            mis = {k: v for k, v in (p.get("misfit_tiles") or {}).items() if k in set(s["tiles"])}
+            if mis:
+                s["misfit_tiles"] = mis
     sheets.sort(key=lambda s: (s["ground"] or "", s["flavour"] or "", s["seed"] or 0))
     counts = {}
     for s in sheets:
