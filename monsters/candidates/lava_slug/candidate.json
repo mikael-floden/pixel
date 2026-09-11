@@ -1341,33 +1341,34 @@
         },
         "east": {
           "status": "pass",
-          "step_mean": 0.4794,
-          "step_max": 0.539,
-          "drift": 7.09,
-          "loop": 0.2536,
-          "loop_ratio": 0.53,
-          "travel": 6.97,
-          "pin": 0.996,
-          "pad": 15,
-          "flash": -0.002,
-          "peak": 0.44,
-          "reach": 0.378,
+          "step_mean": 0.494,
+          "step_max": 0.5749,
+          "drift": 7.35,
+          "loop": 0.4195,
+          "loop_ratio": 0.85,
+          "travel": 7.14,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": 0.0,
+          "peak": 0.448,
+          "reach": 0.446,
           "canvas": [
-            126,
-            126
+            96,
+            96
           ],
-          "reasons": [
-            "canvas grown by 15 px a side to hold the motion"
-          ],
-          "sub": "1b981eba-4f28-42d8-9a8b-efb297269b39",
-          "group": "99bd4bc8-a4af-4a11-837c-bd68a87f64c9",
+          "reasons": [],
+          "sub": "1e13a87c-43a8-4d23-bf03-9d33de53dbf6",
+          "group": "be34986a-6817-47e4-8af0-6e53b8cbc9dc",
           "takes": 1,
-          "version": 1,
+          "version": 2,
+          "mirrored": false,
           "action": "Magma Spit - Rears its front up high and spits a gout of magma forward",
-          "rung": 0,
+          "intensity": 0,
           "rolls": 1,
-          "generated_at": "2026-09-11T15:18:28+00:00",
-          "unwrapped": 1
+          "frames": 4,
+          "rung": 0,
+          "tries": 1,
+          "generated_at": "2026-09-11T15:59:56+00:00"
         },
         "north-east": {
           "status": "warn",
@@ -1501,34 +1502,34 @@
         },
         "west": {
           "status": "pass",
-          "step_mean": 0.4794,
-          "step_max": 0.539,
-          "drift": 7.09,
-          "loop": 0.2536,
-          "loop_ratio": 0.53,
-          "travel": 6.97,
-          "pin": 0.996,
-          "pad": 15,
-          "flash": -0.002,
-          "peak": 0.44,
-          "reach": 0.378,
+          "step_mean": 0.494,
+          "step_max": 0.5749,
+          "drift": 7.35,
+          "loop": 0.4195,
+          "loop_ratio": 0.85,
+          "travel": 7.14,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": 0.0,
+          "peak": 0.448,
+          "reach": 0.446,
           "canvas": [
-            126,
-            126
+            96,
+            96
           ],
-          "reasons": [
-            "canvas grown by 15 px a side to hold the motion"
-          ],
-          "sub": "1b981eba-4f28-42d8-9a8b-efb297269b39",
-          "group": "99bd4bc8-a4af-4a11-837c-bd68a87f64c9",
+          "reasons": [],
+          "sub": "1e13a87c-43a8-4d23-bf03-9d33de53dbf6",
+          "group": "be34986a-6817-47e4-8af0-6e53b8cbc9dc",
           "takes": 1,
-          "version": 1,
-          "action": "Magma Spit - Rears its front up high and spits a gout of magma forward",
-          "rung": 0,
-          "rolls": 1,
-          "generated_at": "2026-09-11T15:18:28+00:00",
-          "unwrapped": 1,
+          "version": 2,
           "mirrored": true,
+          "action": "Magma Spit - Rears its front up high and spits a gout of magma forward",
+          "intensity": 0,
+          "rolls": 1,
+          "frames": 4,
+          "rung": 0,
+          "tries": 1,
+          "generated_at": "2026-09-11T15:59:56+00:00",
           "source": "east"
         }
       },
@@ -1590,7 +1591,8 @@
         "north-east": "lava_slug/animations/attack_try__north-east.webp",
         "north": "lava_slug/animations/attack_try__north.webp",
         "south-west": "lava_slug/animations/attack_try__south-west.webp",
-        "north-west": "lava_slug/animations/attack_try__north-west.webp"
+        "north-west": "lava_slug/animations/attack_try__north-west.webp",
+        "west": "lava_slug/animations/attack_try__west.webp"
       }
     }
   }
