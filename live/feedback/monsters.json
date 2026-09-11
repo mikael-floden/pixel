@@ -1,7 +1,7 @@
 {
   "format": "pixel-wiki-feedback@1",
   "domain": "monsters",
-  "updated_at": "2026-09-10T19:02:39.182Z",
+  "updated_at": "2026-09-11T18:13:08.807Z",
   "entries": {
     "monsters/candidates/lava_slug": {
       "status": "approved",
@@ -543,6 +543,54 @@
       "rating": 1,
       "art": "403f0baece7cd365",
       "updated_at": "2026-09-10T19:01:32.848Z"
+    },
+    "monsters/crag_troll#attack_v3#south": {
+      "status": "approved",
+      "rating": 3,
+      "art": "ec66e5ad4a88dc44",
+      "updated_at": "2026-09-11T18:11:51.403Z"
+    },
+    "monsters/crag_troll#attack_v3#south-east": {
+      "status": "redo",
+      "art": "5ec734dcb5513680",
+      "updated_at": "2026-09-11T18:12:20.210Z",
+      "note": "the direction looks like S and not SE"
+    },
+    "monsters/crag_troll#attack_v3#east": {
+      "rating": 3,
+      "status": "approved",
+      "art": "13796e6662fcedba",
+      "updated_at": "2026-09-11T18:12:24.968Z"
+    },
+    "monsters/crag_troll#attack_v3#north-east": {
+      "rating": 3,
+      "status": "approved",
+      "art": "f5895f1b3b2d9582",
+      "updated_at": "2026-09-11T18:12:31.402Z"
+    },
+    "monsters/crag_troll#attack_v3#north": {
+      "rating": 3,
+      "status": "approved",
+      "art": "5efc435584cac64b",
+      "updated_at": "2026-09-11T18:12:34.604Z"
+    },
+    "monsters/crag_troll#attack_v3#north-west": {
+      "rating": 3,
+      "status": "approved",
+      "art": "6ccb7867d38addb6",
+      "updated_at": "2026-09-11T18:12:36.939Z"
+    },
+    "monsters/crag_troll#attack_v3#west": {
+      "rating": 3,
+      "status": "approved",
+      "art": "72d71841202ca071",
+      "updated_at": "2026-09-11T18:12:39.759Z"
+    },
+    "monsters/crag_troll#attack_v3#south-west": {
+      "status": "redo",
+      "art": "7bef38e2d0057f0a",
+      "updated_at": "2026-09-11T18:13:10.455Z",
+      "note": "the direction looks like S and not SW"
     }
   }
 }
