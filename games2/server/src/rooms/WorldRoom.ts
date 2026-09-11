@@ -246,6 +246,16 @@ interface HotState {
   lastHitAt: number;
   lastCombatAt: number;
   dirty: boolean;
+  /** THE COMBAT COUNTERS CROSS WITH THE BODY. The client mirrors one-shot
+   *  clips off `actionSeq` and the flinch + its sound off `hitSeq` by
+   *  CHANGE; a hand-off that rebuilt the Player from zero made the next
+   *  crossing a change, and the fall he took 15 s earlier in the other zone
+   *  played again at the border (maintainer 2026-09-11: "I hit the ground
+   *  like 15s ago?!"). MonsterXfer always carried actionSeq for the same
+   *  reason. Optional only so a hot state written by the previous build
+   *  still restores during a rollout. */
+  actionSeq?: number;
+  hitSeq?: number;
 }
 interface MonsterXfer {
   kind: string; x: number; y: number; dir: string; moving: boolean; elev: number;
@@ -2927,6 +2937,8 @@ export class WorldRoom extends Room<WorldState> {
       lastHitAt: p.lastHitAt,
       lastCombatAt: p.lastCombatAt,
       dirty: p.dirty,
+      actionSeq: p.actionSeq,
+      hitSeq: p.hitSeq,
     };
     void bus()
       .set(handoffKey(this.worldName, pid), JSON.stringify(hot), HANDOFF_TTL_S)
@@ -2985,6 +2997,8 @@ export class WorldRoom extends Room<WorldState> {
     player.lastHitAt = hot.lastHitAt;
     player.lastCombatAt = hot.lastCombatAt;
     player.dirty = hot.dirty;
+    player.actionSeq = hot.actionSeq ?? 0;
+    player.hitSeq = hot.hitSeq ?? 0;
     if (client.state === ClientState.LEAVING || client.state === ClientState.CLOSED) {
       this.savePlayer(player);
       return;

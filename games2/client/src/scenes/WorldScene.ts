@@ -11088,6 +11088,13 @@ export class WorldScene extends Phaser.Scene {
       // One-shot clips ride action/actionSeq; hits ride hitSeq; death rides
       // dead. All server-owned — the client only ever mirrors.
       const nowMs = this.time.now;
+      // A COUNTER THAT WENT DOWN IS A REBUILT RECORD, NOT AN EVENT: the
+      // server only ever increments these, so a lower value is a fresh Player
+      // (a hand-off from a room that did not carry the counters, a rejoin)
+      // and is re-seeded silently — replaying "the change" is the fall from
+      // the other zone flinching again at the border. Same for hitSeq below.
+      if ((player.actionSeq ?? 0) < (av.lastActionSeq ?? 0)) av.lastActionSeq = player.actionSeq ?? 0;
+      if ((player.hitSeq ?? 0) < (av.lastHitSeq ?? 0)) av.lastHitSeq = player.hitSeq ?? 0;
       if ((player.actionSeq ?? 0) !== (av.lastActionSeq ?? 0)) {
         av.lastActionSeq = player.actionSeq;
         if (player.action === "attack") {

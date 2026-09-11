@@ -34,7 +34,9 @@ Kubernetes). Rules here are present tense; the measurements land in
   anything else, so a player near a border sees across it through ONE socket.
 - **Hand-off.** When a player's position enters another zone, the home room
   writes the player's hot state (`pos`, `elev`, `dir`, hp/ep/level/xp, `inv`,
-  the account id and record, `dirty`, the input `seq`, torch, no-aggro) to
+  the account id and record, `dirty`, the input `seq`, torch, no-aggro, the
+  combat counters `actionSeq`/`hitSeq` — the client plays clips on their
+  CHANGE, so a body rebuilt from zero replayed its last hit at the border) to
   the bus key `handoff:<world>:<pid>` (10 s TTL) together with a 128-bit
   one-shot KEY minted for this crossing, keeps stepping the player, and sends
   the client `zone:go {zone, pid, key}`. The key, not the pid, is the

@@ -85,6 +85,16 @@ test("ghosts across the border, then a hand-off that keeps the body", async (t) 
     rB.send("teleport", { x: BORDER_X + 3 * CELL_WU, y });
     await waitFor(() => rA.state.ghosts.has(pidB), 5000, "and comes back");
 
+    // A HIT BEFORE THE HOP, through the real path (dbgkill = hurtPlayer for
+    // full hp, then the press-to-continue revive), so the counters the hop
+    // must carry are non-zero. The revive stands the body at the world spawn;
+    // park it back by the border.
+    rA.send("dbgkill");
+    await waitFor(() => rA.state.players.get(pidA)?.dead === true, 5000, "dbgkill killed Left");
+    for (let i = 0; i < 60 && rA.state.players.get(pidA)?.dead !== false; i++) { rA.send("respawn"); await settle(150); }
+    assert.equal(rA.state.players.get(pidA)?.dead, false, "Left revived");
+    rA.send("teleport", { x: BORDER_X - 3 * CELL_WU, y });
+    await waitFor(() => Math.abs(rA.state.players.get(pidA).x - (BORDER_X - 3 * CELL_WU)) < 1, 5000, "parked again");
     // THE HAND-OFF: Left crosses into zone 1. The old room sends zone:go; the
     // client joins the new room with the pid + key.
     const go = new Promise<{ zone: number; pid: string; key: string }>((res) => rA.onMessage("zone:go", res));
@@ -94,12 +104,20 @@ test("ghosts across the border, then a hand-off that keeps the body", async (t) 
     assert.equal(msg.pid, pidA);
     assert.match(msg.key, /^[0-9a-f]{32}$/);
     const hpBefore = rA.state.players.get(pidA).hp;
+    const hitSeqBefore = rA.state.players.get(pidA).hitSeq;
+    const actionSeqBefore = rA.state.players.get(pidA).actionSeq;
+    assert.ok(hitSeqBefore > 0, "the body crosses with a hit on its counter (the test below is about that)");
     const cA2 = new Client(`ws://localhost:${port}`);
     const rA2: any = await cA2.joinOrCreate(ROOM_NAME, { ...base, zone: 1, name: "Left", character: "default_boy", pid: msg.pid, handoff: msg.key });
     await waitFor(() => rA2.state.players.get(pidA)?.sid === rA2.sessionId, 5000, "the body is in zone 1 under the SAME id, bound to the new session");
     const me2 = rA2.state.players.get(pidA);
     assert.equal(me2.name, "Left");
     assert.equal(me2.hp, hpBefore);
+    // THE COMBAT COUNTERS CROSS WITH THE BODY: the client plays the flinch on
+    // a CHANGE of hitSeq, so a body rebuilt from zero replayed its last hit
+    // at every border (the fall from the other zone, 15 s later).
+    assert.equal(me2.hitSeq, hitSeqBefore, "hitSeq carried over");
+    assert.equal(me2.actionSeq, actionSeqBefore, "actionSeq carried over");
     assert.ok(Math.abs(me2.x - (BORDER_X + 2 * CELL_WU)) < 1, "position carried over");
     // The old room let go of the body (handoff:done over the bus).
     await waitFor(() => !rA.state.players.has(pidA), 5000, "zone 0 dropped the handed-over body");

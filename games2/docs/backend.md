@@ -83,7 +83,9 @@ and the rejected approaches as each phase lands. Rewrite in place.
   expire after `GHOST_TTL_MS` (1 s).
 - **The hand-off**: `stepZones` sees a body outside the rect, writes the hot
   state (`HotState`: position, dir, hp/ep/level/xp, backpack, the account
-  record, seq, torch, no-aggro) to `handoff:<world>:<pid>` with a 24-hex
+  record, seq, torch, no-aggro, `actionSeq`/`hitSeq` — mirrored by CHANGE on
+  the client, so a counter rebuilt from zero replayed the last hit at the
+  border; the client also re-seeds silently on any DECREASE) to `handoff:<world>:<pid>` with a 24-hex
   one-shot key (TTL 10 s) and sends `zone:go`; the client joins the new zone
   `fresh` (no seat reclaim) with pid + key, binds it in SWAP mode (adds are
   idempotent, a reconcile removes what the new view lacks), replays the
