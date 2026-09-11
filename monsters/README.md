@@ -321,45 +321,45 @@ The rules that produce a real strike:
   after repair steps the ladder down to calmer wording — overflow means too
   much, never too little.
 
-### Approved art is not frozen — replace a state as a WHOLE, in a try slot
+### NOTHING in candidates is live — they are numbered attempts, and HE picks
 
-Maintainer 2026-09-10, after approving part of a round: "sometimes it's
-extremely hard to generate the last unsuccessful direction and you might have
-to redo the entire prompt (all directions) in order to get a full 8 set that
-is valid. So I don't want you to see the animations I have accepted as
-something you can't delete. If you have to generate a completely different
-type of attack of course you need to remove the directions in the old attack
-I have already approved!"
+Maintainer 2026-09-11, after I called the first attack set "the set the game
+would load today": "LOL NO! The game will never ever load something still not
+done. This is in development. The wiki literally says 'in the making'. We have
+not even done all mandatory animations yet. This is all tests until we have
+settled on a complete set that works. All your versions is just as not-live as
+everything else! I will approve and pick what is live or not!"
 
-- **A state is ONE take across all eight directions.** Never half the old
-  wording and half the new: the character would carry two contradictory
-  attacks and nothing downstream could tell which one IS the state. When a
-  new take replaces a state, the directions it replaces are DELETED — on
-  PixelLab and on disk — approved or not.
-- **Build the replacement in a try slot, switch only when it is complete**
-  (his second instruction: "it's also possible to start generating an attack
-  v2 without deleting v1 and only switch to v2 once v2 has proven it can
-  generate the attack for all directions. Doing it this way can make you go
-  back to v1 and try again if you see v2 was not easier at all"):
+- **A candidate's animations are ATTEMPTS, numbered in the order they were
+  made**: `attack` (attempt 1, made before the numbering), `attack_v2`,
+  `attack_v3`, … Every one of them has equal standing. None is live, none is
+  the default, and the newest is not automatically the best — the highest
+  number is only the one being worked on.
+- **Never name a slot after the thing that produced it.** The second attempt
+  was called `attack_v3try` because it used PixelLab's V3 *mode*, and the
+  wiki dutifully labelled it "v3" next to a "try" that was actually attempt
+  three: "What is live vs try vs v3? … This is confusing as hell." Slots are
+  `<state>` or `<state>_v<N>`, nothing else; the generation mode belongs in
+  the record, not the name.
+- **The maintainer decides which attempt becomes the animation**, through the
+  wiki's approve. `promote --state attack` is the mechanic that carries out
+  HIS choice — it copies the chosen attempt into the shipping state name and
+  deletes the directions it replaces, on PixelLab and on disk. It is never
+  run on the agent's own judgement of "this one looks better".
+- **A whole state is replaced, never half of one.** An attempt is built
+  alongside the others and only becomes the state when it covers all eight
+  directions (maintainer 2026-09-10: "it's possible to start generating an
+  attack v2 without deleting v1 and only switch to v2 once v2 has proven it
+  can generate the attack for all directions … that can make you go back to
+  v1 and try again if you see v2 was not easier at all"). `promote` refuses
+  anything incomplete; `discard --state <s>` throws an attempt away.
 
 ```bash
-python monsters/pipeline/animate.py attack --try            # v2, alongside the live v1
+python monsters/pipeline/animate.py attack --try          # build the next attempt
 python monsters/pipeline/animate.py status --state attack_try
-python monsters/pipeline/animate.py promote --state attack  # v2 replaces v1, v1's takes deleted
-python monsters/pipeline/animate.py discard --state attack  # v2 thrown away, v1 untouched
+python monsters/pipeline/animate.py promote --state attack   # carry out HIS pick
+python monsters/pipeline/animate.py discard --state attack   # bin the attempt
 ```
-
-- `promote` refuses anything incomplete — every one of the eight directions
-  must be `pass` (`--allow-warn` to accept warns). That is the whole point:
-  the live state is never left mid-swap.
-- **The live record's wording is frozen at what its art was made from.** A
-  reword in `config/candidates.json` no longer invalidates live art: the
-  plain `attack` command reports which monsters have live art from other
-  words and tells you to use `--try`. Only `promote` moves new wording in.
-- Frames: live at `candidates/<id>/animations/<state>/<dir>/NN.webp`, the
-  try variant at `animations/<state>_try/<dir>/NN.webp`; both carry strips.
-  The review page takes a slot name, so `attack_try` can be reviewed before
-  it is promoted.
 
 ### Skeleton template animations (`mode: "template"`) — measured, not used
 
