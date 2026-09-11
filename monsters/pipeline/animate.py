@@ -38,6 +38,7 @@ import argparse
 import collections
 import json
 import os
+import re
 import shutil
 import sys
 import time
@@ -63,8 +64,13 @@ TRY = "_try"
 
 
 def base_state(slot):
-    """The state a slot belongs to ('attack_try' -> 'attack')."""
-    return slot[:-len(TRY)] if slot.endswith(TRY) else slot
+    """The state a slot belongs to: 'attack_v3' and 'attack_try' -> 'attack'.
+    Attempts are numbered (`<state>_v<N>`); nothing in candidates is live, so
+    a bare state name is only the shape a promoted animation takes."""
+    if slot.endswith(TRY):
+        return slot[:-len(TRY)]
+    m = re.match(r"^(.*)_v\d+$", slot)
+    return m.group(1) if m else slot
 
 
 GEN_DIRS = ["south", "south-east", "east", "north-east", "north"]
@@ -794,7 +800,7 @@ def cmd_state(args, state):
         # one take — maintainer: "you might have to redo the entire prompt
         # (all directions) in order to get a full 8 set that is valid")
         rec_now = (man.get("animations") or {}).get(state) or {}
-        if (not state.endswith(TRY) and rec_now.get("directions")
+        if (base_state(state) == state and rec_now.get("directions")
                 and rec_now.get("action") and rec_now["action"] != state_action(cid, state)):
             # the config asks for a DIFFERENT take on a state that already has
             # art. Rewriting the live state in place would leave it half old
