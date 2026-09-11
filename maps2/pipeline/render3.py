@@ -1253,8 +1253,21 @@ def render(doc, x0=0, y0=0, x1=None, y1=None, scale=1.0, log=print,
                 # (maintainer 2026-09-09, "the transition tile is not 100%
                 # water or 100% beach"); a liquid cell draws it top-face-only
                 # below. Both held equal to the game by the parity fixture.
+                # ...BUT WATER LIES FLAT: a LIQUID corner votes only at this
+                # cell's own level. One storey of tolerance let the sea
+                # compose into the top face of the step above it - water
+                # running up a stair, on a cell a whole level clear of it
+                # (maintainer 2026-09-11, ringing the bottom step of a shore
+                # staircase: "The ground on that stair has fucking water on
+                # it!"; 8 cells of the_game, every one of them land at level
+                # 1 beside water at 0). Land still blends across one storey -
+                # that is the terrace rim the step rule was written for - and
+                # a WATER cell still composes its land corner, which is the
+                # shore tile that is "not 100% water or 100% beach".
                 if None not in gs and "" not in gs:
-                    gs = [gv if abs(L(*c) - zl) <= 1 else gs[0]
+                    gs = [gv if (abs(L(*c) - zl) <= 1
+                                 and (gv not in liq or L(*c) == zl))
+                          else gs[0]
                           for gv, c in zip(gs, quad)]
                 # A THREE-GROUND JUNCTION STILL GETS A BOUNDARY. Falling back
                 # to the pure plate there drew the cell's raw diamond edge -
