@@ -1242,6 +1242,7 @@
           "flash": 0.063,
           "peak": 0.5416,
           "reach": 0.379,
+          "turn": 0,
           "canvas": [
             120,
             120
@@ -1253,11 +1254,10 @@
           "group": "3b945d48-73fd-44fc-bf33-9f747b3b13c3",
           "takes": 1,
           "version": 1,
-          "action": "Flame Burst - Throws both hands forward and hurls a burst of flame",
-          "rung": 0,
-          "rolls": 1,
           "generated_at": "2026-09-11T16:10:05+00:00",
-          "unwrapped": 1
+          "action": "Flame Burst - Throws both hands forward and hurls a burst of flame",
+          "rolls": 1,
+          "rung": 0
         },
         "south-east": {
           "status": "pass",
@@ -1272,6 +1272,7 @@
           "flash": 0.008,
           "peak": 0.5237,
           "reach": 0.456,
+          "turn": 0,
           "canvas": [
             96,
             96
@@ -1303,6 +1304,7 @@
           "flash": 0.068,
           "peak": 1.1825,
           "reach": 0.971,
+          "turn": 3,
           "canvas": [
             96,
             96
@@ -1334,6 +1336,7 @@
           "flash": 0.036,
           "peak": 0.7504,
           "reach": 0.696,
+          "turn": 4,
           "canvas": [
             96,
             96
@@ -1365,6 +1368,7 @@
           "flash": 0.054,
           "peak": 0.9084,
           "reach": 0.362,
+          "turn": 3,
           "canvas": [
             96,
             96
@@ -1396,6 +1400,7 @@
           "flash": 0.008,
           "peak": 0.5237,
           "reach": 0.456,
+          "turn": 0,
           "canvas": [
             96,
             96
@@ -1428,6 +1433,7 @@
           "flash": 0.068,
           "peak": 1.1825,
           "reach": 0.971,
+          "turn": 3,
           "canvas": [
             96,
             96
@@ -1460,6 +1466,7 @@
           "flash": 0.036,
           "peak": 0.7504,
           "reach": 0.696,
+          "turn": 4,
           "canvas": [
             96,
             96

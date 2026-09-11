@@ -1247,6 +1247,7 @@
           "flash": 0.025,
           "peak": 0.4277,
           "reach": 0.574,
+          "turn": 0,
           "canvas": [
             124,
             124
@@ -1258,11 +1259,10 @@
           "group": "f4721772-39ed-405d-93f4-92f85d5a11df",
           "takes": 1,
           "version": 1,
-          "action": "Water Whip - Lashes a long whip of water forward from one arm",
-          "rung": 0,
-          "rolls": 1,
           "generated_at": "2026-09-11T16:20:06+00:00",
-          "unwrapped": 1
+          "action": "Water Whip - Lashes a long whip of water forward from one arm",
+          "rolls": 1,
+          "rung": 0
         },
         "south-east": {
           "status": "pass",
@@ -1277,6 +1277,7 @@
           "flash": 0.047,
           "peak": 0.4661,
           "reach": 0.694,
+          "turn": 0,
           "canvas": [
             124,
             124
@@ -1288,11 +1289,10 @@
           "group": "f4721772-39ed-405d-93f4-92f85d5a11df",
           "takes": 1,
           "version": 1,
-          "action": "Water Whip - Lashes a long whip of water forward from one arm",
-          "rung": 0,
-          "rolls": 1,
           "generated_at": "2026-09-11T16:20:07+00:00",
-          "unwrapped": 1
+          "action": "Water Whip - Lashes a long whip of water forward from one arm",
+          "rolls": 1,
+          "rung": 0
         },
         "east": {
           "status": "pass",
@@ -1307,6 +1307,7 @@
           "flash": 0.005,
           "peak": 0.5443,
           "reach": 1.065,
+          "turn": 4,
           "canvas": [
             96,
             96
@@ -1338,6 +1339,7 @@
           "flash": 0.002,
           "peak": 0.7437,
           "reach": 0.721,
+          "turn": 3,
           "canvas": [
             96,
             96
@@ -1369,6 +1371,7 @@
           "flash": 0.025,
           "peak": 0.3352,
           "reach": 0.641,
+          "turn": 0,
           "canvas": [
             96,
             96
@@ -1400,6 +1403,7 @@
           "flash": 0.047,
           "peak": 0.4661,
           "reach": 0.694,
+          "turn": 0,
           "canvas": [
             124,
             124
@@ -1411,11 +1415,10 @@
           "group": "f4721772-39ed-405d-93f4-92f85d5a11df",
           "takes": 1,
           "version": 1,
-          "action": "Water Whip - Lashes a long whip of water forward from one arm",
-          "rung": 0,
-          "rolls": 1,
           "generated_at": "2026-09-11T16:20:07+00:00",
-          "unwrapped": 1,
+          "action": "Water Whip - Lashes a long whip of water forward from one arm",
+          "rolls": 1,
+          "rung": 0,
           "mirrored": true,
           "source": "south-east"
         },
@@ -1432,6 +1435,7 @@
           "flash": 0.005,
           "peak": 0.5443,
           "reach": 1.065,
+          "turn": 4,
           "canvas": [
             96,
             96
@@ -1464,6 +1468,7 @@
           "flash": 0.002,
           "peak": 0.7437,
           "reach": 0.721,
+          "turn": 3,
           "canvas": [
             96,
             96

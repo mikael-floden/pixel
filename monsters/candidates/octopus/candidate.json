@@ -1270,6 +1270,7 @@
           "flash": 0.0,
           "peak": 0.1505,
           "reach": 0.163,
+          "turn": 0,
           "canvas": [
             108,
             108
@@ -1282,11 +1283,10 @@
           "group": "efc1da40-3f28-4553-b32b-d9b04fe3a7b1",
           "takes": 1,
           "version": 1,
-          "action": "Tentacle Lash - Rears up high and whips two tentacles forward",
-          "rung": 0,
-          "rolls": 1,
           "generated_at": "2026-09-11T15:53:56+00:00",
-          "unwrapped": 1
+          "action": "Tentacle Lash - Rears up high and whips two tentacles forward",
+          "rolls": 1,
+          "rung": 0
         },
         "south-east": {
           "status": "warn",
@@ -1301,6 +1301,7 @@
           "flash": 0.001,
           "peak": 0.0866,
           "reach": 0.313,
+          "turn": 0,
           "canvas": [
             96,
             96
@@ -1334,6 +1335,7 @@
           "flash": 0.001,
           "peak": 0.0968,
           "reach": 0.386,
+          "turn": 0,
           "canvas": [
             102,
             102
@@ -1346,11 +1348,10 @@
           "group": "efc1da40-3f28-4553-b32b-d9b04fe3a7b1",
           "takes": 1,
           "version": 1,
-          "action": "Tentacle Lash - Rears up high and whips two tentacles forward",
-          "rung": 0,
-          "rolls": 1,
           "generated_at": "2026-09-11T15:53:57+00:00",
-          "unwrapped": 1
+          "action": "Tentacle Lash - Rears up high and whips two tentacles forward",
+          "rolls": 1,
+          "rung": 0
         },
         "north-east": {
           "status": "pass",
@@ -1365,6 +1366,7 @@
           "flash": -0.001,
           "peak": 0.241,
           "reach": 0.418,
+          "turn": 2,
           "canvas": [
             96,
             96
@@ -1396,6 +1398,7 @@
           "flash": 0.0,
           "peak": 0.1724,
           "reach": 0.269,
+          "turn": 4,
           "canvas": [
             96,
             96
@@ -1429,6 +1432,7 @@
           "flash": 0.001,
           "peak": 0.0866,
           "reach": 0.313,
+          "turn": 0,
           "canvas": [
             96,
             96
@@ -1463,6 +1467,7 @@
           "flash": 0.001,
           "peak": 0.0968,
           "reach": 0.386,
+          "turn": 0,
           "canvas": [
             102,
             102
@@ -1475,11 +1480,10 @@
           "group": "efc1da40-3f28-4553-b32b-d9b04fe3a7b1",
           "takes": 1,
           "version": 1,
-          "action": "Tentacle Lash - Rears up high and whips two tentacles forward",
-          "rung": 0,
-          "rolls": 1,
           "generated_at": "2026-09-11T15:53:57+00:00",
-          "unwrapped": 1,
+          "action": "Tentacle Lash - Rears up high and whips two tentacles forward",
+          "rolls": 1,
+          "rung": 0,
           "mirrored": true,
           "source": "east"
         },
@@ -1496,6 +1500,7 @@
           "flash": -0.001,
           "peak": 0.241,
           "reach": 0.418,
+          "turn": 2,
           "canvas": [
             96,
             96

@@ -1297,6 +1297,7 @@
           "flash": 0.0,
           "peak": 0.5075,
           "reach": 0.253,
+          "turn": 3,
           "canvas": [
             232,
             232
@@ -1319,7 +1320,7 @@
           "rung": 0
         },
         "south-east": {
-          "status": "fail",
+          "status": "warn",
           "step_mean": 0.4934,
           "step_max": 0.6066,
           "drift": 30.07,
@@ -1337,7 +1338,6 @@
             232
           ],
           "reasons": [
-            "HE says redo: the direction looks like S and not SW",
             "drifts 30.1 px — eyeball it",
             "shallow strike: reach 0.28 — eyeball it"
           ],
@@ -1346,15 +1346,13 @@
           "takes": 1,
           "version": 2,
           "mirrored": false,
-          "action": "Club Smash - Raises the stone club overhead and smashes it straight down, a big aggressive swing",
-          "intensity": 0,
-          "rolls": 2,
-          "frames": 4,
-          "rung": 1,
-          "unwrapped": null,
-          "tries": 2,
           "generated_at": "2026-09-11T20:22:49+00:00",
-          "maintainer": "the direction looks like S and not SW"
+          "action": "Club Smash - Raises the stone club overhead and smashes it straight down, a big aggressive swing",
+          "tries": 2,
+          "rolls": 2,
+          "intensity": 0,
+          "frames": 4,
+          "rung": 1
         },
         "east": {
           "status": "warn",
@@ -1369,6 +1367,7 @@
           "flash": 0.0,
           "peak": 0.7056,
           "reach": 0.453,
+          "turn": 4,
           "canvas": [
             232,
             232
@@ -1402,6 +1401,7 @@
           "flash": 0.0,
           "peak": 0.4255,
           "reach": 0.364,
+          "turn": 0,
           "canvas": [
             232,
             232
@@ -1433,6 +1433,7 @@
           "flash": 0.0,
           "peak": 0.4149,
           "reach": 0.257,
+          "turn": 4,
           "canvas": [
             232,
             232
@@ -1454,7 +1455,7 @@
           "rung": 0
         },
         "south-west": {
-          "status": "fail",
+          "status": "warn",
           "step_mean": 0.4934,
           "step_max": 0.6066,
           "drift": 30.07,
@@ -1472,7 +1473,6 @@
             232
           ],
           "reasons": [
-            "HE says redo: the direction looks like S and not SW",
             "drifts 30.1 px — eyeball it",
             "shallow strike: reach 0.28 — eyeball it"
           ],
@@ -1481,16 +1481,14 @@
           "takes": 1,
           "version": 2,
           "mirrored": true,
+          "generated_at": "2026-09-11T20:22:49+00:00",
           "action": "Club Smash - Raises the stone club overhead and smashes it straight down, a big aggressive swing",
-          "intensity": 0,
+          "tries": 2,
           "rolls": 2,
+          "intensity": 0,
           "frames": 4,
           "rung": 1,
-          "unwrapped": null,
-          "tries": 2,
-          "generated_at": "2026-09-11T20:22:49+00:00",
-          "source": "south-east",
-          "maintainer": "the direction looks like S and not SW"
+          "source": "south-east"
         },
         "west": {
           "status": "warn",
@@ -1505,6 +1503,7 @@
           "flash": 0.0,
           "peak": 0.7056,
           "reach": 0.453,
+          "turn": 4,
           "canvas": [
             232,
             232
@@ -1539,6 +1538,7 @@
           "flash": 0.0,
           "peak": 0.4255,
           "reach": 0.364,
+          "turn": 0,
           "canvas": [
             232,
             232

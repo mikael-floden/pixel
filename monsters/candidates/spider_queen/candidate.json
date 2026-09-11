@@ -1258,6 +1258,7 @@
           "flash": 0.0,
           "peak": 0.364,
           "reach": 0.235,
+          "turn": 0,
           "canvas": [
             240,
             240
@@ -1291,6 +1292,7 @@
           "flash": 0.0,
           "peak": 0.215,
           "reach": 0.246,
+          "turn": 0,
           "canvas": [
             240,
             240
@@ -1324,6 +1326,7 @@
           "flash": -0.001,
           "peak": 0.6346,
           "reach": 0.24,
+          "turn": 2,
           "canvas": [
             240,
             240
@@ -1345,7 +1348,7 @@
           "rung": 0
         },
         "north-east": {
-          "status": "fail",
+          "status": "warn",
           "step_mean": 0.5539,
           "step_max": 0.6633,
           "drift": 27.64,
@@ -1363,7 +1366,6 @@
             240
           ],
           "reasons": [
-            "HE says redo: The direction changes inaide the animation",
             "drifts 27.6 px — eyeball it",
             "shallow strike: reach 0.24 — eyeball it"
           ],
@@ -1372,15 +1374,13 @@
           "takes": 1,
           "version": 2,
           "mirrored": false,
-          "action": "Fang Stab - Rears high on her back legs and stabs down with fangs and front legs, a big aggressive swing",
-          "intensity": 0,
-          "rolls": 2,
-          "frames": 4,
-          "rung": 1,
-          "unwrapped": null,
-          "tries": 2,
           "generated_at": "2026-09-11T20:25:09+00:00",
-          "maintainer": "The direction changes inaide the animation"
+          "action": "Fang Stab - Rears high on her back legs and stabs down with fangs and front legs, a big aggressive swing",
+          "tries": 2,
+          "rolls": 2,
+          "intensity": 0,
+          "frames": 4,
+          "rung": 1
         },
         "north": {
           "status": "warn",
@@ -1408,14 +1408,13 @@
           "takes": 1,
           "version": 2,
           "mirrored": false,
+          "generated_at": "2026-09-11T20:25:11+00:00",
           "action": "Fang Stab - Rears high on her back legs and stabs down with fangs and front legs, a big aggressive swing",
-          "intensity": 0,
-          "rolls": 2,
-          "frames": 4,
-          "rung": 1,
-          "unwrapped": null,
           "tries": 2,
-          "generated_at": "2026-09-11T20:25:11+00:00"
+          "rolls": 2,
+          "intensity": 0,
+          "frames": 4,
+          "rung": 1
         },
         "south-west": {
           "status": "warn",
@@ -1430,6 +1429,7 @@
           "flash": 0.0,
           "peak": 0.215,
           "reach": 0.246,
+          "turn": 0,
           "canvas": [
             240,
             240
@@ -1464,6 +1464,7 @@
           "flash": -0.001,
           "peak": 0.6346,
           "reach": 0.24,
+          "turn": 2,
           "canvas": [
             240,
             240
@@ -1486,7 +1487,7 @@
           "source": "east"
         },
         "north-west": {
-          "status": "fail",
+          "status": "warn",
           "step_mean": 0.5539,
           "step_max": 0.6633,
           "drift": 27.64,
@@ -1504,7 +1505,6 @@
             240
           ],
           "reasons": [
-            "HE says redo: The direction changes inaide the animation",
             "drifts 27.6 px — eyeball it",
             "shallow strike: reach 0.24 — eyeball it"
           ],
@@ -1513,16 +1513,14 @@
           "takes": 1,
           "version": 2,
           "mirrored": true,
+          "generated_at": "2026-09-11T20:25:09+00:00",
           "action": "Fang Stab - Rears high on her back legs and stabs down with fangs and front legs, a big aggressive swing",
-          "intensity": 0,
+          "tries": 2,
           "rolls": 2,
+          "intensity": 0,
           "frames": 4,
           "rung": 1,
-          "unwrapped": null,
-          "tries": 2,
-          "generated_at": "2026-09-11T20:25:09+00:00",
-          "source": "north-east",
-          "maintainer": "The direction changes inaide the animation"
+          "source": "north-east"
         }
       },
       "action": "Fang Stab - Rears high on her back legs and stabs down with fangs and front legs",

@@ -1269,6 +1269,7 @@
           "flash": 0.0,
           "peak": 0.5828,
           "reach": 0.247,
+          "turn": 0,
           "canvas": [
             240,
             240
@@ -1303,6 +1304,7 @@
           "flash": 0.0,
           "peak": 0.557,
           "reach": 0.312,
+          "turn": 3,
           "canvas": [
             240,
             240
@@ -1322,7 +1324,7 @@
           "rung": 0
         },
         "east": {
-          "status": "fail",
+          "status": "warn",
           "step_mean": 0.6018,
           "step_max": 0.7864,
           "drift": 31.57,
@@ -1340,7 +1342,6 @@
             240
           ],
           "reasons": [
-            "HE says redo: the animation flips direction inside the animation",
             "drifts 31.6 px — eyeball it"
           ],
           "sub": "d7715db6-5dde-49d1-aede-99972d753db8",
@@ -1348,18 +1349,16 @@
           "takes": 1,
           "version": 3,
           "mirrored": false,
-          "action": "Club Smash - Heaves the stalactite club overhead and smashes it down, a big aggressive swing",
-          "intensity": 0,
-          "rolls": 3,
-          "frames": 4,
-          "rung": 1,
-          "unwrapped": null,
-          "tries": 3,
           "generated_at": "2026-09-11T20:24:38+00:00",
-          "maintainer": "the animation flips direction inside the animation"
+          "action": "Club Smash - Heaves the stalactite club overhead and smashes it down, a big aggressive swing",
+          "tries": 3,
+          "rolls": 3,
+          "intensity": 0,
+          "frames": 4,
+          "rung": 1
         },
         "north-east": {
-          "status": "fail",
+          "status": "warn",
           "step_mean": 0.6259,
           "step_max": 0.7167,
           "drift": 23.46,
@@ -1377,7 +1376,6 @@
             240
           ],
           "reasons": [
-            "HE says redo: the animation flips direction inside the animation",
             "drifts 23.5 px — eyeball it"
           ],
           "sub": "58083258-45c0-45db-b1a7-e5a60e7692c7",
@@ -1385,15 +1383,13 @@
           "takes": 1,
           "version": 3,
           "mirrored": false,
-          "action": "Club Smash - Heaves the stalactite club overhead and smashes it down, a big aggressive swing",
-          "intensity": 0,
-          "rolls": 2,
-          "frames": 4,
-          "rung": 1,
-          "unwrapped": null,
-          "tries": 2,
           "generated_at": "2026-09-11T20:24:39+00:00",
-          "maintainer": "the animation flips direction inside the animation"
+          "action": "Club Smash - Heaves the stalactite club overhead and smashes it down, a big aggressive swing",
+          "tries": 2,
+          "rolls": 2,
+          "intensity": 0,
+          "frames": 4,
+          "rung": 1
         },
         "north": {
           "status": "warn",
@@ -1408,6 +1404,7 @@
           "flash": 0.0,
           "peak": 0.579,
           "reach": 0.24,
+          "turn": 3,
           "canvas": [
             240,
             240
@@ -1442,6 +1439,7 @@
           "flash": 0.0,
           "peak": 0.557,
           "reach": 0.312,
+          "turn": 3,
           "canvas": [
             240,
             240
@@ -1462,7 +1460,7 @@
           "source": "south-east"
         },
         "north-west": {
-          "status": "fail",
+          "status": "warn",
           "step_mean": 0.6259,
           "step_max": 0.7167,
           "drift": 23.46,
@@ -1480,7 +1478,6 @@
             240
           ],
           "reasons": [
-            "HE says redo: the animation flips direction inside the animation",
             "drifts 23.5 px — eyeball it"
           ],
           "sub": "58083258-45c0-45db-b1a7-e5a60e7692c7",
@@ -1488,19 +1485,17 @@
           "takes": 1,
           "version": 3,
           "mirrored": true,
+          "generated_at": "2026-09-11T20:24:39+00:00",
           "action": "Club Smash - Heaves the stalactite club overhead and smashes it down, a big aggressive swing",
-          "intensity": 0,
+          "tries": 2,
           "rolls": 2,
+          "intensity": 0,
           "frames": 4,
           "rung": 1,
-          "unwrapped": null,
-          "tries": 2,
-          "generated_at": "2026-09-11T20:24:39+00:00",
-          "source": "north-east",
-          "maintainer": "the animation flips direction inside the animation"
+          "source": "north-east"
         },
         "west": {
-          "status": "fail",
+          "status": "warn",
           "step_mean": 0.6018,
           "step_max": 0.7864,
           "drift": 31.57,
@@ -1518,7 +1513,6 @@
             240
           ],
           "reasons": [
-            "HE says redo: the animation flips direction inside the animation",
             "drifts 31.6 px — eyeball it"
           ],
           "sub": "d7715db6-5dde-49d1-aede-99972d753db8",
@@ -1526,16 +1520,14 @@
           "takes": 1,
           "version": 3,
           "mirrored": true,
+          "generated_at": "2026-09-11T20:24:38+00:00",
           "action": "Club Smash - Heaves the stalactite club overhead and smashes it down, a big aggressive swing",
-          "intensity": 0,
+          "tries": 3,
           "rolls": 3,
+          "intensity": 0,
           "frames": 4,
           "rung": 1,
-          "unwrapped": null,
-          "tries": 3,
-          "generated_at": "2026-09-11T20:24:38+00:00",
-          "source": "east",
-          "maintainer": "the animation flips direction inside the animation"
+          "source": "east"
         }
       },
       "action": "Club Smash - Heaves the stalactite club overhead and smashes it down",

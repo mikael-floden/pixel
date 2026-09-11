@@ -1237,7 +1237,7 @@
     "attack_v3": {
       "directions": {
         "south": {
-          "status": "fail",
+          "status": "pass",
           "step_mean": 0.3127,
           "step_max": 0.4645,
           "drift": 4.85,
@@ -1254,23 +1254,19 @@
             96,
             96
           ],
-          "reasons": [
-            "HE says redo: The wings go outside the frame and is not saved in postprocess"
-          ],
+          "reasons": [],
           "sub": "64a44574-a94c-4cd7-8bff-ea464440684c",
           "group": "aa7a629e-c7b9-419f-8f7b-1a02665416e3",
           "takes": 1,
           "version": 2,
           "mirrored": false,
-          "action": "Beak Stab - Spreads its wings wide and stabs forward with its hooked beak",
-          "intensity": 0,
-          "rolls": 2,
-          "frames": 4,
-          "rung": 0,
-          "unwrapped": null,
-          "tries": 2,
           "generated_at": "2026-09-11T20:21:30+00:00",
-          "maintainer": "The wings go outside the frame and is not saved in postprocess"
+          "action": "Beak Stab - Spreads its wings wide and stabs forward with its hooked beak",
+          "tries": 2,
+          "rolls": 2,
+          "intensity": 0,
+          "frames": 4,
+          "rung": 0
         },
         "south-east": {
           "status": "pass",
@@ -1285,6 +1281,7 @@
           "flash": -0.0,
           "peak": 0.5819,
           "reach": 0.534,
+          "turn": 1,
           "canvas": [
             96,
             96
@@ -1316,6 +1313,7 @@
           "flash": 0.022,
           "peak": 0.3865,
           "reach": 0.268,
+          "turn": 0,
           "canvas": [
             96,
             96
@@ -1349,6 +1347,7 @@
           "flash": -0.033,
           "peak": 0.5457,
           "reach": 0.517,
+          "turn": 3,
           "canvas": [
             96,
             96
@@ -1380,6 +1379,7 @@
           "flash": -0.017,
           "peak": 0.4627,
           "reach": 0.603,
+          "turn": 4,
           "canvas": [
             96,
             96
@@ -1411,6 +1411,7 @@
           "flash": -0.0,
           "peak": 0.5819,
           "reach": 0.534,
+          "turn": 1,
           "canvas": [
             96,
             96
@@ -1443,6 +1444,7 @@
           "flash": 0.022,
           "peak": 0.3865,
           "reach": 0.268,
+          "turn": 0,
           "canvas": [
             96,
             96
@@ -1477,6 +1479,7 @@
           "flash": -0.033,
           "peak": 0.5457,
           "reach": 0.517,
+          "turn": 3,
           "canvas": [
             96,
             96

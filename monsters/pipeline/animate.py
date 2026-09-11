@@ -1032,6 +1032,13 @@ def cmd_review(args):
                 continue
             st = (v.get("status") or "").lower()
             note = (v.get("note") or "").strip()
+            made, said = q.get("generated_at"), v.get("updated_at")
+            if made and said and made > said:
+                # already acted on: this direction was regenerated AFTER he
+                # wrote the note, so re-applying it would fail fresh art for a
+                # defect in a clip that no longer exists. prune-feedback drops
+                # the entry; nothing to do here.
+                continue
             if st in ("redo", "rejected"):
                 src = MIRRORED.get(d)           # a mirror is fixed by redoing its source
                 tgt = rec["directions"].get(src) if src else None
