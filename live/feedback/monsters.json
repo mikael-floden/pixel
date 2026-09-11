@@ -1,7 +1,7 @@
 {
   "format": "pixel-wiki-feedback@1",
   "domain": "monsters",
-  "updated_at": "2026-09-11T22:02:47.778Z",
+  "updated_at": "2026-09-11T22:03:22.099Z",
   "entries": {
     "monsters/candidates/lava_slug": {
       "status": "approved",
@@ -760,6 +760,12 @@
       "art": "bf3f8242e39b8909",
       "updated_at": "2026-09-11T22:02:47.563Z",
       "note": "The direction flips inside the animation"
+    },
+    "monsters/cave_troll_boss#attack_v3#north-west": {
+      "status": "redo",
+      "art": "9624d2648e508640",
+      "updated_at": "2026-09-11T22:03:21.729Z",
+      "note": "The animation flips inside the animation"
     }
   }
 }
