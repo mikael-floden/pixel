@@ -300,6 +300,14 @@ from the games agent), #18 (title/landing screen).
   after every HudBar rebuild, so the rule only stays true if it lives on the
   receiving side. Moving a node out of `.ml-set` fires only records the observer
   ignores, so it cannot loop.
+  ADOPTION ALSO DRESSES IT (`adoptDial`): the track and the reset button are put
+  into a `.ml-slider-row` and the button gains `.ml-slider-def`, reading none of
+  the injector's own classes. PAID FOR — `navbias.ts` kept a private copy of the
+  row CSS and a rewrite left the copy but dropped the call that injected it, so
+  both Uphill dials shipped with the button on its own centred line above the
+  track (maintainer 2026-09-11: "two default buttons look missplaced"). The gate
+  now measures that a button's centre falls INSIDE its track's box, because that
+  layout passes every class check.
 - **A UI ICON IS THE MAINTAINER'S ART AT ITS AUTHORED GRID, NEVER AN EMOJI.**
   The 🔍 button shipped with the `&#128269;` glyph and he replaced it with his
   own PixelLab piece (2026-09-03) — an emoji is whatever the phone's font
