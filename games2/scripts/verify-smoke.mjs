@@ -283,6 +283,7 @@ try {
       const rows = [...document.querySelectorAll(".ml-amb-slider")];
       const bad = [];
       let leftOfTrack = 0;
+      const offLine = [];
       for (const r of rows) {
         const name = r.querySelector(".ml-amb-slider-label")?.textContent ?? "?";
         const btn = r.querySelector(".ml-slider-def");
@@ -291,14 +292,21 @@ try {
           bad.push(name);
           continue;
         }
-        if (btn.getBoundingClientRect().left < track.getBoundingClientRect().right) leftOfTrack++;
+        const b = btn.getBoundingClientRect();
+        const t = track.getBoundingClientRect();
+        if (b.left < t.right) leftOfTrack++;
+        // ON THE TRACK'S LINE, measured — a button that lost its row lands on
+        // its own line ABOVE the track and still passes every class check.
+        if (b.top + b.height / 2 < t.top || b.top + b.height / 2 > t.bottom) offLine.push(name);
       }
-      return { n: rows.length, bad, leftOfTrack };
+      return { n: rows.length, bad, leftOfTrack, offLine };
     });
     if (!defs.n) fail("no sliders on the Settings page to check the default button on");
     else if (defs.bad.length) fail(`sliders with no "default" button: ${JSON.stringify(defs.bad)}`);
     else if (defs.leftOfTrack)
       fail(`${defs.leftOfTrack} "default" button(s) sit LEFT of their track — the gutter is on the right`);
+    else if (defs.offLine.length)
+      fail(`"default" button(s) not on their track's line: ${JSON.stringify(defs.offLine)} — the row is what puts them in the gutter`);
 
     // ALL THE DIALS IN ONE BLOCK: a slider that lands outside the dial group
     // is the bug he reported ("two settings sliders at the bottom of the page

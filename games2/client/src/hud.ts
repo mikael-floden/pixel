@@ -870,7 +870,7 @@ export class HudBar {
     new MutationObserver((recs) => {
       for (const r of recs)
         for (const n of r.addedNodes)
-          if (n instanceof HTMLElement && n.classList.contains("ml-amb-slider")) dials.appendChild(n);
+          if (n instanceof HTMLElement && n.classList.contains("ml-amb-slider")) adoptDial(dials, n);
     }).observe(wrap, { childList: true });
 
     // INDOOR LIGHT: the base ambient inside houses and caves (maintainer
@@ -1413,6 +1413,35 @@ function plateButton(label: string, onPress: () => void): HTMLButtonElement {
   pressFx(b);
   // pressed / switch-ON states are pure CSS now (.press / .on on .ml-plate-btn)
   return b;
+}
+
+/** Take in a dial built OUTSIDE this file: move it into the group, and dress
+ * its track and its reset button in the shared row so it sits where every
+ * other dial sits. The same fix-up the settings button row does for injected
+ * plate buttons, and for the same reason — an outside injector dresses itself
+ * by class and what it misses is invisible until a screenshot arrives.
+ * PAID FOR TWICE: navbias.ts kept a private copy of the row CSS, and a rewrite
+ * left the copy behind but dropped the call that injected it — so its two
+ * dials shipped with the button on its own centred line above the track
+ * (maintainer 2026-09-11: "two default buttons look missplaced"). Nothing here
+ * reads the injector's own classes, so it holds however they build it. */
+function adoptDial(group: HTMLElement, dial: HTMLElement): void {
+  group.appendChild(dial);
+  const track = dial.querySelector<HTMLElement>(".ml-slider");
+  if (!track || track.parentElement?.classList.contains("ml-slider-row")) return;
+  const btn = dial.querySelector<HTMLButtonElement>("button");
+  const host = track.parentElement;
+  if (!host) return;
+  // the row lands where the injector's own container sat, so the head stays
+  // above it and the order of the dial's parts is unchanged
+  const row = mk("div", "ml-slider-row");
+  dial.insertBefore(row, host === dial ? track : host);
+  row.appendChild(track);
+  if (btn) {
+    btn.classList.add("ml-slider-def"); // additive: their own hooks still work
+    row.appendChild(btn);
+  }
+  if (host !== dial && !host.childElementCount) host.remove();
 }
 
 /** THE "default" BUTTON EVERY SLIDER CARRIES, riding in the scroll gutter to

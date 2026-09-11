@@ -27,8 +27,12 @@
 // (UI_AGENT.md) and these are the games agent's settings. Same pattern as the
 // ambient agent's settings button and the map layer row: find the page, add to
 // it, and re-add when the HudBar has thrown everything away on a rejoin. They
-// wear the HUD's OWN slider classes, so they are the same widget to look at,
-// and each carries the "default" button he asked every slider to have.
+// wear the HUD's OWN slider classes — .ml-amb-slider, .ml-slider-row and the
+// .ml-slider-def button — so they are the same widget to look at, and each
+// carries the "default" button he asked every slider to have. hud.ts then
+// MOVES this wrap into its dial group so the dials all sit together; wrap
+// .isConnected stays true through the move, so ensureNavDial still returns
+// early and nothing re-injects.
 
 export const NAV_UPHILL_MIN = 1;
 export const NAV_UPHILL_MAX = 8;
@@ -157,24 +161,6 @@ interface Dial {
 
 let dials: Dial[] = [];
 
-function styleOnce() {
-  if (document.getElementById("ml-navdial-css")) return;
-  const st = document.createElement("style");
-  st.id = "ml-navdial-css";
-  // THE DEFAULT BUTTON GOES BESIDE THE TRACK (maintainer 2026-09-10: "we have
-  // some space to the left of the sliders ... place a default button that is
-  // disabled if the current value is already default"). Everything else is the
-  // HUD's own slider recipe, reused by class so they look identical.
-  st.textContent = `
-  .${CLS}-row{display:flex;align-items:center;gap:8px;width:100%}
-  .${CLS}-row .ml-slider{flex:1 1 auto;min-width:0}
-  .${CLS}-def{flex:0 0 auto;min-height:26px;padding:3px 9px;font:600 11px/1 var(--sans);
-    border-radius:7px;cursor:pointer;background:var(--surface);color:var(--ink);
-    border:1px solid var(--border);touch-action:manipulation;-webkit-tap-highlight-color:transparent}
-  .${CLS}-def:disabled{opacity:0.42;cursor:default}`;
-  document.head.appendChild(st);
-}
-
 function paint(d: Dial) {
   const v = value.get(d.sp.key)!;
   const p = toSlider(d.sp, v);
@@ -202,16 +188,23 @@ function build(host: HTMLElement, sp: Spec): Dial {
   label.textContent = sp.label;
   const valEl = mk("span", "ml-amb-slider-val");
   head.append(label, valEl);
-  const row = mk("div", `${CLS}-row`);
-  const reset = mk("button", `${CLS}-def`) as HTMLButtonElement;
+  // THE HUD'S OWN ROW, BY CLASS — .ml-slider-row puts the "default" button in
+  // the scroll gutter to the RIGHT of the track, which is where he asked every
+  // dial to carry it (2026-09-10). NO PRIVATE COPY OF THIS CSS: this file kept
+  // one, a rewrite left the copy but dropped the call that injected it, and
+  // both dials shipped with the button on its own line above the track. hud.ts
+  // owns the recipe and dresses these dials on adoption anyway.
+  const row = mk("div", "ml-slider-row");
+  const reset = mk("button", "ml-slider-def") as HTMLButtonElement;
   reset.type = "button";
   reset.textContent = "default";
+  reset.title = "back to the default";
   reset.addEventListener("click", () => set(sp, sp.def));
   const track = mk("div", "ml-slider");
   const fill = mk("div", "ml-slider-fill");
   const knob = mk("div", "ml-slider-knob");
   track.append(fill, knob);
-  row.append(reset, track);
+  row.append(track, reset);
   wrap.append(head, row);
   host.appendChild(wrap);
 
