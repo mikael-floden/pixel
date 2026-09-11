@@ -13,6 +13,8 @@
 //   IT CHANGES   — the path is short runs broken by hard turns, measured on
 //                  the heading the feature actually flies.
 //   IT SETTLES   — one goes down to the grass, shuts its wings, comes back up.
+//   IT MINDS YOU — walk at one and it notices, puts distance between you, and
+//                  takes off if it was sitting. Needs the live player probe.
 //   IT SHOWS     — a pixel arm against an OFF envelope, inside the clear game
 //                  area (the HUD is painted over the canvas). CONTRAST either
 //                  way: his commonest butterfly is brown+black, darker than
@@ -162,16 +164,30 @@ const spread = [...seenSpecies.entries()].sort((a, b) => b[1] - a[1]);
 const sightings = spread.reduce((n, [, c]) => n + c, 0);
 console.log(`colours: ${sightings} sightings over ${spread.length} mixes — ${spread.map(([k, c]) => `${k} ${c}`).join(", ")}`);
 const TABLE = new Set([
-  "brown_black", "black_orange", "brown_orange", "green_black", "yellow_black",
-  "blue_black", "white_black", "red_black", "purple_black", "green_blue",
+  "chalk_charcoal", "cream_grey", "soot_shadow", "umber_night", "sage_olive",
+  "moss_deep", "brick_ash", "rust_peat", "fawn_bark", "ochre_loam",
+  "slate_stone", "mauve_iris",
 ]);
+/* HIS BANDS, live. The unit test proves the table adds up; only this proves
+ * the population the game actually draws is mostly pale and dark rather than
+ * mostly colour — which is the complaint that produced the bands. */
+const BAND_OF = {
+  chalk_charcoal: "pale", cream_grey: "pale", soot_shadow: "dark", umber_night: "dark",
+  sage_olive: "green", moss_deep: "green", brick_ash: "red", rust_peat: "red",
+  fawn_bark: "free", ochre_loam: "free", slate_stone: "free", mauve_iris: "free",
+};
 const strangers = spread.filter(([k]) => !TABLE.has(k));
 if (strangers.length) fail(`drawn mixes that are not in his table: ${strangers.map(([k]) => k).join(", ")}`);
 if (spread.length < 3) fail(`only ${spread.length} butterfly mix(es) drawn over ${sightings} sightings — his table has ten`);
-// the common end must be common: nothing from his bottom three may lead
-const RARE = new Set(["red_black", "purple_black", "green_blue"]);
-if (sightings >= 40 && RARE.has(spread[0][0]))
-  fail(`${spread[0][0]} is his rarest end but came out commonest (${spread[0][1]} of ${sightings})`);
+if (sightings >= 25) {
+  const inBand = (b) => spread.filter(([k]) => BAND_OF[k] === b).reduce((n, [, c]) => n + c, 0);
+  const quiet = ((inBand("pale") + inBand("dark")) / sightings) * 100;
+  const colour = ((inBand("green") + inBand("red")) / sightings) * 100;
+  console.log(`colours: ${quiet.toFixed(0)}% pale-or-dark, ${colour.toFixed(0)}% green-or-red, ${(100 - quiet - colour).toFixed(0)}% the rest`);
+  // a live sample of ~30 is noisy, so the bar is well under his 50 — it is
+  // here to catch a population that has gone COLOURFUL, not to police luck
+  if (quiet < 30) fail(`only ${quiet.toFixed(0)}% of butterflies drawn were pale or dark; his floor for the table is 50`);
+}
 // back to the meadow the later arms are calibrated on — and the camera moved,
 // so the view every later arm converts screen positions through moves with it
 view = await goto(MEADOW.c, MEADOW.r);
@@ -228,6 +244,89 @@ console.log(`settle: ${landing.settles} settles, ${landing.down} frames on the g
 if (!landing.down) fail("nothing ever landed — a meadow where nothing settles is a screen saver");
 if (landing.shut !== landing.down) fail(`${landing.down - landing.shut} frames sat on the grass with its wings open`);
 if (!landing.lifted) fail("a butterfly landed and never left");
+
+/* ---- IT MINDS YOU ---------------------------------------------------------- */
+/* "Would also be cool if the butterflies interact/avoid the player to make the
+ * game feel more alive/realtime." Walk at one and it must (a) notice, (b) end
+ * up further away than it started, and (c) if it was sitting on the grass,
+ * take off. None of that is visible to a unit test: the reaction needs the
+ * game's own player position through a probe. */
+{
+  const before = (await dbg()).startled;
+  let noticed = 0;
+  let fled = 0;
+  let tried = 0;
+  let tookOff = 0;
+  for (let round = 0; round < 10 && (fled < 2 || tookOff < 1); round++) {
+    const all = (await dbg()).all.filter((f) => f.a > 0.5);
+    if (!all.length) { await page.waitForTimeout(800); continue; }
+    /* PREFER ONE THAT IS SITTING ON THE GRASS. Taking off as you arrive is
+     * the half of this he would actually notice, and walking at whichever
+     * butterfly happened to be first in the array tested it only by luck —
+     * five rounds caught no settled one at all. */
+    const target = all.find((f) => f.down) ?? all.find((f) => f.settling) ?? all[0];
+    const wasDown = !!target.down || !!target.settling;
+    // its drawn point -> the cell to stand on (gx/gy are DRAWN ISO PIXELS)
+    const cell = await page.evaluate(([x, y]) => window.__ml.pickAt(x, y), [target.x, target.y]);
+    if (!cell) continue;
+    tried++;
+    /* Read the counter HERE, not inside the tracking window: a sitting
+     * butterfly takes off on the very next frame after the teleport, which
+     * is inside the round trip back to node — a "before" sampled once the
+     * window opens has already missed it. */
+    const s0 = (await dbg()).startled;
+    // pickAt answers in WORLD UNITS (32 per cell) and teleport takes a CELL
+    await page.evaluate(([c, r]) => window.__ml.teleport(Math.round(c), Math.round(r)), [cell.x / 32, cell.y / 32]);
+    // track that one butterfly (by its patch, which does not change mid-flight)
+    const track = await page.evaluate(async (hx) => {
+      const tick = () => new Promise((r) => requestAnimationFrame(r));
+      const mine = () => window.__mlAmbient.debug("butterflies").all.find((f) => `${f.hx},${f.hy}` === hx);
+      const until = performance.now() + 3500;
+      let maxShy = 0;
+      const first = mine();
+      /* MEASURE FROM THE CLOSEST APPROACH, not from the first frame. The
+       * teleport lands over several frames and the camera follows, so the
+       * distance shrinks on its own at the start of the window — comparing
+       * first to last measured the player arriving, not the butterfly
+       * leaving (round 1 read 216 -> 70 and called it a failure to flee). */
+      let minD = Infinity;
+      let lastD = null;
+      while (performance.now() < until) {
+        const f = mine();
+        if (f) {
+          maxShy = Math.max(maxShy, f.shy ?? 0);
+          const me = window.__ml.myScreen?.();
+          const v = window.__ml.camView();
+          if (me && me.zoom) {
+            const px = v.x + me.sx / me.zoom, py = v.y + me.sy / me.zoom;
+            const d = Math.hypot(f.x - px, (f.y - py) * (32 / 14));
+            minD = Math.min(minD, d);
+            lastD = d;
+          }
+        }
+        await tick();
+      }
+      return { maxShy, minD: minD === Infinity ? null : minD, lastD, was: !!first };
+    }, `${target.hx},${target.hy}`);
+    const flew = (await dbg()).startled > s0;
+    if (track.maxShy > 0) noticed++;
+    if (wasDown && flew) tookOff++;
+    // it must end the window further off than it ever got, by more than the
+    // wobble of a flight path — 8 px is under a third of the shy radius
+    if (track.maxShy > 0 && track.lastD !== null && track.minD !== null && track.lastD > track.minD + 8) fled++;
+    console.log(
+      `shy: round ${round + 1} — ${wasDown ? "sitting" : "flying"}, alarm ${track.maxShy.toFixed(2)}, closest ${track.minD === null ? "?" : track.minD.toFixed(0)} px then ${track.lastD === null ? "?" : track.lastD.toFixed(0)} px${flew ? ", TOOK OFF" : ""}`,
+    );
+  }
+  const startled = (await dbg()).startled - before;
+  console.log(`shy: ${noticed} of ${tried} approaches noticed, ${fled} put distance between us, ${startled} sitting butterflies took off`);
+  if (!tried) fail("could not stand next to a single butterfly — the arm tested nothing");
+  if (!noticed) fail("no butterfly noticed the player standing on it");
+  if (fled < 2) fail(`only ${fled} of ${tried} butterflies moved away from the player`);
+  if (!startled) fail("no butterfly sitting on the grass took off as the player arrived — the half of this that reads as alive");
+}
+// back to the meadow the pixel arm is calibrated on
+view = await goto(MEADOW.c, MEADOW.r);
 
 /* ---- IT SHOWS (pixels) ---------------------------------------------------- */
 const setOn = (on) => page.evaluate((on) => window.__mlAmbient.setEnabled("butterflies", on), on);

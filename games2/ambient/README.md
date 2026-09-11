@@ -67,6 +67,21 @@ them; folder isolation beats DRY here).
   white (maintainer 2026-09-11), and they would drift again at the next art
   regeneration. Measured over the eight birds: 5b9a42 green, e84940 red,
   cbd1d9 white, and six more all distinct.
+- **`playerAt(view)`** (`runtime/ground.ts`) is where the player is DRAWN, in
+  the world px every critter holds. `__ml.myScreen()` answers in screen px and
+  the view converts it; the player's `__ml.me()` is WORLD UNITS and is the
+  wrong space entirely. Anything that reacts to you needs this — `crabs/`
+  bolt, `gnats/` break up, `butterflies/` turn away and take off — and it is
+  ONE probe read per frame for a whole population, never one per creature.
+  REACTING TO THE PLAYER IS WHAT MAKES A FEATURE FEEL REAL-TIME rather than
+  decorative (maintainer 2026-09-11: "would also be cool if the butterflies
+  interact/avoid the player to make the game feel more alive"), and the
+  strongest version of it is interrupting something: a butterfly that leaves
+  the grass as you reach it beats one that merely steers aside. Grade the
+  reaction by distance rather than switching it at a radius, or a whole meadow
+  bolts on the same frame.
+  (`crabs/` and `gnats/` predate this and each carry their own copy; they can
+  adopt it whenever they are next opened.)
 - **`groundSoundAt(wx, wy)`** (`runtime/ground.ts`) answers WHAT THE GROUND
   UNDER A DRAWN POINT IS MADE OF — its surface `sound` ("grass", "sand",
   "stone", "dirt", …) — for a feature that belongs over one kind of ground.
@@ -332,7 +347,7 @@ controller (AUTO / NONE / solo-each).
 | `fish/` | field | THE RISE — a fish takes a fly: a dorsal fin breaks the surface, a tail flicks a beat later, and two or three rings leave the spot and widen until they fade; the harder takes throw a few specks of water. Rings are ISO ELLIPSES (a circle stands up out of the lake like a hoop) at whole-pixel radii, the lead ring big and the followers smaller so nested rings stay legible | Lakes and shallows only (`runtime/water.ts`; the open sea is `deepwater/`'s), outdoors. Peaks at dawn and dusk on a bump in the sun, never zero, hidden by heavy rain |
 | `water/` | field | Living water — pixel-art wavelets + sun/moon reflection glints (frame-animated, full-pixel, no sub-px slide) | LAKES AND SHALLOWS: water on screen (iso probe) MINUS anywhere the deep-sea current runs — the open sea is `deepwater/`'s |
 | `feathers/` | field | WHAT A FLUSH LEAVES BEHIND — spook a landed flock and each bird drops a feather or two: knocked loose by the wingbeat so it rises first, then sinks slowly, swinging side to side and LEANING into each slide, and lies on the ground a few seconds before it goes. TINTED FROM ITS OWN BIRD (`plumageOf`, lifted toward white): a red bird sheds a pink feather, a green one a pale green | Only when `birds/` announces a flush (`runtime/flush.ts`); outdoors. Selected ALONE in Settings there is no flock, so it sheds a demo feather then and only then |
-| `butterflies/` | field | THE MEADOW IN SUMMER — at four pixels a butterfly is a WAY OF MOVING, not a shape: the body BOBS a whole pixel or three with every wingbeat (a mark that slides level reads as a bee), the path is short runs broken by hard turns (a smooth curve reads as a bird), and the beat is uneven so it does not tick. Wings change SILHOUETTE WIDTH, 5 px open / 3 half / 1 shut, on frames all the same height so only the wings move. TEN COLOUR MIXES FROM THE MAINTAINER'S OWN TABLE (`species.ts`), brown+black commonest at 22% down to green+blue at 1%, with red and purple lifted 1.2x because he likes them. Each one works the PATCH it was placed on and settles onto the grass now and then, wings shut, before lifting off | Grass (the surface's own `sound`, `groundSoundAt`), outdoors, by DAY: a ramp on sun strength, gone in rain, and gone in storm, snow or wind |
+| `butterflies/` | field | THE MEADOW IN SUMMER — at four pixels a butterfly is a WAY OF MOVING, not a shape: the body BOBS a whole pixel or three with every wingbeat (a mark that slides level reads as a bee), the path is short runs broken by hard turns (a smooth curve reads as a bird), and the beat is uneven so it does not tick. Wings change SILHOUETTE WIDTH, 5 px open / 3 half / 1 shut, on frames all the same height so only the wings move. MUTED BY LAW (`species.ts`): the maintainer's bands — at least half pale-and-dark, a quarter green-and-red, a quarter free — and nothing over `MAX_SAT` 0.45 saturation, because this is background. It works the PATCH it was placed on, settles onto the grass now and then with its wings shut, and MINDS YOU: walk up and it turns away, hurries, and takes off if it was sitting | Grass (the surface's own `sound`, `groundSoundAt`), outdoors, by DAY: a ramp on sun strength, gone in rain, and gone in storm, snow or wind |
 | `bats/` | episode | Night colony wheeling: boids in any direction (top-down), erratic jinking, scattering near the player (no landing) | base 1.0; day ×0.01 |
 | `birds/` | episode | Living day flock: boids over the world, landing on dry ground to peck, flushing near the player | base 1.0; night ×0.05 |
 | `thunder/` | episode | Distant sheet lightning beyond the horizon | base 0.35 × (1 + rain + night); cloud/mist as weak proxies |
@@ -466,6 +481,19 @@ a guess; this is not.
 surface in the world still passed — there was no other surface to get it wrong
 on. Moved to a view that is 63% grass and 37% soil and paving, the same
 falsification fails two arms. A gate location is part of the gate.
+**A BACKGROUND EFFECT'S PALETTE IS CAPPED BY A NUMBER, NOT BY TASTE.** Twice
+the maintainer rejected butterfly colour for being too loud — "you made them
+blue and yellow", then "I don't want the butterflies to bring this much color
+into the game... no extreme/vibrant colors. This is a background effect." The
+second time the fix was a measurable one: every colour a background feature
+draws is capped at an HSV saturation (`MAX_SAT` 0.45 in `butterflies/`) and a
+test asserts it, INCLUDING that the rejected palette's own colours would fail
+it (orange 0.81, yellow 0.69, blue 0.65, green 0.63). "Muted" is a judgement
+that drifts with whoever writes the next feature; a number does not.
+**AND WHEN HE GIVES PROPORTIONS, THE PROPORTIONS ARE THE CONTRACT** — the
+thing he objected to was the BALANCE, not any one colour, so `BANDS` is
+published and tested (pale+dark >= 50%, green+red = 25%, free = 25%) and a
+colour added later cannot quietly shift it.
 **A TWO-COLOUR CREATURE CANNOT BE A TINT, and a colour table's percentages
 are not pixel areas.** `setTint` multiplies the whole sprite by one value, so
 anything with a marking has its colours PAINTED INTO per-species textures

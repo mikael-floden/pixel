@@ -95,6 +95,57 @@ export function homePull(h: number, dx: number, dy: number, dt: number): number 
   return Math.max(-most, Math.min(most, diff));
 }
 
+
+/* SHY OF THE PLAYER — "would also be cool if the butterflies interact/avoid
+ * the player to make the game feel more alive/realtime" (maintainer).
+ *
+ * Three things happen as you walk up, and the third is the one that sells it:
+ * it turns away, it speeds up, and IF IT WAS SITTING ON THE GRASS IT TAKES
+ * OFF. A butterfly that ignores you is scenery; one that leaves the flower as
+ * you reach it is alive. The reaction is graded by distance rather than
+ * switched at a radius, so walking slowly past the edge of a meadow makes
+ * them drift aside rather than all bolt at once.
+ *
+ * Distances are GROUND-PLANE px: the caller un-squashes the iso y (a step is
+ * 32 wide to 14 tall) before calling, or a butterfly would be shy of someone
+ * standing twice as far away north of it as east.
+ */
+/** How close before it minds you at all, ground-plane px (about a cell). */
+export const SHY_R = 38;
+/** How hard it turns away at the very closest, rad/s. */
+export const SHY_TURN = 3.4;
+/** And how much faster it flies while it is getting out of the way. */
+export const SHY_BOOST = 0.8;
+/** A sitting butterfly takes off once you are this alarming. */
+export const SHY_TAKEOFF = 0.3;
+
+/** How alarmed a butterfly is: 0 beyond SHY_R, rising to 1 at the player.
+ *  `dx`/`dy` point FROM the butterfly TO the player, ground-plane px. */
+export function shyness(dx: number, dy: number): number {
+  const r = Math.hypot(dx, dy);
+  if (r >= SHY_R) return 0;
+  return 1 - r / SHY_R;
+}
+
+/** The extra turn over `dt` ms that points a butterfly AWAY from the player.
+ *  Zero when it is already fleeing straight away, so a startled one flies off
+ *  in a line instead of being spun on the spot. */
+export function shyTurn(h: number, dx: number, dy: number, dt: number): number {
+  const s = shyness(dx, dy);
+  if (s <= 0) return 0;
+  const away = Math.atan2(-dy, -dx);
+  let diff = (away - h) % (Math.PI * 2);
+  if (diff > Math.PI) diff -= Math.PI * 2;
+  if (diff < -Math.PI) diff += Math.PI * 2;
+  const most = SHY_TURN * s * (dt / 1000);
+  return Math.max(-most, Math.min(most, diff));
+}
+
+/** Ground speed multiplier while alarmed — it hurries, it does not bolt. */
+export function shySpeed(s: number): number {
+  return 1 + SHY_BOOST * Math.max(0, Math.min(1, s));
+}
+
 /** Flight altitude above the ground, px: low, and it settles now and then. */
 export const ALT: readonly [number, number] = [7, 34];
 /** A settle: down to the ground, wings shut, for a moment. */

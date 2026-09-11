@@ -165,3 +165,25 @@ export function flatWith(lvl: number | null, wx: number, wy: number): boolean {
   const here = levelAt(wx, wy);
   return here === null || here === lvl;
 }
+
+/** WHERE THE PLAYER IS DRAWN, in the same world px every critter holds, or
+ *  null when the probe is not there.
+ *
+ *  `__ml.myScreen()` answers in SCREEN px and the view converts it — the
+ *  player's `__ml.me()` is WORLD UNITS (32 per cell) and would be the wrong
+ *  space entirely. Anything that reacts to you needs this: `crabs/` bolt,
+ *  `gnats/` break up, `butterflies/` take off. (Those first two each carry
+ *  their own copy from before this existed; they can adopt it whenever
+ *  they are next opened.) */
+export function playerAt(view: { x: number; y: number }): { x: number; y: number } | null {
+  const ml = (window as unknown as { __ml?: Record<string, (...a: never[]) => unknown> }).__ml;
+  const ms = ml?.myScreen as undefined | (() => { sx: number; sy: number; zoom: number } | null);
+  if (!ms) return null;
+  try {
+    const s = ms();
+    if (!s || !s.zoom) return null;
+    return { x: view.x + s.sx / s.zoom, y: view.y + s.sy / s.zoom };
+  } catch {
+    return null;
+  }
+}

@@ -16,24 +16,31 @@ import {
   WING_OPEN,
   bob,
   homePull,
+  SHY_R,
+  SHY_TURN,
   settleAlt,
   settleLife,
   settled,
+  shySpeed,
+  shyTurn,
+  shyness,
   speedAt,
   steer,
   wing,
 } from "../../ambient/butterflies/flight.js";
 import {
+  BANDS,
   BODY_PX,
-  PAINTED_PX,
-  RARE_LIFT,
-  SPECIES,
   MAX_DARK_PAIRS,
+  MAX_SAT,
+  PAINTED_PX,
+  SPECIES,
   WING_PAIRS,
   bodyColour,
   darkPairs,
   drawnDarkShare,
   pickSpecies,
+  saturation,
   weightOf,
 } from "../../ambient/butterflies/species.js";
 
@@ -169,40 +176,49 @@ test("IT WORKS A PATCH: inside its patch nothing pulls, outside it bends back", 
  * butterfly color... you made them blue and yellow" — so these tests guard the
  * table itself, which is the part that is his and must not drift. */
 
-test("HIS TABLE IS THE TABLE: the ten mixes, his percentages, his order", () => {
-  const want = [
-    ["brown_black", 22, 0.3],
-    ["black_orange", 18, 0.6],
-    ["brown_orange", 15, 0.65],
-    ["green_black", 12, 0.3],
-    ["yellow_black", 11, 0.4],
-    ["blue_black", 8, 0.45],
-    ["white_black", 7, 0.25],
-    ["red_black", 4, 0.5],
-    ["purple_black", 2, 0.4],
-    ["green_blue", 1, 0.5],
-  ] as const;
-  assert.equal(SPECIES.length, want.length, "ten mixes");
-  want.forEach(([key, base, darkShare], i) => {
-    assert.equal(SPECIES[i].key, key, `row ${i} is ${key}, in his order`);
-    assert.equal(SPECIES[i].base, base, `${key} keeps his percentage`);
-    assert.equal(SPECIES[i].darkShare, darkShare, `${key} keeps his mix`);
-  });
+test("HIS BANDS ARE THE BANDS: half pale-and-dark, a quarter green-and-red", () => {
+  /* "at least 50% of the butterflies whiteish and blackish. 25% green-ish and
+   * red-ish and the rest 25% whatever you want" — the thing he objected to
+   * was the BALANCE, so the balance is what a later colour must not shift. */
+  const share = (band: string) =>
+    (SPECIES.filter((s) => s.band === band).reduce((n, s) => n + weightOf(s), 0) /
+      SPECIES.reduce((n, s) => n + weightOf(s), 0)) *
+    100;
+  const pale = share("pale");
+  const dark = share("dark");
+  const green = share("green");
+  const red = share("red");
+  const free = share("free");
+  assert.ok(pale + dark >= 50 - 1e-9, `whiteish+blackish is ${(pale + dark).toFixed(1)}%, his floor is 50`);
+  assert.ok(Math.abs(green + red - 25) < 1e-9, `greenish+reddish is ${(green + red).toFixed(1)}%, he said 25`);
+  assert.ok(Math.abs(free - 25) < 1e-9, `the free quarter is ${free.toFixed(1)}%, he said 25`);
+  assert.ok(Math.abs(pale + dark + green + red + free - 100) < 1e-9, "the bands account for every butterfly");
+  // BANDS is the published contract and must agree with the table itself
+  for (const band of Object.keys(BANDS) as (keyof typeof BANDS)[])
+    assert.equal(
+      SPECIES.filter((s) => s.band === band).reduce((n, s) => n + weightOf(s), 0),
+      BANDS[band],
+      `the ${band} band's members add up to its published share`,
+    );
+  // both halves of every band are actually populated
+  for (const band of Object.keys(BANDS)) assert.ok(SPECIES.some((s) => s.band === band), `${band} has members`);
+  // and red leads green, which is where his earlier "red looks cool" went
+  assert.ok(red > 0 && green > 0, "both are present");
 });
 
-test("RED AND PURPLE CARRY THE 1.2x LIFT, and nothing else does", () => {
-  assert.equal(RARE_LIFT, 1.2, "his number");
+test("NOTHING VIBRANT: this is a background effect", () => {
+  /* "No extreme/vibrant colors. This is a background effect." The palette
+   * this replaced failed that measurably — orange 0.81, yellow 0.69, blue
+   * 0.65 — so the cap is a number, not a judgement that drifts. */
   for (const s of SPECIES) {
-    const lifted = s.key === "red_black" || s.key === "purple_black";
-    assert.equal(weightOf(s), s.base * (lifted ? RARE_LIFT : 1), `${s.key} weight`);
+    for (const [what, c] of [["wing", s.bright], ["marking", s.dark]] as const) {
+      const sat = saturation(c);
+      assert.ok(sat <= MAX_SAT, `${s.key} ${what} #${c.toString(16)} is ${(sat * 100) | 0}% saturated, cap ${MAX_SAT * 100}%`);
+    }
   }
-  // the lift is a nudge, not a promotion: they stay the two rarest of the
-  // nine black-paired mixes, or "rare colour you are pleased to see" is lost
-  const ranked = [...SPECIES].sort((a, b) => weightOf(b) - weightOf(a)).map((s) => s.key);
-  assert.equal(ranked[0], "brown_black", "brown is still the commonest");
-  assert.equal(ranked[ranked.length - 1], "green_blue", "green+blue is still the rarest");
-  assert.ok(ranked.indexOf("red_black") > ranked.indexOf("white_black"), "red is still rarer than white");
-  assert.ok(ranked.indexOf("purple_black") > ranked.indexOf("red_black"), "purple is still rarer than red");
+  // the old palette's colours must not pass, or the cap proves nothing
+  for (const loud of [0xe07a2a, 0xf2d24b, 0x4472c4, 0x7abd46, 0x9350c4])
+    assert.ok(saturation(loud) > MAX_SAT, `#${loud.toString(16)} would still be rejected`);
 });
 
 test("picking reproduces his frequencies", () => {
@@ -291,4 +307,65 @@ test("every mix is two TELLABLE colours: the dark one is actually darker", () =>
     assert.notEqual(s.dark, 0x000000);
     assert.notEqual(s.bright, 0xffffff);
   }
+});
+
+/* SHY OF THE PLAYER — "would also be cool if the butterflies interact/avoid
+ * the player to make the game feel more alive/realtime" (maintainer). */
+
+test("IT MINDS YOU, and more the closer you get", () => {
+  assert.equal(shyness(SHY_R, 0), 0, "not at the edge of its notice");
+  assert.equal(shyness(SHY_R * 3, 0), 0, "nor well outside it");
+  assert.equal(shyness(0, 0), 1, "fully alarmed underfoot");
+  // graded, not switched: walking slowly past a meadow must not bolt them all
+  // at the same instant
+  let prev = 0;
+  for (let r = SHY_R; r >= 0; r -= 2) {
+    const s = shyness(r, 0);
+    assert.ok(s >= prev - 1e-9, `alarm rises as you close (${r}px -> ${s.toFixed(2)})`);
+    assert.ok(s >= 0 && s <= 1, "and stays a fraction");
+    prev = s;
+  }
+  // it is a RADIUS, not a box: the same distance in any direction reads alike
+  const d = SHY_R / 2;
+  const diag = d / Math.SQRT2;
+  assert.ok(Math.abs(shyness(d, 0) - shyness(0, d)) < 1e-9, "north is as close as east");
+  assert.ok(Math.abs(shyness(diag, diag) - shyness(d, 0)) < 1e-9, "and so is the diagonal");
+});
+
+test("IT TURNS AWAY FROM YOU, and does not spin once it is fleeing", () => {
+  const dt = 100;
+  // player due east; a butterfly flying east at it must turn
+  const toward = shyTurn(0, 10, 0, dt);
+  assert.notEqual(toward, 0, "flying at you is corrected");
+  // already flying due west, away from a player due east: nothing to do
+  assert.ok(Math.abs(shyTurn(Math.PI, 10, 0, dt)) < 1e-9, "a butterfly already leaving is left alone");
+  // the turn closes on "away" from any heading, and never exceeds the rate
+  const wrap = (a: number) => {
+    let v = a % (2 * Math.PI);
+    if (v > Math.PI) v -= 2 * Math.PI;
+    if (v < -Math.PI) v += 2 * Math.PI;
+    return v;
+  };
+  for (const h of [0, 1, 2, 3, 4, 5, 6]) {
+    const t = shyTurn(h, 12, 5, dt);
+    const away = Math.atan2(-5, -12);
+    assert.ok(Math.abs(wrap(away - (h + t))) <= Math.abs(wrap(away - h)) + 1e-9, `turns away from ${h}`);
+    assert.ok(Math.abs(t) <= SHY_TURN * (dt / 1000) + 1e-9, "within the turn rate");
+  }
+  // out of range it is not steered at all
+  assert.equal(shyTurn(0, SHY_R + 1, 0, dt), 0, "it does not react to someone it cannot notice");
+});
+
+test("it hurries away, it does not bolt", () => {
+  assert.equal(shySpeed(0), 1, "undisturbed speed is unchanged");
+  assert.ok(shySpeed(1) > 1, "alarmed is faster");
+  assert.ok(shySpeed(1) < 2.5, `but a butterfly never becomes a bird (${shySpeed(1)})`);
+  // monotone, so closing on one makes it leave faster rather than jumping
+  let prev = 0;
+  for (let a = 0; a <= 1.001; a += 0.1) {
+    const v = shySpeed(a);
+    assert.ok(v >= prev, "speed rises with alarm");
+    prev = v;
+  }
+  assert.equal(shySpeed(5), shySpeed(1), "and it is clamped, not unbounded");
 });

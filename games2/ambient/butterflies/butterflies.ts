@@ -1,6 +1,6 @@
 import Phaser from "phaser";
 import { AmbientCtx, AmbientFeature } from "../runtime/types";
-import { findGround, groundSoundAt, landableAt } from "../runtime/ground";
+import { findGround, groundSoundAt, landableAt, playerAt } from "../runtime/ground";
 import { SPECIES, Species, bodyColour, darkPairs, pickSpecies } from "./species";
 import {
   ALT,
@@ -8,9 +8,11 @@ import {
   BOB_PX,
   FLICK_MS,
   FLICK_RAD,
+  LAND_MS,
   homePull,
   SETTLE_EVERY,
   SETTLE_MS,
+  SHY_TAKEOFF,
   SPEED,
   WING_CLOSED,
   Wing,
@@ -18,6 +20,9 @@ import {
   settleAlt,
   settleLife,
   settled,
+  shySpeed,
+  shyTurn,
+  shyness,
   speedAt,
   steer,
   wing,
@@ -130,6 +135,7 @@ interface Flit {
   settleIn: number;
   settleT: number; // >0 while a settle is running
   settleHold: number;
+  shy: number; // last frame's alarm, 0..1 — reported, never re-probed
   a: number;
 }
 
@@ -144,7 +150,7 @@ export function butterfliesFeature(): AmbientFeature {
   let seed = 20260912;
   const rnd = () => (seed = (seed * 1664525 + 1013904223) >>> 0) / 0xffffffff;
   const between = (r: readonly [number, number]) => r[0] + rnd() * (r[1] - r[0]);
-  const stats = { placed: 0, rejected: 0, settles: 0 };
+  const stats = { placed: 0, rejected: 0, settles: 0, startled: 0 };
 
   const ensureTextures = (s: Phaser.Scene) => {
     if (s.textures.exists(KEY(SPECIES[0].key, WING_CLOSED))) return;
@@ -252,6 +258,7 @@ export function butterfliesFeature(): AmbientFeature {
     settleIn: 6000,
     settleT: 0,
     settleHold: 1200,
+    shy: 0,
     a: 0,
   });
 
@@ -286,6 +293,12 @@ export function butterfliesFeature(): AmbientFeature {
 
       placeAge += dtc;
       const mayPlace = placeAge >= placeWait;
+      /* ONE player read per frame for the whole population, not one each:
+       * it is a probe call, and twelve of them a frame is twelve too many. */
+      const you = playerAt(view);
+      /* The iso plane again — un-squash y before any distance to the player,
+       * or a butterfly is shy of someone twice as far away to the north. */
+      const shyOf = (f: Flit) => (you ? shyness(you.x - f.x, (you.y - f.y) * (32 / 14)) : 0);
 
       for (let i = 0; i < flits.length; i++) {
         const f = flits[i];
@@ -300,6 +313,7 @@ export function butterfliesFeature(): AmbientFeature {
           // butterflies flying over open water.
           const park = () => {
             f.a = 0;
+            f.shy = 0;
             f.sprite.setVisible(false);
           };
           if (!mayPlace) {
@@ -314,7 +328,19 @@ export function butterfliesFeature(): AmbientFeature {
         }
         f.t += dtc;
 
+        const shy = shyOf(f);
+        f.shy = shy;
         if (f.settleT > 0) {
+          /* IT TAKES OFF WHEN YOU REACH IT. This is the whole reason the
+           * feature reads the player at all: a butterfly that sits there
+           * while you walk into it is scenery, and one that leaves the grass
+           * as you arrive is alive. Cutting the settle short to the start of
+           * its lift-off means it rises from where it sat rather than
+           * teleporting into the air. */
+          if (shy > SHY_TAKEOFF && f.settleT < LAND_MS + f.settleHold) {
+            f.settleT = LAND_MS + f.settleHold;
+            stats.startled++;
+          }
           f.settleT += dtc;
           f.alt = settleAlt(f.settleT, f.settleHold, f.cruise);
           if (f.settleT >= settleLife(f.settleHold)) {
@@ -323,7 +349,8 @@ export function butterfliesFeature(): AmbientFeature {
           }
         } else {
           f.settleIn -= dtc;
-          if (f.settleIn <= 0) {
+          // and it will not sit down while you are standing over it
+          if (f.settleIn <= 0 && shy <= 0) {
             if (landableAt(f.x, f.y)) {
               f.settleT = 1;
               f.settleHold = between(SETTLE_MS);
@@ -340,14 +367,21 @@ export function butterfliesFeature(): AmbientFeature {
             f.flickIn = between(FLICK_MS);
             turn = (rnd() < 0.5 ? -1 : 1) * between(FLICK_RAD);
           }
-          // back toward its patch when it has wandered off the edge of it.
-          // The y difference is un-squashed first: on the iso plane a step is
-          // 32 wide to 14 tall, so a raw dy makes the pull lopsided.
-          turn += homePull(f.h, f.hx - f.x, (f.hy - f.y) * (32 / 14), dtc);
+          if (shy > 0 && you) {
+            // GETTING OUT OF YOUR WAY BEATS GOING HOME. The patch tether
+            // would fight the flight and hold it in your path, which is the
+            // one thing a startled butterfly must not do.
+            turn += shyTurn(f.h, you.x - f.x, (you.y - f.y) * (32 / 14), dtc);
+          } else {
+            // back toward its patch when it has wandered off the edge of it.
+            // The y difference is un-squashed first: on the iso plane a step
+            // is 32 wide to 14 tall, so a raw dy makes the pull lopsided.
+            turn += homePull(f.h, f.hx - f.x, (f.hy - f.y) * (32 / 14), dtc);
+          }
           // wrapped, or a butterfly left running all afternoon loses precision
           // in the heading and starts to stutter
           f.h = (steer(f.h, dtc, rnd() * 2 - 1, turn) % TAU + TAU) % TAU;
-          const v = speedAt(f.spd, f.t, f.beat, f.phase);
+          const v = speedAt(f.spd, f.t, f.beat, f.phase) * shySpeed(shy);
           // the iso ground plane: a step is wider than it is tall
           f.x += Math.cos(f.h) * v * (dtc / 1000);
           f.y += Math.sin(f.h) * v * (dtc / 1000) * (14 / 32);
@@ -390,6 +424,7 @@ export function butterfliesFeature(): AmbientFeature {
           settling: f.settleT > 0,
           down: f.settleT > 0 && settled(f.settleT, f.settleHold),
           species: f.species.key,
+          shy: +f.shy.toFixed(2),
           hx: Math.round(f.hx),
           hy: Math.round(f.hy),
           home: Math.round(Math.hypot(f.hx - f.x, (f.hy - f.y) * (32 / 14))),

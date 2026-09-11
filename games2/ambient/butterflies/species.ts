@@ -1,80 +1,113 @@
-/* WHAT COLOUR A BUTTERFLY IS — the maintainer's table, 2026-09-11.
+/* WHAT COLOUR A BUTTERFLY IS — the maintainer's bands, 2026-09-11 (second
+ * verdict, and it replaces the ten-mix table that came before it).
  *
- * The first cut gave each butterfly ONE flat colour from a palette I chose,
- * and his verdict was short: "I like the effect/animation but not the colour.
- * You made them blue and yellow." Real butterflies are not one colour. They
- * are a MIX — a bright ground with a dark border, or a dark ground with a
- * bright flash — and he sent the ten mixes he wants with how common each one
- * should be. That table IS this file; the percentages are his, not derived.
+ * "I hate that and don't want the butterflies to bring this much color into
+ * the game. Can you make at least 50% of the butterflies whiteish and
+ * blackish. 25% green-ish and red-ish and the rest 25% whatever you want. No
+ * extreme/vibrant colors. This is a background effect."
  *
- * RED AND PURPLE CARRY A 1.2x LIFT, also his: "red and purple should have a
- * higher weight 1.2x because that looks cool." They stay the two rarest, so
- * meeting one is still an event — the lift makes it happen a fifth more
- * often, which is the whole point of a rare colour you are pleased to see.
+ * So two things are law here and both are tested:
  *
- * The `dark` share is the second column of his table read as "how much of the
- * butterfly is the darker colour". `darkPairs` turns it into whole pixels,
- * because at five pixels across there is no such thing as 45% of a wing.
+ *   THE BANDS. Pale and dark together are at least half of every butterfly
+ *   drawn, green and red are a quarter between them, and the last quarter is
+ *   mine. `BANDS` below is the contract and `server/test/butterflies.test.ts`
+ *   asserts the shares add up — a colour added later cannot quietly shift the
+ *   balance, which is the thing he actually objected to.
+ *
+ *   NOTHING VIBRANT. A background effect must not pull the eye, so every
+ *   colour is capped at MAX_SAT saturation. The palette this replaces failed
+ *   that badly and measurably: its orange sat at 0.81, its yellow 0.69, its
+ *   blue 0.65, its green 0.63. Nothing here is over 0.45, and the test says
+ *   so, because "muted" is a judgement that drifts and a number is not.
+ *
+ * His earlier "red and purple should have a higher weight 1.2x" survives as
+ * SHAPE rather than a multiplier: the bands are now exact, so red takes the
+ * larger half of the green/red band and a dusty mauve holds a place in my own
+ * quarter. A 1.2x lift on top would break the shares he just gave.
  */
 
-/* A pixel-art palette: nothing is pure black or pure white, and the green sits
- * off the grass it flies over so a green butterfly still has a silhouette.
- *
- * GREEN AND BLUE ARE SET APART ON PURPOSE. They are the two halves of his
- * rarest mix (green+blue, 1%), and the first pair I picked were 13 luma apart
- * — at four pixels tall that is not two colours, it is one mushy one. The
- * green went up and the blue went down until they are 46 apart; blue still
- * clears its own black by 70, so blue+black lost nothing. */
-const BROWN = 0x8a5a34;
-const BLACK = 0x2b2724;
-const ORANGE = 0xe07a2a;
-const GREEN = 0x7abd46;
-const YELLOW = 0xf2d24b;
-const BLUE = 0x4472c4;
-const WHITE = 0xf1ece0;
-const RED = 0xc9392b;
-const PURPLE = 0x9350c4;
+/* A MUTED PALETTE. Chalk and soot rather than white and black (pixel art has
+ * no pure ends), and every hue pulled toward grey — these are meant to be
+ * noticed as movement, not as colour. */
+const CHALK = 0xe8e4da;
+const CREAM = 0xdcd3bf;
+const FAWN = 0xc0ab8e;
+const OCHRE = 0xab9970;
+const SAGE = 0x8a9c72;
+const MOSS = 0x6b7a4e;
+const BRICK = 0x94685c;
+const RUST = 0x8f6a52;
+const SLATE = 0x7c8a9c;
+const MAUVE = 0x93789c;
+const SOOT = 0x57534c;
+const UMBER = 0x4a423a;
+// markings: darker still, and never pure black
+const CHARCOAL = 0x4f4b45;
+const GREY = 0x7d7469;
+const ASH = 0x3b3330;
+const BARK = 0x6e5a45;
+const DEEP = 0x40382c;
+const SHADOW = 0x2b2926;
+const NIGHT = 0x272320;
+const STONE = 0x3a4049;
+const IRIS = 0x443a48;
+const PEAT = 0x46382c;
+const LOAM = 0x574a37;
+const OLIVE = 0x3f463a;
 
-/** His lift for the two colours he likes best. */
-export const RARE_LIFT = 1.2;
+/** The most colour a background effect may carry (HSV saturation). */
+export const MAX_SAT = 0.45;
+
+/** His bands, and the share of every butterfly drawn that each one takes. */
+export const BANDS = { pale: 28, dark: 22, green: 13, red: 12, free: 25 } as const;
+export type Band = keyof typeof BANDS;
 
 export interface Species {
   /** Stable name, used as the texture key and reported by `debug()`. */
   key: string;
+  /** Which of his bands this belongs to. */
+  band: Band;
   /** The ground colour — the one you would name the butterfly by. */
   bright: number;
   /** The darker colour it is marked with. */
   dark: number;
-  /** How much of the butterfly is `dark`, from his table. */
+  /** How much of the butterfly is `dark`. */
   darkShare: number;
-  /** His frequency, in percent. Relative, never normalised. */
+  /** Frequency, in percent. Relative, never normalised. */
   base: number;
-  /** Whether his 1.2x lift applies (red and purple). */
-  lifted?: boolean;
 }
 
-/** HIS TABLE, in his order — commonest first. */
+/** PALE 28 + DARK 22 = his "at least 50% whiteish and blackish"; GREEN 13 +
+ *  RED 12 = his 25%; FREE 25 = the quarter he left to me. */
 export const SPECIES: readonly Species[] = [
-  { key: "brown_black", bright: BROWN, dark: BLACK, darkShare: 0.3, base: 22 },
-  { key: "black_orange", bright: ORANGE, dark: BLACK, darkShare: 0.6, base: 18 },
-  { key: "brown_orange", bright: ORANGE, dark: BROWN, darkShare: 0.65, base: 15 },
-  { key: "green_black", bright: GREEN, dark: BLACK, darkShare: 0.3, base: 12 },
-  { key: "yellow_black", bright: YELLOW, dark: BLACK, darkShare: 0.4, base: 11 },
-  { key: "blue_black", bright: BLUE, dark: BLACK, darkShare: 0.45, base: 8 },
-  { key: "white_black", bright: WHITE, dark: BLACK, darkShare: 0.25, base: 7 },
-  { key: "red_black", bright: RED, dark: BLACK, darkShare: 0.5, base: 4, lifted: true },
-  { key: "purple_black", bright: PURPLE, dark: BLACK, darkShare: 0.4, base: 2, lifted: true },
-  { key: "green_blue", bright: GREEN, dark: BLUE, darkShare: 0.5, base: 1 },
+  // whiteish
+  { key: "chalk_charcoal", band: "pale", bright: CHALK, dark: CHARCOAL, darkShare: 0.3, base: 16 },
+  { key: "cream_grey", band: "pale", bright: CREAM, dark: GREY, darkShare: 0.25, base: 12 },
+  // blackish
+  { key: "soot_shadow", band: "dark", bright: SOOT, dark: SHADOW, darkShare: 0.4, base: 12 },
+  { key: "umber_night", band: "dark", bright: UMBER, dark: NIGHT, darkShare: 0.35, base: 10 },
+  // greenish
+  { key: "sage_olive", band: "green", bright: SAGE, dark: OLIVE, darkShare: 0.35, base: 8 },
+  { key: "moss_deep", band: "green", bright: MOSS, dark: DEEP, darkShare: 0.45, base: 5 },
+  // reddish — the larger half of the band, which is where his "red looks
+  // cool" lives now that the shares are exact
+  { key: "brick_ash", band: "red", bright: BRICK, dark: ASH, darkShare: 0.4, base: 7 },
+  { key: "rust_peat", band: "red", bright: RUST, dark: PEAT, darkShare: 0.45, base: 5 },
+  // my quarter: earth, one cool grey-blue, and a dusty mauve for the purple
+  { key: "fawn_bark", band: "free", bright: FAWN, dark: BARK, darkShare: 0.3, base: 9 },
+  { key: "ochre_loam", band: "free", bright: OCHRE, dark: LOAM, darkShare: 0.35, base: 6 },
+  { key: "slate_stone", band: "free", bright: SLATE, dark: STONE, darkShare: 0.35, base: 6 },
+  { key: "mauve_iris", band: "free", bright: MAUVE, dark: IRIS, darkShare: 0.4, base: 4 },
 ];
 
-/** A species' drawing weight: his percentage, with his lift where it applies. */
+/** A species' drawing weight. */
 export function weightOf(s: Species): number {
-  return s.base * (s.lifted ? RARE_LIFT : 1);
+  return s.base;
 }
 
 const TOTAL = SPECIES.reduce((n, s) => n + weightOf(s), 0);
 
-/** Pick a species for `r` in [0,1). Cumulative over the lifted weights. */
+/** Pick a species for `r` in [0,1). Cumulative over the weights. */
 export function pickSpecies(r: number): Species {
   let acc = Math.max(0, Math.min(1, r)) * TOTAL;
   for (const s of SPECIES) {
@@ -84,29 +117,30 @@ export function pickSpecies(r: number): Species {
   return SPECIES[SPECIES.length - 1];
 }
 
-/* HOW THE MIX BECOMES PIXELS — and why the percentages cannot be taken
- * literally at this size.
+/** HSV saturation of a packed RGB, 0..1 — how much COLOUR it carries. */
+export function saturation(c: number): number {
+  const r = (c >> 16) & 255;
+  const g = (c >> 8) & 255;
+  const b = c & 255;
+  const hi = Math.max(r, g, b);
+  return hi === 0 ? 0 : (hi - Math.min(r, g, b)) / hi;
+}
+
+/* HOW THE MIX BECOMES PIXELS — and why a split cannot be taken literally at
+ * this size.
  *
- * A drawn butterfly is 13 painted pixels: ten wing and three body. His column
- * of splits ("60% black / 40% orange") counts the VEINS AND BORDERS of a real
- * butterfly, and at five pixels across there are no veins to draw — spending
- * 60% of the pixels on black gives a black blob with two orange specks, which
- * is not a monarch, it is a fly. Measured on screen: the first cut did exactly
- * that and black+orange came out unreadable.
+ * A drawn butterfly is 13 painted pixels: ten wing and three body. A real
+ * butterfly's dark half is its VEINS AND BORDERS, and at five pixels across
+ * there are no veins to draw — spending 60% of the pixels on the marking gave
+ * a dark blob with two bright specks, measured on screen.
  *
  * So the split sets HOW MUCH MARKING, not how much area: the dark colour takes
  * the body and up to MAX_DARK_PAIRS wing pairs, spent on the hindwing tips and
  * then the forewing tips, so the FOREWING MASS — the part that tells you what
- * colour the butterfly is — always survives. His order is preserved exactly
- * (a mix he called darker is never drawn lighter); his absolute percentages
- * are not, and that is deliberate.
- *
- * Pairs, always left and right together: asymmetric markings at this size read
- * as damage rather than pattern.
- */
+ * colour the butterfly is — always survives. Pairs, always left and right
+ * together: asymmetric markings at this size read as damage. */
 export const WING_PAIRS = 5;
-/** The most wing pairs the marking may take — the rest of the wing is the
- *  butterfly's own colour, or it has no colour. */
+/** The most wing pairs the marking may take. */
 export const MAX_DARK_PAIRS = 3;
 export const PAINTED_PX = 13;
 export const BODY_PX = 3;
@@ -123,12 +157,11 @@ export function drawnDarkShare(s: Species): number {
 }
 
 /* THE BODY IS DARK BUT NOT A DIFFERENT CREATURE. Painting it the mix's flat
- * dark colour split a brown butterfly into two brown blobs with a black bar
- * between them — the same failure the very first cut had with a near-black
- * body, and for the same reason: the one pixel column joining the wings was
- * the one that did not belong to them. Blending it a third of the way back
- * toward the wing colour keeps it the darkest part of the creature while
- * keeping the creature one creature. */
+ * dark colour split a brown butterfly into two blobs with a bar between them —
+ * the same failure a near-black body had over grass, and for the same reason:
+ * the one pixel column joining the wings was the one that did not belong to
+ * them. Blending it a third of the way back toward the wing colour keeps it
+ * the darkest part of the creature while keeping the creature one creature. */
 const BODY_TOWARD_WING = 0.35;
 
 export function bodyColour(s: Species): number {
