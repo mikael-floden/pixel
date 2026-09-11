@@ -1253,40 +1253,40 @@
     "attack_v3": {
       "directions": {
         "south": {
-          "status": "fail",
-          "step_mean": 0.0314,
-          "step_max": 0.1354,
-          "drift": 1.62,
+          "status": "warn",
+          "step_mean": 0.0523,
+          "step_max": 0.2684,
+          "drift": 2.64,
           "loop": 0.0,
           "loop_ratio": 0.0,
-          "travel": 1.27,
+          "travel": 0.7,
           "pin": 1.0,
-          "pad": 0,
-          "flash": 0.037,
-          "peak": 0.1343,
-          "reach": 0.247,
+          "pad": 1,
+          "flash": 0.169,
+          "peak": 0.255,
+          "reach": 0.201,
           "canvas": [
-            40,
-            40
+            42,
+            42
           ],
           "reasons": [
-            "frozen: silhouette moves 0.031 per frame",
-            "weak strike: peak 0.134 — eyeball it",
-            "shallow strike: reach 0.25 — eyeball it"
+            "motion 0.052 outside the calm band 0.08–0.9 — eyeball it",
+            "shallow strike: reach 0.20 — eyeball it",
+            "canvas grown by 1 px a side to hold the motion"
           ],
-          "sub": "c8bcd029-5e29-4cd5-aca3-dd004b52f734",
-          "group": "fcb38aae-f12d-40d9-9c3b-d7ecf4e2f3ef",
-          "takes": 2,
-          "version": 4,
+          "sub": "9ed3f725-ea14-4e40-a95b-79ee1d50a240",
+          "group": "09be590a-1085-49f2-a913-5c9d66c4a843",
+          "takes": 1,
+          "version": 5,
           "mirrored": false,
-          "action": "Ember Burst - The hatchling rears back and lunges, a burst of embers erupting from its mouth",
+          "action": "Ember Burst - The hatchling rears back and lunges, a burst of embers erupting from its mouth, a huge aggressive attack with the whole body behind it, wide exaggerated motion",
           "intensity": 0,
-          "rolls": 4,
+          "rolls": 5,
           "frames": 16,
-          "rung": 3,
-          "unwrapped": null,
-          "tries": 4,
-          "generated_at": "2026-09-11T18:26:13+00:00"
+          "rung": 4,
+          "unwrapped": 1,
+          "tries": 5,
+          "generated_at": "2026-09-11T18:28:16+00:00"
         },
         "south-east": {
           "status": "warn",

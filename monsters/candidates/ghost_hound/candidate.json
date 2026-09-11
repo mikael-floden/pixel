@@ -1295,38 +1295,39 @@
           "rung": 0
         },
         "south-east": {
-          "status": "fail",
-          "step_mean": 0.7469,
-          "step_max": 0.8982,
-          "drift": 10.99,
-          "loop": 0.7985,
-          "loop_ratio": 1.07,
-          "travel": 12.4,
-          "pin": 0.934,
+          "status": "warn",
+          "step_mean": 0.8248,
+          "step_max": 0.9935,
+          "drift": 13.97,
+          "loop": 0.3419,
+          "loop_ratio": 0.41,
+          "travel": 13.97,
+          "pin": 0.665,
           "pad": 0,
-          "flash": 0.116,
-          "peak": 0.8584,
-          "reach": 0.872,
+          "flash": 0.0,
+          "peak": 0.9256,
+          "reach": 0.641,
           "canvas": [
             104,
             104
           ],
           "reasons": [
-            "body turned the wrong way: matches mirrored south-west (0.39) better than south-east (0.27)"
+            "drifts 14.0 px — eyeball it",
+            "14 px of travel — eyeball it"
           ],
-          "sub": "eeff0c43-ca59-4451-be0d-a747050f4572",
-          "group": "cfb177ac-636f-4150-a543-fb8b0f8d8614",
+          "sub": "4b074475-ee72-43e2-b29e-3faeca935569",
+          "group": "ab74a306-34b5-4bb4-b882-0ebd1c5db210",
           "takes": 1,
-          "version": 5,
+          "version": 6,
           "mirrored": false,
-          "action": "Bite - Lunges forward with its jaws wide open and bites, a big aggressive swing",
+          "action": "Claw Swipe - Raises one front paw and performs one quick swipe forward, white swoosh lines following the claws, a big aggressive swing",
           "intensity": 0,
-          "rolls": 5,
+          "rolls": 6,
           "frames": 4,
-          "rung": 1,
+          "rung": 2,
           "unwrapped": null,
-          "tries": 5,
-          "generated_at": "2026-09-11T18:16:16+00:00"
+          "tries": 6,
+          "generated_at": "2026-09-11T18:27:57+00:00"
         },
         "east": {
           "status": "pass",
@@ -1488,6 +1489,42 @@
           "frames": 4,
           "rung": 0,
           "source": "north-east"
+        },
+        "south-west": {
+          "status": "warn",
+          "step_mean": 0.8248,
+          "step_max": 0.9935,
+          "drift": 13.97,
+          "loop": 0.3419,
+          "loop_ratio": 0.41,
+          "travel": 13.97,
+          "pin": 0.665,
+          "pad": 0,
+          "flash": 0.0,
+          "peak": 0.9256,
+          "reach": 0.641,
+          "canvas": [
+            104,
+            104
+          ],
+          "reasons": [
+            "drifts 14.0 px — eyeball it",
+            "14 px of travel — eyeball it"
+          ],
+          "sub": "4b074475-ee72-43e2-b29e-3faeca935569",
+          "group": "ab74a306-34b5-4bb4-b882-0ebd1c5db210",
+          "takes": 1,
+          "version": 6,
+          "mirrored": true,
+          "action": "Claw Swipe - Raises one front paw and performs one quick swipe forward, white swoosh lines following the claws, a big aggressive swing",
+          "intensity": 0,
+          "rolls": 6,
+          "frames": 4,
+          "rung": 2,
+          "unwrapped": null,
+          "tries": 6,
+          "generated_at": "2026-09-11T18:27:57+00:00",
+          "source": "south-east"
         }
       },
       "action": "Bite - Lunges forward with its jaws wide open and bites",
@@ -1533,6 +1570,12 @@
           "ghost_hound/animations/attack_v3/north-west/01.webp",
           "ghost_hound/animations/attack_v3/north-west/02.webp",
           "ghost_hound/animations/attack_v3/north-west/03.webp"
+        ],
+        "south-west": [
+          "ghost_hound/animations/attack_v3/south-west/00.webp",
+          "ghost_hound/animations/attack_v3/south-west/01.webp",
+          "ghost_hound/animations/attack_v3/south-west/02.webp",
+          "ghost_hound/animations/attack_v3/south-west/03.webp"
         ]
       },
       "strips": {
@@ -1542,7 +1585,8 @@
         "north-east": "ghost_hound/animations/attack_v3__north-east.webp",
         "north": "ghost_hound/animations/attack_v3__north.webp",
         "west": "ghost_hound/animations/attack_v3__west.webp",
-        "north-west": "ghost_hound/animations/attack_v3__north-west.webp"
+        "north-west": "ghost_hound/animations/attack_v3__north-west.webp",
+        "south-west": "ghost_hound/animations/attack_v3__south-west.webp"
       }
     }
   }
