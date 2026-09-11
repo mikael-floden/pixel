@@ -259,7 +259,62 @@ jobs:
           done
           echo "timed out waiting for the test job" && exit 1
 
+      # SUPERSEDED? DON'T ROLL BACK OVER A NEWER COMMIT.
+      #
+      # The concurrency group above is per-commit ON PURPOSE — a shared gate
+      # deadlocked the pipeline for 18 hours and the maintainer's rule is "I
+      # want no deadlock", so that stays. But its documented cost ("N pushes
+      # are N deploys") has a consequence nobody had written down: those N
+      # runs finish in whatever order their builds take, so an OLDER commit's
+      # rollout can land after a newer one and put production backwards.
+      # Measured twice on 2026-09-11 — run #3729 (the parent commit) rolled
+      # out 6 seconds after #3731 (its child), and the child's work was simply
+      # gone from the live bundle while both runs showed green.
+      #
+      # So the guard belongs at the ROLLOUT, not at the gate: every run still
+      # builds independently (nothing can wedge anything), and a run whose
+      # commit is no longer an ancestor-or-equal of main's tip declines to
+      # deploy. The newest commit always wins, and no run is ever blocked.
+      #
+      # FAILS OPEN, deliberately: any trouble resolving the tip (API hiccup,
+      # rate limit, an unexpected body) deploys anyway. A guard that can
+      # silently stop deploys is the very thing this file already learned not
+      # to build. A DISPATCH is never skipped either — it is the manual
+      # recovery lever and must always be able to force a rollout.
+      - name: Am I still the newest commit?
+        id: fresh
+        env:
+          GH_TOKEN: ${{ github.token }}
+          MINE: ${{ needs.resolve.outputs.sha }}
+        run: |
+          echo "roll=yes" >> "$GITHUB_OUTPUT"
+          if [ "${{ github.event_name }}" != "push" ]; then
+            echo "$GITHUB_EVENT_NAME is not a push — rolling out unconditionally"; exit 0
+          fi
+          tip=$(gh api "repos/${{ github.repository }}/commits/${{ github.ref_name }}" --jq '.sha' 2>/dev/null || true)
+          # A 40-hex sha or nothing. Asserted by SHAPE, not by counting
+          # wildcards in a glob — the first cut of this line had 41 `?` and so
+          # fell open on every real sha, which is a guard that only looks like
+          # one.
+          if ! printf '%s' "$tip" | grep -Eq '^[0-9a-f]{40}$'; then
+            echo "could not resolve the tip of ${{ github.ref_name }} (got '$tip') — rolling out"; exit 0
+          fi
+          if [ "$tip" = "$MINE" ]; then
+            echo "$MINE IS the tip — rolling out"; exit 0
+          fi
+          # Not the tip. Only skip when the tip really is a DESCENDANT of mine
+          # (a newer commit on this branch); anything else — a force-push, an
+          # unrelated history — is not a supersede and still deploys.
+          st=$(gh api "repos/${{ github.repository }}/compare/$MINE...$tip" --jq '.status' 2>/dev/null || true)
+          if [ "$st" = "ahead" ]; then
+            echo "roll=no" >> "$GITHUB_OUTPUT"
+            echo "SUPERSEDED: $tip is ahead of $MINE on ${{ github.ref_name }} — its own deploy rolls out, not this one."
+          else
+            echo "tip $tip is '$st' relative to $MINE — not a supersede, rolling out"
+          fi
+
       - name: Deploy to Cloud Run
+        if: steps.fresh.outputs.roll != 'no'
         env:
           IMAGE: ${{ vars.GCP_REGION }}-docker.pkg.dev/${{ vars.GCP_PROJECT_ID }}/${{ vars.GCP_AR_REPO }}/${{ vars.GCP_SERVICE }}
         run: |
@@ -277,6 +332,7 @@ jobs:
             --timeout 3600
 
       - name: Show URL
+        if: steps.fresh.outputs.roll != 'no'
         run: |
           gcloud run services describe "${{ vars.GCP_SERVICE }}" \
             --region "${{ vars.GCP_REGION }}" --format='value(status.url)'
