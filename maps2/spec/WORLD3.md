@@ -509,7 +509,11 @@ is solved here is the reference for the real game.
 `dungeon()` (right after `i2_cave`, so `caves()` digs and dresses it like the
 mountain's): a **pit stair cut into open meadow, a doorway at its foot, and
 under the field ONE cave lid at the field's own level S** over three chambers
-at three depths. The plan, door at (0,0), north up:
+at three depths. This is the hand-planned first of the_game's five; the
+other four and the three massif caves are planned by `_plan_cave` (see "more
+caves — planned, not drawn"), dug with the same pit, lids, ramps and site
+record, and audited by the same `dungeon_audit`. The plan, door at (0,0),
+north up:
 
 ```
 x:   -2..2      3..6       7..12       8..13       level
@@ -568,8 +572,10 @@ pit   y 1..5, three lanes; banks two above a step  S-5 .. S-1
   field, and a breach up the shelf took the ring's corner (both measured).
 * **The pit stays clear** (`mouth_clear`, a `put()` refusal): nothing stands
   in the doorway, on the stair, on the banks or on the jambs. The cave-mouth
-  torches stand one pair per cave — the mountain's in its mouth, the
-  dungeon's on the rim of its pit beside the top step (`mouth_torches`).
+  torches stand one pair per door — the ported cave's in its mouth, a
+  dungeon's on the rim of its pit beside the top step, a planned mountain
+  cave's on the ground beside its mouth (`mouth_torches`, from every site's
+  `doors`).
 * **Build-asserted** (`dungeon_audit`, before `spawns`): every dug cell keeps
   its level, the two ledges are still 3, the one lid is at S with thickness
   0 and covers every floor and never the door, every lid cell is cave floor
@@ -581,6 +587,121 @@ pit   y 1..5, three lanes; banks two above a step  S-5 .. S-1
   then kept the meadow's grass and the way down was never a ramp (measured).
   The dungeon also gets a cave-cast monster zone over all its floor levels
   (`spawns`, `elev [fl, max(fl+2, fh)]`).
+
+### more caves — planned, not drawn
+
+Maintainer 2026-09-10: *"I can't tell you have fully nailed the dungeon
+concept unless you do 8 more caves. 4 caves that is under the playing world
+and 4 more mountain caves. Actually we only need 3 more mountain caves
+because 1 cave should have 2 entrances/exits. The new mountain caves should
+also show your ability to use different elevations inside the dungeon."*
+the_game carries `CAVE_PITS = 5` caves under a field (the hand-planned one
+above and four planned ones) and `CAVE_MOUTHS = 3` caves dug into the massif
+from its rim beside the ported one, `CAVE_TWO_MOUTHS = 1` of them running
+through to a second mouth — eight new entrances, seven new caves.
+
+**ONE PLANNER, TWO DOORS** (`_plan_cave`). A cave is planned in its own
+frame — the door at (0,0), the cave to the north — and dug into the world
+through a transform: a translation for a pit, a turn for a mountain mouth
+(south-facing rims keep the frame, east-facing rims transpose it, so the
+cave runs west into the rock). The plan is a random walk: a hall right
+behind the door, then rooms added one at a time off a room already placed,
+each through a corridor that is flat, a cut stair of one-level steps, or a
+LEDGE — a drop of `DUNGEON_LEDGE = 3` the player cannot climb back. A room
+only a ledge reaches then gets a RETURN STAIR (`dig_way`): a straight run
+of one-level steps out of it, then a flat corridor through the rock to the
+nearest floor already reachable by reversible moves — so every floor is
+reversibly reachable from the door and the reach audit's trap rule holds
+with no special case. `CAVE_BUFFER = 2` cells of rock stay between any two
+features of one cave (a corridor touches only the room it leaves and the
+room it enters), and the plan is refused unless every 4-adjacent pair of
+floor cells is flat, one step of a published stair, or a recorded ledge
+(`adjacency_ok`); a plan whose rooms all lie at one level is refused too — a
+flat cave shows nothing. **Every number is a pool, not a value**
+(maintainer: *"my input should nudge the rules in a direction and never
+create an if statement"*): rooms per cave `CAVE_ROOMS` (3 or 4 mostly, 2 or
+5 sometimes), room sizes `CAVE_ROOM_W/H`, corridor width `CAVE_LANES` (two
+lanes three times in four), the step between rooms `CAVE_STEP` (the ledge
+and the flat corridor weigh three each, the six stairs one each), flat cells
+before a step `CAVE_GAP_RUN`, headroom `CAVE_HEAD` (6, 8, 5), a pit's depth
+`PIT_DEPTH` (6 mostly), a mouth's width `CAVE_MOUTH_W`. **Nudges, not
+rules:** a digger rolls plans — they cost milliseconds — and takes the
+first that has a ledge (*"some places you can jump down but not up to"*),
+that fits a meadow (a pit), that reaches a second mouth while one is still
+owed (a mountain cave); after enough rolls it takes what comes. the_game's
+caves therefore differ in every one of these and the build log says how.
+
+**A pit dungeon** (`dungeons`, after `mountain_caves`) is planned first and
+the field is found for ITS shape (`_shape_fits`: the plan plus the pit, one
+flat level of natural ground with nothing built on it, `DUNGEON_MARGIN` of
+untouched field around; the ring may carry the road). The nearest fit to the
+spawn whose pit head is reversibly reachable, never within `CAVE_APART = 12`
+of another cave. The rooms lie north of the door, beside the pit or beyond
+its head, never under it. The pit, lid, ramps and site record are those of
+`dungeon()`; the door stands the pit's depth below the field and that depth
+is the headroom. **A pit in a terrace the player can only drop onto makes
+its whole cave a trap** (291 cells, measured) — hence the reach test.
+
+**A mountain cave** (`mountain_caves`, right after `dungeon`) opens in a rim
+cell of a rock body at `CAVE_MASS = 14` or higher that stands
+`CAVE_MOUTH_RISE = 8` above reversibly reachable natural ground outside —
+20 left one face free once the ported cave, the crown and the keep-outs had
+theirs. **The rim is drawn by the rock behind it**: the cells of a 17×16
+frame behind the mouth a floor could take, as the weight in the pool
+(drawn uniformly, the tries went to spurs and to the honeycomb over the
+ported cave: 0 of 400 halls stood). The mouth is as wide as the rim is
+straight there, up to `CAVE_MOUTH_W`. Floors go `CAVE_DOWN_MAX = 6` below
+the mouth's grade (never below 0) and `CAVE_UP_MAX = 6` above it. A floor
+cell is rock with `head` of rock left over it, never another cave's cell or
+a deck's; a wall is any land the floor beside it cannot climb (`CLIMB + 1`
+above it) — the rim row is ragged, a shoulder below `CAVE_MASS` walls a low
+floor as well as the massif's body does, and a bridge or lid over the cell
+is no less a wall. **Not behind the crown**: `mountain_back` cuts and voids
+what the ridge hides, and a cave dug there lost its floor to the valley
+(measured, (247–252, 412–416)); the planner reads the same crown map
+(`_crown_top`), in which **a cell under a cave lid counts at the lid's
+level** — the lid is what shows, and a floor dug to 4 under a 36 lid must
+not move the ridge. A cave floor is never cut or voided (build-asserted).
+The lid is the mountain top: one deck per (top level, top ground, floor
+level) carrying the thickness that puts the ceiling `head` above that floor.
+The second mouth is the same `dig_way` from a random room to a cell beside
+another rim of the same kind ten or more cells from the first, the rim cell
+becoming a door at its outside's grade; the flat search runs to 4000 cells
+for a rim (a return stair's target is near, 400).
+
+the_game (394×394 canvas): pit dungeons at doors (237,210) in the stone
+field at 20 (4 rooms, 2 ledges, depth 5), (242,266) in the dark-mud field
+at 12 beside the hand-planned one (2 rooms, depth 6), (156,229) in the
+snowfield at 36 (4 rooms, depth 6) and (185,208) in the snowfield at 32
+(4 rooms, 2 ledges, depth 7); massif caves at mouths (281,131) facing east
+(4 rooms, floors 0–3, 2 ledges, head 6), (217,236) facing east running
+through to a second mouth at (197,255) (4 rooms, floors 4–7, head 5) and
+(148,295) facing south (3 rooms, head 5). Every cave has floors at two
+levels or more, a brazier in every room, a torch at every door; 0 traps,
+every floor reachable, 17 cave monster zones.
+
+**The site record** (`_register_site`, `self.cave_sites`): every cave — the
+hand-planned dungeon included — is one record of its cells and levels,
+floor, doors (cells, outward step, the two torch cells beside the mouth,
+the cells kept clear in front of it), stairs, margin (the rock or field
+around it, with its levels), ledges, headroom and rock line. The passes read
+the list, never a single site: the road walks around every box
+(`i2_road`), nothing carves a margin or a cleared mouth (`_carvable`),
+nothing stands in a cleared mouth (`put`), every pit's box wears its field
+(`dungeon_field`), one pair of torches stands at every door (`lights`), a
+cave-cast monster zone covers every cave (`spawns`), and `dungeon_audit`
+audits every site: levels unchanged, lids cover the floor and never a door,
+one headroom, ledges of 3, the margin untouched, every floor reachable from
+the spawn, the mouths clear, a brazier inside, only cave dressing inside, a
+torch at every door. **A planned cave keeps its corridor width**: `caves()`
+does not widen it (a cell dug beside a planned corridor would join two
+floors the buffer keeps apart); its rock line is its own (`planned_rock`:
+the field's level for a pit, `grade + CLIMB + 1` for a mountain cave, so
+`lights` never reads a low wall as a way in). **The ice chamber is the
+deepest room** — the lid with the most rock over its floor (`level − floor`),
+which is the highest lid of the ported cave and the lowest chamber of a cave
+that steps down under a field; keyed on the lid's level alone, every lid of
+a pit dungeon was "deepest".
 
 ### windows and hangings — scenery ON a wall, not in front of it
 
