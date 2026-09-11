@@ -100,6 +100,37 @@ simply cannot be generated.
 - The SCENERY state row is the one review that keeps both (maintainer
   2026-09-03) — there, remove deletes a state the piece can do without.
 
+## "Removed" must be TRUE — one 404 proves nothing
+
+Maintainer 2026-09-11: *"When I first open the wiki or press on a page I get an
+error saying 'removed'. I then click back and on the same page again and the
+same img/monster loads."* Three routine things answer 404 for art that is on
+main this second, and each of them showed him a deletion that had not happened:
+
+- **the deployed image**, which carries only what the game reaches — a creature
+  still being animated is staging by arrangement (`games2/scripts/shipset.mjs`);
+- **the boot pin**, a sha cached for ten minutes while the art agents push every
+  few;
+- **a CDN that has not fetched the path yet.**
+
+So a `gone` verdict has to survive being asked again at `main`, the newest ref
+there is (`probeGone`). If main has the file it is not gone: the element is
+repointed there and it loads — which is exactly what his second visit did by
+hand. One extra HEAD, only on the miss path. A path neither side has is still
+`gone`, and the piece still leaves the wiki.
+
+STAGING IS ADMIN-ONLY, for the same reason. A player has no repo to fall back
+to, so a creature the image does not carry would be a permanently broken card
+for them: `creatures()` hides `pending` ones from the player face (and the
+Candidates tab with them), which is what the shipset law already said — "stays
+visible to a signed-in admin in the wiki". The nav count follows the same
+accessor, and `setAdmin` drops the creature index so signing in or out changes
+the roster immediately.
+
+Gate: `wiki/tools/check-gone.mjs` drives it across TWO origins — the image 404s
+the strip, the repo has it — and fails if the page says "removed" about art main
+still has. It runs in `wiki-guard.yml`, which now starts `serve-repo.mjs` too.
+
 ## A deleted piece LEAVES the wiki — it does not become a tombstone
 
 **The admin reads ART from HEAD of main and the PIECE LIST from the deployed

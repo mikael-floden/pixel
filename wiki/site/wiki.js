@@ -244,6 +244,48 @@ function probeArt(url) {
   }
   return artProbe.get(url);
 }
+/* GONE IS PROVED AT MAIN, NOWHERE ELSE (maintainer 2026-09-11: "When I first
+ * open the wiki or press on a page I get an error saying 'removed'. I then
+ * click back and on the same page again and the same img/monster loads.")
+ *
+ * A single 404 is not a deletion. THREE routine things answer 404 for art that
+ * is on main this second: the deployed image, which carries only what the game
+ * reaches (a creature still being animated is staging by arrangement — see
+ * shipset.mjs); the boot PIN, a sha cached for ten minutes while the art agents
+ * push every few; and a CDN that has not fetched the path yet. Each of those
+ * showed him "removed — the agent acted on this" on art that loaded when he
+ * walked back into the page.
+ *
+ * So a "gone" verdict now has to survive being asked again at `main`, the
+ * newest ref there is. If main has the file it is not gone — the element is
+ * repointed there and it simply loads, which is what his second visit was
+ * doing by hand. One extra HEAD, only on the miss path. */
+function repoRel(url) {
+  const u = new URL(url, location.href);
+  if (repoBase && u.href.startsWith(String(repoBase))) return u.href.slice(String(repoBase).length);
+  const rel = u.pathname.replace(/^.*\/assets\//, "");
+  return rel && !rel.startsWith("/") ? rel : null;
+}
+/** The same art at HEAD of main — the one ref that cannot be stale. */
+function mainTwin(url) {
+  const rel = repoRel(url);
+  if (!rel) return null;
+  const href = new URL(rel, stagingBase("main")).href;
+  // An injected base (the gates, a dev run) can resolve to the url that just
+  // missed — that is no new information, and asking twice proves nothing.
+  return href === url ? null : href;
+}
+/** probeArt, but a 404 must repeat itself at main before it counts as gone. */
+async function probeGone(url) {
+  const first = await probeArt(url);
+  if (first !== "gone") return { verdict: first, twin: null };
+  const twin = mainTwin(url);
+  if (!twin) return { verdict: "gone", twin: null };
+  const atMain = await probeArt(twin);
+  // Anything but a 404 at main — it is there, or the network hiccuped. Either
+  // way this is not a deletion, and the twin is where the art actually is.
+  return atMain === "gone" ? { verdict: "gone", twin: null } : { verdict: "failed", twin };
+}
 /** Paths already served by the repo, so the second card of a domain the image
  *  does not carry goes straight there instead of 404ing first.
  *
@@ -347,7 +389,14 @@ async function onArtMissing(img) {
   // been retried against the repo, a 404 THERE is real news.
   const fromRepo = !!repoBase && url.startsWith(String(repoBase));
   const unshipped = isUnshipped(domain) && !fromRepo;
-  const verdict = (/\/icons\//.test(url) || unshipped) ? "failed" : await probeArt(url);
+  let verdict = "failed", mainAt = null;
+  if (!/\/icons\//.test(url) && !unshipped) {
+    const p = await probeGone(url);
+    verdict = p.verdict; mainAt = p.twin;
+  }
+  // Main has it: point at main and let it load, rather than telling him a
+  // story about art that is right there.
+  if (mainAt && img.isConnected) { img.dataset.triedRepo = "1"; img.src = mainAt; return; }
   // GONE MEANS GONE — the piece leaves the wiki, it does not become a
   // tombstone (maintainer 2026-08-16, on three "removed" cards sitting in his
   // partly-reviewed filter: "why is the object not removed then removed? Why
@@ -3527,7 +3576,7 @@ function takeRow(domain, entityPath, take, extra = []) {
 // (maintainer 2026-07-30 named these). Add a section here and the nav, the
 // start page, the headings and the back-links all follow.
 const SECTIONS = {
-  monsters:   { label: "Creatures",     noun: "creatures",  icon: "creatures",  count: (d) => d.counts.monsters },
+  monsters:   { label: "Creatures",     noun: "creatures",  icon: "creatures",  count: () => creatures().length },
   // "Races", not "Characters" (maintainer 2026-08-05: "Characters" reads too
   // close to "Creatures"). The nav counts RACES; the start tile keeps heroes.
   // "Races", not "Characters" (maintainer 2026-08-05: "Characters" reads too
@@ -4374,7 +4423,7 @@ function monsterSort(list) {
  *  them — the list ‹ › walks on a creature page. */
 function monsterNav() {
   const mode = shadowFilter();
-  const all = state.data.domains.monsters;
+  const all = creatures();
   const kept = mode === "all" ? all : all.filter((m) => MONSTER_SHADOWS[mode].hit(m));
   return monsterSort(kept.length ? kept : all);   // never strand him on an empty pager
 }
@@ -4550,7 +4599,15 @@ async function showcaseMissing(el, url) {
   //    means the entity leaves the wiki, anything else stays visible and says
   //    it did not load.
   if (!el.isConnected) return;
-  const verdict = await probeArt(url);
+  const { verdict, twin: atMain } = await probeGone(url);
+  if (atMain && el.isConnected) {
+    el.dataset.triedRepo = "1";
+    el.dataset.strip = atMain;
+    if (el.dataset.preview) el.dataset.preview = mainTwin(el.dataset.preview) ?? el.dataset.preview;
+    el.style.backgroundImage = "";
+    paintShowcase(el);
+    return;
+  }
   if (verdict === "gone" && dropGoneEntity(el.dataset.preview || url)) return;
   if (!el.isConnected) return;
   const stage = el.closest(".showcase");
@@ -4671,15 +4728,17 @@ function showcaseGrid(cards, fit = fitShowcase) {
  * switched. Now both pages are `sectionHead` + this row, in that order, and
  * nothing on screen moves between them. */
 function creatureTabs(cur) {
-  const nCand = candidates().length;
+  // The candidates are staging art as well — a player has no repo to read them
+  // from, so the tab is the Game Master's.
+  const nCand = state.admin ? candidates().length : 0;
   return sortBar("wiki-creature-tab", [
-    ["monsters", `Creatures ${(state.data.domains.monsters ?? []).length}`, "Everything the monsters agent has animated"],
+    ["monsters", `Creatures ${creatures().length}`, "Everything the monsters agent has animated"],
     ...(nCand ? [["candidates", `Candidates ${nCand}`, "New designs, judged on their 8 directions before they earn animations"]] : []),
   ], cur, (id) => { location.hash = id === "monsters" ? "#/monsters" : "#/monsters/candidates"; }, { persist: false });
 }
 function viewMonsters() {
   const q = state.query;
-  const list = state.data.domains.monsters.filter((m) => matches(q, m.id, m.name, m.kind, monsterLore(m), ...(m.loreStory ?? [])));
+  const list = creatures().filter((m) => matches(q, m.id, m.name, m.kind, monsterLore(m), ...(m.loreStory ?? [])));
   // Default is BY NAME. The underlying order is the folder id, which reads as
   // random to anyone looking at display names (Emberwing, Nightmule, Ashfiend…).
   let sort = "name";
@@ -4959,6 +5018,8 @@ function fitCandidates(grid) {
   if (note) note.textContent = `Every card at ${z}× — one scale for all of them, so a big design really looks big.`;
 }
 function viewCandidates() {
+  if (!state.admin) return h("div", {}, sectionHead("monsters", "Candidates"),
+    h("p", { class: "muted" }, "New creature designs are reviewed by the Game Master before they are animated. Sign in to see them."));
   const mode = candFilter();
   const all = candidates();
   const shown = candList(mode).filter((c) => matches(state.query, c.id, c.name, c.tier, c.lore));
@@ -4992,6 +5053,7 @@ function viewCandidates() {
       : "The monsters agent has not generated a candidate yet."));
 }
 function viewCandidate(id) {
+  if (!state.admin) return viewCandidates();
   const c = candById(id);
   if (!c) return h("p", {}, "Unknown candidate.");
   const list = candList();
@@ -5913,7 +5975,17 @@ function levelBadge(stats) {
 /* --- loot: the item ↔ creature join (build.mjs precomputes both ways) --- */
 let _itemIx = null, _monIx = null;
 const itemById = (id) => (_itemIx ??= new Map((state.data.domains.items ?? []).map((i) => [i.id, i]))).get(id);
-const monsterById = (id) => (_monIx ??= new Map((state.data.domains.monsters ?? []).map((m) => [m.id, m]))).get(id);
+/* STAGING IS ADMIN-ONLY — a creature still being animated is not in the image
+ * (shipset.mjs: "anything not in the closure is STAGING: it stays in git, stays
+ * visible to a signed-in admin in the wiki, and does NOT enter the image"), so
+ * a player asking for its art gets a 404 with no repo to fall back to. The
+ * whole roster is one accessor away, and everything that lists, counts, pages
+ * or looks up a creature goes through it. */
+const creatures = () => {
+  const all = state.data.domains.monsters ?? [];
+  return state.admin ? all : all.filter((m) => !m.pending);
+};
+const monsterById = (id) => (_monIx ??= new Map(creatures().map((m) => [m.id, m]))).get(id);
 /** A drop chance (a FRACTION) as a percentage a human can read. The data spans
  *  0.006..0.45, so a fixed precision either prints "1%" for three different
  *  odds or "45.0%" for none of them: keep one decimal below 10%, whole
@@ -6207,7 +6279,7 @@ function zoneMapPanel(monsterId) {
 }
 
 function viewMonster(id) {
-  const m = state.data.domains.monsters.find((x) => x.id === id);
+  const m = creatures().find((x) => x.id === id);
   if (!m) return h("p", {}, "Unknown monster.");
   // AN APPROVED DESIGN IS A CREATURE WHILE IT IS STILL BEING ANIMATED
   // (maintainer 2026-09-10: "They may still not have all animations yet
@@ -6298,7 +6370,7 @@ function viewMonster(id) {
         // reserves for the longest blurb then falls at the bottom of the
         // column, where it reads as the gap before the next panel instead of
         // opening a blank line in the middle of the page.
-        loreSlot(monsterLore(m), state.data.domains.monsters.map(monsterLore)),
+        loreSlot(monsterLore(m), creatures().map(monsterLore)),
         // The art/render tech line (resolution, pads, foot metrics, kind) is
         // GONE — maintainer 2026-08-15: "only the text 'Open in PixelLab ↗' is
         // enough for the admin here". It was measurement output, useful while
@@ -13915,6 +13987,10 @@ function initChrome() {
 
 function setAdmin(on, { keepEdits = false } = {}) {
   state.admin = on;
+  // The creature index is built through `creatures()`, whose answer depends on
+  // this flag — a stale one would leave a player's roster on screen after he
+  // signs in, or the staging creatures on screen after he signs out.
+  _monIx = null;
   document.documentElement.classList.toggle("is-admin", on);
   const btn = $("#admin-btn");
   btn.textContent = on ? "Sign out (Game Master)" : "Game Master";
@@ -14108,6 +14184,9 @@ async function upgradeToStaging() {
   // Headless QA hook (mirrors the games2 __ml convention).
   window.__wiki = {
     state, route,
+    // The gone-verdict path, so a gate can ask it directly rather than
+    // reconstructing a two-origin miss.
+    probeGone,
     // The pass -> art-path resolver, so a gate can assert WHICH pass a card
     // resolves to without counting network requests — which measures the HTTP
     // cache once anything has been viewed, not the page.

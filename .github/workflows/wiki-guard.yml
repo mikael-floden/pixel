@@ -21,6 +21,8 @@ on:
       - "wiki/tools/check-routes.mjs"
       - "wiki/tools/check-stage.mjs"
       - "wiki/tools/check-candidates.mjs"
+      - "wiki/tools/check-gone.mjs"
+      - "wiki/tools/serve-repo.mjs"
       - "wiki/tools/check-script.mjs"
       - ".github/workflows/wiki-guard.yml"
 
@@ -45,8 +47,14 @@ jobs:
       - name: Serve the assets
         run: |
           node wiki/tools/serve-assets.mjs 8902 &
+          # THE SECOND ORIGIN. Production has two places art can come from —
+          # the deployed image (only what the game reaches) and the repo
+          # (everything) — and the logic that moves between them is invisible
+          # against a single server that happens to hold both.
+          node wiki/tools/serve-repo.mjs &
           for i in $(seq 1 30); do
-            curl -sf -o /dev/null "http://127.0.0.1:8902/assets/wiki/site/index.html" && break
+            curl -sf -o /dev/null "http://127.0.0.1:8902/assets/wiki/site/index.html" \
+              && curl -sf -o /dev/null "http://127.0.0.1:8903/wiki/site/data.json" && break
             sleep 1
           done
       - name: Every route renders, as player and as Game Master
@@ -55,3 +63,5 @@ jobs:
         run: node wiki/tools/check-stage.mjs
       - name: A new monster is judged on its 8 directions before it earns animations
         run: node wiki/tools/check-candidates.mjs
+      - name: "\"Removed\" must be true — a 404 at the image is not a deletion"
+        run: node wiki/tools/check-gone.mjs
