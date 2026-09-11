@@ -1,7 +1,7 @@
 {
   "format": "pixel-wiki-feedback@1",
   "domain": "monsters",
-  "updated_at": "2026-09-11T19:46:43.035Z",
+  "updated_at": "2026-09-11T19:47:28.010Z",
   "entries": {
     "monsters/candidates/lava_slug": {
       "status": "approved",
@@ -645,6 +645,12 @@
       "art": "b7cc44354cd8048e",
       "updated_at": "2026-09-11T19:46:42.592Z",
       "note": "the direction swaps very much during the attack"
+    },
+    "monsters/spider_queen#attack_v3#north": {
+      "status": "redo",
+      "art": "455aa5f9ed9867b3",
+      "updated_at": "2026-09-11T19:47:27.605Z",
+      "note": "the head ends up in the but during the animation"
     }
   }
 }
