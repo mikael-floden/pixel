@@ -1345,7 +1345,7 @@
           "rung": 0
         },
         "north-east": {
-          "status": "warn",
+          "status": "fail",
           "step_mean": 0.5138,
           "step_max": 0.6501,
           "drift": 19.97,
@@ -1362,6 +1362,7 @@
             240
           ],
           "reasons": [
+            "HE says redo: The direction changes inaide the animation",
             "drifts 20.0 px — eyeball it",
             "shallow strike: reach 0.24 — eyeball it"
           ],
@@ -1376,10 +1377,11 @@
           "rolls": 1,
           "intensity": 0,
           "frames": 4,
-          "rung": 0
+          "rung": 0,
+          "maintainer": "The direction changes inaide the animation"
         },
         "north": {
-          "status": "warn",
+          "status": "fail",
           "step_mean": 0.3093,
           "step_max": 0.4335,
           "drift": 8.51,
@@ -1396,6 +1398,7 @@
             240
           ],
           "reasons": [
+            "HE says redo: the head ends up in the but during the animation",
             "shallow strike: reach 0.23 — eyeball it"
           ],
           "sub": "22825231-7d1e-494f-bb17-4d2c6c9ce29c",
@@ -1409,7 +1412,8 @@
           "rolls": 1,
           "intensity": 0,
           "frames": 4,
-          "rung": 0
+          "rung": 0,
+          "maintainer": "the head ends up in the but during the animation"
         },
         "south-west": {
           "status": "warn",
@@ -1480,7 +1484,7 @@
           "source": "east"
         },
         "north-west": {
-          "status": "warn",
+          "status": "fail",
           "step_mean": 0.5138,
           "step_max": 0.6501,
           "drift": 19.97,
@@ -1497,6 +1501,7 @@
             240
           ],
           "reasons": [
+            "HE says redo: The direction changes inaide the animation",
             "drifts 20.0 px — eyeball it",
             "shallow strike: reach 0.24 — eyeball it"
           ],
@@ -1512,7 +1517,8 @@
           "intensity": 0,
           "frames": 4,
           "rung": 0,
-          "source": "north-east"
+          "source": "north-east",
+          "maintainer": "The direction changes inaide the animation"
         }
       },
       "action": "Fang Stab - Rears high on her back legs and stabs down with fangs and front legs",

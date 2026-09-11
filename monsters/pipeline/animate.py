@@ -968,6 +968,67 @@ def _slot_files_delete(cid, slot, dirs):
             os.remove(strip)
 
 
+FEEDBACK = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))),
+                        "live", "feedback", "monsters.json")
+
+
+def cmd_review(args):
+    """Read HIS verdicts out of live/feedback/monsters.json and apply them to a
+    slot: 'redo' and 'rejected' become fails carrying his note, so the next
+    sweep re-rolls exactly those directions and the ladder climbs from what he
+    said. Keys are 'monsters/<id>#<slot>#<direction>'. He decides; this only
+    carries the decision into the pipeline."""
+    cfg = cand.load_cfg()
+    try:
+        entries = (json.load(open(FEEDBACK)) or {}).get("entries") or {}
+    except FileNotFoundError:
+        print(f"no feedback at {FEEDBACK}"); return
+    want = args.state
+    marked = cleared = 0
+    per = {}
+    for key, v in entries.items():
+        if "#" not in key:
+            continue
+        path, _, rest = key.partition("#")
+        slot, _, d = rest.partition("#")
+        cid = path.split("/")[-1]
+        if slot != want or d not in ALL_DIRS:
+            continue
+        per.setdefault(cid, {})[d] = v
+    for cid, dirs in sorted(per.items()):
+        man = cand.load_manifest(cid)
+        rec = (man.get("animations") or {}).get(want) if man else None
+        if not rec:
+            continue
+        touched = False
+        for d, v in dirs.items():
+            q = rec["directions"].get(d)
+            if not q:
+                continue
+            st = (v.get("status") or "").lower()
+            note = (v.get("note") or "").strip()
+            if st in ("redo", "rejected"):
+                src = MIRRORED.get(d)           # a mirror is fixed by redoing its source
+                tgt = rec["directions"].get(src) if src else None
+                for qq, dd in ((q, d),) + (((tgt, src),) if tgt else ()):
+                    if qq.get("status") == "fail" and qq.get("maintainer") == note:
+                        continue
+                    qq["status"] = "fail"
+                    qq["maintainer"] = note or st
+                    qq["reasons"] = [f"HE says redo: {note or st}"] + [r for r in (qq.get("reasons") or [])
+                                                                      if "HE says redo" not in r]
+                    marked += 1
+                print(f"  {cid} {d}: redo — {note[:70] or st}" + (f"  (+ mirror {src})" if src else ""))
+                touched = True
+            elif st == "approved" and q.get("status") == "fail":
+                q["status"] = "warn"; q["maintainer"] = "approved"
+                q["reasons"] = ["HE approved it"]; cleared += 1; touched = True
+        if touched:
+            write_manifest(cid, man)
+    print(f"{marked} direction(s) marked for redo, {cleared} approved despite the machine")
+    cand.rebuild_index(cfg)
+
+
 def cmd_unwrap(args):
     """Repair wrap-around overflow on clips ALREADY on disk and re-verdict
     them: a clip that rendered past the canvas is art worth saving, not a
@@ -1166,6 +1227,8 @@ def main():
     pr.add_argument("--from", dest="src", help="the attempt to promote, e.g. attack_v3 (default: <state>_try)")
     pr.add_argument("--allow-warn", action="store_true", help="promote when every direction is pass or warn (default: no fails, no gaps)")
     pr.set_defaults(func=cmd_promote)
+    rv = sub.add_parser("review", help="apply HIS wiki verdicts to a slot (redo -> fail, with his note)")
+    rv.add_argument("--state", required=True); rv.set_defaults(func=cmd_review)
     uw = sub.add_parser("unwrap", help="repair clips that rendered past the canvas edge (no generation)")
     uw.add_argument("--state", required=True); uw.add_argument("--only"); uw.set_defaults(func=cmd_unwrap)
     se = sub.add_parser("settle", help="a maxed-out dial stops the loop: shallow-but-real strikes become warns for the maintainer to judge")

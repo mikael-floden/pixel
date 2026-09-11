@@ -1237,7 +1237,7 @@
     "attack_v3": {
       "directions": {
         "south": {
-          "status": "pass",
+          "status": "fail",
           "step_mean": 0.2733,
           "step_max": 0.3549,
           "drift": 4.78,
@@ -1253,7 +1253,9 @@
             96,
             96
           ],
-          "reasons": [],
+          "reasons": [
+            "HE says redo: The wings go outside the frame and is not saved in postprocess"
+          ],
           "sub": "695b1b11-e721-4127-90a0-47a7b83442c8",
           "group": "8807e774-e393-4e76-a6f0-ff730856678a",
           "takes": 1,
@@ -1265,7 +1267,8 @@
           "rolls": 1,
           "intensity": 0,
           "frames": 4,
-          "rung": 0
+          "rung": 0,
+          "maintainer": "The wings go outside the frame and is not saved in postprocess"
         },
         "south-east": {
           "status": "pass",

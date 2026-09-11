@@ -1322,7 +1322,7 @@
           "rung": 0
         },
         "east": {
-          "status": "pass",
+          "status": "fail",
           "step_mean": 0.5469,
           "step_max": 0.685,
           "drift": 17.29,
@@ -1338,7 +1338,9 @@
             240,
             240
           ],
-          "reasons": [],
+          "reasons": [
+            "HE says redo: the animation flips direction inside the animation"
+          ],
           "sub": "2e2bbdef-e29d-4264-bedf-57cd3ea55217",
           "group": "c4d2ff18-9ca1-40de-bfc7-4a522f7d7c11",
           "takes": 1,
@@ -1350,10 +1352,11 @@
           "rolls": 2,
           "intensity": 0,
           "frames": 4,
-          "rung": 0
+          "rung": 0,
+          "maintainer": "the animation flips direction inside the animation"
         },
         "north-east": {
-          "status": "warn",
+          "status": "fail",
           "step_mean": 0.5023,
           "step_max": 0.5256,
           "drift": 20.04,
@@ -1370,6 +1373,7 @@
             240
           ],
           "reasons": [
+            "HE says redo: the animation flips direction inside the animation",
             "drifts 20.0 px — eyeball it",
             "shallow strike: reach 0.26 — eyeball it"
           ],
@@ -1384,7 +1388,8 @@
           "rolls": 1,
           "intensity": 0,
           "frames": 4,
-          "rung": 0
+          "rung": 0,
+          "maintainer": "the animation flips direction inside the animation"
         },
         "north": {
           "status": "warn",
@@ -1453,7 +1458,7 @@
           "source": "south-east"
         },
         "north-west": {
-          "status": "warn",
+          "status": "fail",
           "step_mean": 0.5023,
           "step_max": 0.5256,
           "drift": 20.04,
@@ -1470,6 +1475,7 @@
             240
           ],
           "reasons": [
+            "HE says redo: the animation flips direction inside the animation",
             "drifts 20.0 px — eyeball it",
             "shallow strike: reach 0.26 — eyeball it"
           ],
@@ -1485,10 +1491,11 @@
           "intensity": 0,
           "frames": 4,
           "rung": 0,
-          "source": "north-east"
+          "source": "north-east",
+          "maintainer": "the animation flips direction inside the animation"
         },
         "west": {
-          "status": "pass",
+          "status": "fail",
           "step_mean": 0.5469,
           "step_max": 0.685,
           "drift": 17.29,
@@ -1504,7 +1511,9 @@
             240,
             240
           ],
-          "reasons": [],
+          "reasons": [
+            "HE says redo: the animation flips direction inside the animation"
+          ],
           "sub": "2e2bbdef-e29d-4264-bedf-57cd3ea55217",
           "group": "c4d2ff18-9ca1-40de-bfc7-4a522f7d7c11",
           "takes": 1,
@@ -1517,7 +1526,8 @@
           "intensity": 0,
           "frames": 4,
           "rung": 0,
-          "source": "east"
+          "source": "east",
+          "maintainer": "the animation flips direction inside the animation"
         }
       },
       "action": "Club Smash - Heaves the stalactite club overhead and smashes it down",
