@@ -497,6 +497,56 @@ test("wallLeft/wallRight hold the FAR walls only; the near walls are fringe minu
   assert.equal([...s.wallLeft].filter((i) => s.wallRight.has(i)).length, 0);
 });
 
+// ============================================================================
+// A CAVE'S FLOOR AND ITS LID SHARE ONE CELL INDEX
+// ============================================================================
+//
+// This is not a fact about this module — `findIndoorSpace` gets it right — it
+// is the fact every CONSUMER that memoises a verdict per cell has to respect.
+// WorldScene's `roomCellMemo` did not: one fill from the mud cave's floor
+// stamped all 142 of its cells "room" for the rest of the session, and from
+// then on every monster that wandered onto the LID — open sky, level 12, the
+// same mud the player is standing on — read as sealed in a room he was not in
+// and was parked invisible (maintainer 2026-09-11, three photographs a second
+// apart: "monsters just disappears"). The renderer now asks `roofAbove` before
+// it reads the memo; this gate is the geometry that makes that necessary.
+test("the_game mud cave: every cell of the room is OPEN SKY from its own lid", () => {
+  const world = loadWorld("the_game");
+  if (!world) return test.skip("maps2/worlds3/the_game missing");
+  const grid = gridOf(world);
+  // The cave under the mud, which is what he was standing on: seven touching
+  // level-12 slabs (thickness 0..6) over a floor cut down to level 0-6.
+  const lids = world.decks!.filter((d) => d.kind === "cave" && d.mat === "dark_mud");
+  assert.equal(lids.length, 7, "the mud cave is seven slabs (measured)");
+  const seed = lids
+    .flatMap((d) => d.cells)
+    .find((c) => {
+      const i = at(grid, c.col, c.row);
+      return grid.deck[i] >= 0 && grid.level[i] < grid.deckBot[i] - 1;
+    })!;
+  const s = findIndoorSpace(grid, seed.col, seed.row, grid.level[at(grid, seed.col, seed.row)])!;
+  assert.ok(s, "the mud cave is a space");
+  assert.equal(s.indoor, true, "…and it passes the room rules");
+  assert.equal(s.roof.size, 142, "the whole connected mud cave (measured)");
+
+  // EVERY one of those cells carries a lid you can stand ON, and from up there
+  // nothing is overhead: the same cell is indoors from below and outdoors from
+  // above. A consumer keyed on the cell alone cannot tell those two apart.
+  let standable = 0;
+  for (const j of s.roof) {
+    const c = j % grid.width;
+    const r = (j - c) / grid.width;
+    const top = grid.deck[j];
+    assert.ok(top >= 0, `(${c},${r}) is in the room but carries no lid`);
+    standable++;
+    assert.equal(roofAbove(grid, c, r, top), null, `(${c},${r}) standing ON the lid is not open sky`);
+    assert.equal(findIndoorSpace(grid, c, r, top), null, `(${c},${r}) reads as a room from on top of its own lid`);
+    // …and from the floor it IS the room, or the pair above proves nothing.
+    assert.ok(roofAbove(grid, c, r, grid.level[j]) !== null, `(${c},${r}) has no roof from its own floor`);
+  }
+  assert.equal(standable, 142, "every cell of the room is walkable from above");
+});
+
 test("the_game cave: the two wall sets overlap only at INSIDE corners and free-standing pillars", () => {
   const world = loadWorld("the_game");
   if (!world) return test.skip("maps2/worlds3/the_game missing");

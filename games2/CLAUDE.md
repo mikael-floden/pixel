@@ -236,7 +236,8 @@ assigned it.
 `window.__ml` is the instrument: `tiles3()`, `t3at(col,row)`, `occDump()`,
 `groundHash()`, `hitch()`, `lightAt`, `lightSlots()`, `indoor()`,
 `sceneryAnims()`, `monsterInfo()`, `teleport(col,row)`, `lookAt(col,row)`,
-`nearby()` — each doc names the ones for its subsystem. Counters over pixels:
+`nearby()`, `sealedAt(col,row,lvl)` — each doc names the ones for its
+subsystem. Counters over pixels:
 a gate cannot tell a correct dark frame from a black one.
 
 ## Don't

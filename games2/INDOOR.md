@@ -251,6 +251,17 @@ Probes: `__ml.indoorWall(v?)` / `__ml.indoor()`.
     GATED ON THE DRAWN STATE (`sealedAway`: not while the room's light mask
     still holds the cell) — keyed on the verdict alone, the bodies in the
     room you leave vanish on the flip frame under a roof still 30% in.
+    **AND GATED ON `roofAbove` BEFORE THE MEMO IS EVEN READ.** A cave's floor
+    and its LID are one cell index, and `roomCellMemo` cannot tell them apart:
+    one fill from the mud cave's floor stamped all 142 of its cells "room" for
+    the session, so every monster that then walked onto the lid — open sky,
+    level 12, the same mud the player stands on — was parked invisible
+    (maintainer 2026-09-11, three photographs a second apart: "monsters just
+    disappears"). `roofAbove` is the same O(1) predicate `findIndoorSpace`
+    opens with, so the memo can never contradict a fresh fill, and it keeps
+    every deckless cell in the world out of the map entirely. Probe:
+    `__ml.sealedAt(col,row,lvl)`; gate: "the_game mud cave: every cell of the
+    room is OPEN SKY from its own lid" in `indoor.test.ts`.
   - **Anything drawn ABOVE the darkness overlay must gate itself** — zero
     ambient can't touch depth 900_001+. `indoorOutside(fx,fy,z)` is the
     predicate (NOT a visibility test; bodies are always drawn): name labels
@@ -366,7 +377,8 @@ Probes: `__ml.indoorWall(v?)` / `__ml.indoor()`.
     mask** — `roomMask` outlives the verdict for the ambient ease, and reading
     it kept cave monsters outlined through rock for a second after exit. One
     flood fill per space (`roomCellMemo`, filled from `space.roof`, cleared on
-    world change); fails OPEN (a spare outline is cosmetic; a missing one is
+    world change, and never consulted for a body with nothing overhead — see
+    the parking rule above); fails OPEN (a spare outline is cosmetic; a missing one is
     the feature broken). Gate: section 8 of verify-indoor — samples the first
     frame that is already outdoors with the fade still running (settle would
     wait it out), kept non-vacuous by `coverFrac` (≥2 sealed >50%-buried

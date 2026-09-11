@@ -2921,7 +2921,11 @@ export class WorldScene extends Phaser.Scene {
   private roomMask: Map<number, number> | null = null;
   /** cell -> 1 when it is sealed inside a ROOM, 0 when it is not (open sky, a
    * bridge, an arch). Filled a whole space at a time by inHiddenRoom; cleared
-   * when the world changes, which is the only thing that can invalidate it. */
+   * when the world changes, which is the only thing that can invalidate it.
+   *
+   * KEYED ON THE CELL ALONE, WHICH IS WHY `roomVerdictAt` ASKS `roofAbove`
+   * FIRST. A cave's cell is two places — the floor inside it and the lid you
+   * walk on — and this map cannot tell them apart. */
   private roomCellMemo = new Map<number, number>();
   /** cell -> depth from the nearest entrance, for every ROOM in the world.
    * Built once per world (buildCaveDepth) and published to the light in the
@@ -4458,6 +4462,14 @@ export class WorldScene extends Phaser.Scene {
       // apart (see verify-indoor's beam assertions).
       torchOn: () => this.torchOn,
       toggleTorch: () => this.toggleTorch(),
+      /** IS A BODY AT (col, row, lvl) PARKED FOR BEING SEALED IN A ROOM I AM
+       *  NOT IN — the exact test every monster, NPC and remote player runs. A
+       *  gate walks into a cave (which fills `roomCellMemo`), walks out, and
+       *  asks this about the LID it is standing next to: a cave's floor and
+       *  its lid share one cell index, and answering from the memo alone
+       *  parked every monster on the lid in broad daylight. */
+      sealedAt: (col: number, row: number, lvl: number) =>
+        this.sealedAway((col + 0.5) * CELL_WU, (row + 0.5) * CELL_WU, lvl),
       indoor: () => {
         const s = this.indoorSpace;
         const av = this.avatars.get(this.myId);
@@ -15883,6 +15895,18 @@ export class WorldScene extends Phaser.Scene {
     const w = this.world;
     if (!g || !w) return false;
     if (col < 0 || row < 0 || col >= w.width || row >= w.height) return false;
+    // NOTHING OVER THIS BODY'S HEAD, SO IT IS IN NO ROOM — asked FIRST, because
+    // the memo below is keyed on the CELL ALONE and a cave's cell is two
+    // places: the floor inside it and the LID you walk on at level 12. One fill
+    // from the floor stamps all 142 cells of the mud cave "room" for the rest
+    // of the session, and every monster that then wandered onto the lid — open
+    // sky, broad daylight — read as sealed in a room I am not in and was
+    // PARKED (`sealedAway` returns true whenever `roomMask` is null, i.e.
+    // whenever I am outdoors). Maintainer 2026-09-11, standing at 220,290 with
+    // three photographs a second apart: "monsters just disappears". This is
+    // `roofAbove`, the same O(1) predicate `findIndoorSpace` opens with — so
+    // the memo can never contradict a fresh fill — and it costs one array read.
+    if (roofAbove(g, col, row, z) === null) return false;
     const idx = row * w.width + col;
     let room = this.roomCellMemo.get(idx);
     if (room === undefined) {
