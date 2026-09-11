@@ -321,6 +321,25 @@ The rules that produce a real strike:
   after repair steps the ladder down to calmer wording — overflow means too
   much, never too little.
 
+### A WRONG DIRECTION is the maintainer's call, never the agent's
+
+Maintainer 2026-09-11, after I started reporting monsters whose 8-direction
+set looked rotated: "I don't trust your eyes to correct this. Let this be
+something only I can correct."
+
+- **Never relabel, rotate or re-map a monster's directions.** Not from a
+  metric, not from a contact sheet, not from 'the frontal view looks like it
+  is under SE'. Both the symmetry and the mirror-pair fits are far too noisy
+  to act on — measured 2026-09-11, the detector rated 23 of 39 approved sets
+  "rotated", including obvious false positives at a 0.003 margin, while the
+  one case confirmed by eye scored below them.
+- **Report and stop.** When a direction looks wrong, say which monster, which
+  slot, and what it appears to show, and leave it. He decides whether the set
+  is wrong and what it should be.
+- The clips inherit whatever the BASE rotations say, so a rotated base set
+  makes every state of that monster rotated with it. That is a fact about the
+  base, not something an animation re-roll can fix.
+
 ### NOTHING in candidates is live — they are numbered attempts, and HE picks
 
 Maintainer 2026-09-11, after I called the first attack set "the set the game
