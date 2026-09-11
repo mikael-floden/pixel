@@ -2837,6 +2837,9 @@ export class WorldScene extends Phaser.Scene {
    *  away. Held apart from `sceneryImgs` so the cut-away crossfade can fade
    *  them with it (see roofedFade); rebuilt with the scenery. */
   private sceneryRoofedImgs: Phaser.GameObjects.Image[] = [];
+  /** Pieces standing ON the cut-away lid — they ride the roof's own dissolve
+   *  (see sceneryAboveCutAt). */
+  private sceneryAboveCutImgs: Phaser.GameObjects.Image[] = [];
   /** SCENERY ON A WALL (maps2 `z`: windows, hangings) — one record per drawn
    *  placement, stepped every frame: the base image and the lit copy take the
    *  wall column's cut fade, and a window's LIGHTS_ON art crossfades in over
@@ -15498,6 +15501,11 @@ export class WorldScene extends Phaser.Scene {
       const rf = this.roofedFade();
       for (const img of this.sceneryRoofedImgs) img.setAlpha(rf);
     }
+    // ...and what stood ON the roof goes the way the roof does.
+    if (this.sceneryAboveCutImgs.length) {
+      const af = this.debrisAlpha();
+      for (const img of this.sceneryAboveCutImgs) img.setAlpha(af);
+    }
     this.stepSceneryWalls();
     /* THE MAP TAB'S LAYER ROW, polled 4x a second. games-ui owns hud.ts, so the
      * chips and the overlay inject themselves into the Map page from outside
@@ -15666,6 +15674,39 @@ export class WorldScene extends Phaser.Scene {
    *  Gated on `indoorMask` for the same reason aboveCut is: the exit fade keeps
    *  the cut world painted while the light rolls back, and the furniture must
    *  not vanish a beat before the roof slab returns over it. */
+  /** IS THIS PIECE STANDING ON THE LID, rather than in the room or beside it?
+   *
+   *  MEASURED at his own spot (224,277), which is the repro: `trees/tree_017`
+   *  is rooted at cell 227,279 at LEVEL 12 — the mountain top that roofs the
+   *  cave — while the cave's floor there is level 3, and it is `roofed:false`
+   *  because nothing covers level 12. So it is neither furniture (that is
+   *  `roofed`, level 3, and shows) nor beside the room: it stands ON the lid,
+   *  and with the lid cut open it hangs in the air with its roots showing
+   *  ("the trees here are still visible inside the cave!").
+   *
+   *  The test is the cut PLUS membership of my building: the column is one the
+   *  cut truncates and the piece stands above that truncation. The mask is
+   *  floor plus enclosure, and a lid cell shares its index with the floor cell
+   *  under it, so a piece on the lid is in it. Scenery BESIDE the room is not
+   *  ("I love the way a scenery side by side with let's say a house can be seen
+   *  as a silhouette"), and neither is one rooted out in the COVERING CONE —
+   *  the cut also truncates columns outside the room that would bury my floor,
+   *  and a tree out there is his red one, which stays.
+   *
+   *  NOT `indoorSpace.roof`: that is the floor only, and a lid cell at level 12
+   *  is not a floor cell, so testing it let every one of these trees through
+   *  (measured on 1fe5126131 — his screenshot). */
+  private sceneryAboveCutAt(col: number, row: number, level: number): boolean {
+    const w = this.world;
+    if (!this.indoorMask || !w) return false; // no cut drawn: everything stands
+    const c = Math.floor(col);
+    const r = Math.floor(row);
+    if (c < 0 || r < 0 || c >= w.width || r >= w.height) return false;
+    if (!this.indoorMask.has(r * w.width + c)) return false;
+    const cut = this.cutAt(col, row);
+    return Number.isFinite(cut) && level > cut;
+  }
+
   private roofCutAwayAt(col: number, row: number, level: number): boolean {
     if (!this.indoorMask) return false; // no cut drawn: every roof is whole
     const cut = this.cutAt(col, row);
@@ -18996,6 +19037,7 @@ export class WorldScene extends Phaser.Scene {
     this.scnCreated = 0;
     this.sceneryImgs = [];
     this.sceneryRoofedImgs = [];
+    this.sceneryAboveCutImgs = [];
     for (const w of this.sceneryWalls) w.on?.destroy(); // the ON overlays are not pooled — see registerSceneryWall
     this.sceneryWalls = [];
     this.sceneryAnimLive = [];
@@ -19199,6 +19241,13 @@ export class WorldScene extends Phaser.Scene {
       if (p.roofed) {
         img.setAlpha(this.roofedFade());
         this.sceneryRoofedImgs.push(img);
+      } else if (this.sceneryAboveCutAt(p.cx, p.cy, p.level)) {
+        // ON the lid: it goes with the roof, on the roof's own curve — opaque
+        // at the flip frame and dissolving with the debris, so walking in and
+        // out fades it away and back instead of popping it. Furniture cannot
+        // reach here: it is `roofed` and took the branch above.
+        img.setAlpha(this.debrisAlpha());
+        this.sceneryAboveCutImgs.push(img);
       }
       /* AND IT OCCLUDES. Scenery drew with the right painter depth but told
        * `resolveBodyDepth` nothing, so a body never sorted behind a tree — it
@@ -20221,7 +20270,7 @@ export class WorldScene extends Phaser.Scene {
   private cullRect: ViewRect = { x: 0, y: 0, width: 0, height: 0 };
 
   private get cullLists(): Phaser.GameObjects.Image[][] {
-    return [this.occluders, this.sceneryImgs, this.sceneryRoofedImgs];
+    return [this.occluders, this.sceneryImgs, this.sceneryRoofedImgs, this.sceneryAboveCutImgs];
   }
   /** Occluders whose submit the last frame skipped — reported by the beacon. */
   private occCulledSubmits = 0;
