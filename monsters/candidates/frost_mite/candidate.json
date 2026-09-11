@@ -1236,37 +1236,38 @@
     "attack_v3": {
       "directions": {
         "south": {
-          "status": "fail",
-          "step_mean": 0.1291,
-          "step_max": 0.2818,
-          "drift": 2.21,
-          "loop": 0.0,
-          "loop_ratio": 0.0,
-          "travel": 0.23,
-          "pin": 1.0,
+          "status": "warn",
+          "step_mean": 0.1306,
+          "step_max": 0.3359,
+          "drift": 3.16,
+          "loop": 0.1221,
+          "loop_ratio": 0.94,
+          "travel": 1.7,
+          "pin": 0.909,
           "pad": 0,
-          "flash": 0.05,
-          "peak": 0.3068,
-          "reach": 0.125,
+          "flash": -0.005,
+          "peak": 0.4555,
+          "reach": 0.167,
           "canvas": [
             32,
             32
           ],
           "reasons": [
-            "no strike, just a lean: nothing reaches past 0.12 of the body"
+            "shallow strike: reach 0.17 — eyeball it"
           ],
-          "sub": "9e475ced-25e7-4b1a-bfbc-832ff0b0678f",
-          "group": "f16d48a9-7110-4242-a0f6-1e46bfbe8033",
-          "takes": 1,
-          "version": 3,
+          "sub": "7944d689-e306-42c8-970f-e9e81d2d8ee2",
+          "group": "85b9f9db-58c5-403c-bafe-d17975307f26",
+          "takes": 2,
+          "version": 4,
           "mirrored": false,
-          "generated_at": "2026-09-11T17:47:51+00:00",
-          "action": "Lunge Attack - Throws its whole body forward in one fast lunge, white swoosh lines trailing behind it, a big aggressive swing",
-          "tries": 3,
-          "rolls": 3,
+          "action": "Ice Burst - The mite rears up and bursts forward in a spray of ice shards, mandibles thrown wide",
           "intensity": 0,
+          "rolls": 4,
           "frames": 16,
-          "rung": 2
+          "rung": 3,
+          "unwrapped": null,
+          "tries": 4,
+          "generated_at": "2026-09-11T18:09:31+00:00"
         },
         "south-east": {
           "status": "warn",

@@ -1237,38 +1237,37 @@
       "directions": {
         "south": {
           "status": "fail",
-          "step_mean": 0.009,
-          "step_max": 0.0332,
-          "drift": 0.61,
+          "step_mean": 0.1182,
+          "step_max": 0.3081,
+          "drift": 2.22,
           "loop": 0.0,
           "loop_ratio": 0.0,
-          "travel": 0.62,
-          "pin": 0.999,
+          "travel": 1.27,
+          "pin": 1.0,
           "pad": 0,
-          "flash": 0.006,
-          "peak": 0.045,
-          "reach": 0.103,
+          "flash": 0.509,
+          "peak": 0.2373,
+          "reach": 0.509,
           "canvas": [
             40,
             40
           ],
           "reasons": [
-            "frozen: silhouette moves 0.009 per frame",
-            "no strike: peak 0.045 of the silhouette away from the base",
-            "no strike, just a lean: nothing reaches past 0.10 of the body"
+            "painted effect: 0.51 of the body in new bright pixels (flare/slash arc)"
           ],
-          "sub": "df5e1ee8-6d56-41c5-9d9f-8477dc734cd2",
-          "group": "cdce98ad-26bd-40d7-9f93-f19e5c5351a4",
-          "takes": 1,
-          "version": 3,
+          "sub": "cc45f0e0-3989-4645-859d-ed6868f90905",
+          "group": "0799eb48-ff56-46cb-ab3f-49965572df55",
+          "takes": 2,
+          "version": 4,
           "mirrored": false,
-          "generated_at": "2026-09-11T17:39:42+00:00",
-          "action": "Lunge Attack - Throws its whole body forward in one fast lunge, white swoosh lines trailing behind it, a big aggressive swing",
-          "tries": 3,
-          "rolls": 3,
+          "action": "Shell Slam - The hatchling launches off the ground and slams down beak first, its shell spinning, dust bursting outward",
           "intensity": 0,
+          "rolls": 4,
           "frames": 16,
-          "rung": 2
+          "rung": 3,
+          "unwrapped": null,
+          "tries": 4,
+          "generated_at": "2026-09-11T18:07:43+00:00"
         },
         "south-east": {
           "status": "warn",

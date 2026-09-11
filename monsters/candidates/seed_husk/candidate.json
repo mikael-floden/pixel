@@ -1255,37 +1255,38 @@
     "attack_v3": {
       "directions": {
         "south": {
-          "status": "fail",
-          "step_mean": 0.1739,
-          "step_max": 0.4268,
-          "drift": 6.23,
+          "status": "warn",
+          "step_mean": 0.2829,
+          "step_max": 0.5758,
+          "drift": 6.01,
           "loop": 0.0,
           "loop_ratio": 0.0,
-          "travel": 3.45,
+          "travel": 1.66,
           "pin": 1.0,
           "pad": 0,
-          "flash": 0.044,
-          "peak": 0.5061,
-          "reach": 0.103,
+          "flash": 0.0,
+          "peak": 0.5993,
+          "reach": 0.231,
           "canvas": [
             48,
             48
           ],
           "reasons": [
-            "no strike, just a lean: nothing reaches past 0.10 of the body"
+            "shallow strike: reach 0.23 — eyeball it"
           ],
-          "sub": "9e4e404b-fb88-44d2-bf36-8ef5c5f4f903",
-          "group": "9c4c2e27-2e43-490e-8c51-a50f8d4469eb",
-          "takes": 2,
-          "version": 3,
+          "sub": "f1636d3b-164d-4a77-8832-f17ff8b035a6",
+          "group": "eee96ad3-8bed-47d0-b679-111b605b164b",
+          "takes": 1,
+          "version": 4,
           "mirrored": false,
-          "generated_at": "2026-09-11T17:40:25+00:00",
-          "action": "Lunge Attack - Throws its whole body forward in one fast lunge, white swoosh lines trailing behind it, a big aggressive swing",
-          "tries": 3,
-          "rolls": 3,
+          "action": "Husk Burst - The husk splits open with a crack and hurls itself forward, seeds and splinters flying",
           "intensity": 0,
+          "rolls": 4,
           "frames": 16,
-          "rung": 2
+          "rung": 3,
+          "unwrapped": null,
+          "tries": 4,
+          "generated_at": "2026-09-11T18:08:58+00:00"
         },
         "south-east": {
           "status": "warn",

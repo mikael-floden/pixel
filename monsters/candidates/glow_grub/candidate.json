@@ -1257,38 +1257,38 @@
     "attack_v3": {
       "directions": {
         "south": {
-          "status": "fail",
-          "step_mean": 0.0587,
-          "step_max": 0.1716,
-          "drift": 1.69,
+          "status": "pass",
+          "step_mean": 0.0989,
+          "step_max": 0.272,
+          "drift": 1.76,
           "loop": 0.0,
           "loop_ratio": 0.0,
-          "travel": 2.26,
+          "travel": 0.96,
           "pin": 1.0,
-          "pad": 0,
-          "flash": 0.0,
-          "peak": 0.2189,
-          "reach": 0.091,
+          "pad": 1,
+          "flash": 0.238,
+          "peak": 0.3112,
+          "reach": 0.366,
           "canvas": [
-            32,
-            32
+            34,
+            34
           ],
           "reasons": [
-            "motion 0.059 outside the calm band 0.08–0.9 — eyeball it",
-            "no strike, just a lean: nothing reaches past 0.09 of the body"
+            "canvas grown by 1 px a side to hold the motion"
           ],
-          "sub": "b6d94cfa-f5d8-427e-a7a9-9409f4b650a9",
-          "group": "aa0f43bd-f55b-4dd0-ad7b-92caae6afb5e",
-          "takes": 2,
-          "version": 3,
+          "sub": "00147117-2042-4524-b0f8-ca0cc91a1ae9",
+          "group": "de309035-21f7-4438-95c9-bdd6772c6130",
+          "takes": 1,
+          "version": 4,
           "mirrored": false,
-          "generated_at": "2026-09-11T17:48:56+00:00",
-          "action": "Lunge Attack - Throws its whole body forward in one fast lunge, white swoosh lines trailing behind it, a big aggressive swing",
-          "tries": 3,
-          "rolls": 3,
+          "action": "Light Burst - The grub rears its whole body up and lunges, its glow flaring into a burst of light",
           "intensity": 0,
+          "rolls": 4,
           "frames": 16,
-          "rung": 2
+          "rung": 3,
+          "unwrapped": 1,
+          "tries": 4,
+          "generated_at": "2026-09-11T18:09:13+00:00"
         },
         "south-east": {
           "status": "warn",
