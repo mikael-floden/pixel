@@ -1,7 +1,7 @@
 {
   "format": "pixel-wiki-feedback@1",
   "domain": "monsters",
-  "updated_at": "2026-09-11T18:13:08.807Z",
+  "updated_at": "2026-09-11T18:15:37.300Z",
   "entries": {
     "monsters/candidates/lava_slug": {
       "status": "approved",
@@ -591,6 +591,54 @@
       "art": "7bef38e2d0057f0a",
       "updated_at": "2026-09-11T18:13:10.455Z",
       "note": "the direction looks like S and not SW"
+    },
+    "monsters/cave_troll_boss#attack_v3#south": {
+      "rating": 3,
+      "status": "approved",
+      "art": "27279cceabd37f3b",
+      "updated_at": "2026-09-11T18:13:28.703Z"
+    },
+    "monsters/cave_troll_boss#attack_v3#south-east": {
+      "rating": 3,
+      "status": "approved",
+      "art": "1e930f10c99780fd",
+      "updated_at": "2026-09-11T18:13:31.215Z"
+    },
+    "monsters/cave_troll_boss#attack_v3#east": {
+      "status": "redo",
+      "art": "1f45098c786eff88",
+      "updated_at": "2026-09-11T18:14:12.882Z",
+      "note": "the direction flips between E and S in the middle of the animation"
+    },
+    "monsters/cave_troll_boss#attack_v3#north-east": {
+      "status": "redo",
+      "art": "71435c78ee9225ee",
+      "updated_at": "2026-09-11T18:14:46.918Z",
+      "note": "The animation flips between NE and E in the middle of the animation"
+    },
+    "monsters/cave_troll_boss#attack_v3#north": {
+      "rating": 3,
+      "status": "approved",
+      "art": "d5c74358319dd8d6",
+      "updated_at": "2026-09-11T18:14:51.759Z"
+    },
+    "monsters/cave_troll_boss#attack_v3#north-west": {
+      "status": "redo",
+      "art": "18889870794ac47a",
+      "updated_at": "2026-09-11T18:15:14.377Z",
+      "note": "the animation flips direction inside the animation"
+    },
+    "monsters/cave_troll_boss#attack_v3#west": {
+      "status": "redo",
+      "art": "f608a7b1a2f0be8b",
+      "updated_at": "2026-09-11T18:15:36.063Z",
+      "note": "the animation flips direction inside the animation"
+    },
+    "monsters/cave_troll_boss#attack_v3#south-west": {
+      "rating": 3,
+      "status": "approved",
+      "art": "2e00a44900f202da",
+      "updated_at": "2026-09-11T18:15:38.447Z"
     }
   }
 }
