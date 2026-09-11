@@ -86,10 +86,21 @@ decoration, it breaks every interior in the running game — measured
   parallel lane, the diagonal pier a parallel diagonal — over the gap it
   crosses or the bank it lands on, never over ground above it, sides
   alternating so a span widens about its own line instead of sliding off it.
-  A lane that will not fit is not forced. Never below `BRIDGE_MIN = 2`, which
-  is a plank; build-asserted, and no two spans share a cell. the_game: three
-  spans of three, one causeway of four, one two-wide footbridge high on the
-  ice — his default two times in three, and the world still surprises.
+  A lane that will not fit is not forced, and **a lane must LAND WHERE THE
+  SPAN LANDS** (maintainer 2026-09-11, at the foot of a widened bridge:
+  *"now it doesn't connect at this spot so it's a hole at the bottom right
+  side making it hard to enter the bridge"* — the third lane met the near
+  shore and ended over open water at the far one, so its far end was a dead
+  lip you had to walk around). A shore is a REGION, flooded over the
+  walkable ground at the span's own level within `SHORE_R = 8`, not the
+  cells the span happens to touch: comparing touched cells called two lanes
+  meeting the same bank a couple of cells apart different shores and refused
+  every widening (measured — no span grew at all). The far side is tried
+  instead, and the span keeps the width its banks allow. Never below
+  `BRIDGE_MIN = 2`, which
+  is a plank; build-asserted, and no two spans share a cell. the_game: one
+  span of three, one causeway of four, and two that stayed at two because
+  no third lane reaches both banks.
 * **A SPAN OVER A GAP CARRIES AT LEAST ONE FULL COURSE.** `thickness` 0 is
   the cap alone, and a cap is a top diamond plus the band hanging under its
   lower V — so along a span's open edge those bands step cell by cell and

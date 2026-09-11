@@ -5957,6 +5957,56 @@ class Grow:
             return False                      # void: nothing to span
         return self.liquid(x, y) or self.lvl[y][x] <= lv
 
+    def _bank_of(self, cells, lv, deck):
+        """The walkable ground at the span's OWN level that `cells` touch -
+        the shore it lands on. Cells of the span itself are never bank."""
+        out = set()
+        for (x, y) in cells:
+            for m in ((x + 1, y), (x - 1, y), (x, y + 1), (x, y - 1)):
+                if m in deck or not (0 <= m[0] < NEW and 0 <= m[1] < NEW):
+                    continue
+                if self.g(*m) and not self.liquid(*m) and self.lvl[m[1]][m[0]] == lv:
+                    out.add(m)
+        return out
+
+    SHORE_R = 8        # how far a shore is followed around a span
+
+    def _shore_map(self, cells, lv):
+        """cell -> shore id, over the walkable ground at the span's own level
+        around it. A SHORE IS A REGION, not the cells a span happens to touch:
+        two lanes that meet the same bank a couple of cells apart are on the
+        same shore, and comparing the touched CELLS instead called them
+        different and refused every widening (measured: no span grew at all)."""
+        xs = [c[0] for c in cells]
+        ys = [c[1] for c in cells]
+        R = self.SHORE_R
+        x0, x1 = min(xs) - R, max(xs) + R
+        y0, y1 = min(ys) - R, max(ys) + R
+
+        def ok(m):
+            return (x0 <= m[0] <= x1 and y0 <= m[1] <= y1
+                    and 0 <= m[0] < NEW and 0 <= m[1] < NEW
+                    and self.g(*m) and not self.liquid(*m)
+                    and self.lvl[m[1]][m[0]] == lv)
+        out, seen, sid = {}, set(), 0
+        for y in range(max(0, y0), min(NEW, y1 + 1)):
+            for x in range(max(0, x0), min(NEW, x1 + 1)):
+                if (x, y) in seen or not ok((x, y)):
+                    continue
+                st = [(x, y)]
+                seen.add((x, y))
+                while st:
+                    cx, cy = st.pop()
+                    out[(cx, cy)] = sid
+                    for dx in (-1, 0, 1):
+                        for dy in (-1, 0, 1):
+                            m = (cx + dx, cy + dy)
+                            if m not in seen and ok(m):
+                                seen.add(m)
+                                st.append(m)
+                sid += 1
+        return out
+
     def _shape_span(self, dk, taken):
         """Draw this span's width from BRIDGE_WIDE and lay it: a lane is the
         whole deck offset one cell sideways, so a straight bridge grows a
@@ -5976,10 +6026,24 @@ class Grow:
             order = order[2:] + order[:2]
         grown = 0
         while self._span_width(cells) < want and grown < 4:
+            smap = self._shore_map(cells, lv)
+            shores = {smap[c] for c in self._bank_of(cells, lv, cells) if c in smap}
             best = None
             for u in order:
                 lane = {(c[0] + u[0], c[1] + u[1]) for c in cells} - cells
                 if not lane or not all(self._spannable(c, lv, taken - cells) for c in lane):
+                    continue
+                # A LANE MUST LAND WHERE THE SPAN LANDS (maintainer 2026-09-11,
+                # standing at the foot of a widened bridge: "now it doesn't
+                # connect at this spot so it's a hole at the bottom right side
+                # making it hard to enter the bridge"). The third lane of that
+                # span met the near shore and ended over open water at the far
+                # one, so its far end was a dead lip you had to walk around.
+                # A lane that does not reach every shore the span already
+                # reaches is not laid - the far side is tried instead, and the
+                # span keeps the width the banks allow.
+                lb = {smap[c] for c in self._bank_of(lane, lv, cells | lane) if c in smap}
+                if not shores <= lb:
                     continue
                 wid = self._span_width(cells | lane)
                 if wid > self._span_width(cells):
@@ -5990,13 +6054,17 @@ class Grow:
             order = order[1:] + order[:1]     # the far side gets the next lane
             cells |= best[1]
             grown += 1
+        smap = self._shore_map(cells, lv)
+        shores = {smap[c] for c in self._bank_of(cells, lv, cells) if c in smap}
         while self._span_width(cells) > max(want, self.BRIDGE_MIN):
             peeled = None
             for u in order:
                 lane = {c for c in cells if (c[0] + u[0], c[1] + u[1]) not in cells}
                 rest = cells - lane
+                keeps = {smap[c] for c in self._bank_of(rest, lv, rest) if c in smap} \
+                    if rest else set()
                 if rest and self._span_width(rest) < self._span_width(cells) \
-                        and self._connected(rest):
+                        and self._connected(rest) and shores <= keeps:
                     peeled = rest
                     break
             if not peeled:
