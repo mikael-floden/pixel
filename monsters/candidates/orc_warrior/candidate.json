@@ -1258,37 +1258,36 @@
           "generated_at": "2026-09-11T15:32:15+00:00"
         },
         "south-east": {
-          "status": "fail",
-          "step_mean": 0.5408,
-          "step_max": 0.7043,
-          "drift": 8.84,
-          "loop": 0.2955,
-          "loop_ratio": 0.55,
-          "travel": 13.39,
-          "pin": 0.998,
+          "status": "pass",
+          "step_mean": 0.4416,
+          "step_max": 0.4788,
+          "drift": 8.74,
+          "loop": 0.3454,
+          "loop_ratio": 0.78,
+          "travel": 4.12,
+          "pin": 0.891,
           "pad": 0,
-          "flash": 0.294,
-          "peak": 0.7043,
-          "reach": 0.368,
+          "flash": 0.021,
+          "peak": 0.4788,
+          "reach": 0.333,
           "canvas": [
             128,
             128
           ],
-          "reasons": [
-            "painted effect: 0.29 of the body in new bright pixels (flare/slash arc)"
-          ],
-          "sub": "a487747b-d830-4ddf-a79c-068bb4b3c6ac",
-          "group": "678dc669-7ed5-4af5-b0a6-a20333a56be9",
+          "reasons": [],
+          "sub": "6efd57b7-3321-4303-8993-5558f705df77",
+          "group": "92de18a4-5b38-4567-8aca-16faeca07e7c",
           "takes": 1,
-          "version": 1,
+          "version": 2,
           "mirrored": false,
-          "action": "Axe Cleave - Swings the battle axe across in one heavy cleave",
+          "action": "Axe Cleave - Swings the battle axe across in one heavy cleave, a big aggressive swing",
           "intensity": 0,
-          "rolls": 1,
+          "rolls": 2,
           "frames": 4,
-          "rung": 0,
-          "tries": 1,
-          "generated_at": "2026-09-11T15:32:16+00:00"
+          "rung": 1,
+          "unwrapped": null,
+          "tries": 2,
+          "generated_at": "2026-09-11T16:46:47+00:00"
         },
         "east": {
           "status": "pass",
@@ -1448,6 +1447,39 @@
           "tries": 1,
           "generated_at": "2026-09-11T15:32:17+00:00",
           "source": "north-east"
+        },
+        "south-west": {
+          "status": "pass",
+          "step_mean": 0.4416,
+          "step_max": 0.4788,
+          "drift": 8.74,
+          "loop": 0.3454,
+          "loop_ratio": 0.78,
+          "travel": 4.12,
+          "pin": 0.891,
+          "pad": 0,
+          "flash": 0.021,
+          "peak": 0.4788,
+          "reach": 0.333,
+          "canvas": [
+            128,
+            128
+          ],
+          "reasons": [],
+          "sub": "6efd57b7-3321-4303-8993-5558f705df77",
+          "group": "92de18a4-5b38-4567-8aca-16faeca07e7c",
+          "takes": 1,
+          "version": 2,
+          "mirrored": true,
+          "action": "Axe Cleave - Swings the battle axe across in one heavy cleave, a big aggressive swing",
+          "intensity": 0,
+          "rolls": 2,
+          "frames": 4,
+          "rung": 1,
+          "unwrapped": null,
+          "tries": 2,
+          "generated_at": "2026-09-11T16:46:47+00:00",
+          "source": "south-east"
         }
       },
       "action": "Axe Cleave - Swings the battle axe across in one heavy cleave",
@@ -1493,6 +1525,12 @@
           "orc_warrior/animations/attack_try/north-west/01.webp",
           "orc_warrior/animations/attack_try/north-west/02.webp",
           "orc_warrior/animations/attack_try/north-west/03.webp"
+        ],
+        "south-west": [
+          "orc_warrior/animations/attack_try/south-west/00.webp",
+          "orc_warrior/animations/attack_try/south-west/01.webp",
+          "orc_warrior/animations/attack_try/south-west/02.webp",
+          "orc_warrior/animations/attack_try/south-west/03.webp"
         ]
       },
       "strips": {
@@ -1502,7 +1540,8 @@
         "north-east": "orc_warrior/animations/attack_try__north-east.webp",
         "north": "orc_warrior/animations/attack_try__north.webp",
         "west": "orc_warrior/animations/attack_try__west.webp",
-        "north-west": "orc_warrior/animations/attack_try__north-west.webp"
+        "north-west": "orc_warrior/animations/attack_try__north-west.webp",
+        "south-west": "orc_warrior/animations/attack_try__south-west.webp"
       }
     }
   }
