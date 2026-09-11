@@ -322,6 +322,74 @@ export async function loadPlaces(name: string = DEFAULT_WORLD): Promise<PlaceLoo
   }
 }
 
+/** THE MAP TAB'S PINS — the same `places.json`, kept whole. `loadPlaces` above
+ * answers the question the SCENE asks ("what am I standing in?") and throws
+ * the rest away; the Map tab asks the other one — "where are they?" — and
+ * needs the name, the kind and a cell to pin. A separate reader rather than a
+ * wider return from that one: it runs on every world load and builds a
+ * per-cell Map, and a caller that wants six pins should not pay for it.
+ *
+ * `anchor` is the spec's own map-pin cell (pixel-maps2/places@2: "one cell
+ * inside the place, nearest its centroid. For map pins and debug"). `entrance`
+ * is additive and OPTIONAL — for a cave the centroid is inside the mountain,
+ * and the cell a player actually wants is the mouth; maps2 publishes it when
+ * it knows it, and the pin falls back to the anchor when it does not.
+ *
+ * A missing file is not an error: a world may simply have no named places. */
+export interface PlaceMark {
+  id: string;
+  /** display text (lore owns the vocabulary) — never bind to it */
+  name: string;
+  /** `house` | `cave` | `summit` today; unknown kinds pass through so a new
+   *  one shows up as data rather than disappearing. */
+  kind: string;
+  indoor: boolean;
+  /** the cell to pin: the mouth when published, else the anchor */
+  at: [number, number];
+  /** true when `at` is the published entrance rather than the centroid */
+  mouth: boolean;
+}
+
+export async function loadPlaceMarks(name: string = DEFAULT_WORLD): Promise<PlaceMark[]> {
+  const url = gameUrl(worldFileUrl(name, "places.json"));
+  try {
+    const res = await fetch(url);
+    if (!res.ok) return [];
+    const doc = (await res.json()) as {
+      places?: {
+        id?: unknown;
+        name?: unknown;
+        kind?: unknown;
+        indoor?: unknown;
+        anchor?: unknown;
+        entrance?: unknown;
+      }[];
+    };
+    const cell = (v: unknown): [number, number] | null =>
+      Array.isArray(v) && v.length >= 2 && Number.isFinite(Number(v[0])) && Number.isFinite(Number(v[1]))
+        ? [Number(v[0]), Number(v[1])]
+        : null;
+    const out: PlaceMark[] = [];
+    for (const p of doc.places ?? []) {
+      if (typeof p?.id !== "string" || !p.id) continue;
+      const mouth = cell(p.entrance);
+      const at = mouth ?? cell(p.anchor);
+      if (!at) continue; // nothing to pin it by — drop it rather than guess
+      out.push({
+        id: p.id,
+        name: typeof p.name === "string" && p.name ? p.name : p.id,
+        kind: typeof p.kind === "string" ? p.kind : "",
+        indoor: p.indoor === true,
+        at,
+        mouth: !!mouth,
+      });
+    }
+    return out;
+  } catch {
+    return [];
+  }
+}
+
 /** One selectable world (client/public/worlds.json, built by build-worlds.mjs). */
 export interface WorldInfo {
   name: string;

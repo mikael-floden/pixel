@@ -3,10 +3,14 @@
 // small buttons that can be pressed to draw different things on the map. In
 // the future this will be features like quests, dungeons, party members").
 //
-// It starts with the TECHNICAL layer, `zones`, so a boundary bug can be told
+// It started with the TECHNICAL layer, `zones`, so a boundary bug can be told
 // apart from any other bug by looking: the rectangle each zone room owns, the
 // band inside it where the neighbouring room mirrors you and the hand-off
-// happens, and which zone you are standing in.
+// happens, and which zone you are standing in. `dungeons` is the first PLAYER
+// layer: maps2's named caves, pinned from its own places.json.
+//
+// A CHIP IS OFFERED ONLY WHEN THERE IS SOMETHING BEHIND IT (`Layer.has`) — a
+// world with no dungeons shows no dungeons button.
 //
 // INJECTED FROM OUTSIDE, because games-ui owns hud.ts (UI_AGENT.md) and this
 // is the games agent's data. Same pattern the ambient agent's settings button
@@ -17,7 +21,14 @@
 // ADDING A LAYER is one entry in LAYERS: an id, a label, and a draw function
 // handed the projection and an SVG to fill. Nothing else changes — the chip
 // row, the persistence and the redraw are generic.
-import { minimapCellPct, type MinimapFeed, type MinimapMeta, loadMinimapMeta } from "./maps";
+import {
+  minimapCellPct,
+  type MinimapFeed,
+  type MinimapMeta,
+  type PlaceMark,
+  loadMinimapMeta,
+  loadPlaceMarks,
+} from "./maps";
 
 const ROW_CLS = "ml-maplayers";
 const SVG_CLS = "ml-maplayer-svg";
@@ -39,6 +50,12 @@ export interface LayerCtx {
    *  anisotropically, and the zone numbers came out as unreadable smears. HTML
    *  positioned in percent is crisp at any box shape. */
   label: (col: number, row: number, text: string, strong?: boolean) => void;
+  /** A PLACE PIN: a diamond at the cell with its name under it. HTML for the
+   *  same reason `label` is — the svg is stretched to the image box, so a
+   *  circle drawn in it comes out an ellipse and a square comes out a
+   *  rectangle. The SHAPE is what separates a pin from the "you are here"
+   *  dot (round, accent, 12px); colour alone would not. */
+  pin: (col: number, row: number, text: string) => void;
 }
 
 interface Layer {
@@ -46,6 +63,11 @@ interface Layer {
   label: string;
   /** A short line for the row's caption when the layer is on. */
   note?: string;
+  /** Offer the chip only when there is something behind it. A world with no
+   *  dungeons must not show a dungeons button that draws nothing — the same
+   *  graceful-degradation rule the ambient checklist follows (no rows, no
+   *  section). Absent = always offered. */
+  has?: () => boolean;
   draw: (ctx: LayerCtx) => void;
 }
 
@@ -116,6 +138,24 @@ const LAYERS: Layer[] = [
       }
     },
   },
+  {
+    // THE DUNGEONS LAYER (maintainer 2026-09-11, relaying the maps agent: the
+    // map should "display/show all dungeons" once the caves being dug are
+    // done). It reads maps2's OWN published names — places.json, schema
+    // pixel-maps2/places@2, one place per named region with a kind — so the
+    // map never guesses where a cave is or what it is called: a dungeon
+    // appears here the moment maps2 ships it, and nothing on this side is
+    // touched when the terrain moves.
+    // Only `kind: "cave"`. Houses and summits are in the same file and are one
+    // more entry each when he asks for them.
+    id: "dungeons",
+    label: "dungeons",
+    note: "named caves, pinned at the mouth",
+    has: () => caves().length > 0,
+    draw: (ctx) => {
+      for (const c of caves()) ctx.pin(c.at[0], c.at[1], c.name);
+    },
+  },
 ];
 
 /* -- state ------------------------------------------------------------------ */
@@ -144,6 +184,12 @@ let caption: HTMLElement | null = null;
 let sig = ""; // what the overlay was last drawn for
 let metaFor = ""; // which world `meta` belongs to
 let meta: MinimapMeta | null = null;
+let placesFor = ""; // which world `places` belongs to
+let places: PlaceMark[] = [];
+const chips = new Map<string, HTMLElement>();
+
+/** The named caves of the loaded world, in the order maps2 published them. */
+const caves = (): PlaceMark[] => places.filter((p) => p.kind === "cave");
 
 const svgEl = (name: string, attrs: Record<string, string | number>): SVGElement => {
   const e = document.createElementNS("http://www.w3.org/2000/svg", name);
@@ -174,7 +220,19 @@ function styleOnce() {
   .${MARK_CLS} b{position:absolute;transform:translate(-50%,-50%);white-space:nowrap;
     font:600 10px/1 var(--sans);color:rgba(255,255,255,0.62);
     text-shadow:0 1px 2px rgba(0,0,0,0.85)}
-  .${MARK_CLS} b.on{font-weight:800;color:rgba(170,222,255,0.98)}`;
+  .${MARK_CLS} b.on{font-weight:800;color:rgba(170,222,255,0.98)}
+  /* A PLACE PIN: a diamond, because the "you are here" dot is a round accent
+     disc and shape is the only difference that survives a colour-blind eye
+     and a 2-inch map. Zero-size anchor so the inherited translate(-50%,-50%)
+     is a no-op and the children position off the exact cell. */
+  .${MARK_CLS} b.pin{width:0;height:0}
+  .${MARK_CLS} b.pin s{position:absolute;left:-5px;top:-5px;width:10px;height:10px;
+    box-sizing:border-box;transform:rotate(45deg);background:rgba(255,196,92,0.96);
+    border:1.5px solid rgba(0,0,0,0.8);box-shadow:0 0 0 1px rgba(255,255,255,0.35)}
+  .${MARK_CLS} b.pin em{position:absolute;left:0;top:8px;transform:translateX(-50%);
+    white-space:nowrap;font:700 10px/1 var(--sans);font-style:normal;
+    color:rgba(255,223,168,0.98);text-shadow:0 1px 2px rgba(0,0,0,0.9)}
+  .${MARK_CLS} b.pin em.up{top:auto;bottom:8px}`;
   document.head.appendChild(st);
 }
 
@@ -200,6 +258,7 @@ function build(page: HTMLElement, frame: HTMLElement) {
     });
     paint();
     row.appendChild(b);
+    chips.set(l.id, b);
   }
   caption = document.createElement("div");
   caption.className = `${ROW_CLS}-note`;
@@ -213,7 +272,18 @@ function build(page: HTMLElement, frame: HTMLElement) {
   marks = document.createElement("div");
   marks.className = MARK_CLS;
   frame.appendChild(marks);
+  syncChips();
   syncCaption();
+}
+
+/** Hide the chip for a layer that has nothing behind it in this world. The
+ *  chip row is built once and the data arrives later, so this runs again each
+ *  time a world's data lands. */
+function syncChips() {
+  for (const l of LAYERS) {
+    const b = chips.get(l.id);
+    if (b) b.hidden = l.has ? !l.has() : false;
+  }
 }
 
 function syncCaption() {
@@ -240,6 +310,18 @@ export function ensureMapLayers() {
   if (!page.offsetParent) return;
   const feed = ml()?.minimap?.();
   if (!feed || !feed.w || !feed.h) return;
+  if (feed.world !== placesFor) {
+    placesFor = feed.world;
+    places = [];
+    const forWorld = feed.world;
+    void loadPlaceMarks(forWorld).then((list) => {
+      if (placesFor === forWorld) {
+        places = list;
+        sig = "";
+        syncChips();
+      }
+    });
+  }
   if (feed.world !== metaFor) {
     metaFor = feed.world;
     meta = null;
@@ -252,11 +334,12 @@ export function ensureMapLayers() {
     });
   }
   const z = on.has("zones") ? ml()?.zones?.() : null;
-  const next = `${feed.world}|${[...on].join(",")}|${z ? `${z.here}:${z.cols}x${z.rows}` : ""}|${meta ? 1 : 0}`;
+  const next = `${feed.world}|${[...on].join(",")}|${z ? `${z.here}:${z.cols}x${z.rows}` : ""}|${meta ? 1 : 0}|${places.length}`;
   if (next === sig) return;
   sig = next;
   svg.textContent = "";
   if (marks) marks.textContent = "";
+  const boxes: { x0: number; x1: number; y0: number; y1: number }[] = []; // placed name boxes, px
   if (!on.size) return;
   const at = (col: number, row2: number) => minimapCellPct(feed, meta, col, row2, 0);
   const ctx: LayerCtx = {
@@ -279,6 +362,52 @@ export function ensureMapLayers() {
       b.style.left = `${x.toFixed(3)}%`;
       b.style.top = `${y.toFixed(3)}%`;
       b.textContent = text;
+      marks.appendChild(b);
+    },
+    pin: (col, row2, text) => {
+      if (!marks) return;
+      const [px, py] = at(col, row2);
+      // NOT clamped like a label: a pin is a claim about WHERE something is,
+      // and dragging one to the rim would put a dungeon on a coastline it is
+      // nowhere near. A place outside the cropped image is simply not drawn.
+      if (px < 0 || px > 100 || py < 0 || py > 100) return;
+      const b = document.createElement("b");
+      b.className = "pin";
+      b.style.left = `${px.toFixed(3)}%`;
+      b.style.top = `${py.toFixed(3)}%`;
+      b.appendChild(document.createElement("s"));
+      // THE DIAMOND ALWAYS, THE NAME IF IT FITS. The map is ~300px wide on a
+      // phone and a dozen caves sit in one massif — two names a few px apart
+      // overlap into an unreadable smear (measured with three). So a name
+      // takes the space under its own pin, or over it, or is left off: the
+      // mark still says something is there, which is the question the layer
+      // answers. Width is ESTIMATED from the glyph count (~5.5px average at
+      // 10px/700) — measuring each would mean a layout per pin, and being a
+      // few px out only costs a name that could have fitted.
+      const fw = frame.clientWidth || 1;
+      const cx = (px / 100) * fw;
+      const cy = (py / 100) * (frame.clientHeight || 1);
+      const w = text.length * 5.5 + 6;
+      const box = (up: boolean) => ({
+        x0: cx - w / 2,
+        x1: cx + w / 2,
+        y0: up ? cy - 20 : cy + 7,
+        y1: up ? cy - 7 : cy + 20,
+      });
+      const free = (bx: { x0: number; x1: number; y0: number; y1: number }) =>
+        bx.x0 > -6 &&
+        bx.x1 < fw + 6 &&
+        boxes.every((o) => bx.x1 < o.x0 || bx.x0 > o.x1 || bx.y1 < o.y0 || bx.y0 > o.y1);
+      const down = box(false);
+      const up = box(true);
+      const spot = free(down) ? down : free(up) ? up : null;
+      if (spot) {
+        boxes.push(spot);
+        const name = document.createElement("em");
+        if (spot === up) name.className = "up";
+        name.textContent = text;
+        b.appendChild(name);
+      }
       marks.appendChild(b);
     },
   };

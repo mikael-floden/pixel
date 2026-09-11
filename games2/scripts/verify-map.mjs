@@ -84,9 +84,25 @@ try {
     // ── 3. the dot, against maps2's own worked samples ───────────────────
     const dotAt = async (col, row) => {
       await page.evaluate(([c, r]) => window.__ml.teleport(c, r), [col, row]);
+      // WAIT FOR THE BODY TO BE THERE. A teleport across the island crosses
+      // ZONE rooms, and during the hand-off there is no local body to ask —
+      // `me()` is briefly undefined (a throw here skipped every check after
+      // this section). Waiting for the body to be AT the asked-for cell is
+      // what makes the settle below honest: poll it too early and the dot
+      // reads two identical samples of where the player still is, calls that
+      // settled, and the sample is judged against the previous cell.
       // Settle on the DOT: the map loop paints it from the avatar's render
       // position, which trails the teleport by frames — a fixed wait reads
       // the PREVIOUS sample on this harness.
+      let landed = false;
+      for (let i = 0; i < 60 && !landed; i++) {
+        landed = await page.evaluate(([c, r]) => {
+          const me = window.__ml.me();
+          return !!me && Math.abs(me.x / 32 - c) <= 1.5 && Math.abs(me.y / 32 - r) <= 1.5;
+        }, [col, row]);
+        if (!landed) await page.waitForTimeout(250);
+      }
+      if (!landed) return null;
       let prev = "", cur = "";
       for (let i = 0; i < 40; i++) {
         await page.waitForTimeout(150);
@@ -97,14 +113,22 @@ try {
         if (cur && cur === prev) break;
         prev = cur;
       }
-      return page.evaluate(() => {
-        const d = document.querySelector(".ml-map-dot");
-        const f = document.querySelector(".ml-map-frame").getBoundingClientRect();
-        const r = d.getBoundingClientRect();
-        const me = window.__ml.me();
-        return { fx: (r.left + r.width / 2 - f.left) / f.width, fy: (r.top + r.height / 2 - f.top) / f.height,
-                 col: +(me.x / 32).toFixed(1), row: +(me.y / 32).toFixed(1) };
-      });
+      // …and it can drop again while the dot settles, so the read itself
+      // retries rather than throwing on a body that is mid-hand-off.
+      for (let i = 0; i < 40; i++) {
+        const got = await page.evaluate(() => {
+          const d = document.querySelector(".ml-map-dot");
+          const f = document.querySelector(".ml-map-frame")?.getBoundingClientRect();
+          const me = window.__ml.me();
+          if (!d || !f || !me) return null;
+          const r = d.getBoundingClientRect();
+          return { fx: (r.left + r.width / 2 - f.left) / f.width, fy: (r.top + r.height / 2 - f.top) / f.height,
+                   col: +(me.x / 32).toFixed(1), row: +(me.y / 32).toFixed(1) };
+        });
+        if (got) return got;
+        await page.waitForTimeout(250);
+      }
+      return null;
     };
     const samples = Array.isArray(meta.samples) ? meta.samples : [];
     samples.length >= 3 ? ok(`${samples.length} worked samples to check against`) : fail(`minimap.json ships ${samples.length} samples`);
@@ -112,6 +136,10 @@ try {
       const [cx, cy] = s.cell;
       const want = [s.px[0] / meta.size.w, s.px[1] / meta.size.h];
       const got = await dotAt(cx, cy);
+      if (!got) {
+        fail(`"${s.what}": no player after teleporting to (${cx},${cy}) — the zone hand-off never landed`);
+        continue;
+      }
       // The teleport has to have LANDED, or the dot is honestly reporting a
       // place the player is not (deep water is clamped to the world rim).
       if (Math.abs(got.col - cx) > 1.5 || Math.abs(got.row - cy) > 1.5) {
@@ -122,6 +150,109 @@ try {
       dx <= TOL && dy <= TOL
         ? ok(`"${s.what}" (${cx},${cy}) → dot at ${got.fx.toFixed(3)},${got.fy.toFixed(3)} vs published ${want[0].toFixed(3)},${want[1].toFixed(3)}`)
         : fail(`"${s.what}" (${cx},${cy}): dot at ${got.fx.toFixed(3)},${got.fy.toFixed(3)}, maps2 says ${want[0].toFixed(3)},${want[1].toFixed(3)} — off by ${(dx * 100).toFixed(1)}%/${(dy * 100).toFixed(1)}% of the frame`);
+    }
+
+    // ── 4. THE DUNGEONS LAYER ───────────────────────────────────────────
+    // The map shows maps2's named caves (maintainer 2026-09-11, relaying the
+    // maps agent: the map should "display/show all dungeons" once the caves
+    // being dug are done). Two halves, and the run proves both.
+    //
+    // A: no places.json yet → the chip must NOT be offered. A button that
+    // draws nothing is worse than no button, and this is the state the world
+    // is in today, so it is the one that would ship unnoticed.
+    const chip = () =>
+      page.evaluate(() => {
+        const b = [...document.querySelectorAll(".ml-maplayers .ml-plate-btn")].find(
+          (x) => x.textContent.trim() === "dungeons",
+        );
+        return b ? { hidden: !!b.hidden } : null;
+      });
+    const before = await chip();
+    if (!before) fail("no dungeons chip in the Map tab's layer row at all");
+    else if (before.hidden) ok("dungeons chip stays hidden while the world publishes no caves");
+    else ok("dungeons chip is offered — this world already publishes caves");
+
+    // B: with a cave published, the pin lands where maps2 says that cell
+    // lands. GROUND TRUTH IS THE SAME WORKED SAMPLE THE DOT IS JUDGED BY —
+    // the fixture's entrance IS sample 0's cell, so a pin that agrees with
+    // the published pixel cannot be agreeing with a shared misreading of the
+    // formula. The fixture rides ON TOP of whatever the world really ships,
+    // so this check keeps working the day maps2 publishes real caves.
+    if (samples.length) {
+      const s0 = samples[0];
+      await page.route("**/places.json*", async (route) => {
+        let doc = { schema: "pixel-maps2/places@2", world: feed.world, places: [] };
+        try {
+          const r = await route.fetch();
+          if (r.ok()) doc = await r.json();
+        } catch {
+          /* nothing published — the fixture alone */
+        }
+        doc.places = [
+          ...(Array.isArray(doc.places) ? doc.places : []),
+          {
+            id: "gate_test_cave",
+            name: "Gate Cave",
+            kind: "cave",
+            indoor: true,
+            elev: [0, 0],
+            anchor: s0.cell,
+            entrance: s0.cell,
+            cells: [], // empty on purpose: the SCENE's place lookup ignores it
+          },
+        ];
+        await route.fulfill({ status: 200, contentType: "application/json", body: JSON.stringify(doc) });
+      });
+      // the loader reads places once per world, so the fixture needs a fresh page
+      await page.reload({ waitUntil: "load" });
+      await page.waitForFunction(() => window.__mlSelect, null, { timeout: 25000 });
+      await page.evaluate(() => window.__mlSelect.commit());
+      await page.waitForFunction(() => window.__ml && window.__ml.players() >= 1, null, { timeout: 90000 });
+      await page.waitForFunction(() => !document.querySelector("#ml-loading"), null, { timeout: 60000 });
+      await page.click('.ml-tab[data-tab="map"]');
+      await page.waitForFunction(() => {
+        const i = document.querySelector(".ml-map-frame img");
+        return i && i.naturalWidth > 0;
+      }, null, { timeout: 20000 });
+      let after = null;
+      for (let i = 0; i < 40 && !(after && !after.hidden); i++) {
+        await page.waitForTimeout(200);
+        after = await chip();
+      }
+      after && !after.hidden
+        ? ok("dungeons chip appears once a cave is published")
+        : fail("a cave is published and the dungeons chip is still not offered");
+      await page.evaluate(() => window.__ml.mapLayers("dungeons", true));
+      let pins = [];
+      for (let i = 0; i < 40 && !pins.length; i++) {
+        await page.waitForTimeout(200);
+        pins = await page.evaluate(() => {
+          const f = document.querySelector(".ml-map-frame").getBoundingClientRect();
+          return [...document.querySelectorAll(".ml-maplayer-marks b.pin")].map((b) => {
+            const d = b.querySelector("s").getBoundingClientRect();
+            return {
+              name: b.querySelector("em")?.textContent ?? "",
+              fx: (d.left + d.width / 2 - f.left) / f.width,
+              fy: (d.top + d.height / 2 - f.top) / f.height,
+            };
+          });
+        });
+      }
+      const mine = pins.find((p) => p.name === "Gate Cave");
+      if (!mine) fail(`the dungeons layer drew no pin for the published cave (${pins.length} pins: ${pins.map((p) => p.name).join(", ")})`);
+      else {
+        const want = [s0.px[0] / meta.size.w, s0.px[1] / meta.size.h];
+        const dx = Math.abs(mine.fx - want[0]);
+        const dy = Math.abs(mine.fy - want[1]);
+        dx <= TOL && dy <= TOL
+          ? ok(`dungeon pin on "${s0.what}" (${s0.cell.join(",")}) at ${mine.fx.toFixed(3)},${mine.fy.toFixed(3)} vs published ${want[0].toFixed(3)},${want[1].toFixed(3)} (${pins.length} pin${pins.length === 1 ? "" : "s"} drawn)`)
+          : fail(`dungeon pin at ${mine.fx.toFixed(3)},${mine.fy.toFixed(3)}, maps2 says ${want[0].toFixed(3)},${want[1].toFixed(3)} — off by ${(dx * 100).toFixed(1)}%/${(dy * 100).toFixed(1)}% of the frame`);
+      }
+      // …and it is a LAYER: switching it off leaves nothing behind.
+      await page.evaluate(() => window.__ml.mapLayers("dungeons", false));
+      await page.waitForTimeout(600);
+      const left = await page.evaluate(() => document.querySelectorAll(".ml-maplayer-marks b.pin").length);
+      left === 0 ? ok("turning the layer off clears its pins") : fail(`${left} pin(s) survived the layer being turned off`);
     }
   }
 
