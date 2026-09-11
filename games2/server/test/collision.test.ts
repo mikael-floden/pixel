@@ -33,6 +33,14 @@ import {
   ISO_DX,
   ISO_DY,
 } from "@nangijala/shared";
+import {
+  FALL_HURT_RATE,
+  HURT_IMPACT_FRAME,
+  hurtLeadFrames,
+  hurtLeadMs,
+  hurtFrameAt,
+  hurtClipMs,
+} from "../../client/src/fallhurt";
 
 // A 3×3 world. Centre column is grass; left column water; the right column is a
 // raised grass wall (elevation 2) — a 2-level ledge you can't walk up. (A single
@@ -319,6 +327,42 @@ test("fallDurationS matches the drawn descent, and never lands the hit early", (
   assert.equal(fallDurationS(0, lh), 0, "no drop, no wait");
   assert.equal(fallDurationS(-3, lh), 0, "a climb is not a fall");
   console.log(`fall clock: ${rows.join(", ")}`);
+});
+
+// THE GOT-HIT FRAME LANDS WITH THE FEET. The server bills a fall on impact and
+// its patch arrives a round trip later, so a flinch triggered by the hit starts
+// on the ground and then plays its wind-up there (maintainer 2026-09-11: "I feel
+// the players 'take dmg' animation is not in sync with the frame we hit the
+// ground"). The client starts the clip EARLY by exactly the frames before the
+// got-hit frame — "the 4th frame is the 'got hit frame'", his words — and plays
+// it faster so those frames pass quickly in the air. Both halves are one
+// arithmetic claim, and this is it.
+test("the fall flinch's 4th frame is the frame on screen at touchdown", () => {
+  const FRAMES = 5; // both heroes' got-punched clip
+  const BASE = 16; // ANIM_FPS.hurt — combat's rate, untouched
+  const lead = hurtLeadMs(FRAMES, BASE);
+  // AT TOUCHDOWN — `lead` ms after the clip started — the 4th frame is up.
+  assert.equal(hurtFrameAt(lead, FRAMES, BASE), HURT_IMPACT_FRAME, "the got-hit frame is not the one on screen when the feet land");
+  // The frame BEFORE touchdown is still the wind-up, and it is still the clip:
+  // start one frame later and the fold would land late, which is the bug.
+  assert.equal(hurtFrameAt(lead - 1, FRAMES, BASE), HURT_IMPACT_FRAME - 1, "the frame before landing is already the fold");
+  // The clip OUTLASTS its own lead, or the flinch would be over mid-air.
+  const clip = hurtClipMs(FRAMES, BASE);
+  assert.ok(clip > lead, `the clip (${clip.toFixed(0)}ms) ends before it lands (${lead.toFixed(0)}ms)`);
+  // …and the lead is short enough to read as bracing rather than as a flinch
+  // with nothing hitting it: a fraction of even the SHORTEST damaging fall.
+  const shortest = fallDurationS(FALL_DMG_MIN_LEVELS, ISO_GEOMETRY_MAPS3.lh) * 1000;
+  assert.ok(lead < shortest * 0.35, `${lead.toFixed(0)}ms of flinch in a ${shortest.toFixed(0)}ms fall is too much air`);
+  // FASTER THAN COMBAT, which is the other half of what he asked for.
+  assert.ok(FALL_HURT_RATE > 1, "a fall's flinch must play faster than a punch's");
+  // Art with a shorter clip leads by what it has, never by longer than it lasts.
+  assert.equal(hurtLeadFrames(2), 1);
+  assert.equal(hurtLeadFrames(1), 0);
+  assert.equal(hurtLeadMs(1, BASE), 0, "a one-frame clip cannot lead");
+  console.log(
+    `fall flinch: ${FRAMES} frames at ${(BASE * FALL_HURT_RATE).toFixed(0)}fps = ${clip.toFixed(0)}ms, ` +
+      `starting ${lead.toFixed(0)}ms before touchdown on frame ${HURT_IMPACT_FRAME + 1}`,
+  );
 });
 
 test("integrateFall: up-steps EASE up (staircase step), gentle down-steps ease, no fall", () => {

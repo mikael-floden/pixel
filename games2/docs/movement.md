@@ -150,12 +150,28 @@ Server-authoritative movement, decks, collision, steer assist, fall damage, tap/
     hit outlives its fall and kills you somewhere else. `fallDurationS` is
     the closed form of `integrateFall`'s own physics (t = √(2d/g)), so the
     two cannot drift.
+  - **AND THE FLINCH'S GOT-HIT FRAME LANDS WITH THE FEET** (`fallhurt.ts`).
+    The hit is the server's and its patch arrives a round trip after impact,
+    so a clip triggered by `hitSeq` starts on the ground and plays its wind-up
+    there. The client runs the server's own rule (≥6 levels, a swimmable
+    landing is a free dive) against its PREDICTED fall and starts the clip
+    early by exactly the frames before the got-hit frame — **the 4th**, index
+    3, the doubled-over pose with the impact mark (maintainer named it) — at
+    `FALL_HURT_RATE` 1.5× the combat rate: a 125 ms lead over a 208 ms clip,
+    three frames of bracing in the air and the fold on the ground. Combat's
+    `ANIM_FPS.hurt` is untouched (round 7 is his). It is ONLY the clip: hp,
+    blood and the damage float stay the server's word, so a missed prediction
+    costs a flinch nobody was charged for and never a wrong number. The
+    server's hit does not restart a running fall flinch — that hit IS its
+    landing. The arm is cancelled by a fall that ends early or a teleport.
   - Gates: `server/test/falldamage.test.ts` (curve pins; the route law
     verified failing on the pre-fix baseline; live-room cliff + dive, and the
     cliff arm asserts hp is UNTOUCHED at the edge and billed 0.5–1× the fall
     clock later — measured 822 ms on an 8-level ledge against a 775 ms
     clock); `collision.test.ts` holds `fallDurationS` to within one frame of
-    the drawn descent at six drop heights.
+    the drawn descent at six drop heights, and pins the flinch arithmetic —
+    the 4th frame is the frame on screen at touchdown, the frame before it is
+    still the wind-up, and the clip outlasts its own lead.
 - **Auto-jump**: walking INTO a 1-level wall auto-fires the jump
   (`maybeAutoJump`/`wouldAutoJump` from `predictAndSend`). Rule: exactly
   `!canEnter(walk) && canEnter(jump)` probed a leading-edge ahead — 2-level+

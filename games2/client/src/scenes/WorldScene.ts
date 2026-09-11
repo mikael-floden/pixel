@@ -57,6 +57,8 @@ import {
   surfaceAtWorldElev,
   levelAtWorld,
   integrateFall,
+  FALL_GRAVITY,
+  FALL_DMG_MIN_LEVELS,
   isStandableAtWorld,
   isBlockedAtWorld,
   findSpawn,
@@ -98,6 +100,7 @@ import {
 } from "../navbias";
 import { hiddenRing, setHiddenRing } from "../hiddenring";
 import { indoorWall, setIndoorWall, INDOOR_WALL_MIN, INDOOR_WALL_MAX } from "../indoorwall";
+import { FALL_HURT_RATE, HURT_IMPACT_FRAME, hurtLeadMs, hurtClipMs } from "../fallhurt";
 import { withV, assetIndexInfo } from "../assetver";
 import { netPerfStart, netPerfTake } from "../netperf";
 import { installTexUploadProbe, texUploadTake } from "../texupload";
@@ -253,6 +256,13 @@ const ANIM_FPS: Record<string, number> = {
   pickup: 9,
   die: 8,
 };
+/** How long the flinch overlay holds at the combat rate: the 5-frame clip at
+ *  ANIM_FPS.hurt, rounded up. */
+const HURT_MS = 300;
+// A FALL'S FLINCH IS PLAYED EARLY AND FAST so its got-hit frame lands on the
+// frame the feet do — the rule, the two numbers and the arithmetic live in
+// `fallhurt.ts` (and are unit-tested there); this file only wires them.
+
 // The blood spatter's 8 direction variants (scenery/blood_spatter, trimmed to
 // burst->dispersal) — one is picked at random per landed hit, played forward
 // or reversed at random.
@@ -1026,6 +1036,12 @@ interface Avatar {
   swimming: boolean;
   wasSwimming?: boolean; // last frame's swimming — detects the swim→land exit
   exitJumpUntil?: number; // while >now, ease the elevation UP (leap out of water)
+  /** When to START a damaging fall's flinch — EARLY, so the clip's got-hit
+   *  frame is on screen the frame the feet land (armFallHurt). 0 = none armed. */
+  fallHurtAt?: number;
+  /** While >now, the flinch on screen is a FALL's: played at FALL_HURT_RATE and
+   *  never restarted by the server's hit, which IS its landing. */
+  fallHurtUntil?: number;
   swimT: number; // 0..1 submerge amount (0 = feet on ground, 1 = shoulders at surface)
   // The SURFACE level the avatar stands (deck/base) or floats (pool) on. While
   // swimming the rendered `elev` sinks `swimDrop` px BELOW this, so lighting must
@@ -11050,9 +11066,14 @@ export class WorldScene extends Phaser.Scene {
         if (!first && !player.dead) {
           // The flinch — unless a stronger clip (attack/die) is mid-play.
           // FAST since round 7 (16fps clip, short overlay window)…
-          if (!av.actionUntil || nowMs >= av.actionUntil || av.actionKey === "hurt") {
+          // …and NEVER restarted on top of a fall's own flinch: that one was
+          // started early on purpose so its got-hit frame lands with the feet,
+          // and this hit IS that landing. Restarting it here would throw the
+          // sync away and replay the wind-up on the ground.
+          const onFall = nowMs < (av.fallHurtUntil ?? 0);
+          if (!onFall && (!av.actionUntil || nowMs >= av.actionUntil || av.actionKey === "hurt")) {
             av.actionKey = "hurt";
-            av.actionUntil = nowMs + 300;
+            av.actionUntil = nowMs + HURT_MS;
           }
           // …with the blood ON the body (maintainer round 7).
           this.spawnBloodFx(av.lx, av.sprite.y - av.sprite.displayHeight * 0.45);
@@ -11173,6 +11194,7 @@ export class WorldScene extends Phaser.Scene {
         av.fallV = 0;
         av.falling = false;
         av.wasFalling = false; // a teleport landing must not swallow the next fall grunt
+        av.fallHurtAt = 0; // …nor land the flinch of a fall that no longer happens
         av.exitJumpUntil = 0; // a teleport cancels any in-progress leap-out
         av.spdWu = undefined; // a teleport is not a speed sample
         // A respawn/teleport also cancels MY tap trip + hold gesture: the
@@ -11209,7 +11231,13 @@ export class WorldScene extends Phaser.Scene {
         if (av.falling && !av.wasFalling) {
           const sp = this.avatarSpatial(id);
           gameAudio.event("player.fall", { pan: sp.pan, dist: sp.dist, voice: av.character });
+          this.armFallHurt(av, targetElev);
         }
+        // The fall ended without reaching the ground it was aimed at (a ledge
+        // caught it, a teleport cancelled it): the flinch it armed is void. The
+        // timer fires while `falling` is still true — it leads the landing by
+        // design — so this can only catch a fall that really stopped early.
+        if (!av.falling && av.fallHurtAt) av.fallHurtAt = 0;
         av.wasFalling = av.falling;
         // Ground speed in WORLD units/s, back-projected from the EASED flat
         // screen delta (smooth for remote 20Hz-stepped targets too):
@@ -11343,6 +11371,26 @@ export class WorldScene extends Phaser.Scene {
         if (this.time.now > (av.bubbleUntil ?? 0)) {
           av.bubble.destroy();
           av.bubble = undefined;
+        }
+      }
+      // THE FALL FLINCH STARTS HERE, in the air, so its 4th frame is the frame
+      // the feet land (armFallHurt). The server's own hit — blood, damage
+      // float, hp — still arrives on impact and is left to do those; it just
+      // must not restart this clip (see the hitSeq branch).
+      if (av.fallHurtAt && this.time.now >= av.fallHurtAt) {
+        av.fallHurtAt = 0;
+        const nowA = this.time.now;
+        if (!av.actionUntil || nowA >= av.actionUntil || av.actionKey === "hurt") {
+          const hk = this.resolveAnim(av.character, "hurt", av.dispDir ?? DEFAULT_DIRECTION);
+          const hn = (hk && this.anims.get(hk)?.frames.length) || HURT_IMPACT_FRAME + 1;
+          av.actionKey = "hurt";
+          av.actionUntil = nowA + hurtClipMs(hn, ANIM_FPS.hurt);
+          av.fallHurtUntil = av.actionUntil;
+          // FROM FRAME 0, even when a combat flinch is already on screen: the
+          // lead is measured from the clip's start, and resuming someone else's
+          // flinch would put an arbitrary frame on the ground. `applyAnimState`
+          // then leaves the clip alone (same key) and only sets its rate.
+          if (hk) av.sprite.play(hk);
         }
       }
       // Swimming plays the idle clip ("swim = modified idle", maintainer): the
@@ -13495,6 +13543,13 @@ export class WorldScene extends Phaser.Scene {
     if (state === "walk" || state === "run") {
       const base = (running ? RUN_SPEED : WALK_SPEED) * (this.world ? Math.SQRT1_2 : 1);
       av.sprite.anims.timeScale = Phaser.Math.Clamp((av.spdWu ?? base) / base, 0.4, 2.6);
+    } else if (state === "hurt" && this.time.now < (av.fallHurtUntil ?? 0)) {
+      // A FALL'S flinch plays faster than a punch's, because it starts in the
+      // air: the wind-up is over in three quick frames instead of lingering
+      // there (maintainer: "play the animation a bit faster so starting it
+      // earlier doesn't look too bad in the air"). The LEAD is derived from
+      // this same rate, so the two move together.
+      av.sprite.anims.timeScale = FALL_HURT_RATE;
     } else {
       av.sprite.anims.timeScale = 1;
     }
@@ -20782,6 +20837,44 @@ export class WorldScene extends Phaser.Scene {
    * real cliff down-steps fall under gravity so walking off a ledge drops to the
    * ground below instead of teleporting.
    */
+  /** ARM THE FALL FLINCH so its GOT-HIT FRAME lands on the touchdown frame.
+   *
+   *  Called on the rising edge of a gravity fall. The hit itself is the
+   *  server's — it bills on impact (`fallPend`) and its patch arrives a trip
+   *  later — but the CLIP cannot wait for that or the fold plays after the feet
+   *  are already down. So the client runs the same rule the server does
+   *  (FALL_DMG_MIN_LEVELS, a swimmable landing is a free dive) against its own
+   *  predicted fall and starts the clip early. It is only ever an ANIMATION: the
+   *  hp, the blood and the damage float stay the server's word, so a prediction
+   *  that misses costs a flinch nobody was charged for and never a wrong number.
+   *
+   *  The remaining fall is solved from the CURRENT state rather than the drop
+   *  height — `t = (−v + √(v² + 2gd)) / g` — so it is exact wherever it is
+   *  asked from, and it is the same physics `integrateFall` steps. */
+  private armFallHurt(av: Avatar, targetElev: number): void {
+    av.fallHurtAt = 0;
+    const lh = this.geom.lh;
+    const d = av.elev - targetElev;
+    if (d / lh < FALL_DMG_MIN_LEVELS) return;
+    // A DIVE IS FREE, exactly as the server's landing check has it.
+    if (this.terrain && av.fx !== undefined && av.fy !== undefined) {
+      if (surfaceAtWorldElev(this.terrain, av.fx, av.fy, targetElev / lh).swimmable) return;
+    }
+    const v = av.fallV;
+    const secs = (-v + Math.sqrt(v * v + 2 * FALL_GRAVITY * d)) / FALL_GRAVITY;
+    const now = this.time.now;
+    av.fallHurtAt = now + Math.max(0, secs * 1000 - this.fallHurtLeadMs(av));
+  }
+
+  /** How far ahead of the landing the clip must start: the frames before the
+   *  got-hit frame, at the fall rate. Read off the REAL clip, so re-cut art
+   *  re-times this instead of drifting. */
+  private fallHurtLeadMs(av: Avatar): number {
+    const key = this.resolveAnim(av.character, "hurt", av.dispDir ?? DEFAULT_DIRECTION);
+    const frames = (key && this.anims.get(key)?.frames.length) || HURT_IMPACT_FRAME + 1;
+    return hurtLeadMs(frames, ANIM_FPS.hurt);
+  }
+
   private stepElevation(av: Avatar, target: number, dt: number): void {
     const s = integrateFall({ elev: av.elev, fallV: av.fallV, falling: av.falling }, target, dt, this.geom.lh);
     av.elev = s.elev;
