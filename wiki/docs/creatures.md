@@ -205,11 +205,15 @@ verdict comes BEFORE the five states are spent on it.
   the stats all work on it unchanged. Its `path` is `monsters/<id>`, the
   identity it keeps once the agent writes `monster.json`, so no verdict is lost
   in the promotion; a real `monsters/<id>` folder always wins, so there is
-  never a duplicate. Its state row is in the DOMAIN'S order —
-  `animation_map.json`'s `idle, walk, angry, attack, die`, anything unmapped
-  after it — never the filesystem's, which is alphabetical and had two
-  creatures side by side disagreeing about where idle was (maintainer
-  2026-09-10: "I like the old monsters sort in the animation buttons").
+  never a duplicate. Its state row is the DOMAIN'S list in the domain's
+  order — `animation_map.json`'s `idle, walk, angry, attack, die` — never the
+  filesystem's, which is alphabetical and had two creatures side by side
+  disagreeing about where idle was (maintainer 2026-09-10: "I like the old
+  monsters sort in the animation buttons"). A folder the map does not name is
+  not a state: the agent builds a new take in a try slot beside the live one
+  (`attack_try`, "generated alongside it and never shown to the game") and
+  promotes it when all eight directions are there, so a trial is not in the
+  registry — and a shipped creature has never shown one either.
   It carries `pending: true` and `candidate: <path>`: the
   card shows "in the making", the Animations panel says "more coming", the page
   links back to the 8 directions, and the filter row grows an "in the making"

@@ -2794,17 +2794,22 @@ function buildCandidateMonsters(shippedIds) {
     if (!isDir(animRoot)) continue;
     const frameW = c.size?.[0] ?? null, frameH = c.size?.[1] ?? frameW;
     const anims = {};
-    // THE STATE ROW IS IN THE DOMAIN'S OWN ORDER, never the filesystem's
-    // (maintainer 2026-09-10: "Why do you sort 'attack, idle, walk' like this
-    // on Ashling and differently on Amethyrn? I like the old monsters sort in
-    // the animation buttons."). A shipped creature's states come from
-    // animation_map.json — idle, walk, angry, attack, die, the order the row
-    // has always had — and listDirs gave the derived ones alphabetical instead,
-    // so two creatures side by side disagreed about where idle was. Anything
-    // the map does not name still follows, so a new state can never vanish.
+    // THE STATE ROW IS THE DOMAIN'S OWN LIST, IN ITS OWN ORDER — exactly what
+    // a shipped creature gets, which is `animation_map.json`: idle, walk,
+    // angry, attack, die (maintainer 2026-09-10: "Why do you sort 'attack,
+    // idle, walk' like this on Ashling and differently on Amethyrn? I like the
+    // old monsters sort in the animation buttons." — listDirs was giving the
+    // derived ones alphabetical instead).
+    //
+    // A folder the map does not name is NOT a state: the agent builds a new
+    // take in a try slot beside the live one (`attack_try`, its own doc: "a
+    // CANDIDATE record generated alongside it and never shown to the game")
+    // and promotes it into `attack` when all eight directions are there. The
+    // registry says what the creature HAS, so a trial is not in it — and a
+    // shipped creature has never shown one either.
     const mapStates = Object.keys(readJson(join(ROOT, "monsters", "animation_map.json"))?.states ?? {});
     const onDisk = listDirs(animRoot);
-    const ordered = [...mapStates.filter((st) => onDisk.includes(st)), ...onDisk.filter((st) => !mapStates.includes(st))];
+    const ordered = mapStates.filter((st) => onDisk.includes(st));
     for (const state of ordered) {
       const dirs = {};
       for (const dir of DIRS) {
