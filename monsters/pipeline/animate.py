@@ -172,7 +172,8 @@ SIMPLE_LUNGE = ("Lunge Attack - Throws its whole body forward in one fast lunge,
 FRAME_LADDER = [4, 6, 4, 8, 4, 6, 4, 8, 6, 4]
 MAX_TRIES = 10          # "keep retrying maybe 10 times before you give up the entire animation"
 TOO_LITTLE = ("no strike", "just a lean", "weak strike", "frozen", "shallow strike", "outside the calm band")
-TOO_MUCH = ("too much", "drifts", "walks across", "slides across", "wrapped around")
+TOO_MUCH = ("too much", "drifts", "walks across", "slides across", "wrapped around",
+            "outside the frame", "out of frame", "outside the screen", "goes outside")
 
 
 def rung_for(prev_rung, reasons):
@@ -404,6 +405,24 @@ def frames_for(rolls):
     return FRAME_LADDER[(max(1, int(rolls or 1)) - 1) % len(FRAME_LADDER)]
 
 
+def _facing_walk(cid, frames):
+    """How far the clip TURNS while it plays: for each frame, which of the 8
+    base rotations its silhouette matches best, as a step count around the
+    compass. The maintainer rejects this by eye — "the direction flips between
+    E and S in the middle of the animation", "the head ends up in the butt" —
+    so it is measured here instead of reaching him."""
+    try:
+        bases = [_sil(on_canvas(rotation(cid, b), frames[0].size)) for b in ALL_DIRS]
+    except Exception:
+        return 0
+    idx = []
+    for f in frames:
+        o = _sil(f)
+        idx.append(int(np.argmax([_iou(o, b) for b in bases])))
+    steps = [min((a - b) % 8, (b - a) % 8) for a, b in zip(idx, idx[1:])]
+    return max(steps) if steps else 0
+
+
 def qa_clip(cid, state, d, frames, pinned=None, claw_take=False, want_frames=None):
     """Machine verdict for one direction's clip. See module docstring."""
     band = STATES[base_state(state)]["band"]
@@ -477,6 +496,12 @@ def qa_clip(cid, state, d, frames, pinned=None, claw_take=False, want_frames=Non
         elif peak < band["peak_pass"]:
             reasons.append(f"weak strike: peak {peak:.3f} — eyeball it"); status = "warn" if status != "fail" else status
     flash = _flash(frames) if "flash_max" in band else 0.0
+    # RECORDED, NEVER GATED: this measure agrees with him on three of his
+    # redo notes and then rates a direction he APPROVED (Cragtroll east) worse
+    # than all of them. Facing is his call — "I don't trust your eyes to
+    # correct this. Let this be something only I can correct" — so the number
+    # goes on the record and on the review page, and rejects nothing.
+    turn = _facing_walk(cid, frames) if "reach_pass" in band else None
     if any(_wrapped(o) for o in ops):
         reasons.append("wrapped around the canvas edge: the body is drawn in two pieces"); status = "fail"
     if "reach_pass" in band:
@@ -540,7 +565,7 @@ def qa_clip(cid, state, d, frames, pinned=None, claw_take=False, want_frames=Non
             "drift": round(drift, 2), "loop": round(loop, 4), "loop_ratio": round(loop_ratio, 2),
             "travel": round(travel, 2), "pin": round(float(pin), 3), "pad": pad, "flash": round(flash, 3),
             "peak": (round(peak, 4) if "peak_pass" in band else None),
-            "reach": (round(rch, 3) if rch is not None else None),
+            "reach": (round(rch, 3) if rch is not None else None), "turn": turn,
             "canvas": list(frames[0].size), "reasons": reasons}
 
 
