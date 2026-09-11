@@ -1,7 +1,7 @@
 {
   "format": "pixel-wiki-feedback@1",
   "domain": "monsters",
-  "updated_at": "2026-09-11T18:15:37.300Z",
+  "updated_at": "2026-09-11T19:46:43.035Z",
   "entries": {
     "monsters/candidates/lava_slug": {
       "status": "approved",
@@ -639,6 +639,12 @@
       "status": "approved",
       "art": "2e00a44900f202da",
       "updated_at": "2026-09-11T18:15:38.447Z"
+    },
+    "monsters/spider_queen#attack_v3#north-east": {
+      "status": "redo",
+      "art": "b7cc44354cd8048e",
+      "updated_at": "2026-09-11T19:46:42.592Z",
+      "note": "the direction swaps very much during the attack"
     }
   }
 }
