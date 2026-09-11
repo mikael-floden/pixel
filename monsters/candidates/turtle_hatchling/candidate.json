@@ -1236,38 +1236,38 @@
     "attack_v3": {
       "directions": {
         "south": {
-          "status": "fail",
-          "step_mean": 0.1182,
-          "step_max": 0.3081,
-          "drift": 2.22,
+          "status": "warn",
+          "step_mean": 0.1256,
+          "step_max": 0.3344,
+          "drift": 2.76,
           "loop": 0.0,
           "loop_ratio": 0.0,
-          "travel": 1.27,
-          "pin": 1.0,
+          "travel": 0.33,
+          "pin": 0.999,
           "pad": 0,
-          "flash": 0.509,
-          "peak": 0.2373,
-          "reach": 0.509,
+          "flash": 0.002,
+          "peak": 0.2982,
+          "reach": 0.161,
           "canvas": [
             40,
             40
           ],
           "reasons": [
-            "painted effect: 0.51 of the body in new bright pixels (flare/slash arc)"
+            "shallow strike: reach 0.16 — eyeball it"
           ],
-          "sub": "cc45f0e0-3989-4645-859d-ed6868f90905",
-          "group": "0799eb48-ff56-46cb-ab3f-49965572df55",
-          "takes": 2,
-          "version": 4,
+          "sub": "53391c81-f0d6-42e6-a0ff-92fee6e229c0",
+          "group": "9609d1ea-8397-4f6f-8f76-a1016a58b590",
+          "takes": 1,
+          "version": 5,
           "mirrored": false,
-          "action": "Shell Slam - The hatchling launches off the ground and slams down beak first, its shell spinning, dust bursting outward",
+          "action": "Shell Slam - The hatchling launches off the ground and slams down beak first, its shell spinning, dust bursting outward, a huge aggressive attack with the whole body behind it, wide exaggerated motion",
           "intensity": 0,
-          "rolls": 4,
+          "rolls": 5,
           "frames": 16,
-          "rung": 3,
+          "rung": 4,
           "unwrapped": null,
-          "tries": 4,
-          "generated_at": "2026-09-11T18:07:43+00:00"
+          "tries": 5,
+          "generated_at": "2026-09-11T18:17:19+00:00"
         },
         "south-east": {
           "status": "warn",

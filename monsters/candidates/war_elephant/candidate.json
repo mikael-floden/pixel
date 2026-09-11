@@ -1259,39 +1259,38 @@
     "attack_v3": {
       "directions": {
         "south": {
-          "status": "fail",
-          "step_mean": 0.3664,
-          "step_max": 0.4424,
-          "drift": 25.58,
-          "loop": 0.4239,
-          "loop_ratio": 1.16,
-          "travel": 6.96,
-          "pin": 0.528,
+          "status": "warn",
+          "step_mean": 0.2417,
+          "step_max": 0.3455,
+          "drift": 16.76,
+          "loop": 0.3277,
+          "loop_ratio": 1.36,
+          "travel": 7.57,
+          "pin": 0.844,
           "pad": 0,
-          "flash": 0.0,
-          "peak": 0.4352,
-          "reach": 0.104,
+          "flash": 0.168,
+          "peak": 0.3277,
+          "reach": 0.168,
           "canvas": [
             240,
             240
           ],
           "reasons": [
-            "drifts 25.6 px — eyeball it",
-            "no strike, just a lean: nothing reaches past 0.10 of the body"
+            "shallow strike: reach 0.17 — eyeball it"
           ],
-          "sub": "7a685008-9f95-4969-a8df-d935b3b1a612",
-          "group": "7ae604f7-7f83-4972-af57-68bd467f1c4e",
-          "takes": 2,
-          "version": 4,
+          "sub": "31385bb8-c1d2-4997-96fd-b46faf0b7f95",
+          "group": "69e1155f-9c41-4c99-a26f-ed613d42de57",
+          "takes": 1,
+          "version": 5,
           "mirrored": false,
-          "action": "Trumpet Charge - The elephant rears its head back and hurls its whole body forward, tusks thrown wide, dust exploding under its feet",
+          "action": "Trumpet Charge - The elephant rears its head back and hurls its whole body forward, tusks thrown wide, dust exploding under its feet, a huge aggressive attack with the whole body behind it, wide exaggerated motion",
           "intensity": 0,
-          "rolls": 4,
+          "rolls": 5,
           "frames": 4,
-          "rung": 3,
+          "rung": 4,
           "unwrapped": null,
-          "tries": 4,
-          "generated_at": "2026-09-11T18:14:30+00:00"
+          "tries": 5,
+          "generated_at": "2026-09-11T18:17:57+00:00"
         },
         "south-east": {
           "status": "pass",
