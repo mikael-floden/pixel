@@ -1260,71 +1260,72 @@
       "directions": {
         "south": {
           "status": "fail",
-          "step_mean": 0.1383,
-          "step_max": 0.1623,
-          "drift": 2.08,
-          "loop": 0.0003,
+          "step_mean": 0.1821,
+          "step_max": 0.2296,
+          "drift": 3.95,
+          "loop": 0.0005,
           "loop_ratio": 0.0,
-          "travel": 2.08,
+          "travel": 1.71,
           "pin": 1.0,
           "pad": 0,
-          "flash": 0.0,
-          "peak": 0.1622,
-          "reach": 0.061,
+          "flash": 0.028,
+          "peak": 0.2296,
+          "reach": 0.09,
           "canvas": [
             240,
             240
           ],
           "reasons": [
-            "no strike, just a lean: nothing reaches past 0.06 of the body"
+            "no strike, just a lean: nothing reaches past 0.09 of the body"
           ],
-          "sub": "d51c01b6-39e2-4f05-8df4-59a1453fc986",
-          "group": "860e1ed2-349f-4bec-a691-ca688fdce28e",
+          "sub": "8fc3494b-5854-427a-9780-500d4ee24f01",
+          "group": "64b842f8-561f-4a91-8a25-dd9cea66cb91",
           "takes": 1,
-          "version": 2,
+          "version": 3,
           "mirrored": false,
-          "action": "Tusk Gore - Lowers its head and drives both tusks forward in a heavy gore, a big aggressive swing",
+          "action": "Lunge Attack - Throws its whole body forward in one fast lunge, white swoosh lines trailing behind it, a big aggressive swing",
           "intensity": 0,
-          "rolls": 2,
+          "rolls": 3,
           "frames": 4,
-          "rung": 1,
+          "rung": 2,
           "unwrapped": null,
-          "tries": 2,
-          "generated_at": "2026-09-11T17:13:32+00:00"
+          "tries": 3,
+          "generated_at": "2026-09-11T17:55:03+00:00"
         },
         "south-east": {
           "status": "fail",
-          "step_mean": 0.176,
-          "step_max": 0.1969,
-          "drift": 6.37,
-          "loop": 0.0214,
-          "loop_ratio": 0.12,
-          "travel": 6.37,
-          "pin": 0.578,
-          "pad": 0,
-          "flash": -0.0,
-          "peak": 0.2162,
+          "step_mean": 0.2278,
+          "step_max": 0.289,
+          "drift": 5.59,
+          "loop": 0.0005,
+          "loop_ratio": 0.0,
+          "travel": 9.3,
+          "pin": 0.579,
+          "pad": 53,
+          "flash": 0.053,
+          "peak": 0.2888,
           "reach": 0.304,
           "canvas": [
-            240,
-            240
+            346,
+            346
           ],
           "reasons": [
-            "body turned the wrong way: matches mirrored south-west (0.65) better than south-east (0.58)"
+            "body turned the wrong way: matches mirrored south-west (0.63) better than south-east (0.57)",
+            "canvas grown by 53 px a side to hold the motion"
           ],
-          "sub": "87ae9522-c1de-4074-8a65-ef3c3f15ad19",
-          "group": "860e1ed2-349f-4bec-a691-ca688fdce28e",
+          "sub": "f18b0f7f-bf9f-4be0-9305-ad409d2afdd5",
+          "group": "64b842f8-561f-4a91-8a25-dd9cea66cb91",
           "takes": 1,
-          "version": 2,
+          "version": 3,
           "mirrored": false,
-          "action": "Tusk Gore - Lowers its head and drives both tusks forward in a heavy gore, a big aggressive swing",
+          "action": "Lunge Attack - Throws its whole body forward in one fast lunge, white swoosh lines trailing behind it, a big aggressive swing",
           "intensity": 0,
-          "rolls": 2,
+          "rolls": 3,
           "frames": 4,
-          "rung": 1,
-          "unwrapped": null,
-          "tries": 2,
-          "generated_at": "2026-09-11T17:13:36+00:00"
+          "rung": 2,
+          "unwrapped": 1,
+          "tries": 3,
+          "generated_at": "2026-09-11T17:55:07+00:00"
         },
         "east": {
           "status": "warn",
@@ -1361,39 +1362,38 @@
           "generated_at": "2026-09-11T17:13:38+00:00"
         },
         "north-east": {
-          "status": "fail",
-          "step_mean": 0.2111,
-          "step_max": 0.2565,
-          "drift": 4.25,
-          "loop": 0.033,
-          "loop_ratio": 0.16,
-          "travel": 4.69,
+          "status": "warn",
+          "step_mean": 0.247,
+          "step_max": 0.3285,
+          "drift": 14.25,
+          "loop": 0.1668,
+          "loop_ratio": 0.68,
+          "travel": 16.44,
           "pin": 1.0,
-          "pad": 18,
-          "flash": -0.0,
-          "peak": 0.2019,
-          "reach": 0.087,
+          "pad": 0,
+          "flash": 0.124,
+          "peak": 0.2762,
+          "reach": 0.163,
           "canvas": [
-            276,
-            276
+            240,
+            240
           ],
           "reasons": [
-            "no strike, just a lean: nothing reaches past 0.09 of the body",
-            "canvas grown by 18 px a side to hold the motion"
+            "shallow strike: reach 0.16 — eyeball it"
           ],
-          "sub": "55d3870b-5cad-4384-9946-88e3d75418c1",
-          "group": "860e1ed2-349f-4bec-a691-ca688fdce28e",
+          "sub": "b253672d-bac0-46c6-bcd0-55d8b18a287f",
+          "group": "64b842f8-561f-4a91-8a25-dd9cea66cb91",
           "takes": 1,
-          "version": 2,
+          "version": 3,
           "mirrored": false,
-          "action": "Tusk Gore - Lowers its head and drives both tusks forward in a heavy gore, a big aggressive swing",
+          "action": "Lunge Attack - Throws its whole body forward in one fast lunge, white swoosh lines trailing behind it, a big aggressive swing",
           "intensity": 0,
-          "rolls": 2,
+          "rolls": 3,
           "frames": 4,
-          "rung": 1,
-          "unwrapped": 1,
-          "tries": 2,
-          "generated_at": "2026-09-11T17:13:41+00:00"
+          "rung": 2,
+          "unwrapped": null,
+          "tries": 3,
+          "generated_at": "2026-09-11T17:55:09+00:00"
         },
         "north": {
           "status": "warn",
@@ -1462,6 +1462,41 @@
           "tries": 2,
           "generated_at": "2026-09-11T17:13:38+00:00",
           "source": "east"
+        },
+        "north-west": {
+          "status": "warn",
+          "step_mean": 0.247,
+          "step_max": 0.3285,
+          "drift": 14.25,
+          "loop": 0.1668,
+          "loop_ratio": 0.68,
+          "travel": 16.44,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": 0.124,
+          "peak": 0.2762,
+          "reach": 0.163,
+          "canvas": [
+            240,
+            240
+          ],
+          "reasons": [
+            "shallow strike: reach 0.16 — eyeball it"
+          ],
+          "sub": "b253672d-bac0-46c6-bcd0-55d8b18a287f",
+          "group": "64b842f8-561f-4a91-8a25-dd9cea66cb91",
+          "takes": 1,
+          "version": 3,
+          "mirrored": true,
+          "action": "Lunge Attack - Throws its whole body forward in one fast lunge, white swoosh lines trailing behind it, a big aggressive swing",
+          "intensity": 0,
+          "rolls": 3,
+          "frames": 4,
+          "rung": 2,
+          "unwrapped": null,
+          "tries": 3,
+          "generated_at": "2026-09-11T17:55:09+00:00",
+          "source": "north-east"
         }
       },
       "action": "Tusk Gore - Lowers its head and drives both tusks forward in a heavy gore",
@@ -1501,6 +1536,12 @@
           "war_elephant/animations/attack_v3/west/01.webp",
           "war_elephant/animations/attack_v3/west/02.webp",
           "war_elephant/animations/attack_v3/west/03.webp"
+        ],
+        "north-west": [
+          "war_elephant/animations/attack_v3/north-west/00.webp",
+          "war_elephant/animations/attack_v3/north-west/01.webp",
+          "war_elephant/animations/attack_v3/north-west/02.webp",
+          "war_elephant/animations/attack_v3/north-west/03.webp"
         ]
       },
       "strips": {
@@ -1509,7 +1550,8 @@
         "east": "war_elephant/animations/attack_v3__east.webp",
         "north-east": "war_elephant/animations/attack_v3__north-east.webp",
         "north": "war_elephant/animations/attack_v3__north.webp",
-        "west": "war_elephant/animations/attack_v3__west.webp"
+        "west": "war_elephant/animations/attack_v3__west.webp",
+        "north-west": "war_elephant/animations/attack_v3__north-west.webp"
       }
     }
   }
