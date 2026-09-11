@@ -118,6 +118,8 @@ import { netPerfStart, netPerfTake } from "../netperf";
 import { installTexUploadProbe, texUploadTake } from "../texupload";
 import { installCaptureProbe, installCapturePool, captureTake } from "../capturepool";
 import { installGlFrameProbe, glFrameTake, glWindowTake, glFrameEmpty, type GlFrame } from "../glframe";
+import { installGpuTimer, gpuTimerTake } from "../gputimer";
+import { cpuScoreMs, frameHist, rafHz, quantiles } from "../perfextra";
 import { fadeTune, setFadeTune } from "../fadetune";
 import { extraTransitions, setExtraTransitions } from "../transitions";
 import { ChessDialog, ChessMatchView } from "../chessui";
@@ -1670,6 +1672,9 @@ export class WorldScene extends Phaser.Scene {
      *  the same reason `slow` is: a replay under the CURRENT value rewrites the
      *  history of every input still in flight, which is a rubber-band. */
     sm: number;
+    /** When it was sent (performance.now), so the ack measures a round trip
+     *  for the beacon's `rtt` block — the one lag no CPU section can see. */
+    at: number;
   }[] = [];
   private curSlowFactor = 1; // the hit-slow factor live integration ran under (captured per input)
   private inputSeq = 0;
@@ -2115,12 +2120,38 @@ export class WorldScene extends Phaser.Scene {
     const zoomMean = this.perfCountN ? this.perfZoomSum / cn : cam.zoom;
     const longN = this.perfLongN;
     const longMs = this.perfLongMs;
+    const litOccMean = this.perfCountN ? Math.round(this.perfLitOccSum / cn) : this.litOccluders.length;
+    const monActMean = this.perfCountN ? +(this.perfMonActSum / cn).toFixed(1) : this.monstersActive;
+    const flushMean = this.perfCountN ? +(this.perfFlushSum / cn).toFixed(1) : this.perfDrawCount;
+    const sceneryImgsMean = this.perfCountN ? Math.round(this.perfSceneryImgSum / cn) : this.sceneryImgs.length;
+    const moveFrac = this.perfCountN ? +(this.perfMoveFrames / cn).toFixed(2) : 0;
+    const runFrac = this.perfCountN ? +(this.perfRunFrames / cn).toFixed(2) : 0;
+    const travelCells = +this.perfTravel.toFixed(1);
+    const rttQ = quantiles(this.perfRtt);
+    const patches = this.perfPatches;
+    const hops = this.zoneHops - this.perfPrevHops;
+    this.perfPrevHops = this.zoneHops;
+    this.perfRtt = [];
+    this.perfPatches = 0;
+    this.perfMoveFrames = 0;
+    this.perfRunFrames = 0;
+    this.perfTravel = 0;
+    this.perfLitOccSum = 0;
+    this.perfMonActSum = 0;
+    this.perfFlushSum = 0;
+    this.perfSceneryImgSum = 0;
     this.perfLongN = 0;
     this.perfLongMs = 0;
     this.perfOccSum = 0;
     this.perfDlSum = 0;
     this.perfZoomSum = 0;
     this.perfCountN = 0;
+    this.perfWinIdx++;
+    // The window's frame intervals were reset by the snapshot above; read the
+    // histogram and the display rate from the copy it returned.
+    const frameList = (snap.frameList as number[] | undefined) ?? [];
+    const hist = frameHist(frameList);
+    const nav = navigator as Navigator & { deviceMemory?: number; connection?: { effectiveType?: string; rtt?: number; downlink?: number } };
     const cpuIndex = {
       cpuOccCull: +(occN > 0 ? ((perFrame["occCull"] ?? 0) / occN) * 1e6 : 0).toFixed(1),
       cpuSort: +(dlN > 1 ? ((perFrame["depthSort"] ?? 0) / (dlN * Math.log2(dlN))) * 1e6 : 0).toFixed(2),
@@ -2154,10 +2185,41 @@ export class WorldScene extends Phaser.Scene {
       view: `${this.scale.width}x${this.scale.height}`,
       secs: +secs.toFixed(1),
       final,
-      frames: snap.frames,
+      frames: { ...(snap.frames as Record<string, number>), ...hist, rafHz: rafHz(frameList) },
       sections: perFrame,
+      run: {
+        runId: this.perfRunId,
+        winIdx: this.perfWinIdx,
+        sinceLoadS: Math.round(performance.now() / 1000),
+        visible: document.visibilityState === "visible",
+        zone: this.zone ?? -1,
+        hops,
+        hopJoinMs: hops && this.zoneLastHop ? this.zoneLastHop.joinMs : 0,
+        hopStateMs: hops && this.zoneLastHop ? this.zoneLastHop.stateMs : 0,
+        hopBoundMs: hops && this.zoneLastHop ? this.zoneLastHop.boundMs : 0,
+        moveFrac,
+        runFrac,
+        travelCells,
+        deviceMemoryGb: nav.deviceMemory ?? 0,
+        connType: nav.connection?.effectiveType ?? "?",
+        connRttHint: nav.connection?.rtt ?? -1,
+        connDownlink: nav.connection?.downlink ?? -1,
+        ua: navigator.userAgent.slice(0, 80),
+      },
+      rtt: {
+        ...rttQ, // input sent -> the server's ack of its seq, in ms (network + the 20 Hz tick)
+        patches, // state patches applied this window
+        patchHz: +(patches / Math.max(1, secs)).toFixed(1),
+        reconnects: this.reconnectRetries,
+      },
+      cpu: { bench: "xorshift400k", scoreMs: cpuScoreMs() },
+      gpu: gpuTimerTake(),
       counts: {
         ...(snap.counts as Record<string, number>),
+        litOccMean,
+        monActMean,
+        flushMean,
+        sceneryImgsMean,
         texturesAdded: snap.texturesAdded as number,
         // Objects the RENDERER actually drew last frame, against the display
         // list we built — the gap is what the cull is worth.
@@ -2692,6 +2754,13 @@ export class WorldScene extends Phaser.Scene {
     installTexUploadProbe(this.renderer);
     installCaptureProbe(this.renderer);
     installGlFrameProbe(this.renderer, { ps: () => this.ps(), pe: (k) => this.pe(k) });
+    installGpuTimer(
+      this.game.renderer as unknown as { gl?: WebGLRenderingContext },
+      this.game.events,
+      Phaser.Core.Events.PRE_RENDER,
+      Phaser.Core.Events.POST_RENDER,
+      () => this.perfOn,
+    );
     this.perfPrevFullPaints = this.groundFullRuns;
     this.perfPrevDrains = this.repaintStats.drains;
     this.perfPrevDeferred = this.repaintStats.drainsDeferred;
@@ -2859,6 +2928,26 @@ export class WorldScene extends Phaser.Scene {
   private perfHeapLimit = 0;
   /** What building the last report cost — see the beacon tick. */
   private beaconSelfMs = 0;
+  /* THE CONTEXT A WINDOW IS READ IN (beacon `run`/`rtt`/`cpu`/`gpu`, 2026-09-11):
+   * which page load and which window of it (a session that degrades over
+   * minutes is thermal or a leak; one that is slow from the first window is
+   * the build), what the player was DOING (moving, running, how far, hopping
+   * zones), the input round trip and patch rate (the one lag no CPU section
+   * can see), a fixed CPU benchmark (the throttling proxy) and the GPU's own
+   * frame time when the browser lends its timer. */
+  private perfRunId = Math.random().toString(16).slice(2, 10);
+  private perfWinIdx = 0;
+  private perfPatches = 0;
+  private perfRtt: number[] = [];
+  private perfMoveFrames = 0;
+  private perfRunFrames = 0;
+  private perfTravel = 0;
+  private perfPrevPos: { x: number; y: number } | null = null;
+  private perfLitOccSum = 0;
+  private perfMonActSum = 0;
+  private perfFlushSum = 0;
+  private perfSceneryImgSum = 0;
+  private perfPrevHops = 0;
   private perfPostAt = 0;
   private perfMsgAt = 0;
   private perfPort: MessagePort | null = null;
@@ -6632,6 +6721,7 @@ export class WorldScene extends Phaser.Scene {
             drawCount: r?.drawCount ?? null,
           },
           window: { ms: +this.perfFrames.reduce((a, b) => a + b, 0).toFixed(0) },
+          frameList: this.perfFrames.slice(), // for the histogram / display rate (beacon only)
           texturesAdded: this.perfTexAdded,
           texFamilies: this.perfTexFam,
           texFrameMax: this.perfTexFrameMax,
@@ -7341,6 +7431,7 @@ export class WorldScene extends Phaser.Scene {
     this.connected = true;
     this.reconnectRetries = 0;
     this.roomBoundAt = this.time.now;
+    room.onStateChange(() => { this.perfPatches++; }); // the beacon's patch rate
     const cam = this.cameras.main;
     const $ = getStateCallbacks(room);
     // Shared time-of-day: fires immediately with the current phase (instant
@@ -10852,6 +10943,22 @@ export class WorldScene extends Phaser.Scene {
       this.perfDlSum += this.children.length;
       this.perfZoomSum += this.cameras.main.zoom;
       this.perfCountN++;
+      // The snapshot counts, promoted to window MEANS (docs/perf.md: a
+      // snapshot missed the mean 17x), and what the player was doing.
+      this.perfLitOccSum += this.litOccluders.length;
+      this.perfMonActSum += this.monstersActive;
+      this.perfFlushSum += this.perfDrawCount;
+      this.perfSceneryImgSum += this.sceneryImgs.length;
+      if (this.lastInput.ax !== 0 || this.lastInput.ay !== 0) {
+        this.perfMoveFrames++;
+        if (this.lastInput.running) this.perfRunFrames++;
+      }
+      const pp = this.mePos();
+      if (pp && this.perfPrevPos) {
+        const d = Math.hypot(pp.x - this.perfPrevPos.x, pp.y - this.perfPrevPos.y);
+        if (d < 3) this.perfTravel += d; // a teleport is not travel
+      }
+      this.perfPrevPos = pp;
       /* THE INSTRUMENT MUST NOT BILL THE GAME, AND IT WAS BILLING 125 ms.
        *
        * Building a window's report is expensive on purpose — a gl.readPixels of
@@ -10981,6 +11088,11 @@ export class WorldScene extends Phaser.Scene {
         // Reconcile: start from the authoritative position and replay every
         // input the server hasn't acked yet, so the local player is responsive
         // but never drifts from the server.
+        if (this.perfOn) {
+          const nowAck = performance.now();
+          for (const p of this.pending) if (p.seq <= player.seq && p.at) this.perfRtt.push(nowAck - p.at);
+          if (this.perfRtt.length > 4000) this.perfRtt.splice(0, this.perfRtt.length - 4000);
+        }
         this.pending = this.pending.filter((p) => p.seq > player.seq);
         // Zombie-connection guard: with a dead room nothing is ever acked and
         // this list (and the per-frame replay cost) grows without bound. The
@@ -13639,6 +13751,7 @@ export class WorldScene extends Phaser.Scene {
       jumping: this.time.now < this.jumpUntil,
       slow: this.curSlowFactor,
       sm: playerSpeed(),
+      at: performance.now(),
     });
     const msg: InputMessage = {
       ax: li.ax, ay: li.ay, running: li.running, seq: this.inputSeq, dt: this.sendAccum,

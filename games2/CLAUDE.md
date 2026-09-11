@@ -124,7 +124,11 @@ secrets; push to `main`, rebase on reject, no PRs unless asked; doc law.
   (`__ml.groundHash`). A tab-in poisons the latch. Do not remove the drop
   drain's repaint. `?ground=legacy` is the bisect.
 - The beacon's `sections` are window means and its `counts` snapshots — never
-  correlate them; its server side is an allowlist (add fields on both sides).
+  correlate them; its server side is an allowlist (add fields on both sides,
+  and `scripts/verify-beacon.mjs` proves the POST survives it). It carries
+  `run` (context), `rtt` (input round trip), `cpu` (throttling proxy), `gpu`
+  (the GPU's clock when lent), the frame histogram and `rafHz`; read a run
+  with `scripts/perf-read.mjs` (`--diff shaA shaB` for two builds).
 
 **Movement** (`docs/movement.md`)
 - Server-authoritative, elevation-governed (`WALK_CLIMB` 0.5, `JUMP_CLIMB` 1);

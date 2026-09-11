@@ -223,3 +223,29 @@ test("groundDrew carries every key the client sends — it was capped one short"
   assert.equal(Object.keys(r.groundDrew).length, 19);
   assert.equal(r.groundDrew.k18, 18);
 });
+
+test("the context, round-trip, cpu and gpu blocks reach the file — added with the fields that emit them", () => {
+  const r = perfReport(
+    {
+      frames: { n: 900, p50: 16.7, p90: 20, p99: 40, max: 120, le17: 700, le34: 150, le50: 30, le100: 15, gt100: 5, mean: 18.2, rafHz: 60 },
+      run: { runId: "ab12cd34", winIdx: 3, sinceLoadS: 95, visible: true, zone: 10, hops: 1, hopJoinMs: 812, moveFrac: 0.7, runFrac: 0.2, travelCells: 41.5, connType: "4g", ua: "Mozilla/5.0 (Linux; Android 14)" },
+      rtt: { n: 590, p50: 83, p90: 140, p99: 260, max: 612, patches: 610, patchHz: 20.3, reconnects: 0 },
+      cpu: { bench: "xorshift400k", scoreMs: 4.7 },
+      gpu: { avail: false, reason: "no EXT_disjoint_timer_query_webgl2", n: 0, p50: 0 },
+      counts: Object.fromEntries(Array.from({ length: 50 }, (_, i) => [`c${i}`, i])),
+    },
+    AT,
+  );
+  assert.equal(r.frames?.rafHz, 60, "the histogram and display rate ride in frames — 12 keys, so the old cap of 12 was one short");
+  assert.equal(r.frames?.gt100, 5);
+  assert.equal(r.run?.runId, "ab12cd34");
+  assert.equal(r.run?.visible, true, "booleans survive in run");
+  assert.equal(r.run?.hopJoinMs, 812);
+  assert.equal(r.rtt?.p50, 83);
+  assert.equal(r.rtt?.patchHz, 20.3);
+  assert.equal(r.cpu?.scoreMs, 4.7);
+  assert.equal(r.cpu?.bench, "xorshift400k");
+  assert.equal(r.gpu?.avail, false, "an absent GPU timer says so instead of reporting 0 ms");
+  assert.equal(r.gpu?.reason, "no EXT_disjoint_timer_query_webgl2");
+  assert.equal(Object.keys(r.counts ?? {}).length, 50, "counts carries the four new means beside the 40 it had");
+});

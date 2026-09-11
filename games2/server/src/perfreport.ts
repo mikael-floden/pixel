@@ -64,12 +64,32 @@ export function perfReport(body: Record<string, unknown>, atISO: string) {
     view: str(body.view, 24),
     secs: num(body.secs, 0, 3600),
     final: body.final === true,
-    frames: flat(body.frames, 12, 100000),
+    /* 24, not 12: n/p50/p90/p99/max plus the histogram (le17..gt100, mean)
+     * and rafHz — 12 keys exactly, which is the cap-one-short trap again. */
+    frames: flat(body.frames, 24, 100000),
     sections: flat(body.sections, 40, 100000),
     /* 48, not 40: `flat` keeps the FIRST N entries and silently drops the rest,
      * so a cap close to the real key count turns "add a counter" into "lose the
      * counter at the end". 34 arrive today; the headroom is the point. */
-    counts: flat(body.counts, 48, 1e9),
+    counts: flat(body.counts, 64, 1e9),
+    /* THE WINDOW'S CONTEXT (2026-09-11): which page load (`runId`) and which
+     * window of it, seconds since load, zone and hops with the last hop's
+     * join/state/bound ms, what the player was doing (moving/running share,
+     * cells travelled), device memory, the connection hint and the UA. A
+     * session that degrades over its windows is thermal or a leak; one slow
+     * from window 1 is the build. */
+    run: mixed(body.run, 24),
+    /* THE INPUT ROUND TRIP — sent seq to the server's ack — and the state
+     * patch rate. The one lag no CPU section can see: a phone on bad Wi-Fi
+     * rubber-bands with a flat 16 ms frame. */
+    rtt: mixed(body.rtt, 12),
+    /* THE THROTTLING PROXY: the same 400k-step benchmark every window. A
+     * window where this went up and the game's sections did not is the phone
+     * slowing down, not the game. */
+    cpu: mixed(body.cpu, 8),
+    /* THE GPU'S OWN FRAME TIME (EXT_disjoint_timer_query_webgl2), with
+     * `avail`/`reason` first: no numbers must never read as 0 ms. */
+    gpu: mixed(body.gpu, 12),
     /* WHAT IS BEING UPLOADED, BY KEY FAMILY. `texturesAdded` said 2,099 in one
      * 30 s window of his 2026-09-08 run and nothing said what they were — and a
      * texture add is a decode plus a GPU upload on the main thread, i.e. a

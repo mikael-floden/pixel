@@ -460,6 +460,31 @@ The ground render texture (scroll, slices, cell repaints, prefetch, compose budg
   `perfCountN` pattern already exists). `zoomMean` and `jumps` were sent by the
   client and DROPPED by the allowlist for two whole runs — the same trap this
   file warns about one bullet down, walked into twice.
+- **THE BEACON CARRIES THE WINDOW'S CONTEXT, THE ROUND TRIP, THE THROTTLING
+  PROXY AND THE GPU'S CLOCK** (2026-09-11, prepared for the next optimisation
+  task so a run answers on its own). Beside the sections and counts: `run`
+  (`runId` per page load + `winIdx`, `sinceLoadS`, zone and hops with the
+  last hop's join/state/bound ms, `moveFrac`/`runFrac`/`travelCells` —
+  what he was DOING, `deviceMemoryGb`, the connection hint, the UA); `rtt`
+  (input seq sent → the server's ack, p50/p90/p99/max — network plus the 20
+  Hz tick, the one lag no CPU section can see — with `patches`/`patchHz`
+  and `reconnects`); `cpu` (`xorshift400k` scoreMs: the same work every
+  window, so a window where it rose while the sections did not is the phone
+  throttling, not the game); `gpu` (`EXT_disjoint_timer_query` — Phaser 3 is
+  WebGL1; the `_webgl2` form is tried first — frame time p50/p90/p99 when the
+  browser lends it, `avail`+`reason` first: "no numbers" is never 0 ms, and
+  headless Chromium withholds it); `frames` now
+  carries the histogram (`le17/le34/le50/le100/gt100`, `mean`) and `rafHz`
+  (the refresh read off the 15th-percentile interval — 60/90/120, or 30 when
+  the browser throttled the tab); and the snapshot counts are promoted to
+  means (`litOccMean`, `monActMean`, `flushMean`, `sceneryImgsMean`).
+  READ A RUN WITH `node scripts/perf-read.mjs [--last N] [--run id] [--build
+  sha] [--diff shaA shaB]` — one line per window, the census, and two
+  builds' medians side by side; "-" is "not measured", never 0. GATE:
+  `scripts/verify-beacon.mjs` captures the client's real POST headless and
+  asserts every block survives `perfReport` — the eaten-field trap, made a
+  test. Instruments: `client/src/gputimer.ts`, `client/src/perfextra.ts`
+  (unit-tested in `server/test/perfextra.test.ts`).
 - **THE PERF BEACON'S SERVER SIDE IS AN ALLOWLIST** (`server/src/perfreport.ts`,
   `perfReport`, tested in `server/test/perfreport.test.ts`): `/api/perf`
   rebuilds the report field by field, so a block the client starts sending is
