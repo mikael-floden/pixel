@@ -897,7 +897,7 @@
         "north-west": "lava_slug/animations/attack__north-west.webp"
       }
     },
-    "attack_try": {
+    "attack_v3try": {
       "directions": {
         "south": {
           "status": "warn",
@@ -1174,92 +1174,379 @@
       "action": "Magma Spit - Rears its front up high and spits a gout of magma forward",
       "frame_paths": {
         "south": [
+          "lava_slug/animations/attack_v3try/south/00.webp",
+          "lava_slug/animations/attack_v3try/south/01.webp",
+          "lava_slug/animations/attack_v3try/south/02.webp",
+          "lava_slug/animations/attack_v3try/south/03.webp",
+          "lava_slug/animations/attack_v3try/south/04.webp",
+          "lava_slug/animations/attack_v3try/south/05.webp",
+          "lava_slug/animations/attack_v3try/south/06.webp",
+          "lava_slug/animations/attack_v3try/south/07.webp",
+          "lava_slug/animations/attack_v3try/south/08.webp"
+        ],
+        "south-east": [
+          "lava_slug/animations/attack_v3try/south-east/00.webp",
+          "lava_slug/animations/attack_v3try/south-east/01.webp",
+          "lava_slug/animations/attack_v3try/south-east/02.webp",
+          "lava_slug/animations/attack_v3try/south-east/03.webp",
+          "lava_slug/animations/attack_v3try/south-east/04.webp",
+          "lava_slug/animations/attack_v3try/south-east/05.webp",
+          "lava_slug/animations/attack_v3try/south-east/06.webp",
+          "lava_slug/animations/attack_v3try/south-east/07.webp",
+          "lava_slug/animations/attack_v3try/south-east/08.webp"
+        ],
+        "east": [
+          "lava_slug/animations/attack_v3try/east/00.webp",
+          "lava_slug/animations/attack_v3try/east/01.webp",
+          "lava_slug/animations/attack_v3try/east/02.webp",
+          "lava_slug/animations/attack_v3try/east/03.webp",
+          "lava_slug/animations/attack_v3try/east/04.webp",
+          "lava_slug/animations/attack_v3try/east/05.webp",
+          "lava_slug/animations/attack_v3try/east/06.webp",
+          "lava_slug/animations/attack_v3try/east/07.webp",
+          "lava_slug/animations/attack_v3try/east/08.webp"
+        ],
+        "north-east": [
+          "lava_slug/animations/attack_v3try/north-east/00.webp",
+          "lava_slug/animations/attack_v3try/north-east/01.webp",
+          "lava_slug/animations/attack_v3try/north-east/02.webp",
+          "lava_slug/animations/attack_v3try/north-east/03.webp",
+          "lava_slug/animations/attack_v3try/north-east/04.webp",
+          "lava_slug/animations/attack_v3try/north-east/05.webp",
+          "lava_slug/animations/attack_v3try/north-east/06.webp",
+          "lava_slug/animations/attack_v3try/north-east/07.webp",
+          "lava_slug/animations/attack_v3try/north-east/08.webp"
+        ],
+        "north": [
+          "lava_slug/animations/attack_v3try/north/00.webp",
+          "lava_slug/animations/attack_v3try/north/01.webp",
+          "lava_slug/animations/attack_v3try/north/02.webp",
+          "lava_slug/animations/attack_v3try/north/03.webp",
+          "lava_slug/animations/attack_v3try/north/04.webp",
+          "lava_slug/animations/attack_v3try/north/05.webp",
+          "lava_slug/animations/attack_v3try/north/06.webp",
+          "lava_slug/animations/attack_v3try/north/07.webp",
+          "lava_slug/animations/attack_v3try/north/08.webp"
+        ],
+        "west": [
+          "lava_slug/animations/attack_v3try/west/00.webp",
+          "lava_slug/animations/attack_v3try/west/01.webp",
+          "lava_slug/animations/attack_v3try/west/02.webp",
+          "lava_slug/animations/attack_v3try/west/03.webp",
+          "lava_slug/animations/attack_v3try/west/04.webp",
+          "lava_slug/animations/attack_v3try/west/05.webp",
+          "lava_slug/animations/attack_v3try/west/06.webp",
+          "lava_slug/animations/attack_v3try/west/07.webp",
+          "lava_slug/animations/attack_v3try/west/08.webp"
+        ],
+        "south-west": [
+          "lava_slug/animations/attack_v3try/south-west/00.webp",
+          "lava_slug/animations/attack_v3try/south-west/01.webp",
+          "lava_slug/animations/attack_v3try/south-west/02.webp",
+          "lava_slug/animations/attack_v3try/south-west/03.webp",
+          "lava_slug/animations/attack_v3try/south-west/04.webp",
+          "lava_slug/animations/attack_v3try/south-west/05.webp",
+          "lava_slug/animations/attack_v3try/south-west/06.webp",
+          "lava_slug/animations/attack_v3try/south-west/07.webp",
+          "lava_slug/animations/attack_v3try/south-west/08.webp"
+        ],
+        "north-west": [
+          "lava_slug/animations/attack_v3try/north-west/00.webp",
+          "lava_slug/animations/attack_v3try/north-west/01.webp",
+          "lava_slug/animations/attack_v3try/north-west/02.webp",
+          "lava_slug/animations/attack_v3try/north-west/03.webp",
+          "lava_slug/animations/attack_v3try/north-west/04.webp",
+          "lava_slug/animations/attack_v3try/north-west/05.webp",
+          "lava_slug/animations/attack_v3try/north-west/06.webp",
+          "lava_slug/animations/attack_v3try/north-west/07.webp",
+          "lava_slug/animations/attack_v3try/north-west/08.webp"
+        ]
+      },
+      "strips": {
+        "south": "lava_slug/animations/attack_v3try__south.webp",
+        "south-east": "lava_slug/animations/attack_v3try__south-east.webp",
+        "east": "lava_slug/animations/attack_v3try__east.webp",
+        "north-east": "lava_slug/animations/attack_v3try__north-east.webp",
+        "north": "lava_slug/animations/attack_v3try__north.webp",
+        "west": "lava_slug/animations/attack_v3try__west.webp",
+        "south-west": "lava_slug/animations/attack_v3try__south-west.webp",
+        "north-west": "lava_slug/animations/attack_v3try__north-west.webp"
+      },
+      "intensity": 1
+    },
+    "attack_try": {
+      "directions": {
+        "south": {
+          "status": "warn",
+          "step_mean": 0.2926,
+          "step_max": 0.3422,
+          "drift": 3.11,
+          "loop": 0.0813,
+          "loop_ratio": 0.28,
+          "travel": 3.13,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": -0.0,
+          "peak": 0.2953,
+          "reach": 0.299,
+          "canvas": [
+            96,
+            96
+          ],
+          "reasons": [
+            "shallow strike: reach 0.30 — eyeball it"
+          ],
+          "sub": "2e5ceb92-aae0-455a-aede-cbf907c40b75",
+          "group": "99bd4bc8-a4af-4a11-837c-bd68a87f64c9",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "action": "Magma Spit - Rears its front up high and spits a gout of magma forward",
+          "intensity": 0,
+          "rolls": 1,
+          "frames": 4,
+          "rung": 0,
+          "tries": 1,
+          "generated_at": "2026-09-11T15:18:27+00:00"
+        },
+        "south-east": {
+          "status": "pass",
+          "step_mean": 0.4765,
+          "step_max": 0.5352,
+          "drift": 6.87,
+          "loop": 0.17,
+          "loop_ratio": 0.36,
+          "travel": 3.74,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": 0.054,
+          "peak": 0.5789,
+          "reach": 0.321,
+          "canvas": [
+            96,
+            96
+          ],
+          "reasons": [],
+          "sub": "bcc44f10-16b6-4910-a6e5-ee8b1f848c85",
+          "group": "99bd4bc8-a4af-4a11-837c-bd68a87f64c9",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "action": "Magma Spit - Rears its front up high and spits a gout of magma forward",
+          "intensity": 0,
+          "rolls": 1,
+          "frames": 4,
+          "rung": 0,
+          "tries": 1,
+          "generated_at": "2026-09-11T15:18:28+00:00"
+        },
+        "east": {
+          "status": "fail",
+          "step_mean": 0.483,
+          "step_max": 0.5159,
+          "drift": 7.09,
+          "loop": 0.3163,
+          "loop_ratio": 0.65,
+          "travel": 6.97,
+          "pin": 0.996,
+          "pad": 0,
+          "flash": -0.002,
+          "peak": 0.4249,
+          "reach": 0.378,
+          "canvas": [
+            96,
+            96
+          ],
+          "reasons": [
+            "wrapped around the canvas edge: the body is drawn in two pieces"
+          ],
+          "sub": "1b981eba-4f28-42d8-9a8b-efb297269b39",
+          "group": "99bd4bc8-a4af-4a11-837c-bd68a87f64c9",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "action": "Magma Spit - Rears its front up high and spits a gout of magma forward",
+          "intensity": 0,
+          "rolls": 1,
+          "frames": 4,
+          "rung": 0,
+          "tries": 1,
+          "generated_at": "2026-09-11T15:18:28+00:00"
+        },
+        "north-east": {
+          "status": "warn",
+          "step_mean": 0.296,
+          "step_max": 0.3258,
+          "drift": 3.5,
+          "loop": 0.0552,
+          "loop_ratio": 0.19,
+          "travel": 1.95,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": 0.01,
+          "peak": 0.2808,
+          "reach": 0.165,
+          "canvas": [
+            96,
+            96
+          ],
+          "reasons": [
+            "shallow strike: reach 0.16 — eyeball it"
+          ],
+          "sub": "99fb5da3-a250-4ef8-a8fa-a6c8338c8aaa",
+          "group": "99bd4bc8-a4af-4a11-837c-bd68a87f64c9",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "action": "Magma Spit - Rears its front up high and spits a gout of magma forward",
+          "intensity": 0,
+          "rolls": 1,
+          "frames": 4,
+          "rung": 0,
+          "tries": 1,
+          "generated_at": "2026-09-11T15:18:29+00:00"
+        },
+        "north": {
+          "status": "pass",
+          "step_mean": 0.2434,
+          "step_max": 0.3125,
+          "drift": 6.81,
+          "loop": 0.1142,
+          "loop_ratio": 0.47,
+          "travel": 0.67,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": 0.0,
+          "peak": 0.2557,
+          "reach": 0.362,
+          "canvas": [
+            96,
+            96
+          ],
+          "reasons": [],
+          "sub": "059c48a8-f77d-490d-a9f4-fc2213c6b2c6",
+          "group": "99bd4bc8-a4af-4a11-837c-bd68a87f64c9",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "action": "Magma Spit - Rears its front up high and spits a gout of magma forward",
+          "intensity": 0,
+          "rolls": 1,
+          "frames": 4,
+          "rung": 0,
+          "tries": 1,
+          "generated_at": "2026-09-11T15:18:29+00:00"
+        },
+        "south-west": {
+          "status": "pass",
+          "step_mean": 0.4765,
+          "step_max": 0.5352,
+          "drift": 6.87,
+          "loop": 0.17,
+          "loop_ratio": 0.36,
+          "travel": 3.74,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": 0.054,
+          "peak": 0.5789,
+          "reach": 0.321,
+          "canvas": [
+            96,
+            96
+          ],
+          "reasons": [],
+          "sub": "bcc44f10-16b6-4910-a6e5-ee8b1f848c85",
+          "group": "99bd4bc8-a4af-4a11-837c-bd68a87f64c9",
+          "takes": 1,
+          "version": 1,
+          "mirrored": true,
+          "action": "Magma Spit - Rears its front up high and spits a gout of magma forward",
+          "intensity": 0,
+          "rolls": 1,
+          "frames": 4,
+          "rung": 0,
+          "tries": 1,
+          "generated_at": "2026-09-11T15:18:28+00:00",
+          "source": "south-east"
+        },
+        "north-west": {
+          "status": "warn",
+          "step_mean": 0.296,
+          "step_max": 0.3258,
+          "drift": 3.5,
+          "loop": 0.0552,
+          "loop_ratio": 0.19,
+          "travel": 1.95,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": 0.01,
+          "peak": 0.2808,
+          "reach": 0.165,
+          "canvas": [
+            96,
+            96
+          ],
+          "reasons": [
+            "shallow strike: reach 0.16 — eyeball it"
+          ],
+          "sub": "99fb5da3-a250-4ef8-a8fa-a6c8338c8aaa",
+          "group": "99bd4bc8-a4af-4a11-837c-bd68a87f64c9",
+          "takes": 1,
+          "version": 1,
+          "mirrored": true,
+          "action": "Magma Spit - Rears its front up high and spits a gout of magma forward",
+          "intensity": 0,
+          "rolls": 1,
+          "frames": 4,
+          "rung": 0,
+          "tries": 1,
+          "generated_at": "2026-09-11T15:18:29+00:00",
+          "source": "north-east"
+        }
+      },
+      "action": "Magma Spit - Rears its front up high and spits a gout of magma forward",
+      "frame_paths": {
+        "south": [
           "lava_slug/animations/attack_try/south/00.webp",
           "lava_slug/animations/attack_try/south/01.webp",
           "lava_slug/animations/attack_try/south/02.webp",
-          "lava_slug/animations/attack_try/south/03.webp",
-          "lava_slug/animations/attack_try/south/04.webp",
-          "lava_slug/animations/attack_try/south/05.webp",
-          "lava_slug/animations/attack_try/south/06.webp",
-          "lava_slug/animations/attack_try/south/07.webp",
-          "lava_slug/animations/attack_try/south/08.webp"
+          "lava_slug/animations/attack_try/south/03.webp"
         ],
         "south-east": [
           "lava_slug/animations/attack_try/south-east/00.webp",
           "lava_slug/animations/attack_try/south-east/01.webp",
           "lava_slug/animations/attack_try/south-east/02.webp",
-          "lava_slug/animations/attack_try/south-east/03.webp",
-          "lava_slug/animations/attack_try/south-east/04.webp",
-          "lava_slug/animations/attack_try/south-east/05.webp",
-          "lava_slug/animations/attack_try/south-east/06.webp",
-          "lava_slug/animations/attack_try/south-east/07.webp",
-          "lava_slug/animations/attack_try/south-east/08.webp"
+          "lava_slug/animations/attack_try/south-east/03.webp"
         ],
         "east": [
           "lava_slug/animations/attack_try/east/00.webp",
           "lava_slug/animations/attack_try/east/01.webp",
           "lava_slug/animations/attack_try/east/02.webp",
-          "lava_slug/animations/attack_try/east/03.webp",
-          "lava_slug/animations/attack_try/east/04.webp",
-          "lava_slug/animations/attack_try/east/05.webp",
-          "lava_slug/animations/attack_try/east/06.webp",
-          "lava_slug/animations/attack_try/east/07.webp",
-          "lava_slug/animations/attack_try/east/08.webp"
+          "lava_slug/animations/attack_try/east/03.webp"
         ],
         "north-east": [
           "lava_slug/animations/attack_try/north-east/00.webp",
           "lava_slug/animations/attack_try/north-east/01.webp",
           "lava_slug/animations/attack_try/north-east/02.webp",
-          "lava_slug/animations/attack_try/north-east/03.webp",
-          "lava_slug/animations/attack_try/north-east/04.webp",
-          "lava_slug/animations/attack_try/north-east/05.webp",
-          "lava_slug/animations/attack_try/north-east/06.webp",
-          "lava_slug/animations/attack_try/north-east/07.webp",
-          "lava_slug/animations/attack_try/north-east/08.webp"
+          "lava_slug/animations/attack_try/north-east/03.webp"
         ],
         "north": [
           "lava_slug/animations/attack_try/north/00.webp",
           "lava_slug/animations/attack_try/north/01.webp",
           "lava_slug/animations/attack_try/north/02.webp",
-          "lava_slug/animations/attack_try/north/03.webp",
-          "lava_slug/animations/attack_try/north/04.webp",
-          "lava_slug/animations/attack_try/north/05.webp",
-          "lava_slug/animations/attack_try/north/06.webp",
-          "lava_slug/animations/attack_try/north/07.webp",
-          "lava_slug/animations/attack_try/north/08.webp"
-        ],
-        "west": [
-          "lava_slug/animations/attack_try/west/00.webp",
-          "lava_slug/animations/attack_try/west/01.webp",
-          "lava_slug/animations/attack_try/west/02.webp",
-          "lava_slug/animations/attack_try/west/03.webp",
-          "lava_slug/animations/attack_try/west/04.webp",
-          "lava_slug/animations/attack_try/west/05.webp",
-          "lava_slug/animations/attack_try/west/06.webp",
-          "lava_slug/animations/attack_try/west/07.webp",
-          "lava_slug/animations/attack_try/west/08.webp"
+          "lava_slug/animations/attack_try/north/03.webp"
         ],
         "south-west": [
           "lava_slug/animations/attack_try/south-west/00.webp",
           "lava_slug/animations/attack_try/south-west/01.webp",
           "lava_slug/animations/attack_try/south-west/02.webp",
-          "lava_slug/animations/attack_try/south-west/03.webp",
-          "lava_slug/animations/attack_try/south-west/04.webp",
-          "lava_slug/animations/attack_try/south-west/05.webp",
-          "lava_slug/animations/attack_try/south-west/06.webp",
-          "lava_slug/animations/attack_try/south-west/07.webp",
-          "lava_slug/animations/attack_try/south-west/08.webp"
+          "lava_slug/animations/attack_try/south-west/03.webp"
         ],
         "north-west": [
           "lava_slug/animations/attack_try/north-west/00.webp",
           "lava_slug/animations/attack_try/north-west/01.webp",
           "lava_slug/animations/attack_try/north-west/02.webp",
-          "lava_slug/animations/attack_try/north-west/03.webp",
-          "lava_slug/animations/attack_try/north-west/04.webp",
-          "lava_slug/animations/attack_try/north-west/05.webp",
-          "lava_slug/animations/attack_try/north-west/06.webp",
-          "lava_slug/animations/attack_try/north-west/07.webp",
-          "lava_slug/animations/attack_try/north-west/08.webp"
+          "lava_slug/animations/attack_try/north-west/03.webp"
         ]
       },
       "strips": {
@@ -1268,11 +1555,9 @@
         "east": "lava_slug/animations/attack_try__east.webp",
         "north-east": "lava_slug/animations/attack_try__north-east.webp",
         "north": "lava_slug/animations/attack_try__north.webp",
-        "west": "lava_slug/animations/attack_try__west.webp",
         "south-west": "lava_slug/animations/attack_try__south-west.webp",
         "north-west": "lava_slug/animations/attack_try__north-west.webp"
-      },
-      "intensity": 1
+      }
     }
   }
 }

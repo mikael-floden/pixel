@@ -1,1242 +1,1242 @@
 {
-  "id": "ember_drake",
-  "name": "Emberdrake",
-  "tier": "boss",
-  "scale": "big",
-  "lore": "A drake that never grew wings and never needed them. It walks the lava fields and the lava parts for it.",
-  "biome": [
-    "lava",
-    "black_rock"
-  ],
-  "items": [],
-  "prompt": "Gigantic fantasy wingless fire drake with a heavy four-legged body of dark red scales, glowing orange plates down its back, a broad horned head with a mouth leaking flame, thick clawed legs, and a short thick tail curled around its feet.",
-  "size": [
-    240,
-    240
-  ],
-  "template_id": "bear",
-  "directions": [
-    "south",
-    "south-east",
-    "east",
-    "north-east",
-    "north",
-    "north-west",
-    "west",
-    "south-west"
-  ],
-  "rotations": {
-    "south": "ember_drake/rotations/south.webp",
-    "south-east": "ember_drake/rotations/south-east.webp",
-    "east": "ember_drake/rotations/east.webp",
-    "north-east": "ember_drake/rotations/north-east.webp",
-    "north": "ember_drake/rotations/north.webp",
-    "north-west": "ember_drake/rotations/north-west.webp",
-    "west": "ember_drake/rotations/west.webp",
-    "south-west": "ember_drake/rotations/south-west.webp"
-  },
-  "sheet": "ember_drake/sheet.webp",
-  "review": "approved",
-  "pixellab_id": "7b08da5f-5c75-4c27-b8ec-1c4f40511de9",
-  "seed": 621051281,
-  "version": 1,
-  "usage": null,
-  "generated_at": "2026-09-09T18:47:26+00:00",
-  "elapsed_s": 261.4,
-  "qa": {
-    "status": "pass",
-    "min_run1": 0.573,
-    "reasons": [],
-    "directions": {
-      "south": {
-        "run1": 0.573,
-        "bbox": [
-          13,
-          7,
-          228,
-          234
-        ],
-        "fill": 0.847,
-        "touches_edge": false
-      },
-      "south-east": {
-        "run1": 0.639,
-        "bbox": [
-          17,
-          7,
-          194,
-          230
-        ],
-        "fill": 0.685,
-        "touches_edge": false
-      },
-      "east": {
-        "run1": 0.651,
-        "bbox": [
-          11,
-          7,
-          202,
-          233
-        ],
-        "fill": 0.749,
-        "touches_edge": false
-      },
-      "north-east": {
-        "run1": 0.663,
-        "bbox": [
-          25,
-          7,
-          225,
-          230
-        ],
-        "fill": 0.774,
-        "touches_edge": false
-      },
-      "north": {
-        "run1": 0.647,
-        "bbox": [
-          11,
-          6,
-          225,
-          229
-        ],
-        "fill": 0.829,
-        "touches_edge": false
-      },
-      "north-west": {
-        "run1": 0.616,
-        "bbox": [
-          34,
-          3,
-          229,
-          229
-        ],
-        "fill": 0.765,
-        "touches_edge": false
-      },
-      "west": {
-        "run1": 0.638,
-        "bbox": [
-          38,
-          7,
-          224,
-          233
-        ],
-        "fill": 0.73,
-        "touches_edge": false
-      },
-      "south-west": {
-        "run1": 0.643,
-        "bbox": [
-          14,
-          7,
-          219,
-          231
-        ],
-        "fill": 0.797,
-        "touches_edge": false
-      }
-    }
-  },
-  "approved_at": "2026-09-09T19:59:23+00:00",
-  "animations": {
-    "idle": {
-      "directions": {
-        "south": {
-          "status": "pass",
-          "step_mean": 0.0685,
-          "step_max": 0.0924,
-          "drift": 1.21,
-          "loop": 0.0,
-          "pin": 1.0,
-          "reasons": [],
-          "sub": "a6d54415-11be-45dd-a858-57c0a014a6de",
-          "takes": 1,
-          "version": 1,
-          "mirrored": false,
-          "generated_at": "2026-09-09T20:19:15+00:00",
-          "cut": 0
-        },
-        "south-east": {
-          "status": "pass",
-          "step_mean": 0.0551,
-          "step_max": 0.0694,
-          "drift": 1.78,
-          "loop": 0.0,
-          "pin": 1.0,
-          "reasons": [],
-          "sub": "049a1da5-aa6a-4d0e-8f1f-5abc43ff3a13",
-          "takes": 1,
-          "version": 1,
-          "mirrored": false,
-          "generated_at": "2026-09-09T20:19:15+00:00",
-          "cut": 0
-        },
-        "east": {
-          "status": "pass",
-          "step_mean": 0.037,
-          "step_max": 0.0569,
-          "drift": 1.61,
-          "loop": 0.0002,
-          "pin": 1.0,
-          "reasons": [],
-          "sub": "f1d01e36-6080-443b-90d6-6d658e7488d0",
-          "takes": 1,
-          "version": 1,
-          "mirrored": false,
-          "generated_at": "2026-09-09T20:19:17+00:00",
-          "cut": 0
-        },
-        "north-east": {
-          "status": "pass",
-          "step_mean": 0.0603,
-          "step_max": 0.0711,
-          "drift": 1.94,
-          "loop": 0.0006,
-          "pin": 1.0,
-          "reasons": [],
-          "sub": "59514b5b-09d4-4864-af85-ee22a300bd0d",
-          "takes": 1,
-          "version": 1,
-          "mirrored": false,
-          "generated_at": "2026-09-09T20:19:17+00:00",
-          "cut": 0
-        },
-        "north": {
-          "status": "pass",
-          "step_mean": 0.0562,
-          "step_max": 0.0709,
-          "drift": 1.7,
-          "loop": 0.0001,
-          "pin": 1.0,
-          "reasons": [],
-          "sub": "0c185229-5265-44f3-b5ac-8c25ecdb1b46",
-          "takes": 1,
-          "version": 1,
-          "mirrored": false,
-          "generated_at": "2026-09-09T20:19:18+00:00",
-          "cut": 0
-        },
-        "south-west": {
-          "status": "pass",
-          "step_mean": 0.0551,
-          "step_max": 0.0694,
-          "drift": 1.78,
-          "loop": 0.0,
-          "pin": 1.0,
-          "reasons": [],
-          "sub": "049a1da5-aa6a-4d0e-8f1f-5abc43ff3a13",
-          "takes": 1,
-          "version": 1,
-          "mirrored": true,
-          "generated_at": "2026-09-09T20:19:15+00:00",
-          "cut": 0,
-          "source": "south-east"
-        },
-        "west": {
-          "status": "pass",
-          "step_mean": 0.037,
-          "step_max": 0.0569,
-          "drift": 1.61,
-          "loop": 0.0002,
-          "pin": 1.0,
-          "reasons": [],
-          "sub": "f1d01e36-6080-443b-90d6-6d658e7488d0",
-          "takes": 1,
-          "version": 1,
-          "mirrored": true,
-          "generated_at": "2026-09-09T20:19:17+00:00",
-          "cut": 0,
-          "source": "east"
-        },
-        "north-west": {
-          "status": "pass",
-          "step_mean": 0.0603,
-          "step_max": 0.0711,
-          "drift": 1.94,
-          "loop": 0.0006,
-          "pin": 1.0,
-          "reasons": [],
-          "sub": "59514b5b-09d4-4864-af85-ee22a300bd0d",
-          "takes": 1,
-          "version": 1,
-          "mirrored": true,
-          "generated_at": "2026-09-09T20:19:17+00:00",
-          "cut": 0,
-          "source": "north-east"
-        }
-      },
-      "action": "Calm still idle, breathing very slowly and subtly, chest and shoulders rise and fall a little, feet planted, no other movement, ends in the same neutral pose it started in",
-      "frame_paths": {
-        "south": [
-          "ember_drake/animations/idle/south/00.webp",
-          "ember_drake/animations/idle/south/01.webp",
-          "ember_drake/animations/idle/south/02.webp",
-          "ember_drake/animations/idle/south/03.webp",
-          "ember_drake/animations/idle/south/04.webp"
-        ],
-        "south-east": [
-          "ember_drake/animations/idle/south-east/00.webp",
-          "ember_drake/animations/idle/south-east/01.webp",
-          "ember_drake/animations/idle/south-east/02.webp",
-          "ember_drake/animations/idle/south-east/03.webp",
-          "ember_drake/animations/idle/south-east/04.webp"
-        ],
-        "east": [
-          "ember_drake/animations/idle/east/00.webp",
-          "ember_drake/animations/idle/east/01.webp",
-          "ember_drake/animations/idle/east/02.webp",
-          "ember_drake/animations/idle/east/03.webp",
-          "ember_drake/animations/idle/east/04.webp"
-        ],
-        "north-east": [
-          "ember_drake/animations/idle/north-east/00.webp",
-          "ember_drake/animations/idle/north-east/01.webp",
-          "ember_drake/animations/idle/north-east/02.webp",
-          "ember_drake/animations/idle/north-east/03.webp",
-          "ember_drake/animations/idle/north-east/04.webp"
-        ],
-        "north": [
-          "ember_drake/animations/idle/north/00.webp",
-          "ember_drake/animations/idle/north/01.webp",
-          "ember_drake/animations/idle/north/02.webp",
-          "ember_drake/animations/idle/north/03.webp",
-          "ember_drake/animations/idle/north/04.webp"
-        ],
-        "south-west": [
-          "ember_drake/animations/idle/south-west/00.webp",
-          "ember_drake/animations/idle/south-west/01.webp",
-          "ember_drake/animations/idle/south-west/02.webp",
-          "ember_drake/animations/idle/south-west/03.webp",
-          "ember_drake/animations/idle/south-west/04.webp"
-        ],
-        "west": [
-          "ember_drake/animations/idle/west/00.webp",
-          "ember_drake/animations/idle/west/01.webp",
-          "ember_drake/animations/idle/west/02.webp",
-          "ember_drake/animations/idle/west/03.webp",
-          "ember_drake/animations/idle/west/04.webp"
-        ],
-        "north-west": [
-          "ember_drake/animations/idle/north-west/00.webp",
-          "ember_drake/animations/idle/north-west/01.webp",
-          "ember_drake/animations/idle/north-west/02.webp",
-          "ember_drake/animations/idle/north-west/03.webp",
-          "ember_drake/animations/idle/north-west/04.webp"
-        ]
-      },
-      "strips": {
-        "south": "ember_drake/animations/idle__south.webp",
-        "south-east": "ember_drake/animations/idle__south-east.webp",
-        "east": "ember_drake/animations/idle__east.webp",
-        "north-east": "ember_drake/animations/idle__north-east.webp",
-        "north": "ember_drake/animations/idle__north.webp",
-        "south-west": "ember_drake/animations/idle__south-west.webp",
-        "west": "ember_drake/animations/idle__west.webp",
-        "north-west": "ember_drake/animations/idle__north-west.webp"
-      }
-    },
-    "walk": {
-      "directions": {
-        "south": {
-          "status": "warn",
-          "step_mean": 0.1235,
-          "step_max": 0.1564,
-          "drift": 1.62,
-          "loop": 0.2616,
-          "loop_ratio": 2.12,
-          "travel": 2.96,
-          "pin": 0.881,
-          "pad": 0,
-          "canvas": [
-            240,
-            240
-          ],
-          "reasons": [
-            "last→first hand-off 2.1× a step — eyeball the loop"
-          ],
-          "sub": "ea633a15-1612-4c0e-9078-71ed2184d764",
-          "group": "bcf307bd-2b5b-41f7-b994-37c5e10c1712",
-          "takes": 1,
-          "version": 1,
-          "mirrored": false,
-          "generated_at": "2026-09-09T21:16:24+00:00"
-        },
-        "south-east": {
-          "status": "pass",
-          "step_mean": 0.1617,
-          "step_max": 0.1817,
-          "drift": 5.6,
-          "loop": 0.2271,
-          "loop_ratio": 1.4,
-          "travel": 4.61,
-          "pin": 0.875,
-          "pad": 0,
-          "canvas": [
-            240,
-            240
-          ],
-          "reasons": [],
-          "sub": "110c24d4-34fc-4159-915e-d4d20a0e386f",
-          "group": "a13a4369-7b03-459e-88e4-e2883b7f3de6",
-          "takes": 1,
-          "version": 1,
-          "mirrored": false,
-          "generated_at": "2026-09-09T21:16:25+00:00"
-        },
-        "east": {
-          "status": "pass",
-          "step_mean": 0.143,
-          "step_max": 0.1768,
-          "drift": 4.04,
-          "loop": 0.2388,
-          "loop_ratio": 1.67,
-          "travel": 2.39,
-          "pin": 0.891,
-          "pad": 0,
-          "canvas": [
-            240,
-            240
-          ],
-          "reasons": [],
-          "sub": "4e4fc72a-7d6f-4163-afdf-bcbd347dfb5d",
-          "group": "988985cc-8641-488a-aab1-f2aee7387f90",
-          "takes": 1,
-          "version": 1,
-          "mirrored": false,
-          "generated_at": "2026-09-09T21:16:26+00:00"
-        },
-        "north-east": {
-          "status": "pass",
-          "step_mean": 0.1428,
-          "step_max": 0.1813,
-          "drift": 3.8,
-          "loop": 0.2134,
-          "loop_ratio": 1.49,
-          "travel": 1.65,
-          "pin": 0.889,
-          "pad": 0,
-          "canvas": [
-            240,
-            240
-          ],
-          "reasons": [],
-          "sub": "748dc7d6-d164-4a8e-b25a-dcd1d0edfc9a",
-          "group": "559c9915-0cf6-4fa8-b902-b999277dc4f6",
-          "takes": 1,
-          "version": 1,
-          "mirrored": false,
-          "generated_at": "2026-09-09T21:16:27+00:00"
-        },
-        "north": {
-          "status": "warn",
-          "step_mean": 0.1621,
-          "step_max": 0.2137,
-          "drift": 7.59,
-          "loop": 0.2616,
-          "loop_ratio": 1.61,
-          "travel": 2.72,
-          "pin": 0.893,
-          "pad": 0,
-          "canvas": [
-            240,
-            240
-          ],
-          "reasons": [
-            "drifts 7.6 px — eyeball it"
-          ],
-          "sub": "eea240aa-34c4-4cd5-b6f0-1756ba41ca85",
-          "group": "db63f987-07c5-4101-bf4a-0eb4c10faa9b",
-          "takes": 1,
-          "version": 1,
-          "mirrored": false,
-          "generated_at": "2026-09-09T21:16:27+00:00"
-        },
-        "south-west": {
-          "status": "pass",
-          "step_mean": 0.1617,
-          "step_max": 0.1817,
-          "drift": 5.6,
-          "loop": 0.2271,
-          "loop_ratio": 1.4,
-          "travel": 4.61,
-          "pin": 0.875,
-          "pad": 0,
-          "canvas": [
-            240,
-            240
-          ],
-          "reasons": [],
-          "sub": "110c24d4-34fc-4159-915e-d4d20a0e386f",
-          "group": "a13a4369-7b03-459e-88e4-e2883b7f3de6",
-          "takes": 1,
-          "version": 1,
-          "mirrored": true,
-          "generated_at": "2026-09-09T21:16:25+00:00",
-          "source": "south-east"
-        },
-        "west": {
-          "status": "pass",
-          "step_mean": 0.143,
-          "step_max": 0.1768,
-          "drift": 4.04,
-          "loop": 0.2388,
-          "loop_ratio": 1.67,
-          "travel": 2.39,
-          "pin": 0.891,
-          "pad": 0,
-          "canvas": [
-            240,
-            240
-          ],
-          "reasons": [],
-          "sub": "4e4fc72a-7d6f-4163-afdf-bcbd347dfb5d",
-          "group": "988985cc-8641-488a-aab1-f2aee7387f90",
-          "takes": 1,
-          "version": 1,
-          "mirrored": true,
-          "generated_at": "2026-09-09T21:16:26+00:00",
-          "source": "east"
-        },
-        "north-west": {
-          "status": "pass",
-          "step_mean": 0.1428,
-          "step_max": 0.1813,
-          "drift": 3.8,
-          "loop": 0.2134,
-          "loop_ratio": 1.49,
-          "travel": 1.65,
-          "pin": 0.889,
-          "pad": 0,
-          "canvas": [
-            240,
-            240
-          ],
-          "reasons": [],
-          "sub": "748dc7d6-d164-4a8e-b25a-dcd1d0edfc9a",
-          "group": "559c9915-0cf6-4fa8-b902-b999277dc4f6",
-          "takes": 1,
-          "version": 1,
-          "mirrored": true,
-          "generated_at": "2026-09-09T21:16:27+00:00",
-          "source": "north-east"
-        }
-      },
-      "action": "walk loop, full walk cycle in place, legs alternate naturally, normal calm walking pace, body stays centered, seamless loop whose last frame leads straight back into the first, no turning",
-      "frame_paths": {
-        "south": [
-          "ember_drake/animations/walk/south/00.webp",
-          "ember_drake/animations/walk/south/01.webp",
-          "ember_drake/animations/walk/south/02.webp",
-          "ember_drake/animations/walk/south/03.webp",
-          "ember_drake/animations/walk/south/04.webp",
-          "ember_drake/animations/walk/south/05.webp"
-        ],
-        "south-east": [
-          "ember_drake/animations/walk/south-east/00.webp",
-          "ember_drake/animations/walk/south-east/01.webp",
-          "ember_drake/animations/walk/south-east/02.webp",
-          "ember_drake/animations/walk/south-east/03.webp",
-          "ember_drake/animations/walk/south-east/04.webp",
-          "ember_drake/animations/walk/south-east/05.webp"
-        ],
-        "east": [
-          "ember_drake/animations/walk/east/00.webp",
-          "ember_drake/animations/walk/east/01.webp",
-          "ember_drake/animations/walk/east/02.webp",
-          "ember_drake/animations/walk/east/03.webp",
-          "ember_drake/animations/walk/east/04.webp",
-          "ember_drake/animations/walk/east/05.webp"
-        ],
-        "north-east": [
-          "ember_drake/animations/walk/north-east/00.webp",
-          "ember_drake/animations/walk/north-east/01.webp",
-          "ember_drake/animations/walk/north-east/02.webp",
-          "ember_drake/animations/walk/north-east/03.webp",
-          "ember_drake/animations/walk/north-east/04.webp",
-          "ember_drake/animations/walk/north-east/05.webp"
-        ],
-        "north": [
-          "ember_drake/animations/walk/north/00.webp",
-          "ember_drake/animations/walk/north/01.webp",
-          "ember_drake/animations/walk/north/02.webp",
-          "ember_drake/animations/walk/north/03.webp",
-          "ember_drake/animations/walk/north/04.webp",
-          "ember_drake/animations/walk/north/05.webp"
-        ],
-        "south-west": [
-          "ember_drake/animations/walk/south-west/00.webp",
-          "ember_drake/animations/walk/south-west/01.webp",
-          "ember_drake/animations/walk/south-west/02.webp",
-          "ember_drake/animations/walk/south-west/03.webp",
-          "ember_drake/animations/walk/south-west/04.webp",
-          "ember_drake/animations/walk/south-west/05.webp"
-        ],
-        "west": [
-          "ember_drake/animations/walk/west/00.webp",
-          "ember_drake/animations/walk/west/01.webp",
-          "ember_drake/animations/walk/west/02.webp",
-          "ember_drake/animations/walk/west/03.webp",
-          "ember_drake/animations/walk/west/04.webp",
-          "ember_drake/animations/walk/west/05.webp"
-        ],
-        "north-west": [
-          "ember_drake/animations/walk/north-west/00.webp",
-          "ember_drake/animations/walk/north-west/01.webp",
-          "ember_drake/animations/walk/north-west/02.webp",
-          "ember_drake/animations/walk/north-west/03.webp",
-          "ember_drake/animations/walk/north-west/04.webp",
-          "ember_drake/animations/walk/north-west/05.webp"
-        ]
-      },
-      "strips": {
-        "south": "ember_drake/animations/walk__south.webp",
-        "south-east": "ember_drake/animations/walk__south-east.webp",
-        "east": "ember_drake/animations/walk__east.webp",
-        "north-east": "ember_drake/animations/walk__north-east.webp",
-        "north": "ember_drake/animations/walk__north.webp",
-        "south-west": "ember_drake/animations/walk__south-west.webp",
-        "west": "ember_drake/animations/walk__west.webp",
-        "north-west": "ember_drake/animations/walk__north-west.webp"
-      }
-    },
-    "attack": {
-      "directions": {
-        "south": {
-          "status": "fail",
-          "step_mean": 0.0793,
-          "step_max": 0.1158,
-          "drift": 4.25,
-          "loop": 0.0,
-          "loop_ratio": 0.0,
-          "travel": 4.25,
-          "pin": 1.0,
-          "pad": 0,
-          "flash": 0.009,
-          "peak": 0.1366,
-          "reach": 0.177,
-          "canvas": [
-            240,
-            240
-          ],
-          "reasons": [
-            "motion 0.079 outside the calm band 0.08–0.9 — eyeball it",
-            "weak strike: peak 0.137 — eyeball it",
-            "no strike, just a lean: nothing reaches past 0.18 of the body"
-          ],
-          "sub": "a98d8840-6ddd-457c-aa15-b35cc2da7d10",
-          "group": "a8e70e31-9388-4329-91c4-9bbf69eeb7ef",
-          "takes": 1,
-          "version": 2,
-          "mirrored": false,
-          "generated_at": "2026-09-09T22:39:51+00:00",
-          "action": "Fire Breath - Rears its head back and breathes one short jet of fire forward, then returns to idle stance"
-        },
-        "south-east": {
-          "status": "warn",
-          "step_mean": 0.1353,
-          "step_max": 0.1918,
-          "drift": 11.89,
-          "loop": 0.0,
-          "loop_ratio": 0.0,
-          "travel": 11.89,
-          "pin": 1.0,
-          "pad": 0,
-          "flash": 0.293,
-          "peak": 0.2534,
-          "reach": 0.271,
-          "canvas": [
-            240,
-            240
-          ],
-          "reasons": [
-            "shallow strike: reach 0.27 — eyeball it",
-            "some bright effect pixels (0.29) — eyeball it"
-          ],
-          "sub": "fe0cb1d5-fad7-42e5-8ffb-d4be9a04f40b",
-          "group": "a2b9356d-bcbe-4502-83cf-57d18defb2bb",
-          "takes": 1,
-          "version": 2,
-          "mirrored": false,
-          "generated_at": "2026-09-09T22:39:52+00:00",
-          "action": "Fire Breath - Rears its head back and breathes one short jet of fire forward, then returns to idle stance"
-        },
-        "east": {
-          "status": "fail",
-          "step_mean": 0.105,
-          "step_max": 0.1218,
-          "drift": 4.48,
-          "loop": 0.0,
-          "loop_ratio": 0.0,
-          "travel": 4.48,
-          "pin": 1.0,
-          "pad": 0,
-          "flash": 0.017,
-          "peak": 0.1863,
-          "reach": 0.178,
-          "canvas": [
-            240,
-            240
-          ],
-          "reasons": [
-            "no strike, just a lean: nothing reaches past 0.18 of the body"
-          ],
-          "sub": "ac710383-6b9c-4921-9d1e-8fb114aad063",
-          "group": "9c1040e3-620f-4d2e-8cd4-ba309ed46a75",
-          "takes": 1,
-          "version": 2,
-          "mirrored": false,
-          "generated_at": "2026-09-09T22:39:53+00:00",
-          "action": "Fire Breath - Rears its head back and breathes one short jet of fire forward, then returns to idle stance"
-        },
-        "north-east": {
-          "status": "fail",
-          "step_mean": 0.0716,
-          "step_max": 0.0811,
-          "drift": 1.74,
-          "loop": 0.0006,
-          "loop_ratio": 0.01,
-          "travel": 0.42,
-          "pin": 1.0,
-          "pad": 0,
-          "flash": 0.0,
-          "peak": 0.1267,
-          "reach": 0.02,
-          "canvas": [
-            240,
-            240
-          ],
-          "reasons": [
-            "motion 0.072 outside the calm band 0.08–0.9 — eyeball it",
-            "weak strike: peak 0.127 — eyeball it",
-            "no strike, just a lean: nothing reaches past 0.02 of the body"
-          ],
-          "sub": "054ec414-3d2e-49d3-b411-6f9f85f0f969",
-          "group": "c4e68f02-f5f2-4341-9ead-5987970c8778",
-          "takes": 1,
-          "version": 2,
-          "mirrored": false,
-          "generated_at": "2026-09-09T22:39:53+00:00",
-          "action": "Fire Breath - Rears its head back and breathes one short jet of fire forward, then returns to idle stance"
-        },
-        "north": {
-          "status": "fail",
-          "step_mean": 0.084,
-          "step_max": 0.124,
-          "drift": 3.43,
-          "loop": 0.0001,
-          "loop_ratio": 0.0,
-          "travel": 3.43,
-          "pin": 1.0,
-          "pad": 0,
-          "flash": 0.009,
-          "peak": 0.1408,
-          "reach": 0.136,
-          "canvas": [
-            240,
-            240
-          ],
-          "reasons": [
-            "weak strike: peak 0.141 — eyeball it",
-            "no strike, just a lean: nothing reaches past 0.14 of the body"
-          ],
-          "sub": "aa59d55f-c380-4c97-884b-5becce3f8721",
-          "group": "b237f9bd-803b-4a8b-a815-4a13e5d3e829",
-          "takes": 1,
-          "version": 2,
-          "mirrored": false,
-          "generated_at": "2026-09-09T22:39:54+00:00",
-          "action": "Fire Breath - Rears its head back and breathes one short jet of fire forward, then returns to idle stance"
-        },
-        "south-west": {
-          "status": "warn",
-          "step_mean": 0.1353,
-          "step_max": 0.1918,
-          "drift": 11.89,
-          "loop": 0.0,
-          "loop_ratio": 0.0,
-          "travel": 11.89,
-          "pin": 1.0,
-          "pad": 0,
-          "flash": 0.293,
-          "peak": 0.2534,
-          "reach": 0.271,
-          "canvas": [
-            240,
-            240
-          ],
-          "reasons": [
-            "shallow strike: reach 0.27 — eyeball it",
-            "some bright effect pixels (0.29) — eyeball it"
-          ],
-          "sub": "fe0cb1d5-fad7-42e5-8ffb-d4be9a04f40b",
-          "group": "a2b9356d-bcbe-4502-83cf-57d18defb2bb",
-          "takes": 1,
-          "version": 2,
-          "mirrored": true,
-          "generated_at": "2026-09-09T22:39:52+00:00",
-          "action": "Fire Breath - Rears its head back and breathes one short jet of fire forward, then returns to idle stance",
-          "source": "south-east"
-        },
-        "west": {
-          "status": "pass",
-          "step_mean": 0.105,
-          "step_max": 0.1218,
-          "drift": 4.48,
-          "loop": 0.0,
-          "loop_ratio": 0.0,
-          "travel": 4.48,
-          "pin": 1.0,
-          "pad": 0,
-          "flash": 0.017,
-          "peak": 0.1863,
-          "canvas": [
-            240,
-            240
-          ],
-          "reasons": [],
-          "sub": "ac710383-6b9c-4921-9d1e-8fb114aad063",
-          "group": "9c1040e3-620f-4d2e-8cd4-ba309ed46a75",
-          "takes": 1,
-          "version": 2,
-          "mirrored": true,
-          "generated_at": "2026-09-09T22:39:53+00:00",
-          "action": "Fire Breath - Rears its head back and breathes one short jet of fire forward, then returns to idle stance",
-          "source": "east"
-        },
-        "north-west": {
-          "status": "pass",
-          "step_mean": 0.0716,
-          "step_max": 0.0811,
-          "drift": 1.74,
-          "loop": 0.0006,
-          "loop_ratio": 0.01,
-          "travel": 0.42,
-          "pin": 1.0,
-          "pad": 0,
-          "flash": 0.0,
-          "peak": 0.1267,
-          "canvas": [
-            240,
-            240
-          ],
-          "reasons": [],
-          "sub": "054ec414-3d2e-49d3-b411-6f9f85f0f969",
-          "group": "c4e68f02-f5f2-4341-9ead-5987970c8778",
-          "takes": 1,
-          "version": 2,
-          "mirrored": true,
-          "generated_at": "2026-09-09T22:39:53+00:00",
-          "action": "Fire Breath - Rears its head back and breathes one short jet of fire forward, then returns to idle stance",
-          "source": "north-east"
-        }
-      },
-      "action": "Fire Breath - Rears its head back and breathes one short jet of fire forward, then returns to idle stance",
-      "frame_paths": {
-        "south": [
-          "ember_drake/animations/attack/south/00.webp",
-          "ember_drake/animations/attack/south/01.webp",
-          "ember_drake/animations/attack/south/02.webp",
-          "ember_drake/animations/attack/south/03.webp",
-          "ember_drake/animations/attack/south/04.webp"
-        ],
-        "south-east": [
-          "ember_drake/animations/attack/south-east/00.webp",
-          "ember_drake/animations/attack/south-east/01.webp",
-          "ember_drake/animations/attack/south-east/02.webp",
-          "ember_drake/animations/attack/south-east/03.webp",
-          "ember_drake/animations/attack/south-east/04.webp"
-        ],
-        "east": [
-          "ember_drake/animations/attack/east/00.webp",
-          "ember_drake/animations/attack/east/01.webp",
-          "ember_drake/animations/attack/east/02.webp",
-          "ember_drake/animations/attack/east/03.webp",
-          "ember_drake/animations/attack/east/04.webp"
-        ],
-        "north-east": [
-          "ember_drake/animations/attack/north-east/00.webp",
-          "ember_drake/animations/attack/north-east/01.webp",
-          "ember_drake/animations/attack/north-east/02.webp",
-          "ember_drake/animations/attack/north-east/03.webp",
-          "ember_drake/animations/attack/north-east/04.webp"
-        ],
-        "north": [
-          "ember_drake/animations/attack/north/00.webp",
-          "ember_drake/animations/attack/north/01.webp",
-          "ember_drake/animations/attack/north/02.webp",
-          "ember_drake/animations/attack/north/03.webp",
-          "ember_drake/animations/attack/north/04.webp"
-        ],
-        "south-west": [
-          "ember_drake/animations/attack/south-west/00.webp",
-          "ember_drake/animations/attack/south-west/01.webp",
-          "ember_drake/animations/attack/south-west/02.webp",
-          "ember_drake/animations/attack/south-west/03.webp",
-          "ember_drake/animations/attack/south-west/04.webp"
-        ],
-        "west": [
-          "ember_drake/animations/attack/west/00.webp",
-          "ember_drake/animations/attack/west/01.webp",
-          "ember_drake/animations/attack/west/02.webp",
-          "ember_drake/animations/attack/west/03.webp",
-          "ember_drake/animations/attack/west/04.webp"
-        ],
-        "north-west": [
-          "ember_drake/animations/attack/north-west/00.webp",
-          "ember_drake/animations/attack/north-west/01.webp",
-          "ember_drake/animations/attack/north-west/02.webp",
-          "ember_drake/animations/attack/north-west/03.webp",
-          "ember_drake/animations/attack/north-west/04.webp"
-        ]
-      },
-      "strips": {
-        "south": "ember_drake/animations/attack__south.webp",
-        "south-east": "ember_drake/animations/attack__south-east.webp",
-        "east": "ember_drake/animations/attack__east.webp",
-        "north-east": "ember_drake/animations/attack__north-east.webp",
-        "north": "ember_drake/animations/attack__north.webp",
-        "south-west": "ember_drake/animations/attack__south-west.webp",
-        "west": "ember_drake/animations/attack__west.webp",
-        "north-west": "ember_drake/animations/attack__north-west.webp"
-      }
-    },
-    "attack_try": {
-      "directions": {
-        "south": {
-          "status": "warn",
-          "step_mean": 0.1296,
-          "step_max": 0.1616,
-          "drift": 4.37,
-          "loop": 0.2163,
-          "loop_ratio": 1.67,
-          "travel": 5.21,
-          "pin": 1.0,
-          "pad": 0,
-          "flash": 0.219,
-          "peak": 0.2163,
-          "reach": 0.219,
-          "canvas": [
-            240,
-            240
-          ],
-          "reasons": [
-            "shallow strike: reach 0.22 — eyeball it"
-          ],
-          "sub": "e3cc23ed-700d-4ab5-b001-72d1964f83f9",
-          "group": "dfdcefac-f7ff-4a54-b83f-06313bd0b932",
-          "takes": 1,
-          "version": 9,
-          "mirrored": false,
-          "generated_at": "2026-09-10T22:50:36+00:00",
-          "action": "Inferno Breath - The drake rears its head far back and unleashes a long roaring jet of fire, wings thrown wide, a huge aggressive attack with the whole body behind it, wide exaggerated motion",
-          "tries": 8,
-          "rolls": 8,
-          "intensity": 1,
-          "frames": 5,
-          "rung": 4
-        },
-        "south-east": {
-          "status": "warn",
-          "step_mean": 0.1404,
-          "step_max": 0.2345,
-          "drift": 12.14,
-          "loop": 0.2903,
-          "loop_ratio": 2.07,
-          "travel": 11.05,
-          "pin": 1.0,
-          "pad": 0,
-          "flash": 0.152,
-          "peak": 0.2903,
-          "reach": 0.22,
-          "canvas": [
-            240,
-            240
-          ],
-          "reasons": [
-            "shallow strike: reach 0.22 — eyeball it"
-          ],
-          "sub": "733c4b30-4549-48cc-8df3-57048e1dbdcd",
-          "group": "7d01b228-bd21-4c95-ab3b-26cfdb92c47c",
-          "takes": 1,
-          "version": 1,
-          "mirrored": false,
-          "generated_at": "2026-09-10T20:06:10+00:00",
-          "action": "Fire Breath - Rears its head back and breathes a long jet of fire forward",
-          "tries": 1,
-          "rolls": 1,
-          "intensity": 1,
-          "rung": 0
-        },
-        "east": {
-          "status": "warn",
-          "step_mean": 0.093,
-          "step_max": 0.1381,
-          "drift": 6.91,
-          "loop": 0.13,
-          "loop_ratio": 1.4,
-          "travel": 6.91,
-          "pin": 1.0,
-          "pad": 0,
-          "flash": 0.108,
-          "peak": 0.1534,
-          "reach": 0.236,
-          "canvas": [
-            240,
-            240
-          ],
-          "reasons": [
-            "shallow strike: reach 0.24 — eyeball it"
-          ],
-          "sub": "a41397d8-9e0e-43e3-86ca-ece8874417a2",
-          "group": "ea93b6e9-d50e-4bde-a668-7201c6f0dcc1",
-          "takes": 1,
-          "version": 1,
-          "mirrored": false,
-          "generated_at": "2026-09-10T20:06:10+00:00",
-          "action": "Fire Breath - Rears its head back and breathes a long jet of fire forward",
-          "tries": 1,
-          "rolls": 1,
-          "intensity": 1,
-          "rung": 0
-        },
-        "north-east": {
-          "status": "warn",
-          "step_mean": 0.1531,
-          "step_max": 0.2122,
-          "drift": 3.99,
-          "loop": 0.2268,
-          "loop_ratio": 1.48,
-          "travel": 3.69,
-          "pin": 1.0,
-          "pad": 0,
-          "flash": 0.194,
-          "peak": 0.2268,
-          "reach": 0.194,
-          "canvas": [
-            240,
-            240
-          ],
-          "reasons": [
-            "shallow strike: reach 0.19 — eyeball it"
-          ],
-          "sub": "d054597f-cd0d-461e-aa6e-edbbf0a05ee3",
-          "group": "15d34d83-4683-4883-bae9-202f3f2c4eaa",
-          "takes": 1,
-          "version": 8,
-          "mirrored": false,
-          "generated_at": "2026-09-10T22:49:16+00:00",
-          "action": "Claw Swipe - Raises one front paw and performs one quick swipe forward, white swoosh lines following the claws, a big aggressive swing",
-          "tries": 3,
-          "rolls": 3,
-          "intensity": 1,
-          "frames": 5,
-          "rung": 2
-        },
-        "north": {
-          "status": "warn",
-          "step_mean": 0.0845,
-          "step_max": 0.1255,
-          "drift": 7.45,
-          "loop": 0.177,
-          "loop_ratio": 2.1,
-          "travel": 7.45,
-          "pin": 1.0,
-          "pad": 0,
-          "flash": 0.062,
-          "peak": 0.1858,
-          "reach": 0.173,
-          "canvas": [
-            240,
-            240
-          ],
-          "reasons": [
-            "shallow strike: reach 0.17 — eyeball it"
-          ],
-          "sub": "cad8bbcb-f9d4-4cd1-9cae-28aa987ef7da",
-          "group": "8a03862a-37fd-4a18-9411-c5af3ff21451",
-          "takes": 1,
-          "version": 5,
-          "mirrored": false,
-          "generated_at": "2026-09-10T22:00:33+00:00",
-          "action": "Fire Breath - Rears its head back and breathes a long jet of fire forward",
-          "tries": 1,
-          "rolls": 1,
-          "intensity": 1,
-          "frames": 5,
-          "rung": 0
-        },
-        "south-west": {
-          "status": "warn",
-          "step_mean": 0.1404,
-          "step_max": 0.2345,
-          "drift": 12.14,
-          "loop": 0.2903,
-          "loop_ratio": 2.07,
-          "travel": 11.05,
-          "pin": 1.0,
-          "pad": 0,
-          "flash": 0.152,
-          "peak": 0.2903,
-          "reach": 0.22,
-          "canvas": [
-            240,
-            240
-          ],
-          "reasons": [
-            "shallow strike: reach 0.22 — eyeball it"
-          ],
-          "sub": "733c4b30-4549-48cc-8df3-57048e1dbdcd",
-          "group": "7d01b228-bd21-4c95-ab3b-26cfdb92c47c",
-          "takes": 1,
-          "version": 1,
-          "mirrored": true,
-          "generated_at": "2026-09-10T20:06:10+00:00",
-          "action": "Fire Breath - Rears its head back and breathes a long jet of fire forward",
-          "tries": 1,
-          "rolls": 1,
-          "intensity": 1,
-          "rung": 0,
-          "source": "south-east"
-        },
-        "west": {
-          "status": "warn",
-          "step_mean": 0.093,
-          "step_max": 0.1381,
-          "drift": 6.91,
-          "loop": 0.13,
-          "loop_ratio": 1.4,
-          "travel": 6.91,
-          "pin": 1.0,
-          "pad": 0,
-          "flash": 0.108,
-          "peak": 0.1534,
-          "reach": 0.236,
-          "canvas": [
-            240,
-            240
-          ],
-          "reasons": [
-            "shallow strike: reach 0.24 — eyeball it"
-          ],
-          "sub": "a41397d8-9e0e-43e3-86ca-ece8874417a2",
-          "group": "ea93b6e9-d50e-4bde-a668-7201c6f0dcc1",
-          "takes": 1,
-          "version": 1,
-          "mirrored": true,
-          "generated_at": "2026-09-10T20:06:10+00:00",
-          "action": "Fire Breath - Rears its head back and breathes a long jet of fire forward",
-          "tries": 1,
-          "rolls": 1,
-          "intensity": 1,
-          "rung": 0,
-          "source": "east"
-        },
-        "north-west": {
-          "status": "warn",
-          "step_mean": 0.1531,
-          "step_max": 0.2122,
-          "drift": 3.99,
-          "loop": 0.2268,
-          "loop_ratio": 1.48,
-          "travel": 3.69,
-          "pin": 1.0,
-          "pad": 0,
-          "flash": 0.194,
-          "peak": 0.2268,
-          "reach": 0.194,
-          "canvas": [
-            240,
-            240
-          ],
-          "reasons": [
-            "shallow strike: reach 0.19 — eyeball it"
-          ],
-          "sub": "d054597f-cd0d-461e-aa6e-edbbf0a05ee3",
-          "group": "15d34d83-4683-4883-bae9-202f3f2c4eaa",
-          "takes": 1,
-          "version": 8,
-          "mirrored": true,
-          "generated_at": "2026-09-10T22:49:16+00:00",
-          "action": "Claw Swipe - Raises one front paw and performs one quick swipe forward, white swoosh lines following the claws, a big aggressive swing",
-          "tries": 3,
-          "rolls": 3,
-          "intensity": 1,
-          "frames": 5,
-          "rung": 2,
-          "source": "north-east"
-        }
-      },
-      "action": "Fire Breath - Rears its head back and breathes a long jet of fire forward",
-      "frame_paths": {
-        "south": [
-          "ember_drake/animations/attack_try/south/00.webp",
-          "ember_drake/animations/attack_try/south/01.webp",
-          "ember_drake/animations/attack_try/south/02.webp",
-          "ember_drake/animations/attack_try/south/03.webp",
-          "ember_drake/animations/attack_try/south/04.webp"
-        ],
-        "south-east": [
-          "ember_drake/animations/attack_try/south-east/00.webp",
-          "ember_drake/animations/attack_try/south-east/01.webp",
-          "ember_drake/animations/attack_try/south-east/02.webp",
-          "ember_drake/animations/attack_try/south-east/03.webp",
-          "ember_drake/animations/attack_try/south-east/04.webp"
-        ],
-        "east": [
-          "ember_drake/animations/attack_try/east/00.webp",
-          "ember_drake/animations/attack_try/east/01.webp",
-          "ember_drake/animations/attack_try/east/02.webp",
-          "ember_drake/animations/attack_try/east/03.webp",
-          "ember_drake/animations/attack_try/east/04.webp"
-        ],
-        "north-east": [
-          "ember_drake/animations/attack_try/north-east/00.webp",
-          "ember_drake/animations/attack_try/north-east/01.webp",
-          "ember_drake/animations/attack_try/north-east/02.webp",
-          "ember_drake/animations/attack_try/north-east/03.webp",
-          "ember_drake/animations/attack_try/north-east/04.webp"
-        ],
-        "north": [
-          "ember_drake/animations/attack_try/north/00.webp",
-          "ember_drake/animations/attack_try/north/01.webp",
-          "ember_drake/animations/attack_try/north/02.webp",
-          "ember_drake/animations/attack_try/north/03.webp",
-          "ember_drake/animations/attack_try/north/04.webp"
-        ],
-        "south-west": [
-          "ember_drake/animations/attack_try/south-west/00.webp",
-          "ember_drake/animations/attack_try/south-west/01.webp",
-          "ember_drake/animations/attack_try/south-west/02.webp",
-          "ember_drake/animations/attack_try/south-west/03.webp",
-          "ember_drake/animations/attack_try/south-west/04.webp"
-        ],
-        "west": [
-          "ember_drake/animations/attack_try/west/00.webp",
-          "ember_drake/animations/attack_try/west/01.webp",
-          "ember_drake/animations/attack_try/west/02.webp",
-          "ember_drake/animations/attack_try/west/03.webp",
-          "ember_drake/animations/attack_try/west/04.webp"
-        ],
-        "north-west": [
-          "ember_drake/animations/attack_try/north-west/00.webp",
-          "ember_drake/animations/attack_try/north-west/01.webp",
-          "ember_drake/animations/attack_try/north-west/02.webp",
-          "ember_drake/animations/attack_try/north-west/03.webp",
-          "ember_drake/animations/attack_try/north-west/04.webp"
-        ]
-      },
-      "strips": {
-        "south": "ember_drake/animations/attack_try__south.webp",
-        "south-east": "ember_drake/animations/attack_try__south-east.webp",
-        "east": "ember_drake/animations/attack_try__east.webp",
-        "north-east": "ember_drake/animations/attack_try__north-east.webp",
-        "north": "ember_drake/animations/attack_try__north.webp",
-        "south-west": "ember_drake/animations/attack_try__south-west.webp",
-        "west": "ember_drake/animations/attack_try__west.webp",
-        "north-west": "ember_drake/animations/attack_try__north-west.webp"
-      },
-      "intensity": 1
-    }
+ "id": "ember_drake",
+ "name": "Emberdrake",
+ "tier": "boss",
+ "scale": "big",
+ "lore": "A drake that never grew wings and never needed them. It walks the lava fields and the lava parts for it.",
+ "biome": [
+  "lava",
+  "black_rock"
+ ],
+ "items": [],
+ "prompt": "Gigantic fantasy wingless fire drake with a heavy four-legged body of dark red scales, glowing orange plates down its back, a broad horned head with a mouth leaking flame, thick clawed legs, and a short thick tail curled around its feet.",
+ "size": [
+  240,
+  240
+ ],
+ "template_id": "bear",
+ "directions": [
+  "south",
+  "south-east",
+  "east",
+  "north-east",
+  "north",
+  "north-west",
+  "west",
+  "south-west"
+ ],
+ "rotations": {
+  "south": "ember_drake/rotations/south.webp",
+  "south-east": "ember_drake/rotations/south-east.webp",
+  "east": "ember_drake/rotations/east.webp",
+  "north-east": "ember_drake/rotations/north-east.webp",
+  "north": "ember_drake/rotations/north.webp",
+  "north-west": "ember_drake/rotations/north-west.webp",
+  "west": "ember_drake/rotations/west.webp",
+  "south-west": "ember_drake/rotations/south-west.webp"
+ },
+ "sheet": "ember_drake/sheet.webp",
+ "review": "approved",
+ "pixellab_id": "7b08da5f-5c75-4c27-b8ec-1c4f40511de9",
+ "seed": 621051281,
+ "version": 1,
+ "usage": null,
+ "generated_at": "2026-09-09T18:47:26+00:00",
+ "elapsed_s": 261.4,
+ "qa": {
+  "status": "pass",
+  "min_run1": 0.573,
+  "reasons": [],
+  "directions": {
+   "south": {
+    "run1": 0.573,
+    "bbox": [
+     13,
+     7,
+     228,
+     234
+    ],
+    "fill": 0.847,
+    "touches_edge": false
+   },
+   "south-east": {
+    "run1": 0.639,
+    "bbox": [
+     17,
+     7,
+     194,
+     230
+    ],
+    "fill": 0.685,
+    "touches_edge": false
+   },
+   "east": {
+    "run1": 0.651,
+    "bbox": [
+     11,
+     7,
+     202,
+     233
+    ],
+    "fill": 0.749,
+    "touches_edge": false
+   },
+   "north-east": {
+    "run1": 0.663,
+    "bbox": [
+     25,
+     7,
+     225,
+     230
+    ],
+    "fill": 0.774,
+    "touches_edge": false
+   },
+   "north": {
+    "run1": 0.647,
+    "bbox": [
+     11,
+     6,
+     225,
+     229
+    ],
+    "fill": 0.829,
+    "touches_edge": false
+   },
+   "north-west": {
+    "run1": 0.616,
+    "bbox": [
+     34,
+     3,
+     229,
+     229
+    ],
+    "fill": 0.765,
+    "touches_edge": false
+   },
+   "west": {
+    "run1": 0.638,
+    "bbox": [
+     38,
+     7,
+     224,
+     233
+    ],
+    "fill": 0.73,
+    "touches_edge": false
+   },
+   "south-west": {
+    "run1": 0.643,
+    "bbox": [
+     14,
+     7,
+     219,
+     231
+    ],
+    "fill": 0.797,
+    "touches_edge": false
+   }
   }
+ },
+ "approved_at": "2026-09-09T19:59:23+00:00",
+ "animations": {
+  "idle": {
+   "directions": {
+    "south": {
+     "status": "pass",
+     "step_mean": 0.0685,
+     "step_max": 0.0924,
+     "drift": 1.21,
+     "loop": 0.0,
+     "pin": 1.0,
+     "reasons": [],
+     "sub": "a6d54415-11be-45dd-a858-57c0a014a6de",
+     "takes": 1,
+     "version": 1,
+     "mirrored": false,
+     "generated_at": "2026-09-09T20:19:15+00:00",
+     "cut": 0
+    },
+    "south-east": {
+     "status": "pass",
+     "step_mean": 0.0551,
+     "step_max": 0.0694,
+     "drift": 1.78,
+     "loop": 0.0,
+     "pin": 1.0,
+     "reasons": [],
+     "sub": "049a1da5-aa6a-4d0e-8f1f-5abc43ff3a13",
+     "takes": 1,
+     "version": 1,
+     "mirrored": false,
+     "generated_at": "2026-09-09T20:19:15+00:00",
+     "cut": 0
+    },
+    "east": {
+     "status": "pass",
+     "step_mean": 0.037,
+     "step_max": 0.0569,
+     "drift": 1.61,
+     "loop": 0.0002,
+     "pin": 1.0,
+     "reasons": [],
+     "sub": "f1d01e36-6080-443b-90d6-6d658e7488d0",
+     "takes": 1,
+     "version": 1,
+     "mirrored": false,
+     "generated_at": "2026-09-09T20:19:17+00:00",
+     "cut": 0
+    },
+    "north-east": {
+     "status": "pass",
+     "step_mean": 0.0603,
+     "step_max": 0.0711,
+     "drift": 1.94,
+     "loop": 0.0006,
+     "pin": 1.0,
+     "reasons": [],
+     "sub": "59514b5b-09d4-4864-af85-ee22a300bd0d",
+     "takes": 1,
+     "version": 1,
+     "mirrored": false,
+     "generated_at": "2026-09-09T20:19:17+00:00",
+     "cut": 0
+    },
+    "north": {
+     "status": "pass",
+     "step_mean": 0.0562,
+     "step_max": 0.0709,
+     "drift": 1.7,
+     "loop": 0.0001,
+     "pin": 1.0,
+     "reasons": [],
+     "sub": "0c185229-5265-44f3-b5ac-8c25ecdb1b46",
+     "takes": 1,
+     "version": 1,
+     "mirrored": false,
+     "generated_at": "2026-09-09T20:19:18+00:00",
+     "cut": 0
+    },
+    "south-west": {
+     "status": "pass",
+     "step_mean": 0.0551,
+     "step_max": 0.0694,
+     "drift": 1.78,
+     "loop": 0.0,
+     "pin": 1.0,
+     "reasons": [],
+     "sub": "049a1da5-aa6a-4d0e-8f1f-5abc43ff3a13",
+     "takes": 1,
+     "version": 1,
+     "mirrored": true,
+     "generated_at": "2026-09-09T20:19:15+00:00",
+     "cut": 0,
+     "source": "south-east"
+    },
+    "west": {
+     "status": "pass",
+     "step_mean": 0.037,
+     "step_max": 0.0569,
+     "drift": 1.61,
+     "loop": 0.0002,
+     "pin": 1.0,
+     "reasons": [],
+     "sub": "f1d01e36-6080-443b-90d6-6d658e7488d0",
+     "takes": 1,
+     "version": 1,
+     "mirrored": true,
+     "generated_at": "2026-09-09T20:19:17+00:00",
+     "cut": 0,
+     "source": "east"
+    },
+    "north-west": {
+     "status": "pass",
+     "step_mean": 0.0603,
+     "step_max": 0.0711,
+     "drift": 1.94,
+     "loop": 0.0006,
+     "pin": 1.0,
+     "reasons": [],
+     "sub": "59514b5b-09d4-4864-af85-ee22a300bd0d",
+     "takes": 1,
+     "version": 1,
+     "mirrored": true,
+     "generated_at": "2026-09-09T20:19:17+00:00",
+     "cut": 0,
+     "source": "north-east"
+    }
+   },
+   "action": "Calm still idle, breathing very slowly and subtly, chest and shoulders rise and fall a little, feet planted, no other movement, ends in the same neutral pose it started in",
+   "frame_paths": {
+    "south": [
+     "ember_drake/animations/idle/south/00.webp",
+     "ember_drake/animations/idle/south/01.webp",
+     "ember_drake/animations/idle/south/02.webp",
+     "ember_drake/animations/idle/south/03.webp",
+     "ember_drake/animations/idle/south/04.webp"
+    ],
+    "south-east": [
+     "ember_drake/animations/idle/south-east/00.webp",
+     "ember_drake/animations/idle/south-east/01.webp",
+     "ember_drake/animations/idle/south-east/02.webp",
+     "ember_drake/animations/idle/south-east/03.webp",
+     "ember_drake/animations/idle/south-east/04.webp"
+    ],
+    "east": [
+     "ember_drake/animations/idle/east/00.webp",
+     "ember_drake/animations/idle/east/01.webp",
+     "ember_drake/animations/idle/east/02.webp",
+     "ember_drake/animations/idle/east/03.webp",
+     "ember_drake/animations/idle/east/04.webp"
+    ],
+    "north-east": [
+     "ember_drake/animations/idle/north-east/00.webp",
+     "ember_drake/animations/idle/north-east/01.webp",
+     "ember_drake/animations/idle/north-east/02.webp",
+     "ember_drake/animations/idle/north-east/03.webp",
+     "ember_drake/animations/idle/north-east/04.webp"
+    ],
+    "north": [
+     "ember_drake/animations/idle/north/00.webp",
+     "ember_drake/animations/idle/north/01.webp",
+     "ember_drake/animations/idle/north/02.webp",
+     "ember_drake/animations/idle/north/03.webp",
+     "ember_drake/animations/idle/north/04.webp"
+    ],
+    "south-west": [
+     "ember_drake/animations/idle/south-west/00.webp",
+     "ember_drake/animations/idle/south-west/01.webp",
+     "ember_drake/animations/idle/south-west/02.webp",
+     "ember_drake/animations/idle/south-west/03.webp",
+     "ember_drake/animations/idle/south-west/04.webp"
+    ],
+    "west": [
+     "ember_drake/animations/idle/west/00.webp",
+     "ember_drake/animations/idle/west/01.webp",
+     "ember_drake/animations/idle/west/02.webp",
+     "ember_drake/animations/idle/west/03.webp",
+     "ember_drake/animations/idle/west/04.webp"
+    ],
+    "north-west": [
+     "ember_drake/animations/idle/north-west/00.webp",
+     "ember_drake/animations/idle/north-west/01.webp",
+     "ember_drake/animations/idle/north-west/02.webp",
+     "ember_drake/animations/idle/north-west/03.webp",
+     "ember_drake/animations/idle/north-west/04.webp"
+    ]
+   },
+   "strips": {
+    "south": "ember_drake/animations/idle__south.webp",
+    "south-east": "ember_drake/animations/idle__south-east.webp",
+    "east": "ember_drake/animations/idle__east.webp",
+    "north-east": "ember_drake/animations/idle__north-east.webp",
+    "north": "ember_drake/animations/idle__north.webp",
+    "south-west": "ember_drake/animations/idle__south-west.webp",
+    "west": "ember_drake/animations/idle__west.webp",
+    "north-west": "ember_drake/animations/idle__north-west.webp"
+   }
+  },
+  "walk": {
+   "directions": {
+    "south": {
+     "status": "warn",
+     "step_mean": 0.1235,
+     "step_max": 0.1564,
+     "drift": 1.62,
+     "loop": 0.2616,
+     "loop_ratio": 2.12,
+     "travel": 2.96,
+     "pin": 0.881,
+     "pad": 0,
+     "canvas": [
+      240,
+      240
+     ],
+     "reasons": [
+      "last→first hand-off 2.1× a step — eyeball the loop"
+     ],
+     "sub": "ea633a15-1612-4c0e-9078-71ed2184d764",
+     "group": "bcf307bd-2b5b-41f7-b994-37c5e10c1712",
+     "takes": 1,
+     "version": 1,
+     "mirrored": false,
+     "generated_at": "2026-09-09T21:16:24+00:00"
+    },
+    "south-east": {
+     "status": "pass",
+     "step_mean": 0.1617,
+     "step_max": 0.1817,
+     "drift": 5.6,
+     "loop": 0.2271,
+     "loop_ratio": 1.4,
+     "travel": 4.61,
+     "pin": 0.875,
+     "pad": 0,
+     "canvas": [
+      240,
+      240
+     ],
+     "reasons": [],
+     "sub": "110c24d4-34fc-4159-915e-d4d20a0e386f",
+     "group": "a13a4369-7b03-459e-88e4-e2883b7f3de6",
+     "takes": 1,
+     "version": 1,
+     "mirrored": false,
+     "generated_at": "2026-09-09T21:16:25+00:00"
+    },
+    "east": {
+     "status": "pass",
+     "step_mean": 0.143,
+     "step_max": 0.1768,
+     "drift": 4.04,
+     "loop": 0.2388,
+     "loop_ratio": 1.67,
+     "travel": 2.39,
+     "pin": 0.891,
+     "pad": 0,
+     "canvas": [
+      240,
+      240
+     ],
+     "reasons": [],
+     "sub": "4e4fc72a-7d6f-4163-afdf-bcbd347dfb5d",
+     "group": "988985cc-8641-488a-aab1-f2aee7387f90",
+     "takes": 1,
+     "version": 1,
+     "mirrored": false,
+     "generated_at": "2026-09-09T21:16:26+00:00"
+    },
+    "north-east": {
+     "status": "pass",
+     "step_mean": 0.1428,
+     "step_max": 0.1813,
+     "drift": 3.8,
+     "loop": 0.2134,
+     "loop_ratio": 1.49,
+     "travel": 1.65,
+     "pin": 0.889,
+     "pad": 0,
+     "canvas": [
+      240,
+      240
+     ],
+     "reasons": [],
+     "sub": "748dc7d6-d164-4a8e-b25a-dcd1d0edfc9a",
+     "group": "559c9915-0cf6-4fa8-b902-b999277dc4f6",
+     "takes": 1,
+     "version": 1,
+     "mirrored": false,
+     "generated_at": "2026-09-09T21:16:27+00:00"
+    },
+    "north": {
+     "status": "warn",
+     "step_mean": 0.1621,
+     "step_max": 0.2137,
+     "drift": 7.59,
+     "loop": 0.2616,
+     "loop_ratio": 1.61,
+     "travel": 2.72,
+     "pin": 0.893,
+     "pad": 0,
+     "canvas": [
+      240,
+      240
+     ],
+     "reasons": [
+      "drifts 7.6 px — eyeball it"
+     ],
+     "sub": "eea240aa-34c4-4cd5-b6f0-1756ba41ca85",
+     "group": "db63f987-07c5-4101-bf4a-0eb4c10faa9b",
+     "takes": 1,
+     "version": 1,
+     "mirrored": false,
+     "generated_at": "2026-09-09T21:16:27+00:00"
+    },
+    "south-west": {
+     "status": "pass",
+     "step_mean": 0.1617,
+     "step_max": 0.1817,
+     "drift": 5.6,
+     "loop": 0.2271,
+     "loop_ratio": 1.4,
+     "travel": 4.61,
+     "pin": 0.875,
+     "pad": 0,
+     "canvas": [
+      240,
+      240
+     ],
+     "reasons": [],
+     "sub": "110c24d4-34fc-4159-915e-d4d20a0e386f",
+     "group": "a13a4369-7b03-459e-88e4-e2883b7f3de6",
+     "takes": 1,
+     "version": 1,
+     "mirrored": true,
+     "generated_at": "2026-09-09T21:16:25+00:00",
+     "source": "south-east"
+    },
+    "west": {
+     "status": "pass",
+     "step_mean": 0.143,
+     "step_max": 0.1768,
+     "drift": 4.04,
+     "loop": 0.2388,
+     "loop_ratio": 1.67,
+     "travel": 2.39,
+     "pin": 0.891,
+     "pad": 0,
+     "canvas": [
+      240,
+      240
+     ],
+     "reasons": [],
+     "sub": "4e4fc72a-7d6f-4163-afdf-bcbd347dfb5d",
+     "group": "988985cc-8641-488a-aab1-f2aee7387f90",
+     "takes": 1,
+     "version": 1,
+     "mirrored": true,
+     "generated_at": "2026-09-09T21:16:26+00:00",
+     "source": "east"
+    },
+    "north-west": {
+     "status": "pass",
+     "step_mean": 0.1428,
+     "step_max": 0.1813,
+     "drift": 3.8,
+     "loop": 0.2134,
+     "loop_ratio": 1.49,
+     "travel": 1.65,
+     "pin": 0.889,
+     "pad": 0,
+     "canvas": [
+      240,
+      240
+     ],
+     "reasons": [],
+     "sub": "748dc7d6-d164-4a8e-b25a-dcd1d0edfc9a",
+     "group": "559c9915-0cf6-4fa8-b902-b999277dc4f6",
+     "takes": 1,
+     "version": 1,
+     "mirrored": true,
+     "generated_at": "2026-09-09T21:16:27+00:00",
+     "source": "north-east"
+    }
+   },
+   "action": "walk loop, full walk cycle in place, legs alternate naturally, normal calm walking pace, body stays centered, seamless loop whose last frame leads straight back into the first, no turning",
+   "frame_paths": {
+    "south": [
+     "ember_drake/animations/walk/south/00.webp",
+     "ember_drake/animations/walk/south/01.webp",
+     "ember_drake/animations/walk/south/02.webp",
+     "ember_drake/animations/walk/south/03.webp",
+     "ember_drake/animations/walk/south/04.webp",
+     "ember_drake/animations/walk/south/05.webp"
+    ],
+    "south-east": [
+     "ember_drake/animations/walk/south-east/00.webp",
+     "ember_drake/animations/walk/south-east/01.webp",
+     "ember_drake/animations/walk/south-east/02.webp",
+     "ember_drake/animations/walk/south-east/03.webp",
+     "ember_drake/animations/walk/south-east/04.webp",
+     "ember_drake/animations/walk/south-east/05.webp"
+    ],
+    "east": [
+     "ember_drake/animations/walk/east/00.webp",
+     "ember_drake/animations/walk/east/01.webp",
+     "ember_drake/animations/walk/east/02.webp",
+     "ember_drake/animations/walk/east/03.webp",
+     "ember_drake/animations/walk/east/04.webp",
+     "ember_drake/animations/walk/east/05.webp"
+    ],
+    "north-east": [
+     "ember_drake/animations/walk/north-east/00.webp",
+     "ember_drake/animations/walk/north-east/01.webp",
+     "ember_drake/animations/walk/north-east/02.webp",
+     "ember_drake/animations/walk/north-east/03.webp",
+     "ember_drake/animations/walk/north-east/04.webp",
+     "ember_drake/animations/walk/north-east/05.webp"
+    ],
+    "north": [
+     "ember_drake/animations/walk/north/00.webp",
+     "ember_drake/animations/walk/north/01.webp",
+     "ember_drake/animations/walk/north/02.webp",
+     "ember_drake/animations/walk/north/03.webp",
+     "ember_drake/animations/walk/north/04.webp",
+     "ember_drake/animations/walk/north/05.webp"
+    ],
+    "south-west": [
+     "ember_drake/animations/walk/south-west/00.webp",
+     "ember_drake/animations/walk/south-west/01.webp",
+     "ember_drake/animations/walk/south-west/02.webp",
+     "ember_drake/animations/walk/south-west/03.webp",
+     "ember_drake/animations/walk/south-west/04.webp",
+     "ember_drake/animations/walk/south-west/05.webp"
+    ],
+    "west": [
+     "ember_drake/animations/walk/west/00.webp",
+     "ember_drake/animations/walk/west/01.webp",
+     "ember_drake/animations/walk/west/02.webp",
+     "ember_drake/animations/walk/west/03.webp",
+     "ember_drake/animations/walk/west/04.webp",
+     "ember_drake/animations/walk/west/05.webp"
+    ],
+    "north-west": [
+     "ember_drake/animations/walk/north-west/00.webp",
+     "ember_drake/animations/walk/north-west/01.webp",
+     "ember_drake/animations/walk/north-west/02.webp",
+     "ember_drake/animations/walk/north-west/03.webp",
+     "ember_drake/animations/walk/north-west/04.webp",
+     "ember_drake/animations/walk/north-west/05.webp"
+    ]
+   },
+   "strips": {
+    "south": "ember_drake/animations/walk__south.webp",
+    "south-east": "ember_drake/animations/walk__south-east.webp",
+    "east": "ember_drake/animations/walk__east.webp",
+    "north-east": "ember_drake/animations/walk__north-east.webp",
+    "north": "ember_drake/animations/walk__north.webp",
+    "south-west": "ember_drake/animations/walk__south-west.webp",
+    "west": "ember_drake/animations/walk__west.webp",
+    "north-west": "ember_drake/animations/walk__north-west.webp"
+   }
+  },
+  "attack": {
+   "directions": {
+    "south": {
+     "status": "fail",
+     "step_mean": 0.0793,
+     "step_max": 0.1158,
+     "drift": 4.25,
+     "loop": 0.0,
+     "loop_ratio": 0.0,
+     "travel": 4.25,
+     "pin": 1.0,
+     "pad": 0,
+     "flash": 0.009,
+     "peak": 0.1366,
+     "reach": 0.177,
+     "canvas": [
+      240,
+      240
+     ],
+     "reasons": [
+      "motion 0.079 outside the calm band 0.08–0.9 — eyeball it",
+      "weak strike: peak 0.137 — eyeball it",
+      "no strike, just a lean: nothing reaches past 0.18 of the body"
+     ],
+     "sub": "a98d8840-6ddd-457c-aa15-b35cc2da7d10",
+     "group": "a8e70e31-9388-4329-91c4-9bbf69eeb7ef",
+     "takes": 1,
+     "version": 2,
+     "mirrored": false,
+     "generated_at": "2026-09-09T22:39:51+00:00",
+     "action": "Fire Breath - Rears its head back and breathes one short jet of fire forward, then returns to idle stance"
+    },
+    "south-east": {
+     "status": "warn",
+     "step_mean": 0.1353,
+     "step_max": 0.1918,
+     "drift": 11.89,
+     "loop": 0.0,
+     "loop_ratio": 0.0,
+     "travel": 11.89,
+     "pin": 1.0,
+     "pad": 0,
+     "flash": 0.293,
+     "peak": 0.2534,
+     "reach": 0.271,
+     "canvas": [
+      240,
+      240
+     ],
+     "reasons": [
+      "shallow strike: reach 0.27 — eyeball it",
+      "some bright effect pixels (0.29) — eyeball it"
+     ],
+     "sub": "fe0cb1d5-fad7-42e5-8ffb-d4be9a04f40b",
+     "group": "a2b9356d-bcbe-4502-83cf-57d18defb2bb",
+     "takes": 1,
+     "version": 2,
+     "mirrored": false,
+     "generated_at": "2026-09-09T22:39:52+00:00",
+     "action": "Fire Breath - Rears its head back and breathes one short jet of fire forward, then returns to idle stance"
+    },
+    "east": {
+     "status": "fail",
+     "step_mean": 0.105,
+     "step_max": 0.1218,
+     "drift": 4.48,
+     "loop": 0.0,
+     "loop_ratio": 0.0,
+     "travel": 4.48,
+     "pin": 1.0,
+     "pad": 0,
+     "flash": 0.017,
+     "peak": 0.1863,
+     "reach": 0.178,
+     "canvas": [
+      240,
+      240
+     ],
+     "reasons": [
+      "no strike, just a lean: nothing reaches past 0.18 of the body"
+     ],
+     "sub": "ac710383-6b9c-4921-9d1e-8fb114aad063",
+     "group": "9c1040e3-620f-4d2e-8cd4-ba309ed46a75",
+     "takes": 1,
+     "version": 2,
+     "mirrored": false,
+     "generated_at": "2026-09-09T22:39:53+00:00",
+     "action": "Fire Breath - Rears its head back and breathes one short jet of fire forward, then returns to idle stance"
+    },
+    "north-east": {
+     "status": "fail",
+     "step_mean": 0.0716,
+     "step_max": 0.0811,
+     "drift": 1.74,
+     "loop": 0.0006,
+     "loop_ratio": 0.01,
+     "travel": 0.42,
+     "pin": 1.0,
+     "pad": 0,
+     "flash": 0.0,
+     "peak": 0.1267,
+     "reach": 0.02,
+     "canvas": [
+      240,
+      240
+     ],
+     "reasons": [
+      "motion 0.072 outside the calm band 0.08–0.9 — eyeball it",
+      "weak strike: peak 0.127 — eyeball it",
+      "no strike, just a lean: nothing reaches past 0.02 of the body"
+     ],
+     "sub": "054ec414-3d2e-49d3-b411-6f9f85f0f969",
+     "group": "c4e68f02-f5f2-4341-9ead-5987970c8778",
+     "takes": 1,
+     "version": 2,
+     "mirrored": false,
+     "generated_at": "2026-09-09T22:39:53+00:00",
+     "action": "Fire Breath - Rears its head back and breathes one short jet of fire forward, then returns to idle stance"
+    },
+    "north": {
+     "status": "fail",
+     "step_mean": 0.084,
+     "step_max": 0.124,
+     "drift": 3.43,
+     "loop": 0.0001,
+     "loop_ratio": 0.0,
+     "travel": 3.43,
+     "pin": 1.0,
+     "pad": 0,
+     "flash": 0.009,
+     "peak": 0.1408,
+     "reach": 0.136,
+     "canvas": [
+      240,
+      240
+     ],
+     "reasons": [
+      "weak strike: peak 0.141 — eyeball it",
+      "no strike, just a lean: nothing reaches past 0.14 of the body"
+     ],
+     "sub": "aa59d55f-c380-4c97-884b-5becce3f8721",
+     "group": "b237f9bd-803b-4a8b-a815-4a13e5d3e829",
+     "takes": 1,
+     "version": 2,
+     "mirrored": false,
+     "generated_at": "2026-09-09T22:39:54+00:00",
+     "action": "Fire Breath - Rears its head back and breathes one short jet of fire forward, then returns to idle stance"
+    },
+    "south-west": {
+     "status": "warn",
+     "step_mean": 0.1353,
+     "step_max": 0.1918,
+     "drift": 11.89,
+     "loop": 0.0,
+     "loop_ratio": 0.0,
+     "travel": 11.89,
+     "pin": 1.0,
+     "pad": 0,
+     "flash": 0.293,
+     "peak": 0.2534,
+     "reach": 0.271,
+     "canvas": [
+      240,
+      240
+     ],
+     "reasons": [
+      "shallow strike: reach 0.27 — eyeball it",
+      "some bright effect pixels (0.29) — eyeball it"
+     ],
+     "sub": "fe0cb1d5-fad7-42e5-8ffb-d4be9a04f40b",
+     "group": "a2b9356d-bcbe-4502-83cf-57d18defb2bb",
+     "takes": 1,
+     "version": 2,
+     "mirrored": true,
+     "generated_at": "2026-09-09T22:39:52+00:00",
+     "action": "Fire Breath - Rears its head back and breathes one short jet of fire forward, then returns to idle stance",
+     "source": "south-east"
+    },
+    "west": {
+     "status": "pass",
+     "step_mean": 0.105,
+     "step_max": 0.1218,
+     "drift": 4.48,
+     "loop": 0.0,
+     "loop_ratio": 0.0,
+     "travel": 4.48,
+     "pin": 1.0,
+     "pad": 0,
+     "flash": 0.017,
+     "peak": 0.1863,
+     "canvas": [
+      240,
+      240
+     ],
+     "reasons": [],
+     "sub": "ac710383-6b9c-4921-9d1e-8fb114aad063",
+     "group": "9c1040e3-620f-4d2e-8cd4-ba309ed46a75",
+     "takes": 1,
+     "version": 2,
+     "mirrored": true,
+     "generated_at": "2026-09-09T22:39:53+00:00",
+     "action": "Fire Breath - Rears its head back and breathes one short jet of fire forward, then returns to idle stance",
+     "source": "east"
+    },
+    "north-west": {
+     "status": "pass",
+     "step_mean": 0.0716,
+     "step_max": 0.0811,
+     "drift": 1.74,
+     "loop": 0.0006,
+     "loop_ratio": 0.01,
+     "travel": 0.42,
+     "pin": 1.0,
+     "pad": 0,
+     "flash": 0.0,
+     "peak": 0.1267,
+     "canvas": [
+      240,
+      240
+     ],
+     "reasons": [],
+     "sub": "054ec414-3d2e-49d3-b411-6f9f85f0f969",
+     "group": "c4e68f02-f5f2-4341-9ead-5987970c8778",
+     "takes": 1,
+     "version": 2,
+     "mirrored": true,
+     "generated_at": "2026-09-09T22:39:53+00:00",
+     "action": "Fire Breath - Rears its head back and breathes one short jet of fire forward, then returns to idle stance",
+     "source": "north-east"
+    }
+   },
+   "action": "Fire Breath - Rears its head back and breathes one short jet of fire forward, then returns to idle stance",
+   "frame_paths": {
+    "south": [
+     "ember_drake/animations/attack/south/00.webp",
+     "ember_drake/animations/attack/south/01.webp",
+     "ember_drake/animations/attack/south/02.webp",
+     "ember_drake/animations/attack/south/03.webp",
+     "ember_drake/animations/attack/south/04.webp"
+    ],
+    "south-east": [
+     "ember_drake/animations/attack/south-east/00.webp",
+     "ember_drake/animations/attack/south-east/01.webp",
+     "ember_drake/animations/attack/south-east/02.webp",
+     "ember_drake/animations/attack/south-east/03.webp",
+     "ember_drake/animations/attack/south-east/04.webp"
+    ],
+    "east": [
+     "ember_drake/animations/attack/east/00.webp",
+     "ember_drake/animations/attack/east/01.webp",
+     "ember_drake/animations/attack/east/02.webp",
+     "ember_drake/animations/attack/east/03.webp",
+     "ember_drake/animations/attack/east/04.webp"
+    ],
+    "north-east": [
+     "ember_drake/animations/attack/north-east/00.webp",
+     "ember_drake/animations/attack/north-east/01.webp",
+     "ember_drake/animations/attack/north-east/02.webp",
+     "ember_drake/animations/attack/north-east/03.webp",
+     "ember_drake/animations/attack/north-east/04.webp"
+    ],
+    "north": [
+     "ember_drake/animations/attack/north/00.webp",
+     "ember_drake/animations/attack/north/01.webp",
+     "ember_drake/animations/attack/north/02.webp",
+     "ember_drake/animations/attack/north/03.webp",
+     "ember_drake/animations/attack/north/04.webp"
+    ],
+    "south-west": [
+     "ember_drake/animations/attack/south-west/00.webp",
+     "ember_drake/animations/attack/south-west/01.webp",
+     "ember_drake/animations/attack/south-west/02.webp",
+     "ember_drake/animations/attack/south-west/03.webp",
+     "ember_drake/animations/attack/south-west/04.webp"
+    ],
+    "west": [
+     "ember_drake/animations/attack/west/00.webp",
+     "ember_drake/animations/attack/west/01.webp",
+     "ember_drake/animations/attack/west/02.webp",
+     "ember_drake/animations/attack/west/03.webp",
+     "ember_drake/animations/attack/west/04.webp"
+    ],
+    "north-west": [
+     "ember_drake/animations/attack/north-west/00.webp",
+     "ember_drake/animations/attack/north-west/01.webp",
+     "ember_drake/animations/attack/north-west/02.webp",
+     "ember_drake/animations/attack/north-west/03.webp",
+     "ember_drake/animations/attack/north-west/04.webp"
+    ]
+   },
+   "strips": {
+    "south": "ember_drake/animations/attack__south.webp",
+    "south-east": "ember_drake/animations/attack__south-east.webp",
+    "east": "ember_drake/animations/attack__east.webp",
+    "north-east": "ember_drake/animations/attack__north-east.webp",
+    "north": "ember_drake/animations/attack__north.webp",
+    "south-west": "ember_drake/animations/attack__south-west.webp",
+    "west": "ember_drake/animations/attack__west.webp",
+    "north-west": "ember_drake/animations/attack__north-west.webp"
+   }
+  },
+  "attack_v3try": {
+   "directions": {
+    "south": {
+     "status": "warn",
+     "step_mean": 0.1296,
+     "step_max": 0.1616,
+     "drift": 4.37,
+     "loop": 0.2163,
+     "loop_ratio": 1.67,
+     "travel": 5.21,
+     "pin": 1.0,
+     "pad": 0,
+     "flash": 0.219,
+     "peak": 0.2163,
+     "reach": 0.219,
+     "canvas": [
+      240,
+      240
+     ],
+     "reasons": [
+      "shallow strike: reach 0.22 — eyeball it"
+     ],
+     "sub": "e3cc23ed-700d-4ab5-b001-72d1964f83f9",
+     "group": "dfdcefac-f7ff-4a54-b83f-06313bd0b932",
+     "takes": 1,
+     "version": 9,
+     "mirrored": false,
+     "generated_at": "2026-09-10T22:50:36+00:00",
+     "action": "Inferno Breath - The drake rears its head far back and unleashes a long roaring jet of fire, wings thrown wide, a huge aggressive attack with the whole body behind it, wide exaggerated motion",
+     "tries": 8,
+     "rolls": 8,
+     "intensity": 1,
+     "frames": 5,
+     "rung": 4
+    },
+    "south-east": {
+     "status": "warn",
+     "step_mean": 0.1404,
+     "step_max": 0.2345,
+     "drift": 12.14,
+     "loop": 0.2903,
+     "loop_ratio": 2.07,
+     "travel": 11.05,
+     "pin": 1.0,
+     "pad": 0,
+     "flash": 0.152,
+     "peak": 0.2903,
+     "reach": 0.22,
+     "canvas": [
+      240,
+      240
+     ],
+     "reasons": [
+      "shallow strike: reach 0.22 — eyeball it"
+     ],
+     "sub": "733c4b30-4549-48cc-8df3-57048e1dbdcd",
+     "group": "7d01b228-bd21-4c95-ab3b-26cfdb92c47c",
+     "takes": 1,
+     "version": 1,
+     "mirrored": false,
+     "generated_at": "2026-09-10T20:06:10+00:00",
+     "action": "Fire Breath - Rears its head back and breathes a long jet of fire forward",
+     "tries": 1,
+     "rolls": 1,
+     "intensity": 1,
+     "rung": 0
+    },
+    "east": {
+     "status": "warn",
+     "step_mean": 0.093,
+     "step_max": 0.1381,
+     "drift": 6.91,
+     "loop": 0.13,
+     "loop_ratio": 1.4,
+     "travel": 6.91,
+     "pin": 1.0,
+     "pad": 0,
+     "flash": 0.108,
+     "peak": 0.1534,
+     "reach": 0.236,
+     "canvas": [
+      240,
+      240
+     ],
+     "reasons": [
+      "shallow strike: reach 0.24 — eyeball it"
+     ],
+     "sub": "a41397d8-9e0e-43e3-86ca-ece8874417a2",
+     "group": "ea93b6e9-d50e-4bde-a668-7201c6f0dcc1",
+     "takes": 1,
+     "version": 1,
+     "mirrored": false,
+     "generated_at": "2026-09-10T20:06:10+00:00",
+     "action": "Fire Breath - Rears its head back and breathes a long jet of fire forward",
+     "tries": 1,
+     "rolls": 1,
+     "intensity": 1,
+     "rung": 0
+    },
+    "north-east": {
+     "status": "warn",
+     "step_mean": 0.1531,
+     "step_max": 0.2122,
+     "drift": 3.99,
+     "loop": 0.2268,
+     "loop_ratio": 1.48,
+     "travel": 3.69,
+     "pin": 1.0,
+     "pad": 0,
+     "flash": 0.194,
+     "peak": 0.2268,
+     "reach": 0.194,
+     "canvas": [
+      240,
+      240
+     ],
+     "reasons": [
+      "shallow strike: reach 0.19 — eyeball it"
+     ],
+     "sub": "d054597f-cd0d-461e-aa6e-edbbf0a05ee3",
+     "group": "15d34d83-4683-4883-bae9-202f3f2c4eaa",
+     "takes": 1,
+     "version": 8,
+     "mirrored": false,
+     "generated_at": "2026-09-10T22:49:16+00:00",
+     "action": "Claw Swipe - Raises one front paw and performs one quick swipe forward, white swoosh lines following the claws, a big aggressive swing",
+     "tries": 3,
+     "rolls": 3,
+     "intensity": 1,
+     "frames": 5,
+     "rung": 2
+    },
+    "north": {
+     "status": "warn",
+     "step_mean": 0.0845,
+     "step_max": 0.1255,
+     "drift": 7.45,
+     "loop": 0.177,
+     "loop_ratio": 2.1,
+     "travel": 7.45,
+     "pin": 1.0,
+     "pad": 0,
+     "flash": 0.062,
+     "peak": 0.1858,
+     "reach": 0.173,
+     "canvas": [
+      240,
+      240
+     ],
+     "reasons": [
+      "shallow strike: reach 0.17 — eyeball it"
+     ],
+     "sub": "cad8bbcb-f9d4-4cd1-9cae-28aa987ef7da",
+     "group": "8a03862a-37fd-4a18-9411-c5af3ff21451",
+     "takes": 1,
+     "version": 5,
+     "mirrored": false,
+     "generated_at": "2026-09-10T22:00:33+00:00",
+     "action": "Fire Breath - Rears its head back and breathes a long jet of fire forward",
+     "tries": 1,
+     "rolls": 1,
+     "intensity": 1,
+     "frames": 5,
+     "rung": 0
+    },
+    "south-west": {
+     "status": "warn",
+     "step_mean": 0.1404,
+     "step_max": 0.2345,
+     "drift": 12.14,
+     "loop": 0.2903,
+     "loop_ratio": 2.07,
+     "travel": 11.05,
+     "pin": 1.0,
+     "pad": 0,
+     "flash": 0.152,
+     "peak": 0.2903,
+     "reach": 0.22,
+     "canvas": [
+      240,
+      240
+     ],
+     "reasons": [
+      "shallow strike: reach 0.22 — eyeball it"
+     ],
+     "sub": "733c4b30-4549-48cc-8df3-57048e1dbdcd",
+     "group": "7d01b228-bd21-4c95-ab3b-26cfdb92c47c",
+     "takes": 1,
+     "version": 1,
+     "mirrored": true,
+     "generated_at": "2026-09-10T20:06:10+00:00",
+     "action": "Fire Breath - Rears its head back and breathes a long jet of fire forward",
+     "tries": 1,
+     "rolls": 1,
+     "intensity": 1,
+     "rung": 0,
+     "source": "south-east"
+    },
+    "west": {
+     "status": "warn",
+     "step_mean": 0.093,
+     "step_max": 0.1381,
+     "drift": 6.91,
+     "loop": 0.13,
+     "loop_ratio": 1.4,
+     "travel": 6.91,
+     "pin": 1.0,
+     "pad": 0,
+     "flash": 0.108,
+     "peak": 0.1534,
+     "reach": 0.236,
+     "canvas": [
+      240,
+      240
+     ],
+     "reasons": [
+      "shallow strike: reach 0.24 — eyeball it"
+     ],
+     "sub": "a41397d8-9e0e-43e3-86ca-ece8874417a2",
+     "group": "ea93b6e9-d50e-4bde-a668-7201c6f0dcc1",
+     "takes": 1,
+     "version": 1,
+     "mirrored": true,
+     "generated_at": "2026-09-10T20:06:10+00:00",
+     "action": "Fire Breath - Rears its head back and breathes a long jet of fire forward",
+     "tries": 1,
+     "rolls": 1,
+     "intensity": 1,
+     "rung": 0,
+     "source": "east"
+    },
+    "north-west": {
+     "status": "warn",
+     "step_mean": 0.1531,
+     "step_max": 0.2122,
+     "drift": 3.99,
+     "loop": 0.2268,
+     "loop_ratio": 1.48,
+     "travel": 3.69,
+     "pin": 1.0,
+     "pad": 0,
+     "flash": 0.194,
+     "peak": 0.2268,
+     "reach": 0.194,
+     "canvas": [
+      240,
+      240
+     ],
+     "reasons": [
+      "shallow strike: reach 0.19 — eyeball it"
+     ],
+     "sub": "d054597f-cd0d-461e-aa6e-edbbf0a05ee3",
+     "group": "15d34d83-4683-4883-bae9-202f3f2c4eaa",
+     "takes": 1,
+     "version": 8,
+     "mirrored": true,
+     "generated_at": "2026-09-10T22:49:16+00:00",
+     "action": "Claw Swipe - Raises one front paw and performs one quick swipe forward, white swoosh lines following the claws, a big aggressive swing",
+     "tries": 3,
+     "rolls": 3,
+     "intensity": 1,
+     "frames": 5,
+     "rung": 2,
+     "source": "north-east"
+    }
+   },
+   "action": "Fire Breath - Rears its head back and breathes a long jet of fire forward",
+   "frame_paths": {
+    "south": [
+     "ember_drake/animations/attack_v3try/south/00.webp",
+     "ember_drake/animations/attack_v3try/south/01.webp",
+     "ember_drake/animations/attack_v3try/south/02.webp",
+     "ember_drake/animations/attack_v3try/south/03.webp",
+     "ember_drake/animations/attack_v3try/south/04.webp"
+    ],
+    "south-east": [
+     "ember_drake/animations/attack_v3try/south-east/00.webp",
+     "ember_drake/animations/attack_v3try/south-east/01.webp",
+     "ember_drake/animations/attack_v3try/south-east/02.webp",
+     "ember_drake/animations/attack_v3try/south-east/03.webp",
+     "ember_drake/animations/attack_v3try/south-east/04.webp"
+    ],
+    "east": [
+     "ember_drake/animations/attack_v3try/east/00.webp",
+     "ember_drake/animations/attack_v3try/east/01.webp",
+     "ember_drake/animations/attack_v3try/east/02.webp",
+     "ember_drake/animations/attack_v3try/east/03.webp",
+     "ember_drake/animations/attack_v3try/east/04.webp"
+    ],
+    "north-east": [
+     "ember_drake/animations/attack_v3try/north-east/00.webp",
+     "ember_drake/animations/attack_v3try/north-east/01.webp",
+     "ember_drake/animations/attack_v3try/north-east/02.webp",
+     "ember_drake/animations/attack_v3try/north-east/03.webp",
+     "ember_drake/animations/attack_v3try/north-east/04.webp"
+    ],
+    "north": [
+     "ember_drake/animations/attack_v3try/north/00.webp",
+     "ember_drake/animations/attack_v3try/north/01.webp",
+     "ember_drake/animations/attack_v3try/north/02.webp",
+     "ember_drake/animations/attack_v3try/north/03.webp",
+     "ember_drake/animations/attack_v3try/north/04.webp"
+    ],
+    "south-west": [
+     "ember_drake/animations/attack_v3try/south-west/00.webp",
+     "ember_drake/animations/attack_v3try/south-west/01.webp",
+     "ember_drake/animations/attack_v3try/south-west/02.webp",
+     "ember_drake/animations/attack_v3try/south-west/03.webp",
+     "ember_drake/animations/attack_v3try/south-west/04.webp"
+    ],
+    "west": [
+     "ember_drake/animations/attack_v3try/west/00.webp",
+     "ember_drake/animations/attack_v3try/west/01.webp",
+     "ember_drake/animations/attack_v3try/west/02.webp",
+     "ember_drake/animations/attack_v3try/west/03.webp",
+     "ember_drake/animations/attack_v3try/west/04.webp"
+    ],
+    "north-west": [
+     "ember_drake/animations/attack_v3try/north-west/00.webp",
+     "ember_drake/animations/attack_v3try/north-west/01.webp",
+     "ember_drake/animations/attack_v3try/north-west/02.webp",
+     "ember_drake/animations/attack_v3try/north-west/03.webp",
+     "ember_drake/animations/attack_v3try/north-west/04.webp"
+    ]
+   },
+   "strips": {
+    "south": "ember_drake/animations/attack_v3try__south.webp",
+    "south-east": "ember_drake/animations/attack_v3try__south-east.webp",
+    "east": "ember_drake/animations/attack_v3try__east.webp",
+    "north-east": "ember_drake/animations/attack_v3try__north-east.webp",
+    "north": "ember_drake/animations/attack_v3try__north.webp",
+    "south-west": "ember_drake/animations/attack_v3try__south-west.webp",
+    "west": "ember_drake/animations/attack_v3try__west.webp",
+    "north-west": "ember_drake/animations/attack_v3try__north-west.webp"
+   },
+   "intensity": 1
+  }
+ }
 }

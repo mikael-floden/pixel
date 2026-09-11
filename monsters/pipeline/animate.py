@@ -113,9 +113,16 @@ STATES = {
     # 4 generated frames + the base = 5 stored, the shape of his own set.
     "attack": {
         "action": "Strike - Quickly lunges forward and strikes once",
+        # PRO, not v3 (maintainer 2026-09-11, comparing his own clips with
+        # mine: "you are using V3 with sometimes 9 frames, I was using PRO
+        # with often only 4 frames"). Pro fixes its own count at 4, returns
+        # the base canvas with no padding, takes no end_frame and no
+        # keep_first_frame, and generates a monster's directions in sequence
+        # so they agree with one another.
+        "mode": "pro",
         "frames": 4,
-        "pin_end": False,       # THE fix: no end_frame — a pinned end is a lean
-        "keep_first": True,     # frame 0 IS the base rotation
+        "pin_end": False,
+        "keep_first": False,
         "band": {"step_pass": (0.080, 0.900), "step_warn": (0.040, 1.200),
                  "peak_pass": 0.15, "peak_warn": 0.08,
                  "reach_pass": 0.30, "reach_warn": 0.14,
@@ -158,7 +165,7 @@ SIMPLE_LUNGE = ("Lunge Attack - Throws its whole body forward in one fast lunge,
 FRAME_LADDER = [4, 6, 4, 8, 4, 6, 4, 8, 6, 4]
 MAX_TRIES = 10          # "keep retrying maybe 10 times before you give up the entire animation"
 TOO_LITTLE = ("no strike", "just a lean", "weak strike", "frozen", "shallow strike", "outside the calm band")
-TOO_MUCH = ("too much", "drifts", "walks across")
+TOO_MUCH = ("too much", "drifts", "walks across", "slides across", "wrapped around")
 
 
 def rung_for(prev_rung, reasons):
@@ -569,18 +576,39 @@ def generate_state(client, cid, state, dirs, version, verbose=True, pin=False):
     # The ladder still walks the count, but it walks it for the whole monster.
     _prev = [(q.get("rolls") or 1) for d, q in (rec.get("directions") or {}).items()
              if d in dirs and q.get("status") == "fail" and not q.get("mirrored")]
-    if base_state(state) == "attack":
-        # the count is LOCKED to whatever this monster's already-good
-        # directions use: re-rolling a stubborn direction must never invalidate
-        # a sibling that already works (measured 2026-09-10 — unifying counts
-        # blind re-rolled passing directions and lost nine of them). Only a
-        # monster with nothing to protect lets the ladder pick the count.
-        keep = collections.Counter(
-            n for d, n in frame_counts(cid, state).items()
-            if d in GEN_DIRS and (rec.get("directions", {}).get(d, {}).get("status") in ("pass", "warn")))
-        nf = keep.most_common(1)[0][0] - 1 if keep else frames_for(max(_prev) + 1 if _prev else 1)
-    else:
-        nf = spec["frames"]
+    if spec.get("mode") == "pro":
+        # ONE call for the whole monster: PRO generates the directions in
+        # SEQUENCE, each using the finished ones as reference, which is what
+        # makes its views agree with one another — and it fixes its own frame
+        # count at 4. So every direction of a monster shares one wording: the
+        # rung its worst direction has climbed to.
+        rung = 0
+        for d in dirs:
+            old = rec["directions"].get(d, {})
+            r = old.get("rung", 0)
+            if old.get("status") == "fail":
+                r = rung_for(r, old.get("reasons"))
+            rung = max(rung, r)
+            tries[d] = (old.get("rolls", 0) + 1) if old.get("status") == "fail" else 1
+        action = ladder_action(cid, rung, rec["action"])
+        for d in dirs:
+            actions[d], rungs[d], counts[d] = action, rung, spec["frames"]
+        ids = client.animate_pro(man["pixellab_id"], action, dirs, name=state,
+                                 seed=seed_for(cid, state, "all", version))
+        if verbose:
+            print(f"  {cid:16s} {state} PRO {len(dirs)} dir(s) rung {rung:+d} "
+                  f"job {(ids or [None])[0]}", flush=True)
+        for j in ids:
+            try:
+                client.wait_job(j, timeout=3600)
+            except PixelLabError as e:
+                print(f"  {cid}: {e}", flush=True)
+        return collect_state(client, cid, state, dirs, version, verbose, pin=pin,
+                             actions=actions, tries=tries, counts=counts, rungs=rungs)
+    keep = collections.Counter(
+        n for d, n in frame_counts(cid, state).items()
+        if d in GEN_DIRS and (rec.get("directions", {}).get(d, {}).get("status") in ("pass", "warn")))
+    nf = keep.most_common(1)[0][0] - 1 if keep else frames_for(max(_prev) + 1 if _prev else 1)
     for d in dirs:
         seed = seed_for(cid, state, d, version)
         pinned = spec["pin_end"] or pin

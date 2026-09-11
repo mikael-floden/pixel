@@ -399,6 +399,23 @@ class PixelLabClient:
         jobs = resp.get("background_job_ids") or []
         return jobs[0] if jobs else None
 
+    def animate_pro(self, character_id, action, directions, name=None, seed=None):
+        """PRO mode: the maintainer's own attacks are made with this, not v3
+        (2026-09-11 — his Ground Bite is "4 FRAMES PRO" while every clip I made
+        was V3). It takes only an action description and a direction list: no
+        frame_count (pro fixes its own), no end_frame, no keep_first_frame. It
+        generates the directions SEQUENTIALLY, using finished sides as
+        reference, which is why its eight views agree with each other — and
+        why it bills 20-40 generations per direction instead of one."""
+        payload = {"character_id": character_id, "mode": "pro",
+                   "action_description": action, "directions": list(directions)}
+        if name:
+            payload["animation_name"] = name
+        if seed is not None:
+            payload["seed"] = int(seed)
+        resp = self._request("POST", "characters/animations", json=payload)
+        return resp.get("background_job_ids") or []
+
     def animate_template(self, character_id, template_animation_id, directions, seed=None):
         """SKELETON-DRIVEN animation from PixelLab's template library (mode
         "template", 1 generation per direction). The templates are per

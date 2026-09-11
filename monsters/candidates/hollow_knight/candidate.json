@@ -1,1242 +1,1242 @@
 {
-  "id": "hollow_knight",
-  "name": "Hollowplate",
-  "tier": "evil",
-  "lore": "The knight left long ago. The armor kept the vigil, and the fire that keeps it standing has forgotten whose it was.",
-  "biome": [
-    "grey_paving_stone",
-    "grey_stone",
-    "parquet_floor"
-  ],
-  "items": [],
-  "prompt": "Fantasy hollow suit of rusted plate armor animated by green witchfire, nothing inside it, green flames burning in the empty helmet visor, a chipped greatsword held in one gauntlet, a torn dark cape, and cracks in the armor leaking green light.",
-  "size": [
-    112,
-    112
-  ],
-  "template_id": "mannequin",
-  "directions": [
-    "south",
-    "south-east",
-    "east",
-    "north-east",
-    "north",
-    "north-west",
-    "west",
-    "south-west"
-  ],
-  "rotations": {
-    "south": "hollow_knight/rotations/south.webp",
-    "south-east": "hollow_knight/rotations/south-east.webp",
-    "east": "hollow_knight/rotations/east.webp",
-    "north-east": "hollow_knight/rotations/north-east.webp",
-    "north": "hollow_knight/rotations/north.webp",
-    "north-west": "hollow_knight/rotations/north-west.webp",
-    "west": "hollow_knight/rotations/west.webp",
-    "south-west": "hollow_knight/rotations/south-west.webp"
-  },
-  "sheet": "hollow_knight/sheet.webp",
-  "review": "approved",
-  "pixellab_id": "2f3aecad-cef3-4701-89a7-457b7eaf9007",
-  "seed": 456058337,
-  "version": 1,
-  "usage": null,
-  "generated_at": "2026-09-09T17:37:23+00:00",
-  "elapsed_s": 181.3,
-  "qa": {
-    "status": "pass",
-    "min_run1": 0.692,
-    "reasons": [],
-    "directions": {
-      "south": {
-        "run1": 0.723,
-        "bbox": [
-          3,
-          2,
-          108,
-          109
-        ],
-        "fill": 0.896,
-        "touches_edge": false
-      },
-      "south-east": {
-        "run1": 0.783,
-        "bbox": [
-          12,
-          3,
-          100,
-          110
-        ],
-        "fill": 0.751,
-        "touches_edge": false
-      },
-      "east": {
-        "run1": 0.773,
-        "bbox": [
-          16,
-          3,
-          81,
-          110
-        ],
-        "fill": 0.554,
-        "touches_edge": false
-      },
-      "north-east": {
-        "run1": 0.73,
-        "bbox": [
-          10,
-          1,
-          105,
-          108
-        ],
-        "fill": 0.81,
-        "touches_edge": false
-      },
-      "north": {
-        "run1": 0.699,
-        "bbox": [
-          5,
-          1,
-          108,
-          107
-        ],
-        "fill": 0.87,
-        "touches_edge": false
-      },
-      "north-west": {
-        "run1": 0.692,
-        "bbox": [
-          25,
-          1,
-          98,
-          108
-        ],
-        "fill": 0.623,
-        "touches_edge": false
-      },
-      "west": {
-        "run1": 0.732,
-        "bbox": [
-          29,
-          3,
-          93,
-          110
-        ],
-        "fill": 0.546,
-        "touches_edge": false
-      },
-      "south-west": {
-        "run1": 0.788,
-        "bbox": [
-          5,
-          3,
-          99,
-          110
-        ],
-        "fill": 0.802,
-        "touches_edge": false
-      }
-    }
-  },
-  "approved_at": "2026-09-09T19:59:19+00:00",
-  "animations": {
-    "idle": {
-      "directions": {
-        "south": {
-          "status": "pass",
-          "step_mean": 0.0465,
-          "step_max": 0.0768,
-          "drift": 0.65,
-          "loop": 0.0015,
-          "pin": 1.0,
-          "reasons": [],
-          "sub": "a93e25d2-c894-40fe-9faf-fccf0851ff6d",
-          "takes": 1,
-          "version": 1,
-          "mirrored": false,
-          "generated_at": "2026-09-09T20:06:56+00:00",
-          "cut": 0
-        },
-        "south-east": {
-          "status": "pass",
-          "step_mean": 0.0564,
-          "step_max": 0.0592,
-          "drift": 1.18,
-          "loop": 0.0011,
-          "pin": 1.0,
-          "reasons": [],
-          "sub": "8cb31070-34ee-476b-a35f-e8f06ea1e1fc",
-          "takes": 1,
-          "version": 1,
-          "mirrored": false,
-          "generated_at": "2026-09-09T20:06:57+00:00",
-          "cut": 0
-        },
-        "east": {
-          "status": "pass",
-          "step_mean": 0.0446,
-          "step_max": 0.081,
-          "drift": 0.98,
-          "loop": 0.0003,
-          "pin": 1.0,
-          "reasons": [],
-          "sub": "40b2b17a-48a2-4184-b15e-c74f0f471962",
-          "takes": 1,
-          "version": 1,
-          "mirrored": false,
-          "generated_at": "2026-09-09T20:06:58+00:00",
-          "cut": 0
-        },
-        "north-east": {
-          "status": "warn",
-          "step_mean": 0.0558,
-          "step_max": 0.0808,
-          "drift": 0.8,
-          "loop": 0.0021,
-          "pin": 1.0,
-          "reasons": [
-            "frame 1 touches a canvas edge the base does not (overflow / wrap risk)"
-          ],
-          "sub": "937bf38d-3dc1-4de0-aac1-c279abe5a52b",
-          "takes": 1,
-          "version": 1,
-          "mirrored": false,
-          "generated_at": "2026-09-09T20:06:58+00:00",
-          "cut": 0
-        },
-        "north": {
-          "status": "pass",
-          "step_mean": 0.0669,
-          "step_max": 0.0983,
-          "drift": 0.71,
-          "loop": 0.0029,
-          "pin": 1.0,
-          "reasons": [],
-          "sub": "39614bc7-fb49-422c-98bd-78cf093b455a",
-          "takes": 1,
-          "version": 1,
-          "mirrored": false,
-          "generated_at": "2026-09-09T20:06:59+00:00",
-          "cut": 0
-        },
-        "south-west": {
-          "status": "pass",
-          "step_mean": 0.0564,
-          "step_max": 0.0592,
-          "drift": 1.18,
-          "loop": 0.0011,
-          "pin": 1.0,
-          "reasons": [],
-          "sub": "8cb31070-34ee-476b-a35f-e8f06ea1e1fc",
-          "takes": 1,
-          "version": 1,
-          "mirrored": true,
-          "generated_at": "2026-09-09T20:06:57+00:00",
-          "cut": 0,
-          "source": "south-east"
-        },
-        "west": {
-          "status": "pass",
-          "step_mean": 0.0446,
-          "step_max": 0.081,
-          "drift": 0.98,
-          "loop": 0.0003,
-          "pin": 1.0,
-          "reasons": [],
-          "sub": "40b2b17a-48a2-4184-b15e-c74f0f471962",
-          "takes": 1,
-          "version": 1,
-          "mirrored": true,
-          "generated_at": "2026-09-09T20:06:58+00:00",
-          "cut": 0,
-          "source": "east"
-        },
-        "north-west": {
-          "status": "warn",
-          "step_mean": 0.0558,
-          "step_max": 0.0808,
-          "drift": 0.8,
-          "loop": 0.0021,
-          "pin": 1.0,
-          "reasons": [
-            "frame 1 touches a canvas edge the base does not (overflow / wrap risk)"
-          ],
-          "sub": "937bf38d-3dc1-4de0-aac1-c279abe5a52b",
-          "takes": 1,
-          "version": 1,
-          "mirrored": true,
-          "generated_at": "2026-09-09T20:06:58+00:00",
-          "cut": 0,
-          "source": "north-east"
-        }
-      },
-      "action": "Calm still idle, breathing very slowly and subtly, chest and shoulders rise and fall a little, feet planted, no other movement, ends in the same neutral pose it started in",
-      "frame_paths": {
-        "south": [
-          "hollow_knight/animations/idle/south/00.webp",
-          "hollow_knight/animations/idle/south/01.webp",
-          "hollow_knight/animations/idle/south/02.webp",
-          "hollow_knight/animations/idle/south/03.webp",
-          "hollow_knight/animations/idle/south/04.webp"
-        ],
-        "south-east": [
-          "hollow_knight/animations/idle/south-east/00.webp",
-          "hollow_knight/animations/idle/south-east/01.webp",
-          "hollow_knight/animations/idle/south-east/02.webp",
-          "hollow_knight/animations/idle/south-east/03.webp",
-          "hollow_knight/animations/idle/south-east/04.webp"
-        ],
-        "east": [
-          "hollow_knight/animations/idle/east/00.webp",
-          "hollow_knight/animations/idle/east/01.webp",
-          "hollow_knight/animations/idle/east/02.webp",
-          "hollow_knight/animations/idle/east/03.webp",
-          "hollow_knight/animations/idle/east/04.webp"
-        ],
-        "north-east": [
-          "hollow_knight/animations/idle/north-east/00.webp",
-          "hollow_knight/animations/idle/north-east/01.webp",
-          "hollow_knight/animations/idle/north-east/02.webp",
-          "hollow_knight/animations/idle/north-east/03.webp",
-          "hollow_knight/animations/idle/north-east/04.webp"
-        ],
-        "north": [
-          "hollow_knight/animations/idle/north/00.webp",
-          "hollow_knight/animations/idle/north/01.webp",
-          "hollow_knight/animations/idle/north/02.webp",
-          "hollow_knight/animations/idle/north/03.webp",
-          "hollow_knight/animations/idle/north/04.webp"
-        ],
-        "south-west": [
-          "hollow_knight/animations/idle/south-west/00.webp",
-          "hollow_knight/animations/idle/south-west/01.webp",
-          "hollow_knight/animations/idle/south-west/02.webp",
-          "hollow_knight/animations/idle/south-west/03.webp",
-          "hollow_knight/animations/idle/south-west/04.webp"
-        ],
-        "west": [
-          "hollow_knight/animations/idle/west/00.webp",
-          "hollow_knight/animations/idle/west/01.webp",
-          "hollow_knight/animations/idle/west/02.webp",
-          "hollow_knight/animations/idle/west/03.webp",
-          "hollow_knight/animations/idle/west/04.webp"
-        ],
-        "north-west": [
-          "hollow_knight/animations/idle/north-west/00.webp",
-          "hollow_knight/animations/idle/north-west/01.webp",
-          "hollow_knight/animations/idle/north-west/02.webp",
-          "hollow_knight/animations/idle/north-west/03.webp",
-          "hollow_knight/animations/idle/north-west/04.webp"
-        ]
-      },
-      "strips": {
-        "south": "hollow_knight/animations/idle__south.webp",
-        "south-east": "hollow_knight/animations/idle__south-east.webp",
-        "east": "hollow_knight/animations/idle__east.webp",
-        "north-east": "hollow_knight/animations/idle__north-east.webp",
-        "north": "hollow_knight/animations/idle__north.webp",
-        "south-west": "hollow_knight/animations/idle__south-west.webp",
-        "west": "hollow_knight/animations/idle__west.webp",
-        "north-west": "hollow_knight/animations/idle__north-west.webp"
-      }
-    },
-    "walk": {
-      "directions": {
-        "south": {
-          "status": "pass",
-          "step_mean": 0.1621,
-          "step_max": 0.1859,
-          "drift": 2.55,
-          "loop": 0.2774,
-          "loop_ratio": 1.71,
-          "travel": 2.55,
-          "pin": 0.891,
-          "pad": 3,
-          "canvas": [
-            118,
-            118
-          ],
-          "reasons": [
-            "canvas grown by 3 px a side to hold the motion"
-          ],
-          "sub": "f5b46679-7014-41e4-9f23-0c64f3f47e6b",
-          "group": "15c13add-445c-429c-898a-3ca25c236fd0",
-          "takes": 1,
-          "version": 1,
-          "mirrored": false,
-          "generated_at": "2026-09-09T21:14:57+00:00"
-        },
-        "south-east": {
-          "status": "pass",
-          "step_mean": 0.1568,
-          "step_max": 0.1672,
-          "drift": 2.18,
-          "loop": 0.2864,
-          "loop_ratio": 1.83,
-          "travel": 2.12,
-          "pin": 0.869,
-          "pad": 2,
-          "canvas": [
-            116,
-            116
-          ],
-          "reasons": [
-            "canvas grown by 2 px a side to hold the motion"
-          ],
-          "sub": "0d1dbf44-f7b2-4c91-9425-6fb547eb0c91",
-          "group": "0bce5446-4bbd-4315-b368-1ae99771f181",
-          "takes": 1,
-          "version": 1,
-          "mirrored": false,
-          "generated_at": "2026-09-09T21:14:58+00:00"
-        },
-        "east": {
-          "status": "pass",
-          "step_mean": 0.1776,
-          "step_max": 0.1898,
-          "drift": 3.4,
-          "loop": 0.3462,
-          "loop_ratio": 1.95,
-          "travel": 3.4,
-          "pin": 0.823,
-          "pad": 0,
-          "canvas": [
-            112,
-            112
-          ],
-          "reasons": [],
-          "sub": "f25d0cf6-9e7e-48df-b5e7-e31063804d37",
-          "group": "20c4eb59-1022-4aa7-a7fe-d7a02635b2b0",
-          "takes": 1,
-          "version": 1,
-          "mirrored": false,
-          "generated_at": "2026-09-09T21:14:59+00:00"
-        },
-        "north-east": {
-          "status": "pass",
-          "step_mean": 0.1652,
-          "step_max": 0.1992,
-          "drift": 2.06,
-          "loop": 0.2012,
-          "loop_ratio": 1.22,
-          "travel": 2.25,
-          "pin": 0.819,
-          "pad": 1,
-          "canvas": [
-            114,
-            114
-          ],
-          "reasons": [
-            "canvas grown by 1 px a side to hold the motion"
-          ],
-          "sub": "22160438-ede9-4dd1-b215-c71f031db5ff",
-          "group": "17e12e13-a9f8-4826-a940-bc8bd4967cf2",
-          "takes": 1,
-          "version": 1,
-          "mirrored": false,
-          "generated_at": "2026-09-09T21:15:00+00:00"
-        },
-        "north": {
-          "status": "pass",
-          "step_mean": 0.1707,
-          "step_max": 0.2037,
-          "drift": 3.8,
-          "loop": 0.3326,
-          "loop_ratio": 1.95,
-          "travel": 3.1,
-          "pin": 0.842,
-          "pad": 0,
-          "canvas": [
-            112,
-            112
-          ],
-          "reasons": [],
-          "sub": "5b66441d-d2e0-4813-9a6e-9ce589ec4580",
-          "group": "131c38c2-c657-486b-a5b1-d05911c38a98",
-          "takes": 1,
-          "version": 1,
-          "mirrored": false,
-          "generated_at": "2026-09-09T21:15:01+00:00"
-        },
-        "west": {
-          "status": "pass",
-          "step_mean": 0.1776,
-          "step_max": 0.1898,
-          "drift": 3.4,
-          "loop": 0.3462,
-          "loop_ratio": 1.95,
-          "travel": 3.4,
-          "pin": 0.823,
-          "pad": 0,
-          "canvas": [
-            112,
-            112
-          ],
-          "reasons": [],
-          "sub": "f25d0cf6-9e7e-48df-b5e7-e31063804d37",
-          "group": "20c4eb59-1022-4aa7-a7fe-d7a02635b2b0",
-          "takes": 1,
-          "version": 1,
-          "mirrored": true,
-          "generated_at": "2026-09-09T21:14:59+00:00",
-          "source": "east"
-        },
-        "north-west": {
-          "status": "pass",
-          "step_mean": 0.1652,
-          "step_max": 0.1992,
-          "drift": 2.06,
-          "loop": 0.2012,
-          "loop_ratio": 1.22,
-          "travel": 2.25,
-          "pin": 0.819,
-          "pad": 1,
-          "canvas": [
-            114,
-            114
-          ],
-          "reasons": [
-            "canvas grown by 1 px a side to hold the motion"
-          ],
-          "sub": "22160438-ede9-4dd1-b215-c71f031db5ff",
-          "group": "17e12e13-a9f8-4826-a940-bc8bd4967cf2",
-          "takes": 1,
-          "version": 1,
-          "mirrored": true,
-          "generated_at": "2026-09-09T21:15:00+00:00",
-          "source": "north-east"
-        },
-        "south-west": {
-          "status": "pass",
-          "step_mean": 0.1568,
-          "step_max": 0.1672,
-          "drift": 2.18,
-          "loop": 0.2864,
-          "loop_ratio": 1.83,
-          "travel": 2.12,
-          "pin": 0.869,
-          "pad": 2,
-          "canvas": [
-            116,
-            116
-          ],
-          "reasons": [
-            "canvas grown by 2 px a side to hold the motion"
-          ],
-          "sub": "0d1dbf44-f7b2-4c91-9425-6fb547eb0c91",
-          "group": "0bce5446-4bbd-4315-b368-1ae99771f181",
-          "takes": 1,
-          "version": 1,
-          "mirrored": true,
-          "generated_at": "2026-09-09T21:14:58+00:00",
-          "source": "south-east"
-        }
-      },
-      "action": "walk loop, full walk cycle in place, legs alternate naturally, normal calm walking pace, body stays centered, seamless loop whose last frame leads straight back into the first, no turning",
-      "frame_paths": {
-        "south": [
-          "hollow_knight/animations/walk/south/00.webp",
-          "hollow_knight/animations/walk/south/01.webp",
-          "hollow_knight/animations/walk/south/02.webp",
-          "hollow_knight/animations/walk/south/03.webp",
-          "hollow_knight/animations/walk/south/04.webp",
-          "hollow_knight/animations/walk/south/05.webp"
-        ],
-        "south-east": [
-          "hollow_knight/animations/walk/south-east/00.webp",
-          "hollow_knight/animations/walk/south-east/01.webp",
-          "hollow_knight/animations/walk/south-east/02.webp",
-          "hollow_knight/animations/walk/south-east/03.webp",
-          "hollow_knight/animations/walk/south-east/04.webp",
-          "hollow_knight/animations/walk/south-east/05.webp"
-        ],
-        "east": [
-          "hollow_knight/animations/walk/east/00.webp",
-          "hollow_knight/animations/walk/east/01.webp",
-          "hollow_knight/animations/walk/east/02.webp",
-          "hollow_knight/animations/walk/east/03.webp",
-          "hollow_knight/animations/walk/east/04.webp",
-          "hollow_knight/animations/walk/east/05.webp"
-        ],
-        "north-east": [
-          "hollow_knight/animations/walk/north-east/00.webp",
-          "hollow_knight/animations/walk/north-east/01.webp",
-          "hollow_knight/animations/walk/north-east/02.webp",
-          "hollow_knight/animations/walk/north-east/03.webp",
-          "hollow_knight/animations/walk/north-east/04.webp",
-          "hollow_knight/animations/walk/north-east/05.webp"
-        ],
-        "north": [
-          "hollow_knight/animations/walk/north/00.webp",
-          "hollow_knight/animations/walk/north/01.webp",
-          "hollow_knight/animations/walk/north/02.webp",
-          "hollow_knight/animations/walk/north/03.webp",
-          "hollow_knight/animations/walk/north/04.webp",
-          "hollow_knight/animations/walk/north/05.webp"
-        ],
-        "west": [
-          "hollow_knight/animations/walk/west/00.webp",
-          "hollow_knight/animations/walk/west/01.webp",
-          "hollow_knight/animations/walk/west/02.webp",
-          "hollow_knight/animations/walk/west/03.webp",
-          "hollow_knight/animations/walk/west/04.webp",
-          "hollow_knight/animations/walk/west/05.webp"
-        ],
-        "north-west": [
-          "hollow_knight/animations/walk/north-west/00.webp",
-          "hollow_knight/animations/walk/north-west/01.webp",
-          "hollow_knight/animations/walk/north-west/02.webp",
-          "hollow_knight/animations/walk/north-west/03.webp",
-          "hollow_knight/animations/walk/north-west/04.webp",
-          "hollow_knight/animations/walk/north-west/05.webp"
-        ],
-        "south-west": [
-          "hollow_knight/animations/walk/south-west/00.webp",
-          "hollow_knight/animations/walk/south-west/01.webp",
-          "hollow_knight/animations/walk/south-west/02.webp",
-          "hollow_knight/animations/walk/south-west/03.webp",
-          "hollow_knight/animations/walk/south-west/04.webp",
-          "hollow_knight/animations/walk/south-west/05.webp"
-        ]
-      },
-      "strips": {
-        "south": "hollow_knight/animations/walk__south.webp",
-        "south-east": "hollow_knight/animations/walk__south-east.webp",
-        "east": "hollow_knight/animations/walk__east.webp",
-        "north-east": "hollow_knight/animations/walk__north-east.webp",
-        "north": "hollow_knight/animations/walk__north.webp",
-        "west": "hollow_knight/animations/walk__west.webp",
-        "north-west": "hollow_knight/animations/walk__north-west.webp",
-        "south-west": "hollow_knight/animations/walk__south-west.webp"
-      }
-    },
-    "attack": {
-      "directions": {
-        "south": {
-          "status": "fail",
-          "step_mean": 0.184,
-          "step_max": 0.2131,
-          "drift": 2.3,
-          "loop": 0.0018,
-          "loop_ratio": 0.01,
-          "travel": 3.01,
-          "pin": 1.0,
-          "pad": 0,
-          "flash": 0.003,
-          "peak": 0.2722,
-          "reach": 0.162,
-          "canvas": [
-            112,
-            112
-          ],
-          "reasons": [
-            "no strike, just a lean: nothing reaches past 0.16 of the body"
-          ],
-          "sub": "57fe00ef-703c-42ca-9e04-cebce17a0d40",
-          "group": "51c6e605-1971-4465-aab1-124b2d6da916",
-          "takes": 1,
-          "version": 2,
-          "mirrored": false,
-          "generated_at": "2026-09-09T22:27:18+00:00",
-          "action": "Overhead Chop - Raises the greatsword and brings it down in one heavy chop, then returns to idle stance"
-        },
-        "south-east": {
-          "status": "fail",
-          "step_mean": 0.1501,
-          "step_max": 0.2074,
-          "drift": 3.74,
-          "loop": 0.0019,
-          "loop_ratio": 0.01,
-          "travel": 3.7,
-          "pin": 1.0,
-          "pad": 0,
-          "flash": 0.0,
-          "peak": 0.2446,
-          "reach": 0.139,
-          "canvas": [
-            112,
-            112
-          ],
-          "reasons": [
-            "no strike, just a lean: nothing reaches past 0.14 of the body"
-          ],
-          "sub": "9bdc49cf-e3b7-4367-aede-3d3f93db5a9f",
-          "group": "dc6eb3e7-d1bc-4f93-a322-c95e84efd0ab",
-          "takes": 1,
-          "version": 2,
-          "mirrored": false,
-          "generated_at": "2026-09-09T22:27:19+00:00",
-          "action": "Overhead Chop - Raises the greatsword and brings it down in one heavy chop, then returns to idle stance"
-        },
-        "east": {
-          "status": "pass",
-          "step_mean": 0.2011,
-          "step_max": 0.2996,
-          "drift": 8.25,
-          "loop": 0.0002,
-          "loop_ratio": 0.0,
-          "travel": 8.25,
-          "pin": 1.0,
-          "pad": 0,
-          "flash": 0.039,
-          "peak": 0.3418,
-          "reach": 0.369,
-          "canvas": [
-            112,
-            112
-          ],
-          "reasons": [],
-          "sub": "5ff43446-23f2-403a-a45b-c2fdab1cfe3b",
-          "group": "d6de9a95-aa3c-451a-a75c-7cf0aecc02a1",
-          "takes": 1,
-          "version": 2,
-          "mirrored": false,
-          "generated_at": "2026-09-09T22:27:19+00:00",
-          "action": "Overhead Chop - Raises the greatsword and brings it down in one heavy chop, then returns to idle stance"
-        },
-        "north-east": {
-          "status": "fail",
-          "step_mean": 0.1268,
-          "step_max": 0.1383,
-          "drift": 1.87,
-          "loop": 0.0014,
-          "loop_ratio": 0.01,
-          "travel": 1.94,
-          "pin": 1.0,
-          "pad": 0,
-          "flash": 0.002,
-          "peak": 0.2036,
-          "reach": 0.095,
-          "canvas": [
-            112,
-            112
-          ],
-          "reasons": [
-            "no strike, just a lean: nothing reaches past 0.09 of the body"
-          ],
-          "sub": "fb986bdf-be06-4cfa-a249-318f197ea5cd",
-          "group": "daf05b35-7ec2-454a-a3da-7451ff515d8c",
-          "takes": 1,
-          "version": 2,
-          "mirrored": false,
-          "generated_at": "2026-09-09T22:27:20+00:00",
-          "action": "Overhead Chop - Raises the greatsword and brings it down in one heavy chop, then returns to idle stance"
-        },
-        "north": {
-          "status": "fail",
-          "step_mean": 0.1813,
-          "step_max": 0.229,
-          "drift": 2.61,
-          "loop": 0.0029,
-          "loop_ratio": 0.02,
-          "travel": 2.77,
-          "pin": 1.0,
-          "pad": 1,
-          "flash": 0.094,
-          "peak": 0.2731,
-          "reach": 0.146,
-          "canvas": [
-            114,
-            114
-          ],
-          "reasons": [
-            "no strike, just a lean: nothing reaches past 0.15 of the body",
-            "canvas grown by 1 px a side to hold the motion"
-          ],
-          "sub": "bc029242-9765-4c30-8b7e-67f0da79f1ce",
-          "group": "6e0f7b4b-1b0c-443e-9428-71881a5c441d",
-          "takes": 1,
-          "version": 2,
-          "mirrored": false,
-          "generated_at": "2026-09-09T22:27:20+00:00",
-          "action": "Overhead Chop - Raises the greatsword and brings it down in one heavy chop, then returns to idle stance"
-        },
-        "south-west": {
-          "status": "pass",
-          "step_mean": 0.1501,
-          "step_max": 0.2074,
-          "drift": 3.74,
-          "loop": 0.0019,
-          "loop_ratio": 0.01,
-          "travel": 3.7,
-          "pin": 1.0,
-          "pad": 0,
-          "flash": 0.0,
-          "peak": 0.2446,
-          "canvas": [
-            112,
-            112
-          ],
-          "reasons": [],
-          "sub": "9bdc49cf-e3b7-4367-aede-3d3f93db5a9f",
-          "group": "dc6eb3e7-d1bc-4f93-a322-c95e84efd0ab",
-          "takes": 1,
-          "version": 2,
-          "mirrored": true,
-          "generated_at": "2026-09-09T22:27:19+00:00",
-          "action": "Overhead Chop - Raises the greatsword and brings it down in one heavy chop, then returns to idle stance",
-          "source": "south-east"
-        },
-        "west": {
-          "status": "pass",
-          "step_mean": 0.2011,
-          "step_max": 0.2996,
-          "drift": 8.25,
-          "loop": 0.0002,
-          "loop_ratio": 0.0,
-          "travel": 8.25,
-          "pin": 1.0,
-          "pad": 0,
-          "flash": 0.039,
-          "peak": 0.3418,
-          "reach": 0.369,
-          "canvas": [
-            112,
-            112
-          ],
-          "reasons": [],
-          "sub": "5ff43446-23f2-403a-a45b-c2fdab1cfe3b",
-          "group": "d6de9a95-aa3c-451a-a75c-7cf0aecc02a1",
-          "takes": 1,
-          "version": 2,
-          "mirrored": true,
-          "generated_at": "2026-09-09T22:27:19+00:00",
-          "action": "Overhead Chop - Raises the greatsword and brings it down in one heavy chop, then returns to idle stance",
-          "source": "east"
-        },
-        "north-west": {
-          "status": "pass",
-          "step_mean": 0.1268,
-          "step_max": 0.1383,
-          "drift": 1.87,
-          "loop": 0.0014,
-          "loop_ratio": 0.01,
-          "travel": 1.94,
-          "pin": 1.0,
-          "pad": 0,
-          "flash": 0.002,
-          "peak": 0.2036,
-          "canvas": [
-            112,
-            112
-          ],
-          "reasons": [],
-          "sub": "fb986bdf-be06-4cfa-a249-318f197ea5cd",
-          "group": "daf05b35-7ec2-454a-a3da-7451ff515d8c",
-          "takes": 1,
-          "version": 2,
-          "mirrored": true,
-          "generated_at": "2026-09-09T22:27:20+00:00",
-          "action": "Overhead Chop - Raises the greatsword and brings it down in one heavy chop, then returns to idle stance",
-          "source": "north-east"
-        }
-      },
-      "action": "Overhead Chop - Raises the greatsword and brings it down in one heavy chop, then returns to idle stance",
-      "frame_paths": {
-        "south": [
-          "hollow_knight/animations/attack/south/00.webp",
-          "hollow_knight/animations/attack/south/01.webp",
-          "hollow_knight/animations/attack/south/02.webp",
-          "hollow_knight/animations/attack/south/03.webp",
-          "hollow_knight/animations/attack/south/04.webp"
-        ],
-        "south-east": [
-          "hollow_knight/animations/attack/south-east/00.webp",
-          "hollow_knight/animations/attack/south-east/01.webp",
-          "hollow_knight/animations/attack/south-east/02.webp",
-          "hollow_knight/animations/attack/south-east/03.webp",
-          "hollow_knight/animations/attack/south-east/04.webp"
-        ],
-        "east": [
-          "hollow_knight/animations/attack/east/00.webp",
-          "hollow_knight/animations/attack/east/01.webp",
-          "hollow_knight/animations/attack/east/02.webp",
-          "hollow_knight/animations/attack/east/03.webp",
-          "hollow_knight/animations/attack/east/04.webp"
-        ],
-        "north-east": [
-          "hollow_knight/animations/attack/north-east/00.webp",
-          "hollow_knight/animations/attack/north-east/01.webp",
-          "hollow_knight/animations/attack/north-east/02.webp",
-          "hollow_knight/animations/attack/north-east/03.webp",
-          "hollow_knight/animations/attack/north-east/04.webp"
-        ],
-        "north": [
-          "hollow_knight/animations/attack/north/00.webp",
-          "hollow_knight/animations/attack/north/01.webp",
-          "hollow_knight/animations/attack/north/02.webp",
-          "hollow_knight/animations/attack/north/03.webp",
-          "hollow_knight/animations/attack/north/04.webp"
-        ],
-        "south-west": [
-          "hollow_knight/animations/attack/south-west/00.webp",
-          "hollow_knight/animations/attack/south-west/01.webp",
-          "hollow_knight/animations/attack/south-west/02.webp",
-          "hollow_knight/animations/attack/south-west/03.webp",
-          "hollow_knight/animations/attack/south-west/04.webp"
-        ],
-        "west": [
-          "hollow_knight/animations/attack/west/00.webp",
-          "hollow_knight/animations/attack/west/01.webp",
-          "hollow_knight/animations/attack/west/02.webp",
-          "hollow_knight/animations/attack/west/03.webp",
-          "hollow_knight/animations/attack/west/04.webp"
-        ],
-        "north-west": [
-          "hollow_knight/animations/attack/north-west/00.webp",
-          "hollow_knight/animations/attack/north-west/01.webp",
-          "hollow_knight/animations/attack/north-west/02.webp",
-          "hollow_knight/animations/attack/north-west/03.webp",
-          "hollow_knight/animations/attack/north-west/04.webp"
-        ]
-      },
-      "strips": {
-        "south": "hollow_knight/animations/attack__south.webp",
-        "south-east": "hollow_knight/animations/attack__south-east.webp",
-        "east": "hollow_knight/animations/attack__east.webp",
-        "north-east": "hollow_knight/animations/attack__north-east.webp",
-        "north": "hollow_knight/animations/attack__north.webp",
-        "south-west": "hollow_knight/animations/attack__south-west.webp",
-        "west": "hollow_knight/animations/attack__west.webp",
-        "north-west": "hollow_knight/animations/attack__north-west.webp"
-      }
-    },
-    "attack_try": {
-      "directions": {
-        "south": {
-          "status": "warn",
-          "step_mean": 0.2346,
-          "step_max": 0.3111,
-          "drift": 3.83,
-          "loop": 0.2965,
-          "loop_ratio": 1.26,
-          "travel": 1.75,
-          "pin": 1.0,
-          "pad": 5,
-          "flash": -0.0,
-          "peak": 0.36,
-          "reach": 0.257,
-          "canvas": [
-            122,
-            122
-          ],
-          "reasons": [
-            "shallow strike: reach 0.26 — eyeball it",
-            "canvas grown by 5 px a side to hold the motion"
-          ],
-          "sub": "18f89fbf-b102-4ff7-8f02-23063e782f05",
-          "group": "f6b53411-cf03-4493-b088-171772dab704",
-          "takes": 1,
-          "version": 5,
-          "mirrored": false,
-          "generated_at": "2026-09-10T21:41:29+00:00",
-          "action": "Overhead Chop - Raises the greatsword high overhead and chops it down hard",
-          "tries": 1,
-          "rolls": 1,
-          "intensity": 1,
-          "frames": 5,
-          "rung": 0
-        },
-        "south-east": {
-          "status": "warn",
-          "step_mean": 0.1993,
-          "step_max": 0.2952,
-          "drift": 5.12,
-          "loop": 0.3234,
-          "loop_ratio": 1.62,
-          "travel": 5.15,
-          "pin": 1.0,
-          "pad": 0,
-          "flash": 0.024,
-          "peak": 0.3363,
-          "reach": 0.25,
-          "canvas": [
-            112,
-            112
-          ],
-          "reasons": [
-            "shallow strike: reach 0.25 — eyeball it"
-          ],
-          "sub": "2e6286b6-dcc1-4201-b4c5-c81c18caef54",
-          "group": "e0a93232-d72d-4404-bc7f-60ef339fe0a9",
-          "takes": 1,
-          "version": 5,
-          "mirrored": false,
-          "generated_at": "2026-09-10T21:41:29+00:00",
-          "action": "Overhead Chop - Raises the greatsword high overhead and chops it down hard",
-          "tries": 1,
-          "rolls": 1,
-          "intensity": 1,
-          "frames": 5,
-          "rung": 0
-        },
-        "east": {
-          "status": "pass",
-          "step_mean": 0.1566,
-          "step_max": 0.2579,
-          "drift": 1.33,
-          "loop": 0.2327,
-          "loop_ratio": 1.49,
-          "travel": 2.06,
-          "pin": 1.0,
-          "pad": 0,
-          "flash": 0.013,
-          "peak": 0.2403,
-          "reach": 0.354,
-          "canvas": [
-            112,
-            112
-          ],
-          "reasons": [],
-          "sub": "4c073f66-3469-4e8d-97c0-d7e022dabb96",
-          "group": "73eb143b-c725-48d6-a71b-94043c42c282",
-          "takes": 1,
-          "version": 1,
-          "mirrored": false,
-          "generated_at": "2026-09-10T19:46:44+00:00",
-          "action": "Overhead Chop - Raises the greatsword high overhead and chops it down hard",
-          "tries": 1,
-          "rolls": 1,
-          "intensity": 1,
-          "rung": 0
-        },
-        "north-east": {
-          "status": "warn",
-          "step_mean": 0.2135,
-          "step_max": 0.3309,
-          "drift": 6.09,
-          "loop": 0.4065,
-          "loop_ratio": 1.9,
-          "travel": 2.71,
-          "pin": 1.0,
-          "pad": 1,
-          "flash": -0.003,
-          "peak": 0.4065,
-          "reach": 0.284,
-          "canvas": [
-            114,
-            114
-          ],
-          "reasons": [
-            "shallow strike: reach 0.28 — eyeball it",
-            "canvas grown by 1 px a side to hold the motion"
-          ],
-          "sub": "2aea503f-55fc-4d94-b711-ba16f0e45d79",
-          "group": "cf8b2dcf-4757-4199-95b1-5df994260e67",
-          "takes": 1,
-          "version": 1,
-          "mirrored": false,
-          "generated_at": "2026-09-10T19:46:44+00:00",
-          "action": "Overhead Chop - Raises the greatsword high overhead and chops it down hard",
-          "tries": 1,
-          "rolls": 1,
-          "intensity": 1,
-          "rung": 0
-        },
-        "north": {
-          "status": "warn",
-          "step_mean": 0.1908,
-          "step_max": 0.2771,
-          "drift": 2.67,
-          "loop": 0.2943,
-          "loop_ratio": 1.54,
-          "travel": 2.19,
-          "pin": 1.0,
-          "pad": 8,
-          "flash": -0.0,
-          "peak": 0.2943,
-          "reach": 0.204,
-          "canvas": [
-            128,
-            128
-          ],
-          "reasons": [
-            "shallow strike: reach 0.20 — eyeball it",
-            "canvas grown by 8 px a side to hold the motion"
-          ],
-          "sub": "3bf2c76d-1c4d-49c2-afa5-feba88c9b62d",
-          "group": "58cf3fe0-07d4-428a-8a05-85d0bceb018f",
-          "takes": 1,
-          "version": 5,
-          "mirrored": false,
-          "generated_at": "2026-09-10T21:41:30+00:00",
-          "action": "Overhead Chop - Raises the greatsword high overhead and chops it down hard",
-          "tries": 1,
-          "rolls": 1,
-          "intensity": 1,
-          "frames": 5,
-          "rung": 0
-        },
-        "west": {
-          "status": "pass",
-          "step_mean": 0.1566,
-          "step_max": 0.2579,
-          "drift": 1.33,
-          "loop": 0.2327,
-          "loop_ratio": 1.49,
-          "travel": 2.06,
-          "pin": 1.0,
-          "pad": 0,
-          "flash": 0.013,
-          "peak": 0.2403,
-          "reach": 0.354,
-          "canvas": [
-            112,
-            112
-          ],
-          "reasons": [],
-          "sub": "4c073f66-3469-4e8d-97c0-d7e022dabb96",
-          "group": "73eb143b-c725-48d6-a71b-94043c42c282",
-          "takes": 1,
-          "version": 1,
-          "mirrored": true,
-          "generated_at": "2026-09-10T19:46:44+00:00",
-          "action": "Overhead Chop - Raises the greatsword high overhead and chops it down hard",
-          "tries": 1,
-          "rolls": 1,
-          "intensity": 1,
-          "rung": 0,
-          "source": "east"
-        },
-        "north-west": {
-          "status": "warn",
-          "step_mean": 0.2135,
-          "step_max": 0.3309,
-          "drift": 6.09,
-          "loop": 0.4065,
-          "loop_ratio": 1.9,
-          "travel": 2.71,
-          "pin": 1.0,
-          "pad": 1,
-          "flash": -0.003,
-          "peak": 0.4065,
-          "reach": 0.284,
-          "canvas": [
-            114,
-            114
-          ],
-          "reasons": [
-            "shallow strike: reach 0.28 — eyeball it",
-            "canvas grown by 1 px a side to hold the motion"
-          ],
-          "sub": "2aea503f-55fc-4d94-b711-ba16f0e45d79",
-          "group": "cf8b2dcf-4757-4199-95b1-5df994260e67",
-          "takes": 1,
-          "version": 1,
-          "mirrored": true,
-          "generated_at": "2026-09-10T19:46:44+00:00",
-          "action": "Overhead Chop - Raises the greatsword high overhead and chops it down hard",
-          "tries": 1,
-          "rolls": 1,
-          "intensity": 1,
-          "rung": 0,
-          "source": "north-east"
-        },
-        "south-west": {
-          "status": "warn",
-          "step_mean": 0.1993,
-          "step_max": 0.2952,
-          "drift": 5.12,
-          "loop": 0.3234,
-          "loop_ratio": 1.62,
-          "travel": 5.15,
-          "pin": 1.0,
-          "pad": 0,
-          "flash": 0.024,
-          "peak": 0.3363,
-          "reach": 0.25,
-          "canvas": [
-            112,
-            112
-          ],
-          "reasons": [
-            "shallow strike: reach 0.25 — eyeball it"
-          ],
-          "sub": "2e6286b6-dcc1-4201-b4c5-c81c18caef54",
-          "group": "e0a93232-d72d-4404-bc7f-60ef339fe0a9",
-          "takes": 1,
-          "version": 5,
-          "mirrored": true,
-          "generated_at": "2026-09-10T21:41:29+00:00",
-          "action": "Overhead Chop - Raises the greatsword high overhead and chops it down hard",
-          "tries": 1,
-          "rolls": 1,
-          "intensity": 1,
-          "frames": 5,
-          "rung": 0,
-          "source": "south-east"
-        }
-      },
-      "action": "Overhead Chop - Raises the greatsword high overhead and chops it down hard",
-      "frame_paths": {
-        "south": [
-          "hollow_knight/animations/attack_try/south/00.webp",
-          "hollow_knight/animations/attack_try/south/01.webp",
-          "hollow_knight/animations/attack_try/south/02.webp",
-          "hollow_knight/animations/attack_try/south/03.webp",
-          "hollow_knight/animations/attack_try/south/04.webp"
-        ],
-        "south-east": [
-          "hollow_knight/animations/attack_try/south-east/00.webp",
-          "hollow_knight/animations/attack_try/south-east/01.webp",
-          "hollow_knight/animations/attack_try/south-east/02.webp",
-          "hollow_knight/animations/attack_try/south-east/03.webp",
-          "hollow_knight/animations/attack_try/south-east/04.webp"
-        ],
-        "east": [
-          "hollow_knight/animations/attack_try/east/00.webp",
-          "hollow_knight/animations/attack_try/east/01.webp",
-          "hollow_knight/animations/attack_try/east/02.webp",
-          "hollow_knight/animations/attack_try/east/03.webp",
-          "hollow_knight/animations/attack_try/east/04.webp"
-        ],
-        "north-east": [
-          "hollow_knight/animations/attack_try/north-east/00.webp",
-          "hollow_knight/animations/attack_try/north-east/01.webp",
-          "hollow_knight/animations/attack_try/north-east/02.webp",
-          "hollow_knight/animations/attack_try/north-east/03.webp",
-          "hollow_knight/animations/attack_try/north-east/04.webp"
-        ],
-        "north": [
-          "hollow_knight/animations/attack_try/north/00.webp",
-          "hollow_knight/animations/attack_try/north/01.webp",
-          "hollow_knight/animations/attack_try/north/02.webp",
-          "hollow_knight/animations/attack_try/north/03.webp",
-          "hollow_knight/animations/attack_try/north/04.webp"
-        ],
-        "west": [
-          "hollow_knight/animations/attack_try/west/00.webp",
-          "hollow_knight/animations/attack_try/west/01.webp",
-          "hollow_knight/animations/attack_try/west/02.webp",
-          "hollow_knight/animations/attack_try/west/03.webp",
-          "hollow_knight/animations/attack_try/west/04.webp"
-        ],
-        "north-west": [
-          "hollow_knight/animations/attack_try/north-west/00.webp",
-          "hollow_knight/animations/attack_try/north-west/01.webp",
-          "hollow_knight/animations/attack_try/north-west/02.webp",
-          "hollow_knight/animations/attack_try/north-west/03.webp",
-          "hollow_knight/animations/attack_try/north-west/04.webp"
-        ],
-        "south-west": [
-          "hollow_knight/animations/attack_try/south-west/00.webp",
-          "hollow_knight/animations/attack_try/south-west/01.webp",
-          "hollow_knight/animations/attack_try/south-west/02.webp",
-          "hollow_knight/animations/attack_try/south-west/03.webp",
-          "hollow_knight/animations/attack_try/south-west/04.webp"
-        ]
-      },
-      "strips": {
-        "south": "hollow_knight/animations/attack_try__south.webp",
-        "south-east": "hollow_knight/animations/attack_try__south-east.webp",
-        "east": "hollow_knight/animations/attack_try__east.webp",
-        "north-east": "hollow_knight/animations/attack_try__north-east.webp",
-        "north": "hollow_knight/animations/attack_try__north.webp",
-        "west": "hollow_knight/animations/attack_try__west.webp",
-        "north-west": "hollow_knight/animations/attack_try__north-west.webp",
-        "south-west": "hollow_knight/animations/attack_try__south-west.webp"
-      },
-      "intensity": 1
-    }
+ "id": "hollow_knight",
+ "name": "Hollowplate",
+ "tier": "evil",
+ "lore": "The knight left long ago. The armor kept the vigil, and the fire that keeps it standing has forgotten whose it was.",
+ "biome": [
+  "grey_paving_stone",
+  "grey_stone",
+  "parquet_floor"
+ ],
+ "items": [],
+ "prompt": "Fantasy hollow suit of rusted plate armor animated by green witchfire, nothing inside it, green flames burning in the empty helmet visor, a chipped greatsword held in one gauntlet, a torn dark cape, and cracks in the armor leaking green light.",
+ "size": [
+  112,
+  112
+ ],
+ "template_id": "mannequin",
+ "directions": [
+  "south",
+  "south-east",
+  "east",
+  "north-east",
+  "north",
+  "north-west",
+  "west",
+  "south-west"
+ ],
+ "rotations": {
+  "south": "hollow_knight/rotations/south.webp",
+  "south-east": "hollow_knight/rotations/south-east.webp",
+  "east": "hollow_knight/rotations/east.webp",
+  "north-east": "hollow_knight/rotations/north-east.webp",
+  "north": "hollow_knight/rotations/north.webp",
+  "north-west": "hollow_knight/rotations/north-west.webp",
+  "west": "hollow_knight/rotations/west.webp",
+  "south-west": "hollow_knight/rotations/south-west.webp"
+ },
+ "sheet": "hollow_knight/sheet.webp",
+ "review": "approved",
+ "pixellab_id": "2f3aecad-cef3-4701-89a7-457b7eaf9007",
+ "seed": 456058337,
+ "version": 1,
+ "usage": null,
+ "generated_at": "2026-09-09T17:37:23+00:00",
+ "elapsed_s": 181.3,
+ "qa": {
+  "status": "pass",
+  "min_run1": 0.692,
+  "reasons": [],
+  "directions": {
+   "south": {
+    "run1": 0.723,
+    "bbox": [
+     3,
+     2,
+     108,
+     109
+    ],
+    "fill": 0.896,
+    "touches_edge": false
+   },
+   "south-east": {
+    "run1": 0.783,
+    "bbox": [
+     12,
+     3,
+     100,
+     110
+    ],
+    "fill": 0.751,
+    "touches_edge": false
+   },
+   "east": {
+    "run1": 0.773,
+    "bbox": [
+     16,
+     3,
+     81,
+     110
+    ],
+    "fill": 0.554,
+    "touches_edge": false
+   },
+   "north-east": {
+    "run1": 0.73,
+    "bbox": [
+     10,
+     1,
+     105,
+     108
+    ],
+    "fill": 0.81,
+    "touches_edge": false
+   },
+   "north": {
+    "run1": 0.699,
+    "bbox": [
+     5,
+     1,
+     108,
+     107
+    ],
+    "fill": 0.87,
+    "touches_edge": false
+   },
+   "north-west": {
+    "run1": 0.692,
+    "bbox": [
+     25,
+     1,
+     98,
+     108
+    ],
+    "fill": 0.623,
+    "touches_edge": false
+   },
+   "west": {
+    "run1": 0.732,
+    "bbox": [
+     29,
+     3,
+     93,
+     110
+    ],
+    "fill": 0.546,
+    "touches_edge": false
+   },
+   "south-west": {
+    "run1": 0.788,
+    "bbox": [
+     5,
+     3,
+     99,
+     110
+    ],
+    "fill": 0.802,
+    "touches_edge": false
+   }
   }
+ },
+ "approved_at": "2026-09-09T19:59:19+00:00",
+ "animations": {
+  "idle": {
+   "directions": {
+    "south": {
+     "status": "pass",
+     "step_mean": 0.0465,
+     "step_max": 0.0768,
+     "drift": 0.65,
+     "loop": 0.0015,
+     "pin": 1.0,
+     "reasons": [],
+     "sub": "a93e25d2-c894-40fe-9faf-fccf0851ff6d",
+     "takes": 1,
+     "version": 1,
+     "mirrored": false,
+     "generated_at": "2026-09-09T20:06:56+00:00",
+     "cut": 0
+    },
+    "south-east": {
+     "status": "pass",
+     "step_mean": 0.0564,
+     "step_max": 0.0592,
+     "drift": 1.18,
+     "loop": 0.0011,
+     "pin": 1.0,
+     "reasons": [],
+     "sub": "8cb31070-34ee-476b-a35f-e8f06ea1e1fc",
+     "takes": 1,
+     "version": 1,
+     "mirrored": false,
+     "generated_at": "2026-09-09T20:06:57+00:00",
+     "cut": 0
+    },
+    "east": {
+     "status": "pass",
+     "step_mean": 0.0446,
+     "step_max": 0.081,
+     "drift": 0.98,
+     "loop": 0.0003,
+     "pin": 1.0,
+     "reasons": [],
+     "sub": "40b2b17a-48a2-4184-b15e-c74f0f471962",
+     "takes": 1,
+     "version": 1,
+     "mirrored": false,
+     "generated_at": "2026-09-09T20:06:58+00:00",
+     "cut": 0
+    },
+    "north-east": {
+     "status": "warn",
+     "step_mean": 0.0558,
+     "step_max": 0.0808,
+     "drift": 0.8,
+     "loop": 0.0021,
+     "pin": 1.0,
+     "reasons": [
+      "frame 1 touches a canvas edge the base does not (overflow / wrap risk)"
+     ],
+     "sub": "937bf38d-3dc1-4de0-aac1-c279abe5a52b",
+     "takes": 1,
+     "version": 1,
+     "mirrored": false,
+     "generated_at": "2026-09-09T20:06:58+00:00",
+     "cut": 0
+    },
+    "north": {
+     "status": "pass",
+     "step_mean": 0.0669,
+     "step_max": 0.0983,
+     "drift": 0.71,
+     "loop": 0.0029,
+     "pin": 1.0,
+     "reasons": [],
+     "sub": "39614bc7-fb49-422c-98bd-78cf093b455a",
+     "takes": 1,
+     "version": 1,
+     "mirrored": false,
+     "generated_at": "2026-09-09T20:06:59+00:00",
+     "cut": 0
+    },
+    "south-west": {
+     "status": "pass",
+     "step_mean": 0.0564,
+     "step_max": 0.0592,
+     "drift": 1.18,
+     "loop": 0.0011,
+     "pin": 1.0,
+     "reasons": [],
+     "sub": "8cb31070-34ee-476b-a35f-e8f06ea1e1fc",
+     "takes": 1,
+     "version": 1,
+     "mirrored": true,
+     "generated_at": "2026-09-09T20:06:57+00:00",
+     "cut": 0,
+     "source": "south-east"
+    },
+    "west": {
+     "status": "pass",
+     "step_mean": 0.0446,
+     "step_max": 0.081,
+     "drift": 0.98,
+     "loop": 0.0003,
+     "pin": 1.0,
+     "reasons": [],
+     "sub": "40b2b17a-48a2-4184-b15e-c74f0f471962",
+     "takes": 1,
+     "version": 1,
+     "mirrored": true,
+     "generated_at": "2026-09-09T20:06:58+00:00",
+     "cut": 0,
+     "source": "east"
+    },
+    "north-west": {
+     "status": "warn",
+     "step_mean": 0.0558,
+     "step_max": 0.0808,
+     "drift": 0.8,
+     "loop": 0.0021,
+     "pin": 1.0,
+     "reasons": [
+      "frame 1 touches a canvas edge the base does not (overflow / wrap risk)"
+     ],
+     "sub": "937bf38d-3dc1-4de0-aac1-c279abe5a52b",
+     "takes": 1,
+     "version": 1,
+     "mirrored": true,
+     "generated_at": "2026-09-09T20:06:58+00:00",
+     "cut": 0,
+     "source": "north-east"
+    }
+   },
+   "action": "Calm still idle, breathing very slowly and subtly, chest and shoulders rise and fall a little, feet planted, no other movement, ends in the same neutral pose it started in",
+   "frame_paths": {
+    "south": [
+     "hollow_knight/animations/idle/south/00.webp",
+     "hollow_knight/animations/idle/south/01.webp",
+     "hollow_knight/animations/idle/south/02.webp",
+     "hollow_knight/animations/idle/south/03.webp",
+     "hollow_knight/animations/idle/south/04.webp"
+    ],
+    "south-east": [
+     "hollow_knight/animations/idle/south-east/00.webp",
+     "hollow_knight/animations/idle/south-east/01.webp",
+     "hollow_knight/animations/idle/south-east/02.webp",
+     "hollow_knight/animations/idle/south-east/03.webp",
+     "hollow_knight/animations/idle/south-east/04.webp"
+    ],
+    "east": [
+     "hollow_knight/animations/idle/east/00.webp",
+     "hollow_knight/animations/idle/east/01.webp",
+     "hollow_knight/animations/idle/east/02.webp",
+     "hollow_knight/animations/idle/east/03.webp",
+     "hollow_knight/animations/idle/east/04.webp"
+    ],
+    "north-east": [
+     "hollow_knight/animations/idle/north-east/00.webp",
+     "hollow_knight/animations/idle/north-east/01.webp",
+     "hollow_knight/animations/idle/north-east/02.webp",
+     "hollow_knight/animations/idle/north-east/03.webp",
+     "hollow_knight/animations/idle/north-east/04.webp"
+    ],
+    "north": [
+     "hollow_knight/animations/idle/north/00.webp",
+     "hollow_knight/animations/idle/north/01.webp",
+     "hollow_knight/animations/idle/north/02.webp",
+     "hollow_knight/animations/idle/north/03.webp",
+     "hollow_knight/animations/idle/north/04.webp"
+    ],
+    "south-west": [
+     "hollow_knight/animations/idle/south-west/00.webp",
+     "hollow_knight/animations/idle/south-west/01.webp",
+     "hollow_knight/animations/idle/south-west/02.webp",
+     "hollow_knight/animations/idle/south-west/03.webp",
+     "hollow_knight/animations/idle/south-west/04.webp"
+    ],
+    "west": [
+     "hollow_knight/animations/idle/west/00.webp",
+     "hollow_knight/animations/idle/west/01.webp",
+     "hollow_knight/animations/idle/west/02.webp",
+     "hollow_knight/animations/idle/west/03.webp",
+     "hollow_knight/animations/idle/west/04.webp"
+    ],
+    "north-west": [
+     "hollow_knight/animations/idle/north-west/00.webp",
+     "hollow_knight/animations/idle/north-west/01.webp",
+     "hollow_knight/animations/idle/north-west/02.webp",
+     "hollow_knight/animations/idle/north-west/03.webp",
+     "hollow_knight/animations/idle/north-west/04.webp"
+    ]
+   },
+   "strips": {
+    "south": "hollow_knight/animations/idle__south.webp",
+    "south-east": "hollow_knight/animations/idle__south-east.webp",
+    "east": "hollow_knight/animations/idle__east.webp",
+    "north-east": "hollow_knight/animations/idle__north-east.webp",
+    "north": "hollow_knight/animations/idle__north.webp",
+    "south-west": "hollow_knight/animations/idle__south-west.webp",
+    "west": "hollow_knight/animations/idle__west.webp",
+    "north-west": "hollow_knight/animations/idle__north-west.webp"
+   }
+  },
+  "walk": {
+   "directions": {
+    "south": {
+     "status": "pass",
+     "step_mean": 0.1621,
+     "step_max": 0.1859,
+     "drift": 2.55,
+     "loop": 0.2774,
+     "loop_ratio": 1.71,
+     "travel": 2.55,
+     "pin": 0.891,
+     "pad": 3,
+     "canvas": [
+      118,
+      118
+     ],
+     "reasons": [
+      "canvas grown by 3 px a side to hold the motion"
+     ],
+     "sub": "f5b46679-7014-41e4-9f23-0c64f3f47e6b",
+     "group": "15c13add-445c-429c-898a-3ca25c236fd0",
+     "takes": 1,
+     "version": 1,
+     "mirrored": false,
+     "generated_at": "2026-09-09T21:14:57+00:00"
+    },
+    "south-east": {
+     "status": "pass",
+     "step_mean": 0.1568,
+     "step_max": 0.1672,
+     "drift": 2.18,
+     "loop": 0.2864,
+     "loop_ratio": 1.83,
+     "travel": 2.12,
+     "pin": 0.869,
+     "pad": 2,
+     "canvas": [
+      116,
+      116
+     ],
+     "reasons": [
+      "canvas grown by 2 px a side to hold the motion"
+     ],
+     "sub": "0d1dbf44-f7b2-4c91-9425-6fb547eb0c91",
+     "group": "0bce5446-4bbd-4315-b368-1ae99771f181",
+     "takes": 1,
+     "version": 1,
+     "mirrored": false,
+     "generated_at": "2026-09-09T21:14:58+00:00"
+    },
+    "east": {
+     "status": "pass",
+     "step_mean": 0.1776,
+     "step_max": 0.1898,
+     "drift": 3.4,
+     "loop": 0.3462,
+     "loop_ratio": 1.95,
+     "travel": 3.4,
+     "pin": 0.823,
+     "pad": 0,
+     "canvas": [
+      112,
+      112
+     ],
+     "reasons": [],
+     "sub": "f25d0cf6-9e7e-48df-b5e7-e31063804d37",
+     "group": "20c4eb59-1022-4aa7-a7fe-d7a02635b2b0",
+     "takes": 1,
+     "version": 1,
+     "mirrored": false,
+     "generated_at": "2026-09-09T21:14:59+00:00"
+    },
+    "north-east": {
+     "status": "pass",
+     "step_mean": 0.1652,
+     "step_max": 0.1992,
+     "drift": 2.06,
+     "loop": 0.2012,
+     "loop_ratio": 1.22,
+     "travel": 2.25,
+     "pin": 0.819,
+     "pad": 1,
+     "canvas": [
+      114,
+      114
+     ],
+     "reasons": [
+      "canvas grown by 1 px a side to hold the motion"
+     ],
+     "sub": "22160438-ede9-4dd1-b215-c71f031db5ff",
+     "group": "17e12e13-a9f8-4826-a940-bc8bd4967cf2",
+     "takes": 1,
+     "version": 1,
+     "mirrored": false,
+     "generated_at": "2026-09-09T21:15:00+00:00"
+    },
+    "north": {
+     "status": "pass",
+     "step_mean": 0.1707,
+     "step_max": 0.2037,
+     "drift": 3.8,
+     "loop": 0.3326,
+     "loop_ratio": 1.95,
+     "travel": 3.1,
+     "pin": 0.842,
+     "pad": 0,
+     "canvas": [
+      112,
+      112
+     ],
+     "reasons": [],
+     "sub": "5b66441d-d2e0-4813-9a6e-9ce589ec4580",
+     "group": "131c38c2-c657-486b-a5b1-d05911c38a98",
+     "takes": 1,
+     "version": 1,
+     "mirrored": false,
+     "generated_at": "2026-09-09T21:15:01+00:00"
+    },
+    "west": {
+     "status": "pass",
+     "step_mean": 0.1776,
+     "step_max": 0.1898,
+     "drift": 3.4,
+     "loop": 0.3462,
+     "loop_ratio": 1.95,
+     "travel": 3.4,
+     "pin": 0.823,
+     "pad": 0,
+     "canvas": [
+      112,
+      112
+     ],
+     "reasons": [],
+     "sub": "f25d0cf6-9e7e-48df-b5e7-e31063804d37",
+     "group": "20c4eb59-1022-4aa7-a7fe-d7a02635b2b0",
+     "takes": 1,
+     "version": 1,
+     "mirrored": true,
+     "generated_at": "2026-09-09T21:14:59+00:00",
+     "source": "east"
+    },
+    "north-west": {
+     "status": "pass",
+     "step_mean": 0.1652,
+     "step_max": 0.1992,
+     "drift": 2.06,
+     "loop": 0.2012,
+     "loop_ratio": 1.22,
+     "travel": 2.25,
+     "pin": 0.819,
+     "pad": 1,
+     "canvas": [
+      114,
+      114
+     ],
+     "reasons": [
+      "canvas grown by 1 px a side to hold the motion"
+     ],
+     "sub": "22160438-ede9-4dd1-b215-c71f031db5ff",
+     "group": "17e12e13-a9f8-4826-a940-bc8bd4967cf2",
+     "takes": 1,
+     "version": 1,
+     "mirrored": true,
+     "generated_at": "2026-09-09T21:15:00+00:00",
+     "source": "north-east"
+    },
+    "south-west": {
+     "status": "pass",
+     "step_mean": 0.1568,
+     "step_max": 0.1672,
+     "drift": 2.18,
+     "loop": 0.2864,
+     "loop_ratio": 1.83,
+     "travel": 2.12,
+     "pin": 0.869,
+     "pad": 2,
+     "canvas": [
+      116,
+      116
+     ],
+     "reasons": [
+      "canvas grown by 2 px a side to hold the motion"
+     ],
+     "sub": "0d1dbf44-f7b2-4c91-9425-6fb547eb0c91",
+     "group": "0bce5446-4bbd-4315-b368-1ae99771f181",
+     "takes": 1,
+     "version": 1,
+     "mirrored": true,
+     "generated_at": "2026-09-09T21:14:58+00:00",
+     "source": "south-east"
+    }
+   },
+   "action": "walk loop, full walk cycle in place, legs alternate naturally, normal calm walking pace, body stays centered, seamless loop whose last frame leads straight back into the first, no turning",
+   "frame_paths": {
+    "south": [
+     "hollow_knight/animations/walk/south/00.webp",
+     "hollow_knight/animations/walk/south/01.webp",
+     "hollow_knight/animations/walk/south/02.webp",
+     "hollow_knight/animations/walk/south/03.webp",
+     "hollow_knight/animations/walk/south/04.webp",
+     "hollow_knight/animations/walk/south/05.webp"
+    ],
+    "south-east": [
+     "hollow_knight/animations/walk/south-east/00.webp",
+     "hollow_knight/animations/walk/south-east/01.webp",
+     "hollow_knight/animations/walk/south-east/02.webp",
+     "hollow_knight/animations/walk/south-east/03.webp",
+     "hollow_knight/animations/walk/south-east/04.webp",
+     "hollow_knight/animations/walk/south-east/05.webp"
+    ],
+    "east": [
+     "hollow_knight/animations/walk/east/00.webp",
+     "hollow_knight/animations/walk/east/01.webp",
+     "hollow_knight/animations/walk/east/02.webp",
+     "hollow_knight/animations/walk/east/03.webp",
+     "hollow_knight/animations/walk/east/04.webp",
+     "hollow_knight/animations/walk/east/05.webp"
+    ],
+    "north-east": [
+     "hollow_knight/animations/walk/north-east/00.webp",
+     "hollow_knight/animations/walk/north-east/01.webp",
+     "hollow_knight/animations/walk/north-east/02.webp",
+     "hollow_knight/animations/walk/north-east/03.webp",
+     "hollow_knight/animations/walk/north-east/04.webp",
+     "hollow_knight/animations/walk/north-east/05.webp"
+    ],
+    "north": [
+     "hollow_knight/animations/walk/north/00.webp",
+     "hollow_knight/animations/walk/north/01.webp",
+     "hollow_knight/animations/walk/north/02.webp",
+     "hollow_knight/animations/walk/north/03.webp",
+     "hollow_knight/animations/walk/north/04.webp",
+     "hollow_knight/animations/walk/north/05.webp"
+    ],
+    "west": [
+     "hollow_knight/animations/walk/west/00.webp",
+     "hollow_knight/animations/walk/west/01.webp",
+     "hollow_knight/animations/walk/west/02.webp",
+     "hollow_knight/animations/walk/west/03.webp",
+     "hollow_knight/animations/walk/west/04.webp",
+     "hollow_knight/animations/walk/west/05.webp"
+    ],
+    "north-west": [
+     "hollow_knight/animations/walk/north-west/00.webp",
+     "hollow_knight/animations/walk/north-west/01.webp",
+     "hollow_knight/animations/walk/north-west/02.webp",
+     "hollow_knight/animations/walk/north-west/03.webp",
+     "hollow_knight/animations/walk/north-west/04.webp",
+     "hollow_knight/animations/walk/north-west/05.webp"
+    ],
+    "south-west": [
+     "hollow_knight/animations/walk/south-west/00.webp",
+     "hollow_knight/animations/walk/south-west/01.webp",
+     "hollow_knight/animations/walk/south-west/02.webp",
+     "hollow_knight/animations/walk/south-west/03.webp",
+     "hollow_knight/animations/walk/south-west/04.webp",
+     "hollow_knight/animations/walk/south-west/05.webp"
+    ]
+   },
+   "strips": {
+    "south": "hollow_knight/animations/walk__south.webp",
+    "south-east": "hollow_knight/animations/walk__south-east.webp",
+    "east": "hollow_knight/animations/walk__east.webp",
+    "north-east": "hollow_knight/animations/walk__north-east.webp",
+    "north": "hollow_knight/animations/walk__north.webp",
+    "west": "hollow_knight/animations/walk__west.webp",
+    "north-west": "hollow_knight/animations/walk__north-west.webp",
+    "south-west": "hollow_knight/animations/walk__south-west.webp"
+   }
+  },
+  "attack": {
+   "directions": {
+    "south": {
+     "status": "fail",
+     "step_mean": 0.184,
+     "step_max": 0.2131,
+     "drift": 2.3,
+     "loop": 0.0018,
+     "loop_ratio": 0.01,
+     "travel": 3.01,
+     "pin": 1.0,
+     "pad": 0,
+     "flash": 0.003,
+     "peak": 0.2722,
+     "reach": 0.162,
+     "canvas": [
+      112,
+      112
+     ],
+     "reasons": [
+      "no strike, just a lean: nothing reaches past 0.16 of the body"
+     ],
+     "sub": "57fe00ef-703c-42ca-9e04-cebce17a0d40",
+     "group": "51c6e605-1971-4465-aab1-124b2d6da916",
+     "takes": 1,
+     "version": 2,
+     "mirrored": false,
+     "generated_at": "2026-09-09T22:27:18+00:00",
+     "action": "Overhead Chop - Raises the greatsword and brings it down in one heavy chop, then returns to idle stance"
+    },
+    "south-east": {
+     "status": "fail",
+     "step_mean": 0.1501,
+     "step_max": 0.2074,
+     "drift": 3.74,
+     "loop": 0.0019,
+     "loop_ratio": 0.01,
+     "travel": 3.7,
+     "pin": 1.0,
+     "pad": 0,
+     "flash": 0.0,
+     "peak": 0.2446,
+     "reach": 0.139,
+     "canvas": [
+      112,
+      112
+     ],
+     "reasons": [
+      "no strike, just a lean: nothing reaches past 0.14 of the body"
+     ],
+     "sub": "9bdc49cf-e3b7-4367-aede-3d3f93db5a9f",
+     "group": "dc6eb3e7-d1bc-4f93-a322-c95e84efd0ab",
+     "takes": 1,
+     "version": 2,
+     "mirrored": false,
+     "generated_at": "2026-09-09T22:27:19+00:00",
+     "action": "Overhead Chop - Raises the greatsword and brings it down in one heavy chop, then returns to idle stance"
+    },
+    "east": {
+     "status": "pass",
+     "step_mean": 0.2011,
+     "step_max": 0.2996,
+     "drift": 8.25,
+     "loop": 0.0002,
+     "loop_ratio": 0.0,
+     "travel": 8.25,
+     "pin": 1.0,
+     "pad": 0,
+     "flash": 0.039,
+     "peak": 0.3418,
+     "reach": 0.369,
+     "canvas": [
+      112,
+      112
+     ],
+     "reasons": [],
+     "sub": "5ff43446-23f2-403a-a45b-c2fdab1cfe3b",
+     "group": "d6de9a95-aa3c-451a-a75c-7cf0aecc02a1",
+     "takes": 1,
+     "version": 2,
+     "mirrored": false,
+     "generated_at": "2026-09-09T22:27:19+00:00",
+     "action": "Overhead Chop - Raises the greatsword and brings it down in one heavy chop, then returns to idle stance"
+    },
+    "north-east": {
+     "status": "fail",
+     "step_mean": 0.1268,
+     "step_max": 0.1383,
+     "drift": 1.87,
+     "loop": 0.0014,
+     "loop_ratio": 0.01,
+     "travel": 1.94,
+     "pin": 1.0,
+     "pad": 0,
+     "flash": 0.002,
+     "peak": 0.2036,
+     "reach": 0.095,
+     "canvas": [
+      112,
+      112
+     ],
+     "reasons": [
+      "no strike, just a lean: nothing reaches past 0.09 of the body"
+     ],
+     "sub": "fb986bdf-be06-4cfa-a249-318f197ea5cd",
+     "group": "daf05b35-7ec2-454a-a3da-7451ff515d8c",
+     "takes": 1,
+     "version": 2,
+     "mirrored": false,
+     "generated_at": "2026-09-09T22:27:20+00:00",
+     "action": "Overhead Chop - Raises the greatsword and brings it down in one heavy chop, then returns to idle stance"
+    },
+    "north": {
+     "status": "fail",
+     "step_mean": 0.1813,
+     "step_max": 0.229,
+     "drift": 2.61,
+     "loop": 0.0029,
+     "loop_ratio": 0.02,
+     "travel": 2.77,
+     "pin": 1.0,
+     "pad": 1,
+     "flash": 0.094,
+     "peak": 0.2731,
+     "reach": 0.146,
+     "canvas": [
+      114,
+      114
+     ],
+     "reasons": [
+      "no strike, just a lean: nothing reaches past 0.15 of the body",
+      "canvas grown by 1 px a side to hold the motion"
+     ],
+     "sub": "bc029242-9765-4c30-8b7e-67f0da79f1ce",
+     "group": "6e0f7b4b-1b0c-443e-9428-71881a5c441d",
+     "takes": 1,
+     "version": 2,
+     "mirrored": false,
+     "generated_at": "2026-09-09T22:27:20+00:00",
+     "action": "Overhead Chop - Raises the greatsword and brings it down in one heavy chop, then returns to idle stance"
+    },
+    "south-west": {
+     "status": "pass",
+     "step_mean": 0.1501,
+     "step_max": 0.2074,
+     "drift": 3.74,
+     "loop": 0.0019,
+     "loop_ratio": 0.01,
+     "travel": 3.7,
+     "pin": 1.0,
+     "pad": 0,
+     "flash": 0.0,
+     "peak": 0.2446,
+     "canvas": [
+      112,
+      112
+     ],
+     "reasons": [],
+     "sub": "9bdc49cf-e3b7-4367-aede-3d3f93db5a9f",
+     "group": "dc6eb3e7-d1bc-4f93-a322-c95e84efd0ab",
+     "takes": 1,
+     "version": 2,
+     "mirrored": true,
+     "generated_at": "2026-09-09T22:27:19+00:00",
+     "action": "Overhead Chop - Raises the greatsword and brings it down in one heavy chop, then returns to idle stance",
+     "source": "south-east"
+    },
+    "west": {
+     "status": "pass",
+     "step_mean": 0.2011,
+     "step_max": 0.2996,
+     "drift": 8.25,
+     "loop": 0.0002,
+     "loop_ratio": 0.0,
+     "travel": 8.25,
+     "pin": 1.0,
+     "pad": 0,
+     "flash": 0.039,
+     "peak": 0.3418,
+     "reach": 0.369,
+     "canvas": [
+      112,
+      112
+     ],
+     "reasons": [],
+     "sub": "5ff43446-23f2-403a-a45b-c2fdab1cfe3b",
+     "group": "d6de9a95-aa3c-451a-a75c-7cf0aecc02a1",
+     "takes": 1,
+     "version": 2,
+     "mirrored": true,
+     "generated_at": "2026-09-09T22:27:19+00:00",
+     "action": "Overhead Chop - Raises the greatsword and brings it down in one heavy chop, then returns to idle stance",
+     "source": "east"
+    },
+    "north-west": {
+     "status": "pass",
+     "step_mean": 0.1268,
+     "step_max": 0.1383,
+     "drift": 1.87,
+     "loop": 0.0014,
+     "loop_ratio": 0.01,
+     "travel": 1.94,
+     "pin": 1.0,
+     "pad": 0,
+     "flash": 0.002,
+     "peak": 0.2036,
+     "canvas": [
+      112,
+      112
+     ],
+     "reasons": [],
+     "sub": "fb986bdf-be06-4cfa-a249-318f197ea5cd",
+     "group": "daf05b35-7ec2-454a-a3da-7451ff515d8c",
+     "takes": 1,
+     "version": 2,
+     "mirrored": true,
+     "generated_at": "2026-09-09T22:27:20+00:00",
+     "action": "Overhead Chop - Raises the greatsword and brings it down in one heavy chop, then returns to idle stance",
+     "source": "north-east"
+    }
+   },
+   "action": "Overhead Chop - Raises the greatsword and brings it down in one heavy chop, then returns to idle stance",
+   "frame_paths": {
+    "south": [
+     "hollow_knight/animations/attack/south/00.webp",
+     "hollow_knight/animations/attack/south/01.webp",
+     "hollow_knight/animations/attack/south/02.webp",
+     "hollow_knight/animations/attack/south/03.webp",
+     "hollow_knight/animations/attack/south/04.webp"
+    ],
+    "south-east": [
+     "hollow_knight/animations/attack/south-east/00.webp",
+     "hollow_knight/animations/attack/south-east/01.webp",
+     "hollow_knight/animations/attack/south-east/02.webp",
+     "hollow_knight/animations/attack/south-east/03.webp",
+     "hollow_knight/animations/attack/south-east/04.webp"
+    ],
+    "east": [
+     "hollow_knight/animations/attack/east/00.webp",
+     "hollow_knight/animations/attack/east/01.webp",
+     "hollow_knight/animations/attack/east/02.webp",
+     "hollow_knight/animations/attack/east/03.webp",
+     "hollow_knight/animations/attack/east/04.webp"
+    ],
+    "north-east": [
+     "hollow_knight/animations/attack/north-east/00.webp",
+     "hollow_knight/animations/attack/north-east/01.webp",
+     "hollow_knight/animations/attack/north-east/02.webp",
+     "hollow_knight/animations/attack/north-east/03.webp",
+     "hollow_knight/animations/attack/north-east/04.webp"
+    ],
+    "north": [
+     "hollow_knight/animations/attack/north/00.webp",
+     "hollow_knight/animations/attack/north/01.webp",
+     "hollow_knight/animations/attack/north/02.webp",
+     "hollow_knight/animations/attack/north/03.webp",
+     "hollow_knight/animations/attack/north/04.webp"
+    ],
+    "south-west": [
+     "hollow_knight/animations/attack/south-west/00.webp",
+     "hollow_knight/animations/attack/south-west/01.webp",
+     "hollow_knight/animations/attack/south-west/02.webp",
+     "hollow_knight/animations/attack/south-west/03.webp",
+     "hollow_knight/animations/attack/south-west/04.webp"
+    ],
+    "west": [
+     "hollow_knight/animations/attack/west/00.webp",
+     "hollow_knight/animations/attack/west/01.webp",
+     "hollow_knight/animations/attack/west/02.webp",
+     "hollow_knight/animations/attack/west/03.webp",
+     "hollow_knight/animations/attack/west/04.webp"
+    ],
+    "north-west": [
+     "hollow_knight/animations/attack/north-west/00.webp",
+     "hollow_knight/animations/attack/north-west/01.webp",
+     "hollow_knight/animations/attack/north-west/02.webp",
+     "hollow_knight/animations/attack/north-west/03.webp",
+     "hollow_knight/animations/attack/north-west/04.webp"
+    ]
+   },
+   "strips": {
+    "south": "hollow_knight/animations/attack__south.webp",
+    "south-east": "hollow_knight/animations/attack__south-east.webp",
+    "east": "hollow_knight/animations/attack__east.webp",
+    "north-east": "hollow_knight/animations/attack__north-east.webp",
+    "north": "hollow_knight/animations/attack__north.webp",
+    "south-west": "hollow_knight/animations/attack__south-west.webp",
+    "west": "hollow_knight/animations/attack__west.webp",
+    "north-west": "hollow_knight/animations/attack__north-west.webp"
+   }
+  },
+  "attack_v3try": {
+   "directions": {
+    "south": {
+     "status": "warn",
+     "step_mean": 0.2346,
+     "step_max": 0.3111,
+     "drift": 3.83,
+     "loop": 0.2965,
+     "loop_ratio": 1.26,
+     "travel": 1.75,
+     "pin": 1.0,
+     "pad": 5,
+     "flash": -0.0,
+     "peak": 0.36,
+     "reach": 0.257,
+     "canvas": [
+      122,
+      122
+     ],
+     "reasons": [
+      "shallow strike: reach 0.26 — eyeball it",
+      "canvas grown by 5 px a side to hold the motion"
+     ],
+     "sub": "18f89fbf-b102-4ff7-8f02-23063e782f05",
+     "group": "f6b53411-cf03-4493-b088-171772dab704",
+     "takes": 1,
+     "version": 5,
+     "mirrored": false,
+     "generated_at": "2026-09-10T21:41:29+00:00",
+     "action": "Overhead Chop - Raises the greatsword high overhead and chops it down hard",
+     "tries": 1,
+     "rolls": 1,
+     "intensity": 1,
+     "frames": 5,
+     "rung": 0
+    },
+    "south-east": {
+     "status": "warn",
+     "step_mean": 0.1993,
+     "step_max": 0.2952,
+     "drift": 5.12,
+     "loop": 0.3234,
+     "loop_ratio": 1.62,
+     "travel": 5.15,
+     "pin": 1.0,
+     "pad": 0,
+     "flash": 0.024,
+     "peak": 0.3363,
+     "reach": 0.25,
+     "canvas": [
+      112,
+      112
+     ],
+     "reasons": [
+      "shallow strike: reach 0.25 — eyeball it"
+     ],
+     "sub": "2e6286b6-dcc1-4201-b4c5-c81c18caef54",
+     "group": "e0a93232-d72d-4404-bc7f-60ef339fe0a9",
+     "takes": 1,
+     "version": 5,
+     "mirrored": false,
+     "generated_at": "2026-09-10T21:41:29+00:00",
+     "action": "Overhead Chop - Raises the greatsword high overhead and chops it down hard",
+     "tries": 1,
+     "rolls": 1,
+     "intensity": 1,
+     "frames": 5,
+     "rung": 0
+    },
+    "east": {
+     "status": "pass",
+     "step_mean": 0.1566,
+     "step_max": 0.2579,
+     "drift": 1.33,
+     "loop": 0.2327,
+     "loop_ratio": 1.49,
+     "travel": 2.06,
+     "pin": 1.0,
+     "pad": 0,
+     "flash": 0.013,
+     "peak": 0.2403,
+     "reach": 0.354,
+     "canvas": [
+      112,
+      112
+     ],
+     "reasons": [],
+     "sub": "4c073f66-3469-4e8d-97c0-d7e022dabb96",
+     "group": "73eb143b-c725-48d6-a71b-94043c42c282",
+     "takes": 1,
+     "version": 1,
+     "mirrored": false,
+     "generated_at": "2026-09-10T19:46:44+00:00",
+     "action": "Overhead Chop - Raises the greatsword high overhead and chops it down hard",
+     "tries": 1,
+     "rolls": 1,
+     "intensity": 1,
+     "rung": 0
+    },
+    "north-east": {
+     "status": "warn",
+     "step_mean": 0.2135,
+     "step_max": 0.3309,
+     "drift": 6.09,
+     "loop": 0.4065,
+     "loop_ratio": 1.9,
+     "travel": 2.71,
+     "pin": 1.0,
+     "pad": 1,
+     "flash": -0.003,
+     "peak": 0.4065,
+     "reach": 0.284,
+     "canvas": [
+      114,
+      114
+     ],
+     "reasons": [
+      "shallow strike: reach 0.28 — eyeball it",
+      "canvas grown by 1 px a side to hold the motion"
+     ],
+     "sub": "2aea503f-55fc-4d94-b711-ba16f0e45d79",
+     "group": "cf8b2dcf-4757-4199-95b1-5df994260e67",
+     "takes": 1,
+     "version": 1,
+     "mirrored": false,
+     "generated_at": "2026-09-10T19:46:44+00:00",
+     "action": "Overhead Chop - Raises the greatsword high overhead and chops it down hard",
+     "tries": 1,
+     "rolls": 1,
+     "intensity": 1,
+     "rung": 0
+    },
+    "north": {
+     "status": "warn",
+     "step_mean": 0.1908,
+     "step_max": 0.2771,
+     "drift": 2.67,
+     "loop": 0.2943,
+     "loop_ratio": 1.54,
+     "travel": 2.19,
+     "pin": 1.0,
+     "pad": 8,
+     "flash": -0.0,
+     "peak": 0.2943,
+     "reach": 0.204,
+     "canvas": [
+      128,
+      128
+     ],
+     "reasons": [
+      "shallow strike: reach 0.20 — eyeball it",
+      "canvas grown by 8 px a side to hold the motion"
+     ],
+     "sub": "3bf2c76d-1c4d-49c2-afa5-feba88c9b62d",
+     "group": "58cf3fe0-07d4-428a-8a05-85d0bceb018f",
+     "takes": 1,
+     "version": 5,
+     "mirrored": false,
+     "generated_at": "2026-09-10T21:41:30+00:00",
+     "action": "Overhead Chop - Raises the greatsword high overhead and chops it down hard",
+     "tries": 1,
+     "rolls": 1,
+     "intensity": 1,
+     "frames": 5,
+     "rung": 0
+    },
+    "west": {
+     "status": "pass",
+     "step_mean": 0.1566,
+     "step_max": 0.2579,
+     "drift": 1.33,
+     "loop": 0.2327,
+     "loop_ratio": 1.49,
+     "travel": 2.06,
+     "pin": 1.0,
+     "pad": 0,
+     "flash": 0.013,
+     "peak": 0.2403,
+     "reach": 0.354,
+     "canvas": [
+      112,
+      112
+     ],
+     "reasons": [],
+     "sub": "4c073f66-3469-4e8d-97c0-d7e022dabb96",
+     "group": "73eb143b-c725-48d6-a71b-94043c42c282",
+     "takes": 1,
+     "version": 1,
+     "mirrored": true,
+     "generated_at": "2026-09-10T19:46:44+00:00",
+     "action": "Overhead Chop - Raises the greatsword high overhead and chops it down hard",
+     "tries": 1,
+     "rolls": 1,
+     "intensity": 1,
+     "rung": 0,
+     "source": "east"
+    },
+    "north-west": {
+     "status": "warn",
+     "step_mean": 0.2135,
+     "step_max": 0.3309,
+     "drift": 6.09,
+     "loop": 0.4065,
+     "loop_ratio": 1.9,
+     "travel": 2.71,
+     "pin": 1.0,
+     "pad": 1,
+     "flash": -0.003,
+     "peak": 0.4065,
+     "reach": 0.284,
+     "canvas": [
+      114,
+      114
+     ],
+     "reasons": [
+      "shallow strike: reach 0.28 — eyeball it",
+      "canvas grown by 1 px a side to hold the motion"
+     ],
+     "sub": "2aea503f-55fc-4d94-b711-ba16f0e45d79",
+     "group": "cf8b2dcf-4757-4199-95b1-5df994260e67",
+     "takes": 1,
+     "version": 1,
+     "mirrored": true,
+     "generated_at": "2026-09-10T19:46:44+00:00",
+     "action": "Overhead Chop - Raises the greatsword high overhead and chops it down hard",
+     "tries": 1,
+     "rolls": 1,
+     "intensity": 1,
+     "rung": 0,
+     "source": "north-east"
+    },
+    "south-west": {
+     "status": "warn",
+     "step_mean": 0.1993,
+     "step_max": 0.2952,
+     "drift": 5.12,
+     "loop": 0.3234,
+     "loop_ratio": 1.62,
+     "travel": 5.15,
+     "pin": 1.0,
+     "pad": 0,
+     "flash": 0.024,
+     "peak": 0.3363,
+     "reach": 0.25,
+     "canvas": [
+      112,
+      112
+     ],
+     "reasons": [
+      "shallow strike: reach 0.25 — eyeball it"
+     ],
+     "sub": "2e6286b6-dcc1-4201-b4c5-c81c18caef54",
+     "group": "e0a93232-d72d-4404-bc7f-60ef339fe0a9",
+     "takes": 1,
+     "version": 5,
+     "mirrored": true,
+     "generated_at": "2026-09-10T21:41:29+00:00",
+     "action": "Overhead Chop - Raises the greatsword high overhead and chops it down hard",
+     "tries": 1,
+     "rolls": 1,
+     "intensity": 1,
+     "frames": 5,
+     "rung": 0,
+     "source": "south-east"
+    }
+   },
+   "action": "Overhead Chop - Raises the greatsword high overhead and chops it down hard",
+   "frame_paths": {
+    "south": [
+     "hollow_knight/animations/attack_v3try/south/00.webp",
+     "hollow_knight/animations/attack_v3try/south/01.webp",
+     "hollow_knight/animations/attack_v3try/south/02.webp",
+     "hollow_knight/animations/attack_v3try/south/03.webp",
+     "hollow_knight/animations/attack_v3try/south/04.webp"
+    ],
+    "south-east": [
+     "hollow_knight/animations/attack_v3try/south-east/00.webp",
+     "hollow_knight/animations/attack_v3try/south-east/01.webp",
+     "hollow_knight/animations/attack_v3try/south-east/02.webp",
+     "hollow_knight/animations/attack_v3try/south-east/03.webp",
+     "hollow_knight/animations/attack_v3try/south-east/04.webp"
+    ],
+    "east": [
+     "hollow_knight/animations/attack_v3try/east/00.webp",
+     "hollow_knight/animations/attack_v3try/east/01.webp",
+     "hollow_knight/animations/attack_v3try/east/02.webp",
+     "hollow_knight/animations/attack_v3try/east/03.webp",
+     "hollow_knight/animations/attack_v3try/east/04.webp"
+    ],
+    "north-east": [
+     "hollow_knight/animations/attack_v3try/north-east/00.webp",
+     "hollow_knight/animations/attack_v3try/north-east/01.webp",
+     "hollow_knight/animations/attack_v3try/north-east/02.webp",
+     "hollow_knight/animations/attack_v3try/north-east/03.webp",
+     "hollow_knight/animations/attack_v3try/north-east/04.webp"
+    ],
+    "north": [
+     "hollow_knight/animations/attack_v3try/north/00.webp",
+     "hollow_knight/animations/attack_v3try/north/01.webp",
+     "hollow_knight/animations/attack_v3try/north/02.webp",
+     "hollow_knight/animations/attack_v3try/north/03.webp",
+     "hollow_knight/animations/attack_v3try/north/04.webp"
+    ],
+    "west": [
+     "hollow_knight/animations/attack_v3try/west/00.webp",
+     "hollow_knight/animations/attack_v3try/west/01.webp",
+     "hollow_knight/animations/attack_v3try/west/02.webp",
+     "hollow_knight/animations/attack_v3try/west/03.webp",
+     "hollow_knight/animations/attack_v3try/west/04.webp"
+    ],
+    "north-west": [
+     "hollow_knight/animations/attack_v3try/north-west/00.webp",
+     "hollow_knight/animations/attack_v3try/north-west/01.webp",
+     "hollow_knight/animations/attack_v3try/north-west/02.webp",
+     "hollow_knight/animations/attack_v3try/north-west/03.webp",
+     "hollow_knight/animations/attack_v3try/north-west/04.webp"
+    ],
+    "south-west": [
+     "hollow_knight/animations/attack_v3try/south-west/00.webp",
+     "hollow_knight/animations/attack_v3try/south-west/01.webp",
+     "hollow_knight/animations/attack_v3try/south-west/02.webp",
+     "hollow_knight/animations/attack_v3try/south-west/03.webp",
+     "hollow_knight/animations/attack_v3try/south-west/04.webp"
+    ]
+   },
+   "strips": {
+    "south": "hollow_knight/animations/attack_v3try__south.webp",
+    "south-east": "hollow_knight/animations/attack_v3try__south-east.webp",
+    "east": "hollow_knight/animations/attack_v3try__east.webp",
+    "north-east": "hollow_knight/animations/attack_v3try__north-east.webp",
+    "north": "hollow_knight/animations/attack_v3try__north.webp",
+    "west": "hollow_knight/animations/attack_v3try__west.webp",
+    "north-west": "hollow_knight/animations/attack_v3try__north-west.webp",
+    "south-west": "hollow_knight/animations/attack_v3try__south-west.webp"
+   },
+   "intensity": 1
+  }
+ }
 }
