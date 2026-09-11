@@ -251,6 +251,25 @@ from the games agent), #18 (title/landing screen).
   was right for exactly one day: it is the check that CAUGHT the crop
   landing, and the samples above replaced it because a cropped render has no
   such relationship to the grid.
+- **A MAP LAYER READS THE PUBLISHER'S OWN NAMES, NEVER ITS OWN DERIVATION.**
+  The `dungeons` chip pins maps2's `places.json` (`pixel-maps2/places@2`) —
+  `kind: "cave"`, the display `name`, and the published `entrance` if there is
+  one else `anchor` (the spec's own map-pin cell; for a cave the centroid is
+  inside the mountain and the useful cell is the mouth). A dungeon appears the
+  day maps2 ships it and nothing here moves when the terrain does. Houses and
+  summits ride in the same file and are one `LAYERS` entry each.
+  A CHIP IS OFFERED ONLY WHEN SOMETHING IS BEHIND IT (`Layer.has`) — a world
+  with no caves shows no dungeons button.
+  A PIN IS A DIAMOND IN HTML: the overlay `<svg>` is stretched to the image box
+  (`preserveAspectRatio="none"`), so a circle drawn in it comes out an ellipse,
+  and SHAPE is what separates a place from the round accent "you are here" dot
+  at 2 inches wide and to a colour-blind eye. The NAME takes the space under
+  its pin, or over it, or is left off — six caves in one massif smear into one
+  another otherwise, and the diamond alone still answers the question.
+  Gated in `verify-map` against maps2's own worked sample: the fixture's cave
+  entrance IS sample 0's cell, so a pin agreeing with the published pixel
+  cannot be agreeing with a shared misreading of the projection. The fixture
+  rides on top of whatever the world really publishes.
 - **SLIDER ROWS LEAVE A SCROLL GUTTER; BUTTONS DO NOT** (`--ml-slider-gutter`,
   100px, maintainer 2026-09-08 with the strip circled on a screenshot: "when
   scrolling in settings it's hard to not by mistake edit a slider … this is
