@@ -1371,38 +1371,38 @@
           "generated_at": "2026-09-11T15:47:48+00:00"
         },
         "north": {
-          "status": "fail",
-          "step_mean": 0.3868,
-          "step_max": 0.442,
-          "drift": 6.79,
-          "loop": 0.4401,
-          "loop_ratio": 1.14,
-          "travel": 5.3,
-          "pin": 1.0,
+          "status": "warn",
+          "step_mean": 0.5381,
+          "step_max": 0.5908,
+          "drift": 8.78,
+          "loop": 0.1005,
+          "loop_ratio": 0.19,
+          "travel": 8.78,
+          "pin": 0.903,
           "pad": 0,
-          "flash": -0.001,
-          "peak": 0.442,
-          "reach": 0.107,
+          "flash": 0.147,
+          "peak": 0.6397,
+          "reach": 0.194,
           "canvas": [
             112,
             112
           ],
           "reasons": [
-            "no strike, just a lean: nothing reaches past 0.11 of the body"
+            "shallow strike: reach 0.19 — eyeball it"
           ],
-          "sub": "7f3aba48-d6d3-4fa9-90b8-81524245ec91",
-          "group": "2cef1586-2e30-4fd3-ab72-32ce3fa192bc",
+          "sub": "496ffc4b-1ced-4e78-ac84-f331540c3f4f",
+          "group": "6d8c92cb-809c-4621-bb51-1b3657affb89",
           "takes": 1,
-          "version": 2,
+          "version": 3,
           "mirrored": false,
-          "action": "Overhead Chop - Raises the greatsword high overhead and chops it down hard, a big aggressive swing",
+          "action": "Claw Swipe - Raises one front paw and performs one quick swipe forward, white swoosh lines following the claws, a big aggressive swing",
           "intensity": 0,
-          "rolls": 2,
+          "rolls": 3,
           "frames": 4,
-          "rung": 1,
+          "rung": 2,
           "unwrapped": null,
-          "tries": 2,
-          "generated_at": "2026-09-11T16:50:27+00:00"
+          "tries": 3,
+          "generated_at": "2026-09-11T17:29:57+00:00"
         },
         "south-west": {
           "status": "warn",

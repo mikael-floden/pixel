@@ -1283,39 +1283,38 @@
     "attack_v3": {
       "directions": {
         "south": {
-          "status": "fail",
-          "step_mean": 0.1327,
-          "step_max": 0.1723,
-          "drift": 2.8,
-          "loop": 0.1488,
-          "loop_ratio": 1.12,
-          "travel": 1.29,
+          "status": "warn",
+          "step_mean": 0.2784,
+          "step_max": 0.4053,
+          "drift": 3.03,
+          "loop": 0.0,
+          "loop_ratio": 0.0,
+          "travel": 4.04,
           "pin": 1.0,
           "pad": 0,
-          "flash": 0.009,
-          "peak": 0.1488,
-          "reach": 0.07,
+          "flash": 0.033,
+          "peak": 0.2711,
+          "reach": 0.155,
           "canvas": [
             88,
             88
           ],
           "reasons": [
-            "weak strike: peak 0.149 — eyeball it",
-            "no strike, just a lean: nothing reaches past 0.07 of the body"
+            "shallow strike: reach 0.15 — eyeball it"
           ],
-          "sub": "5c7e5a5b-95c1-4147-9bc1-a5769664b6dc",
-          "group": "20b40054-c26b-4ed2-8998-4605b273df5e",
-          "takes": 1,
-          "version": 2,
+          "sub": "054d9561-38ad-480c-8ac9-cdd70441eafe",
+          "group": "1369cec9-ddc1-4845-98b6-f472a7ae9535",
+          "takes": 2,
+          "version": 3,
           "mirrored": false,
-          "action": "Strike - Coils its head back, then strikes forward with fangs bared, a big aggressive swing",
+          "action": "Lunge Attack - Throws its whole body forward in one fast lunge, white swoosh lines trailing behind it, a big aggressive swing",
           "intensity": 0,
-          "rolls": 2,
+          "rolls": 3,
           "frames": 4,
-          "rung": 1,
+          "rung": 2,
           "unwrapped": null,
-          "tries": 2,
-          "generated_at": "2026-09-11T16:52:40+00:00"
+          "tries": 3,
+          "generated_at": "2026-09-11T17:30:29+00:00"
         },
         "south-east": {
           "status": "warn",
