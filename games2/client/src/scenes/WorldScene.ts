@@ -3165,6 +3165,9 @@ export class WorldScene extends Phaser.Scene {
      *  only while that roof is cut away, and it FADES with the cut-away's own
      *  crossfade rather than popping at the flip (see roofedFade). */
     roofed?: boolean;
+    /** Standing ON a cut-away lid: the copy crosses with the lid, not with the
+     *  room (see applyObjectLights). */
+    aboveCut?: boolean;
     /** Scenery: the placement's index into world.scenery — keys the piece's own
      *  occluder shares out of its tint (nightlight.sceneryExclR2). */
     place?: number;
@@ -12405,7 +12408,15 @@ export class WorldScene extends Phaser.Scene {
        * fog take the same opacity the base sprite does, or the copy — which
        * draws ABOVE the darkness overlay — would stay solid over a roof that
        * has already faded back in. */
-      const rf = (lo.roofed ? this.roofedFade() : 1) * (lo.fade ?? 1);
+      /* ...AND WHAT STANDS ON THE CUT-AWAY LID CROSSES WITH THE LID. Same
+       * reason, opposite direction: the copy draws ABOVE the darkness overlay,
+       * so a tree on the lid stayed solid over the opened room even though its
+       * base sprite had faded — which is why fading only the base sprite never
+       * removed it from his screen through four attempts (2026-09-11: "you
+       * know the renderer might render the same tree in different passes
+       * right?"). The copy and its fog take the alpha the base sprite has. */
+      const rf =
+        (lo.roofed ? this.roofedFade() : lo.aboveCut ? this.debrisAlpha() : 1) * (lo.fade ?? 1);
       lo.img.setAlpha(rf);
       if (fa > 0.002) {
         if (!lo.fog) this.makeFogSilhouette(lo);
@@ -19293,6 +19304,7 @@ export class WorldScene extends Phaser.Scene {
           pd: onWall ? wallDepth : hbDepth,
           place: p.i,
           roofed: p.roofed,
+          aboveCut: this.sceneryAboveCutAt(p.cx, p.cy, p.level),
         });
         if (onWall) this.litOccluders[this.litOccluders.length - 1].cover = Infinity; // the wall is BEHIND it
         const lo = this.litOccluders[this.litOccluders.length - 1];
