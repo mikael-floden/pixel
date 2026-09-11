@@ -1,1549 +1,1549 @@
 {
-  "id": "fire_elemental",
-  "name": "Flarewisp",
-  "tier": "mid",
-  "scale": "standard",
-  "lore": "It burns because it is, not because it must. It follows travellers for the company and leaves them as ash.",
-  "biome": [
-    "lava",
-    "black_rock"
-  ],
-  "items": [],
-  "prompt": "Fantasy fire elemental shown full body from head to feet, a humanoid figure of living orange and yellow flame with a dark ember core, two blazing white eyes, arms tapering into licks of fire, and sparks drifting off its shoulders.",
-  "size": [
-    96,
-    96
-  ],
-  "template_id": "mannequin",
-  "directions": [
-    "south",
-    "south-east",
-    "east",
-    "north-east",
-    "north",
-    "north-west",
-    "west",
-    "south-west"
-  ],
-  "rotations": {
-    "south": "fire_elemental/rotations/south.webp",
-    "south-east": "fire_elemental/rotations/south-east.webp",
-    "east": "fire_elemental/rotations/east.webp",
-    "north-east": "fire_elemental/rotations/north-east.webp",
-    "north": "fire_elemental/rotations/north.webp",
-    "north-west": "fire_elemental/rotations/north-west.webp",
-    "west": "fire_elemental/rotations/west.webp",
-    "south-west": "fire_elemental/rotations/south-west.webp"
-  },
-  "sheet": "fire_elemental/sheet.webp",
-  "review": "approved",
-  "pixellab_id": "ed20edca-0a76-41ff-934a-5a1f4c33849e",
-  "seed": 106115589,
-  "version": 1,
-  "usage": null,
-  "generated_at": "2026-09-09T18:20:52+00:00",
-  "elapsed_s": 194.2,
-  "qa": {
-    "status": "pass",
-    "min_run1": 0.799,
-    "reasons": [],
-    "directions": {
-      "south": {
-        "run1": 0.825,
-        "bbox": [
-          15,
-          3,
-          81,
-          92
-        ],
-        "fill": 0.637,
-        "touches_edge": false
-      },
-      "south-east": {
-        "run1": 0.861,
-        "bbox": [
-          18,
-          2,
-          75,
-          94
-        ],
-        "fill": 0.569,
-        "touches_edge": false
-      },
-      "east": {
-        "run1": 0.846,
-        "bbox": [
-          28,
-          3,
-          63,
-          94
-        ],
-        "fill": 0.346,
-        "touches_edge": false
-      },
-      "north-east": {
-        "run1": 0.829,
-        "bbox": [
-          24,
-          2,
-          70,
-          94
-        ],
-        "fill": 0.459,
-        "touches_edge": false
-      },
-      "north": {
-        "run1": 0.799,
-        "bbox": [
-          19,
-          2,
-          77,
-          92
-        ],
-        "fill": 0.566,
-        "touches_edge": false
-      },
-      "north-west": {
-        "run1": 0.83,
-        "bbox": [
-          26,
-          3,
-          74,
-          94
-        ],
-        "fill": 0.474,
-        "touches_edge": false
-      },
-      "west": {
-        "run1": 0.851,
-        "bbox": [
-          33,
-          3,
-          65,
-          94
-        ],
-        "fill": 0.316,
-        "touches_edge": false
-      },
-      "south-west": {
-        "run1": 0.871,
-        "bbox": [
-          26,
-          2,
-          76,
-          94
-        ],
-        "fill": 0.499,
-        "touches_edge": false
-      }
-    }
-  },
-  "approved_at": "2026-09-09T19:59:21+00:00",
-  "animations": {
-    "idle": {
-      "directions": {
-        "south": {
-          "status": "warn",
-          "step_mean": 0.137,
-          "step_max": 0.1498,
-          "drift": 0.86,
-          "loop": 0.0,
-          "pin": 1.0,
-          "reasons": [
-            "frame 2 touches a canvas edge the base does not (overflow / wrap risk)"
-          ],
-          "sub": "43771a07-afe4-4abc-b26b-31c0db2fae26",
-          "takes": 1,
-          "version": 1,
-          "mirrored": false,
-          "generated_at": "2026-09-09T20:10:20+00:00",
-          "cut": 0
-        },
-        "south-east": {
-          "status": "pass",
-          "step_mean": 0.0917,
-          "step_max": 0.1175,
-          "drift": 1.18,
-          "loop": 0.0,
-          "pin": 1.0,
-          "reasons": [],
-          "sub": "5d181a2d-ddfc-4573-b2cd-9069ec73e240",
-          "takes": 1,
-          "version": 1,
-          "mirrored": false,
-          "generated_at": "2026-09-09T20:10:20+00:00",
-          "cut": 0
-        },
-        "east": {
-          "status": "pass",
-          "step_mean": 0.0887,
-          "step_max": 0.125,
-          "drift": 1.13,
-          "loop": 0.0,
-          "pin": 1.0,
-          "reasons": [],
-          "sub": "ae88d5d2-a1e8-4d66-b74a-244cf9e22263",
-          "takes": 1,
-          "version": 1,
-          "mirrored": false,
-          "generated_at": "2026-09-09T20:10:22+00:00",
-          "cut": 0
-        },
-        "north-east": {
-          "status": "pass",
-          "step_mean": 0.1009,
-          "step_max": 0.1319,
-          "drift": 0.4,
-          "loop": 0.0008,
-          "pin": 1.0,
-          "reasons": [],
-          "sub": "f6d30abf-ba3f-451a-9fde-785043ed59b3",
-          "takes": 1,
-          "version": 1,
-          "mirrored": false,
-          "generated_at": "2026-09-09T20:10:22+00:00",
-          "cut": 0
-        },
-        "north": {
-          "status": "pass",
-          "step_mean": 0.1302,
-          "step_max": 0.1504,
-          "drift": 1.18,
-          "loop": 0.0,
-          "pin": 1.0,
-          "reasons": [],
-          "sub": "dc5bc0dc-2d43-428f-a05e-1eca0c89ff4c",
-          "takes": 1,
-          "version": 1,
-          "mirrored": false,
-          "generated_at": "2026-09-09T20:10:23+00:00",
-          "cut": 0
-        },
-        "south-west": {
-          "status": "pass",
-          "step_mean": 0.0917,
-          "step_max": 0.1175,
-          "drift": 1.18,
-          "loop": 0.0,
-          "pin": 1.0,
-          "reasons": [],
-          "sub": "5d181a2d-ddfc-4573-b2cd-9069ec73e240",
-          "takes": 1,
-          "version": 1,
-          "mirrored": true,
-          "generated_at": "2026-09-09T20:10:20+00:00",
-          "cut": 0,
-          "source": "south-east"
-        },
-        "west": {
-          "status": "pass",
-          "step_mean": 0.0887,
-          "step_max": 0.125,
-          "drift": 1.13,
-          "loop": 0.0,
-          "pin": 1.0,
-          "reasons": [],
-          "sub": "ae88d5d2-a1e8-4d66-b74a-244cf9e22263",
-          "takes": 1,
-          "version": 1,
-          "mirrored": true,
-          "generated_at": "2026-09-09T20:10:22+00:00",
-          "cut": 0,
-          "source": "east"
-        },
-        "north-west": {
-          "status": "pass",
-          "step_mean": 0.1009,
-          "step_max": 0.1319,
-          "drift": 0.4,
-          "loop": 0.0008,
-          "pin": 1.0,
-          "reasons": [],
-          "sub": "f6d30abf-ba3f-451a-9fde-785043ed59b3",
-          "takes": 1,
-          "version": 1,
-          "mirrored": true,
-          "generated_at": "2026-09-09T20:10:22+00:00",
-          "cut": 0,
-          "source": "north-east"
-        }
-      },
-      "action": "Calm still idle, breathing very slowly and subtly, chest and shoulders rise and fall a little, feet planted, no other movement, ends in the same neutral pose it started in",
-      "frame_paths": {
-        "south": [
-          "fire_elemental/animations/idle/south/00.webp",
-          "fire_elemental/animations/idle/south/01.webp",
-          "fire_elemental/animations/idle/south/02.webp",
-          "fire_elemental/animations/idle/south/03.webp",
-          "fire_elemental/animations/idle/south/04.webp"
-        ],
-        "south-east": [
-          "fire_elemental/animations/idle/south-east/00.webp",
-          "fire_elemental/animations/idle/south-east/01.webp",
-          "fire_elemental/animations/idle/south-east/02.webp",
-          "fire_elemental/animations/idle/south-east/03.webp",
-          "fire_elemental/animations/idle/south-east/04.webp"
-        ],
-        "east": [
-          "fire_elemental/animations/idle/east/00.webp",
-          "fire_elemental/animations/idle/east/01.webp",
-          "fire_elemental/animations/idle/east/02.webp",
-          "fire_elemental/animations/idle/east/03.webp",
-          "fire_elemental/animations/idle/east/04.webp"
-        ],
-        "north-east": [
-          "fire_elemental/animations/idle/north-east/00.webp",
-          "fire_elemental/animations/idle/north-east/01.webp",
-          "fire_elemental/animations/idle/north-east/02.webp",
-          "fire_elemental/animations/idle/north-east/03.webp",
-          "fire_elemental/animations/idle/north-east/04.webp"
-        ],
-        "north": [
-          "fire_elemental/animations/idle/north/00.webp",
-          "fire_elemental/animations/idle/north/01.webp",
-          "fire_elemental/animations/idle/north/02.webp",
-          "fire_elemental/animations/idle/north/03.webp",
-          "fire_elemental/animations/idle/north/04.webp"
-        ],
-        "south-west": [
-          "fire_elemental/animations/idle/south-west/00.webp",
-          "fire_elemental/animations/idle/south-west/01.webp",
-          "fire_elemental/animations/idle/south-west/02.webp",
-          "fire_elemental/animations/idle/south-west/03.webp",
-          "fire_elemental/animations/idle/south-west/04.webp"
-        ],
-        "west": [
-          "fire_elemental/animations/idle/west/00.webp",
-          "fire_elemental/animations/idle/west/01.webp",
-          "fire_elemental/animations/idle/west/02.webp",
-          "fire_elemental/animations/idle/west/03.webp",
-          "fire_elemental/animations/idle/west/04.webp"
-        ],
-        "north-west": [
-          "fire_elemental/animations/idle/north-west/00.webp",
-          "fire_elemental/animations/idle/north-west/01.webp",
-          "fire_elemental/animations/idle/north-west/02.webp",
-          "fire_elemental/animations/idle/north-west/03.webp",
-          "fire_elemental/animations/idle/north-west/04.webp"
-        ]
-      },
-      "strips": {
-        "south": "fire_elemental/animations/idle__south.webp",
-        "south-east": "fire_elemental/animations/idle__south-east.webp",
-        "east": "fire_elemental/animations/idle__east.webp",
-        "north-east": "fire_elemental/animations/idle__north-east.webp",
-        "north": "fire_elemental/animations/idle__north.webp",
-        "south-west": "fire_elemental/animations/idle__south-west.webp",
-        "west": "fire_elemental/animations/idle__west.webp",
-        "north-west": "fire_elemental/animations/idle__north-west.webp"
-      }
-    },
-    "walk": {
-      "directions": {
-        "south": {
-          "status": "pass",
-          "step_mean": 0.1535,
-          "step_max": 0.2028,
-          "drift": 2.95,
-          "loop": 0.2661,
-          "loop_ratio": 1.73,
-          "travel": 0.39,
-          "pin": 0.837,
-          "pad": 0,
-          "canvas": [
-            96,
-            96
-          ],
-          "reasons": [],
-          "sub": "14a3bdfd-a9e2-4c54-a3db-198da38efc48",
-          "group": "ae363333-2853-4c0f-a72a-90f06163bc7e",
-          "takes": 1,
-          "version": 1,
-          "mirrored": false,
-          "generated_at": "2026-09-09T21:15:40+00:00"
-        },
-        "south-east": {
-          "status": "pass",
-          "step_mean": 0.2765,
-          "step_max": 0.3197,
-          "drift": 4.28,
-          "loop": 0.4698,
-          "loop_ratio": 1.7,
-          "travel": 0.9,
-          "pin": 0.791,
-          "pad": 0,
-          "canvas": [
-            96,
-            96
-          ],
-          "reasons": [],
-          "sub": "573c3edc-39eb-41b2-b837-aaed92ca6280",
-          "group": "4252b76a-0289-4cd2-b2fe-d1e1a9b86446",
-          "takes": 1,
-          "version": 1,
-          "mirrored": false,
-          "generated_at": "2026-09-09T21:15:41+00:00"
-        },
-        "east": {
-          "status": "pass",
-          "step_mean": 0.2851,
-          "step_max": 0.3673,
-          "drift": 2.53,
-          "loop": 0.3461,
-          "loop_ratio": 1.21,
-          "travel": 1.07,
-          "pin": 0.688,
-          "pad": 0,
-          "canvas": [
-            96,
-            96
-          ],
-          "reasons": [],
-          "sub": "fa410399-7f73-4f8a-a74c-121d06ff1599",
-          "group": "4a94041a-3e15-438f-962e-7862cdb17c3a",
-          "takes": 1,
-          "version": 1,
-          "mirrored": false,
-          "generated_at": "2026-09-09T21:15:41+00:00"
-        },
-        "north-east": {
-          "status": "pass",
-          "step_mean": 0.2386,
-          "step_max": 0.3107,
-          "drift": 2.81,
-          "loop": 0.4266,
-          "loop_ratio": 1.79,
-          "travel": 0.75,
-          "pin": 0.786,
-          "pad": 1,
-          "canvas": [
-            98,
-            98
-          ],
-          "reasons": [
-            "canvas grown by 1 px a side to hold the motion"
-          ],
-          "sub": "9547adc4-8b08-405b-9d7f-b3030fe81d40",
-          "group": "88d746f2-412b-4495-b4a2-d13d567be50c",
-          "takes": 1,
-          "version": 1,
-          "mirrored": false,
-          "generated_at": "2026-09-09T21:15:42+00:00"
-        },
-        "north": {
-          "status": "pass",
-          "step_mean": 0.1681,
-          "step_max": 0.2489,
-          "drift": 2.7,
-          "loop": 0.3221,
-          "loop_ratio": 1.92,
-          "travel": 0.52,
-          "pin": 0.879,
-          "pad": 1,
-          "canvas": [
-            98,
-            98
-          ],
-          "reasons": [
-            "canvas grown by 1 px a side to hold the motion"
-          ],
-          "sub": "17fe9c75-a7a0-42b9-ad53-95c63f55a841",
-          "group": "10208ecd-47ae-425a-a5d7-e02779ae694b",
-          "takes": 1,
-          "version": 1,
-          "mirrored": false,
-          "generated_at": "2026-09-09T21:15:43+00:00"
-        },
-        "south-west": {
-          "status": "pass",
-          "step_mean": 0.2765,
-          "step_max": 0.3197,
-          "drift": 4.28,
-          "loop": 0.4698,
-          "loop_ratio": 1.7,
-          "travel": 0.9,
-          "pin": 0.791,
-          "pad": 0,
-          "canvas": [
-            96,
-            96
-          ],
-          "reasons": [],
-          "sub": "573c3edc-39eb-41b2-b837-aaed92ca6280",
-          "group": "4252b76a-0289-4cd2-b2fe-d1e1a9b86446",
-          "takes": 1,
-          "version": 1,
-          "mirrored": true,
-          "generated_at": "2026-09-09T21:15:41+00:00",
-          "source": "south-east"
-        },
-        "west": {
-          "status": "pass",
-          "step_mean": 0.2851,
-          "step_max": 0.3673,
-          "drift": 2.53,
-          "loop": 0.3461,
-          "loop_ratio": 1.21,
-          "travel": 1.07,
-          "pin": 0.688,
-          "pad": 0,
-          "canvas": [
-            96,
-            96
-          ],
-          "reasons": [],
-          "sub": "fa410399-7f73-4f8a-a74c-121d06ff1599",
-          "group": "4a94041a-3e15-438f-962e-7862cdb17c3a",
-          "takes": 1,
-          "version": 1,
-          "mirrored": true,
-          "generated_at": "2026-09-09T21:15:41+00:00",
-          "source": "east"
-        },
-        "north-west": {
-          "status": "pass",
-          "step_mean": 0.2386,
-          "step_max": 0.3107,
-          "drift": 2.81,
-          "loop": 0.4266,
-          "loop_ratio": 1.79,
-          "travel": 0.75,
-          "pin": 0.786,
-          "pad": 1,
-          "canvas": [
-            98,
-            98
-          ],
-          "reasons": [
-            "canvas grown by 1 px a side to hold the motion"
-          ],
-          "sub": "9547adc4-8b08-405b-9d7f-b3030fe81d40",
-          "group": "88d746f2-412b-4495-b4a2-d13d567be50c",
-          "takes": 1,
-          "version": 1,
-          "mirrored": true,
-          "generated_at": "2026-09-09T21:15:42+00:00",
-          "source": "north-east"
-        }
-      },
-      "action": "walk loop, full walk cycle in place, legs alternate naturally, normal calm walking pace, body stays centered, seamless loop whose last frame leads straight back into the first, no turning",
-      "frame_paths": {
-        "south": [
-          "fire_elemental/animations/walk/south/00.webp",
-          "fire_elemental/animations/walk/south/01.webp",
-          "fire_elemental/animations/walk/south/02.webp",
-          "fire_elemental/animations/walk/south/03.webp",
-          "fire_elemental/animations/walk/south/04.webp",
-          "fire_elemental/animations/walk/south/05.webp"
-        ],
-        "south-east": [
-          "fire_elemental/animations/walk/south-east/00.webp",
-          "fire_elemental/animations/walk/south-east/01.webp",
-          "fire_elemental/animations/walk/south-east/02.webp",
-          "fire_elemental/animations/walk/south-east/03.webp",
-          "fire_elemental/animations/walk/south-east/04.webp",
-          "fire_elemental/animations/walk/south-east/05.webp"
-        ],
-        "east": [
-          "fire_elemental/animations/walk/east/00.webp",
-          "fire_elemental/animations/walk/east/01.webp",
-          "fire_elemental/animations/walk/east/02.webp",
-          "fire_elemental/animations/walk/east/03.webp",
-          "fire_elemental/animations/walk/east/04.webp",
-          "fire_elemental/animations/walk/east/05.webp"
-        ],
-        "north-east": [
-          "fire_elemental/animations/walk/north-east/00.webp",
-          "fire_elemental/animations/walk/north-east/01.webp",
-          "fire_elemental/animations/walk/north-east/02.webp",
-          "fire_elemental/animations/walk/north-east/03.webp",
-          "fire_elemental/animations/walk/north-east/04.webp",
-          "fire_elemental/animations/walk/north-east/05.webp"
-        ],
-        "north": [
-          "fire_elemental/animations/walk/north/00.webp",
-          "fire_elemental/animations/walk/north/01.webp",
-          "fire_elemental/animations/walk/north/02.webp",
-          "fire_elemental/animations/walk/north/03.webp",
-          "fire_elemental/animations/walk/north/04.webp",
-          "fire_elemental/animations/walk/north/05.webp"
-        ],
-        "south-west": [
-          "fire_elemental/animations/walk/south-west/00.webp",
-          "fire_elemental/animations/walk/south-west/01.webp",
-          "fire_elemental/animations/walk/south-west/02.webp",
-          "fire_elemental/animations/walk/south-west/03.webp",
-          "fire_elemental/animations/walk/south-west/04.webp",
-          "fire_elemental/animations/walk/south-west/05.webp"
-        ],
-        "west": [
-          "fire_elemental/animations/walk/west/00.webp",
-          "fire_elemental/animations/walk/west/01.webp",
-          "fire_elemental/animations/walk/west/02.webp",
-          "fire_elemental/animations/walk/west/03.webp",
-          "fire_elemental/animations/walk/west/04.webp",
-          "fire_elemental/animations/walk/west/05.webp"
-        ],
-        "north-west": [
-          "fire_elemental/animations/walk/north-west/00.webp",
-          "fire_elemental/animations/walk/north-west/01.webp",
-          "fire_elemental/animations/walk/north-west/02.webp",
-          "fire_elemental/animations/walk/north-west/03.webp",
-          "fire_elemental/animations/walk/north-west/04.webp",
-          "fire_elemental/animations/walk/north-west/05.webp"
-        ]
-      },
-      "strips": {
-        "south": "fire_elemental/animations/walk__south.webp",
-        "south-east": "fire_elemental/animations/walk__south-east.webp",
-        "east": "fire_elemental/animations/walk__east.webp",
-        "north-east": "fire_elemental/animations/walk__north-east.webp",
-        "north": "fire_elemental/animations/walk__north.webp",
-        "south-west": "fire_elemental/animations/walk__south-west.webp",
-        "west": "fire_elemental/animations/walk__west.webp",
-        "north-west": "fire_elemental/animations/walk__north-west.webp"
-      }
-    },
-    "attack": {
-      "directions": {
-        "south": {
-          "status": "warn",
-          "step_mean": 0.2074,
-          "step_max": 0.2485,
-          "drift": 1.37,
-          "loop": 0.0,
-          "loop_ratio": 0.0,
-          "travel": 0.14,
-          "pin": 1.0,
-          "pad": 0,
-          "flash": 0.075,
-          "peak": 0.3132,
-          "reach": 0.227,
-          "canvas": [
-            96,
-            96
-          ],
-          "reasons": [
-            "shallow strike: reach 0.23 — eyeball it"
-          ],
-          "sub": "0beb8b3d-1a98-45ae-ab58-0d3dac7b87a6",
-          "group": "f87e16c7-8dcb-429d-b0c0-f96dbb3fc950",
-          "takes": 1,
-          "version": 2,
-          "mirrored": false,
-          "generated_at": "2026-09-09T22:32:52+00:00",
-          "action": "Flame Burst - Thrusts both hands forward and hurls one burst of flame, then returns to idle stance"
-        },
-        "south-east": {
-          "status": "fail",
-          "step_mean": 0.2388,
-          "step_max": 0.2754,
-          "drift": 1.45,
-          "loop": 0.0,
-          "loop_ratio": 0.0,
-          "travel": 0.36,
-          "pin": 1.0,
-          "pad": 0,
-          "flash": 0.088,
-          "peak": 0.3933,
-          "reach": 0.123,
-          "canvas": [
-            96,
-            96
-          ],
-          "reasons": [
-            "no strike, just a lean: nothing reaches past 0.12 of the body"
-          ],
-          "sub": "ac5fbea4-50ad-4008-a514-78060b7aa34c",
-          "group": "87b32ee7-4093-4bd1-808a-ed8901ecf051",
-          "takes": 1,
-          "version": 2,
-          "mirrored": false,
-          "generated_at": "2026-09-09T22:32:52+00:00",
-          "action": "Flame Burst - Thrusts both hands forward and hurls one burst of flame, then returns to idle stance"
-        },
-        "east": {
-          "status": "pass",
-          "step_mean": 0.3547,
-          "step_max": 0.379,
-          "drift": 2.41,
-          "loop": 0.0,
-          "loop_ratio": 0.0,
-          "travel": 2.41,
-          "pin": 1.0,
-          "pad": 0,
-          "flash": 0.046,
-          "peak": 0.5061,
-          "reach": 0.514,
-          "canvas": [
-            96,
-            96
-          ],
-          "reasons": [],
-          "sub": "2e1e7417-a1f4-4c30-8bdf-1b57fbdc4254",
-          "group": "b212be34-b3ad-4043-94fe-11b46132fd30",
-          "takes": 1,
-          "version": 2,
-          "mirrored": false,
-          "generated_at": "2026-09-09T22:32:53+00:00",
-          "action": "Flame Burst - Thrusts both hands forward and hurls one burst of flame, then returns to idle stance"
-        },
-        "north": {
-          "status": "fail",
-          "step_mean": 0.1803,
-          "step_max": 0.2557,
-          "drift": 1.61,
-          "loop": 0.0,
-          "loop_ratio": 0.0,
-          "travel": 0.21,
-          "pin": 1.0,
-          "pad": 0,
-          "flash": 0.0,
-          "peak": 0.2831,
-          "reach": 0.052,
-          "canvas": [
-            96,
-            96
-          ],
-          "reasons": [
-            "no strike, just a lean: nothing reaches past 0.05 of the body"
-          ],
-          "sub": "bcd94d32-5b30-4270-a3fb-ce4d9a0e79ac",
-          "group": "5513aabf-708d-41c5-8fde-55f4065c4af7",
-          "takes": 1,
-          "version": 2,
-          "mirrored": false,
-          "generated_at": "2026-09-09T22:32:54+00:00",
-          "action": "Flame Burst - Thrusts both hands forward and hurls one burst of flame, then returns to idle stance"
-        },
-        "south-west": {
-          "status": "pass",
-          "step_mean": 0.2388,
-          "step_max": 0.2754,
-          "drift": 1.45,
-          "loop": 0.0,
-          "loop_ratio": 0.0,
-          "travel": 0.36,
-          "pin": 1.0,
-          "pad": 0,
-          "flash": 0.088,
-          "peak": 0.3933,
-          "canvas": [
-            96,
-            96
-          ],
-          "reasons": [],
-          "sub": "ac5fbea4-50ad-4008-a514-78060b7aa34c",
-          "group": "87b32ee7-4093-4bd1-808a-ed8901ecf051",
-          "takes": 1,
-          "version": 2,
-          "mirrored": true,
-          "generated_at": "2026-09-09T22:32:52+00:00",
-          "action": "Flame Burst - Thrusts both hands forward and hurls one burst of flame, then returns to idle stance",
-          "source": "south-east"
-        },
-        "west": {
-          "status": "pass",
-          "step_mean": 0.3547,
-          "step_max": 0.379,
-          "drift": 2.41,
-          "loop": 0.0,
-          "loop_ratio": 0.0,
-          "travel": 2.41,
-          "pin": 1.0,
-          "pad": 0,
-          "flash": 0.046,
-          "peak": 0.5061,
-          "reach": 0.514,
-          "canvas": [
-            96,
-            96
-          ],
-          "reasons": [],
-          "sub": "2e1e7417-a1f4-4c30-8bdf-1b57fbdc4254",
-          "group": "b212be34-b3ad-4043-94fe-11b46132fd30",
-          "takes": 1,
-          "version": 2,
-          "mirrored": true,
-          "generated_at": "2026-09-09T22:32:53+00:00",
-          "action": "Flame Burst - Thrusts both hands forward and hurls one burst of flame, then returns to idle stance",
-          "source": "east"
-        },
-        "north-east": {
-          "status": "warn",
-          "step_mean": 0.3075,
-          "step_max": 0.3869,
-          "drift": 2.26,
-          "loop": 0.0015,
-          "loop_ratio": 0.0,
-          "travel": 0.92,
-          "pin": 1.0,
-          "pad": 0,
-          "flash": 0.097,
-          "peak": 0.4704,
-          "reach": 0.283,
-          "canvas": [
-            96,
-            96
-          ],
-          "reasons": [
-            "shallow strike: reach 0.28 — eyeball it"
-          ],
-          "sub": "52efb1fa-ca14-4993-affa-c61a7e57660d",
-          "group": "b878286b-b57f-4182-a23b-3f96493c2d45",
-          "takes": 1,
-          "version": 2,
-          "mirrored": false,
-          "generated_at": "2026-09-09T22:32:53+00:00",
-          "action": "Flame Burst - Thrusts both hands forward and hurls one burst of flame, then returns to idle stance"
-        },
-        "north-west": {
-          "status": "warn",
-          "step_mean": 0.3075,
-          "step_max": 0.3869,
-          "drift": 2.26,
-          "loop": 0.0015,
-          "loop_ratio": 0.0,
-          "travel": 0.92,
-          "pin": 1.0,
-          "pad": 0,
-          "flash": 0.097,
-          "peak": 0.4704,
-          "reach": 0.283,
-          "canvas": [
-            96,
-            96
-          ],
-          "reasons": [
-            "shallow strike: reach 0.28 — eyeball it"
-          ],
-          "sub": "52efb1fa-ca14-4993-affa-c61a7e57660d",
-          "group": "b878286b-b57f-4182-a23b-3f96493c2d45",
-          "takes": 1,
-          "version": 2,
-          "mirrored": true,
-          "generated_at": "2026-09-09T22:32:53+00:00",
-          "action": "Flame Burst - Thrusts both hands forward and hurls one burst of flame, then returns to idle stance",
-          "source": "north-east"
-        }
-      },
-      "action": "Flame Burst - Thrusts both hands forward and hurls one burst of flame, then returns to idle stance",
-      "frame_paths": {
-        "south": [
-          "fire_elemental/animations/attack/south/00.webp",
-          "fire_elemental/animations/attack/south/01.webp",
-          "fire_elemental/animations/attack/south/02.webp",
-          "fire_elemental/animations/attack/south/03.webp",
-          "fire_elemental/animations/attack/south/04.webp"
-        ],
-        "south-east": [
-          "fire_elemental/animations/attack/south-east/00.webp",
-          "fire_elemental/animations/attack/south-east/01.webp",
-          "fire_elemental/animations/attack/south-east/02.webp",
-          "fire_elemental/animations/attack/south-east/03.webp",
-          "fire_elemental/animations/attack/south-east/04.webp"
-        ],
-        "east": [
-          "fire_elemental/animations/attack/east/00.webp",
-          "fire_elemental/animations/attack/east/01.webp",
-          "fire_elemental/animations/attack/east/02.webp",
-          "fire_elemental/animations/attack/east/03.webp",
-          "fire_elemental/animations/attack/east/04.webp"
-        ],
-        "north": [
-          "fire_elemental/animations/attack/north/00.webp",
-          "fire_elemental/animations/attack/north/01.webp",
-          "fire_elemental/animations/attack/north/02.webp",
-          "fire_elemental/animations/attack/north/03.webp",
-          "fire_elemental/animations/attack/north/04.webp"
-        ],
-        "south-west": [
-          "fire_elemental/animations/attack/south-west/00.webp",
-          "fire_elemental/animations/attack/south-west/01.webp",
-          "fire_elemental/animations/attack/south-west/02.webp",
-          "fire_elemental/animations/attack/south-west/03.webp",
-          "fire_elemental/animations/attack/south-west/04.webp"
-        ],
-        "west": [
-          "fire_elemental/animations/attack/west/00.webp",
-          "fire_elemental/animations/attack/west/01.webp",
-          "fire_elemental/animations/attack/west/02.webp",
-          "fire_elemental/animations/attack/west/03.webp",
-          "fire_elemental/animations/attack/west/04.webp"
-        ],
-        "north-east": [
-          "fire_elemental/animations/attack/north-east/00.webp",
-          "fire_elemental/animations/attack/north-east/01.webp",
-          "fire_elemental/animations/attack/north-east/02.webp",
-          "fire_elemental/animations/attack/north-east/03.webp",
-          "fire_elemental/animations/attack/north-east/04.webp"
-        ],
-        "north-west": [
-          "fire_elemental/animations/attack/north-west/00.webp",
-          "fire_elemental/animations/attack/north-west/01.webp",
-          "fire_elemental/animations/attack/north-west/02.webp",
-          "fire_elemental/animations/attack/north-west/03.webp",
-          "fire_elemental/animations/attack/north-west/04.webp"
-        ]
-      },
-      "strips": {
-        "south": "fire_elemental/animations/attack__south.webp",
-        "south-east": "fire_elemental/animations/attack__south-east.webp",
-        "east": "fire_elemental/animations/attack__east.webp",
-        "north": "fire_elemental/animations/attack__north.webp",
-        "south-west": "fire_elemental/animations/attack__south-west.webp",
-        "west": "fire_elemental/animations/attack__west.webp",
-        "north-east": "fire_elemental/animations/attack__north-east.webp",
-        "north-west": "fire_elemental/animations/attack__north-west.webp"
-      }
-    },
-    "attack_v3try": {
-      "directions": {
-        "south": {
-          "status": "warn",
-          "step_mean": 0.3126,
-          "step_max": 0.5016,
-          "drift": 1.39,
-          "loop": 0.4166,
-          "loop_ratio": 1.33,
-          "travel": 0.47,
-          "pin": 1.0,
-          "pad": 0,
-          "flash": 0.177,
-          "peak": 0.5328,
-          "reach": 0.273,
-          "canvas": [
-            96,
-            96
-          ],
-          "reasons": [
-            "shallow strike: reach 0.27 — eyeball it"
-          ],
-          "sub": "9e9dd99b-0659-4d48-92b3-a59ade066ac0",
-          "group": "b55afbf7-0eb4-4509-af09-ed2028ff70d0",
-          "takes": 1,
-          "version": 1,
-          "mirrored": false,
-          "generated_at": "2026-09-10T20:07:52+00:00",
-          "action": "Flame Burst - Throws both hands forward and hurls a burst of flame",
-          "tries": 1,
-          "rolls": 1,
-          "intensity": 0,
-          "rung": 0
-        },
-        "south-east": {
-          "status": "pass",
-          "step_mean": 0.295,
-          "step_max": 0.5453,
-          "drift": 2.16,
-          "loop": 0.5818,
-          "loop_ratio": 1.97,
-          "travel": 0.63,
-          "pin": 1.0,
-          "pad": 5,
-          "flash": 0.212,
-          "peak": 0.6415,
-          "reach": 0.404,
-          "canvas": [
-            106,
-            106
-          ],
-          "reasons": [
-            "canvas grown by 5 px a side to hold the motion"
-          ],
-          "sub": "9793add1-e686-458c-8696-06a6a02824d4",
-          "group": "9ee963cd-0338-419a-89f3-344c80ad9a7c",
-          "takes": 1,
-          "version": 1,
-          "mirrored": false,
-          "generated_at": "2026-09-10T20:07:53+00:00",
-          "action": "Flame Burst - Throws both hands forward and hurls a burst of flame",
-          "tries": 1,
-          "rolls": 1,
-          "intensity": 0,
-          "rung": 0
-        },
-        "east": {
-          "status": "pass",
-          "step_mean": 0.2614,
-          "step_max": 0.3664,
-          "drift": 8.2,
-          "loop": 0.6238,
-          "loop_ratio": 2.39,
-          "travel": 8.2,
-          "pin": 1.0,
-          "pad": 0,
-          "flash": 0.078,
-          "peak": 0.6238,
-          "reach": 0.687,
-          "canvas": [
-            96,
-            96
-          ],
-          "reasons": [],
-          "sub": "d6f6b8b0-a723-46ae-9d66-35210f78a67c",
-          "group": "299b6a1f-c820-481b-bb56-dc4456537ff2",
-          "takes": 1,
-          "version": 1,
-          "mirrored": false,
-          "generated_at": "2026-09-10T20:07:54+00:00",
-          "action": "Flame Burst - Throws both hands forward and hurls a burst of flame",
-          "tries": 1,
-          "rolls": 1,
-          "intensity": 0,
-          "rung": 0
-        },
-        "north-east": {
-          "status": "warn",
-          "step_mean": 0.2767,
-          "step_max": 0.6324,
-          "drift": 8.21,
-          "loop": 0.5421,
-          "loop_ratio": 1.96,
-          "travel": 8.21,
-          "pin": 1.0,
-          "pad": 3,
-          "flash": 0.398,
-          "peak": 0.6385,
-          "reach": 0.609,
-          "canvas": [
-            102,
-            102
-          ],
-          "reasons": [
-            "some bright effect pixels (0.40) — eyeball it",
-            "canvas grown by 3 px a side to hold the motion"
-          ],
-          "sub": "071d9d5e-c6b9-48cd-9745-bb90b503f286",
-          "group": "5c2416cd-dd4b-42f1-b12b-9f3714beed34",
-          "takes": 1,
-          "version": 1,
-          "mirrored": false,
-          "generated_at": "2026-09-10T20:07:55+00:00",
-          "action": "Flame Burst - Throws both hands forward and hurls a burst of flame",
-          "tries": 1,
-          "rolls": 1,
-          "intensity": 0,
-          "rung": 0
-        },
-        "north": {
-          "status": "warn",
-          "step_mean": 0.3376,
-          "step_max": 0.5391,
-          "drift": 6.41,
-          "loop": 0.3463,
-          "loop_ratio": 1.03,
-          "travel": 0.18,
-          "pin": 1.0,
-          "pad": 0,
-          "flash": 0.007,
-          "peak": 0.4971,
-          "reach": 0.293,
-          "canvas": [
-            96,
-            96
-          ],
-          "reasons": [
-            "shallow strike: reach 0.29 — eyeball it"
-          ],
-          "sub": "30c03996-3b29-416a-9cb4-71818563243b",
-          "group": "030f0f32-0e85-4abe-9311-4b22aa9bdd59",
-          "takes": 1,
-          "version": 1,
-          "mirrored": false,
-          "generated_at": "2026-09-10T20:07:55+00:00",
-          "action": "Flame Burst - Throws both hands forward and hurls a burst of flame",
-          "tries": 1,
-          "rolls": 1,
-          "intensity": 0,
-          "rung": 0
-        },
-        "south-west": {
-          "status": "pass",
-          "step_mean": 0.295,
-          "step_max": 0.5453,
-          "drift": 2.16,
-          "loop": 0.5818,
-          "loop_ratio": 1.97,
-          "travel": 0.63,
-          "pin": 1.0,
-          "pad": 5,
-          "flash": 0.212,
-          "peak": 0.6415,
-          "reach": 0.404,
-          "canvas": [
-            106,
-            106
-          ],
-          "reasons": [
-            "canvas grown by 5 px a side to hold the motion"
-          ],
-          "sub": "9793add1-e686-458c-8696-06a6a02824d4",
-          "group": "9ee963cd-0338-419a-89f3-344c80ad9a7c",
-          "takes": 1,
-          "version": 1,
-          "mirrored": true,
-          "generated_at": "2026-09-10T20:07:53+00:00",
-          "action": "Flame Burst - Throws both hands forward and hurls a burst of flame",
-          "tries": 1,
-          "rolls": 1,
-          "intensity": 0,
-          "rung": 0,
-          "source": "south-east"
-        },
-        "west": {
-          "status": "pass",
-          "step_mean": 0.2614,
-          "step_max": 0.3664,
-          "drift": 8.2,
-          "loop": 0.6238,
-          "loop_ratio": 2.39,
-          "travel": 8.2,
-          "pin": 1.0,
-          "pad": 0,
-          "flash": 0.078,
-          "peak": 0.6238,
-          "reach": 0.687,
-          "canvas": [
-            96,
-            96
-          ],
-          "reasons": [],
-          "sub": "d6f6b8b0-a723-46ae-9d66-35210f78a67c",
-          "group": "299b6a1f-c820-481b-bb56-dc4456537ff2",
-          "takes": 1,
-          "version": 1,
-          "mirrored": true,
-          "generated_at": "2026-09-10T20:07:54+00:00",
-          "action": "Flame Burst - Throws both hands forward and hurls a burst of flame",
-          "tries": 1,
-          "rolls": 1,
-          "intensity": 0,
-          "rung": 0,
-          "source": "east"
-        },
-        "north-west": {
-          "status": "warn",
-          "step_mean": 0.2767,
-          "step_max": 0.6324,
-          "drift": 8.21,
-          "loop": 0.5421,
-          "loop_ratio": 1.96,
-          "travel": 8.21,
-          "pin": 1.0,
-          "pad": 3,
-          "flash": 0.398,
-          "peak": 0.6385,
-          "reach": 0.609,
-          "canvas": [
-            102,
-            102
-          ],
-          "reasons": [
-            "some bright effect pixels (0.40) — eyeball it",
-            "canvas grown by 3 px a side to hold the motion"
-          ],
-          "sub": "071d9d5e-c6b9-48cd-9745-bb90b503f286",
-          "group": "5c2416cd-dd4b-42f1-b12b-9f3714beed34",
-          "takes": 1,
-          "version": 1,
-          "mirrored": true,
-          "generated_at": "2026-09-10T20:07:55+00:00",
-          "action": "Flame Burst - Throws both hands forward and hurls a burst of flame",
-          "tries": 1,
-          "rolls": 1,
-          "intensity": 0,
-          "rung": 0,
-          "source": "north-east"
-        }
-      },
-      "action": "Flame Burst - Throws both hands forward and hurls a burst of flame",
-      "frame_paths": {
-        "south": [
-          "fire_elemental/animations/attack_v3try/south/00.webp",
-          "fire_elemental/animations/attack_v3try/south/01.webp",
-          "fire_elemental/animations/attack_v3try/south/02.webp",
-          "fire_elemental/animations/attack_v3try/south/03.webp",
-          "fire_elemental/animations/attack_v3try/south/04.webp"
-        ],
-        "south-east": [
-          "fire_elemental/animations/attack_v3try/south-east/00.webp",
-          "fire_elemental/animations/attack_v3try/south-east/01.webp",
-          "fire_elemental/animations/attack_v3try/south-east/02.webp",
-          "fire_elemental/animations/attack_v3try/south-east/03.webp",
-          "fire_elemental/animations/attack_v3try/south-east/04.webp"
-        ],
-        "east": [
-          "fire_elemental/animations/attack_v3try/east/00.webp",
-          "fire_elemental/animations/attack_v3try/east/01.webp",
-          "fire_elemental/animations/attack_v3try/east/02.webp",
-          "fire_elemental/animations/attack_v3try/east/03.webp",
-          "fire_elemental/animations/attack_v3try/east/04.webp"
-        ],
-        "north-east": [
-          "fire_elemental/animations/attack_v3try/north-east/00.webp",
-          "fire_elemental/animations/attack_v3try/north-east/01.webp",
-          "fire_elemental/animations/attack_v3try/north-east/02.webp",
-          "fire_elemental/animations/attack_v3try/north-east/03.webp",
-          "fire_elemental/animations/attack_v3try/north-east/04.webp"
-        ],
-        "north": [
-          "fire_elemental/animations/attack_v3try/north/00.webp",
-          "fire_elemental/animations/attack_v3try/north/01.webp",
-          "fire_elemental/animations/attack_v3try/north/02.webp",
-          "fire_elemental/animations/attack_v3try/north/03.webp",
-          "fire_elemental/animations/attack_v3try/north/04.webp"
-        ],
-        "south-west": [
-          "fire_elemental/animations/attack_v3try/south-west/00.webp",
-          "fire_elemental/animations/attack_v3try/south-west/01.webp",
-          "fire_elemental/animations/attack_v3try/south-west/02.webp",
-          "fire_elemental/animations/attack_v3try/south-west/03.webp",
-          "fire_elemental/animations/attack_v3try/south-west/04.webp"
-        ],
-        "west": [
-          "fire_elemental/animations/attack_v3try/west/00.webp",
-          "fire_elemental/animations/attack_v3try/west/01.webp",
-          "fire_elemental/animations/attack_v3try/west/02.webp",
-          "fire_elemental/animations/attack_v3try/west/03.webp",
-          "fire_elemental/animations/attack_v3try/west/04.webp"
-        ],
-        "north-west": [
-          "fire_elemental/animations/attack_v3try/north-west/00.webp",
-          "fire_elemental/animations/attack_v3try/north-west/01.webp",
-          "fire_elemental/animations/attack_v3try/north-west/02.webp",
-          "fire_elemental/animations/attack_v3try/north-west/03.webp",
-          "fire_elemental/animations/attack_v3try/north-west/04.webp"
-        ]
-      },
-      "strips": {
-        "south": "fire_elemental/animations/attack_v3try__south.webp",
-        "south-east": "fire_elemental/animations/attack_v3try__south-east.webp",
-        "east": "fire_elemental/animations/attack_v3try__east.webp",
-        "north-east": "fire_elemental/animations/attack_v3try__north-east.webp",
-        "north": "fire_elemental/animations/attack_v3try__north.webp",
-        "south-west": "fire_elemental/animations/attack_v3try__south-west.webp",
-        "west": "fire_elemental/animations/attack_v3try__west.webp",
-        "north-west": "fire_elemental/animations/attack_v3try__north-west.webp"
-      }
-    },
-    "attack_try": {
-      "directions": {
-        "south": {
-          "status": "warn",
-          "step_mean": 0.4112,
-          "step_max": 0.5296,
-          "drift": 7.34,
-          "loop": 0.0945,
-          "loop_ratio": 0.23,
-          "travel": 10.22,
-          "pin": 0.969,
-          "pad": 0,
-          "flash": 0.038,
-          "peak": 0.4542,
-          "reach": 0.288,
-          "canvas": [
-            96,
-            96
-          ],
-          "reasons": [
-            "shallow strike: reach 0.29 — eyeball it"
-          ],
-          "sub": "50ebfa9d-c52f-4540-848a-a5ad85b10469",
-          "group": "3b945d48-73fd-44fc-bf33-9f747b3b13c3",
-          "takes": 1,
-          "version": 1,
-          "mirrored": false,
-          "action": "Flame Burst - Throws both hands forward and hurls a burst of flame",
-          "intensity": 0,
-          "rolls": 1,
-          "frames": 4,
-          "rung": 0,
-          "tries": 1,
-          "generated_at": "2026-09-11T16:10:05+00:00"
-        },
-        "south-east": {
-          "status": "pass",
-          "step_mean": 0.386,
-          "step_max": 0.5218,
-          "drift": 9.54,
-          "loop": 0.0019,
-          "loop_ratio": 0.0,
-          "travel": 9.55,
-          "pin": 0.999,
-          "pad": 0,
-          "flash": 0.008,
-          "peak": 0.5237,
-          "reach": 0.456,
-          "canvas": [
-            96,
-            96
-          ],
-          "reasons": [],
-          "sub": "fe979d4a-81cb-4544-86ba-322a0f4b1e06",
-          "group": "3b945d48-73fd-44fc-bf33-9f747b3b13c3",
-          "takes": 1,
-          "version": 1,
-          "mirrored": false,
-          "action": "Flame Burst - Throws both hands forward and hurls a burst of flame",
-          "intensity": 0,
-          "rolls": 1,
-          "frames": 4,
-          "rung": 0,
-          "tries": 1,
-          "generated_at": "2026-09-11T16:10:06+00:00"
-        },
-        "east": {
-          "status": "pass",
-          "step_mean": 0.6725,
-          "step_max": 0.9272,
-          "drift": 5.95,
-          "loop": 1.1825,
-          "loop_ratio": 1.76,
-          "travel": 6.98,
-          "pin": 0.48,
-          "pad": 0,
-          "flash": 0.068,
-          "peak": 1.1825,
-          "reach": 0.971,
-          "canvas": [
-            96,
-            96
-          ],
-          "reasons": [],
-          "sub": "be274d1c-867d-4cc7-9f51-548fd99d1d9b",
-          "group": "3b945d48-73fd-44fc-bf33-9f747b3b13c3",
-          "takes": 1,
-          "version": 1,
-          "mirrored": false,
-          "action": "Flame Burst - Throws both hands forward and hurls a burst of flame",
-          "intensity": 0,
-          "rolls": 1,
-          "frames": 4,
-          "rung": 0,
-          "tries": 1,
-          "generated_at": "2026-09-11T16:10:06+00:00"
-        },
-        "north-east": {
-          "status": "pass",
-          "step_mean": 0.5814,
-          "step_max": 0.7271,
-          "drift": 9.09,
-          "loop": 0.0488,
-          "loop_ratio": 0.08,
-          "travel": 9.09,
-          "pin": 1.0,
-          "pad": 0,
-          "flash": 0.036,
-          "peak": 0.7504,
-          "reach": 0.696,
-          "canvas": [
-            96,
-            96
-          ],
-          "reasons": [],
-          "sub": "69dfd7c3-8d58-43dc-918b-2dde2792a677",
-          "group": "3b945d48-73fd-44fc-bf33-9f747b3b13c3",
-          "takes": 1,
-          "version": 1,
-          "mirrored": false,
-          "action": "Flame Burst - Throws both hands forward and hurls a burst of flame",
-          "intensity": 0,
-          "rolls": 1,
-          "frames": 4,
-          "rung": 0,
-          "tries": 1,
-          "generated_at": "2026-09-11T16:10:07+00:00"
-        },
-        "north": {
-          "status": "pass",
-          "step_mean": 0.6588,
-          "step_max": 0.8499,
-          "drift": 3.38,
-          "loop": 0.2927,
-          "loop_ratio": 0.44,
-          "travel": 4.33,
-          "pin": 0.709,
-          "pad": 0,
-          "flash": 0.054,
-          "peak": 0.9084,
-          "reach": 0.362,
-          "canvas": [
-            96,
-            96
-          ],
-          "reasons": [],
-          "sub": "ed4cb579-7980-445f-b7dd-6ba95b239b36",
-          "group": "3b945d48-73fd-44fc-bf33-9f747b3b13c3",
-          "takes": 1,
-          "version": 1,
-          "mirrored": false,
-          "action": "Flame Burst - Throws both hands forward and hurls a burst of flame",
-          "intensity": 0,
-          "rolls": 1,
-          "frames": 4,
-          "rung": 0,
-          "tries": 1,
-          "generated_at": "2026-09-11T16:10:07+00:00"
-        },
-        "south-west": {
-          "status": "pass",
-          "step_mean": 0.386,
-          "step_max": 0.5218,
-          "drift": 9.54,
-          "loop": 0.0019,
-          "loop_ratio": 0.0,
-          "travel": 9.55,
-          "pin": 0.999,
-          "pad": 0,
-          "flash": 0.008,
-          "peak": 0.5237,
-          "reach": 0.456,
-          "canvas": [
-            96,
-            96
-          ],
-          "reasons": [],
-          "sub": "fe979d4a-81cb-4544-86ba-322a0f4b1e06",
-          "group": "3b945d48-73fd-44fc-bf33-9f747b3b13c3",
-          "takes": 1,
-          "version": 1,
-          "mirrored": true,
-          "action": "Flame Burst - Throws both hands forward and hurls a burst of flame",
-          "intensity": 0,
-          "rolls": 1,
-          "frames": 4,
-          "rung": 0,
-          "tries": 1,
-          "generated_at": "2026-09-11T16:10:06+00:00",
-          "source": "south-east"
-        },
-        "west": {
-          "status": "pass",
-          "step_mean": 0.6725,
-          "step_max": 0.9272,
-          "drift": 5.95,
-          "loop": 1.1825,
-          "loop_ratio": 1.76,
-          "travel": 6.98,
-          "pin": 0.48,
-          "pad": 0,
-          "flash": 0.068,
-          "peak": 1.1825,
-          "reach": 0.971,
-          "canvas": [
-            96,
-            96
-          ],
-          "reasons": [],
-          "sub": "be274d1c-867d-4cc7-9f51-548fd99d1d9b",
-          "group": "3b945d48-73fd-44fc-bf33-9f747b3b13c3",
-          "takes": 1,
-          "version": 1,
-          "mirrored": true,
-          "action": "Flame Burst - Throws both hands forward and hurls a burst of flame",
-          "intensity": 0,
-          "rolls": 1,
-          "frames": 4,
-          "rung": 0,
-          "tries": 1,
-          "generated_at": "2026-09-11T16:10:06+00:00",
-          "source": "east"
-        },
-        "north-west": {
-          "status": "pass",
-          "step_mean": 0.5814,
-          "step_max": 0.7271,
-          "drift": 9.09,
-          "loop": 0.0488,
-          "loop_ratio": 0.08,
-          "travel": 9.09,
-          "pin": 1.0,
-          "pad": 0,
-          "flash": 0.036,
-          "peak": 0.7504,
-          "reach": 0.696,
-          "canvas": [
-            96,
-            96
-          ],
-          "reasons": [],
-          "sub": "69dfd7c3-8d58-43dc-918b-2dde2792a677",
-          "group": "3b945d48-73fd-44fc-bf33-9f747b3b13c3",
-          "takes": 1,
-          "version": 1,
-          "mirrored": true,
-          "action": "Flame Burst - Throws both hands forward and hurls a burst of flame",
-          "intensity": 0,
-          "rolls": 1,
-          "frames": 4,
-          "rung": 0,
-          "tries": 1,
-          "generated_at": "2026-09-11T16:10:07+00:00",
-          "source": "north-east"
-        }
-      },
-      "action": "Flame Burst - Throws both hands forward and hurls a burst of flame",
-      "frame_paths": {
-        "south": [
-          "fire_elemental/animations/attack_try/south/00.webp",
-          "fire_elemental/animations/attack_try/south/01.webp",
-          "fire_elemental/animations/attack_try/south/02.webp",
-          "fire_elemental/animations/attack_try/south/03.webp"
-        ],
-        "south-east": [
-          "fire_elemental/animations/attack_try/south-east/00.webp",
-          "fire_elemental/animations/attack_try/south-east/01.webp",
-          "fire_elemental/animations/attack_try/south-east/02.webp",
-          "fire_elemental/animations/attack_try/south-east/03.webp"
-        ],
-        "east": [
-          "fire_elemental/animations/attack_try/east/00.webp",
-          "fire_elemental/animations/attack_try/east/01.webp",
-          "fire_elemental/animations/attack_try/east/02.webp",
-          "fire_elemental/animations/attack_try/east/03.webp"
-        ],
-        "north-east": [
-          "fire_elemental/animations/attack_try/north-east/00.webp",
-          "fire_elemental/animations/attack_try/north-east/01.webp",
-          "fire_elemental/animations/attack_try/north-east/02.webp",
-          "fire_elemental/animations/attack_try/north-east/03.webp"
-        ],
-        "north": [
-          "fire_elemental/animations/attack_try/north/00.webp",
-          "fire_elemental/animations/attack_try/north/01.webp",
-          "fire_elemental/animations/attack_try/north/02.webp",
-          "fire_elemental/animations/attack_try/north/03.webp"
-        ],
-        "south-west": [
-          "fire_elemental/animations/attack_try/south-west/00.webp",
-          "fire_elemental/animations/attack_try/south-west/01.webp",
-          "fire_elemental/animations/attack_try/south-west/02.webp",
-          "fire_elemental/animations/attack_try/south-west/03.webp"
-        ],
-        "west": [
-          "fire_elemental/animations/attack_try/west/00.webp",
-          "fire_elemental/animations/attack_try/west/01.webp",
-          "fire_elemental/animations/attack_try/west/02.webp",
-          "fire_elemental/animations/attack_try/west/03.webp"
-        ],
-        "north-west": [
-          "fire_elemental/animations/attack_try/north-west/00.webp",
-          "fire_elemental/animations/attack_try/north-west/01.webp",
-          "fire_elemental/animations/attack_try/north-west/02.webp",
-          "fire_elemental/animations/attack_try/north-west/03.webp"
-        ]
-      },
-      "strips": {
-        "south": "fire_elemental/animations/attack_try__south.webp",
-        "south-east": "fire_elemental/animations/attack_try__south-east.webp",
-        "east": "fire_elemental/animations/attack_try__east.webp",
-        "north-east": "fire_elemental/animations/attack_try__north-east.webp",
-        "north": "fire_elemental/animations/attack_try__north.webp",
-        "south-west": "fire_elemental/animations/attack_try__south-west.webp",
-        "west": "fire_elemental/animations/attack_try__west.webp",
-        "north-west": "fire_elemental/animations/attack_try__north-west.webp"
-      }
-    }
+ "id": "fire_elemental",
+ "name": "Flarewisp",
+ "tier": "mid",
+ "scale": "standard",
+ "lore": "It burns because it is, not because it must. It follows travellers for the company and leaves them as ash.",
+ "biome": [
+  "lava",
+  "black_rock"
+ ],
+ "items": [],
+ "prompt": "Fantasy fire elemental shown full body from head to feet, a humanoid figure of living orange and yellow flame with a dark ember core, two blazing white eyes, arms tapering into licks of fire, and sparks drifting off its shoulders.",
+ "size": [
+  96,
+  96
+ ],
+ "template_id": "mannequin",
+ "directions": [
+  "south",
+  "south-east",
+  "east",
+  "north-east",
+  "north",
+  "north-west",
+  "west",
+  "south-west"
+ ],
+ "rotations": {
+  "south": "fire_elemental/rotations/south.webp",
+  "south-east": "fire_elemental/rotations/south-east.webp",
+  "east": "fire_elemental/rotations/east.webp",
+  "north-east": "fire_elemental/rotations/north-east.webp",
+  "north": "fire_elemental/rotations/north.webp",
+  "north-west": "fire_elemental/rotations/north-west.webp",
+  "west": "fire_elemental/rotations/west.webp",
+  "south-west": "fire_elemental/rotations/south-west.webp"
+ },
+ "sheet": "fire_elemental/sheet.webp",
+ "review": "approved",
+ "pixellab_id": "ed20edca-0a76-41ff-934a-5a1f4c33849e",
+ "seed": 106115589,
+ "version": 1,
+ "usage": null,
+ "generated_at": "2026-09-09T18:20:52+00:00",
+ "elapsed_s": 194.2,
+ "qa": {
+  "status": "pass",
+  "min_run1": 0.799,
+  "reasons": [],
+  "directions": {
+   "south": {
+    "run1": 0.825,
+    "bbox": [
+     15,
+     3,
+     81,
+     92
+    ],
+    "fill": 0.637,
+    "touches_edge": false
+   },
+   "south-east": {
+    "run1": 0.861,
+    "bbox": [
+     18,
+     2,
+     75,
+     94
+    ],
+    "fill": 0.569,
+    "touches_edge": false
+   },
+   "east": {
+    "run1": 0.846,
+    "bbox": [
+     28,
+     3,
+     63,
+     94
+    ],
+    "fill": 0.346,
+    "touches_edge": false
+   },
+   "north-east": {
+    "run1": 0.829,
+    "bbox": [
+     24,
+     2,
+     70,
+     94
+    ],
+    "fill": 0.459,
+    "touches_edge": false
+   },
+   "north": {
+    "run1": 0.799,
+    "bbox": [
+     19,
+     2,
+     77,
+     92
+    ],
+    "fill": 0.566,
+    "touches_edge": false
+   },
+   "north-west": {
+    "run1": 0.83,
+    "bbox": [
+     26,
+     3,
+     74,
+     94
+    ],
+    "fill": 0.474,
+    "touches_edge": false
+   },
+   "west": {
+    "run1": 0.851,
+    "bbox": [
+     33,
+     3,
+     65,
+     94
+    ],
+    "fill": 0.316,
+    "touches_edge": false
+   },
+   "south-west": {
+    "run1": 0.871,
+    "bbox": [
+     26,
+     2,
+     76,
+     94
+    ],
+    "fill": 0.499,
+    "touches_edge": false
+   }
   }
+ },
+ "approved_at": "2026-09-09T19:59:21+00:00",
+ "animations": {
+  "idle": {
+   "directions": {
+    "south": {
+     "status": "warn",
+     "step_mean": 0.137,
+     "step_max": 0.1498,
+     "drift": 0.86,
+     "loop": 0.0,
+     "pin": 1.0,
+     "reasons": [
+      "frame 2 touches a canvas edge the base does not (overflow / wrap risk)"
+     ],
+     "sub": "43771a07-afe4-4abc-b26b-31c0db2fae26",
+     "takes": 1,
+     "version": 1,
+     "mirrored": false,
+     "generated_at": "2026-09-09T20:10:20+00:00",
+     "cut": 0
+    },
+    "south-east": {
+     "status": "pass",
+     "step_mean": 0.0917,
+     "step_max": 0.1175,
+     "drift": 1.18,
+     "loop": 0.0,
+     "pin": 1.0,
+     "reasons": [],
+     "sub": "5d181a2d-ddfc-4573-b2cd-9069ec73e240",
+     "takes": 1,
+     "version": 1,
+     "mirrored": false,
+     "generated_at": "2026-09-09T20:10:20+00:00",
+     "cut": 0
+    },
+    "east": {
+     "status": "pass",
+     "step_mean": 0.0887,
+     "step_max": 0.125,
+     "drift": 1.13,
+     "loop": 0.0,
+     "pin": 1.0,
+     "reasons": [],
+     "sub": "ae88d5d2-a1e8-4d66-b74a-244cf9e22263",
+     "takes": 1,
+     "version": 1,
+     "mirrored": false,
+     "generated_at": "2026-09-09T20:10:22+00:00",
+     "cut": 0
+    },
+    "north-east": {
+     "status": "pass",
+     "step_mean": 0.1009,
+     "step_max": 0.1319,
+     "drift": 0.4,
+     "loop": 0.0008,
+     "pin": 1.0,
+     "reasons": [],
+     "sub": "f6d30abf-ba3f-451a-9fde-785043ed59b3",
+     "takes": 1,
+     "version": 1,
+     "mirrored": false,
+     "generated_at": "2026-09-09T20:10:22+00:00",
+     "cut": 0
+    },
+    "north": {
+     "status": "pass",
+     "step_mean": 0.1302,
+     "step_max": 0.1504,
+     "drift": 1.18,
+     "loop": 0.0,
+     "pin": 1.0,
+     "reasons": [],
+     "sub": "dc5bc0dc-2d43-428f-a05e-1eca0c89ff4c",
+     "takes": 1,
+     "version": 1,
+     "mirrored": false,
+     "generated_at": "2026-09-09T20:10:23+00:00",
+     "cut": 0
+    },
+    "south-west": {
+     "status": "pass",
+     "step_mean": 0.0917,
+     "step_max": 0.1175,
+     "drift": 1.18,
+     "loop": 0.0,
+     "pin": 1.0,
+     "reasons": [],
+     "sub": "5d181a2d-ddfc-4573-b2cd-9069ec73e240",
+     "takes": 1,
+     "version": 1,
+     "mirrored": true,
+     "generated_at": "2026-09-09T20:10:20+00:00",
+     "cut": 0,
+     "source": "south-east"
+    },
+    "west": {
+     "status": "pass",
+     "step_mean": 0.0887,
+     "step_max": 0.125,
+     "drift": 1.13,
+     "loop": 0.0,
+     "pin": 1.0,
+     "reasons": [],
+     "sub": "ae88d5d2-a1e8-4d66-b74a-244cf9e22263",
+     "takes": 1,
+     "version": 1,
+     "mirrored": true,
+     "generated_at": "2026-09-09T20:10:22+00:00",
+     "cut": 0,
+     "source": "east"
+    },
+    "north-west": {
+     "status": "pass",
+     "step_mean": 0.1009,
+     "step_max": 0.1319,
+     "drift": 0.4,
+     "loop": 0.0008,
+     "pin": 1.0,
+     "reasons": [],
+     "sub": "f6d30abf-ba3f-451a-9fde-785043ed59b3",
+     "takes": 1,
+     "version": 1,
+     "mirrored": true,
+     "generated_at": "2026-09-09T20:10:22+00:00",
+     "cut": 0,
+     "source": "north-east"
+    }
+   },
+   "action": "Calm still idle, breathing very slowly and subtly, chest and shoulders rise and fall a little, feet planted, no other movement, ends in the same neutral pose it started in",
+   "frame_paths": {
+    "south": [
+     "fire_elemental/animations/idle/south/00.webp",
+     "fire_elemental/animations/idle/south/01.webp",
+     "fire_elemental/animations/idle/south/02.webp",
+     "fire_elemental/animations/idle/south/03.webp",
+     "fire_elemental/animations/idle/south/04.webp"
+    ],
+    "south-east": [
+     "fire_elemental/animations/idle/south-east/00.webp",
+     "fire_elemental/animations/idle/south-east/01.webp",
+     "fire_elemental/animations/idle/south-east/02.webp",
+     "fire_elemental/animations/idle/south-east/03.webp",
+     "fire_elemental/animations/idle/south-east/04.webp"
+    ],
+    "east": [
+     "fire_elemental/animations/idle/east/00.webp",
+     "fire_elemental/animations/idle/east/01.webp",
+     "fire_elemental/animations/idle/east/02.webp",
+     "fire_elemental/animations/idle/east/03.webp",
+     "fire_elemental/animations/idle/east/04.webp"
+    ],
+    "north-east": [
+     "fire_elemental/animations/idle/north-east/00.webp",
+     "fire_elemental/animations/idle/north-east/01.webp",
+     "fire_elemental/animations/idle/north-east/02.webp",
+     "fire_elemental/animations/idle/north-east/03.webp",
+     "fire_elemental/animations/idle/north-east/04.webp"
+    ],
+    "north": [
+     "fire_elemental/animations/idle/north/00.webp",
+     "fire_elemental/animations/idle/north/01.webp",
+     "fire_elemental/animations/idle/north/02.webp",
+     "fire_elemental/animations/idle/north/03.webp",
+     "fire_elemental/animations/idle/north/04.webp"
+    ],
+    "south-west": [
+     "fire_elemental/animations/idle/south-west/00.webp",
+     "fire_elemental/animations/idle/south-west/01.webp",
+     "fire_elemental/animations/idle/south-west/02.webp",
+     "fire_elemental/animations/idle/south-west/03.webp",
+     "fire_elemental/animations/idle/south-west/04.webp"
+    ],
+    "west": [
+     "fire_elemental/animations/idle/west/00.webp",
+     "fire_elemental/animations/idle/west/01.webp",
+     "fire_elemental/animations/idle/west/02.webp",
+     "fire_elemental/animations/idle/west/03.webp",
+     "fire_elemental/animations/idle/west/04.webp"
+    ],
+    "north-west": [
+     "fire_elemental/animations/idle/north-west/00.webp",
+     "fire_elemental/animations/idle/north-west/01.webp",
+     "fire_elemental/animations/idle/north-west/02.webp",
+     "fire_elemental/animations/idle/north-west/03.webp",
+     "fire_elemental/animations/idle/north-west/04.webp"
+    ]
+   },
+   "strips": {
+    "south": "fire_elemental/animations/idle__south.webp",
+    "south-east": "fire_elemental/animations/idle__south-east.webp",
+    "east": "fire_elemental/animations/idle__east.webp",
+    "north-east": "fire_elemental/animations/idle__north-east.webp",
+    "north": "fire_elemental/animations/idle__north.webp",
+    "south-west": "fire_elemental/animations/idle__south-west.webp",
+    "west": "fire_elemental/animations/idle__west.webp",
+    "north-west": "fire_elemental/animations/idle__north-west.webp"
+   }
+  },
+  "walk": {
+   "directions": {
+    "south": {
+     "status": "pass",
+     "step_mean": 0.1535,
+     "step_max": 0.2028,
+     "drift": 2.95,
+     "loop": 0.2661,
+     "loop_ratio": 1.73,
+     "travel": 0.39,
+     "pin": 0.837,
+     "pad": 0,
+     "canvas": [
+      96,
+      96
+     ],
+     "reasons": [],
+     "sub": "14a3bdfd-a9e2-4c54-a3db-198da38efc48",
+     "group": "ae363333-2853-4c0f-a72a-90f06163bc7e",
+     "takes": 1,
+     "version": 1,
+     "mirrored": false,
+     "generated_at": "2026-09-09T21:15:40+00:00"
+    },
+    "south-east": {
+     "status": "pass",
+     "step_mean": 0.2765,
+     "step_max": 0.3197,
+     "drift": 4.28,
+     "loop": 0.4698,
+     "loop_ratio": 1.7,
+     "travel": 0.9,
+     "pin": 0.791,
+     "pad": 0,
+     "canvas": [
+      96,
+      96
+     ],
+     "reasons": [],
+     "sub": "573c3edc-39eb-41b2-b837-aaed92ca6280",
+     "group": "4252b76a-0289-4cd2-b2fe-d1e1a9b86446",
+     "takes": 1,
+     "version": 1,
+     "mirrored": false,
+     "generated_at": "2026-09-09T21:15:41+00:00"
+    },
+    "east": {
+     "status": "pass",
+     "step_mean": 0.2851,
+     "step_max": 0.3673,
+     "drift": 2.53,
+     "loop": 0.3461,
+     "loop_ratio": 1.21,
+     "travel": 1.07,
+     "pin": 0.688,
+     "pad": 0,
+     "canvas": [
+      96,
+      96
+     ],
+     "reasons": [],
+     "sub": "fa410399-7f73-4f8a-a74c-121d06ff1599",
+     "group": "4a94041a-3e15-438f-962e-7862cdb17c3a",
+     "takes": 1,
+     "version": 1,
+     "mirrored": false,
+     "generated_at": "2026-09-09T21:15:41+00:00"
+    },
+    "north-east": {
+     "status": "pass",
+     "step_mean": 0.2386,
+     "step_max": 0.3107,
+     "drift": 2.81,
+     "loop": 0.4266,
+     "loop_ratio": 1.79,
+     "travel": 0.75,
+     "pin": 0.786,
+     "pad": 1,
+     "canvas": [
+      98,
+      98
+     ],
+     "reasons": [
+      "canvas grown by 1 px a side to hold the motion"
+     ],
+     "sub": "9547adc4-8b08-405b-9d7f-b3030fe81d40",
+     "group": "88d746f2-412b-4495-b4a2-d13d567be50c",
+     "takes": 1,
+     "version": 1,
+     "mirrored": false,
+     "generated_at": "2026-09-09T21:15:42+00:00"
+    },
+    "north": {
+     "status": "pass",
+     "step_mean": 0.1681,
+     "step_max": 0.2489,
+     "drift": 2.7,
+     "loop": 0.3221,
+     "loop_ratio": 1.92,
+     "travel": 0.52,
+     "pin": 0.879,
+     "pad": 1,
+     "canvas": [
+      98,
+      98
+     ],
+     "reasons": [
+      "canvas grown by 1 px a side to hold the motion"
+     ],
+     "sub": "17fe9c75-a7a0-42b9-ad53-95c63f55a841",
+     "group": "10208ecd-47ae-425a-a5d7-e02779ae694b",
+     "takes": 1,
+     "version": 1,
+     "mirrored": false,
+     "generated_at": "2026-09-09T21:15:43+00:00"
+    },
+    "south-west": {
+     "status": "pass",
+     "step_mean": 0.2765,
+     "step_max": 0.3197,
+     "drift": 4.28,
+     "loop": 0.4698,
+     "loop_ratio": 1.7,
+     "travel": 0.9,
+     "pin": 0.791,
+     "pad": 0,
+     "canvas": [
+      96,
+      96
+     ],
+     "reasons": [],
+     "sub": "573c3edc-39eb-41b2-b837-aaed92ca6280",
+     "group": "4252b76a-0289-4cd2-b2fe-d1e1a9b86446",
+     "takes": 1,
+     "version": 1,
+     "mirrored": true,
+     "generated_at": "2026-09-09T21:15:41+00:00",
+     "source": "south-east"
+    },
+    "west": {
+     "status": "pass",
+     "step_mean": 0.2851,
+     "step_max": 0.3673,
+     "drift": 2.53,
+     "loop": 0.3461,
+     "loop_ratio": 1.21,
+     "travel": 1.07,
+     "pin": 0.688,
+     "pad": 0,
+     "canvas": [
+      96,
+      96
+     ],
+     "reasons": [],
+     "sub": "fa410399-7f73-4f8a-a74c-121d06ff1599",
+     "group": "4a94041a-3e15-438f-962e-7862cdb17c3a",
+     "takes": 1,
+     "version": 1,
+     "mirrored": true,
+     "generated_at": "2026-09-09T21:15:41+00:00",
+     "source": "east"
+    },
+    "north-west": {
+     "status": "pass",
+     "step_mean": 0.2386,
+     "step_max": 0.3107,
+     "drift": 2.81,
+     "loop": 0.4266,
+     "loop_ratio": 1.79,
+     "travel": 0.75,
+     "pin": 0.786,
+     "pad": 1,
+     "canvas": [
+      98,
+      98
+     ],
+     "reasons": [
+      "canvas grown by 1 px a side to hold the motion"
+     ],
+     "sub": "9547adc4-8b08-405b-9d7f-b3030fe81d40",
+     "group": "88d746f2-412b-4495-b4a2-d13d567be50c",
+     "takes": 1,
+     "version": 1,
+     "mirrored": true,
+     "generated_at": "2026-09-09T21:15:42+00:00",
+     "source": "north-east"
+    }
+   },
+   "action": "walk loop, full walk cycle in place, legs alternate naturally, normal calm walking pace, body stays centered, seamless loop whose last frame leads straight back into the first, no turning",
+   "frame_paths": {
+    "south": [
+     "fire_elemental/animations/walk/south/00.webp",
+     "fire_elemental/animations/walk/south/01.webp",
+     "fire_elemental/animations/walk/south/02.webp",
+     "fire_elemental/animations/walk/south/03.webp",
+     "fire_elemental/animations/walk/south/04.webp",
+     "fire_elemental/animations/walk/south/05.webp"
+    ],
+    "south-east": [
+     "fire_elemental/animations/walk/south-east/00.webp",
+     "fire_elemental/animations/walk/south-east/01.webp",
+     "fire_elemental/animations/walk/south-east/02.webp",
+     "fire_elemental/animations/walk/south-east/03.webp",
+     "fire_elemental/animations/walk/south-east/04.webp",
+     "fire_elemental/animations/walk/south-east/05.webp"
+    ],
+    "east": [
+     "fire_elemental/animations/walk/east/00.webp",
+     "fire_elemental/animations/walk/east/01.webp",
+     "fire_elemental/animations/walk/east/02.webp",
+     "fire_elemental/animations/walk/east/03.webp",
+     "fire_elemental/animations/walk/east/04.webp",
+     "fire_elemental/animations/walk/east/05.webp"
+    ],
+    "north-east": [
+     "fire_elemental/animations/walk/north-east/00.webp",
+     "fire_elemental/animations/walk/north-east/01.webp",
+     "fire_elemental/animations/walk/north-east/02.webp",
+     "fire_elemental/animations/walk/north-east/03.webp",
+     "fire_elemental/animations/walk/north-east/04.webp",
+     "fire_elemental/animations/walk/north-east/05.webp"
+    ],
+    "north": [
+     "fire_elemental/animations/walk/north/00.webp",
+     "fire_elemental/animations/walk/north/01.webp",
+     "fire_elemental/animations/walk/north/02.webp",
+     "fire_elemental/animations/walk/north/03.webp",
+     "fire_elemental/animations/walk/north/04.webp",
+     "fire_elemental/animations/walk/north/05.webp"
+    ],
+    "south-west": [
+     "fire_elemental/animations/walk/south-west/00.webp",
+     "fire_elemental/animations/walk/south-west/01.webp",
+     "fire_elemental/animations/walk/south-west/02.webp",
+     "fire_elemental/animations/walk/south-west/03.webp",
+     "fire_elemental/animations/walk/south-west/04.webp",
+     "fire_elemental/animations/walk/south-west/05.webp"
+    ],
+    "west": [
+     "fire_elemental/animations/walk/west/00.webp",
+     "fire_elemental/animations/walk/west/01.webp",
+     "fire_elemental/animations/walk/west/02.webp",
+     "fire_elemental/animations/walk/west/03.webp",
+     "fire_elemental/animations/walk/west/04.webp",
+     "fire_elemental/animations/walk/west/05.webp"
+    ],
+    "north-west": [
+     "fire_elemental/animations/walk/north-west/00.webp",
+     "fire_elemental/animations/walk/north-west/01.webp",
+     "fire_elemental/animations/walk/north-west/02.webp",
+     "fire_elemental/animations/walk/north-west/03.webp",
+     "fire_elemental/animations/walk/north-west/04.webp",
+     "fire_elemental/animations/walk/north-west/05.webp"
+    ]
+   },
+   "strips": {
+    "south": "fire_elemental/animations/walk__south.webp",
+    "south-east": "fire_elemental/animations/walk__south-east.webp",
+    "east": "fire_elemental/animations/walk__east.webp",
+    "north-east": "fire_elemental/animations/walk__north-east.webp",
+    "north": "fire_elemental/animations/walk__north.webp",
+    "south-west": "fire_elemental/animations/walk__south-west.webp",
+    "west": "fire_elemental/animations/walk__west.webp",
+    "north-west": "fire_elemental/animations/walk__north-west.webp"
+   }
+  },
+  "attack": {
+   "directions": {
+    "south": {
+     "status": "warn",
+     "step_mean": 0.2074,
+     "step_max": 0.2485,
+     "drift": 1.37,
+     "loop": 0.0,
+     "loop_ratio": 0.0,
+     "travel": 0.14,
+     "pin": 1.0,
+     "pad": 0,
+     "flash": 0.075,
+     "peak": 0.3132,
+     "reach": 0.227,
+     "canvas": [
+      96,
+      96
+     ],
+     "reasons": [
+      "shallow strike: reach 0.23 — eyeball it"
+     ],
+     "sub": "0beb8b3d-1a98-45ae-ab58-0d3dac7b87a6",
+     "group": "f87e16c7-8dcb-429d-b0c0-f96dbb3fc950",
+     "takes": 1,
+     "version": 2,
+     "mirrored": false,
+     "generated_at": "2026-09-09T22:32:52+00:00",
+     "action": "Flame Burst - Thrusts both hands forward and hurls one burst of flame, then returns to idle stance"
+    },
+    "south-east": {
+     "status": "fail",
+     "step_mean": 0.2388,
+     "step_max": 0.2754,
+     "drift": 1.45,
+     "loop": 0.0,
+     "loop_ratio": 0.0,
+     "travel": 0.36,
+     "pin": 1.0,
+     "pad": 0,
+     "flash": 0.088,
+     "peak": 0.3933,
+     "reach": 0.123,
+     "canvas": [
+      96,
+      96
+     ],
+     "reasons": [
+      "no strike, just a lean: nothing reaches past 0.12 of the body"
+     ],
+     "sub": "ac5fbea4-50ad-4008-a514-78060b7aa34c",
+     "group": "87b32ee7-4093-4bd1-808a-ed8901ecf051",
+     "takes": 1,
+     "version": 2,
+     "mirrored": false,
+     "generated_at": "2026-09-09T22:32:52+00:00",
+     "action": "Flame Burst - Thrusts both hands forward and hurls one burst of flame, then returns to idle stance"
+    },
+    "east": {
+     "status": "pass",
+     "step_mean": 0.3547,
+     "step_max": 0.379,
+     "drift": 2.41,
+     "loop": 0.0,
+     "loop_ratio": 0.0,
+     "travel": 2.41,
+     "pin": 1.0,
+     "pad": 0,
+     "flash": 0.046,
+     "peak": 0.5061,
+     "reach": 0.514,
+     "canvas": [
+      96,
+      96
+     ],
+     "reasons": [],
+     "sub": "2e1e7417-a1f4-4c30-8bdf-1b57fbdc4254",
+     "group": "b212be34-b3ad-4043-94fe-11b46132fd30",
+     "takes": 1,
+     "version": 2,
+     "mirrored": false,
+     "generated_at": "2026-09-09T22:32:53+00:00",
+     "action": "Flame Burst - Thrusts both hands forward and hurls one burst of flame, then returns to idle stance"
+    },
+    "north": {
+     "status": "fail",
+     "step_mean": 0.1803,
+     "step_max": 0.2557,
+     "drift": 1.61,
+     "loop": 0.0,
+     "loop_ratio": 0.0,
+     "travel": 0.21,
+     "pin": 1.0,
+     "pad": 0,
+     "flash": 0.0,
+     "peak": 0.2831,
+     "reach": 0.052,
+     "canvas": [
+      96,
+      96
+     ],
+     "reasons": [
+      "no strike, just a lean: nothing reaches past 0.05 of the body"
+     ],
+     "sub": "bcd94d32-5b30-4270-a3fb-ce4d9a0e79ac",
+     "group": "5513aabf-708d-41c5-8fde-55f4065c4af7",
+     "takes": 1,
+     "version": 2,
+     "mirrored": false,
+     "generated_at": "2026-09-09T22:32:54+00:00",
+     "action": "Flame Burst - Thrusts both hands forward and hurls one burst of flame, then returns to idle stance"
+    },
+    "south-west": {
+     "status": "pass",
+     "step_mean": 0.2388,
+     "step_max": 0.2754,
+     "drift": 1.45,
+     "loop": 0.0,
+     "loop_ratio": 0.0,
+     "travel": 0.36,
+     "pin": 1.0,
+     "pad": 0,
+     "flash": 0.088,
+     "peak": 0.3933,
+     "canvas": [
+      96,
+      96
+     ],
+     "reasons": [],
+     "sub": "ac5fbea4-50ad-4008-a514-78060b7aa34c",
+     "group": "87b32ee7-4093-4bd1-808a-ed8901ecf051",
+     "takes": 1,
+     "version": 2,
+     "mirrored": true,
+     "generated_at": "2026-09-09T22:32:52+00:00",
+     "action": "Flame Burst - Thrusts both hands forward and hurls one burst of flame, then returns to idle stance",
+     "source": "south-east"
+    },
+    "west": {
+     "status": "pass",
+     "step_mean": 0.3547,
+     "step_max": 0.379,
+     "drift": 2.41,
+     "loop": 0.0,
+     "loop_ratio": 0.0,
+     "travel": 2.41,
+     "pin": 1.0,
+     "pad": 0,
+     "flash": 0.046,
+     "peak": 0.5061,
+     "reach": 0.514,
+     "canvas": [
+      96,
+      96
+     ],
+     "reasons": [],
+     "sub": "2e1e7417-a1f4-4c30-8bdf-1b57fbdc4254",
+     "group": "b212be34-b3ad-4043-94fe-11b46132fd30",
+     "takes": 1,
+     "version": 2,
+     "mirrored": true,
+     "generated_at": "2026-09-09T22:32:53+00:00",
+     "action": "Flame Burst - Thrusts both hands forward and hurls one burst of flame, then returns to idle stance",
+     "source": "east"
+    },
+    "north-east": {
+     "status": "warn",
+     "step_mean": 0.3075,
+     "step_max": 0.3869,
+     "drift": 2.26,
+     "loop": 0.0015,
+     "loop_ratio": 0.0,
+     "travel": 0.92,
+     "pin": 1.0,
+     "pad": 0,
+     "flash": 0.097,
+     "peak": 0.4704,
+     "reach": 0.283,
+     "canvas": [
+      96,
+      96
+     ],
+     "reasons": [
+      "shallow strike: reach 0.28 — eyeball it"
+     ],
+     "sub": "52efb1fa-ca14-4993-affa-c61a7e57660d",
+     "group": "b878286b-b57f-4182-a23b-3f96493c2d45",
+     "takes": 1,
+     "version": 2,
+     "mirrored": false,
+     "generated_at": "2026-09-09T22:32:53+00:00",
+     "action": "Flame Burst - Thrusts both hands forward and hurls one burst of flame, then returns to idle stance"
+    },
+    "north-west": {
+     "status": "warn",
+     "step_mean": 0.3075,
+     "step_max": 0.3869,
+     "drift": 2.26,
+     "loop": 0.0015,
+     "loop_ratio": 0.0,
+     "travel": 0.92,
+     "pin": 1.0,
+     "pad": 0,
+     "flash": 0.097,
+     "peak": 0.4704,
+     "reach": 0.283,
+     "canvas": [
+      96,
+      96
+     ],
+     "reasons": [
+      "shallow strike: reach 0.28 — eyeball it"
+     ],
+     "sub": "52efb1fa-ca14-4993-affa-c61a7e57660d",
+     "group": "b878286b-b57f-4182-a23b-3f96493c2d45",
+     "takes": 1,
+     "version": 2,
+     "mirrored": true,
+     "generated_at": "2026-09-09T22:32:53+00:00",
+     "action": "Flame Burst - Thrusts both hands forward and hurls one burst of flame, then returns to idle stance",
+     "source": "north-east"
+    }
+   },
+   "action": "Flame Burst - Thrusts both hands forward and hurls one burst of flame, then returns to idle stance",
+   "frame_paths": {
+    "south": [
+     "fire_elemental/animations/attack/south/00.webp",
+     "fire_elemental/animations/attack/south/01.webp",
+     "fire_elemental/animations/attack/south/02.webp",
+     "fire_elemental/animations/attack/south/03.webp",
+     "fire_elemental/animations/attack/south/04.webp"
+    ],
+    "south-east": [
+     "fire_elemental/animations/attack/south-east/00.webp",
+     "fire_elemental/animations/attack/south-east/01.webp",
+     "fire_elemental/animations/attack/south-east/02.webp",
+     "fire_elemental/animations/attack/south-east/03.webp",
+     "fire_elemental/animations/attack/south-east/04.webp"
+    ],
+    "east": [
+     "fire_elemental/animations/attack/east/00.webp",
+     "fire_elemental/animations/attack/east/01.webp",
+     "fire_elemental/animations/attack/east/02.webp",
+     "fire_elemental/animations/attack/east/03.webp",
+     "fire_elemental/animations/attack/east/04.webp"
+    ],
+    "north": [
+     "fire_elemental/animations/attack/north/00.webp",
+     "fire_elemental/animations/attack/north/01.webp",
+     "fire_elemental/animations/attack/north/02.webp",
+     "fire_elemental/animations/attack/north/03.webp",
+     "fire_elemental/animations/attack/north/04.webp"
+    ],
+    "south-west": [
+     "fire_elemental/animations/attack/south-west/00.webp",
+     "fire_elemental/animations/attack/south-west/01.webp",
+     "fire_elemental/animations/attack/south-west/02.webp",
+     "fire_elemental/animations/attack/south-west/03.webp",
+     "fire_elemental/animations/attack/south-west/04.webp"
+    ],
+    "west": [
+     "fire_elemental/animations/attack/west/00.webp",
+     "fire_elemental/animations/attack/west/01.webp",
+     "fire_elemental/animations/attack/west/02.webp",
+     "fire_elemental/animations/attack/west/03.webp",
+     "fire_elemental/animations/attack/west/04.webp"
+    ],
+    "north-east": [
+     "fire_elemental/animations/attack/north-east/00.webp",
+     "fire_elemental/animations/attack/north-east/01.webp",
+     "fire_elemental/animations/attack/north-east/02.webp",
+     "fire_elemental/animations/attack/north-east/03.webp",
+     "fire_elemental/animations/attack/north-east/04.webp"
+    ],
+    "north-west": [
+     "fire_elemental/animations/attack/north-west/00.webp",
+     "fire_elemental/animations/attack/north-west/01.webp",
+     "fire_elemental/animations/attack/north-west/02.webp",
+     "fire_elemental/animations/attack/north-west/03.webp",
+     "fire_elemental/animations/attack/north-west/04.webp"
+    ]
+   },
+   "strips": {
+    "south": "fire_elemental/animations/attack__south.webp",
+    "south-east": "fire_elemental/animations/attack__south-east.webp",
+    "east": "fire_elemental/animations/attack__east.webp",
+    "north": "fire_elemental/animations/attack__north.webp",
+    "south-west": "fire_elemental/animations/attack__south-west.webp",
+    "west": "fire_elemental/animations/attack__west.webp",
+    "north-east": "fire_elemental/animations/attack__north-east.webp",
+    "north-west": "fire_elemental/animations/attack__north-west.webp"
+   }
+  },
+  "attack_try": {
+   "directions": {
+    "south": {
+     "status": "warn",
+     "step_mean": 0.4112,
+     "step_max": 0.5296,
+     "drift": 7.34,
+     "loop": 0.0945,
+     "loop_ratio": 0.23,
+     "travel": 10.22,
+     "pin": 0.969,
+     "pad": 0,
+     "flash": 0.038,
+     "peak": 0.4542,
+     "reach": 0.288,
+     "canvas": [
+      96,
+      96
+     ],
+     "reasons": [
+      "shallow strike: reach 0.29 — eyeball it"
+     ],
+     "sub": "50ebfa9d-c52f-4540-848a-a5ad85b10469",
+     "group": "3b945d48-73fd-44fc-bf33-9f747b3b13c3",
+     "takes": 1,
+     "version": 1,
+     "mirrored": false,
+     "action": "Flame Burst - Throws both hands forward and hurls a burst of flame",
+     "intensity": 0,
+     "rolls": 1,
+     "frames": 4,
+     "rung": 0,
+     "tries": 1,
+     "generated_at": "2026-09-11T16:10:05+00:00"
+    },
+    "south-east": {
+     "status": "pass",
+     "step_mean": 0.386,
+     "step_max": 0.5218,
+     "drift": 9.54,
+     "loop": 0.0019,
+     "loop_ratio": 0.0,
+     "travel": 9.55,
+     "pin": 0.999,
+     "pad": 0,
+     "flash": 0.008,
+     "peak": 0.5237,
+     "reach": 0.456,
+     "canvas": [
+      96,
+      96
+     ],
+     "reasons": [],
+     "sub": "fe979d4a-81cb-4544-86ba-322a0f4b1e06",
+     "group": "3b945d48-73fd-44fc-bf33-9f747b3b13c3",
+     "takes": 1,
+     "version": 1,
+     "mirrored": false,
+     "action": "Flame Burst - Throws both hands forward and hurls a burst of flame",
+     "intensity": 0,
+     "rolls": 1,
+     "frames": 4,
+     "rung": 0,
+     "tries": 1,
+     "generated_at": "2026-09-11T16:10:06+00:00"
+    },
+    "east": {
+     "status": "pass",
+     "step_mean": 0.6725,
+     "step_max": 0.9272,
+     "drift": 5.95,
+     "loop": 1.1825,
+     "loop_ratio": 1.76,
+     "travel": 6.98,
+     "pin": 0.48,
+     "pad": 0,
+     "flash": 0.068,
+     "peak": 1.1825,
+     "reach": 0.971,
+     "canvas": [
+      96,
+      96
+     ],
+     "reasons": [],
+     "sub": "be274d1c-867d-4cc7-9f51-548fd99d1d9b",
+     "group": "3b945d48-73fd-44fc-bf33-9f747b3b13c3",
+     "takes": 1,
+     "version": 1,
+     "mirrored": false,
+     "action": "Flame Burst - Throws both hands forward and hurls a burst of flame",
+     "intensity": 0,
+     "rolls": 1,
+     "frames": 4,
+     "rung": 0,
+     "tries": 1,
+     "generated_at": "2026-09-11T16:10:06+00:00"
+    },
+    "north-east": {
+     "status": "pass",
+     "step_mean": 0.5814,
+     "step_max": 0.7271,
+     "drift": 9.09,
+     "loop": 0.0488,
+     "loop_ratio": 0.08,
+     "travel": 9.09,
+     "pin": 1.0,
+     "pad": 0,
+     "flash": 0.036,
+     "peak": 0.7504,
+     "reach": 0.696,
+     "canvas": [
+      96,
+      96
+     ],
+     "reasons": [],
+     "sub": "69dfd7c3-8d58-43dc-918b-2dde2792a677",
+     "group": "3b945d48-73fd-44fc-bf33-9f747b3b13c3",
+     "takes": 1,
+     "version": 1,
+     "mirrored": false,
+     "action": "Flame Burst - Throws both hands forward and hurls a burst of flame",
+     "intensity": 0,
+     "rolls": 1,
+     "frames": 4,
+     "rung": 0,
+     "tries": 1,
+     "generated_at": "2026-09-11T16:10:07+00:00"
+    },
+    "north": {
+     "status": "pass",
+     "step_mean": 0.6588,
+     "step_max": 0.8499,
+     "drift": 3.38,
+     "loop": 0.2927,
+     "loop_ratio": 0.44,
+     "travel": 4.33,
+     "pin": 0.709,
+     "pad": 0,
+     "flash": 0.054,
+     "peak": 0.9084,
+     "reach": 0.362,
+     "canvas": [
+      96,
+      96
+     ],
+     "reasons": [],
+     "sub": "ed4cb579-7980-445f-b7dd-6ba95b239b36",
+     "group": "3b945d48-73fd-44fc-bf33-9f747b3b13c3",
+     "takes": 1,
+     "version": 1,
+     "mirrored": false,
+     "action": "Flame Burst - Throws both hands forward and hurls a burst of flame",
+     "intensity": 0,
+     "rolls": 1,
+     "frames": 4,
+     "rung": 0,
+     "tries": 1,
+     "generated_at": "2026-09-11T16:10:07+00:00"
+    },
+    "south-west": {
+     "status": "pass",
+     "step_mean": 0.386,
+     "step_max": 0.5218,
+     "drift": 9.54,
+     "loop": 0.0019,
+     "loop_ratio": 0.0,
+     "travel": 9.55,
+     "pin": 0.999,
+     "pad": 0,
+     "flash": 0.008,
+     "peak": 0.5237,
+     "reach": 0.456,
+     "canvas": [
+      96,
+      96
+     ],
+     "reasons": [],
+     "sub": "fe979d4a-81cb-4544-86ba-322a0f4b1e06",
+     "group": "3b945d48-73fd-44fc-bf33-9f747b3b13c3",
+     "takes": 1,
+     "version": 1,
+     "mirrored": true,
+     "action": "Flame Burst - Throws both hands forward and hurls a burst of flame",
+     "intensity": 0,
+     "rolls": 1,
+     "frames": 4,
+     "rung": 0,
+     "tries": 1,
+     "generated_at": "2026-09-11T16:10:06+00:00",
+     "source": "south-east"
+    },
+    "west": {
+     "status": "pass",
+     "step_mean": 0.6725,
+     "step_max": 0.9272,
+     "drift": 5.95,
+     "loop": 1.1825,
+     "loop_ratio": 1.76,
+     "travel": 6.98,
+     "pin": 0.48,
+     "pad": 0,
+     "flash": 0.068,
+     "peak": 1.1825,
+     "reach": 0.971,
+     "canvas": [
+      96,
+      96
+     ],
+     "reasons": [],
+     "sub": "be274d1c-867d-4cc7-9f51-548fd99d1d9b",
+     "group": "3b945d48-73fd-44fc-bf33-9f747b3b13c3",
+     "takes": 1,
+     "version": 1,
+     "mirrored": true,
+     "action": "Flame Burst - Throws both hands forward and hurls a burst of flame",
+     "intensity": 0,
+     "rolls": 1,
+     "frames": 4,
+     "rung": 0,
+     "tries": 1,
+     "generated_at": "2026-09-11T16:10:06+00:00",
+     "source": "east"
+    },
+    "north-west": {
+     "status": "pass",
+     "step_mean": 0.5814,
+     "step_max": 0.7271,
+     "drift": 9.09,
+     "loop": 0.0488,
+     "loop_ratio": 0.08,
+     "travel": 9.09,
+     "pin": 1.0,
+     "pad": 0,
+     "flash": 0.036,
+     "peak": 0.7504,
+     "reach": 0.696,
+     "canvas": [
+      96,
+      96
+     ],
+     "reasons": [],
+     "sub": "69dfd7c3-8d58-43dc-918b-2dde2792a677",
+     "group": "3b945d48-73fd-44fc-bf33-9f747b3b13c3",
+     "takes": 1,
+     "version": 1,
+     "mirrored": true,
+     "action": "Flame Burst - Throws both hands forward and hurls a burst of flame",
+     "intensity": 0,
+     "rolls": 1,
+     "frames": 4,
+     "rung": 0,
+     "tries": 1,
+     "generated_at": "2026-09-11T16:10:07+00:00",
+     "source": "north-east"
+    }
+   },
+   "action": "Flame Burst - Throws both hands forward and hurls a burst of flame",
+   "frame_paths": {
+    "south": [
+     "fire_elemental/animations/attack_try/south/00.webp",
+     "fire_elemental/animations/attack_try/south/01.webp",
+     "fire_elemental/animations/attack_try/south/02.webp",
+     "fire_elemental/animations/attack_try/south/03.webp"
+    ],
+    "south-east": [
+     "fire_elemental/animations/attack_try/south-east/00.webp",
+     "fire_elemental/animations/attack_try/south-east/01.webp",
+     "fire_elemental/animations/attack_try/south-east/02.webp",
+     "fire_elemental/animations/attack_try/south-east/03.webp"
+    ],
+    "east": [
+     "fire_elemental/animations/attack_try/east/00.webp",
+     "fire_elemental/animations/attack_try/east/01.webp",
+     "fire_elemental/animations/attack_try/east/02.webp",
+     "fire_elemental/animations/attack_try/east/03.webp"
+    ],
+    "north-east": [
+     "fire_elemental/animations/attack_try/north-east/00.webp",
+     "fire_elemental/animations/attack_try/north-east/01.webp",
+     "fire_elemental/animations/attack_try/north-east/02.webp",
+     "fire_elemental/animations/attack_try/north-east/03.webp"
+    ],
+    "north": [
+     "fire_elemental/animations/attack_try/north/00.webp",
+     "fire_elemental/animations/attack_try/north/01.webp",
+     "fire_elemental/animations/attack_try/north/02.webp",
+     "fire_elemental/animations/attack_try/north/03.webp"
+    ],
+    "south-west": [
+     "fire_elemental/animations/attack_try/south-west/00.webp",
+     "fire_elemental/animations/attack_try/south-west/01.webp",
+     "fire_elemental/animations/attack_try/south-west/02.webp",
+     "fire_elemental/animations/attack_try/south-west/03.webp"
+    ],
+    "west": [
+     "fire_elemental/animations/attack_try/west/00.webp",
+     "fire_elemental/animations/attack_try/west/01.webp",
+     "fire_elemental/animations/attack_try/west/02.webp",
+     "fire_elemental/animations/attack_try/west/03.webp"
+    ],
+    "north-west": [
+     "fire_elemental/animations/attack_try/north-west/00.webp",
+     "fire_elemental/animations/attack_try/north-west/01.webp",
+     "fire_elemental/animations/attack_try/north-west/02.webp",
+     "fire_elemental/animations/attack_try/north-west/03.webp"
+    ]
+   },
+   "strips": {
+    "south": "fire_elemental/animations/attack_try__south.webp",
+    "south-east": "fire_elemental/animations/attack_try__south-east.webp",
+    "east": "fire_elemental/animations/attack_try__east.webp",
+    "north-east": "fire_elemental/animations/attack_try__north-east.webp",
+    "north": "fire_elemental/animations/attack_try__north.webp",
+    "south-west": "fire_elemental/animations/attack_try__south-west.webp",
+    "west": "fire_elemental/animations/attack_try__west.webp",
+    "north-west": "fire_elemental/animations/attack_try__north-west.webp"
+   }
+  },
+  "attack_v2": {
+   "directions": {
+    "south": {
+     "status": "warn",
+     "step_mean": 0.3126,
+     "step_max": 0.5016,
+     "drift": 1.39,
+     "loop": 0.4166,
+     "loop_ratio": 1.33,
+     "travel": 0.47,
+     "pin": 1.0,
+     "pad": 0,
+     "flash": 0.177,
+     "peak": 0.5328,
+     "reach": 0.273,
+     "canvas": [
+      96,
+      96
+     ],
+     "reasons": [
+      "shallow strike: reach 0.27 — eyeball it"
+     ],
+     "sub": "9e9dd99b-0659-4d48-92b3-a59ade066ac0",
+     "group": "b55afbf7-0eb4-4509-af09-ed2028ff70d0",
+     "takes": 1,
+     "version": 1,
+     "mirrored": false,
+     "generated_at": "2026-09-10T20:07:52+00:00",
+     "action": "Flame Burst - Throws both hands forward and hurls a burst of flame",
+     "tries": 1,
+     "rolls": 1,
+     "intensity": 0,
+     "rung": 0
+    },
+    "south-east": {
+     "status": "pass",
+     "step_mean": 0.295,
+     "step_max": 0.5453,
+     "drift": 2.16,
+     "loop": 0.5818,
+     "loop_ratio": 1.97,
+     "travel": 0.63,
+     "pin": 1.0,
+     "pad": 5,
+     "flash": 0.212,
+     "peak": 0.6415,
+     "reach": 0.404,
+     "canvas": [
+      106,
+      106
+     ],
+     "reasons": [
+      "canvas grown by 5 px a side to hold the motion"
+     ],
+     "sub": "9793add1-e686-458c-8696-06a6a02824d4",
+     "group": "9ee963cd-0338-419a-89f3-344c80ad9a7c",
+     "takes": 1,
+     "version": 1,
+     "mirrored": false,
+     "generated_at": "2026-09-10T20:07:53+00:00",
+     "action": "Flame Burst - Throws both hands forward and hurls a burst of flame",
+     "tries": 1,
+     "rolls": 1,
+     "intensity": 0,
+     "rung": 0
+    },
+    "east": {
+     "status": "pass",
+     "step_mean": 0.2614,
+     "step_max": 0.3664,
+     "drift": 8.2,
+     "loop": 0.6238,
+     "loop_ratio": 2.39,
+     "travel": 8.2,
+     "pin": 1.0,
+     "pad": 0,
+     "flash": 0.078,
+     "peak": 0.6238,
+     "reach": 0.687,
+     "canvas": [
+      96,
+      96
+     ],
+     "reasons": [],
+     "sub": "d6f6b8b0-a723-46ae-9d66-35210f78a67c",
+     "group": "299b6a1f-c820-481b-bb56-dc4456537ff2",
+     "takes": 1,
+     "version": 1,
+     "mirrored": false,
+     "generated_at": "2026-09-10T20:07:54+00:00",
+     "action": "Flame Burst - Throws both hands forward and hurls a burst of flame",
+     "tries": 1,
+     "rolls": 1,
+     "intensity": 0,
+     "rung": 0
+    },
+    "north-east": {
+     "status": "warn",
+     "step_mean": 0.2767,
+     "step_max": 0.6324,
+     "drift": 8.21,
+     "loop": 0.5421,
+     "loop_ratio": 1.96,
+     "travel": 8.21,
+     "pin": 1.0,
+     "pad": 3,
+     "flash": 0.398,
+     "peak": 0.6385,
+     "reach": 0.609,
+     "canvas": [
+      102,
+      102
+     ],
+     "reasons": [
+      "some bright effect pixels (0.40) — eyeball it",
+      "canvas grown by 3 px a side to hold the motion"
+     ],
+     "sub": "071d9d5e-c6b9-48cd-9745-bb90b503f286",
+     "group": "5c2416cd-dd4b-42f1-b12b-9f3714beed34",
+     "takes": 1,
+     "version": 1,
+     "mirrored": false,
+     "generated_at": "2026-09-10T20:07:55+00:00",
+     "action": "Flame Burst - Throws both hands forward and hurls a burst of flame",
+     "tries": 1,
+     "rolls": 1,
+     "intensity": 0,
+     "rung": 0
+    },
+    "north": {
+     "status": "warn",
+     "step_mean": 0.3376,
+     "step_max": 0.5391,
+     "drift": 6.41,
+     "loop": 0.3463,
+     "loop_ratio": 1.03,
+     "travel": 0.18,
+     "pin": 1.0,
+     "pad": 0,
+     "flash": 0.007,
+     "peak": 0.4971,
+     "reach": 0.293,
+     "canvas": [
+      96,
+      96
+     ],
+     "reasons": [
+      "shallow strike: reach 0.29 — eyeball it"
+     ],
+     "sub": "30c03996-3b29-416a-9cb4-71818563243b",
+     "group": "030f0f32-0e85-4abe-9311-4b22aa9bdd59",
+     "takes": 1,
+     "version": 1,
+     "mirrored": false,
+     "generated_at": "2026-09-10T20:07:55+00:00",
+     "action": "Flame Burst - Throws both hands forward and hurls a burst of flame",
+     "tries": 1,
+     "rolls": 1,
+     "intensity": 0,
+     "rung": 0
+    },
+    "south-west": {
+     "status": "pass",
+     "step_mean": 0.295,
+     "step_max": 0.5453,
+     "drift": 2.16,
+     "loop": 0.5818,
+     "loop_ratio": 1.97,
+     "travel": 0.63,
+     "pin": 1.0,
+     "pad": 5,
+     "flash": 0.212,
+     "peak": 0.6415,
+     "reach": 0.404,
+     "canvas": [
+      106,
+      106
+     ],
+     "reasons": [
+      "canvas grown by 5 px a side to hold the motion"
+     ],
+     "sub": "9793add1-e686-458c-8696-06a6a02824d4",
+     "group": "9ee963cd-0338-419a-89f3-344c80ad9a7c",
+     "takes": 1,
+     "version": 1,
+     "mirrored": true,
+     "generated_at": "2026-09-10T20:07:53+00:00",
+     "action": "Flame Burst - Throws both hands forward and hurls a burst of flame",
+     "tries": 1,
+     "rolls": 1,
+     "intensity": 0,
+     "rung": 0,
+     "source": "south-east"
+    },
+    "west": {
+     "status": "pass",
+     "step_mean": 0.2614,
+     "step_max": 0.3664,
+     "drift": 8.2,
+     "loop": 0.6238,
+     "loop_ratio": 2.39,
+     "travel": 8.2,
+     "pin": 1.0,
+     "pad": 0,
+     "flash": 0.078,
+     "peak": 0.6238,
+     "reach": 0.687,
+     "canvas": [
+      96,
+      96
+     ],
+     "reasons": [],
+     "sub": "d6f6b8b0-a723-46ae-9d66-35210f78a67c",
+     "group": "299b6a1f-c820-481b-bb56-dc4456537ff2",
+     "takes": 1,
+     "version": 1,
+     "mirrored": true,
+     "generated_at": "2026-09-10T20:07:54+00:00",
+     "action": "Flame Burst - Throws both hands forward and hurls a burst of flame",
+     "tries": 1,
+     "rolls": 1,
+     "intensity": 0,
+     "rung": 0,
+     "source": "east"
+    },
+    "north-west": {
+     "status": "warn",
+     "step_mean": 0.2767,
+     "step_max": 0.6324,
+     "drift": 8.21,
+     "loop": 0.5421,
+     "loop_ratio": 1.96,
+     "travel": 8.21,
+     "pin": 1.0,
+     "pad": 3,
+     "flash": 0.398,
+     "peak": 0.6385,
+     "reach": 0.609,
+     "canvas": [
+      102,
+      102
+     ],
+     "reasons": [
+      "some bright effect pixels (0.40) — eyeball it",
+      "canvas grown by 3 px a side to hold the motion"
+     ],
+     "sub": "071d9d5e-c6b9-48cd-9745-bb90b503f286",
+     "group": "5c2416cd-dd4b-42f1-b12b-9f3714beed34",
+     "takes": 1,
+     "version": 1,
+     "mirrored": true,
+     "generated_at": "2026-09-10T20:07:55+00:00",
+     "action": "Flame Burst - Throws both hands forward and hurls a burst of flame",
+     "tries": 1,
+     "rolls": 1,
+     "intensity": 0,
+     "rung": 0,
+     "source": "north-east"
+    }
+   },
+   "action": "Flame Burst - Throws both hands forward and hurls a burst of flame",
+   "frame_paths": {
+    "south": [
+     "fire_elemental/animations/attack_v2/south/00.webp",
+     "fire_elemental/animations/attack_v2/south/01.webp",
+     "fire_elemental/animations/attack_v2/south/02.webp",
+     "fire_elemental/animations/attack_v2/south/03.webp",
+     "fire_elemental/animations/attack_v2/south/04.webp"
+    ],
+    "south-east": [
+     "fire_elemental/animations/attack_v2/south-east/00.webp",
+     "fire_elemental/animations/attack_v2/south-east/01.webp",
+     "fire_elemental/animations/attack_v2/south-east/02.webp",
+     "fire_elemental/animations/attack_v2/south-east/03.webp",
+     "fire_elemental/animations/attack_v2/south-east/04.webp"
+    ],
+    "east": [
+     "fire_elemental/animations/attack_v2/east/00.webp",
+     "fire_elemental/animations/attack_v2/east/01.webp",
+     "fire_elemental/animations/attack_v2/east/02.webp",
+     "fire_elemental/animations/attack_v2/east/03.webp",
+     "fire_elemental/animations/attack_v2/east/04.webp"
+    ],
+    "north-east": [
+     "fire_elemental/animations/attack_v2/north-east/00.webp",
+     "fire_elemental/animations/attack_v2/north-east/01.webp",
+     "fire_elemental/animations/attack_v2/north-east/02.webp",
+     "fire_elemental/animations/attack_v2/north-east/03.webp",
+     "fire_elemental/animations/attack_v2/north-east/04.webp"
+    ],
+    "north": [
+     "fire_elemental/animations/attack_v2/north/00.webp",
+     "fire_elemental/animations/attack_v2/north/01.webp",
+     "fire_elemental/animations/attack_v2/north/02.webp",
+     "fire_elemental/animations/attack_v2/north/03.webp",
+     "fire_elemental/animations/attack_v2/north/04.webp"
+    ],
+    "south-west": [
+     "fire_elemental/animations/attack_v2/south-west/00.webp",
+     "fire_elemental/animations/attack_v2/south-west/01.webp",
+     "fire_elemental/animations/attack_v2/south-west/02.webp",
+     "fire_elemental/animations/attack_v2/south-west/03.webp",
+     "fire_elemental/animations/attack_v2/south-west/04.webp"
+    ],
+    "west": [
+     "fire_elemental/animations/attack_v2/west/00.webp",
+     "fire_elemental/animations/attack_v2/west/01.webp",
+     "fire_elemental/animations/attack_v2/west/02.webp",
+     "fire_elemental/animations/attack_v2/west/03.webp",
+     "fire_elemental/animations/attack_v2/west/04.webp"
+    ],
+    "north-west": [
+     "fire_elemental/animations/attack_v2/north-west/00.webp",
+     "fire_elemental/animations/attack_v2/north-west/01.webp",
+     "fire_elemental/animations/attack_v2/north-west/02.webp",
+     "fire_elemental/animations/attack_v2/north-west/03.webp",
+     "fire_elemental/animations/attack_v2/north-west/04.webp"
+    ]
+   },
+   "strips": {
+    "south": "fire_elemental/animations/attack_v2__south.webp",
+    "south-east": "fire_elemental/animations/attack_v2__south-east.webp",
+    "east": "fire_elemental/animations/attack_v2__east.webp",
+    "north-east": "fire_elemental/animations/attack_v2__north-east.webp",
+    "north": "fire_elemental/animations/attack_v2__north.webp",
+    "south-west": "fire_elemental/animations/attack_v2__south-west.webp",
+    "west": "fire_elemental/animations/attack_v2__west.webp",
+    "north-west": "fire_elemental/animations/attack_v2__north-west.webp"
+   }
+  }
+ }
 }
