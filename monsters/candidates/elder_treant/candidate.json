@@ -611,626 +611,6 @@
         "north-west": "elder_treant/animations/walk__north-west.webp"
       }
     },
-    "attack": {
-      "directions": {
-        "south": {
-          "status": "fail",
-          "step_mean": 0.3136,
-          "step_max": 0.4325,
-          "drift": 3.76,
-          "loop": 0.0001,
-          "loop_ratio": 0.0,
-          "travel": 0.86,
-          "pin": 1.0,
-          "pad": 0,
-          "flash": 0.001,
-          "peak": 0.4652,
-          "reach": 0.071,
-          "canvas": [
-            224,
-            224
-          ],
-          "reasons": [
-            "no strike, just a lean: nothing reaches past 0.07 of the body"
-          ],
-          "sub": "0c7ad7d0-0809-44e9-8734-b3114da211a0",
-          "group": "6c2b9e51-0c89-49b9-98ab-3bc1db0e325c",
-          "takes": 1,
-          "version": 7,
-          "mirrored": false,
-          "generated_at": "2026-09-09T23:34:48+00:00",
-          "action": "Arm Swing - Raises one huge branch arm and swings it down once, then returns to idle stance",
-          "tries": 2
-        },
-        "south-east": {
-          "status": "fail",
-          "step_mean": 0.2815,
-          "step_max": 0.3895,
-          "drift": 5.48,
-          "loop": 0.0,
-          "loop_ratio": 0.0,
-          "travel": 5.48,
-          "pin": 1.0,
-          "pad": 0,
-          "flash": 0.001,
-          "peak": 0.3895,
-          "reach": 0.115,
-          "canvas": [
-            224,
-            224
-          ],
-          "reasons": [
-            "no strike, just a lean: nothing reaches past 0.12 of the body"
-          ],
-          "sub": "2ad2ee58-541b-4875-a33d-5f559cce2892",
-          "group": "a09d691c-8c42-46ec-ad9b-647d9577cfc7",
-          "takes": 1,
-          "version": 3,
-          "mirrored": false,
-          "generated_at": "2026-09-09T22:49:34+00:00",
-          "action": "Arm Swing - Raises one huge branch arm and swings it down once, then returns to idle stance"
-        },
-        "east": {
-          "status": "pass",
-          "step_mean": 0.2491,
-          "step_max": 0.3168,
-          "drift": 7.77,
-          "loop": 0.0005,
-          "loop_ratio": 0.0,
-          "travel": 7.77,
-          "pin": 1.0,
-          "pad": 0,
-          "flash": 0.0,
-          "peak": 0.3101,
-          "reach": 0.545,
-          "canvas": [
-            224,
-            224
-          ],
-          "reasons": [],
-          "sub": "59fc1cf6-47f1-4904-9991-95a70749851c",
-          "group": "a2bdb28b-ff28-4618-bd19-8c18389a98b3",
-          "takes": 1,
-          "version": 3,
-          "mirrored": false,
-          "generated_at": "2026-09-09T22:49:35+00:00",
-          "action": "Arm Swing - Raises one huge branch arm and swings it down once, then returns to idle stance"
-        },
-        "north-east": {
-          "status": "warn",
-          "step_mean": 0.2631,
-          "step_max": 0.3855,
-          "drift": 8.32,
-          "loop": 0.0,
-          "loop_ratio": 0.0,
-          "travel": 2.5,
-          "pin": 1.0,
-          "pad": 0,
-          "flash": 0.0,
-          "peak": 0.4496,
-          "reach": 0.25,
-          "canvas": [
-            224,
-            224
-          ],
-          "reasons": [
-            "shallow strike: reach 0.25 — eyeball it"
-          ],
-          "sub": "1180c597-baea-456a-b40e-106c8f712c10",
-          "group": "d4d302cc-4727-40d5-9598-c6ae2287ceec",
-          "takes": 1,
-          "version": 3,
-          "mirrored": false,
-          "generated_at": "2026-09-09T22:49:36+00:00",
-          "action": "Arm Swing - Raises one huge branch arm and swings it down once, then returns to idle stance"
-        },
-        "north": {
-          "status": "fail",
-          "step_mean": 0.2758,
-          "step_max": 0.4821,
-          "drift": 6.29,
-          "loop": 0.0,
-          "loop_ratio": 0.0,
-          "travel": 0.34,
-          "pin": 1.0,
-          "pad": 0,
-          "flash": 0.027,
-          "peak": 0.5106,
-          "reach": 0.076,
-          "canvas": [
-            224,
-            224
-          ],
-          "reasons": [
-            "no strike, just a lean: nothing reaches past 0.08 of the body"
-          ],
-          "sub": "fbd73fb9-a544-4fec-b5ad-414cf94501a2",
-          "group": "0c469e4f-b2d5-4fd2-979a-1eb51970d0e0",
-          "takes": 1,
-          "version": 3,
-          "mirrored": false,
-          "generated_at": "2026-09-09T22:49:36+00:00",
-          "action": "Arm Swing - Raises one huge branch arm and swings it down once, then returns to idle stance"
-        },
-        "south-west": {
-          "status": "pass",
-          "step_mean": 0.2815,
-          "step_max": 0.3895,
-          "drift": 5.48,
-          "loop": 0.0,
-          "loop_ratio": 0.0,
-          "travel": 5.48,
-          "pin": 1.0,
-          "pad": 0,
-          "flash": 0.001,
-          "peak": 0.3895,
-          "canvas": [
-            224,
-            224
-          ],
-          "reasons": [],
-          "sub": "2ad2ee58-541b-4875-a33d-5f559cce2892",
-          "group": "a09d691c-8c42-46ec-ad9b-647d9577cfc7",
-          "takes": 1,
-          "version": 3,
-          "mirrored": true,
-          "generated_at": "2026-09-09T22:49:34+00:00",
-          "action": "Arm Swing - Raises one huge branch arm and swings it down once, then returns to idle stance",
-          "source": "south-east"
-        },
-        "west": {
-          "status": "pass",
-          "step_mean": 0.2491,
-          "step_max": 0.3168,
-          "drift": 7.77,
-          "loop": 0.0005,
-          "loop_ratio": 0.0,
-          "travel": 7.77,
-          "pin": 1.0,
-          "pad": 0,
-          "flash": 0.0,
-          "peak": 0.3101,
-          "reach": 0.545,
-          "canvas": [
-            224,
-            224
-          ],
-          "reasons": [],
-          "sub": "59fc1cf6-47f1-4904-9991-95a70749851c",
-          "group": "a2bdb28b-ff28-4618-bd19-8c18389a98b3",
-          "takes": 1,
-          "version": 3,
-          "mirrored": true,
-          "generated_at": "2026-09-09T22:49:35+00:00",
-          "action": "Arm Swing - Raises one huge branch arm and swings it down once, then returns to idle stance",
-          "source": "east"
-        },
-        "north-west": {
-          "status": "warn",
-          "step_mean": 0.2631,
-          "step_max": 0.3855,
-          "drift": 8.32,
-          "loop": 0.0,
-          "loop_ratio": 0.0,
-          "travel": 2.5,
-          "pin": 1.0,
-          "pad": 0,
-          "flash": 0.0,
-          "peak": 0.4496,
-          "reach": 0.25,
-          "canvas": [
-            224,
-            224
-          ],
-          "reasons": [
-            "shallow strike: reach 0.25 — eyeball it"
-          ],
-          "sub": "1180c597-baea-456a-b40e-106c8f712c10",
-          "group": "d4d302cc-4727-40d5-9598-c6ae2287ceec",
-          "takes": 1,
-          "version": 3,
-          "mirrored": true,
-          "generated_at": "2026-09-09T22:49:36+00:00",
-          "action": "Arm Swing - Raises one huge branch arm and swings it down once, then returns to idle stance",
-          "source": "north-east"
-        }
-      },
-      "action": "Arm Swing - Raises one huge branch arm and swings it down once, then returns to idle stance",
-      "frame_paths": {
-        "south": [
-          "elder_treant/animations/attack/south/00.webp",
-          "elder_treant/animations/attack/south/01.webp",
-          "elder_treant/animations/attack/south/02.webp",
-          "elder_treant/animations/attack/south/03.webp",
-          "elder_treant/animations/attack/south/04.webp"
-        ],
-        "south-east": [
-          "elder_treant/animations/attack/south-east/00.webp",
-          "elder_treant/animations/attack/south-east/01.webp",
-          "elder_treant/animations/attack/south-east/02.webp",
-          "elder_treant/animations/attack/south-east/03.webp",
-          "elder_treant/animations/attack/south-east/04.webp"
-        ],
-        "east": [
-          "elder_treant/animations/attack/east/00.webp",
-          "elder_treant/animations/attack/east/01.webp",
-          "elder_treant/animations/attack/east/02.webp",
-          "elder_treant/animations/attack/east/03.webp",
-          "elder_treant/animations/attack/east/04.webp"
-        ],
-        "north-east": [
-          "elder_treant/animations/attack/north-east/00.webp",
-          "elder_treant/animations/attack/north-east/01.webp",
-          "elder_treant/animations/attack/north-east/02.webp",
-          "elder_treant/animations/attack/north-east/03.webp",
-          "elder_treant/animations/attack/north-east/04.webp"
-        ],
-        "north": [
-          "elder_treant/animations/attack/north/00.webp",
-          "elder_treant/animations/attack/north/01.webp",
-          "elder_treant/animations/attack/north/02.webp",
-          "elder_treant/animations/attack/north/03.webp",
-          "elder_treant/animations/attack/north/04.webp"
-        ],
-        "south-west": [
-          "elder_treant/animations/attack/south-west/00.webp",
-          "elder_treant/animations/attack/south-west/01.webp",
-          "elder_treant/animations/attack/south-west/02.webp",
-          "elder_treant/animations/attack/south-west/03.webp",
-          "elder_treant/animations/attack/south-west/04.webp"
-        ],
-        "west": [
-          "elder_treant/animations/attack/west/00.webp",
-          "elder_treant/animations/attack/west/01.webp",
-          "elder_treant/animations/attack/west/02.webp",
-          "elder_treant/animations/attack/west/03.webp",
-          "elder_treant/animations/attack/west/04.webp"
-        ],
-        "north-west": [
-          "elder_treant/animations/attack/north-west/00.webp",
-          "elder_treant/animations/attack/north-west/01.webp",
-          "elder_treant/animations/attack/north-west/02.webp",
-          "elder_treant/animations/attack/north-west/03.webp",
-          "elder_treant/animations/attack/north-west/04.webp"
-        ]
-      },
-      "strips": {
-        "south": "elder_treant/animations/attack__south.webp",
-        "south-east": "elder_treant/animations/attack__south-east.webp",
-        "east": "elder_treant/animations/attack__east.webp",
-        "north-east": "elder_treant/animations/attack__north-east.webp",
-        "north": "elder_treant/animations/attack__north.webp",
-        "south-west": "elder_treant/animations/attack__south-west.webp",
-        "west": "elder_treant/animations/attack__west.webp",
-        "north-west": "elder_treant/animations/attack__north-west.webp"
-      }
-    },
-    "attack_try": {
-      "directions": {
-        "south": {
-          "status": "warn",
-          "step_mean": 0.2837,
-          "step_max": 0.4175,
-          "drift": 11.74,
-          "loop": 0.1059,
-          "loop_ratio": 0.37,
-          "travel": 12.8,
-          "pin": 1.0,
-          "pad": 0,
-          "flash": 0.0,
-          "peak": 0.3534,
-          "reach": 0.159,
-          "canvas": [
-            224,
-            224
-          ],
-          "reasons": [
-            "shallow strike: reach 0.16 — eyeball it"
-          ],
-          "sub": "35572336-72c7-487d-b58b-50d2c6f4273a",
-          "group": "10d1dd9a-fcb5-4921-8ff4-2b17500d00c6",
-          "takes": 1,
-          "version": 1,
-          "mirrored": false,
-          "action": "Branch Smash - Swings one huge branch arm down in a wide overhead smash",
-          "intensity": 0,
-          "rolls": 1,
-          "frames": 4,
-          "rung": 0,
-          "tries": 1,
-          "generated_at": "2026-09-11T16:32:31+00:00"
-        },
-        "south-east": {
-          "status": "pass",
-          "step_mean": 0.5213,
-          "step_max": 0.659,
-          "drift": 14.87,
-          "loop": 0.0008,
-          "loop_ratio": 0.0,
-          "travel": 2.25,
-          "pin": 1.0,
-          "pad": 0,
-          "flash": 0.0,
-          "peak": 0.6591,
-          "reach": 0.345,
-          "canvas": [
-            224,
-            224
-          ],
-          "reasons": [],
-          "sub": "6a91a406-07d5-4b3c-bfa9-a2b71298efd3",
-          "group": "10d1dd9a-fcb5-4921-8ff4-2b17500d00c6",
-          "takes": 1,
-          "version": 1,
-          "mirrored": false,
-          "action": "Branch Smash - Swings one huge branch arm down in a wide overhead smash",
-          "intensity": 0,
-          "rolls": 1,
-          "frames": 4,
-          "rung": 0,
-          "tries": 1,
-          "generated_at": "2026-09-11T16:32:32+00:00"
-        },
-        "east": {
-          "status": "warn",
-          "step_mean": 0.5458,
-          "step_max": 0.6129,
-          "drift": 14.46,
-          "loop": 0.7733,
-          "loop_ratio": 1.42,
-          "travel": 27.67,
-          "pin": 1.0,
-          "pad": 0,
-          "flash": 0.001,
-          "peak": 0.7733,
-          "reach": 0.545,
-          "canvas": [
-            224,
-            224
-          ],
-          "reasons": [
-            "28 px of travel — eyeball it"
-          ],
-          "sub": "61cd914b-6b4a-4954-9882-6ddba8aa694b",
-          "group": "10d1dd9a-fcb5-4921-8ff4-2b17500d00c6",
-          "takes": 1,
-          "version": 1,
-          "mirrored": false,
-          "action": "Branch Smash - Swings one huge branch arm down in a wide overhead smash",
-          "intensity": 0,
-          "rolls": 1,
-          "frames": 4,
-          "rung": 0,
-          "tries": 1,
-          "generated_at": "2026-09-11T16:32:33+00:00"
-        },
-        "north-east": {
-          "status": "pass",
-          "step_mean": 0.1325,
-          "step_max": 0.2923,
-          "drift": 13.73,
-          "loop": 0.2787,
-          "loop_ratio": 2.1,
-          "travel": 1.88,
-          "pin": 1.0,
-          "pad": 0,
-          "flash": 0.0,
-          "peak": 0.2923,
-          "reach": 0.303,
-          "canvas": [
-            224,
-            224
-          ],
-          "reasons": [],
-          "sub": "4027b426-1d9a-4d57-a747-b776556724c5",
-          "group": "10d1dd9a-fcb5-4921-8ff4-2b17500d00c6",
-          "takes": 1,
-          "version": 1,
-          "mirrored": false,
-          "action": "Branch Smash - Swings one huge branch arm down in a wide overhead smash",
-          "intensity": 0,
-          "rolls": 1,
-          "frames": 4,
-          "rung": 0,
-          "tries": 1,
-          "generated_at": "2026-09-11T16:32:33+00:00"
-        },
-        "north": {
-          "status": "warn",
-          "step_mean": 0.4253,
-          "step_max": 0.5987,
-          "drift": 24.6,
-          "loop": 0.1621,
-          "loop_ratio": 0.38,
-          "travel": 3.24,
-          "pin": 1.0,
-          "pad": 0,
-          "flash": 0.0,
-          "peak": 0.5538,
-          "reach": 0.233,
-          "canvas": [
-            224,
-            224
-          ],
-          "reasons": [
-            "drifts 24.6 px — eyeball it",
-            "shallow strike: reach 0.23 — eyeball it"
-          ],
-          "sub": "443e38ec-10d9-47d6-b7d4-07cb24ddea42",
-          "group": "9428b727-5979-4ab7-8e35-8dbb7b2fb870",
-          "takes": 1,
-          "version": 2,
-          "mirrored": false,
-          "action": "Branch Smash - Swings one huge branch arm down in a wide overhead smash, a big aggressive swing",
-          "intensity": 0,
-          "rolls": 2,
-          "frames": 4,
-          "rung": 1,
-          "unwrapped": null,
-          "tries": 2,
-          "generated_at": "2026-09-11T17:15:34+00:00"
-        },
-        "south-west": {
-          "status": "pass",
-          "step_mean": 0.5213,
-          "step_max": 0.659,
-          "drift": 14.87,
-          "loop": 0.0008,
-          "loop_ratio": 0.0,
-          "travel": 2.25,
-          "pin": 1.0,
-          "pad": 0,
-          "flash": 0.0,
-          "peak": 0.6591,
-          "reach": 0.345,
-          "canvas": [
-            224,
-            224
-          ],
-          "reasons": [],
-          "sub": "6a91a406-07d5-4b3c-bfa9-a2b71298efd3",
-          "group": "10d1dd9a-fcb5-4921-8ff4-2b17500d00c6",
-          "takes": 1,
-          "version": 1,
-          "mirrored": true,
-          "action": "Branch Smash - Swings one huge branch arm down in a wide overhead smash",
-          "intensity": 0,
-          "rolls": 1,
-          "frames": 4,
-          "rung": 0,
-          "tries": 1,
-          "generated_at": "2026-09-11T16:32:32+00:00",
-          "source": "south-east"
-        },
-        "west": {
-          "status": "warn",
-          "step_mean": 0.5458,
-          "step_max": 0.6129,
-          "drift": 14.46,
-          "loop": 0.7733,
-          "loop_ratio": 1.42,
-          "travel": 27.67,
-          "pin": 1.0,
-          "pad": 0,
-          "flash": 0.001,
-          "peak": 0.7733,
-          "reach": 0.545,
-          "canvas": [
-            224,
-            224
-          ],
-          "reasons": [
-            "28 px of travel — eyeball it"
-          ],
-          "sub": "61cd914b-6b4a-4954-9882-6ddba8aa694b",
-          "group": "10d1dd9a-fcb5-4921-8ff4-2b17500d00c6",
-          "takes": 1,
-          "version": 1,
-          "mirrored": true,
-          "action": "Branch Smash - Swings one huge branch arm down in a wide overhead smash",
-          "intensity": 0,
-          "rolls": 1,
-          "frames": 4,
-          "rung": 0,
-          "tries": 1,
-          "generated_at": "2026-09-11T16:32:33+00:00",
-          "source": "east"
-        },
-        "north-west": {
-          "status": "pass",
-          "step_mean": 0.1325,
-          "step_max": 0.2923,
-          "drift": 13.73,
-          "loop": 0.2787,
-          "loop_ratio": 2.1,
-          "travel": 1.88,
-          "pin": 1.0,
-          "pad": 0,
-          "flash": 0.0,
-          "peak": 0.2923,
-          "reach": 0.303,
-          "canvas": [
-            224,
-            224
-          ],
-          "reasons": [],
-          "sub": "4027b426-1d9a-4d57-a747-b776556724c5",
-          "group": "10d1dd9a-fcb5-4921-8ff4-2b17500d00c6",
-          "takes": 1,
-          "version": 1,
-          "mirrored": true,
-          "action": "Branch Smash - Swings one huge branch arm down in a wide overhead smash",
-          "intensity": 0,
-          "rolls": 1,
-          "frames": 4,
-          "rung": 0,
-          "tries": 1,
-          "generated_at": "2026-09-11T16:32:33+00:00",
-          "source": "north-east"
-        }
-      },
-      "action": "Branch Smash - Swings one huge branch arm down in a wide overhead smash",
-      "frame_paths": {
-        "south": [
-          "elder_treant/animations/attack_try/south/00.webp",
-          "elder_treant/animations/attack_try/south/01.webp",
-          "elder_treant/animations/attack_try/south/02.webp",
-          "elder_treant/animations/attack_try/south/03.webp"
-        ],
-        "south-east": [
-          "elder_treant/animations/attack_try/south-east/00.webp",
-          "elder_treant/animations/attack_try/south-east/01.webp",
-          "elder_treant/animations/attack_try/south-east/02.webp",
-          "elder_treant/animations/attack_try/south-east/03.webp"
-        ],
-        "east": [
-          "elder_treant/animations/attack_try/east/00.webp",
-          "elder_treant/animations/attack_try/east/01.webp",
-          "elder_treant/animations/attack_try/east/02.webp",
-          "elder_treant/animations/attack_try/east/03.webp"
-        ],
-        "north-east": [
-          "elder_treant/animations/attack_try/north-east/00.webp",
-          "elder_treant/animations/attack_try/north-east/01.webp",
-          "elder_treant/animations/attack_try/north-east/02.webp",
-          "elder_treant/animations/attack_try/north-east/03.webp"
-        ],
-        "north": [
-          "elder_treant/animations/attack_try/north/00.webp",
-          "elder_treant/animations/attack_try/north/01.webp",
-          "elder_treant/animations/attack_try/north/02.webp",
-          "elder_treant/animations/attack_try/north/03.webp"
-        ],
-        "south-west": [
-          "elder_treant/animations/attack_try/south-west/00.webp",
-          "elder_treant/animations/attack_try/south-west/01.webp",
-          "elder_treant/animations/attack_try/south-west/02.webp",
-          "elder_treant/animations/attack_try/south-west/03.webp"
-        ],
-        "west": [
-          "elder_treant/animations/attack_try/west/00.webp",
-          "elder_treant/animations/attack_try/west/01.webp",
-          "elder_treant/animations/attack_try/west/02.webp",
-          "elder_treant/animations/attack_try/west/03.webp"
-        ],
-        "north-west": [
-          "elder_treant/animations/attack_try/north-west/00.webp",
-          "elder_treant/animations/attack_try/north-west/01.webp",
-          "elder_treant/animations/attack_try/north-west/02.webp",
-          "elder_treant/animations/attack_try/north-west/03.webp"
-        ]
-      },
-      "strips": {
-        "south": "elder_treant/animations/attack_try__south.webp",
-        "south-east": "elder_treant/animations/attack_try__south-east.webp",
-        "east": "elder_treant/animations/attack_try__east.webp",
-        "north-east": "elder_treant/animations/attack_try__north-east.webp",
-        "north": "elder_treant/animations/attack_try__north.webp",
-        "south-west": "elder_treant/animations/attack_try__south-west.webp",
-        "west": "elder_treant/animations/attack_try__west.webp",
-        "north-west": "elder_treant/animations/attack_try__north-west.webp"
-      }
-    },
     "attack_v2": {
       "directions": {
         "south": {
@@ -1553,6 +933,626 @@
         "north-west": "elder_treant/animations/attack_v2__north-west.webp"
       },
       "intensity": 1
+    },
+    "attack_v1": {
+      "directions": {
+        "south": {
+          "status": "fail",
+          "step_mean": 0.3136,
+          "step_max": 0.4325,
+          "drift": 3.76,
+          "loop": 0.0001,
+          "loop_ratio": 0.0,
+          "travel": 0.86,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": 0.001,
+          "peak": 0.4652,
+          "reach": 0.071,
+          "canvas": [
+            224,
+            224
+          ],
+          "reasons": [
+            "no strike, just a lean: nothing reaches past 0.07 of the body"
+          ],
+          "sub": "0c7ad7d0-0809-44e9-8734-b3114da211a0",
+          "group": "6c2b9e51-0c89-49b9-98ab-3bc1db0e325c",
+          "takes": 1,
+          "version": 7,
+          "mirrored": false,
+          "generated_at": "2026-09-09T23:34:48+00:00",
+          "action": "Arm Swing - Raises one huge branch arm and swings it down once, then returns to idle stance",
+          "tries": 2
+        },
+        "south-east": {
+          "status": "fail",
+          "step_mean": 0.2815,
+          "step_max": 0.3895,
+          "drift": 5.48,
+          "loop": 0.0,
+          "loop_ratio": 0.0,
+          "travel": 5.48,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": 0.001,
+          "peak": 0.3895,
+          "reach": 0.115,
+          "canvas": [
+            224,
+            224
+          ],
+          "reasons": [
+            "no strike, just a lean: nothing reaches past 0.12 of the body"
+          ],
+          "sub": "2ad2ee58-541b-4875-a33d-5f559cce2892",
+          "group": "a09d691c-8c42-46ec-ad9b-647d9577cfc7",
+          "takes": 1,
+          "version": 3,
+          "mirrored": false,
+          "generated_at": "2026-09-09T22:49:34+00:00",
+          "action": "Arm Swing - Raises one huge branch arm and swings it down once, then returns to idle stance"
+        },
+        "east": {
+          "status": "pass",
+          "step_mean": 0.2491,
+          "step_max": 0.3168,
+          "drift": 7.77,
+          "loop": 0.0005,
+          "loop_ratio": 0.0,
+          "travel": 7.77,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": 0.0,
+          "peak": 0.3101,
+          "reach": 0.545,
+          "canvas": [
+            224,
+            224
+          ],
+          "reasons": [],
+          "sub": "59fc1cf6-47f1-4904-9991-95a70749851c",
+          "group": "a2bdb28b-ff28-4618-bd19-8c18389a98b3",
+          "takes": 1,
+          "version": 3,
+          "mirrored": false,
+          "generated_at": "2026-09-09T22:49:35+00:00",
+          "action": "Arm Swing - Raises one huge branch arm and swings it down once, then returns to idle stance"
+        },
+        "north-east": {
+          "status": "warn",
+          "step_mean": 0.2631,
+          "step_max": 0.3855,
+          "drift": 8.32,
+          "loop": 0.0,
+          "loop_ratio": 0.0,
+          "travel": 2.5,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": 0.0,
+          "peak": 0.4496,
+          "reach": 0.25,
+          "canvas": [
+            224,
+            224
+          ],
+          "reasons": [
+            "shallow strike: reach 0.25 — eyeball it"
+          ],
+          "sub": "1180c597-baea-456a-b40e-106c8f712c10",
+          "group": "d4d302cc-4727-40d5-9598-c6ae2287ceec",
+          "takes": 1,
+          "version": 3,
+          "mirrored": false,
+          "generated_at": "2026-09-09T22:49:36+00:00",
+          "action": "Arm Swing - Raises one huge branch arm and swings it down once, then returns to idle stance"
+        },
+        "north": {
+          "status": "fail",
+          "step_mean": 0.2758,
+          "step_max": 0.4821,
+          "drift": 6.29,
+          "loop": 0.0,
+          "loop_ratio": 0.0,
+          "travel": 0.34,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": 0.027,
+          "peak": 0.5106,
+          "reach": 0.076,
+          "canvas": [
+            224,
+            224
+          ],
+          "reasons": [
+            "no strike, just a lean: nothing reaches past 0.08 of the body"
+          ],
+          "sub": "fbd73fb9-a544-4fec-b5ad-414cf94501a2",
+          "group": "0c469e4f-b2d5-4fd2-979a-1eb51970d0e0",
+          "takes": 1,
+          "version": 3,
+          "mirrored": false,
+          "generated_at": "2026-09-09T22:49:36+00:00",
+          "action": "Arm Swing - Raises one huge branch arm and swings it down once, then returns to idle stance"
+        },
+        "south-west": {
+          "status": "pass",
+          "step_mean": 0.2815,
+          "step_max": 0.3895,
+          "drift": 5.48,
+          "loop": 0.0,
+          "loop_ratio": 0.0,
+          "travel": 5.48,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": 0.001,
+          "peak": 0.3895,
+          "canvas": [
+            224,
+            224
+          ],
+          "reasons": [],
+          "sub": "2ad2ee58-541b-4875-a33d-5f559cce2892",
+          "group": "a09d691c-8c42-46ec-ad9b-647d9577cfc7",
+          "takes": 1,
+          "version": 3,
+          "mirrored": true,
+          "generated_at": "2026-09-09T22:49:34+00:00",
+          "action": "Arm Swing - Raises one huge branch arm and swings it down once, then returns to idle stance",
+          "source": "south-east"
+        },
+        "west": {
+          "status": "pass",
+          "step_mean": 0.2491,
+          "step_max": 0.3168,
+          "drift": 7.77,
+          "loop": 0.0005,
+          "loop_ratio": 0.0,
+          "travel": 7.77,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": 0.0,
+          "peak": 0.3101,
+          "reach": 0.545,
+          "canvas": [
+            224,
+            224
+          ],
+          "reasons": [],
+          "sub": "59fc1cf6-47f1-4904-9991-95a70749851c",
+          "group": "a2bdb28b-ff28-4618-bd19-8c18389a98b3",
+          "takes": 1,
+          "version": 3,
+          "mirrored": true,
+          "generated_at": "2026-09-09T22:49:35+00:00",
+          "action": "Arm Swing - Raises one huge branch arm and swings it down once, then returns to idle stance",
+          "source": "east"
+        },
+        "north-west": {
+          "status": "warn",
+          "step_mean": 0.2631,
+          "step_max": 0.3855,
+          "drift": 8.32,
+          "loop": 0.0,
+          "loop_ratio": 0.0,
+          "travel": 2.5,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": 0.0,
+          "peak": 0.4496,
+          "reach": 0.25,
+          "canvas": [
+            224,
+            224
+          ],
+          "reasons": [
+            "shallow strike: reach 0.25 — eyeball it"
+          ],
+          "sub": "1180c597-baea-456a-b40e-106c8f712c10",
+          "group": "d4d302cc-4727-40d5-9598-c6ae2287ceec",
+          "takes": 1,
+          "version": 3,
+          "mirrored": true,
+          "generated_at": "2026-09-09T22:49:36+00:00",
+          "action": "Arm Swing - Raises one huge branch arm and swings it down once, then returns to idle stance",
+          "source": "north-east"
+        }
+      },
+      "action": "Arm Swing - Raises one huge branch arm and swings it down once, then returns to idle stance",
+      "frame_paths": {
+        "south": [
+          "elder_treant/animations/attack_v1/south/00.webp",
+          "elder_treant/animations/attack_v1/south/01.webp",
+          "elder_treant/animations/attack_v1/south/02.webp",
+          "elder_treant/animations/attack_v1/south/03.webp",
+          "elder_treant/animations/attack_v1/south/04.webp"
+        ],
+        "south-east": [
+          "elder_treant/animations/attack_v1/south-east/00.webp",
+          "elder_treant/animations/attack_v1/south-east/01.webp",
+          "elder_treant/animations/attack_v1/south-east/02.webp",
+          "elder_treant/animations/attack_v1/south-east/03.webp",
+          "elder_treant/animations/attack_v1/south-east/04.webp"
+        ],
+        "east": [
+          "elder_treant/animations/attack_v1/east/00.webp",
+          "elder_treant/animations/attack_v1/east/01.webp",
+          "elder_treant/animations/attack_v1/east/02.webp",
+          "elder_treant/animations/attack_v1/east/03.webp",
+          "elder_treant/animations/attack_v1/east/04.webp"
+        ],
+        "north-east": [
+          "elder_treant/animations/attack_v1/north-east/00.webp",
+          "elder_treant/animations/attack_v1/north-east/01.webp",
+          "elder_treant/animations/attack_v1/north-east/02.webp",
+          "elder_treant/animations/attack_v1/north-east/03.webp",
+          "elder_treant/animations/attack_v1/north-east/04.webp"
+        ],
+        "north": [
+          "elder_treant/animations/attack_v1/north/00.webp",
+          "elder_treant/animations/attack_v1/north/01.webp",
+          "elder_treant/animations/attack_v1/north/02.webp",
+          "elder_treant/animations/attack_v1/north/03.webp",
+          "elder_treant/animations/attack_v1/north/04.webp"
+        ],
+        "south-west": [
+          "elder_treant/animations/attack_v1/south-west/00.webp",
+          "elder_treant/animations/attack_v1/south-west/01.webp",
+          "elder_treant/animations/attack_v1/south-west/02.webp",
+          "elder_treant/animations/attack_v1/south-west/03.webp",
+          "elder_treant/animations/attack_v1/south-west/04.webp"
+        ],
+        "west": [
+          "elder_treant/animations/attack_v1/west/00.webp",
+          "elder_treant/animations/attack_v1/west/01.webp",
+          "elder_treant/animations/attack_v1/west/02.webp",
+          "elder_treant/animations/attack_v1/west/03.webp",
+          "elder_treant/animations/attack_v1/west/04.webp"
+        ],
+        "north-west": [
+          "elder_treant/animations/attack_v1/north-west/00.webp",
+          "elder_treant/animations/attack_v1/north-west/01.webp",
+          "elder_treant/animations/attack_v1/north-west/02.webp",
+          "elder_treant/animations/attack_v1/north-west/03.webp",
+          "elder_treant/animations/attack_v1/north-west/04.webp"
+        ]
+      },
+      "strips": {
+        "south": "elder_treant/animations/attack_v1__south.webp",
+        "south-east": "elder_treant/animations/attack_v1__south-east.webp",
+        "east": "elder_treant/animations/attack_v1__east.webp",
+        "north-east": "elder_treant/animations/attack_v1__north-east.webp",
+        "north": "elder_treant/animations/attack_v1__north.webp",
+        "south-west": "elder_treant/animations/attack_v1__south-west.webp",
+        "west": "elder_treant/animations/attack_v1__west.webp",
+        "north-west": "elder_treant/animations/attack_v1__north-west.webp"
+      }
+    },
+    "attack_v3": {
+      "directions": {
+        "south": {
+          "status": "warn",
+          "step_mean": 0.2837,
+          "step_max": 0.4175,
+          "drift": 11.74,
+          "loop": 0.1059,
+          "loop_ratio": 0.37,
+          "travel": 12.8,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": 0.0,
+          "peak": 0.3534,
+          "reach": 0.159,
+          "canvas": [
+            224,
+            224
+          ],
+          "reasons": [
+            "shallow strike: reach 0.16 — eyeball it"
+          ],
+          "sub": "35572336-72c7-487d-b58b-50d2c6f4273a",
+          "group": "10d1dd9a-fcb5-4921-8ff4-2b17500d00c6",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "action": "Branch Smash - Swings one huge branch arm down in a wide overhead smash",
+          "intensity": 0,
+          "rolls": 1,
+          "frames": 4,
+          "rung": 0,
+          "tries": 1,
+          "generated_at": "2026-09-11T16:32:31+00:00"
+        },
+        "south-east": {
+          "status": "pass",
+          "step_mean": 0.5213,
+          "step_max": 0.659,
+          "drift": 14.87,
+          "loop": 0.0008,
+          "loop_ratio": 0.0,
+          "travel": 2.25,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": 0.0,
+          "peak": 0.6591,
+          "reach": 0.345,
+          "canvas": [
+            224,
+            224
+          ],
+          "reasons": [],
+          "sub": "6a91a406-07d5-4b3c-bfa9-a2b71298efd3",
+          "group": "10d1dd9a-fcb5-4921-8ff4-2b17500d00c6",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "action": "Branch Smash - Swings one huge branch arm down in a wide overhead smash",
+          "intensity": 0,
+          "rolls": 1,
+          "frames": 4,
+          "rung": 0,
+          "tries": 1,
+          "generated_at": "2026-09-11T16:32:32+00:00"
+        },
+        "east": {
+          "status": "warn",
+          "step_mean": 0.5458,
+          "step_max": 0.6129,
+          "drift": 14.46,
+          "loop": 0.7733,
+          "loop_ratio": 1.42,
+          "travel": 27.67,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": 0.001,
+          "peak": 0.7733,
+          "reach": 0.545,
+          "canvas": [
+            224,
+            224
+          ],
+          "reasons": [
+            "28 px of travel — eyeball it"
+          ],
+          "sub": "61cd914b-6b4a-4954-9882-6ddba8aa694b",
+          "group": "10d1dd9a-fcb5-4921-8ff4-2b17500d00c6",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "action": "Branch Smash - Swings one huge branch arm down in a wide overhead smash",
+          "intensity": 0,
+          "rolls": 1,
+          "frames": 4,
+          "rung": 0,
+          "tries": 1,
+          "generated_at": "2026-09-11T16:32:33+00:00"
+        },
+        "north-east": {
+          "status": "pass",
+          "step_mean": 0.1325,
+          "step_max": 0.2923,
+          "drift": 13.73,
+          "loop": 0.2787,
+          "loop_ratio": 2.1,
+          "travel": 1.88,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": 0.0,
+          "peak": 0.2923,
+          "reach": 0.303,
+          "canvas": [
+            224,
+            224
+          ],
+          "reasons": [],
+          "sub": "4027b426-1d9a-4d57-a747-b776556724c5",
+          "group": "10d1dd9a-fcb5-4921-8ff4-2b17500d00c6",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "action": "Branch Smash - Swings one huge branch arm down in a wide overhead smash",
+          "intensity": 0,
+          "rolls": 1,
+          "frames": 4,
+          "rung": 0,
+          "tries": 1,
+          "generated_at": "2026-09-11T16:32:33+00:00"
+        },
+        "north": {
+          "status": "warn",
+          "step_mean": 0.4253,
+          "step_max": 0.5987,
+          "drift": 24.6,
+          "loop": 0.1621,
+          "loop_ratio": 0.38,
+          "travel": 3.24,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": 0.0,
+          "peak": 0.5538,
+          "reach": 0.233,
+          "canvas": [
+            224,
+            224
+          ],
+          "reasons": [
+            "drifts 24.6 px — eyeball it",
+            "shallow strike: reach 0.23 — eyeball it"
+          ],
+          "sub": "443e38ec-10d9-47d6-b7d4-07cb24ddea42",
+          "group": "9428b727-5979-4ab7-8e35-8dbb7b2fb870",
+          "takes": 1,
+          "version": 2,
+          "mirrored": false,
+          "action": "Branch Smash - Swings one huge branch arm down in a wide overhead smash, a big aggressive swing",
+          "intensity": 0,
+          "rolls": 2,
+          "frames": 4,
+          "rung": 1,
+          "unwrapped": null,
+          "tries": 2,
+          "generated_at": "2026-09-11T17:15:34+00:00"
+        },
+        "south-west": {
+          "status": "pass",
+          "step_mean": 0.5213,
+          "step_max": 0.659,
+          "drift": 14.87,
+          "loop": 0.0008,
+          "loop_ratio": 0.0,
+          "travel": 2.25,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": 0.0,
+          "peak": 0.6591,
+          "reach": 0.345,
+          "canvas": [
+            224,
+            224
+          ],
+          "reasons": [],
+          "sub": "6a91a406-07d5-4b3c-bfa9-a2b71298efd3",
+          "group": "10d1dd9a-fcb5-4921-8ff4-2b17500d00c6",
+          "takes": 1,
+          "version": 1,
+          "mirrored": true,
+          "action": "Branch Smash - Swings one huge branch arm down in a wide overhead smash",
+          "intensity": 0,
+          "rolls": 1,
+          "frames": 4,
+          "rung": 0,
+          "tries": 1,
+          "generated_at": "2026-09-11T16:32:32+00:00",
+          "source": "south-east"
+        },
+        "west": {
+          "status": "warn",
+          "step_mean": 0.5458,
+          "step_max": 0.6129,
+          "drift": 14.46,
+          "loop": 0.7733,
+          "loop_ratio": 1.42,
+          "travel": 27.67,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": 0.001,
+          "peak": 0.7733,
+          "reach": 0.545,
+          "canvas": [
+            224,
+            224
+          ],
+          "reasons": [
+            "28 px of travel — eyeball it"
+          ],
+          "sub": "61cd914b-6b4a-4954-9882-6ddba8aa694b",
+          "group": "10d1dd9a-fcb5-4921-8ff4-2b17500d00c6",
+          "takes": 1,
+          "version": 1,
+          "mirrored": true,
+          "action": "Branch Smash - Swings one huge branch arm down in a wide overhead smash",
+          "intensity": 0,
+          "rolls": 1,
+          "frames": 4,
+          "rung": 0,
+          "tries": 1,
+          "generated_at": "2026-09-11T16:32:33+00:00",
+          "source": "east"
+        },
+        "north-west": {
+          "status": "pass",
+          "step_mean": 0.1325,
+          "step_max": 0.2923,
+          "drift": 13.73,
+          "loop": 0.2787,
+          "loop_ratio": 2.1,
+          "travel": 1.88,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": 0.0,
+          "peak": 0.2923,
+          "reach": 0.303,
+          "canvas": [
+            224,
+            224
+          ],
+          "reasons": [],
+          "sub": "4027b426-1d9a-4d57-a747-b776556724c5",
+          "group": "10d1dd9a-fcb5-4921-8ff4-2b17500d00c6",
+          "takes": 1,
+          "version": 1,
+          "mirrored": true,
+          "action": "Branch Smash - Swings one huge branch arm down in a wide overhead smash",
+          "intensity": 0,
+          "rolls": 1,
+          "frames": 4,
+          "rung": 0,
+          "tries": 1,
+          "generated_at": "2026-09-11T16:32:33+00:00",
+          "source": "north-east"
+        }
+      },
+      "action": "Branch Smash - Swings one huge branch arm down in a wide overhead smash",
+      "frame_paths": {
+        "south": [
+          "elder_treant/animations/attack_v3/south/00.webp",
+          "elder_treant/animations/attack_v3/south/01.webp",
+          "elder_treant/animations/attack_v3/south/02.webp",
+          "elder_treant/animations/attack_v3/south/03.webp"
+        ],
+        "south-east": [
+          "elder_treant/animations/attack_v3/south-east/00.webp",
+          "elder_treant/animations/attack_v3/south-east/01.webp",
+          "elder_treant/animations/attack_v3/south-east/02.webp",
+          "elder_treant/animations/attack_v3/south-east/03.webp"
+        ],
+        "east": [
+          "elder_treant/animations/attack_v3/east/00.webp",
+          "elder_treant/animations/attack_v3/east/01.webp",
+          "elder_treant/animations/attack_v3/east/02.webp",
+          "elder_treant/animations/attack_v3/east/03.webp"
+        ],
+        "north-east": [
+          "elder_treant/animations/attack_v3/north-east/00.webp",
+          "elder_treant/animations/attack_v3/north-east/01.webp",
+          "elder_treant/animations/attack_v3/north-east/02.webp",
+          "elder_treant/animations/attack_v3/north-east/03.webp"
+        ],
+        "north": [
+          "elder_treant/animations/attack_v3/north/00.webp",
+          "elder_treant/animations/attack_v3/north/01.webp",
+          "elder_treant/animations/attack_v3/north/02.webp",
+          "elder_treant/animations/attack_v3/north/03.webp"
+        ],
+        "south-west": [
+          "elder_treant/animations/attack_v3/south-west/00.webp",
+          "elder_treant/animations/attack_v3/south-west/01.webp",
+          "elder_treant/animations/attack_v3/south-west/02.webp",
+          "elder_treant/animations/attack_v3/south-west/03.webp"
+        ],
+        "west": [
+          "elder_treant/animations/attack_v3/west/00.webp",
+          "elder_treant/animations/attack_v3/west/01.webp",
+          "elder_treant/animations/attack_v3/west/02.webp",
+          "elder_treant/animations/attack_v3/west/03.webp"
+        ],
+        "north-west": [
+          "elder_treant/animations/attack_v3/north-west/00.webp",
+          "elder_treant/animations/attack_v3/north-west/01.webp",
+          "elder_treant/animations/attack_v3/north-west/02.webp",
+          "elder_treant/animations/attack_v3/north-west/03.webp"
+        ]
+      },
+      "strips": {
+        "south": "elder_treant/animations/attack_v3__south.webp",
+        "south-east": "elder_treant/animations/attack_v3__south-east.webp",
+        "east": "elder_treant/animations/attack_v3__east.webp",
+        "north-east": "elder_treant/animations/attack_v3__north-east.webp",
+        "north": "elder_treant/animations/attack_v3__north.webp",
+        "south-west": "elder_treant/animations/attack_v3__south-west.webp",
+        "west": "elder_treant/animations/attack_v3__west.webp",
+        "north-west": "elder_treant/animations/attack_v3__north-west.webp"
+      }
     }
   }
 }

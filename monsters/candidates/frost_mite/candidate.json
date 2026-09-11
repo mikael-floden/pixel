@@ -1,1518 +1,1518 @@
 {
- "id": "frost_mite",
- "name": "Rimemite",
- "tier": "cute",
- "scale": "small",
- "lore": "It bites once and the bite never thaws. Snow-walkers check their boots every night for good reason.",
- "biome": [
-  "ice",
-  "snow"
- ],
- "items": [],
- "prompt": "Tiny fantasy ice tick, a round body of frosted blue crystal with six small legs, two pale glowing eyes, and a few snowflakes clinging to its back.",
- "size": [
-  32,
-  32
- ],
- "template_id": "bear",
- "directions": [
-  "south",
-  "south-east",
-  "east",
-  "north-east",
-  "north",
-  "north-west",
-  "west",
-  "south-west"
- ],
- "rotations": {
-  "south": "frost_mite/rotations/south.webp",
-  "south-east": "frost_mite/rotations/south-east.webp",
-  "east": "frost_mite/rotations/east.webp",
-  "north-east": "frost_mite/rotations/north-east.webp",
-  "north": "frost_mite/rotations/north.webp",
-  "north-west": "frost_mite/rotations/north-west.webp",
-  "west": "frost_mite/rotations/west.webp",
-  "south-west": "frost_mite/rotations/south-west.webp"
- },
- "sheet": "frost_mite/sheet.webp",
- "review": "approved",
- "pixellab_id": "2fcc0529-ebc2-4078-9ffb-48abac3fe1ad",
- "seed": 1384120121,
- "version": 1,
- "usage": null,
- "generated_at": "2026-09-09T18:41:24+00:00",
- "elapsed_s": 161.7,
- "qa": {
-  "status": "pass",
-  "min_run1": 0.762,
-  "reasons": [],
-  "directions": {
-   "south": {
-    "run1": 0.788,
-    "bbox": [
-     2,
-     4,
-     30,
-     28
-    ],
-    "fill": 0.656,
-    "touches_edge": false
-   },
-   "south-east": {
-    "run1": 0.802,
-    "bbox": [
-     4,
-     4,
-     29,
-     28
-    ],
-    "fill": 0.586,
-    "touches_edge": false
-   },
-   "east": {
-    "run1": 0.771,
-    "bbox": [
-     4,
-     5,
-     27,
-     28
-    ],
-    "fill": 0.517,
-    "touches_edge": false
-   },
-   "north-east": {
-    "run1": 0.818,
-    "bbox": [
-     4,
-     5,
-     27,
-     27
-    ],
-    "fill": 0.494,
-    "touches_edge": false
-   },
-   "north": {
-    "run1": 0.849,
-    "bbox": [
-     4,
-     5,
-     29,
-     27
-    ],
-    "fill": 0.537,
-    "touches_edge": false
-   },
-   "north-west": {
-    "run1": 0.819,
-    "bbox": [
-     5,
-     5,
-     28,
-     27
-    ],
-    "fill": 0.494,
-    "touches_edge": false
-   },
-   "west": {
-    "run1": 0.762,
-    "bbox": [
-     5,
-     5,
-     28,
-     28
-    ],
-    "fill": 0.517,
-    "touches_edge": false
-   },
-   "south-west": {
-    "run1": 0.817,
-    "bbox": [
-     3,
-     4,
-     28,
-     28
-    ],
-    "fill": 0.586,
-    "touches_edge": false
-   }
+  "id": "frost_mite",
+  "name": "Rimemite",
+  "tier": "cute",
+  "scale": "small",
+  "lore": "It bites once and the bite never thaws. Snow-walkers check their boots every night for good reason.",
+  "biome": [
+    "ice",
+    "snow"
+  ],
+  "items": [],
+  "prompt": "Tiny fantasy ice tick, a round body of frosted blue crystal with six small legs, two pale glowing eyes, and a few snowflakes clinging to its back.",
+  "size": [
+    32,
+    32
+  ],
+  "template_id": "bear",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "frost_mite/rotations/south.webp",
+    "south-east": "frost_mite/rotations/south-east.webp",
+    "east": "frost_mite/rotations/east.webp",
+    "north-east": "frost_mite/rotations/north-east.webp",
+    "north": "frost_mite/rotations/north.webp",
+    "north-west": "frost_mite/rotations/north-west.webp",
+    "west": "frost_mite/rotations/west.webp",
+    "south-west": "frost_mite/rotations/south-west.webp"
+  },
+  "sheet": "frost_mite/sheet.webp",
+  "review": "approved",
+  "pixellab_id": "2fcc0529-ebc2-4078-9ffb-48abac3fe1ad",
+  "seed": 1384120121,
+  "version": 1,
+  "usage": null,
+  "generated_at": "2026-09-09T18:41:24+00:00",
+  "elapsed_s": 161.7,
+  "qa": {
+    "status": "pass",
+    "min_run1": 0.762,
+    "reasons": [],
+    "directions": {
+      "south": {
+        "run1": 0.788,
+        "bbox": [
+          2,
+          4,
+          30,
+          28
+        ],
+        "fill": 0.656,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.802,
+        "bbox": [
+          4,
+          4,
+          29,
+          28
+        ],
+        "fill": 0.586,
+        "touches_edge": false
+      },
+      "east": {
+        "run1": 0.771,
+        "bbox": [
+          4,
+          5,
+          27,
+          28
+        ],
+        "fill": 0.517,
+        "touches_edge": false
+      },
+      "north-east": {
+        "run1": 0.818,
+        "bbox": [
+          4,
+          5,
+          27,
+          27
+        ],
+        "fill": 0.494,
+        "touches_edge": false
+      },
+      "north": {
+        "run1": 0.849,
+        "bbox": [
+          4,
+          5,
+          29,
+          27
+        ],
+        "fill": 0.537,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.819,
+        "bbox": [
+          5,
+          5,
+          28,
+          27
+        ],
+        "fill": 0.494,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.762,
+        "bbox": [
+          5,
+          5,
+          28,
+          28
+        ],
+        "fill": 0.517,
+        "touches_edge": false
+      },
+      "south-west": {
+        "run1": 0.817,
+        "bbox": [
+          3,
+          4,
+          28,
+          28
+        ],
+        "fill": 0.586,
+        "touches_edge": false
+      }
+    }
+  },
+  "approved_at": "2026-09-09T19:59:23+00:00",
+  "animations": {
+    "idle": {
+      "directions": {
+        "south": {
+          "status": "pass",
+          "step_mean": 0.1476,
+          "step_max": 0.201,
+          "drift": 1.28,
+          "loop": 0.0,
+          "pin": 1.0,
+          "reasons": [],
+          "sub": "0dfeb2ac-36f1-4880-90e8-2a5079c6b919",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "generated_at": "2026-09-09T20:17:34+00:00",
+          "cut": 0
+        },
+        "south-east": {
+          "status": "pass",
+          "step_mean": 0.09,
+          "step_max": 0.1645,
+          "drift": 0.38,
+          "loop": 0.0,
+          "pin": 1.0,
+          "reasons": [],
+          "sub": "6404886d-66bd-4aaa-9509-316da5f5a73c",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "generated_at": "2026-09-09T20:17:34+00:00",
+          "cut": 0
+        },
+        "east": {
+          "status": "pass",
+          "step_mean": 0.116,
+          "step_max": 0.152,
+          "drift": 1.0,
+          "loop": 0.0,
+          "pin": 1.0,
+          "reasons": [],
+          "sub": "1ac88c02-6969-4215-a322-a56e211a5099",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "generated_at": "2026-09-09T20:17:35+00:00",
+          "cut": 0
+        },
+        "north-east": {
+          "status": "pass",
+          "step_mean": 0.1174,
+          "step_max": 0.1713,
+          "drift": 0.35,
+          "loop": 0.0,
+          "pin": 1.0,
+          "reasons": [],
+          "sub": "3e6d271b-5e14-47a0-9b29-f7895a737947",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "generated_at": "2026-09-09T20:17:36+00:00",
+          "cut": 0
+        },
+        "north": {
+          "status": "pass",
+          "step_mean": 0.1148,
+          "step_max": 0.1311,
+          "drift": 0.15,
+          "loop": 0.0,
+          "pin": 1.0,
+          "reasons": [],
+          "sub": "e7fa77f1-c963-479d-81bc-20da69adecee",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "generated_at": "2026-09-09T20:17:36+00:00",
+          "cut": 0
+        },
+        "south-west": {
+          "status": "pass",
+          "step_mean": 0.09,
+          "step_max": 0.1645,
+          "drift": 0.38,
+          "loop": 0.0,
+          "pin": 1.0,
+          "reasons": [],
+          "sub": "6404886d-66bd-4aaa-9509-316da5f5a73c",
+          "takes": 1,
+          "version": 1,
+          "mirrored": true,
+          "generated_at": "2026-09-09T20:17:34+00:00",
+          "cut": 0,
+          "source": "south-east"
+        },
+        "west": {
+          "status": "pass",
+          "step_mean": 0.116,
+          "step_max": 0.152,
+          "drift": 1.0,
+          "loop": 0.0,
+          "pin": 1.0,
+          "reasons": [],
+          "sub": "1ac88c02-6969-4215-a322-a56e211a5099",
+          "takes": 1,
+          "version": 1,
+          "mirrored": true,
+          "generated_at": "2026-09-09T20:17:35+00:00",
+          "cut": 0,
+          "source": "east"
+        },
+        "north-west": {
+          "status": "pass",
+          "step_mean": 0.1174,
+          "step_max": 0.1713,
+          "drift": 0.35,
+          "loop": 0.0,
+          "pin": 1.0,
+          "reasons": [],
+          "sub": "3e6d271b-5e14-47a0-9b29-f7895a737947",
+          "takes": 1,
+          "version": 1,
+          "mirrored": true,
+          "generated_at": "2026-09-09T20:17:36+00:00",
+          "cut": 0,
+          "source": "north-east"
+        }
+      },
+      "action": "Calm still idle, breathing very slowly and subtly, chest and shoulders rise and fall a little, feet planted, no other movement, ends in the same neutral pose it started in",
+      "frame_paths": {
+        "south": [
+          "frost_mite/animations/idle/south/00.webp",
+          "frost_mite/animations/idle/south/01.webp",
+          "frost_mite/animations/idle/south/02.webp",
+          "frost_mite/animations/idle/south/03.webp",
+          "frost_mite/animations/idle/south/04.webp"
+        ],
+        "south-east": [
+          "frost_mite/animations/idle/south-east/00.webp",
+          "frost_mite/animations/idle/south-east/01.webp",
+          "frost_mite/animations/idle/south-east/02.webp",
+          "frost_mite/animations/idle/south-east/03.webp",
+          "frost_mite/animations/idle/south-east/04.webp"
+        ],
+        "east": [
+          "frost_mite/animations/idle/east/00.webp",
+          "frost_mite/animations/idle/east/01.webp",
+          "frost_mite/animations/idle/east/02.webp",
+          "frost_mite/animations/idle/east/03.webp",
+          "frost_mite/animations/idle/east/04.webp"
+        ],
+        "north-east": [
+          "frost_mite/animations/idle/north-east/00.webp",
+          "frost_mite/animations/idle/north-east/01.webp",
+          "frost_mite/animations/idle/north-east/02.webp",
+          "frost_mite/animations/idle/north-east/03.webp",
+          "frost_mite/animations/idle/north-east/04.webp"
+        ],
+        "north": [
+          "frost_mite/animations/idle/north/00.webp",
+          "frost_mite/animations/idle/north/01.webp",
+          "frost_mite/animations/idle/north/02.webp",
+          "frost_mite/animations/idle/north/03.webp",
+          "frost_mite/animations/idle/north/04.webp"
+        ],
+        "south-west": [
+          "frost_mite/animations/idle/south-west/00.webp",
+          "frost_mite/animations/idle/south-west/01.webp",
+          "frost_mite/animations/idle/south-west/02.webp",
+          "frost_mite/animations/idle/south-west/03.webp",
+          "frost_mite/animations/idle/south-west/04.webp"
+        ],
+        "west": [
+          "frost_mite/animations/idle/west/00.webp",
+          "frost_mite/animations/idle/west/01.webp",
+          "frost_mite/animations/idle/west/02.webp",
+          "frost_mite/animations/idle/west/03.webp",
+          "frost_mite/animations/idle/west/04.webp"
+        ],
+        "north-west": [
+          "frost_mite/animations/idle/north-west/00.webp",
+          "frost_mite/animations/idle/north-west/01.webp",
+          "frost_mite/animations/idle/north-west/02.webp",
+          "frost_mite/animations/idle/north-west/03.webp",
+          "frost_mite/animations/idle/north-west/04.webp"
+        ]
+      },
+      "strips": {
+        "south": "frost_mite/animations/idle__south.webp",
+        "south-east": "frost_mite/animations/idle__south-east.webp",
+        "east": "frost_mite/animations/idle__east.webp",
+        "north-east": "frost_mite/animations/idle__north-east.webp",
+        "north": "frost_mite/animations/idle__north.webp",
+        "south-west": "frost_mite/animations/idle__south-west.webp",
+        "west": "frost_mite/animations/idle__west.webp",
+        "north-west": "frost_mite/animations/idle__north-west.webp"
+      }
+    },
+    "walk": {
+      "directions": {
+        "south": {
+          "status": "pass",
+          "step_mean": 0.1504,
+          "step_max": 0.1787,
+          "drift": 0.78,
+          "loop": 0.1762,
+          "loop_ratio": 1.17,
+          "travel": 0.32,
+          "pin": 0.861,
+          "pad": 0,
+          "canvas": [
+            32,
+            32
+          ],
+          "reasons": [],
+          "sub": "4457d50f-d5a8-4df6-96df-16cf572fe6e5",
+          "group": "2d2be84b-a63b-4149-ae9a-d051517094d6",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "generated_at": "2026-09-09T21:16:16+00:00"
+        },
+        "south-east": {
+          "status": "pass",
+          "step_mean": 0.1479,
+          "step_max": 0.2105,
+          "drift": 0.9,
+          "loop": 0.183,
+          "loop_ratio": 1.24,
+          "travel": 0.4,
+          "pin": 0.955,
+          "pad": 0,
+          "canvas": [
+            32,
+            32
+          ],
+          "reasons": [],
+          "sub": "8aed0758-c64b-4e8d-8fbb-d2ec76a49227",
+          "group": "1f16c2f8-a4fc-424e-996e-b8d6292a7b81",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "generated_at": "2026-09-09T21:16:16+00:00"
+        },
+        "east": {
+          "status": "warn",
+          "step_mean": 0.1047,
+          "step_max": 0.1283,
+          "drift": 1.53,
+          "loop": 0.2147,
+          "loop_ratio": 2.05,
+          "travel": 0.44,
+          "pin": 0.878,
+          "pad": 0,
+          "canvas": [
+            32,
+            32
+          ],
+          "reasons": [
+            "last→first hand-off 2.1× a step — eyeball the loop"
+          ],
+          "sub": "db38fec6-8a62-4338-a80d-6c0a8cf8382e",
+          "group": "5b904653-cff2-4476-aa66-bc815db61560",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "generated_at": "2026-09-09T21:16:17+00:00"
+        },
+        "north-east": {
+          "status": "pass",
+          "step_mean": 0.1455,
+          "step_max": 0.1989,
+          "drift": 1.43,
+          "loop": 0.2102,
+          "loop_ratio": 1.45,
+          "travel": 0.62,
+          "pin": 0.874,
+          "pad": 0,
+          "canvas": [
+            32,
+            32
+          ],
+          "reasons": [],
+          "sub": "d37028c2-c024-4da7-903d-65fcf2d4deaf",
+          "group": "64931a3d-d158-494a-8ad9-08f000251709",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "generated_at": "2026-09-09T21:16:18+00:00"
+        },
+        "north": {
+          "status": "pass",
+          "step_mean": 0.1144,
+          "step_max": 0.1583,
+          "drift": 1.75,
+          "loop": 0.2111,
+          "loop_ratio": 1.84,
+          "travel": 0.77,
+          "pin": 0.901,
+          "pad": 0,
+          "canvas": [
+            32,
+            32
+          ],
+          "reasons": [],
+          "sub": "36feac29-dc03-4762-ae4c-bb396cb5ffd9",
+          "group": "4a4b5ec5-0acf-4b54-8334-460f92d5dab1",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "generated_at": "2026-09-09T21:16:18+00:00"
+        },
+        "south-west": {
+          "status": "pass",
+          "step_mean": 0.1479,
+          "step_max": 0.2105,
+          "drift": 0.9,
+          "loop": 0.183,
+          "loop_ratio": 1.24,
+          "travel": 0.4,
+          "pin": 0.955,
+          "pad": 0,
+          "canvas": [
+            32,
+            32
+          ],
+          "reasons": [],
+          "sub": "8aed0758-c64b-4e8d-8fbb-d2ec76a49227",
+          "group": "1f16c2f8-a4fc-424e-996e-b8d6292a7b81",
+          "takes": 1,
+          "version": 1,
+          "mirrored": true,
+          "generated_at": "2026-09-09T21:16:16+00:00",
+          "source": "south-east"
+        },
+        "west": {
+          "status": "warn",
+          "step_mean": 0.1047,
+          "step_max": 0.1283,
+          "drift": 1.53,
+          "loop": 0.2147,
+          "loop_ratio": 2.05,
+          "travel": 0.44,
+          "pin": 0.878,
+          "pad": 0,
+          "canvas": [
+            32,
+            32
+          ],
+          "reasons": [
+            "last→first hand-off 2.1× a step — eyeball the loop"
+          ],
+          "sub": "db38fec6-8a62-4338-a80d-6c0a8cf8382e",
+          "group": "5b904653-cff2-4476-aa66-bc815db61560",
+          "takes": 1,
+          "version": 1,
+          "mirrored": true,
+          "generated_at": "2026-09-09T21:16:17+00:00",
+          "source": "east"
+        },
+        "north-west": {
+          "status": "pass",
+          "step_mean": 0.1455,
+          "step_max": 0.1989,
+          "drift": 1.43,
+          "loop": 0.2102,
+          "loop_ratio": 1.45,
+          "travel": 0.62,
+          "pin": 0.874,
+          "pad": 0,
+          "canvas": [
+            32,
+            32
+          ],
+          "reasons": [],
+          "sub": "d37028c2-c024-4da7-903d-65fcf2d4deaf",
+          "group": "64931a3d-d158-494a-8ad9-08f000251709",
+          "takes": 1,
+          "version": 1,
+          "mirrored": true,
+          "generated_at": "2026-09-09T21:16:18+00:00",
+          "source": "north-east"
+        }
+      },
+      "action": "walk loop, full walk cycle in place, legs alternate naturally, normal calm walking pace, body stays centered, seamless loop whose last frame leads straight back into the first, no turning",
+      "frame_paths": {
+        "south": [
+          "frost_mite/animations/walk/south/00.webp",
+          "frost_mite/animations/walk/south/01.webp",
+          "frost_mite/animations/walk/south/02.webp",
+          "frost_mite/animations/walk/south/03.webp",
+          "frost_mite/animations/walk/south/04.webp",
+          "frost_mite/animations/walk/south/05.webp"
+        ],
+        "south-east": [
+          "frost_mite/animations/walk/south-east/00.webp",
+          "frost_mite/animations/walk/south-east/01.webp",
+          "frost_mite/animations/walk/south-east/02.webp",
+          "frost_mite/animations/walk/south-east/03.webp",
+          "frost_mite/animations/walk/south-east/04.webp",
+          "frost_mite/animations/walk/south-east/05.webp"
+        ],
+        "east": [
+          "frost_mite/animations/walk/east/00.webp",
+          "frost_mite/animations/walk/east/01.webp",
+          "frost_mite/animations/walk/east/02.webp",
+          "frost_mite/animations/walk/east/03.webp",
+          "frost_mite/animations/walk/east/04.webp",
+          "frost_mite/animations/walk/east/05.webp"
+        ],
+        "north-east": [
+          "frost_mite/animations/walk/north-east/00.webp",
+          "frost_mite/animations/walk/north-east/01.webp",
+          "frost_mite/animations/walk/north-east/02.webp",
+          "frost_mite/animations/walk/north-east/03.webp",
+          "frost_mite/animations/walk/north-east/04.webp",
+          "frost_mite/animations/walk/north-east/05.webp"
+        ],
+        "north": [
+          "frost_mite/animations/walk/north/00.webp",
+          "frost_mite/animations/walk/north/01.webp",
+          "frost_mite/animations/walk/north/02.webp",
+          "frost_mite/animations/walk/north/03.webp",
+          "frost_mite/animations/walk/north/04.webp",
+          "frost_mite/animations/walk/north/05.webp"
+        ],
+        "south-west": [
+          "frost_mite/animations/walk/south-west/00.webp",
+          "frost_mite/animations/walk/south-west/01.webp",
+          "frost_mite/animations/walk/south-west/02.webp",
+          "frost_mite/animations/walk/south-west/03.webp",
+          "frost_mite/animations/walk/south-west/04.webp",
+          "frost_mite/animations/walk/south-west/05.webp"
+        ],
+        "west": [
+          "frost_mite/animations/walk/west/00.webp",
+          "frost_mite/animations/walk/west/01.webp",
+          "frost_mite/animations/walk/west/02.webp",
+          "frost_mite/animations/walk/west/03.webp",
+          "frost_mite/animations/walk/west/04.webp",
+          "frost_mite/animations/walk/west/05.webp"
+        ],
+        "north-west": [
+          "frost_mite/animations/walk/north-west/00.webp",
+          "frost_mite/animations/walk/north-west/01.webp",
+          "frost_mite/animations/walk/north-west/02.webp",
+          "frost_mite/animations/walk/north-west/03.webp",
+          "frost_mite/animations/walk/north-west/04.webp",
+          "frost_mite/animations/walk/north-west/05.webp"
+        ]
+      },
+      "strips": {
+        "south": "frost_mite/animations/walk__south.webp",
+        "south-east": "frost_mite/animations/walk__south-east.webp",
+        "east": "frost_mite/animations/walk__east.webp",
+        "north-east": "frost_mite/animations/walk__north-east.webp",
+        "north": "frost_mite/animations/walk__north.webp",
+        "south-west": "frost_mite/animations/walk__south-west.webp",
+        "west": "frost_mite/animations/walk__west.webp",
+        "north-west": "frost_mite/animations/walk__north-west.webp"
+      }
+    },
+    "attack_v2": {
+      "directions": {
+        "south": {
+          "status": "pass",
+          "step_mean": 0.2463,
+          "step_max": 0.3088,
+          "drift": 1.0,
+          "loop": 0.1408,
+          "loop_ratio": 0.57,
+          "travel": 0.58,
+          "pin": 1.0,
+          "pad": 1,
+          "flash": 0.337,
+          "peak": 0.3803,
+          "reach": 0.375,
+          "canvas": [
+            34,
+            34
+          ],
+          "reasons": [
+            "canvas grown by 1 px a side to hold the motion"
+          ],
+          "sub": "78a13af8-0830-41db-a2d1-11d287b6ce0d",
+          "group": "7fdaab3e-d996-45aa-bbbe-677cca780e52",
+          "takes": 1,
+          "version": 6,
+          "mirrored": false,
+          "generated_at": "2026-09-10T22:20:44+00:00",
+          "action": "Ice Burst - The mite rears up and bursts forward in a spray of ice shards, mandibles thrown wide, an extremely violent attack, huge exaggerated motion, the limb thrown far out",
+          "tries": 6,
+          "rolls": 6,
+          "intensity": 1,
+          "frames": 5,
+          "rung": 5
+        },
+        "south-east": {
+          "status": "warn",
+          "step_mean": 0.2139,
+          "step_max": 0.2915,
+          "drift": 1.66,
+          "loop": 0.3246,
+          "loop_ratio": 1.52,
+          "travel": 1.59,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": 0.149,
+          "peak": 0.3626,
+          "reach": 0.208,
+          "canvas": [
+            32,
+            32
+          ],
+          "reasons": [
+            "shallow strike: reach 0.21 — eyeball it"
+          ],
+          "sub": "92559560-f924-4e1d-ba1c-81aee8e0cdfb",
+          "group": "a7c78809-ace5-4b03-a8a6-e0236696639d",
+          "takes": 1,
+          "version": 7,
+          "mirrored": false,
+          "generated_at": "2026-09-10T22:36:41+00:00",
+          "action": "Lunge Attack - Throws its whole body forward in one fast lunge, white swoosh lines trailing behind it, a big aggressive swing",
+          "tries": 3,
+          "rolls": 3,
+          "intensity": 1,
+          "frames": 5,
+          "rung": 2
+        },
+        "east": {
+          "status": "warn",
+          "step_mean": 0.2233,
+          "step_max": 0.254,
+          "drift": 2.5,
+          "loop": 0.0481,
+          "loop_ratio": 0.22,
+          "travel": 1.94,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": 0.0,
+          "peak": 0.3957,
+          "reach": 0.217,
+          "canvas": [
+            32,
+            32
+          ],
+          "reasons": [
+            "shallow strike: reach 0.22 — eyeball it"
+          ],
+          "sub": "4519d95b-7dc0-470b-a3a3-c46700f4fea7",
+          "group": "e2475fa8-5590-48f6-b696-2f713321e0ff",
+          "takes": 1,
+          "version": 7,
+          "mirrored": false,
+          "generated_at": "2026-09-10T22:36:42+00:00",
+          "action": "Ice Burst - The mite rears up and bursts forward in a spray of ice shards, mandibles thrown wide, an explosively violent attack, the whole body thrown into it, debris and swoosh lines flying",
+          "tries": 7,
+          "rolls": 7,
+          "intensity": 1,
+          "frames": 5,
+          "rung": 6
+        },
+        "north-east": {
+          "status": "warn",
+          "step_mean": 0.1713,
+          "step_max": 0.2293,
+          "drift": 1.34,
+          "loop": 0.2044,
+          "loop_ratio": 1.19,
+          "travel": 1.54,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": 0.003,
+          "peak": 0.3149,
+          "reach": 0.182,
+          "canvas": [
+            32,
+            32
+          ],
+          "reasons": [
+            "shallow strike: reach 0.18 — eyeball it"
+          ],
+          "sub": "7bdf7e8d-3d88-482f-9a88-3a0c0b3a9af0",
+          "group": "294237cd-679c-402e-b7e1-88bc19677f45",
+          "takes": 1,
+          "version": 7,
+          "mirrored": false,
+          "generated_at": "2026-09-10T22:36:42+00:00",
+          "action": "Lunge Attack - Throws its whole body forward in one fast lunge, white swoosh lines trailing behind it, a big aggressive swing",
+          "tries": 3,
+          "rolls": 3,
+          "intensity": 1,
+          "frames": 5,
+          "rung": 2
+        },
+        "north": {
+          "status": "pass",
+          "step_mean": 0.3551,
+          "step_max": 0.4902,
+          "drift": 1.88,
+          "loop": 0.2179,
+          "loop_ratio": 0.61,
+          "travel": 0.52,
+          "pin": 1.0,
+          "pad": 2,
+          "flash": 0.32,
+          "peak": 0.4706,
+          "reach": 0.409,
+          "canvas": [
+            36,
+            36
+          ],
+          "reasons": [
+            "canvas grown by 2 px a side to hold the motion"
+          ],
+          "sub": "d61aa54d-c97d-4096-b8c1-678ab52de20c",
+          "group": "5ea64c89-82b4-4a30-ba0b-352a222d4bfa",
+          "takes": 1,
+          "version": 5,
+          "mirrored": false,
+          "generated_at": "2026-09-10T21:56:08+00:00",
+          "action": "Ice Burst - The mite rears up and bursts forward in a spray of ice shards, mandibles thrown wide",
+          "tries": 1,
+          "rolls": 1,
+          "intensity": 1,
+          "frames": 5,
+          "rung": 3
+        },
+        "south-west": {
+          "status": "warn",
+          "step_mean": 0.2139,
+          "step_max": 0.2915,
+          "drift": 1.66,
+          "loop": 0.3246,
+          "loop_ratio": 1.52,
+          "travel": 1.59,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": 0.149,
+          "peak": 0.3626,
+          "reach": 0.208,
+          "canvas": [
+            32,
+            32
+          ],
+          "reasons": [
+            "shallow strike: reach 0.21 — eyeball it"
+          ],
+          "sub": "92559560-f924-4e1d-ba1c-81aee8e0cdfb",
+          "group": "a7c78809-ace5-4b03-a8a6-e0236696639d",
+          "takes": 1,
+          "version": 7,
+          "mirrored": true,
+          "generated_at": "2026-09-10T22:36:41+00:00",
+          "action": "Lunge Attack - Throws its whole body forward in one fast lunge, white swoosh lines trailing behind it, a big aggressive swing",
+          "tries": 3,
+          "rolls": 3,
+          "intensity": 1,
+          "frames": 5,
+          "rung": 2,
+          "source": "south-east"
+        },
+        "north-west": {
+          "status": "warn",
+          "step_mean": 0.1713,
+          "step_max": 0.2293,
+          "drift": 1.34,
+          "loop": 0.2044,
+          "loop_ratio": 1.19,
+          "travel": 1.54,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": 0.003,
+          "peak": 0.3149,
+          "reach": 0.182,
+          "canvas": [
+            32,
+            32
+          ],
+          "reasons": [
+            "shallow strike: reach 0.18 — eyeball it"
+          ],
+          "sub": "7bdf7e8d-3d88-482f-9a88-3a0c0b3a9af0",
+          "group": "294237cd-679c-402e-b7e1-88bc19677f45",
+          "takes": 1,
+          "version": 7,
+          "mirrored": true,
+          "generated_at": "2026-09-10T22:36:42+00:00",
+          "action": "Lunge Attack - Throws its whole body forward in one fast lunge, white swoosh lines trailing behind it, a big aggressive swing",
+          "tries": 3,
+          "rolls": 3,
+          "intensity": 1,
+          "frames": 5,
+          "rung": 2,
+          "source": "north-east"
+        },
+        "west": {
+          "status": "warn",
+          "step_mean": 0.2233,
+          "step_max": 0.254,
+          "drift": 2.5,
+          "loop": 0.0481,
+          "loop_ratio": 0.22,
+          "travel": 1.94,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": 0.0,
+          "peak": 0.3957,
+          "reach": 0.217,
+          "canvas": [
+            32,
+            32
+          ],
+          "reasons": [
+            "shallow strike: reach 0.22 — eyeball it"
+          ],
+          "sub": "4519d95b-7dc0-470b-a3a3-c46700f4fea7",
+          "group": "e2475fa8-5590-48f6-b696-2f713321e0ff",
+          "takes": 1,
+          "version": 7,
+          "mirrored": true,
+          "generated_at": "2026-09-10T22:36:42+00:00",
+          "action": "Ice Burst - The mite rears up and bursts forward in a spray of ice shards, mandibles thrown wide, an explosively violent attack, the whole body thrown into it, debris and swoosh lines flying",
+          "tries": 7,
+          "rolls": 7,
+          "intensity": 1,
+          "frames": 5,
+          "rung": 6,
+          "source": "east"
+        }
+      },
+      "action": "Bite - Hops forward and bites hard with its mandibles wide",
+      "frame_paths": {
+        "south": [
+          "frost_mite/animations/attack_v2/south/00.webp",
+          "frost_mite/animations/attack_v2/south/01.webp",
+          "frost_mite/animations/attack_v2/south/02.webp",
+          "frost_mite/animations/attack_v2/south/03.webp",
+          "frost_mite/animations/attack_v2/south/04.webp"
+        ],
+        "south-east": [
+          "frost_mite/animations/attack_v2/south-east/00.webp",
+          "frost_mite/animations/attack_v2/south-east/01.webp",
+          "frost_mite/animations/attack_v2/south-east/02.webp",
+          "frost_mite/animations/attack_v2/south-east/03.webp",
+          "frost_mite/animations/attack_v2/south-east/04.webp"
+        ],
+        "east": [
+          "frost_mite/animations/attack_v2/east/00.webp",
+          "frost_mite/animations/attack_v2/east/01.webp",
+          "frost_mite/animations/attack_v2/east/02.webp",
+          "frost_mite/animations/attack_v2/east/03.webp",
+          "frost_mite/animations/attack_v2/east/04.webp"
+        ],
+        "north-east": [
+          "frost_mite/animations/attack_v2/north-east/00.webp",
+          "frost_mite/animations/attack_v2/north-east/01.webp",
+          "frost_mite/animations/attack_v2/north-east/02.webp",
+          "frost_mite/animations/attack_v2/north-east/03.webp",
+          "frost_mite/animations/attack_v2/north-east/04.webp"
+        ],
+        "north": [
+          "frost_mite/animations/attack_v2/north/00.webp",
+          "frost_mite/animations/attack_v2/north/01.webp",
+          "frost_mite/animations/attack_v2/north/02.webp",
+          "frost_mite/animations/attack_v2/north/03.webp",
+          "frost_mite/animations/attack_v2/north/04.webp"
+        ],
+        "south-west": [
+          "frost_mite/animations/attack_v2/south-west/00.webp",
+          "frost_mite/animations/attack_v2/south-west/01.webp",
+          "frost_mite/animations/attack_v2/south-west/02.webp",
+          "frost_mite/animations/attack_v2/south-west/03.webp",
+          "frost_mite/animations/attack_v2/south-west/04.webp"
+        ],
+        "north-west": [
+          "frost_mite/animations/attack_v2/north-west/00.webp",
+          "frost_mite/animations/attack_v2/north-west/01.webp",
+          "frost_mite/animations/attack_v2/north-west/02.webp",
+          "frost_mite/animations/attack_v2/north-west/03.webp",
+          "frost_mite/animations/attack_v2/north-west/04.webp"
+        ],
+        "west": [
+          "frost_mite/animations/attack_v2/west/00.webp",
+          "frost_mite/animations/attack_v2/west/01.webp",
+          "frost_mite/animations/attack_v2/west/02.webp",
+          "frost_mite/animations/attack_v2/west/03.webp",
+          "frost_mite/animations/attack_v2/west/04.webp"
+        ]
+      },
+      "strips": {
+        "south": "frost_mite/animations/attack_v2__south.webp",
+        "south-east": "frost_mite/animations/attack_v2__south-east.webp",
+        "east": "frost_mite/animations/attack_v2__east.webp",
+        "north-east": "frost_mite/animations/attack_v2__north-east.webp",
+        "north": "frost_mite/animations/attack_v2__north.webp",
+        "south-west": "frost_mite/animations/attack_v2__south-west.webp",
+        "north-west": "frost_mite/animations/attack_v2__north-west.webp",
+        "west": "frost_mite/animations/attack_v2__west.webp"
+      },
+      "intensity": 1
+    },
+    "attack_v1": {
+      "directions": {
+        "south": {
+          "status": "fail",
+          "step_mean": 0.1476,
+          "step_max": 0.1811,
+          "drift": 0.42,
+          "loop": 0.0,
+          "loop_ratio": 0.0,
+          "travel": 0.05,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": 0.052,
+          "peak": 0.2531,
+          "reach": 0.083,
+          "canvas": [
+            32,
+            32
+          ],
+          "reasons": [
+            "no strike, just a lean: nothing reaches past 0.08 of the body",
+            "some bright effect pixels (0.05) — eyeball it"
+          ],
+          "sub": "a51c4867-bcc8-456e-afe3-c7b972650983",
+          "group": "91438d1f-ec9e-4a6f-9dba-fe5c8ba918cc",
+          "takes": 1,
+          "version": 2,
+          "mirrored": false,
+          "generated_at": "2026-09-09T22:38:23+00:00",
+          "action": "Bite - Hops forward and bites once with its small mandibles, then returns to idle stance"
+        },
+        "south-east": {
+          "status": "fail",
+          "step_mean": 0.1877,
+          "step_max": 0.2494,
+          "drift": 1.28,
+          "loop": 0.0,
+          "loop_ratio": 0.0,
+          "travel": 0.25,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": 0.013,
+          "peak": 0.3496,
+          "reach": 0.167,
+          "canvas": [
+            32,
+            32
+          ],
+          "reasons": [
+            "no strike, just a lean: nothing reaches past 0.17 of the body"
+          ],
+          "sub": "777a212c-b27f-4180-8abe-dc2a428017ad",
+          "group": "1a8acad0-c2ac-476e-8be4-8602e2c0ba2e",
+          "takes": 1,
+          "version": 2,
+          "mirrored": false,
+          "generated_at": "2026-09-09T22:38:23+00:00",
+          "action": "Bite - Hops forward and bites once with its small mandibles, then returns to idle stance"
+        },
+        "east": {
+          "status": "fail",
+          "step_mean": 0.1609,
+          "step_max": 0.1941,
+          "drift": 1.01,
+          "loop": 0.0,
+          "loop_ratio": 0.0,
+          "travel": 1.01,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": 0.016,
+          "peak": 0.25,
+          "reach": 0.087,
+          "canvas": [
+            32,
+            32
+          ],
+          "reasons": [
+            "no strike, just a lean: nothing reaches past 0.09 of the body"
+          ],
+          "sub": "a9a5616d-d815-4b34-8f6a-a2aeacca1403",
+          "group": "218de652-3ce3-46f2-a3ca-512577e43fc1",
+          "takes": 1,
+          "version": 2,
+          "mirrored": false,
+          "generated_at": "2026-09-09T22:38:24+00:00",
+          "action": "Bite - Hops forward and bites once with its small mandibles, then returns to idle stance"
+        },
+        "north-east": {
+          "status": "fail",
+          "step_mean": 0.1561,
+          "step_max": 0.1906,
+          "drift": 0.6,
+          "loop": 0.0,
+          "loop_ratio": 0.0,
+          "travel": 0.59,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": 0.019,
+          "peak": 0.2873,
+          "reach": 0.143,
+          "canvas": [
+            32,
+            32
+          ],
+          "reasons": [
+            "no strike, just a lean: nothing reaches past 0.14 of the body"
+          ],
+          "sub": "17a6e693-44fa-4623-a386-1d2aa4a2b16f",
+          "group": "98d84e83-3660-4bf5-bfae-efe9638b6b0a",
+          "takes": 1,
+          "version": 2,
+          "mirrored": false,
+          "generated_at": "2026-09-09T22:38:24+00:00",
+          "action": "Bite - Hops forward and bites once with its small mandibles, then returns to idle stance"
+        },
+        "north": {
+          "status": "fail",
+          "step_mean": 0.179,
+          "step_max": 0.2022,
+          "drift": 1.23,
+          "loop": 0.0,
+          "loop_ratio": 0.0,
+          "travel": 1.23,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": 0.022,
+          "peak": 0.2814,
+          "reach": 0.136,
+          "canvas": [
+            32,
+            32
+          ],
+          "reasons": [
+            "no strike, just a lean: nothing reaches past 0.14 of the body"
+          ],
+          "sub": "c4d8dd03-63b4-4d5d-8bbc-ef4544c423ba",
+          "group": "ea496e17-c3f2-4615-8e38-bfeb00109044",
+          "takes": 1,
+          "version": 2,
+          "mirrored": false,
+          "generated_at": "2026-09-09T22:38:24+00:00",
+          "action": "Bite - Hops forward and bites once with its small mandibles, then returns to idle stance"
+        },
+        "south-west": {
+          "status": "pass",
+          "step_mean": 0.1877,
+          "step_max": 0.2494,
+          "drift": 1.28,
+          "loop": 0.0,
+          "loop_ratio": 0.0,
+          "travel": 0.25,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": 0.013,
+          "peak": 0.3496,
+          "canvas": [
+            32,
+            32
+          ],
+          "reasons": [],
+          "sub": "777a212c-b27f-4180-8abe-dc2a428017ad",
+          "group": "1a8acad0-c2ac-476e-8be4-8602e2c0ba2e",
+          "takes": 1,
+          "version": 2,
+          "mirrored": true,
+          "generated_at": "2026-09-09T22:38:23+00:00",
+          "action": "Bite - Hops forward and bites once with its small mandibles, then returns to idle stance",
+          "source": "south-east"
+        },
+        "west": {
+          "status": "pass",
+          "step_mean": 0.1609,
+          "step_max": 0.1941,
+          "drift": 1.01,
+          "loop": 0.0,
+          "loop_ratio": 0.0,
+          "travel": 1.01,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": 0.016,
+          "peak": 0.25,
+          "canvas": [
+            32,
+            32
+          ],
+          "reasons": [],
+          "sub": "a9a5616d-d815-4b34-8f6a-a2aeacca1403",
+          "group": "218de652-3ce3-46f2-a3ca-512577e43fc1",
+          "takes": 1,
+          "version": 2,
+          "mirrored": true,
+          "generated_at": "2026-09-09T22:38:24+00:00",
+          "action": "Bite - Hops forward and bites once with its small mandibles, then returns to idle stance",
+          "source": "east"
+        },
+        "north-west": {
+          "status": "pass",
+          "step_mean": 0.1561,
+          "step_max": 0.1906,
+          "drift": 0.6,
+          "loop": 0.0,
+          "loop_ratio": 0.0,
+          "travel": 0.59,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": 0.019,
+          "peak": 0.2873,
+          "canvas": [
+            32,
+            32
+          ],
+          "reasons": [],
+          "sub": "17a6e693-44fa-4623-a386-1d2aa4a2b16f",
+          "group": "98d84e83-3660-4bf5-bfae-efe9638b6b0a",
+          "takes": 1,
+          "version": 2,
+          "mirrored": true,
+          "generated_at": "2026-09-09T22:38:24+00:00",
+          "action": "Bite - Hops forward and bites once with its small mandibles, then returns to idle stance",
+          "source": "north-east"
+        }
+      },
+      "action": "Bite - Hops forward and bites once with its small mandibles, then returns to idle stance",
+      "frame_paths": {
+        "south": [
+          "frost_mite/animations/attack_v1/south/00.webp",
+          "frost_mite/animations/attack_v1/south/01.webp",
+          "frost_mite/animations/attack_v1/south/02.webp",
+          "frost_mite/animations/attack_v1/south/03.webp",
+          "frost_mite/animations/attack_v1/south/04.webp"
+        ],
+        "south-east": [
+          "frost_mite/animations/attack_v1/south-east/00.webp",
+          "frost_mite/animations/attack_v1/south-east/01.webp",
+          "frost_mite/animations/attack_v1/south-east/02.webp",
+          "frost_mite/animations/attack_v1/south-east/03.webp",
+          "frost_mite/animations/attack_v1/south-east/04.webp"
+        ],
+        "east": [
+          "frost_mite/animations/attack_v1/east/00.webp",
+          "frost_mite/animations/attack_v1/east/01.webp",
+          "frost_mite/animations/attack_v1/east/02.webp",
+          "frost_mite/animations/attack_v1/east/03.webp",
+          "frost_mite/animations/attack_v1/east/04.webp"
+        ],
+        "north-east": [
+          "frost_mite/animations/attack_v1/north-east/00.webp",
+          "frost_mite/animations/attack_v1/north-east/01.webp",
+          "frost_mite/animations/attack_v1/north-east/02.webp",
+          "frost_mite/animations/attack_v1/north-east/03.webp",
+          "frost_mite/animations/attack_v1/north-east/04.webp"
+        ],
+        "north": [
+          "frost_mite/animations/attack_v1/north/00.webp",
+          "frost_mite/animations/attack_v1/north/01.webp",
+          "frost_mite/animations/attack_v1/north/02.webp",
+          "frost_mite/animations/attack_v1/north/03.webp",
+          "frost_mite/animations/attack_v1/north/04.webp"
+        ],
+        "south-west": [
+          "frost_mite/animations/attack_v1/south-west/00.webp",
+          "frost_mite/animations/attack_v1/south-west/01.webp",
+          "frost_mite/animations/attack_v1/south-west/02.webp",
+          "frost_mite/animations/attack_v1/south-west/03.webp",
+          "frost_mite/animations/attack_v1/south-west/04.webp"
+        ],
+        "west": [
+          "frost_mite/animations/attack_v1/west/00.webp",
+          "frost_mite/animations/attack_v1/west/01.webp",
+          "frost_mite/animations/attack_v1/west/02.webp",
+          "frost_mite/animations/attack_v1/west/03.webp",
+          "frost_mite/animations/attack_v1/west/04.webp"
+        ],
+        "north-west": [
+          "frost_mite/animations/attack_v1/north-west/00.webp",
+          "frost_mite/animations/attack_v1/north-west/01.webp",
+          "frost_mite/animations/attack_v1/north-west/02.webp",
+          "frost_mite/animations/attack_v1/north-west/03.webp",
+          "frost_mite/animations/attack_v1/north-west/04.webp"
+        ]
+      },
+      "strips": {
+        "south": "frost_mite/animations/attack_v1__south.webp",
+        "south-east": "frost_mite/animations/attack_v1__south-east.webp",
+        "east": "frost_mite/animations/attack_v1__east.webp",
+        "north-east": "frost_mite/animations/attack_v1__north-east.webp",
+        "north": "frost_mite/animations/attack_v1__north.webp",
+        "south-west": "frost_mite/animations/attack_v1__south-west.webp",
+        "west": "frost_mite/animations/attack_v1__west.webp",
+        "north-west": "frost_mite/animations/attack_v1__north-west.webp"
+      }
+    },
+    "attack_v3": {
+      "directions": {
+        "south": {
+          "status": "fail",
+          "step_mean": 0.0923,
+          "step_max": 0.2259,
+          "drift": 1.34,
+          "loop": 0.0241,
+          "loop_ratio": 0.26,
+          "travel": 1.15,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": 0.015,
+          "peak": 0.182,
+          "reach": 0.171,
+          "canvas": [
+            32,
+            32
+          ],
+          "reasons": [
+            "16 frames, expected 4",
+            "shallow strike: reach 0.17 — eyeball it"
+          ],
+          "sub": "796e7732-8116-4bd8-a56e-2429fe6bf8a4",
+          "group": "4561448c-fd25-4065-8129-6b8f650ecf34",
+          "takes": 1,
+          "version": 2,
+          "mirrored": false,
+          "action": "Bite - Hops forward and bites hard with its mandibles wide, a big aggressive swing",
+          "intensity": 0,
+          "rolls": 2,
+          "frames": 16,
+          "rung": 1,
+          "unwrapped": null,
+          "tries": 2,
+          "generated_at": "2026-09-11T17:04:07+00:00"
+        },
+        "south-east": {
+          "status": "fail",
+          "step_mean": 0.078,
+          "step_max": 0.2251,
+          "drift": 0.76,
+          "loop": 0.0,
+          "loop_ratio": 0.0,
+          "travel": 0.62,
+          "pin": 1.0,
+          "pad": 1,
+          "flash": 0.01,
+          "peak": 0.2668,
+          "reach": 0.208,
+          "canvas": [
+            34,
+            34
+          ],
+          "reasons": [
+            "16 frames, expected 4",
+            "motion 0.078 outside the calm band 0.08–0.9 — eyeball it",
+            "shallow strike: reach 0.21 — eyeball it",
+            "canvas grown by 1 px a side to hold the motion"
+          ],
+          "sub": "10e44dfa-bee3-4d19-be60-2c742b1321f4",
+          "group": "4561448c-fd25-4065-8129-6b8f650ecf34",
+          "takes": 1,
+          "version": 2,
+          "mirrored": false,
+          "action": "Bite - Hops forward and bites hard with its mandibles wide, a big aggressive swing",
+          "intensity": 0,
+          "rolls": 2,
+          "frames": 16,
+          "rung": 1,
+          "unwrapped": 1,
+          "tries": 2,
+          "generated_at": "2026-09-11T17:04:08+00:00"
+        },
+        "east": {
+          "status": "fail",
+          "step_mean": 0.1822,
+          "step_max": 0.4974,
+          "drift": 1.93,
+          "loop": 0.0308,
+          "loop_ratio": 0.17,
+          "travel": 0.72,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": 0.003,
+          "peak": 0.3744,
+          "reach": 0.237,
+          "canvas": [
+            32,
+            32
+          ],
+          "reasons": [
+            "16 frames, expected 4",
+            "shallow strike: reach 0.24 — eyeball it"
+          ],
+          "sub": "c844ffe9-313d-42db-8642-938238ddc211",
+          "group": "4561448c-fd25-4065-8129-6b8f650ecf34",
+          "takes": 1,
+          "version": 2,
+          "mirrored": false,
+          "action": "Bite - Hops forward and bites hard with its mandibles wide, a big aggressive swing",
+          "intensity": 0,
+          "rolls": 2,
+          "frames": 16,
+          "rung": 1,
+          "unwrapped": null,
+          "tries": 2,
+          "generated_at": "2026-09-11T17:04:10+00:00"
+        },
+        "north-east": {
+          "status": "fail",
+          "step_mean": 0.0434,
+          "step_max": 0.1089,
+          "drift": 0.85,
+          "loop": 0.0283,
+          "loop_ratio": 0.65,
+          "travel": 0.89,
+          "pin": 0.736,
+          "pad": 0,
+          "flash": 0.017,
+          "peak": 0.183,
+          "reach": 0.182,
+          "canvas": [
+            32,
+            32
+          ],
+          "reasons": [
+            "16 frames, expected 4",
+            "motion 0.043 outside the calm band 0.08–0.9 — eyeball it",
+            "shallow strike: reach 0.18 — eyeball it"
+          ],
+          "sub": "cc2f9713-626e-44d1-87e0-780303794e6e",
+          "group": "4561448c-fd25-4065-8129-6b8f650ecf34",
+          "takes": 1,
+          "version": 2,
+          "mirrored": false,
+          "action": "Bite - Hops forward and bites hard with its mandibles wide, a big aggressive swing",
+          "intensity": 0,
+          "rolls": 2,
+          "frames": 16,
+          "rung": 1,
+          "unwrapped": null,
+          "tries": 2,
+          "generated_at": "2026-09-11T17:04:12+00:00"
+        },
+        "north": {
+          "status": "fail",
+          "step_mean": 0.0988,
+          "step_max": 0.3939,
+          "drift": 2.22,
+          "loop": 0.0,
+          "loop_ratio": 0.0,
+          "travel": 0.39,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": 0.005,
+          "peak": 0.4163,
+          "reach": 0.318,
+          "canvas": [
+            32,
+            32
+          ],
+          "reasons": [
+            "16 frames, expected 4"
+          ],
+          "sub": "281d7bd4-dc20-4395-b9c8-1f420c5626ee",
+          "group": "4561448c-fd25-4065-8129-6b8f650ecf34",
+          "takes": 1,
+          "version": 2,
+          "mirrored": false,
+          "action": "Bite - Hops forward and bites hard with its mandibles wide, a big aggressive swing",
+          "intensity": 0,
+          "rolls": 2,
+          "frames": 16,
+          "rung": 1,
+          "unwrapped": null,
+          "tries": 2,
+          "generated_at": "2026-09-11T17:04:15+00:00"
+        }
+      },
+      "action": "Bite - Hops forward and bites hard with its mandibles wide",
+      "frame_paths": {
+        "south": [
+          "frost_mite/animations/attack_v3/south/00.webp",
+          "frost_mite/animations/attack_v3/south/01.webp",
+          "frost_mite/animations/attack_v3/south/02.webp",
+          "frost_mite/animations/attack_v3/south/03.webp",
+          "frost_mite/animations/attack_v3/south/04.webp",
+          "frost_mite/animations/attack_v3/south/05.webp",
+          "frost_mite/animations/attack_v3/south/06.webp",
+          "frost_mite/animations/attack_v3/south/07.webp",
+          "frost_mite/animations/attack_v3/south/08.webp",
+          "frost_mite/animations/attack_v3/south/09.webp",
+          "frost_mite/animations/attack_v3/south/10.webp",
+          "frost_mite/animations/attack_v3/south/11.webp",
+          "frost_mite/animations/attack_v3/south/12.webp",
+          "frost_mite/animations/attack_v3/south/13.webp",
+          "frost_mite/animations/attack_v3/south/14.webp",
+          "frost_mite/animations/attack_v3/south/15.webp"
+        ],
+        "south-east": [
+          "frost_mite/animations/attack_v3/south-east/00.webp",
+          "frost_mite/animations/attack_v3/south-east/01.webp",
+          "frost_mite/animations/attack_v3/south-east/02.webp",
+          "frost_mite/animations/attack_v3/south-east/03.webp",
+          "frost_mite/animations/attack_v3/south-east/04.webp",
+          "frost_mite/animations/attack_v3/south-east/05.webp",
+          "frost_mite/animations/attack_v3/south-east/06.webp",
+          "frost_mite/animations/attack_v3/south-east/07.webp",
+          "frost_mite/animations/attack_v3/south-east/08.webp",
+          "frost_mite/animations/attack_v3/south-east/09.webp",
+          "frost_mite/animations/attack_v3/south-east/10.webp",
+          "frost_mite/animations/attack_v3/south-east/11.webp",
+          "frost_mite/animations/attack_v3/south-east/12.webp",
+          "frost_mite/animations/attack_v3/south-east/13.webp",
+          "frost_mite/animations/attack_v3/south-east/14.webp",
+          "frost_mite/animations/attack_v3/south-east/15.webp"
+        ],
+        "east": [
+          "frost_mite/animations/attack_v3/east/00.webp",
+          "frost_mite/animations/attack_v3/east/01.webp",
+          "frost_mite/animations/attack_v3/east/02.webp",
+          "frost_mite/animations/attack_v3/east/03.webp",
+          "frost_mite/animations/attack_v3/east/04.webp",
+          "frost_mite/animations/attack_v3/east/05.webp",
+          "frost_mite/animations/attack_v3/east/06.webp",
+          "frost_mite/animations/attack_v3/east/07.webp",
+          "frost_mite/animations/attack_v3/east/08.webp",
+          "frost_mite/animations/attack_v3/east/09.webp",
+          "frost_mite/animations/attack_v3/east/10.webp",
+          "frost_mite/animations/attack_v3/east/11.webp",
+          "frost_mite/animations/attack_v3/east/12.webp",
+          "frost_mite/animations/attack_v3/east/13.webp",
+          "frost_mite/animations/attack_v3/east/14.webp",
+          "frost_mite/animations/attack_v3/east/15.webp"
+        ],
+        "north-east": [
+          "frost_mite/animations/attack_v3/north-east/00.webp",
+          "frost_mite/animations/attack_v3/north-east/01.webp",
+          "frost_mite/animations/attack_v3/north-east/02.webp",
+          "frost_mite/animations/attack_v3/north-east/03.webp",
+          "frost_mite/animations/attack_v3/north-east/04.webp",
+          "frost_mite/animations/attack_v3/north-east/05.webp",
+          "frost_mite/animations/attack_v3/north-east/06.webp",
+          "frost_mite/animations/attack_v3/north-east/07.webp",
+          "frost_mite/animations/attack_v3/north-east/08.webp",
+          "frost_mite/animations/attack_v3/north-east/09.webp",
+          "frost_mite/animations/attack_v3/north-east/10.webp",
+          "frost_mite/animations/attack_v3/north-east/11.webp",
+          "frost_mite/animations/attack_v3/north-east/12.webp",
+          "frost_mite/animations/attack_v3/north-east/13.webp",
+          "frost_mite/animations/attack_v3/north-east/14.webp",
+          "frost_mite/animations/attack_v3/north-east/15.webp"
+        ],
+        "north": [
+          "frost_mite/animations/attack_v3/north/00.webp",
+          "frost_mite/animations/attack_v3/north/01.webp",
+          "frost_mite/animations/attack_v3/north/02.webp",
+          "frost_mite/animations/attack_v3/north/03.webp",
+          "frost_mite/animations/attack_v3/north/04.webp",
+          "frost_mite/animations/attack_v3/north/05.webp",
+          "frost_mite/animations/attack_v3/north/06.webp",
+          "frost_mite/animations/attack_v3/north/07.webp",
+          "frost_mite/animations/attack_v3/north/08.webp",
+          "frost_mite/animations/attack_v3/north/09.webp",
+          "frost_mite/animations/attack_v3/north/10.webp",
+          "frost_mite/animations/attack_v3/north/11.webp",
+          "frost_mite/animations/attack_v3/north/12.webp",
+          "frost_mite/animations/attack_v3/north/13.webp",
+          "frost_mite/animations/attack_v3/north/14.webp",
+          "frost_mite/animations/attack_v3/north/15.webp"
+        ]
+      },
+      "strips": {
+        "south": "frost_mite/animations/attack_v3__south.webp",
+        "south-east": "frost_mite/animations/attack_v3__south-east.webp",
+        "east": "frost_mite/animations/attack_v3__east.webp",
+        "north-east": "frost_mite/animations/attack_v3__north-east.webp",
+        "north": "frost_mite/animations/attack_v3__north.webp"
+      }
+    }
   }
- },
- "approved_at": "2026-09-09T19:59:23+00:00",
- "animations": {
-  "idle": {
-   "directions": {
-    "south": {
-     "status": "pass",
-     "step_mean": 0.1476,
-     "step_max": 0.201,
-     "drift": 1.28,
-     "loop": 0.0,
-     "pin": 1.0,
-     "reasons": [],
-     "sub": "0dfeb2ac-36f1-4880-90e8-2a5079c6b919",
-     "takes": 1,
-     "version": 1,
-     "mirrored": false,
-     "generated_at": "2026-09-09T20:17:34+00:00",
-     "cut": 0
-    },
-    "south-east": {
-     "status": "pass",
-     "step_mean": 0.09,
-     "step_max": 0.1645,
-     "drift": 0.38,
-     "loop": 0.0,
-     "pin": 1.0,
-     "reasons": [],
-     "sub": "6404886d-66bd-4aaa-9509-316da5f5a73c",
-     "takes": 1,
-     "version": 1,
-     "mirrored": false,
-     "generated_at": "2026-09-09T20:17:34+00:00",
-     "cut": 0
-    },
-    "east": {
-     "status": "pass",
-     "step_mean": 0.116,
-     "step_max": 0.152,
-     "drift": 1.0,
-     "loop": 0.0,
-     "pin": 1.0,
-     "reasons": [],
-     "sub": "1ac88c02-6969-4215-a322-a56e211a5099",
-     "takes": 1,
-     "version": 1,
-     "mirrored": false,
-     "generated_at": "2026-09-09T20:17:35+00:00",
-     "cut": 0
-    },
-    "north-east": {
-     "status": "pass",
-     "step_mean": 0.1174,
-     "step_max": 0.1713,
-     "drift": 0.35,
-     "loop": 0.0,
-     "pin": 1.0,
-     "reasons": [],
-     "sub": "3e6d271b-5e14-47a0-9b29-f7895a737947",
-     "takes": 1,
-     "version": 1,
-     "mirrored": false,
-     "generated_at": "2026-09-09T20:17:36+00:00",
-     "cut": 0
-    },
-    "north": {
-     "status": "pass",
-     "step_mean": 0.1148,
-     "step_max": 0.1311,
-     "drift": 0.15,
-     "loop": 0.0,
-     "pin": 1.0,
-     "reasons": [],
-     "sub": "e7fa77f1-c963-479d-81bc-20da69adecee",
-     "takes": 1,
-     "version": 1,
-     "mirrored": false,
-     "generated_at": "2026-09-09T20:17:36+00:00",
-     "cut": 0
-    },
-    "south-west": {
-     "status": "pass",
-     "step_mean": 0.09,
-     "step_max": 0.1645,
-     "drift": 0.38,
-     "loop": 0.0,
-     "pin": 1.0,
-     "reasons": [],
-     "sub": "6404886d-66bd-4aaa-9509-316da5f5a73c",
-     "takes": 1,
-     "version": 1,
-     "mirrored": true,
-     "generated_at": "2026-09-09T20:17:34+00:00",
-     "cut": 0,
-     "source": "south-east"
-    },
-    "west": {
-     "status": "pass",
-     "step_mean": 0.116,
-     "step_max": 0.152,
-     "drift": 1.0,
-     "loop": 0.0,
-     "pin": 1.0,
-     "reasons": [],
-     "sub": "1ac88c02-6969-4215-a322-a56e211a5099",
-     "takes": 1,
-     "version": 1,
-     "mirrored": true,
-     "generated_at": "2026-09-09T20:17:35+00:00",
-     "cut": 0,
-     "source": "east"
-    },
-    "north-west": {
-     "status": "pass",
-     "step_mean": 0.1174,
-     "step_max": 0.1713,
-     "drift": 0.35,
-     "loop": 0.0,
-     "pin": 1.0,
-     "reasons": [],
-     "sub": "3e6d271b-5e14-47a0-9b29-f7895a737947",
-     "takes": 1,
-     "version": 1,
-     "mirrored": true,
-     "generated_at": "2026-09-09T20:17:36+00:00",
-     "cut": 0,
-     "source": "north-east"
-    }
-   },
-   "action": "Calm still idle, breathing very slowly and subtly, chest and shoulders rise and fall a little, feet planted, no other movement, ends in the same neutral pose it started in",
-   "frame_paths": {
-    "south": [
-     "frost_mite/animations/idle/south/00.webp",
-     "frost_mite/animations/idle/south/01.webp",
-     "frost_mite/animations/idle/south/02.webp",
-     "frost_mite/animations/idle/south/03.webp",
-     "frost_mite/animations/idle/south/04.webp"
-    ],
-    "south-east": [
-     "frost_mite/animations/idle/south-east/00.webp",
-     "frost_mite/animations/idle/south-east/01.webp",
-     "frost_mite/animations/idle/south-east/02.webp",
-     "frost_mite/animations/idle/south-east/03.webp",
-     "frost_mite/animations/idle/south-east/04.webp"
-    ],
-    "east": [
-     "frost_mite/animations/idle/east/00.webp",
-     "frost_mite/animations/idle/east/01.webp",
-     "frost_mite/animations/idle/east/02.webp",
-     "frost_mite/animations/idle/east/03.webp",
-     "frost_mite/animations/idle/east/04.webp"
-    ],
-    "north-east": [
-     "frost_mite/animations/idle/north-east/00.webp",
-     "frost_mite/animations/idle/north-east/01.webp",
-     "frost_mite/animations/idle/north-east/02.webp",
-     "frost_mite/animations/idle/north-east/03.webp",
-     "frost_mite/animations/idle/north-east/04.webp"
-    ],
-    "north": [
-     "frost_mite/animations/idle/north/00.webp",
-     "frost_mite/animations/idle/north/01.webp",
-     "frost_mite/animations/idle/north/02.webp",
-     "frost_mite/animations/idle/north/03.webp",
-     "frost_mite/animations/idle/north/04.webp"
-    ],
-    "south-west": [
-     "frost_mite/animations/idle/south-west/00.webp",
-     "frost_mite/animations/idle/south-west/01.webp",
-     "frost_mite/animations/idle/south-west/02.webp",
-     "frost_mite/animations/idle/south-west/03.webp",
-     "frost_mite/animations/idle/south-west/04.webp"
-    ],
-    "west": [
-     "frost_mite/animations/idle/west/00.webp",
-     "frost_mite/animations/idle/west/01.webp",
-     "frost_mite/animations/idle/west/02.webp",
-     "frost_mite/animations/idle/west/03.webp",
-     "frost_mite/animations/idle/west/04.webp"
-    ],
-    "north-west": [
-     "frost_mite/animations/idle/north-west/00.webp",
-     "frost_mite/animations/idle/north-west/01.webp",
-     "frost_mite/animations/idle/north-west/02.webp",
-     "frost_mite/animations/idle/north-west/03.webp",
-     "frost_mite/animations/idle/north-west/04.webp"
-    ]
-   },
-   "strips": {
-    "south": "frost_mite/animations/idle__south.webp",
-    "south-east": "frost_mite/animations/idle__south-east.webp",
-    "east": "frost_mite/animations/idle__east.webp",
-    "north-east": "frost_mite/animations/idle__north-east.webp",
-    "north": "frost_mite/animations/idle__north.webp",
-    "south-west": "frost_mite/animations/idle__south-west.webp",
-    "west": "frost_mite/animations/idle__west.webp",
-    "north-west": "frost_mite/animations/idle__north-west.webp"
-   }
-  },
-  "walk": {
-   "directions": {
-    "south": {
-     "status": "pass",
-     "step_mean": 0.1504,
-     "step_max": 0.1787,
-     "drift": 0.78,
-     "loop": 0.1762,
-     "loop_ratio": 1.17,
-     "travel": 0.32,
-     "pin": 0.861,
-     "pad": 0,
-     "canvas": [
-      32,
-      32
-     ],
-     "reasons": [],
-     "sub": "4457d50f-d5a8-4df6-96df-16cf572fe6e5",
-     "group": "2d2be84b-a63b-4149-ae9a-d051517094d6",
-     "takes": 1,
-     "version": 1,
-     "mirrored": false,
-     "generated_at": "2026-09-09T21:16:16+00:00"
-    },
-    "south-east": {
-     "status": "pass",
-     "step_mean": 0.1479,
-     "step_max": 0.2105,
-     "drift": 0.9,
-     "loop": 0.183,
-     "loop_ratio": 1.24,
-     "travel": 0.4,
-     "pin": 0.955,
-     "pad": 0,
-     "canvas": [
-      32,
-      32
-     ],
-     "reasons": [],
-     "sub": "8aed0758-c64b-4e8d-8fbb-d2ec76a49227",
-     "group": "1f16c2f8-a4fc-424e-996e-b8d6292a7b81",
-     "takes": 1,
-     "version": 1,
-     "mirrored": false,
-     "generated_at": "2026-09-09T21:16:16+00:00"
-    },
-    "east": {
-     "status": "warn",
-     "step_mean": 0.1047,
-     "step_max": 0.1283,
-     "drift": 1.53,
-     "loop": 0.2147,
-     "loop_ratio": 2.05,
-     "travel": 0.44,
-     "pin": 0.878,
-     "pad": 0,
-     "canvas": [
-      32,
-      32
-     ],
-     "reasons": [
-      "last→first hand-off 2.1× a step — eyeball the loop"
-     ],
-     "sub": "db38fec6-8a62-4338-a80d-6c0a8cf8382e",
-     "group": "5b904653-cff2-4476-aa66-bc815db61560",
-     "takes": 1,
-     "version": 1,
-     "mirrored": false,
-     "generated_at": "2026-09-09T21:16:17+00:00"
-    },
-    "north-east": {
-     "status": "pass",
-     "step_mean": 0.1455,
-     "step_max": 0.1989,
-     "drift": 1.43,
-     "loop": 0.2102,
-     "loop_ratio": 1.45,
-     "travel": 0.62,
-     "pin": 0.874,
-     "pad": 0,
-     "canvas": [
-      32,
-      32
-     ],
-     "reasons": [],
-     "sub": "d37028c2-c024-4da7-903d-65fcf2d4deaf",
-     "group": "64931a3d-d158-494a-8ad9-08f000251709",
-     "takes": 1,
-     "version": 1,
-     "mirrored": false,
-     "generated_at": "2026-09-09T21:16:18+00:00"
-    },
-    "north": {
-     "status": "pass",
-     "step_mean": 0.1144,
-     "step_max": 0.1583,
-     "drift": 1.75,
-     "loop": 0.2111,
-     "loop_ratio": 1.84,
-     "travel": 0.77,
-     "pin": 0.901,
-     "pad": 0,
-     "canvas": [
-      32,
-      32
-     ],
-     "reasons": [],
-     "sub": "36feac29-dc03-4762-ae4c-bb396cb5ffd9",
-     "group": "4a4b5ec5-0acf-4b54-8334-460f92d5dab1",
-     "takes": 1,
-     "version": 1,
-     "mirrored": false,
-     "generated_at": "2026-09-09T21:16:18+00:00"
-    },
-    "south-west": {
-     "status": "pass",
-     "step_mean": 0.1479,
-     "step_max": 0.2105,
-     "drift": 0.9,
-     "loop": 0.183,
-     "loop_ratio": 1.24,
-     "travel": 0.4,
-     "pin": 0.955,
-     "pad": 0,
-     "canvas": [
-      32,
-      32
-     ],
-     "reasons": [],
-     "sub": "8aed0758-c64b-4e8d-8fbb-d2ec76a49227",
-     "group": "1f16c2f8-a4fc-424e-996e-b8d6292a7b81",
-     "takes": 1,
-     "version": 1,
-     "mirrored": true,
-     "generated_at": "2026-09-09T21:16:16+00:00",
-     "source": "south-east"
-    },
-    "west": {
-     "status": "warn",
-     "step_mean": 0.1047,
-     "step_max": 0.1283,
-     "drift": 1.53,
-     "loop": 0.2147,
-     "loop_ratio": 2.05,
-     "travel": 0.44,
-     "pin": 0.878,
-     "pad": 0,
-     "canvas": [
-      32,
-      32
-     ],
-     "reasons": [
-      "last→first hand-off 2.1× a step — eyeball the loop"
-     ],
-     "sub": "db38fec6-8a62-4338-a80d-6c0a8cf8382e",
-     "group": "5b904653-cff2-4476-aa66-bc815db61560",
-     "takes": 1,
-     "version": 1,
-     "mirrored": true,
-     "generated_at": "2026-09-09T21:16:17+00:00",
-     "source": "east"
-    },
-    "north-west": {
-     "status": "pass",
-     "step_mean": 0.1455,
-     "step_max": 0.1989,
-     "drift": 1.43,
-     "loop": 0.2102,
-     "loop_ratio": 1.45,
-     "travel": 0.62,
-     "pin": 0.874,
-     "pad": 0,
-     "canvas": [
-      32,
-      32
-     ],
-     "reasons": [],
-     "sub": "d37028c2-c024-4da7-903d-65fcf2d4deaf",
-     "group": "64931a3d-d158-494a-8ad9-08f000251709",
-     "takes": 1,
-     "version": 1,
-     "mirrored": true,
-     "generated_at": "2026-09-09T21:16:18+00:00",
-     "source": "north-east"
-    }
-   },
-   "action": "walk loop, full walk cycle in place, legs alternate naturally, normal calm walking pace, body stays centered, seamless loop whose last frame leads straight back into the first, no turning",
-   "frame_paths": {
-    "south": [
-     "frost_mite/animations/walk/south/00.webp",
-     "frost_mite/animations/walk/south/01.webp",
-     "frost_mite/animations/walk/south/02.webp",
-     "frost_mite/animations/walk/south/03.webp",
-     "frost_mite/animations/walk/south/04.webp",
-     "frost_mite/animations/walk/south/05.webp"
-    ],
-    "south-east": [
-     "frost_mite/animations/walk/south-east/00.webp",
-     "frost_mite/animations/walk/south-east/01.webp",
-     "frost_mite/animations/walk/south-east/02.webp",
-     "frost_mite/animations/walk/south-east/03.webp",
-     "frost_mite/animations/walk/south-east/04.webp",
-     "frost_mite/animations/walk/south-east/05.webp"
-    ],
-    "east": [
-     "frost_mite/animations/walk/east/00.webp",
-     "frost_mite/animations/walk/east/01.webp",
-     "frost_mite/animations/walk/east/02.webp",
-     "frost_mite/animations/walk/east/03.webp",
-     "frost_mite/animations/walk/east/04.webp",
-     "frost_mite/animations/walk/east/05.webp"
-    ],
-    "north-east": [
-     "frost_mite/animations/walk/north-east/00.webp",
-     "frost_mite/animations/walk/north-east/01.webp",
-     "frost_mite/animations/walk/north-east/02.webp",
-     "frost_mite/animations/walk/north-east/03.webp",
-     "frost_mite/animations/walk/north-east/04.webp",
-     "frost_mite/animations/walk/north-east/05.webp"
-    ],
-    "north": [
-     "frost_mite/animations/walk/north/00.webp",
-     "frost_mite/animations/walk/north/01.webp",
-     "frost_mite/animations/walk/north/02.webp",
-     "frost_mite/animations/walk/north/03.webp",
-     "frost_mite/animations/walk/north/04.webp",
-     "frost_mite/animations/walk/north/05.webp"
-    ],
-    "south-west": [
-     "frost_mite/animations/walk/south-west/00.webp",
-     "frost_mite/animations/walk/south-west/01.webp",
-     "frost_mite/animations/walk/south-west/02.webp",
-     "frost_mite/animations/walk/south-west/03.webp",
-     "frost_mite/animations/walk/south-west/04.webp",
-     "frost_mite/animations/walk/south-west/05.webp"
-    ],
-    "west": [
-     "frost_mite/animations/walk/west/00.webp",
-     "frost_mite/animations/walk/west/01.webp",
-     "frost_mite/animations/walk/west/02.webp",
-     "frost_mite/animations/walk/west/03.webp",
-     "frost_mite/animations/walk/west/04.webp",
-     "frost_mite/animations/walk/west/05.webp"
-    ],
-    "north-west": [
-     "frost_mite/animations/walk/north-west/00.webp",
-     "frost_mite/animations/walk/north-west/01.webp",
-     "frost_mite/animations/walk/north-west/02.webp",
-     "frost_mite/animations/walk/north-west/03.webp",
-     "frost_mite/animations/walk/north-west/04.webp",
-     "frost_mite/animations/walk/north-west/05.webp"
-    ]
-   },
-   "strips": {
-    "south": "frost_mite/animations/walk__south.webp",
-    "south-east": "frost_mite/animations/walk__south-east.webp",
-    "east": "frost_mite/animations/walk__east.webp",
-    "north-east": "frost_mite/animations/walk__north-east.webp",
-    "north": "frost_mite/animations/walk__north.webp",
-    "south-west": "frost_mite/animations/walk__south-west.webp",
-    "west": "frost_mite/animations/walk__west.webp",
-    "north-west": "frost_mite/animations/walk__north-west.webp"
-   }
-  },
-  "attack": {
-   "directions": {
-    "south": {
-     "status": "fail",
-     "step_mean": 0.1476,
-     "step_max": 0.1811,
-     "drift": 0.42,
-     "loop": 0.0,
-     "loop_ratio": 0.0,
-     "travel": 0.05,
-     "pin": 1.0,
-     "pad": 0,
-     "flash": 0.052,
-     "peak": 0.2531,
-     "reach": 0.083,
-     "canvas": [
-      32,
-      32
-     ],
-     "reasons": [
-      "no strike, just a lean: nothing reaches past 0.08 of the body",
-      "some bright effect pixels (0.05) — eyeball it"
-     ],
-     "sub": "a51c4867-bcc8-456e-afe3-c7b972650983",
-     "group": "91438d1f-ec9e-4a6f-9dba-fe5c8ba918cc",
-     "takes": 1,
-     "version": 2,
-     "mirrored": false,
-     "generated_at": "2026-09-09T22:38:23+00:00",
-     "action": "Bite - Hops forward and bites once with its small mandibles, then returns to idle stance"
-    },
-    "south-east": {
-     "status": "fail",
-     "step_mean": 0.1877,
-     "step_max": 0.2494,
-     "drift": 1.28,
-     "loop": 0.0,
-     "loop_ratio": 0.0,
-     "travel": 0.25,
-     "pin": 1.0,
-     "pad": 0,
-     "flash": 0.013,
-     "peak": 0.3496,
-     "reach": 0.167,
-     "canvas": [
-      32,
-      32
-     ],
-     "reasons": [
-      "no strike, just a lean: nothing reaches past 0.17 of the body"
-     ],
-     "sub": "777a212c-b27f-4180-8abe-dc2a428017ad",
-     "group": "1a8acad0-c2ac-476e-8be4-8602e2c0ba2e",
-     "takes": 1,
-     "version": 2,
-     "mirrored": false,
-     "generated_at": "2026-09-09T22:38:23+00:00",
-     "action": "Bite - Hops forward and bites once with its small mandibles, then returns to idle stance"
-    },
-    "east": {
-     "status": "fail",
-     "step_mean": 0.1609,
-     "step_max": 0.1941,
-     "drift": 1.01,
-     "loop": 0.0,
-     "loop_ratio": 0.0,
-     "travel": 1.01,
-     "pin": 1.0,
-     "pad": 0,
-     "flash": 0.016,
-     "peak": 0.25,
-     "reach": 0.087,
-     "canvas": [
-      32,
-      32
-     ],
-     "reasons": [
-      "no strike, just a lean: nothing reaches past 0.09 of the body"
-     ],
-     "sub": "a9a5616d-d815-4b34-8f6a-a2aeacca1403",
-     "group": "218de652-3ce3-46f2-a3ca-512577e43fc1",
-     "takes": 1,
-     "version": 2,
-     "mirrored": false,
-     "generated_at": "2026-09-09T22:38:24+00:00",
-     "action": "Bite - Hops forward and bites once with its small mandibles, then returns to idle stance"
-    },
-    "north-east": {
-     "status": "fail",
-     "step_mean": 0.1561,
-     "step_max": 0.1906,
-     "drift": 0.6,
-     "loop": 0.0,
-     "loop_ratio": 0.0,
-     "travel": 0.59,
-     "pin": 1.0,
-     "pad": 0,
-     "flash": 0.019,
-     "peak": 0.2873,
-     "reach": 0.143,
-     "canvas": [
-      32,
-      32
-     ],
-     "reasons": [
-      "no strike, just a lean: nothing reaches past 0.14 of the body"
-     ],
-     "sub": "17a6e693-44fa-4623-a386-1d2aa4a2b16f",
-     "group": "98d84e83-3660-4bf5-bfae-efe9638b6b0a",
-     "takes": 1,
-     "version": 2,
-     "mirrored": false,
-     "generated_at": "2026-09-09T22:38:24+00:00",
-     "action": "Bite - Hops forward and bites once with its small mandibles, then returns to idle stance"
-    },
-    "north": {
-     "status": "fail",
-     "step_mean": 0.179,
-     "step_max": 0.2022,
-     "drift": 1.23,
-     "loop": 0.0,
-     "loop_ratio": 0.0,
-     "travel": 1.23,
-     "pin": 1.0,
-     "pad": 0,
-     "flash": 0.022,
-     "peak": 0.2814,
-     "reach": 0.136,
-     "canvas": [
-      32,
-      32
-     ],
-     "reasons": [
-      "no strike, just a lean: nothing reaches past 0.14 of the body"
-     ],
-     "sub": "c4d8dd03-63b4-4d5d-8bbc-ef4544c423ba",
-     "group": "ea496e17-c3f2-4615-8e38-bfeb00109044",
-     "takes": 1,
-     "version": 2,
-     "mirrored": false,
-     "generated_at": "2026-09-09T22:38:24+00:00",
-     "action": "Bite - Hops forward and bites once with its small mandibles, then returns to idle stance"
-    },
-    "south-west": {
-     "status": "pass",
-     "step_mean": 0.1877,
-     "step_max": 0.2494,
-     "drift": 1.28,
-     "loop": 0.0,
-     "loop_ratio": 0.0,
-     "travel": 0.25,
-     "pin": 1.0,
-     "pad": 0,
-     "flash": 0.013,
-     "peak": 0.3496,
-     "canvas": [
-      32,
-      32
-     ],
-     "reasons": [],
-     "sub": "777a212c-b27f-4180-8abe-dc2a428017ad",
-     "group": "1a8acad0-c2ac-476e-8be4-8602e2c0ba2e",
-     "takes": 1,
-     "version": 2,
-     "mirrored": true,
-     "generated_at": "2026-09-09T22:38:23+00:00",
-     "action": "Bite - Hops forward and bites once with its small mandibles, then returns to idle stance",
-     "source": "south-east"
-    },
-    "west": {
-     "status": "pass",
-     "step_mean": 0.1609,
-     "step_max": 0.1941,
-     "drift": 1.01,
-     "loop": 0.0,
-     "loop_ratio": 0.0,
-     "travel": 1.01,
-     "pin": 1.0,
-     "pad": 0,
-     "flash": 0.016,
-     "peak": 0.25,
-     "canvas": [
-      32,
-      32
-     ],
-     "reasons": [],
-     "sub": "a9a5616d-d815-4b34-8f6a-a2aeacca1403",
-     "group": "218de652-3ce3-46f2-a3ca-512577e43fc1",
-     "takes": 1,
-     "version": 2,
-     "mirrored": true,
-     "generated_at": "2026-09-09T22:38:24+00:00",
-     "action": "Bite - Hops forward and bites once with its small mandibles, then returns to idle stance",
-     "source": "east"
-    },
-    "north-west": {
-     "status": "pass",
-     "step_mean": 0.1561,
-     "step_max": 0.1906,
-     "drift": 0.6,
-     "loop": 0.0,
-     "loop_ratio": 0.0,
-     "travel": 0.59,
-     "pin": 1.0,
-     "pad": 0,
-     "flash": 0.019,
-     "peak": 0.2873,
-     "canvas": [
-      32,
-      32
-     ],
-     "reasons": [],
-     "sub": "17a6e693-44fa-4623-a386-1d2aa4a2b16f",
-     "group": "98d84e83-3660-4bf5-bfae-efe9638b6b0a",
-     "takes": 1,
-     "version": 2,
-     "mirrored": true,
-     "generated_at": "2026-09-09T22:38:24+00:00",
-     "action": "Bite - Hops forward and bites once with its small mandibles, then returns to idle stance",
-     "source": "north-east"
-    }
-   },
-   "action": "Bite - Hops forward and bites once with its small mandibles, then returns to idle stance",
-   "frame_paths": {
-    "south": [
-     "frost_mite/animations/attack/south/00.webp",
-     "frost_mite/animations/attack/south/01.webp",
-     "frost_mite/animations/attack/south/02.webp",
-     "frost_mite/animations/attack/south/03.webp",
-     "frost_mite/animations/attack/south/04.webp"
-    ],
-    "south-east": [
-     "frost_mite/animations/attack/south-east/00.webp",
-     "frost_mite/animations/attack/south-east/01.webp",
-     "frost_mite/animations/attack/south-east/02.webp",
-     "frost_mite/animations/attack/south-east/03.webp",
-     "frost_mite/animations/attack/south-east/04.webp"
-    ],
-    "east": [
-     "frost_mite/animations/attack/east/00.webp",
-     "frost_mite/animations/attack/east/01.webp",
-     "frost_mite/animations/attack/east/02.webp",
-     "frost_mite/animations/attack/east/03.webp",
-     "frost_mite/animations/attack/east/04.webp"
-    ],
-    "north-east": [
-     "frost_mite/animations/attack/north-east/00.webp",
-     "frost_mite/animations/attack/north-east/01.webp",
-     "frost_mite/animations/attack/north-east/02.webp",
-     "frost_mite/animations/attack/north-east/03.webp",
-     "frost_mite/animations/attack/north-east/04.webp"
-    ],
-    "north": [
-     "frost_mite/animations/attack/north/00.webp",
-     "frost_mite/animations/attack/north/01.webp",
-     "frost_mite/animations/attack/north/02.webp",
-     "frost_mite/animations/attack/north/03.webp",
-     "frost_mite/animations/attack/north/04.webp"
-    ],
-    "south-west": [
-     "frost_mite/animations/attack/south-west/00.webp",
-     "frost_mite/animations/attack/south-west/01.webp",
-     "frost_mite/animations/attack/south-west/02.webp",
-     "frost_mite/animations/attack/south-west/03.webp",
-     "frost_mite/animations/attack/south-west/04.webp"
-    ],
-    "west": [
-     "frost_mite/animations/attack/west/00.webp",
-     "frost_mite/animations/attack/west/01.webp",
-     "frost_mite/animations/attack/west/02.webp",
-     "frost_mite/animations/attack/west/03.webp",
-     "frost_mite/animations/attack/west/04.webp"
-    ],
-    "north-west": [
-     "frost_mite/animations/attack/north-west/00.webp",
-     "frost_mite/animations/attack/north-west/01.webp",
-     "frost_mite/animations/attack/north-west/02.webp",
-     "frost_mite/animations/attack/north-west/03.webp",
-     "frost_mite/animations/attack/north-west/04.webp"
-    ]
-   },
-   "strips": {
-    "south": "frost_mite/animations/attack__south.webp",
-    "south-east": "frost_mite/animations/attack__south-east.webp",
-    "east": "frost_mite/animations/attack__east.webp",
-    "north-east": "frost_mite/animations/attack__north-east.webp",
-    "north": "frost_mite/animations/attack__north.webp",
-    "south-west": "frost_mite/animations/attack__south-west.webp",
-    "west": "frost_mite/animations/attack__west.webp",
-    "north-west": "frost_mite/animations/attack__north-west.webp"
-   }
-  },
-  "attack_try": {
-   "directions": {
-    "south": {
-     "status": "fail",
-     "step_mean": 0.0923,
-     "step_max": 0.2259,
-     "drift": 1.34,
-     "loop": 0.0241,
-     "loop_ratio": 0.26,
-     "travel": 1.15,
-     "pin": 1.0,
-     "pad": 0,
-     "flash": 0.015,
-     "peak": 0.182,
-     "reach": 0.171,
-     "canvas": [
-      32,
-      32
-     ],
-     "reasons": [
-      "16 frames, expected 4",
-      "shallow strike: reach 0.17 — eyeball it"
-     ],
-     "sub": "796e7732-8116-4bd8-a56e-2429fe6bf8a4",
-     "group": "4561448c-fd25-4065-8129-6b8f650ecf34",
-     "takes": 1,
-     "version": 2,
-     "mirrored": false,
-     "action": "Bite - Hops forward and bites hard with its mandibles wide, a big aggressive swing",
-     "intensity": 0,
-     "rolls": 2,
-     "frames": 16,
-     "rung": 1,
-     "unwrapped": null,
-     "tries": 2,
-     "generated_at": "2026-09-11T17:04:07+00:00"
-    },
-    "south-east": {
-     "status": "fail",
-     "step_mean": 0.078,
-     "step_max": 0.2251,
-     "drift": 0.76,
-     "loop": 0.0,
-     "loop_ratio": 0.0,
-     "travel": 0.62,
-     "pin": 1.0,
-     "pad": 1,
-     "flash": 0.01,
-     "peak": 0.2668,
-     "reach": 0.208,
-     "canvas": [
-      34,
-      34
-     ],
-     "reasons": [
-      "16 frames, expected 4",
-      "motion 0.078 outside the calm band 0.08–0.9 — eyeball it",
-      "shallow strike: reach 0.21 — eyeball it",
-      "canvas grown by 1 px a side to hold the motion"
-     ],
-     "sub": "10e44dfa-bee3-4d19-be60-2c742b1321f4",
-     "group": "4561448c-fd25-4065-8129-6b8f650ecf34",
-     "takes": 1,
-     "version": 2,
-     "mirrored": false,
-     "action": "Bite - Hops forward and bites hard with its mandibles wide, a big aggressive swing",
-     "intensity": 0,
-     "rolls": 2,
-     "frames": 16,
-     "rung": 1,
-     "unwrapped": 1,
-     "tries": 2,
-     "generated_at": "2026-09-11T17:04:08+00:00"
-    },
-    "east": {
-     "status": "fail",
-     "step_mean": 0.1822,
-     "step_max": 0.4974,
-     "drift": 1.93,
-     "loop": 0.0308,
-     "loop_ratio": 0.17,
-     "travel": 0.72,
-     "pin": 1.0,
-     "pad": 0,
-     "flash": 0.003,
-     "peak": 0.3744,
-     "reach": 0.237,
-     "canvas": [
-      32,
-      32
-     ],
-     "reasons": [
-      "16 frames, expected 4",
-      "shallow strike: reach 0.24 — eyeball it"
-     ],
-     "sub": "c844ffe9-313d-42db-8642-938238ddc211",
-     "group": "4561448c-fd25-4065-8129-6b8f650ecf34",
-     "takes": 1,
-     "version": 2,
-     "mirrored": false,
-     "action": "Bite - Hops forward and bites hard with its mandibles wide, a big aggressive swing",
-     "intensity": 0,
-     "rolls": 2,
-     "frames": 16,
-     "rung": 1,
-     "unwrapped": null,
-     "tries": 2,
-     "generated_at": "2026-09-11T17:04:10+00:00"
-    },
-    "north-east": {
-     "status": "fail",
-     "step_mean": 0.0434,
-     "step_max": 0.1089,
-     "drift": 0.85,
-     "loop": 0.0283,
-     "loop_ratio": 0.65,
-     "travel": 0.89,
-     "pin": 0.736,
-     "pad": 0,
-     "flash": 0.017,
-     "peak": 0.183,
-     "reach": 0.182,
-     "canvas": [
-      32,
-      32
-     ],
-     "reasons": [
-      "16 frames, expected 4",
-      "motion 0.043 outside the calm band 0.08–0.9 — eyeball it",
-      "shallow strike: reach 0.18 — eyeball it"
-     ],
-     "sub": "cc2f9713-626e-44d1-87e0-780303794e6e",
-     "group": "4561448c-fd25-4065-8129-6b8f650ecf34",
-     "takes": 1,
-     "version": 2,
-     "mirrored": false,
-     "action": "Bite - Hops forward and bites hard with its mandibles wide, a big aggressive swing",
-     "intensity": 0,
-     "rolls": 2,
-     "frames": 16,
-     "rung": 1,
-     "unwrapped": null,
-     "tries": 2,
-     "generated_at": "2026-09-11T17:04:12+00:00"
-    },
-    "north": {
-     "status": "fail",
-     "step_mean": 0.0988,
-     "step_max": 0.3939,
-     "drift": 2.22,
-     "loop": 0.0,
-     "loop_ratio": 0.0,
-     "travel": 0.39,
-     "pin": 1.0,
-     "pad": 0,
-     "flash": 0.005,
-     "peak": 0.4163,
-     "reach": 0.318,
-     "canvas": [
-      32,
-      32
-     ],
-     "reasons": [
-      "16 frames, expected 4"
-     ],
-     "sub": "281d7bd4-dc20-4395-b9c8-1f420c5626ee",
-     "group": "4561448c-fd25-4065-8129-6b8f650ecf34",
-     "takes": 1,
-     "version": 2,
-     "mirrored": false,
-     "action": "Bite - Hops forward and bites hard with its mandibles wide, a big aggressive swing",
-     "intensity": 0,
-     "rolls": 2,
-     "frames": 16,
-     "rung": 1,
-     "unwrapped": null,
-     "tries": 2,
-     "generated_at": "2026-09-11T17:04:15+00:00"
-    }
-   },
-   "action": "Bite - Hops forward and bites hard with its mandibles wide",
-   "frame_paths": {
-    "south": [
-     "frost_mite/animations/attack_try/south/00.webp",
-     "frost_mite/animations/attack_try/south/01.webp",
-     "frost_mite/animations/attack_try/south/02.webp",
-     "frost_mite/animations/attack_try/south/03.webp",
-     "frost_mite/animations/attack_try/south/04.webp",
-     "frost_mite/animations/attack_try/south/05.webp",
-     "frost_mite/animations/attack_try/south/06.webp",
-     "frost_mite/animations/attack_try/south/07.webp",
-     "frost_mite/animations/attack_try/south/08.webp",
-     "frost_mite/animations/attack_try/south/09.webp",
-     "frost_mite/animations/attack_try/south/10.webp",
-     "frost_mite/animations/attack_try/south/11.webp",
-     "frost_mite/animations/attack_try/south/12.webp",
-     "frost_mite/animations/attack_try/south/13.webp",
-     "frost_mite/animations/attack_try/south/14.webp",
-     "frost_mite/animations/attack_try/south/15.webp"
-    ],
-    "south-east": [
-     "frost_mite/animations/attack_try/south-east/00.webp",
-     "frost_mite/animations/attack_try/south-east/01.webp",
-     "frost_mite/animations/attack_try/south-east/02.webp",
-     "frost_mite/animations/attack_try/south-east/03.webp",
-     "frost_mite/animations/attack_try/south-east/04.webp",
-     "frost_mite/animations/attack_try/south-east/05.webp",
-     "frost_mite/animations/attack_try/south-east/06.webp",
-     "frost_mite/animations/attack_try/south-east/07.webp",
-     "frost_mite/animations/attack_try/south-east/08.webp",
-     "frost_mite/animations/attack_try/south-east/09.webp",
-     "frost_mite/animations/attack_try/south-east/10.webp",
-     "frost_mite/animations/attack_try/south-east/11.webp",
-     "frost_mite/animations/attack_try/south-east/12.webp",
-     "frost_mite/animations/attack_try/south-east/13.webp",
-     "frost_mite/animations/attack_try/south-east/14.webp",
-     "frost_mite/animations/attack_try/south-east/15.webp"
-    ],
-    "east": [
-     "frost_mite/animations/attack_try/east/00.webp",
-     "frost_mite/animations/attack_try/east/01.webp",
-     "frost_mite/animations/attack_try/east/02.webp",
-     "frost_mite/animations/attack_try/east/03.webp",
-     "frost_mite/animations/attack_try/east/04.webp",
-     "frost_mite/animations/attack_try/east/05.webp",
-     "frost_mite/animations/attack_try/east/06.webp",
-     "frost_mite/animations/attack_try/east/07.webp",
-     "frost_mite/animations/attack_try/east/08.webp",
-     "frost_mite/animations/attack_try/east/09.webp",
-     "frost_mite/animations/attack_try/east/10.webp",
-     "frost_mite/animations/attack_try/east/11.webp",
-     "frost_mite/animations/attack_try/east/12.webp",
-     "frost_mite/animations/attack_try/east/13.webp",
-     "frost_mite/animations/attack_try/east/14.webp",
-     "frost_mite/animations/attack_try/east/15.webp"
-    ],
-    "north-east": [
-     "frost_mite/animations/attack_try/north-east/00.webp",
-     "frost_mite/animations/attack_try/north-east/01.webp",
-     "frost_mite/animations/attack_try/north-east/02.webp",
-     "frost_mite/animations/attack_try/north-east/03.webp",
-     "frost_mite/animations/attack_try/north-east/04.webp",
-     "frost_mite/animations/attack_try/north-east/05.webp",
-     "frost_mite/animations/attack_try/north-east/06.webp",
-     "frost_mite/animations/attack_try/north-east/07.webp",
-     "frost_mite/animations/attack_try/north-east/08.webp",
-     "frost_mite/animations/attack_try/north-east/09.webp",
-     "frost_mite/animations/attack_try/north-east/10.webp",
-     "frost_mite/animations/attack_try/north-east/11.webp",
-     "frost_mite/animations/attack_try/north-east/12.webp",
-     "frost_mite/animations/attack_try/north-east/13.webp",
-     "frost_mite/animations/attack_try/north-east/14.webp",
-     "frost_mite/animations/attack_try/north-east/15.webp"
-    ],
-    "north": [
-     "frost_mite/animations/attack_try/north/00.webp",
-     "frost_mite/animations/attack_try/north/01.webp",
-     "frost_mite/animations/attack_try/north/02.webp",
-     "frost_mite/animations/attack_try/north/03.webp",
-     "frost_mite/animations/attack_try/north/04.webp",
-     "frost_mite/animations/attack_try/north/05.webp",
-     "frost_mite/animations/attack_try/north/06.webp",
-     "frost_mite/animations/attack_try/north/07.webp",
-     "frost_mite/animations/attack_try/north/08.webp",
-     "frost_mite/animations/attack_try/north/09.webp",
-     "frost_mite/animations/attack_try/north/10.webp",
-     "frost_mite/animations/attack_try/north/11.webp",
-     "frost_mite/animations/attack_try/north/12.webp",
-     "frost_mite/animations/attack_try/north/13.webp",
-     "frost_mite/animations/attack_try/north/14.webp",
-     "frost_mite/animations/attack_try/north/15.webp"
-    ]
-   },
-   "strips": {
-    "south": "frost_mite/animations/attack_try__south.webp",
-    "south-east": "frost_mite/animations/attack_try__south-east.webp",
-    "east": "frost_mite/animations/attack_try__east.webp",
-    "north-east": "frost_mite/animations/attack_try__north-east.webp",
-    "north": "frost_mite/animations/attack_try__north.webp"
-   }
-  },
-  "attack_v2": {
-   "directions": {
-    "south": {
-     "status": "pass",
-     "step_mean": 0.2463,
-     "step_max": 0.3088,
-     "drift": 1.0,
-     "loop": 0.1408,
-     "loop_ratio": 0.57,
-     "travel": 0.58,
-     "pin": 1.0,
-     "pad": 1,
-     "flash": 0.337,
-     "peak": 0.3803,
-     "reach": 0.375,
-     "canvas": [
-      34,
-      34
-     ],
-     "reasons": [
-      "canvas grown by 1 px a side to hold the motion"
-     ],
-     "sub": "78a13af8-0830-41db-a2d1-11d287b6ce0d",
-     "group": "7fdaab3e-d996-45aa-bbbe-677cca780e52",
-     "takes": 1,
-     "version": 6,
-     "mirrored": false,
-     "generated_at": "2026-09-10T22:20:44+00:00",
-     "action": "Ice Burst - The mite rears up and bursts forward in a spray of ice shards, mandibles thrown wide, an extremely violent attack, huge exaggerated motion, the limb thrown far out",
-     "tries": 6,
-     "rolls": 6,
-     "intensity": 1,
-     "frames": 5,
-     "rung": 5
-    },
-    "south-east": {
-     "status": "warn",
-     "step_mean": 0.2139,
-     "step_max": 0.2915,
-     "drift": 1.66,
-     "loop": 0.3246,
-     "loop_ratio": 1.52,
-     "travel": 1.59,
-     "pin": 1.0,
-     "pad": 0,
-     "flash": 0.149,
-     "peak": 0.3626,
-     "reach": 0.208,
-     "canvas": [
-      32,
-      32
-     ],
-     "reasons": [
-      "shallow strike: reach 0.21 — eyeball it"
-     ],
-     "sub": "92559560-f924-4e1d-ba1c-81aee8e0cdfb",
-     "group": "a7c78809-ace5-4b03-a8a6-e0236696639d",
-     "takes": 1,
-     "version": 7,
-     "mirrored": false,
-     "generated_at": "2026-09-10T22:36:41+00:00",
-     "action": "Lunge Attack - Throws its whole body forward in one fast lunge, white swoosh lines trailing behind it, a big aggressive swing",
-     "tries": 3,
-     "rolls": 3,
-     "intensity": 1,
-     "frames": 5,
-     "rung": 2
-    },
-    "east": {
-     "status": "warn",
-     "step_mean": 0.2233,
-     "step_max": 0.254,
-     "drift": 2.5,
-     "loop": 0.0481,
-     "loop_ratio": 0.22,
-     "travel": 1.94,
-     "pin": 1.0,
-     "pad": 0,
-     "flash": 0.0,
-     "peak": 0.3957,
-     "reach": 0.217,
-     "canvas": [
-      32,
-      32
-     ],
-     "reasons": [
-      "shallow strike: reach 0.22 — eyeball it"
-     ],
-     "sub": "4519d95b-7dc0-470b-a3a3-c46700f4fea7",
-     "group": "e2475fa8-5590-48f6-b696-2f713321e0ff",
-     "takes": 1,
-     "version": 7,
-     "mirrored": false,
-     "generated_at": "2026-09-10T22:36:42+00:00",
-     "action": "Ice Burst - The mite rears up and bursts forward in a spray of ice shards, mandibles thrown wide, an explosively violent attack, the whole body thrown into it, debris and swoosh lines flying",
-     "tries": 7,
-     "rolls": 7,
-     "intensity": 1,
-     "frames": 5,
-     "rung": 6
-    },
-    "north-east": {
-     "status": "warn",
-     "step_mean": 0.1713,
-     "step_max": 0.2293,
-     "drift": 1.34,
-     "loop": 0.2044,
-     "loop_ratio": 1.19,
-     "travel": 1.54,
-     "pin": 1.0,
-     "pad": 0,
-     "flash": 0.003,
-     "peak": 0.3149,
-     "reach": 0.182,
-     "canvas": [
-      32,
-      32
-     ],
-     "reasons": [
-      "shallow strike: reach 0.18 — eyeball it"
-     ],
-     "sub": "7bdf7e8d-3d88-482f-9a88-3a0c0b3a9af0",
-     "group": "294237cd-679c-402e-b7e1-88bc19677f45",
-     "takes": 1,
-     "version": 7,
-     "mirrored": false,
-     "generated_at": "2026-09-10T22:36:42+00:00",
-     "action": "Lunge Attack - Throws its whole body forward in one fast lunge, white swoosh lines trailing behind it, a big aggressive swing",
-     "tries": 3,
-     "rolls": 3,
-     "intensity": 1,
-     "frames": 5,
-     "rung": 2
-    },
-    "north": {
-     "status": "pass",
-     "step_mean": 0.3551,
-     "step_max": 0.4902,
-     "drift": 1.88,
-     "loop": 0.2179,
-     "loop_ratio": 0.61,
-     "travel": 0.52,
-     "pin": 1.0,
-     "pad": 2,
-     "flash": 0.32,
-     "peak": 0.4706,
-     "reach": 0.409,
-     "canvas": [
-      36,
-      36
-     ],
-     "reasons": [
-      "canvas grown by 2 px a side to hold the motion"
-     ],
-     "sub": "d61aa54d-c97d-4096-b8c1-678ab52de20c",
-     "group": "5ea64c89-82b4-4a30-ba0b-352a222d4bfa",
-     "takes": 1,
-     "version": 5,
-     "mirrored": false,
-     "generated_at": "2026-09-10T21:56:08+00:00",
-     "action": "Ice Burst - The mite rears up and bursts forward in a spray of ice shards, mandibles thrown wide",
-     "tries": 1,
-     "rolls": 1,
-     "intensity": 1,
-     "frames": 5,
-     "rung": 3
-    },
-    "south-west": {
-     "status": "warn",
-     "step_mean": 0.2139,
-     "step_max": 0.2915,
-     "drift": 1.66,
-     "loop": 0.3246,
-     "loop_ratio": 1.52,
-     "travel": 1.59,
-     "pin": 1.0,
-     "pad": 0,
-     "flash": 0.149,
-     "peak": 0.3626,
-     "reach": 0.208,
-     "canvas": [
-      32,
-      32
-     ],
-     "reasons": [
-      "shallow strike: reach 0.21 — eyeball it"
-     ],
-     "sub": "92559560-f924-4e1d-ba1c-81aee8e0cdfb",
-     "group": "a7c78809-ace5-4b03-a8a6-e0236696639d",
-     "takes": 1,
-     "version": 7,
-     "mirrored": true,
-     "generated_at": "2026-09-10T22:36:41+00:00",
-     "action": "Lunge Attack - Throws its whole body forward in one fast lunge, white swoosh lines trailing behind it, a big aggressive swing",
-     "tries": 3,
-     "rolls": 3,
-     "intensity": 1,
-     "frames": 5,
-     "rung": 2,
-     "source": "south-east"
-    },
-    "north-west": {
-     "status": "warn",
-     "step_mean": 0.1713,
-     "step_max": 0.2293,
-     "drift": 1.34,
-     "loop": 0.2044,
-     "loop_ratio": 1.19,
-     "travel": 1.54,
-     "pin": 1.0,
-     "pad": 0,
-     "flash": 0.003,
-     "peak": 0.3149,
-     "reach": 0.182,
-     "canvas": [
-      32,
-      32
-     ],
-     "reasons": [
-      "shallow strike: reach 0.18 — eyeball it"
-     ],
-     "sub": "7bdf7e8d-3d88-482f-9a88-3a0c0b3a9af0",
-     "group": "294237cd-679c-402e-b7e1-88bc19677f45",
-     "takes": 1,
-     "version": 7,
-     "mirrored": true,
-     "generated_at": "2026-09-10T22:36:42+00:00",
-     "action": "Lunge Attack - Throws its whole body forward in one fast lunge, white swoosh lines trailing behind it, a big aggressive swing",
-     "tries": 3,
-     "rolls": 3,
-     "intensity": 1,
-     "frames": 5,
-     "rung": 2,
-     "source": "north-east"
-    },
-    "west": {
-     "status": "warn",
-     "step_mean": 0.2233,
-     "step_max": 0.254,
-     "drift": 2.5,
-     "loop": 0.0481,
-     "loop_ratio": 0.22,
-     "travel": 1.94,
-     "pin": 1.0,
-     "pad": 0,
-     "flash": 0.0,
-     "peak": 0.3957,
-     "reach": 0.217,
-     "canvas": [
-      32,
-      32
-     ],
-     "reasons": [
-      "shallow strike: reach 0.22 — eyeball it"
-     ],
-     "sub": "4519d95b-7dc0-470b-a3a3-c46700f4fea7",
-     "group": "e2475fa8-5590-48f6-b696-2f713321e0ff",
-     "takes": 1,
-     "version": 7,
-     "mirrored": true,
-     "generated_at": "2026-09-10T22:36:42+00:00",
-     "action": "Ice Burst - The mite rears up and bursts forward in a spray of ice shards, mandibles thrown wide, an explosively violent attack, the whole body thrown into it, debris and swoosh lines flying",
-     "tries": 7,
-     "rolls": 7,
-     "intensity": 1,
-     "frames": 5,
-     "rung": 6,
-     "source": "east"
-    }
-   },
-   "action": "Bite - Hops forward and bites hard with its mandibles wide",
-   "frame_paths": {
-    "south": [
-     "frost_mite/animations/attack_v2/south/00.webp",
-     "frost_mite/animations/attack_v2/south/01.webp",
-     "frost_mite/animations/attack_v2/south/02.webp",
-     "frost_mite/animations/attack_v2/south/03.webp",
-     "frost_mite/animations/attack_v2/south/04.webp"
-    ],
-    "south-east": [
-     "frost_mite/animations/attack_v2/south-east/00.webp",
-     "frost_mite/animations/attack_v2/south-east/01.webp",
-     "frost_mite/animations/attack_v2/south-east/02.webp",
-     "frost_mite/animations/attack_v2/south-east/03.webp",
-     "frost_mite/animations/attack_v2/south-east/04.webp"
-    ],
-    "east": [
-     "frost_mite/animations/attack_v2/east/00.webp",
-     "frost_mite/animations/attack_v2/east/01.webp",
-     "frost_mite/animations/attack_v2/east/02.webp",
-     "frost_mite/animations/attack_v2/east/03.webp",
-     "frost_mite/animations/attack_v2/east/04.webp"
-    ],
-    "north-east": [
-     "frost_mite/animations/attack_v2/north-east/00.webp",
-     "frost_mite/animations/attack_v2/north-east/01.webp",
-     "frost_mite/animations/attack_v2/north-east/02.webp",
-     "frost_mite/animations/attack_v2/north-east/03.webp",
-     "frost_mite/animations/attack_v2/north-east/04.webp"
-    ],
-    "north": [
-     "frost_mite/animations/attack_v2/north/00.webp",
-     "frost_mite/animations/attack_v2/north/01.webp",
-     "frost_mite/animations/attack_v2/north/02.webp",
-     "frost_mite/animations/attack_v2/north/03.webp",
-     "frost_mite/animations/attack_v2/north/04.webp"
-    ],
-    "south-west": [
-     "frost_mite/animations/attack_v2/south-west/00.webp",
-     "frost_mite/animations/attack_v2/south-west/01.webp",
-     "frost_mite/animations/attack_v2/south-west/02.webp",
-     "frost_mite/animations/attack_v2/south-west/03.webp",
-     "frost_mite/animations/attack_v2/south-west/04.webp"
-    ],
-    "north-west": [
-     "frost_mite/animations/attack_v2/north-west/00.webp",
-     "frost_mite/animations/attack_v2/north-west/01.webp",
-     "frost_mite/animations/attack_v2/north-west/02.webp",
-     "frost_mite/animations/attack_v2/north-west/03.webp",
-     "frost_mite/animations/attack_v2/north-west/04.webp"
-    ],
-    "west": [
-     "frost_mite/animations/attack_v2/west/00.webp",
-     "frost_mite/animations/attack_v2/west/01.webp",
-     "frost_mite/animations/attack_v2/west/02.webp",
-     "frost_mite/animations/attack_v2/west/03.webp",
-     "frost_mite/animations/attack_v2/west/04.webp"
-    ]
-   },
-   "strips": {
-    "south": "frost_mite/animations/attack_v2__south.webp",
-    "south-east": "frost_mite/animations/attack_v2__south-east.webp",
-    "east": "frost_mite/animations/attack_v2__east.webp",
-    "north-east": "frost_mite/animations/attack_v2__north-east.webp",
-    "north": "frost_mite/animations/attack_v2__north.webp",
-    "south-west": "frost_mite/animations/attack_v2__south-west.webp",
-    "north-west": "frost_mite/animations/attack_v2__north-west.webp",
-    "west": "frost_mite/animations/attack_v2__west.webp"
-   },
-   "intensity": 1
-  }
- }
 }

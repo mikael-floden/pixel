@@ -596,584 +596,6 @@
         "north-west": "ice_sprite/animations/walk__north-west.webp"
       }
     },
-    "attack": {
-      "directions": {
-        "south": {
-          "status": "warn",
-          "step_mean": 0.2615,
-          "step_max": 0.3968,
-          "drift": 1.05,
-          "loop": 0.0,
-          "loop_ratio": 0.0,
-          "travel": 0.06,
-          "pin": 1.0,
-          "pad": 0,
-          "flash": 0.207,
-          "peak": 0.3968,
-          "reach": 0.273,
-          "canvas": [
-            40,
-            40
-          ],
-          "reasons": [
-            "shallow strike: reach 0.27 — eyeball it"
-          ],
-          "sub": "9134d7d1-cf75-4d1b-b64b-b18fc90b1242",
-          "group": "c70781df-9dd3-43be-9ccf-f52b6def9b3f",
-          "takes": 1,
-          "version": 2,
-          "mirrored": false,
-          "generated_at": "2026-09-09T22:44:00+00:00",
-          "action": "Frost Burst - Thrusts both hands forward and releases one burst of frost crystals, then returns to idle stance"
-        },
-        "south-east": {
-          "status": "warn",
-          "step_mean": 0.2607,
-          "step_max": 0.3312,
-          "drift": 1.42,
-          "loop": 0.0,
-          "loop_ratio": 0.0,
-          "travel": 0.45,
-          "pin": 1.0,
-          "pad": 0,
-          "flash": 0.308,
-          "peak": 0.3868,
-          "reach": 0.389,
-          "canvas": [
-            40,
-            40
-          ],
-          "reasons": [
-            "some bright effect pixels (0.31) — eyeball it"
-          ],
-          "sub": "ca0ab6d2-0290-4757-a37c-51908b51b602",
-          "group": "c451c773-fba0-46f8-bf71-ecf168b91f61",
-          "takes": 1,
-          "version": 2,
-          "mirrored": false,
-          "generated_at": "2026-09-09T22:44:01+00:00",
-          "action": "Frost Burst - Thrusts both hands forward and releases one burst of frost crystals, then returns to idle stance"
-        },
-        "east": {
-          "status": "warn",
-          "step_mean": 0.375,
-          "step_max": 0.5542,
-          "drift": 3.59,
-          "loop": 0.0,
-          "loop_ratio": 0.0,
-          "travel": 0.49,
-          "pin": 1.0,
-          "pad": 0,
-          "flash": 0.242,
-          "peak": 0.5542,
-          "reach": 0.714,
-          "canvas": [
-            40,
-            40
-          ],
-          "reasons": [
-            "some bright effect pixels (0.24) — eyeball it"
-          ],
-          "sub": "f395fffb-535f-4190-92f9-9a2b6188010b",
-          "group": "af34f9a2-191f-4a3c-84fa-aab117d04891",
-          "takes": 1,
-          "version": 5,
-          "mirrored": false,
-          "generated_at": "2026-09-09T23:12:31+00:00",
-          "action": "Frost Burst - Thrusts both hands forward and releases one burst of frost crystals, then returns to idle stance",
-          "tries": 3
-        },
-        "north-east": {
-          "status": "pass",
-          "step_mean": 0.2353,
-          "step_max": 0.3575,
-          "drift": 1.19,
-          "loop": 0.0,
-          "loop_ratio": 0.0,
-          "travel": 0.56,
-          "pin": 1.0,
-          "pad": 0,
-          "flash": 0.146,
-          "peak": 0.4027,
-          "reach": 0.353,
-          "canvas": [
-            40,
-            40
-          ],
-          "reasons": [],
-          "sub": "a1407168-063e-4ba8-819f-ab829cec0d82",
-          "group": "150aecc4-16d4-43e5-9cea-2f49cb5131de",
-          "takes": 1,
-          "version": 2,
-          "mirrored": false,
-          "generated_at": "2026-09-09T22:44:01+00:00",
-          "action": "Frost Burst - Thrusts both hands forward and releases one burst of frost crystals, then returns to idle stance"
-        },
-        "north": {
-          "status": "pass",
-          "step_mean": 0.2603,
-          "step_max": 0.3261,
-          "drift": 0.78,
-          "loop": 0.0,
-          "loop_ratio": 0.0,
-          "travel": 0.03,
-          "pin": 1.0,
-          "pad": 0,
-          "flash": 0.221,
-          "peak": 0.4471,
-          "reach": 0.318,
-          "canvas": [
-            40,
-            40
-          ],
-          "reasons": [],
-          "sub": "6d361a0a-902a-4681-a4f9-9adeeb23d1b6",
-          "group": "e5e95d6c-7b14-48c0-8cb3-58d8827ca559",
-          "takes": 1,
-          "version": 2,
-          "mirrored": false,
-          "generated_at": "2026-09-09T22:44:02+00:00",
-          "action": "Frost Burst - Thrusts both hands forward and releases one burst of frost crystals, then returns to idle stance"
-        },
-        "south-west": {
-          "status": "warn",
-          "step_mean": 0.2607,
-          "step_max": 0.3312,
-          "drift": 1.42,
-          "loop": 0.0,
-          "loop_ratio": 0.0,
-          "travel": 0.45,
-          "pin": 1.0,
-          "pad": 0,
-          "flash": 0.308,
-          "peak": 0.3868,
-          "reach": 0.389,
-          "canvas": [
-            40,
-            40
-          ],
-          "reasons": [
-            "some bright effect pixels (0.31) — eyeball it"
-          ],
-          "sub": "ca0ab6d2-0290-4757-a37c-51908b51b602",
-          "group": "c451c773-fba0-46f8-bf71-ecf168b91f61",
-          "takes": 1,
-          "version": 2,
-          "mirrored": true,
-          "generated_at": "2026-09-09T22:44:01+00:00",
-          "action": "Frost Burst - Thrusts both hands forward and releases one burst of frost crystals, then returns to idle stance",
-          "source": "south-east"
-        },
-        "west": {
-          "status": "warn",
-          "step_mean": 0.375,
-          "step_max": 0.5542,
-          "drift": 3.59,
-          "loop": 0.0,
-          "loop_ratio": 0.0,
-          "travel": 0.49,
-          "pin": 1.0,
-          "pad": 0,
-          "flash": 0.242,
-          "peak": 0.5542,
-          "reach": 0.714,
-          "canvas": [
-            40,
-            40
-          ],
-          "reasons": [
-            "some bright effect pixels (0.24) — eyeball it"
-          ],
-          "sub": "f395fffb-535f-4190-92f9-9a2b6188010b",
-          "group": "af34f9a2-191f-4a3c-84fa-aab117d04891",
-          "takes": 1,
-          "version": 5,
-          "mirrored": true,
-          "generated_at": "2026-09-09T23:12:31+00:00",
-          "action": "Frost Burst - Thrusts both hands forward and releases one burst of frost crystals, then returns to idle stance",
-          "tries": 3,
-          "source": "east"
-        },
-        "north-west": {
-          "status": "pass",
-          "step_mean": 0.2353,
-          "step_max": 0.3575,
-          "drift": 1.19,
-          "loop": 0.0,
-          "loop_ratio": 0.0,
-          "travel": 0.56,
-          "pin": 1.0,
-          "pad": 0,
-          "flash": 0.146,
-          "peak": 0.4027,
-          "reach": 0.353,
-          "canvas": [
-            40,
-            40
-          ],
-          "reasons": [],
-          "sub": "a1407168-063e-4ba8-819f-ab829cec0d82",
-          "group": "150aecc4-16d4-43e5-9cea-2f49cb5131de",
-          "takes": 1,
-          "version": 2,
-          "mirrored": true,
-          "generated_at": "2026-09-09T22:44:01+00:00",
-          "action": "Frost Burst - Thrusts both hands forward and releases one burst of frost crystals, then returns to idle stance",
-          "source": "north-east"
-        }
-      },
-      "action": "Frost Burst - Thrusts both hands forward and releases one burst of frost crystals, then returns to idle stance",
-      "frame_paths": {
-        "south": [
-          "ice_sprite/animations/attack/south/00.webp",
-          "ice_sprite/animations/attack/south/01.webp",
-          "ice_sprite/animations/attack/south/02.webp",
-          "ice_sprite/animations/attack/south/03.webp",
-          "ice_sprite/animations/attack/south/04.webp"
-        ],
-        "south-east": [
-          "ice_sprite/animations/attack/south-east/00.webp",
-          "ice_sprite/animations/attack/south-east/01.webp",
-          "ice_sprite/animations/attack/south-east/02.webp",
-          "ice_sprite/animations/attack/south-east/03.webp",
-          "ice_sprite/animations/attack/south-east/04.webp"
-        ],
-        "east": [
-          "ice_sprite/animations/attack/east/00.webp",
-          "ice_sprite/animations/attack/east/01.webp",
-          "ice_sprite/animations/attack/east/02.webp",
-          "ice_sprite/animations/attack/east/03.webp",
-          "ice_sprite/animations/attack/east/04.webp"
-        ],
-        "north-east": [
-          "ice_sprite/animations/attack/north-east/00.webp",
-          "ice_sprite/animations/attack/north-east/01.webp",
-          "ice_sprite/animations/attack/north-east/02.webp",
-          "ice_sprite/animations/attack/north-east/03.webp",
-          "ice_sprite/animations/attack/north-east/04.webp"
-        ],
-        "north": [
-          "ice_sprite/animations/attack/north/00.webp",
-          "ice_sprite/animations/attack/north/01.webp",
-          "ice_sprite/animations/attack/north/02.webp",
-          "ice_sprite/animations/attack/north/03.webp",
-          "ice_sprite/animations/attack/north/04.webp"
-        ],
-        "south-west": [
-          "ice_sprite/animations/attack/south-west/00.webp",
-          "ice_sprite/animations/attack/south-west/01.webp",
-          "ice_sprite/animations/attack/south-west/02.webp",
-          "ice_sprite/animations/attack/south-west/03.webp",
-          "ice_sprite/animations/attack/south-west/04.webp"
-        ],
-        "west": [
-          "ice_sprite/animations/attack/west/00.webp",
-          "ice_sprite/animations/attack/west/01.webp",
-          "ice_sprite/animations/attack/west/02.webp",
-          "ice_sprite/animations/attack/west/03.webp",
-          "ice_sprite/animations/attack/west/04.webp"
-        ],
-        "north-west": [
-          "ice_sprite/animations/attack/north-west/00.webp",
-          "ice_sprite/animations/attack/north-west/01.webp",
-          "ice_sprite/animations/attack/north-west/02.webp",
-          "ice_sprite/animations/attack/north-west/03.webp",
-          "ice_sprite/animations/attack/north-west/04.webp"
-        ]
-      },
-      "strips": {
-        "south": "ice_sprite/animations/attack__south.webp",
-        "south-east": "ice_sprite/animations/attack__south-east.webp",
-        "east": "ice_sprite/animations/attack__east.webp",
-        "north-east": "ice_sprite/animations/attack__north-east.webp",
-        "north": "ice_sprite/animations/attack__north.webp",
-        "south-west": "ice_sprite/animations/attack__south-west.webp",
-        "west": "ice_sprite/animations/attack__west.webp",
-        "north-west": "ice_sprite/animations/attack__north-west.webp"
-      }
-    },
-    "attack_try": {
-      "directions": {
-        "south": {
-          "status": "fail",
-          "step_mean": 0.1503,
-          "step_max": 0.6631,
-          "drift": 6.79,
-          "loop": 0.0,
-          "loop_ratio": 0.0,
-          "travel": 7.65,
-          "pin": 1.0,
-          "pad": 7,
-          "flash": 0.105,
-          "peak": 0.6282,
-          "reach": 0.818,
-          "canvas": [
-            54,
-            54
-          ],
-          "reasons": [
-            "16 frames, expected 4",
-            "8 px of travel — eyeball it",
-            "canvas grown by 7 px a side to hold the motion"
-          ],
-          "sub": "c0c333d8-12dd-473d-876c-61975b442433",
-          "group": "84135312-73a4-4027-9fb9-7347ae3632b0",
-          "takes": 1,
-          "version": 2,
-          "mirrored": false,
-          "action": "Frost Burst - Throws both hands forward and releases a burst of frost, a big aggressive swing",
-          "intensity": 0,
-          "rolls": 2,
-          "frames": 16,
-          "rung": 1,
-          "unwrapped": 2,
-          "tries": 2,
-          "generated_at": "2026-09-11T17:14:52+00:00"
-        },
-        "south-east": {
-          "status": "fail",
-          "step_mean": 0.1917,
-          "step_max": 0.5118,
-          "drift": 5.34,
-          "loop": 0.0202,
-          "loop_ratio": 0.11,
-          "travel": 5.34,
-          "pin": 1.0,
-          "pad": 7,
-          "flash": 0.053,
-          "peak": 0.6044,
-          "reach": 1.056,
-          "canvas": [
-            54,
-            54
-          ],
-          "reasons": [
-            "16 frames, expected 4",
-            "5 px of travel — eyeball it",
-            "canvas grown by 7 px a side to hold the motion"
-          ],
-          "sub": "b83949f6-7740-439d-8bd5-e380aecbd7c3",
-          "group": "84135312-73a4-4027-9fb9-7347ae3632b0",
-          "takes": 1,
-          "version": 2,
-          "mirrored": false,
-          "action": "Frost Burst - Throws both hands forward and releases a burst of frost, a big aggressive swing",
-          "intensity": 0,
-          "rolls": 2,
-          "frames": 16,
-          "rung": 1,
-          "unwrapped": 1,
-          "tries": 2,
-          "generated_at": "2026-09-11T17:14:53+00:00"
-        },
-        "east": {
-          "status": "fail",
-          "step_mean": 0.1538,
-          "step_max": 0.4144,
-          "drift": 2.91,
-          "loop": 0.0,
-          "loop_ratio": 0.0,
-          "travel": 2.75,
-          "pin": 1.0,
-          "pad": 0,
-          "flash": 0.013,
-          "peak": 0.4505,
-          "reach": 0.932,
-          "canvas": [
-            40,
-            40
-          ],
-          "reasons": [
-            "16 frames, expected 4"
-          ],
-          "sub": "225f4764-e00d-4f6b-8235-b819c7904e76",
-          "group": "84135312-73a4-4027-9fb9-7347ae3632b0",
-          "takes": 1,
-          "version": 2,
-          "mirrored": false,
-          "action": "Frost Burst - Throws both hands forward and releases a burst of frost, a big aggressive swing",
-          "intensity": 0,
-          "rolls": 2,
-          "frames": 16,
-          "rung": 1,
-          "unwrapped": null,
-          "tries": 2,
-          "generated_at": "2026-09-11T17:14:55+00:00"
-        },
-        "north-east": {
-          "status": "fail",
-          "step_mean": 0.1996,
-          "step_max": 0.6904,
-          "drift": 6.4,
-          "loop": 0.0,
-          "loop_ratio": 0.0,
-          "travel": 7.04,
-          "pin": 1.0,
-          "pad": 8,
-          "flash": 0.374,
-          "peak": 0.6459,
-          "reach": 1.118,
-          "canvas": [
-            56,
-            56
-          ],
-          "reasons": [
-            "16 frames, expected 4",
-            "some bright effect pixels (0.37) — eyeball it",
-            "7 px of travel — eyeball it",
-            "canvas grown by 8 px a side to hold the motion"
-          ],
-          "sub": "56d42841-ccbb-415b-aa96-2831d721b5bf",
-          "group": "84135312-73a4-4027-9fb9-7347ae3632b0",
-          "takes": 1,
-          "version": 2,
-          "mirrored": false,
-          "action": "Frost Burst - Throws both hands forward and releases a burst of frost, a big aggressive swing",
-          "intensity": 0,
-          "rolls": 2,
-          "frames": 16,
-          "rung": 1,
-          "unwrapped": 2,
-          "tries": 2,
-          "generated_at": "2026-09-11T17:14:56+00:00"
-        },
-        "north": {
-          "status": "fail",
-          "step_mean": 0.1701,
-          "step_max": 0.7291,
-          "drift": 5.26,
-          "loop": 0.0,
-          "loop_ratio": 0.0,
-          "travel": 7.28,
-          "pin": 1.0,
-          "pad": 0,
-          "flash": 0.007,
-          "peak": 0.6054,
-          "reach": 0.591,
-          "canvas": [
-            40,
-            40
-          ],
-          "reasons": [
-            "16 frames, expected 4",
-            "7 px of travel — eyeball it"
-          ],
-          "sub": "504311d5-d2ed-4b6e-a860-72b98f795151",
-          "group": "84135312-73a4-4027-9fb9-7347ae3632b0",
-          "takes": 1,
-          "version": 2,
-          "mirrored": false,
-          "action": "Frost Burst - Throws both hands forward and releases a burst of frost, a big aggressive swing",
-          "intensity": 0,
-          "rolls": 2,
-          "frames": 16,
-          "rung": 1,
-          "unwrapped": null,
-          "tries": 2,
-          "generated_at": "2026-09-11T17:14:57+00:00"
-        }
-      },
-      "action": "Frost Burst - Throws both hands forward and releases a burst of frost",
-      "frame_paths": {
-        "south": [
-          "ice_sprite/animations/attack_try/south/00.webp",
-          "ice_sprite/animations/attack_try/south/01.webp",
-          "ice_sprite/animations/attack_try/south/02.webp",
-          "ice_sprite/animations/attack_try/south/03.webp",
-          "ice_sprite/animations/attack_try/south/04.webp",
-          "ice_sprite/animations/attack_try/south/05.webp",
-          "ice_sprite/animations/attack_try/south/06.webp",
-          "ice_sprite/animations/attack_try/south/07.webp",
-          "ice_sprite/animations/attack_try/south/08.webp",
-          "ice_sprite/animations/attack_try/south/09.webp",
-          "ice_sprite/animations/attack_try/south/10.webp",
-          "ice_sprite/animations/attack_try/south/11.webp",
-          "ice_sprite/animations/attack_try/south/12.webp",
-          "ice_sprite/animations/attack_try/south/13.webp",
-          "ice_sprite/animations/attack_try/south/14.webp",
-          "ice_sprite/animations/attack_try/south/15.webp"
-        ],
-        "south-east": [
-          "ice_sprite/animations/attack_try/south-east/00.webp",
-          "ice_sprite/animations/attack_try/south-east/01.webp",
-          "ice_sprite/animations/attack_try/south-east/02.webp",
-          "ice_sprite/animations/attack_try/south-east/03.webp",
-          "ice_sprite/animations/attack_try/south-east/04.webp",
-          "ice_sprite/animations/attack_try/south-east/05.webp",
-          "ice_sprite/animations/attack_try/south-east/06.webp",
-          "ice_sprite/animations/attack_try/south-east/07.webp",
-          "ice_sprite/animations/attack_try/south-east/08.webp",
-          "ice_sprite/animations/attack_try/south-east/09.webp",
-          "ice_sprite/animations/attack_try/south-east/10.webp",
-          "ice_sprite/animations/attack_try/south-east/11.webp",
-          "ice_sprite/animations/attack_try/south-east/12.webp",
-          "ice_sprite/animations/attack_try/south-east/13.webp",
-          "ice_sprite/animations/attack_try/south-east/14.webp",
-          "ice_sprite/animations/attack_try/south-east/15.webp"
-        ],
-        "east": [
-          "ice_sprite/animations/attack_try/east/00.webp",
-          "ice_sprite/animations/attack_try/east/01.webp",
-          "ice_sprite/animations/attack_try/east/02.webp",
-          "ice_sprite/animations/attack_try/east/03.webp",
-          "ice_sprite/animations/attack_try/east/04.webp",
-          "ice_sprite/animations/attack_try/east/05.webp",
-          "ice_sprite/animations/attack_try/east/06.webp",
-          "ice_sprite/animations/attack_try/east/07.webp",
-          "ice_sprite/animations/attack_try/east/08.webp",
-          "ice_sprite/animations/attack_try/east/09.webp",
-          "ice_sprite/animations/attack_try/east/10.webp",
-          "ice_sprite/animations/attack_try/east/11.webp",
-          "ice_sprite/animations/attack_try/east/12.webp",
-          "ice_sprite/animations/attack_try/east/13.webp",
-          "ice_sprite/animations/attack_try/east/14.webp",
-          "ice_sprite/animations/attack_try/east/15.webp"
-        ],
-        "north-east": [
-          "ice_sprite/animations/attack_try/north-east/00.webp",
-          "ice_sprite/animations/attack_try/north-east/01.webp",
-          "ice_sprite/animations/attack_try/north-east/02.webp",
-          "ice_sprite/animations/attack_try/north-east/03.webp",
-          "ice_sprite/animations/attack_try/north-east/04.webp",
-          "ice_sprite/animations/attack_try/north-east/05.webp",
-          "ice_sprite/animations/attack_try/north-east/06.webp",
-          "ice_sprite/animations/attack_try/north-east/07.webp",
-          "ice_sprite/animations/attack_try/north-east/08.webp",
-          "ice_sprite/animations/attack_try/north-east/09.webp",
-          "ice_sprite/animations/attack_try/north-east/10.webp",
-          "ice_sprite/animations/attack_try/north-east/11.webp",
-          "ice_sprite/animations/attack_try/north-east/12.webp",
-          "ice_sprite/animations/attack_try/north-east/13.webp",
-          "ice_sprite/animations/attack_try/north-east/14.webp",
-          "ice_sprite/animations/attack_try/north-east/15.webp"
-        ],
-        "north": [
-          "ice_sprite/animations/attack_try/north/00.webp",
-          "ice_sprite/animations/attack_try/north/01.webp",
-          "ice_sprite/animations/attack_try/north/02.webp",
-          "ice_sprite/animations/attack_try/north/03.webp",
-          "ice_sprite/animations/attack_try/north/04.webp",
-          "ice_sprite/animations/attack_try/north/05.webp",
-          "ice_sprite/animations/attack_try/north/06.webp",
-          "ice_sprite/animations/attack_try/north/07.webp",
-          "ice_sprite/animations/attack_try/north/08.webp",
-          "ice_sprite/animations/attack_try/north/09.webp",
-          "ice_sprite/animations/attack_try/north/10.webp",
-          "ice_sprite/animations/attack_try/north/11.webp",
-          "ice_sprite/animations/attack_try/north/12.webp",
-          "ice_sprite/animations/attack_try/north/13.webp",
-          "ice_sprite/animations/attack_try/north/14.webp",
-          "ice_sprite/animations/attack_try/north/15.webp"
-        ]
-      },
-      "strips": {
-        "south": "ice_sprite/animations/attack_try__south.webp",
-        "south-east": "ice_sprite/animations/attack_try__south-east.webp",
-        "east": "ice_sprite/animations/attack_try__east.webp",
-        "north-east": "ice_sprite/animations/attack_try__north-east.webp",
-        "north": "ice_sprite/animations/attack_try__north.webp"
-      }
-    },
     "attack_v2": {
       "directions": {
         "south": {
@@ -1488,6 +910,584 @@
         "south-west": "ice_sprite/animations/attack_v2__south-west.webp",
         "west": "ice_sprite/animations/attack_v2__west.webp",
         "north-west": "ice_sprite/animations/attack_v2__north-west.webp"
+      }
+    },
+    "attack_v1": {
+      "directions": {
+        "south": {
+          "status": "warn",
+          "step_mean": 0.2615,
+          "step_max": 0.3968,
+          "drift": 1.05,
+          "loop": 0.0,
+          "loop_ratio": 0.0,
+          "travel": 0.06,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": 0.207,
+          "peak": 0.3968,
+          "reach": 0.273,
+          "canvas": [
+            40,
+            40
+          ],
+          "reasons": [
+            "shallow strike: reach 0.27 — eyeball it"
+          ],
+          "sub": "9134d7d1-cf75-4d1b-b64b-b18fc90b1242",
+          "group": "c70781df-9dd3-43be-9ccf-f52b6def9b3f",
+          "takes": 1,
+          "version": 2,
+          "mirrored": false,
+          "generated_at": "2026-09-09T22:44:00+00:00",
+          "action": "Frost Burst - Thrusts both hands forward and releases one burst of frost crystals, then returns to idle stance"
+        },
+        "south-east": {
+          "status": "warn",
+          "step_mean": 0.2607,
+          "step_max": 0.3312,
+          "drift": 1.42,
+          "loop": 0.0,
+          "loop_ratio": 0.0,
+          "travel": 0.45,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": 0.308,
+          "peak": 0.3868,
+          "reach": 0.389,
+          "canvas": [
+            40,
+            40
+          ],
+          "reasons": [
+            "some bright effect pixels (0.31) — eyeball it"
+          ],
+          "sub": "ca0ab6d2-0290-4757-a37c-51908b51b602",
+          "group": "c451c773-fba0-46f8-bf71-ecf168b91f61",
+          "takes": 1,
+          "version": 2,
+          "mirrored": false,
+          "generated_at": "2026-09-09T22:44:01+00:00",
+          "action": "Frost Burst - Thrusts both hands forward and releases one burst of frost crystals, then returns to idle stance"
+        },
+        "east": {
+          "status": "warn",
+          "step_mean": 0.375,
+          "step_max": 0.5542,
+          "drift": 3.59,
+          "loop": 0.0,
+          "loop_ratio": 0.0,
+          "travel": 0.49,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": 0.242,
+          "peak": 0.5542,
+          "reach": 0.714,
+          "canvas": [
+            40,
+            40
+          ],
+          "reasons": [
+            "some bright effect pixels (0.24) — eyeball it"
+          ],
+          "sub": "f395fffb-535f-4190-92f9-9a2b6188010b",
+          "group": "af34f9a2-191f-4a3c-84fa-aab117d04891",
+          "takes": 1,
+          "version": 5,
+          "mirrored": false,
+          "generated_at": "2026-09-09T23:12:31+00:00",
+          "action": "Frost Burst - Thrusts both hands forward and releases one burst of frost crystals, then returns to idle stance",
+          "tries": 3
+        },
+        "north-east": {
+          "status": "pass",
+          "step_mean": 0.2353,
+          "step_max": 0.3575,
+          "drift": 1.19,
+          "loop": 0.0,
+          "loop_ratio": 0.0,
+          "travel": 0.56,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": 0.146,
+          "peak": 0.4027,
+          "reach": 0.353,
+          "canvas": [
+            40,
+            40
+          ],
+          "reasons": [],
+          "sub": "a1407168-063e-4ba8-819f-ab829cec0d82",
+          "group": "150aecc4-16d4-43e5-9cea-2f49cb5131de",
+          "takes": 1,
+          "version": 2,
+          "mirrored": false,
+          "generated_at": "2026-09-09T22:44:01+00:00",
+          "action": "Frost Burst - Thrusts both hands forward and releases one burst of frost crystals, then returns to idle stance"
+        },
+        "north": {
+          "status": "pass",
+          "step_mean": 0.2603,
+          "step_max": 0.3261,
+          "drift": 0.78,
+          "loop": 0.0,
+          "loop_ratio": 0.0,
+          "travel": 0.03,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": 0.221,
+          "peak": 0.4471,
+          "reach": 0.318,
+          "canvas": [
+            40,
+            40
+          ],
+          "reasons": [],
+          "sub": "6d361a0a-902a-4681-a4f9-9adeeb23d1b6",
+          "group": "e5e95d6c-7b14-48c0-8cb3-58d8827ca559",
+          "takes": 1,
+          "version": 2,
+          "mirrored": false,
+          "generated_at": "2026-09-09T22:44:02+00:00",
+          "action": "Frost Burst - Thrusts both hands forward and releases one burst of frost crystals, then returns to idle stance"
+        },
+        "south-west": {
+          "status": "warn",
+          "step_mean": 0.2607,
+          "step_max": 0.3312,
+          "drift": 1.42,
+          "loop": 0.0,
+          "loop_ratio": 0.0,
+          "travel": 0.45,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": 0.308,
+          "peak": 0.3868,
+          "reach": 0.389,
+          "canvas": [
+            40,
+            40
+          ],
+          "reasons": [
+            "some bright effect pixels (0.31) — eyeball it"
+          ],
+          "sub": "ca0ab6d2-0290-4757-a37c-51908b51b602",
+          "group": "c451c773-fba0-46f8-bf71-ecf168b91f61",
+          "takes": 1,
+          "version": 2,
+          "mirrored": true,
+          "generated_at": "2026-09-09T22:44:01+00:00",
+          "action": "Frost Burst - Thrusts both hands forward and releases one burst of frost crystals, then returns to idle stance",
+          "source": "south-east"
+        },
+        "west": {
+          "status": "warn",
+          "step_mean": 0.375,
+          "step_max": 0.5542,
+          "drift": 3.59,
+          "loop": 0.0,
+          "loop_ratio": 0.0,
+          "travel": 0.49,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": 0.242,
+          "peak": 0.5542,
+          "reach": 0.714,
+          "canvas": [
+            40,
+            40
+          ],
+          "reasons": [
+            "some bright effect pixels (0.24) — eyeball it"
+          ],
+          "sub": "f395fffb-535f-4190-92f9-9a2b6188010b",
+          "group": "af34f9a2-191f-4a3c-84fa-aab117d04891",
+          "takes": 1,
+          "version": 5,
+          "mirrored": true,
+          "generated_at": "2026-09-09T23:12:31+00:00",
+          "action": "Frost Burst - Thrusts both hands forward and releases one burst of frost crystals, then returns to idle stance",
+          "tries": 3,
+          "source": "east"
+        },
+        "north-west": {
+          "status": "pass",
+          "step_mean": 0.2353,
+          "step_max": 0.3575,
+          "drift": 1.19,
+          "loop": 0.0,
+          "loop_ratio": 0.0,
+          "travel": 0.56,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": 0.146,
+          "peak": 0.4027,
+          "reach": 0.353,
+          "canvas": [
+            40,
+            40
+          ],
+          "reasons": [],
+          "sub": "a1407168-063e-4ba8-819f-ab829cec0d82",
+          "group": "150aecc4-16d4-43e5-9cea-2f49cb5131de",
+          "takes": 1,
+          "version": 2,
+          "mirrored": true,
+          "generated_at": "2026-09-09T22:44:01+00:00",
+          "action": "Frost Burst - Thrusts both hands forward and releases one burst of frost crystals, then returns to idle stance",
+          "source": "north-east"
+        }
+      },
+      "action": "Frost Burst - Thrusts both hands forward and releases one burst of frost crystals, then returns to idle stance",
+      "frame_paths": {
+        "south": [
+          "ice_sprite/animations/attack_v1/south/00.webp",
+          "ice_sprite/animations/attack_v1/south/01.webp",
+          "ice_sprite/animations/attack_v1/south/02.webp",
+          "ice_sprite/animations/attack_v1/south/03.webp",
+          "ice_sprite/animations/attack_v1/south/04.webp"
+        ],
+        "south-east": [
+          "ice_sprite/animations/attack_v1/south-east/00.webp",
+          "ice_sprite/animations/attack_v1/south-east/01.webp",
+          "ice_sprite/animations/attack_v1/south-east/02.webp",
+          "ice_sprite/animations/attack_v1/south-east/03.webp",
+          "ice_sprite/animations/attack_v1/south-east/04.webp"
+        ],
+        "east": [
+          "ice_sprite/animations/attack_v1/east/00.webp",
+          "ice_sprite/animations/attack_v1/east/01.webp",
+          "ice_sprite/animations/attack_v1/east/02.webp",
+          "ice_sprite/animations/attack_v1/east/03.webp",
+          "ice_sprite/animations/attack_v1/east/04.webp"
+        ],
+        "north-east": [
+          "ice_sprite/animations/attack_v1/north-east/00.webp",
+          "ice_sprite/animations/attack_v1/north-east/01.webp",
+          "ice_sprite/animations/attack_v1/north-east/02.webp",
+          "ice_sprite/animations/attack_v1/north-east/03.webp",
+          "ice_sprite/animations/attack_v1/north-east/04.webp"
+        ],
+        "north": [
+          "ice_sprite/animations/attack_v1/north/00.webp",
+          "ice_sprite/animations/attack_v1/north/01.webp",
+          "ice_sprite/animations/attack_v1/north/02.webp",
+          "ice_sprite/animations/attack_v1/north/03.webp",
+          "ice_sprite/animations/attack_v1/north/04.webp"
+        ],
+        "south-west": [
+          "ice_sprite/animations/attack_v1/south-west/00.webp",
+          "ice_sprite/animations/attack_v1/south-west/01.webp",
+          "ice_sprite/animations/attack_v1/south-west/02.webp",
+          "ice_sprite/animations/attack_v1/south-west/03.webp",
+          "ice_sprite/animations/attack_v1/south-west/04.webp"
+        ],
+        "west": [
+          "ice_sprite/animations/attack_v1/west/00.webp",
+          "ice_sprite/animations/attack_v1/west/01.webp",
+          "ice_sprite/animations/attack_v1/west/02.webp",
+          "ice_sprite/animations/attack_v1/west/03.webp",
+          "ice_sprite/animations/attack_v1/west/04.webp"
+        ],
+        "north-west": [
+          "ice_sprite/animations/attack_v1/north-west/00.webp",
+          "ice_sprite/animations/attack_v1/north-west/01.webp",
+          "ice_sprite/animations/attack_v1/north-west/02.webp",
+          "ice_sprite/animations/attack_v1/north-west/03.webp",
+          "ice_sprite/animations/attack_v1/north-west/04.webp"
+        ]
+      },
+      "strips": {
+        "south": "ice_sprite/animations/attack_v1__south.webp",
+        "south-east": "ice_sprite/animations/attack_v1__south-east.webp",
+        "east": "ice_sprite/animations/attack_v1__east.webp",
+        "north-east": "ice_sprite/animations/attack_v1__north-east.webp",
+        "north": "ice_sprite/animations/attack_v1__north.webp",
+        "south-west": "ice_sprite/animations/attack_v1__south-west.webp",
+        "west": "ice_sprite/animations/attack_v1__west.webp",
+        "north-west": "ice_sprite/animations/attack_v1__north-west.webp"
+      }
+    },
+    "attack_v3": {
+      "directions": {
+        "south": {
+          "status": "fail",
+          "step_mean": 0.1503,
+          "step_max": 0.6631,
+          "drift": 6.79,
+          "loop": 0.0,
+          "loop_ratio": 0.0,
+          "travel": 7.65,
+          "pin": 1.0,
+          "pad": 7,
+          "flash": 0.105,
+          "peak": 0.6282,
+          "reach": 0.818,
+          "canvas": [
+            54,
+            54
+          ],
+          "reasons": [
+            "16 frames, expected 4",
+            "8 px of travel — eyeball it",
+            "canvas grown by 7 px a side to hold the motion"
+          ],
+          "sub": "c0c333d8-12dd-473d-876c-61975b442433",
+          "group": "84135312-73a4-4027-9fb9-7347ae3632b0",
+          "takes": 1,
+          "version": 2,
+          "mirrored": false,
+          "action": "Frost Burst - Throws both hands forward and releases a burst of frost, a big aggressive swing",
+          "intensity": 0,
+          "rolls": 2,
+          "frames": 16,
+          "rung": 1,
+          "unwrapped": 2,
+          "tries": 2,
+          "generated_at": "2026-09-11T17:14:52+00:00"
+        },
+        "south-east": {
+          "status": "fail",
+          "step_mean": 0.1917,
+          "step_max": 0.5118,
+          "drift": 5.34,
+          "loop": 0.0202,
+          "loop_ratio": 0.11,
+          "travel": 5.34,
+          "pin": 1.0,
+          "pad": 7,
+          "flash": 0.053,
+          "peak": 0.6044,
+          "reach": 1.056,
+          "canvas": [
+            54,
+            54
+          ],
+          "reasons": [
+            "16 frames, expected 4",
+            "5 px of travel — eyeball it",
+            "canvas grown by 7 px a side to hold the motion"
+          ],
+          "sub": "b83949f6-7740-439d-8bd5-e380aecbd7c3",
+          "group": "84135312-73a4-4027-9fb9-7347ae3632b0",
+          "takes": 1,
+          "version": 2,
+          "mirrored": false,
+          "action": "Frost Burst - Throws both hands forward and releases a burst of frost, a big aggressive swing",
+          "intensity": 0,
+          "rolls": 2,
+          "frames": 16,
+          "rung": 1,
+          "unwrapped": 1,
+          "tries": 2,
+          "generated_at": "2026-09-11T17:14:53+00:00"
+        },
+        "east": {
+          "status": "fail",
+          "step_mean": 0.1538,
+          "step_max": 0.4144,
+          "drift": 2.91,
+          "loop": 0.0,
+          "loop_ratio": 0.0,
+          "travel": 2.75,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": 0.013,
+          "peak": 0.4505,
+          "reach": 0.932,
+          "canvas": [
+            40,
+            40
+          ],
+          "reasons": [
+            "16 frames, expected 4"
+          ],
+          "sub": "225f4764-e00d-4f6b-8235-b819c7904e76",
+          "group": "84135312-73a4-4027-9fb9-7347ae3632b0",
+          "takes": 1,
+          "version": 2,
+          "mirrored": false,
+          "action": "Frost Burst - Throws both hands forward and releases a burst of frost, a big aggressive swing",
+          "intensity": 0,
+          "rolls": 2,
+          "frames": 16,
+          "rung": 1,
+          "unwrapped": null,
+          "tries": 2,
+          "generated_at": "2026-09-11T17:14:55+00:00"
+        },
+        "north-east": {
+          "status": "fail",
+          "step_mean": 0.1996,
+          "step_max": 0.6904,
+          "drift": 6.4,
+          "loop": 0.0,
+          "loop_ratio": 0.0,
+          "travel": 7.04,
+          "pin": 1.0,
+          "pad": 8,
+          "flash": 0.374,
+          "peak": 0.6459,
+          "reach": 1.118,
+          "canvas": [
+            56,
+            56
+          ],
+          "reasons": [
+            "16 frames, expected 4",
+            "some bright effect pixels (0.37) — eyeball it",
+            "7 px of travel — eyeball it",
+            "canvas grown by 8 px a side to hold the motion"
+          ],
+          "sub": "56d42841-ccbb-415b-aa96-2831d721b5bf",
+          "group": "84135312-73a4-4027-9fb9-7347ae3632b0",
+          "takes": 1,
+          "version": 2,
+          "mirrored": false,
+          "action": "Frost Burst - Throws both hands forward and releases a burst of frost, a big aggressive swing",
+          "intensity": 0,
+          "rolls": 2,
+          "frames": 16,
+          "rung": 1,
+          "unwrapped": 2,
+          "tries": 2,
+          "generated_at": "2026-09-11T17:14:56+00:00"
+        },
+        "north": {
+          "status": "fail",
+          "step_mean": 0.1701,
+          "step_max": 0.7291,
+          "drift": 5.26,
+          "loop": 0.0,
+          "loop_ratio": 0.0,
+          "travel": 7.28,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": 0.007,
+          "peak": 0.6054,
+          "reach": 0.591,
+          "canvas": [
+            40,
+            40
+          ],
+          "reasons": [
+            "16 frames, expected 4",
+            "7 px of travel — eyeball it"
+          ],
+          "sub": "504311d5-d2ed-4b6e-a860-72b98f795151",
+          "group": "84135312-73a4-4027-9fb9-7347ae3632b0",
+          "takes": 1,
+          "version": 2,
+          "mirrored": false,
+          "action": "Frost Burst - Throws both hands forward and releases a burst of frost, a big aggressive swing",
+          "intensity": 0,
+          "rolls": 2,
+          "frames": 16,
+          "rung": 1,
+          "unwrapped": null,
+          "tries": 2,
+          "generated_at": "2026-09-11T17:14:57+00:00"
+        }
+      },
+      "action": "Frost Burst - Throws both hands forward and releases a burst of frost",
+      "frame_paths": {
+        "south": [
+          "ice_sprite/animations/attack_v3/south/00.webp",
+          "ice_sprite/animations/attack_v3/south/01.webp",
+          "ice_sprite/animations/attack_v3/south/02.webp",
+          "ice_sprite/animations/attack_v3/south/03.webp",
+          "ice_sprite/animations/attack_v3/south/04.webp",
+          "ice_sprite/animations/attack_v3/south/05.webp",
+          "ice_sprite/animations/attack_v3/south/06.webp",
+          "ice_sprite/animations/attack_v3/south/07.webp",
+          "ice_sprite/animations/attack_v3/south/08.webp",
+          "ice_sprite/animations/attack_v3/south/09.webp",
+          "ice_sprite/animations/attack_v3/south/10.webp",
+          "ice_sprite/animations/attack_v3/south/11.webp",
+          "ice_sprite/animations/attack_v3/south/12.webp",
+          "ice_sprite/animations/attack_v3/south/13.webp",
+          "ice_sprite/animations/attack_v3/south/14.webp",
+          "ice_sprite/animations/attack_v3/south/15.webp"
+        ],
+        "south-east": [
+          "ice_sprite/animations/attack_v3/south-east/00.webp",
+          "ice_sprite/animations/attack_v3/south-east/01.webp",
+          "ice_sprite/animations/attack_v3/south-east/02.webp",
+          "ice_sprite/animations/attack_v3/south-east/03.webp",
+          "ice_sprite/animations/attack_v3/south-east/04.webp",
+          "ice_sprite/animations/attack_v3/south-east/05.webp",
+          "ice_sprite/animations/attack_v3/south-east/06.webp",
+          "ice_sprite/animations/attack_v3/south-east/07.webp",
+          "ice_sprite/animations/attack_v3/south-east/08.webp",
+          "ice_sprite/animations/attack_v3/south-east/09.webp",
+          "ice_sprite/animations/attack_v3/south-east/10.webp",
+          "ice_sprite/animations/attack_v3/south-east/11.webp",
+          "ice_sprite/animations/attack_v3/south-east/12.webp",
+          "ice_sprite/animations/attack_v3/south-east/13.webp",
+          "ice_sprite/animations/attack_v3/south-east/14.webp",
+          "ice_sprite/animations/attack_v3/south-east/15.webp"
+        ],
+        "east": [
+          "ice_sprite/animations/attack_v3/east/00.webp",
+          "ice_sprite/animations/attack_v3/east/01.webp",
+          "ice_sprite/animations/attack_v3/east/02.webp",
+          "ice_sprite/animations/attack_v3/east/03.webp",
+          "ice_sprite/animations/attack_v3/east/04.webp",
+          "ice_sprite/animations/attack_v3/east/05.webp",
+          "ice_sprite/animations/attack_v3/east/06.webp",
+          "ice_sprite/animations/attack_v3/east/07.webp",
+          "ice_sprite/animations/attack_v3/east/08.webp",
+          "ice_sprite/animations/attack_v3/east/09.webp",
+          "ice_sprite/animations/attack_v3/east/10.webp",
+          "ice_sprite/animations/attack_v3/east/11.webp",
+          "ice_sprite/animations/attack_v3/east/12.webp",
+          "ice_sprite/animations/attack_v3/east/13.webp",
+          "ice_sprite/animations/attack_v3/east/14.webp",
+          "ice_sprite/animations/attack_v3/east/15.webp"
+        ],
+        "north-east": [
+          "ice_sprite/animations/attack_v3/north-east/00.webp",
+          "ice_sprite/animations/attack_v3/north-east/01.webp",
+          "ice_sprite/animations/attack_v3/north-east/02.webp",
+          "ice_sprite/animations/attack_v3/north-east/03.webp",
+          "ice_sprite/animations/attack_v3/north-east/04.webp",
+          "ice_sprite/animations/attack_v3/north-east/05.webp",
+          "ice_sprite/animations/attack_v3/north-east/06.webp",
+          "ice_sprite/animations/attack_v3/north-east/07.webp",
+          "ice_sprite/animations/attack_v3/north-east/08.webp",
+          "ice_sprite/animations/attack_v3/north-east/09.webp",
+          "ice_sprite/animations/attack_v3/north-east/10.webp",
+          "ice_sprite/animations/attack_v3/north-east/11.webp",
+          "ice_sprite/animations/attack_v3/north-east/12.webp",
+          "ice_sprite/animations/attack_v3/north-east/13.webp",
+          "ice_sprite/animations/attack_v3/north-east/14.webp",
+          "ice_sprite/animations/attack_v3/north-east/15.webp"
+        ],
+        "north": [
+          "ice_sprite/animations/attack_v3/north/00.webp",
+          "ice_sprite/animations/attack_v3/north/01.webp",
+          "ice_sprite/animations/attack_v3/north/02.webp",
+          "ice_sprite/animations/attack_v3/north/03.webp",
+          "ice_sprite/animations/attack_v3/north/04.webp",
+          "ice_sprite/animations/attack_v3/north/05.webp",
+          "ice_sprite/animations/attack_v3/north/06.webp",
+          "ice_sprite/animations/attack_v3/north/07.webp",
+          "ice_sprite/animations/attack_v3/north/08.webp",
+          "ice_sprite/animations/attack_v3/north/09.webp",
+          "ice_sprite/animations/attack_v3/north/10.webp",
+          "ice_sprite/animations/attack_v3/north/11.webp",
+          "ice_sprite/animations/attack_v3/north/12.webp",
+          "ice_sprite/animations/attack_v3/north/13.webp",
+          "ice_sprite/animations/attack_v3/north/14.webp",
+          "ice_sprite/animations/attack_v3/north/15.webp"
+        ]
+      },
+      "strips": {
+        "south": "ice_sprite/animations/attack_v3__south.webp",
+        "south-east": "ice_sprite/animations/attack_v3__south-east.webp",
+        "east": "ice_sprite/animations/attack_v3__east.webp",
+        "north-east": "ice_sprite/animations/attack_v3__north-east.webp",
+        "north": "ice_sprite/animations/attack_v3__north.webp"
       }
     }
   }

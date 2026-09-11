@@ -602,577 +602,6 @@
         "north-west": "moss_snail/animations/walk__north-west.webp"
       }
     },
-    "attack": {
-      "directions": {
-        "south": {
-          "status": "fail",
-          "step_mean": 0.1214,
-          "step_max": 0.1836,
-          "drift": 0.58,
-          "loop": 0.0,
-          "loop_ratio": 0.0,
-          "travel": 0.58,
-          "pin": 1.0,
-          "pad": 0,
-          "flash": 0.002,
-          "peak": 0.2358,
-          "reach": 0.109,
-          "canvas": [
-            40,
-            40
-          ],
-          "reasons": [
-            "no strike, just a lean: nothing reaches past 0.11 of the body"
-          ],
-          "sub": "27fa4dab-95d2-4706-acc6-d63d8ed55de2",
-          "group": "f8d9e81d-a496-44ef-8ec6-54fbd6be9a22",
-          "takes": 1,
-          "version": 2,
-          "mirrored": false,
-          "generated_at": "2026-09-09T22:28:37+00:00",
-          "action": "Shell Butt - Rears its head up and butts forward once with its shell, then returns to idle stance"
-        },
-        "south-east": {
-          "status": "fail",
-          "step_mean": 0.0785,
-          "step_max": 0.1034,
-          "drift": 0.77,
-          "loop": 0.0,
-          "loop_ratio": 0.0,
-          "travel": 0.03,
-          "pin": 1.0,
-          "pad": 0,
-          "flash": 0.008,
-          "peak": 0.1532,
-          "reach": 0.088,
-          "canvas": [
-            40,
-            40
-          ],
-          "reasons": [
-            "motion 0.078 outside the calm band 0.08–0.9 — eyeball it",
-            "no strike, just a lean: nothing reaches past 0.09 of the body"
-          ],
-          "sub": "a1069203-d62b-4762-babb-095093a642de",
-          "group": "f7482b9e-4466-4083-8ea3-7136c5bd7cea",
-          "takes": 1,
-          "version": 2,
-          "mirrored": false,
-          "generated_at": "2026-09-09T22:28:37+00:00",
-          "action": "Shell Butt - Rears its head up and butts forward once with its shell, then returns to idle stance"
-        },
-        "east": {
-          "status": "fail",
-          "step_mean": 0.1597,
-          "step_max": 0.2159,
-          "drift": 1.97,
-          "loop": 0.0,
-          "loop_ratio": 0.0,
-          "travel": 1.97,
-          "pin": 1.0,
-          "pad": 0,
-          "flash": 0.008,
-          "peak": 0.2753,
-          "reach": 0.129,
-          "canvas": [
-            40,
-            40
-          ],
-          "reasons": [
-            "no strike, just a lean: nothing reaches past 0.13 of the body"
-          ],
-          "sub": "d3e1d8bd-7c4b-4288-aa7b-d06baf3541a0",
-          "group": "a9579d61-8a29-4316-b28f-258d62b964b3",
-          "takes": 1,
-          "version": 2,
-          "mirrored": false,
-          "generated_at": "2026-09-09T22:28:37+00:00",
-          "action": "Shell Butt - Rears its head up and butts forward once with its shell, then returns to idle stance"
-        },
-        "north-east": {
-          "status": "fail",
-          "step_mean": 0.1241,
-          "step_max": 0.1831,
-          "drift": 2.15,
-          "loop": 0.0,
-          "loop_ratio": 0.0,
-          "travel": 0.91,
-          "pin": 1.0,
-          "pad": 0,
-          "flash": 0.009,
-          "peak": 0.2254,
-          "reach": 0.171,
-          "canvas": [
-            40,
-            40
-          ],
-          "reasons": [
-            "no strike, just a lean: nothing reaches past 0.17 of the body"
-          ],
-          "sub": "afc85c12-d511-419a-8486-df55dc10a9c3",
-          "group": "42675a80-9b91-47c2-b263-7aade94cef41",
-          "takes": 1,
-          "version": 2,
-          "mirrored": false,
-          "generated_at": "2026-09-09T22:28:38+00:00",
-          "action": "Shell Butt - Rears its head up and butts forward once with its shell, then returns to idle stance"
-        },
-        "north": {
-          "status": "fail",
-          "step_mean": 0.0865,
-          "step_max": 0.1301,
-          "drift": 0.87,
-          "loop": 0.0,
-          "loop_ratio": 0.0,
-          "travel": 0.32,
-          "pin": 1.0,
-          "pad": 0,
-          "flash": 0.004,
-          "peak": 0.1515,
-          "reach": 0.062,
-          "canvas": [
-            40,
-            40
-          ],
-          "reasons": [
-            "no strike, just a lean: nothing reaches past 0.06 of the body"
-          ],
-          "sub": "faf41753-2e38-4a4f-bfb4-04267ed40020",
-          "group": "d9e33621-9244-48af-a0f7-ee5a74b156e7",
-          "takes": 1,
-          "version": 2,
-          "mirrored": false,
-          "generated_at": "2026-09-09T22:28:38+00:00",
-          "action": "Shell Butt - Rears its head up and butts forward once with its shell, then returns to idle stance"
-        },
-        "south-west": {
-          "status": "pass",
-          "step_mean": 0.0785,
-          "step_max": 0.1034,
-          "drift": 0.77,
-          "loop": 0.0,
-          "loop_ratio": 0.0,
-          "travel": 0.03,
-          "pin": 1.0,
-          "pad": 0,
-          "flash": 0.008,
-          "peak": 0.1532,
-          "canvas": [
-            40,
-            40
-          ],
-          "reasons": [],
-          "sub": "a1069203-d62b-4762-babb-095093a642de",
-          "group": "f7482b9e-4466-4083-8ea3-7136c5bd7cea",
-          "takes": 1,
-          "version": 2,
-          "mirrored": true,
-          "generated_at": "2026-09-09T22:28:37+00:00",
-          "action": "Shell Butt - Rears its head up and butts forward once with its shell, then returns to idle stance",
-          "source": "south-east"
-        },
-        "west": {
-          "status": "pass",
-          "step_mean": 0.1597,
-          "step_max": 0.2159,
-          "drift": 1.97,
-          "loop": 0.0,
-          "loop_ratio": 0.0,
-          "travel": 1.97,
-          "pin": 1.0,
-          "pad": 0,
-          "flash": 0.008,
-          "peak": 0.2753,
-          "canvas": [
-            40,
-            40
-          ],
-          "reasons": [],
-          "sub": "d3e1d8bd-7c4b-4288-aa7b-d06baf3541a0",
-          "group": "a9579d61-8a29-4316-b28f-258d62b964b3",
-          "takes": 1,
-          "version": 2,
-          "mirrored": true,
-          "generated_at": "2026-09-09T22:28:37+00:00",
-          "action": "Shell Butt - Rears its head up and butts forward once with its shell, then returns to idle stance",
-          "source": "east"
-        },
-        "north-west": {
-          "status": "pass",
-          "step_mean": 0.1241,
-          "step_max": 0.1831,
-          "drift": 2.15,
-          "loop": 0.0,
-          "loop_ratio": 0.0,
-          "travel": 0.91,
-          "pin": 1.0,
-          "pad": 0,
-          "flash": 0.009,
-          "peak": 0.2254,
-          "canvas": [
-            40,
-            40
-          ],
-          "reasons": [],
-          "sub": "afc85c12-d511-419a-8486-df55dc10a9c3",
-          "group": "42675a80-9b91-47c2-b263-7aade94cef41",
-          "takes": 1,
-          "version": 2,
-          "mirrored": true,
-          "generated_at": "2026-09-09T22:28:38+00:00",
-          "action": "Shell Butt - Rears its head up and butts forward once with its shell, then returns to idle stance",
-          "source": "north-east"
-        }
-      },
-      "action": "Shell Butt - Rears its head up and butts forward once with its shell, then returns to idle stance",
-      "frame_paths": {
-        "south": [
-          "moss_snail/animations/attack/south/00.webp",
-          "moss_snail/animations/attack/south/01.webp",
-          "moss_snail/animations/attack/south/02.webp",
-          "moss_snail/animations/attack/south/03.webp",
-          "moss_snail/animations/attack/south/04.webp"
-        ],
-        "south-east": [
-          "moss_snail/animations/attack/south-east/00.webp",
-          "moss_snail/animations/attack/south-east/01.webp",
-          "moss_snail/animations/attack/south-east/02.webp",
-          "moss_snail/animations/attack/south-east/03.webp",
-          "moss_snail/animations/attack/south-east/04.webp"
-        ],
-        "east": [
-          "moss_snail/animations/attack/east/00.webp",
-          "moss_snail/animations/attack/east/01.webp",
-          "moss_snail/animations/attack/east/02.webp",
-          "moss_snail/animations/attack/east/03.webp",
-          "moss_snail/animations/attack/east/04.webp"
-        ],
-        "north-east": [
-          "moss_snail/animations/attack/north-east/00.webp",
-          "moss_snail/animations/attack/north-east/01.webp",
-          "moss_snail/animations/attack/north-east/02.webp",
-          "moss_snail/animations/attack/north-east/03.webp",
-          "moss_snail/animations/attack/north-east/04.webp"
-        ],
-        "north": [
-          "moss_snail/animations/attack/north/00.webp",
-          "moss_snail/animations/attack/north/01.webp",
-          "moss_snail/animations/attack/north/02.webp",
-          "moss_snail/animations/attack/north/03.webp",
-          "moss_snail/animations/attack/north/04.webp"
-        ],
-        "south-west": [
-          "moss_snail/animations/attack/south-west/00.webp",
-          "moss_snail/animations/attack/south-west/01.webp",
-          "moss_snail/animations/attack/south-west/02.webp",
-          "moss_snail/animations/attack/south-west/03.webp",
-          "moss_snail/animations/attack/south-west/04.webp"
-        ],
-        "west": [
-          "moss_snail/animations/attack/west/00.webp",
-          "moss_snail/animations/attack/west/01.webp",
-          "moss_snail/animations/attack/west/02.webp",
-          "moss_snail/animations/attack/west/03.webp",
-          "moss_snail/animations/attack/west/04.webp"
-        ],
-        "north-west": [
-          "moss_snail/animations/attack/north-west/00.webp",
-          "moss_snail/animations/attack/north-west/01.webp",
-          "moss_snail/animations/attack/north-west/02.webp",
-          "moss_snail/animations/attack/north-west/03.webp",
-          "moss_snail/animations/attack/north-west/04.webp"
-        ]
-      },
-      "strips": {
-        "south": "moss_snail/animations/attack__south.webp",
-        "south-east": "moss_snail/animations/attack__south-east.webp",
-        "east": "moss_snail/animations/attack__east.webp",
-        "north-east": "moss_snail/animations/attack__north-east.webp",
-        "north": "moss_snail/animations/attack__north.webp",
-        "south-west": "moss_snail/animations/attack__south-west.webp",
-        "west": "moss_snail/animations/attack__west.webp",
-        "north-west": "moss_snail/animations/attack__north-west.webp"
-      }
-    },
-    "attack_try": {
-      "directions": {
-        "south": {
-          "status": "fail",
-          "step_mean": 0.1257,
-          "step_max": 0.2985,
-          "drift": 1.98,
-          "loop": 0.0,
-          "loop_ratio": 0.0,
-          "travel": 2.22,
-          "pin": 1.0,
-          "pad": 0,
-          "flash": 0.002,
-          "peak": 0.3038,
-          "reach": 0.229,
-          "canvas": [
-            40,
-            40
-          ],
-          "reasons": [
-            "16 frames, expected 4",
-            "shallow strike: reach 0.23 — eyeball it"
-          ],
-          "sub": "cf5e0b8b-081b-4dfe-be79-cee7e9bc1c9e",
-          "group": "361825ab-81d4-4a44-af20-3899db9c42a9",
-          "takes": 1,
-          "version": 2,
-          "mirrored": false,
-          "action": "Shell Butt - Rears its head high and rams forward with its shell, a big aggressive swing",
-          "intensity": 0,
-          "rolls": 2,
-          "frames": 16,
-          "rung": 1,
-          "unwrapped": null,
-          "tries": 2,
-          "generated_at": "2026-09-11T17:12:50+00:00"
-        },
-        "south-east": {
-          "status": "fail",
-          "step_mean": 0.114,
-          "step_max": 0.2473,
-          "drift": 1.82,
-          "loop": 0.0,
-          "loop_ratio": 0.0,
-          "travel": 1.33,
-          "pin": 1.0,
-          "pad": 0,
-          "flash": 0.0,
-          "peak": 0.2268,
-          "reach": 0.176,
-          "canvas": [
-            40,
-            40
-          ],
-          "reasons": [
-            "16 frames, expected 4",
-            "shallow strike: reach 0.18 — eyeball it"
-          ],
-          "sub": "69f0ad51-5c3b-4e17-8726-b70b7e42ba6a",
-          "group": "361825ab-81d4-4a44-af20-3899db9c42a9",
-          "takes": 1,
-          "version": 2,
-          "mirrored": false,
-          "action": "Shell Butt - Rears its head high and rams forward with its shell, a big aggressive swing",
-          "intensity": 0,
-          "rolls": 2,
-          "frames": 16,
-          "rung": 1,
-          "unwrapped": null,
-          "tries": 2,
-          "generated_at": "2026-09-11T17:12:53+00:00"
-        },
-        "east": {
-          "status": "fail",
-          "step_mean": 0.0942,
-          "step_max": 0.2055,
-          "drift": 1.47,
-          "loop": 0.1249,
-          "loop_ratio": 1.33,
-          "travel": 1.88,
-          "pin": 0.71,
-          "pad": 0,
-          "flash": -0.001,
-          "peak": 0.2044,
-          "reach": 0.182,
-          "canvas": [
-            40,
-            40
-          ],
-          "reasons": [
-            "16 frames, expected 4",
-            "shallow strike: reach 0.18 — eyeball it"
-          ],
-          "sub": "9a115750-cf7e-4f89-aec3-80faa192b026",
-          "group": "361825ab-81d4-4a44-af20-3899db9c42a9",
-          "takes": 1,
-          "version": 2,
-          "mirrored": false,
-          "action": "Shell Butt - Rears its head high and rams forward with its shell, a big aggressive swing",
-          "intensity": 0,
-          "rolls": 2,
-          "frames": 16,
-          "rung": 1,
-          "unwrapped": null,
-          "tries": 2,
-          "generated_at": "2026-09-11T17:12:54+00:00"
-        },
-        "north-east": {
-          "status": "fail",
-          "step_mean": 0.1253,
-          "step_max": 0.4186,
-          "drift": 2.9,
-          "loop": 0.0835,
-          "loop_ratio": 0.67,
-          "travel": 2.9,
-          "pin": 0.756,
-          "pad": 0,
-          "flash": 0.165,
-          "peak": 0.4896,
-          "reach": 0.429,
-          "canvas": [
-            40,
-            40
-          ],
-          "reasons": [
-            "16 frames, expected 4",
-            "painted effect: 0.17 of the body in new bright pixels (flare/slash arc)"
-          ],
-          "sub": "53e7c2da-f98c-49fd-b425-485e65c47cb4",
-          "group": "361825ab-81d4-4a44-af20-3899db9c42a9",
-          "takes": 1,
-          "version": 2,
-          "mirrored": false,
-          "action": "Shell Butt - Rears its head high and rams forward with its shell, a big aggressive swing",
-          "intensity": 0,
-          "rolls": 2,
-          "frames": 16,
-          "rung": 1,
-          "unwrapped": null,
-          "tries": 2,
-          "generated_at": "2026-09-11T17:12:55+00:00"
-        },
-        "north": {
-          "status": "fail",
-          "step_mean": 0.129,
-          "step_max": 0.4494,
-          "drift": 3.22,
-          "loop": 0.1078,
-          "loop_ratio": 0.84,
-          "travel": 2.14,
-          "pin": 0.993,
-          "pad": 0,
-          "flash": 0.004,
-          "peak": 0.3966,
-          "reach": 0.188,
-          "canvas": [
-            40,
-            40
-          ],
-          "reasons": [
-            "16 frames, expected 4",
-            "shallow strike: reach 0.19 — eyeball it"
-          ],
-          "sub": "3f9edfc3-3f81-4954-ab8b-1a833de38ba6",
-          "group": "361825ab-81d4-4a44-af20-3899db9c42a9",
-          "takes": 1,
-          "version": 2,
-          "mirrored": false,
-          "action": "Shell Butt - Rears its head high and rams forward with its shell, a big aggressive swing",
-          "intensity": 0,
-          "rolls": 2,
-          "frames": 16,
-          "rung": 1,
-          "unwrapped": null,
-          "tries": 2,
-          "generated_at": "2026-09-11T17:12:57+00:00"
-        }
-      },
-      "action": "Shell Butt - Rears its head high and rams forward with its shell",
-      "frame_paths": {
-        "south": [
-          "moss_snail/animations/attack_try/south/00.webp",
-          "moss_snail/animations/attack_try/south/01.webp",
-          "moss_snail/animations/attack_try/south/02.webp",
-          "moss_snail/animations/attack_try/south/03.webp",
-          "moss_snail/animations/attack_try/south/04.webp",
-          "moss_snail/animations/attack_try/south/05.webp",
-          "moss_snail/animations/attack_try/south/06.webp",
-          "moss_snail/animations/attack_try/south/07.webp",
-          "moss_snail/animations/attack_try/south/08.webp",
-          "moss_snail/animations/attack_try/south/09.webp",
-          "moss_snail/animations/attack_try/south/10.webp",
-          "moss_snail/animations/attack_try/south/11.webp",
-          "moss_snail/animations/attack_try/south/12.webp",
-          "moss_snail/animations/attack_try/south/13.webp",
-          "moss_snail/animations/attack_try/south/14.webp",
-          "moss_snail/animations/attack_try/south/15.webp"
-        ],
-        "south-east": [
-          "moss_snail/animations/attack_try/south-east/00.webp",
-          "moss_snail/animations/attack_try/south-east/01.webp",
-          "moss_snail/animations/attack_try/south-east/02.webp",
-          "moss_snail/animations/attack_try/south-east/03.webp",
-          "moss_snail/animations/attack_try/south-east/04.webp",
-          "moss_snail/animations/attack_try/south-east/05.webp",
-          "moss_snail/animations/attack_try/south-east/06.webp",
-          "moss_snail/animations/attack_try/south-east/07.webp",
-          "moss_snail/animations/attack_try/south-east/08.webp",
-          "moss_snail/animations/attack_try/south-east/09.webp",
-          "moss_snail/animations/attack_try/south-east/10.webp",
-          "moss_snail/animations/attack_try/south-east/11.webp",
-          "moss_snail/animations/attack_try/south-east/12.webp",
-          "moss_snail/animations/attack_try/south-east/13.webp",
-          "moss_snail/animations/attack_try/south-east/14.webp",
-          "moss_snail/animations/attack_try/south-east/15.webp"
-        ],
-        "east": [
-          "moss_snail/animations/attack_try/east/00.webp",
-          "moss_snail/animations/attack_try/east/01.webp",
-          "moss_snail/animations/attack_try/east/02.webp",
-          "moss_snail/animations/attack_try/east/03.webp",
-          "moss_snail/animations/attack_try/east/04.webp",
-          "moss_snail/animations/attack_try/east/05.webp",
-          "moss_snail/animations/attack_try/east/06.webp",
-          "moss_snail/animations/attack_try/east/07.webp",
-          "moss_snail/animations/attack_try/east/08.webp",
-          "moss_snail/animations/attack_try/east/09.webp",
-          "moss_snail/animations/attack_try/east/10.webp",
-          "moss_snail/animations/attack_try/east/11.webp",
-          "moss_snail/animations/attack_try/east/12.webp",
-          "moss_snail/animations/attack_try/east/13.webp",
-          "moss_snail/animations/attack_try/east/14.webp",
-          "moss_snail/animations/attack_try/east/15.webp"
-        ],
-        "north-east": [
-          "moss_snail/animations/attack_try/north-east/00.webp",
-          "moss_snail/animations/attack_try/north-east/01.webp",
-          "moss_snail/animations/attack_try/north-east/02.webp",
-          "moss_snail/animations/attack_try/north-east/03.webp",
-          "moss_snail/animations/attack_try/north-east/04.webp",
-          "moss_snail/animations/attack_try/north-east/05.webp",
-          "moss_snail/animations/attack_try/north-east/06.webp",
-          "moss_snail/animations/attack_try/north-east/07.webp",
-          "moss_snail/animations/attack_try/north-east/08.webp",
-          "moss_snail/animations/attack_try/north-east/09.webp",
-          "moss_snail/animations/attack_try/north-east/10.webp",
-          "moss_snail/animations/attack_try/north-east/11.webp",
-          "moss_snail/animations/attack_try/north-east/12.webp",
-          "moss_snail/animations/attack_try/north-east/13.webp",
-          "moss_snail/animations/attack_try/north-east/14.webp",
-          "moss_snail/animations/attack_try/north-east/15.webp"
-        ],
-        "north": [
-          "moss_snail/animations/attack_try/north/00.webp",
-          "moss_snail/animations/attack_try/north/01.webp",
-          "moss_snail/animations/attack_try/north/02.webp",
-          "moss_snail/animations/attack_try/north/03.webp",
-          "moss_snail/animations/attack_try/north/04.webp",
-          "moss_snail/animations/attack_try/north/05.webp",
-          "moss_snail/animations/attack_try/north/06.webp",
-          "moss_snail/animations/attack_try/north/07.webp",
-          "moss_snail/animations/attack_try/north/08.webp",
-          "moss_snail/animations/attack_try/north/09.webp",
-          "moss_snail/animations/attack_try/north/10.webp",
-          "moss_snail/animations/attack_try/north/11.webp",
-          "moss_snail/animations/attack_try/north/12.webp",
-          "moss_snail/animations/attack_try/north/13.webp",
-          "moss_snail/animations/attack_try/north/14.webp",
-          "moss_snail/animations/attack_try/north/15.webp"
-        ]
-      },
-      "strips": {
-        "south": "moss_snail/animations/attack_try__south.webp",
-        "south-east": "moss_snail/animations/attack_try__south-east.webp",
-        "east": "moss_snail/animations/attack_try__east.webp",
-        "north-east": "moss_snail/animations/attack_try__north-east.webp",
-        "north": "moss_snail/animations/attack_try__north.webp"
-      }
-    },
     "attack_v2": {
       "directions": {
         "south": {
@@ -1550,6 +979,577 @@
         "west": "moss_snail/animations/attack_v2__west.webp"
       },
       "intensity": 1
+    },
+    "attack_v1": {
+      "directions": {
+        "south": {
+          "status": "fail",
+          "step_mean": 0.1214,
+          "step_max": 0.1836,
+          "drift": 0.58,
+          "loop": 0.0,
+          "loop_ratio": 0.0,
+          "travel": 0.58,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": 0.002,
+          "peak": 0.2358,
+          "reach": 0.109,
+          "canvas": [
+            40,
+            40
+          ],
+          "reasons": [
+            "no strike, just a lean: nothing reaches past 0.11 of the body"
+          ],
+          "sub": "27fa4dab-95d2-4706-acc6-d63d8ed55de2",
+          "group": "f8d9e81d-a496-44ef-8ec6-54fbd6be9a22",
+          "takes": 1,
+          "version": 2,
+          "mirrored": false,
+          "generated_at": "2026-09-09T22:28:37+00:00",
+          "action": "Shell Butt - Rears its head up and butts forward once with its shell, then returns to idle stance"
+        },
+        "south-east": {
+          "status": "fail",
+          "step_mean": 0.0785,
+          "step_max": 0.1034,
+          "drift": 0.77,
+          "loop": 0.0,
+          "loop_ratio": 0.0,
+          "travel": 0.03,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": 0.008,
+          "peak": 0.1532,
+          "reach": 0.088,
+          "canvas": [
+            40,
+            40
+          ],
+          "reasons": [
+            "motion 0.078 outside the calm band 0.08–0.9 — eyeball it",
+            "no strike, just a lean: nothing reaches past 0.09 of the body"
+          ],
+          "sub": "a1069203-d62b-4762-babb-095093a642de",
+          "group": "f7482b9e-4466-4083-8ea3-7136c5bd7cea",
+          "takes": 1,
+          "version": 2,
+          "mirrored": false,
+          "generated_at": "2026-09-09T22:28:37+00:00",
+          "action": "Shell Butt - Rears its head up and butts forward once with its shell, then returns to idle stance"
+        },
+        "east": {
+          "status": "fail",
+          "step_mean": 0.1597,
+          "step_max": 0.2159,
+          "drift": 1.97,
+          "loop": 0.0,
+          "loop_ratio": 0.0,
+          "travel": 1.97,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": 0.008,
+          "peak": 0.2753,
+          "reach": 0.129,
+          "canvas": [
+            40,
+            40
+          ],
+          "reasons": [
+            "no strike, just a lean: nothing reaches past 0.13 of the body"
+          ],
+          "sub": "d3e1d8bd-7c4b-4288-aa7b-d06baf3541a0",
+          "group": "a9579d61-8a29-4316-b28f-258d62b964b3",
+          "takes": 1,
+          "version": 2,
+          "mirrored": false,
+          "generated_at": "2026-09-09T22:28:37+00:00",
+          "action": "Shell Butt - Rears its head up and butts forward once with its shell, then returns to idle stance"
+        },
+        "north-east": {
+          "status": "fail",
+          "step_mean": 0.1241,
+          "step_max": 0.1831,
+          "drift": 2.15,
+          "loop": 0.0,
+          "loop_ratio": 0.0,
+          "travel": 0.91,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": 0.009,
+          "peak": 0.2254,
+          "reach": 0.171,
+          "canvas": [
+            40,
+            40
+          ],
+          "reasons": [
+            "no strike, just a lean: nothing reaches past 0.17 of the body"
+          ],
+          "sub": "afc85c12-d511-419a-8486-df55dc10a9c3",
+          "group": "42675a80-9b91-47c2-b263-7aade94cef41",
+          "takes": 1,
+          "version": 2,
+          "mirrored": false,
+          "generated_at": "2026-09-09T22:28:38+00:00",
+          "action": "Shell Butt - Rears its head up and butts forward once with its shell, then returns to idle stance"
+        },
+        "north": {
+          "status": "fail",
+          "step_mean": 0.0865,
+          "step_max": 0.1301,
+          "drift": 0.87,
+          "loop": 0.0,
+          "loop_ratio": 0.0,
+          "travel": 0.32,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": 0.004,
+          "peak": 0.1515,
+          "reach": 0.062,
+          "canvas": [
+            40,
+            40
+          ],
+          "reasons": [
+            "no strike, just a lean: nothing reaches past 0.06 of the body"
+          ],
+          "sub": "faf41753-2e38-4a4f-bfb4-04267ed40020",
+          "group": "d9e33621-9244-48af-a0f7-ee5a74b156e7",
+          "takes": 1,
+          "version": 2,
+          "mirrored": false,
+          "generated_at": "2026-09-09T22:28:38+00:00",
+          "action": "Shell Butt - Rears its head up and butts forward once with its shell, then returns to idle stance"
+        },
+        "south-west": {
+          "status": "pass",
+          "step_mean": 0.0785,
+          "step_max": 0.1034,
+          "drift": 0.77,
+          "loop": 0.0,
+          "loop_ratio": 0.0,
+          "travel": 0.03,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": 0.008,
+          "peak": 0.1532,
+          "canvas": [
+            40,
+            40
+          ],
+          "reasons": [],
+          "sub": "a1069203-d62b-4762-babb-095093a642de",
+          "group": "f7482b9e-4466-4083-8ea3-7136c5bd7cea",
+          "takes": 1,
+          "version": 2,
+          "mirrored": true,
+          "generated_at": "2026-09-09T22:28:37+00:00",
+          "action": "Shell Butt - Rears its head up and butts forward once with its shell, then returns to idle stance",
+          "source": "south-east"
+        },
+        "west": {
+          "status": "pass",
+          "step_mean": 0.1597,
+          "step_max": 0.2159,
+          "drift": 1.97,
+          "loop": 0.0,
+          "loop_ratio": 0.0,
+          "travel": 1.97,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": 0.008,
+          "peak": 0.2753,
+          "canvas": [
+            40,
+            40
+          ],
+          "reasons": [],
+          "sub": "d3e1d8bd-7c4b-4288-aa7b-d06baf3541a0",
+          "group": "a9579d61-8a29-4316-b28f-258d62b964b3",
+          "takes": 1,
+          "version": 2,
+          "mirrored": true,
+          "generated_at": "2026-09-09T22:28:37+00:00",
+          "action": "Shell Butt - Rears its head up and butts forward once with its shell, then returns to idle stance",
+          "source": "east"
+        },
+        "north-west": {
+          "status": "pass",
+          "step_mean": 0.1241,
+          "step_max": 0.1831,
+          "drift": 2.15,
+          "loop": 0.0,
+          "loop_ratio": 0.0,
+          "travel": 0.91,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": 0.009,
+          "peak": 0.2254,
+          "canvas": [
+            40,
+            40
+          ],
+          "reasons": [],
+          "sub": "afc85c12-d511-419a-8486-df55dc10a9c3",
+          "group": "42675a80-9b91-47c2-b263-7aade94cef41",
+          "takes": 1,
+          "version": 2,
+          "mirrored": true,
+          "generated_at": "2026-09-09T22:28:38+00:00",
+          "action": "Shell Butt - Rears its head up and butts forward once with its shell, then returns to idle stance",
+          "source": "north-east"
+        }
+      },
+      "action": "Shell Butt - Rears its head up and butts forward once with its shell, then returns to idle stance",
+      "frame_paths": {
+        "south": [
+          "moss_snail/animations/attack_v1/south/00.webp",
+          "moss_snail/animations/attack_v1/south/01.webp",
+          "moss_snail/animations/attack_v1/south/02.webp",
+          "moss_snail/animations/attack_v1/south/03.webp",
+          "moss_snail/animations/attack_v1/south/04.webp"
+        ],
+        "south-east": [
+          "moss_snail/animations/attack_v1/south-east/00.webp",
+          "moss_snail/animations/attack_v1/south-east/01.webp",
+          "moss_snail/animations/attack_v1/south-east/02.webp",
+          "moss_snail/animations/attack_v1/south-east/03.webp",
+          "moss_snail/animations/attack_v1/south-east/04.webp"
+        ],
+        "east": [
+          "moss_snail/animations/attack_v1/east/00.webp",
+          "moss_snail/animations/attack_v1/east/01.webp",
+          "moss_snail/animations/attack_v1/east/02.webp",
+          "moss_snail/animations/attack_v1/east/03.webp",
+          "moss_snail/animations/attack_v1/east/04.webp"
+        ],
+        "north-east": [
+          "moss_snail/animations/attack_v1/north-east/00.webp",
+          "moss_snail/animations/attack_v1/north-east/01.webp",
+          "moss_snail/animations/attack_v1/north-east/02.webp",
+          "moss_snail/animations/attack_v1/north-east/03.webp",
+          "moss_snail/animations/attack_v1/north-east/04.webp"
+        ],
+        "north": [
+          "moss_snail/animations/attack_v1/north/00.webp",
+          "moss_snail/animations/attack_v1/north/01.webp",
+          "moss_snail/animations/attack_v1/north/02.webp",
+          "moss_snail/animations/attack_v1/north/03.webp",
+          "moss_snail/animations/attack_v1/north/04.webp"
+        ],
+        "south-west": [
+          "moss_snail/animations/attack_v1/south-west/00.webp",
+          "moss_snail/animations/attack_v1/south-west/01.webp",
+          "moss_snail/animations/attack_v1/south-west/02.webp",
+          "moss_snail/animations/attack_v1/south-west/03.webp",
+          "moss_snail/animations/attack_v1/south-west/04.webp"
+        ],
+        "west": [
+          "moss_snail/animations/attack_v1/west/00.webp",
+          "moss_snail/animations/attack_v1/west/01.webp",
+          "moss_snail/animations/attack_v1/west/02.webp",
+          "moss_snail/animations/attack_v1/west/03.webp",
+          "moss_snail/animations/attack_v1/west/04.webp"
+        ],
+        "north-west": [
+          "moss_snail/animations/attack_v1/north-west/00.webp",
+          "moss_snail/animations/attack_v1/north-west/01.webp",
+          "moss_snail/animations/attack_v1/north-west/02.webp",
+          "moss_snail/animations/attack_v1/north-west/03.webp",
+          "moss_snail/animations/attack_v1/north-west/04.webp"
+        ]
+      },
+      "strips": {
+        "south": "moss_snail/animations/attack_v1__south.webp",
+        "south-east": "moss_snail/animations/attack_v1__south-east.webp",
+        "east": "moss_snail/animations/attack_v1__east.webp",
+        "north-east": "moss_snail/animations/attack_v1__north-east.webp",
+        "north": "moss_snail/animations/attack_v1__north.webp",
+        "south-west": "moss_snail/animations/attack_v1__south-west.webp",
+        "west": "moss_snail/animations/attack_v1__west.webp",
+        "north-west": "moss_snail/animations/attack_v1__north-west.webp"
+      }
+    },
+    "attack_v3": {
+      "directions": {
+        "south": {
+          "status": "fail",
+          "step_mean": 0.1257,
+          "step_max": 0.2985,
+          "drift": 1.98,
+          "loop": 0.0,
+          "loop_ratio": 0.0,
+          "travel": 2.22,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": 0.002,
+          "peak": 0.3038,
+          "reach": 0.229,
+          "canvas": [
+            40,
+            40
+          ],
+          "reasons": [
+            "16 frames, expected 4",
+            "shallow strike: reach 0.23 — eyeball it"
+          ],
+          "sub": "cf5e0b8b-081b-4dfe-be79-cee7e9bc1c9e",
+          "group": "361825ab-81d4-4a44-af20-3899db9c42a9",
+          "takes": 1,
+          "version": 2,
+          "mirrored": false,
+          "action": "Shell Butt - Rears its head high and rams forward with its shell, a big aggressive swing",
+          "intensity": 0,
+          "rolls": 2,
+          "frames": 16,
+          "rung": 1,
+          "unwrapped": null,
+          "tries": 2,
+          "generated_at": "2026-09-11T17:12:50+00:00"
+        },
+        "south-east": {
+          "status": "fail",
+          "step_mean": 0.114,
+          "step_max": 0.2473,
+          "drift": 1.82,
+          "loop": 0.0,
+          "loop_ratio": 0.0,
+          "travel": 1.33,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": 0.0,
+          "peak": 0.2268,
+          "reach": 0.176,
+          "canvas": [
+            40,
+            40
+          ],
+          "reasons": [
+            "16 frames, expected 4",
+            "shallow strike: reach 0.18 — eyeball it"
+          ],
+          "sub": "69f0ad51-5c3b-4e17-8726-b70b7e42ba6a",
+          "group": "361825ab-81d4-4a44-af20-3899db9c42a9",
+          "takes": 1,
+          "version": 2,
+          "mirrored": false,
+          "action": "Shell Butt - Rears its head high and rams forward with its shell, a big aggressive swing",
+          "intensity": 0,
+          "rolls": 2,
+          "frames": 16,
+          "rung": 1,
+          "unwrapped": null,
+          "tries": 2,
+          "generated_at": "2026-09-11T17:12:53+00:00"
+        },
+        "east": {
+          "status": "fail",
+          "step_mean": 0.0942,
+          "step_max": 0.2055,
+          "drift": 1.47,
+          "loop": 0.1249,
+          "loop_ratio": 1.33,
+          "travel": 1.88,
+          "pin": 0.71,
+          "pad": 0,
+          "flash": -0.001,
+          "peak": 0.2044,
+          "reach": 0.182,
+          "canvas": [
+            40,
+            40
+          ],
+          "reasons": [
+            "16 frames, expected 4",
+            "shallow strike: reach 0.18 — eyeball it"
+          ],
+          "sub": "9a115750-cf7e-4f89-aec3-80faa192b026",
+          "group": "361825ab-81d4-4a44-af20-3899db9c42a9",
+          "takes": 1,
+          "version": 2,
+          "mirrored": false,
+          "action": "Shell Butt - Rears its head high and rams forward with its shell, a big aggressive swing",
+          "intensity": 0,
+          "rolls": 2,
+          "frames": 16,
+          "rung": 1,
+          "unwrapped": null,
+          "tries": 2,
+          "generated_at": "2026-09-11T17:12:54+00:00"
+        },
+        "north-east": {
+          "status": "fail",
+          "step_mean": 0.1253,
+          "step_max": 0.4186,
+          "drift": 2.9,
+          "loop": 0.0835,
+          "loop_ratio": 0.67,
+          "travel": 2.9,
+          "pin": 0.756,
+          "pad": 0,
+          "flash": 0.165,
+          "peak": 0.4896,
+          "reach": 0.429,
+          "canvas": [
+            40,
+            40
+          ],
+          "reasons": [
+            "16 frames, expected 4",
+            "painted effect: 0.17 of the body in new bright pixels (flare/slash arc)"
+          ],
+          "sub": "53e7c2da-f98c-49fd-b425-485e65c47cb4",
+          "group": "361825ab-81d4-4a44-af20-3899db9c42a9",
+          "takes": 1,
+          "version": 2,
+          "mirrored": false,
+          "action": "Shell Butt - Rears its head high and rams forward with its shell, a big aggressive swing",
+          "intensity": 0,
+          "rolls": 2,
+          "frames": 16,
+          "rung": 1,
+          "unwrapped": null,
+          "tries": 2,
+          "generated_at": "2026-09-11T17:12:55+00:00"
+        },
+        "north": {
+          "status": "fail",
+          "step_mean": 0.129,
+          "step_max": 0.4494,
+          "drift": 3.22,
+          "loop": 0.1078,
+          "loop_ratio": 0.84,
+          "travel": 2.14,
+          "pin": 0.993,
+          "pad": 0,
+          "flash": 0.004,
+          "peak": 0.3966,
+          "reach": 0.188,
+          "canvas": [
+            40,
+            40
+          ],
+          "reasons": [
+            "16 frames, expected 4",
+            "shallow strike: reach 0.19 — eyeball it"
+          ],
+          "sub": "3f9edfc3-3f81-4954-ab8b-1a833de38ba6",
+          "group": "361825ab-81d4-4a44-af20-3899db9c42a9",
+          "takes": 1,
+          "version": 2,
+          "mirrored": false,
+          "action": "Shell Butt - Rears its head high and rams forward with its shell, a big aggressive swing",
+          "intensity": 0,
+          "rolls": 2,
+          "frames": 16,
+          "rung": 1,
+          "unwrapped": null,
+          "tries": 2,
+          "generated_at": "2026-09-11T17:12:57+00:00"
+        }
+      },
+      "action": "Shell Butt - Rears its head high and rams forward with its shell",
+      "frame_paths": {
+        "south": [
+          "moss_snail/animations/attack_v3/south/00.webp",
+          "moss_snail/animations/attack_v3/south/01.webp",
+          "moss_snail/animations/attack_v3/south/02.webp",
+          "moss_snail/animations/attack_v3/south/03.webp",
+          "moss_snail/animations/attack_v3/south/04.webp",
+          "moss_snail/animations/attack_v3/south/05.webp",
+          "moss_snail/animations/attack_v3/south/06.webp",
+          "moss_snail/animations/attack_v3/south/07.webp",
+          "moss_snail/animations/attack_v3/south/08.webp",
+          "moss_snail/animations/attack_v3/south/09.webp",
+          "moss_snail/animations/attack_v3/south/10.webp",
+          "moss_snail/animations/attack_v3/south/11.webp",
+          "moss_snail/animations/attack_v3/south/12.webp",
+          "moss_snail/animations/attack_v3/south/13.webp",
+          "moss_snail/animations/attack_v3/south/14.webp",
+          "moss_snail/animations/attack_v3/south/15.webp"
+        ],
+        "south-east": [
+          "moss_snail/animations/attack_v3/south-east/00.webp",
+          "moss_snail/animations/attack_v3/south-east/01.webp",
+          "moss_snail/animations/attack_v3/south-east/02.webp",
+          "moss_snail/animations/attack_v3/south-east/03.webp",
+          "moss_snail/animations/attack_v3/south-east/04.webp",
+          "moss_snail/animations/attack_v3/south-east/05.webp",
+          "moss_snail/animations/attack_v3/south-east/06.webp",
+          "moss_snail/animations/attack_v3/south-east/07.webp",
+          "moss_snail/animations/attack_v3/south-east/08.webp",
+          "moss_snail/animations/attack_v3/south-east/09.webp",
+          "moss_snail/animations/attack_v3/south-east/10.webp",
+          "moss_snail/animations/attack_v3/south-east/11.webp",
+          "moss_snail/animations/attack_v3/south-east/12.webp",
+          "moss_snail/animations/attack_v3/south-east/13.webp",
+          "moss_snail/animations/attack_v3/south-east/14.webp",
+          "moss_snail/animations/attack_v3/south-east/15.webp"
+        ],
+        "east": [
+          "moss_snail/animations/attack_v3/east/00.webp",
+          "moss_snail/animations/attack_v3/east/01.webp",
+          "moss_snail/animations/attack_v3/east/02.webp",
+          "moss_snail/animations/attack_v3/east/03.webp",
+          "moss_snail/animations/attack_v3/east/04.webp",
+          "moss_snail/animations/attack_v3/east/05.webp",
+          "moss_snail/animations/attack_v3/east/06.webp",
+          "moss_snail/animations/attack_v3/east/07.webp",
+          "moss_snail/animations/attack_v3/east/08.webp",
+          "moss_snail/animations/attack_v3/east/09.webp",
+          "moss_snail/animations/attack_v3/east/10.webp",
+          "moss_snail/animations/attack_v3/east/11.webp",
+          "moss_snail/animations/attack_v3/east/12.webp",
+          "moss_snail/animations/attack_v3/east/13.webp",
+          "moss_snail/animations/attack_v3/east/14.webp",
+          "moss_snail/animations/attack_v3/east/15.webp"
+        ],
+        "north-east": [
+          "moss_snail/animations/attack_v3/north-east/00.webp",
+          "moss_snail/animations/attack_v3/north-east/01.webp",
+          "moss_snail/animations/attack_v3/north-east/02.webp",
+          "moss_snail/animations/attack_v3/north-east/03.webp",
+          "moss_snail/animations/attack_v3/north-east/04.webp",
+          "moss_snail/animations/attack_v3/north-east/05.webp",
+          "moss_snail/animations/attack_v3/north-east/06.webp",
+          "moss_snail/animations/attack_v3/north-east/07.webp",
+          "moss_snail/animations/attack_v3/north-east/08.webp",
+          "moss_snail/animations/attack_v3/north-east/09.webp",
+          "moss_snail/animations/attack_v3/north-east/10.webp",
+          "moss_snail/animations/attack_v3/north-east/11.webp",
+          "moss_snail/animations/attack_v3/north-east/12.webp",
+          "moss_snail/animations/attack_v3/north-east/13.webp",
+          "moss_snail/animations/attack_v3/north-east/14.webp",
+          "moss_snail/animations/attack_v3/north-east/15.webp"
+        ],
+        "north": [
+          "moss_snail/animations/attack_v3/north/00.webp",
+          "moss_snail/animations/attack_v3/north/01.webp",
+          "moss_snail/animations/attack_v3/north/02.webp",
+          "moss_snail/animations/attack_v3/north/03.webp",
+          "moss_snail/animations/attack_v3/north/04.webp",
+          "moss_snail/animations/attack_v3/north/05.webp",
+          "moss_snail/animations/attack_v3/north/06.webp",
+          "moss_snail/animations/attack_v3/north/07.webp",
+          "moss_snail/animations/attack_v3/north/08.webp",
+          "moss_snail/animations/attack_v3/north/09.webp",
+          "moss_snail/animations/attack_v3/north/10.webp",
+          "moss_snail/animations/attack_v3/north/11.webp",
+          "moss_snail/animations/attack_v3/north/12.webp",
+          "moss_snail/animations/attack_v3/north/13.webp",
+          "moss_snail/animations/attack_v3/north/14.webp",
+          "moss_snail/animations/attack_v3/north/15.webp"
+        ]
+      },
+      "strips": {
+        "south": "moss_snail/animations/attack_v3__south.webp",
+        "south-east": "moss_snail/animations/attack_v3__south-east.webp",
+        "east": "moss_snail/animations/attack_v3__east.webp",
+        "north-east": "moss_snail/animations/attack_v3__north-east.webp",
+        "north": "moss_snail/animations/attack_v3__north.webp"
+      }
     }
   }
 }
