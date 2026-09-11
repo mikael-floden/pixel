@@ -15684,25 +15684,27 @@ export class WorldScene extends Phaser.Scene {
    *  and with the lid cut open it hangs in the air with its roots showing
    *  ("the trees here are still visible inside the cave!").
    *
-   *  The test is the cut PLUS membership of my building: the column is one the
-   *  cut truncates and the piece stands above that truncation. The mask is
-   *  floor plus enclosure, and a lid cell shares its index with the floor cell
-   *  under it, so a piece on the lid is in it. Scenery BESIDE the room is not
-   *  ("I love the way a scenery side by side with let's say a house can be seen
-   *  as a silhouette"), and neither is one rooted out in the COVERING CONE —
-   *  the cut also truncates columns outside the room that would bury my floor,
-   *  and a tree out there is his red one, which stays.
+   *  THE TEST IS THE CUT AND NOTHING ELSE: this column is one the cut
+   *  truncates, and the piece stands above that truncation — so the ground it
+   *  stood on is gone and it is hanging in the air.
    *
-   *  NOT `indoorSpace.roof`: that is the floor only, and a lid cell at level 12
-   *  is not a floor cell, so testing it let every one of these trees through
-   *  (measured on 1fe5126131 — his screenshot). */
+   *  NOT "and its cell is in my building". Measured offline against the shipped
+   *  world: the cave's space is 142 floor + 76 shell cells, and cell 227,279 —
+   *  where that tree is rooted — is in NEITHER. Its rock is truncated by the
+   *  COVERING CONE, the cut that removes columns OUTSIDE the room which would
+   *  otherwise bury my floor, which is by definition everything the mask is
+   *  not. So both narrowings failed on his screen for the same reason: the mask
+   *  (945bdc3c39) and the floor set (1fe5126131) each exclude the cone, and the
+   *  cone is exactly where these trees stand.
+   *
+   *  His RED tree still stays, and on the same rule: rooted where the ground is
+   *  "dark/outside" means its column is not cut at all, so the test is false
+   *  for it. A piece beside a house is untouched for the same reason — the
+   *  silhouette he likes ("I love the way a scenery side by side with let's say
+   *  a house can be seen as a silhouette"). Furniture cannot reach here: it is
+   *  `roofed` and takes the branch above. */
   private sceneryAboveCutAt(col: number, row: number, level: number): boolean {
-    const w = this.world;
-    if (!this.indoorMask || !w) return false; // no cut drawn: everything stands
-    const c = Math.floor(col);
-    const r = Math.floor(row);
-    if (c < 0 || r < 0 || c >= w.width || r >= w.height) return false;
-    if (!this.indoorMask.has(r * w.width + c)) return false;
+    if (!this.indoorMask) return false; // no cut drawn: everything stands whole
     const cut = this.cutAt(col, row);
     return Number.isFinite(cut) && level > cut;
   }
