@@ -255,8 +255,9 @@ The night shader and its CPU twins, the light slot ledger, scenery lights and sh
   ambient clock so shadows sweep. CPU twin `sunFactorAt()` shades lit-copy
   tints. Probes: `__ml.sunInfo()`, `__ml.sunAt(col,row[,z])` (z=−1 = own
   height). Regression: scripts/verify-sunshadow.mjs.
-- STALE GATES, known: verify-solidband + verify-wallspread (predate maps2
-  worlds, fail on baseline); verify-penumbra is PINNED TO NIGHT and finds
+- STALE GATES, known: verify-solidband (predates maps2 worlds, fails on
+  baseline; verify-wallspread went the same way and was replaced by
+  verify-wallwash, which finds its wall on the_game); verify-penumbra is PINNED TO NIGHT and finds
   pre-existing base defects at some ledges (fails identically on the pre-sun
   baseline — candidate-placement sensitivity, needs its own follow-up).
   verify-glow-seams went with its glow_test world (2026-09-09).
@@ -266,6 +267,39 @@ The night shader and its CPU twins, the light slot ledger, scenery lights and sh
 - Always-night per-pixel shader: MULTIPLY overlay; per-pixel surface resolve
   (cell + height) → point lights with attenuation, LOS cast shadows, Lambert
   face gating with penumbras at both ends of every wall band.
+- **THE WALL WASH IS PER PIXEL, AND ITS WRAP IS HIS DIAL** (maintainer
+  2026-09-11, a torch beside a house wall at night: "the light doesn't travel
+  very long along the wall", a hard seam at every tile edge along the lit
+  wall, and the bottom course darker than the rest). Three laws, each pinned
+  by `scripts/verify-wallwash.mjs` (BEFORE → AFTER on the 3-storey terrace at
+  243..247/291, probe light 0.4 cells out):
+  - The face Lambert gate's lateral distance is the light to THIS PIXEL's
+    point on the face plane (`pos`), never to the cell's face segment
+    (`clamp(lp, baseF, baseF+1)`): the per-cell form gave a whole tile one
+    gate value, so the wash stepped a tile's worth of falloff at every edge
+    (worst neighbour step 26% of the run's range → 6%).
+  - The gate's exponent is `uWallWrap = max(0.02, 1 − wrap)` from the
+    Settings dial "Wall light wrap" (`client/src/wallwrap.ts`, default 0.7 —
+    the old hard-coded 0.45 exponent was "a bit too extreme"; 0 = a plain
+    cosine, 1 = the light hugs the wall as far as it reaches on the ground).
+    `front` keeps its own `smoothstep(0, 0.25)`; a light behind the plane
+    never lights the face at any wrap.
+  - The LOS march never reads the wall's own column for a sample inside the
+    wall's FRONT SKIRT: `heightAtSoft`/`groundAtSoft` are bilinear, so a
+    sample within half a cell in front of the face plane blended the wall's
+    own height in and shadowed the bottom course from its own wall (foot/mid
+    luma 0.59 on the tiles beside the light → 1.00). For face pixels the
+    sample point is pushed to the half-cell line in front of the plane before
+    the height reads; ground pixels are untouched.
+  - The harness reads pattern 5 (raw field, opaque) at face points found by
+    pattern 4 (faces red) — the TALLEST red run under the cell anchor, since
+    the terrace behind paints a sliver of its own face just above the lip;
+    depth fog off (it bands the field); the run's corners are excluded from
+    the seam metric (the corner blend brightens the last 1/8 cell). Pattern 6
+    paints `fract(pos.x)`, `fract(z)`, `gateFade` per face pixel for
+    diagnosing the resolve. Absolute luma drifts run to run (the night
+    ramp); every assertion is within-run. Reach is judged against the pool's
+    own half-distance on flat ground, 0.29 r (r/3 is unmeetable).
 - **THE SURFACE MARCH SKIPS WHOLE BLOCKS** (`blockMaxAt`, `uHBlock`, 2026-09-02).
   Every pixel of the night, mist and depth-fog passes resolves the ground
   under it by walking a ray from the WORLD's max level down, one cell boundary
@@ -674,8 +708,9 @@ The night shader and its CPU twins, the light slot ledger, scenery lights and sh
   `worldView`; anything pixel-exact placed in update() may not.
 - Debug: `__ml.nightCal(flip,span,test)` (field test patterns — headless
   only; the old [6]-[9] keys are retired); `__ml.probeLight(col,row,z,
-  radius)`; `__ml.lookAt(col,row)`. Numeric probes: verify-solidband,
-  verify-penumbra, verify-wallspread, verify-timecycle, verify-lit-order.
+  radius)`; `__ml.lookAt(col,row)`; `__ml.wallWrap(v?)`. Numeric probes:
+  verify-wallwash, verify-solidband, verify-penumbra, verify-timecycle,
+  verify-lit-order.
   Run them against a dev stack before touching the shader.
 
 ## Windows

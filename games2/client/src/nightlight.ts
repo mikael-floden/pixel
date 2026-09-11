@@ -4,6 +4,7 @@ import type { SceneryFootprints } from "@nangijala/shared";
 import { World, MAP_GEOMETRY, geometryFor } from "./maps";
 import { renderedWorldView, ViewRect } from "./camview";
 import { lightScale } from "./lightscale";
+import { wallWrapExponent } from "./wallwrap";
 
 /**
  * Serious night lighting: a fullscreen MULTIPLY shader that reconstructs each
@@ -247,6 +248,10 @@ uniform float uAurora;    // aurora night 0..1: northern-light curtains ADD colo
 uniform float uFlip;      // 1 = invert fragment y (GL bottom-up), 0 = direct
 uniform float uTest;      // 1 = output a raw world-y gradient (calibration)
 uniform float uShadowDbg; // 0 = normal, 1 = shadows OFF, 2 = shadows RED (settings switch)
+// THE WALL-WASH EXPONENT — how hard a face's Lambert term falls off with the
+// grazing angle (the maintainer's "wall light wrap" dial, wallwrap.ts): 1 is
+// physical cosine, 0 is no angle falloff at all. Was a hard-coded 0.45.
+uniform float uWallWrap;
 uniform float uNumLights;
 uniform vec4 uLightPos[${MAX_SHADER_LIGHTS}];  // col, row, z, radius(cells)
 uniform vec4 uLightCol[${MAX_SHADER_LIGHTS}];  // r, g, b, flicker
@@ -723,7 +728,7 @@ void main() {
   }
 
   float Ha = heightAt(cell);
-  if (uTest > 3.5) {
+  if (uTest > 3.5 && uTest < 4.5) {
     // Calibration 4: final surface classification — wall-face pixels RED,
     // top pixels GREEN (probed numerically by the verify scripts).
     float isFace = (Ha < 90.0 && Ha - z > 0.05 && groundAt(cell) - z > 0.05) ? 1.0 : 0.0;
@@ -806,6 +811,15 @@ void main() {
     }
   }
 
+  if (uTest > 5.5 && uTest < 6.5) {
+    // Calibration 6: WHAT A FACE PIXEL THINKS IT IS. R = fract(pos.x) (its
+    // point along the plane), G = fract(z) (its resolved height), B = the
+    // gate's top penumbra gateFade. A term that is per-cell shows up as a
+    // FLAT channel across a tile; per-pixel terms ramp. Opaque like every
+    // pattern >= 3, so the art underneath cannot leak into the read.
+    gl_FragColor = vec4(fract(pos.x), fract(z), gateFade, 1.0);
+    return;
+  }
   // DIRECTIONAL SUN (day phases; maintainer): daylight is modelled as
   // SKY + SUN — the phase ambient is split into a flat sky term (55%) and a
   // directional sun term (45%) that only reaches tiles with a clear line
@@ -1056,6 +1070,32 @@ void main() {
         if (ownShare > 0.0 && dot(p - ownC, p - ownC) < 1.0) continue;
         if (lShare > 0.0 && dot(p - lC, p - lC) < 1.0) continue;
         float hRay = mix(z, lp.z, t) + 0.2;
+        // A WALL MUST NOT SHADOW ITS OWN FOOT THROUGH ITS BILINEAR SKIRT.
+        // The march reads the LINEAR height map so cast shadows get a
+        // penumbra — and that same filter smears a wall's height half a cell
+        // INTO THE FLOOR in front of it, as a ramp from the wall's level down
+        // to the ground's. A face pixel's ray toward a light that stands off
+        // to the side runs nearly parallel to the plane, so its first samples
+        // past the 0.75-cell near-field skip sit only 0.1-0.2 cells in front
+        // of the plane — deep in that ramp — and read a phantom blocker two
+        // storeys tall: three or four samples at 0.45 each, and the bottom
+        // course of the wall is black while the course above it is lit. The
+        // maintainer drew it in red (2026-09-11: "the bottom of the wall (the
+        // tile closest to the ground) seem to be darkened more than the rest
+        // of the wall"), and it is worse the further along the wall from the
+        // light, exactly as the geometry says. Same for a lit scenery piece.
+        // For a FACE pixel, a sample inside the skirt band in front of its own
+        // plane is read at the band's outer edge instead — where the wall's
+        // weight is zero and the floor row's own heights (a barrel standing
+        // against the wall included) are what the filter returns. Ground
+        // pixels keep the exact reads they had; the own-column and near-field
+        // skips already cover their base case.
+        vec2 ps = p;
+        if (isFace) {
+          vec2 nF = mix(vec2(0.0, 1.0), vec2(1.0, 0.0), step(0.5, pickR));
+          float fp = dot(p - (baseF + 1.0), nF); // cells in front of the plane
+          if (fp > -0.01 && fp < 0.5) ps = p + nF * (0.5 - fp);
+        }
         // TWO SOLID SPANS PER COLUMN, not one height. The ground is solid
         // from 0 to hg; a deck (when H > hg) is a slab at H with OPEN AIR
         // under it. A slab can therefore only block a ray whose LIGHT is on the
@@ -1063,8 +1103,8 @@ void main() {
         // slab is in the open air with it and must shine straight through.
         // (The sun march is deliberately untouched: it wants the deck to block,
         // and its cliff look is locked.)
-        float H = heightAtSoft(p);
-        float hg = groundAtSoft(p);
+        float H = heightAtSoft(ps);
+        float hg = groundAtSoft(ps);
         float blocker = (H > hg + 0.01 && lp.z <= H) ? hg : H;
         if (blocker < 90.0 && blocker > hRay) {
           float pen = clamp((blocker - hRay) * 1.5, 0.0, 1.0);
@@ -1125,22 +1165,34 @@ void main() {
     if (isFace && uLightPos[i].w > 0.0) {
       float frontL = lp.y - (baseF.y + 1.0); // beyond the +row (left) face
       float frontR = lp.x - (baseF.x + 1.0); // beyond the +col (right) face
-      // Lateral: how far the light sits OUTSIDE the face's own 1-cell span.
-      float latL = abs(lp.x - clamp(lp.x, baseF.x, baseF.x + 1.0));
-      float latR = abs(lp.y - clamp(lp.y, baseF.y, baseF.y + 1.0));
+      // Lateral: how far the light sits along the plane from THIS PIXEL'S
+      // point on it — pos, the same exact face point the attenuation
+      // already uses. This used to be the light's distance from the CELL's
+      // one-cell span (clamp(lp.x, baseF.x, baseF.x + 1)), which is one
+      // number for a whole tile and jumps at every tile edge: with a torch
+      // near a wall the Lambert gate stepped 0.0 -> 0.7 -> 1.7 cells of
+      // lateral across three tiles and drew a hard vertical seam at each
+      // boundary — the "sharp tile edges" the maintainer drew in blue
+      // (2026-09-11: "I don't really understand why a boundary exists at
+      // all. Isn't this shader in pixelspace?"). It is now; this was the one
+      // face term that was not.
+      float latL = abs(lp.x - pos.x);
+      float latR = abs(lp.y - pos.y);
       float front = mix(frontL, frontR, pickR);
       float lat = mix(latL, latR, pickR);
-      // Lambert from the NEAREST point of the face to the light: a torch in
-      // front of a long wall lights the whole run (cosine taper + the normal
-      // distance attenuation) instead of only the single facing cell, while
+      // True per-pixel Lambert in the ground plane: front / distance-along-
+      // the-plane, so a torch in front of a long wall washes the whole run
+      // continuously (cosine taper + the normal distance attenuation), while
       // a light behind the plane still leaves the face dark.
       float cosF = front / max(sqrt(front * front + lat * lat), 0.001);
-      // Lambert-like lateral taper. The old smoothstep(0.2,0.6,cosF) crushed
-      // grazing light: a torch CLOSE to a wall lit ~1 cell of it while its
-      // ground pool spread 4+ cells (light must extend along the wall about
-      // as far as along the ground). pow keeps a gentle cosine-ish falloff
-      // along the run; the front gate still keeps back faces dark.
-      float gate = smoothstep(0.0, 0.25, front) * pow(clamp(cosF, 0.0, 1.0), 0.45);
+      // THE WRAP: pow(cos, uWallWrap). A physical cosine (1.0) crushes
+      // grazing light — a torch held close to a wall lights a cell of it
+      // while its ground pool spreads 4+ cells, because the ground takes no
+      // angle term at all. 0.45 was the first softening; the maintainer
+      // still found it "a bit too extreme so only the wall very close to the
+      // player is lit up", so the exponent is his dial now (wallwrap.ts) —
+      // the front gate keeps back faces dark at every setting.
+      float gate = smoothstep(0.0, 0.25, front) * pow(clamp(cosF, 0.0, 1.0), uWallWrap);
       // Penumbra: the gate fades in up the face (see gateFade above).
       occ *= mix(1.0, gate, gateFade);
     }
@@ -2145,6 +2197,9 @@ export class NightLights {
       uFlip: { type: "1f", value: 1 },
       uTest: { type: "1f", value: 0 },
       uShadowDbg: { type: "1f", value: 0 },
+      // DECLARED (the uSun lesson): an undeclared uniform never syncs on a
+      // real phone GPU and the wall wrap would silently sit at 0 = no falloff.
+      uWallWrap: { type: "1f", value: wallWrapExponent() },
       // Animation clock (seconds). MUST be driven every frame from the SAME
       // clock as the JS emission layers (stamps/lit copies, scene.time.now/
       // 1000) or the shader floor/fire flicker either freezes (the long-
@@ -4003,6 +4058,7 @@ export class NightLights {
     // light field, free of the art underneath.
     s.setUniform("uTest.value", this.testPattern === 5 ? 0 : this.testPattern);
     s.setUniform("uShadowDbg.value", this.shadowDbg);
+    s.setUniform("uWallWrap.value", wallWrapExponent());
     this.overlay?.setFlipY(this.overlayFlip);
     // Raw-readback test mode draws opaque (multiply would mix in the art).
     this.overlay?.setBlendMode(

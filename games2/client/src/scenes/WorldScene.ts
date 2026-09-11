@@ -102,6 +102,7 @@ import {
 } from "../navbias";
 import { ensureSpeedDial, playerSpeed } from "../playerspeed";
 import { ensureStickDial, ensureStickAngle, stickLean, stickHeading } from "../stickdir";
+import { ensureWallWrapDial, wallWrap, setWallWrap } from "../wallwrap";
 import { hiddenRing, setHiddenRing } from "../hiddenring";
 import { indoorWall, setIndoorWall, INDOOR_WALL_MIN, INDOOR_WALL_MAX } from "../indoorwall";
 import {
@@ -4530,6 +4531,12 @@ export class WorldScene extends Phaser.Scene {
        *  wants to drive fast sets it through `setPlayerSpeed`, never here — the
        *  server clamps whatever arrives. */
       speed: () => playerSpeed(),
+      /** The wall light wrap dial (0 = physical cosine, 1 = no angle falloff);
+       *  set it to pin a gate's measurement to one exponent. */
+      wallWrap: (v?: number) => {
+        if (typeof v === "number") setWallWrap(v);
+        return wallWrap();
+      },
       /** IS A BODY AT (col, row, lvl) PARKED FOR BEING SEALED IN A ROOM I AM
        *  NOT IN — the exact test every monster, NPC and remote player runs. A
        *  gate walks into a cave (which fills `roomCellMemo`), walks out, and
@@ -15743,6 +15750,7 @@ export class WorldScene extends Phaser.Scene {
       ensureSpeedDial(); // the player-speed slider, injected the same way
       ensureStickDial(); // …and the stick's direction-freedom slider
       ensureStickAngle(); // (re)bind the bearing listeners on games-ui's stick
+      ensureWallWrapDial(); // …and the night shader's wall light wrap
       if (this.zoneLinesOn && this.zoneLinesFor !== this.zone) this.drawZoneLines(); // the uphill-bias slider, injected the same way
     }
     // The room's LIGHT rules outlive the geometry by exactly one GRADE. The

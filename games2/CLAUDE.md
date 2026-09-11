@@ -209,6 +209,10 @@ secrets; push to `main`, rebase on reject, no PRs unless asked; doc law.
   25%); the glow field is half resolution; an overlay's RT ratio survives
   update().
 - Solid objects are art, not walls (no face band); a cave mouth is not a face.
+- The wall wash is per PIXEL (the face gate's lateral is to the pixel, never
+  the cell), its wrap is his "Wall light wrap" dial (default 0.7), and the
+  LOS march never blends a wall's own height into its front skirt; gate:
+  `scripts/verify-wallwash.mjs`.
 - Day is sky + sun; the sun is the hand; DAY == NIGHT in the phase table is
   load-bearing (equal sun and moon speed on the pill).
 - Indoor ambient: dark room 40%, lit room 12%; hidden outline 60% — his dials.
