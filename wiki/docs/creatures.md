@@ -14,9 +14,12 @@ a way to ... see all different parallel versions (and review/rate all parallel
 versions). In the end we will only have a single attack animation ofc."*)
 
 - **A take is published as its own entry** carrying `takeOf` (the state it
-  belongs to) and `takeLabel` (`try`, `v3` — parsed from the slot name, so
-  `attack_v3try` is v3). Any folder matching `<state>_*` is a take of that
-  state; anything else on disk is not a state at all.
+  belongs to) and `takeLabel` (`try`, `v2` — parsed from the slot name, so
+  `attack_v3try` and `attack_v3` both read v3). Any folder matching `<state>_*`
+  is a take of that state; anything else on disk is not a state at all.
+- **The versions are sorted, live first, numbers in number order** — the agent
+  is renaming them `v1, v2, v3`, so the row collates numerically and v10
+  follows v9 rather than v1 (maintainer 2026-09-11).
 - **One chip per STATE, versions on their own row.** The viewer's `takeRow`
   appears only while the state on screen has more than one take, and reads
   `live | try | v3`. A take is never a second state chip — it is the same
@@ -26,6 +29,16 @@ versions). In the end we will only have a single attack animation ofc."*)
   on v3 can never land on the live take: its feedback id is
   `<path>#attack_v3try#<dir>`. The judging pill says "Attack v3", never the raw
   slot.
+- **The version he is reviewing follows him**, creature to creature and state
+  to state (maintainer 2026-09-11: "When I stand on a monster and review the
+  attack animation version today named 'try' I want to be able to click 'next
+  next next' to see the next monsters attack 'try' animation. I don't want the
+  wiki to switch back to the 'live' version."). Remembered as the LABEL
+  (`wiki-viewer-take-<kind>`), never the slot: the slot is per state
+  (`attack_v2`) while the question is per version — show me everyone's v2. A
+  creature or state without that version opens on its live take and does NOT
+  forget his choice, so stepping through Idle on the way back to Attack still
+  lands on v2.
 - The state chip carries the LIVE take's marks (that is the one that ships);
   each version chip carries its own.
 - The Animations panel counts STATES and says "N parallel takes" beside it.

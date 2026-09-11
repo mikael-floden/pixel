@@ -2779,7 +2779,14 @@ function seedMonsterTuning(monsters, levels) {
  * (what the chip says), and the viewer groups them: one chip per state, a
  * version row under it. Each take keeps its own feedback id — `<path>#<slot>
  * #<dir>` — so a verdict on v3 is never a verdict on the live one. */
-const takeSlots = (onDisk, st) => onDisk.filter((d) => d !== st && new RegExp(`^${st}[_-]`).test(d));
+// ALPHABETICAL, NUMBER-AWARE (maintainer 2026-09-11: "The monster-agent is also
+// working on renaming the versions to only call them 'v1', 'v2', 'v3', etc. So
+// the version selector has to be alphabetically sorted."). Numeric collation,
+// so v10 follows v9 instead of v1. The live take is not in this list — it is
+// the state itself and leads the row.
+const takeSlots = (onDisk, st) => onDisk
+  .filter((d) => d !== st && new RegExp(`^${st}[_-]`).test(d))
+  .sort((a, b) => takeLabel(a, st).localeCompare(takeLabel(b, st), undefined, { numeric: true, sensitivity: "base" }));
 function takeLabel(slot, st) {
   const suffix = slot.slice(st.length).replace(/^[_-]+/, "");
   const v = /^v(\d+)/.exec(suffix);

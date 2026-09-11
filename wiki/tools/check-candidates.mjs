@@ -258,6 +258,12 @@ if (pend.length) {
   if (withTakes) {
     const slots = Object.entries(withTakes.animations).filter(([, a]) => a.takeOf);
     const base = slots[0][1].takeOf;
+    // Page inside the in-the-making list: those are the creatures with takes,
+    // and ‹ › walks the filter he is in.
+    await p.evaluate(() => { location.hash = "#/monsters"; });
+    await p.waitForTimeout(1600);
+    await p.evaluate(() => [...document.querySelectorAll('[data-bar="wiki-monster-shadow"] .sortbar-btn')].find((b) => /in the making/.test(b.textContent))?.click());
+    await p.waitForTimeout(1000);
     await p.evaluate((id) => { location.hash = `#/monsters/${id}`; }, withTakes.id);
     await p.waitForTimeout(3000);
     await p.evaluate((b) => [...document.querySelectorAll(".seg-states button")].find((x) => x.textContent.trim().toLowerCase() === b).click(), base);
@@ -286,6 +292,31 @@ if (pend.length) {
       `judging "${other}" writes a verdict against that take alone (${landed.join(", ")})`);
     ok(/\bv?\d|try/i.test(pill ?? "") && !/try\b.*try/i.test(pill ?? ""),
       `and the judging pill names the version in words, not the raw slot ("${pill}")`);
+
+    // THE VERSION SURVIVES ‹ › (maintainer 2026-09-11: "When I stand on a
+    // monster and review the attack animation version today named 'try' I want
+    // to be able to click 'next next next' to see the next monsters attack
+    // 'try' animation. I don't want the wiki to switch back to the 'live'
+    // version.")
+    const walkTakes = [];
+    for (let i = 0; i < 2; i++) {
+      await p.evaluate(() => document.querySelectorAll(".nav-btn")[1]?.click());
+      await p.waitForTimeout(1900);
+      walkTakes.push(await p.evaluate(() => ({
+        name: document.querySelector("h1")?.textContent,
+        state: [...document.querySelectorAll(".seg-states button.on")].map((b) => b.textContent.trim())[0],
+        take: [...document.querySelectorAll(".seg-takes button.on")].map((b) => b.textContent.trim())[0],
+        takes: [...document.querySelectorAll(".seg-takes button")].map((b) => b.textContent.trim()),
+      })));
+    }
+    console.log("walk takes:", JSON.stringify(walkTakes));
+    ok(walkTakes.every((w) => w.take === other), `‹ › stays on "${other}" instead of falling back to live (${walkTakes.map((w) => `${w.name}:${w.take}`).join(" → ")})`);
+    // ...and the version row is sorted, live first (the agent is renaming them
+    // v1, v2, v3 — v10 must follow v9, not v1).
+    const order = walkTakes[0].takes;
+    const rest = order.slice(1);
+    const sorted = [...rest].sort((a, b) => a.localeCompare(b, undefined, { numeric: true, sensitivity: "base" }));
+    ok(order[0] === "live" && rest.join() === sorted.join(), `and the versions are sorted, live first (${order.join(" | ")})`);
   } else {
     console.log("  (no parallel takes in the registry right now — nothing to drive)");
   }

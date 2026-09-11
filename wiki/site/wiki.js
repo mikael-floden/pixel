@@ -1636,6 +1636,15 @@ function facetMark(domain, path, state, dirs, entity) {
  * entity actually has that state. */
 const VIEWER_STATE_KINDS = new Set(["monster", "character"]);
 const VIEWER_STATE_KEY = (kind) => `wiki-viewer-state-${kind}`;
+/* ...AND THE VERSION WITH IT (maintainer 2026-09-11: "When I stand on a monster
+ * and review the attack animation version today named 'try' I want to be able
+ * to click 'next next next' to see the next monsters attack 'try' animation. I
+ * don't want the wiki to switch back to the 'live' version.")
+ *
+ * Remembered as the LABEL — "try", "v2" — never the slot, because the slot is
+ * per state (`attack_v2`) while the question he is asking is per version: show
+ * me everyone's v2. A creature without that version opens on its live take. */
+const VIEWER_TAKE_KEY = (kind) => `wiki-viewer-take-${kind}`;
 const lastViewerState = (kind) => {
   if (!VIEWER_STATE_KINDS.has(kind)) return null;
   try { return localStorage.getItem(VIEWER_STATE_KEY(kind)); } catch { return null; }
@@ -1644,15 +1653,31 @@ const rememberViewerState = (kind, st) => {
   if (!VIEWER_STATE_KINDS.has(kind)) return;
   try { localStorage.setItem(VIEWER_STATE_KEY(kind), st); } catch { /* private mode */ }
 };
+const lastViewerTake = (kind) => {
+  if (!VIEWER_STATE_KINDS.has(kind)) return null;
+  try { return localStorage.getItem(VIEWER_TAKE_KEY(kind)); } catch { return null; }
+};
+const rememberViewerTake = (kind, label) => {
+  if (!VIEWER_STATE_KINDS.has(kind)) return;
+  try { localStorage.setItem(VIEWER_TAKE_KEY(kind), label); } catch { /* private mode */ }
+};
 function makePlayer(entity, kind, opts = {}) {
   const anims = entity.animations;
   const stateNames = Object.keys(anims);
   // A take is not a state: one chip per state, versions on their own row.
   const baseStates = stateNames.filter((s) => !anims[s]?.takeOf);
+  const takeOf = (s) => anims[s]?.takeOf ?? s;
+  const takesOf = (st) => [st, ...stateNames.filter((s) => anims[s]?.takeOf === st)];
+  const takeLabelOf = (s) => anims[s]?.takeLabel ?? "live";
+  /** The slot to show for a state: the version he last picked when this state
+   *  has one, else the live take. */
+  const slotFor = (st, label) => (label ? takesOf(st).find((s) => takeLabelOf(s) === label) ?? st : st);
   const kept = lastViewerState(kind);
+  const keptTake = lastViewerTake(kind);
+  const openState = kept && baseStates.includes(kept) ? kept
+    : baseStates.includes("idle") ? "idle" : baseStates[0];
   let cur = {
-    state: kept && baseStates.includes(kept) ? kept
-      : baseStates.includes("idle") ? "idle" : baseStates[0],
+    state: slotFor(openState, keptTake),
     dir: "south", frame: 0, playing: true, speed: 1, zoom: 0 /* 0 = auto */,
     shadow: kind === "monster",
     editShadow: false,
@@ -2302,8 +2327,6 @@ function makePlayer(entity, kind, opts = {}) {
    * SLOT being shown, so every verdict, stamp, mark and clip lookup below keeps
    * working on a plain animations key, and v3's verdict can never land on the
    * live take. */
-  const takeOf = (s) => anims[s]?.takeOf ?? s;
-  const takesOf = (st) => [st, ...stateNames.filter((s) => anims[s]?.takeOf === st)];
   const takeSeg = h("span", { class: "seg seg-takes" });
   // The whole row disappears when a state has one take, which is every creature
   // the agent has finished with — an empty control row is a question with no
@@ -2329,13 +2352,21 @@ function makePlayer(entity, kind, opts = {}) {
       return h("button", {
         class: [s === takeOf(cur.state) ? "on" : "", mark.cls].filter(Boolean).join(" "),
         onclick: () => {
-          cur.state = s;
+          // Stay on the version he is reviewing when this state has one too —
+          // the same rule that carries it from creature to creature.
+          // The REMEMBERED version leads: it is the answer to "which version am
+          // I reviewing", and the state chip he just left may have had none.
+          cur.state = slotFor(s, lastViewerTake(kind) ?? takeLabelOf(cur.state));
           rememberViewerState(kind, s);
+          // A state with ONE take says nothing about which version he wants:
+          // stepping through Idle on the way back to Attack must not forget
+          // that he is reviewing v2.
+          if (takesOf(s).length > 1) rememberViewerTake(kind, takeLabelOf(cur.state));
           // Direction availability differs per state (e.g. stone_golem's
           // angry ships 5/8 dirs) — refresh the pad and hop to an available
           // direction if the current one has no clip in this state.
-          if (!anims[s]?.dirs?.[cur.dir]) {
-            cur.dir = state.data.directions.find((d) => anims[s]?.dirs?.[d]) ?? cur.dir;
+          if (!anims[cur.state]?.dirs?.[cur.dir]) {
+            cur.dir = state.data.directions.find((d) => anims[cur.state]?.dirs?.[d]) ?? cur.dir;
           }
           // ...and the hitbox bar, which now shows THIS variation's own box
           // (2026-08-29): without this the rails kept driving the previous
@@ -2362,6 +2393,7 @@ function makePlayer(entity, kind, opts = {}) {
         title: mark.title ? `${label} — ${words} — ${mark.title}` : `${label} — ${words}`,
         onclick: () => {
           cur.state = s;
+          rememberViewerTake(kind, takeLabelOf(s));
           if (!anims[s]?.dirs?.[cur.dir]) cur.dir = state.data.directions.find((d) => anims[s]?.dirs?.[d]) ?? cur.dir;
           loadClip(); renderStateSeg(); renderTakeSeg(); renderDirPad(); refreshShadowBar(); refreshHitBar(); onFacetChange?.();
         },
