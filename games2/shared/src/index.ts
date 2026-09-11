@@ -223,6 +223,21 @@ export const STICK_LEAN_DEFAULT = 0;
  *  most a lean can ever be asked to undo. */
 export const OCTANT_HALF_DEG = 22.5;
 
+/** The screen angle (degrees, +y down) a KEY octant actually RUNS at. A
+ *  cardinal runs where it points; a diagonal press runs along the nearest
+ *  GRID AXIS (`screenToWorldVector`'s lock), which on a 32x14 iso screen is
+ *  23.6deg off the horizontal, not 45. The lean interpolates between THESE, so
+ *  a finger centred in the NE sector runs exactly where the W+D keys do and
+ *  nothing jumps when it drifts a degree off centre. */
+export function octantRunDeg(oct: number, iso: IsoGeometry = ISO_GEOMETRY): number {
+  const k = ((oct % 8) + 8) % 8;
+  const c = k * 45;
+  if (k % 2 === 0) return ((c + 180) % 360) - 180;
+  const sx = Math.cos((c * Math.PI) / 180) >= 0 ? 1 : -1;
+  const sy = Math.sin((c * Math.PI) / 180) >= 0 ? 1 : -1;
+  return (Math.atan2(sy * iso.dy, sx * iso.dx) * 180) / Math.PI;
+}
+
 /** Lean a SNAPPED screen heading toward the raw one the finger is holding.
  *
  *  `ax/ay` is the snapped 8-way vector (screen space, +y DOWN — the same frame
@@ -230,6 +245,16 @@ export const OCTANT_HALF_DEG = 22.5;
  *  the finger's angle in that frame. Returns a UNIT vector — `stepMovement`
  *  normalises anyway, so the leaned heading walks at exactly the speed the
  *  (1,1) diagonal did.
+ *
+ *  THE LEAN RUNS BETWEEN THE OCTANTS' REAL RUN HEADINGS (`octantRunDeg`), not
+ *  between the sector centres: the finger's place in its 45deg sector (the
+ *  residual, clamped to half an octant) is mapped, times the dial, onto the
+ *  angular gap to the neighbouring octant's run heading on that side — half
+ *  the gap at the sector edge, so both sides of every edge meet at the same
+ *  heading and at 1.0 the run is CONTINUOUS all the way round. Interpolating
+ *  raw screen angles instead put a leaned NE at 45deg while the W+D press
+ *  runs the grid axis at 23.6deg: a 21deg jump the moment the finger left
+ *  the sector's exact centre.
  *
  *  The residual is CLAMPED to half an octant. It cannot legitimately exceed
  *  that — the snap is the nearest octant to the very same angle — but the
@@ -242,16 +267,22 @@ export function leanHeading(
   ay: number,
   rawDeg: number,
   amount: number,
+  iso: IsoGeometry = ISO_GEOMETRY,
 ): { ax: number; ay: number } {
   const len = Math.hypot(ax, ay);
   if (len < 1e-6 || !Number.isFinite(rawDeg)) return { ax, ay };
   const lean = Math.max(STICK_LEAN_MIN, Math.min(STICK_LEAN_MAX, amount));
   if (lean <= 0) return { ax: ax / len, ay: ay / len };
   const snapDeg = (Math.atan2(ay, ax) * 180) / Math.PI;
+  const oct = Math.round(snapDeg / 45);
   // Shortest signed way round, in (-180, 180].
   const resid = ((rawDeg - snapDeg + 540) % 360) - 180;
   const d = Math.max(-OCTANT_HALF_DEG, Math.min(OCTANT_HALF_DEG, resid));
-  const a = ((snapDeg + lean * d) * Math.PI) / 180;
+  const side = d >= 0 ? 1 : -1;
+  const h0 = octantRunDeg(oct, iso);
+  const h1 = octantRunDeg(oct + side, iso);
+  const gap = ((h1 - h0 + 540) % 360) - 180; // signed, toward the neighbour
+  const a = ((h0 + lean * (Math.abs(d) / OCTANT_HALF_DEG) * 0.5 * gap) * Math.PI) / 180;
   return { ax: Math.cos(a), ay: Math.sin(a) };
 }
 
@@ -534,7 +565,14 @@ export function screenToWorldVector(
   // line, so a bridge/corridor slowly slips sideways. Snap the world direction
   // to the nearest grid axis so those runs track true. Single-key presses are
   // untouched — they keep their screen-cardinal (up/down/left/right) move.
-  if (ix !== 0 && iy !== 0) {
+  // ONLY AN EXACT DIAGONAL IS A DIAGONAL PRESS. The test used to be "both
+  // components non-zero", which read every LEANED heading (stickdir: the
+  // stick's finger bearing pulling a snapped octant off-centre) as a diagonal
+  // and snapped a near-north walk onto a grid axis — the body ran NE/NW while
+  // the sprite faced N (maintainer 2026-09-11: "I try to run up (N) and the
+  // player only runs NE and NW. Almost impossible to control"). Key vectors
+  // are exactly (+-1, +-1); a leaned vector is never that.
+  if (Math.abs(Math.abs(ix) - Math.abs(iy)) < 1e-9) {
     if (Math.abs(ux) >= Math.abs(uy)) {
       ux = Math.sign(ux);
       uy = 0;

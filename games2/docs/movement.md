@@ -242,18 +242,31 @@ Server-authoritative movement, decks, collision, steer assist, fall damage, tap/
   run in 8 directions on a keyboard" — but the snap costs FEEDBACK: "it's hard
   to see if you are close to snap to a new direction or not". So the heading
   leans toward the finger's real bearing by his dial: **0 = today's snap
-  (the default), 0.5 = half the residual, 1 = free 360**.
-  `out = snapped + lean x (raw - snapped)`, residual clamped to half an
-  octant.
-  - **THE FACING STILL SNAPS AT EVERY SETTING**, and nothing was needed to
-    make it: `stepMovement` takes the facing from the vector, a lean is at most
-    half a sector, so `vectorToDirection` returns the SAME octant — and at 1.0
-    the heading is the bearing whose nearest octant is the one it snapped to.
-    Eight animations, eight facings, a heading that breathes. Swept over 1,680
-    (octant, dial, bearing) combinations. On the boundary itself the facing is
-    a genuine TIE between the two octants sharing it — and the stick's own
-    `Math.round` has already flipped by then, so that bearing arrives paired
-    with the other snapped vector.
+  (the default), 0.5 = half the residual, 1 = continuous all the way round**.
+  The finger's place in its 45deg sector (residual, clamped to half an
+  octant) is mapped, times the dial, onto HALF the angular gap to the
+  neighbouring octant's RUN heading on that side (`octantRunDeg`).
+  - **THE LEAN RUNS BETWEEN THE OCTANTS' REAL RUN HEADINGS, NOT THE SECTOR
+    CENTRES.** A diagonal press does not run at 45deg on screen: the grid-axis
+    lock (below) runs it along the tile axis, 23.6deg off the horizontal on a
+    32x14 iso. So the diagonal's anchor is that axis, both sides of every
+    sector edge meet at the same heading (half the gap), and at 1.0 the run
+    is continuous round the circle — non-linear in the finger's angle, which
+    is the iso remap, not a bug. (Interpolating raw screen angles put a leaned
+    NE at 45deg while W+D ran the axis at 23.6: a 21deg jump the moment the
+    finger left the sector's exact centre.)
+  - **THE GRID-AXIS LOCK LOCKS EXACT DIAGONALS ONLY** (`screenToWorldVector`:
+    |ix| == |iy| to 1e-9). It used to lock ANY vector with both components
+    non-zero, so every leaned heading was a "diagonal press": a near-north
+    walk snapped onto a grid axis and the body ran NE/NW while the sprite
+    faced N (maintainer 2026-09-11: "almost impossible to control"). Key
+    vectors are exactly (+-1, +-1) and the lock is bit-for-bit what it was
+    for them; a leaned vector never is one.
+  - **THE FACING FOLLOWS THE RUN**: `stepMovement` takes it from the vector
+    (`vectorToDirection`), so it is the key's octant or, past the point where
+    the leaned run is nearer the neighbour's, the neighbour's — the sprite
+    faces within 22.5deg of where the body is going at every setting. Eight
+    animations, eight facings, a heading that breathes.
   - **THE BEARING IS READ ADDITIVELY, off games-ui's element.** Their
     `gamepad.ts` snaps to 8 and SYNTHESIZES WASD by design ("no games-agent
     file is touched"), so the finger's angle never reaches this agent's code.
@@ -273,7 +286,9 @@ Server-authoritative movement, decks, collision, steer assist, fall damage, tap/
     pace; it goes into the input message like any heading, so the server
     integrates exactly what the client predicted.
   - Gate: `server/test/stickdir.test.ts` — his three settings in his own
-    words, the facing sweep, the clamp, and unit magnitude.
+    words, continuity across every sector edge, the diagonal anchored on the
+    grid axis, the lock left alone by a leaned vector, the clamp, and unit
+    magnitude.
 - **Auto-jump**: walking INTO a 1-level wall auto-fires the jump
   (`maybeAutoJump`/`wouldAutoJump` from `predictAndSend`). Rule: exactly
   `!canEnter(walk) && canEnter(jump)` probed a leading-edge ahead — 2-level+
@@ -319,10 +334,11 @@ Server-authoritative movement, decks, collision, steer assist, fall damage, tap/
 - **Controls are screen-relative**: `stepMovement(..., screenInput)` rotates
   input by the projection ratio (`ISO_DX`/`ISO_DY` in `shared/`; the client's
   `MAP_GEOMETRY` imports them so they can't drift) — Up walks straight up on
-  screen; facing uses the raw screen vector. **Grid-axis lock**: a diagonal
-  press snaps the world move to the nearest tile axis
+  screen; facing uses the raw screen vector. **Grid-axis lock**: an EXACT
+  diagonal press (|ix| == |iy|) snaps the world move to the nearest tile axis
   (`screenToWorldVector`) so corridors/bridges track true; single keys stay
-  screen-cardinal.
+  screen-cardinal; a leaned stick heading is never a diagonal press (it ran
+  N as NE/NW when it was).
 - Open follow-ups (#28): occlusion behind tall tiles; half-level (0.5)
   stair/ramp tiles from the maps agent. If the tile "house format" changes,
   re-measure `MAP_GEOMETRY` and update `ISO_DX/ISO_DY`.

@@ -13,6 +13,8 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 import {
   leanHeading,
+  octantRunDeg,
+  screenToWorldVector,
   vectorToDirection,
   STICK_LEAN_DEFAULT,
   OCTANT_HALF_DEG,
@@ -39,83 +41,110 @@ test("the dial ships at 0 — today's snap, to the pixel", () => {
   }
 });
 
-test("1.0 is full 360: the heading is the finger, exactly", () => {
+test("1.0 is continuous round the circle, anchored on the octants' REAL run headings", () => {
+  // A diagonal press runs the GRID AXIS (23.6deg off horizontal on 32x14),
+  // not 45deg — so that is where the finger centred in the sector must run.
   for (let oct = 0; oct < 8; oct++) {
     const ax = Math.round(Math.cos((oct * Math.PI) / 4));
     const ay = Math.round(Math.sin((oct * Math.PI) / 4));
     const snap = snapOf(ax, ay);
-    for (const off of [-22, -7, 0, 7, 22]) {
-      const got = deg(leanHeading(ax, ay, snap + off, 1));
-      assert.ok(Math.abs(diff(snap + off, got)) < 1e-9, `octant ${oct} +${off}: 1.0 must be the raw bearing`);
+    const centred = leanHeading(ax, ay, snap, 1);
+    assert.ok(Math.abs(diff(octantRunDeg(oct), deg(centred))) < 1e-9, `octant ${oct}: finger centred runs the octant's own heading`);
+    const wKey = screenToWorldVector(ax, ay);
+    const wLean = screenToWorldVector(centred.ax, centred.ay);
+    assert.ok(Math.hypot(wKey.x - wLean.x, wKey.y - wLean.y) < 1e-6, `octant ${oct}: the same world move as the key press`);
+  }
+  // Both sides of every sector edge meet, and the run is monotonic in the
+  // finger's angle — the "no jump anywhere" that IS "full 360".
+  let prev: number | null = null;
+  for (let phi = -180; phi < 180; phi += 0.5) {
+    const oct = Math.round(phi / 45);
+    const ax = Math.round(Math.cos((oct * Math.PI) / 4));
+    const ay = Math.round(Math.sin((oct * Math.PI) / 4));
+    const h = deg(leanHeading(ax, ay, phi, 1));
+    if (prev !== null) {
+      const step = diff(prev, h);
+      assert.ok(step >= -1e-9 && step < 3, `finger ${phi}deg: run stepped ${step.toFixed(2)}deg`);
     }
+    prev = h;
+  }
+  for (let oct = 0; oct < 8; oct++) {
+    const edge = oct * 45 + OCTANT_HALF_DEG;
+    const lo = leanHeading(Math.round(Math.cos((oct * Math.PI) / 4)), Math.round(Math.sin((oct * Math.PI) / 4)), edge, 1);
+    const n = oct + 1;
+    const hi = leanHeading(Math.round(Math.cos((n * Math.PI) / 4)), Math.round(Math.sin((n * Math.PI) / 4)), edge, 1);
+    assert.ok(Math.abs(diff(deg(lo), deg(hi))) < 1e-9, `sector edge at ${edge}deg: ${deg(lo).toFixed(2)} vs ${deg(hi).toFixed(2)}`);
   }
 });
 
-test("0.5 gives HALF the residual, on both sides of a threshold — his example", () => {
-  // Walking NE on screen is up+right: ax +1, ay -1 (screen y is DOWN), -45deg.
-  // N is -90deg, E is 0deg. A finger just short of the N/NE threshold sits at
-  // about -68deg and snaps to N; one hair past it snaps to NE.
+test("a LEANED heading is never a diagonal press: the grid-axis lock leaves it alone", () => {
+  // The bug of 2026-09-11: "both components non-zero" read every lean as a
+  // diagonal and snapped a near-north walk onto a grid axis — NE/NW runs
+  // while the sprite faced N.
+  const key = screenToWorldVector(1, -1); // W+D: locked onto the axis
+  assert.ok(Math.abs(key.x) < 1e-9 || Math.abs(key.y) < 1e-9, "an exact diagonal press still locks");
+  const lean = leanHeading(0, -1, -80, 1); // N, finger 10deg toward NE
+  const w = screenToWorldVector(lean.ax, lean.ay);
+  const wN = screenToWorldVector(0, -1);
+  const ang = Math.atan2(w.y, w.x) - Math.atan2(wN.y, wN.x);
+  assert.ok(Math.abs(ang) > 0.02 && Math.abs(ang) < 0.5, `a leaned N moves a little off N in the world, not onto an axis (${((ang * 180) / Math.PI).toFixed(1)}deg)`);
+  assert.ok(Math.abs(w.x) > 1e-3 && Math.abs(w.y) > 1e-3, "and is not axis-locked");
+});
+
+test("0.5 gives HALF the lean, on both sides of a threshold — his example", () => {
+  // Walking NE on screen is up+right: ax +1, ay -1 (screen y is DOWN). N runs
+  // at -90deg; the NE PRESS runs the grid axis, octantRunDeg(7) = -23.6deg.
+  // A finger just short of the N/NE threshold sits at about -68deg and snaps
+  // to N; one hair past it snaps to NE.
   const N = { ax: 0, ay: -1 };
   const NE = { ax: 1, ay: -1 };
+  const neRun = octantRunDeg(7);
+  const meet = -90 + 0.5 * diff(-90, neRun); // where both sides meet at 1.0
   // "we can change the direction somewhat to NE": still snapped N, leaning NE.
   const beforeSnap = deg(leanHeading(N.ax, N.ay, -68, 0.5));
-  assert.ok(beforeSnap > -90 && beforeSnap < -78, `leaning off N toward NE, got ${beforeSnap.toFixed(1)}deg`);
-  assert.equal(vectorToDirection(...(Object.values(leanHeading(N.ax, N.ay, -68, 0.5)) as [number, number])), "north");
+  assert.ok(beforeSnap > -90 && beforeSnap < meet, `leaning off N toward NE, got ${beforeSnap.toFixed(1)}deg`);
   // "…and when the threshold is reached and we run NE instead we will run
   // somewhat to N": now snapped NE, leaning back toward N.
   const afterSnap = deg(leanHeading(NE.ax, NE.ay, -67, 0.5));
-  assert.ok(afterSnap < -45 && afterSnap > -57, `leaning off NE back toward N, got ${afterSnap.toFixed(1)}deg`);
-  // THE TWO HEADINGS STRADDLE THE THRESHOLD AND ARE CLOSE: that continuity is
-  // the whole feature — the snap still happens, and it no longer teleports the
-  // heading a full 45deg.
-  assert.ok(
-    Math.abs(diff(beforeSnap, afterSnap)) < 45,
-    `crossing the threshold jumped ${Math.abs(diff(beforeSnap, afterSnap)).toFixed(1)}deg — no smoother than a raw snap`,
-  );
-  // Exactly half, to the degree, either side.
-  assert.ok(Math.abs(beforeSnap - (-90 + 11)) < 0.6, `half of the 22deg residual off N, got ${beforeSnap.toFixed(1)}`);
-  assert.ok(Math.abs(afterSnap - (-45 - 11)) < 0.6, `half of the -22deg residual off NE, got ${afterSnap.toFixed(1)}`);
+  assert.ok(afterSnap < neRun && afterSnap > meet, `leaning off NE back toward N, got ${afterSnap.toFixed(1)}deg`);
+  // THE TWO HEADINGS STRADDLE THE THRESHOLD AND ARE CLOSER than the raw snap
+  // (|-90 - neRun| = 66deg): the snap still happens, it no longer teleports.
+  const jump = Math.abs(diff(beforeSnap, afterSnap));
+  assert.ok(jump < Math.abs(diff(-90, neRun)) * 0.55, `crossing the threshold jumped ${jump.toFixed(1)}deg`);
+  // Half of the full lean, to the degree, either side.
+  const fullBefore = deg(leanHeading(N.ax, N.ay, -68, 1));
+  const fullAfter = deg(leanHeading(NE.ax, NE.ay, -67, 1));
+  assert.ok(Math.abs(diff(-90, beforeSnap) - 0.5 * diff(-90, fullBefore)) < 1e-9, "half the lean off N");
+  assert.ok(Math.abs(diff(neRun, afterSnap) - 0.5 * diff(neRun, fullAfter)) < 1e-9, "half the lean off NE");
 });
 
-test("THE FACING NEVER LEAVES ITS OCTANT, at any dial — the 8 animations still fit", () => {
+test("THE FACING FOLLOWS THE RUN: the key's octant or the neighbour it leans toward, never a third", () => {
+  const OCTS = ["east", "south-east", "south", "south-west", "west", "north-west", "north", "north-east"];
   let checked = 0;
   for (let oct = 0; oct < 8; oct++) {
     const ax = Math.round(Math.cos((oct * Math.PI) / 4));
     const ay = Math.round(Math.sin((oct * Math.PI) / 4));
-    const want = vectorToDirection(ax, ay);
     const snap = snapOf(ax, ay);
-    // THE OPEN interval. At EXACTLY +-22.5 the leaned heading sits on the
-    // octant boundary, where the nearest-of-8 is a genuine tie and either
-    // neighbour is a correct answer — and the stick's own `Math.round` has
-    // already flipped to the other octant by then, so that bearing arrives
-    // paired with the OTHER snapped vector, never this one. Asserted on its
-    // own below rather than smuggled into the sweep.
     for (const lean of [0, 0.1, 0.25, 0.5, 0.75, 0.9, 1])
-      for (let off = -OCTANT_HALF_DEG + 0.1; off <= OCTANT_HALF_DEG - 0.1; off += 1.5) {
+      for (let off = -OCTANT_HALF_DEG; off <= OCTANT_HALF_DEG; off += 1.5) {
         const v = leanHeading(ax, ay, snap + off, lean);
-        assert.equal(vectorToDirection(v.ax, v.ay), want, `octant ${oct}, lean ${lean}, ${off.toFixed(1)}deg off`);
+        const got = vectorToDirection(v.ax, v.ay);
+        const nb = OCTS[(((oct + (off >= 0 ? 1 : -1)) % 8) + 8) % 8];
+        assert.ok(got === OCTS[oct] || got === nb, `octant ${oct}, lean ${lean}, ${off.toFixed(1)}deg off faced ${got}`);
+        // And always within 22.5deg of where the body goes.
+        const faceDeg = OCTS.indexOf(got!) * 45; // +y down: SE is +45
+        assert.ok(Math.abs(diff(faceDeg, deg(v))) <= OCTANT_HALF_DEG + 1e-6, `facing ${got} is ${diff(faceDeg, deg(v)).toFixed(1)}deg off the run`);
         checked++;
       }
   }
   assert.ok(checked > 1500, `only ${checked} combinations swept`);
-  // AND ON THE BOUNDARY ITSELF: a tie resolves to one of the TWO octants that
-  // share it — never a third. That is the only guarantee available there, and
-  // it is enough: both answers draw a body facing within 22.5deg of its walk.
+  // At 0 the facing IS the key's octant, every time.
   for (let oct = 0; oct < 8; oct++) {
     const ax = Math.round(Math.cos((oct * Math.PI) / 4));
     const ay = Math.round(Math.sin((oct * Math.PI) / 4));
-    const mine = vectorToDirection(ax, ay);
-    for (const edge of [-OCTANT_HALF_DEG, OCTANT_HALF_DEG]) {
-      const v = leanHeading(ax, ay, snapOf(ax, ay) + edge, 1);
-      const got = vectorToDirection(v.ax, v.ay);
-      const nb = Math.abs(diff(snapOf(ax, ay) + edge * 2, deg(v))) < 1e-6;
-      assert.ok(
-        got === mine || nb || Math.abs(diff(snapOf(ax, ay), deg(v))) <= OCTANT_HALF_DEG + 1e-9,
-        `octant ${oct} on its ${edge > 0 ? "upper" : "lower"} edge faced ${got}`,
-      );
-    }
+    for (const off of [-22, 0, 22]) assert.equal(vectorToDirection(...(Object.values(leanHeading(ax, ay, snapOf(ax, ay) + off, 0)) as [number, number])), OCTS[oct]);
   }
-  console.log(`stick lean: facing held its octant across ${checked} (octant, dial, bearing) combinations`);
+  console.log(`stick lean: facing followed the run across ${checked} (octant, dial, bearing) combinations`);
 });
 
 test("the residual can never swing into the next octant, however wrong the bearing", () => {
@@ -124,9 +153,11 @@ test("the residual can never swing into the next octant, however wrong the beari
   // Clamped, the worst case is "leans to the sector edge".
   for (const bogus of [80, 179, -179, 400, -400]) {
     const v = leanHeading(1, 0, bogus, 1);
+    const side = diff(0, bogus) >= 0 ? 1 : -1;
+    const most = 0.5 * Math.abs(diff(0, octantRunDeg(side)));
     assert.ok(
-      Math.abs(diff(0, deg(v))) <= OCTANT_HALF_DEG + 1e-9,
-      `bearing ${bogus} leaned ${deg(v).toFixed(1)}deg off a 0deg snap`,
+      Math.abs(diff(0, deg(v))) <= most + 1e-9,
+      `bearing ${bogus} leaned ${deg(v).toFixed(1)}deg off a 0deg snap (at most ${most.toFixed(1)})`,
     );
   }
   // …and junk is simply ignored.
