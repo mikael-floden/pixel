@@ -244,15 +244,21 @@ test("walls override the face material per cell, and LATER WINS", () => {
 
 test("scenery is carried off-grid, and buildTerrainGrid alone blocks nothing", () => {
   if (!world) return test.skip("maps2/worlds3/the_game missing");
-  assert.equal(world.scenery?.length, doc.scenery.length);
-  assert.equal(world.scenery!.length, 1340, "placements (measured)");
-  assert.equal(world.scenery!.filter((p) => p.hflip).length, 244, "mirrored placements (measured)");
-  assert.equal(world.scenery!.filter((p) => p.lit).length, 147, "lit placements (measured)");
-  assert.equal(world.scenery!.filter((p) => p.state).length, 1298, "placements naming a variation (measured)");
-  assert.equal(world.scenery!.filter((p) => p.dir).length, 89, "placements naming a facing (measured)");
-  assert.equal(world.scenery!.filter((p) => p.hflip).length, doc.scenery.filter((p: any) => p.hflip).length);
-  assert.equal(world.scenery!.filter((p) => p.state).length, doc.scenery.filter((p: any) => p.state).length);
-  assert.equal(world.scenery!.filter((p) => p.dir).length, doc.scenery.filter((p: any) => p.dir).length);
+  // NO CENSUS PINS HERE. This gate is about the PARSER, and the maps2 agent
+  // places scenery continuously — pinning "1,340 placements" made a green suite
+  // go red every time somebody planted a bush, and the number asserted nothing
+  // about the parser anyway (it churned 1,294 -> 1,330 -> 1,340 -> 1,334 inside
+  // one afternoon). What matters is that NOTHING IS LOST OR INVENTED between
+  // the doc and the parsed world, which is the equalities below, plus a floor
+  // so the test cannot pass on an empty world.
+  assert.equal(world.scenery?.length, doc.scenery.length, "every placement is carried");
+  assert.ok(world.scenery!.length > 500, `only ${world.scenery!.length} placements — the world lost its scenery`);
+  for (const field of ["hflip", "lit", "state", "dir"] as const)
+    assert.equal(
+      world.scenery!.filter((p) => (p as Record<string, unknown>)[field]).length,
+      doc.scenery.filter((p: Record<string, unknown>) => p[field]).length,
+      `placements carrying \`${field}\``,
+    );
   const first = world.scenery![0];
   assert.equal(first.piece, doc.scenery[0].piece);
   assert.equal(first.x, doc.scenery[0].x);

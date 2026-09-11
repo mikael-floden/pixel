@@ -57,6 +57,9 @@ import {
   FALL_DMG_MIN_LEVELS,
   fallDamageFrac,
   fallDurationS,
+  PLAYER_SPEED_MIN,
+  PLAYER_SPEED_MAX,
+  PLAYER_SPEED_DEFAULT,
   isStandableAtWorld,
   findSpawn,
   WALK_CLIMB,
@@ -684,6 +687,15 @@ export class WorldRoom extends Room<WorldState> {
           running: !!message.running,
           seq: typeof message.seq === "number" ? message.seq : undefined,
           dt: clamp(message.dt ?? 1 / TICK_RATE, 0, MAX_INPUT_DT),
+          // THE PLAYER-SPEED DIAL, clamped here because this is the authority.
+          // It rides per input rather than sitting in room state so the
+          // client's replay of its pending buffer integrates each window under
+          // the number that window was sent with — see InputMessage.sm.
+          sm: clamp(
+            Number.isFinite(message.sm as number) ? (message.sm as number) : PLAYER_SPEED_DEFAULT,
+            PLAYER_SPEED_MIN,
+            PLAYER_SPEED_MAX,
+          ),
         });
       } else if (typeof message.seq === "number") {
         player.seq = message.seq; // overloaded queue: drop but still ack
@@ -1532,14 +1544,18 @@ export class WorldRoom extends Room<WorldState> {
             // they're on (walk ON the bridge/roof vs UNDER it). Non-deck cells
             // resolve exactly as canEnter, so all other worlds are unaffected.
             makeBlockedElev(terrain, ctx, () => player.elev),
-            surf.speed * (jumping ? JUMP_SPEED_FACTOR : 1) * player.slow,
+            surf.speed * (jumping ? JUMP_SPEED_FACTOR : 1) * player.slow * (inp.sm ?? PLAYER_SPEED_DEFAULT),
             true, // iso world → input is screen-relative (Up walks up on screen)
             this.worldW,
             this.worldH,
             makeSideBlocked(terrain, ctx, () => player.elev), // corner probes: solids only (no ledge-wedging)
           );
         } else {
-          r = stepMovement(player.x, player.y, inp.ax, inp.ay, inp.running, eff);
+          // No map (the open-world fallback): still the player's own dial.
+          r = stepMovement(
+            player.x, player.y, inp.ax, inp.ay, inp.running, eff,
+            undefined, inp.sm ?? PLAYER_SPEED_DEFAULT,
+          );
         }
         /* THE DEEP-SEA CURRENT. Integrated as a SECOND ordinary move rather
          * than added to the position, so terrain still collides and the sea can

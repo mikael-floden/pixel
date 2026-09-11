@@ -165,10 +165,20 @@ Server-authoritative movement, decks, collision, steer assist, fall damage, tap/
       (maintainer named it) — at `FALL_HURT_RATE` 1.5× the combat rate: a
       125 ms lead over a 208 ms clip, three frames of bracing in the air and
       the fold on the ground. Combat's `ANIM_FPS.hurt` is untouched (round 7).
-    - the server's hit for that fall is then SWALLOWED (`fallShownUntil`) —
-      clip, blood, sound and the float's already-shown amount. If the server
-      ever charges more than predicted the float shows the REMAINDER rather
-      than hiding it, and the hp bar was always and still is the server's word.
+    - the server's hit for that fall is then SWALLOWED WHOLE
+      (`fallShownUntil`) — clip, blood, sound and the number. **ONE FALL IS
+      ONE NUMBER**: floating the remainder of a disagreement was tried and is
+      the bug it looks like, a 16 and then a 1 over his head from one point
+      (maintainer 2026-09-11: "now I take dmg two times ... WTF?"). The hp BAR
+      is the server's word and already shows the truth, so a prediction a
+      point out costs a slightly wrong number for half a second, never two.
+    - and the two agree to the point because the client reads WHOLE levels:
+      the server bills `elevBefore - player.elev`, both resolved surface levels
+      and so integers, while `av.elev` is the ANIMATED pixel lift — 8.34 storeys
+      where the server reads 9, and `fallDamageFrac` of that is the point that
+      became the second number. Gate: "the predicted fall damage is the
+      server's figure, to the point" (non-vacuous — a fractional read differs
+      on 319 of the swept cases).
     Three things that were each a frame or more of lateness on their own:
     the clip's start time is RE-SOLVED every falling frame (a one-shot
     estimate drifts over a second and a half); the landing time subtracts
@@ -197,6 +207,29 @@ Server-authoritative movement, decks, collision, steer assist, fall damage, tap/
     the drawn descent at six drop heights, and pins the flinch arithmetic —
     the 4th frame is the frame on screen at touchdown, the frame before it is
     still the wind-up, and the clip outlasts its own lead.
+- **THE PLAYER-SPEED DIAL** (`client/src/playerspeed.ts`), his instrument for
+  finding a default and for crossing the map (2026-09-11: "a way for me to
+  travel the map faster"). 0.5x-4x, default **1x** — the shipped walk, so the
+  dial changes nothing until he moves it; `localStorage`, with the "default"
+  button every slider carries, injected into the Settings page from outside
+  exactly like the nav dials (games-ui owns hud.ts).
+  - **IT RIDES PER INPUT** (`InputMessage.sm`), not as room state. Movement is
+    server-authoritative and the client replays an RTT-deep pending buffer, so
+    a factor that changed mid-flight would rewrite the history of every input
+    still in it — the same trap `pending.slow` is documented for. Each window
+    is integrated, on BOTH sides, under the number it was sent with; absent
+    means 1x, so an old client or a replayed pre-dial message walks normally.
+  - **THE CLAMP IS THE SERVER'S** — `[PLAYER_SPEED_MIN, PLAYER_SPEED_MAX]` in
+    the input handler. Same standing as `teleport`: a knob the maintainer
+    drives, bounded by the authority rather than by the client's good manners.
+  - Nothing else needs changing, and both are measured, not assumed: the
+    autopilot's advance/arrive radii already scale with the OBSERVED per-step
+    distance (capped at a cell), so a 4x walk clips waypoints instead of
+    orbiting them; and the gait's playback timeScale is `spdWu / base` clamped
+    to 2.6x, so the legs run fast and never free-wheel.
+  - Gate: `server/test/playerspeed.test.ts` — a live room integrating the same
+    input stream at each dial. Measured: 2x = 2.00x the ground, no dial =
+    1.00x, sm=99 = 3.94x (the cap), 0.5x = 0.47x. Probe: `__ml.speed()`.
 - **Auto-jump**: walking INTO a 1-level wall auto-fires the jump
   (`maybeAutoJump`/`wouldAutoJump` from `predictAndSend`). Rule: exactly
   `!canEnter(walk) && canEnter(jump)` probed a leading-edge ahead — 2-level+

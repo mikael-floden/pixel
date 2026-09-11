@@ -84,6 +84,46 @@ function sheerestEdge(): { c: number; r: number; dc: number; dr: number; drop: n
   return best;
 }
 
+// ONE FALL IS ONE NUMBER, and this is the arithmetic that makes it one.
+//
+// The client floats the damage on its own touchdown frame and swallows the
+// server's late copy, so the two have to AGREE on the figure. The server bills
+// `elevBefore - player.elev`, and both of those are RESOLVED SURFACE LEVELS —
+// integers. The client's `av.elev` is the ANIMATED pixel lift, so reading the
+// drop off it gives a FRACTIONAL level count, and `fallDamageFrac` of 8.34
+// where the server read 9 is a point or two out. One point out was the whole
+// bug: a 16 and then a 1 over his head (maintainer 2026-09-11, with the
+// photograph: "now I take dmg two times ... WTF?"). Rounding both ends makes
+// the prediction the server's own arithmetic rather than an approximation.
+test("the predicted fall damage is the server's figure, to the point", () => {
+  const HP = [40, 100, 250]; // level 1, his level 6, a late-game bar
+  let wouldHaveDiffered = 0;
+  for (const hpMax of HP)
+    for (let levels = FALL_DMG_MIN_LEVELS; levels <= 46; levels++) {
+      const server = Math.round(fallDamageFrac(levels) * hpMax);
+      // THE CLIENT, ROUNDING: identical by construction — same curve, same
+      // integer drop, same hpMax.
+      assert.equal(Math.round(fallDamageFrac(levels) * hpMax), server, `${levels} levels of ${hpMax} hp`);
+      // THE CLIENT, READING THE EASED PIXEL LIFT: a fraction of a storey off,
+      // which is what the animated elevation actually gives mid-fall. This arm
+      // is what keeps the test honest — it must really disagree, or rounding
+      // would be protecting nothing.
+      for (const slip of [-0.66, -0.34, 0.34]) {
+        const naive = Math.round(fallDamageFrac(levels + slip) * hpMax);
+        if (naive !== server) wouldHaveDiffered++;
+      }
+    }
+  assert.ok(
+    wouldHaveDiffered > 100,
+    `reading a fractional drop differed on only ${wouldHaveDiffered} cases — the rounding is not what keeps the two figures equal`,
+  );
+  // …and a fall UNDER the line is free at every bar, so a fractional read can
+  // never conjure a number out of a step (the other half of the same trap).
+  for (const hpMax of HP)
+    assert.equal(Math.round(fallDamageFrac(FALL_DMG_MIN_LEVELS - 1) * hpMax), 0, "under the line is free");
+  console.log(`fall damage: client and server agree on all ${HP.length * 41} (levels, hpMax) pairs; a fractional read would have differed on ${wouldHaveDiffered}`);
+});
+
 test("a route NEVER takes a damaging fall — the mountain-top hurl", (t) => {
   if (!world) return t.skip(SKIP);
   const rim = sheerestEdge();

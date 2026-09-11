@@ -166,7 +166,34 @@ export interface InputMessage {
   // these durations (bounded by a real-time budget), so server and client run
   // identical math and stay in perfect agreement — no reconciliation jitter.
   dt?: number;
+  /** THE PLAYER-SPEED DIAL, carried PER INPUT and not as room state.
+   *
+   *  Movement is server-authoritative, so a client-side speed knob would
+   *  rubber-band on every step. It cannot be a plain setting either: the client
+   *  replays an RTT-deep buffer of pending inputs, and a factor that changed
+   *  mid-flight would rewrite the history of every input still in it — the same
+   *  trap the hit-slow factor is documented for (`pending.slow`). So it rides
+   *  WITH the input, exactly like `running` and the slow factor: each window is
+   *  integrated, on both sides, under the number it was sent with.
+   *
+   *  Absent = 1 (an old client, or a replayed message from before the dial).
+   *  The server CLAMPS it to [PLAYER_SPEED_MIN, PLAYER_SPEED_MAX]. */
+  sm?: number;
 }
+
+/** THE PLAYER-SPEED DIAL's range. The maintainer asked for it to find a good
+ *  default and to cross the map faster (2026-09-11: "add a slider in settings so
+ *  I can control/tweak the players speed ... will be good for me in order to
+ *  find the perfect default and a way for me to travel the map faster"), so the
+ *  top end is a travel speed, not a tuning nudge. 1.0 stays the shipped walk
+ *  until he picks otherwise — the dial is the instrument, not a new default.
+ *
+ *  The AUTOPILOT needs nothing for this: `stepAutopilot`'s advance/arrive radii
+ *  scale with the OBSERVED per-step distance (capped at a cell), so a 4x walk
+ *  clips its waypoints instead of orbiting them. */
+export const PLAYER_SPEED_MIN = 0.5;
+export const PLAYER_SPEED_MAX = 4;
+export const PLAYER_SPEED_DEFAULT = 1;
 
 // Anti-cheat bounds for input-stream integration: a single input may not claim
 // more than MAX_INPUT_DT, and a client can never accumulate more integration

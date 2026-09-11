@@ -47,7 +47,11 @@ export class Player extends Schema {
   // Server-only (not synced): queued inputs + rate-limit bookkeeping. The
   // server integrates each input's dt (client-reported, budget-bounded) so
   // both sides run identical movement math.
-  inputQueue: { ax: number; ay: number; running: boolean; seq?: number; dt: number }[] = [];
+  /** `sm` is the PLAYER-SPEED dial the client sent WITH this window — every
+   *  input is integrated under its own, because the client replays an RTT-deep
+   *  buffer and a factor that changed mid-flight would rewrite the history of
+   *  everything still in it (the same rule the hit-slow factor follows). */
+  inputQueue: { ax: number; ay: number; running: boolean; seq?: number; dt: number; sm: number }[] = [];
   timeCredit = 0; // seconds of integration budget (accrues with real time)
   lastMoving = false;
   jumpUntil = 0; // ms timestamp: jump window ends

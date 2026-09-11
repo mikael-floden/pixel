@@ -99,6 +99,7 @@ import {
   ensureNavDial, navUphill, setNavUphill, NAV_UPHILL_DEFAULT,
   navExpo, setNavExpo, NAV_EXPO_DEFAULT,
 } from "../navbias";
+import { ensureSpeedDial, playerSpeed } from "../playerspeed";
 import { hiddenRing, setHiddenRing } from "../hiddenring";
 import { indoorWall, setIndoorWall, INDOOR_WALL_MIN, INDOOR_WALL_MAX } from "../indoorwall";
 import {
@@ -1660,7 +1661,13 @@ export class WorldScene extends Phaser.Scene {
   // re-blocked at the ledge (walk climb) — the anchor briefly rolls back to
   // the wall base until the server acks, and auto-jump saw that phantom wall
   // and fired a silly second hop on the hilltop.
-  private pending: { seq: number; ax: number; ay: number; running: boolean; dt: number; jumping: boolean; slow: number }[] = [];
+  private pending: {
+    seq: number; ax: number; ay: number; running: boolean; dt: number; jumping: boolean; slow: number;
+    /** The PLAYER-SPEED dial this window was integrated under. Per input for
+     *  the same reason `slow` is: a replay under the CURRENT value rewrites the
+     *  history of every input still in flight, which is a rubber-band. */
+    sm: number;
+  }[] = [];
   private curSlowFactor = 1; // the hit-slow factor live integration ran under (captured per input)
   private inputSeq = 0;
   private sendAccum = 0;
@@ -4517,6 +4524,10 @@ export class WorldScene extends Phaser.Scene {
        *  touched. `frame` is Phaser's 1-based index, so the maintainer's 4th
        *  got-hit frame reads as 4. */
       fallHurt: () => this.avatars.get(this.myId)?.fallLast ?? null,
+      /** The PLAYER-SPEED dial the next input will be stamped with. A gate that
+       *  wants to drive fast sets it through `setPlayerSpeed`, never here — the
+       *  server clamps whatever arrives. */
+      speed: () => playerSpeed(),
       /** IS A BODY AT (col, row, lvl) PARKED FOR BEING SEALED IN A ROOM I AM
        *  NOT IN — the exact test every monster, NPC and remote player runs. A
        *  gate walks into a cave (which fills `roomCellMemo`), walks out, and
@@ -10985,7 +10996,13 @@ export class WorldScene extends Phaser.Scene {
         // an uncommanded forward teleport when the slow expired (not fine,
         // fired exactly as you broke free of a chase).
         this.curSlowFactor = player.slow || 1;
-        const stepLocal = (ax: number, ay: number, running: boolean, sdt: number, jumping: boolean, slowF: number) => {
+        const stepLocal = (
+          ax: number, ay: number, running: boolean, sdt: number, jumping: boolean, slowF: number,
+          /** The PLAYER-SPEED dial THIS window was sent with — never the live
+           *  one. Replaying the pending buffer under the current value is what
+           *  rubber-bands the body the moment the slider moves. */
+          sm: number,
+        ) => {
           let blocked;
           let sideBlocked;
           let speed = 1;
@@ -11005,7 +11022,8 @@ export class WorldScene extends Phaser.Scene {
             speed =
               surfaceAtWorldElev(this.terrain, rx, ry, predElev).speed *
               (jumping ? JUMP_SPEED_FACTOR : 1) *
-              slowF;
+              slowF *
+              sm;
           }
           // screenInput matches the server: on the iso world, input is screen-relative.
           const r = stepMovement(rx, ry, ax, ay, running, sdt, blocked, speed, !!this.terrain, this.worldW, this.worldH, sideBlocked);
@@ -11032,11 +11050,14 @@ export class WorldScene extends Phaser.Scene {
             predElev = resolveElevAt(this.terrain, predElev, rx, ry, ctx);
           }
         };
-        for (const p of this.pending) stepLocal(p.ax, p.ay, p.running, p.dt, p.jumping, p.slow);
+        for (const p of this.pending) stepLocal(p.ax, p.ay, p.running, p.dt, p.jumping, p.slow, p.sm ?? 1);
         // Integrate the not-yet-sent input tail too, so the local player moves
         // every FRAME (60fps-smooth) instead of only at the 20Hz send tick.
         if (this.sendAccum > 0)
-          stepLocal(this.lastInput.ax, this.lastInput.ay, this.lastInput.running, this.sendAccum, jumpingNow, this.curSlowFactor);
+          stepLocal(
+            this.lastInput.ax, this.lastInput.ay, this.lastInput.running, this.sendAccum, jumpingNow,
+            this.curSlowFactor, playerSpeed(),
+          );
         tx = rx;
         ty = ry;
         surfLevel = predElev;
@@ -11141,19 +11162,22 @@ export class WorldScene extends Phaser.Scene {
         }
       }
       if ((av.lastHp ?? player.hp) > player.hp) {
-        let shown = Math.round((av.lastHp ?? player.hp) - player.hp);
-        // A fall's number was already floated on the touchdown frame. Eat what
-        // was shown and float only the REMAINDER — if the server charged more
-        // than the prediction (it should not; same curve, same drop) the
-        // difference still reaches the screen rather than being hidden.
-        if (nowMs < (av.fallShownUntil ?? 0) && (av.fallShownDmg ?? 0) > 0) {
-          const eat = Math.min(shown, av.fallShownDmg!);
-          shown -= eat;
-          av.fallShownDmg = av.fallShownDmg! - eat;
-          if (av.fallShownDmg <= 0) av.fallShownUntil = 0;
-        }
-        if (shown > 0)
+        const shown = Math.round((av.lastHp ?? player.hp) - player.hp);
+        // A FALL'S NUMBER WAS ALREADY FLOATED on the touchdown frame, so this
+        // drop is the same event arriving late: swallow it WHOLE. Floating the
+        // difference was tried and is the bug it looks like — a 16 and then a
+        // 1 over his head from a one-point disagreement (maintainer
+        // 2026-09-11: "now I take dmg two times ... WTF?"). ONE fall is ONE
+        // number; the HP BAR is the server's word and already shows the truth,
+        // so a prediction that is a point off costs a slightly wrong number
+        // for half a second and never a second number.
+        const owed = nowMs < (av.fallShownUntil ?? 0) && (av.fallShownDmg ?? 0) > 0;
+        if (owed) {
+          av.fallShownDmg = 0;
+          av.fallShownUntil = 0;
+        } else if (shown > 0) {
           this.spawnDamageFloat(av.lx, av.sprite.y - av.sprite.displayHeight * 0.8, `${shown}`, 0xf25d5d);
+        }
       }
       av.lastHp = player.hp;
       if (player.dead) {
@@ -13574,8 +13598,12 @@ export class WorldScene extends Phaser.Scene {
       // straddle a jump onset).
       jumping: this.time.now < this.jumpUntil,
       slow: this.curSlowFactor,
+      sm: playerSpeed(),
     });
-    const msg: InputMessage = { ax: li.ax, ay: li.ay, running: li.running, seq: this.inputSeq, dt: this.sendAccum };
+    const msg: InputMessage = {
+      ax: li.ax, ay: li.ay, running: li.running, seq: this.inputSeq, dt: this.sendAccum,
+      sm: playerSpeed(),
+    };
     if (this.jumpQueued) {
       msg.jump = true;
       this.jumpQueued = false;
@@ -15686,6 +15714,7 @@ export class WorldScene extends Phaser.Scene {
       this.mapLayersAt = this.time.now + 250;
       ensureMapLayers();
       ensureNavDial();
+      ensureSpeedDial(); // the player-speed slider, injected the same way
       if (this.zoneLinesOn && this.zoneLinesFor !== this.zone) this.drawZoneLines(); // the uphill-bias slider, injected the same way
     }
     // The room's LIGHT rules outlive the geometry by exactly one GRADE. The
@@ -20949,11 +20978,23 @@ export class WorldScene extends Phaser.Scene {
     av.fallHurtAt = 0;
     av.fallHurtDmg = 0;
     const lh = this.geom.lh;
-    const levels = (av.elev - targetElev) / lh;
+    // WHOLE LEVELS, ROUNDED — the server bills `elevBefore - player.elev`, and
+    // both of those are RESOLVED SURFACE LEVELS, i.e. integers. `av.elev` is
+    // the ANIMATED pixel lift, so dividing it by the storey pitch gives a
+    // fractional drop (8.34 where the server reads 9) and `fallDamageFrac` of
+    // that is a point or two off. One point off was enough to be a BUG: the
+    // remainder logic below floated the difference as a SECOND number over his
+    // head (maintainer 2026-09-11, with the photograph: "now I take dmg two
+    // times ... first taking 16 dmg then 1 dmg. WTF?"). Rounding both ends
+    // makes the prediction the server's own arithmetic, not an approximation
+    // of it.
+    const from = Math.round(av.elev / lh);
+    const to = Math.round(targetElev / lh);
+    const levels = from - to;
     if (levels < FALL_DMG_MIN_LEVELS) return;
     // A DIVE IS FREE, exactly as the server's landing check has it.
     if (this.terrain && av.fx !== undefined && av.fy !== undefined) {
-      if (surfaceAtWorldElev(this.terrain, av.fx, av.fy, targetElev / lh).swimmable) return;
+      if (surfaceAtWorldElev(this.terrain, av.fx, av.fy, to).swimmable) return;
     }
     const dmg = Math.round(fallDamageFrac(levels) * hpMax);
     if (dmg <= 0) return;
