@@ -207,17 +207,21 @@ test("RED AND PURPLE CARRY THE 1.2x LIFT, and nothing else does", () => {
 
 test("picking reproduces his frequencies", () => {
   const n = 200_000;
-  const hit = new Map(SPECIES.map((s) => [s.key, 0]));
-  for (let i = 0; i < n; i++) hit.set(pickSpecies(i / n).key, hit.get(pickSpecies(i / n).key) + 1);
+  const hit = new Map<string, number>(SPECIES.map((s) => [s.key, 0]));
+  const count = (k: string) => hit.get(k) ?? 0;
+  for (let i = 0; i < n; i++) {
+    const k = pickSpecies(i / n).key;
+    hit.set(k, count(k) + 1);
+  }
   const total = SPECIES.reduce((a, s) => a + weightOf(s), 0);
   for (const s of SPECIES) {
-    const got = (hit.get(s.key) / n) * 100;
+    const got = (count(s.key) / n) * 100;
     const want = (weightOf(s) / total) * 100;
     assert.ok(Math.abs(got - want) < 0.5, `${s.key}: drew ${got.toFixed(2)}%, table says ${want.toFixed(2)}%`);
   }
   // every mix must be reachable — a rounding bug that swallowed green+blue
   // (1%) would still pass a chi-square on the common ones
-  for (const s of SPECIES) assert.ok(hit.get(s.key) > 0, `${s.key} can come up at all`);
+  for (const s of SPECIES) assert.ok(count(s.key) > 0, `${s.key} can come up at all`);
   // and the ends of the range are in range
   assert.equal(pickSpecies(0).key, SPECIES[0].key);
   assert.ok(SPECIES.includes(pickSpecies(0.999999)));
@@ -258,7 +262,7 @@ test("THE BODY JOINS THE WINGS, it is not a bar through them", () => {
    * on screen — near-black over grass, then the mix's own black under brown
    * wings. It is blended back toward the wing, so it is the darkest part of
    * the butterfly and still the same creature. */
-  const luma = (c) => 0.299 * ((c >> 16) & 255) + 0.587 * ((c >> 8) & 255) + 0.114 * (c & 255);
+  const luma = (c: number) => 0.299 * ((c >> 16) & 255) + 0.587 * ((c >> 8) & 255) + 0.114 * (c & 255);
   for (const s of SPECIES) {
     const b = bodyColour(s);
     assert.ok(luma(b) < luma(s.bright), `${s.key}: the body is darker than the wing`);
@@ -276,7 +280,7 @@ test("THE BODY JOINS THE WINGS, it is not a bar through them", () => {
 });
 
 test("every mix is two TELLABLE colours: the dark one is actually darker", () => {
-  const luma = (c) => 0.299 * ((c >> 16) & 255) + 0.587 * ((c >> 8) & 255) + 0.114 * (c & 255);
+  const luma = (c: number) => 0.299 * ((c >> 16) & 255) + 0.587 * ((c >> 8) & 255) + 0.114 * (c & 255);
   for (const s of SPECIES) {
     assert.notEqual(s.bright, s.dark, `${s.key} is a mix of two colours`);
     assert.ok(luma(s.dark) < luma(s.bright), `${s.key}: the dark half is darker (${luma(s.dark) | 0} vs ${luma(s.bright) | 0})`);
