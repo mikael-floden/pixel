@@ -1,7 +1,7 @@
 {
   "format": "pixel-wiki-feedback@1",
   "domain": "monsters",
-  "updated_at": "2026-09-11T19:48:35.421Z",
+  "updated_at": "2026-09-11T19:49:53.650Z",
   "entries": {
     "monsters/candidates/lava_slug": {
       "status": "approved",
@@ -687,6 +687,54 @@
       "status": "approved",
       "art": "97fd0708238ef472",
       "updated_at": "2026-09-11T19:48:33.510Z"
+    },
+    "monsters/vulture#attack_v3#south-east": {
+      "rating": 3,
+      "status": "approved",
+      "art": "fbf97d60cfe4bc06",
+      "updated_at": "2026-09-11T19:48:53.210Z"
+    },
+    "monsters/vulture#attack_v3#east": {
+      "rating": 3,
+      "status": "approved",
+      "art": "b81a4498c6a497e5",
+      "updated_at": "2026-09-11T19:48:55.544Z"
+    },
+    "monsters/vulture#attack_v3#north-east": {
+      "rating": 3,
+      "status": "approved",
+      "art": "aa80f1ab3824b46d",
+      "updated_at": "2026-09-11T19:48:59.130Z"
+    },
+    "monsters/vulture#attack_v3#north": {
+      "rating": 3,
+      "status": "approved",
+      "art": "ecc867010cf5a896",
+      "updated_at": "2026-09-11T19:49:02.948Z"
+    },
+    "monsters/vulture#attack_v3#north-west": {
+      "rating": 3,
+      "status": "approved",
+      "art": "044b7de21a1be8ab",
+      "updated_at": "2026-09-11T19:49:05.809Z"
+    },
+    "monsters/vulture#attack_v3#west": {
+      "rating": 3,
+      "status": "approved",
+      "art": "38f28fbc61668ce6",
+      "updated_at": "2026-09-11T19:49:09.081Z"
+    },
+    "monsters/vulture#attack_v3#south-west": {
+      "rating": 3,
+      "status": "approved",
+      "art": "f8e332131bef73b6",
+      "updated_at": "2026-09-11T19:49:11.861Z"
+    },
+    "monsters/vulture#attack_v3#south": {
+      "status": "redo",
+      "art": "b1f2fe7e4744b68f",
+      "updated_at": "2026-09-11T19:49:53.309Z",
+      "note": "The wings go outside the frame and is not saved in postprocess"
     }
   }
 }
