@@ -1,6 +1,7 @@
 import Phaser from "phaser";
 import { AmbientCtx, AmbientFeature } from "../runtime/types";
 import { findGround, groundSoundAt, landableAt } from "../runtime/ground";
+import { SPECIES, Species, bodyColour, darkPairs, pickSpecies } from "./species";
 import {
   ALT,
   BEAT_MS,
@@ -80,18 +81,35 @@ const OFF_VIEW = 60; // px past the edge before it is re-placed somewhere visibl
 /** THE GROUNDS A BUTTERFLY BELONGS OVER, by the surface's own sound. */
 const MEADOW = new Set(["grass"]);
 
-const KEY = (species: number, w: Wing) => `amb-flit${species}_${w}`;
-/* FOUR SPECIES, wings painted WHITE and tinted.
+const KEY = (species: string, w: Wing) => `amb-flit-${species}_${w}`;
+
+/* THE COLOURS ARE PAINTED IN, NOT TINTED. A butterfly is a MIX of two colours
+ * (`species.ts` holds the maintainer's table) and Phaser's setTint multiplies
+ * the WHOLE sprite by one value, so a two-tone creature cannot be a tint. Ten
+ * species x three frames is thirty three-by-four textures, built once at init
+ * and free thereafter — cheaper than the second sprite per butterfly the
+ * alternative would need, and the colours come out exact instead of being a
+ * multiply against whatever the art happened to be.
  *
- * THE BODY IS A DARKER SHADE OF THE SAME WING COLOUR, not near-black. The
- * first cut borrowed the feather's dark shaft (tint multiplies, so a dark art
- * pixel stays dark) — and over dark grass that read as TWO ORANGE BLOCKS with
- * a gap, because the one thing joining the wings was the one thing the ground
- * swallowed. Painting the body mid-grey makes it the wing colour at 43%: the
- * mark is one creature in one hue, and the body still separates the wings.
- * (Pale ground was the feather's case; grass is this one.) */
-const WINGS = [0xf3efe2, 0xf2d24b, 0xe07a2a, 0x7fa0dd];
-const BODY = 0x6e6e6e;
+ * The body is always the dark colour and the dark wing PAIRS are spent from
+ * the outside in, so the layouts below are ordered outermost-first. */
+type Px = readonly [number, number];
+const OPEN_BODY: readonly Px[] = [[2, 1], [2, 2], [2, 3]];
+/* Spent DARK-FIRST, and the order is the whole trick: the hindwing and the
+ * forewing tips go first, so the forewing MASS (the pixels that tell you what
+ * colour the butterfly is) is the last thing the marking ever reaches. */
+const OPEN_PAIRS: readonly (readonly Px[])[] = [
+  [[1, 2], [3, 2]], // hindwing tips
+  [[0, 0], [4, 0]], // forewing tips
+  [[0, 1], [4, 1]], // the outer forewing
+  [[1, 0], [3, 0]],
+  [[1, 1], [3, 1]], // innermost, against the body
+];
+const HALF_BODY: readonly Px[] = [[1, 1], [1, 2], [1, 3]];
+const HALF_PAIRS: readonly (readonly Px[])[] = [[[0, 0], [2, 0]], [[0, 1], [2, 1]]];
+const HALF_CAP: Px = [1, 0]; // where the raised wings meet over the back
+/** Wings shut is the UNDERSIDE, and an underside is drab — all dark. */
+const SHUT_ALL: readonly Px[] = [[1, 0], [1, 1], [1, 2], [1, 3]];
 
 interface Flit {
   sprite: Phaser.GameObjects.Image;
@@ -106,7 +124,7 @@ interface Flit {
   beat: number;
   phase: number;
   bobA: number;
-  species: number;
+  species: Species;
   t: number;
   flickIn: number;
   settleIn: number;
@@ -129,8 +147,8 @@ export function butterfliesFeature(): AmbientFeature {
   const stats = { placed: 0, rejected: 0, settles: 0 };
 
   const ensureTextures = (s: Phaser.Scene) => {
-    if (s.textures.exists(KEY(0, WING_CLOSED))) return;
-    const paint = (key: string, w: number, h: number, layers: { c: number; px: [number, number][] }[]) => {
+    if (s.textures.exists(KEY(SPECIES[0].key, WING_CLOSED))) return;
+    const paint = (key: string, w: number, h: number, layers: { c: number; px: readonly Px[] }[]) => {
       if (s.textures.exists(key)) return;
       const g = s.make.graphics({ x: 0, y: 0 }, false);
       for (const { c, px } of layers) {
@@ -145,28 +163,29 @@ export function butterfliesFeature(): AmbientFeature {
      * every frame: the wings change WIDTH (5 -> 3 -> 1) and nothing else
      * moves. A frame of a different height makes the whole creature hop by
      * half a pixel every beat, which reads as a glitch, not a flutter. */
-    for (let sp = 0; sp < WINGS.length; sp++) {
-      // OPEN: forewings and hindwings from above, notched at the head,
-      // tapering to an abdomen — the silhouette is what names the creature
-      paint(KEY(sp, 2), 5, 4, [
-        {
-          c: 0xffffff,
-          px: [[0, 0], [1, 0], [3, 0], [4, 0], [0, 1], [1, 1], [3, 1], [4, 1], [1, 2], [3, 2]],
-        },
-        { c: BODY, px: [[2, 1], [2, 2], [2, 3]] },
+    for (const sp of SPECIES) {
+      const n = darkPairs(sp.darkShare);
+      const body = bodyColour(sp);
+      const flat = (rows: readonly (readonly Px[])[]) => rows.flat() as Px[];
+      // OPEN: a dark border of `n` pairs round a bright middle, notched at the
+      // head and tapering to an abdomen — the silhouette names the creature
+      paint(KEY(sp.key, 2), 5, 4, [
+        { c: sp.bright, px: flat(OPEN_PAIRS.slice(n)) },
+        { c: sp.dark, px: flat(OPEN_PAIRS.slice(0, n)) },
+        { c: body, px: OPEN_BODY },
       ]);
       // HALF: the wings are coming up, so the span narrows to the shoulders.
       // They MEET across the top — leaving that pixel open put a one-pixel
       // hole in the middle of the creature, which at this size is noise
-      paint(KEY(sp, 1), 3, 4, [
-        { c: 0xffffff, px: [[0, 0], [1, 0], [2, 0], [0, 1], [2, 1]] },
-        { c: BODY, px: [[1, 1], [1, 2], [1, 3]] },
+      const hn = Math.min(n, HALF_PAIRS.length);
+      paint(KEY(sp.key, 1), 3, 4, [
+        { c: sp.bright, px: [...flat(HALF_PAIRS.slice(hn)), HALF_CAP] },
+        { c: sp.dark, px: flat(HALF_PAIRS.slice(0, hn)) },
+        { c: body, px: HALF_BODY },
       ]);
-      // SHUT: wings together over the back — a sliver, and also how it sits
-      paint(KEY(sp, 0), 3, 4, [
-        { c: 0xffffff, px: [[1, 0], [1, 1]] },
-        { c: BODY, px: [[1, 2], [1, 3]] },
-      ]);
+      // SHUT: wings together over the back — a sliver, and also how it sits.
+      // An underside is drab, so it is the marking colour all the way down.
+      paint(KEY(sp.key, 0), 3, 4, [{ c: sp.dark, px: SHUT_ALL }]);
     }
   };
 
@@ -205,7 +224,7 @@ export function butterfliesFeature(): AmbientFeature {
     f.beat = between(BEAT_MS);
     f.phase = rnd();
     f.bobA = between(BOB_PX);
-    f.species = (rnd() * WINGS.length) | 0;
+    f.species = pickSpecies(rnd());
     f.t = 0;
     f.flickIn = between(FLICK_MS);
     f.settleIn = between(SETTLE_EVERY);
@@ -215,7 +234,7 @@ export function butterfliesFeature(): AmbientFeature {
   };
 
   const make = (s: Phaser.Scene): Flit => ({
-    sprite: s.add.image(0, 0, KEY(0, 2)).setDepth(DEPTH).setScale(1).setVisible(false),
+    sprite: s.add.image(0, 0, KEY(SPECIES[0].key, 2)).setDepth(DEPTH).setScale(1).setVisible(false),
     x: 0,
     y: 0,
     hx: 0,
@@ -227,7 +246,7 @@ export function butterfliesFeature(): AmbientFeature {
     beat: 180,
     phase: 0,
     bobA: 3,
-    species: 0,
+    species: SPECIES[0],
     t: 0,
     flickIn: 500,
     settleIn: 6000,
@@ -341,8 +360,7 @@ export function butterfliesFeature(): AmbientFeature {
         const a = g;
         f.a = a;
         f.sprite
-          .setTexture(KEY(f.species, wg))
-          .setTint(WINGS[f.species])
+          .setTexture(KEY(f.species.key, wg))
           .setPosition(Math.round(f.x), Math.round(f.y - f.alt + lift))
           .setDepth(DEPTH + f.y * DEPTH_BIAS)
           .setAlpha(a)
@@ -371,7 +389,7 @@ export function butterfliesFeature(): AmbientFeature {
           bob: f.settleT > 0 && settled(f.settleT, f.settleHold) ? 0 : bob(f.t, f.beat, f.phase, f.bobA),
           settling: f.settleT > 0,
           down: f.settleT > 0 && settled(f.settleT, f.settleHold),
-          species: f.species,
+          species: f.species.key,
           hx: Math.round(f.hx),
           hy: Math.round(f.hy),
           home: Math.round(Math.hypot(f.hx - f.x, (f.hy - f.y) * (32 / 14))),

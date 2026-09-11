@@ -332,7 +332,7 @@ controller (AUTO / NONE / solo-each).
 | `fish/` | field | THE RISE — a fish takes a fly: a dorsal fin breaks the surface, a tail flicks a beat later, and two or three rings leave the spot and widen until they fade; the harder takes throw a few specks of water. Rings are ISO ELLIPSES (a circle stands up out of the lake like a hoop) at whole-pixel radii, the lead ring big and the followers smaller so nested rings stay legible | Lakes and shallows only (`runtime/water.ts`; the open sea is `deepwater/`'s), outdoors. Peaks at dawn and dusk on a bump in the sun, never zero, hidden by heavy rain |
 | `water/` | field | Living water — pixel-art wavelets + sun/moon reflection glints (frame-animated, full-pixel, no sub-px slide) | LAKES AND SHALLOWS: water on screen (iso probe) MINUS anywhere the deep-sea current runs — the open sea is `deepwater/`'s |
 | `feathers/` | field | WHAT A FLUSH LEAVES BEHIND — spook a landed flock and each bird drops a feather or two: knocked loose by the wingbeat so it rises first, then sinks slowly, swinging side to side and LEANING into each slide, and lies on the ground a few seconds before it goes. TINTED FROM ITS OWN BIRD (`plumageOf`, lifted toward white): a red bird sheds a pink feather, a green one a pale green | Only when `birds/` announces a flush (`runtime/flush.ts`); outdoors. Selected ALONE in Settings there is no flock, so it sheds a demo feather then and only then |
-| `butterflies/` | field | THE MEADOW IN SUMMER — at four pixels a butterfly is a WAY OF MOVING, not a shape: the body BOBS a whole pixel or three with every wingbeat (a mark that slides level reads as a bee), the path is short runs broken by hard turns (a smooth curve reads as a bird), and the beat is uneven so it does not tick. Wings change SILHOUETTE WIDTH, 5 px open / 3 half / 1 shut, on frames all the same height so only the wings move. Each one works the PATCH it was placed on and settles onto the grass now and then, wings shut, before lifting off | Grass (the surface's own `sound`, `groundSoundAt`), outdoors, by DAY: a ramp on sun strength, and gone in rain |
+| `butterflies/` | field | THE MEADOW IN SUMMER — at four pixels a butterfly is a WAY OF MOVING, not a shape: the body BOBS a whole pixel or three with every wingbeat (a mark that slides level reads as a bee), the path is short runs broken by hard turns (a smooth curve reads as a bird), and the beat is uneven so it does not tick. Wings change SILHOUETTE WIDTH, 5 px open / 3 half / 1 shut, on frames all the same height so only the wings move. TEN COLOUR MIXES FROM THE MAINTAINER'S OWN TABLE (`species.ts`), brown+black commonest at 22% down to green+blue at 1%, with red and purple lifted 1.2x because he likes them. Each one works the PATCH it was placed on and settles onto the grass now and then, wings shut, before lifting off | Grass (the surface's own `sound`, `groundSoundAt`), outdoors, by DAY: a ramp on sun strength, gone in rain, and gone in storm, snow or wind |
 | `bats/` | episode | Night colony wheeling: boids in any direction (top-down), erratic jinking, scattering near the player (no landing) | base 1.0; day ×0.01 |
 | `birds/` | episode | Living day flock: boids over the world, landing on dry ground to peck, flushing near the player | base 1.0; night ×0.05 |
 | `thunder/` | episode | Distant sheet lightning beyond the horizon | base 0.35 × (1 + rain + night); cloud/mist as weak proxies |
@@ -439,7 +439,11 @@ A pixel arm's BOX IS THE GAME AREA, never the
 screen: at the 480x320 QA viewport the camera shows 198 px of world and the
 rest is HUD, where the chat line rewrites itself while the gate runs — judging
 the whole screen measured that text and read 243.6 with the control at 243.6.
-**And for a SMALL mark the box is the MARK, not the game area.** An OFF
+**And for a SMALL mark the box is the MARK, not the game area** — and it
+measures CONTRAST EITHER WAY, not a brightness rise: the commonest butterfly
+in the game is brown+black, which is DARKER than the grass, so an OFF envelope
+read only as a maximum would call it invisible. Keep a max and a min over the
+OFF frames and take the largest departure from that band. An OFF
 envelope over a wide box also measures everything else alive in it — the
 player's idle and the scenery's sway are both bigger than a 5 px butterfly —
 so ask the feature where its mark is (`debug().all`), convert to screen, and
@@ -447,11 +451,36 @@ judge a window a few pixels wider than the art, with the control taken in the
 SAME windows. Measured: a deliberately broken butterflies run "failed" on a
 swaying grass tuft (rise 199, noise 125) instead of on the thing being broken;
 the same run on per-mark windows read rise 222 against noise 0.0.
+**AN OFF ENVELOPE NEEDS A QUIET SCREEN, AND QUIET MUST BE MEASURED.** The
+ground is a render texture that scrolls and repaints in slices, so for a
+second or two after the camera arrives somewhere its own frames differ from
+each other by more than any small mark does — measured 99 luma of "noise" in
+an OFF control taken right after an arm teleported around and came back,
+which failed the arm on the ground finishing its paint rather than on
+anything real. Before building an envelope, shoot two frames 400 ms apart and
+require them to agree (under 8 luma) — two frames that agree is the evidence
+that the only thing still moving is the feature under test. A fixed sleep is
+a guess; this is not.
 **STAND WHERE THE THING COULD GO WRONG.** `verify-butterflies` first ran on a
 13x13 block of pure grass, where widening the accepted-ground set to every
 surface in the world still passed — there was no other surface to get it wrong
 on. Moved to a view that is 63% grass and 37% soil and paving, the same
 falsification fails two arms. A gate location is part of the gate.
+**A TWO-COLOUR CREATURE CANNOT BE A TINT, and a colour table's percentages
+are not pixel areas.** `setTint` multiplies the whole sprite by one value, so
+anything with a marking has its colours PAINTED INTO per-species textures
+(ten mixes x three frames = thirty 5x4 textures, built once at init — cheaper
+than the second sprite per creature the alternative needs, and the colours
+come out exact rather than as a multiply). And a real colour table's split
+("60% black / 40% orange") counts VEINS AND BORDERS that do not exist at five
+pixels across: spending 60% of thirteen pixels on black drew a black blob with
+two orange specks. The split sets HOW MUCH MARKING and the table's ORDER is
+what is preserved; the marking is capped (`MAX_DARK_PAIRS`) and spent from the
+hindwing and forewing TIPS inward, so the forewing mass — the pixels that say
+what colour the creature is — is the last thing it reaches.
+**AND THE BODY IS BLENDED BACK TOWARD THE WING.** Twice a flat dark body split
+a creature into two blobs on screen: near-black over grass, then the mix's own
+black under brown wings. The pixel joining the wings must belong to them.
 **AN IN-PAGE LOOP RUNS ON rAF WITH A WALL-CLOCK DEADLINE, never on a
 `setTimeout` count.** Chromium clamps timers hard in a headless page, so a
 gate arm written as "900 iterations of `await setTimeout(30)`" — 27 s on

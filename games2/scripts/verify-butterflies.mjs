@@ -14,7 +14,12 @@
 //                  the heading the feature actually flies.
 //   IT SETTLES   — one goes down to the grass, shuts its wings, comes back up.
 //   IT SHOWS     — a pixel arm against an OFF envelope, inside the clear game
-//                  area (the HUD is painted over the canvas).
+//                  area (the HUD is painted over the canvas). CONTRAST either
+//                  way: his commonest butterfly is brown+black, darker than
+//                  the grass, so a brightness-only arm would miss it.
+//   HIS COLOURS  — the drawn species come from his table and more than one of
+//                  them shows up, so a bug that pinned every butterfly to one
+//                  mix cannot pass.
 //   IT IS A DAY CREATURE — night and rain empty the meadow, and the open sea
 //                  never has one over it.
 //
@@ -107,7 +112,7 @@ const luma = (png, X, Y) => { const i = (Y * png.width + X) * 4; return 0.299 * 
 const SAMPLE = `const tick = () => new Promise((r) => requestAnimationFrame(r));`;
 
 /* ---- OVER GRASS ----------------------------------------------------------- */
-const view = await goto(MEADOW.c, MEADOW.r);
+let view = await goto(MEADOW.c, MEADOW.r);
 await page.waitForTimeout(4000);
 const d0 = await dbg();
 console.log(`meadow: gain ${d0.gain.toFixed(2)}, ${d0.count} alive, placed ${d0.placed}, rejected ${d0.rejected}`);
@@ -138,6 +143,38 @@ if (wet.length) fail(`${wet.length} butterfly positions are over water`);
 // and the patch has to hold them: free-flying with no tether measured 64%
 if (offGrass.length > grounds.length * 0.5)
   fail(`only ${grounds.length - offGrass.length} of ${grounds.length} positions are over grass — the patch is not holding them`);
+
+/* ---- HIS COLOURS ---------------------------------------------------------- */
+/* The species table is unit-tested; what a unit test cannot see is whether the
+ * feature ever ASKS for more than one mix. A butterfly only draws a new mix
+ * when it is PLACED, and the home tether means a placed one stays put — so
+ * standing still for 25 s measured four placements, far too thin a sample to
+ * judge anything by. Teleporting churns them: every jump puts the whole
+ * population off-view and forces fresh placements. */
+const MEADOWS = [[333, 241], [264, 243], [335, 245]];
+const seenSpecies = new Map();
+for (let round = 0; round < 8; round++) {
+  await page.evaluate(([c, r]) => window.__ml.teleport(c, r), MEADOWS[round % MEADOWS.length]);
+  await page.waitForTimeout(2600);
+  for (const f of (await dbg()).all) if (f.a > 0.5) seenSpecies.set(f.species, (seenSpecies.get(f.species) ?? 0) + 1);
+}
+const spread = [...seenSpecies.entries()].sort((a, b) => b[1] - a[1]);
+const sightings = spread.reduce((n, [, c]) => n + c, 0);
+console.log(`colours: ${sightings} sightings over ${spread.length} mixes — ${spread.map(([k, c]) => `${k} ${c}`).join(", ")}`);
+const TABLE = new Set([
+  "brown_black", "black_orange", "brown_orange", "green_black", "yellow_black",
+  "blue_black", "white_black", "red_black", "purple_black", "green_blue",
+]);
+const strangers = spread.filter(([k]) => !TABLE.has(k));
+if (strangers.length) fail(`drawn mixes that are not in his table: ${strangers.map(([k]) => k).join(", ")}`);
+if (spread.length < 3) fail(`only ${spread.length} butterfly mix(es) drawn over ${sightings} sightings — his table has ten`);
+// the common end must be common: nothing from his bottom three may lead
+const RARE = new Set(["red_black", "purple_black", "green_blue"]);
+if (sightings >= 40 && RARE.has(spread[0][0]))
+  fail(`${spread[0][0]} is his rarest end but came out commonest (${spread[0][1]} of ${sightings})`);
+// back to the meadow the later arms are calibrated on — and the camera moved,
+// so the view every later arm converts screen positions through moves with it
+view = await goto(MEADOW.c, MEADOW.r);
 
 /* ---- IT FLUTTERS ---------------------------------------------------------- */
 const flutter = await page.evaluate(async (src) => {
@@ -211,7 +248,29 @@ const inClear = (f) => {
   return s.x > CLEAR.x0 + HALF.x && s.x < CLEAR.x1 - HALF.x && s.y > CLEAR.y0 + HALF.y && s.y < CLEAR.y1 - HALF.y;
 };
 await setOn(false);
-await page.waitForTimeout(2500);
+/* WAIT FOR A QUIET SCREEN BEFORE BUILDING AN ENVELOPE. The ground is a render
+ * texture that scrolls and repaints in slices, so for a second or two after
+ * the camera arrives somewhere the frames differ from each other by more than
+ * any butterfly does — measured 99 luma of "noise" in an OFF control right
+ * after the colour arm teleported around and came back, which failed the arm
+ * on the ground finishing its paint. Two frames that agree is the evidence
+ * that the only thing left moving is the feature under test. */
+const quiet = async () => {
+  let prev = await shoot();
+  for (let i = 0; i < 30; i++) {
+    await page.waitForTimeout(400);
+    const now = await shoot();
+    let worst = 0;
+    for (let y = CLEAR.y0; y < CLEAR.y1; y += 2)
+      for (let x = CLEAR.x0; x < CLEAR.x1; x += 2) worst = Math.max(worst, Math.abs(luma(now, x, y) - luma(prev, x, y)));
+    if (worst < 8) return { settled: true, worst: +worst.toFixed(1), waited: i };
+    prev = now;
+  }
+  return { settled: false, worst: -1, waited: 30 };
+};
+const q = await quiet();
+console.log(`pixels: the screen went quiet after ${(q.waited * 0.4).toFixed(1)}s (frame-to-frame ${q.worst})`);
+if (!q.settled) fail("the screen never went quiet — an OFF envelope built on it would measure the scenery");
 const offs = [];
 for (let i = 0; i < 6; i++) { offs.push(await shoot()); await page.waitForTimeout(200); }
 const noiseShot = await shoot();
@@ -219,20 +278,31 @@ await setOn(true);
 const ons = [];
 for (let i = 0; i < 90 && ons.length < 8; i++) {
   const f = (await dbg()).all.find((f) => f.a > 0.5 && inClear(f));
-  if (f) ons.push({ png: await shoot(), at: screenOf(f) });
+  if (f) ons.push({ png: await shoot(), at: screenOf(f), species: f.species });
   else await page.waitForTimeout(70);
 }
 console.log(`pixels: ${ons.length} ON frames with a butterfly in the clear canvas`);
 if (ons.length < 3) fail(`only ${ons.length} frames put a butterfly in the clear canvas`);
-/** Brightest pixel in the window minus the MAX the same pixel reached with the
- *  feature off — the ground animates, so one OFF frame is one phase of it. */
-const riseAt = (png, at) => {
+/** CONTRAST in the window, either way. The OFF envelope is a max AND a min
+ *  over the OFF frames (the ground animates, so one frame is one phase of a
+ *  moving picture), and the arm takes the largest departure from that band in
+ *  either direction. A rise alone was right while every butterfly was pale;
+ *  his table has brown+black at 22%, and that one is DARKER than the grass —
+ *  measuring only brightening would have called the commonest butterfly in
+ *  the game invisible. */
+const contrastAt = (png, at) => {
   let m = -Infinity;
   for (let y = at.y - HALF.y; y <= at.y + HALF.y; y++)
     for (let x = at.x - HALF.x; x <= at.x + HALF.x; x++) {
-      let base = 0;
-      for (const o of offs) base = Math.max(base, luma(o, x, y));
-      m = Math.max(m, luma(png, x, y) - base);
+      let hi = 0;
+      let lo = 255;
+      for (const o of offs) {
+        const l = luma(o, x, y);
+        hi = Math.max(hi, l);
+        lo = Math.min(lo, l);
+      }
+      const l = luma(png, x, y);
+      m = Math.max(m, l - hi, lo - l);
     }
   return m;
 };
@@ -240,11 +310,12 @@ if (ons.length) {
   let best = 0;
   let noise = 0;
   for (const o of ons) {
-    best = Math.max(best, riseAt(o.png, o.at));
-    noise = Math.max(noise, riseAt(noiseShot, o.at)); // the same windows, feature off
+    best = Math.max(best, contrastAt(o.png, o.at));
+    noise = Math.max(noise, contrastAt(noiseShot, o.at)); // the same windows, feature off
   }
-  console.log(`pixels: the ground brightens by ${best.toFixed(1)} where the butterfly is (same windows OFF: ${noise.toFixed(1)})`);
-  if (!(best >= 30 && best >= noise * 2 + 10)) fail(`no butterfly showed on screen (rise ${best.toFixed(1)}, noise ${noise.toFixed(1)})`);
+  const seen = [...new Set(ons.map((o) => o.species))];
+  console.log(`pixels: the ground shifts by ${best.toFixed(1)} luma where the butterfly is (same windows OFF: ${noise.toFixed(1)}); species shot: ${seen.join(", ")}`);
+  if (!(best >= 30 && best >= noise * 2 + 10)) fail(`no butterfly showed on screen (contrast ${best.toFixed(1)}, noise ${noise.toFixed(1)})`);
 }
 
 /* ---- A DAY CREATURE ------------------------------------------------------- */

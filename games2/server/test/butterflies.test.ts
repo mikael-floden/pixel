@@ -23,6 +23,19 @@ import {
   steer,
   wing,
 } from "../../ambient/butterflies/flight.js";
+import {
+  BODY_PX,
+  PAINTED_PX,
+  RARE_LIFT,
+  SPECIES,
+  MAX_DARK_PAIRS,
+  WING_PAIRS,
+  bodyColour,
+  darkPairs,
+  drawnDarkShare,
+  pickSpecies,
+  weightOf,
+} from "../../ambient/butterflies/species.js";
 
 test("THE BODY BOBS WITH THE BEAT, in whole pixels, always upward", () => {
   const amp = BOB_PX[1];
@@ -149,4 +162,129 @@ test("IT WORKS A PATCH: inside its patch nothing pulls, outside it bends back", 
   // A BUTTERFLY ALREADY HEADED HOME IS NOT STEERED: the pull is a correction,
   // not a rail, or the flight straightens into a homing missile
   assert.equal(homePull(0, HOME_R * 5, 0, dt), 0, "no turn when it is already pointed at home");
+});
+
+/* THE COLOURS ARE THE MAINTAINER'S TABLE (2026-09-11), not a palette I chose.
+ * His verdict on the first cut was "I like the effect/animation but not the
+ * butterfly color... you made them blue and yellow" — so these tests guard the
+ * table itself, which is the part that is his and must not drift. */
+
+test("HIS TABLE IS THE TABLE: the ten mixes, his percentages, his order", () => {
+  const want = [
+    ["brown_black", 22, 0.3],
+    ["black_orange", 18, 0.6],
+    ["brown_orange", 15, 0.65],
+    ["green_black", 12, 0.3],
+    ["yellow_black", 11, 0.4],
+    ["blue_black", 8, 0.45],
+    ["white_black", 7, 0.25],
+    ["red_black", 4, 0.5],
+    ["purple_black", 2, 0.4],
+    ["green_blue", 1, 0.5],
+  ] as const;
+  assert.equal(SPECIES.length, want.length, "ten mixes");
+  want.forEach(([key, base, darkShare], i) => {
+    assert.equal(SPECIES[i].key, key, `row ${i} is ${key}, in his order`);
+    assert.equal(SPECIES[i].base, base, `${key} keeps his percentage`);
+    assert.equal(SPECIES[i].darkShare, darkShare, `${key} keeps his mix`);
+  });
+});
+
+test("RED AND PURPLE CARRY THE 1.2x LIFT, and nothing else does", () => {
+  assert.equal(RARE_LIFT, 1.2, "his number");
+  for (const s of SPECIES) {
+    const lifted = s.key === "red_black" || s.key === "purple_black";
+    assert.equal(weightOf(s), s.base * (lifted ? RARE_LIFT : 1), `${s.key} weight`);
+  }
+  // the lift is a nudge, not a promotion: they stay the two rarest of the
+  // nine black-paired mixes, or "rare colour you are pleased to see" is lost
+  const ranked = [...SPECIES].sort((a, b) => weightOf(b) - weightOf(a)).map((s) => s.key);
+  assert.equal(ranked[0], "brown_black", "brown is still the commonest");
+  assert.equal(ranked[ranked.length - 1], "green_blue", "green+blue is still the rarest");
+  assert.ok(ranked.indexOf("red_black") > ranked.indexOf("white_black"), "red is still rarer than white");
+  assert.ok(ranked.indexOf("purple_black") > ranked.indexOf("red_black"), "purple is still rarer than red");
+});
+
+test("picking reproduces his frequencies", () => {
+  const n = 200_000;
+  const hit = new Map(SPECIES.map((s) => [s.key, 0]));
+  for (let i = 0; i < n; i++) hit.set(pickSpecies(i / n).key, hit.get(pickSpecies(i / n).key) + 1);
+  const total = SPECIES.reduce((a, s) => a + weightOf(s), 0);
+  for (const s of SPECIES) {
+    const got = (hit.get(s.key) / n) * 100;
+    const want = (weightOf(s) / total) * 100;
+    assert.ok(Math.abs(got - want) < 0.5, `${s.key}: drew ${got.toFixed(2)}%, table says ${want.toFixed(2)}%`);
+  }
+  // every mix must be reachable — a rounding bug that swallowed green+blue
+  // (1%) would still pass a chi-square on the common ones
+  for (const s of SPECIES) assert.ok(hit.get(s.key) > 0, `${s.key} can come up at all`);
+  // and the ends of the range are in range
+  assert.equal(pickSpecies(0).key, SPECIES[0].key);
+  assert.ok(SPECIES.includes(pickSpecies(0.999999)));
+  assert.ok(SPECIES.includes(pickSpecies(1)), "1 is clamped, not undefined");
+});
+
+test("THE MARKING NEVER EATS THE BUTTERFLY", () => {
+  /* His split counts the veins and borders of a real butterfly, and there are
+   * no veins at five pixels across: spending 60% of them on black gives a
+   * black blob with two orange specks, which is a fly. So the split sets HOW
+   * MUCH MARKING and his ORDER is what must survive, not his absolute area. */
+  const byShare = [...SPECIES].sort((a, b) => a.darkShare - b.darkShare);
+  for (let i = 1; i < byShare.length; i++)
+    assert.ok(
+      drawnDarkShare(byShare[i]) >= drawnDarkShare(byShare[i - 1]),
+      `${byShare[i].key} (his ${byShare[i].darkShare}) is drawn lighter than ${byShare[i - 1].key} (his ${byShare[i - 1].darkShare})`,
+    );
+  // the ends are distinguishable: his lightest mix is not drawn like his darkest
+  assert.ok(drawnDarkShare(byShare[byShare.length - 1]) > drawnDarkShare(byShare[0]), "the range has not collapsed");
+
+  // THE BUTTERFLY'S OWN COLOUR KEEPS THE WINGS. Whatever the mix, most wing
+  // pixels are the bright colour — that is what makes it a red butterfly
+  // rather than a black one with red on it.
+  for (const s of SPECIES) {
+    const dark = 2 * darkPairs(s.darkShare);
+    assert.ok(dark <= 2 * MAX_DARK_PAIRS, `${s.key} respects the marking cap`);
+    assert.ok(10 - dark >= 4, `${s.key}: only ${10 - dark} wing pixels left in its own colour`);
+  }
+  // the body is always dark, so nothing is ever wholly bright
+  for (const s of SPECIES) assert.ok(drawnDarkShare(s) >= BODY_PX / PAINTED_PX, `${s.key} has a dark body`);
+  assert.equal(darkPairs(0), 0, "an unmarked mix darkens no pair");
+  assert.equal(darkPairs(1), MAX_DARK_PAIRS, "and the heaviest marking stops at the cap");
+  assert.ok(MAX_DARK_PAIRS < WING_PAIRS, "the cap is a cap");
+});
+
+test("THE BODY JOINS THE WINGS, it is not a bar through them", () => {
+  /* Twice now a body painted a flat dark colour has split the creature in two
+   * on screen — near-black over grass, then the mix's own black under brown
+   * wings. It is blended back toward the wing, so it is the darkest part of
+   * the butterfly and still the same creature. */
+  const luma = (c) => 0.299 * ((c >> 16) & 255) + 0.587 * ((c >> 8) & 255) + 0.114 * (c & 255);
+  for (const s of SPECIES) {
+    const b = bodyColour(s);
+    assert.ok(luma(b) < luma(s.bright), `${s.key}: the body is darker than the wing`);
+    assert.ok(luma(b) > luma(s.dark) - 1e-9, `${s.key}: the body is no darker than the marking`);
+    // and it is genuinely pulled toward the wing, not just the dark colour
+    if (s.dark !== s.bright) assert.notEqual(b, s.dark, `${s.key}: the body is not the flat marking colour`);
+    /* Close enough to the wing to read as one creature — as a RATIO, not an
+     * absolute gap: a white butterfly's body is 108 luma below its wing and
+     * looks right, a green one's is 75 below and would not, because what the
+     * eye judges is the contrast between them, not the arithmetic. */
+    const ratio = luma(b) / luma(s.bright);
+    assert.ok(ratio >= 0.4, `${s.key}: the body sits at ${(ratio * 100) | 0}% of the wing's brightness — a hole, not a body`);
+    assert.ok(ratio < 1, `${s.key}: and it is still darker`);
+  }
+});
+
+test("every mix is two TELLABLE colours: the dark one is actually darker", () => {
+  const luma = (c) => 0.299 * ((c >> 16) & 255) + 0.587 * ((c >> 8) & 255) + 0.114 * (c & 255);
+  for (const s of SPECIES) {
+    assert.notEqual(s.bright, s.dark, `${s.key} is a mix of two colours`);
+    assert.ok(luma(s.dark) < luma(s.bright), `${s.key}: the dark half is darker (${luma(s.dark) | 0} vs ${luma(s.bright) | 0})`);
+    // and far enough apart to read as a marking rather than a compression
+    // artefact at four pixels tall
+    assert.ok(luma(s.bright) - luma(s.dark) > 25, `${s.key}: the two halves are ${(luma(s.bright) - luma(s.dark)) | 0} luma apart`);
+    // pixel art: never pure black, never pure white
+    assert.notEqual(s.dark, 0x000000);
+    assert.notEqual(s.bright, 0xffffff);
+  }
 });
