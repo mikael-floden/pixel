@@ -321,6 +321,31 @@ The rules that produce a real strike:
   after repair steps the ladder down to calmer wording — overflow means too
   much, never too little.
 
+### His verdicts: read them, act, then DELETE the ones you acted on
+
+Maintainer 2026-09-11, seeing his own redo note still sitting under a clip
+that had already been regenerated: "I can still see my old comment even when
+you have acted on it and generated a new animation. My comment is obsolete
+and should be removed when you act on the review." Same lifecycle the tiles
+agent was given in 2026-08: a rejection's whole job is to cause a
+regeneration, and once that happened the entry has done its work.
+
+```bash
+python monsters/pipeline/animate.py review --state attack_v3   # his verdicts -> fails, with his note
+python monsters/pipeline/animate.py attack --slot attack_v3    # re-roll exactly those
+python monsters/pipeline/animate.py prune-feedback             # drop the notes that were acted on
+```
+
+- **`review`** reads `live/feedback/monsters.json` (keys
+  `monsters/<id>#<slot>#<direction>`), turns every `redo`/`rejected` into a
+  fail carrying his words, and redoes a MIRROR by redoing its source — that
+  is what actually produces it.
+- **`prune-feedback`** deletes a redo verdict only when that direction's
+  `generated_at` is newer than the verdict's `updated_at`, so a note is
+  removed for one reason only: the art it judged no longer exists.
+- **An APPROVAL is never pruned.** That is his pick and it has to outlive the
+  review.
+
 ### A WRONG DIRECTION is the maintainer's call, never the agent's
 
 Maintainer 2026-09-11, after I started reporting monsters whose 8-direction

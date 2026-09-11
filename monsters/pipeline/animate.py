@@ -1054,6 +1054,45 @@ def cmd_review(args):
     cand.rebuild_index(cfg)
 
 
+def cmd_prune_feedback(args):
+    """Delete a redo verdict once the art it judged HAS BEEN REGENERATED. His
+    note has done its job at that point and only misleads: he sees his own old
+    words under a clip that no longer exists (2026-09-11: "I can still see my
+    old comment even when you have acted on it and generated a new animation.
+    My comment is obsolete and should be removed when you act on the review").
+    Same lifecycle the tiles agent already follows. An APPROVAL is never
+    pruned — that is his pick, and it has to outlive the review."""
+    try:
+        doc = json.load(open(FEEDBACK))
+    except FileNotFoundError:
+        print(f"no feedback at {FEEDBACK}"); return
+    entries = doc.get("entries") or {}
+    drop = []
+    for key, v in entries.items():
+        if (v.get("status") or "").lower() not in ("redo", "rejected") or "#" not in key:
+            continue
+        path, _, rest = key.partition("#")
+        slot, _, d = rest.partition("#")
+        cid = path.split("/")[-1]
+        man = cand.load_manifest(cid)
+        q = (((man or {}).get("animations") or {}).get(slot, {}).get("directions") or {}).get(d)
+        if not q:
+            continue
+        made, said = q.get("generated_at"), v.get("updated_at")
+        if made and said and made > said:          # both ISO-8601 UTC
+            drop.append((key, made, said))
+    for key, made, said in drop:
+        entries.pop(key, None)
+        print(f"  pruned {key}  (judged {said[:19]}, regenerated {made[:19]})")
+    if drop and not args.dry_run:
+        doc["entries"] = entries
+        with open(FEEDBACK, "w") as f:
+            json.dump(doc, f, indent=1, ensure_ascii=False)
+            f.write("\n")
+    print(f"{len(drop)} obsolete verdict(s){' (dry run)' if args.dry_run else ' removed'}; "
+          f"{len(entries)} left")
+
+
 def cmd_unwrap(args):
     """Repair wrap-around overflow on clips ALREADY on disk and re-verdict
     them: a clip that rendered past the canvas is art worth saving, not a
@@ -1252,6 +1291,8 @@ def main():
     pr.add_argument("--from", dest="src", help="the attempt to promote, e.g. attack_v3 (default: <state>_try)")
     pr.add_argument("--allow-warn", action="store_true", help="promote when every direction is pass or warn (default: no fails, no gaps)")
     pr.set_defaults(func=cmd_promote)
+    pf = sub.add_parser("prune-feedback", help="drop his redo notes whose art has since been regenerated")
+    pf.add_argument("--dry-run", action="store_true"); pf.set_defaults(func=cmd_prune_feedback)
     rv = sub.add_parser("review", help="apply HIS wiki verdicts to a slot (redo -> fail, with his note)")
     rv.add_argument("--state", required=True); rv.set_defaults(func=cmd_review)
     uw = sub.add_parser("unwrap", help="repair clips that rendered past the canvas edge (no generation)")
