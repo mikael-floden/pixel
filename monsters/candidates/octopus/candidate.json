@@ -1,1259 +1,1588 @@
 {
- "id": "octopus",
- "name": "Inkling",
- "tier": "mid",
- "scale": "standard",
- "lore": "It has three hearts and holds a grudge in each. The ink is how it says goodbye.",
- "biome": [
-  "water",
-  "deep_water"
- ],
- "items": [],
- "prompt": "Fantasy octopus with a bulbous dark red mantle, eight thick tentacles coiled tightly beneath it, two large golden eyes with rectangular pupils, and a cloud of black ink drifting from under it.",
- "size": [
-  96,
-  96
- ],
- "template_id": "bear",
- "directions": [
-  "south",
-  "south-east",
-  "east",
-  "north-east",
-  "north",
-  "north-west",
-  "west",
-  "south-west"
- ],
- "rotations": {
-  "south": "octopus/rotations/south.webp",
-  "south-east": "octopus/rotations/south-east.webp",
-  "east": "octopus/rotations/east.webp",
-  "north-east": "octopus/rotations/north-east.webp",
-  "north": "octopus/rotations/north.webp",
-  "north-west": "octopus/rotations/north-west.webp",
-  "west": "octopus/rotations/west.webp",
-  "south-west": "octopus/rotations/south-west.webp"
- },
- "sheet": "octopus/sheet.webp",
- "review": "approved",
- "pixellab_id": "22734026-d7a4-48dc-9ccb-102f2bc8f77f",
- "seed": 833747596,
- "version": 1,
- "usage": null,
- "generated_at": "2026-09-09T18:34:31+00:00",
- "elapsed_s": 341.9,
- "qa": {
-  "status": "pass",
-  "min_run1": 0.554,
-  "reasons": [],
-  "directions": {
-   "south": {
-    "run1": 0.593,
-    "bbox": [
-     5,
-     4,
-     91,
-     91
-    ],
-    "fill": 0.812,
-    "touches_edge": false
-   },
-   "south-east": {
-    "run1": 0.699,
-    "bbox": [
-     8,
-     4,
-     91,
-     92
-    ],
-    "fill": 0.793,
-    "touches_edge": false
-   },
-   "east": {
-    "run1": 0.63,
-    "bbox": [
-     7,
-     6,
-     90,
-     90
-    ],
-    "fill": 0.757,
-    "touches_edge": false
-   },
-   "north-east": {
-    "run1": 0.596,
-    "bbox": [
-     7,
-     10,
-     91,
-     89
-    ],
-    "fill": 0.72,
-    "touches_edge": false
-   },
-   "north": {
-    "run1": 0.554,
-    "bbox": [
-     7,
-     11,
-     89,
-     89
-    ],
-    "fill": 0.694,
-    "touches_edge": false
-   },
-   "north-west": {
-    "run1": 0.594,
-    "bbox": [
-     5,
-     9,
-     88,
-     89
-    ],
-    "fill": 0.72,
-    "touches_edge": false
-   },
-   "west": {
-    "run1": 0.618,
-    "bbox": [
-     6,
-     6,
-     87,
-     90
-    ],
-    "fill": 0.738,
-    "touches_edge": false
-   },
-   "south-west": {
-    "run1": 0.693,
-    "bbox": [
-     5,
-     4,
-     88,
-     92
-    ],
-    "fill": 0.793,
-    "touches_edge": false
-   }
+  "id": "octopus",
+  "name": "Inkling",
+  "tier": "mid",
+  "scale": "standard",
+  "lore": "It has three hearts and holds a grudge in each. The ink is how it says goodbye.",
+  "biome": [
+    "water",
+    "deep_water"
+  ],
+  "items": [],
+  "prompt": "Fantasy octopus with a bulbous dark red mantle, eight thick tentacles coiled tightly beneath it, two large golden eyes with rectangular pupils, and a cloud of black ink drifting from under it.",
+  "size": [
+    96,
+    96
+  ],
+  "template_id": "bear",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "octopus/rotations/south.webp",
+    "south-east": "octopus/rotations/south-east.webp",
+    "east": "octopus/rotations/east.webp",
+    "north-east": "octopus/rotations/north-east.webp",
+    "north": "octopus/rotations/north.webp",
+    "north-west": "octopus/rotations/north-west.webp",
+    "west": "octopus/rotations/west.webp",
+    "south-west": "octopus/rotations/south-west.webp"
+  },
+  "sheet": "octopus/sheet.webp",
+  "review": "approved",
+  "pixellab_id": "22734026-d7a4-48dc-9ccb-102f2bc8f77f",
+  "seed": 833747596,
+  "version": 1,
+  "usage": null,
+  "generated_at": "2026-09-09T18:34:31+00:00",
+  "elapsed_s": 341.9,
+  "qa": {
+    "status": "pass",
+    "min_run1": 0.554,
+    "reasons": [],
+    "directions": {
+      "south": {
+        "run1": 0.593,
+        "bbox": [
+          5,
+          4,
+          91,
+          91
+        ],
+        "fill": 0.812,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.699,
+        "bbox": [
+          8,
+          4,
+          91,
+          92
+        ],
+        "fill": 0.793,
+        "touches_edge": false
+      },
+      "east": {
+        "run1": 0.63,
+        "bbox": [
+          7,
+          6,
+          90,
+          90
+        ],
+        "fill": 0.757,
+        "touches_edge": false
+      },
+      "north-east": {
+        "run1": 0.596,
+        "bbox": [
+          7,
+          10,
+          91,
+          89
+        ],
+        "fill": 0.72,
+        "touches_edge": false
+      },
+      "north": {
+        "run1": 0.554,
+        "bbox": [
+          7,
+          11,
+          89,
+          89
+        ],
+        "fill": 0.694,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.594,
+        "bbox": [
+          5,
+          9,
+          88,
+          89
+        ],
+        "fill": 0.72,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.618,
+        "bbox": [
+          6,
+          6,
+          87,
+          90
+        ],
+        "fill": 0.738,
+        "touches_edge": false
+      },
+      "south-west": {
+        "run1": 0.693,
+        "bbox": [
+          5,
+          4,
+          88,
+          92
+        ],
+        "fill": 0.793,
+        "touches_edge": false
+      }
+    }
+  },
+  "notes": [
+    "agent eyeball: the ink cloud under the body is baked into every facing and reads like a ground shadow in play — the game draws its own. Re-roll without the ink if you want it."
+  ],
+  "approved_at": "2026-09-09T19:59:22+00:00",
+  "animations": {
+    "idle": {
+      "directions": {
+        "south": {
+          "status": "pass",
+          "step_mean": 0.0441,
+          "step_max": 0.0511,
+          "drift": 1.08,
+          "loop": 0.0009,
+          "pin": 1.0,
+          "reasons": [],
+          "sub": "6a8128af-f51d-4564-bb56-44686b44a4fe",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "generated_at": "2026-09-09T20:16:20+00:00",
+          "cut": 0
+        },
+        "south-east": {
+          "status": "pass",
+          "step_mean": 0.0435,
+          "step_max": 0.0469,
+          "drift": 0.9,
+          "loop": 0.0002,
+          "pin": 1.0,
+          "reasons": [],
+          "sub": "9114b7b9-77f9-4898-b447-9f85a9967a07",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "generated_at": "2026-09-09T20:16:21+00:00",
+          "cut": 0
+        },
+        "east": {
+          "status": "pass",
+          "step_mean": 0.0213,
+          "step_max": 0.0301,
+          "drift": 0.74,
+          "loop": 0.0,
+          "pin": 1.0,
+          "reasons": [],
+          "sub": "d9b5a0bd-b5d4-48fb-9aba-e7806804acde",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "generated_at": "2026-09-09T20:16:22+00:00",
+          "cut": 0
+        },
+        "north-east": {
+          "status": "pass",
+          "step_mean": 0.0255,
+          "step_max": 0.033,
+          "drift": 1.29,
+          "loop": 0.0,
+          "pin": 1.0,
+          "reasons": [],
+          "sub": "95da925e-4a44-4fd4-8473-a7a74ff44476",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "generated_at": "2026-09-09T20:16:22+00:00",
+          "cut": 0
+        },
+        "north": {
+          "status": "pass",
+          "step_mean": 0.0541,
+          "step_max": 0.078,
+          "drift": 2.38,
+          "loop": 0.0,
+          "pin": 1.0,
+          "reasons": [],
+          "sub": "5651b41a-9a20-4949-8e74-21ec3c9e7b22",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "generated_at": "2026-09-09T20:16:23+00:00",
+          "cut": 0
+        },
+        "south-west": {
+          "status": "pass",
+          "step_mean": 0.0435,
+          "step_max": 0.0469,
+          "drift": 0.9,
+          "loop": 0.0002,
+          "pin": 1.0,
+          "reasons": [],
+          "sub": "9114b7b9-77f9-4898-b447-9f85a9967a07",
+          "takes": 1,
+          "version": 1,
+          "mirrored": true,
+          "generated_at": "2026-09-09T20:16:21+00:00",
+          "cut": 0,
+          "source": "south-east"
+        },
+        "west": {
+          "status": "pass",
+          "step_mean": 0.0213,
+          "step_max": 0.0301,
+          "drift": 0.74,
+          "loop": 0.0,
+          "pin": 1.0,
+          "reasons": [],
+          "sub": "d9b5a0bd-b5d4-48fb-9aba-e7806804acde",
+          "takes": 1,
+          "version": 1,
+          "mirrored": true,
+          "generated_at": "2026-09-09T20:16:22+00:00",
+          "cut": 0,
+          "source": "east"
+        },
+        "north-west": {
+          "status": "pass",
+          "step_mean": 0.0255,
+          "step_max": 0.033,
+          "drift": 1.29,
+          "loop": 0.0,
+          "pin": 1.0,
+          "reasons": [],
+          "sub": "95da925e-4a44-4fd4-8473-a7a74ff44476",
+          "takes": 1,
+          "version": 1,
+          "mirrored": true,
+          "generated_at": "2026-09-09T20:16:22+00:00",
+          "cut": 0,
+          "source": "north-east"
+        }
+      },
+      "action": "Calm still idle, breathing very slowly and subtly, chest and shoulders rise and fall a little, feet planted, no other movement, ends in the same neutral pose it started in",
+      "frame_paths": {
+        "south": [
+          "octopus/animations/idle/south/00.webp",
+          "octopus/animations/idle/south/01.webp",
+          "octopus/animations/idle/south/02.webp",
+          "octopus/animations/idle/south/03.webp",
+          "octopus/animations/idle/south/04.webp"
+        ],
+        "south-east": [
+          "octopus/animations/idle/south-east/00.webp",
+          "octopus/animations/idle/south-east/01.webp",
+          "octopus/animations/idle/south-east/02.webp",
+          "octopus/animations/idle/south-east/03.webp",
+          "octopus/animations/idle/south-east/04.webp"
+        ],
+        "east": [
+          "octopus/animations/idle/east/00.webp",
+          "octopus/animations/idle/east/01.webp",
+          "octopus/animations/idle/east/02.webp",
+          "octopus/animations/idle/east/03.webp",
+          "octopus/animations/idle/east/04.webp"
+        ],
+        "north-east": [
+          "octopus/animations/idle/north-east/00.webp",
+          "octopus/animations/idle/north-east/01.webp",
+          "octopus/animations/idle/north-east/02.webp",
+          "octopus/animations/idle/north-east/03.webp",
+          "octopus/animations/idle/north-east/04.webp"
+        ],
+        "north": [
+          "octopus/animations/idle/north/00.webp",
+          "octopus/animations/idle/north/01.webp",
+          "octopus/animations/idle/north/02.webp",
+          "octopus/animations/idle/north/03.webp",
+          "octopus/animations/idle/north/04.webp"
+        ],
+        "south-west": [
+          "octopus/animations/idle/south-west/00.webp",
+          "octopus/animations/idle/south-west/01.webp",
+          "octopus/animations/idle/south-west/02.webp",
+          "octopus/animations/idle/south-west/03.webp",
+          "octopus/animations/idle/south-west/04.webp"
+        ],
+        "west": [
+          "octopus/animations/idle/west/00.webp",
+          "octopus/animations/idle/west/01.webp",
+          "octopus/animations/idle/west/02.webp",
+          "octopus/animations/idle/west/03.webp",
+          "octopus/animations/idle/west/04.webp"
+        ],
+        "north-west": [
+          "octopus/animations/idle/north-west/00.webp",
+          "octopus/animations/idle/north-west/01.webp",
+          "octopus/animations/idle/north-west/02.webp",
+          "octopus/animations/idle/north-west/03.webp",
+          "octopus/animations/idle/north-west/04.webp"
+        ]
+      },
+      "strips": {
+        "south": "octopus/animations/idle__south.webp",
+        "south-east": "octopus/animations/idle__south-east.webp",
+        "east": "octopus/animations/idle__east.webp",
+        "north-east": "octopus/animations/idle__north-east.webp",
+        "north": "octopus/animations/idle__north.webp",
+        "south-west": "octopus/animations/idle__south-west.webp",
+        "west": "octopus/animations/idle__west.webp",
+        "north-west": "octopus/animations/idle__north-west.webp"
+      }
+    },
+    "walk": {
+      "directions": {
+        "south": {
+          "status": "pass",
+          "step_mean": 0.046,
+          "step_max": 0.0552,
+          "drift": 1.09,
+          "loop": 0.0759,
+          "loop_ratio": 1.65,
+          "travel": 0.35,
+          "pin": 0.965,
+          "pad": 0,
+          "canvas": [
+            96,
+            96
+          ],
+          "reasons": [],
+          "sub": "3755854b-4ec3-475e-b8ce-aac0512fcb96",
+          "group": "7f8668ce-4fee-4425-9af9-b862bc553fdf",
+          "takes": 1,
+          "version": 2,
+          "mirrored": false,
+          "generated_at": "2026-09-09T21:21:35+00:00"
+        },
+        "south-east": {
+          "status": "warn",
+          "step_mean": 0.0674,
+          "step_max": 0.0749,
+          "drift": 0.8,
+          "loop": 0.1395,
+          "loop_ratio": 2.07,
+          "travel": 1.12,
+          "pin": 0.95,
+          "pad": 0,
+          "canvas": [
+            96,
+            96
+          ],
+          "reasons": [
+            "last→first hand-off 2.1× a step — eyeball the loop"
+          ],
+          "sub": "3783f6d0-72e6-4659-b181-9487d9fad4c3",
+          "group": "2e64ec90-78c3-48c3-b513-f731dc432f53",
+          "takes": 1,
+          "version": 2,
+          "mirrored": false,
+          "generated_at": "2026-09-09T21:21:36+00:00"
+        },
+        "east": {
+          "status": "pass",
+          "step_mean": 0.0437,
+          "step_max": 0.0512,
+          "drift": 1.28,
+          "loop": 0.0647,
+          "loop_ratio": 1.48,
+          "travel": 1.4,
+          "pin": 0.964,
+          "pad": 0,
+          "canvas": [
+            96,
+            96
+          ],
+          "reasons": [],
+          "sub": "feca75a3-540c-4279-bb76-f1a553275b4a",
+          "group": "03473b13-0f8b-4795-a69e-30f4c61ac54e",
+          "takes": 1,
+          "version": 2,
+          "mirrored": false,
+          "generated_at": "2026-09-09T21:21:36+00:00"
+        },
+        "north-east": {
+          "status": "pass",
+          "step_mean": 0.0458,
+          "step_max": 0.0586,
+          "drift": 1.43,
+          "loop": 0.0878,
+          "loop_ratio": 1.91,
+          "travel": 1.45,
+          "pin": 0.964,
+          "pad": 0,
+          "canvas": [
+            96,
+            96
+          ],
+          "reasons": [],
+          "sub": "3e6c7eaf-4eac-4a66-8007-2e284c39eb74",
+          "group": "c5ca09b6-4f12-483a-ae18-14da92c73ba0",
+          "takes": 1,
+          "version": 2,
+          "mirrored": false,
+          "generated_at": "2026-09-09T21:21:37+00:00"
+        },
+        "north": {
+          "status": "pass",
+          "step_mean": 0.0529,
+          "step_max": 0.064,
+          "drift": 1.63,
+          "loop": 0.0703,
+          "loop_ratio": 1.33,
+          "travel": 0.45,
+          "pin": 0.946,
+          "pad": 0,
+          "canvas": [
+            96,
+            96
+          ],
+          "reasons": [],
+          "sub": "5ed48b0b-8bff-4cce-b11a-cf0815bc146e",
+          "group": "c9145f55-18a7-43b5-82d1-c11156f8b4c6",
+          "takes": 1,
+          "version": 2,
+          "mirrored": false,
+          "generated_at": "2026-09-09T21:21:37+00:00"
+        },
+        "south-west": {
+          "status": "warn",
+          "step_mean": 0.0674,
+          "step_max": 0.0749,
+          "drift": 0.8,
+          "loop": 0.1395,
+          "loop_ratio": 2.07,
+          "travel": 1.12,
+          "pin": 0.95,
+          "pad": 0,
+          "canvas": [
+            96,
+            96
+          ],
+          "reasons": [
+            "last→first hand-off 2.1× a step — eyeball the loop"
+          ],
+          "sub": "3783f6d0-72e6-4659-b181-9487d9fad4c3",
+          "group": "2e64ec90-78c3-48c3-b513-f731dc432f53",
+          "takes": 1,
+          "version": 2,
+          "mirrored": true,
+          "generated_at": "2026-09-09T21:21:36+00:00",
+          "source": "south-east"
+        },
+        "west": {
+          "status": "pass",
+          "step_mean": 0.0437,
+          "step_max": 0.0512,
+          "drift": 1.28,
+          "loop": 0.0647,
+          "loop_ratio": 1.48,
+          "travel": 1.4,
+          "pin": 0.964,
+          "pad": 0,
+          "canvas": [
+            96,
+            96
+          ],
+          "reasons": [],
+          "sub": "feca75a3-540c-4279-bb76-f1a553275b4a",
+          "group": "03473b13-0f8b-4795-a69e-30f4c61ac54e",
+          "takes": 1,
+          "version": 2,
+          "mirrored": true,
+          "generated_at": "2026-09-09T21:21:36+00:00",
+          "source": "east"
+        },
+        "north-west": {
+          "status": "pass",
+          "step_mean": 0.0458,
+          "step_max": 0.0586,
+          "drift": 1.43,
+          "loop": 0.0878,
+          "loop_ratio": 1.91,
+          "travel": 1.45,
+          "pin": 0.964,
+          "pad": 0,
+          "canvas": [
+            96,
+            96
+          ],
+          "reasons": [],
+          "sub": "3e6c7eaf-4eac-4a66-8007-2e284c39eb74",
+          "group": "c5ca09b6-4f12-483a-ae18-14da92c73ba0",
+          "takes": 1,
+          "version": 2,
+          "mirrored": true,
+          "generated_at": "2026-09-09T21:21:37+00:00",
+          "source": "north-east"
+        }
+      },
+      "action": "crawls forward on its tentacles in place, tentacles reaching and pulling in turn, mantle swaying slightly, seamless loop, no turning",
+      "frame_paths": {
+        "south": [
+          "octopus/animations/walk/south/00.webp",
+          "octopus/animations/walk/south/01.webp",
+          "octopus/animations/walk/south/02.webp",
+          "octopus/animations/walk/south/03.webp",
+          "octopus/animations/walk/south/04.webp",
+          "octopus/animations/walk/south/05.webp"
+        ],
+        "south-east": [
+          "octopus/animations/walk/south-east/00.webp",
+          "octopus/animations/walk/south-east/01.webp",
+          "octopus/animations/walk/south-east/02.webp",
+          "octopus/animations/walk/south-east/03.webp",
+          "octopus/animations/walk/south-east/04.webp",
+          "octopus/animations/walk/south-east/05.webp"
+        ],
+        "east": [
+          "octopus/animations/walk/east/00.webp",
+          "octopus/animations/walk/east/01.webp",
+          "octopus/animations/walk/east/02.webp",
+          "octopus/animations/walk/east/03.webp",
+          "octopus/animations/walk/east/04.webp",
+          "octopus/animations/walk/east/05.webp"
+        ],
+        "north-east": [
+          "octopus/animations/walk/north-east/00.webp",
+          "octopus/animations/walk/north-east/01.webp",
+          "octopus/animations/walk/north-east/02.webp",
+          "octopus/animations/walk/north-east/03.webp",
+          "octopus/animations/walk/north-east/04.webp",
+          "octopus/animations/walk/north-east/05.webp"
+        ],
+        "north": [
+          "octopus/animations/walk/north/00.webp",
+          "octopus/animations/walk/north/01.webp",
+          "octopus/animations/walk/north/02.webp",
+          "octopus/animations/walk/north/03.webp",
+          "octopus/animations/walk/north/04.webp",
+          "octopus/animations/walk/north/05.webp"
+        ],
+        "south-west": [
+          "octopus/animations/walk/south-west/00.webp",
+          "octopus/animations/walk/south-west/01.webp",
+          "octopus/animations/walk/south-west/02.webp",
+          "octopus/animations/walk/south-west/03.webp",
+          "octopus/animations/walk/south-west/04.webp",
+          "octopus/animations/walk/south-west/05.webp"
+        ],
+        "west": [
+          "octopus/animations/walk/west/00.webp",
+          "octopus/animations/walk/west/01.webp",
+          "octopus/animations/walk/west/02.webp",
+          "octopus/animations/walk/west/03.webp",
+          "octopus/animations/walk/west/04.webp",
+          "octopus/animations/walk/west/05.webp"
+        ],
+        "north-west": [
+          "octopus/animations/walk/north-west/00.webp",
+          "octopus/animations/walk/north-west/01.webp",
+          "octopus/animations/walk/north-west/02.webp",
+          "octopus/animations/walk/north-west/03.webp",
+          "octopus/animations/walk/north-west/04.webp",
+          "octopus/animations/walk/north-west/05.webp"
+        ]
+      },
+      "strips": {
+        "south": "octopus/animations/walk__south.webp",
+        "south-east": "octopus/animations/walk__south-east.webp",
+        "east": "octopus/animations/walk__east.webp",
+        "north-east": "octopus/animations/walk__north-east.webp",
+        "north": "octopus/animations/walk__north.webp",
+        "south-west": "octopus/animations/walk__south-west.webp",
+        "west": "octopus/animations/walk__west.webp",
+        "north-west": "octopus/animations/walk__north-west.webp"
+      }
+    },
+    "attack": {
+      "directions": {
+        "south": {
+          "status": "fail",
+          "step_mean": 0.0893,
+          "step_max": 0.1014,
+          "drift": 0.57,
+          "loop": 0.0,
+          "loop_ratio": 0.0,
+          "travel": 0.2,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": 0.0,
+          "peak": 0.1602,
+          "reach": 0.081,
+          "canvas": [
+            96,
+            96
+          ],
+          "reasons": [
+            "no strike, just a lean: nothing reaches past 0.08 of the body"
+          ],
+          "sub": "fe63514f-ba97-40e8-9a1e-3d2c1540304e",
+          "group": "69f86693-a9a5-41c6-82f7-ed026379851f",
+          "takes": 1,
+          "version": 3,
+          "mirrored": false,
+          "generated_at": "2026-09-09T22:49:44+00:00",
+          "action": "Tentacle Slam - Raises two front tentacles high, then brings them down once, then returns to idle stance"
+        },
+        "south-east": {
+          "status": "fail",
+          "step_mean": 0.0802,
+          "step_max": 0.1067,
+          "drift": 1.18,
+          "loop": 0.0002,
+          "loop_ratio": 0.0,
+          "travel": 1.04,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": 0.0,
+          "peak": 0.116,
+          "reach": 0.072,
+          "canvas": [
+            96,
+            96
+          ],
+          "reasons": [
+            "weak strike: peak 0.116 — eyeball it",
+            "no strike, just a lean: nothing reaches past 0.07 of the body"
+          ],
+          "sub": "f4b92347-bb66-4a97-a5bd-afa7913c3d98",
+          "group": "09bbcdc5-a057-4216-b475-7fcd02d60c80",
+          "takes": 1,
+          "version": 3,
+          "mirrored": false,
+          "generated_at": "2026-09-09T22:49:44+00:00",
+          "action": "Tentacle Slam - Raises two front tentacles high, then brings them down once, then returns to idle stance"
+        },
+        "east": {
+          "status": "fail",
+          "step_mean": 0.0582,
+          "step_max": 0.0695,
+          "drift": 1.46,
+          "loop": 0.0,
+          "loop_ratio": 0.0,
+          "travel": 0.75,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": 0.0,
+          "peak": 0.0885,
+          "reach": 0.084,
+          "canvas": [
+            96,
+            96
+          ],
+          "reasons": [
+            "motion 0.058 outside the calm band 0.08–0.9 — eyeball it",
+            "weak strike: peak 0.089 — eyeball it",
+            "no strike, just a lean: nothing reaches past 0.08 of the body"
+          ],
+          "sub": "7180d95e-1042-47dd-a046-fbe7ebf5e2e2",
+          "group": "550518cd-61b3-4dec-9ddd-77d11691b434",
+          "takes": 1,
+          "version": 3,
+          "mirrored": false,
+          "generated_at": "2026-09-09T22:49:45+00:00",
+          "action": "Tentacle Slam - Raises two front tentacles high, then brings them down once, then returns to idle stance"
+        },
+        "north-east": {
+          "status": "fail",
+          "step_mean": 0.0516,
+          "step_max": 0.0742,
+          "drift": 1.39,
+          "loop": 0.0,
+          "loop_ratio": 0.0,
+          "travel": 1.44,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": 0.0,
+          "peak": 0.0685,
+          "reach": 0.076,
+          "canvas": [
+            96,
+            96
+          ],
+          "reasons": [
+            "motion 0.052 outside the calm band 0.08–0.9 — eyeball it",
+            "no strike: peak 0.069 of the silhouette away from the base",
+            "no strike, just a lean: nothing reaches past 0.08 of the body"
+          ],
+          "sub": "3b0a9fa7-c718-4f4e-b179-85be2ce850a0",
+          "group": "a351c76c-67bb-480d-9ea3-a14030eab0f5",
+          "takes": 1,
+          "version": 3,
+          "mirrored": false,
+          "generated_at": "2026-09-09T22:49:45+00:00",
+          "action": "Tentacle Slam - Raises two front tentacles high, then brings them down once, then returns to idle stance"
+        },
+        "north": {
+          "status": "warn",
+          "step_mean": 0.1417,
+          "step_max": 0.1536,
+          "drift": 4.02,
+          "loop": 0.0,
+          "loop_ratio": 0.0,
+          "travel": 0.29,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": 0.0,
+          "peak": 0.2023,
+          "reach": 0.295,
+          "canvas": [
+            96,
+            96
+          ],
+          "reasons": [
+            "shallow strike: reach 0.29 — eyeball it"
+          ],
+          "sub": "cce2dfd7-b462-4e27-bf4e-8ca8644b1c7a",
+          "group": "f8e3ec9a-bfab-4153-a546-1c070ef7f456",
+          "takes": 1,
+          "version": 3,
+          "mirrored": false,
+          "generated_at": "2026-09-09T22:49:46+00:00",
+          "action": "Tentacle Slam - Raises two front tentacles high, then brings them down once, then returns to idle stance"
+        },
+        "south-west": {
+          "status": "warn",
+          "step_mean": 0.0802,
+          "step_max": 0.1067,
+          "drift": 1.18,
+          "loop": 0.0002,
+          "loop_ratio": 0.0,
+          "travel": 1.04,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": 0.0,
+          "peak": 0.116,
+          "canvas": [
+            96,
+            96
+          ],
+          "reasons": [
+            "weak strike: peak 0.116 — eyeball it"
+          ],
+          "sub": "f4b92347-bb66-4a97-a5bd-afa7913c3d98",
+          "group": "09bbcdc5-a057-4216-b475-7fcd02d60c80",
+          "takes": 1,
+          "version": 3,
+          "mirrored": true,
+          "generated_at": "2026-09-09T22:49:44+00:00",
+          "action": "Tentacle Slam - Raises two front tentacles high, then brings them down once, then returns to idle stance",
+          "source": "south-east"
+        },
+        "west": {
+          "status": "warn",
+          "step_mean": 0.0582,
+          "step_max": 0.0695,
+          "drift": 1.46,
+          "loop": 0.0,
+          "loop_ratio": 0.0,
+          "travel": 0.75,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": 0.0,
+          "peak": 0.0885,
+          "canvas": [
+            96,
+            96
+          ],
+          "reasons": [
+            "motion 0.058 outside the calm band 0.06–0.9 — eyeball it",
+            "weak strike: peak 0.089 — eyeball it"
+          ],
+          "sub": "7180d95e-1042-47dd-a046-fbe7ebf5e2e2",
+          "group": "550518cd-61b3-4dec-9ddd-77d11691b434",
+          "takes": 1,
+          "version": 3,
+          "mirrored": true,
+          "generated_at": "2026-09-09T22:49:45+00:00",
+          "action": "Tentacle Slam - Raises two front tentacles high, then brings them down once, then returns to idle stance",
+          "source": "east"
+        },
+        "north-west": {
+          "status": "warn",
+          "step_mean": 0.0516,
+          "step_max": 0.0742,
+          "drift": 1.39,
+          "loop": 0.0,
+          "loop_ratio": 0.0,
+          "travel": 1.44,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": 0.0,
+          "peak": 0.0685,
+          "canvas": [
+            96,
+            96
+          ],
+          "reasons": [
+            "motion 0.052 outside the calm band 0.06–0.9 — eyeball it",
+            "weak strike: peak 0.069 — eyeball it"
+          ],
+          "sub": "3b0a9fa7-c718-4f4e-b179-85be2ce850a0",
+          "group": "a351c76c-67bb-480d-9ea3-a14030eab0f5",
+          "takes": 1,
+          "version": 3,
+          "mirrored": true,
+          "generated_at": "2026-09-09T22:49:45+00:00",
+          "action": "Tentacle Slam - Raises two front tentacles high, then brings them down once, then returns to idle stance",
+          "source": "north-east"
+        }
+      },
+      "action": "Tentacle Slam - Raises two front tentacles high, then brings them down once, then returns to idle stance",
+      "frame_paths": {
+        "south": [
+          "octopus/animations/attack/south/00.webp",
+          "octopus/animations/attack/south/01.webp",
+          "octopus/animations/attack/south/02.webp",
+          "octopus/animations/attack/south/03.webp",
+          "octopus/animations/attack/south/04.webp"
+        ],
+        "south-east": [
+          "octopus/animations/attack/south-east/00.webp",
+          "octopus/animations/attack/south-east/01.webp",
+          "octopus/animations/attack/south-east/02.webp",
+          "octopus/animations/attack/south-east/03.webp",
+          "octopus/animations/attack/south-east/04.webp"
+        ],
+        "east": [
+          "octopus/animations/attack/east/00.webp",
+          "octopus/animations/attack/east/01.webp",
+          "octopus/animations/attack/east/02.webp",
+          "octopus/animations/attack/east/03.webp",
+          "octopus/animations/attack/east/04.webp"
+        ],
+        "north-east": [
+          "octopus/animations/attack/north-east/00.webp",
+          "octopus/animations/attack/north-east/01.webp",
+          "octopus/animations/attack/north-east/02.webp",
+          "octopus/animations/attack/north-east/03.webp",
+          "octopus/animations/attack/north-east/04.webp"
+        ],
+        "north": [
+          "octopus/animations/attack/north/00.webp",
+          "octopus/animations/attack/north/01.webp",
+          "octopus/animations/attack/north/02.webp",
+          "octopus/animations/attack/north/03.webp",
+          "octopus/animations/attack/north/04.webp"
+        ],
+        "south-west": [
+          "octopus/animations/attack/south-west/00.webp",
+          "octopus/animations/attack/south-west/01.webp",
+          "octopus/animations/attack/south-west/02.webp",
+          "octopus/animations/attack/south-west/03.webp",
+          "octopus/animations/attack/south-west/04.webp"
+        ],
+        "west": [
+          "octopus/animations/attack/west/00.webp",
+          "octopus/animations/attack/west/01.webp",
+          "octopus/animations/attack/west/02.webp",
+          "octopus/animations/attack/west/03.webp",
+          "octopus/animations/attack/west/04.webp"
+        ],
+        "north-west": [
+          "octopus/animations/attack/north-west/00.webp",
+          "octopus/animations/attack/north-west/01.webp",
+          "octopus/animations/attack/north-west/02.webp",
+          "octopus/animations/attack/north-west/03.webp",
+          "octopus/animations/attack/north-west/04.webp"
+        ]
+      },
+      "strips": {
+        "south": "octopus/animations/attack__south.webp",
+        "south-east": "octopus/animations/attack__south-east.webp",
+        "east": "octopus/animations/attack__east.webp",
+        "north-east": "octopus/animations/attack__north-east.webp",
+        "north": "octopus/animations/attack__north.webp",
+        "south-west": "octopus/animations/attack__south-west.webp",
+        "west": "octopus/animations/attack__west.webp",
+        "north-west": "octopus/animations/attack__north-west.webp"
+      }
+    },
+    "attack_v3try": {
+      "directions": {
+        "south": {
+          "status": "warn",
+          "step_mean": 0.1575,
+          "step_max": 0.2137,
+          "drift": 1.72,
+          "loop": 0.0559,
+          "loop_ratio": 0.35,
+          "travel": 0.38,
+          "pin": 1.0,
+          "pad": 3,
+          "flash": 0.445,
+          "peak": 0.244,
+          "reach": 0.445,
+          "canvas": [
+            102,
+            102
+          ],
+          "reasons": [
+            "some bright effect pixels (0.45) — eyeball it",
+            "canvas grown by 3 px a side to hold the motion"
+          ],
+          "sub": "d25cd8e6-05a3-4d07-bf6c-df5a399d21cc",
+          "group": "18360b16-420f-454c-872d-5e7aa01fce93",
+          "takes": 1,
+          "version": 8,
+          "mirrored": false,
+          "generated_at": "2026-09-10T22:44:00+00:00",
+          "action": "Tentacle Storm - The octopus rears its whole mantle up and hurls every tentacle forward at once, water bursting out, an extremely violent attack, huge exaggerated motion, the limb thrown far out",
+          "tries": 6,
+          "rolls": 6,
+          "intensity": 1,
+          "frames": 5,
+          "rung": 5
+        },
+        "south-east": {
+          "status": "warn",
+          "step_mean": 0.1052,
+          "step_max": 0.1524,
+          "drift": 2.63,
+          "loop": 0.1087,
+          "loop_ratio": 1.03,
+          "travel": 1.48,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": 0.221,
+          "peak": 0.1311,
+          "reach": 0.221,
+          "canvas": [
+            96,
+            96
+          ],
+          "reasons": [
+            "weak strike: peak 0.131 — eyeball it",
+            "shallow strike: reach 0.22 — eyeball it"
+          ],
+          "sub": "56ad2a00-777a-40e2-aa6e-f8c7cf605809",
+          "group": "d3f0b292-9c69-486b-8e3d-ecda731aa849",
+          "takes": 1,
+          "version": 5,
+          "mirrored": false,
+          "generated_at": "2026-09-10T21:46:34+00:00",
+          "action": "Lunge Attack - Throws its whole body forward in one fast lunge, white swoosh lines trailing behind it, a big aggressive swing",
+          "tries": 3,
+          "rolls": 3,
+          "intensity": 1,
+          "frames": 5,
+          "rung": 2
+        },
+        "east": {
+          "status": "warn",
+          "step_mean": 0.0799,
+          "step_max": 0.1316,
+          "drift": 1.52,
+          "loop": 0.1706,
+          "loop_ratio": 2.14,
+          "travel": 1.48,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": 0.235,
+          "peak": 0.1706,
+          "reach": 0.235,
+          "canvas": [
+            96,
+            96
+          ],
+          "reasons": [
+            "motion 0.080 outside the calm band 0.08–0.9 — eyeball it",
+            "shallow strike: reach 0.23 — eyeball it"
+          ],
+          "sub": "ab617592-afde-4824-88d5-1ec1387a61b2",
+          "group": "759427d5-3b63-4478-8445-744bb5b4e4cc",
+          "takes": 1,
+          "version": 6,
+          "mirrored": false,
+          "generated_at": "2026-09-10T22:10:06+00:00",
+          "action": "Tentacle Storm - The octopus rears its whole mantle up and hurls every tentacle forward at once, water bursting out",
+          "tries": 4,
+          "rolls": 4,
+          "intensity": 1,
+          "frames": 5,
+          "rung": 3
+        },
+        "north-east": {
+          "status": "warn",
+          "step_mean": 0.1277,
+          "step_max": 0.1905,
+          "drift": 2.79,
+          "loop": 0.0703,
+          "loop_ratio": 0.55,
+          "travel": 3.04,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": 0.168,
+          "peak": 0.1649,
+          "reach": 0.168,
+          "canvas": [
+            96,
+            96
+          ],
+          "reasons": [
+            "shallow strike: reach 0.17 — eyeball it"
+          ],
+          "sub": "89f342cd-d26b-4649-91b6-6f8431bffe2b",
+          "group": "bc92831c-2e3f-45a1-ada3-fe1dc80267e0",
+          "takes": 1,
+          "version": 5,
+          "mirrored": false,
+          "generated_at": "2026-09-10T21:46:35+00:00",
+          "action": "Lunge Attack - Throws its whole body forward in one fast lunge, white swoosh lines trailing behind it, a big aggressive swing",
+          "tries": 3,
+          "rolls": 3,
+          "intensity": 1,
+          "frames": 5,
+          "rung": 2
+        },
+        "north": {
+          "status": "warn",
+          "step_mean": 0.0791,
+          "step_max": 0.0927,
+          "drift": 2.83,
+          "loop": 0.1032,
+          "loop_ratio": 1.3,
+          "travel": 0.39,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": 0.295,
+          "peak": 0.1142,
+          "reach": 0.295,
+          "canvas": [
+            96,
+            96
+          ],
+          "reasons": [
+            "motion 0.079 outside the calm band 0.08–0.9 — eyeball it",
+            "weak strike: peak 0.114 — eyeball it",
+            "shallow strike: reach 0.30 — eyeball it"
+          ],
+          "sub": "21150047-13f0-43ec-9b09-39ace70b5c35",
+          "group": "bc10bd83-44a0-4215-8fc9-236b93abebc8",
+          "takes": 1,
+          "version": 6,
+          "mirrored": false,
+          "generated_at": "2026-09-10T22:10:06+00:00",
+          "action": "Tentacle Storm - The octopus rears its whole mantle up and hurls every tentacle forward at once, water bursting out",
+          "tries": 4,
+          "rolls": 4,
+          "intensity": 1,
+          "frames": 5,
+          "rung": 3
+        },
+        "south-west": {
+          "status": "warn",
+          "step_mean": 0.1052,
+          "step_max": 0.1524,
+          "drift": 2.63,
+          "loop": 0.1087,
+          "loop_ratio": 1.03,
+          "travel": 1.48,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": 0.221,
+          "peak": 0.1311,
+          "reach": 0.221,
+          "canvas": [
+            96,
+            96
+          ],
+          "reasons": [
+            "weak strike: peak 0.131 — eyeball it",
+            "shallow strike: reach 0.22 — eyeball it"
+          ],
+          "sub": "56ad2a00-777a-40e2-aa6e-f8c7cf605809",
+          "group": "d3f0b292-9c69-486b-8e3d-ecda731aa849",
+          "takes": 1,
+          "version": 5,
+          "mirrored": true,
+          "generated_at": "2026-09-10T21:46:34+00:00",
+          "action": "Lunge Attack - Throws its whole body forward in one fast lunge, white swoosh lines trailing behind it, a big aggressive swing",
+          "tries": 3,
+          "rolls": 3,
+          "intensity": 1,
+          "frames": 5,
+          "rung": 2,
+          "source": "south-east"
+        },
+        "north-west": {
+          "status": "warn",
+          "step_mean": 0.1277,
+          "step_max": 0.1905,
+          "drift": 2.79,
+          "loop": 0.0703,
+          "loop_ratio": 0.55,
+          "travel": 3.04,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": 0.168,
+          "peak": 0.1649,
+          "reach": 0.168,
+          "canvas": [
+            96,
+            96
+          ],
+          "reasons": [
+            "shallow strike: reach 0.17 — eyeball it"
+          ],
+          "sub": "89f342cd-d26b-4649-91b6-6f8431bffe2b",
+          "group": "bc92831c-2e3f-45a1-ada3-fe1dc80267e0",
+          "takes": 1,
+          "version": 5,
+          "mirrored": true,
+          "generated_at": "2026-09-10T21:46:35+00:00",
+          "action": "Lunge Attack - Throws its whole body forward in one fast lunge, white swoosh lines trailing behind it, a big aggressive swing",
+          "tries": 3,
+          "rolls": 3,
+          "intensity": 1,
+          "frames": 5,
+          "rung": 2,
+          "source": "north-east"
+        },
+        "west": {
+          "status": "warn",
+          "step_mean": 0.0799,
+          "step_max": 0.1316,
+          "drift": 1.52,
+          "loop": 0.1706,
+          "loop_ratio": 2.14,
+          "travel": 1.48,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": 0.235,
+          "peak": 0.1706,
+          "reach": 0.235,
+          "canvas": [
+            96,
+            96
+          ],
+          "reasons": [
+            "motion 0.080 outside the calm band 0.08–0.9 — eyeball it",
+            "shallow strike: reach 0.23 — eyeball it"
+          ],
+          "sub": "ab617592-afde-4824-88d5-1ec1387a61b2",
+          "group": "759427d5-3b63-4478-8445-744bb5b4e4cc",
+          "takes": 1,
+          "version": 6,
+          "mirrored": true,
+          "generated_at": "2026-09-10T22:10:06+00:00",
+          "action": "Tentacle Storm - The octopus rears its whole mantle up and hurls every tentacle forward at once, water bursting out",
+          "tries": 4,
+          "rolls": 4,
+          "intensity": 1,
+          "frames": 5,
+          "rung": 3,
+          "source": "east"
+        }
+      },
+      "action": "Tentacle Lash - Rears up high and whips two tentacles forward",
+      "frame_paths": {
+        "south": [
+          "octopus/animations/attack_v3try/south/00.webp",
+          "octopus/animations/attack_v3try/south/01.webp",
+          "octopus/animations/attack_v3try/south/02.webp",
+          "octopus/animations/attack_v3try/south/03.webp",
+          "octopus/animations/attack_v3try/south/04.webp"
+        ],
+        "south-east": [
+          "octopus/animations/attack_v3try/south-east/00.webp",
+          "octopus/animations/attack_v3try/south-east/01.webp",
+          "octopus/animations/attack_v3try/south-east/02.webp",
+          "octopus/animations/attack_v3try/south-east/03.webp",
+          "octopus/animations/attack_v3try/south-east/04.webp"
+        ],
+        "east": [
+          "octopus/animations/attack_v3try/east/00.webp",
+          "octopus/animations/attack_v3try/east/01.webp",
+          "octopus/animations/attack_v3try/east/02.webp",
+          "octopus/animations/attack_v3try/east/03.webp",
+          "octopus/animations/attack_v3try/east/04.webp"
+        ],
+        "north-east": [
+          "octopus/animations/attack_v3try/north-east/00.webp",
+          "octopus/animations/attack_v3try/north-east/01.webp",
+          "octopus/animations/attack_v3try/north-east/02.webp",
+          "octopus/animations/attack_v3try/north-east/03.webp",
+          "octopus/animations/attack_v3try/north-east/04.webp"
+        ],
+        "north": [
+          "octopus/animations/attack_v3try/north/00.webp",
+          "octopus/animations/attack_v3try/north/01.webp",
+          "octopus/animations/attack_v3try/north/02.webp",
+          "octopus/animations/attack_v3try/north/03.webp",
+          "octopus/animations/attack_v3try/north/04.webp"
+        ],
+        "south-west": [
+          "octopus/animations/attack_v3try/south-west/00.webp",
+          "octopus/animations/attack_v3try/south-west/01.webp",
+          "octopus/animations/attack_v3try/south-west/02.webp",
+          "octopus/animations/attack_v3try/south-west/03.webp",
+          "octopus/animations/attack_v3try/south-west/04.webp"
+        ],
+        "north-west": [
+          "octopus/animations/attack_v3try/north-west/00.webp",
+          "octopus/animations/attack_v3try/north-west/01.webp",
+          "octopus/animations/attack_v3try/north-west/02.webp",
+          "octopus/animations/attack_v3try/north-west/03.webp",
+          "octopus/animations/attack_v3try/north-west/04.webp"
+        ],
+        "west": [
+          "octopus/animations/attack_v3try/west/00.webp",
+          "octopus/animations/attack_v3try/west/01.webp",
+          "octopus/animations/attack_v3try/west/02.webp",
+          "octopus/animations/attack_v3try/west/03.webp",
+          "octopus/animations/attack_v3try/west/04.webp"
+        ]
+      },
+      "strips": {
+        "south": "octopus/animations/attack_v3try__south.webp",
+        "south-east": "octopus/animations/attack_v3try__south-east.webp",
+        "east": "octopus/animations/attack_v3try__east.webp",
+        "north-east": "octopus/animations/attack_v3try__north-east.webp",
+        "north": "octopus/animations/attack_v3try__north.webp",
+        "south-west": "octopus/animations/attack_v3try__south-west.webp",
+        "north-west": "octopus/animations/attack_v3try__north-west.webp",
+        "west": "octopus/animations/attack_v3try__west.webp"
+      },
+      "intensity": 1
+    },
+    "attack_try": {
+      "directions": {
+        "south": {
+          "status": "warn",
+          "step_mean": 0.1396,
+          "step_max": 0.1677,
+          "drift": 2.27,
+          "loop": 0.0414,
+          "loop_ratio": 0.3,
+          "travel": 0.6,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": 0.0,
+          "peak": 0.1397,
+          "reach": 0.163,
+          "canvas": [
+            96,
+            96
+          ],
+          "reasons": [
+            "weak strike: peak 0.140 — eyeball it",
+            "shallow strike: reach 0.16 — eyeball it"
+          ],
+          "sub": "66f770a3-ad29-4a3b-ad62-7c8c90597303",
+          "group": "efc1da40-3f28-4553-b32b-d9b04fe3a7b1",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "action": "Tentacle Lash - Rears up high and whips two tentacles forward",
+          "intensity": 0,
+          "rolls": 1,
+          "frames": 4,
+          "rung": 0,
+          "tries": 1,
+          "generated_at": "2026-09-11T15:53:56+00:00"
+        },
+        "south-east": {
+          "status": "warn",
+          "step_mean": 0.0994,
+          "step_max": 0.1223,
+          "drift": 2.48,
+          "loop": 0.0282,
+          "loop_ratio": 0.28,
+          "travel": 2.35,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": 0.001,
+          "peak": 0.0866,
+          "reach": 0.313,
+          "canvas": [
+            96,
+            96
+          ],
+          "reasons": [
+            "weak strike: peak 0.087 — eyeball it"
+          ],
+          "sub": "54162dfd-97ee-4d6a-81f1-8347b065455a",
+          "group": "efc1da40-3f28-4553-b32b-d9b04fe3a7b1",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "action": "Tentacle Lash - Rears up high and whips two tentacles forward",
+          "intensity": 0,
+          "rolls": 1,
+          "frames": 4,
+          "rung": 0,
+          "tries": 1,
+          "generated_at": "2026-09-11T15:53:56+00:00"
+        },
+        "east": {
+          "status": "warn",
+          "step_mean": 0.1023,
+          "step_max": 0.1218,
+          "drift": 2.63,
+          "loop": 0.017,
+          "loop_ratio": 0.17,
+          "travel": 2.63,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": 0.001,
+          "peak": 0.0968,
+          "reach": 0.373,
+          "canvas": [
+            96,
+            96
+          ],
+          "reasons": [
+            "weak strike: peak 0.097 — eyeball it"
+          ],
+          "sub": "fb2f2d50-1acd-43e6-a6a9-309df11d2662",
+          "group": "efc1da40-3f28-4553-b32b-d9b04fe3a7b1",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "action": "Tentacle Lash - Rears up high and whips two tentacles forward",
+          "intensity": 0,
+          "rolls": 1,
+          "frames": 4,
+          "rung": 0,
+          "tries": 1,
+          "generated_at": "2026-09-11T15:53:57+00:00"
+        },
+        "north-east": {
+          "status": "pass",
+          "step_mean": 0.2833,
+          "step_max": 0.3152,
+          "drift": 4.23,
+          "loop": 0.1539,
+          "loop_ratio": 0.54,
+          "travel": 4.72,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": -0.001,
+          "peak": 0.241,
+          "reach": 0.418,
+          "canvas": [
+            96,
+            96
+          ],
+          "reasons": [],
+          "sub": "088aa38f-5061-476e-95fd-9863222a1dfc",
+          "group": "efc1da40-3f28-4553-b32b-d9b04fe3a7b1",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "action": "Tentacle Lash - Rears up high and whips two tentacles forward",
+          "intensity": 0,
+          "rolls": 1,
+          "frames": 4,
+          "rung": 0,
+          "tries": 1,
+          "generated_at": "2026-09-11T15:53:57+00:00"
+        },
+        "north": {
+          "status": "warn",
+          "step_mean": 0.1679,
+          "step_max": 0.205,
+          "drift": 4.35,
+          "loop": 0.0138,
+          "loop_ratio": 0.08,
+          "travel": 0.67,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": 0.0,
+          "peak": 0.1724,
+          "reach": 0.269,
+          "canvas": [
+            96,
+            96
+          ],
+          "reasons": [
+            "shallow strike: reach 0.27 — eyeball it"
+          ],
+          "sub": "21cb30ac-90be-4b71-92fd-b8774e87b335",
+          "group": "efc1da40-3f28-4553-b32b-d9b04fe3a7b1",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "action": "Tentacle Lash - Rears up high and whips two tentacles forward",
+          "intensity": 0,
+          "rolls": 1,
+          "frames": 4,
+          "rung": 0,
+          "tries": 1,
+          "generated_at": "2026-09-11T15:53:58+00:00"
+        },
+        "south-west": {
+          "status": "warn",
+          "step_mean": 0.0994,
+          "step_max": 0.1223,
+          "drift": 2.48,
+          "loop": 0.0282,
+          "loop_ratio": 0.28,
+          "travel": 2.35,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": 0.001,
+          "peak": 0.0866,
+          "reach": 0.313,
+          "canvas": [
+            96,
+            96
+          ],
+          "reasons": [
+            "weak strike: peak 0.087 — eyeball it"
+          ],
+          "sub": "54162dfd-97ee-4d6a-81f1-8347b065455a",
+          "group": "efc1da40-3f28-4553-b32b-d9b04fe3a7b1",
+          "takes": 1,
+          "version": 1,
+          "mirrored": true,
+          "action": "Tentacle Lash - Rears up high and whips two tentacles forward",
+          "intensity": 0,
+          "rolls": 1,
+          "frames": 4,
+          "rung": 0,
+          "tries": 1,
+          "generated_at": "2026-09-11T15:53:56+00:00",
+          "source": "south-east"
+        },
+        "west": {
+          "status": "warn",
+          "step_mean": 0.1023,
+          "step_max": 0.1218,
+          "drift": 2.63,
+          "loop": 0.017,
+          "loop_ratio": 0.17,
+          "travel": 2.63,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": 0.001,
+          "peak": 0.0968,
+          "reach": 0.373,
+          "canvas": [
+            96,
+            96
+          ],
+          "reasons": [
+            "weak strike: peak 0.097 — eyeball it"
+          ],
+          "sub": "fb2f2d50-1acd-43e6-a6a9-309df11d2662",
+          "group": "efc1da40-3f28-4553-b32b-d9b04fe3a7b1",
+          "takes": 1,
+          "version": 1,
+          "mirrored": true,
+          "action": "Tentacle Lash - Rears up high and whips two tentacles forward",
+          "intensity": 0,
+          "rolls": 1,
+          "frames": 4,
+          "rung": 0,
+          "tries": 1,
+          "generated_at": "2026-09-11T15:53:57+00:00",
+          "source": "east"
+        },
+        "north-west": {
+          "status": "pass",
+          "step_mean": 0.2833,
+          "step_max": 0.3152,
+          "drift": 4.23,
+          "loop": 0.1539,
+          "loop_ratio": 0.54,
+          "travel": 4.72,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": -0.001,
+          "peak": 0.241,
+          "reach": 0.418,
+          "canvas": [
+            96,
+            96
+          ],
+          "reasons": [],
+          "sub": "088aa38f-5061-476e-95fd-9863222a1dfc",
+          "group": "efc1da40-3f28-4553-b32b-d9b04fe3a7b1",
+          "takes": 1,
+          "version": 1,
+          "mirrored": true,
+          "action": "Tentacle Lash - Rears up high and whips two tentacles forward",
+          "intensity": 0,
+          "rolls": 1,
+          "frames": 4,
+          "rung": 0,
+          "tries": 1,
+          "generated_at": "2026-09-11T15:53:57+00:00",
+          "source": "north-east"
+        }
+      },
+      "action": "Tentacle Lash - Rears up high and whips two tentacles forward",
+      "frame_paths": {
+        "south": [
+          "octopus/animations/attack_try/south/00.webp",
+          "octopus/animations/attack_try/south/01.webp",
+          "octopus/animations/attack_try/south/02.webp",
+          "octopus/animations/attack_try/south/03.webp"
+        ],
+        "south-east": [
+          "octopus/animations/attack_try/south-east/00.webp",
+          "octopus/animations/attack_try/south-east/01.webp",
+          "octopus/animations/attack_try/south-east/02.webp",
+          "octopus/animations/attack_try/south-east/03.webp"
+        ],
+        "east": [
+          "octopus/animations/attack_try/east/00.webp",
+          "octopus/animations/attack_try/east/01.webp",
+          "octopus/animations/attack_try/east/02.webp",
+          "octopus/animations/attack_try/east/03.webp"
+        ],
+        "north-east": [
+          "octopus/animations/attack_try/north-east/00.webp",
+          "octopus/animations/attack_try/north-east/01.webp",
+          "octopus/animations/attack_try/north-east/02.webp",
+          "octopus/animations/attack_try/north-east/03.webp"
+        ],
+        "north": [
+          "octopus/animations/attack_try/north/00.webp",
+          "octopus/animations/attack_try/north/01.webp",
+          "octopus/animations/attack_try/north/02.webp",
+          "octopus/animations/attack_try/north/03.webp"
+        ],
+        "south-west": [
+          "octopus/animations/attack_try/south-west/00.webp",
+          "octopus/animations/attack_try/south-west/01.webp",
+          "octopus/animations/attack_try/south-west/02.webp",
+          "octopus/animations/attack_try/south-west/03.webp"
+        ],
+        "west": [
+          "octopus/animations/attack_try/west/00.webp",
+          "octopus/animations/attack_try/west/01.webp",
+          "octopus/animations/attack_try/west/02.webp",
+          "octopus/animations/attack_try/west/03.webp"
+        ],
+        "north-west": [
+          "octopus/animations/attack_try/north-west/00.webp",
+          "octopus/animations/attack_try/north-west/01.webp",
+          "octopus/animations/attack_try/north-west/02.webp",
+          "octopus/animations/attack_try/north-west/03.webp"
+        ]
+      },
+      "strips": {
+        "south": "octopus/animations/attack_try__south.webp",
+        "south-east": "octopus/animations/attack_try__south-east.webp",
+        "east": "octopus/animations/attack_try__east.webp",
+        "north-east": "octopus/animations/attack_try__north-east.webp",
+        "north": "octopus/animations/attack_try__north.webp",
+        "south-west": "octopus/animations/attack_try__south-west.webp",
+        "west": "octopus/animations/attack_try__west.webp",
+        "north-west": "octopus/animations/attack_try__north-west.webp"
+      }
+    }
   }
- },
- "notes": [
-  "agent eyeball: the ink cloud under the body is baked into every facing and reads like a ground shadow in play — the game draws its own. Re-roll without the ink if you want it."
- ],
- "approved_at": "2026-09-09T19:59:22+00:00",
- "animations": {
-  "idle": {
-   "directions": {
-    "south": {
-     "status": "pass",
-     "step_mean": 0.0441,
-     "step_max": 0.0511,
-     "drift": 1.08,
-     "loop": 0.0009,
-     "pin": 1.0,
-     "reasons": [],
-     "sub": "6a8128af-f51d-4564-bb56-44686b44a4fe",
-     "takes": 1,
-     "version": 1,
-     "mirrored": false,
-     "generated_at": "2026-09-09T20:16:20+00:00",
-     "cut": 0
-    },
-    "south-east": {
-     "status": "pass",
-     "step_mean": 0.0435,
-     "step_max": 0.0469,
-     "drift": 0.9,
-     "loop": 0.0002,
-     "pin": 1.0,
-     "reasons": [],
-     "sub": "9114b7b9-77f9-4898-b447-9f85a9967a07",
-     "takes": 1,
-     "version": 1,
-     "mirrored": false,
-     "generated_at": "2026-09-09T20:16:21+00:00",
-     "cut": 0
-    },
-    "east": {
-     "status": "pass",
-     "step_mean": 0.0213,
-     "step_max": 0.0301,
-     "drift": 0.74,
-     "loop": 0.0,
-     "pin": 1.0,
-     "reasons": [],
-     "sub": "d9b5a0bd-b5d4-48fb-9aba-e7806804acde",
-     "takes": 1,
-     "version": 1,
-     "mirrored": false,
-     "generated_at": "2026-09-09T20:16:22+00:00",
-     "cut": 0
-    },
-    "north-east": {
-     "status": "pass",
-     "step_mean": 0.0255,
-     "step_max": 0.033,
-     "drift": 1.29,
-     "loop": 0.0,
-     "pin": 1.0,
-     "reasons": [],
-     "sub": "95da925e-4a44-4fd4-8473-a7a74ff44476",
-     "takes": 1,
-     "version": 1,
-     "mirrored": false,
-     "generated_at": "2026-09-09T20:16:22+00:00",
-     "cut": 0
-    },
-    "north": {
-     "status": "pass",
-     "step_mean": 0.0541,
-     "step_max": 0.078,
-     "drift": 2.38,
-     "loop": 0.0,
-     "pin": 1.0,
-     "reasons": [],
-     "sub": "5651b41a-9a20-4949-8e74-21ec3c9e7b22",
-     "takes": 1,
-     "version": 1,
-     "mirrored": false,
-     "generated_at": "2026-09-09T20:16:23+00:00",
-     "cut": 0
-    },
-    "south-west": {
-     "status": "pass",
-     "step_mean": 0.0435,
-     "step_max": 0.0469,
-     "drift": 0.9,
-     "loop": 0.0002,
-     "pin": 1.0,
-     "reasons": [],
-     "sub": "9114b7b9-77f9-4898-b447-9f85a9967a07",
-     "takes": 1,
-     "version": 1,
-     "mirrored": true,
-     "generated_at": "2026-09-09T20:16:21+00:00",
-     "cut": 0,
-     "source": "south-east"
-    },
-    "west": {
-     "status": "pass",
-     "step_mean": 0.0213,
-     "step_max": 0.0301,
-     "drift": 0.74,
-     "loop": 0.0,
-     "pin": 1.0,
-     "reasons": [],
-     "sub": "d9b5a0bd-b5d4-48fb-9aba-e7806804acde",
-     "takes": 1,
-     "version": 1,
-     "mirrored": true,
-     "generated_at": "2026-09-09T20:16:22+00:00",
-     "cut": 0,
-     "source": "east"
-    },
-    "north-west": {
-     "status": "pass",
-     "step_mean": 0.0255,
-     "step_max": 0.033,
-     "drift": 1.29,
-     "loop": 0.0,
-     "pin": 1.0,
-     "reasons": [],
-     "sub": "95da925e-4a44-4fd4-8473-a7a74ff44476",
-     "takes": 1,
-     "version": 1,
-     "mirrored": true,
-     "generated_at": "2026-09-09T20:16:22+00:00",
-     "cut": 0,
-     "source": "north-east"
-    }
-   },
-   "action": "Calm still idle, breathing very slowly and subtly, chest and shoulders rise and fall a little, feet planted, no other movement, ends in the same neutral pose it started in",
-   "frame_paths": {
-    "south": [
-     "octopus/animations/idle/south/00.webp",
-     "octopus/animations/idle/south/01.webp",
-     "octopus/animations/idle/south/02.webp",
-     "octopus/animations/idle/south/03.webp",
-     "octopus/animations/idle/south/04.webp"
-    ],
-    "south-east": [
-     "octopus/animations/idle/south-east/00.webp",
-     "octopus/animations/idle/south-east/01.webp",
-     "octopus/animations/idle/south-east/02.webp",
-     "octopus/animations/idle/south-east/03.webp",
-     "octopus/animations/idle/south-east/04.webp"
-    ],
-    "east": [
-     "octopus/animations/idle/east/00.webp",
-     "octopus/animations/idle/east/01.webp",
-     "octopus/animations/idle/east/02.webp",
-     "octopus/animations/idle/east/03.webp",
-     "octopus/animations/idle/east/04.webp"
-    ],
-    "north-east": [
-     "octopus/animations/idle/north-east/00.webp",
-     "octopus/animations/idle/north-east/01.webp",
-     "octopus/animations/idle/north-east/02.webp",
-     "octopus/animations/idle/north-east/03.webp",
-     "octopus/animations/idle/north-east/04.webp"
-    ],
-    "north": [
-     "octopus/animations/idle/north/00.webp",
-     "octopus/animations/idle/north/01.webp",
-     "octopus/animations/idle/north/02.webp",
-     "octopus/animations/idle/north/03.webp",
-     "octopus/animations/idle/north/04.webp"
-    ],
-    "south-west": [
-     "octopus/animations/idle/south-west/00.webp",
-     "octopus/animations/idle/south-west/01.webp",
-     "octopus/animations/idle/south-west/02.webp",
-     "octopus/animations/idle/south-west/03.webp",
-     "octopus/animations/idle/south-west/04.webp"
-    ],
-    "west": [
-     "octopus/animations/idle/west/00.webp",
-     "octopus/animations/idle/west/01.webp",
-     "octopus/animations/idle/west/02.webp",
-     "octopus/animations/idle/west/03.webp",
-     "octopus/animations/idle/west/04.webp"
-    ],
-    "north-west": [
-     "octopus/animations/idle/north-west/00.webp",
-     "octopus/animations/idle/north-west/01.webp",
-     "octopus/animations/idle/north-west/02.webp",
-     "octopus/animations/idle/north-west/03.webp",
-     "octopus/animations/idle/north-west/04.webp"
-    ]
-   },
-   "strips": {
-    "south": "octopus/animations/idle__south.webp",
-    "south-east": "octopus/animations/idle__south-east.webp",
-    "east": "octopus/animations/idle__east.webp",
-    "north-east": "octopus/animations/idle__north-east.webp",
-    "north": "octopus/animations/idle__north.webp",
-    "south-west": "octopus/animations/idle__south-west.webp",
-    "west": "octopus/animations/idle__west.webp",
-    "north-west": "octopus/animations/idle__north-west.webp"
-   }
-  },
-  "walk": {
-   "directions": {
-    "south": {
-     "status": "pass",
-     "step_mean": 0.046,
-     "step_max": 0.0552,
-     "drift": 1.09,
-     "loop": 0.0759,
-     "loop_ratio": 1.65,
-     "travel": 0.35,
-     "pin": 0.965,
-     "pad": 0,
-     "canvas": [
-      96,
-      96
-     ],
-     "reasons": [],
-     "sub": "3755854b-4ec3-475e-b8ce-aac0512fcb96",
-     "group": "7f8668ce-4fee-4425-9af9-b862bc553fdf",
-     "takes": 1,
-     "version": 2,
-     "mirrored": false,
-     "generated_at": "2026-09-09T21:21:35+00:00"
-    },
-    "south-east": {
-     "status": "warn",
-     "step_mean": 0.0674,
-     "step_max": 0.0749,
-     "drift": 0.8,
-     "loop": 0.1395,
-     "loop_ratio": 2.07,
-     "travel": 1.12,
-     "pin": 0.95,
-     "pad": 0,
-     "canvas": [
-      96,
-      96
-     ],
-     "reasons": [
-      "last→first hand-off 2.1× a step — eyeball the loop"
-     ],
-     "sub": "3783f6d0-72e6-4659-b181-9487d9fad4c3",
-     "group": "2e64ec90-78c3-48c3-b513-f731dc432f53",
-     "takes": 1,
-     "version": 2,
-     "mirrored": false,
-     "generated_at": "2026-09-09T21:21:36+00:00"
-    },
-    "east": {
-     "status": "pass",
-     "step_mean": 0.0437,
-     "step_max": 0.0512,
-     "drift": 1.28,
-     "loop": 0.0647,
-     "loop_ratio": 1.48,
-     "travel": 1.4,
-     "pin": 0.964,
-     "pad": 0,
-     "canvas": [
-      96,
-      96
-     ],
-     "reasons": [],
-     "sub": "feca75a3-540c-4279-bb76-f1a553275b4a",
-     "group": "03473b13-0f8b-4795-a69e-30f4c61ac54e",
-     "takes": 1,
-     "version": 2,
-     "mirrored": false,
-     "generated_at": "2026-09-09T21:21:36+00:00"
-    },
-    "north-east": {
-     "status": "pass",
-     "step_mean": 0.0458,
-     "step_max": 0.0586,
-     "drift": 1.43,
-     "loop": 0.0878,
-     "loop_ratio": 1.91,
-     "travel": 1.45,
-     "pin": 0.964,
-     "pad": 0,
-     "canvas": [
-      96,
-      96
-     ],
-     "reasons": [],
-     "sub": "3e6c7eaf-4eac-4a66-8007-2e284c39eb74",
-     "group": "c5ca09b6-4f12-483a-ae18-14da92c73ba0",
-     "takes": 1,
-     "version": 2,
-     "mirrored": false,
-     "generated_at": "2026-09-09T21:21:37+00:00"
-    },
-    "north": {
-     "status": "pass",
-     "step_mean": 0.0529,
-     "step_max": 0.064,
-     "drift": 1.63,
-     "loop": 0.0703,
-     "loop_ratio": 1.33,
-     "travel": 0.45,
-     "pin": 0.946,
-     "pad": 0,
-     "canvas": [
-      96,
-      96
-     ],
-     "reasons": [],
-     "sub": "5ed48b0b-8bff-4cce-b11a-cf0815bc146e",
-     "group": "c9145f55-18a7-43b5-82d1-c11156f8b4c6",
-     "takes": 1,
-     "version": 2,
-     "mirrored": false,
-     "generated_at": "2026-09-09T21:21:37+00:00"
-    },
-    "south-west": {
-     "status": "warn",
-     "step_mean": 0.0674,
-     "step_max": 0.0749,
-     "drift": 0.8,
-     "loop": 0.1395,
-     "loop_ratio": 2.07,
-     "travel": 1.12,
-     "pin": 0.95,
-     "pad": 0,
-     "canvas": [
-      96,
-      96
-     ],
-     "reasons": [
-      "last→first hand-off 2.1× a step — eyeball the loop"
-     ],
-     "sub": "3783f6d0-72e6-4659-b181-9487d9fad4c3",
-     "group": "2e64ec90-78c3-48c3-b513-f731dc432f53",
-     "takes": 1,
-     "version": 2,
-     "mirrored": true,
-     "generated_at": "2026-09-09T21:21:36+00:00",
-     "source": "south-east"
-    },
-    "west": {
-     "status": "pass",
-     "step_mean": 0.0437,
-     "step_max": 0.0512,
-     "drift": 1.28,
-     "loop": 0.0647,
-     "loop_ratio": 1.48,
-     "travel": 1.4,
-     "pin": 0.964,
-     "pad": 0,
-     "canvas": [
-      96,
-      96
-     ],
-     "reasons": [],
-     "sub": "feca75a3-540c-4279-bb76-f1a553275b4a",
-     "group": "03473b13-0f8b-4795-a69e-30f4c61ac54e",
-     "takes": 1,
-     "version": 2,
-     "mirrored": true,
-     "generated_at": "2026-09-09T21:21:36+00:00",
-     "source": "east"
-    },
-    "north-west": {
-     "status": "pass",
-     "step_mean": 0.0458,
-     "step_max": 0.0586,
-     "drift": 1.43,
-     "loop": 0.0878,
-     "loop_ratio": 1.91,
-     "travel": 1.45,
-     "pin": 0.964,
-     "pad": 0,
-     "canvas": [
-      96,
-      96
-     ],
-     "reasons": [],
-     "sub": "3e6c7eaf-4eac-4a66-8007-2e284c39eb74",
-     "group": "c5ca09b6-4f12-483a-ae18-14da92c73ba0",
-     "takes": 1,
-     "version": 2,
-     "mirrored": true,
-     "generated_at": "2026-09-09T21:21:37+00:00",
-     "source": "north-east"
-    }
-   },
-   "action": "crawls forward on its tentacles in place, tentacles reaching and pulling in turn, mantle swaying slightly, seamless loop, no turning",
-   "frame_paths": {
-    "south": [
-     "octopus/animations/walk/south/00.webp",
-     "octopus/animations/walk/south/01.webp",
-     "octopus/animations/walk/south/02.webp",
-     "octopus/animations/walk/south/03.webp",
-     "octopus/animations/walk/south/04.webp",
-     "octopus/animations/walk/south/05.webp"
-    ],
-    "south-east": [
-     "octopus/animations/walk/south-east/00.webp",
-     "octopus/animations/walk/south-east/01.webp",
-     "octopus/animations/walk/south-east/02.webp",
-     "octopus/animations/walk/south-east/03.webp",
-     "octopus/animations/walk/south-east/04.webp",
-     "octopus/animations/walk/south-east/05.webp"
-    ],
-    "east": [
-     "octopus/animations/walk/east/00.webp",
-     "octopus/animations/walk/east/01.webp",
-     "octopus/animations/walk/east/02.webp",
-     "octopus/animations/walk/east/03.webp",
-     "octopus/animations/walk/east/04.webp",
-     "octopus/animations/walk/east/05.webp"
-    ],
-    "north-east": [
-     "octopus/animations/walk/north-east/00.webp",
-     "octopus/animations/walk/north-east/01.webp",
-     "octopus/animations/walk/north-east/02.webp",
-     "octopus/animations/walk/north-east/03.webp",
-     "octopus/animations/walk/north-east/04.webp",
-     "octopus/animations/walk/north-east/05.webp"
-    ],
-    "north": [
-     "octopus/animations/walk/north/00.webp",
-     "octopus/animations/walk/north/01.webp",
-     "octopus/animations/walk/north/02.webp",
-     "octopus/animations/walk/north/03.webp",
-     "octopus/animations/walk/north/04.webp",
-     "octopus/animations/walk/north/05.webp"
-    ],
-    "south-west": [
-     "octopus/animations/walk/south-west/00.webp",
-     "octopus/animations/walk/south-west/01.webp",
-     "octopus/animations/walk/south-west/02.webp",
-     "octopus/animations/walk/south-west/03.webp",
-     "octopus/animations/walk/south-west/04.webp",
-     "octopus/animations/walk/south-west/05.webp"
-    ],
-    "west": [
-     "octopus/animations/walk/west/00.webp",
-     "octopus/animations/walk/west/01.webp",
-     "octopus/animations/walk/west/02.webp",
-     "octopus/animations/walk/west/03.webp",
-     "octopus/animations/walk/west/04.webp",
-     "octopus/animations/walk/west/05.webp"
-    ],
-    "north-west": [
-     "octopus/animations/walk/north-west/00.webp",
-     "octopus/animations/walk/north-west/01.webp",
-     "octopus/animations/walk/north-west/02.webp",
-     "octopus/animations/walk/north-west/03.webp",
-     "octopus/animations/walk/north-west/04.webp",
-     "octopus/animations/walk/north-west/05.webp"
-    ]
-   },
-   "strips": {
-    "south": "octopus/animations/walk__south.webp",
-    "south-east": "octopus/animations/walk__south-east.webp",
-    "east": "octopus/animations/walk__east.webp",
-    "north-east": "octopus/animations/walk__north-east.webp",
-    "north": "octopus/animations/walk__north.webp",
-    "south-west": "octopus/animations/walk__south-west.webp",
-    "west": "octopus/animations/walk__west.webp",
-    "north-west": "octopus/animations/walk__north-west.webp"
-   }
-  },
-  "attack": {
-   "directions": {
-    "south": {
-     "status": "fail",
-     "step_mean": 0.0893,
-     "step_max": 0.1014,
-     "drift": 0.57,
-     "loop": 0.0,
-     "loop_ratio": 0.0,
-     "travel": 0.2,
-     "pin": 1.0,
-     "pad": 0,
-     "flash": 0.0,
-     "peak": 0.1602,
-     "reach": 0.081,
-     "canvas": [
-      96,
-      96
-     ],
-     "reasons": [
-      "no strike, just a lean: nothing reaches past 0.08 of the body"
-     ],
-     "sub": "fe63514f-ba97-40e8-9a1e-3d2c1540304e",
-     "group": "69f86693-a9a5-41c6-82f7-ed026379851f",
-     "takes": 1,
-     "version": 3,
-     "mirrored": false,
-     "generated_at": "2026-09-09T22:49:44+00:00",
-     "action": "Tentacle Slam - Raises two front tentacles high, then brings them down once, then returns to idle stance"
-    },
-    "south-east": {
-     "status": "fail",
-     "step_mean": 0.0802,
-     "step_max": 0.1067,
-     "drift": 1.18,
-     "loop": 0.0002,
-     "loop_ratio": 0.0,
-     "travel": 1.04,
-     "pin": 1.0,
-     "pad": 0,
-     "flash": 0.0,
-     "peak": 0.116,
-     "reach": 0.072,
-     "canvas": [
-      96,
-      96
-     ],
-     "reasons": [
-      "weak strike: peak 0.116 — eyeball it",
-      "no strike, just a lean: nothing reaches past 0.07 of the body"
-     ],
-     "sub": "f4b92347-bb66-4a97-a5bd-afa7913c3d98",
-     "group": "09bbcdc5-a057-4216-b475-7fcd02d60c80",
-     "takes": 1,
-     "version": 3,
-     "mirrored": false,
-     "generated_at": "2026-09-09T22:49:44+00:00",
-     "action": "Tentacle Slam - Raises two front tentacles high, then brings them down once, then returns to idle stance"
-    },
-    "east": {
-     "status": "fail",
-     "step_mean": 0.0582,
-     "step_max": 0.0695,
-     "drift": 1.46,
-     "loop": 0.0,
-     "loop_ratio": 0.0,
-     "travel": 0.75,
-     "pin": 1.0,
-     "pad": 0,
-     "flash": 0.0,
-     "peak": 0.0885,
-     "reach": 0.084,
-     "canvas": [
-      96,
-      96
-     ],
-     "reasons": [
-      "motion 0.058 outside the calm band 0.08–0.9 — eyeball it",
-      "weak strike: peak 0.089 — eyeball it",
-      "no strike, just a lean: nothing reaches past 0.08 of the body"
-     ],
-     "sub": "7180d95e-1042-47dd-a046-fbe7ebf5e2e2",
-     "group": "550518cd-61b3-4dec-9ddd-77d11691b434",
-     "takes": 1,
-     "version": 3,
-     "mirrored": false,
-     "generated_at": "2026-09-09T22:49:45+00:00",
-     "action": "Tentacle Slam - Raises two front tentacles high, then brings them down once, then returns to idle stance"
-    },
-    "north-east": {
-     "status": "fail",
-     "step_mean": 0.0516,
-     "step_max": 0.0742,
-     "drift": 1.39,
-     "loop": 0.0,
-     "loop_ratio": 0.0,
-     "travel": 1.44,
-     "pin": 1.0,
-     "pad": 0,
-     "flash": 0.0,
-     "peak": 0.0685,
-     "reach": 0.076,
-     "canvas": [
-      96,
-      96
-     ],
-     "reasons": [
-      "motion 0.052 outside the calm band 0.08–0.9 — eyeball it",
-      "no strike: peak 0.069 of the silhouette away from the base",
-      "no strike, just a lean: nothing reaches past 0.08 of the body"
-     ],
-     "sub": "3b0a9fa7-c718-4f4e-b179-85be2ce850a0",
-     "group": "a351c76c-67bb-480d-9ea3-a14030eab0f5",
-     "takes": 1,
-     "version": 3,
-     "mirrored": false,
-     "generated_at": "2026-09-09T22:49:45+00:00",
-     "action": "Tentacle Slam - Raises two front tentacles high, then brings them down once, then returns to idle stance"
-    },
-    "north": {
-     "status": "warn",
-     "step_mean": 0.1417,
-     "step_max": 0.1536,
-     "drift": 4.02,
-     "loop": 0.0,
-     "loop_ratio": 0.0,
-     "travel": 0.29,
-     "pin": 1.0,
-     "pad": 0,
-     "flash": 0.0,
-     "peak": 0.2023,
-     "reach": 0.295,
-     "canvas": [
-      96,
-      96
-     ],
-     "reasons": [
-      "shallow strike: reach 0.29 — eyeball it"
-     ],
-     "sub": "cce2dfd7-b462-4e27-bf4e-8ca8644b1c7a",
-     "group": "f8e3ec9a-bfab-4153-a546-1c070ef7f456",
-     "takes": 1,
-     "version": 3,
-     "mirrored": false,
-     "generated_at": "2026-09-09T22:49:46+00:00",
-     "action": "Tentacle Slam - Raises two front tentacles high, then brings them down once, then returns to idle stance"
-    },
-    "south-west": {
-     "status": "warn",
-     "step_mean": 0.0802,
-     "step_max": 0.1067,
-     "drift": 1.18,
-     "loop": 0.0002,
-     "loop_ratio": 0.0,
-     "travel": 1.04,
-     "pin": 1.0,
-     "pad": 0,
-     "flash": 0.0,
-     "peak": 0.116,
-     "canvas": [
-      96,
-      96
-     ],
-     "reasons": [
-      "weak strike: peak 0.116 — eyeball it"
-     ],
-     "sub": "f4b92347-bb66-4a97-a5bd-afa7913c3d98",
-     "group": "09bbcdc5-a057-4216-b475-7fcd02d60c80",
-     "takes": 1,
-     "version": 3,
-     "mirrored": true,
-     "generated_at": "2026-09-09T22:49:44+00:00",
-     "action": "Tentacle Slam - Raises two front tentacles high, then brings them down once, then returns to idle stance",
-     "source": "south-east"
-    },
-    "west": {
-     "status": "warn",
-     "step_mean": 0.0582,
-     "step_max": 0.0695,
-     "drift": 1.46,
-     "loop": 0.0,
-     "loop_ratio": 0.0,
-     "travel": 0.75,
-     "pin": 1.0,
-     "pad": 0,
-     "flash": 0.0,
-     "peak": 0.0885,
-     "canvas": [
-      96,
-      96
-     ],
-     "reasons": [
-      "motion 0.058 outside the calm band 0.06–0.9 — eyeball it",
-      "weak strike: peak 0.089 — eyeball it"
-     ],
-     "sub": "7180d95e-1042-47dd-a046-fbe7ebf5e2e2",
-     "group": "550518cd-61b3-4dec-9ddd-77d11691b434",
-     "takes": 1,
-     "version": 3,
-     "mirrored": true,
-     "generated_at": "2026-09-09T22:49:45+00:00",
-     "action": "Tentacle Slam - Raises two front tentacles high, then brings them down once, then returns to idle stance",
-     "source": "east"
-    },
-    "north-west": {
-     "status": "warn",
-     "step_mean": 0.0516,
-     "step_max": 0.0742,
-     "drift": 1.39,
-     "loop": 0.0,
-     "loop_ratio": 0.0,
-     "travel": 1.44,
-     "pin": 1.0,
-     "pad": 0,
-     "flash": 0.0,
-     "peak": 0.0685,
-     "canvas": [
-      96,
-      96
-     ],
-     "reasons": [
-      "motion 0.052 outside the calm band 0.06–0.9 — eyeball it",
-      "weak strike: peak 0.069 — eyeball it"
-     ],
-     "sub": "3b0a9fa7-c718-4f4e-b179-85be2ce850a0",
-     "group": "a351c76c-67bb-480d-9ea3-a14030eab0f5",
-     "takes": 1,
-     "version": 3,
-     "mirrored": true,
-     "generated_at": "2026-09-09T22:49:45+00:00",
-     "action": "Tentacle Slam - Raises two front tentacles high, then brings them down once, then returns to idle stance",
-     "source": "north-east"
-    }
-   },
-   "action": "Tentacle Slam - Raises two front tentacles high, then brings them down once, then returns to idle stance",
-   "frame_paths": {
-    "south": [
-     "octopus/animations/attack/south/00.webp",
-     "octopus/animations/attack/south/01.webp",
-     "octopus/animations/attack/south/02.webp",
-     "octopus/animations/attack/south/03.webp",
-     "octopus/animations/attack/south/04.webp"
-    ],
-    "south-east": [
-     "octopus/animations/attack/south-east/00.webp",
-     "octopus/animations/attack/south-east/01.webp",
-     "octopus/animations/attack/south-east/02.webp",
-     "octopus/animations/attack/south-east/03.webp",
-     "octopus/animations/attack/south-east/04.webp"
-    ],
-    "east": [
-     "octopus/animations/attack/east/00.webp",
-     "octopus/animations/attack/east/01.webp",
-     "octopus/animations/attack/east/02.webp",
-     "octopus/animations/attack/east/03.webp",
-     "octopus/animations/attack/east/04.webp"
-    ],
-    "north-east": [
-     "octopus/animations/attack/north-east/00.webp",
-     "octopus/animations/attack/north-east/01.webp",
-     "octopus/animations/attack/north-east/02.webp",
-     "octopus/animations/attack/north-east/03.webp",
-     "octopus/animations/attack/north-east/04.webp"
-    ],
-    "north": [
-     "octopus/animations/attack/north/00.webp",
-     "octopus/animations/attack/north/01.webp",
-     "octopus/animations/attack/north/02.webp",
-     "octopus/animations/attack/north/03.webp",
-     "octopus/animations/attack/north/04.webp"
-    ],
-    "south-west": [
-     "octopus/animations/attack/south-west/00.webp",
-     "octopus/animations/attack/south-west/01.webp",
-     "octopus/animations/attack/south-west/02.webp",
-     "octopus/animations/attack/south-west/03.webp",
-     "octopus/animations/attack/south-west/04.webp"
-    ],
-    "west": [
-     "octopus/animations/attack/west/00.webp",
-     "octopus/animations/attack/west/01.webp",
-     "octopus/animations/attack/west/02.webp",
-     "octopus/animations/attack/west/03.webp",
-     "octopus/animations/attack/west/04.webp"
-    ],
-    "north-west": [
-     "octopus/animations/attack/north-west/00.webp",
-     "octopus/animations/attack/north-west/01.webp",
-     "octopus/animations/attack/north-west/02.webp",
-     "octopus/animations/attack/north-west/03.webp",
-     "octopus/animations/attack/north-west/04.webp"
-    ]
-   },
-   "strips": {
-    "south": "octopus/animations/attack__south.webp",
-    "south-east": "octopus/animations/attack__south-east.webp",
-    "east": "octopus/animations/attack__east.webp",
-    "north-east": "octopus/animations/attack__north-east.webp",
-    "north": "octopus/animations/attack__north.webp",
-    "south-west": "octopus/animations/attack__south-west.webp",
-    "west": "octopus/animations/attack__west.webp",
-    "north-west": "octopus/animations/attack__north-west.webp"
-   }
-  },
-  "attack_v3try": {
-   "directions": {
-    "south": {
-     "status": "warn",
-     "step_mean": 0.1575,
-     "step_max": 0.2137,
-     "drift": 1.72,
-     "loop": 0.0559,
-     "loop_ratio": 0.35,
-     "travel": 0.38,
-     "pin": 1.0,
-     "pad": 3,
-     "flash": 0.445,
-     "peak": 0.244,
-     "reach": 0.445,
-     "canvas": [
-      102,
-      102
-     ],
-     "reasons": [
-      "some bright effect pixels (0.45) — eyeball it",
-      "canvas grown by 3 px a side to hold the motion"
-     ],
-     "sub": "d25cd8e6-05a3-4d07-bf6c-df5a399d21cc",
-     "group": "18360b16-420f-454c-872d-5e7aa01fce93",
-     "takes": 1,
-     "version": 8,
-     "mirrored": false,
-     "generated_at": "2026-09-10T22:44:00+00:00",
-     "action": "Tentacle Storm - The octopus rears its whole mantle up and hurls every tentacle forward at once, water bursting out, an extremely violent attack, huge exaggerated motion, the limb thrown far out",
-     "tries": 6,
-     "rolls": 6,
-     "intensity": 1,
-     "frames": 5,
-     "rung": 5
-    },
-    "south-east": {
-     "status": "warn",
-     "step_mean": 0.1052,
-     "step_max": 0.1524,
-     "drift": 2.63,
-     "loop": 0.1087,
-     "loop_ratio": 1.03,
-     "travel": 1.48,
-     "pin": 1.0,
-     "pad": 0,
-     "flash": 0.221,
-     "peak": 0.1311,
-     "reach": 0.221,
-     "canvas": [
-      96,
-      96
-     ],
-     "reasons": [
-      "weak strike: peak 0.131 — eyeball it",
-      "shallow strike: reach 0.22 — eyeball it"
-     ],
-     "sub": "56ad2a00-777a-40e2-aa6e-f8c7cf605809",
-     "group": "d3f0b292-9c69-486b-8e3d-ecda731aa849",
-     "takes": 1,
-     "version": 5,
-     "mirrored": false,
-     "generated_at": "2026-09-10T21:46:34+00:00",
-     "action": "Lunge Attack - Throws its whole body forward in one fast lunge, white swoosh lines trailing behind it, a big aggressive swing",
-     "tries": 3,
-     "rolls": 3,
-     "intensity": 1,
-     "frames": 5,
-     "rung": 2
-    },
-    "east": {
-     "status": "warn",
-     "step_mean": 0.0799,
-     "step_max": 0.1316,
-     "drift": 1.52,
-     "loop": 0.1706,
-     "loop_ratio": 2.14,
-     "travel": 1.48,
-     "pin": 1.0,
-     "pad": 0,
-     "flash": 0.235,
-     "peak": 0.1706,
-     "reach": 0.235,
-     "canvas": [
-      96,
-      96
-     ],
-     "reasons": [
-      "motion 0.080 outside the calm band 0.08–0.9 — eyeball it",
-      "shallow strike: reach 0.23 — eyeball it"
-     ],
-     "sub": "ab617592-afde-4824-88d5-1ec1387a61b2",
-     "group": "759427d5-3b63-4478-8445-744bb5b4e4cc",
-     "takes": 1,
-     "version": 6,
-     "mirrored": false,
-     "generated_at": "2026-09-10T22:10:06+00:00",
-     "action": "Tentacle Storm - The octopus rears its whole mantle up and hurls every tentacle forward at once, water bursting out",
-     "tries": 4,
-     "rolls": 4,
-     "intensity": 1,
-     "frames": 5,
-     "rung": 3
-    },
-    "north-east": {
-     "status": "warn",
-     "step_mean": 0.1277,
-     "step_max": 0.1905,
-     "drift": 2.79,
-     "loop": 0.0703,
-     "loop_ratio": 0.55,
-     "travel": 3.04,
-     "pin": 1.0,
-     "pad": 0,
-     "flash": 0.168,
-     "peak": 0.1649,
-     "reach": 0.168,
-     "canvas": [
-      96,
-      96
-     ],
-     "reasons": [
-      "shallow strike: reach 0.17 — eyeball it"
-     ],
-     "sub": "89f342cd-d26b-4649-91b6-6f8431bffe2b",
-     "group": "bc92831c-2e3f-45a1-ada3-fe1dc80267e0",
-     "takes": 1,
-     "version": 5,
-     "mirrored": false,
-     "generated_at": "2026-09-10T21:46:35+00:00",
-     "action": "Lunge Attack - Throws its whole body forward in one fast lunge, white swoosh lines trailing behind it, a big aggressive swing",
-     "tries": 3,
-     "rolls": 3,
-     "intensity": 1,
-     "frames": 5,
-     "rung": 2
-    },
-    "north": {
-     "status": "warn",
-     "step_mean": 0.0791,
-     "step_max": 0.0927,
-     "drift": 2.83,
-     "loop": 0.1032,
-     "loop_ratio": 1.3,
-     "travel": 0.39,
-     "pin": 1.0,
-     "pad": 0,
-     "flash": 0.295,
-     "peak": 0.1142,
-     "reach": 0.295,
-     "canvas": [
-      96,
-      96
-     ],
-     "reasons": [
-      "motion 0.079 outside the calm band 0.08–0.9 — eyeball it",
-      "weak strike: peak 0.114 — eyeball it",
-      "shallow strike: reach 0.30 — eyeball it"
-     ],
-     "sub": "21150047-13f0-43ec-9b09-39ace70b5c35",
-     "group": "bc10bd83-44a0-4215-8fc9-236b93abebc8",
-     "takes": 1,
-     "version": 6,
-     "mirrored": false,
-     "generated_at": "2026-09-10T22:10:06+00:00",
-     "action": "Tentacle Storm - The octopus rears its whole mantle up and hurls every tentacle forward at once, water bursting out",
-     "tries": 4,
-     "rolls": 4,
-     "intensity": 1,
-     "frames": 5,
-     "rung": 3
-    },
-    "south-west": {
-     "status": "warn",
-     "step_mean": 0.1052,
-     "step_max": 0.1524,
-     "drift": 2.63,
-     "loop": 0.1087,
-     "loop_ratio": 1.03,
-     "travel": 1.48,
-     "pin": 1.0,
-     "pad": 0,
-     "flash": 0.221,
-     "peak": 0.1311,
-     "reach": 0.221,
-     "canvas": [
-      96,
-      96
-     ],
-     "reasons": [
-      "weak strike: peak 0.131 — eyeball it",
-      "shallow strike: reach 0.22 — eyeball it"
-     ],
-     "sub": "56ad2a00-777a-40e2-aa6e-f8c7cf605809",
-     "group": "d3f0b292-9c69-486b-8e3d-ecda731aa849",
-     "takes": 1,
-     "version": 5,
-     "mirrored": true,
-     "generated_at": "2026-09-10T21:46:34+00:00",
-     "action": "Lunge Attack - Throws its whole body forward in one fast lunge, white swoosh lines trailing behind it, a big aggressive swing",
-     "tries": 3,
-     "rolls": 3,
-     "intensity": 1,
-     "frames": 5,
-     "rung": 2,
-     "source": "south-east"
-    },
-    "north-west": {
-     "status": "warn",
-     "step_mean": 0.1277,
-     "step_max": 0.1905,
-     "drift": 2.79,
-     "loop": 0.0703,
-     "loop_ratio": 0.55,
-     "travel": 3.04,
-     "pin": 1.0,
-     "pad": 0,
-     "flash": 0.168,
-     "peak": 0.1649,
-     "reach": 0.168,
-     "canvas": [
-      96,
-      96
-     ],
-     "reasons": [
-      "shallow strike: reach 0.17 — eyeball it"
-     ],
-     "sub": "89f342cd-d26b-4649-91b6-6f8431bffe2b",
-     "group": "bc92831c-2e3f-45a1-ada3-fe1dc80267e0",
-     "takes": 1,
-     "version": 5,
-     "mirrored": true,
-     "generated_at": "2026-09-10T21:46:35+00:00",
-     "action": "Lunge Attack - Throws its whole body forward in one fast lunge, white swoosh lines trailing behind it, a big aggressive swing",
-     "tries": 3,
-     "rolls": 3,
-     "intensity": 1,
-     "frames": 5,
-     "rung": 2,
-     "source": "north-east"
-    },
-    "west": {
-     "status": "warn",
-     "step_mean": 0.0799,
-     "step_max": 0.1316,
-     "drift": 1.52,
-     "loop": 0.1706,
-     "loop_ratio": 2.14,
-     "travel": 1.48,
-     "pin": 1.0,
-     "pad": 0,
-     "flash": 0.235,
-     "peak": 0.1706,
-     "reach": 0.235,
-     "canvas": [
-      96,
-      96
-     ],
-     "reasons": [
-      "motion 0.080 outside the calm band 0.08–0.9 — eyeball it",
-      "shallow strike: reach 0.23 — eyeball it"
-     ],
-     "sub": "ab617592-afde-4824-88d5-1ec1387a61b2",
-     "group": "759427d5-3b63-4478-8445-744bb5b4e4cc",
-     "takes": 1,
-     "version": 6,
-     "mirrored": true,
-     "generated_at": "2026-09-10T22:10:06+00:00",
-     "action": "Tentacle Storm - The octopus rears its whole mantle up and hurls every tentacle forward at once, water bursting out",
-     "tries": 4,
-     "rolls": 4,
-     "intensity": 1,
-     "frames": 5,
-     "rung": 3,
-     "source": "east"
-    }
-   },
-   "action": "Tentacle Lash - Rears up high and whips two tentacles forward",
-   "frame_paths": {
-    "south": [
-     "octopus/animations/attack_v3try/south/00.webp",
-     "octopus/animations/attack_v3try/south/01.webp",
-     "octopus/animations/attack_v3try/south/02.webp",
-     "octopus/animations/attack_v3try/south/03.webp",
-     "octopus/animations/attack_v3try/south/04.webp"
-    ],
-    "south-east": [
-     "octopus/animations/attack_v3try/south-east/00.webp",
-     "octopus/animations/attack_v3try/south-east/01.webp",
-     "octopus/animations/attack_v3try/south-east/02.webp",
-     "octopus/animations/attack_v3try/south-east/03.webp",
-     "octopus/animations/attack_v3try/south-east/04.webp"
-    ],
-    "east": [
-     "octopus/animations/attack_v3try/east/00.webp",
-     "octopus/animations/attack_v3try/east/01.webp",
-     "octopus/animations/attack_v3try/east/02.webp",
-     "octopus/animations/attack_v3try/east/03.webp",
-     "octopus/animations/attack_v3try/east/04.webp"
-    ],
-    "north-east": [
-     "octopus/animations/attack_v3try/north-east/00.webp",
-     "octopus/animations/attack_v3try/north-east/01.webp",
-     "octopus/animations/attack_v3try/north-east/02.webp",
-     "octopus/animations/attack_v3try/north-east/03.webp",
-     "octopus/animations/attack_v3try/north-east/04.webp"
-    ],
-    "north": [
-     "octopus/animations/attack_v3try/north/00.webp",
-     "octopus/animations/attack_v3try/north/01.webp",
-     "octopus/animations/attack_v3try/north/02.webp",
-     "octopus/animations/attack_v3try/north/03.webp",
-     "octopus/animations/attack_v3try/north/04.webp"
-    ],
-    "south-west": [
-     "octopus/animations/attack_v3try/south-west/00.webp",
-     "octopus/animations/attack_v3try/south-west/01.webp",
-     "octopus/animations/attack_v3try/south-west/02.webp",
-     "octopus/animations/attack_v3try/south-west/03.webp",
-     "octopus/animations/attack_v3try/south-west/04.webp"
-    ],
-    "north-west": [
-     "octopus/animations/attack_v3try/north-west/00.webp",
-     "octopus/animations/attack_v3try/north-west/01.webp",
-     "octopus/animations/attack_v3try/north-west/02.webp",
-     "octopus/animations/attack_v3try/north-west/03.webp",
-     "octopus/animations/attack_v3try/north-west/04.webp"
-    ],
-    "west": [
-     "octopus/animations/attack_v3try/west/00.webp",
-     "octopus/animations/attack_v3try/west/01.webp",
-     "octopus/animations/attack_v3try/west/02.webp",
-     "octopus/animations/attack_v3try/west/03.webp",
-     "octopus/animations/attack_v3try/west/04.webp"
-    ]
-   },
-   "strips": {
-    "south": "octopus/animations/attack_v3try__south.webp",
-    "south-east": "octopus/animations/attack_v3try__south-east.webp",
-    "east": "octopus/animations/attack_v3try__east.webp",
-    "north-east": "octopus/animations/attack_v3try__north-east.webp",
-    "north": "octopus/animations/attack_v3try__north.webp",
-    "south-west": "octopus/animations/attack_v3try__south-west.webp",
-    "north-west": "octopus/animations/attack_v3try__north-west.webp",
-    "west": "octopus/animations/attack_v3try__west.webp"
-   },
-   "intensity": 1
-  }
- }
 }
