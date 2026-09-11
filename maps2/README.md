@@ -279,7 +279,9 @@ footprints (`bridge` excluded — a span is a roof over open air, outdoors), eac
 group gets a ROLE from world.json alone (`house-1` = nearest the arrival
 point), and `places.NAMES[world][role]` supplies the name — keying on role,
 never a coordinate, is what makes a name survive the terrain moving.
-Re-derived by `save_world`. **Canon wins where canon has a name**
+Re-derived by `save_world` (world@2, retired); the_game's come from the
+generator (`world3grow.places`: every cave complex, with `entrance` /
+`entrances` for the Map tab's pins). **Canon wins where canon has a name**
 (`lore/canon/CONSTRAINTS.md` §5): The Stone House and The Cave are adopted
 verbatim; The Meadow House is the one plain-descriptive addition.
 `mountain_top` is MEASURED, not chosen — snow line down to the massif's foot

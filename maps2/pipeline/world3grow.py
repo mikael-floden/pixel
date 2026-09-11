@@ -4289,7 +4289,7 @@ class Grow:
             p["y"] = round(p["y"] + dy, 4)
         # the two sidecars are written before this pass; they are cell
         # coordinates in files this domain owns, so they move with the world
-        for nm, fix in (("npcs.json", "npc"), ("spawns.json", "zone")):
+        for nm, fix in (("npcs.json", "npc"), ("spawns.json", "zone"), ("places.json", "place")):
             f = os.path.join(OUT, nm)
             if not os.path.isfile(f):
                 continue
@@ -4301,6 +4301,11 @@ class Grow:
                 z["area"] = [[x + dx, y + dy] for x, y in z["area"]]
                 if isinstance(z.get("anchor"), list) and len(z["anchor"]) == 2:
                     z["anchor"] = [z["anchor"][0] + dx, z["anchor"][1] + dy]
+            for p in doc.get("places", []):
+                p["cells"] = [[x + dx, y + dy] for x, y in p["cells"]]
+                p["entrances"] = [[x + dx, y + dy] for x, y in p["entrances"]]
+                for k in ("anchor", "entrance"):
+                    p[k] = [p[k][0] + dx, p[k][1] + dy]
             json.dump(doc, open(f, "w"), separators=(",", ":"))
         # WHERE THE LAND IS, stated rather than re-derived (maintainer: "it
         # would also be good with some metadata that describes where the
@@ -4318,6 +4323,93 @@ class Grow:
         assert abs(m[0] - m[2]) <= 1 and abs(m[1] - m[3]) <= 1, \
             f"the land is not centred: margins {m}"
         assert min(m) >= self.SEA_MARGIN - 1, f"the sea margin is thin: {m}"
+
+    # NAMED PLACES for the_game (`pixel-maps2/places@2`, maps2/spec/PLACES.md):
+    # the caves, because the Map tab pins every place of kind 'cave' with its
+    # name (games-ui 2026-09-11: "I derive NOTHING - not the position, not the
+    # name, not which regions are dungeons ... pin = entrance ?? anchor").
+    # A place is one CAVE COMPLEX - lids whose floors touch - named by its
+    # distance from the spawn (ids never move once the game binds to them;
+    # lore may rewrite the names, which stay SHORT: at his phone width six
+    # names in one massif collide). The ported cave keeps the canon's own
+    # name, "the cave" (lore/canon/CONSTRAINTS.md §5).
+    CAVE_NAMES = (("the_cave", "The Cave"), ("cave_2", "Cave II"), ("cave_3", "Cave III"),
+                  ("cave_4", "Cave IV"), ("cave_5", "Cave V"), ("cave_6", "Cave VI"))
+    PIT_NAMES = (("pit_1", "Pit I"), ("pit_2", "Pit II"), ("pit_3", "Pit III"),
+                 ("pit_4", "Pit IV"), ("pit_5", "Pit V"), ("pit_6", "Pit VI"))
+
+    def places(self):
+        """places.json: every cave complex as a place - id, name, kind 'cave',
+        indoor, the floor's elev band, an anchor near its centroid, the
+        `entrance` (the door cell the player walks in through; `entrances`
+        lists every mouth of a cave with two) and the floor cells. Written
+        before recentre, which translates it with the other sidecars."""
+        decks = [(i, dk) for i, dk in enumerate(self.doc["decks"]) if dk.get("kind") == "cave"]
+        at = {}
+        for i, dk in decks:
+            for c in dk["cells"]:
+                at[(c["x"], c["y"])] = i
+        parent = {i: i for i, _ in decks}
+
+        def find(i):
+            while parent[i] != i:
+                parent[i] = parent[parent[i]]
+                i = parent[i]
+            return i
+        for (x, y), i in at.items():
+            for m in ((x + 1, y), (x, y + 1), (x + 1, y + 1), (x - 1, y + 1)):
+                j = at.get(m)
+                if j is not None and find(i) != find(j):
+                    parent[find(i)] = find(j)
+        comps = collections.defaultdict(set)
+        for c, i in at.items():
+            comps[find(i)].add(c)
+        sites = getattr(self, "cave_sites", [])
+        sx, sy = self.doc["spawn"]
+        out = []
+        for cells in comps.values():
+            mine = [st for st in sites if st["floor"] & cells]
+            doors = [d for st in mine for d in st["doors"]]
+            kind = mine[0]["kind"] if mine else "mouth"
+            if doors:
+                mouths = [d["cells"][len(d["cells"]) // 2] for d in doors]
+            else:
+                # the ported cave: a floor cell beside land at its grade
+                mouths = sorted(c for c in cells if any(
+                    m not in at and self.g(*m) and not self.liquid(*m)
+                    and abs(self.lvl[m[1]][m[0]] - self.lvl[c[1]][c[0]]) <= self.CLIMB
+                    for m in ((c[0] + 1, c[1]), (c[0] - 1, c[1]), (c[0], c[1] + 1), (c[0], c[1] - 1))))[:1]
+            assert mouths, ("a cave with no way in", min(cells))
+            floor = set(cells) | {c for st in mine for c in st["door"]}
+            lv = [self.lvl[c[1]][c[0]] for c in floor]
+            cx = sum(c[0] for c in floor) / len(floor)
+            cy = sum(c[1] for c in floor) / len(floor)
+            anchor = min(floor, key=lambda c: ((c[0] - cx) ** 2 + (c[1] - cy) ** 2, c))
+            near = min(max(abs(c[0] - sx), abs(c[1] - sy)) for c in floor)
+            out.append((kind, near, min(floor), {
+                "kind": "cave", "indoor": True, "elev": [min(lv), max(lv)],
+                "anchor": [anchor[0], anchor[1]], "entrance": [mouths[0][0], mouths[0][1]],
+                "entrances": [[m[0], m[1]] for m in mouths],
+                "cells": [[c[0], c[1]] for c in sorted(floor)]}))
+        places = []
+        for kind, names in (("mouth", self.CAVE_NAMES), ("pit", self.PIT_NAMES)):
+            mine = sorted((o for o in out if o[0] == kind), key=lambda o: (o[1], o[2]))
+            if kind == "mouth":
+                # the ported cave is the canon's: the biggest complex with no
+                # planned site, the_cave wherever it ranks
+                ported = [o for o in mine if not any(st["floor"] & {tuple(c) for c in o[3]["cells"]} for st in sites)]
+                if ported:
+                    big = max(ported, key=lambda o: len(o[3]["cells"]))
+                    mine.remove(big)
+                    mine.insert(0, big)
+            assert len(mine) <= len(names), ("more caves than names", kind, len(mine))
+            for (pid, disp), o in zip(names, mine):
+                places.append(dict(id=pid, name=disp, **o[3]))
+        places.sort(key=lambda p: p["id"])
+        json.dump({"schema": "pixel-maps2/places@2", "world": "the_game", "places": places},
+                  open(os.path.join(OUT, "places.json"), "w"), separators=(",", ":"))
+        self.placed += [("named places", ", ".join(f"{p['name']} ({len(p['cells'])} cells, "
+                                                    f"{len(p['entrances'])} mouths)" for p in places))]
 
     def spawns(self):
         """Monsters SPREAD over the doubled land (maintainer 2026-08-29): the
@@ -7873,7 +7965,7 @@ class Grow:
                      self.lights, self.npcs,
                      self.rooms, self.cliff_faces, self.cliff_apron, self.way_ground,
                      self.audit_ground,
-                     self.dungeon_audit, self.spawns, self.recentre, self.settle_states):
+                     self.dungeon_audit, self.spawns, self.places, self.recentre, self.settle_states):
             t = time.time()
             step()
             print(f"  [{step.__name__} {time.time() - t:.1f}s]", flush=True)

@@ -37,6 +37,8 @@ Every world ships `worlds/<name>/places.json` beside `world.json`,
 | `elev` | `[min, max]` **surface** levels — the band the player's own `elev` must fall in. Not decoration: see *The stack*. |
 | `anchor` | one cell inside the place, nearest its centroid. For map pins and debug, not for containment. |
 | `cells` | the footprint. **Cell → place is one lookup**; no geometry needed on the consumer side. |
+| `entrance` | optional: the door cell the player walks in through — where a map pins a cave, because a cave's centroid is inside the mountain (games-ui: `pin = entrance ?? anchor`). |
+| `entrances` | optional: every mouth of the place, `entrance` first — a cave that runs through the massif has two. One pin per place record; the map may pin every mouth from this list when he asks. |
 
 `places: []` is normal — a flat showcase map has neither an inside nor a
 summit.
@@ -103,7 +105,16 @@ The standing doctrine (rules, never spot edits) applies to the geometry:
    name survive the terrain moving;
 5. `places.NAMES[world][role]` supplies the id and display name.
 
-Re-derived by `save_world` beside spawns/npcs.
+Re-derived by `save_world` beside spawns/npcs on the world@2 worlds (retired).
+**the_game (world3) publishes its places from the generator** (`world3grow.places`,
+before `recentre` translates the sidecars): one place per CAVE COMPLEX — lids
+whose floors touch — with the floor's elev band, `entrance` and `entrances` from
+the cave's site record (the door cells the dig cut) and, for the ported cave,
+the floor cell beside land at its grade. Names by distance from the spawn,
+`the_cave` for the ported cave (canon), `cave_N` / `pit_N` for the massif caves
+and the pit dungeons; display names "Cave II", "Pit I" — short on purpose, six
+names in one massif collide at phone width — and lore may rewrite them. No
+house or summit places on the_game yet (one line each when he asks).
 
 ### The outdoor rule: `mountain_top`
 
