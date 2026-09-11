@@ -255,8 +255,8 @@ test("scenery is carried off-grid, and buildTerrainGrid alone blocks nothing", (
   assert.ok(world.scenery!.length > 500, `only ${world.scenery!.length} placements — the world lost its scenery`);
   for (const field of ["hflip", "lit", "state", "dir"] as const)
     assert.equal(
-      world.scenery!.filter((p) => (p as Record<string, unknown>)[field]).length,
-      doc.scenery.filter((p: Record<string, unknown>) => p[field]).length,
+      world.scenery!.filter((p) => !!p[field]).length,
+      doc.scenery.filter((p: Record<string, unknown>) => !!p[field]).length,
       `placements carrying \`${field}\``,
     );
   const first = world.scenery![0];
