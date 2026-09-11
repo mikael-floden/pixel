@@ -492,7 +492,7 @@ const state = {
   admin: false,          // signed in as the game designer? (server-verified)
   feedback: {},          // domain -> parsed pixel-wiki-feedback@1
   tuning: { monsters: null, constants: null, shadow_notes: null, tile_walls: null },
-  dirty: new Set(),      // "feedback/monsters" | "tuning/monsters" | "tuning/constants"
+  dirty: new Set(),      // "feedback/monsters" | "tuning/monsters" | "tuning/scenery_hitbox" …
   // Per file: WHICH ids this session actually edited. Saves send exactly
   // these ids as a delta — the server merges them into the current document,
   // so a stale page can never clobber entries committed earlier.
@@ -13317,40 +13317,44 @@ function viewRedLine() {
 }
 
 /* --- tuning --- */
+/* PARAMETERS IS A READ-ONLY REFERENCE (maintainer 2026-09-11: "I like this page
+ * being only visible for the admin, but the admin should not be able to change
+ * settings here. I have found a better way to tweak the game and that is using
+ * sliders under the in game settings menu. So the parameters/constants here
+ * should always only be read only. This means you can simplify the code
+ * involved in me editing this (I will never ever do it and don't want the wiki
+ * to let me).")
+ *
+ * The override input, its touch/markDirty bookkeeping and the save path that
+ * carried `tuning/constants` are gone — the wiki never writes that file. The
+ * column only appears if something else ever writes an override, so the page
+ * still cannot lie about what the running game holds. Tuning happens on the
+ * game's own sliders, where he can see the change as he drags it. */
 function viewTuning() {
   const t = state.tuning.constants;
   const q = state.query;
   const rows = state.data.constants.filter((c) => matches(q, c.name, c.description, c.source));
+  const overrides = t?.overrides ?? {};
+  const anyOverride = rows.some((c) => overrides[c.name] !== undefined);
   return h("div", {},
     sectionHead("tuning"),
     h("p", { class: "muted" }, state.admin
-      ? "Game constants discovered in games2/shared. Set an override and Save — it commits to live/tuning/constants.json and is pushed to the running game and every client over the WebSocket, no redeploy. (Each system adopts its overrides as the games agent wires them in.)"
-      : "The knobs behind the game — live values the designer can tune while the world runs."),
+      ? "Game constants discovered in games2/shared — what the running game is built with, and where each one lives. Read-only on purpose: the knobs you actually turn are the sliders in the game's own settings menu, where you see the change as you drag it."
+      : "The knobs behind the game — the values the world is built from."),
     h("div", { class: "panel table-scroll" },
       h("table", { class: "tune" },
         h("thead", {}, h("tr", {},
-          h("th", {}, "constant"), h("th", {}, "game value"), h("th", {}, "override"), h("th", {}, "what it does"), h("th", {}, "source"))),
+          h("th", {}, "constant"), h("th", {}, "game value"),
+          anyOverride ? h("th", {}, "override") : null,
+          h("th", {}, "what it does"), h("th", {}, "source"))),
         h("tbody", {}, ...rows.map((c) => {
-          const cur = t?.overrides?.[c.name];
-          let overrideCell;
-          if (state.admin) {
-            const input = h("input", { type: "number", step: "any", value: cur !== undefined ? String(cur) : "", placeholder: String(c.value), class: cur !== undefined ? "overridden" : "" });
-            input.addEventListener("change", () => {
-              if (input.value === "" || Number(input.value) === c.value) delete t.overrides[c.name];
-              else t.overrides[c.name] = Number(input.value);
-              input.classList.toggle("overridden", t.overrides[c.name] !== undefined);
-              t.updated_at = new Date().toISOString();
-              touch("tuning/constants", c.name);
-              markDirty("tuning/constants");
-            });
-            overrideCell = input;
-          } else {
-            overrideCell = cur !== undefined ? h("span", { class: "pill warn" }, String(cur)) : h("span", { class: "muted" }, "—");
-          }
+          const cur = overrides[c.name];
           return h("tr", {},
             h("td", {}, h("code", {}, c.name)),
             h("td", { class: "num" }, String(c.value)),
-            h("td", {}, overrideCell),
+            anyOverride ? h("td", {}, cur !== undefined
+              ? h("span", { class: "pill warn", title: "Something is overriding this constant live" }, String(cur))
+              : h("span", { class: "muted" }, "—")) : null,
             h("td", { class: "muted" }, c.description ?? ""),
             h("td", { class: "muted" }, h("code", {}, `${c.source.replace("games2/shared/src/", "")}:${c.line}`)));
         })))));

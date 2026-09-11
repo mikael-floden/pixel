@@ -3,7 +3,8 @@
 An in-game wiki that shows **everything the art/audio agents produce** —
 monsters, player characters, tiles, objects, sounds, music, items — and lets
 the **maintainer** rate, approve/reject and remove individual assets, and tune
-gameplay parameters (monster stats, game constants). Owned by the **wiki
+monster stats. (Game constants are shown but never edited here — the sliders in
+the game's own settings menu are where that happens.) Owned by the **wiki
 agent** (board file `coordination/wiki.json`).
 
 Live at **`/assets/wiki/site/index.html`** on any server that serves the art
@@ -336,12 +337,17 @@ in a topic doc opened when that feature is touched (root doc law, 2026-09-09).
   on the roster with `defaults` and PRESERVES existing edits. Monster combat isn't in the game
   yet — this file is written first so the games agent can adopt it as the
   authoritative stat source when the monster brain lands (board request sent).
-- `live/tuning/constants.json` (`pixel-wiki-tuning-constants@1`) — overrides
-  for game constants. The **catalog** of tunable constants (name, current
-  value, source file) is discovered by `build.mjs` from
-  `games2/shared/src/index.ts` (read-only toward games2); this file holds only
-  the maintainer's overrides. The games agent decides when/how to consume
-  them (they are advisory until wired in).
+- `live/tuning/constants.json` (`pixel-wiki-tuning-constants@1`) — read by the
+  Parameters page, NEVER written by it. **Parameters is a read-only reference**
+  (maintainer 2026-09-11: "the admin should not be able to change settings
+  here. I have found a better way to tweak the game and that is using sliders
+  under the in game settings menu ... I will never ever do it and don't want
+  the wiki to let me"), so the override input and the save path that carried
+  `tuning/constants` are gone. The catalog (name, current value, description,
+  source file and line) is discovered by `build.mjs` from
+  `games2/shared/src/index.ts`, read-only toward games2. The override column
+  appears only if something else ever writes one, so the page cannot claim a
+  value the running game does not have.
 
 ## Don't
 
