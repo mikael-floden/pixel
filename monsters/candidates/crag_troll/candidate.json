@@ -1319,7 +1319,7 @@
           "rung": 0
         },
         "south-east": {
-          "status": "warn",
+          "status": "fail",
           "step_mean": 0.4934,
           "step_max": 0.6066,
           "drift": 30.07,
@@ -1337,6 +1337,7 @@
             232
           ],
           "reasons": [
+            "HE says redo: the direction looks like S and not SW",
             "drifts 30.1 px — eyeball it",
             "shallow strike: reach 0.28 — eyeball it"
           ],
@@ -1352,7 +1353,8 @@
           "rung": 1,
           "unwrapped": null,
           "tries": 2,
-          "generated_at": "2026-09-11T20:22:49+00:00"
+          "generated_at": "2026-09-11T20:22:49+00:00",
+          "maintainer": "the direction looks like S and not SW"
         },
         "east": {
           "status": "warn",
@@ -1452,7 +1454,7 @@
           "rung": 0
         },
         "south-west": {
-          "status": "warn",
+          "status": "fail",
           "step_mean": 0.4934,
           "step_max": 0.6066,
           "drift": 30.07,
@@ -1470,6 +1472,7 @@
             232
           ],
           "reasons": [
+            "HE says redo: the direction looks like S and not SW",
             "drifts 30.1 px — eyeball it",
             "shallow strike: reach 0.28 — eyeball it"
           ],
@@ -1486,7 +1489,8 @@
           "unwrapped": null,
           "tries": 2,
           "generated_at": "2026-09-11T20:22:49+00:00",
-          "source": "south-east"
+          "source": "south-east",
+          "maintainer": "the direction looks like S and not SW"
         },
         "west": {
           "status": "warn",
