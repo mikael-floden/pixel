@@ -241,8 +241,12 @@ Server-authoritative movement, decks, collision, steer assist, fall damage, tap/
   why — "we only have animations in 8 directions and you will only be able to
   run in 8 directions on a keyboard" — but the snap costs FEEDBACK: "it's hard
   to see if you are close to snap to a new direction or not". So the heading
-  leans toward the finger's real bearing by his dial: **0 = today's snap
-  (the default), 0.5 = half the residual, 1 = continuous all the way round**.
+  leans toward the finger's real bearing by his dial ("Direction freedom
+  (stick)"): **0 = the plain 8-way snap, 0.5 = half the lean, 1 = continuous
+  all the way round; HIS DEFAULT IS 0.85** (maintainer 2026-09-11, off the
+  slider — nearly free movement with a last sliver of pull toward the octant
+  so the eight animations still read; it shipped at 0 only so the dial could
+  not change the game before he had looked at it).
   The finger's place in its 45deg sector (residual, clamped to half an
   octant) is mapped, times the dial, onto HALF the angular gap to the
   neighbouring octant's RUN heading on that side (`octantRunDeg`).

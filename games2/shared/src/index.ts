@@ -214,10 +214,12 @@ export interface InputMessage {
  *  eight facings, a heading that breathes. */
 export const STICK_LEAN_MIN = 0;
 export const STICK_LEAN_MAX = 1;
-/** 0 — today's behaviour to the pixel, because the dial exists for him to find
- *  the number and a default that changed the game before he had looked at it
- *  would be my taste, not his. */
-export const STICK_LEAN_DEFAULT = 0;
+/** HIS NUMBER, found on the slider (maintainer 2026-09-11: "the 'Directional
+ *  freedom stick' should have a default on 0.85"). Nearly free movement, with
+ *  a last sliver of pull toward the octant so the eight animations still read.
+ *  Not a placeholder — do not "restore" 0 (the dial shipped at 0 only so he
+ *  could find the number before it changed the game). */
+export const STICK_LEAN_DEFAULT = 0.85;
 
 /** Half an octant: the most a snapped heading can ever be wrong by, and so the
  *  most a lean can ever be asked to undo. */

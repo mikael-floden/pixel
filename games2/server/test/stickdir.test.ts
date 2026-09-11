@@ -26,8 +26,8 @@ const snapOf = (ax: number, ay: number) => (Math.atan2(ay, ax) * 180) / Math.PI;
 /** Shortest signed difference a..b, in (-180, 180]. */
 const diff = (a: number, b: number) => ((b - a + 540) % 360) - 180;
 
-test("the dial ships at 0 — today's snap, to the pixel", () => {
-  assert.equal(STICK_LEAN_DEFAULT, 0, "a default that changed the game before he looked at it would be my taste");
+test("the dial ships at HIS 0.85, and 0 is still today's snap to the pixel", () => {
+  assert.equal(STICK_LEAN_DEFAULT, 0.85, "his number off the slider — not a placeholder");
   // Every octant, finger anywhere inside it: at 0 the heading IS the octant.
   for (let oct = 0; oct < 8; oct++) {
     const ax = Math.round(Math.cos((oct * Math.PI) / 4));
@@ -38,6 +38,18 @@ test("the dial ships at 0 — today's snap, to the pixel", () => {
         Math.abs(diff(snap, deg(leanHeading(ax, ay, snap + off, 0)))) < 1e-9,
         `octant ${oct}, finger ${off}deg off: lean 0 must not move the heading`,
       );
+  }
+  // …and the shipped default leans nearly all the way: at the sector edge it
+  // reaches 0.85 of the half-gap to the neighbour's run heading.
+  for (let oct = 0; oct < 8; oct++) {
+    const ax = Math.round(Math.cos((oct * Math.PI) / 4));
+    const ay = Math.round(Math.sin((oct * Math.PI) / 4));
+    const snap = snapOf(ax, ay);
+    for (const off of [-OCTANT_HALF_DEG, -9, 9, OCTANT_HALF_DEG]) {
+      const full = diff(octantRunDeg(oct), deg(leanHeading(ax, ay, snap + off, 1)));
+      const def = diff(octantRunDeg(oct), deg(leanHeading(ax, ay, snap + off, STICK_LEAN_DEFAULT)));
+      assert.ok(Math.abs(def - STICK_LEAN_DEFAULT * full) < 1e-9, `octant ${oct} ${off}deg off: the default is ${STICK_LEAN_DEFAULT} of the full lean`);
+    }
   }
 });
 
