@@ -228,7 +228,12 @@ anything something still DRAWS: a base-set member (`live/tuning/base_tile_sets.j
 `tiles/resolve.json`), a wall donor in `live/tuning/top_walls.json` ("the wall might
 still have been accepted" - the game draws that wall under other tiles), a plate-pool
 member, a games2 fixture. `tile_walls.json` `top_only` is the wall's own rejection and
-never keeps. The bare-key verdict from before faces existed (2026-08-21, every
+never keeps. **A base-set member stays whatever its detail verdict** (maintainer
+2026-09-12: "99.99% of the time a detail tile is not part of a base tile. But this is
+different sets so ofc it may happen ... it's not a rule that is forbidden"). "Not a
+detail" and "in my set" are two independent judgements, so a rejected tile that his set
+draws is not a conflict to put to him - it is kept, silently, until he drops it from the
+set. The bare-key verdict from before faces existed (2026-08-21, every
 candidate carries an approval there) counts only while no faced verdict is newer -
 read beside a later `#top` rejection it kept every rejected tile. A top-only sheet
 shrinks with the verdict (its `meta.json` lists the `removed` tiles, so `is_complete`
