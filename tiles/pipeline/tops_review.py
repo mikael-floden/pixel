@@ -46,6 +46,7 @@ REFERENCE_FILES = [
     os.path.join(REPO, "live", "tuning", "base_tile_sets.json"),
     os.path.join(ROOT, "resolve.json"),
     os.path.join(ROOT, "plates", "index.json"),
+    os.path.join(ROOT, "ground_types.json"),      # his promoted base tile per ground
 ] + sorted(glob.glob(os.path.join(REPO, "games2", "server", "test", "fixtures", "*.json")))
 
 

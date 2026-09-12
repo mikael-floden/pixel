@@ -10,7 +10,7 @@
   "prompt": "brown paving stone, a loose pebble in the middle, brown paving stone all around the edge",
   "palette_top": "#7d7265",
   "tile_id": "0477286b-3e2c-42e8-8d1f-6e83fc5ce28a",
-  "n_tiles": 16,
+  "n_tiles": 12,
   "tiles": [
     "tile_00.webp",
     "tile_01.webp",
@@ -22,12 +22,8 @@
     "tile_07.webp",
     "tile_08.webp",
     "tile_09.webp",
-    "tile_10.webp",
-    "tile_11.webp",
     "tile_12.webp",
-    "tile_13.webp",
-    "tile_14.webp",
-    "tile_15.webp"
+    "tile_14.webp"
   ],
   "settings": {
     "tile_size": 64,
@@ -128,5 +124,27 @@
   },
   "motif": "a loose pebble",
   "motif_source": "tiles/config/details.json",
-  "walkable": true
+  "walkable": true,
+  "removed": {
+    "tile_10.webp": {
+      "status": "rejected",
+      "at": "2026-09-12T05:05:21+00:00",
+      "record": "tiles/tops/removed.json"
+    },
+    "tile_11.webp": {
+      "status": "rejected",
+      "at": "2026-09-12T05:05:21+00:00",
+      "record": "tiles/tops/removed.json"
+    },
+    "tile_13.webp": {
+      "status": "rejected",
+      "at": "2026-09-12T05:05:21+00:00",
+      "record": "tiles/tops/removed.json"
+    },
+    "tile_15.webp": {
+      "status": "rejected",
+      "at": "2026-09-12T05:05:21+00:00",
+      "record": "tiles/tops/removed.json"
+    }
+  }
 }

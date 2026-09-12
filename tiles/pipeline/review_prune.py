@@ -51,6 +51,13 @@ def references():
         "resolve": os.path.join(ROOT, "resolve.json"),
         "plates_index": os.path.join(ROOT, "plates", "index.json"),
         "hard_cells": os.path.join(ROOT, "hard_cells.json"),
+        # THE GROUND'S PROMOTED BASE TILE (ground_types.json base_tiles) is HIS pick
+        # for what a whole field of that ground reads as - the strongest keep there is.
+        # Measured 2026-09-12: his brown_paving_stone review rejected every candidate in
+        # brown_paving_stone__over__brown_paving_stone, including the one his own ground
+        # type promotes, and without this the paving would have lost its base tile AND
+        # the ground's only x-over-x wall source in one pass.
+        "ground_types": os.path.join(ROOT, "ground_types.json"),
     }
     for p in sorted(glob.glob(os.path.join(REPO, "games2", "server", "test", "fixtures", "*.json"))):
         files["games2 fixture " + os.path.basename(p)] = p
