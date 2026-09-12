@@ -360,6 +360,15 @@ Server-authoritative movement, decks, collision, steer assist, fall damage, tap/
   changes must persist `DIR_STICK_MS` before the sprite turns; 90°+ turns
   switch instantly; a direction-only clip change resumes at the same loop
   progress (no stride restart). Display-only — movement math untouched.
+- **A SLIDE IS NEVER FASTER THAN THE RUN** (`stepMovement`, maintainer
+  2026-09-12, the caves: "when I run into a wall at a certain angle the
+  player is moving much faster"). The axes resolve separately, so a refused
+  axis left the other's WORLD component intact — and a world axis projects
+  longer on the iso screen (34.9 px per unit) than the heading it came from
+  (screen-down 19.8): sliding along a wall ran at 1.22x the free speed on
+  screen from the keys, up to 1.36x leaned. The slide keeps its direction and
+  is scaled so its screen length never exceeds the free step's. Gate: the
+  full-circle sweep in `server/test/collision.test.ts`.
 - **Controls are screen-relative**: `stepMovement(..., screenInput)` rotates
   input by the projection ratio (`ISO_DX`/`ISO_DY` in `shared/`; the client's
   `MAP_GEOMETRY` imports them so they can't drift) — Up walks straight up on

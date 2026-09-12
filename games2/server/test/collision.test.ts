@@ -767,3 +767,43 @@ test("findPath best-effort: unreachable goal routes to the reachable rim", () =>
   const end = path[path.length - 1];
   assert.ok(end.x < 4 * CELL_WU, `stops on the reachable side (ended at x=${end.x.toFixed(0)})`);
 });
+
+
+/* A SLIDE IS NEVER FASTER THAN THE RUN (maintainer 2026-09-12, the caves:
+ * "when I run into a wall at a certain angle the player is moving much
+ * faster"). The axes resolve separately, and a world axis projects longer on
+ * the iso screen than the heading it came from — so sliding along a wall
+ * went up to 1.36x the free speed ON SCREEN. */
+test("sliding along a wall never moves faster on screen than running free", () => {
+  const W = 40;
+  const H = 40;
+  const rows = Array.from({ length: H }, () => Array.from({ length: W }, () => ({ t: "grass", l: 0 })));
+  for (let r = 0; r < H; r++) for (let c = 20; c < W; c++) rows[r][c].l = 5; // a wall across +x
+  const g = buildTerrainGrid(W, H, rows, [], []);
+  const walk = { maxClimb: WALK_CLIMB, canSwim: true };
+  const screenLen = (mx: number, my: number) => Math.hypot((mx - my) * ISO_DX, (mx + my) * ISO_DY);
+  const run = (ax: number, ay: number, x0: number, y0: number) => {
+    let x = x0;
+    let y = y0;
+    for (let i = 0; i < 30; i++) {
+      const r = stepMovement(x, y, ax, ay, true, 1 / 30, makeBlocked(g, walk), 1, true, W * CELL_WU, H * CELL_WU, makeSideBlocked(g, walk));
+      x = r.x;
+      y = r.y;
+    }
+    return { screen: screenLen(x - x0, y - y0), wy: (y - y0) / CELL_WU };
+  };
+  // Every screen heading over the circle, keys and leaned alike.
+  let worst = 0;
+  for (let deg = -180; deg < 180; deg += 5) {
+    const ax = Math.cos((deg * Math.PI) / 180);
+    const ay = Math.sin((deg * Math.PI) / 180);
+    const free = run(ax, ay, 10 * CELL_WU, 20 * CELL_WU);
+    const wall = run(ax, ay, 19.4 * CELL_WU, 20 * CELL_WU);
+    worst = Math.max(worst, wall.screen / Math.max(1, free.screen));
+    assert.ok(wall.screen <= free.screen * 1.001, `heading ${deg}deg: slid ${wall.screen.toFixed(0)} screen px/s against ${free.screen.toFixed(0)} free`);
+  }
+  // …and the slide still slides: screen-down into the +x wall carries on along +y.
+  const down = run(0, 1, 19.4 * CELL_WU, 20 * CELL_WU);
+  assert.ok(down.wy > 3, `screen-down against the wall should still slide along it, moved ${down.wy.toFixed(2)} cells in y`);
+  assert.ok(worst <= 1.001, `worst slide/free ratio ${worst.toFixed(3)}`);
+});

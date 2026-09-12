@@ -720,6 +720,30 @@ export function stepMovement(
       blocked && (blocked(rx, py, rx, ry) || sideB!(rx - SIDE, py, rx, ry) || sideB!(rx + SIDE, py, rx, ry));
     if (!blockedY) ry = ty;
     else freeY = false;
+    /* A SLIDE IS NEVER FASTER THAN THE RUN. The axes resolve separately, so a
+     * refused axis leaves the other's WORLD component intact — and a world
+     * axis projects LONGER on the iso screen (hypot(dx, dy) = 34.9 px per
+     * unit) than the heading it came from (screen-down is 19.8 px per unit).
+     * Running screen-down into a wall that blocks +x slid along +y at 6,830
+     * screen px/s against 5,600 free: 1.22x, and up to 1.36x for a leaned
+     * heading (maintainer 2026-09-12, the caves: "when I run into a wall at
+     * a certain angle the player is moving much faster"). The slide keeps its
+     * direction and is scaled so its SCREEN length never exceeds the free
+     * step's. */
+    if ((blockedX || blockedY) && (rx !== fx || ry !== fy)) {
+      const mx = rx - fx;
+      const my = ry - fy;
+      const want = Math.hypot((sx - sy) * ISO_DX, (sx + sy) * ISO_DY);
+      const got = Math.hypot((mx - my) * ISO_DX, (mx + my) * ISO_DY);
+      if (got > want + 1e-9) {
+        const f = want / got;
+        rx = fx + mx * f;
+        ry = fy + my * f;
+        // The free axis must keep the scaled sum, not be re-applied whole.
+        freeX = false;
+        freeY = false;
+      }
+    }
     if (rx === fx && ry === fy) {
       /* THE GLIDE. Per-axis resolution slides along a WALL — one axis survives
        * — but an ellipse refuses both axes at once for every heading that is
