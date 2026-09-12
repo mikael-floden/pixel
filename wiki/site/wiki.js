@@ -10021,7 +10021,10 @@ function viewWorldType(top) {
         dPass === PASS_RAW && !cand.raw
           ? h("span", { class: "pill warn", title: "No raw art for this tile (pre-@2 generation) — showing the postprocessed top" }, "after only")
           : null),
-      state.admin ? h("div", { class: "card-sub" },
+      // THE BUTTONS SIT UNDER HIS THUMB — right, where a hand holding a phone
+      // already is (maintainer 2026-09-12), and on the same pixel card after
+      // card (see judgedInPlace).
+      state.admin ? h("div", { class: "card-sub judge-right" },
         feedbackRow("tiles", topKey(cand.key), {
           // THE CARD LEAVES, THE PAGE DOES NOT MOVE — see judgedInPlace above.
           onchange: () => judgedInPlace(card),
@@ -10037,9 +10040,13 @@ function viewWorldType(top) {
            * this row's onchange; the star is now routed past it instead. An
            * explicit approve still moves the card into the collection, which is
            * its own pinned behaviour. */
-          reject: "✕ not a detail",
-          rejectTitle: "This top is not ground-detail material — the tile itself is untouched",
-          rejectedLabel: "not a detail",
+          // "REMOVE", not "not a detail" (maintainer 2026-09-12). The verdict
+          // is the same one every other review writes, and the tooltip still
+          // says what it touches: the top leaves the detail pool, the tile
+          // itself is untouched.
+          reject: "✕ remove",
+          rejectTitle: "Remove this top from the ground's details — the tile itself is untouched",
+          rejectedLabel: "removed",
           note: false,
         })) : null];
     const detailCard = (x) => {
@@ -11259,12 +11266,16 @@ function worldCandidate(cell, cand, i, onVerdict, onStars) {
       // base tiles, ringed exactly as the game places it.
 
       onTop
-        ? feedbackRow("tiles", topKey(cand.key), {
+        ? h("div", { class: "judge-right" }, feedbackRow("tiles", topKey(cand.key), {
           glyph: ROOF_GLYPH,
-          reject: "✕ not a detail",
-          rejectTitle: "This top is not ground-detail material — the tile itself is untouched",
-          rejectedLabel: "not a detail",
-        })
+          // "REMOVE", not "not a detail" (maintainer 2026-09-12). The verdict
+          // is the same one every other review writes, and the tooltip still
+          // says what it touches: the top leaves the detail pool, the tile
+          // itself is untouched.
+          reject: "✕ remove",
+          rejectTitle: "Remove this top from the ground's details — the tile itself is untouched",
+          rejectedLabel: "removed",
+        }))
         : feedbackRow("tiles", cand.key, {
           onchange: onVerdict,
           // Under a filter this tile can disappear the moment it is marked, so

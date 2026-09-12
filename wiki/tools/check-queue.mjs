@@ -64,6 +64,23 @@ const aim = async () => {
 };
 const first = await aim();
 console.log("aimed at:", JSON.stringify(first));
+
+// THE BUTTONS SIT ON THE RIGHT, where a hand holding a phone already is
+// (maintainer 2026-09-12: "Can you right align the approve/not a detail button
+// and rename 'not a detail' to just 'remove'?"). The stars keep the left.
+const row = await p.evaluate(() => {
+  const card = document.querySelector(".detail-queue .detail-card");
+  const v = card.querySelector(".judge-right .verdict");
+  const cr = card.getBoundingClientRect(), vr = v.getBoundingClientRect();
+  const stars = card.querySelector(".judge-right .fb-row > *").getBoundingClientRect();
+  return { labels: [...v.querySelectorAll("button")].map((x) => x.textContent.trim()),
+    gapRight: Math.round(cr.right - vr.right), gapLeft: Math.round(vr.left - cr.left),
+    starsFromLeft: Math.round(stars.left - cr.left) };
+});
+console.log("row:", JSON.stringify(row));
+ok(row.labels.join(" ") === "✓ approve ✕ remove", `the verdict reads approve and remove (${row.labels.join(" | ")})`);
+ok(row.gapRight < row.gapLeft, `and sits against the card's right edge (${row.gapRight}px from it, ${row.gapLeft}px from the left)`);
+ok(row.starsFromLeft < row.gapLeft, `while the stars keep the left (${row.starsFromLeft}px in)`);
 const seen = [first];
 for (let i = 0; i < 3; i++) {
   // TAP THE SAME SPOT — not the same element. That is the whole point.

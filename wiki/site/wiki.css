@@ -1951,3 +1951,10 @@ input[type="range"] { accent-color: var(--accent); }
 .take-row { display: flex; align-items: center; gap: 10px; }
 .take-row .take-label { flex: 0 0 auto; font-size: 12px; }
 .seg-takes { min-width: 0; }
+
+/* THE VERDICT SITS WHERE HIS THUMB IS (maintainer 2026-09-12, reviewing a
+   ground's details on a phone: "Can you right align the approve/not a detail
+   button"). The stars keep the left of the row; the buttons take the right,
+   which is the half a hand holding the phone already covers. `auto` rather
+   than a flex end on the row, so the stars do not move with them. */
+.judge-right .verdict { margin-left: auto; }

@@ -20,8 +20,15 @@ reviewed."*)
   natural render, which is the deal the stars have had since 2026-08-28.
 - The ONE render he cannot avoid: when the last visible card of the queue is
   judged, the next dozen are pulled in.
+- **The buttons sit on the RIGHT**, where a hand holding a phone already is,
+  and the stars keep the left (`judge-right`, `margin-left: auto` on the
+  verdict rather than a flex end on the row, so the stars do not move with
+  them). The reject button says **"✕ remove"** — his word (2026-09-12), not
+  "not a detail"; the tooltip still says what it touches, which is the detail
+  pool and not the tile.
 - Gate: `wiki/tools/check-queue.mjs` taps the same PIXEL four times and fails
-  unless each tap judges a different top and lands on the same coordinates.
+  unless each tap judges a different top and lands on the same coordinates, and
+  asserts the labels and the right alignment.
 
 ## The ground system: World (Tiles 3.0)
 
