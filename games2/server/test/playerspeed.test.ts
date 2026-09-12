@@ -34,6 +34,8 @@ import { Client } from "colyseus.js";
 import {
   ROOM_NAME,
   INPUT_TIME_SLACK,
+  WORLD_WIDTH,
+  WORLD_HEIGHT,
   PLAYER_SPEED_MIN,
   PLAYER_SPEED_MAX,
   PLAYER_SPEED_DEFAULT,
@@ -62,7 +64,19 @@ test("the player-speed dial is authoritative, clamped, and carried per input", a
   await gameServer.listen(port);
   try {
     const c = new Client(`ws://localhost:${port}`);
-    const r: any = await c.joinOrCreate(ROOM_NAME, { name: "Runner", character: "default_boy", monsterCount: 0 });
+    // THE OPEN PLAIN, NOT THE_GAME. A room loads the_game unless asked for a
+    // world that does not exist, and on real ground the surface speed under
+    // the feet and the walls beside them vary with the random spawn: measured
+    // at the_game's centre, +x covered 23.6 wu a batch and -x 8.7 — terrain,
+    // not the dial. An unknown world is the documented open-world fallback
+    // (no terrain, the player's own dial and nothing else), and it is the same
+    // room the deploy gate's sparse checkout gets, so both runs see one world.
+    const r: any = await c.joinOrCreate(ROOM_NAME, {
+      name: "Runner",
+      character: "default_boy",
+      monsterCount: 0,
+      world: "open-plain",
+    });
     r.onMessage("chat", () => {});
     r.onMessage("inv", () => {});
     r.onMessage("star", () => {});
@@ -77,29 +91,35 @@ test("the player-speed dial is authoritative, clamped, and carried per input", a
     room.setSimulationInterval(undefined);
     const me = () => room.state.players.get(r.sessionId);
     assert.ok(me(), "the runner is in the room state");
+    assert.equal(room.terrain, null, "the open plain has no terrain");
+    // The plain spawns at a random spot near its centre; pin the runner to the
+    // centre itself so no leg can ever reach the world's edge clamp.
+    me().x = WORLD_WIDTH / 2;
+    me().y = WORLD_HEIGHT / 2;
 
-    /** Send INPUTS inputs of INPUT_DT at the given dial over the wire, wait for
-     *  every one to be queued, integrate them with the clock this test turns,
-     *  and return the ground covered. Alternating east and west so the run
-     *  stays in one place; the open world has no terrain, so the only thing
-     *  changing between runs is `sm`. */
-    const INPUTS = 12;
+    /** Walk BATCHES × 3 inputs of INPUT_DT at the given dial, over the wire,
+     *  and return the ground covered. One update per batch of three: the
+     *  update grants the whole burst allowance, three inputs claim 0.24 of
+     *  its 0.25 s, so every input integrates in full and the distance is the
+     *  dial's alone — the update drains its queue whatever the credit, so a
+     *  fourth input in the same batch would be CLIPPED, not deferred.
+     *  Alternating east and west so the run stays in one place; the plain
+     *  has no terrain, so the only thing changing between runs is `sm`.
+     *  Measured: 20.16 wu a batch at the default, every batch, every dial. */
+    const BATCHES = 8;
     const INPUT_DT = 0.08;
     let seq = 0;
     const runWith = async (sm: number | undefined, ax: number) => {
       const x0 = me().x;
-      for (let i = 0; i < INPUTS; i++) {
-        const msg: Record<string, unknown> = { ax, ay: 0, running: false, dt: INPUT_DT, seq: ++seq };
-        if (sm !== undefined) msg.sm = sm;
-        r.send("input", msg);
-      }
-      await waitFor(() => me().inputQueue.length === INPUTS, 6000, `${INPUTS} inputs queued`);
-      // Each step grants the full burst allowance, which covers three inputs
-      // (0.24 of 0.25 s): nothing is clipped, the distance is the dial's alone.
-      let steps = 0;
-      while (me().inputQueue.length) {
+      for (let b = 0; b < BATCHES; b++) {
+        for (let i = 0; i < 3; i++) {
+          const msg: Record<string, unknown> = { ax, ay: 0, running: false, dt: INPUT_DT, seq: ++seq };
+          if (sm !== undefined) msg.sm = sm;
+          r.send("input", msg);
+        }
+        await waitFor(() => me().inputQueue.length === 3, 6000, "a batch of three inputs queued");
         room.update(INPUT_TIME_SLACK);
-        assert.ok(++steps <= INPUTS, "the queue drains");
+        assert.equal(me().inputQueue.length, 0, "the batch drained");
       }
       assert.equal(me().seq, seq, "every input was acked");
       return Math.abs(me().x - x0);
@@ -116,14 +136,14 @@ test("the player-speed dial is authoritative, clamped, and carried per input", a
     // multiple of the baseline — the default is HIS dial to move (it went 1 ->
     // 1.2 the day the slider shipped) and a test that hardcoded "2x is twice
     // the baseline" would have gone red on his taste rather than on a bug.
-    // 1% tolerance: the integration is deterministic, so anything wider would
-    // only hide a dial that is partly applied.
+    // 1% tolerance: the integration is deterministic (measured exact to four
+    // places), so anything wider would only hide a dial that is partly applied.
     const ratio = (covered: number, sm: number) => {
       const want = Math.min(PLAYER_SPEED_MAX, Math.max(PLAYER_SPEED_MIN, sm)) / PLAYER_SPEED_DEFAULT;
       const got = covered / base;
       assert.ok(
         Math.abs(got / want - 1) < 0.01,
-        `sm=${sm} covered ${got.toFixed(3)}x the default walk, expected ${want.toFixed(3)}x`,
+        `sm=${sm} covered ${covered.toFixed(3)}wu = ${got.toFixed(4)}x the default walk of ${base.toFixed(3)}wu, expected ${want.toFixed(4)}x`,
       );
       return got;
     };
@@ -138,9 +158,9 @@ test("the player-speed dial is authoritative, clamped, and carried per input", a
     assert.ok(rCap > r2, "the cap must still be faster than 2x");
     assert.ok(rSlow < rAbsent, "the floor must still be slower than the default");
     console.log(
-      `player speed: default ${PLAYER_SPEED_DEFAULT}x = ${base.toFixed(1)}wu; ` +
-        `2x ${r2.toFixed(3)}x, no-dial ${rAbsent.toFixed(3)}x, ` +
-        `sm=99 ${rCap.toFixed(3)}x (cap ${PLAYER_SPEED_MAX}), ${PLAYER_SPEED_MIN}x ${rSlow.toFixed(3)}x`,
+      `player speed: default ${PLAYER_SPEED_DEFAULT}x = ${base.toFixed(3)}wu; ` +
+        `2x ${r2.toFixed(4)}x (${twice.toFixed(3)}wu), no-dial ${rAbsent.toFixed(4)}x, ` +
+        `sm=99 ${rCap.toFixed(4)}x (cap ${PLAYER_SPEED_MAX}), ${PLAYER_SPEED_MIN}x ${rSlow.toFixed(4)}x`,
     );
     await r.leave();
   } finally {
