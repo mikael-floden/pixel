@@ -11,7 +11,18 @@ The ground render texture (scroll, slices, cell repaints, prefetch, compose budg
   CELLS below; cliffs 38 → 11, cave 51 → 17), `rebuildOccluders` 50-133 ms
   every 96 px (done: THE WALK IS INCREMENTAL below), `repaintCells` 112 ms
   and transition composing 105 ms in one frame (the 2 ms budget bypassed —
-  next), an `avatarLoop` spike of 159 ms.
+  next), an `avatarLoop` spike of 159 ms. After burst 2 (his run 7ed5f6a7:
+  7/7 lag frames a window) no single burst is left; a slow frame is the
+  ground texture work (slice 15-38 ms, cell repaints 10-54 ms, prefetch
+  10-20 ms — ~600 ms of the 48 slowest frames) plus GPU waits (~580 ms) that
+  track the composed-texture churn (window 1: 669 GL textures created,
+  165 MB uploaded, 8,800-10,600 textures live). THERE IS NO TRANSITION
+  SHADER: every boundary, fade and capped plate is composed on the CPU per
+  (pattern, groundA, groundB) and uploaded as its own texture. Settings
+  "shader test" (`Tiles3Textures.simNoCompose`, beacon `sim: nocompose`)
+  composes nothing — raw plates, hard edges — and is the ceiling a
+  compositing shader (mask select on the GPU, sources uploaded once) can
+  reach; measured before one is written.
 - **THE OCCLUDER SET IS POOLED, NOT REBUILT** (`occImage`, `destroyBatch`,
   2026-09-02). A rebuild used to destroy every image and create every image,
   and 90-95% of what it created was bit-identical to what it had just
