@@ -523,6 +523,30 @@ dressing). `this.maps3` gates every terrain branch (false only for a hand-built
   is held equal with render3 by the parity fixtures (THE RESOLVER AND render3
   HOLD ONE RULE SET, above).
 
+- **A SET MEMBER LEAVES ITS SET ON HIS VERDICT ON THE TILE, NEVER ON ITS
+  `#top` DETAIL VERDICT** (`memberRejected`, 2026-09-12). The pool drops a
+  member whose review key (the pair verdict) or raw tile string is `rejected`;
+  `<key>#top` is his detail review, and a `rejected` there is "not a detail" —
+  by the live channel's contract "it does not reject the tile" (live/README.md,
+  2026-08-21), and by his word "not a detail" and "in my set" are independent
+  judgements (2026-09-12, via the tiles agent, who keeps the 57 rejected tops
+  his sets draw). A `tiles/tops` member's ONLY verdict key is that facet, so
+  it leaves a set only when he removes it in the wiki. (The pool probed the
+  facet until 2026-09-12, and his detail pass that morning silently emptied 33
+  of his sets: 219 of 340 members dropped, none by a verdict on the tile;
+  measured on the_game, 29.3% of the land and 11 of the 16 roofs and bridges
+  drew the clean plate, brown/grey paving and parquet at 74-96% flat — the
+  flat grey grid he photographed on the spawn house, whose roof's region picks
+  brown_paving_stone set 2, all four members `#top`-rejected between 04:13
+  and 04:15 UTC. Under the tile-verdict rule no set is empty and the flat share
+  is the 12.6% his weighted Clean sets ask for.) STILL OPEN: a set he empties
+  by rejecting every TILE still wins its region at full weight and draws clean
+  — none today; the fix would be weight 0 for an emptied set in `pickSet`,
+  mirrored in render3 and the wiki reference. render3's `_member_rejected`
+  probes the facet too and is asked of maps2 to mirror this, then the parity
+  fixtures regenerate. Gate: `server/test/tiles3members.test.ts` (data-free
+  arms run in the deploy gate).
+
 - **Anti-tiling: NONE, on purpose.** Varying tiles is the maps agent's job —
   this repo never swaps a cell's art. REJECTED and fully rolled back: a shader
   seam-smear AND a brightness "ground wash" (maintainer wants the fresh,

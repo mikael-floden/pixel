@@ -1534,14 +1534,27 @@ export class Tiles3 {
     return [ax, (a - ax) / view.width];
   }
 
-  /** Did he reject this member? The verdict rides the member's key, that key
-   *  plus `#top`, or the raw tile string. */
+  /** Did he reject this member — THE TILE ITSELF? The verdict rides the
+   *  member's key (a review member's pair verdict) or the raw tile string.
+   *
+   *  NEVER THE `#top` FACET. `<key>#top` is his DETAIL review — "is this top a
+   *  once-in-a-while detail" — and by the live channel's own contract a
+   *  `rejected` there means "not a detail", "it does not reject the tile"
+   *  (live/README.md, 2026-08-21). The maintainer said it again on
+   *  2026-09-12: "not a detail" and "in my set" are independent judgements, so
+   *  a tile stays in his set whatever its detail verdict, and a `tiles/tops`
+   *  member — whose ONLY verdict key is that facet — leaves a set only when he
+   *  removes it in the wiki. This probed the facet until 2026-09-12 and his
+   *  detail pass that morning silently emptied 33 of his sets (219 of 340
+   *  members dropped, none by a verdict on the tile): 29% of the_game's land
+   *  and 11 of its 16 roofs and bridges drew the clean plate, which is the flat
+   *  grey grid he photographed on the spawn house. render3's `_member_rejected`
+   *  is the mirror; the parity fixture holds the two equal. */
   memberRejected(m: BaseMember): boolean {
     if (m.kind !== "tile" || !m.tile) return false;
     const fb = this.data.feedback ?? {};
     const k = memberVerdictKey(m.tile);
-    for (const probe of [k, `${k}#top`, m.tile])
-      if (fb[strip(probe)]?.status === "rejected") return true;
+    for (const probe of [k, m.tile]) if (fb[strip(probe)]?.status === "rejected") return true;
     return false;
   }
 

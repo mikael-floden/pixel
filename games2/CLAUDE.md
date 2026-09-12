@@ -88,6 +88,8 @@ secrets; push to `main`, rebase on reject, no PRs unless asked; doc law.
 - Ground DETAILS are his approved `tiles/tops` details + the x-over-y top
   approvals, one in N cells by the Settings "Ground details" dial
   (`detailrate.ts`, default 1 in 56); never tiled, never on an indoor floor.
+- A base-set member leaves its set on his verdict on THE TILE, never on its
+  `#top` detail verdict (independent, maintainer 2026-09-12; `tiles3members.test.ts`).
 - The resolver is PER CELL (`Tiles3World`), never the sweep, and it is held
   deeply equal to the sweep and to `maps2/pipeline/render3.py` by the parity
   fixtures (`scripts/tiles3-fixture.py`); a resolution rule changes in
@@ -151,8 +153,8 @@ secrets; push to `main`, rebase on reject, no PRs unless asked; doc law.
   wiki's `rectCorners`, never re-derive; ONE lookup, `sceneryHitboxRec`.
 - Indoor furniture is drawn while its roof is cut away and crossfades with it;
   flat (`collision:false`) pieces draw under everything, no lit copy. An
-  OUTSIDE piece over half the room's floor fades out (`scenerycover.ts`,
-  2026-09-12); a smaller one keeps its silhouette.
+  OUTSIDE piece over half the room's floor fades out (`scenerycover.ts`); a
+  smaller one keeps its silhouette.
 - Scenery animates once then sleeps per class; a lit clip moves its light
   (both defaults are his: foliage 1-8 s, fire 0-1, water 1-4, rigid 10-30;
   swing 0.12x).
