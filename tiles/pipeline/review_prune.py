@@ -14,6 +14,10 @@ What goes: the manifest entry, before/after/textured art (every hashed generatio
 the source is deferred in tombstones.json so publish.py can never bring it back. A cell
 left with no candidate is flagged needs_regeneration. publish.py is NOT run - the raw
 matrix is container-local and a republish would re-hash art his base sets point at.
+tile_states.py IS re-run at the end: a surviving top-only tile may borrow its wall from a
+donor this pass deleted, and a key is not a file, so nothing that checks files sees it
+(three grey_stone-over-ice tops, 2026-09-12); check_immutable.py check 4 fails on any
+donor still missing.
 
     python3 tiles/pipeline/review_prune.py [--cell black_rock__over__]   # dry run
     python3 tiles/pipeline/review_prune.py --apply [--cell ...]
@@ -141,6 +145,7 @@ def plan(prefix=None):
 
 
 def apply(man, drop):
+    import tile_states  # before any mutation: a missing dependency fails here, not after git rm
     dropped = {e["key"] for _, e, _ in drop}
     paths = []
     for cell, e, _ in drop:
@@ -173,6 +178,10 @@ def apply(man, drop):
             f.write("\n".join(os.path.relpath(p, REPO) for p in existing) + "\n")
         subprocess.run(["git", "rm", "-q", "--pathspec-from-file", spec], cwd=REPO, check=True)
         os.remove(spec)
+    # THE DONOR RULE: re-fold top_only / own_top / borrow_wall from the survivors, so the
+    # manifest never names a wall donor this pass deleted (0.2 s, byte-identical when
+    # nothing changed).
+    tile_states.build()
     return len(existing), n_def
 
 

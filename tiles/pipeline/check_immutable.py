@@ -10,7 +10,7 @@ structurally impossible here: a regenerable art file's NAME contains the sha1 of
 CONTENT, so the same URL can never serve two different pixels - a stale cache shows a
 coherent old version or a 404, never a mix.
 
-Three checks, and every one is falsifiable:
+Four checks, and every one is falsifiable:
 
   1. NO MUTABLE NAMES. No file exists under a regenerable pass's old stable-name
      pattern (`<n>_textured.webp`, `post/tile_NN.webp` unhashed). Such a file is a
@@ -21,6 +21,13 @@ Three checks, and every one is falsifiable:
   3. HASHES ARE TRUE. Every content-hashed filename re-hashes to its own name. If
      anything ever rewrites a hashed file in place - the one remaining way to
      recreate the bug - this line catches it before the maintainer ever can.
+  4. EVERY KEY REFERENCE RESOLVES. A published tile can name ANOTHER tile by its
+     review key (`borrow_wall`: the x-over-x tile that builds the wall under a
+     top-only tile), and `tiles/resolve.json` maps base-tile-set members to art.
+     A key is not a file, so checks 2 and 3 never saw one dangle. (Measured
+     2026-09-12: a review prune deleted ice-over-ice donors three surviving
+     grey_stone-over-ice tops borrowed from; the manifest shipped naming art that
+     was gone and only a re-run of tile_states.py by hand caught it.)
 
 Exit code 1 on any violation. publish.py runs it at the tail of every publish, so a
 violation cannot ride a green build.
@@ -107,14 +114,46 @@ def main():
                     if not os.path.isfile(p2):
                         bad.append(f"DANGLING {fname}: {e['dir']}/post/{e['file']}")
 
+    # 4. every KEY reference resolves
+    keys = {e["key"] for c in man["cells"].values() for e in c["candidates"]}
+    for c in man["cells"].values():
+        for e in c["candidates"]:
+            w = e.get("borrow_wall")
+            if w and w not in keys:
+                bad.append(f"DANGLING borrow_wall: {e['key']} borrows {w}, which is not "
+                           "in the manifest (re-run tile_states.py)")
+    # resolve.json is the lookup every base-tile-set consumer draws from. A conform
+    # member's art is a hashed textured name the textured pass re-hashes and prunes
+    # past current+1 (the tops rot repoint_pruned catches, on the review tree); a miss
+    # here is a base-set member drawing nothing.
+    rp = os.path.join(ROOT, "resolve.json")
+    if os.path.isfile(rp):
+        for m, v in (json.load(open(rp)).get("members") or {}).items():
+            if not isinstance(v, dict):
+                continue
+            art = v.get("art")
+            if art and not os.path.isfile(os.path.join(REPO, art)):
+                bad.append(f"DANGLING resolve.json art: {m} -> {art} "
+                           "(re-run member_resolve.py)")
+            if v.get("kind") == "conform" and m not in keys:
+                bad.append(f"DANGLING resolve.json member: {m} is not in the manifest "
+                           "(re-run member_resolve.py)")
+    # the maintainer's promoted base tile per ground, by path
+    gp = os.path.join(ROOT, "ground_types.json")
+    if os.path.isfile(gp):
+        for g, gv in (json.load(open(gp)).get("grounds") or {}).items():
+            for t in (gv.get("base_tiles") or []) if isinstance(gv, dict) else []:
+                if isinstance(t, str) and t.startswith("tiles/") and not os.path.isfile(os.path.join(REPO, t)):
+                    bad.append(f"DANGLING ground_types base_tiles: {g} -> {t}")
+
     if bad:
         print(f"*** CACHE-SAFETY GATE FAILED - {len(bad)} violation(s) ***")
         for b in bad[:20]:
             print("   " + b)
         print("   a violation here IS a cache bug in the making. Do not push.")
         return 1
-    print(f"cache-safety gate: OK - 0 mutable names, 0 dangling references, "
-          f"{checked} content hashes verified true")
+    print(f"cache-safety gate: OK - 0 mutable names, 0 dangling references (files and "
+          f"keys), {checked} content hashes verified true")
     return 0
 
 

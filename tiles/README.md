@@ -6,6 +6,13 @@ in git. Maintainer: "We will never go back to the tile2 system again.")
 
 > Naming: `tiles/` = Tiles 3.0; the plain name was reused from the retired v1.
 
+> Two agents work here (maintainer 2026-09-12): the tiles agent, and **tiles-assistant**,
+> its first assistant - the same remit, for the units the tiles agent is not in. The
+> assistant reads `coordination/tiles.json` first, never touches a file named there as in
+> flight, names every file it touches on `coordination/tiles-assistant.json`, and rebases
+> onto the tiles agent's pushes before every push. One writer per file still holds, and
+> the PixelLab floor is the tiles agent's.
+
 ## What is actually different
 
 Tiles 2.0 generated *interesting* tiles and then spent months fighting the results in
@@ -242,7 +249,11 @@ stays true); a sheet that lost EVERY tile keeps `meta.json` as a tombstone with
 `tiles/tops/removed.json` is the durable record - the wiki prunes a feedback entry
 once the tile leaves the index. A rejected candidate's source is deferred in
 `tombstones.json` so `publish.py` cannot bring it back; a cell left empty is flagged
-`needs_regeneration`.
+`needs_regeneration`. `review_prune.py --apply` re-folds `tile_states.py` when it is done
+(a surviving top-only tile may borrow its wall from a donor the pass deleted, and a key is
+not a file, so the file checks never saw it - three grey_stone-over-ice tops, 2026-09-12),
+and `check_immutable.py` fails on any `borrow_wall`, `resolve.json` member or promoted
+base tile that no longer resolves.
 
 ## Art immutability (LAW, 2026-08-27)
 
