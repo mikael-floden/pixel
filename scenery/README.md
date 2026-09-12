@@ -5,7 +5,11 @@ trees, stones, graves, braziers, streetlights… Two properties define the
 domain against tiles: a piece can be placed anywhere (it does not follow the
 tile grid — `tiles2/`'s job), and it can animate (tiles cannot).
 
-Owned by the **scenery agent** (board file `coordination/scenery.json`).
+Owned by the **scenery agent** (board file `coordination/scenery.json`),
+with the **scenery-assistant** (2026-09-12, `coordination/scenery-assistant.json`)
+taking the units the scenery agent is idle or occupied for — it reads the
+scenery board first, never touches a file named there as in flight, and
+names every file it touches on its own board.
 Generated on [PixelLab](https://pixellab.ai); the **maps2 agent** places
 scenery in worlds; the game (`games2/`) renders it; the **maintainer**
 approves/rejects/comments every piece in the wiki's Scenery section.
@@ -268,6 +272,19 @@ of the decoded bytes (291 -> 211 MB), 36 MB on disk.
   correct, just bigger.
 - **Cache law**: never a stable name; current + one back (`prev`) so an open
   page keeps rendering through a deploy.
+- **Who runs it — nobody, by hand** (scenery-assistant 2026-09-12; the games
+  agent wrote the script under the maintainer's grant and asked this domain to
+  keep it current). Two hooks, both incremental (a family whose raw bytes hash
+  to its index's `src` is skipped: ~1 s over the 192 placed pieces when
+  nothing changed): `viewer_build.build()` calls `pack.refresh(jobs=1)` at the
+  end of EVERY pipeline script, so a re-rolled placed piece is re-cut in the
+  unit that re-rolled it; and `.github/workflows/scenery-pack.yml` packs after
+  a push that changes `maps2/worlds3/*/world.json`, `games2/config/publish.json`
+  or `scenery/**` outside `packed/`, commits, and dispatches the deploy when it
+  pushed anything (a bot-token push triggers no workflow on its own — so it
+  cannot loop, and cannot roll without the dispatch). Packing never fails a
+  publish: a piece that will not pack draws raw. `pack.py --check` is the gate
+  either way.
 
 ## Random horizontal flip — the game's half of the deal
 

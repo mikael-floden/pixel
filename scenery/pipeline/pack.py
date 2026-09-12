@@ -244,51 +244,57 @@ def stale_families(piece: str, index: dict) -> list:
     return todo
 
 
-def main():
-    ap = argparse.ArgumentParser()
-    ap.add_argument("--all", action="store_true", help="every piece, not only the placed ones")
-    ap.add_argument("--only", default=None, help="comma-separated piece ids (group/id)")
-    ap.add_argument("--check", action="store_true")
-    ap.add_argument("--jobs", type=int, default=max(1, (os.cpu_count() or 2) - 1))
-    args = ap.parse_args()
-    if args.only:
-        ids = [i for i in args.only.split(",") if os.path.exists(os.path.join(ROOT, i, "scenery.json"))]
-    elif args.all:
-        ids = all_pieces()
-    else:
+def refresh(ids=None, jobs=None, check=False, log=print) -> dict:
+    """Pack what is stale among `ids` (default: the pieces the published worlds
+    place); the one entry point for the CLI, for viewer_build.build() (every
+    pipeline script ends there, so a regenerated placed piece is re-cut in the
+    same unit) and for .github/workflows/scenery-pack.yml (a piece maps2 has
+    just placed). `jobs=1` packs inline, no process pool — what a caller
+    inside another pipeline wants. Returns {"pieces", "stale_families",
+    "touched"}; with `check` nothing is written."""
+    if ids is None:
         ids = placed_pieces()
     if not ids:
-        print("[pack] no pieces selected")
-        return
+        log("[pack] no pieces selected")
+        return {"pieces": 0, "stale_families": 0, "touched": []}
     indexes = {i: load_index(os.path.join(ROOT, i, "packed")) for i in ids}
     todo = []
     for i in ids:
         todo += stale_families(i, indexes[i])
-    if args.check:
+    if check:
         stale = sum(len(f[1]) for _, f in todo)
-        print(f"[pack] {len(ids)} pieces: {'STALE ' + str(stale) + ' files in ' + str(len(todo)) + ' families' if todo else 'up to date'}")
-        sys.exit(1 if todo else 0)
-    print(f"[pack] {len(ids)} pieces, {len(todo)} families to pack")
+        log(f"[pack] {len(ids)} pieces: {'STALE ' + str(stale) + ' files in ' + str(len(todo)) + ' families' if todo else 'up to date'}")
+        return {"pieces": len(ids), "stale_families": len(todo), "touched": []}
+    log(f"[pack] {len(ids)} pieces, {len(todo)} families to pack")
     touched = set()
-    with ProcessPoolExecutor(max_workers=args.jobs) as ex:
-        for n, (piece, recs, skipped) in enumerate(ex.map(pack_family, todo, chunksize=4), 1):
-            index = indexes[piece]
-            pdir = os.path.join(ROOT, piece, "packed")
-            for rel in skipped:
-                index["files"].pop(rel, None)  # stays raw: not on its still's canvas
-            for rel, rec, enc in recs:
-                path = os.path.join(pdir, rec["file"])
-                os.makedirs(os.path.dirname(path), exist_ok=True)
-                if not os.path.exists(path):
-                    with open(path, "wb") as f:
-                        f.write(enc)
-                old = index["files"].get(rel, {}).get("file")
-                if old and old != rec["file"]:
-                    rec["prev"] = old
-                index["files"][rel] = rec
-            touched.add(piece)
-            if n % 100 == 0:
-                print(f"[pack] {n}/{len(todo)} families")
+
+    def land(n, piece, recs, skipped):
+        index = indexes[piece]
+        pdir = os.path.join(ROOT, piece, "packed")
+        for rel in skipped:
+            index["files"].pop(rel, None)  # stays raw: not on its still's canvas
+        for rel, rec, enc in recs:
+            path = os.path.join(pdir, rec["file"])
+            os.makedirs(os.path.dirname(path), exist_ok=True)
+            if not os.path.exists(path):
+                with open(path, "wb") as f:
+                    f.write(enc)
+            old = index["files"].get(rel, {}).get("file")
+            if old and old != rec["file"]:
+                rec["prev"] = old
+            index["files"][rel] = rec
+        touched.add(piece)
+        if n % 100 == 0:
+            log(f"[pack] {n}/{len(todo)} families")
+
+    jobs = jobs or max(1, (os.cpu_count() or 2) - 1)
+    if jobs <= 1 or len(todo) < 4:
+        for n, job in enumerate(todo, 1):
+            land(n, *pack_family(job))
+    else:
+        with ProcessPoolExecutor(max_workers=jobs) as ex:
+            for n, (piece, recs, skipped) in enumerate(ex.map(pack_family, todo, chunksize=4), 1):
+                land(n, piece, recs, skipped)
     for piece in sorted(touched):
         index = indexes[piece]
         pdir = os.path.join(ROOT, piece, "packed")
@@ -316,9 +322,28 @@ def main():
             files += 1
             raw_b += r["srcW"] * r["srcH"] * 4
             packed_b += r["w"] * r["h"] * 4
-    print(f"[pack] {len(touched)} pieces written; {files} files in the selected indexes")
+    log(f"[pack] {len(touched)} pieces written; {files} files in the selected indexes")
     if raw_b:
-        print(f"[pack] decoded texels: raw {raw_b/1e6:.0f} MB -> packed {packed_b/1e6:.0f} MB ({100*packed_b/raw_b:.0f}%)")
+        log(f"[pack] decoded texels: raw {raw_b/1e6:.0f} MB -> packed {packed_b/1e6:.0f} MB ({100*packed_b/raw_b:.0f}%)")
+    return {"pieces": len(ids), "stale_families": len(todo), "touched": sorted(touched)}
+
+
+def main():
+    ap = argparse.ArgumentParser()
+    ap.add_argument("--all", action="store_true", help="every piece, not only the placed ones")
+    ap.add_argument("--only", default=None, help="comma-separated piece ids (group/id)")
+    ap.add_argument("--check", action="store_true")
+    ap.add_argument("--jobs", type=int, default=max(1, (os.cpu_count() or 2) - 1))
+    args = ap.parse_args()
+    if args.only:
+        ids = [i for i in args.only.split(",") if os.path.exists(os.path.join(ROOT, i, "scenery.json"))]
+    elif args.all:
+        ids = all_pieces()
+    else:
+        ids = placed_pieces()
+    r = refresh(ids, jobs=args.jobs, check=args.check)
+    if args.check:
+        sys.exit(1 if r["stale_families"] else 0)
 
 
 if __name__ == "__main__":

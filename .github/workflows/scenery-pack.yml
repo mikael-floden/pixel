@@ -1,0 +1,95 @@
+name: Scenery packed layer
+
+# THE PACKED LAYER FOLLOWS THE WORLDS (scenery-assistant, 2026-09-12).
+#
+# games2 draws every placed scenery piece from <piece>/packed/ — each art file
+# cut to its state's box under a content-hashed name (scenery/pipeline/pack.py;
+# scenery/README.md "THE PACKED LAYER"). The scenery pipeline re-packs a piece
+# it regenerates (viewer_build.build() ends every script), but a piece the
+# maps2 agent has JUST PLACED, or art changed by hand, draws RAW until pack.py
+# runs — correct, just bigger, and nobody keeps a laptop to run it (root
+# CLAUDE.md). So this runs it: on every push that changes what the worlds
+# place or what a placed piece looks like, pack what is stale, commit, push.
+#
+# Pushes are by GITHUB_TOKEN, which never triggers another workflow — this
+# cannot loop on its own scenery/** push, and it also cannot trigger the
+# deploy. So when something WAS packed the deploy is dispatched explicitly
+# (nangijala-deploy.yml resolves main's tip itself, so the push is what it
+# builds; a dispatch always rolls). Nothing packed = nothing pushed = no roll.
+on:
+  push:
+    branches: [main]
+    paths:
+      - "maps2/worlds3/*/world.json" # what the worlds place
+      - "games2/config/publish.json" # which worlds are published
+      - "scenery/**"                 # what a placed piece looks like
+      - "!scenery/**/packed/**"      # ...but not the layer itself
+      - ".github/workflows/scenery-pack.yml"
+  workflow_dispatch: {}
+
+permissions:
+  contents: write # the pack commit
+  actions: write # dispatching the deploy
+
+# One pack at a time; a second push while one runs queues behind it.
+concurrency:
+  group: scenery-pack
+  cancel-in-progress: false
+
+jobs:
+  pack:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    steps:
+      - name: Checkout main (sparse — only what pack.py reads)
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          # depth 1: the pack is >1 GiB of binary-art history; the commit+push
+          # below needs only the tip (rebase-on-reject fetches what it needs).
+          fetch-depth: 1
+          sparse-checkout: |
+            scenery
+            maps2/worlds3
+            games2/config
+          sparse-checkout-cone-mode: true
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Pack the placed pieces
+        run: python3 scenery/pipeline/pack.py | tee pack.log
+
+      - name: Commit and push what changed
+        id: push
+        run: |
+          git config user.name "pixel-scenery-bot"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add -A scenery
+          if git diff --cached --quiet; then
+            echo "pushed=0" >> "$GITHUB_OUTPUT"
+            echo "### Packed layer: up to date, nothing to commit" >> "$GITHUB_STEP_SUMMARY"
+            exit 0
+          fi
+          n=$(git diff --cached --name-only | grep -c '/packed/index.json$' || true)
+          git commit -m "scenery: pack ${n} placed piece(s) — the packed layer follows the worlds" \
+                     -m "$(grep '^\[pack\]' pack.log | tail -3)"
+          for attempt in 1 2 3 4; do
+            git push origin HEAD:main && break
+            git fetch origin main
+            git rebase origin/main || exit 1
+            sleep $((2 ** attempt))
+          done
+          echo "pushed=1" >> "$GITHUB_OUTPUT"
+          { echo "### Packed layer: ${n} piece(s) re-cut and pushed"; echo; grep '^\[pack\]' pack.log; } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Deploy the packed art (a GITHUB_TOKEN push never triggers the deploy on its own)
+        if: steps.push.outputs.pushed == '1'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh workflow run nangijala-deploy.yml --ref main

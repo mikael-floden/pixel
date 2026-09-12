@@ -176,7 +176,29 @@ def build():
     }
     with open(DATA_PATH, "w") as f:
         json.dump(data, f, indent=2)
+    _pack_placed()
     return data
+
+
+def _pack_placed():
+    """THE PACKED LAYER FOLLOWS THE ART (scenery-assistant 2026-09-12). games2
+    draws every placed piece from <piece>/packed/ (pipeline/pack.py, README
+    "THE PACKED LAYER"), and every pipeline script that touches art ends in
+    build() — so this is the one place a regenerated placed piece is re-cut
+    for the game, in the same unit that regenerated it. Incremental (a family
+    whose raw bytes match its index is skipped: ~1 s over the 192 placed
+    pieces when nothing changed; a re-rolled piece costs its own encodes) and
+    never fatal: a piece that fails to pack draws raw, which is correct, just
+    bigger. Pieces the worlds place AFTER this ran are the workflow's
+    (.github/workflows/scenery-pack.yml)."""
+    try:
+        import pack
+        r = pack.refresh(jobs=1, log=lambda *a: None)
+        if r["touched"]:
+            print(f"  packed: {len(r['touched'])} placed piece(s) re-cut for the game "
+                  f"({', '.join(r['touched'][:6])}{', ...' if len(r['touched']) > 6 else ''})")
+    except Exception as e:  # noqa: BLE001 — packing must never fail a publish
+        print(f"  ! pack skipped ({e}) — placed pieces draw raw until pipeline/pack.py runs")
 
 
 if __name__ == "__main__":
