@@ -3,7 +3,8 @@
 // stream, then (1) the worker is on and no job fell back, (2) every frame's upload stayed
 // inside the budget (KB=<n> env, default 128) plus one band, (3) the biggest banded
 // textures read back byte-identical to the same files uploaded the old way (an <img> under
-// UNPACK_PREMULTIPLY_ALPHA_WEBGL) and the worker's on-demand frame alpha equals the readback,
+// UNPACK_PREMULTIPLY_ALPHA_WEBGL), the worker's on-demand frame alpha and whole-image pixels equal
+// the readback, and a banded still's cut-frame box (from the seeded whole-image box) equals a fresh measure,
 // (4) a forced WebGL context loss + restore refills them
 // and parity holds again, (5) every scenery still the worker banded carries the same fit
 // (alphaBBox + size) a GPU readback measures. Needs a built client (`npm run build -w client`). Exit 1 on any
@@ -53,6 +54,21 @@ for (const p of par.slice(0, 3)) for (const fr of [0, 2]) { const al = await pag
 for (const p of par) if (p.error || !p.equal) fail(`parity ${p.key}: ${p.error ?? `${p.diff} bytes differ`}`);
 // (3b') the worker's on-demand alpha (what the outline and the foam clamp read now) equals the readback.
 for (const p of par.slice(0, 2)) for (const fr of [0, 2]) { const aw = await page.evaluate(([k,f])=>window.__ml.artAlphaWorker(k,f),[p.key,fr]); console.log(`  worker alpha ${p.key} frame ${fr}: ${aw.error ?? (aw.equal ? `IDENTICAL (${aw.waitedMs} ms)` : `diff ${aw.diff} texels`)}`); if (aw.error || !aw.equal) fail(`worker alpha ${p.key} frame ${fr}: ${aw.error ?? `${aw.diff} texels differ`}`); }
+// (3b'') the worker's whole-image pixels (what a still's light and shape map read now) against the readback,
+// and the cut-frame boxes derived from the seeded whole-image box against a fresh measure.
+{
+  const stills = await page.evaluate(()=>{ const out=[]; for (const k of window.__ml.sceneryKeys ? window.__ml.sceneryKeys() : []) out.push(k); return out; }).catch(()=>[]);
+  const keys = stills.length ? stills.slice(0,2) : await page.evaluate(()=>{ const t=window.__ml.tiles3(); return []; }).catch(()=>[]);
+  const pk = await page.evaluate(()=>{ const s=window.__ml.sceneryPack&&window.__ml.sceneryPack(); return s&&s.sample ? s.sample.slice(0,2) : []; }).catch(()=>[]);
+  const cand = (keys.length?keys:pk);
+  if (!cand.length) console.log("  (no scenery key sample from the probes; pixel parity via artParity's list)");
+  const list = cand.length ? cand : par.map(p=>p.key).slice(0,2);
+  for (const k of list) { const pw = await page.evaluate((key)=>window.__ml.artPixelsWorker(key),k); console.log(`  worker pixels ${k}: ${pw.error ?? (pw.equal ? `OK alpha exact, colour within ${pw.colourMaxDelta} (${pw.waitedMs} ms)` : `alphaDiff ${pw.alphaDiff} colourMaxDelta ${pw.colourMaxDelta}`)}`); if (pw.error || !pw.equal) fail(`worker pixels ${k}: ${pw.error ?? `alphaDiff ${pw.alphaDiff}, colour delta ${pw.colourMaxDelta}`}`); }
+  const ab = await page.evaluate(()=>window.__ml.artBoundsParity(80));
+  console.log(`  cut-frame boxes: checked ${ab.checked} mismatched ${ab.mismatched} provisional ${ab.provisional}${ab.bad.length?" "+ab.bad.join(" | "):""}`);
+  if (!ab.checked) fail("no cut-frame box of a banded still to compare");
+  if (ab.mismatched) fail(`cut-frame boxes: ${ab.mismatched} mismatched`);
+}
 // (3c) scenery stills ride the queue too: the fit the worker seeded (alphaBBox's box + the canvas size)
 // equals a fresh alphaBBox of the texture read back from the GPU, for every banded still on this route.
 const sf = await page.evaluate(()=>window.__ml.sceneryFitParity(60));

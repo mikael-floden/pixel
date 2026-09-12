@@ -17,7 +17,9 @@
  * decode per frame on the main thread. The pixels are in hand here, so the
  * boxes are measured once, off the main thread, and travel with the bands.
  * The other alpha readers (the outline, the foam clamp) ask for a frame's
- * alpha on demand (`alpha`), and the last few decoded files stay here for it.
+ * alpha on demand (`alpha`), the whole-image readers (a scenery still's light
+ * and shape map) for its pixels (`pixels`), and the last few decoded files
+ * stay here for both.
  *
  * THE MAIN THREAD BUILDS EVERY URL (staging rewrites `/assets/**` onto a CDN;
  * this file must never re-derive one). Nothing here touches WebGL: a worker
@@ -76,8 +78,26 @@ export interface ArtWorkerAlphaOk {
   /** The rectangle's alpha, row-major, one byte per texel. */
   a: Uint8Array;
 }
-export type ArtWorkerIn = ArtWorkerLoad | ArtWorkerAlpha;
-export type ArtWorkerOut = ArtWorkerOk | ArtWorkerErr | ArtWorkerAlphaOk;
+/** A FILE'S PIXELS ON DEMAND (Smooth 6): the whole image as straight RGBA,
+ *  for the readers that want every texel of a scenery still (the light
+ *  derivation, the shape map) and used to read the GL texture back for it —
+ *  on his phone a readback of a whole still is a pipeline drain, worse than
+ *  the decode it replaced (rebuildScenery 62-92 ms a long frame, run 21:57). */
+export interface ArtWorkerPixels {
+  type: "pixels";
+  id: number;
+  url: string;
+}
+export interface ArtWorkerPixelsOk {
+  type: "pixels";
+  id: number;
+  w: number;
+  h: number;
+  /** Row-major straight RGBA, what a 2D canvas answers for the file. */
+  data: Uint8ClampedArray;
+}
+export type ArtWorkerIn = ArtWorkerLoad | ArtWorkerAlpha | ArtWorkerPixels;
+export type ArtWorkerOut = ArtWorkerOk | ArtWorkerErr | ArtWorkerAlphaOk | ArtWorkerPixelsOk;
 
 /** Premultiplied HERE, so the upload under Phaser's
  *  `UNPACK_PREMULTIPLY_ALPHA_WEBGL true` is a copy and not a conversion; the
@@ -231,7 +251,26 @@ async function alpha(m: ArtWorkerAlpha): Promise<void> {
   }
 }
 
+async function pixels(m: ArtWorkerPixels): Promise<void> {
+  try {
+    if (typeof OffscreenCanvas === "undefined" || typeof createImageBitmap === "undefined") throw new Error("no OffscreenCanvas");
+    const whole = await wholeOf(m.url);
+    const w = whole.width;
+    const h = whole.height;
+    if (!w || !h) throw new Error("empty image");
+    const cv = new OffscreenCanvas(w, h);
+    const ctx = cv.getContext("2d", { willReadFrequently: true });
+    if (!ctx) throw new Error("no 2d context");
+    ctx.drawImage(whole, 0, 0);
+    const data = ctx.getImageData(0, 0, w, h).data;
+    post({ type: "pixels", id: m.id, w, h, data }, [data.buffer]);
+  } catch (e) {
+    post({ type: "err", id: m.id, error: String((e as Error)?.message ?? e) });
+  }
+}
+
 self.onmessage = (ev: MessageEvent<ArtWorkerIn>) => {
   if (ev.data?.type === "load") void load(ev.data);
   else if (ev.data?.type === "alpha") void alpha(ev.data);
+  else if (ev.data?.type === "pixels") void pixels(ev.data);
 };

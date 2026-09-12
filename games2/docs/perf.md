@@ -160,7 +160,27 @@ The ground render texture (scroll, slices, cell repaints, prefetch, compose budg
   (un-premultiplied within rounding — the scenery light block's colour
   average and the shape maps can bear that) for the readers that still want
   the whole still (`sceneryFit.clear()` on the scenery switch, the shape
-  maps). Gate: `__ml.sceneryFitParity(n)` compares
+  maps) — and THE READBACK IS NEVER INSIDE THE FRAME (Smooth 6, 2026-09-12:
+  his 21:57 run on Smooth 4 had `rebuildScenery` at 62-92 ms a long frame,
+  25 in one window, WORSE than the 33-66 before, and the headless profile
+  said why — `readPixels` was 59% of the rebuild's time: a scenery still is
+  drawn through a CUT frame (`addSceneryCut`), so `artBounds` missed the
+  seeded `__BASE` box and read the texture back, and the light derivation
+  and the shape jobs read the whole still back for its pixels; on a Mali a
+  readback drains the pipeline, worse than the decode it replaced). Now a
+  cut frame's box is the seeded whole-image box clipped into the cut — exact
+  when the cut holds every opaque texel (a still's cut is its own alpha box,
+  a clip frame's crop its state's box), a superset otherwise, refined from
+  the worker's alpha when it answers (`artBoundsRefine`) — and `texPixels`
+  on a banded texture hands over the worker's pixels on demand
+  (`ArtQueue.pixels`, one request per key, the answer taken once): the
+  light waits a rebuild for them (and for its unlit sibling's, so the
+  derivation never runs without the sibling and caches that), a shape job
+  waits a frame without blocking the jobs behind it. `texPixels(key, true)`
+  is the probes' synchronous readback. Gates: `__ml.artPixelsWorker(key)`
+  (alpha exact, colour within the un-premultiply's rounding),
+  `__ml.artBoundsParity(n)` (every derived cut-frame box against a fresh
+  measure). `__ml.sceneryFitParity(n)` compares
   every seeded fit against a fresh `alphaBBox` of the readback, in
   `scripts/verify-artworker.mjs` (checked > 0, mismatched 0). The art-worker
   Settings row bisects this too: off sends the stills the `<img>` way.

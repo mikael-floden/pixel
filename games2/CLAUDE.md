@@ -122,7 +122,10 @@ secrets; push to `main`, rebase on reject, no PRs unless asked; doc law.
   Chrome decodes it again inside the call, 5.8-9.2 ms a strip. Scenery
   stills ride it too, and their fit boxes come with the bands: never measure
   a streamed image's pixels on the frame thread (a first-sight canvas draw
-  is another decode; 33-66 ms a step into a fresh forest).
+  is another decode; 33-66 ms a step into a fresh forest), and NEVER read a
+  banded texture back from the GPU inside the frame (a whole-still readback
+  drains a phone GPU: 62-92 ms a frame) — boxes come with the bands, alpha
+  and pixels from the worker on demand (`docs/perf.md`).
 
 **Depth, occluders, scenery** (`docs/depth-sort.md`, `docs/scenery.md`)
 - ONE body pipeline: `resolveDrawDepth` + `placeBodyShadow` + `syncLitCopy`

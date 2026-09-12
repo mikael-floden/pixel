@@ -40,7 +40,7 @@
  * the number (`ml-upload-kb`, beacon `run.sim`), then it is pinned. */
 import Phaser from "phaser";
 import type { ArtWorkerIn, ArtWorkerOut } from "./artworker";
-import { drawFrameInto } from "./framepixels";
+import { drawFrameInto, readTexturePixels } from "./framepixels";
 
 export interface ArtJob {
   /** Texture key to create. A key that already exists is never fetched. */
@@ -106,6 +106,9 @@ export interface ArtQueueStats {
   /** Frame-alpha requests answered by the worker (`frameAlpha`), and the ones it could not. */
   alphaReqs: number;
   alphaErrors: number;
+  /** Whole-image pixel requests (`pixels`), and the ones the worker could not serve. */
+  pixelReqs: number;
+  pixelErrors: number;
 }
 
 /** THE DIAL — KB of texture per frame. 0 means unbounded (the old behaviour:
@@ -126,6 +129,8 @@ const KEY = "ml-upload-kb";
 const REFILL = "\0refill:";
 /** Frame-alpha answers kept until a reader takes them (`frameAlpha`). */
 const ALPHA_READY_MAX = 64;
+/** Whole-image answers kept until a reader takes them (`pixels`) — a still is up to a few MB. */
+const PIXELS_READY_MAX = 8;
 
 export function uploadKb(): number {
   try {
@@ -197,8 +202,14 @@ export class ArtQueue {
   private debt = 0;
   private stats: ArtQueueStats = {
     queued: 0, fetching: 0, ready: 0, readyKb: 0, landed: 0, failed: 0, landedKb: 0, frameKbMax: 0, frames: 0,
-    bands: 0, bandMs: 0, bandMax: 0, worker: 0, workerErrors: 0, refilled: 0, alphaReqs: 0, alphaErrors: 0,
+    bands: 0, bandMs: 0, bandMax: 0, worker: 0, workerErrors: 0, refilled: 0, alphaReqs: 0, alphaErrors: 0, pixelReqs: 0, pixelErrors: 0,
   };
+  /** Whole-image pixel requests in flight (id -> key), answers not yet taken,
+   *  and keys the worker could not serve (the reader's own path). */
+  private pixelsById = new Map<number, string>();
+  private pixelsWaiting = new Set<string>();
+  private pixelsReady = new Map<string, { w: number; h: number; data: Uint8ClampedArray }>();
+  private pixelsFailed = new Set<string>();
   /** Frame-alpha requests in flight (id -> rectangle key), answers not yet
    *  taken, and rectangles the worker could not serve (the reader's own path). */
   private alphaById = new Map<number, string>();
@@ -493,6 +504,69 @@ export class ArtQueue {
     return { w, h, equal: diff === 0, diff };
   }
 
+  /** A banded texture's WHOLE IMAGE as straight RGBA, decoded on the worker
+   *  (Smooth 6) — for the readers that used to draw the source element into a
+   *  canvas (`texPixels`) and, on a banded texture, read the GL texture back:
+   *  a whole still's readback is a pipeline drain on his phone. "pending"
+   *  until the worker answers (the reader waits a rebuild and asks again; one
+   *  request per key in flight), null when the worker cannot serve it — the
+   *  reader's cue for its own path. Handed over ONCE; the readers cache. */
+  pixels(key: string): { w: number; h: number; data: Uint8ClampedArray } | "pending" | null {
+    const u = this.uploaded.get(key);
+    if (!u || this.workerState !== "on" || !this.worker) return null;
+    const hit = this.pixelsReady.get(key);
+    if (hit) {
+      this.pixelsReady.delete(key);
+      return hit;
+    }
+    if (this.pixelsFailed.has(key)) return null;
+    if (this.pixelsWaiting.has(key)) return "pending";
+    const id = this.nextId++;
+    this.pixelsById.set(id, key);
+    this.pixelsWaiting.add(key);
+    this.stats.pixelReqs++;
+    const m: ArtWorkerIn = { type: "pixels", id, url: u.url };
+    this.worker.postMessage(m);
+    return "pending";
+  }
+
+  /** Is a `pixels` answer for this key on its way? (A reader that must not
+   *  fall back — the light derived against its sibling — waits on this.) */
+  pixelsPending(key: string): boolean {
+    return this.pixelsWaiting.has(key);
+  }
+
+  /** THE WORKER-PIXELS PARITY (`__ml.artPixelsWorker`): a banded texture's
+   *  whole image as the worker answers it against the GPU readback of the
+   *  texture (alpha must be identical; colour within the un-premultiply's
+   *  rounding where a texel is translucent). */
+  async pixelsWorkerParity(key: string): Promise<{ w: number; h: number; alphaDiff: number; colourMaxDelta: number; equal: boolean; waitedMs: number } | { error: string }> {
+    const u = this.uploaded.get(key);
+    if (!u || !this.textures.exists(key)) return { error: "not a banded texture" };
+    const t0 = performance.now();
+    let got: { w: number; h: number; data: Uint8ClampedArray } | "pending" | null = null;
+    for (let i = 0; i < 200; i++) {
+      got = this.pixels(key);
+      if (got !== "pending") break;
+      await new Promise((r) => setTimeout(r, 25));
+    }
+    if (!got || got === "pending") return { error: got === "pending" ? "still pending after 5 s" : "the worker could not serve it" };
+    const back = readTexturePixels(this.gl, this.textures.get(key));
+    if (!back) return { error: "readback failed" };
+    if (back.w !== got.w || back.h !== got.h) return { error: `size ${got.w}x${got.h}, readback ${back.w}x${back.h}` };
+    let alphaDiff = 0;
+    let colourMaxDelta = 0;
+    for (let i = 0; i < got.data.length; i += 4) {
+      if (got.data[i + 3] !== back.data[i + 3]) alphaDiff++;
+      if (got.data[i + 3] === 0) continue; // fully transparent: colour is undefined on both sides
+      for (let c = 0; c < 3; c++) {
+        const d = Math.abs(got.data[i + c] - back.data[i + c]);
+        if (d > colourMaxDelta) colourMaxDelta = d;
+      }
+    }
+    return { w: got.w, h: got.h, alphaDiff, colourMaxDelta, equal: alphaDiff === 0 && colourMaxDelta <= 3, waitedMs: Math.round(performance.now() - t0) };
+  }
+
   /** THE WORKER-ALPHA PARITY (`__ml.artAlphaWorker`): a banded frame's alpha
    *  as the worker answers it (`frameAlpha`, what the outline and the foam
    *  clamp read) against the GPU readback of the same frame. */
@@ -655,12 +729,29 @@ export class ArtQueue {
       job.bytes = 0; // re-picked by startFetches, now on the <img> path
     }
     this.jobsById.clear();
-    // The alpha readers get null from now on and take their own path.
+    // The alpha and pixel readers get null from now on and take their own path.
     this.alphaById.clear();
     this.alphaPending.clear();
+    this.pixelsById.clear();
+    this.pixelsWaiting.clear();
   }
 
   private onWorker(m: ArtWorkerOut): void {
+    const pk = this.pixelsById.get(m.id);
+    if (pk !== undefined) {
+      // A whole-image answer (pixels), not a job.
+      this.pixelsById.delete(m.id);
+      this.pixelsWaiting.delete(pk);
+      if (m.type === "pixels") {
+        this.pixelsReady.set(pk, { w: m.w, h: m.h, data: m.data });
+        while (this.pixelsReady.size > PIXELS_READY_MAX) this.pixelsReady.delete(this.pixelsReady.keys().next().value as string);
+      } else {
+        this.stats.pixelErrors++;
+        this.pixelsFailed.add(pk);
+        if (m.type === "ok") for (const b of m.bands) b.close();
+      }
+      return;
+    }
     const rk = this.alphaById.get(m.id);
     if (rk !== undefined) {
       // A frame-alpha answer (frameAlpha), not a job.
@@ -684,7 +775,7 @@ export class ArtQueue {
       if (m.type === "ok") for (const b of m.bands) b.close();
       return;
     }
-    if (m.type === "alpha") return; // not for a job
+    if (m.type === "alpha" || m.type === "pixels") return; // not for a job
     this.fetching--;
     if (!this.pending.has(job.pkey) || this.pending.get(job.pkey) !== job) {
       if (m.type === "ok") for (const b of m.bands) b.close(); // dropped meanwhile

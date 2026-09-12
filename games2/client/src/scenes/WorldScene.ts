@@ -7024,7 +7024,7 @@ export class WorldScene extends Phaser.Scene {
         for (const [key, rec] of this.sceneryFit) {
           if (checked + unread >= n) break;
           if (!art.banded(key) || !rec) continue;
-          const px = this.sceneryCanvasPixels(key);
+          const px = this.sceneryCanvasPixels(key, true);
           if (!px) { unread++; continue; }
           checked++;
           if (this.sceneryPackOf(key)) packed++;
@@ -7038,6 +7038,31 @@ export class WorldScene extends Phaser.Scene {
       artAlpha: (key: string, frame: number | string = 0) => this.artQueue().alphaParity(key, frame),
       /** The same frame's alpha as the worker answers it (what the outline and the foam clamp read) against the readback. */
       artAlphaWorker: (key: string, frame: number | string = 0) => this.artQueue().alphaWorkerParity(key, frame),
+      /** A banded still's whole image as the worker answers it (what the light and the shape map read) against the readback. */
+      artPixelsWorker: (key: string) => this.artQueue().pixelsWorkerParity(key),
+      /** Resident scenery stills that landed through the worker (the gates' sample). */
+      sceneryKeys: (n = 8) => this.textures.getTextureKeys().filter((k) => k.startsWith("s3:") && this.artQueue().banded(k)).slice(0, n),
+      /** Cut frames of banded stills: the seeded/clipped box against a fresh readback measure (artBounds' rule). */
+      artBoundsParity: (n = 40) => {
+        let checked = 0, mismatched = 0, provisional = 0;
+        const bad: string[] = [];
+        for (const [ck, b] of this.artBoundsCache) {
+          if (checked >= n) break;
+          const [tkey, fname] = ck.split("#");
+          if (fname === "__BASE" || !this.artQueue().banded(tkey) || !this.textures.exists(tkey)) continue;
+          if (this.artBoundsRefine.has(ck)) { provisional++; continue; }
+          const fr = (this.textures.get(tkey).frames as Record<string, Phaser.Textures.Frame | undefined>)[fname];
+          if (!fr) continue;
+          const fa = readFrameAlpha(this.game.renderer, fr);
+          if (!fa) continue;
+          checked++;
+          let x0 = fa.w, y0 = fa.h, x1 = -1, y1 = -1;
+          for (let y = 0; y < fa.h; y++) for (let x = 0; x < fa.w; x++) if (fa.a[y * fa.w + x] > 16) { if (x < x0) x0 = x; if (x > x1) x1 = x; if (y < y0) y0 = y; if (y > y1) y1 = y; }
+          const fresh = x1 >= x0 ? { x0, y0, x1: x1 + 1, y1: y1 + 1 } : { x0: 0, y0: 0, x1: fa.w, y1: fa.h };
+          if (fresh.x0 !== b.x0 || fresh.y0 !== b.y0 || fresh.x1 !== b.x1 || fresh.y1 !== b.y1) { mismatched++; if (bad.length < 5) bad.push(`${ck}: cached ${JSON.stringify(b)} fresh ${JSON.stringify(fresh)}`); }
+        }
+        return { checked, mismatched, provisional, bad };
+      },
       occInc: (on?: boolean) => {
         if (on !== undefined) {
           this.occIncOn = on;
@@ -7314,7 +7339,7 @@ export class WorldScene extends Phaser.Scene {
         const playing = new Set<Phaser.GameObjects.Image>();
         for (const l of this.sceneryAnimLive) if ((this.sceneryAnimRuns.get(l.place)?.frame ?? -1) >= 0) playing.add(l.img);
         const hashOf = (key: string, f: Phaser.Textures.Frame): number | null => {
-          const px = this.texPixels(key);
+          const px = this.texPixels(key, true);
           if (!px) return null;
           let h = 2166136261;
           for (let y = 0; y < f.cutHeight; y++) {
@@ -14492,13 +14517,68 @@ export class WorldScene extends Phaser.Scene {
    * occupies a small box in the middle of a mostly-transparent frame; occlusion
    * tests against the full frame hit walls tiles away from the body. */
   private artBoundsCache = new Map<string, { x0: number; y0: number; x1: number; y1: number }>();
+  /** Cut frames whose box is the whole image's clipped (a superset) until the
+   *  worker's alpha for the cut arrives — see artBounds. */
+  private artBoundsRefine = new Set<string>();
+
+  /** The exact box of a cut frame from the worker's alpha (alpha > 16,
+   *  artBounds' rule), replacing the clipped one; the clipped box stays until
+   *  the worker answers. */
+  private artBoundsRefineFrom(frame: Phaser.Textures.Frame, key: string, cur: { x0: number; y0: number; x1: number; y1: number }) {
+    const r = this.artQueue().frameAlpha(frame.texture.key, frame.cutX, frame.cutY, frame.cutWidth, frame.cutHeight);
+    if (r === "pending") return cur;
+    this.artBoundsRefine.delete(key);
+    if (!r || r.w !== frame.cutWidth || r.h !== frame.cutHeight) return cur;
+    const w = r.w;
+    let x0 = w, y0 = r.h, x1 = -1, y1 = -1;
+    for (let y = 0; y < r.h; y++)
+      for (let x = 0; x < w; x++)
+        if (r.a[y * w + x] > 16) {
+          if (x < x0) x0 = x;
+          if (x > x1) x1 = x;
+          if (y < y0) y0 = y;
+          if (y > y1) y1 = y;
+        }
+    const b = x1 >= x0 ? { x0, y0, x1: x1 + 1, y1: y1 + 1 } : { x0: 0, y0: 0, x1: frame.cutWidth, y1: frame.cutHeight };
+    this.artBoundsCache.set(key, b);
+    return b;
+  }
 
   private artBounds(sprite: Phaser.GameObjects.Sprite | Phaser.GameObjects.Image) {
     const frame = sprite.frame;
     const key = `${frame.texture.key}#${frame.name}`;
     let b = this.artBoundsCache.get(key);
-    if (b) return b;
+    if (b) {
+      if (this.artBoundsRefine.size && this.artBoundsRefine.has(key)) b = this.artBoundsRefineFrom(frame, key, b);
+      return b;
+    }
     b = { x0: 0, y0: 0, x1: frame.cutWidth, y1: frame.cutHeight }; // fallback: whole frame
+    /* A BANDED TEXTURE'S CUT FRAME (a scenery still is drawn through one,
+     * addSceneryCut): the worker measured the whole image (`__BASE`, onBounds),
+     * and the cut's box is that box clipped into the cut — exact when the cut
+     * holds every opaque texel (a still's cut is its own alpha box, a clip
+     * frame's crop its state's box), a superset otherwise, refined from the
+     * worker's alpha when it answers. Never the GL readback the canvas path
+     * below takes for a banded frame: on his phone that was rebuildScenery at
+     * 62-92 ms a long frame, 25 in a window (run 21:57 on Smooth 4). */
+    if (frame.name !== "__BASE" && !drawableSource(frame.source.image)) {
+      const base = this.artBoundsCache.get(`${frame.texture.key}#__BASE`);
+      if (base) {
+        const cx = frame.cutX;
+        const cy = frame.cutY;
+        const cw = frame.cutWidth;
+        const ch = frame.cutHeight;
+        const x0 = Math.max(base.x0, cx) - cx;
+        const y0 = Math.max(base.y0, cy) - cy;
+        const x1 = Math.min(base.x1, cx + cw) - cx;
+        const y1 = Math.min(base.y1, cy + ch) - cy;
+        if (x1 > x0 && y1 > y0) b = { x0, y0, x1, y1 };
+        this.artBoundsCache.set(key, b);
+        const exact = base.x0 >= cx && base.y0 >= cy && base.x1 <= cx + cw && base.y1 <= cy + ch;
+        if (!exact) this.artBoundsRefine.add(key);
+        return b;
+      }
+    }
     try {
       const cnv = document.createElement("canvas");
       cnv.width = frame.cutWidth;
@@ -17160,7 +17240,13 @@ export class WorldScene extends Phaser.Scene {
    *  canvas is read from its own context; an `<img>` is drawn into a scratch
    *  one first; raw bytes are handed straight back. Null while the art is not
    *  resident. */
-  private texPixels(key: string): T3Pixels | null {
+  /** `sync`: a probe's reading — the GL readback, now, whatever the texture.
+   *  A frame-path reader leaves it off: a banded texture's pixels come from
+   *  the art worker on demand (null while they are on their way — ask again
+   *  next rebuild; `artQueue().pixelsPending(key)` says so), never from a
+   *  readback inside the frame (Smooth 6: a whole still's readback drained
+   *  his phone's GPU, rebuildScenery 62-92 ms a long frame). */
+  private texPixels(key: string, sync = false): T3Pixels | null {
     if (!this.textures.exists(key)) return null;
     const raw = this.rawTexPixels(key);
     if (raw) return raw;
@@ -17169,9 +17255,16 @@ export class WorldScene extends Phaser.Scene {
       | (HTMLImageElement & HTMLCanvasElement)
       | undefined;
     if (!src) return null;
-    // A texture the art queue banded has no element to draw: read the GL
-    // texture back instead (framepixels.ts — straight RGBA within rounding).
-    if (!drawableSource(src)) return tex ? readTexturePixels(this.game.renderer, tex) : null;
+    if (!drawableSource(src)) {
+      if (!sync) {
+        const r = this.artQueue().pixels(key);
+        if (r === "pending") return null;
+        if (r) return r;
+      }
+      // The worker cannot serve it (off, dead) or a probe asked: the readback
+      // (framepixels.ts — straight RGBA within rounding).
+      return tex ? readTexturePixels(this.game.renderer, tex) : null;
+    }
     const w = src.naturalWidth || src.width;
     const h = src.naturalHeight || src.height;
     if (!w || !h) return null;
@@ -17214,9 +17307,9 @@ export class WorldScene extends Phaser.Scene {
     if (!patterns || !groundTypes) return null;
     if (!this.t3sheets) {
       const p = patternSheetPaths(patterns);
-      const sil = this.texPixels(t3ArtKey(p.silhouette));
-      const masks = this.texPixels(t3ArtKey(p.masks));
-      const border = this.texPixels(t3ArtKey(p.border));
+      const sil = this.texPixels(t3ArtKey(p.silhouette), true);
+      const masks = this.texPixels(t3ArtKey(p.masks), true);
+      const border = this.texPixels(t3ArtKey(p.border), true);
       if (!sil || !masks || !border) return null;
       this.t3sheets = patternSheets(patterns, sil, masks, border);
     }
@@ -17292,7 +17385,7 @@ export class WorldScene extends Phaser.Scene {
       return;
     }
     if (!path) return;
-    const px = this.texPixels(t3ArtKey(path));
+    const px = this.texPixels(t3ArtKey(path), true);
     if (!px) return;
     this.t3pitchChecked = true;
     const pitch = measureStoreyPitch(px.w, px.h, (x, y) => px.data[(y * px.w + x) * 4 + 3] > 128);
@@ -19807,14 +19900,19 @@ export class WorldScene extends Phaser.Scene {
     let rec = this.sceneryLightCache.get(key);
     if (rec === undefined) {
       const pix = this.sceneryCanvasPixels(key);
-      if (!pix) return; // art not landed yet — next rebuild
+      if (!pix) return; // art not landed yet, or its pixels still on their way from the worker — next rebuild
       const unlitKey = Object.keys(piece.states).find((k) => k.startsWith("NOT_LIT")) ?? (piece.baseState.startsWith("LIT") ? null : piece.baseState);
       let upix = null;
       if (unlitKey && piece.states[unlitKey]) {
         const us = piece.states[unlitKey];
         const usprite = (p.dir ? us.rotations[p.dir] : "") || us.rotations.south || us.sprite;
         const ukey = this.sKey(usprite);
-        upix = this.textures.exists(ukey) ? this.sceneryCanvasPixels(ukey) : null;
+        if (this.textures.exists(ukey)) {
+          upix = this.sceneryCanvasPixels(ukey);
+          // The sibling is resident: the derivation is against it, so wait for
+          // its pixels rather than measure the bright texels alone and cache that.
+          if (!upix && this.artQueue().pixelsPending(ukey)) return;
+        }
       }
       const e = deriveEmissive(pix, upix);
       // `unlit` records WHICH derivation ran (against the sibling, or the
@@ -19868,6 +19966,7 @@ export class WorldScene extends Phaser.Scene {
       if (performance.now() - t0 > budgetMs) break;
       let rec: { tex: Phaser.Renderer.WebGL.Wrappers.WebGLTextureWrapper; w: number; h: number; opaque: number; ms: number } | null = null;
       let finished = false;
+      let waiting = false; // the worker is decoding the art's pixels: this job next frame
       const tj = performance.now();
       try {
         if (this.textures.exists(mapKey)) {
@@ -19877,8 +19976,10 @@ export class WorldScene extends Phaser.Scene {
         } else {
           if (!job.builder) {
             const px = this.texPixels(job.artKey);
-            if (!px) finished = true; // art not resident: cannot build
-            else {
+            if (!px) {
+              if (this.artQueue().pixelsPending(job.artKey)) waiting = true;
+              else finished = true; // art not resident: cannot build
+            } else {
               job.builder = new ShapeMapBuilder(px, job.hb, job.sc);
               job.t0 = tj;
             }
@@ -19899,6 +20000,7 @@ export class WorldScene extends Phaser.Scene {
         rec = null;
         finished = true;
       }
+      if (waiting) continue; // untouched; the jobs behind it still get the frame's budget
       const ms = performance.now() - tj;
       if (ms > this.shapeStats.maxMs) this.shapeStats.maxMs = ms;
       this.shapeStats.ms += ms;
@@ -19979,7 +20081,7 @@ export class WorldScene extends Phaser.Scene {
       // copy's crop and flip): the ground behind a tree is lit by the same torch
       // from the same side and would fake the very asymmetry being measured.
       const fr = lo.img.frame;
-      const pix = this.texPixels(lo.img.texture.key);
+      const pix = this.texPixels(lo.img.texture.key, true);
       const flip = lo.img.flipX;
       const once = () => {
         this.game.events.off(Phaser.Core.Events.POST_RENDER, once);
@@ -20051,8 +20153,8 @@ export class WorldScene extends Phaser.Scene {
     return sceneryArtUrl(rec ? rec.path : spritePath, this.t3route);
   }
 
-  private sceneryCanvasPixels(key: string): T3Pixels | null {
-    const px = this.texPixels(key);
+  private sceneryCanvasPixels(key: string, sync = false): T3Pixels | null {
+    const px = this.texPixels(key, sync);
     if (!px) return null;
     const rec = this.sceneryPackOf(key);
     return rec ? unpackPixels(px, rec) : px;
