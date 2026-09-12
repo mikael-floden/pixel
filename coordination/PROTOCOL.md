@@ -20,6 +20,7 @@ parallel. Each agent owns one domain and one board file
 | games-ui | `games2/` (UI surfaces) | HUD, menus, screens — split in `games2/UI_AGENT.md` |
 | games-ambient | `games2/ambient/` | mood/ambient life; never impacts gameplay |
 | games-audio | `games2/composer/` | the composer: binds music + sound into the game |
+| games-perf | `games2/` (frame time) | the optimization agent (2026-09-12): the client's hot paths for smoothness, from the phone's beacon; names every file it touches on its board |
 
 `games2/` is the one directory shared by several agents (maintainer decision);
 **one-writer-per-file still holds** — the per-file split is documented in
