@@ -24,7 +24,7 @@ every one of them owns one board file (`coordination/<agent>.json`):
 | games-assistant | `games2/` | the games agent's assistant — the first of them (2026-09-12); every assistant follows the pattern below |
 | wiki-assistant | `wiki/` (the wiki agent's overflow) | the wiki agent's first assistant (2026-09-12): same remit as wiki (`wiki/**`, `live/**`, the authorized games2 surfaces), for the units the wiki agent is occupied elsewhere for; reads the wiki board first, never a file named there as in flight, names every file it touches on its board |
 | maps2-assistant | `maps2/` (the map agent's overflow) | the map agent's first assistant (2026-09-12): same remit as maps2, for the units the map agent is occupied elsewhere for; reads the maps2 board first, never a file named there as in flight, names every file it touches on its board |
-| tiles-assistant | `tiles/` (the tiles agent's overflow) | the tiles agent's first assistant (2026-09-12): same remit as tiles, for the units the tiles agent is occupied elsewhere for; reads the tiles board first, never a file named there as in flight, names every file it touches on its board; the PixelLab floor stays the tiles agent's |
+| tiles-assistant | `tiles/` | the tiles agent's assistant (2026-09-12); follows the pattern below; the PixelLab floor stays the tiles agent's |
 
 **Every agent above has an assistant, `<agent>-assistant`** (maintainer
 2026-09-12: "an assistant that works with the same tasks and in the same

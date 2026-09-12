@@ -6,12 +6,11 @@ in git. Maintainer: "We will never go back to the tile2 system again.")
 
 > Naming: `tiles/` = Tiles 3.0; the plain name was reused from the retired v1.
 
-> Two agents work here (maintainer 2026-09-12): the tiles agent, and **tiles-assistant**,
-> its first assistant - the same remit, for the units the tiles agent is not in. The
-> assistant reads `coordination/tiles.json` first, never touches a file named there as in
-> flight, names every file it touches on `coordination/tiles-assistant.json`, and rebases
-> onto the tiles agent's pushes before every push. One writer per file still holds, and
-> the PixelLab floor is the tiles agent's.
+> Two agents work here (maintainer 2026-09-12): the tiles agent and **tiles-assistant**,
+> the same tasks in the same directory. The procedure is `coordination/PROTOCOL.md`
+> "Two writers per directory": claim the unit and its files on your board before
+> editing, never a file the partner's board names in flight, rebase before every push
+> and re-run the gates after it. The PixelLab pool is one; the floor is the tiles agent's.
 
 ## What is actually different
 
