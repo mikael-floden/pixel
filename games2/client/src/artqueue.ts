@@ -74,6 +74,7 @@ interface Pending extends ArtJob {
   h: number;
   frames: number;
   bounds?: Int32Array;
+  bbox0?: Int32Array;
   /** The GL texture being filled; a refill fills an existing one. */
   wrapper?: Wrapper;
   refill?: Wrapper;
@@ -174,10 +175,12 @@ type GLRenderer = Phaser.Renderer.WebGL.WebGLRenderer & {
 export class ArtQueue {
   /** KB per frame; 0 = unbounded. Read live from the dial by the scene. */
   budgetKb = uploadKb();
-  /** The scene's hook for a landed job's measured art boxes (frame px,
-   *  x0 y0 x1 y1 per frame; `sheet` says the frames are numbered, else the
-   *  one frame is `__BASE`). Set once by the scene. */
-  onBounds: ((key: string, frames: number, bounds: Int32Array, sheet: boolean) => void) | null = null;
+  /** The scene's hook for a landed job's measured boxes: `bounds` is one
+   *  x0 y0 x1 y1 per frame at alpha > 16 (artBounds' rule; `sheet` says the
+   *  frames are numbered, else the one frame is `__BASE`), `bbox0` the whole
+   *  image at alpha > 0 (alphaBBox's rule, all -1 when empty), with the
+   *  image's size. Set once by the scene. */
+  onBounds: ((key: string, frames: number, bounds: Int32Array, sheet: boolean, w: number, h: number, bbox0: Int32Array) => void) | null = null;
   private pending = new Map<string, Pending>();
   private readyList: Pending[] = [];
   /** The banded job a frame left half-uploaded; it goes first next frame. */
@@ -236,10 +239,18 @@ export class ArtQueue {
     return this.pending.has(key);
   }
 
-  /** Once per frame, from the scene's update. */
-  tick(): void {
+  /** Did this texture land through the worker (bands, no source element)? */
+  banded(key: string): boolean {
+    return this.uploaded.has(key);
+  }
+
+  /** Once per frame, from the scene's update. `unbounded` while the loading
+   *  screen is up: there is no frame to protect behind it, the scenery stills
+   *  the hold waits for ride this queue, and the byte budget would only make
+   *  the bar slower (the scene passes `!worldUp`, as the compose budget does). */
+  tick(unbounded = false): void {
     this.startFetches();
-    const budget = this.budgetKb > 0 ? this.budgetKb * 1024 : Infinity;
+    const budget = unbounded || this.budgetKb <= 0 ? Infinity : this.budgetKb * 1024;
     // Pay last frame's overshoot before adding anything.
     this.debt = Math.max(0, this.debt - budget);
     if (this.debt > 0 || !this.readyList.length) return;
@@ -290,7 +301,9 @@ export class ArtQueue {
       } else this.stats.failed++;
       job.onLanded?.(job.key, ok);
     }
-    if (frameBytes > 0) {
+    // The frame stats mean "under the budget": an unbounded frame behind the
+    // loading screen is not one.
+    if (frameBytes > 0 && !unbounded) {
       this.stats.frames++;
       this.stats.frameKbMax = Math.max(this.stats.frameKbMax, frameBytes / 1024);
     }
@@ -600,6 +613,7 @@ export class ArtQueue {
     job.h = m.h;
     job.frames = m.frames;
     job.bounds = m.bounds;
+    job.bbox0 = m.bbox0;
     job.bytes = Math.max(1, m.w * m.h * 4);
     this.readyBytes += job.bytes;
     this.readyList.push(job);
@@ -692,7 +706,7 @@ export class ArtQueue {
     this.textures.emit(Phaser.Textures.Events.ADD, job.key, texture);
     this.textures.emit(Phaser.Textures.Events.ADD_KEY + job.key, texture);
     this.uploaded.set(job.key, { url: job.url, w: job.w, h: job.h, sheet: job.sheet, wrapper });
-    if (job.bounds && this.onBounds) this.onBounds(job.key, job.frames, job.bounds, !!job.sheet);
+    if (job.bounds && job.bbox0 && this.onBounds) this.onBounds(job.key, job.frames, job.bounds, !!job.sheet, job.w, job.h, job.bbox0);
     return true;
   }
 }

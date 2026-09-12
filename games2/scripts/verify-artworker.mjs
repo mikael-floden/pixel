@@ -4,7 +4,8 @@
 // inside the budget (KB=<n> env, default 128) plus one band, (3) the biggest banded
 // textures read back byte-identical to the same files uploaded the old way (an <img> under
 // UNPACK_PREMULTIPLY_ALPHA_WEBGL), (4) a forced WebGL context loss + restore refills them
-// and parity holds again. Needs a built client (`npm run build -w client`). Exit 1 on any
+// and parity holds again, (5) every scenery still the worker banded carries the same fit
+// (alphaBBox + size) a GPU readback measures. Needs a built client (`npm run build -w client`). Exit 1 on any
 // failure.
 import { spawn } from "node:child_process";
 import { dirname, join } from "node:path";
@@ -49,7 +50,13 @@ if (!par.length) fail("no banded texture to compare");
 // (3b) the CPU readers' path: a banded frame's alpha read back from the GPU equals the <img> path's.
 for (const p of par.slice(0, 3)) for (const fr of [0, 2]) { const al = await page.evaluate(([k,f])=>window.__ml.artAlpha(k,f),[p.key,fr]); console.log(`  alpha ${p.key} frame ${fr}: ${al.error ?? (al.equal ? "IDENTICAL" : `diff ${al.diff} texels`)} ${al.w?`${al.w}x${al.h}`:""}`); if (al.error || !al.equal) fail(`alpha ${p.key} frame ${fr}: ${al.error ?? `${al.diff} texels differ`}`); }
 for (const p of par) if (p.error || !p.equal) fail(`parity ${p.key}: ${p.error ?? `${p.diff} bytes differ`}`);
-// (3c) the Settings switch, live: off sends the next files the <img> way, on brings the worker back.
+// (3c) scenery stills ride the queue too: the fit the worker seeded (alphaBBox's box + the canvas size)
+// equals a fresh alphaBBox of the texture read back from the GPU, for every banded still on this route.
+const sf = await page.evaluate(()=>window.__ml.sceneryFitParity(60));
+console.log(`  scenery fits: checked ${sf.checked} (packed ${sf.packed}) mismatched ${sf.mismatched} unread ${sf.unread}${sf.bad.length?" "+sf.bad.join(" | "):""}`);
+if (!sf.checked) fail("no banded scenery still to compare (did the stills ride the queue?)");
+if (sf.mismatched || sf.unread) fail(`scenery fits: ${sf.mismatched} mismatched, ${sf.unread} unreadable`);
+// (3d) the Settings switch, live: off sends the next files the <img> way, on brings the worker back.
 for (const [val, want] of [["0", 0], ["1", 1]]) {
   await page.evaluate((v)=>localStorage.setItem("ml-art-worker", v), val);
   await page.evaluate(({a,d})=>{const m=window.__ml.me(); if(!m) return; const x=m.x+Math.cos(a)*d, y=m.y+Math.sin(a)*d; if(window.__ml.blockedAt(x,y)) return; const s=window.__ml.surfaceAt(x,y); if(!s||(!s.standable&&!s.swimmable)) return; window.__ml.tapTo(x,y,true);},{a:rand()*Math.PI*2,d:(10+rand()*12)*32});

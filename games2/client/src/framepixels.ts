@@ -73,3 +73,28 @@ export function drawFrameInto(renderer: GL, ctx: CanvasRenderingContext2D, frame
   ctx.putImageData(new ImageData(px, w, h), dx, dy);
   return true;
 }
+
+/** The whole first source of a texture as straight (un-premultiplied) RGBA,
+ *  read back from its GL texture — for a reader that used to draw the source
+ *  element into a canvas (`texPixels`) when the texture has no element. The
+ *  un-premultiply is exact where alpha is 255 or 0 and within rounding
+ *  elsewhere, which is what a colour AVERAGE (the scenery light block) or an
+ *  alpha test (the shape maps, alphaBBox) can bear. Null when it cannot. */
+export function readTexturePixels(renderer: GL, texture: Phaser.Textures.Texture): { w: number; h: number; data: Uint8ClampedArray } | null {
+  const src = texture.source[0];
+  const gl = (renderer as { gl?: WebGLRenderingContext | WebGL2RenderingContext } | null | undefined)?.gl;
+  const tex = (src?.glTexture as Wrapper | null)?.webGLTexture;
+  const w = src?.width ?? 0;
+  const h = src?.height ?? 0;
+  if (!gl || !tex || !w || !h) return null;
+  const px = readTextureRect(gl, tex, 0, 0, w, h);
+  if (!px) return null;
+  for (let i = 0; i < px.length; i += 4) {
+    const a = px[i + 3];
+    if (a === 0 || a === 255) continue;
+    px[i] = Math.min(255, Math.round((px[i] * 255) / a));
+    px[i + 1] = Math.min(255, Math.round((px[i + 1] * 255) / a));
+    px[i + 2] = Math.min(255, Math.round((px[i + 2] * 255) / a));
+  }
+  return { w, h, data: px };
+}

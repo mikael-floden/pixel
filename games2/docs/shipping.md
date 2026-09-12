@@ -216,8 +216,11 @@ pipeline.
   the moment it arrived, and bounding the files in flight (the old
   `maxParallelDownloads = 2`) bounded the count per frame, never the bytes —
   measured 12 MB in one frame, 564 MB in a window, and every slow frame on
-  his phone carrying an upload. Item icons, the grave cross and chess pieces
-  still use the scene loader (small, on demand).
+  his phone carrying an upload. Scenery STILLS ride it too (2026-09-12,
+  games-perf: through the terrain loader they were decoded three times on
+  the frame thread on first sight, 33-66 ms a step into a fresh forest —
+  `docs/perf.md`, SCENERY STILLS RIDE THE ART QUEUE). Item icons, the grave
+  cross and chess pieces still use the scene loader (small, on demand).
 
 - **THE DEPLOY GATE AND CI MUST SEE THE SAME WORLD** — they do not, and that
   is why main can deploy while CI is red (ambient agent, 2026-09-07). The

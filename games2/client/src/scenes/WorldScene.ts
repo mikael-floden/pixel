@@ -1,7 +1,7 @@
 import Phaser from "phaser";
 import { resolveDepthRule } from "../depthrule";
 import { ART_IDLE_SHARE, ArtQueue, artWorkerEnabled, setArtWorker, setUploadKb, UPLOAD_KB_STEPS } from "../artqueue";
-import { drawFrameInto } from "../framepixels";
+import { drawFrameInto, drawableSource, readTexturePixels } from "../framepixels";
 import { renderRes } from "../resolution";
 import { ensureResDial } from "../resdial";
 import { Room, getStateCallbacks } from "colyseus.js";
@@ -1049,8 +1049,15 @@ const T3_DRAIN_GROUP = 8;
  *  the fight to start, we just change the priority to high IF the fight
  *  starts"; scenery animations behind that ("they only play once in a while
  *  anyways"); angry, the fight's idle pose, dead last. No kind's strips are
- *  asked for before a monster of it exists. */
-const ART_PRIO = { mine: 0, fight: 1, fightAngry: 1.5, walk: 2, idle: 3, npc: 4, blood: 4, weapons: 5, chars: 6, combatEarly: 7, sceneryAnim: 8, angryEarly: 9 } as const;
+ *  asked for before a monster of it exists. SCENERY STILLS (games-perf,
+ *  2026-09-12) sit behind my clips and a fight's strips and ahead of a
+ *  newcomer's walk: they are the world's furniture, what a step into a
+ *  forest needs before its trees exist. BEHIND THE LOADING SCREEN they go
+ *  first of all (`sceneryBoot`): the hold waits for them and for nothing
+ *  else in this queue, and behind my own clips none of 43 had landed 5 s
+ *  after they were asked for (measured headless) — the avatar is not on
+ *  screen yet, so its clips can follow. */
+const ART_PRIO = { sceneryBoot: -1, mine: 0, fight: 1, fightAngry: 1.5, sceneryStill: 1.75, walk: 2, idle: 3, npc: 4, blood: 4, weapons: 5, chars: 6, combatEarly: 7, sceneryAnim: 8, angryEarly: 9 } as const;
 const CAM_ZOOM_OUT = 0.32; // fraction of base zoom shed at full run speed (maintainer: "stronger", twice)
 const CAM_ZOOM_REF_WU = 124; // ≈ run world-speed (175 px/s side-view · √½)
 const CAM_ZOOM_TAU_OUT = 0.45; // s — ease toward zoomed-out while speeding up
@@ -1656,8 +1663,22 @@ export class WorldScene extends Phaser.Scene {
        * landed strip is never decoded a second time on this thread for them.
        * Sheet frames are numbered as Phaser's parser numbers them; a plain
        * image's one frame is __BASE — the names `artBounds` keys on. */
-      this.art.onBounds = (key, frames, b, sheet) => {
+      this.art.onBounds = (key, frames, b, sheet, w, h, bbox0) => {
         for (let i = 0; i < frames; i++) this.artBoundsCache.set(`${key}#${sheet ? i : "__BASE"}`, { x0: b[i * 4], y0: b[i * 4 + 1], x1: b[i * 4 + 2], y1: b[i * 4 + 3] });
+        /* A SCENERY STILL'S FIT, seeded with the worker's alpha>0 box — the
+         * record sceneryArtFit would have measured by drawing the source into
+         * a canvas (a second decode of every new tree on the frame thread,
+         * measured 33-66 ms a step in a fresh forest on his phone). On the
+         * SOURCE canvas, as sceneryCanvasPixels measures: a packed texture is
+         * the raw art cut at (ox, oy), so its box shifts back and its canvas
+         * is the source's (the identity for raw art). */
+        if (key.startsWith("s3:") && !sheet && !this.sceneryFit.has(key)) {
+          const rec = this.sceneryPackOf(key);
+          const ox = rec?.ox ?? 0;
+          const oy = rec?.oy ?? 0;
+          const bbox: SceneryBBox | null = bbox0[2] >= 0 ? [bbox0[0] + ox, bbox0[1] + oy, bbox0[2] + ox, bbox0[3] + oy] : null;
+          this.sceneryFit.set(key, { bbox, canvas: rec ? { w: rec.srcW, h: rec.srcH } : { w, h } });
+        }
       };
     }
     return this.art;
@@ -1904,6 +1925,8 @@ export class WorldScene extends Phaser.Scene {
   /** Scenery ART files (not manifests) queued and finished — the loading bar's
    *  last stage counts them beside the terrain's. */
   private sceneryArt = { requested: 0, done: 0 };
+  /** The settle after a burst of scenery-still landings — see flushScenery. */
+  private sceneryArtTimer: Phaser.Time.TimerEvent | null = null;
   /* THE FRAME BUDGET, on demand (`__ml.perf(true)`). Off by default and gated
    * at every call site, so a normal frame pays one boolean per section. The
    * question it answers is the only one that matters for a stutter: WHICH
@@ -3177,7 +3200,6 @@ export class WorldScene extends Phaser.Scene {
   private jumpLastY: number | null = null;
   /** The "Connecting…" creep — see the bar bands. */
   private connectCreep: Phaser.Time.TimerEvent | null = null;
-  private sceneryArtCounting = false;
   private sceneryRoofedDrawn = 0; // roofed pieces the last rebuild actually drew
   /** The INDOOR FURNITURE drawn this rebuild — the pieces whose roof is cut
    *  away. Held apart from `sceneryImgs` so the cut-away crossfade can fade
@@ -4938,6 +4960,8 @@ export class WorldScene extends Phaser.Scene {
           artIdle: !this.t3load || this.t3load.idle,
           loaderBusy: this.tiles3Loader().isLoading(),
           manifestTimer: !!this.sceneryManifestTimer,
+          // The stills ride the art queue (flushScenery): asked vs landed.
+          sceneryArt: { ...this.sceneryArt, timer: !!this.sceneryArtTimer },
         },
       }),
       /** MAPS3, ONE CELL: what tiles3 resolves at (col,row) and what it can
@@ -6989,6 +7013,26 @@ export class WorldScene extends Phaser.Scene {
       art: () => this.artQueue().peek(),
       /** A banded texture read back against the <img> upload of the same file. */
       artParity: (key?: string) => (key ? this.artQueue().parity(key) : this.artQueue().parityAll(6)),
+      /** Every seeded scenery fit (a still banded by the worker) against a fresh
+       *  alphaBBox of the texture read back from the GPU and put on its source
+       *  canvas (sceneryCanvasPixels) — the two must agree, packed or raw. */
+      sceneryFitParity: (n = 40) => {
+        const art = this.artQueue();
+        let checked = 0, mismatched = 0, unread = 0, packed = 0;
+        const bad: string[] = [];
+        for (const [key, rec] of this.sceneryFit) {
+          if (checked + unread >= n) break;
+          if (!art.banded(key) || !rec) continue;
+          const px = this.sceneryCanvasPixels(key);
+          if (!px) { unread++; continue; }
+          checked++;
+          if (this.sceneryPackOf(key)) packed++;
+          const fresh = alphaBBox(px);
+          const same = JSON.stringify(fresh) === JSON.stringify(rec.bbox) && px.w === rec.canvas.w && px.h === rec.canvas.h;
+          if (!same) { mismatched++; if (bad.length < 5) bad.push(`${key}: seeded ${JSON.stringify(rec.bbox)}@${rec.canvas.w}x${rec.canvas.h} fresh ${JSON.stringify(fresh)}@${px.w}x${px.h}`); }
+        }
+        return { checked, packed, mismatched, unread, bad };
+      },
       /** A banded frame's alpha through the readback path against the <img> path. */
       artAlpha: (key: string, frame: number | string = 0) => this.artQueue().alphaParity(key, frame),
       occInc: (on?: boolean) => {
@@ -11568,7 +11612,7 @@ export class WorldScene extends Phaser.Scene {
     // and the frame's texture creations are what it does, and they used to
     // land in the unattributed `gapBusy`.
     this.ps();
-    this.artQueue().tick(); // streamed art becomes textures here, under the budget
+    this.artQueue().tick(!this.worldUp); // streamed art becomes textures here, under the budget once the world is up
     this.pe("artTick");
     this.debrisWarm(); // the indoor crossfade's sprite pool, a few a frame
     if (!this.room) return;
@@ -17107,10 +17151,14 @@ export class WorldScene extends Phaser.Scene {
     if (!this.textures.exists(key)) return null;
     const raw = this.rawTexPixels(key);
     if (raw) return raw;
-    const src = this.textures.get(key)?.getSourceImage() as
+    const tex = this.textures.get(key);
+    const src = tex?.getSourceImage() as
       | (HTMLImageElement & HTMLCanvasElement)
       | undefined;
     if (!src) return null;
+    // A texture the art queue banded has no element to draw: read the GL
+    // texture back instead (framepixels.ts — straight RGBA within rounding).
+    if (!drawableSource(src)) return tex ? readTexturePixels(this.game.renderer, tex) : null;
     const w = src.naturalWidth || src.width;
     const h = src.naturalHeight || src.height;
     if (!w || !h) return null;
@@ -18531,11 +18579,15 @@ export class WorldScene extends Phaser.Scene {
          * it (205 fetches for 1,388 placements), and its landing schedules the
          * rebuild that queues its art (onSceneryManifest — before that hook the
          * art waited for camera drift and this hold always ran to its deadline).
-         * So the wait is: the first rebuild has run, no manifest is in flight,
-         * nothing is queued, and the shared Phaser loader is quiet. */
+         * The art itself rides the ART QUEUE (2026-09-12, games-perf; counted
+         * in sceneryArt, one landing per file), unbudgeted while this screen
+         * is up. So the wait is: the first rebuild has run, no manifest is in
+         * flight, nothing is queued, every still asked for has landed, and the
+         * shared Phaser loader is quiet. */
         const scenery =
           this.sceneryRebuilds > 0 &&
           this.sceneryQueue.length === 0 &&
+          this.sceneryArt.done >= this.sceneryArt.requested &&
           (!this.sceneryPieces || this.sceneryPieces.idle) &&
           !this.tiles3Loader().isLoading();
         const ready =
@@ -20012,28 +20064,37 @@ export class WorldScene extends Phaser.Scene {
     return false;
   }
 
+  /* THROUGH THE ART QUEUE, not the scene loader (2026-09-12, games-perf):
+   * a still that lands through the loader is decoded again by texImage2D on
+   * this thread, and then twice more on first sight — sceneryArtFit and
+   * artBounds each drew it into a canvas — which is what made every 96 px
+   * step into a fresh forest a 33-66 ms frame on his phone. The worker
+   * decodes it once, off this thread, hands the two boxes over with the
+   * bands (onBounds), and the queue uploads it under the frame budget. A
+   * landing marks the occluder repaint after a short settle, one repaint per
+   * burst of landings, as the loader's batch `complete` did. COUNTED, because
+   * the loading bar's last stage is mostly these: they keep their own tally
+   * and the hold adds it to the terrain loader's. */
   private flushScenery() {
     if (!this.sceneryQueue.length) return;
     const batch = this.sceneryQueue;
     this.sceneryQueue = [];
-    const l = this.tiles3LoaderAdapter();
-    /* COUNTED, because the loading bar's last stage is mostly these. They ride
-     * the terrain loader's Phaser queue but are not the terrain loader's files,
-     * so they keep their own tally and the hold adds the two. */
+    const art = this.artQueue();
     this.sceneryArt.requested += batch.length;
-    if (!this.sceneryArtCounting) {
-      this.sceneryArtCounting = true;
-      l.onFile((key) => {
-        if (key.startsWith("s3:") && this.sceneryArt.done < this.sceneryArt.requested) this.sceneryArt.done++;
+    const landed = () => {
+      if (this.sceneryArt.done < this.sceneryArt.requested) this.sceneryArt.done++;
+      if (this.sceneryArtTimer || this.unloading || !this.world) return;
+      this.sceneryArtTimer = this.time.delayedCall(SCENERY_MANIFEST_SETTLE_MS, () => {
+        this.sceneryArtTimer = null;
+        if (this.unloading || !this.world) return;
+        this.requestRepaint("scenery");
       });
+    };
+    const prio = this.worldUp ? ART_PRIO.sceneryStill : ART_PRIO.sceneryBoot;
+    for (const [key, url] of batch) {
+      art.request({ key, url, prio, onLanded: landed });
+      if (!art.has(key)) landed(); // already a texture, or refused: count it now
     }
-    for (const [key, url] of batch) l.image(key, url);
-    l.once("complete", () => {
-      // Reconcile, the batch rule: everything queued before this landed.
-      this.sceneryArt.done = this.sceneryArt.requested;
-      this.requestRepaint("scenery");
-    });
-    if (!l.isLoading()) l.start();
   }
 
   /** The visible scenery for this camera window. Rebuilt on the occluder

@@ -119,7 +119,10 @@ secrets; push to `main`, rebase on reject, no PRs unless asked; doc law.
   every slow frame on his phone carried a texture upload (measured 2026-09-12;
   monsters mocked = the ceiling). The queue decodes on a worker and uploads
   in bands (`artworker.ts`); never `texImage2D` an `<img>` for streamed art —
-  Chrome decodes it again inside the call, 5.8-9.2 ms a strip.
+  Chrome decodes it again inside the call, 5.8-9.2 ms a strip. Scenery
+  stills ride it too, and their fit boxes come with the bands: never measure
+  a streamed image's pixels on the frame thread (a first-sight canvas draw
+  is another decode; 33-66 ms a step into a fresh forest).
 
 **Depth, occluders, scenery** (`docs/depth-sort.md`, `docs/scenery.md`)
 - ONE body pipeline: `resolveDrawDepth` + `placeBodyShadow` + `syncLitCopy`

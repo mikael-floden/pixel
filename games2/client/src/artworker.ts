@@ -42,6 +42,10 @@ export interface ArtWorkerOk {
    *  `artBounds` measures (alpha > 16; an empty frame is its whole box). */
   frames: number;
   bounds: Int32Array;
+  /** The whole image's box at alpha > 0 — `alphaBBox`'s rule (scenery3.ts),
+   *  which `sceneryArtFit` crops a still by; x0 y0 x1 y1 exclusive, or all
+   *  -1 for a fully transparent image (alphaBBox answers null). */
+  bbox0: Int32Array;
   bands: ImageBitmap[];
 }
 export interface ArtWorkerErr {
@@ -66,7 +70,7 @@ function post(m: ArtWorkerOut, transfer?: Transferable[]): void {
 
 /** The frame grid is Phaser's SpriteSheet parser's: whole frames only, left to
  *  right then top to bottom, no margin or spacing (the queue passes none). */
-function boundsOf(whole: ImageBitmap, sheet?: { frameWidth: number; frameHeight: number }): { frames: number; bounds: Int32Array } {
+function boundsOf(whole: ImageBitmap, sheet?: { frameWidth: number; frameHeight: number }): { frames: number; bounds: Int32Array; bbox0: Int32Array } {
   const w = whole.width;
   const h = whole.height;
   const fw = sheet ? sheet.frameWidth : w;
@@ -79,6 +83,27 @@ function boundsOf(whole: ImageBitmap, sheet?: { frameWidth: number; frameHeight:
   if (!ctx) throw new Error("no 2d context");
   ctx.drawImage(whole, 0, 0);
   const d = ctx.getImageData(0, 0, w, h).data;
+  // alphaBBox's box: any alpha above 0, over the whole image.
+  const bbox0 = new Int32Array([-1, -1, -1, -1]);
+  {
+    let l = w, t = h, r = -1, b = -1;
+    for (let y = 0; y < h; y++) {
+      let p = y * w * 4 + 3;
+      for (let x = 0; x < w; x++, p += 4)
+        if (d[p] !== 0) {
+          if (x < l) l = x;
+          if (x > r) r = x;
+          if (y < t) t = y;
+          if (y > b) b = y;
+        }
+    }
+    if (r >= 0) {
+      bbox0[0] = l;
+      bbox0[1] = t;
+      bbox0[2] = r + 1;
+      bbox0[3] = b + 1;
+    }
+  }
   const out = new Int32Array(frames * 4);
   for (let i = 0; i < frames; i++) {
     const ox = (i % perRow) * fw;
@@ -112,7 +137,7 @@ function boundsOf(whole: ImageBitmap, sheet?: { frameWidth: number; frameHeight:
       out[o + 3] = ch;
     }
   }
-  return { frames, bounds: out };
+  return { frames, bounds: out, bbox0 };
 }
 
 async function load(m: ArtWorkerLoad): Promise<void> {
@@ -125,12 +150,12 @@ async function load(m: ArtWorkerLoad): Promise<void> {
     const w = whole.width;
     const h = whole.height;
     if (!w || !h) throw new Error("empty image");
-    const { frames, bounds } = boundsOf(whole, m.sheet);
+    const { frames, bounds, bbox0 } = boundsOf(whole, m.sheet);
     const rows = m.bandBytes > 0 ? Math.max(1, Math.min(h, Math.floor(m.bandBytes / (w * 4)))) : h;
     const bands: ImageBitmap[] = [];
     for (let y = 0; y < h; y += rows) bands.push(await createImageBitmap(whole, 0, y, w, Math.min(rows, h - y), OPTS));
     whole.close();
-    post({ type: "ok", id: m.id, w, h, rows, frames, bounds, bands }, [bounds.buffer, ...bands]);
+    post({ type: "ok", id: m.id, w, h, rows, frames, bounds, bbox0, bands }, [bounds.buffer, bbox0.buffer, ...bands]);
   } catch (e) {
     post({ type: "err", id: m.id, error: String((e as Error)?.message ?? e) });
   }

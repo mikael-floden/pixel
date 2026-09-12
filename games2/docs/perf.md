@@ -117,6 +117,45 @@ The ground render texture (scroll, slices, cell repaints, prefetch, compose budg
   job the `<img>` way from the next file on, remembered in `ml-art-worker`.
   Not measured here: the GPU side of an upload on a Mali — his next run's
   `texUp.slow` and the worst frames' `upKb` say.
+- **SCENERY STILLS RIDE THE ART QUEUE, AND THEIR FIT COMES WITH THE BANDS**
+  (`flushScenery`, `onBounds`, 2026-09-12, games-perf). His 20:51 run (build
+  4736387f1, strips already banded) still had 18 and 12 frames over 50 ms a
+  window, and 10 of the first window's 13 were `rebuildScenery` at 33-66 ms
+  per 96 px occluder step into a fresh forest; the scoped profile said the
+  loop itself is ~1 ms a step and the rest is FIRST-SIGHT PIXEL WORK per new
+  still: the stills rode the terrain loader's Phaser queue (a `texImage2D` of
+  an `<img>` — decode one), then `sceneryArtFit` drew the source into a
+  canvas for `alphaBBox` (decode two) and `resolveDrawDepth → artBounds` drew
+  it again for the opaque box (decode three), 4.5-8.9 ms each on his phone.
+  Now `flushScenery` requests every still from the queue (`ART_PRIO.
+  sceneryStill` 1.75: behind my clips and a fight's strips, ahead of a
+  newcomer's walk; behind the loading screen `sceneryBoot` -1, first of
+  all — the hold waits for the stills and for nothing else in this queue,
+  and behind my own clips none of 43 had landed 5 s after they were asked
+  for, headless); the worker decodes it once and hands over both
+  boxes with the bands — `bounds` (artBounds' rule, alpha > 16) and `bbox0`
+  (alphaBBox's rule, alpha > 0, all -1 when empty) — and `onBounds` seeds
+  `artBoundsCache` and `sceneryFit` before the first rebuild sees the
+  texture, so a step into a new forest measures nothing on the frame
+  thread. Landings count on the loading bar as before
+  (`sceneryArt.done`, one per `onLanded`, at once for a key the queue
+  already holds) and mark the occluder repaint after a
+  `SCENERY_MANIFEST_SETTLE_MS` settle (one repaint per burst, as the
+  loader's batch `complete` was). THE BOOT HOLD waits for them by that
+  tally (`sceneryArt.done >= requested` in its `scenery` condition — the
+  stills left the terrain loader, whose `isLoading` was what held it), and
+  the queue ticks UNBOUNDED while the loading screen is up
+  (`tick(!worldUp)`, as the compose budget already is): there is no frame
+  to protect behind it and the byte budget would only make the bar slower;
+  the frame stats (`frames`, `frameKbMax`) count budgeted frames only.
+  `texPixels` reads a banded texture back through `readTexturePixels`
+  (un-premultiplied within rounding — the scenery light block's colour
+  average and the shape maps can bear that) for the readers that still want
+  the whole still (`sceneryFit.clear()` on the scenery switch, the shape
+  maps). Gate: `__ml.sceneryFitParity(n)` compares
+  every seeded fit against a fresh `alphaBBox` of the readback, in
+  `scripts/verify-artworker.mjs` (checked > 0, mismatched 0). The art-worker
+  Settings row bisects this too: off sends the stills the `<img>` way.
 - **MEASURED 2026-09-12, NOT THE LAG** (headless traces of the overworld run,
   games-perf; each was a suspect for the unattributed `gapBusy`): the
   Colyseus patch decode is 1.1 ms per SECOND (21 messages/s, 92 KB);
@@ -255,9 +294,11 @@ The ground render texture (scroll, slices, cell repaints, prefetch, compose budg
   full walk). NOT time-slicing the full walk across frames (stash of
   2026-09-12: a generator with a staged swap — the set is stale for the
   frames it takes, lit copies were lost at one spot, and it still does all
-  the work). The scenery rebuild (`rebuildScenery`, ~1.6-1.9 ms avg, 64 ms
-  max headless) and the cover index still run in full every step — next if
-  his run still names them.
+  the work). The scenery rebuild (`rebuildScenery`) and the cover index
+  still run in full every step; the rebuild's loop is ~1 ms a step headless
+  and its 33-66 ms steps on his phone were first-sight pixel work per new
+  still, now measured on the worker (SCENERY STILLS RIDE THE ART QUEUE) —
+  the cover index is next if his run still names it.
 - **STREAMING REPAINTS ARE COALESCED** (`requestRepaint`, 2026-09-02). While
   a window's art streams in, three things used to run a FULL synchronous
   repaint — the terrain batch landing (`Tiles3Loader.onBatch`), the scenery
