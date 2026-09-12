@@ -170,7 +170,7 @@ export function perfReport(body: Record<string, unknown>, atISO: string) {
      * named here, which has now silently eaten `lights`, `zoomMean`/`jumps`,
      * and this. Add the field here in the same commit that emits it. */
     worst: Array.isArray(body.worst)
-      ? (body.worst as unknown[]).slice(0, 24).map((w) => str(JSON.stringify(w), 900))
+      ? (body.worst as unknown[]).slice(0, 24).map((w) => str(JSON.stringify(w), 1200))
       : null,
     /* WHAT A GROUND PAINT ACTUALLY DID — cells resolved, blits issued,
      * boundaries composed and the ms they took. THE FOURTH FIELD THIS
@@ -186,6 +186,11 @@ export function perfReport(body: Record<string, unknown>, atISO: string) {
     /* The long-frame CENSUS — every frame over the threshold bucketed by ground
      * mode and dominant section, not just the unluckiest few. */
     longBy: nested(body.longBy, 24, 8),
+    /* AND BY PLACE, in 8-cell blocks: every report he sends is about a spot
+     * ("when I run here it lags"), and `longBy` could only say what the bad
+     * frames were doing, never where they were. The key is the block's corner,
+     * so it reads back as a teleport target. */
+    longWhere: nested(body.longWhere, 16, 6),
   };
   return report;
 }

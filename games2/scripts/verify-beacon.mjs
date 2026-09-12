@@ -55,7 +55,7 @@ const MUST = {
   cpu: ["bench", "scoreMs"],
   gpu: ["avail", "reason", "n", "p50"],
   texFam: [], texUp: ["n", "installed"], net: [], worker: ["state"], heap: ["meanMb", "grewMbPerSec", "drops"],
-  lights: ["n", "gpu", "torch"], groundDrew: ["cells", "blits"], longBy: [],
+  lights: ["n", "gpu", "torch"], groundDrew: ["cells", "blits"], longBy: [], longWhere: [],
 };
 let ok = 0;
 for (const [block, keys] of Object.entries(MUST)) {
@@ -70,5 +70,15 @@ for (const [block, keys] of Object.entries(MUST)) {
   if (lost.length) fail(`\`${block}\` lost ${lost.length} scalar key(s) to the allowlist cap: ${lost.join(", ")}`);
   ok++;
 }
-console.log(`beacon: ${ok}/${Object.keys(MUST).length} blocks survive the allowlist; frames n=${rep.frames?.n}, rtt n=${rep.rtt?.n}, gpu ${rep.gpu?.avail ? `p50 ${rep.gpu.p50} ms` : rep.gpu?.reason}, cpu ${rep.cpu?.scoreMs} ms`);
+// A WORST-FRAME RECORD MUST ARRIVE WHOLE. It is JSON in a string with a
+// length cap, and the cap has twice cut off the tail — which is where the
+// evidence lives (`mode`, `ring`, `tex`, and now `at`/`z`/`t`).
+const w0 = (rep.worst ?? [])[0];
+if (!w0) fail("no worst frame reached the file — the hitch recorder rides with the beacon");
+else {
+  let parsed = null;
+  try { parsed = JSON.parse(w0); } catch { fail(`the first worst record is truncated JSON (${w0.length} chars) — raise the cap`); }
+  if (parsed) for (const k of ["total", "sec", "mode", "at", "z", "t", "dl", "occ"]) if (parsed[k] === undefined) fail(`worst[0].${k} did not reach the file`);
+}
+console.log(`beacon: ${ok}/${Object.keys(MUST).length} blocks survive the allowlist; frames n=${rep.frames?.n}, rtt n=${rep.rtt?.n}, gpu ${rep.gpu?.avail ? `p50 ${rep.gpu.p50} ms` : rep.gpu?.reason}, cpu ${rep.cpu?.scoreMs} ms, worst ${(rep.worst ?? []).length} frames, longWhere ${Object.keys(rep.longWhere ?? {}).length} blocks, why ${rep.run?.why}`);
 if (process.exitCode) console.error("the eaten-field trap: add the field on BOTH sides in the same commit (docs/perf.md)");

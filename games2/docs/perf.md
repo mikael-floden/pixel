@@ -478,9 +478,20 @@ The ground render texture (scroll, slices, cell repaints, prefetch, compose budg
   (the refresh read off the 15th-percentile interval — 60/90/120, or 30 when
   the browser throttled the tab); and the snapshot counts are promoted to
   means (`litOccMean`, `monActMean`, `flushMean`, `sceneryImgsMean`).
+  Every WORST-FRAME record now also says WHERE it happened (`at`, the body's
+  cell), at what `z`oom and `t` ms into the window — every report he sends is
+  about a place ("if I stand here and run down...") — and `longWhere` is the
+  long-frame census BY PLACE, in 8-cell blocks keyed by the block's corner so
+  it reads back as a teleport target (`longBy` could only say what the bad
+  frames were doing). A STATIONARY WINDOW IS NO LONGER DROPPED WHEN IT WAS
+  BAD: the old gate was "have you moved 2 cells", which threw away exactly
+  the report he keeps sending by hand — standing still while it stutters —
+  so a window carrying a >100 ms frame, a browser long task or a p90 over 30
+  ms now posts too, and `run.why` says which (`moved`/`bad`/`flush`).
   READ A RUN WITH `node scripts/perf-read.mjs [--last N] [--run id] [--build
-  sha] [--diff shaA shaB]` — one line per window, the census, and two
-  builds' medians side by side; "-" is "not measured", never 0. GATE:
+  sha] [--diff shaA shaB]` — one line per window, both censuses, the worst
+  frames with their place, and two builds' medians side by side; "-" is "not
+  measured", never 0. GATE:
   `scripts/verify-beacon.mjs` captures the client's real POST headless and
   asserts every block survives `perfReport` — the eaten-field trap, made a
   test. Instruments: `client/src/gputimer.ts`, `client/src/perfextra.ts`

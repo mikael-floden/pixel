@@ -1872,6 +1872,8 @@ export class WorldScene extends Phaser.Scene {
   private hitchSec: Record<string, number> = {};
   private hitchC = { tex: 0, files: 0, built: 0, buildMs: 0, blits: 0, objs: 0 };
   private hitchWorst: Record<string, unknown>[] = [];
+  /** Long frames by 8-cell block (beacon `longWhere`) — see closeHitchFrame. */
+  private hitchWhere: Record<string, { n: number; ms: number; worst: number }> = {};
   /** The previous frame's GL work (glframe.ts) — a long frame is read against
    *  what the frame BEFORE it queued, because that is where a driver pays. */
   private hitchGlPrev: GlFrame | null = null;
@@ -1943,6 +1945,15 @@ export class WorldScene extends Phaser.Scene {
       q: this.groundSliceQ.length,
       dl: this.children.length,
       occ: this.occluders.length,
+      /* WHERE AND WHEN, because every report he sends is about a PLACE ("if I
+       * stand here and run down..."): the body's cell, the zoom the frame was
+       * drawn at, and the seconds into this beacon window — so a burst can be
+       * lined up against the hop, the teleport or the pool it happened in.
+       * `perfPrevPos` is already read once a frame for the travel counter, so
+       * this costs nothing. */
+      at: this.perfPrevPos ? `${this.perfPrevPos.x.toFixed(1)},${this.perfPrevPos.y.toFixed(1)}` : "?",
+      z: +this.cameras.main.zoom.toFixed(2),
+      t: this.perfBeaconAt ? Math.round(performance.now() - this.perfBeaconAt) : 0,
     };
     /* A CENSUS OF THE BAD FRAMES, not a top-N of them. The worst-24 list is
      * biased to the extremes by construction, and the extremes are NOT what is
@@ -1977,6 +1988,19 @@ export class WorldScene extends Phaser.Scene {
       b.ms += total;
       b.top += best;
       b.idle += this.hitchSec.gapIdle ?? 0;
+      /* AND BY PLACE. `longBy` says WHAT the bad frames were doing; this says
+       * WHERE they were, in 8-cell blocks — the shape every report he sends
+       * has ("when I run here it lags"), and the one thing the census could
+       * not answer. A block key is the block's own corner, so it reads
+       * straight back as a teleport target. */
+      const pp = this.perfPrevPos;
+      if (pp) {
+        const key = `${Math.floor(pp.x / 8) * 8},${Math.floor(pp.y / 8) * 8}`;
+        const w = (this.hitchWhere[key] ??= { n: 0, ms: 0, worst: 0 });
+        w.n++;
+        w.ms += total;
+        if (total > w.worst) w.worst = total;
+      }
     }
     if (this.hitchWorst.length < 24) this.hitchWorst.push(rec);
     else {
@@ -2086,7 +2110,21 @@ export class WorldScene extends Phaser.Scene {
     // MOVED? A stationary window says nothing about the lag he reports while
     // running, and would evict a useful report from the file's tail. A FINAL
     // flush is exempt — see above.
-    if (!final && (!from || !at || Math.hypot(at.x - from.x, at.y - from.y) < 2)) return;
+    /* A STATIONARY WINDOW IS DROPPED ONLY IF IT WAS ALSO FINE. The gate was
+     * "have you moved", which throws away exactly the report he keeps sending
+     * by hand — standing in the town square, or in the dungeon, while it
+     * stutters. Travel is still the usual trigger (the ground pass only bills
+     * when the camera moves), but a window carrying a hitch, a browser long
+     * task or a bad p90 is evidence whether or not the body went anywhere. */
+    const moved = !!from && !!at && Math.hypot(at.x - from.x, at.y - from.y) >= 2;
+    const fs = this.perfFrames;
+    let bad = this.perfLongN > 0;
+    if (!bad) for (const f of fs) if (f > 100) { bad = true; break; }
+    if (!bad && fs.length > 30) {
+      const srt = [...fs].sort((a, b) => a - b);
+      bad = srt[Math.floor(srt.length * 0.9)] > 30;
+    }
+    if (!final && !moved && !bad) return;
     let snap: Record<string, unknown> | null = null;
     try {
       snap = (window as unknown as { __ml?: { perf?: () => Record<string, unknown> } }).__ml?.perf?.() ?? null;
@@ -2200,6 +2238,8 @@ export class WorldScene extends Phaser.Scene {
         moveFrac,
         runFrac,
         travelCells,
+        why: final ? "flush" : moved ? "moved" : "bad", // why this window was sent at all
+
         deviceMemoryGb: nav.deviceMemory ?? 0,
         connType: nav.connection?.effectiveType ?? "?",
         connRttHint: nav.connection?.rtt ?? -1,
@@ -2422,6 +2462,12 @@ export class WorldScene extends Phaser.Scene {
        * of these happens over and over", which is the only question that
        * matters here. Emitted longest-total-first so a truncating reader keeps
        * the buckets that matter. */
+      longWhere: Object.fromEntries(
+        Object.entries(this.hitchWhere)
+          .sort((a, b) => b[1].ms - a[1].ms)
+          .slice(0, 16)
+          .map(([k, v]) => [k, { n: v.n, ms: +v.ms.toFixed(0), avg: +(v.ms / v.n).toFixed(1), worst: +v.worst.toFixed(0) }]),
+      ),
       longBy: Object.fromEntries(
         Object.entries(this.hitchBy)
           .sort((a, b) => b[1].ms - a[1].ms)
@@ -6151,6 +6197,7 @@ export class WorldScene extends Phaser.Scene {
           this.hitchOn = on;
           this.hitchWorst = [];
           this.hitchBy = {};
+          this.hitchWhere = {};
           this.hitchSec = {};
           this.hitchN = 0;
           this.hitchSum = 0;
@@ -6162,6 +6209,7 @@ export class WorldScene extends Phaser.Scene {
         const worst = [...this.hitchWorst].sort((a, b) => (b.total as number) - (a.total as number));
         this.hitchWorst = [];
         this.hitchBy = {};
+        this.hitchWhere = {};
         return { on: this.hitchOn, frames: this.hitchN, avgMs: +(this.hitchSum / Math.max(1, this.hitchN)).toFixed(1), worst };
       },
       /** DIAGNOSTIC: every visible image/sprite whose box meets a world rect. */

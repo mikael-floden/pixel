@@ -66,7 +66,7 @@ for (const r of rows) {
   const over50 = fr.le100 !== undefined ? fr.le100 + fr.gt100 : "-";
   const doing = r.run ? `${Math.round((r.run.moveFrac ?? 0) * 100)}%mv ${f(r.run.travelCells, 0)}c` : "-";
   console.log([
-    (r.at ?? "").slice(5, 16), short(r.build), r.run ? `${r.run.runId}/${r.run.winIdx}` : "-", r.where ?? "-", f(r.secs, 0), doing,
+    (r.at ?? "").slice(5, 16), short(r.build), r.run ? `${r.run.runId}/${r.run.winIdx}${r.run.why ? ":" + r.run.why : ""}` : "-", r.where ?? "-", f(r.secs, 0), doing,
     f(fr.p50), f(fr.p90), f(fr.p99), f(fr.max, 0), over50, fr.rafHz ?? "-", top(r.sections),
     r.rtt ? `${f(r.rtt.p50, 0)}/${f(r.rtt.p90, 0)}` : "-", r.rtt ? f(r.rtt.patchHz, 0) : "-", r.cpu ? f(r.cpu.scoreMs) : "-",
     r.gpu ? (r.gpu.avail ? f(r.gpu.p50) : "n/a") : "-", r.heap ? f(r.heap.grewMbPerSec, 0) : "-", r.counts?.texturesAdded ?? "-", r.counts?.longN ?? "-", r.run ? r.run.hops : "-",
@@ -77,5 +77,17 @@ const census = {};
 for (const r of rows) for (const [k, v] of Object.entries(r.longBy ?? {})) { const c = (census[k] ??= { n: 0, ms: 0 }); c.n += v.n ?? 0; c.ms += v.ms ?? 0; }
 const ce = Object.entries(census).sort((a, b) => b[1].ms - a[1].ms).slice(0, 10);
 if (ce.length) console.log("\nlong frames by ground mode : dominant section  —  " + ce.map(([k, v]) => `${k} ${v.n}x/${v.ms.toFixed(0)}ms`).join("; "));
+// WHERE the bad frames were, summed over the printed windows — 8-cell blocks,
+// keyed by the block's corner so it reads back as a teleport target.
+const where = {};
+for (const r of rows) for (const [k, v] of Object.entries(r.longWhere ?? {})) { const c = (where[k] ??= { n: 0, ms: 0, worst: 0 }); c.n += v.n ?? 0; c.ms += v.ms ?? 0; c.worst = Math.max(c.worst, v.worst ?? 0); }
+const we = Object.entries(where).sort((a, b) => b[1].ms - a[1].ms).slice(0, 10);
+if (we.length) console.log("\nlong frames by PLACE (8-cell blocks, teleport there)  —  " + we.map(([k, v]) => `${k} ${v.n}x/${v.ms.toFixed(0)}ms worst ${v.worst}`).join("; "));
+// The worst single frames of the printed windows, with where and when.
+const worst = rows.flatMap((r) => (r.worst ?? []).map((w) => { try { return JSON.parse(w); } catch { return null; } })).filter(Boolean).sort((a, b) => b.total - a.total).slice(0, 8);
+if (worst.length) {
+  console.log("\nworst frames: ms | at | zoom | t(s into window) | sections | mode | tex | dl/occ");
+  for (const w of worst) console.log(`  ${f(w.total, 0).padStart(5)} | ${String(w.at ?? "-").padStart(13)} | ${w.z ?? "-"} | ${w.t !== undefined ? (w.t / 1000).toFixed(1) : "-"} | ${Object.entries(w.sec ?? {}).sort((a, b) => b[1] - a[1]).slice(0, 3).map(([k, v]) => `${k} ${v}`).join(", ")} | ${w.mode ?? "-"} | ${w.tex ?? "-"} | ${w.dl ?? "-"}/${w.occ ?? "-"}`);
+}
 const gpuRe = rows.map((r) => r.gpu?.reason).filter(Boolean);
 if (gpuRe.length) console.log("gpu timer: " + [...new Set(gpuRe)].join(", "));

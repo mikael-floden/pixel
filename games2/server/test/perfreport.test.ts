@@ -249,3 +249,20 @@ test("the context, round-trip, cpu and gpu blocks reach the file — added with 
   assert.equal(r.gpu?.reason, "no EXT_disjoint_timer_query_webgl2");
   assert.equal(Object.keys(r.counts ?? {}).length, 50, "counts carries the four new means beside the 40 it had");
 });
+
+test("longWhere and a whole worst record reach the file — the place census and the evidence tail", () => {
+  const rec = { f: 12, total: 212.4, other: 30, sec: { redrawGround: 120, occCull: 40 }, mode: "full", composed: 9, composeMs: 60, bnd: 8, defer: 2, owed: 3, tex: 14, files: 2, objs: 40, ring: 11, gl: { texNew: 3 }, burst: 2, q: 1, dl: 4259, occ: 3648, at: "276.6,178.9", z: 3, t: 18422 };
+  const r = perfReport(
+    {
+      frames: { n: 100 },
+      longWhere: { "272,176": { n: 14, ms: 1802, avg: 128.7, worst: 212 }, "264,216": { n: 3, ms: 260, avg: 86.7, worst: 120 } },
+      worst: [rec],
+    },
+    AT,
+  );
+  assert.equal(r.longWhere?.["272,176"]?.n, 14, "the place census is a record of records, not scalars");
+  assert.equal(r.longWhere?.["272,176"]?.worst, 212);
+  const back = JSON.parse(r.worst![0]!);
+  assert.deepEqual(back, rec, "a worst record arrives WHOLE — the cap cut the evidence tail twice before");
+  assert.equal(back.at, "276.6,178.9", "and it says where the frame happened");
+});
