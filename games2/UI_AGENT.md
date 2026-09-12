@@ -344,6 +344,21 @@ from the games agent), #18 (title/landing screen).
   track (maintainer 2026-09-11: "two default buttons look missplaced"). The gate
   now measures that a button's centre falls INSIDE its track's box, because that
   layout passes every class check.
+- **THE LIGHT GROUND IS BEIGE, NOT WHITE** (maintainer 2026-09-12: "the light
+  css is a bit too light/white … make it a little more beige … I just don't
+  want this super white"). `theme.ts` light tokens: ground `#f6f0e6`, card
+  `#fdf9f3`, pressed `#eee6da`, border `#e1dacd` — one CIELAB hue (86°, warm
+  paper; 78° reads salmon beside the coral accent, 92° goes dusty olive), an
+  even L* ramp 98.2 / 95.0 / 91.7 / 87.2 / 79.7, chroma rising as it darkens.
+  HIS PICK from six rendered candidates was the SOFTER one (chroma × 0.72, a
+  step lighter than the fuller paper beige) — "a little bit more beige than
+  white", not a parchment (maintainer decision). `--good` / `--accent-ink` are
+  a hair darker than the wiki's purely to hold ≥ 4.5:1 on the new ground.
+  Pinned in `verify-hudtabs` (`palette()`): ground max channel ≤ 248 and R−B
+  ≥ 12 (the old `#faf9f5` is 250 / 5), a card lighter than the ground, ink ≥
+  12:1 and muted ≥ 4.5:1 — reverting to the wiki's white fails it. The DARK
+  blocks are the wiki's verbatim and untouched. The wiki has the light values
+  on its board to adopt; `wiki/` is never edited from here.
 - **A UI ICON IS THE MAINTAINER'S ART AT ITS AUTHORED GRID, NEVER AN EMOJI.**
   The 🔍 button shipped with the `&#128269;` glyph and he replaced it with his
   own PixelLab piece (2026-09-03) — an emoji is whatever the phone's font

@@ -4,12 +4,28 @@
  * wiki's Claude-artifact look; "changing to dark theme will affect both the
  * wiki and the in-game HUD").
  *
- * TOKENS: a verbatim copy of wiki/site/wiki.css's palette blocks (cream
- * ground, serif display headings, coral #d97757 accent, quiet 1px borders,
- * 8-14px radii). Kept the SAME custom-property names (--bg, --surface,
- * --ink, ...) so game CSS reads exactly like wiki CSS. If the wiki agent
- * ever retunes its palette, copy the new values here — the two files are
- * deliberately twins.
+ * TOKENS: wiki/site/wiki.css's palette blocks (serif display headings, coral
+ * #d97757 accent, quiet 1px borders, 8-14px radii), with the LIGHT ground
+ * retuned to beige (maintainer 2026-09-12: "the light css is a bit too
+ * light/white … make it a little more beige … I just don't want this super
+ * white"). Kept the SAME custom-property names (--bg, --surface, --ink, ...)
+ * so game CSS reads exactly like wiki CSS, and the DARK blocks are the
+ * wiki's verbatim. The two files are deliberately twins — the wiki agent has
+ * the new light values on their board to adopt.
+ *
+ * THE BEIGE, in CIELAB so the ramp is even and the reason survives a hex
+ * edit: one hue for every neutral (h 86°, a warm paper yellow — 78° reads
+ * salmon beside the coral accent and 92° goes dusty olive), L* stepping
+ * 98.2 surface / 95.0 ground / 91.7 pressed / 87.2 border / 79.7 strong
+ * border, with chroma RISING as it darkens (3.6 → 8.3) the way real paper
+ * does. HIS PICK from six rendered candidates was the SOFTER one — same hue,
+ * chroma × 0.72, a step lighter — over the fuller paper beige: "a little
+ * bit more beige than white", not a parchment. Nothing is pure white any
+ * more; the cards are the lightest step, not #fff, so they still lift off
+ * the ground by 3.2 L*.
+ * CONTRAST HELD, measured, because the ground moved down: ink 14.2:1 on the
+ * ground, muted 4.52:1 — and `--good` / `--accent-ink` are a hair darker
+ * than the wiki's purely to stay above 4.5:1 on the beige.
  *
  * DARK THEME is the wiki's contract exactly:
  * - localStorage["wiki-theme"] = "light" | "dark" (unset → OS preference
@@ -78,23 +94,23 @@ export function mountTheme() {
  * shared derived tokens at the bottom. */
 const CSS_TOKENS = `
 :root {
-  --bg: #faf9f5;
-  --surface: #ffffff;
-  --surface-2: #f4f2ec;
-  --ink: #1f1e1a;
-  --muted: #706b5f;
-  --border: #e6e2d7;
-  --border-strong: #d5d0c2;
+  --bg: #f6f0e6;
+  --surface: #fdf9f3;
+  --surface-2: #eee6da;
+  --ink: #23211d;
+  --muted: #736d63;
+  --border: #e1dacd;
+  --border-strong: #cdc5b6;
   --accent: #d97757;
-  --accent-soft: #f6e3db;
-  --accent-ink: #b45309;
-  --good: #4d7c4d;
-  --good-soft: #e4efe4;
+  --accent-soft: #fbded4;
+  --accent-ink: #b15005;
+  --good: #497849;
+  --good-soft: #deecde;
   --bad: #b3453a;
-  --bad-soft: #f6e1de;
+  --bad-soft: #f8dedb;
   --star: #d9a13b;
-  --checker-a: #efece3;
-  --checker-b: #e2ded2;
+  --checker-a: #f1ebe1;
+  --checker-b: #e4ddd1;
   --shadow: 0 1px 2px rgba(40, 35, 25, 0.06), 0 4px 16px rgba(40, 35, 25, 0.05);
   --serif: "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, ui-serif, serif;
   --sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
@@ -111,11 +127,11 @@ const CSS_TOKENS = `
   }
 }
 :root[data-theme="light"] {
-  --bg: #faf9f5; --surface: #ffffff; --surface-2: #f4f2ec; --ink: #1f1e1a;
-  --muted: #706b5f; --border: #e6e2d7; --border-strong: #d5d0c2;
-  --accent: #d97757; --accent-soft: #f6e3db; --accent-ink: #b45309;
-  --good: #4d7c4d; --good-soft: #e4efe4; --bad: #b3453a; --bad-soft: #f6e1de;
-  --star: #d9a13b; --checker-a: #efece3; --checker-b: #e2ded2;
+  --bg: #f6f0e6; --surface: #fdf9f3; --surface-2: #eee6da; --ink: #23211d;
+  --muted: #736d63; --border: #e1dacd; --border-strong: #cdc5b6;
+  --accent: #d97757; --accent-soft: #fbded4; --accent-ink: #b15005;
+  --good: #497849; --good-soft: #deecde; --bad: #b3453a; --bad-soft: #f8dedb;
+  --star: #d9a13b; --checker-a: #f1ebe1; --checker-b: #e4ddd1;
   --shadow: 0 1px 2px rgba(40, 35, 25, 0.06), 0 4px 16px rgba(40, 35, 25, 0.05);
 }
 :root[data-theme="dark"] {
