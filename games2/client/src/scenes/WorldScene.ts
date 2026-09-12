@@ -968,17 +968,6 @@ const GROUND_RING_MS = 2;
 type OccTagged = Phaser.GameObjects.Image & { ocCol?: number; ocRow?: number; ocBase?: number };
 
 const GROUND_COMPOSE_MS = 2;
-/** How often a boundary repair may force an occluder rebuild, in ms. A RAISED
- *  transition is worn by the occluder cap, not by the ground texture under it
- *  (the cap is re-issued over the ground so bodies interleave by depth), so a
- *  boundary the budget deferred is invisible until the occluder set is built
- *  again — and that set is latched to 96 px of camera drift, which never comes
- *  while he stands still. Measured on the_game, 118-217 of a window's 169-287
- *  boundaries are raised, so this is the common case, not the corner.
- *  Rebuilding on every repaired cell would cost a rebuild per frame for
- *  hundreds of frames; this makes the repairs land in waves a few times a
- *  second, at ~3 ms each, and stops by itself when the owed set drains. */
-const T3_OCC_REPAIR_MS = 400;
 /** ONE COMPOSITION IS AN ATOM, AND ON HIS PHONE IT IS ~13 ms.
  *
  *  Measured: with GROUND_RING_MS already in force, `prefetch` still cost 15.64
@@ -1158,6 +1147,10 @@ const TILE_DIAMOND_TOP = 5;
  * are never pooled, are recreated in creation order every rebuild, and the
  * stable sort resolves their ties exactly as it always did. */
 const OCC_DEPTH_EPS = 1e-6;
+/** WHERE SCENERY'S TIE-BREAK STARTS: past every terrain slot (128 diagonals x
+ *  40 a cell, see tiles3Occluders), so a piece on a wall top still draws over
+ *  the wall's own images as it did when the count simply ran on. */
+const OCC_SEQ_SCENERY = 128 * 40;
 
 /* THE LOADING BAR'S BANDS — a stage gets the share of the BAR that matches its
  * share of the TIME, measured, so the bar moves at roughly one speed the whole
@@ -3449,6 +3442,20 @@ export class WorldScene extends Phaser.Scene {
     y1: number;
   }[] = [];
   private lastOccl = { x: NaN, y: NaN };
+  /** THE INCREMENTAL REBUILD'S BOOKKEEPING (2026-09-12): the window the live
+   *  set was built for and the indoor state it was built under (either
+   *  changing means a full walk), per-cell meta buckets and walk state, the
+   *  landing flag (a terrain batch re-walks the incomplete cells only) and
+   *  the A/B switch (`__ml.occInc(false)` = every step walks the window). */
+  private occWin: { u0: number; u1: number; v0: number; v1: number } | null = null;
+  private occWinMask: Map<number, number> | null = null;
+  private occWinTop = 0;
+  private occMetaByCell = new Map<number, (typeof this.occluderMeta)[number][]>();
+  private occCellState = new Map<number, { partial: boolean; incomplete: boolean }>();
+  private occRelanded = false;
+  private occIncOn = true;
+  private occIncStats = { steps: 0, walked: 0 };
+  private occForceStep = false; // occIncCheck: one step at the camera's exact spot
   /** Dev switch for A/B measurement of destroyBatch's two paths (`__ml.occRebuild`);
    *  nothing in play reads it. */
   private occFastDestroy = true;
@@ -6741,6 +6748,75 @@ export class WorldScene extends Phaser.Scene {
           destroyMs: +this.occDestroyMs.toFixed(1),
           buildMs: +(ms - this.occDestroyMs).toFixed(1),
           displayList: this.children.length,
+        };
+      },
+      /** THE INCREMENTAL REBUILD'S A/B AND ITS COUNTERS — `occInc(false)` makes
+       *  every 96 px step walk the whole window again (the pre-2026-09-12
+       *  cost); reading resets the step and cell counts. */
+      occInc: (on?: boolean) => {
+        if (on !== undefined) {
+          this.occIncOn = on;
+          this.lastOccl = { x: NaN, y: NaN };
+        }
+        let partial = 0;
+        let incomplete = 0;
+        for (const st of this.occCellState.values()) {
+          if (st.partial) partial++;
+          if (st.incomplete) incomplete++;
+        }
+        const out = { on: this.occIncOn, ...this.occIncStats, cells: this.occCellState.size, partial, incomplete, images: this.occluders.length, meta: this.occluderMeta.length };
+        this.occIncStats = { steps: 0, walked: 0 };
+        return out;
+      },
+      /** PARITY OF THE INCREMENTAL SET AGAINST A FULL WALK at this camera: the
+       *  live set (however many steps built it) against the set a fresh full
+       *  walk produces. Every image and record of the full set must be in the
+       *  live set; the live set may carry EXTRA images only for cells kept
+       *  from an earlier step whose images the moving cull box would refuse
+       *  now (`extra`), never a record. Leaves the full set live. */
+      occIncCheck: () => {
+        const dump = () => {
+          const imgs = this.occluders.map((im) => `${im.texture.key}|${im.x}|${im.y}|${(im as OccTagged).ocBase}|${(im as OccTagged).ocCol},${(im as OccTagged).ocRow}|${im.tintTopLeft}|${Math.round(im.depth * 1e7)}`);
+          const meta = this.occluderMeta.filter((m) => !m.solid).map((m) => JSON.stringify(m));
+          return { imgs, meta };
+        };
+        // One incremental step at the camera's exact spot first, so both sets
+        // describe the same window (the latch tolerates 96 px of drift).
+        this.occForceStep = true;
+        this.rebuildOccluders();
+        this.occForceStep = false;
+        const inc = dump();
+        const stepsBefore = this.occIncStats.steps;
+        this.lastOccl = { x: NaN, y: NaN };
+        this.rebuildOccluders();
+        const full = dump();
+        const count = (a: string[]) => {
+          const m = new Map<string, number>();
+          for (const k of a) m.set(k, (m.get(k) ?? 0) + 1);
+          return m;
+        };
+        const diff = (a: string[], b: string[]) => {
+          const ca = count(a);
+          const cb = count(b);
+          const out: string[] = [];
+          for (const [k, n] of ca) if ((cb.get(k) ?? 0) < n) out.push(k);
+          return out;
+        };
+        const missingImgs = diff(full.imgs, inc.imgs);
+        const extraImgs = diff(inc.imgs, full.imgs);
+        const missingMeta = diff(full.meta, inc.meta);
+        const extraMeta = diff(inc.meta, full.meta);
+        return {
+          steps: stepsBefore,
+          inc: inc.imgs.length,
+          full: full.imgs.length,
+          missingImgs: missingImgs.length,
+          extraImgs: extraImgs.length,
+          missingMeta: missingMeta.length,
+          extraMeta: extraMeta.length,
+          sampleMissing: missingImgs.slice(0, 3),
+          sampleExtra: extraImgs.slice(0, 3),
+          sampleMissingMeta: missingMeta.slice(0, 2),
         };
       },
       /** THE FRAME BUDGET at this spot — `perf(true)` arms it, `perf()` reads
@@ -10991,7 +11067,10 @@ export class WorldScene extends Phaser.Scene {
     }
     if (this.repaintOccPending) {
       this.repaintOccPending = false;
-      this.lastOccl = { x: NaN, y: NaN };
+      // A landing walks the INCOMPLETE cells again (see rebuildOccluders),
+      // never the window: it used to poison the latch — a full rebuild per
+      // terrain batch, 200-300 batches a window while running.
+      this.occRelanded = true;
       this.repaintStats.occRuns++;
     }
     if (this.perfOn) {
@@ -17819,24 +17898,18 @@ export class WorldScene extends Phaser.Scene {
     }
     if (!ready.length) return;
     this.repaintTiles3Cells(ready);
-    /* ONLY A RAISED REPAIR NEEDS AN OCCLUDER REBUILD, and rebuilding for a flat
-     * one is a measured no-op: a level-0 field cell emits no occluder image and
-     * no `occluderMeta` record at all (`if (cell.kind !== "wall" && cell.level
-     * <= 0) continue`), so the set that comes back is bit-identical. Measured
-     * standing still with no landing repaints, poisoning on every repair cost
-     * 11-12 full rebuilds and 101-309 ms of JS per 12 s here — 250-770 ms on
-     * his phone — to produce exactly the same occluders, because 94-100% of the
-     * cells a repair fixes are flat. A raised cap wears its transition on the
-     * occluder rather than on the ground under it, so that case still needs
-     * one; rate-limited by T3_OCC_REPAIR_MS. */
-    if (!raisedRepair) return;
-    const now = performance.now();
-    if (now - this.t3occRepairAt >= T3_OCC_REPAIR_MS) {
-      this.t3occRepairAt = now;
-      this.lastOccl = { x: NaN, y: NaN };
-    }
+    /* ONLY A RAISED REPAIR TOUCHES THE OCCLUDERS, and only the cells the walk
+     * left INCOMPLETE (rebuildOccluders): a level-0 field cell emits no
+     * occluder image and no `occluderMeta` record at all (`if (cell.kind !==
+     * "wall" && cell.level <= 0) return`), and 94-100% of the cells a repair
+     * fixes are flat. A raised cap wears its transition on the occluder rather
+     * than on the ground under it, so that one is walked again — it refused
+     * its boundary when it was last walked, which is what marked it. (This
+     * used to poison the latch, a full rebuild per repair, rate-limited to
+     * T3_OCC_REPAIR_MS because it cost 250-770 ms on his phone per 12 s to
+     * rebuild an identical set.) */
+    if (raisedRepair) this.occRelanded = true;
   }
-  private t3occRepairAt = 0;
   /** Dev A/B for the compose budget — `null` is GROUND_COMPOSE_MS. Remembered
    *  like the other ground switches so it can be flipped on the phone, where a
    *  probe call cannot survive the reload the comparison needs. */
@@ -18660,6 +18733,7 @@ export class WorldScene extends Phaser.Scene {
     top: number,
     shows: (x: number, y: number) => boolean,
     columnShows: (x: number, yTop: number, yBot: number) => boolean,
+    only?: Set<number>,
   ): number {
     const t3 = this.t3;
     const world = this.world;
@@ -18667,16 +18741,57 @@ export class WorldScene extends Phaser.Scene {
     if (!t3 || !world || !tex) return 0;
     const { dx, dy, lh, tile: tileSize } = this.geom;
     let culled = 0;
-    for (let v = v0; v <= v1; v++) {
-      for (let u = u0; u <= u1; u++) {
-        if ((u + v) & 1) continue;
-        const col = (u + v) / 2;
-        const row = (v - u) / 2;
-        if (col < 0 || row < 0 || col >= world.width || row >= world.height) continue;
+    /* ONE CELL AT A TIME (the incremental rebuild, 2026-09-12): the body that
+     * used to be the loop's, so a rebuild can walk the whole window or ONLY
+     * the cells `only` names. Every cell it visits records its state —
+     * `partial` (an image of its culled; the cull box moves with the camera,
+     * so it is walked again next step) and `incomplete` (art still streaming;
+     * walked again when terrain lands) — and its meta goes into its own
+     * bucket (`occMetaByCell`), so cells that leave the window take their
+     * records with them and nothing else is touched. */
+    const walk = (col: number, row: number): void => {
+      if (col < 0 || row < 0 || col >= world.width || row >= world.height) return;
+      const u = col - row;
+      const idx = row * world.width + col;
+      const st = { partial: false, incomplete: false };
+      this.occCellState.set(idx, st);
+      const metaPush = (m: (typeof this.occluderMeta)[number]) => {
+        let arr = this.occMetaByCell.get(idx);
+        if (!arr) this.occMetaByCell.set(idx, (arr = []));
+        arr.push(m);
+      };
+      walkCell = () => walkBody(col, row, st, metaPush);
+      /* THE TIE-BREAK IS THE CELL'S PLACE ON ITS DIAGONAL, not a running
+       * count: images on one diagonal share a base depth and sort by
+       * creation order, which the full walk gave in u order; an incremental
+       * walk creates them in any order, so the order is stated. 40 slots a
+       * cell (a 24-storey column is ~30 images), u wrapped at 128 (4,096 px —
+       * two cells that far apart on one diagonal never overlap), so the
+       * epsilon band stays under 0.0052 and below the debris' +0.01. */
+      this.occSeq = (((u % 128) + 128) % 128) * 40;
+      /* "INCOMPLETE" IS WHATEVER THE FACTORY COULD NOT GIVE THIS CELL — its own
+       * plate or course (`!topKey || !fk`), or an op built from a neighbour's
+       * art or under the compose budget (a boundary, a fade, a deck course, a
+       * dress): every such refusal bumps one of four counters, and a cell whose
+       * walk moved any of them is walked again on the next landing, the next
+       * boundary repair and the next step. That is what the full rebuild per
+       * terrain batch used to do for every cell in the window. */
+      const d0 = tex.droppedOps;
+      const r0 = tex.plateRawFallbacks;
+      const m0 = tex.stats.missing;
+      const f0 = tex.stats.deferred;
+      walkCell();
+      if (tex.droppedOps !== d0 || tex.plateRawFallbacks !== r0 || tex.stats.missing !== m0 || tex.stats.deferred !== f0)
+        st.incomplete = true;
+    };
+    let walkCell = () => {};
+    const walkBody = (col: number, row: number, st: { partial: boolean; incomplete: boolean }, metaPush: (m: (typeof this.occluderMeta)[number]) => void): void => {
+      const u = col - row;
+      const v = col + row;
+      const idx = row * world.width + col;
         const bx = this.iso.ox + u * dx;
         const by = this.iso.oy + v * dy;
         const oDepth = by + dy;
-        const idx = row * world.width + col;
         const occCut = mask ? (cuts ? cuts.get(idx) : top) : undefined;
 
         // A deck slab floating ABOVE its base must occlude whoever walks under
@@ -18721,18 +18836,19 @@ export class WorldScene extends Phaser.Scene {
               const isTop = oi === dops.length - 1;
               if (!(isTop ? columnShows(bx, by - d.level * lh, by + tileSize) : shows(bx, op.y))) {
                 culled++;
+                st.partial = true;
                 continue;
               }
-              this.occluders.push(this.occTint(this.occImage(op.key, bx, op.y, oDepth, col, row), "deck"));
+              this.occTint(this.occImage(op.key, bx, op.y, oDepth, col, row), "deck");
             }
-            this.occluderMeta.push({
+            metaPush({
               col, row, top: d.level, solid: false, depth: oDepth, stand: d.level,
               x0: bx, x1: bx + tileSize, y0: by - d.level * lh, y1: by + tileSize,
             });
           }
 
         const cell = this.t3cellOf(t3, col, row);
-        if (!cell) continue; // void cells never occlude
+        if (!cell) return; // void cells never occlude
         /* ANY RAISED COLUMN OCCLUDES — world@2's rule, restored.
          *
          * `kind === "wall"` answers a DRAWING question: does this column show an
@@ -18747,12 +18863,15 @@ export class WorldScene extends Phaser.Scene {
          * does this now. The exposed-face rule still governs the FACE COURSES
          * below — those are art, and drawing a band with nothing in front of it
          * is the row of ticks that rule exists to prevent. */
-        if (cell.kind !== "wall" && cell.level <= 0) continue;
+        if (cell.kind !== "wall" && cell.level <= 0) return;
         const topKey = t3SurfaceKey(tex, this.t3tm, cell);
         const fk = t3FaceKey(this.t3tm, cell) ?? topKey;
-        if (!topKey || !fk) continue; // art still streaming
+        if (!topKey || !fk) {
+          st.incomplete = true; // art still streaming: walked again when it lands
+          return;
+        }
         const topL = occCut !== undefined ? Math.min(cell.level, occCut) : cell.level;
-        if (topL < 0) continue;
+        if (topL < 0) return;
         const cutL = (c: number, r: number): number => {
           const n = world.rows[r]?.[c];
           if (!n) return -1;
@@ -18771,6 +18890,7 @@ export class WorldScene extends Phaser.Scene {
         for (let lvl = from; lvl < topL; lvl++) {
           if (!shows(bx, by - lvl * lh)) {
             culled++;
+            st.partial = true;
             continue;
           }
           /* EACH STOREY DRAWS ITS OWN TILE. Stacking one key up the column is
@@ -18778,7 +18898,7 @@ export class WorldScene extends Phaser.Scene {
            * mountain on the maintainer's screen, with the correctly varied
            * ground texture painted underneath it and covered. */
           const faceArt = t3FaceKeyAt(this.t3tm, cell, lvl) ?? fk;
-          this.occluders.push(this.occTint(this.occImage(faceArt, bx, by - lvl * lh, oDepth, col, row), "face"));
+          this.occTint(this.occImage(faceArt, bx, by - lvl * lh, oDepth, col, row), "face");
         }
         /* THE CAP IS PASTED WHERE THE GROUND PASS PASTES IT. A surface is a
          * 64x46 plate anchored at the cell's own `sy`; a wall course is 64x64
@@ -18805,9 +18925,9 @@ export class WorldScene extends Phaser.Scene {
            * ground texture, so the two passes agree. */
           const lid = topL < cell.level ? t3CutLidKey(tex, cell) : null;
           const capKey = topL === cell.level ? topKey : lid && capSurface !== null ? lid : fk;
-          this.occluders.push(this.occTint(this.occImage(capKey, capX, capY, oDepth, col, row), "cap"));
+          this.occTint(this.occImage(capKey, capX, capY, oDepth, col, row), "cap");
           if (lid && capSurface === null)
-            this.occluders.push(this.occTint(this.occImage(lid, cell.sx, (cell.pasteY ?? cell.sy) + (cell.level - topL) * lh, oDepth, col, row), "cap"));
+            this.occTint(this.occImage(lid, cell.sx, (cell.pasteY ?? cell.sy) + (cell.level - topL) * lh, oDepth, col, row), "cap");
           /* AND THE SET SURFACE OVER A DRESSED WALL'S CAP — the second image
            * the ground pass paints on such a cell (`cellOps`: stack, then the
            * surface at its own anchor). A review course's top is one flat
@@ -18817,7 +18937,7 @@ export class WorldScene extends Phaser.Scene {
            * See `dressKey`. Full-height columns only, like everything below. */
           if (topL === cell.level) {
             const dk = this.t3Try(`occ dress ${col},${row}`, () => t3DressKey(tex, cell), null);
-            if (dk) this.occluders.push(this.occTint(this.occImage(dk.key, dk.x, dk.y, oDepth, col, row), "cap"));
+            if (dk) this.occTint(this.occImage(dk.key, dk.x, dk.y, oDepth, col, row), "cap");
           }
           /* THE CAP WEARS ITS TRANSITION HERE TOO — and not doing so is the
            * whole of "the transition only works on level 0" (maintainer, for
@@ -18853,7 +18973,7 @@ export class WorldScene extends Phaser.Scene {
             const obop = this.t3Try(`occ boundary ${col},${row}`, () => tex.opsForBoundary(ob), null);
             // `obop` carries the boundary's own absolute paste point (the same
             // one the ground pass blits it at) — never re-derive it here.
-            if (obop) this.occluders.push(this.occTint(this.occImage(obop.key, obop.x, obop.y, oDepth, col, row), "boundary"));
+            if (obop) this.occTint(this.occImage(obop.key, obop.x, obop.y, oDepth, col, row), "boundary");
           }
           /* AND THE CAP WEARS ITS FADE AND ITS WALL-FOOT BAND, for exactly the
            * reason it wears its transition: the ground pass paints them into
@@ -18871,9 +18991,12 @@ export class WorldScene extends Phaser.Scene {
             const extra = this.t3Try(`occ overlay ${col},${row}`, () => tex.overlayOps(cell), null);
             if (extra)
               for (const op of extra)
-                this.occluders.push(this.occTint(this.occImage(op.key, op.x, op.y, oDepth, col, row), op.role));
+                this.occTint(this.occImage(op.key, op.x, op.y, oDepth, col, row), op.role);
           }
-        } else culled++;
+        } else {
+          culled++;
+          st.partial = true;
+        }
         // The roof over a wall top — see capDecks above. Only on a column drawn
         // whole: a truncated column's deck was already skipped by occCut.
         if (topL === cell.level)
@@ -18881,16 +19004,28 @@ export class WorldScene extends Phaser.Scene {
             for (const op of tex.opsForDeck(d)) {
               if (!columnShows(bx, op.y, by + tileSize)) {
                 culled++;
+                st.partial = true;
                 continue;
               }
-              this.occluders.push(this.occTint(this.occImage(op.key, bx, op.y, oDepth, col, row), "deck"));
+              this.occTint(this.occImage(op.key, bx, op.y, oDepth, col, row), "deck");
             }
-        this.occluderMeta.push({
+        metaPush({
           col, row, top: topL, solid: false, depth: oDepth,
           stand: cell.kind === "wall" ? -1 : cell.level,
           x0: bx, x1: bx + tileSize, y0: by - topL * lh, y1: by + tileSize,
         });
+    };
+    if (only) {
+      for (const idx of only) {
+        const col = idx % world.width;
+        walk(col, (idx - col) / world.width);
       }
+    } else {
+      for (let v = v0; v <= v1; v++)
+        for (let u = u0; u <= u1; u++) {
+          if ((u + v) & 1) continue;
+          walk((u + v) / 2, (v - u) / 2);
+        }
     }
     return culled;
   }
@@ -20792,50 +20927,13 @@ export class WorldScene extends Phaser.Scene {
     const cam = this.cameras.main;
     const ccx = cam.worldView.centerX;
     const ccy = cam.worldView.centerY;
-    if (
-      !Number.isNaN(this.lastOccl.x) &&
-      Math.abs(ccx - this.lastOccl.x) < 96 &&
-      Math.abs(ccy - this.lastOccl.y) < 96
-    )
-      return;
-    this.lastOccl = { x: ccx, y: ccy };
+    const poisoned = Number.isNaN(this.lastOccl.x);
+    const moved = poisoned || this.occForceStep || Math.abs(ccx - this.lastOccl.x) >= 96 || Math.abs(ccy - this.lastOccl.y) >= 96;
+    if (!moved && !this.occRelanded) return;
+    if (moved) this.lastOccl = { x: ccx, y: ccy };
     const tDestroy = performance.now();
-    this.occSeq = 0;
     this.occReused = 0;
     this.occCreated = 0;
-    if (this.maps3 && this.occPoolOn) {
-      /* THE CURRENT SET BECOMES THE POOL. Every maps3 occluder is created by
-       * occImage and therefore lives in occNext; what this rebuild does not
-       * take back out is destroyed at the end of the maps3 branch. LIT COPIES
-       * ARE DELIBERATELY OUTSIDE THE POOL — maps2 emissive art AND the maps3
-       * scenery silhouettes rebuildScenery pushes per drawn piece — and are
-       * destroyed and recreated in creation order every rebuild; that order is
-       * what keeps their ties right without any depth epsilon (see
-       * OCC_DEPTH_EPS). Do not drop this destroy as dead: it is one image per
-       * tree per rebuild. */
-      /* SELF-HEALING: a throw between the swap and the drain (tiles3draw's
-       * composeBoundary documents one) would leave images in occPool with no
-       * other reference — alive, drawn every frame, never re-sorted for a cut.
-       * Normally occPool is empty here and this costs nothing. */
-      if (this.occPool.size) {
-        const stray: Phaser.GameObjects.Image[] = [];
-        for (const arr of this.occPool.values()) for (const im of arr) stray.push(im);
-        this.destroyBatch(stray);
-      }
-      this.occPool = this.occNext;
-      this.occNext = new Map();
-      this.destroyBatch(this.litOccluders.flatMap((lo) => (lo.fog ? [lo.img, lo.fog] : [lo.img])));
-    } else {
-      // ONE pass for both sets — see destroyBatch.
-      this.destroyBatch(this.occluders.concat(this.litOccluders.flatMap((lo) => (lo.fog ? [lo.img, lo.fog] : [lo.img]))));
-      this.occPool.clear();
-      this.occNext.clear();
-    }
-    this.litOccluders = [];
-    this.occluders = [];
-    this.occDestroyMs = performance.now() - tDestroy;
-    this.occluderMeta = [];
-    this.emissiveLights = [];
 
     // ONE mask, TWO consumers — the ground RT and this pass are independent
     // renderings of the same terrain, and deriving the verdict twice guarantees
@@ -20891,36 +20989,164 @@ export class WorldScene extends Phaser.Scene {
      * overlap an on-screen body's art box, so culling them whole is safe. */
     const columnShows = (ix: number, iyTop: number, iyBot: number) =>
       ix + tileSize >= cx0 && ix <= cx1 && iyBot >= cy0 && iyTop <= cy1;
-    // MAPS3: the column's art comes from tiles3, not from a baked path. Same
-    // cull boxes, same occluderMeta contract, same atomic rebuild — scenery
-    // rides here for exactly the reason props do (see rebuildProps).
-    if (this.maps3) {
-      this.occCulled = this.tiles3Occluders(u0, u1, v0, v1, mask, cuts, top, shows, columnShows);
-      this.ps();
-      this.rebuildScenery(cam);
-      this.pe("rebuildScenery");
-      // No glow field: tiles2/emission.json is a tiles2 product and a v3 world
-      // references none of it. An empty stamp list is what the night pipeline
-      // already does for a world with no emissive art.
-      this.glowStamps = [];
-      /* THE COVER INDEX, which this early return skipped on EVERY maps3 world.
-       * It is the last line of the maps2 path for a reason: the occluder images
-       * have just been destroyed and recreated, so this is the one moment their
-       * broad-phase index can go stale. Returning before it left `coverBuckets`
-       * empty, so `coverCandidates` found nothing for any body, nothing was ever
-       * COVERED, and the pixel-exact lit copy drew over every wall and roof in
-       * the world — the player standing on top of a house he was behind. The
-       * depth sort was right the whole time; the second copy was not. */
-      this.rebuildCoverIndex();
-      // WHAT THE POOL DID NOT GIVE BACK is what actually left the window.
-      const tLeft = performance.now();
-      const leftover: Phaser.GameObjects.Image[] = [];
-      for (const arr of this.occPool.values()) for (const im of arr) leftover.push(im);
+    if (!this.maps3) {
+      this.destroyBatch(this.occluders.concat(this.litOccluders.flatMap((lo) => (lo.fog ? [lo.img, lo.fog] : [lo.img]))));
       this.occPool.clear();
-      this.destroyBatch(leftover);
-      this.occDestroyMs += performance.now() - tLeft;
+      this.occNext.clear();
+      this.occMetaByCell.clear();
+      this.occCellState.clear();
+      this.occWin = null;
+      this.litOccluders = [];
+      this.occluders = [];
+      this.occluderMeta = [];
+      this.emissiveLights = [];
+      this.occDestroyMs = performance.now() - tDestroy;
       return;
     }
+    /* FULL OR INCREMENTAL (2026-09-12). A full walk visits every cell of the
+     * window — ~2,700 on his phone, 50-133 ms, every 96 px of travel, and it
+     * was the largest burst left after the drain (the burst test that skipped
+     * it ran 2-3 lag frames a window against 38-51). Measured before the
+     * pool: 90-95% of what a rebuild created was bit-identical to what it had
+     * just destroyed; the pool kept the IMAGES and this keeps the WALK. A step
+     * now walks only the cells that ENTERED the window, the kept cells whose
+     * images the moving cull box refused last time (`partial`), and the kept
+     * cells whose art was still streaming (`incomplete`); cells that LEFT
+     * take their images and meta with them; every other cell is untouched.
+     * A landing (`occRelanded`) walks the incomplete cells alone, from
+     * wherever the camera stands. The full walk remains for the first set,
+     * the poisoned latch (a teleport, a manifest settle) and an indoor
+     * change — the cut mask rewrites every column. */
+    const W = this.world.width;
+    const cur = { u0, u1, v0, v1 };
+    const full =
+      !this.occIncOn || !this.occPoolOn || poisoned || !this.occWin || this.occWinMask !== mask || this.occWinTop !== top;
+    // LIT COPIES ARE OUTSIDE THE POOL — rebuildScenery recreates them in
+    // creation order every pass (that order is what keeps their ties right).
+    this.destroyBatch(this.litOccluders.flatMap((lo) => (lo.fog ? [lo.img, lo.fog] : [lo.img])));
+    this.litOccluders = [];
+    this.emissiveLights = [];
+    if (full) {
+      /* THE CURRENT SET BECOMES THE POOL. Every maps3 occluder is created by
+       * occImage and therefore lives in occNext; what this rebuild does not
+       * take back out is destroyed at the end of the maps3 branch. LIT COPIES
+       * ARE DELIBERATELY OUTSIDE THE POOL — maps2 emissive art AND the maps3
+       * scenery silhouettes rebuildScenery pushes per drawn piece — and are
+       * destroyed and recreated in creation order every rebuild; that order is
+       * what keeps their ties right without any depth epsilon (see
+       * OCC_DEPTH_EPS). Do not drop this destroy as dead: it is one image per
+       * tree per rebuild. */
+      /* SELF-HEALING: a throw between the swap and the drain (tiles3draw's
+       * composeBoundary documents one) would leave images in occPool with no
+       * other reference — alive, drawn every frame, never re-sorted for a cut.
+       * Normally occPool is empty here and this costs nothing. */
+      if (this.occPool.size) {
+        const stray: Phaser.GameObjects.Image[] = [];
+        for (const arr of this.occPool.values()) for (const im of arr) stray.push(im);
+        this.destroyBatch(stray);
+      }
+      this.occPool = this.occNext;
+      this.occNext = new Map();
+      this.occMetaByCell.clear();
+      this.occCellState.clear();
+      this.ps();
+      this.occCulled = this.tiles3Occluders(u0, u1, v0, v1, mask, cuts, top, shows, columnShows);
+      this.pe("occWalkFull");
+    } else {
+      const prev = this.occWin!;
+      const inWin = (u: number, v: number, w: { u0: number; u1: number; v0: number; v1: number }) => u >= w.u0 && u <= w.u1 && v >= w.v0 && v <= w.v1;
+      const cellUV = (k: number): [number, number] => {
+        const col = k % W;
+        const row = (k - col) / W;
+        return [col - row, col + row];
+      };
+      // Cells that LEFT: their images, meta and state go.
+      const gone: Phaser.GameObjects.Image[] = [];
+      for (const [k, imgs] of this.occNext) {
+        const [u, v] = cellUV(k);
+        if (inWin(u, v, cur)) continue;
+        for (const im of imgs) gone.push(im);
+        this.occNext.delete(k);
+      }
+      for (const k of [...this.occMetaByCell.keys()]) {
+        const [u, v] = cellUV(k);
+        if (!inWin(u, v, cur)) this.occMetaByCell.delete(k);
+      }
+      for (const k of [...this.occCellState.keys()]) {
+        const [u, v] = cellUV(k);
+        if (!inWin(u, v, cur)) this.occCellState.delete(k);
+      }
+      this.destroyBatch(gone);
+      // Cells to WALK: entered, culled last time, or still streaming.
+      const rewalk = new Set<number>();
+      for (let v = v0; v <= v1; v++)
+        for (let u = u0; u <= u1; u++) {
+          if ((u + v) & 1) continue;
+          const col = (u + v) / 2;
+          const row = (v - u) / 2;
+          if (col < 0 || row < 0 || col >= W || row >= this.world.height) continue;
+          const k = row * W + col;
+          if (!moved && !this.occRelanded) continue;
+          const st = this.occCellState.get(k);
+          const entered = !inWin(u, v, prev) || !st;
+          if (moved ? entered || st!.partial || st!.incomplete : st?.incomplete) rewalk.add(k);
+        }
+      // Their images become the pool (occImage reuses the unchanged ones),
+      // their meta is rebuilt by the walk.
+      for (const k of rewalk) {
+        const b = this.occNext.get(k);
+        if (b) {
+          this.occPool.set(k, b);
+          this.occNext.delete(k);
+        }
+        this.occMetaByCell.delete(k);
+      }
+      this.occIncStats.steps++;
+      this.occIncStats.walked += rewalk.size;
+      this.ps();
+      this.occCulled = this.tiles3Occluders(u0, u1, v0, v1, mask, cuts, top, shows, columnShows, rewalk);
+      this.pe("occWalkInc");
+    }
+    this.occWin = cur;
+    this.occWinMask = mask;
+    this.occWinTop = top;
+    this.occRelanded = false;
+    // The flat views every consumer reads (the per-frame cull, the cover
+    // index, the beacon, the depth rule), from the per-cell buckets.
+    const flatI: Phaser.GameObjects.Image[] = [];
+    for (const b of this.occNext.values()) for (const im of b) flatI.push(im);
+    this.occluders = flatI;
+    const flatM: (typeof this.occluderMeta)[number][] = [];
+    for (const arr of this.occMetaByCell.values()) for (const m of arr) flatM.push(m);
+    this.occluderMeta = flatM;
+    this.occDestroyMs = performance.now() - tDestroy;
+    this.occSeq = OCC_SEQ_SCENERY;
+    this.ps();
+    this.rebuildScenery(cam);
+    this.pe("rebuildScenery");
+    // No glow field: tiles2/emission.json is a tiles2 product and a v3 world
+    // references none of it. An empty stamp list is what the night pipeline
+    // already does for a world with no emissive art.
+    this.glowStamps = [];
+    /* THE COVER INDEX, which this early return skipped on EVERY maps3 world.
+     * It is the last line of the maps2 path for a reason: the occluder images
+     * have just been destroyed and recreated, so this is the one moment their
+     * broad-phase index can go stale. Returning before it left `coverBuckets`
+     * empty, so `coverCandidates` found nothing for any body, nothing was ever
+     * COVERED, and the pixel-exact lit copy drew over every wall and roof in
+     * the world — the player standing on top of a house he was behind. The
+     * depth sort was right the whole time; the second copy was not. */
+    this.ps();
+    this.rebuildCoverIndex();
+    this.pe("coverIndex");
+    // WHAT THE POOL DID NOT GIVE BACK is what actually left the window (or,
+    // on an incremental step, what a re-walked cell no longer draws).
+    const tLeft = performance.now();
+    const leftover: Phaser.GameObjects.Image[] = [];
+    for (const arr of this.occPool.values()) for (const im of arr) leftover.push(im);
+    this.occPool.clear();
+    this.destroyBatch(leftover);
+    this.occDestroyMs += performance.now() - tLeft;
   }
 
 

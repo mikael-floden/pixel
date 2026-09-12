@@ -1789,7 +1789,9 @@ export class Tiles3Textures {
    *  A plate is never budgeted (see `plate`), so this op is never refused; it is
    *  dropped only while its file streams, exactly like a course. */
   opsForDeck(d: Tiles3DeckCell): Tiles3Blit[] {
-    const ops = deckOps(d).filter((op) => this.o.textures.exists(op.key));
+    const all = deckOps(d);
+    const ops = all.filter((op) => this.o.textures.exists(op.key));
+    this.droppedOps += all.length - ops.length; // a course still streaming counts as a drop, like any other op
     // A slab whose surface did not resolve draws its courses alone — the cap
     // tile, the pre-fix look — never a hole.
     if (d.surface && d.ground) {

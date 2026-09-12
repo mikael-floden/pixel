@@ -5,12 +5,13 @@ The ground render texture (scroll, slices, cell repaints, prefetch, compose budg
 - **REJECTED 2026-09-12: replacing the occluder sprites with a per-pixel
   depth test** (the render retake, `docs/depth-sort.md`) — GPU-bound on his
   phone, 4.5x the lag frames. The CPU bursts the beacon's worst frames name
-  on the sprite path are the targets instead: `rebuildOccluders` 133 ms
-  (walks all ~2,700 window cells every 96 px — make it incremental), the
-  full-paint-per-drain loop (14-30 full paints per window with 0 textures
-  landing, 46-77 ms each — the guard below is NOT holding on his phone),
-  `repaintCells` 112 ms and transition composing 105 ms in one frame (the
-  2 ms budget bypassed), an `avatarLoop` spike of 159 ms.
+  on the sprite path are the targets instead, proved by the Settings "burst
+  test" switch (skips them all: 38/51 → 3/2 frames over 50 ms per window,
+  p90 19 ms): the full-paint-per-drain loop (done: THE DROP DRAIN REPAINTS
+  CELLS below; cliffs 38 → 11, cave 51 → 17), `rebuildOccluders` 50-133 ms
+  every 96 px (done: THE WALK IS INCREMENTAL below), `repaintCells` 112 ms
+  and transition composing 105 ms in one frame (the 2 ms budget bypassed —
+  next), an `avatarLoop` spike of 159 ms.
 - **THE OCCLUDER SET IS POOLED, NOT REBUILT** (`occImage`, `destroyBatch`,
   2026-09-02). A rebuild used to destroy every image and create every image,
   and 90-95% of what it created was bit-identical to what it had just
@@ -34,13 +35,18 @@ The ground render texture (scroll, slices, cell repaints, prefetch, compose budg
   column's faces and cap share one depth (`oDepth = by + dy`) and stack only
   because they were inserted bottom-up, cap last — so once images outlive a
   rebuild, insertion order is gone and EVERY image a rebuild places gets
-  depth = base + creationIndex × `OCC_DEPTH_EPS` (1e-6), scenery included,
-  which reproduces "insertion order among equals" exactly and tops out at
-  ~0.006 — far inside the ≥0.3 every body and light keeps from a column
-  (`resolveBodyDepth` +0.5 / above+0.6 / below−0.3; lights +0.1). The
-  metadata (`occluderMeta`, `emissiveLights`, the cover index) is still
-  rebuilt in full every time: it is data, and the cover index's staleness
-  contract is unchanged. **The epsilon is a BASE-band quantity: nothing that
+  depth = base + slot × `OCC_DEPTH_EPS` (1e-6), where the slot is STATED, not
+  counted: a terrain image's slot is its cell's place on its diagonal
+  (`u mod 128` × 40 + the cell's own creation order; a 24-storey column is
+  ~30 images, and two cells 128 diagonals apart never overlap) and scenery
+  starts past every terrain slot (`OCC_SEQ_SCENERY`) so a piece on a wall
+  top still draws over the wall — the incremental walk creates cells in any
+  order, so a running count would have put a newly entered cell over an
+  older neighbour on the same diagonal. Tops out at ~0.006 — far inside the
+  ≥0.3 every body and light keeps from a column (`resolveBodyDepth` +0.5 /
+  above+0.6 / below−0.3; lights +0.1). `emissiveLights` and the cover index
+  are still rebuilt in full every time: data, and the cover index's
+  staleness contract is unchanged. **The epsilon is a BASE-band quantity: nothing that
   goes through `litDepth` (×1e-5) takes it** — lit copies are never pooled
   and keep their creation order, and 1e-6 in the lit band is 0.1 world px
   per index (review caught scenery lit copies 165-540 px in front of the
@@ -49,6 +55,40 @@ The ground render texture (scroll, slices, cell repaints, prefetch, compose budg
   pool is drained at the next rebuild. The pool holds TEXTURE OBJECTS across
   rebuilds, so tiles3's `limit: 0` cache must stay unbounded, or an eviction
   must clear the pool too.
+- **THE WALK IS INCREMENTAL TOO** (`rebuildOccluders` full vs step,
+  `tiles3Occluders(..., only)`, 2026-09-12). The pool kept the IMAGES; the
+  walk that decided them still visited every cell of the window — ~2,700 on
+  his phone — every 96 px, and it was the largest burst left after the drain
+  (50-133 ms frames, `rebuildOccluders` 1.1-1.5 ms/frame mean while moving).
+  A step now walks only the cells that ENTERED the window, the kept cells
+  whose images the moving cull box refused last time (`partial`), and the
+  kept cells the texture factory could not fully serve (`incomplete`: its
+  own plate or course missing, or a boundary, fade, deck course or dress
+  refused — every refusal moves one of `droppedOps`, `plateRawFallbacks`,
+  `stats.missing`, `stats.deferred`, and the walk reads them before and
+  after each cell). Cells that LEFT take their images and per-cell meta
+  bucket (`occMetaByCell`) with them; nothing else is touched, and the flat
+  `occluders`/`occluderMeta` views are rebuilt from the buckets after every
+  step. A terrain landing and a raised boundary repair set `occRelanded`,
+  which walks the incomplete cells alone from wherever the camera stands
+  (both used to poison the latch: a FULL rebuild per batch, 200-300 batches a
+  window while running, rate-limited to 400 ms for the repair). The full
+  walk remains for the first set, a poisoned latch (teleport, manifest
+  settle, `repaintWorld`) and any indoor change (the cut mask rewrites every
+  column). Measured headless, spawn area, 10 run trips each: the walk 2.85 ms
+  avg / 9.2 max per step → 0.26 avg / 3.8 max (~80-100 cells walked per step
+  of ~1,900), and the incremental set IDENTICAL to a fresh full walk at every
+  check — same images, same depths, same meta — except kept cells' images the
+  cull box would now refuse, which stay (harmless: a few extra sprites, never
+  a missing one). `scripts/verify-occinc.mjs` is that check (`__ml.occInc()`
+  counters and A/B — `occInc(false)` walks the window every step;
+  `__ml.occIncCheck()` steps to the exact camera, then compares against a
+  full walk). NOT time-slicing the full walk across frames (stash of
+  2026-09-12: a generator with a staged swap — the set is stale for the
+  frames it takes, lit copies were lost at one spot, and it still does all
+  the work). The scenery rebuild (`rebuildScenery`, ~1.6-1.9 ms avg, 64 ms
+  max headless) and the cover index still run in full every step — next if
+  his run still names them.
 - **STREAMING REPAINTS ARE COALESCED** (`requestRepaint`, 2026-09-02). While
   a window's art streams in, three things used to run a FULL synchronous
   repaint — the terrain batch landing (`Tiles3Loader.onBatch`), the scenery
@@ -58,10 +98,12 @@ The ground render texture (scroll, slices, cell repaints, prefetch, compose budg
   with art landing: 8 of 11 occluder rebuilds and 8 of 8 ground redraws were
   that, not camera movement. Now a landing MARKS what it dirtied and
   `update()` poisons the matching latch at most once per frame: a terrain
-  batch needs ground + occluders (its plates were holes, its faces skipped);
-  a scenery batch or manifest needs the occluder rebuild ONLY — scenery rides
-  inside it; the terrain occluders come back out of the pool, while the
-  scenery images and lit copies are rebuilt in full (not pooled). The
+  batch needs the ground and a re-walk of the occluder cells the last walk
+  left INCOMPLETE (its plates were holes, its faces skipped — `occRelanded`,
+  never the whole window); a scenery batch or manifest needs the occluder
+  rebuild ONLY — scenery rides inside it; the terrain occluders come back out
+  of the pool, while the scenery images and lit copies are rebuilt in full
+  (not pooled). The
   explicit `repaintWorld()` callers (the indoor cut, landed hitbox docs) stay
   synchronous — state changes whose callers may read the result on the same
   frame — and clear the pending flags, so a landing beside a state change
