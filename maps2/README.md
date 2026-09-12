@@ -7,6 +7,30 @@ World assembler. Names a **ground type per cell** from `tiles/ground_types.json`
 parses against live in `spec/`: `WORLD3.md`, `SPAWNS.md`, `NPCS.md`, `PLACES.md`.
 (tiles2 and the world@1/@2 worlds were retired 2026-09-09 — history in git.)
 
+## The change page — every map change ships with one (maintainer law, 2026-09-12)
+
+**Every push that changes a world ships an Artifact page with a render of
+each change and a "Show on map" button that pins the place on the minimap**
+(maintainer: *"From now on I always want to see an artifact page with
+screenshots of each change with a 'show on map' button I can click on to see
+where this location is on the minimap. Since this artifact page will be
+required from you now on for every map change it has to be in your claude
+file"*). He plays on a phone and tests in production; a commit message names
+cells, the page shows him the place.
+
+- `python3 maps2/pipeline/report3.py <spec.json> <out_dir>` renders one window
+  per change (lossless WebP, `cutaway: true` lifts the cave lids over it),
+  copies the minimap and writes `index.html`; publish `out_dir/index.html`
+  with the Artifact tool and its `img/` files as `files`. The pin is the
+  world's own `minimap.json` dot formula with the cell's level from
+  `world.json` — the same pixel the game's map tab puts a body on.
+- One card per change, in the words a player uses: what changed, why, the
+  cell as the game shows it under the player (post-recentre coordinates).
+  A change he cannot see from the surface gets its lids lifted.
+- The spec lives in the scratchpad, the page link goes in the reply that
+  reports the push, and the script stays in the repo. Not optional and not
+  "when there is time": a map change without its page is not shipped.
+
 ## Releasing — deploy YOURSELF, always push to `main`
 
 **`main` is the release channel.** The game reads worlds from the repo at
