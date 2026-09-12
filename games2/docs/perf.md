@@ -92,18 +92,24 @@ The ground render texture (scroll, slices, cell repaints, prefetch, compose budg
   slot, which is walk order and never orders two overlapping images.
 - **THE RESOLUTION DIAL** (`client/src/resolution.ts`, the slider in
   `resdial.ts` just above the HUD's "Light resolution", 2026-09-12): the
-  canvas backing is `devicePixelRatio` (capped at 4) × the dial — 1, 1/2,
-  1/4, 1/8 — and the camera zoom is derived at full resolution and scaled by
-  the dial, so the SAME world fills the screen with a quarter, a sixteenth or
-  a sixty-fourth of the fragments (`zoomFor`; below 1/2 the zoom is
-  fractional and the art minified — a measurement, not a look). `renderScale`
+  canvas backing is `devicePixelRatio` (capped at 4) × the dial — 1, 2/3,
+  1/2, 1/3, 1/4, 1/8 — and the camera zoom is derived at full resolution and
+  scaled by the dial, so the SAME world fills the screen with the square of
+  the fraction in fragments (`zoomFor`; a step whose zoom is not whole — 2/3
+  and 1/3 always, 1/4 and below on his phone — resamples the art and
+  camzoom.ts's seam can show; the thirds are his ask for more options, not a
+  look). Measured (frames over 50 ms per window): 1/1 7 and 21, 1/2 4 and
+  2, 1/4 12 and 23 — below 1/2 nothing more comes back, so past that point
+  the frame is the CPU bursts, not the fill; his verdict is that 1/1 "looks
+  best by far" and is the target. `renderScale`
   in the registry is the EFFECTIVE backing per CSS px, which is what the
   ground texture's world size and the pointer mapping want; "ml-render-res"
   refits the canvas live and the scene's resize handler re-zooms and re-makes
   the ground texture. The light dial is a fraction of the canvas, so its
   ceiling follows this one by construction, and both readouts name the same
   units: `1/2 540×702`, a fraction of the FULL backing and the pixels it
-  means (`resFractionLabel`). Beacon: `run.sim` carries `/r2`, `/r4`, `/r8`;
+  means (`resFractionLabel`). Beacon: `run.sim` carries `/r1.5`, `/r2`,
+  `/r3`, `/r4`, `/r8`;
   `view` and `lights.backing` show the size. Measured on his phone before it
   existed (the light dial alone): 100% → 50% light resolution moved fps 43 →
   49 with CPU work flat — the frame is fragment-bound, and this dial asks

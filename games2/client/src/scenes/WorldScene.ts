@@ -20641,9 +20641,9 @@ export class WorldScene extends Phaser.Scene {
      * both scaled by the dial, so the zoom is derived at FULL resolution —
      * the same integer as always — and then scaled by the dial too, which
      * keeps the visible world identical (540 world px across on his phone at
-     * every step) while the fragments fall with the square. Below 1/2 the
-     * zoom is fractional and the art is minified — a measurement, not a
-     * look. */
+     * every step) while the fragments fall with the square. A step whose
+     * zoom is not whole (2/3, 1/3; 1/4 and below on his phone) resamples the
+     * art — his option, not the look (resolution.ts). */
     const frac = renderRes();
     if (frac >= 1) return cameraZoom(this.scale.width, this.renderScale());
     return cameraZoom(this.scale.width / frac, this.renderScale() / frac) * frac;

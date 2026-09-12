@@ -339,12 +339,12 @@ async function boot() {
   // Phaser's Scale.RESIZE renders 1:1 CSS with no DPR knob, so we drive the fit
   // manually under Scale.NONE: backing = #game size × RS, canvas CSS = #game size.
   /* THE BACKING: devicePixelRatio (capped) TIMES THE RESOLUTION DIAL
-   * (resolution.ts — 1, 1/2, 1/4, 1/8). `renderScale` is the EFFECTIVE
+   * (resolution.ts — 1, 2/3, 1/2, 1/3, 1/4, 1/8). `renderScale` is the EFFECTIVE
    * backing per CSS px, which is what every consumer wants (the ground
    * texture's world size, the pointer mapping); the scene's zoom re-derives
    * the full-resolution zoom and scales it by the dial, so the same world
-   * fills the screen at a quarter, a sixteenth or a sixty-fourth of the
-   * fragments. "ml-render-res" refits the canvas live; the scene's resize
+   * fills the screen at the square of the fraction in fragments.
+   * "ml-render-res" refits the canvas live; the scene's resize
    * handler re-zooms and re-makes the ground texture. */
   const RS_FULL = Math.min(4, Math.max(1, window.devicePixelRatio || 1));
   const rsNow = () => RS_FULL * renderRes();

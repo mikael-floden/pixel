@@ -1,5 +1,5 @@
-// THE RESOLUTION DIAL (client/src/resolution.ts, resdial.ts) HEADLESS: boot at 1, 1/2
-// and 1/4 and print the backing, the zoom and the visible world width — the world
+// THE RESOLUTION DIAL (client/src/resolution.ts, resdial.ts) HEADLESS: boot at 1, 2/3,
+// 1/2, 1/3 and 1/4 and print the backing, the zoom and the visible world width — the world
 // must stay the same width at every step while the backing shrinks — plus the
 // Settings dials as the page shows them (the Resolution row sits above Light
 // resolution, both in "1/k W×H" units). Needs a built client.
@@ -24,5 +24,5 @@ const probe = async (res) => {
   const r = await page.evaluate(()=>{ const g=window.__mlGame; const sc=g.scene.scenes[0]; const cam=sc.cameras.main; const dials=document.querySelector('.ml-page[data-page="settings"] .ml-dials'); const rows=dials?[...dials.querySelectorAll(".ml-amb-slider")].map(e=>[e.querySelector(".ml-amb-slider-label")?.textContent, e.querySelector(".ml-amb-slider-val")?.textContent]):null; return { backing:[g.scale.width,g.scale.height], css:[g.canvas.style.width,g.canvas.style.height], zoom:cam.zoom, worldW: g.scale.width/cam.zoom, rs:g.registry.get("renderScale"), rows }; });
   await ctx.close(); return { ...r, errs: errs.slice(0,3) };
 };
-for (const res of [1, 0.5, 0.25]) { const r = await probe(res); console.log(`res ${res}: backing ${r.backing} css ${r.css} zoom ${r.zoom} visible world ${r.worldW.toFixed(1)} px rs ${r.rs.toFixed(3)} errs ${JSON.stringify(r.errs)}`); console.log("   dials:", JSON.stringify(r.rows)); }
+for (const res of [1, 2 / 3, 0.5, 1 / 3, 0.25]) { const r = await probe(res); console.log(`res ${res}: backing ${r.backing} css ${r.css} zoom ${r.zoom} visible world ${r.worldW.toFixed(1)} px rs ${r.rs.toFixed(3)} errs ${JSON.stringify(r.errs)}`); console.log("   dials:", JSON.stringify(r.rows)); }
 await browser.close(); stop(); process.exit(0);
