@@ -22,10 +22,11 @@ on:
     # Game code AND every art domain the game bakes into its image auto-deploy
     # (maintainer 2026-07-17: "if graphics or map data that effects the game
     # changed, it should be baked into a deploy and released automatically").
-    # The art loops push frequently, but the concurrency group below collapses
-    # rapid pushes into the newest run, and BuildKit's layer cache keeps
-    # art-only rebuilds cheap. Manifests (characters.json / worlds.json)
-    # regenerate inside the image build, so art-only deploys are complete.
+    # The art loops push frequently; every push is its own run (CONCURRENCY,
+    # below), the rollout guard keeps the runs from rolling production
+    # backwards, and BuildKit's layer cache keeps art-only rebuilds cheap.
+    # Manifests (characters.json / worlds.json) regenerate inside the image
+    # build, so art-only deploys are complete.
     paths:
       - "games2/**"
       - "characters2/**"
@@ -259,77 +260,119 @@ jobs:
           done
           echo "timed out waiting for the test job" && exit 1
 
-      # SUPERSEDED? DON'T ROLL BACK OVER A NEWER COMMIT.
+      # WOULD THIS ROLLOUT MOVE PRODUCTION BACKWARDS? Asked of PRODUCTION, never
+      # of main's tip.
       #
-      # The concurrency group above is per-commit ON PURPOSE — a shared gate
-      # deadlocked the pipeline for 18 hours and the maintainer's rule is "I
-      # want no deadlock", so that stays. But its documented cost ("N pushes
-      # are N deploys") has a consequence nobody had written down: those N
-      # runs finish in whatever order their builds take, so an OLDER commit's
-      # rollout can land after a newer one and put production backwards.
-      # Measured twice on 2026-09-11 — run #3729 (the parent commit) rolled
-      # out 6 seconds after #3731 (its child), and the child's work was simply
-      # gone from the live bundle while both runs showed green.
+      # The concurrency group above is per-commit ON PURPOSE (a shared gate
+      # deadlocked the pipeline for 18 hours; "I want no deadlock"), so N pushes
+      # are N independent runs finishing in build order — and an OLDER commit's
+      # rollout can land after a newer one's (measured twice 2026-09-11: run
+      # #3729, the parent, rolled out 6 s after #3731, its child, and the child's
+      # work was gone from the live bundle with both runs green). So the guard
+      # sits at the rollout, and the one question it answers is "is the live
+      # build already past this commit?": it reads the sha production serves
+      # (`/version`, no-store, the GIT_SHA this same job bakes into the image)
+      # and compares ANCESTRY with its own commit. Newer than production → roll,
+      # whatever else has landed on main; a descendant already serving → skip.
       #
-      # So the guard belongs at the ROLLOUT, not at the gate: every run still
-      # builds independently (nothing can wedge anything), and a run whose
-      # commit is no longer an ancestor-or-equal of main's tip declines to
-      # deploy. The newest commit always wins, and no run is ever blocked.
+      # NOT "is main's tip still my commit" — the first cut, with two holes that
+      # each left production behind main for an hour (wiki + games-ui boards,
+      # 2026-09-11/12): (1) in a push burst every run found a newer tip by the
+      # time its ~5-minute build was done, skipped, and nothing had a tail — the
+      # site sat 45 minutes behind main while the monsters loop pushed art every
+      # 3-6 minutes; (2) the tip counted commits this workflow never runs for,
+      # so the maintainer saving a wiki verdict (live/**, never a deploy trigger)
+      # cancelled the rollout he was waiting for. Rejected alongside: a shared
+      # queue-style concurrency group (the deadlock), and re-resolving HEAD to
+      # deploy the newest image instead (that image may not be built yet; asking
+      # production needs nothing to exist).
       #
-      # FAILS OPEN, deliberately: any trouble resolving the tip (API hiccup,
-      # rate limit, an unexpected body) deploys anyway. A guard that can
-      # silently stop deploys is the very thing this file already learned not
-      # to build. A DISPATCH is never skipped either — it is the manual
-      # recovery lever and must always be able to force a rollout.
-      - name: Am I still the newest commit?
+      # FAILS OPEN, deliberately: any trouble reading production or the compare
+      # (a cold start, an API hiccup, an unexpected body) rolls out — a guard
+      # that can silently stop deploys is the very thing this file learned not
+      # to build. A DISPATCH is never skipped either: it is the manual recovery
+      # lever and must always be able to force a rollout.
+      - name: Would this rollout move production backwards?
         id: fresh
         env:
           GH_TOKEN: ${{ github.token }}
           MINE: ${{ needs.resolve.outputs.sha }}
         run: |
           echo "roll=yes" >> "$GITHUB_OUTPUT"
+          url=$(gcloud run services describe "${{ vars.GCP_SERVICE }}" \
+            --region "${{ vars.GCP_REGION }}" --format='value(status.url)' 2>/dev/null || true)
+          echo "url=$url" >> "$GITHUB_OUTPUT"
           if [ "${{ github.event_name }}" != "push" ]; then
             echo "$GITHUB_EVENT_NAME is not a push — rolling out unconditionally"; exit 0
           fi
-          tip=$(gh api "repos/${{ github.repository }}/commits/${{ github.ref_name }}" --jq '.sha' 2>/dev/null || true)
+          served=$( { [ -n "$url" ] && curl -fsS --max-time 30 --retry 2 "$url/version"; } 2>/dev/null | jq -r '.sha // empty' 2>/dev/null || true)
           # A 40-hex sha or nothing. Asserted by SHAPE, not by counting
           # wildcards in a glob — the first cut of this line had 41 `?` and so
           # fell open on every real sha, which is a guard that only looks like
           # one.
-          if ! printf '%s' "$tip" | grep -Eq '^[0-9a-f]{40}$'; then
-            echo "could not resolve the tip of ${{ github.ref_name }} (got '$tip') — rolling out"; exit 0
+          if ! printf '%s' "$served" | grep -Eq '^[0-9a-f]{40}$'; then
+            echo "could not read what production serves (got '$served') — rolling out"; exit 0
           fi
-          if [ "$tip" = "$MINE" ]; then
-            echo "$MINE IS the tip — rolling out"; exit 0
+          if [ "$served" = "$MINE" ]; then
+            echo "roll=no" >> "$GITHUB_OUTPUT"
+            echo "production already serves $MINE — nothing to roll"
+            echo "Production already serves \`$MINE\` — nothing rolled out." >> "$GITHUB_STEP_SUMMARY"
+            exit 0
           fi
-          # Not the tip. Only skip when the tip really is a DESCENDANT of mine
-          # (a newer commit on this branch); anything else — a force-push, an
-          # unrelated history — is not a supersede and still deploys.
-          st=$(gh api "repos/${{ github.repository }}/compare/$MINE...$tip" --jq '.status' 2>/dev/null || true)
+          # `compare/MINE...served` describes what production serves RELATIVE
+          # TO this commit: "ahead" = a descendant is live and this run is
+          # stale; "behind" = this commit is the newer one; "diverged" (a
+          # force-push, an unrelated history) and any failure to answer are not
+          # a supersede and still deploy.
+          st=$(gh api "repos/${{ github.repository }}/compare/$MINE...$served" --jq '.status' 2>/dev/null || true)
           if [ "$st" = "ahead" ]; then
             echo "roll=no" >> "$GITHUB_OUTPUT"
-            echo "SUPERSEDED: $tip is ahead of $MINE on ${{ github.ref_name }} — its own deploy rolls out, not this one."
+            echo "NOT ROLLING OUT: production serves $served, a descendant of $MINE — the site is already past this commit."
+            echo "**Not rolled out** — production already serves \`$served\`, which is ahead of this run's \`$MINE\`. The site is past this commit, not behind it." >> "$GITHUB_STEP_SUMMARY"
           else
-            echo "tip $tip is '$st' relative to $MINE — not a supersede, rolling out"
+            echo "production serves $served ('${st:-unknown}' relative to $MINE) — rolling out $MINE"
           fi
 
       - name: Deploy to Cloud Run
         if: steps.fresh.outputs.roll != 'no'
         env:
           IMAGE: ${{ vars.GCP_REGION }}-docker.pkg.dev/${{ vars.GCP_PROJECT_ID }}/${{ vars.GCP_AR_REPO }}/${{ vars.GCP_SERVICE }}
+          MINE: ${{ needs.resolve.outputs.sha }}
+          URL: ${{ steps.fresh.outputs.url }}
+          GH_TOKEN: ${{ github.token }}
         run: |
-          gcloud run deploy "${{ vars.GCP_SERVICE }}" \
-            --image "$IMAGE:${{ needs.resolve.outputs.sha }}" \
-            --region "${{ vars.GCP_REGION }}" \
-            --platform managed \
-            --allow-unauthenticated \
-            --port 8080 \
-            --cpu 1 --memory 1Gi \
-            --min-instances 0 \
-            --max-instances 1 \
-            --no-cpu-throttling \
-            --no-session-affinity \
-            --timeout 3600
+          deploy() {
+            gcloud run deploy "${{ vars.GCP_SERVICE }}" \
+              --image "$IMAGE:$MINE" \
+              --region "${{ vars.GCP_REGION }}" \
+              --platform managed \
+              --allow-unauthenticated \
+              --port 8080 \
+              --cpu 1 --memory 1Gi \
+              --min-instances 0 \
+              --max-instances 1 \
+              --no-cpu-throttling \
+              --no-session-affinity \
+              --timeout 3600
+          }
+          deploy
+          echo "Rolled out \`$MINE\`." >> "$GITHUB_STEP_SUMMARY"
+          # TWO ROLLOUTS IN FLIGHT AT ONCE can still cross — the guard above ran
+          # before either, so the older one can finish last. Read production
+          # once more: if it now serves an ANCESTOR of this commit, an older
+          # rollout landed over this one, and this commit rolls once more. The
+          # newer commit always has the last word; nothing ever re-rolls over a
+          # descendant, and a run re-rolls at most once.
+          [ "${{ github.event_name }}" = "push" ] || exit 0
+          served=$( { [ -n "$URL" ] && curl -fsS --max-time 30 --retry 2 "$URL/version"; } 2>/dev/null | jq -r '.sha // empty' 2>/dev/null || true)
+          printf '%s' "$served" | grep -Eq '^[0-9a-f]{40}$' || exit 0
+          [ "$served" != "$MINE" ] || exit 0
+          st=$(gh api "repos/${{ github.repository }}/compare/$MINE...$served" --jq '.status' 2>/dev/null || true)
+          if [ "$st" = "behind" ]; then
+            echo "production serves $served, an ancestor of $MINE — an older rollout landed over this one; rolling $MINE once more"
+            deploy
+            echo "An older rollout had landed over it (\`$served\`); rolled out \`$MINE\` once more." >> "$GITHUB_STEP_SUMMARY"
+          fi
 
       - name: Show URL
         if: steps.fresh.outputs.roll != 'no'

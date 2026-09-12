@@ -41,9 +41,10 @@ versions, delete >14 days. No CI job, no credentials.
 root, so sibling art is baked in), pushes to Artifact Registry, and
 `gcloud run deploy`s to `europe-north1` (Finland, ~10-20 ms from Sweden). It
 runs on **push to `main`** touching `games2/**` OR any art domain the image
-bakes (art pushes auto-deploy — maintainer decision 2026-07-17; the
-concurrency group collapses rapid pushes into the newest run), plus
-**manual dispatch**. A parallel `test` job (typecheck + `npm test`) gates the
+bakes (art pushes auto-deploy — maintainer decision 2026-07-17; every push
+is its own run, and the rollout guard asks PRODUCTION whether it is already
+past the commit — `games2/docs/shipping.md`, Deploy), plus **manual
+dispatch**, which always rolls out. A parallel `test` job (typecheck + `npm test`) gates the
 deploy — see `games2/docs/shipping.md` (Deploy) and `games2/SURFACES.md` for the
 one gate an art push can trip.
 

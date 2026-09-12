@@ -237,8 +237,17 @@ pipeline.
 - **Deploy** (push to main → live): the workflow runs `test` (typecheck +
   full suite) IN PARALLEL with the layer-cached image build; `deploy` needs
   both. Triggers on `games2/**` AND every domain the image bakes (art pushes
-  deploy automatically — maintainer; the concurrency group collapses rapid
-  pushes into the newest run). A maps2 push using an unclassified tile
+  deploy automatically — maintainer). EVERY PUSH IS ITS OWN RUN (a shared
+  concurrency group deadlocked the pipeline for 18 hours, 2026-08-06), so runs
+  finish in build order, and THE ROLLOUT GUARD ASKS PRODUCTION: it reads the
+  sha the site serves (`/version`, the image's own GIT_SHA) and skips only when
+  a DESCENDANT of its commit is already live; two rollouts that cross re-roll
+  the newer commit once. Never main's tip — that starved production for 45
+  minutes behind an art-push burst (every run found a newer tip by the time
+  its build was done) and let a `live/**` save, which never deploys, cancel
+  the rollout he was waiting for (2026-09-11/12). A green run whose summary
+  says "Not rolled out" means the site is already PAST that commit, never
+  behind it. A maps2 push using an unclassified tile
   category fails check-surfaces and BLOCKS its own deploy (prod stays on the
   previous revision) until the SURFACES entry ships — watch for red runs.
   Dockerfile layers are ordered deps → art (per-domain) → game source LAST;

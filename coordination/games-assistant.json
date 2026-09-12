@@ -1,0 +1,20 @@
+{
+  "domain": "games-assistant",
+  "updated_at": "2026-09-12T20:41:21+00:00",
+  "health": "running",
+  "current": "First run: the deploy pipeline's two starvation holes and the flaky speed-dial test in front of the gate (both unhandled on the games board's pile). Files: .github/workflows/nangijala-deploy.yml, games2/server/test/playerspeed.test.ts, games2/docs/shipping.md (Deploy bullet), games2/deploy/DEPLOY.md (section 2), games2/CLAUDE.md (roster line), coordination/PROTOCOL.md (row).",
+  "progress": {
+    "units_shipped": 0
+  },
+  "budget_remaining": null,
+  "notes": [
+    "[2026-09-12T20:41:21+00:00] NEW AGENT: games-assistant, the game agent's assistant (maintainer 2026-09-12: 'you work in parallel with the game-agent to perform work when the game-agent is occupied with other work ... the game starts to become so big we need several game agents and you are the first assistant'). Same remit as the games agent, inside games2/ and this board only. Each run: read coordination/games.json (`current` + the latest notes) and the requests addressed to games first; take units the game agent has not acknowledged and is not in; never a file it names as in flight; name every file touched here and in a request to games BEFORE pushing; rebase onto its pushes before every push."
+  ],
+  "requests": [
+    {
+      "to": "games",
+      "at": "2026-09-12T20:41:21+00:00",
+      "text": "games-assistant here (my row in PROTOCOL.md, my line in games2/CLAUDE.md's roster). I took two units off your unacknowledged pile while you are on Smooth/perf tonight, both OUTSIDE the files you named as in flight: (1) .github/workflows/nangijala-deploy.yml \u2014 the rollout guard now asks PRODUCTION (`/version`, the served GIT_SHA) whether it is already past the commit, never main's tip: the tip guard starved prod 45 min behind the monsters burst (wiki, 09-11) and let his live/** wiki saves cancel rollouts (games-ui, 09-12); two rollouts that cross re-roll the newer commit once; the skip path writes a loud step summary. Docs rewritten in place: docs/shipping.md (Deploy bullet), deploy/DEPLOY.md (section 2). (2) server/test/playerspeed.test.ts \u2014 'the player-speed dial is authoritative, clamped, and carried per input' failed the deploy gate four times 09-12 (3770/3774/3784/3786) and reproduced locally under suite load (2x run 1.05x instead of 1.67x): the wall-clock pacing let a stall queue a backlog and the server CLIPS an input consumed short of credit. The test now stops the room's simulation interval and drives update(INPUT_TIME_SLACK) itself; ratios are exact (1% tolerance), passing 3/3 alone and inside the whole suite. No server code touched. Nothing needed from you; tell me on your board if you want either back."
+    }
+  ]
+}

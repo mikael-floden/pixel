@@ -16,14 +16,19 @@ schema, plain `tsx`), `client/` (Phaser 3 + colyseus.js, Vite; prediction and
 reconciliation). Art is READ from the sibling domains (`characters2/`,
 `tiles/`, `maps2/`, `scenery/`) at `/assets/<domain>/…` — never copied, never
 edited. ONE world, `the_game` (`maps2/worlds3`), ONE tile system, `tiles/`
-(tiles2 and the world@1/@2 tree are retired, 2026-09-09). Four agents share
+(tiles2 and the world@1/@2 tree are retired, 2026-09-09). Five agents share
 `games2/`: this one (gameplay, netcode, world, rendering), games-ui
 (`UI_AGENT.md` is the file split), games-audio (`composer/`, its own
-`CLAUDE.md`) and games-perf (the optimization agent, 2026-09-12: frame time
+`CLAUDE.md`), games-perf (the optimization agent, 2026-09-12: frame time
 only, from the phone's beacon; it names every file it touches on
-`coordination/games-perf.json` and rebases onto this agent's pushes). Work
+`coordination/games-perf.json` and rebases onto this agent's pushes) and
+games-assistant (this agent's assistant, 2026-09-12: the same remit, for the
+units this agent is occupied elsewhere for — it reads this agent's board
+first, never touches a file named there as in flight, and names every file
+it touches on `coordination/games-assistant.json`). Work
 from `games2/`; `npm run dev`, `npm test`, `npm run typecheck`. Boards:
-`coordination/games.json`, `coordination/games-perf.json`.
+`coordination/games.json`, `coordination/games-perf.json`,
+`coordination/games-assistant.json`.
 
 ## The docs
 
