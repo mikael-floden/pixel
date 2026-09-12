@@ -30,6 +30,8 @@ every one of them owns one board file (`coordination/<agent>.json`):
 | games-ambient-assistant | `games2/ambient/` | the ambient-life agent's assistant (2026-09-12); follows the pattern below; its board `coordination/games-ambient-assistant.json` |
 | characters2-assistant | `characters2/` | the characters2 agent's assistant (2026-09-12); follows the pattern below; the mirror stays zero-generation |
 | lore-assistant | `lore/` | the lore agent's assistant (2026-09-12); follows the pattern below; `lore/pipeline/build.py --check` before and after every unit, never a broken canon on main |
+| scenery-assistant | `scenery/` | the scenery agent's assistant (2026-09-12); follows the pattern below; the PixelLab floor and the generation loop stay the scenery agent's — this one keeps the domain's published layers current (the packed layer, the gates) and takes the requests to the domain the scenery agent is idle for |
+| games-ambient-assistant | `games2/ambient/` | the ambient agent's assistant (2026-09-12); follows the pattern below; takes the items of the maintainer's effect list the ambient agent is not in, one folder per effect like every feature |
 
 **Every agent above has an assistant, `<agent>-assistant`** (maintainer
 2026-09-12: "an assistant that works with the same tasks and in the same
