@@ -107,12 +107,14 @@ ${resolveGlslChunk()}
 // height — the painter clamps such a body behind the slab and the plates
 // cover it; a head "poking through the planks" is what the 3-D rule alone
 // draws (measured at the river bridge). ownPacked = col + 1024 x row (tdCell).
-bool terrainHides(vec2 w, float zPx, float zFloor, float ownPacked) {
+// Returns WHY: 0 visible, 1 a nearer deck top, 2 the own column's slab,
+// 3 nearer terrain (the 3-D rule) — the probe's uTdDbg paints the reason.
+int terrainHidesWhy(vec2 w, float zPx, float zFloor, float ownPacked) {
   float u = (w.x - uIsoA.x) / uIsoA.z - 1.0;
   float v0 = (w.y - uIsoA.y) / uIsoA.w;
   vec2 cell;
   float z;
-  if (!terrainResolve(u, v0, cell, z)) return false;
+  if (!terrainResolve(u, v0, cell, z)) return 0;
   vec2 own = vec2(mod(ownPacked, 1024.0), floor(ownPacked / 1024.0));
   float cv = floor(cell.x) + floor(cell.y);
   float ov = own.x + own.y;
@@ -121,16 +123,24 @@ bool terrainHides(vec2 w, float zPx, float zFloor, float ownPacked) {
     // A deck top over a body below it: nearer diagonals cover; the body's
     // own diagonal covers too while its own column wears the slab (the
     // painter clamps it just behind that column); diagonals behind never.
-    if (cv > ov + 0.5) return true;
+    if (cv > ov + 0.5) return 1;
     if (cv > ov - 0.5) {
       vec2 oc = own + 0.5;
       float Ho = heightAt(oc);
-      return Ho > baseTerrAt(oc) + 0.5 && Ho > zFloor + 0.5;
+      return (Ho > baseTerrAt(oc) + 0.5 && Ho > zFloor + 0.5) ? 2 : 0;
     }
-    return false;
+    return 0;
   }
-  if (cv < ov + 0.5) return false;
-  return z > zPx + uTdEps;
+  if (cv < ov + 0.5) return 0;
+  // A LOW LEDGE NEVER COVERS: a column rising less than two levels above the
+  // caller's floor is drawn behind it (depthrule's lift — the maintainer's
+  // rule; measured: a one-level cut wall beside a dungeon corridor ate the
+  // feet of anyone walking along it).
+  if (H < zFloor + 1.5) return 0;
+  return z > zPx + uTdEps ? 3 : 0;
+}
+bool terrainHides(vec2 w, float zPx, float zFloor, float ownPacked) {
+  return terrainHidesWhy(w, zPx, zFloor, ownPacked) > 0;
 }
 `;
 }
@@ -163,6 +173,7 @@ function buildFrag(): string {
   return `#define SHADER_NAME TERRAIN_DEPTH_FS
 precision highp float;
 uniform sampler2D uMainSampler;
+uniform float uTdDbg;
 varying vec2 outTexCoord;
 varying float outTintEffect;
 varying vec4 outTint;
@@ -181,10 +192,24 @@ void main() {
   }
   if (vMode > 0.5 && color.a > 0.002) {
     float zPx = max(vOcc.x - vOcc.y * vWorld.y, vOcc.z);
-    bool hid = terrainHides(vWorld, zPx, vOcc.z, vOcc.w);
-    if (vMode < 1.5) {
-      if (hid) discard;
-    } else if (!hid) discard;
+    int why = terrainHidesWhy(vWorld, zPx, vOcc.z, vOcc.w);
+    if (uTdDbg > 2.5) {
+      // Probe 3: every tested pixel this pipeline DRAWS, magenta — the parity
+      // harness's mask (a hidden region always wears its ring, so a body the
+      // sprite path showed there still meets the mask at the ring).
+      bool drawn = vMode < 1.5 ? why == 0 : why > 0;
+      if (!drawn) discard;
+      color = vec4(1.0, 0.0, 1.0, 1.0);
+    } else if (uTdDbg > 1.5) {
+      // Probe 2: every tested pixel magenta, hidden or not.
+      color = vec4(1.0, 0.0, 1.0, 1.0);
+    } else if (uTdDbg > 0.5) {
+      // Probe 1: paint the reason (red deck, green own slab, blue terrain).
+      if (why == 0) discard;
+      color = why == 1 ? vec4(1.0, 0.0, 0.0, 1.0) : why == 2 ? vec4(0.0, 1.0, 0.0, 1.0) : vec4(0.0, 0.4, 1.0, 1.0);
+    } else if (vMode < 1.5) {
+      if (why > 0) discard;
+    } else if (why == 0) discard;
   }
   gl_FragColor = color;
 }
@@ -238,6 +263,10 @@ export class TerrainDepthPipeline extends Phaser.Renderer.WebGL.Pipelines.MultiP
   /** Levels of slack before a surface counts as nearer (the body's own ground
    *  resolves to exactly its level; faces are fractional). */
   eps = 0.01;
+  /** Probe: 1 paints every tested pixel by the reason it is hidden, 2 paints
+   *  every tested pixel magenta, 3 every tested pixel that is DRAWN (the
+   *  parity harness's mask). */
+  dbg = 0;
   private cam: Phaser.Cameras.Scene2D.Camera | null = null;
   private lastUpload = -1;
   private white: TexWrap | null = null;
@@ -278,6 +307,7 @@ export class TerrainDepthPipeline extends Phaser.Renderer.WebGL.Pipelines.MultiP
     this.quads = 0;
     this.testedQuads = 0;
     this.white = this.renderer.whiteTexture as TexWrap;
+    this.set1f("uTdDbg", this.dbg);
     this.texUnits = uploadTerrainUniforms(this, this.night, this.eps);
   }
 

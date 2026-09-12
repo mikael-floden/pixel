@@ -1054,6 +1054,7 @@ interface Avatar {
   lit?: Phaser.GameObjects.Sprite; // lit copy above the night overlay
   fog?: Phaser.GameObjects.Image; // the fog silhouette over the lit copy (syncLitCopy)
   hidden?: Phaser.GameObjects.Image; // white outline over the covered part (syncCoverOutline)
+  hiddenScn?: Phaser.GameObjects.Image;
   // Screen y of the highest wall top drawn over the sprite this frame, or
   // undefined when nothing covers it — the lit copy is cropped BELOW this line.
   coverY?: number;
@@ -1342,6 +1343,7 @@ interface MonsterAvatar {
   lit?: Phaser.GameObjects.Sprite; // lit copy above the night overlay (shared pipeline)
   fog?: Phaser.GameObjects.Image; // the fog silhouette over the lit copy (syncLitCopy)
   hidden?: Phaser.GameObjects.Image; // white outline over the covered part (syncCoverOutline)
+  hiddenScn?: Phaser.GameObjects.Image;
   coverY?: number; // wall-top line covering the sprite (lit copy cropped below it)
   /** The depth path's per-body inputs (terraindepth.ts): the standing level
    *  and the test mode this frame (1 = covered, tested; 0 = untested). */
@@ -1463,6 +1465,7 @@ interface NpcAvatar {
   lit?: Phaser.GameObjects.Sprite;
   fog?: Phaser.GameObjects.Image; // the fog silhouette over the lit copy (syncLitCopy)
   hidden?: Phaser.GameObjects.Image; // white outline over the covered part (syncCoverOutline)
+  hiddenScn?: Phaser.GameObjects.Image;
   coverY?: number;
   surfLevel?: number;
   charId: string;
@@ -1544,6 +1547,9 @@ interface BodyVisual {
   lit?: Phaser.GameObjects.Sprite;
   fog?: Phaser.GameObjects.Image; // the fog silhouette over the lit copy (syncLitCopy)
   hidden?: Phaser.GameObjects.Image; // white outline over the covered part (syncCoverOutline)
+  /** The depth path's second outline: the part SCENERY covers, from the cover
+   *  atlas (the shader's ring knows terrain only). */
+  hiddenScn?: Phaser.GameObjects.Image;
   coverY?: number;
   // The body's slot in the three cover atlases, held while it lives, and the
   // frame counter it was last registered on. `coverAt === scene.coverTick` is
@@ -5095,6 +5101,12 @@ export class WorldScene extends Phaser.Scene {
         const p = this.tdPipe;
         return { on: this.occDepth, pipe: !!p, quads: p?.quads ?? 0, tested: p?.testedQuads ?? 0, occluders: this.occluders.length };
       },
+      /** `tdDebug(1)`: every depth-tested body pixel paints WHY it is hidden
+       *  (red a nearer deck top, green the own column's slab, blue terrain). */
+      tdDebug: (n: number) => {
+        if (this.tdPipe) this.tdPipe.dbg = n;
+        return this.tdPipe?.dbg ?? -1;
+      },
       freeze: (on = true) => {
         this.frozen = on;
         if (on) {
@@ -7911,6 +7923,7 @@ export class WorldScene extends Phaser.Scene {
     // BEFORE av.waterMask is destroyed below — the outline holds that mask now.
     this.releaseCoverSlot(av);
     av.hidden?.destroy();
+    av.hiddenScn?.destroy();
     av.shadow.destroy();
     av.label.destroy();
     av.waterMask?.destroy();
@@ -8593,7 +8606,7 @@ export class WorldScene extends Phaser.Scene {
   private registerCoverSlot(b: BodyVisual) {
     b.coverAt = undefined;
     const sp = b.sprite;
-    if (!this.coverExact || this.occDepth || b.coverY === undefined || !sp.visible) return;
+    if (!this.coverExact || b.coverY === undefined || !sp.visible) return;
     // The atlas maps world px to frame px by integer translation, which is
     // only the identity at scale 1 (bodies and occluders both ship that).
     if (sp.scaleX !== 1 || sp.scaleY !== 1) return;
@@ -8616,7 +8629,7 @@ export class WorldScene extends Phaser.Scene {
   private rebuildCoverIndex() {
     this.coverBuckets.clear();
     this.coverGen++;
-    if (!this.coverExact || this.occDepth) return;
+    if (!this.coverExact) return;
     const add = (im: Phaser.GameObjects.Image) => {
       if (!im.visible) return;
       const f = im.frame;
@@ -8867,6 +8880,7 @@ export class WorldScene extends Phaser.Scene {
     const sp = b.sprite;
     const hide = () => {
       if (b.hidden?.visible) b.hidden.setVisible(false);
+      if (b.hiddenScn?.visible) b.hiddenScn.setVisible(false);
     };
     // A body that is not drawn has nothing hidden — this also covers the
     // camera-culled monsters (whose coverY is deliberately stale).
@@ -8898,6 +8912,10 @@ export class WorldScene extends Phaser.Scene {
     const ab = this.artBounds(sp);
     const fw = sp.frame.cutWidth;
     const fh = sp.frame.cutHeight;
+    // ON THE DEPTH PATH the shader's ring (mode 2) answers for terrain and the
+    // atlas answers for SCENERY alone (its cover index holds no occluder
+    // images then): the O surface rides a second image, untested.
+    const scnSlot = this.occDepth ? this.coverSlotOf(b) : undefined;
     const slot = this.occDepth ? undefined : this.coverSlotOf(b);
     // THE FLAT LINE MAY NOT VETO THE EXACT PATH. `coverY` is the top of the
     // covering column's 64px IMAGE BOX, so a low occluder in front of the feet
@@ -8964,6 +8982,24 @@ export class WorldScene extends Phaser.Scene {
       // body (mode 2 — the inverse of the copy's test, on the same pixels).
       if (img.isCropped) img.setCrop();
       this.tdArmLayer(img, b, 2);
+      let scn = b.hiddenScn;
+      if (scnSlot) {
+        if (!scn) scn = b.hiddenScn = this.add.image(0, 0, this.coverO!.key).setVisible(false);
+        scn
+          .setTexture(this.coverO!.key, scnSlot.name)
+          .setOrigin((sp.originX * fw + RING_PAD) / scnSlot.w, (sp.originY * fh + RING_PAD) / scnSlot.h)
+          .setScale(sp.scaleX, sp.scaleY)
+          .setFlipX(false)
+          .setPosition(sp.x, sp.y)
+          .setAlpha(hiddenRing())
+          .setTint(ringTint)
+          .setDepth(900_001.43)
+          .setVisible(true);
+        if (scn.isCropped) scn.setCrop();
+        if (sp.mask) {
+          if (scn.mask !== sp.mask) scn.setMask(sp.mask);
+        } else if (scn.mask) scn.clearMask();
+      } else if (scn?.visible) scn.setVisible(false);
     } else if (slot) {
       // THE PIXEL-EXACT PATH. The O surface already IS the ring of the covered
       // sub-silhouette — a diagonal wall top, a doorway, a tree trunk — so
@@ -9605,6 +9641,7 @@ export class WorldScene extends Phaser.Scene {
     mv.fog?.destroy();
     this.releaseCoverSlot(mv);
     mv.hidden?.destroy();
+    mv.hiddenScn?.destroy();
     mv.hpBg?.destroy();
     mv.hpFill?.destroy();
     mv.nameText?.destroy();
@@ -19182,6 +19219,7 @@ export class WorldScene extends Phaser.Scene {
         b.fog?.resetPipeline();
         b.shadow?.resetPipeline();
         b.hidden?.resetPipeline();
+        b.hiddenScn?.setVisible(false);
       };
       for (const av of this.avatars.values()) reset(av);
       for (const mv of this.monsters.values()) reset(mv);

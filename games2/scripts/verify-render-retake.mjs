@@ -13,9 +13,10 @@
 // <OUT>/rr-<c>,<r>-{sprites,depth,diff}.png.
 //
 // Needs the dev stack. SPOTS="c,r;c,r" overrides the list; OUT= the image
-// directory (default: no images). Fails on a page error or when the changed
-// share INSIDE the bodies' art boxes exceeds MAXPCT (default 3%) — terrain
-// outside them differs by design (see docs/depth-sort.md).
+// directory (default: no images); TOD=Night for the night rules. Fails on a
+// page error or when more than MAXPCT (default 12%) of the TESTED pixels (the
+// pipeline's own mask: drawn covered bodies, rings, scenery) changed by
+// more than 24 — terrain outside them differs by design (docs/depth-sort.md).
 import { chromium } from "playwright-core";
 import { PNG } from "pngjs";
 import fs from "node:fs";
@@ -23,7 +24,10 @@ import path from "node:path";
 const EXE = "/opt/pw-browsers/chromium-1194/chrome-linux/chrome";
 const PORT = process.env.PORT || "5173";
 const OUT = process.env.OUT || "";
-const MAXPCT = Number(process.env.MAXPCT || 3);
+// 12%: a fully ringed body (under the bridge) spends ~10% on the ring's own
+// one-pixel offsets between the atlas ring and the shader ring; a body drawn
+// over a wall it should be behind is 30%+.
+const MAXPCT = Number(process.env.MAXPCT || 12);
 const fail = (m) => { console.error("FAIL:", m); process.exitCode = 1; };
 const SPOTS = process.env.SPOTS
   ? process.env.SPOTS.split(";").map((s) => s.split(",").map(Number))
@@ -33,7 +37,10 @@ const page = await browser.newPage({ viewport: { width: 720, height: 480 } });
 const errs = [];
 page.on("pageerror", (e) => errs.push(e.message.slice(0, 200)));
 page.on("console", (m) => { if (m.type() === "error" || /terrain-depth|shader/i.test(m.text())) errs.push(m.text().slice(0, 300)); });
-await page.addInitScript(() => { localStorage.setItem("ml-monsters", "0"); localStorage.setItem("ml-occ-path", "sprites"); });
+// TOD=Night runs the spots at night (the torch, the lit copies' tint, the
+// hidden ring's light floor); default Day.
+const TOD = process.env.TOD || "Day";
+await page.addInitScript((tod) => { localStorage.setItem("ml-monsters", "0"); localStorage.setItem("ml-occ-path", "sprites"); localStorage.setItem("rr-tod", tod); }, TOD);
 await page.goto(`http://localhost:${PORT}/#the_game`, { waitUntil: "load" });
 await page.waitForFunction(() => window.__mlSelect, null, { timeout: 120000 });
 await page.evaluate(() => window.__mlSelect.commit());
@@ -41,7 +48,7 @@ await page.waitForFunction(() => window.__ml && window.__ml.players() >= 1, null
 await page.waitForFunction(() => !document.getElementById("ml-loading"), null, { timeout: 120000 });
 await page.evaluate(() => {
   window.__ml.noAggro?.(true); window.__ml.timeSpeed(0); window.__mlAmbient?.demo?.("none");
-  window.__ml.timeOfDay("Day", true); window.__ml.aurora(false, true); window.__ml.weather(0, true);
+  window.__ml.timeOfDay(localStorage.getItem("rr-tod") || "Day", true); window.__ml.aurora(false, true); window.__ml.weather(0, true);
 });
 await page.waitForFunction(() => window.__ml?.nightShader?.() === true, null, { timeout: 60000 });
 
@@ -62,25 +69,28 @@ async function settled() {
   const b = await shot();
   return [a, b, compare(a, b)];
 }
-/** Pixel metrics between two same-size PNGs; `boxes` (screenshot px) split
- *  the count into ON A BODY (the retake's subject) and elsewhere (terrain). */
-function compare(a, b, boxes = []) {
+/** Pixel metrics between two same-size PNGs; `mask` (a PNG the pipeline's
+ *  probe 3 painted magenta on every tested pixel it draws) splits the count
+ *  into TESTED (the retake's subject: covered bodies, their rings, covered
+ *  scenery) and elsewhere (terrain). A tested pixel that moved by more than
+ *  HARD is a real occlusion change; less is the lit copy's tint rounding. */
+const HARD = 24;
+function compare(a, b, mask = null) {
   const w = a.width, h = a.height;
   const B = 24, bw = Math.ceil(w / B), bh = Math.ceil(h / B);
   const blocks = new Float64Array(bw * bh);
-  let changed = 0, sum = 0, max = 0, bodyN = 0, bodyChanged = 0, bodySum = 0, bodyMax = 0;
+  let changed = 0, sum = 0, max = 0, tN = 0, tChanged = 0, tHard = 0, tSum = 0, tMax = 0;
   const diff = new PNG({ width: w, height: h });
   for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) {
     const i = (y * w + x) * 4;
     const d = Math.max(Math.abs(a.data[i] - b.data[i]), Math.abs(a.data[i + 1] - b.data[i + 1]), Math.abs(a.data[i + 2] - b.data[i + 2]));
     diff.data[i] = d; diff.data[i + 1] = d; diff.data[i + 2] = d; diff.data[i + 3] = 255;
-    let onBody = false;
-    for (const bx of boxes) if (x >= bx.x0 && x < bx.x1 && y >= bx.y0 && y < bx.y1) { onBody = true; break; }
-    if (onBody) bodyN++;
+    const tested = !!mask && mask.data[i] > 180 && mask.data[i + 1] < 80 && mask.data[i + 2] > 180;
+    if (tested) tN++;
     if (d > 0) {
       changed++; sum += d; if (d > max) max = d;
       blocks[Math.floor(y / B) * bw + Math.floor(x / B)] += d;
-      if (onBody) { bodyChanged++; bodySum += d; if (d > bodyMax) bodyMax = d; }
+      if (tested) { tChanged++; tSum += d; if (d > tMax) tMax = d; if (d > HARD) tHard++; }
     }
   }
   let bi = 0;
@@ -88,11 +98,11 @@ function compare(a, b, boxes = []) {
   const worst = { x: (bi % bw) * B, y: Math.floor(bi / bw) * B, sum: Math.round(blocks[bi]) };
   return {
     w, h, changed, pct: (100 * changed) / (w * h), mean: changed ? sum / changed : 0, max, worst, diff,
-    body: { n: bodyN, changed: bodyChanged, pct: (100 * bodyChanged) / Math.max(1, bodyN), mean: bodyChanged ? bodySum / bodyChanged : 0, max: bodyMax },
+    tested: { n: tN, changed: tChanged, hard: tHard, pct: (100 * tChanged) / Math.max(1, tN), hardPct: (100 * tHard) / Math.max(1, tN), mean: tChanged ? tSum / tChanged : 0, max: tMax },
   };
 }
 const fmt = (m) => `changed ${m.pct.toFixed(2)}% (${m.changed}px) mean ${m.mean.toFixed(1)} max ${m.max} worst@${m.worst.x},${m.worst.y}(${m.worst.sum})`;
-const fmtBody = (m) => `bodies ${m.body.pct.toFixed(2)}% of ${m.body.n}px mean ${m.body.mean.toFixed(1)} max ${m.body.max}`;
+const fmtTested = (m) => `tested ${m.tested.n}px: changed ${m.tested.pct.toFixed(2)}% hard(>${HARD}) ${m.tested.hardPct.toFixed(2)}% mean ${m.tested.mean.toFixed(1)} max ${m.tested.max}`;
 if (OUT) fs.mkdirSync(OUT, { recursive: true });
 for (const [c, r] of SPOTS) {
   await page.evaluate(() => window.__ml.occDepth(false));
@@ -106,20 +116,26 @@ for (const [c, r] of SPOTS) {
   await page.waitForTimeout(1000);
   const [b] = await settled();
   const probe = await page.evaluate(() => window.__ml.occDepth());
-  const bb = await page.evaluate(() => window.__ml.bodyBoxes());
-  const k = box.width / bb.w; // game px → screenshot px
-  const boxes = bb.boxes.map((q) => ({ x0: q.x0 * k, y0: q.y0 * k, x1: q.x1 * k, y1: q.y1 * k }));
-  const m = compare(a1, b, boxes);
+  // The mask: probe 3 paints every tested pixel the pipeline draws (a hidden
+  // region always wears its ring, so a body the sprite path showed there
+  // still meets the mask at the ring).
+  await page.evaluate(() => window.__ml.tdDebug(3));
+  await page.waitForTimeout(400);
+  const mask = await shot();
+  await page.evaluate(() => window.__ml.tdDebug(0));
+  const m = compare(a1, b, mask);
   const tag = `${c},${r}`;
-  console.log(`spot ${tag}: sprites-vs-depth ${fmt(m)} | ${fmtBody(m)} | baseline ${fmt(base)} | pipe ${probe.pipe} quads ${probe.quads} tested ${probe.tested} occluders ${probe.occluders}`);
+  console.log(`spot ${tag}: sprites-vs-depth ${fmt(m)} | ${fmtTested(m)} | baseline ${fmt(base)} | pipe ${probe.pipe} quads ${probe.quads} tested ${probe.tested} occluders ${probe.occluders}`);
   if (OUT) {
     fs.writeFileSync(path.join(OUT, `rr-${tag}-sprites.png`), PNG.sync.write(a1));
     fs.writeFileSync(path.join(OUT, `rr-${tag}-depth.png`), PNG.sync.write(b));
     fs.writeFileSync(path.join(OUT, `rr-${tag}-diff.png`), PNG.sync.write(m.diff));
+    fs.writeFileSync(path.join(OUT, `rr-${tag}-mask.png`), PNG.sync.write(mask));
   }
-  // The gate is the BODIES: terrain itself differs by design (the sprite copies
-  // re-pasted raw art over the ground texture's composed faces).
-  if (m.body.pct > MAXPCT) fail(`spot ${tag}: ${m.body.pct.toFixed(2)}% of body pixels differ between the paths`);
+  // The gate is the TESTED pixels' hard changes: terrain itself differs by
+  // design (the sprite copies re-pasted raw art over the ground texture's
+  // composed faces), and a tint-rounding difference is not an occlusion one.
+  if (m.tested.hardPct > MAXPCT) fail(`spot ${tag}: ${m.tested.hardPct.toFixed(2)}% of tested pixels changed by more than ${HARD}`);
   await page.evaluate(() => { window.__ml.freeze(false); window.__ml.occDepth(false); });
 }
 if (errs.length) fail("page errors: " + errs.slice(0, 3).join(" | "));

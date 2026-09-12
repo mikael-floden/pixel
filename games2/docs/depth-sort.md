@@ -27,31 +27,48 @@ How bodies and pieces interleave with terrain columns: the occluder set, the pur
     beside the body is what the painter drew behind it (equal depth, body
     created later), and a body's feet do overlap the columns beside its cell.
   - A DECK TOP (H > base, roof/bridge/lid) hides a body standing BELOW it
-    wherever the ray meets that top, whatever the pixel's height — the
-    painter clamps such a body behind the slab; without this a head walking
-    under the river bridge showed through the planks.
+    wherever the ray meets that top on a nearer diagonal — and on the body's
+    own diagonal while its own column wears the slab (the painter clamps
+    such a body just behind that column); without this a head walking under
+    the river bridge showed through the planks, and with "every deck top"
+    the hair above the bridge's far edge vanished.
+  - A LOW LEDGE NEVER COVERS: a column rising less than two levels above the
+    caller's floor is drawn behind it (depthrule's lift, the maintainer's
+    rule) — a one-level cut wall beside a dungeon corridor ate the feet of
+    anyone walking along it, and indoors every cut wall is such a column.
   - Mode 1 (draw the visible part) is armed only when the cover rule set
     `coverY` — the per-pixel walk costs on covered sprites alone; mode 2
     (draw the HIDDEN part) is the hidden-behind outline on the plain ring
-    texture. `occluderMeta` is still built (it feeds `resolveDrawDepth`, the
-    painter order among bodies/pieces/debris and the campfire crop); the
-    cover atlases, cover index and `occImage` are skipped.
+    texture, which knows TERRAIN. The part SCENERY covers (a tree, a table)
+    keeps the cover atlas: its index holds no occluder images on this path,
+    so the O surface is the ring of the scenery-covered part alone and rides
+    a second untested image (`hiddenScn`). `occluderMeta` is still built (it
+    feeds `resolveDrawDepth`, the painter order among bodies/pieces/debris
+    and the campfire crop); `occImage` is never called.
+  - `__ml.tdDebug(1)` paints every tested body pixel by the reason it is
+    hidden (red a nearer deck top, green the own column's slab, blue
+    terrain); calibration 8 of the night pass paints the resolved height.
   - Textures on units 1-4 (scenery-lit: 2-5) via `addTextureToBatch`; scalar
     `uMainSampler` (Mobile-style boot); world coordinates PER VERTEX (camera
     matrix inverse), never gl_FragCoord.
   - MEASURED DIFFERENCES vs the sprite path (`scripts/verify-render-retake.mjs`,
-    frozen frame, same session, % changed + mean/max + worst block + on-body
-    split; images with OUT=): bodies behind the house wall, under the bridge,
-    at the cave mouth and the forest: identical silhouettes (on-body means
-    1-8 of 255, mostly the lit copy's tint rounding). Terrain itself differs
-    by design — 12-28% of a frame at mean 15-25 — because the occluder copies
+    frozen frame, same session, % changed + mean/max + worst block, and the
+    TESTED split over the pipeline's own mask — probe 3, every tested pixel
+    it draws; a tested pixel moved by more than 24 is a "hard" change, less
+    is the lit copy's tint rounding; images with OUT=). Behind the house
+    wall 0.2% hard, indoors behind the table 0.0%, the cave 0.0%, the
+    dungeon corridor 2.4%, under the bridge 10% (the ring's own one-pixel
+    offsets on a fully ringed body); the gate is 12%. Terrain itself differs
+    by design — 5-28% of a frame at mean 10-25 — because the occluder copies
     re-pasted raw face/cap art over the ground texture's COMPOSED faces (the
     fades and foot bands the ground pass paints were covered on every raised
     column); the depth path shows the ground texture as composed.
-    KNOWN LOSSES: the hidden outline behind SCENERY (a tree) is gone — the
-    test knows terrain, not pieces; a body seen through the GAP under a
-    floating bridge is hidden (the resolve treats a deck column as solid to
-    the ground). Both are the maintainer's call before the sprite path goes.
+    KNOWN DIFFERENCES: a body seen through the GAP under a floating bridge
+    is hidden (the resolve treats a deck column as solid to the ground); a
+    FLAT piece (a rug) on a raised floor now shows — the sprite path buried
+    it under the floor cells' cap images (flat depth −500,000 is under every
+    occluder), which nobody had noticed indoors. Both are the maintainer's
+    call before the sprite path goes.
   - Ground truth for the resolve itself: `scripts/verify-terraindepth.mjs`
     (calibration 7 paints floor(cell) as bytes; `__ml.occTopAt` is the
     painter): 77.5% exact, 7.1% neighbour cell (art overhang), 0.3% two or

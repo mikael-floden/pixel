@@ -810,6 +810,12 @@ void main() {
     vHi = vLo;
   }
   }
+  if (uTest > 7.5 && uTest < 8.5) {
+    // Calibration 8 (probe-only): the resolved height z as a byte (x 16),
+    // 0 where nothing resolves — the depth pipeline's own inputs.
+    gl_FragColor = found ? vec4(clamp(z * 16.0 / 255.0, 0.0, 1.0), 0.0, 0.0, 1.0) : vec4(0.0);
+    return;
+  }
   if (uTest > 6.5 && uTest < 7.5) {
     // Calibration 7: WHICH COLUMN THIS PIXEL SHOWS — floor(cell) as bytes
     // (R col mod 256, G row mod 256, B col/256*16 + row/256), alpha 0 where
