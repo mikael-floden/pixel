@@ -7,42 +7,47 @@ World assembler. Names a **ground type per cell** from `tiles/ground_types.json`
 parses against live in `spec/`: `WORLD3.md`, `SPAWNS.md`, `NPCS.md`, `PLACES.md`.
 (tiles2 and the world@1/@2 worlds were retired 2026-09-09 — history in git.)
 
-## The change page — every map change ships with one (maintainer law, 2026-09-12)
+## The change page — filled in AFTER every push to main (maintainer law, 2026-09-12)
 
-**Every push that changes a world ships an Artifact page with a render of
-each change and a "Show on map" button that pins the place on the minimap**
-(maintainer: *"From now on I always want to see an artifact page with
-screenshots of each change with a 'show on map' button I can click on to see
-where this location is on the minimap. Since this artifact page will be
-required from you now on for every map change it has to be in your claude
-file"*). He plays on a phone and tests in production; a commit message names
-cells, the page shows him the place.
+**Push first, page after — never the other way round.** Maintainer: *"From
+now on I always want to see an artifact page with screenshots of each change
+with a 'show on map' button ... I want that artifact page filled in after
+every push to main. Remember I said after! You can still push before me
+approving the change! I just want to be able to review it afterwards."* He
+plays on a phone and tests in production; a commit message names cells, the
+page shows him the place, and his review comes back as marked numbers.
 
-- `python3 maps2/pipeline/report3.py <spec.json> <out_dir>` renders one window
-  per change TWICE — the world after the change and the world at the spec's
-  `before` commit (from git; lossless WebP, `cutaway: true` lifts the cave
-  lids over both) — copies the minimap and writes `index.html`; publish
-  `out_dir/index.html` with the Artifact tool and its `img/` files as
-  `files`. Each card shows "after" with a pill top-right and a tap on the
-  image flips it to "before"; "Show on map" opens the minimap in a MODAL
-  with the pin (maintainer 2026-09-12: not a panel fixed at the top). The pin
-  is the world's own `minimap.json` dot formula with the cell's level from
-  `world.json` — the same pixel the game's map tab puts a body on. Every
-  change carries a number he can MARK — the whole title row is the tap
-  target, not the checkbox alone — and a footer pinned to the bottom always
-  shows the marked numbers as chips, with one "Copy marked" that puts
-  `Changes I do not like: #a, #b` and then `#n name — cell x,y, level l —
-  commit` per change on the clipboard (maintainer: "The usecase is I mark
-  changes I don't like and copy them in order to paste to you"); a reply that
-  quotes those numbers is about those cards. The page's script is a RAW
-  string in report3.py: templated once, a `\n` became a line break inside a
-  JavaScript string and nothing on the page worked (measured, twice).
-- One card per change, in the words a player uses: what changed, why, the
-  cell as the game shows it under the player (post-recentre coordinates).
-  A change he cannot see from the surface gets its lids lifted.
-- The spec lives in the scratchpad, the page link goes in the reply that
-  reports the push, and the script stays in the repo. Not optional and not
-  "when there is time": a map change without its page is not shipped.
+- **The log is in the repo**: `maps2/reports/<world>.json`
+  (`maps2/change-log@1`) — the page's own URL under `artifact`, and one entry
+  per push: `date`, `commit`, `before` (the commit whose world is "before",
+  from git), `title`, and the `changes` (name, what, cell, optional window,
+  optional `cutaway` to lift the cave lids). Changes are numbered straight
+  through across pushes and a number never moves once he may have quoted it:
+  APPEND a push, never reorder or renumber.
+- **After every push that changes a world**: append the push to the log,
+  `python3 maps2/pipeline/report3.py maps2/reports/<world>.json <out_dir>`
+  (renders each change twice — the world at the push and at `before` —
+  lossless WebP, copies the minimap, writes `index.html`, parse-checks
+  nothing for you: run `node --check` on the page's script if you touched
+  report3.py), then republish with the Artifact tool at the log's `artifact`
+  URL (`url`, after a `read`) with `out_dir/index.html` and its `img/` files as
+  `files`; commit the log in the same or the next push. The link goes in the
+  reply that reports the push.
+- **What the page does** (report3.py owns it): newest push first; every card
+  shows "after" with a pill top-right, a tap on the image flips to "before";
+  "Show on map" opens the minimap in a MODAL with the pin — the world's own
+  `minimap.json` dot formula at the cell's level, the pixel the game's map tab
+  puts a body on; the whole title row MARKS a change, a footer pinned to the
+  bottom always lists the marked numbers as chips, and "Copy marked" puts
+  `Changes I do not like: #a, #b` and one line per change (`#n name — cell
+  x,y, level l — commit`) on the clipboard — his review comes back as those
+  lines, and a reply that quotes those numbers is about those cards.
+- Cards are written in a player's words (what changed, why, the cell as the
+  game shows it under the player); a change he cannot see from the surface
+  gets its lids lifted. Not optional and not "when there is time": a push
+  that changed a world without its page is not finished. The page's script
+  is a RAW string in report3.py — templated once, a `\n` became a line break
+  inside a JavaScript string and nothing on the page worked (measured, twice).
 
 ## Releasing — deploy YOURSELF, always push to `main`
 

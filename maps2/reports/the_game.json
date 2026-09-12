@@ -1,0 +1,189 @@
+{
+ "schema": "maps2/change-log@1",
+ "world": "the_game",
+ "artifact": "https://claude.ai/code/artifact/380e0818-32c4-4388-bd85-b73d37282f86",
+ "title": "Nangijala Map Changes",
+ "subtitle": "Every push to main that changed the_game, newest first. Tap a title to mark it, copy the marks, paste them to maps2. Coordinates are the ones the game shows under the player.",
+ "pushes": [
+  {
+   "date": "2026-09-11 / 12",
+   "commit": "329e27423d → 52f7a50bdf",
+   "before": "d3f2329f0f",
+   "title": "Nine caves, wider ways",
+   "changes": [
+    {
+     "name": "The hill's stair, back",
+     "what": "The cut stair up the level-12 hill west of the town. Lost in the eight-caves commit because Pit I's own stair stood in for it; a stair into a cave now covers no cliff, so the fixer cut it again where it was.",
+     "cell": [
+      255,
+      255
+     ],
+     "window": [
+      244,
+      243,
+      270,
+      264
+     ],
+     "commit": "52f7a50bdf",
+     "before": "fdaf01ffd3"
+    },
+    {
+     "name": "The hill's western stair, back",
+     "what": "The hill's other old stair, beside Pit I's ring. The outer cell of a pit's ring may now carry a stair's flare.",
+     "cell": [
+      237,
+      268
+     ],
+     "window": [
+      226,
+      258,
+      252,
+      278
+     ],
+     "commit": "52f7a50bdf",
+     "before": "fdaf01ffd3"
+    },
+    {
+     "name": "Cave III: lanes beside every one-wide way",
+     "what": "Lids lifted. The bend where a brazier stood in a one-wide passage: the lane now runs round the corner, and no brazier stands on a passage.",
+     "cell": [
+      208,
+      213
+     ],
+     "window": [
+      196,
+      200,
+      222,
+      226
+     ],
+     "cutaway": true,
+     "commit": "fdaf01ffd3",
+     "before": "6074217997"
+    },
+    {
+     "name": "Cave III: the through-cave",
+     "what": "Lids lifted. Runs from its east mouth to a second mouth further south-west; both mouths are single rim cells and stay one wide.",
+     "cell": [
+      210,
+      229
+     ],
+     "window": [
+      192,
+      202,
+      222,
+      258
+     ],
+     "cutaway": true,
+     "commit": "6074217997",
+     "before": "fa149c642d"
+    },
+    {
+     "name": "Cave II, east face",
+     "what": "Mouth on the massif's east face at grade 2; four rooms, floors 0 to 3, two ledges.",
+     "cell": [
+      281,
+      132
+     ],
+     "window": [
+      266,
+      118,
+      292,
+      148
+     ],
+     "commit": "329e27423d"
+    },
+    {
+     "name": "Cave IV, south face",
+     "what": "Mouth on the massif's south-west face at grade 2; three rooms.",
+     "cell": [
+      148,
+      295
+     ],
+     "window": [
+      134,
+      262,
+      160,
+      300
+     ],
+     "commit": "329e27423d"
+    },
+    {
+     "name": "Pit I, beside the old dungeon",
+     "what": "In the dark-mud field at 12, a few cells east of the hand-planned dungeon; a hall at 6 and a room at 4.",
+     "cell": [
+      242,
+      266
+     ],
+     "window": [
+      232,
+      252,
+      258,
+      276
+     ],
+     "commit": "329e27423d"
+    },
+    {
+     "name": "Pit II, stone field",
+     "what": "The field at 20 north of the massif's foot; four rooms, two ledges, depth 5.",
+     "cell": [
+      237,
+      210
+     ],
+     "window": [
+      226,
+      194,
+      254,
+      218
+     ],
+     "commit": "329e27423d"
+    },
+    {
+     "name": "Pit IV, snowfield at 32",
+     "what": "Four rooms, two ledges, depth 7.",
+     "cell": [
+      185,
+      208
+     ],
+     "window": [
+      172,
+      190,
+      198,
+      216
+     ],
+     "commit": "329e27423d"
+    },
+    {
+     "name": "Pit V, snowfield at 36",
+     "what": "Four rooms, depth 6.",
+     "cell": [
+      156,
+      229
+     ],
+     "window": [
+      144,
+      214,
+      170,
+      236
+     ],
+     "commit": "329e27423d"
+    },
+    {
+     "name": "Pit III, the first dungeon",
+     "what": "Unchanged: the hand-planned dungeon under the field, for reference.",
+     "cell": [
+      210,
+      281
+     ],
+     "window": [
+      204,
+      270,
+      228,
+      292
+     ],
+     "commit": "8b0155dbe0",
+     "before": null
+    }
+   ]
+  }
+ ]
+}

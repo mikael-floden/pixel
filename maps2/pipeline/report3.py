@@ -1,17 +1,23 @@
-"""THE CHANGE PAGE - every map change ships with one (maintainer 2026-09-12:
-"From now on I always want to see an artifact page with screenshots of each
-change with a 'show on map' button I can click on to see where this location
-is on the minimap").
+"""THE CHANGE PAGE - filled in AFTER every push to main that changes a world
+(maintainer 2026-09-12: "I want that artifact page filled in after every
+push to main. Remember I said after! You can still push before me approving
+the change! I just want to be able to review it afterwards.").
 
-    python3 maps2/pipeline/report3.py <spec.json> <out_dir>
+    python3 maps2/pipeline/report3.py maps2/reports/<world>.json <out_dir>
 
-spec.json:
-    {"title": "...", "subtitle": "...", "world": "the_game", "commit": "abc123",
-     "before": "def456",                          # the commit whose world is "before" (git), or null
-     "changes": [{"name": "...", "what": "...", "cell": [x, y],
-                  "window": [x0, y0, x1, y1],     # optional, default the cell +- 10 x 7
-                  "before": "...",                # optional, overrides the spec's
-                  "cutaway": true}]}              # optional: lift the cave lids over the window
+The log (`maps2/change-log@1`) is the source, kept in the repo so every run
+appends its push and republishes the SAME page (`artifact` is its URL):
+    {"schema": "maps2/change-log@1", "world": "the_game", "artifact": "https://...",
+     "title": "...", "subtitle": "...",
+     "pushes": [{"date": "2026-09-12", "commit": "abc123", "before": "def456",   # before: the world before the push (git)
+                 "title": "...",
+                 "changes": [{"name": "...", "what": "...", "cell": [x, y],
+                              "window": [x0, y0, x1, y1],   # optional, default the cell +- 10 x 7
+                              "before": "...",              # optional, overrides the push's
+                              "cutaway": true}]}]}          # optional: lift the cave lids over the window
+Pushes are listed oldest first and numbered straight through, so a change's
+number never moves once he has quoted it; the page shows the newest push
+first.
 
 Writes out_dir/index.html, out_dir/img/<n>-after.webp and <n>-before.webp
 (the same window from the world at the `before` commit, lossless) and
@@ -54,6 +60,8 @@ def _window(doc, x0, y0, x1, y1, cutaway):
 
 
 def build(spec, out):
+    if spec.get("schema") == "maps2/change-log@1":
+        return build_log(spec, out)
     world = spec.get("world", "the_game")
     wdir = os.path.join(MAPS2, "worlds3", world)
     doc = json.load(open(os.path.join(wdir, "world.json")))
@@ -164,18 +172,78 @@ SCRIPT = r"""<script>
 </script>"""
 
 
+def build_log(log, out):
+    """the running log: every push's changes rendered, numbered straight
+    through, the world of each push read from git at its commit"""
+    world = log.get("world", "the_game")
+    wdir = os.path.join(MAPS2, "worlds3", world)
+    mm = json.load(open(os.path.join(wdir, "minimap.json")))
+    dot = mm["dot"]
+    os.makedirs(os.path.join(out, "img"), exist_ok=True)
+    from PIL import Image
+    Image.open(os.path.join(wdir, mm["image"])).save(os.path.join(out, "img", "minimap.webp"), lossless=True, exact=True)
+    n, sections = 0, []
+    for push in log["pushes"]:
+        head = push["commit"].split("→")[-1].strip().split()[0]
+        try:
+            doc = world_at(head, world)
+        except subprocess.CalledProcessError:
+            doc = json.load(open(os.path.join(wdir, "world.json")))
+        cards = []
+        for ch in push["changes"]:
+            n += 1
+            cx, cy = ch["cell"]
+            x0, y0, x1, y1 = ch.get("window") or (cx - 10, cy - 7, cx + 11, cy + 9)
+            cut = bool(ch.get("cutaway"))
+            after = f"img/{n:03d}-after.webp"
+            if not os.path.exists(os.path.join(out, after)):
+                _window(doc, x0, y0, x1, y1, cut).convert("RGB").save(os.path.join(out, after), lossless=True, exact=True)
+            before = None
+            bc = ch.get("before", push.get("before"))
+            if bc:
+                bdoc = world_at(bc, world)
+                if bdoc["size"] == doc["size"]:
+                    before = f"img/{n:03d}-before.webp"
+                    if not os.path.exists(os.path.join(out, before)):
+                        _window(bdoc, x0, y0, x1, y1, cut).convert("RGB").save(os.path.join(out, before), lossless=True, exact=True)
+            lvl = doc["level"][int(cy)][int(cx)]
+            px = dot["kx"] * (cx - cy) + dot["x0"]
+            py = dot["ky"] * (cx + cy) - dot["kz"] * lvl + dot["y0"]
+            cards.append({"n": n, "name": ch["name"], "what": ch.get("what", ""), "cell": [cx, cy], "level": lvl,
+                          "after": after, "before": before, "before_commit": bc or "",
+                          "px": round(100 * px / mm["size"]["w"], 3), "py": round(100 * py / mm["size"]["h"], 3),
+                          "cutaway": cut, "commit": ch.get("commit", push.get("commit", ""))})
+        sections.append({"date": push.get("date", ""), "commit": push.get("commit", ""),
+                         "title": push.get("title", ""), "cards": cards})
+    sections.reverse()
+    page = render_page(log, sections, mm)
+    open(os.path.join(out, "index.html"), "w").write(page)
+    return [c for sct in sections for c in sct["cards"]]
+
+
 def render_page(spec, cards, mm):
     title = html.escape(spec["title"])
     sub = html.escape(spec.get("subtitle", ""))
     commit = html.escape(spec.get("commit", ""))
+    sections = cards if cards and isinstance(cards[0], dict) and "cards" in cards[0] else [{"cards": cards}]
     items = []
-    for c in cards:
+    for sct in sections:
+        if sct.get("commit") or sct.get("title"):
+            items.append(f'''
+<h2 class="push"><span class="date">{html.escape(sct.get("date", ""))}</span> {html.escape(sct.get("title", ""))} <span class="mono">{html.escape(sct.get("commit", ""))}</span></h2>''')
+        for c in sct["cards"]:
+            items.append(card_html(c))
+    return page_html(title, sub, commit, items, spec, mm)
+
+
+def card_html(c):
+    if True:
         pill = ""
         if c["before"]:
             pill = (f'<button type="button" class="pill" id="pill{c["n"]}" aria-pressed="false" '
                     f'aria-label="Flip between after and before">After</button>')
         before_attr = f' data-before="{c["before"]}"' if c["before"] else ""
-        items.append(f'''
+        return f'''
 <article class="change" id="c{c["n"]}" data-n="{c["n"]}" data-name="{html.escape(c["name"], quote=True)}" data-px="{c["px"]}" data-py="{c["py"]}" data-cell="{c["cell"][0]},{c["cell"][1]}" data-level="{c["level"]}" data-commit="{html.escape(c["commit"], quote=True)}" data-after="{c["after"]}"{before_attr}>
   <header>
     <label class="pick" for="sel{c["n"]}"><input type="checkbox" class="sel" id="sel{c["n"]}" aria-label="Mark change {c["n"]}"><span class="n">#{c["n"]}</span><h2>{html.escape(c["name"])}</h2></label>
@@ -187,7 +255,10 @@ def render_page(spec, cards, mm):
     <img src="{c["after"]}" alt="Render of {html.escape(c["name"])} around cell {c["cell"][0]}, {c["cell"][1]}" loading="lazy">
     {pill}
   </div>
-</article>''')
+</article>'''
+
+
+def page_html(title, sub, commit, items, spec, mm):
     return f'''<title>{title}</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Newsreader:opsz,wght@6..72,500;6..72,600&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
 <style>
@@ -214,6 +285,9 @@ h1 {{ font-family: "Newsreader", Georgia, serif; font-weight: 600; font-size: cl
 .sub {{ color: var(--muted); margin: 0 0 6px; max-width: 65ch; }}
 .commit {{ font-family: "IBM Plex Mono", ui-monospace, monospace; font-size: 13px; color: var(--muted); margin: 0 0 22px; }}
 .list {{ display: grid; gap: 18px; }}
+.push {{ font-family: "Newsreader", Georgia, serif; font-weight: 500; font-size: 20px; margin: 18px 0 0; padding-top: 14px; border-top: 2px solid var(--line); display: flex; gap: 10px; flex-wrap: wrap; align-items: baseline; }}
+.push .date {{ font-family: "IBM Plex Mono", ui-monospace, monospace; font-size: 13px; color: var(--muted); }}
+.push .mono {{ font-size: 13px; color: var(--muted); }}
 .change {{ background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 14px 16px 16px; }}
 .change header {{ display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }}
 .change h2 {{ font-family: "Newsreader", Georgia, serif; font-weight: 500; font-size: 22px; margin: 0; flex: 1 1 200px; text-wrap: balance; }}
