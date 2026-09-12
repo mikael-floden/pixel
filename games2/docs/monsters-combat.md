@@ -699,6 +699,17 @@ spec `maps2/spec/NPCS.md`); characters2 owns who they are
 - Rendering goes through the SAME shared body pipeline (`resolveBodyDepth` +
   `placeBodyShadow` + lit copy; NpcAvatar satisfies BodyVisual). Never
   hand-roll a second path. Off-screen NPCs park like culled monsters.
+- **NPC art ships PACKED** (`characters2/npcs/<id>/packed/`, one box per NPC,
+  `characters2/pipeline/pack.py`): the manifest builder points `base` and
+  `idleUrls` at the packed files and CONVERTS the foot anchors it measures on
+  the raw frames into the packed box (footAnchor's band and lift scale with
+  the frame height, so a cropped frame would be a different measurement), so
+  the sprite's origin is the same pixel; `frameW/H` are the box. One box per
+  NPC because rotations and idle frames swap under one origin. Measured over
+  the roster: 38% of the canvas is body, 223 -> 84 MB decoded. Gate:
+  `scripts/verify-npc-pack.mjs` (raw vs packed manifest within 0.02 px, every
+  URL on disk, a headless boot drawing every placed NPC from its packed
+  texture with its feet on its shadow). `NPCS_PACK=0` builds the raw manifest.
 - **Faked client-side collision**, the monster pattern: NPCs join the
   `monsterDodge` near-list at NPC_BODY_RADIUS; not in the collision grid, not
   in findPath.

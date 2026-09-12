@@ -252,10 +252,38 @@ characters2/
   npcs/
     index.json                   the NPC roll-up (characters2-npcs@1)
     <id8>/                       one NPC, same shape as a hero
+      packed/                    THE PACKED LAYER games2 loads (below)
   pipeline/
     pixellab_client.py  sync.py  verify_sync.py  retouch.py  retouch_author.py
-    to_webp.py  generate.py (legacy explorer)
+    to_webp.py  generate.py (legacy explorer)  pack.py (the packed layer)
 ```
+
+## THE PACKED LAYER (`npcs/<id>/packed/`; games2 reads it, `pipeline/pack.py` writes it)
+
+Every NPC carries `packed/`: each art file (8 rotations, every idle frame)
+cut to ONE box per NPC — the union of the opaque boxes of all its files, +1
+px — under a content-hashed name (`packed/<same subpath>.<sha8>.webp`), with
+`packed/index.json` naming the box and the current file per raw path. The
+game draws an NPC as one sprite whose origin is the foot anchor as a fraction
+of the frame and swaps rotations and idle frames under it, so every texture
+of an NPC must be the same size with the art at the same offset — hence one
+box per NPC, not per file. Measured over the roster (191 NPCs, 4,436 files):
+a body fills 38% of its 112x112 canvas; the packed frames are 223 -> 84 MB
+of decoded texels, 24 MB on disk.
+
+- **The raw files are untouched and stay the truth**: the wiki, the previews,
+  `verify_sync.py` and the anchor measurement read them. games2's
+  `build-npcs-manifest.mjs` measures the foot anchors on the RAW frames
+  (footAnchor's band and lift scale with the frame height) and converts them
+  into the packed frame; its gate `games2/scripts/verify-npc-pack.mjs` proves
+  the packed feet land on the raw pixel.
+- **Run it after every sync that changes art**: `python3
+  characters2/pipeline/pack.py` (resumable: an NPC whose raw bytes hash to
+  its index is skipped; `--check` exits 1 when any NPC is stale; `--only`).
+  `sync.py` never touches `packed/` — it prunes inside `base/` and
+  `animations/` only. An NPC without a current packed layer draws raw.
+- **Cache law**: never a stable name; current + one back (`prev`) so an open
+  page keeps rendering through a deploy.
 
 Verify a sync is exact (read-only; re-fetches PixelLab and diffs the repo —
 every animation/direction/frame-count, image validity, stale folders, states):

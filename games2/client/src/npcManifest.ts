@@ -31,6 +31,14 @@ export interface NpcDef {
   noTurn?: boolean;
   idleAnim: string | null; // the idle folder name, if any
   idle: Record<string, number>; // dir -> frame count (south only today)
+  /** THE PACKED LAYER (characters2/npcs/<id>/packed/, build-npcs-manifest.mjs):
+   *  the idle frames' URLs per direction when every frame of it is packed.
+   *  Absent, the scene builds the raw path. `base` URLs and `anchors` are
+   *  already the packed ones — the anchor is measured on the raw frame and
+   *  converted, so the sprite's origin is the same pixel either way. */
+  idleUrls?: Record<string, string[]>;
+  /** The box the packed frames were cut from (source canvas srcW x srcH). */
+  packed?: { ox: number; oy: number; w: number; h: number; srcW: number; srcH: number };
 }
 
 export interface NpcManifest {

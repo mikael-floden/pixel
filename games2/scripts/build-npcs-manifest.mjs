@@ -46,6 +46,35 @@ function scan() {
     try {
       meta = JSON.parse(readFileSync(join(dir, "character.json"), "utf8"));
     } catch {}
+    /* THE PACKED LAYER (characters2/pipeline/pack.py): every file of this NPC
+     * cut to ONE box (`packed/index.json`), so the game uploads the body and
+     * not the 112x112 canvas around it (38% of the texels, measured over the
+     * roster). The URLs below point at the packed files; the anchors are
+     * MEASURED ON THE RAW FRAMES — footAnchor's band and lift scale with the
+     * frame height, so measuring a cropped frame is a different measurement —
+     * and CONVERTED into the packed frame, which is the same pixel. No index
+     * = raw URLs and raw fractions, exactly as before. */
+    const packedIndex = join(dir, "packed", "index.json");
+    let packed = null;
+    try {
+      // NPCS_PACK=0 ignores every index (verify-npc-pack.mjs builds the raw
+      // manifest with it and compares the two).
+      const idx = existsSync(packedIndex) && process.env.NPCS_PACK !== "0" ? JSON.parse(readFileSync(packedIndex, "utf8")) : null;
+      if (idx?.schema === "characters2-packed@1" && idx.box && idx.files) packed = idx;
+    } catch {}
+    const packedUrl = (rel) => {
+      const rec = packed?.files?.[rel];
+      return rec?.file && resolveImg(join(dir, "packed", rec.file)) ? `/assets/characters2/npcs/${id}/packed/${rec.file}` : null;
+    };
+    const toPacked = (a, w, h) => {
+      const b = packed?.box;
+      if (!b || !a) return a;
+      return {
+        x: +((a.x * w - b.ox) / b.w).toFixed(4),
+        y: +((a.y * h - b.oy) / b.h).toFixed(4),
+        top: +((a.top * h - b.oy) / b.h).toFixed(4),
+      };
+    };
     // Static rotations — the fallback every facing is guaranteed to have.
     const base = {};
     // FOOT ANCHOR per rotation, measured with the SAME code the player
@@ -60,7 +89,8 @@ function scan() {
     for (const d of DIRECTIONS) {
       const abs = resolveImg(join(dir, "base", `${d}.webp`));
       if (!abs) continue;
-      base[d] = `/assets/characters2/npcs/${id}/base/${abs.split(/[\\/]/).pop()}`;
+      const baseFile = abs.split(/[\\/]/).pop();
+      base[d] = packedUrl(`base/${baseFile}`) ?? `/assets/characters2/npcs/${id}/base/${baseFile}`;
       const a = footAnchor(abs);
       // CLOAK GUARD (NPC-only — the player measurement is approved art and is
       // never touched here). A floor-length cloak/robe puts the frame's lowest
@@ -78,18 +108,20 @@ function scan() {
           const anchorRow = a.y * png.h;
           if (sole - anchorRow > 4) a.y = +((sole - 1.5) / png.h).toFixed(4);
         }
-        anchors[d] = a;
+        const [w, h] = imgDims(abs);
+        anchors[d] = toPacked(a, w, h);
       }
       if (!frameW) {
         const [w, h] = imgDims(abs);
-        frameW = w;
-        frameH = h;
+        frameW = packed?.box?.w ?? w;
+        frameH = packed?.box?.h ?? h;
       }
     }
     if (!Object.keys(base).length) continue; // unrenderable
     // The idle clip, per direction that actually ships frames.
     const animsDir = join(dir, "animations");
     const idle = {};
+    const idleUrls = {};
     let idleAnim = null;
     // ASK character.json WHICH FOLDER IS THE IDLE — never the folder name.
     // PixelLab animation names are GENERATION PROMPTS the maintainer rewords
@@ -114,9 +146,17 @@ function scan() {
         const dd = join(ad, d);
         if (!existsSync(dd)) continue;
         let n = 0;
-        while (resolveImg(join(dd, `${n}.webp`))) n++;
+        const urls = [];
+        while (resolveImg(join(dd, `${n}.webp`))) {
+          const u = packedUrl(`animations/${anim}/${d}/${n}.webp`);
+          if (u) urls.push(u);
+          n++;
+        }
         if (n > 0) {
           idle[d] = n;
+          // The packed frames' URLs, only when EVERY frame has one — a clip
+          // half raw and half packed would breathe at two sizes.
+          if (urls.length === n) idleUrls[d] = urls;
           any = true;
         }
       }
@@ -135,6 +175,10 @@ function scan() {
       anchors, // dir -> {x, y, top} foot anchor (fractions of the frame)
       idleAnim,
       idle, // dir -> frame count (S/SE/SW today; empty for a few)
+      // dir -> the packed frame URLs (absent: the client builds the raw path).
+      ...(Object.keys(idleUrls).length ? { idleUrls } : {}),
+      // The box the packed frames were cut from, for probes and the gate.
+      ...(packed?.box ? { packed: packed.box } : {}),
       // NEVER RE-FACE THIS ONE. characters2' own metadata flag, published on
       // character.json and index.json: some NPC art only reads right from one
       // direction, so turning it looks broken rather than alive. Thorne is the
@@ -151,7 +195,7 @@ const publicDir = join(GAME_ROOT, "client", "public");
 mkdirSync(publicDir, { recursive: true });
 const npcs = scan();
 writeFileSync(
-  join(publicDir, "npcs.json"),
+  process.env.NPCS_MANIFEST_OUT || join(publicDir, "npcs.json"),
   JSON.stringify({ generatedFrom: "characters2/npcs", directions: DIRECTIONS, npcs }, null, 2) + "\n",
 );
 const withIdle = npcs.filter((n) => Object.keys(n.idle).length).length;

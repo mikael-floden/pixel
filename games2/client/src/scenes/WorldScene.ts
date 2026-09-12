@@ -10689,6 +10689,13 @@ export class WorldScene extends Phaser.Scene {
     this.loadNpcArt(npc, def);
   }
 
+  /** One idle frame's URL: the PACKED frame when the manifest carries the
+   *  direction's packed list (characters2/npcs/<id>/packed/, one box per NPC,
+   *  the anchors already converted), else the raw path. */
+  private npcFrameUrl(def: NpcDef, dir: string, i: number): string {
+    return def.idleUrls?.[dir]?.[i] ?? `/assets/characters2/npcs/${def.id}/animations/${def.idleAnim}/${dir}/${i}.webp`;
+  }
+
   /** Lazy art for ONE npc: the static rotation for its facing always, plus the
    * idle clip when the art ships one for that direction. The generated idle is
    * SOUTH-ONLY today, so most NPCs correctly stand still on their rotation —
@@ -10715,10 +10722,7 @@ export class WorldScene extends Phaser.Scene {
       for (let i = 0; i < fn; i++) {
         const fk = `npcf:${def.id}:${d}:${i}`;
         if (this.textures.exists(fk)) continue;
-        this.npcIdleQueue.push({
-          key: fk,
-          url: `/assets/characters2/npcs/${def.id}/animations/${def.idleAnim}/${d}/${i}.webp`,
-        });
+        this.npcIdleQueue.push({ key: fk, url: this.npcFrameUrl(def, d, i) });
       }
     }
     // The standing pose arrived with the BOOT batch (preloadNpcArt), so the
@@ -10731,12 +10735,7 @@ export class WorldScene extends Phaser.Scene {
       for (let i = 0; i < frames; i++) {
         const k = `npcf:${def.id}:${npc.dir}:${i}`;
         keys.push(k);
-        if (!this.textures.exists(k)) {
-          this.npcIdleQueue.push({
-            key: k,
-            url: `/assets/characters2/npcs/${def.id}/animations/${def.idleAnim}/${npc.dir}/${i}.webp`,
-          });
-        }
+        if (!this.textures.exists(k)) this.npcIdleQueue.push({ key: k, url: this.npcFrameUrl(def, npc.dir, i) });
       }
       // Registered LAZILY by stepNpcs once every frame texture exists — NOT on
       // a one-shot loader COMPLETE. A world queues ~20 NPCs back to back, so
