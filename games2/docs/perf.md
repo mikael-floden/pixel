@@ -19,6 +19,21 @@ The ground render texture (scroll, slices, cell repaints, prefetch, compose budg
   capped plate is composed on the CPU per (pattern, groundA, groundB) and
   uploaded as its own texture (the shader with a parity test was the render
   retake's terrain DEPTH shader, rolled back).
+- **THE STEADY FRAME IS THE LAG, NOT THE BURSTS** (measured 2026-09-12 on
+  the overworld run that "felt laggy": 14.6-21.8 ms of CPU per frame on a
+  cool phone, 37% of frames under 17 ms; the same route on a throttled phone
+  26-33 ms). It scales with the occluder count (3.5-8.8k sprites in the
+  display list): `render` 2.8-7.6, `occCull` 0.9-2.2, `depthSort` 0.85-2.1 —
+  answered by the proximity cull and the insertion sort (`docs/depth-sort.md`).
+  What is left after them, per frame: the ground streaming (`prefetch` +
+  `repaintCells` + `groundSlice` 2.4-5.5 ms), `gapBusy` 1.8-4 (unattributed),
+  `monsterLoop` 0.5-2.4 (20-40 monsters, ~70 µs each), `lighting` ~1, the
+  lit copies ~1, and 100-240 MB of texture uploads per 30 s window (every
+  composed boundary is its own texture). RUNS ARE ONLY COMPARABLE ON A COOL
+  PHONE: `cpu.scoreMs` (the beacon's 400k-iteration loop) reads 2.6-4.3 ms
+  cool and 7.2-7.8 after five back-to-back runs, with the display dropping
+  to 41 Hz — a run whose score is over ~5 measures the throttling, not the
+  build.
 - **REJECTED 2026-09-12: A GPU TRANSITION COMPOSITOR** (a SinglePipeline
   subclass doing the composer's three reads per boundary quad, 0.83% of
   texels off the CPU composer; removed with its Settings switch). Three runs

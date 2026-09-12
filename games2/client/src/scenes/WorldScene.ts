@@ -818,6 +818,11 @@ const OCC_CULL_PAD = OCC_STEP + 64 + 200;
  *  tests the rect the RENDERER will use, so this covers only rounding, not a
  *  frame of camera travel. See cullOccluderSubmits. */
 const CULL_EDGE_PX = 4;
+/** THE PROXIMITY CULL (cullOccludersNear): the broad-phase grid's cell in
+ *  world px, and the margin a body's box grows by — the cull runs before the
+ *  body loops move the bodies, so a body must meet its wall a frame early. */
+const OCC_NEAR_GRID = 128;
+const OCC_NEAR_PAD = 32;
 
 // Living camera (maintainer): the camera CHASES the player instead of pinning
 // them dead-centre — exponential ease toward the sprite with the trail capped,
@@ -976,7 +981,7 @@ const GROUND_RING_MS = 2;
  *  GROUND_RING_MS, which bounds the same work from the other side. */
 /** An occluder image carries the cell it came from as plain properties — see
  *  `tagOccluder`. Read only by `__ml.occAudit()` and `__ml.occDump()`. */
-type OccTagged = Phaser.GameObjects.Image & { ocCol?: number; ocRow?: number; ocBase?: number };
+type OccTagged = Phaser.GameObjects.Image & { ocCol?: number; ocRow?: number; ocBase?: number; ocNear?: number };
 
 const GROUND_COMPOSE_MS = 2;
 /** ONE COMPOSITION IS AN ATOM, AND ON HIS PHONE IT IS ~13 ms.
@@ -2259,7 +2264,7 @@ export class WorldScene extends Phaser.Scene {
         why: final ? "flush" : moved ? "moved" : "bad", // why this window was sent at all
         // The two dials under measurement: the upload budget (Settings "upload
         // budget", KB a frame) and the render resolution (1/r of the backing).
-        sim: `up${this.artQueue().budgetKb || "free"}i${Math.round(ART_IDLE_SHARE * 100)}${renderRes() < 1 ? `/r${Math.round(1 / renderRes())}` : ""}`,
+        sim: `up${this.artQueue().budgetKb || "free"}i${Math.round(ART_IDLE_SHARE * 100)}${renderRes() < 1 ? `/r${(1 / renderRes()).toFixed(1).replace(/\.0$/, "")}` : ""}`,
 
         deviceMemoryGb: nav.deviceMemory ?? 0,
         connType: nav.connection?.effectiveType ?? "?",
@@ -2286,6 +2291,8 @@ export class WorldScene extends Phaser.Scene {
         // list we built — the gap is what the cull is worth.
         flushes: this.perfDrawCount, // batch flushes in the last rendered frame
         occSkipped: this.occCulledSubmits, // occluder submits the cull removed
+        occShown: this.occNearShown.length, // occluders the proximity cull submitted last frame
+        occBodies: this.occNearBodies,
         // THE COVER SURFACES' own bill — the suspect for `lighting`: it scales
         // with covered bodies x occluders, not with lights, and re-rasterises
         // three atlases whenever anything it draws has MOVED (see coverSig).
@@ -2974,20 +2981,49 @@ export class WorldScene extends Phaser.Scene {
         if (this.perfOn) this.perfFlushes++;
       });
     });
-    /* THE DEPTH SORT, timed where it happens. Phaser re-sorts the whole list
-     * whenever anything changed depth, which for this scene is every frame that
-     * a body moves — i.e. every frame. n log n over ~5,000 objects. */
-    const list = this.children as unknown as { depthSort?: () => void };
-    const orig = list.depthSort;
-    if (typeof orig === "function") {
-      list.depthSort = () => {
-        if (!this.perfOn) return orig.call(list);
-        const t = performance.now();
-        const r = orig.call(list);
-        this.pAdd("depthSort", performance.now() - t);
-        return r;
-      };
-    }
+    // The depth sort times itself — see installDepthSort.
+  }
+
+  /** THE DEPTH SORT IS AN INSERTION SORT, because the list is nearly sorted
+   *  on every frame: only the bodies changed depth since the last one. Phaser
+   *  re-runs a merge sort of the WHOLE display list whenever any depth
+   *  changed, which here is every frame a body moves — 0.85-2.1 ms on his
+   *  phone over 4.6-9.7k objects. An insertion sort is stable (an element
+   *  moves past strictly greater depths only, so equal depths keep their
+   *  order, exactly as Phaser's stable sort keeps it) and costs one pass plus
+   *  one slot per inversion; when the inversions run past the list's length
+   *  (a rebuild that added hundreds of images) it hands the half-sorted list
+   *  to Phaser's own sort, which finishes it. */
+  private installDepthSort(): void {
+    const dl = this.children as unknown as { list: { _depth: number }[]; sortChildrenFlag: boolean; depthSort(): void };
+    const orig = dl.depthSort.bind(dl);
+    dl.depthSort = () => {
+      if (!dl.sortChildrenFlag) return;
+      const t = this.perfOn ? performance.now() : 0;
+      const list = dl.list;
+      const n = list.length;
+      let moves = 0;
+      let done = true;
+      for (let i = 1; i < n; i++) {
+        const key = list[i];
+        const d = key._depth;
+        let j = i - 1;
+        if (list[j]._depth <= d) continue;
+        do {
+          list[j + 1] = list[j];
+          j--;
+          moves++;
+        } while (j >= 0 && list[j]._depth > d);
+        list[j + 1] = key;
+        if (moves > n) {
+          done = false;
+          break;
+        }
+      }
+      if (done) dl.sortChildrenFlag = false;
+      else orig();
+      if (t) this.pAdd("depthSort", performance.now() - t);
+    };
   }
   private perfRenderHooked = false;
   /** Batch flushes in the last rendered frame — see perfHookRender. */
@@ -3928,6 +3964,7 @@ export class WorldScene extends Phaser.Scene {
     /* Before the first DynamicTexture bracket (cover surfaces, ground RT):
      * one capture texture per size — see capturepool.ts. */
     if (this.game.renderer.type === Phaser.WEBGL) installCapturePool(this.renderer);
+    this.installDepthSort();
     /* A BEACON ARMED AT BOOT (`?perf=1`, or remembered) gets the same
      * instruments the settings toggle installs. Without this the two arming
      * paths measure different things, and the boot path is the one he uses. */
@@ -5956,6 +5993,7 @@ export class WorldScene extends Phaser.Scene {
       occCull: (on?: boolean) => {
         if (typeof on === "boolean") {
           this.occCullOn = on;
+          this.occNearDirty = true;
           if (!on) for (const l of this.cullLists) for (const im of l) im.cameraFilter = 0;
         }
         /* AUDITED AGAINST PHASER'S OWN BOUNDS, never against the cull's own
@@ -5984,6 +6022,40 @@ export class WorldScene extends Phaser.Scene {
           wrongCulled,
           wastedSubmits,
         };
+      },
+      /** THE PROXIMITY CULL's switch and audit. `wrongHidden` is the only
+       *  number that matters: an occluder hidden by this cull whose real
+       *  `getBounds()` meets a body's real bounds inside the view would draw
+       *  that body over its wall. It must be 0. */
+      occNear: (on?: boolean) => {
+        if (typeof on === "boolean") {
+          this.occNearOn = on;
+          this.occNearDirty = true;
+          if (!on) for (const im of this.occluders) im.cameraFilter = 0;
+        }
+        const cam = this.cameras.main;
+        const v = cam.worldView;
+        // Drawn bodies only: an invisible one draws nothing to cover.
+        const boxes: Phaser.Geom.Rectangle[] = [];
+        for (const a of this.avatars.values()) if (a.sprite.visible) boxes.push(a.sprite.getBounds());
+        for (const m of this.monsters.values()) if (m.sprite.visible) boxes.push(m.sprite.getBounds());
+        for (const n of this.npcs.values()) if (n.sprite.visible) boxes.push(n.sprite.getBounds());
+        for (const d of this.drops.values()) if (d.img.visible) boxes.push(d.img.getBounds());
+        for (const l of this.sceneryCullLists) for (const im of l) if (im.visible) boxes.push(im.getBounds());
+        let wrongHidden = 0;
+        let hiddenInView = 0;
+        for (const im of this.occluders) {
+          if (im.cameraFilter === 0) continue;
+          const bb = im.getBounds();
+          if (!(bb.right > v.x && bb.x < v.right && bb.bottom > v.y && bb.y < v.bottom)) continue;
+          hiddenInView++;
+          for (const b of boxes)
+            if (bb.right > b.x && bb.x < b.right && bb.bottom > b.y && bb.y < b.bottom) {
+              wrongHidden++;
+              break;
+            }
+        }
+        return { on: this.occNearOn, occluders: this.occluders.length, shown: this.occNearShown.length, bodies: this.occNearBodies, hiddenInView, wrongHidden };
       },
       groundCompose: (ms?: number) => {
         if (typeof ms === "number") {
@@ -12211,6 +12283,9 @@ export class WorldScene extends Phaser.Scene {
     this.ps();
     this.stepNpcs();
     this.pe("stepNpcs");
+    this.ps();
+    this.cullOccludersNearStep();
+    this.pe("occNear");
     this.stepSceneryAnims();
     // Sword marker + target frame + aggro-radius debug rings (all read the
     // freshly-updated monster sprites above).
@@ -20974,7 +21049,8 @@ export class WorldScene extends Phaser.Scene {
      * WORSE — measured, submits went 814 -> 936 at the mountain — because for
      * the tile art, which is most of the residue, a flat 64 px is LARGER than
      * the per-image slack it replaced. Rotation is handled per image instead. */
-    for (const list of this.cullLists) {
+    const lists = this.occNearOn ? this.sceneryCullLists : this.cullLists;
+    for (const list of lists) {
       for (let i = 0; i < list.length; i++) {
         const im = list[i];
         // ABS: a flip done with a negative scale gives a negative displayWidth,
@@ -20998,6 +21074,147 @@ export class WorldScene extends Phaser.Scene {
     this.occCulledSubmits = off;
   }
 
+  /** The proximity cull's frame step — AFTER the body loops, so it tests this
+   *  frame's boxes: before them it tested last frame's, and a starved frame
+   *  (headless, 600 ms) walked a body past its pad (audit: 22-93 occluders
+   *  hidden over a body). Adds what it hid to the frame's skipped count. */
+  private cullOccludersNearStep(): void {
+    if (!this.occCullOn || !this.occNearOn) return;
+    const cam = this.cameras.main;
+    const rv = renderedWorldView(cam, this.cullRect);
+    const x0 = rv.x - CULL_EDGE_PX;
+    const y0 = rv.y - CULL_EDGE_PX;
+    this.occCulledSubmits += this.cullOccludersNear(cam.id, x0, y0, rv.x + rv.width + CULL_EDGE_PX, rv.y + rv.height + CULL_EDGE_PX);
+  }
+
+  /* THE PROXIMITY CULL. An occluder sprite is the ground texture's own pixels
+   * drawn a second time at the same spot, so that a BODY can be drawn between
+   * the ground and it. Where no body's box meets it, submitting it is the
+   * identity — the same argument as the off-view cull, one step further. So
+   * only the occluders whose box meets a body's box (grown by OCC_NEAR_PAD)
+   * inside the view are submitted; every other occluder carries the camera
+   * filter, exactly like an off-view one, and nothing else about it changes
+   * (`occluderMeta`, the cover index and the depth rule read the set, not the
+   * filter — see the off-view cull's contract above).
+   *
+   * Bodies are every avatar, monster, NPC and drop with its shadow (their lit,
+   * fog and outline copies share the box) and every scenery image — a tree
+   * behind a wall is covered by the wall's copy. The broad phase is a 128-px
+   * grid rebuilt with the set (`occNearIndex`), so a frame costs the bodies'
+   * grid cells, not the set: his phone submitted 1.6-2.4k occluders a frame
+   * and spent 2.8-7.6 ms in `render` and 0.9-2.2 in this cull for 3.5-8.8k
+   * of them (2026-09-12, the run that felt laggy on the overworld).
+   *
+   * Incremental on purpose: the images shown last frame and not this one are
+   * hidden, the new set is shown, and nothing else is touched — a rebuild or
+   * a switch marks the set dirty and the next frame hides every member once
+   * (`occImage` recycles images, so a filter can outlive its set). Returns how
+   * many occluders it hid. */
+  private cullOccludersNear(id: number, vx0: number, vy0: number, vx1: number, vy1: number): number {
+    if (this.occNearDirty) {
+      this.occNearDirty = false;
+      for (let i = 0; i < this.occluders.length; i++) this.occluders[i].cameraFilter = id;
+      this.occNearShown.length = 0;
+    }
+    const tag = ++this.occNearTag;
+    const shown = this.occNearShownNext;
+    shown.length = 0;
+    const grid = this.occNearGrid;
+    const G = OCC_NEAR_GRID;
+    let bodies = 0;
+    const body = (o: { x: number; y: number; displayWidth: number; displayHeight: number; originX: number; originY: number; visible: boolean } | undefined) => {
+      if (!o || !o.visible) return;
+      bodies++;
+      const w = Math.abs(o.displayWidth);
+      const h = Math.abs(o.displayHeight);
+      const bx0 = o.x - w * o.originX - OCC_NEAR_PAD;
+      const by0 = o.y - h * o.originY - OCC_NEAR_PAD;
+      const bx1 = bx0 + w + OCC_NEAR_PAD * 2;
+      const by1 = by0 + h + OCC_NEAR_PAD * 2;
+      // Off the view: nothing over it is drawn either.
+      if (bx1 < vx0 || bx0 > vx1 || by1 < vy0 || by0 > vy1) return;
+      const gx0 = Math.floor(bx0 / G);
+      const gx1 = Math.floor(bx1 / G);
+      const gy0 = Math.floor(by0 / G);
+      const gy1 = Math.floor(by1 / G);
+      for (let gy = gy0; gy <= gy1; gy++)
+        for (let gx = gx0; gx <= gx1; gx++) {
+          const arr = grid.get((gy + 2048) * 4096 + (gx + 2048));
+          if (!arr) continue;
+          for (let i = 0; i < arr.length; i++) {
+            const im = arr[i] as OccTagged;
+            if (im.ocNear === tag) continue;
+            const iw = Math.abs(im.displayWidth);
+            const ih = Math.abs(im.displayHeight);
+            const ix = im.x - iw * im.originX;
+            const iy = im.y - ih * im.originY;
+            if (ix + iw < bx0 || ix > bx1 || iy + ih < by0 || iy > by1) continue;
+            // And the view, as the off-view cull tests it.
+            if (ix + iw < vx0 || ix > vx1 || iy + ih < vy0 || iy > vy1) continue;
+            im.ocNear = tag;
+            shown.push(im);
+          }
+        }
+    };
+    for (const a of this.avatars.values()) {
+      body(a.sprite);
+      body(a.shadow);
+    }
+    for (const m of this.monsters.values()) {
+      body(m.sprite);
+      body(m.shadow);
+    }
+    for (const n of this.npcs.values()) {
+      body(n.sprite);
+      body(n.shadow);
+    }
+    for (const d of this.drops.values()) {
+      body(d.img);
+      body(d.shadow);
+    }
+    for (const l of this.sceneryCullLists) for (let i = 0; i < l.length; i++) body(l[i]);
+    this.occNearBodies = bodies;
+    const prev = this.occNearShown;
+    for (let i = 0; i < prev.length; i++) {
+      const im = prev[i] as OccTagged;
+      if (im.ocNear !== tag) im.cameraFilter = id;
+    }
+    for (let i = 0; i < shown.length; i++) shown[i].cameraFilter = 0;
+    this.occNearShown = shown;
+    this.occNearShownNext = prev;
+    return this.occluders.length - shown.length;
+  }
+
+  /** The proximity cull's broad phase: every occluder in every grid cell its
+   *  box touches (an image is one tile, so at most four). Rebuilt with the set,
+   *  which is every OCC_STEP of camera drift; the arrays are kept and refilled
+   *  so a step allocates nothing but the cells the window has just reached. */
+  private occNearIndex(): void {
+    const grid = this.occNearGrid;
+    for (const arr of grid.values()) arr.length = 0;
+    const G = OCC_NEAR_GRID;
+    for (let n = 0; n < this.occluders.length; n++) {
+      const im = this.occluders[n];
+      const w = Math.abs(im.displayWidth);
+      const h = Math.abs(im.displayHeight);
+      const x0 = im.x - w * im.originX;
+      const y0 = im.y - h * im.originY;
+      const gx0 = Math.floor(x0 / G);
+      const gx1 = Math.floor((x0 + w) / G);
+      const gy0 = Math.floor(y0 / G);
+      const gy1 = Math.floor((y0 + h) / G);
+      for (let gy = gy0; gy <= gy1; gy++)
+        for (let gx = gx0; gx <= gx1; gx++) {
+          const k = (gy + 2048) * 4096 + (gx + 2048);
+          let arr = grid.get(k);
+          if (!arr) grid.set(k, (arr = []));
+          arr.push(im);
+        }
+    }
+    for (const [k, arr] of grid) if (!arr.length) grid.delete(k);
+    this.occNearDirty = true;
+  }
+
   /** The lists cullOccluderSubmits walks. Held as an array so the loop is one
    *  pass and a new class of world art is added in one place. */
   /** Scratch for the cull's view rect — held so the per-frame test allocates
@@ -21007,6 +21224,19 @@ export class WorldScene extends Phaser.Scene {
   private get cullLists(): Phaser.GameObjects.Image[][] {
     return [this.occluders, this.sceneryImgs, this.sceneryRoofedImgs, this.sceneryAboveCutImgs];
   }
+  /** The lists the view cull walks when the proximity cull owns the occluders. */
+  private get sceneryCullLists(): Phaser.GameObjects.Image[][] {
+    return [this.sceneryImgs, this.sceneryRoofedImgs, this.sceneryAboveCutImgs];
+  }
+  /* THE PROXIMITY CULL's state — see cullOccludersNear. `occNearOn` is the
+   * dev A/B (`__ml.occNear(false)` submits every in-view occluder as before). */
+  private occNearOn = true;
+  private occNearDirty = true;
+  private occNearGrid = new Map<number, Phaser.GameObjects.Image[]>();
+  private occNearShown: Phaser.GameObjects.Image[] = [];
+  private occNearShownNext: Phaser.GameObjects.Image[] = [];
+  private occNearTag = 0;
+  private occNearBodies = 0;
   /** Occluders whose submit the last frame skipped — reported by the beacon. */
   private occCulledSubmits = 0;
   /** Dev A/B: `__ml.occCull(false)` restores the old every-object submit. */
@@ -21233,6 +21463,7 @@ export class WorldScene extends Phaser.Scene {
     const flatI: Phaser.GameObjects.Image[] = [];
     for (const b of this.occNext.values()) for (const im of b) flatI.push(im);
     this.occluders = flatI;
+    this.occNearIndex();
     const flatM: (typeof this.occluderMeta)[number][] = [];
     for (const arr of this.occMetaByCell.values()) for (const m of arr) flatM.push(m);
     this.occluderMeta = flatM;

@@ -18,6 +18,36 @@ How bodies and pieces interleave with terrain columns: the occluder set, the pur
   work and only removes CPU bursts; the beacon's `gapIdle` is the GPU's
   bill. His verdict: "the game is still totally broken... only if we get
   super smooth and high fps" — not worth a month of bugs for no gain.
+- **THE PROXIMITY CULL: ONLY THE OCCLUDERS THAT MEET A BODY ARE SUBMITTED**
+  (`cullOccludersNear`, `occNearIndex`, 2026-09-12). An occluder sprite is
+  the ground texture's own pixels drawn a second time at the same spot so a
+  body can be drawn between them; where no body's box meets it, submitting
+  it is the identity — the off-view cull's argument, one step further. Each
+  frame, after the body loops (before them it tested last frame's boxes, and
+  a starved frame walked a body past the pad), every avatar, monster, NPC and
+  drop with its shadow and every scenery image grows by 32 px and visits a
+  128-px grid of the set, rebuilt with the set every OCC_STEP; the occluders
+  it meets inside the view are shown, the rest carry the camera filter like
+  an off-view one. Incremental: last frame's shown set minus this frame's is
+  hidden, and a rebuild or a switch marks the set dirty so the next frame
+  hides every member once (`occImage` recycles images, so a filter outlives
+  its set). Nothing else changes — `occluderMeta`, the cover index and the
+  depth rule read the set, not the filter. Measured on his phone before it:
+  1.6-2.4k occluder submits a frame, `render` 2.8-7.6 ms, `occCull` 0.9-2.2
+  and `depthSort` 0.85-2.1 for 3.5-8.8k occluders, the steady frame 14.6-21.8
+  ms of CPU that made the overworld feel laggy; headless the frame submits
+  ~320 of ~1,500. Gate: `__ml.occNear()` audits every hidden in-view
+  occluder against every drawn body's real `getBounds()` — `wrongHidden`
+  must be 0; `__ml.occNear(false)` is the A/B. Beacon: `counts.occShown`,
+  `counts.occBodies`.
+- **THE DEPTH SORT IS AN INSERTION SORT** (`installDepthSort`, 2026-09-12).
+  Phaser re-runs a merge sort of the whole display list whenever any depth
+  changed — every frame a body moves — 0.85-2.1 ms on his phone over 4.6-9.7k
+  objects, while the list is nearly sorted (only the bodies moved). A stable
+  insertion sort costs one pass plus a slot per inversion and hands the list
+  to Phaser's own sort when the inversions pass the list's length (a rebuild
+  added hundreds of images). Equal depths keep their order in both, so the
+  picture is the same.
 - **SEE-THROUGH WALLS IS DELETED — never reintroduce a per-frame occluder
   alpha sweep.** The prototype ([7] key, "see-through walls" switch,
   `occFade`/`occFocus`/`occApply` probes) swept the whole live occluder set

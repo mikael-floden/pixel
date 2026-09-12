@@ -110,6 +110,9 @@ secrets; push to `main`, rebase on reject, no PRs unless asked; doc law.
 - SEE-THROUGH WALLS IS DELETED — never a per-frame occluder alpha sweep.
 - The occluder set is POOLED; depth = base + creationIndex × 1e-6 in the base
   band only; tiles3's texture cache stays unbounded.
+- Only the occluders that MEET A BODY are submitted (the proximity cull) and
+  the display list is insertion-sorted; an occluder far from every body is
+  the ground's own pixels drawn twice. Gate `__ml.occNear().wrongHidden` = 0.
 - Scenery is sized against the 88-px person this game draws
   (`sceneryDrawnPx`); the bbox doc is gated by `check-scenery-bbox.mjs`.
 - A hitbox is an ellipse OR a ground rect drawn in perspective — port the
