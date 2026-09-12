@@ -19,18 +19,13 @@ edited. ONE world, `the_game` (`maps2/worlds3`), ONE tile system, `tiles/`
 (tiles2 and the world@1/@2 tree are retired, 2026-09-09). Six agents share
 `games2/`: this one (gameplay, netcode, world, rendering), games-ui
 (`UI_AGENT.md` is the file split), games-audio (`composer/`, its own
-`CLAUDE.md`), games-perf (the optimization agent, 2026-09-12: frame time
-only, from the phone's beacon; it names every file it touches on
-`coordination/games-perf.json` and rebases onto this agent's pushes),
-games-assistant (this agent's assistant, 2026-09-12: the same remit for the
-units this agent is not in; it reads this board first, never a file named
-there as in flight, and names every file it touches on
-`coordination/games-assistant.json`) and the ambient pair — games-ambient
-(`ambient/`, its own README) and its games-ambient-assistant (2026-09-12, board
-`coordination/games-ambient-assistant.json`). Work
-from `games2/`; `npm run dev`, `npm test`, `npm run typecheck`. Boards:
-`coordination/games.json`, `coordination/games-perf.json`,
-`coordination/games-assistant.json`.
+`CLAUDE.md`), games-ambient (`ambient/`, its own README), games-perf (frame
+time only, from the phone's beacon, 2026-09-12) — and each has an
+`<agent>-assistant` with the same remit and its own board (2026-09-12; root
+`CLAUDE.md` "two writers": claim the unit and its files on your board before
+editing, never a file the partner names in flight, the original agent wins a
+collision). Work from `games2/`; `npm run dev`, `npm test`, `npm run
+typecheck`. Boards: `coordination/<agent>.json` and `<agent>-assistant.json`.
 
 ## The docs
 
@@ -103,7 +98,8 @@ secrets; push to `main`, rebase on reject, no PRs unless asked; doc law.
   rows of their own surface. A fix that makes the geometry more exact leaves
   the seam class alive.
 - A transition covers what the plate it replaces covered; the seam (0.82) is
-  ON — it is what makes a transition visible (maintainer verdict).
+  ON — it is what makes a transition visible (maintainer verdict). Water lies
+  flat: a liquid corner votes only at its own level (`tiles3liquid.test.ts`).
 - Every field art goes through `plate()`; a conformed plate fills every
   silhouette texel including holes inside a column.
 - A liquid diamond wears `sheets.libTop`, never a formula.

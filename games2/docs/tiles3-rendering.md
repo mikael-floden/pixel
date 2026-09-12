@@ -490,8 +490,14 @@ dressing). `this.maps3` gates every terrain branch (false only for a hand-built
   `__ml.details()`; gate `scripts/verify-details.mjs`;
   MADE_GROUND = brown_paving_stone, grey_paving_stone, parquet_floor; a
   boundary corner within `BOUNDARY_STEP` votes and a farther one folds to its
-  own ground, liquid pairs compose and the liquid cell draws top-face-only
-  with no wall; a room anchors its member ONLY for the room's own floor ground
+  own ground — EXCEPT A LIQUID CORNER, which votes only at the drawing cell's
+  own level (water lies flat: one storey of tolerance composed the sea into
+  the top face of the step above it, 8 cells of the_game, all land at level 1
+  beside water at 0 — maintainer 2026-09-11, "The ground on that stair has
+  fucking water on it!"; render3 2026-09-11, the game 2026-09-12; a water
+  cell still composes its land corner one storey up, the shore tile that is
+  "not 100% water or 100% beach"; gate `tiles3liquid.test.ts`), liquid pairs
+  compose and the liquid cell draws top-face-only with no wall; a room anchors its member ONLY for the room's own floor ground
   (`roomFloorAt`; a foreign ground inside a room keeps its cell); a deck's
   `side`, cap tile, doorway/behind crop (the deck bullet under Decks); scenery
   takes an explicit `state` over `lit`, its `dir` rotation, drawn-px scale

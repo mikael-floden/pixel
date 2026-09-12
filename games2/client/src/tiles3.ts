@@ -70,7 +70,9 @@ export const FADE_BAND = 2;
  *  every ground-change quad spanned two levels or more, out to forty. One storey
  *  is a terrace lip or a stair: the same surface continuing, and the case the
  *  maintainer wants eased. Anything further is two surfaces you cannot walk
- *  between, and blending them put wood across a paved roof. */
+ *  between, and blending them put wood across a paved roof. A LIQUID corner
+ *  gets no tolerance at all: water lies flat, so it votes only at the cell's
+ *  own level (`boundaryAt`, 2026-09-12). */
 export const BOUNDARY_STEP = 1;
 /** A detail roughly once per 56 field cells — "once in a while", overridable per
  *  ground by live/tuning/tile_details.json (`rate`), which publishes none today. */
@@ -2437,8 +2439,19 @@ export class Tiles3 {
         }
       }
     }
+    /* ...BUT WATER LIES FLAT: A LIQUID CORNER VOTES ONLY AT THIS CELL'S OWN
+     * LEVEL. One storey of tolerance let the sea compose into the top face of
+     * the step above it — water running up a stair, on a cell a whole level
+     * clear of it (maintainer 2026-09-11, ringing the bottom step of a shore
+     * staircase: "The ground on that stair has fucking water on it!"; 8 cells
+     * of the_game, every one land at level 1 beside water at 0). Land still
+     * blends across one storey — the terrace rim the step rule was written for
+     * — and a WATER cell still composes its land corner, which is the shore
+     * tile that is "not 100% water or 100% beach" (2026-09-09). Only a liquid
+     * corner standing off the plane of the cell it would paint is folded away.
+     * render3 `wang_surface` carries the same clause (maps2, 2026-09-11). */
     let gs: (string | null)[] = [g0, gz[0], gz[1], gz[2]].map((gv, i) =>
-      Math.abs(zs[i] - z0) <= BOUNDARY_STEP ? gv : g0,
+      Math.abs(zs[i] - z0) <= BOUNDARY_STEP && (zs[i] === z0 || !view.isLiquid(gv as string)) ? gv : g0,
     );
     /* The foot overrides the fold: the face is ON this plane by construction. */
     let ownRef: string | null = null; // the cell's own ground when its corner was lent away
