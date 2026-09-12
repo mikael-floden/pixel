@@ -1770,8 +1770,11 @@ class Grow:
                 lm = level(m, extra)
                 if lm is not None and lm != l and not (m in steps and abs(lm - l) == 1):
                     return False
-            for dx in range(-B, B + 1):
-                for dy in range(-B, B + 1):
+            # one cell of rock beside a lane is a wall (the planner keeps
+            # CAVE_BUFFER between features; a lane joins nothing, so it may
+            # run closer - two cells of a bend stayed one wide otherwise)
+            for dx in (-1, 0, 1):
+                for dy in (-1, 0, 1):
                     q = (n[0] + dx, n[1] + dy)
                     if q == n or q in cells or q in new or q in extra:
                         continue
@@ -1823,22 +1826,38 @@ class Grow:
                         st.append(m)
             groups.append(sorted(comp))
         for comp in groups:
-            best = None
-            for sign in (1, -1):
+            def lanes_for(sign, done):
                 adds = {}
                 for c in comp:
                     l = cells[c]
-                    along_x = any(m in cells or m in new for m in ((c[0] + 1, c[1]), (c[0] - 1, c[1])))
-                    along_y = any(m in cells or m in new for m in ((c[0], c[1] + 1), (c[0], c[1] - 1)))
+                    along_x = any(m in cells or m in new or m in done for m in ((c[0] + 1, c[1]), (c[0] - 1, c[1])))
+                    along_y = any(m in cells or m in new or m in done for m in ((c[0], c[1] + 1), (c[0], c[1] - 1)))
                     if along_x == along_y:
                         continue                 # a corner or a dot: not narrow
                     n = (c[0], c[1] + sign) if along_x else (c[0] + sign, c[1])
                     if takes(n, l, adds):
                         adds[n] = l
-                if best is None or len(adds) > len(best):
-                    best = adds
-            if best:
-                new.update(best)
+                return adds
+            a1, a2 = lanes_for(1, {}), lanes_for(-1, {})
+            best, other = (a1, -1) if len(a1) >= len(a2) else (a2, 1)
+            new.update(best)
+            # a cell the corridor's side could not serve takes the other side
+            # (a strip between a rock spine and the massif's shoulder stayed
+            # one wide for two cells, measured)
+            new.update(lanes_for(other, {}))
+        # a bend: the cell that closes the 2 x 2 between a corridor cell and
+        # its two neighbours on perpendicular axes, so the lane runs round
+        # the corner instead of stopping at it (maintainer 2026-09-12, at a
+        # one-wide bend of Cave III)
+        for c in sorted(flat):
+            l = cells[c]
+            for dx in (-1, 1):
+                for dy in (-1, 1):
+                    a, b = (c[0] + dx, c[1]), (c[0], c[1] + dy)
+                    d = (c[0] + dx, c[1] + dy)
+                    if level(a, {}) == l and level(b, {}) == l and d not in cells and d not in new \
+                            and takes(d, l, {}):
+                        new[d] = l
         plan["keep"] = set(cells)                # the keep-out box is the plan's, not the lanes'
         cells.update(new)
         plan["floor"] |= set(new)
@@ -2174,6 +2193,27 @@ class Grow:
                 two = len(plan["doors"]) > 1
                 made_two += two
                 wide = self._widen_plan(plan, free, solid)
+                # A MOUTH ONE CELL WIDE IS A CHOKEPOINT TOO: it takes the rim
+                # cell beside it that faces the same way at the same grade,
+                # where the floor behind that cell is the door's own
+                for dd in plan["doors"]:
+                    if len(dd["cells"]) >= 2:
+                        continue
+                    c0 = dd["cells"][0]
+                    oo = dd["out"]
+                    lv0 = plan["cells"][c0]
+                    for sgn in (1, -1):
+                        c = (c0[0] - oo[1] * sgn, c0[1] + oo[0] * sgn)
+                        inner = (c[0] - oo[0], c[1] - oo[1])
+                        if c in plan["cells"] or plan["cells"].get(inner) != lv0:
+                            continue
+                        is_rim = (rimd.get((T(*c), o)) == G if oo == (0, 1)
+                                  else (rim2 or {}).get(c) == (lv0, oo))
+                        if not is_rim:
+                            continue
+                        plan["cells"][c] = lv0
+                        dd["cells"].append(c)
+                        break
                 site, gone = self._dig_planned(
                     plan, T, G, head, "dark_mud", "mouth", G + self.CLIMB + 1,
                     lambda w: (self.lvl[w[1]][w[0]], self.G[self.grd[w[1]][w[0]]]))
@@ -2577,13 +2617,14 @@ class Grow:
 
     ROOM_MIN = 4       # a floor cell is in a ROOM when the floor runs this far through it both ways
 
-    def _cave_rooms(self, cells):
+    def _cave_rooms(self, cells, room_min=None):
         """Room cells of a cave: the floor runs ROOM_MIN or more through the
         cell along x AND along y. Anything narrower is a corridor, and a
         corridor gets nothing put in it (maintainer 2026-09-06: "you have
         blocked the corridors and made it even more hard to navigate the
         dungeon"). A two-cell passage counted as a room before."""
         cs = set(cells)
+        room_min = room_min or self.ROOM_MIN
 
         def run(c, dx, dy):
             n, m = 1, (c[0] + dx, c[1] + dy)
@@ -2595,7 +2636,7 @@ class Grow:
                 n += 1
                 m = (m[0] - dx, m[1] - dy)
             return n
-        return {c for c in cs if run(c, 1, 0) >= self.ROOM_MIN and run(c, 0, 1) >= self.ROOM_MIN}
+        return {c for c in cs if run(c, 1, 0) >= room_min and run(c, 0, 1) >= room_min}
 
     @staticmethod
     def _chambers(cells):
@@ -5595,9 +5636,11 @@ class Grow:
             # (the dungeon under the field is one lid over three)
             chambers = self._chambers(self._cave_rooms(cells))
             if not chambers:
-                # a lid with no room in it (a long passage, a low chamber
-                # under ROOM_MIN) still burns: one brazier against its wall
-                chambers = [max(self._chambers(cells), key=len)]
+                # a lid whose rooms are three deep still burns - in those
+                # rooms, NEVER in a passage (maintainer 2026-09-12, a brazier
+                # in a one-wide bend of Cave III: "How do you expect players
+                # to get through?"); a lid of passages only stays dark
+                chambers = self._chambers(self._cave_rooms(cells, self.ROOM_MIN - 1))
             for chamber in chambers:
                 edge = []
                 for c in sorted(chamber):

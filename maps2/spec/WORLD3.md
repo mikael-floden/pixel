@@ -691,9 +691,22 @@ corridor cell with floor along one axis only gets its neighbour on one side
 (per corridor, the side where more cells can take it: free rock, joining
 nothing at another level, its rock halo kept); a stair run gets a whole
 parallel lane on the first side where every step can, published as a run.
-Rooms, doors and the pit stay as they were; the keep-out between caves is
-the plan's box, not the lanes'. the_game: 97 cells and 13 lanes over the
-seven planned caves.
+At every bend the cell that closes the 2 × 2 between a corridor cell and its
+two neighbours is dug too, so the lane runs round the corner instead of
+stopping at it (maintainer 2026-09-12, at a one-wide bend of Cave III).
+A cell whose corridor's side cannot serve it takes the other side (a strip
+between a rock spine and the massif's shoulder stayed one wide for two
+cells). A lane needs one cell of rock beside it, not the planner's buffer: it
+joins nothing. A mouth one cell wide takes the rim cell beside it that faces
+the same way at the same grade, where the floor behind is the door's own;
+Cave III's two mouths have no such neighbour and stay one wide. Rooms, doors
+and the pit stay as they were; the keep-out between caves is the plan's box,
+not the lanes'. the_game: 158 cells and 13 lanes over the seven planned
+caves, and no passage cell one wide but those two mouths (measured on the
+published cells). **A brazier never stands in a passage**: a lid with no
+room `ROOM_MIN` deep lights the rooms three deep it has, and a lid of
+passages only stays dark (a fallback that lit "the biggest patch" put one in
+that same bend: *"How do you expect players to get through?"*).
 
 **The site record** (`_register_site`, `self.cave_sites`): every cave — the
 hand-planned dungeon included — is one record of its cells and levels,
