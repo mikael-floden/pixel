@@ -1,13 +1,13 @@
 {
   "format": "pixel-lore@2",
-  "generated_at": "2026-08-24T19:42:32Z",
+  "generated_at": "2026-09-12T23:08:54Z",
   "note": "Authored by the lore agent, keyed by the owning domain's folder id. entities.<domain>.<id>.description is the SHORT line shown under the entity's name \u2014 it REPLACES the domain's own description, and is guaranteed never to be longer than the longest text that domain already ships, so substituting it cannot grow the layout. entities.<domain>.<id>.lore is the LONG read-more text, an array of paragraphs, shown only if the reader expands it; no length limit. 'entries' are standalone articles (chapters, peoples, places). A paragraph (in lore or body) is EITHER a plain string OR an array of segments {t} / {t, ref:{domain,id}} \u2014 render t as a text node, and a segment with ref as a link to #/domain/id. No markup ever. Standalone cross-references are {domain, id} pairs. Every entry carries an 'icon' (repo-relative path to a 48x48 png) \u2014 draw it at whole multiples of 48 with image-rendering: pixelated, never at a fractional width. See lore/icons/icons.json.",
   "layout_budget": {
     "monsters": 118,
     "items": 123,
     "characters": 161,
     "objects": 845,
-    "tiles": 51
+    "tiles": 120
   },
   "default_icon": "lore/icons/rune.png",
   "red_line_progress": {
@@ -215,7 +215,7 @@
         ]
       },
       "7a779de1": {
-        "description": "Elder of the meadow fire. He pays for company with the east road, one evening at a time, and knows better than anyone how much road he has left.",
+        "description": "Elder of the meadow fire. He pays for company with the mountain road, one evening at a time, and knows better than anyone how much road he has left.",
         "lore": [
           [
             {
@@ -229,7 +229,7 @@
               }
             },
             {
-              "t": ", and told right. What that chapter is too kind to add: a telling keeps the east road firm under feet that still walk it, so every evening he sells is maintenance, and every listener who thinks they are indulging an old man is holding up a road without knowing whose."
+              "t": ", and told right. What that chapter is too kind to add: a telling keeps the mountain road firm under feet that still walk it, so every evening he sells is maintenance, and every listener who thinks they are indulging an old man is holding up a road without knowing whose."
             }
           ],
           [
@@ -290,7 +290,7 @@
               }
             },
             {
-              "t": " tested it. She asked him nothing about the inside \u2014 only about the ones who went in \u2014 and he talked until the candles were done: names, trades, who owed whom, who sang badly on the walk east, freely and warmly and in order. His account of that morning is the fullest thing in "
+              "t": " tested it. She asked him nothing about the inside \u2014 only about the ones who went in \u2014 and he talked until the candles were done: names, trades, who owed whom, who sang badly on the walk out, freely and warmly and in order. His account of that morning is the fullest thing in "
             },
             {
               "t": "the Chronicle",
@@ -308,7 +308,7 @@
               "t": "What was promised, and to whom, is nowhere in this book, because he has kept it out of every book, and pays for the keeping in public and in small change: the rounds he cannot afford, the "
             },
             {
-              "t": "eastern stone",
+              "t": "cracked stone",
               "ref": {
                 "domain": "items",
                 "id": "hollow_black_soulstone"
@@ -339,12 +339,12 @@
         ]
       },
       "a6d7323d": {
-        "description": "Wanderer. He maps the Drift with stakes and string, walks the eastern line every year, and has stopped telling anybody what the measurements say.",
+        "description": "Wanderer. He maps the Drift with stakes and string, walks the mountain line every year, and has stopped telling anybody what the measurements say.",
         "lore": [
           "Most people meet a Turn the morning after, when the path goes somewhere new. Gunnar meets it in the numbers. He walks the country with stakes and knotted string and a ledger of small tidy figures, re-measuring what everyone else re-remembers, and for years he did it out loud \u2014 sheets posted at the fires, a hamlet warned its ford was going, the shore people told which cliff not to build under. They thanked him and built there anyway, or moved and grumbled, and either way the maps did what maps are for.",
           [
             {
-              "t": "Then his eastern line began coming back wrong in one direction only. Soft ground \u2014 the kind that forgets faster than anyone is forgetting it \u2014 moving year on year, not wandering the way the Drift wanders but travelling, and travelling toward the meadow. "
+              "t": "Then his mountain line began coming back wrong in one direction only. Soft ground \u2014 the kind that forgets faster than anyone is forgetting it \u2014 moving year on year, not wandering the way the Drift wanders but travelling, and travelling toward the meadow. "
             },
             {
               "t": "The Hole Under the Mountain",
@@ -552,7 +552,7 @@
               }
             },
             {
-              "t": " gets her a whole evening every week and believes it is for his east road, which she has duly saved \u2014 forty pages, milestone by milestone. She keeps coming for a different reason. Wendell met Britt once, at a shearing, and he tells it a little differently each time \u2014 the dress, the weather, what Britt called across the pen \u2014 and Bettany sits very still through every version, waiting for the one with something new in it. He knows exactly what he is doing. He spins that morning out a thread a week, because the evenings are what he is really trading for; she pays, and both of them let the price go on being called the road."
+              "t": " gets her a whole evening every week and believes it is for his mountain road, which she has duly saved \u2014 forty pages, milestone by milestone. She keeps coming for a different reason. Wendell met Britt once, at a shearing, and he tells it a little differently each time \u2014 the dress, the weather, what Britt called across the pen \u2014 and Bettany sits very still through every version, waiting for the one with something new in it. He knows exactly what he is doing. He spins that morning out a thread a week, because the evenings are what he is really trading for; she pays, and both of them let the price go on being called the road."
             }
           ]
         ],
@@ -10509,7 +10509,7 @@
       "masked_shadow_creature": {
         "description": "Not a thing that thinned \u2014 a thing that was emptied. What falls when it breaks is a mask, and the masks all match.",
         "lore": [
-          "Everything else out there is running on habit \u2014 a shape walking its round with the details gone, that will only hurt you for standing in the round. Grinmask stops when you stop and starts when you start. It plays. Crackers who work the eastern ground will take any two of anything else before one of these, because the rest defend themselves and this one has intentions, and the intentions did not come from the shape.",
+          "Everything else out there is running on habit \u2014 a shape walking its round with the details gone, that will only hurt you for standing in the round. Grinmask stops when you stop and starts when you start. It plays. Crackers who work the ground under the mountain will take any two of anything else before one of these, because the rest defend themselves and this one has intentions, and the intentions did not come from the shape.",
           [
             {
               "t": "Break it and the dark is simply not there any more \u2014 no struggle, no leaving. What comes down is the mask, and the mask does not thin. "
@@ -11817,7 +11817,7 @@
       "body": [
         [
           {
-            "t": "Walk east from "
+            "t": "Walk out from "
           },
           {
             "t": "the meadow",
@@ -12029,7 +12029,7 @@
       "icon": "lore/icons/hourglass.png",
       "icon_id": "hourglass",
       "category": "chapter",
-      "summary": "Nothing here dies. It thins \u2014 Bright, Faded, Habit, Quiet. You learn the stages the way everyone does: from outside, beside Wendell on the east road, visiting somebody who is no longer home.",
+      "summary": "Nothing here dies. It thins \u2014 Bright, Faded, Habit, Quiet. You learn the stages the way everyone does: from outside, beside Wendell on the mountain road, visiting somebody who is no longer home.",
       "body": [
         "You cannot die in Nangijala. That door is behind you and it does not open twice. The newly woken find this reassuring for about a season.",
         "It does not mean nothing can happen to you. You can be broken \u2014 knocked past the point of holding a shape \u2014 as unpleasant as it sounds, and not an ending. What is left of you goes where the remembering is thickest, in practice the nearest tended fire, and puts itself back together beside it over a few hours. You keep what you were carrying. You lose a little of what you were thinking about. Nobody here treats a fight as final, and everybody knows exactly how far it is to the nearest lit fire.",
@@ -12045,16 +12045,16 @@
             }
           },
           {
-            "t": ", the oldest head at the meadow fire, who pays for his suppers with the east road \u2014 the carts, the inn at the ford, the summer the verge came up in flowers, all from when the road was safe. People trade him a listening for an evening of it and think they are being kind to an old man. Then, when the weather is quiet, Wendell walks that road himself, out past where anybody goes now, to visit somebody."
+            "t": ", the oldest head at the meadow fire, who pays for his suppers with the mountain road \u2014 the carts, the inn at the ford, the summer the verge came up in flowers, all from when the road was safe. People trade him a listening for an evening of it and think they are being kind to an old man. Then, when the weather is quiet, Wendell walks that road himself, out past where anybody goes now, to visit somebody."
           }
         ],
         "Thinning has four stages, called the same four things since anybody started counting: Bright, Faded, Habit, Quiet. None of it hurts. That is the part people find hard to hear.",
-        "Bright is what you are now. You know who you were and you can say it \u2014 your name, your work, the face of somebody you loved, the road home. The one he visits was Bright a long time. She told the east road better than he does; he learned it from her. He does not say what she was to him. Nobody asks twice.",
+        "Bright is what you are now. You know who you were and you can say it \u2014 your name, your work, the face of somebody you loved, the road home. The one he visits was Bright a long time. She told the mountain road better than he does; he learned it from her. He does not say what she was to him. Nobody asks twice.",
         "Then you Fade. The particulars go first, so gently nobody catches them leaving. She knew she had loved people; she could not produce the faces. She knew the road went somewhere, and no longer which way it ran. A Faded person is still entirely present, with less and less to say about it, and it is the stage where saying them back to themselves, out loud, at a fire, still takes. Wendell did that for years. Some evenings it worked, and those were the worst ones, he says, because of what they let him hope.",
-        "Then there is Habit, where it stops being sad and starts being frightening: the person is gone and the behaviour is still running, a shape walking its round with nobody home. She walks the east road now. The same stretch, out and back, at the hour she always walked it. Wendell falls in step beside her. He gives her back her own stories at walking pace, the carts, the ford, the flowering summer, and she does not stop, and he does not stop either, and when the light goes he stands still in the road and lets her walk away from him.",
+        "Then there is Habit, where it stops being sad and starts being frightening: the person is gone and the behaviour is still running, a shape walking its round with nobody home. She walks the mountain road now. The same stretch, out and back, at the hour she always walked it. Wendell falls in step beside her. He gives her back her own stories at walking pace, the carts, the ford, the flowering summer, and she does not stop, and he does not stop either, and when the light goes he stands still in the road and lets her walk away from him.",
         [
           {
-            "t": "Count what the old man is doing before you call it sentiment. A shape at Habit holds only as long as its round holds, and a road nobody speaks of goes soft like everything else. So he sells the east road to the fireside, one listening at a time, keeping it firm under her feet. And he walks beside her so that anybody who comes out that way with a hammer, meaning the quick mercy the trade deals Habit shapes, finds an old man standing in the road first. What the trade does is "
+            "t": "Count what the old man is doing before you call it sentiment. A shape at Habit holds only as long as its round holds, and a road nobody speaks of goes soft like everything else. So he sells the mountain road to the fireside, one listening at a time, keeping it firm under her feet. And he walks beside her so that anybody who comes out that way with a hammer, meaning the quick mercy the trade deals Habit shapes, finds an old man standing in the road first. What the trade does is "
           },
           {
             "t": "the next chapter",
@@ -12067,9 +12067,9 @@
             "t": ". Wendell has read it. He has an opinion about mercy."
           }
         ],
-        "Carry her with you among the wild things, because nearly everything out there is at Habit too. The creatures are not wicked. Some outlasted their occupants, some never had one at all, and either way they come at you for reasons that stopped being reasons long ago \u2014 a round still walked, a bridge still guarded for a keeper whose name went out of the world before it did. Do not hate them. Every one of them is somebody's east road.",
+        "Carry her with you among the wild things, because nearly everything out there is at Habit too. The creatures are not wicked. Some outlasted their occupants, some never had one at all, and either way they come at you for reasons that stopped being reasons long ago \u2014 a round still walked, a bridge still guarded for a keeper whose name went out of the world before it did. Do not hate them. Every one of them is somebody's mountain road.",
         "And at the end, the Quiet. The shape lets go. There is no body and no grave, because there was no death; the thing simply stops being anywhere, and afterwards the place it was seems slightly wider than it should. People who have watched say the worst part is how ordinary it looks. Wendell has watched. The worst part, he says, is that the road will still be there.",
-        "The Quiet is what this world is afraid of \u2014 not the creatures, not the cave, not the winter. Every fire, every rota, every supper an old man buys with a dead road is the same answer to the same question. Nobody says the question out loud. It walks the east road on the quiet evenings, at the pace of an empty shape, an old man keeping up, saying carts, saying ford, saying flowers.",
+        "The Quiet is what this world is afraid of \u2014 not the creatures, not the cave, not the winter. Every fire, every rota, every supper an old man buys with a dead road is the same answer to the same question. Nobody says the question out loud. It walks the mountain road on the quiet evenings, at the pace of an empty shape, an old man keeping up, saying carts, saying ford, saying flowers.",
         "Who is going to remember me, and will they do it out loud."
       ],
       "related": [
@@ -12111,7 +12111,7 @@
         "Everything that thins gets thinner all the way down, and then stops. At the very bottom one thing refuses to go any further, and if the shape is broken open it falls out into the grass. It is about the size of an egg. It is warm.",
         [
           {
-            "t": "This is a soulstone. It is not a soul \u2014 a soul is a whole person, and no person fits in a stone. What is in there is the last piece: one fact, one appetite, one habit of being, pressed down over centuries until it is very nearly a mineral. A thing that spent itself burning leaves a stone that is still, in some stubborn way, about burning. A thing that endured cold leaves a stone that endures it. One kind of creature, one kind of stone, no exceptions \u2014 except near the eastern mountain, where what the broken things leave behind is "
+            "t": "This is a soulstone. It is not a soul \u2014 a soul is a whole person, and no person fits in a stone. What is in there is the last piece: one fact, one appetite, one habit of being, pressed down over centuries until it is very nearly a mineral. A thing that spent itself burning leaves a stone that is still, in some stubborn way, about burning. A thing that endured cold leaves a stone that endures it. One kind of creature, one kind of stone, no exceptions \u2014 except near the mountain, where what the broken things leave behind is "
           },
           {
             "t": "another matter",
@@ -12270,7 +12270,7 @@
             "t": " for his first night beside the meadow fire; she told him the fire is not for sale; he waited until her back was turned and left the coin on the woodpile anyway, because he could not sleep owing. People leave coins here the way the living leave flowers \u2014 on a doorstep that was kind, on the sill of the stone house, beside fires they cannot stay to feed. It is not commerce. It is the habit of squaring things, carried across by people who owe nothing now, and it will not leave them."
           }
         ],
-        "And at one of the eastern fires there is a man who pays Halvard a coin at every visit and buys nothing. In life he and his wife put a coin by every market day, toward a house with a south window. She died first. She never woke here, and he does not know what that means \u2014 nobody does \u2014 so he keeps the only part of the plan still in his power, which is the putting-by. Halvard carries the count in his book, one long column with nothing against it, and once, gently, he tried to hand it all back. Only once."
+        "And at one of the far fires there is a man who pays Halvard a coin at every visit and buys nothing. In life he and his wife put a coin by every market day, toward a house with a south window. She died first. She never woke here, and he does not know what that means \u2014 nobody does \u2014 so he keeps the only part of the plan still in his power, which is the putting-by. Halvard carries the count in his book, one long column with nothing against it, and once, gently, he tried to hand it all back. Only once."
       ],
       "related": [
         {
@@ -12351,7 +12351,7 @@
         "So the question the woken always ask, a year in, at somebody's fire, wearing the face of a person who has spotted what everybody else missed: if the door is open, and it costs nothing, why is anybody still here?",
         [
           {
-            "t": "Walk the country and the answers are standing at their posts. A woman comes to the meadow for every waking because her husband has not fallen yet, and she will not go on ahead of him, and she has waited long enough now that the waiting has begun to replace her. A man on the eastern fells follows, at a distance, a shape gone to Habit that used to be his brother, walking its one faithful empty round; he will not leave a thing that still has his name in its mouth. "
+            "t": "Walk the country and the answers are standing at their posts. A woman comes to the meadow for every waking because her husband has not fallen yet, and she will not go on ahead of him, and she has waited long enough now that the waiting has begun to replace her. A man on the fells under the mountain follows, at a distance, a shape gone to Habit that used to be his brother, walking its one faithful empty round; he will not leave a thing that still has his name in its mouth. "
           },
           {
             "t": "Hearn",
@@ -12453,11 +12453,11 @@
       "category": "chapter",
       "summary": "Eleven masks on one table: one face, all smiling. The hole is new, and the oldest say the worst part is who it must have been. It is hungry, not hateful. One man came back: it asked politely.",
       "body": [
-        "Everything else in this book is the world working as it always has. This chapter is the exception. Read it, and then do not go east.",
-        "There is a cave under the eastern mountain. One mouth, not hidden; every person in Nangijala can tell you roughly where it is. Nobody ever needed a legend to find it. The whole difficulty runs the other way.",
+        "Everything else in this book is the world working as it always has. This chapter is the exception. Read it, and then do not take the mountain road.",
+        "There is a cave under the mountain. One mouth, not hidden; every person in Nangijala can tell you roughly where it is. Nobody ever needed a legend to find it. The whole difficulty runs the other way.",
         [
           {
-            "t": "Near it, things forget faster. That was measured carefully, by people who wanted it to be wrong: ground held for centuries \u2014 in the rota, with a fire on it \u2014 went soft in a season, and then the season became a month. A keeper on the eastern circuit lost the name of her own fire walking toward the mouth and had it back within the hour of walking away, and she was not a woman anyone had known to lose anything. "
+            "t": "Near it, things forget faster. That was measured carefully, by people who wanted it to be wrong: ground held for centuries \u2014 in the rota, with a fire on it \u2014 went soft in a season, and then the season became a month. A keeper on the mountain circuit lost the name of her own fire walking toward the mouth and had it back within the hour of walking away, and she was not a woman anyone had known to lose anything. "
           },
           {
             "t": "Gunnar",
@@ -12467,7 +12467,7 @@
             }
           },
           {
-            "t": ", who maps the Drift, still walks the eastern line every year. He has stopped telling anybody what he measures."
+            "t": ", who maps the Drift, still walks the mountain line every year. He has stopped telling anybody what he measures."
           }
         ],
         [
@@ -12534,7 +12534,7 @@
             }
           },
           {
-            "t": " with her book open \u2014 and all of them got the same three words: it asked politely. He buys rounds he cannot afford for people who are not there to drink them. The others never re-formed at any fire anybody keeps, and nobody who walks the east road at dusk looks closely at the shapes they pass, in case of knowing a walk."
+            "t": " with her book open \u2014 and all of them got the same three words: it asked politely. He buys rounds he cannot afford for people who are not there to drink them. The others never re-formed at any fire anybody keeps, and nobody who walks the mountain road at dusk looks closely at the shapes they pass, in case of knowing a walk."
           }
         ],
         [
@@ -12549,7 +12549,7 @@
             }
           },
           {
-            "t": " had no hole under the eastern mountain. "
+            "t": " had no hole under the mountain. "
           },
           {
             "t": "Wendell",
@@ -12559,7 +12559,7 @@
             }
           },
           {
-            "t": " was already old when the east road was just a road, and for an evening of company he will give you what that was like: carts, he says, and dust, and somebody always singing badly over the hill. He once slept on the open ground above where the mouth is now. Then he stops trading."
+            "t": " was already old when the mountain road was just a road, and for an evening of company he will give you what that was like: carts, he says, and dust, and somebody always singing badly over the hill. He once slept on the open ground above where the mouth is now. Then he stops trading."
           }
         ],
         "The second: count what it takes. Not ground, not meat, not blood \u2014 names. Faces, voices, the thing you were about to say. It wants what people are made of, the way a person wants: one thing, terribly, without being able to stop. Habit does not want like that; weather does not want at all. The oldest finished that thought years ago and have not said it since: the hole was almost certainly somebody. And the worst part, they say, is not what it is now. The worst part is who it must have been then.",
@@ -12586,7 +12586,7 @@
           }
         ],
         "The last fact is the one the tellers insist on. Nothing about it is angry. In the whole record there is no malice \u2014 no vengeance, no spite, nothing done for the sake of the doing. It has never hated anyone. It is hungry. That is all it is, and hunger is what waiting turns into when it stops being able to end.",
-        "Nobody knows what it was waiting for. Do not go east."
+        "Nobody knows what it was waiting for. Do not take the mountain road."
       ],
       "related": [
         {
@@ -12886,7 +12886,7 @@
       "category": "place",
       "summary": "Four rooms and a hall on the meadow, built when the rota needed four rooms. Solveig sleeps in one. The other three are shut, and the table still seats thirty.",
       "body": [
-        "West of the little stone house, across the grass everybody wakes in, there is a second house that is much too big.",
+        "Across the grass everybody wakes in, a little way from the stone house, there is a second house that is much too big.",
         "Four rooms and a hall. It was built when this country had enough keepers to need four rooms, and enough of them coming and going at odd hours that they wanted the doors on different sides. The hall has a table down the middle of it that seats about thirty, and the thirty chairs are still there, because taking chairs out of a room is a decision and nobody has been willing to be the one who made it.",
         "This was the muster of the rota. Keepers slept here between circuits. The ones walking out to the wakings waited here for their turn, and when somebody came back off a circuit carrying names, the names were said at that table so that everyone in the room heard them, which is the entire technology this country runs on. There is a worn place along one edge, about a third of the way down, where somebody sat for a very long time.",
         [

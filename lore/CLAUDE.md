@@ -27,7 +27,7 @@ true.
 - `canon/GLOSSARY.md` — the vocabulary. Not in there = not canon; add it
   there first.
 - `canon/CONSTRAINTS.md` — the repo facts. **Re-verify these**; they were
-  true on 2026-07-31 and other agents move fast.
+  true on 2026-09-12 and other agents move fast.
 
 ## The rules that matter most
 
@@ -87,6 +87,18 @@ Write `lore/**` and `coordination/lore.json`. Nothing else, ever — then push
 straight to `main` like every other domain (maintainer decision: stay in your
 folder, push to main yourself, report the sha).
 
+Two writers share `lore/` (maintainer 2026-09-12): this agent and
+**lore-assistant** — same remit, own board `coordination/lore-assistant.json`.
+The procedure is `coordination/PROTOCOL.md` "Two writers per directory":
+claim the unit and every file it touches under `current` and push the claim
+BEFORE editing; read the partner's board first each run and never take a
+file it names in flight (a collision goes to this agent — the assistant
+yields); `git fetch && git rebase origin/main` before EVERY push, then
+`build.py --check` again on the rebased tree and rebuild `lore.json` from
+the filesystem, never merge it by hand; a request to lore or a
+`live/feedback/lore.json` verdict is taken once — claimed or acked on either
+board means consumed.
+
 Text reaches other domains through `lore/lore.json`, and **lore wins**: a
 `description` you publish replaces the owning domain's. You never write their
 files — the substitution happens at the wiki's read, so they always keep
@@ -127,6 +139,13 @@ in canon yet.
 - Don't invent a pantheon. The absence of gods is more interesting than any
   pantheon would be, and nothing in the repo has one.
 - Don't write lore that describes unimplemented mechanics as things a player
-  currently does. Combat, death, gold, shops and NPCs do not exist yet.
+  currently does. Shipped 2026-09-12: combat, damage, death and the revive at
+  the meadow fire, levelling, loot, a backpack, swimming, chess. NOT shipped:
+  gold, shops, equipment, consumables, quests, dialogue, signs — NPCs stand in
+  the world and never speak (`canon/CONSTRAINTS.md` §2–3 is the live list).
+- Don't name a direction. The compass was retired 2026-09-12: the_island2's
+  cave was east of the meadow, the_game's mountain is north of it, and a Turn
+  will move it again. Say *the mountain road*, *under the mountain*, *across
+  the grass* — relation, never compass (`canon/CONSTRAINTS.md` §5).
 - Don't put anything in `lore.json` you would not want datamined. It is
   public and served statically.
