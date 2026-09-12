@@ -33,6 +33,8 @@ import {
   makeSideBlocked,
   unstickFromSolids,
   autoJumpWanted,
+  hopIntoWall,
+  type HopMemo,
   steerAssist,
   monsterDodge,
   type MonsterDodgeState,
@@ -3684,6 +3686,8 @@ export class WorldScene extends Phaser.Scene {
   private jumpUntil = 0;
   private jumpReadyAt = 0;
   private jumpQueued = false;
+  /** The hop into a wall beside the run, while it climbs (shared hopIntoWall). */
+  private hopMemo: HopMemo = { hop: null };
   private deferredAnimsKicked = false; // action-state frames background-load once, after join
   private selfDead = false; // mirror of my own Player.dead (freezes input sending)
   /** Deferred-batch bookkeeping for MY OWN character's clips — see animReady. */
@@ -13539,6 +13543,17 @@ export class WorldScene extends Phaser.Scene {
         ay = led.ay;
       }
     }
+    // AUTO-JUMP, AND THE HOP INTO THE WALL — after the lean, so the finger's
+    // real angle is what is probed. A ledge straight ahead fires the jump as
+    // before; a ledge one axis of the run pushes INTO while the other slides
+    // along it fires the jump AND steers the run into the wall until the feet
+    // have climbed (maintainer 2026-09-12: the run he asked for is the angle,
+    // never the wall). The steered vector is predicted and sent like any
+    // deflection; the server sees ordinary input. Direct input only, like
+    // steer assist — the autopilot plans its climbs. May set jumpQueued.
+    const hop = this.maybeAutoJump(ax, ay);
+    ax = hop.ax;
+    ay = hop.ay;
     const sig = `${ax.toFixed(3)},${ay.toFixed(3)},${running ? 1 : 0}`;
     // If the input CHANGED, flush the elapsed window under the PREVIOUS input
     // first. Otherwise a quick tap gets re-attributed to the new vector (e.g.
@@ -13547,9 +13562,6 @@ export class WorldScene extends Phaser.Scene {
     this.lastInput = { ax, ay, running };
     this.lastSent = sig;
     this.sendAccum += dt;
-    // Auto-hop a 1-level ledge you walk into (a wall a jump COULD clear) so the
-    // player doesn't have to tap Space at every step — may set jumpQueued.
-    this.maybeAutoJump(ax, ay);
     // Regular cadence, and jumps flush immediately so the edge isn't delayed.
     if (this.jumpQueued || this.sendAccum >= 1 / INPUT_HZ) this.flushInput();
   }
@@ -14170,19 +14182,27 @@ export class WorldScene extends Phaser.Scene {
   }
 
   /**
-   * If the player is walking INTO a ledge that a jump could climb but a walk
-   * can't — i.e. a 2-level wall (`WALK_CLIMB < step ≤ JUMP_CLIMB`, now 1 < step ≤ 2;
-   * a 1-level step just walks up) — fire the jump automatically. A 3-level+ wall
-   * fails the jump check too, so it's left alone; solid props (trees/boulders) are
-   * impassable at any climb, so they never auto-jump either. `tryJump` still gates
-   * on grounded+cooldown.
+   * Auto-jump: a ledge a jump could climb but a walk can't (`WALK_CLIMB < step
+   * ≤ JUMP_CLIMB`, now 1 < step ≤ 2; a 1-level step just walks up) fires the
+   * jump automatically; a 3-level+ wall fails the jump check too and solid
+   * props are impassable at any climb, so neither ever auto-jumps. Straight
+   * ahead or in a concave corner the run itself climbs; a ledge BESIDE the run
+   * (any push at least HOP_INTO_MIN into it) is climbed by steering the run
+   * into the wall for as long as the climb takes — shared `hopIntoWall`,
+   * headless-tested in server/test/hop.test.ts. Returns the input to walk this
+   * frame. `tryJump` still gates on grounded+cooldown.
    */
-  private maybeAutoJump(ax: number, ay: number) {
-    if (ax === 0 && ay === 0) return;
-    const now = this.time.now;
-    if (now < this.jumpUntil || now < this.jumpReadyAt) return; // already airborne / cooling down
+  private maybeAutoJump(ax: number, ay: number): { ax: number; ay: number } {
     const me = this.room ? this.avatars.get(this.myId) : undefined;
-    if (me && this.wouldAutoJump(me.fx, me.fy, ax, ay, me.surfLevel)) this.tryJump();
+    if (!me || !this.terrain) {
+      this.hopMemo.hop = null;
+      return { ax, ay };
+    }
+    const now = this.time.now;
+    const canJump = now >= this.jumpUntil && now >= this.jumpReadyAt; // grounded and off cooldown
+    const r = hopIntoWall(this.terrain, me.fx, me.fy, ax, ay, me.surfLevel, now, canJump, this.hopMemo, this.keysActive);
+    if (r.jump) this.tryJump();
+    return { ax: r.ax, ay: r.ay };
   }
 
   /** The terrain predicate behind auto-jump: from world (fromX,fromY), moving

@@ -2374,6 +2374,156 @@ export function autoJumpWanted(
   return !canEnter(grid, x, y, tx, ty, walk) && canEnter(grid, x, y, tx, ty, jump);
 }
 
+// --- The hop into the wall: auto-jump respects the run's angle ---------------
+// Maintainer 2026-09-12: "When running using the thumb stick you might run in a
+// slightly different direction than the usual 8-dirs. Let's say you run against
+// a 1 level hill this way. Today even if you have a slight angle into the wall
+// the player/character will never jump up the hill. I want it so the direction
+// the player wants (using the thumb stick) will be respected and the player has
+// to jump up to the next platform in order to maintain that angle. The player
+// can't keep running along the wall forever (that is not the direction the user
+// input)."
+//
+// WHY IT NEVER JUMPED: `autoJumpWanted` probes ONE point, PLAYER_RADIUS+3 out
+// along the DOMINANT axis of the push. A run leaned a little into a wall beside
+// it reaches the wall line only by the MINOR component — at 10 degrees the probe
+// is 2.6 wu toward a wall 12 wu away — so it lands on the player's own cell, the
+// refused axis slides, and the free one runs the body along the wall for as
+// long as the finger holds. `autoJumpProbe` keeps that probe (a ledge straight
+// ahead, a concave corner) and adds one per AXIS: any component of the push at
+// least HOP_INTO_MIN into a wall a jump would clear is a jump. Such a ledge is
+// LATERAL — the hop must move INTO the wall to climb it, and the finger's angle
+// alone would take several hops (the feet rest PLAYER_RADIUS from the line and
+// the airborne window moves them `component × speed × 0.6 × 0.5 s` per hop:
+// 5 wu at 10 degrees running, 12 needed). So `hopIntoWall` steers the run into
+// the wall for as long as the climb takes — at most one jump window, and only
+// while the finger still pushes into that wall — then hands the angle back.
+// The client predicts and sends the steered vector like any deflection; the
+// server sees ordinary input and a jump it validates as always. Direct input
+// only: the autopilot plans its climbs (cardinal jump edges) and keeps the
+// dominant probe.
+
+/** The dead band: a push must lean at least this much (unit component, ~3
+ *  degrees) into a wall before the wall counts as wanted, so finger jitter on
+ *  a run held parallel to a ledge does not hop it. */
+export const HOP_INTO_MIN = 0.05;
+
+export interface AutoJumpProbe {
+  /** Fire the jump now. */
+  jump: boolean;
+  /** The ledge is BESIDE the run: one axis of the push meets it while the other
+   *  slides along it, so the hop has to be steered into it. */
+  lateral: boolean;
+  /** WORLD direction the hop climbs in — the push itself unless lateral. */
+  nx: number;
+  ny: number;
+}
+
+const NO_JUMP: AutoJumpProbe = { jump: false, lateral: false, nx: 0, ny: 0 };
+
+/** `autoJumpWanted` plus the per-axis probes. `lateral` false keeps exactly the
+ *  dominant-axis rule (the autopilot). */
+export function autoJumpProbe(
+  grid: TerrainGrid,
+  x: number,
+  y: number,
+  ux: number,
+  uy: number,
+  elev?: number,
+  lateral = true,
+): AutoJumpProbe {
+  const len = Math.hypot(ux, uy);
+  if (len < 1e-6) return NO_JUMP;
+  ux /= len;
+  uy /= len;
+  if (autoJumpWanted(grid, x, y, ux, uy, elev)) return { jump: true, lateral: false, nx: ux, ny: uy };
+  if (!lateral) return NO_JUMP;
+  const walk = { maxClimb: WALK_CLIMB, canSwim: true };
+  const jump = { maxClimb: JUMP_CLIMB, canSwim: true };
+  const reach = PLAYER_RADIUS + 3;
+  const ledge = (tx: number, ty: number) =>
+    elev !== undefined
+      ? !canEnterElev(grid, elev, x, y, tx, ty, walk).ok && canEnterElev(grid, elev, x, y, tx, ty, jump).ok
+      : !canEnter(grid, x, y, tx, ty, walk) && canEnter(grid, x, y, tx, ty, jump);
+  // The larger component first: it is the wall the run is more nearly facing.
+  const axes: [number, number][] = Math.abs(ux) >= Math.abs(uy) ? [[ux, 0], [0, uy]] : [[0, uy], [ux, 0]];
+  for (const [cx, cy] of axes) {
+    if (Math.abs(cx + cy) < HOP_INTO_MIN) continue;
+    const sx = Math.sign(cx);
+    const sy = Math.sign(cy);
+    if (ledge(x + sx * reach, y + sy * reach)) return { jump: true, lateral: true, nx: sx, ny: sy };
+  }
+  return NO_JUMP;
+}
+
+/** The SCREEN input that runs exactly along a WORLD axis: the diagonal key
+ *  pair the grid-axis lock in `screenToWorldVector` snaps onto that axis
+ *  (down-right = +x, down-left = +y). Exact key vectors, so the lock applies. */
+export function worldAxisToScreenInput(nx: number, ny: number): { ax: number; ay: number } {
+  if (Math.abs(nx) >= Math.abs(ny)) {
+    const s = Math.sign(nx) || 1;
+    return { ax: s, ay: s };
+  }
+  const s = Math.sign(ny) || 1;
+  return { ax: -s, ay: s };
+}
+
+/** A hop in progress: the wall's inward WORLD normal, the screen input that
+ *  walks into it, the level the feet left, and when the jump window ends. */
+export interface HopState {
+  nx: number;
+  ny: number;
+  ax: number;
+  ay: number;
+  fromElev: number;
+  until: number;
+}
+
+/** Caller-owned; `hopIntoWall` is pure. */
+export interface HopMemo {
+  hop: HopState | null;
+}
+
+/** One frame of auto-jump with the hop into the wall. `ax,ay` is the SCREEN
+ *  input the frame would otherwise walk (leaned, deflected, whatever came
+ *  before); the answer is the input to walk AND send, plus whether to fire a
+ *  jump now. `canJump` is the caller's grounded-and-off-cooldown gate. A hop
+ *  in `memo` keeps steering until the feet have climbed (`elev` rose above
+ *  the level they left), the window is over, or the finger no longer pushes
+ *  into that wall — whichever is first. */
+export function hopIntoWall(
+  grid: TerrainGrid,
+  x: number,
+  y: number,
+  ax: number,
+  ay: number,
+  elev: number | undefined,
+  nowMs: number,
+  canJump: boolean,
+  memo: HopMemo,
+  lateral = true,
+): { ax: number; ay: number; jump: boolean } {
+  const h = memo.hop;
+  if (h) {
+    // The same dead band that armed it: a push let go to parallel leaves a
+    // 1e-17 residue into the wall, which is not a push.
+    const w = screenToWorldVector(ax, ay);
+    const wl = Math.hypot(w.x, w.y);
+    const pushing = wl > 1e-9 && (w.x * h.nx + w.y * h.ny) / wl >= HOP_INTO_MIN;
+    const climbed = elev !== undefined && elev > h.fromElev + 0.5;
+    if (nowMs >= h.until || climbed || !pushing) memo.hop = null;
+    else return { ax: h.ax, ay: h.ay, jump: false };
+  }
+  if (!canJump || (ax === 0 && ay === 0)) return { ax, ay, jump: false };
+  const w = screenToWorldVector(ax, ay);
+  const p = autoJumpProbe(grid, x, y, w.x, w.y, elev, lateral);
+  if (!p.jump) return { ax, ay, jump: false };
+  if (!p.lateral) return { ax, ay, jump: true };
+  const s = worldAxisToScreenInput(p.nx, p.ny);
+  memo.hop = { nx: p.nx, ny: p.ny, ax: s.ax, ay: s.ay, fromElev: elev ?? 0, until: nowMs + JUMP_MS };
+  return { ax: s.ax, ay: s.ay, jump: true };
+}
+
 // --- Steer assist: slip around a solid prop's corner on direct input ---------
 // Running with WASD / the analog stick into a SOLID OBJECT dead-stops the
 // player even when they obviously meant to pass beside it (the wall-slide

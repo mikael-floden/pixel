@@ -318,12 +318,41 @@ Server-authoritative movement, decks, collision, steer assist, fall damage, tap/
     words, continuity across every sector edge, the diagonal anchored on the
     grid axis, the lock left alone by a leaned vector, the clamp, and unit
     magnitude.
-- **Auto-jump**: walking INTO a 1-level wall auto-fires the jump
-  (`maybeAutoJump`/`wouldAutoJump` from `predictAndSend`). Rule: exactly
-  `!canEnter(walk) && canEnter(jump)` probed a leading-edge ahead — 2-level+
-  walls and solid props are left alone; flat ground never fires. Client-only
-  (queues the same jump input the server validates); `tryJump` still gates on
-  grounded+cooldown. Probe: `__ml.autoJumpAt(x,y,ax,ay)`.
+- **Auto-jump**: walking INTO a wall a jump clears auto-fires the jump
+  (`maybeAutoJump` from `predictAndSend`, after the stick's lean). Rule:
+  exactly `!canEnter(walk) && canEnter(jump)` — taller walls and solid props
+  are left alone; flat ground never fires. Client-only (queues the same jump
+  input the server validates); `tryJump` still gates on grounded+cooldown.
+  Probe: `__ml.autoJumpAt(x,y,ax,ay)`.
+  - **THE HOP INTO THE WALL** (maintainer 2026-09-12: "even if you have a
+    slight angle into the wall the player/character will never jump up the
+    hill. I want it so the direction the player wants (using the thumb stick)
+    will be respected and the player has to jump up to the next platform in
+    order to maintain that angle. The player can't keep running along the
+    wall forever"). `autoJumpWanted` probes ONE point PLAYER_RADIUS+3 out
+    along the push's DOMINANT axis, so a run leaned into a wall BESIDE it
+    reached the wall line only by its minor component (2.6 wu at 10 degrees,
+    12 needed): the refused axis slid, the free one ran the body along the
+    wall for as long as the finger held. `autoJumpProbe` keeps that probe and
+    adds one per AXIS — any component at least `HOP_INTO_MIN` (0.05, ~3
+    degrees: finger jitter on a run held parallel is not a lean) into a
+    jumpable wall is a jump, and a LATERAL one: the airborne window moves the
+    feet only `component × speed × 0.6 × 0.5 s` toward the wall (5 wu at 10
+    degrees running, 12 needed), so the angle alone would take a series of
+    hops along the wall. `hopIntoWall` (shared, pure; the memo is the
+    caller's) steers the run INTO the wall — `worldAxisToScreenInput`, the
+    diagonal key pair the grid-axis lock snaps onto that world axis, at the
+    diagonal press's own pace — until the feet have climbed, the window is
+    over, or the push into that wall drops below the dead band, then hands
+    the angle back; the steered vector is predicted and sent like any
+    deflection, the server sees ordinary input. Direct input only (keys, the
+    stick — `keysActive`); the autopilot plans cardinal jump edges and keeps
+    the dominant probe (`lateral` false). Measured on the real tick
+    (`server/test/hop.test.ts`, the same stepMovement/makeBlockedElev/
+    resolveElevAt under the server's jump semantics): a 6-degree lean running
+    climbs in ONE hop, at 117 ms, steered 133 ms, and is 471 wu
+    on along its angle at 3 s; the old rule is still on the low ground,
+    pressed to the wall, 484 wu down it.
 - **Collision probes** (`stepMovement`): per axis, the forward CENTRE probe
   applies the full rule (`makeBlocked`); the two LATERAL corner probes
   (±`PLAYER_RADIUS*0.75`) apply `makeSideBlocked` (solids only) and are STRICT

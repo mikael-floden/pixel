@@ -181,6 +181,10 @@ secrets; push to `main`, rebase on reject, no PRs unless asked; doc law.
   0.85 IS HIS), the grid-axis lock locks EXACT diagonals only, the facing
   follows the run, and the bearing is read additively off games-ui's stick
   (`stickdir.ts`).
+- Auto-jump fires on ANY push at least `HOP_INTO_MIN` into a jumpable wall,
+  and a wall BESIDE the run is climbed by steering the hop into it
+  (`hopIntoWall`): a run never slides along a ledge it leans into
+  (maintainer 2026-09-12; `docs/movement.md`, the hop into the wall).
 - Never-backwards is a rule, not an absolute: `walkHeading` watches progress
   along the ask and after `STUCK_ESCALATE_MS` (1.5 s) without any commits to
   a planned escape route past the no-retreat rule and the hold (rule 0).
