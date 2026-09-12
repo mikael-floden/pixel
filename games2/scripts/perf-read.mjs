@@ -1,4 +1,4 @@
-// READ A PERF RUN: node scripts/perf-read.mjs [--last N] [--run <runId>] [--build <sha>] [--occ depth|sprites] [--diff <A> <B>]
+// READ A PERF RUN: node scripts/perf-read.mjs [--last N] [--run <runId>] [--build <sha>] [--diff <shaA> <shaB>]
 //
 // live/telemetry/perf.json holds the last 40 windows the beacon posted from
 // his phone. This prints them as a story instead of a JSON dump: one line per
@@ -7,9 +7,7 @@
 // benchmark, the GPU frame time when the browser lent its timer, heap growth,
 // textures added, long tasks, zone hops), then the union of the long-frame
 // census. `--diff A B` sets two builds' window medians side by side, which is
-// the question every optimisation task starts with; A and B are build shas
-// or the renderer names `depth` / `sprites` (the render retake's A/B — every
-// window carries `run.occ`, the renderer it ran on). Fields older windows do
+// the question every optimisation task starts with. Fields older windows do
 // not carry print as "-": a "-" is "not measured", never 0.
 import { readFileSync } from "node:fs";
 import { join, dirname } from "node:path";
@@ -24,7 +22,6 @@ const opt = (k, n = 1) => { const i = args.indexOf(k); return i < 0 ? null : n =
 const last = Number(opt("--last") ?? 40);
 const runId = opt("--run");
 const build = opt("--build");
-const occ = opt("--occ");
 const diff = opt("--diff", 2);
 
 const f = (v, d = 1) => (typeof v === "number" ? v.toFixed(d) : "-");
@@ -35,13 +32,11 @@ const median = (xs) => { const s = xs.filter((x) => typeof x === "number").sort(
 let rows = all;
 if (runId) rows = rows.filter((r) => r.run?.runId === runId);
 if (build) rows = rows.filter((r) => (r.build ?? "").startsWith(build));
-if (occ) rows = rows.filter((r) => r.run?.occ === occ);
 rows = rows.slice(-last);
 
 if (diff) {
   const [a, b] = diff;
-  // A side is a build sha prefix, or a renderer name (run.occ).
-  const pick = (k) => (k === "depth" || k === "sprites" ? all.filter((r) => r.run?.occ === k) : all.filter((r) => (r.build ?? "").startsWith(k)));
+  const pick = (sha) => all.filter((r) => (r.build ?? "").startsWith(sha));
   const A = pick(a), B = pick(b);
   console.log(`build ${short(a)}: ${A.length} windows   build ${short(b)}: ${B.length} windows   (medians over windows)`);
   const metrics = [
@@ -65,13 +60,13 @@ if (diff) {
 }
 
 console.log(`${rows.length} windows (file updated ${doc.updated_at})`);
-console.log(["when", "build", "rend", "run/win", "where", "s", "do", "p50", "p90", "p99", "max", ">50", "Hz", "top sections (ms/frame)", "rtt50/90", "pHz", "cpu", "gpu50", "heap/s", "tex", "long", "hops"].join(" | "));
+console.log(["when", "build", "run/win", "where", "s", "do", "p50", "p90", "p99", "max", ">50", "Hz", "top sections (ms/frame)", "rtt50/90", "pHz", "cpu", "gpu50", "heap/s", "tex", "long", "hops"].join(" | "));
 for (const r of rows) {
   const fr = r.frames ?? {};
   const over50 = fr.le100 !== undefined ? fr.le100 + fr.gt100 : "-";
   const doing = r.run ? `${Math.round((r.run.moveFrac ?? 0) * 100)}%mv ${f(r.run.travelCells, 0)}c` : "-";
   console.log([
-    (r.at ?? "").slice(5, 16), short(r.build), r.run?.occ ?? "-", r.run ? `${r.run.runId}/${r.run.winIdx}${r.run.why ? ":" + r.run.why : ""}` : "-", r.where ?? "-", f(r.secs, 0), doing,
+    (r.at ?? "").slice(5, 16), short(r.build), r.run ? `${r.run.runId}/${r.run.winIdx}${r.run.why ? ":" + r.run.why : ""}` : "-", r.where ?? "-", f(r.secs, 0), doing,
     f(fr.p50), f(fr.p90), f(fr.p99), f(fr.max, 0), over50, fr.rafHz ?? "-", top(r.sections),
     r.rtt ? `${f(r.rtt.p50, 0)}/${f(r.rtt.p90, 0)}` : "-", r.rtt ? f(r.rtt.patchHz, 0) : "-", r.cpu ? f(r.cpu.scoreMs) : "-",
     r.gpu ? (r.gpu.avail ? f(r.gpu.p50) : "n/a") : "-", r.heap ? f(r.heap.grewMbPerSec, 0) : "-", r.counts?.texturesAdded ?? "-", r.counts?.longN ?? "-", r.run ? r.run.hops : "-",

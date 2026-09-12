@@ -2,17 +2,15 @@
 
 The ground render texture (scroll, slices, cell repaints, prefetch, compose budget), the pooled occluders, the capture pool, and how the perf beacon is read. Moved verbatim out of `games2/CLAUDE.md` (2026-09-09), which keeps the law and points here; the measurements, traps and rejected approaches live in this file. Rewrite in place under the root doc law.
 
-- **THE OCCLUDER SET GOES AWAY UNDER `?occ=depth`** (`docs/depth-sort.md`,
-  the render retake, 2026-09-12): the last beacon run (bf040ae1) put 95 of
-  140 long frames on `rebuildOccluders` — `tiles3Occluders` 80% of a 50-60 ms
-  rebuild every 96 px of camera travel — and the render section at 6.7 ms
-  over 7.6k display objects. The depth path issues NO occluder images and
-  tests bodies per pixel in their own shader; the pooling below is the
-  sprite path's, kept while it is the default. A/B on his phone: the
-  Settings "renderer" button flips the path in the running game and every
-  beacon window carries `run.occ` (`depth` / `sprites`), so one perf run
-  with a flip in the middle is the experiment: `scripts/perf-read.mjs
-  --diff depth sprites` (or `--occ depth`) reads it.
+- **REJECTED 2026-09-12: replacing the occluder sprites with a per-pixel
+  depth test** (the render retake, `docs/depth-sort.md`) — GPU-bound on his
+  phone, 4.5x the lag frames. The CPU bursts the beacon's worst frames name
+  on the sprite path are the targets instead: `rebuildOccluders` 133 ms
+  (walks all ~2,700 window cells every 96 px — make it incremental), the
+  full-paint-per-drain loop (14-30 full paints per window with 0 textures
+  landing, 46-77 ms each — the guard below is NOT holding on his phone),
+  `repaintCells` 112 ms and transition composing 105 ms in one frame (the
+  2 ms budget bypassed), an `avatarLoop` spike of 159 ms.
 - **THE OCCLUDER SET IS POOLED, NOT REBUILT** (`occImage`, `destroyBatch`,
   2026-09-02). A rebuild used to destroy every image and create every image,
   and 90-95% of what it created was bit-identical to what it had just

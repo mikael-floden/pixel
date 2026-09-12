@@ -59,29 +59,15 @@ export interface DepthCtx {
   cx1?: number;
 }
 
-export function resolveDepthRule(
-  ctx: DepthCtx,
-  metas: Iterable<OccluderMeta>,
-): { depth: number; coverY: number | undefined; coverTerrain: boolean; coverTop: number } {
+export function resolveDepthRule(ctx: DepthCtx, metas: Iterable<OccluderMeta>): { depth: number; coverY: number | undefined } {
   let depth = ctx.lyFlat + 0.5; // painter y at the flat (unlifted) ground
   let above = -Infinity;
   let below = Infinity;
   let coverY = Infinity;
-  /** Did TERRAIN (a non-solid record) set the cover line? The depth path arms
-   *  its per-pixel test on this alone: a caller covered only by a piece is
-   *  drawn behind that piece by the painter and needs no walk. */
-  let coverTerrain = false;
-  /** The tallest TERRAIN column whose art box overlaps the caller's (levels):
-   *  the depth path's per-pixel walk starts there instead of at the world's
-   *  top level — a body behind a two-level ledge walks two levels, not 24
-   *  (measured on his phone: the full walk on covered scenery cost more than
-   *  the sprites it replaced). 0 when nothing overlaps. */
-  let coverTop = 0;
   const feetY = ctx.ly;
   for (const o of metas) {
     if (o === ctx.self) continue; // never occlude yourself — see the note above
     if (o.x1 < ctx.sx0 || o.x0 > ctx.sx1 || o.y1 < ctx.sy0 || o.y0 > ctx.sy1) continue;
-    if (!o.solid && o.top > coverTop) coverTop = o.top;
     const od = o.drawDepth ?? o.depth; // what it DRAWS at — see drawDepth
     const higher = o.top > ctx.lvl;
     // (a) Wall genuinely between the camera and the feet point.
@@ -182,10 +168,7 @@ export function resolveDepthRule(
       // The DEPTH decision keeps the whole art box — a piece in front must
       // still push this one back — but only something over the caller's OWN
       // COLUMN may set the crop line. See DepthCtx.cx0.
-      if (o.x1 >= (ctx.cx0 ?? ctx.sx0) && o.x0 <= (ctx.cx1 ?? ctx.sx1)) {
-        coverY = Math.min(coverY, o.y0);
-        if (!o.solid) coverTerrain = true;
-      }
+      if (o.x1 >= (ctx.cx0 ?? ctx.sx0) && o.x0 <= (ctx.cx1 ?? ctx.sx1)) coverY = Math.min(coverY, o.y0);
     } else if (
       /* A NON-SOLID COLUMN LIFTS THE CALLER — unless it is HIGHER, NOT
        * STANDABLE AT THE CALLER'S LEVEL, and the caller is not camera-
@@ -249,5 +232,5 @@ export function resolveDepthRule(
    * without cropping (see DepthCtx.cx0) — so this keys on coverY itself.
    * Returning the untouched Infinity would hand consumers an infinite crop
    * line, which reads as "covered" everywhere it is tested against undefined. */
-  return { depth, coverY: coverY < Infinity ? coverY : undefined, coverTerrain, coverTop };
+  return { depth, coverY: coverY < Infinity ? coverY : undefined };
 }

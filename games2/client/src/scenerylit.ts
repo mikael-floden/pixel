@@ -57,8 +57,7 @@
  * With `shade` 0 the fragment is Multi.frag's own maths — the parity switch.
  */
 import Phaser from "phaser";
-import { MAX_SHADER_LIGHTS, type NightLights } from "./nightlight";
-import { terrainHidesGlsl, uploadTerrainUniforms, type TerrainDepthData, type TexWrap as TdTexWrap } from "./terraindepth";
+import { MAX_SHADER_LIGHTS } from "./nightlight";
 import { SHAPE_DEPTH_CELLS, SHAPE_ZW_ATT } from "./scenerylight";
 
 export const SCENERY_LIT_PIPELINE = "scenery-lit";
@@ -78,9 +77,6 @@ export interface SceneryLitShape {
   fc: number;
   fr: number;
   fz: number;
-  /** The depth test's per-piece data (terraindepth.ts), written by the scenery
-   *  rebuild; absent or mode 0 = untested. */
-  td?: TerrainDepthData;
   /** −1 when the art is drawn mirrored (N.x negated), else +1. */
   flip: number;
   /** Per-light LOS occlusion at the axis × the ground AO twin (this frame). */
@@ -112,7 +108,6 @@ attribute vec4 inLocal;  // X (cells, +screen right), Z (levels above the hitbox
 attribute vec4 inOccA;   // per-light LOS occlusion × AO at the axis, lights 0..3
 attribute vec4 inOccB;   // lights 4..7
 attribute vec4 inOccC;   // lights 8..11
-attribute vec4 inTd;     // world x, world y, flat line / lh + 8192 × hTop, depth-test mode + 4 × own cell (terraindepth.ts)
 varying vec2 vUv;
 varying vec4 vTint;
 varying vec4 vMisc;
@@ -120,7 +115,6 @@ varying vec4 vLocal;
 varying vec4 vOccA;
 varying vec4 vOccB;
 varying vec4 vOccC;
-varying vec4 vTd;
 void main () {
   gl_Position = uProjectionMatrix * vec4(inPosUv.xy, 1.0, 1.0);
   vUv = inPosUv.zw;
@@ -130,12 +124,9 @@ void main () {
   vOccA = inOccA;
   vOccB = inOccB;
   vOccC = inOccC;
-  vTd = inTd;
 }`;
 
-/** Built per pipeline, not at module load: the terrain chunk is cut out of the
- *  night shader's source and a bad cut must fail the pipeline, never the app. */
-const FRAG = () => `#define SHADER_NAME SCENERY_LIT_FS
+const FRAG = `#define SHADER_NAME SCENERY_LIT_FS
 #ifdef GL_FRAGMENT_PRECISION_HIGH
 precision highp float;
 #else
@@ -143,7 +134,6 @@ precision mediump float;
 #endif
 uniform sampler2D uMainSampler;
 uniform sampler2D uShapeSampler;
-${terrainHidesGlsl()}
 uniform float uOn;      // 0 = Multi.frag's own maths exactly (flat tint); 1 = volume lighting
 uniform float uDebug;   // 1 = show the normal, 2 = the lit factor alone, 3 = the depth channel
 uniform float uWrap;    // Lambert wrap floor: 0 = hard terminator, 1 = no direction at all
@@ -160,7 +150,6 @@ varying vec4 vLocal;
 varying vec4 vOccA;
 varying vec4 vOccB;
 varying vec4 vOccC;
-varying vec4 vTd;
 const float SQ2I = 0.70710678;
 const float ZWA = ${SHAPE_ZW_ATT.toFixed(3)};
 const float DEPTH = ${SHAPE_DEPTH_CELLS.toFixed(1)};
@@ -182,14 +171,6 @@ void main () {
   vec4 color = texture * texel;
   if (eff == 1.0) color.rgb = mix(texture.rgb, vTint.bgr * vTint.a, texture.a);
   else if (eff == 2.0) color = texel;
-  // THE DEPTH TEST (terraindepth.ts): a piece is a billboard on its tread
-  // level; where nearer terrain resolves, the pixel is not drawn.
-  float tdMode = mod(vTd.w, 4.0);
-  if (tdMode > 0.5 && color.a > 0.002) {
-    float tdTop = floor(vTd.z / 8192.0);
-    float zPx = max(vTd.z - 8192.0 * tdTop - vTd.y / uIsoB.x, vMisc.w);
-    if (terrainHides(vTd.xy, zPx, vMisc.w, floor(vTd.w / 4.0), tdTop)) discard;
-  }
   float flip = vMisc.y;
   if (uOn > 0.5 && eff == 0.0 && abs(flip) > 0.5) {
     vec4 sm = texture2D(uShapeSampler, vUv);
@@ -283,27 +264,18 @@ export class SceneryLitPipeline extends Phaser.Renderer.WebGL.Pipelines.MultiPip
   private relPos = new Float32Array(MAX_SHADER_LIGHTS * 4);
   private relCol = new Float32Array(MAX_SHADER_LIGHTS * 4);
   private curShape: TexWrap | null = null;
-  /** The depth test's source (the night pass) and its four maps this frame;
-   *  `night` null = every quad untested (the terrain uniforms still upload
-   *  once per frame so the shader never reads stale ones). */
-  night: NightLights | null = null;
-  tdEps = 0.01;
-  private tdUnits: TdTexWrap[] = [];
   /** Quads batched through this pipeline this frame (probe). */
   quads = 0;
   /** Of which shaped (a shape map was bound). */
   shapedQuads = 0;
   lightsFed = 0;
-  /** Depth-tested quads this frame and their screen area (the beacon's tdScn). */
-  tdQuads = 0;
-  tdPx = 0;
 
   constructor(game: Phaser.Game) {
     super({
       game,
       name: SCENERY_LIT_PIPELINE,
       vertShader: VERT,
-      fragShader: FRAG(),
+      fragShader: FRAG,
       attributes: [
         { name: "inPosUv", size: 4, type: Phaser.Renderer.WebGL.FLOAT },
         { name: "inTint", size: 4, type: Phaser.Renderer.WebGL.UNSIGNED_BYTE, normalized: true },
@@ -312,8 +284,6 @@ export class SceneryLitPipeline extends Phaser.Renderer.WebGL.Pipelines.MultiPip
         { name: "inOccA", size: 4, type: Phaser.Renderer.WebGL.FLOAT },
         { name: "inOccB", size: 4, type: Phaser.Renderer.WebGL.FLOAT },
         { name: "inOccC", size: 4, type: Phaser.Renderer.WebGL.FLOAT },
-        // Eight attributes: WebGL1 guarantees eight vertex attribute slots.
-        { name: "inTd", size: 4, type: Phaser.Renderer.WebGL.FLOAT },
       ],
     });
   }
@@ -324,11 +294,6 @@ export class SceneryLitPipeline extends Phaser.Renderer.WebGL.Pipelines.MultiPip
     Phaser.Renderer.WebGL.WebGLPipeline.prototype.boot.call(this);
     this.set1i("uMainSampler", 0);
     this.set1i("uShapeSampler", 1);
-    // The terrain maps for the depth test (terraindepth.ts), units 2-5.
-    this.set1i("uHeight", 2);
-    this.set1i("uHeightL", 3);
-    this.set1i("uHBlock", 4);
-    this.set1i("uRoom", 5);
   }
 
   /** Per-frame uniforms, uploaded ONCE per frame (the first sprite that binds
@@ -339,9 +304,6 @@ export class SceneryLitPipeline extends Phaser.Renderer.WebGL.Pipelines.MultiPip
     this.lastUpload = frame;
     this.quads = 0;
     this.shapedQuads = 0;
-    this.tdQuads = 0;
-    this.tdPx = 0;
-    this.tdUnits = uploadTerrainUniforms(this, this.night, this.tdEps);
     const f = this.source?.() ?? null;
     this.set1f("uOn", this.shade);
     this.set1f("uDebug", this.debug);
@@ -396,9 +358,6 @@ export class SceneryLitPipeline extends Phaser.Renderer.WebGL.Pipelines.MultiPip
     if (this.currentBatch && this.currentTexture === texture && this.curShape === shape) return;
     this.createBatch(texture);
     this.addTextureToBatch(shape);
-    const u = this.tdUnits;
-    const white = this.renderer.whiteTexture as TexWrap;
-    for (let i = 0; i < 4; i++) this.addTextureToBatch((u[i] as TexWrap | undefined) ?? white);
     this.curShape = shape;
   }
 
@@ -453,12 +412,6 @@ export class SceneryLitPipeline extends Phaser.Renderer.WebGL.Pipelines.MultiPip
     const fr = shaped ? d!.fr! - this.orgY : 0;
     const fz = shaped ? d!.fz! : 0;
     const O = shaped ? d!.occ! : null;
-    const td = d?.td;
-    // The flat line and the walk's top level share one float: a + 8192 x hTop
-    // (a < 8192 on any shipped world; the ulp at 254k is 0.015 levels).
-    const tdA = td ? td[0] + 8192 * td[5] : 0;
-    // Mode and the piece's own cell share one float: mode + 4 × tdCell.
-    const tdMode = td ? td[3] + 4 * td[4] : 0;
     const F = this.vertexViewF32;
     const U = this.vertexViewU32;
     let o = this.vertexCount * this.currentShader.vertexComponentCount - 1;
@@ -473,23 +426,16 @@ export class SceneryLitPipeline extends Phaser.Renderer.WebGL.Pipelines.MultiPip
       F[++o] = x; F[++o] = y; F[++o] = QU[k]; F[++o] = QV[k];
       U[++o] = QT[k];
       F[++o] = eff; F[++o] = flip; F[++o] = sv; F[++o] = fz;
-      const wx = (x - ex) / sx + scx;
-      const wy = (y - ey) / sy + scy;
-      F[++o] = shaped ? (wx - hbX) * kx : 0;
-      F[++o] = shaped ? (hbY - wy) * kz : 0;
+      F[++o] = shaped ? ((x - ex) / sx + scx - hbX) * kx : 0;
+      F[++o] = shaped ? (hbY - ((y - ey) / sy + scy)) * kz : 0;
       F[++o] = fc; F[++o] = fr;
       if (O) for (let j = 0; j < SCENERY_LIT_OCC; j++) F[++o] = O[j];
       else for (let j = 0; j < SCENERY_LIT_OCC; j++) F[++o] = 1;
-      F[++o] = wx; F[++o] = wy; F[++o] = tdA; F[++o] = tdMode;
     }
     this.vertexCount += 6;
     this.currentBatch!.count = this.vertexCount - this.currentBatch!.start;
     this.quads++;
     if (shaped) this.shapedQuads++;
-    if (td && td[3] > 0) {
-      this.tdQuads++;
-      this.tdPx += Math.abs((x2 - x0) * (y2 - y0));
-    }
     this.onBatch(gameObject ?? undefined);
     return hasFlushed;
   }
