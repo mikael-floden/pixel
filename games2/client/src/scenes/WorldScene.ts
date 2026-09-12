@@ -18872,7 +18872,7 @@ export class WorldScene extends Phaser.Scene {
              * 2026-08-29: "THE PLAYER STILL RENDERS OVER THE WALL WHEN BEHIND
              * THE WALL. THIS WORKED PERFECTLY"). It did: world@2 keeps the top
              * whenever the COLUMN reaches the cull box. Faces still cull. */
-            const dops = tex.opsForDeck(d);
+            const dops = tex.opsForDeck(d).filter((op) => !op.gpu); // the shader test: no raw-file copy (see obop)
             for (let oi = 0; oi < dops.length; oi++) {
               const op = dops[oi];
               const isTop = oi === dops.length - 1;
@@ -19015,7 +19015,13 @@ export class WorldScene extends Phaser.Scene {
             const obop = this.t3Try(`occ boundary ${col},${row}`, () => tex.opsForBoundary(ob), null);
             // `obop` carries the boundary's own absolute paste point (the same
             // one the ground pass blits it at) — never re-derive it here.
-            if (obop) this.occTint(this.occImage(obop.key, obop.x, obop.y, oDepth, col, row), "boundary");
+            // THE SHADER TEST DRAWS NO OCCLUDER COPY OF A BOUNDARY: the copy
+            // would be plate A's raw file (2,012 texels with its wall band, over
+            // the cell in front) where the composed copy is a 924-texel top
+            // face — twice the fill on every raised transition cap, which is a
+            // GPU cost the real compositor would not have. The cap under it
+            // shows plain; the ground under that wears the GPU transition.
+            if (obop && !obop.gpu) this.occTint(this.occImage(obop.key, obop.x, obop.y, oDepth, col, row), "boundary");
           }
           /* AND THE CAP WEARS ITS FADE AND ITS WALL-FOOT BAND, for exactly the
            * reason it wears its transition: the ground pass paints them into
@@ -19044,6 +19050,7 @@ export class WorldScene extends Phaser.Scene {
         if (topL === cell.level)
           for (const d of capDecks)
             for (const op of tex.opsForDeck(d)) {
+              if (op.gpu) continue; // the shader test: no raw-file copy (see obop)
               if (!columnShows(bx, op.y, by + tileSize)) {
                 culled++;
                 st.partial = true;
