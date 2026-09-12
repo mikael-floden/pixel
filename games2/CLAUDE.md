@@ -102,7 +102,9 @@ secrets; push to `main`, rebase on reject, no PRs unless asked; doc law.
   before a monster of it exists, its fight art at the back and raised when a
   fight starts, scenery animations last. Never the scene loader for it —
   every slow frame on his phone carried a texture upload (measured 2026-09-12;
-  monsters mocked = the ceiling).
+  monsters mocked = the ceiling). The queue decodes on a worker and uploads
+  in bands (`artworker.ts`); never `texImage2D` an `<img>` for streamed art —
+  Chrome decodes it again inside the call, 5.8-9.2 ms a strip.
 
 **Depth, occluders, scenery** (`docs/depth-sort.md`, `docs/scenery.md`)
 - ONE body pipeline: `resolveDrawDepth` + `placeBodyShadow` + `syncLitCopy`

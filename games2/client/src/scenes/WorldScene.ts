@@ -1,6 +1,7 @@
 import Phaser from "phaser";
 import { resolveDepthRule } from "../depthrule";
 import { ART_IDLE_SHARE, ArtQueue, setUploadKb, UPLOAD_KB_STEPS } from "../artqueue";
+import { drawFrameInto } from "../framepixels";
 import { renderRes } from "../resolution";
 import { ensureResDial } from "../resdial";
 import { Room, getStateCallbacks } from "colyseus.js";
@@ -1621,7 +1622,17 @@ export class WorldScene extends Phaser.Scene {
    *  goes through it, under the per-frame byte budget. */
   private art: ArtQueue | null = null;
   private artQueue(): ArtQueue {
-    return (this.art ??= new ArtQueue(this.textures));
+    if (!this.art) {
+      this.art = new ArtQueue(this.textures, this.game.renderer);
+      /* THE WORKER MEASURED THE ART BOXES (artworker.ts): seed artBounds so a
+       * landed strip is never decoded a second time on this thread for them.
+       * Sheet frames are numbered as Phaser's parser numbers them; a plain
+       * image's one frame is __BASE — the names `artBounds` keys on. */
+      this.art.onBounds = (key, frames, b, sheet) => {
+        for (let i = 0; i < frames; i++) this.artBoundsCache.set(`${key}#${sheet ? i : "__BASE"}`, { x0: b[i * 4], y0: b[i * 4 + 1], x1: b[i * 4 + 2], y1: b[i * 4 + 3] });
+      };
+    }
+    return this.art;
   }
   /** Kinds whose body / combat strips have been asked of the art queue. */
   private monsterBodyAsked = new Set<string>();
@@ -2324,6 +2335,12 @@ export class WorldScene extends Phaser.Scene {
         artReady: aq.ready,
         artLanded: aq.landed,
         artKbMax: Math.round(aq.frameKbMax),
+        /* THE BANDED UPLOADS (artworker.ts): bands this window, the slowest
+         * band's main-thread ms (the claim under test: a copy, not a decode),
+         * and the worker's state (1 on, 2 failed — back to the <img> path). */
+        artBands: aq.bands,
+        artBandMaxMs: +aq.bandMax.toFixed(2),
+        artWorker: aq.worker,
         /* WHAT THE DRAIN NOW GATES ON: terrain batches landed. Reported beside
          * texGen so a run says which of the two moved. `drains` with texGen
          * climbing and terrainGen flat is the bug this pair was added for. */
@@ -6870,6 +6887,10 @@ export class WorldScene extends Phaser.Scene {
        *  cost); reading resets the step and cell counts. */
       /** THE ART QUEUE, live (artqueue.ts): the dial and what is waiting. */
       art: () => this.artQueue().peek(),
+      /** A banded texture read back against the <img> upload of the same file. */
+      artParity: (key?: string) => (key ? this.artQueue().parity(key) : this.artQueue().parityAll(6)),
+      /** A banded frame's alpha through the readback path against the <img> path. */
+      artAlpha: (key: string, frame: number | string = 0) => this.artQueue().alphaParity(key, frame),
       occInc: (on?: boolean) => {
         if (on !== undefined) {
           this.occIncOn = on;
@@ -8500,11 +8521,9 @@ export class WorldScene extends Phaser.Scene {
     cnv.height = h;
     const ctx = cnv.getContext("2d", { willReadFrequently: true });
     if (!ctx) return null;
-    ctx.drawImage(
-      frame.source.image as CanvasImageSource,
-      frame.cutX, frame.cutY, fw, fh,
-      RING_PAD, RING_PAD, fw, fh,
-    );
+    // An element is drawn; a banded texture (artworker.ts) is read back —
+    // only the alpha is read below, which the readback keeps exact.
+    if (!drawFrameInto(this.game.renderer, ctx, frame, RING_PAD, RING_PAD)) return null;
     const a = ctx.getImageData(0, 0, w, h).data;
     // Solid = the art's own opacity threshold; soft anti-alias fringes on
     // generated strips stay outside the border.
@@ -14246,13 +14265,12 @@ export class WorldScene extends Phaser.Scene {
     if (b) return b;
     b = { x0: 0, y0: 0, x1: frame.cutWidth, y1: frame.cutHeight }; // fallback: whole frame
     try {
-      const src = frame.source.image as CanvasImageSource;
       const cnv = document.createElement("canvas");
       cnv.width = frame.cutWidth;
       cnv.height = frame.cutHeight;
       const ctx = cnv.getContext("2d", { willReadFrequently: true });
-      if (src && ctx) {
-        ctx.drawImage(src, frame.cutX, frame.cutY, frame.cutWidth, frame.cutHeight, 0, 0, cnv.width, cnv.height);
+      // An element is drawn; a banded texture (artworker.ts) is read back.
+      if (ctx && drawFrameInto(this.game.renderer, ctx, frame, 0, 0)) {
         const d = ctx.getImageData(0, 0, cnv.width, cnv.height).data;
         let x0 = cnv.width, y0 = cnv.height, x1 = -1, y1 = -1;
         for (let y = 0; y < cnv.height; y++)
@@ -14285,13 +14303,11 @@ export class WorldScene extends Phaser.Scene {
     const w = frame.cutWidth, h = frame.cutHeight;
     const a = new Uint8Array(w * h);
     try {
-      const src = frame.source.image as CanvasImageSource;
       const cnv = document.createElement("canvas");
       cnv.width = w;
       cnv.height = h;
       const ctx = cnv.getContext("2d", { willReadFrequently: true });
-      if (src && ctx) {
-        ctx.drawImage(src, frame.cutX, frame.cutY, w, h, 0, 0, w, h);
+      if (ctx && drawFrameInto(this.game.renderer, ctx, frame, 0, 0)) {
         const d = ctx.getImageData(0, 0, w, h).data;
         for (let i = 0; i < w * h; i++) a[i] = d[i * 4 + 3];
       }
@@ -20284,10 +20300,15 @@ export class WorldScene extends Phaser.Scene {
     // event directly, it runs before that.
     const webgl = this.game.renderer.type === Phaser.WEBGL ? this.game.renderer : null;
     webgl?.on(Phaser.Renderer.Events.RESTORE_WEBGL, repaint);
+    // The art queue's banded textures have no source for Phaser to re-upload
+    // from; the queue refills them itself, after Phaser's blank re-creation.
+    const refill = () => this.art?.onContextRestored();
+    webgl?.on(Phaser.Renderer.Events.RESTORE_WEBGL, refill);
     this.events.once("shutdown", () => {
       document.removeEventListener("visibilitychange", onVisible);
       window.removeEventListener("pageshow", onPageShow);
       webgl?.off(Phaser.Renderer.Events.RESTORE_WEBGL, repaint);
+      webgl?.off(Phaser.Renderer.Events.RESTORE_WEBGL, refill);
       this.ctxRestoreHooked = false;
     });
   }

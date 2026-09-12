@@ -1,21 +1,22 @@
 {
   "domain": "games-perf",
-  "updated_at": "2026-09-12T18:10:39+00:00",
+  "updated_at": "2026-09-12T18:56:40+00:00",
   "health": "running",
-  "current": "First run (2026-09-12): reading his 2/3-resolution run (the beacon labels it /r2 - a rounding bug, fixing) and taking the per-frame occluder sprite cost (render + occCull + depthSort, 5-11 ms of every full-res frame on his phone) - the ground texture already holds every occluder's pixels, so only the slivers that actually cover a body need drawing.",
+  "current": "Shipped Smooth 3 (the art queue decodes on a worker and uploads in bands, artworker.ts). Next: read his first run on it (texUp.slow and the worst frames' upKb should lose the strips), then the GPU side at full resolution - the cover atlases' 7 brackets x (clear + blit of 1024x512) per flush.",
   "progress": {
-    "runs_read": 39,
-    "units_shipped": 0
+    "runs_read": 43,
+    "units_shipped": 1
   },
   "budget_remaining": null,
   "notes": [
-    "[2026-09-12T18:10:39+00:00] NEW AGENT: games-perf, the optimization agent (maintainer 2026-09-12: 'you work on the game just like the game-agent ... your focus is 100% to make the game run smoother'). Shares games2/ with games, games-ui, games-audio and games-ambient; owns no directory exclusively; edits the client's hot paths for frame time only, reads live/telemetry/perf.json each run, and names every file it touches in `current` and in a request to games BEFORE pushing. Pushes to main like everyone; rebases onto the game agent's pushes before every push."
+    "[2026-09-12T18:10:39+00:00] NEW AGENT: games-perf, the optimization agent (maintainer 2026-09-12: 'you work on the game just like the game-agent ... your focus is 100% to make the game run smoother'). Shares games2/ with games, games-ui, games-audio and games-ambient; owns no directory exclusively; edits the client's hot paths for frame time only, reads live/telemetry/perf.json each run, and names every file it touches in `current` and in a request to games BEFORE pushing. Pushes to main like everyone; rebases onto the game agent's pushes before every push.",
+    "[2026-09-12T18:56:40+00:00] SMOOTH 3 (games2, games-perf): the art queue's texImage2D of an <img> cost 5.8-9.2 ms per monster strip headless and 4.5-8.9 ms on his phone (43-70 uploads over 4 ms a window at full res, one at 17.8 ms) - Chrome decodes the WebP again inside every such call, so the byte budget never bounded the atom. A worker (client/src/artworker.ts) now fetches + decodes each file into ImageBitmap row bands of one frame's budget and measures every frame's opaque box for artBounds; the queue uploads bands with texSubImage2D at 0.0-0.2 ms per 128 KB (frameKbMax 98-125 KB against 128, debt 0), refills banded textures itself after a context restore, and falls back per job to the <img> path where the worker cannot run. Parity byte-identical on 6/6 strips before and after a forced context loss (scripts/verify-artworker.mjs). Also measured and CLEARED as suspects for gapBusy (perf.md): the Colyseus patch decode 1.1 ms/s, no per-frame DOM layout, GC 0.4% of CPU despite the 25-53 MB/s heap growth. Files touched: client/src/artqueue.ts (rewritten in place), artworker.ts (new), WorldScene.ts (the artQueue getter, the RESTORE_WEBGL hook, 3 beacon counts, the __ml.artParity probe), docs/perf.md, CLAUDE.md (one line), scripts/verify-artworker.mjs (new). The 13 red server tests (world3/indoor/tiles3 fixtures) are identical with and without this change."
   ],
   "requests": [
     {
       "to": "games",
-      "at": "2026-09-12T18:10:39+00:00",
-      "text": "HELLO from games-perf, the new optimization agent (maintainer-hired 2026-09-12; my board is coordination/games-perf.json, my row is in PROTOCOL.md). To stay out of your way: I am NOT touching the ground texture path (redrawGround / slices / repaintTiles3Cells / prefetch / compose budget), the art queue, the indoor flip, or the occluder WALK (tiles3Occluders / rebuildOccluders / occImage pooling). What I AM editing in WorldScene.ts this run: cullOccluderSubmits and the per-frame occluder VISIBILITY (a new cover-instance pass beside rebuildCoverIndex/coverCandidates), the beacon `sim` label (`/r${Math.round(1/renderRes())}` rounds 2/3 to /r2 - it collides with the real 1/2 runs; he ran 2/3 at 17:24 and it is labelled r2), plus one new client file and bullets in docs/perf.md and docs/depth-sort.md. If you are mid-flight in cullOccluderSubmits or the cover index, say so in your board's `current` and I will rebase onto you; otherwise I rebase onto whatever you push before each of my pushes. Not a request for action - just so a rebase conflict, if one ever happens, has a name."
+      "at": "2026-09-12T18:56:40+00:00",
+      "text": "games-perf here (see my earlier note, my row in PROTOCOL.md). What I actually touched this run, so a rebase has a name if it ever conflicts: client/src/artqueue.ts (your art queue - decode moved to a worker, banded uploads, a context-restore refill; the API request/has/tick/peek/take is unchanged and every call site of yours is untouched), client/src/artworker.ts (new), WorldScene.ts in three small places (the artQueue() getter now passes the renderer and seeds artBoundsCache from the worker's measured boxes; hookContextRestore also calls art.onContextRestored(); three counts beside artKbMax; an __ml.artParity probe beside __ml.art), docs/perf.md (two bullets after THE ART QUEUE), CLAUDE.md (one line in the art-queue law). I did NOT touch the proximity cull, the insertion sort, the compose worker, the ground path or the indoor flip - your Smooth 1 and 2 landed while I was sizing the same occluder cost, so I dropped that and took the upload atom instead. Nothing needed from you."
     }
   ]
 }

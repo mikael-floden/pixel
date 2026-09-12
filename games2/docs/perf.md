@@ -78,6 +78,52 @@ The ground render texture (scroll, slices, cell repaints, prefetch, compose budg
   and the old shader test both provoked `litShapeJobs` bursts of 50-400 ms
   (shape maps rebuilt for the substituted textures), so a scenery-mock run
   is not a clean ceiling.
+- **THE ART QUEUE DECODES ON A WORKER AND UPLOADS IN BANDS**
+  (`client/src/artworker.ts`, `artqueue.ts`, 2026-09-12, games-perf). The
+  queue's `texImage2D` of an `<img>` it had already `decode()`d cost 5.8-9.2
+  ms of main thread per monster strip headless and 4.5-8.9 ms on his phone
+  (`texUp.p90/max`, 22-60 uploads over 4 ms a window; a 1-1.6 MB strip rode
+  in many of his worst frames) — Chrome decodes the WebP AGAIN inside every
+  such call, the same whether the upload follows `decode()` at once or
+  seconds later (both measured), so the byte budget bounded the bytes and
+  never the atom. Decoded on the worker into an ImageBitmap (premultiplied
+  there, under the browser-default colour rule), a strip reaches the GPU as
+  row BANDS of one frame's budget through `texSubImage2D`: 0.0-0.2 ms per
+  128 KB band (p50 0.09), so a frame's upload is bounded by the dial
+  exactly — `frameKbMax` 98-125 KB against 128, debt 0. The worker also
+  measures every frame's opaque box and hands it over before the bitmap is
+  closed (`artBounds` used to draw the source into a canvas on first use:
+  a second decode of every body's strip on the main thread, 188 ms of a 60 s
+  harness profile). A banded texture holds no source pixels, so a context
+  restore refills it through the queue (`onContextRestored`, unbudgeted —
+  the art is already off the screen) after Phaser re-creates the wrapper
+  blank, and the three CPU readers of a body's frame (`artBounds`,
+  `alphaMap`, the hidden-behind outline's `ringTextureFor`) go through
+  `framepixels.ts`, which draws an element as before and READS a bare GL
+  texture back through a temporary framebuffer (alpha exact; the readback is
+  premultiplied, so a reader that wants colour must un-premultiply) — the
+  gate found `ringTextureFor` throwing on `drawImage` of a texture wrapper
+  before this existed. Gate: `__ml.artAlpha(key, frame)` is that readback
+  against the `<img>` path's alpha. Pixel parity: `__ml.artParity()` reads the banded texture and an
+  `<img>` upload of the same file back from the same context — byte-identical
+  on 6 of 6 strips, and again after a forced context loss
+  (`scripts/verify-artworker.mjs`). A browser without workers, ImageBitmaps
+  or OffscreenCanvas, or a worker that dies, falls back per job to the
+  `<img>` path. Beacon: `counts.artBands`, `counts.artBandMaxMs`,
+  `counts.artWorker` (1 on, 2 fell back); `texUp` should lose the strips.
+  Not measured here: the GPU side of an upload on a Mali — his next run's
+  `texUp.slow` and the worst frames' `upKb` say.
+- **MEASURED 2026-09-12, NOT THE LAG** (headless traces of the overworld run,
+  games-perf; each was a suspect for the unattributed `gapBusy`): the
+  Colyseus patch decode is 1.1 ms per SECOND (21 messages/s, 92 KB);
+  no style or layout work runs per frame (the HUD's DOM is quiet;
+  `PrePaint` 0.13 ms/frame); the JS heap's 25-53 MB/s of growth is
+  short-lived garbage — GC is 0.4% of CPU (scavenges; the beacon's `drops`
+  are those), so cutting allocations is not a frame-time lever here. Still
+  open on the GPU side: the cover atlases run 7 brackets per flush and each
+  bracket clears and blits the whole 1024x512 target (~7 Mpx of fill per
+  flush, ~23 flushes/s — ~2x the visible screen's fill), a candidate for a
+  smaller atlas or fewer brackets, untested on his phone.
 - **THE INDOOR FLIP IS INCREMENTAL** (`repaintIndoorFlip`, `debrisPool`,
   `occWinCuts`, 2026-09-12). Crossing a cave or house threshold used to be
   a full ground paint, a full occluder walk, the destruction of the whole
