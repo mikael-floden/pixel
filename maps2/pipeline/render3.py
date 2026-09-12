@@ -57,6 +57,7 @@ from __future__ import annotations
 
 import collections
 import json
+import math
 import os
 import re
 import sys
@@ -613,16 +614,39 @@ def borrowed_wall(key):
     return None
 
 
-def approved_candidate(top, side, storey=False):
-    """The wiki's own rule: the approved candidate, else rank 0. For a STOREY
-    fill (the repeated wall below the cap), candidates the maintainer flagged
-    `top_only` in live/tuning/tile_walls.json are skipped — vertical.py's
-    doctrine: a top that repeats poorly vertically needs same-over-same backup."""
+def approved_candidate(top, side, storey=False, x=None, y=None, z=None):
+    """The wiki's own rule: the approved candidates, else rank 0 — and, given
+    a CELL and a STOREY, WHICH approved tile this course wears: the game's wall
+    region field (games2/client/src/wallregion.ts, ported below), so the
+    still render, the wiki and the game put the same stone on the same cell.
+    For a STOREY fill (the repeated wall below the cap), candidates the
+    maintainer flagged `top_only` in live/tuning/tile_walls.json are skipped
+    — vertical.py's doctrine: a top that repeats poorly vertically needs
+    same-over-same backup — and that filtered pool is its own pool (`|s`).
+
+    WITHOUT A CELL THE ANSWER IS RANK 0, ON PURPOSE: the flat-tile ladder, a
+    borrowed wall, the pitch probe and the fixture's identity lookups must
+    keep getting the old stable tile, never whatever happens to live at
+    (0,0,0)."""
     cands = _candidates(top, side)
+    cell = f"{top}__over__{side}"
+    pool = cell
     if storey:
         rest = [c for c in cands if not WALL_OV.get(c["key"], {}).get("top_only")]
-        cands = rest or cands
-    return cands[0] if cands else None
+        if rest and len(rest) != len(cands):
+            cands, pool = rest, cell + "|s"
+    if not cands:
+        return None
+    if x is None or y is None or z is None:
+        return cands[0]
+    i = pick_wall_index(pool, _wall_keys(cands), x, y, z, None, WALL_SETS.get(cell))
+    return cands[i if i >= 0 else 0]
+
+
+def _wall_keys(cands):
+    """The key the measured sets name a tile by: a candidate key's last path
+    segment (what wall-sets.py writes)."""
+    return [c["key"].strip("/").split("/")[-1] for c in cands]
 
 
 # -- BASE TILE SETS — port of wiki/lib/basesets.mjs (the shared reference) ----
@@ -667,6 +691,208 @@ def pick_weighted(weights, u):
         if weights[i] > 0:
             return i
     return -1
+
+
+# -- THE WALL REGION FIELD — port of games2/client/src/wallregion.ts ----------
+# WHICH of the maintainer's approved wall tiles paints a given cell of a cliff,
+# and where the tile may change. The game shipped it 2026-09-07 after the
+# maps agent's verdict on the old rank-0 pick ("the mountain reads as
+# wallpaper": all 74 approved grey_stone walls rendered as ONE); until this
+# port the game drew walls the still render and the wiki did not. The shape
+# is the GROUND's (a set per region keeps an area coherent, a member per cell
+# varies the field, his weights decide the mix), one scale up:
+#   PALETTE per region  — one MEASURED set of five joining tiles
+#                         (games2/client/src/wallsets.json, wall-sets.py: the
+#                         seam of every ordered pair composited as the game
+#                         stacks them), chosen by the region's hash among the
+#                         sets whose expected seam is at most WALL_SET_MAX_COST
+#                         times the art's own texture step; none → rank 0
+#                         alone (a mountain of wallpaper, the reported defect,
+#                         only for pools with no measured set);
+#   TILE per cell+storey — a weighted member (8/5/3/2/1, dominant first). Per
+#                         STOREY, never per column: a constant tile over a
+#                         region is a patch with edges, and an edge on a wall
+#                         is a column seam or a storey stripe.
+# The region is a BALL in world space — elevation enters at the measured
+# storey/cell-step ratio, the point is domain-warped before it is chunked so
+# no boundary is a plane — and everything is integer hashing plus double
+# arithmetic, so it ports to the bit: _prove_wall_port() checks every line of
+# the game's WALL_TEST_VECTORS at import (regenerate them with
+# games2/scripts/wall-vectors.mjs). The numbers are the game's, measured
+# there; retune them THERE and copy — never here alone.
+WALL_STOREY_CELLS = 0.429      # one storey (15 px) in cell steps (34.9 px)
+WALL_REGION_CELLS = 40         # one set per massif, deliberately bigger than a cliff
+WALL_WARP_CELLS = 18           # the drag before chunking — a fraction of the region
+WALL_WARP_PERIOD = 47          # base period of the warp noise, in cells
+WALL_WARP_Z_SCALE = 6          # the warp varies faster with height than across
+WALL_WARP_OCTAVES = 3
+WALL_WARP_PERSISTENCE = 0.65
+WALL_PALETTE_N = 5
+WALL_PALETTE_WEIGHTS = [8, 5, 3, 2, 1]
+WALL_SET_MAX_COST = 2.0
+_WARP_SEED_X, _WARP_SEED_Y, _WARP_SEED_Z = 0x57414c31, 0x57414c32, 0x57414c33
+_U32 = 4294967296
+
+
+def hash3(i, j, k, seed):
+    """A 32-bit avalanche of three integer lattice coordinates and a seed.
+    Inputs modulo 2^32 (the game's `|0` then `>>>0`), multiply-add then
+    fmix32 — never `(h ^ coord) * prime` per axis, whose zero state lost the
+    seed and the coordinate together."""
+    h = int(seed) & 0xffffffff
+    h = (h + int(i) * 0x8da6b343) & 0xffffffff
+    h = (h + int(j) * 0xd8163841) & 0xffffffff
+    h = (h + int(k) * 0xcb1ab31f) & 0xffffffff
+    h ^= h >> 16
+    h = (h * 0x85ebca6b) & 0xffffffff
+    h ^= h >> 13
+    h = (h * 0xc2b2ae35) & 0xffffffff
+    h ^= h >> 16
+    return h
+
+
+def vnoise3(x, y, z, seed):
+    """Trilinear value noise in [0,1), smoothstep on each axis."""
+    xi, yi, zi = math.floor(x), math.floor(y), math.floor(z)
+    fx, fy, fz = x - xi, y - yi, z - zi
+    u = fx * fx * (3 - 2 * fx)
+    v = fy * fy * (3 - 2 * fy)
+    w = fz * fz * (3 - 2 * fz)
+
+    def c(di, dj, dk):
+        return hash3(xi + di, yi + dj, zi + dk, seed) / _U32
+    x00 = c(0, 0, 0) + (c(1, 0, 0) - c(0, 0, 0)) * u
+    x10 = c(0, 1, 0) + (c(1, 1, 0) - c(0, 1, 0)) * u
+    x01 = c(0, 0, 1) + (c(1, 0, 1) - c(0, 0, 1)) * u
+    x11 = c(0, 1, 1) + (c(1, 1, 1) - c(0, 1, 1)) * u
+    y0 = x00 + (x10 - x00) * v
+    y1 = x01 + (x11 - x01) * v
+    return y0 + (y1 - y0) * w
+
+
+def fbm3(x, y, z, seed):
+    """WALL_WARP_OCTAVES of vnoise3, each at twice the frequency and
+    WALL_WARP_PERSISTENCE of the amplitude, normalised back to [0,1)."""
+    acc, amp, f, norm = 0.0, 1.0, 1, 0.0
+    for o in range(WALL_WARP_OCTAVES):
+        acc += amp * vnoise3(x * f, y * f, z * f, seed + o * 7919)
+        norm += amp
+        amp *= WALL_WARP_PERSISTENCE
+        f *= 2
+    return acc / norm
+
+
+_wall_field_cache = {}
+
+
+def wall_field(x, y, z):
+    """The region a cell of a wall belongs to: warp the point, then chunk it,
+    all three axes in cell steps (elevation × WALL_STOREY_CELLS)."""
+    key = (x, y, z)
+    r = _wall_field_cache.get(key)
+    if r is None:
+        zc = z * WALL_STOREY_CELLS
+        p = 1 / WALL_WARP_PERIOD
+        nx, ny, nz = x * p, y * p, zc * p * WALL_WARP_Z_SCALE
+        wx = x + WALL_WARP_CELLS * (fbm3(nx, ny, nz, _WARP_SEED_X) * 2 - 1)
+        wy = y + WALL_WARP_CELLS * (fbm3(nx, ny, nz, _WARP_SEED_Y) * 2 - 1)
+        wz = zc + WALL_WARP_CELLS * (fbm3(nx, ny, nz, _WARP_SEED_Z) * 2 - 1)
+        R = WALL_REGION_CELLS
+        r = f"{math.floor(wx / R)},{math.floor(wy / R)},{math.floor(wz / R)}"
+        _wall_field_cache[key] = r
+    return r
+
+
+def wall_palette(pool, region, keys, sets=None):
+    """THE PALETTE FOR ONE REGION: one measured set, mapped onto this pool's
+    candidate list, entry 0 the dominant. A set whose tiles are not all in
+    THIS pool is not this pool's set (the storey filter can remove one, and a
+    partial set is a different set). No usable set → [0], rank 0 alone."""
+    n = len(keys)
+    if n <= 0:
+        return []
+    usable = []
+    for st in sets or []:
+        if st["cost"] > WALL_SET_MAX_COST:
+            continue
+        idx = [keys.index(t) for t in st["tiles"] if t in keys]
+        if len(idx) == len(st["tiles"]) and len(idx) > 1:
+            usable.append(idx)
+    if not usable:
+        return [0]
+    pick = math.floor(unit_hash(f"wr1|set|{pool}|{region}") * len(usable))
+    return usable[min(pick, len(usable) - 1)]
+
+
+def pick_wall_index(pool, keys, x, y, z, field=None, sets=None):
+    """WHICH APPROVED TILE PAINTS THIS CELL OF THE WALL — the whole rule."""
+    n = len(keys)
+    if n <= 0:
+        return -1
+    if n == 1:
+        return 0
+    region = field if field is not None else wall_field(x, y, z)
+    pal = wall_palette(pool, region, keys, sets)
+    if len(pal) <= 1:
+        return pal[0] if pal else 0
+    w = WALL_PALETTE_WEIGHTS[:len(pal)]
+    i = pick_weighted(w, unit_hash(f"wr1|tile|{pool}|{int(x)}|{int(y)}|{int(z)}"))
+    return pal[i if i >= 0 else 0]
+
+
+# The measured sets (games2-wall-sets@1): pools keyed `top__over__side`, each
+# a list of {cost, tiles[key8...]} — the game reads the same file. Absent =
+# every pool draws rank 0 alone, the pre-2026-09-07 picture.
+try:
+    WALL_SETS = json.load(open(os.path.join(
+        REPO, "games2", "client", "src", "wallsets.json"))).get("pools", {})
+except (OSError, ValueError):
+    WALL_SETS = {}
+
+
+def _prove_wall_port():
+    """Every line of the game's WALL_TEST_VECTORS (wallregion.ts) — a port
+    that drifts would put a different stone on a cell than the game does,
+    and nobody would see it until the two renders were held side by side."""
+    for i, j, k, sd, want in [
+            [0, 0, 0, 1, 1364076727], [1, 0, 0, 1, 609303115],
+            [0, 1, 0, 1, 4222228470], [0, 0, 1, 1, 1194506052],
+            [-1, -1, -1, 1, 2314441001], [123, 456, 7, 1463897137, 3666960045],
+            [4294967295, 0, 0, 7, 391211354]]:
+        assert hash3(i, j, k, sd) == want, ("hash3", i, j, k, sd)
+    for x, y, z, sd, want in [
+            [0, 0, 0, 1, 0.317599], [0.5, 0.5, 0.5, 1, 0.458244],
+            [1.25, -2.75, 3.5, 1, 0.527028], [10.1, 20.2, 30.3, 1463897139, 0.267224]]:
+        assert abs(vnoise3(x, y, z, sd) - want) < 1e-6, ("vnoise3", x, y, z, sd)
+    for x, y, z, sd, want in [
+            [0, 0, 0, 1, 0.479412], [0.5, 0.5, 0.5, 1, 0.493022],
+            [1.25, -2.75, 3.5, 1463897138, 0.543485]]:
+        assert abs(fbm3(x, y, z, sd) - want) < 1e-6, ("fbm3", x, y, z, sd)
+    for x, y, z, want in [
+            [0, 0, 0, "-1,0,-1"], [1, 0, 0, "-1,0,-1"], [0, 0, 1, "-1,0,-1"],
+            [37, 214, 5, "0,5,-1"], [120, 15, 11, "3,0,0"], [393, 393, 40, "9,10,0"]]:
+        assert wall_field(x, y, z) == want, ("field", x, y, z, wall_field(x, y, z))
+    sets = [{"cost": 0.9, "tiles": ["k3", "k7", "k11", "k13", "k17"]},
+            {"cost": 1.8, "tiles": ["k2", "k5", "k9", "k12", "k15"]},
+            {"cost": 9, "tiles": ["k0", "k1", "k4", "k6", "k8"]}]
+
+    def keys_of(n):
+        return [f"k{i}" for i in range(n)]
+    for pool, region, n, want in [
+            ["grey_stone__over__grey_stone", "0,0,0", 74, [3, 7, 11, 13, 17]],
+            ["grey_stone__over__grey_stone", "1,-2,0", 74, [2, 5, 9, 12, 15]],
+            ["a__over__b", "0,0,0", 2, [0]], ["a__over__b", "0,0,0", 1, [0]]]:
+        assert wall_palette(pool, region, keys_of(n), sets) == want, ("palette", pool, region, n)
+    for pool, n, x, y, z, want in [
+            ["grey_stone__over__grey_stone", 74, 0, 0, 0, 3],
+            ["grey_stone__over__grey_stone", 74, 37, 214, 5, 11],
+            ["grey_stone__over__grey_stone", 74, 38, 214, 5, 3],
+            ["grey_stone__over__grey_stone", 74, 37, 214, 6, 7],
+            ["one__over__one", 1, 5, 5, 5, 0], ["none__over__none", 0, 1, 2, 3, -1]]:
+        assert pick_wall_index(pool, keys_of(n), x, y, z, None, sets) == want, ("pick", pool, n, x, y, z)
+
+
+_prove_wall_port()
 
 
 def _norm_members(set_id, members):
@@ -765,25 +991,29 @@ def storey_pitch(im):
     return _lp_cache[key]
 
 
-def over_candidate(top, side):
-    c = approved_candidate(top, side) or approved_candidate(top, top)
+def over_candidate(top, side, x=None, y=None, z=None):
+    c = approved_candidate(top, side, False, x, y, z) \
+        or approved_candidate(top, top, False, x, y, z)
     assert c, f"no review cell for {top} over {side} (nor {top} over {top}) — " \
               f"the x-over-y matrix is the ONLY wall source and it has no tile"
     return c
 
 
-def over_tile(top, side):
-    """The x-over-y tile image — THE ONLY WALL SOURCE.
+def over_tile(top, side, x=None, y=None, z=None):
+    """The x-over-y tile image — THE ONLY WALL SOURCE. Given the cell and the
+    storey it is the tile the wall region field picks there (the game's
+    rule); without them, rank 0. Cached per CHOSEN candidate, and the image
+    carries its key in `info["k"]` so a consumer can name the tile.
 
     TOP_ONLY (his tile_walls.json): the tile's own wall is unusable, so the
     face is replaced by the wall he chose for it in top_walls.json — the
     tile keeps its top and BORROWS a wall, which is what the two files are
     for. Without this the mark was dead: it only filtered a storey pool it
     could never match."""
-    key = ("over", top, side)
+    c = over_candidate(top, side, x, y, z)
+    key = ("over", top, side, c["key"].strip("/").split("/")[-1])
     if key in _tile_cache:
         return _tile_cache[key]
-    c = over_candidate(top, side)
     im = Image.open(os.path.join(REPO, c["file"])).convert("RGBA")
     if top_only(c["key"].strip("/")):
         lend = borrowed_wall(c["key"].strip("/")) or approved_candidate(side, side)
@@ -794,6 +1024,7 @@ def over_tile(top, side):
             out.paste((0, 0, 0, 0), (0, TOP_Y + 2 * DY, TILE, out.height))
             out.alpha_composite(band, (0, TOP_Y + 2 * DY))
             im = out
+    im.info["k"] = key
     _tile_cache[key] = im
     return im
 
@@ -812,16 +1043,25 @@ def shadowed(img, key):
     if ck not in _tile_cache:
         a = np.array(img).astype(np.int16)
         a[..., :3] = (a[..., :3] * INTERIOR_SHADE).astype(np.int16)
-        _tile_cache[ck] = Image.fromarray(a.astype(np.uint8), "RGBA")
+        out = Image.fromarray(a.astype(np.uint8), "RGBA")
+        # the shade is a look, not a resolution: the image names the cap or
+        # course it shades (its own cache key), which is what the parity
+        # fixture reads as its identity
+        out.info["k"] = key
+        _tile_cache[ck] = out
     return _tile_cache[ck]
 
 
-def storey_tile(ground):
-    """The repeated storey below a cap: same-over-same, honouring top_only."""
-    key = ("storey", ground)
+def storey_tile(ground, x=None, y=None, z=None):
+    """The repeated storey below a cap: same-over-same, honouring top_only —
+    at a cell and storey, the course the wall region field picks there
+    (PER STOREY, so a boundary can cross a column); without them, rank 0."""
+    c = approved_candidate(ground, ground, True, x, y, z)
+    key = ("storey", ground, c["key"].strip("/").split("/")[-1])
     if key not in _tile_cache:
-        c = approved_candidate(ground, ground, storey=True)
-        _tile_cache[key] = Image.open(os.path.join(REPO, c["file"])).convert("RGBA")
+        im = Image.open(os.path.join(REPO, c["file"])).convert("RGBA")
+        im.info["k"] = key
+        _tile_cache[key] = im
     return _tile_cache[key]
 
 
@@ -1183,9 +1423,8 @@ def render(doc, x0=0, y0=0, x1=None, y1=None, scale=1.0, log=print,
             behind = any((nx, ny) in cellset and (nx, ny) not in wall_over
                          and L(nx, ny) < dl
                          for (nx, ny) in ((x, y + 1), (x + 1, y)))
-            cap = over_tile(dg, body) if (body != dg or not front_covered) \
+            cap = over_tile(dg, body, x, y, dl) if (body != dg or not front_covered) \
                 else flat_tile(dg)
-            mid = storey_tile(body)
             for f in range(lo, dl + 1):
                 # OVER A DOORWAY THE ROOF IS EXACTLY ONE STOREY. An x-over-y
                 # cap is a top face PLUS a wall band, and that band is taller
@@ -1198,7 +1437,10 @@ def render(doc, x0=0, y0=0, x1=None, y1=None, scale=1.0, log=print,
                 # the full 5. Dropping the course instead opened a sliver of
                 # grass through the top of every door - the band is what
                 # closes the roofline.
-                t = cap if f == dl else mid
+                # each course asks the wall field at ITS OWN storey (the
+                # game's stack): the tile may change between two courses
+                # of one column, never along a whole column at once
+                t = cap if f == dl else storey_tile(body, x, y, f)
                 if f == dl and (doorway or behind):
                     # ONE LEVEL OF ROOF OVER A DOORWAY, NOT TWO. A cap tile is
                     # a top-face diamond PLUS a storey band, 45 px of opaque
@@ -1450,21 +1692,25 @@ def render(doc, x0=0, y0=0, x1=None, y1=None, scale=1.0, log=print,
             inside = (fx, fy) in indoor
             exposed = front_low < zl
             if exposed:
-                cap = over_tile(gr, side)
+                cap = over_tile(gr, side, x, y, zl)
                 # the repeated course is the WALL's own material in every
                 # case - keying it on the top ground drew 407 cells whose
-                # courses were a different material from their own cap
-                mid = storey_tile(side)
+                # courses were a different material from their own cap.
+                # PER STOREY, NOT PER COLUMN (the game's stack): each course
+                # asks the wall region field at its own storey, so the tile
+                # can change between two courses of one column - hoisting
+                # the pick out of the loop is the "whole column switching"
+                # the maintainer ruled out.
                 for f in range(max(0, front_low), zl + 1):
-                    t = cap if f == zl else mid
+                    t = cap if f == zl else storey_tile(side, x, y, f)
                     if inside:       # an interior face: in shadow, not lit
-                        t = shadowed(t, (gr, side, f == zl))
+                        t = shadowed(t, t.info["k"])
                     img.alpha_composite(t, (bx, col_y(x, y, f) - TOP_Y))
             # ...and the SURFACE goes on the cap: the wall is x-over-y art,
             # the top is the maintainer's set. Only the top face is painted,
             # so the cap's own wall — the only lawful wall source — survives.
             if not exposed or not own_top(
-                    over_candidate(gr, side)["key"].strip("/")):
+                    over_candidate(gr, side, x, y, zl)["key"].strip("/")):
                 img.alpha_composite(top_face_only(wang_surface()),
                                     (bx, col_y(x, y, zl)))
         for (dx_, dy_) in sorted(deck_diag.get(s, ()), key=lambda c: c[1]):

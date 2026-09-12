@@ -402,7 +402,13 @@ ground NAME per cell), so a tiles publish never repoints anything here.
   doorway crop, scenery scale with no lift — the maintainer's verdicts, taken
   in the game) and `games2/scripts/tiles3-fixture.py` holds the two equal by
   tracing this file's draw stream; a rule changes in both or the fixture
-  names the cells.
+  names the cells. Walls vary per cell and per storey exactly as the game's
+  do: `games2/client/src/wallregion.ts` (the warped region field that picks
+  one measured set of five joining tiles from `games2/client/src/wallsets.json`
+  per massif, then a weighted member per course) is ported into this file and
+  proved against its `WALL_TEST_VECTORS` at import; a caller with no cell
+  gets rank 0, as before. (Rank 0 everywhere drew all 74 approved grey_stone
+  walls as ONE — "the mountain reads as wallpaper".)
 - `spawns.py` / `npcs.py` / `places.py` — the sidecar derivers + `--check` gates.
 - `sceneryscale.py` — the size the GAME draws scenery at.
 
