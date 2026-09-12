@@ -3049,16 +3049,22 @@ export class WorldScene extends Phaser.Scene {
     // The depth sort times itself — see installDepthSort.
   }
 
-  /** THE DEPTH SORT IS AN INSERTION SORT, because the list is nearly sorted
-   *  on every frame: only the bodies changed depth since the last one. Phaser
-   *  re-runs a merge sort of the WHOLE display list whenever any depth
-   *  changed, which here is every frame a body moves — 0.85-2.1 ms on his
-   *  phone over 4.6-9.7k objects. An insertion sort is stable (an element
-   *  moves past strictly greater depths only, so equal depths keep their
-   *  order, exactly as Phaser's stable sort keeps it) and costs one pass plus
-   *  one slot per inversion; when the inversions run past the list's length
-   *  (a rebuild that added hundreds of images) it hands the half-sorted list
-   *  to Phaser's own sort, which finishes it. */
+  /** PHASER'S DEPTH SORT, TIMED. (An insertion sort was tried here, on the
+   *  idea that only the bodies move between frames — measured on his phone
+   *  at 1.05 ms/frame against Phaser's own 0.85 at the same list size: a
+   *  rebuild appends hundreds of images out of order, so the attempt was paid
+   *  and the merge sort ran anyway. Rejected 2026-09-12.) */
+  private installDepthSort(): void {
+    const dl = this.children as unknown as { depthSort(): void };
+    const orig = dl.depthSort.bind(dl);
+    dl.depthSort = () => {
+      if (!this.perfOn) return orig();
+      const t = performance.now();
+      orig();
+      this.pAdd("depthSort", performance.now() - t);
+    };
+  }
+
   /** PHASER FILTERS THE DISPLAY LIST INTO A NEW ARRAY EVERY FRAME
    *  (`CameraManager.getVisibleChildren` is `children.filter(...)`): two to
    *  three thousand references and a closure a frame, garbage for a
@@ -3079,37 +3085,6 @@ export class WorldScene extends Phaser.Scene {
     };
   }
 
-  private installDepthSort(): void {
-    const dl = this.children as unknown as { list: { _depth: number }[]; sortChildrenFlag: boolean; depthSort(): void };
-    const orig = dl.depthSort.bind(dl);
-    dl.depthSort = () => {
-      if (!dl.sortChildrenFlag) return;
-      const t = this.perfOn ? performance.now() : 0;
-      const list = dl.list;
-      const n = list.length;
-      let moves = 0;
-      let done = true;
-      for (let i = 1; i < n; i++) {
-        const key = list[i];
-        const d = key._depth;
-        let j = i - 1;
-        if (list[j]._depth <= d) continue;
-        do {
-          list[j + 1] = list[j];
-          j--;
-          moves++;
-        } while (j >= 0 && list[j]._depth > d);
-        list[j + 1] = key;
-        if (moves > n) {
-          done = false;
-          break;
-        }
-      }
-      if (done) dl.sortChildrenFlag = false;
-      else orig();
-      if (t) this.pAdd("depthSort", performance.now() - t);
-    };
-  }
   private perfRenderHooked = false;
   /** Batch flushes in the last rendered frame — see perfHookRender. */
   private perfDrawCount = 0;
@@ -11504,7 +11479,12 @@ export class WorldScene extends Phaser.Scene {
     // ...and, once the art has settled, repair anything a paint dropped.
     this.t3drainDrops();
     this.t3drainTick();
+    // Its own section: the queue's banded uploads (texSubImage2D, artworker.ts)
+    // and the frame's texture creations are what it does, and they used to
+    // land in the unattributed `gapBusy`.
+    this.ps();
     this.artQueue().tick(); // streamed art becomes textures here, under the budget
+    this.pe("artTick");
     this.debrisWarm(); // the indoor crossfade's sprite pool, a few a frame
     if (!this.room) return;
     const dt = delta / 1000;

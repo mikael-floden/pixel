@@ -68,6 +68,8 @@ export function perfReport(body: Record<string, unknown>, atISO: string) {
      * and rafHz — 12 keys exactly, which is the cap-one-short trap again. */
     frames: flat(body.frames, 24, 100000),
     sections: flat(body.sections, 40, 100000),
+    // Heap growth by section, KB per frame (client perfAlloc) — who allocates.
+    allocBy: flat(body.allocBy ?? {}, 12, 100000),
     /* 48, not 40: `flat` keeps the FIRST N entries and silently drops the rest,
      * so a cap close to the real key count turns "add a counter" into "lose the
      * counter at the end". 34 arrive today; the headroom is the point. */
@@ -123,6 +125,8 @@ export function perfReport(body: Record<string, unknown>, atISO: string) {
      * as zero, which is indistinguishable from one that booted and was never
      * needed. */
     worker: mixed(body.worker, 16),
+    // The compose worker (client/src/composeclient.ts), state and miss reasons included.
+    compose: mixed(body.compose, 16),
     /* THE HEAP AND ITS COLLECTIONS. The client has sent this since db459b988a
      * and THIS ALLOWLIST DROPPED EVERY SAMPLE — the fifth field lost the same
      * way, and lost while chasing the one question it answers: whether GC
