@@ -16,9 +16,11 @@
  *          has very little ... further away. The 'Fade falloff' slider
  *          controls this behavior." (It used to bend the DENSITY instead.)
  *
- *  ...and a fourth switch he asked for in the same breath: whether a fade may
- *  sit ON a transition tile itself (a 50/50 sand-grass tile carrying a grassy
- *  fade reads as 75/25).
+ *  `onBoundary` — whether a fade may sit ON a transition tile itself — is
+ *  ALWAYS FALSE (a 50/50 sand-grass tile carrying a grassy fade reads as
+ *  75/25; maintainer 2026-09-12: "should always be off", and its switch is
+ *  gone). The field stays because the resolver reads it; a stored value is
+ *  ignored.
  *
  *  Same contract as indoorlight.ts: this module owns the values and their
  *  persistence, the Settings sliders are the only writers, and the scene
@@ -61,7 +63,7 @@ function load(): FadeTune {
       reach: Math.round(num(v.reach, FADE_TUNE_DEFAULT.reach, 0, FADE_REACH_MAX)),
       amount: num(v.amount, FADE_TUNE_DEFAULT.amount, 0, FADE_AMOUNT_MAX),
       falloff: num(v.falloff, FADE_TUNE_DEFAULT.falloff, FADE_FALLOFF_MIN, FADE_FALLOFF_MAX),
-      onBoundary: typeof v.onBoundary === "boolean" ? v.onBoundary : FADE_TUNE_DEFAULT.onBoundary,
+      onBoundary: false,
     };
   } catch {
     return { ...FADE_TUNE_DEFAULT };
@@ -73,7 +75,7 @@ export function fadeTune(): FadeTune {
 }
 
 export function setFadeTune(patch: Partial<FadeTune>): void {
-  const next = { ...value, ...patch };
+  const next = { ...value, ...patch, onBoundary: false };
   if (
     next.reach === value.reach &&
     next.amount === value.amount &&

@@ -122,7 +122,6 @@ import { installGlFrameProbe, glFrameTake, glWindowTake, glFrameEmpty, type GlFr
 import { installGpuTimer, gpuTimerTake } from "../gputimer";
 import { cpuScoreMs, frameHist, rafHz, quantiles } from "../perfextra";
 import { fadeTune, setFadeTune } from "../fadetune";
-import { extraTransitions, setExtraTransitions } from "../transitions";
 import { ChessDialog, ChessMatchView } from "../chessui";
 import { gameUrl } from "../staging";
 import { MonsterManifest, MonsterDef, monsterWalkKey, resolveMonsterAnim } from "../monsterManifest";
@@ -4334,78 +4333,19 @@ export class WorldScene extends Phaser.Scene {
          * transition tile? "A transition tile that is 50% sand and 50% grass
          * can in fact end up being 75% grass and 25% sand if a fade tile with
          * lots of grass happened to be placed there." Re-resolves the world. */
-        {
-          label: "fade on transition",
-          act: () => {
-            const on = !fadeTune().onBoundary;
-            setFadeTune({ onBoundary: on });
-            this.chat.addLog("—", `fade on transition: ${on ? "on — a transition tile may wear a fade" : "off"}`);
-          },
-          get: () => fadeTune().onBoundary,
-          state: () => (fadeTune().onBoundary ? "on" : "off"),
-        },
         /* SCENERY ANIMATION REPORT — a phone-side probe (maintainer 2026-09-09,
          * a cave brazier whose clip plays headless and not on his phone: the
          * only instrument he has is this list). Logs what `__ml.sceneryAnims()`
          * knows: how many animated placements are in reach, how many are
          * playing, how many have every frame resident, and the next sleeps. */
-        {
-          label: "scenery anim report",
-          act: () => {
-            const runs = this.sceneryAnimLive.map((l) => ({ l, run: this.sceneryAnimRuns.get(l.place)! }));
-            const resident = runs.filter((r) => r.run.keys.every((k) => this.textures.exists(k))).length;
-            const playing = runs.filter((r) => r.run.frame >= 0).length;
-            const missing = runs.flatMap((r) => r.run.keys.filter((k) => !this.textures.exists(k))).length;
-            const next = runs.filter((r) => r.run.frame < 0).map((r) => Math.round((r.run.next - this.time.now) / 100) / 10).sort((a, b) => a - b).slice(0, 5);
-            const near = runs.slice(0, 4).map((r) => `${r.run.clip.name}@${r.l.place}:${r.run.frame >= 0 ? `f${r.run.frame}` : "sleep"}`);
-            this.chat.addLog("—", `scenery anims: ${runs.length} live, ${playing} playing, ${resident} with all frames, ${missing} frames missing; next sleeps ${next.join("/")} s; ${near.join(" ")}`);
-          },
-          get: () => false,
-          state: () => `${this.sceneryAnimLive.filter((l) => (this.sceneryAnimRuns.get(l.place)?.frame ?? -1) >= 0).length} playing`,
-        },
         /* INDOOR REPORT — the phone-side twin of __ml.indoor() + lightSlots()
          * (maintainer 2026-09-09, a cave room "different lit up depending on
          * where I stand" that no headless position reproduces): the verdict,
          * its ease, the room key and mask size, the dials, and which world
          * lights hold a slot right now, in one chat line. */
-        {
-          label: "indoor report",
-          act: () => {
-            const me = this.room ? this.avatars.get(this.myId) : undefined;
-            const cell = me ? [Math.floor(me.fx / CELL_WU), Math.floor(me.fy / CELL_WU)] : null;
-            const grade = this.indoorGrade();
-            const lit = this.roomHasLight();
-            const slots = [...this.slotLit].map((id) => {
-              const src = this.sceneryLightSources.find((x) => x.id === id);
-              return src ? `${id}=${src.piece.split("/").pop()}@${Math.round(src.col)},${Math.round(src.row)}r${src.radius}${src.sealed ? "S" : ""}` : id;
-            });
-            const w = this.world;
-            const idx = cell && w ? cell[1] * w.width + cell[0] : -1;
-            const dep = idx >= 0 ? this.caveDepth?.get(idx) : undefined;
-            const rt = this.night?.roomDebug() as { bound?: boolean; lit?: number; roomOn?: number } | null;
-            const twin = cell ? this.night?.lightAt(cell[0] + 0.5, cell[1] + 0.5, 0.02, false, 0, undefined, true) : null;
-            const twinS = twin ? twin.map((v) => v.toFixed(2)).join("/") : "-";
-            this.chat.addLog(
-              "—",
-              `indoor: ${this.indoorInside ? "IN" : "out"} (verdict ${this.indoorPending ? "in" : "out"}) grade ${grade.toFixed(2)} mix ${this.indoorMix.toFixed(2)} at ${cell?.join(",") ?? "?"} elev ${me?.surfLevel ?? "?"} key ${this.indoorKey}; room ${this.indoorSpace ? `${this.indoorSpace.roof.size} cells, wall ${this.indoorSpace.wallRatio.toFixed(2)}, depth ${this.indoorSpace.depth}` : "none"}; mask ${this.roomMask ? `up ${this.roomMask.size}` : "down"} tex ${rt ? `${rt.bound ? "bound" : "UNBOUND"} lit ${rt.lit} on ${rt.roomOn}` : "none"}; my depth ${dep ?? "-"}; ambient ${lit ? "lit-room" : "dark-room"} dial; torch ${this.torchOn ? "on" : "off"} f ${this.curTorchF.toFixed(2)}; twin ${twinS}; slots [${slots.join(" ")}]`,
-            );
-          },
-          get: () => false,
-          state: () => (this.indoorInside ? `IN ${this.indoorGrade().toFixed(2)}` : "out"),
-        },
         /* CLIFF-FOOT AND LID TRANSITIONS (transitions.ts): a nature wall's
          * foot and a deck slab compose boundary tiles like any two grounds.
          * Off is the resolver's parity picture. Re-resolves the world. */
-        {
-          label: "cliff-foot & lid transitions",
-          act: () => {
-            const on = !extraTransitions();
-            setExtraTransitions(on);
-            this.chat.addLog("—", `cliff-foot & lid transitions: ${on ? "on" : "off"}`);
-          },
-          get: () => extraTransitions(),
-          state: () => (extraTransitions() ? "on" : "off"),
-        },
         /* THE PERF BEACON, as a BUTTON — because the maintainer plays from an
          * INSTALLED HOME-SCREEN APP, which has no address bar, so `?perf=1`
          * cannot be typed there at all (his question, 2026-09-03). Same law as
@@ -4417,12 +4357,6 @@ export class WorldScene extends Phaser.Scene {
           act: () => this.togglePerfBeacon(),
           get: () => this.perfBeacon,
           state: () => (this.perfBeacon ? "reporting" : "off"),
-        },
-        {
-          label: "overlay",
-          act: () => this.setOverlay((this.overlayIdx + 1) % OVERLAYS.length),
-          get: () => this.overlayIdx !== 0,
-          state: () => OVERLAYS[this.overlayIdx].name,
         },
       ],
     });
@@ -4509,7 +4443,6 @@ export class WorldScene extends Phaser.Scene {
       }, 400);
     };
     window.addEventListener("ml-fade-tune", reResolve);
-    window.addEventListener("ml-extra-transitions", reResolve); // transitions.ts — same rebuild
 
     // Debug hooks for headless end-to-end verification.
     (window as any).__ml = {
@@ -12557,8 +12490,8 @@ export class WorldScene extends Phaser.Scene {
   // the preference is just this.torchOn. Player.torch stays synced on the
   // server; nothing here reads it any more.)
 
-  /** Cover the game render with a flat colour (frame QA): the Settings
-   * "OVERLAY" button cycles NONE -> BLACK -> WHITE -> PINK. The cover is a
+  /** Cover the game render with a flat colour (frame QA): `__ml.overlay(n)`
+   * picks NONE -> BLACK -> WHITE -> PINK (no Settings button). The cover is a
    * div over the game viewport only (z 3: above the canvas, below the HUD
    * at 4 and the frame art at 6); chat/roster hide while it's up. */
   private overlayIdx = 0;
@@ -16551,8 +16484,10 @@ export class WorldScene extends Phaser.Scene {
       return;
     }
     data.fadeTune = fadeTune(); // the Settings fade dials; "ml-fade-tune" rebuilds the resolver
-    data.footBoundary = extraTransitions(); // transitions.ts — the cliff-foot and lid transitions
-    data.deckBoundary = extraTransitions();
+    // The cliff-foot and lid transitions are always on (maintainer 2026-09-12;
+    // the switch that could turn them off is gone).
+    data.footBoundary = true;
+    data.deckBoundary = true;
     const tiles = new Tiles3(data);
     const view = viewFromParsed(world);
     // THE REGION FLOOD FILL RUNS HERE, ONCE, OVER THE WHOLE DOC — measured 38ms
@@ -18596,8 +18531,8 @@ export class WorldScene extends Phaser.Scene {
         this.t3Blit(rt, bop, ax, ay, tint);
         stats.blits++;
         stats.boundaries++;
-        /* ...AND WHAT THE TRANSITION TILE WEARS: its fade (the maintainer's
-         * "fade on transition" switch) and its wall-foot band — the boundary
+        /* ...AND WHAT THE TRANSITION TILE WEARS: its fade (never, since
+         * fadetune's onBoundary is pinned false) and its wall-foot band — the boundary
          * replaced the cell's own ops, so these are asked for separately. IN
          * THIS BRANCH: it once sat in the other one, behind a `useBoundary`
          * test that branch can never see true, so no transition tile on the

@@ -198,10 +198,11 @@ dressing). `this.maps3` gates every terrain branch (false only for a hand-built
   and 41 fades resolved. A settings switch (`seam`) flips it live, and
   `boundaryKey` carries `|noseam`, so seamed and unseamed are different
   pictures under different keys.
-- **THE FADE HAS THREE DIALS AND A SWITCH, AND HE TUNES THEM** (`client/src/
-  fadetune.ts` owns the values; Settings sliders "Fade reach" / "Fade amount"
-  / "Fade falloff" in hud.ts, the button "fade on transition" in the scene's
-  list; `Tiles3Data.fadeTune` carries them into the resolver, and
+- **THE FADE HAS THREE DIALS, AND HE TUNES THEM** (`client/src/fadetune.ts`
+  owns the values; Settings sliders "Fade reach" / "Fade amount" / "Fade
+  falloff" in hud.ts; `onBoundary` — a fade on a transition tile — is always
+  false, maintainer 2026-09-12, no switch; `Tiles3Data.fadeTune` carries them
+  into the resolver, and
   "ml-fade-tune" re-resolves and repaints the world 400 ms after the thumb
   rests). Maintainer 2026-09-09, on the beach: the fades "look like random
   dots and don't read 'a transition' at all ... I kinda feel I need 3 sliders
@@ -230,10 +231,10 @@ dressing). `this.maps3` gates every terrain branch (false only for a hand-built
   pool tile (from tiles/fades/index.json); exposing that per placement is
   not built.
 - **A NATURE WALL'S FOOT IS A TRANSITION TILE, AND A DECK SLAB COMPOSES
-  TRANSITIONS TOO** (`Tiles3Data.footBoundary` / `deckBoundary`; ONE Settings
-  switch "cliff-foot & lid transitions", `client/src/transitions.ts`, on by
-  default; off is the resolver's parity picture and the render3 fixtures
-  hold). Maintainer 2026-09-09: "When a nature wall (not a house, etc)
+  TRANSITIONS TOO** (`Tiles3Data.footBoundary` / `deckBoundary`, both always
+  true — the switch that turned them off is gone, maintainer 2026-09-12; the
+  render3 fixtures still hold the resolver's picture with both false).
+  Maintainer 2026-09-09: "When a nature wall (not a house, etc)
   intersect the ground we should make the ground a transition/boundary tile
   to make the connection look better", and on the cave lid "the ground up
   here also look very sharp and has no transition/boundary tiles". FOOT:
