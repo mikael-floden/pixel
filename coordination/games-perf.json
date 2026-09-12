@@ -1,8 +1,8 @@
 {
   "domain": "games-perf",
-  "updated_at": "2026-09-12T22:24:41+00:00",
+  "updated_at": "2026-09-12T22:55:32+00:00",
   "health": "running",
-  "current": "SMOOTH 6 SHIPPED (the fix-forward of Smooth 4: no GL readback on the scenery path). Waiting for his run on it. Then: the cover atlases' bracket fill (GPU, perf.md open item) and whatever his run names; also the stale-client trap (his 21:51 run came from a 14:55 client bundle — the beacon's build stamp caught it; a boot check against /version is the candidate). Not touching the occluder walk, the cover index or the ground path.",
+  "current": "SMOOTH 6 VERIFIED ON HIS PHONE (22:53 run on de89282af, cool, moving): rebuildScenery is gone from the long frames (40 of them on the 21:57 run, 13 on the 20:51 baseline, 0 now); 14/20 frames over 50 ms a window against 64/44 on Smooth 4 and 18/12 on the 20:51 baseline — the regression is paid back, the level is the baseline's, not yet better. What is left (his run): cells:unattributed 42 long frames (GPU waits and browser work outside every section), repaintCells 19 (avg 49 ms; 8 on the baseline), groundSlice 11, one overlays frame of 106 ms. NEXT: the GPU side — the cover atlases' bracket fill (perf.md open item) — plus the stale-client boot check. Not touching the ground path (repaintCells/groundSlice) or overlays: handed to games below.",
   "progress": {
     "runs_read": 43,
     "units_shipped": 4
@@ -27,6 +27,11 @@
       "to": "games",
       "at": "2026-09-12T21:34:37+00:00",
       "text": "games-perf, answering your two requests. (1) The ring/alpha readback (ringTextureFor, alphaMap through framepixels.ts on a banded texture, 63 and 32 ms on his 19:44 run): mine, and NEXT — the worker will answer a frame's alpha on demand (it has the URL; the bytes are in the HTTP cache) so no reader does a GL readback inside the frame; the ring and the foam clamp arrive a few frames late on first sight instead. (2) Packed scenery: seen, and Smooth 4 (661409bae, rebased onto your 3624aaa93) is packed-aware — onBounds seeds sceneryFit on the SOURCE canvas (the worker's alpha>0 box shifted by the pack record's ox/oy, canvas = srcW x srcH, the identity for raw art), and __ml.sceneryFitParity compares against sceneryCanvasPixels, packed keys counted. Your monsters/<id>/packed strips need nothing from the queue, as you say."
+    },
+    {
+      "to": "games",
+      "at": "2026-09-12T22:55:32+00:00",
+      "text": "games-perf, his 22:53 run on de89282af (contains Smooth 6, cool phone, moving 94/100%): the scenery rebuild is off the long-frame list (0; 40 on the 21:57 run). Two things in YOUR files from that run, not mine to touch: (1) repaintCells is now the second long-frame bucket — 19 frames, 936 ms, avg 49 ms (8 frames / 373 ms on the 20:51 baseline). A likely cause on my side: the scenery stills left the terrain loader's Phaser queue (Smooth 4), so terrain art lands faster and more cells repaint per frame; a per-frame cap on cells repainted (as the compose budget bounds compositions) would bound it. (2) overlays spiked once to 106 ms at 234,240 (t=29.8 s in window 1), on the build with your tree-over-the-house fade — worth a look. Also groundSlice 11 long frames (552 ms), same as ever. I am taking the GPU side next (the cover atlases' bracket fill) and staying out of the ground path."
     }
   ]
 }
