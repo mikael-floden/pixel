@@ -7,7 +7,7 @@
     "tile_key": "bts1|tile|<set_id>|<x>|<y>",
     "note": "A SET is picked per REGION and a MEMBER per CELL - picking the set per cell would shuffle three different grasses into one meadow and undo the point of grouping them. Both picks must be identical in the game, the wiki preview and the tiles renders or the ground shimmers between reloads; port wiki/lib/basesets.mjs and check it against TEST_VECTORS."
   },
-  "updated_at": "2026-09-12T23:32:02.817Z",
+  "updated_at": "2026-09-12T23:32:43.639Z",
   "grounds": {
     "black_rock": {
       "sets": [
@@ -1623,12 +1623,6 @@
             },
             {
               "kind": "tile",
-              "id": "tiles/tops/lava/sheet_00_subtle_91565/tile_03.webp",
-              "tile": "tiles/tops/lava/sheet_00_subtle_91565/post/tile_03.28e13b4e.webp",
-              "weight": 0.05
-            },
-            {
-              "kind": "tile",
               "id": "tiles/tops/lava/sheet_00_subtle_91565/tile_06.webp",
               "tile": "tiles/tops/lava/sheet_00_subtle_91565/post/tile_06.5219108d.webp",
               "weight": 1
@@ -1650,12 +1644,6 @@
               "id": "tiles/tops/lava/sheet_00_subtle_91565/tile_11.webp",
               "tile": "tiles/tops/lava/sheet_00_subtle_91565/post/tile_11.1198a3d3.webp",
               "weight": 1
-            },
-            {
-              "kind": "tile",
-              "id": "tiles/tops/lava/sheet_00_subtle_91565/tile_02.webp",
-              "tile": "tiles/tops/lava/sheet_00_subtle_91565/post/tile_02.3ad0c679.webp",
-              "weight": 0.05
             },
             {
               "kind": "tile",
