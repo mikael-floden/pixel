@@ -219,6 +219,7 @@ import {
   docUrl,
   faceKey as t3FaceKey,
   faceKeyAt as t3FaceKeyAt,
+  faceOwnKey as t3FaceOwnKey,
   dressKey as t3DressKey,
   sheetPaths,
   surfaceKey as t3SurfaceKey,
@@ -502,6 +503,14 @@ const OVERLAYS = [
 const INPUT_HZ = 20;
 const BUBBLE_MS = 5000;
 const PLACEHOLDER_TEX = "placeholder:wanderer";
+/** The indoor crossfade's sprite pool (WorldScene.debrisPool): how many to hold
+ *  ready and how many to make per frame while warming — 3,000 covers the
+ *  largest measured room (2,647) and 16 a frame is ~1 ms on his phone. */
+const DEBRIS_POOL_TARGET = 4000;
+const DEBRIS_WARM_PER_FRAME = 16;
+/** The crossfade layer's view cull, in world px past the camera (see
+ *  buildIndoorDebris3). */
+const INDOOR_DEBRIS_PAD = 96;
 /** THE PINK MOCK (maintainer 2026-09-08, driving the bisection himself): one
  *  already-resident 64x64 magenta texture that EVERY monster and EVERY scenery
  *  piece is drawn with in "mock" mode. The bodies, sprites, shadows, lit copies,
@@ -3206,6 +3215,37 @@ export class WorldScene extends Phaser.Scene {
    * outdoors). Null between transitions; never built for the kill-switch's
    * legacy scalar cut (QA wants instant frames). */
   private indoorDebris: Phaser.GameObjects.Image[] | null = null;
+  /** THE DEBRIS POOL (burst 4, 2026-09-12): the crossfade's sprites are
+   *  REUSED, never re-created — a cave entry built 2,647 of them in one frame
+   *  (measured headless; ~350 ms of a 487 ms flip on his phone). Warmed a
+   *  few per frame once the world is up (debrisWarm), taken with one
+   *  display-list add each and returned in ONE batch (a single filter of the
+   *  list, never a per-object indexOf). */
+  private debrisPool: Phaser.GameObjects.Image[] = [];
+  private debrisWarm(): void {
+    if (!this.worldUp || this.debrisPool.length >= DEBRIS_POOL_TARGET) return;
+    for (let i = 0; i < DEBRIS_WARM_PER_FRAME; i++)
+      this.debrisPool.push(this.make.image({ x: 0, y: 0, key: PLACEHOLDER_TEX, add: false }).setOrigin(0, 0).setVisible(false));
+  }
+  private debrisTake(x: number, y: number, key: string, depth: number, alpha: number): Phaser.GameObjects.Image {
+    const img = this.debrisPool.pop() ?? this.make.image({ x: 0, y: 0, key, add: false }).setOrigin(0, 0);
+    img.setTexture(key).setPosition(x, y).setDepth(depth).setAlpha(alpha).setVisible(true);
+    this.add.existing(img);
+    return img;
+  }
+  private debrisReturn(imgs: Phaser.GameObjects.Image[]): void {
+    const gone = new Set<Phaser.GameObjects.GameObject>(imgs);
+    const list = this.children.list;
+    let w = 0;
+    for (let r = 0; r < list.length; r++) if (!gone.has(list[r])) list[w++] = list[r];
+    list.length = w;
+    this.children.queueDepthSort();
+    for (const img of imgs) {
+      img.setVisible(false);
+      if (this.debrisPool.length < DEBRIS_POOL_TARGET * 2) this.debrisPool.push(img);
+      else img.destroy();
+    }
+  }
   private indoorAtCol = NaN; // the (cell, surface elev) the cached space is for
   private indoorAtRow = NaN;
   private indoorAtElev = NaN;
@@ -3473,6 +3513,11 @@ export class WorldScene extends Phaser.Scene {
   private occWin: { u0: number; u1: number; v0: number; v1: number } | null = null;
   private occWinMask: Map<number, number> | null = null;
   private occWinTop = 0;
+  /** The per-cell cut map the live set was walked under — a different map
+   *  means the cut cells (old and new) and their west/north neighbours are
+   *  walked again (repaintIndoorFlip); only the legacy scalar cut, which
+   *  rewrites every column, still forces a full walk. */
+  private occWinCuts: Map<number, number> | null = null;
   private occMetaByCell = new Map<number, (typeof this.occluderMeta)[number][]>();
   private occCellState = new Map<number, { partial: boolean; incomplete: boolean }>();
   private occRelanded = false;
@@ -6735,7 +6780,12 @@ export class WorldScene extends Phaser.Scene {
        *  walk produces. Every image and record of the full set must be in the
        *  live set; the live set may carry EXTRA images only for cells kept
        *  from an earlier step whose images the moving cull box would refuse
-       *  now (`extra`), never a record. Leaves the full set live. */
+       *  now (`extraSprites`, none of them in view), never a record. The
+       *  strict image diff (`missingImgs`) also counts the per-diagonal depth
+       *  slot, which is walk order: after a cut change re-walks cells out of
+       *  order it differs without ordering any two overlapping images (a
+       *  diagonal's cells sit side by side), so the gates read
+       *  `missingSprites` and `extraInView`. Leaves the full set live. */
       occIncCheck: () => {
         const dump = () => {
           const imgs = this.occluders.map((im) => `${im.texture.key}|${im.x}|${im.y}|${(im as OccTagged).ocBase}|${(im as OccTagged).ocCol},${(im as OccTagged).ocRow}|${im.tintTopLeft}|${Math.round(im.depth * 1e7)}`);
@@ -6749,6 +6799,10 @@ export class WorldScene extends Phaser.Scene {
         this.occForceStep = false;
         const inc = dump();
         const stepsBefore = this.occIncStats.steps;
+        const states = new Map<number, { partial: boolean; incomplete: boolean }>();
+        for (const [k, st] of this.occCellState) states.set(k, { ...st });
+        const buckets = new Set(this.occNext.keys());
+        const metas = new Set(this.occMetaByCell.keys());
         this.lastOccl = { x: NaN, y: NaN };
         this.rebuildOccluders();
         const full = dump();
@@ -6766,6 +6820,42 @@ export class WorldScene extends Phaser.Scene {
         };
         const missingImgs = diff(full.imgs, inc.imgs);
         const extraImgs = diff(inc.imgs, full.imgs);
+        // A record's fields from its END: a texture key may carry a pipe.
+        const parts = (k: string) => {
+          const f = k.split("|");
+          const n = f.length;
+          return { key: f.slice(0, n - 6).join("|"), x: Number(f[n - 6]), y: Number(f[n - 5]), base: f[n - 4], cell: f[n - 3], tint: f[n - 2], depth: f[n - 1] };
+        };
+        // The same, ignoring the depth slot and the tint: a difference that
+        // survives this is a sprite, not an ordering epsilon.
+        const loose = (k: string) => {
+          const q = parts(k);
+          return `${q.key}|${q.x}|${q.y}|${q.base}|${q.cell}`;
+        };
+        const missingLoose = diff(full.imgs.map(loose), inc.imgs.map(loose));
+        const extraLoose = diff(inc.imgs.map(loose), full.imgs.map(loose));
+        // Extras the camera could see now (the rest are cells kept from an
+        // earlier step, culled by the full walk's box and harmless).
+        const view = this.cameras.main.worldView;
+        const inView = (k: string) => {
+          const q = parts(k);
+          return q.x > view.x - 192 && q.x < view.right + 128 && q.y > view.y - 192 && q.y < view.bottom + 128;
+        };
+        const extraInView = extraLoose.filter(inView);
+        // The differences that are only a slot or a tint: the full record
+        // against the live record of the same sprite.
+        const missingSet = new Set(missingLoose);
+        const liveByLoose = new Map<string, string>();
+        for (const k of inc.imgs) liveByLoose.set(loose(k), k);
+        const slotDiff = missingImgs
+          .filter((k) => !missingSet.has(loose(k)))
+          .slice(0, 3)
+          .map((k) => {
+            const q = parts(k);
+            const live = liveByLoose.get(loose(k));
+            const l = live ? parts(live) : null;
+            return { cell: q.cell, key: q.key.split("/").pop(), full: `${q.tint}/${q.depth}`, live: l ? `${l.tint}/${l.depth}` : null };
+          });
         const missingMeta = diff(full.meta, inc.meta);
         const extraMeta = diff(inc.meta, full.meta);
         return {
@@ -6773,10 +6863,35 @@ export class WorldScene extends Phaser.Scene {
           inc: inc.imgs.length,
           full: full.imgs.length,
           missingImgs: missingImgs.length,
+          missingSprites: missingLoose.length,
+          sampleMissingSprites: missingLoose.slice(0, 3),
           extraImgs: extraImgs.length,
+          extraSprites: extraLoose.length,
+          extraInView: extraInView.length,
+          sampleExtraSprites: extraInView.slice(0, 3),
+          slotDiff,
           missingMeta: missingMeta.length,
           extraMeta: extraMeta.length,
           sampleMissing: missingImgs.slice(0, 3),
+          // WHY a missing image is missing: the live walk's record of its cell.
+          missingCells: missingLoose.slice(0, 6).map((k) => {
+            const q = parts(k);
+            const [c, r] = q.cell.split(",").map(Number);
+            const idx = r * (this.world?.width ?? 1) + c;
+            const short = (s: string) => {
+              const w = parts(s);
+              return `${w.key.split("/").pop()}|y${w.y}`;
+            };
+            return {
+              cell: q.cell,
+              state: states.get(idx) ?? null,
+              bucket: buckets.has(idx),
+              meta: metas.has(idx),
+              texExists: this.textures.exists(q.key),
+              live: inc.imgs.filter((s) => parts(s).cell === q.cell).map(short),
+              full: full.imgs.filter((s) => parts(s).cell === q.cell).map(short),
+            };
+          }),
           sampleExtra: extraImgs.slice(0, 3),
           sampleMissingMeta: missingMeta.slice(0, 2),
         };
@@ -11156,6 +11271,7 @@ export class WorldScene extends Phaser.Scene {
     this.t3drainDrops();
     this.t3drainTick();
     this.artQueue().tick(); // streamed art becomes textures here, under the budget
+    this.debrisWarm(); // the indoor crossfade's sprite pool, a few a frame
     if (!this.room) return;
     const dt = delta / 1000;
     const myId = this.myId;
@@ -15158,10 +15274,11 @@ export class WorldScene extends Phaser.Scene {
     this.indoorFlipAt = now;
     this.indoorFlips++;
     if (inside) {
+      const prevCuts = this.indoorCut;
       this.ps();
       this.refreshIndoorMask();
       this.pe("indoorMask");
-      this.repaintWorld();
+      this.repaintIndoorFlip(prevCuts);
       // THE ENTRY FADE (maintainer 2026-08-13: "the sudden roof pop is
       // dominating the transition"). The world above just repainted to the
       // cut state, but the debris layer — the exact art the cut removed — is
@@ -15187,8 +15304,46 @@ export class WorldScene extends Phaser.Scene {
     // Nothing was drawn (never really committed), the world is going away, or
     // the legacy kill-switch cut is active (no per-cell map to fade) — the
     // old instant transition.
+    const prevCuts = this.indoorCut;
     this.clearIndoorDrawState();
-    this.repaintWorld();
+    this.repaintIndoorFlip(prevCuts);
+  }
+
+  /** THE FLIP REPAINTS WHAT THE CUT CHANGED, NOT THE WORLD (burst 4,
+   *  2026-09-12). A cave crossing used to be a full ground paint (40 ms), a
+   *  full occluder walk (40 ms) and the destruction of the whole old set
+   *  (120 ms) — four crossings in one 30 s window on his phone, 150-490 ms a
+   *  frame. Only the cells IN a cut (old or new) draw differently, plus their
+   *  west and north neighbours' faces (the exposed-face rule reads the east
+   *  and south neighbour's cut): the ground repaints those cells through the
+   *  clipped cell path under the NEW indoor state (the anchor's mask and top
+   *  are moved first — repaintTiles3Cells paints under the anchor's), and the
+   *  occluder rebuild finds the cut change itself (occWinCuts) and re-walks
+   *  the same cells, the pool giving back every image that did not change.
+   *  The legacy scalar cut (no per-cell map) still paints in full. */
+  private repaintIndoorFlip(prevCuts: Map<number, number> | null): void {
+    const mask = this.indoorMask; // the drawn mask (null once an exit has landed)
+    const cuts = mask ? this.indoorCut : null;
+    const a = this.groundAnchor;
+    const perCell = !mask || !!cuts;
+    if (!a || !perCell || Number.isNaN(this.lastGround.x)) {
+      this.repaintWorld();
+      return;
+    }
+    const cells = new Set<number>();
+    if (prevCuts) for (const k of prevCuts.keys()) cells.add(k);
+    if (cuts) for (const k of cuts.keys()) cells.add(k);
+    // The anchor's indoor state moves to the new one: the cell path paints
+    // under it, and the scroll keeps going from it. Queued slices and pending
+    // landing repaints are left alone — nothing here supersedes them.
+    a.mask = mask;
+    a.top = this.indoorTop;
+    this.ps();
+    this.repaintTiles3Cells([...cells]);
+    this.pe("repaintCells");
+    this.ps();
+    this.rebuildOccluders();
+    this.pe("rebuildOccluders");
   }
 
   /** Drop everything the cut-away DRAWS from — the mask, the per-cell cuts,
@@ -15202,7 +15357,7 @@ export class WorldScene extends Phaser.Scene {
 
   private destroyIndoorDebris() {
     if (!this.indoorDebris) return;
-    for (const img of this.indoorDebris) img.destroy();
+    this.debrisReturn(this.indoorDebris);
     this.indoorDebris = null;
   }
 
@@ -15486,17 +15641,22 @@ export class WorldScene extends Phaser.Scene {
     if (!t3 || !tex) return;
     const { dx, dy, lh, tile: tileSize } = this.geom;
     const cam = this.cameras.main;
-    const cx0 = cam.worldView.x - OCC_CULL_PAD;
-    const cx1 = cam.worldView.right + OCC_CULL_PAD;
-    const cy0 = cam.worldView.y - OCC_CULL_PAD;
-    const cy1 = cam.worldView.bottom + OCC_CULL_PAD;
+    /* THE FADE LAYER'S OWN CULL: the camera plus INDOOR_DEBRIS_PAD, not the
+     * occluders' 360 px. The layer exists for the ~0.4 s of the crossfade and
+     * the exit swap needs it to cover ≤ ~60 px of camera drift (easeIndoorMix);
+     * at the occluders' pad a cave exit built 7,035 sprites, at this one a
+     * third of that. */
+    const cx0 = cam.worldView.x - INDOOR_DEBRIS_PAD;
+    const cx1 = cam.worldView.right + INDOOR_DEBRIS_PAD;
+    const cy0 = cam.worldView.y - INDOOR_DEBRIS_PAD;
+    const cy1 = cam.worldView.bottom + INDOOR_DEBRIS_PAD;
     const shows = (ix: number, iy: number) =>
       ix + tileSize >= cx0 && ix <= cx1 && iy + tileSize >= cy0 && iy <= cy1;
     const a = this.debrisAlpha();
     const out: Phaser.GameObjects.Image[] = [];
     const push = (x: number, y: number, key: string, depth: number) => {
       if (!this.textures.exists(key)) return;
-      out.push(this.add.image(x, y, key).setOrigin(0, 0).setDepth(depth).setAlpha(a));
+      out.push(this.debrisTake(x, y, key, depth, a));
     };
     for (const [idx, cutE] of cuts) {
       const col = idx % world.width;
@@ -15961,8 +16121,9 @@ export class WorldScene extends Phaser.Scene {
       // and drop the fade layer in the same frame. This is the repaint
       // commitIndoor deliberately did not do at the flip.
       if (this.indoorMask) {
+        const prevCuts = this.indoorCut;
         this.clearIndoorDrawState();
-        this.repaintWorld();
+        this.repaintIndoorFlip(prevCuts);
       }
     }
   }
@@ -18772,7 +18933,8 @@ export class WorldScene extends Phaser.Scene {
          * is the row of ticks that rule exists to prevent. */
         if (cell.kind !== "wall" && cell.level <= 0) return;
         const topKey = t3SurfaceKey(tex, this.t3tm, cell);
-        const fk = t3FaceKey(this.t3tm, cell) ?? topKey;
+        const mid = t3FaceKey(this.t3tm, cell);
+        const fk = mid ?? topKey;
         if (!topKey || !fk) {
           st.incomplete = true; // art still streaming: walked again when it lands
           return;
@@ -18782,8 +18944,14 @@ export class WorldScene extends Phaser.Scene {
         const cutL = (c: number, r: number): number => {
           const n = world.rows[r]?.[c];
           if (!n) return -1;
+          // A cell without a level counts as stackFrom counts it (`?? -1`):
+          // `n.l` undefined made this NaN, and a NaN `from` drew NO faces on
+          // every wall beside such a cell whenever a mask was on — which is
+          // also why a cut change re-walking only the cut cells left far walls
+          // differing from a full walk (measured: 9-54 face images).
+          const lv = n.l ?? -1;
           const e = cuts ? cuts.get(r * world.width + c) : top;
-          return e === undefined ? n.l : Math.min(n.l, e);
+          return e === undefined ? lv : Math.min(lv, e);
         };
         // Only the EXPOSED faces, from the lowest front neighbour up — the same
         // rule the world@2 branch has: redrawing the covered lower faces on top
@@ -18804,6 +18972,10 @@ export class WorldScene extends Phaser.Scene {
            * what put a single repeated tile down the whole height of every
            * mountain on the maintainer's screen, with the correctly varied
            * ground texture painted underneath it and covered. */
+          // A storey whose own tile is still streaming draws the mid tile for
+          // now (faceKeyAt's substitute) and is walked again when it lands.
+          const own = t3FaceOwnKey(cell, lvl);
+          if (own && !this.t3tm.exists(own)) st.incomplete = true;
           const faceArt = t3FaceKeyAt(this.t3tm, cell, lvl) ?? fk;
           this.occTint(this.occImage(faceArt, bx, by - lvl * lh, oDepth, col, row), "face");
         }
@@ -18832,6 +19004,11 @@ export class WorldScene extends Phaser.Scene {
            * ground texture, so the two passes agree. */
           const lid = topL < cell.level ? t3CutLidKey(tex, cell) : null;
           const capKey = topL === cell.level ? topKey : lid && capSurface !== null ? lid : fk;
+          // A cut wall's cap course is the mid tile (the ground pass's own cut
+          // op asks for it); while it streams the cap tile stands in and the
+          // cell is walked again when it lands — the last face a full walk
+          // found that the incremental set lacked (three at the cave mouth).
+          if (topL < cell.level && capSurface === null && !mid && cell.wall?.mid.path) st.incomplete = true;
           this.occTint(this.occImage(capKey, capX, capY, oDepth, col, row), "cap");
           if (lid && capSurface === null)
             this.occTint(this.occImage(lid, cell.sx, (cell.pasteY ?? cell.sy) + (cell.level - topL) * lh, oDepth, col, row), "cap");
@@ -20844,7 +21021,13 @@ export class WorldScene extends Phaser.Scene {
     const ccy = cam.worldView.centerY;
     const poisoned = Number.isNaN(this.lastOccl.x);
     const moved = poisoned || this.occForceStep || Math.abs(ccx - this.lastOccl.x) >= 96 || Math.abs(ccy - this.lastOccl.y) >= 96;
-    if (!moved && !this.occRelanded) return;
+    // THE DRAWN MASK, not the verdict: the exit fade keeps the cut world
+    // (mask and cuts stay until the light grade lands and clearIndoorDrawState
+    // drops them), and the occluders keep it with the ground.
+    const maskNow = this.indoorMask;
+    const cutsNow = maskNow ? this.indoorCut : null;
+    const cutChanged = !!this.occWin && (this.occWinMask !== maskNow || this.occWinCuts !== cutsNow);
+    if (!moved && !this.occRelanded && !cutChanged) return;
     if (moved) this.lastOccl = { x: ccx, y: ccy };
     const tDestroy = performance.now();
     this.occReused = 0;
@@ -20856,7 +21039,7 @@ export class WorldScene extends Phaser.Scene {
     // as a sprite at depth `by+dy`, floating over a ground that has already
     // deleted it. (commitIndoor poisons BOTH camera latches for the same
     // reason — they fire on different thresholds.)
-    const mask = this.indoorInside ? this.indoorMask : null;
+    const mask = this.indoorMask; // the drawn mask — see maskNow above
     const top = this.indoorTop; // the cut: highest level any column still draws
     const cuts = mask ? this.indoorCut : null; // per-wall raises past it
 
@@ -20934,8 +21117,25 @@ export class WorldScene extends Phaser.Scene {
      * change — the cut mask rewrites every column. */
     const W = this.world.width;
     const cur = { u0, u1, v0, v1 };
-    const full =
-      !this.occIncOn || !this.occPoolOn || poisoned || !this.occWin || this.occWinMask !== mask || this.occWinTop !== top;
+    /* A CUT CHANGE IS INCREMENTAL TOO when both sides are per-cell maps (or
+     * no mask at all): the cells of either map and their west/north
+     * neighbours. The legacy scalar cut (`mask && !cuts`, the QA kill
+     * switch) rewrites every column and keeps the full walk. */
+    const scalarCut = (!!mask && !cuts) || (!!this.occWinMask && !this.occWinCuts);
+    const full = !this.occIncOn || !this.occPoolOn || poisoned || !this.occWin || (cutChanged && scalarCut) || (this.occWinTop !== top && scalarCut);
+    let flip: Set<number> | null = null;
+    if (!full && cutChanged) {
+      flip = new Set<number>();
+      const add = (k: number) => {
+        const c = k % W;
+        const r = (k - c) / W;
+        flip!.add(k);
+        if (c > 0) flip!.add(k - 1);
+        if (r > 0) flip!.add(k - W);
+      };
+      if (this.occWinCuts) for (const k of this.occWinCuts.keys()) add(k);
+      if (cuts) for (const k of cuts.keys()) add(k);
+    }
     // LIT COPIES ARE OUTSIDE THE POOL — rebuildScenery recreates them in
     // creation order every pass (that order is what keeps their ties right).
     this.destroyBatch(this.litOccluders.flatMap((lo) => (lo.fog ? [lo.img, lo.fog] : [lo.img])));
@@ -21001,10 +21201,11 @@ export class WorldScene extends Phaser.Scene {
           const row = (v - u) / 2;
           if (col < 0 || row < 0 || col >= W || row >= this.world.height) continue;
           const k = row * W + col;
-          if (!moved && !this.occRelanded) continue;
+          if (!moved && !this.occRelanded && !flip) continue;
           const st = this.occCellState.get(k);
           const entered = !inWin(u, v, prev) || !st;
-          if (moved ? entered || st!.partial || st!.incomplete : st?.incomplete) rewalk.add(k);
+          if (flip?.has(k)) rewalk.add(k);
+          else if (moved ? entered || st!.partial || st!.incomplete : st?.incomplete) rewalk.add(k);
         }
       // Their images become the pool (occImage reuses the unchanged ones),
       // their meta is rebuilt by the walk.
@@ -21025,6 +21226,7 @@ export class WorldScene extends Phaser.Scene {
     this.occWin = cur;
     this.occWinMask = mask;
     this.occWinTop = top;
+    this.occWinCuts = cuts;
     this.occRelanded = false;
     // The flat views every consumer reads (the per-frame cull, the cover
     // index, the beacon, the depth rule), from the per-cell buckets.

@@ -681,6 +681,18 @@ export function faceKey(tex: TextureManagerLike, cell: Tiles3Cell): string | nul
  *
  *  Falls back to the representative course when this storey's own art has not
  *  landed — a band with a hole in it is a body drawn through a mountain. */
+/** THE STOREY'S OWN TILE KEY, resident or not — what `faceKeyAt` substitutes
+ *  the mid tile for while it streams. An occluder walk that took the
+ *  substitute marks its cell incomplete on this, so a landing walks it again
+ *  (measured 2026-09-12: a full walk after the art landed found 13-54 face
+ *  images the incremental set had drawn with the mid tile). */
+export function faceOwnKey(cell: Tiles3Cell, storey: number): string | null {
+  const w = cell.wall;
+  if (!w) return null;
+  const s = w.stack.length ? w.stack[storey - w.stack[0].storey] : undefined;
+  return s && s.storey === storey && s.tile.path ? artKey(s.tile.path) : null;
+}
+
 export function faceKeyAt(
   tex: TextureManagerLike,
   cell: Tiles3Cell,

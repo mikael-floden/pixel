@@ -37,9 +37,10 @@ for (const on of [true,false]) {
     if (!t) continue;
     for (let i=0;i<40;i++){ await sleep(200); if(!(await page.evaluate(()=>!!window.__ml.target()))) break; }
     const chk = await page.evaluate(()=>{ const s=window.__ml.occInc(); const c=window.__ml.occIncCheck(); const m=window.__ml.me(); return {s,c,me:m?[Math.round(m.x),Math.round(m.y)]:null}; });
-    const bad = chk.c.missingImgs || chk.c.missingMeta || chk.c.extraMeta;
+    // Sprites and records, not the depth slot (see occIncCheck's contract).
+    const bad = chk.c.missingSprites || chk.c.extraInView || chk.c.missingMeta || chk.c.extraMeta;
     if (bad) fail++;
-    console.log(`${on?"INC ":"FULL"} trip ${trip} @${chk.me}: steps ${chk.s.steps} walked ${chk.s.walked} of ${chk.s.cells} cells (partial ${chk.s.partial} incomplete ${chk.s.incomplete}) | inc ${chk.c.inc} full ${chk.c.full} missingImgs ${chk.c.missingImgs} extraImgs ${chk.c.extraImgs} missingMeta ${chk.c.missingMeta} extraMeta ${chk.c.extraMeta} ${bad?"  <-- DIFF "+JSON.stringify([chk.c.sampleMissing,chk.c.sampleMissingMeta]).slice(0,500):""}`);
+    console.log(`${on?"INC ":"FULL"} trip ${trip} @${chk.me}: steps ${chk.s.steps} walked ${chk.s.walked} of ${chk.s.cells} cells (partial ${chk.s.partial} incomplete ${chk.s.incomplete}) | inc ${chk.c.inc} full ${chk.c.full} missingSprites ${chk.c.missingSprites} extraInView ${chk.c.extraInView} (slot-only ${chk.c.missingImgs}) missingMeta ${chk.c.missingMeta} extraMeta ${chk.c.extraMeta} ${bad?"  <-- DIFF "+JSON.stringify([chk.c.sampleMissingSprites,chk.c.sampleExtraSprites,chk.c.sampleMissingMeta]).slice(0,500):""}`);
   }
   const p = await page.evaluate(()=>window.__ml.perf());
   const ro = p.sections.rebuildOccluders || {n:0,totalMs:0,avgMs:0,maxMs:0};

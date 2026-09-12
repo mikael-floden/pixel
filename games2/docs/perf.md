@@ -63,6 +63,33 @@ The ground render texture (scroll, slices, cell repaints, prefetch, compose budg
   and the old shader test both provoked `litShapeJobs` bursts of 50-400 ms
   (shape maps rebuilt for the substituted textures), so a scenery-mock run
   is not a clean ceiling.
+- **THE INDOOR FLIP IS INCREMENTAL** (`repaintIndoorFlip`, `debrisPool`,
+  `occWinCuts`, 2026-09-12). Crossing a cave or house threshold used to be
+  a full ground paint, a full occluder walk, the destruction of the whole
+  old set (the 120-160 ms cleanup frame after) and a crossfade layer of
+  every removed sprite built in one frame — his mountain window carried four
+  crossings at 150-490 ms a frame, 350 ms of it the 2,647-sprite debris
+  build. Now: (1) the ground repaints only the cells IN a cut, old or new,
+  through the clipped cell path under the NEW indoor state — the anchor's
+  mask and top are moved first, because `repaintTiles3Cells` paints under
+  the anchor's — pixel-identical to a full paint after every crossing
+  (`scripts/verify-cave.mjs`; the legacy scalar cut still paints in full);
+  (2) the occluder rebuild finds the cut change itself (`occWinCuts`) and
+  re-walks those cells plus their west and north neighbours (the
+  exposed-face rule reads the east and south neighbour's cut), the pool
+  giving back every unchanged image; (3) the crossfade's sprites come from
+  a POOL warmed 16 a frame once the world is up (4,000; taken with one
+  display-list add, returned in one batch filter) and are culled to the
+  camera plus 96 px instead of the occluders' 360 — a cave exit at the old
+  pad built 7,035 of them, now a third. A storey drawn with the mid tile
+  while its own tile streams (`faceKeyAt`'s substitute), and a cut wall's
+  cap course drawn with the cap tile while the mid streams, mark their cell
+  incomplete (`faceOwnKey`), so a landing walks it again — a full walk used
+  to find 13-54 such faces the incremental set lacked. Gate:
+  `scripts/verify-cave.mjs` (four crossings: 0 sprites missing, 0 extra in
+  view, the ground hash equal to a full paint after each; `INC=0` is the
+  full-paint control). The only difference left is the per-diagonal depth
+  slot, which is walk order and never orders two overlapping images.
 - **THE RESOLUTION DIAL** (`client/src/resolution.ts`, the slider in
   `resdial.ts` just above the HUD's "Light resolution", 2026-09-12): the
   canvas backing is `devicePixelRatio` (capped at 4) × the dial — 1, 1/2,
@@ -147,9 +174,11 @@ The ground render texture (scroll, slices, cell repaints, prefetch, compose budg
   column). Measured headless, spawn area, 10 run trips each: the walk 2.85 ms
   avg / 9.2 max per step → 0.26 avg / 3.8 max (~80-100 cells walked per step
   of ~1,900), and the incremental set IDENTICAL to a fresh full walk at every
-  check — same images, same depths, same meta — except kept cells' images the
-  cull box would now refuse, which stay (harmless: a few extra sprites, never
-  a missing one). `scripts/verify-occinc.mjs` is that check (`__ml.occInc()`
+  check — same images, same meta — except kept cells' images the cull box
+  would now refuse, which stay (harmless: a few extra sprites, none in view,
+  never a missing one), and the per-diagonal depth slot after a cut change
+  (walk order; a diagonal's cells sit side by side, so it never orders two
+  overlapping images). `scripts/verify-occinc.mjs` is that check (`__ml.occInc()`
   counters and A/B — `occInc(false)` walks the window every step;
   `__ml.occIncCheck()` steps to the exact camera, then compares against a
   full walk). NOT time-slicing the full walk across frames (stash of
