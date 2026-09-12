@@ -137,6 +137,50 @@ STATES = {
                  "drift_pass": 12.0, "drift_warn": 24.0,
                  "flash_warn": 0.04, "flash_max": 0.10},
     },
+    # A die must END DEAD. Measured on his own 57 shipped dies (east): 34 are
+    # 4 frames; the last frame differs from the first by 0.27–1.41 of the
+    # silhouette (median 0.90 — the body is DOWN or GONE) where an idle's loop
+    # closes under 0.05; silhouette step median 0.42, up to 0.93; the body's
+    # height at the end is a median 0.71 of the start and 10 of 57 end fully
+    # transparent. His wording is "faints and fades away" for 30 of them, the
+    # rest creature-specific (melts into a puddle, cracks into a crystal pile,
+    # burns up) — `die_action` per design carries that. Frame 0 is the base
+    # (every clip starts from the idle pose, as his do) and the end is FREE:
+    # the game plays a die once into the 1.1 s corpse window and never comes
+    # back, so nothing may pin the end.
+    "die": {
+        "action": "Death - Faints, collapses to the ground and fades away",
+        # SIX frames, not the attack's four (A/B on Warmaul south, 2026-09-12):
+        # at 4 the model stands still for two frames and drops into a heap on
+        # the third; at 6 it staggers, kneels, goes to its hands and lies down;
+        # at 8 it pads five standing frames in front of the same 3-frame fall.
+        "frames": 6,
+        "frame_ladder": [6, 6, 8, 6, 6, 8, 6, 6, 8, 6],
+        "pin_end": False,
+        "keep_first": True,
+        "facing": False,        # a body on the ground matches neither base — that check is noise here
+        "band": {"step_pass": (0.100, 0.900), "step_warn": (0.050, 1.200),
+                 # the centroid falls with the body: his 57 drift a median 20 px,
+                 # p90 38, max 57 on canvases of 64–256 — 35 % / 55 % of the width
+                 "drift_pass": 12.0, "drift_warn": 24.0, "drift_rel": (0.35, 0.55),
+                 # last frame vs first: his minimum 0.27, p10 0.53
+                 "fall_pass": 0.40, "fall_warn": 0.25,
+                 "flash_record": True},
+        # a die's own ladder: a clip that stays standing asks for a bigger
+        # collapse, one that overflowed the canvas asks for a plainer one —
+        # never the attack's swing/claw/extreme rungs
+        "amplify": [
+            "",
+            ", a heavy dramatic collapse, the whole body going down onto the ground",
+            ", collapses completely and lies flat on the ground, then fades away entirely",
+            ", the whole body crumples to the ground and dissolves away to nothing",
+        ],
+        "calm": [
+            "",
+            ", a simple slow collapse, nothing added around it",
+            ", only the body sinks down, no clouds, no smoke, no effects around it",
+        ],
+    },
 }
 # Maintainer 2026-09-10: "on some monsters you have to give a more and more
 # extreme prompt until you get the movement you want. It's different for
@@ -171,7 +215,8 @@ SIMPLE_LUNGE = ("Lunge Attack - Throws its whole body forward in one fast lunge,
                 "white swoosh lines trailing behind it")
 FRAME_LADDER = [4, 6, 4, 8, 4, 6, 4, 8, 6, 4]
 MAX_TRIES = 10          # "keep retrying maybe 10 times before you give up the entire animation"
-TOO_LITTLE = ("no strike", "just a lean", "weak strike", "frozen", "shallow strike", "outside the calm band")
+TOO_LITTLE = ("no strike", "just a lean", "weak strike", "frozen", "shallow strike", "outside the calm band",
+              "still standing", "barely falls")
 TOO_MUCH = ("too much", "drifts", "walks across", "slides across", "wrapped around",
             "outside the frame", "out of frame", "outside the screen", "goes outside")
 
@@ -187,11 +232,19 @@ def rung_for(prev_rung, reasons):
     return min(prev_rung + 1, len(AMPLIFY) - 1 + 3)
 
 
-def ladder_action(cid, rung, base_action):
+def ladder_action(cid, rung, base_action, state="attack"):
     """The wording for a rung. Climbing goes: the creature's own attack, the
     same amplified, a SIMPLER swooshing attack, then its hand-written EXTREME
     event, and from there that event amplified without end. Negative rungs
-    calm the creature's own attack down instead."""
+    calm the creature's own attack down instead. A state with its own rungs
+    (`amplify`/`calm` on its STATES entry — die) climbs those and never
+    borrows the attack's swing, claw or extreme event."""
+    own = STATES.get(state) or {}
+    if own.get("amplify"):
+        amp, calm = own["amplify"], own.get("calm") or CALM
+        if rung < 0:
+            return base_action + calm[min(-rung, len(calm) - 1)]
+        return base_action + amp[min(rung, len(amp) - 1)]
     extreme = design_flag(cid, "attack_extreme")
     simple = CLAW_SLASH if design_flag(cid, "claws") else SIMPLE_LUNGE
     if rung < 0:
@@ -400,9 +453,11 @@ def _reach(ops, base_op, cap=48):
     return (max(out) / scale) if out else 0.0
 
 
-def frames_for(rolls):
-    """How many frames this roll asks PixelLab for (see FRAME_LADDER)."""
-    return FRAME_LADDER[(max(1, int(rolls or 1)) - 1) % len(FRAME_LADDER)]
+def frames_for(rolls, state="attack"):
+    """How many frames this roll asks PixelLab for: the state's own ladder when
+    it has one (die), else FRAME_LADDER."""
+    ladder = (STATES.get(state) or {}).get("frame_ladder") or FRAME_LADDER
+    return ladder[(max(1, int(rolls or 1)) - 1) % len(ladder)]
 
 
 def _facing_walk(cid, frames):
@@ -457,7 +512,7 @@ def qa_clip(cid, state, d, frames, pinned=None, claw_take=False, want_frames=Non
     travel = float(max(xs) - min(xs))
     loop_ratio = float(loop / step_mean) if step_mean > 1e-6 else 0.0
     # facing: mid frames must match own base better than the mirrored opposite base
-    if d in OPPOSITE:
+    if d in OPPOSITE and spec.get("facing", True):
         opp = ImageOps.mirror(on_canvas(rotation(cid, OPPOSITE[d]), frames[0].size))
         bo = _sil(opp)
         own = np.mean([_iou(b0, o) for o in ops[1:]])
@@ -483,7 +538,7 @@ def qa_clip(cid, state, d, frames, pinned=None, claw_take=False, want_frames=Non
     # as a 112 px goblin bobbing 3 (the maintainer's 37 walks: median 2.2 px,
     # max 13 on a 256 px canvas)
     W0 = rotation(cid, d).width
-    rel = (0.08, 0.15) if "peak_pass" in band else (0.03, 0.05)
+    rel = band.get("drift_rel") or ((0.08, 0.15) if "peak_pass" in band else (0.03, 0.05))
     d_pass, d_warn = max(band["drift_pass"], rel[0] * W0), max(band["drift_warn"], rel[1] * W0)
     if drift > d_warn:
         reasons.append(f"drifts {drift:.1f} px (> {d_warn:.0f})"); status = "fail"
@@ -495,7 +550,7 @@ def qa_clip(cid, state, d, frames, pinned=None, claw_take=False, want_frames=Non
             reasons.append(f"no strike: peak {peak:.3f} of the silhouette away from the base"); status = "fail"
         elif peak < band["peak_pass"]:
             reasons.append(f"weak strike: peak {peak:.3f} — eyeball it"); status = "warn" if status != "fail" else status
-    flash = _flash(frames) if "flash_max" in band else 0.0
+    flash = _flash(frames) if ("flash_max" in band or band.get("flash_record")) else 0.0
     # RECORDED, NEVER GATED: this measure agrees with him on three of his
     # redo notes and then rates a direction he APPROVED (Cragtroll east) worse
     # than all of them. Facing is his call — "I don't trust your eyes to
@@ -521,6 +576,13 @@ def qa_clip(cid, state, d, frames, pinned=None, claw_take=False, want_frames=Non
             reasons.append(f"shallow strike: reach {rch:.2f} — eyeball it"); status = "warn" if status != "fail" else status
     else:
         rch = None
+    if "fall_pass" in band:
+        # a die must END DEAD: the last frame is the body down or gone, never
+        # the pose it started in (his 57: last vs first 0.27–1.41, median 0.90)
+        if loop < band["fall_warn"]:
+            reasons.append(f"still standing: the last frame is only {loop:.2f} of the silhouette away from the first — no collapse"); status = "fail"
+        elif loop < band["fall_pass"]:
+            reasons.append(f"barely falls: last vs first {loop:.2f} — eyeball it"); status = "warn" if status != "fail" else status
     if "loop_max" in band and loop > band["loop_max"]:
         reasons.append(f"loop does not close (last vs first {loop:.3f})"); status = "fail"
     elif "loop_warn" in band and loop > band["loop_warn"]:
@@ -566,6 +628,7 @@ def qa_clip(cid, state, d, frames, pinned=None, claw_take=False, want_frames=Non
             "travel": round(travel, 2), "pin": round(float(pin), 3), "pad": pad, "flash": round(flash, 3),
             "peak": (round(peak, 4) if "peak_pass" in band else None),
             "reach": (round(rch, 3) if rch is not None else None), "turn": turn,
+            "end_area": round(float(ops[-1].sum() / max(1, ops[0].sum())), 3),
             "canvas": list(frames[0].size), "reasons": reasons}
 
 
@@ -647,15 +710,19 @@ def generate_state(client, cid, state, dirs, version, verbose=True, pin=False):
         # makes its views agree with one another — and it fixes its own frame
         # count at 4. So every direction of a monster shares one wording: the
         # rung its worst direction has climbed to.
-        rung = 0
+        rung = None
         for d in dirs:
             old = rec["directions"].get(d, {})
             r = old.get("rung", 0)
             if old.get("status") == "fail":
                 r = rung_for(r, old.get("reasons"))
-            rung = max(rung, r)
+            # the loudest direction sets the wording — and a NEGATIVE rung must
+            # be reachable (a `max` seeded with 0 pinned every PRO roll at the
+            # plain attack: a clip that failed for drifting could never calm)
+            rung = r if rung is None else max(rung, r)
             tries[d] = (old.get("rolls", 0) + 1) if old.get("status") == "fail" else 1
-        action = ladder_action(cid, rung, rec["action"])
+        rung = rung or 0
+        action = ladder_action(cid, rung, rec["action"], base_state(state))
         for d in dirs:
             actions[d], rungs[d], counts[d] = action, rung, spec["frames"]
         ids = client.animate_pro(man["pixellab_id"], action, dirs, name=state,
@@ -673,7 +740,7 @@ def generate_state(client, cid, state, dirs, version, verbose=True, pin=False):
     keep = collections.Counter(
         n for d, n in frame_counts(cid, state).items()
         if d in GEN_DIRS and (rec.get("directions", {}).get(d, {}).get("status") in ("pass", "warn")))
-    nf = keep.most_common(1)[0][0] - 1 if keep else frames_for(max(_prev) + 1 if _prev else 1)
+    nf = keep.most_common(1)[0][0] - 1 if keep else frames_for(max(_prev) + 1 if _prev else 1, base_state(state))
     for d in dirs:
         seed = seed_for(cid, state, d, version)
         pinned = spec["pin_end"] or pin
@@ -687,7 +754,7 @@ def generate_state(client, cid, state, dirs, version, verbose=True, pin=False):
             rung = rung_for(rung, old.get("reasons"))
         rungs[d] = rung
         tries[d] = (old.get("rolls", 0) + 1) if old.get("status") == "fail" else 1
-        action = ladder_action(cid, rung, rec["action"])
+        action = ladder_action(cid, rung, rec["action"], base_state(state))
         actions[d] = action
         counts[d] = nf
         job = client.animate_v3(man["pixellab_id"], state, action, d,

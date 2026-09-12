@@ -339,6 +339,45 @@ The rules that produce a real strike:
   after repair steps the ladder down to calmer wording — overflow means too
   much, never too little.
 
+### Die — it must END DEAD: frame 0 pinned, SIX frames, the end free
+
+Slot `die_v1` on the 39 approved candidates (monsters-assistant, 2026-09-12;
+`animate.py die --slot die_v1`, resumable like the others). The game plays a
+die once into the server's 1.1 s corpse window and never returns to it, so
+nothing pins the end. The rules, measured on his own 57 shipped dies (east):
+- **His wording is the model**: "faints and fades away" for 30 of the 57, the
+  rest creature-specific ("Melts into a puddle of water and disappears",
+  "Cracks and turns into a crystal pile", "Burns up in a flame"). Every design
+  carries a `die_action` in that style — what the body does, then it fades:
+  the armor collapses into a heap of plates, the elemental collapses into a
+  puddle, the treant topples like a felled tree. The default is his majority
+  line.
+- **Frame 0 is the base (`keep_first`), the end is FREE, six generated
+  frames** (7 stored). A/B on Warmaul south: at 4 frames the model stands
+  still for two frames and drops into a heap on the third; at 6 it staggers,
+  kneels, goes to its hands and lies down; at 8 it pads five standing frames
+  in front of the same 3-frame fall. The die ladder walks 6, 6, 8, never 4.
+- **The gate is the LAST frame, not the loop**: `loop` (last vs first
+  silhouette, the idle's "must close" number) must be ≥ 0.40 to pass, ≥ 0.25
+  to warn, below is "still standing" and fails — his 57 run 0.27–1.41,
+  median 0.90 (the body is down or gone); a clip that keeps standing scores
+  0.11–0.25 (Pebblemite, Stonegaze east on the first roll). Silhouette step
+  0.10–0.90 (his median 0.42), drift is expected (his median 20 px — the
+  centroid falls with the body) and only fails past 55 % of the canvas. The
+  facing check is off: a body on the ground matches neither base. Flash is
+  recorded, never gated. `end_area` (last frame's opaque area over frame 0)
+  goes on the record: 10 of his 57 end fully transparent, most end at
+  0.5–0.9 — a solid corpse the game removes is fine; "fades away" is mostly
+  ignored by the model and that is no loss.
+- **The die ladder is its own** (`amplify`/`calm` on the STATES entry): a
+  "still standing" fail asks for a heavier collapse, an overflow asks for a
+  plainer one — never the attack's swing, claw or extreme rungs. (Before this,
+  every state's re-roll borrowed the attack ladder: an idle that froze was
+  re-asked for "a big aggressive swing".)
+- Review: `pipeline/review_slot.py --slot die_v1` builds the page with the
+  clips playing (each plays through, holds its corpse frame, restarts) and a
+  redo toggle per direction; published as an artifact, never committed.
+
 ### His verdicts: read them, act, then DELETE the ones you acted on
 
 Maintainer 2026-09-11, seeing his own redo note still sitting under a clip
