@@ -1290,6 +1290,10 @@ export class Tiles3Textures {
    *  a 32-row overlap between neighbours the only way to expose the background
    *  is an op that never drew. This counts them. */
   droppedOps = 0;
+  /** Plates drawn from their RAW file because the capped raster could not be
+   *  built yet (`plate()`'s fallback) — the picture is not final there, and
+   *  the scene owes those cells a repaint (WorldScene.t3dropOwed). */
+  plateRawFallbacks = 0;
   /** DIAGNOSTIC: paint a MAGENTA diamond where an op was dropped instead of
    *  leaving the background showing (the maintainer's own idea, sharpened —
    *  "clear the screen with pink before we draw, then we know if the pixels are
@@ -1525,7 +1529,9 @@ export class Tiles3Textures {
       if (hit) return hit;
       const capped = this.ensure(skey, () => this.platePixels(art, ground));
       if (capped) return capped;
-      return this.o.textures.exists(key) ? key : null;
+      if (!this.o.textures.exists(key)) return null;
+      this.plateRawFallbacks++;
+      return key;
     }
     return this.ensureHit(key) ?? this.ensure(key, () => this.platePixels(art, ground));
   }

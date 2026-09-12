@@ -997,6 +997,8 @@ const T3_BOUNDARY_RETRY = 32;
 /** How many times a too-wide cell repaint may be halved before it gives up and
  *  paints in full — at most 2^N rects. */
 const T3_REPAINT_SPLITS = 2;
+/** The drop drain's group size (cells per frame) — see t3drainTick. */
+const T3_DRAIN_GROUP = 8;
 /** Files in flight for the DEFERRED animation batch — see loadDeferredAnims.
  *  Dev A/B: localStorage `ml-deferred-parallel` overrides (0 = the loader's own). */
 const DEFERRED_PARALLEL = 2;
@@ -3226,6 +3228,14 @@ export class WorldScene extends Phaser.Scene {
    * full paint, extended by band paints); the cells a landed batch made drawable;
    * the ring of cells beyond the texture whose art is asked for ahead of time. */
   private t3missing = new Map<string, Set<number>>();
+  /** THE CELLS WHOSE OPS DROPPED in the last pass that drew them — what the
+   *  drop drain repaints, cell by cell, instead of the whole texture (see
+   *  t3drainDrops). A cell leaves when a pass draws it whole. */
+  private t3dropOwed = new Set<number>();
+  /** The drain's repaint queue: owed cells, x-sorted, repainted one group per
+   *  frame by t3drainTick so a fresh area's hundreds of deferred fades are
+   *  repaired over frames, never in one. */
+  private t3drainQueue: number[] = [];
   /** A paint DROPPED at least one op (its texture was not registered) and the
    *  loader has not gone idle since. THE GUESS, shipped at the maintainer's
    *  explicit request ("PLEASE PUSH YOUR GUESS! we might be able to save time
@@ -5793,7 +5803,7 @@ export class WorldScene extends Phaser.Scene {
         }
         const log = this.groundScrollLog;
         this.groundScrollLog = [];
-        return { on: this.groundScroll, lastMode: this.groundLastMode, anchor: this.groundAnchor ? { ax: this.groundAnchor.ax, ay: this.groundAnchor.ay } : null, log, cells: { ...this.groundCellStats }, ring: { queued: this.t3ringQueue.length - this.t3ringAt, missing: this.t3missing.size } };
+        return { on: this.groundScroll, lastMode: this.groundLastMode, anchor: this.groundAnchor ? { ax: this.groundAnchor.ax, ay: this.groundAnchor.ay } : null, log, cells: { ...this.groundCellStats }, ring: { queued: this.t3ringQueue.length - this.t3ringAt, missing: this.t3missing.size }, drain: { owed: this.t3dropOwed.size, queue: this.t3drainQueue.length, drains: this.repaintStats.drains, deferred: this.repaintStats.drainsDeferred, pending: this.groundDropsPending, gen: this.t3terrainGen, drainGen: this.t3drainGen, dropped: this.t3tex?.droppedOps ?? -1, raw: this.t3tex?.plateRawFallbacks ?? -1, bOwed: this.t3boundaryOwed.size, dOwed: this.t3deckOwed.size, deferred: this.t3tex?.stats.deferred ?? -1, builtB: this.t3tex?.stats.builtBoundary ?? -1 } };
       },
       /** THE LANDING REPAINT's switch (off = a landed batch paints in full) and
        *  THE PREFETCH RING's (off = art is asked for only by the window). */
@@ -11094,6 +11104,7 @@ export class WorldScene extends Phaser.Scene {
     this.pe("prefetch");
     // ...and, once the art has settled, repair anything a paint dropped.
     this.t3drainDrops();
+    this.t3drainTick();
     if (!this.room) return;
     const dt = delta / 1000;
     const myId = this.myId;
@@ -16456,6 +16467,8 @@ export class WorldScene extends Phaser.Scene {
     this.groundSliceCtx = null;
     this.worldUp = false;
     this.t3missing.clear();
+    this.t3dropOwed.clear();
+    this.t3drainQueue = [];
     this.groundDirtyCells = [];
     this.repaintGroundPartial = false;
     this.t3ringQueue = [];
@@ -18238,6 +18251,8 @@ export class WorldScene extends Phaser.Scene {
       if (b) boundaryArtPaths(b, need);
       if (!tex) continue;
       const idx = row * world.width + col;
+      const dropsCell = tex?.droppedOps ?? 0; // per-cell drop accounting, see t3dropOwed
+      const rawCell = tex?.plateRawFallbacks ?? 0; // ...and a raw plate drawn for want of its capped raster
       const cut = mask ? (cuts ? cuts.get(idx) : top) : undefined;
       const tint = this.caveTint(idx, !!mask);
       /* A BOUNDARY IS SKIPPED INDOORS ONLY WHERE ITS OWN COLUMN IS TRUNCATED.
@@ -18422,6 +18437,10 @@ export class WorldScene extends Phaser.Scene {
           stats.boundaries++;
         }
       }
+      // A cell that dropped an op is owed a cell repaint by the drain; one
+      // drawn whole owes nothing (a still-dropping cell re-enters each pass).
+      if ((tex?.droppedOps ?? 0) > dropsCell || (tex?.plateRawFallbacks ?? 0) > rawCell) this.t3dropOwed.add(idx);
+      else this.t3dropOwed.delete(idx);
     }
 
     // DECK SLABS (roofs, bridges, the cave lid) last, as render3 draws them.
@@ -18430,6 +18449,8 @@ export class WorldScene extends Phaser.Scene {
       if (mask && (cuts ? cuts.get(idx) : top) !== undefined) continue; // my roof, or a lid over my floor
       needIdx = idx;
       let deckMissing = false;
+      const dropsDeck = tex?.droppedOps ?? 0;
+      const rawDeck = tex?.plateRawFallbacks ?? 0;
       for (const d of decksOf(col, row)) {
         deckArtPaths(d, need);
         if (!tex) continue;
@@ -18445,6 +18466,7 @@ export class WorldScene extends Phaser.Scene {
       if (deckMissing) {
         if (!this.t3deckOwed.has(idx)) this.t3deckOwed.set(idx, 0);
       } else this.t3deckOwed.delete(idx);
+      if ((tex?.droppedOps ?? 0) > dropsDeck || (tex?.plateRawFallbacks ?? 0) > rawDeck) this.t3dropOwed.add(idx);
     }
     if (ownBracket) {
       this.t3countBatches(rt);
@@ -18537,19 +18559,58 @@ export class WorldScene extends Phaser.Scene {
      * and the boundary retry. Nothing stands down for it, so its 21-60 ms
      * landed on a frame that had already done a frame's work. */
     if (!this.groundDrainRepaint) return;
-    /* GROUND ONLY. A dropped GROUND op is a hole in the ground texture; it says
-     * nothing about the occluder set, which draws its own art on its own 96 px
-     * latch and is repainted by the landing path anyway (`requestRepaint`
-     * sets `repaintOccPending` for every terrain batch). Poisoning that latch
-     * here bought a full occluder rebuild — measured 4.9-35.1 ms on his phone,
-     * 198.8 ms across the beacon's worst twenty — for a texture it cannot
-     * change. This is `repaintWorld` minus the occluder half. */
-    this.groundSliceQ = [];
-    this.groundSliceCtx = null;
-    this.lastGround = { x: NaN, y: NaN };
+    /* THE CELLS, NEVER THE TEXTURE (2026-09-12). This used to poison the
+     * latch and paint the whole ground: measured on his phone, ONE full paint
+     * per drain, 14-19 per 30 s window with ZERO textures landing, 46-77 ms
+     * each — the single largest share of his lag frames on the sprite path
+     * (the "burst test" that skipped it and the other bursts ran 2-3 lag
+     * frames per window against 38-51). Every pass records the cells whose
+     * ops dropped (t3dropOwed); this repaints THOSE through the same clipped
+     * cell path a landing uses, in x-sorted groups small enough to stay under
+     * the half-texture split, at most T3_DRAIN_CELLS per edge (the rest wait
+     * for the next). A cell that still drops re-owes itself; a permanently
+     * undrawable op costs one small rect per loader cycle, never a paint.
+     * GROUND ONLY, as before: the occluder set has its own latch. */
+    const W = this.world?.width ?? 1;
+    const queued = new Set(this.t3drainQueue);
+    const owed = [...this.t3dropOwed].filter((c) => !queued.has(c) && this.t3cellOnTexture(c));
+    this.t3dropOwed.clear();
+    if (!owed.length) return;
+    owed.sort((a, b) => ((a % W) - Math.floor(a / W)) - ((b % W) - Math.floor(b / W)));
+    this.t3drainQueue.push(...owed);
+  }
+
+  /** Does this cell's column reach the ground texture as anchored now? (The
+   *  same reach `repaintTiles3Cells` tests; an owed cell that scrolled off is
+   *  not worth a queue slot.) */
+  private t3cellOnTexture(idx: number): boolean {
+    const rt = this.groundRT;
+    const a = this.groundAnchor;
+    const f = this.t3?.frame;
+    const world = this.world;
+    if (!rt || !a || !f || !world) return false;
+    const col = idx % world.width;
+    const row = (idx - col) / world.width;
+    const cx = t3columnX(f, col, row) - a.ax;
+    const top = t3columnY(f, col, row, this.maxLevel) - T3_TOP_Y - this.geom.lh - a.ay;
+    const bot = t3columnY(f, col, row, 0) + T3_TILE + this.geom.lh - a.ay;
+    return !(cx + T3_TILE <= 0 || cx >= rt.width || bot <= 0 || top >= rt.height);
+  }
+
+  /** ONE GROUP OF THE DRAIN'S OWED CELLS PER FRAME (see t3drainDrops): at most
+   *  T3_DRAIN_GROUP cells, x-sorted so their rect stays under the half-texture
+   *  split, through the same clipped cell path a landing uses. A fresh area
+   *  streams in with hundreds of deferred fades; repainting them all at the
+   *  idle edge was the full paint's burst under another name (measured: a
+   *  48-cell cap left 13% of the texture plain against a full paint, no cap
+   *  is 38 groups in one frame). Amortised here it is a few ms a frame for a
+   *  second or two, and the picture ends pixel-identical to a full paint. */
+  private t3drainTick(): void {
+    if (!this.t3drainQueue.length || !this.maps3) return;
+    const group = this.t3drainQueue.splice(0, T3_DRAIN_GROUP);
     this.ps();
-    this.redrawGround();
-    this.pe("redrawGround");
+    this.repaintTiles3Cells(group);
+    this.pe("repaintCells");
   }
   /** Was the terrain loader idle last frame? — see t3drainDrops. */
   private t3loadWasIdle = false;
@@ -20069,6 +20130,8 @@ export class WorldScene extends Phaser.Scene {
       // A full paint covers everything: whatever the band still owed is void.
       this.groundSliceQ = [];
       this.groundSliceCtx = null;
+      this.t3dropOwed.clear();
+      this.t3drainQueue = [];
       rt.setPosition(ax, ay);
       rt.clear();
       this.fillGround(rt, this.groundFillRGB(mask));

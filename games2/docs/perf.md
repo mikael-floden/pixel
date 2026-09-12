@@ -419,25 +419,29 @@ The ground render texture (scroll, slices, cell repaints, prefetch, compose budg
   because it never grew. Removed. Any self-tuning ratchet whose growth test is
   stricter than its target has this bug.
 
-- **THE GROUND DRAIN REPAINTS ONLY WHEN ART HAS LANDED** (`t3drainDrops`,
-  `t3texGen`/`t3drainGen`). A dropped ground op drops because the art it wanted
-  is not resident, so a repaint can only change the picture if something has
-  LANDED since — and the flag was re-armed by the very repaint it triggered, so
-  a permanently undrawable op (a 404, an unpublished x-over-y pair) bought a
-  FULL ground paint at every loader idle edge, forever. The rising-edge guard
-  bounded it to one per loader cycle, but the loader cycles constantly while
-  prefetching. MEASURED in his 2026-09-07 run, window 1: `drains` 20,
-  `drainsDeferred` 0, `texturesAdded` **0** — with nothing landing, every one of
-  those 20 full paints was futile by construction. HONEST SIZE, from the run's
-  own ceiling rather than the older per-paint note: w1's `redrawGround` is 1.09
-  ms/frame over 1027 frames = 1119 ms for the WHOLE window, and 24 full paints
-  in it, so a full paint averages at most 46.6 ms — the fix returns roughly
-  800-900 ms of a 30 s window (~3%), concentrated in ~20 hitches, and moves p99
-  and max rather than p50. That window spent 3306 ms in tasks over 50 ms
-  against a ~1280 ms floor in the quiet windows. Arming on the
-  residency counter leaves the feature intact (one repaint per drop episode,
-  which is what it was for) and removes the loop. Verified headless: drains
-  stopped at 2 and full paints at 6, flat for 72 s while textures kept arriving.
+- **THE DROP DRAIN REPAINTS CELLS, NEVER THE TEXTURE** (`t3drainDrops`,
+  `t3dropOwed`, 2026-09-12). A ground op drops when its art is not resident
+  or its composition is deferred; the landing path repairs the first
+  (`t3missing` -> `repaintTiles3Cells`) and `t3retryBoundaries` the composed
+  transitions, and the drain — one repaint per loader idle edge — catches
+  what neither owns (fades, plates, decks). It used to poison the latch and
+  paint the WHOLE ground: measured on his phone, one full paint per drain,
+  14-19 per 30 s window with ZERO textures landing, 46-77 ms each — the
+  largest share of his lag frames on the sprite path, and the "burst test"
+  that skipped it with the other bursts ran 2-3 lag frames per window
+  against 38-51. Now every pass records the cells whose ops dropped and the
+  drain queues THOSE (x-sorted) and `t3drainTick` repaints one group of
+  `T3_DRAIN_GROUP` (8, under the half-texture split) per frame through the
+  clipped cell path until the queue drains — a fresh area streams in with
+  hundreds of deferred fades, and repainting them all at the edge was the
+  full paint's burst under another name (a 48-per-edge cap instead left 13%
+  of the texture plain against a full paint). A still-dropping cell re-owes
+  itself, so a permanently undrawable op costs one small rect per loader
+  cycle. GROUND ONLY: the occluder set keeps its own latch. Gates: the
+  streamed picture equals a forced full paint once the ring is drained
+  (`groundSnapshot` overlap, 0.09% at 275,224 either way), and `fullPaints`
+  per window ~0 while running with `drains` unchanged.
+
 - **`lighting` IS THE NIGHT PASS UPDATE — SPLIT IT, DON'T GUESS IT.** The
   maintainer's 2026-09-07 beacon run made `lighting` the biggest CPU section
   and the least explained: 2.48 ms in one window and 17.13 in another on a
