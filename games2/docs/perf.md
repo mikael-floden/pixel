@@ -111,9 +111,10 @@ The ground render texture (scroll, slices, cell repaints, prefetch, compose budg
   or OffscreenCanvas, or a worker that dies, falls back per job to the
   `<img>` path. Beacon: `counts.artBands`, `counts.artBandMaxMs`,
   `counts.artWorker` (1 on, 2 fell back); `texUp` should lose the strips.
-  THE BISECT, one reload from the phone: `?artworker=0` sends every job the
-  `<img>` way (remembered in `ml-art-worker`, like `?ground=legacy`);
-  `?artworker=1` restores.
+  THE BISECT is the Settings row "art worker" (the installed home-screen app
+  has no address bar, so a URL-only switch is no switch — the beacon's own
+  lesson, 2026-09-03; `?artworker=0|1` still works in a tab): off sends every
+  job the `<img>` way from the next file on, remembered in `ml-art-worker`.
   Not measured here: the GPU side of an upload on a Mali — his next run's
   `texUp.slow` and the worst frames' `upKb` say.
 - **MEASURED 2026-09-12, NOT THE LAG** (headless traces of the overworld run,

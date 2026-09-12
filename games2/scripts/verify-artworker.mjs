@@ -49,6 +49,15 @@ if (!par.length) fail("no banded texture to compare");
 // (3b) the CPU readers' path: a banded frame's alpha read back from the GPU equals the <img> path's.
 for (const p of par.slice(0, 3)) for (const fr of [0, 2]) { const al = await page.evaluate(([k,f])=>window.__ml.artAlpha(k,f),[p.key,fr]); console.log(`  alpha ${p.key} frame ${fr}: ${al.error ?? (al.equal ? "IDENTICAL" : `diff ${al.diff} texels`)} ${al.w?`${al.w}x${al.h}`:""}`); if (al.error || !al.equal) fail(`alpha ${p.key} frame ${fr}: ${al.error ?? `${al.diff} texels differ`}`); }
 for (const p of par) if (p.error || !p.equal) fail(`parity ${p.key}: ${p.error ?? `${p.diff} bytes differ`}`);
+// (3c) the Settings switch, live: off sends the next files the <img> way, on brings the worker back.
+for (const [val, want] of [["0", 0], ["1", 1]]) {
+  await page.evaluate((v)=>localStorage.setItem("ml-art-worker", v), val);
+  await page.evaluate(({a,d})=>{const m=window.__ml.me(); if(!m) return; const x=m.x+Math.cos(a)*d, y=m.y+Math.sin(a)*d; if(window.__ml.blockedAt(x,y)) return; const s=window.__ml.surfaceAt(x,y); if(!s||(!s.standable&&!s.swimmable)) return; window.__ml.tapTo(x,y,true);},{a:rand()*Math.PI*2,d:(10+rand()*12)*32});
+  let a; for (let i=0;i<10;i++){ await sleep(2000); a = await page.evaluate(()=>window.__ml.art()); if (a.worker===want) break; }
+  console.log(`  switch ml-art-worker=${val}: worker ${a.worker} landed ${a.landed} failed ${a.failed}`);
+  if (a.worker !== want) fail(`switch ${val}: worker ${a.worker}, wanted ${want}`);
+  if (a.failed) fail(`switch ${val}: failed ${a.failed}`);
+}
 // (4) a forced context loss + restore: Phaser rebuilds its wrappers blank, the queue refills.
 const lost = await page.evaluate(async ()=>{ const c=document.querySelector("canvas"); const gl=c.getContext("webgl")||c.getContext("webgl2"); const ext=gl&&gl.getExtension("WEBGL_lose_context"); if(!ext) return "no WEBGL_lose_context"; ext.loseContext(); await new Promise(r=>setTimeout(r,500)); ext.restoreContext(); return "ok"; });
 console.log("context loss:", lost);

@@ -132,9 +132,12 @@ export function uploadKb(): number {
   }
 }
 
-/** THE BISECT, one reload from the phone: `?artworker=0` sends every job the
- *  <img> way (the path before 2026-09-12), `?artworker=1` restores; the choice
- *  is remembered in `ml-art-worker`, like `?ground=legacy`. */
+/** THE BISECT: the Settings row "art worker" (the maintainer plays from an
+ *  installed home-screen app, which has no address bar — a switch he cannot
+ *  reach is no switch) and, for a browser tab, `?artworker=0|1`; both write
+ *  `ml-art-worker`, read again at EVERY fetch so a tap takes effect on the
+ *  next file without a reload. Off sends every job the <img> way, the path
+ *  before 2026-09-12; what already landed stays as it is. */
 export function artWorkerEnabled(): boolean {
   try {
     const q = new URLSearchParams(location.search).get("artworker");
@@ -142,6 +145,14 @@ export function artWorkerEnabled(): boolean {
     return localStorage.getItem("ml-art-worker") !== "0";
   } catch {
     return true;
+  }
+}
+
+export function setArtWorker(on: boolean): void {
+  try {
+    localStorage.setItem("ml-art-worker", on ? "1" : "0");
+  } catch {
+    /* storage disabled — the setting simply does not persist */
   }
 }
 
@@ -469,7 +480,7 @@ export class ArtQueue {
   }
 
   private fetch(job: Pending): void {
-    if (this.workerBoot()) {
+    if (artWorkerEnabled() ? this.workerBoot() : ((this.stats.worker = 0), false)) {
       const id = this.nextId++;
       this.jobsById.set(id, job);
       job.bytes = -1; // in flight (never 0 again, so it is not re-picked)
@@ -516,12 +527,9 @@ export class ArtQueue {
   // ---- the worker path ------------------------------------------------------
 
   private workerBoot(): boolean {
-    if (this.workerState !== "off") return this.workerState === "on";
-    if (!artWorkerEnabled()) {
-      this.workerState = "failed"; // the switch: every job goes the <img> way
-      this.workerError = "switched off (?artworker=0)";
-      this.stats.worker = 0;
-      return false;
+    if (this.workerState !== "off") {
+      if (this.workerState === "on") this.stats.worker = 1; // the switch may have been off for a while
+      return this.workerState === "on";
     }
     if (!this.gl || typeof Worker === "undefined" || typeof createImageBitmap === "undefined") {
       this.workerState = "failed";

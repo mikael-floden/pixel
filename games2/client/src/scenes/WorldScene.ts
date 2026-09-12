@@ -1,6 +1,6 @@
 import Phaser from "phaser";
 import { resolveDepthRule } from "../depthrule";
-import { ART_IDLE_SHARE, ArtQueue, setUploadKb, UPLOAD_KB_STEPS } from "../artqueue";
+import { ART_IDLE_SHARE, ArtQueue, artWorkerEnabled, setArtWorker, setUploadKb, UPLOAD_KB_STEPS } from "../artqueue";
 import { drawFrameInto } from "../framepixels";
 import { renderRes } from "../resolution";
 import { ensureResDial } from "../resdial";
@@ -4538,6 +4538,25 @@ export class WorldScene extends Phaser.Scene {
           },
           get: () => this.artQueue().budgetKb > 0,
           state: () => (this.artQueue().budgetKb ? `${this.artQueue().budgetKb} KB/f` : "unbounded"),
+        },
+        /* THE ART WORKER SWITCH (artqueue.ts, artworker.ts): off sends every
+         * streamed strip the way it went before 2026-09-12 — decoded again by
+         * texImage2D on this thread — so a report on monster or NPC art can
+         * be bisected in one tap. Takes effect on the next file; what landed
+         * stays. A Settings row, not a URL, for the same reason as the beacon. */
+        {
+          label: "art worker",
+          act: () => {
+            const on = !artWorkerEnabled();
+            setArtWorker(on);
+            this.chat.addLog("—", `art worker: ${on ? "on — strips decode on another core and upload in bands" : "OFF — every strip decodes on this thread (the path before 2026-09-12)"}`);
+          },
+          get: () => artWorkerEnabled(),
+          state: () => {
+            if (!artWorkerEnabled()) return "off";
+            const a = this.artQueue().peek();
+            return a.worker === 2 ? `on (fell back: ${a.workerError || "worker failed"})` : "on";
+          },
         },
         {
           label: "perf beacon",
