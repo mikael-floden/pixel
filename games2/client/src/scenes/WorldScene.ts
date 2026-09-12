@@ -1,5 +1,6 @@
 import Phaser from "phaser";
 import { resolveDepthRule } from "../depthrule";
+import { boundaryPipeline, type BoundaryPipeline } from "../tiles3gpu";
 import { Room, getStateCallbacks } from "colyseus.js";
 import {
   WORLD_WIDTH,
@@ -2234,7 +2235,7 @@ export class WorldScene extends Phaser.Scene {
         runFrac,
         travelCells,
         why: final ? "flush" : moved ? "moved" : "bad", // why this window was sent at all
-        sim: this.burstTest ? "nobursts" : this.shaderTest ? "nocompose" : "", // the test switches (burstTest, shaderTest)
+        sim: this.shaderTest ? "gpucompose" : "", // the shader test switch (see shaderTest)
 
         deviceMemoryGb: nav.deviceMemory ?? 0,
         connType: nav.connection?.effectiveType ?? "?",
@@ -3284,11 +3285,12 @@ export class WorldScene extends Phaser.Scene {
    * once those are made incremental or moved offline. The picture goes STALE
    * on purpose: no landed art repairs, bodies sort against the first area's
    * columns. Remembered (ml-burst-test); the beacon stamps run.sim. */
-  private burstTest = localStorage.getItem("ml-burst-test") === "1";
-  /** THE SHADER TEST — Settings "shader test": nothing is composed (see
-   *  Tiles3Textures.simNoCompose), so a run with it on is the ceiling a
-   *  compositing shader could reach; measured before one is written
-   *  (maintainer's method, 2026-09-12: prove the fix before the code). */
+  /** THE SHADER TEST — Settings "shader test": the CPU composes nothing and
+   *  every boundary is drawn through tiles3gpu.ts's pipeline instead (see
+   *  Tiles3Textures.simNoCompose, t3BlitGpu), so a run with it on is the
+   *  ceiling the real compositing shader can reach; measured before it is
+   *  written (maintainer's method, 2026-09-12: prove the fix before the
+   *  code). */
   private shaderTest = localStorage.getItem("ml-shader-test") === "1";
   private groundPartial = groundPathFast();
   private groundPrefetch = groundPathFast();
@@ -4303,20 +4305,6 @@ export class WorldScene extends Phaser.Scene {
           state: () => (this.groundClearPink ? "pink" : "off"),
         },
         {
-          label: "burst test",
-          act: () => {
-            this.burstTest = !this.burstTest;
-            try {
-              localStorage.setItem("ml-burst-test", this.burstTest ? "1" : "0");
-            } catch {
-              /* storage blocked */
-            }
-            this.chat.addLog("—", `burst test: ${this.burstTest ? "ON — no occluder rebuilds, no streaming repaints, no composing (stale picture, on purpose)" : "off"}`);
-          },
-          get: () => this.burstTest,
-          state: () => (this.burstTest ? "on (broken)" : "off"),
-        },
-        {
           label: "shader test",
           act: () => {
             this.shaderTest = !this.shaderTest;
@@ -4326,10 +4314,10 @@ export class WorldScene extends Phaser.Scene {
               /* storage blocked */
             }
             if (this.t3tex) this.t3tex.simNoCompose = this.shaderTest;
-            this.chat.addLog("—", `shader test: ${this.shaderTest ? "ON — no transitions, fades or capped plates are composed (hard edges, on purpose): the ceiling a compositing shader can reach" : "off"}`);
+            this.chat.addLog("—", `shader test: ${this.shaderTest ? "ON — transitions drawn by a GPU shader from the plate files, nothing composed on the CPU (fades and wall-band colours are rough, on purpose)" : "off"}`);
           },
           get: () => this.shaderTest,
-          state: () => (this.shaderTest ? "on (hard edges)" : "off"),
+          state: () => (this.shaderTest ? "on (gpu)" : "off"),
         },
         {
           label: "transitions",
@@ -5830,7 +5818,7 @@ export class WorldScene extends Phaser.Scene {
         }
         const log = this.groundScrollLog;
         this.groundScrollLog = [];
-        return { on: this.groundScroll, lastMode: this.groundLastMode, anchor: this.groundAnchor ? { ax: this.groundAnchor.ax, ay: this.groundAnchor.ay } : null, log, cells: { ...this.groundCellStats }, ring: { queued: this.t3ringQueue.length - this.t3ringAt, missing: this.t3missing.size }, drain: { owed: this.t3dropOwed.size, queue: this.t3drainQueue.length, drains: this.repaintStats.drains, deferred: this.repaintStats.drainsDeferred, pending: this.groundDropsPending, gen: this.t3terrainGen, drainGen: this.t3drainGen, dropped: this.t3tex?.droppedOps ?? -1, raw: this.t3tex?.plateRawFallbacks ?? -1, bOwed: this.t3boundaryOwed.size, dOwed: this.t3deckOwed.size, bDeferred: this.t3tex?.stats.deferred ?? -1, builtB: this.t3tex?.stats.builtBoundary ?? -1 } };
+        return { on: this.groundScroll, lastMode: this.groundLastMode, anchor: this.groundAnchor ? { ax: this.groundAnchor.ax, ay: this.groundAnchor.ay } : null, log, cells: { ...this.groundCellStats }, ring: { queued: this.t3ringQueue.length - this.t3ringAt, missing: this.t3missing.size }, drain: { owed: this.t3dropOwed.size, queue: this.t3drainQueue.length, drains: this.repaintStats.drains, deferred: this.repaintStats.drainsDeferred, pending: this.groundDropsPending, gen: this.t3terrainGen, drainGen: this.t3drainGen, dropped: this.t3tex?.droppedOps ?? -1, raw: this.t3tex?.plateRawFallbacks ?? -1, bOwed: this.t3boundaryOwed.size, dOwed: this.t3deckOwed.size, bDeferred: this.t3tex?.stats.deferred ?? -1, builtB: this.t3tex?.stats.builtBoundary ?? -1, gpuDraws: this.t3gpuDraws } };
       },
       /** THE LANDING REPAINT's switch (off = a landed batch paints in full) and
        *  THE PREFETCH RING's (off = art is asked for only by the window). */
@@ -6773,6 +6761,18 @@ export class WorldScene extends Phaser.Scene {
       /** THE INCREMENTAL REBUILD'S A/B AND ITS COUNTERS — `occInc(false)` makes
        *  every 96 px step walk the whole window again (the pre-2026-09-12
        *  cost); reading resets the step and cell counts. */
+      /** THE SHADER TEST AT RUNTIME (parity): flip it, force every boundary
+       *  through the GPU even where a CPU composition exists, repaint. */
+      shaderTest: (on: boolean, force = true) => {
+        this.shaderTest = on;
+        const tex = this.ensureTiles3Textures();
+        if (tex) {
+          tex.simNoCompose = on;
+          tex.simForceGpu = on && force;
+        }
+        this.t3gpuDraws = 0;
+        return { on, gpuDraws: this.t3gpuDraws };
+      },
       occInc: (on?: boolean) => {
         if (on !== undefined) {
           this.occIncOn = on;
@@ -11068,7 +11068,7 @@ export class WorldScene extends Phaser.Scene {
      * UNBUDGETED: it is behind the loading screen, nothing is being played
      * through it, and releasing the hold onto a window of hard edges is
      * exactly the pop-in the hold exists to prevent. */
-    this.t3tex?.armCompose(this.burstTest ? 0 : this.worldUp ? (this.composeMsOverride ?? GROUND_COMPOSE_MS) : Infinity);
+    this.t3tex?.armCompose(this.worldUp ? (this.composeMsOverride ?? GROUND_COMPOSE_MS) : Infinity);
     // The coalesced streaming repaints — see requestRepaint / onTerrainBatch.
     if (this.repaintGroundPending) {
       this.repaintGroundPending = false;
@@ -16868,6 +16868,89 @@ export class WorldScene extends Phaser.Scene {
       );
   }
 
+  /** THE SHADER TEST'S BOUNDARY DRAW (tiles3gpu.ts). One image through the
+   *  boundary pipeline: plate A is the image's texture (its top-left fw x fh
+   *  window, registered as a frame so the uv rect is the frame's), plate B and
+   *  the three sheets ride on texture units 1-4, the mask frame and the tone
+   *  are uniforms. Bound, drawn and handed back to the texture's own pipeline
+   *  per op — two flushes a boundary, which is the cost of per-draw uniforms. */
+  private t3BlitGpu(rt: Phaser.GameObjects.RenderTexture, op: { key: string; gpu: Tiles3Boundary }, dx: number, dy: number, tint: number): void {
+    const g = this.t3gpuReady();
+    if (!g) return;
+    const b = op.gpu;
+    const sheets = this.t3sheets!;
+    const frameOf = (key: string) => {
+      const tex = this.textures.get(key);
+      const name = `t3g:${sheets.fw}x${sheets.fh}`;
+      if (!tex.has(name)) {
+        tex.add(name, 0, 0, 0, sheets.fw, sheets.fh);
+        tex.firstFrame = "__BASE";
+      }
+      return tex.get(name);
+    };
+    const fa = frameOf(op.key);
+    const fb = frameOf(t3ArtKey(b.plateB.path));
+    const dt = rt.texture as Phaser.Textures.DynamicTexture;
+    const renderer = dt.renderer as Phaser.Renderer.WebGL.WebGLRenderer;
+    const pipe = g.pipe;
+    renderer.pipelines.set(pipe);
+    pipe.set4f("uFrameA", fa.u0, fa.v0, fa.u1 - fa.u0, fa.v1 - fa.v0);
+    pipe.set4f("uFrameB", fb.u0, fb.v0, fb.u1 - fb.u0, fb.v1 - fb.v0);
+    const frame = b.maskFrame as number;
+    const mw = g.mask.source[0].width;
+    const mh = g.mask.source[0].height;
+    pipe.set4f("uMaskRect", ((frame % sheets.cols) * sheets.fw) / mw, (Math.floor(frame / sheets.cols) * sheets.fh) / mh, sheets.fw / mw, sheets.fh / mh);
+    pipe.set1f("uTone", this.t3tex?.seamOn === false ? 1 : sheets.tone);
+    const wa = this.t3tex!.wallOf(b.a);
+    const wb = this.t3tex!.wallOf(b.b);
+    pipe.set3f("uWallA", wa[0] / 255, wa[1] / 255, wa[2] / 255);
+    pipe.set3f("uWallB", wb[0] / 255, wb[1] / 255, wb[2] / 255);
+    pipe.set1f("uTopOnly", b.topOnly ? 1 : 0);
+    pipe.bindTexture(fb.source.glTexture!, 1);
+    pipe.bindTexture(g.mask.source[0].glTexture!, 2);
+    pipe.bindTexture(g.border.source[0].glTexture!, 3);
+    pipe.bindTexture(g.sil.source[0].glTexture!, 4);
+    const im = g.stamp;
+    im.setTexture(op.key, fa.name).setTint(tint);
+    dt.batchDraw(im, dx, dy);
+    renderer.pipelines.set(dt.pipeline);
+    this.t3gpuDraws++;
+  }
+  private t3gpu: { pipe: BoundaryPipeline; stamp: Phaser.GameObjects.Image; mask: Phaser.Textures.Texture; border: Phaser.Textures.Texture; sil: Phaser.Textures.Texture } | null = null;
+  private t3gpuDraws = 0;
+  /** The pipeline, the stamp and the sheets — once. The silhouette sheet is
+   *  re-made as one 64x46 texture whose alpha is the silhouette and whose red
+   *  is the library top face (`PatternSheets.libTop`), so topOnly is one read. */
+  private t3gpuReady() {
+    if (this.t3gpu) return this.t3gpu;
+    const sheets = this.t3sheets;
+    const patterns = this.cache.json.get("t3doc:patterns") as PatternsDoc | undefined;
+    if (!sheets || !patterns) return null;
+    const pipe = boundaryPipeline(this.game);
+    if (!pipe) return null;
+    const p = patternSheetPaths(patterns);
+    const mask = this.textures.get(t3ArtKey(p.masks));
+    const border = this.textures.get(t3ArtKey(p.border));
+    const silKey = "t3gpu:sil";
+    if (!this.textures.exists(silKey)) {
+      const c = document.createElement("canvas");
+      c.width = sheets.fw;
+      c.height = sheets.fh;
+      const ctx = c.getContext("2d")!;
+      const img = ctx.createImageData(sheets.fw, sheets.fh);
+      for (let i = 0; i < sheets.fw * sheets.fh; i++) {
+        img.data[i * 4] = sheets.libTop[i] ? 255 : 0;
+        img.data[i * 4 + 3] = sheets.sil[i];
+      }
+      ctx.putImageData(img, 0, 0);
+      this.textures.addCanvas(silKey, c);
+    }
+    const stamp = this.make.image({ key: "__DEFAULT", add: false }).setOrigin(0, 0);
+    stamp.setPipeline(pipe);
+    this.t3gpu = { pipe, stamp, mask, border, sil: this.textures.get(silKey) };
+    return this.t3gpu;
+  }
+
   /** One resolved blit onto the ground RenderTexture. `batchDraw` cannot crop,
    *  and exactly one op needs it — a FADE tile is the top `TOP_Y + 2·DY + 2`
    *  rows of a 64x64 file and its wall is explicitly meaningless, so drawing
@@ -16875,7 +16958,7 @@ export class WorldScene extends Phaser.Scene {
    *  registered on the texture once, under a name derived from the crop. */
   private t3Blit(
     rt: Phaser.GameObjects.RenderTexture,
-    op: { key: string; x: number; y: number; sx: number; sy: number; sw: number; sh: number },
+    op: { key: string; x: number; y: number; sx: number; sy: number; sw: number; sh: number; gpu?: Tiles3Boundary },
     ax: number,
     ay: number,
     tint: number,
@@ -16955,6 +17038,10 @@ export class WorldScene extends Phaser.Scene {
         this.groundCulled++;
         return;
       }
+    }
+    if (op.gpu) {
+      this.t3BlitGpu(rt, op as typeof op & { gpu: Tiles3Boundary }, dx, dy, tint);
+      return;
     }
     const tex = this.textures.get(op.key);
     const src = tex?.getSourceImage() as { width?: number; height?: number } | undefined;
@@ -17496,7 +17583,6 @@ export class WorldScene extends Phaser.Scene {
    *  (coalesce off) and the switch off keep the old full repaint. */
   private onTerrainBatch(paths: string[]): void {
     this.repaintStats.terrain++;
-    if (this.burstTest) return; // the burst test: landed art repairs nothing
     /* THE ONLY THING THAT CAN REPAIR A DROPPED GROUND OP. See t3drainDrops:
      * the drain's residency guard used to read `t3texGen`, which counts EVERY
      * texture the game adds — a monster strip, an NPC frame, a scenery piece,
@@ -18602,7 +18688,6 @@ export class WorldScene extends Phaser.Scene {
    *  genuinely never arrives costs one repaint, not one per frame. */
   private t3drainDrops(): void {
     if (!this.maps3) return;
-    if (this.burstTest) return; // the burst test: no drain repaint
     const load = this.t3load;
     if (!load) return;
     /* THE RISING EDGE, AND IT WAS A GUARD IN NAME ONLY.
@@ -20942,7 +21027,6 @@ export class WorldScene extends Phaser.Scene {
 
   private rebuildOccluders() {
     if (!this.world) return;
-    if (this.burstTest && this.occluderMeta.length) return; // the burst test: the first set stays
     // The pool's cell key is row*stride+col; the stride is the world's width.
     this.occStride = this.world.width;
     const cam = this.cameras.main;

@@ -960,6 +960,9 @@ export interface Tiles3Blit {
   /** What produced this op — for the depth sort, the occluder pass and QA.
    *  `foot` is the wall-foot band on a lower cell (see `footBand`). */
   role: "surface" | "wall" | "boundary" | "deck" | "fade" | "foot";
+  /** THE SHADER TEST: this op is a boundary the GPU composes (tiles3gpu.ts);
+   *  `key` is plate A's own file, and the boundary carries the rest. */
+  gpu?: Tiles3Boundary;
 }
 
 /** The ops for one resolved cell, in render3's own order: a field cell is ONE
@@ -1332,14 +1335,24 @@ export class Tiles3Textures {
    * session, so they cost nothing to leave alone. */
   private composeBudgetMs = Infinity;
   private composeSpent = 0;
-  /** THE SHADER TEST (Settings, 2026-09-12): compose NOTHING — a boundary
-   *  answers null and is not owed, a fade is not drawn and not counted as a
-   *  drop, a plate draws its raw file — so the maintainer can measure the
-   *  ceiling a compositing shader (mask select on the GPU, sources uploaded
-   *  once) could reach before one is written: no canvas work, no per-pair
-   *  texture uploads. The picture is the pre-3.0 look — hard edges, wall
-   *  bands under level-0 tiles — on purpose. */
+  /** THE SHADER TEST (Settings, 2026-09-12): no BOUNDARY is composed on the
+   *  CPU — each becomes a GPU op (`Tiles3Blit.gpu`, drawn through
+   *  tiles3gpu.ts's pipeline from the plate files and the pattern sheets),
+   *  which is the shape of the real compositor. Plates and fades stay on the
+   *  CPU: a handful per window, cached for the session — the boundaries are
+   *  the churn (measured at spawn: 572 of the window's compositions). A
+   *  boundary composed before the switch stays in use unless `simForceGpu`
+   *  (the parity probe) says otherwise. */
   simNoCompose = false;
+  simForceGpu = false;
+  /** The ground's palette wall colour, for the GPU op's wall band. */
+  wallOf(ground: string): readonly [number, number, number] {
+    return this.wallRGB(ground);
+  }
+  /** Whether compositions darken the seam (`opts.seam`), for the GPU op. */
+  get seamOn(): boolean {
+    return this.o.seam !== false;
+  }
 
   private mine = new Map<string, true>();
   private pix = new Map<string, Pixels | null>();
@@ -1536,18 +1549,11 @@ export class Tiles3Textures {
        * file: worst case is exactly today's picture. */
       const hit = this.ensureHit(skey);
       if (hit) return hit;
-      if (this.simNoCompose) return this.o.textures.exists(key) ? key : null; // the shader test: the raw file, uncounted
       const capped = this.ensure(skey, () => this.platePixels(art, ground));
       if (capped) return capped;
       if (!this.o.textures.exists(key)) return null;
       this.plateRawFallbacks++;
       return key;
-    }
-    if (this.simNoCompose) {
-      // The shader test: the raw file where one is loaded (a conformed or
-      // top-only plate is a different picture — the wrong one, on purpose).
-      const raw = artKey(art.path);
-      return this.ensureHit(key) ?? (this.o.textures.exists(raw) ? raw : null);
     }
     return this.ensureHit(key) ?? this.ensure(key, () => this.platePixels(art, ground));
   }
@@ -1557,7 +1563,6 @@ export class Tiles3Textures {
    *  which is the pre-fade look and never a hole. */
   fade(path: string, ground: string): string | null {
     const key = fadeKey(path, ground);
-    if (this.simNoCompose) return this.ensureHit(key); // the shader test
     return this.ensure(key, () => {
       const src = this.sourcePixels(artKey(path));
       if (!src) return null;
@@ -1600,7 +1605,7 @@ export class Tiles3Textures {
           if (built !== op.key && !out) out = base.slice(0, i);
           if (out) out.push(built === op.key ? op : { ...op, key: built });
         } else {
-          if (!this.simNoCompose) this.droppedOps++;
+          this.droppedOps++;
           if (!out) out = base.slice(0, i);
         }
         continue;
@@ -1768,7 +1773,7 @@ export class Tiles3Textures {
         const f = cell.fade;
         const built = f ? this.fade(f.file, cell.ground) : null;
         if (built) out.push(built === op.key ? op : { ...op, key: built });
-        else if (!this.simNoCompose) this.droppedOps++;
+        else this.droppedOps++;
       } else if (op.role === "foot") {
         this.ensureFoot(op.key);
         out.push(op);
@@ -1781,6 +1786,14 @@ export class Tiles3Textures {
   opsForBoundary(b: Tiles3Boundary): Tiles3Blit | null {
     const op = boundaryOp(b, this.o.seam !== false);
     if (!op) return null;
+    if (this.simNoCompose && (this.simForceGpu || !this.o.textures.exists(op.key))) {
+      // The shader test: plate A's file is the op's texture, the GPU does the
+      // rest — once both files are resident (dropped like any streaming op).
+      const rawA = artKey(b.plateA.path);
+      const rawB = artKey(b.plateB.path);
+      if (!this.o.textures.exists(rawA) || !this.o.textures.exists(rawB)) return null;
+      return { ...op, key: rawA, gpu: b };
+    }
     return this.boundary(b) ? op : null;
   }
 
