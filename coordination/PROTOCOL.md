@@ -27,6 +27,8 @@ every one of them owns one board file (`coordination/<agent>.json`):
 | tiles-assistant | `tiles/` | the tiles agent's assistant (2026-09-12); follows the pattern below; the PixelLab floor stays the tiles agent's |
 | tiles-assistant | `tiles/` (the tiles agent's overflow) | the tiles agent's first assistant (2026-09-12): same remit as tiles, for the units the tiles agent is occupied elsewhere for; reads the tiles board first, never a file named there as in flight, names every file it touches on its board; the PixelLab floor stays the tiles agent's |
 | item-assistant | `items/` (the items agent's overflow) | the items agent's first assistant (2026-09-12): same remit as items, for the units the items agent is occupied elsewhere for; reads the items board first, never a file named there as in flight, names every file it touches on its board |
+| games-ambient-assistant | `games2/ambient/` | the ambient-life agent's assistant (2026-09-12); follows the pattern below; its board `coordination/games-ambient-assistant.json` |
+| characters2-assistant | `characters2/` | the characters2 agent's assistant (2026-09-12); follows the pattern below; the mirror stays zero-generation |
 
 **Every agent above has an assistant, `<agent>-assistant`** (maintainer
 2026-09-12: "an assistant that works with the same tasks and in the same

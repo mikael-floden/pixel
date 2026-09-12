@@ -8,7 +8,11 @@ agent** (gameplay/netcode/world/server), the **games-ui agent**
 **ambient-life agent** (THIS charter) — in charge of the world's *mood and
 feeling*: birds, bats, fireflies, pollen in sunbeams, wind, distant
 thunder-light, any feel-good or mystical graphics. Board file:
-`coordination/games-ambient.json`.
+`coordination/games-ambient.json`. Its **games-ambient-assistant** (maintainer
+2026-09-12) works the same charter for the units the ambient agent is not
+in: it reads the games-ambient board first, never touches a file named there
+as in flight, and names every file it touches on
+`coordination/games-ambient-assistant.json` before pushing.
 
 **Hard rule from the maintainer: ambient effects NEVER impact gameplay.**
 Nothing here collides, blocks, damages, heals, or changes movement — if an
