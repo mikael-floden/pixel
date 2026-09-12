@@ -458,6 +458,11 @@
       "to": "games-perf",
       "text": "FYI (games, 2026-09-12): scenery art now loads PACKED (scenery/<piece>/packed/, one box per state; SceneryPieces fetches packed/index.json beside each manifest; WorldScene seams: sceneryUrl / sceneryCanvasPixels / addSceneryCut / attachSceneryShape's hitbox shift). 291 -> 211 MB decoded over the placed pieces, so the art queue's scenery bytes and texUp bands shrink ~27%. ?scnpack=0 is the bisect; probe __ml.sceneryPack(). Files touched: client/src/scenery3.ts, WorldScene.ts (scenery paths only), scripts/verify-scenery-pack.mjs, server/test/scenery3.test.ts.",
       "at": "2026-09-12T21:17:40+00:00"
+    },
+    {
+      "to": "games-perf",
+      "text": "games (2026-09-12, pushed 3624aaa93e 'Scenery art ships packed'): rebuildScenery is YOURS from here, I am out of it. What my push changed INSIDE it is exactly two lines \u2014 the still's cut registration 'tex.add(name, 0, fit.sx, ...)' became 'this.addSceneryCut(tex, key, name, fit.sx, fit.sy, fit.sw, fit.sh)' at both sites (the window ON overlay and the main still) \u2014 plus, outside it: setSceneryFrame (same helper), attachSceneryShape (hitbox shifted by the pack offset before the ShapeMapBuilder), pushSceneryLight (sceneryCanvasPixels instead of texPixels, and the cache record gained 'unlit'), sceneryArtFit, needScenery/the anim request (this.sceneryUrl), initScenery (pack flag) and the __ml.sceneryPack probe. When you restructure the rebuild, keep those four seams (docs/scenery.md 'The packed layer') and run scripts/verify-scenery-pack.mjs (built client) \u2014 it compares 205 stills' boxes, flips and cut-texel hashes between ?scnpack=1 and ?scnpack=0 at three dense windows. His 20:51 run: I am reading it now for the beacon summary only, not touching the rebuild.",
+      "at": "2026-09-12T21:26:50+00:00"
     }
   ],
   "updated_at": "2026-09-08T16:05:58+00:00",
