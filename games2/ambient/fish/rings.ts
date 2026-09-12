@@ -1,20 +1,13 @@
-/* FISH RISES — the pure half. No Phaser, no DOM: the ring geometry and the
- * whole timeline of one rise are arithmetic here so `server/test/fish.test.ts`
- * can pin them, and fish.ts only pools sprites and reads the clock.
+/* FISH RISES — the pure half. No Phaser, no DOM: the whole timeline of one
+ * rise is arithmetic here so `server/test/fish.test.ts` can pin it, and fish.ts
+ * only pools sprites and reads the clock.
  *
- * A RING ON THIS GROUND IS AN ELLIPSE. The iso projection maps a world circle
- * to a screen ellipse squashed by dy/dx = 14/32, and a rise drawing a circle
- * would read as a hoop standing up out of the lake. Same arithmetic the game
- * uses for a body's shadow ellipse; the ratio is the projection's, not taste.
- *
- * Pixel art rules apply: every ring is rasterised at a WHOLE-PIXEL radius and
- * drawn at scale 1 on integer positions, so a growing ring steps radius by
- * radius rather than sliding sub-pixel. That is also why the frames are a
- * handful of small textures generated once, not one texture scaled up.
+ * A RING ON THIS GROUND IS AN ELLIPSE, and the geometry of one now lives in
+ * `runtime/ellipse.ts` (drips/ draws rings too, 2026-09-12); it is re-exported
+ * here unchanged so this file's API and its test did not move.
  */
 
-/** Screen squash of the iso projection: ISO_DY / ISO_DX. */
-export const RING_RY = 14 / 32;
+export { RING_RY, ellipsePixels } from "../runtime/ellipse";
 
 /** A ring's life, and how far it gets. RMAX is about half a cell across: a
  *  rise is a fish taking a fly, not a stone thrown in. */
@@ -100,31 +93,4 @@ export function splashAt(i: number, age: number): { dx: number; dy: number; aliv
     dy: -Math.round(up * (t * 2 - t * t * 2.6) * 2),
     alive: true,
   };
-}
-
-/** The 1-px outline of an iso ellipse of x-radius `rx`, as offsets from its
- *  centre. Closed and 8-connected: sampled along BOTH axes and unioned, so
- *  there is no gap where the curve turns (a single-axis sweep leaves the top
- *  and bottom of a flat ellipse open). */
-export function ellipsePixels(rx: number): { ry: number; px: [number, number][] } {
-  const ry = Math.max(1, Math.round(rx * RING_RY));
-  const seen = new Set<number>();
-  const px: [number, number][] = [];
-  const put = (x: number, y: number) => {
-    const k = (x + 64) * 256 + (y + 64);
-    if (seen.has(k)) return;
-    seen.add(k);
-    px.push([x, y]);
-  };
-  for (let x = -rx; x <= rx; x++) {
-    const y = Math.round(ry * Math.sqrt(Math.max(0, 1 - (x / rx) ** 2)));
-    put(x, y);
-    put(x, -y);
-  }
-  for (let y = -ry; y <= ry; y++) {
-    const x = Math.round(rx * Math.sqrt(Math.max(0, 1 - (y / ry) ** 2)));
-    put(x, y);
-    put(-x, y);
-  }
-  return { ry, px };
 }
