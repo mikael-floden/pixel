@@ -13,6 +13,14 @@ The shared body pipeline, spawn zones, shadows, gait, the monster brain, escape 
 
 ## Monsters (client rendering = the SHARED body pipeline)
 
+**STRIPS ARE THE PACKED ONES** (`monsters/<id>/packed/`, `monsters/pipeline/pack.py`,
+2026-09-12). The manifest builder (`scripts/build-monsters-manifest.mjs`) points
+each strip at its packed file when the monster has one — the raw strip cropped to
+the union box of its frames' art (32% of the texels; a raw strip is 16% opaque)
+— and measures the anchors from that file, so nothing else in the game changes.
+Fewer decoded bytes per strip is fewer upload bands (artworker.ts), less video
+memory and fewer frames spent uploading; the raw strips stay for the wiki.
+
 - **Spawn placement is MAPS2 DATA**: every world ships
   `maps2/worlds3/<name>/spawns.json` (`pixel-maps3/spawns@1`, spec
   `maps2/spec/SPAWNS.md`) — polygon zones `{id, monster, area, elev, num}`.

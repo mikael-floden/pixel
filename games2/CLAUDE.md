@@ -72,6 +72,9 @@ secrets; push to `main`, rebase on reject, no PRs unless asked; doc law.
   but exists on GitHub is that file.
 
 **Rendering a maps3 world** (`docs/tiles3-rendering.md`)
+- Monster strips ship PACKED (`monsters/<id>/packed/`, cropped to the art's
+  union box, content-hashed; the manifest builder prefers them and measures
+  anchors from them). Never point the game at a raw strip again.
 - Ground DETAILS are his approved `tiles/tops` details + the x-over-y top
   approvals, one in N cells by the Settings "Ground details" dial
   (`detailrate.ts`, default 1 in 56); never tiled, never on an indoor floor.

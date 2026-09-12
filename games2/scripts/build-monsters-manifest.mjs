@@ -506,6 +506,17 @@ function scan() {
     // anim so a mapping gap can never emit an unrenderable monster).
     let walkAnim = aliases.walk || mapped?.walk || "jump";
 
+    /* THE PACKED STRIPS WIN (monsters/pipeline/pack.py, 2026-09-12). A raw
+     * strip is 16% opaque texels — PixelLab's canvas around a small body,
+     * centred in max-size cells — and the GPU pays for all of it: decoded
+     * bytes, upload bands, VRAM. The pack step crops every strip to the
+     * union box of its frames' art (32% of the texels, measured over 60
+     * strips) into a content-hashed file under packed/, and this builder
+     * points the game at that file with its real dims; every anchor below is
+     * MEASURED from the strip it names, so the crop changes nothing else.
+     * The raw strip stays the mirror's write-once output (the wiki reads it). */
+    const packedIndex = join(monDir, "packed", "index.json");
+    const packed = existsSync(packedIndex) ? JSON.parse(readFileSync(packedIndex, "utf8")).strips ?? {} : {};
     const animations = {}; // <animKey>: { <dir>: frameCount }
     const strips = {}; // <animKey>: { <dir>: served URL }
     const stripDims = {}; // <animKey>: { <dir>: {w, h} } — TRUE per-strip frame size
@@ -524,7 +535,8 @@ function scan() {
         // and during the WebP migration it can still say .png after the strip
         // became .webp (or the reverse). Without this the strip silently
         // vanishes from the manifest and the monster loses a whole direction.
-        const abs = resolveImg(join(MONSTERS, rel));
+        const pk = packed[`${animKey}__${d}`];
+        const abs = pk?.file ? resolveImg(join(monDir, "packed", pk.file)) : resolveImg(join(MONSTERS, rel));
         if (!abs) continue;
         const relReal = abs.slice(MONSTERS.length + 1).split("\\").join("/");
         perDirFrames[d] = dd.frames;

@@ -54,7 +54,25 @@ monsters/<id>/
   rotations/<dir>.webp             8 directions
   animations/<state>/<dir>/NN.webp per-frame art
   animations/<state>__<dir>.webp   sprite-sheet strip
+  packed/<state>__<dir>.<sha8>.webp  THE SAME STRIP CROPPED FOR THE GAME (derived; see below)
+  packed/index.json                  which packed file is current per strip
 ```
+
+**THE PACKED LAYER (`pipeline/pack.py`, 2026-09-12, maintainer-authorized for
+the game agent).** The game draws the strips under `packed/`, never the raw
+ones: a raw strip is 16% opaque texels (PixelLab's canvas around a small
+body, every frame centred in a max-size cell) and the phone's GPU paid for
+all of it — decoded bytes, upload bands, video memory. `pack.py` crops each
+strip to the union box of its frames' art (32% of the texels, measured over
+60 strips), one strip in one row as before, so the game slices it exactly as
+it slices a raw one and measures its anchors from it. It is DERIVED and never
+edited by hand: the raw strip stays this mirror's write-once output (the wiki
+and the contact sheets read it), the packed file is named by its content hash,
+`packed/index.json` names the current file per strip, and the previous
+generation is kept (current + one back — the cache law). Resumable: a strip
+whose raw bytes hash to what the index recorded is skipped, so `pack.py` runs
+after any sync that changes strips (`--check` exits 1 when an index is stale;
+`--only id` for one monster).
 
 **57 monsters** (20 authored in the objects store, 37 in the characters
 store; counts drift with tagging — the tag is ground truth). All serve
