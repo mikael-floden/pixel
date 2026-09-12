@@ -22,6 +22,7 @@ on:
       - "wiki/tools/check-stage.mjs"
       - "wiki/tools/check-candidates.mjs"
       - "wiki/tools/check-gone.mjs"
+      - "wiki/tools/check-queue.mjs"
       - "wiki/tools/serve-repo.mjs"
       - "wiki/tools/check-script.mjs"
       - ".github/workflows/wiki-guard.yml"
@@ -65,3 +66,5 @@ jobs:
         run: node wiki/tools/check-candidates.mjs
       - name: "\"Removed\" must be true — a 404 at the image is not a deletion"
         run: node wiki/tools/check-gone.mjs
+      - name: A review queue does not move under his thumb
+        run: node wiki/tools/check-queue.mjs

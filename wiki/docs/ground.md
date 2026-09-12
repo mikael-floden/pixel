@@ -2,6 +2,27 @@
 
 How the ground pages, passes, transitions, ledger and filters work, and the breaks that shaped them. Moved verbatim out of `wiki/README.md` (2026-09-09), which keeps the rules and points here; rewrite in place under the root doc law.
 
+## The queue does not move under his thumb
+
+A verdict in a review QUEUE removes that card where it stands; nothing above it
+re-renders (maintainer 2026-09-12, on a ground's details: *"if I press approve
+the already reviewed element is moved down instead of the next item to review
+moving up. This means I have to scroll before I can press approve again. This
+takes time. I want to be able to not move my thumb and press approve/not a
+detail on the exact same place over and over again until everything is
+reviewed."*)
+
+- The old behaviour re-rendered the page at the same `scrollY`, and the judged
+  top joined the collection ABOVE — one card taller — so the queue and every
+  button in it slid down a card. Same scroll position, different pixels.
+- `judgedInPlace(card)` drops the card from the DOM and corrects the queue's
+  count in place. The collection and the "N approved" pill catch up on the next
+  natural render, which is the deal the stars have had since 2026-08-28.
+- The ONE render he cannot avoid: when the last visible card of the queue is
+  judged, the next dozen are pulled in.
+- Gate: `wiki/tools/check-queue.mjs` taps the same PIXEL four times and fails
+  unless each tap judges a different top and lands on the same coordinates.
+
 ## The ground system: World (Tiles 3.0)
 
 `tiles/` is THE tile library (tiles2 — the "Tiles OLD" row — was deleted

@@ -9962,7 +9962,38 @@ function viewWorldType(top) {
      * change each. The stars now fill in place and the card stays until the
      * next natural render. The roof glyph went with it: lit and dim ⌂ differ
      * only by colour, which is exactly what he could not see. */
-    const detailCard = ({ cell, cand }) => h("div", { class: "card detail-card" },
+    /* HIS THUMB DOES NOT MOVE (maintainer 2026-09-12: "if I press approve the
+     * already reviewed element is moved down instead of the next item to
+     * review moving up. This means I have to scroll before I can press approve
+     * again. This takes time. I want to be able to not move my thumb and press
+     * approve/not a detail on the exact same place over and over again until
+     * everything is reviewed.")
+     *
+     * A verdict used to re-render the page at the same scrollY, and the
+     * judged top joined the collection ABOVE — which is one card taller, so
+     * the queue and every button in it slid DOWN a card. Now the judged card
+     * is removed from the DOM where it stands: the next one rises into its
+     * place and its buttons land under the thumb that just tapped. The
+     * collection and the counts catch up on the next natural render, which is
+     * the same deal the stars already had.
+     *
+     * The counts are corrected in place so nothing on screen lies in the
+     * meantime, and the queue re-renders only when it runs out of cards. */
+    const judgedInPlace = (card) => {
+      const inQueue = !!card.closest(".detail-queue");
+      card.remove();
+      const left = document.querySelectorAll(".detail-queue .detail-card").length;
+      const pill = $(".detail-queue-count");
+      if (inQueue && pill) pill.textContent = String(Math.max(0, queue.length - (shownQueue - left)));
+      // Out of cards on screen but not out of queue: pull the next dozen in.
+      // That is a render he cannot avoid, and the only one.
+      if (inQueue && !left && queue.length > shownQueue) {
+        detailShown.set(t.id, shownQueue + 12);
+        keepScrollY = window.scrollY;
+        route();
+      }
+    };
+    const detailCardBody = ({ cell, cand }, card) => [
       detailField(t.id, cand, dPass, [dSeed % 89, (dSeed * 7) % 83], 1),
       /* NO WALL PICKER ON A DETAIL (maintainer 2026-09-03: "Why did you add
        * the wall selector to details? A detail only has a top and will never
@@ -9992,7 +10023,8 @@ function viewWorldType(top) {
           : null),
       state.admin ? h("div", { class: "card-sub" },
         feedbackRow("tiles", topKey(cand.key), {
-          onchange: () => { keepScrollY = window.scrollY; route(); },
+          // THE CARD LEAVES, THE PAGE DOES NOT MOVE — see judgedInPlace above.
+          onchange: () => judgedInPlace(card),
           // ...but not from a star: it fills in place and the card stays.
           onStarChange: null,
           /* THE CARD HOLDS STILL UNDER A STAR (maintainer
@@ -10009,7 +10041,12 @@ function viewWorldType(top) {
           rejectTitle: "This top is not ground-detail material — the tile itself is untouched",
           rejectedLabel: "not a detail",
           note: false,
-        })) : null);
+        })) : null];
+    const detailCard = (x) => {
+      const card = h("div", { class: "card detail-card" });
+      card.append(...detailCardBody(x, card).filter(Boolean));
+      return card;
+    };
     return h("div", {},
       h("p", { class: "muted" }, state.admin
         ? `The detail ONCE in the centre of the ground it would decorate. Tops that look amazing when they appear ONCE IN A WHILE — a flower, a stone, a glint. The wall never shows, so only the top is judged. ${dPass === worldViewFor(t.id) ? `Drawn ${dPass === PASS_RAW ? "RAW — the generator's own" : passSet(t.id, dPass) ? `in ${setLabel(passSet(t.id, dPass))}` : "on the clean colour"}, as the switch says.` : "Drawn in this ground's first set whatever the switch says: the clean colour flattens a top to one tone, which is nothing to judge. Pick Raw for the generator's own."}`
@@ -10025,11 +10062,11 @@ function viewWorldType(top) {
             : "None yet — they are being picked right now.")),
       state.admin ? h("div", { class: "panel" },
         h("div", { class: "panel-title" }, "Tops nobody has judged",
-          h("span", { class: "pill" }, String(queue.length)),
+          h("span", { class: "pill detail-queue-count" }, String(queue.length)),
           h("span", { class: "muted", style: "font-weight:400;font-size:12.5px" }, " — your when-bored queue")),
         queue.length
           ? h("div", {},
-            h("div", { class: "grid detail-grid" }, ...queue.slice(0, shownQueue).map(detailCard)),
+            h("div", { class: "grid detail-grid detail-queue" }, ...queue.slice(0, shownQueue).map(detailCard)),
             queue.length > shownQueue ? h("button", {
               class: "ghost-btn", style: "margin-top:10px",
               onclick: () => { detailShown.set(t.id, shownQueue + 12); keepScrollY = window.scrollY; route(); },
