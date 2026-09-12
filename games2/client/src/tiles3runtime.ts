@@ -51,6 +51,7 @@ import {
   type Tiles3Data,
   type Tiles3DeckCell,
   type World3View,
+  TopsDoc,
 } from "./tiles3";
 import {
   artKey,
@@ -368,6 +369,11 @@ export const TILES3_DOCS = {
   review: "tiles/review/manifest.json",
   fades: "tiles/fades/index.json",
   slopes: "tiles/slopes/index.json",
+  /** His reviewed detail library (flavour "detail" sheets, one motif centred
+   *  on its own ground) — the detail pool reads it against his `#top`
+   *  verdicts. In the image: ship-tiles3 copies every document the closure
+   *  names, and the tops' post files wholesale. */
+  tops: "tiles/tops/index.json",
   baseTileSets: "live/tuning/base_tile_sets.json",
   basePromotions: "live/tuning/base_tiles.json",
   tileWalls: "live/tuning/tile_walls.json",
@@ -416,6 +422,7 @@ export function tiles3DataFrom(
     basePromotions: docs.basePromotions?.overrides,
     fades: docs.fades as FadesDoc | undefined,
     slopes: docs.slopes as SlopesDoc | undefined,
+    tops: docs.tops as TopsDoc | undefined,
     topWallOverrides: docs.topWalls?.overrides,
     topOverrides: docs.tileTops?.overrides,
     /* NO live/tuning/tile_details.json: the wiki has never published it, and a

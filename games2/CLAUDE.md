@@ -72,6 +72,9 @@ secrets; push to `main`, rebase on reject, no PRs unless asked; doc law.
   but exists on GitHub is that file.
 
 **Rendering a maps3 world** (`docs/tiles3-rendering.md`)
+- Ground DETAILS are his approved `tiles/tops` details + the x-over-y top
+  approvals, one in N cells by the Settings "Ground details" dial
+  (`detailrate.ts`, default 1 in 56); never tiled, never on an indoor floor.
 - The resolver is PER CELL (`Tiles3World`), never the sweep, and it is held
   deeply equal to the sweep and to `maps2/pipeline/render3.py` by the parity
   fixtures (`scripts/tiles3-fixture.py`); a resolution rule changes in

@@ -47,6 +47,9 @@ export interface ComposeWorkerStats {
    *  path adds to a frame, and the number that decides whether it was worth it. */
   applyMs: number;
   batches: number;
+  /** The first few distinct reasons the worker gave for a miss — what the
+   *  beacon needs to say WHY 5% of a run's jobs came back unbuilt. */
+  missSample: string[];
 }
 
 export class ComposeWorker implements RemoteComposer {
@@ -57,7 +60,7 @@ export class ComposeWorker implements RemoteComposer {
   private flushQueued = false;
   private onLand: ((key: string, px: Pixels, ms: number) => void) | null = null;
   private onMiss: ((key: string, error: string) => void) | null = null;
-  readonly stats: ComposeWorkerStats = { state: "off", error: "", bootMs: 0, queued: 0, landed: 0, missed: 0, workerMs: 0, applyMs: 0, batches: 0 };
+  readonly stats: ComposeWorkerStats = { state: "off", error: "", bootMs: 0, queued: 0, landed: 0, missed: 0, workerMs: 0, applyMs: 0, batches: 0, missSample: [] };
 
   ready(): boolean {
     return this.isReady;
@@ -153,6 +156,8 @@ export class ComposeWorker implements RemoteComposer {
     }
     if (m.type === "miss") {
       this.stats.missed++;
+      const why = m.error.replace(/\?v=[^ ]*/, "").slice(0, 120);
+      if (this.stats.missSample.length < 6 && !this.stats.missSample.includes(why)) this.stats.missSample.push(why);
       this.onMiss?.(m.key, m.error);
       return;
     }

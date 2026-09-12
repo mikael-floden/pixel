@@ -475,7 +475,19 @@ dressing). `this.maps3` gates every terrain branch (false only for a hand-built
   `(1+1.6·rating)·max(0, 1−|pct−target|/(span/2))` with target = pctMin +
   span·pos^falloff — at the resolver's own constants FADE_BAND 2 / amount 1 /
   falloff 1 (the fixtures pin those; the game's dials are the maintainer's and
-  differ); a detail rolls wherever no fade landed, never on parquet_floor;
+  differ); a detail rolls wherever no fade landed, never on parquet_floor —
+  THE POOL is his `#top` approvals over the x-over-y textured tops PLUS his
+  reviewed detail library (`tiles/tops/index.json`: flavour "detail" sheets,
+  a tile whose `<dir>/<tile>#top` verdict is approved, drawn as
+  `<dir>/post/<post file>` matched by stem; 2,549 approved, 2026-09-12 —
+  before that none of them could reach a field except as a base-set member,
+  TILED, "the one thing a detail must never be"), and THE RATE is the
+  Settings "Ground details" dial (`detailrate.ts`: one in N cells, N on a
+  geometric track from every cell to one in 10,000, default the old 1 in 56;
+  "ml-detail-rate" rebuilds the resolver on both threads like the fade dials,
+  and the worker rolls the same rate — `WorkerInit.detailRate`); render3
+  mirrors the pool (asked of maps2 on their board), not the dial; probe
+  `__ml.details()`; gate `scripts/verify-details.mjs`;
   MADE_GROUND = brown_paving_stone, grey_paving_stone, parquet_floor; a
   boundary corner within `BOUNDARY_STEP` votes and a farther one folds to its
   own ground, liquid pairs compose and the liquid cell draws top-face-only

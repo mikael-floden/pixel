@@ -564,6 +564,14 @@ export interface TileArt {
 
 /* -- the data this resolver reads ------------------------------------------- */
 
+/** tiles/tops/index.json: sheets of top-only tiles, `flavour` "detail" or
+ *  "subtle", their surviving tiles and the post pass of each (index order,
+ *  matched by stem). A rejected tile leaves the index on every review pass,
+ *  so "listed and approved" is the whole rule. */
+export interface TopsDoc {
+  sheets?: { ground: string; flavour?: string; dir: string; tiles?: string[]; post_files?: string[] }[];
+}
+
 export interface Tiles3Data {
   /** live/tuning/base_tile_sets.json. LIVE — see `setBaseTileSets`. */
   baseTileSets: BaseTileSetsDoc;
@@ -612,8 +620,13 @@ export interface Tiles3Data {
    *  tile's OWN top; the base-tile-set surface is not painted over it. */
   topOverrides?: Record<string, { own_top?: boolean }>;
   /** live/tuning/tile_details.json `.rate` — a per-ground detail rate. Nothing
-   *  is published today; every ground uses DETAIL_FREQ. */
+   *  is published today; every ground uses `detailRate`, then DETAIL_FREQ. */
   detailRates?: Record<string, number>;
+  /** THE SETTINGS DIAL (detailrate.ts): one detail in every 1/rate field
+   *  cells, for every ground without a published per-ground rate. */
+  detailRate?: number;
+  /** tiles/tops/index.json — his reviewed detail library. */
+  tops?: TopsDoc;
   /** The fade set's ALIEN-PALETTE GUARD, which is a pixel test render3 runs over
    *  the tile's own top diamond (80th percentile of the per-pixel distance to
    *  the nearer of the two palette tops, rejected above 78). A pure module
@@ -1789,8 +1802,39 @@ export class Tiles3 {
         if (rel) out.push(rel);
       }
     }
+    /* AND HIS DETAIL LIBRARY (tiles/tops, 2026-09-12). 9,840 tiles were bought
+     * as details — flavour "detail", one motif centred on its own ground,
+     * generated for exactly this once-in-a-while placement — and he reviewed
+     * every one; 2,549 are approved. Until now none reached a field except as
+     * a base-set member, where the weighted pick TILED it, the one placement
+     * he says a detail must never have ("looks amazing, but not if tiled").
+     * The rule, from the tiles agent's board note: a sheet with flavour
+     * "detail", a tile whose `<dir>/<tile>#top` verdict is approved, drawn as
+     * `<dir>/post/<post file>` — the post pass, matched by stem, NEVER a
+     * constructed name. The x-over-y textured tops above stay in the pool:
+     * they are his approvals for the same purpose. Index order, so the pick's
+     * hash lands on the same tile every boot. */
+    for (const sh of this.data.tops?.sheets ?? []) {
+      if (sh.ground !== ground || sh.flavour !== "detail") continue;
+      const tiles = sh.tiles ?? [];
+      const post = sh.post_files ?? [];
+      for (let i = 0; i < tiles.length; i++) {
+        if (fb[`${sh.dir}/${tiles[i]}#top`]?.status !== "approved") continue;
+        const stem = tiles[i].replace(/\.[^.]+$/, "");
+        const file = post.find((f) => f.startsWith(`${stem}.`)) ?? post[i];
+        if (file) out.push(`${sh.dir}/post/${file}`);
+      }
+    }
     this.detailCache.set(ground, out);
     return out;
+  }
+
+  /** THE DETAILS DIAL, live: a new rate for every ground without a published
+   *  one. The picks are made per cell by whoever resolves cells (the scene's
+   *  cache, the worker), so the caller re-resolves; the pool itself does not
+   *  change. */
+  setDetailRate(rate: number): void {
+    this.data = { ...this.data, detailRate: rate };
   }
 
   /* -- slopes -------------------------------------------------------------- */
@@ -2765,7 +2809,7 @@ export class Tiles3 {
     if (gr === ROOM_FLOOR) return out;
     const dp = this.detailPool(gr);
     if (dp.length) {
-      const rate = this.data.detailRates?.[gr] ?? DETAIL_FREQ;
+      const rate = this.data.detailRates?.[gr] ?? this.data.detailRate ?? DETAIL_FREQ;
       const rd = lcg((x * 83492791) ^ (y * 2654435761) ^ 0xd47a);
       if (rd() < rate) {
         const index = Math.trunc(rd() * dp.length) % dp.length;

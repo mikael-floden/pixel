@@ -178,6 +178,8 @@ import type { MapGeometry, PlaceLookup } from "../maps";
 import { renderedWorldView, type ViewRect } from "../camview";
 import { ResolveWorker, resolveWorkerEnabled, setResolveWorkerEnabled, type ResolvedCell } from "../resolveworker";
 import { ComposeWorker, composeWorkerEnabled, setComposeWorkerEnabled } from "../composeclient";
+import { detailEvery, detailRate, setDetailEvery } from "../detailrate";
+import { ensureDetailDial } from "../detaildial";
 // ---- TILES 3.0 (maps3 worlds) -------------------------------------------
 // The resolver (what draws on this cell), the draw layer (the two pixel ops +
 // the texture factory), the streaming per-cell runtime, and scenery. All four
@@ -1899,8 +1901,17 @@ export class WorldScene extends Phaser.Scene {
   private perfBeaconAt = 0;
   private perfBeaconFrom: { x: number; y: number } | null = null;
   private perfHideHooked = false;
-  private perfStack: { t0: number; child: number }[] = [];
+  private perfStack: { t0: number; child: number; m0: number; childMem: number }[] = [];
   private perfAcc: Record<string, { n: number; ms: number; max: number }> = {};
+  /* HEAP GROWTH BY SECTION — who allocates. His beacon reads 25-53 MB/s of
+   * heap growth and 33-68 collections a second, and the collector's time is
+   * exactly the `gapBusy` nobody could name (1.8-2.4 ms a frame steady, 45-63
+   * ms spikes). `performance.memory.usedJSHeapSize` (Chrome) is read at every
+   * section's start and end; growth is self growth, handed up like time, and a
+   * collection inside a span (a negative delta) counts as nothing. Estimate,
+   * not accounting — but it names the allocator. */
+  private perfAlloc: Record<string, number> = {};
+  private perfMem: { usedJSHeapSize: number } | null = (performance as unknown as { memory?: { usedJSHeapSize: number } }).memory ?? null;
   private perfFrames: number[] = [];
   private perfLast = 0;
   /* THE HITCH RECORDER — the instrument the whole optimisation day lacked.
@@ -2055,7 +2066,10 @@ export class WorldScene extends Phaser.Scene {
   }
 
   private ps(): void {
-    if (this.perfOn) this.perfStack.push({ t0: performance.now(), child: 0 });
+    if (this.perfOn) this.perfStack.push({ t0: performance.now(), child: 0, m0: this.perfMem ? this.perfMem.usedJSHeapSize : 0, childMem: 0 });
+  }
+  private aAdd(key: string, bytes: number): void {
+    if (bytes > 0) this.perfAlloc[key] = (this.perfAlloc[key] ?? 0) + bytes;
   }
   /** Arm or disarm the perf beacon from the settings panel, and remember it —
    *  the installed app cannot be given a query parameter. Arming also turns on
@@ -2095,6 +2109,7 @@ export class WorldScene extends Phaser.Scene {
     this.perfBeaconAt = 0;
     this.perfBeaconFrom = null;
     this.perfAcc = {};
+    this.perfAlloc = {};
     this.perfFrames = [];
     this.perfStack = [];
     this.perfLast = 0;
@@ -2267,6 +2282,14 @@ export class WorldScene extends Phaser.Scene {
       final,
       frames: { ...(snap.frames as Record<string, number>), ...hist, rafHz: rafHz(frameList) },
       sections: perFrame,
+      // HEAP GROWTH BY SECTION, KB PER FRAME (the dozen largest) — the
+      // allocators behind `heap.grewMbPerSec` and the collector's `gapBusy`.
+      allocBy: Object.fromEntries(
+        Object.entries((snap.alloc ?? {}) as Record<string, number>)
+          .sort((a, b) => b[1] - a[1])
+          .slice(0, 12)
+          .map(([k, v]) => [k, +(v / frames).toFixed(1)]),
+      ),
       run: {
         runId: this.perfRunId,
         winIdx: this.perfWinIdx,
@@ -2437,6 +2460,8 @@ export class WorldScene extends Phaser.Scene {
        * not far below workerMs the feature is not paying for itself, and
        * `state` says whether it ran at all on his device. */
       worker: { ...this.t3worker.stats, cores: navigator.hardwareConcurrency || 0 },
+      // THE COMPOSE WORKER, whole: its state, its counters and why it missed.
+      compose: { ...this.t3compose.stats, workerMs: Math.round(this.t3compose.stats.workerMs), applyMs: +this.t3compose.stats.applyMs.toFixed(1) },
       // Every jump of the AUTHORITATIVE body over 2 cells in one frame, with
       // the unacked-input depth at the time — a rejoin restore, a respawn, an
       // unstick and a reconciliation blow-up all land here and are told apart
@@ -2831,6 +2856,11 @@ export class WorldScene extends Phaser.Scene {
     const parent = this.perfStack[this.perfStack.length - 1];
     if (parent) parent.child += d;
     this.pAdd(key, d - f.child);
+    if (this.perfMem) {
+      const grew = this.perfMem.usedJSHeapSize - f.m0;
+      if (parent) parent.childMem += grew;
+      this.aAdd(key, grew - f.childMem);
+    }
   }
   /** One measured span into the beacon's accumulators. Split out of `pe` so a
    *  span that is NOT a stack pair — the renderer, which starts and ends on
@@ -2887,10 +2917,12 @@ export class WorldScene extends Phaser.Scene {
     const ev = this.game.events;
     let t0 = 0;
     let sort0 = 0;
+    let m0 = 0;
     ev.on(Phaser.Core.Events.PRE_RENDER, () => {
       if (!this.perfOn) return;
       t0 = performance.now();
       sort0 = this.perfAcc["depthSort"]?.ms ?? 0;
+      m0 = this.perfMem ? this.perfMem.usedJSHeapSize : 0;
     });
     ev.on(Phaser.Core.Events.POST_RENDER, () => {
       if (!this.perfOn || !t0) return;
@@ -2904,6 +2936,7 @@ export class WorldScene extends Phaser.Scene {
        * accumulated inside this bracket. */
       const sortMs = (this.perfAcc["depthSort"]?.ms ?? 0) - sort0;
       this.pAdd("render", performance.now() - t0 - sortMs);
+      if (this.perfMem) this.aAdd("render", this.perfMem.usedJSHeapSize - m0);
       t0 = 0;
       this.perfDrawCount = this.perfFlushes;
       this.perfFlushes = 0;
@@ -3026,6 +3059,26 @@ export class WorldScene extends Phaser.Scene {
    *  one slot per inversion; when the inversions run past the list's length
    *  (a rebuild that added hundreds of images) it hands the half-sorted list
    *  to Phaser's own sort, which finishes it. */
+  /** PHASER FILTERS THE DISPLAY LIST INTO A NEW ARRAY EVERY FRAME
+   *  (`CameraManager.getVisibleChildren` is `children.filter(...)`): two to
+   *  three thousand references and a closure a frame, garbage for a
+   *  collector that already runs 33-68 times a second on his phone. One
+   *  scratch array per camera, refilled; the renderer reads it at once and
+   *  keeps nothing. */
+  private installVisibleScratch(): void {
+    const cm = this.cameras as unknown as {
+      getVisibleChildren(children: Phaser.GameObjects.GameObject[], camera: Phaser.Cameras.Scene2D.Camera): Phaser.GameObjects.GameObject[];
+    };
+    const scratch = new Map<Phaser.Cameras.Scene2D.Camera, Phaser.GameObjects.GameObject[]>();
+    cm.getVisibleChildren = (children, camera) => {
+      let out = scratch.get(camera);
+      if (!out) scratch.set(camera, (out = []));
+      out.length = 0;
+      for (let i = 0; i < children.length; i++) if (children[i].willRender(camera)) out.push(children[i]);
+      return out;
+    };
+  }
+
   private installDepthSort(): void {
     const dl = this.children as unknown as { list: { _depth: number }[]; sortChildrenFlag: boolean; depthSort(): void };
     const orig = dl.depthSort.bind(dl);
@@ -3997,6 +4050,7 @@ export class WorldScene extends Phaser.Scene {
      * one capture texture per size — see capturepool.ts. */
     if (this.game.renderer.type === Phaser.WEBGL) installCapturePool(this.renderer);
     this.installDepthSort();
+    this.installVisibleScratch();
     /* A BEACON ARMED AT BOOT (`?perf=1`, or remembered) gets the same
      * instruments the settings toggle installs. Without this the two arming
      * paths measure different things, and the boot path is the one he uses. */
@@ -4576,6 +4630,10 @@ export class WorldScene extends Phaser.Scene {
       }, 400);
     };
     window.addEventListener("ml-fade-tune", reResolve);
+    // The details dial takes the same road: the picks are per cell, made by
+    // whoever resolves cells, so the resolver is rebuilt on both threads and
+    // the ground repainted.
+    window.addEventListener("ml-detail-rate", reResolve);
 
     // Debug hooks for headless end-to-end verification.
     (window as any).__ml = {
@@ -6056,6 +6114,25 @@ export class WorldScene extends Phaser.Scene {
           wastedSubmits,
         };
       },
+      /** THE DETAILS: the dial, each ground's pool (his approved tops + the
+       *  x-over-y textured tops) and how many resolved cells in the cache
+       *  carry a detail right now. */
+      details: (every?: number) => {
+        if (typeof every === "number") setDetailEvery(every);
+        const t3 = this.t3;
+        const pools: Record<string, number> = {};
+        const tiles = (t3 as unknown as { tiles?: { detailPool(g: string): string[] } } | null)?.tiles;
+        const grounds = Object.keys((this.cache.json.get("t3doc:groundTypes") as { grounds?: Record<string, unknown> } | undefined)?.grounds ?? {});
+        if (tiles) for (const g of grounds) pools[g] = tiles.detailPool(g).length;
+        let cells = 0;
+        let withDetail = 0;
+        for (const e of this.t3cells.values()) {
+          if (!e.cell) continue;
+          cells++;
+          if ((e.cell as unknown as { detail?: unknown }).detail) withDetail++;
+        }
+        return { every: detailEvery(), rate: detailRate(), pools, cells, withDetail };
+      },
       /** THE COMPOSE WORKER's switch, stats and audit. `composeWorker(false)`
        *  stops it (the factory composes on this thread again at once);
        *  `composeWorker(true)` rebuilds the factory with it. `composeWorker
@@ -7058,6 +7135,7 @@ export class WorldScene extends Phaser.Scene {
             this.perfArmBaselines();
           }
           this.perfAcc = {};
+    this.perfAlloc = {};
           this.perfFrames = [];
           this.perfStack = [];
           this.perfLast = 0;
@@ -7071,9 +7149,16 @@ export class WorldScene extends Phaser.Scene {
             .map(([k, v]) => [k, { n: v.n, totalMs: +v.ms.toFixed(1), avgMs: +(v.ms / Math.max(1, v.n)).toFixed(2), maxMs: +v.max.toFixed(1) }]),
         );
         const r = this.game.renderer as unknown as { drawCount?: number; batches?: number };
+        // Heap growth by section, KB — see perfAlloc.
+        const alloc = Object.fromEntries(
+          Object.entries(this.perfAlloc)
+            .sort((a, b) => b[1] - a[1])
+            .map(([k, v]) => [k, Math.round(v / 1024)]),
+        );
         const out = {
           frames: { n: f.length, p50: pick(0.5), p90: pick(0.9), p99: pick(0.99), max: f.length ? +f[f.length - 1].toFixed(1) : 0 },
           sections,
+          alloc,
           counts: {
             occluders: this.occluders.length,
             litOccluders: this.litOccluders.length,
@@ -7098,6 +7183,7 @@ export class WorldScene extends Phaser.Scene {
         this.perfTexFam = {};
         this.perfTexFrameMax = 0;
         this.perfAcc = {};
+    this.perfAlloc = {};
         this.perfFrames = [];
         return out;
       },
@@ -16219,6 +16305,7 @@ export class WorldScene extends Phaser.Scene {
       ensureMapLayers();
       ensureNavDial();
       ensureResDial(); // the render-resolution slider, above the HUD's light-resolution one
+      ensureDetailDial(); // the ground-details slider, below it
       ensureSpeedDial(); // the player-speed slider, injected the same way
       ensureStickDial(); // …and the stick's direction-freedom slider
       ensureStickAngle(); // (re)bind the bearing listeners on games-ui's stick
@@ -16721,6 +16808,7 @@ export class WorldScene extends Phaser.Scene {
       return;
     }
     data.fadeTune = fadeTune(); // the Settings fade dials; "ml-fade-tune" rebuilds the resolver
+    data.detailRate = detailRate(); // the Settings details dial; "ml-detail-rate" rebuilds it the same way
     // The cliff-foot and lid transitions are always on (maintainer 2026-09-12;
     // the switch that could turn them off is gone).
     data.footBoundary = true;
@@ -16770,6 +16858,7 @@ export class WorldScene extends Phaser.Scene {
       worldUrl: gameUrl(worldFileUrl(this.worldName, "world.json")),
       frame: this.tiles3Frame(),
       pitch: this.geom.lh,
+      detailRate: detailRate(),
     };
     this.t3worker.stop();
     this.t3workerBooted = true;

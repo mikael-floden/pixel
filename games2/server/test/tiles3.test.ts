@@ -172,6 +172,7 @@ function build(): { t: Tiles3; pitch: number; groundTypes: Record<string, any> }
     groundTypes,
     patterns: load("tiles/patterns/index.json"),
     review: load("tiles/review/manifest.json"),
+    tops: load("tiles/tops/index.json"),
     feedback: load("live/feedback/tiles.json").entries,
     wallOverrides: load("live/tuning/tile_walls.json").overrides,
     basePromotions: load("live/tuning/base_tiles.json").overrides,
@@ -708,6 +709,39 @@ test("a set member draws its TEXTURED art, and a gap in the index is reported", 
 });
 
 /* -- the pools -------------------------------------------------------------- */
+
+test("the detail pool carries his approved tiles/tops details, drawn as their post files", { skip: !!MISSING.length }, () => {
+  // The rule from the tiles agent's board note (2026-09-12): a sheet with
+  // flavour "detail", a tile whose `<dir>/<tile>#top` verdict is approved,
+  // drawn as `<dir>/post/<post file>` matched by stem — never a constructed
+  // name. Counted here straight off the index and his verdicts.
+  const { t } = build();
+  const tops = load("tiles/tops/index.json").sheets as { ground: string; flavour?: string; dir: string; tiles?: string[]; post_files?: string[] }[];
+  const fb = load("live/feedback/tiles.json").entries as Record<string, { status?: string }>;
+  const want = new Map<string, string[]>();
+  for (const sh of tops) {
+    if (sh.flavour !== "detail") continue;
+    for (const tile of sh.tiles ?? []) {
+      if (fb[`${sh.dir}/${tile}#top`]?.status !== "approved") continue;
+      const stem = tile.replace(/\.[^.]+$/, "");
+      const post = (sh.post_files ?? []).find((f) => f.startsWith(`${stem}.`));
+      assert.ok(post, `no post file for ${sh.dir}/${tile}`);
+      const list = want.get(sh.ground) ?? [];
+      list.push(`${sh.dir}/post/${post}`);
+      want.set(sh.ground, list);
+    }
+  }
+  assert.ok(want.size >= 10, `only ${want.size} grounds have approved details`);
+  for (const [ground, files] of want) {
+    const pool = t.detailPool(ground);
+    for (const f of files) assert.ok(pool.includes(f), `${ground}: ${f} is approved and not in the pool`);
+    // A rejected top never gets in: everything from tiles/tops in the pool is
+    // one of the approved files.
+    for (const p of pool) if (p.startsWith("tiles/tops/")) assert.ok(files.includes(p), `${ground}: ${p} is in the pool without an approval`);
+    // ...and the x-over-y top approvals are still there before them.
+    assert.ok(pool.length > files.length || pool.length === files.length, `${ground}: pool ${pool.length} < tops ${files.length}`);
+  }
+});
 
 test("the detail, fade and slope pools are render3's pools", { skip: !!MISSING.length }, () => {
   const { t } = build();

@@ -97,6 +97,8 @@ export class ResolveWorker {
     worldUrl: string;
     frame: Frame;
     pitch: number;
+    /** The details dial (detailrate.ts): the worker rolls the same rate. */
+    detailRate?: number;
   }): void {
     this.gen++;
     this.pending.clear();
