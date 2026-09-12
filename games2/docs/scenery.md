@@ -158,6 +158,12 @@ Off-grid set dressing: sizing, hitboxes, animation, windows on walls, indoor fur
   epsilons and 0.49 under the bodies. `verify-indoorscope` runs on the_game.
   Probe: `__ml.indoorFade()` (debris count + alpha per frame).
 
+- **A PIECE OVER HALF THE ROOM FADES OUT while the room is entered**
+  (`scenerycover.ts`, `stepSceneryCover`; the rule and its receipt are in
+  `INDOOR.md`): the share of the room's floor cells under the piece's drawn
+  box, at or past 0.5 the sprite, lit copy and fog silhouette wear
+  `1 − indoorGrade()`. A smaller piece keeps its black silhouette over the
+  lit floor — the effect he asked to keep.
 - **FLAT SCENERY DRAWS UNDER EVERYTHING** (`collision: false` — the six rugs
   and one clutter piece; maintainer 2026-09-03: "no collision means the object
   is flat on the ground … everything marked as no collision should always be

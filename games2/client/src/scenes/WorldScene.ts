@@ -109,6 +109,7 @@ import {
 } from "../navbias";
 import { ensureSpeedDial, playerSpeed } from "../playerspeed";
 import { ensureStickDial, ensureStickAngle, stickLean, stickHeading } from "../stickdir";
+import { roomCoverFraction, coversRoom, type ScreenBox, type ScreenPt } from "../scenerycover";
 import { ensureWallWrapDial, wallWrap, setWallWrap } from "../wallwrap";
 import { hiddenRing, setHiddenRing } from "../hiddenring";
 import { indoorWall, setIndoorWall, INDOOR_WALL_MIN, INDOOR_WALL_MAX } from "../indoorwall";
@@ -3209,6 +3210,14 @@ export class WorldScene extends Phaser.Scene {
   /** Pieces standing ON the cut-away lid — they ride the roof's own dissolve
    *  (see sceneryAboveCutAt). */
   private sceneryAboveCutImgs: Phaser.GameObjects.Image[] = [];
+  /** THE TREE OVER THE HOUSE (scenerycover.ts): every drawn OUTSIDE piece —
+   *  not furniture, not on a lid, not flat, not on a wall — with its drawn
+   *  box, so the share of the room's floor it covers can be measured when a
+   *  room is entered; `cover` is -1 until it is. A piece over half the room
+   *  fades out on the indoor grade (stepSceneryCover). */
+  private sceneryCoverRecs: { img: Phaser.GameObjects.Image; lo: { fade?: number } | null; box: ScreenBox; place: number; cover: number }[] = [];
+  /** The room the cover shares were measured against (indoorKey); "" = none. */
+  private sceneryCoverSig = "";
   /** SCENERY ON A WALL (maps2 `z`: windows, hangings) — one record per drawn
    *  placement, stepped every frame: the base image and the lit copy take the
    *  wall column's cut fade, and a window's LIGHTS_ON art crossfades in over
@@ -4833,7 +4842,21 @@ export class WorldScene extends Phaser.Scene {
         roofedDrawn: this.sceneryRoofedImgs.length
           ? +(this.sceneryRoofedImgs.reduce((a, i) => a + i.alpha, 0) / this.sceneryRoofedImgs.length).toFixed(3)
           : null,
+        // THE TREE OVER THE HOUSE: outside pieces measured against this room,
+        // how many cover at least half its floor, and the alpha those wear.
+        covering: this.sceneryCoverRecs.filter((r) => r.cover >= 0 && coversRoom(r.cover)).length,
+        coveringAlpha: (() => {
+          const c = this.sceneryCoverRecs.filter((r) => r.cover >= 0 && coversRoom(r.cover));
+          return c.length ? +(c.reduce((a, r) => a + r.img.alpha, 0) / c.length).toFixed(3) : null;
+        })(),
       }),
+      // Every outside piece with its measured share of the room's floor and
+      // the alpha it wears — sorted by share, biggest first (scenerycover.ts).
+      sceneryCover: (n = 12) =>
+        [...this.sceneryCoverRecs]
+          .sort((a, b) => b.cover - a.cover)
+          .slice(0, n)
+          .map((r) => ({ place: r.place, cover: +r.cover.toFixed(3), alpha: +r.img.alpha.toFixed(3), fades: r.cover >= 0 && coversRoom(r.cover) })),
       // How this world's tile art arrived: sheets sliced from the committed
       // atlas vs individual fallback requests (verify-atlas's instrument).
       chess: () => ({
@@ -15945,6 +15968,50 @@ export class WorldScene extends Phaser.Scene {
     this.sceneryWalls.push({ place: p.i, piece: p.piece, img, lo, on, z, fx, fy, inner, glow: 0, glowAt: -Infinity });
   }
 
+  /** THE ROOM'S FLOOR ON SCREEN: the top centre of every cell under my roof
+   *  (the cut-away's own `roof` set), through the ONE ground-plane projection
+   *  at each cell's own level. What a piece's drawn box is measured against. */
+  private roomFloorPoints(): ScreenPt[] {
+    const w = this.world;
+    const sp = this.indoorSpace;
+    if (!w || !sp) return [];
+    const pts: ScreenPt[] = [];
+    for (const i of sp.roof) {
+      const col = i % w.width;
+      const row = (i / w.width) | 0;
+      pts.push(this.projectCellCorner(col + 0.5, row + 0.5, w.rows[row]?.[col]?.l ?? 0));
+    }
+    return pts;
+  }
+
+  /** THE TREE OVER THE HOUSE (maintainer 2026-09-12; scenerycover.ts): an
+   *  outside piece whose drawn box lies over at least half the room's floor
+   *  fades OUT on the indoor grade — the curve the room's light darkens on, so
+   *  it dissolves as the roof leaves and returns as it comes back — and a
+   *  smaller piece keeps its black silhouette over the lit floor. The shares
+   *  are measured once per room entered (and again after a rebuild, which
+   *  recreates the records); the per-frame cost is an alpha per covering
+   *  piece. Leaving keeps the last shares, so the fade-in rides the grade
+   *  down instead of popping on the flip frame. */
+  private stepSceneryCover(): void {
+    const recs = this.sceneryCoverRecs;
+    if (!recs.length) return;
+    if (this.indoorInside && this.indoorSpace) {
+      const sig = `${this.indoorKey}`;
+      if (sig !== this.sceneryCoverSig) {
+        this.sceneryCoverSig = sig;
+        const pts = this.roomFloorPoints();
+        for (const r of recs) r.cover = roomCoverFraction(r.box, pts);
+      }
+    }
+    const g = this.indoorGrade();
+    for (const r of recs) {
+      const a = r.cover >= 0 && coversRoom(r.cover) ? 1 - g : 1;
+      if (r.img.alpha !== a) r.img.setAlpha(a);
+      if (r.lo) r.lo.fade = a === 1 ? undefined : a;
+    }
+  }
+
   /** Per frame: every wall piece takes its wall column's cut fade, and a
    *  window's ON overlay its glow. Cheap — the_game hangs 61 pieces. */
   private stepSceneryWalls(): void {
@@ -16529,6 +16596,7 @@ export class WorldScene extends Phaser.Scene {
       const af = this.debrisAlpha();
       for (const img of this.sceneryAboveCutImgs) img.setAlpha(af);
     }
+    this.stepSceneryCover();
     this.stepSceneryWalls();
     /* THE MAP TAB'S LAYER ROW, polled 4x a second. games-ui owns hud.ts, so the
      * chips and the overlay inject themselves into the Map page from outside
@@ -20321,6 +20389,8 @@ export class WorldScene extends Phaser.Scene {
     this.sceneryImgs = [];
     this.sceneryRoofedImgs = [];
     this.sceneryAboveCutImgs = [];
+    this.sceneryCoverRecs = [];
+    this.sceneryCoverSig = ""; // measured again against the new records
     for (const w of this.sceneryWalls) w.on?.destroy(); // the ON overlays are not pooled — see registerSceneryWall
     this.sceneryWalls = [];
     this.sceneryAnimLive = [];
@@ -20532,6 +20602,14 @@ export class WorldScene extends Phaser.Scene {
         img.setAlpha(this.debrisAlpha());
         this.sceneryAboveCutImgs.push(img);
       }
+      // ...and everything else standing in the world is a candidate to fade
+      // out over a room it buries (THE TREE OVER THE HOUSE, stepSceneryCover).
+      // Its lit copy joins the record below, once it exists.
+      const coverRec =
+        !flat && !onWall && !p.roofed && !this.sceneryAboveCutAt(p.cx, p.cy, p.level)
+          ? { img, lo: null as { fade?: number } | null, box: { x: fit.x, y: fit.y, w: fit.w, h: fit.h }, place: p.i, cover: -1 }
+          : null;
+      if (coverRec) this.sceneryCoverRecs.push(coverRec);
       /* AND IT OCCLUDES. Scenery drew with the right painter depth but told
        * `resolveBodyDepth` nothing, so a body never sorted behind a tree — it
        * only ever looked right by luck of raw painter order. This is the props'
@@ -20578,6 +20656,7 @@ export class WorldScene extends Phaser.Scene {
         });
         if (onWall) this.litOccluders[this.litOccluders.length - 1].cover = Infinity; // the wall is BEHIND it
         const lo = this.litOccluders[this.litOccluders.length - 1];
+        if (coverRec) coverRec.lo = lo;
         // THE VOLUME (scenery-lit): attached BEFORE the silhouette so the
         // silhouette can take the same pipeline — see makeFogSilhouette.
         this.attachSceneryShape(lo, key, art, fit, box0, hbX, hbY, p, world.rows[srow]?.[scol]?.l ?? 0, tileSize);

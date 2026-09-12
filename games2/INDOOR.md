@@ -202,6 +202,23 @@ Probes: `__ml.indoorWall(v?)` / `__ml.indoor()`.
   emission floor and NOTHING ELSE. Point lights stay additive — the torch
   spills through the doorway with the opening's own shadow (measured 5.2×
   brighter down the doorway than at the flanks).
+  - **A PIECE OVER HALF THE ROOM FADES OUT** (`scenerycover.ts`,
+    `stepSceneryCover`; maintainer 2026-09-12, at the spawn: "I feel the tree
+    at the spawn almost cover the entire house ... I still want to see this
+    effect on trees and other scenery that doesn't cover 50% of the house").
+    Zero ambient makes an outside piece a black silhouette over the lit
+    floor, and that stays the rule for a bush at the door; a canopy that
+    buries the room is the room gone. The measure is the share of the room's
+    `roof` cells whose projected top centre lies under the piece's drawn box
+    (the art's whole crop); at or past `SCENERY_COVER_FADE` (0.5) the sprite,
+    its lit copy and its fog silhouette wear `1 − indoorGrade()` — dissolving
+    as the roof leaves, back as it returns — and under it nothing changes.
+    Measured once per room entered and after each scenery rebuild; leaving
+    keeps the shares so the fade-in rides the grade, never the flip frame.
+    Furniture, lid pieces, flat pieces and wall hangings are not candidates
+    (each has its own rule). Probes: `__ml.indoorFade().covering`,
+    `__ml.sceneryCover(n)`; gates: `scripts/verify-scenerycover.mjs` (the
+    spawn house on the_game) and `server/test/scenerycover.test.ts`.
   - **The cut applies to EVERY column in the world**, not just the building:
     painter order draws down-screen columns over the room (a column buries
     an interior cell once ~0.94·k levels taller at k steps). Around the

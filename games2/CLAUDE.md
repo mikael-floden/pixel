@@ -22,10 +22,10 @@ edited. ONE world, `the_game` (`maps2/worlds3`), ONE tile system, `tiles/`
 `CLAUDE.md`), games-perf (the optimization agent, 2026-09-12: frame time
 only, from the phone's beacon; it names every file it touches on
 `coordination/games-perf.json` and rebases onto this agent's pushes) and
-games-assistant (this agent's assistant, 2026-09-12: the same remit, for the
-units this agent is occupied elsewhere for — it reads this agent's board
-first, never touches a file named there as in flight, and names every file
-it touches on `coordination/games-assistant.json`). Work
+games-assistant (this agent's assistant, 2026-09-12: the same remit for the
+units this agent is not in; it reads this board first, never a file named
+there as in flight, and names every file it touches on
+`coordination/games-assistant.json`). Work
 from `games2/`; `npm run dev`, `npm test`, `npm run typecheck`. Boards:
 `coordination/games.json`, `coordination/games-perf.json`,
 `coordination/games-assistant.json`.
@@ -150,7 +150,9 @@ secrets; push to `main`, rebase on reject, no PRs unless asked; doc law.
 - A hitbox is an ellipse OR a ground rect drawn in perspective — port the
   wiki's `rectCorners`, never re-derive; ONE lookup, `sceneryHitboxRec`.
 - Indoor furniture is drawn while its roof is cut away and crossfades with it;
-  flat (`collision:false`) pieces draw under everything, no lit copy.
+  flat (`collision:false`) pieces draw under everything, no lit copy. An
+  OUTSIDE piece over half the room's floor fades out (`scenerycover.ts`,
+  2026-09-12); a smaller one keeps its silhouette.
 - Scenery animates once then sleeps per class; a lit clip moves its light
   (both defaults are his: foliage 1-8 s, fire 0-1, water 1-4, rigid 10-30;
   swing 0.12x).
@@ -183,8 +185,8 @@ secrets; push to `main`, rebase on reject, no PRs unless asked; doc law.
   fall bills on IMPACT (`fallPend`, `fallDurationS`), never at the edge, and
   the client draws the whole impact — blood, number, flinch — on its own
   predicted touchdown frame, swallowing the server's late copy
-  (`fallhurt.ts`); its slow FADES with the number (`fallSlowAt`, 850 ms),
-  never the hit's 1.5 s stagger.
+  (`fallhurt.ts`); its slow FADES with the number (`fallSlowAt`), never the
+  hit's 1.5 s stagger.
 - Water is the player's sanctuary: no monster enters, swims or is hit there.
 - The player-speed dial rides PER INPUT (`InputMessage.sm`) and the SERVER
   clamps it; default 1.2x IS HIS (`playerspeed.ts`).
@@ -193,10 +195,9 @@ secrets; push to `main`, rebase on reject, no PRs unless asked; doc law.
   0.85 IS HIS), the grid-axis lock locks EXACT diagonals only, the facing
   follows the run, and the bearing is read additively off games-ui's stick
   (`stickdir.ts`).
-- Auto-jump fires on ANY push at least `HOP_INTO_MIN` into a jumpable wall,
-  and a wall BESIDE the run is climbed by steering the hop into it
-  (`hopIntoWall`): a run never slides along a ledge it leans into
-  (maintainer 2026-09-12; `docs/movement.md`, the hop into the wall).
+- Auto-jump fires on ANY push into a jumpable wall, and a wall BESIDE the
+  run is climbed by steering the hop into it (`hopIntoWall`): never a slide
+  along a ledge you lean into (maintainer 2026-09-12).
 - Never-backwards is a rule, not an absolute: `walkHeading` watches progress
   along the ask and after `STUCK_ESCALATE_MS` (1.5 s) without any commits to
   a planned escape route past the no-retreat rule and the hold (rule 0).
