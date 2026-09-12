@@ -620,13 +620,8 @@ floor cells is flat, one step of a published stair, or a recorded ledge
 flat cave shows nothing. **Every number is a pool, not a value**
 (maintainer: *"my input should nudge the rules in a direction and never
 create an if statement"*): rooms per cave `CAVE_ROOMS` (3 or 4 mostly, 2 or
-5 sometimes), room sizes `CAVE_ROOM_W/H` (never under `ROOM_MIN` deep: a
-room three deep dressed as a corridor), corridor width `CAVE_LANES` (two lanes
-twice in three, three otherwise — **never one**: a pool that allowed one gave
-Cave III a one-wide stair, maintainer 2026-09-12: *"A single monster will
-block the entire dungeon!"*; every return way is dug as wide as the rest, its
-flat leg searched as blocks of lanes × lanes cells so it is wide by
-construction), the step between rooms `CAVE_STEP` (the ledge
+5 sometimes), room sizes `CAVE_ROOM_W/H`, corridor width `CAVE_LANES` (two
+lanes three times in four), the step between rooms `CAVE_STEP` (the ledge
 and the flat corridor weigh three each, the six stairs one each), flat cells
 before a step `CAVE_GAP_RUN`, headroom `CAVE_HEAD` (6, 8, 5), a pit's depth
 `PIT_DEPTH` (6 mostly), a mouth's width `CAVE_MOUTH_W`. **Nudges, not
@@ -684,6 +679,21 @@ through to a second mouth at (197,255) (4 rooms, floors 4–7, head 5) and
 (148,295) facing south (3 rooms, head 5). Every cave has floors at two
 levels or more, a brazier in every room, a torch at every door; 0 traps,
 every floor reachable, 17 cave monster zones.
+
+**A second lane beside every one-wide way** (`_widen_plan`, at dig time):
+maintainer 2026-09-12, in a one-wide stair of Cave III: *"A single monster
+will block the entire dungeon!"* — and, when the caves were replanned wider
+around him: *"I liked the old caves better! ... I want the old back, but with
+slightly wider corridors only!"* So the planner is untouched and the plan is
+widened after it is fixed and before it is dug, drawing nothing from the
+cave's random stream — every cave stays where and as it was planned. A flat
+corridor cell with floor along one axis only gets its neighbour on one side
+(per corridor, the side where more cells can take it: free rock, joining
+nothing at another level, its rock halo kept); a stair run gets a whole
+parallel lane on the first side where every step can, published as a run.
+Rooms, doors and the pit stay as they were; the keep-out between caves is
+the plan's box, not the lanes'. the_game: 97 cells and 13 lanes over the
+seven planned caves.
 
 **The site record** (`_register_site`, `self.cave_sites`): every cave — the
 hand-planned dungeon included — is one record of its cells and levels,
@@ -1359,14 +1369,7 @@ freestanding blocks, a wedge hugging the wall — were built and rejected
 rule ... Have you ever seen triangles like this in nature?"*). **Roads,
 ramps and the cells beside them, houses and the wild are never carved**; a
 stair that would need them is not built, and a trap under `LEDGE_MAX = 12`
-cells with no room joins the terrace above — as does any trap up to
-`POCKET_MAX` cells once every breach has failed to land (its terrace above is
-a cave's lid, which is never cut, or too narrow for a stair and its flare:
-the east shoulder's 18-cell strip beside the through-cave, measured as a red
-build); a join drops the stair runs it raises, a stair inside a trap led
-nowhere. A massif cave's wall takes a breach when it stays a wall — a breach
-is `STAIR_MAX` deep at most, so a wall cell that plus a climb above the
-cave's highest floor may be cut (`margin_soft`); a pit's field is never cut. **The road is never broken**:
+cells with no room joins the terrace above. **The road is never broken**:
 every two adjacent road cells differ by at most one level, as `ramps()` left
 them — asserted, because one build cut stairs across the Trollstigen
 switchbacks and the old road could not be climbed. Trap components are
