@@ -1,8 +1,8 @@
 {
   "domain": "games-perf",
-  "updated_at": "2026-09-12T21:45:12+00:00",
+  "updated_at": "2026-09-12T22:12:48+00:00",
   "health": "running",
-  "current": "SMOOTH 5 SHIPPED (a frame's alpha from the art worker on demand; no GL readback inside the frame for the outline or the foam clamp). Waiting for his next perf run on Smooth 4+5: rebuildScenery and the outline's first sight should leave the long frames. Next candidates: the cover atlases' bracket fill (GPU, perf.md open item), then whatever his run names. Not touching the occluder walk, the cover index or the ground path.",
+  "current": "CLAIMING Smooth 6, a fix-forward of my own Smooth 4: his 21:57 run on a25172d34 has rebuildScenery at 62-92 ms a long frame, 25 in one window (worse than the 33-66 before). Cause, confirmed headless: a scenery still is drawn through a CUT frame (addSceneryCut), so artBounds misses the seeded __BASE box and reads the GL texture back (readPixels = 59% of rebuildScenery's time headless, 71% under resolveDrawDepth), and pushSceneryLight / the shape jobs read the whole texture back for pixels — on a Mali a readback is a pipeline drain, worse than the decode it replaced. Fix: a cut frame's box comes from the seeded whole-image box (exact when the cut is the state's own box; refined from the worker's alpha otherwise), and texPixels on a banded texture hands over the worker's pixels on demand (async; the light and the shape job wait a rebuild instead of reading back). Files: client/src/scenes/WorldScene.ts (artBounds, texPixels/sceneryCanvasPixels, pushSceneryLight, runShapeJobs, the probes' sync path), artqueue.ts, artworker.ts, framepixels.ts, docs/perf.md, CLAUDE.md (one phrase). Not touching rebuildScenery's loop, the occluder walk or the ground path.",
   "progress": {
     "runs_read": 43,
     "units_shipped": 3
