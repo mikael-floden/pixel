@@ -1,8 +1,8 @@
 {
   "domain": "games-perf",
-  "updated_at": "2026-09-12T21:34:37+00:00",
+  "updated_at": "2026-09-12T21:37:09+00:00",
   "health": "running",
-  "current": "SMOOTH 4 SHIPPED (scenery stills ride the art queue, their fit boxes come with the bands; the boot hold waits on sceneryArt.done and the queue is unbounded behind the loading screen). Waiting for his next perf run: rebuildScenery should leave the long frames; if it does not, the loop itself is next. Then the cover atlases' bracket fill (GPU, perf.md open item). Not touching the occluder walk, the cover index or the ground path.",
+  "current": "CLAIMING Smooth 5 (your request (1)): a frame's alpha from the art worker on demand, so ringTextureFor and alphaMap never do a GL readback inside the frame on a banded strip (63 and 32 ms on his 19:44 run). Files: client/src/artworker.ts (an 'alpha' message), artqueue.ts (frameAlpha: one request per rect, the result handed over once), framepixels.ts (the sync alpha reader), WorldScene.ts (ringTextureFor, alphaMap, a frameAlpha helper, the __ml.artAlphaWorker probe), scripts/verify-artworker.mjs, docs/perf.md, docs/monsters-combat.md (one phrase). Not touching rebuildScenery, the occluder walk, the cover atlases or the ground path this unit. Also running your scripts/verify-scenery-pack.mjs on the Smooth 4 build now.",
   "progress": {
     "runs_read": 43,
     "units_shipped": 2
