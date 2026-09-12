@@ -59,7 +59,10 @@ export interface DepthCtx {
   cx1?: number;
 }
 
-export function resolveDepthRule(ctx: DepthCtx, metas: Iterable<OccluderMeta>): { depth: number; coverY: number | undefined; coverTerrain: boolean } {
+export function resolveDepthRule(
+  ctx: DepthCtx,
+  metas: Iterable<OccluderMeta>,
+): { depth: number; coverY: number | undefined; coverTerrain: boolean; coverTop: number } {
   let depth = ctx.lyFlat + 0.5; // painter y at the flat (unlifted) ground
   let above = -Infinity;
   let below = Infinity;
@@ -68,10 +71,17 @@ export function resolveDepthRule(ctx: DepthCtx, metas: Iterable<OccluderMeta>): 
    *  its per-pixel test on this alone: a caller covered only by a piece is
    *  drawn behind that piece by the painter and needs no walk. */
   let coverTerrain = false;
+  /** The tallest TERRAIN column whose art box overlaps the caller's (levels):
+   *  the depth path's per-pixel walk starts there instead of at the world's
+   *  top level — a body behind a two-level ledge walks two levels, not 24
+   *  (measured on his phone: the full walk on covered scenery cost more than
+   *  the sprites it replaced). 0 when nothing overlaps. */
+  let coverTop = 0;
   const feetY = ctx.ly;
   for (const o of metas) {
     if (o === ctx.self) continue; // never occlude yourself — see the note above
     if (o.x1 < ctx.sx0 || o.x0 > ctx.sx1 || o.y1 < ctx.sy0 || o.y0 > ctx.sy1) continue;
+    if (!o.solid && o.top > coverTop) coverTop = o.top;
     const od = o.drawDepth ?? o.depth; // what it DRAWS at — see drawDepth
     const higher = o.top > ctx.lvl;
     // (a) Wall genuinely between the camera and the feet point.
@@ -239,5 +249,5 @@ export function resolveDepthRule(ctx: DepthCtx, metas: Iterable<OccluderMeta>): 
    * without cropping (see DepthCtx.cx0) — so this keys on coverY itself.
    * Returning the untouched Infinity would hand consumers an infinite crop
    * line, which reads as "covered" everywhere it is tested against undefined. */
-  return { depth, coverY: coverY < Infinity ? coverY : undefined, coverTerrain };
+  return { depth, coverY: coverY < Infinity ? coverY : undefined, coverTerrain, coverTop };
 }

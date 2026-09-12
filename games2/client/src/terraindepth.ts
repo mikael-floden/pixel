@@ -60,11 +60,12 @@ import { resolveGlslChunk, RESOLVE_GLSL_UNIFORMS, type NightLights } from "./nig
 export const TERRAIN_DEPTH_PIPELINE = "terrain-depth";
 
 /** Per-sprite data (`pipelineData.td`): a, b, floor, mode, own cell (col +
- *  1024 × row, one float) — see the header. */
+ *  1024 × row, one float), hTop (the tallest overlapping column, levels — the
+ *  walk starts there) — see the header. */
 export type TerrainDepthData = Float32Array;
 
 export function terrainDepthData(): TerrainDepthData {
-  return new Float32Array(5);
+  return new Float32Array(6);
 }
 
 /** The caller's own cell as one float the shader unpacks (col + 1024·row). */
@@ -75,19 +76,21 @@ export function tdCell(col: number, row: number): number {
 /** The height-line for a billboard whose feet's flat line is at `flatY` and
  *  which stands at level `floor` (levels) in `cell` (tdCell), or a flat decal
  *  at height `z`. */
-export function tdBillboard(d: TerrainDepthData, flatY: number, floor: number, lh: number, mode: number, cell: number): void {
+export function tdBillboard(d: TerrainDepthData, flatY: number, floor: number, lh: number, mode: number, cell: number, hTop: number): void {
   d[0] = flatY / lh;
   d[1] = 1 / lh;
   d[2] = floor;
   d[3] = mode;
   d[4] = cell;
+  d[5] = Math.min(63, Math.max(0, Math.ceil(hTop + 0.5)));
 }
-export function tdFlat(d: TerrainDepthData, z: number, mode: number, cell: number): void {
+export function tdFlat(d: TerrainDepthData, z: number, mode: number, cell: number, hTop: number): void {
   d[0] = z;
   d[1] = 0;
   d[2] = z;
   d[3] = mode;
   d[4] = cell;
+  d[5] = Math.min(63, Math.max(0, Math.ceil(hTop + 0.5)));
 }
 
 /** THE OCCLUSION TEST AS GLSL — the resolve chunk plus one function, for this
@@ -109,12 +112,14 @@ ${resolveGlslChunk()}
 // draws (measured at the river bridge). ownPacked = col + 1024 x row (tdCell).
 // Returns WHY: 0 visible, 1 a nearer deck top, 2 the own column's slab,
 // 3 nearer terrain (the 3-D rule) — the probe's uTdDbg paints the reason.
-int terrainHidesWhy(vec2 w, float zPx, float zFloor, float ownPacked) {
+// hTop: the tallest column overlapping the sprite (levels) — the walk starts
+// there, not at the world's top (the walk's cost is its length).
+int terrainHidesWhy(vec2 w, float zPx, float zFloor, float ownPacked, float hTop) {
   float u = (w.x - uIsoA.x) / uIsoA.z - 1.0;
   float v0 = (w.y - uIsoA.y) / uIsoA.w;
   vec2 cell;
   float z;
-  if (!terrainResolve(u, v0, cell, z)) return 0;
+  if (!terrainResolve(u, v0, hTop, cell, z)) return 0;
   vec2 own = vec2(mod(ownPacked, 1024.0), floor(ownPacked / 1024.0));
   float cv = floor(cell.x) + floor(cell.y);
   float ov = own.x + own.y;
@@ -139,8 +144,8 @@ int terrainHidesWhy(vec2 w, float zPx, float zFloor, float ownPacked) {
   if (H < zFloor + 1.5) return 0;
   return z > zPx + uTdEps ? 3 : 0;
 }
-bool terrainHides(vec2 w, float zPx, float zFloor, float ownPacked) {
-  return terrainHidesWhy(w, zPx, zFloor, ownPacked) > 0;
+bool terrainHides(vec2 w, float zPx, float zFloor, float ownPacked, float hTop) {
+  return terrainHidesWhy(w, zPx, zFloor, ownPacked, hTop) > 0;
 }
 `;
 }
@@ -158,13 +163,15 @@ varying vec4 outTint;
 varying vec2 vWorld;
 varying vec4 vOcc;
 varying float vMode;
+varying float vTop;
 void main() {
   gl_Position = uProjectionMatrix * vec4(inPosUv.xy, 1.0, 1.0);
   outTexCoord = inPosUv.zw;
   outTint = inTint;
   outTintEffect = inMisc.x;
   vWorld = inMisc.yz;
-  vMode = inMisc.w;
+  vMode = mod(inMisc.w, 4.0);   // mode + 4 x hTop share one float
+  vTop = floor(inMisc.w / 4.0);
   vOcc = inOcc;
 }
 `;
@@ -180,6 +187,7 @@ varying vec4 outTint;
 varying vec2 vWorld;
 varying vec4 vOcc;
 varying float vMode;
+varying float vTop;
 ${terrainHidesGlsl()}
 void main() {
   vec4 texture = texture2D(uMainSampler, outTexCoord);
@@ -192,7 +200,7 @@ void main() {
   }
   if (vMode > 0.5 && color.a > 0.002) {
     float zPx = max(vOcc.x - vOcc.y * vWorld.y, vOcc.z);
-    int why = terrainHidesWhy(vWorld, zPx, vOcc.z, vOcc.w);
+    int why = terrainHidesWhy(vWorld, zPx, vOcc.z, vOcc.w, vTop);
     if (uTdDbg > 2.5) {
       // Probe 3: every tested pixel this pipeline DRAWS, magenta — the parity
       // harness's mask (a hidden region always wears its ring, so a body the
@@ -354,6 +362,7 @@ export class TerrainDepthPipeline extends Phaser.Renderer.WebGL.Pipelines.MultiP
     if (!this.currentBatch && texture) this.ensureBatch(texture);
     const d = ((gameObject as Img | null)?.pipelineData as { td?: TerrainDepthData } | undefined)?.td;
     const mode = d ? d[3] : 0;
+    const modeTop = d ? d[3] + 4 * d[5] : 0; // mode + 4 x hTop, one attribute float
     const eff = typeof tintEffect === "boolean" ? (tintEffect ? 1 : 0) : tintEffect;
     // Camera space → world px: cam-space = m.a·(wx − scrollX) + m.e (no rotation).
     let sx = 1, sy = 1, ex = 0, ey = 0, scx = 0, scy = 0;
@@ -380,7 +389,7 @@ export class TerrainDepthPipeline extends Phaser.Renderer.WebGL.Pipelines.MultiP
       const y = QY[k];
       F[++o] = x; F[++o] = y; F[++o] = QU[k]; F[++o] = QV[k];
       U[++o] = QT[k];
-      F[++o] = eff; F[++o] = (x - ex) / sx + scx; F[++o] = (y - ey) / sy + scy; F[++o] = mode;
+      F[++o] = eff; F[++o] = (x - ex) / sx + scx; F[++o] = (y - ey) / sy + scy; F[++o] = modeTop;
       F[++o] = a; F[++o] = b; F[++o] = fl; F[++o] = vc;
     }
     this.vertexCount += 6;

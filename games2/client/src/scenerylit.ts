@@ -112,7 +112,7 @@ attribute vec4 inLocal;  // X (cells, +screen right), Z (levels above the hitbox
 attribute vec4 inOccA;   // per-light LOS occlusion × AO at the axis, lights 0..3
 attribute vec4 inOccB;   // lights 4..7
 attribute vec4 inOccC;   // lights 8..11
-attribute vec4 inTd;     // world x, world y, flat line / lh, depth-test mode + 4 × own cell (terraindepth.ts tdCell)
+attribute vec4 inTd;     // world x, world y, flat line / lh + 8192 × hTop, depth-test mode + 4 × own cell (terraindepth.ts)
 varying vec2 vUv;
 varying vec4 vTint;
 varying vec4 vMisc;
@@ -186,8 +186,9 @@ void main () {
   // level; where nearer terrain resolves, the pixel is not drawn.
   float tdMode = mod(vTd.w, 4.0);
   if (tdMode > 0.5 && color.a > 0.002) {
-    float zPx = max(vTd.z - vTd.y / uIsoB.x, vMisc.w);
-    if (terrainHides(vTd.xy, zPx, vMisc.w, floor(vTd.w / 4.0))) discard;
+    float tdTop = floor(vTd.z / 8192.0);
+    float zPx = max(vTd.z - 8192.0 * tdTop - vTd.y / uIsoB.x, vMisc.w);
+    if (terrainHides(vTd.xy, zPx, vMisc.w, floor(vTd.w / 4.0), tdTop)) discard;
   }
   float flip = vMisc.y;
   if (uOn > 0.5 && eff == 0.0 && abs(flip) > 0.5) {
@@ -453,7 +454,9 @@ export class SceneryLitPipeline extends Phaser.Renderer.WebGL.Pipelines.MultiPip
     const fz = shaped ? d!.fz! : 0;
     const O = shaped ? d!.occ! : null;
     const td = d?.td;
-    const tdA = td ? td[0] : 0;
+    // The flat line and the walk's top level share one float: a + 8192 x hTop
+    // (a < 8192 on any shipped world; the ulp at 254k is 0.015 levels).
+    const tdA = td ? td[0] + 8192 * td[5] : 0;
     // Mode and the piece's own cell share one float: mode + 4 × tdCell.
     const tdMode = td ? td[3] + 4 * td[4] : 0;
     const F = this.vertexViewF32;

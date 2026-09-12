@@ -667,11 +667,13 @@ float blockMaxAt(vec2 b) {
 // until 2026-09-12, moved out so the depth-tested sprite pipelines
 // (terraindepth.ts) run the IDENTICAL resolve: a body pixel is hidden exactly
 // where the painter drew a nearer column, so the two must agree to the bit.
-// u is the pixel's iso column diagonal, v0 its grid diagonal at height 0;
+// u is the pixel's iso column diagonal, v0 its grid diagonal at height 0,
+// hTop the highest level the walk starts from (the night pass: the world's
+// maxLevel; a depth-tested sprite: the tallest column overlapping it);
 // returns the cell (fractional; floor() is the column) and the height z hit.
-bool terrainResolve(float u, float v0, out vec2 cell, out float z) {
+bool terrainResolve(float u, float v0, float hTop, out vec2 cell, out float z) {
   float kk = uIsoB.x / uIsoA.w;
-  float vTop = v0 + uIsoB.w * kk;
+  float vTop = v0 + hTop * kk;
   z = 0.0;
   cell = vec2(0.0);
   bool found = false;
@@ -760,7 +762,7 @@ void main() {
   // cell. Fixed-width segments straddled cells, attributing wall pixels to
   // the wrong column — every face rule downstream then judged the wrong wall.
   if (uResolveFn > 0.5) {
-    found = terrainResolve(u, v0, cell, z);
+    found = terrainResolve(u, v0, uIsoB.w, cell, z);
   } else {
   float vHi = vTop;
   // WALK BUDGET: sweeping from the max-level candidate down to level 0 needs

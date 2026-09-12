@@ -1564,6 +1564,9 @@ interface BodyVisual {
    *  and this frame's test mode (1 = covered, tested; 0 = untested). */
   tdFloor?: number;
   tdMode?: number;
+  /** The tallest terrain column overlapping the art box (levels): where the
+   *  per-pixel walk starts (depthrule coverTop). */
+  tdTop?: number;
 }
 
 /** One body-sized rectangle, at the SAME coordinates in all three cover
@@ -14268,6 +14271,7 @@ export class WorldScene extends Phaser.Scene {
       // frame from 20 to 30 ms).
       b.tdFloor = lvl;
       b.tdMode = r.coverTerrain ? 1 : 0;
+      b.tdTop = r.coverTop;
       this.tdArmLayer(b.sprite, b);
     }
     // The depth is final here, and `depth > sprite.depth` is what the cover
@@ -14295,11 +14299,12 @@ export class WorldScene extends Phaser.Scene {
     v: { sprite: Phaser.GameObjects.Image; lx: number; lyFlat: number; ly: number; fx: number; fy: number; cx0?: number; cx1?: number },
     lvl: number,
     self?: unknown,
-  ): { depth: number; coverY: number | undefined; coverTerrain: boolean } {
+  ): { depth: number; coverY: number | undefined; coverTerrain: boolean; coverTop: number } {
     const b = v;
     let depth = b.lyFlat + 0.5; // painter y at the flat (unlifted) ground
     let coverOut: number | undefined;
     let coverTerrain = false;
+    let coverTop = 0;
     if (this.world) {
       const colf = b.fx / CELL_WU; // 1 cell = CELL_WU world units (any world size)
       const rowf = b.fy / CELL_WU;
@@ -14321,8 +14326,9 @@ export class WorldScene extends Phaser.Scene {
       depth = r.depth;
       coverOut = r.coverY;
       coverTerrain = r.coverTerrain;
+      coverTop = r.coverTop;
     }
-    return { depth, coverY: coverOut, coverTerrain };
+    return { depth, coverY: coverOut, coverTerrain, coverTop };
   }
 
   /** Shadow for ANY body: cast on the LANDING ground (flat − target
@@ -14348,7 +14354,7 @@ export class WorldScene extends Phaser.Scene {
       .setAlpha(1 - airFrac * 0.35)
       .setDisplaySize(w - airFrac * shrinkW, h - airFrac * shrinkH)
       .setDepth(b.sprite.depth - 0.1);
-    if (this.occDepth) this.tdArmFlat(b.shadow, targetElevPx / this.geom.lh, b.tdMode ?? 0, tdCell(b.fx / CELL_WU, b.fy / CELL_WU));
+    if (this.occDepth) this.tdArmFlat(b.shadow, targetElevPx / this.geom.lh, b.tdMode ?? 0, tdCell(b.fx / CELL_WU, b.fy / CELL_WU), b.tdTop ?? 0);
   }
 
   /** Lit copy for ANY body (player or monster): the sprite re-drawn ABOVE the
@@ -19185,12 +19191,12 @@ export class WorldScene extends Phaser.Scene {
   /** Arm one body layer with the depth test: the body's flat line, its
    *  standing level and the mode (see terraindepth.ts). */
   private tdArmLayer(img: Phaser.GameObjects.Image | Phaser.GameObjects.Sprite, b: BodyVisual, mode = b.tdMode ?? 0): void {
-    this.tdArmImage(img, b.lyFlat, b.tdFloor ?? 0, mode, tdCell(b.fx / CELL_WU, b.fy / CELL_WU));
+    this.tdArmImage(img, b.lyFlat, b.tdFloor ?? 0, mode, tdCell(b.fx / CELL_WU, b.fy / CELL_WU), b.tdTop ?? 0);
   }
 
   /** Any billboard image (a body layer, a scenery base image) through the
    *  depth pipeline with its flat line, floor level and mode. */
-  private tdArmImage(img: Phaser.GameObjects.Image | Phaser.GameObjects.Sprite, flatY: number, floor: number, mode: number, vCell: number): void {
+  private tdArmImage(img: Phaser.GameObjects.Image | Phaser.GameObjects.Sprite, flatY: number, floor: number, mode: number, vCell: number, hTop: number): void {
     const pipe = this.tdPipe as unknown as Phaser.Renderer.WebGL.WebGLPipeline | null;
     if (!pipe) return;
     if (mode <= 0) {
@@ -19203,27 +19209,27 @@ export class WorldScene extends Phaser.Scene {
       img.setPipeline(pipe, { td: terrainDepthData() }, false);
       pd = img.pipelineData as { td: TerrainDepthData };
     }
-    tdBillboard(pd.td!, flatY, floor, this.geom.lh, mode, vCell);
+    tdBillboard(pd.td!, flatY, floor, this.geom.lh, mode, vCell, hTop);
   }
 
   /** A scenery lit copy and its fog silhouette: on the scenery-lit pipeline
    *  the test rides the shape data (`td`); a copy that pipeline could not
    *  shape takes the depth pipeline instead. */
-  private tdArmScenery(lo: (typeof this.litOccluders)[number], flatY: number, floor: number, mode: number, vCell: number): void {
+  private tdArmScenery(lo: (typeof this.litOccluders)[number], flatY: number, floor: number, mode: number, vCell: number, hTop: number): void {
     const sl = this.sceneryLitPipe as unknown as Phaser.Renderer.WebGL.WebGLPipeline | null;
     if (lo.shape && sl && lo.img.pipeline === sl) {
       const td = (lo.shape.td ??= terrainDepthData());
-      tdBillboard(td, flatY, floor, this.geom.lh, mode, vCell);
+      tdBillboard(td, flatY, floor, this.geom.lh, mode, vCell, hTop);
       if (lo.fog && lo.fog.pipeline === sl && (lo.fog.pipelineData as { td?: TerrainDepthData } | undefined)?.td !== td)
         lo.fog.setPipeline(sl, { td }, false);
       return;
     }
-    this.tdArmImage(lo.img, flatY, floor, mode, vCell);
-    if (lo.fog) this.tdArmImage(lo.fog, flatY, floor, mode, vCell);
+    this.tdArmImage(lo.img, flatY, floor, mode, vCell, hTop);
+    if (lo.fog) this.tdArmImage(lo.fog, flatY, floor, mode, vCell, hTop);
   }
 
   /** A ground decal (the shadow) at height z levels. */
-  private tdArmFlat(img: Phaser.GameObjects.Image, z: number, mode: number, vCell: number): void {
+  private tdArmFlat(img: Phaser.GameObjects.Image, z: number, mode: number, vCell: number, hTop: number): void {
     const pipe = this.tdPipe as unknown as Phaser.Renderer.WebGL.WebGLPipeline | null;
     if (!pipe) return;
     let pd = img.pipelineData as { td?: TerrainDepthData } | undefined;
@@ -19231,7 +19237,7 @@ export class WorldScene extends Phaser.Scene {
       img.setPipeline(pipe, { td: terrainDepthData() }, false);
       pd = img.pipelineData as { td: TerrainDepthData };
     }
-    tdFlat(pd.td!, z, mode, vCell);
+    tdFlat(pd.td!, z, mode, vCell, hTop);
   }
 
   /** `__ml.occDepth(on)` — flip the occlusion path live. Off: every body layer
@@ -20135,8 +20141,8 @@ export class WorldScene extends Phaser.Scene {
         const mode = d.coverTerrain ? 1 : 0;
         const flatY = r.hbDepth - 0.5;
         const vCell = tdCell(r.fx / CELL_WU, r.fy / CELL_WU);
-        this.tdArmImage(r.img, flatY, r.lvl, mode, vCell);
-        if (r.lo) this.tdArmScenery(r.lo, flatY, r.lvl, mode, vCell);
+        this.tdArmImage(r.img, flatY, r.lvl, mode, vCell, d.coverTop);
+        if (r.lo) this.tdArmScenery(r.lo, flatY, r.lvl, mode, vCell, d.coverTop);
       } else if (this.tdPipe) {
         // The switch went back to sprites: a pooled piece keeps no test.
         const td = this.tdPipe as unknown as Phaser.Renderer.WebGL.WebGLPipeline;
