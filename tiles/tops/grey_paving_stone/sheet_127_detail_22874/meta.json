@@ -10,7 +10,7 @@
   "prompt": "grey paving stone, a patch of sand in the middle, grey paving stone all around the edge",
   "palette_top": "#a8a8a8",
   "tile_id": "7e292a28-7dc4-48d3-bb48-8eb3fefa84c0",
-  "n_tiles": 16,
+  "n_tiles": 11,
   "tiles": [
     "tile_00.webp",
     "tile_01.webp",
@@ -21,13 +21,8 @@
     "tile_06.webp",
     "tile_07.webp",
     "tile_08.webp",
-    "tile_09.webp",
-    "tile_10.webp",
     "tile_11.webp",
-    "tile_12.webp",
-    "tile_13.webp",
-    "tile_14.webp",
-    "tile_15.webp"
+    "tile_12.webp"
   ],
   "settings": {
     "tile_size": 64,
@@ -128,5 +123,32 @@
   },
   "motif": "a patch of sand",
   "motif_source": "tiles/config/details.json",
-  "walkable": true
+  "walkable": true,
+  "removed": {
+    "tile_09.webp": {
+      "status": "rejected",
+      "at": "2026-09-12T05:22:10+00:00",
+      "record": "tiles/tops/removed.json"
+    },
+    "tile_10.webp": {
+      "status": "rejected",
+      "at": "2026-09-12T05:22:10+00:00",
+      "record": "tiles/tops/removed.json"
+    },
+    "tile_13.webp": {
+      "status": "rejected",
+      "at": "2026-09-12T05:22:10+00:00",
+      "record": "tiles/tops/removed.json"
+    },
+    "tile_14.webp": {
+      "status": "rejected",
+      "at": "2026-09-12T05:22:10+00:00",
+      "record": "tiles/tops/removed.json"
+    },
+    "tile_15.webp": {
+      "status": "rejected",
+      "at": "2026-09-12T05:22:10+00:00",
+      "record": "tiles/tops/removed.json"
+    }
+  }
 }

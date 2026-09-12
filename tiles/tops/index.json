@@ -17,8 +17,8 @@
  },
  "sheet_usd": 0.096,
  "top_face_note": "mean_colours / mean_dominant_share measure the TOP FACE only (transition_render.top_face). Reference: a deliberately flat matrix top is 4 colours / 0.95, a textured base candidate 9-14 / 0.30-0.67.",
- "n_sheets": 564,
- "n_tiles": 7770,
+ "n_sheets": 558,
+ "n_tiles": 7400,
  "counts": {
   "black_rock": {
    "subtle": 2,
@@ -42,7 +42,7 @@
   },
   "grey_paving_stone": {
    "subtle": 3,
-   "detail": 38
+   "detail": 32
   },
   "grey_stone": {
    "subtle": 3,
@@ -6708,21 +6708,13 @@
    "palette_top": "#a8a8a8",
    "tile_id": "917683c4-d14d-4939-8075-6fa38b2448cd",
    "dir": "tiles/tops/grey_paving_stone/sheet_123_detail_14391",
-   "n_tiles": 16,
+   "n_tiles": 8,
    "tiles": [
-    "tile_00.webp",
-    "tile_01.webp",
     "tile_02.webp",
     "tile_03.webp",
     "tile_04.webp",
-    "tile_05.webp",
-    "tile_06.webp",
-    "tile_07.webp",
-    "tile_08.webp",
-    "tile_09.webp",
     "tile_10.webp",
     "tile_11.webp",
-    "tile_12.webp",
     "tile_13.webp",
     "tile_14.webp",
     "tile_15.webp"
@@ -6733,19 +6725,11 @@
    },
    "post": true,
    "post_files": [
-    "tile_00.efc582a8.webp",
-    "tile_01.981ad66c.webp",
     "tile_02.3b3f64b6.webp",
     "tile_03.bcd89c80.webp",
     "tile_04.b5eb099c.webp",
-    "tile_05.4140e749.webp",
-    "tile_06.cc589c3c.webp",
-    "tile_07.3b3c0c2a.webp",
-    "tile_08.6e9e8406.webp",
-    "tile_09.b5350cdd.webp",
     "tile_10.d8c5d5d9.webp",
     "tile_11.5a0934fd.webp",
-    "tile_12.17ad804f.webp",
     "tile_13.42da8509.webp",
     "tile_14.0cdb238d.webp",
     "tile_15.a49b3093.webp"
@@ -6759,24 +6743,9 @@
    "palette_top": "#a8a8a8",
    "tile_id": "d97939c4-0054-4ada-a1f3-c4488e01ebd4",
    "dir": "tiles/tops/grey_paving_stone/sheet_03_detail_15264",
-   "n_tiles": 16,
+   "n_tiles": 1,
    "tiles": [
-    "tile_00.webp",
-    "tile_01.webp",
-    "tile_02.webp",
-    "tile_03.webp",
-    "tile_04.webp",
-    "tile_05.webp",
-    "tile_06.webp",
-    "tile_07.webp",
-    "tile_08.webp",
-    "tile_09.webp",
-    "tile_10.webp",
-    "tile_11.webp",
-    "tile_12.webp",
-    "tile_13.webp",
-    "tile_14.webp",
-    "tile_15.webp"
+    "tile_02.webp"
    ],
    "top_face": {
     "mean_colours": 12.5,
@@ -6784,22 +6753,7 @@
    },
    "post": true,
    "post_files": [
-    "tile_00.780afc3c.webp",
-    "tile_01.2211f6d5.webp",
-    "tile_02.1af00a84.webp",
-    "tile_03.794e0474.webp",
-    "tile_04.432ddf26.webp",
-    "tile_05.bed2be4b.webp",
-    "tile_06.e39cfbb0.webp",
-    "tile_07.86e51c3c.webp",
-    "tile_08.c9a88d44.webp",
-    "tile_09.027fb0c0.webp",
-    "tile_10.d8e1af91.webp",
-    "tile_11.afa4c1a9.webp",
-    "tile_12.4b93ac3b.webp",
-    "tile_13.0369f977.webp",
-    "tile_14.51682f9f.webp",
-    "tile_15.fa9ecf19.webp"
+    "tile_02.1af00a84.webp"
    ]
   },
   {
@@ -6810,9 +6764,8 @@
    "palette_top": "#a8a8a8",
    "tile_id": "282c2825-ac50-4a9a-a869-a6886fa6b195",
    "dir": "tiles/tops/grey_paving_stone/sheet_103_detail_17750",
-   "n_tiles": 16,
+   "n_tiles": 15,
    "tiles": [
-    "tile_00.webp",
     "tile_01.webp",
     "tile_02.webp",
     "tile_03.webp",
@@ -6835,7 +6788,6 @@
    },
    "post": true,
    "post_files": [
-    "tile_00.ca06e1d4.webp",
     "tile_01.60aeca64.webp",
     "tile_02.24f93d32.webp",
     "tile_03.f502f74e.webp",
@@ -6861,7 +6813,7 @@
    "palette_top": "#a8a8a8",
    "tile_id": "90669e8f-2f3f-42d3-a1c9-e8cd953b1f34",
    "dir": "tiles/tops/grey_paving_stone/sheet_133_detail_17958",
-   "n_tiles": 16,
+   "n_tiles": 14,
    "tiles": [
     "tile_00.webp",
     "tile_01.webp",
@@ -6869,12 +6821,10 @@
     "tile_03.webp",
     "tile_04.webp",
     "tile_05.webp",
-    "tile_06.webp",
     "tile_07.webp",
     "tile_08.webp",
     "tile_09.webp",
     "tile_10.webp",
-    "tile_11.webp",
     "tile_12.webp",
     "tile_13.webp",
     "tile_14.webp",
@@ -6892,12 +6842,10 @@
     "tile_03.fb655a5c.webp",
     "tile_04.0afd0792.webp",
     "tile_05.13424c93.webp",
-    "tile_06.142b8696.webp",
     "tile_07.513a9298.webp",
     "tile_08.29acd853.webp",
     "tile_09.e809699a.webp",
     "tile_10.89a37d80.webp",
-    "tile_11.f6263ef5.webp",
     "tile_12.b53073f5.webp",
     "tile_13.cc1ff79c.webp",
     "tile_14.7bcb1550.webp",
@@ -6912,24 +6860,12 @@
    "palette_top": "#a8a8a8",
    "tile_id": "7f67e49e-d234-48fb-8cb2-acfd25d9a7ab",
    "dir": "tiles/tops/grey_paving_stone/sheet_115_detail_22243",
-   "n_tiles": 16,
+   "n_tiles": 4,
    "tiles": [
     "tile_00.webp",
     "tile_01.webp",
-    "tile_02.webp",
-    "tile_03.webp",
     "tile_04.webp",
-    "tile_05.webp",
-    "tile_06.webp",
-    "tile_07.webp",
-    "tile_08.webp",
-    "tile_09.webp",
-    "tile_10.webp",
-    "tile_11.webp",
-    "tile_12.webp",
-    "tile_13.webp",
-    "tile_14.webp",
-    "tile_15.webp"
+    "tile_08.webp"
    ],
    "top_face": {
     "mean_colours": 20.56,
@@ -6939,20 +6875,8 @@
    "post_files": [
     "tile_00.6dc7ba6e.webp",
     "tile_01.ca72df63.webp",
-    "tile_02.3baf9ff0.webp",
-    "tile_03.c92c94b9.webp",
     "tile_04.c705c32d.webp",
-    "tile_05.ba77443a.webp",
-    "tile_06.b4e658b2.webp",
-    "tile_07.317e52e3.webp",
-    "tile_08.ebebb07b.webp",
-    "tile_09.6bcaa124.webp",
-    "tile_10.85fc6bc8.webp",
-    "tile_11.fb55b047.webp",
-    "tile_12.5cea8371.webp",
-    "tile_13.c38a970a.webp",
-    "tile_14.625f35a1.webp",
-    "tile_15.1dec4cf4.webp"
+    "tile_08.ebebb07b.webp"
    ]
   },
   {
@@ -6963,7 +6887,7 @@
    "palette_top": "#a8a8a8",
    "tile_id": "7e292a28-7dc4-48d3-bb48-8eb3fefa84c0",
    "dir": "tiles/tops/grey_paving_stone/sheet_127_detail_22874",
-   "n_tiles": 16,
+   "n_tiles": 11,
    "tiles": [
     "tile_00.webp",
     "tile_01.webp",
@@ -6974,13 +6898,8 @@
     "tile_06.webp",
     "tile_07.webp",
     "tile_08.webp",
-    "tile_09.webp",
-    "tile_10.webp",
     "tile_11.webp",
-    "tile_12.webp",
-    "tile_13.webp",
-    "tile_14.webp",
-    "tile_15.webp"
+    "tile_12.webp"
    ],
    "top_face": {
     "mean_colours": 18.0,
@@ -6997,13 +6916,8 @@
     "tile_06.11b43a05.webp",
     "tile_07.ca8c65e8.webp",
     "tile_08.70301d1d.webp",
-    "tile_09.cd2cb791.webp",
-    "tile_10.0d79268a.webp",
     "tile_11.b29f746d.webp",
-    "tile_12.9dbf0ac7.webp",
-    "tile_13.13fad327.webp",
-    "tile_14.5a7352fb.webp",
-    "tile_15.dd459d23.webp"
+    "tile_12.9dbf0ac7.webp"
    ]
   },
   {
@@ -7014,24 +6928,18 @@
    "palette_top": "#a8a8a8",
    "tile_id": "d5dfcecd-6d95-4bce-a38f-cbdc79c1c4ee",
    "dir": "tiles/tops/grey_paving_stone/sheet_132_detail_25650",
-   "n_tiles": 16,
+   "n_tiles": 10,
    "tiles": [
     "tile_00.webp",
     "tile_01.webp",
-    "tile_02.webp",
-    "tile_03.webp",
     "tile_04.webp",
     "tile_05.webp",
     "tile_06.webp",
-    "tile_07.webp",
     "tile_08.webp",
     "tile_09.webp",
     "tile_10.webp",
     "tile_11.webp",
-    "tile_12.webp",
-    "tile_13.webp",
-    "tile_14.webp",
-    "tile_15.webp"
+    "tile_13.webp"
    ],
    "top_face": {
     "mean_colours": 13.31,
@@ -7041,20 +6949,14 @@
    "post_files": [
     "tile_00.5aec9e91.webp",
     "tile_01.ec338fd1.webp",
-    "tile_02.9c8f0465.webp",
-    "tile_03.ec52492e.webp",
     "tile_04.1be5bb54.webp",
     "tile_05.f121f1d7.webp",
     "tile_06.b89a2a23.webp",
-    "tile_07.faa18ab9.webp",
     "tile_08.6c64669d.webp",
     "tile_09.39444b43.webp",
     "tile_10.59b840f7.webp",
     "tile_11.3aa0ed5a.webp",
-    "tile_12.7cf06892.webp",
-    "tile_13.656bde14.webp",
-    "tile_14.3fae09c4.webp",
-    "tile_15.8d742724.webp"
+    "tile_13.656bde14.webp"
    ]
   },
   {
@@ -7065,24 +6967,10 @@
    "palette_top": "#a8a8a8",
    "tile_id": "0f59a2ad-6635-400e-bc83-fbc8dd61c948",
    "dir": "tiles/tops/grey_paving_stone/sheet_129_detail_30853",
-   "n_tiles": 16,
+   "n_tiles": 2,
    "tiles": [
     "tile_00.webp",
-    "tile_01.webp",
-    "tile_02.webp",
-    "tile_03.webp",
-    "tile_04.webp",
-    "tile_05.webp",
-    "tile_06.webp",
-    "tile_07.webp",
-    "tile_08.webp",
-    "tile_09.webp",
-    "tile_10.webp",
-    "tile_11.webp",
-    "tile_12.webp",
-    "tile_13.webp",
-    "tile_14.webp",
-    "tile_15.webp"
+    "tile_11.webp"
    ],
    "top_face": {
     "mean_colours": 25.19,
@@ -7091,21 +6979,7 @@
    "post": true,
    "post_files": [
     "tile_00.3ab0dc00.webp",
-    "tile_01.b0b502c8.webp",
-    "tile_02.a40c48dd.webp",
-    "tile_03.e596a261.webp",
-    "tile_04.21d4cecc.webp",
-    "tile_05.55a733ad.webp",
-    "tile_06.92e8e402.webp",
-    "tile_07.768e9ef2.webp",
-    "tile_08.f2bccffa.webp",
-    "tile_09.bbbc9439.webp",
-    "tile_10.e9c8e70b.webp",
-    "tile_11.3fb20861.webp",
-    "tile_12.3df8145a.webp",
-    "tile_13.e82b89d2.webp",
-    "tile_14.b7d2af8f.webp",
-    "tile_15.d5beb4e1.webp"
+    "tile_11.3fb20861.webp"
    ]
   },
   {
@@ -7116,9 +6990,8 @@
    "palette_top": "#a8a8a8",
    "tile_id": "37e7f20b-73e3-4e43-a764-f42a846fb761",
    "dir": "tiles/tops/grey_paving_stone/sheet_121_detail_33343",
-   "n_tiles": 16,
+   "n_tiles": 9,
    "tiles": [
-    "tile_00.webp",
     "tile_01.webp",
     "tile_02.webp",
     "tile_03.webp",
@@ -7127,13 +7000,7 @@
     "tile_06.webp",
     "tile_07.webp",
     "tile_08.webp",
-    "tile_09.webp",
-    "tile_10.webp",
-    "tile_11.webp",
-    "tile_12.webp",
-    "tile_13.webp",
-    "tile_14.webp",
-    "tile_15.webp"
+    "tile_11.webp"
    ],
    "top_face": {
     "mean_colours": 19.38,
@@ -7141,7 +7008,6 @@
    },
    "post": true,
    "post_files": [
-    "tile_00.55a6f142.webp",
     "tile_01.8d191021.webp",
     "tile_02.93bd0ce2.webp",
     "tile_03.29055322.webp",
@@ -7150,13 +7016,7 @@
     "tile_06.d7f59098.webp",
     "tile_07.26384c43.webp",
     "tile_08.36c22a66.webp",
-    "tile_09.e087f434.webp",
-    "tile_10.0a2d173d.webp",
-    "tile_11.545a5e5a.webp",
-    "tile_12.e74578db.webp",
-    "tile_13.8297b924.webp",
-    "tile_14.e182acb9.webp",
-    "tile_15.70459497.webp"
+    "tile_11.545a5e5a.webp"
    ]
   },
   {
@@ -7167,24 +7027,9 @@
    "palette_top": "#a8a8a8",
    "tile_id": "35de6784-b077-4e73-a915-9383fbc7437f",
    "dir": "tiles/tops/grey_paving_stone/sheet_105_detail_33636",
-   "n_tiles": 16,
+   "n_tiles": 1,
    "tiles": [
-    "tile_00.webp",
-    "tile_01.webp",
-    "tile_02.webp",
-    "tile_03.webp",
-    "tile_04.webp",
-    "tile_05.webp",
-    "tile_06.webp",
-    "tile_07.webp",
-    "tile_08.webp",
-    "tile_09.webp",
-    "tile_10.webp",
-    "tile_11.webp",
-    "tile_12.webp",
-    "tile_13.webp",
-    "tile_14.webp",
-    "tile_15.webp"
+    "tile_04.webp"
    ],
    "top_face": {
     "mean_colours": 15.19,
@@ -7192,22 +7037,7 @@
    },
    "post": true,
    "post_files": [
-    "tile_00.d2cb2c69.webp",
-    "tile_01.cbfefc5f.webp",
-    "tile_02.2ab85b7a.webp",
-    "tile_03.04447a1d.webp",
-    "tile_04.3cf15a5a.webp",
-    "tile_05.3b57410b.webp",
-    "tile_06.f90e3579.webp",
-    "tile_07.b6388406.webp",
-    "tile_08.5f58e529.webp",
-    "tile_09.2688ee54.webp",
-    "tile_10.606da5b4.webp",
-    "tile_11.0b01b11a.webp",
-    "tile_12.1af87ba9.webp",
-    "tile_13.ba2824bd.webp",
-    "tile_14.df689fcb.webp",
-    "tile_15.30cc191b.webp"
+    "tile_04.3cf15a5a.webp"
    ]
   },
   {
@@ -7218,10 +7048,9 @@
    "palette_top": "#a8a8a8",
    "tile_id": "3fd64067-d0b9-4977-9236-853bb8c5cae3",
    "dir": "tiles/tops/grey_paving_stone/sheet_112_detail_34775",
-   "n_tiles": 16,
+   "n_tiles": 14,
    "tiles": [
     "tile_00.webp",
-    "tile_01.webp",
     "tile_02.webp",
     "tile_03.webp",
     "tile_04.webp",
@@ -7230,7 +7059,6 @@
     "tile_07.webp",
     "tile_08.webp",
     "tile_09.webp",
-    "tile_10.webp",
     "tile_11.webp",
     "tile_12.webp",
     "tile_13.webp",
@@ -7244,7 +7072,6 @@
    "post": true,
    "post_files": [
     "tile_00.661a3feb.webp",
-    "tile_01.4ac6659e.webp",
     "tile_02.385bc48e.webp",
     "tile_03.dce49a65.webp",
     "tile_04.de23ea6e.webp",
@@ -7253,7 +7080,6 @@
     "tile_07.f1c2fe5f.webp",
     "tile_08.81de3cda.webp",
     "tile_09.a21fe0fa.webp",
-    "tile_10.7ff51084.webp",
     "tile_11.76c2110e.webp",
     "tile_12.85bb984a.webp",
     "tile_13.7f5f282e.webp",
@@ -7269,24 +7095,11 @@
    "palette_top": "#a8a8a8",
    "tile_id": "8024992a-95b6-4a7c-82a6-f410e2df251b",
    "dir": "tiles/tops/grey_paving_stone/sheet_124_detail_41639",
-   "n_tiles": 16,
+   "n_tiles": 3,
    "tiles": [
-    "tile_00.webp",
     "tile_01.webp",
-    "tile_02.webp",
     "tile_03.webp",
-    "tile_04.webp",
-    "tile_05.webp",
-    "tile_06.webp",
-    "tile_07.webp",
-    "tile_08.webp",
-    "tile_09.webp",
-    "tile_10.webp",
-    "tile_11.webp",
-    "tile_12.webp",
-    "tile_13.webp",
-    "tile_14.webp",
-    "tile_15.webp"
+    "tile_07.webp"
    ],
    "top_face": {
     "mean_colours": 20.31,
@@ -7294,22 +7107,9 @@
    },
    "post": true,
    "post_files": [
-    "tile_00.16c2e338.webp",
     "tile_01.d4a0a53a.webp",
-    "tile_02.38617e9c.webp",
     "tile_03.ea0821e2.webp",
-    "tile_04.9db35b84.webp",
-    "tile_05.250a894a.webp",
-    "tile_06.db0950c2.webp",
-    "tile_07.272044eb.webp",
-    "tile_08.b5051988.webp",
-    "tile_09.962a2b8d.webp",
-    "tile_10.ccd8a326.webp",
-    "tile_11.72b900e2.webp",
-    "tile_12.3e71cea1.webp",
-    "tile_13.1e17bd86.webp",
-    "tile_14.b811ef36.webp",
-    "tile_15.ee91b76f.webp"
+    "tile_07.272044eb.webp"
    ]
   },
   {
@@ -7371,24 +7171,11 @@
    "palette_top": "#a8a8a8",
    "tile_id": "3616c524-7871-4f4a-9ca6-27c8cbfaceb7",
    "dir": "tiles/tops/grey_paving_stone/sheet_125_detail_48534",
-   "n_tiles": 16,
+   "n_tiles": 3,
    "tiles": [
-    "tile_00.webp",
-    "tile_01.webp",
-    "tile_02.webp",
     "tile_03.webp",
-    "tile_04.webp",
-    "tile_05.webp",
-    "tile_06.webp",
-    "tile_07.webp",
     "tile_08.webp",
-    "tile_09.webp",
-    "tile_10.webp",
-    "tile_11.webp",
-    "tile_12.webp",
-    "tile_13.webp",
-    "tile_14.webp",
-    "tile_15.webp"
+    "tile_09.webp"
    ],
    "top_face": {
     "mean_colours": 13.62,
@@ -7396,73 +7183,9 @@
    },
    "post": true,
    "post_files": [
-    "tile_00.e0a45367.webp",
-    "tile_01.889a5e5d.webp",
-    "tile_02.39f84d6a.webp",
     "tile_03.d2b54459.webp",
-    "tile_04.9a961252.webp",
-    "tile_05.091b93a4.webp",
-    "tile_06.f29ee8e8.webp",
-    "tile_07.688e5472.webp",
     "tile_08.d0787dff.webp",
-    "tile_09.45256962.webp",
-    "tile_10.8f0caceb.webp",
-    "tile_11.a179548d.webp",
-    "tile_12.9560781c.webp",
-    "tile_13.a82a91a1.webp",
-    "tile_14.7f08b22b.webp",
-    "tile_15.7eca4dac.webp"
-   ]
-  },
-  {
-   "ground": "grey_paving_stone",
-   "flavour": "detail",
-   "seed": 51796,
-   "prompt": "grey paving stone, a faded arrow mark in the middle, grey paving stone all around the edge",
-   "palette_top": "#a8a8a8",
-   "tile_id": "06f09075-9a65-45fd-8435-debdbfc3fb9e",
-   "dir": "tiles/tops/grey_paving_stone/sheet_128_detail_51796",
-   "n_tiles": 16,
-   "tiles": [
-    "tile_00.webp",
-    "tile_01.webp",
-    "tile_02.webp",
-    "tile_03.webp",
-    "tile_04.webp",
-    "tile_05.webp",
-    "tile_06.webp",
-    "tile_07.webp",
-    "tile_08.webp",
-    "tile_09.webp",
-    "tile_10.webp",
-    "tile_11.webp",
-    "tile_12.webp",
-    "tile_13.webp",
-    "tile_14.webp",
-    "tile_15.webp"
-   ],
-   "top_face": {
-    "mean_colours": 17.44,
-    "mean_dominant_share": 0.3837
-   },
-   "post": true,
-   "post_files": [
-    "tile_00.dd474514.webp",
-    "tile_01.be3e3004.webp",
-    "tile_02.689f45a3.webp",
-    "tile_03.441e0644.webp",
-    "tile_04.fa3d90a5.webp",
-    "tile_05.60aed2b9.webp",
-    "tile_06.1b106965.webp",
-    "tile_07.e1b3ce87.webp",
-    "tile_08.75384974.webp",
-    "tile_09.abb359f9.webp",
-    "tile_10.0d0f3d19.webp",
-    "tile_11.e3863a68.webp",
-    "tile_12.1ed2d53f.webp",
-    "tile_13.9904938c.webp",
-    "tile_14.026cb32d.webp",
-    "tile_15.335d5cb9.webp"
+    "tile_09.45256962.webp"
    ]
   },
   {
@@ -7524,24 +7247,19 @@
    "palette_top": "#a8a8a8",
    "tile_id": "c65046a1-e7d9-4022-a1ce-01e405cd0785",
    "dir": "tiles/tops/grey_paving_stone/sheet_118_detail_54449",
-   "n_tiles": 16,
+   "n_tiles": 11,
    "tiles": [
     "tile_00.webp",
     "tile_01.webp",
-    "tile_02.webp",
-    "tile_03.webp",
     "tile_04.webp",
     "tile_05.webp",
     "tile_06.webp",
     "tile_07.webp",
-    "tile_08.webp",
     "tile_09.webp",
     "tile_10.webp",
     "tile_11.webp",
     "tile_12.webp",
-    "tile_13.webp",
-    "tile_14.webp",
-    "tile_15.webp"
+    "tile_14.webp"
    ],
    "top_face": {
     "mean_colours": 16.94,
@@ -7551,71 +7269,15 @@
    "post_files": [
     "tile_00.55a40408.webp",
     "tile_01.df05beee.webp",
-    "tile_02.bf96a51d.webp",
-    "tile_03.d771ca96.webp",
     "tile_04.32efb62c.webp",
     "tile_05.f1ddac32.webp",
     "tile_06.03e78c26.webp",
     "tile_07.fdbc3832.webp",
-    "tile_08.aa0c810e.webp",
     "tile_09.cb0bf612.webp",
     "tile_10.4157eced.webp",
     "tile_11.3d4b2730.webp",
     "tile_12.24999b40.webp",
-    "tile_13.338cc1dd.webp",
-    "tile_14.3ce54df9.webp",
-    "tile_15.fa312bd6.webp"
-   ]
-  },
-  {
-   "ground": "grey_paving_stone",
-   "flavour": "detail",
-   "seed": 55698,
-   "prompt": "grey paving stone, a pale mortar line in the middle, grey paving stone all around the edge",
-   "palette_top": "#a8a8a8",
-   "tile_id": "0d2d5c49-4436-4096-8e58-eb407f9df1b9",
-   "dir": "tiles/tops/grey_paving_stone/sheet_117_detail_55698",
-   "n_tiles": 16,
-   "tiles": [
-    "tile_00.webp",
-    "tile_01.webp",
-    "tile_02.webp",
-    "tile_03.webp",
-    "tile_04.webp",
-    "tile_05.webp",
-    "tile_06.webp",
-    "tile_07.webp",
-    "tile_08.webp",
-    "tile_09.webp",
-    "tile_10.webp",
-    "tile_11.webp",
-    "tile_12.webp",
-    "tile_13.webp",
-    "tile_14.webp",
-    "tile_15.webp"
-   ],
-   "top_face": {
-    "mean_colours": 7.88,
-    "mean_dominant_share": 0.7645
-   },
-   "post": true,
-   "post_files": [
-    "tile_00.c1e678e5.webp",
-    "tile_01.019e7707.webp",
-    "tile_02.bf8be648.webp",
-    "tile_03.95208f2a.webp",
-    "tile_04.a5217739.webp",
-    "tile_05.e3ee73ae.webp",
-    "tile_06.636e6323.webp",
-    "tile_07.c62dc801.webp",
-    "tile_08.0996fb26.webp",
-    "tile_09.41911ab8.webp",
-    "tile_10.4a1816ee.webp",
-    "tile_11.85ca4d72.webp",
-    "tile_12.f1505957.webp",
-    "tile_13.8382d379.webp",
-    "tile_14.e58ba739.webp",
-    "tile_15.40c3e8c7.webp"
+    "tile_14.3ce54df9.webp"
    ]
   },
   {
@@ -7626,24 +7288,12 @@
    "palette_top": "#a8a8a8",
    "tile_id": "2acb78a6-c80d-439d-b675-4eaf0116dcd6",
    "dir": "tiles/tops/grey_paving_stone/sheet_108_detail_57989",
-   "n_tiles": 16,
+   "n_tiles": 4,
    "tiles": [
     "tile_00.webp",
-    "tile_01.webp",
-    "tile_02.webp",
-    "tile_03.webp",
-    "tile_04.webp",
-    "tile_05.webp",
-    "tile_06.webp",
-    "tile_07.webp",
-    "tile_08.webp",
-    "tile_09.webp",
-    "tile_10.webp",
-    "tile_11.webp",
     "tile_12.webp",
     "tile_13.webp",
-    "tile_14.webp",
-    "tile_15.webp"
+    "tile_14.webp"
    ],
    "top_face": {
     "mean_colours": 12.25,
@@ -7652,21 +7302,9 @@
    "post": true,
    "post_files": [
     "tile_00.3f1d160b.webp",
-    "tile_01.4ffc5094.webp",
-    "tile_02.4a9ecead.webp",
-    "tile_03.6ce5f47f.webp",
-    "tile_04.f83f4a05.webp",
-    "tile_05.38c77021.webp",
-    "tile_06.812c09ea.webp",
-    "tile_07.df40a743.webp",
-    "tile_08.7223e33b.webp",
-    "tile_09.4aa2168c.webp",
-    "tile_10.fbd07f6d.webp",
-    "tile_11.33fea0cb.webp",
     "tile_12.e77bc60c.webp",
     "tile_13.62932454.webp",
-    "tile_14.5d87d90e.webp",
-    "tile_15.0f9b6dc1.webp"
+    "tile_14.5d87d90e.webp"
    ]
   },
   {
@@ -7677,24 +7315,11 @@
    "palette_top": "#a8a8a8",
    "tile_id": "6f9d1a82-129f-493b-8c8c-9cf732645880",
    "dir": "tiles/tops/grey_paving_stone/sheet_122_detail_60638",
-   "n_tiles": 16,
+   "n_tiles": 3,
    "tiles": [
     "tile_00.webp",
     "tile_01.webp",
-    "tile_02.webp",
-    "tile_03.webp",
-    "tile_04.webp",
-    "tile_05.webp",
-    "tile_06.webp",
-    "tile_07.webp",
-    "tile_08.webp",
-    "tile_09.webp",
-    "tile_10.webp",
-    "tile_11.webp",
-    "tile_12.webp",
-    "tile_13.webp",
-    "tile_14.webp",
-    "tile_15.webp"
+    "tile_08.webp"
    ],
    "top_face": {
     "mean_colours": 13.62,
@@ -7704,71 +7329,7 @@
    "post_files": [
     "tile_00.5768c445.webp",
     "tile_01.3ca396e7.webp",
-    "tile_02.6413a957.webp",
-    "tile_03.b4d60a8e.webp",
-    "tile_04.45516a2a.webp",
-    "tile_05.733d9ab2.webp",
-    "tile_06.6b7e011a.webp",
-    "tile_07.da3a5c1d.webp",
-    "tile_08.ae29a4ac.webp",
-    "tile_09.f84abb31.webp",
-    "tile_10.d5459622.webp",
-    "tile_11.bc8d2c9a.webp",
-    "tile_12.5b905c60.webp",
-    "tile_13.72d7ebb7.webp",
-    "tile_14.d00fe44f.webp",
-    "tile_15.e022c9fa.webp"
-   ]
-  },
-  {
-   "ground": "grey_paving_stone",
-   "flavour": "detail",
-   "seed": 61417,
-   "prompt": "grey paving stone, a missing stone in the middle, grey paving stone all around the edge",
-   "palette_top": "#a8a8a8",
-   "tile_id": "ce76549c-df11-44f8-b5a1-935ebb7a8cec",
-   "dir": "tiles/tops/grey_paving_stone/sheet_106_detail_61417",
-   "n_tiles": 16,
-   "tiles": [
-    "tile_00.webp",
-    "tile_01.webp",
-    "tile_02.webp",
-    "tile_03.webp",
-    "tile_04.webp",
-    "tile_05.webp",
-    "tile_06.webp",
-    "tile_07.webp",
-    "tile_08.webp",
-    "tile_09.webp",
-    "tile_10.webp",
-    "tile_11.webp",
-    "tile_12.webp",
-    "tile_13.webp",
-    "tile_14.webp",
-    "tile_15.webp"
-   ],
-   "top_face": {
-    "mean_colours": 20.31,
-    "mean_dominant_share": 0.2211
-   },
-   "post": true,
-   "post_files": [
-    "tile_00.e281f51b.webp",
-    "tile_01.0cc063b0.webp",
-    "tile_02.fe7269c1.webp",
-    "tile_03.6f8fb9b4.webp",
-    "tile_04.1ba144e5.webp",
-    "tile_05.912d3d9e.webp",
-    "tile_06.3775b97e.webp",
-    "tile_07.6dd7d9e7.webp",
-    "tile_08.6321be35.webp",
-    "tile_09.b31b4624.webp",
-    "tile_10.bac6bf10.webp",
-    "tile_11.c0d9b25c.webp",
-    "tile_12.76ab0d87.webp",
-    "tile_13.903d79f6.webp",
-    "tile_14.bab85edc.webp",
-    "tile_15.4fa23492.webp"
+    "tile_08.ae29a4ac.webp"
    ]
   },
   {
@@ -7779,23 +7340,12 @@
    "palette_top": "#a8a8a8",
    "tile_id": "dc1702c4-eb45-49d6-bf4a-541215aa9e6e",
    "dir": "tiles/tops/grey_paving_stone/sheet_131_detail_64301",
-   "n_tiles": 16,
+   "n_tiles": 5,
    "tiles": [
-    "tile_00.webp",
-    "tile_01.webp",
-    "tile_02.webp",
-    "tile_03.webp",
     "tile_04.webp",
     "tile_05.webp",
     "tile_06.webp",
-    "tile_07.webp",
-    "tile_08.webp",
-    "tile_09.webp",
-    "tile_10.webp",
-    "tile_11.webp",
     "tile_12.webp",
-    "tile_13.webp",
-    "tile_14.webp",
     "tile_15.webp"
    ],
    "top_face": {
@@ -7804,21 +7354,10 @@
    },
    "post": true,
    "post_files": [
-    "tile_00.cd7e85dc.webp",
-    "tile_01.5ae67439.webp",
-    "tile_02.31a90faa.webp",
-    "tile_03.a0192e1e.webp",
     "tile_04.0082aa1e.webp",
     "tile_05.2c9fee15.webp",
     "tile_06.456f55ea.webp",
-    "tile_07.012559a1.webp",
-    "tile_08.b5f3993b.webp",
-    "tile_09.44f4be30.webp",
-    "tile_10.12cec0d9.webp",
-    "tile_11.9a417871.webp",
     "tile_12.971d8ea0.webp",
-    "tile_13.db2962a6.webp",
-    "tile_14.796be541.webp",
     "tile_15.ab78cd24.webp"
    ]
   },
@@ -7830,24 +7369,13 @@
    "palette_top": "#a8a8a8",
    "tile_id": "cd0113f3-b059-4668-b761-2226b36ea0fa",
    "dir": "tiles/tops/grey_paving_stone/sheet_100_detail_64545",
-   "n_tiles": 16,
+   "n_tiles": 5,
    "tiles": [
     "tile_00.webp",
     "tile_01.webp",
     "tile_02.webp",
-    "tile_03.webp",
-    "tile_04.webp",
-    "tile_05.webp",
     "tile_06.webp",
-    "tile_07.webp",
-    "tile_08.webp",
-    "tile_09.webp",
-    "tile_10.webp",
-    "tile_11.webp",
-    "tile_12.webp",
-    "tile_13.webp",
-    "tile_14.webp",
-    "tile_15.webp"
+    "tile_07.webp"
    ],
    "top_face": {
     "mean_colours": 16.81,
@@ -7858,19 +7386,8 @@
     "tile_00.376167d5.webp",
     "tile_01.835d25ec.webp",
     "tile_02.fa10ed29.webp",
-    "tile_03.43ff5e8e.webp",
-    "tile_04.f8ac7d5e.webp",
-    "tile_05.de14cb47.webp",
     "tile_06.5f9a4a16.webp",
-    "tile_07.c79cc72d.webp",
-    "tile_08.c3ac35d0.webp",
-    "tile_09.e4a817f1.webp",
-    "tile_10.ca9b1921.webp",
-    "tile_11.6801ca9f.webp",
-    "tile_12.25cda548.webp",
-    "tile_13.97adaa77.webp",
-    "tile_14.f2ea85e7.webp",
-    "tile_15.91dcba40.webp"
+    "tile_07.c79cc72d.webp"
    ]
   },
   {
@@ -7881,24 +7398,15 @@
    "palette_top": "#a8a8a8",
    "tile_id": "0953d4c8-c35d-4e76-b297-30587ec5530f",
    "dir": "tiles/tops/grey_paving_stone/sheet_130_detail_65890",
-   "n_tiles": 16,
+   "n_tiles": 7,
    "tiles": [
     "tile_00.webp",
     "tile_01.webp",
-    "tile_02.webp",
-    "tile_03.webp",
     "tile_04.webp",
     "tile_05.webp",
     "tile_06.webp",
     "tile_07.webp",
-    "tile_08.webp",
-    "tile_09.webp",
-    "tile_10.webp",
-    "tile_11.webp",
-    "tile_12.webp",
-    "tile_13.webp",
-    "tile_14.webp",
-    "tile_15.webp"
+    "tile_08.webp"
    ],
    "top_face": {
     "mean_colours": 12.44,
@@ -7908,71 +7416,11 @@
    "post_files": [
     "tile_00.6f42f78f.webp",
     "tile_01.70ac8264.webp",
-    "tile_02.f05faa06.webp",
-    "tile_03.7fb28b0c.webp",
     "tile_04.fd6131e9.webp",
     "tile_05.7f5ba7e5.webp",
     "tile_06.e7e8e2af.webp",
     "tile_07.4f0773f3.webp",
-    "tile_08.5bb2f187.webp",
-    "tile_09.bfcb9856.webp",
-    "tile_10.8d6a9c29.webp",
-    "tile_11.a806b614.webp",
-    "tile_12.8f317701.webp",
-    "tile_13.b9c3ec32.webp",
-    "tile_14.02787f6b.webp",
-    "tile_15.8683900d.webp"
-   ]
-  },
-  {
-   "ground": "grey_paving_stone",
-   "flavour": "detail",
-   "seed": 65928,
-   "prompt": "grey paving stone, a dropped coin in the middle, grey paving stone all around the edge",
-   "palette_top": "#a8a8a8",
-   "tile_id": "be0ad5b2-32ef-48c5-b0db-2f0538bd7a7d",
-   "dir": "tiles/tops/grey_paving_stone/sheet_102_detail_65928",
-   "n_tiles": 16,
-   "tiles": [
-    "tile_00.webp",
-    "tile_01.webp",
-    "tile_02.webp",
-    "tile_03.webp",
-    "tile_04.webp",
-    "tile_05.webp",
-    "tile_06.webp",
-    "tile_07.webp",
-    "tile_08.webp",
-    "tile_09.webp",
-    "tile_10.webp",
-    "tile_11.webp",
-    "tile_12.webp",
-    "tile_13.webp",
-    "tile_14.webp",
-    "tile_15.webp"
-   ],
-   "top_face": {
-    "mean_colours": 25.75,
-    "mean_dominant_share": 0.2974
-   },
-   "post": true,
-   "post_files": [
-    "tile_00.8408f060.webp",
-    "tile_01.d8609677.webp",
-    "tile_02.f22a7731.webp",
-    "tile_03.f630403f.webp",
-    "tile_04.0a501585.webp",
-    "tile_05.1cf309d5.webp",
-    "tile_06.4c5474ee.webp",
-    "tile_07.4ec50a9d.webp",
-    "tile_08.8deb3d1d.webp",
-    "tile_09.18222f82.webp",
-    "tile_10.674c0431.webp",
-    "tile_11.72c9118e.webp",
-    "tile_12.a7420808.webp",
-    "tile_13.d7a049e9.webp",
-    "tile_14.3aed6834.webp",
-    "tile_15.a28b5540.webp"
+    "tile_08.5bb2f187.webp"
    ]
   },
   {
@@ -7983,22 +7431,12 @@
    "palette_top": "#a8a8a8",
    "tile_id": "16e381d9-110f-4dac-8665-a20dea961a1d",
    "dir": "tiles/tops/grey_paving_stone/sheet_05_detail_67911",
-   "n_tiles": 16,
+   "n_tiles": 6,
    "tiles": [
     "tile_00.webp",
     "tile_01.webp",
-    "tile_02.webp",
-    "tile_03.webp",
-    "tile_04.webp",
-    "tile_05.webp",
-    "tile_06.webp",
-    "tile_07.webp",
-    "tile_08.webp",
     "tile_09.webp",
-    "tile_10.webp",
     "tile_11.webp",
-    "tile_12.webp",
-    "tile_13.webp",
     "tile_14.webp",
     "tile_15.webp"
    ],
@@ -8010,18 +7448,8 @@
    "post_files": [
     "tile_00.c31d2b82.webp",
     "tile_01.331e0a04.webp",
-    "tile_02.4cbdf027.webp",
-    "tile_03.29954aa3.webp",
-    "tile_04.556df75e.webp",
-    "tile_05.242cb04f.webp",
-    "tile_06.38887821.webp",
-    "tile_07.121f3ad4.webp",
-    "tile_08.4269d36e.webp",
     "tile_09.cdbfc891.webp",
-    "tile_10.ec74ee03.webp",
     "tile_11.d52d0d15.webp",
-    "tile_12.14c6166d.webp",
-    "tile_13.31e90aae.webp",
     "tile_14.0a1bea18.webp",
     "tile_15.2e274934.webp"
    ]
@@ -8034,23 +7462,8 @@
    "palette_top": "#a8a8a8",
    "tile_id": "4d4e37fa-748f-4206-80b2-1163447c0597",
    "dir": "tiles/tops/grey_paving_stone/sheet_119_detail_72616",
-   "n_tiles": 16,
+   "n_tiles": 1,
    "tiles": [
-    "tile_00.webp",
-    "tile_01.webp",
-    "tile_02.webp",
-    "tile_03.webp",
-    "tile_04.webp",
-    "tile_05.webp",
-    "tile_06.webp",
-    "tile_07.webp",
-    "tile_08.webp",
-    "tile_09.webp",
-    "tile_10.webp",
-    "tile_11.webp",
-    "tile_12.webp",
-    "tile_13.webp",
-    "tile_14.webp",
     "tile_15.webp"
    ],
    "top_face": {
@@ -8059,21 +7472,6 @@
    },
    "post": true,
    "post_files": [
-    "tile_00.156c5699.webp",
-    "tile_01.909f4d00.webp",
-    "tile_02.f7bb792a.webp",
-    "tile_03.79b44c5e.webp",
-    "tile_04.6742f6bd.webp",
-    "tile_05.bdcd7648.webp",
-    "tile_06.4a9164b2.webp",
-    "tile_07.00c6af14.webp",
-    "tile_08.cd9f988a.webp",
-    "tile_09.b359623e.webp",
-    "tile_10.bf72e37b.webp",
-    "tile_11.7800e9b4.webp",
-    "tile_12.c4b876ab.webp",
-    "tile_13.d85027ec.webp",
-    "tile_14.4052f520.webp",
     "tile_15.2324df07.webp"
    ]
   },
@@ -8131,63 +7529,12 @@
   {
    "ground": "grey_paving_stone",
    "flavour": "detail",
-   "seed": 74142,
-   "prompt": "grey paving stone, a carved initial in the middle, grey paving stone all around the edge",
-   "palette_top": "#a8a8a8",
-   "tile_id": "9112aca9-8e0a-401e-8c3d-9988b5419246",
-   "dir": "tiles/tops/grey_paving_stone/sheet_116_detail_74142",
-   "n_tiles": 16,
-   "tiles": [
-    "tile_00.webp",
-    "tile_01.webp",
-    "tile_02.webp",
-    "tile_03.webp",
-    "tile_04.webp",
-    "tile_05.webp",
-    "tile_06.webp",
-    "tile_07.webp",
-    "tile_08.webp",
-    "tile_09.webp",
-    "tile_10.webp",
-    "tile_11.webp",
-    "tile_12.webp",
-    "tile_13.webp",
-    "tile_14.webp",
-    "tile_15.webp"
-   ],
-   "top_face": {
-    "mean_colours": 10.0,
-    "mean_dominant_share": 0.3135
-   },
-   "post": true,
-   "post_files": [
-    "tile_00.ceb01e6d.webp",
-    "tile_01.02884c83.webp",
-    "tile_02.864c1c60.webp",
-    "tile_03.d0a3e5ca.webp",
-    "tile_04.2e454150.webp",
-    "tile_05.305a7e79.webp",
-    "tile_06.f013da25.webp",
-    "tile_07.9d24958a.webp",
-    "tile_08.465f28e0.webp",
-    "tile_09.9e3424c2.webp",
-    "tile_10.b62aed43.webp",
-    "tile_11.ffff4fa3.webp",
-    "tile_12.cdef85f8.webp",
-    "tile_13.6a3f50dd.webp",
-    "tile_14.19d60157.webp",
-    "tile_15.acdc0332.webp"
-   ]
-  },
-  {
-   "ground": "grey_paving_stone",
-   "flavour": "detail",
    "seed": 75129,
    "prompt": "grey paving stone, a lighter replacement stone in the middle, grey paving stone all around the edge",
    "palette_top": "#a8a8a8",
    "tile_id": "d868859e-208a-4f43-a3fd-26284cbe57f7",
    "dir": "tiles/tops/grey_paving_stone/sheet_134_detail_75129",
-   "n_tiles": 16,
+   "n_tiles": 7,
    "tiles": [
     "tile_00.webp",
     "tile_01.webp",
@@ -8195,16 +7542,7 @@
     "tile_03.webp",
     "tile_04.webp",
     "tile_05.webp",
-    "tile_06.webp",
-    "tile_07.webp",
-    "tile_08.webp",
-    "tile_09.webp",
-    "tile_10.webp",
-    "tile_11.webp",
-    "tile_12.webp",
-    "tile_13.webp",
-    "tile_14.webp",
-    "tile_15.webp"
+    "tile_14.webp"
    ],
    "top_face": {
     "mean_colours": 23.38,
@@ -8218,16 +7556,7 @@
     "tile_03.5949a1b8.webp",
     "tile_04.1c294709.webp",
     "tile_05.f2c15e9a.webp",
-    "tile_06.36859d02.webp",
-    "tile_07.25eb5f12.webp",
-    "tile_08.5dcd2b3b.webp",
-    "tile_09.adbaaa4f.webp",
-    "tile_10.1604bcfc.webp",
-    "tile_11.c2698add.webp",
-    "tile_12.a870f8bb.webp",
-    "tile_13.cec68526.webp",
-    "tile_14.2559a104.webp",
-    "tile_15.cb2ce5ad.webp"
+    "tile_14.2559a104.webp"
    ]
   },
   {
@@ -8238,24 +7567,16 @@
    "palette_top": "#a8a8a8",
    "tile_id": "b6d139fe-9f56-4de1-aa23-5972f5d789e5",
    "dir": "tiles/tops/grey_paving_stone/sheet_04_detail_82570",
-   "n_tiles": 16,
+   "n_tiles": 8,
    "tiles": [
-    "tile_00.webp",
     "tile_01.webp",
-    "tile_02.webp",
-    "tile_03.webp",
     "tile_04.webp",
-    "tile_05.webp",
     "tile_06.webp",
     "tile_07.webp",
     "tile_08.webp",
     "tile_09.webp",
     "tile_10.webp",
-    "tile_11.webp",
-    "tile_12.webp",
-    "tile_13.webp",
-    "tile_14.webp",
-    "tile_15.webp"
+    "tile_14.webp"
    ],
    "top_face": {
     "mean_colours": 18.81,
@@ -8263,22 +7584,14 @@
    },
    "post": true,
    "post_files": [
-    "tile_00.702cb941.webp",
     "tile_01.de795928.webp",
-    "tile_02.4a6b0f8f.webp",
-    "tile_03.af1b83c7.webp",
     "tile_04.8cf3e048.webp",
-    "tile_05.8d763ed7.webp",
     "tile_06.bcda2472.webp",
     "tile_07.47bd8739.webp",
     "tile_08.06f97cf0.webp",
     "tile_09.e10b9e6c.webp",
     "tile_10.3aa28243.webp",
-    "tile_11.301e7a83.webp",
-    "tile_12.c1392b1b.webp",
-    "tile_13.aedc66fb.webp",
-    "tile_14.4682baae.webp",
-    "tile_15.633b10dd.webp"
+    "tile_14.4682baae.webp"
    ]
   },
   {
@@ -8289,24 +7602,14 @@
    "palette_top": "#a8a8a8",
    "tile_id": "2682699c-df24-45ca-b0bd-75ad04529a50",
    "dir": "tiles/tops/grey_paving_stone/sheet_101_detail_85457",
-   "n_tiles": 16,
+   "n_tiles": 6,
    "tiles": [
-    "tile_00.webp",
     "tile_01.webp",
     "tile_02.webp",
     "tile_03.webp",
-    "tile_04.webp",
-    "tile_05.webp",
-    "tile_06.webp",
-    "tile_07.webp",
     "tile_08.webp",
     "tile_09.webp",
-    "tile_10.webp",
-    "tile_11.webp",
-    "tile_12.webp",
-    "tile_13.webp",
-    "tile_14.webp",
-    "tile_15.webp"
+    "tile_12.webp"
    ],
    "top_face": {
     "mean_colours": 14.25,
@@ -8314,22 +7617,12 @@
    },
    "post": true,
    "post_files": [
-    "tile_00.d40892ff.webp",
     "tile_01.433c0de2.webp",
     "tile_02.e39f9688.webp",
     "tile_03.44ce3a9a.webp",
-    "tile_04.9910363e.webp",
-    "tile_05.f67f27b8.webp",
-    "tile_06.4f78dd24.webp",
-    "tile_07.b969d2b9.webp",
     "tile_08.63ad39dc.webp",
     "tile_09.37269a49.webp",
-    "tile_10.26f53375.webp",
-    "tile_11.6dc856eb.webp",
-    "tile_12.41378d15.webp",
-    "tile_13.22e845c9.webp",
-    "tile_14.a8165421.webp",
-    "tile_15.f6fe07f2.webp"
+    "tile_12.41378d15.webp"
    ]
   },
   {
@@ -8340,24 +7633,13 @@
    "palette_top": "#a8a8a8",
    "tile_id": "501cb9a9-15bc-47b2-a51d-e27d9e314da7",
    "dir": "tiles/tops/grey_paving_stone/sheet_107_detail_86051",
-   "n_tiles": 16,
+   "n_tiles": 5,
    "tiles": [
     "tile_00.webp",
-    "tile_01.webp",
-    "tile_02.webp",
-    "tile_03.webp",
-    "tile_04.webp",
-    "tile_05.webp",
     "tile_06.webp",
     "tile_07.webp",
     "tile_08.webp",
-    "tile_09.webp",
-    "tile_10.webp",
-    "tile_11.webp",
-    "tile_12.webp",
-    "tile_13.webp",
-    "tile_14.webp",
-    "tile_15.webp"
+    "tile_14.webp"
    ],
    "top_face": {
     "mean_colours": 20.38,
@@ -8366,72 +7648,10 @@
    "post": true,
    "post_files": [
     "tile_00.0de16a6f.webp",
-    "tile_01.e8d5115e.webp",
-    "tile_02.786860d4.webp",
-    "tile_03.04fab981.webp",
-    "tile_04.516efe92.webp",
-    "tile_05.ad2626d9.webp",
     "tile_06.31fb36c3.webp",
     "tile_07.90a136a9.webp",
     "tile_08.1c25976d.webp",
-    "tile_09.19778c1e.webp",
-    "tile_10.d2213f21.webp",
-    "tile_11.c3b61256.webp",
-    "tile_12.14292ca5.webp",
-    "tile_13.f76d8f0a.webp",
-    "tile_14.0e4267c3.webp",
-    "tile_15.a210e6df.webp"
-   ]
-  },
-  {
-   "ground": "grey_paving_stone",
-   "flavour": "detail",
-   "seed": 89378,
-   "prompt": "grey paving stone, a line of ants in the middle, grey paving stone all around the edge",
-   "palette_top": "#a8a8a8",
-   "tile_id": "830cc00c-293f-48c2-82b2-3da75514cd4c",
-   "dir": "tiles/tops/grey_paving_stone/sheet_114_detail_89378",
-   "n_tiles": 16,
-   "tiles": [
-    "tile_00.webp",
-    "tile_01.webp",
-    "tile_02.webp",
-    "tile_03.webp",
-    "tile_04.webp",
-    "tile_05.webp",
-    "tile_06.webp",
-    "tile_07.webp",
-    "tile_08.webp",
-    "tile_09.webp",
-    "tile_10.webp",
-    "tile_11.webp",
-    "tile_12.webp",
-    "tile_13.webp",
-    "tile_14.webp",
-    "tile_15.webp"
-   ],
-   "top_face": {
-    "mean_colours": 21.06,
-    "mean_dominant_share": 0.4491
-   },
-   "post": true,
-   "post_files": [
-    "tile_00.e35664c2.webp",
-    "tile_01.469921bd.webp",
-    "tile_02.44c4168b.webp",
-    "tile_03.2f0a933a.webp",
-    "tile_04.00004a8a.webp",
-    "tile_05.356822b7.webp",
-    "tile_06.c86c9158.webp",
-    "tile_07.37f85c19.webp",
-    "tile_08.4ab27df7.webp",
-    "tile_09.a95cd55b.webp",
-    "tile_10.cb388e2f.webp",
-    "tile_11.c628229f.webp",
-    "tile_12.fe387ddb.webp",
-    "tile_13.c14ee41b.webp",
-    "tile_14.ccd5cce5.webp",
-    "tile_15.8b8a4d3d.webp"
+    "tile_14.0e4267c3.webp"
    ]
   },
   {
@@ -8442,24 +7662,14 @@
    "palette_top": "#a8a8a8",
    "tile_id": "eadb5b28-5433-4998-b4b2-ffb9f23f8a5a",
    "dir": "tiles/tops/grey_paving_stone/sheet_120_detail_90586",
-   "n_tiles": 16,
+   "n_tiles": 6,
    "tiles": [
     "tile_00.webp",
     "tile_01.webp",
     "tile_02.webp",
-    "tile_03.webp",
-    "tile_04.webp",
-    "tile_05.webp",
-    "tile_06.webp",
-    "tile_07.webp",
-    "tile_08.webp",
-    "tile_09.webp",
     "tile_10.webp",
-    "tile_11.webp",
     "tile_12.webp",
-    "tile_13.webp",
-    "tile_14.webp",
-    "tile_15.webp"
+    "tile_13.webp"
    ],
    "top_face": {
     "mean_colours": 14.62,
@@ -8470,19 +7680,9 @@
     "tile_00.c3446d37.webp",
     "tile_01.f3de9ed6.webp",
     "tile_02.f916d83b.webp",
-    "tile_03.387bacbc.webp",
-    "tile_04.30515f1d.webp",
-    "tile_05.cedf435b.webp",
-    "tile_06.afc34bf2.webp",
-    "tile_07.cc28b890.webp",
-    "tile_08.cf88a76d.webp",
-    "tile_09.f1a1a3a5.webp",
     "tile_10.b53f69f8.webp",
-    "tile_11.bde87eb4.webp",
     "tile_12.d57c565d.webp",
-    "tile_13.829a0d5e.webp",
-    "tile_14.c6497ae2.webp",
-    "tile_15.65ba256b.webp"
+    "tile_13.829a0d5e.webp"
    ]
   },
   {
@@ -8493,24 +7693,14 @@
    "palette_top": "#a8a8a8",
    "tile_id": "c2d02666-228b-4a4d-aa10-078397426339",
    "dir": "tiles/tops/grey_paving_stone/sheet_111_detail_92702",
-   "n_tiles": 16,
+   "n_tiles": 6,
    "tiles": [
-    "tile_00.webp",
     "tile_01.webp",
     "tile_02.webp",
-    "tile_03.webp",
     "tile_04.webp",
     "tile_05.webp",
     "tile_06.webp",
-    "tile_07.webp",
-    "tile_08.webp",
-    "tile_09.webp",
-    "tile_10.webp",
-    "tile_11.webp",
-    "tile_12.webp",
-    "tile_13.webp",
-    "tile_14.webp",
-    "tile_15.webp"
+    "tile_11.webp"
    ],
    "top_face": {
     "mean_colours": 15.44,
@@ -8518,22 +7708,12 @@
    },
    "post": true,
    "post_files": [
-    "tile_00.971eaead.webp",
     "tile_01.a59ca49b.webp",
     "tile_02.bd078cc2.webp",
-    "tile_03.02a7b27f.webp",
     "tile_04.0ccfe686.webp",
     "tile_05.0edec996.webp",
     "tile_06.690e480a.webp",
-    "tile_07.f0abca0b.webp",
-    "tile_08.5dbae177.webp",
-    "tile_09.553a23bc.webp",
-    "tile_10.6838ee74.webp",
-    "tile_11.58b259bf.webp",
-    "tile_12.34bccd17.webp",
-    "tile_13.b586f606.webp",
-    "tile_14.ed707f09.webp",
-    "tile_15.0be62268.webp"
+    "tile_11.58b259bf.webp"
    ]
   },
   {
@@ -8544,24 +7724,9 @@
    "palette_top": "#a8a8a8",
    "tile_id": "e025ab7a-c895-456b-9179-6c97948a6e0f",
    "dir": "tiles/tops/grey_paving_stone/sheet_110_detail_96365",
-   "n_tiles": 16,
+   "n_tiles": 1,
    "tiles": [
-    "tile_00.webp",
-    "tile_01.webp",
-    "tile_02.webp",
-    "tile_03.webp",
-    "tile_04.webp",
-    "tile_05.webp",
-    "tile_06.webp",
-    "tile_07.webp",
-    "tile_08.webp",
-    "tile_09.webp",
-    "tile_10.webp",
-    "tile_11.webp",
-    "tile_12.webp",
-    "tile_13.webp",
-    "tile_14.webp",
-    "tile_15.webp"
+    "tile_09.webp"
    ],
    "top_face": {
     "mean_colours": 11.75,
@@ -8569,22 +7734,7 @@
    },
    "post": true,
    "post_files": [
-    "tile_00.8890ffec.webp",
-    "tile_01.026bb8f6.webp",
-    "tile_02.20292bd2.webp",
-    "tile_03.11beb795.webp",
-    "tile_04.aa7fffef.webp",
-    "tile_05.046436d6.webp",
-    "tile_06.1f039d26.webp",
-    "tile_07.cdaf859d.webp",
-    "tile_08.c686d2bd.webp",
-    "tile_09.3d97cb75.webp",
-    "tile_10.d932f4d8.webp",
-    "tile_11.5529f9ef.webp",
-    "tile_12.c66c8e66.webp",
-    "tile_13.24b710f3.webp",
-    "tile_14.439c9af8.webp",
-    "tile_15.aeb35e3e.webp"
+    "tile_09.3d97cb75.webp"
    ]
   },
   {
@@ -8595,11 +7745,9 @@
    "palette_top": "#a8a8a8",
    "tile_id": "2aa52b61-0037-4f8b-901b-fa4ebb15d40c",
    "dir": "tiles/tops/grey_paving_stone/sheet_113_detail_98815",
-   "n_tiles": 16,
+   "n_tiles": 14,
    "tiles": [
     "tile_00.webp",
-    "tile_01.webp",
-    "tile_02.webp",
     "tile_03.webp",
     "tile_04.webp",
     "tile_05.webp",
@@ -8621,8 +7769,6 @@
    "post": true,
    "post_files": [
     "tile_00.17518c95.webp",
-    "tile_01.7f5bad71.webp",
-    "tile_02.53294a93.webp",
     "tile_03.1adb085a.webp",
     "tile_04.42c1ebb8.webp",
     "tile_05.7fde8cb0.webp",

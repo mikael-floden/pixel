@@ -10,10 +10,9 @@
   "prompt": "grey paving stone, a chipped edge in the middle, grey paving stone all around the edge",
   "palette_top": "#a8a8a8",
   "tile_id": "3fd64067-d0b9-4977-9236-853bb8c5cae3",
-  "n_tiles": 16,
+  "n_tiles": 14,
   "tiles": [
     "tile_00.webp",
-    "tile_01.webp",
     "tile_02.webp",
     "tile_03.webp",
     "tile_04.webp",
@@ -22,7 +21,6 @@
     "tile_07.webp",
     "tile_08.webp",
     "tile_09.webp",
-    "tile_10.webp",
     "tile_11.webp",
     "tile_12.webp",
     "tile_13.webp",
@@ -128,5 +126,17 @@
   },
   "motif": "a chipped edge",
   "motif_source": "tiles/config/details.json",
-  "walkable": true
+  "walkable": true,
+  "removed": {
+    "tile_01.webp": {
+      "status": "rejected",
+      "at": "2026-09-12T05:22:10+00:00",
+      "record": "tiles/tops/removed.json"
+    },
+    "tile_10.webp": {
+      "status": "rejected",
+      "at": "2026-09-12T05:22:10+00:00",
+      "record": "tiles/tops/removed.json"
+    }
+  }
 }

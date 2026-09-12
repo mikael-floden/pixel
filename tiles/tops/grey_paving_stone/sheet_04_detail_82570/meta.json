@@ -10,24 +10,16 @@
   "prompt": "beautiful grey paving stones, pale silver grey, finely cut, richly worn, lots of detail",
   "palette_top": "#a8a8a8",
   "tile_id": "b6d139fe-9f56-4de1-aa23-5972f5d789e5",
-  "n_tiles": 16,
+  "n_tiles": 8,
   "tiles": [
-    "tile_00.webp",
     "tile_01.webp",
-    "tile_02.webp",
-    "tile_03.webp",
     "tile_04.webp",
-    "tile_05.webp",
     "tile_06.webp",
     "tile_07.webp",
     "tile_08.webp",
     "tile_09.webp",
     "tile_10.webp",
-    "tile_11.webp",
-    "tile_12.webp",
-    "tile_13.webp",
-    "tile_14.webp",
-    "tile_15.webp"
+    "tile_14.webp"
   ],
   "settings": {
     "tile_size": 64,
@@ -125,5 +117,47 @@
     ],
     "mean_colours": 18.81,
     "mean_dominant_share": 0.4809
+  },
+  "removed": {
+    "tile_00.webp": {
+      "status": "rejected",
+      "at": "2026-09-12T05:22:10+00:00",
+      "record": "tiles/tops/removed.json"
+    },
+    "tile_02.webp": {
+      "status": "rejected",
+      "at": "2026-09-12T05:22:10+00:00",
+      "record": "tiles/tops/removed.json"
+    },
+    "tile_03.webp": {
+      "status": "rejected",
+      "at": "2026-09-12T05:22:10+00:00",
+      "record": "tiles/tops/removed.json"
+    },
+    "tile_05.webp": {
+      "status": "rejected",
+      "at": "2026-09-12T05:22:10+00:00",
+      "record": "tiles/tops/removed.json"
+    },
+    "tile_11.webp": {
+      "status": "rejected",
+      "at": "2026-09-12T05:22:10+00:00",
+      "record": "tiles/tops/removed.json"
+    },
+    "tile_12.webp": {
+      "status": "rejected",
+      "at": "2026-09-12T05:22:10+00:00",
+      "record": "tiles/tops/removed.json"
+    },
+    "tile_13.webp": {
+      "status": "rejected",
+      "at": "2026-09-12T05:22:10+00:00",
+      "record": "tiles/tops/removed.json"
+    },
+    "tile_15.webp": {
+      "status": "rejected",
+      "at": "2026-09-12T05:22:10+00:00",
+      "record": "tiles/tops/removed.json"
+    }
   }
 }
