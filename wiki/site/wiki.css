@@ -4,23 +4,23 @@
    (data-theme) must win in both directions. */
 
 :root {
-  --bg: #faf9f5;
-  --surface: #ffffff;
-  --surface-2: #f4f2ec;
-  --ink: #1f1e1a;
-  --muted: #706b5f;
-  --border: #e6e2d7;
-  --border-strong: #d5d0c2;
+  --bg: #f6f0e6;
+  --surface: #fdf9f3;
+  --surface-2: #eee6da;
+  --ink: #23211d;
+  --muted: #736d63;
+  --border: #e1dacd;
+  --border-strong: #cdc5b6;
   --accent: #d97757;
-  --accent-soft: #f6e3db;
-  --accent-ink: #b45309;
-  --good: #4d7c4d;
-  --good-soft: #e4efe4;
+  --accent-soft: #fbded4;
+  --accent-ink: #b15005;
+  --good: #497849;
+  --good-soft: #deecde;
   --bad: #b3453a;
-  --bad-soft: #f6e1de;
+  --bad-soft: #f8dedb;
   --star: #d9a13b;
-  --checker-a: #efece3;
-  --checker-b: #e2ded2;
+  --checker-a: #f1ebe1;
+  --checker-b: #e4ddd1;
   --shadow: 0 1px 2px rgba(40, 35, 25, 0.06), 0 4px 16px rgba(40, 35, 25, 0.05);
   --serif: "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, ui-serif, serif;
   --sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
@@ -49,11 +49,11 @@
   }
 }
 :root[data-theme="light"] {
-  --bg: #faf9f5; --surface: #ffffff; --surface-2: #f4f2ec; --ink: #1f1e1a;
-  --muted: #706b5f; --border: #e6e2d7; --border-strong: #d5d0c2;
-  --accent: #d97757; --accent-soft: #f6e3db; --accent-ink: #b45309;
-  --good: #4d7c4d; --good-soft: #e4efe4; --bad: #b3453a; --bad-soft: #f6e1de;
-  --star: #d9a13b; --checker-a: #efece3; --checker-b: #e2ded2;
+  --bg: #f6f0e6; --surface: #fdf9f3; --surface-2: #eee6da; --ink: #23211d;
+  --muted: #736d63; --border: #e1dacd; --border-strong: #cdc5b6;
+  --accent: #d97757; --accent-soft: #fbded4; --accent-ink: #b15005;
+  --good: #497849; --good-soft: #deecde; --bad: #b3453a; --bad-soft: #f8dedb;
+  --star: #d9a13b; --checker-a: #f1ebe1; --checker-b: #e4ddd1;
   --shadow: 0 1px 2px rgba(40, 35, 25, 0.06), 0 4px 16px rgba(40, 35, 25, 0.05);
 }
 :root[data-theme="dark"] {
