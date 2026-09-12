@@ -6,7 +6,12 @@ carry. Art is authored on [PixelLab](https://pixellab.ai); this domain mirrors
 it in — **zero generations**, download only — and owns all the **metadata**
 the game needs to make an item mean something. One domain of the multi-domain
 `pixel` repo, owned by the **items agent**; everything lives under `items/`.
-Fleet contract: `coordination/PROTOCOL.md`.
+Fleet contract: `coordination/PROTOCOL.md`. Two agents work here since
+2026-09-12: the items agent and its assistant, **item-assistant** (the same
+remit, for the units the items agent is not in; it reads
+`coordination/items.json` first, never touches a file named there as in
+flight, and names every file it touches on `coordination/item-assistant.json`).
+One writer per file still holds.
 
 ## Ground truth: the type tag on PixelLab
 
