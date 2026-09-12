@@ -10,10 +10,8 @@
   "prompt": "old brown paving, warm grey brown, evenly laid, worn smooth, plain",
   "palette_top": "#7d7265",
   "tile_id": "300ccb4b-ca5e-43a4-a2ac-dca4fec22839",
-  "n_tiles": 1,
-  "tiles": [
-    "tile_02.webp"
-  ],
+  "n_tiles": 0,
+  "tiles": [],
   "settings": {
     "tile_size": 64,
     "tile_view": "high top-down",
@@ -185,6 +183,11 @@
     "tile_15.webp": {
       "status": "rejected",
       "at": "2026-09-12T05:05:21+00:00",
+      "record": "tiles/tops/removed.json"
+    },
+    "tile_02.webp": {
+      "status": "rejected",
+      "at": "2026-09-12T05:26:20+00:00",
       "record": "tiles/tops/removed.json"
     }
   }

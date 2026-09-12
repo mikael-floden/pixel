@@ -10,15 +10,11 @@
   "prompt": "churned wet mud, deep cold brown, glossy sheen, coarse and uneven, lots of detail",
   "palette_top": "#514137",
   "tile_id": "28746128-0da5-4d0e-afa2-c2be3c76e525",
-  "n_tiles": 8,
+  "n_tiles": 4,
   "tiles": [
-    "tile_01.webp",
     "tile_02.webp",
-    "tile_03.webp",
-    "tile_06.webp",
     "tile_07.webp",
     "tile_08.webp",
-    "tile_10.webp",
     "tile_14.webp"
   ],
   "settings": {
@@ -157,6 +153,26 @@
     "tile_15.webp": {
       "status": "rejected",
       "at": "2026-09-12T05:05:25+00:00",
+      "record": "tiles/tops/removed.json"
+    },
+    "tile_01.webp": {
+      "status": "rejected",
+      "at": "2026-09-12T05:24:58+00:00",
+      "record": "tiles/tops/removed.json"
+    },
+    "tile_03.webp": {
+      "status": "rejected",
+      "at": "2026-09-12T05:24:58+00:00",
+      "record": "tiles/tops/removed.json"
+    },
+    "tile_06.webp": {
+      "status": "rejected",
+      "at": "2026-09-12T05:24:58+00:00",
+      "record": "tiles/tops/removed.json"
+    },
+    "tile_10.webp": {
+      "status": "rejected",
+      "at": "2026-09-12T05:24:58+00:00",
       "record": "tiles/tops/removed.json"
     }
   }

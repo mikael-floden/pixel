@@ -10,12 +10,8 @@
   "prompt": "beautiful meadow grass, deep green, sunlit, rich and varied, lots of detail",
   "palette_top": "#14523b",
   "tile_id": "dfe50efe-7128-4540-9936-a3303ec42a28",
-  "n_tiles": 3,
-  "tiles": [
-    "tile_07.webp",
-    "tile_08.webp",
-    "tile_09.webp"
-  ],
+  "n_tiles": 0,
+  "tiles": [],
   "settings": {
     "tile_size": 64,
     "tile_view": "high top-down",
@@ -177,6 +173,21 @@
     "tile_15.webp": {
       "status": "rejected",
       "at": "2026-09-12T05:05:14+00:00",
+      "record": "tiles/tops/removed.json"
+    },
+    "tile_07.webp": {
+      "status": "rejected",
+      "at": "2026-09-12T05:24:59+00:00",
+      "record": "tiles/tops/removed.json"
+    },
+    "tile_08.webp": {
+      "status": "rejected",
+      "at": "2026-09-12T05:24:59+00:00",
+      "record": "tiles/tops/removed.json"
+    },
+    "tile_09.webp": {
+      "status": "rejected",
+      "at": "2026-09-12T05:24:59+00:00",
       "record": "tiles/tops/removed.json"
     }
   }

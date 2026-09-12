@@ -39,16 +39,51 @@ TOPS = os.path.join(ROOT, "tops")
 INDEX = os.path.join(TOPS, "index.json")
 REMOVED = os.path.join(TOPS, "removed.json")
 FEEDBACK = os.path.join(REPO, "live", "feedback", "tiles.json")
+SETS_PATH = os.path.join(REPO, "live", "tuning", "base_tile_sets.json")
 
 # Files whose mention of a tile means something DRAWS it. Verdict records
 # (tile_walls, top_walls faces, the feedback file) are not references.
 REFERENCE_FILES = [
-    os.path.join(REPO, "live", "tuning", "base_tile_sets.json"),
     os.path.join(ROOT, "resolve.json"),
     os.path.join(ROOT, "plates", "index.json"),
     os.path.join(ROOT, "ground_types.json"),      # his promoted base tile per ground
 ] + sorted(glob.glob(os.path.join(REPO, "games2", "server", "test", "fixtures", "*.json")))
 
+
+def base_set_members():
+    """What his base tile sets actually DRAW - member ids only.
+
+    A set also carries a `rejected` list (tiles he threw out OF THAT SET), and reading
+    the file as raw text made that list look like a use: one brown_paving_stone tile was
+    kept alive by the record of his own rejection of it, which is exactly backwards.
+    """
+    try:
+        with open(SETS_PATH) as f:
+            doc = json.load(f)
+    except (OSError, json.JSONDecodeError):
+        return ""
+    out = []
+    for gv in (doc.get("grounds") or doc).values():
+        if not isinstance(gv, dict):
+            continue
+        for s in gv.get("sets") or []:
+            for m in s.get("members") or []:
+                for k in ("tile", "id", "art"):
+                    if isinstance(m.get(k), str):
+                        out.append(m[k])
+    return "\n".join(out)
+
+
+def names_in(text, names):
+    """Which of `names` the text actually USES.
+
+    A match immediately followed by '#' is a VERDICT KEY, not a use - the wiki's
+    feedback keys are `<path or key>#top` / `#wall`. tiles/plates/index.json carries
+    8,499 of them under pool.unresolved_approved_keys, a snapshot of what was approved
+    when the plates were built, and reading that as a reference kept 15 tiles he had
+    since rejected alive on the strength of a stale record of his OWN older verdict.
+    """
+    return [n for n in names if re.search(re.escape(n) + r"(?!#)", text)]
 
 def _now():
     return datetime.datetime.now(datetime.timezone.utc).isoformat(timespec="seconds")
@@ -80,7 +115,8 @@ def verdicts():
 
 
 def reference_text():
-    return "".join(open(p, errors="ignore").read() for p in REFERENCE_FILES if os.path.isfile(p))
+    return base_set_members() + "\n" + "".join(
+        open(p, errors="ignore").read() for p in REFERENCE_FILES if os.path.isfile(p))
 
 
 def plan(ground=None):
@@ -98,7 +134,7 @@ def plan(ground=None):
             st = fb.get(key)
             if st == "rejected" or (st is None and key in tomb):
                 named = [key] + ([f"{sh['dir']}/post/{pf}"] if pf else [])
-                hit = [n for n in named if n in refs]
+                hit = names_in(refs, named)
                 (keep if hit else remove).append((sh, name, pf, hit))
             elif st and key in tomb:
                 revive.append(key)
@@ -181,7 +217,7 @@ def main():
           f"({len(emptied)} sheets lose every tile), {len(keep)} kept because something draws them")
     for sh, name, pf, hit in keep:
         who = sorted({os.path.relpath(p, REPO) for p in REFERENCE_FILES
-                      if os.path.isfile(p) and any(h in open(p, errors="ignore").read() for h in hit)})
+                      if os.path.isfile(p) and names_in(open(p, errors="ignore").read(), hit)})
         print(f"   KEEP {sh['dir']}/{name}  <- {', '.join(who)}")
     if revive:
         print(f"{len(revive)} removed tile(s) now carry a non-rejected verdict; the record clears, restore the art from git by hand:")

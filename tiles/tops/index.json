@@ -17,15 +17,15 @@
  },
  "sheet_usd": 0.096,
  "top_face_note": "mean_colours / mean_dominant_share measure the TOP FACE only (transition_render.top_face). Reference: a deliberately flat matrix top is 4 colours / 0.95, a textured base candidate 9-14 / 0.30-0.67.",
- "n_sheets": 558,
- "n_tiles": 7400,
+ "n_sheets": 555,
+ "n_tiles": 7384,
  "counts": {
   "black_rock": {
    "subtle": 2,
    "detail": 30
   },
   "brown_paving_stone": {
-   "subtle": 3,
+   "subtle": 2,
    "detail": 19
   },
   "dark_mud": {
@@ -38,7 +38,7 @@
   },
   "grass": {
    "subtle": 1,
-   "detail": 24
+   "detail": 22
   },
   "grey_paving_stone": {
    "subtle": 3,
@@ -1689,12 +1689,9 @@
    "palette_top": "#7d7265",
    "tile_id": "c85d25c1-b71b-4839-9909-1f290738839d",
    "dir": "tiles/tops/brown_paving_stone/sheet_00_subtle_21205",
-   "n_tiles": 4,
+   "n_tiles": 1,
    "tiles": [
-    "tile_03.webp",
-    "tile_04.webp",
-    "tile_13.webp",
-    "tile_14.webp"
+    "tile_04.webp"
    ],
    "top_face": {
     "mean_colours": 8.75,
@@ -1702,31 +1699,7 @@
    },
    "post": true,
    "post_files": [
-    "tile_03.9b3e222e.webp",
-    "tile_04.f38bcbfb.webp",
-    "tile_13.9a879df3.webp",
-    "tile_14.3e9a6ae0.webp"
-   ]
-  },
-  {
-   "ground": "brown_paving_stone",
-   "flavour": "subtle",
-   "seed": 72275,
-   "prompt": "old brown paving, warm grey brown, evenly laid, worn smooth, plain",
-   "palette_top": "#7d7265",
-   "tile_id": "300ccb4b-ca5e-43a4-a2ac-dca4fec22839",
-   "dir": "tiles/tops/brown_paving_stone/sheet_02_subtle_72275",
-   "n_tiles": 1,
-   "tiles": [
-    "tile_02.webp"
-   ],
-   "top_face": {
-    "mean_colours": 8.25,
-    "mean_dominant_share": 0.6981
-   },
-   "post": true,
-   "post_files": [
-    "tile_02.e4d20431.webp"
+    "tile_04.f38bcbfb.webp"
    ]
   },
   {
@@ -1789,15 +1762,11 @@
    "palette_top": "#514137",
    "tile_id": "28746128-0da5-4d0e-afa2-c2be3c76e525",
    "dir": "tiles/tops/dark_mud/sheet_03_detail_14797",
-   "n_tiles": 8,
+   "n_tiles": 4,
    "tiles": [
-    "tile_01.webp",
     "tile_02.webp",
-    "tile_03.webp",
-    "tile_06.webp",
     "tile_07.webp",
     "tile_08.webp",
-    "tile_10.webp",
     "tile_14.webp"
    ],
    "top_face": {
@@ -1806,13 +1775,9 @@
    },
    "post": true,
    "post_files": [
-    "tile_01.e88d499a.webp",
     "tile_02.d7c8f994.webp",
-    "tile_03.d8a05c0e.webp",
-    "tile_06.9ef19b2b.webp",
     "tile_07.794fb7be.webp",
     "tile_08.b318d8ed.webp",
-    "tile_10.ea00bc8d.webp",
     "tile_14.e35ba2d8.webp"
    ]
   },
@@ -6390,64 +6355,14 @@
   {
    "ground": "grass",
    "flavour": "detail",
-   "seed": 72634,
-   "prompt": "beautiful meadow grass, deep green, sunlit, rich and varied, lots of detail",
-   "palette_top": "#14523b",
-   "tile_id": "9c393f18-8c7b-4f60-875e-5f2a7e09755f",
-   "dir": "tiles/tops/grass/sheet_04_detail_72634",
-   "n_tiles": 4,
-   "tiles": [
-    "tile_03.webp",
-    "tile_06.webp",
-    "tile_07.webp",
-    "tile_09.webp"
-   ],
-   "top_face": {
-    "mean_colours": 21.44,
-    "mean_dominant_share": 0.1643
-   },
-   "post": true,
-   "post_files": [
-    "tile_03.73d15f22.webp",
-    "tile_06.6623f9e5.webp",
-    "tile_07.0391739e.webp",
-    "tile_09.61b91301.webp"
-   ],
-   "misfit_tiles": {
-    "tile_03.webp": {
-     "misfit": true,
-     "squeezed_pct": 0.0,
-     "hue_deg": 36.9
-    },
-    "tile_06.webp": {
-     "misfit": true,
-     "squeezed_pct": 18.3,
-     "hue_deg": 33.6
-    },
-    "tile_07.webp": {
-     "misfit": true,
-     "squeezed_pct": 0.0,
-     "hue_deg": 38.8
-    },
-    "tile_09.webp": {
-     "misfit": true,
-     "squeezed_pct": 19.2,
-     "hue_deg": 30.1
-    }
-   }
-  },
-  {
-   "ground": "grass",
-   "flavour": "detail",
    "seed": 74402,
    "prompt": "beautiful meadow grass, deep green, sunlit, rich and varied, lots of detail",
    "palette_top": "#14523b",
    "tile_id": "c86787ad-ed1d-46a9-8b0c-a1ac43cb96d1",
    "dir": "tiles/tops/grass/sheet_03_detail_74402",
-   "n_tiles": 2,
+   "n_tiles": 1,
    "tiles": [
-    "tile_07.webp",
-    "tile_10.webp"
+    "tile_07.webp"
    ],
    "top_face": {
     "mean_colours": 20.5,
@@ -6455,8 +6370,7 @@
    },
    "post": true,
    "post_files": [
-    "tile_07.5065528c.webp",
-    "tile_10.5e9f4dd3.webp"
+    "tile_07.5065528c.webp"
    ]
   },
   {
@@ -6505,48 +6419,6 @@
      "misfit": true,
      "squeezed_pct": 1.9,
      "hue_deg": 37.6
-    }
-   }
-  },
-  {
-   "ground": "grass",
-   "flavour": "detail",
-   "seed": 75979,
-   "prompt": "beautiful meadow grass, deep green, sunlit, rich and varied, lots of detail",
-   "palette_top": "#14523b",
-   "tile_id": "dfe50efe-7128-4540-9936-a3303ec42a28",
-   "dir": "tiles/tops/grass/sheet_05_detail_75979",
-   "n_tiles": 3,
-   "tiles": [
-    "tile_07.webp",
-    "tile_08.webp",
-    "tile_09.webp"
-   ],
-   "top_face": {
-    "mean_colours": 17.81,
-    "mean_dominant_share": 0.2411
-   },
-   "post": true,
-   "post_files": [
-    "tile_07.cc2d81a3.webp",
-    "tile_08.bf7e7b8a.webp",
-    "tile_09.d1185a42.webp"
-   ],
-   "misfit_tiles": {
-    "tile_07.webp": {
-     "misfit": true,
-     "squeezed_pct": 0.0,
-     "hue_deg": 46.6
-    },
-    "tile_08.webp": {
-     "misfit": true,
-     "squeezed_pct": 49.0,
-     "hue_deg": 43.8
-    },
-    "tile_09.webp": {
-     "misfit": true,
-     "squeezed_pct": 32.7,
-     "hue_deg": 45.4
     }
    }
   },

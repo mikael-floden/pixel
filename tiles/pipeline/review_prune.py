@@ -24,6 +24,7 @@ import argparse
 import glob
 import json
 import os
+import re
 import subprocess
 import sys
 
@@ -33,6 +34,7 @@ import tombstones  # noqa: E402
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 REPO = os.path.dirname(ROOT)
 MANIFEST = os.path.join(ROOT, "review", "manifest.json")
+SETS_PATH = os.path.join(REPO, "live", "tuning", "base_tile_sets.json")
 FEEDBACK = os.path.join(REPO, "live", "feedback", "tiles.json")
 
 
@@ -47,7 +49,6 @@ def _load(p, default=None):
 def references():
     """name -> text, for files whose mention of a key or path means something draws it."""
     files = {
-        "base_tile_sets": os.path.join(REPO, "live", "tuning", "base_tile_sets.json"),
         "resolve": os.path.join(ROOT, "resolve.json"),
         "plates_index": os.path.join(ROOT, "plates", "index.json"),
         "hard_cells": os.path.join(ROOT, "hard_cells.json"),
@@ -62,12 +63,48 @@ def references():
     for p in sorted(glob.glob(os.path.join(REPO, "games2", "server", "test", "fixtures", "*.json"))):
         files["games2 fixture " + os.path.basename(p)] = p
     out = {n: open(p, errors="ignore").read() for n, p in files.items() if os.path.isfile(p)}
+    out["base_tile_sets"] = base_set_members()
     # top_walls: only the DONOR side (value.wall) is a use of the tile
     donors = {v.get("wall") for v in (_load(os.path.join(REPO, "live", "tuning", "top_walls.json"), {}).get("overrides") or {}).values()
               if isinstance(v, dict)}
     out["top_walls (wall donor)"] = "\n".join(d for d in donors if d)
     return out
 
+
+def base_set_members():
+    """What his base tile sets actually DRAW - member ids only.
+
+    A set also carries a `rejected` list (tiles he threw out OF THAT SET), and reading
+    the file as raw text made that list look like a use: one brown_paving_stone tile was
+    kept alive by the record of his own rejection of it, which is exactly backwards.
+    """
+    try:
+        with open(SETS_PATH) as f:
+            doc = json.load(f)
+    except (OSError, json.JSONDecodeError):
+        return ""
+    out = []
+    for gv in (doc.get("grounds") or doc).values():
+        if not isinstance(gv, dict):
+            continue
+        for s in gv.get("sets") or []:
+            for m in s.get("members") or []:
+                for k in ("tile", "id", "art"):
+                    if isinstance(m.get(k), str):
+                        out.append(m[k])
+    return "\n".join(out)
+
+
+def names_in(text, names):
+    """Which of `names` the text actually USES.
+
+    A match immediately followed by '#' is a VERDICT KEY, not a use - the wiki's
+    feedback keys are `<path or key>#top` / `#wall`. tiles/plates/index.json carries
+    8,499 of them under pool.unresolved_approved_keys, a snapshot of what was approved
+    when the plates were built, and reading that as a reference kept 15 tiles he had
+    since rejected alive on the strength of a stale record of his OWN older verdict.
+    """
+    return [n for n in names if re.search(re.escape(n) + r"(?!#)", text)]
 
 def live_statuses(fb, key):
     """The statuses that still stand for a candidate: its #top and #wall faces, plus the
@@ -98,7 +135,7 @@ def plan(prefix=None):
             if "rejected" not in sts or "approved" in sts:
                 continue
             named = [e["key"]] + [e[f] for f in ("before", "after", "textured") if e.get(f)]
-            hit = sorted(n for n, t in refs.items() if any(s in t for s in named))
+            hit = sorted(n for n, t in refs.items() if names_in(t, named))
             (keep if hit else drop).append((cell, e, hit))
     return man, drop, keep
 
