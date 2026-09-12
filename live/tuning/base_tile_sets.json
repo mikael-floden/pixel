@@ -7,7 +7,7 @@
     "tile_key": "bts1|tile|<set_id>|<x>|<y>",
     "note": "A SET is picked per REGION and a MEMBER per CELL - picking the set per cell would shuffle three different grasses into one meadow and undo the point of grouping them. Both picks must be identical in the game, the wiki preview and the tiles renders or the ground shimmers between reloads; port wiki/lib/basesets.mjs and check it against TEST_VECTORS."
   },
-  "updated_at": "2026-09-12T23:30:41.317Z",
+  "updated_at": "2026-09-12T23:31:18.635Z",
   "grounds": {
     "black_rock": {
       "sets": [
@@ -968,23 +968,6 @@
           ]
         },
         {
-          "id": 2,
-          "name": "Set",
-          "weight": 1,
-          "members": [
-            {
-              "kind": "clean",
-              "weight": 0
-            },
-            {
-              "kind": "tile",
-              "id": "tiles/tops/grey_paving_stone/sheet_04_detail_82570/tile_06.webp",
-              "tile": "tiles/tops/grey_paving_stone/sheet_04_detail_82570/post/tile_06.bcda2472.webp",
-              "weight": 1
-            }
-          ]
-        },
-        {
           "id": 3,
           "name": "Set",
           "weight": 1,
@@ -1057,29 +1040,6 @@
               "id": "tiles/grey_paving_stone__over__grass/4b6eb7e5",
               "tile": "tiles/grey_paving_stone__over__grass/4b6eb7e5",
               "weight": 0.6
-            }
-          ]
-        },
-        {
-          "id": 5,
-          "name": "Set",
-          "weight": 1,
-          "members": [
-            {
-              "kind": "clean",
-              "weight": 0
-            },
-            {
-              "kind": "tile",
-              "id": "tiles/grey_paving_stone__over__brown_paving_stone/0a8e9085",
-              "tile": "tiles/grey_paving_stone__over__brown_paving_stone/0a8e9085",
-              "weight": 1
-            },
-            {
-              "kind": "tile",
-              "id": "tiles/grey_paving_stone__over__brown_paving_stone/d6404111",
-              "tile": "tiles/grey_paving_stone__over__brown_paving_stone/d6404111",
-              "weight": 1
             }
           ]
         },
@@ -1228,7 +1188,7 @@
         {
           "id": 11,
           "name": "Set",
-          "weight": 1,
+          "weight": 3,
           "members": [
             {
               "kind": "clean",
