@@ -122,9 +122,10 @@ secrets; push to `main`, rebase on reject, no PRs unless asked; doc law.
   (`composeworker.ts`), ahead of the camera, with the factory's own
   builders; the main thread only uploads. The sync path is the fallback and
   the tests. Gate: `__ml.composeWorker({audit:true}).audit.diff` = 0.
-- Only the occluders that MEET A BODY are submitted (the proximity cull) and
-  the display list is insertion-sorted; an occluder far from every body is
-  the ground's own pixels drawn twice. Gate `__ml.occNear().wrongHidden` = 0.
+- The occluder set is drawn WHOLE (view cull only). Never submit a subset
+  chosen per image: a shown course whose front cap is hidden paints over
+  the cap's ground (the proximity cull, rejected on his screenshot). The
+  display list is insertion-sorted.
 - Scenery is sized against the 88-px person this game draws
   (`sceneryDrawnPx`); the bbox doc is gated by `check-scenery-bbox.mjs`.
 - A hitbox is an ellipse OR a ground rect drawn in perspective — port the

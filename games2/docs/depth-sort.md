@@ -18,28 +18,24 @@ How bodies and pieces interleave with terrain columns: the occluder set, the pur
   work and only removes CPU bursts; the beacon's `gapIdle` is the GPU's
   bill. His verdict: "the game is still totally broken... only if we get
   super smooth and high fps" — not worth a month of bugs for no gain.
-- **THE PROXIMITY CULL: ONLY THE OCCLUDERS THAT MEET A BODY ARE SUBMITTED**
-  (`cullOccludersNear`, `occNearIndex`, 2026-09-12). An occluder sprite is
-  the ground texture's own pixels drawn a second time at the same spot so a
-  body can be drawn between them; where no body's box meets it, submitting
-  it is the identity — the off-view cull's argument, one step further. Each
-  frame, after the body loops (before them it tested last frame's boxes, and
-  a starved frame walked a body past the pad), every avatar, monster, NPC and
-  drop with its shadow and every scenery image grows by 32 px and visits a
-  128-px grid of the set, rebuilt with the set every OCC_STEP; the occluders
-  it meets inside the view are shown, the rest carry the camera filter like
-  an off-view one. Incremental: last frame's shown set minus this frame's is
-  hidden, and a rebuild or a switch marks the set dirty so the next frame
-  hides every member once (`occImage` recycles images, so a filter outlives
-  its set). Nothing else changes — `occluderMeta`, the cover index and the
-  depth rule read the set, not the filter. Measured on his phone before it:
-  1.6-2.4k occluder submits a frame, `render` 2.8-7.6 ms, `occCull` 0.9-2.2
-  and `depthSort` 0.85-2.1 for 3.5-8.8k occluders, the steady frame 14.6-21.8
-  ms of CPU that made the overworld feel laggy; headless the frame submits
-  ~320 of ~1,500. Gate: `__ml.occNear()` audits every hidden in-view
-  occluder against every drawn body's real `getBounds()` — `wrongHidden`
-  must be 0; `__ml.occNear(false)` is the A/B. Beacon: `counts.occShown`,
-  `counts.occBodies`.
+- **REJECTED 2026-09-12: THE PROXIMITY CULL — submitting only the occluders
+  that meet a body** (`cullOccludersNear`, kept OFF as the A/B for a
+  front-closed version). The premise — an occluder far from every body is
+  the ground's own pixels drawn twice, so skipping it is the identity — is
+  false, because the set is a painter-ordered STACK: a course that is shown
+  while the cap in front of it is hidden paints over the cap's ground pixels
+  (his screenshot at 258,217: a dark band along the cliff top, "the Z-order
+  looks fucked up"). A subset chosen per image is not a valid picture; only
+  the whole set is, or a subset closed under "everything in front that
+  overlaps a shown image", which fans out over a plateau. The view cull is
+  consistent because visibility is per pixel: an on-screen pixel's cover is
+  on screen too. It DID buy what it promised on his phone (render 6.7 →
+  3.9 ms, cull 2.1 → 1.1, sort 2.1 → 1.5 in the mountain window), which is
+  the size of the prize for the real way out: draw a covered body through
+  its cover surface (E, the frame minus every covering occluder, which the
+  cover pass already rasterises for the lit copy) and drop the occluder
+  sprites from the display list altogether — the retake's goal without its
+  per-pixel GPU walk.
 - **THE DEPTH SORT IS AN INSERTION SORT** (`installDepthSort`, 2026-09-12).
   Phaser re-runs a merge sort of the whole display list whenever any depth
   changed — every frame a body moves — 0.85-2.1 ms on his phone over 4.6-9.7k

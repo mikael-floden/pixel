@@ -21402,7 +21402,15 @@ export class WorldScene extends Phaser.Scene {
   }
   /* THE PROXIMITY CULL's state — see cullOccludersNear. `occNearOn` is the
    * dev A/B (`__ml.occNear(false)` submits every in-view occluder as before). */
-  private occNearOn = true;
+  /* OFF — REJECTED 2026-09-12 (maintainer, with a screenshot of the cliff
+   * top at 258,217: "the tiles around the player look super weird and
+   * buggy... The Z-order looks fucked up"). The premise was wrong: an
+   * occluder far from every body is NOT the identity, because the set is a
+   * painter-ordered stack. A course that is shown while the cap in front of
+   * it is hidden paints over the cap's ground pixels — a subset chosen per
+   * image is not a valid picture; only the whole set (or a front-closed one)
+   * is. Kept as the A/B for a closure version; `docs/depth-sort.md`. */
+  private occNearOn = false;
   private occNearDirty = true;
   private occNearGrid = new Map<number, Phaser.GameObjects.Image[]>();
   private occNearShown: Phaser.GameObjects.Image[] = [];
