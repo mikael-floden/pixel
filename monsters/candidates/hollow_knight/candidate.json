@@ -1573,6 +1573,387 @@
         "west": "hollow_knight/animations/attack_v3__west.webp",
         "north-west": "hollow_knight/animations/attack_v3__north-west.webp"
       }
+    },
+    "die_v1": {
+      "directions": {
+        "south": {
+          "status": "warn",
+          "step_mean": 0.3457,
+          "step_max": 0.6182,
+          "drift": 41.89,
+          "loop": 1.1992,
+          "loop_ratio": 3.47,
+          "travel": 3.81,
+          "pin": 1.0,
+          "pad": 10,
+          "flash": -0.002,
+          "peak": null,
+          "reach": null,
+          "turn": null,
+          "end_area": 0.426,
+          "canvas": [
+            132,
+            132
+          ],
+          "reasons": [
+            "drifts 41.9 px — eyeball it",
+            "canvas grown by 10 px a side to hold the motion"
+          ],
+          "sub": "675f0392-9cf6-4b5e-92b2-e8875c736c2d",
+          "group": "23dddc51-db34-447a-bb2f-bbc61a422739",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "action": "Death - The green witchfire goes out and the empty armor collapses into a heap of plates on the ground, then fades away",
+          "intensity": 0,
+          "rolls": 1,
+          "frames": 7,
+          "rung": 0,
+          "unwrapped": null,
+          "tries": 1,
+          "generated_at": "2026-09-12T23:09:52+00:00"
+        },
+        "south-east": {
+          "status": "pass",
+          "step_mean": 0.2841,
+          "step_max": 0.6223,
+          "drift": 36.56,
+          "loop": 1.0882,
+          "loop_ratio": 3.83,
+          "travel": 3.56,
+          "pin": 1.0,
+          "pad": 4,
+          "flash": 0.0,
+          "peak": null,
+          "reach": null,
+          "turn": null,
+          "end_area": 0.508,
+          "canvas": [
+            120,
+            120
+          ],
+          "reasons": [
+            "canvas grown by 4 px a side to hold the motion"
+          ],
+          "sub": "71497341-8666-4524-977e-2658aa357e19",
+          "group": "2ec193ca-b103-4502-8138-6199587a0742",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "action": "Death - The green witchfire goes out and the empty armor collapses into a heap of plates on the ground, then fades away",
+          "intensity": 0,
+          "rolls": 1,
+          "frames": 7,
+          "rung": 0,
+          "unwrapped": null,
+          "tries": 1,
+          "generated_at": "2026-09-12T23:09:52+00:00"
+        },
+        "east": {
+          "status": "pass",
+          "step_mean": 0.3626,
+          "step_max": 0.6869,
+          "drift": 34.07,
+          "loop": 1.148,
+          "loop_ratio": 3.17,
+          "travel": 14.3,
+          "pin": 1.0,
+          "pad": 4,
+          "flash": 0.003,
+          "peak": null,
+          "reach": null,
+          "turn": null,
+          "end_area": 0.612,
+          "canvas": [
+            120,
+            120
+          ],
+          "reasons": [
+            "canvas grown by 4 px a side to hold the motion"
+          ],
+          "sub": "89f58ad3-0720-4829-8024-bb963494e734",
+          "group": "a204138b-6099-4ecd-b3d3-7d2638a66f20",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "action": "Death - The green witchfire goes out and the empty armor collapses into a heap of plates on the ground, then fades away",
+          "intensity": 0,
+          "rolls": 1,
+          "frames": 7,
+          "rung": 0,
+          "unwrapped": null,
+          "tries": 1,
+          "generated_at": "2026-09-12T23:09:54+00:00"
+        },
+        "north-east": {
+          "status": "pass",
+          "step_mean": 0.3219,
+          "step_max": 0.8702,
+          "drift": 34.25,
+          "loop": 1.0809,
+          "loop_ratio": 3.36,
+          "travel": 4.76,
+          "pin": 1.0,
+          "pad": 6,
+          "flash": 0.0,
+          "peak": null,
+          "reach": null,
+          "turn": null,
+          "end_area": 0.586,
+          "canvas": [
+            124,
+            124
+          ],
+          "reasons": [
+            "canvas grown by 6 px a side to hold the motion"
+          ],
+          "sub": "b0fca2c6-8646-423a-a441-41d04d7ed6ef",
+          "group": "0bd5c202-3baf-47c1-ab1a-261d1fe96b5e",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "action": "Death - The green witchfire goes out and the empty armor collapses into a heap of plates on the ground, then fades away",
+          "intensity": 0,
+          "rolls": 1,
+          "frames": 7,
+          "rung": 0,
+          "unwrapped": null,
+          "tries": 1,
+          "generated_at": "2026-09-12T23:09:55+00:00"
+        },
+        "north": {
+          "status": "pass",
+          "step_mean": 0.3136,
+          "step_max": 0.8077,
+          "drift": 35.89,
+          "loop": 1.074,
+          "loop_ratio": 3.42,
+          "travel": 10.98,
+          "pin": 1.0,
+          "pad": 3,
+          "flash": -0.001,
+          "peak": null,
+          "reach": null,
+          "turn": null,
+          "end_area": 0.495,
+          "canvas": [
+            118,
+            118
+          ],
+          "reasons": [
+            "canvas grown by 3 px a side to hold the motion"
+          ],
+          "sub": "8fa624c4-25a7-47dc-9578-ec110caa5d85",
+          "group": "89855579-4ff0-42c6-b1d3-3e1b3f14b0de",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "action": "Death - The green witchfire goes out and the empty armor collapses into a heap of plates on the ground, then fades away",
+          "intensity": 0,
+          "rolls": 1,
+          "frames": 7,
+          "rung": 0,
+          "unwrapped": null,
+          "tries": 1,
+          "generated_at": "2026-09-12T23:09:55+00:00"
+        },
+        "south-west": {
+          "status": "pass",
+          "step_mean": 0.2841,
+          "step_max": 0.6223,
+          "drift": 36.56,
+          "loop": 1.0882,
+          "loop_ratio": 3.83,
+          "travel": 3.56,
+          "pin": 1.0,
+          "pad": 4,
+          "flash": 0.0,
+          "peak": null,
+          "reach": null,
+          "turn": null,
+          "end_area": 0.508,
+          "canvas": [
+            120,
+            120
+          ],
+          "reasons": [
+            "canvas grown by 4 px a side to hold the motion"
+          ],
+          "sub": "71497341-8666-4524-977e-2658aa357e19",
+          "group": "2ec193ca-b103-4502-8138-6199587a0742",
+          "takes": 1,
+          "version": 1,
+          "mirrored": true,
+          "action": "Death - The green witchfire goes out and the empty armor collapses into a heap of plates on the ground, then fades away",
+          "intensity": 0,
+          "rolls": 1,
+          "frames": 7,
+          "rung": 0,
+          "unwrapped": null,
+          "tries": 1,
+          "generated_at": "2026-09-12T23:09:52+00:00",
+          "source": "south-east"
+        },
+        "west": {
+          "status": "pass",
+          "step_mean": 0.3626,
+          "step_max": 0.6869,
+          "drift": 34.07,
+          "loop": 1.148,
+          "loop_ratio": 3.17,
+          "travel": 14.3,
+          "pin": 1.0,
+          "pad": 4,
+          "flash": 0.003,
+          "peak": null,
+          "reach": null,
+          "turn": null,
+          "end_area": 0.612,
+          "canvas": [
+            120,
+            120
+          ],
+          "reasons": [
+            "canvas grown by 4 px a side to hold the motion"
+          ],
+          "sub": "89f58ad3-0720-4829-8024-bb963494e734",
+          "group": "a204138b-6099-4ecd-b3d3-7d2638a66f20",
+          "takes": 1,
+          "version": 1,
+          "mirrored": true,
+          "action": "Death - The green witchfire goes out and the empty armor collapses into a heap of plates on the ground, then fades away",
+          "intensity": 0,
+          "rolls": 1,
+          "frames": 7,
+          "rung": 0,
+          "unwrapped": null,
+          "tries": 1,
+          "generated_at": "2026-09-12T23:09:54+00:00",
+          "source": "east"
+        },
+        "north-west": {
+          "status": "pass",
+          "step_mean": 0.3219,
+          "step_max": 0.8702,
+          "drift": 34.25,
+          "loop": 1.0809,
+          "loop_ratio": 3.36,
+          "travel": 4.76,
+          "pin": 1.0,
+          "pad": 6,
+          "flash": 0.0,
+          "peak": null,
+          "reach": null,
+          "turn": null,
+          "end_area": 0.586,
+          "canvas": [
+            124,
+            124
+          ],
+          "reasons": [
+            "canvas grown by 6 px a side to hold the motion"
+          ],
+          "sub": "b0fca2c6-8646-423a-a441-41d04d7ed6ef",
+          "group": "0bd5c202-3baf-47c1-ab1a-261d1fe96b5e",
+          "takes": 1,
+          "version": 1,
+          "mirrored": true,
+          "action": "Death - The green witchfire goes out and the empty armor collapses into a heap of plates on the ground, then fades away",
+          "intensity": 0,
+          "rolls": 1,
+          "frames": 7,
+          "rung": 0,
+          "unwrapped": null,
+          "tries": 1,
+          "generated_at": "2026-09-12T23:09:55+00:00",
+          "source": "north-east"
+        }
+      },
+      "action": "Death - The green witchfire goes out and the empty armor collapses into a heap of plates on the ground, then fades away",
+      "frame_paths": {
+        "south": [
+          "hollow_knight/animations/die_v1/south/00.webp",
+          "hollow_knight/animations/die_v1/south/01.webp",
+          "hollow_knight/animations/die_v1/south/02.webp",
+          "hollow_knight/animations/die_v1/south/03.webp",
+          "hollow_knight/animations/die_v1/south/04.webp",
+          "hollow_knight/animations/die_v1/south/05.webp",
+          "hollow_knight/animations/die_v1/south/06.webp"
+        ],
+        "south-east": [
+          "hollow_knight/animations/die_v1/south-east/00.webp",
+          "hollow_knight/animations/die_v1/south-east/01.webp",
+          "hollow_knight/animations/die_v1/south-east/02.webp",
+          "hollow_knight/animations/die_v1/south-east/03.webp",
+          "hollow_knight/animations/die_v1/south-east/04.webp",
+          "hollow_knight/animations/die_v1/south-east/05.webp",
+          "hollow_knight/animations/die_v1/south-east/06.webp"
+        ],
+        "east": [
+          "hollow_knight/animations/die_v1/east/00.webp",
+          "hollow_knight/animations/die_v1/east/01.webp",
+          "hollow_knight/animations/die_v1/east/02.webp",
+          "hollow_knight/animations/die_v1/east/03.webp",
+          "hollow_knight/animations/die_v1/east/04.webp",
+          "hollow_knight/animations/die_v1/east/05.webp",
+          "hollow_knight/animations/die_v1/east/06.webp"
+        ],
+        "north-east": [
+          "hollow_knight/animations/die_v1/north-east/00.webp",
+          "hollow_knight/animations/die_v1/north-east/01.webp",
+          "hollow_knight/animations/die_v1/north-east/02.webp",
+          "hollow_knight/animations/die_v1/north-east/03.webp",
+          "hollow_knight/animations/die_v1/north-east/04.webp",
+          "hollow_knight/animations/die_v1/north-east/05.webp",
+          "hollow_knight/animations/die_v1/north-east/06.webp"
+        ],
+        "north": [
+          "hollow_knight/animations/die_v1/north/00.webp",
+          "hollow_knight/animations/die_v1/north/01.webp",
+          "hollow_knight/animations/die_v1/north/02.webp",
+          "hollow_knight/animations/die_v1/north/03.webp",
+          "hollow_knight/animations/die_v1/north/04.webp",
+          "hollow_knight/animations/die_v1/north/05.webp",
+          "hollow_knight/animations/die_v1/north/06.webp"
+        ],
+        "south-west": [
+          "hollow_knight/animations/die_v1/south-west/00.webp",
+          "hollow_knight/animations/die_v1/south-west/01.webp",
+          "hollow_knight/animations/die_v1/south-west/02.webp",
+          "hollow_knight/animations/die_v1/south-west/03.webp",
+          "hollow_knight/animations/die_v1/south-west/04.webp",
+          "hollow_knight/animations/die_v1/south-west/05.webp",
+          "hollow_knight/animations/die_v1/south-west/06.webp"
+        ],
+        "west": [
+          "hollow_knight/animations/die_v1/west/00.webp",
+          "hollow_knight/animations/die_v1/west/01.webp",
+          "hollow_knight/animations/die_v1/west/02.webp",
+          "hollow_knight/animations/die_v1/west/03.webp",
+          "hollow_knight/animations/die_v1/west/04.webp",
+          "hollow_knight/animations/die_v1/west/05.webp",
+          "hollow_knight/animations/die_v1/west/06.webp"
+        ],
+        "north-west": [
+          "hollow_knight/animations/die_v1/north-west/00.webp",
+          "hollow_knight/animations/die_v1/north-west/01.webp",
+          "hollow_knight/animations/die_v1/north-west/02.webp",
+          "hollow_knight/animations/die_v1/north-west/03.webp",
+          "hollow_knight/animations/die_v1/north-west/04.webp",
+          "hollow_knight/animations/die_v1/north-west/05.webp",
+          "hollow_knight/animations/die_v1/north-west/06.webp"
+        ]
+      },
+      "strips": {
+        "south": "hollow_knight/animations/die_v1__south.webp",
+        "south-east": "hollow_knight/animations/die_v1__south-east.webp",
+        "east": "hollow_knight/animations/die_v1__east.webp",
+        "north-east": "hollow_knight/animations/die_v1__north-east.webp",
+        "north": "hollow_knight/animations/die_v1__north.webp",
+        "south-west": "hollow_knight/animations/die_v1__south-west.webp",
+        "west": "hollow_knight/animations/die_v1__west.webp",
+        "north-west": "hollow_knight/animations/die_v1__north-west.webp"
+      }
     }
   }
 }

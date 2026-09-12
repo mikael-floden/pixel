@@ -1572,6 +1572,387 @@
         "east": "ember_king/animations/attack_v3__east.webp",
         "west": "ember_king/animations/attack_v3__west.webp"
       }
+    },
+    "die_v1": {
+      "directions": {
+        "south": {
+          "status": "warn",
+          "step_mean": 0.1751,
+          "step_max": 0.2845,
+          "drift": 20.9,
+          "loop": 0.3156,
+          "loop_ratio": 1.8,
+          "travel": 0.45,
+          "pin": 1.0,
+          "pad": 6,
+          "flash": 0.074,
+          "peak": null,
+          "reach": null,
+          "turn": null,
+          "end_area": 0.858,
+          "canvas": [
+            188,
+            188
+          ],
+          "reasons": [
+            "barely falls: last vs first 0.32 — eyeball it",
+            "canvas grown by 6 px a side to hold the motion"
+          ],
+          "sub": "4bc52aaf-8268-4b9f-99d8-6512c7f3ea68",
+          "group": "a28e90fb-9e9f-4789-95e7-bcb4c86cd874",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "action": "Death - Sinks to its knees, the magma cracks and flames go dark, then it crumbles down onto the ground and fades away",
+          "intensity": 0,
+          "rolls": 1,
+          "frames": 7,
+          "rung": 0,
+          "unwrapped": null,
+          "tries": 1,
+          "generated_at": "2026-09-12T23:09:07+00:00"
+        },
+        "south-east": {
+          "status": "pass",
+          "step_mean": 0.1492,
+          "step_max": 0.1833,
+          "drift": 22.72,
+          "loop": 0.5293,
+          "loop_ratio": 3.55,
+          "travel": 2.23,
+          "pin": 1.0,
+          "pad": 4,
+          "flash": 0.218,
+          "peak": null,
+          "reach": null,
+          "turn": null,
+          "end_area": 0.879,
+          "canvas": [
+            184,
+            184
+          ],
+          "reasons": [
+            "canvas grown by 4 px a side to hold the motion"
+          ],
+          "sub": "f1c36af5-65a7-4c47-a4f7-bd4dc760035c",
+          "group": "58b84121-2ae7-441c-8575-58d1285fe5a6",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "action": "Death - Sinks to its knees, the magma cracks and flames go dark, then it crumbles down onto the ground and fades away",
+          "intensity": 0,
+          "rolls": 1,
+          "frames": 7,
+          "rung": 0,
+          "unwrapped": null,
+          "tries": 1,
+          "generated_at": "2026-09-12T23:09:07+00:00"
+        },
+        "east": {
+          "status": "pass",
+          "step_mean": 0.1965,
+          "step_max": 0.2846,
+          "drift": 24.89,
+          "loop": 0.5108,
+          "loop_ratio": 2.6,
+          "travel": 7.26,
+          "pin": 1.0,
+          "pad": 2,
+          "flash": 0.146,
+          "peak": null,
+          "reach": null,
+          "turn": null,
+          "end_area": 0.924,
+          "canvas": [
+            180,
+            180
+          ],
+          "reasons": [
+            "canvas grown by 2 px a side to hold the motion"
+          ],
+          "sub": "62c27ef9-44fe-40ba-8d0f-9489b2622e9a",
+          "group": "c67feae3-4631-41a6-b407-4a5918bccdff",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "action": "Death - Sinks to its knees, the magma cracks and flames go dark, then it crumbles down onto the ground and fades away",
+          "intensity": 0,
+          "rolls": 1,
+          "frames": 7,
+          "rung": 0,
+          "unwrapped": null,
+          "tries": 1,
+          "generated_at": "2026-09-12T23:09:08+00:00"
+        },
+        "north-east": {
+          "status": "pass",
+          "step_mean": 0.1952,
+          "step_max": 0.3043,
+          "drift": 23.39,
+          "loop": 0.5668,
+          "loop_ratio": 2.9,
+          "travel": 4.64,
+          "pin": 1.0,
+          "pad": 1,
+          "flash": 0.301,
+          "peak": null,
+          "reach": null,
+          "turn": null,
+          "end_area": 1.111,
+          "canvas": [
+            178,
+            178
+          ],
+          "reasons": [
+            "canvas grown by 1 px a side to hold the motion"
+          ],
+          "sub": "c3cfb70d-d119-46d2-8694-ec7a5f4f918a",
+          "group": "c360a9fd-73c1-4edb-a5cf-e51b67125dd3",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "action": "Death - Sinks to its knees, the magma cracks and flames go dark, then it crumbles down onto the ground and fades away",
+          "intensity": 0,
+          "rolls": 1,
+          "frames": 7,
+          "rung": 0,
+          "unwrapped": null,
+          "tries": 1,
+          "generated_at": "2026-09-12T23:09:08+00:00"
+        },
+        "north": {
+          "status": "pass",
+          "step_mean": 0.1778,
+          "step_max": 0.2355,
+          "drift": 20.02,
+          "loop": 0.5669,
+          "loop_ratio": 3.19,
+          "travel": 0.72,
+          "pin": 1.0,
+          "pad": 19,
+          "flash": 0.252,
+          "peak": null,
+          "reach": null,
+          "turn": null,
+          "end_area": 0.917,
+          "canvas": [
+            214,
+            214
+          ],
+          "reasons": [
+            "canvas grown by 19 px a side to hold the motion"
+          ],
+          "sub": "58895191-1824-4faa-88cd-bdf632e482e9",
+          "group": "644f2237-bf0a-479d-a7c3-22697c8573f4",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "action": "Death - Sinks to its knees, the magma cracks and flames go dark, then it crumbles down onto the ground and fades away",
+          "intensity": 0,
+          "rolls": 1,
+          "frames": 7,
+          "rung": 0,
+          "unwrapped": null,
+          "tries": 1,
+          "generated_at": "2026-09-12T23:09:09+00:00"
+        },
+        "south-west": {
+          "status": "pass",
+          "step_mean": 0.1492,
+          "step_max": 0.1833,
+          "drift": 22.72,
+          "loop": 0.5293,
+          "loop_ratio": 3.55,
+          "travel": 2.23,
+          "pin": 1.0,
+          "pad": 4,
+          "flash": 0.218,
+          "peak": null,
+          "reach": null,
+          "turn": null,
+          "end_area": 0.879,
+          "canvas": [
+            184,
+            184
+          ],
+          "reasons": [
+            "canvas grown by 4 px a side to hold the motion"
+          ],
+          "sub": "f1c36af5-65a7-4c47-a4f7-bd4dc760035c",
+          "group": "58b84121-2ae7-441c-8575-58d1285fe5a6",
+          "takes": 1,
+          "version": 1,
+          "mirrored": true,
+          "action": "Death - Sinks to its knees, the magma cracks and flames go dark, then it crumbles down onto the ground and fades away",
+          "intensity": 0,
+          "rolls": 1,
+          "frames": 7,
+          "rung": 0,
+          "unwrapped": null,
+          "tries": 1,
+          "generated_at": "2026-09-12T23:09:07+00:00",
+          "source": "south-east"
+        },
+        "west": {
+          "status": "pass",
+          "step_mean": 0.1965,
+          "step_max": 0.2846,
+          "drift": 24.89,
+          "loop": 0.5108,
+          "loop_ratio": 2.6,
+          "travel": 7.26,
+          "pin": 1.0,
+          "pad": 2,
+          "flash": 0.146,
+          "peak": null,
+          "reach": null,
+          "turn": null,
+          "end_area": 0.924,
+          "canvas": [
+            180,
+            180
+          ],
+          "reasons": [
+            "canvas grown by 2 px a side to hold the motion"
+          ],
+          "sub": "62c27ef9-44fe-40ba-8d0f-9489b2622e9a",
+          "group": "c67feae3-4631-41a6-b407-4a5918bccdff",
+          "takes": 1,
+          "version": 1,
+          "mirrored": true,
+          "action": "Death - Sinks to its knees, the magma cracks and flames go dark, then it crumbles down onto the ground and fades away",
+          "intensity": 0,
+          "rolls": 1,
+          "frames": 7,
+          "rung": 0,
+          "unwrapped": null,
+          "tries": 1,
+          "generated_at": "2026-09-12T23:09:08+00:00",
+          "source": "east"
+        },
+        "north-west": {
+          "status": "pass",
+          "step_mean": 0.1952,
+          "step_max": 0.3043,
+          "drift": 23.39,
+          "loop": 0.5668,
+          "loop_ratio": 2.9,
+          "travel": 4.64,
+          "pin": 1.0,
+          "pad": 1,
+          "flash": 0.301,
+          "peak": null,
+          "reach": null,
+          "turn": null,
+          "end_area": 1.111,
+          "canvas": [
+            178,
+            178
+          ],
+          "reasons": [
+            "canvas grown by 1 px a side to hold the motion"
+          ],
+          "sub": "c3cfb70d-d119-46d2-8694-ec7a5f4f918a",
+          "group": "c360a9fd-73c1-4edb-a5cf-e51b67125dd3",
+          "takes": 1,
+          "version": 1,
+          "mirrored": true,
+          "action": "Death - Sinks to its knees, the magma cracks and flames go dark, then it crumbles down onto the ground and fades away",
+          "intensity": 0,
+          "rolls": 1,
+          "frames": 7,
+          "rung": 0,
+          "unwrapped": null,
+          "tries": 1,
+          "generated_at": "2026-09-12T23:09:08+00:00",
+          "source": "north-east"
+        }
+      },
+      "action": "Death - Sinks to its knees, the magma cracks and flames go dark, then it crumbles down onto the ground and fades away",
+      "frame_paths": {
+        "south": [
+          "ember_king/animations/die_v1/south/00.webp",
+          "ember_king/animations/die_v1/south/01.webp",
+          "ember_king/animations/die_v1/south/02.webp",
+          "ember_king/animations/die_v1/south/03.webp",
+          "ember_king/animations/die_v1/south/04.webp",
+          "ember_king/animations/die_v1/south/05.webp",
+          "ember_king/animations/die_v1/south/06.webp"
+        ],
+        "south-east": [
+          "ember_king/animations/die_v1/south-east/00.webp",
+          "ember_king/animations/die_v1/south-east/01.webp",
+          "ember_king/animations/die_v1/south-east/02.webp",
+          "ember_king/animations/die_v1/south-east/03.webp",
+          "ember_king/animations/die_v1/south-east/04.webp",
+          "ember_king/animations/die_v1/south-east/05.webp",
+          "ember_king/animations/die_v1/south-east/06.webp"
+        ],
+        "east": [
+          "ember_king/animations/die_v1/east/00.webp",
+          "ember_king/animations/die_v1/east/01.webp",
+          "ember_king/animations/die_v1/east/02.webp",
+          "ember_king/animations/die_v1/east/03.webp",
+          "ember_king/animations/die_v1/east/04.webp",
+          "ember_king/animations/die_v1/east/05.webp",
+          "ember_king/animations/die_v1/east/06.webp"
+        ],
+        "north-east": [
+          "ember_king/animations/die_v1/north-east/00.webp",
+          "ember_king/animations/die_v1/north-east/01.webp",
+          "ember_king/animations/die_v1/north-east/02.webp",
+          "ember_king/animations/die_v1/north-east/03.webp",
+          "ember_king/animations/die_v1/north-east/04.webp",
+          "ember_king/animations/die_v1/north-east/05.webp",
+          "ember_king/animations/die_v1/north-east/06.webp"
+        ],
+        "north": [
+          "ember_king/animations/die_v1/north/00.webp",
+          "ember_king/animations/die_v1/north/01.webp",
+          "ember_king/animations/die_v1/north/02.webp",
+          "ember_king/animations/die_v1/north/03.webp",
+          "ember_king/animations/die_v1/north/04.webp",
+          "ember_king/animations/die_v1/north/05.webp",
+          "ember_king/animations/die_v1/north/06.webp"
+        ],
+        "south-west": [
+          "ember_king/animations/die_v1/south-west/00.webp",
+          "ember_king/animations/die_v1/south-west/01.webp",
+          "ember_king/animations/die_v1/south-west/02.webp",
+          "ember_king/animations/die_v1/south-west/03.webp",
+          "ember_king/animations/die_v1/south-west/04.webp",
+          "ember_king/animations/die_v1/south-west/05.webp",
+          "ember_king/animations/die_v1/south-west/06.webp"
+        ],
+        "west": [
+          "ember_king/animations/die_v1/west/00.webp",
+          "ember_king/animations/die_v1/west/01.webp",
+          "ember_king/animations/die_v1/west/02.webp",
+          "ember_king/animations/die_v1/west/03.webp",
+          "ember_king/animations/die_v1/west/04.webp",
+          "ember_king/animations/die_v1/west/05.webp",
+          "ember_king/animations/die_v1/west/06.webp"
+        ],
+        "north-west": [
+          "ember_king/animations/die_v1/north-west/00.webp",
+          "ember_king/animations/die_v1/north-west/01.webp",
+          "ember_king/animations/die_v1/north-west/02.webp",
+          "ember_king/animations/die_v1/north-west/03.webp",
+          "ember_king/animations/die_v1/north-west/04.webp",
+          "ember_king/animations/die_v1/north-west/05.webp",
+          "ember_king/animations/die_v1/north-west/06.webp"
+        ]
+      },
+      "strips": {
+        "south": "ember_king/animations/die_v1__south.webp",
+        "south-east": "ember_king/animations/die_v1__south-east.webp",
+        "east": "ember_king/animations/die_v1__east.webp",
+        "north-east": "ember_king/animations/die_v1__north-east.webp",
+        "north": "ember_king/animations/die_v1__north.webp",
+        "south-west": "ember_king/animations/die_v1__south-west.webp",
+        "west": "ember_king/animations/die_v1__west.webp",
+        "north-west": "ember_king/animations/die_v1__north-west.webp"
+      }
     }
   }
 }
