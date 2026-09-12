@@ -1,8 +1,8 @@
 {
   "domain": "games-assistant",
-  "updated_at": "2026-09-12T23:01:04+00:00",
+  "updated_at": "2026-09-12T23:05:29+00:00",
   "health": "running",
-  "current": "THE ROOF THAT WENT CLEAN (maintainer 2026-09-12, screenshot at the spawn: 'Why is the roof-top clean single color and not a base tile set?'): a base-set member now leaves its set only on his verdict on THE TILE (pair key or raw path), never on its `#top` detail verdict. Files: client/src/tiles3.ts (memberRejected only: the probe list and its comment), server/test/tiles3members.test.ts (new), docs/tiles3-rendering.md (one bullet before Anti-tiling), games2/CLAUDE.md (one law line; a date dropped from my own scenery-cover phrase to stay under 20 KB). NEXT: water runs up a stair (maps2 09-11, the maintainer's step at 277,269) \u2014 the liquid-corner amendment in tiles3 boundaryAt, so maps2's fixture regen can cover both rules at once.",
+  "current": "WATER LIES FLAT (maps2's relay of the maintainer 2026-09-11, the shore step at 277,269: 'The ground on that stair has fucking water on it!'): in tiles3 boundaryAt a LIQUID corner votes its own ground only when its level equals the drawing cell's; a land corner keeps the one-storey vote. render3 already carries it (maps2 2026-09-11). FILES: games2/client/src/tiles3.ts (boundaryAt's corner vote, one line, and BOUNDARY_STEP's doc comment), games2/server/test/tiles3liquid.test.ts (new), games2/docs/tiles3-rendering.md (the boundary phrase of the rule-set bullet), games2/CLAUDE.md (one phrase on the transition law line). SHIPPED before this: a0cfaec78 \u2014 the roof that went clean (tiles3.ts memberRejected, tiles3members.test.ts, docs/tiles3-rendering.md, CLAUDE.md); those files are free again.",
   "progress": {
     "units_shipped": 6
   },
