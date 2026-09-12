@@ -29,11 +29,13 @@ semantics only — see world3.py):
     edge_ground, never by area majority; rejected tiles are not candidates
     and his ratings weight the rest; a SCATTERED event over a real Chebyshev
     distance band, never a coat of one tile.
-  * details: HIS 478 '#top' APPROVALS. The wiki's roof glyph is "rating the
-    TOP as a once-in-a-while ground detail", and a tile rejected AS A PAIR
-    can still be a top-approved detail — the two reviews are independent.
-    Drawn at DETAIL_FREQ from the `textured` pass and conformed, so a
-    detail's foreign lava/ice/sand wall can never leak into a field.
+  * details: his '#top' approvals on the x-over-y candidates, THEN his detail
+    library (tiles/tops/index.json, flavour "detail", `#top` approved, the
+    post file by stem) — the game's pool, in the game's order. The wiki's
+    roof glyph is "rating the TOP as a once-in-a-while ground detail", and a
+    tile rejected AS A PAIR can still be a top-approved detail — the two
+    reviews are independent. Rolled at DETAIL_FREQ per cell and conformed,
+    so a detail's foreign lava/ice/sand wall can never leak into a field.
   * slopes: tiles3/slopes@1 — a Wang set on ELEVATION (bit = that corner is
     raised) in the same 64x46 frame as a plate. A cell takes the graded tile
     when its OWN ground rises beside it. Every published set is a 4px
@@ -326,8 +328,9 @@ except Exception:
 
 
 def detail_pool(ground):
-    """THE MAINTAINER'S ONCE-IN-A-WHILE GROUND DETAILS — his 478 '#top'
-    approvals, which nothing had ever drawn.
+    """THE MAINTAINER'S ONCE-IN-A-WHILE GROUND DETAILS — his '#top' approvals
+    on the x-over-y candidates, then his detail LIBRARY (tiles/tops, 2,549
+    approved of 9,840 bought for exactly this placement, 2026-09-12).
 
     The wiki states the contract in his own words (wiki/site/wiki.js:5896):
     "other categories can still have a chance to once in a while be in the
@@ -358,6 +361,26 @@ def detail_pool(ground):
             rel = c.get("textured") or c.get("before") or c.get("file")
             if rel and os.path.isfile(os.path.join(REPO, rel)):
                 out.append(conformed_plate(rel, ground))
+    # AND HIS DETAIL LIBRARY (tiles/tops/index.json; tiles agent 2026-09-12,
+    # the game's rule since games2 505a723a3): a sheet with flavour "detail",
+    # a tile whose <dir>/<tile>#top verdict is approved, drawn as its POST
+    # file matched by stem - never a constructed name. AFTER the x-over-y
+    # approvals and in index order, so the per-cell roll lands on the same
+    # tile here and in the game. No existence check on purpose: the index is
+    # gated to 0 dangling files, and a miss must be loud rather than a
+    # shorter pool that shifts every index after it.
+    for sh in TOPS.get("sheets", []):
+        if sh.get("ground") != ground or sh.get("flavour") != "detail":
+            continue
+        tiles, post = sh.get("tiles") or [], sh.get("post_files") or []
+        for i, t in enumerate(tiles):
+            if FB.get(f"{sh['dir']}/{t}#top", {}).get("status") != "approved":
+                continue
+            stem = t.rsplit(".", 1)[0]
+            f = next((q for q in post if q.startswith(stem + ".")),
+                     post[i] if i < len(post) else None)
+            if f:
+                out.append(conformed_plate(f"{sh['dir']}/post/{f}", ground))
     _set_cache[key] = out
     return out
 
@@ -466,6 +489,10 @@ INDOOR_GROUNDS = {"parquet_floor", "brown_paving_stone", "grey_paving_stone"}
 GT = json.load(open(os.path.join(REPO, "tiles", "ground_types.json")))["grounds"]
 MAN = json.load(open(os.path.join(REPO, "tiles", "review", "manifest.json")))
 FB = json.load(open(os.path.join(REPO, "live", "feedback", "tiles.json")))["entries"]
+try:                        # his detail library (tiles/tops); absent = none
+    TOPS = json.load(open(os.path.join(REPO, "tiles", "tops", "index.json")))
+except (OSError, ValueError):
+    TOPS = {}
 BASE = json.load(open(os.path.join(REPO, "live", "tuning", "base_tiles.json"))).get("overrides", {})
 WALL_OV = json.load(open(os.path.join(REPO, "live", "tuning", "tile_walls.json"))).get("overrides", {})
 
@@ -1651,6 +1678,13 @@ def write_minimap(img_unused, world_dir, doc):
             ("east corner of the land", max(cells, key=lambda c: c[0] - c[1])),
             ("north corner of the land", min(cells, key=lambda c: c[0] + c[1])),
             ("south corner of the land", max(cells, key=lambda c: c[0] + c[1]))]
+    # ONE SAMPLE UP HIGH (games-ui 2026-09-12). Five samples at level 0 prove
+    # the crop and the x axis and nothing about kz: a consumer that projected
+    # every cell at level 0 passed its gate against this file for a day while
+    # Pit V's pin sat 31.6 px down the slope. The highest land cell (the first
+    # in scan order) makes the level term fail loudly instead - any cell over
+    # 20 storeys would.
+    ends.append(("highest ground", max(cells, key=lambda c: lvl[c[1]][c[0]])))
     meta = {
         "schema": "pixel-maps3/minimap@1",
         "image": "minimap.webp",

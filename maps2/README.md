@@ -122,6 +122,16 @@ directly"): once the deploy run is green, deliver
   **`python maps2/pipeline/minimaps.py`** backfills/refreshes every world from
   its committed `world.json` (no regeneration) — run it after touching the
   renderer.
+- **`minimap.json`** (`pixel-maps3/minimap@1`, written beside the image by
+  `render3.write_minimap`) — the dot formula (`kx ky kz x0 y0`: px from a
+  cell, its level and this file's crop) and the worked samples every consumer
+  gates itself against, each asserted at render time to land on drawn alpha:
+  the spawn, the land's four corners, and **one up high** — the highest land
+  cell (level 46 today). The high row is what makes the level term testable:
+  the five level-0 rows passed a consumer that projected every pin at level 0,
+  and Pit V's mouth sat 31.6 px down the slope for a day (games-ui
+  2026-09-12). A consumer compares its own px against the row, not the alpha
+  under it — that cell projected at level 0 still lands on land.
 - **`map_base.webp`** (`pipeline/cartomap.py`) — the Map tab's cartographic
   base layer: same iso projection but drawn to be READ at thumbnail size
   (per-material palette instead of tile art, hillshade from the level grid,
