@@ -44,6 +44,7 @@ import os
 import re
 import shutil
 import subprocess
+import sys
 from collections import Counter
 
 from PIL import Image
@@ -150,6 +151,21 @@ def _dir_key(order, d):
 
 # --- mirroring one character ------------------------------------------------
 
+def _pick_take(cands):
+    """Which of several takes of one (animation, direction) ships: THE LAST ONE IN
+    THE RECORD, which is the take the PixelLab editor renders (it keys takes by
+    (animation, direction) walking the same array, so the last write wins) — the
+    only take the maintainer ever sees.
+
+    Not the newest by CDN Last-Modified (what this did until 2026-09-12): the
+    monsters domain measured that ranking against the editor over 19 real
+    doubled directions and it agreed only about half the time — upload time is
+    not authoring order — and the maintainer lost finished animations deleting
+    both takes to force the two to agree. verify_sync.py expects the same take
+    (its per-direction expectation is the last entry too)."""
+    return cands[-1]
+
+
 def sync_character(client, name, cid, force=False, dest=None, states_for=None):
     """Mirror one PixelLab character (base rotations + all animations) into
     humans/<name>/. Returns a short summary dict.
@@ -220,10 +236,10 @@ def sync_character(client, name, cid, force=False, dest=None, states_for=None):
         gid = a.get("animation_group_id")
         adir = os.path.join(anims_dir, slug)
         dirs_payload = a.get("directions") or []
-        # map direction -> list of frame urls. PixelLab can transiently return
-        # DUPLICATE entries for a direction while it regenerates an animation in
-        # place (an old copy + a new one); when that happens, keep the NEWEST by
-        # Last-Modified rather than whatever came last in the list.
+        # map direction -> list of frame urls. PixelLab KEEPS EVERY TAKE of a
+        # direction (regenerate it in the UI and the old copy stays in the
+        # record, with no timestamp and no current-flag), so a direction can
+        # arrive twice. _pick_take says which one ships — see it.
         entries = {}
         for dp in dirs_payload:
             dd = dp.get("direction")
@@ -232,17 +248,10 @@ def sync_character(client, name, cid, force=False, dest=None, states_for=None):
                 entries.setdefault(dd, []).append(frames)
         want = {}
         for dd, cands in entries.items():
-            if len(cands) == 1:
-                want[dd] = cands[0]
-            else:
-                best, best_lm = cands[0], None
-                for fr in cands:
-                    lm = client.last_modified(fr[0])
-                    if lm is not None and (best_lm is None or lm > best_lm):
-                        best, best_lm = fr, lm
-                want[dd] = best
-                print(f"    · {slug}/{dd}: {len(cands)} duplicate entries — kept newest "
-                      f"({best_lm})")
+            want[dd] = _pick_take(cands)
+            if len(cands) > 1:
+                print(f"    · {slug}/{dd}: {len(cands)} takes on PixelLab — kept the last "
+                      f"in the record (the one the PixelLab editor shows)")
 
         prev_a = prev_by_type.get(atype) or {}
         unchanged = (not force and prev_a.get("animation_group_id") == gid and gid is not None
@@ -388,9 +397,16 @@ def _git(*args, check=True):
     return subprocess.run(["git", *args], cwd=REPO_ROOT, capture_output=True, text=True, check=check)
 
 
+# The sync's commit stages ONLY the mirror (humans/, npcs/) — never the whole
+# domain. `add -A characters2` swept half-finished pipeline edits into a commit
+# titled "sync 191 NPCs" on 2026-09-12 (caught by --no-push); the mirror pass
+# writes nowhere else, so nothing else belongs in its commit.
+MIRROR_PATHS = ("characters2/humans", "characters2/npcs")
+
+
 def commit_push(message, push=True):
-    _git("add", "-A", "characters2")
-    if not _git("status", "--porcelain", "--", "characters2").stdout.strip():
+    _git("add", "-A", "--", *MIRROR_PATHS)
+    if not _git("status", "--porcelain", "--", *MIRROR_PATHS).stdout.strip():
         return False
     _git("commit", "-m", message)
     if push:
@@ -555,6 +571,27 @@ def sync_npcs(client, force=False, only=None):
     return totals
 
 
+def pack_npcs():
+    """THE PACKED LAYER RIDES ON EVERY NPC SYNC (games agent's ask, 2026-09-12).
+    `npcs/<id>/packed/` is what the deployed game draws an NPC from
+    (pack.py; README "THE PACKED LAYER"), and it is derived from the raw frames
+    this pass just wrote — an NPC whose raw art changed draws from STALE packed
+    frames until it is re-cut. So the cut happens here, before the commit, and
+    never as a step someone has to remember: pack.py is resumable (an NPC whose
+    raw bytes still hash to its index is skipped, ~2 s for the roster) and writes
+    content-hashed names, current + one back, so re-running it is free and a
+    commit that carries new raw art always carries its packed layer too."""
+    r = subprocess.run([sys.executable, os.path.join(ROOT, "pipeline", "pack.py")],
+                       cwd=REPO_ROOT, capture_output=True, text=True)
+    tail = (r.stdout.strip().splitlines() or [""])[-1]
+    print(f"  {tail}" if tail else "  [pack] (no output)")
+    if r.returncode != 0:
+        # A stale packed layer is worse than a loud one: say so, and let the
+        # sync's own commit proceed with the raw art (the game draws raw when an
+        # NPC has no current packed layer) rather than lose the mirror.
+        print(f"  ! pack.py failed ({r.returncode}): {r.stderr.strip()[-600:]}")
+
+
 # --- main -------------------------------------------------------------------
 
 def main():
@@ -586,6 +623,7 @@ def main():
             t = sync_npcs(client, force=args.force, only=only)
             print(f"  npcs: {t['npcs']} mirrored | +{t['frames']} frames | "
                   f"{t['skipped']} unchanged | {t['pruned']} pruned")
+            pack_npcs()
             commit_push(f"characters2: sync {t['npcs']} NPCs from PixelLab "
                         f"(+{t['frames']} frames, {t['pruned']} pruned)",
                         push=not args.no_push)

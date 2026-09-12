@@ -5,6 +5,12 @@ heroes** plus **every character tagged `NPC`**. **PixelLab is the source of
 truth** — `pipeline/sync.py` mirrors it into the repo with **zero generations**.
 (The earlier `characters/` skeleton-exploration domain is retired; history in git.)
 
+Two agents work it (maintainer 2026-09-12): the **characters2 agent** and its
+**characters2-assistant** — the same remit, for the units the characters2 agent
+is not in. The assistant reads `coordination/characters2.json` first, never
+touches a file named there as in flight, and names every file it touches on
+`coordination/characters2-assistant.json` before pushing.
+
 ## PixelLab mental model + conventions
 
 - A **skeleton** = a generation-parameter profile: view, canvas size,
@@ -218,6 +224,20 @@ downloads only what changed:
   all frames are on disk (newly-added *directions* still get picked up);
 - a true mirror — animations / directions / stray frames deleted in the UI are
   removed locally too;
+- **a direction regenerated in the UI keeps its old take in the record**, with
+  no timestamp and no current-flag, so a direction can arrive twice — the take
+  that ships is **the LAST one in the record** (`sync._pick_take`), which is
+  the take the PixelLab editor renders. (Not the newest by CDN Last-Modified:
+  the monsters domain measured that ranking against the editor over 19 real
+  doubled directions and it agreed about half the time, and the maintainer
+  lost finished animations to the disagreement. `verify_sync.py` expects the
+  same take.)
+- **the packed layer is re-cut at the end of every NPC pass** (`pack_npcs`,
+  before the commit), so a commit that carries new raw art always carries the
+  packed frames the game draws from — see "THE PACKED LAYER";
+- **the sync's commit stages only the mirror** (`humans/`, `npcs/`) — a local
+  `sync.py --no-push` from a dirty tree used to sweep pipeline edits into a
+  commit titled "sync N NPCs" (2026-09-12); it cannot now.
 - declared retouches (`retouch.json`) re-applied to every downloaded frame —
   see "Retouch layer" above.
 
@@ -277,10 +297,13 @@ of decoded texels, 24 MB on disk.
   (footAnchor's band and lift scale with the frame height) and converts them
   into the packed frame; its gate `games2/scripts/verify-npc-pack.mjs` proves
   the packed feet land on the raw pixel.
-- **Run it after every sync that changes art**: `python3
-  characters2/pipeline/pack.py` (resumable: an NPC whose raw bytes hash to
-  its index is skipped; `--check` exits 1 when any NPC is stale; `--only`).
-  `sync.py` never touches `packed/` — it prunes inside `base/` and
+- **It runs at the end of every NPC sync** (`sync.py` calls `pack.py` before
+  it commits, 2026-09-12 — a step someone has to remember is a step that gets
+  skipped, and an NPC whose raw art changed draws from STALE packed frames
+  until it is re-cut). By hand: `python3 characters2/pipeline/pack.py`
+  (resumable: an NPC whose raw bytes hash to its index is skipped, ~2 s for
+  the roster; `--check` exits 1 when any NPC is stale; `--only`). `sync.py`'s
+  mirror pass never touches `packed/` — it prunes inside `base/` and
   `animations/` only. An NPC without a current packed layer draws raw.
 - **Cache law**: never a stable name; current + one back (`prev`) so an open
   page keeps rendering through a deploy.
