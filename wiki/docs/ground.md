@@ -18,8 +18,21 @@ reviewed."*)
 - `judgedInPlace(card)` drops the card from the DOM and corrects the queue's
   count in place. The collection and the "N approved" pill catch up on the next
   natural render, which is the deal the stars have had since 2026-08-28.
-- The ONE render he cannot avoid: when the last visible card of the queue is
-  judged, the next dozen are pulled in.
+- **THE QUEUE GROWS BY ITSELF AT THE BOTTOM** (maintainer 2026-09-12: "Can you
+  automatically expand and show more once I'm at the bottom (will speed up the
+  review). It's also important that the approve/remove button stay on same
+  place after automatic expand."). An observer on a sentinel under the grid
+  appends the next dozen 900px before he reaches the end; the "Show 12 more"
+  button stays for a thumb that gets there first and calls the same function.
+  Nothing is re-rendered — the cards are APPENDED — so nothing already on
+  screen moves, and judging the last visible card appends rather than routes.
+- **A FIELD IS DRAWN WHEN IT COMES NEAR THE SCREEN**, 800px out (`drawNear`).
+  The old page decoded tiles and drew a 25-cell scene for every card the
+  moment it rendered — the whole approved collection included — which is the
+  lag he felt ("the page is very big and starts to lag. This lag in itself
+  slows down the review"). Measured on deep water: 4 fields drawn on entry
+  instead of 65, and an expand costs twelve cards instead of every card on the
+  page.
 - **The buttons sit on the RIGHT**, where a hand holding a phone already is,
   and the stars keep the left (`judge-right`, `margin-left: auto` on the
   verdict rather than a flex end on the row, so the stars do not move with
@@ -27,8 +40,10 @@ reviewed."*)
   "not a detail"; the tooltip still says what it touches, which is the detail
   pool and not the tile.
 - Gate: `wiki/tools/check-queue.mjs` taps the same PIXEL four times and fails
-  unless each tap judges a different top and lands on the same coordinates, and
-  asserts the labels and the right alignment.
+  unless each tap judges a different top and lands on the same coordinates,
+  asserts the labels and the right alignment, scrolls to the bottom to prove
+  the queue grows with no button pressed, and checks that fewer fields are
+  drawn than exist.
 
 ## The ground system: World (Tiles 3.0)
 

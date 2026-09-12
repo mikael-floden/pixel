@@ -8195,8 +8195,36 @@ function detailField(typeId, cand, view, origin = [0, 0], scale = 1) {
   };
   const paths = [...new Set(cells.map((x) => x.img).filter(Boolean))];
   if (!paths.length) { box.append(h("p", { class: "muted" }, "no ground to stand this on yet")); return box; }
-  loadImages(paths, (images) => box.replaceChildren(isoScene(cells.filter((x) => x.img), images, scale, 4, worldIso())));
+  /* DRAWN WHEN IT COMES NEAR THE SCREEN, never all at once (maintainer
+   * 2026-09-12: "The expand at the end is also a bit slow now since the page is
+   * very big and starts to lag. This lag in itself slows down the review.")
+   * A ground's details page holds the whole approved collection above the
+   * queue — hundreds of these — and each one decodes its tiles and draws a
+   * 25-cell scene. Doing that for every card the moment the page renders is
+   * the lag, and almost all of it is for cards a phone screen will never show
+   * on the way down. An observer gives each field its work when it is 800px
+   * away, which on a scroll is early enough to be already drawn. */
+  drawNear(box, () => loadImages(paths, (images) =>
+    box.replaceChildren(isoScene(cells.filter((x) => x.img), images, scale, 4, worldIso()))));
   return box;
+}
+/** Run `work` once, when `el` comes within 800px of the viewport — or right
+ *  now where there is no observer to ask (an old browser, a gate's jsdom). */
+let nearWatch = null;
+const nearWork = new WeakMap();
+function drawNear(el, work) {
+  if (typeof IntersectionObserver !== "function") { work(); return; }
+  nearWatch ??= new IntersectionObserver((entries) => {
+    for (const e of entries) {
+      if (!e.isIntersecting) continue;
+      nearWatch.unobserve(e.target);
+      const job = nearWork.get(e.target);
+      nearWork.delete(e.target);
+      job?.();
+    }
+  }, { rootMargin: "800px 0px" });
+  nearWork.set(el, work);
+  nearWatch.observe(el);
 }
 
 /** A transition set's tile path — derivable, never shipped (build.mjs ships
@@ -9979,19 +10007,53 @@ function viewWorldType(top) {
      *
      * The counts are corrected in place so nothing on screen lies in the
      * meantime, and the queue re-renders only when it runs out of cards. */
+    /* THE QUEUE GROWS AT THE BOTTOM, BY ITSELF (maintainer 2026-09-12: "Can you
+     * automatically expand and show more once I'm at the bottom (will speed up
+     * the review). It's also important that the approve/remove button stay on
+     * same place after automatic expand. The expand at the end is also a bit
+     * slow now since the page is very big and starts to lag.")
+     *
+     * Both halves are the same change: the next dozen cards are APPENDED to the
+     * grid, and the page is never re-rendered. Nothing above the new cards
+     * moves, so the button he is aiming at does not move either; and the work
+     * is twelve cards rather than every card on a page that is now hundreds
+     * long — which is what the old `route()` did on every press of "Show 12
+     * more". */
+    let shownNow = shownQueue;
+    let judged = 0;
+    const queueGrid = h("div", { class: "grid detail-grid detail-queue" });
+    const queueCount = h("span", { class: "pill detail-queue-count" }, String(queue.length));
+    const moreBtn = h("button", { class: "ghost-btn queue-more", style: "margin-top:10px" });
+    const endMark = h("div", { class: "queue-end", "aria-hidden": "true" });
+    const appendMore = () => {
+      const next = queue.slice(shownNow, shownNow + 12);
+      if (!next.length) { moreBtn.hidden = true; return; }
+      shownNow += next.length;
+      detailShown.set(t.id, shownNow);
+      queueGrid.append(...next.map(detailCard));
+      moreBtn.hidden = shownNow >= queue.length;
+      moreBtn.textContent = `Show 12 more (${queue.length - shownNow} left)`;
+      // The sentinel goes back under the new bottom, and is watched again.
+      watchEnd();
+    };
+    let endWatch = null;
+    const watchEnd = () => {
+      if (typeof IntersectionObserver !== "function" || shownNow >= queue.length) return;
+      endWatch?.disconnect();
+      endWatch = new IntersectionObserver((entries) => {
+        if (entries.some((e) => e.isIntersecting)) appendMore();
+      }, { rootMargin: "900px 0px" });
+      endWatch.observe(endMark);
+    };
     const judgedInPlace = (card) => {
       const inQueue = !!card.closest(".detail-queue");
       card.remove();
-      const left = document.querySelectorAll(".detail-queue .detail-card").length;
-      const pill = $(".detail-queue-count");
-      if (inQueue && pill) pill.textContent = String(Math.max(0, queue.length - (shownQueue - left)));
-      // Out of cards on screen but not out of queue: pull the next dozen in.
-      // That is a render he cannot avoid, and the only one.
-      if (inQueue && !left && queue.length > shownQueue) {
-        detailShown.set(t.id, shownQueue + 12);
-        keepScrollY = window.scrollY;
-        route();
-      }
+      if (!inQueue) return;
+      judged++;
+      queueCount.textContent = String(Math.max(0, queue.length - judged));
+      // Judged the last card on screen: pull the next dozen in, still without
+      // a render.
+      if (!queueGrid.children.length) appendMore();
     };
     const detailCardBody = ({ cell, cand }, card) => [
       detailField(t.id, cand, dPass, [dSeed % 89, (dSeed * 7) % 83], 1),
@@ -10068,16 +10130,19 @@ function viewWorldType(top) {
             ? "Nothing approved yet — the queue below is where they come from."
             : "None yet — they are being picked right now.")),
       state.admin ? h("div", { class: "panel" },
-        h("div", { class: "panel-title" }, "Tops nobody has judged",
-          h("span", { class: "pill detail-queue-count" }, String(queue.length)),
+        h("div", { class: "panel-title" }, "Tops nobody has judged", queueCount,
           h("span", { class: "muted", style: "font-weight:400;font-size:12.5px" }, " — your when-bored queue")),
         queue.length
-          ? h("div", {},
-            h("div", { class: "grid detail-grid detail-queue" }, ...queue.slice(0, shownQueue).map(detailCard)),
-            queue.length > shownQueue ? h("button", {
-              class: "ghost-btn", style: "margin-top:10px",
-              onclick: () => { detailShown.set(t.id, shownQueue + 12); keepScrollY = window.scrollY; route(); },
-            }, `Show 12 more (${queue.length - shownQueue} left)`) : null)
+          ? (() => {
+            queueGrid.append(...queue.slice(0, shownNow).map(detailCard));
+            moreBtn.hidden = shownNow >= queue.length;
+            moreBtn.textContent = `Show 12 more (${Math.max(0, queue.length - shownNow)} left)`;
+            // The button stays for a thumb that gets there first, and does
+            // exactly what the scroll does.
+            moreBtn.onclick = appendMore;
+            requestAnimationFrame(watchEnd);
+            return h("div", {}, queueGrid, endMark, moreBtn);
+          })()
           : h("p", { class: "muted" }, "Every top of this ground has been judged. Boredom will have to find something else.")) : null);
   }
 }

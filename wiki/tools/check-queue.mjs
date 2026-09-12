@@ -105,6 +105,44 @@ ok(Number(seen[seen.length - 1].count) === Number(first.count) - 3, `and the que
 const pend = await p.evaluate(() => Object.values(window.__wiki.state.touched).reduce((n, s) => n + s.size, 0));
 ok(pend === 3, `three taps, three pending verdicts — no tap was swallowed or doubled (${pend})`);
 
+// THE QUEUE GROWS AT THE BOTTOM BY ITSELF, and nothing above it moves
+// (maintainer 2026-09-12: "Can you automatically expand and show more once I'm
+// at the bottom ... It's also important that the approve/remove button stay on
+// same place after automatic expand. The expand at the end is also a bit slow
+// now since the page is very big and starts to lag.")
+const nCards = () => p.evaluate(() => document.querySelectorAll(".detail-queue .detail-card").length);
+const grew = [await nCards()];
+for (let i = 0; i < 2; i++) {
+  await p.evaluate(() => window.scrollTo(0, document.body.scrollHeight));
+  await p.waitForTimeout(1200);
+  grew.push(await nCards());
+}
+console.log("queue grew:", JSON.stringify(grew));
+ok(grew[grew.length - 1] > grew[0], `scrolling to the bottom pulls the next cards in with no button pressed (${grew.join(" → ")})`);
+
+await p.evaluate(() => document.querySelector(".detail-queue .detail-card")?.scrollIntoView({ block: "center" }));
+await p.waitForTimeout(400);
+const btnAt = () => p.evaluate(() => {
+  const r = document.querySelector(".detail-queue .detail-card .verdict button").getBoundingClientRect();
+  return `${Math.round(r.left + r.width / 2)},${Math.round(r.top + r.height / 2)}`;
+});
+const beforeExpand = await btnAt();
+const nBefore = await nCards();
+await p.evaluate(() => document.querySelector(".queue-more")?.click());
+await p.waitForTimeout(900);
+const afterExpand = await btnAt();
+ok(beforeExpand === afterExpand && (await nCards()) > nBefore,
+  `and an expand moves nothing already on screen (button at ${beforeExpand} → ${afterExpand}, ${nBefore} → ${await nCards()} cards)`);
+
+// ...and the fields are drawn as they come near, not all at once: that is the
+// lag he felt on a page hundreds of cards long.
+const fields = await p.evaluate(() => ({
+  total: document.querySelectorAll(".detail-card .iso-stage").length,
+  drawn: [...document.querySelectorAll(".detail-card .iso-stage")].filter((s) => s.querySelector("canvas")).length,
+}));
+console.log("fields:", JSON.stringify(fields));
+ok(fields.drawn < fields.total, `only the fields near the screen are drawn (${fields.drawn} of ${fields.total})`);
+
 console.log(`page errors: ${errors.length ? errors.join(" | ").slice(0, 200) : "none"}`);
 ok(!errors.length, "no page errors");
 await b.close();
