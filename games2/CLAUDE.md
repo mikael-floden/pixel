@@ -101,6 +101,11 @@ secrets; push to `main`, rebase on reject, no PRs unless asked; doc law.
 - `depthrule.ts` is a pure function tested against DUMPED occluder records;
   never reconstruct a fixture's projection.
 - SEE-THROUGH WALLS IS DELETED — never a per-frame occluder alpha sweep.
+- THE RENDER RETAKE (`?occ=depth`, `terraindepth.ts`; rollback branch
+  `render-retake-start`): no occluder sprites — a body, its lit copy, shadow,
+  outline and every scenery piece is depth-tested PER PIXEL against the night
+  shader's own terrain resolve. Off by default until the parity pass and his
+  phone say so; `scripts/verify-render-retake.mjs` measures both paths.
 - The occluder set is POOLED; depth = base + creationIndex × 1e-6 in the base
   band only; tiles3's texture cache stays unbounded.
 - Scenery is sized against the 88-px person this game draws

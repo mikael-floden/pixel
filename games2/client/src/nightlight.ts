@@ -236,6 +236,41 @@ export function emissionSelfPulse(anim: number, t: number, ph: number): number {
   return Math.max(0.5, Math.min(1, 0.66 + 0.34 * (0.5 + 0.5 * Math.sin(t * 1.2 + ph)) + tw));
 }
 
+/** THE RESOLVE, shared: everything between the //@resolve markers of the
+ *  night FRAG — baseTerrAt, heightAt (with the indoor cut), blockMaxAt and
+ *  terrainResolve — verbatim, so a depth-tested sprite pipeline
+ *  (terraindepth.ts) resolves a body pixel to the same column the night pass
+ *  lights. Declared uniforms it needs: RESOLVE_GLSL_UNIFORMS. */
+export function resolveGlslChunk(): string {
+  const out: string[] = [];
+  const re = /\/\/@resolve-begin\n([\s\S]*?)\/\/@resolve-end\n/g;
+  let m: RegExpExecArray | null;
+  while ((m = re.exec(FRAG))) out.push(m[1]);
+  if (out.length !== 3) throw new Error(`resolve chunk: expected 3 marked regions, found ${out.length}`);
+  return out.join("\n");
+}
+/** What terrainUniforms() hands the depth-tested pipeline (see there). */
+export interface TerrainUniforms {
+  ox: number; oyArt: number; dx: number; dy: number; lh: number;
+  gridW: number; gridH: number; maxLevel: number; hScale: number;
+  blockN: { x: number; y: number }; skip: boolean;
+  indoor: boolean; indoorTop: number; roomOn: boolean;
+  heightKey: string; heightLKey: string; blockKey: string; roomKey: string;
+}
+export const RESOLVE_GLSL_UNIFORMS = `
+uniform vec4 uIsoA;        // ox, oy + 8, dx, dy
+uniform vec4 uIsoB;        // lh, gridW, gridH, maxLevel
+uniform sampler2D uHeight;
+uniform sampler2D uHeightL;
+uniform sampler2D uHBlock;
+uniform vec2 uHBlockN;
+uniform float uSkip;
+uniform float uHScale;
+uniform float uIndoor;
+uniform float uIndoorTop;
+uniform sampler2D uRoom;
+uniform float uRoomOn;
+`;
 const FRAG = `
 precision highp float;
 
@@ -259,6 +294,7 @@ uniform float uShadowDbg; // 0 = normal, 1 = shadows OFF, 2 = shadows RED (setti
 // grazing angle (the maintainer's "wall light wrap" dial, wallwrap.ts): 1 is
 // physical cosine, 0 is no angle falloff at all. Was a hard-coded 0.45.
 uniform float uWallWrap;
+uniform float uResolveFn; // 1 = terrainResolve() (the chunk the sprite pipelines share), 0 = the inline walk — same-frame parity toggle
 uniform float uNumLights;
 uniform vec4 uLightPos[${MAX_SHADER_LIGHTS}];  // col, row, z, radius(cells)
 uniform vec4 uLightCol[${MAX_SHADER_LIGHTS}];  // r, g, b, flicker
@@ -312,11 +348,13 @@ float terrHeightSoft(vec2 cr) {
 // span floating over open water/air is not a concave corner, and reading the
 // deck-inflated surface height painted a static dark band on the ground in
 // front of every span (maintainer: the underside line was the ground AO).
+//@resolve-begin
 float baseTerrAt(vec2 cr) {
   if (cr.x < 0.0 || cr.y < 0.0 || cr.x >= uIsoB.y || cr.y >= uIsoB.z) return 99.0;
   vec2 uv = (floor(cr) + 0.5) / vec2(uIsoB.y, uIsoB.z);
   return texture2D(uHeightL, uv).b * 255.0 / uHScale;
 }
+//@resolve-end
 
 // The GROUND COLUMN's own top (A of the linear map): terrain + its solid/prop
 // bump, but NEVER a deck. Bilinear like heightAtSoft, because the LOS march
@@ -487,6 +525,7 @@ vec2 groundCellAt(float u, float v0, float kk) {
   return hit;
 }
 
+//@resolve-begin
 float heightAt(vec2 cr) {
   if (cr.x < 0.0 || cr.y < 0.0 || cr.x >= uIsoB.y || cr.y >= uIsoB.z) return 99.0;
   vec2 uv = (floor(cr) + 0.5) / vec2(uIsoB.y, uIsoB.z);
@@ -512,6 +551,7 @@ float heightAt(vec2 cr) {
   }
   return texture2D(uHeight, uv).r * 255.0 / uHScale;
 }
+//@resolve-end
 
 // IS THIS CELL IN THE ROOM I AM STANDING IN? 1 inside, 0 outside; 1 everywhere
 // while outdoors, so every outdoor pixel is byte-identical to before.
@@ -618,10 +658,51 @@ float cwNoise(vec2 p) {
 // The largest surface height any cell of block b can report through
 // heightAt — the same decode as heightAt, so it bounds it exactly; a block
 // outside the world answers 99 (= never skip; heightAt says 99 there too).
+//@resolve-begin
 float blockMaxAt(vec2 b) {
   if (b.x < 0.0 || b.y < 0.0 || b.x >= uHBlockN.x || b.y >= uHBlockN.y) return 99.0;
   return texture2D(uHBlock, (b + 0.5) / uHBlockN).r * 255.0 / uHScale;
 }
+// THE SURFACE THIS PIXEL SHOWS, as one function — the walk main() ran inline
+// until 2026-09-12, moved out so the depth-tested sprite pipelines
+// (terraindepth.ts) run the IDENTICAL resolve: a body pixel is hidden exactly
+// where the painter drew a nearer column, so the two must agree to the bit.
+// u is the pixel's iso column diagonal, v0 its grid diagonal at height 0;
+// returns the cell (fractional; floor() is the column) and the height z hit.
+bool terrainResolve(float u, float v0, out vec2 cell, out float z) {
+  float kk = uIsoB.x / uIsoA.w;
+  float vTop = v0 + uIsoB.w * kk;
+  z = 0.0;
+  cell = vec2(0.0);
+  bool found = false;
+  float vHi = vTop;
+  vec2 blk = vec2(-9.0);
+  float hb = 99.0;
+  for (int s = 0; s < 128; s++) {
+    if (found || vHi <= v0 - 1.5) break;
+    float vColB = 2.0 * floor((vHi + u) * 0.5 - 0.0001) - u;
+    float vRowB = 2.0 * floor((vHi - u) * 0.5 - 0.0001) + u;
+    float vLo = max(vColB, vRowB);
+    float vMid = (vHi + vLo) * 0.5;
+    vec2 cr = vec2((u + vMid) * 0.5, (vMid - u) * 0.5);
+    vec2 b = floor(cr * 0.125);
+    if (uSkip > 0.5 && (b.x != blk.x || b.y != blk.y)) { blk = b; hb = blockMaxAt(b); }
+    if (uSkip > 0.5 && v0 + hb * kk < vLo - 0.0001) { vHi = vLo; continue; }
+    float H = heightAt(cr);
+    if (H < 90.0) {
+      float vSurf = v0 + H * kk;
+      if (vSurf >= vLo - 0.0001) {
+        float vHit = min(vHi, vSurf);
+        z = max((vHit - v0) / kk, 0.0);
+        cell = cr;
+        found = true;
+      }
+    }
+    vHi = vLo;
+  }
+  return found;
+}
+//@resolve-end
 
 void main() {
   vec2 suv = gl_FragCoord.xy / resolution;
@@ -678,6 +759,9 @@ void main() {
   // v = 2m - u, row at v = 2n + u) so every interval lies inside exactly one
   // cell. Fixed-width segments straddled cells, attributing wall pixels to
   // the wrong column — every face rule downstream then judged the wrong wall.
+  if (uResolveFn > 0.5) {
+    found = terrainResolve(u, v0, cell, z);
+  } else {
   float vHi = vTop;
   // WALK BUDGET: sweeping from the max-level candidate down to level 0 needs
   // about maxLevel*(lh/dy) iterations (~1.07 per level on maps2 geometry; the
@@ -724,6 +808,16 @@ void main() {
       }
     }
     vHi = vLo;
+  }
+  }
+  if (uTest > 6.5 && uTest < 7.5) {
+    // Calibration 7: WHICH COLUMN THIS PIXEL SHOWS — floor(cell) as bytes
+    // (R col mod 256, G row mod 256, B col/256*16 + row/256), alpha 0 where
+    // nothing resolved. verify-terraindepth reads it against the painter.
+    if (!found) { gl_FragColor = vec4(0.0); return; }
+    vec2 c = floor(cell);
+    gl_FragColor = vec4(mod(c.x, 256.0) / 255.0, mod(c.y, 256.0) / 255.0, (floor(c.x / 256.0) * 16.0 + floor(c.y / 256.0)) / 255.0, 1.0);
+    return;
   }
   if (!found) {
     // Off-map / unresolved: plain ambient — but INDOORS that pixel is the sky
@@ -2102,6 +2196,14 @@ export class NightLights {
    *  and the right one: a line that survives mode 1 is in the ground texture,
    *  a line that turns red in mode 2 is this pass. */
   shadowDbg = 0;
+  /** 1 = the shared terrainResolve() (terraindepth.ts); 0 = the inline walk it
+   *  was lifted from — a same-frame parity toggle (`__ml.nightParity("night",
+   *  "resolve")`), kept until the inline copy is deleted. */
+  resolveFn = 1;
+  /** A pinned animation clock for hashes and screenshots: the torch flicker,
+   *  water and foam ride uAnimTime, so two frames never hash alike unless the
+   *  clock stands still. null = live. */
+  animPin: number | null = null;
   /** OVERLAY ISOLATION (debug switch, 0 = normal). The zigzag is provably NOT
    *  in the ground texture — an exact unlit palette census at the maintainer's
    *  own cell and zoom found zero wall-coloured texels — so whatever draws it
@@ -2218,6 +2320,7 @@ export class NightLights {
       // DECLARED (the uSun lesson): an undeclared uniform never syncs on a
       // real phone GPU and the wall wrap would silently sit at 0 = no falloff.
       uWallWrap: { type: "1f", value: wallWrapExponent() },
+      uResolveFn: { type: "1f", value: 1 },
       // Animation clock (seconds). MUST be driven every frame from the SAME
       // clock as the JS emission layers (stamps/lit copies, scene.time.now/
       // 1000) or the shader floor/fire flicker either freezes (the long-
@@ -3582,6 +3685,36 @@ export class NightLights {
     u.time = this.scene.time.now / 1000;
     return u;
   }
+  /** THE FRAME'S TERRAIN AS THE NIGHT PASS RESOLVES IT — the iso uniforms in
+   *  the ART frame (oy + 8), the pack scale, the block skip, the indoor cut and
+   *  the room mask's bound state, plus the texture keys — for the depth-tested
+   *  sprite pipeline (terraindepth.ts), so a body pixel is hidden by exactly
+   *  the column this pass lights. One object, mutated per call. */
+  terrainUniforms(): TerrainUniforms {
+    const t = this.terrainU;
+    t.ox = this.iso.ox;
+    t.oyArt = this.iso.oy + 8;
+    t.dx = this.geo.dx;
+    t.dy = this.geo.dy;
+    t.lh = this.geo.lh;
+    t.gridW = this.world.width;
+    t.gridH = this.world.height;
+    t.maxLevel = this.maxLevel;
+    t.hScale = this.hScale;
+    t.blockN.x = this.blockN.x;
+    t.blockN.y = this.blockN.y;
+    t.skip = this.skipOn && this.scene.textures.exists(BLOCK_KEY);
+    t.indoor = this.indoor;
+    t.indoorTop = this.indoorTop;
+    t.roomOn = this.roomBound && this.scene.textures.exists(ROOM_KEY);
+    return t;
+  }
+  private terrainU: TerrainUniforms = {
+    ox: 0, oyArt: 0, dx: 32, dy: 16, lh: 15, gridW: 1, gridH: 1, maxLevel: 0, hScale: 16,
+    blockN: { x: 1, y: 1 }, skip: false, indoor: false, indoorTop: 0, roomOn: false,
+    heightKey: "world-heightmap", heightLKey: "world-heightmap-linear", blockKey: BLOCK_KEY, roomKey: ROOM_KEY,
+  };
+
   /** One object, mutated per call — the pipeline reads it every frame. */
   private lightU: { pos: Float32Array; col: Float32Array; n: number; sun: [number, number, number, number]; time: number } = {
     pos: new Float32Array(0),
@@ -3726,6 +3859,22 @@ export class NightLights {
   }
 
   private passSnaps = new Map<string, Uint8Array>();
+  /** RGBA of the pass at the given PASS pixels (x right, y as readPixels
+   *  delivers it — row 0 at the bottom of the framebuffer). The harness
+   *  learns the orientation from calibration 3 (R = x, G = y). */
+  samplePass(which: "night" | "fog", pts: Array<[number, number]>): Array<[number, number, number, number]> {
+    const sh = which === "night" ? this.shader : this.depthFogShader;
+    if (!sh) throw new Error(`no ${which} pass`);
+    const buf = this.readPass(sh);
+    const w = sh.width;
+    const h = sh.height;
+    return pts.map(([x, y]) => {
+      const px = Math.max(0, Math.min(w - 1, Math.round(x)));
+      const py = Math.max(0, Math.min(h - 1, Math.round(y)));
+      const i = (py * w + px) * 4;
+      return [buf[i], buf[i + 1], buf[i + 2], buf[i + 3]];
+    });
+  }
 
   /** DIAGNOSTIC: keep a pass's raw pixels under a label, for diffPass. */
   snapPass(which: "night" | "fog", label: string): number {
@@ -3890,11 +4039,29 @@ export class NightLights {
    *  same uniforms for both), so the two hashes differ only by the skip. The
    *  renderer draws a render-to-texture shader with exactly load() + flush()
    *  (ShaderWebGLRenderer). Raw readPixels, so exact for both passes. */
-  parityHash(which: "night" | "fog", toggle: "skip" | "gate" = "skip"): Promise<{ full: string; skip: string; w: number; h: number }> {
+  parityHash(which: "night" | "fog", toggle: "skip" | "gate" | "resolve" = "skip"): Promise<{ full: string; skip: string; w: number; h: number }> {
     const sh = which === "night" ? this.shader : this.depthFogShader;
     if (!sh) return Promise.reject(new Error(`no ${which} pass`));
     const draw = sh as unknown as { load: () => void; flush: () => void };
     const armed = this.scene.textures.exists(BLOCK_KEY);
+    if (toggle === "resolve") {
+      // `full` = the inline walk, `skip` = terrainResolve(): must hash alike.
+      try {
+        sh.setUniform("uResolveFn.value", 0);
+        draw.load();
+        draw.flush();
+        const full = this.hashPass(sh);
+        sh.setUniform("uResolveFn.value", 1);
+        draw.load();
+        draw.flush();
+        const skip = this.hashPass(sh);
+        sh.setUniform("uResolveFn.value", this.resolveFn);
+        return Promise.resolve({ full, skip, w: sh.width, h: sh.height });
+      } catch (e) {
+        sh.setUniform("uResolveFn.value", this.resolveFn);
+        return Promise.reject(e);
+      }
+    }
     if (toggle === "gate") {
       // THE SPARSE SUN-PATCH GATE, same turn: the pass with the prop loop run
       // for every pixel, then gated by the ground map's G flag — nothing else
@@ -4010,7 +4177,7 @@ export class NightLights {
     // Drive the shader animation clock from the SAME source as the JS
     // emission layers (glow stamps below, lit-copy tints) so the shader
     // floor + fire flicker move and stay phase-locked with them.
-    s.setUniform("uAnimTime.value", this.scene.time.now / 1000);
+    s.setUniform("uAnimTime.value", this.animPin ?? this.scene.time.now / 1000);
     s.setUniform("uCam.value.x", camX);
     s.setUniform("uCam.value.y", camY);
     s.setUniform("uCam.value.z", wv.width * k);
@@ -4077,6 +4244,7 @@ export class NightLights {
     s.setUniform("uTest.value", this.testPattern === 5 ? 0 : this.testPattern);
     s.setUniform("uShadowDbg.value", this.shadowDbg);
     s.setUniform("uWallWrap.value", wallWrapExponent());
+    s.setUniform("uResolveFn.value", this.resolveFn);
     this.overlay?.setFlipY(this.overlayFlip);
     // Raw-readback test mode draws opaque (multiply would mix in the art).
     this.overlay?.setBlendMode(
@@ -4168,7 +4336,7 @@ export class NightLights {
     this.mistShader?.setUniform("uMist.value", mist);
     if (showMist && this.mistShader) {
       const m = this.mistShader;
-      m.setUniform("uAnimTime.value", this.scene.time.now / 1000);
+      m.setUniform("uAnimTime.value", this.animPin ?? this.scene.time.now / 1000);
       m.setUniform("uCam.value.x", camX);
       m.setUniform("uCam.value.y", camY);
       m.setUniform("uCam.value.z", wv.width * k);

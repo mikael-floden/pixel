@@ -1,6 +1,61 @@
 # Depth sort and occluders
 
-How bodies and pieces interleave with terrain columns: the occluder set, the pure depth rule and its cover lines. Moved verbatim out of `games2/CLAUDE.md` (2026-09-09), which keeps the law and points here; the measurements, traps and rejected approaches live in this file. Rewrite in place under the root doc law.
+How bodies and pieces interleave with terrain columns: the occluder set, the pure depth rule and its cover lines — and the DEPTH PATH that replaces the occluder set with a per-pixel test. Moved verbatim out of `games2/CLAUDE.md` (2026-09-09), which keeps the law and points here; the measurements, traps and rejected approaches live in this file. Rewrite in place under the root doc law.
+
+- **THE RENDER RETAKE — `?occ=depth` (remembered as `ml-occ-path`; flipped
+  live by `__ml.occDepth(on)`; rollback point = branch `render-retake-start`
+  at 7b73e316).** The maintainer's last beacon run put 95 of 140 long frames
+  on `rebuildOccluders` (`tiles3Occluders` alone 80% of a 50-60 ms rebuild
+  every 96 px), so instead of slicing that loop the occluder SPRITES are
+  deleted: the ground texture already paints every column, and a body only
+  has to not draw where a nearer column would have covered it.
+  `client/src/terraindepth.ts` is a MultiPipeline whose fragment resolves the
+  terrain surface under the pixel with the night shader's `terrainResolve`
+  (cut out of nightlight.ts by `resolveGlslChunk()` between the
+  `//@resolve` markers — ONE resolve, lighting and occlusion can never
+  disagree) and discards the pixel when that surface is nearer. Every body
+  layer (`resolveBodyDepth`, `syncLitCopy`, `placeBodyShadow`,
+  `syncCoverOutline`) and every standing scenery piece (base image through
+  the depth pipeline, lit copy + fog through the scenery-lit pipeline, which
+  carries the same test on its eighth attribute) is armed with
+  `pipelineData.td` = (flatY/lh, 1/lh, floor level, mode, own col+row).
+  - The test is 3-D: the pixel at world y is `zPx = max((flatY − y)/lh,
+    floor)` above the ground; the ray through it (v = v0 + z·kk) meets the
+    resolved surface at height z; hidden when z > zPx (nearer). The FLOOR
+    clamp keeps the 4 px body seat from being eaten by the body's own ground.
+  - ONLY A NEARER DIAGONAL HIDES (col + row > the caller's own): a column
+    beside the body is what the painter drew behind it (equal depth, body
+    created later), and a body's feet do overlap the columns beside its cell.
+  - A DECK TOP (H > base, roof/bridge/lid) hides a body standing BELOW it
+    wherever the ray meets that top, whatever the pixel's height — the
+    painter clamps such a body behind the slab; without this a head walking
+    under the river bridge showed through the planks.
+  - Mode 1 (draw the visible part) is armed only when the cover rule set
+    `coverY` — the per-pixel walk costs on covered sprites alone; mode 2
+    (draw the HIDDEN part) is the hidden-behind outline on the plain ring
+    texture. `occluderMeta` is still built (it feeds `resolveDrawDepth`, the
+    painter order among bodies/pieces/debris and the campfire crop); the
+    cover atlases, cover index and `occImage` are skipped.
+  - Textures on units 1-4 (scenery-lit: 2-5) via `addTextureToBatch`; scalar
+    `uMainSampler` (Mobile-style boot); world coordinates PER VERTEX (camera
+    matrix inverse), never gl_FragCoord.
+  - MEASURED DIFFERENCES vs the sprite path (`scripts/verify-render-retake.mjs`,
+    frozen frame, same session, % changed + mean/max + worst block + on-body
+    split; images with OUT=): bodies behind the house wall, under the bridge,
+    at the cave mouth and the forest: identical silhouettes (on-body means
+    1-8 of 255, mostly the lit copy's tint rounding). Terrain itself differs
+    by design — 12-28% of a frame at mean 15-25 — because the occluder copies
+    re-pasted raw face/cap art over the ground texture's COMPOSED faces (the
+    fades and foot bands the ground pass paints were covered on every raised
+    column); the depth path shows the ground texture as composed.
+    KNOWN LOSSES: the hidden outline behind SCENERY (a tree) is gone — the
+    test knows terrain, not pieces; a body seen through the GAP under a
+    floating bridge is hidden (the resolve treats a deck column as solid to
+    the ground). Both are the maintainer's call before the sprite path goes.
+  - Ground truth for the resolve itself: `scripts/verify-terraindepth.mjs`
+    (calibration 7 paints floor(cell) as bytes; `__ml.occTopAt` is the
+    painter): 77.5% exact, 7.1% neighbour cell (art overhang), 0.3% two or
+    more cells off, 15% where the painter had no image (flat ground).
 
 - **SEE-THROUGH WALLS IS DELETED — never reintroduce a per-frame occluder
   alpha sweep.** The prototype ([7] key, "see-through walls" switch,

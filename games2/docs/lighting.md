@@ -2,6 +2,15 @@
 
 The night shader and its CPU twins, the light slot ledger, scenery lights and shadows, depth fog, sun, time-of-day, weather, indoor ambient. Moved verbatim out of `games2/CLAUDE.md` (2026-09-09), which keeps the law and points here; the measurements, traps and rejected approaches live in this file. Rewrite in place under the root doc law.
 
+- **THE RESOLVE IS SHARED** (`terrainResolve`, `heightAt`, `baseTerrAt`,
+  `blockMaxAt` between the `//@resolve-begin/end` markers of the night FRAG;
+  `resolveGlslChunk()` + `RESOLVE_GLSL_UNIFORMS` + `terrainUniforms()`): the
+  depth-tested sprite pipelines (`terraindepth.ts`, `docs/depth-sort.md`)
+  compile the identical text, so a body is hidden by exactly the column this
+  pass lights. Edit the marked regions only through both consumers; the
+  marker count is asserted at pipeline build. `uResolveFn` 0 keeps the old
+  inline walk for parity (`nightParity("night","resolve")` — identical).
+  Calibration 7 paints floor(cell) as bytes (col, row, high nibbles).
 - **TWO INDOOR AMBIENT DIALS — DARK ROOM 40%, LIT ROOM 12%**
   (`indoorlight.ts`, both in Settings). A room with no light of its own needs
   40% to read as stone rather than void; a room that lights ITSELF gets its

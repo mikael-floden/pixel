@@ -145,6 +145,7 @@ import {
   type LightParts,
 } from "../nightlight";
 import { SceneryLitPipeline, SCENERY_LIT_PIPELINE, SCENERY_LIT_OCC, type SceneryLitShape } from "../scenerylit";
+import { TerrainDepthPipeline, TERRAIN_DEPTH_PIPELINE, terrainDepthData, tdBillboard, tdFlat, tdCell, type TerrainDepthData } from "../terraindepth";
 import { ShapeMapBuilder, shapeMapKey, decodeShape, type ShapeHitbox, type ShapeScale } from "../scenerylight";
 import { reservedLights, WORLD_LIGHT_SLOTS, RESERVED_LIGHT_SLOTS } from "../lightslots";
 import { deriveEmissive, lightKindOf, lightParams, lightFromBlock, type SceneryLightParams } from "../scenerylights";
@@ -879,6 +880,20 @@ function groundPathFast(): boolean {
     return true; // storage or location blocked: the fast path, which is the default
   }
 }
+
+/** `?occ=depth` (remembered as `ml-occ-path`) selects the DEPTH-TESTED sprite
+ *  path: no occluder sprites, terrain hides a body per pixel in its own shader
+ *  (terraindepth.ts). `?occ=sprites` pins the pooled occluder set. Flipped live
+ *  by `__ml.occDepth(on)` — the parity harness compares both in one session. */
+function occDepthPath(): boolean {
+  try {
+    const q = new URLSearchParams(location.search).get("occ");
+    if (q === "depth" || q === "sprites") localStorage.setItem("ml-occ-path", q);
+    return localStorage.getItem("ml-occ-path") === "depth";
+  } catch {
+    return false;
+  }
+}
 /** How far AHEAD the prefetch reaches when the direction of travel is not yet
  *  known (the first paint after a join or a teleport) — see t3armRing. */
 const GROUND_RING = 512;
@@ -1328,6 +1343,10 @@ interface MonsterAvatar {
   fog?: Phaser.GameObjects.Image; // the fog silhouette over the lit copy (syncLitCopy)
   hidden?: Phaser.GameObjects.Image; // white outline over the covered part (syncCoverOutline)
   coverY?: number; // wall-top line covering the sprite (lit copy cropped below it)
+  /** The depth path's per-body inputs (terraindepth.ts): the standing level
+   *  and the test mode this frame (1 = covered, tested; 0 = untested). */
+  tdFloor?: number;
+  tdMode?: number;
   // The pixel-exact cover surfaces (see BodyVisual / registerCoverSlot).
   coverSlot?: CoverSlot;
   coverAt?: number;
@@ -1535,6 +1554,10 @@ interface BodyVisual {
   coverAt?: number;
   surfLevel?: number;
   swimming?: boolean;
+  /** The depth path's per-body inputs (terraindepth.ts): the standing level
+   *  and this frame's test mode (1 = covered, tested; 0 = untested). */
+  tdFloor?: number;
+  tdMode?: number;
 }
 
 /** One body-sized rectangle, at the SAME coordinates in all three cover
@@ -2982,6 +3005,43 @@ export class WorldScene extends Phaser.Scene {
    * can see), a fixed CPU benchmark (the throttling proxy) and the GPU's own
    * frame time when the browser lends its timer. */
   private perfRunId = Math.random().toString(16).slice(2, 10);
+  /** THE SCENE STANDS STILL for a screenshot: every Phaser animation paused,
+   *  NPCs, scenery animations, ground decor and weather not stepped, the
+   *  night pass's clock pinned. The render-retake harness photographs the old
+   *  and the new renderer a few frames apart and must see only the renderer
+   *  change (`__ml.freeze`). */
+  private frozen = false;
+  /** A texel's alpha, read back from the GPU once per texture and cached —
+   *  tiles3 textures are raw uploads with no drawable image, so Phaser's
+   *  getPixelAlpha throws on them. Harness-only (occTopAt). */
+  private texelCache = new Map<string, { w: number; h: number; data: Uint8Array }>();
+  private texelAlpha(frame: Phaser.Textures.Frame, fx: number, fy: number): number {
+    const src = frame.source;
+    const key = `${frame.texture.key}#${frame.sourceIndex}`;
+    let c = this.texelCache.get(key);
+    if (!c) {
+      const r = this.game.renderer as Phaser.Renderer.WebGL.WebGLRenderer;
+      const gl = r.gl;
+      const wrap = src.glTexture as unknown as { webGLTexture?: WebGLTexture } | null;
+      const w = src.width, h = src.height;
+      const data = new Uint8Array(w * h * 4);
+      if (wrap?.webGLTexture) {
+        const prev = gl.getParameter(gl.FRAMEBUFFER_BINDING) as WebGLFramebuffer | null;
+        const fb = gl.createFramebuffer();
+        gl.bindFramebuffer(gl.FRAMEBUFFER, fb);
+        gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, wrap.webGLTexture, 0);
+        if (gl.checkFramebufferStatus(gl.FRAMEBUFFER) === gl.FRAMEBUFFER_COMPLETE) gl.readPixels(0, 0, w, h, gl.RGBA, gl.UNSIGNED_BYTE, data);
+        gl.bindFramebuffer(gl.FRAMEBUFFER, prev);
+        gl.deleteFramebuffer(fb);
+      }
+      c = { w, h, data };
+      this.texelCache.set(key, c);
+    }
+    const x = frame.cutX + fx, y = frame.cutY + fy;
+    if (x < 0 || y < 0 || x >= c.w || y >= c.h) return 0;
+    return c.data[(y * c.w + x) * 4 + 3];
+  }
+
   private perfWinIdx = 0;
   private perfPatches = 0;
   private perfRtt: number[] = [];
@@ -3382,6 +3442,9 @@ export class WorldScene extends Phaser.Scene {
    * copy to the flat tint for an A/B. */
   private sceneryLightOn = true;
   private sceneryLitPipe: SceneryLitPipeline | null = null;
+  /** The depth-tested sprite pipeline (terraindepth.ts) and its switch. */
+  private tdPipe: TerrainDepthPipeline | null = null;
+  private occDepth = occDepthPath();
   /** Shape maps by their content key: the GL texture, or null = could not be built. */
   private shapeMaps = new Map<string, { tex: Phaser.Renderer.WebGL.Wrappers.WebGLTextureWrapper; w: number; h: number; opaque: number; ms: number } | null>();
   /** Maps still to build (the art landed this rebuild) and the copies waiting on each. */
@@ -3889,6 +3952,7 @@ export class WorldScene extends Phaser.Scene {
         this.lastGround = { x: NaN, y: NaN };
         this.lastOccl = { x: NaN, y: NaN };
         this.ensureSceneryLitPipeline();
+        if (this.occDepth) this.ensureTerrainDepthPipeline();
       }
     }
 
@@ -4998,6 +5062,90 @@ export class WorldScene extends Phaser.Scene {
       // the exact hit test pointerdown runs (round 12 hitbox QA).
       tapAt: (wx: number, wy: number) => this.tapTarget(wx, wy),
       camZoom: () => this.cameras.main.zoom,
+      /** Stand still for a photograph (see `frozen`). Ambient life is the
+       *  ambient runtime's own: the harness calls __mlAmbient.demo("none"). */
+      /** Every drawn body's art box in GAME px (the parity harness splits its
+       *  pixel diff into "on a body" and "elsewhere"). */
+      bodyBoxes: () => {
+        const cam = this.cameras.main;
+        const boxes: { x0: number; y0: number; x1: number; y1: number }[] = [];
+        const add = (b: BodyVisual) => {
+          const sp = b.sprite;
+          if (!sp.visible) return;
+          const ab = this.artBounds(sp);
+          const left = sp.x - sp.displayWidth * sp.originX;
+          const top = sp.y - sp.displayHeight * sp.originY;
+          const z = cam.zoom;
+          boxes.push({
+            x0: (left + ab.x0 * sp.scaleX - 6 - cam.worldView.x) * z,
+            y0: (top + ab.y0 * sp.scaleY - 6 - cam.worldView.y) * z,
+            x1: (left + ab.x1 * sp.scaleX + 6 - cam.worldView.x) * z,
+            y1: (top + ab.y1 * sp.scaleY + 6 - cam.worldView.y) * z,
+          });
+        };
+        for (const av of this.avatars.values()) add(av);
+        for (const mv of this.monsters.values()) add(mv);
+        for (const nv of this.npcs.values()) add(nv);
+        return { boxes, w: this.scale.width, h: this.scale.height };
+      },
+      /** The occlusion path: `occDepth()` reads, `occDepth(true|false)` flips
+       *  it live (terraindepth.ts; remembered as ml-occ-path). */
+      occDepth: (on?: boolean) => {
+        if (on !== undefined) this.setOccDepth(on);
+        const p = this.tdPipe;
+        return { on: this.occDepth, pipe: !!p, quads: p?.quads ?? 0, tested: p?.testedQuads ?? 0, occluders: this.occluders.length };
+      },
+      freeze: (on = true) => {
+        this.frozen = on;
+        if (on) {
+          this.anims.pauseAll();
+          if (this.night) this.night.animPin = this.time.now / 1000;
+        } else {
+          this.anims.resumeAll();
+          if (this.night) this.night.animPin = null;
+        }
+        return this.frozen;
+      },
+      /** Pin (or free, with null) the night pass's animation clock. */
+      nightAnimPin: (t: number | null) => {
+        if (this.night) this.night.animPin = t;
+        return this.night?.animPin ?? null;
+      },
+      /** The night pass's RGBA at PASS pixels (see NightLights.samplePass). */
+      nightSample: (pts: Array<[number, number]>, which: "night" | "fog" = "night") => this.night?.samplePass(which, pts) ?? null,
+      /** The resolve-function parity toggle (1 = terrainResolve(), 0 = the inline walk). */
+      nightResolveFn: (v?: number) => {
+        if (this.night && typeof v === "number") this.night.resolveFn = v;
+        return this.night?.resolveFn ?? null;
+      },
+      /** THE PAINTER'S ANSWER: which occluder image is on top at a screen
+       *  pixel (canvas px) under the OLD renderer — highest depth, then latest
+       *  in the display list, first with an opaque texel there. The ground
+       *  truth verify-terraindepth measures the shader's resolve against. */
+      occTopAt: (sx: number, sy: number) => {
+        const cam = this.cameras.main;
+        const wx = cam.worldView.x + sx / cam.zoom;
+        const wy = cam.worldView.y + sy / cam.zoom;
+        const list = this.children.list;
+        let best: { im: Phaser.GameObjects.Image; i: number } | null = null;
+        for (let i = 0; i < list.length; i++) {
+          const o = list[i] as Phaser.GameObjects.Image & OccTagged;
+          if (o.ocCol === undefined || !o.visible || !(o instanceof Phaser.GameObjects.Image)) continue;
+          if (best && (o.depth < best.im.depth || (o.depth === best.im.depth && i < best.i))) continue;
+          const dw = o.displayWidth, dh = o.displayHeight;
+          const x0 = o.x - o.originX * dw, y0 = o.y - o.originY * dh;
+          if (wx < x0 || wx >= x0 + dw || wy < y0 || wy >= y0 + dh) continue;
+          let fx = (wx - x0) / o.scaleX;
+          if (o.flipX) fx = o.frame.cutWidth - 1 - fx;
+          const fy = (wy - y0) / o.scaleY;
+          const a = this.texelAlpha(o.frame, Math.floor(fx), Math.floor(fy));
+          if (a <= 0) continue;
+          best = { im: o, i };
+        }
+        if (!best) return null;
+        const b = best.im as Phaser.GameObjects.Image & OccTagged;
+        return { col: b.ocCol, row: b.ocRow, depth: b.depth, key: b.texture.key, frame: b.frame.name, wx, wy };
+      },
       sunInfo: () => ({ sun: [...this.curSun], phase: TIME_PHASES[this.timeIdx].name, t: this.timeT }),
       // Weather probes: info + LOCAL force (headless QA without the server).
       weatherInfo: () => ({
@@ -8445,7 +8593,7 @@ export class WorldScene extends Phaser.Scene {
   private registerCoverSlot(b: BodyVisual) {
     b.coverAt = undefined;
     const sp = b.sprite;
-    if (!this.coverExact || b.coverY === undefined || !sp.visible) return;
+    if (!this.coverExact || this.occDepth || b.coverY === undefined || !sp.visible) return;
     // The atlas maps world px to frame px by integer translation, which is
     // only the identity at scale 1 (bodies and occluders both ship that).
     if (sp.scaleX !== 1 || sp.scaleY !== 1) return;
@@ -8468,7 +8616,7 @@ export class WorldScene extends Phaser.Scene {
   private rebuildCoverIndex() {
     this.coverBuckets.clear();
     this.coverGen++;
-    if (!this.coverExact) return;
+    if (!this.coverExact || this.occDepth) return;
     const add = (im: Phaser.GameObjects.Image) => {
       if (!im.visible) return;
       const f = im.frame;
@@ -8750,7 +8898,7 @@ export class WorldScene extends Phaser.Scene {
     const ab = this.artBounds(sp);
     const fw = sp.frame.cutWidth;
     const fh = sp.frame.cutHeight;
-    const slot = this.coverSlotOf(b);
+    const slot = this.occDepth ? undefined : this.coverSlotOf(b);
     // THE FLAT LINE MAY NOT VETO THE EXACT PATH. `coverY` is the top of the
     // covering column's 64px IMAGE BOX, so a low occluder in front of the feet
     // can put it below the art while genuinely covering texels — measured at
@@ -8758,7 +8906,7 @@ export class WorldScene extends Phaser.Scene {
     // this early-out fired before the slot was consulted. With a slot the O
     // surface answers for itself: when nothing is covered it is empty and the
     // image draws nothing, which costs one transparent quad and cannot lie.
-    if (!slot && cropH >= ab.y1) return hide();
+    if (!slot && !this.occDepth && cropH >= ab.y1) return hide();
     const key = slot ? this.coverO!.key : this.ringTextureFor(sp, HIDDEN_RING_COLOR, HIDDEN_RING_BRIGHT);
     if (!key) return hide();
     let img = b.hidden;
@@ -8811,7 +8959,12 @@ export class WorldScene extends Phaser.Scene {
       .setTint(ringTint)
       .setDepth(900_001.43)
       .setVisible(true);
-    if (slot) {
+    if (this.occDepth) {
+      // THE DEPTH PATH: the whole ring, drawn only where terrain hides the
+      // body (mode 2 — the inverse of the copy's test, on the same pixels).
+      if (img.isCropped) img.setCrop();
+      this.tdArmLayer(img, b, 2);
+    } else if (slot) {
       // THE PIXEL-EXACT PATH. The O surface already IS the ring of the covered
       // sub-silhouette — a diagonal wall top, a doorway, a tree trunk — so
       // there is nothing left to crop. (maintainer 2026-08-09: "the effect is
@@ -12006,9 +12159,9 @@ export class WorldScene extends Phaser.Scene {
     // The world's people: placed by maps2, drawn through the shared body
     // pipeline, breathing on their own calm clocks.
     this.ps();
-    this.stepNpcs();
+    if (!this.frozen) this.stepNpcs();
     this.pe("stepNpcs");
-    this.stepSceneryAnims();
+    if (!this.frozen) this.stepSceneryAnims();
     // Sword marker + target frame + aggro-radius debug rings (all read the
     // freshly-updated monster sprites above).
     this.ps();
@@ -12018,7 +12171,7 @@ export class WorldScene extends Phaser.Scene {
     // same frame rather than one frame apart.
     this.stepPickupSfx();
     // Grave crosses (appear → hold → reverse) + the drop end-of-life flash.
-    this.stepGroundDecor();
+    if (!this.frozen) this.stepGroundDecor();
 
     if (this.death) this.stepDeath(this.time.now);
     this.updateChaseCam(delta);
@@ -12188,7 +12341,7 @@ export class WorldScene extends Phaser.Scene {
       if (!this.weatherFX) this.weatherFX = new WeatherFX(this);
       this.weatherFX.setWeather(this.weatherIdx);
       this.ps();
-      this.weatherFX.update(this.game.loop.delta, this.cameras.main, (wx, wy) => this.isWaterAtScreen(wx, wy));
+      if (!this.frozen) this.weatherFX.update(this.game.loop.delta, this.cameras.main, (wx, wy) => this.isWaterAtScreen(wx, wy));
       this.pe("litWeather");
       // Aurora eases on the same ~4s roll (the curtains breathe in).
       const auroraTo = this.auroraOn ? 1 : 0;
@@ -12739,7 +12892,10 @@ export class WorldScene extends Phaser.Scene {
        * layer; the copy just has to show the same part of it, which is exactly
        * what bodies do with `coverY` in syncLitCopy. Computed ONCE per rebuild:
        * both the piece and the terrain are static. */
-      if (lo.cover !== undefined && lo.cover !== Infinity) {
+      if (this.occDepth) {
+        if (lo.img.isCropped) lo.img.setCrop();
+        if (lo.fog?.isCropped) lo.fog.setCrop();
+      } else if (lo.cover !== undefined && lo.cover !== Infinity) {
         const im = lo.img;
         const cropH = (lo.cover - im.y) / (im.scaleY || 1);
         if (cropH <= 0) {
@@ -14043,6 +14199,13 @@ export class WorldScene extends Phaser.Scene {
     const r = this.resolveDrawDepth(b, lvl);
     b.coverY = r.coverY;
     b.sprite.setDepth(r.depth);
+    if (this.occDepth) {
+      // The per-pixel test runs only where the cover rule says a column
+      // overlaps the art box; an uncovered body draws plain (mode 0).
+      b.tdFloor = lvl;
+      b.tdMode = r.coverY !== undefined ? 1 : 0;
+      this.tdArmLayer(b.sprite, b);
+    }
     // The depth is final here, and `depth > sprite.depth` is what the cover
     // surfaces filter occluders on — so the slot registers LAST, and in this
     // one function rather than in either consumer (see registerCoverSlot).
@@ -14119,6 +14282,7 @@ export class WorldScene extends Phaser.Scene {
       .setAlpha(1 - airFrac * 0.35)
       .setDisplaySize(w - airFrac * shrinkW, h - airFrac * shrinkH)
       .setDepth(b.sprite.depth - 0.1);
+    if (this.occDepth) this.tdArmFlat(b.shadow, targetElevPx / this.geom.lh, b.tdMode ?? 0, tdCell(b.fx / CELL_WU, b.fy / CELL_WU));
   }
 
   /** Lit copy for ANY body (player or monster): the sprite re-drawn ABOVE the
@@ -14180,7 +14344,7 @@ export class WorldScene extends Phaser.Scene {
     // being a discipline two call sites have to keep and becomes a property of
     // the framebuffer. (It also kills the dark band the flat line left across
     // visible legs, which only ever showed at Night.)
-    const slot = this.coverSlotOf(b);
+    const slot = this.occDepth ? undefined : this.coverSlotOf(b);
     const fw = sp.frame.cutWidth;
     const fh = sp.frame.cutHeight;
     b.lit
@@ -14196,7 +14360,11 @@ export class WorldScene extends Phaser.Scene {
       .setDepth(litDepth(sp.depth))
       .setAlpha(sp.alpha * rf) // a body fading with the cut takes its copy with it
       .setTint((r << 16) | (g << 8) | bl);
-    if (slot) {
+    if (this.occDepth) {
+      // THE DEPTH PATH: the copy is the sprite again, tested per pixel.
+      if (b.lit.isCropped) b.lit.setCrop();
+      this.tdArmLayer(b.lit, b);
+    } else if (slot) {
       if (b.lit.isCropped) b.lit.setCrop();
     } else if (b.coverY !== undefined) {
       // FALLBACK: frame-space y of the occluding wall's top line.
@@ -14227,6 +14395,7 @@ export class WorldScene extends Phaser.Scene {
         const cc = (b.lit as unknown as { _crop: { width: number; height: number } })._crop;
         fg.setCrop(0, 0, cc?.width ?? b.lit.frame.cutWidth, cc?.height ?? b.lit.frame.cutHeight);
       } else if (fg.isCropped) fg.setCrop();
+      if (this.occDepth) this.tdArmLayer(fg, b);
     } else b.fog?.setVisible(false);
     return l;
   }
@@ -18579,6 +18748,13 @@ export class WorldScene extends Phaser.Scene {
     if (!t3 || !world || !tex) return 0;
     const { dx, dy, lh, tile: tileSize } = this.geom;
     let culled = 0;
+    /* THE DEPTH PATH ISSUES NO IMAGES (terraindepth.ts): the meta alone is
+     * built — it still answers the cover rule, the scenery and campfire crops. */
+    const occ = this.occDepth
+      ? (_k: string, _x: number, _y: number, _d: number, _c: number, _r: number, _role: string) => {}
+      : (k: string, x: number, y: number, d: number, c: number, r: number, role: string) => {
+          this.occluders.push(this.occTint(this.occImage(k, x, y, d, c, r), role));
+        };
     for (let v = v0; v <= v1; v++) {
       for (let u = u0; u <= u1; u++) {
         if ((u + v) & 1) continue;
@@ -18635,7 +18811,7 @@ export class WorldScene extends Phaser.Scene {
                 culled++;
                 continue;
               }
-              this.occluders.push(this.occTint(this.occImage(op.key, bx, op.y, oDepth, col, row), "deck"));
+              occ(op.key, bx, op.y, oDepth, col, row, "deck");
             }
             this.occluderMeta.push({
               col, row, top: d.level, solid: false, depth: oDepth, stand: d.level,
@@ -18690,7 +18866,7 @@ export class WorldScene extends Phaser.Scene {
            * mountain on the maintainer's screen, with the correctly varied
            * ground texture painted underneath it and covered. */
           const faceArt = t3FaceKeyAt(this.t3tm, cell, lvl) ?? fk;
-          this.occluders.push(this.occTint(this.occImage(faceArt, bx, by - lvl * lh, oDepth, col, row), "face"));
+          occ(faceArt, bx, by - lvl * lh, oDepth, col, row, "face");
         }
         /* THE CAP IS PASTED WHERE THE GROUND PASS PASTES IT. A surface is a
          * 64x46 plate anchored at the cell's own `sy`; a wall course is 64x64
@@ -18717,9 +18893,9 @@ export class WorldScene extends Phaser.Scene {
            * ground texture, so the two passes agree. */
           const lid = topL < cell.level ? t3CutLidKey(tex, cell) : null;
           const capKey = topL === cell.level ? topKey : lid && capSurface !== null ? lid : fk;
-          this.occluders.push(this.occTint(this.occImage(capKey, capX, capY, oDepth, col, row), "cap"));
+          occ(capKey, capX, capY, oDepth, col, row, "cap");
           if (lid && capSurface === null)
-            this.occluders.push(this.occTint(this.occImage(lid, cell.sx, (cell.pasteY ?? cell.sy) + (cell.level - topL) * lh, oDepth, col, row), "cap"));
+            occ(lid, cell.sx, (cell.pasteY ?? cell.sy) + (cell.level - topL) * lh, oDepth, col, row, "cap");
           /* AND THE SET SURFACE OVER A DRESSED WALL'S CAP — the second image
            * the ground pass paints on such a cell (`cellOps`: stack, then the
            * surface at its own anchor). A review course's top is one flat
@@ -18729,7 +18905,7 @@ export class WorldScene extends Phaser.Scene {
            * See `dressKey`. Full-height columns only, like everything below. */
           if (topL === cell.level) {
             const dk = this.t3Try(`occ dress ${col},${row}`, () => t3DressKey(tex, cell), null);
-            if (dk) this.occluders.push(this.occTint(this.occImage(dk.key, dk.x, dk.y, oDepth, col, row), "cap"));
+            if (dk) occ(dk.key, dk.x, dk.y, oDepth, col, row, "cap");
           }
           /* THE CAP WEARS ITS TRANSITION HERE TOO — and not doing so is the
            * whole of "the transition only works on level 0" (maintainer, for
@@ -18765,7 +18941,7 @@ export class WorldScene extends Phaser.Scene {
             const obop = this.t3Try(`occ boundary ${col},${row}`, () => tex.opsForBoundary(ob), null);
             // `obop` carries the boundary's own absolute paste point (the same
             // one the ground pass blits it at) — never re-derive it here.
-            if (obop) this.occluders.push(this.occTint(this.occImage(obop.key, obop.x, obop.y, oDepth, col, row), "boundary"));
+            if (obop) occ(obop.key, obop.x, obop.y, oDepth, col, row, "boundary");
           }
           /* AND THE CAP WEARS ITS FADE AND ITS WALL-FOOT BAND, for exactly the
            * reason it wears its transition: the ground pass paints them into
@@ -18783,7 +18959,7 @@ export class WorldScene extends Phaser.Scene {
             const extra = this.t3Try(`occ overlay ${col},${row}`, () => tex.overlayOps(cell), null);
             if (extra)
               for (const op of extra)
-                this.occluders.push(this.occTint(this.occImage(op.key, op.x, op.y, oDepth, col, row), op.role));
+                occ(op.key, op.x, op.y, oDepth, col, row, op.role);
           }
         } else culled++;
         // The roof over a wall top — see capDecks above. Only on a column drawn
@@ -18795,7 +18971,7 @@ export class WorldScene extends Phaser.Scene {
                 culled++;
                 continue;
               }
-              this.occluders.push(this.occTint(this.occImage(op.key, bx, op.y, oDepth, col, row), "deck"));
+              occ(op.key, bx, op.y, oDepth, col, row, "deck");
             }
         this.occluderMeta.push({
           col, row, top: topL, solid: false, depth: oDepth,
@@ -18925,6 +19101,95 @@ export class WorldScene extends Phaser.Scene {
    *  scenes) and wire it to this scene's night ledger. A shader that fails to
    *  compile throws here and the scenery keeps its flat tint — nothing else
    *  depends on it. */
+  private ensureTerrainDepthPipeline(): void {
+    if (this.tdPipe || this.game.renderer.type !== Phaser.WEBGL) return;
+    try {
+      const pm = (this.game.renderer as Phaser.Renderer.WebGL.WebGLRenderer).pipelines;
+      const have = (pm.has(TERRAIN_DEPTH_PIPELINE) ? pm.get(TERRAIN_DEPTH_PIPELINE) : null) as unknown as TerrainDepthPipeline | null;
+      const pipe =
+        have ?? (pm.add(TERRAIN_DEPTH_PIPELINE, new TerrainDepthPipeline(this.game) as unknown as Phaser.Renderer.WebGL.WebGLPipeline) as unknown as TerrainDepthPipeline);
+      pipe.night = this.night ?? null;
+      this.tdPipe = pipe;
+    } catch (e) {
+      console.warn("terrain-depth pipeline unavailable, occluder sprites stay", e);
+      this.occDepth = false;
+    }
+  }
+
+  /** Arm one body layer with the depth test: the body's flat line, its
+   *  standing level and the mode (see terraindepth.ts). */
+  private tdArmLayer(img: Phaser.GameObjects.Image | Phaser.GameObjects.Sprite, b: BodyVisual, mode = b.tdMode ?? 0): void {
+    this.tdArmImage(img, b.lyFlat, b.tdFloor ?? 0, mode, tdCell(b.fx / CELL_WU, b.fy / CELL_WU));
+  }
+
+  /** Any billboard image (a body layer, a scenery base image) through the
+   *  depth pipeline with its flat line, floor level and mode. */
+  private tdArmImage(img: Phaser.GameObjects.Image | Phaser.GameObjects.Sprite, flatY: number, floor: number, mode: number, vCell: number): void {
+    const pipe = this.tdPipe as unknown as Phaser.Renderer.WebGL.WebGLPipeline | null;
+    if (!pipe) return;
+    let pd = img.pipelineData as { td?: TerrainDepthData } | undefined;
+    if (img.pipeline !== pipe || !pd?.td) {
+      img.setPipeline(pipe, { td: terrainDepthData() }, false);
+      pd = img.pipelineData as { td: TerrainDepthData };
+    }
+    tdBillboard(pd.td!, flatY, floor, this.geom.lh, mode, vCell);
+  }
+
+  /** A scenery lit copy and its fog silhouette: on the scenery-lit pipeline
+   *  the test rides the shape data (`td`); a copy that pipeline could not
+   *  shape takes the depth pipeline instead. */
+  private tdArmScenery(lo: (typeof this.litOccluders)[number], flatY: number, floor: number, mode: number, vCell: number): void {
+    const sl = this.sceneryLitPipe as unknown as Phaser.Renderer.WebGL.WebGLPipeline | null;
+    if (lo.shape && sl && lo.img.pipeline === sl) {
+      const td = (lo.shape.td ??= terrainDepthData());
+      tdBillboard(td, flatY, floor, this.geom.lh, mode, vCell);
+      if (lo.fog && lo.fog.pipeline === sl && (lo.fog.pipelineData as { td?: TerrainDepthData } | undefined)?.td !== td)
+        lo.fog.setPipeline(sl, { td }, false);
+      return;
+    }
+    this.tdArmImage(lo.img, flatY, floor, mode, vCell);
+    if (lo.fog) this.tdArmImage(lo.fog, flatY, floor, mode, vCell);
+  }
+
+  /** A ground decal (the shadow) at height z levels. */
+  private tdArmFlat(img: Phaser.GameObjects.Image, z: number, mode: number, vCell: number): void {
+    const pipe = this.tdPipe as unknown as Phaser.Renderer.WebGL.WebGLPipeline | null;
+    if (!pipe) return;
+    let pd = img.pipelineData as { td?: TerrainDepthData } | undefined;
+    if (img.pipeline !== pipe || !pd?.td) {
+      img.setPipeline(pipe, { td: terrainDepthData() }, false);
+      pd = img.pipelineData as { td: TerrainDepthData };
+    }
+    tdFlat(pd.td!, z, mode, vCell);
+  }
+
+  /** `__ml.occDepth(on)` — flip the occlusion path live. Off: every body layer
+   *  goes back to the plain pipeline and the next rebuild re-issues the
+   *  occluder sprites; on: the rebuild issues none. */
+  private setOccDepth(on: boolean): void {
+    if (on === this.occDepth) return;
+    this.occDepth = on;
+    try {
+      localStorage.setItem("ml-occ-path", on ? "depth" : "sprites");
+    } catch {
+      /* storage blocked: the flip still holds for this session */
+    }
+    if (on) this.ensureTerrainDepthPipeline();
+    else {
+      const reset = (b: BodyVisual) => {
+        b.sprite.resetPipeline();
+        b.lit?.resetPipeline();
+        b.fog?.resetPipeline();
+        b.shadow?.resetPipeline();
+        b.hidden?.resetPipeline();
+      };
+      for (const av of this.avatars.values()) reset(av);
+      for (const mv of this.monsters.values()) reset(mv);
+      for (const nv of this.npcs.values()) reset(nv);
+    }
+    this.lastOccl = { x: NaN, y: NaN };
+  }
+
   private ensureSceneryLitPipeline(): void {
     if (this.sceneryLitPipe || this.game.renderer.type !== Phaser.WEBGL) return;
     try {
@@ -18934,6 +19199,7 @@ export class WorldScene extends Phaser.Scene {
         have ?? (pm.add(SCENERY_LIT_PIPELINE, new SceneryLitPipeline(this.game) as unknown as Phaser.Renderer.WebGL.WebGLPipeline) as unknown as SceneryLitPipeline);
       pipe.dx = this.geom.dx;
       pipe.lh = this.geom.lh;
+      pipe.night = this.night ?? null;
       // ONE ledger: the frame's lights exactly as the night pass uploads them,
       // re-based on my own cell so a mediump phone GPU keeps sub-cell accuracy.
       const frame: { pos: Float32Array; col: Float32Array; n: number; sun: [number, number, number, number]; time: number; orgX: number; orgY: number } = {
@@ -19789,6 +20055,16 @@ export class WorldScene extends Phaser.Scene {
         r.lo.cover = d.coverY ?? Infinity;
         r.lo.img.setDepth(litDepth(d.depth));
         r.lo.fog?.setDepth(litDepth(d.depth));
+      }
+      if (this.occDepth) {
+        // THE DEPTH PATH: the piece is a billboard on its tread level, tested
+        // per pixel where the cover rule says terrain overlaps it — base image,
+        // lit copy (through its own pipeline) and fog silhouette alike.
+        const mode = d.coverY !== undefined ? 1 : 0;
+        const flatY = r.hbDepth - 0.5;
+        const vCell = tdCell(r.fx / CELL_WU, r.fy / CELL_WU);
+        this.tdArmImage(r.img, flatY, r.lvl, mode, vCell);
+        if (r.lo) this.tdArmScenery(r.lo, flatY, r.lvl, mode, vCell);
       }
     }
     this.t3stats.scenery = drawn;

@@ -2,6 +2,14 @@
 
 The ground render texture (scroll, slices, cell repaints, prefetch, compose budget), the pooled occluders, the capture pool, and how the perf beacon is read. Moved verbatim out of `games2/CLAUDE.md` (2026-09-09), which keeps the law and points here; the measurements, traps and rejected approaches live in this file. Rewrite in place under the root doc law.
 
+- **THE OCCLUDER SET GOES AWAY UNDER `?occ=depth`** (`docs/depth-sort.md`,
+  the render retake, 2026-09-12): the last beacon run (bf040ae1) put 95 of
+  140 long frames on `rebuildOccluders` — `tiles3Occluders` 80% of a 50-60 ms
+  rebuild every 96 px of camera travel — and the render section at 6.7 ms
+  over 7.6k display objects. The depth path issues NO occluder images and
+  tests bodies per pixel in their own shader; the pooling below is the
+  sprite path's, kept while it is the default. A/B on his phone: two beacon
+  runs, `?occ=sprites` and `?occ=depth`, `scripts/perf-read.mjs --diff`.
 - **THE OCCLUDER SET IS POOLED, NOT REBUILT** (`occImage`, `destroyBatch`,
   2026-09-02). A rebuild used to destroy every image and create every image,
   and 90-95% of what it created was bit-identical to what it had just
