@@ -10,17 +10,15 @@
   "prompt": "snow, a frozen puddle in the middle, snow all around the edge",
   "palette_top": "#ebf4f6",
   "tile_id": "983c1c7d-5767-4afe-a277-40e98a17711e",
-  "n_tiles": 16,
+  "n_tiles": 14,
   "tiles": [
     "tile_00.webp",
     "tile_01.webp",
     "tile_02.webp",
-    "tile_03.webp",
     "tile_04.webp",
     "tile_05.webp",
     "tile_06.webp",
     "tile_07.webp",
-    "tile_08.webp",
     "tile_09.webp",
     "tile_10.webp",
     "tile_11.webp",
@@ -128,5 +126,17 @@
   },
   "motif": "a frozen puddle",
   "motif_source": "tiles/config/details.json",
-  "walkable": true
+  "walkable": true,
+  "removed": {
+    "tile_03.webp": {
+      "status": "rejected",
+      "at": "2026-09-12T16:46:24+00:00",
+      "record": "tiles/tops/removed.json"
+    },
+    "tile_08.webp": {
+      "status": "rejected",
+      "at": "2026-09-12T16:46:24+00:00",
+      "record": "tiles/tops/removed.json"
+    }
+  }
 }

@@ -10,7 +10,7 @@
   "prompt": "water, a lily pad in the middle, water all around the edge",
   "palette_top": "#7eb7c7",
   "tile_id": "fa68ed71-a3e1-4bac-915a-777ae27ac638",
-  "n_tiles": 16,
+  "n_tiles": 14,
   "tiles": [
     "tile_00.webp",
     "tile_01.webp",
@@ -25,9 +25,7 @@
     "tile_10.webp",
     "tile_11.webp",
     "tile_12.webp",
-    "tile_13.webp",
-    "tile_14.webp",
-    "tile_15.webp"
+    "tile_13.webp"
   ],
   "settings": {
     "tile_size": 64,
@@ -128,5 +126,17 @@
   },
   "motif": "a lily pad",
   "motif_source": "tiles/config/details.json",
-  "walkable": true
+  "walkable": true,
+  "removed": {
+    "tile_14.webp": {
+      "status": "rejected",
+      "at": "2026-09-12T16:46:24+00:00",
+      "record": "tiles/tops/removed.json"
+    },
+    "tile_15.webp": {
+      "status": "rejected",
+      "at": "2026-09-12T16:46:24+00:00",
+      "record": "tiles/tops/removed.json"
+    }
+  }
 }

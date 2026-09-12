@@ -10,22 +10,15 @@
   "prompt": "beautiful craggy grey stone, medium grey, rough and mottled, deep shadow, rich detail",
   "palette_top": "#808082",
   "tile_id": "7542452e-6ba6-4114-9d26-27fd0e256e8d",
-  "n_tiles": 16,
+  "n_tiles": 9,
   "tiles": [
     "tile_00.webp",
     "tile_01.webp",
-    "tile_02.webp",
     "tile_03.webp",
     "tile_04.webp",
-    "tile_05.webp",
-    "tile_06.webp",
     "tile_07.webp",
-    "tile_08.webp",
     "tile_09.webp",
-    "tile_10.webp",
-    "tile_11.webp",
     "tile_12.webp",
-    "tile_13.webp",
     "tile_14.webp",
     "tile_15.webp"
   ],
@@ -125,5 +118,42 @@
     ],
     "mean_colours": 13.81,
     "mean_dominant_share": 0.5478
+  },
+  "removed": {
+    "tile_02.webp": {
+      "status": "rejected",
+      "at": "2026-09-12T16:46:23+00:00",
+      "record": "tiles/tops/removed.json"
+    },
+    "tile_05.webp": {
+      "status": "rejected",
+      "at": "2026-09-12T16:46:23+00:00",
+      "record": "tiles/tops/removed.json"
+    },
+    "tile_06.webp": {
+      "status": "rejected",
+      "at": "2026-09-12T16:46:23+00:00",
+      "record": "tiles/tops/removed.json"
+    },
+    "tile_08.webp": {
+      "status": "rejected",
+      "at": "2026-09-12T16:46:23+00:00",
+      "record": "tiles/tops/removed.json"
+    },
+    "tile_10.webp": {
+      "status": "rejected",
+      "at": "2026-09-12T16:46:23+00:00",
+      "record": "tiles/tops/removed.json"
+    },
+    "tile_11.webp": {
+      "status": "rejected",
+      "at": "2026-09-12T16:46:23+00:00",
+      "record": "tiles/tops/removed.json"
+    },
+    "tile_13.webp": {
+      "status": "rejected",
+      "at": "2026-09-12T16:46:23+00:00",
+      "record": "tiles/tops/removed.json"
+    }
   }
 }

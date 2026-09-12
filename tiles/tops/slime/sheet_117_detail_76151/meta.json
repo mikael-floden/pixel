@@ -10,7 +10,7 @@
   "prompt": "slime, a sunken bone in the middle, slime all around the edge",
   "palette_top": "#31bd75",
   "tile_id": "21488530-73fe-46ab-a6df-7086726d4e58",
-  "n_tiles": 16,
+  "n_tiles": 15,
   "tiles": [
     "tile_00.webp",
     "tile_01.webp",
@@ -24,7 +24,6 @@
     "tile_09.webp",
     "tile_10.webp",
     "tile_11.webp",
-    "tile_12.webp",
     "tile_13.webp",
     "tile_14.webp",
     "tile_15.webp"
@@ -128,5 +127,12 @@
   },
   "motif": "a sunken bone",
   "motif_source": "tiles/config/details.json",
-  "walkable": true
+  "walkable": true,
+  "removed": {
+    "tile_12.webp": {
+      "status": "rejected",
+      "at": "2026-09-12T16:46:24+00:00",
+      "record": "tiles/tops/removed.json"
+    }
+  }
 }

@@ -10,22 +10,11 @@
   "prompt": "beautiful sunlit beach sand, warm pale gold, rippled and varied, lots of detail",
   "palette_top": "#e4c495",
   "tile_id": "1da57175-92b2-4257-81ba-21e730108ca1",
-  "n_tiles": 16,
+  "n_tiles": 5,
   "tiles": [
     "tile_00.webp",
-    "tile_01.webp",
-    "tile_02.webp",
     "tile_03.webp",
-    "tile_04.webp",
-    "tile_05.webp",
-    "tile_06.webp",
-    "tile_07.webp",
     "tile_08.webp",
-    "tile_09.webp",
-    "tile_10.webp",
-    "tile_11.webp",
-    "tile_12.webp",
-    "tile_13.webp",
     "tile_14.webp",
     "tile_15.webp"
   ],
@@ -125,5 +114,62 @@
     ],
     "mean_colours": 8.25,
     "mean_dominant_share": 0.5106
+  },
+  "removed": {
+    "tile_01.webp": {
+      "status": "rejected",
+      "at": "2026-09-12T16:46:23+00:00",
+      "record": "tiles/tops/removed.json"
+    },
+    "tile_02.webp": {
+      "status": "rejected",
+      "at": "2026-09-12T16:46:23+00:00",
+      "record": "tiles/tops/removed.json"
+    },
+    "tile_04.webp": {
+      "status": "rejected",
+      "at": "2026-09-12T16:46:23+00:00",
+      "record": "tiles/tops/removed.json"
+    },
+    "tile_05.webp": {
+      "status": "rejected",
+      "at": "2026-09-12T16:46:23+00:00",
+      "record": "tiles/tops/removed.json"
+    },
+    "tile_06.webp": {
+      "status": "rejected",
+      "at": "2026-09-12T16:46:23+00:00",
+      "record": "tiles/tops/removed.json"
+    },
+    "tile_07.webp": {
+      "status": "rejected",
+      "at": "2026-09-12T16:46:23+00:00",
+      "record": "tiles/tops/removed.json"
+    },
+    "tile_09.webp": {
+      "status": "rejected",
+      "at": "2026-09-12T16:46:23+00:00",
+      "record": "tiles/tops/removed.json"
+    },
+    "tile_10.webp": {
+      "status": "rejected",
+      "at": "2026-09-12T16:46:23+00:00",
+      "record": "tiles/tops/removed.json"
+    },
+    "tile_11.webp": {
+      "status": "rejected",
+      "at": "2026-09-12T16:46:23+00:00",
+      "record": "tiles/tops/removed.json"
+    },
+    "tile_12.webp": {
+      "status": "rejected",
+      "at": "2026-09-12T16:46:23+00:00",
+      "record": "tiles/tops/removed.json"
+    },
+    "tile_13.webp": {
+      "status": "rejected",
+      "at": "2026-09-12T16:46:23+00:00",
+      "record": "tiles/tops/removed.json"
+    }
   }
 }

@@ -10,7 +10,7 @@
   "prompt": "snow, bird footprints in the middle, snow all around the edge",
   "palette_top": "#ebf4f6",
   "tile_id": "285b5c0f-f3ff-46f3-a2d5-14345e5ebe7d",
-  "n_tiles": 16,
+  "n_tiles": 10,
   "tiles": [
     "tile_00.webp",
     "tile_01.webp",
@@ -21,13 +21,7 @@
     "tile_06.webp",
     "tile_07.webp",
     "tile_08.webp",
-    "tile_09.webp",
-    "tile_10.webp",
-    "tile_11.webp",
-    "tile_12.webp",
-    "tile_13.webp",
-    "tile_14.webp",
-    "tile_15.webp"
+    "tile_09.webp"
   ],
   "settings": {
     "tile_size": 64,
@@ -128,5 +122,37 @@
   },
   "motif": "bird footprints",
   "motif_source": "tiles/config/details.json",
-  "walkable": true
+  "walkable": true,
+  "removed": {
+    "tile_10.webp": {
+      "status": "rejected",
+      "at": "2026-09-12T16:46:24+00:00",
+      "record": "tiles/tops/removed.json"
+    },
+    "tile_11.webp": {
+      "status": "rejected",
+      "at": "2026-09-12T16:46:24+00:00",
+      "record": "tiles/tops/removed.json"
+    },
+    "tile_12.webp": {
+      "status": "rejected",
+      "at": "2026-09-12T16:46:24+00:00",
+      "record": "tiles/tops/removed.json"
+    },
+    "tile_13.webp": {
+      "status": "rejected",
+      "at": "2026-09-12T16:46:24+00:00",
+      "record": "tiles/tops/removed.json"
+    },
+    "tile_14.webp": {
+      "status": "rejected",
+      "at": "2026-09-12T16:46:24+00:00",
+      "record": "tiles/tops/removed.json"
+    },
+    "tile_15.webp": {
+      "status": "rejected",
+      "at": "2026-09-12T16:46:24+00:00",
+      "record": "tiles/tops/removed.json"
+    }
+  }
 }

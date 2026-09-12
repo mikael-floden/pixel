@@ -10,10 +10,8 @@
   "prompt": "deep water, a drifting jellyfish in the middle, deep water all around the edge",
   "palette_top": "#162843",
   "tile_id": "6fbd33e9-8cc3-4512-aa77-a9e3eb8ee435",
-  "n_tiles": 1,
-  "tiles": [
-    "tile_08.webp"
-  ],
+  "n_tiles": 0,
+  "tiles": [],
   "settings": {
     "tile_size": 64,
     "tile_view": "high top-down",
@@ -188,6 +186,11 @@
     "tile_15.webp": {
       "status": "rejected",
       "at": "2026-09-12T05:05:30+00:00",
+      "record": "tiles/tops/removed.json"
+    },
+    "tile_08.webp": {
+      "status": "rejected",
+      "at": "2026-09-12T16:46:23+00:00",
       "record": "tiles/tops/removed.json"
     }
   }

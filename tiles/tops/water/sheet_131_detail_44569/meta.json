@@ -10,10 +10,8 @@
   "prompt": "water, a lone cattail in the middle, water all around the edge",
   "palette_top": "#7eb7c7",
   "tile_id": "916d07fe-e5f4-42e5-9cf9-29492435a1b9",
-  "n_tiles": 16,
+  "n_tiles": 14,
   "tiles": [
-    "tile_00.webp",
-    "tile_01.webp",
     "tile_02.webp",
     "tile_03.webp",
     "tile_04.webp",
@@ -128,5 +126,17 @@
   },
   "motif": "a lone cattail",
   "motif_source": "tiles/config/details.json",
-  "walkable": true
+  "walkable": true,
+  "removed": {
+    "tile_00.webp": {
+      "status": "rejected",
+      "at": "2026-09-12T16:46:24+00:00",
+      "record": "tiles/tops/removed.json"
+    },
+    "tile_01.webp": {
+      "status": "rejected",
+      "at": "2026-09-12T16:46:24+00:00",
+      "record": "tiles/tops/removed.json"
+    }
+  }
 }

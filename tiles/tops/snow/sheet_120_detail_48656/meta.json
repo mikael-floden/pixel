@@ -10,7 +10,7 @@
   "prompt": "snow, a dropped berry in the middle, snow all around the edge",
   "palette_top": "#ebf4f6",
   "tile_id": "6718f4f8-6d88-45d4-aa2a-e42580376420",
-  "n_tiles": 16,
+  "n_tiles": 14,
   "tiles": [
     "tile_00.webp",
     "tile_01.webp",
@@ -20,14 +20,12 @@
     "tile_05.webp",
     "tile_06.webp",
     "tile_07.webp",
-    "tile_08.webp",
     "tile_09.webp",
     "tile_10.webp",
     "tile_11.webp",
     "tile_12.webp",
     "tile_13.webp",
-    "tile_14.webp",
-    "tile_15.webp"
+    "tile_14.webp"
   ],
   "settings": {
     "tile_size": 64,
@@ -128,5 +126,17 @@
   },
   "motif": "a dropped berry",
   "motif_source": "tiles/config/details.json",
-  "walkable": true
+  "walkable": true,
+  "removed": {
+    "tile_08.webp": {
+      "status": "rejected",
+      "at": "2026-09-12T16:46:24+00:00",
+      "record": "tiles/tops/removed.json"
+    },
+    "tile_15.webp": {
+      "status": "rejected",
+      "at": "2026-09-12T16:46:24+00:00",
+      "record": "tiles/tops/removed.json"
+    }
+  }
 }
