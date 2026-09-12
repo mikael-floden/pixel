@@ -125,7 +125,7 @@ for (const [c, r] of SPOTS) {
   await page.evaluate(() => window.__ml.tdDebug(0));
   const m = compare(a1, b, mask);
   const tag = `${c},${r}`;
-  console.log(`spot ${tag}: sprites-vs-depth ${fmt(m)} | ${fmtTested(m)} | baseline ${fmt(base)} | pipe ${probe.pipe} quads ${probe.quads} tested ${probe.tested} occluders ${probe.occluders}`);
+  console.log(`spot ${tag}: sprites-vs-depth ${fmt(m)} | ${fmtTested(m)} | baseline ${fmt(base)} | pipe ${probe.pipe} quads ${probe.quads} tested ${probe.tested} (${probe.testedPx}px) scenery ${probe.scnTested} (${probe.scnPx}px) occluders ${probe.occluders}`);
   if (OUT) {
     fs.writeFileSync(path.join(OUT, `rr-${tag}-sprites.png`), PNG.sync.write(a1));
     fs.writeFileSync(path.join(OUT, `rr-${tag}-depth.png`), PNG.sync.write(b));

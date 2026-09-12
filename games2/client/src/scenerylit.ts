@@ -293,6 +293,9 @@ export class SceneryLitPipeline extends Phaser.Renderer.WebGL.Pipelines.MultiPip
   /** Of which shaped (a shape map was bound). */
   shapedQuads = 0;
   lightsFed = 0;
+  /** Depth-tested quads this frame and their screen area (the beacon's tdScn). */
+  tdQuads = 0;
+  tdPx = 0;
 
   constructor(game: Phaser.Game) {
     super({
@@ -335,6 +338,8 @@ export class SceneryLitPipeline extends Phaser.Renderer.WebGL.Pipelines.MultiPip
     this.lastUpload = frame;
     this.quads = 0;
     this.shapedQuads = 0;
+    this.tdQuads = 0;
+    this.tdPx = 0;
     this.tdUnits = uploadTerrainUniforms(this, this.night, this.tdEps);
     const f = this.source?.() ?? null;
     this.set1f("uOn", this.shade);
@@ -478,6 +483,10 @@ export class SceneryLitPipeline extends Phaser.Renderer.WebGL.Pipelines.MultiPip
     this.currentBatch!.count = this.vertexCount - this.currentBatch!.start;
     this.quads++;
     if (shaped) this.shapedQuads++;
+    if (td && td[3] > 0) {
+      this.tdQuads++;
+      this.tdPx += Math.abs((x2 - x0) * (y2 - y0));
+    }
     this.onBatch(gameObject ?? undefined);
     return hasFlushed;
   }

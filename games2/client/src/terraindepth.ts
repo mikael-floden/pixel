@@ -271,9 +271,11 @@ export class TerrainDepthPipeline extends Phaser.Renderer.WebGL.Pipelines.MultiP
   private lastUpload = -1;
   private white: TexWrap | null = null;
   private texUnits: TexWrap[] = [];
-  /** Quads batched this frame, and of them tested (probe). */
+  /** Quads batched this frame, of them tested, and the tested quads' screen
+   *  area in px (the fragments the walk may run on — the beacon's tdPx). */
   quads = 0;
   testedQuads = 0;
+  testedPx = 0;
 
   constructor(game: Phaser.Game) {
     super({
@@ -306,6 +308,7 @@ export class TerrainDepthPipeline extends Phaser.Renderer.WebGL.Pipelines.MultiP
     this.lastUpload = frame;
     this.quads = 0;
     this.testedQuads = 0;
+    this.testedPx = 0;
     this.white = this.renderer.whiteTexture as TexWrap;
     this.set1f("uTdDbg", this.dbg);
     this.texUnits = uploadTerrainUniforms(this, this.night, this.eps);
@@ -383,7 +386,10 @@ export class TerrainDepthPipeline extends Phaser.Renderer.WebGL.Pipelines.MultiP
     this.vertexCount += 6;
     this.currentBatch!.count = this.vertexCount - this.currentBatch!.start;
     this.quads++;
-    if (mode > 0) this.testedQuads++;
+    if (mode > 0) {
+      this.testedQuads++;
+      this.testedPx += Math.abs((x2 - x0) * (y2 - y0));
+    }
     this.onBatch(gameObject ?? undefined);
     return hasFlushed;
   }

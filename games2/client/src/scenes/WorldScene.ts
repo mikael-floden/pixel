@@ -2228,6 +2228,12 @@ export class WorldScene extends Phaser.Scene {
       longMs: +longMs.toFixed(0),
       occMean: Math.round(occN),
       dlMean: Math.round(dlN),
+      // The depth path's GPU load last frame: tested quads and their screen
+      // area (px) on the body pipeline, and on the scenery-lit one.
+      tdTested: this.tdPipe?.testedQuads ?? 0,
+      tdPx: Math.round(this.tdPipe?.testedPx ?? 0),
+      tdScn: this.sceneryLitPipe?.tdQuads ?? 0,
+      tdScnPx: Math.round(this.sceneryLitPipe?.tdPx ?? 0),
     };
     const netTake = netPerfTake();
     const texUp = texUploadTake(secs);
@@ -5114,7 +5120,7 @@ export class WorldScene extends Phaser.Scene {
       occDepth: (on?: boolean) => {
         if (on !== undefined) this.setOccDepth(on);
         const p = this.tdPipe;
-        return { on: this.occDepth, pipe: !!p, quads: p?.quads ?? 0, tested: p?.testedQuads ?? 0, occluders: this.occluders.length };
+        return { on: this.occDepth, pipe: !!p, quads: p?.quads ?? 0, tested: p?.testedQuads ?? 0, testedPx: Math.round(p?.testedPx ?? 0), scnTested: this.sceneryLitPipe?.tdQuads ?? 0, scnPx: Math.round(this.sceneryLitPipe?.tdPx ?? 0), occluders: this.occluders.length };
       },
       /** `tdDebug(1)`: every depth-tested body pixel paints WHY it is hidden
        *  (red a nearer deck top, green the own column's slab, blue terrain). */
@@ -8994,9 +9000,11 @@ export class WorldScene extends Phaser.Scene {
       .setVisible(true);
     if (this.occDepth) {
       // THE DEPTH PATH: the whole ring, drawn only where terrain hides the
-      // body (mode 2 — the inverse of the copy's test, on the same pixels).
+      // body (mode 2 — the inverse of the copy's test, on the same pixels);
+      // a body no terrain covers draws no terrain ring at all.
       if (img.isCropped) img.setCrop();
-      this.tdArmLayer(img, b, 2);
+      if ((b.tdMode ?? 0) > 0) this.tdArmLayer(img, b, 2);
+      else img.setVisible(false);
       let scn = b.hiddenScn;
       if (scnSlot) {
         if (!scn) scn = b.hiddenScn = this.add.image(0, 0, this.coverO!.key).setVisible(false);
@@ -14252,10 +14260,14 @@ export class WorldScene extends Phaser.Scene {
     b.coverY = r.coverY;
     b.sprite.setDepth(r.depth);
     if (this.occDepth) {
-      // The per-pixel test runs only where the cover rule says a column
-      // overlaps the art box; an uncovered body draws plain (mode 0).
+      // The per-pixel test runs only where the cover rule says TERRAIN
+      // overlaps the art box (a piece covering the body is painter order);
+      // an untested body stays on the plain pipeline (mode 0 = no pipeline —
+      // measured on his phone: every body on this pipeline doubled the
+      // flushes per frame, and the walk on every covered pixel took the
+      // frame from 20 to 30 ms).
       b.tdFloor = lvl;
-      b.tdMode = r.coverY !== undefined ? 1 : 0;
+      b.tdMode = r.coverTerrain ? 1 : 0;
       this.tdArmLayer(b.sprite, b);
     }
     // The depth is final here, and `depth > sprite.depth` is what the cover
@@ -14283,10 +14295,11 @@ export class WorldScene extends Phaser.Scene {
     v: { sprite: Phaser.GameObjects.Image; lx: number; lyFlat: number; ly: number; fx: number; fy: number; cx0?: number; cx1?: number },
     lvl: number,
     self?: unknown,
-  ): { depth: number; coverY: number | undefined } {
+  ): { depth: number; coverY: number | undefined; coverTerrain: boolean } {
     const b = v;
     let depth = b.lyFlat + 0.5; // painter y at the flat (unlifted) ground
     let coverOut: number | undefined;
+    let coverTerrain = false;
     if (this.world) {
       const colf = b.fx / CELL_WU; // 1 cell = CELL_WU world units (any world size)
       const rowf = b.fy / CELL_WU;
@@ -14307,8 +14320,9 @@ export class WorldScene extends Phaser.Scene {
       );
       depth = r.depth;
       coverOut = r.coverY;
+      coverTerrain = r.coverTerrain;
     }
-    return { depth, coverY: coverOut };
+    return { depth, coverY: coverOut, coverTerrain };
   }
 
   /** Shadow for ANY body: cast on the LANDING ground (flat − target
@@ -19179,6 +19193,11 @@ export class WorldScene extends Phaser.Scene {
   private tdArmImage(img: Phaser.GameObjects.Image | Phaser.GameObjects.Sprite, flatY: number, floor: number, mode: number, vCell: number): void {
     const pipe = this.tdPipe as unknown as Phaser.Renderer.WebGL.WebGLPipeline | null;
     if (!pipe) return;
+    if (mode <= 0) {
+      // Untested: the plain pipeline, so it batches with everything else.
+      if (img.pipeline === pipe) img.resetPipeline();
+      return;
+    }
     let pd = img.pipelineData as { td?: TerrainDepthData } | undefined;
     if (img.pipeline !== pipe || !pd?.td) {
       img.setPipeline(pipe, { td: terrainDepthData() }, false);
@@ -20113,7 +20132,7 @@ export class WorldScene extends Phaser.Scene {
         // THE DEPTH PATH: the piece is a billboard on its tread level, tested
         // per pixel where the cover rule says terrain overlaps it — base image,
         // lit copy (through its own pipeline) and fog silhouette alike.
-        const mode = d.coverY !== undefined ? 1 : 0;
+        const mode = d.coverTerrain ? 1 : 0;
         const flatY = r.hbDepth - 0.5;
         const vCell = tdCell(r.fx / CELL_WU, r.fy / CELL_WU);
         this.tdArmImage(r.img, flatY, r.lvl, mode, vCell);
