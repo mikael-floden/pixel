@@ -3,7 +3,8 @@
 // stream, then (1) the worker is on and no job fell back, (2) every frame's upload stayed
 // inside the budget (KB=<n> env, default 128) plus one band, (3) the biggest banded
 // textures read back byte-identical to the same files uploaded the old way (an <img> under
-// UNPACK_PREMULTIPLY_ALPHA_WEBGL), (4) a forced WebGL context loss + restore refills them
+// UNPACK_PREMULTIPLY_ALPHA_WEBGL) and the worker's on-demand frame alpha equals the readback,
+// (4) a forced WebGL context loss + restore refills them
 // and parity holds again, (5) every scenery still the worker banded carries the same fit
 // (alphaBBox + size) a GPU readback measures. Needs a built client (`npm run build -w client`). Exit 1 on any
 // failure.
@@ -50,6 +51,8 @@ if (!par.length) fail("no banded texture to compare");
 // (3b) the CPU readers' path: a banded frame's alpha read back from the GPU equals the <img> path's.
 for (const p of par.slice(0, 3)) for (const fr of [0, 2]) { const al = await page.evaluate(([k,f])=>window.__ml.artAlpha(k,f),[p.key,fr]); console.log(`  alpha ${p.key} frame ${fr}: ${al.error ?? (al.equal ? "IDENTICAL" : `diff ${al.diff} texels`)} ${al.w?`${al.w}x${al.h}`:""}`); if (al.error || !al.equal) fail(`alpha ${p.key} frame ${fr}: ${al.error ?? `${al.diff} texels differ`}`); }
 for (const p of par) if (p.error || !p.equal) fail(`parity ${p.key}: ${p.error ?? `${p.diff} bytes differ`}`);
+// (3b') the worker's on-demand alpha (what the outline and the foam clamp read now) equals the readback.
+for (const p of par.slice(0, 2)) for (const fr of [0, 2]) { const aw = await page.evaluate(([k,f])=>window.__ml.artAlphaWorker(k,f),[p.key,fr]); console.log(`  worker alpha ${p.key} frame ${fr}: ${aw.error ?? (aw.equal ? `IDENTICAL (${aw.waitedMs} ms)` : `diff ${aw.diff} texels`)}`); if (aw.error || !aw.equal) fail(`worker alpha ${p.key} frame ${fr}: ${aw.error ?? `${aw.diff} texels differ`}`); }
 // (3c) scenery stills ride the queue too: the fit the worker seeded (alphaBBox's box + the canvas size)
 // equals a fresh alphaBBox of the texture read back from the GPU, for every banded still on this route.
 const sf = await page.evaluate(()=>window.__ml.sceneryFitParity(60));

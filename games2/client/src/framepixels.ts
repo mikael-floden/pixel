@@ -18,9 +18,13 @@
  * `readPixels` walks texture rows upward. Gate: `__ml.artAlpha(key, frame)`
  * compares this against the <img> path's alpha for a banded frame.
  *
- * COST. A readback is a GPU sync — the same order as the decode the old
- * drawImage of a streamed strip cost (Chrome re-decoded the WebP for it, 5-9
- * ms) — and every reader caches per (texture, frame), so it is paid once. */
+ * COST. A readback is a GPU sync — on his phone 32-63 ms inside the frame
+ * (his 19:44 run of Smooth 3, the outline's first sight of a banded frame) —
+ * so no reader takes it for a strip the art worker holds: `artBounds` has the
+ * worker's boxes, and the outline and the foam clamp ask the worker for the
+ * frame's alpha (`ArtQueue.frameAlpha`, answered a few frames later). The
+ * readback is the element-less last resort and the parity probes' reference;
+ * every reader caches per (texture, frame), so whichever path, it is once. */
 import type Phaser from "phaser";
 
 type Wrapper = Phaser.Renderer.WebGL.Wrappers.WebGLTextureWrapper;
@@ -72,6 +76,37 @@ export function drawFrameInto(renderer: GL, ctx: CanvasRenderingContext2D, frame
   if (!px) return false;
   ctx.putImageData(new ImageData(px, w, h), dx, dy);
   return true;
+}
+
+/** The frame's alpha plane (cutWidth x cutHeight) the SYNCHRONOUS way: an
+ *  element is drawn into a canvas, a bare GL texture is read back — the two
+ *  paths of drawFrameInto, alpha only. For a banded frame a reader asks the
+ *  art worker first (`ArtQueue.frameAlpha`, answered off the frame thread);
+ *  this is the element path and the last resort. */
+export function readFrameAlpha(renderer: GL, frame: Phaser.Textures.Frame): { w: number; h: number; a: Uint8Array } | null {
+  const w = frame.cutWidth;
+  const h = frame.cutHeight;
+  if (!w || !h) return null;
+  const src = frame.source.image as unknown;
+  let px: Uint8ClampedArray | null = null;
+  if (drawableSource(src)) {
+    const cv = document.createElement("canvas");
+    cv.width = w;
+    cv.height = h;
+    const ctx = cv.getContext("2d", { willReadFrequently: true });
+    if (!ctx) return null;
+    ctx.drawImage(src, frame.cutX, frame.cutY, w, h, 0, 0, w, h);
+    px = ctx.getImageData(0, 0, w, h).data;
+  } else {
+    const gl = (renderer as { gl?: WebGLRenderingContext | WebGL2RenderingContext } | null | undefined)?.gl;
+    const tex = (frame.source.glTexture as Wrapper | null)?.webGLTexture;
+    if (!gl || !tex) return null;
+    px = readTextureRect(gl, tex, frame.cutX, frame.cutY, w, h);
+  }
+  if (!px) return null;
+  const a = new Uint8Array(w * h);
+  for (let i = 0, q = 3; i < a.length; i++, q += 4) a[i] = px[q];
+  return { w, h, a };
 }
 
 /** The whole first source of a texture as straight (un-premultiplied) RGBA,

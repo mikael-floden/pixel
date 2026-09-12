@@ -349,8 +349,9 @@ memory and fewer frames spent uploading; the raw strips stay for the wiki.
     and item walk-tos pass showMarker=false to setMoveTarget — the ground
     beacon is for plain ground taps only.
 - **The two TARGET MARKERS** — borders built from the marked body's own
-  silhouette: `ringTextureFor` reads the frame's alpha into a RING_PAD(2)px-
-  padded canvas and grows a 2px TWO-TONE border (inner = base colour, outer a
+  silhouette: `ringTextureFor` reads the frame's alpha (a banded strip's from
+  the art worker, a few frames after first sight — `docs/perf.md`) into a
+  RING_PAD(2)px-padded grid and grows a 2px TWO-TONE border (inner = base colour, outer a
   step brighter), each line one **4-neighbour** dilation. SIDES ONLY, never
   diagonals — side-dilation leaves the single diagonally-touching pixels
   pixel art itself outlines with; dilating diagonally doubled the border at

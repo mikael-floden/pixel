@@ -103,6 +103,9 @@ export interface ArtQueueStats {
   /** Jobs the worker refused (each fell back to the <img> path) and textures refilled after a context restore. */
   workerErrors: number;
   refilled: number;
+  /** Frame-alpha requests answered by the worker (`frameAlpha`), and the ones it could not. */
+  alphaReqs: number;
+  alphaErrors: number;
 }
 
 /** THE DIAL — KB of texture per frame. 0 means unbounded (the old behaviour:
@@ -121,6 +124,8 @@ export const ART_IDLE_PRIO = 7;
 export const ART_IDLE_SHARE = 0.25;
 const KEY = "ml-upload-kb";
 const REFILL = "\0refill:";
+/** Frame-alpha answers kept until a reader takes them (`frameAlpha`). */
+const ALPHA_READY_MAX = 64;
 
 export function uploadKb(): number {
   try {
@@ -192,8 +197,14 @@ export class ArtQueue {
   private debt = 0;
   private stats: ArtQueueStats = {
     queued: 0, fetching: 0, ready: 0, readyKb: 0, landed: 0, failed: 0, landedKb: 0, frameKbMax: 0, frames: 0,
-    bands: 0, bandMs: 0, bandMax: 0, worker: 0, workerErrors: 0, refilled: 0,
+    bands: 0, bandMs: 0, bandMax: 0, worker: 0, workerErrors: 0, refilled: 0, alphaReqs: 0, alphaErrors: 0,
   };
+  /** Frame-alpha requests in flight (id -> rectangle key), answers not yet
+   *  taken, and rectangles the worker could not serve (the reader's own path). */
+  private alphaById = new Map<number, string>();
+  private alphaPending = new Set<string>();
+  private alphaReady = new Map<string, { w: number; h: number; a: Uint8Array }>();
+  private alphaFailed = new Set<string>();
   private readonly gl: GLRenderer | null;
   private worker: Worker | null = null;
   private workerState: "off" | "on" | "failed" = "off";
@@ -242,6 +253,34 @@ export class ArtQueue {
   /** Did this texture land through the worker (bands, no source element)? */
   banded(key: string): boolean {
     return this.uploaded.has(key);
+  }
+
+  /** A banded frame's alpha, decoded on the worker — the file's bytes are in
+   *  the HTTP cache and its pixels stay on the worker for a while; nothing is
+   *  read back from the GPU. "pending" until the worker answers (the reader
+   *  shows nothing yet and asks again next frame; one request per rectangle
+   *  is in flight), null when the worker cannot serve it (not a banded
+   *  texture, the worker is off or died, this rectangle failed) — the
+   *  reader's cue for its own path. An answer is handed over ONCE: every
+   *  reader caches per (texture, frame) itself. */
+  frameAlpha(key: string, x: number, y: number, w: number, h: number): { w: number; h: number; a: Uint8Array } | "pending" | null {
+    const u = this.uploaded.get(key);
+    if (!u || this.workerState !== "on" || !this.worker) return null;
+    const rk = `${key}|${x},${y},${w},${h}`;
+    const hit = this.alphaReady.get(rk);
+    if (hit) {
+      this.alphaReady.delete(rk);
+      return hit;
+    }
+    if (this.alphaFailed.has(rk)) return null;
+    if (this.alphaPending.has(rk)) return "pending";
+    const id = this.nextId++;
+    this.alphaById.set(id, rk);
+    this.alphaPending.add(rk);
+    this.stats.alphaReqs++;
+    const m: ArtWorkerIn = { type: "alpha", id, url: u.url, x, y, w, h };
+    this.worker.postMessage(m);
+    return "pending";
   }
 
   /** Once per frame, from the scene's update. `unbounded` while the loading
@@ -454,6 +493,37 @@ export class ArtQueue {
     return { w, h, equal: diff === 0, diff };
   }
 
+  /** THE WORKER-ALPHA PARITY (`__ml.artAlphaWorker`): a banded frame's alpha
+   *  as the worker answers it (`frameAlpha`, what the outline and the foam
+   *  clamp read) against the GPU readback of the same frame. */
+  async alphaWorkerParity(key: string, frame: number | string = 0): Promise<{ w: number; h: number; equal: boolean; diff: number; waitedMs: number } | { error: string }> {
+    const u = this.uploaded.get(key);
+    if (!u || !this.textures.exists(key)) return { error: "not a banded texture" };
+    const tex = this.textures.get(key);
+    const fr = (tex.frames as Record<string, Phaser.Textures.Frame | undefined>)[String(frame)];
+    if (!fr) return { error: `no frame ${frame}` };
+    const t0 = performance.now();
+    let got: { w: number; h: number; a: Uint8Array } | "pending" | null = null;
+    for (let i = 0; i < 200; i++) {
+      got = this.frameAlpha(key, fr.cutX, fr.cutY, fr.cutWidth, fr.cutHeight);
+      if (got !== "pending") break;
+      await new Promise((r) => setTimeout(r, 25));
+    }
+    if (!got || got === "pending") return { error: got === "pending" ? "still pending after 5 s" : "the worker could not serve it" };
+    const w = fr.cutWidth;
+    const h = fr.cutHeight;
+    const c = document.createElement("canvas");
+    c.width = w;
+    c.height = h;
+    const ctx = c.getContext("2d", { willReadFrequently: true })!;
+    if (!drawFrameInto(this.gl, ctx, fr, 0, 0)) return { error: "readback failed" };
+    const d = ctx.getImageData(0, 0, w, h).data;
+    let diff = 0;
+    if (got.w !== w || got.h !== h) return { error: `size ${got.w}x${got.h}, wanted ${w}x${h}` };
+    for (let i = 0, q = 3; i < got.a.length; i++, q += 4) if (got.a[i] !== d[q]) diff++;
+    return { w, h, equal: diff === 0, diff, waitedMs: Math.round(performance.now() - t0) };
+  }
+
   /** The parity of up to `n` banded textures, biggest first. */
   async parityAll(n = 6): Promise<Array<{ key: string } & Awaited<ReturnType<ArtQueue["parity"]>>>> {
     const keys = [...this.uploaded.entries()].sort((a, b) => b[1].w * b[1].h - a[1].w * a[1].h).slice(0, n).map(([k]) => k);
@@ -585,15 +655,36 @@ export class ArtQueue {
       job.bytes = 0; // re-picked by startFetches, now on the <img> path
     }
     this.jobsById.clear();
+    // The alpha readers get null from now on and take their own path.
+    this.alphaById.clear();
+    this.alphaPending.clear();
   }
 
   private onWorker(m: ArtWorkerOut): void {
+    const rk = this.alphaById.get(m.id);
+    if (rk !== undefined) {
+      // A frame-alpha answer (frameAlpha), not a job.
+      this.alphaById.delete(m.id);
+      this.alphaPending.delete(rk);
+      if (m.type === "alpha") {
+        this.alphaReady.set(rk, { w: m.w, h: m.h, a: m.a });
+        // An answer nobody takes (the body left the screen first) must not
+        // pile up: the oldest goes when there are too many.
+        while (this.alphaReady.size > ALPHA_READY_MAX) this.alphaReady.delete(this.alphaReady.keys().next().value as string);
+      } else {
+        this.stats.alphaErrors++;
+        this.alphaFailed.add(rk);
+        if (m.type === "ok") for (const b of m.bands) b.close();
+      }
+      return;
+    }
     const job = this.jobsById.get(m.id);
     this.jobsById.delete(m.id);
     if (!job) {
       if (m.type === "ok") for (const b of m.bands) b.close();
       return;
     }
+    if (m.type === "alpha") return; // not for a job
     this.fetching--;
     if (!this.pending.has(job.pkey) || this.pending.get(job.pkey) !== job) {
       if (m.type === "ok") for (const b of m.bands) b.close(); // dropped meanwhile

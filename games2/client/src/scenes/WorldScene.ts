@@ -1,7 +1,7 @@
 import Phaser from "phaser";
 import { resolveDepthRule } from "../depthrule";
 import { ART_IDLE_SHARE, ArtQueue, artWorkerEnabled, setArtWorker, setUploadKb, UPLOAD_KB_STEPS } from "../artqueue";
-import { drawFrameInto, drawableSource, readTexturePixels } from "../framepixels";
+import { drawFrameInto, drawableSource, readFrameAlpha, readTexturePixels } from "../framepixels";
 import { renderRes } from "../resolution";
 import { ensureResDial } from "../resdial";
 import { Room, getStateCallbacks } from "colyseus.js";
@@ -7035,6 +7035,8 @@ export class WorldScene extends Phaser.Scene {
       },
       /** A banded frame's alpha through the readback path against the <img> path. */
       artAlpha: (key: string, frame: number | string = 0) => this.artQueue().alphaParity(key, frame),
+      /** The same frame's alpha as the worker answers it (what the outline and the foam clamp read) against the readback. */
+      artAlphaWorker: (key: string, frame: number | string = 0) => this.artQueue().alphaWorkerParity(key, frame),
       occInc: (on?: boolean) => {
         if (on !== undefined) {
           this.occIncOn = on;
@@ -8725,20 +8727,22 @@ export class WorldScene extends Phaser.Scene {
     if (!fw || !fh) return null;
     const w = fw + RING_PAD * 2;
     const h = fh + RING_PAD * 2;
+    // The frame's alpha: an element's at once, a banded strip's from the art
+    // worker a few frames after the first ask (null meanwhile — no outline
+    // yet, asked again next frame; never a GL readback inside the frame).
+    const fa = this.frameAlpha(frame);
+    if (!fa) return null;
     const cnv = document.createElement("canvas");
     cnv.width = w;
     cnv.height = h;
     const ctx = cnv.getContext("2d", { willReadFrequently: true });
     if (!ctx) return null;
-    // An element is drawn; a banded texture (artworker.ts) is read back —
-    // only the alpha is read below, which the readback keeps exact.
-    if (!drawFrameInto(this.game.renderer, ctx, frame, RING_PAD, RING_PAD)) return null;
-    const a = ctx.getImageData(0, 0, w, h).data;
     // Solid = the art's own opacity threshold; soft anti-alias fringes on
-    // generated strips stay outside the border.
+    // generated strips stay outside the border. Placed RING_PAD in from every
+    // side of the padded grid.
     const n = w * h;
     const solid = new Uint8Array(n);
-    for (let i = 0; i < n; i++) if (a[i * 4 + 3] >= 128) solid[i] = 1;
+    for (let y = 0; y < fh; y++) for (let x = 0; x < fw; x++) if (fa.a[y * fw + x] >= 128) solid[(y + RING_PAD) * w + x + RING_PAD] = 1;
     // One 4-neighbour dilation ring: mask=1 where a transparent-in-`base`
     // pixel touches a `base` pixel on a side.
     const growRing = (base: Uint8Array) => {
@@ -14531,22 +14535,30 @@ export class WorldScene extends Phaser.Scene {
     let m = this.alphaMapCache.get(key);
     if (m) return m;
     const w = frame.cutWidth, h = frame.cutHeight;
-    const a = new Uint8Array(w * h);
-    try {
-      const cnv = document.createElement("canvas");
-      cnv.width = w;
-      cnv.height = h;
-      const ctx = cnv.getContext("2d", { willReadFrequently: true });
-      if (ctx && drawFrameInto(this.game.renderer, ctx, frame, 0, 0)) {
-        const d = ctx.getImageData(0, 0, w, h).data;
-        for (let i = 0; i < w * h; i++) a[i] = d[i * 4 + 3];
-      }
-    } catch {
-      // Unreadable source (shouldn't happen same-origin) — leave all-transparent.
-    }
-    m = { w, h, a };
+    // A banded strip's alpha comes from the art worker a few frames after
+    // the first ask: until then the map is all-transparent (no clamp) and NOT
+    // cached, so the next frame asks again and the real one lands.
+    const fa = this.frameAlpha(frame);
+    if (!fa) return { w, h, a: new Uint8Array(w * h) };
+    m = { w, h, a: fa.a };
     this.alphaMapCache.set(key, m);
     return m;
+  }
+
+  /** A frame's alpha plane for the CPU readers (the outline, the foam clamp):
+   *  a banded strip's from the art worker, asked once and answered a few
+   *  frames later (null meanwhile — the reader shows nothing yet and asks
+   *  again); an element's, or a texture the worker cannot serve, the
+   *  synchronous way (framepixels.ts). Never a GL readback inside the frame
+   *  for a strip the worker holds: measured 63 and 32 ms on his 19:44 run of
+   *  Smooth 3, where the outline's first sight of a banded frame was one. */
+  private frameAlpha(frame: Phaser.Textures.Frame): { w: number; h: number; a: Uint8Array } | null {
+    if (!drawableSource(frame.source.image)) {
+      const r = this.artQueue().frameAlpha(frame.texture.key, frame.cutX, frame.cutY, frame.cutWidth, frame.cutHeight);
+      if (r === "pending") return null;
+      if (r && r.w === frame.cutWidth && r.h === frame.cutHeight) return r;
+    }
+    return readFrameAlpha(this.game.renderer, frame);
   }
 
   /** Set the sprite origin to the measured foot anchor for this direction and

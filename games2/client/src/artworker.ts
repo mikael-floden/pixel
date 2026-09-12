@@ -15,8 +15,9 @@
  * WHAT ELSE HAPPENS HERE. `artBounds` (WorldScene) measures each frame's
  * opaque box on first use by drawing the source into a canvas — a second
  * decode per frame on the main thread. The pixels are in hand here, so the
- * boxes are measured once, off the main thread, and travel with the bands; the
- * bitmap is then closed and never read again.
+ * boxes are measured once, off the main thread, and travel with the bands.
+ * The other alpha readers (the outline, the foam clamp) ask for a frame's
+ * alpha on demand (`alpha`), and the last few decoded files stay here for it.
  *
  * THE MAIN THREAD BUILDS EVERY URL (staging rewrites `/assets/**` onto a CDN;
  * this file must never re-derive one). Nothing here touches WebGL: a worker
@@ -53,8 +54,30 @@ export interface ArtWorkerErr {
   id: number;
   error: string;
 }
-export type ArtWorkerIn = ArtWorkerLoad;
-export type ArtWorkerOut = ArtWorkerOk | ArtWorkerErr;
+/** A FRAME'S ALPHA ON DEMAND (Smooth 5): a rectangle of a file this worker
+ *  already decoded for its bands — the outline and the foam clamp read alpha
+ *  and used to read the GL texture back inside the frame for it (63 and 32 ms
+ *  on his phone). The bytes are in the HTTP cache; the last few decoded files
+ *  stay here, so a marked body's frames cost one decode per file. */
+export interface ArtWorkerAlpha {
+  type: "alpha";
+  id: number;
+  url: string;
+  x: number;
+  y: number;
+  w: number;
+  h: number;
+}
+export interface ArtWorkerAlphaOk {
+  type: "alpha";
+  id: number;
+  w: number;
+  h: number;
+  /** The rectangle's alpha, row-major, one byte per texel. */
+  a: Uint8Array;
+}
+export type ArtWorkerIn = ArtWorkerLoad | ArtWorkerAlpha;
+export type ArtWorkerOut = ArtWorkerOk | ArtWorkerErr | ArtWorkerAlphaOk;
 
 /** Premultiplied HERE, so the upload under Phaser's
  *  `UNPACK_PREMULTIPLY_ALPHA_WEBGL true` is a copy and not a conversion; the
@@ -66,6 +89,36 @@ const ALPHA_MIN = 16;
 
 function post(m: ArtWorkerOut, transfer?: Transferable[]): void {
   (self as unknown as { postMessage(m: unknown, t?: Transferable[]): void }).postMessage(m, transfer);
+}
+
+/** THE LAST FEW DECODED FILES, kept for the alpha readers (a marked body asks
+ *  for its frames one after another; a strip that just landed is asked for
+ *  first). Bounded: the oldest is closed when a fifth arrives. */
+const RECENT_MAX = 4;
+const recent = new Map<string, ImageBitmap>();
+function remember(url: string, whole: ImageBitmap): void {
+  const had = recent.get(url);
+  if (had && had !== whole) had.close();
+  recent.delete(url);
+  recent.set(url, whole);
+  while (recent.size > RECENT_MAX) {
+    const first = recent.keys().next().value as string;
+    recent.get(first)?.close();
+    recent.delete(first);
+  }
+}
+async function wholeOf(url: string): Promise<ImageBitmap> {
+  const hit = recent.get(url);
+  if (hit && hit.width > 0) {
+    recent.delete(url);
+    recent.set(url, hit); // most recent again
+    return hit;
+  }
+  const res = await fetch(url);
+  if (!res.ok) throw new Error(`HTTP ${res.status}`);
+  const whole = await createImageBitmap(await res.blob(), OPTS);
+  remember(url, whole);
+  return whole;
 }
 
 /** The frame grid is Phaser's SpriteSheet parser's: whole frames only, left to
@@ -143,10 +196,7 @@ function boundsOf(whole: ImageBitmap, sheet?: { frameWidth: number; frameHeight:
 async function load(m: ArtWorkerLoad): Promise<void> {
   try {
     if (typeof OffscreenCanvas === "undefined" || typeof createImageBitmap === "undefined") throw new Error("no OffscreenCanvas");
-    const res = await fetch(m.url);
-    if (!res.ok) throw new Error(`HTTP ${res.status}`);
-    const blob = await res.blob();
-    const whole = await createImageBitmap(blob, OPTS);
+    const whole = await wholeOf(m.url);
     const w = whole.width;
     const h = whole.height;
     if (!w || !h) throw new Error("empty image");
@@ -154,8 +204,28 @@ async function load(m: ArtWorkerLoad): Promise<void> {
     const rows = m.bandBytes > 0 ? Math.max(1, Math.min(h, Math.floor(m.bandBytes / (w * 4)))) : h;
     const bands: ImageBitmap[] = [];
     for (let y = 0; y < h; y += rows) bands.push(await createImageBitmap(whole, 0, y, w, Math.min(rows, h - y), OPTS));
-    whole.close();
+    // `whole` stays in `recent` for the alpha readers (bounded there).
     post({ type: "ok", id: m.id, w, h, rows, frames, bounds, bbox0, bands }, [bounds.buffer, bbox0.buffer, ...bands]);
+  } catch (e) {
+    post({ type: "err", id: m.id, error: String((e as Error)?.message ?? e) });
+  }
+}
+
+async function alpha(m: ArtWorkerAlpha): Promise<void> {
+  try {
+    if (typeof OffscreenCanvas === "undefined" || typeof createImageBitmap === "undefined") throw new Error("no OffscreenCanvas");
+    const whole = await wholeOf(m.url);
+    const w = Math.max(0, Math.min(m.w, whole.width - m.x));
+    const h = Math.max(0, Math.min(m.h, whole.height - m.y));
+    if (!w || !h) throw new Error("empty rectangle");
+    const cv = new OffscreenCanvas(w, h);
+    const ctx = cv.getContext("2d", { willReadFrequently: true });
+    if (!ctx) throw new Error("no 2d context");
+    ctx.drawImage(whole, m.x, m.y, w, h, 0, 0, w, h);
+    const d = ctx.getImageData(0, 0, w, h).data;
+    const a = new Uint8Array(w * h);
+    for (let i = 0, q = 3; i < a.length; i++, q += 4) a[i] = d[q];
+    post({ type: "alpha", id: m.id, w, h, a }, [a.buffer]);
   } catch (e) {
     post({ type: "err", id: m.id, error: String((e as Error)?.message ?? e) });
   }
@@ -163,4 +233,5 @@ async function load(m: ArtWorkerLoad): Promise<void> {
 
 self.onmessage = (ev: MessageEvent<ArtWorkerIn>) => {
   if (ev.data?.type === "load") void load(ev.data);
+  else if (ev.data?.type === "alpha") void alpha(ev.data);
 };

@@ -97,14 +97,22 @@ The ground render texture (scroll, slices, cell repaints, prefetch, compose budg
   harness profile). A banded texture holds no source pixels, so a context
   restore refills it through the queue (`onContextRestored`, unbudgeted —
   the art is already off the screen) after Phaser re-creates the wrapper
-  blank, and the three CPU readers of a body's frame (`artBounds`,
-  `alphaMap`, the hidden-behind outline's `ringTextureFor`) go through
-  `framepixels.ts`, which draws an element as before and READS a bare GL
-  texture back through a temporary framebuffer (alpha exact; the readback is
-  premultiplied, so a reader that wants colour must un-premultiply) — the
-  gate found `ringTextureFor` throwing on `drawImage` of a texture wrapper
-  before this existed. Gate: `__ml.artAlpha(key, frame)` is that readback
-  against the `<img>` path's alpha. Pixel parity: `__ml.artParity()` reads the banded texture and an
+  blank. A banded texture holds no element for the CPU readers of a body's
+  frame either, and A GL READBACK IS NEVER INSIDE THE FRAME FOR ONE (Smooth
+  5, 2026-09-12: his 19:44 run of Smooth 3 had the outline's first sight of
+  a banded frame as a 63 and a 32 ms readback): `artBounds` has the worker's
+  boxes, and the outline (`ringTextureFor`) and the foam clamp (`alphaMap`)
+  ask the worker for the frame's alpha (`ArtQueue.frameAlpha` — one request
+  per rectangle, the file's bytes from the HTTP cache, the last four decoded
+  files kept on the worker so a body's frames cost one decode per file) and
+  show nothing until it answers a few frames later; the map is not cached
+  while it is pending. `framepixels.ts` keeps the two synchronous paths
+  (an element drawn as before; a bare GL texture read back through a
+  temporary framebuffer, alpha exact, premultiplied colour) for a texture
+  the worker cannot serve and for the parity probes. Gates:
+  `__ml.artAlpha(key, frame)` is the readback against the `<img>` path's
+  alpha, `__ml.artAlphaWorker(key, frame)` the worker's answer against the
+  readback. Pixel parity: `__ml.artParity()` reads the banded texture and an
   `<img>` upload of the same file back from the same context — byte-identical
   on 6 of 6 strips, and again after a forced context loss
   (`scripts/verify-artworker.mjs`). A browser without workers, ImageBitmaps
