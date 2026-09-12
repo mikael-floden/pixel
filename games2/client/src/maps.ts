@@ -329,11 +329,13 @@ export async function loadPlaces(name: string = DEFAULT_WORLD): Promise<PlaceLoo
  * wider return from that one: it runs on every world load and builds a
  * per-cell Map, and a caller that wants six pins should not pay for it.
  *
- * `anchor` is the spec's own map-pin cell (pixel-maps2/places@2: "one cell
- * inside the place, nearest its centroid. For map pins and debug"). `entrance`
- * is additive and OPTIONAL — for a cave the centroid is inside the mountain,
- * and the cell a player actually wants is the mouth; maps2 publishes it when
- * it knows it, and the pin falls back to the anchor when it does not.
+ * ONE MARK PER WAY IN. `entrances` is every mouth of the place (maps2 shipped
+ * it with the caves, `entrance` first); a cave that runs through the massif
+ * has two, and both are somewhere a player can walk to, so both are pinned
+ * under the place's name. Falling back: `entrances` → `entrance` → `anchor`,
+ * which is the spec's own map-pin cell ("one cell inside the place, nearest
+ * its centroid. For map pins and debug") and is right for a house but lands
+ * inside the mountain for a cave.
  *
  * A missing file is not an error: a world may simply have no named places. */
 export interface PlaceMark {
@@ -344,9 +346,9 @@ export interface PlaceMark {
    *  one shows up as data rather than disappearing. */
   kind: string;
   indoor: boolean;
-  /** the cell to pin: the mouth when published, else the anchor */
+  /** the cell to pin: a mouth when published, else the anchor */
   at: [number, number];
-  /** true when `at` is the published entrance rather than the centroid */
+  /** true when `at` is a published mouth rather than the centroid */
   mouth: boolean;
 }
 
@@ -363,6 +365,7 @@ export async function loadPlaceMarks(name: string = DEFAULT_WORLD): Promise<Plac
         indoor?: unknown;
         anchor?: unknown;
         entrance?: unknown;
+        entrances?: unknown;
       }[];
     };
     const cell = (v: unknown): [number, number] | null =>
@@ -372,17 +375,30 @@ export async function loadPlaceMarks(name: string = DEFAULT_WORLD): Promise<Plac
     const out: PlaceMark[] = [];
     for (const p of doc.places ?? []) {
       if (typeof p?.id !== "string" || !p.id) continue;
-      const mouth = cell(p.entrance);
-      const at = mouth ?? cell(p.anchor);
-      if (!at) continue; // nothing to pin it by — drop it rather than guess
-      out.push({
-        id: p.id,
-        name: typeof p.name === "string" && p.name ? p.name : p.id,
-        kind: typeof p.kind === "string" ? p.kind : "",
-        indoor: p.indoor === true,
-        at,
-        mouth: !!mouth,
-      });
+      const mouths = (Array.isArray(p.entrances) ? p.entrances : [])
+        .map(cell)
+        .filter((c): c is [number, number] => !!c);
+      if (!mouths.length) {
+        const one = cell(p.entrance);
+        if (one) mouths.push(one);
+      }
+      // nothing to pin it by → the anchor, and if that is missing too the
+      // record is dropped rather than guessed at
+      const spots: [number, number][] = mouths.length ? mouths : [];
+      if (!spots.length) {
+        const a = cell(p.anchor);
+        if (!a) continue;
+        spots.push(a);
+      }
+      for (const at of spots)
+        out.push({
+          id: p.id,
+          name: typeof p.name === "string" && p.name ? p.name : p.id,
+          kind: typeof p.kind === "string" ? p.kind : "",
+          indoor: p.indoor === true,
+          at,
+          mouth: mouths.length > 0,
+        });
     }
     return out;
   } catch {
