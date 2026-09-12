@@ -28,10 +28,15 @@ cells, the page shows him the place.
   with the pin (maintainer 2026-09-12: not a panel fixed at the top). The pin
   is the world's own `minimap.json` dot formula with the cell's level from
   `world.json` — the same pixel the game's map tab puts a body on. Every
-  change carries a number he can tick and copy — "Copy #n" on the card, and
-  a bar with "Copy selected" that puts `#n name — cell x,y, level l — commit`
-  on the clipboard, one line per change (maintainer: "so I can communicate
-  easier with you"); a reply that quotes those numbers is about those cards.
+  change carries a number he can MARK — the whole title row is the tap
+  target, not the checkbox alone — and a footer pinned to the bottom always
+  shows the marked numbers as chips, with one "Copy marked" that puts
+  `Changes I do not like: #a, #b` and then `#n name — cell x,y, level l —
+  commit` per change on the clipboard (maintainer: "The usecase is I mark
+  changes I don't like and copy them in order to paste to you"); a reply that
+  quotes those numbers is about those cards. The page's script is a RAW
+  string in report3.py: templated once, a `\n` became a line break inside a
+  JavaScript string and nothing on the page worked (measured, twice).
 - One card per change, in the words a player uses: what changed, why, the
   cell as the game shows it under the player (post-recentre coordinates).
   A change he cannot see from the surface gets its lids lifted.

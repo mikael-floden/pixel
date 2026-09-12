@@ -88,6 +88,82 @@ def build(spec, out):
     return cards
 
 
+SCRIPT = r"""<script>
+(function () {
+  var dlg = document.getElementById('mapdlg'), pin = document.getElementById('pin');
+  var where = document.getElementById('where'), mtitle = document.getElementById('mtitle');
+  var chips = document.getElementById('chips'), out = document.getElementById('out');
+  var copyall = document.getElementById('copyall'), toast = document.getElementById('toast'), toastT = null;
+  var cards = Array.prototype.slice.call(document.querySelectorAll('.change'));
+  document.getElementById('mclose').addEventListener('click', function () { dlg.close(); });
+  dlg.addEventListener('click', function (e) { if (e.target === dlg) dlg.close(); });
+  function say(msg) {
+    toast.textContent = msg; toast.hidden = false;
+    clearTimeout(toastT); toastT = setTimeout(function () { toast.hidden = true; }, 1600);
+  }
+  function line(card) {
+    return '#' + card.dataset.n + ' ' + card.dataset.name + ' — cell ' + card.dataset.cell + ', level ' + card.dataset.level
+      + (card.dataset.commit ? ' — ' + card.dataset.commit : '');
+  }
+  function marked() { return cards.filter(function (c) { return c.querySelector('.sel').checked; }); }
+  function refresh() {
+    var m = marked();
+    cards.forEach(function (c) { c.classList.toggle('picked', c.querySelector('.sel').checked); });
+    chips.innerHTML = '';
+    if (!m.length) {
+      var none = document.createElement('span'); none.className = 'none';
+      none.textContent = 'Nothing yet — tap a change’s title to mark it';
+      chips.appendChild(none);
+    }
+    m.forEach(function (c) {
+      var chip = document.createElement('span'); chip.className = 'chip'; chip.textContent = '#' + c.dataset.n;
+      chips.appendChild(chip);
+    });
+    copyall.disabled = !m.length;
+    out.value = m.map(line).join('\n');
+  }
+  function copyText(text) {
+    out.value = text;
+    function manual() { out.hidden = false; out.focus(); out.select(); say('Select the text below and copy'); }
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(text).then(function () { say('Copied'); }, manual);
+    } else { manual(); }
+  }
+  document.getElementById('clear').addEventListener('click', function () {
+    cards.forEach(function (c) { c.querySelector('.sel').checked = false; }); out.hidden = true; refresh();
+  });
+  copyall.addEventListener('click', function () {
+    var m = marked();
+    if (!m.length) return;
+    copyText('Changes I do not like: ' + m.map(function (c) { return '#' + c.dataset.n; }).join(', ') + '\n' + m.map(line).join('\n'));
+  });
+  cards.forEach(function (card) {
+    card.querySelector('.sel').addEventListener('change', refresh);
+    card.querySelector('.show').addEventListener('click', function () {
+      pin.style.left = card.dataset.px + '%';
+      pin.style.top = card.dataset.py + '%';
+      pin.classList.remove('pulse'); void pin.offsetWidth; pin.classList.add('pulse');
+      mtitle.textContent = card.querySelector('h2').textContent;
+      where.textContent = 'cell ' + card.dataset.cell;
+      if (typeof dlg.showModal === 'function') dlg.showModal(); else dlg.setAttribute('open', '');
+    });
+    var img = card.querySelector('.shot img'), pill = card.querySelector('.pill');
+    if (!pill) return;
+    var showingBefore = false;
+    function flip() {
+      showingBefore = !showingBefore;
+      img.src = showingBefore ? card.dataset.before : card.dataset.after;
+      pill.textContent = showingBefore ? 'Before' : 'After';
+      pill.setAttribute('aria-pressed', showingBefore ? 'true' : 'false');
+    }
+    img.addEventListener('click', flip);
+    pill.addEventListener('click', flip);
+  });
+  refresh();
+})();
+</script>"""
+
+
 def render_page(spec, cards, mm):
     title = html.escape(spec["title"])
     sub = html.escape(spec.get("subtitle", ""))
@@ -102,9 +178,7 @@ def render_page(spec, cards, mm):
         items.append(f'''
 <article class="change" id="c{c["n"]}" data-n="{c["n"]}" data-name="{html.escape(c["name"], quote=True)}" data-px="{c["px"]}" data-py="{c["py"]}" data-cell="{c["cell"][0]},{c["cell"][1]}" data-level="{c["level"]}" data-commit="{html.escape(c["commit"], quote=True)}" data-after="{c["after"]}"{before_attr}>
   <header>
-    <label class="pick"><input type="checkbox" class="sel" id="sel{c["n"]}" aria-label="Select change {c["n"]}"><span class="n">#{c["n"]}</span></label>
-    <h2>{html.escape(c["name"])}</h2>
-    <button type="button" class="copy1" id="copy{c["n"]}" aria-label="Copy the number of change {c["n"]}">Copy #{c["n"]}</button>
+    <label class="pick" for="sel{c["n"]}"><input type="checkbox" class="sel" id="sel{c["n"]}" aria-label="Mark change {c["n"]}"><span class="n">#{c["n"]}</span><h2>{html.escape(c["name"])}</h2></label>
     <button type="button" class="show" id="show{c["n"]}" aria-label="Show {html.escape(c["name"])} on the map">Show on map</button>
   </header>
   <p class="what">{html.escape(c["what"])}</p>
@@ -144,20 +218,25 @@ h1 {{ font-family: "Newsreader", Georgia, serif; font-weight: 600; font-size: cl
 .change header {{ display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }}
 .change h2 {{ font-family: "Newsreader", Georgia, serif; font-weight: 500; font-size: 22px; margin: 0; flex: 1 1 200px; text-wrap: balance; }}
 .n {{ font-family: "IBM Plex Mono", ui-monospace, monospace; font-size: 13px; color: var(--muted); border: 1px solid var(--line); border-radius: 999px; padding: 2px 9px; }}
-.pick {{ display: inline-flex; align-items: center; gap: 8px; cursor: pointer; }}
-.pick input {{ width: 20px; height: 20px; accent-color: var(--accent); margin: 0; }}
-.change.picked {{ border-color: var(--accent); }}
-.change.picked .n {{ background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }}
-.copy1 {{ background: transparent; color: var(--ink); border: 1px solid var(--line); border-radius: 8px; padding: 7px 12px; font: inherit; font-size: 14px; cursor: pointer; }}
-.bar {{ position: fixed; left: 0; right: 0; bottom: 0; z-index: 3; background: var(--panel); border-top: 1px solid var(--line); padding: 10px 16px; display: flex; align-items: center; gap: 12px; flex-wrap: wrap; box-shadow: 0 -6px 24px rgba(0, 0, 0, .12); }}
-.bar[hidden] {{ display: none; }}
-.bar .count {{ flex: 1 1 160px; font-weight: 600; }}
+.pick {{ display: flex; align-items: center; gap: 12px; cursor: pointer; flex: 1 1 260px; padding: 6px 8px 6px 4px; margin: -6px 0 -6px -4px; border-radius: 8px; user-select: none; }}
+.pick:hover {{ background: var(--bg); }}
+.pick input {{ width: 22px; height: 22px; accent-color: var(--pin); margin: 0; flex: none; }}
+.pick h2 {{ flex: 1 1 160px; }}
+.change.picked {{ border-color: var(--pin); box-shadow: 0 0 0 2px var(--pin-ring); }}
+.change.picked .n {{ background: var(--pin); color: #fff; border-color: var(--pin); }}
+.bar {{ position: fixed; left: 0; right: 0; bottom: 0; z-index: 3; background: var(--panel); border-top: 1px solid var(--line); padding: 10px 16px; display: flex; align-items: center; gap: 10px; flex-wrap: wrap; box-shadow: 0 -6px 24px rgba(0, 0, 0, .12); }}
+.bar .label {{ font-size: 13px; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); font-weight: 600; }}
+.bar .chips {{ flex: 1 1 200px; display: flex; gap: 6px; flex-wrap: wrap; align-items: center; min-height: 28px; }}
+.chip {{ font-family: "IBM Plex Mono", ui-monospace, monospace; font-size: 13px; background: var(--pin); color: #fff; border-radius: 999px; padding: 3px 10px; }}
+.chips .none {{ color: var(--muted); font-size: 14px; }}
 .bar .copy {{ background: var(--accent); color: var(--accent-ink); border: 0; border-radius: 8px; padding: 9px 16px; font: inherit; font-weight: 600; cursor: pointer; }}
+.bar .copy:disabled {{ opacity: .5; cursor: default; }}
 .bar .clear {{ background: transparent; color: var(--ink); border: 1px solid var(--line); border-radius: 8px; padding: 8px 12px; font: inherit; cursor: pointer; }}
 .bar textarea {{ flex: 1 1 100%; width: 100%; min-height: 72px; font-family: "IBM Plex Mono", ui-monospace, monospace; font-size: 13px; color: var(--ink); background: var(--bg); border: 1px solid var(--line); border-radius: 8px; padding: 8px; resize: vertical; }}
+.bar textarea[hidden] {{ display: none; }}
 .toast {{ position: fixed; left: 50%; bottom: 96px; transform: translateX(-50%); background: var(--ink); color: var(--bg); padding: 8px 14px; border-radius: 999px; font-size: 14px; z-index: 4; }}
 .toast[hidden] {{ display: none; }}
-body.has-bar {{ padding-bottom: 180px; }}
+body {{ padding-bottom: 120px; }}
 .show {{ background: var(--accent); color: var(--accent-ink); border: 0; border-radius: 8px; padding: 8px 14px; font: inherit; font-weight: 600; cursor: pointer; }}
 .show:hover {{ filter: brightness(1.08); }}
 .show:focus-visible, .pill:focus-visible, .close:focus-visible {{ outline: 3px solid var(--pin); outline-offset: 2px; }}
@@ -187,11 +266,12 @@ dialog::backdrop {{ background: var(--scrim); }}
   <div class="list">{"".join(items)}
   </div>
 </main>
-<div class="bar" id="bar" hidden>
-  <span class="count" id="count">0 selected</span>
+<div class="bar" id="bar" role="region" aria-label="Marked changes">
+  <span class="label">Marked</span>
+  <span class="chips" id="chips"><span class="none">Nothing yet — tap a change's title to mark it</span></span>
   <button type="button" class="clear" id="clear">Clear</button>
-  <button type="button" class="copy" id="copyall">Copy selected</button>
-  <textarea id="out" readonly aria-label="The text that Copy selected copies"></textarea>
+  <button type="button" class="copy" id="copyall" disabled>Copy marked</button>
+  <textarea id="out" readonly hidden aria-label="The text that Copy marked copies"></textarea>
 </div>
 <div class="toast" id="toast" hidden>Copied</div>
 <dialog id="mapdlg" aria-labelledby="mtitle">
@@ -205,69 +285,7 @@ dialog::backdrop {{ background: var(--scrim); }}
     <div class="pin" id="pin"></div>
   </div>
 </dialog>
-<script>
-(function () {{
-  var dlg = document.getElementById('mapdlg'), pin = document.getElementById('pin');
-  var where = document.getElementById('where'), mtitle = document.getElementById('mtitle');
-  document.getElementById('mclose').addEventListener('click', function () {{ dlg.close(); }});
-  dlg.addEventListener('click', function (e) {{ if (e.target === dlg) dlg.close(); }});
-  var bar = document.getElementById('bar'), count = document.getElementById('count'), out = document.getElementById('out');
-  var toast = document.getElementById('toast'), toastT = null;
-  function say(msg) {{
-    toast.textContent = msg; toast.hidden = false;
-    clearTimeout(toastT); toastT = setTimeout(function () {{ toast.hidden = true; }}, 1400);
-  }}
-  function copyText(text) {{
-    out.value = text;
-    if (navigator.clipboard && navigator.clipboard.writeText) {{
-      navigator.clipboard.writeText(text).then(function () {{ say('Copied'); }}, function () {{ out.focus(); out.select(); say('Select the text below and copy'); }});
-    }} else {{ out.focus(); out.select(); say('Select the text below and copy'); }}
-  }}
-  function line(card) {{
-    return '#' + card.dataset.n + ' ' + card.dataset.name + ' — cell ' + card.dataset.cell + ', level ' + card.dataset.level
-      + (card.dataset.commit ? ' — ' + card.dataset.commit : '');
-  }}
-  function refresh() {{
-    var picked = Array.prototype.filter.call(document.querySelectorAll('.change'), function (c) {{ return c.querySelector('.sel').checked; }});
-    picked.forEach(function (c) {{ c.classList.add('picked'); }});
-    document.querySelectorAll('.change').forEach(function (c) {{ if (picked.indexOf(c) < 0) c.classList.remove('picked'); }});
-    bar.hidden = picked.length === 0;
-    document.body.classList.toggle('has-bar', picked.length > 0);
-    count.textContent = picked.length + ' selected';
-    out.value = picked.map(line).join('\n');
-  }}
-  document.getElementById('clear').addEventListener('click', function () {{
-    document.querySelectorAll('.sel').forEach(function (b) {{ b.checked = false; }}); refresh();
-  }});
-  document.getElementById('copyall').addEventListener('click', function () {{
-    var t = document.title + ' — changes ' + Array.prototype.map.call(document.querySelectorAll('.change.picked'), function (c) {{ return '#' + c.dataset.n; }}).join(', ') + '\n' + out.value;
-    copyText(t);
-  }});
-  document.querySelectorAll('.change').forEach(function (card) {{
-    card.querySelector('.sel').addEventListener('change', refresh);
-    card.querySelector('.copy1').addEventListener('click', function () {{ copyText(line(card)); }});
-    card.querySelector('.show').addEventListener('click', function () {{
-      pin.style.left = card.dataset.px + '%';
-      pin.style.top = card.dataset.py + '%';
-      pin.classList.remove('pulse'); void pin.offsetWidth; pin.classList.add('pulse');
-      mtitle.textContent = card.querySelector('h2').textContent;
-      where.textContent = 'cell ' + card.dataset.cell;
-      if (typeof dlg.showModal === 'function') dlg.showModal(); else dlg.setAttribute('open', '');
-    }});
-    var img = card.querySelector('.shot img'), pill = card.querySelector('.pill');
-    if (!pill) return;
-    var showingBefore = false;
-    function flip() {{
-      showingBefore = !showingBefore;
-      img.src = showingBefore ? card.dataset.before : card.dataset.after;
-      pill.textContent = showingBefore ? 'Before' : 'After';
-      pill.setAttribute('aria-pressed', showingBefore ? 'true' : 'false');
-    }}
-    img.addEventListener('click', flip);
-    pill.addEventListener('click', flip);
-  }});
-}})();
-</script>
+{SCRIPT}
 '''
 
 
