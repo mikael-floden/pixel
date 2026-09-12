@@ -1315,8 +1315,15 @@ class Grow:
         # wall (wild raised four wall cells 32 -> 36 beside a floor at 4:
         # still a wall, measured)
         wall = max(cells.values()) + self.CLIMB + 1
+
+        def touches(c):
+            return any((c[0] + dx, c[1] + dy) in cells for dx, dy in ((1, 0), (-1, 0), (0, 1), (0, -1)))
+        # a mountain cave's WALL is the rock that meets its floor edge-on; a
+        # breach may lower rock two cells off (measured: two cells beside a
+        # mouth, cut to the outside's grade by the fixer)
         hurt = [c for c in d["margin"] - widened
-                if (self.lvl[c[1]][c[0]] != d["margin_lv"][c] if pit else self.lvl[c[1]][c[0]] < wall)
+                if (self.lvl[c[1]][c[0]] != d["margin_lv"][c] if pit
+                    else (touches(c) and self.lvl[c[1]][c[0]] < wall))
                 or c in lid or c in decked
                 or (pit and self.g(*c) not in self.NATURAL + ("light_soil",))]
         assert not hurt, ("the rock around the cave was touched", d["kind"], hurt[:8])
@@ -1391,7 +1398,10 @@ class Grow:
     CAVE_STEP = ((-3, 3), (0, 3), (-1, 1), (-2, 1), (1, 1), (2, 1), (3, 1))  # -3 is the ledge
     CAVE_ROOM_W = ((4, 2), (5, 3), (6, 2), (7, 1))
     CAVE_ROOM_H = ((4, 3), (5, 3), (6, 2), (7, 1))   # ROOM_MIN deep at least: a room three deep dressed as a corridor
-    CAVE_LANES = ((2, 3), (1, 1))          # corridor and stair width
+    CAVE_LANES = ((2, 2), (3, 1))          # corridor and stair width: never one
+                                           # (maintainer 2026-09-12, in a one-wide
+                                           # stair of Cave III: "A single monster
+                                           # will block the entire dungeon!")
     CAVE_HEAD = ((6, 3), (8, 2), (5, 1))   # a mountain cave's headroom
     CAVE_GAP_RUN = ((1, 2), (2, 2), (3, 1))  # flat corridor cells before a step
     CAVE_BUFFER = 2          # rock kept between two features of one cave
@@ -1492,8 +1502,8 @@ class Grow:
                 u = DIRS[sides[int(r() * len(sides)) % len(sides)]]
                 v = (-u[1], u[0]) if r() < 0.5 else (u[1], -u[0])
                 edge = [c for c in par if (c[0] + u[0], c[1] + u[1]) not in par]
-                if lanes == 2:
-                    edge = [c for c in edge if (c[0] + v[0], c[1] + v[1]) in edge]
+                offs = [(v[0] * k, v[1] * k) for k in range(lanes)]
+                edge = [c for c in edge if all((c[0] + o[0], c[1] + o[1]) in edge for o in offs)]
                 if not edge:
                     continue
                 e = sorted(edge)[int(r() * len(edge)) % len(edge)]
@@ -1505,14 +1515,13 @@ class Grow:
                 plv = [pl + (0 if j <= g else (j - g) * sgn) for j in range(1, m + 1)]
                 corr = {}
                 for j, c in enumerate(path):
-                    corr[c] = plv[j]
-                    if lanes == 2:
-                        corr[(c[0] + v[0], c[1] + v[1])] = plv[j]
+                    for o in offs:
+                        corr[(c[0] + o[0], c[1] + o[1])] = plv[j]
                 if not ok(corr, par):
                     continue
                 end = path[-1]
                 ent = (end[0] + u[0], end[1] + u[1])
-                ents = [ent] + ([(ent[0] + v[0], ent[1] + v[1])] if lanes == 2 else [])
+                ents = [(ent[0] + o[0], ent[1] + o[1]) for o in offs]
                 w, h = self._weighted(self.CAVE_ROOM_W, r), self._weighted(self.CAVE_ROOM_H, r)
                 cl = pl + step
                 if u[1]:
@@ -1534,7 +1543,7 @@ class Grow:
                     for c in ents:
                         ledges.append(((c[0] - u[0], c[1] - u[1]), c))
                 elif step:
-                    for off in ((0, 0), v) if lanes == 2 else ((0, 0),):
+                    for off in offs:
                         run = [(c[0] + off[0], c[1] + off[1]) for c in path[g - 1:]]
                         runs.append(run if step > 0 else run[::-1])
                 placed = True
@@ -1577,64 +1586,103 @@ class Grow:
                     if not ok(tmp, ch, same=gl):
                         continue
                     t = run[-1]
-                    # flat from the top of the run; a path cell touches nothing
-                    # but the way itself, and a floor at its own level
-                    prev, dq, seen, hit = {t: None}, collections.deque([t]), {t}, None
-                    while dq and hit is None:
-                        c = dq.popleft()
-                        if goal(c, gl):
-                            hit = c
-                            break
-                        if len(prev) > reach:
-                            break
-                        for m in ((c[0] + 1, c[1]), (c[0] - 1, c[1]), (c[0], c[1] + 1), (c[0], c[1] - 1)):
-                            if m in seen or m in tmp or m in cells or not free(m[0], m[1], gl):
+                    # the other lanes of the run, where the rock allows them
+                    v = (-u[1], u[0]) if r() < 0.5 else (u[1], -u[0])
+                    way = dict(tmp)
+                    lane_runs = []
+                    for k in range(1, lanes):
+                        sv = (s[0] + v[0] * k, s[1] + v[1] * k)
+                        lane = {(c[0] + v[0] * k, c[1] + v[1] * k): l for c, l in tmp.items()}
+                        if sv in ch and ok(lane, ch | set(way), same=gl):
+                            way.update(lane)
+                            lane_run = [sv] + [(c[0] + v[0] * k, c[1] + v[1] * k) for c in run]
+                            lane_runs.append(lane_run if d > 0 else lane_run[::-1])
+                    # FLAT FROM THE TOP OF THE RUN, `lanes` WIDE BY CONSTRUCTION:
+                    # the search walks blocks of lanes x lanes cells, so the
+                    # way it finds is as wide as the rest (a way found one
+                    # cell wide had no room beside it once its halo was
+                    # checked; maintainer 2026-09-12, in one: "A single
+                    # monster will block the entire dungeon!"). A block cell
+                    # touches nothing but the way itself and floors at its
+                    # own level; a wall one cell thick toward the open air
+                    # is a wall.
+                    def block(a_):
+                        return [(a_[0] + i, a_[1] + j) for i in range(lanes) for j in range(lanes)]
+
+                    def block_ok(a_, taken):
+                        bl = set(block(a_))
+                        for q in bl:
+                            if q in way:
                                 continue
-                            # a flat cell touches nothing but the way itself and
-                            # floors at its own level; a wall one cell thick
-                            # toward the open air is a wall
-                            bad = False
+                            if q in cells or not free(q[0], q[1], gl):
+                                return False
                             for dx in range(-B, B + 1):
                                 for dy in range(-B, B + 1):
-                                    q = (m[0] + dx, m[1] + dy)
+                                    qq = (q[0] + dx, q[1] + dy)
                                     near = max(abs(dx), abs(dy)) == 1
-                                    if q in tmp or q in prev:
-                                        if near and tmp.get(q, gl) != gl:
-                                            bad = True
-                                    elif q in cells:
-                                        if cells[q] != gl:
-                                            bad = True
-                                    elif near and q[1] <= 0 and not solid(q[0], q[1], gl):
-                                        bad = True
-                            if bad:
+                                    if qq in way:
+                                        # a step beside a flat cell is a fault; a
+                                        # step at its corner is a corner (tested
+                                        # before the visited skip: a walk along
+                                        # the run's own cells let a flat leg lie
+                                        # beside a step four down - measured)
+                                        if abs(dx) + abs(dy) == 1 and way[qq] != gl:
+                                            return False
+                                        continue
+                                    if qq in bl or qq in taken:
+                                        continue
+                                    elif qq in cells:
+                                        # the room the run leaves from is near
+                                        # by construction; a flat cell may not
+                                        # touch it edge-on, anything else may
+                                        if cells[qq] != gl and not (qq in ch and abs(dx) + abs(dy) != 1):
+                                            return False
+                                    elif near and qq[1] <= 0 and not solid(qq[0], qq[1], gl):
+                                        return False
+                        return True
+                    starts_ = [(t[0] - i, t[1] - j) for i in range(lanes) for j in range(lanes)]
+                    prev, taken, hit, hit_a = {}, set(), None, None
+                    dq = collections.deque()
+                    for a_ in starts_:
+                        if block_ok(a_, taken):
+                            prev[a_] = None
+                            taken |= set(block(a_))
+                            dq.append(a_)
+                    if want is not None:
+                        fails["way: " + ("no start" if not dq else "searched")] += 1
+                    while dq and hit is None:
+                        a_ = dq.popleft()
+                        for q in block(a_):
+                            if way.get(q, gl) == gl and goal(q, gl):
+                                hit, hit_a = q, a_
+                                break
+                        if hit is not None or len(prev) > reach:
+                            break
+                        for m in ((a_[0] + 1, a_[1]), (a_[0] - 1, a_[1]), (a_[0], a_[1] + 1), (a_[0], a_[1] - 1)):
+                            if m in prev or not block_ok(m, taken):
                                 continue
-                            seen.add(m)
-                            prev[m] = c
+                            prev[m] = a_
+                            taken |= set(block(m))
                             dq.append(m)
                     if hit is None:
+                        if want is not None:
+                            fails["way: " + ("exhausted" if len(prev) > reach else "dead end %d" % len(prev))] += 1
                         continue
-                    flat, c = [], hit
-                    while c is not None and c != t:
-                        flat.append(c)
-                        c = prev[c]
+                    flat, a_ = [], hit_a
+                    while a_ is not None:
+                        flat.append(a_)
+                        a_ = prev[a_]
                     flat.reverse()
-                    way = dict(tmp)
-                    for c in flat:
-                        way[c] = gl
-                    # the second lane of the run, where the rock allows it
-                    if lanes == 2:
-                        v = (-u[1], u[0]) if r() < 0.5 else (u[1], -u[0])
-                        sv = (s[0] + v[0], s[1] + v[1])
-                        if sv in ch:
-                            lane = {(c[0] + v[0], c[1] + v[1]): l for c, l in tmp.items()}
-                            if ok(lane, ch | set(way), same=gl):
-                                way.update(lane)
-                                lane_run = [sv] + [(c[0] + v[0], c[1] + v[1]) for c in run]
-                                runs.append(lane_run if d > 0 else lane_run[::-1])
+                    for a_ in flat:
+                        for q in block(a_):
+                            if q not in way:
+                                way[q] = gl
                     cells.update(way)
+                    runs.extend(lane_runs)
                     run_cells = [s] + run
                     runs.append(run_cells if d > 0 else run_cells[::-1])
-                    return hit, gl, flat
+                    self._last_way = (s, u, d, t, hit, hit_a, flat, sorted((c, l) for c, l in way.items() if c not in tmp))
+                    return hit, gl, flat, block(hit_a)
             return None
         # return stairs: every room reversibly reachable from the door
         for k, ch in enumerate(chambers):
@@ -1647,7 +1695,16 @@ class Grow:
             if got is None:
                 fails["return stair"] += 1
                 return None
-        assert all(ch & rev() for ch in chambers)
+        if not all(ch & rev() for ch in chambers):
+            R_ = rev()
+            xs = [c[0] for c in cells]; ys = [c[1] for c in cells]
+            runc = {c for run in runs for c in run}
+            pic = []
+            for y in range(min(ys), max(ys) + 1):
+                pic.append("%4d " % y + "".join(
+                    (("s" if (x, y) in runc else ("r" if (x, y) in R_ else "U")) + "%2d" % cells[(x, y)]) if (x, y) in cells else "  ."
+                    for x in range(min(xs), max(xs) + 1)))
+            raise AssertionError("a room the return stair did not reach\n" + "\n".join(pic) + "\nlast way: %r" % (getattr(self, "_last_way", None),))
         doors = [{"cells": door, "out": (0, 1)}]
         if rims:
             order = list(range(1, len(chambers)))
@@ -1658,11 +1715,16 @@ class Grow:
                               lanes, reach=4000, want={g for g, _ in rims.values()}, tries=6)
                 if got is None:
                     continue
-                hit, gl, flat = got
+                hit, gl, flat, last = got
                 rim = next(m for m in ((hit[0] + 1, hit[1]), (hit[0] - 1, hit[1]), (hit[0], hit[1] + 1), (hit[0], hit[1] - 1))
                            if m in rims and rims[m][0] == gl and m not in cells)
-                cells[rim] = gl
-                doors.append({"cells": [rim], "out": rims[rim][1]})
+                # the mouth is as wide as the way that reaches it: every rim
+                # cell of the same grade and facing beside the last block
+                door2 = sorted({m for q in last for m in ((q[0] + 1, q[1]), (q[0] - 1, q[1]), (q[0], q[1] + 1), (q[0], q[1] - 1))
+                                if m in rims and rims[m] == rims[rim] and m not in cells})[:lanes]
+                for m in door2:
+                    cells[m] = gl
+                doors.append({"cells": door2, "out": rims[rim][1]})
                 break
         if not adjacency_ok():
             fails["adjacency"] += 1
@@ -1680,6 +1742,17 @@ class Grow:
         self.mouth_clear = getattr(self, "mouth_clear", set()) | site["clear"]
         self.mouth_torches = getattr(self, "mouth_torches", []) + [t for d in site["doors"] for t in d["torches"]]
         self.dungeon_margin = getattr(self, "dungeon_margin", set()) | site["margin"]
+        # A MASSIF CAVE'S WALL TAKES A BREACH IF IT STAYS A WALL: the fixer
+        # cuts the terraces' stairs where the terrain wants them, and a cave
+        # under the plateau covered those spots with its margin - 18 trap
+        # cells on the east shoulder, measured. A breach is STAIR_MAX deep at
+        # most, so a wall cell standing that plus a climb above the cave's
+        # highest floor may be cut. A pit's field is never cut (its audit).
+        self.margin_soft = getattr(self, "margin_soft", {})
+        if site["kind"] == "mouth":
+            hi = max(site["cells"].values())
+            for c in site["margin"]:
+                self.margin_soft[c] = hi
         self.planned_floor = getattr(self, "planned_floor", set()) | (site["floor"] if site.get("planned") else set())
         self.planned_rock = getattr(self, "planned_rock", {})
         for c in site["floor"]:
@@ -1724,7 +1797,10 @@ class Grow:
         return [(int(S[j, i]), int(i) - x0, int(j) - y0) for j, i in np.argwhere(good)]
 
     def _keep_out(self):
-        """cells within CAVE_APART / 2 of any cave: no other cave's box"""
+        """cells within CAVE_APART / 2 of any cave - a planned site's box, or
+        any cave lid's cell (the ported cave has no site: a cave dug beside
+        its mouth had two wall cells taken by its corridor widening -
+        measured)"""
         out = set()
         R = self.CAVE_APART // 2
         for s in getattr(self, "cave_sites", []):
@@ -1733,6 +1809,12 @@ class Grow:
             for x in range(min(xs) - R, max(xs) + R + 1):
                 for y in range(min(ys) - R, max(ys) + R + 1):
                     out.add((x, y))
+        for dk in self.doc["decks"]:
+            if dk.get("kind") == "cave":
+                for c in dk["cells"]:
+                    for dx in range(-R, R + 1):
+                        for dy in range(-R, R + 1):
+                            out.add((c["x"] + dx, c["y"] + dy))
         return out
 
     def _dig_planned(self, plan, T, base, head, field, kind, rock_min, lid_of):
@@ -1924,9 +2006,79 @@ class Grow:
             w = T(fx, fy)
             return (0 <= w[0] < NEW and 0 <= w[1] < NEW
                     and bool(self.g(*w)) and not self.liquid(*w)
-                    and not self._behind_crown(w[0], w[1], top)
+                    and not self._back_touched(w[0], w[1], top)
                     and self.lvl[w[1]][w[0]] >= G + l + self.CLIMB + 1)
         return T, free, solid
+
+    def _through_rims(self, rims, rock, blocked):
+        """The rims from which a way two cells wide can reach another rim ten
+        or more cells off, at that rim's grade, through rock no other cave
+        holds and the mountain's back does not touch. Per absolute floor
+        level, the 2 x 2 blocks a floor could take are labelled into
+        components; a rim is THROUGH-CAPABLE when a component at another
+        rim's grade touches both that rim and the rock behind this one. Drawn
+        by rock alone, 1,800 tries found no through-cave once the ways were
+        two wide (measured): the through-caves had squeezed one cell wide
+        along the back."""
+        head = min(h for h, _ in self.CAVE_HEAD)
+        grades = sorted({G for _, _, G in rims})
+        N = NEW
+        comp_at = {}
+        for F in grades:
+            def bok(a):
+                for i in (0, 1):
+                    for j in (0, 1):
+                        x, y = a[0] + i, a[1] + j
+                        if not (0 <= x < N and 0 <= y < N) or self.grd[y][x] not in rock \
+                                or (x, y) in blocked or self.lvl[y][x] - F < head:
+                            return False
+                return True
+            label, n = {}, 0
+            for y in range(N - 1):
+                for x in range(N - 1):
+                    a = (x, y)
+                    if a in label or not bok(a):
+                        continue
+                    n += 1
+                    st = [a]
+                    label[a] = n
+                    while st:
+                        u = st.pop()
+                        for m in ((u[0] + 1, u[1]), (u[0] - 1, u[1]), (u[0], u[1] + 1), (u[0], u[1] - 1)):
+                            if m not in label and bok(m):
+                                label[m] = n
+                                st.append(m)
+            comp_at[F] = label
+
+        def comps_touching(c, F, r=1):
+            out = set()
+            lab = comp_at[F]
+            for dx in range(-r - 1, r + 1):
+                for dy in range(-r - 1, r + 1):
+                    a = (c[0] + dx, c[1] + dy)
+                    if a in lab:
+                        out.add(lab[a])
+            return out
+        by_grade = collections.defaultdict(list)
+        for k, (c, o, G) in enumerate(rims):
+            by_grade[G].append((k, c))
+        through = set()
+        for k, (c, o, G) in enumerate(rims):
+            for G2, others in by_grade.items():
+                if abs(G2 - G) > self.CAVE_UP_MAX:
+                    continue
+                near = comps_touching(c, G2, r=8)
+                if not near:
+                    continue
+                for k2, c2 in others:
+                    if k2 == k or max(abs(c2[0] - c[0]), abs(c2[1] - c[1])) < 10:
+                        continue
+                    if comps_touching(c2, G2) & near:
+                        through.add(k)
+                        break
+                if k in through:
+                    break
+        return through
 
     def mountain_caves(self):
         """CAVE_MOUTHS caves dug into the massif from rim cells that stand
@@ -1940,7 +2092,11 @@ class Grow:
         reach, _ = self._ways()
         blocked = {(c["x"], c["y"]) for dk in self.doc["decks"] for c in dk["cells"]}
         for w in self.doc["walls"]:
-            blocked |= {(c["x"], c["y"]) for c in w["cells"]}
+            # a HOUSE blocks; the terrain's own wall groups are the shelf
+            # faces of the massif, and taking them as walls fenced the rock
+            # with one-cell lines no two-wide way could cross (measured)
+            if w.get("kind") == "house":
+                blocked |= {(c["x"], c["y"]) for c in w["cells"]}
         blocked |= set(getattr(self, "floor_cells", {})) | set(getattr(self, "door_cells", ()))
         blocked |= set(getattr(self, "cave_floor", {}))
         blocked |= self._keep_out()
@@ -1949,7 +2105,7 @@ class Grow:
         top = self._crown_top()
         for y in range(NEW):
             for x in range(NEW):
-                if self._behind_crown(x, y, top):
+                if self._back_touched(x, y, top):
                     blocked.add((x, y))
 
         def mass(c):
@@ -1977,6 +2133,8 @@ class Grow:
                         continue
                     rims.append((c, o, G))
         assert rims, "no rim of the massif holds a mouth"
+        through = self._through_rims(rims, rock, blocked)
+        self.placed += [("rims that can run through to another", f"{len(through)} of {len(rims)}")]
         r = _rng32(0x3C0A7)
         made = made_two = 0
         for k in range(self.CAVE_MOUTHS):
@@ -1992,7 +2150,12 @@ class Grow:
             # spurs and to the honeycomb over the ported cave (measured: 0
             # of 400 halls stood).
             pool = []
+            want2 = made_two < self.CAVE_TWO_MOUTHS
+            thru = {rims[k][0] for k in through}
             for (X, Y), o, G in cand:
+                if want2 and thru and (X, Y) not in thru:
+                    continue          # a through-cave is owed: only the rims
+                                      # that can pay it, while any remain
                 along = FACES[o][0]
                 n = 0
                 for fx in range(-8, 9):
@@ -2023,7 +2186,6 @@ class Grow:
                         xs.append(k)
                 lo, hi = -min(G, self.CAVE_DOWN_MAX), self.CAVE_UP_MAX
                 rim2 = None
-                want2 = made_two < self.CAVE_TWO_MOUTHS
                 if want2:
                     rim2 = {}
                     for (c, oo, G2) in rims:
@@ -6159,6 +6321,19 @@ class Grow:
         dd, s = x - y, x + y
         return dd in top and s < top[dd][1]
 
+    def _back_touched(self, x, y, top, lvl=None):
+        """True where mountain_back will cut or void the cell: behind the
+        crown AND either a shoulder below CROWN_MIN (cut to the valley) or
+        hidden under the ridge (voided). Rock at the crown's own height that
+        still shows above the ridge is left alone, and a cave may be dug
+        under it (blocking everything up-screen of the crown pinched the
+        massif's east band to one cell and no way two cells wide reached a
+        second mouth - measured)."""
+        if not self._behind_crown(x, y, top):
+            return False
+        l = self.lvl[y][x] if lvl is None else lvl
+        return l < self.CROWN_MIN or self._under_ridge(x, y, l, top)
+
     def mountain_back(self):
         gi_void = -1
         N = NEW
@@ -6237,9 +6412,13 @@ class Grow:
         # the crown is entirely above it, so nobody stands half-hidden.
         for (x, y) in void:
             assert self._under_ridge(x, y, self.lvl[y][x], top), (x, y)
-        hid = [c for c in cave if self._behind_crown(c[0], c[1], top)
-               and self._under_ridge(c[0], c[1], self.lvl[c[1]][c[0]], top)]
-        assert not hid, ("a cave floor lies behind the crown", len(hid), hid[:6])
+        lidlv = {}
+        for dk in self.doc["decks"]:
+            if dk.get("kind") == "cave":
+                for c in dk["cells"]:
+                    lidlv[(c["x"], c["y"])] = max(lidlv.get((c["x"], c["y"]), 0), int(dk["level"]))
+        hid = [c for c in cave if self._back_touched(c[0], c[1], top, lidlv.get(c, self.lvl[c[1]][c[0]]))]
+        assert not hid, ("a cave floor lies where the back is cut or voided", len(hid), hid[:6])
         # THE FOREST THICKENS INTO THE MOUNTAIN. Void draws nothing, and the
         # game does not draw the ridge from the valley either (it culls by
         # cell distance, and the ridge is 17 cells away), so a void band
@@ -6755,8 +6934,11 @@ class Grow:
 
     def _dissolve_specks(self):
         """A natural-ground patch of SPECK_MAX cells or fewer, at one level,
-        takes the ground its rim mostly is (same level preferred). Repeats
-        until nothing changes - dissolving one speck can expose another."""
+        takes the ground its rim mostly is - the rim ON ITS OWN PLANE, within
+        a step: a cliff is another plane, and rock ringed by cave floors
+        several levels down is a wall, not a speck (measured: a two-cell wall
+        between two cave floors turned mud). Repeats until nothing changes -
+        dissolving one speck can expose another."""
         total = 0
         for _ in range(6):
             n = 0
@@ -6768,12 +6950,12 @@ class Grow:
                 votes = collections.Counter()
                 for x, y in rim:
                     gg = self.g(x, y)
-                    if gg in self.NATURAL and gg != g0:
+                    if gg in self.NATURAL and gg != g0 and abs(self.lvl[y][x] - l0) <= 1:
                         votes[gg] += 2 if self.lvl[y][x] == l0 else 1
                 if not votes:            # a mud dot in a road becomes road
                     for x, y in rim:
                         gg = self.g(x, y)
-                        if self._speck_rim(x, y) and gg != g0:
+                        if self._speck_rim(x, y) and gg != g0 and abs(self.lvl[y][x] - l0) <= 1:
                             votes[gg] += 1
                 if not votes:            # a one-cell islet is an islet
                     continue
@@ -7107,10 +7289,13 @@ class Grow:
         """BUILD ASSERT, at the end: no natural-ground speck, no pocket
         below its rim, no deep water off the sea - whatever a later pass
         painted, the photographs cannot come back."""
+        # a speck has a rim on its own plane to dissolve into (a step at
+        # most, as _dissolve_specks reads it); rock ringed only by floors
+        # several levels down is a wall, a rock in the sea an islet
         specks = [comp for g0, l0, comp in self._components(
             lambda x, y: self.g(x, y) in self.NATURAL, by_level=False)
             if len(comp) <= self.SPECK_MAX
-            and any(self._speck_rim(x, y) for x, y in self._rim(comp))]
+            and any(self._speck_rim(x, y) and abs(self.lvl[y][x] - l0) <= 1 for x, y in self._rim(comp))]
         pockets = [(p[0], p[1], p[2][0], len(p[2]), p[4]) for p in self._pockets()]
         assert not specks, ("specks", len(specks), [c[0] for c in specks[:8]])
         assert not pockets, ("pockets", pockets[:8])
@@ -7294,7 +7479,7 @@ class Grow:
         lv = self._standable()
         top = self._crown_top()
         for (x, y, layer) in list(lv):
-            if layer == 0 and self.lvl[y][x] > self.SHOULDER_MAX and self._behind_crown(x, y, top):
+            if layer == 0 and self.lvl[y][x] > self.SHOULDER_MAX and self._back_touched(x, y, top):
                 del lv[(x, y, layer)]
         return lv
 
@@ -7372,13 +7557,15 @@ class Grow:
         # slope ending under a cliff and cut a breach from its head up
         # through the field (measured: a 5-step light_soil stair beside the
         # pit). The pit itself is cut once, by dungeon().
+        soft = getattr(self, "margin_soft", {})
         return (g and g not in self.INDOOR_GROUNDS and g != "light_soil"
                 and (x, y) not in self.floor_cells
                 and (x, y) not in getattr(self, "door_cells", set())
                 and (x, y) not in getattr(self, "wild_cells", set())
                 and (x, y) not in getattr(self, "cave_floor", {})
                 and (x, y) not in getattr(self, "mouth_clear", set())
-                and (x, y) not in getattr(self, "dungeon_margin", set()))
+                and ((x, y) not in getattr(self, "dungeon_margin", set())
+                     or ((x, y) in soft and self.lvl[y][x] - self.STAIR_MAX >= soft[(x, y)] + self.CLIMB + 1)))
 
     def _stair(self, t, b, T, B):
         """A BREACH: the way up is cut DOWN into the terrace above, never
@@ -7498,13 +7685,25 @@ class Grow:
                     if where:
                         laid.append(t)
                         fixed["breach"] += 1
-                if not laid and len(T) <= self.LEDGE_MAX:
+                # a trap this small is a ledge and joins the terrace above -
+                # and so does any trap up to a pocket's size once every
+                # breach has failed to land (the terrace above is a cave's
+                # lid, or too narrow for a stair and its flare): the east
+                # shoulder's 18-cell strip beside the through-cave, measured
+                # as 18 trap cells and a red build. A hole is not terrain.
+                if not laid and len(T) <= self.POCKET_MAX:
                     _, t, b = cands[0]
                     H, gb = self.lvl[b[1]][b[0]], self.grd[b[1]][b[0]]
                     for (x, y) in T:
                         self.lvl[y][x] = H
                         if not self.liquid(x, y):
                             self.grd[y][x] = gb
+                    # a stair inside a trap led nowhere; raised, its steps
+                    # would break the ramp contract (measured: one run)
+                    before = len(self.doc.get("ramps", []))
+                    self.doc["ramps"] = [rr for rr in self.doc.get("ramps", [])
+                                         if not any((c["x"], c["y"]) in T for c in rr["cells"])]
+                    fixed["runs dropped by a join"] += before - len(self.doc["ramps"])
                     fixed["joined"] += 1
                     laid.append(t)
                 progress += len(laid)
