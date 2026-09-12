@@ -1,6 +1,6 @@
 {
   "format": "pixel-wiki-tuning-monsters@1",
-  "updated_at": "2026-08-24T17:59:10.487Z",
+  "updated_at": "2026-09-12T23:03:02.736Z",
   "defaults": {
     "level": 1,
     "max_hp": 20,
@@ -100,7 +100,16 @@
       "attack_cooldown_ms": 1200,
       "xp": 5,
       "scale": 1,
-      "loot": []
+      "loot": [
+        {
+          "item": "glowing_ember_dust",
+          "chance": 0.128
+        },
+        {
+          "item": "smooth_black_egg",
+          "chance": 0.16
+        }
+      ]
     },
     "basilisk": {
       "level": 16,
@@ -111,7 +120,24 @@
       "attack_cooldown_ms": 1200,
       "xp": 5,
       "scale": 1,
-      "loot": []
+      "loot": [
+        {
+          "item": "bright_green_plate_stone",
+          "chance": 0.02
+        },
+        {
+          "item": "green_slit_eyeball",
+          "chance": 0.128
+        },
+        {
+          "item": "severed_scaled_paw",
+          "chance": 0.128
+        },
+        {
+          "item": "green_scale_cluster",
+          "chance": 0.256
+        }
+      ]
     },
     "black_horse": {
       "max_hp": 155,
@@ -314,7 +340,28 @@
       "attack_cooldown_ms": 1200,
       "xp": 5,
       "scale": 1,
-      "loot": []
+      "loot": [
+        {
+          "item": "pale_moss_plate_stone",
+          "chance": 0.03
+        },
+        {
+          "item": "bog_slime_blob",
+          "chance": 0.256
+        },
+        {
+          "item": "coiled_bog_worm",
+          "chance": 0.256
+        },
+        {
+          "item": "layered_fern_fronds",
+          "chance": 0.256
+        },
+        {
+          "item": "mossy_driftwood_bundle",
+          "chance": 0.256
+        }
+      ]
     },
     "bridge_troll": {
       "level": 15,
@@ -325,7 +372,20 @@
       "attack_cooldown_ms": 1200,
       "xp": 5,
       "scale": 1,
-      "loot": []
+      "loot": [
+        {
+          "item": "dented_metal_flask",
+          "chance": 0.128
+        },
+        {
+          "item": "worn_wooden_band",
+          "chance": 0.128
+        },
+        {
+          "item": "heavy_iron_links",
+          "chance": 0.256
+        }
+      ]
     },
     "butterfly_dragon": {
       "level": 12,
@@ -394,7 +454,24 @@
       "attack_cooldown_ms": 1200,
       "xp": 5,
       "scale": 1,
-      "loot": []
+      "loot": [
+        {
+          "item": "broken_boar_tusk",
+          "chance": 0.128
+        },
+        {
+          "item": "great_curved_fang",
+          "chance": 0.128
+        },
+        {
+          "item": "pale_grey_eyeball",
+          "chance": 0.128
+        },
+        {
+          "item": "rough_brown_boulder",
+          "chance": 0.256
+        }
+      ]
     },
     "chestnut_horse": {
       "max_hp": 95,
@@ -483,7 +560,16 @@
       "attack_cooldown_ms": 1200,
       "xp": 5,
       "scale": 1,
-      "loot": []
+      "loot": [
+        {
+          "item": "green_slit_eyeball",
+          "chance": 0.128
+        },
+        {
+          "item": "yellowed_curved_fang",
+          "chance": 0.256
+        }
+      ]
     },
     "corrupt_stag": {
       "max_hp": 155,
@@ -564,7 +650,24 @@
       "attack_cooldown_ms": 1200,
       "xp": 5,
       "scale": 1,
-      "loot": []
+      "loot": [
+        {
+          "item": "worn_tan_tusk",
+          "chance": 0.128
+        },
+        {
+          "item": "grey_rock_pile",
+          "chance": 0.256
+        },
+        {
+          "item": "lichen_crusted_rock",
+          "chance": 0.256
+        },
+        {
+          "item": "rough_brown_boulder",
+          "chance": 0.256
+        }
+      ]
     },
     "crystal_horn": {
       "max_hp": 145,
@@ -589,7 +692,7 @@
         },
         {
           "item": "amethyst_point",
-          "chance": 0.055
+          "chance": 0.044
         },
         {
           "item": "gold_veined_ore",
@@ -601,7 +704,7 @@
         },
         {
           "item": "violet_crystal_shard",
-          "chance": 0.055
+          "chance": 0.044
         },
         {
           "item": "clear_quartz_cluster",
@@ -787,7 +890,24 @@
       "attack_cooldown_ms": 1200,
       "xp": 5,
       "scale": 1,
-      "loot": []
+      "loot": [
+        {
+          "item": "violet_knot_stone",
+          "chance": 0.008
+        },
+        {
+          "item": "blue_veined_rift_geode",
+          "chance": 0.011
+        },
+        {
+          "item": "amethyst_point",
+          "chance": 0.044
+        },
+        {
+          "item": "violet_crystal_shard",
+          "chance": 0.044
+        }
+      ]
     },
     "dark_donkey": {
       "level": 11,
@@ -833,7 +953,7 @@
         },
         {
           "item": "stretched_tan_hide",
-          "chance": 0.32
+          "chance": 0.256
         },
         {
           "item": "yellowed_beast_molar",
@@ -1196,7 +1316,7 @@
         },
         {
           "item": "bleached_sea_shells",
-          "chance": 0.32
+          "chance": 0.256
         }
       ],
       "level": 13,
@@ -1252,7 +1372,24 @@
       "attack_cooldown_ms": 1200,
       "xp": 5,
       "scale": 1,
-      "loot": []
+      "loot": [
+        {
+          "item": "brown_woodgrain_stone",
+          "chance": 0.03
+        },
+        {
+          "item": "amber_glazed_root",
+          "chance": 0.128
+        },
+        {
+          "item": "crooked_twig",
+          "chance": 0.256
+        },
+        {
+          "item": "dark_hardwood_plank",
+          "chance": 0.256
+        }
+      ]
     },
     "eldritch_maw": {
       "max_hp": 205,
@@ -1281,7 +1418,7 @@
         },
         {
           "item": "coiled_purple_tentacle",
-          "chance": 0.16
+          "chance": 0.128
         },
         {
           "item": "pale_grey_brain",
@@ -1353,7 +1490,24 @@
       "attack_cooldown_ms": 1200,
       "xp": 5,
       "scale": 1,
-      "loot": []
+      "loot": [
+        {
+          "item": "deep_red_crack_stone",
+          "chance": 0.02
+        },
+        {
+          "item": "flame_veined_shard",
+          "chance": 0.044
+        },
+        {
+          "item": "great_curved_fang",
+          "chance": 0.128
+        },
+        {
+          "item": "red_scaled_hide",
+          "chance": 0.128
+        }
+      ]
     },
     "ember_king": {
       "level": 17,
@@ -1364,7 +1518,16 @@
       "attack_cooldown_ms": 1200,
       "xp": 5,
       "scale": 1,
-      "loot": []
+      "loot": [
+        {
+          "item": "black_glass_lump",
+          "chance": 0.128
+        },
+        {
+          "item": "glowing_ember_dust",
+          "chance": 0.128
+        }
+      ]
     },
     "eye_bat": {
       "level": 5,
@@ -1375,7 +1538,20 @@
       "attack_cooldown_ms": 1200,
       "xp": 5,
       "scale": 1,
-      "loot": []
+      "loot": [
+        {
+          "item": "hooked_bat_wing",
+          "chance": 0.16
+        },
+        {
+          "item": "plucked_beast_eyeball",
+          "chance": 0.128
+        },
+        {
+          "item": "torn_brown_wing",
+          "chance": 0.32
+        }
+      ]
     },
     "fire_elemental": {
       "level": 10,
@@ -1386,7 +1562,16 @@
       "attack_cooldown_ms": 1200,
       "xp": 5,
       "scale": 1,
-      "loot": []
+      "loot": [
+        {
+          "item": "orange_lightning_stone",
+          "chance": 0.008
+        },
+        {
+          "item": "glowing_ember_dust",
+          "chance": 0.128
+        }
+      ]
     },
     "forest_poring": {
       "level": 3,
@@ -1565,7 +1750,16 @@
       "attack_cooldown_ms": 1200,
       "xp": 5,
       "scale": 1,
-      "loot": []
+      "loot": [
+        {
+          "item": "white_rune_frost_stone",
+          "chance": 0.02
+        },
+        {
+          "item": "pale_blue_hailstones",
+          "chance": 0.128
+        }
+      ]
     },
     "ghost_hound": {
       "level": 11,
@@ -1576,7 +1770,16 @@
       "attack_cooldown_ms": 1200,
       "xp": 5,
       "scale": 1,
-      "loot": []
+      "loot": [
+        {
+          "item": "heavy_long_bone",
+          "chance": 0.256
+        },
+        {
+          "item": "loose_vertebrae",
+          "chance": 0.256
+        }
+      ]
     },
     "ghoul": {
       "level": 11,
@@ -1587,7 +1790,24 @@
       "attack_cooldown_ms": 1200,
       "xp": 5,
       "scale": 1,
-      "loot": []
+      "loot": [
+        {
+          "item": "pale_grey_eyeball",
+          "chance": 0.128
+        },
+        {
+          "item": "pale_hooked_claw",
+          "chance": 0.128
+        },
+        {
+          "item": "bone_flecked_grave_soil",
+          "chance": 0.256
+        },
+        {
+          "item": "scattered_small_teeth",
+          "chance": 0.256
+        }
+      ]
     },
     "glow_grub": {
       "level": 1,
@@ -1609,7 +1829,20 @@
       "attack_cooldown_ms": 1200,
       "xp": 5,
       "scale": 1,
-      "loot": []
+      "loot": [
+        {
+          "item": "corded_fang_charm",
+          "chance": 0.16
+        },
+        {
+          "item": "green_herb_bundle",
+          "chance": 0.32
+        },
+        {
+          "item": "tied_bone_bundle",
+          "chance": 0.256
+        }
+      ]
     },
     "granite_bear": {
       "max_hp": 205,
@@ -2026,7 +2259,12 @@
       "attack_cooldown_ms": 1200,
       "xp": 5,
       "scale": 1,
-      "loot": []
+      "loot": [
+        {
+          "item": "heavy_iron_links",
+          "chance": 0.256
+        }
+      ]
     },
     "ice_crystal_golem": {
       "level": 19,
@@ -2181,7 +2419,16 @@
       "attack_cooldown_ms": 1200,
       "xp": 5,
       "scale": 1,
-      "loot": []
+      "loot": [
+        {
+          "item": "blue_white_star_stone",
+          "chance": 0.02
+        },
+        {
+          "item": "clustered_ice_crystals",
+          "chance": 0.044
+        }
+      ]
     },
     "ice_wolf": {
       "max_hp": 175,
@@ -2399,7 +2646,7 @@
         },
         {
           "item": "red_scaled_hide",
-          "chance": 0.16
+          "chance": 0.128
         },
         {
           "item": "scaly_clawed_foot",
@@ -2489,7 +2736,7 @@
         },
         {
           "item": "green_scale_cluster",
-          "chance": 0.32
+          "chance": 0.256
         },
         {
           "item": "loose_beast_teeth",
@@ -2548,7 +2795,16 @@
       "attack_cooldown_ms": 1200,
       "xp": 5,
       "scale": 1,
-      "loot": []
+      "loot": [
+        {
+          "item": "cracked_magma_stone",
+          "chance": 0.044
+        },
+        {
+          "item": "black_glass_slab",
+          "chance": 0.128
+        }
+      ]
     },
     "lizard_warrior": {
       "level": 15,
@@ -2559,7 +2815,20 @@
       "attack_cooldown_ms": 1200,
       "xp": 5,
       "scale": 1,
-      "loot": []
+      "loot": [
+        {
+          "item": "wrapped_tooth_charm",
+          "chance": 0.16
+        },
+        {
+          "item": "yellow_slit_eye",
+          "chance": 0.128
+        },
+        {
+          "item": "green_scale_cluster",
+          "chance": 0.256
+        }
+      ]
     },
     "magma_wolf": {
       "max_hp": 125,
@@ -2777,7 +3046,7 @@
         },
         {
           "item": "corked_glass_vial",
-          "chance": 0.16
+          "chance": 0.128
         },
         {
           "item": "pale_grey_brain",
@@ -2793,7 +3062,7 @@
         },
         {
           "item": "linen_thread_spool",
-          "chance": 0.32
+          "chance": 0.256
         },
         {
           "item": "rotten_stitched_hide",
@@ -2801,7 +3070,7 @@
         },
         {
           "item": "tied_bone_bundle",
-          "chance": 0.32
+          "chance": 0.256
         }
       ],
       "shadow": {
@@ -2922,7 +3191,28 @@
       "attack_cooldown_ms": 1200,
       "xp": 5,
       "scale": 1,
-      "loot": []
+      "loot": [
+        {
+          "item": "corked_glass_vial",
+          "chance": 0.128
+        },
+        {
+          "item": "gnarled_mandrake_root",
+          "chance": 0.128
+        },
+        {
+          "item": "bound_root_bundle",
+          "chance": 0.32
+        },
+        {
+          "item": "fresh_green_herbs",
+          "chance": 0.32
+        },
+        {
+          "item": "tied_bone_bundle",
+          "chance": 0.256
+        }
+      ]
     },
     "masked_shadow_creature": {
       "level": 8,
@@ -2948,7 +3238,7 @@
         },
         {
           "item": "worn_wooden_band",
-          "chance": 0.16
+          "chance": 0.128
         },
         {
           "item": "bone_flecked_grave_soil",
@@ -3057,7 +3347,16 @@
       "attack_cooldown_ms": 1200,
       "xp": 5,
       "scale": 1,
-      "loot": []
+      "loot": [
+        {
+          "item": "pale_green_core_stone",
+          "chance": 0.02
+        },
+        {
+          "item": "moss_green_slime",
+          "chance": 0.256
+        }
+      ]
     },
     "mummy": {
       "level": 10,
@@ -3068,7 +3367,20 @@
       "attack_cooldown_ms": 1200,
       "xp": 5,
       "scale": 1,
-      "loot": []
+      "loot": [
+        {
+          "item": "white_gold_branch_stone",
+          "chance": 0.008
+        },
+        {
+          "item": "bone_flecked_grave_soil",
+          "chance": 0.256
+        },
+        {
+          "item": "linen_thread_spool",
+          "chance": 0.256
+        }
+      ]
     },
     "mystical_frog": {
       "level": 1,
@@ -3317,7 +3629,12 @@
       "attack_cooldown_ms": 1200,
       "xp": 5,
       "scale": 1,
-      "loot": []
+      "loot": [
+        {
+          "item": "coiled_purple_tentacle",
+          "chance": 0.128
+        }
+      ]
     },
     "orc_warrior": {
       "level": 15,
@@ -3328,7 +3645,16 @@
       "attack_cooldown_ms": 1200,
       "xp": 5,
       "scale": 1,
-      "loot": []
+      "loot": [
+        {
+          "item": "broken_boar_tusk",
+          "chance": 0.128
+        },
+        {
+          "item": "stretched_tan_hide",
+          "chance": 0.256
+        }
+      ]
     },
     "pebble_crab": {
       "level": 3,
@@ -3339,7 +3665,20 @@
       "attack_cooldown_ms": 1200,
       "xp": 5,
       "scale": 1,
-      "loot": []
+      "loot": [
+        {
+          "item": "bleached_sea_shells",
+          "chance": 0.256
+        },
+        {
+          "item": "curved_crab_pincer",
+          "chance": 0.256
+        },
+        {
+          "item": "smooth_river_stone",
+          "chance": 0.256
+        }
+      ]
     },
     "plague_hound": {
       "max_hp": 75,
@@ -3462,7 +3801,7 @@
         },
         {
           "item": "pale_hooked_claw",
-          "chance": 0.16
+          "chance": 0.128
         },
         {
           "item": "spiky_white_tuft",
@@ -3526,7 +3865,12 @@
       "attack_cooldown_ms": 1200,
       "xp": 5,
       "scale": 1,
-      "loot": []
+      "loot": [
+        {
+          "item": "grey_rock_pile",
+          "chance": 0.256
+        }
+      ]
     },
     "root_bear": {
       "max_hp": 165,
@@ -3835,7 +4179,20 @@
       "attack_cooldown_ms": 1200,
       "xp": 5,
       "scale": 1,
-      "loot": []
+      "loot": [
+        {
+          "item": "gnarled_mandrake_root",
+          "chance": 0.128
+        },
+        {
+          "item": "crooked_twig",
+          "chance": 0.256
+        },
+        {
+          "item": "glossy_brown_seeds",
+          "chance": 0.256
+        }
+      ]
     },
     "shadow_panther": {
       "max_hp": 135,
@@ -3884,7 +4241,20 @@
       "attack_cooldown_ms": 1200,
       "xp": 5,
       "scale": 1,
-      "loot": []
+      "loot": [
+        {
+          "item": "heavy_long_bone",
+          "chance": 0.256
+        },
+        {
+          "item": "loose_vertebrae",
+          "chance": 0.256
+        },
+        {
+          "item": "stained_marrow_bone",
+          "chance": 0.256
+        }
+      ]
     },
     "snow_demon": {
       "level": 17,
@@ -4015,7 +4385,20 @@
       "attack_cooldown_ms": 1200,
       "xp": 5,
       "scale": 1,
-      "loot": []
+      "loot": [
+        {
+          "item": "pale_silk_skein",
+          "chance": 0.16
+        },
+        {
+          "item": "curved_ivory_fang",
+          "chance": 0.256
+        },
+        {
+          "item": "tangled_cobweb",
+          "chance": 0.32
+        }
+      ]
     },
     "stone_golem": {
       "level": 18,
@@ -4600,7 +4983,20 @@
       "attack_cooldown_ms": 1200,
       "xp": 5,
       "scale": 1,
-      "loot": []
+      "loot": [
+        {
+          "item": "segmented_carapace",
+          "chance": 0.128
+        },
+        {
+          "item": "bleached_sea_shells",
+          "chance": 0.256
+        },
+        {
+          "item": "curved_crab_pincer",
+          "chance": 0.256
+        }
+      ]
     },
     "tree_stump": {
       "level": 10,
@@ -4697,7 +5093,16 @@
       "attack_cooldown_ms": 1200,
       "xp": 5,
       "scale": 1,
-      "loot": []
+      "loot": [
+        {
+          "item": "dark_teal_plate_stone",
+          "chance": 0.02
+        },
+        {
+          "item": "segmented_carapace",
+          "chance": 0.128
+        }
+      ]
     },
     "undead_charger": {
       "max_hp": 135,
@@ -4891,7 +5296,20 @@
       "attack_cooldown_ms": 1200,
       "xp": 5,
       "scale": 1,
-      "loot": []
+      "loot": [
+        {
+          "item": "curved_bone_talon",
+          "chance": 0.128
+        },
+        {
+          "item": "barred_brown_feather",
+          "chance": 0.32
+        },
+        {
+          "item": "tan_down_feather",
+          "chance": 0.32
+        }
+      ]
     },
     "war_elephant": {
       "level": 20,
@@ -4902,7 +5320,24 @@
       "attack_cooldown_ms": 1200,
       "xp": 5,
       "scale": 1,
-      "loot": []
+      "loot": [
+        {
+          "item": "purple_gold_vein_stone",
+          "chance": 0.008
+        },
+        {
+          "item": "dark_hardwood_plank",
+          "chance": 0.256
+        },
+        {
+          "item": "heavy_iron_links",
+          "chance": 0.256
+        },
+        {
+          "item": "pair_of_molars",
+          "chance": 0.256
+        }
+      ]
     },
     "water_elemental": {
       "level": 8,
@@ -4913,7 +5348,20 @@
       "attack_cooldown_ms": 1200,
       "xp": 5,
       "scale": 1,
-      "loot": []
+      "loot": [
+        {
+          "item": "opal_bubble_stone",
+          "chance": 0.008
+        },
+        {
+          "item": "large_white_pearl",
+          "chance": 0.055
+        },
+        {
+          "item": "clear_dew_drop",
+          "chance": 0.128
+        }
+      ]
     },
     "water_poring": {
       "level": 2,
@@ -4990,7 +5438,24 @@
       "attack_cooldown_ms": 1200,
       "xp": 5,
       "scale": 1,
-      "loot": []
+      "loot": [
+        {
+          "item": "crimson_spiral_stone",
+          "chance": 0.008
+        },
+        {
+          "item": "furred_dark_claw",
+          "chance": 0.128
+        },
+        {
+          "item": "matted_black_pelt",
+          "chance": 0.128
+        },
+        {
+          "item": "curved_ivory_fang",
+          "chance": 0.256
+        }
+      ]
     },
     "white_horse": {
       "max_hp": 105,

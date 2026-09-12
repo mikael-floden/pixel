@@ -34,7 +34,7 @@ type with its tag, stack rules, equip slot and the shared rarity ladder.
 `sync.py` discovers by **exactly those tags**, so tagging a new object `SWORD`
 on PixelLab is all it takes for swords to start flowing in.
 
-**Currently shipped: `MISC` (77) and `SOUL` (28).** The other five types are
+**Currently shipped: `MISC` (155) and `SOUL` (71).** The other five types are
 contracted in `types.json` and have no art yet.
 
 ## PixelLab owns the art, this repo owns the meaning
@@ -66,7 +66,7 @@ id, so the next run flags "look at this sprite and name it".
   batches, so the PixelLab `name` field is useless — every name here is
   chosen by *looking* at the sprite, ≤ 12 characters (same rule as monsters).
 - **Every soul stone is called "Soulstone".** `SOUL` declares `shared_name`
-  in `types.json`: the 28 stones share one display name and differ by
+  in `types.json`: the 71 stones share one display name and differ by
   description, element, power and — above all — the monster they belong to
   ([1-to-1](#a-soulstone-belongs-to-exactly-one-monster-and-back)). Sync
   enforces the shared name instead of the unique-name rule other types get.
@@ -96,6 +96,15 @@ copy** of the mapping. One source of truth, owned by the maintainer; `item`
 values are `items/<id>` folder ids, and `items/viewer_data.json` resolves an
 id to name, sprite and value.
 
+The file also carries the **approved candidate creatures the wiki lists as
+pending** (`monsters/candidates/<id>` with `review: approved`, seeded by the
+wiki build with default stats before their animations are complete). Their
+loot is written the moment the design is approved, ahead of the art: a table
+for a creature that has not spawned yet is inert in the game (the server only
+spawns kinds in the monsters manifest) and visible on the pending creature's
+wiki page, so the maintainer reviews the drops before the first one is ever
+cracked. `drops.py` reads those kinds like any other.
+
 The rules the mapping follows:
 
 - **An item binds to a creature only when it is OF that creature** — its
@@ -118,9 +127,11 @@ Much of the art predates the world that uses it, so some items are of
 creatures the game does not have — bats, birds, a crab, insects, a spider,
 shellfish, someone with hands to tie a bundle. Those items carry
 **`waiting_for`** in the roster (and in `item.json` / `viewer_data.json`),
-drop from nothing, and their descriptions do not name a creature. **18 of the
-77 MISC items are waiting — that is the correct state**; binding them to
-whatever roughly rhymed is how you get a bat wing dropping off a snow demon.
+drop from nothing, and their descriptions do not name a creature. **17 of the
+155 MISC items are waiting — that is the correct state** (bright plumes for a
+bird nobody picked, two bat wings, beetles, a dragonfly, a moth, blue scales,
+silver bars); binding them to whatever roughly rhymed is how you get a bat
+wing dropping off a snow demon.
 
 `drops.py` lists them every run. What it *flags* is an item that nothing
 drops **and** has no `waiting_for` — nobody decided, which is the actual
@@ -144,7 +155,9 @@ and `pipeline/drops.py` fails on any monster holding two stones or any stone
 with two sources.
 
 **Unbound stones are expected, not a defect — unused is this repo's default
-state** (currently 24 of the 28 stones are bound; 4 wait). Content is made
+state** (today all 71 stones are bound and 25 of the 96 creatures have none —
+the reverse gap, a request for SOUL art, not a reason to double up). Content
+is made
 ahead of the world that uses it: a surplus stone waits for a creature of its
 own rather than doubling up, its description says so instead of naming a
 creature, and `drops.py` reports it as ordinary status. It binds the moment
