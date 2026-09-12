@@ -2234,7 +2234,7 @@ export class WorldScene extends Phaser.Scene {
         runFrac,
         travelCells,
         why: final ? "flush" : moved ? "moved" : "bad", // why this window was sent at all
-        sim: this.burstTest ? "nobursts" : "", // the burst test switch (see burstTest)
+        sim: this.burstTest ? "nobursts" : this.shaderTest ? "nocompose" : "", // the test switches (burstTest, shaderTest)
 
         deviceMemoryGb: nav.deviceMemory ?? 0,
         connType: nav.connection?.effectiveType ?? "?",
@@ -3285,6 +3285,11 @@ export class WorldScene extends Phaser.Scene {
    * on purpose: no landed art repairs, bodies sort against the first area's
    * columns. Remembered (ml-burst-test); the beacon stamps run.sim. */
   private burstTest = localStorage.getItem("ml-burst-test") === "1";
+  /** THE SHADER TEST — Settings "shader test": nothing is composed (see
+   *  Tiles3Textures.simNoCompose), so a run with it on is the ceiling a
+   *  compositing shader could reach; measured before one is written
+   *  (maintainer's method, 2026-09-12: prove the fix before the code). */
+  private shaderTest = localStorage.getItem("ml-shader-test") === "1";
   private groundPartial = groundPathFast();
   private groundPrefetch = groundPathFast();
   private t3ringQueue: [number, number][] = [];
@@ -4310,6 +4315,21 @@ export class WorldScene extends Phaser.Scene {
           },
           get: () => this.burstTest,
           state: () => (this.burstTest ? "on (broken)" : "off"),
+        },
+        {
+          label: "shader test",
+          act: () => {
+            this.shaderTest = !this.shaderTest;
+            try {
+              localStorage.setItem("ml-shader-test", this.shaderTest ? "1" : "0");
+            } catch {
+              /* storage blocked */
+            }
+            if (this.t3tex) this.t3tex.simNoCompose = this.shaderTest;
+            this.chat.addLog("—", `shader test: ${this.shaderTest ? "ON — no transitions, fades or capped plates are composed (hard edges, on purpose): the ceiling a compositing shader can reach" : "off"}`);
+          },
+          get: () => this.shaderTest,
+          state: () => (this.shaderTest ? "on (hard edges)" : "off"),
         },
         {
           label: "transitions",
@@ -16818,6 +16838,7 @@ export class WorldScene extends Phaser.Scene {
       // future eviction must also clear occPool/occNext or a pooled image renders
       // from a destroyed texture — legacy's per-rebuild recreate no longer re-resolves the key.
     });
+    this.t3tex.simNoCompose = this.shaderTest;
     return this.t3tex;
   }
 
@@ -18481,7 +18502,7 @@ export class WorldScene extends Phaser.Scene {
        * resetting its rect and re-blitting it — the cave floor "simmering like
        * crazy" while standing still (maintainer 2026-09-05), and a
        * repaintTiles3Cells bill of 4-19 ms per frame under every roof. */
-      if (b && !bop && !cutSuppressed) this.t3boundaryOwed.add(idx);
+      if (b && !bop && !cutSuppressed && !tex.simNoCompose) this.t3boundaryOwed.add(idx);
       else this.t3boundaryOwed.delete(idx);
       if (useBoundary && bop) {
         // `useBoundary` already implies `bop`; the `&& bop` only restores the

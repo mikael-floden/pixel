@@ -1332,6 +1332,14 @@ export class Tiles3Textures {
    * session, so they cost nothing to leave alone. */
   private composeBudgetMs = Infinity;
   private composeSpent = 0;
+  /** THE SHADER TEST (Settings, 2026-09-12): compose NOTHING — a boundary
+   *  answers null and is not owed, a fade is not drawn and not counted as a
+   *  drop, a plate draws its raw file — so the maintainer can measure the
+   *  ceiling a compositing shader (mask select on the GPU, sources uploaded
+   *  once) could reach before one is written: no canvas work, no per-pair
+   *  texture uploads. The picture is the pre-3.0 look — hard edges, wall
+   *  bands under level-0 tiles — on purpose. */
+  simNoCompose = false;
 
   private mine = new Map<string, true>();
   private pix = new Map<string, Pixels | null>();
@@ -1347,6 +1355,7 @@ export class Tiles3Textures {
   boundary(b: Tiles3Boundary): string | null {
     const key = boundaryKeyFor(b, this.o.seam !== false);
     if (!key) return null;
+    if (this.simNoCompose) return this.ensureHit(key); // the shader test: what is built stays, nothing new
     // THE BUDGET, and the ONE place it is enforced. An already-composed key is
     // free and is always answered — refusing a cache hit would make the ground
     // flicker between plate and transition as the camera moved.
@@ -1527,11 +1536,18 @@ export class Tiles3Textures {
        * file: worst case is exactly today's picture. */
       const hit = this.ensureHit(skey);
       if (hit) return hit;
+      if (this.simNoCompose) return this.o.textures.exists(key) ? key : null; // the shader test: the raw file, uncounted
       const capped = this.ensure(skey, () => this.platePixels(art, ground));
       if (capped) return capped;
       if (!this.o.textures.exists(key)) return null;
       this.plateRawFallbacks++;
       return key;
+    }
+    if (this.simNoCompose) {
+      // The shader test: the raw file where one is loaded (a conformed or
+      // top-only plate is a different picture — the wrong one, on purpose).
+      const raw = artKey(art.path);
+      return this.ensureHit(key) ?? (this.o.textures.exists(raw) ? raw : null);
     }
     return this.ensureHit(key) ?? this.ensure(key, () => this.platePixels(art, ground));
   }
@@ -1541,6 +1557,7 @@ export class Tiles3Textures {
    *  which is the pre-fade look and never a hole. */
   fade(path: string, ground: string): string | null {
     const key = fadeKey(path, ground);
+    if (this.simNoCompose) return this.ensureHit(key); // the shader test
     return this.ensure(key, () => {
       const src = this.sourcePixels(artKey(path));
       if (!src) return null;
@@ -1583,7 +1600,7 @@ export class Tiles3Textures {
           if (built !== op.key && !out) out = base.slice(0, i);
           if (out) out.push(built === op.key ? op : { ...op, key: built });
         } else {
-          this.droppedOps++;
+          if (!this.simNoCompose) this.droppedOps++;
           if (!out) out = base.slice(0, i);
         }
         continue;
@@ -1751,7 +1768,7 @@ export class Tiles3Textures {
         const f = cell.fade;
         const built = f ? this.fade(f.file, cell.ground) : null;
         if (built) out.push(built === op.key ? op : { ...op, key: built });
-        else this.droppedOps++;
+        else if (!this.simNoCompose) this.droppedOps++;
       } else if (op.role === "foot") {
         this.ensureFoot(op.key);
         out.push(op);
