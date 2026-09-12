@@ -7,7 +7,7 @@
     "tile_key": "bts1|tile|<set_id>|<x>|<y>",
     "note": "A SET is picked per REGION and a MEMBER per CELL - picking the set per cell would shuffle three different grasses into one meadow and undo the point of grouping them. Both picks must be identical in the game, the wiki preview and the tiles renders or the ground shimmers between reloads; port wiki/lib/basesets.mjs and check it against TEST_VECTORS."
   },
-  "updated_at": "2026-09-12T23:31:18.635Z",
+  "updated_at": "2026-09-12T23:31:47.128Z",
   "grounds": {
     "black_rock": {
       "sets": [
@@ -1221,7 +1221,7 @@
         {
           "id": 0,
           "name": "Clean",
-          "weight": 0.5,
+          "weight": 0,
           "members": [
             {
               "kind": "clean",
@@ -1260,83 +1260,6 @@
               "kind": "tile",
               "id": "tiles/tops/grey_stone/sheet_00_subtle_11961/tile_06.webp",
               "tile": "tiles/tops/grey_stone/sheet_00_subtle_11961/post/tile_06.daf6be4a.webp",
-              "weight": 1
-            }
-          ]
-        },
-        {
-          "id": 2,
-          "name": "Set",
-          "weight": 1,
-          "members": [
-            {
-              "kind": "clean",
-              "weight": 0
-            },
-            {
-              "kind": "tile",
-              "id": "tiles/grey_stone__over__brown_paving_stone/e0dbc557",
-              "tile": "tiles/grey_stone__over__brown_paving_stone/e0dbc557",
-              "weight": 1
-            },
-            {
-              "kind": "tile",
-              "id": "tiles/grey_stone__over__brown_paving_stone/ce3a4b04",
-              "tile": "tiles/grey_stone__over__brown_paving_stone/ce3a4b04",
-              "weight": 1
-            },
-            {
-              "kind": "tile",
-              "id": "tiles/grey_stone__over__brown_paving_stone/c5567391",
-              "tile": "tiles/grey_stone__over__brown_paving_stone/c5567391",
-              "weight": 1
-            },
-            {
-              "kind": "tile",
-              "id": "tiles/grey_stone__over__brown_paving_stone/4f395de3",
-              "tile": "tiles/grey_stone__over__brown_paving_stone/4f395de3",
-              "weight": 1
-            },
-            {
-              "kind": "tile",
-              "id": "tiles/grey_stone__over__brown_paving_stone/6f10e076",
-              "tile": "tiles/grey_stone__over__brown_paving_stone/6f10e076",
-              "weight": 1
-            },
-            {
-              "kind": "tile",
-              "id": "tiles/grey_stone__over__brown_paving_stone/438bdb69",
-              "tile": "tiles/grey_stone__over__brown_paving_stone/438bdb69",
-              "weight": 1
-            },
-            {
-              "kind": "tile",
-              "id": "tiles/grey_stone__over__brown_paving_stone/2c5605ea",
-              "tile": "tiles/grey_stone__over__brown_paving_stone/2c5605ea",
-              "weight": 1
-            },
-            {
-              "kind": "tile",
-              "id": "tiles/grey_stone__over__brown_paving_stone/1ee69582",
-              "tile": "tiles/grey_stone__over__brown_paving_stone/1ee69582",
-              "weight": 1
-            },
-            {
-              "kind": "tile",
-              "id": "tiles/grey_stone__over__brown_paving_stone/1e95e202",
-              "tile": "tiles/grey_stone__over__brown_paving_stone/1e95e202",
-              "weight": 1
-            },
-            {
-              "kind": "tile",
-              "id": "tiles/grey_stone__over__brown_paving_stone/1d3bfc82",
-              "tile": "tiles/grey_stone__over__brown_paving_stone/1d3bfc82",
-              "weight": 1
-            },
-            {
-              "kind": "tile",
-              "id": "tiles/grey_stone__over__brown_paving_stone/180fcb2c",
-              "tile": "tiles/grey_stone__over__brown_paving_stone/180fcb2c",
               "weight": 1
             }
           ]
