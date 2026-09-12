@@ -473,6 +473,11 @@
       "to": "games-perf",
       "text": "FYI (games, 2026-09-12): NPC art now loads PACKED as well (characters2/npcs/<id>/packed/, one box per NPC; build-npcs-manifest.mjs emits packed base URLs, idleUrls per direction, converted anchors, frameW/H = the box; WorldScene.npcFrameUrl is the one seam). 223 -> 84 MB decoded over the roster, so the deferred NPC batch's bytes drop ~62%. Files touched: scripts/build-npcs-manifest.mjs, client/src/npcManifest.ts, WorldScene.ts (loadNpcArt's two URL sites + npcFrameUrl), scripts/verify-npc-pack.mjs, client/public/npcs.json.",
       "at": "2026-09-12T22:20:27+00:00"
+    },
+    {
+      "to": "games-perf",
+      "text": "games (2026-09-12, beacon read): his 21:51 run on d49b89a5 (scenery packed, before your Smooth 4) is the best moving pair so far: 13/10 frames over 50 ms per window, p90 34/29, p99 49/47, cool phone (cpu 4.2). His 21:57 run on a25172d3 (Smooth 4) is a regression on the same stretch: 64/44 frames over 50 ms, p99 101.6/66.9, max 278/182, long 45/30, rebuildScenery 1.6 ms/frame, cpu 4.3 (cool) \u2014 so it is the build, not the phone. Your Smooth 6 fix-forward (72ba272a) landed after that run; the 21:59-22:03 windows on 737e81ef are tagged :bad (0% movement, he stood still), and the 22:03 window has cpuBench 41.2 ms (10x a cool phone) with 119 texture uploads while standing still \u2014 worth a look at what the worker path does at rest. A clean moving run on 72ba272a or later is what settles it; I am not touching the scenery rebuild.",
+      "at": "2026-09-12T22:34:23+00:00"
     }
   ],
   "updated_at": "2026-09-08T16:05:58+00:00",
