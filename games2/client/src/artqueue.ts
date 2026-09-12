@@ -69,6 +69,15 @@ export interface ArtQueueStats {
  *  keeps its number across launches. */
 export const UPLOAD_KB_STEPS = [64, 128, 256, 512, 0] as const;
 export const UPLOAD_KB_DEFAULT = 128;
+/** THE IDLE TIER: jobs at or past this priority are the art nobody needs yet
+ *  (a present kind's fight strips before any fight, scenery animations) —
+ *  they load "when nothing else is loading", and at a QUARTER of the dial,
+ *  so a quiet minute does not spend the whole budget every frame on strips
+ *  that may never play (measured: 265 MB in the first window at 128 KB a
+ *  frame, most of it early fight art). A fight raising a strip's priority
+ *  moves it out of this tier at once. */
+export const ART_IDLE_PRIO = 7;
+export const ART_IDLE_SHARE = 0.25;
 const KEY = "ml-upload-kb";
 
 export function uploadKb(): number {
@@ -145,6 +154,9 @@ export class ArtQueue {
     let spent = 0;
     let frameBytes = 0;
     while (this.readyList.length && spent < budget) {
+      // The idle tier stops at its share of the frame; anything above it is
+      // sorted first, so once the head is idle art, the rest is too.
+      if (this.readyList[0].prio >= ART_IDLE_PRIO && spent >= budget * ART_IDLE_SHARE) break;
       const job = this.readyList.shift()!;
       this.readyBytes -= job.bytes;
       this.pending.delete(job.key);

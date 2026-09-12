@@ -1,6 +1,6 @@
 import Phaser from "phaser";
 import { resolveDepthRule } from "../depthrule";
-import { ArtQueue, setUploadKb, UPLOAD_KB_STEPS } from "../artqueue";
+import { ART_IDLE_SHARE, ArtQueue, setUploadKb, UPLOAD_KB_STEPS } from "../artqueue";
 import { renderRes } from "../resolution";
 import { ensureResDial } from "../resdial";
 import { Room, getStateCallbacks } from "colyseus.js";
@@ -2250,7 +2250,7 @@ export class WorldScene extends Phaser.Scene {
         why: final ? "flush" : moved ? "moved" : "bad", // why this window was sent at all
         // The two dials under measurement: the upload budget (Settings "upload
         // budget", KB a frame) and the render resolution (1/r of the backing).
-        sim: `up${this.artQueue().budgetKb || "free"}${renderRes() < 1 ? `/r${Math.round(1 / renderRes())}` : ""}`,
+        sim: `up${this.artQueue().budgetKb || "free"}i${Math.round(ART_IDLE_SHARE * 100)}${renderRes() < 1 ? `/r${Math.round(1 / renderRes())}` : ""}`,
 
         deviceMemoryGb: nav.deviceMemory ?? 0,
         connType: nav.connection?.effectiveType ?? "?",
@@ -4601,6 +4601,7 @@ export class WorldScene extends Phaser.Scene {
       // opacity every debris image wears this frame; `exiting` marks the
       // outward half (verdict outdoors, cut world still drawn).
       indoorFade: () => ({
+        cutCells: this.indoorCut?.size ?? 0,
         debris: this.indoorDebris?.length ?? 0,
         alpha: +this.debrisAlpha().toFixed(3),
         exiting: !this.indoorInside && !!this.indoorMask,
@@ -15157,7 +15158,9 @@ export class WorldScene extends Phaser.Scene {
     this.indoorFlipAt = now;
     this.indoorFlips++;
     if (inside) {
+      this.ps();
       this.refreshIndoorMask();
+      this.pe("indoorMask");
       this.repaintWorld();
       // THE ENTRY FADE (maintainer 2026-08-13: "the sudden roof pop is
       // dominating the transition"). The world above just repainted to the
@@ -15165,7 +15168,9 @@ export class WorldScene extends Phaser.Scene {
       // built OPAQUE on this same frame, so the flip frame shows the picture
       // you were already looking at. It then dissolves on the transition
       // grade (alpha = 1 − indoorGrade, applied in easeIndoorMix).
+      this.ps();
       this.buildIndoorDebris();
+      this.pe("indoorDebris");
       return;
     }
     // THE EXIT FADE, the same crossfade run backward: keep drawing the CUT
@@ -15174,7 +15179,9 @@ export class WorldScene extends Phaser.Scene {
     // lands (mix ⅓, ~0.39s) — by then the debris has been opaque for most of
     // the roll, so the swap cannot be seen (easeIndoorMix's landing branch).
     if (wasDrawn && this.indoorCut && this.world && this.terrain) {
+      this.ps();
       this.buildIndoorDebris();
+      this.pe("indoorDebris");
       return;
     }
     // Nothing was drawn (never really committed), the world is going away, or
@@ -15707,9 +15714,11 @@ export class WorldScene extends Phaser.Scene {
     for (const ci of s.shell) m.set(ci, (m.get(ci) ?? 0) | IN_WALL);
     this.indoorMask = m;
     this.roomMask = m;
+    this.ps();
     this.indoorCut = this.indoorRaiseOn
       ? this.computeIndoorCuts(m, s, Math.min(ceil, floor + indoorWall()))
       : null;
+    this.pe("indoorCuts");
     // Publish the room to the LIGHT. This is what makes the outside black:
     // the renderer draws it like any other terrain, and the shader gives every
     // cell outside this set zero ambient — so a point light inside can still
@@ -15718,7 +15727,9 @@ export class WorldScene extends Phaser.Scene {
     // exactly the level the renderer draws it to — and resolve every column
     // WITHOUT an entry at its full, deck-inflated height, because that is
     // what the renderer paints now (see nightlight heightAt / setRoom).
+    this.ps();
     this.night?.setRoom(m.keys(), (this.caveDepth ??= this.buildCaveDepth()), this.caveUnder, this.indoorCut, top);
+    this.pe("roomTex");
     return true;
   }
 
