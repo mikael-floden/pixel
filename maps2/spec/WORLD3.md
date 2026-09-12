@@ -1382,7 +1382,14 @@ freestanding blocks, a wedge hugging the wall — were built and rejected
 rule ... Have you ever seen triangles like this in nature?"*). **Roads,
 ramps and the cells beside them, houses and the wild are never carved**; a
 stair that would need them is not built, and a trap under `LEDGE_MAX = 12`
-cells with no room joins the terrace above. **The road is never broken**:
+cells with no room joins the terrace above. **A stair into a cave covers no
+cliff**: a pit's lanes and a cave's inner stairs are the cave's way, not the
+hill's, so `_stair_coverage` does not count them — counted, the pit dug into
+the hill at (242,266) stood in for the hill's own stair fifteen cells off and
+the hill lost it (maintainer 2026-09-12: *"the stair up on the hill ... I
+really loved"*). **The outer cell of a pit's ring may carry a stair**
+(`margin_outer`): the ring keeps breaches off the pit's banks, and a cliff
+stair flares two cells wide; the audit reads a stair there as the hill's. **The road is never broken**:
 every two adjacent road cells differ by at most one level, as `ramps()` left
 them — asserted, because one build cut stairs across the Trollstigen
 switchbacks and the old road could not be climbed. Trap components are

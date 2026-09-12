@@ -1309,8 +1309,11 @@ class Grow:
         for top, foot in d["ledges"]:
             assert self.lvl[top[1]][top[0]] - self.lvl[foot[1]][foot[0]] == self.DUNGEON_LEDGE, ("ledge", top, foot)
         decked = {(c["x"], c["y"]) for x in self.doc["decks"] if x not in lids for c in x["cells"]}
-        # the widened passages are lid cells inside the ring: caves() dug them
-        widened = {c for c in d["margin"] if c in lid and c not in cells}
+        # the widened passages are lid cells inside the ring: caves() dug them;
+        # a stair the fixer cut through the outer ring is the hill's
+        ramp = {(c["x"], c["y"]) for r in self.doc.get("ramps", []) for c in r["cells"]}
+        outer = getattr(self, "margin_outer", set())
+        widened = {c for c in d["margin"] if (c in lid and c not in cells) or c in outer}
         # a pit's field stays at its level; a mountain cave's wall stays a
         # wall (wild raised four wall cells 32 -> 36 beside a floor at 4:
         # still a wall, measured)
@@ -1328,7 +1331,7 @@ class Grow:
                 return any(self.g(c[0] + dx, c[1] + dy)
                            and self.lvl[c[1] + dy][c[0] + dx] - self.lvl[c[1]][c[0]] >= self.APRON_DROP
                            for dx in (-2, -1, 0, 1, 2) for dy in (-2, -1, 0, 1, 2))
-            speck = [(c, self.g(*c)) for c in d["margin"]
+            speck = [(c, self.g(*c)) for c in d["margin"] - widened
                      if self.g(*c) in self.NATURAL and self.g(*c) != lids[0]["ground"] and not foot(c)]
             assert not speck, ("a scrap of the old ground survived in the field", speck[:6])
             assert lids[0]["ground"] == collections.Counter(
@@ -1680,6 +1683,13 @@ class Grow:
         self.mouth_clear = getattr(self, "mouth_clear", set()) | site["clear"]
         self.mouth_torches = getattr(self, "mouth_torches", []) + [t for d in site["doors"] for t in d["torches"]]
         self.dungeon_margin = getattr(self, "dungeon_margin", set()) | site["margin"]
+        # THE OUTER RING MAY CARRY A STAIR'S FLARE: the ring keeps breaches
+        # off the pit's banks, but a cliff stair the hill had (maintainer
+        # 2026-09-12: "the stair up on the hill ... I really loved") flares
+        # two cells wide and was refused for touching the ring's outer cell
+        self.margin_outer = getattr(self, "margin_outer", set()) | {
+            c for c in site["margin"]
+            if not any((c[0] + dx, c[1] + dy) in site["cells"] for dx in (-1, 0, 1) for dy in (-1, 0, 1))}
         self.planned_floor = getattr(self, "planned_floor", set()) | (site["floor"] if site.get("planned") else set())
         self.planned_rock = getattr(self, "planned_rock", {})
         for c in site["floor"]:
@@ -7542,7 +7552,8 @@ class Grow:
                 and (x, y) not in getattr(self, "wild_cells", set())
                 and (x, y) not in getattr(self, "cave_floor", {})
                 and (x, y) not in getattr(self, "mouth_clear", set())
-                and (x, y) not in getattr(self, "dungeon_margin", set()))
+                and ((x, y) not in getattr(self, "dungeon_margin", set())
+                     or (x, y) in getattr(self, "margin_outer", set())))
 
     def _stair(self, t, b, T, B):
         """A BREACH: the way up is cut DOWN into the terrace above, never
@@ -7697,7 +7708,16 @@ class Grow:
         lv = self._standable()
         R, Rev = self._reach(lv)
         revg = {(x, y) for (x, y, layer) in Rev if layer == 0}
-        cells = [(c["x"], c["y"]) for r in self.doc["ramps"] for c in r["cells"]]
+        # A STAIR INTO A CAVE COVERS NO CLIFF: a pit's lanes and a cave's
+        # inner stairs are the cave's way, not the hill's - counted, the pit
+        # dug into a hill stood in for the hill's own stair 15 cells off and
+        # the hill lost it (maintainer 2026-09-12: "the stair up on the hill
+        # ... I really loved")
+        cave = set(getattr(self, "cave_floor", {}))
+        for site in getattr(self, "cave_sites", []):
+            cave |= set(site["cells"])
+        cells = [(c["x"], c["y"]) for r in self.doc["ramps"] for c in r["cells"]
+                 if not any((cc["x"], cc["y"]) in cave for cc in r["cells"])]
         K = self.STAIR_EVERY
         bucket = collections.defaultdict(list)
         for c in cells:
