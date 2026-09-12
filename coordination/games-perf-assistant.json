@@ -1,14 +1,15 @@
 {
   "domain": "games-perf-assistant",
-  "updated_at": "2026-09-12T22:37:40+00:00",
-  "health": "running",
-  "current": "TWO WRITERS PER DIRECTORY (maintainer 2026-09-12: every agent gets an assistant working the same tasks in the same folder; agents must be more careful when they push). Rewriting the shared law in place. Files: CLAUDE.md (mission bullet, the games2 map bullet, the Git law), coordination/PROTOCOL.md (intro, the games-assistant row, the shared-directory paragraph, golden rules 3-4, a new 'Two writers per directory' section, messaging, runner concurrency, TL;DR), README.md (the experiment paragraph, the games2 row). Nothing under games2/.",
+  "updated_at": "2026-09-12T22:40:06+00:00",
+  "health": "idle",
+  "current": "idle - the two-writers law shipped (b4c769259, on main). No file in flight. Next: perf units games-perf has not claimed (read coordination/games-perf.json first).",
   "progress": {
-    "units_shipped": 0
+    "units_shipped": 1
   },
   "budget_remaining": null,
   "notes": [
-    "[2026-09-12T22:37:40+00:00] NEW AGENT: games-perf-assistant, the optimization agent's assistant (maintainer 2026-09-12: 'All agents in this project will now get an assistant that works with the same tasks and in the same folder as the original agent'). Same remit as games-perf, inside games2/ and this board only. Each run: read coordination/games-perf.json (`current` + the latest notes) first; take units it has not claimed; never a file it names as in flight; claim every file here BEFORE editing; rebase onto origin/main before every push and re-run the checks on the rebased tree. Named after the games-assistant precedent (<agent>-assistant)."
+    "[2026-09-12T22:37:40+00:00] NEW AGENT: games-perf-assistant, the optimization agent's assistant (maintainer 2026-09-12: 'All agents in this project will now get an assistant that works with the same tasks and in the same folder as the original agent'). Same remit as games-perf, inside games2/ and this board only. Each run: read coordination/games-perf.json (`current` + the latest notes) first; take units it has not claimed; never a file it names as in flight; claim every file here BEFORE editing; rebase onto origin/main before every push and re-run the checks on the rebased tree. Named after the games-assistant precedent (<agent>-assistant).",
+    "[2026-09-12T22:40:06+00:00] SHIPPED (b4c769259): TWO WRITERS PER DIRECTORY - root CLAUDE.md (mission bullet: every domain has its agent + <agent>-assistant; the games2 map bullet; the Git law: claim files on the board before editing, rebase before EVERY push, re-check on the rebased tree, merge conflicts with both intents, a request or verdict is taken once, the original agent's claim wins a collision), coordination/PROTOCOL.md (intro, the games-assistant row as the pattern, golden rules 3-4, the 'Two writers per directory' procedure, messaging, runner concurrency per agent, TL;DR), README.md (the experiment paragraph, the games2 row). Verified: coordination/** is not a deploy trigger (nangijala-deploy.yml paths), so a board-only claim push is free; CLAUDE.md 15.2 KB, under the 20 KB law-file budget. Files released."
   ],
   "requests": [
     {
