@@ -3,6 +3,7 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import {
+  type AccountStore,
   MemoryAccountStore,
   hashSecret,
   mintId,
@@ -88,9 +89,13 @@ test("an unknown id is answered exactly like no claim at all", async () => {
 test("a malformed id is rejected before it ever reaches the store", async () => {
   const store = new MemoryAccountStore();
   let loads = 0;
-  const spy = {
-    load: (id: string) => { loads++; return store.load(id); },
-    save: (id: string, r: any) => store.save(id, r),
+  const spy: AccountStore = {
+    load: (id) => { loads++; return store.load(id); },
+    save: (id, r) => store.save(id, r),
+    setSecretHash: (id, h) => store.setSecretHash(id, h),
+    linkProvider: (id, p, s) => store.linkProvider(id, p, s),
+    claimLogin: (k, a) => store.claimLogin(k, a),
+    lookupLogin: (k) => store.lookupLogin(k),
   };
   for (const bad of ["", "../../etc/passwd", "x".repeat(200), "NOTHEX", "abc"]) {
     const got = await resolveAccount(spy, { id: bad, secret: mintSecret() }, "A", "c");

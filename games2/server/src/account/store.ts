@@ -13,6 +13,12 @@
 // ephemeral, so every redeploy and every idle scale-to-zero deleted every
 // player's level, xp and inventory with no error and no log.
 //
+// A SECOND, TINY COLLECTION `logins` maps a provider identity ("google:<sub>")
+// to the accountId it is attached to — get-by-key, one document per attached
+// login, created with create() so two accounts can never own one identity.
+// The provider identity is a linked attribute, NEVER the key of anything
+// (law 1): the account outlives any login attached to it.
+//
 // WHAT IS *NOT* HERE, deliberately: no signed tokens, no JWT, no key
 // management, no Secret Manager. Identity is {accountId, secret} compared
 // against a hash on the account document during the read onJoin already
@@ -34,6 +40,10 @@ import { Firestore } from "@google-cloud/firestore";
 export interface AccountRecord {
   secretHash: string;
   createdAt: number;
+  /** Attached ways to log back in: provider → the provider's opaque subject
+   *  id (Google's `sub`), never an email. Absent until the first attach. The
+   *  same pair is the key of the `logins` document that points back here. */
+  providers?: Record<string, string>;
   name: string;
   character: string;
   level: number;
@@ -47,9 +57,59 @@ export interface AccountRecord {
   pos: Record<string, { x: number; y: number; elev?: number }>;
 }
 
+/** The fields a ROOM owns and rewrites: everything the player earned or
+ *  stood on. Identity (`secretHash`, `createdAt`, `providers`) is not in
+ *  here on purpose — see `AccountStore.save`. */
+export type Progression = Pick<AccountRecord, "name" | "character" | "level" | "xp" | "hp" | "ep" | "inv" | "pos">;
+
+export const IDENTITY_FIELDS = ["secretHash", "createdAt", "providers"] as const;
+
+export function progressionOf(rec: AccountRecord): Progression {
+  return {
+    name: rec.name,
+    character: rec.character,
+    level: rec.level,
+    xp: rec.xp,
+    hp: rec.hp,
+    ep: rec.ep,
+    inv: rec.inv.map((s) => ({ item: s.item, n: s.n })),
+    pos: structuredClone(rec.pos ?? {}),
+  };
+}
+
+/** The `logins` document id for one provider identity. The provider name is
+ *  ours (an allowlist in attach.ts) and Google's `sub` is a digit string, so
+ *  the key is a clean single path segment. */
+export const loginKey = (provider: string, subject: string): string => `${provider}:${subject}`;
+
 export interface AccountStore {
   load(id: string): Promise<AccountRecord | undefined>;
+  /**
+   * A ROOM's save: writes the PROGRESSION only — never `secretHash`,
+   * `createdAt` or `providers` — merged into the document that exists; the
+   * whole record only when no document exists yet (a fresh mint).
+   *
+   * The room holds the document it loaded at join and rewrites it on every
+   * save. Identity, though, can change UNDER a live room: a login on a new
+   * device rotates the secret, an attach links a provider. A save that wrote
+   * the held record whole would put the OLD hash back — and the join that
+   * kicks the old session makes it save, so the new device's pair would die
+   * on its very next join. Identity is therefore written once at creation and
+   * afterwards only by the identity methods below, and a stale `rec` is
+   * harmless by construction. (Gated in test/attach.test.ts.)
+   */
   save(id: string, rec: AccountRecord): Promise<void>;
+  /** Rotate the secret: every pair issued before is dead at its next join. */
+  setSecretHash(id: string, hash: string): Promise<void>;
+  /** Record an attached login on the account (the `logins` row is the truth
+   *  for lookups; this is what the account panel shows). */
+  linkProvider(id: string, provider: string, subject: string): Promise<void>;
+  /** Claim a provider identity for an account. Returns the accountId that
+   *  OWNS the key after the call: `accountId` when it was free (or already
+   *  this account's), another account's id when it was theirs first. Atomic:
+   *  two accounts can never both hold one identity. */
+  claimLogin(key: string, accountId: string): Promise<string>;
+  lookupLogin(key: string): Promise<string | undefined>;
 }
 
 // ---------------------------------------------------------------- identity
@@ -102,6 +162,13 @@ export interface Resolved {
   secret?: string;
 }
 
+/** A claim's id, cleaned: 32 hex chars or nothing. Anything else never
+ *  reaches the store. */
+export function cleanId(id: unknown): string {
+  const s = typeof id === "string" ? id.slice(0, 64) : "";
+  return /^[0-9a-f]{32}$/.test(s) ? s : "";
+}
+
 /**
  * Resolve a join's claim to an account, MINTING ONE IF ANYTHING IS OFF.
  *
@@ -120,9 +187,9 @@ export async function resolveAccount(
   name: string,
   character: string,
 ): Promise<Resolved> {
-  const id = typeof claim?.id === "string" ? claim.id.slice(0, 64) : "";
+  const id = cleanId(claim?.id);
   const secret = typeof claim?.secret === "string" ? claim.secret : "";
-  if (/^[0-9a-f]{32}$/.test(id) && secret) {
+  if (id && secret) {
     const rec = await store.load(id);
     if (rec && secretMatches(secret, rec.secretHash)) return { id, rec };
   }
@@ -140,22 +207,49 @@ export async function resolveAccount(
  *  replaces, and the bug is easy to reintroduce. */
 export class MemoryAccountStore implements AccountStore {
   private data = new Map<string, AccountRecord>();
+  private logins = new Map<string, string>();
   async load(id: string): Promise<AccountRecord | undefined> {
     const rec = id ? this.data.get(id) : undefined;
     return rec === undefined ? undefined : structuredClone(rec);
   }
   async save(id: string, rec: AccountRecord): Promise<void> {
-    if (id) this.data.set(id, structuredClone(rec));
+    if (!id) return;
+    const have = this.data.get(id);
+    if (have) Object.assign(have, progressionOf(rec));
+    else this.data.set(id, structuredClone(rec));
+  }
+  async setSecretHash(id: string, hash: string): Promise<void> {
+    const have = this.data.get(id);
+    if (have) have.secretHash = hash;
+  }
+  async linkProvider(id: string, provider: string, subject: string): Promise<void> {
+    const have = this.data.get(id);
+    if (have) have.providers = { ...(have.providers ?? {}), [provider]: subject };
+  }
+  async claimLogin(key: string, accountId: string): Promise<string> {
+    const owner = this.logins.get(key);
+    if (owner) return owner;
+    this.logins.set(key, accountId);
+    return accountId;
+  }
+  async lookupLogin(key: string): Promise<string | undefined> {
+    return this.logins.get(key);
   }
 }
 
-/** Production. One document per account; no queries, no indexes, no joins —
- *  get-by-key and put-by-key, which is the one shape a document store is
- *  optimal for rather than a compromise. */
+// grpc status codes the Firestore client throws as `err.code`.
+const NOT_FOUND = 5;
+const ALREADY_EXISTS = 6;
+
+/** Production. One document per account, one per attached login; no queries,
+ *  no indexes, no joins — get-by-key and put-by-key, which is the one shape a
+ *  document store is optimal for rather than a compromise. */
 export class FirestoreAccountStore implements AccountStore {
   private readonly col;
+  private readonly logins;
   constructor(db: Firestore = new Firestore({ ignoreUndefinedProperties: true })) {
     this.col = db.collection("accounts");
+    this.logins = db.collection("logins");
   }
   async load(id: string): Promise<AccountRecord | undefined> {
     if (!id) return undefined;
@@ -164,7 +258,40 @@ export class FirestoreAccountStore implements AccountStore {
   }
   async save(id: string, rec: AccountRecord): Promise<void> {
     if (!id) return;
-    await this.col.doc(id).set(rec);
+    // update() touches ONLY the named fields and refuses a missing document
+    // (NOT_FOUND) — one write, no read, and identity is never in the payload.
+    // Only a document that does not exist yet gets the whole record.
+    try {
+      await this.col.doc(id).update({ ...progressionOf(rec) });
+    } catch (e: any) {
+      if (e?.code !== NOT_FOUND) throw e;
+      await this.col.doc(id).set(rec);
+    }
+  }
+  async setSecretHash(id: string, hash: string): Promise<void> {
+    if (!id) return;
+    await this.col.doc(id).update({ secretHash: hash });
+  }
+  async linkProvider(id: string, provider: string, subject: string): Promise<void> {
+    if (!id) return;
+    await this.col.doc(id).set({ providers: { [provider]: subject } }, { merge: true });
+  }
+  async claimLogin(key: string, accountId: string): Promise<string> {
+    const ref = this.logins.doc(key);
+    try {
+      await ref.create({ accountId, at: Date.now() });
+      return accountId;
+    } catch (e: any) {
+      if (e?.code !== ALREADY_EXISTS) throw e;
+    }
+    const snap = await ref.get();
+    const owner = snap.data()?.accountId;
+    return typeof owner === "string" && owner ? owner : accountId;
+  }
+  async lookupLogin(key: string): Promise<string | undefined> {
+    const snap = await this.logins.doc(key).get();
+    const owner = snap.data()?.accountId;
+    return typeof owner === "string" && owner ? owner : undefined;
   }
 }
 
