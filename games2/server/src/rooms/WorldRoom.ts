@@ -101,6 +101,7 @@ import {
   hpMaxFor,
   epMaxFor,
   slowFactorAt,
+  fallSlowAt,
   SLOW_FACTOR,
   FLEE_SLOW_FACTOR,
   provokedChaseSpeed,
@@ -244,6 +245,7 @@ interface HotState {
   torch: boolean;
   noAggro: boolean;
   lastHitAt: number;
+  lastFallAt?: number; // optional: a peer from before the fall slow had it
   lastCombatAt: number;
   dirty: boolean;
   /** THE COMBAT COUNTERS CROSS WITH THE BODY. The client mirrors one-shot
@@ -1499,7 +1501,11 @@ export class WorldRoom extends Room<WorldState> {
       // prediction mirrors (both sides multiply stepMovement's speedScale).
       player.slow = player.dead
         ? 1
-        : Math.min(slowFactorAt(player.lastHitAt, now), hunted.has(id) ? FLEE_SLOW_FACTOR : 1);
+        : Math.min(
+            slowFactorAt(player.lastHitAt, now),
+            fallSlowAt(player.lastFallAt, now), // a landing's slow fades with its number (shared)
+            hunted.has(id) ? FLEE_SLOW_FACTOR : 1,
+          );
       // A corpse doesn't walk: swallow queued input while dead (the client
       // freezes its own input too; this is the authoritative guard). Ack the
       // dropped seqs — un-acked entries would sit in the client's pending
@@ -2193,13 +2199,17 @@ export class WorldRoom extends Room<WorldState> {
       this.fallPend.delete(id);
       const p = this.state.players.get(id);
       if (!p || p.dead) continue;
-      this.hurtPlayer(p, f.dmg, now);
+      this.hurtPlayer(p, f.dmg, now, true);
     }
   }
-  private hurtPlayer(player: Player, dmg: number, now: number) {
+  /** `fall`: a landing, not a hit — it drives the fading fall slow, never the
+   *  1.5 s combat stagger (shared fallSlowAt). Everything else is the same
+   *  hit: hp, hitSeq, the regen gate. */
+  private hurtPlayer(player: Player, dmg: number, now: number, fall = false) {
     player.hp = Math.max(0, player.hp - dmg);
     player.hitSeq++;
-    player.lastHitAt = now;
+    if (fall) player.lastFallAt = now;
+    else player.lastHitAt = now;
     player.lastCombatAt = now;
     player.regenAccHp = 0;
     player.regenAccEp = 0;
@@ -2235,6 +2245,7 @@ export class WorldRoom extends Room<WorldState> {
     player.action = "";
     player.slow = 1;
     player.lastHitAt = -100000;
+    player.lastFallAt = -100000;
     player.regenAccHp = 0;
     player.regenAccEp = 0;
     for (const q of player.inputQueue) if (typeof q.seq === "number") player.seq = q.seq;
@@ -2935,6 +2946,7 @@ export class WorldRoom extends Room<WorldState> {
       torch: p.torch,
       noAggro: this.noAggro.has(pid),
       lastHitAt: p.lastHitAt,
+      lastFallAt: p.lastFallAt,
       lastCombatAt: p.lastCombatAt,
       dirty: p.dirty,
       actionSeq: p.actionSeq,
@@ -2995,6 +3007,7 @@ export class WorldRoom extends Room<WorldState> {
     player.timeCredit = HANDOFF_INPUT_CREDIT_S;
     player.torch = hot.torch;
     player.lastHitAt = hot.lastHitAt;
+    player.lastFallAt = hot.lastFallAt ?? -100000;
     player.lastCombatAt = hot.lastCombatAt;
     player.dirty = hot.dirty;
     player.actionSeq = hot.actionSeq ?? 0;

@@ -179,7 +179,8 @@ secrets; push to `main`, rebase on reject, no PRs unless asked; doc law.
   fall bills on IMPACT (`fallPend`, `fallDurationS`), never at the edge, and
   the client draws the whole impact — blood, number, flinch — on its own
   predicted touchdown frame, swallowing the server's late copy
-  (`fallhurt.ts`).
+  (`fallhurt.ts`); its slow FADES with the number (`fallSlowAt`, 850 ms),
+  never the hit's 1.5 s stagger.
 - Water is the player's sanctuary: no monster enters, swims or is hit there.
 - The player-speed dial rides PER INPUT (`InputMessage.sm`) and the SERVER
   clamps it; default 1.2x IS HIS (`playerspeed.ts`).

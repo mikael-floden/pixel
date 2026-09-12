@@ -313,8 +313,11 @@ memory and fewer frames spent uploading; the raw strips stay for the wiki.
     provokedChaseSpeed(victim's current possible speed) — always ~12% above
     whatever the victim can do (floor 60), AND the victim carries
     FLEE_SLOW_FACTOR 0.8 for the whole hunt (synced `slow` = min(hit-slow
-    0.55/1.5s, flee 0.8); the client predicts from the synced field; pending
-    inputs carry their factor).
+    0.55/1.5s, the fall's fading slow, flee 0.8); the client predicts from
+    the synced field; pending inputs carry their factor). A FALL is not a hit
+    here: its slow is `fallSlowAt`, 0.55 at impact fading to 1 over the
+    damage number's 850 ms (`docs/movement.md`, the landing's slow) — the
+    1.5 s stagger is this escape math's and stays.
   - The way out is the RUN-AWAY LINE: `ESCAPE_RADIUS_WU` **390 ≈ 0.75 of a
     screen** beyond the home ZONE bbox — crossing it makes the hunter give up
     and walk home (m.returning, aggro scan suppressed), flee slow lifts.

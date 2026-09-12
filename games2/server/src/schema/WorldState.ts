@@ -77,6 +77,7 @@ export class Player extends Schema {
   target = ""; // engaged monster id ("" = none)
   nextSwingAt = 0;
   lastHitAt = -100000; // when the last hit LANDED on this player (drives slow)
+  lastFallAt = -100000; // when the last FALL landed (drives the fading fall slow — shared fallSlowAt)
   lastCombatAt = -100000; // last swing given OR taken (gates regen)
   respawnAt = 0; // while dead: the EARLIEST a press may revive (die clip done)
   deadUntil = 0; // ...and the backstop, if the press never comes (closed tab)

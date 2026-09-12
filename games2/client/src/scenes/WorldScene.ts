@@ -35,6 +35,7 @@ import {
   autoJumpWanted,
   hopIntoWall,
   type HopMemo,
+  DMG_FLOAT_MS,
   steerAssist,
   monsterDodge,
   type MonsterDodgeState,
@@ -10269,7 +10270,7 @@ export class WorldScene extends Phaser.Scene {
       targets: t,
       y: y - 30,
       alpha: { from: 1, to: 0 },
-      duration: 850,
+      duration: DMG_FLOAT_MS, // shared: a landing's slow fades over the same float
       ease: "Cubic.easeOut",
       onComplete: () => t.destroy(),
     });

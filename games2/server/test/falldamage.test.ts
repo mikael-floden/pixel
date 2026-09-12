@@ -36,6 +36,8 @@ import {
   FALL_DMG_MAX_LEVELS,
   fallDurationS,
   ISO_GEOMETRY_MAPS3,
+  FALL_SLOW_MS,
+  SLOW_FACTOR,
 } from "@nangijala/shared";
 import { WorldRoom } from "../src/rooms/WorldRoom.js";
 
@@ -280,6 +282,29 @@ test("landing costs the curve's price, and water is a dive", async (t) => {
       `a ${cliff!.drop}-level fall off ${cliff!.c},${cliff!.r} costs exactly ${expect}`);
     assert.ok(!me().dead, `a ${cliff!.drop}-level fall stings, it does not kill`);
     console.log(`falldamage: ${cliff!.drop} levels billed ${waited}ms after the edge (clock says ${fall.toFixed(0)}ms)`);
+
+    // THE SLOW FADES WITH THE NUMBER (maintainer 2026-09-12). The synced factor
+    // is SLOW_FACTOR on the patch that carries the hit, climbs through the
+    // float, and is 1 once the number is gone — not the combat stagger's flat
+    // 0.55 until 1.5 s. Sampled off the client's own state, the field the
+    // prediction multiplies by.
+    const tHit = Date.now();
+    const samples: { t: number; slow: number }[] = [];
+    while (Date.now() - tHit < FALL_SLOW_MS + 400) {
+      samples.push({ t: Date.now() - tHit, slow: me().slow });
+      await new Promise((r) => setTimeout(r, 40));
+    }
+    assert.ok(samples[0].slow <= SLOW_FACTOR + 0.12, `slowed on landing (first sample ${samples[0].slow.toFixed(2)})`);
+    const mid = samples.filter((x) => x.t > 300 && x.t < FALL_SLOW_MS - 150);
+    assert.ok(mid.length >= 5, "sampled through the float");
+    assert.ok(mid.every((x) => x.slow > SLOW_FACTOR + 0.05 && x.slow < 1),
+      `fading, not flat: mid-float samples ${mid.map((x) => x.slow.toFixed(2)).join(" ")}`);
+    for (let i = 1; i < samples.length; i++)
+      assert.ok(samples[i].slow >= samples[i - 1].slow - 1e-9, `never slows again while recovering (${samples[i - 1].slow} -> ${samples[i].slow} at ${samples[i].t} ms)`);
+    const late = samples.filter((x) => x.t >= FALL_SLOW_MS + 250);
+    assert.ok(late.length >= 1 && late.every((x) => x.slow === 1),
+      `full speed once the number is gone (${late.map((x) => x.slow).join(" ")})`);
+    console.log(`falldamage: slow ${samples[0].slow.toFixed(2)} on landing, ${mid[Math.floor(mid.length / 2)].slow.toFixed(2)} mid-float, 1 at ${late[0].t} ms`);
 
     // A ledge over WATER: the same walk is a dive, no damage.
     const hpBefore = me().hp;

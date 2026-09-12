@@ -175,6 +175,24 @@ Server-authoritative movement, decks, collision, steer assist, fall damage, tap/
     hit outlives its fall and kills you somewhere else. `fallDurationS` is
     the closed form of `integrateFall`'s own physics (t = √(2d/g)), so the
     two cannot drift.
+  - **THE LANDING'S SLOW FADES WITH ITS NUMBER** (maintainer 2026-09-12: "The
+    slowdown after a fall is too long. Should only apply when the user hit
+    the ground and fade away. Maybe last as long as the dmg number but also
+    fade away"). A landing went through `hurtPlayer` as a hit and so took the
+    combat stagger: SLOW_FACTOR flat for SLOW_MS (1.5 s), then full speed in
+    one step — a long drag with a hard end. It is its own factor now,
+    `fallSlowAt` (shared `combat.ts`): SLOW_FACTOR the tick the feet are down
+    (`lastFallAt`, set by `settleFalls`, never `lastHitAt`), fading linearly
+    to 1 over `FALL_SLOW_MS` = `DMG_FLOAT_MS` (850 ms, the damage number's
+    float — the scene's tween reads the same constant), min()ed with the
+    stagger and the flee slow like before. The 1.5 s stagger stays combat's:
+    it is the escape math (a hit-slowed runner cannot pull clear of a chase),
+    and a fall onto a monster simply takes the deeper of the two. The client
+    changes nothing — it mirrors the synced factor per patch as it always
+    has, and a 20 Hz ramp reconciles in sub-pixel nudges (0.45 of speed over
+    850 ms is 0.03 a tick). Gate: `fallslow.test.ts` (the curve) and the
+    live landing in `falldamage.test.ts` (slowed on the hit's patch, mid-float
+    strictly between, 1 once the number is gone).
   - **THE WHOLE IMPACT IS THE CLIENT'S TO SHOW** (`fallhurt.ts`), because the
     server's cannot arrive in time: it bills on landing and its patch then
     costs a 20 Hz tick, a patch interval and a round trip, so ANYTHING hung
