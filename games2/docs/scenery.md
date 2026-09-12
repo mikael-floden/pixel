@@ -234,6 +234,44 @@ Off-grid set dressing: sizing, hitboxes, animation, windows on walls, indoor fur
   pixel is excluded and a floor pixel (z 0.02) is not — the contact shading
   under indoor furniture is untouched.
 
+## The packed layer (`scenery/<piece>/packed/`, scenery/pipeline/pack.py)
+
+Every scenery art file is LOADED as its packed twin — the raw canvas cut to
+its state's box (still + rotations + every clip frame share one box, +1 px),
+content-hashed beside the piece, named by `packed/index.json` — and MEASURED
+on its source canvas, so nothing about a placement moves. (Measured on
+the_game's 192 placed pieces, 2026-09-12: the art fills 27% of its canvases;
+one box per state keeps 73% of the decoded bytes, 291 -> 211 MB, on a phone
+that held 7-9k textures and paid for every transparent texel in decode,
+upload and video memory.) The loader fetches the index beside each manifest
+(`SceneryPieces`, one extra request per piece, a miss is silent = raw piece),
+and the scene meets the layer at four seams and nowhere else:
+
+- `sceneryUrl` — the packed URL when the index names one; the texture KEY
+  stays the raw path's (the same art, cut).
+- `sceneryCanvasPixels` — `unpackPixels` puts the packed bytes back on the
+  canvas for every measurement: `alphaBBox` (the fit), the emissive centroid
+  and the lit-against-unlit comparison (`pushSceneryLight`), which compares
+  two STATES cut to different boxes and therefore needs the canvas.
+- `addSceneryCut` — a canvas rectangle registered on a texture in its own
+  texels (`packedCut`); the frame NAME stays the canvas rectangle's, so a
+  frame swap finds the still's rectangle under one name on every texture of
+  the state. The rectangle keeps its size (the image was sized from it).
+- `attachSceneryShape` — the one reader that wants the texture's own texels
+  (the map is sampled at the copy's UV), so its hitbox shifts by the cut.
+
+Hitboxes, `light_frames`, the bbox doc and the collision stamp are in
+source-canvas pixels and untouched. A file on a different canvas than its
+still is not packed (pack.py leaves it raw; the swap draws it as before).
+Gate: `scripts/verify-scenery-pack.mjs` — the same spots with `?scnpack=1`
+and `?scnpack=0` (remembered in `ml-scenery-pack`; the bisect), every still's
+box, flip and cut-texel hash, every fit and every emissive centre identical.
+Probe: `__ml.sceneryPack()` (`{dump:true}` for the comparison). Rejected:
+per-file boxes (72% vs 73%, and a frame swap needs the still's rectangle
+inside every frame texture); Phaser frame trims (the whole-texture geometry
+is never drawn — scenery always draws a sub-frame — so explicit offsets at
+the seams are the smaller change).
+
 ## Depth-fog on BODIES (syncLitCopy)
 
 Monsters and remote players are coloured by the elevation depth-fog like the

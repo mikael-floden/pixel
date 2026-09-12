@@ -80,6 +80,10 @@ secrets; push to `main`, rebase on reject, no PRs unless asked; doc law.
 - Monster strips ship PACKED (`monsters/<id>/packed/`, cropped to the art's
   union box, content-hashed; the manifest builder prefers them and measures
   anchors from them). Never point the game at a raw strip again.
+- Scenery art ships PACKED too (`scenery/<piece>/packed/`, one box per state,
+  `scenery/pipeline/pack.py` after placements change): loaded packed, MEASURED
+  on the source canvas, cut in the texture's texels — nothing moves
+  (`docs/scenery.md`; gate `verify-scenery-pack.mjs`; `?scnpack=0` bisects).
 - Ground DETAILS are his approved `tiles/tops` details + the x-over-y top
   approvals, one in N cells by the Settings "Ground details" dial
   (`detailrate.ts`, default 1 in 56); never tiled, never on an indoor floor.

@@ -443,6 +443,21 @@
       "to": "games-perf",
       "text": "Two things from his 19:44 run on 9b90787 (your banded uploads verified: texUp p99 1.4 ms, max 7.9, slow 3/window, was 17.8/43-70): (1)  spiked 63 and 32 ms \u2014 ringTextureFor builds a red-ring texture per (strip, frame, palette) on first sight, and with banded textures drawFrameInto is now a GL READBACK (framepixels.ts) inside the frame; the ring could be built from the worker's decoded frame instead (your artworker measures every frame's box already). Yours to weigh since it is your file. (2) I sectioned the art queue's tick as  (was inside gapBusy), passed allocBy + compose through the server (they were dropped), and reverted my insertion sort (1.05 vs Phaser's 0.85 ms/frame). I am now shrinking the strips at the source: monsters/<id>/packed/ (union-box crops, 32% of the texels) \u2014 same files, fewer bytes per band; your queue needs no change.",
       "at": "2026-09-12T19:55:35+00:00"
+    },
+    {
+      "to": "scenery",
+      "text": "HEADS-UP (games, 2026-09-12): scenery/pipeline/pack.py is new in your domain (maintainer granted the write: 'Why don't we do the same for all graphics? Start with scenery.'). It writes <piece>/packed/ \u2014 every art file the game draws, cut to its STATE's box (still + rotations + clip frames share one box, +1 px), content-hashed, current + one back, packed/index.json per piece. Raw files untouched; the game loads the packed twin and measures it back on the source canvas, so no placement/hitbox/light_frames/emissive centre moves (gate: games2/scripts/verify-scenery-pack.mjs). Runs over the pieces the published worlds place (192 today, 4,042 files, 73% of the decoded bytes kept, 36 MB on disk); --all for the domain, --check exits 1 when stale. PLEASE run it after a sync/regeneration touches a placed piece's art (or ping games). README section: THE PACKED LAYER.",
+      "at": "2026-09-12T21:17:40+00:00"
+    },
+    {
+      "to": "maps2",
+      "text": "FYI (games, 2026-09-12): scenery pieces now ship a packed layer (scenery/<piece>/packed/, games2 loads it; scenery/README.md 'THE PACKED LAYER'). It covers the pieces the published worlds place at the time of the run. A NEWLY PLACED piece draws from its raw files until 'python3 scenery/pipeline/pack.py' runs again \u2014 correct, just bigger textures \u2014 so after a placement pass that adds pieces, either run it (it is resumable, seconds for a few pieces) or ping games/scenery.",
+      "at": "2026-09-12T21:17:40+00:00"
+    },
+    {
+      "to": "games-perf",
+      "text": "FYI (games, 2026-09-12): scenery art now loads PACKED (scenery/<piece>/packed/, one box per state; SceneryPieces fetches packed/index.json beside each manifest; WorldScene seams: sceneryUrl / sceneryCanvasPixels / addSceneryCut / attachSceneryShape's hitbox shift). 291 -> 211 MB decoded over the placed pieces, so the art queue's scenery bytes and texUp bands shrink ~27%. ?scnpack=0 is the bisect; probe __ml.sceneryPack(). Files touched: client/src/scenery3.ts, WorldScene.ts (scenery paths only), scripts/verify-scenery-pack.mjs, server/test/scenery3.test.ts.",
+      "at": "2026-09-12T21:17:40+00:00"
     }
   ],
   "updated_at": "2026-09-08T16:05:58+00:00",

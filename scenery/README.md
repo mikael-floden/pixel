@@ -239,6 +239,36 @@ Art resolution ≠ world size. Each piece carries `placement.world_px_height`
 scaled to that height and everything composes at believable scale. Group art
 sizes live in the config; heights vary per piece inside the group's range.
 
+## THE PACKED LAYER (games2 reads it; `pipeline/pack.py` writes it)
+
+Every piece the published worlds place carries `packed/`: each art file the
+game draws, cut to its STATE's box — the union of the opaque boxes of the
+state's still, its rotations and every frame of its clips, plus 1 px — under a
+content-hashed name (`packed/<same subpath>.<sha8>.webp`), with
+`packed/index.json` naming the current file per raw path and the cut (`ox,
+oy, w, h` on the `srcW x srcH` canvas). The game loads the packed twin,
+measures it back on its source canvas and registers the still's rectangle in
+the packed texels, so no placement, hitbox, `light_frames` offset or
+emissive centre moves (games2/docs/scenery.md; its gate
+`games2/scripts/verify-scenery-pack.mjs` proves it). Measured on the_game's
+192 pieces: the art fills 27% of its canvases, one box per state keeps 73%
+of the decoded bytes (291 -> 211 MB), 36 MB on disk.
+
+- **The raw files are untouched and stay the truth**: the wiki, the viewer,
+  render3, the bbox table and every review read them. Packing changes what
+  the game UPLOADS, never what anyone measures.
+- **A box is one canvas**: a file on a different canvas than its still
+  (crystal_tree_002's 68-px frames under a 64-px still) is not packed and
+  draws raw, exactly as before.
+- **Run it after anything changes what the worlds place or what a placed
+  piece looks like**: `python3 scenery/pipeline/pack.py` (placed pieces;
+  `--all` for the whole domain, `--only group/id`, `--check` exits 1 when a
+  placed piece is stale). Resumable: a family whose raw bytes hash to the
+  index's `src` is skipped. A newly placed piece draws raw until it runs —
+  correct, just bigger.
+- **Cache law**: never a stable name; current + one back (`prev`) so an open
+  page keeps rendering through a deploy.
+
 ## Random horizontal flip — the game's half of the deal
 
 Scenery is SOUTH-only, and a south-facing sprite is still itself mirrored:

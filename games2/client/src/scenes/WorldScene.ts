@@ -250,6 +250,10 @@ import {
   type SceneryHitboxRec,
   type SceneryHitbox,
   type SceneryFit,
+  type BBox as SceneryBBox,
+  type SceneryPackRec,
+  packedCut,
+  unpackPixels,
   anchorX,
   anchorY,
   lightBlockFor as sceneryLightBlockFor,
@@ -901,6 +905,26 @@ function groundPathFast(): boolean {
     return true; // storage or location blocked: the fast path, which is the default
   }
 }
+
+/** THE PACKED SCENERY LAYER (`scenery/<piece>/packed/`, scenery/pipeline/pack.py):
+ *  every scenery art file the game draws is loaded as its cut-to-the-art twin
+ *  and measured on its source canvas, so nothing about a placement moves
+ *  (docs/scenery.md). `?scnpack=0` (remembered in `ml-scenery-pack`) loads the
+ *  raw files instead — the bisect, and what `scripts/verify-scenery-pack.mjs`
+ *  compares against. */
+function sceneryPackEnabled(): boolean {
+  try {
+    const q = new URLSearchParams(location.search).get("scnpack");
+    if (q === "0" || q === "1") localStorage.setItem("ml-scenery-pack", q);
+    return localStorage.getItem("ml-scenery-pack") !== "0";
+  } catch {
+    return true;
+  }
+}
+
+/** A distinct scenery art file's measured crop: its alpha bbox and its SOURCE
+ *  canvas — in source pixels whether the texture behind it is raw or packed. */
+type SceneryArtFit = { bbox: SceneryBBox | null; canvas: { w: number; h: number } };
 /** How far AHEAD the prefetch reaches when the direction of travel is not yet
  *  known (the first paint after a join or a teleport) — see t3armRing. */
 const GROUND_RING = 512;
@@ -1872,7 +1896,8 @@ export class WorldScene extends Phaser.Scene {
   private scenery: SceneryIndex | null = null; // placements bucketed by screen anchor
   private sceneryPieces: SceneryPieces | null = null; // lazy per-piece manifests
   private sceneryImgs: Phaser.GameObjects.Image[] = [];
-  private sceneryFit = new Map<string, SceneryFit | null>(); // per piece+state, measured once
+  private sceneryFit = new Map<string, SceneryArtFit | null>(); // per distinct art file, measured once
+  private sceneryPackOn = sceneryPackEnabled();
   private sceneryAsked = new Set<string>();
   private sceneryQueue: [string, string][] = [];
   private sceneryRebuilds = 0; // the boot hold waits for the first one
@@ -3807,7 +3832,7 @@ export class WorldScene extends Phaser.Scene {
   private sceneryStamps: GlowStamp[] = [];
   /** Per LIT texture key: the derived emissive (canvas px) + params, or null
    *  when the art has nothing bright — derived once, the art never changes. */
-  private sceneryLightCache = new Map<string, { cx: number; cy: number; params: SceneryLightParams } | null>();
+  private sceneryLightCache = new Map<string, { cx: number; cy: number; params: SceneryLightParams; unlit: boolean } | null>();
   // Per-pixel glow halos for the visible window (rebuilt with the occluders).
   private glowStamps: GlowStamp[] = [];
   // The spawn campfire: an animated world object with its own fire light.
@@ -7210,6 +7235,62 @@ export class WorldScene extends Phaser.Scene {
        *  the cut is letting through right now. */
       // The animation scheduler: how many placed pieces carry a playable clip
       // right now, how many are mid-play, and the next few starts.
+      /** THE PACKED LAYER: how much of the resident scenery art is packed and
+       *  what it saves; `{dump:true}` adds every drawn still's texture, cut,
+       *  box, flip and a hash of the cut's texels, every measured fit and every
+       *  emissive centre — what verify-scenery-pack.mjs compares between
+       *  `?scnpack=1` and `?scnpack=0`. */
+      sceneryPack: (o?: { dump?: boolean }) => {
+        const keys = this.textures.getTextureKeys().filter((k) => k.startsWith("s3:"));
+        let packedTextures = 0, rawBytes = 0, packedBytes = 0;
+        for (const k of keys) {
+          const rec = this.sceneryPackOf(k);
+          const src = this.textures.get(k).source[0];
+          if (rec) {
+            packedTextures++;
+            rawBytes += rec.srcW * rec.srcH * 4;
+            packedBytes += rec.w * rec.h * 4;
+          } else if (src) {
+            rawBytes += src.width * src.height * 4;
+            packedBytes += src.width * src.height * 4;
+          }
+        }
+        let resident = 0;
+        for (const k of this.sceneryAsked) if (this.textures.exists(k)) resident++;
+        const out = {
+          on: this.sceneryPackOn, indexes: this.sceneryPieces?.stats.packed ?? 0, files: this.sceneryPieces?.packedFiles ?? 0,
+          textures: keys.length, packedTextures, rawMB: +(rawBytes / 1e6).toFixed(2), packedMB: +(packedBytes / 1e6).toFixed(2),
+          // Settling: manifests in flight, stills asked for and landed.
+          idle: this.sceneryPieces?.idle ?? true, asked: this.sceneryAsked.size, resident,
+        };
+        if (!o?.dump) return out;
+        const playing = new Set<Phaser.GameObjects.Image>();
+        for (const l of this.sceneryAnimLive) if ((this.sceneryAnimRuns.get(l.place)?.frame ?? -1) >= 0) playing.add(l.img);
+        const hashOf = (key: string, f: Phaser.Textures.Frame): number | null => {
+          const px = this.texPixels(key);
+          if (!px) return null;
+          let h = 2166136261;
+          for (let y = 0; y < f.cutHeight; y++) {
+            const yy = f.cutY + y;
+            if (yy < 0 || yy >= px.h) continue;
+            for (let x = 0; x < f.cutWidth; x++) {
+              const xx = f.cutX + x;
+              if (xx < 0 || xx >= px.w) continue;
+              const i = (yy * px.w + xx) * 4;
+              for (let c = 0; c < 4; c++) h = Math.imul(h ^ px.data[i + c], 16777619);
+            }
+          }
+          return h >>> 0;
+        };
+        const images = this.sceneryImgs.filter((i) => i.active && !playing.has(i)).map((i) => ({
+          key: i.texture.key, frame: i.frame.name, cut: [i.frame.cutX, i.frame.cutY, i.frame.cutWidth, i.frame.cutHeight],
+          x: Math.round(i.x), y: Math.round(i.y), w: +i.displayWidth.toFixed(2), h: +i.displayHeight.toFixed(2), flip: i.flipX,
+          hash: hashOf(i.texture.key, i.frame),
+        }));
+        const fits = [...this.sceneryFit.entries()].map(([k, f]) => ({ key: k, bbox: f?.bbox ?? null, canvas: f?.canvas ?? null }));
+        const lights = [...this.sceneryLightCache.entries()].map(([k, r]) => ({ key: k, cx: r ? +r.cx.toFixed(3) : null, cy: r ? +r.cy.toFixed(3) : null, unlit: r ? r.unlit : null }));
+        return { ...out, images, fits, lights };
+      },
       sceneryAnims: () => {
         const now = this.time.now;
         const runs = this.sceneryAnimLive.map((l) => ({ place: l.place, run: this.sceneryAnimRuns.get(l.place)! }));
@@ -15708,7 +15789,7 @@ export class WorldScene extends Phaser.Scene {
             const key = this.sKey(spriteOn);
             const name = `s3c:${fit.sx},${fit.sy},${fit.sw},${fit.sh}`;
             const tex = this.textures.get(key);
-            if (!tex.has(name)) tex.add(name, 0, fit.sx, fit.sy, fit.sw, fit.sh);
+            if (!tex.has(name)) this.addSceneryCut(tex, key, name, fit.sx, fit.sy, fit.sw, fit.sh);
             /* NOT POOLED: a pooled image keeps its old place in the display
              * list, and at the copy's depth the list order is the draw order —
              * a recycled overlay drew UNDER the copy created a moment before
@@ -17647,7 +17728,7 @@ export class WorldScene extends Phaser.Scene {
     // needs. The run plays once every frame is resident (below).
     for (const f of clip.frames) {
       const k = this.sKey(f);
-      if (!this.textures.exists(k)) this.artQueue().request({ key: k, url: sceneryArtUrl(f, this.t3route), prio: ART_PRIO.sceneryAnim });
+      if (!this.textures.exists(k)) this.artQueue().request({ key: k, url: this.sceneryUrl(f), prio: ART_PRIO.sceneryAnim });
     }
     const live: SceneryAnimLive = {
       place, img, lo, stillKey, frameName, crop,
@@ -17664,7 +17745,7 @@ export class WorldScene extends Phaser.Scene {
   private setSceneryFrame(live: SceneryAnimLive, key: string): void {
     if (!this.textures.exists(key)) return;
     const tex = this.textures.get(key);
-    if (!tex.has(live.frameName)) tex.add(live.frameName, 0, live.crop[0], live.crop[1], live.crop[2], live.crop[3]);
+    if (!tex.has(live.frameName)) this.addSceneryCut(tex, key, live.frameName, live.crop[0], live.crop[1], live.crop[2], live.crop[3]);
     live.img.setTexture(key, live.frameName);
     live.lo?.img.setTexture(key, live.frameName);
     live.lo?.fog?.setTexture(key, live.frameName);
@@ -19409,6 +19490,7 @@ export class WorldScene extends Phaser.Scene {
         }),
       route: this.t3route,
       onLanded: () => this.onSceneryManifest(),
+      pack: this.sceneryPackOn,
     });
     /* THE COLLISION DOCUMENTS, FROM THE AUTHORITY THAT STAMPS WITH THEM.
      * Footprints become blocked cells from two documents, and the prediction
@@ -19569,6 +19651,14 @@ export class WorldScene extends Phaser.Scene {
           theta: rect ? rectGroundRot(box0, dir, false) : 0,
         }
       : { cx: fit.sx + fit.sw / 2, cy: fit.sy + fit.sh, rx: r0, ry: (r0 * dy) / dx, rect: false, theta: 0 };
+    // A PACKED texture holds the canvas from (ox, oy). The map is built on
+    // the texture's own texels — the fragment samples it at the copy's UV —
+    // so the hitbox, measured on the canvas, moves with the cut.
+    const pk = this.sceneryPackOf(key);
+    if (pk) {
+      hb.cx -= pk.ox;
+      hb.cy -= pk.oy;
+    }
     const sc: ShapeScale = { px2cell: fit.kx / (dx * Math.SQRT2), py2cell: fit.ky / (dy * Math.SQRT2), px2lvl: fit.ky / lh };
     const mapKey = shapeMapKey(key, hb, sc);
     // Hitbox centre → cells: the collision stamp's own inverse projection.
@@ -19651,7 +19741,7 @@ export class WorldScene extends Phaser.Scene {
     const block = sceneryLightBlockFor(piece, st.key);
     let rec = this.sceneryLightCache.get(key);
     if (rec === undefined) {
-      const pix = this.texPixels(key);
+      const pix = this.sceneryCanvasPixels(key);
       if (!pix) return; // art not landed yet — next rebuild
       const unlitKey = Object.keys(piece.states).find((k) => k.startsWith("NOT_LIT")) ?? (piece.baseState.startsWith("LIT") ? null : piece.baseState);
       let upix = null;
@@ -19659,10 +19749,13 @@ export class WorldScene extends Phaser.Scene {
         const us = piece.states[unlitKey];
         const usprite = (p.dir ? us.rotations[p.dir] : "") || us.rotations.south || us.sprite;
         const ukey = this.sKey(usprite);
-        upix = this.textures.exists(ukey) ? this.texPixels(ukey) : null;
+        upix = this.textures.exists(ukey) ? this.sceneryCanvasPixels(ukey) : null;
       }
       const e = deriveEmissive(pix, upix);
-      rec = e ? { cx: e.cx, cy: e.cy, params: lightParams(e, lightKindOf(p.piece)) } : null;
+      // `unlit` records WHICH derivation ran (against the sibling, or the
+      // bright pixels alone when it was not resident yet): the first measure
+      // is cached, so the gate compares only like with like.
+      rec = e ? { cx: e.cx, cy: e.cy, params: lightParams(e, lightKindOf(p.piece)), unlit: !!upix } : null;
       this.sceneryLightCache.set(key, rec);
     }
     const fromBlock = block ? lightFromBlock(block, lightKindOf(p.piece)) : null;
@@ -19865,14 +19958,45 @@ export class WorldScene extends Phaser.Scene {
     });
   }
 
-  private sceneryArtFit(key: string): { bbox: ReturnType<typeof alphaBBox>; canvas: { w: number; h: number } } | null {
+  private sceneryArtFit(key: string): SceneryArtFit | null {
     const hit = this.sceneryFit.get(key);
-    if (hit !== undefined) return hit as never;
+    if (hit !== undefined) return hit;
+    const px = this.sceneryCanvasPixels(key);
+    if (!px) return null;
+    const rec: SceneryArtFit = { bbox: alphaBBox(px), canvas: { w: px.w, h: px.h } };
+    this.sceneryFit.set(key, rec);
+    return rec;
+  }
+
+  /* THE PACKED LAYER, at its four seams. A scenery texture is loaded from its
+   * packed twin when the piece's `packed/index.json` names one (sceneryUrl),
+   * its KEY stays the raw path's (the same art, cut), it is MEASURED on its
+   * source canvas (sceneryCanvasPixels: bbox, emissive centroid, lit against
+   * unlit), and a source-canvas rectangle is registered on it in its own
+   * texels (addSceneryCut). The shape map is the one reader that wants the
+   * texture's own texels, and shifts its hitbox instead (attachSceneryShape).
+   * Off, every one of these is the identity. */
+  private sceneryPackOf(key: string): SceneryPackRec | undefined {
+    if (!this.sceneryPackOn || !key.startsWith("s3:")) return undefined;
+    return this.sceneryPieces?.packOf(key.slice(3));
+  }
+
+  private sceneryUrl(spritePath: string): string {
+    const rec = this.sceneryPackOn ? this.sceneryPieces?.packOf(spritePath) : undefined;
+    return sceneryArtUrl(rec ? rec.path : spritePath, this.t3route);
+  }
+
+  private sceneryCanvasPixels(key: string): T3Pixels | null {
     const px = this.texPixels(key);
     if (!px) return null;
-    const rec = { bbox: alphaBBox(px), canvas: { w: px.w, h: px.h } };
-    this.sceneryFit.set(key, rec as never);
-    return rec;
+    const rec = this.sceneryPackOf(key);
+    return rec ? unpackPixels(px, rec) : px;
+  }
+
+  private addSceneryCut(tex: Phaser.Textures.Texture, key: string, name: string, sx: number, sy: number, sw: number, sh: number): void {
+    const rec = this.sceneryPackOf(key);
+    const c = rec ? packedCut(rec, sx, sy, sw, sh) : { x: sx, y: sy, w: sw, h: sh };
+    tex.add(name, 0, c.x, c.y, c.w, c.h);
   }
 
   /** Queue one scenery art file. Same one-request-per-path tombstone rule the
@@ -19883,7 +20007,7 @@ export class WorldScene extends Phaser.Scene {
     if (this.textures.exists(key)) return true;
     if (!this.sceneryAsked.has(key)) {
       this.sceneryAsked.add(key);
-      this.sceneryQueue.push([key, sceneryArtUrl(spritePath, this.t3route)]);
+      this.sceneryQueue.push([key, this.sceneryUrl(spritePath)]);
     }
     return false;
   }
@@ -20199,7 +20323,7 @@ export class WorldScene extends Phaser.Scene {
       // piece must sort against its neighbours, not only against terrain.
       const tex = this.textures.get(key);
       const name = `s3c:${fit.sx},${fit.sy},${fit.sw},${fit.sh}`;
-      if (!tex.has(name)) tex.add(name, 0, fit.sx, fit.sy, fit.sw, fit.sh);
+      if (!tex.has(name)) this.addSceneryCut(tex, key, name, fit.sx, fit.sy, fit.sw, fit.sh);
       const img = this.scnImage(key, name, fit.x, fit.y, fit.w, fit.h, fit.flipX);
       this.sceneryImgs.push(
         img

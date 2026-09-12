@@ -942,6 +942,84 @@ export function artKey(spritePath: string): string {
   return "s3:" + spritePath;
 }
 
+/* -- the packed layer (scenery/pipeline/pack.py) ----------------------------- */
+
+/** ONE RAW ART PATH'S PACKED TWIN: the same pixels cut to the box of its STATE
+ *  (the still, its rotations and every frame of its clips share one box, so a
+ *  frame swap finds the still's rectangle inside every texture it lands on),
+ *  under a content-hashed name beside the piece. `path` is the packed file's
+ *  domain-relative art path, `ox/oy` where the cut sits on the source canvas
+ *  (`srcW` x `srcH`), `w/h` the cut. Everything the game measures — the bbox,
+ *  the hitbox from the frame centre, `light_frames`, the emissive centroid —
+ *  stays in SOURCE-CANVAS pixels: the packed texture is put back on its canvas
+ *  to be measured (`unpackPixels`) and a canvas rectangle is registered on it
+ *  through `packedCut`. No geometry changes, only the texels that exist. */
+export interface SceneryPackRec {
+  path: string;
+  ox: number;
+  oy: number;
+  w: number;
+  h: number;
+  srcW: number;
+  srcH: number;
+}
+
+export const SCENERY_PACK_SCHEMA = "scenery-packed@1";
+
+export function packIndexPath(pieceId: string): string {
+  return `scenery/${pieceId}/packed/index.json`;
+}
+
+export function packIndexUrl(pieceId: string, route?: UrlRoute): string {
+  return routeUrl(packIndexPath(pieceId), route);
+}
+
+/** The index as pack.py writes it — `files[rawPath] = {file, ox, oy, w, h,
+ *  srcW, srcH, ...}` — validated per record (a record the cut does not fit is
+ *  dropped, never a texture registered outside its own bytes). Null for
+ *  anything that is not this schema. */
+export function parsePackIndex(json: unknown, pieceId: string): Record<string, SceneryPackRec> | null {
+  const doc = json as { schema?: unknown; files?: unknown } | null;
+  if (!doc || typeof doc !== "object" || doc.schema !== SCENERY_PACK_SCHEMA) return null;
+  if (!doc.files || typeof doc.files !== "object" || Array.isArray(doc.files)) return null;
+  const out: Record<string, SceneryPackRec> = {};
+  const int = (v: unknown): v is number => typeof v === "number" && Number.isInteger(v);
+  for (const [raw, r] of Object.entries(doc.files as Record<string, any>)) {
+    if (raw === "__proto__" || !r || typeof r !== "object") continue;
+    const file = str(r.file);
+    if (!file || file.includes("..") || file.startsWith("/")) continue;
+    if (!int(r.ox) || !int(r.oy) || !int(r.w) || !int(r.h) || !int(r.srcW) || !int(r.srcH)) continue;
+    if (r.ox < 0 || r.oy < 0 || r.w < 1 || r.h < 1 || r.ox + r.w > r.srcW || r.oy + r.h > r.srcH) continue;
+    out[raw.replace(/^\/+/, "")] = { path: `${pieceId}/packed/${file}`, ox: r.ox, oy: r.oy, w: r.w, h: r.h, srcW: r.srcW, srcH: r.srcH };
+  }
+  return out;
+}
+
+/** The packed texture's pixels put back on the source canvas, so a measurement
+ *  made on the raw file (alphaBBox, the emissive centroid, a lit-against-unlit
+ *  comparison of two states cut to different boxes) reads the same numbers
+ *  from the packed one. Transparent black outside the cut — what the raw
+ *  canvas holds there (exact=True keeps the RGB under alpha 0 in the FILE, and
+ *  a browser's premultiplied read-back returns 0,0,0,0 for it anyway). */
+export function unpackPixels(px: Pixels, rec: SceneryPackRec): Pixels {
+  if (px.w === rec.srcW && px.h === rec.srcH) return px;
+  const data = new Uint8ClampedArray(rec.srcW * rec.srcH * 4);
+  const w = Math.max(0, Math.min(px.w, rec.srcW - rec.ox));
+  const h = Math.max(0, Math.min(px.h, rec.srcH - rec.oy));
+  for (let y = 0; y < h; y++) data.set(px.data.subarray(y * px.w * 4, (y * px.w + w) * 4), ((rec.oy + y) * rec.srcW + rec.ox) * 4);
+  return { w: rec.srcW, h: rec.srcH, data };
+}
+
+/** A source-canvas rectangle in the packed texture's own texels. The rectangle
+ *  keeps its size — the image it fills was sized from it (`fitSprite`), and a
+ *  shrunk cut would stretch the art — so a rectangle the cut does not contain
+ *  comes back partly outside the texture (the sampler clamps to the transparent
+ *  margin), which the pack step's one-box-per-state rule makes impossible for
+ *  a still or a frame of the same state. */
+export function packedCut(rec: SceneryPackRec, sx: number, sy: number, sw: number, sh: number): { x: number; y: number; w: number; h: number } {
+  return { x: sx - rec.ox, y: sy - rec.oy, w: sw, h: sh };
+}
+
 /** One art file to load and the key it lands under — same shape as
  *  `Tiles3Load`, so one loader serves both. */
 export interface SceneryLoad {
@@ -988,13 +1066,18 @@ export function sceneryLoads(
  *  render pass never awaits: it draws what is resident and picks the rest up on
  *  a later frame. */
 export class SceneryPieces {
-  readonly stats = { requested: 0, loaded: 0, failed: 0 };
+  readonly stats = { requested: 0, loaded: 0, failed: 0, packed: 0 };
   private cache = new Map<string, SceneryPiece | null>();
   private inflight = new Map<string, Promise<void>>();
+  /** Raw art path -> its packed twin, from every `packed/index.json` that has
+   *  landed. Filled BEFORE `onLanded`, so the art a manifest names is asked
+   *  for by its packed URL from the first rebuild that sees it. */
+  private packs = new Map<string, SceneryPackRec>();
   private fetchJson: (url: string) => Promise<any>;
   private route?: UrlRoute;
   private warn: (m: string) => void;
   private onLanded?: () => void;
+  private packOn: boolean;
 
   constructor(o: {
     fetchJson: (url: string) => Promise<any>;
@@ -1005,10 +1088,15 @@ export class SceneryPieces {
      *  the manifest names; without it the art waited for the next
      *  camera-driven rebuild. */
     onLanded?: () => void;
+    /** Also fetch each piece's `packed/index.json` (default on; the
+     *  `?scnpack=0` bisect turns it off). A piece without one — not packed
+     *  yet, or a 404 — simply loads its raw files. */
+    pack?: boolean;
   }) {
     this.fetchJson = o.fetchJson;
     this.route = o.route;
     this.onLanded = o.onLanded;
+    this.packOn = o.pack !== false;
     // ONCE PER PIECE, not once per placement: a broken manifest on a piece
     // placed 26 times must not put 26 lines in the console every frame.
     const warned = new Set<string>();
@@ -1034,12 +1122,21 @@ export class SceneryPieces {
     return this.inflight.size === 0;
   }
 
+  /** The packed twin of a raw art path, once its piece's index has landed. */
+  packOf(spritePath: string): SceneryPackRec | undefined {
+    return this.packs.get(spritePath.replace(/^\/+/, ""));
+  }
+
+  get packedFiles(): number {
+    return this.packs.size;
+  }
+
   request(id: string): Promise<void> {
     const done = this.inflight.get(id);
     if (done) return done;
     if (this.cache.has(id)) return Promise.resolve();
     this.stats.requested++;
-    const p = this.fetchJson(manifestUrl(id, this.route))
+    const manifest = this.fetchJson(manifestUrl(id, this.route))
       .then((json) => {
         const piece = parsePiece(id, json, this.warn);
         this.cache.set(id, piece);
@@ -1050,7 +1147,22 @@ export class SceneryPieces {
         this.cache.set(id, null);
         this.stats.failed++;
         this.warn(`scenery3: ${id} manifest failed to load (${e})`);
-      })
+      });
+    // The packed index rides beside the manifest — one more request in the
+    // same round trip, never a second one after it — and a miss is silent:
+    // an unpacked piece is a normal piece.
+    const packed = !this.packOn
+      ? Promise.resolve()
+      : this.fetchJson(packIndexUrl(id, this.route))
+          .then((json) => {
+            const idx = parsePackIndex(json, id);
+            if (!idx) return;
+            for (const [raw, rec] of Object.entries(idx)) this.packs.set(raw, rec);
+            this.stats.packed++;
+          })
+          .catch(() => {});
+    const p = Promise.all([manifest, packed])
+      .then(() => undefined)
       .finally(() => {
         this.inflight.delete(id);
         this.onLanded?.();
