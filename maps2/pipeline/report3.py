@@ -100,10 +100,11 @@ def render_page(spec, cards, mm):
                     f'aria-label="Flip between after and before">After</button>')
         before_attr = f' data-before="{c["before"]}"' if c["before"] else ""
         items.append(f'''
-<article class="change" id="c{c["n"]}" data-px="{c["px"]}" data-py="{c["py"]}" data-cell="{c["cell"][0]},{c["cell"][1]}" data-after="{c["after"]}"{before_attr}>
+<article class="change" id="c{c["n"]}" data-n="{c["n"]}" data-name="{html.escape(c["name"], quote=True)}" data-px="{c["px"]}" data-py="{c["py"]}" data-cell="{c["cell"][0]},{c["cell"][1]}" data-level="{c["level"]}" data-commit="{html.escape(c["commit"], quote=True)}" data-after="{c["after"]}"{before_attr}>
   <header>
-    <span class="n">{c["n"]}</span>
+    <label class="pick"><input type="checkbox" class="sel" id="sel{c["n"]}" aria-label="Select change {c["n"]}"><span class="n">#{c["n"]}</span></label>
     <h2>{html.escape(c["name"])}</h2>
+    <button type="button" class="copy1" id="copy{c["n"]}" aria-label="Copy the number of change {c["n"]}">Copy #{c["n"]}</button>
     <button type="button" class="show" id="show{c["n"]}" aria-label="Show {html.escape(c["name"])} on the map">Show on map</button>
   </header>
   <p class="what">{html.escape(c["what"])}</p>
@@ -143,6 +144,20 @@ h1 {{ font-family: "Newsreader", Georgia, serif; font-weight: 600; font-size: cl
 .change header {{ display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }}
 .change h2 {{ font-family: "Newsreader", Georgia, serif; font-weight: 500; font-size: 22px; margin: 0; flex: 1 1 200px; text-wrap: balance; }}
 .n {{ font-family: "IBM Plex Mono", ui-monospace, monospace; font-size: 13px; color: var(--muted); border: 1px solid var(--line); border-radius: 999px; padding: 2px 9px; }}
+.pick {{ display: inline-flex; align-items: center; gap: 8px; cursor: pointer; }}
+.pick input {{ width: 20px; height: 20px; accent-color: var(--accent); margin: 0; }}
+.change.picked {{ border-color: var(--accent); }}
+.change.picked .n {{ background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }}
+.copy1 {{ background: transparent; color: var(--ink); border: 1px solid var(--line); border-radius: 8px; padding: 7px 12px; font: inherit; font-size: 14px; cursor: pointer; }}
+.bar {{ position: fixed; left: 0; right: 0; bottom: 0; z-index: 3; background: var(--panel); border-top: 1px solid var(--line); padding: 10px 16px; display: flex; align-items: center; gap: 12px; flex-wrap: wrap; box-shadow: 0 -6px 24px rgba(0, 0, 0, .12); }}
+.bar[hidden] {{ display: none; }}
+.bar .count {{ flex: 1 1 160px; font-weight: 600; }}
+.bar .copy {{ background: var(--accent); color: var(--accent-ink); border: 0; border-radius: 8px; padding: 9px 16px; font: inherit; font-weight: 600; cursor: pointer; }}
+.bar .clear {{ background: transparent; color: var(--ink); border: 1px solid var(--line); border-radius: 8px; padding: 8px 12px; font: inherit; cursor: pointer; }}
+.bar textarea {{ flex: 1 1 100%; width: 100%; min-height: 72px; font-family: "IBM Plex Mono", ui-monospace, monospace; font-size: 13px; color: var(--ink); background: var(--bg); border: 1px solid var(--line); border-radius: 8px; padding: 8px; resize: vertical; }}
+.toast {{ position: fixed; left: 50%; bottom: 96px; transform: translateX(-50%); background: var(--ink); color: var(--bg); padding: 8px 14px; border-radius: 999px; font-size: 14px; z-index: 4; }}
+.toast[hidden] {{ display: none; }}
+body.has-bar {{ padding-bottom: 180px; }}
 .show {{ background: var(--accent); color: var(--accent-ink); border: 0; border-radius: 8px; padding: 8px 14px; font: inherit; font-weight: 600; cursor: pointer; }}
 .show:hover {{ filter: brightness(1.08); }}
 .show:focus-visible, .pill:focus-visible, .close:focus-visible {{ outline: 3px solid var(--pin); outline-offset: 2px; }}
@@ -172,6 +187,13 @@ dialog::backdrop {{ background: var(--scrim); }}
   <div class="list">{"".join(items)}
   </div>
 </main>
+<div class="bar" id="bar" hidden>
+  <span class="count" id="count">0 selected</span>
+  <button type="button" class="clear" id="clear">Clear</button>
+  <button type="button" class="copy" id="copyall">Copy selected</button>
+  <textarea id="out" readonly aria-label="The text that Copy selected copies"></textarea>
+</div>
+<div class="toast" id="toast" hidden>Copied</div>
 <dialog id="mapdlg" aria-labelledby="mtitle">
   <div class="mhead">
     <h3 id="mtitle">Where on the island</h3>
@@ -189,7 +211,41 @@ dialog::backdrop {{ background: var(--scrim); }}
   var where = document.getElementById('where'), mtitle = document.getElementById('mtitle');
   document.getElementById('mclose').addEventListener('click', function () {{ dlg.close(); }});
   dlg.addEventListener('click', function (e) {{ if (e.target === dlg) dlg.close(); }});
+  var bar = document.getElementById('bar'), count = document.getElementById('count'), out = document.getElementById('out');
+  var toast = document.getElementById('toast'), toastT = null;
+  function say(msg) {{
+    toast.textContent = msg; toast.hidden = false;
+    clearTimeout(toastT); toastT = setTimeout(function () {{ toast.hidden = true; }}, 1400);
+  }}
+  function copyText(text) {{
+    out.value = text;
+    if (navigator.clipboard && navigator.clipboard.writeText) {{
+      navigator.clipboard.writeText(text).then(function () {{ say('Copied'); }}, function () {{ out.focus(); out.select(); say('Select the text below and copy'); }});
+    }} else {{ out.focus(); out.select(); say('Select the text below and copy'); }}
+  }}
+  function line(card) {{
+    return '#' + card.dataset.n + ' ' + card.dataset.name + ' — cell ' + card.dataset.cell + ', level ' + card.dataset.level
+      + (card.dataset.commit ? ' — ' + card.dataset.commit : '');
+  }}
+  function refresh() {{
+    var picked = Array.prototype.filter.call(document.querySelectorAll('.change'), function (c) {{ return c.querySelector('.sel').checked; }});
+    picked.forEach(function (c) {{ c.classList.add('picked'); }});
+    document.querySelectorAll('.change').forEach(function (c) {{ if (picked.indexOf(c) < 0) c.classList.remove('picked'); }});
+    bar.hidden = picked.length === 0;
+    document.body.classList.toggle('has-bar', picked.length > 0);
+    count.textContent = picked.length + ' selected';
+    out.value = picked.map(line).join('\n');
+  }}
+  document.getElementById('clear').addEventListener('click', function () {{
+    document.querySelectorAll('.sel').forEach(function (b) {{ b.checked = false; }}); refresh();
+  }});
+  document.getElementById('copyall').addEventListener('click', function () {{
+    var t = document.title + ' — changes ' + Array.prototype.map.call(document.querySelectorAll('.change.picked'), function (c) {{ return '#' + c.dataset.n; }}).join(', ') + '\n' + out.value;
+    copyText(t);
+  }});
   document.querySelectorAll('.change').forEach(function (card) {{
+    card.querySelector('.sel').addEventListener('change', refresh);
+    card.querySelector('.copy1').addEventListener('click', function () {{ copyText(line(card)); }});
     card.querySelector('.show').addEventListener('click', function () {{
       pin.style.left = card.dataset.px + '%';
       pin.style.top = card.dataset.py + '%';

@@ -27,7 +27,11 @@ cells, the page shows him the place.
   image flips it to "before"; "Show on map" opens the minimap in a MODAL
   with the pin (maintainer 2026-09-12: not a panel fixed at the top). The pin
   is the world's own `minimap.json` dot formula with the cell's level from
-  `world.json` — the same pixel the game's map tab puts a body on.
+  `world.json` — the same pixel the game's map tab puts a body on. Every
+  change carries a number he can tick and copy — "Copy #n" on the card, and
+  a bar with "Copy selected" that puts `#n name — cell x,y, level l — commit`
+  on the clipboard, one line per change (maintainer: "so I can communicate
+  easier with you"); a reply that quotes those numbers is about those cards.
 - One card per change, in the words a player uses: what changed, why, the
   cell as the game shows it under the player (post-recentre coordinates).
   A change he cannot see from the surface gets its lids lifted.
