@@ -108,10 +108,10 @@ dressing). `this.maps3` gates every terrain branch (false only for a hand-built
   unknown key, NOT undefined — handed to the composer an unloaded 64x46 plate
   arrives as 32x32 and kills the frame, so the scene passes an adapter whose
   `get` answers through `exists`. And terrain gets its **own `LoaderPlugin`**:
-  `this.load` is one FIFO queue and `loadDeferredAnims` pushes ~1,700 action
-  frames onto it the moment the avatar is in — measured, 95 plate files sat at
-  position 1,719 and the ground never filled in while every counter said it had
-  been requested. The dedicated loader also carries `crossOrigin =
+  `this.load` is one FIFO queue shared with everything the scene loads
+  (measured before the art queue existed: 1,700 deferred action frames ahead
+  of 95 plate files at position 1,719, and the ground never filled in while
+  every counter said it had been requested). The dedicated loader also carries `crossOrigin =
   "anonymous"`, which a staging join depends on: a composed boundary reads its
   plates back with `getImageData`, and a cross-origin image loaded without the
   attribute taints the canvas and makes every boundary in the world vanish.

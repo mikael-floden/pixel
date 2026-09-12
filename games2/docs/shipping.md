@@ -205,21 +205,19 @@ pipeline.
   - The world picker's thumbnail (`build-worlds.mjs`) probes `webp` before
     `png` per stem, so a mid-conversion world keeps its picture.
 
-- **The deferred animation batch is PACED (#7).** `loadDeferredAnims` (every
-  character's non-boot states, every NPC rotation/idle frame, 525 monster
-  combat strips, ~1,000 files) streams behind the live world, and each landed
-  file is a decode + GPU upload on the main thread the moment it arrives. At
-  the loader's default parallelism (32; 6 on Android) a warm cache landed them
-  in bursts: measured on the north run, 32-105 textures added per step for
-  the whole run. The batch runs with `maxParallelDownloads = 2`
-  (`DEFERRED_PARALLEL`; restored on COMPLETE), which bounds arrivals to ~2 per
-  frame — measured 3-15 per step — at the price of the batch taking ~10-16 s
-  on a phone instead of ~3 s; nothing in it is needed in the first seconds
-  (my urgent clips are queued first and register per state as they land).
-  Anything appended to the scene loader meanwhile (item icons, the grave
-  cross, chess pieces) queues behind it, as before — FIFO — only later. Dev
-  A/B: localStorage `ml-deferred-parallel` (0 = the loader's own);
-  `__ml.perf()` reports texture adds by key family and the per-frame max.
+- **The deferred animation batch is THE ART QUEUE (#7)** (`client/src/
+  artqueue.ts`, `docs/perf.md` THE ART QUEUE). `loadDeferredAnims` (my
+  urgent clips, the NPC idles, the blood, my weapon/spell states, the other
+  characters' states) and everything else streamed behind the live world go
+  through one priority queue that decodes off the main thread and creates
+  textures under a BYTE budget per frame (Settings dial "upload budget",
+  `ml-upload-kb`, default 128 KB). Never the scene loader for anything behind
+  the live world: it is one FIFO, it made every landed file a decode + upload
+  the moment it arrived, and bounding the files in flight (the old
+  `maxParallelDownloads = 2`) bounded the count per frame, never the bytes —
+  measured 12 MB in one frame, 564 MB in a window, and every slow frame on
+  his phone carrying an upload. Item icons, the grave cross and chess pieces
+  still use the scene loader (small, on demand).
 
 - **THE DEPLOY GATE AND CI MUST SEE THE SAME WORLD** — they do not, and that
   is why main can deploy while CI is red (ambient agent, 2026-09-07). The

@@ -960,9 +960,6 @@ export interface Tiles3Blit {
   /** What produced this op — for the depth sort, the occluder pass and QA.
    *  `foot` is the wall-foot band on a lower cell (see `footBand`). */
   role: "surface" | "wall" | "boundary" | "deck" | "fade" | "foot";
-  /** THE SHADER TEST: this op is a boundary the GPU composes (tiles3gpu.ts);
-   *  `key` is plate A's own file, and the boundary carries the rest. */
-  gpu?: Tiles3Boundary;
 }
 
 /** The ops for one resolved cell, in render3's own order: a field cell is ONE
@@ -1335,25 +1332,6 @@ export class Tiles3Textures {
    * session, so they cost nothing to leave alone. */
   private composeBudgetMs = Infinity;
   private composeSpent = 0;
-  /** THE SHADER TEST (Settings, 2026-09-12): no BOUNDARY is composed on the
-   *  CPU — each becomes a GPU op (`Tiles3Blit.gpu`, drawn through
-   *  tiles3gpu.ts's pipeline from the plate files and the pattern sheets),
-   *  which is the shape of the real compositor. Plates and fades stay on the
-   *  CPU: a handful per window, cached for the session — the boundaries are
-   *  the churn (measured at spawn: 572 of the window's compositions). A
-   *  boundary composed before the switch stays in use unless `simForceGpu`
-   *  (the parity probe) says otherwise. */
-  simNoCompose = false;
-  simForceGpu = false;
-  /** The ground's palette wall colour, for the GPU op's wall band. */
-  wallOf(ground: string): readonly [number, number, number] {
-    return this.wallRGB(ground);
-  }
-  /** Whether compositions darken the seam (`opts.seam`), for the GPU op. */
-  get seamOn(): boolean {
-    return this.o.seam !== false;
-  }
-
   private mine = new Map<string, true>();
   private pix = new Map<string, Pixels | null>();
 
@@ -1368,7 +1346,6 @@ export class Tiles3Textures {
   boundary(b: Tiles3Boundary): string | null {
     const key = boundaryKeyFor(b, this.o.seam !== false);
     if (!key) return null;
-    if (this.simNoCompose) return this.ensureHit(key); // the shader test: what is built stays, nothing new
     // THE BUDGET, and the ONE place it is enforced. An already-composed key is
     // free and is always answered — refusing a cache hit would make the ground
     // flicker between plate and transition as the camera moved.
@@ -1786,14 +1763,6 @@ export class Tiles3Textures {
   opsForBoundary(b: Tiles3Boundary): Tiles3Blit | null {
     const op = boundaryOp(b, this.o.seam !== false);
     if (!op) return null;
-    if (this.simNoCompose && (this.simForceGpu || !this.o.textures.exists(op.key))) {
-      // The shader test: plate A's file is the op's texture, the GPU does the
-      // rest — once both files are resident (dropped like any streaming op).
-      const rawA = artKey(b.plateA.path);
-      const rawB = artKey(b.plateB.path);
-      if (!this.o.textures.exists(rawA) || !this.o.textures.exists(rawB)) return null;
-      return { ...op, key: rawA, gpu: b };
-    }
     return this.boundary(b) ? op : null;
   }
 

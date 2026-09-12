@@ -19,24 +19,50 @@ The ground render texture (scroll, slices, cell repaints, prefetch, compose budg
   capped plate is composed on the CPU per (pattern, groundA, groundB) and
   uploaded as its own texture (the shader with a parity test was the render
   retake's terrain DEPTH shader, rolled back).
-- **THE SHADER TEST** (Settings, `tiles3gpu.ts`, `Tiles3Textures.simNoCompose`,
-  beacon `sim: gpucompose`, 2026-09-12) is the maintainer's method — prove
-  the fix before the code: with it on, no boundary is composed on the CPU;
-  each is ONE quad through a SinglePipeline subclass that does the
-  composer's three reads on the GPU (`rgb = mask ? plateB : plateA` from the
-  two plate FILES, alpha from the silhouette sheet, the seam darkened to
-  `tone`, the palette wall colour where a file has no texel, `topOnly` from a
-  64x46 silhouette+top texture built once) with the mask frame and plate
-  windows as per-draw uniforms (a flush each way per boundary). Plates and
-  fades stay on the CPU: a handful a window, cached for the session; the
-  boundaries are the churn (565 of the spawn window's compositions).
-  `scripts/verify-gpuboundary.mjs`: same page, same anchor, a full paint each
-  way — 0.83% of texels differ (mean 26, max 106; CPU-vs-CPU repaint noise
-  0), so a run with it on is the ceiling the real compositor reaches. What the
-  real one must close: a conformed plate's own texels (the CPU recolours the
-  wall band), the liquid margin row, the raised occluder copy of a cap (still
-  plate A alone). `__ml.shaderTest(on)` flips it at runtime and forces every
-  boundary to the GPU.
+- **REJECTED 2026-09-12: A GPU TRANSITION COMPOSITOR** (a SinglePipeline
+  subclass doing the composer's three reads per boundary quad, 0.83% of
+  texels off the CPU composer; removed with its Settings switch). Three runs
+  with it on were worse — 44/51 and 102/117 lag frames a window against 7/7
+  and 15/15 with it off — and none was a clean measurement: every slow frame
+  in every run carried a monster-strip upload, and the sim's one draw with
+  per-draw uniforms per boundary is the shape a Mali dislikes. Its whole
+  upside is ~1-2 ms of CPU and ~8 MB of uploads a window (the composed
+  `t3x:` textures, 600-1,200 a window at 12 KB), while the runs were
+  dominated by hundreds of MB of monster art (next bullet). Not worth a
+  fourth run.
+- **THE ART QUEUE** (`client/src/artqueue.ts`, 2026-09-12): every texture
+  streamed behind the live world — monster strips, characters' deferred
+  states, NPC idles, scenery animation frames — is fetched and decoded off
+  the main thread, then turned into a GPU texture under a BYTE BUDGET PER
+  FRAME in the maintainer's priority order (`ART_PRIO`: my urgent clips; the
+  attack and die strips of a kind whose monster chases or fights, then its
+  angry; a kind's walk when the first monster of it exists, idle behind it —
+  walk stands in for idle until then; NPC idles and the blood; my weapon and
+  spell states; the other characters' states; then, when nothing above is
+  waiting, the fight art of every kind that exists, so a fight that starts
+  later finds it resident — a fight only RAISES those requests; scenery
+  animations behind that; angry dead last). One file bigger than the budget
+  goes in one piece and its overshoot is charged to the frames after it, so
+  the average holds whatever the file sizes; decoded pixels waiting are
+  capped at 48 MB. MEASURED, four runs on his phone: every slow frame (24 of
+  24, 15 of 15, 45 of 48) carried a texture upload and the uploads were
+  monster strips — the game queued the combat strips of all 57 kinds at
+  launch (1,312 files, 416 MB of textures; walk+idle of all kinds another
+  912 files, 284 MB; a 256-px kind is 40 MB) and the loader's "two in
+  flight" bounded the count per frame, never the bytes: 564 MB in one 30 s
+  window, 12 MB in one frame. With monsters MOCKED (Settings "monsters":
+  mock — nothing loaded) the same stretches ran 2 and 9 lag frames a window,
+  the burst-test ceiling; that is what this reaches for. No kind's strips
+  are asked for before a monster of it exists near me. THE BUDGET IS A DIAL
+  until his phone finds the number: Settings "upload budget" (64/128/256/512
+  KB a frame or unbounded, `ml-upload-kb`, default 128), beacon `run.sim` =
+  `up128`, `counts.artQueued/artReady/artLanded/artKbMax`, probe
+  `__ml.art()`. Then it is pinned and the dial goes. The boot batch (behind
+  the loading bar) and the ground art (its own loader, its own compose
+  budget) stay outside it. Mock-mode caveat for future runs: "scenery: mock"
+  and the old shader test both provoked `litShapeJobs` bursts of 50-400 ms
+  (shape maps rebuilt for the substituted textures), so a scenery-mock run
+  is not a clean ceiling.
 - **THE OCCLUDER SET IS POOLED, NOT REBUILT** (`occImage`, `destroyBatch`,
   2026-09-02). A rebuild used to destroy every image and create every image,
   and 90-95% of what it created was bit-identical to what it had just

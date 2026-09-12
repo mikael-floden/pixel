@@ -429,29 +429,39 @@ The shared body pipeline, spawn zones, shadows, gait, the monster brain, escape 
   Chebyshev to the zone bbox) of the world's spawn OR of the cell the player
   last stood on in this world (`ml-lastpos:<world>`, written every 3 s —
   a returning player lands on their saved spot). Every other kind's strips
-  queue in the deferred batch behind my urgent clips and the NPC idles, and
-  a body whose kind is still deferred starts PARKED — culled, never the
-  placeholder wanderer — until ITS strips land (per-kind FILE_COMPLETE
-  count → `onMonsterArtLanded` registers the clips and releases the bodies;
-  an errored strip releases on the batch's COMPLETE and degrades to the
-  placeholder as before). No spawns.json / no zones / any fetch error → every
-  kind at boot, the pre-split behaviour. (the_game names all 57 kinds; 912
+  are asked of the ART QUEUE (`docs/perf.md`) when the FIRST monster of the
+  kind exists near me (`requestMonsterBody`: walk at ART_PRIO.walk, idle
+  behind it — walk stands in for idle until it lands — and the fight art at
+  the very back, raised if a fight starts), never the whole world's kinds at
+  once, and a body whose kind is still deferred starts PARKED — culled, never
+  the placeholder wanderer — until ITS walk strips land (per-kind count →
+  `onMonsterArtLanded` registers the clips and releases the bodies; a failed
+  strip counts as landed, so a missing file degrades to the placeholder as
+  before). No spawns.json / no zones / any fetch error → every kind at boot,
+  the pre-split behaviour. (the_game names all 57 kinds; 912
   strips / 5.3 MB were half of a cold boot's 1,884 requests, and 20 kinds
   live within 32 cells of the spawn: measured 320 strips before the avatar
   is in, 146 monsters with 92 parked, released one kind at a time, 57/57
   clips at the end, zero visible placeholders across 116 samples. A monster
-  roams only inside its zone and chases ≤ ESCAPE_RADIUS past it, so a
-  deferred kind cannot reach the player before the batch lands.) Probes:
+  roams only inside its zone and chases ≤ ESCAPE_RADIUS past it; a kind's
+  walk strips are 8 files, 2-16 MB of textures, ~0.3-1 s under the 128 KB a
+  frame budget.) Probes:
   `__ml.monsterBoot()` (boot/deferred/pending/clipKinds), `monsterInfo().
   artPending/spriteVisible`, `monsterGate().parkedInView` (a parked body in
   view is counted apart, never as a wrong cull). Gate:
   `server/test/monsterboot.test.ts` (definition, union of centres, the real
   partition on every world on disk).
-- **Monster combat clips**: attack/angry/die strips (~525 files, ~3.1MB)
-  background-load in the SAME deferred batch as the player's action states
-  (boot stays walk+idle of the NEAR kinds — above). The COMPLETE handler re-runs
-  buildMonsterAnimations (a late texture never registers a clip by itself —
-  the single-call-site trap). attack/die once-through (die paced to
+- **Monster combat clips**: a kind's attack/die strips (then angry, the
+  fight's idle) enter the art queue at the LOWEST priority when the kind's
+  first monster appears — fetched only when nothing else is waiting, so a
+  fight that starts later finds them resident — and JUMP to the front
+  (`requestMonsterCombat`, from playMonsterAnim's state) the moment one of it
+  chases, fights or dies. Never at launch for every kind (the_game's 57 kinds
+  carry 1,312 combat strips, 416 MB of textures, which used to stream in at
+  launch and were the lag). Each strip registers its clip as it lands
+  (buildMonsterAnimations per kind, idempotent — a late texture never
+  registers a clip by itself, the single-call-site trap); until then the
+  guards park the body on its walk contact frame. attack/die once-through (die paced to
   MONSTER_DIE_MS so clip and corpse sweep agree); angry loops between swings;
   6 kinds ship NO angry (forest_poring ×2, lava_poring, ice_crystal_golem,
   diablo ×2) and park on the walk contact frame — anims.exists guards
@@ -568,8 +578,8 @@ The shared body pipeline, spawn zones, shadows, gait, the monster brain, escape 
   stored TRIMMED to the maintainer's green-circled dispersal window — see
   scenery.json:edited before any resync): one of 8 direction variants,
   forward or REVERSED at random, 14fps, depth 900_001.95 (never dimmed),
-  preloaded in the deferred batch with the sword marker (lazy first-engage
-  load lost the walk-to race). Hurt flinch 16fps, 300ms overlay. `bloodFx()`
+  queued in the art queue the moment the avatar joins (ART_PRIO.blood, 8
+  tiny strips; a lazy first-engage load lost the walk-to race). Hurt flinch 16fps, 300ms overlay. `bloodFx()`
   probe; verify-combat asserts ≥1.
 - **Gates**: combat.unit.test.ts (curves/determinism/escape math),
   combat.test.ts (2 live rooms: fight loop + death/respawn),
@@ -680,13 +690,14 @@ spec `maps2/spec/NPCS.md`); characters2 owns who they are
 - **Faked client-side collision**, the monster pattern: NPCs join the
   `monsterDodge` near-list at NPC_BODY_RADIUS; not in the collision grid, not
   in findPath.
-- **Loading: standing art at BOOT; idle frames FIRST in the deferred batch.**
+- **Loading: standing art at BOOT; idle frames EARLY in the art queue.**
   Both original symptoms were one mistake — spawnNpcs started its OWN loader
   run in create(), which re-fired the loading overlay's progress events (bar
   restart) and delivered art late (pop-in). Now main.ts fetches placement at
   boot; `preloadNpcArt` queues one standing image per DISTINCT placed
-  character into the boot batch; idle frames go FIRST in the deferred batch
-  (queued last they landed 18.3s in behind ~800 action frames; first, 0.2s).
+  character into the boot batch; idle frames go into the art queue at
+  ART_PRIO.npc, behind only my own urgent clips (queued last they once
+  landed 18.3s in behind ~800 action frames; early, 0.2s).
   **Never put the idle frames in the boot batch** — that is the loading-bar
   regression. (The player's own art now outranks NPC idles — see loading.)
 - The idle clip registers LAZILY, per NPC, once its frame textures exist —

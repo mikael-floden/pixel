@@ -1,6 +1,6 @@
 import Phaser from "phaser";
 import { resolveDepthRule } from "../depthrule";
-import { boundaryPipeline, type BoundaryPipeline } from "../tiles3gpu";
+import { ArtQueue, setUploadKb, UPLOAD_KB_STEPS } from "../artqueue";
 import { Room, getStateCallbacks } from "colyseus.js";
 import {
   WORLD_WIDTH,
@@ -988,18 +988,19 @@ const T3_BOUNDARY_RETRY = 32;
 const T3_REPAINT_SPLITS = 2;
 /** The drop drain's group size (cells per frame) — see t3drainTick. */
 const T3_DRAIN_GROUP = 8;
-/** Files in flight for the DEFERRED animation batch — see loadDeferredAnims.
- *  Dev A/B: localStorage `ml-deferred-parallel` overrides (0 = the loader's own). */
-const DEFERRED_PARALLEL = 2;
-function deferredParallel(): number {
-  try {
-    const n = Number(localStorage.getItem("ml-deferred-parallel"));
-    if (Number.isFinite(n) && n >= 0 && localStorage.getItem("ml-deferred-parallel") !== null) return n;
-  } catch {
-    /* storage blocked: the constant */
-  }
-  return DEFERRED_PARALLEL;
-}
+/** THE ART QUEUE'S PRIORITIES (artqueue.ts; lower first). The maintainer's
+ *  order, 2026-09-12: my own urgent clips; the attack and die strips of a
+ *  kind whose monster is chasing or fighting (`fight`), then its angry; the
+ *  walk strips of a kind the moment one of it exists near me (walk stands in
+ *  for idle until idle lands); NPC idles and the blood; my weapon and spell
+ *  states; the other characters' deferred states; and, when nothing above is
+ *  waiting, the fight art of every kind that exists (`combatEarly`) so a
+ *  fight that starts later finds it resident — "we don't HAVE to wait for
+ *  the fight to start, we just change the priority to high IF the fight
+ *  starts"; scenery animations behind that ("they only play once in a while
+ *  anyways"); angry, the fight's idle pose, dead last. No kind's strips are
+ *  asked for before a monster of it exists. */
+const ART_PRIO = { mine: 0, fight: 1, fightAngry: 1.5, walk: 2, idle: 3, npc: 4, blood: 4, weapons: 5, chars: 6, combatEarly: 7, sceneryAnim: 8, angryEarly: 9 } as const;
 const CAM_ZOOM_OUT = 0.32; // fraction of base zoom shed at full run speed (maintainer: "stronger", twice)
 const CAM_ZOOM_REF_WU = 124; // ≈ run world-speed (175 px/s side-view · √½)
 const CAM_ZOOM_TAU_OUT = 0.45; // s — ease toward zoomed-out while speeding up
@@ -1594,6 +1595,16 @@ export class WorldScene extends Phaser.Scene {
   /** Kinds the boot batch left out: queued in the deferred batch, and their
    *  bodies stay parked (artPending) until THEIR strips land. */
   private monsterDeferredKinds = new Set<string>();
+  /** THE ART QUEUE (artqueue.ts) — made lazily: the texture manager is not
+   *  there at construction. Every texture streamed behind the live world
+   *  goes through it, under the per-frame byte budget. */
+  private art: ArtQueue | null = null;
+  private artQueue(): ArtQueue {
+    return (this.art ??= new ArtQueue(this.textures));
+  }
+  /** Kinds whose body / combat strips have been asked of the art queue. */
+  private monsterBodyAsked = new Set<string>();
+  private monsterCombatAsked = new Set<string>();
   private lastPosSavedAt = 0;
   private npcManifest: NpcManifest | null = null;
   /** Placed NPCs, rendered through the SAME body pipeline as players and
@@ -2197,6 +2208,7 @@ export class WorldScene extends Phaser.Scene {
     };
     const netTake = netPerfTake();
     const texUp = texUploadTake(secs);
+    const aq = this.artQueue().take();
     const cap = captureTake();
     const gb = this.groundBatchStats;
     this.groundBatchStats = { brackets: 0, subBatches: 0, binds: 0, maxSub: 0 };
@@ -2234,7 +2246,7 @@ export class WorldScene extends Phaser.Scene {
         runFrac,
         travelCells,
         why: final ? "flush" : moved ? "moved" : "bad", // why this window was sent at all
-        sim: this.shaderTest ? "gpucompose" : "", // the shader test switch (see shaderTest)
+        sim: `up${this.artQueue().budgetKb || "free"}`, // the upload budget dial (Settings "upload budget")
 
         deviceMemoryGb: nav.deviceMemory ?? 0,
         connType: nav.connection?.effectiveType ?? "?",
@@ -2270,6 +2282,13 @@ export class WorldScene extends Phaser.Scene {
         coverCands: this.coverStat.cands,
         coverSlots: this.coverStat.slots,
         texGen: this.t3texGen, // every texture the game added — a diagnostic
+        /* THE ART QUEUE (artqueue.ts): waiting, decoded-and-waiting, landed
+         * this window, and the biggest one frame's upload in KB — against
+         * `run.sim`'s dial (up128 = 128 KB a frame). */
+        artQueued: aq.queued,
+        artReady: aq.ready,
+        artLanded: aq.landed,
+        artKbMax: Math.round(aq.frameKbMax),
         /* WHAT THE DRAIN NOW GATES ON: terrain batches landed. Reported beside
          * texGen so a run says which of the two moved. `drains` with texGen
          * climbing and terrainGen flat is the bug this pair was added for. */
@@ -3285,13 +3304,6 @@ export class WorldScene extends Phaser.Scene {
    * once those are made incremental or moved offline. The picture goes STALE
    * on purpose: no landed art repairs, bodies sort against the first area's
    * columns. Remembered (ml-burst-test); the beacon stamps run.sim. */
-  /** THE SHADER TEST — Settings "shader test": the CPU composes nothing and
-   *  every boundary is drawn through tiles3gpu.ts's pipeline instead (see
-   *  Tiles3Textures.simNoCompose, t3BlitGpu), so a run with it on is the
-   *  ceiling the real compositing shader can reach; measured before it is
-   *  written (maintainer's method, 2026-09-12: prove the fix before the
-   *  code). */
-  private shaderTest = localStorage.getItem("ml-shader-test") === "1";
   private groundPartial = groundPathFast();
   private groundPrefetch = groundPathFast();
   private t3ringQueue: [number, number][] = [];
@@ -4305,21 +4317,6 @@ export class WorldScene extends Phaser.Scene {
           state: () => (this.groundClearPink ? "pink" : "off"),
         },
         {
-          label: "shader test",
-          act: () => {
-            this.shaderTest = !this.shaderTest;
-            try {
-              localStorage.setItem("ml-shader-test", this.shaderTest ? "1" : "0");
-            } catch {
-              /* storage blocked */
-            }
-            if (this.t3tex) this.t3tex.simNoCompose = this.shaderTest;
-            this.chat.addLog("—", `shader test: ${this.shaderTest ? "ON — transitions drawn by a GPU shader from the plate files, nothing composed on the CPU (fades and wall-band colours are rough, on purpose)" : "off"}`);
-          },
-          get: () => this.shaderTest,
-          state: () => (this.shaderTest ? "on (gpu)" : "off"),
-        },
-        {
           label: "transitions",
           act: () => {
             this.noTransitions = !this.noTransitions;
@@ -4353,6 +4350,22 @@ export class WorldScene extends Phaser.Scene {
          * the repo's ops rule: a step that needs a URL he cannot enter will not
          * happen. The switch is the same localStorage key the query param sets,
          * so either route works and the app remembers it across launches. */
+        /* THE UPLOAD BUDGET DIAL — KB of streamed art turned into textures per
+         * frame (artqueue.ts). His phone finds the number; then it is pinned
+         * and this goes (maintainer: no toggles for what is decided). */
+        {
+          label: "upload budget",
+          act: () => {
+            const q = this.artQueue();
+            const i = UPLOAD_KB_STEPS.indexOf(q.budgetKb as (typeof UPLOAD_KB_STEPS)[number]);
+            const next = UPLOAD_KB_STEPS[(i + 1) % UPLOAD_KB_STEPS.length];
+            q.budgetKb = next;
+            setUploadKb(next);
+            this.chat.addLog("—", `upload budget: ${next ? `${next} KB of textures per frame` : "unbounded — whatever arrives lands at once"}`);
+          },
+          get: () => this.artQueue().budgetKb > 0,
+          state: () => (this.artQueue().budgetKb ? `${this.artQueue().budgetKb} KB/f` : "unbounded"),
+        },
         {
           label: "perf beacon",
           act: () => this.togglePerfBeacon(),
@@ -5752,7 +5765,7 @@ export class WorldScene extends Phaser.Scene {
         }
         const log = this.groundScrollLog;
         this.groundScrollLog = [];
-        return { on: this.groundScroll, lastMode: this.groundLastMode, anchor: this.groundAnchor ? { ax: this.groundAnchor.ax, ay: this.groundAnchor.ay } : null, log, cells: { ...this.groundCellStats }, ring: { queued: this.t3ringQueue.length - this.t3ringAt, missing: this.t3missing.size }, drain: { owed: this.t3dropOwed.size, queue: this.t3drainQueue.length, drains: this.repaintStats.drains, deferred: this.repaintStats.drainsDeferred, pending: this.groundDropsPending, gen: this.t3terrainGen, drainGen: this.t3drainGen, dropped: this.t3tex?.droppedOps ?? -1, raw: this.t3tex?.plateRawFallbacks ?? -1, bOwed: this.t3boundaryOwed.size, dOwed: this.t3deckOwed.size, bDeferred: this.t3tex?.stats.deferred ?? -1, builtB: this.t3tex?.stats.builtBoundary ?? -1, gpuDraws: this.t3gpuDraws } };
+        return { on: this.groundScroll, lastMode: this.groundLastMode, anchor: this.groundAnchor ? { ax: this.groundAnchor.ax, ay: this.groundAnchor.ay } : null, log, cells: { ...this.groundCellStats }, ring: { queued: this.t3ringQueue.length - this.t3ringAt, missing: this.t3missing.size }, drain: { owed: this.t3dropOwed.size, queue: this.t3drainQueue.length, drains: this.repaintStats.drains, deferred: this.repaintStats.drainsDeferred, pending: this.groundDropsPending, gen: this.t3terrainGen, drainGen: this.t3drainGen, dropped: this.t3tex?.droppedOps ?? -1, raw: this.t3tex?.plateRawFallbacks ?? -1, bOwed: this.t3boundaryOwed.size, dOwed: this.t3deckOwed.size, bDeferred: this.t3tex?.stats.deferred ?? -1, builtB: this.t3tex?.stats.builtBoundary ?? -1 } };
       },
       /** THE LANDING REPAINT's switch (off = a landed batch paints in full) and
        *  THE PREFETCH RING's (off = art is asked for only by the window). */
@@ -6695,18 +6708,8 @@ export class WorldScene extends Phaser.Scene {
       /** THE INCREMENTAL REBUILD'S A/B AND ITS COUNTERS — `occInc(false)` makes
        *  every 96 px step walk the whole window again (the pre-2026-09-12
        *  cost); reading resets the step and cell counts. */
-      /** THE SHADER TEST AT RUNTIME (parity): flip it, force every boundary
-       *  through the GPU even where a CPU composition exists, repaint. */
-      shaderTest: (on: boolean, force = true) => {
-        this.shaderTest = on;
-        const tex = this.ensureTiles3Textures();
-        if (tex) {
-          tex.simNoCompose = on;
-          tex.simForceGpu = on && force;
-        }
-        this.t3gpuDraws = 0;
-        return { on, gpuDraws: this.t3gpuDraws };
-      },
+      /** THE ART QUEUE, live (artqueue.ts): the dial and what is waiting. */
+      art: () => this.artQueue().peek(),
       occInc: (on?: boolean) => {
         if (on !== undefined) {
           this.occIncOn = on;
@@ -7904,6 +7907,10 @@ export class WorldScene extends Phaser.Scene {
     const walk = def ? monsterWalkKey(def) : "jump";
     const initKey = this.monstersMock ? this.ensureMockTex() : monsterSheetKey(m.kind, walk, DEFAULT_DIRECTION);
     const hasArt = this.textures.exists(initKey);
+    // A KIND'S STRIPS ARE ASKED FOR WHEN A MONSTER OF IT EXISTS — never the
+    // whole world's kinds at once (artqueue.ts). The body stays parked until
+    // its walk strips land; idle follows behind.
+    if (!hasArt && def && !this.monstersMock) this.requestMonsterBody(def);
     // 48px art, drawn at scale 1 (the camera zoom already scales the world);
     // origin near the feet so it y-sorts and lifts like a player. Fall back to
     // the wanderer placeholder if a monster's strip failed to load.
@@ -9907,6 +9914,11 @@ export class WorldScene extends Phaser.Scene {
   }
 
   private playMonsterAnim(mv: MonsterAvatar, moving: boolean, dir: string, mstate = "roam", actionSeq = 0) {
+    // THE FIGHT'S ART JUMPS THE QUEUE WHEN THE FIGHT STARTS (artqueue.ts): it
+    // was asked for early at the lowest priority when the kind appeared; the
+    // chase gives the raise a few seconds' lead, and until the strip lands
+    // the guards below park the body on its walk contact frame, as before.
+    if (mstate === "chase" || mstate === "combat" || mstate === "die") this.requestMonsterCombat(mv.kind);
     if (this.monstersMock) return; // the pink mock holds one pose; nothing to play
     const want = DIRECTIONS.includes(dir as never) ? dir : DEFAULT_DIRECTION;
     // Monsters take EVERY turn (even 90-180°) through hysteresis: they are
@@ -11138,6 +11150,7 @@ export class WorldScene extends Phaser.Scene {
     // ...and, once the art has settled, repair anything a paint dropped.
     this.t3drainDrops();
     this.t3drainTick();
+    this.artQueue().tick(); // streamed art becomes textures here, under the budget
     if (!this.room) return;
     const dt = delta / 1000;
     const myId = this.myId;
@@ -14532,224 +14545,141 @@ export class WorldScene extends Phaser.Scene {
    * player's own avatar joins — the world is already live, so these ~800 PNGs
    * stream in without holding the loading screen (resolveAnim's fallback covers
    * any state something might request before its clip lands). */
+  /** WHAT STREAMS IN BEHIND THE LIVE WORLD, through the art queue (artqueue.ts)
+   *  in the maintainer's priority order (ART_PRIO). Not here any more: the far
+   *  kinds' walk/idle strips and EVERY kind's combat strips — 912 + 1,312
+   *  files, 700 MB of textures for the_game's 57 kinds — which used to ride
+   *  this batch and landed as fast as the network delivered them; a kind's
+   *  strips are asked for when a monster of it exists (requestMonsterBody) and
+   *  its fight's when a fight starts (requestMonsterCombat). */
   private loadDeferredAnims() {
     if (this.deferredAnimsKicked) return;
     this.deferredAnimsKicked = true;
-    let queued = 0;
-    const queueState = (def: CharacterDef, state: string): string[] => {
-      const keys: string[] = [];
-      for (const [dir, count] of Object.entries(def.animations[state] ?? {})) {
+    const art = this.artQueue();
+    const deferredStates = (def: CharacterDef) => Object.keys(def.animations).filter((s) => !BOOT_ANIM_STATES.includes(s));
+    /* ONE STATE IS ONE GROUP: its clip registers when the LAST of its frames
+     * lands (buildAnimations(uid, state)). A clip built from a partial set
+     * would be sealed short — anims.exists skips it for good after that. A
+     * failed fetch counts as landed, so a missing file cannot wedge a state. */
+    const queueState = (def: CharacterDef, state: string, prio: number): void => {
+      let left = 0;
+      const onLanded = () => {
+        if (--left === 0) this.buildAnimations(def.uid, state);
+      };
+      for (const [dir, count] of Object.entries(def.animations[state] ?? {}))
         for (let n = 0; n < count; n++) {
           const fk = frameKey(def.uid, state, dir, n);
           if (this.textures.exists(fk)) continue;
-          this.load.image(fk, withV(frameUrl(def, state, dir, n)));
-          keys.push(fk);
-          queued++;
+          art.request({ key: fk, url: withV(frameUrl(def, state, dir, n)), prio, onLanded });
+          if (art.has(fk)) left++;
         }
-      }
-      return keys;
+      if (left === 0) this.buildAnimations(def.uid, state);
     };
-    const deferredStates = (def: CharacterDef) =>
-      Object.keys(def.animations).filter((s) => !BOOT_ANIM_STATES.includes(s));
-
-    // MY OWN URGENT STATES GO FIRST — ahead of the NPCs, who held this spot
-    // until now (maintainer 2026-08-12: "the player is the most critical
-    // graphics/animations to always have fully loaded"). hurt/die/kick/punch/
-    // pickup are ALL deferred, so in manifest order the local player's could sit
-    // behind ~315 NPC frames AND another character's 408 — many seconds on a
-    // phone, and exactly the window where you spawn, get jumped by a predator
-    // and have no die clip. The NPCs lose their head start for this and the calm
-    // idle's frame-0 hold covers it: a frozen villager is cosmetic, a player
-    // with no death animation is not.
-    //
-    // PLAYER_URGENT_STATES is what the game can actually trigger seconds after
-    // a spawn. The weapon and spell states are deliberately NOT in it and are
-    // queued dead LAST of mine — nothing in the game can play them yet (there
-    // are no weapons; every swing resolves to kick or punch), and at 128 of my
-    // 408 frames they were a third of my own set sitting in front of art that
-    // was about to be drawn.
+    // MY OWN URGENT STATES GO FIRST (maintainer 2026-08-12: "the player is the
+    // most critical graphics/animations to always have fully loaded"):
+    // hurt/die/kick/punch/pickup are what the game can trigger seconds after a
+    // spawn. My weapon and spell states are queued behind the NPC idles —
+    // nothing can play them yet.
     const chars = this.charsMeFirst();
     const myDef = chars[0]?.uid === this.myCharacter?.uid ? chars[0] : null;
-    const mineByState = new Map<string, string[]>();
     let myRest: string[] = [];
     if (myDef) {
       const all = deferredStates(myDef);
       const urgent = PLAYER_URGENT_STATES.filter((s) => all.includes(s));
       myRest = all.filter((s) => !urgent.includes(s));
-      for (const s of urgent) mineByState.set(s, queueState(myDef, s));
+      for (const s of urgent) queueState(myDef, s, ART_PRIO.mine);
     }
-    // NPC idle frames next. They ride the deferred batch (never boot — a second
-    // loader run mid-create restarted the loading bar), but queued LAST they
-    // landed 18s in, behind every action-state frame and every monster combat
-    // strip, so a town stood frozen the whole time.
+    // NPC idle frames: registered lazily by stepNpcs once every frame texture
+    // exists, so no callback here.
     for (const f of this.npcIdleQueue) {
       if (this.textures.exists(f.key)) continue;
-      this.load.image(f.key, withV(f.url));
-      queued++;
+      art.request({ key: f.key, url: withV(f.url), prio: ART_PRIO.npc });
     }
     this.npcIdleQueue = [];
-    // FAR MONSTERS' walk/idle strips — the kinds the boot batch left out.
-    // Behind my urgent clips and the NPC idles, ahead of my weapon/spell
-    // states: a body that can wander into view outranks a clip nothing can
-    // trigger yet. Each kind releases its parked bodies the moment ITS strips
-    // land (per-kind FILE_COMPLETE count below), not at the batch's end.
-    const farKeys = new Map<string, string[]>();
-    for (const def of this.monsterManifest?.monsters ?? []) {
-      if (!this.monsterDeferredKinds.has(def.id)) continue;
-      const keys = this.queueMonsterBodyStrips(def);
-      if (keys.length) farKeys.set(def.id, keys);
-      else this.onMonsterArtLanded(def.id); // already resident — nothing to wait for
-      queued += keys.length;
-    }
-    if (myDef) for (const s of myRest) mineByState.set(s, queueState(myDef, s));
-    for (const def of chars) {
-      if (def.uid === myDef?.uid) continue; // already queued, first
-      for (const s of deferredStates(def)) queueState(def, s);
-    }
-    // MONSTER combat strips (attack/angry/die — 525 strips, ~3.1 MB) join the
-    // SAME background batch: boot stays walk+idle only (the loading-time work
-    // must not regress), and the fight art streams in behind the live world.
-    // Sliced with each strip's OWN measured frame size (stripDims) — the
-    // monster-level size goes stale on in-place art repairs and frames bleed.
-    for (const def of this.monstersMock ? [] : (this.monsterManifest?.monsters ?? [])) {
-      for (const state of ["attack", "angry", "die"]) {
-        const anim = resolveMonsterAnim(def, state);
-        if (!anim) continue;
-        const dirStrips = def.strips?.[anim] ?? {};
-        for (const [dir, url] of Object.entries(dirStrips)) {
-          if (!url) continue;
-          const sk = monsterSheetKey(def.id, anim, dir);
-          if (this.textures.exists(sk)) continue;
-          const dims = def.stripDims?.[anim]?.[dir];
-          this.load.spritesheet(sk, withV(url), {
-            frameWidth: dims?.w ?? def.frameW,
-            frameHeight: dims?.h ?? def.frameH,
-          });
-          queued++;
-        }
-      }
-    }
-    // The BLOOD SPATTER variants (scenery/blood_spatter, trimmed) ride the
-    // same batch — tiny (8 strips, 34px frames), ready before the first hit.
+    // THE BLOOD SPATTER variants (scenery/blood_spatter, trimmed): tiny (8
+    // strips, 34px frames), ready before the first hit.
     for (const dir of BLOOD_DIRS) {
       const bk = `blood:${dir}`;
       if (this.textures.exists(bk)) continue;
-      this.load.spritesheet(bk, withV(`/assets/scenery/blood_spatter/animations/spatter__${dir}.webp`), {
-        frameWidth: 34,
-        frameHeight: 34,
-      });
-      queued++;
-    }
-    // (Neither target marker needs an asset since rounds 9-11 — both borders
-    // are drawn from the marked body's own silhouette.)
-    if (!queued) return;
-    // AND MY CLIPS REGISTER THE MOMENT MY ART IS IN — queueing first buys
-    // nothing on its own, because buildAnimations ran ONLY on the loader's
-    // COMPLETE, i.e. after the other character, every NPC idle, all 525 monster
-    // combat strips and the blood spatters. My frames could be sitting in the
-    // texture manager for ten seconds with no clip pointing at them. Counting
-    // MY OWN queued keys is what makes the early run safe: a clip is built from
-    // whatever frames exist and is never repaired, so it may only fire once
-    // every one of them has landed — which is exactly when `left` hits 0.
-    // ...AND EACH OF MY STATES REGISTERS THE MOMENT ITS OWN FRAMES ARE IN.
-    // Queueing first buys nothing on its own, because buildAnimations ran ONLY
-    // on the loader's COMPLETE — after the other character, every NPC idle, all
-    // 525 monster combat strips and the blood spatters. Measured: my frames sat
-    // in the texture manager with no clip pointing at them for the whole batch.
-    // PER STATE and not per character, because those are 40-88 frames rather
-    // than 408: `hurt` is playable in a fraction of the time `sword` takes, and
-    // it is the one you need. Counting the keys is also what makes an early run
-    // SAFE — a clip is built from whatever frames exist and is never repaired,
-    // so a state may only be built once every one of its frames has landed.
-    const owner = new Map<string, string>(); // frame key -> which state wants it
-    const left = new Map<string, number>(); // state -> frames outstanding
-    for (const [s, keys] of mineByState) {
-      if (!keys.length) continue;
-      left.set(s, keys.length);
-      for (const k of keys) owner.set(k, s);
-    }
-    this.myAnimDebug = { queued: owner.size, left: owner.size, at: null };
-    if (owner.size) {
-      const dbg = this.myAnimDebug;
-      const onFile = (key: string) => {
-        const s = owner.get(key);
-        if (s === undefined) return;
-        owner.delete(key);
-        dbg.left--;
-        const n = (left.get(s) ?? 1) - 1;
-        if (n > 0) return void left.set(s, n);
-        left.delete(s);
-        this.buildAnimations(myDef?.uid, s);
-        if (dbg.at === null) dbg.at = Math.round(this.time.now);
-        if (!left.size) this.load.off(Phaser.Loader.Events.FILE_COMPLETE, onFile);
-      };
-      this.load.on(Phaser.Loader.Events.FILE_COMPLETE, onFile);
-      // A file that ERRORS never fires FILE_COMPLETE, so a state could stall at
-      // 1 forever — the batch's own COMPLETE drops the listener either way.
-      this.load.once(Phaser.Loader.Events.COMPLETE, () =>
-        this.load.off(Phaser.Loader.Events.FILE_COMPLETE, onFile),
-      );
-    }
-    if (farKeys.size) {
-      const kindOf = new Map<string, string>(); // sheet key -> kind
-      const leftOf = new Map<string, number>(); // kind -> strips outstanding
-      for (const [kind, keys] of farKeys) {
-        leftOf.set(kind, keys.length);
-        for (const k of keys) kindOf.set(k, kind);
-      }
-      const onStrip = (key: string) => {
-        const kind = kindOf.get(key);
-        if (kind === undefined) return;
-        kindOf.delete(key);
-        const n = (leftOf.get(kind) ?? 1) - 1;
-        if (n > 0) return void leftOf.set(kind, n);
-        leftOf.delete(kind);
-        this.onMonsterArtLanded(kind);
-        if (!leftOf.size) this.load.off(Phaser.Loader.Events.FILE_COMPLETE, onStrip);
-      };
-      this.load.on(Phaser.Loader.Events.FILE_COMPLETE, onStrip);
-      this.load.once(Phaser.Loader.Events.COMPLETE, () => {
-        this.load.off(Phaser.Loader.Events.FILE_COMPLETE, onStrip);
-        // An ERRORED strip never fires FILE_COMPLETE: release what is left so a
-        // kind with a missing file degrades to today's placeholder, not to a
-        // body parked forever.
-        for (const kind of [...leftOf.keys()]) this.onMonsterArtLanded(kind);
+      art.request({
+        key: bk,
+        url: withV(`/assets/scenery/blood_spatter/animations/spatter__${dir}.webp`),
+        prio: ART_PRIO.blood,
+        sheet: { frameWidth: 34, frameHeight: 34 },
+        onLanded: (k, ok) => {
+          if (ok && !this.anims.exists(k))
+            this.anims.create({ key: k, frames: this.anims.generateFrameNumbers(k, {}), frameRate: 14, repeat: 0 });
+        },
       });
     }
-    // PACED. This batch is ~1,000 files (every character's deferred states,
-    // every NPC rotation and idle frame, 525 monster combat strips) streaming
-    // behind a LIVE world, and each landed file is a decode + a GPU upload on
-    // the main thread the moment it arrives. With the loader's default
-    // parallelism (32; 6 on Android) a warm cache lands them in bursts —
-    // measured 565 textures added in ONE step of the north run, 30-60 per step
-    // for the rest of it — which is the "something is loading" hitch while
-    // running. Two in flight bounds the arrivals to ~2 per frame (~1,000 files
-    // in ~8 s at 60 fps), and nothing here is needed in the first second: my
-    // urgent clips are queued first and a state registers the moment its own
-    // frames are in (above). Restored on COMPLETE for whatever loads next.
-    const prevParallel = this.load.maxParallelDownloads;
-    const paced = deferredParallel();
-    if (paced > 0) this.load.maxParallelDownloads = paced;
-    this.load.once(Phaser.Loader.Events.COMPLETE, () => {
-      this.load.maxParallelDownloads = prevParallel;
-      this.buildAnimations();
-      // THE SINGLE-CALL-SITE TRAP (see CLAUDE.md): textures.exists turning
-      // true does NOT register anims — without this re-run every late-loaded
-      // combat strip would stay a texture no clip ever plays.
-      this.buildMonsterAnimations();
-      for (const dir of BLOOD_DIRS) {
-        const bk = `blood:${dir}`;
-        if (this.textures.exists(bk) && !this.anims.exists(bk)) {
-          this.anims.create({
-            key: bk,
-            frames: this.anims.generateFrameNumbers(bk, {}),
-            frameRate: 14,
-            repeat: 0,
-          });
-        }
-      }
+    if (myDef) for (const s of myRest) queueState(myDef, s, ART_PRIO.weapons);
+    for (const def of chars) {
+      if (def.uid === myDef?.uid) continue; // already queued, first
+      for (const s of deferredStates(def)) queueState(def, s, ART_PRIO.chars);
+    }
+  }
+
+  /** One animation's strips of one kind into the art queue at a priority; a
+   *  second call for the same strips only RAISES their priority (artqueue.ts
+   *  `request`). Returns how many are still to land. */
+  private requestMonsterStrips(def: MonsterDef, anim: string, prio: number, onLanded: (key: string, ok: boolean) => void): number {
+    const art = this.artQueue();
+    let n = 0;
+    for (const [dir, url] of Object.entries(def.strips?.[anim] ?? {})) {
+      if (!url) continue;
+      const sk = monsterSheetKey(def.id, anim, dir);
+      if (this.textures.exists(sk)) continue;
+      const dims = def.stripDims?.[anim]?.[dir];
+      art.request({ key: sk, url: withV(url), prio, sheet: { frameWidth: dims?.w ?? def.frameW, frameHeight: dims?.h ?? def.frameH }, onLanded });
+      if (art.has(sk)) n++;
+    }
+    return n;
+  }
+
+  /** A KIND'S STRIPS, ASKED FOR ONCE, when the first monster of it exists near
+   *  me: the walk strips release the parked bodies the moment the last of them
+   *  lands (onMonsterArtLanded); idle follows and registers as it arrives
+   *  (walk stands in for idle until then — the playMonsterAnim fallback); its
+   *  fight art goes in LAST (ART_PRIO.combatEarly / angryEarly), fetched only
+   *  when nothing above it is waiting, and requestMonsterCombat raises it the
+   *  moment a fight starts. Boot kinds arrive with the loading bar and are
+   *  never asked for here. */
+  private requestMonsterBody(def: MonsterDef): void {
+    if (this.monsterBodyAsked.has(def.id)) return;
+    this.monsterBodyAsked.add(def.id);
+    const walk = monsterWalkKey(def);
+    let left = 0;
+    left = this.requestMonsterStrips(def, walk, ART_PRIO.walk, () => {
+      if (--left === 0) this.onMonsterArtLanded(def.id);
     });
-    this.load.start();
+    if (left === 0) this.onMonsterArtLanded(def.id);
+    const registers = (_k: string, ok: boolean) => void (ok && this.buildMonsterAnimations(def.id));
+    if (def.idleAnim && def.idleAnim !== walk) this.requestMonsterStrips(def, def.idleAnim, ART_PRIO.idle, registers);
+    this.requestMonsterFight(def, ART_PRIO.combatEarly, ART_PRIO.angryEarly);
+  }
+
+  private requestMonsterFight(def: MonsterDef, prio: number, prioAngry: number): void {
+    const registers = (_k: string, ok: boolean) => void (ok && this.buildMonsterAnimations(def.id));
+    for (const [state, p] of [
+      ["attack", prio],
+      ["die", prio],
+      ["angry", prioAngry],
+    ] as const) {
+      const anim = resolveMonsterAnim(def, state);
+      if (anim) this.requestMonsterStrips(def, anim, p, registers);
+    }
+  }
+
+  /** THE FIGHT STARTED (a monster of the kind chases, fights or dies): its
+   *  attack and die strips jump to ART_PRIO.fight, angry to fightAngry — the
+   *  same requests requestMonsterBody made early, only raised. Each strip
+   *  registers its clip as it lands (buildMonsterAnimations is idempotent per
+   *  clip). */
+  private requestMonsterCombat(kind: string): void {
+    if (this.monsterCombatAsked.has(kind) || this.monstersMock) return;
+    this.monsterCombatAsked.add(kind);
+    const def = this.monsterManifest?.monsters.find((d) => d.id === kind);
+    if (def) this.requestMonsterFight(def, ART_PRIO.fight, ART_PRIO.fightAngry);
   }
 
   /** The character list with MY OWN first. The Phaser loader is a FIFO queue,
@@ -16774,7 +16704,6 @@ export class WorldScene extends Phaser.Scene {
       // future eviction must also clear occPool/occNext or a pooled image renders
       // from a destroyed texture — legacy's per-rebuild recreate no longer re-resolves the key.
     });
-    this.t3tex.simNoCompose = this.shaderTest;
     return this.t3tex;
   }
 
@@ -16804,89 +16733,6 @@ export class WorldScene extends Phaser.Scene {
       );
   }
 
-  /** THE SHADER TEST'S BOUNDARY DRAW (tiles3gpu.ts). One image through the
-   *  boundary pipeline: plate A is the image's texture (its top-left fw x fh
-   *  window, registered as a frame so the uv rect is the frame's), plate B and
-   *  the three sheets ride on texture units 1-4, the mask frame and the tone
-   *  are uniforms. Bound, drawn and handed back to the texture's own pipeline
-   *  per op — two flushes a boundary, which is the cost of per-draw uniforms. */
-  private t3BlitGpu(rt: Phaser.GameObjects.RenderTexture, op: { key: string; gpu: Tiles3Boundary }, dx: number, dy: number, tint: number): void {
-    const g = this.t3gpuReady();
-    if (!g) return;
-    const b = op.gpu;
-    const sheets = this.t3sheets!;
-    const frameOf = (key: string) => {
-      const tex = this.textures.get(key);
-      const name = `t3g:${sheets.fw}x${sheets.fh}`;
-      if (!tex.has(name)) {
-        tex.add(name, 0, 0, 0, sheets.fw, sheets.fh);
-        tex.firstFrame = "__BASE";
-      }
-      return tex.get(name);
-    };
-    const fa = frameOf(op.key);
-    const fb = frameOf(t3ArtKey(b.plateB.path));
-    const dt = rt.texture as Phaser.Textures.DynamicTexture;
-    const renderer = dt.renderer as Phaser.Renderer.WebGL.WebGLRenderer;
-    const pipe = g.pipe;
-    renderer.pipelines.set(pipe);
-    pipe.set4f("uFrameA", fa.u0, fa.v0, fa.u1 - fa.u0, fa.v1 - fa.v0);
-    pipe.set4f("uFrameB", fb.u0, fb.v0, fb.u1 - fb.u0, fb.v1 - fb.v0);
-    const frame = b.maskFrame as number;
-    const mw = g.mask.source[0].width;
-    const mh = g.mask.source[0].height;
-    pipe.set4f("uMaskRect", ((frame % sheets.cols) * sheets.fw) / mw, (Math.floor(frame / sheets.cols) * sheets.fh) / mh, sheets.fw / mw, sheets.fh / mh);
-    pipe.set1f("uTone", this.t3tex?.seamOn === false ? 1 : sheets.tone);
-    const wa = this.t3tex!.wallOf(b.a);
-    const wb = this.t3tex!.wallOf(b.b);
-    pipe.set3f("uWallA", wa[0] / 255, wa[1] / 255, wa[2] / 255);
-    pipe.set3f("uWallB", wb[0] / 255, wb[1] / 255, wb[2] / 255);
-    pipe.set1f("uTopOnly", b.topOnly ? 1 : 0);
-    pipe.bindTexture(fb.source.glTexture!, 1);
-    pipe.bindTexture(g.mask.source[0].glTexture!, 2);
-    pipe.bindTexture(g.border.source[0].glTexture!, 3);
-    pipe.bindTexture(g.sil.source[0].glTexture!, 4);
-    const im = g.stamp;
-    im.setTexture(op.key, fa.name).setTint(tint);
-    dt.batchDraw(im, dx, dy);
-    renderer.pipelines.set(dt.pipeline);
-    this.t3gpuDraws++;
-  }
-  private t3gpu: { pipe: BoundaryPipeline; stamp: Phaser.GameObjects.Image; mask: Phaser.Textures.Texture; border: Phaser.Textures.Texture; sil: Phaser.Textures.Texture } | null = null;
-  private t3gpuDraws = 0;
-  /** The pipeline, the stamp and the sheets — once. The silhouette sheet is
-   *  re-made as one 64x46 texture whose alpha is the silhouette and whose red
-   *  is the library top face (`PatternSheets.libTop`), so topOnly is one read. */
-  private t3gpuReady() {
-    if (this.t3gpu) return this.t3gpu;
-    const sheets = this.t3sheets;
-    const patterns = this.cache.json.get("t3doc:patterns") as PatternsDoc | undefined;
-    if (!sheets || !patterns) return null;
-    const pipe = boundaryPipeline(this.game);
-    if (!pipe) return null;
-    const p = patternSheetPaths(patterns);
-    const mask = this.textures.get(t3ArtKey(p.masks));
-    const border = this.textures.get(t3ArtKey(p.border));
-    const silKey = "t3gpu:sil";
-    if (!this.textures.exists(silKey)) {
-      const c = document.createElement("canvas");
-      c.width = sheets.fw;
-      c.height = sheets.fh;
-      const ctx = c.getContext("2d")!;
-      const img = ctx.createImageData(sheets.fw, sheets.fh);
-      for (let i = 0; i < sheets.fw * sheets.fh; i++) {
-        img.data[i * 4] = sheets.libTop[i] ? 255 : 0;
-        img.data[i * 4 + 3] = sheets.sil[i];
-      }
-      ctx.putImageData(img, 0, 0);
-      this.textures.addCanvas(silKey, c);
-    }
-    const stamp = this.make.image({ key: "__DEFAULT", add: false }).setOrigin(0, 0);
-    stamp.setPipeline(pipe);
-    this.t3gpu = { pipe, stamp, mask, border, sil: this.textures.get(silKey) };
-    return this.t3gpu;
-  }
-
   /** One resolved blit onto the ground RenderTexture. `batchDraw` cannot crop,
    *  and exactly one op needs it — a FADE tile is the top `TOP_Y + 2·DY + 2`
    *  rows of a 64x64 file and its wall is explicitly meaningless, so drawing
@@ -16894,7 +16740,7 @@ export class WorldScene extends Phaser.Scene {
    *  registered on the texture once, under a name derived from the crop. */
   private t3Blit(
     rt: Phaser.GameObjects.RenderTexture,
-    op: { key: string; x: number; y: number; sx: number; sy: number; sw: number; sh: number; gpu?: Tiles3Boundary },
+    op: { key: string; x: number; y: number; sx: number; sy: number; sw: number; sh: number },
     ax: number,
     ay: number,
     tint: number,
@@ -16974,10 +16820,6 @@ export class WorldScene extends Phaser.Scene {
         this.groundCulled++;
         return;
       }
-    }
-    if (op.gpu) {
-      this.t3BlitGpu(rt, op as typeof op & { gpu: Tiles3Boundary }, dx, dy, tint);
-      return;
     }
     const tex = this.textures.get(op.key);
     const src = tex?.getSourceImage() as { width?: number; height?: number } | undefined;
@@ -17371,7 +17213,14 @@ export class WorldScene extends Phaser.Scene {
       run = { clip, cls, keys: clip.frames.map((f) => this.sKey(f)), frame: -1, t0: 0, next: this.time.now + Math.random() * scenerySleepMs(cls) };
       this.sceneryAnimRuns.set(place, run);
     }
-    for (const f of clip.frames) this.needScenery(f);
+    // ANIMATION FRAMES ARE THE LOWEST-PRIORITY ART THERE IS (maintainer
+    // 2026-09-12: "Scenery animations should be lowest prio. They only play
+    // once in a while anyways!"): the art queue, behind everything a body
+    // needs. The run plays once every frame is resident (below).
+    for (const f of clip.frames) {
+      const k = this.sKey(f);
+      if (!this.textures.exists(k)) this.artQueue().request({ key: k, url: sceneryArtUrl(f, this.t3route), prio: ART_PRIO.sceneryAnim });
+    }
     const live: SceneryAnimLive = {
       place, img, lo, stillKey, frameName, crop,
       kx: crop[2] > 0 ? img.displayWidth / crop[2] : 1,
@@ -18524,7 +18373,7 @@ export class WorldScene extends Phaser.Scene {
        * resetting its rect and re-blitting it — the cave floor "simmering like
        * crazy" while standing still (maintainer 2026-09-05), and a
        * repaintTiles3Cells bill of 4-19 ms per frame under every roof. */
-      if (b && !bop && !cutSuppressed && !tex.simNoCompose) this.t3boundaryOwed.add(idx);
+      if (b && !bop && !cutSuppressed) this.t3boundaryOwed.add(idx);
       else this.t3boundaryOwed.delete(idx);
       if (useBoundary && bop) {
         // `useBoundary` already implies `bop`; the `&& bop` only restores the
@@ -18872,7 +18721,7 @@ export class WorldScene extends Phaser.Scene {
              * 2026-08-29: "THE PLAYER STILL RENDERS OVER THE WALL WHEN BEHIND
              * THE WALL. THIS WORKED PERFECTLY"). It did: world@2 keeps the top
              * whenever the COLUMN reaches the cull box. Faces still cull. */
-            const dops = tex.opsForDeck(d).filter((op) => !op.gpu); // the shader test: no raw-file copy (see obop)
+            const dops = tex.opsForDeck(d);
             for (let oi = 0; oi < dops.length; oi++) {
               const op = dops[oi];
               const isTop = oi === dops.length - 1;
@@ -19015,13 +18864,7 @@ export class WorldScene extends Phaser.Scene {
             const obop = this.t3Try(`occ boundary ${col},${row}`, () => tex.opsForBoundary(ob), null);
             // `obop` carries the boundary's own absolute paste point (the same
             // one the ground pass blits it at) — never re-derive it here.
-            // THE SHADER TEST DRAWS NO OCCLUDER COPY OF A BOUNDARY: the copy
-            // would be plate A's raw file (2,012 texels with its wall band, over
-            // the cell in front) where the composed copy is a 924-texel top
-            // face — twice the fill on every raised transition cap, which is a
-            // GPU cost the real compositor would not have. The cap under it
-            // shows plain; the ground under that wears the GPU transition.
-            if (obop && !obop.gpu) this.occTint(this.occImage(obop.key, obop.x, obop.y, oDepth, col, row), "boundary");
+            if (obop) this.occTint(this.occImage(obop.key, obop.x, obop.y, oDepth, col, row), "boundary");
           }
           /* AND THE CAP WEARS ITS FADE AND ITS WALL-FOOT BAND, for exactly the
            * reason it wears its transition: the ground pass paints them into
@@ -19050,7 +18893,6 @@ export class WorldScene extends Phaser.Scene {
         if (topL === cell.level)
           for (const d of capDecks)
             for (const op of tex.opsForDeck(d)) {
-              if (op.gpu) continue; // the shader test: no raw-file copy (see obop)
               if (!columnShows(bx, op.y, by + tileSize)) {
                 culled++;
                 st.partial = true;

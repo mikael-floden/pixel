@@ -30,7 +30,7 @@ typecheck`. Boards: `coordination/games.json`.
 | `docs/tiles3-rendering.md` | the tiles3 resolver and draw ops, plates, transitions, seams, fades, decks, wall feet, the render3 parity contract |
 | `docs/scenery.md` | sizing, hitboxes, animation, windows on walls, indoor furniture, flat pieces, fog silhouettes |
 | `docs/depth-sort.md` | the occluder set, `depthrule.ts`, cover lines, lifts |
-| `docs/perf.md` | the ground render texture (scroll, slices, cell repaints, prefetch, compose budget), pooled occluders, the capture pool, the perf beacon |
+| `docs/perf.md` | the ground render texture (scroll, slices, cell repaints, prefetch, compose budget), pooled occluders, the capture pool, the art queue, the perf beacon |
 | `docs/movement.md` | movement, decks, collision, steer assist, fall damage, tap/hold-to-move, the body dodge, swimming, footsteps, gait playback, camera |
 | `docs/monsters-combat.md` | spawn zones, shadows, gait, the monster brain, escape math, loot, backpack, levelling, death, NPCs |
 | `docs/lighting.md` | the night shader and its CPU twins, light slots, scenery lights and shadows, depth fog, sun, time-of-day, weather, indoor ambient |
@@ -93,6 +93,13 @@ secrets; push to `main`, rebase on reject, no PRs unless asked; doc law.
 - Regions are 24-cell chunks; a cell edit is bounded by its chunk plus a 5x5.
 - Phaser: `textures.get` returns `__MISSING` for an unknown key (adapter via
   `exists`); terrain has its own `LoaderPlugin` with `crossOrigin` set.
+- EVERYTHING STREAMED BEHIND THE LIVE WORLD goes through THE ART QUEUE
+  (`client/src/artqueue.ts`, `docs/perf.md`): priority order, a BYTE budget
+  per frame (Settings dial "upload budget" until pinned), no kind's strips
+  before a monster of it exists, its fight art at the back and raised when a
+  fight starts, scenery animations last. Never the scene loader for it —
+  every slow frame on his phone carried a texture upload (measured 2026-09-12;
+  monsters mocked = the ceiling).
 
 **Depth, occluders, scenery** (`docs/depth-sort.md`, `docs/scenery.md`)
 - ONE body pipeline: `resolveDrawDepth` + `placeBodyShadow` + `syncLitCopy`
