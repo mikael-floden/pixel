@@ -842,8 +842,11 @@ claim:
   names a tile that no longer exists; that orphan row is the receipt) against
   any **still standing** (rejected, but the tile is still in the manifest). This
   is the "is anyone acting on me" number.
-- **Tops** — the second axis, judged vs total, with a press that opens the
-  biggest queue in **Textured**.
+- **Tops** — the second axis, judged vs total over EVERY top the Details tabs
+  list (the x-over-y candidates AND the top-only sheets, one rule: `typeTops`
+  / `detailQueue`), with the count still waiting as its pill and a press that
+  opens the biggest queue in **Textured**. (Until 2026-09-12 it counted the
+  x-over-y tops alone and read "all judged" over 9,008 waiting sheets.)
 
 Note for whoever runs `prune-feedback.mjs` next: the orphan rejected rows *are*
 the receipt the ledger reads. Pruning them is not wrong, but it zeroes "carried
@@ -944,9 +947,17 @@ when the type has none, landing the visitor on On top of.
   INDEPENDENT of the pair review: a tile rejected for its wall can still be a
   top-approved detail ("every nice tile that didn't make it into the other
   categories can still have a chance"), and the gate asserts a top approval
-  never leaks into the pair filters. The tab holds the approved collection
-  first, then **"Tops nobody has judged"** — the when-bored queue, twelve
-  composed cards at a time. Every pair-page tile card carries a collapsed
+  never leaks into the pair filters. **For the admin the tab opens on the
+  queue** — **"Tops waiting for your verdict"**, twelve composed cards at a
+  time — and the approved collection follows; the tab's chip is that queue's
+  count in the to-do colour (✓ once it is 0), and the World overview's ground
+  cards carry the same number, all three off one rule (`detailQueue`).
+  (Maintainer 2026-09-11, on black_rock: *"I have tried to review the entire
+  black_rock details. But I don't know if I have already or not becouse the
+  wiki has no way for me to filter so I only see tiles I have not reviewed
+  yet"* — the chip counted the 275 tops he had APPROVED and the 0 he needed
+  sat under them, a 275-card scroll away on a phone.) Every pair-page tile
+  card carries a collapsed
   **"☘ review the top"** toggle with its own stars and a "not a detail"
   verdict, wearing the top's state on the button; detail cards carry **promote
   to base tile**, the same modal as a tile card. Ground details are not in the

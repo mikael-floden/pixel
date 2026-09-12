@@ -49,6 +49,34 @@ for (const top of tops) {
 if (!ground) { console.log("no ground has an unjudged queue right now — nothing to drive"); await b.close(); process.exit(0); }
 console.log(`driving ${ground}`);
 
+// THE CHIP IS THE QUEUE, AND THE QUEUE COMES FIRST (maintainer 2026-09-11:
+// "I don't know if I have already or not becouse the wiki has no way for me to
+// filter so I only see tiles I have not reviewed yet"): the Details chip counts
+// the tops waiting, in the to-do colour, and the queue panel sits above the
+// approved collection.
+const layout = await p.evaluate(() => {
+  const chip = [...document.querySelectorAll(".groundtab")].find((x) => /^Details/.test(x.textContent.trim()))?.querySelector(".tab-n");
+  const queue = document.querySelector(".detail-queue")?.closest(".panel");
+  const approved = document.querySelector(".detail-grid:not(.detail-queue)")?.closest(".panel");
+  return { chip: chip?.textContent, todo: !!chip?.classList.contains("todo"), count: document.querySelector(".detail-queue-count")?.textContent,
+    queueFirst: !!(queue && (!approved || (queue.compareDocumentPosition(approved) & Node.DOCUMENT_POSITION_FOLLOWING))) };
+});
+console.log("layout:", JSON.stringify(layout));
+ok(layout.chip === layout.count && layout.todo, `the Details chip is the queue count, in the to-do colour (${layout.chip} vs ${layout.count})`);
+ok(layout.queueFirst, "and the queue panel comes before the approved collection");
+
+// ...and the World overview says the same number on that ground's card, so he
+// can see which grounds still owe him a pass without opening each one.
+await p.goto(`${W}#/world`, { waitUntil: "load" });
+await p.waitForTimeout(2400);
+const cardPill = await p.evaluate((g) =>
+  [...document.querySelectorAll(`a.card[href="#/world/${g}"] .pill`)].map((x) => x.textContent).find((t) => /tops waiting/.test(t)) ?? null, ground);
+ok(cardPill && parseInt(cardPill, 10) === Number(layout.count), `the overview card carries the same queue (${cardPill} vs ${layout.count})`);
+await p.goto(`${W}#/world/${ground}`, { waitUntil: "load" });
+await p.waitForTimeout(2400);
+await p.evaluate(() => [...document.querySelectorAll("button, .sortbar-btn")].find((x) => /^Details/.test(x.textContent.trim()))?.click());
+await p.waitForTimeout(1600);
+
 /** The first queue card's verdict button, put at a fixed place on screen. */
 const aim = async () => {
   await p.evaluate(() => document.querySelector(".detail-queue .detail-card")?.scrollIntoView({ block: "center" }));
@@ -113,7 +141,9 @@ ok(pend === 3, `three taps, three pending verdicts — no tap was swallowed or d
 const nCards = () => p.evaluate(() => document.querySelectorAll(".detail-queue .detail-card").length);
 const grew = [await nCards()];
 for (let i = 0; i < 2; i++) {
-  await p.evaluate(() => window.scrollTo(0, document.body.scrollHeight));
+  // the bottom OF THE QUEUE — it sits above the approved collection now, so
+  // the page's own bottom is the wrong place to be
+  await p.evaluate(() => document.querySelector(".queue-end")?.scrollIntoView({ block: "end" }));
   await p.waitForTimeout(1200);
   grew.push(await nCards());
 }

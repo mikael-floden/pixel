@@ -9366,20 +9366,25 @@ function reviewLedger() {
   const entries = state.feedback.tiles?.entries ?? {};
   const carried = Object.keys(entries).filter((k) =>
     !k.endsWith("#top") && !liveKeys.has(k) && entries[k]?.status === "rejected").length;
-  const tops = tiles.filter((x) => judged(topKey(x.cand.key))).length;
   const byPair = new Map();
   for (const x of left) {
     const id = `${x.cell.top}/${x.cell.side}`;
     byPair.set(id, { n: (byPair.get(id)?.n ?? 0) + 1, name: x.cell.name });
   }
-  // Which ground has the most unjudged tops — where the top review starts.
+  // THE SECOND AXIS COUNTS THE WHOLE LIBRARY (2026-09-12): the x-over-y tops
+  // AND the purpose-built top-only sheets, through the same typeTops rule the
+  // Details tab and the ground cards read, so the three numbers can never
+  // disagree. 9,008 of his tops were waiting while this line counted only the
+  // x-over-y ones. The biggest queue is where the top review starts.
+  const allTops = worldTypes().flatMap((t) => typeTops(t.id));
   const topsBy = new Map();
-  for (const x of tiles) {
-    if (judged(topKey(x.cand.key))) continue;
+  let tops = 0;
+  for (const x of allTops) {
+    if (topReviewed(x.cand.key)) { tops++; continue; }
     topsBy.set(x.cell.top, (topsBy.get(x.cell.top) ?? 0) + 1);
   }
   const biggestTops = [...topsBy.entries()].sort((a, b) => b[1] - a[1])[0] ?? null;
-  return { total: tiles.length, left, approved, standing, carried, tops, byPair, biggestTops };
+  return { total: tiles.length, left, approved, standing, carried, tops, topsTotal: allTops.length, byPair, biggestTops };
 }
 function reviewLedgerPanel() {
   const L = reviewLedger();
@@ -9420,8 +9425,10 @@ function reviewLedgerPanel() {
     L.standing
       ? h("span", { class: "pill warn", title: "Rejected, but the tile is still in the manifest — the agent has not run since" }, `${L.standing} not yet acted on`)
       : h("span", { class: "pill ok" }, "nothing waiting on the agent")),
-    line("Tops", `${L.tops.toLocaleString()} of ${L.total.toLocaleString()} judged — the second axis, and the one that is open`,
-      L.tops ? null : h("span", { class: "pill warn" }, "untouched")),
+    line("Tops", `${L.tops.toLocaleString()} of ${L.topsTotal.toLocaleString()} judged — the second axis: every ground's detail queue`,
+      L.tops < L.topsTotal
+        ? h("span", { class: "pill warn" }, `${(L.topsTotal - L.tops).toLocaleString()} waiting`)
+        : h("span", { class: "pill ok" }, "all judged")),
     L.biggestTops ? h("div", { class: "ledger-jump" },
       h("button", {
         class: "ghost-btn",
@@ -9487,6 +9494,10 @@ function viewWorld() {
   const mode = state.admin ? starFilter() : "all";
   const on = mode !== "all";
   const allTypes = worldTypes().filter((t) => matches(state.query, t.id, t.name));
+  // HIS TOP QUEUE, PER GROUND (maintainer 2026-09-11): which grounds still
+  // owe him a pass, without opening each one. The same rule as the Details
+  // tab's chip — detailQueue — so the two numbers can never disagree.
+  const waiting = state.admin ? new Map(allTypes.map((t) => [t.id, detailQueue(t.id).length])) : null;
   // Types holding at least one tile the mode keeps.
   const hitTypes = allTypes.filter((t) => t.pairs.some((c) => pairHits(c, mode)));
   const types = on ? hitTypes : allTypes;
@@ -9497,7 +9508,7 @@ function viewWorld() {
   return h("div", {},
     sectionHead("world"),
     h("p", { class: "muted" }, state.admin
-      ? "Tiles 3.0 — the ground system being built to replace Tiles OLD. Open a ground type to see every wall it can stand on."
+      ? "Tiles 3.0 — the ground the game draws. Open a ground type to see every wall it can stand on."
       : "The ground of Nangijala. Open a ground to see the cliffs it makes where the land steps down."),
     // THE "WHAT IS NEW" PANEL IS GONE, for everyone (maintainer 2026-08-17,
     // first "I feel this is too technical for players that visits the World
@@ -9547,7 +9558,8 @@ function viewWorld() {
               tileCount(t.pairs.reduce((m, c) => m + pairHits(c, mode), 0), mode))
             : null,
           state.admin && !on && t.open ? h("span", { class: "pill warn" }, `${t.open} to review`) : null,
-          state.admin && !on && t.picked ? h("span", { class: "pill ok" }, `${t.picked} picked`) : null))))
+          state.admin && !on && t.picked ? h("span", { class: "pill ok" }, `${t.picked} picked`) : null,
+          state.admin && !on && waiting?.get(t.id) ? h("span", { class: "pill warn tops-waiting" }, `${waiting.get(t.id)} tops waiting`) : null))))
       : h("p", { class: "muted" }, state.admin && on
         ? `${TILE_MATCH_EMPTY[mode]} Nothing is waiting for you.`
         : "No pairs generated yet — the tiles agent publishes them to tiles/review/manifest.json."));
@@ -9626,12 +9638,12 @@ function viewWorldType(top) {
    * textured now, Clean is a real thing to judge a detail against, so every
    * chip means itself. */
   const detailPass = () => worldViewFor(t.id);
-  const tabBtn = (id, label2, count, disabled, title) => h("button", {
+  const tabBtn = (id, label2, count, disabled, title, tone = "") => h("button", {
     class: `groundtab${tab === id ? " sel" : ""}${disabled ? " off" : ""}`,
     type: "button", title,
     ...(disabled ? { disabled: "disabled" } : {}),
     onclick: disabled ? null : () => pickTab(id),
-  }, label2, count == null ? null : h("span", { class: "tab-n" }, String(count)));
+  }, label2, count == null ? null : h("span", { class: `tab-n${tone ? ` ${tone}` : ""}` }, String(count)));
 
   /* ---------------- TAB: base (the ground's sets) ---------------- */
   const baseTab = () => {
@@ -9890,8 +9902,22 @@ function viewWorldType(top) {
       tabBtn("base", "Base", null, baseDead,
         state.admin ? "The sets this ground paints its fields from — what is in each, how often, and how often each set is used"
           : "The looks this ground comes in"),
-      tabBtn("details", "Details", details.length || null, detailsDead,
-        details.length ? "The tops that look amazing once in a while — this ground's small wonders" : state.admin ? "No details approved yet — the queue inside is your TODO" : "No details approved for this ground yet"),
+      /* THE CHIP IS HIS TO-DO, NOT HIS DONE PILE (maintainer 2026-09-11, on
+       * black_rock: "I have tried to review the entire black_rock details. But
+       * I don't know if I have already or not becouse the wiki has no way for
+       * me to filter so I only see tiles I have not reviewed yet"). The chip
+       * read 275 — the tops he had APPROVED — and the 0 he needed sat under a
+       * 275-card grid. For the admin the chip is the queue: the count while
+       * tops wait, ✓ once the ground is judged through. A player still sees
+       * the collection's size, which is what a player is shown. */
+      tabBtn("details", "Details",
+        state.admin ? (queue.length || (typeTops(t.id).length ? "✓" : null)) : (details.length || null), detailsDead,
+        state.admin
+          ? (queue.length
+            ? `${queue.length} top${queue.length === 1 ? "" : "s"} waiting for your verdict · ${details.length} approved`
+            : `Every top of this ground has been judged · ${details.length} approved`)
+          : (details.length ? "The tops that look amazing once in a while — this ground's small wonders" : "No details approved for this ground yet"),
+        state.admin ? (queue.length ? "todo" : "done") : ""),
       /* SHORT LABELS, ONE ROW (maintainer 2026-08-28: "We need to change the
        * title button to fit all buttons on the same row. You can call 'On top
        * of' just 'Wall' instead. You can call 'Transitions' just 'Fade'.").
@@ -10116,10 +10142,30 @@ function viewWorldType(top) {
       card.append(...detailCardBody(x, card).filter(Boolean));
       return card;
     };
+    /* THE QUEUE COMES FIRST (his words on the chip above): the work is what
+     * the tab is opened for, and it sat under the whole approved collection —
+     * 275 cards to scroll past on a phone before the "0 waiting" that answered
+     * his question. The collection follows. */
+    const queuePanel = state.admin ? h("div", { class: "panel" },
+      h("div", { class: "panel-title" }, "Tops waiting for your verdict", queueCount,
+        h("span", { class: "muted", style: "font-weight:400;font-size:12.5px" }, " — approve or remove; the next one rises under your thumb")),
+      queue.length
+        ? (() => {
+          queueGrid.append(...queue.slice(0, shownNow).map(detailCard));
+          moreBtn.hidden = shownNow >= queue.length;
+          moreBtn.textContent = `Show 12 more (${Math.max(0, queue.length - shownNow)} left)`;
+          // The button stays for a thumb that gets there first, and does
+          // exactly what the scroll does.
+          moreBtn.onclick = appendMore;
+          requestAnimationFrame(watchEnd);
+          return h("div", {}, queueGrid, endMark, moreBtn);
+        })()
+        : h("p", { class: "muted" }, "Every top of this ground has been judged — nothing waits for you here.")) : null;
     return h("div", {},
       h("p", { class: "muted" }, state.admin
         ? `The detail ONCE in the centre of the ground it would decorate. Tops that look amazing when they appear ONCE IN A WHILE — a flower, a stone, a glint. The wall never shows, so only the top is judged. ${dPass === worldViewFor(t.id) ? `Drawn ${dPass === PASS_RAW ? "RAW — the generator's own" : passSet(t.id, dPass) ? `in ${setLabel(passSet(t.id, dPass))}` : "on the clean colour"}, as the switch says.` : "Drawn in this ground's first set whatever the switch says: the clean colour flattens a top to one tone, which is nothing to judge. Pick Raw for the generator's own."}`
         : `The small wonders of ${t.name.toLowerCase()} — details that appear once in a while as you walk.`),
+      queuePanel,
       h("div", { class: "panel" },
         h("div", { class: "panel-title" }, "This ground's details",
           h("span", { class: "pill" }, details.length ? `${details.length} approved` : "none yet"),
@@ -10127,23 +10173,8 @@ function viewWorldType(top) {
         details.length
           ? h("div", { class: "grid detail-grid" }, ...details.map(detailCard))
           : h("p", { class: "muted" }, state.admin
-            ? "Nothing approved yet — the queue below is where they come from."
-            : "None yet — they are being picked right now.")),
-      state.admin ? h("div", { class: "panel" },
-        h("div", { class: "panel-title" }, "Tops nobody has judged", queueCount,
-          h("span", { class: "muted", style: "font-weight:400;font-size:12.5px" }, " — your when-bored queue")),
-        queue.length
-          ? (() => {
-            queueGrid.append(...queue.slice(0, shownNow).map(detailCard));
-            moreBtn.hidden = shownNow >= queue.length;
-            moreBtn.textContent = `Show 12 more (${Math.max(0, queue.length - shownNow)} left)`;
-            // The button stays for a thumb that gets there first, and does
-            // exactly what the scroll does.
-            moreBtn.onclick = appendMore;
-            requestAnimationFrame(watchEnd);
-            return h("div", {}, queueGrid, endMark, moreBtn);
-          })()
-          : h("p", { class: "muted" }, "Every top of this ground has been judged. Boredom will have to find something else.")) : null);
+            ? "Nothing approved yet — the queue above is where they come from."
+            : "None yet — they are being picked right now.")));
   }
 }
 /* ---- THE TRANSITION PAGE — a demo, not a list (maintainer 2026-08-21:
