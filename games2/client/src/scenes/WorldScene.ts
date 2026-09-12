@@ -4339,6 +4339,20 @@ export class WorldScene extends Phaser.Scene {
           get: () => this.groundClearPink,
           state: () => (this.groundClearPink ? "pink" : "off"),
         },
+        /* THE RENDERER SWITCH (maintainer 2026-09-12: the installed app has no
+         * address bar, so `?occ=depth` is unreachable — "switch renderer with
+         * a settings button so I can easily switch while running the game").
+         * Down = the depth-tested path (no occluder sprites, terraindepth.ts);
+         * up = the pooled occluder sprites. Remembered (ml-occ-path). */
+        {
+          label: "renderer",
+          act: () => {
+            this.setOccDepth(!this.occDepth);
+            this.chat.addLog("—", `renderer: ${this.occDepth ? "DEPTH — per-pixel terrain test, no occluder sprites" : "SPRITES — the pooled occluder set"}`);
+          },
+          get: () => this.occDepth,
+          state: () => (this.occDepth ? "depth (new)" : "sprites (old)"),
+        },
         {
           label: "transitions",
           act: () => {
@@ -20103,6 +20117,15 @@ export class WorldScene extends Phaser.Scene {
         const vCell = tdCell(r.fx / CELL_WU, r.fy / CELL_WU);
         this.tdArmImage(r.img, flatY, r.lvl, mode, vCell);
         if (r.lo) this.tdArmScenery(r.lo, flatY, r.lvl, mode, vCell);
+      } else if (this.tdPipe) {
+        // The switch went back to sprites: a pooled piece keeps no test.
+        const td = this.tdPipe as unknown as Phaser.Renderer.WebGL.WebGLPipeline;
+        if (r.img.pipeline === td) r.img.resetPipeline();
+        if (r.lo) {
+          if (r.lo.shape?.td) r.lo.shape.td[3] = 0;
+          if (r.lo.img.pipeline === td) r.lo.img.resetPipeline();
+          if (r.lo.fog?.pipeline === td) r.lo.fog.resetPipeline();
+        }
       }
     }
     this.t3stats.scenery = drawn;

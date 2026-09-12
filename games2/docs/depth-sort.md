@@ -2,9 +2,10 @@
 
 How bodies and pieces interleave with terrain columns: the occluder set, the pure depth rule and its cover lines — and the DEPTH PATH that replaces the occluder set with a per-pixel test. Moved verbatim out of `games2/CLAUDE.md` (2026-09-09), which keeps the law and points here; the measurements, traps and rejected approaches live in this file. Rewrite in place under the root doc law.
 
-- **THE RENDER RETAKE — `?occ=depth` (remembered as `ml-occ-path`; flipped
-  live by `__ml.occDepth(on)`; rollback point = branch `render-retake-start`
-  at 7b73e316).** The maintainer's last beacon run put 95 of 140 long frames
+- **THE RENDER RETAKE — the Settings "renderer" button (down = depth), or
+  `?occ=depth`; remembered as `ml-occ-path`; flipped live by
+  `__ml.occDepth(on)` too; rollback point = branch `render-retake-start` at
+  7b73e316.** The maintainer's last beacon run put 95 of 140 long frames
   on `rebuildOccluders` (`tiles3Occluders` alone 80% of a 50-60 ms rebuild
   every 96 px), so instead of slicing that loop the occluder SPRITES are
   deleted: the ground texture already paints every column, and a body only
