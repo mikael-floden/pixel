@@ -431,8 +431,38 @@ The ground render texture (scroll, slices, cell repaints, prefetch, compose budg
   the occluder+scenery rebuild and the per-frame fog/lit-copy pass. The lag
   he FELT was not this floor: it was the capture-target re-allocation (see
   "THE RUNNING-INTO-A-NEW-AREA LAG", below).
-- **COMPOSING IS BUDGETED, AND A CELL WITHOUT ITS TRANSITION YET DRAWS THE
-  PLAIN PLATE** (`Tiles3Textures.armCompose`, `GROUND_COMPOSE_MS` = 2). One
+- **THE GROUND AHEAD IS COMPOSED OFF THE FRAME THREAD** (`composeworker.ts`,
+  `composeclient.ts`, `Tiles3Textures.landRemote`, 2026-09-12; maintainer:
+  "a background thread that prepares the world you are next to enter …
+  You must not do everything on the main thread!"). Every boundary
+  transition and fade overlay is a job the factory posts to a worker the
+  first time it is asked for: the worker fetches the plates itself (a cache
+  hit — the ground loader asked for the same files), decodes them with
+  `createImageBitmap`, reads them through an OffscreenCanvas, composes with
+  the SAME functions the factory uses (`buildPlatePixels`,
+  `buildBoundaryPixels`, `fadeOverlay` — one code path, so the rasters are
+  byte-identical: unit test in tiles3draw.test.ts, live audit
+  `__ml.composeWorker({audit:true})`, gate `scripts/verify-compose.mjs`)
+  and posts the raster back with its buffer transferred; the frame thread's
+  whole cost is one `texImage2D` of 11,776 bytes (`counts.composeApplyMs`).
+  Until a raster lands the cell draws its plain plate and sits in the owed
+  set, exactly as a budget-refused composition did, and the directional ring
+  asks AHEAD of the camera, so on a walk the raster is there before the cell
+  is. Jobs batch into one message a frame; a raster from a rebuilt factory's
+  generation is dropped; a worker that fails to boot, dies, or is switched
+  off (`ml-compose-worker`, `__ml.composeWorker(false)`) leaves the factory
+  composing here as before, and a key the worker cannot fetch is composed
+  here too. NOT build-time packaging (maintainer: the pairs × patterns × set
+  members "will grow insane") — the compositions stay per-cell at runtime,
+  they just happen on another core, ahead. What still builds on the frame
+  thread: conformed plates and foot bands (5-9 a window, cached for the
+  session) and the resolution of the ring's cells (the resolver worker,
+  `ml-resolve-worker`, is off by default). Beacon: `run.sim` carries `/cw`
+  while the worker is ready; `counts.composeQueued/Landed/Missed/WorkerMs`.
+  `T3_BOUNDARY_LAND` = 12 caps how many landed cells one frame repaints.
+- **COMPOSING ON THE FRAME THREAD IS BUDGETED, AND A CELL WITHOUT ITS
+  TRANSITION YET DRAWS THE PLAIN PLATE** (`Tiles3Textures.armCompose`,
+  `GROUND_COMPOSE_MS` = 2; the path the worker's fallback takes). One
   composition costs **6.0-9.6 ms on his phone** (measured composeMs/composed
   over the worst frames of the 0a0d1e775 beacon — NOT the "2-4 ms" this file
   used to guess), and the pass composed every boundary a fresh window needed

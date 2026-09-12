@@ -113,6 +113,10 @@ secrets; push to `main`, rebase on reject, no PRs unless asked; doc law.
 - SEE-THROUGH WALLS IS DELETED — never a per-frame occluder alpha sweep.
 - The occluder set is POOLED; depth = base + creationIndex × 1e-6 in the base
   band only; tiles3's texture cache stays unbounded.
+- Boundary transitions and fades are composed OFF THE FRAME THREAD
+  (`composeworker.ts`), ahead of the camera, with the factory's own
+  builders; the main thread only uploads. The sync path is the fallback and
+  the tests. Gate: `__ml.composeWorker({audit:true}).audit.diff` = 0.
 - Only the occluders that MEET A BODY are submitted (the proximity cull) and
   the display list is insertion-sorted; an occluder far from every body is
   the ground's own pixels drawn twice. Gate `__ml.occNear().wrongHidden` = 0.

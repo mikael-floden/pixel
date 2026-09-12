@@ -274,6 +274,31 @@ export function composeBoundary(
   return out;
 }
 
+/** THE BOUNDARY RASTER FROM ITS TWO PLATE RASTERS — one function for BOTH
+ *  threads (composeworker.ts composes with it, the factory composes with it),
+ *  so a raster built off the frame thread is the raster this thread would
+ *  have built. The compose, then the pass: a raised cap keeps the top face
+ *  only (with the margin row when nothing is drawn under it), a level-0
+ *  boundary keeps its wall band capped to the surface — see `boundary()`. */
+export function buildBoundaryPixels(
+  sheets: PatternSheets,
+  b: { maskFrame: number | null; topOnly?: boolean; noWall?: boolean },
+  a: Pixels,
+  bb: Pixels,
+  seam: boolean,
+): Pixels {
+  const out = composeBoundary(sheets, b.maskFrame as number, a, bb, { seam });
+  return b.topOnly ? topFaceOnly(sheets, out, { margin: !!b.noWall }) : capWallToSurface(sheets, out);
+}
+
+/** A PLATE RASTER FROM ITS DECODED SOURCE — the conform when the resolver asked
+ *  for it, then the cap, then the top-face mask (in that order: see
+ *  `platePixels`). Shared with the worker for the same reason. */
+export function buildPlatePixels(sheets: PatternSheets, art: PlateLike, src: Pixels, wallRGB: readonly [number, number, number]): Pixels {
+  const out = art.kind === "conform" ? conformPlate(sheets, src, wallRGB) : src;
+  return art.topOnly ? topFaceOnly(sheets, capWallToSurface(sheets, out)) : capWallToSurface(sheets, out);
+}
+
 /** A FADE OVERLAY'S KEY. Distinct from the conformed plate of the same file:
  *  it is a DIFFERENT PICTURE (the field texels are transparent), and two
  *  pictures must never share a key. */
@@ -1220,7 +1245,34 @@ export interface TextureManagerLike {
   remove(key: string): unknown;
 }
 
+/** ONE SIDE OF A COMPOSITION AS THE WORKER NEEDS IT: the art, its routed URL
+ *  (the worker fetches its own copy — a cache hit), and the palette colour a
+ *  conformed plate fills with. */
+export interface ComposeSide {
+  kind: string;
+  path: string;
+  topOnly: boolean;
+  url: string;
+  wall: [number, number, number];
+}
+export type ComposeJob =
+  | { kind: "boundary"; key: string; frame: number; seam: boolean; topOnly: boolean; noWall: boolean; a: ComposeSide; b: ComposeSide }
+  | { kind: "fade"; key: string; side: ComposeSide; top: [number, number, number] };
+
+/** Something that composes OFF THE FRAME THREAD (composeclient.ts). The
+ *  factory hands it a job when `ready()` and draws the plain plate until the
+ *  raster comes back through `landRemote`; not ready means the factory
+ *  composes here, as it always did. */
+export interface RemoteComposer {
+  ready(): boolean;
+  compose(job: ComposeJob): void;
+}
+
 export interface Tiles3TexturesOpts {
+  /** THE COMPOSE WORKER, and the routed URL of a repo-relative art path it
+   *  needs to fetch a plate itself. Both or neither. */
+  remote?: RemoteComposer;
+  artUrl?: (path: string) => string;
   /** The storey pitch the occluder pass stacks faces at (`geom.lh`) — the wall
    *  foot band is placed from it. Defaults to the shipped 16. */
   pitch?: number;
@@ -1271,6 +1323,14 @@ export interface Tiles3TexturesStats {
    *  spent. Each one draws its plain plate instead and is repainted by
    *  `t3retryBoundaries` when a later frame's budget affords it. */
   deferred: number;
+  /** Compositions handed to the worker, and the rasters it sent back that
+   *  were registered here (composeworker.ts). */
+  queued: number;
+  landed: number;
+  /** The audit (`Tiles3Textures.audit`): landed rasters composed a second time
+   *  on this thread and compared byte for byte. `auditDiff` must be 0. */
+  auditSame: number;
+  auditDiff: number;
 }
 
 /**
@@ -1281,7 +1341,18 @@ export interface Tiles3TexturesStats {
  * atlas bake.
  */
 export class Tiles3Textures {
-  readonly stats: Tiles3TexturesStats = { built: 0, buildMs: 0, reused: 0, live: 0, evicted: 0, missing: 0, builtBoundary: 0, deferred: 0 };
+  readonly stats: Tiles3TexturesStats = { built: 0, buildMs: 0, reused: 0, live: 0, evicted: 0, missing: 0, builtBoundary: 0, deferred: 0, queued: 0, landed: 0, auditSame: 0, auditDiff: 0 };
+  /** THE WORKER AUDIT — off unless `__ml.composeWorker({ audit: true })`: every
+   *  raster the worker lands is composed again here and compared. */
+  audit = false;
+  auditSample: { key: string; at: number; worker: number[]; sync: number[] } | null = null;
+  /** Keys the worker is composing right now; a second ask draws the plain
+   *  plate and waits, it never posts twice. */
+  private inflight = new Set<string>();
+  /** Keys the worker could not build (its fetch failed): this thread composes
+   *  those itself, which answers with the same failure or the art. */
+  private remoteDead = new Set<string>();
+  private auditJobs = new Map<string, () => Pixels | null>();
   /** Ops `opsForCell` DROPPED because their texture was not registered. It has
    *  always dropped them silently; nothing counted it, so "a tile simply never
    *  drew" was invisible to every probe. The maintainer's artefact is bare
@@ -1346,6 +1417,26 @@ export class Tiles3Textures {
   boundary(b: Tiles3Boundary): string | null {
     const key = boundaryKeyFor(b, this.o.seam !== false);
     if (!key) return null;
+    /* THE WORKER COMPOSES IT (composeworker.ts): the job goes over once, and
+     * until the raster lands this answers null exactly as a budget-refused
+     * composition did — the cell draws its plain plate, lands in the owed set
+     * and is repainted when the key exists. The ring asks ahead of the
+     * camera, so on a walk the raster is usually there before the cell is. */
+    const remote = this.remoteFor(key);
+    if (remote) {
+      if (!this.inflight.has(key)) {
+        this.inflight.add(key);
+        this.stats.queued++;
+        if (this.audit)
+          this.auditJobs.set(key, () => {
+            const a = this.platePixels(b.plateA, b.a);
+            const bb = this.platePixels(b.plateB, b.b);
+            return a && bb ? buildBoundaryPixels(this.o.sheets, b, a, bb, this.o.seam !== false) : null;
+          });
+        remote.compose({ kind: "boundary", key, frame: b.maskFrame as number, seam: this.o.seam !== false, topOnly: !!b.topOnly, noWall: !!b.noWall, a: this.side(b.plateA, b.a), b: this.side(b.plateB, b.b) });
+      }
+      return null;
+    }
     // THE BUDGET, and the ONE place it is enforced. An already-composed key is
     // free and is always answered — refusing a cache hit would make the ground
     // flicker between plate and transition as the camera moved.
@@ -1358,7 +1449,8 @@ export class Tiles3Textures {
       const a = this.platePixels(b.plateA, b.a);
       const bb = this.platePixels(b.plateB, b.b);
       if (!a || !bb) return null;
-      const out = composeBoundary(this.o.sheets, b.maskFrame as number, a, bb, { seam: this.o.seam !== false });
+      // The compose and the pass below are `buildBoundaryPixels` — the same
+      // function the worker composes with.
       /* A COMPOSED BOUNDARY IS TOP FACE ONLY, ALWAYS — and this is the
        * maintainer's zigzag on the beach (2026-09-03).
        *
@@ -1440,9 +1532,7 @@ export class Tiles3Textures {
        * which is what he photographed swimming over the deep-water rim. A
        * raised cap keeps `margin: false`: its own wall column is drawn beneath
        * and the extra row would paint surface over the course. */
-      return b.topOnly
-        ? topFaceOnly(this.o.sheets, out, { margin: !!b.noWall })
-        : capWallToSurface(this.o.sheets, out);
+      return buildBoundaryPixels(this.o.sheets, b, a, bb, this.o.seam !== false);
     });
     if (this.stats.built !== before) this.stats.builtBoundary++;
     return out;
@@ -1540,6 +1630,20 @@ export class Tiles3Textures {
    *  which is the pre-fade look and never a hole. */
   fade(path: string, ground: string): string | null {
     const key = fadeKey(path, ground);
+    const remote = this.remoteFor(key);
+    if (remote) {
+      if (!this.inflight.has(key)) {
+        this.inflight.add(key);
+        this.stats.queued++;
+        if (this.audit)
+          this.auditJobs.set(key, () => {
+            const src = this.sourcePixels(artKey(path));
+            return src ? fadeOverlay(this.o.sheets, src, this.topRGB(ground), this.wallRGB(ground)) : null;
+          });
+        remote.compose({ kind: "fade", key, side: { kind: "plate", path, topOnly: false, url: this.o.artUrl!(path), wall: this.wallRGB(ground) }, top: this.topRGB(ground) });
+      }
+      return null;
+    }
     return this.ensure(key, () => {
       const src = this.sourcePixels(artKey(path));
       if (!src) return null;
@@ -1852,12 +1956,18 @@ export class Tiles3Textures {
       this.stats.missing++;
       return null;
     }
+    this.admit(key, t0);
+    return key;
+  }
+
+  /** A registered raster becomes one of mine: the counters, the budget (a
+   *  plate composition spends it too — it is part of the same frame — it is
+   *  just never refused by it) and the LRU. */
+  private admit(key: string, t0: number): void {
     this.mine.set(key, true);
     this.stats.built++;
-    const ms = typeof performance !== "undefined" ? performance.now() - t0 : 0;
+    const ms = t0 && typeof performance !== "undefined" ? performance.now() - t0 : 0;
     this.stats.buildMs += ms;
-    // Plate compositions spend the budget too — they are part of the same
-    // frame — they are just never refused by it.
     this.composeSpent += ms;
     this.stats.live = this.mine.size;
     const limit = this.o.limit ?? 0;
@@ -1868,7 +1978,60 @@ export class Tiles3Textures {
         this.drop(oldest);
       }
     }
-    return key;
+  }
+
+  /** THE WORKER, when it may take this key: it is ready, the art has a URL,
+   *  the key is not built and the worker has not already failed it. */
+  private remoteFor(key: string): RemoteComposer | null {
+    const r = this.o.remote;
+    if (!r || !this.o.artUrl || !r.ready() || this.remoteDead.has(key) || this.o.textures.exists(key)) return null;
+    return r;
+  }
+
+  private side(art: PlateLike, ground: string): ComposeSide {
+    return { kind: art.kind, path: art.path, topOnly: !!art.topOnly, url: this.o.artUrl!(art.path), wall: this.wallRGB(ground) };
+  }
+
+  /** A raster the worker composed (composeclient.ts): registered like one
+   *  built here, and audited against one built here when the audit is on. */
+  landRemote(key: string, px: Pixels): void {
+    this.inflight.delete(key);
+    const job = this.auditJobs.get(key);
+    this.auditJobs.delete(key);
+    if (job) {
+      const sync = job();
+      if (sync) {
+        let at = -1;
+        if (sync.w !== px.w || sync.h !== px.h || sync.data.length !== px.data.length) at = 0;
+        else for (let i = 0; i < px.data.length; i++) if (sync.data[i] !== px.data[i]) { at = i; break; }
+        if (at < 0) this.stats.auditSame++;
+        else {
+          this.stats.auditDiff++;
+          const o = at - (at % 4);
+          if (!this.auditSample) this.auditSample = { key, at, worker: Array.from(px.data.slice(o, o + 4)), sync: Array.from(sync.data.slice(o, o + 4)) };
+        }
+      }
+    }
+    if (this.o.textures.exists(key)) return; // built here meanwhile
+    const t0 = typeof performance !== "undefined" ? performance.now() : 0;
+    if (!this.registerRaster(key, px)) {
+      this.stats.missing++;
+      return;
+    }
+    this.admit(key, t0);
+    this.stats.landed++;
+    if (!key.startsWith("t3d:")) this.stats.builtBoundary++;
+  }
+
+  /** The worker could not build this key; this thread will. */
+  remoteMissed(key: string): void {
+    this.inflight.delete(key);
+    this.auditJobs.delete(key);
+    this.remoteDead.add(key);
+  }
+
+  inflightCount(): number {
+    return this.inflight.size;
   }
 
   private drop(key: string): void {
@@ -1889,13 +2052,11 @@ export class Tiles3Textures {
     const key = plateKey(art, ground);
     const hit = this.pix.get(key);
     if (hit) return hit;
-    let out: Pixels | null = null;
-    if (art.kind === "conform") {
-      const src = this.sourcePixels(artKey(art.path));
-      out = src ? conformPlate(this.o.sheets, src, this.wallRGB(ground)) : null;
-    } else {
-      out = this.sourcePixels(artKey(art.path));
-    }
+    const src = this.sourcePixels(artKey(art.path));
+    // The conform, the cap and the mask are `buildPlatePixels` — the same
+    // function the worker builds a side with; the order is the whole point
+    // and is explained there.
+    const out: Pixels | null = src ? buildPlatePixels(this.o.sheets, art, src, this.wallRGB(ground)) : null;
     /* LAST, over the conformed raster too: conforming REPAINTS the wall band
      * from the ground palette, so masking first would hand it back. */
     /* CAP FIRST, THEN MASK — and the order is the whole point.
@@ -1913,8 +2074,6 @@ export class Tiles3Textures {
      * came back with them. Capping first repaints that band from each column's
      * own bottom top-face texel, so the margin row is the SURFACE's colour and
      * cannot read as a course whatever the mask keeps. */
-    if (out && art.topOnly) out = topFaceOnly(this.o.sheets, capWallToSurface(this.o.sheets, out));
-    else if (out) out = capWallToSurface(this.o.sheets, out);
     if (out) this.pix.set(key, out);
     return out;
   }

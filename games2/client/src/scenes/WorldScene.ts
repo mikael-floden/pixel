@@ -176,6 +176,7 @@ import {
 import type { MapGeometry, PlaceLookup } from "../maps";
 import { renderedWorldView, type ViewRect } from "../camview";
 import { ResolveWorker, resolveWorkerEnabled, setResolveWorkerEnabled, type ResolvedCell } from "../resolveworker";
+import { ComposeWorker, composeWorkerEnabled, setComposeWorkerEnabled } from "../composeclient";
 // ---- TILES 3.0 (maps3 worlds) -------------------------------------------
 // The resolver (what draws on this cell), the draw layer (the two pixel ops +
 // the texture factory), the streaming per-cell runtime, and scenery. All four
@@ -999,6 +1000,10 @@ const GROUND_RING_COMPOSE_EMA = 0.25;
  *  lookup each, so this is cheap; the repaint it triggers is the real cost and
  *  is bounded by how many of them actually became ready. */
 const T3_BOUNDARY_RETRY = 32;
+/** How many owed cells one frame's retry REPAINTS. With the compose worker a
+ *  whole ring's rasters can land in one frame; the lookups are cheap, the
+ *  repaint is a pass over the cells' bounding window, so it is bounded. */
+const T3_BOUNDARY_LAND = 12;
 /** How many times a too-wide cell repaint may be halved before it gives up and
  *  paints in full — at most 2^N rects. */
 const T3_REPAINT_SPLITS = 2;
@@ -1838,6 +1843,9 @@ export class WorldScene extends Phaser.Scene {
   /** THE RESOLVER ON ANOTHER CORE — see resolveworker.ts. It fills `t3cells`
    *  ahead of the band that needs them; every answer is optional. */
   private t3worker = new ResolveWorker();
+  /** THE COMPOSE WORKER (composeworker.ts) — booted with the composed-texture
+   *  factory, stopped with the scene. */
+  private t3compose = new ComposeWorker();
   /** Boot options for `t3worker`, applied on first use — see initTiles3. */
   private t3workerOpts: Parameters<ResolveWorker["init"]>[0] | null = null;
   private t3workerBooted = false;
@@ -2264,7 +2272,7 @@ export class WorldScene extends Phaser.Scene {
         why: final ? "flush" : moved ? "moved" : "bad", // why this window was sent at all
         // The two dials under measurement: the upload budget (Settings "upload
         // budget", KB a frame) and the render resolution (1/r of the backing).
-        sim: `up${this.artQueue().budgetKb || "free"}i${Math.round(ART_IDLE_SHARE * 100)}${renderRes() < 1 ? `/r${(1 / renderRes()).toFixed(1).replace(/\.0$/, "")}` : ""}`,
+        sim: `up${this.artQueue().budgetKb || "free"}i${Math.round(ART_IDLE_SHARE * 100)}${renderRes() < 1 ? `/r${(1 / renderRes()).toFixed(1).replace(/\.0$/, "")}` : ""}${this.t3compose.stats.state === "ready" ? "/cw" : ""}`,
 
         deviceMemoryGb: nav.deviceMemory ?? 0,
         connType: nav.connection?.effectiveType ?? "?",
@@ -2293,6 +2301,13 @@ export class WorldScene extends Phaser.Scene {
         occSkipped: this.occCulledSubmits, // occluder submits the cull removed
         occShown: this.occNearShown.length, // occluders the proximity cull submitted last frame
         occBodies: this.occNearBodies,
+        // THE COMPOSE WORKER's bill: what it took, what came back, and the
+        // frame-thread milliseconds spent registering the rasters.
+        composeQueued: this.t3tex?.stats.queued ?? 0,
+        composeLanded: this.t3tex?.stats.landed ?? 0,
+        composeMissed: this.t3compose.stats.missed,
+        composeWorkerMs: Math.round(this.t3compose.stats.workerMs),
+        composeApplyMs: +this.t3compose.stats.applyMs.toFixed(1),
         // THE COVER SURFACES' own bill — the suspect for `lighting`: it scales
         // with covered bodies x occluders, not with lights, and re-rasterises
         // three atlases whenever anything it draws has MOVED (see coverSig).
@@ -4164,6 +4179,7 @@ export class WorldScene extends Phaser.Scene {
        * one on a phone. */
       this.t3worker.stop();
       this.t3workerBooted = false;
+      this.t3compose.stop();
     });
 
     // Chat: Enter opens the input; while typing, Phaser keyboard is disabled so
@@ -6021,6 +6037,28 @@ export class WorldScene extends Phaser.Scene {
           skipped: this.occCulledSubmits,
           wrongCulled,
           wastedSubmits,
+        };
+      },
+      /** THE COMPOSE WORKER's switch, stats and audit. `composeWorker(false)`
+       *  stops it (the factory composes on this thread again at once);
+       *  `composeWorker(true)` rebuilds the factory with it. `composeWorker
+       *  ({ audit: true })` composes every landed raster a second time on this
+       *  thread and compares the bytes — `audit.diff` must stay 0. */
+      composeWorker: (arg?: boolean | { audit?: boolean }) => {
+        if (typeof arg === "boolean") {
+          setComposeWorkerEnabled(arg);
+          if (!arg) this.t3compose.stop();
+          else this.t3tex = null; // ensureTiles3Textures boots the worker with the next factory
+        }
+        if (arg && typeof arg === "object" && typeof arg.audit === "boolean" && this.t3tex) this.t3tex.audit = arg.audit;
+        const t = this.t3tex?.stats;
+        return {
+          enabled: composeWorkerEnabled(),
+          ...this.t3compose.stats,
+          factoryQueued: t?.queued ?? 0,
+          factoryLanded: t?.landed ?? 0,
+          inflight: this.t3tex?.inflightCount() ?? 0,
+          audit: { on: !!this.t3tex?.audit, same: t?.auditSame ?? 0, diff: t?.auditDiff ?? 0, sample: this.t3tex?.auditSample ?? null },
         };
       },
       /** THE PROXIMITY CULL's switch and audit. `wrongHidden` is the only
@@ -16916,9 +16954,23 @@ export class WorldScene extends Phaser.Scene {
       if (!sil || !masks || !border) return null;
       this.t3sheets = patternSheets(patterns, sil, masks, border);
     }
+    /* THE COMPOSE WORKER boots with the factory — the same three sheets and
+     * the patterns index, fetched by the worker itself. Rasters land through
+     * `landRemote`; a miss lets the frame thread compose that key. */
+    this.t3compose.onComposed((key, px) => this.t3tex?.landRemote(key, px));
+    this.t3compose.onMissed((key) => this.t3tex?.remoteMissed(key));
+    {
+      const p = patternSheetPaths(patterns);
+      this.t3compose.init({
+        patterns,
+        sheets: { silhouette: docUrl(p.silhouette, this.t3route), masks: docUrl(p.masks, this.t3route), border: docUrl(p.border, this.t3route) },
+      });
+    }
     this.t3tex = new Tiles3Textures({
       textures: this.t3tm,
       sheets: this.t3sheets,
+      remote: this.t3compose,
+      artUrl: (path) => docUrl(path, this.t3route),
       pitch: this.geom.lh, // the occluder pass's storey pitch: where a face ends, for the wall-foot band
 
       /* THE SEAM IS BACK ON, AND TURNING IT OFF WAS A MISTAKE OF MINE
@@ -17948,7 +18000,7 @@ export class WorldScene extends Phaser.Scene {
     let raisedRepair = false;
     let looked = 0;
     for (const idx of this.t3boundaryOwed) {
-      if (looked++ >= T3_BOUNDARY_RETRY) break;
+      if (looked++ >= T3_BOUNDARY_RETRY || ready.length >= T3_BOUNDARY_LAND) break;
       const col = idx % world.width;
       const row = (idx - col) / world.width;
       const b = this.t3boundaryOf(t3, col, row);
@@ -18014,7 +18066,7 @@ export class WorldScene extends Phaser.Scene {
      * last repaint (a cached one answers every frame; counting it again would
      * repaint the cell forever while a sibling's plate streams). */
     for (const [idx, had] of this.t3deckOwed) {
-      if (looked++ >= T3_BOUNDARY_RETRY) break;
+      if (looked++ >= T3_BOUNDARY_RETRY || ready.length >= T3_BOUNDARY_LAND) break;
       const col = idx % world.width;
       const row = (idx - col) / world.width;
       const dbs = this.t3decksOf(t3, col, row).map((d) => d.boundary).filter((x): x is NonNullable<typeof x> => !!x);
@@ -18041,7 +18093,11 @@ export class WorldScene extends Phaser.Scene {
       }
     }
     if (!ready.length) return;
+    // Its own section: with the compose worker this is where landed rasters
+    // reach the ground, and the phone's beacon must be able to name it.
+    this.ps();
     this.repaintTiles3Cells(ready);
+    this.pe("landRepaint");
     /* ONLY A RAISED REPAIR TOUCHES THE OCCLUDERS, and only the cells the walk
      * left INCOMPLETE (rebuildOccluders): a level-0 field cell emits no
      * occluder image and no `occluderMeta` record at all (`if (cell.kind !==
@@ -18138,7 +18194,13 @@ export class WorldScene extends Phaser.Scene {
        * fresh 256 px step needed 66-98 of them inside ONE frame (measured 33-44
        * ms of the 60-98 ms spike). Built here, ahead of the camera and budgeted
        * per frame, they are cache hits by the time the band is painted. The ops
-       * are discarded; only the textures they build are wanted. */
+       * are discarded; only the textures they build are wanted.
+       * WITH THE COMPOSE WORKER (composeworker.ts) a boundary or fade asked
+       * for here is posted to the worker and answered null — nothing is built
+       * on this thread, so `built` does not move and the ring walks on under
+       * its millisecond budget, naming the whole strip ahead in a frame or two;
+       * the rasters land as textures while the player is still walking
+       * toward them. Plates and foot bands still build here (5-9 a window). */
       // BUDGET SPENT — resume here next frame. The MILLISECOND test is the one
       // that binds on a phone (see GROUND_RING_MS); the compose count is an
       // upper bound for machines fast enough never to reach it.

@@ -66,6 +66,7 @@ import {
 } from "../../client/src/tiles3draw";
 // @ts-expect-error — plain .mjs helper shared with the build scripts
 import { imgRGBA } from "../../scripts/imagelib.mjs";
+import { buildBoundaryPixels, buildPlatePixels } from "../../client/src/tiles3draw";
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 const REPO = join(HERE, "..", "..", "..");
@@ -495,6 +496,29 @@ function fakeTextures() {
   };
   return { man, t, filters, removed, put };
 }
+
+test("the compose worker's builders ARE the factory's: byte-identical rasters", { skip }, () => {
+  // composeworker.ts composes with buildPlatePixels + buildBoundaryPixels and
+  // nothing else; the factory composes through the same two. So what lands
+  // from the worker must equal what the factory registers, byte for byte.
+  const c = (F.boundary as any[]).find((b) => b.a.kind === "clean" && b.b.kind === "conform");
+  assert.ok(c);
+  const fx = fakeTextures();
+  fx.put(artKey(c.a.path), px(c.a.path));
+  fx.put(artKey(c.b.path), px(c.b.path));
+  const T = new Tiles3Textures({ textures: fx.man, sheets: SHEETS, groundTypes: GT, canvas: fakeCanvas });
+  const b: any = { maskFrame: c.frame, a: c.a.ground, b: c.b.ground, plateA: c.a, plateB: c.b };
+  const k = T.boundary(b) as string;
+  const got = (fx.man.get(k)!.getSourceImage() as { pix: Uint8ClampedArray }).pix;
+  // The factory fills a conformed plate's wall band with the ground's TOP
+  // colour (its wallRGB); the worker is handed that same colour in the job.
+  const fill = (g: string): [number, number, number] => hexRGB(GT[g].palette?.top ?? GT[g].palette?.wall ?? "#808080");
+  const pa = buildPlatePixels(SHEETS, c.a, px(c.a.path), fill(c.a.ground));
+  const pb = buildPlatePixels(SHEETS, c.b, px(c.b.path), fill(c.b.ground));
+  const want = buildBoundaryPixels(SHEETS, b, pa, pb, true);
+  assert.equal(got.length, want.data.length);
+  assert.equal(Buffer.compare(Buffer.from(got), Buffer.from(want.data)), 0, "the worker's raster differs from the factory's");
+});
 
 test("the factory builds a composition once and NEAREST-filters every canvas", { skip }, () => {
   const c = (F.boundary as any[]).find((b) => b.a.kind === "clean" && b.b.kind === "conform");
