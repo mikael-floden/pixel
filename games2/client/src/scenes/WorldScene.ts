@@ -2354,6 +2354,7 @@ export class WorldScene extends Phaser.Scene {
        * because the claim is specifically about SIZE. */
       texUp: texUp.stats,
       texUpWorst: texUp.worst,
+      texUpBy: texUp.by, // creations by (kind, size) with the caller — see texupload.ts
       net: netTake.fams,
       /* THE SLOWEST INDIVIDUAL LOADS, NAMED. A percentile cannot tell a 40 ms
        * scenery piece from forty 1 ms tiles, and the whole question is which

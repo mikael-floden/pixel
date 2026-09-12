@@ -111,6 +111,8 @@ export function perfReport(body: Record<string, unknown>, atISO: string) {
     texUpWorst: Array.isArray(body.texUpWorst)
       ? (body.texUpWorst as unknown[]).slice(0, 10).map((w) => String(w).slice(0, 80))
       : null,
+    // Creations by (kind, size) with the caller — see client texupload.ts.
+    texUpBy: Array.isArray(body.texUpBy) ? (body.texUpBy as unknown[]).slice(0, 10).map((w) => String(w).slice(0, 200)) : [],
     net: nested(body.net, 12, 16),
     netWorst: Array.isArray(body.netWorst)
       ? (body.netWorst as unknown[]).slice(0, 12).map((w) => String(w).slice(0, 140))
