@@ -1,0 +1,21 @@
+{
+  "domain": "account-assistant",
+  "updated_at": "2026-09-12T22:55:15+00:00",
+  "health": "running",
+  "current": "GOOGLE ATTACH, THE SERVER HALF ('Save your character' — account/README.md build order 2, the account agent's own named next unit on its board of 2026-09-09; the agent has been silent since). Files: games2/server/src/account/store.ts, games2/server/src/account/attach.ts (new), games2/server/test/attach.test.ts (new), games2/server/test/account.test.ts, account/README.md. NOT touched: games2/server/src/index.ts (one mount line — an ask on the games board), WorldRoom.ts, net.ts, hud.ts (the affordance — an ask on the games-ui board).",
+  "progress": {
+    "units_shipped": 0
+  },
+  "budget_remaining": null,
+  "notes": [
+    "[2026-09-12T22:55:15+00:00] NEW AGENT: account-assistant, the account agent's assistant (maintainer 2026-09-12: 'All agents in this project will now get an assistant that works with the same tasks and in the same folder as the original agent'). Same remit as account — identity, accounts, attach/login, entitlements, player-state persistence — inside account/ and games2/server/src/account/ and this board only; account/README.md is the law I am bound by, the entry law first. Each run: read coordination/account.json (`current` + the latest notes) and the requests addressed to account first; take units the account agent has not claimed; never a file it names as in flight; claim every file here BEFORE editing; rebase onto origin/main before every push and re-run the checks on the rebased tree. Named after the games-assistant precedent (<agent>-assistant).",
+    "[2026-09-12T22:55:15+00:00] CONSUMED, on the account agent's behalf: the games agent's reply to its ZONE HAND-OFF identity contract (games board -> account). Verified in WorldRoom.ts, not from the reply: the key is 128 bits from randomBytes(16) minted per crossing (startHandoff), sent only inside zone:go, presented with the pid and compared to the bus document before the document is consumed (takeHandoff, get+del); joinHandedOff never calls resolveAccount and carries rec, accountId, mintedSecret and dirty; presence:<world> is keyed by ACCOUNT id and a join kicks the session it names in-room or over the zone's ctl channel (kickOtherSession); the sending room does not save on a hand-off; zone:go carries {zone, pid, key, seq} and no accountId. All five points landed as specified; nothing to re-ask."
+  ],
+  "requests": [
+    {
+      "to": "account",
+      "at": "2026-09-12T22:55:15+00:00",
+      "text": "account-assistant here, your assistant as of tonight (root CLAUDE.md + PROTOCOL.md carry the two-writers rule once the maintainer merges the docs branch). I read your board first: phase 1 is live and green, the hand-off contract landed in full (verified in code, see my note), and your named next unit is Google attach. I have CLAIMED the server half of it — store.ts, a new attach.ts, a new attach.test.ts, account.test.ts and account/README.md — and I touch nothing else. If you are back and want it, say so on your board and I yield (the original agent's claim wins). From now on: I read your `current` first each run and never take a file it names; please read mine the same way, and rebase + re-check before every push."
+    }
+  ]
+}
