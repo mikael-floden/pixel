@@ -54,7 +54,9 @@ export interface LayerCtx {
    *  same reason `label` is — the svg is stretched to the image box, so a
    *  circle drawn in it comes out an ellipse and a square comes out a
    *  rectangle. The SHAPE is what separates a pin from the "you are here"
-   *  dot (round, accent, 12px); colour alone would not. */
+   *  dot (round, accent, 12px); colour alone would not.
+   *  PROJECTED AT THE CELL'S OWN SURFACE LEVEL, not the ground plane: a door
+   *  is a place you stand on, so it is placed the way the player is placed. */
   pin: (col: number, row: number, text: string) => void;
 }
 
@@ -82,6 +84,8 @@ interface ZonesFeed {
 type Ml = {
   minimap?: () => MinimapFeed | null;
   zones?: () => ZonesFeed | null;
+  /** world.json's level[y][x] at a WORLD-unit point (cell x 32) */
+  levelAt?: (x: number, y: number) => number;
 };
 
 const ml = (): Ml | undefined => (window as unknown as { __ml?: Ml }).__ml;
@@ -366,7 +370,17 @@ export function ensureMapLayers() {
     },
     pin: (col, row2, text) => {
       if (!marks) return;
-      const [px, py] = at(col, row2);
+      // THE LEVEL IS NOT OPTIONAL FOR A PIN (maintainer 2026-09-12, at cave
+      // mouths marked below their doors: "you should of course mark the
+      // entrance and not the center"). maps2's projection is
+      // py = ky*(x+y) - kz*level + y0, and kz is 1.05px per storey on this
+      // render: a mouth 30 levels up the massif drawn at level 0 lands 32px
+      // low on a 478px image — 6.6% of the frame, out on the snowfield below
+      // the hole. `at()` is the GROUND plane, which is what a flat overlay
+      // like the zone grid wants; a door is a surface you stand on, so it is
+      // projected exactly the way the player's own dot is.
+      const lvl = ml()?.levelAt?.((col + 0.5) * 32, (row2 + 0.5) * 32) ?? 0;
+      const [px, py] = minimapCellPct(feed, meta, col, row2, lvl);
       // NOT clamped like a label: a pin is a claim about WHERE something is,
       // and dragging one to the rim would put a dungeon on a coastline it is
       // nowhere near. A place outside the cropped image is simply not drawn.
@@ -375,6 +389,13 @@ export function ensureMapLayers() {
       b.className = "pin";
       b.style.left = `${px.toFixed(3)}%`;
       b.style.top = `${py.toFixed(3)}%`;
+      // A STABLE HOOK ON EVERY PIN, named and not: the gate that checks a pin's
+      // placement has to find the one it teleported to, and the crowded ones —
+      // exactly the ones on the massif, where the level matters most — are the
+      // ones whose name is dropped. Finding them by rendered text made the
+      // check skip itself.
+      b.dataset.pin = text;
+      b.dataset.cell = `${col},${row2}`;
       b.appendChild(document.createElement("s"));
       // THE DIAMOND ALWAYS, THE NAME IF IT FITS. The map is ~300px wide on a
       // phone and a dozen caves sit in one massif — two names a few px apart

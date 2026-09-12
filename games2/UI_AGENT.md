@@ -266,10 +266,27 @@ from the games agent), #18 (title/landing screen).
   at 2 inches wide and to a colour-blind eye. The NAME takes the space under
   its pin, or over it, or is left off — six caves in one massif smear into one
   another otherwise, and the diamond alone still answers the question.
+  A PIN IS PROJECTED AT ITS CELL'S OWN LEVEL, never the ground plane. maps2's
+  formula lifts a cell by `kz*level` (1.05px per storey on this render), so a
+  cave mouth 30 storeys up the massif drawn at level 0 lands 32px low on a
+  478px image — 6.6% of the frame, out on the snowfield below the hole he
+  walks into (maintainer 2026-09-12: "you should of course mark the entrance
+  and not the center"). `minimapCellPct`'s `level` defaults to 0 because a
+  FLAT overlay (the zone grid) wants the ground plane; anything that marks a
+  place you STAND on passes `__ml.levelAt((col+0.5)*32, (row+0.5)*32)`.
   Gated in `verify-map` against maps2's own worked sample: the fixture's cave
   entrance IS sample 0's cell, so a pin agreeing with the published pixel
   cannot be agreeing with a shared misreading of the projection. The fixture
   rides on top of whatever the world really publishes.
+  …AND AGAINST THE DOT, because every published sample is a level-0 land
+  corner and therefore cannot tell a level-aware projection from one that
+  passes 0 — which is how the level bug shipped past a green gate. The check
+  stands the player ON the highest published cave mouth and requires the pin
+  to be under them; the dot is itself gated against the samples, so this tests
+  the level through a different mechanism. Pins carry `data-cell` for it: the
+  crowded pins are the ones whose NAME is dropped, and they are exactly the
+  ones on the massif, so looking them up by rendered text made the check skip
+  the case it exists for.
 - **SLIDER ROWS LEAVE A SCROLL GUTTER; BUTTONS DO NOT** (`--ml-slider-gutter`,
   100px, maintainer 2026-09-08 with the strip circled on a screenshot: "when
   scrolling in settings it's hard to not by mistake edit a slider … this is

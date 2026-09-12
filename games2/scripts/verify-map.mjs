@@ -248,6 +248,67 @@ try {
           ? ok(`dungeon pin on "${s0.what}" (${s0.cell.join(",")}) at ${mine.fx.toFixed(3)},${mine.fy.toFixed(3)} vs published ${want[0].toFixed(3)},${want[1].toFixed(3)} (${pins.length} pin${pins.length === 1 ? "" : "s"} drawn)`)
           : fail(`dungeon pin at ${mine.fx.toFixed(3)},${mine.fy.toFixed(3)}, maps2 says ${want[0].toFixed(3)},${want[1].toFixed(3)} — off by ${(dx * 100).toFixed(1)}%/${(dy * 100).toFixed(1)}% of the frame`);
       }
+      // …AND A PIN IS PLACED THE WAY THE PLAYER IS. maps2's projection lifts a
+      // cell by its LEVEL (py = ky*(x+y) - kz*level + y0, kz = 1.05px per
+      // storey here), and every published worked sample is a level-0 land
+      // corner — so the samples above cannot tell a level-aware projection
+      // from one that passes 0, and the first version of this layer passed 0.
+      // Measured cost: a cave mouth 30 storeys up the massif landed 32px low
+      // on a 478px image, 6.6% of the frame, out on the snowfield below the
+      // hole he walks into (maintainer 2026-09-12).
+      // GROUND TRUTH IS THE DOT, not a second evaluation of the formula: the
+      // dot is independently gated against maps2's samples above, so standing
+      // the player ON the mouth and requiring the pin to be under them tests
+      // the one thing at issue through a different mechanism.
+      const doc = await page.evaluate(
+        async (src) => {
+          const res = await fetch(src.replace(/minimap\.(webp|png)$/, "places.json"));
+          return res.ok ? res.json() : null;
+        },
+        img.src,
+      );
+      const spots = [];
+      for (const pl of doc?.places ?? []) {
+        if (pl?.kind !== "cave") continue;
+        const list = Array.isArray(pl.entrances) && pl.entrances.length ? pl.entrances : [pl.entrance];
+        for (const e of list) if (Array.isArray(e)) spots.push({ name: pl.name ?? pl.id, cell: e });
+      }
+      if (!spots.length) console.log("note: the world publishes no caves yet — the level check has nothing to stand on");
+      else {
+        const lv = await page.evaluate(
+          (cells) => cells.map(([x, y]) => window.__ml.levelAt((x + 0.5) * 32, (y + 0.5) * 32)),
+          spots.map((s) => s.cell),
+        );
+        let best = 0;
+        for (let i = 1; i < lv.length; i++) if (lv[i] > lv[best]) best = i;
+        const high = { ...spots[best], level: lv[best] };
+        if (!high.level)
+          console.log(`note: the highest published cave mouth is at level 0 (${high.name}) — this run cannot tell the level apart`);
+        else {
+          const got = await dotAt(high.cell[0], high.cell[1]);
+          // BY CELL, not by the rendered name: the crowded pins are the ones
+          // whose name is dropped, and they are exactly the ones on the massif
+          // where the level matters — looking them up by text made this check
+          // skip itself on the one case it exists for.
+          const pin = await page.evaluate((cell) => {
+            const f = document.querySelector(".ml-map-frame").getBoundingClientRect();
+            const b = document.querySelector(`.ml-maplayer-marks b.pin[data-cell="${cell}"]`);
+            if (!b) return null;
+            const d = b.querySelector("s").getBoundingClientRect();
+            return { fx: (d.left + d.width / 2 - f.left) / f.width, fy: (d.top + d.height / 2 - f.top) / f.height };
+          }, high.cell.join(","));
+          if (!got) fail(`could not stand on ${high.name}'s mouth (${high.cell.join(",")}) to check its pin`);
+          else if (!pin) fail(`no pin at ${high.name}'s mouth (${high.cell.join(",")}) — the layer published no mark for the cell it was asked to`);
+          else {
+            const dx = Math.abs(pin.fx - got.fx);
+            const dy = Math.abs(pin.fy - got.fy);
+            dx <= TOL && dy <= TOL
+              ? ok(`${high.name}'s pin is under the player standing on it (level ${high.level}, ${(dy * 100).toFixed(2)}% apart)`)
+              : fail(`${high.name}'s mouth is at level ${high.level}: the pin is at ${pin.fx.toFixed(3)},${pin.fy.toFixed(3)} and the player standing on it is at ${got.fx.toFixed(3)},${got.fy.toFixed(3)} — off by ${(dx * 100).toFixed(1)}%/${(dy * 100).toFixed(1)}% of the frame`);
+          }
+        }
+      }
+
       // …and it is a LAYER: switching it off leaves nothing behind.
       await page.evaluate(() => window.__ml.mapLayers("dungeons", false));
       await page.waitForTimeout(600);
