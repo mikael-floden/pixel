@@ -7,7 +7,9 @@
 // benchmark, the GPU frame time when the browser lent its timer, heap growth,
 // textures added, long tasks, zone hops), then the union of the long-frame
 // census. `--diff A B` sets two builds' window medians side by side, which is
-// the question every optimisation task starts with. Fields older windows do
+// the question every optimisation task starts with. `sim` is the Settings
+// "burst test" switch (WorldScene.burstTest: the CPU bursts skipped, the
+// frame rate the game would have once they are gone). Fields older windows do
 // not carry print as "-": a "-" is "not measured", never 0.
 import { readFileSync } from "node:fs";
 import { join, dirname } from "node:path";
@@ -60,13 +62,13 @@ if (diff) {
 }
 
 console.log(`${rows.length} windows (file updated ${doc.updated_at})`);
-console.log(["when", "build", "run/win", "where", "s", "do", "p50", "p90", "p99", "max", ">50", "Hz", "top sections (ms/frame)", "rtt50/90", "pHz", "cpu", "gpu50", "heap/s", "tex", "long", "hops"].join(" | "));
+console.log(["when", "build", "sim", "run/win", "where", "s", "do", "p50", "p90", "p99", "max", ">50", "Hz", "top sections (ms/frame)", "rtt50/90", "pHz", "cpu", "gpu50", "heap/s", "tex", "long", "hops"].join(" | "));
 for (const r of rows) {
   const fr = r.frames ?? {};
   const over50 = fr.le100 !== undefined ? fr.le100 + fr.gt100 : "-";
   const doing = r.run ? `${Math.round((r.run.moveFrac ?? 0) * 100)}%mv ${f(r.run.travelCells, 0)}c` : "-";
   console.log([
-    (r.at ?? "").slice(5, 16), short(r.build), r.run ? `${r.run.runId}/${r.run.winIdx}${r.run.why ? ":" + r.run.why : ""}` : "-", r.where ?? "-", f(r.secs, 0), doing,
+    (r.at ?? "").slice(5, 16), short(r.build), r.run?.sim || "-", r.run ? `${r.run.runId}/${r.run.winIdx}${r.run.why ? ":" + r.run.why : ""}` : "-", r.where ?? "-", f(r.secs, 0), doing,
     f(fr.p50), f(fr.p90), f(fr.p99), f(fr.max, 0), over50, fr.rafHz ?? "-", top(r.sections),
     r.rtt ? `${f(r.rtt.p50, 0)}/${f(r.rtt.p90, 0)}` : "-", r.rtt ? f(r.rtt.patchHz, 0) : "-", r.cpu ? f(r.cpu.scoreMs) : "-",
     r.gpu ? (r.gpu.avail ? f(r.gpu.p50) : "n/a") : "-", r.heap ? f(r.heap.grewMbPerSec, 0) : "-", r.counts?.texturesAdded ?? "-", r.counts?.longN ?? "-", r.run ? r.run.hops : "-",

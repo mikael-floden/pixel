@@ -2239,6 +2239,7 @@ export class WorldScene extends Phaser.Scene {
         runFrac,
         travelCells,
         why: final ? "flush" : moved ? "moved" : "bad", // why this window was sent at all
+        sim: this.burstTest ? "nobursts" : "", // the burst test switch (see burstTest)
 
         deviceMemoryGb: nav.deviceMemory ?? 0,
         connType: nav.connection?.effectiveType ?? "?",
@@ -3271,6 +3272,16 @@ export class WorldScene extends Phaser.Scene {
    *  scrolls it prevents. See t3drainDrops.
    *  `__ml.groundDrain(true)` puts it back for an A/B. */
   private groundDrainRepaint = true; // `__ml.groundDrain(false)` for a dev A/B; the Settings switch is gone (no felt change)
+  /* THE BURST TEST (maintainer 2026-09-12: "prove the fix works before you
+   * write the code... push a broken version that doesn't do the slow code").
+   * A Settings switch that simply SKIPS the CPU bursts the beacon's worst
+   * frames name — the occluder rebuild after the first, the streaming
+   * repaints (landed cells, full paints, the drop drain) and transition
+   * composing — so a beacon run shows the frame rate the game would have
+   * once those are made incremental or moved offline. The picture goes STALE
+   * on purpose: no landed art repairs, bodies sort against the first area's
+   * columns. Remembered (ml-burst-test); the beacon stamps run.sim. */
+  private burstTest = localStorage.getItem("ml-burst-test") === "1";
   private groundPartial = groundPathFast();
   private groundPrefetch = groundPathFast();
   private t3ringQueue: [number, number][] = [];
@@ -4268,6 +4279,20 @@ export class WorldScene extends Phaser.Scene {
           },
           get: () => this.groundClearPink,
           state: () => (this.groundClearPink ? "pink" : "off"),
+        },
+        {
+          label: "burst test",
+          act: () => {
+            this.burstTest = !this.burstTest;
+            try {
+              localStorage.setItem("ml-burst-test", this.burstTest ? "1" : "0");
+            } catch {
+              /* storage blocked */
+            }
+            this.chat.addLog("—", `burst test: ${this.burstTest ? "ON — no occluder rebuilds, no streaming repaints, no composing (stale picture, on purpose)" : "off"}`);
+          },
+          get: () => this.burstTest,
+          state: () => (this.burstTest ? "on (broken)" : "off"),
         },
         {
           label: "transitions",
@@ -10937,7 +10962,7 @@ export class WorldScene extends Phaser.Scene {
      * UNBUDGETED: it is behind the loading screen, nothing is being played
      * through it, and releasing the hold onto a window of hard edges is
      * exactly the pop-in the hold exists to prevent. */
-    this.t3tex?.armCompose(this.worldUp ? (this.composeMsOverride ?? GROUND_COMPOSE_MS) : Infinity);
+    this.t3tex?.armCompose(this.burstTest ? 0 : this.worldUp ? (this.composeMsOverride ?? GROUND_COMPOSE_MS) : Infinity);
     // The coalesced streaming repaints — see requestRepaint / onTerrainBatch.
     if (this.repaintGroundPending) {
       this.repaintGroundPending = false;
@@ -17358,6 +17383,7 @@ export class WorldScene extends Phaser.Scene {
    *  (coalesce off) and the switch off keep the old full repaint. */
   private onTerrainBatch(paths: string[]): void {
     this.repaintStats.terrain++;
+    if (this.burstTest) return; // the burst test: landed art repairs nothing
     /* THE ONLY THING THAT CAN REPAIR A DROPPED GROUND OP. See t3drainDrops:
      * the drain's residency guard used to read `t3texGen`, which counts EVERY
      * texture the game adds — a monster strip, an NPC frame, a scenery piece,
@@ -18460,6 +18486,7 @@ export class WorldScene extends Phaser.Scene {
    *  genuinely never arrives costs one repaint, not one per frame. */
   private t3drainDrops(): void {
     if (!this.maps3) return;
+    if (this.burstTest) return; // the burst test: no drain repaint
     const load = this.t3load;
     if (!load) return;
     /* THE RISING EDGE, AND IT WAS A GUARD IN NAME ONLY.
@@ -20696,6 +20723,7 @@ export class WorldScene extends Phaser.Scene {
 
   private rebuildOccluders() {
     if (!this.world) return;
+    if (this.burstTest && this.occluderMeta.length) return; // the burst test: the first set stays
     // The pool's cell key is row*stride+col; the stride is the world's width.
     this.occStride = this.world.width;
     const cam = this.cameras.main;
