@@ -132,6 +132,19 @@ export function uploadKb(): number {
   }
 }
 
+/** THE BISECT, one reload from the phone: `?artworker=0` sends every job the
+ *  <img> way (the path before 2026-09-12), `?artworker=1` restores; the choice
+ *  is remembered in `ml-art-worker`, like `?ground=legacy`. */
+export function artWorkerEnabled(): boolean {
+  try {
+    const q = new URLSearchParams(location.search).get("artworker");
+    if (q === "0" || q === "1") localStorage.setItem("ml-art-worker", q);
+    return localStorage.getItem("ml-art-worker") !== "0";
+  } catch {
+    return true;
+  }
+}
+
 export function setUploadKb(kb: number): void {
   try {
     localStorage.setItem(KEY, String(kb));
@@ -504,6 +517,12 @@ export class ArtQueue {
 
   private workerBoot(): boolean {
     if (this.workerState !== "off") return this.workerState === "on";
+    if (!artWorkerEnabled()) {
+      this.workerState = "failed"; // the switch: every job goes the <img> way
+      this.workerError = "switched off (?artworker=0)";
+      this.stats.worker = 0;
+      return false;
+    }
     if (!this.gl || typeof Worker === "undefined" || typeof createImageBitmap === "undefined") {
       this.workerState = "failed";
       this.workerError = "unsupported";
