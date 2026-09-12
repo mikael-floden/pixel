@@ -2268,6 +2268,7 @@ export class WorldScene extends Phaser.Scene {
         runFrac,
         travelCells,
         why: final ? "flush" : moved ? "moved" : "bad", // why this window was sent at all
+        occ: this.occDepth ? "depth" : "sprites", // the renderer the window ran on (the render retake's A/B)
 
         deviceMemoryGb: nav.deviceMemory ?? 0,
         connType: nav.connection?.effectiveType ?? "?",

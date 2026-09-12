@@ -50,7 +50,7 @@ const MUST = {
   frames: ["n", "p50", "p90", "p99", "max", "le17", "gt100", "mean", "rafHz"],
   sections: ["render"],
   counts: ["occluders", "occMean", "dlMean", "litOccMean", "monActMean", "flushMean", "sceneryImgsMean", "glTexNew", "capSwitch", "longN"],
-  run: ["runId", "winIdx", "sinceLoadS", "visible", "zone", "hops", "moveFrac", "travelCells", "ua"],
+  run: ["runId", "winIdx", "sinceLoadS", "visible", "zone", "hops", "moveFrac", "travelCells", "ua", "occ"],
   rtt: ["n", "p50", "p90", "max", "patches", "patchHz", "reconnects"],
   cpu: ["bench", "scoreMs"],
   gpu: ["avail", "reason", "n", "p50"],

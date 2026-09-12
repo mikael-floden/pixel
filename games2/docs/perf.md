@@ -8,8 +8,11 @@ The ground render texture (scroll, slices, cell repaints, prefetch, compose budg
   rebuild every 96 px of camera travel — and the render section at 6.7 ms
   over 7.6k display objects. The depth path issues NO occluder images and
   tests bodies per pixel in their own shader; the pooling below is the
-  sprite path's, kept while it is the default. A/B on his phone: two beacon
-  runs, `?occ=sprites` and `?occ=depth`, `scripts/perf-read.mjs --diff`.
+  sprite path's, kept while it is the default. A/B on his phone: the
+  Settings "renderer" button flips the path in the running game and every
+  beacon window carries `run.occ` (`depth` / `sprites`), so one perf run
+  with a flip in the middle is the experiment: `scripts/perf-read.mjs
+  --diff depth sprites` (or `--occ depth`) reads it.
 - **THE OCCLUDER SET IS POOLED, NOT REBUILT** (`occImage`, `destroyBatch`,
   2026-09-02). A rebuild used to destroy every image and create every image,
   and 90-95% of what it created was bit-identical to what it had just
