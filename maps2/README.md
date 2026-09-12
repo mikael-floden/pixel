@@ -19,10 +19,14 @@ file"*). He plays on a phone and tests in production; a commit message names
 cells, the page shows him the place.
 
 - `python3 maps2/pipeline/report3.py <spec.json> <out_dir>` renders one window
-  per change (lossless WebP, `cutaway: true` lifts the cave lids over it),
-  copies the minimap and writes `index.html`; publish `out_dir/index.html`
-  with the Artifact tool and its `img/` files as `files`. The pin is the
-  world's own `minimap.json` dot formula with the cell's level from
+  per change TWICE — the world after the change and the world at the spec's
+  `before` commit (from git; lossless WebP, `cutaway: true` lifts the cave
+  lids over both) — copies the minimap and writes `index.html`; publish
+  `out_dir/index.html` with the Artifact tool and its `img/` files as
+  `files`. Each card shows "after" with a pill top-right and a tap on the
+  image flips it to "before"; "Show on map" opens the minimap in a MODAL
+  with the pin (maintainer 2026-09-12: not a panel fixed at the top). The pin
+  is the world's own `minimap.json` dot formula with the cell's level from
   `world.json` — the same pixel the game's map tab puts a body on.
 - One card per change, in the words a player uses: what changed, why, the
   cell as the game shows it under the player (post-recentre coordinates).
