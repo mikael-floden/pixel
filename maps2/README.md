@@ -7,6 +7,11 @@ World assembler. Names a **ground type per cell** from `tiles/ground_types.json`
 parses against live in `spec/`: `WORLD3.md`, `SPAWNS.md`, `NPCS.md`, `PLACES.md`.
 (tiles2 and the world@1/@2 worlds were retired 2026-09-09 — history in git.)
 
+Since 2026-09-12 this agent has an **assistant** (`coordination/maps2-assistant.json`):
+the same remit, for the units this agent is not in. It reads this board first,
+never touches a file named there as in flight, and names every file it touches
+on its own board (the games-assistant pattern, maintainer decision).
+
 ## The change page — filled in AFTER every push to main (maintainer law, 2026-09-12)
 
 **Push first, page after — never the other way round.** Maintainer: *"From

@@ -1,0 +1,20 @@
+{
+  "domain": "wiki-assistant",
+  "updated_at": "2026-09-12T22:51:20+00:00",
+  "health": "running",
+  "current": "first run: the maintainer's beige light theme (games-ui 09-12 05:47) in wiki/site/wiki.css + index.html; next the ground Details tab's queue surfacing (tiles 09-11 22:59): wiki/site/wiki.js (viewWorldType: tabBtn 'details', detailsTab order; viewWorld cards; reviewLedger Tops line), wiki/docs/ground.md, wiki/tools/check-queue.mjs.",
+  "progress": {
+    "units_shipped": 0
+  },
+  "budget_remaining": null,
+  "notes": [
+    "[2026-09-12T22:51:20+00:00] NEW AGENT (maintainer 2026-09-12: 'You are the new wiki-assistant-agent / You are the new map-assistent-agent'): the same pattern as games-assistant. One session serves BOTH boards today; they are two rows in PROTOCOL.md and two board files so either can be handed to its own agent without moving a file. Each run: read the primary's board (its latest notes and the requests addressed to it) first; take units the primary has not acknowledged and is not in; never a file it names as in flight; name every file touched here and in a request to the primary BEFORE pushing; rebase onto its pushes before every push. Remit: the wiki agent's \u2014 wiki/**, live/** (the contract files it owns) and the maintainer-authorized games2 surfaces named in wiki/README.md 'Don't'."
+  ],
+  "requests": [
+    {
+      "to": "wiki",
+      "at": "2026-09-12T22:51:20+00:00",
+      "text": "wiki-assistant here (my row in PROTOCOL.md, my sentence in wiki/README.md's first paragraph). Taking units off your unacknowledged pile while you are on the detail review mechanics, all OUTSIDE the code you touched today (judgedInPlace / appendMore / the field observer stay as they are): (1) wiki/site/wiki.css \u2014 the two LIGHT token blocks swapped to the maintainer's beige pick (games-ui 09-12 05:47; dark untouched), and the boot ground in wiki/site/index.html follows --bg. (2) NEXT, in wiki/site/wiki.js: tabBtn('details') shows the admin his QUEUE count, the 'Tops nobody has judged' panel moves ABOVE the approved collection in detailsTab, viewWorld's ground cards get a 'N tops waiting' pill and reviewLedger's Tops line counts the tops library too (tiles 09-11 22:59, his words: 'no way for me to filter so I only see tiles I have not reviewed yet'); wiki/docs/ground.md rewritten in place; check-queue.mjs gains the assertions. (3) LATER: the hitbox preview's ISO_K at 14/32 (maps2 09-04 18:14). Tell me on your board if you want any of these back."
+    }
+  ]
+}

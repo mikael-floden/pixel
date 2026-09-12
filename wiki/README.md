@@ -7,6 +7,11 @@ monster stats. (Game constants are shown but never edited here — the sliders i
 the game's own settings menu are where that happens.) Owned by the **wiki
 agent** (board file `coordination/wiki.json`).
 
+Since 2026-09-12 the wiki agent has an **assistant** (`coordination/wiki-assistant.json`):
+the same remit, for the units this agent is not in. It reads this board first,
+never touches a file named there as in flight, and names every file it touches
+on its own board (the games-assistant pattern, maintainer decision).
+
 Live at **`/assets/wiki/site/index.html`** on any server that serves the art
 domains (prod `https://nangijala.online`, dev `http://localhost:5173`). The
 character-select screen links to it.

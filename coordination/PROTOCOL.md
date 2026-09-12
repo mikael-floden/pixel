@@ -22,6 +22,8 @@ parallel. Each agent owns one domain and one board file
 | games-audio | `games2/composer/` | the composer: binds music + sound into the game |
 | games-perf | `games2/` (frame time) | the optimization agent (2026-09-12): the client's hot paths for smoothness, from the phone's beacon; names every file it touches on its board |
 | games-assistant | `games2/` (the game agent's overflow) | the game agent's first assistant (2026-09-12): same remit as games, for the units the game agent is occupied elsewhere for; reads the games board first, never a file named there as in flight, names every file it touches on its board |
+| wiki-assistant | `wiki/` (the wiki agent's overflow) | the wiki agent's first assistant (2026-09-12): same remit as wiki (`wiki/**`, `live/**`, the authorized games2 surfaces), for the units the wiki agent is occupied elsewhere for; reads the wiki board first, never a file named there as in flight, names every file it touches on its board |
+| maps2-assistant | `maps2/` (the map agent's overflow) | the map agent's first assistant (2026-09-12): same remit as maps2, for the units the map agent is occupied elsewhere for; reads the maps2 board first, never a file named there as in flight, names every file it touches on its board |
 
 `games2/` is the one directory shared by several agents (maintainer decision);
 **one-writer-per-file still holds** — the per-file split is documented in
