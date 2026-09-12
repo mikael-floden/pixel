@@ -1,6 +1,8 @@
 import Phaser from "phaser";
 import { resolveDepthRule } from "../depthrule";
 import { ArtQueue, setUploadKb, UPLOAD_KB_STEPS } from "../artqueue";
+import { renderRes } from "../resolution";
+import { ensureResDial } from "../resdial";
 import { Room, getStateCallbacks } from "colyseus.js";
 import {
   WORLD_WIDTH,
@@ -2246,7 +2248,9 @@ export class WorldScene extends Phaser.Scene {
         runFrac,
         travelCells,
         why: final ? "flush" : moved ? "moved" : "bad", // why this window was sent at all
-        sim: `up${this.artQueue().budgetKb || "free"}`, // the upload budget dial (Settings "upload budget")
+        // The two dials under measurement: the upload budget (Settings "upload
+        // budget", KB a frame) and the render resolution (1/r of the backing).
+        sim: `up${this.artQueue().budgetKb || "free"}${renderRes() < 1 ? `/r${Math.round(1 / renderRes())}` : ""}`,
 
         deviceMemoryGb: nav.deviceMemory ?? 0,
         connType: nav.connection?.effectiveType ?? "?",
@@ -15914,6 +15918,7 @@ export class WorldScene extends Phaser.Scene {
       this.mapLayersAt = this.time.now + 250;
       ensureMapLayers();
       ensureNavDial();
+      ensureResDial(); // the render-resolution slider, above the HUD's light-resolution one
       ensureSpeedDial(); // the player-speed slider, injected the same way
       ensureStickDial(); // …and the stick's direction-freedom slider
       ensureStickAngle(); // (re)bind the bearing listeners on games-ui's stick
@@ -20444,7 +20449,16 @@ export class WorldScene extends Phaser.Scene {
     // (1 world px still = base·rs backing px = base device px). rs=1 →
     // byte-identical. ROUNDED to a whole backing pixel per world pixel — see
     // `cameraZoom`, which owns the reason and the arithmetic.
-    return cameraZoom(this.scale.width, this.renderScale());
+    /* THE RESOLUTION DIAL (resolution.ts): the backing and `renderScale` are
+     * both scaled by the dial, so the zoom is derived at FULL resolution —
+     * the same integer as always — and then scaled by the dial too, which
+     * keeps the visible world identical (540 world px across on his phone at
+     * every step) while the fragments fall with the square. Below 1/2 the
+     * zoom is fractional and the art is minified — a measurement, not a
+     * look. */
+    const frac = renderRes();
+    if (frac >= 1) return cameraZoom(this.scale.width, this.renderScale());
+    return cameraZoom(this.scale.width / frac, this.renderScale() / frac) * frac;
   }
 
   private tryJump() {

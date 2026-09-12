@@ -1,3 +1,4 @@
+import { renderRes, setFullBacking } from "./resolution";
 import { zoneAt, zoneGrid, CELL_WU, WHOLE_WORLD, type ZoneCfg } from "@nangijala/shared";
 import { mountFpsBadge } from "./fpsbadge";
 import Phaser from "phaser";
@@ -337,7 +338,16 @@ async function boot() {
   // standard-DPI, tests) is byte-identical to before — a built-in kill switch.
   // Phaser's Scale.RESIZE renders 1:1 CSS with no DPR knob, so we drive the fit
   // manually under Scale.NONE: backing = #game size × RS, canvas CSS = #game size.
-  const RS = Math.min(4, Math.max(1, window.devicePixelRatio || 1));
+  /* THE BACKING: devicePixelRatio (capped) TIMES THE RESOLUTION DIAL
+   * (resolution.ts — 1, 1/2, 1/4, 1/8). `renderScale` is the EFFECTIVE
+   * backing per CSS px, which is what every consumer wants (the ground
+   * texture's world size, the pointer mapping); the scene's zoom re-derives
+   * the full-resolution zoom and scales it by the dial, so the same world
+   * fills the screen at a quarter, a sixteenth or a sixty-fourth of the
+   * fragments. "ml-render-res" refits the canvas live; the scene's resize
+   * handler re-zooms and re-makes the ground texture. */
+  const RS_FULL = Math.min(4, Math.max(1, window.devicePixelRatio || 1));
+  const rsNow = () => RS_FULL * renderRes();
   const game = new Phaser.Game({
     type: Phaser.AUTO,
     parent: "game",
@@ -345,12 +355,13 @@ async function boot() {
     pixelArt: true,
     scale: {
       mode: Phaser.Scale.NONE,
-      width: Math.round(window.innerWidth * RS),
-      height: Math.round(window.innerHeight * RS),
+      width: Math.round(window.innerWidth * rsNow()),
+      height: Math.round(window.innerHeight * rsNow()),
     },
     scene: [WorldScene],
   });
-  game.registry.set("renderScale", RS);
+  game.registry.set("renderScale", rsNow());
+  game.registry.set("renderRes", renderRes());
   // A REAL touch device — hud.ts's touchDevice(), inlined (no import: keep
   // main.ts free of the HUD module graph). Gates the rotation coherence
   // check below so desktop is never affected.
@@ -386,6 +397,8 @@ async function boot() {
     const cssW = el.clientWidth;
     const cssH = el.clientHeight;
     if (cssW < 1 || cssH < 1) return;
+    const RS = rsNow();
+    setFullBacking(Math.round(cssW * RS_FULL), Math.round(cssH * RS_FULL));
     const bw = Math.round(cssW * RS);
     const bh = Math.round(cssH * RS);
     if (game.scale.width !== bw || game.scale.height !== bh) game.scale.resize(bw, bh);
@@ -424,6 +437,11 @@ async function boot() {
   // keeps its size, so the ResizeObserver never fires and only the bounds
   // POSITION goes stale. Same fix, different trigger.
   window.addEventListener("ml-hand", fitCanvas);
+  window.addEventListener("ml-render-res", () => {
+    game.registry.set("renderScale", rsNow());
+    game.registry.set("renderRes", renderRes());
+    fitCanvas();
+  });
   const gameEl = document.getElementById("game");
   if (gameEl && "ResizeObserver" in window) new ResizeObserver(fitCanvas).observe(gameEl);
 

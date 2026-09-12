@@ -63,6 +63,24 @@ The ground render texture (scroll, slices, cell repaints, prefetch, compose budg
   and the old shader test both provoked `litShapeJobs` bursts of 50-400 ms
   (shape maps rebuilt for the substituted textures), so a scenery-mock run
   is not a clean ceiling.
+- **THE RESOLUTION DIAL** (`client/src/resolution.ts`, the slider in
+  `resdial.ts` just above the HUD's "Light resolution", 2026-09-12): the
+  canvas backing is `devicePixelRatio` (capped at 4) × the dial — 1, 1/2,
+  1/4, 1/8 — and the camera zoom is derived at full resolution and scaled by
+  the dial, so the SAME world fills the screen with a quarter, a sixteenth or
+  a sixty-fourth of the fragments (`zoomFor`; below 1/2 the zoom is
+  fractional and the art minified — a measurement, not a look). `renderScale`
+  in the registry is the EFFECTIVE backing per CSS px, which is what the
+  ground texture's world size and the pointer mapping want; "ml-render-res"
+  refits the canvas live and the scene's resize handler re-zooms and re-makes
+  the ground texture. The light dial is a fraction of the canvas, so its
+  ceiling follows this one by construction, and both readouts name the same
+  units: `1/2 540×702`, a fraction of the FULL backing and the pixels it
+  means (`resFractionLabel`). Beacon: `run.sim` carries `/r2`, `/r4`, `/r8`;
+  `view` and `lights.backing` show the size. Measured on his phone before it
+  existed (the light dial alone): 100% → 50% light resolution moved fps 43 →
+  49 with CPU work flat — the frame is fragment-bound, and this dial asks
+  how much of it is everything else.
 - **THE OCCLUDER SET IS POOLED, NOT REBUILT** (`occImage`, `destroyBatch`,
   2026-09-02). A rebuild used to destroy every image and create every image,
   and 90-95% of what it created was bit-identical to what it had just

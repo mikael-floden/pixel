@@ -20,6 +20,7 @@
  * control and every future knob gets one.
  */
 
+import { renderRes, resFractionLabel } from "./resolution";
 const KEY = "ml-light-scale";
 
 /* REACHED THROUGH globalThis, not as bare globals. The curve here is pure and
@@ -123,15 +124,12 @@ export function setLightScale(v: number): void {
   if (g.window && g.CustomEvent) g.window.dispatchEvent(new g.CustomEvent("ml-light-scale", { detail: next }));
 }
 
-/** Slider readout. Names the side that matters — the fragment count, which is
- * the square — because 50% sounds like half the work and is a quarter of it. */
+/** Slider readout, IN THE RESOLUTION DIAL'S UNITS (maintainer 2026-09-12: "the
+ * light resolution should also change to the same slider value text
+ * representation"): the fields' size as a fraction of the device's FULL
+ * backing — this dial times the render resolution — and the pixels it means,
+ * `1/2 540×702`. The top of this dial is the canvas, i.e. the render
+ * resolution, so it can never name more than the resolution dial does. */
 export function lightScaleLabel(v: number = value): string {
-  if (v >= 1) return "100% (full)";
-  // One decimal under 10%, where whole percents would print three steps of the
-  // slider as the same number.
-  const pct = v * 100;
-  const side = pct < 10 ? pct.toFixed(1) : String(Math.round(pct));
-  const area = v * v * 100;
-  const frac = area < 1 ? area.toFixed(2) : area < 10 ? area.toFixed(1) : String(Math.round(area));
-  return `${side}% · ${frac}% of the pixels`;
+  return resFractionLabel(v * renderRes());
 }
