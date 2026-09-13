@@ -269,6 +269,8 @@ characters2/
       animations/<slug>/<dir>/N.webp   frames per direction (+ preview.gif per animation)
     default_girl/  (same shape)
     _experiments/                archived pre-decision reroll takes
+    _hd_candidates/              high-detail STATE candidates (see below): index.json,
+      <hero>/sheet.<sha8>.webp   one contact sheet per hero, <hero>/<id8>/ per candidate
   npcs/
     index.json                   the NPC roll-up (characters2-npcs@1)
     <id8>/                       one NPC, same shape as a hero
@@ -276,6 +278,7 @@ characters2/
   pipeline/
     pixellab_client.py  sync.py  verify_sync.py  retouch.py  retouch_author.py
     to_webp.py  generate.py (legacy explorer)  pack.py (the packed layer)
+    states.py (the HD candidate states)
 ```
 
 ## THE PACKED LAYER (`npcs/<id>/packed/`; games2 reads it, `pipeline/pack.py` writes it)
@@ -313,6 +316,54 @@ every animation/direction/frame-count, image validity, stale folders, states):
 
 ```bash
 python characters2/pipeline/verify_sync.py     # exits nonzero on any mismatch
+```
+
+## HD candidate states (`humans/_hd_candidates/`) — `characters2-hd-candidates@1`
+
+The heroes are getting a higher-detail base model (maintainer 2026-09-13: "10
+high detail versions of the boy and 10 of the girl … I also want the girl to
+look better … I generated them as states … I will select what version will be
+the final characters"). `pipeline/states.py` makes the candidates as PixelLab
+**states** of the pinned heroes (`create-character-state`: one text edit applied
+to all 8 rotations, saved as a sibling character in the hero's `group_id`), so
+they sit beside the hero in the PixelLab UI, where he picks. The pinned
+characters are never touched; nothing here carries the NPC tag.
+
+- **Ten slots per hero, named `HD 01 refined` … `HD 10 shading P`**: five
+  briefs (refined / face / figure / hair / shading) × {free palette, `P` =
+  snapped to the hero's own palette}. The snap is a real axis, not a repeat: it
+  forbids colour drift (his own `High detail version` grew gold clasps and
+  sandal straps on the girl) and costs shading tones. Every brief restates the
+  locked design (barefoot, bare hands, plain band top + briefs in
+  brown/black/grey/white, no blue; the boy shirtless in plain dark briefs, no
+  gear) because a state edit invents freely otherwise; "look better" rides on
+  the face / figure / hair briefs, never on a new design.
+- **Resumable, never doubled**: the existing set is read from PixelLab (the
+  group siblings named `HD …`) and from disk, never memory; seeds derive from
+  (hero, slot). It runs on the USD credits (the generation pool reads 0.0) and
+  stops below `--min-usd` (default $30 — the other domains' share of the same
+  pool). Measured 2026-09-13: **$0.12 and ~2 minutes per state** (the price is
+  on the finished background job; the create response answers `usage {}`).
+- **The mirror** (`states.py mirror`): every sibling of a hero — the
+  maintainer's own takes included — at `humans/_hd_candidates/<hero>/<id8>/`
+  (8 rotations, `preview.webp`, `state.json` with brief, seed, price and the
+  PixelLab record); `index.json` rolls it up; one tall contact sheet per hero
+  at `<hero>/sheet.<sha8>.webp` (content-hashed, current + prev — the cache
+  law) for a phone. A state deleted in the UI is pruned. The `_` prefix keeps
+  the tree out of the wiki and the game manifest (both skip `_` folders).
+- **Picking a winner**: re-point `config.json:pixellab_characters` at the
+  chosen state's id, regenerate its animations on PixelLab (a state starts at
+  `animation_count 0`; the pinned hero's `character.json` lists the 13–14
+  clips and their `animation_type` text, which is the prompt to replay), then
+  `sync.py <hero>` mirrors it like any hero. `verify_sync.py` fails until every
+  game state resolves; `retouch.json` patches go RETOUCH STALE on the new
+  pickup frames until re-authored. The losers can stay on PixelLab (free to
+  keep) or be deleted in the UI.
+
+```bash
+python characters2/pipeline/states.py plan       # exists / missing / price so far
+python characters2/pipeline/states.py generate   # create the missing slots (--limit 1 to price it)
+python characters2/pipeline/states.py mirror     # download + sheets + index.json
 ```
 
 ## Outfits / extra models (coming)

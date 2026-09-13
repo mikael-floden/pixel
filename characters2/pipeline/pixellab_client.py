@@ -192,5 +192,31 @@ class PixelLabClient:
         """Download one CDN image -> PIL (RGBA), retrying brief post-generation 404s."""
         return self._download(url)
 
+    def create_character_state(self, character_id, edit_description, seed=None,
+                               state_name=None, use_color_palette_from_reference=False,
+                               override_frame_size=None):
+        """Start a STATE of an existing character (POST /create-character-state):
+        the text edit is applied consistently to all of its rotations and saved
+        as a NEW character that shares the source's group_id — the PixelLab UI
+        lists it beside the source, which is how the maintainer compares and
+        picks. The source character is untouched. Returns the raw response:
+        character_id (the new sibling), background_job_id (poll with wait_job;
+        the sibling's rotation_urls stay null until it completes) and usage
+        (usd or generations — the API publishes no price for this call, so the
+        caller reads it here). `use_color_palette_from_reference` snaps the
+        result to the source's own colours (no colour drift, fewer tones);
+        `override_frame_size` ({width, height}, multiples of 4, >= source) only
+        for an edit that needs room — omit to keep the source canvas."""
+        payload = {"character_id": character_id, "edit_description": edit_description,
+                   "use_color_palette_from_reference": bool(use_color_palette_from_reference)}
+        if seed is not None:
+            payload["seed"] = int(seed)
+        if state_name:
+            payload["state_name"] = state_name
+        if override_frame_size:
+            payload["override_frame_size"] = {"width": int(override_frame_size["width"]),
+                                              "height": int(override_frame_size["height"])}
+        return self._request("POST", f"{V2}/create-character-state", json=payload)
+
     def delete_character(self, character_id):
         return self._request("DELETE", f"{V2}/characters/{character_id}")
