@@ -111,6 +111,17 @@ them; folder isolation beats DRY here).
   of slack past it makes the sprite the feet by definition. A FALL needs none:
   `falling` clears on the frame the elevation reaches its target, when the
   body is already down.
+- **THE PROBE SURFACE IS NOT ONE COORDINATE SPACE, AND TWO OF ITS ANSWERS ARE
+  NOT WHAT THEIR NAMES SUGGEST.** Both cost `dawnmist/` a gate run each:
+  `__ml.pickAt` answers in WORLD UNITS (32 to the cell), so a distance taken
+  from it and compared against a threshold in CELLS is out by 32x — every
+  sample fell in the wrong bucket and the deepest hollow in the game reported
+  no fog, with every downstream counter agreeing on a consistent zero. And
+  `__ml.camView()` returns `{x, y, w, h}` — NOT `width`/`height` like the
+  `ctx.view` Rectangle a feature is handed — so `v.width` in a hand-written
+  probe is `undefined`, every sampled point is NaN, and every terrain probe
+  politely answers false. A debug script that samples the view is exactly where
+  this bites, and it looks like the GAME is broken rather than the script.
 - **`playerAt(view)`** (`runtime/ground.ts`) is where the player is DRAWN, in
   the world px every critter holds. `__ml.myScreen()` answers in screen px and
   the view converts it; the player's `__ml.me()` is WORLD UNITS and is the
@@ -647,6 +658,16 @@ server can serve a STALE transform to a fresh page, so a new module (a new
 feature folder, a new probe) may simply not be there — check
 `__mlAmbient.list()` for your effect before believing a zero, and restart the
 dev server rather than debugging the effect.
+**AND "THE FEATURE IS REGISTERED" PROVES NOTHING ABOUT YOUR LATEST EDIT.** A
+server will serve commit N-1 of a file perfectly happily: `dawnmist/` reported
+zero fog in the world's deepest hollow for a whole gate run because the served
+module still carried the previous commit's arithmetic, while its debug block
+carried a field from that same commit and so looked fresh. Touching the file
+did not shake it loose. GREP THE SERVED MODULE FOR THE EXACT SYMBOL YOU
+CHANGED —
+`curl -s "http://localhost:<port>/@fs/<abs path>/feature.ts" | grep -c NEW_CONST`
+— and if it answers 0, start your own dev server (`npm run dev:client` takes
+the next free port) rather than restarting someone else's.
 **A COUNTER THAT READS ZERO PASSES EVERY CEILING.** Two arms in
 `verify-chimney` were green while measuring nothing, and both are now guarded
 because the shape recurs everywhere:
