@@ -165,10 +165,23 @@ export function releases(root) {
 }
 
 /** Refresh the committed cache. A no-op (and a clean exit) where git cannot
- *  answer — this must never be the reason a deploy fails. */
+ *  answer — this must never be the reason a deploy fails.
+ *
+ *  A SHALLOW CLONE ANSWERS WITH ONE COMMIT, AND ONE COMMIT IS NOT A LIST. CI
+ *  checks out depth 1, so `git log -50` there succeeds and returns a single
+ *  row: without this guard the deploy would cheerfully overwrite a good list
+ *  of 50 with a list of 1 and ship it. So the cache never SHRINKS below what
+ *  it already holds (short of a repo that genuinely has fewer commits than
+ *  N_COMMITS), and the refusal is loud rather than silent. */
 export function writeCache(root) {
   const doc = releases(root);
   if (doc.from !== "git") return null;
+  const have = loadCache(root)?.commits?.length ?? 0;
+  if (doc.commits.length < Math.min(N_COMMITS, have)) {
+    console.error(`[releases] git answered with ${doc.commits.length} commit(s) and the committed list holds ${have} — `
+      + "a shallow clone, so the list stands. Deepen the history (blobless) before asking.");
+    return null;
+  }
   const { from, ...body } = doc;
   writeFileSync(cachePath(root), `${JSON.stringify(body, null, 1)}\n`);
   return body;

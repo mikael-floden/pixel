@@ -234,10 +234,18 @@ jobs:
       # It cannot fail the deploy: a list of commit messages is not worth a
       # rollout, and the committed wiki/release_notes.json is the fallback the
       # image build reads if this step writes nothing.
+      # A deepen by REFSPEC and a deepen of what the clone already tracks are
+      # both spelled differently by different checkout versions; neither is
+      # allowed to pull blobs, and neither is allowed to fail the job. If both
+      # miss, the builder refuses to replace 50 commits with the 1 a shallow
+      # clone reports (wiki/lib/releases.mjs) and the committed list ships.
       - name: The wiki's release list (the image has no .git)
         continue-on-error: true
         run: |
-          git fetch --deepen=60 --filter=blob:none --no-tags origin "${{ needs.resolve.outputs.sha }}"
+          git fetch --deepen=60 --filter=blob:none --no-tags origin "${{ needs.resolve.outputs.sha }}" \
+            || git fetch --deepen=60 --filter=blob:none --no-tags origin \
+            || echo "::warning::could not deepen — the committed release list will ship"
+          echo "history depth now: $(git rev-list --count HEAD)"
           node wiki/lib/releases.mjs
 
       - id: auth
