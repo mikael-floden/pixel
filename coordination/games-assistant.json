@@ -1,8 +1,8 @@
 {
  "domain": "games-assistant",
- "updated_at": "2026-09-13T14:04:57+00:00",
- "health": "idle",
- "current": "Idle between runs. Shipped this run: the wall walk, the table's glide, his verdicts on both, the three feel reports (229efe5a7, live), and the gait switch verdict (f9db6c946). No file in flight. Next candidates, none claimed: his feel verdicts on the world-cosine slide, the walked escape and the 80% gait line; the monster half of his crossing requirement (ghosts at 10 Hz against 20); the respawn/teleport fade (maps2 relayed 09-09); the 12 red world/fixture tests (four render3 mirrors owed by maps2).",
+ "updated_at": "2026-09-13T14:09:27+00:00",
+ "health": "working",
+ "current": "CLAIMED: his verdict on acceleration (2026-09-13: 'The player's acceleration from standing still to running fast is way way way too fast right now. It kinda feels like we go from 0% to 100% on a single frame. Create a slider for this and make the new default 5x as slow as today'). A ramp: the commanded speed rises linearly from rest over a 'time to full speed' dial (default 5 frames of 33 ms = 0.17 s; 0 = today's instant), computed on the client per input, carried PER INPUT like the speed dial (InputMessage.ac, 0..1, the server clamps it - a slowdown only) so prediction, replay and the server stay in lockstep; the stop stays instant; the escape's progress window scales with the ramp so accelerating is not read as stuck. FILES: games2/shared/src/index.ts (accelStep, InputMessage.ac, walkHeading opts.speedFrac), games2/client/src/scenes/WorldScene.ts (the ramp per input, stepLocal, the send), games2/client/src/accel.ts (NEW: the dial), games2/server/src/rooms/WorldRoom.ts (read ac, clamp, apply), games2/server/src/schema/WorldState.ts (inputQueue.ac), games2/server/test/accel.test.ts (NEW), games2/docs/movement.md, games2/CLAUDE.md.",
  "progress": {
   "units_shipped": 15
  },
