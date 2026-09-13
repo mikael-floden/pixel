@@ -20,6 +20,7 @@ import { sandstormFeature } from "./sandstorm/sandstorm";
 import { leavesFeature } from "./leaves/leaves";
 import { foamFeature } from "./foam/foam";
 import { fishFeature } from "./fish/fish";
+import { dripsFeature } from "./drips/drips";
 
 /** The ambient-life registry — one entry per feature folder. FIELD features
  * (fireflies, pollen, water) gate themselves on the environment/terrain;
@@ -42,6 +43,7 @@ export function mountAmbient(game: Phaser.Game) {
     deepWaterFeature(),
     foamFeature(),
     fishFeature(),
+    dripsFeature(),
     antsFeature(),
     spidersFeature(),
     mothsFeature(),
