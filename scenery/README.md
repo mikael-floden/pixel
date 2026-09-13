@@ -269,11 +269,13 @@ ask for five; the 4-own/2-opposite default is unchanged).
   and the hole is not where the south view puts it. `conf` says how it was
   found: `opening` (a dark hole), `flue_top` (the top of the narrow flue, for
   a pot whose mouth is drawn light rather than as a hole) or `silhouette`
-  (neither). Measured over the 40 states x 3 facings: 117 `opening`, 3 `silhouette`, every
-  one landing on the art in its top 42%.
-  **THE MAINTAINER MARKED THREE ROUNDS OF THIS BY HAND, and every correction
-  is a rule now** (2026-09-13, his red circles on the measurement against green
-  crosses on the truth):
+  (neither). Measured over the 40 states x 3 facings: 117 `opening`, 3
+  `flue_top`, and every anchor lands on a pixel of its own art that is dark —
+  which `--check` proves on every run (`OFF THE HOLE` is a failure).
+  **THE MAINTAINER MARKED FOUR ROUNDS OF THIS BY HAND, and every correction is
+  a rule now** (2026-09-13, his red circles on the measurement against green
+  crosses on the truth). They are listed because each one is a trap the next
+  measurement of anything on a sprite will fall into:
   - **THE FLUE IS THE NARROW THING AT THE TOP, and the mouth is in IT.** The
     measurement had put it on the CAP beside the pot, where the socket's shadow
     is bigger and darker than the pot's own opening. So the search walks down
@@ -285,27 +287,59 @@ ask for five; the 4-own/2-opposite default is unchanged).
     width test was throwing it away: in a three-quarter view the opening's top
     row is the cap's far corner, where the silhouette is narrowest, so a 31 px
     opening measured 31/29 and read as a mortar course.
-  - **THE SMOKE STARTS IN THE MIDDLE OF THE HOLE, not at its rim.** Two things
-    were putting it on the rim. Only the DARKEST part of a big opening clears
-    the cut — the deep shadow under the far rim — while the near inner wall
-    catches light, so the winning blob is grown over a relaxed cut before its
-    centroid is taken. And the flue rule itself was misfiring: in a
-    three-quarter view EVERY box starts at its narrow far corner, so a plain
-    cap read as a "flue" and the search covered only its top sliver. A flue
-    must hold roughly ONE WIDTH down its length and then step out under it
-    (`FLUE_RATIO`, `FLUE_STEP`); a corner fans out a few pixels a row and no
-    longer qualifies.
-  A mouth must also BEGIN in the top third of the piece: a chimney capped by a
-  dark iron cowl has no surviving opening at all (the cowl is dark and reads as
-  the outline), and without that guard it anchored on a shadow a third of the
-  way down the stack. Better the honest fallback than a hole that is not one.
-  The other rules that survive from the first pass: the darkness cut is a
-  fraction of the piece's OWN median luma (a percentile finds a "darkest fifth"
-  even where there is no hole); a blob touching transparency is the sprite's
-  outline; a blob must span 2+ rows (a pot's mouth is a two-row ellipse in a
-  three-quarter view); and on a plain cap a blob must stand back from the
-  silhouette or it is the rim's own shadow. **Run `--sheet` and LOOK at it** —
-  every one of those was caught by looking, not by a number.
+  - **THE SMOKE STARTS IN THE MIDDLE OF THE HOLE, not at its rim.** Only the
+    DARKEST part of a big opening clears the cut — the deep shadow under the
+    far rim — while the near inner wall catches light, so the winning blob is
+    grown over a relaxed cut (1.37x the cut that found it) before its middle is
+    taken.
+  - **AND THE MIDDLE MUST BE A PIXEL OF THE HOLE.** "You nailed everyone except
+    the 3 I posted": on three stacks the cross sat on the lit course just UNDER
+    the opening, and on a fourth on the rim above it. Four rules came out of
+    that round, and they are the ones to copy for any future measurement:
+    - A GROW CAN WALK OUT OF THE HOLE. A cap's rim casts a dark band that runs
+      wall to wall under the mouth and joins it through one shadowed mortar
+      joint; the mean of mouth+band lands on the band. A mouth is never as wide
+      as the stack, so a grown shape that is gets thrown away and the darkest
+      core alone is the hole.
+    - THE MIDDLE IS THE BOX CENTRE, NOT THE MEAN. A mouth carries a ragged dark
+      fringe down its shaded side and the mean rides into it (5 px off his mark
+      on chimney_009, where the box centre landed 1 px away). The point is then
+      SNAPPED to the nearest pixel actually in the region.
+    - A DARK CAP NEEDS A DARKER CUT. A wooden crown is as dark as its own
+      cavity at one cut, so the two fuse, touch the outline and are dropped —
+      the piece fell back to its silhouette and put the smoke on the rim. The
+      cut walks down a ladder until the cavity separates; the first rung that
+      finds anything wins, so pieces that already worked are untouched.
+    - THE OUTLINE IS THE OUTSIDE, NOT ANY TRANSPARENT PIXEL. A cap raised on
+      legs is drawn with real holes through it and the mouth under it touches
+      them; only the background the piece floats in disqualifies a blob, so the
+      transparent pixels are flood-filled from the canvas edge first.
+  A mouth must also BEGIN in the top third of the piece (a shadow a third of
+  the way down a stack is not a hole), and INSIDE A POT the highest dark thing
+  is the mouth — the size slack that lets a cap's far rim win belongs to caps,
+  and it was handing a pot's shaded flank the anchor instead of its little
+  ellipse of a mouth.
+  **A FLUE HOLDS ITS WIDTH; A CORNER NEVER DOES** — this is what tells a pot
+  from the top corner of a box in three-quarter view, where every box starts
+  narrow. A pot widens from its rim and then repeats one width down its body
+  (7, 11, 13, 15, 17, 17, 17, 17); a corner gains a couple of pixels every row
+  and repeats nothing, so the test is a PLATEAU (one width over 30% of the
+  run). Two simpler rules died here and are not coming back: a ratio bound (a
+  pot tapers 2.6x from rim to foot, so the bound that stopped corners threw
+  pots away and let the anchor wander onto the brickwork beside one) and a
+  step-out under the run (in three-quarter the cap under the pot starts at ITS
+  own corner, so there is no step to find).
+  The rules that survive from the first pass: the darkness cut is a fraction of
+  the piece's OWN median luma (a percentile finds a "darkest fifth" even where
+  there is no hole); a blob must span 2+ rows (a pot's mouth is a two-row
+  ellipse in a three-quarter view); and on a plain cap a blob must stand back
+  from the silhouette or it is the rim's own shadow.
+  **A MEASUREMENT OF WHERE AN EFFECT LEAVES A PIECE CANNOT BE GATED, ONLY
+  LOOKED AT.** Four cuts of this passed their own checks and read plausibly on
+  a contact sheet; his eye on the art caught every one. `--sheet` draws a cross
+  on every mouth: run it and LOOK. The counter-gate in `--check` is the cheap
+  half of the lesson — it re-reads every published anchor and fails any that is
+  off the art or on lit material — and it would have caught three of the four.
 - **SE/S/SW COST NOTHING** and are already a standing order (his 2026-08-28:
   "Everything under 'Indoor' and under 'Town' should have SW, S and SE").
   Anything 168 px or under went down `create-8-direction-object`, so PixelLab

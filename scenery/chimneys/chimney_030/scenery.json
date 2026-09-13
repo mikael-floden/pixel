@@ -73,7 +73,7 @@
           },
           "south-west": {
             "dx": -5.0,
-            "dy": -28.1,
+            "dy": -28.0,
             "conf": "opening"
           }
         }
@@ -92,18 +92,18 @@
         "south": "chimneys/chimney_030/not_lit_2/sprite.webp"
       },
       "vent": {
-        "dx": -1.4,
-        "dy": -26.9,
+        "dx": -1.0,
+        "dy": -27.5,
         "conf": "opening",
         "rotations": {
           "south-east": {
-            "dx": -2.1,
-            "dy": -26.7,
+            "dx": -2.0,
+            "dy": -27.5,
             "conf": "opening"
           },
           "south-west": {
-            "dx": -0.5,
-            "dy": -26.8,
+            "dx": 0.0,
+            "dy": -27.5,
             "conf": "opening"
           }
         }
@@ -127,8 +127,8 @@
         "conf": "opening",
         "rotations": {
           "south-east": {
-            "dx": 4.2,
-            "dy": -11.6,
+            "dx": 5.0,
+            "dy": -13.0,
             "conf": "opening"
           },
           "south-west": {
@@ -152,18 +152,18 @@
         "south": "chimneys/chimney_030/not_lit_4/sprite.webp"
       },
       "vent": {
-        "dx": 0.7,
-        "dy": -29.3,
+        "dx": 1.0,
+        "dy": -29.5,
         "conf": "opening",
         "rotations": {
           "south-east": {
-            "dx": 0.6,
-            "dy": -28.6,
+            "dx": 1.0,
+            "dy": -28.5,
             "conf": "opening"
           },
           "south-west": {
-            "dx": 0.9,
-            "dy": -28.7,
+            "dx": 1.0,
+            "dy": -29.0,
             "conf": "opening"
           }
         }
@@ -184,17 +184,17 @@
       "vent": {
         "dx": 1.0,
         "dy": -32.4,
-        "conf": "silhouette",
+        "conf": "flue_top",
         "rotations": {
           "south-east": {
-            "dx": -0.4,
-            "dy": -13.0,
-            "conf": "opening"
+            "dx": -5.8,
+            "dy": -32.4,
+            "conf": "flue_top"
           },
           "south-west": {
-            "dx": 11.4,
-            "dy": -16.2,
-            "conf": "opening"
+            "dx": 7.0,
+            "dy": -32.4,
+            "conf": "flue_top"
           }
         }
       }
@@ -212,7 +212,7 @@
       },
       "south-west": {
         "dx": -5.0,
-        "dy": -28.1,
+        "dy": -28.0,
         "conf": "opening"
       }
     }
