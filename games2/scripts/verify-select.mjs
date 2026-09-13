@@ -100,6 +100,23 @@ try {
   // they can never differ in size or baseline — his 2026-07-30 report — so
   // this asserts the PAIR, not two icons independently, and it asserts the
   // decoded bitmaps: a missing /ui2 file is an empty box, not an error.
+  // DECODE FIRST, MEASURE SECOND. naturalWidth is 0 both for a 404 and for a
+  // file that simply has not arrived yet, and on a cold dev server the corner
+  // art lands ~300ms after #ml-wiki exists (the install chip's is later still
+  // — a hidden image is fetched at a lower priority). Waiting keeps the gate's
+  // teeth: a missing /ui2 file never decodes, so this times out and fails with
+  // the same meaning, instead of the gate passing or failing on the harness's
+  // luck.
+  await page
+    .waitForFunction(
+      () => [...document.querySelectorAll(".ml-cicon-img")].every((i) => i.naturalWidth > 0),
+      null,
+      { timeout: 15000 },
+    )
+    .catch(() => {
+      throw new Error("a corner icon never decoded — check /ui2 for a 404 (an empty box, not an error)");
+    });
+
   const pair = await page.evaluate(() => {
     const one = (sel) => {
       const b = document.querySelector(sel);
@@ -110,6 +127,7 @@ try {
         box: [Math.round(ir.width), Math.round(ir.height)],
         rendering: getComputedStyle(i).imageRendering,
         left: Math.round(ir.left), midOffset: +((ir.top + ir.bottom) / 2 - (br.top + br.bottom) / 2).toFixed(1),
+        iconLeftPad: +(ir.left - br.left).toFixed(1),
         btn: [Math.round(br.width), Math.round(br.height)], top: Math.round(br.top), bottom: Math.round(br.bottom),
       };
     };
@@ -121,6 +139,51 @@ try {
     if (g.box[0] !== 24 || g.box[1] !== 24 || g.rendering !== "pixelated")
       throw new Error(`${name} icon is ${g.box.join("x")}/${g.rendering}, wanted its authored 24x24 pixelated`);
   }
+  // ── THE INSTALL CHIP: his download arrow, and the THIRD member of the set ──
+  // (2026-09-13, replacing the ⤓ text glyph; "The button should look similar
+  // to Wiki and theme same size and margin".) It is HIDDEN until the browser
+  // offers an install prompt, which headless Chromium never does — so flash it
+  // visible to measure its resting geometry and restore, the same pure
+  // measurement verify-chat makes on the chat input. Asserted AS A SET with
+  // the pair, never independently: identical box, identical 12px margin from
+  // its own edge, same top line as Wiki — sizing one of a matched set alone is
+  // the bug the shared rule exists to prevent.
+  const inst = await page.evaluate(() => {
+    const b = document.querySelector("#ml-install");
+    const wasHidden = b.hidden;
+    b.hidden = false;
+    const i = b.querySelector(".ml-cicon-img");
+    const br = b.getBoundingClientRect(), ir = i.getBoundingClientRect();
+    const g = {
+      src: i.getAttribute("src") ?? "", nat: [i.naturalWidth, i.naturalHeight],
+      box: [Math.round(ir.width), Math.round(ir.height)],
+      rendering: getComputedStyle(i).imageRendering,
+      midOffset: +((ir.top + ir.bottom) / 2 - (br.top + br.bottom) / 2).toFixed(1),
+      iconLeftPad: +(ir.left - br.left).toFixed(1),
+      btn: [Math.round(br.width), Math.round(br.height)],
+      right: Math.round(window.innerWidth - br.right), top: Math.round(br.top),
+      text: (b.textContent || "").trim(),
+      glyph: /[\u2193\u21a7\u2913\u2b07\ufe0f]/.test(b.textContent || ""),
+    };
+    b.hidden = wasHidden;
+    return g;
+  });
+  if (inst.nat[0] !== 48 || inst.nat[1] !== 48)
+    throw new Error(`install icon did not decode (${inst.src}, natural ${inst.nat.join("x")}) — a 404 in /ui2 renders as an empty box`);
+  if (inst.box[0] !== 24 || inst.box[1] !== 24 || inst.rendering !== "pixelated")
+    throw new Error(`install icon is ${inst.box.join("x")}/${inst.rendering}, wanted its authored 24x24 pixelated`);
+  if (inst.glyph) throw new Error(`the install chip still carries an arrow GLYPH (${inst.text}) — the face is his pixel art`);
+  if (!/install/i.test(inst.text)) throw new Error(`the install chip lost its word: "${inst.text}"`);
+  if (Math.abs(inst.midOffset) > 0.6)
+    throw new Error(`install icon is off the chip's centre line by ${inst.midOffset}px`);
+  if (String(inst.btn) !== String(pair.wiki.btn))
+    throw new Error(`the install chip is ${inst.btn} while the pair is ${pair.wiki.btn} — the three are one set (his 2026-09-13 verdict)`);
+  if (Math.abs(inst.right - 12) > 1 || Math.abs(inst.top - pair.wiki.top) > 1)
+    throw new Error(`install chip at right ${inst.right}/top ${inst.top}, wanted the same 12px margin as Wiki's (left ${pair.wiki.left - 24}) on its line (${pair.wiki.top})`);
+  if (Math.abs(inst.iconLeftPad - pair.wiki.iconLeftPad) > 0.6)
+    throw new Error(`install icon sits ${inst.iconLeftPad}px inside its chip, Wiki's sits ${pair.wiki.iconLeftPad} — one internal layout`);
+  console.log("INSTALL " + JSON.stringify(inst));
+
   const gap = pair.theme.top - pair.wiki.bottom;
   if (pair.wiki.left !== pair.theme.left || Math.abs(pair.wiki.midOffset - pair.theme.midOffset) > 0.6)
     throw new Error(`the corner pair is not aligned: left ${pair.wiki.left}/${pair.theme.left}, centre offset ${pair.wiki.midOffset}/${pair.theme.midOffset}`);
