@@ -1664,6 +1664,344 @@
         "west": "rock_mite/animations/attack_v3__west.webp",
         "north-west": "rock_mite/animations/attack_v3__north-west.webp"
       }
+    },
+    "die_v1": {
+      "directions": {
+        "south": {
+          "status": "fail",
+          "step_mean": 0.1275,
+          "step_max": 0.2367,
+          "drift": 1.96,
+          "loop": 0.2194,
+          "loop_ratio": 1.72,
+          "travel": 0.14,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": 0.007,
+          "peak": null,
+          "reach": null,
+          "turn": null,
+          "end_area": 1.003,
+          "canvas": [
+            40,
+            40
+          ],
+          "reasons": [
+            "still standing: the last frame is only 0.22 of the silhouette away from the first — no collapse"
+          ],
+          "sub": "3d12fd34-ffc0-4294-8cbd-fb7a6a7f1386",
+          "group": "4075db23-d2bb-4196-8a13-e2d84388af8a",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "action": "Death - The glow goes out, it tips over onto its back with its legs curled up and fades away",
+          "intensity": 0,
+          "rolls": 1,
+          "frames": 7,
+          "rung": 0,
+          "unwrapped": null,
+          "tries": 1,
+          "generated_at": "2026-09-12T23:27:02+00:00"
+        },
+        "south-east": {
+          "status": "warn",
+          "step_mean": 0.0826,
+          "step_max": 0.1364,
+          "drift": 1.89,
+          "loop": 0.2562,
+          "loop_ratio": 3.1,
+          "travel": 1.61,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": -0.002,
+          "peak": null,
+          "reach": null,
+          "turn": null,
+          "end_area": 0.99,
+          "canvas": [
+            40,
+            40
+          ],
+          "reasons": [
+            "motion 0.083 outside the calm band 0.1–0.9 — eyeball it",
+            "barely falls: last vs first 0.26 — eyeball it"
+          ],
+          "sub": "e81d882b-91fc-47e3-8a7f-24814e94bf61",
+          "group": "6fadb64e-9543-41e0-bc60-b6ac3efd870d",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "action": "Death - The glow goes out, it tips over onto its back with its legs curled up and fades away",
+          "intensity": 0,
+          "rolls": 1,
+          "frames": 7,
+          "rung": 0,
+          "unwrapped": null,
+          "tries": 1,
+          "generated_at": "2026-09-12T23:27:03+00:00"
+        },
+        "east": {
+          "status": "warn",
+          "step_mean": 0.0918,
+          "step_max": 0.1209,
+          "drift": 3.64,
+          "loop": 0.3921,
+          "loop_ratio": 4.27,
+          "travel": 0.95,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": 0.0,
+          "peak": null,
+          "reach": null,
+          "turn": null,
+          "end_area": 0.978,
+          "canvas": [
+            40,
+            40
+          ],
+          "reasons": [
+            "motion 0.092 outside the calm band 0.1–0.9 — eyeball it",
+            "barely falls: last vs first 0.39 — eyeball it"
+          ],
+          "sub": "b7eb642c-5b7f-4c8f-92a4-2af6e940fda2",
+          "group": "c35a201f-734d-4656-ba25-8ac3a388bc03",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "action": "Death - The glow goes out, it tips over onto its back with its legs curled up and fades away",
+          "intensity": 0,
+          "rolls": 1,
+          "frames": 7,
+          "rung": 0,
+          "unwrapped": null,
+          "tries": 1,
+          "generated_at": "2026-09-12T23:27:03+00:00"
+        },
+        "north-east": {
+          "status": "fail",
+          "step_mean": 0.0762,
+          "step_max": 0.1431,
+          "drift": 1.62,
+          "loop": 0.2024,
+          "loop_ratio": 2.66,
+          "travel": 0.81,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": 0.002,
+          "peak": null,
+          "reach": null,
+          "turn": null,
+          "end_area": 0.972,
+          "canvas": [
+            40,
+            40
+          ],
+          "reasons": [
+            "motion 0.076 outside the calm band 0.1–0.9 — eyeball it",
+            "still standing: the last frame is only 0.20 of the silhouette away from the first — no collapse"
+          ],
+          "sub": "babf05bd-bb17-4a47-be7a-67aa63fccb4f",
+          "group": "8e24ed03-b84c-4bba-abf3-1a4d01fc0d82",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "action": "Death - The glow goes out, it tips over onto its back with its legs curled up and fades away",
+          "intensity": 0,
+          "rolls": 1,
+          "frames": 7,
+          "rung": 0,
+          "unwrapped": null,
+          "tries": 1,
+          "generated_at": "2026-09-12T23:27:04+00:00"
+        },
+        "north": {
+          "status": "warn",
+          "step_mean": 0.1096,
+          "step_max": 0.1793,
+          "drift": 4.25,
+          "loop": 0.2993,
+          "loop_ratio": 2.73,
+          "travel": 0.11,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": 0.167,
+          "peak": null,
+          "reach": null,
+          "turn": null,
+          "end_area": 0.949,
+          "canvas": [
+            40,
+            40
+          ],
+          "reasons": [
+            "barely falls: last vs first 0.30 — eyeball it"
+          ],
+          "sub": "4e6ea674-8345-40a6-a483-523e055bbe56",
+          "group": "60c6a480-5d91-4af0-b50f-ab2cb135e5f7",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "action": "Death - The glow goes out, it tips over onto its back with its legs curled up and fades away",
+          "intensity": 0,
+          "rolls": 1,
+          "frames": 7,
+          "rung": 0,
+          "unwrapped": null,
+          "tries": 1,
+          "generated_at": "2026-09-12T23:27:04+00:00"
+        },
+        "south-west": {
+          "status": "warn",
+          "step_mean": 0.0826,
+          "step_max": 0.1364,
+          "drift": 1.89,
+          "loop": 0.2562,
+          "loop_ratio": 3.1,
+          "travel": 1.61,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": -0.002,
+          "peak": null,
+          "reach": null,
+          "turn": null,
+          "end_area": 0.99,
+          "canvas": [
+            40,
+            40
+          ],
+          "reasons": [
+            "motion 0.083 outside the calm band 0.1–0.9 — eyeball it",
+            "barely falls: last vs first 0.26 — eyeball it"
+          ],
+          "sub": "e81d882b-91fc-47e3-8a7f-24814e94bf61",
+          "group": "6fadb64e-9543-41e0-bc60-b6ac3efd870d",
+          "takes": 1,
+          "version": 1,
+          "mirrored": true,
+          "action": "Death - The glow goes out, it tips over onto its back with its legs curled up and fades away",
+          "intensity": 0,
+          "rolls": 1,
+          "frames": 7,
+          "rung": 0,
+          "unwrapped": null,
+          "tries": 1,
+          "generated_at": "2026-09-12T23:27:03+00:00",
+          "source": "south-east"
+        },
+        "west": {
+          "status": "warn",
+          "step_mean": 0.0918,
+          "step_max": 0.1209,
+          "drift": 3.64,
+          "loop": 0.3921,
+          "loop_ratio": 4.27,
+          "travel": 0.95,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": 0.0,
+          "peak": null,
+          "reach": null,
+          "turn": null,
+          "end_area": 0.978,
+          "canvas": [
+            40,
+            40
+          ],
+          "reasons": [
+            "motion 0.092 outside the calm band 0.1–0.9 — eyeball it",
+            "barely falls: last vs first 0.39 — eyeball it"
+          ],
+          "sub": "b7eb642c-5b7f-4c8f-92a4-2af6e940fda2",
+          "group": "c35a201f-734d-4656-ba25-8ac3a388bc03",
+          "takes": 1,
+          "version": 1,
+          "mirrored": true,
+          "action": "Death - The glow goes out, it tips over onto its back with its legs curled up and fades away",
+          "intensity": 0,
+          "rolls": 1,
+          "frames": 7,
+          "rung": 0,
+          "unwrapped": null,
+          "tries": 1,
+          "generated_at": "2026-09-12T23:27:03+00:00",
+          "source": "east"
+        }
+      },
+      "action": "Death - The glow goes out, it tips over onto its back with its legs curled up and fades away",
+      "frame_paths": {
+        "south": [
+          "rock_mite/animations/die_v1/south/00.webp",
+          "rock_mite/animations/die_v1/south/01.webp",
+          "rock_mite/animations/die_v1/south/02.webp",
+          "rock_mite/animations/die_v1/south/03.webp",
+          "rock_mite/animations/die_v1/south/04.webp",
+          "rock_mite/animations/die_v1/south/05.webp",
+          "rock_mite/animations/die_v1/south/06.webp"
+        ],
+        "south-east": [
+          "rock_mite/animations/die_v1/south-east/00.webp",
+          "rock_mite/animations/die_v1/south-east/01.webp",
+          "rock_mite/animations/die_v1/south-east/02.webp",
+          "rock_mite/animations/die_v1/south-east/03.webp",
+          "rock_mite/animations/die_v1/south-east/04.webp",
+          "rock_mite/animations/die_v1/south-east/05.webp",
+          "rock_mite/animations/die_v1/south-east/06.webp"
+        ],
+        "east": [
+          "rock_mite/animations/die_v1/east/00.webp",
+          "rock_mite/animations/die_v1/east/01.webp",
+          "rock_mite/animations/die_v1/east/02.webp",
+          "rock_mite/animations/die_v1/east/03.webp",
+          "rock_mite/animations/die_v1/east/04.webp",
+          "rock_mite/animations/die_v1/east/05.webp",
+          "rock_mite/animations/die_v1/east/06.webp"
+        ],
+        "north-east": [
+          "rock_mite/animations/die_v1/north-east/00.webp",
+          "rock_mite/animations/die_v1/north-east/01.webp",
+          "rock_mite/animations/die_v1/north-east/02.webp",
+          "rock_mite/animations/die_v1/north-east/03.webp",
+          "rock_mite/animations/die_v1/north-east/04.webp",
+          "rock_mite/animations/die_v1/north-east/05.webp",
+          "rock_mite/animations/die_v1/north-east/06.webp"
+        ],
+        "north": [
+          "rock_mite/animations/die_v1/north/00.webp",
+          "rock_mite/animations/die_v1/north/01.webp",
+          "rock_mite/animations/die_v1/north/02.webp",
+          "rock_mite/animations/die_v1/north/03.webp",
+          "rock_mite/animations/die_v1/north/04.webp",
+          "rock_mite/animations/die_v1/north/05.webp",
+          "rock_mite/animations/die_v1/north/06.webp"
+        ],
+        "south-west": [
+          "rock_mite/animations/die_v1/south-west/00.webp",
+          "rock_mite/animations/die_v1/south-west/01.webp",
+          "rock_mite/animations/die_v1/south-west/02.webp",
+          "rock_mite/animations/die_v1/south-west/03.webp",
+          "rock_mite/animations/die_v1/south-west/04.webp",
+          "rock_mite/animations/die_v1/south-west/05.webp",
+          "rock_mite/animations/die_v1/south-west/06.webp"
+        ],
+        "west": [
+          "rock_mite/animations/die_v1/west/00.webp",
+          "rock_mite/animations/die_v1/west/01.webp",
+          "rock_mite/animations/die_v1/west/02.webp",
+          "rock_mite/animations/die_v1/west/03.webp",
+          "rock_mite/animations/die_v1/west/04.webp",
+          "rock_mite/animations/die_v1/west/05.webp",
+          "rock_mite/animations/die_v1/west/06.webp"
+        ]
+      },
+      "strips": {
+        "south": "rock_mite/animations/die_v1__south.webp",
+        "south-east": "rock_mite/animations/die_v1__south-east.webp",
+        "east": "rock_mite/animations/die_v1__east.webp",
+        "north-east": "rock_mite/animations/die_v1__north-east.webp",
+        "north": "rock_mite/animations/die_v1__north.webp",
+        "south-west": "rock_mite/animations/die_v1__south-west.webp",
+        "west": "rock_mite/animations/die_v1__west.webp"
+      }
     }
   }
 }

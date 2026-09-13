@@ -1594,6 +1594,247 @@
         "north-west": "ghost_hound/animations/attack_v3__north-west.webp",
         "south-west": "ghost_hound/animations/attack_v3__south-west.webp"
       }
+    },
+    "die_v1": {
+      "directions": {
+        "south": {
+          "status": "fail",
+          "step_mean": 0.1084,
+          "step_max": 0.2033,
+          "drift": 4.36,
+          "loop": 0.2315,
+          "loop_ratio": 2.14,
+          "travel": 2.64,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": 0.0,
+          "peak": null,
+          "reach": null,
+          "turn": null,
+          "end_area": 0.839,
+          "canvas": [
+            104,
+            104
+          ],
+          "reasons": [
+            "still standing: the last frame is only 0.23 of the silhouette away from the first — no collapse"
+          ],
+          "sub": "d4cc6f27-7a48-4cef-bcd4-9df0e68f1522",
+          "group": "119f4218-d4de-4289-974b-4317743c79ca",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "action": "Death - Sinks down onto its belly and dissolves into cold mist that drifts apart and fades away",
+          "intensity": 0,
+          "rolls": 1,
+          "frames": 7,
+          "rung": 0,
+          "unwrapped": null,
+          "tries": 1,
+          "generated_at": "2026-09-12T23:50:28+00:00"
+        },
+        "south-east": {
+          "status": "fail",
+          "step_mean": 0.1123,
+          "step_max": 0.1633,
+          "drift": 6.66,
+          "loop": 0.1835,
+          "loop_ratio": 1.63,
+          "travel": 0.75,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": 0.162,
+          "peak": null,
+          "reach": null,
+          "turn": null,
+          "end_area": 0.907,
+          "canvas": [
+            104,
+            104
+          ],
+          "reasons": [
+            "still standing: the last frame is only 0.18 of the silhouette away from the first — no collapse"
+          ],
+          "sub": "3815c93b-33ed-467b-84a5-0a42e1ed5ef1",
+          "group": "2f282157-0d00-4662-8228-dc7aacdeeba5",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "action": "Death - Sinks down onto its belly and dissolves into cold mist that drifts apart and fades away",
+          "intensity": 0,
+          "rolls": 1,
+          "frames": 7,
+          "rung": 0,
+          "unwrapped": null,
+          "tries": 1,
+          "generated_at": "2026-09-12T23:50:29+00:00"
+        },
+        "east": {
+          "status": "fail",
+          "step_mean": 0.1325,
+          "step_max": 0.1976,
+          "drift": 3.31,
+          "loop": 0.2389,
+          "loop_ratio": 1.8,
+          "travel": 1.12,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": 0.033,
+          "peak": null,
+          "reach": null,
+          "turn": null,
+          "end_area": 1.03,
+          "canvas": [
+            104,
+            104
+          ],
+          "reasons": [
+            "still standing: the last frame is only 0.24 of the silhouette away from the first — no collapse"
+          ],
+          "sub": "2631d0c3-1286-4931-8253-86e1a94cabd2",
+          "group": "9d249227-8591-4dc2-b8c2-b270c4c57a42",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "action": "Death - Sinks down onto its belly and dissolves into cold mist that drifts apart and fades away",
+          "intensity": 0,
+          "rolls": 1,
+          "frames": 7,
+          "rung": 0,
+          "unwrapped": null,
+          "tries": 1,
+          "generated_at": "2026-09-12T23:50:29+00:00"
+        },
+        "north-east": {
+          "status": "fail",
+          "step_mean": 0.0873,
+          "step_max": 0.197,
+          "drift": 2.95,
+          "loop": 0.2203,
+          "loop_ratio": 2.52,
+          "travel": 2.25,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": 0.02,
+          "peak": null,
+          "reach": null,
+          "turn": null,
+          "end_area": 0.921,
+          "canvas": [
+            104,
+            104
+          ],
+          "reasons": [
+            "motion 0.087 outside the calm band 0.1–0.9 — eyeball it",
+            "still standing: the last frame is only 0.22 of the silhouette away from the first — no collapse"
+          ],
+          "sub": "f6a2648d-e694-470e-b35c-291e511dbf2d",
+          "group": "e03ff9b3-7edf-4689-bcbb-cfb52eecf7fc",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "action": "Death - Sinks down onto its belly and dissolves into cold mist that drifts apart and fades away",
+          "intensity": 0,
+          "rolls": 1,
+          "frames": 7,
+          "rung": 0,
+          "unwrapped": null,
+          "tries": 1,
+          "generated_at": "2026-09-12T23:50:30+00:00"
+        },
+        "north": {
+          "status": "fail",
+          "step_mean": 0.2277,
+          "step_max": 0.3127,
+          "drift": 6.92,
+          "loop": 0.2448,
+          "loop_ratio": 1.08,
+          "travel": 4.1,
+          "pin": 1.0,
+          "pad": 1,
+          "flash": 0.039,
+          "peak": null,
+          "reach": null,
+          "turn": null,
+          "end_area": 0.981,
+          "canvas": [
+            106,
+            106
+          ],
+          "reasons": [
+            "still standing: the last frame is only 0.24 of the silhouette away from the first — no collapse",
+            "canvas grown by 1 px a side to hold the motion"
+          ],
+          "sub": "6287d382-f48d-498f-8a9f-24b274a8ff2d",
+          "group": "5cde23f8-81bf-4701-aa40-b325c6c1a6c3",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "action": "Death - Sinks down onto its belly and dissolves into cold mist that drifts apart and fades away",
+          "intensity": 0,
+          "rolls": 1,
+          "frames": 7,
+          "rung": 0,
+          "unwrapped": null,
+          "tries": 1,
+          "generated_at": "2026-09-12T23:50:30+00:00"
+        }
+      },
+      "action": "Death - Sinks down onto its belly and dissolves into cold mist that drifts apart and fades away",
+      "frame_paths": {
+        "south": [
+          "ghost_hound/animations/die_v1/south/00.webp",
+          "ghost_hound/animations/die_v1/south/01.webp",
+          "ghost_hound/animations/die_v1/south/02.webp",
+          "ghost_hound/animations/die_v1/south/03.webp",
+          "ghost_hound/animations/die_v1/south/04.webp",
+          "ghost_hound/animations/die_v1/south/05.webp",
+          "ghost_hound/animations/die_v1/south/06.webp"
+        ],
+        "south-east": [
+          "ghost_hound/animations/die_v1/south-east/00.webp",
+          "ghost_hound/animations/die_v1/south-east/01.webp",
+          "ghost_hound/animations/die_v1/south-east/02.webp",
+          "ghost_hound/animations/die_v1/south-east/03.webp",
+          "ghost_hound/animations/die_v1/south-east/04.webp",
+          "ghost_hound/animations/die_v1/south-east/05.webp",
+          "ghost_hound/animations/die_v1/south-east/06.webp"
+        ],
+        "east": [
+          "ghost_hound/animations/die_v1/east/00.webp",
+          "ghost_hound/animations/die_v1/east/01.webp",
+          "ghost_hound/animations/die_v1/east/02.webp",
+          "ghost_hound/animations/die_v1/east/03.webp",
+          "ghost_hound/animations/die_v1/east/04.webp",
+          "ghost_hound/animations/die_v1/east/05.webp",
+          "ghost_hound/animations/die_v1/east/06.webp"
+        ],
+        "north-east": [
+          "ghost_hound/animations/die_v1/north-east/00.webp",
+          "ghost_hound/animations/die_v1/north-east/01.webp",
+          "ghost_hound/animations/die_v1/north-east/02.webp",
+          "ghost_hound/animations/die_v1/north-east/03.webp",
+          "ghost_hound/animations/die_v1/north-east/04.webp",
+          "ghost_hound/animations/die_v1/north-east/05.webp",
+          "ghost_hound/animations/die_v1/north-east/06.webp"
+        ],
+        "north": [
+          "ghost_hound/animations/die_v1/north/00.webp",
+          "ghost_hound/animations/die_v1/north/01.webp",
+          "ghost_hound/animations/die_v1/north/02.webp",
+          "ghost_hound/animations/die_v1/north/03.webp",
+          "ghost_hound/animations/die_v1/north/04.webp",
+          "ghost_hound/animations/die_v1/north/05.webp",
+          "ghost_hound/animations/die_v1/north/06.webp"
+        ]
+      },
+      "strips": {
+        "south": "ghost_hound/animations/die_v1__south.webp",
+        "south-east": "ghost_hound/animations/die_v1__south-east.webp",
+        "east": "ghost_hound/animations/die_v1__east.webp",
+        "north-east": "ghost_hound/animations/die_v1__north-east.webp",
+        "north": "ghost_hound/animations/die_v1__north.webp"
+      }
     }
   }
 }

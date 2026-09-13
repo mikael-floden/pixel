@@ -1693,6 +1693,294 @@
         "west": "glow_grub/animations/attack_v3__west.webp",
         "north-west": "glow_grub/animations/attack_v3__north-west.webp"
       }
+    },
+    "die_v1": {
+      "directions": {
+        "south": {
+          "status": "warn",
+          "step_mean": 0.0838,
+          "step_max": 0.1103,
+          "drift": 2.43,
+          "loop": 0.3128,
+          "loop_ratio": 3.73,
+          "travel": 0.98,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": 0.036,
+          "peak": null,
+          "reach": null,
+          "turn": null,
+          "end_area": 0.908,
+          "canvas": [
+            32,
+            32
+          ],
+          "reasons": [
+            "motion 0.084 outside the calm band 0.1–0.9 — eyeball it",
+            "barely falls: last vs first 0.31 — eyeball it"
+          ],
+          "sub": "e28822e3-12ff-4af4-94b6-e18be39f3453",
+          "group": "1e35de49-5e56-4fdf-b207-bc1386a62991",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "action": "Death - Its blue spots go dark, it curls up on its side and fades away",
+          "intensity": 0,
+          "rolls": 1,
+          "frames": 7,
+          "rung": 0,
+          "unwrapped": null,
+          "tries": 1,
+          "generated_at": "2026-09-12T23:37:42+00:00"
+        },
+        "south-east": {
+          "status": "fail",
+          "step_mean": 0.1694,
+          "step_max": 0.2288,
+          "drift": 2.47,
+          "loop": 0.1013,
+          "loop_ratio": 0.6,
+          "travel": 0.4,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": 0.014,
+          "peak": null,
+          "reach": null,
+          "turn": null,
+          "end_area": 0.969,
+          "canvas": [
+            32,
+            32
+          ],
+          "reasons": [
+            "still standing: the last frame is only 0.10 of the silhouette away from the first — no collapse"
+          ],
+          "sub": "f5754142-463a-4b69-84a3-38eeb39c8559",
+          "group": "afb95db9-35d4-48ef-ac33-3d234fbfd6b1",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "action": "Death - Its blue spots go dark, it curls up on its side and fades away",
+          "intensity": 0,
+          "rolls": 1,
+          "frames": 7,
+          "rung": 0,
+          "unwrapped": null,
+          "tries": 1,
+          "generated_at": "2026-09-12T23:37:42+00:00"
+        },
+        "east": {
+          "status": "warn",
+          "step_mean": 0.1273,
+          "step_max": 0.2418,
+          "drift": 2.3,
+          "loop": 0.2637,
+          "loop_ratio": 2.07,
+          "travel": 0.65,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": 0.026,
+          "peak": null,
+          "reach": null,
+          "turn": null,
+          "end_area": 0.919,
+          "canvas": [
+            32,
+            32
+          ],
+          "reasons": [
+            "barely falls: last vs first 0.26 — eyeball it"
+          ],
+          "sub": "548a7fd0-68c3-4c61-a0ae-4c9d20f04c78",
+          "group": "15d3726a-70d6-4192-8cac-d66dec8f7c62",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "action": "Death - Its blue spots go dark, it curls up on its side and fades away",
+          "intensity": 0,
+          "rolls": 1,
+          "frames": 7,
+          "rung": 0,
+          "unwrapped": null,
+          "tries": 1,
+          "generated_at": "2026-09-12T23:37:49+00:00"
+        },
+        "north-east": {
+          "status": "fail",
+          "step_mean": 0.1459,
+          "step_max": 0.1777,
+          "drift": 1.98,
+          "loop": 0.2208,
+          "loop_ratio": 1.51,
+          "travel": 0.26,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": 0.036,
+          "peak": null,
+          "reach": null,
+          "turn": null,
+          "end_area": 0.957,
+          "canvas": [
+            32,
+            32
+          ],
+          "reasons": [
+            "still standing: the last frame is only 0.22 of the silhouette away from the first — no collapse"
+          ],
+          "sub": "eaf523cd-42a2-47c8-9038-290d11c3aae3",
+          "group": "cb6da6fe-9d47-4a5e-bb43-2d29c3f29376",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "action": "Death - Its blue spots go dark, it curls up on its side and fades away",
+          "intensity": 0,
+          "rolls": 1,
+          "frames": 7,
+          "rung": 0,
+          "unwrapped": null,
+          "tries": 1,
+          "generated_at": "2026-09-12T23:37:50+00:00"
+        },
+        "north": {
+          "status": "fail",
+          "step_mean": 0.0912,
+          "step_max": 0.1257,
+          "drift": 1.12,
+          "loop": 0.1387,
+          "loop_ratio": 1.52,
+          "travel": 0.25,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": 0.029,
+          "peak": null,
+          "reach": null,
+          "turn": null,
+          "end_area": 0.997,
+          "canvas": [
+            32,
+            32
+          ],
+          "reasons": [
+            "motion 0.091 outside the calm band 0.1–0.9 — eyeball it",
+            "still standing: the last frame is only 0.14 of the silhouette away from the first — no collapse"
+          ],
+          "sub": "0ef254ca-6c12-4853-aba0-5ffba4e08b27",
+          "group": "005e5b2b-bff6-4207-b99b-89268427ddbe",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "action": "Death - Its blue spots go dark, it curls up on its side and fades away",
+          "intensity": 0,
+          "rolls": 1,
+          "frames": 7,
+          "rung": 0,
+          "unwrapped": null,
+          "tries": 1,
+          "generated_at": "2026-09-12T23:37:50+00:00"
+        },
+        "west": {
+          "status": "warn",
+          "step_mean": 0.1273,
+          "step_max": 0.2418,
+          "drift": 2.3,
+          "loop": 0.2637,
+          "loop_ratio": 2.07,
+          "travel": 0.65,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": 0.026,
+          "peak": null,
+          "reach": null,
+          "turn": null,
+          "end_area": 0.919,
+          "canvas": [
+            32,
+            32
+          ],
+          "reasons": [
+            "barely falls: last vs first 0.26 — eyeball it"
+          ],
+          "sub": "548a7fd0-68c3-4c61-a0ae-4c9d20f04c78",
+          "group": "15d3726a-70d6-4192-8cac-d66dec8f7c62",
+          "takes": 1,
+          "version": 1,
+          "mirrored": true,
+          "action": "Death - Its blue spots go dark, it curls up on its side and fades away",
+          "intensity": 0,
+          "rolls": 1,
+          "frames": 7,
+          "rung": 0,
+          "unwrapped": null,
+          "tries": 1,
+          "generated_at": "2026-09-12T23:37:49+00:00",
+          "source": "east"
+        }
+      },
+      "action": "Death - Its blue spots go dark, it curls up on its side and fades away",
+      "frame_paths": {
+        "south": [
+          "glow_grub/animations/die_v1/south/00.webp",
+          "glow_grub/animations/die_v1/south/01.webp",
+          "glow_grub/animations/die_v1/south/02.webp",
+          "glow_grub/animations/die_v1/south/03.webp",
+          "glow_grub/animations/die_v1/south/04.webp",
+          "glow_grub/animations/die_v1/south/05.webp",
+          "glow_grub/animations/die_v1/south/06.webp"
+        ],
+        "south-east": [
+          "glow_grub/animations/die_v1/south-east/00.webp",
+          "glow_grub/animations/die_v1/south-east/01.webp",
+          "glow_grub/animations/die_v1/south-east/02.webp",
+          "glow_grub/animations/die_v1/south-east/03.webp",
+          "glow_grub/animations/die_v1/south-east/04.webp",
+          "glow_grub/animations/die_v1/south-east/05.webp",
+          "glow_grub/animations/die_v1/south-east/06.webp"
+        ],
+        "east": [
+          "glow_grub/animations/die_v1/east/00.webp",
+          "glow_grub/animations/die_v1/east/01.webp",
+          "glow_grub/animations/die_v1/east/02.webp",
+          "glow_grub/animations/die_v1/east/03.webp",
+          "glow_grub/animations/die_v1/east/04.webp",
+          "glow_grub/animations/die_v1/east/05.webp",
+          "glow_grub/animations/die_v1/east/06.webp"
+        ],
+        "north-east": [
+          "glow_grub/animations/die_v1/north-east/00.webp",
+          "glow_grub/animations/die_v1/north-east/01.webp",
+          "glow_grub/animations/die_v1/north-east/02.webp",
+          "glow_grub/animations/die_v1/north-east/03.webp",
+          "glow_grub/animations/die_v1/north-east/04.webp",
+          "glow_grub/animations/die_v1/north-east/05.webp",
+          "glow_grub/animations/die_v1/north-east/06.webp"
+        ],
+        "north": [
+          "glow_grub/animations/die_v1/north/00.webp",
+          "glow_grub/animations/die_v1/north/01.webp",
+          "glow_grub/animations/die_v1/north/02.webp",
+          "glow_grub/animations/die_v1/north/03.webp",
+          "glow_grub/animations/die_v1/north/04.webp",
+          "glow_grub/animations/die_v1/north/05.webp",
+          "glow_grub/animations/die_v1/north/06.webp"
+        ],
+        "west": [
+          "glow_grub/animations/die_v1/west/00.webp",
+          "glow_grub/animations/die_v1/west/01.webp",
+          "glow_grub/animations/die_v1/west/02.webp",
+          "glow_grub/animations/die_v1/west/03.webp",
+          "glow_grub/animations/die_v1/west/04.webp",
+          "glow_grub/animations/die_v1/west/05.webp",
+          "glow_grub/animations/die_v1/west/06.webp"
+        ]
+      },
+      "strips": {
+        "south": "glow_grub/animations/die_v1__south.webp",
+        "south-east": "glow_grub/animations/die_v1__south-east.webp",
+        "east": "glow_grub/animations/die_v1__east.webp",
+        "north-east": "glow_grub/animations/die_v1__north-east.webp",
+        "north": "glow_grub/animations/die_v1__north.webp",
+        "west": "glow_grub/animations/die_v1__west.webp"
+      }
     }
   }
 }

@@ -1582,6 +1582,250 @@
         "west": "octopus/animations/attack_v3__west.webp",
         "north-west": "octopus/animations/attack_v3__north-west.webp"
       }
+    },
+    "die_v1": {
+      "directions": {
+        "south": {
+          "status": "fail",
+          "step_mean": 0.0336,
+          "step_max": 0.0452,
+          "drift": 1.64,
+          "loop": 0.0967,
+          "loop_ratio": 2.88,
+          "travel": 0.27,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": -0.0,
+          "peak": null,
+          "reach": null,
+          "turn": null,
+          "end_area": 0.984,
+          "canvas": [
+            96,
+            96
+          ],
+          "reasons": [
+            "frozen: silhouette moves 0.034 per frame",
+            "still standing: the last frame is only 0.10 of the silhouette away from the first — no collapse"
+          ],
+          "sub": "aad3940a-5995-462c-b0cf-b634e92205ca",
+          "group": "9079a3a7-4604-416f-b3a5-a323ed132c9c",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "action": "Death - Goes limp, the tentacles sprawl flat around it, and it fades away",
+          "intensity": 0,
+          "rolls": 1,
+          "frames": 7,
+          "rung": 0,
+          "unwrapped": null,
+          "tries": 1,
+          "generated_at": "2026-09-12T23:25:22+00:00"
+        },
+        "south-east": {
+          "status": "fail",
+          "step_mean": 0.0442,
+          "step_max": 0.0618,
+          "drift": 2.3,
+          "loop": 0.0495,
+          "loop_ratio": 1.12,
+          "travel": 1.24,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": -0.001,
+          "peak": null,
+          "reach": null,
+          "turn": null,
+          "end_area": 1.009,
+          "canvas": [
+            96,
+            96
+          ],
+          "reasons": [
+            "frozen: silhouette moves 0.044 per frame",
+            "still standing: the last frame is only 0.05 of the silhouette away from the first — no collapse"
+          ],
+          "sub": "edfe363a-d731-413b-9fe7-829a2a031f25",
+          "group": "e2fa1599-c125-4711-8708-d66c2def23eb",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "action": "Death - Goes limp, the tentacles sprawl flat around it, and it fades away",
+          "intensity": 0,
+          "rolls": 1,
+          "frames": 7,
+          "rung": 0,
+          "unwrapped": null,
+          "tries": 1,
+          "generated_at": "2026-09-12T23:25:22+00:00"
+        },
+        "east": {
+          "status": "fail",
+          "step_mean": 0.0395,
+          "step_max": 0.0432,
+          "drift": 2.3,
+          "loop": 0.0675,
+          "loop_ratio": 1.71,
+          "travel": 1.35,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": -0.0,
+          "peak": null,
+          "reach": null,
+          "turn": null,
+          "end_area": 0.96,
+          "canvas": [
+            96,
+            96
+          ],
+          "reasons": [
+            "frozen: silhouette moves 0.039 per frame",
+            "still standing: the last frame is only 0.07 of the silhouette away from the first — no collapse"
+          ],
+          "sub": "2024f545-f7e3-442b-ace6-4d9a402a04ae",
+          "group": "ff56b9db-b3ff-4727-b297-7c0b4c050e07",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "action": "Death - Goes limp, the tentacles sprawl flat around it, and it fades away",
+          "intensity": 0,
+          "rolls": 1,
+          "frames": 7,
+          "rung": 0,
+          "unwrapped": null,
+          "tries": 1,
+          "generated_at": "2026-09-12T23:25:25+00:00"
+        },
+        "north-east": {
+          "status": "fail",
+          "step_mean": 0.022,
+          "step_max": 0.026,
+          "drift": 1.02,
+          "loop": 0.0421,
+          "loop_ratio": 1.91,
+          "travel": 1.28,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": 0.0,
+          "peak": null,
+          "reach": null,
+          "turn": null,
+          "end_area": 1.007,
+          "canvas": [
+            96,
+            96
+          ],
+          "reasons": [
+            "frozen: silhouette moves 0.022 per frame",
+            "still standing: the last frame is only 0.04 of the silhouette away from the first — no collapse"
+          ],
+          "sub": "dc2a4bfc-3e45-443e-9d7a-dc94896393d4",
+          "group": "5f1de354-1cee-4c88-a7b9-560a2a7daa15",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "action": "Death - Goes limp, the tentacles sprawl flat around it, and it fades away",
+          "intensity": 0,
+          "rolls": 1,
+          "frames": 7,
+          "rung": 0,
+          "unwrapped": null,
+          "tries": 1,
+          "generated_at": "2026-09-12T23:25:26+00:00"
+        },
+        "north": {
+          "status": "fail",
+          "step_mean": 0.0413,
+          "step_max": 0.0546,
+          "drift": 1.75,
+          "loop": 0.0713,
+          "loop_ratio": 1.73,
+          "travel": 0.55,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": 0.0,
+          "peak": null,
+          "reach": null,
+          "turn": null,
+          "end_area": 1.013,
+          "canvas": [
+            96,
+            96
+          ],
+          "reasons": [
+            "frozen: silhouette moves 0.041 per frame",
+            "still standing: the last frame is only 0.07 of the silhouette away from the first — no collapse"
+          ],
+          "sub": "dd8a98f0-a6f6-47ac-9989-6ad00dd20fbc",
+          "group": "f77f37b4-1224-4c3a-9a64-acb118ef2ea4",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "action": "Death - Goes limp, the tentacles sprawl flat around it, and it fades away",
+          "intensity": 0,
+          "rolls": 1,
+          "frames": 7,
+          "rung": 0,
+          "unwrapped": null,
+          "tries": 1,
+          "generated_at": "2026-09-12T23:25:26+00:00"
+        }
+      },
+      "action": "Death - Goes limp, the tentacles sprawl flat around it, and it fades away",
+      "frame_paths": {
+        "south": [
+          "octopus/animations/die_v1/south/00.webp",
+          "octopus/animations/die_v1/south/01.webp",
+          "octopus/animations/die_v1/south/02.webp",
+          "octopus/animations/die_v1/south/03.webp",
+          "octopus/animations/die_v1/south/04.webp",
+          "octopus/animations/die_v1/south/05.webp",
+          "octopus/animations/die_v1/south/06.webp"
+        ],
+        "south-east": [
+          "octopus/animations/die_v1/south-east/00.webp",
+          "octopus/animations/die_v1/south-east/01.webp",
+          "octopus/animations/die_v1/south-east/02.webp",
+          "octopus/animations/die_v1/south-east/03.webp",
+          "octopus/animations/die_v1/south-east/04.webp",
+          "octopus/animations/die_v1/south-east/05.webp",
+          "octopus/animations/die_v1/south-east/06.webp"
+        ],
+        "east": [
+          "octopus/animations/die_v1/east/00.webp",
+          "octopus/animations/die_v1/east/01.webp",
+          "octopus/animations/die_v1/east/02.webp",
+          "octopus/animations/die_v1/east/03.webp",
+          "octopus/animations/die_v1/east/04.webp",
+          "octopus/animations/die_v1/east/05.webp",
+          "octopus/animations/die_v1/east/06.webp"
+        ],
+        "north-east": [
+          "octopus/animations/die_v1/north-east/00.webp",
+          "octopus/animations/die_v1/north-east/01.webp",
+          "octopus/animations/die_v1/north-east/02.webp",
+          "octopus/animations/die_v1/north-east/03.webp",
+          "octopus/animations/die_v1/north-east/04.webp",
+          "octopus/animations/die_v1/north-east/05.webp",
+          "octopus/animations/die_v1/north-east/06.webp"
+        ],
+        "north": [
+          "octopus/animations/die_v1/north/00.webp",
+          "octopus/animations/die_v1/north/01.webp",
+          "octopus/animations/die_v1/north/02.webp",
+          "octopus/animations/die_v1/north/03.webp",
+          "octopus/animations/die_v1/north/04.webp",
+          "octopus/animations/die_v1/north/05.webp",
+          "octopus/animations/die_v1/north/06.webp"
+        ]
+      },
+      "strips": {
+        "south": "octopus/animations/die_v1__south.webp",
+        "south-east": "octopus/animations/die_v1__south-east.webp",
+        "east": "octopus/animations/die_v1__east.webp",
+        "north-east": "octopus/animations/die_v1__north-east.webp",
+        "north": "octopus/animations/die_v1__north.webp"
+      }
     }
   }
 }

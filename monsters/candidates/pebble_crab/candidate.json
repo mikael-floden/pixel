@@ -1671,6 +1671,248 @@
         "south-west": "pebble_crab/animations/attack_v3__south-west.webp",
         "west": "pebble_crab/animations/attack_v3__west.webp"
       }
+    },
+    "die_v1": {
+      "directions": {
+        "south": {
+          "status": "fail",
+          "step_mean": 0.1438,
+          "step_max": 0.1992,
+          "drift": 2.52,
+          "loop": 0.1591,
+          "loop_ratio": 1.11,
+          "travel": 0.17,
+          "pin": 1.0,
+          "pad": 1,
+          "flash": 0.0,
+          "peak": null,
+          "reach": null,
+          "turn": null,
+          "end_area": 0.988,
+          "canvas": [
+            42,
+            42
+          ],
+          "reasons": [
+            "still standing: the last frame is only 0.16 of the silhouette away from the first — no collapse",
+            "canvas grown by 1 px a side to hold the motion"
+          ],
+          "sub": "53920b25-daaf-4a17-aa9c-6f2fc3eb4bb3",
+          "group": "ab9aa8be-5ed9-4a76-86b7-afe48d4e4616",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "action": "Death - Pulls its legs in and tips over onto its side, goes still and fades away",
+          "intensity": 0,
+          "rolls": 1,
+          "frames": 7,
+          "rung": 0,
+          "unwrapped": null,
+          "tries": 1,
+          "generated_at": "2026-09-12T23:11:29+00:00"
+        },
+        "south-east": {
+          "status": "fail",
+          "step_mean": 0.0977,
+          "step_max": 0.1469,
+          "drift": 0.95,
+          "loop": 0.2166,
+          "loop_ratio": 2.22,
+          "travel": 0.7,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": 0.0,
+          "peak": null,
+          "reach": null,
+          "turn": null,
+          "end_area": 0.989,
+          "canvas": [
+            40,
+            40
+          ],
+          "reasons": [
+            "motion 0.098 outside the calm band 0.1–0.9 — eyeball it",
+            "still standing: the last frame is only 0.22 of the silhouette away from the first — no collapse"
+          ],
+          "sub": "decf1e17-1cd7-41f0-bab2-b89112bd70ec",
+          "group": "6bfcaec1-28e9-483e-b54a-863904f13bf8",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "action": "Death - Pulls its legs in and tips over onto its side, goes still and fades away",
+          "intensity": 0,
+          "rolls": 1,
+          "frames": 7,
+          "rung": 0,
+          "unwrapped": null,
+          "tries": 1,
+          "generated_at": "2026-09-12T23:11:30+00:00"
+        },
+        "east": {
+          "status": "fail",
+          "step_mean": 0.1439,
+          "step_max": 0.1786,
+          "drift": 1.48,
+          "loop": 0.1407,
+          "loop_ratio": 0.98,
+          "travel": 2.01,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": 0.0,
+          "peak": null,
+          "reach": null,
+          "turn": null,
+          "end_area": 0.949,
+          "canvas": [
+            40,
+            40
+          ],
+          "reasons": [
+            "still standing: the last frame is only 0.14 of the silhouette away from the first — no collapse"
+          ],
+          "sub": "08955021-d6a9-4c94-bfed-bafd1206e4b5",
+          "group": "17932041-c37a-49cf-ae30-8e073f1f91b2",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "action": "Death - Pulls its legs in and tips over onto its side, goes still and fades away",
+          "intensity": 0,
+          "rolls": 1,
+          "frames": 7,
+          "rung": 0,
+          "unwrapped": null,
+          "tries": 1,
+          "generated_at": "2026-09-12T23:11:30+00:00"
+        },
+        "north-east": {
+          "status": "fail",
+          "step_mean": 0.0972,
+          "step_max": 0.1116,
+          "drift": 0.58,
+          "loop": 0.1208,
+          "loop_ratio": 1.24,
+          "travel": 0.23,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": 0.007,
+          "peak": null,
+          "reach": null,
+          "turn": null,
+          "end_area": 0.993,
+          "canvas": [
+            40,
+            40
+          ],
+          "reasons": [
+            "motion 0.097 outside the calm band 0.1–0.9 — eyeball it",
+            "still standing: the last frame is only 0.12 of the silhouette away from the first — no collapse"
+          ],
+          "sub": "e8e703bc-5e37-4a0c-9f09-7ef0d55a01c1",
+          "group": "1056a8d2-769f-4d2e-b312-39f2e66c00fa",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "action": "Death - Pulls its legs in and tips over onto its side, goes still and fades away",
+          "intensity": 0,
+          "rolls": 1,
+          "frames": 7,
+          "rung": 0,
+          "unwrapped": null,
+          "tries": 1,
+          "generated_at": "2026-09-12T23:11:31+00:00"
+        },
+        "north": {
+          "status": "fail",
+          "step_mean": 0.1428,
+          "step_max": 0.1731,
+          "drift": 3.23,
+          "loop": 0.1916,
+          "loop_ratio": 1.34,
+          "travel": 0.15,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": 0.001,
+          "peak": null,
+          "reach": null,
+          "turn": null,
+          "end_area": 0.984,
+          "canvas": [
+            40,
+            40
+          ],
+          "reasons": [
+            "still standing: the last frame is only 0.19 of the silhouette away from the first — no collapse"
+          ],
+          "sub": "de30bb75-db59-46b7-a8b8-93cd44ea9f95",
+          "group": "60abd9e4-d3c2-460f-a816-7e4d9165e317",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "action": "Death - Pulls its legs in and tips over onto its side, goes still and fades away",
+          "intensity": 0,
+          "rolls": 1,
+          "frames": 7,
+          "rung": 0,
+          "unwrapped": null,
+          "tries": 1,
+          "generated_at": "2026-09-12T23:11:32+00:00"
+        }
+      },
+      "action": "Death - Pulls its legs in and tips over onto its side, goes still and fades away",
+      "frame_paths": {
+        "south": [
+          "pebble_crab/animations/die_v1/south/00.webp",
+          "pebble_crab/animations/die_v1/south/01.webp",
+          "pebble_crab/animations/die_v1/south/02.webp",
+          "pebble_crab/animations/die_v1/south/03.webp",
+          "pebble_crab/animations/die_v1/south/04.webp",
+          "pebble_crab/animations/die_v1/south/05.webp",
+          "pebble_crab/animations/die_v1/south/06.webp"
+        ],
+        "south-east": [
+          "pebble_crab/animations/die_v1/south-east/00.webp",
+          "pebble_crab/animations/die_v1/south-east/01.webp",
+          "pebble_crab/animations/die_v1/south-east/02.webp",
+          "pebble_crab/animations/die_v1/south-east/03.webp",
+          "pebble_crab/animations/die_v1/south-east/04.webp",
+          "pebble_crab/animations/die_v1/south-east/05.webp",
+          "pebble_crab/animations/die_v1/south-east/06.webp"
+        ],
+        "east": [
+          "pebble_crab/animations/die_v1/east/00.webp",
+          "pebble_crab/animations/die_v1/east/01.webp",
+          "pebble_crab/animations/die_v1/east/02.webp",
+          "pebble_crab/animations/die_v1/east/03.webp",
+          "pebble_crab/animations/die_v1/east/04.webp",
+          "pebble_crab/animations/die_v1/east/05.webp",
+          "pebble_crab/animations/die_v1/east/06.webp"
+        ],
+        "north-east": [
+          "pebble_crab/animations/die_v1/north-east/00.webp",
+          "pebble_crab/animations/die_v1/north-east/01.webp",
+          "pebble_crab/animations/die_v1/north-east/02.webp",
+          "pebble_crab/animations/die_v1/north-east/03.webp",
+          "pebble_crab/animations/die_v1/north-east/04.webp",
+          "pebble_crab/animations/die_v1/north-east/05.webp",
+          "pebble_crab/animations/die_v1/north-east/06.webp"
+        ],
+        "north": [
+          "pebble_crab/animations/die_v1/north/00.webp",
+          "pebble_crab/animations/die_v1/north/01.webp",
+          "pebble_crab/animations/die_v1/north/02.webp",
+          "pebble_crab/animations/die_v1/north/03.webp",
+          "pebble_crab/animations/die_v1/north/04.webp",
+          "pebble_crab/animations/die_v1/north/05.webp",
+          "pebble_crab/animations/die_v1/north/06.webp"
+        ]
+      },
+      "strips": {
+        "south": "pebble_crab/animations/die_v1__south.webp",
+        "south-east": "pebble_crab/animations/die_v1__south-east.webp",
+        "east": "pebble_crab/animations/die_v1__east.webp",
+        "north-east": "pebble_crab/animations/die_v1__north-east.webp",
+        "north": "pebble_crab/animations/die_v1__north.webp"
+      }
     }
   }
 }

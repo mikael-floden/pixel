@@ -1670,6 +1670,246 @@
         "west": "frost_mite/animations/attack_v3__west.webp",
         "north-west": "frost_mite/animations/attack_v3__north-west.webp"
       }
+    },
+    "die_v1": {
+      "directions": {
+        "south": {
+          "status": "fail",
+          "step_mean": 0.1443,
+          "step_max": 0.1935,
+          "drift": 1.9,
+          "loop": 0.0868,
+          "loop_ratio": 0.6,
+          "travel": 0.37,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": 0.141,
+          "peak": null,
+          "reach": null,
+          "turn": null,
+          "end_area": 0.993,
+          "canvas": [
+            32,
+            32
+          ],
+          "reasons": [
+            "still standing: the last frame is only 0.09 of the silhouette away from the first — no collapse"
+          ],
+          "sub": "cf50bce9-ff99-46b7-b3e2-e9bdc0a43fc4",
+          "group": "ba6b02a7-254b-466c-bfea-a0bb42f39035",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "action": "Death - Tips over onto its back with its legs curled up, then breaks into frost and fades away",
+          "intensity": 0,
+          "rolls": 1,
+          "frames": 7,
+          "rung": 0,
+          "unwrapped": null,
+          "tries": 1,
+          "generated_at": "2026-09-12T23:31:18+00:00"
+        },
+        "south-east": {
+          "status": "fail",
+          "step_mean": 0.0842,
+          "step_max": 0.1436,
+          "drift": 0.49,
+          "loop": 0.0846,
+          "loop_ratio": 1.01,
+          "travel": 0.55,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": 0.054,
+          "peak": null,
+          "reach": null,
+          "turn": null,
+          "end_area": 1.003,
+          "canvas": [
+            32,
+            32
+          ],
+          "reasons": [
+            "motion 0.084 outside the calm band 0.1–0.9 — eyeball it",
+            "still standing: the last frame is only 0.08 of the silhouette away from the first — no collapse"
+          ],
+          "sub": "6d7bd69c-90bb-4c64-8c6c-9fed7e9c9a09",
+          "group": "614ea144-ea86-4689-9b88-0e31c941204b",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "action": "Death - Tips over onto its back with its legs curled up, then breaks into frost and fades away",
+          "intensity": 0,
+          "rolls": 1,
+          "frames": 7,
+          "rung": 0,
+          "unwrapped": null,
+          "tries": 1,
+          "generated_at": "2026-09-12T23:31:21+00:00"
+        },
+        "east": {
+          "status": "fail",
+          "step_mean": 0.126,
+          "step_max": 0.1823,
+          "drift": 1.8,
+          "loop": 0.1126,
+          "loop_ratio": 0.89,
+          "travel": 0.37,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": 0.241,
+          "peak": null,
+          "reach": null,
+          "turn": null,
+          "end_area": 0.957,
+          "canvas": [
+            32,
+            32
+          ],
+          "reasons": [
+            "still standing: the last frame is only 0.11 of the silhouette away from the first — no collapse"
+          ],
+          "sub": "dfd9e73f-1c2b-466b-9004-1710e1918de7",
+          "group": "fec1f818-b8cd-4934-93d6-88bf4fb12227",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "action": "Death - Tips over onto its back with its legs curled up, then breaks into frost and fades away",
+          "intensity": 0,
+          "rolls": 1,
+          "frames": 7,
+          "rung": 0,
+          "unwrapped": null,
+          "tries": 1,
+          "generated_at": "2026-09-12T23:31:21+00:00"
+        },
+        "north-east": {
+          "status": "fail",
+          "step_mean": 0.1031,
+          "step_max": 0.1685,
+          "drift": 1.7,
+          "loop": 0.0829,
+          "loop_ratio": 0.8,
+          "travel": 0.16,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": 0.097,
+          "peak": null,
+          "reach": null,
+          "turn": null,
+          "end_area": 0.945,
+          "canvas": [
+            32,
+            32
+          ],
+          "reasons": [
+            "still standing: the last frame is only 0.08 of the silhouette away from the first — no collapse"
+          ],
+          "sub": "d09d19b3-a704-4678-be68-12cbe4db0169",
+          "group": "7d04c072-eb86-4b34-bf54-8e99cbdf81d0",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "action": "Death - Tips over onto its back with its legs curled up, then breaks into frost and fades away",
+          "intensity": 0,
+          "rolls": 1,
+          "frames": 7,
+          "rung": 0,
+          "unwrapped": null,
+          "tries": 1,
+          "generated_at": "2026-09-12T23:31:29+00:00"
+        },
+        "north": {
+          "status": "fail",
+          "step_mean": 0.1702,
+          "step_max": 0.2074,
+          "drift": 1.38,
+          "loop": 0.1436,
+          "loop_ratio": 0.84,
+          "travel": 0.3,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": -0.022,
+          "peak": null,
+          "reach": null,
+          "turn": null,
+          "end_area": 1.027,
+          "canvas": [
+            32,
+            32
+          ],
+          "reasons": [
+            "still standing: the last frame is only 0.14 of the silhouette away from the first — no collapse"
+          ],
+          "sub": "bff2d6d5-168f-4a08-b68f-419277613fa1",
+          "group": "9594bd76-f725-42f2-b877-dafd7d5b7b38",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "action": "Death - Tips over onto its back with its legs curled up, then breaks into frost and fades away",
+          "intensity": 0,
+          "rolls": 1,
+          "frames": 7,
+          "rung": 0,
+          "unwrapped": null,
+          "tries": 1,
+          "generated_at": "2026-09-12T23:31:29+00:00"
+        }
+      },
+      "action": "Death - Tips over onto its back with its legs curled up, then breaks into frost and fades away",
+      "frame_paths": {
+        "south": [
+          "frost_mite/animations/die_v1/south/00.webp",
+          "frost_mite/animations/die_v1/south/01.webp",
+          "frost_mite/animations/die_v1/south/02.webp",
+          "frost_mite/animations/die_v1/south/03.webp",
+          "frost_mite/animations/die_v1/south/04.webp",
+          "frost_mite/animations/die_v1/south/05.webp",
+          "frost_mite/animations/die_v1/south/06.webp"
+        ],
+        "south-east": [
+          "frost_mite/animations/die_v1/south-east/00.webp",
+          "frost_mite/animations/die_v1/south-east/01.webp",
+          "frost_mite/animations/die_v1/south-east/02.webp",
+          "frost_mite/animations/die_v1/south-east/03.webp",
+          "frost_mite/animations/die_v1/south-east/04.webp",
+          "frost_mite/animations/die_v1/south-east/05.webp",
+          "frost_mite/animations/die_v1/south-east/06.webp"
+        ],
+        "east": [
+          "frost_mite/animations/die_v1/east/00.webp",
+          "frost_mite/animations/die_v1/east/01.webp",
+          "frost_mite/animations/die_v1/east/02.webp",
+          "frost_mite/animations/die_v1/east/03.webp",
+          "frost_mite/animations/die_v1/east/04.webp",
+          "frost_mite/animations/die_v1/east/05.webp",
+          "frost_mite/animations/die_v1/east/06.webp"
+        ],
+        "north-east": [
+          "frost_mite/animations/die_v1/north-east/00.webp",
+          "frost_mite/animations/die_v1/north-east/01.webp",
+          "frost_mite/animations/die_v1/north-east/02.webp",
+          "frost_mite/animations/die_v1/north-east/03.webp",
+          "frost_mite/animations/die_v1/north-east/04.webp",
+          "frost_mite/animations/die_v1/north-east/05.webp",
+          "frost_mite/animations/die_v1/north-east/06.webp"
+        ],
+        "north": [
+          "frost_mite/animations/die_v1/north/00.webp",
+          "frost_mite/animations/die_v1/north/01.webp",
+          "frost_mite/animations/die_v1/north/02.webp",
+          "frost_mite/animations/die_v1/north/03.webp",
+          "frost_mite/animations/die_v1/north/04.webp",
+          "frost_mite/animations/die_v1/north/05.webp",
+          "frost_mite/animations/die_v1/north/06.webp"
+        ]
+      },
+      "strips": {
+        "south": "frost_mite/animations/die_v1__south.webp",
+        "south-east": "frost_mite/animations/die_v1__south-east.webp",
+        "east": "frost_mite/animations/die_v1__east.webp",
+        "north-east": "frost_mite/animations/die_v1__north-east.webp",
+        "north": "frost_mite/animations/die_v1__north.webp"
+      }
     }
   }
 }

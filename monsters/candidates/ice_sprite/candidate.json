@@ -1627,6 +1627,243 @@
         "west": "ice_sprite/animations/attack_v3__west.webp",
         "north-west": "ice_sprite/animations/attack_v3__north-west.webp"
       }
+    },
+    "die_v1": {
+      "directions": {
+        "south": {
+          "status": "warn",
+          "step_mean": 0.1855,
+          "step_max": 0.2552,
+          "drift": 1.64,
+          "loop": 0.251,
+          "loop_ratio": 1.35,
+          "travel": 0.27,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": 0.083,
+          "peak": null,
+          "reach": null,
+          "turn": null,
+          "end_area": 1.092,
+          "canvas": [
+            40,
+            40
+          ],
+          "reasons": [
+            "barely falls: last vs first 0.25 — eyeball it"
+          ],
+          "sub": "39c96624-f28f-4139-a97a-348e319e36bc",
+          "group": "bcf95ad5-ffb6-4e12-991a-3c105c46648b",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "action": "Death - Cracks through and shatters into a small pile of ice shards on the ground, then fades away",
+          "intensity": 0,
+          "rolls": 1,
+          "frames": 7,
+          "rung": 0,
+          "unwrapped": null,
+          "tries": 1,
+          "generated_at": "2026-09-12T23:45:50+00:00"
+        },
+        "south-east": {
+          "status": "fail",
+          "step_mean": 0.2346,
+          "step_max": 0.3107,
+          "drift": 2.96,
+          "loop": 0.0825,
+          "loop_ratio": 0.35,
+          "travel": 0.38,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": 0.229,
+          "peak": null,
+          "reach": null,
+          "turn": null,
+          "end_area": 0.99,
+          "canvas": [
+            40,
+            40
+          ],
+          "reasons": [
+            "still standing: the last frame is only 0.08 of the silhouette away from the first — no collapse"
+          ],
+          "sub": "af72e1fa-277a-41f3-895a-ae71135d0710",
+          "group": "5b33259c-712c-44d6-b438-0e028e00c49d",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "action": "Death - Cracks through and shatters into a small pile of ice shards on the ground, then fades away",
+          "intensity": 0,
+          "rolls": 1,
+          "frames": 7,
+          "rung": 0,
+          "unwrapped": null,
+          "tries": 1,
+          "generated_at": "2026-09-12T23:45:51+00:00"
+        },
+        "east": {
+          "status": "fail",
+          "step_mean": 0.1948,
+          "step_max": 0.374,
+          "drift": 2.92,
+          "loop": 0.0609,
+          "loop_ratio": 0.31,
+          "travel": 0.5,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": 0.066,
+          "peak": null,
+          "reach": null,
+          "turn": null,
+          "end_area": 1.04,
+          "canvas": [
+            40,
+            40
+          ],
+          "reasons": [
+            "still standing: the last frame is only 0.06 of the silhouette away from the first — no collapse"
+          ],
+          "sub": "0341b88b-aa68-45b2-943c-a4ab4013c4e7",
+          "group": "feacd493-f0b3-47f6-8581-0734de9bceaa",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "action": "Death - Cracks through and shatters into a small pile of ice shards on the ground, then fades away",
+          "intensity": 0,
+          "rolls": 1,
+          "frames": 7,
+          "rung": 0,
+          "unwrapped": null,
+          "tries": 1,
+          "generated_at": "2026-09-12T23:45:52+00:00"
+        },
+        "north-east": {
+          "status": "fail",
+          "step_mean": 0.2696,
+          "step_max": 0.4601,
+          "drift": 1.12,
+          "loop": 0.1681,
+          "loop_ratio": 0.62,
+          "travel": 0.69,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": 0.208,
+          "peak": null,
+          "reach": null,
+          "turn": null,
+          "end_area": 1.031,
+          "canvas": [
+            40,
+            40
+          ],
+          "reasons": [
+            "still standing: the last frame is only 0.17 of the silhouette away from the first — no collapse"
+          ],
+          "sub": "bba48d71-fa09-4dec-b92c-c99ae1433fd3",
+          "group": "5b18b365-781a-40ae-80f4-e568e781b640",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "action": "Death - Cracks through and shatters into a small pile of ice shards on the ground, then fades away",
+          "intensity": 0,
+          "rolls": 1,
+          "frames": 7,
+          "rung": 0,
+          "unwrapped": null,
+          "tries": 1,
+          "generated_at": "2026-09-12T23:45:52+00:00"
+        },
+        "north": {
+          "status": "pass",
+          "step_mean": 0.2837,
+          "step_max": 0.4714,
+          "drift": 9.15,
+          "loop": 0.7119,
+          "loop_ratio": 2.51,
+          "travel": 0.23,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": 0.262,
+          "peak": null,
+          "reach": null,
+          "turn": null,
+          "end_area": 0.55,
+          "canvas": [
+            40,
+            40
+          ],
+          "reasons": [],
+          "sub": "136422bd-db02-4777-847f-ba482afa4aac",
+          "group": "9f810569-4225-47f3-8f76-12e0276ea66b",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "action": "Death - Cracks through and shatters into a small pile of ice shards on the ground, then fades away",
+          "intensity": 0,
+          "rolls": 1,
+          "frames": 7,
+          "rung": 0,
+          "unwrapped": null,
+          "tries": 1,
+          "generated_at": "2026-09-12T23:45:52+00:00"
+        }
+      },
+      "action": "Death - Cracks through and shatters into a small pile of ice shards on the ground, then fades away",
+      "frame_paths": {
+        "south": [
+          "ice_sprite/animations/die_v1/south/00.webp",
+          "ice_sprite/animations/die_v1/south/01.webp",
+          "ice_sprite/animations/die_v1/south/02.webp",
+          "ice_sprite/animations/die_v1/south/03.webp",
+          "ice_sprite/animations/die_v1/south/04.webp",
+          "ice_sprite/animations/die_v1/south/05.webp",
+          "ice_sprite/animations/die_v1/south/06.webp"
+        ],
+        "south-east": [
+          "ice_sprite/animations/die_v1/south-east/00.webp",
+          "ice_sprite/animations/die_v1/south-east/01.webp",
+          "ice_sprite/animations/die_v1/south-east/02.webp",
+          "ice_sprite/animations/die_v1/south-east/03.webp",
+          "ice_sprite/animations/die_v1/south-east/04.webp",
+          "ice_sprite/animations/die_v1/south-east/05.webp",
+          "ice_sprite/animations/die_v1/south-east/06.webp"
+        ],
+        "east": [
+          "ice_sprite/animations/die_v1/east/00.webp",
+          "ice_sprite/animations/die_v1/east/01.webp",
+          "ice_sprite/animations/die_v1/east/02.webp",
+          "ice_sprite/animations/die_v1/east/03.webp",
+          "ice_sprite/animations/die_v1/east/04.webp",
+          "ice_sprite/animations/die_v1/east/05.webp",
+          "ice_sprite/animations/die_v1/east/06.webp"
+        ],
+        "north-east": [
+          "ice_sprite/animations/die_v1/north-east/00.webp",
+          "ice_sprite/animations/die_v1/north-east/01.webp",
+          "ice_sprite/animations/die_v1/north-east/02.webp",
+          "ice_sprite/animations/die_v1/north-east/03.webp",
+          "ice_sprite/animations/die_v1/north-east/04.webp",
+          "ice_sprite/animations/die_v1/north-east/05.webp",
+          "ice_sprite/animations/die_v1/north-east/06.webp"
+        ],
+        "north": [
+          "ice_sprite/animations/die_v1/north/00.webp",
+          "ice_sprite/animations/die_v1/north/01.webp",
+          "ice_sprite/animations/die_v1/north/02.webp",
+          "ice_sprite/animations/die_v1/north/03.webp",
+          "ice_sprite/animations/die_v1/north/04.webp",
+          "ice_sprite/animations/die_v1/north/05.webp",
+          "ice_sprite/animations/die_v1/north/06.webp"
+        ]
+      },
+      "strips": {
+        "south": "ice_sprite/animations/die_v1__south.webp",
+        "south-east": "ice_sprite/animations/die_v1__south-east.webp",
+        "east": "ice_sprite/animations/die_v1__east.webp",
+        "north-east": "ice_sprite/animations/die_v1__north-east.webp",
+        "north": "ice_sprite/animations/die_v1__north.webp"
+      }
     }
   }
 }

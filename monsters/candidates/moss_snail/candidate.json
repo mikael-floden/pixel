@@ -1708,6 +1708,250 @@
         "north-west": "moss_snail/animations/attack_v3__north-west.webp",
         "west": "moss_snail/animations/attack_v3__west.webp"
       }
+    },
+    "die_v1": {
+      "directions": {
+        "south": {
+          "status": "fail",
+          "step_mean": 0.0454,
+          "step_max": 0.055,
+          "drift": 0.37,
+          "loop": 0.0215,
+          "loop_ratio": 0.47,
+          "travel": 0.37,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": 0.01,
+          "peak": null,
+          "reach": null,
+          "turn": null,
+          "end_area": 0.998,
+          "canvas": [
+            40,
+            40
+          ],
+          "reasons": [
+            "frozen: silhouette moves 0.045 per frame",
+            "still standing: the last frame is only 0.02 of the silhouette away from the first — no collapse"
+          ],
+          "sub": "a5e29567-7690-4a55-a631-9caafcc86411",
+          "group": "896a88e5-93c8-45e7-bc74-479537d695ca",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "action": "Death - Shrinks back into its shell, the shell tips over onto its side and fades away",
+          "intensity": 0,
+          "rolls": 1,
+          "frames": 7,
+          "rung": 0,
+          "unwrapped": null,
+          "tries": 1,
+          "generated_at": "2026-09-12T23:12:04+00:00"
+        },
+        "south-east": {
+          "status": "fail",
+          "step_mean": 0.0663,
+          "step_max": 0.0862,
+          "drift": 1.15,
+          "loop": 0.0364,
+          "loop_ratio": 0.55,
+          "travel": 0.35,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": 0.019,
+          "peak": null,
+          "reach": null,
+          "turn": null,
+          "end_area": 1.005,
+          "canvas": [
+            40,
+            40
+          ],
+          "reasons": [
+            "motion 0.066 outside the calm band 0.1–0.9 — eyeball it",
+            "still standing: the last frame is only 0.04 of the silhouette away from the first — no collapse"
+          ],
+          "sub": "48546060-46ae-49e3-83e4-d0a2a5ef1a59",
+          "group": "2b193822-238b-4f70-8439-f121a213b4d6",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "action": "Death - Shrinks back into its shell, the shell tips over onto its side and fades away",
+          "intensity": 0,
+          "rolls": 1,
+          "frames": 7,
+          "rung": 0,
+          "unwrapped": null,
+          "tries": 1,
+          "generated_at": "2026-09-12T23:12:04+00:00"
+        },
+        "east": {
+          "status": "fail",
+          "step_mean": 0.0787,
+          "step_max": 0.1221,
+          "drift": 1.14,
+          "loop": 0.0868,
+          "loop_ratio": 1.1,
+          "travel": 1.36,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": 0.008,
+          "peak": null,
+          "reach": null,
+          "turn": null,
+          "end_area": 1.014,
+          "canvas": [
+            40,
+            40
+          ],
+          "reasons": [
+            "motion 0.079 outside the calm band 0.1–0.9 — eyeball it",
+            "still standing: the last frame is only 0.09 of the silhouette away from the first — no collapse"
+          ],
+          "sub": "a0a806a7-4c6f-4334-8475-b231ed189ab2",
+          "group": "608781ba-dae3-4b6f-b39b-6285a70c8ef9",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "action": "Death - Shrinks back into its shell, the shell tips over onto its side and fades away",
+          "intensity": 0,
+          "rolls": 1,
+          "frames": 7,
+          "rung": 0,
+          "unwrapped": null,
+          "tries": 1,
+          "generated_at": "2026-09-12T23:12:05+00:00"
+        },
+        "north-east": {
+          "status": "fail",
+          "step_mean": 0.0637,
+          "step_max": 0.1084,
+          "drift": 2.6,
+          "loop": 0.0792,
+          "loop_ratio": 1.24,
+          "travel": 0.05,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": 0.009,
+          "peak": null,
+          "reach": null,
+          "turn": null,
+          "end_area": 0.975,
+          "canvas": [
+            40,
+            40
+          ],
+          "reasons": [
+            "motion 0.064 outside the calm band 0.1–0.9 — eyeball it",
+            "still standing: the last frame is only 0.08 of the silhouette away from the first — no collapse"
+          ],
+          "sub": "fd984964-b530-4bcb-9798-6c540bfb8a88",
+          "group": "516cb3a0-d11c-4cfe-816e-431b7b61d97e",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "action": "Death - Shrinks back into its shell, the shell tips over onto its side and fades away",
+          "intensity": 0,
+          "rolls": 1,
+          "frames": 7,
+          "rung": 0,
+          "unwrapped": null,
+          "tries": 1,
+          "generated_at": "2026-09-12T23:12:05+00:00"
+        },
+        "north": {
+          "status": "fail",
+          "step_mean": 0.0657,
+          "step_max": 0.0917,
+          "drift": 0.26,
+          "loop": 0.0301,
+          "loop_ratio": 0.46,
+          "travel": 0.13,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": 0.009,
+          "peak": null,
+          "reach": null,
+          "turn": null,
+          "end_area": 0.993,
+          "canvas": [
+            40,
+            40
+          ],
+          "reasons": [
+            "motion 0.066 outside the calm band 0.1–0.9 — eyeball it",
+            "still standing: the last frame is only 0.03 of the silhouette away from the first — no collapse"
+          ],
+          "sub": "b418b6d4-95e8-4a95-9e76-51af2feabd1e",
+          "group": "cb933b46-602a-4602-a088-9022868f2207",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "action": "Death - Shrinks back into its shell, the shell tips over onto its side and fades away",
+          "intensity": 0,
+          "rolls": 1,
+          "frames": 7,
+          "rung": 0,
+          "unwrapped": null,
+          "tries": 1,
+          "generated_at": "2026-09-12T23:12:06+00:00"
+        }
+      },
+      "action": "Death - Shrinks back into its shell, the shell tips over onto its side and fades away",
+      "frame_paths": {
+        "south": [
+          "moss_snail/animations/die_v1/south/00.webp",
+          "moss_snail/animations/die_v1/south/01.webp",
+          "moss_snail/animations/die_v1/south/02.webp",
+          "moss_snail/animations/die_v1/south/03.webp",
+          "moss_snail/animations/die_v1/south/04.webp",
+          "moss_snail/animations/die_v1/south/05.webp",
+          "moss_snail/animations/die_v1/south/06.webp"
+        ],
+        "south-east": [
+          "moss_snail/animations/die_v1/south-east/00.webp",
+          "moss_snail/animations/die_v1/south-east/01.webp",
+          "moss_snail/animations/die_v1/south-east/02.webp",
+          "moss_snail/animations/die_v1/south-east/03.webp",
+          "moss_snail/animations/die_v1/south-east/04.webp",
+          "moss_snail/animations/die_v1/south-east/05.webp",
+          "moss_snail/animations/die_v1/south-east/06.webp"
+        ],
+        "east": [
+          "moss_snail/animations/die_v1/east/00.webp",
+          "moss_snail/animations/die_v1/east/01.webp",
+          "moss_snail/animations/die_v1/east/02.webp",
+          "moss_snail/animations/die_v1/east/03.webp",
+          "moss_snail/animations/die_v1/east/04.webp",
+          "moss_snail/animations/die_v1/east/05.webp",
+          "moss_snail/animations/die_v1/east/06.webp"
+        ],
+        "north-east": [
+          "moss_snail/animations/die_v1/north-east/00.webp",
+          "moss_snail/animations/die_v1/north-east/01.webp",
+          "moss_snail/animations/die_v1/north-east/02.webp",
+          "moss_snail/animations/die_v1/north-east/03.webp",
+          "moss_snail/animations/die_v1/north-east/04.webp",
+          "moss_snail/animations/die_v1/north-east/05.webp",
+          "moss_snail/animations/die_v1/north-east/06.webp"
+        ],
+        "north": [
+          "moss_snail/animations/die_v1/north/00.webp",
+          "moss_snail/animations/die_v1/north/01.webp",
+          "moss_snail/animations/die_v1/north/02.webp",
+          "moss_snail/animations/die_v1/north/03.webp",
+          "moss_snail/animations/die_v1/north/04.webp",
+          "moss_snail/animations/die_v1/north/05.webp",
+          "moss_snail/animations/die_v1/north/06.webp"
+        ]
+      },
+      "strips": {
+        "south": "moss_snail/animations/die_v1__south.webp",
+        "south-east": "moss_snail/animations/die_v1__south-east.webp",
+        "east": "moss_snail/animations/die_v1__east.webp",
+        "north-east": "moss_snail/animations/die_v1__north-east.webp",
+        "north": "moss_snail/animations/die_v1__north.webp"
+      }
     }
   }
 }

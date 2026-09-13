@@ -1550,6 +1550,386 @@
         "west": "water_elemental/animations/attack_v3__west.webp",
         "north-west": "water_elemental/animations/attack_v3__north-west.webp"
       }
+    },
+    "die_v1": {
+      "directions": {
+        "south": {
+          "status": "pass",
+          "step_mean": 0.3153,
+          "step_max": 0.5734,
+          "drift": 25.83,
+          "loop": 0.7215,
+          "loop_ratio": 2.29,
+          "travel": 1.68,
+          "pin": 1.0,
+          "pad": 3,
+          "flash": 0.087,
+          "peak": null,
+          "reach": null,
+          "turn": null,
+          "end_area": 0.679,
+          "canvas": [
+            102,
+            102
+          ],
+          "reasons": [
+            "canvas grown by 3 px a side to hold the motion"
+          ],
+          "sub": "72139517-70de-4246-84ec-791b10af23ed",
+          "group": "8b0e0799-1ebb-492f-ae17-1a2a2754ba1f",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "action": "Death - Loses its shape and collapses into a puddle of water on the ground, then evaporates and fades away",
+          "intensity": 0,
+          "rolls": 1,
+          "frames": 7,
+          "rung": 0,
+          "unwrapped": null,
+          "tries": 1,
+          "generated_at": "2026-09-12T23:20:12+00:00"
+        },
+        "south-east": {
+          "status": "pass",
+          "step_mean": 0.3126,
+          "step_max": 0.7318,
+          "drift": 32.16,
+          "loop": 1.2451,
+          "loop_ratio": 3.98,
+          "travel": 5.42,
+          "pin": 1.0,
+          "pad": 1,
+          "flash": 0.002,
+          "peak": null,
+          "reach": null,
+          "turn": null,
+          "end_area": 0.611,
+          "canvas": [
+            98,
+            98
+          ],
+          "reasons": [
+            "canvas grown by 1 px a side to hold the motion"
+          ],
+          "sub": "a5d10cda-4d81-4df5-8be1-64aefd3539d6",
+          "group": "88714b3f-7f70-4cbd-bd2f-ab547154ebd2",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "action": "Death - Loses its shape and collapses into a puddle of water on the ground, then evaporates and fades away",
+          "intensity": 0,
+          "rolls": 1,
+          "frames": 7,
+          "rung": 0,
+          "unwrapped": null,
+          "tries": 1,
+          "generated_at": "2026-09-12T23:20:12+00:00"
+        },
+        "east": {
+          "status": "warn",
+          "step_mean": 0.4537,
+          "step_max": 1.1066,
+          "drift": 34.94,
+          "loop": 1.546,
+          "loop_ratio": 3.41,
+          "travel": 8.84,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": 0.275,
+          "peak": null,
+          "reach": null,
+          "turn": null,
+          "end_area": 0.815,
+          "canvas": [
+            96,
+            96
+          ],
+          "reasons": [
+            "drifts 34.9 px — eyeball it"
+          ],
+          "sub": "43de1f00-0e2c-430b-ac5c-c0d524aa7dc6",
+          "group": "3ad744a5-723b-417b-8280-2798cf8ea137",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "action": "Death - Loses its shape and collapses into a puddle of water on the ground, then evaporates and fades away",
+          "intensity": 0,
+          "rolls": 1,
+          "frames": 7,
+          "rung": 0,
+          "unwrapped": null,
+          "tries": 1,
+          "generated_at": "2026-09-12T23:20:13+00:00"
+        },
+        "north-east": {
+          "status": "pass",
+          "step_mean": 0.379,
+          "step_max": 0.6277,
+          "drift": 31.87,
+          "loop": 1.3956,
+          "loop_ratio": 3.68,
+          "travel": 5.96,
+          "pin": 1.0,
+          "pad": 4,
+          "flash": 0.067,
+          "peak": null,
+          "reach": null,
+          "turn": null,
+          "end_area": 1.066,
+          "canvas": [
+            104,
+            104
+          ],
+          "reasons": [
+            "canvas grown by 4 px a side to hold the motion"
+          ],
+          "sub": "75f9ae96-36a4-4f6d-ac4c-4e41171c83f4",
+          "group": "2d836e93-2c10-4a4f-911e-67a14b1136c0",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "action": "Death - Loses its shape and collapses into a puddle of water on the ground, then evaporates and fades away",
+          "intensity": 0,
+          "rolls": 1,
+          "frames": 7,
+          "rung": 0,
+          "unwrapped": null,
+          "tries": 1,
+          "generated_at": "2026-09-12T23:20:13+00:00"
+        },
+        "north": {
+          "status": "pass",
+          "step_mean": 0.3643,
+          "step_max": 0.5006,
+          "drift": 32.04,
+          "loop": 1.3767,
+          "loop_ratio": 3.78,
+          "travel": 6.35,
+          "pin": 1.0,
+          "pad": 2,
+          "flash": 0.178,
+          "peak": null,
+          "reach": null,
+          "turn": null,
+          "end_area": 0.995,
+          "canvas": [
+            100,
+            100
+          ],
+          "reasons": [
+            "canvas grown by 2 px a side to hold the motion"
+          ],
+          "sub": "971ccddb-99b9-4da1-914b-6ba3f7099a46",
+          "group": "60c7039a-99de-48ca-875f-cb66f96b96a2",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "action": "Death - Loses its shape and collapses into a puddle of water on the ground, then evaporates and fades away",
+          "intensity": 0,
+          "rolls": 1,
+          "frames": 7,
+          "rung": 0,
+          "unwrapped": null,
+          "tries": 1,
+          "generated_at": "2026-09-12T23:20:14+00:00"
+        },
+        "south-west": {
+          "status": "pass",
+          "step_mean": 0.3126,
+          "step_max": 0.7318,
+          "drift": 32.16,
+          "loop": 1.2451,
+          "loop_ratio": 3.98,
+          "travel": 5.42,
+          "pin": 1.0,
+          "pad": 1,
+          "flash": 0.002,
+          "peak": null,
+          "reach": null,
+          "turn": null,
+          "end_area": 0.611,
+          "canvas": [
+            98,
+            98
+          ],
+          "reasons": [
+            "canvas grown by 1 px a side to hold the motion"
+          ],
+          "sub": "a5d10cda-4d81-4df5-8be1-64aefd3539d6",
+          "group": "88714b3f-7f70-4cbd-bd2f-ab547154ebd2",
+          "takes": 1,
+          "version": 1,
+          "mirrored": true,
+          "action": "Death - Loses its shape and collapses into a puddle of water on the ground, then evaporates and fades away",
+          "intensity": 0,
+          "rolls": 1,
+          "frames": 7,
+          "rung": 0,
+          "unwrapped": null,
+          "tries": 1,
+          "generated_at": "2026-09-12T23:20:12+00:00",
+          "source": "south-east"
+        },
+        "west": {
+          "status": "warn",
+          "step_mean": 0.4537,
+          "step_max": 1.1066,
+          "drift": 34.94,
+          "loop": 1.546,
+          "loop_ratio": 3.41,
+          "travel": 8.84,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": 0.275,
+          "peak": null,
+          "reach": null,
+          "turn": null,
+          "end_area": 0.815,
+          "canvas": [
+            96,
+            96
+          ],
+          "reasons": [
+            "drifts 34.9 px — eyeball it"
+          ],
+          "sub": "43de1f00-0e2c-430b-ac5c-c0d524aa7dc6",
+          "group": "3ad744a5-723b-417b-8280-2798cf8ea137",
+          "takes": 1,
+          "version": 1,
+          "mirrored": true,
+          "action": "Death - Loses its shape and collapses into a puddle of water on the ground, then evaporates and fades away",
+          "intensity": 0,
+          "rolls": 1,
+          "frames": 7,
+          "rung": 0,
+          "unwrapped": null,
+          "tries": 1,
+          "generated_at": "2026-09-12T23:20:13+00:00",
+          "source": "east"
+        },
+        "north-west": {
+          "status": "pass",
+          "step_mean": 0.379,
+          "step_max": 0.6277,
+          "drift": 31.87,
+          "loop": 1.3956,
+          "loop_ratio": 3.68,
+          "travel": 5.96,
+          "pin": 1.0,
+          "pad": 4,
+          "flash": 0.067,
+          "peak": null,
+          "reach": null,
+          "turn": null,
+          "end_area": 1.066,
+          "canvas": [
+            104,
+            104
+          ],
+          "reasons": [
+            "canvas grown by 4 px a side to hold the motion"
+          ],
+          "sub": "75f9ae96-36a4-4f6d-ac4c-4e41171c83f4",
+          "group": "2d836e93-2c10-4a4f-911e-67a14b1136c0",
+          "takes": 1,
+          "version": 1,
+          "mirrored": true,
+          "action": "Death - Loses its shape and collapses into a puddle of water on the ground, then evaporates and fades away",
+          "intensity": 0,
+          "rolls": 1,
+          "frames": 7,
+          "rung": 0,
+          "unwrapped": null,
+          "tries": 1,
+          "generated_at": "2026-09-12T23:20:13+00:00",
+          "source": "north-east"
+        }
+      },
+      "action": "Death - Loses its shape and collapses into a puddle of water on the ground, then evaporates and fades away",
+      "frame_paths": {
+        "south": [
+          "water_elemental/animations/die_v1/south/00.webp",
+          "water_elemental/animations/die_v1/south/01.webp",
+          "water_elemental/animations/die_v1/south/02.webp",
+          "water_elemental/animations/die_v1/south/03.webp",
+          "water_elemental/animations/die_v1/south/04.webp",
+          "water_elemental/animations/die_v1/south/05.webp",
+          "water_elemental/animations/die_v1/south/06.webp"
+        ],
+        "south-east": [
+          "water_elemental/animations/die_v1/south-east/00.webp",
+          "water_elemental/animations/die_v1/south-east/01.webp",
+          "water_elemental/animations/die_v1/south-east/02.webp",
+          "water_elemental/animations/die_v1/south-east/03.webp",
+          "water_elemental/animations/die_v1/south-east/04.webp",
+          "water_elemental/animations/die_v1/south-east/05.webp",
+          "water_elemental/animations/die_v1/south-east/06.webp"
+        ],
+        "east": [
+          "water_elemental/animations/die_v1/east/00.webp",
+          "water_elemental/animations/die_v1/east/01.webp",
+          "water_elemental/animations/die_v1/east/02.webp",
+          "water_elemental/animations/die_v1/east/03.webp",
+          "water_elemental/animations/die_v1/east/04.webp",
+          "water_elemental/animations/die_v1/east/05.webp",
+          "water_elemental/animations/die_v1/east/06.webp"
+        ],
+        "north-east": [
+          "water_elemental/animations/die_v1/north-east/00.webp",
+          "water_elemental/animations/die_v1/north-east/01.webp",
+          "water_elemental/animations/die_v1/north-east/02.webp",
+          "water_elemental/animations/die_v1/north-east/03.webp",
+          "water_elemental/animations/die_v1/north-east/04.webp",
+          "water_elemental/animations/die_v1/north-east/05.webp",
+          "water_elemental/animations/die_v1/north-east/06.webp"
+        ],
+        "north": [
+          "water_elemental/animations/die_v1/north/00.webp",
+          "water_elemental/animations/die_v1/north/01.webp",
+          "water_elemental/animations/die_v1/north/02.webp",
+          "water_elemental/animations/die_v1/north/03.webp",
+          "water_elemental/animations/die_v1/north/04.webp",
+          "water_elemental/animations/die_v1/north/05.webp",
+          "water_elemental/animations/die_v1/north/06.webp"
+        ],
+        "south-west": [
+          "water_elemental/animations/die_v1/south-west/00.webp",
+          "water_elemental/animations/die_v1/south-west/01.webp",
+          "water_elemental/animations/die_v1/south-west/02.webp",
+          "water_elemental/animations/die_v1/south-west/03.webp",
+          "water_elemental/animations/die_v1/south-west/04.webp",
+          "water_elemental/animations/die_v1/south-west/05.webp",
+          "water_elemental/animations/die_v1/south-west/06.webp"
+        ],
+        "west": [
+          "water_elemental/animations/die_v1/west/00.webp",
+          "water_elemental/animations/die_v1/west/01.webp",
+          "water_elemental/animations/die_v1/west/02.webp",
+          "water_elemental/animations/die_v1/west/03.webp",
+          "water_elemental/animations/die_v1/west/04.webp",
+          "water_elemental/animations/die_v1/west/05.webp",
+          "water_elemental/animations/die_v1/west/06.webp"
+        ],
+        "north-west": [
+          "water_elemental/animations/die_v1/north-west/00.webp",
+          "water_elemental/animations/die_v1/north-west/01.webp",
+          "water_elemental/animations/die_v1/north-west/02.webp",
+          "water_elemental/animations/die_v1/north-west/03.webp",
+          "water_elemental/animations/die_v1/north-west/04.webp",
+          "water_elemental/animations/die_v1/north-west/05.webp",
+          "water_elemental/animations/die_v1/north-west/06.webp"
+        ]
+      },
+      "strips": {
+        "south": "water_elemental/animations/die_v1__south.webp",
+        "south-east": "water_elemental/animations/die_v1__south-east.webp",
+        "east": "water_elemental/animations/die_v1__east.webp",
+        "north-east": "water_elemental/animations/die_v1__north-east.webp",
+        "north": "water_elemental/animations/die_v1__north.webp",
+        "south-west": "water_elemental/animations/die_v1__south-west.webp",
+        "west": "water_elemental/animations/die_v1__west.webp",
+        "north-west": "water_elemental/animations/die_v1__north-west.webp"
+      }
     }
   }
 }

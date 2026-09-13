@@ -1666,6 +1666,249 @@
         "west": "turtle_hatchling/animations/attack_v3__west.webp",
         "north-west": "turtle_hatchling/animations/attack_v3__north-west.webp"
       }
+    },
+    "die_v1": {
+      "directions": {
+        "south": {
+          "status": "fail",
+          "step_mean": 0.0913,
+          "step_max": 0.1993,
+          "drift": 1.92,
+          "loop": 0.1567,
+          "loop_ratio": 1.72,
+          "travel": 0.1,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": 0.004,
+          "peak": null,
+          "reach": null,
+          "turn": null,
+          "end_area": 0.957,
+          "canvas": [
+            40,
+            40
+          ],
+          "reasons": [
+            "motion 0.091 outside the calm band 0.1–0.9 — eyeball it",
+            "still standing: the last frame is only 0.16 of the silhouette away from the first — no collapse"
+          ],
+          "sub": "0b4ce4ab-b5bf-4fdb-9add-9fd31ae293cf",
+          "group": "6c04488a-72f9-425f-b55e-99910919b90c",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "action": "Death - Pulls its head and flippers into the shell, the shell tips over onto its side and fades away",
+          "intensity": 0,
+          "rolls": 1,
+          "frames": 7,
+          "rung": 0,
+          "unwrapped": null,
+          "tries": 1,
+          "generated_at": "2026-09-12T23:47:59+00:00"
+        },
+        "south-east": {
+          "status": "fail",
+          "step_mean": 0.11,
+          "step_max": 0.1587,
+          "drift": 3.03,
+          "loop": 0.0787,
+          "loop_ratio": 0.72,
+          "travel": 1.24,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": 0.003,
+          "peak": null,
+          "reach": null,
+          "turn": null,
+          "end_area": 0.967,
+          "canvas": [
+            40,
+            40
+          ],
+          "reasons": [
+            "still standing: the last frame is only 0.08 of the silhouette away from the first — no collapse"
+          ],
+          "sub": "a18a45d2-c852-40d5-955e-70d662e741bf",
+          "group": "3132de20-84e5-4a47-8371-2a76f2ebb7c7",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "action": "Death - Pulls its head and flippers into the shell, the shell tips over onto its side and fades away",
+          "intensity": 0,
+          "rolls": 1,
+          "frames": 7,
+          "rung": 0,
+          "unwrapped": null,
+          "tries": 1,
+          "generated_at": "2026-09-12T23:48:00+00:00"
+        },
+        "east": {
+          "status": "fail",
+          "step_mean": 0.0981,
+          "step_max": 0.141,
+          "drift": 1.37,
+          "loop": 0.1695,
+          "loop_ratio": 1.73,
+          "travel": 0.7,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": 0.007,
+          "peak": null,
+          "reach": null,
+          "turn": null,
+          "end_area": 1.007,
+          "canvas": [
+            40,
+            40
+          ],
+          "reasons": [
+            "motion 0.098 outside the calm band 0.1–0.9 — eyeball it",
+            "still standing: the last frame is only 0.17 of the silhouette away from the first — no collapse"
+          ],
+          "sub": "8de99d15-0c8d-4a82-8385-b3b5b6aad0b1",
+          "group": "962f1b46-bf6d-44de-998e-7121ce03fb2f",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "action": "Death - Pulls its head and flippers into the shell, the shell tips over onto its side and fades away",
+          "intensity": 0,
+          "rolls": 1,
+          "frames": 7,
+          "rung": 0,
+          "unwrapped": null,
+          "tries": 1,
+          "generated_at": "2026-09-12T23:48:00+00:00"
+        },
+        "north-east": {
+          "status": "fail",
+          "step_mean": 0.0593,
+          "step_max": 0.0977,
+          "drift": 1.54,
+          "loop": 0.0807,
+          "loop_ratio": 1.36,
+          "travel": 0.14,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": 0.003,
+          "peak": null,
+          "reach": null,
+          "turn": null,
+          "end_area": 0.97,
+          "canvas": [
+            40,
+            40
+          ],
+          "reasons": [
+            "motion 0.059 outside the calm band 0.1–0.9 — eyeball it",
+            "still standing: the last frame is only 0.08 of the silhouette away from the first — no collapse"
+          ],
+          "sub": "0eb39529-df45-433c-abef-2f12f487f1aa",
+          "group": "b854f329-8e63-41e7-8f7c-f39ec5103678",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "action": "Death - Pulls its head and flippers into the shell, the shell tips over onto its side and fades away",
+          "intensity": 0,
+          "rolls": 1,
+          "frames": 7,
+          "rung": 0,
+          "unwrapped": null,
+          "tries": 1,
+          "generated_at": "2026-09-12T23:48:01+00:00"
+        },
+        "north": {
+          "status": "fail",
+          "step_mean": 0.084,
+          "step_max": 0.1361,
+          "drift": 1.65,
+          "loop": 0.0573,
+          "loop_ratio": 0.68,
+          "travel": 0.09,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": 0.009,
+          "peak": null,
+          "reach": null,
+          "turn": null,
+          "end_area": 0.951,
+          "canvas": [
+            40,
+            40
+          ],
+          "reasons": [
+            "motion 0.084 outside the calm band 0.1–0.9 — eyeball it",
+            "still standing: the last frame is only 0.06 of the silhouette away from the first — no collapse"
+          ],
+          "sub": "db5f0f9e-c840-46aa-b49e-c0bfac353b09",
+          "group": "d00e829a-35dd-4579-ae6e-fc0718a82978",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "action": "Death - Pulls its head and flippers into the shell, the shell tips over onto its side and fades away",
+          "intensity": 0,
+          "rolls": 1,
+          "frames": 7,
+          "rung": 0,
+          "unwrapped": null,
+          "tries": 1,
+          "generated_at": "2026-09-12T23:48:01+00:00"
+        }
+      },
+      "action": "Death - Pulls its head and flippers into the shell, the shell tips over onto its side and fades away",
+      "frame_paths": {
+        "south": [
+          "turtle_hatchling/animations/die_v1/south/00.webp",
+          "turtle_hatchling/animations/die_v1/south/01.webp",
+          "turtle_hatchling/animations/die_v1/south/02.webp",
+          "turtle_hatchling/animations/die_v1/south/03.webp",
+          "turtle_hatchling/animations/die_v1/south/04.webp",
+          "turtle_hatchling/animations/die_v1/south/05.webp",
+          "turtle_hatchling/animations/die_v1/south/06.webp"
+        ],
+        "south-east": [
+          "turtle_hatchling/animations/die_v1/south-east/00.webp",
+          "turtle_hatchling/animations/die_v1/south-east/01.webp",
+          "turtle_hatchling/animations/die_v1/south-east/02.webp",
+          "turtle_hatchling/animations/die_v1/south-east/03.webp",
+          "turtle_hatchling/animations/die_v1/south-east/04.webp",
+          "turtle_hatchling/animations/die_v1/south-east/05.webp",
+          "turtle_hatchling/animations/die_v1/south-east/06.webp"
+        ],
+        "east": [
+          "turtle_hatchling/animations/die_v1/east/00.webp",
+          "turtle_hatchling/animations/die_v1/east/01.webp",
+          "turtle_hatchling/animations/die_v1/east/02.webp",
+          "turtle_hatchling/animations/die_v1/east/03.webp",
+          "turtle_hatchling/animations/die_v1/east/04.webp",
+          "turtle_hatchling/animations/die_v1/east/05.webp",
+          "turtle_hatchling/animations/die_v1/east/06.webp"
+        ],
+        "north-east": [
+          "turtle_hatchling/animations/die_v1/north-east/00.webp",
+          "turtle_hatchling/animations/die_v1/north-east/01.webp",
+          "turtle_hatchling/animations/die_v1/north-east/02.webp",
+          "turtle_hatchling/animations/die_v1/north-east/03.webp",
+          "turtle_hatchling/animations/die_v1/north-east/04.webp",
+          "turtle_hatchling/animations/die_v1/north-east/05.webp",
+          "turtle_hatchling/animations/die_v1/north-east/06.webp"
+        ],
+        "north": [
+          "turtle_hatchling/animations/die_v1/north/00.webp",
+          "turtle_hatchling/animations/die_v1/north/01.webp",
+          "turtle_hatchling/animations/die_v1/north/02.webp",
+          "turtle_hatchling/animations/die_v1/north/03.webp",
+          "turtle_hatchling/animations/die_v1/north/04.webp",
+          "turtle_hatchling/animations/die_v1/north/05.webp",
+          "turtle_hatchling/animations/die_v1/north/06.webp"
+        ]
+      },
+      "strips": {
+        "south": "turtle_hatchling/animations/die_v1__south.webp",
+        "south-east": "turtle_hatchling/animations/die_v1__south-east.webp",
+        "east": "turtle_hatchling/animations/die_v1__east.webp",
+        "north-east": "turtle_hatchling/animations/die_v1__north-east.webp",
+        "north": "turtle_hatchling/animations/die_v1__north.webp"
+      }
     }
   }
 }
