@@ -65,9 +65,17 @@ const RING_N = 4;
  *  level x lh from screen y, so a point 42 px up-screen of you may resolve to
  *  a cell three levels higher AND several cells further back. The answer is
  *  not to aim more carefully — it is to USE WHAT WAS ACTUALLY HIT: `pickAt`
- *  reports the CELL it resolved, so each sample is filed by its true distance
+ *  reports where it resolved, so each sample is filed by its true distance
  *  from the centre rather than by the offset it was asked for. */
 const NEAR_CELLS = 6;
+/** ...AND `pickAt` ANSWERS IN WORLD UNITS, NOT CELLS — 32 to the cell, the
+ *  same trap `playerAt` carries a warning about in the README. Comparing its
+ *  distances against a threshold in CELLS put every sample in the far bucket,
+ *  left the near ring empty and made `dampAt` return 0 for the whole world:
+ *  the deepest hollow in the game reported no fog at all, with the feature
+ *  otherwise working perfectly (measured — the player at cell 94.5,209.5 comes
+ *  back as 3024,6704). */
+const CELL_WU = 32;
 /** How far out still water still counts as damp — 2 cells. */
 const WATER_PX = 2 * 32;
 /** Placement probes per attempt; the gap does the real throttling. */
@@ -162,7 +170,7 @@ export function dawnMistFeature(): AmbientFeature {
         const p = pickAt(wx + Math.cos(a) * r, wy + Math.sin(a) * r * RING_RY);
         if (!p) continue;
         // Filed by the distance ACTUALLY resolved, not the one asked for.
-        const d = Math.hypot(p.x - c.x, p.y - c.y);
+        const d = Math.hypot(p.x - c.x, p.y - c.y) / CELL_WU;
         if (d < 1) continue; // the same cell says nothing about its surroundings
         if (d <= NEAR_CELLS) ring.push(p.lvl);
         else far.push(p.lvl);
