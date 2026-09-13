@@ -1,8 +1,8 @@
 {
   "domain": "games-assistant",
-  "updated_at": "2026-09-13T16:58:59+00:00",
-  "health": "idle",
-  "current": "Idle between runs. Shipped this run (all on main, mirrored to claude/game-assistant-agent-2syvnz): the escape's PROGRESS goal — the farthest point along the ask inside the corridor, the search corridor-bound, the retreat counted only before the route has got on (852cc4e1d); the scenery bbox table regenerated for the chimneys, npm test's gate green again (181cda7eb); a relogin comes back on the surface you left, never on a wall's top — restoreSurface (554187b55); the LOS march skips the light's own near field — a torch beside a column no longer shadows the floor at its own feet, verify-wallwash green (42a7fca77). OPEN, not claimed: his 'turned off the cave + relogin broke the render' report (no settings row or live tuning names a cave; the black areas on the mountain after 'Reconnected.' did not reproduce headless at the mouth — see the request to games); the bone arch's hard cast shadow across his torch pool (scenery shadows are hard by design — his call). Earlier today: the wall walk, the table's glide, the three feel reports (229efe5a7), the gait switch (f9db6c946), the acceleration ramp + dial (9afff4a20), the sprite facing (a5e07923e), the dodge ring (1c96c055c), the roof-edge rule (92514287a), the nav-help floor (1e07f6a04). No file in flight.",
+  "updated_at": "2026-09-13T17:09:36+00:00",
+  "health": "working",
+  "current": "CLAIMED (his report 2026-09-13, the dungeon at day, running with the camera zoomed out): a far cave light POPS on — it acquires a slot with its pool already inside the view and ramps up over lots of visible pixels. Diagnosing headless (slot trace along 205.5,225.0 → 207.6,218.4); the suspect is the picker's reach box (radius·dx + 128 px, half the pool's iso width). Files: games2/client/src/scenes/WorldScene.ts (pickWorldLights), games2/client/src/lightslots.ts, games2/docs/lighting.md, games2/server/test/lightreach.test.ts (new). Shipped this run (all on main, mirrored): 852cc4e1d escape progress goal, 181cda7eb scenery bbox, 554187b55 restore guard, 42a7fca77 light-side near-field skip; live check pending. Open, not claimed: the reconnect black areas and the hard arch shadow (posted to games).",
   "progress": {
     "units_shipped": 20
   },
