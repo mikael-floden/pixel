@@ -616,6 +616,17 @@ anything real. Before building an envelope, shoot two frames 400 ms apart and
 require them to agree (under 8 luma) — two frames that agree is the evidence
 that the only thing still moving is the feature under test. A fixed sleep is
 a guess; this is not.
+**DO NOT EDIT A FILE IN THE CLIENT'S MODULE GRAPH WHILE A GATE IS RUNNING.**
+Vite hot-reloads the page and the run dies with `page.evaluate: Execution
+context was destroyed, most likely because of a navigation` — which reads like
+a harness bug and is not one. Paid twice on one afternoon (a constant in
+`flue.ts`, then a probe in `WorldScene.ts`), and these runs are 15-25 minutes
+each. Docs and `scripts/*.mjs` are outside the graph and safe; anything under
+`ambient/` or `client/src/` is not. Related and separate: a LONG-LIVED dev
+server can serve a STALE transform to a fresh page, so a new module (a new
+feature folder, a new probe) may simply not be there — check
+`__mlAmbient.list()` for your effect before believing a zero, and restart the
+dev server rather than debugging the effect.
 **A COUNTER THAT READS ZERO PASSES EVERY CEILING.** Two arms in
 `verify-chimney` were green while measuring nothing, and both are now guarded
 because the shape recurs everywhere:

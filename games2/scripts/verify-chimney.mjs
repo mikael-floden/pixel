@@ -29,6 +29,14 @@
 //  5. IT IS ON THE SCREEN. Per-mark windows inside a clear area measured off
 //     the DOM, with the same windows read with the effect OFF as the control.
 //
+// AND THE ARM HAS TO STAND OUTSIDE. A chimney stands over an INDOOR fire, so
+// the obvious place to watch it from — a couple of cells off the stack — is
+// inside the house it belongs to, where `ctx.outdoor` is 0 and this effect
+// correctly draws nothing. Measured: a stack reporting `conf=opening alpha=1`
+// with the effect taking none of it, which is the outdoor rule working and
+// looks exactly like a broken feature. Every spot is walked out to open air
+// first, and the log says where it ended up.
+//
 //   node scripts/verify-chimney.mjs      (needs the dev stack on :5173)
 import { chromium } from "playwright-core";
 import { existsSync, readdirSync, readFileSync } from "node:fs";
@@ -264,11 +272,20 @@ if (!placed.length)
 if (!source.length) fail("nothing in this world carries a vent, injected or real — the in-world arms proved nothing");
 else {
   const spots = [...new Map(source.map((p) => [`${Math.floor(p.x / 8)},${Math.floor(p.y / 8)}`, p])).values()].slice(0, 8);
-  const seen = await page.evaluate(async ({ spots, FRAME }) => {
+  /* Stand-offs walked in order until one is OUTDOORS — a chimney's own house
+   * is directly under it, so the near ones are usually indoors. */
+  const STANDOFFS = [[2.5, 4.5], [4.5, 6.5], [-3.5, 6.5], [6.5, -2.5], [0, 9.5], [9.5, 0], [-9.5, 0], [0, -9.5]];
+  const seen = await page.evaluate(async ({ spots, FRAME, OFFSETS }) => {
     const step = () => new Promise((r) => requestAnimationFrame(r));
     for (const s of spots) {
-      window.__ml.teleport(s.x + 2.5, s.y + 4.5);
-      for (let i = 0; i < 120; i++) await step();
+      let stand = null;
+      for (const [dx, dy] of OFFSETS) {
+        window.__ml.teleport(s.x + dx, s.y + dy);
+        for (let i = 0; i < 70; i++) await step();
+        if (!window.__ml.indoor?.().indoor) { stand = [dx, dy]; break; }
+      }
+      if (!stand) continue; // every stand-off was inside the house
+      for (let i = 0; i < 60; i++) await step();
       const frame = await (0, eval)(FRAME)(s); // aim at the vent — see FRAME_JS
       const list = window.__ml.ventsInView(96) || [];
       if (!list.length) continue;
@@ -295,22 +312,30 @@ else {
         }
         await step();
       }
-      return { at: [s.x, s.y], frame, list, vents, puffs, maxA, draw, born, climb };
+      // A house that cannot be watched from open air is not this gate's
+      // verdict on the effect — try the next stack before giving up.
+      if (!vents && spots.indexOf(s) < spots.length - 1) continue;
+      return { at: [s.x, s.y], stand, frame, list, vents, puffs, maxA, draw, born, climb };
     }
     return null;
-  }, { spots, FRAME: FRAME_JS });
+  }, { spots, FRAME: FRAME_JS, OFFSETS: STANDOFFS });
 
   if (!seen) fail(`no vent was reported at any of the ${spots.length} chimney placements — the seam is not delivering`);
   else {
     console.log(
-      `framing: ${seen.frame ? `${seen.frame.k} cells up-world puts the mouth at y ${seen.frame.sy} of a wanted ${seen.frame.want}` : "no offset found"}`,
+      `framing: stood ${seen.stand ? `${seen.stand[0]},${seen.stand[1]} cells off (open air)` : "?"}; ` +
+        `${seen.frame ? `${seen.frame.k} cells up-world puts the mouth at y ${seen.frame.sy} of a wanted ${seen.frame.want}` : "no offset found"}`,
     );
     console.log(
       `at ${seen.at}: ${seen.list.length} vent(s) reported, ${seen.vents} taken by the effect, ` +
         `${seen.puffs} puffs in the air, brightest mark alpha ${seen.maxA}`,
     );
     for (const v of seen.list) console.log(`  vent ${v.id} ${v.piece}#${v.state} conf=${v.conf} alpha=${v.alpha} at ${Math.round(v.x)},${Math.round(v.y)}`);
-    if (!seen.vents) fail("the vents are reported but the effect took none of them");
+    if (!seen.vents)
+      fail(
+        "the vents are reported but the effect took none of them — check `conf` above (only a measured hole counts), " +
+          "the piece's `alpha` (a stack dissolving with its roof is not fed), and that this spot is OUTDOORS",
+      );
     if (!seen.puffs) fail("the effect took a vent and emitted nothing");
     if (!seen.draw) fail("no puff ever reached the screen");
     else {
@@ -358,11 +383,11 @@ else {
       window.__mlAmbient.setEnabled("chimney", o);
       for (let i = 0; i < 90; i++) await new Promise((r) => requestAnimationFrame(r));
     }, on);
-    const layout = await page.evaluate(async ({ at, FRAME }) => {
+    const layout = await page.evaluate(async ({ at, stand, FRAME }) => {
       const step = () => new Promise((r) => requestAnimationFrame(r));
-      window.__ml.teleport(at[0] + 2.5, at[1] + 4.5);
+      window.__ml.teleport(at[0] + stand[0], at[1] + stand[1]); // the observation's own open-air spot
       for (let i = 0; i < 120; i++) await step();
-      await (0, eval)(FRAME)({ x: at[0], y: at[1] }); // the observation's own framing
+      await (0, eval)(FRAME)({ x: at[0], y: at[1] }); // ...and its framing
       const cv = document.querySelector("canvas").getBoundingClientRect();
       const over = [];
       for (const el of document.querySelectorAll("body *")) {
@@ -376,7 +401,7 @@ else {
         over.push({ x0: b.left, x1: b.right, y0: b.top, y1: b.bottom });
       }
       return { cv: { x0: cv.left, x1: cv.right, y0: cv.top, y1: cv.bottom }, over, me: window.__ml.myScreen() };
-    }, { at: seen.at, FRAME: FRAME_JS });
+    }, { at: seen.at, stand: seen.stand ?? [2.5, 4.5], FRAME: FRAME_JS });
     const skipBox = layout.me
       ? { x0: layout.me.sx - 26, x1: layout.me.sx + 26, y0: layout.me.sy - 62, y1: layout.me.sy + 16 }
       : null;
