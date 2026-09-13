@@ -383,6 +383,21 @@ nothing pins the end. The rules, measured on his own 57 shipped dies (east):
   --from die_v1 --only …`): the record keeps the wording it was generated
   with, by design, while `needed_dirs` compares the config — left alone, the
   old-wording directions would regenerate with the old text forever.
+- **PRO is the escape for a body v3 will not change** (`--pro` on the state
+  command and on `redo`; measured 2026-09-13 on Shellet south): after six
+  rolls and every rung of wording, v3 interpolating from the pinned base
+  kept seven flat bodies intact (last vs first 0.05–0.23, the body fully
+  there at the end); an empty `end_frame` only cut to nothing on the last
+  frame; his own poring recipe (12 frames, "faints and fades away") froze
+  without the pin. PRO drew the shell cracking apart and the turtle melting
+  into a puddle that shrinks away — 16 frames, ~$0.19 a direction against
+  $0.013. PRO takes no pins and fixes its own count, so `--pro` turns
+  `keep_first` off and restarts the ladder at the design's own words; run
+  it on a monster's five directions together (`redo … --dirs
+  south,south-east,east,north-east,north --pro`) so the state keeps one
+  frame count — `needed_dirs` redoes the odd-length directions of a mixed
+  state, and a lone 16-frame PRO direction beside 7-frame v3 ones would be
+  re-rolled back into the failure.
 - **The die ladder is its own** (`amplify`/`calm` on the STATES entry): a
   "still standing" fail asks for a heavier collapse, an overflow asks for a
   plainer one — never the attack's swing, claw or extreme rungs. (Before this,

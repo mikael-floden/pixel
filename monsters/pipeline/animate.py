@@ -722,6 +722,8 @@ def generate_state(client, cid, state, dirs, version, verbose=True, pin=False):
             rung = r if rung is None else max(rung, r)
             tries[d] = (old.get("rolls", 0) + 1) if old.get("status") == "fail" else 1
         rung = rung or 0
+        if spec.get("ladder_restart"):
+            rung = 0        # a new generator starts from the design's own words
         action = ladder_action(cid, rung, rec["action"], base_state(state))
         for d in dirs:
             actions[d], rungs[d], counts[d] = action, rung, spec["frames"]
@@ -882,6 +884,18 @@ def needed_dirs(man, slot, redo=None):
 
 def cmd_state(args, state):
     cfg = cand.load_cfg()
+    if getattr(args, "pro", False):
+        # THE ESCAPE FOR A BODY v3 WILL NOT CHANGE (measured 2026-09-13, Shellet
+        # south): v3 interpolating from the pinned base kept a flat body intact
+        # through six rolls and every rung of wording, and an empty end_frame
+        # only cut to nothing on the last frame; PRO drew the shell cracking
+        # apart and the turtle melting into a puddle that shrinks away, 16
+        # frames, ~$0.19 a direction. PRO takes no pins and fixes its own
+        # count, so keep_first is off and the ladder restarts at the design's
+        # own words. Regenerate a monster's five directions together — one
+        # count across the state, and PRO makes its views agree.
+        spec = STATES[base_state(state)]
+        spec["mode"], spec["keep_first"], spec["ladder_restart"] = "pro", False, True
     ids = args.only.split(",") if args.only else [c["id"] for c in cfg["candidates"]
                                                   if (cand.load_manifest(c["id"]) or {}).get("review") == "approved"]
     redo = args.dirs.split(",") if getattr(args, "dirs", None) else None
@@ -1415,11 +1429,13 @@ def main():
         g.add_argument("--try", dest="use_try", action="store_true",
                        help="build the NEXT ATTEMPT at this state alongside the others (nothing in candidates is live; he picks)")
         g.add_argument("--slot", help="write to this slot exactly, e.g. attack_v3")
+        g.add_argument("--pro", action="store_true", help="PRO mode for this run: no pins, its own frame count, the ladder restarts (the escape for a body v3 will not change)")
         g.set_defaults(func=lambda a, st=st: cmd_state(a, a.slot or (st + (TRY if a.use_try else ""))))
     r = sub.add_parser("redo"); r.add_argument("--state", default="idle"); r.add_argument("--only", required=True)
     r.add_argument("--dirs", required=True); r.add_argument("--min-usd", type=float, default=MIN_USD)
     r.add_argument("--pin", action="store_true", help="pin start+end to the base (the maintainer's fallback for a clip that never loops)")
     r.add_argument("--try", dest="use_try", action="store_true")
+    r.add_argument("--pro", action="store_true", help="PRO mode for this run (see the state command)")
     r.set_defaults(func=lambda a: cmd_state(a, a.state + (TRY if a.use_try else "")), dry_run=False)
     f = sub.add_parser("fetch", help="re-download + re-QA the last takes already on PixelLab (no generation)")
     f.add_argument("--state", default="idle"); f.add_argument("--only", required=True); f.add_argument("--dirs")
