@@ -367,6 +367,39 @@ float sceneryNearAt(vec2 cr) {
   vec2 uv = (floor(cr) + 0.5) / vec2(uIsoB.y, uIsoB.z);
   return texture2D(uHeightG, uv).g;
 }
+// The occlusion height of the cell a sample lies in — the linear map read at
+// its texel centre, so the bilinear filter returns the cell's own value with
+// no neighbour blended in. The march's HARD test: does this cell itself stand
+// above the ray? (see skirtOcc)
+float heightAtHard(vec2 cr) {
+  if (cr.x < 0.0 || cr.y < 0.0 || cr.x >= uIsoB.y || cr.y >= uIsoB.z) return 99.0;
+  return texture2D(uHeightL, (floor(cr) + 0.5) / vec2(uIsoB.y, uIsoB.z)).r * 255.0 / uHScale;
+}
+// One march sample's SOFT occlusion: the bilinear reads (blockers ramp in over
+// a cell, so a cast shadow's edge gets a penumbra), the two-span deck rule and
+// the scenery-share hardness. ps is where the heights are read (a face
+// pixel's own-skirt push), p the true sample point (the share test).
+// Returns the factor occ is multiplied by; 1 when nothing stands above the ray.
+float skirtOcc(vec2 ps, vec2 p, float hRay, float lz) {
+  // TWO SOLID SPANS PER COLUMN, not one height. The ground is solid
+  // from 0 to hg; a deck (when H > hg) is a slab at H with OPEN AIR
+  // under it. A slab can therefore only block a ray whose LIGHT is on the
+  // far side of it — sun/lamp above, ray below. A torch under the same
+  // slab is in the open air with it and must shine straight through.
+  // (The sun march is deliberately untouched: it wants the deck to block,
+  // and its cliff look is locked.)
+  float H = heightAtSoft(ps);
+  float hg = groundAtSoft(ps);
+  float blocker = (H > hg + 0.01 && lz <= H) ? hg : H;
+  if (blocker < 90.0 && blocker > hRay) {
+    float pen = clamp((blocker - hRay) * 1.5, 0.0, 1.0);
+    // A scenery share shadows HARD (one or two samples per piece);
+    // terrain keeps the wall chain. One extra read, blocking samples only.
+    float sc = uSceneryOn > 0.5 ? step(0.01, sceneryShareAt(p)) : 0.0;
+    return mix(mix(0.8, 0.45, pen), mix(${SCN_SHADOW_NEAR}, ${SCN_SHADOW_DEEP}, pen), sc);
+  }
+  return 1.0;
+}
 // groundAt WITHOUT the scenery share — the terrain + solid column, for the
 // cave-mouth walk: a trunk bump on a cliff-top cell must not extend that
 // column over the mouth below it (B is 0 for props: same bytes as groundAt).
@@ -1066,6 +1099,14 @@ void main() {
     vec2 lC = floor(lp.xy) + 0.5;
     float peakC = max(max(uLightCol[i].r, uLightCol[i].g), uLightCol[i].b);
     if (uLightPos[i].w > 0.0 && att * peakC > ${SHADOW_MARCH_MIN_LIGHT} && (z < lp.z + 0.05 || objAt(cell) > 0.5)) {
+      // The previous VALID sample (see the skirt law below): whether its own
+      // cell stood above the ray, and where it was read.
+      bool prevHard = false;
+      bool prevOk = false;
+      bool prevDone = false; // the previous sample's soft read already applied (it left a blocker)
+      vec2 prevPs = pos;
+      vec2 prevP = pos;
+      float prevHRay = 0.0;
       for (int s = 1; s <= 12; s++) {
         float t = float(s) / 13.0;
         // March from the EXACT surface point (same as attenuation): marching
@@ -1109,32 +1150,65 @@ void main() {
         // For a FACE pixel, a sample inside the skirt band in front of its own
         // plane is read at the band's outer edge instead — where the wall's
         // weight is zero and the floor row's own heights (a barrel standing
-        // against the wall included) are what the filter returns. Ground
-        // pixels keep the exact reads they had; the own-column and near-field
-        // skips already cover their base case.
+        // against the wall included) are what the filter returns.
         vec2 ps = p;
         if (isFace) {
           vec2 nF = mix(vec2(0.0, 1.0), vec2(1.0, 0.0), step(0.5, pickR));
           float fp = dot(p - (baseF + 1.0), nF); // cells in front of the plane
           if (fp > -0.01 && fp < 0.5) ps = p + nF * (0.5 - fp);
         }
-        // TWO SOLID SPANS PER COLUMN, not one height. The ground is solid
-        // from 0 to hg; a deck (when H > hg) is a slab at H with OPEN AIR
-        // under it. A slab can therefore only block a ray whose LIGHT is on the
-        // far side of it — sun/lamp above, ray below. A torch under the same
-        // slab is in the open air with it and must shine straight through.
-        // (The sun march is deliberately untouched: it wants the deck to block,
-        // and its cliff look is locked.)
-        float H = heightAtSoft(ps);
-        float hg = groundAtSoft(ps);
-        float blocker = (H > hg + 0.01 && lp.z <= H) ? hg : H;
-        if (blocker < 90.0 && blocker > hRay) {
-          float pen = clamp((blocker - hRay) * 1.5, 0.0, 1.0);
-          // A scenery share shadows HARD (one or two samples per piece);
-          // terrain keeps the wall chain. One extra read, blocking samples only.
-          float sc = uSceneryOn > 0.5 ? step(0.01, sceneryShareAt(p)) : 0.0;
-          occ *= mix(mix(0.8, 0.45, pen), mix(${SCN_SHADOW_NEAR}, ${SCN_SHADOW_DEEP}, pen), sc);
+        // A SKIRT SAMPLE COUNTS ONLY BESIDE A HARD HIT. The push above covers
+        // a face's OWN skirt; the GROUND beside a wall has the same ramp under
+        // it and no plane of its own to push away from. A torch that stands
+        // beside a wall sends its ray to the floor further along that wall
+        // INSIDE the skirt band the whole way — every sample past the near
+        // fields reads the wall's phantom height and the wall shadows the
+        // floor in front of itself, from a light that is also in front of it:
+        // the pool ended in a hard, cell-stepped edge along the foot beyond
+        // ~1.5 cells (maintainer 2026-09-13, 285.4,115.8 with the torch:
+        // "standing near a wall effects how the torch light up the ground";
+        // 286.4,125.3: the ground cell in front of each face of a pillar a
+        // flat dark diamond read as the wall's bottom course; measured at the
+        // 0.22 floor beside a lit cell one column out).
+        // A real shadow is cast by a column the ray ENTERS: some sample's own
+        // cell, read at its texel centre with nothing blended in, stands
+        // above the ray. The bilinear reads exist to give THAT edge a
+        // penumbra, so they are applied where the ray is inside a hard cell,
+        // on the sample just before it enters one (retroactively — the
+        // approach side) and the one after it leaves (the far side). A ray
+        // that never enters a taller cell is not shadowed at all, whatever
+        // the skirt beside it reads: a wall throws no shadow onto the floor
+        // in front of it. Unshadowed rays now cost two nearest fetches per
+        // sample (the sample and the midpoint below) where they cost two
+        // bilinear ones; shadowed samples cost up to four.
+        float hHard = heightAtHard(ps);
+        bool hard = hHard < 90.0 && hHard > hRay;
+        // A THIN WALL BETWEEN TWO SAMPLES IS STILL A HIT. Samples sit
+        // dist/13 apart — 1.2 cells under a radius-16 hearth — so a one-cell
+        // house wall can fall between two of them; the bilinear reads used to
+        // catch it from either side, the exact reads would not. The midpoint
+        // of the segment from the previous sample is tested too (the same
+        // own-cell and own-trunk skips), which halves the spacing.
+        if (!hard && prevOk) {
+          vec2 pm = 0.5 * (p + prevP);
+          bool own = floor(pm.x) == floor(pos.x) && floor(pm.y) == floor(pos.y);
+          if (ownShare > 0.0 && dot(pm - ownC, pm - ownC) < 1.0) own = true;
+          if (lShare > 0.0 && dot(pm - lC, pm - lC) < 1.0) own = true;
+          if (!own) {
+            float hm = heightAtHard(pm);
+            hard = hm < 90.0 && hm > 0.5 * (hRay + prevHRay);
+          }
         }
+        if (hard || prevHard) {
+          if (hard && !prevHard && prevOk && !prevDone) occ *= skirtOcc(prevPs, prevP, prevHRay, lp.z);
+          occ *= skirtOcc(ps, p, hRay, lp.z);
+        }
+        prevDone = hard || prevHard;
+        prevHard = hard;
+        prevOk = true;
+        prevPs = ps;
+        prevP = p;
+        prevHRay = hRay;
       }
       // Bounce floor: firelight scatters — shadowed ground near a light keeps
       // a faint glow instead of dropping to pitch ambient. Faces still gate
@@ -3468,6 +3542,36 @@ export class NightLights {
       const lcx = lc + 0.5;
       const lcy = lr + 0.5;
       if (L.radius > 0 && (att * Math.max(L.color[0], L.color[1], L.color[2]) > SHADOW_MARCH_MIN_LIGHT || wantOcc) && (z < L.z + 0.05 || isObj)) {
+        // One sample's SOFT occlusion — the twin of the shader's skirtOcc:
+        // bilinear reads, the two-span deck test (a deck is a floating slab,
+        // so it only blocks a ray whose light is on its far side), the
+        // scenery-share hardness, and the lit copy's own-share exclusion.
+        const softOcc = (px: number, py: number, hRay: number): number => {
+          let hh = hAtSoft(px, py);
+          let hg = gAtSoft(px, py);
+          const inSelf = selfR2 > 0 && (px - col) * (px - col) + (py - row) * (py - row) < selfR2;
+          if (inSelf) {
+            // The piece's OWN shares (0 off-grid) — subtracted inside its
+            // exclusion radius so its lit copy is never shadowed by itself.
+            hh -= this.shareAtSoft(this.sArrH, px, py);
+            hg -= this.shareAtSoft(this.sArrG, px, py);
+          }
+          const blocker = hh > hg + 0.01 && L.z <= hh ? hg : hh;
+          if (!(blocker < 90 && blocker > hRay)) return 1;
+          const pen = Math.min(1, (blocker - hRay) * 1.5);
+          const pc = Math.floor(px);
+          const pr = Math.floor(py);
+          const sc = !inSelf && this.hasSceneryShares && pc >= 0 && pr >= 0 && pc < W && pr < H && this.sArrG[pr * W + pc] > 0.01;
+          return sc ? SCN_SHADOW_NEAR + (SCN_SHADOW_DEEP - SCN_SHADOW_NEAR) * pen : 0.8 + (0.45 - 0.8) * pen;
+        };
+        // A SKIRT SAMPLE COUNTS ONLY BESIDE A HARD HIT — the shader's law (see
+        // FRAG): the soft reads apply where a sample's own cell stands above
+        // the ray, on the sample before the ray enters such a cell and the one
+        // after it leaves; a ray that enters no taller cell is unshadowed.
+        let prevHard = false;
+        let prevOk = false;
+        let prevDone = false;
+        let prevPx = col, prevPy = row, prevHRay = 0;
         for (let sN = 1; sN <= 12; sN++) {
           const tt = sN / 13;
           const px = col + dx * tt;
@@ -3478,25 +3582,29 @@ export class NightLights {
           if (ownShare > 0 && (px - ocx) * (px - ocx) + (py - ocy) * (py - ocy) < 1.0) continue; // own trunk's skirt
           if (lShare > 0 && (px - lcx) * (px - lcx) + (py - lcy) * (py - lcy) < 1.0) continue; // the LIGHT's own trunk (a fire IS its piece)
           const hRay = z + (L.z - z) * tt + 0.2;
-          // EXACT twin of the shader's two-span test: a deck is a floating
-          // slab, so it only blocks a ray whose light is on its far side.
-          let hh = hAtSoft(px, py);
-          let hg = gAtSoft(px, py);
-          if (selfR2 > 0 && (px - col) * (px - col) + (py - row) * (py - row) < selfR2) {
-            // The piece's OWN shares (0 off-grid) — subtracted inside its
-            // exclusion radius so its lit copy is never shadowed by itself.
-            hh -= this.shareAtSoft(this.sArrH, px, py);
-            hg -= this.shareAtSoft(this.sArrG, px, py);
+          const hHard = hAt(px, py);
+          let hard = hHard < 90 && hHard > hRay;
+          if (!hard && prevOk) {
+            // A thin wall between two samples is still a hit (see FRAG).
+            const mx = 0.5 * (px + prevPx), my = 0.5 * (py + prevPy);
+            let own = Math.floor(mx) === Math.floor(col) && Math.floor(my) === Math.floor(row);
+            if (ownShare > 0 && (mx - ocx) * (mx - ocx) + (my - ocy) * (my - ocy) < 1.0) own = true;
+            if (lShare > 0 && (mx - lcx) * (mx - lcx) + (my - lcy) * (my - lcy) < 1.0) own = true;
+            if (!own) {
+              const hm = hAt(mx, my);
+              hard = hm < 90 && hm > 0.5 * (hRay + prevHRay);
+            }
           }
-          const blocker = hh > hg + 0.01 && L.z <= hh ? hg : hh;
-          if (blocker < 90 && blocker > hRay) {
-            const pen = Math.min(1, (blocker - hRay) * 1.5);
-            const pc = Math.floor(px);
-            const pr = Math.floor(py);
-            const inSelf = selfR2 > 0 && (px - col) * (px - col) + (py - row) * (py - row) < selfR2;
-            const sc = !inSelf && this.hasSceneryShares && pc >= 0 && pr >= 0 && pc < W && pr < H && this.sArrG[pr * W + pc] > 0.01;
-            occ *= sc ? SCN_SHADOW_NEAR + (SCN_SHADOW_DEEP - SCN_SHADOW_NEAR) * pen : 0.8 + (0.45 - 0.8) * pen;
+          if (hard || prevHard) {
+            if (hard && !prevHard && prevOk && !prevDone) occ *= softOcc(prevPx, prevPy, prevHRay);
+            occ *= softOcc(px, py, hRay);
           }
+          prevDone = hard || prevHard;
+          prevHard = hard;
+          prevOk = true;
+          prevPx = px;
+          prevPy = py;
+          prevHRay = hRay;
         }
         // THE OWN TRUNK'S CORE, DIRECTIONALLY — the shader's rule.
         if (ownShare > 0 && selfR2 <= 0) {

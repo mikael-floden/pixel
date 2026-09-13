@@ -298,7 +298,39 @@ The night shader and its CPU twins, the light slot ledger, scenery lights and sh
     own height in and shadowed the bottom course from its own wall (foot/mid
     luma 0.59 on the tiles beside the light → 1.00). For face pixels the
     sample point is pushed to the half-cell line in front of the plane before
-    the height reads; ground pixels are untouched.
+    the height reads.
+- **A SKIRT SAMPLE COUNTS ONLY BESIDE A HARD HIT** (maintainer 2026-09-13,
+  the torch beside a tall wall at 285.4,115.8: the pool ended in a hard,
+  cell-stepped edge along the wall's foot — "standing near a wall effects how
+  the torch light up the ground"; at 286.4,125.3 the floor cell in front of
+  each face of a pillar was a flat dark diamond he read as the wall's bottom
+  course). The floor beside a wall sits in the same bilinear skirt with no
+  plane to push away from, and a light that also stands beside the wall sends
+  its ray along the band the whole way: every sample past the near fields
+  read the wall's phantom height and the wall shadowed the floor in front of
+  itself — measured at the 0.22 bounce floor beside a lit cell one column
+  out, at night, evening and day alike (the cave-swallow and sun paths were
+  ruled out first: no roofed cell within ten of either spot, and the diamond
+  stood at night). Law: the bilinear reads apply only where a sample's own
+  cell — the linear map read at its texel centre, `heightAtHard` — stands
+  above the ray, on the sample before the ray enters such a cell (applied
+  retroactively) and the one after it leaves; a ray that enters no taller
+  cell is not shadowed, whatever the skirt beside it reads. The midpoint of
+  each segment is hard-tested too: samples sit dist/13 apart, 1.2 cells
+  under a radius-16 hearth, and a one-cell house wall can fall between two
+  (the bilinear reads caught it from either side; exact reads alone let the
+  light through). Cost: two nearest fetches per sample on an unshadowed ray
+  where two bilinear ones were; up to four on a shadowed sample. `skirtOcc`
+  holds the soft read, the deck two-span rule and the scenery hardness; the
+  CPU twin `lightAt` mirrors the whole state machine. The sun march is
+  untouched (its cliff look is locked). Gate: `scripts/verify-wallfoot.mjs`
+  — the run verify-wallwash finds, the probe 0.4 cells out at its start:
+  the front row's floor against the row one out (≥ 0.8 per cell — the front
+  cell is the CLOSER one; skirt-shadowed it read ~0.3), the foot's
+  half-reach ≥ 3/4 of the pool's own, and a shadow control on a
+  free-standing column when the world offers one. Rejected: exact reads for
+  ground pixels alone (no penumbra, thin walls missed) and a pixel-side
+  plane push for the ground (the floor has no single plane).
   - The harness reads pattern 5 (raw field, opaque) at face points found by
     pattern 4 (faces red) — the TALLEST red run under the cell anchor, since
     the terrace behind paints a sliver of its own face just above the lip;
@@ -749,8 +781,8 @@ The night shader and its CPU twins, the light slot ledger, scenery lights and sh
 - Debug: `__ml.nightCal(flip,span,test)` (field test patterns — headless
   only; the old [6]-[9] keys are retired); `__ml.probeLight(col,row,z,
   radius)`; `__ml.lookAt(col,row)`; `__ml.wallWrap(v?)`. Numeric probes:
-  verify-wallwash, verify-solidband, verify-penumbra, verify-timecycle,
-  verify-lit-order.
+  verify-wallwash, verify-wallfoot, verify-solidband, verify-penumbra,
+  verify-timecycle, verify-lit-order.
   Run them against a dev stack before touching the shader.
 
 ## Windows

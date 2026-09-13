@@ -15,7 +15,7 @@ schema, plain `tsx`), `client/` (Phaser 3 + colyseus.js, Vite; prediction and
 reconciliation). Art is READ from the sibling domains (`characters2/`,
 `tiles/`, `maps2/`, `scenery/`) at `/assets/<domain>/…` — never copied, never
 edited. ONE world, `the_game` (`maps2/worlds3`), ONE tile system, `tiles/`
-(tiles2 and world@1/@2 retired, 2026-09-09). Six agents share
+(tiles2 and world@1/@2 retired). Six agents share
 `games2/`: this one (gameplay, netcode, world, rendering), games-ui
 (`UI_AGENT.md` is the file split), games-audio (`composer/`, its own
 `CLAUDE.md`), games-ambient (`ambient/`, its own README), games-perf (frame
@@ -81,7 +81,7 @@ secrets; push to `main`, rebase on reject, no PRs unless asked; doc law.
   100, his), never indoors, on a ramp or touching another, and draw as an
   OVERLAY, top face alone (`detail*.test.ts`).
 - A base-set member leaves its set on his verdict on THE TILE, never on its
-  `#top` detail verdict (2026-09-12; `tiles3members.test.ts`).
+  `#top` detail verdict (`tiles3members.test.ts`).
 - The resolver is PER CELL (`Tiles3World`), never the sweep, held deeply equal
   to the sweep and to `maps2/pipeline/render3.py` by the parity fixtures
   (`scripts/tiles3-fixture.py`); a resolution rule changes in tiles3.ts AND
@@ -120,7 +120,7 @@ secrets; push to `main`, rebase on reject, no PRs unless asked; doc law.
   from the worker on demand.
 - A DynamicTexture BRACKET is the GPU cost (a whole capture clear + blit): an
   erase is the object's own ERASE blend inside the pass, and the capture binds
-  the rows in use (`coverRaster`, 2026-09-13).
+  the rows in use (`coverRaster`).
 
 **Depth, occluders, scenery** (`docs/depth-sort.md`, `docs/scenery.md`)
 - ONE body pipeline: `resolveDrawDepth` + `placeBodyShadow` + `syncLitCopy`
@@ -234,9 +234,8 @@ secrets; push to `main`, rebase on reject, no PRs unless asked; doc law.
   every patch; the client reads `x/y` through installed getters. A field only
   its owner needs (`seq`, `slow`) carries `OWNER_VIEW_TAG`.
 - A client receives only what is within `INTEREST_WU` of itself (a
-  `StateView` per client, recomputed every `INTEREST_TICKS`, filled for a
-  JOINER before its first snapshot); "unlimited" is a view of everything,
-  granted only by a room CREATE option. THE JOIN
+  `StateView` per client, recomputed every `INTEREST_TICKS`); "unlimited" is
+  a view of everything, granted only by a room CREATE option. THE JOIN
   SNAPSHOT IS A WHOLE VIEW (`attachView` runs the pass for the joiner) — a
   crossing binds on it; gate `scripts/verify-zonehop.mjs`.
 - `view()` is applied as a decorator call after `defineTypes` (the `view:
@@ -277,9 +276,11 @@ secrets; push to `main`, rebase on reject, no PRs unless asked; doc law.
   update().
 - Solid objects are art, not walls (no face band); a cave mouth is not a face.
 - The wall wash is per PIXEL (the face gate's lateral is to the pixel, never
-  the cell), its wrap is his "Wall light wrap" dial (default 0.7), and the
+  the cell), its wrap is his "Wall light wrap" dial (0.7), and the
   LOS march never blends a wall's own height into its front skirt, nor the
-  skirt the LIGHT stands in; gate: `scripts/verify-wallwash.mjs`.
+  skirt the LIGHT stands in; a skirt sample counts only beside a HARD hit (a
+  wall never shadows the floor before it); gates:
+  `scripts/verify-wallwash.mjs`, `verify-wallfoot.mjs`.
 - Day is sky + sun; the sun is the hand; DAY == NIGHT in the phase table is
   load-bearing (equal sun and moon speed on the pill).
 - Indoor ambient: dark room 40%, lit room 12%; hidden outline 20% — his dials.
