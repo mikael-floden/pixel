@@ -2900,6 +2900,7 @@ export class WorldRoom extends Room<WorldState> {
     this.state.players.forEach((p, pid) => {
       if (p.handoff) {
         if (now - p.handoff.at > HANDOFF_TIMEOUT_MS) p.handoff = null;
+        else this.refreshHandoff(p, pid);
         return;
       }
       if (p.dead) return;
@@ -2945,7 +2946,19 @@ export class WorldRoom extends Room<WorldState> {
     if (!client) return;
     const key = randomBytes(16).toString("hex"); // 128 bits: the capability for ONE join
     p.handoff = { to, key, at: now };
-    const hot: HotState = {
+    const hot = this.hotStateFor(p, pid, key);
+    void bus()
+      .set(handoffKey(this.worldName, pid), JSON.stringify(hot), HANDOFF_TTL_S)
+      .then(() => client.send("zone:go", { zone: to, pid, key, seq: hot.seq }))
+      .catch((e) => {
+        console.error("[zones] hand-off write failed:", e);
+        p.handoff = null;
+      });
+  }
+
+  /** The body as it stands RIGHT NOW, under the capability of this hand-off. */
+  private hotStateFor(p: Player, pid: string, key: string): HotState {
+    return {
       key,
       pid,
       from: this.zoneId,
@@ -2973,13 +2986,42 @@ export class WorldRoom extends Room<WorldState> {
       actionSeq: p.actionSeq,
       hitSeq: p.hitSeq,
     };
+  }
+
+  /** THE HAND-OFF CARRIES THE BODY AS IT IS AT THE CUT, NOT AS IT WAS WHEN THE
+   *  CROSSING WAS NOTICED (maintainer 2026-09-13: "Why can't the old zone
+   *  continue handling the player and hand it over with the most recent data
+   *  when the transfer is ready?" — it now does).
+   *
+   *  This room keeps SIMULATING a body whose hand-off is in flight, and that is
+   *  right: the client is still sending it inputs while it opens a socket to
+   *  the other room, and a phone's join is hundreds of ms. But the hot state
+   *  was written ONCE, at `zone:go`, so every one of those ticks was thrown
+   *  away — the receiving room adopted a body that old, and the client, whose
+   *  pending-input buffer THIS room had been acking meanwhile, reconciled onto
+   *  it and snapped backwards by the distance covered during the join. That is
+   *  the "lag and teleport backwards" he reported, and the reason a crossing
+   *  could never be seamless however fast the join got.
+   *
+   *  So the document is rewritten every tick under the SAME capability: it
+   *  always holds the position, elevation, hp and — the one that makes the
+   *  client's reconciliation continuous — the `seq` this room has actually
+   *  acked. Whatever moved the body is carried, not just what the client can
+   *  replay: a knockback, a fall, the deep current, a monster's hit.
+   *
+   *  One write per crossing player per tick, for at most HANDOFF_TIMEOUT_MS.
+   *  A write still in flight is never doubled (`handoffWriting`), and a write
+   *  whose capability is no longer this player's hand-off is not issued — so a
+   *  completed hop cannot be resurrected under a later one's key. */
+  private handoffWriting = new Set<string>();
+  private refreshHandoff(p: Player, pid: string) {
+    const h = p.handoff;
+    if (!h || this.handoffWriting.has(pid)) return;
+    this.handoffWriting.add(pid);
     void bus()
-      .set(handoffKey(this.worldName, pid), JSON.stringify(hot), HANDOFF_TTL_S)
-      .then(() => client.send("zone:go", { zone: to, pid, key, seq: hot.seq }))
-      .catch((e) => {
-        console.error("[zones] hand-off write failed:", e);
-        p.handoff = null;
-      });
+      .set(handoffKey(this.worldName, pid), JSON.stringify(this.hotStateFor(p, pid, h.key)), HANDOFF_TTL_S)
+      .catch(() => {}) // the document from `startHandoff` still stands; the next tick tries again
+      .finally(() => this.handoffWriting.delete(pid));
   }
 
   /** HAND-OFF, the receiving side: only a pid + key pair that matches the

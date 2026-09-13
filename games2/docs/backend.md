@@ -124,11 +124,34 @@ and the rejected approaches as each phase lands. Rewrite in place.
   it joined the new room, so the body stood at the border for the whole
   hop, the client walked on alone, and the replay was throttled to the 0.25 s
   input budget — the body snapped back. Now inputs keep flowing to the OLD
-  room (its body keeps walking, and the neighbours' ghost of it with it),
-  `zone:go` carries the `seq` the hot state was taken at, the client keeps a
-  log of what it sent and replays everything after that seq into the new
-  room on bind, and the new room grants `HANDOFF_INPUT_CREDIT_S` (2 s) of
-  integration credit for the burst. The new room is bound only after its
+  room (its body keeps walking, and the neighbours' ghost of it with it), the
+  client keeps a log of what it sent and replays everything after the cut into
+  the new room on bind, and the new room grants `HANDOFF_INPUT_CREDIT_S` (2 s)
+  of integration credit for the burst.
+  THE CUT IS WHERE THE BODY IS WHEN THE NEW ROOM TAKES IT, NOT WHERE IT WAS
+  WHEN THE CROSSING WAS NOTICED (maintainer 2026-09-13: "Why does the player
+  lag and sometimes teleport backwards when running from one zone to
+  another? ... Why can't the old zone continue handling the player and hand it
+  over with the most recent data when the transfer is ready?"). The hot state
+  was written ONCE, at `zone:go`, so the old room's own ticks through the join
+  — hundreds of ms of them on a phone — were thrown away: the new room adopted
+  a body that old, and the client, whose `pending` buffer the OLD room had been
+  acking all the while, reconciled onto it, lost exactly the distance covered
+  during the join, and sprang forward when its replay landed. `refreshHandoff`
+  now rewrites the document every tick under the same capability, so it always
+  holds the live position, elevation, hp and the `seq` this room has acked —
+  and whatever moved the body is carried, not only what the client can replay
+  (a knockback, a fall, the deep current, a monster's hit). One `bus().set` per
+  crossing player per tick, never doubled (`handoffWriting`), never issued
+  under a capability that is no longer this player's hand-off. The client then
+  replays from the seq THE NEW ROOM reports — `zone:go`'s own seq is only where
+  the crossing was noticed, and replaying from it would re-integrate what the
+  new room already has — and rebuilds `pending` from `predLog`, the same input
+  records kept past their ack, because the acks that emptied `pending` came
+  from the room being left. Gates: `server/test/handofffresh.test.ts` (the body
+  runs ~76 wu during the join and is adopted 0 wu from its live spot; with the
+  refresh disabled it is adopted 76 wu behind) and the beacon's hop row
+  (`baseSeq`, `behind`, `replayed`). The new room is bound only after its
   FIRST STATE has landed (the join resolves before it; binding earlier left
   `state.players` undefined for a few frames and every per-frame read
   threw). A hand-off join does NOT resend `live:update` (91 KB the same

@@ -184,8 +184,8 @@ secrets; push to `main`, rebase on reject, no PRs unless asked; doc law.
   (`fallhurt.ts`); its slow FADES with the number (`fallSlowAt`), never the
   hit's 1.5 s stagger.
 - Water is the player's sanctuary: no monster enters, swims or is hit there.
-  It also lies FLAT: a liquid corner votes on the ground under a point only at
-  the cell's own level (`swimlevel.test.ts`), as it does on a boundary.
+  It lies FLAT: a liquid corner votes on the ground under a point only at the
+  cell's own level (`swimlevel.test.ts`), as on a boundary.
 - The player-speed dial rides PER INPUT (`InputMessage.sm`) and the SERVER
   clamps it; default 1.2x IS HIS (`playerspeed.ts`).
 - The stick "almost" snaps: `leanHeading` leans the heading between the
@@ -209,10 +209,12 @@ secrets; push to `main`, rebase on reject, no PRs unless asked; doc law.
 **Backend for 10k** (`spec/ZONES.md`, `docs/backend.md`)
 - ONE world, never instances (maintainer). Zones are rooms (`config/zones.json`;
   no entry = one room); entities belong to the zone containing them; the
-  client sees across a border through GHOSTS, which live in their own maps
-  so no server loop ever steps or fights one; a crossing is a hand-off over
+  client sees across a border through GHOSTS, in their own maps so no server
+  loop ever steps or fights one; a crossing is a hand-off over
   the bus (hot state under a one-shot key, `zone:go`, a fresh join, the old
-  room lets go on `handoff:done`).
+  room lets go on `handoff:done`). The sender rewrites that hot state EVERY
+  TICK and the client replays from the seq the new room reports (a frozen
+  snapshot snapped the body backwards).
 - A player's map key is its FIRST session id and never changes across
   hand-offs; the client finds itself by the synced `sid`, never by key.
 - ONE room per zone per process (`zoneRooms`, warmed at boot, autoDispose
@@ -220,33 +222,34 @@ secrets; push to `main`, rebase on reject, no PRs unless asked; doc law.
   runs its sim at a quarter rate (`IDLE_DIVISOR`).
 - `Encoder.BUFFER_SIZE` holds EVERY client's view section of one patch (2 MB;
   an overflow freezes clients silently, never errors). `scripts/loadbot.mjs`
-  + `/api/stats` are the load instrument; numbers in `docs/backend.md`.
+  + `/api/stats` are the load instrument.
 - Positions are int16 quarter units relative to the room (`px/py`,
   `shared/worldunits.ts`); the server keeps float `x/y` and syncs before
   every patch; the client reads `x/y` through installed getters. A field only
   its owner needs (`seq`, `slow`) carries `OWNER_VIEW_TAG`.
 - A client receives only what is within `INTEREST_WU` of itself (a
-  `StateView` per client, recomputed every `INTEREST_TICKS`); "unlimited" is a
-  view holding everything, and only a room CREATE option grants it. THE JOIN
+  `StateView` per client, recomputed every `INTEREST_TICKS`, filled for a
+  JOINER before its first snapshot); "unlimited" is a view of everything,
+  granted only by a room CREATE option. THE JOIN
   SNAPSHOT IS A WHOLE VIEW (`attachView` runs the pass for the joiner) — a
   crossing binds on it; gate `scripts/verify-zonehop.mjs`.
 - `view()` is applied as a decorator call after `defineTypes` (the `view:
   true` flag is ignored there); `Encoder.BUFFER_SIZE` is set in the room
-  module, not index.ts.
+  module.
 - Rooms talk ONLY over `server/src/bus.ts` (ioredis when `REDIS_URL`, else the
   in-process fake with the same asynchronous contract). Writes are the
-  Firestore bill: a save happens on leave, death, level-up and the dirty
-  flush (a player who earned nothing is never written).
+  Firestore bill: a save on leave, death, level-up and the dirty flush (a
+  player who earned nothing is never written).
 
 **Monsters, combat** (`docs/monsters-combat.md`)
 - Spawn placement is maps2 data (`spawns.json`); no spawns → no monsters.
 - The tuned shadow overrides everything art-measured: centre = position, size
-  = hit box, ONE size for all facings, through the one seam `monsterRadiusFor`.
+  = hit box, ONE size for all facings, through `monsterRadiusFor`.
 - `separationPush` stays squared-distance; a broad-phase, never micro-tuning.
 - Passive by default; predators aggro; provoked chases pace the victim and the
   RUN-AWAY LINE is `ESCAPE_RADIUS_WU` 390 past the zone; the give-up IS the
   rejected step.
-- Monster stats come from live tuning (content check, not truthiness).
+- Monster stats come from live tuning (a content check, not truthiness).
 - Nothing may block the revive press; the ask is retried.
 
 **Lighting** (`docs/lighting.md`)
@@ -286,9 +289,8 @@ secrets; push to `main`, rebase on reject, no PRs unless asked; doc law.
 
 **Testing** (`docs/testing.md`)
 - Logic belongs in `server/test` (seconds); a browser gate is one session in
-  `scripts/verify-smoke.mjs`; keep e2e viewports small (starvation fakes
-  bugs).
-- A one-pixel bug is reproduced on HIS screen — 393x851, dpr 2.75, isMobile —
+  `scripts/verify-smoke.mjs`; keep e2e viewports small (starvation fakes bugs).
+- A one-pixel bug is reproduced on HIS screen (393x851, dpr 2.75, isMobile)
   and judged on the SCREENSHOT, moving as well as at rest.
 - Compare colours unlit (`__ml.lightAtCell`); a headless GL run cannot
   reproduce a phone GPU's precision, contents loss, or lag.
@@ -303,12 +305,12 @@ assigned it.
 
 ## Probes
 
-`window.__ml` is the instrument: `tiles3()`, `t3at(col,row)`, `occDump()`,
+`window.__ml` is the instrument — `tiles3()`, `t3at`, `occDump()`,
 `groundHash()`, `hitch()`, `lightAt`, `lightSlots()`, `indoor()`,
-`sceneryAnims()`, `monsterInfo()`, `teleport(col,row)`, `lookAt(col,row)`,
-`nearby()`, `sealedAt(col,row,lvl)`, `fallHurt()` — each doc names the ones
-for its subsystem. Counters over pixels:
-a gate cannot tell a correct dark frame from a black one.
+`sceneryAnims()`, `monsterInfo()`, `teleport`, `lookAt`, `nearby()`,
+`sealedAt`, `fallHurt()`, `zone()` — and each doc names the ones for its
+subsystem. Counters over pixels: a gate cannot tell a correct dark frame
+from a black one.
 
 ## Don't
 

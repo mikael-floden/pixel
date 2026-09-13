@@ -42,14 +42,19 @@ Kubernetes). Rules here are present tense; the measurements land in
   combat counters `actionSeq`/`hitSeq` — the client plays clips on their
   CHANGE, so a body rebuilt from zero replayed its last hit at the border) to
   the bus key `handoff:<world>:<pid>` (10 s TTL) together with a 128-bit
-  one-shot KEY minted for this crossing, keeps stepping the player, and sends
-  the client `zone:go {zone, pid, key}`. The key, not the pid, is the
+  one-shot KEY minted for this crossing, keeps stepping the player — AND
+  REWRITES THAT DOCUMENT EVERY TICK while the hand-off is in flight, so what is
+  handed over is the body as it stands at the cut, at the `seq` this room has
+  acked, not as it stood when the crossing was noticed (2026-09-13: the frozen
+  snapshot is what made a crossing lag and snap backwards) — and sends the
+  client `zone:go {zone, pid, key}`. The key, not the pid, is the
   capability: pids are visible to every neighbour, the key reaches only the
   crossing client, a join presents both, the receiving room consumes the
   document on a match and a mismatch is an ordinary join under a fresh id
   (the account agent's contract, 2026-09-09). The client joins the new
   zone room with that key WHILE the old socket stays open; the new room loads
-  the hot state from the bus (no database read), places the player, publishes
+  the hot state from the bus (no database read — the LATEST write, not the one
+  made at `zone:go`), places the player, publishes
   `handoff:done:<pid>`; the old room then deletes its entity (the neighbour's
   ghost keeps the body on everyone's screen) and the client drops the old
   room. Avatars keyed by pid survive the swap; `bindRoom` in swap mode

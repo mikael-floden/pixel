@@ -956,6 +956,28 @@ function setCoverPasses(fast: boolean): void {
 /** A distinct scenery art file's measured crop: its alpha bbox and its SOURCE
  *  canvas — in source pixels whether the texture behind it is raw or packed. */
 type SceneryArtFit = { bbox: SceneryBBox | null; canvas: { w: number; h: number } };
+/** ONE SENT INPUT WINDOW, as prediction integrated it. Each record keeps the
+ *  JUMP state it was originally integrated with: reconcile replays must use the
+ *  same climb allowance, or mid-jump inputs replayed after landing get
+ *  re-blocked at the ledge (walk climb) — the anchor briefly rolls back to the
+ *  wall base until the server acks, and auto-jump saw that phantom wall and
+ *  fired a silly second hop on the hilltop. `slow` and `sm` ride per record for
+ *  the same reason: a replay under the CURRENT value rewrites the history of
+ *  every input still in flight, which is a rubber-band. `at` is when it was
+ *  sent (performance.now), so the ack measures a round trip for the beacon's
+ *  `rtt` block — the one lag no CPU section can see. */
+interface PendingInput {
+  seq: number;
+  ax: number;
+  ay: number;
+  running: boolean;
+  dt: number;
+  jumping: boolean;
+  slow: number;
+  sm: number;
+  at: number;
+}
+
 /** THE CROSSING WATCH: how long after a `zone:go` every frame's visible-body
  *  count is recorded, and the ring's cap (3 s at 60 Hz plus slack). */
 const ZONE_WATCH_MS = 3000;
@@ -1671,6 +1693,13 @@ export class WorldScene extends Phaser.Scene {
    *  replayed there on bind, so the body never freezes at the border and the
    *  two rooms integrate the same stream. */
   private sentLog: InputMessage[] = [];
+  /** THE SAME RECORDS AS `pending`, KEPT PAST THEIR ACK (spec/ZONES.md).
+   *  `pending` is emptied by the acks of the room I am LEAVING, so by the time
+   *  a swap binds, the inputs that room integrated during the join are gone
+   *  from it — and the new room has not integrated them yet. Reconciling onto
+   *  the new room's body with an emptied buffer is exactly the backwards snap
+   *  (maintainer 2026-09-13). Same objects, so this costs a pointer each. */
+  private predLog: PendingInput[] = [];
   private avatars = new Map<string, Avatar>();
   // Roaming monsters (server-authoritative, all clients see the same ones).
   private monsters = new Map<string, MonsterAvatar>();
@@ -1789,16 +1818,7 @@ export class WorldScene extends Phaser.Scene {
   // re-blocked at the ledge (walk climb) — the anchor briefly rolls back to
   // the wall base until the server acks, and auto-jump saw that phantom wall
   // and fired a silly second hop on the hilltop.
-  private pending: {
-    seq: number; ax: number; ay: number; running: boolean; dt: number; jumping: boolean; slow: number;
-    /** The PLAYER-SPEED dial this window was integrated under. Per input for
-     *  the same reason `slow` is: a replay under the CURRENT value rewrites the
-     *  history of every input still in flight, which is a rubber-band. */
-    sm: number;
-    /** When it was sent (performance.now), so the ack measures a round trip
-     *  for the beacon's `rtt` block — the one lag no CPU section can see. */
-    at: number;
-  }[] = [];
+  private pending: PendingInput[] = [];
   private curSlowFactor = 1; // the hit-slow factor live integration ran under (captured per input)
   private inputSeq = 0;
   private sendAccum = 0;
@@ -11354,7 +11374,7 @@ export class WorldScene extends Phaser.Scene {
     this.zoneWatchT0 = this.time.now;
     this.zoneWatchUntil = this.time.now + ZONE_WATCH_MS;
     const t0 = performance.now();
-    const hop = { goAt: Date.now(), joinMs: 0, stateMs: 0, boundMs: 0, zone: msg.zone, snap: { players: 0, monsters: 0 }, removed: { avatars: 0, monsters: 0, drops: 0, inView: 0, seen: [] as string[] } };
+    const hop = { goAt: Date.now(), joinMs: 0, stateMs: 0, boundMs: 0, zone: msg.zone, baseSeq: 0, behind: 0, replayed: 0, snap: { players: 0, monsters: 0 }, removed: { avatars: 0, monsters: 0, drops: 0, inView: 0, seen: [] as string[] } };
     this.zoneLastHop = hop;
     try {
       const next = await joinWorld(
@@ -11425,10 +11445,35 @@ export class WorldScene extends Phaser.Scene {
       const filled = (st0?.players?.size ?? 0) + (st0?.ghosts?.size ?? 0) + (st0?.monsters?.size ?? 0) + (st0?.ghostMonsters?.size ?? 0) > 1;
       if (st0?.players?.has(msg.pid) && filled) reconcile();
       else next.onStateChange.once(reconcile);
-      // Inputs kept flowing to the old room while we swapped (its body kept
-      // walking, and the neighbours' ghost of it with it); the new room holds
-      // the snapshot taken at `fromSeq` and now receives everything after it.
-      for (const m of this.sentLog) if (typeof m.seq === "number" && m.seq > fromSeq) next.send("input", m);
+      /* THE CUT IS AT THE SEQ THE NEW ROOM ADOPTED, NOT THE ONE `zone:go`
+       * NAMED (2026-09-13). The old room keeps simulating this body while the
+       * socket opens, and rewrites its hand-off document every tick, so what
+       * the new room holds is the body as of its LAST ack — `fromSeq` is only
+       * where the crossing was noticed, hundreds of ms earlier on a phone.
+       * Replaying from `fromSeq` would re-integrate windows the new room
+       * already has (a double step forward); replaying from its own `seq` is
+       * exactly the tail it is missing. An old server that never refreshes
+       * answers `fromSeq` here, so this is correct against it too. */
+      const adopted: any = (next.state as any)?.players?.get(msg.pid);
+      const baseSeq = typeof adopted?.seq === "number" ? Math.max(adopted.seq, 0) : fromSeq;
+      hop.baseSeq = Number.isFinite(baseSeq) ? baseSeq : 0;
+      hop.behind = Number.isFinite(fromSeq) ? hop.baseSeq - fromSeq : 0;
+      /* AND PREDICTION RESTARTS ON THAT SAME CUT. `pending` was emptied by the
+       * acks of the room I am LEAVING, so it no longer holds the windows that
+       * room integrated while I joined — and the new room has not integrated
+       * them either. Reconciling onto the new body with that gap is the
+       * backwards snap he reported ("sometimes teleport backwards",
+       * 2026-09-13): the body loses exactly the distance covered during the
+       * join, then springs forward when the replay below lands. `predLog`
+       * kept those records; take every one after the cut. */
+      this.pending = this.predLog.filter((q) => q.seq > baseSeq);
+      let replayed = 0;
+      for (const m of this.sentLog)
+        if (typeof m.seq === "number" && m.seq > baseSeq) {
+          next.send("input", m);
+          replayed++;
+        }
+      hop.replayed = replayed;
       this.zoneSwapping = false;
       from.leave(true);
       this.zoneHops++;
@@ -11510,6 +11555,7 @@ export class WorldScene extends Phaser.Scene {
         this.selfDead = false;
         this.endDeath();
         this.pending = [];
+        this.predLog = []; // seq restarts below; a kept record would replay under a stranger's number
         this.inputSeq = 0;
         this.sendAccum = 0;
         this.lastSent = "";
@@ -14765,7 +14811,7 @@ export class WorldScene extends Phaser.Scene {
     }
     const li = this.lastInput;
     this.inputSeq += 1;
-    this.pending.push({
+    const rec: PendingInput = {
       seq: this.inputSeq,
       ax: li.ax,
       ay: li.ay,
@@ -14778,7 +14824,11 @@ export class WorldScene extends Phaser.Scene {
       slow: this.curSlowFactor,
       sm: playerSpeed(),
       at: performance.now(),
-    });
+    };
+    this.pending.push(rec);
+    // ...and into the log a zone swap rebuilds `pending` from. The same object.
+    this.predLog.push(rec);
+    if (this.predLog.length > 240) this.predLog.splice(0, this.predLog.length - 240); // ~12 s at 20 Hz, as sentLog
     const msg: InputMessage = {
       ax: li.ax, ay: li.ay, running: li.running, seq: this.inputSeq, dt: this.sendAccum,
       sm: playerSpeed(),
