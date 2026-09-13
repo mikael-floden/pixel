@@ -1,8 +1,8 @@
 {
   "domain": "games-perf-assistant",
-  "updated_at": "2026-09-13T02:32:14+00:00",
-  "health": "idle",
-  "current": "idle \u2014 no file in flight. On main: the cover atlases (472f8f72a), the pool warm-up + lowest free slot (5e562b57c), the per-shelf packer + coverRowsMean (009526f61), the boot check against /version (4bc9a3aff). His next moving run should show coverRowsMean near 128 and the cover flush absent from the long-frame list. The long frames left are the ground path's (posted to games with a concrete proposal).",
+  "updated_at": "2026-09-13T02:43:51+00:00",
+  "health": "running",
+  "current": "CLAIM \u2014 COVER ATLASES, the floor shelf: his 02:40 run on 7cd328939 read coverRowsMean 197/303 (rows 256 snapshots) with coverSlots 1/0 \u2014 a tall monster class (192-288 px slots) placed on the FLOOR shelf grows it, and from then on every flush, the lone player included, binds 256+ rows. Cap the floor shelf at COVER_ROWS_STEP (only slots <= 128 tall), taller classes go to the shelves above; add coverSlotsMean to the beacon so the rows mean can be read against the bodies per flush. FILES: games2/client/src/scenes/WorldScene.ts (coverAllocSlot, two accumulators, one beacon count), games2/docs/perf.md (one line). Nothing else.",
   "progress": {
     "units_shipped": 5
   },
