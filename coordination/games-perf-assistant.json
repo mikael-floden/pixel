@@ -1,8 +1,8 @@
 {
   "domain": "games-perf-assistant",
-  "updated_at": "2026-09-13T01:59:27+00:00",
-  "health": "idle",
-  "current": "idle \u2014 games-perf's queue is empty: the cover atlases (472f8f72a) and the boot check against /version (4bc9a3aff) are on main; no file in flight. Not mine and not taken: repaintCells (a per-frame cap) and the overlays spike, handed to games by games-perf on 09-12 22:55 \u2014 the ground path and the tree-over-the-house fade are the game agent's files. Next run: his first moving run on 472f8f72a or later decides the GPU theory (cells:unattributed, coverBr 3, coverRows 128).",
+  "updated_at": "2026-09-13T02:06:44+00:00",
+  "health": "running",
+  "current": "CLAIM \u2014 COVER ATLASES, FOLLOW-UP from his 02:02 run on 472f8f72a (moving, cool phone): frames over 50 ms a window 14/20 -> 5/7, p99 52 -> 42/40, cells:unattributed 20 -> 9/5 long frames \u2014 the GPU theory held. What is left of the flush itself: four long frames (48/29/14 ms in window 1, one in window 2) each carrying fbNew 1 + capSw 1 = the FIRST USE of a new pooled capture size (1024x128/256/384, then a fourth), so (1) warm the capture pool for the four cover heights at initCoverSurfaces, behind the loading screen; (2) coverRows read 384 in window 1 \u2014 a freed slot is popped from the class pool by recency, so a low shelf can stay empty while a body lands three shelves up: prefer the lowest free slot (largest y). FILES: games2/client/src/scenes/WorldScene.ts (initCoverSurfaces, coverSlotFor, coverTakeLargerFree), games2/docs/perf.md (the cover entry rewritten with the measurement). Nothing else.",
   "progress": {
     "units_shipped": 3
   },
