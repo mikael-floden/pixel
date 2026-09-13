@@ -4,10 +4,16 @@
 //
 // Five things to prove, each of them a way this could be wrong while every
 // counter read correct:
-//  1. IT IS IN A HOLLOW AND NOT ON THE RIDGE. The whole effect is "where", so
-//     the gate DERIVES a hollow and the world's summit from the world doc —
-//     with its own arithmetic, independent of the model the unit test pins —
-//     stands in each, and compares. A fog that is everywhere is weather.
+//  1. IT IS AT YOUR FEET IN A HOLLOW AND NOT ON THE RIDGE. The whole effect is
+//     "where", so the gate DERIVES a hollow and the world's summit from the
+//     world doc — with its own arithmetic, independent of the model the unit
+//     test pins — stands in each, and compares.
+//     AND IT COUNTS WHAT IS NEAR THE PLAYER, not what is on screen. The first
+//     cut counted patches in the VIEW and failed the effect for fogging a
+//     summit: standing on a 46-level peak you look down over half the massif,
+//     and the hollows in it are real. "The view from a ridge contains hollows"
+//     is not the claim; "a ridge fogs" is, and only the fog around your own
+//     feet can answer it.
 //  2. IT IS UNDER THE DARKNESS OVERLAY. The depth is the one bug that would
 //     look fine at dawn and ruin every night: above the overlay a pale bank is
 //     the brightest thing on a dark screen. A negative depth is the contract.
@@ -215,24 +221,45 @@ const visit = (spots, label) =>
       window.__mlAmbient.setEnabled("dawnmist", false);
       for (let i = 0; i < 20; i++) await step();
       window.__mlAmbient.setEnabled("dawnmist", true);
-      let patches = 0, damp = 0, best = 0, draw = null;
+      let patches = 0, damp = 0, best = 0, draw = null, near = 0, nearest = Infinity, nearDamp = 0;
       for (let i = 0; i < 320; i++) {
         const d = window.__mlAmbient.debug("dawnmist");
         patches = Math.max(patches, d.patches);
         best = Math.max(best, d.bestDamp);
         for (const p of d.all) damp = Math.max(damp, p.damp);
         if (d.draw && (!draw || d.draw.alpha > draw.alpha)) draw = d.draw;
+        // WHERE THE PLAYER IS, in the world px the patches are placed in.
+        const v = window.__ml.camView();
+        const me = window.__ml.myScreen();
+        if (me) {
+          const z = me.zoom ?? 1;
+          const px = v.x + me.sx / z;
+          const py = v.y + me.sy / z;
+          let n = 0;
+          for (const p of d.all) {
+            // Distance in CELLS, so the x and y squash of the projection do
+            // not make "a cell away" mean two different things.
+            const dx = (p.x - px) / 32;
+            const dy = (p.y - py) / 14;
+            const r = Math.sqrt(dx * dx + dy * dy);
+            if (r < 4) { n++; nearDamp = Math.max(nearDamp, p.damp); }
+            nearest = Math.min(nearest, r);
+          }
+          near = Math.max(near, n);
+        }
         await step();
       }
-      out.push({ at: [s.x, s.y], lvl: s.l, patches, damp, best, draw, label });
+      out.push({ at: [s.x, s.y], lvl: s.l, patches, damp, best, draw, label, near, nearDamp, nearest: Number.isFinite(nearest) ? +nearest.toFixed(1) : null });
     }
     return out;
   }, { spots, label });
 
 const inHollow = await visit(places.hollows.slice(0, 3).map((h) => ({ x: h.x, y: h.y, l: h.l })), "hollow");
-for (const r of inHollow) console.log(`hollow ${r.at} (level ${r.lvl}): ${r.patches} patches, thickest damp ${r.damp}`);
-const bestHollow = inHollow.reduce((m, r) => (r.patches > m.patches ? r : m), inHollow[0] ?? { patches: 0, damp: 0, draw: null });
+for (const r of inHollow)
+  console.log(`hollow ${r.at} (level ${r.lvl}): ${r.patches} patches, ${r.near} within 4 cells of me (nearest ${r.nearest}), thickest damp ${r.damp}`);
+const bestHollow = inHollow.reduce((m, r) => (r.near > m.near ? r : m), inHollow[0] ?? { patches: 0, near: 0, damp: 0, draw: null });
 if (!bestHollow.patches) fail("no mist gathered in any of the world's deepest hollows");
+if (!bestHollow.near) fail("the mist gathered somewhere in view but never around the player standing in the hollow");
 if (!(bestHollow.damp >= 0.5)) fail(`the thickest bank in a hollow reads damp ${bestHollow.damp} — it is finding the rim, not the bottom`);
 
 /* THE DEPTH, which is the bug that would look fine at dawn and ruin the night:
@@ -251,15 +278,19 @@ else {
 
 const onRidge = await visit(places.ridges.slice(0, 2).map((r) => ({ x: r.x, y: r.y, l: r.l })), "ridge");
 for (const r of onRidge) console.log(`ridge ${r.at} (level ${r.lvl}): ${r.patches} patches, thickest damp ${r.damp}`);
-const worstRidge = onRidge.reduce((m, r) => (r.patches > m.patches ? r : m), onRidge[0] ?? { patches: 0, damp: 0 });
-console.log(`where: the deepest hollow holds ${bestHollow.patches} patches, the highest ridge ${worstRidge.patches}`);
-// A summit still LOOKS DOWN on the slopes around it, so the honest claim is
-// not "none on a ridge" but "far less, and far thinner" — the view from a
-// hilltop legitimately contains hollows.
-if (!(bestHollow.patches > worstRidge.patches * 1.5 + 1))
-  fail(`a ridge fogs like a hollow (${worstRidge.patches} vs ${bestHollow.patches}) — the basin test is not discriminating`);
-if (!(bestHollow.damp > worstRidge.damp + 0.15))
-  fail(`the bank on the ridge is as thick as the one in the hollow (${worstRidge.damp} vs ${bestHollow.damp})`);
+const worstRidge = onRidge.reduce((m, r) => (r.near > m.near ? r : m), onRidge[0] ?? { patches: 0, near: 0, damp: 0, nearDamp: 0 });
+console.log(
+  `where: within 4 cells of the player — the deepest hollow holds ${bestHollow.near} banks (nearest ${bestHollow.nearest} cells), ` +
+    `the highest ridge ${worstRidge.near} (nearest ${worstRidge.nearest})`,
+);
+// The claim is about the ground UNDER YOUR FEET. A summit looks down on the
+// slopes around it and the hollows down there are real fog, so counting the
+// view would fail a correct effect (measured: 18 patches in view from a
+// 46-level peak, every one of them below it).
+if (!(bestHollow.near > worstRidge.near * 2 + 1))
+  fail(`a ridge fogs at your feet like a hollow (${worstRidge.near} vs ${bestHollow.near} banks within 4 cells)`);
+if (worstRidge.near && !(bestHollow.nearDamp > worstRidge.nearDamp + 0.15))
+  fail(`what little reaches the ridge is as thick as the hollow's (${worstRidge.nearDamp} vs ${bestHollow.nearDamp})`);
 
 /* ---- AND IT IS ON THE SCREEN ---- */
 {
@@ -274,6 +305,29 @@ if (!(bestHollow.damp > worstRidge.damp + 0.15))
     window.__mlAmbient.setEnabled("dawnmist", o);
     for (let i = 0; i < 90; i++) await new Promise((r) => requestAnimationFrame(r));
   }, on);
+  /* FIRST LIGHT, NOT PITCH DARK. The mist draws UNDER the darkness overlay by
+   * design, so at sun 0 it is multiplied down with the ground and the two keep
+   * their ratio but lose their difference — measured 7.2 luma at sun 0, which
+   * says more about the hour than about the fog. The moment this effect exists
+   * FOR is the one where the bank is still thick AND the light has arrived, so
+   * the arm walks the morning until it finds a sun that is up while the weight
+   * is still most of the way on, and says which moment it judged. */
+  const lit = await page.evaluate(async () => {
+    const step = () => new Promise((r) => requestAnimationFrame(r));
+    let best = null;
+    for (const t of [0, 0.05, 0.1, 0.15, 0.2, 0.3, 0.4]) {
+      window.__ml.timeSpeed(0);
+      window.__ml.timeOfDay("Morning", true, t);
+      for (let i = 0; i < 45; i++) await step();
+      const d = window.__mlAmbient.debug("dawnmist");
+      if (d.sun >= 0.25 && d.weight >= 0.4) { best = { t, sun: d.sun, weight: d.weight }; break; }
+      if (!best || d.sun > best.sun) best = { t, sun: d.sun, weight: d.weight };
+    }
+    return best;
+  });
+  console.log(`pixels: judged at phaseT ${lit?.t} of Morning — sun ${lit?.sun}, weight ${lit?.weight}`);
+  if (lit && lit.sun < 0.05)
+    console.log("pixels: the clock never lifted the sun off zero — this is the darkest reading the effect can give");
   const layout = await page.evaluate(async (at) => {
     const step = () => new Promise((r) => requestAnimationFrame(r));
     window.__ml.teleport(at[0] + 0.5, at[1] + 0.5);

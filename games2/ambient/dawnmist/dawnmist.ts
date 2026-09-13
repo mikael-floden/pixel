@@ -64,9 +64,14 @@ const TRIES = 2;
 /** Above the ground render texture (-1_000_000) and under `foam/` (-999_999),
  *  so the coast line stays crisp over the top of a bank. */
 const DEPTH = -999_999.5;
-/** Peak opacity of ONE patch. Low on purpose: the bank is built by OVERLAP,
- *  and the dither already leaves half the rim transparent. */
-const ALPHA = 0.22;
+/** Peak opacity of ONE patch. Low on purpose — the bank is built by OVERLAP,
+ *  and the dither already leaves half the rim transparent — but not as low as
+ *  the first cut: at 0.22 a bank moved its own pixels by 7.2 luma at first
+ *  light (measured), and a mark nobody can see is not subtle, it is absent.
+ *  The reason it is dimmer than it looks is the surface band itself: under the
+ *  darkness overlay the mist is multiplied down with the ground it lies on, so
+ *  its alpha has to be read against a DARK picture, not against the tint. */
+const ALPHA = 0.28;
 /** How far a patch may sit from its spot, and how far outside the view a
  *  patch is kept before it is retired. */
 const SPREAD_PX = 40;

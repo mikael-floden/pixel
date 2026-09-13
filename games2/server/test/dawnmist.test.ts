@@ -55,6 +55,17 @@ test("a ridge never fogs, and a pit always does", () => {
   const foot = basin(0, [0, 0, 0, 6, 6, 6]);
   assert.ok(foot > 0.4 && foot < 0.6, `a cliff foot is half enclosed (${foot})`);
   assert.equal(basin(0, []), 0, "no samples, no verdict");
+  // AND IT DRAINS. A terrace halfway up a slope has a wall on one side and
+  // nothing but air on the other, and the cold air pours off it — without the
+  // drain term it scores the same 0.5 as a cliff FOOT, which is the case that
+  // actually fogs. This is the difference between "somewhere lower than its
+  // neighbours" and "somewhere the air cannot leave".
+  assert.equal(basin(3, [6, 6, 6, 0, 0, 0]), 0, "a terrace on a slope drains — it does not fog");
+  assert.ok(basin(0, [0, 0, 0, 6, 6, 6]) > 0.4, "...while the FOOT of the same cliff still does");
+  assert.ok(
+    basin(3, [6, 6, 6, 3, 3, 3]) > basin(3, [6, 6, 6, 0, 0, 0]),
+    "a pocket against a wall beats a ledge that spills off one",
+  );
   // monotone: the higher the walls, the deeper the hollow
   let prev = -1;
   for (let h = 0; h <= 6; h++) {
