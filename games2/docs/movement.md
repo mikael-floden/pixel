@@ -417,6 +417,31 @@ Server-authoritative movement, decks, collision, steer assist, fall damage, tap/
   - **THE CLAMP IS THE SERVER'S** — `[PLAYER_SPEED_MIN, PLAYER_SPEED_MAX]` in
     the input handler. Same standing as `teleport`: a knob the maintainer
     drives, bounded by the authority rather than by the client's good manners.
+- **THE ACCELERATION RAMP** (`client/src/accel.ts`, shared `accelStep`;
+  maintainer 2026-09-13: "The player's acceleration from standing still to
+  running fast is way way way too fast right now. It kinda feels like we go
+  from 0% to 100% on a single frame. Create a slider for this and make the new
+  default 5x as slow as today"): the commanded speed rises linearly from rest
+  over the dial's "time to full speed" — 0 is the instant law of before, the
+  default `ACCEL_S_DEFAULT` 0.17 s (five frames of 33 ms: today was one), the
+  top a second — and falls at the same rate when the stick is released, so a
+  press within a release's ramp resumes where it was while the body itself
+  stops at once (no input, no move). The stop is not ramped: he asked for the
+  start.
+  - **IT RIDES PER INPUT** (`InputMessage.ac`, 0..1), the speed dial's rule
+    and reason (a factor that changed mid-flight would rewrite the pending
+    buffer's history). The window's number is the ramp's MEAN over it — the
+    exact integral of a linear ramp (`accel.test.ts`) — which is what the
+    client's not-yet-sent tail is previewed under (`WorldScene.rampMean`),
+    what the window is stamped with when it closes, and what the server
+    integrates: preview, replay and authority move the same distance. The
+    server CLAMPS it to [0, 1]: a slowdown only, never a boost; absent = 1.
+  - **ACCELERATING IS NOT STUCK**: `walkHeading` takes the ramp's factor as
+    `speedFrac` and rule 0's progress ask (a tenth of a walk's pace) is at
+    that share — a second-long ramp moves a walk 0.35 wu in its first window,
+    half the ask, and without the share the walk planned an escape route
+    across open ground. The gait needs nothing: it follows the actual speed,
+    so a body accelerates through the walk into the run.
   - Nothing else needs changing, and both are measured, not assumed: the
     autopilot's advance/arrive radii already scale with the OBSERVED per-step
     distance (capped at a cell), so a 4x walk clips waypoints instead of

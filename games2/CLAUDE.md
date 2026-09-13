@@ -5,8 +5,8 @@ each subsystem's detail lives. **The measurements, traps and rejected
 approaches are in `games2/docs/<topic>.md` — open the one for the subsystem
 you touch, and put new detail THERE.** A rule here is one or two lines: the
 present-tense law, the reason in parentheses, the doc that holds the story.
-(2026-09-09, maintainer: the always-loaded text had grown to 300 KB and every
-turn paid for it before reading his message.)
+(2026-09-09, maintainer: the always-loaded text had grown to 300 KB, paid
+before every message was read.)
 
 ## What this is
 
@@ -53,7 +53,7 @@ secrets; push to `main`, rebase on reject, no PRs unless asked; doc law.
 
 **Scope**
 - Never edit the art domains; the games agent may improve the RENDERER, never
-  the art. Anti-tiling effects: NONE (rejected twice; the fresh ground stands).
+  the art. Anti-tiling effects: NONE (rejected twice).
 - The ONE games2 file art agents may edit is `shared/src/surfaces.ts`
   (`SURFACES.md`). `check-surfaces.mjs` fails `npm test` on an unclassified
   category.
@@ -178,16 +178,17 @@ secrets; push to `main`, rebase on reject, no PRs unless asked; doc law.
 - A footprint and a body belong to the FLOOR they stand on (`lvl`); every
   query that knows the surface level passes it.
 - The nav avoids fall damage at any cost: ≥6 levels is not an edge; a fall
-  bills on IMPACT (`fallPend`); the client draws the impact on its own
-  predicted frame (`fallhurt.ts`); the slow FADES with the number.
+  bills on IMPACT (`fallPend`), drawn on the client's own predicted frame
+  (`fallhurt.ts`); the slow FADES with the number.
 - Water is the player's sanctuary (no monster enters or is hit there) and
   lies FLAT: a liquid corner votes only at its own level (`swimlevel.test.ts`).
-- The player-speed dial rides PER INPUT (`InputMessage.sm`) and the SERVER
-  clamps it; 1.2x IS HIS (`playerspeed.ts`).
+- The speed dial and the acceleration ramp ride PER INPUT (`InputMessage.sm`,
+  `.ac`), the SERVER clamps them; 1.2x and 0.17 s to full speed ARE HIS
+  (`playerspeed.ts`, `accel.ts`, `accelStep`).
 - The stick "almost" snaps: `leanHeading` leans between the octants' run
   headings by his dial (0 snap, 1 continuous; 0.85 IS HIS); the grid-axis
-  lock locks EXACT diagonals only; the bearing is read additively off
-  games-ui's stick (`stickdir.ts`).
+  lock locks EXACT diagonals only; the bearing is games-ui's stick's
+  (`stickdir.ts`).
 - A TERRAIN wall gets the honest walk (`wallcorner.test.ts`): within his
   "Wall assist angle" dial (10°, HIS) the run is straightened along it; past
   it the body slides at its screen speed times the WORLD cosine to the wall
@@ -205,7 +206,7 @@ secrets; push to `main`, rebase on reject, no PRs unless asked; doc law.
 - Walk or run follows the body's SCREEN speed (`gaitSpeed`, `gaitRunning`):
   the run gait from 80% of the run, off below 74% (HIS).
 - A tap RUNS; the beacon is the pixel you touched and never moves to meet
-  the walk (rejected twice); both readings of an ambiguous pixel are routed.
+  the walk (rejected twice); both readings of an ambiguous pixel route.
 - The body dodge is a manoeuvre: engage and hold on different thresholds,
   `MONSTER_DODGE_TIGHTEN` never reaches the hold; a waypoint someone stands
   on counts as arrived.

@@ -713,6 +713,9 @@ export class WorldRoom extends Room<WorldState> {
           // A planned route's window keeps the world-axis slide; the thumb's
           // slides at the screen share (InputMessage.route, MoveOpts).
           route: !!message.route,
+          // THE ACCELERATION RAMP'S FACTOR, clamped here because this is the
+          // authority: a slowdown only, never a boost (InputMessage.ac).
+          ac: clamp(Number.isFinite(message.ac as number) ? (message.ac as number) : 1, 0, 1),
         });
       } else if (typeof message.seq === "number") {
         player.seq = message.seq; // overloaded queue: drop but still ack
@@ -1586,7 +1589,7 @@ export class WorldRoom extends Room<WorldState> {
             // they're on (walk ON the bridge/roof vs UNDER it). Non-deck cells
             // resolve exactly as canEnter, so all other worlds are unaffected.
             makeBlockedElev(terrain, ctx, () => player.elev),
-            surf.speed * (jumping ? JUMP_SPEED_FACTOR : 1) * player.slow * (inp.sm ?? PLAYER_SPEED_DEFAULT),
+            surf.speed * (jumping ? JUMP_SPEED_FACTOR : 1) * player.slow * (inp.sm ?? PLAYER_SPEED_DEFAULT) * (inp.ac ?? 1),
             true, // iso world → input is screen-relative (Up walks up on screen)
             this.worldW,
             this.worldH,
@@ -1594,10 +1597,10 @@ export class WorldRoom extends Room<WorldState> {
             { screenSlide: !inp.route },
           );
         } else {
-          // No map (the open-world fallback): still the player's own dial.
+          // No map (the open-world fallback): still the player's own dial and ramp.
           r = stepMovement(
             player.x, player.y, inp.ax, inp.ay, inp.running, eff,
-            undefined, inp.sm ?? PLAYER_SPEED_DEFAULT,
+            undefined, (inp.sm ?? PLAYER_SPEED_DEFAULT) * (inp.ac ?? 1),
           );
         }
         // The body's ACTUAL speed over this window (before the position is

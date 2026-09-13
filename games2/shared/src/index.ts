@@ -179,6 +179,12 @@ export interface InputMessage {
    *  Absent = 1 (an old client, or a replayed message from before the dial).
    *  The server CLAMPS it to [PLAYER_SPEED_MIN, PLAYER_SPEED_MAX]. */
   sm?: number;
+  /** THE ACCELERATION RAMP'S FACTOR THIS WINDOW WAS INTEGRATED UNDER, 0..1
+   *  (accelStep: the mean of the ramp over the window). Per input like `sm`
+   *  and for the same reason; the server CLAMPS it to [0, 1] — a slowdown
+   *  only, never a boost. Absent = 1 (an old client, or a message from before
+   *  the ramp). */
+  ac?: number;
   /** A PLANNED ROUTE STEERED THIS WINDOW — tap-to-move, or the walk's escape
    *  round a thing — and its slides keep the WORLD axis (the old cap, never
    *  faster than the run). The thumb's windows slide at the SCREEN share
@@ -305,6 +311,31 @@ export const PLAYER_SPEED_MAX = 4;
  *  shipped walk is 1.2x of what it was this morning. Not a placeholder: do not
  *  "restore" 1. */
 export const PLAYER_SPEED_DEFAULT = 1.2;
+
+/** THE ACCELERATION RAMP — his dial: the time, in seconds, a body takes from
+ *  rest to its full speed (maintainer 2026-09-13: "The player's acceleration
+ *  from standing still to running fast is way way way too fast right now. It
+ *  kinda feels like we go from 0% to 100% on a single frame. Create a slider
+ *  for this and make the new default 5x as slow as today"). Today was one
+ *  frame: the default is five frames of 33 ms, in hundredths; 0 is that
+ *  instant law, the top a full second. `client/src/accel.ts` is the dial. */
+export const ACCEL_S_MIN = 0;
+export const ACCEL_S_MAX = 1;
+export const ACCEL_S_DEFAULT = 0.17;
+/** One window of the ramp: the factor (0..1) at the window's END. A held input
+ *  raises it linearly at 1/rampS per second (to 1 at once when rampS is 0); a
+ *  released one lowers it at the same rate, so a press within the ramp of a
+ *  release resumes where it was while the body itself stops at once (no input,
+ *  no move). The window is INTEGRATED under the mean of its start and end
+ *  factors — the exact integral of a linear ramp — which is what rides per
+ *  input as `InputMessage.ac`, so the client's tail preview, its replay and
+ *  the server move the same distance. */
+export function accelStep(prev: number, held: boolean, dt: number, rampS: number): number {
+  const p = Math.max(0, Math.min(1, Number.isFinite(prev) ? prev : 0));
+  if (!(rampS > 0)) return held ? 1 : 0;
+  const d = Math.max(0, dt) / rampS;
+  return held ? Math.min(1, p + d) : Math.max(0, p - d);
+}
 
 /** WALK OR RUN FOLLOWS THE BODY'S ACTUAL SPEED, not the input's flag
  *  (maintainer 2026-09-13: "when it comes to the player running into a wall
@@ -4210,6 +4241,13 @@ export function walkHeading(
     /** How long without progress before the escape is planned, ms (his "Nav
      *  help after" dial); absent = NAV_HELP_MS_DEFAULT. */
     stuckMs?: number;
+    /** The share of its speed the body is COMMANDED at this frame — the
+     *  acceleration ramp's factor (accelStep), 0..1; absent = 1. The progress
+     *  rule 0 asks for is a tenth of a walk's pace AT THAT SHARE, so a body
+     *  still accelerating out of rest (a second-long ramp on the dial moves a
+     *  walk 0.35 wu in its first window, half the rate's ask) is not read as
+     *  stuck and walked onto an escape route across open ground. */
+    speedFrac?: number;
   },
 ): { ax: number; ay: number; trip: AutopilotTrip | null; deflected: boolean } {
   /* `deflected` says whether the answer is the walk's own, not the stick's — so
@@ -4287,7 +4325,7 @@ export function walkHeading(
       const wait = hold.escapeWait ?? stuckMs;
       const dtMs = opts.nowMs - hold.progAt!;
       if (dtMs >= wait) {
-        if (p - hold.progRef! >= STUCK_PROGRESS_RATE * WALK_SPEED * (dtMs / 1000)) {
+        if (p - hold.progRef! >= STUCK_PROGRESS_RATE * WALK_SPEED * (dtMs / 1000) * Math.max(0, Math.min(1, opts.speedFrac ?? 1))) {
           // Progress: the window slides on.
           hold.progRef = p;
           hold.progAt = opts.nowMs;

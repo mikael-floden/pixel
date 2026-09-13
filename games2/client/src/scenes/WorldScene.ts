@@ -50,6 +50,7 @@ import {
   slideAlong,
   gaitRunning,
   gaitSpeed,
+  accelStep,
   type SlideMemo,
   stepAutopilot,
   bodyStandoff,
@@ -113,6 +114,7 @@ import { ensureSpeedDial, playerSpeed } from "../playerspeed";
 import { ensureStickDial, ensureStickAngle, stickLean, stickHeading } from "../stickdir";
 import { ensureWallAssistDial, wallAssistDeg } from "../wallassist";
 import { ensureNavHelpDial, navHelpMs } from "../navhelp";
+import { ensureAccelDial, accelS } from "../accel";
 import { roomCoverFraction, coversRoom, type ScreenBox, type ScreenPt } from "../scenerycover";
 import { ensureWallWrapDial, wallWrap, setWallWrap } from "../wallwrap";
 import { hiddenRing, setHiddenRing } from "../hiddenring";
@@ -1000,6 +1002,9 @@ interface PendingInput {
    *  its slides keep the world axis; the thumb's take the screen share.
    *  Replayed under the law it was sent with (InputMessage.route, MoveOpts). */
   route: boolean;
+  /** The acceleration ramp's factor this window was integrated under
+   *  (InputMessage.ac) — replayed under it, like `sm`. */
+  ac: number;
   at: number;
 }
 
@@ -1854,6 +1859,12 @@ export class WorldScene extends Phaser.Scene {
   private curSlowFactor = 1; // the hit-slow factor live integration ran under (captured per input)
   private inputSeq = 0;
   private sendAccum = 0;
+  /** THE ACCELERATION RAMP's factor at the end of the last SENT window
+   *  (shared accelStep, his dial in accel.ts). The not-yet-sent tail previews
+   *  from it, and the window that closes is stamped with the mean over the
+   *  tail (InputMessage.ac) — the same number, so preview, replay and the
+   *  server move the same distance. */
+  private accelF = 0;
   private lastInput: { ax: number; ay: number; running: boolean; route: boolean } = { ax: 0, ay: 0, running: false, route: false };
   // Tap-to-move (mobile-first): tap the ground → walk there; double-tap → run.
   // The autopilot only SYNTHESIZES the same 8-way screen input the keyboard
@@ -12421,10 +12432,13 @@ export class WorldScene extends Phaser.Scene {
           /** Whether a planned route steered THIS window (its slides keep the
            *  world axis; the thumb's take the screen share) — the same rule. */
           route: boolean,
+          /** The acceleration ramp's factor THIS window was integrated under
+           *  (InputMessage.ac) — the same rule again. */
+          ac: number,
         ) => {
           let blocked;
           let sideBlocked;
-          let speed = 1;
+          let speed = ac;
           if (this.terrain) {
             // Mirror the server exactly: unstick before integrating.
             const u = unstickFromSolids(this.terrain, rx, ry, 80 * sdt, undefined, predElev);
@@ -12442,7 +12456,8 @@ export class WorldScene extends Phaser.Scene {
               surfaceAtWorldElev(this.terrain, rx, ry, predElev).speed *
               (jumping ? JUMP_SPEED_FACTOR : 1) *
               slowF *
-              sm;
+              sm *
+              ac;
           }
           // screenInput matches the server: on the iso world, input is screen-relative.
           const r = stepMovement(rx, ry, ax, ay, running, sdt, blocked, speed, !!this.terrain, this.worldW, this.worldH, sideBlocked, { screenSlide: !route });
@@ -12469,13 +12484,15 @@ export class WorldScene extends Phaser.Scene {
             predElev = resolveElevAt(this.terrain, predElev, rx, ry, ctx);
           }
         };
-        for (const p of this.pending) stepLocal(p.ax, p.ay, p.running, p.dt, p.jumping, p.slow, p.sm ?? 1, p.route);
+        for (const p of this.pending) stepLocal(p.ax, p.ay, p.running, p.dt, p.jumping, p.slow, p.sm ?? 1, p.route, p.ac ?? 1);
         // Integrate the not-yet-sent input tail too, so the local player moves
-        // every FRAME (60fps-smooth) instead of only at the 20Hz send tick.
+        // every FRAME (60fps-smooth) instead of only at the 20Hz send tick —
+        // under the ramp's mean over the tail, the number the window will be
+        // stamped with when it closes (flushInput).
         if (this.sendAccum > 0)
           stepLocal(
             this.lastInput.ax, this.lastInput.ay, this.lastInput.running, this.sendAccum, jumpingNow,
-            this.curSlowFactor, playerSpeed(), this.lastInput.route,
+            this.curSlowFactor, playerSpeed(), this.lastInput.route, this.rampMean(),
           );
         tx = rx;
         ty = ry;
@@ -14319,6 +14336,7 @@ export class WorldScene extends Phaser.Scene {
             heading: stickVec ?? undefined,
             wallAssistDeg: wallAssistDeg(),
             stuckMs: navHelpMs(),
+            speedFrac: this.rampEnd(), // accelerating out of rest is not stuck
           });
           ax = r.ax;
           ay = r.ay;
@@ -15101,6 +15119,19 @@ export class WorldScene extends Phaser.Scene {
     return autoJumpWanted(this.terrain, fromX, fromY, w.x, w.y, elev);
   }
 
+  /** The acceleration ramp's factor at the END of the not-yet-sent tail —
+   *  the speed the body is commanded at right now (shared accelStep, his dial
+   *  in accel.ts). A held input is any non-zero vector. */
+  private rampEnd(): number {
+    const held = this.lastInput.ax !== 0 || this.lastInput.ay !== 0;
+    return accelStep(this.accelF, held, this.sendAccum, accelS());
+  }
+  /** The ramp's MEAN over the tail: the exact integral of the linear ramp,
+   *  what the tail is integrated under and the window stamped with. */
+  private rampMean(): number {
+    return (this.accelF + this.rampEnd()) / 2;
+  }
+
   /** Persist + send the accumulated input window (prediction and server get
    * the exact same vector and duration). */
   private flushInput() {
@@ -15113,6 +15144,11 @@ export class WorldScene extends Phaser.Scene {
     }
     const li = this.lastInput;
     this.inputSeq += 1;
+    // The ramp: this window is stamped with its mean factor over the tail —
+    // exactly what the tail preview integrated under — and the boundary moves
+    // on to the window's end.
+    const ac = this.rampMean();
+    this.accelF = this.rampEnd();
     const rec: PendingInput = {
       seq: this.inputSeq,
       ax: li.ax,
@@ -15126,6 +15162,7 @@ export class WorldScene extends Phaser.Scene {
       slow: this.curSlowFactor,
       sm: playerSpeed(),
       route: li.route,
+      ac,
       at: performance.now(),
     };
     this.pending.push(rec);
@@ -15135,6 +15172,7 @@ export class WorldScene extends Phaser.Scene {
     const msg: InputMessage = {
       ax: li.ax, ay: li.ay, running: li.running, seq: this.inputSeq, dt: this.sendAccum,
       sm: playerSpeed(),
+      ac,
     };
     if (li.route) msg.route = true;
     if (this.jumpQueued) {
@@ -17329,6 +17367,7 @@ export class WorldScene extends Phaser.Scene {
       ensureStickDial(); // …and the stick's direction-freedom slider
       ensureWallAssistDial(); // …and the wall-assist angle (how far off a wall the stick still runs along it)
       ensureNavHelpDial(); // …and how long the body may be stuck before the nav plans a way round
+      ensureAccelDial(); // …and the acceleration ramp (time from rest to full speed)
       ensureStickAngle(); // (re)bind the bearing listeners on games-ui's stick
       ensureWallWrapDial(); // …and the night shader's wall light wrap
       if (this.zoneLinesOn && this.zoneLinesFor !== this.zone) this.drawZoneLines(); // the uphill-bias slider, injected the same way
