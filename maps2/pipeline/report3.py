@@ -6,6 +6,11 @@ the change! I just want to be able to review it afterwards.").
     python3 maps2/pipeline/report3.py maps2/reports/<world>.json <out_dir> \
         --push=<commit|latest>       # ONE push - what a reply links
 
+ONE OUT_DIR PER PUSH (`<scratch>/push-<commit>`). The Artifact tool keys a
+published page by the FILE PATH it came from, so rendering a second push into
+the same out_dir republishes the FIRST push's URL - it does not make the new
+page. Measured 2026-09-13: it overwrote the running log with one push's cards.
+
 The log (`maps2/change-log@1`) is the source, kept in the repo so every run
 appends its push and republishes the SAME page (`artifact` is its URL):
     {"schema": "maps2/change-log@1", "world": "the_game", "artifact": "https://...",

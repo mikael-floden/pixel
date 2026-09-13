@@ -391,8 +391,105 @@
     }
    ],
    "artifact": "https://claude.ai/code/artifact/2495fc84-cd00-4c8e-8240-e67bd666ed32"
+  },
+  {
+   "date": "2026-09-13",
+   "commit": "67a94df8c9",
+   "before": "30ffaad2e3",
+   "title": "A fire in 10 of 13 rooms, and a chimney on the roof over every one",
+   "changes": [
+    {
+     "name": "The town's skyline: five roofs, five chimneys",
+     "what": "Every house whose room has an open fire now carries a chimney on its roof, standing directly over that fire. Tap the picture for the same view yesterday: the same roofs, bare. This is also the whole reason the game had to learn a new trick - a piece standing ON a roof used to be read as furniture UNDER it, so it would have been invisible from the street and visible from inside the room.",
+     "cell": [
+      110,
+      162
+     ],
+     "window": [
+      92,
+      142,
+      128,
+      182
+     ]
+    },
+    {
+     "name": "One stack, up close",
+     "what": "The house by the well. South-east of the three facings you asked about (S, SE, SW): I rendered all three on this roof and looked. South is the stack seen flat on - one face, its clay pot dead centre - and it reads as a sticker lying on the roof. The two turned views show the brick's corner, so the stack has a lit face and a shaded one and stands up off the roof plane; south-east turns the LIT face toward the same side this world's roofs and walls are lit from, which is what makes it look like part of the building.",
+     "cell": [
+      97,
+      164
+     ],
+     "window": [
+      92,
+      158,
+      106,
+      170
+     ]
+    },
+    {
+     "name": "...and the fire under it",
+     "what": "The same house with its roof lifted, so you can see what the chimney is for: the hearth stands against the back wall and the stack rises from its own cell. One column from the fire to the sky, which is what the ambient agent's smoke needs - the art publishes where the flue mouth is per facing, and the smoke leaves from that exact pixel. Tap for yesterday: this room had no fire at all.",
+     "cell": [
+      97,
+      164
+     ],
+     "window": [
+      92,
+      158,
+      106,
+      170
+     ],
+     "roofcut": true
+    },
+    {
+     "name": "The one that actually burns",
+     "what": "Nine of the ten fires are laid but cold, and this is the honest reason: the engine renders 8 world lights per camera window and the town already spends all 8 on its streetlamps, so only this house - out past the town - had a slot free. Everything else about a cold hearth is right (it is a fireplace, it has its chimney); it just is not lit. Say the word and I will let the fires take the slots from the street lamps instead, which is what the builder now does when the whole world is rebuilt.",
+     "cell": [
+      253,
+      303
+     ],
+     "window": [
+      246,
+      297,
+      260,
+      310
+     ],
+     "roofcut": true
+    },
+    {
+     "name": "A brazier where a hearth will not fit",
+     "what": "A hearth is a metre and a half of masonry along a wall and this room has no such stretch left - bed, table, chair, barrels, chest. Rather than leave it cold it gets a fire basket: half a cell, the same open fire, and it takes its own chimney like any other. Two rooms of thirteen are still bare and one drew 'a light' it could not have lit, which is the 76 / 0 / 23 against the 70 / 10 / 20 you asked for.",
+     "cell": [
+      253,
+      144
+     ],
+     "window": [
+      247,
+      138,
+      261,
+      152
+     ],
+     "roofcut": true
+    },
+    {
+     "name": "The L-shaped house gets its fire back",
+     "what": "This one is 54 cells in an L, and the old rule looked for the back wall in the bounding box's top row - which here is ONE cell, so it had a single short wall to try and gave up. A wall is a local fact now: any run of floor whose neighbour to the north (or west) is outside the room, longest run first. That found this 10-cell wall in the middle of the L, and the fire is on it.",
+     "cell": [
+      305,
+      233
+     ],
+     "window": [
+      296,
+      226,
+      314,
+      241
+     ],
+     "roofcut": true
+    }
+   ],
+   "artifact": "https://claude.ai/code/artifact/3ddee28c-e8e7-4a5d-9a70-10eaf8389d34"
   }
  ],
  "artifact_previous": "https://claude.ai/code/artifact/380e0818-32c4-4388-bd85-b73d37282f86",
- "_artifact_note": "ONE PAGE PER PUSH (maintainer 2026-09-13). Each push entry carries its own `artifact` URL - that page holds THAT push's cards only, and it is the link a reply gives him. The top-level `artifact` is the running page over every push: it is history, never a link in a reply."
+ "_artifact_note": "ONE PAGE PER PUSH (maintainer 2026-09-13). Each push entry carries its own `artifact` URL - that page holds THAT push's cards only, and it is the link a reply gives him. The top-level `artifact` is the running page over every push: it is history, never a link in a reply. RENDER EACH PUSH'S PAGE INTO ITS OWN DIRECTORY (<scratch>/push-<commit>): the Artifact tool keys an artifact by the FILE PATH it was published from, so re-using one out_dir republishes the previous push's URL instead of creating the new page - measured 2026-09-13, it overwrote the running log."
 }

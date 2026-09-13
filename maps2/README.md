@@ -43,7 +43,12 @@ page shows him the place, and his review comes back as marked numbers.
   Publish that directory as **a NEW artifact** (a fresh `file_path`, so it
   gets its own URL), write the URL into that push's own `artifact` field in
   the log, and put THAT link in the reply. Never republish a page a previous
-  push already linked, and never hand him the running page.
+  push already linked, and never hand him the running page. **RENDER INTO
+  `<scratch>/push-<commit>`, a directory per push**: the Artifact tool keys a
+  page by the FILE PATH it was published from, so a re-used `out_dir`
+  republishes the earlier page's URL rather than making the new one (measured
+  2026-09-13 — it overwrote the running log with one push's cards, and the
+  repair is to re-render the whole log into that same path and republish).
   (`--push` renders each change twice — the world at the push and at `before` —
   lossless WebP, copies the minimap, writes `index.html`, and parse-checks
   nothing for you: run `node --check` on the page's script if you touched
