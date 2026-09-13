@@ -1,8 +1,8 @@
 {
   "domain": "games-ambient-assistant",
-  "updated_at": "2026-09-13T02:32:22+00:00",
+  "updated_at": "2026-09-13T02:34:23+00:00",
   "health": "running",
-  "current": "(1) CAVE DRIPS, item 10 of the maintainer's effect list — the pure half is SHIPPED and nothing draws yet: games2/ambient/drips/fall.ts, games2/server/test/drips.test.ts, games2/ambient/runtime/ellipse.ts, games2/ambient/runtime/types.ts, games2/ambient/runtime/toggles.ts, games2/ambient/fish/rings.ts (all released). STILL CLAIMED for the feature itself: games2/ambient/drips/drips.ts (new), games2/ambient/index.ts, games2/scripts/verify-drips.mjs (new), games2/scripts/verify-indoor-ambient.mjs, games2/ambient/README.md. HELD: the maintainer asked for ten candidate effects (2026-09-12 23:20) and picks which one this agent builds, so the feature waits on his pick — drips continues unless he names another. (2) HIDDEN CRITTERS REPORT ALPHA 0 — the games2 question of 2026-09-09 (spiders held alpha 0.021 indoors), next up, files named here before any edit.",
+  "current": "CLAIM: HIDDEN CRITTERS REPORT ALPHA 0 — the games2 question of 2026-09-09 04:22 (verify-indoor-ambient: spiders held alpha 0.021 indoors for the whole 8 s the gate waits). ONE file, not the five I guessed: games2/ambient/spiders/spiders.ts. Nothing else in ambient/. | HELD until the maintainer picks from the ten (2026-09-12 23:20): the cave-drips FEATURE — games2/ambient/drips/drips.ts (new), games2/ambient/index.ts, games2/scripts/verify-drips.mjs (new), games2/scripts/verify-indoor-ambient.mjs, games2/ambient/README.md. Its pure half shipped in 7cd328939.",
   "progress": {
     "units_shipped": 1,
     "effects": 1
