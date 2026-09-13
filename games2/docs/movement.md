@@ -88,9 +88,17 @@ Server-authoritative movement, decks, collision, steer assist, fall damage, tap/
   headings: 158 phantom stalls with the base rule, 0 with the surface level.
   A caller without a level keeps the base rule. AND THE RELOG: `rec.pos`
   saves `elev`, and the join resolves it against today's terrain — restoring
-  the base level put a lid-walker back INSIDE the cave. KNOWN GAP: a piece
-  placed ON a deck reads the base under it (none in the_game). Gate: the
-  floor test in `server/test/footprint.test.ts`.
+  the base level put a lid-walker back INSIDE the cave. NEVER ON A WALL'S
+  TOP (`restoreSurface`, maintainer 2026-09-13, "your engine sent me to the
+  top of the mountain" at 208.0,225.5): `resolveElevAt` answers a cell with
+  no surface a walk from the saved level with the cell's BASE, and a spot
+  saved a hair inside a rock cell (its west edge x = 208.0 IS the rock,
+  floor()) came back on the block beside Cave III's floor at 24, the floor
+  at 4 one cell west. A restore that lands more than a jump from the saved
+  level is moved to the nearest cell within three whose base or deck is a
+  walk from it; none → the spawn. Gate: `server/test/restore.test.ts`.
+  KNOWN GAP: a piece placed ON a deck reads the base under it (none in
+  the_game). Gate: the floor test in `server/test/footprint.test.ts`.
 - **NEVER-BACKWARDS IS A RULE, NOT AN ABSOLUTE: SECONDS OF NO PROGRESS
   ESCALATE TO A COMMITTED ROUTE** (`walkHeading` rule 0, maintainer
   2026-09-11: held down in the dungeon at 276.6,178.9 the body ran up and

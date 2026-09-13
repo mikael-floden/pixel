@@ -2334,6 +2334,64 @@ export function resolveElevAt(grid: TerrainGrid, elev: number, x: number, y: num
   return best === null ? grid.level[i] : best;
 }
 
+/** WHERE A SAVED SPOT PUTS YOU BACK: the surface you left, never a wall's top.
+ *  `resolveElevAt` answers a cell that holds no surface within a walk of the
+ *  saved level with the cell's BASE level, so a spot saved a hair inside a rock
+ *  cell (its edge IS the cell's — floor(208.0) is the rock) came back ON the
+ *  rock: his relogin at 208.0,225.5 beside Cave III's floor stood him on the
+ *  block's top at 24, the floor at 4 one cell west (maintainer 2026-09-13,
+ *  "your engine sent me to the top of the mountain"). A restore that lands more
+ *  than a jump from the saved level is moved to the nearest cell within three
+ *  whose base or deck is a walk from it; none → null, and the caller spawns.
+ *  A spot saved with no level keeps the old answer (the base under it), and a
+ *  lid-walker saved ON a deck comes back on it (2026-09-09). */
+export function restoreSurface(
+  grid: TerrainGrid,
+  x: number,
+  y: number,
+  savedElev: number | undefined,
+): { x: number; y: number; elev: number } | null {
+  const walk = { maxClimb: WALK_CLIMB, canSwim: true };
+  if (savedElev === undefined) return { x, y, elev: resolveElevAt(grid, levelAtWorld(grid, x, y), x, y, walk) };
+  const elev = resolveElevAt(grid, savedElev, x, y, walk);
+  if (Math.abs(elev - savedElev) <= JUMP_CLIMB + 1e-9) return { x, y, elev };
+  const c0 = clamp(Math.floor(x / CELL_WU), 0, grid.width - 1);
+  const r0 = clamp(Math.floor(y / CELL_WU), 0, grid.height - 1);
+  // Ring by ring, the NEAREST cell of the ring to the saved point: a spot
+  // saved at a block's west edge comes back on the floor cell beside it, not
+  // on the diagonal one the ring happens to visit first.
+  for (let rad = 1; rad <= 3; rad++) {
+    let best: { x: number; y: number; elev: number } | null = null;
+    let bestD = Infinity;
+    for (let dr = -rad; dr <= rad; dr++)
+      for (let dc = -rad; dc <= rad; dc++) {
+        if (Math.max(Math.abs(dr), Math.abs(dc)) !== rad) continue;
+        const c = c0 + dc;
+        const r = r0 + dr;
+        if (c < 0 || r < 0 || c >= grid.width || r >= grid.height) continue;
+        const i = r * grid.width + c;
+        const cx = (c + 0.5) * CELL_WU;
+        const cy = (r + 0.5) * CELL_WU;
+        let lvl: number | null = null;
+        if (
+          Math.abs(grid.level[i] - savedElev) <= WALK_CLIMB + 1e-9 &&
+          isStandableAtWorld(grid, cx, cy) &&
+          baseUnderDeckOpen(grid, i, savedElev)
+        )
+          lvl = grid.level[i];
+        else if (grid.deck[i] >= 0 && Math.abs(grid.deck[i] - savedElev) <= WALK_CLIMB + 1e-9) lvl = grid.deck[i];
+        if (lvl === null) continue;
+        const d = Math.hypot(cx - x, cy - y);
+        if (d < bestD) {
+          bestD = d;
+          best = { x: cx, y: cy, elev: lvl };
+        }
+      }
+    if (best) return best;
+  }
+  return null;
+}
+
 /** stepMovement blocked() predicate that carries the player's live elevation
  * (via getElev, read each probe) so decks resolve correctly. */
 export function makeBlockedElev(grid: TerrainGrid, ctx: MoveContext, getElev: () => number): BlockedFn {

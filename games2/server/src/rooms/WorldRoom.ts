@@ -51,6 +51,7 @@ import {
   parseWorld,
   makeBlockedElev,
   resolveElevAt,
+  restoreSurface,
   levelAtWorld,
   makeSideBlocked,
   unstickFromSolids,
@@ -1329,21 +1330,23 @@ export class WorldRoom extends Room<WorldState> {
       const r = Math.floor(s.y / CELL_WU);
       return c >= 0 && r >= 0 && c < t.width && r < t.height && t.deck[r * t.width + c] >= 0;
     };
-    if (spot && (!this.terrain || isStandableAtWorld(this.terrain, spot.x, spot.y) || deckUnderSpot(spot))) {
-      // Returning player: restore their last position ON THE SURFACE THEY LEFT
-      // FROM — the saved elev, resolved against today's terrain (a spot that
-      // lost its deck falls back to the base; one without a saved elev too).
-      player.x = spot.x;
-      player.y = spot.y;
-      player.elev = this.terrain
-        ? resolveElevAt(
-            this.terrain,
-            spot.elev ?? levelAtWorld(this.terrain, player.x, player.y),
-            player.x,
-            player.y,
-            { maxClimb: WALK_CLIMB, canSwim: true },
-          )
-        : 0;
+    // Returning player: restore their last position ON THE SURFACE THEY LEFT
+    // FROM — the saved elev, resolved against today's terrain (a spot that
+    // lost its deck falls back to the base; one without a saved elev too).
+    // NEVER ON A WALL'S TOP: a spot saved a hair inside a rock cell resolves
+    // to the rock's level, and his relogin stood him on the block beside Cave
+    // III's floor (2026-09-13, 208.0,225.5) — `restoreSurface` moves such a
+    // restore to the nearest cell a walk from the saved level, or spawns.
+    const back =
+      spot && this.terrain && (isStandableAtWorld(this.terrain, spot.x, spot.y) || deckUnderSpot(spot))
+        ? restoreSurface(this.terrain, spot.x, spot.y, spot.elev)
+        : spot && !this.terrain
+          ? { x: spot.x, y: spot.y, elev: 0 }
+          : null;
+    if (back) {
+      player.x = back.x;
+      player.y = back.y;
+      player.elev = back.elev;
     } else {
       this.placeAtSpawn(player);
     }
