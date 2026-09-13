@@ -1,8 +1,9 @@
 // THE GROUND DETAILS' GATE (docs/tiles3-rendering.md): boot headless, check the
 // pool carries tiles/tops post files for the grounds he approved details on, count
 // the resolved cells carrying a detail at the default rate, then turn the dial to
-// 1 in 4 and count again after the resolver rebuilt — the count must rise about
-// 14x. Needs a built client. Exit 1 when the pool has no tops or the dial does
+// 1 in 4 and count again after the resolver rebuilt — the count must rise steeply
+// (his default is 1 in 100; the no-touching rule caps the dense end, so the gate
+// asks for 4x rather than the raw ratio). Needs a built client. Exit 1 when the pool has no tops or the dial does
 // not change the picture.
 import { spawn } from "node:child_process";
 import { dirname, join } from "node:path";
@@ -29,5 +30,5 @@ const b=await page.evaluate(()=>window.__ml.details());
 console.log(`1 in 4:  every ${b.every} (rate ${b.rate.toFixed(4)}) cells ${b.cells} withDetail ${b.withDetail} (${(100*b.withDetail/Math.max(1,b.cells)).toFixed(2)}%)`);
 const rows=await page.evaluate(()=>{ const dials=document.querySelector('.ml-page[data-page="settings"] .ml-dials'); return dials?[...dials.querySelectorAll(".ml-amb-slider")].map(e=>[e.querySelector(".ml-amb-slider-label")?.textContent, e.querySelector(".ml-amb-slider-val")?.textContent]):null; });
 console.log("dials:", JSON.stringify(rows), "errs", JSON.stringify(errs.slice(0,2)));
-const ok = topsGrounds>=10 && a.every===56 && b.every===4 && b.withDetail > a.withDetail*4 && errs.length===0;
+const ok = topsGrounds>=10 && a.every===100 && b.every===4 && b.withDetail > a.withDetail*4 && errs.length===0;
 await browser.close(); stop(); process.exit(ok?0:1);

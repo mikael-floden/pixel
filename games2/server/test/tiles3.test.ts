@@ -704,8 +704,20 @@ test("a set member draws its TEXTURED art, and a gap in the index is reported", 
         }
   assert.equal(t.stats.staleMembers, 0);
   assert.equal(t.stats.unresolvedMembers, 0);
-  assert.ok(members >= 300, `only ${members} members checked`);
-  assert.ok(fromTextured >= 200, `only ${fromTextured} members came from their textured art`);
+  /* NON-VACUOUS, AND IT FOLLOWS HIS FILE. These were 300 and 200, the counts
+   * the sets held the day it was written — but base_tile_sets.json is the LIVE
+   * channel and he edits it from the wiki: three admin saves on 2026-09-13
+   * (06:22-06:27) took the roster from 340 members to 295 and turned this
+   * assertion red on a change that is exactly what the file is for. So the
+   * sample is measured against the document itself, and only the floor that
+   * proves the loop ran at all stays absolute. */
+  const declared = Object.values<any>(load("live/tuning/base_tile_sets.json").grounds ?? {})
+    .flatMap((g: any) => g?.sets ?? [])
+    .flatMap((st: any) => st?.members ?? [])
+    .filter((m: any) => m?.kind === "tile").length;
+  assert.equal(members, declared, `checked ${members} of the ${declared} tile members his sets declare`);
+  assert.ok(members >= 100, `only ${members} members in the whole file — the gate has nothing to prove`);
+  assert.ok(fromTextured >= 0.5 * members, `only ${fromTextured} of ${members} members came from their textured art`);
 });
 
 /* -- the pools -------------------------------------------------------------- */

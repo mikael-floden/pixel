@@ -306,6 +306,36 @@ export function fadeKey(path: string, ground: string): string {
   return `t3d:${ground}|${path}`;
 }
 
+/** A DETAIL OVERLAY'S KEY. Like a fade's, a different picture from the
+ *  conformed plate of the same file, so never the same key. */
+export function detailKey(path: string, ground: string): string {
+  return `t3dt:${ground}|${path}`;
+}
+
+/** A DETAIL'S TOP FACE AND NOTHING ELSE — the maintainer's law, 2026-09-13: "A
+ *  detail should never be able to show its wall."
+ *
+ *  A detail used to REPLACE the cell's plate, so at level 0 (the one place a
+ *  plate is not `topOnly`) the 17-row band under its diamond was the detail's:
+ *  `capWallToSurface` smears each column's bottom top-face pixel down it. That
+ *  band is never legitimate art — nothing exists below a level-0 cell — and the
+ *  tiles in front cover almost all of it, but "almost" is the whole story here:
+ *  a one-texel coverage error along a diamond edge shows a short broken run of
+ *  it, which is exactly the artefact he photographed in September (633 texels
+ *  of light_beach's palette wall in 116 chevrons). With a detail's own colour in
+ *  that band — a dark rock or a puddle on grass — the same error reads as a
+ *  chevron of the motif.
+ *
+ *  So a detail is an OVERLAY, like a fade: the cell keeps its own member plate
+ *  and the detail paints its diamond over it. `topFaceOnly` with NO margin row,
+ *  because the plate underneath already carries the whole band — the overlay
+ *  must not put one texel of itself below the top face. The picture on the
+ *  diamond is unchanged: a conformed plate's top face is fully opaque over the
+ *  library silhouette, so it covers the member's. */
+export function detailOverlay(sheets: PatternSheets, src: Pixels, wallRGB: readonly [number, number, number]): Pixels {
+  return topFaceOnly(sheets, conformPlate(sheets, src, wallRGB), { margin: false });
+}
+
 /** HOW CLOSE TO THE GROUND'S OWN TOP COLOUR COUNTS AS "FIELD", and therefore
  *  as not-scatter. Measured over the real fade arts: 100% of the 124 rim texels
  *  sit within 10 of the palette top, while the scatter is tens of units away —
@@ -984,7 +1014,7 @@ export interface Tiles3Blit {
   sh: number;
   /** What produced this op — for the depth sort, the occluder pass and QA.
    *  `foot` is the wall-foot band on a lower cell (see `footBand`). */
-  role: "surface" | "wall" | "boundary" | "deck" | "fade" | "foot";
+  role: "surface" | "wall" | "boundary" | "deck" | "fade" | "detail" | "foot";
 }
 
 /** The ops for one resolved cell, in render3's own order: a field cell is ONE
@@ -1091,6 +1121,20 @@ function cellOpsBuild(cell: Tiles3Cell): Tiles3Blit[] {
         role: "fade",
       });
     }
+    /* ...AND A DETAIL THE SAME WAY, top face only: "a detail should never be
+     * able to show its wall" (maintainer 2026-09-13). See `detailOverlay`. */
+    if (cell.detail) {
+      ops.push({
+        key: detailKey(cell.detail.file, cell.ground),
+        x: cell.sx,
+        y: cell.pasteY ?? cell.sy,
+        sx: 0,
+        sy: 0,
+        sw: TILE,
+        sh: PLATE_H,
+        role: "detail",
+      });
+    }
     pushFoot(cell, ops);
     return ops;
   }
@@ -1137,6 +1181,21 @@ function cellOpsBuild(cell: Tiles3Cell): Tiles3Blit[] {
         sw: TILE,
         sh: PLATE_H,
         role: "fade",
+      });
+    }
+    /* ...and its detail, for that same reason. The cap's surface is already
+     * `topOnly`, so this changes no pixel there — it keeps ONE rule for where a
+     * detail's art may land, on a cap and on flat ground alike. */
+    if (cell.detail) {
+      ops.push({
+        key: detailKey(cell.detail.file, cell.ground),
+        x: cell.sx,
+        y: cell.pasteY ?? cell.sy,
+        sx: 0,
+        sy: 0,
+        sw: TILE,
+        sh: PLATE_H,
+        role: "detail",
       });
     }
   }
@@ -1651,6 +1710,20 @@ export class Tiles3Textures {
     });
   }
 
+  /** THE DETAIL OVERLAY for one file on one ground, built once and cached.
+   *  Null while its art has not decoded — the cell then draws its plain member
+   *  plate, which is the pre-detail look and never a hole. Built locally: a
+   *  detail lands on about one cell in a hundred, so there is no per-frame
+   *  compose pressure to move off the frame thread the way a fade's had. */
+  detail(path: string, ground: string): string | null {
+    const key = detailKey(path, ground);
+    return this.ensure(key, () => {
+      const src = this.sourcePixels(artKey(path));
+      if (!src) return null;
+      return detailOverlay(this.o.sheets, src, this.wallRGB(ground));
+    });
+  }
+
   /** A liquid's painted diamond. */
   liquid(rgb: readonly [number, number, number]): string {
     const key = liquidKey(rgb);
@@ -1682,6 +1755,22 @@ export class Tiles3Textures {
       if (op.role === "fade") {
         const f = cell.fade;
         const built = f ? this.fade(f.file, cell.ground) : null;
+        if (built) {
+          if (built !== op.key && !out) out = base.slice(0, i);
+          if (out) out.push(built === op.key ? op : { ...op, key: built });
+        } else {
+          this.droppedOps++;
+          if (!out) out = base.slice(0, i);
+        }
+        continue;
+      }
+      /* A DETAIL OP BUILDS ITS OVERLAY — the top face alone, no band. Dropped
+       * like any other op if its art has not landed; the member plate under it
+       * is already drawn, so a dropped detail is the plain ground, never a
+       * hole. */
+      if (op.role === "detail") {
+        const d = cell.detail;
+        const built = d ? this.detail(d.file, cell.ground) : null;
         if (built) {
           if (built !== op.key && !out) out = base.slice(0, i);
           if (out) out.push(built === op.key ? op : { ...op, key: built });

@@ -477,8 +477,24 @@ dressing). `this.maps3` gates every terrain branch (false only for a hand-built
   falloff 1 (the fixtures pin those; the game's dials are the maintainer's and
   differ); a detail rolls wherever no fade landed, never on parquet_floor,
   NEVER ON A RAMP (a slope cell keeps its graded tile) and NEVER TOUCHING
-  ANOTHER (`detailAlone`: among the raw winners of an 8-ring the smallest
-  roll keeps, the others yield — symmetric and order-free, so the worker, a
+  ANOTHER, and drawn as an OVERLAY — its top face alone, never its band
+  (`detailOverlay`; "a detail should never be able to show its wall",
+  maintainer 2026-09-13. A detail used to REPLACE the plate, so at level 0 —
+  the one place a surface is not `topOnly` — the 17-row band under its diamond
+  was the DETAIL'S, smeared down by `capWallToSurface`. That band is never
+  legitimate art and the tiles in front cover nearly all of it, but a one-texel
+  coverage error along a diamond edge shows a short broken run, which is the
+  artefact class of 2026-09-04's 633 palette-wall texels in 116 chevrons — in a
+  detail's own colour this time. As an overlay the cell keeps its member plate
+  and the detail paints only the diamond, with NO margin row, so it cannot
+  contribute one band texel by construction. The diamond is unchanged: a
+  conformed top face is opaque over the whole library silhouette, 924 texels.
+  Keyed per ground like a fade's, built locally rather than on the compose
+  worker — one cell in a hundred is no per-frame pressure. `cellArtPaths` names
+  `cell.detail.file`, which is now the ONLY place it is named: miss it and
+  every detail 404s in production and only in production. Gate
+  `server/test/detailwall.test.ts`) — (`detailAlone`: among the raw winners of
+  an 8-ring the smallest roll keeps, the others yield — symmetric and order-free, so the worker, a
   streaming window and a sweep agree; at the dial's top the field packs to the
   hash's local minima, about one in nine, never tiled. Maintainer 2026-09-13,
   "doesn't look good repeated, but look very good alone"; measured before it

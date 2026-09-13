@@ -2844,8 +2844,16 @@ export class Tiles3 {
     if (roll && this.detailAlone(g, L, x, y, roll.u)) {
       const dp = this.detailPool(gr);
       const index = Math.trunc(roll.pick * dp.length) % dp.length;
+      /* AN OVERLAY, NOT A REPLACEMENT — "a detail should never be able to show
+       * its wall" (maintainer 2026-09-13). `out.art` stays the cell's own
+       * member plate, so the 17-row band under the diamond is the ground's as
+       * it is on every other cell, and the detail paints its top face over it
+       * (`tiles3draw.detailOverlay`, which is where the reasoning lives). The
+       * picture on the diamond is unchanged: a conformed top face is opaque
+       * over the whole library silhouette. DIVERGES FROM render3, which still
+       * returns the detail as the cell's art — the same divergence, and for the
+       * same reason, as the fade overlay before it; asked of maps2. */
       out.detail = { index, file: dp[index] };
-      out.art = { kind: "conform", path: dp[index], w: TILE, h: PLATE_H };
     }
     return out;
   }

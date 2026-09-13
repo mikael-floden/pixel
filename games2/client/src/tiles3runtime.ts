@@ -547,6 +547,12 @@ export function cellArtPaths(cell: Tiles3Cell, out: (p: string) => void, lid = t
    * loader and scripts/tiles3closure.ts, which decides what enters the image.
    * Miss it and every fade 404s in production and only in production. */
   if (cell.fade) out(cell.fade.file);
+  /* ...AND THE DETAIL'S, for exactly the same reason: since 2026-09-13 a detail
+   * is an OVERLAY and no longer the cell's `art`, so this is the only place its
+   * file is named. Miss it and every detail 404s at /assets/tiles/… in
+   * production and only in production (the loader drops the op, and
+   * scripts/ship-tiles3.ts never copies the file into the image). */
+  if (cell.detail) out(cell.detail.file);
   /* ...AND THE STUMP'S LID (Tiles3Cell.cutCap) — for the ship closure always,
    * for the LOADER only while the cut is up (`lid`). A landed terrain file
    * rebuilds the occluders and unlocks a drain repaint (onTerrainBatch), so

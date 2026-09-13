@@ -81,15 +81,16 @@ secrets; push to `main`, rebase on reject, no PRs unless asked; doc law.
   nothing moves (`docs/scenery.md`, `docs/monsters-combat.md`; gates
   `verify-scenery-pack.mjs`, `verify-npc-pack.mjs`).
 - Ground DETAILS are his approved `tiles/tops` details + the x-over-y top
-  approvals, one in N cells by the Settings "Ground details" dial (default 1
-  in 100, his); never on an indoor floor, a ramp, or touching another — so
-  never tiled (`detailplace.test.ts`).
+  approvals, one in N cells by the dial (default 1 in 100, his); never on an
+  indoor floor, a ramp, or touching another, so never tiled; drawn as an
+  OVERLAY — its top face alone, so it can never show a wall
+  (`detailplace.test.ts`, `detailwall.test.ts`).
 - A base-set member leaves its set on his verdict on THE TILE, never on its
   `#top` detail verdict (independent, maintainer 2026-09-12; `tiles3members.test.ts`).
-- The resolver is PER CELL (`Tiles3World`), never the sweep, and it is held
-  deeply equal to the sweep and to `maps2/pipeline/render3.py` by the parity
-  fixtures (`scripts/tiles3-fixture.py`); a resolution rule changes in
-  tiles3.ts AND render3.py, then both fixtures regenerate.
+- The resolver is PER CELL (`Tiles3World`), never the sweep, held deeply equal
+  to the sweep and to `maps2/pipeline/render3.py` by the parity fixtures
+  (`scripts/tiles3-fixture.py`); a resolution rule changes in tiles3.ts AND
+  render3.py, then both fixtures regenerate.
 - Painter order: a cell draws once and everything it wears draws in its slot;
   boundaries are NOT a second pass; decks draw last.
 - SLACK, NOT EXACTNESS: a full plate overlaps 17 rows; a top-face-only plate
