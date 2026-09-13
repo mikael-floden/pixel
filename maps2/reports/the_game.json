@@ -1,7 +1,7 @@
 {
  "schema": "maps2/change-log@1",
  "world": "the_game",
- "artifact": "https://claude.ai/code/artifact/380e0818-32c4-4388-bd85-b73d37282f86",
+ "artifact": "https://claude.ai/code/artifact/a5a64840-824c-483d-aa73-9e4f16b64100",
  "title": "Nangijala Map Changes",
  "subtitle": "Every push to main that changed the_game, newest first. Tap a title to mark it, copy the marks, paste them to maps2. Coordinates are the ones the game shows under the player.",
  "pushes": [
@@ -184,6 +184,113 @@
      "before": null
     }
    ]
+  },
+  {
+   "date": "2026-09-13",
+   "commit": "dc41b9f86",
+   "before": "175302d7c",
+   "title": "Scenery stands where the nav matches its hitbox (88 footprints move off their cell centre; every piece smaller than a cell stays put)",
+   "changes": [
+    {
+     "name": "The cart by the field, four nav cells under it",
+     "what": "The cooper's cart you stood beside. Its collision box is a rectangle 1.5 cells wide and 2.8 cells long down the screen, and centred on a cell it blocked ONE nav cell, so the diamonds never matched the box. It stands half a cell over now, on a cell edge, and the nav blocks the four cells under the box: nav-vs-hitbox mismatch 3.4 cells down to 1.5. Turn on 'collision (hitbox)' in settings to see the diamonds under the blue box. The art moved half a cell in x, nothing else.",
+     "cell": [
+      324,
+      241
+     ],
+     "window": [
+      314,
+      234,
+      335,
+      250
+     ]
+    },
+    {
+     "name": "The rock spire on the massif",
+     "what": "The lit spire's footprint is 15 cells of ground. Centred it blocked 9 nav cells; at its best offset the nav blocks 13 and follows the shape, mismatch 6.0 cells down to 3.2.",
+     "cell": [
+      209,
+      178
+     ],
+     "window": [
+      199,
+      171,
+      220,
+      187
+     ]
+    },
+    {
+     "name": "An ancient tree above the south shore",
+     "what": "Fourteen cells of canopy over a footprint that blocked 9 nav cells centred; it blocks 12 now, mismatch 5.0 down to 2.5. The same rule moves the other four ancient trees and 83 more footprints across the map. A piece that does not fill a cell blocks no cell, as the game intends, and stands exactly where it did.",
+     "cell": [
+      186,
+      306
+     ],
+     "window": [
+      176,
+      299,
+      197,
+      315
+     ]
+    },
+    {
+     "name": "The dragon ribcage on the beach",
+     "what": "One nav cell centred, four now, under a footprint of 4.4 cells: mismatch 3.4 down to 1.0.",
+     "cell": [
+      260,
+      163
+     ],
+     "window": [
+      250,
+      156,
+      271,
+      172
+     ]
+    },
+    {
+     "name": "The toadstool ring in the west woods",
+     "what": "One nav cell centred, three now: mismatch 3.0 down to 1.2.",
+     "cell": [
+      136,
+      139
+     ],
+     "window": [
+      126,
+      132,
+      147,
+      148
+     ]
+    },
+    {
+     "name": "The hanging willow on the fen isle",
+     "what": "Three nav cells centred, five now under the 6.3-cell canopy: mismatch 3.3 down to 2.0.",
+     "cell": [
+      33,
+      200
+     ],
+     "window": [
+      23,
+      193,
+      44,
+      209
+     ]
+    },
+    {
+     "name": "Every variation from a stable seed",
+     "what": "Not a spot you can point at: the build drew each piece's variation from a hash that Python salts per process, so every rebuild re-rolled about a tenth of the dressing without anyone asking. It draws from a stable hash now. This push carries that one-time re-roll (147 pieces wear another variation and about 200 nature pieces stand elsewhere), and the build reproduces itself from here. The window is the spawn.",
+     "cell": [
+      333,
+      237
+     ],
+     "window": [
+      323,
+      230,
+      344,
+      246
+     ]
+    }
+   ]
   }
- ]
+ ],
+ "artifact_previous": "https://claude.ai/code/artifact/380e0818-32c4-4388-bd85-b73d37282f86"
 }
