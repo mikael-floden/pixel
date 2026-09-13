@@ -433,6 +433,23 @@ from the games agent), #18 (title/landing screen).
   a literal `env()` in a consumer: one declaration is what lets the gate drive
   every surface at once. `env()` is CSS-only, so this is the ONE layout var
   `applyLayout()` cannot publish in px; a JS consumer reads the element's rect.
+  AND THE BAND ITSELF IS PAINTED (`#ml-safebar`, `client/index.html`: one
+  fixed strip, `height: env(safe-area-inset-top)`, the letterbox's own `#000`,
+  `pointer-events:none`, z 9). THE TRIGGER IS A TAB-OUT AND BACK (his words,
+  after "the card is not at the top … I then restarted the game and that fixed
+  the issue"): his shell letterboxes the cutout, and on a resume from the task
+  switcher it hands the app the whole screen instead, so the state flips
+  MID-SESSION and a restart "fixes" it by landing back in the letterboxed one.
+  MEASURED on his shots of the
+  same build: the card does not move — its HP bar is 198 vs 196 device px from
+  the top of the glass — because the chips already clear the cutout. All that
+  differs is what fills the 152 device px (55.3 css px) above it: black
+  letterbox, or live world. World there reads as a floating card, so the band
+  wears the same black either way and the two launches are pixel-alike. It is
+  PAINT, NOT LAYOUT — nothing is inset, the canvas is not re-fitted, the golden
+  split is untouched — which is why it costs no gate. REJECTED: chips flush to
+  the glass at 10px, the pre-inset layout; that is exactly what the inset
+  exists to prevent, and a top-corner camera hole then sits on the HP numbers.
   Gated in `verify-safearea` through CDP's inset override — the only way to
   see a cutout on this harness — before AND after, so "inert at 0" is measured,
   not assumed. NOT DONE YET: the landscape cutout is a LEFT/RIGHT inset (the

@@ -8,7 +8,12 @@
 // pill stack that hangs under the XP chip (clock.ts / wikibtn.ts /
 // wikinear.ts) and the update toast under the chips (main.ts). The HUD pages
 // pad their scroll end by --ml-safe-bottom so the last row can scroll clear of
-// the gesture bar. Both insets are 0 wherever the browser letterboxes the
+// the gesture bar. AND THE BAND ITSELF IS PAINTED (#ml-safebar, index.html):
+// his shell letterboxes the cutout on one launch and hands the app the whole
+// screen on the next, so the strip above the chips was black one time and live
+// world the next — the card had not moved (198 vs 196 device px on his two
+// shots), but it read as floating. The bar wears the letterbox's own #000, so
+// the two launches look alike. Both insets are 0 wherever the browser letterboxes the
 // cutout or there is none, so the change is INERT there — proven here on the
 // same page, before and after, by driving the insets through CDP
 // (Emulation.setSafeAreaInsetsOverride) rather than waiting for a device.
@@ -149,6 +154,39 @@ try {
   await insets(0, 0);
   await page.setViewportSize({ width: 393, height: 851 });
   await settle();
+
+  // ---- 4. the painted band: zero where there is no cutout, the cutout's own
+  //         height where there is one, opaque black, and never over the chips ----
+  const bar = () => page.evaluate(() => {
+    const e = document.querySelector("#ml-safebar");
+    if (!e) return null;
+    const r = e.getBoundingClientRect(), cs = getComputedStyle(e);
+    const chip = document.querySelector(".ml-bars-l")?.getBoundingClientRect() ?? null;
+    return { top: r.top, h: r.height, w: r.width, bg: cs.backgroundColor, pe: cs.pointerEvents,
+             vw: window.innerWidth, chipTop: chip ? chip.top : null };
+  });
+  const b0 = await bar();
+  if (!b0) { fail("no #ml-safebar in the page — the cutout band is unpainted"); }
+  else {
+    b0.h === 0 ? ok("band: no cutout, no paint (0px)") : fail(`band is ${b0.h}px tall without a cutout — it must collapse`);
+    await insets(TOP, BOTTOM);
+    await settle();
+    const b1 = await bar();
+    near(b1.h, TOP) && near(b1.top, 0) && near(b1.w, b1.vw)
+      ? ok(`band covers the ${TOP}px cutout, full width, at the top`)
+      : fail(`band is ${b1.w}x${b1.h} at y ${b1.top}, wanted ${b1.vw}x${TOP} at 0`);
+    b1.bg === "rgb(0, 0, 0)"
+      ? ok("band wears the letterbox's own black")
+      : fail(`band background ${b1.bg}, wanted the shell letterbox's rgb(0, 0, 0)`);
+    b1.pe === "none" ? ok("band takes no pointer events (a tap there still reaches the world)") : fail(`band pointer-events ${b1.pe}, wanted none`);
+    b1.chipTop != null && b1.chipTop >= b1.h
+      ? ok(`the chips start below it (${b1.chipTop} >= ${b1.h}) — it can never cover the HP numbers`)
+      : fail(`the band (${b1.h}px) reaches over the chips at ${b1.chipTop}`);
+    await insets(0, 0);
+    await settle();
+    const b2 = await bar();
+    b2.h === 0 ? ok("…and collapses again when the cutout goes") : fail(`band stayed ${b2.h}px after the insets cleared`);
+  }
 
   errors.length === 0 ? ok("no page errors") : fail(`page errors: ${errors.join(" | ")}`);
 } catch (e) {
