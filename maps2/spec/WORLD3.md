@@ -403,7 +403,9 @@ the rule the generator and the in-place pass share).
   the_game that interior is ONE 115-cell region of the level-24 shelf (562
   cells); every other black_rock shelf in the world has an interior of 0–2
   cells and gets no lava at all, which is why the lava is all in one place.
-- **How big**: `LAVA_SHARE = 0.78` of that interior. Rendered and looked at:
+- **How big**: `LAVA_SHARE = 0.78` of that interior — **his number, approved
+  on sight 2026-09-13** ("All changes looks good!"); do not re-tune it without
+  a picture he has seen. Rendered and looked at:
   20% is the dabs he rejected, 62% is four ponds, 78% is three lava FLOWS that
   read from the camera, and 100% floods the interior into one sheet with a
   2-cell ledge round it — a corridor, not a mountain.
@@ -907,6 +909,9 @@ the cell centre whenever it is one of them. `put()` snaps a new placement
 there before the footprint law judges it; `snap_hitboxes()` moves every
 non-flush piece there (never a whole cell) and asserts every footprint is on
 its offset.
+
+(The fit and the lakes it moved were approved 2026-09-13, "All changes looks
+good!" — the offsets are his now, not a default to revisit.)
 
 **A PLACEMENT-RULE CHANGE REACHES THE SHIPPED WORLD THROUGH
 `python3 maps2/pipeline/navfit.py --apply maps2/worlds3/the_game`, NEVER
