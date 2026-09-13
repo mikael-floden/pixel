@@ -1756,12 +1756,25 @@ def render(doc, x0=0, y0=0, x1=None, y1=None, scale=1.0, log=print,
     #    and drawing it put a bush on the meadow house's roof.
     roofed = {(c["x"], c["y"]) for dk in doc.get("decks", [])
               if dk.get("kind") in ("roof", "cave") for c in dk["cells"]}
+    # ...BUT A PIECE STANDING **ON** A DECK IS NOT UNDER IT: a chimney's feet
+    # are on the roof's own top (`z` storeys above its cell's ground), so it
+    # is drawn like any outdoor piece - the game reads the same line
+    # (scenery3.ts `onDeck`; spec/WORLD3.md "scenery ON a roof").
+    deck_top = {}
+    for dk in doc.get("decks", []):
+        if dk.get("kind") in ("roof", "cave"):
+            for c in dk["cells"]:
+                k = (c["x"], c["y"])
+                deck_top[k] = max(deck_top.get(k, -1), dk["level"])
     pieces = sorted(doc.get("scenery", []), key=lambda p: p["x"] + p["y"])
     for p in pieces:
         px, py = p["x"], p["y"]
         if not (x0 <= px < x1 and y0 <= py < y1):
             continue
-        if (int(px), int(py)) in roofed:
+        cell = (int(px), int(py))
+        if cell in roofed and not (
+                float(p.get("z") or 0.0)
+                and L(*cell) + float(p["z"]) >= deck_top.get(cell, 1e9) - 1e-9):
             continue
         meta = json.load(open(os.path.join(REPO, "scenery", p["piece"], "scenery.json")))
         spath = meta["sprite"]
@@ -1783,13 +1796,24 @@ def render(doc, x0=0, y0=0, x1=None, y1=None, scale=1.0, log=print,
         # AN EXPLICIT STATE WINS OVER `lit` (the game's rule, scenery3.ts
         # stateFor): a placement naming LIT_2 is that variation, and `lit`
         # only picks the first LIT_* state for a placement naming none.
-        if p.get("state") and (meta.get("states") or {}).get(p["state"]):
-            spath = meta["states"][p["state"]]["sprite"]
-        elif p.get("lit"):            # {"lit": true} selects the LIT_* state
+        stk = p.get("state") if (meta.get("states") or {}).get(p.get("state") or "") \
+            else None
+        if not stk and p.get("lit"):  # {"lit": true} selects the LIT_* state
             litk = sorted(k for k in (meta.get("states") or {})
                           if k.startswith("LIT"))
-            if litk:
-                spath = meta["states"][litk[0]]["sprite"]
+            stk = litk[0] if litk else None
+        if stk:
+            # A STATE CARRIES ITS OWN ROTATIONS, and the facing must come from
+            # THAT state (the game's `facedSprite`: state.rotations[dir] ||
+            # state.rotations.south || state.sprite). Taking the state's south
+            # sprite here drew every TURNED variation facing the camera - a bed
+            # placed south-west in its NOT_LIT_3 look rendered south - so the
+            # still render disagreed with the game on every stated, turned
+            # piece indoors. Measured on the_game: 259 placements carry both a
+            # state and a dir.
+            st = meta["states"][stk]
+            rot = st.get("rotations") or {}
+            spath = rot.get(p.get("dir") or "") or rot.get("south") or st["sprite"]
         sp = Image.open(os.path.join(REPO, "scenery", spath)).convert("RGBA")
         # SCALE IS THE PIECE'S, NOT THE SPRITE'S (maintainer 2026-08-30: "fix
         # your renderer so you draw objects in the correct scale"). The fit is

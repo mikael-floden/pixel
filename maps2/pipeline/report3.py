@@ -15,7 +15,8 @@ appends its push and republishes the SAME page (`artifact` is its URL):
                  "changes": [{"name": "...", "what": "...", "cell": [x, y],
                               "window": [x0, y0, x1, y1],   # optional, default the cell +- 10 x 7
                               "before": "...",              # optional, overrides the push's
-                              "cutaway": true}]}]}          # optional: lift the cave lids over the window
+                              "cutaway": true,              # optional: lift the cave lids over the window
+                              "roofcut": true}]}]}          # ...and the house roofs, to show a room
 Pushes are listed oldest first and numbered straight through, so a change's
 number never moves once he has quoted it; the page shows the newest push
 first.
@@ -51,11 +52,16 @@ def world_at(commit, world, cache={}):
     return cache[key]
 
 
-def _window(doc, x0, y0, x1, y1, cutaway):
+def _window(doc, x0, y0, x1, y1, cutaway, roofcut=False):
+    """The window, optionally with the lids over it lifted: `cutaway` takes
+    the CAVE lids (what a card about a cave needs), `roofcut` the house ROOFS
+    too — the only way a card about the furniture in a room shows it, since
+    render3 draws the roof the game draws."""
     d = doc
-    if cutaway:
+    kinds = ("cave",) + (("roof",) if roofcut else ())
+    if cutaway or roofcut:
         d = dict(doc)
-        d["decks"] = [dk for dk in doc["decks"] if not (dk["kind"] == "cave" and any(
+        d["decks"] = [dk for dk in doc["decks"] if not (dk["kind"] in kinds and any(
             x0 <= c["x"] <= x1 and y0 <= c["y"] <= y1 for c in dk["cells"]))]
     return render3.render(d, x0, y0, x1, y1, log=lambda *a: None)
 
@@ -75,23 +81,23 @@ def build(spec, out, only=None):
     for n, ch in enumerate(spec["changes"], 1):
         cx, cy = ch["cell"]
         x0, y0, x1, y1 = ch.get("window") or (cx - 10, cy - 7, cx + 11, cy + 9)
-        cut = bool(ch.get("cutaway"))
+        cut, rcut = bool(ch.get("cutaway")), bool(ch.get("roofcut"))
         after = f"img/{n:02d}-after.webp"
-        _window(doc, x0, y0, x1, y1, cut).convert("RGB").save(os.path.join(out, after), lossless=True, exact=True)
+        _window(doc, x0, y0, x1, y1, cut, rcut).convert("RGB").save(os.path.join(out, after), lossless=True, exact=True)
         before = None
         bc = ch.get("before", spec.get("before"))
         if bc:
             bdoc = world_at(bc, world)
             if bdoc["size"] == doc["size"]:
                 before = f"img/{n:02d}-before.webp"
-                _window(bdoc, x0, y0, x1, y1, cut).convert("RGB").save(os.path.join(out, before), lossless=True, exact=True)
+                _window(bdoc, x0, y0, x1, y1, cut, rcut).convert("RGB").save(os.path.join(out, before), lossless=True, exact=True)
         lvl = doc["level"][int(cy)][int(cx)]
         px = dot["kx"] * (cx - cy) + dot["x0"]
         py = dot["ky"] * (cx + cy) - dot["kz"] * lvl + dot["y0"]
         cards.append({"n": n, "name": ch["name"], "what": ch.get("what", ""), "cell": [cx, cy], "level": lvl,
                       "after": after, "before": before, "before_commit": bc or "",
                       "px": round(100 * px / mm["size"]["w"], 3), "py": round(100 * py / mm["size"]["h"], 3),
-                      "cutaway": cut, "commit": ch.get("commit", spec.get("commit", ""))})
+                      "cutaway": cut or rcut, "commit": ch.get("commit", spec.get("commit", ""))})
     page = render_page(spec, cards, mm)
     open(os.path.join(out, "index.html"), "w").write(page)
     return cards
@@ -213,10 +219,10 @@ def build_log(log, out, only=None):
             n += 1
             cx, cy = ch["cell"]
             x0, y0, x1, y1 = ch.get("window") or (cx - 10, cy - 7, cx + 11, cy + 9)
-            cut = bool(ch.get("cutaway"))
+            cut, rcut = bool(ch.get("cutaway")), bool(ch.get("roofcut"))
             after = f"img/{n:03d}-after.webp"
             if not os.path.exists(os.path.join(out, after)):
-                _window(doc, x0, y0, x1, y1, cut).convert("RGB").save(os.path.join(out, after), lossless=True, exact=True)
+                _window(doc, x0, y0, x1, y1, cut, rcut).convert("RGB").save(os.path.join(out, after), lossless=True, exact=True)
             before = None
             bc = ch.get("before", push.get("before"))
             if bc:
@@ -224,14 +230,14 @@ def build_log(log, out, only=None):
                 if bdoc["size"] == doc["size"]:
                     before = f"img/{n:03d}-before.webp"
                     if not os.path.exists(os.path.join(out, before)):
-                        _window(bdoc, x0, y0, x1, y1, cut).convert("RGB").save(os.path.join(out, before), lossless=True, exact=True)
+                        _window(bdoc, x0, y0, x1, y1, cut, rcut).convert("RGB").save(os.path.join(out, before), lossless=True, exact=True)
             lvl = doc["level"][int(cy)][int(cx)]
             px = dot["kx"] * (cx - cy) + dot["x0"]
             py = dot["ky"] * (cx + cy) - dot["kz"] * lvl + dot["y0"]
             cards.append({"n": n, "name": ch["name"], "what": ch.get("what", ""), "cell": [cx, cy], "level": lvl,
                           "after": after, "before": before, "before_commit": bc or "",
                           "px": round(100 * px / mm["size"]["w"], 3), "py": round(100 * py / mm["size"]["h"], 3),
-                          "cutaway": cut, "commit": ch.get("commit", push.get("commit", ""))})
+                          "cutaway": cut or rcut, "commit": ch.get("commit", push.get("commit", ""))})
         sections.append({"date": push.get("date", ""), "commit": push.get("commit", ""),
                          "title": push.get("title", ""), "cards": cards})
     sections.reverse()

@@ -429,6 +429,15 @@ ground NAME per cell), so a tiles publish never repoints anything here.
 - `lavafill.py` — the massif's lava lakes: the growth rule `world3grow.lava()`
   builds with, and `--apply <world_dir>` to grow a world that already ships
   without rebuilding (and re-dressing) it (`spec/WORLD3.md` → lava).
+- `indoorfire.py` — the fire in a room: the 70/10/20 fire/light/bare draw the
+  build and the shipped world share, the back-wall runs it stands a hearth or
+  a brazier on, and the engine's per-window light budget applied the way
+  `lights()` applies it (`spec/WORLD3.md` → the fire indoors). `--apply
+  <world_dir>` gives a world that already ships its fires, additively.
+- `chimneys.py` — a chimney on the roof over every open fire indoors, at the
+  fire's own cell with `z` lifting its feet to the deck's top
+  (`spec/WORLD3.md` → scenery ON a roof). `--apply <world_dir>`; `--dir`
+  overrides the south-east facing.
 - `spawns.py` / `npcs.py` / `places.py` — the sidecar derivers + `--check` gates.
 - `sceneryscale.py` — the size the GAME draws scenery at.
 

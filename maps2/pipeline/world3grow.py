@@ -78,6 +78,8 @@ TOWN_AT = (OFF[0] - 72, OFF[1] - 68)   # fallback town target; the real one
                           # derives from where the ridge ends and the valley
                           # opens
 
+import chimneys
+import indoorfire
 import lavafill
 import navfit
 import world3
@@ -3928,8 +3930,14 @@ class Grow:
         near = lambda p: abs(p["x"] - sx) + abs(p["y"] - sy)
         for p in sorted((p for p in already if p["piece"].startswith("streetlights/")), key=near):
             tally["plaza and village streetlights"] += light(p, "plaza streetlights")
-        for p in sorted((p for p in self.doc["scenery"] if p["piece"].startswith("hearths/")), key=near):
-            tally["hearths"] += light(p)
+        # THE FIRE INDOORS OUTRANKS THE REST OF THE TOWN'S LAMPS: a room is
+        # built around its fire, and a cold hearth under a smoking chimney is
+        # the one thing the maintainer asked not to see. `in` only - the cave
+        # braziers keep their hall-by-hall fairness in step 3.
+        for p in sorted((p for p in self.doc["scenery"]
+                         if p["piece"].split("/")[0] in indoorfire.FIRE_GROUPS
+                         and space(p["x"], p["y"]) == "in"), key=near):
+            tally["indoor fires"] += light(p)
         # 2. the beacon on Lighthouse Point - the one big far light
         for p in (p for p in self.doc["scenery"] if p["piece"].startswith("beacons/")):
             tally["lighthouse beacon"] += light(p)
@@ -5338,6 +5346,17 @@ class Grow:
                         ("windows hung", placed),
                         ("house faces left bare", bare)]
 
+    def chimneys(self):
+        """A CHIMNEY ON THE ROOF OVER EVERY OPEN FIRE INDOORS (maintainer
+        2026-09-13). The rule is chimneys.py, which also puts them on a world
+        that already ships without rebuilding it; it runs after `windows` so
+        every house, its roof deck and its fire are already placed."""
+        new, served = chimneys.place(self.doc)
+        self.doc["scenery"] += new
+        self._reindex()
+        self.placed += [("chimneys on a roof", len(new)),
+                        ("fires that already had one", served)]
+
     def _hang(self, x0, y0, x1, y1, r, count):
         """Hangings ON the room's back walls, not on the floor in front of
         them. The walls a room shows are its north and west ones (the south
@@ -5600,10 +5619,35 @@ class Grow:
             # count follows its size, so a hall is furnished like a hall.
             for k in range(max(1, len(west) // 3)):
                 n += against("beds", west, k * 3)
+            # A ROOM IS BUILT AROUND ITS FIRE, SO THE FIRE ASKS FIRST
+            # (maintainer 2026-09-13, told one room of thirteen had one:
+            # "ONLY ONE ROOM HAS FIRE?!?! WTF! I kinda want 70% to have a
+            # fire and 10% to at least have a light. Only 20% should have no
+            # fire and no light. This is not a hard rule but something to
+            # strive for."). It used to ask LAST, after a cupboard every
+            # three cells of the same north wall, and a hearth is 1.51 x 1.65
+            # cells: the footprint law then had nowhere to put it and refused
+            # 12 of 13, silently, because a refusal only bumps a counter.
+            # The 70/10/20 draw is indoorfire.role(), shared with the
+            # in-place pass that gives a world that already ships its fires.
+            want = indoorfire.role((x0, y0))
+            lit_room = 0
+            if want == "fire":
+                # a hearth first, a brazier when the room has no metre and a
+                # half of clear wall for one - indoorfire.FIRE_GROUPS
+                for group in indoorfire.FIRE_GROUPS:
+                    lit_room = (against(group, north, len(north) // 2)
+                                or against(group, west, len(west) // 2))
+                    if lit_room:
+                        break
+                n += lit_room
+            if want == "light" or (want == "fire" and not lit_room):
+                # a room that cannot fit a hearth still gets a lamp; lights()
+                # decides later which of them the 8-slot budget can light
+                n += (against("lantern_stands", north, len(north) // 2)
+                      or against("lantern_stands", west, len(west) // 2))
             for k in range(max(1, len(north) // 3)):
                 n += against("cupboards_and_shelves", north, k * 3 + 1)
-            if len(north) > 2:
-                n += against("hearths", north, len(north) // 2)
             if len(west) > 2:
                 n += against("barrels", west, len(west) - 1)
             for k in range(len(cells) // 24):
@@ -8188,6 +8232,7 @@ class Grow:
                      self.archipelago, self.pier, self.houses, self.town,
                      self.mountain_back, self.wild, self.terrace_grounds, self.dungeon_field, self.lava,
                      self.build_no_place, self.interiors, self.village, self.windows,
+                     self.chimneys,
                      self.roads, self.nature, self.cave_dress, self.dress_islets,
                      self.retype, self.widen_roads, self.ramps,
                      self.ramp_paths, self.regroom, self.reach_audit,

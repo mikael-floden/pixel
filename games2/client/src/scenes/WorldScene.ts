@@ -20552,6 +20552,14 @@ export class WorldScene extends Phaser.Scene {
         // drawing it put a bush on the meadow house's roof. A BRIDGE hides
         // nothing: you walk under a bridge and the scenery below is the point.
         roofed: roofedCells(world.decks, world.width),
+        // ...AND A PIECE STANDING ON ONE IS NOT UNDER IT: a chimney's feet are
+        // on the roof's top, so it draws from the street and goes with the
+        // roof when the cut takes it (SceneryPlacement.onDeck).
+        deckAt: (cx, cy) => {
+          const t = this.terrain;
+          if (!t || cx < 0 || cy < 0 || cx >= t.width || cy >= t.height) return -1;
+          return t.deck[cy * t.width + cx] ?? -1;
+        },
         width: world.width,
         bounds: { x0: 0, y0: 0, x1: world.width, y1: world.height },
       }),
@@ -21491,7 +21499,9 @@ export class WorldScene extends Phaser.Scene {
       if (p.roofed) {
         img.setAlpha(this.roofedFade());
         this.sceneryRoofedImgs.push(img);
-      } else if (this.sceneryAboveCutAt(p.cx, p.cy, p.level)) {
+        // ON the deck (a chimney): the cut is asked about its FEET, not the
+        // ground under the house — see SceneryPlacement.onDeck.
+      } else if (this.sceneryAboveCutAt(p.cx, p.cy, p.onDeck ? p.level + (p.z ?? 0) : p.level)) {
         // ON the lid: it goes with the roof, on the roof's own curve — opaque
         // at the flip frame and dissolving with the debris, so walking in and
         // out fades it away and back instead of popping it. Furniture cannot
@@ -21549,7 +21559,10 @@ export class WorldScene extends Phaser.Scene {
           pd: onWall ? wallDepth : hbDepth,
           place: p.i,
           roofed: p.roofed,
-          aboveCut: this.sceneryAboveCutAt(p.cx, p.cy, p.level),
+          // ...and the FEET of a piece standing on the deck, same as the still
+          // above: a chimney's lit band has to dissolve with its own sprite,
+          // or the cut leaves a glowing ghost stack on an open roof.
+          aboveCut: this.sceneryAboveCutAt(p.cx, p.cy, p.onDeck ? p.level + (p.z ?? 0) : p.level),
         });
         if (onWall) this.litOccluders[this.litOccluders.length - 1].cover = Infinity; // the wall is BEHIND it
         const lo = this.litOccluders[this.litOccluders.length - 1];

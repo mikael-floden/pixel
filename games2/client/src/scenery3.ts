@@ -705,6 +705,24 @@ export interface SceneryPlacement {
    *  roof is actually cut away (WorldScene.roofCutAwayAt) — outdoors, and
    *  inside the neighbour's still-roofed house, it stays hidden as before. */
   roofed?: boolean;
+  /** STANDING ON A DECK, NOT UNDER IT — a `z` piece whose feet reach the deck's
+   *  own top at its cell: maps2's chimney on a house roof (`spec/WORLD3.md`
+   *  "scenery ON a roof").
+   *
+   *  The cell is a roof cell, so `roofedCells` holds it and the piece would be
+   *  flagged `roofed` — indoor furniture, drawn ONLY while that roof is cut
+   *  away, i.e. invisible from the street and visible from inside the room.
+   *  That is backwards for anything standing on top, so `roofed` is withheld
+   *  here and this flag is set instead: the scene draws it like any outdoor
+   *  piece and fades it with the roof's own curve when the cut takes the roof
+   *  (WorldScene: the `sceneryAboveCutAt` test reads the FEET of an onDeck
+   *  piece, `level + z`, not its ground).
+   *
+   *  A window or a wall hanging is NOT this: their feet are below the deck's
+   *  top, so they keep exactly the behaviour they had. `wall` is also withheld
+   *  — a chimney is not hanging on a wall face, so it sorts on its own painter
+   *  line like a tree instead of at a wall column's depth. */
+  onDeck?: true;
 }
 
 export interface PlacementOptions {
@@ -715,6 +733,10 @@ export interface PlacementOptions {
    *  placement on one of these cells is FLAGGED `roofed`, not dropped — see
    *  SceneryPlacement.roofed. Omit for a world with no roof deck. */
   roofed?: Set<number>;
+  /** The deck's own walkable level at a cell, or -1 for none
+   *  (`TerrainGrid.deck`). Only a world that stands scenery ON a roof needs
+   *  it; without it nothing is `onDeck` and every placement behaves as before. */
+  deckAt?: (cx: number, cy: number) => number;
   width?: number;
   /** render3's window filter, on continuous coordinates. Defaults to the
    *  frame's own bounds, which is what render3 does. */
@@ -754,6 +776,11 @@ export function buildPlacements(
         : p.dir === "south-east" ? east
         : o.levelAt(east.cx, east.cy) > o.levelAt(south.cx, south.cy) ? east : south;
     }
+    /* ON TOP OF THE DECK, or under it — see SceneryPlacement.onDeck. The feet
+     * of a `z` piece are at `level + z`; the deck's top at this cell is what
+     * decides which side of it they are on. */
+    const deckTop = z === undefined ? -1 : (o.deckAt?.(cx, cy) ?? -1);
+    const onDeck = z !== undefined && deckTop >= 0 && level + z >= deckTop - 1e-9;
     return {
       i,
       piece: p.piece,
@@ -763,11 +790,13 @@ export function buildPlacements(
       lit: !!p.lit,
       ...(p.dir ? { dir: p.dir } : {}),
       ...(p.state ? { state: p.state } : {}),
-      ...(o.roofed?.has(cy * width + cx) ? { roofed: true as const } : {}),
+      ...(!onDeck && o.roofed?.has(cy * width + cx) ? { roofed: true as const } : {}),
+      ...(onDeck ? { onDeck: true as const } : {}),
       cx,
       cy,
       level,
-      ...(z !== undefined && wall ? { z, wall } : {}),
+      ...(z !== undefined ? { z } : {}),
+      ...(z !== undefined && wall && !onDeck ? { wall } : {}),
       ax: anchorX(o.frame, p.x, p.y),
       // Lifted `z` storeys up its wall — render3's column_y(x, y, level + z).
       ay: anchorY(o.frame, p.x, p.y, level + (z ?? 0)),

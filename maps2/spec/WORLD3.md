@@ -881,6 +881,86 @@ and dropped the rug — so centring alone took the_game from 3 carpets to one in
 every room, which is the sameness he keeps ruling out. the_game: 8 rugs in 13
 rooms, 0.25–1.52 cells off their centroids.
 
+### the fire indoors, and the chimney on the roof
+
+**70% of rooms get an open FIRE, 10% at least a LIGHT, 20% neither**
+(maintainer 2026-09-13, told one room of thirteen had a fire: *"ONLY ONE ROOM
+HAS FIRE?!?! WTF! I kinda want 70% to have a fire and 10% to at least have a
+light. Only 20% should have no fire and no light. This is not a hard rule but
+something to strive for."*). `indoorfire.role()` is the draw — weighted and
+seeded on the room's own corner, so it is a tendency and not a quota, and it
+is the SAME rule the build and the in-place pass use.
+
+- **A ROOM IS BUILT AROUND ITS FIRE: the fire asks FIRST.** It used to ask
+  last, after a cupboard every three cells of the same north wall, and a
+  hearth is 1.51 x 1.65 cells — the footprint law then had nowhere to put one
+  and refused 12 of 13, silently, because a refusal only bumps a counter.
+- **A hearth first, a brazier when the room is full.** A brazier is half a
+  cell of fire basket, the same open fire, and it takes its own chimney; it is
+  what keeps a dressed room from going cold (`indoorfire.FIRE_GROUPS`).
+- **A BACK WALL IS A LOCAL FACT, not the bounding box.** A wall run is the
+  cells whose north (or west) neighbour is outside the room, longest run
+  first. The box's own min-x column and min-y row ARE the back walls of a
+  rectangle and are wrong for anything else: room 10 of the_game is an L of 54
+  cells whose box top row is ONE cell, so the old reading had a single 4-cell
+  wall to try and left the room bare. (`_walls`.)
+- **THE FACING COMES FROM THE STATE'S OWN `rotations`**, which is what
+  `facedSprite` reads — a brazier publishes its rotations per state and
+  nothing at the piece root, and a placement naming a facing its state does
+  not publish draws its south still anyway while the footprint lookup asks for
+  a box that was never measured. No rotation, no `dir`.
+- **The light budget is the engine's 8 per camera window, not a preference**
+  and the test is per WINDOW: a new light must not push a window IT IS IN over
+  8 (`max_overlap(..., only=box)`). A global worst answers "no" to every
+  indoor fire in this world, whose streetlamp windows already sit at 8 of 8.
+  An unlit hearth is still a fireplace and still gets its chimney; an unlit
+  LANTERN is furniture, so it is not placed at all.
+- the_game 2026-09-13 (in place, additive): 13 rooms → **10 with a fire
+  (76%), 0 with a light only, 3 bare (23%)**; 9 pieces added, 1 of them lit —
+  the town's windows are full of streetlamps, and on a REBUILD `lights()`
+  lights the indoor fires right after the plaza's lamps and before the rest of
+  the town's, which is the only way the other nine burn.
+
+### scenery ON a roof — the chimney over the fire
+
+**A chimney is placed for every open fire indoors, at that fire's own `x`/`y`,
+with `z` = the roof deck's level − the cell's ground level** (maintainer
+2026-09-13: *"place them whenever you have an open fire indoors and also be
+sure to place them OVER that indoor fire. If you can't place scenery on a roof
+yet, add support for it."*). Its feet land on the roof's top and the stack
+rises directly above the hearth — one column from fire to sky, which is what
+the ambient domain's smoke needs. A fire under a CAVE lid gets nothing: a
+mountain is not a house. (`chimneys.py`.)
+
+- **THE GAME HAD TO LEARN IT.** A `z` placement was wall scenery, and any
+  placement whose CELL is a roof cell is flagged `roofed` — indoor furniture,
+  drawn only while that roof is cut away, so a chimney would have been
+  invisible from the street and visible from inside the room. `scenery3.ts`
+  now asks where the FEET are (`buildPlacements` + `deckAt`): at or above the
+  deck's top the placement is `onDeck`, drawn like any outdoor piece, not on a
+  `wall`, and it fades with the roof's own curve when the cut takes it — the
+  still and its lit band both (`games2/server/test/scenerydeck.test.ts`).
+  render3 reads the same line. A window or a hanging, whose feet are below the
+  deck's top, keeps everything it had.
+- **SOUTH-EAST, and it is a taste call** (he asked for S, SE or SW): rendered
+  all three on the spawn-side house and looked. South is the stack seen flat
+  on, one face, and it reads as a sticker on the roof; the turned views show
+  the brick's corner so it stands up off the roof plane, and SE turns the LIT
+  face toward the side this world's roofs and walls are lit from.
+- **NO HFLIP, deliberately.** The art publishes its flue mouth per facing
+  (`scenery.json` `vent`) and ambient's smoke leaves from that exact point; a
+  mirrored placement would mirror the mouth and nothing downstream un-mirrors
+  it. A chimney is near enough symmetric that the variation is not worth the
+  trap.
+- **A CAPTIONED VARIATION IS NEVER PLACED.** PixelLab sometimes writes a word
+  across the bottom of the sheet: measured over all 120 chimney images,
+  chimney_022's NOT_LIT_2 and NOT_LIT_4 read "NEW" in rows 90-95 of the 96 px
+  canvas, in every facing. Drawn on a house that is a black word lying on the
+  roof. The test is the SHAPE of the defect, not the letters — a component of
+  the alpha mask detached from the piece in the bottom eighth of the canvas —
+  and the finding goes to the scenery agent, whose art it is to re-roll.
+- the_game: 10 chimneys, one per indoor fire, all at `z = 6`.
+
 ### `scenery` — a placement stands where the game's NAV matches its hitbox
 
 **The footprint sits at the offset inside its cell where the cells the game
