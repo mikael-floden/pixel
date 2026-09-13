@@ -30,6 +30,7 @@ import {
   ISO_DY,
   WALL_ASSIST_DEG_DEFAULT,
   ESCAPE_RETREAT_CELLS,
+  ESCAPE_MIN_PROGRESS_CELLS,
   STUCK_ESCALATE_MS,
 } from "@nangijala/shared";
 
@@ -356,4 +357,34 @@ test("the escape may reach one TILE back and no further: the house door is out o
   assert.equal(routeRetreat(trip([[9.5, 12.5], [9.5, 13.5]]), x, y, 0, 1), 0, "four tiles west of a run along +y: sideways");
   assert.equal(routeRetreat(trip([[13.5, 10.5]]), x, y, 0, 1), 2, "two tiles up against a run along +y");
   assert.equal(STUCK_ESCALATE_MS, 100, "the escape waits his 0.1 s by default");
+});
+
+/** THE PLATEAU'S NOTCH (his 285.6,208.6, 2026-09-13): a level-4 plateau whose
+ *  west edge steps one column at row 9 — cols >= 11 for rows 2..8, cols >= 10
+ *  for rows 9..14 — so a body at (10.6, 8.6) holding screen-DOWN (the world
+ *  diagonal +col +row) meets the hill on both axes, and the way on lies one
+ *  tile west, down col 9, and out past the plateau's foot at row 15. */
+function notch(): TerrainGrid {
+  const rows = Array.from({ length: H }, (_, r) =>
+    Array.from({ length: W }, (_, c) => ({
+      t: "grass",
+      l: (r >= 2 && r <= 8 && c >= 11) || (r >= 9 && r <= 14 && c >= 10) ? 4 : 0,
+    })),
+  );
+  return buildTerrainGrid(W, H, rows, [], []);
+}
+
+test("held DOWN into the plateau's notch: no goal ahead is standable, and the escape still gets the body south — one tile west, down the side, on past the foot", () => {
+  const grid = notch();
+  const h = hold(grid, 10.6, 8.6, 0, 1, 240);
+  assert.ok(h.trips > 0, "an escape was taken");
+  assert.ok(h.maxRow > 15, `past the plateau's foot: maxRow ${h.maxRow.toFixed(2)}`);
+  assert.ok(h.minCol >= 9, `one tile west at most: minCol ${h.minCol.toFixed(2)}`);
+  assert.ok(h.still < 60, `no stand of 2 s: ${h.still} frames`);
+  // The endless wall is unchanged: an escape must get ON, and the rim beside
+  // the body is no progress — square into it the body stands.
+  const sq = screenFor(1, 0);
+  const w = hold(field(6), 5.4, 12, sq.ax, sq.ay, 120);
+  assert.equal(w.trips, 0, "square into an endless wall: no route, the body stands");
+  assert.equal(ESCAPE_MIN_PROGRESS_CELLS, 2);
 });

@@ -5,8 +5,7 @@ each subsystem's detail lives. **The measurements, traps and rejected
 approaches are in `games2/docs/<topic>.md` — open the one for the subsystem
 you touch, and put new detail THERE.** A rule here is one or two lines: the
 present-tense law, the reason in parentheses, the doc that holds the story.
-(2026-09-09, maintainer: the always-loaded text had grown to 300 KB, paid
-before every message was read.)
+(2026-09-09: 300 KB, paid before every message was read.)
 
 ## What this is
 
@@ -20,9 +19,8 @@ edited. ONE world, `the_game` (`maps2/worlds3`), ONE tile system, `tiles/`
 `games2/`: this one (gameplay, netcode, world, rendering), games-ui
 (`UI_AGENT.md` is the file split), games-audio (`composer/`, its own
 `CLAUDE.md`), games-ambient (`ambient/`, its own README), games-perf (frame
-time only, from the phone's beacon, 2026-09-12) — and each has an
-`<agent>-assistant` with the same remit and its own board (2026-09-12; the
-root `CLAUDE.md` "two writers" law). Work from `games2/`; `npm run dev`,
+time only, from the beacon) — and each has an `<agent>-assistant` with the
+same remit and its own board (root `CLAUDE.md`). Work from `games2/`; `npm run dev`,
 `npm test`, `npm run typecheck`. Boards: `coordination/<agent>.json` and
 `<agent>-assistant.json`.
 
@@ -201,8 +199,10 @@ secrets; push to `main`, rebase on reject, no PRs unless asked; doc law.
   detour or slide rule: the ESCAPE is the nav.
 - Never-backwards is a rule, not an absolute: after his "Nav help after"
   dial (0.1 s) without progress AT A RATE, `walkHeading` commits to an escape
-  route that ARRIVES ahead, one TILE back at most (`routeRetreat`), walked
-  first (`routeStallCell`), under its roof for a prop's only.
+  that GETS ON — the goal, or the farthest point along the ask inside the
+  corridor (`findPath` progress); one TILE back before it has got on
+  (`routeRetreat`), walked first (`routeStallCell`), under its roof for a
+  prop's only.
 - Walk or run follows the body's SCREEN speed (`gaitSpeed`, `gaitRunning`):
   the run gait from 80% of the run, off below 74% (HIS).
 - A tap RUNS; the beacon is the pixel you touched and never moves to meet

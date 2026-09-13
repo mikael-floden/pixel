@@ -205,7 +205,28 @@ Server-authoritative movement, decks, collision, steer assist, fall damage, tap/
   axis from the body's cell (`ESCAPE_RETREAT_CELLS` 1) — the pocket's exit
   one tile aside passes, the spawn house's door two tiles along the wall does
   not. Tiles, not a distance: findPath nudges its points off the walls, so
-  the pocket measured 1.07 cells against the door's 1.48.
+  the pocket measured 1.07 cells against the door's 1.48. Counted over the
+  route's points BEFORE IT HAS GOT ON (`ESCAPE_MIN_PROGRESS_CELLS`, 2 cells
+  along the ask): backwards is the first move against the tile being run
+  into; a step against the stick taken eleven tiles on is the way round,
+  and the corridor bounds it.
+  **THE GOAL IS GETTING ON, NOT THE POINT AHEAD** (maintainer 2026-09-13,
+  285.6,208.6 held down into a level-4 plateau's notch: "It's extremely
+  clear I can continue downwards if I navigate a bit backwards and left ...
+  Often the player want to run S and doesn't care how we manage to get S"):
+  every goal straight ahead lay on the hill, reachable only ten cells south
+  and up a ramp — a 9.9-cell bulge the corridor threw away — so no route
+  arrived and the body stood, with the way south one tile west of it. Now
+  `findPath` takes `progress` (through `startTrip`): the SEARCH stays inside
+  the escape's corridor (`ESCAPE_CORRIDOR_CELLS`, 10, beside the ask's line;
+  the goal's own distance on; `ESCAPE_RETREAT_CELLS`+1 back), and a goal it
+  cannot reach there ends the route at the explored point FARTHEST along the
+  ask, at least `ESCAPE_MIN_PROGRESS_CELLS` on — never the rim beside the
+  goal. `planRoundTheStick` takes a route that arrives OR gets that far
+  (`routeProgress`); an endless wall's rim beside the body is neither, and
+  the body still stands there. Replayed at his spot: one tile west, ten
+  south down the plateau's side, the ramp, and on. Gate: the notch fixture
+  in `server/test/wallcorner.test.ts`.
 - **THE RESCUE NEVER CLIMBS** (`unstickFromSolids` with the body's elevation):
   a push that would step more than a walk can climb, or drop, onto a cell
   with no deck at the body's level is refused — a cupboard against a wall

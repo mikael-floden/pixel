@@ -3367,6 +3367,20 @@ export function findPath(
      *  planner has WALKED and found the body does not fit through, whatever
      *  the nav layer says (see routeStallCell). */
     avoid?: Set<number>;
+    /** THE FARTHEST POINT ALONG THE ASK when the goal cannot be reached: the
+     *  explored node with the most progress along the world direction
+     *  (ux,uy) from the start — at least `min` and at most `max` cells on,
+     *  within `lateral` cells of the ask's line — is the route's end instead
+     *  of the rim nearest the goal. The escape's goal is not the point ahead
+     *  but getting on (maintainer 2026-09-13, held down into a plateau's
+     *  notch: "Often the player want to run S and doesn't care how we manage
+     *  to get S"). Without a node that qualifies the rim stands as before.
+     *  THE SEARCH ITSELF STAYS IN THAT CORRIDOR (`lateral` beside the line,
+     *  `max` on, `back` against): his plateau was reachable, ten cells south
+     *  and up a ramp, and a route that far off the ask is a journey the
+     *  planner throws away — the search then has to come back with the way
+     *  on that IS inside the corridor, not with the journey. */
+    progress?: { ux: number; uy: number; min: number; max: number; lateral: number; back: number };
   },
   // Waypoints carry the LEVEL of the surface the route stands on there. The
   // last one's is the only honest answer to "where does this trip actually
@@ -3588,6 +3602,13 @@ export function findPath(
   // and stopping cleanly beats beelining into the wall and grinding.
   let closest = startSid;
   let closestH = hx(c0, r0);
+  // ...and the explored node FARTHEST along the ask (opts.progress): the
+  // escape's own fallback, measured from the exact start point in cells.
+  const prog = opts?.progress;
+  const sCol = fromX / CELL_WU;
+  const sRow = fromY / CELL_WU;
+  let farthest = -1;
+  let farthestP = -Infinity;
   while (heap.length) {
     const cur = pop();
     const curCell = sidCell(cur);
@@ -3604,6 +3625,16 @@ export function findPath(
         closestH = ch;
         closest = cur;
       }
+      if (prog) {
+        const px = cc + 0.5 - sCol;
+        const py = cr + 0.5 - sRow;
+        const along = px * prog.ux + py * prog.uy;
+        const across = Math.abs(px * prog.uy - py * prog.ux);
+        if (along >= prog.min && along <= prog.max && across <= prog.lateral && along > farthestP) {
+          farthestP = along;
+          farthest = cur;
+        }
+      }
     }
     if (++expanded > maxNodes) break;
     const g0 = gScore.get(cur)!;
@@ -3613,6 +3644,13 @@ export function findPath(
         if (dc === 0 && dr === 0) continue;
         const nc = cc + dc;
         const nr = cr + dr;
+        if (prog) {
+          const px = nc + 0.5 - sCol;
+          const py = nr + 0.5 - sRow;
+          const along = px * prog.ux + py * prog.uy;
+          if (along > prog.max || along < -prog.back) continue;
+          if (Math.abs(px * prog.uy - py * prog.ux) > prog.lateral) continue;
+        }
         const diag = dc !== 0 && dr !== 0;
         // Each reachable surface in the neighbour (base and/or deck) is its own
         // node — the search picks the layer that gets it where it's going.
@@ -3668,7 +3706,7 @@ export function findPath(
       }
     }
   }
-  const dest = found ? foundSid : closest;
+  const dest = found ? foundSid : farthest >= 0 ? farthest : closest;
   if (dest === startSid) return null; // nowhere to go at all — ignore the tap
   // Reconstruct dest→start, then emit start→dest cell centres, merging
   // straight runs; the last waypoint becomes the exact tapped point (or the
@@ -4064,8 +4102,13 @@ const STUCK_PROGRESS_RATE = 0.1;
  *  0.1 s would otherwise cost the goal fan's searches ten times a second. */
 const ESCAPE_BACKOFF_MAX_MS = 2000;
 /** The escape route may bulge this far off the asked line — a pocket's exit is
- *  a real detour, not a skirt (DETOUR_CORRIDOR_CELLS is 3). */
-const ESCAPE_CORRIDOR_CELLS = 8;
+ *  a real detour, not a skirt (DETOUR_CORRIDOR_CELLS is 3). Ten, not eight:
+ *  the way round his plateau (2026-09-13, 285.6,208.6 held down — the ramp
+ *  up it lies ten cells south and two west of the notch) bulges 9.9 cells
+ *  off the ask's line, and the search itself stays inside this corridor
+ *  (`findPath` progress), so the width is what the escape may search, not
+ *  what it may accept after the fact. */
+const ESCAPE_CORRIDOR_CELLS = 10;
 const ESCAPE_NODES = 2500; // a pocket, not a map crossing
 /** Escape goals out of a TERRAIN pocket: STRAIGHT AHEAD, farther first, so a
  *  short slot leads OUT of the pocket rather than to its next wall. A way out
@@ -4502,6 +4545,18 @@ function arrives(trip: AutopilotTrip, gx: number, gy: number): boolean {
   return !!end && Math.hypot(end.x - gx, end.y - gy) <= 1.5 * CELL_WU;
 }
 
+/** The least a route that does NOT arrive must get on along the ask, in
+ *  cells, to be an escape: a rim beside the body (an endless wall's answer)
+ *  is none, the way past a plateau's notch is seven. Two: the cell the body
+ *  is in and the one past it. */
+export const ESCAPE_MIN_PROGRESS_CELLS = 2;
+
+/** How far ALONG THE ASK a route's end lies from the body, in cells. */
+export function routeProgress(trip: AutopilotTrip, x: number, y: number, ux: number, uy: number): number {
+  const end = trip.path[trip.path.length - 1];
+  return end ? ((end.x - x) * ux + (end.y - y) * uy) / CELL_WU : 0;
+}
+
 function planRoundTheStick(
   grid: TerrainGrid,
   x: number,
@@ -4556,10 +4611,29 @@ function planRoundTheStick(
       const trip = startTrip(
         grid, x, y, gx, gy,
         false, nowMs, fromElev, undefined, maxNodes, undefined, avoid,
+        // THE GOAL IS GETTING ON, NOT THE POINT AHEAD (maintainer 2026-09-13,
+        // held down into a plateau's notch at 285.6,208.6: every goal ahead
+        // lay on the hill, no route arrived, the body stood while the way
+        // south ran one tile west of it — "Often the player want to run S
+        // and doesn't care how we manage to get S"). A goal the search
+        // cannot reach ends the route at the farthest reachable point along
+        // the ask instead of the rim beside the goal: at least
+        // ESCAPE_MIN_PROGRESS_CELLS on (a rim beside the body is still no
+        // escape), no farther than the goal itself, within the corridor —
+        // and the search never leaves the corridor: his plateau's goals WERE
+        // reachable, ten cells south and up a ramp, and that journey was
+        // thrown away (withinCorridor) with the way on unplanned.
+        escape
+          ? { ux, uy, min: ESCAPE_MIN_PROGRESS_CELLS, max: dist + 0.5, lateral: corridorCells, back: ESCAPE_RETREAT_CELLS + 1 }
+          : undefined,
       );
       if (!trip || !withinCorridor(trip, x, y, cx, cy, corridorCells)) break;
       if (escape) {
-        if (!arrives(trip, gx, gy) || (underRoof && !roofExitAhead(grid, trip, x, y, ux, uy, fromElev))) break;
+        if (
+          !(arrives(trip, gx, gy) || routeProgress(trip, x, y, ux, uy) >= ESCAPE_MIN_PROGRESS_CELLS) ||
+          (underRoof && !roofExitAhead(grid, trip, x, y, ux, uy, fromElev))
+        )
+          break;
         if (avoid) {
           const stood = routeStallCell(grid, trip, x, y, nowMs, fromElev);
           if (stood >= 0) {
@@ -4673,7 +4747,14 @@ export const ESCAPE_RETREAT_CELLS = 1;
  *  was 2 tiles away from the opening and not 1" — and not a distance: findPath
  *  nudges its points off the walls, so the pocket's one-cell exit measured
  *  1.07 cells and the house door's two-cell run 1.48. 0 for a route that only
- *  ever goes sideways or on. */
+ *  ever goes sideways or on.
+ *  BEFORE THE ROUTE HAS GOT ON, ONLY. Backwards is the route's first move
+ *  against the tile the body is running into; a step against the stick
+ *  taken once the route is ESCAPE_MIN_PROGRESS_CELLS along the ask is the
+ *  way round, and the corridor bounds it. His plateau's way (2026-09-13,
+ *  285.6,208.6 held down) is one tile west, ten south, then two west and up
+ *  a ramp — two tiles back on the col axis, eleven tiles on; the spawn
+ *  house's door is two tiles back in the route's first two points. */
 export function routeRetreat(trip: AutopilotTrip, x: number, y: number, ux: number, uy: number): number {
   const bc = Math.floor(x / CELL_WU);
   const br = Math.floor(y / CELL_WU);
@@ -4681,6 +4762,7 @@ export function routeRetreat(trip: AutopilotTrip, x: number, y: number, ux: numb
   const sy = Math.abs(uy) > 1e-6 ? Math.sign(uy) : 0;
   let worst = 0;
   for (const p of trip.path) {
+    if (((p.x - x) * ux + (p.y - y) * uy) / CELL_WU >= ESCAPE_MIN_PROGRESS_CELLS) continue;
     const dc = Math.floor(p.x / CELL_WU) - bc;
     const dr = Math.floor(p.y / CELL_WU) - br;
     worst = Math.max(worst, -dc * sx, -dr * sy);
@@ -4750,6 +4832,7 @@ export function startTrip(
   // Cells the route may not enter (findPath's `avoid`): the escape planner's
   // cells the body was walked at and did not fit through.
   avoid?: Set<number>,
+  progress?: { ux: number; uy: number; min: number; max: number; lateral: number; back: number },
 ): AutopilotTrip | null {
   const path = grid
     ? (findPath(grid, fromX, fromY, toX, toY, {
@@ -4758,6 +4841,7 @@ export function startTrip(
         ...(maxNodes ? { maxNodes } : {}),
         ...(canSwim === undefined ? {} : { canSwim }),
         ...(avoid ? { avoid } : {}),
+        ...(progress ? { progress } : {}),
       }) ?? [])
     : [{ x: toX, y: toY }];
   if (path.length === 0) return null;
