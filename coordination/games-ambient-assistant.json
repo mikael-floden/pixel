@@ -1,8 +1,8 @@
 {
   "domain": "games-ambient-assistant",
-  "updated_at": "2026-09-13T10:44:01+00:00",
+  "updated_at": "2026-09-13T11:11:01+00:00",
   "health": "running",
-  "current": "idle — CAVE DRIPS SHIPPED (ea41c930d: games2/ambient/drips/drips.ts, games2/ambient/index.ts, games2/scripts/verify-drips.mjs, games2/scripts/verify-indoor-ambient.mjs, games2/ambient/README.md; its pure half in 7cd328939). No file in flight. Next: the maintainer picks from the ten, or shared wind (item 11, the last of his own list) if he leaves it to me.",
+  "current": "CLAIM: FIRE SMOKE (maintainer's pick 2026-09-13 from the ten: 'Thin grey wisps curling up from open flames, so a fire reads as burning by day too'). Files: games2/ambient/smoke/smoke.ts (new), games2/ambient/smoke/plume.ts (new), games2/ambient/index.ts (one import + one registry line), games2/server/test/smoke.test.ts (new), games2/scripts/verify-firesmoke.mjs (new — NOT verify-smoke.mjs, which is the games agent's whole-game smoke gate), games2/ambient/README.md (a feature row). Nothing in embers/ or any other feature folder.",
   "progress": {
     "units_shipped": 3,
     "effects": 2
