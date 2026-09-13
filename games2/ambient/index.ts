@@ -10,6 +10,7 @@ import { mothsFeature } from "./moths/moths";
 import { gnatsFeature } from "./gnats/gnats";
 import { crabsFeature } from "./crabs/crabs";
 import { bubblesFeature } from "./bubbles/bubbles";
+import { dustFeature } from "./dust/dust";
 import { embersFeature } from "./embers/embers";
 import { smokeFeature } from "./smoke/smoke";
 import { batsFeature } from "./bats/bats";
@@ -52,6 +53,7 @@ export function mountAmbient(game: Phaser.Game) {
     crabsFeature(),
     bubblesFeature(),
     embersFeature(),
+    dustFeature(),
     smokeFeature(),
     batsFeature(),
     birdsFeature(),

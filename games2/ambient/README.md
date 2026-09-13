@@ -71,6 +71,22 @@ them; folder isolation beats DRY here).
   white (maintainer 2026-09-11), and they would drift again at the next art
   regeneration. Measured over the eight birds: 5b9a42 green, e84940 red,
   cbd1d9 white, and six more all distinct.
+- **A LANDING IS ALREADY PUBLISHED — twice, and neither probe was added for
+  it.** `__ml.me().jumping` is the SYNCED jump flag, so its rising edge plus
+  the fixed `JUMP_MS` window is the touchdown, on the same clock every client
+  hops on; `__ml.fall().falling` going false is a gravity impact, and the
+  `fallV` of its last true frame is how hard — the very number the game bills
+  fall damage on, so a landing that hurts and a landing that puffs agree by
+  construction rather than by two thresholds drifting apart. Before asking the
+  games agent for a seam, read the 168 keys on `__ml`: the fact is usually
+  there.
+  **BUT THE POSITION IS THE SPRITE'S, AND THE SPRITE IS STILL IN THE AIR.**
+  `playerAt()` reads the drawn avatar, which carries the hop parabola, so
+  firing on the timer alone threw the dust 28 px above the ground (measured).
+  The parabola is exactly zero once the window closes, so a couple of frames
+  of slack past it makes the sprite the feet by definition. A FALL needs none:
+  `falling` clears on the frame the elevation reaches its target, when the
+  body is already down.
 - **`playerAt(view)`** (`runtime/ground.ts`) is where the player is DRAWN, in
   the world px every critter holds. `__ml.myScreen()` answers in screen px and
   the view converts it; the player's `__ml.me()` is WORLD UNITS and is the
@@ -288,7 +304,7 @@ decision; an earlier version that jumped the world to each effect's
 
   (currently fireflies, pollen, water, deepwater, foam, fish, drips, ants, spiders, moths,
   smoke,
-  gnats, crabs, bubbles, embers, bats, birds, feathers, butterflies,
+  gnats, crabs, bubbles, embers, dust, bats, birds, feathers, butterflies,
   thunder, sandstorm, leaves — the ring is built from `index.ts`, so a new
   folder joins it automatically.)
 
@@ -364,6 +380,7 @@ controller (AUTO / NONE / solo-each).
 | `feathers/` | field | WHAT A FLUSH LEAVES BEHIND — spook a landed flock and each bird drops a feather or two: knocked loose by the wingbeat so it rises first, then sinks slowly, swinging side to side and LEANING into each slide, and lies on the ground a few seconds before it goes. TINTED FROM ITS OWN BIRD (`plumageOf`, lifted toward white): a red bird sheds a pink feather, a green one a pale green | Only when `birds/` announces a flush (`runtime/flush.ts`); outdoors. Selected ALONE in Settings there is no flock, so it sheds a demo feather then and only then |
 | `butterflies/` | field | THE MEADOW IN SUMMER — at four pixels a butterfly is a WAY OF MOVING, not a shape: the body BOBS a whole pixel or three with every wingbeat (a mark that slides level reads as a bee), the path is short runs broken by hard turns (a smooth curve reads as a bird), and the beat is uneven so it does not tick. Wings change SILHOUETTE WIDTH, 5 px open / 3 half / 1 shut, on frames all the same height so only the wings move. MUTED BY LAW (`species.ts`): the maintainer's bands — at least half pale-and-dark, a quarter green-and-red, a quarter free — and nothing over `MAX_SAT` 0.45 saturation, because this is background. It works the PATCH it was placed on, settles onto the grass now and then with its wings shut, and MINDS YOU: walk up and it turns away, hurries, and takes off if it was sitting | Grass (the surface's own `sound`, `groundSoundAt`), outdoors, by DAY: a ramp on sun strength, gone in rain, and gone in storm, snow or wind |
 | `smoke/` | field | FIRE SMOKE — thin grey wisps curling up off an open flame, so a fire reads as burning BY DAY (the embers are the night half of the same object). A column, not a cloud: marks leave the same point a tenth of a second apart, lean on the cloud wind, bend together on a shared curl phase, gather from one pixel to three and thin away. DARK grey, and darker the brighter the day — the case is a fire on sunlit ground, where a pale wisp is nothing at all (measured 5.8 luma). NORMAL blend, never additive: smoke is in the way, it does not glow | Any OPEN fire in view (`light.kind` is `fire/*` and not `fire/enclosed` — a lantern burns behind glass); sorts against its own fire's lit copy; a sealed fire only while you are in the room with it. Full by day, a third at night |
+| `dust/` | field | LANDING DUST — a ring of specks kicked out at your boots when you come down. They go OUT, not up (a ring that rises reads as a spell; one that skims the ground, stalls and settles reads as weight), the ring is ISO so it lies on the floor instead of standing up out of it, and ONE dial drives count, spread, speed and life so a drop off a ledge cannot look like a hop. The colour is the ground itself, lifted — sand throws pale grit, stone grey, snow white, grass a dull olive | The LOCAL player's own landings, off `__ml.me().jumping` (+ JUMP_MS) and `__ml.fall().falling`; dry ground only, outdoors. An EVENT effect: nothing runs between landings |
 | `bats/` | episode | Night colony wheeling: boids in any direction (top-down), erratic jinking, scattering near the player (no landing) | base 1.0; day ×0.01 |
 | `birds/` | episode | Living day flock: boids over the world, landing on dry ground to peck, flushing near the player | base 1.0; night ×0.05 |
 | `thunder/` | episode | Distant sheet lightning beyond the horizon | base 0.35 × (1 + rain + night); cloud/mist as weak proxies |
