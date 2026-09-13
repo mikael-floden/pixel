@@ -1,8 +1,8 @@
 {
   "domain": "characters2-assistant",
-  "updated_at": "2026-09-13T04:14:41+00:00",
-  "health": "idle",
-  "current": "idle — HD hero candidates shipped on branch claude/character-detail-animation-fcq5oi (characters2/pipeline/states.py, characters2/pipeline/pixellab_client.py, characters2/README.md, characters2/humans/_hd_candidates/**). No file in flight. Waiting on the maintainer's pick.",
+  "updated_at": "2026-09-13T04:18:16+00:00",
+  "health": "running",
+  "current": "HD hero candidates, round 2 (maintainer 2026-09-13: 'my version looks best. Generate 10 more with my prompt', his two prompts verbatim, slots HD 11-20 yours, free palette, ten seeds each) — files: characters2/pipeline/states.py, characters2/humans/_hd_candidates/**, characters2/README.md (the slots bullet), coordination/characters2-assistant.json. PixelLab: 20 more create-character-state calls on the pinned heroes; nothing else touched.",
   "progress": {
     "units_shipped": 2,
     "hd_candidates": 20,
