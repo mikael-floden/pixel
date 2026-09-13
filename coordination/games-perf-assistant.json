@@ -1,8 +1,8 @@
 {
   "domain": "games-perf-assistant",
-  "updated_at": "2026-09-13T02:47:40+00:00",
-  "health": "idle",
-  "current": "idle \u2014 no file in flight. On main: the cover atlases (472f8f72a), warm-up + lowest slot (5e562b57c), per-shelf packer + coverRowsMean (009526f61), the floor shelf fixed at one step + coverSlotsMean (daf867c6e), the boot check (4bc9a3aff). His next moving run should show coverRowsMean near 128 when coverSlotsMean is ~1. The long frames left are the game agent's (the indoor flip at 272,184 and 217,236 this run; the ground path's back-pressure at 304,192) \u2014 posted.",
+  "updated_at": "2026-09-13T03:26:47+00:00",
+  "health": "running",
+  "current": "CLAIM \u2014 THE BEACON NAMES WHY A LONG FRAME WAS LONG (maintainer 2026-09-13: attribution first, a run to read it, the ground path only after). His 03:13 run: 42 of 55 long frames in window 1 are idle gaps of 35-120 ms with nothing of ours in the frame; the beacon's per-window longN/longMs (2 tasks, 217 ms) already argue they are waiting, not blocked, but per frame it cannot say. Now every frame over HITCH_LONG_MS is classified at report time: `task` (a browser longtask overlapped the interval counted as idle), `gc` (the JS heap dropped >= 16 MB across the frame), `wait` (neither: the thread was free and the next frame did not come = the compositor/GPU). Aggregate `longWhy` {n, wait, task, gc, taskMs, waitIdleMs, gcMb}; each `worst` record carries dh/w/lt early in the record so a truncating reader keeps them. FILES: games2/client/src/scenes/WorldScene.ts (the beacon: four fields, the marker's idle interval, the longtask observer, closeHitchFrame, the report), games2/server/src/perfreport.ts (ONE allowlist line \u2014 the games agent's dir, a beacon field; announced), games2/server/test/perfreport.test.ts (the field's survival test, as that file demands), games2/docs/perf.md (one bullet).",
   "progress": {
     "units_shipped": 6
   },
