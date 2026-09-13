@@ -346,8 +346,10 @@ characters are never touched; nothing here carries the NPC tag.
   (`states.py:SOURCES`; he moved it out of the pinned boy's group and tagged
   it PLAYER, so its states live in ITS group and the survey covers both
   groups): "Redraw the face in same looking style. Keep the hair exactly as
-  it is. DON'T CHANGE ANYTHING ELSE. ONLY REDRAW THE FACE". His wording is
-  the lock there; a new series numbers on, never renames a slot.
+  it is. DON'T CHANGE ANYTHING ELSE. ONLY REDRAW THE FACE". `redraw2` — girl
+  `HD 61`–`HD 85`, the redraw prompt on a DIFFERENT source girl he picked
+  (`2304c3d8`, a duplicate of an NPC girl in its own group, tagged NPC). His
+  wording is the lock there; a new series numbers on, never renames a slot.
 - **Resumable, never doubled**: the existing set is read from PixelLab (the
   group siblings named `HD …`) and from disk, never memory; seeds derive from
   (hero, slot). It runs on the USD credits (the generation pool reads 0.0) and

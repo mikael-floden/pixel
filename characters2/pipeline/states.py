@@ -171,10 +171,18 @@ YOURS_SERIES = (
         "default_boy": "Redraw the face in same looking style. Keep the hair exactly as it is. DON'T CHANGE "
                        "ANYTHING ELSE. ONLY REDRAW THE FACE",
     }, {"default_girl": 0, "default_boy": 25}),
+    # redraw2 — the redraw prompt again, 25 variations, on a DIFFERENT girl he
+    # picked (2026-09-13 05:14: 2304c3d8, a duplicate of an NPC girl, its own
+    # group, tagged NPC), so the source is that character (SOURCES).
+    ("redraw2", {
+        "default_girl": "Similar looking, but high detail version, new face and hair, don't change her cloth. "
+                        "Bikini only. Draw new version.",
+    }, {"default_girl": 25, "default_boy": 0}),
 )
 # series key -> {hero: character id the edit is applied to} when it is not the
 # pinned hero. Its group's siblings are surveyed and mirrored under the hero too.
-SOURCES = {"newface": {"default_boy": "b0479ac0-f12c-4318-ba5d-a2e67afca901"}}
+SOURCES = {"newface": {"default_boy": "b0479ac0-f12c-4318-ba5d-a2e67afca901"},
+           "redraw2": {"default_girl": "2304c3d8-c678-4ada-afa5-aec3bfb0ffc4"}}
 
 
 def _slot(hero, n, brief, snap, edit):
