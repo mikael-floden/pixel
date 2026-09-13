@@ -3415,7 +3415,7 @@ export class WorldScene extends Phaser.Scene {
    *  hole itself. Rebuilt with the scenery, read through `__ml.ventsInView`;
    *  an effect attaches its plume to this instead of guessing a point on the
    *  art, which is what the moths' `hx`/`hy` exists for one layer down. */
-  private ventRecs: { img: Phaser.GameObjects.Image; place: number; piece: string; state: string; fixture: string; conf: string; x: number; y: number; footY: number }[] = [];
+  private ventRecs: { img: Phaser.GameObjects.Image; lo: WorldScene["litOccluders"][number] | null; place: number; piece: string; state: string; fixture: string; conf: string; x: number; y: number; footY: number }[] = [];
   /** SCENERY ON A WALL (maps2 `z`: windows, hangings) — one record per drawn
    *  placement, stepped every frame: the base image and the lit copy take the
    *  wall column's cut fade, and a window's LIGHTS_ON art crossfades in over
@@ -5989,8 +5989,6 @@ export class WorldScene extends Phaser.Scene {
        * consumer multiplies by one number instead of re-deriving three rules. */
       ventsInView: (pad = 96) => {
         const v = this.cameras.main.worldView;
-        const litAt = new Map<number, number>();
-        for (const lo of this.litOccluders) if (lo.place !== undefined) litAt.set(lo.place, lo.img.depth);
         return this.ventRecs
           .filter((r) => r.x >= v.x - pad && r.x <= v.right + pad && r.y >= v.y - pad && r.y <= v.bottom + pad)
           .map((r) => ({
@@ -5998,7 +5996,7 @@ export class WorldScene extends Phaser.Scene {
             x: r.x, y: r.y, footY: r.footY,
             piece: r.piece, state: r.state, fixture: r.fixture, conf: r.conf,
             alpha: +(r.img.scene ? r.img.alpha : 0).toFixed(3),
-            litDepth: litAt.get(r.place) ?? null,
+            litDepth: r.lo?.img.scene ? r.lo.img.depth : null,
           }));
       },
       lightSlots: () => ({
@@ -21633,8 +21631,17 @@ export class WorldScene extends Phaser.Scene {
       const vpt = ventFor(piece, st, p.dir);
       if (vpt) {
         const vxy = ventPoint(vpt, fit, art.canvas);
+        /* THE LIT COPY IS HELD, NOT LOOKED UP. The cover records take their
+         * `lo` the same way and for the same reason: the probe would otherwise
+         * have to index EVERY lit occluder in the view to answer about a
+         * handful of vents, which is the one piece of unbounded work an
+         * ambient read can put on the frame thread. The copy for this piece is
+         * the last one pushed — the anim registration below relies on exactly
+         * that — so it is taken here rather than searched for later. */
+        const vlo = this.night && !flat ? this.litOccluders[this.litOccluders.length - 1] : null;
         this.ventRecs.push({
-          img, place: p.i, piece: p.piece, state: st.key, fixture: piece.fixture ?? "",
+          img, lo: vlo && vlo.place === p.i ? vlo : null,
+          place: p.i, piece: p.piece, state: st.key, fixture: piece.fixture ?? "",
           conf: vpt.conf, x: vxy.x, y: vxy.y, footY: p.ay,
         });
       }

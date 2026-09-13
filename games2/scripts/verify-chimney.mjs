@@ -147,6 +147,36 @@ else {
  * `{ok:false, blockedBy}` — so the result is read rather than assumed: a
  * silently-refused enable leaves the field suppressed, and a suppressed field
  * reads zero on every counter the arms below look at. */
+/* AIM AT THE VENT, NOT AT THE CELL. `lookAt(col,row)` centres on a cell at its
+ * GROUND level, and a chimney stands on a roof six levels up — so the naive
+ * framing puts the mouth ~144 px above the camera centre, which is off the top
+ * of a 198 px-tall game area entirely. Measured: 28 puffs drawn at peak alpha
+ * 0.58 and NOT ONE of them inside the canvas.
+ * Walking col and row down together moves the camera up-world (the vent down
+ * the screen) without touching its x, so this searches that one axis for the
+ * offset that lands the mouth about two thirds down the view — the plume then
+ * rises through the middle instead of out of the top. */
+const FRAME_JS = `async (spot) => {
+  const step = () => new Promise((r) => requestAnimationFrame(r));
+  const cv = document.querySelector("canvas").getBoundingClientRect();
+  let best = null;
+  for (let k = 0; k <= 12; k++) {
+    window.__ml.lookAt(spot.x - k, spot.y - k);
+    await step();
+    const v = window.__ml.camView();
+    const z = window.__ml.myScreen()?.zoom ?? 1;
+    const list = window.__ml.ventsInView(160) || [];
+    if (!list.length) continue;
+    const sy = list.reduce((m, q) => m + (q.y - v.y) * z, 0) / list.length;
+    const want = cv.height * 0.62;
+    const err = Math.abs(sy - want);
+    if (!best || err < best.err) best = { k, err, sy: Math.round(sy), want: Math.round(want), vents: list.length };
+  }
+  window.__ml.lookAt(spot.x - (best ? best.k : 1), spot.y - (best ? best.k : 1));
+  for (let i = 0; i < 60; i++) await step();
+  return best;
+}`;
+
 const sel = await page.evaluate(() => {
   window.__ml.timeSpeed(0);
   window.__ml.timeOfDay("Day", true);
@@ -234,18 +264,12 @@ if (!placed.length)
 if (!source.length) fail("nothing in this world carries a vent, injected or real — the in-world arms proved nothing");
 else {
   const spots = [...new Map(source.map((p) => [`${Math.floor(p.x / 8)},${Math.floor(p.y / 8)}`, p])).values()].slice(0, 8);
-  const seen = await page.evaluate(async (spots) => {
+  const seen = await page.evaluate(async ({ spots, FRAME }) => {
     const step = () => new Promise((r) => requestAnimationFrame(r));
     for (const s of spots) {
       window.__ml.teleport(s.x + 2.5, s.y + 4.5);
       for (let i = 0; i < 120; i++) await step();
-      /* ONE CELL UP-SCREEN OF THE PIECE, and the SAME framing the pixel arm
-       * uses below: a vent centred in the view puts its whole plume in the
-       * upper half, where this 480x198 game area is thinnest and the HUD sits.
-       * `lookAt` takes a continuous cell position (its formula does not index
-       * the row array for the point itself), so the fraction is kept. */
-      window.__ml.lookAt(s.x - 1, s.y - 1);
-      for (let i = 0; i < 60; i++) await step();
+      const frame = await (0, eval)(FRAME)(s); // aim at the vent — see FRAME_JS
       const list = window.__ml.ventsInView(96) || [];
       if (!list.length) continue;
       const born = [];
@@ -271,13 +295,16 @@ else {
         }
         await step();
       }
-      return { at: [s.x, s.y], list, vents, puffs, maxA, draw, born, climb };
+      return { at: [s.x, s.y], frame, list, vents, puffs, maxA, draw, born, climb };
     }
     return null;
-  }, spots);
+  }, { spots, FRAME: FRAME_JS });
 
   if (!seen) fail(`no vent was reported at any of the ${spots.length} chimney placements — the seam is not delivering`);
   else {
+    console.log(
+      `framing: ${seen.frame ? `${seen.frame.k} cells up-world puts the mouth at y ${seen.frame.sy} of a wanted ${seen.frame.want}` : "no offset found"}`,
+    );
     console.log(
       `at ${seen.at}: ${seen.list.length} vent(s) reported, ${seen.vents} taken by the effect, ` +
         `${seen.puffs} puffs in the air, brightest mark alpha ${seen.maxA}`,
@@ -331,12 +358,11 @@ else {
       window.__mlAmbient.setEnabled("chimney", o);
       for (let i = 0; i < 90; i++) await new Promise((r) => requestAnimationFrame(r));
     }, on);
-    const layout = await page.evaluate(async (at) => {
+    const layout = await page.evaluate(async ({ at, FRAME }) => {
       const step = () => new Promise((r) => requestAnimationFrame(r));
       window.__ml.teleport(at[0] + 2.5, at[1] + 4.5);
       for (let i = 0; i < 120; i++) await step();
-      window.__ml.lookAt(at[0] - 1, at[1] - 1); // the observation's own framing
-      for (let i = 0; i < 60; i++) await step();
+      await (0, eval)(FRAME)({ x: at[0], y: at[1] }); // the observation's own framing
       const cv = document.querySelector("canvas").getBoundingClientRect();
       const over = [];
       for (const el of document.querySelectorAll("body *")) {
@@ -350,7 +376,7 @@ else {
         over.push({ x0: b.left, x1: b.right, y0: b.top, y1: b.bottom });
       }
       return { cv: { x0: cv.left, x1: cv.right, y0: cv.top, y1: cv.bottom }, over, me: window.__ml.myScreen() };
-    }, seen.at);
+    }, { at: seen.at, FRAME: FRAME_JS });
     const skipBox = layout.me
       ? { x0: layout.me.sx - 26, x1: layout.me.sx + 26, y0: layout.me.sy - 62, y1: layout.me.sy + 16 }
       : null;
