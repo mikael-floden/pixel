@@ -1624,40 +1624,40 @@
           "generated_at": "2026-09-12T23:37:47+00:00"
         },
         "south-east": {
-          "status": "fail",
-          "step_mean": 0.114,
-          "step_max": 0.1425,
-          "drift": 4.22,
-          "loop": 0.112,
-          "loop_ratio": 0.98,
-          "travel": 4.67,
+          "status": "warn",
+          "step_mean": 0.1601,
+          "step_max": 0.2272,
+          "drift": 2.89,
+          "loop": 0.3183,
+          "loop_ratio": 1.99,
+          "travel": 2.89,
           "pin": 1.0,
           "pad": 0,
           "flash": 0.0,
           "peak": null,
           "reach": null,
           "turn": null,
-          "end_area": 0.997,
+          "end_area": 0.97,
           "canvas": [
             240,
             240
           ],
           "reasons": [
-            "still standing: the last frame is only 0.11 of the silhouette away from the first — no collapse"
+            "barely falls: last vs first 0.32 — eyeball it"
           ],
-          "sub": "53412092-009b-4e4f-b4ca-10d750d370ff",
-          "group": "9f93d96e-382a-4e80-82ee-4925b6572456",
+          "sub": "cbbfad15-ac80-4a7a-bbe1-759026d8a94e",
+          "group": "1bfb1f22-f40a-4136-aa29-97dc9d873823",
           "takes": 1,
-          "version": 1,
+          "version": 4,
           "mirrored": false,
-          "action": "Death - Her legs curl in under her and she collapses onto her belly, then fades away",
+          "action": "Death - Her legs curl in under her and she collapses onto her belly, then fades away, the whole body crumples to the ground and dissolves away to nothing",
           "intensity": 0,
-          "rolls": 1,
+          "rolls": 4,
           "frames": 7,
-          "rung": 0,
+          "rung": 3,
           "unwrapped": null,
-          "tries": 1,
-          "generated_at": "2026-09-12T23:37:59+00:00"
+          "tries": 4,
+          "generated_at": "2026-09-13T02:04:04+00:00"
         },
         "east": {
           "status": "pass",
@@ -1694,41 +1694,38 @@
           "generated_at": "2026-09-12T23:38:00+00:00"
         },
         "north-east": {
-          "status": "fail",
-          "step_mean": 0.0931,
-          "step_max": 0.1221,
-          "drift": 3.18,
-          "loop": 0.1636,
-          "loop_ratio": 1.76,
-          "travel": 0.6,
+          "status": "pass",
+          "step_mean": 0.2045,
+          "step_max": 0.2902,
+          "drift": 2.52,
+          "loop": 0.4164,
+          "loop_ratio": 2.04,
+          "travel": 1.78,
           "pin": 1.0,
           "pad": 0,
           "flash": 0.001,
           "peak": null,
           "reach": null,
           "turn": null,
-          "end_area": 1.001,
+          "end_area": 0.882,
           "canvas": [
             240,
             240
           ],
-          "reasons": [
-            "motion 0.093 outside the calm band 0.1–0.9 — eyeball it",
-            "still standing: the last frame is only 0.16 of the silhouette away from the first — no collapse"
-          ],
-          "sub": "6a79713a-3e2f-44cf-9ca1-d08c45a13992",
-          "group": "2322c8e8-f342-484a-aa14-8301e39b38a5",
+          "reasons": [],
+          "sub": "dc7bb3bb-e798-4808-b62e-ab9da3d41a06",
+          "group": "d7fe4159-5978-443a-9aa5-88948e9e3bad",
           "takes": 1,
-          "version": 1,
+          "version": 2,
           "mirrored": false,
-          "action": "Death - Her legs curl in under her and she collapses onto her belly, then fades away",
+          "action": "Death - Her legs curl in under her and she collapses onto her belly, then fades away, a heavy dramatic collapse, the whole body going down onto the ground",
           "intensity": 0,
-          "rolls": 1,
+          "rolls": 2,
           "frames": 7,
-          "rung": 0,
+          "rung": 1,
           "unwrapped": null,
-          "tries": 1,
-          "generated_at": "2026-09-12T23:38:01+00:00"
+          "tries": 2,
+          "generated_at": "2026-09-13T01:33:13+00:00"
         },
         "north": {
           "status": "pass",
@@ -1798,6 +1795,78 @@
           "tries": 1,
           "generated_at": "2026-09-12T23:38:00+00:00",
           "source": "east"
+        },
+        "north-west": {
+          "status": "pass",
+          "step_mean": 0.2045,
+          "step_max": 0.2902,
+          "drift": 2.52,
+          "loop": 0.4164,
+          "loop_ratio": 2.04,
+          "travel": 1.78,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": 0.001,
+          "peak": null,
+          "reach": null,
+          "turn": null,
+          "end_area": 0.882,
+          "canvas": [
+            240,
+            240
+          ],
+          "reasons": [],
+          "sub": "dc7bb3bb-e798-4808-b62e-ab9da3d41a06",
+          "group": "d7fe4159-5978-443a-9aa5-88948e9e3bad",
+          "takes": 1,
+          "version": 2,
+          "mirrored": true,
+          "action": "Death - Her legs curl in under her and she collapses onto her belly, then fades away, a heavy dramatic collapse, the whole body going down onto the ground",
+          "intensity": 0,
+          "rolls": 2,
+          "frames": 7,
+          "rung": 1,
+          "unwrapped": null,
+          "tries": 2,
+          "generated_at": "2026-09-13T01:33:13+00:00",
+          "source": "north-east"
+        },
+        "south-west": {
+          "status": "warn",
+          "step_mean": 0.1601,
+          "step_max": 0.2272,
+          "drift": 2.89,
+          "loop": 0.3183,
+          "loop_ratio": 1.99,
+          "travel": 2.89,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": 0.0,
+          "peak": null,
+          "reach": null,
+          "turn": null,
+          "end_area": 0.97,
+          "canvas": [
+            240,
+            240
+          ],
+          "reasons": [
+            "barely falls: last vs first 0.32 — eyeball it"
+          ],
+          "sub": "cbbfad15-ac80-4a7a-bbe1-759026d8a94e",
+          "group": "1bfb1f22-f40a-4136-aa29-97dc9d873823",
+          "takes": 1,
+          "version": 4,
+          "mirrored": true,
+          "action": "Death - Her legs curl in under her and she collapses onto her belly, then fades away, the whole body crumples to the ground and dissolves away to nothing",
+          "intensity": 0,
+          "rolls": 4,
+          "frames": 7,
+          "rung": 3,
+          "unwrapped": null,
+          "tries": 4,
+          "generated_at": "2026-09-13T02:04:04+00:00",
+          "source": "south-east"
         }
       },
       "action": "Death - Her legs curl in under her and she collapses onto her belly, then fades away",
@@ -1855,6 +1924,24 @@
           "spider_queen/animations/die_v1/west/04.webp",
           "spider_queen/animations/die_v1/west/05.webp",
           "spider_queen/animations/die_v1/west/06.webp"
+        ],
+        "north-west": [
+          "spider_queen/animations/die_v1/north-west/00.webp",
+          "spider_queen/animations/die_v1/north-west/01.webp",
+          "spider_queen/animations/die_v1/north-west/02.webp",
+          "spider_queen/animations/die_v1/north-west/03.webp",
+          "spider_queen/animations/die_v1/north-west/04.webp",
+          "spider_queen/animations/die_v1/north-west/05.webp",
+          "spider_queen/animations/die_v1/north-west/06.webp"
+        ],
+        "south-west": [
+          "spider_queen/animations/die_v1/south-west/00.webp",
+          "spider_queen/animations/die_v1/south-west/01.webp",
+          "spider_queen/animations/die_v1/south-west/02.webp",
+          "spider_queen/animations/die_v1/south-west/03.webp",
+          "spider_queen/animations/die_v1/south-west/04.webp",
+          "spider_queen/animations/die_v1/south-west/05.webp",
+          "spider_queen/animations/die_v1/south-west/06.webp"
         ]
       },
       "strips": {
@@ -1863,7 +1950,9 @@
         "east": "spider_queen/animations/die_v1__east.webp",
         "north-east": "spider_queen/animations/die_v1__north-east.webp",
         "north": "spider_queen/animations/die_v1__north.webp",
-        "west": "spider_queen/animations/die_v1__west.webp"
+        "west": "spider_queen/animations/die_v1__west.webp",
+        "north-west": "spider_queen/animations/die_v1__north-west.webp",
+        "south-west": "spider_queen/animations/die_v1__south-west.webp"
       }
     }
   }

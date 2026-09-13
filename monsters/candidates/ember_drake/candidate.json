@@ -1584,41 +1584,38 @@
     "die_v1": {
       "directions": {
         "south": {
-          "status": "fail",
-          "step_mean": 0.0618,
-          "step_max": 0.1084,
-          "drift": 4.84,
-          "loop": 0.1651,
-          "loop_ratio": 2.67,
-          "travel": 1.86,
+          "status": "pass",
+          "step_mean": 0.119,
+          "step_max": 0.1688,
+          "drift": 20.5,
+          "loop": 0.4386,
+          "loop_ratio": 3.69,
+          "travel": 3.43,
           "pin": 1.0,
           "pad": 0,
-          "flash": 0.062,
+          "flash": 0.007,
           "peak": null,
           "reach": null,
           "turn": null,
-          "end_area": 0.985,
+          "end_area": 0.88,
           "canvas": [
             240,
             240
           ],
-          "reasons": [
-            "motion 0.062 outside the calm band 0.1–0.9 — eyeball it",
-            "still standing: the last frame is only 0.17 of the silhouette away from the first — no collapse"
-          ],
-          "sub": "1114a508-8f21-4698-98d9-c535f2c75c11",
-          "group": "d7b09a56-d437-4d3f-86e7-309ba4aa54ee",
+          "reasons": [],
+          "sub": "f4053888-30ab-477c-8431-06b2030462ca",
+          "group": "6ff0acd0-2d1a-46eb-8bc2-1cc83a3e874b",
           "takes": 1,
-          "version": 1,
+          "version": 2,
           "mirrored": false,
-          "action": "Death - The glow in its plates goes dark, it slumps down onto its side and fades away",
+          "action": "Death - The glow in its plates goes dark, it slumps down onto its side and fades away, a heavy dramatic collapse, the whole body going down onto the ground",
           "intensity": 0,
-          "rolls": 1,
+          "rolls": 2,
           "frames": 7,
-          "rung": 0,
+          "rung": 1,
           "unwrapped": null,
-          "tries": 1,
-          "generated_at": "2026-09-12T23:30:53+00:00"
+          "tries": 2,
+          "generated_at": "2026-09-13T01:34:52+00:00"
         },
         "south-east": {
           "status": "pass",
@@ -1689,41 +1686,38 @@
           "generated_at": "2026-09-12T23:30:55+00:00"
         },
         "north-east": {
-          "status": "fail",
-          "step_mean": 0.0821,
-          "step_max": 0.1339,
-          "drift": 5.78,
-          "loop": 0.1659,
-          "loop_ratio": 2.02,
-          "travel": 1.52,
+          "status": "pass",
+          "step_mean": 0.1917,
+          "step_max": 0.3113,
+          "drift": 40.95,
+          "loop": 0.6985,
+          "loop_ratio": 3.64,
+          "travel": 4.42,
           "pin": 1.0,
           "pad": 0,
-          "flash": 0.144,
+          "flash": 0.117,
           "peak": null,
           "reach": null,
           "turn": null,
-          "end_area": 0.987,
+          "end_area": 0.798,
           "canvas": [
             240,
             240
           ],
-          "reasons": [
-            "motion 0.082 outside the calm band 0.1–0.9 — eyeball it",
-            "still standing: the last frame is only 0.17 of the silhouette away from the first — no collapse"
-          ],
-          "sub": "9ccbdcf2-aae4-4708-8a75-d6906005284e",
-          "group": "fdd5b5f9-7390-4182-9306-a471c75a4dbb",
+          "reasons": [],
+          "sub": "baf56ea4-34c2-4f11-839b-0cd8b5730e85",
+          "group": "f3256497-3221-4667-a40d-1ae392ec3558",
           "takes": 1,
-          "version": 1,
+          "version": 2,
           "mirrored": false,
-          "action": "Death - The glow in its plates goes dark, it slumps down onto its side and fades away",
+          "action": "Death - The glow in its plates goes dark, it slumps down onto its side and fades away, a heavy dramatic collapse, the whole body going down onto the ground",
           "intensity": 0,
-          "rolls": 1,
+          "rolls": 2,
           "frames": 7,
-          "rung": 0,
+          "rung": 1,
           "unwrapped": null,
-          "tries": 1,
-          "generated_at": "2026-09-12T23:30:56+00:00"
+          "tries": 2,
+          "generated_at": "2026-09-13T01:34:52+00:00"
         },
         "north": {
           "status": "warn",
@@ -1831,6 +1825,41 @@
           "tries": 1,
           "generated_at": "2026-09-12T23:30:55+00:00",
           "source": "east"
+        },
+        "north-west": {
+          "status": "pass",
+          "step_mean": 0.1917,
+          "step_max": 0.3113,
+          "drift": 40.95,
+          "loop": 0.6985,
+          "loop_ratio": 3.64,
+          "travel": 4.42,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": 0.117,
+          "peak": null,
+          "reach": null,
+          "turn": null,
+          "end_area": 0.798,
+          "canvas": [
+            240,
+            240
+          ],
+          "reasons": [],
+          "sub": "baf56ea4-34c2-4f11-839b-0cd8b5730e85",
+          "group": "f3256497-3221-4667-a40d-1ae392ec3558",
+          "takes": 1,
+          "version": 2,
+          "mirrored": true,
+          "action": "Death - The glow in its plates goes dark, it slumps down onto its side and fades away, a heavy dramatic collapse, the whole body going down onto the ground",
+          "intensity": 0,
+          "rolls": 2,
+          "frames": 7,
+          "rung": 1,
+          "unwrapped": null,
+          "tries": 2,
+          "generated_at": "2026-09-13T01:34:52+00:00",
+          "source": "north-east"
         }
       },
       "action": "Death - The glow in its plates goes dark, it slumps down onto its side and fades away",
@@ -1897,6 +1926,15 @@
           "ember_drake/animations/die_v1/west/04.webp",
           "ember_drake/animations/die_v1/west/05.webp",
           "ember_drake/animations/die_v1/west/06.webp"
+        ],
+        "north-west": [
+          "ember_drake/animations/die_v1/north-west/00.webp",
+          "ember_drake/animations/die_v1/north-west/01.webp",
+          "ember_drake/animations/die_v1/north-west/02.webp",
+          "ember_drake/animations/die_v1/north-west/03.webp",
+          "ember_drake/animations/die_v1/north-west/04.webp",
+          "ember_drake/animations/die_v1/north-west/05.webp",
+          "ember_drake/animations/die_v1/north-west/06.webp"
         ]
       },
       "strips": {
@@ -1906,7 +1944,8 @@
         "north-east": "ember_drake/animations/die_v1__north-east.webp",
         "north": "ember_drake/animations/die_v1__north.webp",
         "south-west": "ember_drake/animations/die_v1__south-west.webp",
-        "west": "ember_drake/animations/die_v1__west.webp"
+        "west": "ember_drake/animations/die_v1__west.webp",
+        "north-west": "ember_drake/animations/die_v1__north-west.webp"
       }
     }
   }

@@ -1576,40 +1576,40 @@
     "die_v1": {
       "directions": {
         "south": {
-          "status": "fail",
-          "step_mean": 0.1264,
-          "step_max": 0.1908,
-          "drift": 13.04,
-          "loop": 0.1844,
-          "loop_ratio": 1.46,
-          "travel": 0.2,
+          "status": "pass",
+          "step_mean": 0.1872,
+          "step_max": 0.2922,
+          "drift": 43.85,
+          "loop": 0.7617,
+          "loop_ratio": 4.07,
+          "travel": 0.75,
           "pin": 1.0,
-          "pad": 0,
-          "flash": 0.138,
+          "pad": 4,
+          "flash": 0.031,
           "peak": null,
           "reach": null,
           "turn": null,
-          "end_area": 0.973,
+          "end_area": 0.889,
           "canvas": [
-            232,
-            232
+            240,
+            240
           ],
           "reasons": [
-            "still standing: the last frame is only 0.18 of the silhouette away from the first — no collapse"
+            "canvas grown by 4 px a side to hold the motion"
           ],
-          "sub": "cdba3e8e-c38a-4842-92aa-ae8e23cb0943",
-          "group": "e20ceede-65f5-413b-99cb-5aa55434a2f6",
+          "sub": "f2dac87b-3ef6-44d7-91a5-9456fe294025",
+          "group": "a52d171e-0b61-44d8-9159-38b69639e8bd",
           "takes": 1,
-          "version": 1,
+          "version": 2,
           "mirrored": false,
-          "action": "Death - Cracks run through the crystal and it collapses into a pile of crystal shards on the ground, then fades away",
+          "action": "Death - Cracks run through the crystal and it collapses into a pile of crystal shards on the ground, then fades away, a heavy dramatic collapse, the whole body going down onto the ground",
           "intensity": 0,
-          "rolls": 1,
+          "rolls": 2,
           "frames": 7,
-          "rung": 0,
+          "rung": 1,
           "unwrapped": null,
-          "tries": 1,
-          "generated_at": "2026-09-12T23:34:09+00:00"
+          "tries": 2,
+          "generated_at": "2026-09-13T01:39:05+00:00"
         },
         "south-east": {
           "status": "pass",

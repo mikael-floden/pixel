@@ -1546,77 +1546,74 @@
     "die_v1": {
       "directions": {
         "south": {
-          "status": "fail",
-          "step_mean": 0.2489,
-          "step_max": 0.4929,
-          "drift": 7.37,
-          "loop": 0.2213,
-          "loop_ratio": 0.89,
-          "travel": 2.24,
+          "status": "pass",
+          "step_mean": 0.3094,
+          "step_max": 0.4197,
+          "drift": 24.6,
+          "loop": 0.6337,
+          "loop_ratio": 2.05,
+          "travel": 1.51,
           "pin": 1.0,
           "pad": 1,
-          "flash": 0.326,
+          "flash": 0.107,
           "peak": null,
           "reach": null,
           "turn": null,
-          "end_area": 0.898,
+          "end_area": 0.86,
           "canvas": [
             130,
             130
           ],
           "reasons": [
-            "still standing: the last frame is only 0.22 of the silhouette away from the first — no collapse",
             "canvas grown by 1 px a side to hold the motion"
           ],
-          "sub": "7e4c1dba-bff7-4e52-b0eb-66ed826cf36d",
-          "group": "5302d263-09d8-4c34-bf36-42340164de59",
+          "sub": "66366b83-1a64-47f8-bc21-af0c5a71b742",
+          "group": "7ba2792d-2324-40c5-9439-2834e0600ffc",
           "takes": 1,
-          "version": 1,
+          "version": 2,
           "mirrored": false,
-          "action": "Death - Sinks down, the veil and dress dissolving into mist that drifts apart and fades away",
+          "action": "Death - Sinks down, the veil and dress dissolving into mist that drifts apart and fades away, a heavy dramatic collapse, the whole body going down onto the ground",
           "intensity": 0,
-          "rolls": 1,
+          "rolls": 2,
           "frames": 7,
-          "rung": 0,
+          "rung": 1,
           "unwrapped": null,
-          "tries": 1,
-          "generated_at": "2026-09-12T23:11:43+00:00"
+          "tries": 2,
+          "generated_at": "2026-09-13T01:33:10+00:00"
         },
         "south-east": {
-          "status": "fail",
-          "step_mean": 0.185,
-          "step_max": 0.356,
-          "drift": 6.01,
-          "loop": 0.224,
-          "loop_ratio": 1.21,
-          "travel": 3.02,
+          "status": "pass",
+          "step_mean": 0.3569,
+          "step_max": 0.5573,
+          "drift": 27.87,
+          "loop": 0.9672,
+          "loop_ratio": 2.71,
+          "travel": 4.84,
           "pin": 1.0,
           "pad": 0,
-          "flash": 0.245,
+          "flash": 0.133,
           "peak": null,
           "reach": null,
           "turn": null,
-          "end_area": 0.95,
+          "end_area": 0.933,
           "canvas": [
             128,
             128
           ],
-          "reasons": [
-            "still standing: the last frame is only 0.22 of the silhouette away from the first — no collapse"
-          ],
-          "sub": "f73258dc-7f57-4594-9800-006386c2d0a0",
-          "group": "58811a0b-00fa-48c0-a7d8-3f954622c21e",
+          "reasons": [],
+          "sub": "09df6731-f4f0-4a40-85aa-407aaa9cc5f4",
+          "group": "cf49a4aa-6c2e-4ce9-8ae5-7297c6e12bdf",
           "takes": 1,
-          "version": 1,
+          "version": 2,
           "mirrored": false,
-          "action": "Death - Sinks down, the veil and dress dissolving into mist that drifts apart and fades away",
+          "action": "Death - Sinks down, the veil and dress dissolving into mist that drifts apart and fades away, a heavy dramatic collapse, the whole body going down onto the ground",
           "intensity": 0,
-          "rolls": 1,
+          "rolls": 2,
           "frames": 7,
-          "rung": 0,
+          "rung": 1,
           "unwrapped": null,
-          "tries": 1,
-          "generated_at": "2026-09-12T23:11:44+00:00"
+          "tries": 2,
+          "generated_at": "2026-09-13T01:33:10+00:00"
         },
         "east": {
           "status": "pass",
@@ -1796,6 +1793,41 @@
           "tries": 1,
           "generated_at": "2026-09-12T23:11:48+00:00",
           "source": "north-east"
+        },
+        "south-west": {
+          "status": "pass",
+          "step_mean": 0.3569,
+          "step_max": 0.5573,
+          "drift": 27.87,
+          "loop": 0.9672,
+          "loop_ratio": 2.71,
+          "travel": 4.84,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": 0.133,
+          "peak": null,
+          "reach": null,
+          "turn": null,
+          "end_area": 0.933,
+          "canvas": [
+            128,
+            128
+          ],
+          "reasons": [],
+          "sub": "09df6731-f4f0-4a40-85aa-407aaa9cc5f4",
+          "group": "cf49a4aa-6c2e-4ce9-8ae5-7297c6e12bdf",
+          "takes": 1,
+          "version": 2,
+          "mirrored": true,
+          "action": "Death - Sinks down, the veil and dress dissolving into mist that drifts apart and fades away, a heavy dramatic collapse, the whole body going down onto the ground",
+          "intensity": 0,
+          "rolls": 2,
+          "frames": 7,
+          "rung": 1,
+          "unwrapped": null,
+          "tries": 2,
+          "generated_at": "2026-09-13T01:33:10+00:00",
+          "source": "south-east"
         }
       },
       "action": "Death - Sinks down, the veil and dress dissolving into mist that drifts apart and fades away",
@@ -1862,6 +1894,15 @@
           "veil_wraith/animations/die_v1/north-west/04.webp",
           "veil_wraith/animations/die_v1/north-west/05.webp",
           "veil_wraith/animations/die_v1/north-west/06.webp"
+        ],
+        "south-west": [
+          "veil_wraith/animations/die_v1/south-west/00.webp",
+          "veil_wraith/animations/die_v1/south-west/01.webp",
+          "veil_wraith/animations/die_v1/south-west/02.webp",
+          "veil_wraith/animations/die_v1/south-west/03.webp",
+          "veil_wraith/animations/die_v1/south-west/04.webp",
+          "veil_wraith/animations/die_v1/south-west/05.webp",
+          "veil_wraith/animations/die_v1/south-west/06.webp"
         ]
       },
       "strips": {
@@ -1871,7 +1912,8 @@
         "north-east": "veil_wraith/animations/die_v1__north-east.webp",
         "north": "veil_wraith/animations/die_v1__north.webp",
         "west": "veil_wraith/animations/die_v1__west.webp",
-        "north-west": "veil_wraith/animations/die_v1__north-west.webp"
+        "north-west": "veil_wraith/animations/die_v1__north-west.webp",
+        "south-west": "veil_wraith/animations/die_v1__south-west.webp"
       }
     }
   }

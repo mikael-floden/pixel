@@ -1689,41 +1689,40 @@
     "die_v1": {
       "directions": {
         "south": {
-          "status": "fail",
-          "step_mean": 0.0927,
-          "step_max": 0.1141,
-          "drift": 1.27,
-          "loop": 0.2041,
-          "loop_ratio": 2.2,
-          "travel": 0.36,
+          "status": "warn",
+          "step_mean": 0.1335,
+          "step_max": 0.2346,
+          "drift": 3.4,
+          "loop": 0.3141,
+          "loop_ratio": 2.35,
+          "travel": 0.56,
           "pin": 1.0,
           "pad": 0,
-          "flash": 0.0,
+          "flash": 0.059,
           "peak": null,
           "reach": null,
           "turn": null,
-          "end_area": 0.978,
+          "end_area": 0.94,
           "canvas": [
             40,
             40
           ],
           "reasons": [
-            "motion 0.093 outside the calm band 0.1–0.9 — eyeball it",
-            "still standing: the last frame is only 0.20 of the silhouette away from the first — no collapse"
+            "barely falls: last vs first 0.31 — eyeball it"
           ],
-          "sub": "bbab66c8-15b5-4f38-acce-c02ead479865",
-          "group": "7297a63e-6e17-4e89-b372-eead088e7db3",
+          "sub": "72dddf69-6fcb-4297-91d2-6f21f74f8f23",
+          "group": "35911826-7c6c-4bbd-9814-06c1fcd58cbf",
           "takes": 1,
-          "version": 1,
+          "version": 2,
           "mirrored": false,
-          "action": "Death - The ember glow goes out, it slumps down onto its side and fades away",
+          "action": "Death - The ember glow goes out, it slumps down onto its side and fades away, a heavy dramatic collapse, the whole body going down onto the ground",
           "intensity": 0,
-          "rolls": 1,
+          "rolls": 2,
           "frames": 7,
-          "rung": 0,
+          "rung": 1,
           "unwrapped": null,
-          "tries": 1,
-          "generated_at": "2026-09-12T23:50:49+00:00"
+          "tries": 2,
+          "generated_at": "2026-09-13T01:34:52+00:00"
         },
         "south-east": {
           "status": "pass",
@@ -1760,40 +1759,38 @@
           "generated_at": "2026-09-12T23:50:49+00:00"
         },
         "east": {
-          "status": "fail",
-          "step_mean": 0.1046,
-          "step_max": 0.134,
-          "drift": 0.91,
-          "loop": 0.2409,
-          "loop_ratio": 2.3,
-          "travel": 1.27,
+          "status": "pass",
+          "step_mean": 0.1389,
+          "step_max": 0.226,
+          "drift": 2.88,
+          "loop": 0.4276,
+          "loop_ratio": 3.08,
+          "travel": 0.48,
           "pin": 1.0,
           "pad": 0,
-          "flash": 0.0,
+          "flash": 0.001,
           "peak": null,
           "reach": null,
           "turn": null,
-          "end_area": 0.962,
+          "end_area": 0.913,
           "canvas": [
             40,
             40
           ],
-          "reasons": [
-            "still standing: the last frame is only 0.24 of the silhouette away from the first — no collapse"
-          ],
-          "sub": "beeaecb5-0b59-493b-b72c-f4833637a072",
-          "group": "9f4a4e20-9bd5-419f-ac29-55a607441ca9",
+          "reasons": [],
+          "sub": "6428798b-b07d-4dcf-867e-96b14b089a80",
+          "group": "e863a880-7da0-4382-95ad-a7d359e3b708",
           "takes": 1,
-          "version": 1,
+          "version": 2,
           "mirrored": false,
-          "action": "Death - The ember glow goes out, it slumps down onto its side and fades away",
+          "action": "Death - The ember glow goes out, it slumps down onto its side and fades away, a heavy dramatic collapse, the whole body going down onto the ground",
           "intensity": 0,
-          "rolls": 1,
+          "rolls": 2,
           "frames": 7,
-          "rung": 0,
+          "rung": 1,
           "unwrapped": null,
-          "tries": 1,
-          "generated_at": "2026-09-12T23:50:50+00:00"
+          "tries": 2,
+          "generated_at": "2026-09-13T01:34:53+00:00"
         },
         "north-east": {
           "status": "warn",
@@ -1936,6 +1933,41 @@
           "tries": 1,
           "generated_at": "2026-09-12T23:50:50+00:00",
           "source": "north-east"
+        },
+        "west": {
+          "status": "pass",
+          "step_mean": 0.1389,
+          "step_max": 0.226,
+          "drift": 2.88,
+          "loop": 0.4276,
+          "loop_ratio": 3.08,
+          "travel": 0.48,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": 0.001,
+          "peak": null,
+          "reach": null,
+          "turn": null,
+          "end_area": 0.913,
+          "canvas": [
+            40,
+            40
+          ],
+          "reasons": [],
+          "sub": "6428798b-b07d-4dcf-867e-96b14b089a80",
+          "group": "e863a880-7da0-4382-95ad-a7d359e3b708",
+          "takes": 1,
+          "version": 2,
+          "mirrored": true,
+          "action": "Death - The ember glow goes out, it slumps down onto its side and fades away, a heavy dramatic collapse, the whole body going down onto the ground",
+          "intensity": 0,
+          "rolls": 2,
+          "frames": 7,
+          "rung": 1,
+          "unwrapped": null,
+          "tries": 2,
+          "generated_at": "2026-09-13T01:34:53+00:00",
+          "source": "east"
         }
       },
       "action": "Death - The ember glow goes out, it slumps down onto its side and fades away",
@@ -2002,6 +2034,15 @@
           "ash_hatchling/animations/die_v1/north-west/04.webp",
           "ash_hatchling/animations/die_v1/north-west/05.webp",
           "ash_hatchling/animations/die_v1/north-west/06.webp"
+        ],
+        "west": [
+          "ash_hatchling/animations/die_v1/west/00.webp",
+          "ash_hatchling/animations/die_v1/west/01.webp",
+          "ash_hatchling/animations/die_v1/west/02.webp",
+          "ash_hatchling/animations/die_v1/west/03.webp",
+          "ash_hatchling/animations/die_v1/west/04.webp",
+          "ash_hatchling/animations/die_v1/west/05.webp",
+          "ash_hatchling/animations/die_v1/west/06.webp"
         ]
       },
       "strips": {
@@ -2011,7 +2052,8 @@
         "north-east": "ash_hatchling/animations/die_v1__north-east.webp",
         "north": "ash_hatchling/animations/die_v1__north.webp",
         "south-west": "ash_hatchling/animations/die_v1__south-west.webp",
-        "north-west": "ash_hatchling/animations/die_v1__north-west.webp"
+        "north-west": "ash_hatchling/animations/die_v1__north-west.webp",
+        "west": "ash_hatchling/animations/die_v1__west.webp"
       }
     }
   }
