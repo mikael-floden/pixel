@@ -416,6 +416,9 @@ ground NAME per cell), so a tiles publish never repoints anything here.
   <world_dir>`, never a rebuild** (a rebuild re-dresses the map; maintainer
   2026-09-13: "I was asking for a placement correction only!"); `--check
   <world_dir> --game <dump>` proves the mirror against the game's own stamp.
+- `lavafill.py` — the massif's lava lakes: the growth rule `world3grow.lava()`
+  builds with, and `--apply <world_dir>` to grow a world that already ships
+  without rebuilding (and re-dressing) it (`spec/WORLD3.md` → lava).
 - `spawns.py` / `npcs.py` / `places.py` — the sidecar derivers + `--check` gates.
 - `sceneryscale.py` — the size the GAME draws scenery at.
 

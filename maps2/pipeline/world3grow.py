@@ -78,6 +78,7 @@ TOWN_AT = (OFF[0] - 72, OFF[1] - 68)   # fallback town target; the real one
                           # derives from where the ridge ends and the valley
                           # opens
 
+import lavafill
 import navfit
 import world3
 from sceneryscale import drawn_px_for_piece
@@ -2271,8 +2272,8 @@ class Grow:
     CAVE_ROCK = ("grey_stone", "black_rock")
     CAVE_ICE_MIN = 4
     CAVE_SLIME_PER = 4  # one slime pool per this many rooms of a complex
-    LAVA_MIN = 40       # a black_rock shelf this big on the massif gets a lava pool
-    LAVA_PER = 200      # ... and one more per this many cells
+    LAVA_MIN = 40       # a black_rock shelf this big on the massif gets lava
+    LAVA_PER = 200      # ... one seed per this many cells, each grown into a lake
     LAVA_LEVEL = 20     # the massif, not a lowland outcrop
     CAVE_OK = ("braziers/", "crystals/", "geodes/", "cup_fungi/", "mushrooms/",
                "cairns/", "beast_skulls/", "frost_flowers/",
@@ -2585,12 +2586,15 @@ class Grow:
         lava on top of the mountain. Again no hard rules ... some
         combinations should just occur more often than others."): every
         black_rock shelf of LAVA_MIN cells or more at LAVA_LEVEL or higher
-        gets a pool, one more per LAVA_PER cells, each a blob of interior
-        cells ringed by walkable rock, clear of roads, ramps, decks, houses,
-        caves and the wild. Lava is a liquid to the game (SURFACES: swum
-        slower than water, 4 HP a second) and to this world (`liquids`);
-        the walkable ring means a pool is a hazard beside the way, never
-        the way itself."""
+        gets a seed, one more per LAVA_PER cells, clear of roads, ramps,
+        decks, houses, caves and the wild - and every seed GROWS into a lake
+        (`lavafill.field_for`, the rule this shares with the in-place pass;
+        maintainer 2026-09-13: "just small spots and doesn't feel epic
+        enough"). A pool only ever takes cells whose whole 5x5 is allowed
+        ground, so a walkable ring always survives: lava is a liquid to the
+        game (SURFACES: swum slower than water, 4 HP a second) and to this
+        world (`liquids`), and the ring means a pool is a hazard beside the
+        way, never the way itself."""
         gi = self.gi
         keep = set(self.floor_cells) | set(getattr(self, "door_cells", ()))
         keep |= {(c["x"], c["y"]) for dk in self.doc["decks"] for c in dk["cells"]}
@@ -2614,16 +2618,24 @@ class Grow:
             anchor = min(cells)
             r = _rng32((anchor[0] * 2654435761 ^ anchor[1] * 40503 ^ 0x1A7A) & 0xffffffff)
             want = 1 + len(cells) // self.LAVA_PER
+            seeds = set()
+            free = set(ok)
             for _ in range(want):
-                pool = self._pool_blob(ok, r, 3 + int(r() * 5))
-                if not pool:
+                seed = self._pool_blob(free, r, 3)
+                if not seed:
                     break
-                pools |= pool
-                for c in pool:
-                    ok.discard(c)
-                    for dx in (-2, -1, 0, 1, 2):        # pools keep apart
-                        for dy in (-2, -1, 0, 1, 2):
-                            ok.discard((c[0] + dx, c[1] + dy))
+                seeds |= seed
+                for c in seed:
+                    for dx in range(-6, 7):             # the seeds start apart
+                        for dy in range(-6, 7):
+                            free.discard((c[0] + dx, c[1] + dy))
+            if not seeds:
+                continue
+            # ...AND EVERY SEED GROWS INTO A LAKE (maintainer 2026-09-13: "the
+            # lava ... is just small spots and doesn't feel epic enough"). The
+            # rule is lavafill.py, which also applies it to a world that
+            # already ships without rebuilding (and re-dressing) it.
+            pools |= lavafill.field_for(ok, seeds, lavafill.shelf_seed(cells))
         for (x, y) in pools:
             self.grd[y][x] = gi["lava"]
         before = len(self.doc["scenery"])

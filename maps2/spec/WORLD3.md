@@ -387,19 +387,53 @@ Maintainer 2026-09-06: *"both slime and lava have never been used ... Lava
 feels best together with black_rock. So maybe we need some lava on top of
 the mountain. Again no hard rules. This game can combine anything with
 anything, some placements/combinations should just occur more often than
-others."* `lava()` (after the terrace colouring, which decides which shelves
-are black rock): every black_rock terrace of `LAVA_MIN = 40` cells or more at
-`LAVA_LEVEL = 20` or higher gets a pool, one more per `LAVA_PER = 200`
-cells, each a blob of 3–7 cells whose every cell has its whole 5×5 square in
-the shelf, pools 2 cells apart, clear of roads (and 2 cells beside them),
-ramps, decks, houses, caves and the wild. **Lava is a liquid**: the world
-declares `liquids: ["water", "deep_water", "lava"]` (that exact list is
-asserted by games2's parity test) and the engine decides what it means
-(`SURFACES.lava`: swum at 0.4 speed, 4 HP a second). In the reachability
-audit lava is swum like water — only deep water is off limits — so the
-walkable ring makes a pool a hazard beside the way, never the way itself.
-the_game: 31 lava cells in six pools on the level-24 shelf. `slime` is in
-the legend and is NOT a liquid (the game walks it).
+others."* **AND IT IS A FLOW, NOT A DAB** (maintainer 2026-09-13: *"the lava you have
+placed on the mountain is just small spots and doesn't feel epic enough. Can't
+you make the lava a bit bigger?"* — he was looking at 23 cells in five 3–6 cell
+pools). `lava()` (after the terrace colouring, which decides which shelves are
+black rock): every black_rock terrace of `LAVA_MIN = 40` cells or more at
+`LAVA_LEVEL = 20` or higher gets a seed, one more per `LAVA_PER = 200` cells,
+clear of roads (and 2 cells beside them), ramps, decks, houses, caves and the
+wild — and **every seed then GROWS into a lake** (`maps2/pipeline/lavafill.py`,
+the rule the generator and the in-place pass share).
+
+- **What bounds the size**: a pool may only take cells whose whole 5×5 square
+  is allowed ground, so a walkable ring of rock always survives and a lava cell
+  can never border anything but black_rock (the containment collar). On
+  the_game that interior is ONE 115-cell region of the level-24 shelf (562
+  cells); every other black_rock shelf in the world has an interior of 0–2
+  cells and gets no lava at all, which is why the lava is all in one place.
+- **How big**: `LAVA_SHARE = 0.78` of that interior. Rendered and looked at:
+  20% is the dabs he rejected, 62% is four ponds, 78% is three lava FLOWS that
+  read from the camera, and 100% floods the interior into one sheet with a
+  2-cell ledge round it — a corridor, not a mountain.
+- **What shape**: the candidate touching the most of the field wins
+  (compactness), nudged by a smooth value-noise field (lobes and bays), and
+  **every pool grows in turn, one cell per round**. Growing the field as a
+  whole spends the whole budget on the biggest cluster and leaves the outliers
+  as dabs — measured: one lake of 48 and four spots of 3–6. Pools that meet
+  MERGE; a lake with two arms is the point.
+
+**Lava is a liquid**: the world declares
+`liquids: ["water", "deep_water", "lava"]` (that exact list is asserted by
+games2's parity test) and the engine decides what it means (`SURFACES.lava`:
+swum at 0.4 speed, 4 HP a second). In the reachability audit lava is swum like
+water — only deep water is off limits — so the walkable ring makes a pool a
+hazard beside the way, never the way itself. A monster never stands in it
+either, whatever a zone polygon covers: the game builds a zone's roster from
+its STANDABLE cells and lava is not one (`buildZoneRuntimes`).
+
+the_game: **90 lava cells in three flows** on the level-24 shelf, 23 before.
+`slime` is in the legend and is NOT a liquid (the game walks it).
+
+A terrain change reaches the shipped world the way a placement change does
+— `python3 maps2/pipeline/lavafill.py --apply maps2/worlds3/the_game`, never a
+rebuild (see `scenery` above for why): it grows the pools the build already
+placed, refuses every cell a footprint, an NPC, a road, a room, a deck, a wall,
+a ramp, a door or a cave floor stands on, re-checks the collar and the
+reachable ground, and writes nothing else. Measured on the push that grew
+them: 67 cells black_rock → lava, every other field of world.json byte for
+byte what it was, all 87 spawn zones still holding standable ground.
 
 ### the cave — dug, not inherited
 
