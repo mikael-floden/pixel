@@ -234,6 +234,75 @@ test("a nav-open cell the body cannot fit through: the escape is walked before i
   assert.ok(esc!.path.every((q) => !(Math.floor(q.x / CELL_WU) === 15 && Math.floor(q.y / CELL_WU) === 15)), `no waypoint in the pinch cell: ${esc!.path.map((q) => `(${(q.x / CELL_WU).toFixed(2)},${(q.y / CELL_WU).toFixed(2)})`).join(" ")}`);
 });
 
+/** A ROOF'S OVERHANG (his 273.3,186.0): a house's roof deck also covers a strip
+ *  OUTSIDE its wall — cols 5..7 here, the wall at col 4 — and a brazier stands
+ *  at the roof's edge on that strip. A body on the strip pressing east into the
+ *  brazier has every way round out from under the roof. */
+function overhangWorld(): TerrainGrid {
+  const rows = Array.from({ length: H }, () => Array.from({ length: W }, (_, c) => ({ t: "grass", l: c === 4 ? 24 : 0 })));
+  const cells: { col: number; row: number }[] = [];
+  for (let r = 0; r < H; r++) for (let c = 0; c <= 7; c++) cells.push({ col: c, row: r });
+  const grid = buildTerrainGrid(W, H, rows, [], [{ level: 24, thickness: 1, cells }]);
+  const bbox: SceneryBboxDoc = { pieces: { p: { wph: 100, cpx: CHARACTER_BODY_PX, sprite: "s" } }, boxes: { s: [0, 0, 100, 100, 100, 100] } };
+  const hitbox: SceneryHitboxDoc = { "scenery/p": { boxes: [{ ax: 0, ay: 50, rx: 30, ry: 22, rot: 0 }] } };
+  stampSceneryCollision(grid, [{ piece: "p", x: 8.2, y: 15.4 }], bbox, hitbox, ISO_GEOMETRY_MAPS3);
+  return grid;
+}
+
+/** A ROOFED ROOM with its door in the south wall and a table in the middle:
+ *  the case the roof rule was built for. Walls (level 24) ring cols 6..16 x
+ *  rows 10..20, the door at (11,20), the roof over the room; the table sits at
+ *  (11.5, 15.5) and the body presses WEST into it from the east. */
+function roomWorld(): TerrainGrid {
+  const rows = Array.from({ length: H }, (_, r) => Array.from({ length: W }, (_, c) => {
+    const ring = ((c === 6 || c === 16) && r >= 10 && r <= 20) || ((r === 10 || r === 20) && c >= 6 && c <= 16);
+    const door = c === 11 && r === 20;
+    return { t: "grass", l: ring && !door ? 24 : 0 };
+  }));
+  const cells: { col: number; row: number }[] = [];
+  for (let r = 11; r <= 19; r++) for (let c = 7; c <= 15; c++) cells.push({ col: c, row: r });
+  cells.push({ col: 11, row: 20 });
+  const grid = buildTerrainGrid(W, H, rows, [], [{ level: 24, thickness: 1, cells }]);
+  const bbox: SceneryBboxDoc = { pieces: { p: { wph: 100, cpx: CHARACTER_BODY_PX, sprite: "s" } }, boxes: { s: [0, 0, 100, 100, 100, 100] } };
+  const hitbox: SceneryHitboxDoc = { "scenery/p": { boxes: [{ ax: 0, ay: 50, rx: 70, ry: 30, shape: "rect", rot: 0 }] } };
+  stampSceneryCollision(grid, [{ piece: "p", x: 11.5, y: 15.5 }], bbox, hitbox, ISO_GEOMETRY_MAPS3);
+  return grid;
+}
+
+test("a prop's escape crosses a roof's edge only AHEAD of the body: out from under the overhang, never through the door beside", () => {
+  // Maintainer 2026-09-13 at 273.3,186.0 running SE: "I get stuck between
+  // the scenery and the wall. I kinda expected the nav to run and navigate me
+  // around, but it doesn't" — the old rule held every prop escape under the
+  // roof it started under, and on the overhang every goal ahead is outside.
+  const g = overhangWorld();
+  const under = (x: number, y: number) => g.deck[Math.floor(y / CELL_WU) * g.width + Math.floor(x / CELL_WU)] >= 0;
+  const p = { x: 6.6 * CELL_WU, y: 15.4 * CELL_WU };
+  assert.ok(under(p.x, p.y), "the body starts under the roof's overhang");
+  assert.equal(levelAtWorld(g, p.x, p.y), 0, "on the ground, not on the roof");
+  const r = hold(g, p, 1, 1, 150, true); // screen down-right = world +x, into the brazier
+  assert.ok(r.x / CELL_WU > 9.5, `round the brazier and on, out from under the roof (x ${(r.x / CELL_WU).toFixed(2)})`);
+  assert.ok(r.frozen < 15, `never stands for long (${r.frozen} ticks)`);
+  assert.ok(r.deflected > 0, "the escape did it");
+  // The room: pressing west into the table, the door is BESIDE the ask. The
+  // body stays under the roof for the whole hold — round the table, never
+  // out through the door and round the outside.
+  const room = roomWorld();
+  const start = { x: 13.2 * CELL_WU, y: 15.5 * CELL_WU };
+  const walk = { maxClimb: WALK_CLIMB, canSwim: true };
+  let x = start.x, y = start.y, t = 0, trip: AutopilotTrip | null = null, left = 0;
+  const memo: SlideMemo = { ax: 0, ay: 0 };
+  for (let i = 0; i < 150; i++) {
+    t += 33;
+    const elev = levelAtWorld(room, x, y);
+    const w = walkHeading(room, x, y, -1, -1, memo, { nowMs: t, trip, fromElev: elev, worldW: W * CELL_WU, worldH: H * CELL_WU });
+    trip = w.trip;
+    const m = stepMovement(x, y, w.ax, w.ay, false, 0.033, makeBlockedElev(room, walk, () => elev), 1, true, W * CELL_WU, H * CELL_WU, makeSideBlocked(room, walk, () => elev), { screenSlide: trip === null });
+    x = m.x; y = m.y;
+    if (room.deck[Math.floor(y / CELL_WU) * room.width + Math.floor(x / CELL_WU)] < 0) left++;
+  }
+  assert.equal(left, 0, `the body left the roof ${left} ticks — the door beside the table was taken`);
+});
+
 test("through walkHeading, under the roof: the table never gets the wall's rules — the slide is the raw walk, square on the escape takes the body round", () => {
   const g = tableWorld(undefined, true);
   const p = touching(g);

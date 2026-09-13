@@ -4081,16 +4081,34 @@ const ESCAPE_GOALS_PROP: readonly [number, number][] = [
  *  a bulge question — see `sameRoof`. */
 const ESCAPE_PROP_CORRIDOR_CELLS = 4.5;
 
-/** A PROP'S ESCAPE STAYS UNDER THE ROOF IT STARTED UNDER — or out from under
- *  it. A route that leaves the room through the door and comes round the
- *  outside to a goal beyond the wall is a journey, not a way round the table,
- *  and the spawn house's did exactly that (3.7 cells off the ask's line,
- *  inside the corridor a 5-cell footprint needs). A TERRAIN wall's escape is
- *  not held to this: pressed to the big house's south wall, the way out is
- *  the door, and holding it in put the body on the wall for good (2026-09-13).
- *  "Under" is a deck above the feet; a body ON a bridge deck is under nothing
- *  and is not constrained. */
-function sameRoof(grid: TerrainGrid, trip: AutopilotTrip, x: number, y: number, elev: number | undefined): boolean {
+/** A PROP'S ESCAPE CROSSES A ROOF'S EDGE ONLY AHEAD OF THE BODY — the way the
+ *  thumb points — never through a door beside or behind it. A route that
+ *  leaves the room through the door and comes round the outside to a goal
+ *  beyond the wall is a journey, not a way round the table, and the spawn
+ *  house's did exactly that (3.7 cells off the ask's line, inside the
+ *  corridor a 5-cell footprint needs): its door was beside the ask. But the
+ *  roof is not a box: a house's roof overhangs a strip OUTSIDE its walls, and
+ *  a body on that strip pressing into a brazier at the roof's edge had every
+ *  route refused for leaving the roof — every goal ahead lies out from under
+ *  it (maintainer 2026-09-13, 273.3,186.0: "I get stuck between the scenery
+ *  and the wall. I kinda expected the nav to run and navigate me around, but
+ *  it doesn't"). So a change of roof along the route is allowed where the
+ *  crossing point lies ahead of the body along the ask by at least
+ *  ROOF_EXIT_AHEAD_CELLS, and refused where it lies beside or behind. A
+ *  TERRAIN wall's escape is not held to this: pressed to the big house's
+ *  south wall, the way out is the door, and holding it in put the body on
+ *  the wall for good (2026-09-13). "Under" is a deck above the feet; a body
+ *  ON a bridge deck is under nothing and is not constrained. */
+const ROOF_EXIT_AHEAD_CELLS = 0.5;
+function roofExitAhead(
+  grid: TerrainGrid,
+  trip: AutopilotTrip,
+  x: number,
+  y: number,
+  ux: number,
+  uy: number,
+  elev: number | undefined,
+): boolean {
   const e = elev ?? 0;
   const under = (px: number, py: number) => {
     const c = Math.floor(px / CELL_WU);
@@ -4099,10 +4117,19 @@ function sameRoof(grid: TerrainGrid, trip: AutopilotTrip, x: number, y: number, 
     const d = grid.deck[r * grid.width + c];
     return d >= 0 && e < d - 0.5;
   };
-  const start = under(x, y);
-  for (const p of trip.path) if (under(p.x, p.y) !== start) return false;
+  let was = under(x, y);
+  for (const p of trip.path) {
+    const now = under(p.x, p.y);
+    if (now !== was) {
+      // The first point on the other side of the edge is where the route
+      // steps across: it must lie ahead of the body along the ask.
+      if ((p.x - x) * ux + (p.y - y) * uy < ROOF_EXIT_AHEAD_CELLS * CELL_WU) return false;
+      was = now;
+    }
+  }
   return true;
 }
+
 
 /** How far ahead a heading is simulated when asking "is the way actually open,
  *  or open for exactly one step?". 12 probe steps of 0.08s is about a second of
@@ -4491,11 +4518,12 @@ function planRoundTheStick(
    *  (routeStallCell); grows as goals are tried, and a goal is planned again
    *  once without them. Absent = no proof, the route as planned. */
   avoid?: Set<number>,
-  /** The escape stays under the roof it starts under (sameRoof): a PROP's
-   *  escape, where "a short path around it" is round the thing and never out
-   *  through the door. A terrain wall's escape may leave the house — that is
-   *  the nav walking a body pressed to the wall out of it, which he knows
-   *  (2026-09-13: "the nav try to navigate me out of the house"). */
+  /** The escape crosses a roof's edge only ahead of the body (roofExitAhead):
+   *  a PROP's escape, where "a short path around it" is round the thing and
+   *  never out through a door beside it. A terrain wall's escape may leave
+   *  the house any way — that is the nav walking a body pressed to the wall
+   *  out of it, which he knows (2026-09-13: "the nav try to navigate me out
+   *  of the house"). */
   underRoof = false,
 ): AutopilotTrip | null {
   const v = screenToWorldVector(ax, ay);
@@ -4524,7 +4552,7 @@ function planRoundTheStick(
       );
       if (!trip || !withinCorridor(trip, x, y, cx, cy, corridorCells)) break;
       if (escape) {
-        if (!arrives(trip, gx, gy) || (underRoof && !sameRoof(grid, trip, x, y, fromElev))) break;
+        if (!arrives(trip, gx, gy) || (underRoof && !roofExitAhead(grid, trip, x, y, ux, uy, fromElev))) break;
         if (avoid) {
           const stood = routeStallCell(grid, trip, x, y, nowMs, fromElev);
           if (stood >= 0) {

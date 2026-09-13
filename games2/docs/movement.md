@@ -137,16 +137,25 @@ Server-authoritative movement, decks, collision, steer assist, fall damage, tap/
   degrees off put the spawn house's door beside ITS line) and is by what is
   in the way: the pocket's 8 cells for terrain, `ESCAPE_PROP_CORRIDOR_CELLS`
   4.5 for a piece or a prop — a 5-cell footprint's half, findPath's buffer
-  cell off it and the cell the route runs through. And a PROP's escape STAYS
-  UNDER THE ROOF it started under, or out from under it (`sameRoof`: a deck
-  above the feet; a body on a bridge is under nothing): the route from the
-  spawn house's table out through the door and round the outside to a goal
-  beyond the wall is a journey, not a way round the table, and it sat 3.7
-  cells off the ask's line, inside what a footprint needs. A TERRAIN wall's
-  escape may leave the house: pressed to the big house's south wall, the way
-  out is the door — "the nav try to navigate me out of the house" is the nav
-  he knows — and holding every escape under the roof put a body that had
-  slid to the corner there for good (2026-09-13). AND THE ROUTE IS WALKED
+  cell off it and the cell the route runs through. And a PROP's escape
+  CROSSES A ROOF'S EDGE ONLY AHEAD OF THE BODY (`roofExitAhead`: "under" is
+  a deck above the feet, a body on a bridge is under nothing; the crossing
+  point must lie `ROOF_EXIT_AHEAD_CELLS` 0.5 ahead along the ask): the route
+  from the spawn house's table out through the door and round the outside
+  to a goal beyond the wall is a journey, not a way round the table — it sat
+  3.7 cells off the ask's line, inside what a footprint needs, and its door
+  was BESIDE the ask. But a roof is not a box: it overhangs a strip outside
+  the walls, and a body on that strip pressing into a brazier at the roof's
+  edge had every route refused for leaving the roof, every goal ahead lying
+  out from under it (2026-09-13, 273.3,186.0 running SE: "stuck between the
+  scenery and the wall ... expected the nav to run and navigate me around,
+  but it doesn't" — reproduced from 273.3,184.0: 4.3 s standing on
+  brazier_004, six routes planned and all refused). Leaving ahead is the
+  way the thumb points; leaving beside or behind is the door. A TERRAIN
+  wall's escape may leave the house any way: pressed to the big house's
+  south wall, the way out is the door — "the nav try to navigate me out of
+  the house" is the nav he knows — and holding every escape under the roof
+  put a body that had slid to the corner there for good (2026-09-13). AND THE ROUTE IS WALKED
   BEFORE IT IS TAKEN (`routeStallCell`): the nav layer answers per CELL —
   some body position exists in it — and a cell can hold a body without
   letting one THROUGH. Between the spawn house's cupboard and its table the
