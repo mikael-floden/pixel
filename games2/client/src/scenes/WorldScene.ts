@@ -1,7 +1,7 @@
 import Phaser from "phaser";
 import { resolveDepthRule } from "../depthrule";
 import { ART_IDLE_SHARE, ArtQueue, artWorkerEnabled, setArtWorker, setUploadKb, UPLOAD_KB_STEPS } from "../artqueue";
-import { drawFrameInto, drawableSource, readFrameAlpha, readTexturePixels } from "../framepixels";
+import { drawFrameInto, drawableSource, readFrameAlpha, readTexturePixels, readTextureRect } from "../framepixels";
 import { renderRes } from "../resolution";
 import { ensureResDial } from "../resdial";
 import { Room, getStateCallbacks } from "colyseus.js";
@@ -348,6 +348,11 @@ const COVER_BUCKET = 128; // occluder broad-phase bucket, world px
 // sweepCoverSlots). Generous: re-acquiring costs nothing while the atlas has
 // room, and a body stepping in and out of cover at a wall edge must not thrash.
 const COVER_SLOT_GRACE = 240;
+// The capture a cover flush binds covers only the atlas rows in use — slots pack
+// BOTTOM-UP (coverAllocSlot), so the rows a flush draws are [512 - rows, 512) —
+// and `rows` is quantised to this step so the capture pool holds at most four
+// heights (1024x128..512) instead of one per body count (coverRaster).
+const COVER_ROWS_STEP = 128;
 // The two dilation passes that build the outline out of the COVERED part —
 // exactly ringTextureFor's structuring element (two successive 4-neighbour
 // dilations = the L1 ball of radius 2), applied to the covered sub-silhouette
@@ -921,6 +926,30 @@ function sceneryPackEnabled(): boolean {
     return localStorage.getItem("ml-scenery-pack") !== "0";
   } catch {
     return true;
+  }
+}
+
+/** THE COVER ATLASES' PASS SHAPE (coverRaster): on, each atlas is ONE draw
+ *  bracket whose erases are the objects' own ERASE blend and whose capture is
+ *  bound at the rows in use; off, the seven-bracket, whole-atlas path before
+ *  2026-09-13. A Settings row ("cover passes"), remembered in `ml-cover-passes`;
+ *  `?coverpasses=7` is the harness's spelling of off. Read at every flush so a
+ *  flip takes effect on the next one. What `scripts/verify-cover.mjs` compares. */
+function coverPassesFast(): boolean {
+  try {
+    const q = new URLSearchParams(location.search).get("coverpasses");
+    if (q === "3" || q === "7") localStorage.setItem("ml-cover-passes", q);
+    return localStorage.getItem("ml-cover-passes") !== "7";
+  } catch {
+    return true;
+  }
+}
+
+function setCoverPasses(fast: boolean): void {
+  try {
+    localStorage.setItem("ml-cover-passes", fast ? "3" : "7");
+  } catch {
+    /* storage disabled — the setting simply does not persist */
   }
 }
 
@@ -2407,6 +2436,8 @@ export class WorldScene extends Phaser.Scene {
         coverQuads: this.coverStat.quads,
         coverCands: this.coverStat.cands,
         coverSlots: this.coverStat.slots,
+        coverBr: this.coverStat.brackets, // draw brackets a flush: 3 = one per atlas (2026-09-13), 7 = the path before
+        coverRows: this.coverStat.rows, // atlas rows the capture is bound at (128-512): what each bracket clears and blits
         texGen: this.t3texGen, // every texture the game added — a diagnostic
         /* THE ART QUEUE (artqueue.ts): waiting, decoded-and-waiting, landed
          * this window, and the biggest one frame's upload in KB — against
@@ -3736,7 +3767,7 @@ export class WorldScene extends Phaser.Scene {
   private coverO?: Phaser.Textures.DynamicTexture;
   private coverSlots: CoverSlot[] = [];
   private coverFree = new Map<string, CoverSlot[]>();
-  private coverShelf = { x: 0, y: 0, h: 0 };
+  private coverShelf = { x: 0, y: COVER_ATLAS_H, h: 0 }; // y = the open shelf's FLOOR: slots stand up from the atlas's last row
   private coverQueue: BodyVisual[] = [];
   private coverScratch?: Phaser.GameObjects.Image;
   private coverTick = 1;
@@ -3748,7 +3779,11 @@ export class WorldScene extends Phaser.Scene {
   private coverBuckets = new Map<number, Phaser.GameObjects.Image[]>();
   private coverSeen = new Set<Phaser.GameObjects.Image>();
   private coverCands: Phaser.GameObjects.Image[] = [];
-  private coverStat = { slots: 0, quads: 0, brackets: 0, skips: 0, flushes: 0, cands: 0 };
+  private coverStat = { slots: 0, quads: 0, brackets: 0, skips: 0, flushes: 0, cands: 0, rows: 0 };
+  /** The bodies of the last rasterised flush — the parity probe re-draws them both ways. */
+  private coverLast: BodyVisual[] = [];
+  /** Rows the open bracket's capture is short by (COVER_ATLAS_H - rows); 0 on the whole-atlas path. */
+  private coverYOff = 0;
   // Images the last rebuild skipped (view-culled + deck-exposure-culled) —
   // reported by __ml.occCount() so the win is measurable, not asserted.
   private occCulled = 0;
@@ -4608,6 +4643,20 @@ export class WorldScene extends Phaser.Scene {
             return a.worker === 2 ? `on (fell back: ${a.workerError || "worker failed"})` : "on";
           },
         },
+        /* THE COVER ATLASES' PASS SHAPE (coverRaster): three brackets on the rows
+         * in use, or the seven whole-atlas brackets before 2026-09-13 — the bisect
+         * for a report on the hidden-behind outline or a lit copy, in one tap.
+         * Takes effect on the next flush. */
+        {
+          label: "cover passes",
+          act: () => {
+            const fast = !coverPassesFast();
+            setCoverPasses(fast);
+            this.chat.addLog("—", `cover passes: ${fast ? "3 — one bracket per atlas, on the rows in use" : "7 — whole-atlas brackets (the path before 2026-09-13)"}`);
+          },
+          get: () => coverPassesFast(),
+          state: () => (coverPassesFast() ? `3 (${this.coverStat.rows || COVER_ATLAS_H} rows)` : "7 (whole atlas)"),
+        },
         {
           label: "perf beacon",
           act: () => this.togglePerfBeacon(),
@@ -5466,6 +5515,39 @@ export class WorldScene extends Phaser.Scene {
         allocated: this.coverSlots.length,
         buckets: this.coverBuckets.size,
       }),
+      /** The three atlases rasterised both ways for the bodies of the last flush —
+       *  one bracket per atlas on the used rows (the running path) first, then the
+       *  seven-bracket whole-atlas path over it — read back RAW (premultiplied, no
+       *  rounding of ours) and compared texel by texel over the whole 1024x512.
+       *  What scripts/verify-cover.mjs gates. */
+      coverParity: () => {
+        const q = this.coverLast.filter((b) => b.coverSlot && b.sprite.active && b.sprite.visible);
+        if (!q.length || !this.coverE || !this.coverC || !this.coverO) return { error: "no covered body since the last flush", slots: 0, equal: false };
+        const gl = (this.game.renderer as { gl?: WebGLRenderingContext | WebGL2RenderingContext }).gl;
+        const raw = (key: string) => {
+          const src = this.textures.get(key).source[0];
+          const tex = (src?.glTexture as { webGLTexture?: WebGLTexture } | null)?.webGLTexture;
+          return gl && tex ? readTextureRect(gl, tex, 0, 0, src.width, src.height) : null;
+        };
+        const keys = ["cover-E", "cover-C", "cover-O"];
+        this.coverRaster(q, true);
+        const fast = keys.map(raw);
+        const rows = this.coverStat.rows;
+        this.coverRaster(q, false);
+        const slow = keys.map(raw);
+        this.coverSig = ""; // the next frame rasterises again, on the configured path
+        const atlases = keys.map((key, i) => {
+          const a = slow[i], b = fast[i];
+          if (!a || !b || a.length !== b.length) return { key, equal: false, diff: -1, maxDelta: -1, error: "readback failed" };
+          let diff = 0, maxDelta = 0;
+          for (let j = 0; j < a.length; j++) {
+            const d = Math.abs(a[j] - b[j]);
+            if (d) { diff++; if (d > maxDelta) maxDelta = d; }
+          }
+          return { key, equal: diff === 0, diff, maxDelta };
+        });
+        return { slots: q.length, rows, atlases, equal: atlases.every((a) => a.equal) };
+      },
       // Chase-cam probe: eased zoom vs base, and how far the camera trails
       // the avatar (scene px).
       camInfo: () => {
@@ -9028,12 +9110,15 @@ export class WorldScene extends Phaser.Scene {
     if (!this.coverE || !this.coverC || !this.coverO) return null;
     const s = this.coverShelf;
     if (s.x + w > COVER_ATLAS_W) {
-      s.y += s.h + COVER_GUTTER;
+      s.y -= s.h + COVER_GUTTER;
       s.x = 0;
       s.h = 0;
     }
-    if (s.y + h > COVER_ATLAS_H || w > COVER_ATLAS_W) return null;
-    const slot: CoverSlot = { i: this.coverSlots.length, x: s.x, y: s.y, w, h, name: `cs${this.coverSlots.length}`, cls };
+    // BOTTOM-UP: a shelf's slots share its floor `s.y` and stand up from it, so
+    // the first bodies covered live in the atlas's LAST rows and a flush's
+    // capture can be bound at those rows alone (coverRaster).
+    if (s.y - h < 0 || w > COVER_ATLAS_W) return null;
+    const slot: CoverSlot = { i: this.coverSlots.length, x: s.x, y: s.y - h, w, h, name: `cs${this.coverSlots.length}`, cls };
     s.x += w + COVER_GUTTER;
     if (h > s.h) s.h = h;
     for (const t of [this.coverE, this.coverC, this.coverO]) t.add(slot.name, 0, slot.x, slot.y, slot.w, slot.h);
@@ -9135,13 +9220,14 @@ export class WorldScene extends Phaser.Scene {
 
   /** Draw the body's CURRENT frame into its slot, flip BAKED IN (so the slot is
    * in display space and every consumer draws it with flipX false). */
-  private coverDrawBody(dt: Phaser.Textures.DynamicTexture, b: BodyVisual) {
+  private coverDrawBody(dt: Phaser.Textures.DynamicTexture, b: BodyVisual, erase = false) {
     const sp = b.sprite;
     const s = b.coverSlot!;
     const im = this.coverBlitter();
     im.setTexture(sp.texture.key, sp.frame.name).setOrigin(0, 0).setFlipX(sp.flipX).setAlpha(1).clearTint();
+    im.setBlendMode(erase ? Phaser.BlendModes.ERASE : Phaser.BlendModes.NORMAL);
     if (im.isCropped) im.setCrop();
-    dt.batchDraw(im, s.x + RING_PAD, s.y + RING_PAD);
+    dt.batchDraw(im, s.x + RING_PAD, s.y + RING_PAD - this.coverYOff);
     this.coverStat.quads++;
   }
 
@@ -9164,7 +9250,7 @@ export class WorldScene extends Phaser.Scene {
    *
    * Each image is then cropped to the slot's own window, or a 64x128 tile would
    * spill into the neighbouring slot. */
-  private coverDrawOccluders(dt: Phaser.Textures.DynamicTexture, b: BodyVisual) {
+  private coverDrawOccluders(dt: Phaser.Textures.DynamicTexture, b: BodyVisual, erase = false) {
     const sp = b.sprite;
     const s = b.coverSlot!;
     const fw = sp.frame.cutWidth;
@@ -9205,7 +9291,7 @@ export class WorldScene extends Phaser.Scene {
       const dy1 = Math.min(oh, H - iy);
       if (dx1 <= dx0 || dy1 <= dy0) continue;
       let px = s.x + ix;
-      const py = s.y + iy;
+      const py = s.y + iy - this.coverYOff;
       const full = dx0 === 0 && dy0 === 0 && dx1 === ow && dy1 === oh;
       if (!full) {
         im.setCrop(dx0, dy0, dx1 - dx0, dy1 - dy0);
@@ -9215,27 +9301,35 @@ export class WorldScene extends Phaser.Scene {
         // it samples is right; only the registration is off, by this much.
         if (im.flipX) px += 2 * dx0 + (dx1 - dx0) - f.realWidth;
       }
+      // ERASE inside the pass: the occluder subtracts itself from the body
+      // already in the capture (dst * (1 - a), Phaser's ERASE func) — the same
+      // maths the erase blit did from a bracket of its own. A live display-list
+      // image, so its own mode comes back before the frame renders it.
+      const bm = im.blendMode;
+      if (erase) im.setBlendMode(Phaser.BlendModes.ERASE);
       dt.batchDraw(im, px, py);
+      if (erase) im.setBlendMode(bm);
       this.coverStat.quads++;
       if (!full) im.setCrop();
     }
   }
 
-  private coverDrawSlot(dt: Phaser.Textures.DynamicTexture, src: Phaser.Textures.DynamicTexture, s: CoverSlot, dx: number, dy: number, tint?: number) {
+  private coverDrawSlot(dt: Phaser.Textures.DynamicTexture, src: Phaser.Textures.DynamicTexture, s: CoverSlot, dx: number, dy: number, tint?: number, erase = false) {
     const im = this.coverBlitter();
     im.setTexture(src.key, s.name).setOrigin(0, 0).setFlipX(false).setAlpha(1);
     if (tint === undefined) im.clearTint();
     else im.setTintFill(tint);
+    im.setBlendMode(erase ? Phaser.BlendModes.ERASE : Phaser.BlendModes.NORMAL);
     if (im.isCropped) im.setCrop();
-    dt.batchDraw(im, s.x + dx, s.y + dy);
+    dt.batchDraw(im, s.x + dx, s.y + dy - this.coverYOff);
     this.coverStat.quads++;
   }
 
   /** Build all three surfaces for every body that registered this frame, once,
-   * after applyObjectLights — SEVEN draw brackets and three clears, CONSTANT in
-   * body count (that is the whole reason for the atlas: on a tile-based mobile
-   * GPU the charge is the render-pass switch, not the fill). Skipped entirely
-   * when no slot's signature moved. */
+   * after applyObjectLights — THREE draw brackets on the rows in use
+   * (coverRaster), CONSTANT in body count (that is the whole reason for the
+   * atlas: on a tile-based mobile GPU the charge is the render pass, not the
+   * quads). Skipped entirely when no slot's signature moved. */
   private flushCoverSurfaces() {
     const q = this.coverQueue;
     const E = this.coverE, C = this.coverC, O = this.coverO;
@@ -9257,49 +9351,125 @@ export class WorldScene extends Phaser.Scene {
     }
     this.coverSig = sig;
     this.coverStat.flushes++;
+    this.coverLast = q;
+    this.coverRaster(q, coverPassesFast());
+    this.coverBlitter().clearTint();
+    this.coverQueue = [];
+    this.sweepCoverSlots();
+  }
+
+  /** Rasterise the three surfaces for `q`, in either pass shape.
+   *
+   * `fast` (the running path since 2026-09-13): ONE draw bracket per atlas,
+   * bound at the rows in use. The bracket is the GPU cost here, not the quads:
+   * every `beginDraw`/`endDraw` clears the capture target and blits it WHOLE
+   * into the atlas, so seven brackets over 1024x512 were ~7 Mpx of fill a
+   * flush for typically one 40x96 body (docs/perf.md). Two cuts: (1) an erase
+   * is the object's own ERASE blend inside the pass (Phaser 3.90
+   * `batchGameObject` applies `gameObject.blendMode`; ERASE = dst * (1 - a),
+   * exactly what the erase blit computed from a bracket of its own), so E, C
+   * and O are one bracket each; (2) the capture is bound at `rows` — the atlas
+   * rows this flush's slots occupy, quantised by COVER_ROWS_STEP. Slots pack
+   * bottom-up and `blitFrame` lands a shorter capture in the target's LAST rows
+   * (its viewport is (0, target.h - source.h), flipped), so everything is drawn
+   * `COVER_ATLAS_H - rows` higher and arrives where its frame is registered;
+   * the atlas is cleared over those rows only. Porter-Duff `over` is
+   * associative and the erase maths is unchanged, so the texels are identical:
+   * `__ml.coverParity`, gated by scripts/verify-cover.mjs. TRAP: the blit
+   * copies with the renderer's CURRENT blend func, so NORMAL is set back
+   * before `endDraw` or the blit itself would erase.
+   *
+   * `!fast`: the seven-bracket, whole-atlas path — the Settings row "cover
+   * passes" (his bisect) and what the parity probe compares against. */
+  private coverRaster(q: BodyVisual[], fast: boolean) {
+    const E = this.coverE!, C = this.coverC!, O = this.coverO!;
     this.coverStat.quads = 0;
     this.coverStat.cands = 0;
-    this.coverStat.brackets = 7;
+    if (!fast) {
+      this.coverYOff = 0;
+      this.coverStat.brackets = 7;
+      this.coverStat.rows = COVER_ATLAS_H;
 
-    // E — what you can still SEE: the body, minus the terrain in front of it.
-    E.clear();
-    E.beginDraw();
-    for (const b of q) this.coverDrawBody(E, b);
-    E.endDraw();
-    E.beginDraw();
-    for (const b of q) this.coverDrawOccluders(E, b);
-    E.endDraw(true);
+      // E — what you can still SEE: the body, minus the terrain in front of it.
+      E.clear();
+      E.beginDraw();
+      for (const b of q) this.coverDrawBody(E, b);
+      E.endDraw();
+      E.beginDraw();
+      for (const b of q) this.coverDrawOccluders(E, b);
+      E.endDraw(true);
 
-    // C — what is COVERED: the body, minus what you can see. Complementary by
-    // construction, so nothing has to keep two rules in agreement.
-    C.clear();
-    C.beginDraw();
-    for (const b of q) this.coverDrawBody(C, b);
-    C.endDraw();
-    C.beginDraw();
-    for (const b of q) this.coverDrawSlot(C, E, b.coverSlot!, 0, 0);
-    C.endDraw(true);
+      // C — what is COVERED: the body, minus what you can see. Complementary by
+      // construction, so nothing has to keep two rules in agreement.
+      C.clear();
+      C.beginDraw();
+      for (const b of q) this.coverDrawBody(C, b);
+      C.endDraw();
+      C.beginDraw();
+      for (const b of q) this.coverDrawSlot(C, E, b.coverSlot!, 0, 0);
+      C.endDraw(true);
 
-    // O — the outline: the L1-ball-2 dilation of C in the outer colour, the
-    // ball-1 dilation overpainted in the inner colour, then the body erased.
-    // Per SLOT, never whole-atlas: 18 blits of a 1024x512 atlas is ~9.4 Mpix a
-    // frame; 18 blits of a ~40x96 body is ~70 Kpix.
-    O.clear();
-    for (const pass of COVER_RING_PASSES) {
+      // O — the outline: the L1-ball-2 dilation of C in the outer colour, the
+      // ball-1 dilation overpainted in the inner colour, then the body erased.
+      // Per SLOT, never whole-atlas: 18 blits of a 1024x512 atlas is ~9.4 Mpix a
+      // frame; 18 blits of a ~40x96 body is ~70 Kpix.
+      O.clear();
+      for (const pass of COVER_RING_PASSES) {
+        O.beginDraw();
+        for (const b of q) {
+          const s = b.coverSlot!;
+          for (const [dx, dy] of pass.offsets) this.coverDrawSlot(O, C, s, dx, dy, pass.color);
+        }
+        O.endDraw();
+      }
       O.beginDraw();
+      for (const b of q) this.coverDrawBody(O, b);
+      O.endDraw(true);
+      return;
+    }
+
+    let top = COVER_ATLAS_H;
+    for (const b of q) if (b.coverSlot!.y < top) top = b.coverSlot!.y;
+    const rows = Math.min(COVER_ATLAS_H, Math.ceil((COVER_ATLAS_H - top) / COVER_ROWS_STEP) * COVER_ROWS_STEP);
+    const off = COVER_ATLAS_H - rows;
+    this.coverYOff = off;
+    this.coverStat.brackets = 3;
+    this.coverStat.rows = rows;
+    const renderer = this.game.renderer as Phaser.Renderer.WebGL.WebGLRenderer;
+    const begin = (dt: Phaser.Textures.DynamicTexture) => {
+      dt.clear(0, off, COVER_ATLAS_W, rows); // the rows in use only (GL row = atlas y): a scissored clear
+      dt.camera.preRender();
+      renderer.beginCapture(COVER_ATLAS_W, rows); // pooled per size (capturepool.ts): 1024 x rows
+      (dt as unknown as { isDrawing: boolean }).isDrawing = true;
+    };
+    const end = (dt: Phaser.Textures.DynamicTexture) => {
+      renderer.setBlendMode(Phaser.BlendModes.NORMAL); // flushes the ERASE quads; the blit must copy, not erase
+      dt.endDraw(false);
+    };
+
+    // E — the body, then every covering occluder erased out of it.
+    begin(E);
+    for (const b of q) this.coverDrawBody(E, b);
+    for (const b of q) this.coverDrawOccluders(E, b, true);
+    end(E);
+
+    // C — the body minus E: what is covered, complementary by construction.
+    begin(C);
+    for (const b of q) this.coverDrawBody(C, b);
+    for (const b of q) this.coverDrawSlot(C, E, b.coverSlot!, 0, 0, undefined, true);
+    end(C);
+
+    // O — the outer ring, the inner ring over it, then the body erased. Per
+    // SLOT, never whole-atlas (18 blits of a ~40x96 body is ~70 Kpix).
+    begin(O);
+    for (const pass of COVER_RING_PASSES)
       for (const b of q) {
         const s = b.coverSlot!;
         for (const [dx, dy] of pass.offsets) this.coverDrawSlot(O, C, s, dx, dy, pass.color);
       }
-      O.endDraw();
-    }
-    O.beginDraw();
-    for (const b of q) this.coverDrawBody(O, b);
-    O.endDraw(true);
-
-    this.coverBlitter().clearTint();
-    this.coverQueue = [];
-    this.sweepCoverSlots();
+    for (const b of q) this.coverDrawBody(O, b, true);
+    end(O);
+    this.coverYOff = 0;
   }
 
   /** The engagement overlays, per frame after the monster loop: (1) the red

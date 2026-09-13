@@ -190,11 +190,30 @@ The ground render texture (scroll, slices, cell repaints, prefetch, compose budg
   no style or layout work runs per frame (the HUD's DOM is quiet;
   `PrePaint` 0.13 ms/frame); the JS heap's 25-53 MB/s of growth is
   short-lived garbage — GC is 0.4% of CPU (scavenges; the beacon's `drops`
-  are those), so cutting allocations is not a frame-time lever here. Still
-  open on the GPU side: the cover atlases run 7 brackets per flush and each
-  bracket clears and blits the whole 1024x512 target (~7 Mpx of fill per
-  flush, ~23 flushes/s — ~2x the visible screen's fill), a candidate for a
-  smaller atlas or fewer brackets, untested on his phone.
+  are those), so cutting allocations is not a frame-time lever here.
+- **THE COVER ATLASES ARE ONE BRACKET EACH, ON THE ROWS IN USE** (`coverRaster`,
+  2026-09-13). A flush ran 7 brackets and 3 whole-atlas clears, and every
+  bracket clears the capture target and blits it whole into the 1024x512 atlas
+  — ~7 Mpx of fill a flush, ~23 flushes/s, ~2x the visible screen's fill, for
+  typically ONE 40x96 body (his 22:53 run: `coverSlots` 1, `coverQuads` 24).
+  Now an erase is the object's own ERASE blend inside the pass (Phaser 3.90
+  `batchGameObject` applies `gameObject.blendMode`; dst * (1 - a) is the erase
+  blit's own maths), so E, C and O are three brackets; and slots pack bottom-up
+  so the capture is bound at the rows the flush's slots occupy (`coverRows`,
+  128-512 in steps of 128 — at most four pooled capture sizes, `capSizes` 3 ->
+  up to 6) and the atlas is cleared over those rows only: a one-body flush
+  fills ~0.8 Mpx. Texels identical by construction (Porter-Duff `over` is
+  associative, the erase maths unchanged) — gate: `__ml.coverParity` in
+  `scripts/verify-cover.mjs`, the three atlases raw byte-equal against the
+  seven-bracket path, plus the Settings switch live both ways. Settings "cover
+  passes" (a row, remembered in `ml-cover-passes`) restores the old path for
+  his A/B; the beacon carries `coverBr` and `coverRows`. Untested on his phone
+  at the ship: his next moving run is the measurement (the suspect bucket is
+  `cells:unattributed`, 42 long frames of GPU waits on the 22:53 run). Traps:
+  the blit copies with the renderer's CURRENT blend func (NORMAL goes back
+  before `endDraw` or the blit erases); a shorter capture lands in the target's
+  LAST rows (`blitFrame` viewports at `target.h - source.h`, flipped) — hence
+  the packer grows upward from the atlas floor.
 - **THE INDOOR FLIP IS INCREMENTAL** (`repaintIndoorFlip`, `debrisPool`,
   `occWinCuts`, 2026-09-12). Crossing a cave or house threshold used to be
   a full ground paint, a full occluder walk, the destruction of the whole
