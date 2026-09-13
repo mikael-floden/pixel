@@ -310,6 +310,21 @@ pipeline.
   Gates: `cachepolicy.test.ts` (the ?h grant is verified against served
   bytes; malformed, stale and mismatched hashes never freeze; hashing is
   lazy), `assethash.test.ts`, `assetver.test.ts`.
+- **A PAGE BEHIND THE SITE RELOADS ITSELF AT BOOT** (`reloadIfBehindAtBoot`,
+  main.ts, 2026-09-13). `index.html` is `no-cache`, but a phone can restore a
+  tab from its cache without asking: his 21:50 load on 2026-09-12 was a 49 s
+  old document on the 14:54 bundle while production served 21:31's (the
+  deploy guard's logs: production never went backwards; that window's `net`
+  stats: 733/733 asset fetches from cache, 0 from the network). The minute
+  poll only banners. Now the bundle's `VITE_GIT_SHA` is checked once at boot
+  against `/version` (`no-store`, always the server) and a page behind it
+  reloads while the loading screen is up — never once `new Phaser.Game` is
+  reached (then the banner, as before), at most one boot reload per 60 s per
+  tab (sessionStorage `ml-boot-reload-at`), the rejoin flag re-armed across
+  it. Gate: `scripts/verify-bootversion.mjs` — a bundle built behind the
+  server's `GIT_SHA` reloads exactly once, still rejoins, and banners instead
+  of looping; a matching one never reloads. sw.js stays cache-free; the fix
+  lives in the page because a restore may not consult the worker at all.
   **THE BUNDLE IS A SEPARATE GRANT**: everything rollup emits into
   `client/dist/assets` is content-hashed by the bundler, so those URLs are
   immutable by construction. The rule matched `js|css` only, leaving 532 of

@@ -135,6 +135,63 @@ function watchForUpdates() {
   setInterval(check, 60_000);
 }
 
+/** THE BOOT CHECK AGAINST /version. A page restored from the phone's cache can
+ * run a bundle hours behind what the site serves: his 21:50 load on 2026-09-12
+ * was a 49 s old document (`performance.now()`) on the 14:54 bundle while
+ * production served 21:31's — the deploy guard's own logs prove production
+ * never went backwards, and that window's `net` stats show all 733 asset
+ * fetches from cache and none from the network (Chrome's tab restore prefers
+ * the cache even for a `no-cache` document). The minute poll above only ever
+ * offers the banner, so the stale build kept running until he tapped it (the
+ * banner's wording and behaviour are the maintainer's and stay). So at boot,
+ * ONCE, the served sha is read — `/version` is `no-store`, it always reaches
+ * the server — and a page that is behind it reloads itself while the loading
+ * screen is still up (a real reload revalidates the document); nothing is lost
+ * yet. Never mid-game: once `new Phaser.Game` has been reached the answer only
+ * feeds the banner. Never a loop: one boot reload per 60 s per tab
+ * (sessionStorage) — a cache that keeps answering stale, or a rollout crossing
+ * the load, gets the banner on the second pass. The rejoin flag (WorldScene's
+ * recovery reload) is re-armed across the reload so the fast path still skips
+ * the select screen. Gate: scripts/verify-bootversion.mjs. */
+let bootReloadOpen = true;
+async function reloadIfBehindAtBoot(): Promise<void> {
+  const mine = (import.meta.env.VITE_GIT_SHA as string | undefined) || "dev";
+  if (mine === "dev") return; // local dev: vite HMR handles it
+  let rejoin = false;
+  try {
+    rejoin = sessionStorage.getItem("ml-rejoin") === "1"; // read before boot() consumes it
+  } catch {
+    /* no storage */
+  }
+  try {
+    const res = await fetch("/version", { cache: "no-store" });
+    if (!res.ok) return;
+    const { sha } = (await res.json()) as { sha?: string };
+    if (!sha || sha === "dev" || sha === mine) return;
+    const key = "ml-boot-reload-at";
+    let last = 0;
+    try {
+      last = Number(sessionStorage.getItem(key) || 0);
+    } catch {
+      /* no storage — one reload is still bounded by bootReloadOpen */
+    }
+    if (!bootReloadOpen || Date.now() - last < 60_000) {
+      showUpdateBanner(sha);
+      return;
+    }
+    try {
+      sessionStorage.setItem(key, String(Date.now()));
+      if (rejoin) sessionStorage.setItem("ml-rejoin", "1");
+    } catch {
+      /* no storage */
+    }
+    console.log(`[nangijala] build ${mine.slice(0, 9)} is behind the served ${sha.slice(0, 9)} — reloading`);
+    location.reload();
+  } catch {
+    /* offline or a hiccup: the minute poll takes over */
+  }
+}
+
 let updateBannerShown = false;
 function showUpdateBanner(sha: string) {
   if (updateBannerShown) return;
@@ -190,6 +247,7 @@ async function boot() {
     /* no storage — no meter */
   }
   watchForUpdates();
+  void reloadIfBehindAtBoot(); // in parallel with the catalogs below; ~one RTT, long before the world is up
   // Composer's audition page (/#foley): every generated foley candidate,
   // playable on the real deploy — the maintainer's ears close the QA loop.
   if (location.hash === "#foley") {
@@ -348,6 +406,7 @@ async function boot() {
    * handler re-zooms and re-makes the ground texture. */
   const RS_FULL = Math.min(4, Math.max(1, window.devicePixelRatio || 1));
   const rsNow = () => RS_FULL * renderRes();
+  bootReloadOpen = false; // from here a late /version answer only banners — never a reload with a game up
   const game = new Phaser.Game({
     type: Phaser.AUTO,
     parent: "game",
