@@ -48,7 +48,7 @@ function build(): NonNullable<typeof dial> {
   const reset = mk("button", "ml-slider-def") as HTMLButtonElement;
   reset.type = "button";
   reset.textContent = "default";
-  reset.title = "one detail in every 56 cells";
+  reset.title = `one detail in every ${DETAIL_EVERY_DEFAULT} cells`;
   reset.addEventListener("click", () => apply(DETAIL_EVERY_DEFAULT));
   const track = mk("div", "ml-slider");
   const fill = mk("div", "ml-slider-fill");

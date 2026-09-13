@@ -82,8 +82,8 @@ secrets; push to `main`, rebase on reject, no PRs unless asked; doc law.
   `verify-scenery-pack.mjs`, `verify-npc-pack.mjs`).
 - Ground DETAILS are his approved `tiles/tops` details + the x-over-y top
   approvals, one in N cells by the Settings "Ground details" dial (default 1
-  in 56); never on an indoor floor, a ramp, or touching another — so never
-  tiled (`detailplace.test.ts`).
+  in 100, his); never on an indoor floor, a ramp, or touching another — so
+  never tiled (`detailplace.test.ts`).
 - A base-set member leaves its set on his verdict on THE TILE, never on its
   `#top` detail verdict (independent, maintainer 2026-09-12; `tiles3members.test.ts`).
 - The resolver is PER CELL (`Tiles3World`), never the sweep, and it is held
@@ -275,7 +275,7 @@ secrets; push to `main`, rebase on reject, no PRs unless asked; doc law.
   `scripts/verify-wallwash.mjs`.
 - Day is sky + sun; the sun is the hand; DAY == NIGHT in the phase table is
   load-bearing (equal sun and moon speed on the pill).
-- Indoor ambient: dark room 40%, lit room 12%; hidden outline 60% — his dials.
+- Indoor ambient: dark room 40%, lit room 12%; hidden outline 20% — his dials.
 
 **UI and mobile** (`docs/ui.md`, `UI_AGENT.md`)
 - Wiki-themed DOM HUD, golden split, ONE 10 px edge margin; pixel art scales

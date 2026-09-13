@@ -491,7 +491,8 @@ dressing). `this.maps3` gates every terrain branch (false only for a hand-built
   before that none of them could reach a field except as a base-set member,
   TILED, "the one thing a detail must never be"), and THE RATE is the
   Settings "Ground details" dial (`detailrate.ts`: one in N cells, N on a
-  geometric track from every cell to one in 10,000, default the old 1 in 56;
+  geometric track from every cell to one in 10,000, default 1 in 100 — HIS,
+  2026-09-13, off the live game; 1 in 56 was the rate before he had a slider;
   "ml-detail-rate" rebuilds the resolver on both threads like the fade dials,
   and the worker rolls the same rate — `WorkerInit.detailRate`); render3
   mirrors the pool (asked of maps2 on their board), not the dial; probe

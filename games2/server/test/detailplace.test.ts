@@ -5,8 +5,9 @@
 // A detail is "a tile that doesn't look good repeated, but look very good alone"
 // (maintainer 2026-09-13), placed once in a while by a per-cell roll against the
 // Settings dial. Two placements broke that, measured on the_game at the default
-// 1 in 56: 28 of 860 details sat on a SLOPE cell and replaced its graded ramp
-// tile, and 101 had another detail touching them (at 1 in 10: 156 and 2,365).
+// 1 in 56 (the default then): 28 of 860 details sat on a SLOPE cell and replaced
+// its graded ramp tile, and 101 had another detail touching them (at 1 in 10:
+// 156 and 2,365).
 //
 // The rules: a slope cell keeps its slope; among the raw winners of an 8-ring
 // the smallest roll keeps its detail and the others yield — symmetric and
@@ -19,7 +20,7 @@ import assert from "node:assert/strict";
 import { existsSync, readFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
-import { Tiles3, viewFromDoc, isoFrame, type World3View, type Tiles3Cell } from "../../client/src/tiles3";
+import { Tiles3, viewFromDoc, isoFrame, DETAIL_FREQ, type World3View, type Tiles3Cell } from "../../client/src/tiles3";
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 const REPO = join(HERE, "..", "..", "..");
@@ -126,6 +127,11 @@ test("on the_game, no detail sits on a ramp and none touches another", { skip: !
   const onSlope = det.filter((c) => c.slope).length;
   assert.equal(onSlope, 0, `${onSlope} details replaced a ramp's graded tile`);
   assert.equal(touching(cells), 0, `${touching(cells)} pairs of details touch`);
-  assert.ok(det.length >= 500, `only ${det.length} details on the_game at the default rate — the rules folded too much (860 before them)`);
-  console.log(`    the_game at 1 in 56: ${det.length} details over ${cells.size} land cells, none on a ramp, none touching`);
+  /* NON-VACUOUS, and it follows the dial: the two rules may thin the field but
+   * must not empty it. At the default they keep 83% of the raw roll (measured
+   * 2026-09-13: 468 of a 561-cell expectation at 1 in 100; at the old 1 in 56,
+   * 776 of 860). Anything under 60% means a rule is eating the feature. */
+  const expected = cells.size * DETAIL_FREQ;
+  assert.ok(det.length >= 0.6 * expected, `only ${det.length} details on the_game against a raw expectation of ${expected.toFixed(0)} — the rules folded too much`);
+  console.log(`    the_game at 1 in ${Math.round(1 / DETAIL_FREQ)}: ${det.length} details over ${cells.size} land cells (raw roll would give ${expected.toFixed(0)}), none on a ramp, none touching`);
 });

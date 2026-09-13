@@ -125,15 +125,15 @@ How bodies and pieces interleave with terrain columns: the occluder set, the pur
   treatment.
 
 - **THE HIDDEN-BEHIND OUTLINE HAS A STRENGTH DIAL** (`hiddenring.ts`, Settings
-  "Hidden outline", default 60%). The line draws ABOVE the darkness overlay, so
-  at full opacity a body behind a wall is the most legible thing on screen and
-  being hidden reads as an ADVANTAGE (maintainer 2026-09-07: "see the objects
-  behind the wall, not see them way better when behind the wall"). Separate
-  knob from `RING_LIGHT_FLOOR`, which decides how far the ring tracks the light
-  at the body's own spot: that one keeps the line from going black after
-  sunset, this one decides how loud it is at all. THE 60% IS A FIRST DIM, NOT A
-  VERDICT — he asked for the slider so he can pick the real default by eye.
-  Probe `__ml.hiddenRing(v?)`.
+  "Hidden outline", default 20% — HIS VERDICT, 2026-09-13, picked by eye off
+  the live game; the 60% before it was the first dim he asked the slider for).
+  The line draws ABOVE the darkness overlay, so at full opacity a body behind a
+  wall is the most legible thing on screen and being hidden reads as an
+  ADVANTAGE (maintainer 2026-09-07: "see the objects behind the wall, not see
+  them way better when behind the wall"). Separate knob from
+  `RING_LIGHT_FLOOR`, which decides how far the ring tracks the light at the
+  body's own spot: that one keeps the line from going black after sunset, this
+  one decides how loud it is at all. Probe `__ml.hiddenRing(v?)`.
 
 - **A CALLER NEVER LIFTS MORE THAN 2.5 CELLS PAST ITS OWN ANCHOR**
   (`LIFT_MAX_PX` 35, `depthrule.ts`). The lift exists so the flat tile IN FRONT

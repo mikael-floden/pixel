@@ -74,9 +74,10 @@ export const FADE_BAND = 2;
  *  gets no tolerance at all: water lies flat, so it votes only at the cell's
  *  own level (`boundaryAt`, 2026-09-12). */
 export const BOUNDARY_STEP = 1;
-/** A detail roughly once per 56 field cells — "once in a while", overridable per
- *  ground by live/tuning/tile_details.json (`rate`), which publishes none today. */
-export const DETAIL_FREQ = 1 / 56;
+/** A detail roughly once per 100 field cells — HIS default (2026-09-13), and
+ *  the twin of `detailrate.ts`'s DETAIL_EVERY_DEFAULT. Overridable per ground
+ *  by live/tuning/tile_details.json (`rate`), which publishes none today. */
+export const DETAIL_FREQ = 1 / 100;
 /** Set 0 is reserved, named Clean, and holds nothing but the clean member. It is
  *  never deleted — it is switched off by weight, so a ground can always draw. */
 export const CLEAN_SET_ID = 0;

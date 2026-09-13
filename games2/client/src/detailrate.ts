@@ -9,8 +9,8 @@
  * the slider only changes how many cells win the roll. The travel is
  * GEOMETRIC from every cell (N = 1) to one in ten thousand (in effect off),
  * 56 steps, so half the track lives between 1 in 10 and 1 in 1,000 where the
- * look is decided. The default is the rate the game always used
- * (`DETAIL_FREQ` = 1/56). The top of the track is NOT the tiled look: since
+ * look is decided. THE DEFAULT IS 1 IN 100, HIS (2026-09-13, off the live
+ * game); 1 in 56 was the rate the game rolled before he had a slider. The top of the track is NOT the tiled look: since
  * 2026-09-13 no two details touch (tiles3 `detailAlone`), so N = 1 packs to
  * about one cell in nine — as dense as details go, never repeated, which is
  * his own definition of one ("doesn't look good repeated, but look very good
@@ -19,15 +19,15 @@
  * Owned here like lightscale.ts: the HUD-side dial (detaildial.ts) writes it,
  * "ml-detail-rate" rebuilds the resolver (WorldScene's reResolve, the fade
  * dials' path) on both threads. Node-safe: no DOM at module scope. */
-export const DETAIL_EVERY_DEFAULT = 56;
+export const DETAIL_EVERY_DEFAULT = 100;
 export const DETAIL_EVERY_MIN = 1;
 export const DETAIL_EVERY_MAX = 10000;
 export const DETAIL_EVERY_STEPS = 56;
 const KEY = "ml-detail-every";
 const RATIO = DETAIL_EVERY_MAX / DETAIL_EVERY_MIN;
-/** One step's ratio (~1.18). The grid is ANCHORED ON THE DEFAULT, so 1 in 56
- *  is a stop on it and the reset button lands exactly where the game always
- *  rolled; the ends clamp. */
+/** One step's ratio (~1.18). The grid is ANCHORED ON THE DEFAULT, so 1 in 100
+ *  is a stop on it and the reset button lands exactly on his number; the ends
+ *  clamp. */
 const STEP = Math.pow(RATIO, 1 / DETAIL_EVERY_STEPS);
 
 const g = globalThis as unknown as {
@@ -37,8 +37,8 @@ const g = globalThis as unknown as {
 
 const clamp = (n: number): number => (n < DETAIL_EVERY_MIN ? DETAIL_EVERY_MIN : n > DETAIL_EVERY_MAX ? DETAIL_EVERY_MAX : n);
 
-/** Snap to the geometric grid, then to a WHOLE number of cells — "1 in 56"
- *  is the unit he reads, and 1/56.3 would print the same and mean another. */
+/** Snap to the geometric grid, then to a WHOLE number of cells — "1 in 100"
+ *  is the unit he reads, and 1/100.4 would print the same and mean another. */
 export function snapDetailEvery(n: number): number {
   const k = Math.round(Math.log(clamp(n) / DETAIL_EVERY_DEFAULT) / Math.log(STEP));
   return clamp(Math.round(DETAIL_EVERY_DEFAULT * Math.pow(STEP, k)));
@@ -82,7 +82,7 @@ export function setDetailEvery(n: number): void {
   if (g.window && g.CustomEvent) g.window.dispatchEvent(new g.CustomEvent("ml-detail-rate", { detail: next }));
 }
 
-/** `1 in 56`; `every cell` at the top. */
+/** `1 in 100`; `every cell` at the top. */
 export function detailEveryLabel(n: number = value): string {
   return n <= 1 ? "every cell" : `1 in ${n.toLocaleString("en-US")}`;
 }

@@ -21,7 +21,7 @@ test("the track spans every cell to one in ten thousand, ends included", () => {
   assert.equal(detailEveryFromSlider(0), DETAIL_EVERY_MAX);
   assert.equal(detailEveryFromSlider(-1), DETAIL_EVERY_MAX);
   assert.equal(detailEveryFromSlider(2), DETAIL_EVERY_MIN);
-  assert.equal(DETAIL_EVERY_DEFAULT, 56, "the rate the game always rolled (DETAIL_FREQ)");
+  assert.equal(DETAIL_EVERY_DEFAULT, 100, "his default, 2026-09-13 (DETAIL_FREQ is its twin)");
 });
 
 test("the steps are whole cells, strictly rising down the track, and round-trip", () => {
@@ -34,13 +34,15 @@ test("the steps are whole cells, strictly rising down the track, and round-trip"
     const p = sliderFromDetailEvery(n);
     assert.ok(Math.abs(detailEveryFromSlider(p) - n) <= Math.max(1, n * 0.02), `${n} -> ${p} -> ${detailEveryFromSlider(p)}`);
   }
-  assert.equal(snapDetailEvery(56), 56);
+  // THE DEFAULT IS A STOP ON THE GRID — the grid is anchored on it, so the
+  // reset button lands exactly on his number and never one step beside it.
+  assert.equal(snapDetailEvery(DETAIL_EVERY_DEFAULT), DETAIL_EVERY_DEFAULT);
   assert.equal(snapDetailEvery(0), DETAIL_EVERY_MIN);
   assert.equal(snapDetailEvery(1e9), DETAIL_EVERY_MAX);
 });
 
 test("labels read as he does", () => {
   assert.equal(detailEveryLabel(1), "every cell");
-  assert.equal(detailEveryLabel(56), "1 in 56");
+  assert.equal(detailEveryLabel(100), "1 in 100");
   assert.equal(detailEveryLabel(10000), "1 in 10,000");
 });
