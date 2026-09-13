@@ -1,8 +1,8 @@
 {
   "domain": "scenery-assistant",
-  "updated_at": "2026-09-13T15:07:55+00:00",
+  "updated_at": "2026-09-13T15:10:07+00:00",
   "health": "running",
-  "current": "idle \u2014 the chimneys commission is complete (54f8f86a5 + 79e0873ad: scenery/chimneys 3 pieces x 5 NOT_LIT states, config/factory.json, pipeline/catalog.py, pipeline/state_variants.py, README). No file in scenery/ in flight. Next candidates, none claimed: whether 96 px is the right canvas for masonry (the pixel-grid gate re-rolled 11 of 14 rolls), and one command for the domain's gate sweep.",
+  "current": "UNIT 3, his chimney follow-up (2026-09-13: 'make some form of tag so the game/ambient-agent knows what this scenery is and can place it and attach an effect to it properly ... he will need to know where the chimney center hole is ... I also want both SE, S and SW ... Also want 25 more chimneys (40 in total)') \u2014 files: scenery/config/factory.json (chimneys quota 3->8, keep_directions SE/S/SW, mount/fixture), scenery/pipeline/vent.py (NEW \u2014 measures the flue mouth per state and publishes it), scenery/pipeline/catalog.py + loop.py (stamp mount/fixture at birth), scenery/pipeline/viewer_build.py (publish them), scenery/chimneys/** (5 more pieces x 5 NOT_LIT states = 25 more sprites, 40 total), README. Facings are FREE and already have a script: add_facings.py (TOWN is in its standing scope, 96 px <= the 8-direction cap, so SE/SW download from the store at zero generations).",
   "progress": {
     "units_shipped": 2
   },
