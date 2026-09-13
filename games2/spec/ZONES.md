@@ -18,6 +18,10 @@ Kubernetes). Rules here are present tense; the measurements land in
   world-unique — a player is keyed by a `pid` minted at first join (its
   `sid` is a synced field, so a client finds itself by `sid === room.sessionId`),
   a monster or drop by `z<zone>:<n>`.
+- **A join snapshot is a whole view.** `attachView` runs the interest pass
+  for the joiner before the snapshot is encoded, so a crossing client binds
+  the new room on a complete neighbourhood; the swap's reconcile then removes
+  only what truly left the view, and nothing on screen flickers.
 - **Interest.** A client receives only the entities within `INTEREST_WU`
   (32 cells, Chebyshev in world units) of its own player, through a Colyseus
   `StateView` per client; hysteresis at `INTEREST_LEAVE_WU` (36 cells) so a

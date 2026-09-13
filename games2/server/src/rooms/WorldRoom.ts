@@ -1162,9 +1162,15 @@ export class WorldRoom extends Room<WorldState> {
   private interestTick = 0;
   private seen = new Map<string, Set<object>>();
 
-  /** Give a joiner its view with its own player in it — BEFORE the join
-   *  snapshot is encoded (Colyseus sends the full state after onJoin resolves),
-   *  so "me" is in the first patch and the client never waits a pass for it. */
+  /** Give a joiner its view with its own player AND ITS WHOLE NEIGHBOURHOOD
+   *  in it — BEFORE the join snapshot is encoded (Colyseus sends the full
+   *  state after onJoin resolves), so the first patch is a complete view.
+   *  A view holding only "me" for up to INTEREST_TICKS (200 ms) was what a
+   *  zone crossing showed: the client binds the new room on that snapshot,
+   *  reconciles its drawn bodies against it and REMOVES every monster, player
+   *  and drop, and the next interest pass adds them all back as fresh sprites
+   *  (maintainer 2026-09-12: "all monsters glitch and disappear for a frame or
+   *  two"). One interest pass for one client, synchronous, at join. */
   private attachView(client: Client, player: Player) {
     const view = new StateView();
     client.view = view;
@@ -1181,6 +1187,9 @@ export class WorldRoom extends Room<WorldState> {
     view.add(player);
     view.add(player, OWNER_VIEW_TAG); // the ack and the prediction fields: mine alone
     this.seen.set(client.sessionId, new Set([player]));
+    // INTEREST_FILL_AT_JOIN=0 is the bisect: the old me-only snapshot, which
+    // scripts/verify-zonehop.mjs must then fail on.
+    if (process.env.INTEREST_FILL_AT_JOIN !== "0") this.interestPass([{ client, me: player }]);
   }
 
   /** Recompute every client's view from distance. Entities are bucketed once
@@ -1190,6 +1199,19 @@ export class WorldRoom extends Room<WorldState> {
    *  state (death, pickup, leave) was already DELETEd to every view that held
    *  it by the encoder; it is dropped from `seen` without a view call. */
   private stepInterest() {
+    const targets: { client: Client; me: Player }[] = [];
+    for (const client of this.clients) {
+      const me = this.playerOf(client);
+      if (client.view && me) targets.push({ client, me });
+    }
+    this.interestPass(targets);
+  }
+
+  /** ONE PASS over the given clients: what each may see now, added to and
+   *  removed from its view against what it held (`seen`). The whole room's
+   *  pass and a joiner's first view are the same computation. */
+  private interestPass(targets: { client: Client; me: Player }[]) {
+    if (!targets.length) return;
     type Ent = { e: object; x: number; y: number };
     const all: Ent[] = [];
     this.state.players.forEach((p) => all.push({ e: p, x: p.x, y: p.y }));
@@ -1214,10 +1236,9 @@ export class WorldRoom extends Room<WorldState> {
       }
     }
     const reach = Math.ceil(L / B);
-    for (const client of this.clients) {
+    for (const { client, me } of targets) {
       const view = client.view;
-      const me = this.playerOf(client);
-      if (!view || !me) continue;
+      if (!view) continue;
       const had = this.seen.get(client.sessionId) ?? new Set<object>();
       const keep = new Set<object>([me]);
       const consider = (a: Ent) => {

@@ -9,9 +9,32 @@ and the rejected approaches as each phase lands. Rewrite in place.
   `INTEREST_WU` (32 cells) of its own player**, keeps them to
   `INTEREST_LEAVE_WU` (36 cells), always holds itself, and the set is
   recomputed every `INTEREST_TICKS` (4) ticks (`WorldRoom.stepInterest`, a
-  `StateView` per client — `attachView` in onJoin, before the join snapshot
-  is encoded so "me" is in the first patch). Time, weather, chess and the
-  spawn-area overlay stay global. Gate: `server/test/interest.test.ts`.
+  `StateView` per client). Time, weather, chess and the spawn-area overlay
+  stay global. Gate: `server/test/interest.test.ts`.
+- **THE JOIN SNAPSHOT IS ALREADY A COMPLETE VIEW**: `attachView` runs the
+  interest pass FOR THE JOINER (`interestPass`, the same computation as the
+  room's own pass, one client) before onJoin resolves, so the first patch
+  carries the whole neighbourhood and not just "me". (A me-only first
+  snapshot cost nothing while a join was a fresh page — but a ZONE CROSSING
+  binds the new room on it and reconciles every drawn body against it, so
+  every monster on screen was removed and re-added up to 200 ms later:
+  maintainer 2026-09-12, "all monsters glitch and disappear for a frame or
+  two" running over a border. Gate: `scripts/verify-zonehop.mjs`; bisect
+  `INTEREST_FILL_AT_JOIN=0`, which `server/test/interest.test.ts` fails on.)
+- **A CROSSING IS JUDGED ON HIS DEVICE.** A headless client binds the new room
+  1-2.7 s after the join, so the 200 ms window a phone meets cannot be
+  reproduced there — `verify-zonehop.mjs` holds the crossing's shape (the
+  join snapshot carries the neighbourhood, the swap removes nothing ON
+  SCREEN, no frame loses its bodies) and the BEACON carries the evidence: the
+  scene records every frame of the 3 s around a hand-off (`ZONE_WATCH_MS`,
+  `__ml.zone().frames` — a probe poll cannot see one frame) and folds each
+  crossing into one row under `zone.last` (`joinMs/stateMs/boundMs`,
+  `snapMonsters`, `inView`, `visMed`/`visFloor`). A `visFloor` far below
+  `visMed` IS a body that blinked, on the frame it happened.
+- **The old room's patches are not news once a swap is bound**: every
+  `onRemove` in `bindRoom` (players, ghosts, monsters, ghost monsters, drops)
+  returns when `room !== this.room`, so a room this client has left can never
+  destroy a sprite the new one is drawing.
 - **`defineTypes` IGNORES `view: true`.** Only the `schema()` builder reads
   that flag; with `defineTypes` the fields registered as plain, `hasFilters`
   stayed false and every client received the whole room while the test said

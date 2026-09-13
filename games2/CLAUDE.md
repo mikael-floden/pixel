@@ -229,7 +229,9 @@ secrets; push to `main`, rebase on reject, no PRs unless asked; doc law.
   its owner needs (`seq`, `slow`) carries `OWNER_VIEW_TAG`.
 - A client receives only what is within `INTEREST_WU` of itself (a
   `StateView` per client, recomputed every `INTEREST_TICKS`); "unlimited" is a
-  view holding everything, and only a room CREATE option grants it.
+  view holding everything, and only a room CREATE option grants it. THE JOIN
+  SNAPSHOT IS A WHOLE VIEW (`attachView` runs the pass for the joiner) — a
+  crossing binds on it; gate `scripts/verify-zonehop.mjs`.
 - `view()` is applied as a decorator call after `defineTypes` (the `view:
   true` flag is ignored there); `Encoder.BUFFER_SIZE` is set in the room
   module, not index.ts.

@@ -23,6 +23,18 @@ export function perfReport(body: Record<string, unknown>, atISO: string) {
     }
     return out;
   };
+  /* A LIST OF RECORDS (`{ hops, last: [ {...}, ... ] }`). `mixed` drops an
+   * array and `nested` expects keys, so a list of flat rows — one per zone
+   * crossing — needs its own arm; same trap, third shape. */
+  const rows = (v: unknown, max: number, keys: number) => {
+    if (!Array.isArray(v)) return null;
+    const out = [];
+    for (const r of v.slice(0, max)) {
+      const m = mixed(r, keys);
+      if (m) out.push(m);
+    }
+    return out.length ? out : null;
+  };
   /* A RECORD OF RECORDS. `mixed` keeps scalars and silently drops anything
    * else, so a nested block passed to it arrives as {} — which is how this
    * allowlist has quietly eaten fields three times now. Anything shaped
@@ -127,6 +139,15 @@ export function perfReport(body: Record<string, unknown>, atISO: string) {
     worker: mixed(body.worker, 16),
     // The compose worker (client/src/composeclient.ts), state and miss reasons included.
     compose: mixed(body.compose, 16),
+    // THE ZONE CROSSINGS of this window (WorldScene's `zone` block): hops and
+    // up to four folded rows — the hand-off's milestones, what its first
+    // snapshot carried and the frames' visible-body floor.
+    zone: (() => {
+      const z = body.zone as { hops?: unknown; last?: unknown } | undefined;
+      const last = rows(z?.last, 4, 16);
+      if (!last) return null;
+      return { hops: num(z?.hops, 0, 1e6) ?? 0, last };
+    })(),
     /* THE HEAP AND ITS COLLECTIONS. The client has sent this since db459b988a
      * and THIS ALLOWLIST DROPPED EVERY SAMPLE — the fifth field lost the same
      * way, and lost while chasing the one question it answers: whether GC

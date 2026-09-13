@@ -927,6 +927,11 @@ function sceneryPackEnabled(): boolean {
 /** A distinct scenery art file's measured crop: its alpha bbox and its SOURCE
  *  canvas — in source pixels whether the texture behind it is raw or packed. */
 type SceneryArtFit = { bbox: SceneryBBox | null; canvas: { w: number; h: number } };
+/** THE CROSSING WATCH: how long after a `zone:go` every frame's visible-body
+ *  count is recorded, and the ring's cap (3 s at 60 Hz plus slack). */
+const ZONE_WATCH_MS = 3000;
+const ZONE_WATCH_MAX = 400;
+
 /** How far AHEAD the prefetch reaches when the direction of travel is not yet
  *  known (the first paint after a join or a teleport) — see t3armRing. */
 const GROUND_RING = 512;
@@ -2514,6 +2519,15 @@ export class WorldScene extends Phaser.Scene {
       worker: { ...this.t3worker.stats, cores: navigator.hardwareConcurrency || 0 },
       // THE COMPOSE WORKER, whole: its state, its counters and why it missed.
       compose: { ...this.t3compose.stats, workerMs: Math.round(this.t3compose.stats.workerMs), applyMs: +this.t3compose.stats.applyMs.toFixed(1) },
+      /* EVERY ZONE CROSSING OF THIS WINDOW, from HIS device — the only place
+       * the hand-off can be judged, because a headless run binds the new room
+       * hundreds of ms after the join and never meets the window a phone does
+       * (maintainer 2026-09-12: "all monsters glitches and disappears for a
+       * frame or two"). `snapMonsters` is what the first snapshot carried,
+       * `inView` bodies the swap removed from the screen, and `visFloor` vs
+       * `visMed` the crossing's own frames: a floor far below the median IS
+       * the reported bug, measured on the frame it happened. */
+      zone: this.zoneHopLog.length ? { hops: this.zoneHops, last: this.zoneHopLog.slice(-4) } : undefined,
       // Every jump of the AUTHORITATIVE body over 2 cells in one frame, with
       // the unacked-input depth at the time — a rejoin restore, a respawn, an
       // unstick and a reconciliation blow-up all land here and are told apart
@@ -7799,7 +7813,7 @@ export class WorldScene extends Phaser.Scene {
         }
         return { cols: g.cols, rows: g.rows, here: this.zone, band: INTEREST_LEAVE_WU / CELL_WU, rects };
       },
-      zone: () => ({ zone: this.zone, hops: this.zoneHops, swapping: this.zoneSwapping, room: this.room?.roomId ?? null, ghosts: (this.room?.state as any)?.ghosts?.size ?? 0, ghostMonsters: (this.room?.state as any)?.ghostMonsters?.size ?? 0, lastHop: this.zoneLastHop }),
+      zone: () => ({ zone: this.zone, hops: this.zoneHops, swapping: this.zoneSwapping, frames: this.zoneWatch, room: this.room?.roomId ?? null, ghosts: (this.room?.state as any)?.ghosts?.size ?? 0, ghostMonsters: (this.room?.state as any)?.ghostMonsters?.size ?? 0, lastHop: this.zoneLastHop }),
       bloodFx: () => this.bloodSeen,
       graveCrosses: () =>
         this.graveCrosses.map((gc) => ({
@@ -8157,21 +8171,29 @@ export class WorldScene extends Phaser.Scene {
     // real maps; an id moving between the two maps keeps its sprite.
     $(room.state).ghosts.onAdd((p: any, id: string) => this.addAvatar(id, p));
     $(room.state).ghosts.onRemove((_p: any, id: string) => {
+      if (room !== this.room) return; // see players.onRemove: the old room's patches are not news
       if (!room.state.players.has(id)) this.removeAvatar(id);
     });
     // Roaming monsters — server-authoritative, so every client renders the same
     // ones at the same positions. Poll state.monsters.get(id) each frame and
     // ease like a remote player (see the monster loop in update()).
     $(room.state).monsters.onAdd((m: any, id: string) => this.addMonster(id, m));
+    /* A REMOVAL FROM A ROOM I HAVE ALREADY LEFT IS NOT NEWS (the rule
+     * players.onRemove already carries): during a hand-off the old room's
+     * patches keep arriving while the new room owns the picture, and its
+     * deletions would destroy sprites the new room is drawing. */
     $(room.state).monsters.onRemove((_m: any, id: string) => {
+      if (room !== this.room) return;
       if (!room.state.ghostMonsters?.has(id)) this.removeMonster(id);
     });
     $(room.state).ghostMonsters.onAdd((m: any, id: string) => this.addMonster(id, m));
     $(room.state).ghostMonsters.onRemove((_m: any, id: string) => {
+      if (room !== this.room) return;
       if (!room.state.monsters.has(id)) this.removeMonster(id);
     });
     $(room.state).ghostDrops.onAdd((g: any, id: string) => this.addDrop(id, g));
     $(room.state).ghostDrops.onRemove((_g: any, id: string) => {
+      if (room !== this.room) return;
       if (!room.state.drops.has(id)) this.removeDrop(id);
     });
     // A ZONE HAND-OFF: the room owning my body says the next zone holds my
@@ -8219,11 +8241,22 @@ export class WorldScene extends Phaser.Scene {
           (m.aSid === this.myId || m.bSid === this.myId)) this.chessDialog.close();
     });
     $(room.state).drops.onRemove((_g: any, id: string) => {
+      if (room !== this.room) return;
       if (!room.state.ghostDrops?.has(id)) this.removeDrop(id);
     });
     // Spawn areas are server-computed per world and synced once — redraw the
     // debug overlay as they arrive (they land after the first iso build).
-    $(room.state).spawnAreas.onAdd(() => this.drawSpawnAreas());
+    // ONE REDRAW, NOT ONE PER AREA: a swap bind re-adds every spawn area of
+    // the new room (87 on the_game) and each add redrew the whole overlay —
+    // 87 polygon rebuilds inside the crossing's own frame.
+    $(room.state).spawnAreas.onAdd(() => {
+      if (this.spawnAreaRedraw) return;
+      this.spawnAreaRedraw = true;
+      this.time.delayedCall(0, () => {
+        this.spawnAreaRedraw = false;
+        this.drawSpawnAreas();
+      });
+    });
     // Live tuning pushes (monster stats + constant overrides edited in the
     // wiki) — sent on join and broadcast on every admin save / live/** push.
     bindLiveTuning(room);
@@ -11079,8 +11112,11 @@ export class WorldScene extends Phaser.Scene {
     if (typeof msg?.zone !== "number" || typeof msg.pid !== "string" || typeof msg.key !== "string") return;
     const fromSeq = typeof msg.seq === "number" ? msg.seq : Infinity;
     this.zoneSwapping = true;
+    this.zoneWatch = [];
+    this.zoneWatchT0 = this.time.now;
+    this.zoneWatchUntil = this.time.now + ZONE_WATCH_MS;
     const t0 = performance.now();
-    const hop = { goAt: Date.now(), joinMs: 0, stateMs: 0, boundMs: 0, zone: msg.zone };
+    const hop = { goAt: Date.now(), joinMs: 0, stateMs: 0, boundMs: 0, zone: msg.zone, snap: { players: 0, monsters: 0 }, removed: { avatars: 0, monsters: 0, drops: 0, inView: 0, seen: [] as string[] } };
     this.zoneLastHop = hop;
     try {
       const next = await joinWorld(
@@ -11102,19 +11138,54 @@ export class WorldScene extends Phaser.Scene {
         });
       }
       hop.stateMs = Math.round(performance.now() - t0);
+      /* WHAT THE FIRST SNAPSHOT CARRIED. The whole crossing rests on this
+       * being a complete view (WorldRoom.attachView runs the interest pass
+       * for the joiner): everything below binds and reconciles against it.
+       * A snapshot holding only me is the bug — 0 here and the bodies on
+       * screen have nothing to match. verify-zonehop.mjs asserts it. */
+      {
+        const st: any = next.state;
+        hop.snap.players = (st?.players?.size ?? 0) + (st?.ghosts?.size ?? 0);
+        hop.snap.monsters = (st?.monsters?.size ?? 0) + (st?.ghostMonsters?.size ?? 0);
+      }
       this.zone = msg.zone;
       this.bindRoom(next, true);
       hop.boundMs = Math.round(performance.now() - t0);
+      /* THE RECONCILE COUNTS WHAT IT DROPS (`__ml.zone().lastHop.removed`):
+       * the join snapshot carries the whole neighbourhood (WorldRoom.attachView
+       * runs the interest pass for the joiner), so on a crossing this removes
+       * only what truly left the view — every body that was drawn on both
+       * sides keeps its sprite. verify-zonehop.mjs asserts it. */
       const reconcile = () => {
         const st: any = next.state;
-        for (const id of [...this.avatars.keys()])
-          if (!st.players?.has(id) && !st.ghosts?.has(id)) this.removeAvatar(id);
-        for (const id of [...this.monsters.keys()])
-          if (!st.monsters?.has(id) && !st.ghostMonsters?.has(id)) this.removeMonster(id);
-        for (const id of [...this.drops.keys()])
-          if (!st.drops?.has(id) && !st.ghostDrops?.has(id)) this.removeDrop(id);
+        /* What the new view lacks is legitimately gone — the interest rim
+         * moved with me — unless the player could SEE it go: a sprite that is
+         * on screen, visible and not parked. That is the one removal a
+         * crossing may never make, and verify-zonehop.mjs refuses it; a
+         * culled body's sprite sits at its last drawn spot, which is why
+         * visibility is part of the test and not the rectangle alone. */
+        const view = this.cameras.main.worldView;
+        const shown = (o: { x: number; y: number; visible?: boolean; alpha?: number } | undefined, culled?: boolean): boolean =>
+          !!o && !culled && o.visible !== false && (o.alpha ?? 1) > 0.02 &&
+          o.x >= view.x - 2 * CELL_WU && o.x <= view.right + 2 * CELL_WU && o.y >= view.y - 2 * CELL_WU && o.y <= view.bottom + 2 * CELL_WU;
+        const note = (kind: string, id: string, o: { x: number; y: number }) => {
+          hop.removed.inView++;
+          if (hop.removed.seen.length < 6)
+            hop.removed.seen.push(`${kind}:${id}@${Math.round(o.x)},${Math.round(o.y)}`);
+        };
+        for (const [id, av] of [...this.avatars.entries()])
+          if (!st.players?.has(id) && !st.ghosts?.has(id)) { if (shown(av.sprite, (av as { culled?: boolean }).culled)) note("player", id, av.sprite); this.removeAvatar(id); hop.removed.avatars++; }
+        for (const [id, mv] of [...this.monsters.entries()])
+          if (!st.monsters?.has(id) && !st.ghostMonsters?.has(id)) { if (shown(mv.sprite, mv.culled)) note("monster", id, mv.sprite); this.removeMonster(id); hop.removed.monsters++; }
+        for (const [id, dp] of [...this.drops.entries()])
+          if (!st.drops?.has(id) && !st.ghostDrops?.has(id)) { const sp = (dp as { sprite?: { x: number; y: number; visible?: boolean; alpha?: number } }).sprite; if (shown(sp)) note("drop", id, sp!); this.removeDrop(id); hop.removed.drops++; }
       };
-      if ((next.state as any)?.players?.has(msg.pid)) reconcile();
+      // A snapshot holding nothing but me is not a view yet (a server that
+      // fills the view a pass later): reconcile against the next patch instead
+      // of wiping every drawn body against an empty one.
+      const st0: any = next.state;
+      const filled = (st0?.players?.size ?? 0) + (st0?.ghosts?.size ?? 0) + (st0?.monsters?.size ?? 0) + (st0?.ghostMonsters?.size ?? 0) > 1;
+      if (st0?.players?.has(msg.pid) && filled) reconcile();
       else next.onStateChange.once(reconcile);
       // Inputs kept flowing to the old room while we swapped (its body kept
       // walking, and the neighbours' ghost of it with it); the new room holds
@@ -11130,7 +11201,39 @@ export class WorldScene extends Phaser.Scene {
   }
   private mapLayersAt = 0; // next ensureMapLayers() poll (see the update loop)
   private zoneHops = 0;
-  private zoneLastHop: { goAt: number; joinMs: number; stateMs: number; boundMs: number; zone: number } | null = null;
+  private spawnAreaRedraw = false; // one overlay redraw per batch of adds
+  /** One row per crossing for the beacon — see the report's `zone` block. */
+  private zoneHopLog: Record<string, number>[] = [];
+  /** One crossing, folded into the row the beacon carries: the hand-off's own
+   *  milestones, what its first snapshot held, what the swap removed from the
+   *  screen, and the frames — median and floor of the monsters a player could
+   *  see. Called once, when the watch runs out. */
+  private closeZoneHop(): void {
+    const h = this.zoneLastHop;
+    if (!h || !this.zoneWatch.length) return;
+    const vis = this.zoneWatch.map((f) => f.vis).sort((a, b) => a - b);
+    const row = {
+      zone: h.zone,
+      joinMs: h.joinMs,
+      stateMs: h.stateMs,
+      boundMs: h.boundMs,
+      snapPlayers: h.snap.players,
+      snapMonsters: h.snap.monsters,
+      inView: h.removed.inView,
+      removed: h.removed.monsters + h.removed.avatars + h.removed.drops,
+      frames: vis.length,
+      visMed: vis[Math.floor(vis.length / 2)] ?? 0,
+      visFloor: vis[0] ?? 0,
+    };
+    this.zoneHopLog.push(row);
+    if (this.zoneHopLog.length > 8) this.zoneHopLog.shift();
+  }
+
+  /** The per-frame crossing watch — see the monster loop's tail. */
+  private zoneWatch: { t: number; vis: number; tot: number; sw: number }[] = [];
+  private zoneWatchT0 = 0;
+  private zoneWatchUntil = 0;
+  private zoneLastHop: { goAt: number; joinMs: number; stateMs: number; boundMs: number; zone: number; snap: { players: number; monsters: number }; removed: { avatars: number; monsters: number; drops: number; inView: number; seen: string[] } } | null = null;
 
   /** The connection died: freeze input, rejoin in place (immediately when
    * visible, else the moment the tab is shown again), retry with backoff,
@@ -12594,6 +12697,26 @@ export class WorldScene extends Phaser.Scene {
         if (hx || hy) mv.shadow.setPosition(mv.shadow.x + hx, mv.shadow.y + hy);
       });
       this.monstersActive = active;
+    }
+    /* THE CROSSING WATCH, PER FRAME (maintainer 2026-09-12: "all monsters
+     * glitches and disappears for a frame or two" running over a zone
+     * border). A 50 ms probe poll cannot see one frame, so the scene records
+     * it itself: while a hand-off is in flight and for ZONE_WATCH_MS after
+     * it, every frame's count of monsters a player can SEE (a sprite that is
+     * visible, not parked and not transparent) goes into a ring the gate and
+     * `__ml.zone().frames` read. A dip to zero here IS the reported bug. */
+    if (this.zoneWatchUntil > this.time.now) {
+      let vis = 0;
+      this.monsters.forEach((mv) => {
+        if (!mv.culled && mv.sprite.visible && mv.sprite.alpha > 0.02) vis++;
+      });
+      this.zoneWatch.push({ t: Math.round(this.time.now - this.zoneWatchT0), vis, tot: this.monsters.size, sw: this.zoneSwapping ? 1 : 0 });
+      if (this.zoneWatch.length > ZONE_WATCH_MAX) this.zoneWatch.shift();
+      // The watch just ran out: fold this crossing into one row for the beacon.
+      if (this.zoneWatchUntil <= this.time.now + 0) this.closeZoneHop();
+    } else if (this.zoneWatch.length && this.zoneWatchUntil) {
+      this.zoneWatchUntil = 0;
+      this.closeZoneHop();
     }
     /* THE REAL MONSTER LOOP, MEASURED AT LAST. `monsterLoop` was instrumented
      * inside the `__ml.monsterGate` debug hook, which play never calls, so the

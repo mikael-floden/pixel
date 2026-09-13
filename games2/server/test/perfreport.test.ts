@@ -266,3 +266,16 @@ test("longWhere and a whole worst record reach the file — the place census and
   assert.deepEqual(back, rec, "a worst record arrives WHOLE — the cap cut the evidence tail twice before");
   assert.equal(back.at, "276.6,178.9", "and it says where the frame happened");
 });
+
+/* THE ZONE CROSSINGS (WorldScene's `zone` block). A crossing can only be
+ * judged on HIS device — a headless client binds the new room hundreds of ms
+ * after the join and never meets the window a phone does — so the beacon
+ * carries one folded row per hop, and the whitelist has to let a record of
+ * records through (the class of field that has been silently dropped twice). */
+test("the zone block survives the whitelist: hops and the folded crossing rows", () => {
+  const row = { zone: 10, joinMs: 412, stateMs: 486, boundMs: 488, snapPlayers: 1, snapMonsters: 47, inView: 0, removed: 6, frames: 96, visMed: 21, visFloor: 19 };
+  const r = perfReport({ frames: { n: 100 }, zone: { hops: 3, last: [row] } }, AT);
+  assert.equal(r.zone?.hops, 3);
+  assert.deepEqual((r.zone?.last as unknown[])?.[0], row, "a crossing row arrives WHOLE — every field is the evidence");
+  assert.ok(!perfReport({ frames: { n: 1 } }, AT).zone, "a window with no crossing carries no block");
+});

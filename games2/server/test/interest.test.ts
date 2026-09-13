@@ -100,3 +100,47 @@ test("interestRadius 0 is the whole room, and monsters follow the same rule", as
     await gameServer.gracefullyShutdown(false);
   }
 });
+
+/* THE JOIN SNAPSHOT IS A COMPLETE VIEW (WorldRoom.attachView runs the interest
+ * pass for the joiner before Colyseus encodes the join snapshot). A zone
+ * crossing binds the new room on that snapshot and reconciles every drawn
+ * body against it; a snapshot holding only "me" until the next pass made
+ * every monster vanish and reappear at the border (maintainer 2026-09-12). */
+test("a joiner's FIRST snapshot already holds its neighbourhood — no wait for an interest pass", async (t) => {
+  if (!HAVE_WORLD) return t.skip(SKIP);
+  const port = 2960; // unique per test file — ports.test.ts enforces it
+  const gameServer = new Server({ transport: new WebSocketTransport({ server: createServer() }) });
+  gameServer.define(ROOM_NAME, WorldRoom).filterBy(["interestRadius"]);
+  await gameServer.listen(port);
+  try {
+    const opts = { character: "default_boy", interestRadius: INTEREST_WU, monsterSeed: 7 };
+    const c1 = new Client(`ws://localhost:${port}`);
+    const r1: any = await c1.joinOrCreate(ROOM_NAME, { ...opts, name: "First" });
+    await waitFor(() => r1.state.players.size === 1 && r1.state.monsters.size > 0, 8000, "the first player sees monsters");
+    await settle(600);
+    const c2 = new Client(`ws://localhost:${port}`);
+    const r2: any = await c2.joinOrCreate(ROOM_NAME, { ...opts, name: "Second" });
+    // The FIRST state this client receives — the join snapshot, never a later patch.
+    const first: { players: string[]; monsters: string[]; me: { x: number; y: number } } = await new Promise((res) => {
+      const grab = () => { const me = r2.state.players.get(r2.sessionId); res({ players: [...r2.state.players.keys()], monsters: [...r2.state.monsters.keys()], me: { x: me?.x ?? NaN, y: me?.y ?? NaN } }); };
+      if (r2.state?.players?.size) grab();
+      else r2.onStateChange.once(grab);
+    });
+    assert.ok(first.players.includes(r2.sessionId), "me, in the first snapshot");
+    assert.ok(first.players.includes(r1.sessionId), "the player beside me, in the first snapshot");
+    // What a body WHERE I LANDED must see: every monster the first player
+    // holds that stands well inside my radius (the spawn scatters bodies a
+    // few cells apart, and a monster walks while the snapshot travels — six
+    // cells of margin cover both).
+    const expected: string[] = [];
+    r1.state.monsters.forEach((m: any, id: string) => {
+      if (Math.max(Math.abs(m.x - first.me.x), Math.abs(m.y - first.me.y)) <= INTEREST_WU - 6 * CELL_WU) expected.push(id);
+    });
+    assert.ok(expected.length > 0, `monsters inside the radius where I landed (${expected.length})`);
+    const missing = expected.filter((id) => !first.monsters.includes(id));
+    assert.deepEqual(missing, [], `every monster inside the radius is in the first snapshot (${first.monsters.length} of ${expected.length} expected)`);
+    r1.leave(); r2.leave();
+  } finally {
+    await gameServer.gracefullyShutdown(false);
+  }
+});
