@@ -6932,6 +6932,31 @@ const setLabel = (s) => `${s.name} #${s.id}`;
  * wants at a glance. What identifies a base tile to him is the WALL it was
  * generated over (that is what makes two tops of one ground differ) and a
  * short handle to tell twins apart. */
+/* A DETAIL IS NEVER A BASE TILE (maintainer 2026-09-13, looking at the Add to
+ * Set audition offering him one: "I want to remove so that is never even
+ * possible. A detail should never be able to be selected/added to a base tile
+ * set.").
+ *
+ * The two placements are opposites, and that is the whole reason: a base-set
+ * member is TILED across a region, while a detail is the once-in-a-while
+ * showpiece — "looks amazing, but not if tiled" (2026-09-12). The tiles domain
+ * generates the two flavours side by side into tiles/tops, which is how they
+ * ended up in one pool.
+ *
+ * ONE PREDICATE, and it reads the SHEET rather than the registry, so it answers
+ * for a set member (which carries only its paths) exactly as it answers for a
+ * candidate (which carries `flavour`). Every top's raw and post path names its
+ * sheet — `sheet_<n>_detail_<seed>/` — and that name is the tiles agent's own,
+ * the same string tiles/tops/index.json's `flavour` is derived from.
+ *
+ * Applied at every door a tile can walk through into a set: the audition pool,
+ * the card button that opens the promote modal, and the modal itself (a guard,
+ * so a door added later cannot reopen this). Gated by check-basesets.mjs. */
+const DETAIL_SHEET = /\/sheet_\d+_detail_\d+\//;
+const isDetailTile = (x) => (typeof x === "string"
+  ? DETAIL_SHEET.test(x)
+  : x?.flavour === "detail" || DETAIL_SHEET.test(x?.id ?? "") || DETAIL_SHEET.test(x?.tile ?? "") || DETAIL_SHEET.test(x?.raw ?? ""));
+
 function memberLabel(typeId, id) {
   // A top-only tile names its flavour and its sheet — there is no wall to name
   // it by, which is the whole point of that pool.
@@ -7361,7 +7386,10 @@ function openPoolPicker(typeId, setId, onDone) {
   const setNow = () => groundSets(typeId).find((s) => s.id === setId);
   const already = () => new Set(setNow()?.members.map((m) => m.id) ?? []);
   const rejectedHere = new Set(setNow()?.rejected ?? []);
-  const pool = basePool(typeId).filter((c) => !already().has(c.id) && !rejectedHere.has(c.id));
+  // A DETAIL IS NEVER OFFERED (isDetailTile — his rule, 2026-09-13). basePool
+  // stays the whole library so an EXISTING member still resolves its art and
+  // draws honestly; what a detail can never be is CHOSEN.
+  const pool = basePool(typeId).filter((c) => !already().has(c.id) && !rejectedHere.has(c.id) && !isDetailTile(c));
   const rejectedN = rejectedHere.size;
   const setOf = () => groundSets(typeId).find((s) => s.id === setId) ?? { id: setId, name: "Set", clean: 0, members: [] };
   /* EVERY CANDIDATE IS AUDITIONED IN THE SET (maintainer 2026-08-27: "a
@@ -9698,6 +9726,14 @@ function viewWorldType(top) {
               : h("span", { class: "swatch ground-swatch" }),
           h("span", { class: "set-row-name", title: m.clean ? null : m.id },
             m.clean ? "Clean colour" : m.gone ? `${memberLabel(t.id, m.id)} — art is gone` : memberLabel(t.id, m.id)),
+          /* A DETAIL THAT IS ALREADY IN A SET SAYS SO, next to the Remove that
+           * clears it (his rule, 2026-09-13). Nothing is removed on his behalf:
+           * these were added before the door was shut, they are tiled across
+           * real ground today, and which of them to keep is a taste call made
+           * where the field above shows the consequence. */
+          !m.clean && isDetailTile(m)
+            ? h("span", { class: "pill err", title: "This is a DETAIL: it is meant to appear once in a while, and a set member is tiled across the region. It can no longer be added to a set — Remove takes it out; the tile itself is untouched." }, "detail — not a base tile")
+            : null,
           h("span", { class: "pill", title: "How much of this set's ground this row paints" }, sharePct(mShares[i])),
           state.admin && !(m.clean && s.id === CLEAN_SET) ? weightBox(m.weight,
             m.clean ? "How often this set paints the plain colour instead of a tile. 0 always draws with texture; make it the only weight and the set is all clean."
@@ -10780,6 +10816,10 @@ function viewWorldTransition(pairId) {
  * inside the model. You can from here promote this tile to the base tile
  * set.") ---- */
 function openPromoteModal(cell, cand, onDone) {
+  // THE LAST DOOR, BOLTED FROM THE INSIDE (his rule, 2026-09-13). The card
+  // button above already hides for a detail; this refuses even if some future
+  // caller does not, so "never even possible" survives the next feature.
+  if (isDetailTile(cand)) { toast("A detail is never a base tile — it is placed once in a while, not tiled."); return; }
   document.querySelector(".promote-modal")?.remove();
   const typeId = cell.top;
   /* PROMOTING IS ADDING TO A SET now, not creating a group (maintainer
@@ -11432,6 +11472,15 @@ function worldCandidate(cell, cand, i, onVerdict, onStars) {
        * meadow and a lawn — so the button offers the modal whether or not it is
        * already in one, and removal happens per set on the Base tab where the
        * consequences are visible. */
+      // A DETAIL CARD HAS NO WAY IN (his rule, 2026-09-13). The line replaces
+      // the button rather than disabling it: a control that can never work is
+      // a worse answer than none, and the card should say which of the two
+      // placements this tile is for.
+      if (isDetailTile(cand)) {
+        return h("div", { class: "card-sub base-row muted" },
+          h("span", { title: "A base-set member is tiled across a region; a detail is placed once in a while. This tile is a detail." },
+            "a detail — never a base tile"));
+      }
       const inSets = setsWith(cell.top, cand.key);
       return h("div", { class: "card-sub base-row" },
         inSets.length ? h("span", { class: "pill ok", title: `${typeLabelWorld(cell.top)} paints fields from this tile` },

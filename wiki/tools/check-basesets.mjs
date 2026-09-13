@@ -18,7 +18,7 @@
  *    never, for a set ("the weight for using this set is 0") and for the clean
  *    member ("Setting this to 0% will always draw with texture") alike.
  */
-import { readFileSync } from "node:fs";
+import { readFileSync, readdirSync, existsSync } from "node:fs";
 import { createRequire } from "node:module";
 const { chromium } = createRequire(new URL("../../games2/package.json", import.meta.url))("playwright-core");
 import { decodeWebP } from "../lib/webp-pixels.mjs";
@@ -177,9 +177,38 @@ function topStructure(d) {
   }
   return n ? c / n : 0;
 }
+/* A PINNED CANDIDATE INDEX IS NOT A PINNED FIXTURE. These name `0_after.webp`
+ * of a review pair, and a rejection now DELETES the art (tiles agent,
+ * 2026-09-12: "a record of his own rejection must never keep art alive") — so
+ * three of the five vanished under this gate and it died ENOENT before running
+ * a single check. The pair is the fixture; which surviving candidate of it
+ * carries the art is not, so resolve to the first one still on disk and skip a
+ * pair the review emptied, loudly. */
+const firstAfter = (rel) => {
+  const dir = rel.slice(0, rel.lastIndexOf("/"));
+  if (existsSync(ROOT + rel)) return rel;
+  try {
+    const f = readdirSync(ROOT + dir).filter((x) => /^\d+_after\.webp$/.test(x))
+      .sort((a, b) => parseInt(a, 10) - parseInt(b, 10))[0];
+    return f ? `${dir}/${f}` : null;
+  } catch { return null; }
+};
 let agreed = 0, worst = 0, worstPair = "";
+/* AT LEAST ONE FIXTURE MUST STILL BE ABLE TO SEE THE BUG. Discrimination is a
+ * property of the ART (apex and foot offsets that differ over a structured
+ * top), and the art under a pair changes when he rejects a candidate — so
+ * asserting it pair by pair turns his review into a red gate, while asserting
+ * nothing would let the suite quietly stop being able to catch a one-row
+ * error. The guarantee is the SUITE's: at least one live fixture still sees
+ * it, and the ones that no longer do are named so a new one can be pinned. */
+const discriminating = [];
 for (const pair of PAIRS) {
-  const keepP = pair.keep, takeP = pair.take;
+  const keepP = firstAfter(pair.keep), takeP = pair.take;
+  if (!keepP || !existsSync(ROOT + takeP)) {
+    console.log(`  note: ${pair.keep.split("/")[2]} has no candidate left on disk — his review deleted it; skipping that fixture`);
+    continue;
+  }
+  if (keepP !== pair.keep) console.log(`  note: ${pair.keep.split("/")[2]} now stands on ${keepP.split("/").pop()} (candidate 0 was rejected and deleted)`);
   const keep = decodeWebP(readFileSync(ROOT + keepP));
   const take = decodeWebP(readFileSync(ROOT + takeP));
   // A DISCRIMINATING FIXTURE STAYS DISCRIMINATING. Re-measure rather than trust
@@ -189,8 +218,17 @@ for (const pair of PAIRS) {
     const dTop = [], dBot = [];
     for (let x = 0; x < keep.w; x++) { if (sk.top[x] < 0 || st.top[x] < 0) continue; dTop.push(sk.top[x] - st.top[x]); dBot.push(sk.bot[x] - st.bot[x]); }
     const a = modeOf(dTop), f = modeOf(dBot), s2 = topStructure(take);
-    ok(a === pair.apex && f === pair.foot && a !== f && s2 > 0.2,
-      `${keepP.split("/")[2]} can still SEE a one-row error (apex ${a} vs foot ${f}, base top ${(s2 * 100).toFixed(1)}% structured)`);
+    /* THE PROPERTY, NOT THE NUMBERS. What makes a fixture discriminating is
+     * that its apex and foot offsets DIFFER (so an aligner that picks the
+     * wrong one is caught) over a structured top (so the error is visible at
+     * all). The exact pair of numbers belongs to one piece of art, and the art
+     * under a pair changes when he rejects a candidate — pinning them turned a
+     * review into a red gate. Measured values are printed so they can be
+     * re-pinned deliberately if that is ever wanted. */
+    const sees = a !== f && s2 > 0.2;
+    if (sees) discriminating.push(`${keepP.split("/")[2]} (apex ${a} vs foot ${f})`);
+    else console.log(`  note: ${keepP.split("/")[2]} no longer discriminates on ${keepP.split("/").pop()} `
+      + `(apex ${a} vs foot ${f}, was ${pair.apex}/${pair.foot}, top ${(s2 * 100).toFixed(1)}% structured) — pin another if this drops to none`);
   }
   const ref = topSubPixels(keep, take);
   const got = await p.evaluate(async ([k, t2]) => {
@@ -395,6 +433,73 @@ ok(Object.values(tSaves.at(-1)?.set ?? {})[0] === null,
   });
   ok(field === 1, `and grey paving's Clean #0 field really is ONE colour on top — the ground he reported (${field})`);
 }
+// ---- 3. A DETAIL IS NEVER A BASE TILE --------------------------------------
+/* Maintainer 2026-09-13, with the Add to Set audition offering him one: "I want
+ * to remove so that is never even possible. A detail should never be able to be
+ * selected/added to a base tile set."
+ *
+ * The two placements are opposites — a member is TILED across a region, a
+ * detail appears once in a while — and the tiles domain generates both flavours
+ * into tiles/tops, which is how they came to share one pool. */
+{
+  const tops = JSON.parse(readFileSync(`${ROOT}tiles/tops/index.json`, "utf8"));
+  const DETAIL_SHEET = /\/sheet_\d+_detail_\d+\//;      // wiki.js's own rule
+  // THE RULE AND THE PUBLISHED FLAVOUR ARE THE SAME FACT. wiki.js tells a
+  // detail from its SHEET NAME (a set member carries only paths, never a
+  // flavour); the tiles agent publishes `flavour`. If those two ever disagree
+  // the door is open again and nothing else would say so.
+  const wrong = (tops.sheets ?? []).filter((sh) => DETAIL_SHEET.test(`${sh.dir}/`) !== (sh.flavour === "detail"));
+  ok(!wrong.length, `the sheet-name rule matches every published flavour (${(tops.sheets ?? []).length} sheets, ${wrong.length} disagree)`);
+
+  const live = JSON.parse(readFileSync(`${ROOT}live/tuning/base_tile_sets.json`, "utf8"));
+  const held = [];
+  for (const [ground, g] of Object.entries(live.grounds ?? {})) {
+    for (const s2 of g.sets ?? []) {
+      for (const m of s2.members ?? []) {
+        if (m.kind === "tile" && (DETAIL_SHEET.test(m.id ?? "") || DETAIL_SHEET.test(m.tile ?? ""))) held.push({ ground, set: s2.id, id: m.id });
+      }
+    }
+  }
+  // NOT AN ASSERTION, deliberately: 12 were added before the door was shut and
+  // they are tiled across real ground today. Which of them to keep is his call,
+  // made on the Base tab where the field shows the consequence — so this
+  // reports, and the flag below is what makes it visible to him.
+  console.log(`  note: ${held.length} detail(s) still sit in a set — ${[...new Set(held.map((h2) => `${h2.ground} #${h2.set}`))].join(", ") || "none"}`);
+
+  // The audition must offer NONE of them, on a ground that has details to offer.
+  const withDetails = Object.entries(tops.sheets.reduce((m, sh) => ((m[sh.ground] = (m[sh.ground] ?? 0) + (sh.flavour === "detail" ? 1 : 0)), m), {}))
+    .filter(([, n]) => n > 0).map(([g]) => g);
+  const ground = held[0]?.ground ?? withDetails[0];
+  await p.goto(`${W}#/world/${ground}`, { waitUntil: "load" });
+  await p.waitForTimeout(2400);
+  const opened = await p.evaluate(() => {
+    const base = [...document.querySelectorAll(".groundtab")].find((x) => /^Base/.test(x.textContent.trim()));
+    base?.click();
+    return !!base;
+  });
+  await p.waitForTimeout(1200);
+  await p.evaluate(() => [...document.querySelectorAll("button")].find((x) => /Add tiles/.test(x.textContent))?.click());
+  await p.waitForTimeout(2000);
+  const offered = await p.evaluate(() => [...document.querySelectorAll(".pool-modal .pool-cell")].map((c) => c.getAttribute("data-cand")));
+  ok(opened && offered.length > 0, `the audition opens on ${ground} with candidates (${offered.length})`);
+  const offeredDetails = offered.filter((id) => /\/sheet_\d+_detail_\d+\//.test(id ?? ""));
+  ok(!offeredDetails.length, `and not one of them is a detail (${offeredDetails.length} of ${offered.length}; ${offeredDetails[0] ?? "none"})`);
+  await p.evaluate(() => document.querySelector(".pool-modal")?.close());
+  await p.waitForTimeout(400);
+
+  // ...and a detail that is ALREADY a member says so, beside the Remove that
+  // clears it — the only way he learns which rows to reconsider.
+  if (held.length) {
+    const flagged = await p.evaluate(() => [...document.querySelectorAll(".set-row")]
+      .filter((r) => /sheet_\d+_detail_\d+/.test(r.querySelector(".set-row-name")?.getAttribute("title") ?? ""))
+      .map((r) => r.textContent.includes("detail — not a base tile")));
+    ok(flagged.length > 0 && flagged.every(Boolean),
+      `every detail already in a set of ${ground} is flagged on the Base tab (${flagged.filter(Boolean).length} of ${flagged.length})`);
+  }
+}
+
+ok(discriminating.length > 0,
+  `a fixture that can still SEE a one-row alignment error is in the run (${discriminating.join("; ") || "NONE — pin a new pair"})`);
 ok(errs.length === 0, `no page errors (${errs[0] ?? "none"})`);
 await b.close();
 

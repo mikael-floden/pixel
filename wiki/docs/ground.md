@@ -959,10 +959,30 @@ when the type has none, landing the visitor on On top of.
   sat under them, a 275-card scroll away on a phone.) Every pair-page tile
   card carries a collapsed
   **"☘ review the top"** toggle with its own stars and a "not a detail"
-  verdict, wearing the top's state on the button; detail cards carry **promote
-  to base tile**, the same modal as a tile card. Ground details are not in the
-  game yet — this is the pick list the tiles agent's detailed-variant pass and
-  the world agent will consume.
+  verdict, wearing the top's state on the button. Ground details ARE in the
+  game (games2 `detailPool`, 2026-09-12) and in the map renderer
+  (`maps2/pipeline/render3.py`), rolled once in every N field cells.
+
+- **A DETAIL IS NEVER A BASE TILE** (maintainer 2026-09-13, with the audition
+  offering him one: *"I want to remove so that is never even possible. A
+  detail should never be able to be selected/added to a base tile set."*) The
+  two placements are opposites — a set member is TILED across a region, a
+  detail is the once-in-a-while showpiece, *"looks amazing, but not if
+  tiled"* — and the tiles domain generates both flavours into `tiles/tops`,
+  which is how they came to share one pool. `isDetailTile` (wiki.js) is the
+  one predicate, and it reads the SHEET NAME (`sheet_<n>_detail_<seed>/`)
+  rather than the registry, because a set member carries only its paths while
+  a pool candidate carries `flavour`; `check-basesets.mjs` holds that rule
+  equal to every published flavour. It is applied at all three doors: the
+  audition pool, the card button that opens the promote modal, and a guard
+  inside the modal itself, so a door added later cannot reopen it. `basePool`
+  is NOT filtered — it stays the whole library so a member added before the
+  door was shut still resolves its art and draws honestly. Those members
+  (12 on 2026-09-13, in brown_paving_stone #5/#10, grey_paving_stone #8/#10
+  and snow #2) wear a red **"detail — not a base tile"** pill on the Base tab
+  beside the Remove that clears them: they are tiled across real ground today,
+  and which to keep is a taste call made where the field shows the
+  consequence.
 - **Transitions** mirror `tiles/transitions/` on disk, and each pair has its
   own DEMO PAGE (`#/world/transition/<a>__to__<b>`) composing the same Wang
   corner set across every direction a boundary can run — west|east,
