@@ -261,6 +261,8 @@ import {
   roofedCells,
   facedSprite,
   stateFor,
+  ventFor,
+  ventPoint,
   sceneryHitboxFor,
   type SceneryHitboxRec,
   type SceneryHitbox,
@@ -3408,6 +3410,12 @@ export class WorldScene extends Phaser.Scene {
   private sceneryCoverRecs: { img: Phaser.GameObjects.Image; lo: { fade?: number } | null; box: ScreenBox; place: number; cover: number }[] = [];
   /** The room the cover shares were measured against (indoorKey); "" = none. */
   private sceneryCoverSig = "";
+  /** WHERE A DRAWN PIECE VENTS — one record per placement whose manifest
+   *  publishes a `vent` block (the chimneys today), at the SCREEN pixel of the
+   *  hole itself. Rebuilt with the scenery, read through `__ml.ventsInView`;
+   *  an effect attaches its plume to this instead of guessing a point on the
+   *  art, which is what the moths' `hx`/`hy` exists for one layer down. */
+  private ventRecs: { img: Phaser.GameObjects.Image; place: number; piece: string; state: string; fixture: string; conf: string; x: number; y: number; footY: number }[] = [];
   /** SCENERY ON A WALL (maps2 `z`: windows, hangings) — one record per drawn
    *  placement, stepped every frame: the base image and the lit copy take the
    *  wall column's cut fade, and a window's LIGHTS_ON art crossfades in over
@@ -5950,6 +5958,48 @@ export class WorldScene extends Phaser.Scene {
         for (const s of this.emissiveSources) take(s);
         for (const s of this.sceneryLightSources) take(s);
         return out;
+      },
+      /* EVERY VENT THE CAMERA CAN SEE, at the pixel the effect comes out of.
+       *
+       * The scenery domain MEASURES this per state and per facing rather than
+       * letting a consumer derive it, and the reason is the four rounds of
+       * corrections it took to get right (scenery/README.md): a chimney's hole
+       * is not the middle of its box, not the top of its silhouette, and not
+       * the dark socket beside the pot. So this reports the point as drawn and
+       * nothing else computes one.
+       *
+       * `conf` is how the domain found it — "opening" (a real hole), "flue_top"
+       * or "silhouette" — so a consumer can be pickier than "there is a vent"
+       * if it ever needs to be. `fixture` says WHAT the piece is, and is
+       * ADVISORY: it is a group default written at manifest time and 4 of the 8
+       * shipped chimneys predate it. The vent block is the discriminator.
+       *
+       * `litDepth` is the drawn piece's lit copy, the same join lightsInView
+       * makes and for the same reason: a mark in the ambient band (~900_000.0x)
+       * is painted over outright by the copy at ~900_001+. Null when there is
+       * no copy (no night shader, or the art has not landed).
+       *
+       * `alpha` IS THE PIECE'S OWN DRAWN ALPHA, and it is what keeps an
+       * attached effect honest about the cut-away without knowing a thing
+       * about roofs: a chimney stands ON a lid, so walking into the house
+       * dissolves it with the roof (sceneryAboveCutImgs), and a plume that
+       * ignored that would hang over an open room — the wall-hack the
+       * cut-away exists to prevent. A piece faded for ANY reason (the roof's
+       * dissolve, the tree-over-the-house cover fade) reports it here, so a
+       * consumer multiplies by one number instead of re-deriving three rules. */
+      ventsInView: (pad = 96) => {
+        const v = this.cameras.main.worldView;
+        const litAt = new Map<number, number>();
+        for (const lo of this.litOccluders) if (lo.place !== undefined) litAt.set(lo.place, lo.img.depth);
+        return this.ventRecs
+          .filter((r) => r.x >= v.x - pad && r.x <= v.right + pad && r.y >= v.y - pad && r.y <= v.bottom + pad)
+          .map((r) => ({
+            id: `s3:${r.place}`,
+            x: r.x, y: r.y, footY: r.footY,
+            piece: r.piece, state: r.state, fixture: r.fixture, conf: r.conf,
+            alpha: +(r.img.scene ? r.img.alpha : 0).toFixed(3),
+            litDepth: litAt.get(r.place) ?? null,
+          }));
       },
       lightSlots: () => ({
         max: MAX_SHADER_LIGHTS,
@@ -21265,6 +21315,7 @@ export class WorldScene extends Phaser.Scene {
     this.sceneryAboveCutImgs = [];
     this.sceneryCoverRecs = [];
     this.sceneryCoverSig = ""; // measured again against the new records
+    this.ventRecs = [];
     for (const w of this.sceneryWalls) w.on?.destroy(); // the ON overlays are not pooled — see registerSceneryWall
     this.sceneryWalls = [];
     this.sceneryAnimLive = [];
@@ -21574,6 +21625,19 @@ export class WorldScene extends Phaser.Scene {
       }
       this.registerSceneryAnim(p.i, piece, st, key, name, [fit.sx, fit.sy, fit.sw, fit.sh], img, this.night && !flat ? this.litOccluders[this.litOccluders.length - 1] : null);
       if (p.lit && st.key.startsWith("LIT")) this.pushSceneryLight(p, piece, st, key, fit, scol, srow);
+      /* ...AND WHERE IT VENTS, for the ambient plume. The manifest's point is
+       * in frame pixels from the CANVAS CENTRE (scenery's `light_frames`
+       * convention) and `ventPoint` puts it through this still's own crop,
+       * scale and flip — the exact transform, not the hitbox's centred
+       * approximation, because this is one pixel of one hole. */
+      const vpt = ventFor(piece, st, p.dir);
+      if (vpt) {
+        const vxy = ventPoint(vpt, fit, art.canvas);
+        this.ventRecs.push({
+          img, place: p.i, piece: p.piece, state: st.key, fixture: piece.fixture ?? "",
+          conf: vpt.conf, x: vxy.x, y: vxy.y, footY: p.ay,
+        });
+      }
       const meta = flat || onWall ? null : {
         col: scol,
         row: srow,

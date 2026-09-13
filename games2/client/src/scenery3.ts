@@ -201,6 +201,12 @@ export interface SceneryState {
   sprite: string;
   rotations: Record<string, string>;
   anims: Record<string, SceneryAnim>;
+  /** THIS STATE'S OWN vent point (see SceneryVent). Per state because every
+   *  variant draws its own cap: across the 8 shipped chimneys the five
+   *  NOT_LIT_n stacks of one piece differ by up to 11 px in dy and 17 in dx,
+   *  so a plume placed from the piece's block alone comes out of the
+   *  brickwork on four stacks in five. Null when the state publishes none. */
+  vent: SceneryVent | null;
 }
 
 export interface SceneryPiece {
@@ -248,6 +254,16 @@ export interface SceneryPiece {
    *  Null when the manifest carries none — the game then derives one from the
    *  pixels (scenerylights.ts). The maintainer tunes this table from the wiki. */
   light: SceneryLight | null;
+  /** `fixture` — WHAT the piece is, for a consumer attaching behaviour
+   *  ("chimney" today). Published per piece from its group's default, so a
+   *  piece written before the field existed carries none: 4 of the 8 shipped
+   *  chimneys have it. NEVER the discriminator for an effect — `vent` is (a
+   *  hole is what a plume needs, and every chimney publishes one). */
+  fixture: string | null;
+  /** THE PUBLISHED VENT BLOCK (`scenery.json` `vent`, scenery 2026-09-13) —
+   *  the ANCHOR STATE's copy, kept at the root. Null when the manifest carries
+   *  none; only the `chimneys` group publishes one today. */
+  vent: SceneryVent | null;
 }
 
 const str = (v: unknown): string => (typeof v === "string" ? v : "");
@@ -338,6 +354,83 @@ function parseLightLevel(o: any, fallback?: SceneryLightLevel): SceneryLightLeve
   return { strength, color, radius };
 }
 
+/** WHERE A PIECE VENTS — the opening a plume of smoke leaves from, published
+ *  per piece by the scenery domain (2026-09-13, the chimneys) as an offset in
+ *  ART PIXELS from the piece's drawn anchor, with a per-rotation table because
+ *  a stack's pot is not centred when you see it from the side.
+ *
+ *  Ambient asked for this rather than deriving it: a plume from the middle of
+ *  a chimney's box comes out of the brickwork, and the moths already paid for
+ *  guessing an anchor twice (`hx`/`hy` exists for the same reason). `conf`
+ *  says how the scenery domain found it — "opening" means the real hole was
+ *  measured. */
+export interface SceneryVent {
+  dx: number;
+  dy: number;
+  conf: string;
+  rotations: Record<string, { dx: number; dy: number; conf: string }>;
+}
+
+function parseVentPoint(o: any): { dx: number; dy: number; conf: string } | null {
+  if (!o || typeof o !== "object") return null;
+  if (typeof o.dx !== "number" || typeof o.dy !== "number") return null;
+  if (!Number.isFinite(o.dx) || !Number.isFinite(o.dy)) return null;
+  return { dx: o.dx, dy: o.dy, conf: str(o.conf) };
+}
+
+/** The manifest's `vent` block, sanitised; null when absent or unusable. */
+export function parseVent(json: any): SceneryVent | null {
+  const top = parseVentPoint(json);
+  if (!top) return null;
+  const rotations: Record<string, { dx: number; dy: number; conf: string }> = {};
+  if (json.rotations && typeof json.rotations === "object" && !Array.isArray(json.rotations)) {
+    for (const [k, v] of Object.entries(json.rotations as Record<string, any>)) {
+      if (k === "__proto__") continue;
+      const pt = parseVentPoint(v);
+      if (pt) rotations[k] = pt;
+    }
+  }
+  return { ...top, rotations };
+}
+
+/** THE VENT FOR WHAT IS ACTUALLY DRAWN: this state's block if it publishes
+ *  one, else the piece's anchor copy, and inside it this facing's entry if
+ *  there is one. Both fallbacks matter — a state's cap is its own (the five
+ *  NOT_LIT stacks of one chimney differ by up to 11 px), and SE/SW are real
+ *  three-quarter views whose hole is not where the south view puts it. Still
+ *  in FRAME PIXELS FROM THE CANVAS CENTRE: the flip belongs to the draw
+ *  transform, and applying it here as well would cancel it (ventPoint). */
+export function ventFor(
+  piece: SceneryPiece,
+  state: SceneryState,
+  dir?: string,
+): { dx: number; dy: number; conf: string } | null {
+  const vent = state.vent ?? piece.vent;
+  if (!vent) return null;
+  const faced = facedDir(state, dir);
+  return vent.rotations[faced] || { dx: vent.dx, dy: vent.dy, conf: vent.conf };
+}
+
+/** ...and where that lands on screen, under the still's OWN transform.
+ *
+ *  THE MIRROR IS ABOUT THE CROP'S CENTRE, not the canvas centre — fitSprite's
+ *  own rule, and `frameRect` maps a whole canvas through exactly this. The
+ *  scenery hitbox's inline arithmetic takes the canvas centre instead, which is
+ *  the same point only while the alpha bbox is horizontally centred; a vent is
+ *  one pixel of one hole, so it takes the exact transform. */
+export function ventPoint(
+  pt: { dx: number; dy: number },
+  fit: SceneryFit,
+  canvas: { w: number; h: number },
+): { x: number; y: number } {
+  const cx = canvas.w / 2 + pt.dx;
+  const cy = canvas.h / 2 + pt.dy;
+  return {
+    x: fit.flipX ? fit.x + fit.w - (cx - fit.sx) * fit.kx : fit.x + (cx - fit.sx) * fit.kx,
+    y: fit.y + (cy - fit.sy) * fit.ky,
+  };
+}
+
 /** The manifest's `light` block, sanitised; null when absent or unusable. */
 export function parseLight(json: any): SceneryLight | null {
   const top = parseLightLevel(json);
@@ -410,6 +503,7 @@ export function parsePiece(
       sprite: ss,
       rotations: parseRotations(s.rotations),
       anims: parseAnims(s.animations, `${id}#${key}`, warn),
+      vent: parseVent(s.vent),
     };
   }
 
@@ -421,7 +515,7 @@ export function parsePiece(
   // publishes none (2 of 712) — so every draw path goes through one shape.
   const base = baseState ?? "";
   if (!baseState)
-    states[base] = { key: base, sprite, rotations: pieceRot, anims: legacy };
+    states[base] = { key: base, sprite, rotations: pieceRot, anims: legacy, vent: parseVent(json.vent) };
   else if (!Object.keys(states[baseState].rotations).length && Object.keys(pieceRot).length)
     states[baseState] = { ...states[baseState], rotations: pieceRot };
 
@@ -440,6 +534,8 @@ export function parsePiece(
     baseState: base,
     lightsOn: states.LIGHTS_ON ? "LIGHTS_ON" : null,
     light: parseLight(json.light),
+    fixture: str(json.fixture) || null,
+    vent: parseVent(json.vent),
   };
 }
 
@@ -481,6 +577,14 @@ export function stateFor(piece: SceneryPiece, lit?: boolean, override?: string |
  *  does not publish still draws, rather than resolving to a missing file. */
 export function facedSprite(state: SceneryState, dir?: string): string {
   return (dir ? state.rotations[dir] : "") || state.rotations.south || state.sprite;
+}
+
+/** WHICH FACING `facedSprite` actually chose. A `dir` the state has no
+ *  rotation for draws the SOUTH still, so a point MEASURED per facing (a vent)
+ *  must be read under this key and not under the asked-for one — otherwise the
+ *  mark sits where the hole is on art that is not on screen. */
+export function facedDir(state: SceneryState, dir?: string): string {
+  return dir && state.rotations[dir] ? dir : "south";
 }
 
 /** The south still. Kept for callers that mean SOUTH specifically. */

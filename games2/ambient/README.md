@@ -205,6 +205,45 @@ them; folder isolation beats DRY here).
   it and the world. `flicker` remains for anything that wants the animation. Ambient could not derive this — a lamp's DRAWN anchor
   and its sealed-in-a-room verdict live only in those arrays. It walks every
   source in the world, so a caller reads it on a THROTTLE, never per frame.
+- **`ventsInView(pad)`** — the third seam added to `WorldScene`, for
+  `chimney/`: every drawn scenery placement whose manifest publishes a `vent`
+  block, as `{id, x, y, footY, piece, state, fixture, conf, alpha, litDepth}`,
+  read-only, filtered by a padded `worldView`. **THE POINT IS MEASURED BY THE
+  SCENERY DOMAIN, NOT DERIVED HERE**, and that is the whole lesson: the
+  maintainer commissioned the chimneys with this effect in mind and asked for
+  the tag in the same breath ("he will need to know where the chimney center
+  hole is", 2026-09-13), and it then took FOUR rounds of his own corrections to
+  measure — the hole is not the middle of the box, not the top of the
+  silhouette, and not the dark socket beside the pot. Ambient has guessed an
+  anchor twice (the moths at a lamp's foot, then `hx`/`hy`); this time the
+  answer arrived as data, and `ventPoint` in `scenery3.ts` only puts it through
+  the still's own crop, scale and flip.
+  It is published **per STATE and per FACING**, and both matter: one chimney's
+  five NOT_LIT caps differ by up to 11 px, and SE/SW are real three-quarter
+  views whose hole is elsewhere again. `ventFor` reads it under the facing
+  `facedSprite` actually DREW, never the one asked for — a `dir` with no
+  rotation draws the south still, and a point read under the asked-for facing
+  then sits on art that is not on screen.
+  `conf` says HOW the domain found it (`opening`, `flue_top`, or `silhouette`
+  = it found neither): honour it, because a `silhouette` plume comes out of
+  the brickwork. `fixture` ("chimney") says what the piece IS and is ADVISORY
+  ONLY — it is a group default written at manifest time and 4 of the 8 shipped
+  chimneys predate the field, so gating on it would silently drop half of
+  them. **The vent block is the discriminator.**
+  `alpha` is the piece's own DRAWN opacity, so an effect follows a stack
+  dissolving with the roof it stands on without knowing anything about roofs.
+  It walks every drawn placement, so a caller reads it on a THROTTLE
+  (an accumulator, never `clock % PERIOD < dt` and never `|| nothing in view` —
+  in a world with no chimneys placed yet that second clause is a per-frame
+  probe nobody notices).
+  **NOT the same tool as `runtime/scenery.ts`'s `sceneryInView`**, and the
+  difference is what to reach for: that one walks the whole DISPLAY LIST and
+  matches a texture-key prefix, so it answers "every reed bed in view" for a
+  whole CATEGORY at the price of a 9.8 ms frame if it is polled. This one is a
+  list the scene already built during its own scenery rebuild, so reading it is
+  a filter over a handful of records — but it only knows pieces whose manifest
+  publishes a vent. Category, or a published attach point: pick by which
+  question you are asking.
 - Time-of-day / weather awareness comes from the game's **documented `__ml`
   probe surface** (`__ml.sunInfo()`, `__ml.weatherInfo()`, `__ml.aurora()`),
   sampled at ~10 Hz with safe fallbacks (no probe → effect fades out). If a
@@ -413,6 +452,7 @@ controller (AUTO / NONE / solo-each).
 | `butterflies/` | field | THE MEADOW IN SUMMER — at four pixels a butterfly is a WAY OF MOVING, not a shape: the body BOBS a whole pixel or three with every wingbeat (a mark that slides level reads as a bee), the path is short runs broken by hard turns (a smooth curve reads as a bird), and the beat is uneven so it does not tick. Wings change SILHOUETTE WIDTH, 5 px open / 3 half / 1 shut, on frames all the same height so only the wings move. MUTED BY LAW (`species.ts`): the maintainer's bands — at least half pale-and-dark, a quarter green-and-red, a quarter free — and nothing over `MAX_SAT` 0.45 saturation, because this is background. It works the PATCH it was placed on, settles onto the grass now and then with its wings shut, and MINDS YOU: walk up and it turns away, hurries, and takes off if it was sitting | Grass (the surface's own `sound`, `groundSoundAt`), outdoors, by DAY: a ramp on sun strength, gone in rain, and gone in storm, snow or wind |
 | `smoke/` | field | FIRE SMOKE — thin grey wisps curling up off an open flame, so a fire reads as burning BY DAY (the embers are the night half of the same object). A column, not a cloud: marks leave the same point a tenth of a second apart, lean on the cloud wind, bend together on a shared curl phase, gather from one pixel to three and thin away. DARK grey, and darker the brighter the day — the case is a fire on sunlit ground, where a pale wisp is nothing at all (measured 5.8 luma). NORMAL blend, never additive: smoke is in the way, it does not glow | Any OPEN fire in view (`light.kind` is `fire/*` and not `fire/enclosed` — a lantern burns behind glass); sorts against its own fire's lit copy; a sealed fire only while you are in the room with it. Full by day, a third at night |
 | `dust/` | field | LANDING DUST — a ring of specks kicked out at your boots when you come down. They go OUT, not up (a ring that rises reads as a spell; one that skims the ground, stalls and settles reads as weight), the ring is ISO so it lies on the floor instead of standing up out of it, and ONE dial drives count, spread, speed and life so a drop off a ledge cannot look like a hop. The colour is the ground itself, lifted — sand throws pale grit, stone grey, snow white, grass a dull olive | The LOCAL player's own landings, off `__ml.me().jumping` (+ JUMP_MS) and `__ml.fall().falling`; dry ground only, outdoors. An EVENT effect: nothing runs between landings |
+| `chimney/` | field | A PLUME OFF A ROOF — a hearth burning inside, seen across the town. A body of smoke out of a hole, not a wisp off a flame (`flue.ts`): it leaves the flue already dense and HOLDS for the first third of its life, it only ever gets BIGGER (campfire smoke gathers and falls apart; this dies by thinning), and it BENDS OVER as it climbs, because a puff still in the lee of the roof barely moves sideways while one well above it is in the air that is moving. Each stack breathes on its OWN slow stoke cycle, derived from its placement index so the same chimney breathes the same way every time you walk past it. TWO-TONE, which is the only reason it can be seen: the plume crosses its own roof and then the sky, and the_game's roofs are surfaced snow (241 luma), grey paving (168), grey stone (128), parquet (127) and brown paving (116) over grass at 61 — no single grey departs from 241 AND from 61, so a puff is a pale core inside a darker rim (one texture, one tint) | Any drawn scenery whose manifest publishes a `vent` the domain actually MEASURED (`conf` `opening` or `flue_top` — never `silhouette`); outdoors; the hearth is banked at noon, roaring at night, stoked further by rain, and NEVER out — a chimney that stops is indistinguishable from a broken effect |
 | `lava/` | field | THE POOL BREATHES — a dome swells slowly on the molten surface, HOLDS while its skin stretches, and bursts into a flash, a few sparks that fall back in, and a ring of cooled crust spreading from the spot; dark ash drifts up off the surface between bursts. Molten rock is viscous, so the whole cycle is slow — a fast bubble reads as boiling soup. THE POOL'S COLOUR IS THE TILES DOMAIN'S (`ground_types.json` `lava.palette.top` and `.wall`, fetched), and the marks depart from it BOTH WAYS: a hotter dome, a cooler crust, near-black ash | Any LAVA in view — the surface table's `harm` field, the game's one liquid that burns, so a second molten liquid bubbles the day it is added; found with `pickAt` + `surfaceAt`, never the landable helpers (lava is swimmable, not landable) |
 | `dragonflies/` | field | THE WATERLINE IN SUMMER, and the deliberate OPPOSITE of the butterflies above it: still, then a straight line at speed, then still again. It HOVERS on one point (a pixel of jitter, never a drift), DARTS in a linear segment that ends DEAD (easing the ends turns it into a bee), and PERCHES on a reed with its wings still OUT — a butterfly folds its wings at rest and a dragonfly never does, which at four pixels is the whole difference. The wings are a BLUR, not frames: at 400 beats a second there is no pose to draw | The maps2 agent's waterline pieces in view (`reed_beds`, `cattail_clumps`, `water_lily_clumps` — 124 placed), read by category from the display list; outdoors, by DAY, gone in rain and gone in wind |
 | `bats/` | episode | Night colony wheeling: boids in any direction (top-down), erratic jinking, scattering near the player (no landing) | base 1.0; day ×0.01 |
@@ -545,7 +585,8 @@ effect mid-flight. Always eyeball a new visual effect this way before
 shipping.
 
 Per-feature browser gates live in `games2/scripts/verify-<feature>.mjs`
-(embers, moths, foam, fish, feathers, butterflies, …). SPOOKING A FLOCK IS A PROTOCOL, not
+(embers, moths, foam, fish, feathers, butterflies, drips, firesmoke, lava,
+chimney, …). SPOOKING A FLOCK IS A PROTOCOL, not
 a lunge: a flock only SETTLES while the player is far away, so chasing it keeps
 it airborne and it never lands to be flushed — stand off, wait for `landed`,
 convert the bird's drawn position with `pickAt`, then close.
@@ -575,6 +616,38 @@ anything real. Before building an envelope, shoot two frames 400 ms apart and
 require them to agree (under 8 luma) — two frames that agree is the evidence
 that the only thing still moving is the feature under test. A fixed sleep is
 a guess; this is not.
+**A COUNTER THAT READS ZERO PASSES EVERY CEILING.** Two arms in
+`verify-chimney` were green while measuring nothing, and both are now guarded
+because the shape recurs everywhere:
+- A THROTTLE ARM ON A PARKED EFFECT. "The vent list was read 0 times in 40 s"
+  is under any ceiling you can write — and it meant the feature was suppressed,
+  not that its throttle worked. An arm that counts a feature's work has to
+  report the feature's GAIN beside the count and fail when it was not running.
+- AN EFFECT SWITCHED ON THAT DID NOT SWITCH ON. `setEnabled` is REFUSED when
+  an incompatible effect is already enabled: it returns `{ok:false,
+  blockedBy}` and CHANGES NOTHING. A gate that calls it and moves on can spend
+  twenty minutes proving a suppressed feature invisible. Read the result, and
+  read `effects()` back.
+And when a pixel arm reports "0 shots", three different causes look identical
+from the verdict line — nothing was drawn, the marks were fainter than the
+sample filter's floor, or they were all under the HUD. Keep a tally of each
+and print it: a gate that cannot say WHICH is a gate you will re-run blind.
+(The faint case is easy to write by accident: `debug().all`'s `a` is the DRAWN
+alpha, so it carries the gain — a field whose weight is 0.45 by day peaks at
+0.26, and a 0.3 floor samples nothing.)
+**A GATE FOR CONTENT THAT IS NOT PLACED YET INJECTS THE DATA, IT DOES NOT WAIT
+AND IT DOES NOT PASS VACUOUSLY.** `chimney/` shipped while the maps agent was
+still putting the stacks on the roofs: 0 vented placements in the world, so
+every in-world arm would have been green and proved nothing — the worst kind
+of gate, one that cannot fail. `verify-chimney.mjs` does two things instead.
+It DERIVES the real placements from the world doc and the scenery manifests
+and fails the day one exists with no smoke; and while there are none it gives
+the most-placed piece in the world a `vent` block AT THE NETWORK BOUNDARY
+(Playwright's `page.route` over `**/scenery/<piece>/scenery.json`), which
+exercises the identical path — parse, per-state lookup, facing, flip, the
+drawn transform, the record, the probe, the feature, the pixels — without
+editing one byte of another domain's data. The log says which mode ran.
+Reach for this whenever the seam is ready before the content is.
 **STAND WHERE THE THING COULD GO WRONG.** `verify-butterflies` first ran on a
 13x13 block of pure grass, where widening the accepted-ground set to every
 surface in the world still passed — there was no other surface to get it wrong

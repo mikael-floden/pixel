@@ -1,0 +1,341 @@
+// CHIMNEY SMOKE — the plume's arithmetic, and the SEAM it hangs on.
+//
+// What a screenshot cannot see and would be wrong forever: a plume that leans
+// the same amount at the roofline and thirty pixels up (which reads as a post),
+// a puff that shrinks as it climbs (smoke leaving a hole only expands), a
+// chimney whose stoke is re-rolled on every scenery rebuild, a mark whose two
+// tones are not actually two, and — the one that matters most — a vent point
+// read off the wrong STATE, the wrong FACING or the wrong side of a flip, which
+// puts the smoke in the brickwork beside the hole the scenery domain spent four
+// rounds of the maintainer's corrections measuring.
+//
+// THE PARSE HALF READS THE REAL SHIPPED MANIFESTS, which is possible because
+// scenery3.ts is pure (no Phaser, no DOM). It skips when the sibling domain is
+// absent — the deploy's sparse checkout has no `scenery/` (docs/testing.md).
+import { test } from "node:test";
+import assert from "node:assert/strict";
+import { existsSync, readFileSync, readdirSync } from "node:fs";
+import { dirname, join } from "node:path";
+import { fileURLToPath } from "node:url";
+import {
+  CURL_PX,
+  GAP_MS,
+  PER_VENT,
+  PUFF_LIFE,
+  RIM_MIX,
+  RISE0,
+  SPREAD_PX,
+  STOKE_MS,
+  WIND_X,
+  driftX,
+  driftY,
+  flueTint,
+  hash01,
+  nextGap,
+  puffAlpha,
+  puffSize,
+  riseY,
+  stoke,
+  stokePeriod,
+  stokePhase,
+  vents,
+  weight,
+} from "../../ambient/chimney/flue.js";
+import { parsePiece, ventFor, ventPoint, facedDir, facedSprite, fitSprite, frameRect, stateFor } from "../../client/src/scenery3.js";
+
+const HERE = dirname(fileURLToPath(import.meta.url));
+const REPO = join(HERE, "..", "..", "..");
+const CHIMNEYS = join(REPO, "scenery", "chimneys");
+const skip = !existsSync(CHIMNEYS);
+
+/* -- the plume ------------------------------------------------------------- */
+
+test("a vent is used only where the domain says it MEASURED a hole", () => {
+  assert.equal(vents("opening"), true, "a real dark hole");
+  assert.equal(vents("flue_top"), true, "the mouth of a pot drawn light, not dark");
+  // the domain's own admission that it found neither and fell back to the
+  // outline: a plume there comes out of the brickwork
+  assert.equal(vents("silhouette"), false);
+  assert.equal(vents(""), false);
+  assert.equal(vents(null), false);
+  assert.equal(vents(undefined), false);
+});
+
+test("the plume BENDS OVER as it climbs — the lean is not constant", () => {
+  const life = 4000;
+  // no curl, no spread: the wind alone, so the ramp is what is being measured
+  const at = (t: number) => driftX(t * life, life, 0, 0, 0, 0);
+  const early = at(0.2);
+  const late = at(0.9);
+  // px per second of age, early vs late: the later share must be bigger, or
+  // the column is a leaning post rather than a plume
+  const rEarly = early / (0.2 * life / 1000);
+  const rLate = late / (0.9 * life / 1000);
+  assert.ok(rLate > rEarly * 1.4, `the lean opens with height (${rEarly.toFixed(1)} -> ${rLate.toFixed(1)} px/s)`);
+  assert.ok(rLate <= WIND_X, "...and never overtakes the wind it rides");
+  assert.ok(driftY(life, life) > 0 && driftY(life, life) < 15, "a tilt, not a fall");
+  assert.equal(driftX(-10, life, 3, 0, 0.3, 4), driftX(0, life, 3, 0, 0.3, 4), "clamped before birth");
+});
+
+test("the column is a ribbon at the mouth and a fan at the top", () => {
+  const life = 4000;
+  const spreadOnly = (t: number) => driftX(t * life, life, 0, 0, 0, SPREAD_PX) - driftX(t * life, life, 0, 0, 0, 0);
+  assert.ok(spreadOnly(0.1) < SPREAD_PX * 0.05, `tight out of the hole (${spreadOnly(0.1).toFixed(2)}px)`);
+  assert.ok(spreadOnly(1) > SPREAD_PX * 0.95, "and open at the end");
+  let prev = -1;
+  for (let t = 0; t <= 1; t += 0.02) {
+    const s = spreadOnly(t);
+    assert.ok(s >= prev - 1e-9, "never narrows");
+    prev = s;
+  }
+  // the curl opens on the same ramp — a wisp at the mouth does not wander
+  const curlAt = (t: number) => Math.abs(driftX(t * life, life, CURL_PX[1], Math.PI / 2, 0, 0) - driftX(t * life, life, 0, Math.PI / 2, 0, 0));
+  assert.ok(curlAt(0.05) < curlAt(0.95), "the wander widens with height");
+});
+
+test("a puff only ever gets BIGGER — smoke out of a hole expands", () => {
+  const life = PUFF_LIFE[1];
+  let prev: number = puffSize(0, life);
+  assert.equal(prev, 1, "one pixel at the mouth");
+  for (let t = 0; t <= life; t += 20) {
+    const n = puffSize(t, life);
+    assert.ok(n >= prev, `never shrinks (${prev} -> ${n} at ${t}ms)`);
+    prev = n;
+  }
+  assert.equal(puffSize(life, life), 4, "and it is a body of smoke by the end");
+});
+
+test("a puff is dense out of the flue, HOLDS, then thins to nothing", () => {
+  const life = 4000;
+  assert.equal(puffAlpha(-1, life), 0, "not there before it is there");
+  assert.equal(puffAlpha(life, life), 0, "gone at the end, not cut");
+  assert.ok(puffAlpha(life * 0.02, life) < 0.5, "it does still thicken — nothing switches on");
+  assert.ok(puffAlpha(life * 0.1, life) > 0.99, "...but fast: this came out of a pipe, not off a flame");
+  assert.ok(puffAlpha(life * 0.29, life) > 0.99, "and holds for the first third");
+  let prev = 1;
+  for (let t = life * 0.3; t < life; t += 20) {
+    const a = puffAlpha(t, life);
+    assert.ok(a <= prev + 1e-9, "then only thins");
+    prev = a;
+  }
+  assert.ok(puffAlpha(life * 0.8, life) < 0.4, "well gone by the top of its life");
+});
+
+test("it rises, slowing, and clears a roof", () => {
+  const life = PUFF_LIFE[0];
+  const up = RISE0[0];
+  assert.equal(riseY(0, life, up), 0);
+  let prev = 0;
+  for (let t = 20; t <= life; t += 20) {
+    const y = riseY(t, life, up);
+    assert.ok(y >= prev, "never sinks");
+    prev = y;
+  }
+  // the slowest puff still climbs clear of a 72px stack's own height
+  assert.ok(prev > 30, `the shortest plume still climbs ${prev.toFixed(0)}px`);
+  const first = riseY(life * 0.1, life, up) / (life * 0.1);
+  const last = (riseY(life, life, up) - riseY(life * 0.9, life, up)) / (life * 0.1);
+  assert.ok(last < first, "and it slows as it cools");
+});
+
+test("each stack breathes on its OWN cycle, and the same one every time", () => {
+  // deterministic: a scenery rebuild (every 96px of camera) must not re-roll it
+  assert.equal(stokePhase(41), stokePhase(41));
+  assert.notEqual(stokePhase(41), stokePhase(42));
+  for (const place of [0, 1, 7, 41, 3000]) {
+    const p = stokePeriod(place);
+    assert.ok(p >= STOKE_MS[0] && p <= STOKE_MS[1], `period ${p} outside its band`);
+    let lo = Infinity;
+    let hi = -Infinity;
+    for (let t = 0; t < p * 2; t += 100) {
+      const s = stoke(t, place);
+      lo = Math.min(lo, s);
+      hi = Math.max(hi, s);
+    }
+    assert.ok(lo > 0.4, `a hearth keeps embers (low ${lo.toFixed(2)}) — it never goes out`);
+    assert.ok(hi > 0.95 && hi <= 1.0001, `and is stoked right up (high ${hi.toFixed(2)})`);
+  }
+  // two stacks in a village are never in step
+  const a: number[] = [];
+  const b: number[] = [];
+  for (let t = 0; t < 30_000; t += 500) {
+    a.push(stoke(t, 11));
+    b.push(stoke(t, 12));
+  }
+  assert.ok(a.some((v, i) => Math.abs(v - b[i]) > 0.2), "two flues do not pulse together");
+  // ...and hash01 is a hash, not a ramp
+  const seen = new Set(Array.from({ length: 400 }, (_, i) => Math.floor(hash01(i) * 20)));
+  assert.ok(seen.size >= 18, `spread over its range (${seen.size}/20 buckets)`);
+  for (let i = 0; i < 500; i++) {
+    const v = hash01(i);
+    assert.ok(v >= 0 && v < 1, `hash01(${i}) = ${v} out of range`);
+  }
+});
+
+test("a stoked fire puffs FASTER, and never faster than the gap band", () => {
+  let seed = 5;
+  const rnd = () => (seed = (seed * 1664525 + 1013904223) >>> 0) / 0xffffffff;
+  let hot = 0;
+  let cold = 0;
+  for (let i = 0; i < 200; i++) hot += nextGap(rnd, 1);
+  for (let i = 0; i < 200; i++) cold += nextGap(rnd, 0.45);
+  assert.ok(cold > hot * 1.5, `a banked fire lets go less often (${(cold / 200).toFixed(0)} vs ${(hot / 200).toFixed(0)}ms)`);
+  assert.ok(nextGap(() => 0, 1) >= GAP_MS[0], "never quicker than the band's floor");
+  assert.ok(nextGap(() => 0.999, 0.3) <= (GAP_MS[1] / 0.3) + 1, "and the divide is clamped");
+  // the ceiling holds a column, not a cloud
+  assert.ok(PER_VENT >= 8 && PER_VENT <= 20, "enough marks to read as a line, few enough to be smoke");
+});
+
+test("the mark is TWO tones, and the pale one never reaches white at night", () => {
+  const lum = (c: number) => 0.299 * ((c >> 16) & 255) + 0.587 * ((c >> 8) & 255) + 0.114 * (c & 255);
+  const day = flueTint(1);
+  const night = flueTint(0);
+  assert.ok(lum(day) > lum(night), "paler by day");
+  assert.ok(lum(night) <= 130, `not a white dot on night ground (${lum(night).toFixed(0)}) — the ants' verdict`);
+  assert.ok(lum(day) <= 230, "and never white even at noon: this is smoke, not a light");
+  // neutral: a warm tint reads as dust, a cool one as mist (the campfire's law)
+  for (const c of [day, night]) {
+    assert.equal((c >> 16) & 255, (c >> 8) & 255);
+    assert.equal((c >> 8) & 255, c & 255);
+  }
+  // THE TWO TONES STRADDLE THE ROOFS THIS GAME ACTUALLY HAS. tiles3
+  // ground_types: snow 241.5, grey_paving_stone 168, grey_stone 128.2,
+  // parquet_floor 127.2, brown_paving_stone 115.8 — over grass at 60.8.
+  const ALPHA = 0.58;
+  const core = lum(day);
+  const rim = core * RIM_MIX;
+  for (const [name, bg] of [["snow", 241.5], ["grey_paving", 168], ["grey_stone", 128.2], ["brown_paving", 115.8], ["grass", 60.8]] as const) {
+    const dCore = Math.abs(bg * (1 - ALPHA) + core * ALPHA - bg);
+    const dRim = Math.abs(bg * (1 - ALPHA) + rim * ALPHA - bg);
+    assert.ok(
+      Math.max(dCore, dRim) > 25,
+      `${name} (${bg}): one tone must depart from it — core ${dCore.toFixed(1)}, rim ${dRim.toFixed(1)} luma`,
+    );
+  }
+  assert.ok(RIM_MIX > 0.2 && RIM_MIX < 0.7, "a rim, not a second colour and not the same one");
+});
+
+test("a hearth is banked at noon, roaring at night, and never out", () => {
+  assert.ok(weight(1, 0) > 0.3, "there is always a fire in there");
+  assert.ok(weight(0, 0) > weight(1, 0), "and more of one after dark");
+  assert.ok(weight(1, 1) > weight(1, 0), "rain stokes it");
+  for (const [s, r] of [[0, 0], [0.5, 0.5], [1, 1], [-1, 5], [2, -3]]) {
+    const w = weight(s, r);
+    assert.ok(w >= 0 && w <= 1, `weight(${s},${r}) = ${w} out of range`);
+  }
+});
+
+/* -- the seam: the published vent, on the art that is actually drawn -------- */
+
+const pieces = () =>
+  readdirSync(CHIMNEYS)
+    .filter((d) => existsSync(join(CHIMNEYS, d, "scenery.json")))
+    .map((d) => {
+      const json = JSON.parse(readFileSync(join(CHIMNEYS, d, "scenery.json"), "utf8"));
+      const p = parsePiece(`chimneys/${d}`, json);
+      assert.ok(p, `chimneys/${d} parses`);
+      return { d, json, piece: p! };
+    });
+
+test("every shipped chimney publishes a vent the game can read", { skip }, () => {
+  const all = pieces();
+  assert.ok(all.length >= 3, `the group ships pieces (${all.length})`);
+  for (const { d, piece } of all) {
+    assert.ok(piece.vent, `${d} publishes a vent at the piece root`);
+    const states = Object.keys(piece.states);
+    assert.ok(states.length > 0);
+    for (const key of states) {
+      const v = ventFor(piece, piece.states[key]);
+      assert.ok(v, `${d}#${key} resolves a vent`);
+      assert.ok(vents(v!.conf), `${d}#${key} conf ${v!.conf} is a measured hole`);
+      // the mouth is ABOVE the canvas centre on every stack — a vent below it
+      // is a measurement that found the base of the art
+      assert.ok(v!.dy < 0, `${d}#${key} vents upward (dy ${v!.dy})`);
+      assert.ok(Math.abs(v!.dx) < 48 && Math.abs(v!.dy) < 48, `${d}#${key} inside a 96px canvas`);
+    }
+  }
+});
+
+test("the vent is per STATE and per FACING — and the states really do differ", { skip }, () => {
+  let moved = 0;
+  for (const { piece } of pieces()) {
+    const keys = Object.keys(piece.states);
+    const pts = keys.map((k) => ventFor(piece, piece.states[k])!);
+    if (pts.some((p) => Math.abs(p.dx - pts[0].dx) > 1 || Math.abs(p.dy - pts[0].dy) > 1)) moved++;
+    // ...and a three-quarter view puts the hole somewhere else again
+    for (const k of keys) {
+      const st = piece.states[k];
+      const s = ventFor(piece, st, "south")!;
+      for (const dir of ["south-east", "south-west"]) {
+        if (!st.rotations[dir]) continue;
+        const r = ventFor(piece, st, dir)!;
+        assert.ok(Number.isFinite(r.dx) && Number.isFinite(r.dy), `${piece.id}#${k} ${dir} resolves`);
+        // it is allowed to coincide, but it must be READ from the facing's own
+        // entry — proved by asking for a facing the piece does not have
+        assert.deepEqual(ventFor(piece, st, "north"), s, "an absent facing falls back to south, like facedSprite");
+      }
+    }
+  }
+  assert.ok(moved >= 3, `a state's cap is its own on most pieces (${moved} of 8 move by more than a pixel)`);
+});
+
+test("the facing a vent is read under is the one facedSprite DREW", { skip }, () => {
+  for (const { piece } of pieces()) {
+    for (const key of Object.keys(piece.states)) {
+      const st = piece.states[key];
+      for (const dir of ["south", "south-east", "south-west", "north", "east", undefined]) {
+        const drew = facedSprite(st, dir);
+        const faced = facedDir(st, dir);
+        // the sprite actually chosen and the facing the point is read under
+        // have to be the same one, or the mark sits where the hole is on art
+        // that is not on screen
+        assert.equal(drew, st.rotations[faced] || st.rotations.south || st.sprite, `${piece.id}#${key} ${dir}`);
+      }
+    }
+  }
+});
+
+test("ventPoint puts the mouth where the still actually draws that pixel", { skip }, () => {
+  const canvas = { w: 96, h: 96 };
+  const bbox: [number, number, number, number] = [34, 17, 62, 76];
+  for (const flipX of [false, true]) {
+    const fit = fitSprite(bbox, canvas, 59, 400, 300, flipX);
+    // frameRect maps a WHOLE canvas under the same transform, so it is the
+    // independent witness: the canvas pixel the vent names must land on the
+    // same screen pixel either way.
+    const fr = frameRect(fit, canvas, canvas)!;
+    for (const pt of [{ dx: 0, dy: -28 }, { dx: 9.5, dy: -28 }, { dx: -7.5, dy: -29 }]) {
+      const got = ventPoint(pt, fit, canvas);
+      const cx = canvas.w / 2 + pt.dx;
+      const cy = canvas.h / 2 + pt.dy;
+      const want = {
+        x: flipX ? fr.x + fr.w - cx * fit.kx : fr.x + cx * fit.kx,
+        y: fr.y + cy * fit.ky,
+      };
+      assert.ok(Math.abs(got.x - want.x) < 1e-6, `x ${got.x} vs ${want.x} (flip ${flipX})`);
+      assert.ok(Math.abs(got.y - want.y) < 1e-6, `y ${got.y} vs ${want.y} (flip ${flipX})`);
+    }
+    // and the mouth is inside the drawn box, not out in the air beside it
+    const inside = ventPoint({ dx: 0, dy: -28 }, fit, canvas);
+    assert.ok(inside.x >= fit.x && inside.x <= fit.x + fit.w, `${inside.x} within [${fit.x}, ${fit.x + fit.w}]`);
+    assert.ok(inside.y >= fit.y && inside.y <= fit.y + fit.h, `${inside.y} within [${fit.y}, ${fit.y + fit.h}]`);
+    assert.ok(inside.y < fit.y + fit.h / 2, "in the top half of the stack");
+  }
+  // THE FLIP IS ABOUT THE CROP'S CENTRE, not the canvas centre — an
+  // off-centre bbox is where those two part company, and a chimney's is
+  // allowed to be off-centre.
+  const off: [number, number, number, number] = [20, 17, 62, 76];
+  const a = ventPoint({ dx: 4, dy: -20 }, fitSprite(off, canvas, 59, 400, 300, false), canvas);
+  const b = ventPoint({ dx: 4, dy: -20 }, fitSprite(off, canvas, 59, 400, 300, true), canvas);
+  const f = fitSprite(off, canvas, 59, 400, 300, true);
+  assert.ok(Math.abs((a.x + b.x) / 2 - (f.x + f.w / 2)) < 1e-6, "the pair straddles the CROP's centre");
+});
+
+test("the drawn state of an unlit chimney resolves, and it is not a LIT one", { skip }, () => {
+  for (const { piece } of pieces()) {
+    const st = stateFor(piece, false, null);
+    assert.ok(st, `${piece.id} resolves a base state`);
+    assert.ok(!st.key.startsWith("LIT"), `${piece.id} is an unlit fixture (${st.key})`);
+    assert.ok(ventFor(piece, st), `${piece.id} vents in the state it draws`);
+  }
+});
