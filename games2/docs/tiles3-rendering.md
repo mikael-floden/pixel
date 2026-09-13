@@ -475,7 +475,15 @@ dressing). `this.maps3` gates every terrain branch (false only for a hand-built
   `(1+1.6·rating)·max(0, 1−|pct−target|/(span/2))` with target = pctMin +
   span·pos^falloff — at the resolver's own constants FADE_BAND 2 / amount 1 /
   falloff 1 (the fixtures pin those; the game's dials are the maintainer's and
-  differ); a detail rolls wherever no fade landed, never on parquet_floor —
+  differ); a detail rolls wherever no fade landed, never on parquet_floor,
+  NEVER ON A RAMP (a slope cell keeps its graded tile) and NEVER TOUCHING
+  ANOTHER (`detailAlone`: among the raw winners of an 8-ring the smallest
+  roll keeps, the others yield — symmetric and order-free, so the worker, a
+  streaming window and a sweep agree; at the dial's top the field packs to the
+  hash's local minima, about one in nine, never tiled. Maintainer 2026-09-13,
+  "doesn't look good repeated, but look very good alone"; measured before it
+  at 1 in 56: 28 of the_game's 860 details on ramps, 101 touching; gate
+  `server/test/detailplace.test.ts`) —
   THE POOL is his `#top` approvals over the x-over-y textured tops PLUS his
   reviewed detail library (`tiles/tops/index.json`: flavour "detail" sheets,
   a tile whose `<dir>/<tile>#top` verdict is approved, drawn as

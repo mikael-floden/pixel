@@ -7,11 +7,14 @@
  * The value is ONE DETAIL IN EVERY N FIELD CELLS: the resolver rolls a fixed
  * per-cell hash against 1/N (`Tiles3.plateFor`), so a detail never shifts and
  * the slider only changes how many cells win the roll. The travel is
- * GEOMETRIC from every cell (N = 1, the tiled look he says a detail must never
- * have — the top of the range, so he can see it) to one in ten thousand (in
- * effect off), 56 steps, so half the track lives between 1 in 10 and 1 in
- * 1,000 where the look is decided. The default is the rate the game always
- * used (`DETAIL_FREQ` = 1/56).
+ * GEOMETRIC from every cell (N = 1) to one in ten thousand (in effect off),
+ * 56 steps, so half the track lives between 1 in 10 and 1 in 1,000 where the
+ * look is decided. The default is the rate the game always used
+ * (`DETAIL_FREQ` = 1/56). The top of the track is NOT the tiled look: since
+ * 2026-09-13 no two details touch (tiles3 `detailAlone`), so N = 1 packs to
+ * about one cell in nine — as dense as details go, never repeated, which is
+ * his own definition of one ("doesn't look good repeated, but look very good
+ * alone").
  *
  * Owned here like lightscale.ts: the HUD-side dial (detaildial.ts) writes it,
  * "ml-detail-rate" rebuilds the resolver (WorldScene's reResolve, the fade

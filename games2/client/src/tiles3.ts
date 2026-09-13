@@ -2829,21 +2829,69 @@ export class Tiles3 {
     /* DETAILS: once in a while, one of his top-approved tops — but NEVER on an
      * indoor floor. A detail is a different tile, so one landing in a room is
      * one plank of the wrong board, and the rule is that a room is laid as ONE.
-     * (render3 places no detail anywhere today: its branch is only reachable
-     * while the field tile is still flat_tile(), and plate_img took the field
-     * over. This keeps details where he asked for them and off the floor.) */
-    if (gr === ROOM_FLOOR) return out;
-    const dp = this.detailPool(gr);
-    if (dp.length) {
-      const rate = this.data.detailRates?.[gr] ?? this.data.detailRate ?? DETAIL_FREQ;
-      const rd = lcg((x * 83492791) ^ (y * 2654435761) ^ 0xd47a);
-      if (rd() < rate) {
-        const index = Math.trunc(rd() * dp.length) % dp.length;
-        out.detail = { index, file: dp[index] };
-        out.art = { kind: "conform", path: dp[index], w: TILE, h: PLATE_H };
-      }
+     *
+     * NEVER ON A RAMP, AND NEVER TOUCHING ANOTHER (maintainer 2026-09-13: "A
+     * tile detail is a tile that doesn't look good repeated, but look very good
+     * alone. Can you place them in the world where it looks good"). Measured on
+     * the_game at the default 1 in 56 before this: of 860 details, 28 sat on a
+     * slope cell and REPLACED its graded ramp tile, and 101 had another detail
+     * in their 8-ring (at 1 in 10: 156 and 2,365). A slope cell keeps its slope;
+     * the neighbourhood rule is `detailAlone` below. render3 carries the same
+     * two clauses (asked of maps2, 2026-09-13). */
+    if (gr === ROOM_FLOOR || sidx) return out;
+    const roll = this.detailRoll(gr, x, y);
+    if (roll && this.detailAlone(g, L, x, y, roll.u)) {
+      const dp = this.detailPool(gr);
+      const index = Math.trunc(roll.pick * dp.length) % dp.length;
+      out.detail = { index, file: dp[index] };
+      out.art = { kind: "conform", path: dp[index], w: TILE, h: PLATE_H };
     }
     return out;
+  }
+
+  /** THE DETAIL ROLL OF ONE CELL: `u` in [0,1) against the ground's rate, and
+   *  the pick draw after it. Null when the ground is the room floor, has no
+   *  pool, or the roll fails. A pure function of (ground, x, y) and the rate,
+   *  so every thread — and render3 — computes the same answer for a cell and
+   *  for its neighbours. */
+  private detailRoll(gr: string, x: number, y: number): { u: number; pick: number } | null {
+    if (gr === ROOM_FLOOR || !this.detailPool(gr).length) return null;
+    const rate = this.data.detailRates?.[gr] ?? this.data.detailRate ?? DETAIL_FREQ;
+    const rd = lcg((x * 83492791) ^ (y * 2654435761) ^ 0xd47a);
+    const u = rd();
+    return u < rate ? { u, pick: rd() } : null;
+  }
+
+  /** NO TWO DETAILS TOUCHING. Among the raw winners of an 8-neighbourhood the
+   *  SMALLEST roll keeps its detail and every other yields — symmetric and
+   *  order-free (both cells of a pair compute the same two numbers), so a
+   *  streaming window, the worker and a full sweep agree without any shared
+   *  state. At the dial's top (every cell wins) this packs to the local minima
+   *  of the hash field, about one cell in nine and never adjacent: a detail is
+   *  never tiled, whatever the slider says — his own law. A neighbour on a
+   *  ramp never draws, so it never vetoes; a neighbour a fade took still vetoes
+   *  (its fade needs the view; the over-veto is one band cell wide and keeps
+   *  this local). Equal rolls yield both ways — never seen, and harmless. */
+  private detailAlone(
+    g: (x: number, y: number) => string | null,
+    L: (x: number, y: number) => number,
+    x: number,
+    y: number,
+    u: number,
+  ): boolean {
+    for (let dy = -1; dy <= 1; dy++)
+      for (let dx = -1; dx <= 1; dx++) {
+        if (!dx && !dy) continue;
+        const nx = x + dx;
+        const ny = y + dy;
+        const gn = g(nx, ny);
+        if (!gn) continue;
+        const r = this.detailRoll(gn, nx, ny);
+        if (!r || r.u > u) continue;
+        if (this.slopeIndexAt(g, L, gn, nx, ny, L(nx, ny))) continue;
+        return false;
+      }
+    return true;
   }
 
   /** side_a / side_b for a pair, canonical via the pattern library's own

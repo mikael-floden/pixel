@@ -54,7 +54,7 @@ secrets; push to `main`, rebase on reject, no PRs unless asked; doc law.
 
 **Scope**
 - Never edit the art domains; the games agent may improve the RENDERER, never
-  the art. Anti-tiling effects: NONE (rejected twice — the fresh ground stands).
+  the art. Anti-tiling effects: NONE (rejected twice; the fresh ground stands).
 - The ONE games2 file art agents may edit is `shared/src/surfaces.ts`
   (`SURFACES.md`). `check-surfaces.mjs` fails `npm test` on an unclassified
   category.
@@ -81,8 +81,9 @@ secrets; push to `main`, rebase on reject, no PRs unless asked; doc law.
   nothing moves (`docs/scenery.md`, `docs/monsters-combat.md`; gates
   `verify-scenery-pack.mjs`, `verify-npc-pack.mjs`).
 - Ground DETAILS are his approved `tiles/tops` details + the x-over-y top
-  approvals, one in N cells by the Settings "Ground details" dial
-  (`detailrate.ts`, default 1 in 56); never tiled, never on an indoor floor.
+  approvals, one in N cells by the Settings "Ground details" dial (default 1
+  in 56); never on an indoor floor, a ramp, or touching another — so never
+  tiled (`detailplace.test.ts`).
 - A base-set member leaves its set on his verdict on THE TILE, never on its
   `#top` detail verdict (independent, maintainer 2026-09-12; `tiles3members.test.ts`).
 - The resolver is PER CELL (`Tiles3World`), never the sweep, and it is held
@@ -93,23 +94,23 @@ secrets; push to `main`, rebase on reject, no PRs unless asked; doc law.
   boundaries are NOT a second pass; decks draw last.
 - SLACK, NOT EXACTNESS: a full plate overlaps 17 rows; a top-face-only plate
   is the only zero-slack seam, so only liquids take it, with `TOP_FACE_MARGIN`
-  rows of their own surface. A fix that makes the geometry more exact leaves
-  the seam class alive.
+  rows of their own surface. Making the geometry more exact leaves the seam
+  class alive.
 - A transition covers what the plate it replaces covered; the seam (0.82) is
   ON — it is what makes a transition visible (maintainer verdict). Water lies
   flat: a liquid corner votes only at its own level (`tiles3liquid.test.ts`).
 - Every field art goes through `plate()`; a conformed plate fills every
-  silhouette texel including holes inside a column.
-- A liquid diamond wears `sheets.libTop`, never a formula.
+  silhouette texel, holes inside a column included.
+- A liquid diamond wears `sheets.libTop`, not a formula.
 - A BUILT slab (roof, bridge) wears ONE surface, anchored at the deck's first
   cell; a CAVE LID is ground and picks per cell, so it matches the terrain
   beside it. Both are drawn (ground pass AND occluder copy); `thickness` is
   the contract (0 = top only); `side` is the body, the doorway crops the cap.
 - The fade has three dials and a switch; THE DEFAULTS ARE HIS (reach 4,
   amount 0.46, falloff 4). Cliff-foot and lid transitions are on by default.
-- Regions are 24-cell chunks; a cell edit is bounded by its chunk plus a 5x5.
+- Regions are 24-cell chunks; a cell edit is bounded by its chunk + a 5x5.
 - Phaser: `textures.get` returns `__MISSING` for an unknown key (adapter via
-  `exists`); terrain has its own `LoaderPlugin` with `crossOrigin` set.
+  `exists`); terrain has its own `LoaderPlugin`, `crossOrigin` set.
 - EVERYTHING STREAMED BEHIND THE LIVE WORLD goes through THE ART QUEUE
   (`client/src/artqueue.ts`, `docs/perf.md`): priority order, a BYTE budget
   per frame, no kind's strips before a monster of it exists, its fight art
