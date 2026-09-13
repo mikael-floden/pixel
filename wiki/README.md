@@ -290,6 +290,28 @@ a reset, a stretched expiry is refused, an expired-but-correctly-signed token
 is refused, rotation revokes) and a scratch e2e that logs in, KILLS the server
 process, starts a new one and reloads.
 
+## A DOMAIN'S VOCABULARY IS THE DOMAIN'S — never a copy in here
+
+The scenery type filter is the worked example, and the trap it paid for
+(maintainer 2026-09-13, hunting for chimneys and finding none): the types live
+in `scenery/config/factory.json` under `types.values`, on his own rule from
+2026-08-14 — *"it should be owned by the scenery"* — and the wiki had THREE
+copies of that list anyway. `build.mjs` gated on its seven and folded anything
+else into OTHER, `wiki.js` drew a chip only for the seven it could name, and
+`check-type.mjs` held the same list and called the result correct. So when the
+scenery agent added CHIMNEY, declared it in the config and generated 8 pieces,
+they arrived in the junk drawer with no chip and nothing to filter — and every
+gate was green.
+
+**A closed list in the consumer silently overrides the producer that owns the
+field.** So: `build.mjs` publishes whatever type it is given (OTHER only when
+group and piece both name none), the chip row is built from the types PRESENT
+in the registry (`objTypeOrder`, known ones first, new ones alphabetically,
+Other last because it is a drawer and not a kind), `OBJ_TYPES` is a label table
+and a sort order rather than a gate, and `check-type.mjs` reads the vocabulary
+out of the factory so a type added tomorrow is checked tomorrow. The same shape
+applies to any field another domain owns.
+
 ## Feedback files — the contract with the other agents
 
 `live/feedback/<domain>.json` (`monsters` `characters` `tiles` `objects`

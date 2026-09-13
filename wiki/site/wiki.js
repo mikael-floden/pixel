@@ -11831,11 +11831,25 @@ const stillDirs = (o) => Math.max(0, ...stillStates(o).map((s) => Object.keys(o.
 const OBJ_SORT_KEY = "wiki-obj-sort";
 const OBJ_FILTER_KEY = "wiki-obj-filter";
 const OBJ_TYPE_KEY = "wiki-obj-type";
+/* THE TYPES THE WIKI KNOWS HOW TO NAME — an ORDER and a label table, never a
+ * gate. The scenery domain owns the vocabulary (his rule, 2026-08-14: "it
+ * should be owned by the scenery"), so a type it invents tomorrow gets a chip
+ * of its own with a title-cased name, sorted in before Other. */
 const OBJ_TYPES = {
   TREE: "Trees", WINDOW: "Windows", MOUNTAIN_WALL: "Mountain wall", TOWN: "Town",
   INDOOR: "Indoor", NATURE: "Nature", OTHER: "Other",
 };
 const objTypeLabel = (t) => OBJ_TYPES[t] ?? titleish(t ?? "other");
+/** Every type the domain actually has, in reading order: the ones named above
+ *  first, then anything new alphabetically, and Other last because it is the
+ *  drawer rather than a kind. Read through typeOf, so a piece he has re-filed
+ *  counts where he put it. */
+function objTypeOrder() {
+  const known = Object.keys(OBJ_TYPES).filter((t) => t !== "OTHER");
+  const seen = new Set((state.data.domains.objects ?? []).map((o) => typeOf(o)).filter(Boolean));
+  const extra = [...seen].filter((t) => !OBJ_TYPES[t]).sort((a, b) => objTypeLabel(a).localeCompare(objTypeLabel(b)));
+  return [...known, ...extra, "OTHER"];
+}
 /* WALKING THE ANIMATIONS (maintainer 2026-09-09: "The wiki will make it
  * possible to filter and review animations so I will when I have time mark the
  * animation as ANIMATION_APPROVED or ANIMATION_REDO"). A piece matches when ANY
@@ -11978,7 +11992,7 @@ function viewObjects() {
     // "Indoor 0" is a dead end you can press.
     sortBar(OBJ_TYPE_KEY, [
       ["all", `all ${q.total}`, "Every kind of scenery"],
-      ...Object.keys(OBJ_TYPES)
+      ...objTypeOrder()
         .map((t) => [t, t, state.data.domains.objects.filter((o) => typeOf(o) === t).length])
         .filter(([, , n]) => n > 0)
         .map(([t, , n]) => [t, `${objTypeLabel(t)} ${n}`, `Only ${objTypeLabel(t).toLowerCase()} — ${n} pieces`]),

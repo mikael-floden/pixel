@@ -1153,19 +1153,28 @@ function buildObjects() {
       if (m) entries.push([`${top}/${child}`, top, m]);
     }
   }
-  // TYPE comes from the scenery domain's own catalog: every group in
-  // scenery/config/factory.json carries a `type` (TREE / WINDOW /
-  // MOUNTAIN_WALL / TOWN / INDOOR / NATURE / OTHER) so the wiki can offer a
-  // type filter without inventing the taxonomy here. A piece may override its
-  // group by putting its own `type` in scenery.json — the piece wins, the
-  // group is the default, and anything unrecognised falls to OTHER rather
-  // than vanishing from every filter.
-  const TYPES = ["TREE", "WINDOW", "MOUNTAIN_WALL", "TOWN", "INDOOR", "NATURE", "OTHER"];
+  /* TYPE COMES FROM THE SCENERY DOMAIN AND IS NOT A CLOSED LIST HERE. Every
+   * group in scenery/config/factory.json carries a `type`, and a piece may
+   * override its group with its own `type` in scenery.json — the piece wins,
+   * the group is the default.
+   *
+   * THE VOCABULARY IS THEIRS, ON HIS OWN RULE (2026-08-14: "it should be owned
+   * by the scenery"), so the wiki PUBLISHES WHAT IT IS GIVEN. This used to
+   * gate on a hardcoded seven and fold anything else into OTHER, which meant a
+   * new type could not reach the page at all: the scenery agent added CHIMNEY
+   * (f6fead335, 2026-09-13, "CHIMNEY is a type of its own, like WINDOW") and
+   * its 8 pieces arrived in the junk drawer with the blood spatter, with no
+   * chip of their own and no way to filter to them — he went looking and
+   * found nothing (maintainer 2026-09-13). A closed list in the consumer
+   * silently overrides the producer that owns the field.
+   *
+   * OTHER is now only what it says: a piece whose group and file BOTH name no
+   * type at all. */
   const factory = readJson(join(base, "config", "factory.json")) ?? {};
   const groupType = new Map((factory.groups ?? []).map((g) => [g.id, g.type]));
   const typeOf = (oj, group) => {
-    const t = String(oj.type ?? groupType.get(group ?? oj.group) ?? "OTHER").toUpperCase();
-    return TYPES.includes(t) ? t : "OTHER";
+    const t = String(oj.type ?? groupType.get(group ?? oj.group) ?? "").toUpperCase().trim();
+    return t || "OTHER";
   };
   const objects = [];
   for (const [rel, group, oj] of entries) {
