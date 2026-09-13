@@ -1,8 +1,8 @@
 {
   "domain": "wiki-assistant",
-  "updated_at": "2026-09-13T04:20:18+00:00",
+  "updated_at": "2026-09-13T19:43:58+00:00",
   "health": "running",
-  "current": "SHIPPED 1fa3cc55c: a detail can no longer be selected or added to a base tile set. Nothing claimed next; the 12 details already in sets are HIS call and are flagged in the Base tab.",
+  "current": "CLAIMED (maintainer 2026-09-13: he could not find a Chimney filter): the wiki FLATTENS any scenery type it was not told about in advance \u2014 build.mjs:1163 gates on a hardcoded 7-word list, so scenery's new CHIMNEY (f6fead335, 8 pieces) landed as OTHER, and the chip row iterates OBJ_TYPES' keys rather than the data. Files: wiki/build.mjs (typeOf), wiki/site/wiki.js (the chip row only), wiki/site/data.json, wiki/README.md or docs. The scenery domain owns the vocabulary \u2014 his own 2026-08-14 rule \u2014 so the wiki must publish what it is given.",
   "progress": {
     "units_shipped": 4
   },
