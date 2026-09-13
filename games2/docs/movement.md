@@ -808,18 +808,32 @@ clip, no tint.
     inside `dodgeHold` — the UNTIGHTENED radii sum, 1.35×. Widening only the
     HOLD makes it hysteresis, not a bigger trigger, and the two are separate
     functions for exactly that reason: **`MONSTER_DODGE_TIGHTEN` must never
-    reach the hold.** It shrinks how EARLY you are turned (0.85 — maintainer
-    2026-09-05, with the overlay on: the outer ring "a bit too big", wanted
-    between the body ring and where it sat), and tightening the hold with it
-    made the walker let go the moment it had stepped aside — the 2026-08-08
-    weave, caught by the dodge gate rather than by reasoning. `bodyStandoff`
-    reads `dodgePersonal` too: the autopilot steers at a waypoint the dodge
-    refuses to enter, and if the two disagree the walker orbits forever. The
-    collision overlay draws `dodgePersonal` ITSELF, never a re-derivation.
-    HALFWAY (0.5) IS STILL WANTED and is not shipped: it stops 9 dodge/pass
-    fixtures from arising at all ("the fixture no longer blocks", "the pass
-    never engaged"), so it needs those bodies re-placed against the new
-    clearance first — not a constant change.
+    reach the hold.** It shrinks how EARLY you are turned — 0.425, the ring
+    at r + 6.4 (maintainer 2026-09-05, with the overlay on: the outer ring
+    "a bit too big", wanted between the body ring and where it sat — 0.85
+    shipped, r + 12.75; and 2026-09-13, the same words on the spawn house's
+    rabbits: "I feel the player starts to dodge the monster at the outer
+    circle. I feel that is too far away from the monster. Can you place the
+    outer radius between the current radius and the inner radius?" — halfway
+    again) — and tightening the hold with it made the walker let go the
+    moment it had stepped aside — the 2026-08-08 weave, caught by the dodge
+    gate rather than by reasoning. The lookahead scales with it
+    (`max(MONSTER_DODGE_LOOKAHEAD, personal + 20)`: 35.4 wu for a 9-wu body,
+    41.75 before), so the turn also STARTS later, which is what he sees.
+    `bodyStandoff` reads `dodgePersonal` too: the autopilot steers at a
+    waypoint the dodge refuses to enter, and if the two disagree the walker
+    orbits forever. The collision overlay draws `dodgePersonal` ITSELF, never
+    a re-derivation. THE FIXTURES FOLLOW THE CONSTANT: the halving stopped 9
+    dodge/pass fixtures from arising at all ("the fixture no longer blocks",
+    "the pass never engaged") — bodies parked 40 wu ahead sat outside the
+    new lookahead, and a 12-wu body no longer sealed a 1-cell doorway (the
+    walker brushes through a soft body whose ring does not reach past the
+    door's half-width). They are placed off `dodgePersonal` and the lookahead
+    now (`AHEAD`, `INSIDE_PERSONAL` in wallhug/dodgepass), and the doorway
+    blocker is an 18-wu body, the smallest that seals it at 0.425 (12, 14,
+    16 let the walker through). Bodies are SOFT collision: brushing one is
+    free, so the ring now turns you only when your line would cut into the
+    body itself (its 6.4 is inside your own 9).
   - The side is chosen ONCE and held; only walkability may overrule it
     (re-scoring both sides per frame with a small bias kept flipping). The
     45°-vs-90° escalation latches the same way — but see below.

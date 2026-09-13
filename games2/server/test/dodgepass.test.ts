@@ -30,6 +30,8 @@ import {
   WALK_CLIMB,
   WALK_SPEED,
   PLAYER_BODY_RADIUS,
+  dodgePersonal,
+  MONSTER_DODGE_LOOKAHEAD,
   DODGE_PASS_STALL_MS,
   DODGE_PASS_JINK_MS,
   DODGE_PASS_MAX_MS,
@@ -144,12 +146,23 @@ function run(
 }
 
 // The doorway: a wall at col 12, its only opening at row 8, a body parked in
-// the opening. The walker starts two cells west and holds east.
+// the opening. The walker starts two cells west and holds east. THE BODY FILLS
+// THE DOOR: its personal radius (r + 15 x MONSTER_DODGE_TIGHTEN) must reach past
+// the door's half-width (16 wu) with room to spare, or the dodge lets the
+// walker brush straight through the soft body and neither the panic nor the
+// pass ever arises — at 0.85 a 12-wu body sealed it (22.2), at 0.425 (the
+// 2026-09-13 tightening) 12, 14 and 16 all let the walker through and 18 (24.4)
+// is the smallest that seals again.
 const DOOR_C = 12;
 const DOOR_R = 8;
-const BODY = { id: "npc:blocker", x: 12.5 * CELL_WU, y: 8.5 * CELL_WU, r: 12 };
+const BODY = { id: "npc:blocker", x: 12.5 * CELL_WU, y: 8.5 * CELL_WU, r: 18 };
 const START = { x: 10.5 * CELL_WU, y: 8.5 * CELL_WU };
 const EAST = screenFor(1, 0);
+/** A 10-wu body dead ahead, just inside the dodge's lookahead (which scales
+ *  with the personal radius: max(MONSTER_DODGE_LOOKAHEAD, personal + 20)) —
+ *  derived, so the direct-call fixtures follow MONSTER_DODGE_TIGHTEN
+ *  (2026-09-13: 0.85 -> 0.425 put a body at 40 wu outside the lookahead). */
+const AHEAD = Math.max(MONSTER_DODGE_LOOKAHEAD, dodgePersonal(10, PLAYER_BODY_RADIUS) + 20) - 6;
 
 test("baseline: a body in the doorway is a wall, and the input panics", () => {
   const g = doorway(DOOR_C, DOOR_R);
@@ -191,7 +204,7 @@ test("structural trigger: a fully sealed lane passes on the FIRST dodge frame", 
   // clock needed; the pass fires the same frame the dodge engages, so the
   // panic never appears at all.
   const rawOnly = (hax: number, hay: number) => hax === EAST.ax && hay === EAST.ay;
-  const bodies = [{ id: "m1", x: START.x + 40, y: START.y, r: 10 }];
+  const bodies = [{ id: "m1", x: START.x + AHEAD, y: START.y, r: 10 }];
   const d = monsterDodge(START.x, START.y, EAST.ax, EAST.ay, bodies, undefined, undefined, rawOnly, 0, true);
   assert.ok(d, "the dodge did not engage");
   assert.equal(d!.state.pass, "m1", "no pass on the first sealed frame");
@@ -218,7 +231,7 @@ test("the jink: a stalled (not sealed) pass opens with one sideways feint, eithe
   // so the dodge sees zero displacement with open candidates — the stall
   // fallback's exact shape. openHeading says everything is walkable.
   const open = () => true;
-  const bodies = [{ id: "m1", x: START.x + 40, y: START.y, r: 10 }];
+  const bodies = [{ id: "m1", x: START.x + AHEAD, y: START.y, r: 10 }];
   let state: MonsterDodgeState | undefined;
   let passStart = -1;
   const emitted: Array<{ t: number; ax: number; ay: number; pass: boolean }> = [];
@@ -253,7 +266,7 @@ test("the valve: a pass that cannot complete expires and re-arms the dodge", () 
   // must not hold past DODGE_PASS_MAX_MS; after expiry the normal dodge is
   // back until a FRESH stall matures.
   const open = () => true;
-  const bodies = [{ id: "m1", x: START.x + 40, y: START.y, r: 10 }];
+  const bodies = [{ id: "m1", x: START.x + AHEAD, y: START.y, r: 10 }];
   let state: MonsterDodgeState | undefined;
   const spans: Array<{ from: number; to: number }> = [];
   let cur: { from: number; to: number } | null = null;

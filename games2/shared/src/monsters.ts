@@ -245,16 +245,25 @@ export const PLAYER_BODY_RADIUS = 9; // wu — the player's own footprint half-w
 export const MONSTER_SEP_MARGIN = 4; // wu — breathing room beyond touching radii
 export const MONSTER_SEP_RELAX_SPEED = 90; // wu/s — cap on the positional push (no teleporting)
 export const MONSTER_DODGE_MARGIN = 6; // wu — dodge clearance beyond the radii sum
-/** HOW MUCH OF THAT CLEARANCE THE DODGE ACTUALLY KEEPS (maintainer 2026-09-05,
- *  with the collision overlay on: "the OUTER hitbox radius on monsters and NPCs
+/** HOW MUCH OF THAT CLEARANCE THE DODGE ACTUALLY KEEPS — the faint ring on the
+ *  collision overlay, where the dodge ENGAGES (dodgePersonal). Twice asked, in
+ *  the same words. 2026-09-05: "the OUTER hitbox radius on monsters and NPCs
  *  are a bit too big and should be maybe in between what it is now and the
- *  inner hitbox circle"). The dodge used to turn you a whole body plus a margin
- *  out from the art — r + 9 + 6 — which drew a ring a body and a half wide and
- *  felt like being pushed aside by nothing. Half of that clearance puts the ring
- *  exactly midway between the body itself (r) and where it used to sit
- *  (r + 15), which is what he asked for; bodies are SOFT collision, so brushing
- *  one is free and the only cost is how early you are steered. */
-export const MONSTER_DODGE_TIGHTEN = 0.85;
+ *  inner hitbox circle" — the dodge turned you a whole body plus a margin out
+ *  from the art, r + 9 + 6, a ring a body and a half wide that felt like
+ *  being pushed aside by nothing; 0.85 of the clearance shipped (r + 12.75),
+ *  not the half he named, because the hold was tightened with it and the
+ *  walker weaved (see MONSTER_DODGE_HOLD_WIDEN). 2026-09-13, the rings on
+ *  the spawn house's rabbits: "I feel the player starts to dodge the monster
+ *  at the outer circle. I feel that is too far away from the monster. Can you
+ *  place the outer radius between the current radius and the inner radius?"
+ *  — halfway from r + 12.75 to r is r + 6.4: 0.425. The trigger alone; the
+ *  hold corridor is the full sum widened and is what keeps a committed dodge
+ *  alive. Bodies are SOFT collision, so brushing one is free and the only
+ *  cost is how early you are steered — this is later than a body's own
+ *  radius (9) reaches, so the dodge now turns you only when your line would
+ *  cut into the body itself. */
+export const MONSTER_DODGE_TIGHTEN = 0.425;
 
 /** THE HOLD CORRIDOR IS DELIBERATELY *NOT* TIGHTENED. Engage and release are
  *  two different thresholds on purpose — "widening only the HOLD is what makes
