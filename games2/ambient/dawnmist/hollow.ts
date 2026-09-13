@@ -81,9 +81,32 @@ export function basin(centre: number, ring: number[]): number {
   return clamp01((up - down) / ring.length);
 }
 
-/** ...and the dampness that follows from it. */
-export function damp(basinV: number, waterNear: boolean): number {
-  return clamp01(clamp01(basinV) + (waterNear ? WATER_BONUS : 0));
+/** HOW FAR THE WORLD FALLS AWAY around a spot, 0..1, from levels sampled much
+ *  further out than `basin`'s ring — and this is the term that tells a VALLEY
+ *  from a POCKET ON A SUMMIT.
+ *
+ *  Enclosure alone cannot: a hollow beside an outcrop on a 46-level peak has
+ *  the same ring as a hollow in a river bottom, and the gate caught exactly
+ *  that (7 banks within four cells of a player standing on the world's highest
+ *  ridge). What separates them is where the cold air GOES — off the massif in
+ *  one case, nowhere in the other — and that is only visible from further out.
+ *  Saturates at DRAIN_LEVELS of fall, so a real valley wall does not read as a
+ *  drop. (Measured on the_game: the fogged share of the land goes 8.76% ->
+ *  6.86%, both summit cells go to drain 1.0, and the three hollows the gate
+ *  stands in keep 0.46-0.97.) */
+export const DRAIN_LEVELS = 6;
+export function drain(centre: number, far: number[]): number {
+  if (!far.length) return 0;
+  let s = 0;
+  for (const l of far) s += clamp01((centre - l) / DRAIN_LEVELS);
+  return clamp01(s / far.length);
+}
+
+/** ...and the dampness that follows: enclosed, damp, and with nowhere to
+ *  drain to. The drain scales the WHOLE thing, water bonus included — a tarn
+ *  on a peak is still a peak. */
+export function damp(basinV: number, waterNear: boolean, drainV = 0): number {
+  return clamp01((clamp01(basinV) + (waterNear ? WATER_BONUS : 0)) * (1 - clamp01(drainV)));
 }
 
 /** THE SUN BURNS IT OFF. Full while the sun is still under the horizon or just
@@ -175,6 +198,23 @@ export function ditherPixels(rx: number, ry: number, seed: number): [number, num
       if (hash01(x, y, seed) < 0.86 * (1 - t * t)) out.push([x, y]);
     }
   return out;
+}
+
+/** HOW OPAQUE A PATCH IS AT THIS HOUR — and it is THICKER IN THE DARK, which
+ *  looks backwards until you remember where this is drawn. The surface band is
+ *  under the darkness overlay, so the night multiplies the mist by the same
+ *  factor as the ground beneath it: the two keep their RATIO and lose their
+ *  DIFFERENCE, and the fog quietly vanishes at exactly the hour it is
+ *  thickest. Measured in the world's deepest hollow at night: the banks covered
+ *  9.37% of the game area and moved those pixels by 3-9 luma.
+ *
+ *  So the opacity compensates for the multiply instead of the depth being
+ *  given up. Everything the surface band buys is kept — the fog goes under
+ *  bodies, it never glows, it takes the cliff's own shadow — and what it cost
+ *  is paid back here, in the one number that can pay it. */
+export const NIGHT_LIFT = 1.2;
+export function alphaFor(base: number, sun: number): number {
+  return clamp01(base * (1 + NIGHT_LIFT * (1 - clamp01(sun))));
 }
 
 /** THE COLOUR, and it does NOT change with the sun. A pale, barely-cool grey:

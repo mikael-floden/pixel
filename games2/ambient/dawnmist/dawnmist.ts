@@ -8,10 +8,12 @@ import {
   MIN_DAMP,
   MIST,
   PATCH_LIFE,
+  alphaFor,
   PATCH_RX,
   BREATHE_MS,
   basin,
   breathe,
+  drain,
   countFor,
   damp,
   ditherPixels,
@@ -54,9 +56,18 @@ import {
 const NAME = "dawnmist";
 const GAIN_TAU = 2600; // fog comes and goes slowly, even when forced
 /** The ring of level samples, in screen px: 3 cells across, squashed by the
- *  projection like every ground shape here. */
+ *  projection like every ground shape here — and a WIDE one at 9 cells, which
+ *  is the only way to tell a valley from a pocket on a summit (see `drain`). */
 const RING_PX = 3 * 32;
-const RING_N = 6;
+const WIDE_PX = 9 * 32;
+const RING_N = 4;
+/** A SCREEN RING IS NOT A WORLD RING ON A SLOPE. The projection subtracts
+ *  level x lh from screen y, so a point 42 px up-screen of you may resolve to
+ *  a cell three levels higher AND several cells further back. The answer is
+ *  not to aim more carefully — it is to USE WHAT WAS ACTUALLY HIT: `pickAt`
+ *  reports the CELL it resolved, so each sample is filed by its true distance
+ *  from the centre rather than by the offset it was asked for. */
+const NEAR_CELLS = 6;
 /** How far out still water still counts as damp — 2 cells. */
 const WATER_PX = 2 * 32;
 /** Placement probes per attempt; the gap does the real throttling. */
@@ -111,7 +122,7 @@ export function dawnMistFeature(): AmbientFeature {
   let forced = false;
   let gap = 0;
   let probes = 0;
-  const stats = { tries: 0, placed: 0, rejected: 0, lastDamp: 0, lastBasin: 0, bestDamp: 0, nearHits: 0 };
+  const stats = { tries: 0, placed: 0, rejected: 0, lastDamp: 0, lastBasin: 0, lastDrain: 0, bestDamp: 0, nearHits: 0 };
   /** Spots that fogged, so the next samples are taken beside them. Capped, and
    *  the LEAST damp is evicted, so the memory drifts toward the bottom of the
    *  dip rather than sticking to whatever was found first. */
@@ -123,15 +134,14 @@ export function dawnMistFeature(): AmbientFeature {
 
   const ml = () => (window as unknown as { __ml?: Record<string, (...a: never[]) => unknown> }).__ml;
 
-  /** The level of whatever is DRAWN at a screen point, or null. Fenced like
-   *  every probe read here: no probe, no mist, never a throw. */
-  const levelAt = (wx: number, wy: number): number | null => {
+  /** The CELL and level of whatever is DRAWN at a screen point, or null.
+   *  Fenced like every probe read here: no probe, no mist, never a throw. */
+  const pickAt = (wx: number, wy: number): { x: number; y: number; lvl: number } | null => {
     const pick = ml()?.pickAt as undefined | ((x: number, y: number) => { x: number; y: number; lvl: number } | null);
     if (!pick) return null;
     probes++;
     try {
-      const p = pick(wx, wy);
-      return p ? p.lvl : null;
+      return pick(wx, wy) ?? null;
     } catch {
       return null;
     }
@@ -141,13 +151,22 @@ export function dawnMistFeature(): AmbientFeature {
    *  look for still water beside it — a PLACEMENT call, never per frame. */
   const dampAt = (wx: number, wy: number): number => {
     if (!landableAt(wx, wy)) return 0; // the spot itself must be dry standable ground
-    const centre = levelAt(wx, wy);
-    if (centre === null) return 0;
+    const c = pickAt(wx, wy);
+    if (!c) return 0;
+    const centre = c.lvl;
     const ring: number[] = [];
+    const far: number[] = [];
     for (let i = 0; i < RING_N; i++) {
-      const a = (i / RING_N) * Math.PI * 2;
-      const l = levelAt(wx + Math.cos(a) * RING_PX, wy + Math.sin(a) * RING_PX * RING_RY);
-      if (l !== null) ring.push(l);
+      const a = (i / RING_N) * Math.PI * 2 + Math.PI / RING_N;
+      for (const r of [RING_PX, WIDE_PX]) {
+        const p = pickAt(wx + Math.cos(a) * r, wy + Math.sin(a) * r * RING_RY);
+        if (!p) continue;
+        // Filed by the distance ACTUALLY resolved, not the one asked for.
+        const d = Math.hypot(p.x - c.x, p.y - c.y);
+        if (d < 1) continue; // the same cell says nothing about its surroundings
+        if (d <= NEAR_CELLS) ring.push(p.lvl);
+        else far.push(p.lvl);
+      }
     }
     if (!ring.length) return 0;
     const b = basin(centre, ring);
@@ -155,8 +174,10 @@ export function dawnMistFeature(): AmbientFeature {
     for (const [dx, dy] of [[1, 0], [-1, 0], [0, 1], [0, -1]] as const) {
       if (lakeAt(wx + dx * WATER_PX, wy + dy * WATER_PX * RING_RY)) { water = true; break; }
     }
+    const dr = drain(centre, far);
     stats.lastBasin = +b.toFixed(3);
-    const d = damp(b, water);
+    stats.lastDrain = +dr.toFixed(3);
+    const d = damp(b, water, dr);
     stats.lastDamp = +d.toFixed(3);
     return d;
   };
@@ -304,7 +325,7 @@ export function dawnMistFeature(): AmbientFeature {
           p.sprite.setVisible(false).setAlpha(0);
           continue;
         }
-        const a = patchAlpha(p.age, p.life) * breathe(p.age, p.period, p.phase) * ALPHA * g;
+        const a = patchAlpha(p.age, p.life) * breathe(p.age, p.period, p.phase) * alphaFor(ALPHA, env.sun) * g;
         if (a <= 0.004) {
           p.sprite.setVisible(false).setAlpha(0);
           continue;

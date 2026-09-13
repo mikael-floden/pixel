@@ -22,8 +22,12 @@ import {
   PATCH_LIFE,
   PATCH_RX,
   PER_SPOT,
+  DRAIN_LEVELS,
+  NIGHT_LIFT,
   WATER_BONUS,
+  alphaFor,
   basin,
+  drain,
   breathe,
   countFor,
   damp,
@@ -73,6 +77,22 @@ test("a ridge never fogs, and a pit always does", () => {
     assert.ok(b >= prev, "deeper walls never read as shallower");
     prev = b;
   }
+});
+
+test("a pocket on a summit is not a valley — the world has to fall away", () => {
+  // The gate caught this standing on the world's highest ridge: a hollow
+  // beside an outcrop at level 46 has the SAME near ring as a hollow in a
+  // river bottom. What separates them is where the cold air goes.
+  assert.equal(drain(46, [40, 40, 40, 40]), 1, "a summit drains in every direction");
+  assert.equal(drain(3, [3, 3, 3, 3]), 0, "a valley floor drains nowhere");
+  assert.equal(drain(3, [9, 9, 9, 9]), 0, "and ground ABOVE you is not a drop");
+  assert.equal(drain(0, []), 0, "no samples, no verdict");
+  assert.ok(drain(10, [10, 10, 4, 10]) > 0 && drain(10, [10, 10, 4, 10]) < 0.3, "one way out is a little drainage");
+  assert.ok(drain(10, [10 - DRAIN_LEVELS, 10, 10, 10]) > 0.2, "a full drop on one side counts");
+  // ...and it scales the whole dampness, water bonus included
+  assert.equal(damp(1, true, 1), 0, "a tarn on a peak is still a peak");
+  assert.ok(damp(1, true, 0) > damp(1, true, 0.5), "and partial drainage thins it");
+  assert.equal(damp(0.8, false, 0), damp(0.8, false), "no drain argument is no drainage");
 });
 
 test("water makes a flat bank damp, but a dry plain stays dry", () => {
@@ -210,6 +230,23 @@ test("a damper spot gets bigger patches and more of them", () => {
     hi = Math.max(hi, g);
   }
   assert.ok(lo >= 400 && hi <= 900, `the placement gap stays in its band (${lo}..${hi})`);
+});
+
+test("it is THICKER in the dark, because the night multiplies it with the ground", () => {
+  // The surface band puts the mist UNDER the darkness overlay, so the night
+  // scales the fog and the ground it lies on by the SAME factor: they keep
+  // their ratio and lose their difference. Measured at night in the world's
+  // deepest hollow: the banks covered 9.37% of the game area and moved those
+  // pixels by 3-9 luma. The opacity pays that back; the depth is not given up.
+  assert.ok(alphaFor(0.28, 0) > alphaFor(0.28, 1), "thicker at night than at noon");
+  assert.equal(alphaFor(0.28, 1), 0.28, "and untouched in full sun");
+  assert.ok(alphaFor(0.28, 0) <= 0.28 * (1 + NIGHT_LIFT) + 1e-9, "lifted by the stated factor, no more");
+  assert.ok(alphaFor(0.28, 0) < 0.75, "still fog, not paint");
+  for (const [b, s] of [[0.28, -1], [0.28, 5], [1, 0], [0, 0]] as const) {
+    const a = alphaFor(b, s);
+    assert.ok(a >= 0 && a <= 1, `alphaFor(${b},${s}) = ${a} out of range`);
+  }
+  assert.ok(alphaFor(0.28, 0.5) > alphaFor(0.28, 0.8), "and it thins all the way up the morning");
 });
 
 test("the colour is a pale, near-neutral grey — the background palette law", () => {
