@@ -326,6 +326,70 @@
      ]
     }
    ]
+  },
+  {
+   "date": "2026-09-13",
+   "commit": "a366eee306",
+   "before": "9421cc23e2",
+   "title": "The massif's lava: three flows where there were five dabs (23 cells -> 90)",
+   "changes": [
+    {
+     "name": "The lava field, from the air",
+     "what": "The whole black rock shelf. It had five dabs of 3 to 6 cells; it has three lava flows now, 90 cells of lava against 470 of rock. What stops it getting bigger is the rock's own shape: a pool only takes cells with a full two-cell ring of rock around them, so there is always a way past it on foot and lava never touches anything but black rock. Everything else on this shelf is exactly where it was - no piece moved, nothing re-dressed.",
+     "cell": [
+      222,
+      200
+     ],
+     "window": [
+      203,
+      178,
+      243,
+      222
+     ]
+    },
+    {
+     "name": "The north flow, 35 cells",
+     "what": "The two pools that sat near the top of the shelf grew into each other and now run east as one flow with rock islands in it. Its edge is lobed rather than round: the growth is nudged by a noise field so a lake gets bays and capes.",
+     "cell": [
+      226,
+      190
+     ],
+     "window": [
+      216,
+      183,
+      237,
+      199
+     ]
+    },
+    {
+     "name": "The west flow, 35 cells",
+     "what": "The dab on the west side, grown down the shelf into a long river of lava. The two-cell rock ledge on both sides of it is the rule, not luck - it is what keeps a flow a hazard beside the way instead of a wall across it. Lava is swum at 0.4 speed for 4 HP a second, so the ledge is where you want to be.",
+     "cell": [
+      215,
+      208
+     ],
+     "window": [
+      205,
+      201,
+      226,
+      217
+     ]
+    },
+    {
+     "name": "The middle pool, 20 cells",
+     "what": "The smallest of the three, between the other two. Every pool grows in turn, one cell each per round: growing the field as a whole would have spent it all on the biggest lake and left these as spots, which is what you were looking at.",
+     "cell": [
+      218,
+      196
+     ],
+     "window": [
+      208,
+      189,
+      229,
+      205
+     ]
+    }
+   ]
   }
  ],
  "artifact_previous": "https://claude.ai/code/artifact/380e0818-32c4-4388-bd85-b73d37282f86"
