@@ -1675,6 +1675,9 @@ const SCENERY_MANIFEST_SETTLE_MS = 120;
  *  the 60-124 ms band the recurring stutter actually lives in — so the census
  *  catches the population and its shoulder without counting ordinary frames. */
 const HITCH_LONG_MS = 40;
+// A JS-heap drop this large across ONE frame is a collection, not a scavenge
+// (a frame allocates ~0.5-0.7 MB; scavenges free a few) — `longWhy`'s `gc`.
+const HITCH_GC_MB = 16;
 
 export class WorldScene extends Phaser.Scene {
   private manifest!: Manifest;
@@ -2077,9 +2080,18 @@ export class WorldScene extends Phaser.Scene {
     const glPrev = this.hitchGlPrev;
     this.hitchGlPrev = gl;
     this.hitchBurst = total >= HITCH_LONG_MS ? this.hitchBurst + 1 : 0;
+    /* THE HEAP ACROSS THIS FRAME, against the sample the last render took
+     * (perfHeapLast): a collection anywhere in the frame — the gap, our own JS
+     * — shows as a drop. Classified with the longtask overlap at report time
+     * (`longWhy`); `dh`/`w`/`lt` sit EARLY in the record, where the 1200-char
+     * cap cannot reach them. */
+    const dh = this.perfMem && this.perfHeapLast > 0 ? this.perfMem.usedJSHeapSize / 1048576 - this.perfHeapLast : 0;
     const rec: Record<string, unknown> = {
       f: this.hitchN,
       total: +total.toFixed(1),
+      dh: +dh.toFixed(1), // JS heap MB change across the frame (negative = a collection ran)
+      w: "", // why it was long — wait | task | gc — filled at report time
+      lt: 0, // ms of browser-reported long task inside the interval counted as idle
       other: +(total - secMs).toFixed(1), // render + GPU + unprofiled JS
       sec: Object.fromEntries(Object.entries(this.hitchSec).filter(([, v]) => v > 0.2).map(([k, v]) => [k, +v.toFixed(1)])),
       mode: this.groundLastMode,
@@ -2129,6 +2141,7 @@ export class WorldScene extends Phaser.Scene {
      * texture upload, vsync) rather than working. Until that overlap is fixed,
      * an argmax including it would just report "idle" for everything. */
     if (total >= HITCH_LONG_MS) {
+      if (this.hitchSpans.length < 512) this.hitchSpans.push({ i0: this.hitchIdle0, i1: this.hitchIdle1, idle: this.hitchSec.gapIdle ?? 0, dh, rec });
       let cause = "";
       let best = 0;
       for (const k in this.hitchSec) {
@@ -2320,6 +2333,39 @@ export class WorldScene extends Phaser.Scene {
     const zoomMean = this.perfCountN ? this.perfZoomSum / cn : cam.zoom;
     const longN = this.perfLongN;
     const longMs = this.perfLongMs;
+    /* WHY THE LONG FRAMES WERE LONG. For every frame over HITCH_LONG_MS this
+     * window: was the main thread HELD by a task the browser reported — a
+     * `longtask` overlapping the interval we counted as idle (GC's idle-time
+     * tasks, a touch handler, a patch we do not time) — did the HEAP DROP
+     * across the frame (a collection ran in it, our own JS included), or
+     * neither: the thread was free and the next frame simply did not come,
+     * which is the compositor waiting on the GPU. One run says which
+     * population `cells:unattributed` is (his 03:13 run: 42 of 55 long frames
+     * in a window were idle gaps of 35-120 ms with nothing of ours in them). */
+    const lt = this.perfLongTasks;
+    const why = { n: 0, wait: 0, task: 0, gc: 0, taskMs: 0, waitIdleMs: 0, gcMb: 0 };
+    for (const s of this.hitchSpans) {
+      why.n++;
+      let overlap = 0;
+      for (let i = 0; i + 1 < lt.length; i += 2) {
+        const o = Math.min(lt[i + 1], s.i1) - Math.max(lt[i], s.i0);
+        if (o > 0) overlap += o;
+      }
+      const w = overlap > 0 ? "task" : s.dh <= -HITCH_GC_MB ? "gc" : "wait";
+      if (w === "task") {
+        why.task++;
+        why.taskMs += overlap;
+      } else if (w === "gc") {
+        why.gc++;
+        why.gcMb += -s.dh;
+      } else {
+        why.wait++;
+        why.waitIdleMs += s.idle;
+      }
+      s.rec.w = w;
+      s.rec.lt = +overlap.toFixed(0);
+    }
+    const longWhy = { n: why.n, wait: why.wait, task: why.task, gc: why.gc, taskMs: Math.round(why.taskMs), waitIdleMs: Math.round(why.waitIdleMs), gcMb: Math.round(why.gcMb) };
     const litOccMean = this.perfCountN ? Math.round(this.perfLitOccSum / cn) : this.litOccluders.length;
     const monActMean = this.perfCountN ? +(this.perfMonActSum / cn).toFixed(1) : this.monstersActive;
     const flushMean = this.perfCountN ? +(this.perfFlushSum / cn).toFixed(1) : this.perfDrawCount;
@@ -2347,6 +2393,8 @@ export class WorldScene extends Phaser.Scene {
     this.perfSceneryImgSum = 0;
     this.perfLongN = 0;
     this.perfLongMs = 0;
+    this.perfLongTasks = [];
+    this.hitchSpans = [];
     this.perfOccSum = 0;
     this.perfDlSum = 0;
     this.perfZoomSum = 0;
@@ -2694,6 +2742,8 @@ export class WorldScene extends Phaser.Scene {
             { n: v.n, ms: +v.ms.toFixed(0), avg: +(v.ms / v.n).toFixed(1), top: +(v.top / v.n).toFixed(1), idle: +(v.idle / v.n).toFixed(1) },
           ]),
       ),
+      // Why the long frames were long: wait (compositor/GPU) | task | gc — see above.
+      longWhy,
       worst: (() => {
         try {
           const h = (window as unknown as { __ml?: { hitch?: () => { worst?: unknown[] } } }).__ml?.hitch?.();
@@ -3142,6 +3192,7 @@ export class WorldScene extends Phaser.Scene {
         for (const e of list.getEntries()) {
           this.perfLongN++;
           this.perfLongMs += e.duration;
+          if (this.perfLongTasks.length < 512) this.perfLongTasks.push(e.startTime, e.startTime + e.duration);
         }
       });
       po.observe({ entryTypes: ["longtask"] });
@@ -3248,6 +3299,15 @@ export class WorldScene extends Phaser.Scene {
   private perfPort: MessagePort | null = null;
   private perfLongN = 0;
   private perfLongMs = 0;
+  /** Long tasks (>50 ms) the browser reported this window, [start, end] pairs on
+   *  performance.now()'s clock — matched against the long frames' idle gaps at
+   *  report time (`longWhy`). */
+  private perfLongTasks: number[] = [];
+  /** The idle interval of the frame being closed, [msg-or-post, marker], set at the marker. */
+  private hitchIdle0 = 0;
+  private hitchIdle1 = 0;
+  /** Every long frame this window: its idle interval, heap delta and its record — classified at report time. */
+  private hitchSpans: { i0: number; i1: number; idle: number; dh: number; rec: Record<string, unknown> }[] = [];
   private perfOccSum = 0;
   private perfDlSum = 0;
   private perfZoomSum = 0;
@@ -6648,6 +6708,7 @@ export class WorldScene extends Phaser.Scene {
           this.hitchWorst = [];
           this.hitchBy = {};
           this.hitchWhere = {};
+          this.hitchSpans = [];
           this.hitchSec = {};
           this.hitchN = 0;
           this.hitchSum = 0;
@@ -11940,10 +12001,13 @@ export class WorldScene extends Phaser.Scene {
       const now = performance.now();
       if (this.perfLast) this.perfFrames.push(now - this.perfLast);
       // Close the gap the previous frame left open — see perfHookRender.
+      this.hitchIdle0 = now;
+      this.hitchIdle1 = now;
       if (this.perfPostAt) {
         const msg = this.perfMsgAt || now; // never fired: treat the whole gap as busy
         this.pAdd("gapBusy", Math.max(0, Math.min(msg, now) - this.perfPostAt));
         this.pAdd("gapIdle", Math.max(0, now - Math.max(msg, this.perfPostAt)));
+        this.hitchIdle0 = Math.min(now, Math.max(msg, this.perfPostAt)); // what closeHitchFrame calls idle, on the clock
         this.perfPostAt = 0;
       }
       if (this.hitchOn && this.perfLast) this.closeHitchFrame(now - this.perfLast);

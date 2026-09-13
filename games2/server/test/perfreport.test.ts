@@ -279,3 +279,15 @@ test("the zone block survives the whitelist: hops and the folded crossing rows",
   assert.deepEqual((r.zone?.last as unknown[])?.[0], row, "a crossing row arrives WHOLE — every field is the evidence");
   assert.ok(!perfReport({ frames: { n: 1 } }, AT).zone, "a window with no crossing carries no block");
 });
+
+test("longWhy — why the long frames were long — survives the allowlist", () => {
+  // The fourth field this allowlist would otherwise eat silently: the client
+  // classifies every long frame (wait | task | gc) and the ground-path
+  // decision rests on which population `cells:unattributed` turns out to be.
+  const r = perfReport({ frames: { n: 10 }, longWhy: { n: 42, wait: 39, task: 2, gc: 1, taskMs: 217, waitIdleMs: 1650, gcMb: 31 } }, AT) as Record<string, any>;
+  assert.equal(r.longWhy.wait, 39);
+  assert.equal(r.longWhy.task, 2);
+  assert.equal(r.longWhy.taskMs, 217);
+  assert.equal(r.longWhy.gcMb, 31);
+  assert.equal(perfReport({ frames: { n: 1 } }, AT).longWhy, null);
+});

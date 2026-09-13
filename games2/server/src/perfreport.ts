@@ -213,6 +213,9 @@ export function perfReport(body: Record<string, unknown>, atISO: string) {
     /* The long-frame CENSUS — every frame over the threshold bucketed by ground
      * mode and dominant section, not just the unluckiest few. */
     longBy: nested(body.longBy, 24, 8),
+    // Why the long frames were long — wait (compositor/GPU) | task | gc — the
+    // population the ground-path decision rests on (docs/perf.md, 2026-09-13).
+    longWhy: mixed(body.longWhy, 8),
     /* AND BY PLACE, in 8-cell blocks: every report he sends is about a spot
      * ("when I run here it lags"), and `longBy` could only say what the bad
      * frames were doing, never where they were. The key is the block's corner,

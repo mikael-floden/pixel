@@ -824,6 +824,22 @@ The ground render texture (scroll, slices, cell repaints, prefetch, compose budg
   `perfCountN` pattern already exists). `zoomMean` and `jumps` were sent by the
   client and DROPPED by the allowlist for two whole runs — the same trap this
   file warns about one bullet down, walked into twice.
+- **`longWhy` SAYS WHY A LONG FRAME WAS LONG** (2026-09-13). Every frame over
+  HITCH_LONG_MS is classified at report time: `task` — a browser `longtask`
+  overlapped the interval the beacon counted as idle (GC's idle-time tasks, a
+  touch handler, a patch we do not time); `gc` — the JS heap dropped >= 16 MB
+  across the frame (a collection ran in it, our own JS included); `wait` —
+  neither: the thread was free and the next frame did not come, which is the
+  compositor waiting on the GPU. `{n, wait, task, gc, taskMs, waitIdleMs,
+  gcMb}`; each `worst` record carries `dh` (heap MB across the frame), `w`
+  and `lt` (overlapping task ms) EARLY in the record, where the 1200-char cap
+  cannot reach them. Read `cells:unattributed` against it: `wait` is the
+  ground path's GPU fill (its whole-target clear + blit per bracket, the
+  cover atlases' old tax), `task`/`gc` is the main thread. His 03:13 run on
+  95af8a01c had 42 of 55 long frames in one window as idle gaps of 35-120 ms
+  with nothing of ours in the frame; the window's 2 long tasks (217 ms) match
+  its two CPU-heavy frames, which already argues `wait` — this settles it per
+  frame.
 - **THE BEACON CARRIES THE WINDOW'S CONTEXT, THE ROUND TRIP, THE THROTTLING
   PROXY AND THE GPU'S CLOCK** (2026-09-11, prepared for the next optimisation
   task so a run answers on its own). Beside the sections and counts: `run`

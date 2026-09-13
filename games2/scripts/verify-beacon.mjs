@@ -56,6 +56,7 @@ const MUST = {
   gpu: ["avail", "reason", "n", "p50"],
   texFam: [], texUp: ["n", "installed"], net: [], worker: ["state"], heap: ["meanMb", "grewMbPerSec", "drops"],
   lights: ["n", "gpu", "torch"], groundDrew: ["cells", "blits"], longBy: [], longWhere: [],
+  longWhy: ["n", "wait", "task", "gc", "taskMs", "waitIdleMs", "gcMb"],
 };
 let ok = 0;
 for (const [block, keys] of Object.entries(MUST)) {
