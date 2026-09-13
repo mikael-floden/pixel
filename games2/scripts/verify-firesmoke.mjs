@@ -217,9 +217,20 @@ if (fire) {
   const byHour = await page.evaluate(async (at) => {
     const step = () => new Promise((r) => requestAnimationFrame(r));
     window.__ml.teleport(at[0] + 0.5, at[1] + 0.5);
-    const sample = async (phase) => {
-      window.__ml.timeOfDay(phase, true);
-      for (let i = 0; i < 260; i++) await step();
+    /* HOLD THE CLOCK, DO NOT JUST SET IT. `timeOfDay` is a local override and
+     * the SERVER keeps broadcasting its own world time, so a phase set once
+     * and then waited on for four hundred frames drifts back: this arm failed
+     * its own precondition at sun 0.21 while asking for Day, on a tree where
+     * nothing was wrong. Re-apply until the sun the FEATURE sees is actually
+     * where it was asked to be. */
+    const sample = async (phase, wantSun) => {
+      for (let i = 0; i < 30; i++) {
+        window.__ml.timeSpeed(0);
+        window.__ml.timeOfDay(phase, true);
+        for (let k = 0; k < 24; k++) await step();
+        if (Math.abs((window.__mlAmbient.debug("smoke").sun ?? 0) - wantSun) < 0.25) break;
+      }
+      for (let i = 0; i < 160; i++) await step();
       const d = window.__mlAmbient.debug("smoke");
       let a = 0;
       for (let i = 0; i < 120; i++) {
@@ -231,8 +242,8 @@ if (fire) {
        * `gain` is 1 at midnight and says nothing about the day rule. */
       return { w: d.weight, gain: +d.gain.toFixed(3), maxA: +a.toFixed(3), sun: +d.sun.toFixed(2) };
     };
-    const day = await sample("Day");
-    const night = await sample("Night");
+    const day = await sample("Day", 1);
+    const night = await sample("Night", 0);
     window.__ml.timeOfDay("Day", true);
     for (let i = 0; i < 120; i++) await step();
     return { day, night };

@@ -102,6 +102,14 @@ them; folder isolation beats DRY here).
   bolts on the same frame.
   (`crabs/` and `gnats/` predate this and each carry their own copy; they can
   adopt it whenever they are next opened.)
+- **A LIQUID IS FOUND WITH THE PICKER, NEVER WITH THE LANDABLE HELPERS.**
+  Everything in `runtime/ground.ts` answers about walkable DRY TOP ground, so
+  none of it can find water or lava at all, and `landableAtScreen` is not
+  cut-aware either (1 of 64 points inside a cave). `pickAt` resolves what is
+  DRAWN at a screen point and `surfaceAt` says what that is made of: two
+  probes, so it is a PLACEMENT call and never a per-frame one. `lava/` asks
+  the surface table's `harm` field — the game's one liquid that BURNS — rather
+  than a ground name, so a second molten liquid works with no edit.
 - **`groundSoundAt(wx, wy)`** (`runtime/ground.ts`) answers WHAT THE GROUND
   UNDER A DRAWN POINT IS MADE OF — its surface `sound` ("grass", "sand",
   "stone", "dirt", …) — for a feature that belongs over one kind of ground.
@@ -303,7 +311,7 @@ decision; an earlier version that jumped the world to each effect's
   `AUTO → NONE → <each feature in registry order> → AUTO`
 
   (currently fireflies, pollen, water, deepwater, foam, fish, drips, ants, spiders, moths,
-  smoke,
+  smoke, lava,
   gnats, crabs, bubbles, embers, dust, bats, birds, feathers, butterflies,
   thunder, sandstorm, leaves — the ring is built from `index.ts`, so a new
   folder joins it automatically.)
@@ -381,6 +389,7 @@ controller (AUTO / NONE / solo-each).
 | `butterflies/` | field | THE MEADOW IN SUMMER — at four pixels a butterfly is a WAY OF MOVING, not a shape: the body BOBS a whole pixel or three with every wingbeat (a mark that slides level reads as a bee), the path is short runs broken by hard turns (a smooth curve reads as a bird), and the beat is uneven so it does not tick. Wings change SILHOUETTE WIDTH, 5 px open / 3 half / 1 shut, on frames all the same height so only the wings move. MUTED BY LAW (`species.ts`): the maintainer's bands — at least half pale-and-dark, a quarter green-and-red, a quarter free — and nothing over `MAX_SAT` 0.45 saturation, because this is background. It works the PATCH it was placed on, settles onto the grass now and then with its wings shut, and MINDS YOU: walk up and it turns away, hurries, and takes off if it was sitting | Grass (the surface's own `sound`, `groundSoundAt`), outdoors, by DAY: a ramp on sun strength, gone in rain, and gone in storm, snow or wind |
 | `smoke/` | field | FIRE SMOKE — thin grey wisps curling up off an open flame, so a fire reads as burning BY DAY (the embers are the night half of the same object). A column, not a cloud: marks leave the same point a tenth of a second apart, lean on the cloud wind, bend together on a shared curl phase, gather from one pixel to three and thin away. DARK grey, and darker the brighter the day — the case is a fire on sunlit ground, where a pale wisp is nothing at all (measured 5.8 luma). NORMAL blend, never additive: smoke is in the way, it does not glow | Any OPEN fire in view (`light.kind` is `fire/*` and not `fire/enclosed` — a lantern burns behind glass); sorts against its own fire's lit copy; a sealed fire only while you are in the room with it. Full by day, a third at night |
 | `dust/` | field | LANDING DUST — a ring of specks kicked out at your boots when you come down. They go OUT, not up (a ring that rises reads as a spell; one that skims the ground, stalls and settles reads as weight), the ring is ISO so it lies on the floor instead of standing up out of it, and ONE dial drives count, spread, speed and life so a drop off a ledge cannot look like a hop. The colour is the ground itself, lifted — sand throws pale grit, stone grey, snow white, grass a dull olive | The LOCAL player's own landings, off `__ml.me().jumping` (+ JUMP_MS) and `__ml.fall().falling`; dry ground only, outdoors. An EVENT effect: nothing runs between landings |
+| `lava/` | field | THE POOL BREATHES — a dome swells slowly on the molten surface, HOLDS while its skin stretches, and bursts into a flash, a few sparks that fall back in, and a ring of cooled crust spreading from the spot; dark ash drifts up off the surface between bursts. Molten rock is viscous, so the whole cycle is slow — a fast bubble reads as boiling soup. THE POOL'S COLOUR IS THE TILES DOMAIN'S (`ground_types.json` `lava.palette.top` and `.wall`, fetched), and the marks depart from it BOTH WAYS: a hotter dome, a cooler crust, near-black ash | Any LAVA in view — the surface table's `harm` field, the game's one liquid that burns, so a second molten liquid bubbles the day it is added; found with `pickAt` + `surfaceAt`, never the landable helpers (lava is swimmable, not landable) |
 | `bats/` | episode | Night colony wheeling: boids in any direction (top-down), erratic jinking, scattering near the player (no landing) | base 1.0; day ×0.01 |
 | `birds/` | episode | Living day flock: boids over the world, landing on dry ground to peck, flushing near the player | base 1.0; night ×0.05 |
 | `thunder/` | episode | Distant sheet lightning beyond the horizon | base 0.35 × (1 + rain + night); cloud/mist as weak proxies |
@@ -574,6 +583,21 @@ what colour the creature is — is the last thing it reaches.
 **AND THE BODY IS BLENDED BACK TOWARD THE WING.** Twice a flat dark body split
 a creature into two blobs on screen: near-black over grass, then the mix's own
 black under brown wings. The pixel joining the wings must belong to them.
+**HOLD THE WORLD CLOCK, DO NOT JUST SET IT.** `__ml.timeOfDay` is a LOCAL
+override and the server keeps broadcasting its own world time, so a phase set
+once and then waited on for a few hundred frames drifts back: `verify-firesmoke`
+failed its own precondition at sun 0.21 while asking for Day, on a tree where
+nothing was wrong. Re-apply the phase until the sun the FEATURE reports is
+actually where it was asked to be, then measure.
+**ANYTHING A GATE FOLLOWS OVER TIME NEEDS AN ID THAT DOES NOT MOVE.** Twice
+now a report has lied to its own gate about motion. `smoke/` stored each puff's
+fire as an INDEX into a list `lightsInView` rebuilds twice a second, so the
+report claimed a 16,520 px wide column. `lava/` published its ash motes without
+ids and the gate keyed them by drawn x — two motes drifting across each other
+read as ash SINKING (2151 times against 3874 rising) on a curve that is
+monotone by construction. Give every mark a stable id, or capture what it is
+measured against ON the mark at birth. The drawing was correct both times; only
+the report was wrong, and a gate cannot tell the difference.
 **WHICH GREY, OR WHICH ANY COLOUR, IS DECIDED BY WHAT IS BEHIND IT.** `smoke/`
 shipped a pale grey first, on the reasoning that smoke is pale — and over the
 sunlit ground where 44 of the 51 open fires stand, a 150-grey wisp moved its own
