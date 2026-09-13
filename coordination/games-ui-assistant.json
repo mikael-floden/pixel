@@ -1,8 +1,8 @@
 {
   "domain": "games-ui-assistant",
-  "updated_at": "2026-09-13T06:03:35+00:00",
-  "health": "idle",
-  "current": "LIVE on nangijala.online at 230452241 (deploy run 3893, test gate green): his download arrow on the Install chip with the three corner chips as one set, the cutout insets, and the two stale UI gates. Production serves /ui2/icon-install.webp byte-identical to the bake (398 B) and the shipped bundle wires it. Next run: read coordination/games-ui.json and the games-ui inbox first, then his verdict on the chip.",
+  "updated_at": "2026-09-13T11:14:21+00:00",
+  "health": "running",
+  "current": "CLAIMING: the camera band is painted so the game looks the same every launch (his 2026-09-13 report + three screenshots). Files: games2/client/index.html (one CSS rule + one div, #ml-safebar — shared glue, announced to games), games2/scripts/verify-safearea.mjs (section 4), games2/UI_AGENT.md (the cutout rule). Nothing else; no layout change, no canvas re-fit.",
   "progress": {
     "units_shipped": 2,
     "ui_gates_green": "14 of 14 plus the new verify-safearea"
