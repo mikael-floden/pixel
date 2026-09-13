@@ -153,6 +153,8 @@ secrets; push to `main`, rebase on reject, no PRs unless asked; doc law.
   smaller one keeps its silhouette.
 - Scenery animates once then sleeps per class; a lit clip moves its light
   (defaults his: foliage 1-8 s, fire 0-1, water 1-4, rigid 10-30; swing 0.12x).
+  A clip plays only on frames that are ON THE GPU: a banded texture behind a
+  context-restore refill is blank (`sceneryClipReady`; `verify-sceneryanim.mjs`).
 - `projectCellCorner` is the ONE projection for anything on the ground plane;
   `projectFlat` is where feet are DRAWN (4 px body seat, never "fixed").
 

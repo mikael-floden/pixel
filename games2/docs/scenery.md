@@ -278,6 +278,28 @@ inside every frame texture); Phaser frame trims (the whole-texture geometry
 is never drawn — scenery always draws a sub-frame — so explicit offsets at
 the seams are the smaller change).
 
+## Clips (stepSceneryAnims)
+
+A placement's clip sleeps by its class and plays once through at
+`SCENERY_ANIM_FPS` 8 (five frames, 625 ms; frame 0 is the still,
+`keep_first_frame`). Its frames come through the art queue at the lowest
+priority, and the still's canvas crop is registered on each frame texture in
+that texture's own texels (`addSceneryCut` through the frame's pack record;
+one box per state makes it the still's cut, so the image keeps its box, scale
+and flip and only its pixels change — `__ml.sceneryAnims({place})` reports
+the swap geometry of one placement). A CLIP PLAYS ONLY ON FRAMES THAT ARE ON
+THE GPU (`sceneryClipReady`: every frame key exists and none is
+`artQueue().refilling`), and a play snaps back to the still the moment that
+stops holding. (After a WebGL context restore — a phone backgrounds the tab —
+Phaser re-creates every banded texture EMPTY and the art queue refills them
+at the head of the queue in landing order, the still ahead of its frames;
+`textures.exists` said yes to the blank frames and the maintainer's
+streetlight vanished for 625 ms at a time until they landed, 2026-09-13,
+screenshots with "Reconnected." on each. Reproduced headless with
+`__ml.glLose(ms)`, which loses and restores the context; gate
+`scripts/verify-sceneryanim.mjs`: the swap keeps the box and the cut, nothing
+past the still shows while a frame is owed, and it plays again after.)
+
 ## Depth-fog on BODIES (syncLitCopy)
 
 Monsters and remote players are coloured by the elevation depth-fog like the

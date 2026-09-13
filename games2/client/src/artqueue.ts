@@ -261,6 +261,15 @@ export class ArtQueue {
     return this.pending.has(key);
   }
 
+  /** Is this banded texture BLANK, waiting for its refill after a context
+   *  restore? Phaser re-created its wrapper empty and the pixels come back
+   *  through the queue (onContextRestored); until then a draw of it shows
+   *  nothing. A reader that swaps textures in and out (a scenery clip) must
+   *  not put such a frame on screen. */
+  refilling(key: string): boolean {
+    return this.pending.has(REFILL + key);
+  }
+
   /** Did this texture land through the worker (bands, no source element)? */
   banded(key: string): boolean {
     return this.uploaded.has(key);

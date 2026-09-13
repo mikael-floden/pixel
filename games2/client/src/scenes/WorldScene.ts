@@ -7772,15 +7772,60 @@ export class WorldScene extends Phaser.Scene {
         const lights = [...this.sceneryLightCache.entries()].map(([k, r]) => ({ key: k, cx: r ? +r.cx.toFixed(3) : null, cy: r ? +r.cy.toFixed(3) : null, unlit: r ? r.unlit : null }));
         return { ...out, images, fits, lights };
       },
-      sceneryAnims: () => {
+      /** Lose the WebGL context and restore it `ms` later (WEBGL_lose_context) —
+       *  what a phone does to a backgrounded tab; the art queue refills every
+       *  banded texture after the restore (`art().refillLeft`). */
+      glLose: (ms = 300) => {
+        const gl = (this.game.renderer as { gl?: WebGLRenderingContext }).gl;
+        const ext = gl?.getExtension("WEBGL_lose_context");
+        if (!ext) return { error: "no WEBGL_lose_context" };
+        ext.loseContext();
+        setTimeout(() => ext.restoreContext(), ms);
+        return { lost: true, restoreInMs: ms };
+      },
+      sceneryAnims: (opts?: { play?: boolean; place?: number }) => {
         const now = this.time.now;
         const runs = this.sceneryAnimLive.map((l) => ({ place: l.place, run: this.sceneryAnimRuns.get(l.place)! }));
+        /* `play`: every sleeping clip starts as soon as its frames are resident,
+         * and frames not yet resident are re-asked at the head of the art queue
+         * (headless, the lowest priority never lands in a session). `place`:
+         * one placement's swap geometry — the still's fit and cut, each frame's
+         * pack record and registered cut, the image's box — what
+         * scripts/verify-sceneryanim.mjs judges. */
+        if (opts?.play) {
+          for (const r of runs) {
+            if (r.run.frame < 0) r.run.next = now;
+            for (const f of r.run.clip.frames) {
+              const k = this.sKey(f);
+              if (!this.textures.exists(k)) this.artQueue().request({ key: k, url: this.sceneryUrl(f), prio: ART_PRIO.sceneryBoot });
+            }
+          }
+        }
+        const cutOf = (key: string, name: string) => {
+          if (!this.textures.exists(key)) return null;
+          const tex = this.textures.get(key);
+          const src = tex.source[0];
+          const fr = tex.has(name) ? tex.get(name) : null;
+          return { tex: [src?.width ?? -1, src?.height ?? -1], cut: fr ? [fr.cutX, fr.cutY, fr.cutWidth, fr.cutHeight] : null, pack: this.sceneryPackOf(key) ?? null, refilling: this.artQueue().has("\0refill:" + key), banded: this.artQueue().banded(key) };
+        };
+        const one = opts?.place === undefined ? null : this.sceneryAnimLive.find((l) => l.place === opts.place) ?? null;
+        const detail = one
+          ? {
+              place: one.place, still: one.stillKey.slice(-40), frameName: one.frameName, crop: one.crop,
+              fit: this.sceneryFit.get(one.stillKey) ?? null,
+              stillCut: cutOf(one.stillKey, one.frameName),
+              frames: (this.sceneryAnimRuns.get(one.place)?.keys ?? []).map((k) => ({ key: k.slice(-40), ...(cutOf(k, one.frameName) ?? { missing: true }) })),
+              img: { tex: one.img.texture.key.slice(-40), frame: one.img.frame.name, x: +one.img.x.toFixed(1), y: +one.img.y.toFixed(1), w: +one.img.displayWidth.toFixed(2), h: +one.img.displayHeight.toFixed(2), sx: +one.img.scaleX.toFixed(4), sy: +one.img.scaleY.toFixed(4), fw: one.img.frame.width, fh: one.img.frame.height },
+              run: (() => { const r = this.sceneryAnimRuns.get(one.place); return r ? { frame: r.frame, cls: r.cls, nextMs: Math.round(r.next - now), resident: this.sceneryClipReady(r) } : null; })(),
+            }
+          : null;
         return {
+          detail,
           live: runs.length,
           playing: runs.filter((r) => r.run.frame >= 0).length,
           byClass: runs.reduce<Record<string, number>>((acc, r) => ((acc[r.run.cls] = (acc[r.run.cls] ?? 0) + 1), acc), {}),
           nextMs: runs.filter((r) => r.run.frame < 0).map((r) => Math.round(r.run.next - now)).sort((a, b) => a - b).slice(0, 8),
-          resident: runs.filter((r) => r.run.keys.every((k) => this.textures.exists(k))).length,
+          resident: runs.filter((r) => this.sceneryClipReady(r.run)).length,
           // The per-frame light (scenery light_frames x the lightanim.ts dials).
           lit: this.sceneryAnimLive.filter((l) => !!l.light).map((l) => {
             const L = l.light as Exclude<SceneryAnimLive["light"], false | undefined>;
@@ -18687,6 +18732,19 @@ export class WorldScene extends Phaser.Scene {
     if (run.frame >= 0) this.setSceneryFrame(live, run.keys[run.frame] ?? stillKey);
   }
 
+  /** EVERY FRAME OF THE CLIP IS ON THE GPU: landed, and not blank behind a
+   *  refill. `textures.exists` alone said yes to a texture Phaser had just
+   *  re-created EMPTY after a WebGL context restore (a phone backgrounds the
+   *  tab, the context goes; the art queue refills every banded texture, the
+   *  still ahead of its frames) — the maintainer's streetlight played its
+   *  clip on blank frames and vanished for 625 ms at a time (2026-09-13,
+   *  screenshots; reproduced with `__ml.glLose`, gated by
+   *  scripts/verify-sceneryanim.mjs). */
+  private sceneryClipReady(run: SceneryAnimRun): boolean {
+    const art = this.artQueue();
+    return run.keys.every((k) => this.textures.exists(k) && !art.refilling(k));
+  }
+
   /** Swap one placement's images to a frame texture. The still's crop rect is
    *  registered on the frame texture under the same name, so the image keeps
    *  its box, scale and flip and only its pixels change. */
@@ -18713,7 +18771,7 @@ export class WorldScene extends Phaser.Scene {
       if (!run) continue;
       if (run.frame < 0) {
         if (now < run.next) continue;
-        if (!run.keys.every((k) => this.textures.exists(k))) {
+        if (!this.sceneryClipReady(run)) {
           run.next = now + 1000;
           continue;
         }
@@ -18722,7 +18780,10 @@ export class WorldScene extends Phaser.Scene {
         continue; // frame 0 is the still (keep_first_frame): nothing to swap yet
       }
       const f = Math.floor(((now - run.t0) * SCENERY_ANIM_FPS) / 1000);
-      if (f >= run.keys.length) {
+      /* A CONTEXT RESTORE MID-PLAY (or a frame evicted): the frames are blank
+       * until the art queue refills them — a clip that keeps playing shows
+       * NOTHING for its 625 ms. Back to the still, whatever the clock says. */
+      if (f >= run.keys.length || !this.sceneryClipReady(run)) {
         run.frame = -1;
         run.next = now + scenerySleepMs(run.cls);
         this.setSceneryFrame(live, live.stillKey);
