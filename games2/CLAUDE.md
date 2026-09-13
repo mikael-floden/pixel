@@ -107,8 +107,8 @@ secrets; push to `main`, rebase on reject, no PRs unless asked; doc law.
   beside it. Both are drawn (ground pass AND occluder copy); `thickness` is
   the contract (0 = top only); `side` is the body, the doorway crops the cap.
 - The fade has three dials and a switch; THE DEFAULTS ARE HIS (reach 4,
-  amount 0.46, falloff 4). Cliff-foot and lid transitions are on by default.
-- Regions are 24-cell chunks; a cell edit is bounded by its chunk + a 5x5.
+  amount 0.46, falloff 4). Cliff-foot and lid transitions default on.
+- Regions are 24-cell chunks; a cell edit is bounded by its chunk + 5x5.
 - Phaser: `textures.get` returns `__MISSING` for an unknown key (adapter via
   `exists`); terrain has its own `LoaderPlugin`, `crossOrigin` set.
 - EVERYTHING STREAMED BEHIND THE LIVE WORLD goes through THE ART QUEUE
@@ -145,14 +145,13 @@ secrets; push to `main`, rebase on reject, no PRs unless asked; doc law.
 - Scenery is sized against the 88-px person this game draws
   (`sceneryDrawnPx`); the bbox doc is gated by `check-scenery-bbox.mjs`.
 - A hitbox is an ellipse OR a ground rect drawn in perspective — port the
-  wiki's `rectCorners`, never re-derive; ONE lookup, `sceneryHitboxRec`.
-- Indoor furniture is drawn while its roof is cut away and crossfades with it;
+  wiki's `rectCorners`, never re-derive; one lookup, `sceneryHitboxRec`.
+- Indoor furniture draws while its roof is cut away and crossfades with it;
   flat (`collision:false`) pieces draw under everything, no lit copy. An
   OUTSIDE piece over half the room's floor fades out (`scenerycover.ts`); a
   smaller one keeps its silhouette.
 - Scenery animates once then sleeps per class; a lit clip moves its light
-  (both defaults are his: foliage 1-8 s, fire 0-1, water 1-4, rigid 10-30;
-  swing 0.12x).
+  (defaults his: foliage 1-8 s, fire 0-1, water 1-4, rigid 10-30; swing 0.12x).
 - `projectCellCorner` is the ONE projection for anything on the ground plane;
   `projectFlat` is where feet are DRAWN (4 px body seat, never "fixed").
 
