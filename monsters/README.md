@@ -369,6 +369,20 @@ nothing pins the end. The rules, measured on his own 57 shipped dies (east):
   goes on the record: 10 of his 57 end fully transparent, most end at
   0.5–0.9 — a solid corpse the game removes is fine; "fades away" is mostly
   ignored by the model and that is no loss.
+- **A flat or legless body does not COLLAPSE — it TRANSFORMS.** First pass,
+  195 directions: 56 of the 61 fails sat on the crabs, slug, snail, mites,
+  grub, octopus, turtle, ice sprite and mist hound, every one "still
+  standing" — a collapse is no silhouette change for a body already on the
+  ground, and the model drew nothing (Inkling south: seven identical
+  frames). His own low creatures never collapse either: "The turtle shell
+  cracks and the turtle melts", "Turns into green smaller balls and
+  disappears", "Melts to lava". So their `die_action` is an event that
+  changes the silhouette — the shell cracks and the crab crumbles to pieces,
+  the octopus melts into a puddle of ink, the mist hound bursts into wisps.
+  Rewording a `_vN` slot means DISCARDING it first (`discard --state die
+  --from die_v1 --only …`): the record keeps the wording it was generated
+  with, by design, while `needed_dirs` compares the config — left alone, the
+  old-wording directions would regenerate with the old text forever.
 - **The die ladder is its own** (`amplify`/`calm` on the STATES entry): a
   "still standing" fail asks for a heavier collapse, an overflow asks for a
   plainer one — never the attack's swing, claw or extreme rungs. (Before this,

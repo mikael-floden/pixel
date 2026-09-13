@@ -53,7 +53,7 @@
    "attack_action": "Claw Snap - Lunges forward and snaps its big claw shut hard",
    "claws": true,
    "attack_extreme": "Shell Burst - The crab's shell cracks open with a burst of force as it hurls both claws wide and slams them down, shards and spray flying",
-   "die_action": "Death - Flips over onto its back with its legs curled up, goes still and fades away"
+   "die_action": "Death - The shell cracks open and the crab crumbles into a scatter of broken shell pieces, then fades away"
   },
   {
    "id": "shell_roller",
@@ -248,7 +248,7 @@
    "attack_action": "Claw Pinch - Darts forward and snaps both small claws shut hard",
    "claws": true,
    "attack_extreme": "Rock Burst - The crab launches its whole body up off the ground, both claws thrown wide, stone shards bursting out beneath it",
-   "die_action": "Death - Pulls its legs in and tips over onto its side, goes still and fades away"
+   "die_action": "Death - The pebble cracks in half and the crab shrivels into a small dark heap, then fades away"
   },
   {
    "id": "moss_snail",
@@ -268,7 +268,7 @@
    "walk_slow": true,
    "attack_action": "Shell Butt - Rears its head high and rams forward with its shell",
    "attack_extreme": "Shell Ram - The snail rears its whole body high off the ground and hammers its shell straight down, moss and spray flying",
-   "die_action": "Death - Shrinks back into its shell, the shell tips over onto its side and fades away"
+   "die_action": "Death - The shell cracks apart and the body melts into a puddle of green slime, then fades away"
   },
   {
    "id": "elder_treant",
@@ -356,7 +356,7 @@
    "attack_action": "Magma Spit - Rears its front up high and spits a gout of magma forward",
    "fx": true,
    "attack_extreme": "Magma Eruption - The slug rears its front high and erupts, a gout of magma bursting forward",
-   "die_action": "Death - The magma seams go dark, the body sags flat into a heap of cooled rock and fades away"
+   "die_action": "Death - Melts into a spreading puddle of lava that cools to dark rock and fades away"
   },
   {
    "id": "bramble_boar",
@@ -726,7 +726,7 @@
    "walk_slow": true,
    "attack_action": "Tentacle Lash - Rears up high and whips two tentacles forward",
    "attack_extreme": "Tentacle Storm - The octopus rears its whole mantle up and hurls every tentacle forward at once, water bursting out",
-   "die_action": "Death - Goes limp, the tentacles sprawl flat around it, and it fades away"
+   "die_action": "Death - Melts into a spreading puddle of black ink on the ground and fades away"
   },
   {
    "id": "angler_walker",
@@ -876,7 +876,7 @@
    "walk_slow": true,
    "attack_action": "Headbutt - Rocks back, then rams forward hard with its stone body",
    "attack_extreme": "Stone Burst - The mite's rocky shell splits with a burst as it launches itself forward, stone shards flying",
-   "die_action": "Death - The glow goes out, it tips over onto its back with its legs curled up and fades away"
+   "die_action": "Death - Cracks apart into a small pile of loose pebbles on the ground and fades away"
   },
   {
    "id": "frost_mite",
@@ -894,7 +894,7 @@
    "lore": "It bites once and the bite never thaws. Snow-walkers check their boots every night for good reason.",
    "attack_action": "Bite - Hops forward and bites hard with its mandibles wide",
    "attack_extreme": "Ice Burst - The mite rears up and bursts forward in a spray of ice shards, mandibles thrown wide",
-   "die_action": "Death - Tips over onto its back with its legs curled up, then breaks into frost and fades away"
+   "die_action": "Death - Shatters into a scatter of small ice shards that melt away and vanish"
   },
   {
    "id": "hill_giant",
@@ -1148,7 +1148,7 @@
    "walk_slow": true,
    "attack_action": "Beak Snap - Stretches its neck right out and snaps its beak shut",
    "attack_extreme": "Shell Slam - The hatchling launches off the ground and slams down beak first, its shell spinning, dust bursting outward",
-   "die_action": "Death - Pulls its head and flippers into the shell, the shell tips over onto its side and fades away"
+   "die_action": "Death - The shell cracks apart and the turtle melts into a small puddle, then fades away"
   },
   {
    "id": "sand_kit",
@@ -1183,7 +1183,7 @@
    "attack_action": "Bite - Rears its front half up and bites forward with its mandibles",
    "fx": true,
    "attack_extreme": "Light Burst - The grub rears its whole body up and lunges, its glow flaring into a burst of light",
-   "die_action": "Death - Its blue spots go dark, it curls up on its side and fades away"
+   "die_action": "Death - Shrivels into a small dark dried husk on the ground and fades away"
   },
   {
    "id": "ice_sprite",
@@ -1202,7 +1202,7 @@
    "attack_action": "Frost Burst - Throws both hands forward and releases a burst of frost",
    "fx": true,
    "attack_extreme": "Frost Nova - The sprite throws both arms wide and erupts in a burst of ice shards",
-   "die_action": "Death - Cracks through and shatters into a small pile of ice shards on the ground, then fades away"
+   "die_action": "Death - Shatters into a scatter of ice shards on the ground that melt away and vanish"
   },
   {
    "id": "briar_hare",
@@ -1595,7 +1595,7 @@
    "lore": "It fell from a tree nobody has found. Where it roots, the ground goes hard and the crops go quiet.",
    "attack_action": "Headbutt - Rocks back, then rams forward hard with its hard husk",
    "attack_extreme": "Husk Burst - The husk splits open with a crack and hurls itself forward, seeds and splinters flying",
-   "die_action": "Death - The husk splits, the shoot wilts and it tips over onto its side, then fades away"
+   "die_action": "Death - The husk cracks open and crumbles into a small pile of dry husk pieces, then fades away"
   },
   {
    "id": "black_ooze",
@@ -1705,7 +1705,7 @@
    "claws": true,
    "fx": true,
    "attack_extreme": "Spectral Lunge - The hound hurls its whole body forward, jaws thrown wide, mist exploding off its flanks",
-   "die_action": "Death - Sinks down onto its belly and dissolves into cold mist that drifts apart and fades away"
+   "die_action": "Death - Bursts apart into wisps of pale mist that drift outward and vanish"
   }
  ],
  "retired": [
