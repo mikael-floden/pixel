@@ -417,28 +417,34 @@ def _font(size):
         return ImageFont.load_default()
 
 
+SHEET_ROWS = 40     # rows per sheet page: 63 rows x 262 px broke WebP's 16383 px limit
+
+
 def _sheet(hero, base_folder, rows):
-    """One tall contact sheet: the pinned hero first, then every candidate — the
-    8-direction strip at 2x under a label line. Long and narrow on purpose:
-    the maintainer reviews on a PHONE, so it scrolls and pinch-zooms."""
+    """Tall contact sheets, SHEET_ROWS rows each: the pinned hero first, then
+    every candidate — the 8-direction strip at 2x under a label line. Long and
+    narrow on purpose: the maintainer reviews on a PHONE, so it scrolls and
+    pinch-zooms. Returns a list of page images (empty when nothing to draw)."""
     scale, pad, label_h, bg = 2, 8, 30, (58, 58, 62, 255)
     strips = []
     for label, folder in rows:
         s = _strip(folder)
         if s is not None:
             strips.append((label, s.resize((s.width * scale, s.height * scale), Image.NEAREST)))
-    if not strips:
-        return None
-    w = max(s.width for _, s in strips) + 2 * pad
-    row_h = max(s.height for _, s in strips) + label_h + pad
-    sheet = Image.new("RGBA", (w, row_h * len(strips) + pad), bg)
-    draw = ImageDraw.Draw(sheet)
+    pages = []
     font = _font(20)
-    for i, (label, s) in enumerate(strips):
-        y = pad + i * row_h
-        draw.text((pad, y), label, fill=(245, 245, 240, 255), font=font)
-        sheet.alpha_composite(s, (pad, y + label_h))
-    return sheet
+    for start in range(0, len(strips), SHEET_ROWS):
+        chunk = strips[start:start + SHEET_ROWS]
+        w = max(s.width for _, s in chunk) + 2 * pad
+        row_h = max(s.height for _, s in chunk) + label_h + pad
+        sheet = Image.new("RGBA", (w, row_h * len(chunk) + pad), bg)
+        draw = ImageDraw.Draw(sheet)
+        for i, (label, s) in enumerate(chunk):
+            y = pad + i * row_h
+            draw.text((pad, y), label, fill=(245, 245, 240, 255), font=font)
+            sheet.alpha_composite(s, (pad, y + label_h))
+        pages.append(sheet)
+    return pages
 
 
 def _publish_hashed(folder, stem, img, cur_name, prev_name):
@@ -508,19 +514,28 @@ def mirror(client, args):
                    + ("  ·  palette snapped" if r.get("palette_snap") else "")
                    + (f"  ·  {r['status']}" if r.get("status") != "completed" else ""))
             rows.append((lab, os.path.join(hero_folder, _id8(r["pixellab_character_id"]))))
-        sheet = _sheet(hero, os.path.join(HUMANS, hero, "base"), rows)
+        pages = _sheet(hero, os.path.join(HUMANS, hero, "base"), rows)
         prev_rec = (index.get("heroes") or {}).get(hero) or {}
-        sheet_name, sheet_prev = (None, None)
-        if sheet is not None:
-            sheet_name, sheet_prev = _publish_hashed(
-                hero_folder, "sheet", sheet,
-                os.path.basename(prev_rec.get("sheet") or ""),
-                os.path.basename(prev_rec.get("sheet_prev") or ""))
+        prev_sheets = prev_rec.get("sheets") or ([prev_rec["sheet"]] if prev_rec.get("sheet") else [])
+        prev_prevs = prev_rec.get("sheets_prev") or ([prev_rec["sheet_prev"]] if prev_rec.get("sheet_prev") else [])
+        sheets, sheets_prev = [], []
+        for i, page in enumerate(pages):
+            stem = f"sheet-{i + 1}"
+            cur = os.path.basename(prev_sheets[i]) if i < len(prev_sheets) else ""
+            prv = os.path.basename(prev_prevs[i]) if i < len(prev_prevs) else ""
+            name, prev = _publish_hashed(hero_folder, stem, page, cur, prv)
+            sheets.append(f"{hero}/{name}"); sheets_prev.append(f"{hero}/{prev}" if prev else None)
+        # pages beyond the current count, and the pre-pagination `sheet.*` files, go
+        for fn in os.listdir(hero_folder):
+            if fn.startswith("sheet") and fn.endswith(".webp"):
+                stem = fn.split(".")[0]
+                if stem == "sheet" or (stem.startswith("sheet-") and int(stem[6:]) > len(pages)):
+                    os.remove(os.path.join(hero_folder, fn))
         heroes_out[hero] = {
             "pixellab_character_id": info["id"],
             "group_id": info["detail"].get("group_id"),
-            "sheet": f"{hero}/{sheet_name}" if sheet_name else None,
-            "sheet_prev": f"{hero}/{sheet_prev}" if sheet_prev else None,
+            "sheets": sheets,
+            "sheets_prev": sheets_prev,
             "candidates": [{
                 "folder": f"{hero}/{_id8(r['pixellab_character_id'])}",
                 "pixellab_character_id": r["pixellab_character_id"],
@@ -535,7 +550,7 @@ def mirror(client, args):
                 "created_on_pixellab": r.get("created_on_pixellab"),
             } for r in cands],
         }
-        print(f"{hero}: {len(cands)} candidate(s) mirrored; sheet {sheet_name}")
+        print(f"{hero}: {len(cands)} candidate(s) mirrored; sheets {[os.path.basename(x) for x in sheets]}")
     if args.hero:                                   # keep the other hero's block
         for h, blk in (index.get("heroes") or {}).items():
             heroes_out.setdefault(h, blk)
@@ -545,7 +560,8 @@ def mirror(client, args):
                     "PixelLab sibling of the pinned hero (same group_id); the maintainer "
                     "picks in the PixelLab UI, then config.json:pixellab_characters is "
                     "re-pointed and the animations regenerated. Never loaded by the game "
-                    "or the wiki (the _ prefix). Sheets are content-hashed, current + prev.",
+                    "or the wiki (the _ prefix). Sheets are content-hashed pages of "
+                    f"{SHEET_ROWS} rows, current + prev.",
         "updated_at": _now(),
         "usd_spent_by_assistant": round(spent_total, 4),
         "heroes": heroes_out,
