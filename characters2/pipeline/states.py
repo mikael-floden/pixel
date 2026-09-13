@@ -521,8 +521,8 @@ def mirror(client, args):
         sheets, sheets_prev = [], []
         for i, page in enumerate(pages):
             stem = f"sheet-{i + 1}"
-            cur = os.path.basename(prev_sheets[i]) if i < len(prev_sheets) else ""
-            prv = os.path.basename(prev_prevs[i]) if i < len(prev_prevs) else ""
+            cur = os.path.basename(prev_sheets[i] or "") if i < len(prev_sheets) else ""
+            prv = os.path.basename(prev_prevs[i] or "") if i < len(prev_prevs) else ""   # a page's prev may be null
             name, prev = _publish_hashed(hero_folder, stem, page, cur, prv)
             sheets.append(f"{hero}/{name}"); sheets_prev.append(f"{hero}/{prev}" if prev else None)
         # pages beyond the current count, and the pre-pagination `sheet.*` files, go
