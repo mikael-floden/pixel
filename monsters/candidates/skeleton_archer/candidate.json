@@ -1577,6 +1577,7 @@
           "reach": null,
           "turn": null,
           "end_area": 0.746,
+          "end_iou": 0.279,
           "canvas": [
             112,
             112
@@ -1587,14 +1588,13 @@
           "takes": 1,
           "version": 1,
           "mirrored": false,
+          "generated_at": "2026-09-12T23:17:14+00:00",
           "action": "Death - The blue light in its eye sockets goes out and the bones collapse into a pile on the ground, then fade away",
-          "intensity": 0,
-          "rolls": 1,
-          "frames": 7,
-          "rung": 0,
-          "unwrapped": null,
           "tries": 1,
-          "generated_at": "2026-09-12T23:17:14+00:00"
+          "rolls": 1,
+          "intensity": 0,
+          "frames": 7,
+          "rung": 0
         },
         "south-east": {
           "status": "pass",
@@ -1611,6 +1611,7 @@
           "reach": null,
           "turn": null,
           "end_area": 0.61,
+          "end_iou": 0.184,
           "canvas": [
             112,
             112
@@ -1621,14 +1622,13 @@
           "takes": 1,
           "version": 1,
           "mirrored": false,
+          "generated_at": "2026-09-12T23:17:15+00:00",
           "action": "Death - The blue light in its eye sockets goes out and the bones collapse into a pile on the ground, then fade away",
-          "intensity": 0,
-          "rolls": 1,
-          "frames": 7,
-          "rung": 0,
-          "unwrapped": null,
           "tries": 1,
-          "generated_at": "2026-09-12T23:17:15+00:00"
+          "rolls": 1,
+          "intensity": 0,
+          "frames": 7,
+          "rung": 0
         },
         "east": {
           "status": "pass",
@@ -1645,6 +1645,7 @@
           "reach": null,
           "turn": null,
           "end_area": 0.851,
+          "end_iou": 0.13,
           "canvas": [
             118,
             118
@@ -1657,14 +1658,13 @@
           "takes": 1,
           "version": 1,
           "mirrored": false,
+          "generated_at": "2026-09-12T23:17:15+00:00",
           "action": "Death - The blue light in its eye sockets goes out and the bones collapse into a pile on the ground, then fade away",
-          "intensity": 0,
-          "rolls": 1,
-          "frames": 7,
-          "rung": 0,
-          "unwrapped": null,
           "tries": 1,
-          "generated_at": "2026-09-12T23:17:15+00:00"
+          "rolls": 1,
+          "intensity": 0,
+          "frames": 7,
+          "rung": 0
         },
         "north-east": {
           "status": "pass",
@@ -1681,6 +1681,7 @@
           "reach": null,
           "turn": null,
           "end_area": 0.896,
+          "end_iou": 0.214,
           "canvas": [
             112,
             112
@@ -1691,50 +1692,51 @@
           "takes": 1,
           "version": 1,
           "mirrored": false,
+          "generated_at": "2026-09-12T23:17:16+00:00",
           "action": "Death - The blue light in its eye sockets goes out and the bones collapse into a pile on the ground, then fade away",
-          "intensity": 0,
-          "rolls": 1,
-          "frames": 7,
-          "rung": 0,
-          "unwrapped": null,
           "tries": 1,
-          "generated_at": "2026-09-12T23:17:16+00:00"
+          "rolls": 1,
+          "intensity": 0,
+          "frames": 7,
+          "rung": 0
         },
         "north": {
           "status": "warn",
-          "step_mean": 0.2159,
-          "step_max": 0.3206,
-          "drift": 7.38,
-          "loop": 0.2511,
-          "loop_ratio": 1.16,
-          "travel": 3.08,
+          "step_mean": 0.4203,
+          "step_max": 0.8189,
+          "drift": 39.7,
+          "loop": 1.3413,
+          "loop_ratio": 3.19,
+          "travel": 5.77,
           "pin": 1.0,
           "pad": 0,
           "flash": 0.0,
           "peak": null,
           "reach": null,
           "turn": null,
-          "end_area": 1.021,
+          "end_area": 0.641,
+          "end_iou": 0.101,
           "canvas": [
             112,
             112
           ],
           "reasons": [
-            "barely falls: last vs first 0.25 — eyeball it"
+            "drifts 39.7 px — eyeball it"
           ],
-          "sub": "846d4ad0-7c70-4366-911d-5c6492eaddbc",
-          "group": "1129417a-1da2-4fe9-954b-ebe2503f08d6",
+          "sub": "77431c80-5c7f-4f4e-a365-8ad77f4d8773",
+          "group": "57a1676d-ee75-4910-9374-f89bb84e4026",
           "takes": 1,
-          "version": 1,
+          "version": 2,
           "mirrored": false,
-          "action": "Death - The blue light in its eye sockets goes out and the bones collapse into a pile on the ground, then fade away",
+          "mode": "v3",
+          "action": "Death - The blue light in its eye sockets goes out and the bones collapse into a pile on the ground, then fade away, a heavy dramatic collapse, the whole body going down onto the ground",
           "intensity": 0,
-          "rolls": 1,
+          "rolls": 2,
           "frames": 7,
-          "rung": 0,
+          "rung": 1,
           "unwrapped": null,
-          "tries": 1,
-          "generated_at": "2026-09-12T23:17:16+00:00"
+          "tries": 2,
+          "generated_at": "2026-09-13T03:14:29+00:00"
         },
         "south-west": {
           "status": "pass",
@@ -1751,6 +1753,7 @@
           "reach": null,
           "turn": null,
           "end_area": 0.61,
+          "end_iou": 0.184,
           "canvas": [
             112,
             112
@@ -1761,14 +1764,13 @@
           "takes": 1,
           "version": 1,
           "mirrored": true,
+          "generated_at": "2026-09-12T23:17:15+00:00",
           "action": "Death - The blue light in its eye sockets goes out and the bones collapse into a pile on the ground, then fade away",
-          "intensity": 0,
+          "tries": 1,
           "rolls": 1,
+          "intensity": 0,
           "frames": 7,
           "rung": 0,
-          "unwrapped": null,
-          "tries": 1,
-          "generated_at": "2026-09-12T23:17:15+00:00",
           "source": "south-east"
         },
         "west": {
@@ -1786,6 +1788,7 @@
           "reach": null,
           "turn": null,
           "end_area": 0.851,
+          "end_iou": 0.13,
           "canvas": [
             118,
             118
@@ -1798,14 +1801,13 @@
           "takes": 1,
           "version": 1,
           "mirrored": true,
+          "generated_at": "2026-09-12T23:17:15+00:00",
           "action": "Death - The blue light in its eye sockets goes out and the bones collapse into a pile on the ground, then fade away",
-          "intensity": 0,
+          "tries": 1,
           "rolls": 1,
+          "intensity": 0,
           "frames": 7,
           "rung": 0,
-          "unwrapped": null,
-          "tries": 1,
-          "generated_at": "2026-09-12T23:17:15+00:00",
           "source": "east"
         },
         "north-west": {
@@ -1823,6 +1825,7 @@
           "reach": null,
           "turn": null,
           "end_area": 0.896,
+          "end_iou": 0.214,
           "canvas": [
             112,
             112
@@ -1833,14 +1836,13 @@
           "takes": 1,
           "version": 1,
           "mirrored": true,
+          "generated_at": "2026-09-12T23:17:16+00:00",
           "action": "Death - The blue light in its eye sockets goes out and the bones collapse into a pile on the ground, then fade away",
-          "intensity": 0,
+          "tries": 1,
           "rolls": 1,
+          "intensity": 0,
           "frames": 7,
           "rung": 0,
-          "unwrapped": null,
-          "tries": 1,
-          "generated_at": "2026-09-12T23:17:16+00:00",
           "source": "north-east"
         }
       },

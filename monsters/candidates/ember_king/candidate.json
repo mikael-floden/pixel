@@ -1577,43 +1577,44 @@
       "directions": {
         "south": {
           "status": "warn",
-          "step_mean": 0.1751,
-          "step_max": 0.2845,
-          "drift": 20.9,
-          "loop": 0.3156,
-          "loop_ratio": 1.8,
-          "travel": 0.45,
+          "step_mean": 0.1634,
+          "step_max": 0.2492,
+          "drift": 26.54,
+          "loop": 0.5377,
+          "loop_ratio": 3.29,
+          "travel": 0.66,
           "pin": 1.0,
-          "pad": 6,
-          "flash": 0.074,
+          "pad": 0,
+          "flash": -0.008,
           "peak": null,
           "reach": null,
           "turn": null,
-          "end_area": 0.858,
+          "end_area": 0.86,
+          "end_iou": 0.551,
           "canvas": [
-            188,
-            188
+            176,
+            176
           ],
           "reasons": [
-            "barely falls: last vs first 0.32 — eyeball it",
-            "canvas grown by 6 px a side to hold the motion"
+            "ends near the base (0.55) — eyeball it"
           ],
-          "sub": "4bc52aaf-8268-4b9f-99d8-6512c7f3ea68",
-          "group": "a28e90fb-9e9f-4789-95e7-bcb4c86cd874",
+          "sub": "9c32679a-3314-496f-9a82-78bc8e19a76c",
+          "group": "53aed986-2c5f-4590-94f4-002b6dccfd65",
           "takes": 1,
-          "version": 1,
+          "version": 2,
           "mirrored": false,
-          "action": "Death - Sinks to its knees, the magma cracks and flames go dark, then it crumbles down onto the ground and fades away",
+          "mode": "v3",
+          "action": "Death - Sinks to its knees, the magma cracks and flames go dark, then it crumbles down onto the ground and fades away, a heavy dramatic collapse, the whole body going down onto the ground",
           "intensity": 0,
-          "rolls": 1,
+          "rolls": 2,
           "frames": 7,
-          "rung": 0,
+          "rung": 1,
           "unwrapped": null,
-          "tries": 1,
-          "generated_at": "2026-09-12T23:09:07+00:00"
+          "tries": 2,
+          "generated_at": "2026-09-13T03:09:38+00:00"
         },
         "south-east": {
-          "status": "pass",
+          "status": "warn",
           "step_mean": 0.1492,
           "step_max": 0.1833,
           "drift": 22.72,
@@ -1627,11 +1628,13 @@
           "reach": null,
           "turn": null,
           "end_area": 0.879,
+          "end_iou": 0.56,
           "canvas": [
             184,
             184
           ],
           "reasons": [
+            "ends near the base (0.56) — eyeball it",
             "canvas grown by 4 px a side to hold the motion"
           ],
           "sub": "f1c36af5-65a7-4c47-a4f7-bd4dc760035c",
@@ -1639,17 +1642,16 @@
           "takes": 1,
           "version": 1,
           "mirrored": false,
+          "generated_at": "2026-09-12T23:09:07+00:00",
           "action": "Death - Sinks to its knees, the magma cracks and flames go dark, then it crumbles down onto the ground and fades away",
-          "intensity": 0,
-          "rolls": 1,
-          "frames": 7,
-          "rung": 0,
-          "unwrapped": null,
           "tries": 1,
-          "generated_at": "2026-09-12T23:09:07+00:00"
+          "rolls": 1,
+          "intensity": 0,
+          "frames": 7,
+          "rung": 0
         },
         "east": {
-          "status": "pass",
+          "status": "warn",
           "step_mean": 0.1965,
           "step_max": 0.2846,
           "drift": 24.89,
@@ -1663,11 +1665,13 @@
           "reach": null,
           "turn": null,
           "end_area": 0.924,
+          "end_iou": 0.535,
           "canvas": [
             180,
             180
           ],
           "reasons": [
+            "ends near the base (0.53) — eyeball it",
             "canvas grown by 2 px a side to hold the motion"
           ],
           "sub": "62c27ef9-44fe-40ba-8d0f-9489b2622e9a",
@@ -1675,17 +1679,16 @@
           "takes": 1,
           "version": 1,
           "mirrored": false,
+          "generated_at": "2026-09-12T23:09:08+00:00",
           "action": "Death - Sinks to its knees, the magma cracks and flames go dark, then it crumbles down onto the ground and fades away",
-          "intensity": 0,
-          "rolls": 1,
-          "frames": 7,
-          "rung": 0,
-          "unwrapped": null,
           "tries": 1,
-          "generated_at": "2026-09-12T23:09:08+00:00"
+          "rolls": 1,
+          "intensity": 0,
+          "frames": 7,
+          "rung": 0
         },
         "north-east": {
-          "status": "pass",
+          "status": "warn",
           "step_mean": 0.1952,
           "step_max": 0.3043,
           "drift": 23.39,
@@ -1699,11 +1702,13 @@
           "reach": null,
           "turn": null,
           "end_area": 1.111,
+          "end_iou": 0.533,
           "canvas": [
             178,
             178
           ],
           "reasons": [
+            "ends near the base (0.53) — eyeball it",
             "canvas grown by 1 px a side to hold the motion"
           ],
           "sub": "c3cfb70d-d119-46d2-8694-ec7a5f4f918a",
@@ -1711,17 +1716,16 @@
           "takes": 1,
           "version": 1,
           "mirrored": false,
+          "generated_at": "2026-09-12T23:09:08+00:00",
           "action": "Death - Sinks to its knees, the magma cracks and flames go dark, then it crumbles down onto the ground and fades away",
-          "intensity": 0,
-          "rolls": 1,
-          "frames": 7,
-          "rung": 0,
-          "unwrapped": null,
           "tries": 1,
-          "generated_at": "2026-09-12T23:09:08+00:00"
+          "rolls": 1,
+          "intensity": 0,
+          "frames": 7,
+          "rung": 0
         },
         "north": {
-          "status": "pass",
+          "status": "warn",
           "step_mean": 0.1778,
           "step_max": 0.2355,
           "drift": 20.02,
@@ -1735,11 +1739,13 @@
           "reach": null,
           "turn": null,
           "end_area": 0.917,
+          "end_iou": 0.544,
           "canvas": [
             214,
             214
           ],
           "reasons": [
+            "ends near the base (0.54) — eyeball it",
             "canvas grown by 19 px a side to hold the motion"
           ],
           "sub": "58895191-1824-4faa-88cd-bdf632e482e9",
@@ -1747,17 +1753,16 @@
           "takes": 1,
           "version": 1,
           "mirrored": false,
+          "generated_at": "2026-09-12T23:09:09+00:00",
           "action": "Death - Sinks to its knees, the magma cracks and flames go dark, then it crumbles down onto the ground and fades away",
-          "intensity": 0,
-          "rolls": 1,
-          "frames": 7,
-          "rung": 0,
-          "unwrapped": null,
           "tries": 1,
-          "generated_at": "2026-09-12T23:09:09+00:00"
+          "rolls": 1,
+          "intensity": 0,
+          "frames": 7,
+          "rung": 0
         },
         "south-west": {
-          "status": "pass",
+          "status": "warn",
           "step_mean": 0.1492,
           "step_max": 0.1833,
           "drift": 22.72,
@@ -1771,11 +1776,13 @@
           "reach": null,
           "turn": null,
           "end_area": 0.879,
+          "end_iou": 0.56,
           "canvas": [
             184,
             184
           ],
           "reasons": [
+            "ends near the base (0.56) — eyeball it",
             "canvas grown by 4 px a side to hold the motion"
           ],
           "sub": "f1c36af5-65a7-4c47-a4f7-bd4dc760035c",
@@ -1783,18 +1790,17 @@
           "takes": 1,
           "version": 1,
           "mirrored": true,
+          "generated_at": "2026-09-12T23:09:07+00:00",
           "action": "Death - Sinks to its knees, the magma cracks and flames go dark, then it crumbles down onto the ground and fades away",
-          "intensity": 0,
+          "tries": 1,
           "rolls": 1,
+          "intensity": 0,
           "frames": 7,
           "rung": 0,
-          "unwrapped": null,
-          "tries": 1,
-          "generated_at": "2026-09-12T23:09:07+00:00",
           "source": "south-east"
         },
         "west": {
-          "status": "pass",
+          "status": "warn",
           "step_mean": 0.1965,
           "step_max": 0.2846,
           "drift": 24.89,
@@ -1808,11 +1814,13 @@
           "reach": null,
           "turn": null,
           "end_area": 0.924,
+          "end_iou": 0.535,
           "canvas": [
             180,
             180
           ],
           "reasons": [
+            "ends near the base (0.53) — eyeball it",
             "canvas grown by 2 px a side to hold the motion"
           ],
           "sub": "62c27ef9-44fe-40ba-8d0f-9489b2622e9a",
@@ -1820,18 +1828,17 @@
           "takes": 1,
           "version": 1,
           "mirrored": true,
+          "generated_at": "2026-09-12T23:09:08+00:00",
           "action": "Death - Sinks to its knees, the magma cracks and flames go dark, then it crumbles down onto the ground and fades away",
-          "intensity": 0,
+          "tries": 1,
           "rolls": 1,
+          "intensity": 0,
           "frames": 7,
           "rung": 0,
-          "unwrapped": null,
-          "tries": 1,
-          "generated_at": "2026-09-12T23:09:08+00:00",
           "source": "east"
         },
         "north-west": {
-          "status": "pass",
+          "status": "warn",
           "step_mean": 0.1952,
           "step_max": 0.3043,
           "drift": 23.39,
@@ -1845,11 +1852,13 @@
           "reach": null,
           "turn": null,
           "end_area": 1.111,
+          "end_iou": 0.533,
           "canvas": [
             178,
             178
           ],
           "reasons": [
+            "ends near the base (0.53) — eyeball it",
             "canvas grown by 1 px a side to hold the motion"
           ],
           "sub": "c3cfb70d-d119-46d2-8694-ec7a5f4f918a",
@@ -1857,14 +1866,13 @@
           "takes": 1,
           "version": 1,
           "mirrored": true,
+          "generated_at": "2026-09-12T23:09:08+00:00",
           "action": "Death - Sinks to its knees, the magma cracks and flames go dark, then it crumbles down onto the ground and fades away",
-          "intensity": 0,
+          "tries": 1,
           "rolls": 1,
+          "intensity": 0,
           "frames": 7,
           "rung": 0,
-          "unwrapped": null,
-          "tries": 1,
-          "generated_at": "2026-09-12T23:09:08+00:00",
           "source": "north-east"
         }
       },

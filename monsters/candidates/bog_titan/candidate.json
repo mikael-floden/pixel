@@ -1572,7 +1572,7 @@
     "die_v1": {
       "directions": {
         "south": {
-          "status": "pass",
+          "status": "warn",
           "step_mean": 0.1834,
           "step_max": 0.3187,
           "drift": 31.1,
@@ -1586,24 +1586,26 @@
           "reach": null,
           "turn": null,
           "end_area": 0.912,
+          "end_iou": 0.494,
           "canvas": [
             224,
             224
           ],
-          "reasons": [],
+          "reasons": [
+            "ends near the base (0.49) — eyeball it"
+          ],
           "sub": "48388d23-4e74-4a7f-b5ca-fa6e84132e73",
           "group": "96720864-083c-43c4-9ce8-382625d12820",
           "takes": 1,
           "version": 1,
           "mirrored": false,
+          "generated_at": "2026-09-12T23:45:21+00:00",
           "action": "Death - The green lamps go out and the body slumps down into a heap of peat and roots on the ground, then fades away",
-          "intensity": 0,
-          "rolls": 1,
-          "frames": 7,
-          "rung": 0,
-          "unwrapped": null,
           "tries": 1,
-          "generated_at": "2026-09-12T23:45:21+00:00"
+          "rolls": 1,
+          "intensity": 0,
+          "frames": 7,
+          "rung": 0
         },
         "south-east": {
           "status": "pass",
@@ -1620,6 +1622,7 @@
           "reach": null,
           "turn": null,
           "end_area": 0.836,
+          "end_iou": 0.42,
           "canvas": [
             224,
             224
@@ -1630,14 +1633,13 @@
           "takes": 1,
           "version": 1,
           "mirrored": false,
+          "generated_at": "2026-09-12T23:45:22+00:00",
           "action": "Death - The green lamps go out and the body slumps down into a heap of peat and roots on the ground, then fades away",
-          "intensity": 0,
-          "rolls": 1,
-          "frames": 7,
-          "rung": 0,
-          "unwrapped": null,
           "tries": 1,
-          "generated_at": "2026-09-12T23:45:22+00:00"
+          "rolls": 1,
+          "intensity": 0,
+          "frames": 7,
+          "rung": 0
         },
         "east": {
           "status": "pass",
@@ -1654,6 +1656,7 @@
           "reach": null,
           "turn": null,
           "end_area": 0.704,
+          "end_iou": 0.124,
           "canvas": [
             224,
             224
@@ -1664,14 +1667,13 @@
           "takes": 1,
           "version": 1,
           "mirrored": false,
+          "generated_at": "2026-09-12T23:45:22+00:00",
           "action": "Death - The green lamps go out and the body slumps down into a heap of peat and roots on the ground, then fades away",
-          "intensity": 0,
-          "rolls": 1,
-          "frames": 7,
-          "rung": 0,
-          "unwrapped": null,
           "tries": 1,
-          "generated_at": "2026-09-12T23:45:22+00:00"
+          "rolls": 1,
+          "intensity": 0,
+          "frames": 7,
+          "rung": 0
         },
         "north-east": {
           "status": "pass",
@@ -1688,6 +1690,7 @@
           "reach": null,
           "turn": null,
           "end_area": 0.701,
+          "end_iou": 0.386,
           "canvas": [
             224,
             224
@@ -1698,14 +1701,13 @@
           "takes": 1,
           "version": 1,
           "mirrored": false,
+          "generated_at": "2026-09-12T23:45:23+00:00",
           "action": "Death - The green lamps go out and the body slumps down into a heap of peat and roots on the ground, then fades away",
-          "intensity": 0,
-          "rolls": 1,
-          "frames": 7,
-          "rung": 0,
-          "unwrapped": null,
           "tries": 1,
-          "generated_at": "2026-09-12T23:45:23+00:00"
+          "rolls": 1,
+          "intensity": 0,
+          "frames": 7,
+          "rung": 0
         },
         "north": {
           "status": "pass",
@@ -1722,6 +1724,7 @@
           "reach": null,
           "turn": null,
           "end_area": 0.837,
+          "end_iou": 0.393,
           "canvas": [
             224,
             224
@@ -1732,14 +1735,13 @@
           "takes": 1,
           "version": 1,
           "mirrored": false,
+          "generated_at": "2026-09-12T23:45:24+00:00",
           "action": "Death - The green lamps go out and the body slumps down into a heap of peat and roots on the ground, then fades away",
-          "intensity": 0,
-          "rolls": 1,
-          "frames": 7,
-          "rung": 0,
-          "unwrapped": null,
           "tries": 1,
-          "generated_at": "2026-09-12T23:45:24+00:00"
+          "rolls": 1,
+          "intensity": 0,
+          "frames": 7,
+          "rung": 0
         },
         "south-west": {
           "status": "pass",
@@ -1756,6 +1758,7 @@
           "reach": null,
           "turn": null,
           "end_area": 0.836,
+          "end_iou": 0.42,
           "canvas": [
             224,
             224
@@ -1766,14 +1769,13 @@
           "takes": 1,
           "version": 1,
           "mirrored": true,
+          "generated_at": "2026-09-12T23:45:22+00:00",
           "action": "Death - The green lamps go out and the body slumps down into a heap of peat and roots on the ground, then fades away",
-          "intensity": 0,
+          "tries": 1,
           "rolls": 1,
+          "intensity": 0,
           "frames": 7,
           "rung": 0,
-          "unwrapped": null,
-          "tries": 1,
-          "generated_at": "2026-09-12T23:45:22+00:00",
           "source": "south-east"
         },
         "west": {
@@ -1791,6 +1793,7 @@
           "reach": null,
           "turn": null,
           "end_area": 0.704,
+          "end_iou": 0.124,
           "canvas": [
             224,
             224
@@ -1801,14 +1804,13 @@
           "takes": 1,
           "version": 1,
           "mirrored": true,
+          "generated_at": "2026-09-12T23:45:22+00:00",
           "action": "Death - The green lamps go out and the body slumps down into a heap of peat and roots on the ground, then fades away",
-          "intensity": 0,
+          "tries": 1,
           "rolls": 1,
+          "intensity": 0,
           "frames": 7,
           "rung": 0,
-          "unwrapped": null,
-          "tries": 1,
-          "generated_at": "2026-09-12T23:45:22+00:00",
           "source": "east"
         },
         "north-west": {
@@ -1826,6 +1828,7 @@
           "reach": null,
           "turn": null,
           "end_area": 0.701,
+          "end_iou": 0.386,
           "canvas": [
             224,
             224
@@ -1836,14 +1839,13 @@
           "takes": 1,
           "version": 1,
           "mirrored": true,
+          "generated_at": "2026-09-12T23:45:23+00:00",
           "action": "Death - The green lamps go out and the body slumps down into a heap of peat and roots on the ground, then fades away",
-          "intensity": 0,
+          "tries": 1,
           "rolls": 1,
+          "intensity": 0,
           "frames": 7,
           "rung": 0,
-          "unwrapped": null,
-          "tries": 1,
-          "generated_at": "2026-09-12T23:45:23+00:00",
           "source": "north-east"
         }
       },

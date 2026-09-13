@@ -1582,6 +1582,7 @@
           "reach": null,
           "turn": null,
           "end_area": 0.553,
+          "end_iou": 0.301,
           "canvas": [
             128,
             128
@@ -1592,14 +1593,13 @@
           "takes": 1,
           "version": 1,
           "mirrored": false,
+          "generated_at": "2026-09-12T23:21:12+00:00",
           "action": "Death - Drops the spear and shield, faints and falls to the ground, then fades away",
-          "intensity": 0,
-          "rolls": 1,
-          "frames": 7,
-          "rung": 0,
-          "unwrapped": null,
           "tries": 1,
-          "generated_at": "2026-09-12T23:21:12+00:00"
+          "rolls": 1,
+          "intensity": 0,
+          "frames": 7,
+          "rung": 0
         },
         "south-east": {
           "status": "pass",
@@ -1616,6 +1616,7 @@
           "reach": null,
           "turn": null,
           "end_area": 0.673,
+          "end_iou": 0.19,
           "canvas": [
             148,
             148
@@ -1628,14 +1629,13 @@
           "takes": 1,
           "version": 1,
           "mirrored": false,
+          "generated_at": "2026-09-12T23:21:12+00:00",
           "action": "Death - Drops the spear and shield, faints and falls to the ground, then fades away",
-          "intensity": 0,
-          "rolls": 1,
-          "frames": 7,
-          "rung": 0,
-          "unwrapped": null,
           "tries": 1,
-          "generated_at": "2026-09-12T23:21:12+00:00"
+          "rolls": 1,
+          "intensity": 0,
+          "frames": 7,
+          "rung": 0
         },
         "east": {
           "status": "pass",
@@ -1652,6 +1652,7 @@
           "reach": null,
           "turn": null,
           "end_area": 0.859,
+          "end_iou": 0.207,
           "canvas": [
             136,
             136
@@ -1664,14 +1665,13 @@
           "takes": 1,
           "version": 1,
           "mirrored": false,
+          "generated_at": "2026-09-12T23:21:14+00:00",
           "action": "Death - Drops the spear and shield, faints and falls to the ground, then fades away",
-          "intensity": 0,
-          "rolls": 1,
-          "frames": 7,
-          "rung": 0,
-          "unwrapped": null,
           "tries": 1,
-          "generated_at": "2026-09-12T23:21:14+00:00"
+          "rolls": 1,
+          "intensity": 0,
+          "frames": 7,
+          "rung": 0
         },
         "north-east": {
           "status": "pass",
@@ -1688,6 +1688,7 @@
           "reach": null,
           "turn": null,
           "end_area": 0.575,
+          "end_iou": 0.178,
           "canvas": [
             140,
             140
@@ -1700,14 +1701,13 @@
           "takes": 1,
           "version": 1,
           "mirrored": false,
+          "generated_at": "2026-09-12T23:21:15+00:00",
           "action": "Death - Drops the spear and shield, faints and falls to the ground, then fades away",
-          "intensity": 0,
-          "rolls": 1,
-          "frames": 7,
-          "rung": 0,
-          "unwrapped": null,
           "tries": 1,
-          "generated_at": "2026-09-12T23:21:15+00:00"
+          "rolls": 1,
+          "intensity": 0,
+          "frames": 7,
+          "rung": 0
         },
         "north": {
           "status": "pass",
@@ -1724,6 +1724,7 @@
           "reach": null,
           "turn": null,
           "end_area": 0.674,
+          "end_iou": 0.223,
           "canvas": [
             144,
             144
@@ -1736,14 +1737,13 @@
           "takes": 1,
           "version": 1,
           "mirrored": false,
+          "generated_at": "2026-09-12T23:21:15+00:00",
           "action": "Death - Drops the spear and shield, faints and falls to the ground, then fades away",
-          "intensity": 0,
-          "rolls": 1,
-          "frames": 7,
-          "rung": 0,
-          "unwrapped": null,
           "tries": 1,
-          "generated_at": "2026-09-12T23:21:15+00:00"
+          "rolls": 1,
+          "intensity": 0,
+          "frames": 7,
+          "rung": 0
         },
         "south-west": {
           "status": "pass",
@@ -1760,6 +1760,7 @@
           "reach": null,
           "turn": null,
           "end_area": 0.673,
+          "end_iou": 0.19,
           "canvas": [
             148,
             148
@@ -1772,14 +1773,13 @@
           "takes": 1,
           "version": 1,
           "mirrored": true,
+          "generated_at": "2026-09-12T23:21:12+00:00",
           "action": "Death - Drops the spear and shield, faints and falls to the ground, then fades away",
-          "intensity": 0,
+          "tries": 1,
           "rolls": 1,
+          "intensity": 0,
           "frames": 7,
           "rung": 0,
-          "unwrapped": null,
-          "tries": 1,
-          "generated_at": "2026-09-12T23:21:12+00:00",
           "source": "south-east"
         },
         "west": {
@@ -1797,6 +1797,7 @@
           "reach": null,
           "turn": null,
           "end_area": 0.859,
+          "end_iou": 0.207,
           "canvas": [
             136,
             136
@@ -1809,14 +1810,13 @@
           "takes": 1,
           "version": 1,
           "mirrored": true,
+          "generated_at": "2026-09-12T23:21:14+00:00",
           "action": "Death - Drops the spear and shield, faints and falls to the ground, then fades away",
-          "intensity": 0,
+          "tries": 1,
           "rolls": 1,
+          "intensity": 0,
           "frames": 7,
           "rung": 0,
-          "unwrapped": null,
-          "tries": 1,
-          "generated_at": "2026-09-12T23:21:14+00:00",
           "source": "east"
         },
         "north-west": {
@@ -1834,6 +1834,7 @@
           "reach": null,
           "turn": null,
           "end_area": 0.575,
+          "end_iou": 0.178,
           "canvas": [
             140,
             140
@@ -1846,14 +1847,13 @@
           "takes": 1,
           "version": 1,
           "mirrored": true,
+          "generated_at": "2026-09-12T23:21:15+00:00",
           "action": "Death - Drops the spear and shield, faints and falls to the ground, then fades away",
-          "intensity": 0,
+          "tries": 1,
           "rolls": 1,
+          "intensity": 0,
           "frames": 7,
           "rung": 0,
-          "unwrapped": null,
-          "tries": 1,
-          "generated_at": "2026-09-12T23:21:15+00:00",
           "source": "north-east"
         }
       },

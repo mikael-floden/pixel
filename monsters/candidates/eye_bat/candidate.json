@@ -1706,39 +1706,41 @@
       "directions": {
         "south": {
           "status": "pass",
-          "step_mean": 0.2465,
-          "step_max": 0.2879,
-          "drift": 5.21,
-          "loop": 0.4108,
-          "loop_ratio": 1.67,
-          "travel": 0.43,
+          "step_mean": 0.3667,
+          "step_max": 0.8461,
+          "drift": 20.55,
+          "loop": 1.1972,
+          "loop_ratio": 3.26,
+          "travel": 0.59,
           "pin": 1.0,
-          "pad": 1,
-          "flash": 0.039,
+          "pad": 8,
+          "flash": 0.002,
           "peak": null,
           "reach": null,
           "turn": null,
-          "end_area": 0.965,
+          "end_area": 0.71,
+          "end_iou": 0.176,
           "canvas": [
-            66,
-            66
+            80,
+            80
           ],
           "reasons": [
-            "canvas grown by 1 px a side to hold the motion"
+            "canvas grown by 8 px a side to hold the motion"
           ],
-          "sub": "eb829132-97fd-4516-9993-3b61c14b3e64",
-          "group": "c67771be-c671-41db-ab84-01751fffe4ab",
+          "sub": "eb27281f-b64e-409a-aafd-efea9dba4459",
+          "group": "51dc5f8a-98bd-4aaf-8cdc-b1951135725d",
           "takes": 1,
-          "version": 1,
+          "version": 2,
           "mirrored": false,
-          "action": "Death - The eye closes, the wings fold and it drops to the ground, then fades away",
+          "mode": "v3",
+          "action": "Death - The eye closes, the wings fold and it drops to the ground, then fades away, a heavy dramatic collapse, the whole body going down onto the ground",
           "intensity": 0,
-          "rolls": 1,
+          "rolls": 2,
           "frames": 7,
-          "rung": 0,
+          "rung": 1,
           "unwrapped": null,
-          "tries": 1,
-          "generated_at": "2026-09-12T23:31:36+00:00"
+          "tries": 2,
+          "generated_at": "2026-09-13T03:10:02+00:00"
         },
         "south-east": {
           "status": "pass",
@@ -1755,6 +1757,7 @@
           "reach": null,
           "turn": null,
           "end_area": 0.747,
+          "end_iou": 0.217,
           "canvas": [
             64,
             64
@@ -1765,14 +1768,13 @@
           "takes": 1,
           "version": 1,
           "mirrored": false,
+          "generated_at": "2026-09-12T23:31:37+00:00",
           "action": "Death - The eye closes, the wings fold and it drops to the ground, then fades away",
-          "intensity": 0,
-          "rolls": 1,
-          "frames": 7,
-          "rung": 0,
-          "unwrapped": null,
           "tries": 1,
-          "generated_at": "2026-09-12T23:31:37+00:00"
+          "rolls": 1,
+          "intensity": 0,
+          "frames": 7,
+          "rung": 0
         },
         "east": {
           "status": "pass",
@@ -1789,6 +1791,7 @@
           "reach": null,
           "turn": null,
           "end_area": 0.874,
+          "end_iou": 0.22,
           "canvas": [
             64,
             64
@@ -1799,14 +1802,13 @@
           "takes": 1,
           "version": 1,
           "mirrored": false,
+          "generated_at": "2026-09-12T23:31:37+00:00",
           "action": "Death - The eye closes, the wings fold and it drops to the ground, then fades away",
-          "intensity": 0,
-          "rolls": 1,
-          "frames": 7,
-          "rung": 0,
-          "unwrapped": null,
           "tries": 1,
-          "generated_at": "2026-09-12T23:31:37+00:00"
+          "rolls": 1,
+          "intensity": 0,
+          "frames": 7,
+          "rung": 0
         },
         "north-east": {
           "status": "pass",
@@ -1823,6 +1825,7 @@
           "reach": null,
           "turn": null,
           "end_area": 0.839,
+          "end_iou": 0.455,
           "canvas": [
             64,
             64
@@ -1833,17 +1836,16 @@
           "takes": 1,
           "version": 1,
           "mirrored": false,
+          "generated_at": "2026-09-12T23:31:38+00:00",
           "action": "Death - The eye closes, the wings fold and it drops to the ground, then fades away",
-          "intensity": 0,
-          "rolls": 1,
-          "frames": 7,
-          "rung": 0,
-          "unwrapped": null,
           "tries": 1,
-          "generated_at": "2026-09-12T23:31:38+00:00"
+          "rolls": 1,
+          "intensity": 0,
+          "frames": 7,
+          "rung": 0
         },
         "north": {
-          "status": "pass",
+          "status": "warn",
           "step_mean": 0.2313,
           "step_max": 0.4254,
           "drift": 6.98,
@@ -1857,24 +1859,26 @@
           "reach": null,
           "turn": null,
           "end_area": 0.926,
+          "end_iou": 0.492,
           "canvas": [
             64,
             64
           ],
-          "reasons": [],
+          "reasons": [
+            "ends near the base (0.49) — eyeball it"
+          ],
           "sub": "48616876-ff30-4e6a-9a2a-7059ac8563ae",
           "group": "98ce1ea2-2a3b-4aab-a774-d022f30730da",
           "takes": 1,
           "version": 1,
           "mirrored": false,
+          "generated_at": "2026-09-12T23:31:38+00:00",
           "action": "Death - The eye closes, the wings fold and it drops to the ground, then fades away",
-          "intensity": 0,
-          "rolls": 1,
-          "frames": 7,
-          "rung": 0,
-          "unwrapped": null,
           "tries": 1,
-          "generated_at": "2026-09-12T23:31:38+00:00"
+          "rolls": 1,
+          "intensity": 0,
+          "frames": 7,
+          "rung": 0
         },
         "south-west": {
           "status": "pass",
@@ -1891,6 +1895,7 @@
           "reach": null,
           "turn": null,
           "end_area": 0.747,
+          "end_iou": 0.217,
           "canvas": [
             64,
             64
@@ -1901,14 +1906,13 @@
           "takes": 1,
           "version": 1,
           "mirrored": true,
+          "generated_at": "2026-09-12T23:31:37+00:00",
           "action": "Death - The eye closes, the wings fold and it drops to the ground, then fades away",
-          "intensity": 0,
+          "tries": 1,
           "rolls": 1,
+          "intensity": 0,
           "frames": 7,
           "rung": 0,
-          "unwrapped": null,
-          "tries": 1,
-          "generated_at": "2026-09-12T23:31:37+00:00",
           "source": "south-east"
         },
         "west": {
@@ -1926,6 +1930,7 @@
           "reach": null,
           "turn": null,
           "end_area": 0.874,
+          "end_iou": 0.22,
           "canvas": [
             64,
             64
@@ -1936,14 +1941,13 @@
           "takes": 1,
           "version": 1,
           "mirrored": true,
+          "generated_at": "2026-09-12T23:31:37+00:00",
           "action": "Death - The eye closes, the wings fold and it drops to the ground, then fades away",
-          "intensity": 0,
+          "tries": 1,
           "rolls": 1,
+          "intensity": 0,
           "frames": 7,
           "rung": 0,
-          "unwrapped": null,
-          "tries": 1,
-          "generated_at": "2026-09-12T23:31:37+00:00",
           "source": "east"
         },
         "north-west": {
@@ -1961,6 +1965,7 @@
           "reach": null,
           "turn": null,
           "end_area": 0.839,
+          "end_iou": 0.455,
           "canvas": [
             64,
             64
@@ -1971,14 +1976,13 @@
           "takes": 1,
           "version": 1,
           "mirrored": true,
+          "generated_at": "2026-09-12T23:31:38+00:00",
           "action": "Death - The eye closes, the wings fold and it drops to the ground, then fades away",
-          "intensity": 0,
+          "tries": 1,
           "rolls": 1,
+          "intensity": 0,
           "frames": 7,
           "rung": 0,
-          "unwrapped": null,
-          "tries": 1,
-          "generated_at": "2026-09-12T23:31:38+00:00",
           "source": "north-east"
         }
       },

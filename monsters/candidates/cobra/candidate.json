@@ -1623,7 +1623,7 @@
     "die_v1": {
       "directions": {
         "south": {
-          "status": "pass",
+          "status": "warn",
           "step_mean": 0.1296,
           "step_max": 0.226,
           "drift": 13.83,
@@ -1637,24 +1637,26 @@
           "reach": null,
           "turn": null,
           "end_area": 0.753,
+          "end_iou": 0.519,
           "canvas": [
             88,
             88
           ],
-          "reasons": [],
+          "reasons": [
+            "ends near the base (0.52) — eyeball it"
+          ],
           "sub": "3e72a482-05bd-4c4b-8c43-5f73980746d2",
           "group": "b68d46f8-a118-47ec-bc65-88bd9d10b5b5",
           "takes": 1,
           "version": 1,
           "mirrored": false,
+          "generated_at": "2026-09-12T23:28:43+00:00",
           "action": "Death - The raised body drops and it uncoils limp along the ground, then fades away",
-          "intensity": 0,
-          "rolls": 1,
-          "frames": 7,
-          "rung": 0,
-          "unwrapped": null,
           "tries": 1,
-          "generated_at": "2026-09-12T23:28:43+00:00"
+          "rolls": 1,
+          "intensity": 0,
+          "frames": 7,
+          "rung": 0
         },
         "south-east": {
           "status": "pass",
@@ -1671,6 +1673,7 @@
           "reach": null,
           "turn": null,
           "end_area": 0.828,
+          "end_iou": 0.416,
           "canvas": [
             88,
             88
@@ -1681,14 +1684,13 @@
           "takes": 1,
           "version": 1,
           "mirrored": false,
+          "generated_at": "2026-09-12T23:28:43+00:00",
           "action": "Death - The raised body drops and it uncoils limp along the ground, then fades away",
-          "intensity": 0,
-          "rolls": 1,
-          "frames": 7,
-          "rung": 0,
-          "unwrapped": null,
           "tries": 1,
-          "generated_at": "2026-09-12T23:28:43+00:00"
+          "rolls": 1,
+          "intensity": 0,
+          "frames": 7,
+          "rung": 0
         },
         "east": {
           "status": "pass",
@@ -1705,6 +1707,7 @@
           "reach": null,
           "turn": null,
           "end_area": 0.969,
+          "end_iou": 0.381,
           "canvas": [
             90,
             90
@@ -1717,17 +1720,16 @@
           "takes": 1,
           "version": 1,
           "mirrored": false,
+          "generated_at": "2026-09-12T23:28:44+00:00",
           "action": "Death - The raised body drops and it uncoils limp along the ground, then fades away",
-          "intensity": 0,
-          "rolls": 1,
-          "frames": 7,
-          "rung": 0,
-          "unwrapped": null,
           "tries": 1,
-          "generated_at": "2026-09-12T23:28:44+00:00"
+          "rolls": 1,
+          "intensity": 0,
+          "frames": 7,
+          "rung": 0
         },
         "north-east": {
-          "status": "pass",
+          "status": "warn",
           "step_mean": 0.1234,
           "step_max": 0.1905,
           "drift": 13.34,
@@ -1741,27 +1743,29 @@
           "reach": null,
           "turn": null,
           "end_area": 0.747,
+          "end_iou": 0.563,
           "canvas": [
             88,
             88
           ],
-          "reasons": [],
+          "reasons": [
+            "ends near the base (0.56) — eyeball it"
+          ],
           "sub": "6dcf5309-2549-4ac3-a1aa-4aac6ad84b99",
           "group": "63b8498a-8a04-4e17-bd09-b04723516c39",
           "takes": 1,
           "version": 1,
           "mirrored": false,
+          "generated_at": "2026-09-12T23:28:45+00:00",
           "action": "Death - The raised body drops and it uncoils limp along the ground, then fades away",
-          "intensity": 0,
-          "rolls": 1,
-          "frames": 7,
-          "rung": 0,
-          "unwrapped": null,
           "tries": 1,
-          "generated_at": "2026-09-12T23:28:45+00:00"
+          "rolls": 1,
+          "intensity": 0,
+          "frames": 7,
+          "rung": 0
         },
         "north": {
-          "status": "pass",
+          "status": "warn",
           "step_mean": 0.1314,
           "step_max": 0.2781,
           "drift": 12.51,
@@ -1775,24 +1779,26 @@
           "reach": null,
           "turn": null,
           "end_area": 0.82,
+          "end_iou": 0.581,
           "canvas": [
             88,
             88
           ],
-          "reasons": [],
+          "reasons": [
+            "ends near the base (0.58) — eyeball it"
+          ],
           "sub": "b1ebbfbf-6382-4a48-803e-42cb8eefbf16",
           "group": "3157da07-d9d2-4759-91bc-7555ca12ff49",
           "takes": 1,
           "version": 1,
           "mirrored": false,
+          "generated_at": "2026-09-12T23:28:45+00:00",
           "action": "Death - The raised body drops and it uncoils limp along the ground, then fades away",
-          "intensity": 0,
-          "rolls": 1,
-          "frames": 7,
-          "rung": 0,
-          "unwrapped": null,
           "tries": 1,
-          "generated_at": "2026-09-12T23:28:45+00:00"
+          "rolls": 1,
+          "intensity": 0,
+          "frames": 7,
+          "rung": 0
         },
         "south-west": {
           "status": "pass",
@@ -1809,6 +1815,7 @@
           "reach": null,
           "turn": null,
           "end_area": 0.828,
+          "end_iou": 0.416,
           "canvas": [
             88,
             88
@@ -1819,14 +1826,13 @@
           "takes": 1,
           "version": 1,
           "mirrored": true,
+          "generated_at": "2026-09-12T23:28:43+00:00",
           "action": "Death - The raised body drops and it uncoils limp along the ground, then fades away",
-          "intensity": 0,
+          "tries": 1,
           "rolls": 1,
+          "intensity": 0,
           "frames": 7,
           "rung": 0,
-          "unwrapped": null,
-          "tries": 1,
-          "generated_at": "2026-09-12T23:28:43+00:00",
           "source": "south-east"
         },
         "west": {
@@ -1844,6 +1850,7 @@
           "reach": null,
           "turn": null,
           "end_area": 0.969,
+          "end_iou": 0.381,
           "canvas": [
             90,
             90
@@ -1856,18 +1863,17 @@
           "takes": 1,
           "version": 1,
           "mirrored": true,
+          "generated_at": "2026-09-12T23:28:44+00:00",
           "action": "Death - The raised body drops and it uncoils limp along the ground, then fades away",
-          "intensity": 0,
+          "tries": 1,
           "rolls": 1,
+          "intensity": 0,
           "frames": 7,
           "rung": 0,
-          "unwrapped": null,
-          "tries": 1,
-          "generated_at": "2026-09-12T23:28:44+00:00",
           "source": "east"
         },
         "north-west": {
-          "status": "pass",
+          "status": "warn",
           "step_mean": 0.1234,
           "step_max": 0.1905,
           "drift": 13.34,
@@ -1881,24 +1887,26 @@
           "reach": null,
           "turn": null,
           "end_area": 0.747,
+          "end_iou": 0.563,
           "canvas": [
             88,
             88
           ],
-          "reasons": [],
+          "reasons": [
+            "ends near the base (0.56) — eyeball it"
+          ],
           "sub": "6dcf5309-2549-4ac3-a1aa-4aac6ad84b99",
           "group": "63b8498a-8a04-4e17-bd09-b04723516c39",
           "takes": 1,
           "version": 1,
           "mirrored": true,
+          "generated_at": "2026-09-12T23:28:45+00:00",
           "action": "Death - The raised body drops and it uncoils limp along the ground, then fades away",
-          "intensity": 0,
+          "tries": 1,
           "rolls": 1,
+          "intensity": 0,
           "frames": 7,
           "rung": 0,
-          "unwrapped": null,
-          "tries": 1,
-          "generated_at": "2026-09-12T23:28:45+00:00",
           "source": "north-east"
         }
       },

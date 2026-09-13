@@ -1578,6 +1578,7 @@
           "reach": null,
           "turn": null,
           "end_area": 0.53,
+          "end_iou": 0.178,
           "canvas": [
             224,
             224
@@ -1588,14 +1589,13 @@
           "takes": 1,
           "version": 1,
           "mirrored": false,
+          "generated_at": "2026-09-12T23:13:56+00:00",
           "action": "Death - Topples over sideways like a felled tree and lies still on the ground, then fades away",
-          "intensity": 0,
-          "rolls": 1,
-          "frames": 7,
-          "rung": 0,
-          "unwrapped": null,
           "tries": 1,
-          "generated_at": "2026-09-12T23:13:56+00:00"
+          "rolls": 1,
+          "intensity": 0,
+          "frames": 7,
+          "rung": 0
         },
         "south-east": {
           "status": "pass",
@@ -1612,6 +1612,7 @@
           "reach": null,
           "turn": null,
           "end_area": 0.587,
+          "end_iou": 0.23,
           "canvas": [
             230,
             230
@@ -1624,14 +1625,13 @@
           "takes": 1,
           "version": 1,
           "mirrored": false,
+          "generated_at": "2026-09-12T23:13:57+00:00",
           "action": "Death - Topples over sideways like a felled tree and lies still on the ground, then fades away",
-          "intensity": 0,
-          "rolls": 1,
-          "frames": 7,
-          "rung": 0,
-          "unwrapped": null,
           "tries": 1,
-          "generated_at": "2026-09-12T23:13:57+00:00"
+          "rolls": 1,
+          "intensity": 0,
+          "frames": 7,
+          "rung": 0
         },
         "east": {
           "status": "pass",
@@ -1648,6 +1648,7 @@
           "reach": null,
           "turn": null,
           "end_area": 0.858,
+          "end_iou": 0.129,
           "canvas": [
             224,
             224
@@ -1658,14 +1659,13 @@
           "takes": 1,
           "version": 1,
           "mirrored": false,
+          "generated_at": "2026-09-12T23:13:58+00:00",
           "action": "Death - Topples over sideways like a felled tree and lies still on the ground, then fades away",
-          "intensity": 0,
-          "rolls": 1,
-          "frames": 7,
-          "rung": 0,
-          "unwrapped": null,
           "tries": 1,
-          "generated_at": "2026-09-12T23:13:58+00:00"
+          "rolls": 1,
+          "intensity": 0,
+          "frames": 7,
+          "rung": 0
         },
         "north-east": {
           "status": "pass",
@@ -1682,6 +1682,7 @@
           "reach": null,
           "turn": null,
           "end_area": 0.699,
+          "end_iou": 0.176,
           "canvas": [
             224,
             224
@@ -1692,14 +1693,13 @@
           "takes": 1,
           "version": 1,
           "mirrored": false,
+          "generated_at": "2026-09-12T23:13:58+00:00",
           "action": "Death - Topples over sideways like a felled tree and lies still on the ground, then fades away",
-          "intensity": 0,
-          "rolls": 1,
-          "frames": 7,
-          "rung": 0,
-          "unwrapped": null,
           "tries": 1,
-          "generated_at": "2026-09-12T23:13:58+00:00"
+          "rolls": 1,
+          "intensity": 0,
+          "frames": 7,
+          "rung": 0
         },
         "north": {
           "status": "pass",
@@ -1716,6 +1716,7 @@
           "reach": null,
           "turn": null,
           "end_area": 0.516,
+          "end_iou": 0.165,
           "canvas": [
             224,
             224
@@ -1726,14 +1727,13 @@
           "takes": 1,
           "version": 1,
           "mirrored": false,
+          "generated_at": "2026-09-12T23:13:59+00:00",
           "action": "Death - Topples over sideways like a felled tree and lies still on the ground, then fades away",
-          "intensity": 0,
-          "rolls": 1,
-          "frames": 7,
-          "rung": 0,
-          "unwrapped": null,
           "tries": 1,
-          "generated_at": "2026-09-12T23:13:59+00:00"
+          "rolls": 1,
+          "intensity": 0,
+          "frames": 7,
+          "rung": 0
         },
         "south-west": {
           "status": "pass",
@@ -1750,6 +1750,7 @@
           "reach": null,
           "turn": null,
           "end_area": 0.587,
+          "end_iou": 0.23,
           "canvas": [
             230,
             230
@@ -1762,14 +1763,13 @@
           "takes": 1,
           "version": 1,
           "mirrored": true,
+          "generated_at": "2026-09-12T23:13:57+00:00",
           "action": "Death - Topples over sideways like a felled tree and lies still on the ground, then fades away",
-          "intensity": 0,
+          "tries": 1,
           "rolls": 1,
+          "intensity": 0,
           "frames": 7,
           "rung": 0,
-          "unwrapped": null,
-          "tries": 1,
-          "generated_at": "2026-09-12T23:13:57+00:00",
           "source": "south-east"
         },
         "west": {
@@ -1787,6 +1787,7 @@
           "reach": null,
           "turn": null,
           "end_area": 0.858,
+          "end_iou": 0.129,
           "canvas": [
             224,
             224
@@ -1797,14 +1798,13 @@
           "takes": 1,
           "version": 1,
           "mirrored": true,
+          "generated_at": "2026-09-12T23:13:58+00:00",
           "action": "Death - Topples over sideways like a felled tree and lies still on the ground, then fades away",
-          "intensity": 0,
+          "tries": 1,
           "rolls": 1,
+          "intensity": 0,
           "frames": 7,
           "rung": 0,
-          "unwrapped": null,
-          "tries": 1,
-          "generated_at": "2026-09-12T23:13:58+00:00",
           "source": "east"
         },
         "north-west": {
@@ -1822,6 +1822,7 @@
           "reach": null,
           "turn": null,
           "end_area": 0.699,
+          "end_iou": 0.176,
           "canvas": [
             224,
             224
@@ -1832,14 +1833,13 @@
           "takes": 1,
           "version": 1,
           "mirrored": true,
+          "generated_at": "2026-09-12T23:13:58+00:00",
           "action": "Death - Topples over sideways like a felled tree and lies still on the ground, then fades away",
-          "intensity": 0,
+          "tries": 1,
           "rolls": 1,
+          "intensity": 0,
           "frames": 7,
           "rung": 0,
-          "unwrapped": null,
-          "tries": 1,
-          "generated_at": "2026-09-12T23:13:58+00:00",
           "source": "north-east"
         }
       },

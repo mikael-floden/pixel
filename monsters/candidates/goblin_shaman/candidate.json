@@ -1554,7 +1554,7 @@
     "die_v1": {
       "directions": {
         "south": {
-          "status": "pass",
+          "status": "warn",
           "step_mean": 0.2067,
           "step_max": 0.323,
           "drift": 18.19,
@@ -1568,24 +1568,26 @@
           "reach": null,
           "turn": null,
           "end_area": 0.74,
+          "end_iou": 0.49,
           "canvas": [
             88,
             88
           ],
-          "reasons": [],
+          "reasons": [
+            "ends near the base (0.49) — eyeball it"
+          ],
           "sub": "d3159913-ede5-4ede-95e3-b49e23afc0de",
           "group": "0d28bb42-3879-4271-bca3-6a6002505018",
           "takes": 1,
           "version": 1,
           "mirrored": false,
+          "generated_at": "2026-09-12T23:15:55+00:00",
           "action": "Death - Drops the staff, clutches its chest and falls over onto its back, then fades away",
-          "intensity": 0,
-          "rolls": 1,
-          "frames": 7,
-          "rung": 0,
-          "unwrapped": null,
           "tries": 1,
-          "generated_at": "2026-09-12T23:15:55+00:00"
+          "rolls": 1,
+          "intensity": 0,
+          "frames": 7,
+          "rung": 0
         },
         "south-east": {
           "status": "pass",
@@ -1602,6 +1604,7 @@
           "reach": null,
           "turn": null,
           "end_area": 0.573,
+          "end_iou": 0.234,
           "canvas": [
             88,
             88
@@ -1612,14 +1615,13 @@
           "takes": 1,
           "version": 1,
           "mirrored": false,
+          "generated_at": "2026-09-12T23:15:56+00:00",
           "action": "Death - Drops the staff, clutches its chest and falls over onto its back, then fades away",
-          "intensity": 0,
-          "rolls": 1,
-          "frames": 7,
-          "rung": 0,
-          "unwrapped": null,
           "tries": 1,
-          "generated_at": "2026-09-12T23:15:56+00:00"
+          "rolls": 1,
+          "intensity": 0,
+          "frames": 7,
+          "rung": 0
         },
         "east": {
           "status": "pass",
@@ -1636,6 +1638,7 @@
           "reach": null,
           "turn": null,
           "end_area": 0.73,
+          "end_iou": 0.119,
           "canvas": [
             88,
             88
@@ -1646,14 +1649,13 @@
           "takes": 1,
           "version": 1,
           "mirrored": false,
+          "generated_at": "2026-09-12T23:15:56+00:00",
           "action": "Death - Drops the staff, clutches its chest and falls over onto its back, then fades away",
-          "intensity": 0,
-          "rolls": 1,
-          "frames": 7,
-          "rung": 0,
-          "unwrapped": null,
           "tries": 1,
-          "generated_at": "2026-09-12T23:15:56+00:00"
+          "rolls": 1,
+          "intensity": 0,
+          "frames": 7,
+          "rung": 0
         },
         "north-east": {
           "status": "pass",
@@ -1670,6 +1672,7 @@
           "reach": null,
           "turn": null,
           "end_area": 0.611,
+          "end_iou": 0.2,
           "canvas": [
             88,
             88
@@ -1680,14 +1683,13 @@
           "takes": 1,
           "version": 1,
           "mirrored": false,
+          "generated_at": "2026-09-12T23:15:57+00:00",
           "action": "Death - Drops the staff, clutches its chest and falls over onto its back, then fades away",
-          "intensity": 0,
-          "rolls": 1,
-          "frames": 7,
-          "rung": 0,
-          "unwrapped": null,
           "tries": 1,
-          "generated_at": "2026-09-12T23:15:57+00:00"
+          "rolls": 1,
+          "intensity": 0,
+          "frames": 7,
+          "rung": 0
         },
         "north": {
           "status": "pass",
@@ -1704,6 +1706,7 @@
           "reach": null,
           "turn": null,
           "end_area": 0.52,
+          "end_iou": 0.188,
           "canvas": [
             98,
             98
@@ -1716,14 +1719,13 @@
           "takes": 1,
           "version": 1,
           "mirrored": false,
+          "generated_at": "2026-09-12T23:15:57+00:00",
           "action": "Death - Drops the staff, clutches its chest and falls over onto its back, then fades away",
-          "intensity": 0,
-          "rolls": 1,
-          "frames": 7,
-          "rung": 0,
-          "unwrapped": null,
           "tries": 1,
-          "generated_at": "2026-09-12T23:15:57+00:00"
+          "rolls": 1,
+          "intensity": 0,
+          "frames": 7,
+          "rung": 0
         },
         "south-west": {
           "status": "pass",
@@ -1740,6 +1742,7 @@
           "reach": null,
           "turn": null,
           "end_area": 0.573,
+          "end_iou": 0.234,
           "canvas": [
             88,
             88
@@ -1750,14 +1753,13 @@
           "takes": 1,
           "version": 1,
           "mirrored": true,
+          "generated_at": "2026-09-12T23:15:56+00:00",
           "action": "Death - Drops the staff, clutches its chest and falls over onto its back, then fades away",
-          "intensity": 0,
+          "tries": 1,
           "rolls": 1,
+          "intensity": 0,
           "frames": 7,
           "rung": 0,
-          "unwrapped": null,
-          "tries": 1,
-          "generated_at": "2026-09-12T23:15:56+00:00",
           "source": "south-east"
         },
         "west": {
@@ -1775,6 +1777,7 @@
           "reach": null,
           "turn": null,
           "end_area": 0.73,
+          "end_iou": 0.119,
           "canvas": [
             88,
             88
@@ -1785,14 +1788,13 @@
           "takes": 1,
           "version": 1,
           "mirrored": true,
+          "generated_at": "2026-09-12T23:15:56+00:00",
           "action": "Death - Drops the staff, clutches its chest and falls over onto its back, then fades away",
-          "intensity": 0,
+          "tries": 1,
           "rolls": 1,
+          "intensity": 0,
           "frames": 7,
           "rung": 0,
-          "unwrapped": null,
-          "tries": 1,
-          "generated_at": "2026-09-12T23:15:56+00:00",
           "source": "east"
         },
         "north-west": {
@@ -1810,6 +1812,7 @@
           "reach": null,
           "turn": null,
           "end_area": 0.611,
+          "end_iou": 0.2,
           "canvas": [
             88,
             88
@@ -1820,14 +1823,13 @@
           "takes": 1,
           "version": 1,
           "mirrored": true,
+          "generated_at": "2026-09-12T23:15:57+00:00",
           "action": "Death - Drops the staff, clutches its chest and falls over onto its back, then fades away",
-          "intensity": 0,
+          "tries": 1,
           "rolls": 1,
+          "intensity": 0,
           "frames": 7,
           "rung": 0,
-          "unwrapped": null,
-          "tries": 1,
-          "generated_at": "2026-09-12T23:15:57+00:00",
           "source": "north-east"
         }
       },

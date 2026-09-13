@@ -1575,6 +1575,7 @@
           "reach": null,
           "turn": null,
           "end_area": 0.636,
+          "end_iou": 0.299,
           "canvas": [
             106,
             106
@@ -1587,14 +1588,13 @@
           "takes": 1,
           "version": 1,
           "mirrored": false,
+          "generated_at": "2026-09-12T23:17:24+00:00",
           "action": "Death - Faints, crumples to the ground on its side and fades away",
-          "intensity": 0,
-          "rolls": 1,
-          "frames": 7,
-          "rung": 0,
-          "unwrapped": null,
           "tries": 1,
-          "generated_at": "2026-09-12T23:17:24+00:00"
+          "rolls": 1,
+          "intensity": 0,
+          "frames": 7,
+          "rung": 0
         },
         "south-east": {
           "status": "pass",
@@ -1611,6 +1611,7 @@
           "reach": null,
           "turn": null,
           "end_area": 0.688,
+          "end_iou": 0.221,
           "canvas": [
             108,
             108
@@ -1623,14 +1624,13 @@
           "takes": 1,
           "version": 1,
           "mirrored": false,
+          "generated_at": "2026-09-12T23:17:25+00:00",
           "action": "Death - Faints, crumples to the ground on its side and fades away",
-          "intensity": 0,
-          "rolls": 1,
-          "frames": 7,
-          "rung": 0,
-          "unwrapped": null,
           "tries": 1,
-          "generated_at": "2026-09-12T23:17:25+00:00"
+          "rolls": 1,
+          "intensity": 0,
+          "frames": 7,
+          "rung": 0
         },
         "east": {
           "status": "pass",
@@ -1647,6 +1647,7 @@
           "reach": null,
           "turn": null,
           "end_area": 0.843,
+          "end_iou": 0.171,
           "canvas": [
             104,
             104
@@ -1657,14 +1658,13 @@
           "takes": 1,
           "version": 1,
           "mirrored": false,
+          "generated_at": "2026-09-12T23:17:25+00:00",
           "action": "Death - Faints, crumples to the ground on its side and fades away",
-          "intensity": 0,
-          "rolls": 1,
-          "frames": 7,
-          "rung": 0,
-          "unwrapped": null,
           "tries": 1,
-          "generated_at": "2026-09-12T23:17:25+00:00"
+          "rolls": 1,
+          "intensity": 0,
+          "frames": 7,
+          "rung": 0
         },
         "north-east": {
           "status": "pass",
@@ -1681,6 +1681,7 @@
           "reach": null,
           "turn": null,
           "end_area": 0.693,
+          "end_iou": 0.175,
           "canvas": [
             106,
             106
@@ -1693,14 +1694,13 @@
           "takes": 1,
           "version": 1,
           "mirrored": false,
+          "generated_at": "2026-09-12T23:17:29+00:00",
           "action": "Death - Faints, crumples to the ground on its side and fades away",
-          "intensity": 0,
-          "rolls": 1,
-          "frames": 7,
-          "rung": 0,
-          "unwrapped": null,
           "tries": 1,
-          "generated_at": "2026-09-12T23:17:29+00:00"
+          "rolls": 1,
+          "intensity": 0,
+          "frames": 7,
+          "rung": 0
         },
         "north": {
           "status": "pass",
@@ -1717,6 +1717,7 @@
           "reach": null,
           "turn": null,
           "end_area": 0.484,
+          "end_iou": 0.13,
           "canvas": [
             104,
             104
@@ -1727,14 +1728,13 @@
           "takes": 1,
           "version": 1,
           "mirrored": false,
+          "generated_at": "2026-09-12T23:17:29+00:00",
           "action": "Death - Faints, crumples to the ground on its side and fades away",
-          "intensity": 0,
-          "rolls": 1,
-          "frames": 7,
-          "rung": 0,
-          "unwrapped": null,
           "tries": 1,
-          "generated_at": "2026-09-12T23:17:29+00:00"
+          "rolls": 1,
+          "intensity": 0,
+          "frames": 7,
+          "rung": 0
         },
         "south-west": {
           "status": "pass",
@@ -1751,6 +1751,7 @@
           "reach": null,
           "turn": null,
           "end_area": 0.688,
+          "end_iou": 0.221,
           "canvas": [
             108,
             108
@@ -1763,14 +1764,13 @@
           "takes": 1,
           "version": 1,
           "mirrored": true,
+          "generated_at": "2026-09-12T23:17:25+00:00",
           "action": "Death - Faints, crumples to the ground on its side and fades away",
-          "intensity": 0,
+          "tries": 1,
           "rolls": 1,
+          "intensity": 0,
           "frames": 7,
           "rung": 0,
-          "unwrapped": null,
-          "tries": 1,
-          "generated_at": "2026-09-12T23:17:25+00:00",
           "source": "south-east"
         },
         "west": {
@@ -1788,6 +1788,7 @@
           "reach": null,
           "turn": null,
           "end_area": 0.843,
+          "end_iou": 0.171,
           "canvas": [
             104,
             104
@@ -1798,14 +1799,13 @@
           "takes": 1,
           "version": 1,
           "mirrored": true,
+          "generated_at": "2026-09-12T23:17:25+00:00",
           "action": "Death - Faints, crumples to the ground on its side and fades away",
-          "intensity": 0,
+          "tries": 1,
           "rolls": 1,
+          "intensity": 0,
           "frames": 7,
           "rung": 0,
-          "unwrapped": null,
-          "tries": 1,
-          "generated_at": "2026-09-12T23:17:25+00:00",
           "source": "east"
         },
         "north-west": {
@@ -1823,6 +1823,7 @@
           "reach": null,
           "turn": null,
           "end_area": 0.693,
+          "end_iou": 0.175,
           "canvas": [
             106,
             106
@@ -1835,14 +1836,13 @@
           "takes": 1,
           "version": 1,
           "mirrored": true,
+          "generated_at": "2026-09-12T23:17:29+00:00",
           "action": "Death - Faints, crumples to the ground on its side and fades away",
-          "intensity": 0,
+          "tries": 1,
           "rolls": 1,
+          "intensity": 0,
           "frames": 7,
           "rung": 0,
-          "unwrapped": null,
-          "tries": 1,
-          "generated_at": "2026-09-12T23:17:29+00:00",
           "source": "north-east"
         }
       },

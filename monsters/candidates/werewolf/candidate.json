@@ -1606,6 +1606,7 @@
           "reach": null,
           "turn": null,
           "end_area": 0.577,
+          "end_iou": 0.17,
           "canvas": [
             130,
             130
@@ -1618,14 +1619,13 @@
           "takes": 1,
           "version": 1,
           "mirrored": false,
+          "generated_at": "2026-09-12T23:22:06+00:00",
           "action": "Death - Staggers, falls forward onto the ground and lies still, then fades away",
-          "intensity": 0,
-          "rolls": 1,
-          "frames": 7,
-          "rung": 0,
-          "unwrapped": null,
           "tries": 1,
-          "generated_at": "2026-09-12T23:22:06+00:00"
+          "rolls": 1,
+          "intensity": 0,
+          "frames": 7,
+          "rung": 0
         },
         "south-east": {
           "status": "pass",
@@ -1642,6 +1642,7 @@
           "reach": null,
           "turn": null,
           "end_area": 0.784,
+          "end_iou": 0.298,
           "canvas": [
             134,
             134
@@ -1654,14 +1655,13 @@
           "takes": 1,
           "version": 1,
           "mirrored": false,
+          "generated_at": "2026-09-12T23:22:07+00:00",
           "action": "Death - Staggers, falls forward onto the ground and lies still, then fades away",
-          "intensity": 0,
-          "rolls": 1,
-          "frames": 7,
-          "rung": 0,
-          "unwrapped": null,
           "tries": 1,
-          "generated_at": "2026-09-12T23:22:07+00:00"
+          "rolls": 1,
+          "intensity": 0,
+          "frames": 7,
+          "rung": 0
         },
         "east": {
           "status": "pass",
@@ -1678,6 +1678,7 @@
           "reach": null,
           "turn": null,
           "end_area": 0.855,
+          "end_iou": 0.216,
           "canvas": [
             134,
             134
@@ -1690,14 +1691,13 @@
           "takes": 1,
           "version": 1,
           "mirrored": false,
+          "generated_at": "2026-09-12T23:22:07+00:00",
           "action": "Death - Staggers, falls forward onto the ground and lies still, then fades away",
-          "intensity": 0,
-          "rolls": 1,
-          "frames": 7,
-          "rung": 0,
-          "unwrapped": null,
           "tries": 1,
-          "generated_at": "2026-09-12T23:22:07+00:00"
+          "rolls": 1,
+          "intensity": 0,
+          "frames": 7,
+          "rung": 0
         },
         "north-east": {
           "status": "pass",
@@ -1714,6 +1714,7 @@
           "reach": null,
           "turn": null,
           "end_area": 0.794,
+          "end_iou": 0.205,
           "canvas": [
             128,
             128
@@ -1724,14 +1725,13 @@
           "takes": 1,
           "version": 1,
           "mirrored": false,
+          "generated_at": "2026-09-12T23:22:08+00:00",
           "action": "Death - Staggers, falls forward onto the ground and lies still, then fades away",
-          "intensity": 0,
-          "rolls": 1,
-          "frames": 7,
-          "rung": 0,
-          "unwrapped": null,
           "tries": 1,
-          "generated_at": "2026-09-12T23:22:08+00:00"
+          "rolls": 1,
+          "intensity": 0,
+          "frames": 7,
+          "rung": 0
         },
         "north": {
           "status": "pass",
@@ -1748,6 +1748,7 @@
           "reach": null,
           "turn": null,
           "end_area": 0.691,
+          "end_iou": 0.211,
           "canvas": [
             136,
             136
@@ -1760,14 +1761,13 @@
           "takes": 1,
           "version": 1,
           "mirrored": false,
+          "generated_at": "2026-09-12T23:22:08+00:00",
           "action": "Death - Staggers, falls forward onto the ground and lies still, then fades away",
-          "intensity": 0,
-          "rolls": 1,
-          "frames": 7,
-          "rung": 0,
-          "unwrapped": null,
           "tries": 1,
-          "generated_at": "2026-09-12T23:22:08+00:00"
+          "rolls": 1,
+          "intensity": 0,
+          "frames": 7,
+          "rung": 0
         },
         "south-west": {
           "status": "pass",
@@ -1784,6 +1784,7 @@
           "reach": null,
           "turn": null,
           "end_area": 0.784,
+          "end_iou": 0.298,
           "canvas": [
             134,
             134
@@ -1796,14 +1797,13 @@
           "takes": 1,
           "version": 1,
           "mirrored": true,
+          "generated_at": "2026-09-12T23:22:07+00:00",
           "action": "Death - Staggers, falls forward onto the ground and lies still, then fades away",
-          "intensity": 0,
+          "tries": 1,
           "rolls": 1,
+          "intensity": 0,
           "frames": 7,
           "rung": 0,
-          "unwrapped": null,
-          "tries": 1,
-          "generated_at": "2026-09-12T23:22:07+00:00",
           "source": "south-east"
         },
         "west": {
@@ -1821,6 +1821,7 @@
           "reach": null,
           "turn": null,
           "end_area": 0.855,
+          "end_iou": 0.216,
           "canvas": [
             134,
             134
@@ -1833,14 +1834,13 @@
           "takes": 1,
           "version": 1,
           "mirrored": true,
+          "generated_at": "2026-09-12T23:22:07+00:00",
           "action": "Death - Staggers, falls forward onto the ground and lies still, then fades away",
-          "intensity": 0,
+          "tries": 1,
           "rolls": 1,
+          "intensity": 0,
           "frames": 7,
           "rung": 0,
-          "unwrapped": null,
-          "tries": 1,
-          "generated_at": "2026-09-12T23:22:07+00:00",
           "source": "east"
         },
         "north-west": {
@@ -1858,6 +1858,7 @@
           "reach": null,
           "turn": null,
           "end_area": 0.794,
+          "end_iou": 0.205,
           "canvas": [
             128,
             128
@@ -1868,14 +1869,13 @@
           "takes": 1,
           "version": 1,
           "mirrored": true,
+          "generated_at": "2026-09-12T23:22:08+00:00",
           "action": "Death - Staggers, falls forward onto the ground and lies still, then fades away",
-          "intensity": 0,
+          "tries": 1,
           "rolls": 1,
+          "intensity": 0,
           "frames": 7,
           "rung": 0,
-          "unwrapped": null,
-          "tries": 1,
-          "generated_at": "2026-09-12T23:22:08+00:00",
           "source": "north-east"
         }
       },

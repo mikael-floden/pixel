@@ -1585,6 +1585,7 @@
           "reach": null,
           "turn": null,
           "end_area": 0.749,
+          "end_iou": 0.376,
           "canvas": [
             110,
             110
@@ -1597,14 +1598,13 @@
           "takes": 1,
           "version": 1,
           "mirrored": false,
+          "generated_at": "2026-09-12T23:25:12+00:00",
           "action": "Death - The green eyes go out and it crumbles into a heap of loose bandages on the ground, then fades away",
-          "intensity": 0,
-          "rolls": 1,
-          "frames": 7,
-          "rung": 0,
-          "unwrapped": null,
           "tries": 1,
-          "generated_at": "2026-09-12T23:25:12+00:00"
+          "rolls": 1,
+          "intensity": 0,
+          "frames": 7,
+          "rung": 0
         },
         "south-east": {
           "status": "pass",
@@ -1621,6 +1621,7 @@
           "reach": null,
           "turn": null,
           "end_area": 0.608,
+          "end_iou": 0.154,
           "canvas": [
             112,
             112
@@ -1633,14 +1634,13 @@
           "takes": 1,
           "version": 1,
           "mirrored": false,
+          "generated_at": "2026-09-12T23:25:13+00:00",
           "action": "Death - The green eyes go out and it crumbles into a heap of loose bandages on the ground, then fades away",
-          "intensity": 0,
-          "rolls": 1,
-          "frames": 7,
-          "rung": 0,
-          "unwrapped": null,
           "tries": 1,
-          "generated_at": "2026-09-12T23:25:13+00:00"
+          "rolls": 1,
+          "intensity": 0,
+          "frames": 7,
+          "rung": 0
         },
         "east": {
           "status": "pass",
@@ -1657,6 +1657,7 @@
           "reach": null,
           "turn": null,
           "end_area": 0.755,
+          "end_iou": 0.111,
           "canvas": [
             104,
             104
@@ -1667,14 +1668,13 @@
           "takes": 1,
           "version": 1,
           "mirrored": false,
+          "generated_at": "2026-09-12T23:25:13+00:00",
           "action": "Death - The green eyes go out and it crumbles into a heap of loose bandages on the ground, then fades away",
-          "intensity": 0,
-          "rolls": 1,
-          "frames": 7,
-          "rung": 0,
-          "unwrapped": null,
           "tries": 1,
-          "generated_at": "2026-09-12T23:25:13+00:00"
+          "rolls": 1,
+          "intensity": 0,
+          "frames": 7,
+          "rung": 0
         },
         "north-east": {
           "status": "warn",
@@ -1691,6 +1691,7 @@
           "reach": null,
           "turn": null,
           "end_area": 0.679,
+          "end_iou": 0.125,
           "canvas": [
             110,
             110
@@ -1704,14 +1705,13 @@
           "takes": 1,
           "version": 1,
           "mirrored": false,
+          "generated_at": "2026-09-12T23:25:14+00:00",
           "action": "Death - The green eyes go out and it crumbles into a heap of loose bandages on the ground, then fades away",
-          "intensity": 0,
-          "rolls": 1,
-          "frames": 7,
-          "rung": 0,
-          "unwrapped": null,
           "tries": 1,
-          "generated_at": "2026-09-12T23:25:14+00:00"
+          "rolls": 1,
+          "intensity": 0,
+          "frames": 7,
+          "rung": 0
         },
         "north": {
           "status": "warn",
@@ -1728,6 +1728,7 @@
           "reach": null,
           "turn": null,
           "end_area": 0.509,
+          "end_iou": 0.107,
           "canvas": [
             108,
             108
@@ -1741,14 +1742,13 @@
           "takes": 1,
           "version": 1,
           "mirrored": false,
+          "generated_at": "2026-09-12T23:25:17+00:00",
           "action": "Death - The green eyes go out and it crumbles into a heap of loose bandages on the ground, then fades away",
-          "intensity": 0,
-          "rolls": 1,
-          "frames": 7,
-          "rung": 0,
-          "unwrapped": null,
           "tries": 1,
-          "generated_at": "2026-09-12T23:25:17+00:00"
+          "rolls": 1,
+          "intensity": 0,
+          "frames": 7,
+          "rung": 0
         },
         "south-west": {
           "status": "pass",
@@ -1765,6 +1765,7 @@
           "reach": null,
           "turn": null,
           "end_area": 0.608,
+          "end_iou": 0.154,
           "canvas": [
             112,
             112
@@ -1777,14 +1778,13 @@
           "takes": 1,
           "version": 1,
           "mirrored": true,
+          "generated_at": "2026-09-12T23:25:13+00:00",
           "action": "Death - The green eyes go out and it crumbles into a heap of loose bandages on the ground, then fades away",
-          "intensity": 0,
+          "tries": 1,
           "rolls": 1,
+          "intensity": 0,
           "frames": 7,
           "rung": 0,
-          "unwrapped": null,
-          "tries": 1,
-          "generated_at": "2026-09-12T23:25:13+00:00",
           "source": "south-east"
         },
         "west": {
@@ -1802,6 +1802,7 @@
           "reach": null,
           "turn": null,
           "end_area": 0.755,
+          "end_iou": 0.111,
           "canvas": [
             104,
             104
@@ -1812,14 +1813,13 @@
           "takes": 1,
           "version": 1,
           "mirrored": true,
+          "generated_at": "2026-09-12T23:25:13+00:00",
           "action": "Death - The green eyes go out and it crumbles into a heap of loose bandages on the ground, then fades away",
-          "intensity": 0,
+          "tries": 1,
           "rolls": 1,
+          "intensity": 0,
           "frames": 7,
           "rung": 0,
-          "unwrapped": null,
-          "tries": 1,
-          "generated_at": "2026-09-12T23:25:13+00:00",
           "source": "east"
         },
         "north-west": {
@@ -1837,6 +1837,7 @@
           "reach": null,
           "turn": null,
           "end_area": 0.679,
+          "end_iou": 0.125,
           "canvas": [
             110,
             110
@@ -1850,14 +1851,13 @@
           "takes": 1,
           "version": 1,
           "mirrored": true,
+          "generated_at": "2026-09-12T23:25:14+00:00",
           "action": "Death - The green eyes go out and it crumbles into a heap of loose bandages on the ground, then fades away",
-          "intensity": 0,
+          "tries": 1,
           "rolls": 1,
+          "intensity": 0,
           "frames": 7,
           "rung": 0,
-          "unwrapped": null,
-          "tries": 1,
-          "generated_at": "2026-09-12T23:25:14+00:00",
           "source": "north-east"
         }
       },

@@ -1602,7 +1602,7 @@
     "die_v1": {
       "directions": {
         "south": {
-          "status": "pass",
+          "status": "warn",
           "step_mean": 0.12,
           "step_max": 0.1587,
           "drift": 18.82,
@@ -1616,24 +1616,26 @@
           "reach": null,
           "turn": null,
           "end_area": 0.862,
+          "end_iou": 0.54,
           "canvas": [
             136,
             136
           ],
-          "reasons": [],
+          "reasons": [
+            "ends near the base (0.54) — eyeball it"
+          ],
           "sub": "988644fd-4004-4ed1-9add-67304abd894e",
           "group": "e360987c-59e3-46ba-8d17-18e9033444d2",
           "takes": 1,
           "version": 1,
           "mirrored": false,
+          "generated_at": "2026-09-12T23:52:48+00:00",
           "action": "Death - Faints, sinks to its knees and falls forward onto the ground, then fades away",
-          "intensity": 0,
-          "rolls": 1,
-          "frames": 7,
-          "rung": 0,
-          "unwrapped": null,
           "tries": 1,
-          "generated_at": "2026-09-12T23:52:48+00:00"
+          "rolls": 1,
+          "intensity": 0,
+          "frames": 7,
+          "rung": 0
         },
         "south-east": {
           "status": "pass",
@@ -1650,6 +1652,7 @@
           "reach": null,
           "turn": null,
           "end_area": 0.784,
+          "end_iou": 0.369,
           "canvas": [
             146,
             146
@@ -1662,14 +1665,13 @@
           "takes": 1,
           "version": 1,
           "mirrored": false,
+          "generated_at": "2026-09-12T23:52:49+00:00",
           "action": "Death - Faints, sinks to its knees and falls forward onto the ground, then fades away",
-          "intensity": 0,
-          "rolls": 1,
-          "frames": 7,
-          "rung": 0,
-          "unwrapped": null,
           "tries": 1,
-          "generated_at": "2026-09-12T23:52:49+00:00"
+          "rolls": 1,
+          "intensity": 0,
+          "frames": 7,
+          "rung": 0
         },
         "east": {
           "status": "pass",
@@ -1686,6 +1688,7 @@
           "reach": null,
           "turn": null,
           "end_area": 1.0,
+          "end_iou": 0.282,
           "canvas": [
             136,
             136
@@ -1696,14 +1699,13 @@
           "takes": 1,
           "version": 1,
           "mirrored": false,
+          "generated_at": "2026-09-12T23:52:50+00:00",
           "action": "Death - Faints, sinks to its knees and falls forward onto the ground, then fades away",
-          "intensity": 0,
-          "rolls": 1,
-          "frames": 7,
-          "rung": 0,
-          "unwrapped": null,
           "tries": 1,
-          "generated_at": "2026-09-12T23:52:50+00:00"
+          "rolls": 1,
+          "intensity": 0,
+          "frames": 7,
+          "rung": 0
         },
         "north-east": {
           "status": "pass",
@@ -1720,6 +1722,7 @@
           "reach": null,
           "turn": null,
           "end_area": 0.738,
+          "end_iou": 0.295,
           "canvas": [
             138,
             138
@@ -1732,14 +1735,13 @@
           "takes": 1,
           "version": 1,
           "mirrored": false,
+          "generated_at": "2026-09-12T23:52:51+00:00",
           "action": "Death - Faints, sinks to its knees and falls forward onto the ground, then fades away",
-          "intensity": 0,
-          "rolls": 1,
-          "frames": 7,
-          "rung": 0,
-          "unwrapped": null,
           "tries": 1,
-          "generated_at": "2026-09-12T23:52:51+00:00"
+          "rolls": 1,
+          "intensity": 0,
+          "frames": 7,
+          "rung": 0
         },
         "north": {
           "status": "pass",
@@ -1756,6 +1758,7 @@
           "reach": null,
           "turn": null,
           "end_area": 0.657,
+          "end_iou": 0.322,
           "canvas": [
             136,
             136
@@ -1766,14 +1769,13 @@
           "takes": 1,
           "version": 1,
           "mirrored": false,
+          "generated_at": "2026-09-12T23:52:51+00:00",
           "action": "Death - Faints, sinks to its knees and falls forward onto the ground, then fades away",
-          "intensity": 0,
-          "rolls": 1,
-          "frames": 7,
-          "rung": 0,
-          "unwrapped": null,
           "tries": 1,
-          "generated_at": "2026-09-12T23:52:51+00:00"
+          "rolls": 1,
+          "intensity": 0,
+          "frames": 7,
+          "rung": 0
         },
         "south-west": {
           "status": "pass",
@@ -1790,6 +1792,7 @@
           "reach": null,
           "turn": null,
           "end_area": 0.784,
+          "end_iou": 0.369,
           "canvas": [
             146,
             146
@@ -1802,14 +1805,13 @@
           "takes": 1,
           "version": 1,
           "mirrored": true,
+          "generated_at": "2026-09-12T23:52:49+00:00",
           "action": "Death - Faints, sinks to its knees and falls forward onto the ground, then fades away",
-          "intensity": 0,
+          "tries": 1,
           "rolls": 1,
+          "intensity": 0,
           "frames": 7,
           "rung": 0,
-          "unwrapped": null,
-          "tries": 1,
-          "generated_at": "2026-09-12T23:52:49+00:00",
           "source": "south-east"
         },
         "west": {
@@ -1827,6 +1829,7 @@
           "reach": null,
           "turn": null,
           "end_area": 1.0,
+          "end_iou": 0.282,
           "canvas": [
             136,
             136
@@ -1837,14 +1840,13 @@
           "takes": 1,
           "version": 1,
           "mirrored": true,
+          "generated_at": "2026-09-12T23:52:50+00:00",
           "action": "Death - Faints, sinks to its knees and falls forward onto the ground, then fades away",
-          "intensity": 0,
+          "tries": 1,
           "rolls": 1,
+          "intensity": 0,
           "frames": 7,
           "rung": 0,
-          "unwrapped": null,
-          "tries": 1,
-          "generated_at": "2026-09-12T23:52:50+00:00",
           "source": "east"
         },
         "north-west": {
@@ -1862,6 +1864,7 @@
           "reach": null,
           "turn": null,
           "end_area": 0.738,
+          "end_iou": 0.295,
           "canvas": [
             138,
             138
@@ -1874,14 +1877,13 @@
           "takes": 1,
           "version": 1,
           "mirrored": true,
+          "generated_at": "2026-09-12T23:52:51+00:00",
           "action": "Death - Faints, sinks to its knees and falls forward onto the ground, then fades away",
-          "intensity": 0,
+          "tries": 1,
           "rolls": 1,
+          "intensity": 0,
           "frames": 7,
           "rung": 0,
-          "unwrapped": null,
-          "tries": 1,
-          "generated_at": "2026-09-12T23:52:51+00:00",
           "source": "north-east"
         }
       },

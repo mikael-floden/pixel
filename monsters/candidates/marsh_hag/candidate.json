@@ -1554,6 +1554,7 @@
           "reach": null,
           "turn": null,
           "end_area": 0.629,
+          "end_iou": 0.283,
           "canvas": [
             126,
             126
@@ -1566,14 +1567,13 @@
           "takes": 1,
           "version": 1,
           "mirrored": false,
+          "generated_at": "2026-09-12T23:21:44+00:00",
           "action": "Death - Drops the staff, faints and falls to the ground, then fades away",
-          "intensity": 0,
-          "rolls": 1,
-          "frames": 7,
-          "rung": 0,
-          "unwrapped": null,
           "tries": 1,
-          "generated_at": "2026-09-12T23:21:44+00:00"
+          "rolls": 1,
+          "intensity": 0,
+          "frames": 7,
+          "rung": 0
         },
         "south-east": {
           "status": "pass",
@@ -1590,6 +1590,7 @@
           "reach": null,
           "turn": null,
           "end_area": 0.661,
+          "end_iou": 0.214,
           "canvas": [
             114,
             114
@@ -1602,14 +1603,13 @@
           "takes": 1,
           "version": 1,
           "mirrored": false,
+          "generated_at": "2026-09-12T23:21:44+00:00",
           "action": "Death - Drops the staff, faints and falls to the ground, then fades away",
-          "intensity": 0,
-          "rolls": 1,
-          "frames": 7,
-          "rung": 0,
-          "unwrapped": null,
           "tries": 1,
-          "generated_at": "2026-09-12T23:21:44+00:00"
+          "rolls": 1,
+          "intensity": 0,
+          "frames": 7,
+          "rung": 0
         },
         "east": {
           "status": "warn",
@@ -1626,6 +1626,7 @@
           "reach": null,
           "turn": null,
           "end_area": 0.755,
+          "end_iou": 0.061,
           "canvas": [
             116,
             116
@@ -1639,14 +1640,13 @@
           "takes": 1,
           "version": 1,
           "mirrored": false,
+          "generated_at": "2026-09-12T23:21:45+00:00",
           "action": "Death - Drops the staff, faints and falls to the ground, then fades away",
-          "intensity": 0,
-          "rolls": 1,
-          "frames": 7,
-          "rung": 0,
-          "unwrapped": null,
           "tries": 1,
-          "generated_at": "2026-09-12T23:21:45+00:00"
+          "rolls": 1,
+          "intensity": 0,
+          "frames": 7,
+          "rung": 0
         },
         "north-east": {
           "status": "pass",
@@ -1663,6 +1663,7 @@
           "reach": null,
           "turn": null,
           "end_area": 0.696,
+          "end_iou": 0.205,
           "canvas": [
             112,
             112
@@ -1673,14 +1674,13 @@
           "takes": 1,
           "version": 1,
           "mirrored": false,
+          "generated_at": "2026-09-12T23:21:46+00:00",
           "action": "Death - Drops the staff, faints and falls to the ground, then fades away",
-          "intensity": 0,
-          "rolls": 1,
-          "frames": 7,
-          "rung": 0,
-          "unwrapped": null,
           "tries": 1,
-          "generated_at": "2026-09-12T23:21:46+00:00"
+          "rolls": 1,
+          "intensity": 0,
+          "frames": 7,
+          "rung": 0
         },
         "north": {
           "status": "warn",
@@ -1697,6 +1697,7 @@
           "reach": null,
           "turn": null,
           "end_area": 0.517,
+          "end_iou": 0.149,
           "canvas": [
             120,
             120
@@ -1710,14 +1711,13 @@
           "takes": 1,
           "version": 1,
           "mirrored": false,
+          "generated_at": "2026-09-12T23:21:46+00:00",
           "action": "Death - Drops the staff, faints and falls to the ground, then fades away",
-          "intensity": 0,
-          "rolls": 1,
-          "frames": 7,
-          "rung": 0,
-          "unwrapped": null,
           "tries": 1,
-          "generated_at": "2026-09-12T23:21:46+00:00"
+          "rolls": 1,
+          "intensity": 0,
+          "frames": 7,
+          "rung": 0
         },
         "south-west": {
           "status": "pass",
@@ -1734,6 +1734,7 @@
           "reach": null,
           "turn": null,
           "end_area": 0.661,
+          "end_iou": 0.214,
           "canvas": [
             114,
             114
@@ -1746,14 +1747,13 @@
           "takes": 1,
           "version": 1,
           "mirrored": true,
+          "generated_at": "2026-09-12T23:21:44+00:00",
           "action": "Death - Drops the staff, faints and falls to the ground, then fades away",
-          "intensity": 0,
+          "tries": 1,
           "rolls": 1,
+          "intensity": 0,
           "frames": 7,
           "rung": 0,
-          "unwrapped": null,
-          "tries": 1,
-          "generated_at": "2026-09-12T23:21:44+00:00",
           "source": "south-east"
         },
         "west": {
@@ -1771,6 +1771,7 @@
           "reach": null,
           "turn": null,
           "end_area": 0.755,
+          "end_iou": 0.061,
           "canvas": [
             116,
             116
@@ -1784,14 +1785,13 @@
           "takes": 1,
           "version": 1,
           "mirrored": true,
+          "generated_at": "2026-09-12T23:21:45+00:00",
           "action": "Death - Drops the staff, faints and falls to the ground, then fades away",
-          "intensity": 0,
+          "tries": 1,
           "rolls": 1,
+          "intensity": 0,
           "frames": 7,
           "rung": 0,
-          "unwrapped": null,
-          "tries": 1,
-          "generated_at": "2026-09-12T23:21:45+00:00",
           "source": "east"
         },
         "north-west": {
@@ -1809,6 +1809,7 @@
           "reach": null,
           "turn": null,
           "end_area": 0.696,
+          "end_iou": 0.205,
           "canvas": [
             112,
             112
@@ -1819,14 +1820,13 @@
           "takes": 1,
           "version": 1,
           "mirrored": true,
+          "generated_at": "2026-09-12T23:21:46+00:00",
           "action": "Death - Drops the staff, faints and falls to the ground, then fades away",
-          "intensity": 0,
+          "tries": 1,
           "rolls": 1,
+          "intensity": 0,
           "frames": 7,
           "rung": 0,
-          "unwrapped": null,
-          "tries": 1,
-          "generated_at": "2026-09-12T23:21:46+00:00",
           "source": "north-east"
         }
       },

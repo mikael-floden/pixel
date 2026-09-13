@@ -1568,6 +1568,7 @@
           "reach": null,
           "turn": null,
           "end_area": 0.679,
+          "end_iou": 0.399,
           "canvas": [
             102,
             102
@@ -1580,14 +1581,13 @@
           "takes": 1,
           "version": 1,
           "mirrored": false,
+          "generated_at": "2026-09-12T23:20:12+00:00",
           "action": "Death - Loses its shape and collapses into a puddle of water on the ground, then evaporates and fades away",
-          "intensity": 0,
-          "rolls": 1,
-          "frames": 7,
-          "rung": 0,
-          "unwrapped": null,
           "tries": 1,
-          "generated_at": "2026-09-12T23:20:12+00:00"
+          "rolls": 1,
+          "intensity": 0,
+          "frames": 7,
+          "rung": 0
         },
         "south-east": {
           "status": "pass",
@@ -1604,6 +1604,7 @@
           "reach": null,
           "turn": null,
           "end_area": 0.611,
+          "end_iou": 0.128,
           "canvas": [
             98,
             98
@@ -1616,14 +1617,13 @@
           "takes": 1,
           "version": 1,
           "mirrored": false,
+          "generated_at": "2026-09-12T23:20:12+00:00",
           "action": "Death - Loses its shape and collapses into a puddle of water on the ground, then evaporates and fades away",
-          "intensity": 0,
-          "rolls": 1,
-          "frames": 7,
-          "rung": 0,
-          "unwrapped": null,
           "tries": 1,
-          "generated_at": "2026-09-12T23:20:12+00:00"
+          "rolls": 1,
+          "intensity": 0,
+          "frames": 7,
+          "rung": 0
         },
         "east": {
           "status": "warn",
@@ -1640,6 +1640,7 @@
           "reach": null,
           "turn": null,
           "end_area": 0.815,
+          "end_iou": 0.066,
           "canvas": [
             96,
             96
@@ -1652,14 +1653,13 @@
           "takes": 1,
           "version": 1,
           "mirrored": false,
+          "generated_at": "2026-09-12T23:20:13+00:00",
           "action": "Death - Loses its shape and collapses into a puddle of water on the ground, then evaporates and fades away",
-          "intensity": 0,
-          "rolls": 1,
-          "frames": 7,
-          "rung": 0,
-          "unwrapped": null,
           "tries": 1,
-          "generated_at": "2026-09-12T23:20:13+00:00"
+          "rolls": 1,
+          "intensity": 0,
+          "frames": 7,
+          "rung": 0
         },
         "north-east": {
           "status": "pass",
@@ -1676,6 +1676,7 @@
           "reach": null,
           "turn": null,
           "end_area": 1.066,
+          "end_iou": 0.163,
           "canvas": [
             104,
             104
@@ -1688,14 +1689,13 @@
           "takes": 1,
           "version": 1,
           "mirrored": false,
+          "generated_at": "2026-09-12T23:20:13+00:00",
           "action": "Death - Loses its shape and collapses into a puddle of water on the ground, then evaporates and fades away",
-          "intensity": 0,
-          "rolls": 1,
-          "frames": 7,
-          "rung": 0,
-          "unwrapped": null,
           "tries": 1,
-          "generated_at": "2026-09-12T23:20:13+00:00"
+          "rolls": 1,
+          "intensity": 0,
+          "frames": 7,
+          "rung": 0
         },
         "north": {
           "status": "pass",
@@ -1712,6 +1712,7 @@
           "reach": null,
           "turn": null,
           "end_area": 0.995,
+          "end_iou": 0.183,
           "canvas": [
             100,
             100
@@ -1724,14 +1725,13 @@
           "takes": 1,
           "version": 1,
           "mirrored": false,
+          "generated_at": "2026-09-12T23:20:14+00:00",
           "action": "Death - Loses its shape and collapses into a puddle of water on the ground, then evaporates and fades away",
-          "intensity": 0,
-          "rolls": 1,
-          "frames": 7,
-          "rung": 0,
-          "unwrapped": null,
           "tries": 1,
-          "generated_at": "2026-09-12T23:20:14+00:00"
+          "rolls": 1,
+          "intensity": 0,
+          "frames": 7,
+          "rung": 0
         },
         "south-west": {
           "status": "pass",
@@ -1748,6 +1748,7 @@
           "reach": null,
           "turn": null,
           "end_area": 0.611,
+          "end_iou": 0.128,
           "canvas": [
             98,
             98
@@ -1760,14 +1761,13 @@
           "takes": 1,
           "version": 1,
           "mirrored": true,
+          "generated_at": "2026-09-12T23:20:12+00:00",
           "action": "Death - Loses its shape and collapses into a puddle of water on the ground, then evaporates and fades away",
-          "intensity": 0,
+          "tries": 1,
           "rolls": 1,
+          "intensity": 0,
           "frames": 7,
           "rung": 0,
-          "unwrapped": null,
-          "tries": 1,
-          "generated_at": "2026-09-12T23:20:12+00:00",
           "source": "south-east"
         },
         "west": {
@@ -1785,6 +1785,7 @@
           "reach": null,
           "turn": null,
           "end_area": 0.815,
+          "end_iou": 0.066,
           "canvas": [
             96,
             96
@@ -1797,14 +1798,13 @@
           "takes": 1,
           "version": 1,
           "mirrored": true,
+          "generated_at": "2026-09-12T23:20:13+00:00",
           "action": "Death - Loses its shape and collapses into a puddle of water on the ground, then evaporates and fades away",
-          "intensity": 0,
+          "tries": 1,
           "rolls": 1,
+          "intensity": 0,
           "frames": 7,
           "rung": 0,
-          "unwrapped": null,
-          "tries": 1,
-          "generated_at": "2026-09-12T23:20:13+00:00",
           "source": "east"
         },
         "north-west": {
@@ -1822,6 +1822,7 @@
           "reach": null,
           "turn": null,
           "end_area": 1.066,
+          "end_iou": 0.163,
           "canvas": [
             104,
             104
@@ -1834,14 +1835,13 @@
           "takes": 1,
           "version": 1,
           "mirrored": true,
+          "generated_at": "2026-09-12T23:20:13+00:00",
           "action": "Death - Loses its shape and collapses into a puddle of water on the ground, then evaporates and fades away",
-          "intensity": 0,
+          "tries": 1,
           "rolls": 1,
+          "intensity": 0,
           "frames": 7,
           "rung": 0,
-          "unwrapped": null,
-          "tries": 1,
-          "generated_at": "2026-09-12T23:20:13+00:00",
           "source": "north-east"
         }
       },

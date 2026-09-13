@@ -1567,6 +1567,7 @@
           "reach": null,
           "turn": null,
           "end_area": 0.534,
+          "end_iou": 0.255,
           "canvas": [
             128,
             128
@@ -1577,14 +1578,13 @@
           "takes": 1,
           "version": 1,
           "mirrored": false,
+          "generated_at": "2026-09-12T23:47:55+00:00",
           "action": "Death - Drops the axe, faints and falls over backwards onto the ground, then fades away",
-          "intensity": 0,
-          "rolls": 1,
-          "frames": 7,
-          "rung": 0,
-          "unwrapped": null,
           "tries": 1,
-          "generated_at": "2026-09-12T23:47:55+00:00"
+          "rolls": 1,
+          "intensity": 0,
+          "frames": 7,
+          "rung": 0
         },
         "south-east": {
           "status": "pass",
@@ -1601,6 +1601,7 @@
           "reach": null,
           "turn": null,
           "end_area": 0.592,
+          "end_iou": 0.153,
           "canvas": [
             132,
             132
@@ -1613,14 +1614,13 @@
           "takes": 1,
           "version": 1,
           "mirrored": false,
+          "generated_at": "2026-09-12T23:47:56+00:00",
           "action": "Death - Drops the axe, faints and falls over backwards onto the ground, then fades away",
-          "intensity": 0,
-          "rolls": 1,
-          "frames": 7,
-          "rung": 0,
-          "unwrapped": null,
           "tries": 1,
-          "generated_at": "2026-09-12T23:47:56+00:00"
+          "rolls": 1,
+          "intensity": 0,
+          "frames": 7,
+          "rung": 0
         },
         "east": {
           "status": "pass",
@@ -1637,6 +1637,7 @@
           "reach": null,
           "turn": null,
           "end_area": 0.841,
+          "end_iou": 0.153,
           "canvas": [
             128,
             128
@@ -1647,14 +1648,13 @@
           "takes": 1,
           "version": 1,
           "mirrored": false,
+          "generated_at": "2026-09-12T23:47:56+00:00",
           "action": "Death - Drops the axe, faints and falls over backwards onto the ground, then fades away",
-          "intensity": 0,
-          "rolls": 1,
-          "frames": 7,
-          "rung": 0,
-          "unwrapped": null,
           "tries": 1,
-          "generated_at": "2026-09-12T23:47:56+00:00"
+          "rolls": 1,
+          "intensity": 0,
+          "frames": 7,
+          "rung": 0
         },
         "north-east": {
           "status": "pass",
@@ -1671,6 +1671,7 @@
           "reach": null,
           "turn": null,
           "end_area": 0.641,
+          "end_iou": 0.162,
           "canvas": [
             130,
             130
@@ -1683,14 +1684,13 @@
           "takes": 1,
           "version": 1,
           "mirrored": false,
+          "generated_at": "2026-09-12T23:47:57+00:00",
           "action": "Death - Drops the axe, faints and falls over backwards onto the ground, then fades away",
-          "intensity": 0,
-          "rolls": 1,
-          "frames": 7,
-          "rung": 0,
-          "unwrapped": null,
           "tries": 1,
-          "generated_at": "2026-09-12T23:47:57+00:00"
+          "rolls": 1,
+          "intensity": 0,
+          "frames": 7,
+          "rung": 0
         },
         "north": {
           "status": "pass",
@@ -1707,6 +1707,7 @@
           "reach": null,
           "turn": null,
           "end_area": 0.547,
+          "end_iou": 0.161,
           "canvas": [
             132,
             132
@@ -1719,14 +1720,13 @@
           "takes": 1,
           "version": 1,
           "mirrored": false,
+          "generated_at": "2026-09-12T23:47:57+00:00",
           "action": "Death - Drops the axe, faints and falls over backwards onto the ground, then fades away",
-          "intensity": 0,
-          "rolls": 1,
-          "frames": 7,
-          "rung": 0,
-          "unwrapped": null,
           "tries": 1,
-          "generated_at": "2026-09-12T23:47:57+00:00"
+          "rolls": 1,
+          "intensity": 0,
+          "frames": 7,
+          "rung": 0
         },
         "south-west": {
           "status": "pass",
@@ -1743,6 +1743,7 @@
           "reach": null,
           "turn": null,
           "end_area": 0.592,
+          "end_iou": 0.153,
           "canvas": [
             132,
             132
@@ -1755,14 +1756,13 @@
           "takes": 1,
           "version": 1,
           "mirrored": true,
+          "generated_at": "2026-09-12T23:47:56+00:00",
           "action": "Death - Drops the axe, faints and falls over backwards onto the ground, then fades away",
-          "intensity": 0,
+          "tries": 1,
           "rolls": 1,
+          "intensity": 0,
           "frames": 7,
           "rung": 0,
-          "unwrapped": null,
-          "tries": 1,
-          "generated_at": "2026-09-12T23:47:56+00:00",
           "source": "south-east"
         },
         "west": {
@@ -1780,6 +1780,7 @@
           "reach": null,
           "turn": null,
           "end_area": 0.841,
+          "end_iou": 0.153,
           "canvas": [
             128,
             128
@@ -1790,14 +1791,13 @@
           "takes": 1,
           "version": 1,
           "mirrored": true,
+          "generated_at": "2026-09-12T23:47:56+00:00",
           "action": "Death - Drops the axe, faints and falls over backwards onto the ground, then fades away",
-          "intensity": 0,
+          "tries": 1,
           "rolls": 1,
+          "intensity": 0,
           "frames": 7,
           "rung": 0,
-          "unwrapped": null,
-          "tries": 1,
-          "generated_at": "2026-09-12T23:47:56+00:00",
           "source": "east"
         },
         "north-west": {
@@ -1815,6 +1815,7 @@
           "reach": null,
           "turn": null,
           "end_area": 0.641,
+          "end_iou": 0.162,
           "canvas": [
             130,
             130
@@ -1827,14 +1828,13 @@
           "takes": 1,
           "version": 1,
           "mirrored": true,
+          "generated_at": "2026-09-12T23:47:57+00:00",
           "action": "Death - Drops the axe, faints and falls over backwards onto the ground, then fades away",
-          "intensity": 0,
+          "tries": 1,
           "rolls": 1,
+          "intensity": 0,
           "frames": 7,
           "rung": 0,
-          "unwrapped": null,
-          "tries": 1,
-          "generated_at": "2026-09-12T23:47:57+00:00",
           "source": "north-east"
         }
       },

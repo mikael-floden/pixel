@@ -1625,40 +1625,41 @@
       "directions": {
         "south": {
           "status": "warn",
-          "step_mean": 0.0845,
-          "step_max": 0.1643,
-          "drift": 23.48,
-          "loop": 0.3868,
-          "loop_ratio": 4.57,
-          "travel": 1.13,
+          "step_mean": 0.1444,
+          "step_max": 0.2082,
+          "drift": 36.85,
+          "loop": 0.5775,
+          "loop_ratio": 4.0,
+          "travel": 1.95,
           "pin": 1.0,
           "pad": 0,
           "flash": 0.0,
           "peak": null,
           "reach": null,
           "turn": null,
-          "end_area": 0.9,
+          "end_area": 0.817,
+          "end_iou": 0.518,
           "canvas": [
             232,
             232
           ],
           "reasons": [
-            "motion 0.085 outside the calm band 0.1–0.9 — eyeball it",
-            "barely falls: last vs first 0.39 — eyeball it"
+            "ends near the base (0.52) — eyeball it"
           ],
-          "sub": "ab5f9f2c-16b4-43a7-863c-033bc4ddfd2b",
-          "group": "a5157af9-c81f-4061-9231-ae823d8bf86a",
+          "sub": "85b9bfd6-527f-49dc-a24c-b7db2a76aba3",
+          "group": "bf0f9fa8-3818-4a52-bc8c-a4909d8aee7a",
           "takes": 1,
-          "version": 1,
+          "version": 2,
           "mirrored": false,
-          "action": "Death - Drops the club, sinks to its knees and falls flat on its face, then fades away",
+          "mode": "v3",
+          "action": "Death - Drops the club, sinks to its knees and falls flat on its face, then fades away, a heavy dramatic collapse, the whole body going down onto the ground",
           "intensity": 0,
-          "rolls": 1,
+          "rolls": 2,
           "frames": 7,
-          "rung": 0,
+          "rung": 1,
           "unwrapped": null,
-          "tries": 1,
-          "generated_at": "2026-09-12T23:14:32+00:00"
+          "tries": 2,
+          "generated_at": "2026-09-13T03:12:59+00:00"
         },
         "south-east": {
           "status": "pass",
@@ -1675,6 +1676,7 @@
           "reach": null,
           "turn": null,
           "end_area": 0.66,
+          "end_iou": 0.307,
           "canvas": [
             232,
             232
@@ -1685,14 +1687,13 @@
           "takes": 1,
           "version": 1,
           "mirrored": false,
+          "generated_at": "2026-09-12T23:14:33+00:00",
           "action": "Death - Drops the club, sinks to its knees and falls flat on its face, then fades away",
-          "intensity": 0,
-          "rolls": 1,
-          "frames": 7,
-          "rung": 0,
-          "unwrapped": null,
           "tries": 1,
-          "generated_at": "2026-09-12T23:14:33+00:00"
+          "rolls": 1,
+          "intensity": 0,
+          "frames": 7,
+          "rung": 0
         },
         "east": {
           "status": "pass",
@@ -1709,6 +1710,7 @@
           "reach": null,
           "turn": null,
           "end_area": 0.862,
+          "end_iou": 0.222,
           "canvas": [
             232,
             232
@@ -1719,14 +1721,13 @@
           "takes": 1,
           "version": 1,
           "mirrored": false,
+          "generated_at": "2026-09-12T23:14:34+00:00",
           "action": "Death - Drops the club, sinks to its knees and falls flat on its face, then fades away",
-          "intensity": 0,
-          "rolls": 1,
-          "frames": 7,
-          "rung": 0,
-          "unwrapped": null,
           "tries": 1,
-          "generated_at": "2026-09-12T23:14:34+00:00"
+          "rolls": 1,
+          "intensity": 0,
+          "frames": 7,
+          "rung": 0
         },
         "north-east": {
           "status": "pass",
@@ -1743,6 +1744,7 @@
           "reach": null,
           "turn": null,
           "end_area": 0.723,
+          "end_iou": 0.282,
           "canvas": [
             232,
             232
@@ -1753,14 +1755,13 @@
           "takes": 1,
           "version": 1,
           "mirrored": false,
+          "generated_at": "2026-09-12T23:14:35+00:00",
           "action": "Death - Drops the club, sinks to its knees and falls flat on its face, then fades away",
-          "intensity": 0,
-          "rolls": 1,
-          "frames": 7,
-          "rung": 0,
-          "unwrapped": null,
           "tries": 1,
-          "generated_at": "2026-09-12T23:14:35+00:00"
+          "rolls": 1,
+          "intensity": 0,
+          "frames": 7,
+          "rung": 0
         },
         "north": {
           "status": "pass",
@@ -1777,6 +1778,7 @@
           "reach": null,
           "turn": null,
           "end_area": 0.753,
+          "end_iou": 0.378,
           "canvas": [
             232,
             232
@@ -1787,14 +1789,13 @@
           "takes": 1,
           "version": 1,
           "mirrored": false,
+          "generated_at": "2026-09-12T23:14:35+00:00",
           "action": "Death - Drops the club, sinks to its knees and falls flat on its face, then fades away",
-          "intensity": 0,
-          "rolls": 1,
-          "frames": 7,
-          "rung": 0,
-          "unwrapped": null,
           "tries": 1,
-          "generated_at": "2026-09-12T23:14:35+00:00"
+          "rolls": 1,
+          "intensity": 0,
+          "frames": 7,
+          "rung": 0
         },
         "south-west": {
           "status": "pass",
@@ -1811,6 +1812,7 @@
           "reach": null,
           "turn": null,
           "end_area": 0.66,
+          "end_iou": 0.307,
           "canvas": [
             232,
             232
@@ -1821,14 +1823,13 @@
           "takes": 1,
           "version": 1,
           "mirrored": true,
+          "generated_at": "2026-09-12T23:14:33+00:00",
           "action": "Death - Drops the club, sinks to its knees and falls flat on its face, then fades away",
-          "intensity": 0,
+          "tries": 1,
           "rolls": 1,
+          "intensity": 0,
           "frames": 7,
           "rung": 0,
-          "unwrapped": null,
-          "tries": 1,
-          "generated_at": "2026-09-12T23:14:33+00:00",
           "source": "south-east"
         },
         "west": {
@@ -1846,6 +1847,7 @@
           "reach": null,
           "turn": null,
           "end_area": 0.862,
+          "end_iou": 0.222,
           "canvas": [
             232,
             232
@@ -1856,14 +1858,13 @@
           "takes": 1,
           "version": 1,
           "mirrored": true,
+          "generated_at": "2026-09-12T23:14:34+00:00",
           "action": "Death - Drops the club, sinks to its knees and falls flat on its face, then fades away",
-          "intensity": 0,
+          "tries": 1,
           "rolls": 1,
+          "intensity": 0,
           "frames": 7,
           "rung": 0,
-          "unwrapped": null,
-          "tries": 1,
-          "generated_at": "2026-09-12T23:14:34+00:00",
           "source": "east"
         },
         "north-west": {
@@ -1881,6 +1882,7 @@
           "reach": null,
           "turn": null,
           "end_area": 0.723,
+          "end_iou": 0.282,
           "canvas": [
             232,
             232
@@ -1891,14 +1893,13 @@
           "takes": 1,
           "version": 1,
           "mirrored": true,
+          "generated_at": "2026-09-12T23:14:35+00:00",
           "action": "Death - Drops the club, sinks to its knees and falls flat on its face, then fades away",
-          "intensity": 0,
+          "tries": 1,
           "rolls": 1,
+          "intensity": 0,
           "frames": 7,
           "rung": 0,
-          "unwrapped": null,
-          "tries": 1,
-          "generated_at": "2026-09-12T23:14:35+00:00",
           "source": "north-east"
         }
       },
