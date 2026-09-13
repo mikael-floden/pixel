@@ -1,8 +1,8 @@
 {
   "domain": "characters2-assistant",
-  "updated_at": "2026-09-13T04:51:38+00:00",
-  "health": "idle",
-  "current": "idle — HD hero candidates rounds 1-3 shipped on branch claude/character-detail-animation-fcq5oi (characters2/pipeline/states.py, characters2/pipeline/pixellab_client.py, characters2/README.md, characters2/humans/_hd_candidates/**). No file in flight. Waiting on the maintainer's pick.",
+  "updated_at": "2026-09-13T04:59:33+00:00",
+  "health": "running",
+  "current": "HD hero candidates, round 4 (maintainer 2026-09-13: 25 new girls on a new prompt, 'Similar looking, but high detail version, new face and hair, don't change her cloth. Bikini only. Draw new version.', a brand new review page) — girl slots HD 36-60 redraw — files: characters2/pipeline/states.py, characters2/humans/_hd_candidates/**, characters2/README.md (the slots bullet), coordination/characters2-assistant.json. PixelLab: 25 more create-character-state calls on the pinned girl; nothing else touched.",
   "progress": {
     "units_shipped": 4,
     "hd_candidates": 55,

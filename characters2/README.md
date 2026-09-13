@@ -335,12 +335,14 @@ characters are never touched; nothing here carries the NPC tag.
   design (barefoot, bare hands, plain cloth in brown/black/grey/white, no
   blue; the boy in plain dark briefs, no gear) because a state edit invents
   freely otherwise, and the snap forbids colour drift at the cost of tones.
-  `HD 11 yours` onward: **the maintainer's own prompt, verbatim**, free
-  palette, one seed each — the girl `HD 11`–`HD 35`, the boy `HD 11`–`HD 20`
-  (2026-09-13: "my version looks best. Generate 10 more with my prompt", then
-  "15 more girls. Same prompt" — girl: "High detail version, new face and
-  hair, don't change her cloth. Bikini only."; boy: "High detail version,
-  don't change his cloth. Speedos only."). His wording is the lock there.
+  From `HD 11` on: **the maintainer's own prompts, verbatim**
+  (`states.py:YOURS_SERIES`), free palette, one seed each. `yours` — girl
+  `HD 11`–`HD 35`, boy `HD 11`–`HD 20` ("High detail version, new face and
+  hair, don't change her cloth. Bikini only." / "High detail version, don't
+  change his cloth. Speedos only."). `redraw` — girl `HD 36`–`HD 60`
+  ("Similar looking, but high detail version, new face and hair, don't change
+  her cloth. Bikini only. Draw new version."), on its own review page. His
+  wording is the lock there; a new series numbers on, never renames a slot.
 - **Resumable, never doubled**: the existing set is read from PixelLab (the
   group siblings named `HD …`) and from disk, never memory; seeds derive from
   (hero, slot). It runs on the USD credits (the generation pool reads 0.0) and

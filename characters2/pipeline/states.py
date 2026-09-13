@@ -147,13 +147,23 @@ BRIEF_ORDER = ("refined", "face", "figure", "hair", "shading")
 # 'High detail version' and my version looks best. Generate 10 more with my
 # prompt"), free palette like his own take, ten seeds. His wording is the design
 # lock there, not the briefs above; the ten are a seed spread of it.
-YOURS = {
-    "default_girl": "High detail version, new face and hair, don't change her cloth. Bikini only.",
-    "default_boy": "High detail version, don't change his cloth. Speedos only.",
-}
-# 2026-09-13 (later): "15 more girls. Same prompt" — the girl carries 25 of
-# these slots (HD 11-35), the boy 10 (HD 11-20).
-YOURS_COUNT = {"default_girl": 25, "default_boy": 10}
+# Each series: its brief key (the state name is "HD <slot> <key>"), his prompt
+# per hero, and how many slots per hero. Slots number on from the briefs above
+# in series order, so a new series never renames an old slot.
+#   yours  — "High detail version, …" (2026-09-13, 10 per hero; then "15 more
+#            girls. Same prompt" → the girl 25, HD 11-35; the boy HD 11-20)
+#   redraw — "Similar looking, but high detail version … Draw new version."
+#            (2026-09-13 later, 25 girls, HD 36-60, its own review page)
+YOURS_SERIES = (
+    ("yours", {
+        "default_girl": "High detail version, new face and hair, don't change her cloth. Bikini only.",
+        "default_boy": "High detail version, don't change his cloth. Speedos only.",
+    }, {"default_girl": 25, "default_boy": 10}),
+    ("redraw", {
+        "default_girl": "Similar looking, but high detail version, new face and hair, don't change her cloth. "
+                        "Bikini only. Draw new version.",
+    }, {"default_girl": 25, "default_boy": 0}),
+)
 
 
 def _slot(hero, n, brief, snap, edit):
@@ -166,17 +176,18 @@ def _slot(hero, n, brief, snap, edit):
 def slots(hero):
     """The (slot, brief, palette_snap, state_name, seed) rows of one hero:
     01-10 the five briefs, odd free and even snapped to the hero's palette;
-    11-N the maintainer's prompt (`yours`), free, one seed each (N = 10 +
-    YOURS_COUNT[hero]: the girl 35, the boy 20)."""
+    then the maintainer's own prompts (YOURS_SERIES), free, one seed each —
+    the girl `yours` 11-35 and `redraw` 36-60, the boy `yours` 11-20."""
     out = []
     n = 0
     for brief in BRIEF_ORDER:
         for snap in (False, True):
             n += 1
             out.append(_slot(hero, n, brief, snap, BRIEFS[hero][brief]))
-    for _ in range(YOURS_COUNT[hero]):
-        n += 1
-        out.append(_slot(hero, n, "yours", False, YOURS[hero]))
+    for key, prompts, counts in YOURS_SERIES:
+        for _ in range(counts.get(hero, 0)):
+            n += 1
+            out.append(_slot(hero, n, key, False, prompts[hero]))
     return out
 
 
