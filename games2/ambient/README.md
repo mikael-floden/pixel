@@ -653,7 +653,13 @@ context was destroyed, most likely because of a navigation` — which reads like
 a harness bug and is not one. Paid twice on one afternoon (a constant in
 `flue.ts`, then a probe in `WorldScene.ts`), and these runs are 15-25 minutes
 each. Docs and `scripts/*.mjs` are outside the graph and safe; anything under
-`ambient/` or `client/src/` is not. Related and separate: a LONG-LIVED dev
+`ambient/` or `client/src/` is not — **and a GIT OPERATION THAT REWRITES THE
+TREE IS AN EDIT.** `git stash`, `git rebase`, `git checkout` and `git pull` all
+rewrite files another agent has pushed, vite reloads the page, and the run dies
+exactly as if you had typed in the file. Four runs went that way on one
+afternoon, two of them to the git half. The discipline that actually works:
+commit and push BEFORE starting a gate, then touch nothing but read-only
+commands until it reports. Related and separate: a LONG-LIVED dev
 server can serve a STALE transform to a fresh page, so a new module (a new
 feature folder, a new probe) may simply not be there — check
 `__mlAmbient.list()` for your effect before believing a zero, and restart the
