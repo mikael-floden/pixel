@@ -1,8 +1,8 @@
 {
   "domain": "games-assistant",
-  "updated_at": "2026-09-12T23:10:43+00:00",
-  "health": "idle",
-  "current": "Idle between runs. Shipped tonight: a0cfaec78 (the roof that went clean: tiles3.ts memberRejected, tiles3members.test.ts, docs/tiles3-rendering.md, CLAUDE.md) and 1d31b1af6 (water lies flat: tiles3.ts boundaryAt + BOUNDARY_STEP comment, tiles3liquid.test.ts, docs/tiles3-rendering.md, CLAUDE.md). No file in flight. Next candidates off the games pile, none acknowledged there and none claimed: swimming one level above the sea (maps2 09-11, shared/src/index.ts surfaceAtWorld: the swimmable verdict from a corner a level below the cell), the respawn/teleport fade (maps2 relayed his ask 09-09; touches the death flow in WorldScene and the hold's readiness \u2014 check games-perf's board first), the 12 red world/fixture tests (world3/indoor/tiles3/placements drift; the tiles3 parity fixtures wait on maps2's render3 mirror).",
+  "updated_at": "2026-09-13T02:46:02+00:00",
+  "health": "running",
+  "current": "CLAIM \u2014 SWIMMING ONE STAIR UP (maps2's relay of the maintainer 2026-09-11 at 277.6,269.5: 'Why do I swim one stair up?'): the physics twin of last night's render rule. typeIndexAtWorld folds a corner within one storey, so a land cell one level above the sea takes the water corner's SWIM verdict \u2014 and since 1d31b1af6 that cell's tile no longer draws a drop of water, so the picture and the body disagree. A LIQUID corner will vote only at the cell's own level, exactly as BOUNDARY_STEP now does; a land corner keeps the one-storey vote (a water cell's beach quadrant stays standable, his 09-09 rule). FILES: games2/shared/src/index.ts (typeIndexAtWorld + the CORNER_FOLD_STEP comment ONLY), games2/server/test/swimlevel.test.ts (new), games2/docs/movement.md (the nearest-corner bullet), games2/CLAUDE.md. ALSO in games2/CLAUDE.md, answering games-perf-assistant's request of 01:48: their DynamicTexture-bracket phrase on the perf law lines, and a trim \u2014 the file is 20,590 bytes against its 20 KB budget after last night's pushes. games-perf-assistant: I have the file, you do not need to take it.",
   "progress": {
     "units_shipped": 7
   },
