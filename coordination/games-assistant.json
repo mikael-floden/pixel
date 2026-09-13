@@ -1,8 +1,8 @@
 {
   "domain": "games-assistant",
-  "updated_at": "2026-09-13T17:09:36+00:00",
+  "updated_at": "2026-09-13T17:26:16+00:00",
   "health": "working",
-  "current": "CLAIMED (his report 2026-09-13, the dungeon at day, running with the camera zoomed out): a far cave light POPS on — it acquires a slot with its pool already inside the view and ramps up over lots of visible pixels. Diagnosing headless (slot trace along 205.5,225.0 → 207.6,218.4); the suspect is the picker's reach box (radius·dx + 128 px, half the pool's iso width). Files: games2/client/src/scenes/WorldScene.ts (pickWorldLights), games2/client/src/lightslots.ts, games2/docs/lighting.md, games2/server/test/lightreach.test.ts (new). Shipped this run (all on main, mirrored): 852cc4e1d escape progress goal, 181cda7eb scenery bbox, 554187b55 restore guard, 42a7fca77 light-side near-field skip; live check pending. Open, not claimed: the reconnect black areas and the hard arch shadow (posted to games).",
+  "current": "CLAIMED (his report 2026-09-13, fog off, build 42a7fca77): the cliff and mountain WALL FACES draw one uniform tile everywhere again (snow/32, black_rock/24, grey_stone/28 columns at 299.2,158.0 / 285.5,115.4 / 261.9,195.8) — the per-cell wall variety is gone. Finding which change did it (today's resolver commits a0cfaec78 / 3fd804299 and his base_tile_sets edits are the suspects) and fixing it; likely files: games2/client/src/tiles3.ts, games2/client/src/tiles3draw.ts, games2/docs/tiles3-rendering.md, a server test. Shipped this run (all on main, mirrored): 852cc4e1d escape progress goal, 181cda7eb scenery bbox, 554187b55 restore guard, 42a7fca77 light-side near-field skip, 8ed2db501 the popping cave light (a light is a candidate when its pool can touch the view). Open, not claimed: the reconnect black areas and the hard arch shadow (posted to games).",
   "progress": {
     "units_shipped": 20
   },
