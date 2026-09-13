@@ -556,10 +556,36 @@ The ground render texture (scroll, slices, cell repaints, prefetch, compose budg
   per frame (`t3paintSliceStep`). Identical pixels (the slices are disjoint
   rects through the same clipped pass the bands used). THE SLICE SIZE IS A
   GPU TRADE, not just a JS one: every `beginDraw`/`endDraw` bracket costs a
-  full capture-target clear AND a full-texture blit whatever it draws
-  (`DynamicTexture.beginDraw` → `RenderTarget.bind`, `endDraw` → `blitFrame`),
-  so more slices spread the JS but multiply whole-texture GPU passes; 384 px
-  gives 4-8 slices, which keeps the GPU within ~2x the unsliced scroll.
+  full capture-target clear (`DynamicTexture.beginDraw` → `RenderTarget.bind`;
+  it cannot be bounded — `adjustViewport` disables the scissor test right
+  before it — and a tiler's transaction elimination makes the repeat nearly
+  free) and a blit (`endDraw` → `blitFrame`). THE BLIT IS THE PAINTED RECT'S
+  SINCE 2026-09-13 (`groundEndDraw`): the drain's slices, the flush's union,
+  the cell repaint's clip on the scratch and its copy-back frame on the RT are
+  scissored; the full paint and the scroll stay whole. Before that it was a
+  full-texture blit whatever the bracket drew — 2.5 Mpx of fragments per
+  bracket, six brackets in one cell-repaint frame on his phone (~30 Mpx,
+  twenty screens), and his 03:53 run's `longWhy` put 66 of 69 long frames in
+  `wait`, the compositor waiting on that fill. Inside the rect the texels are
+  identical; outside it the scissor DROPS THE SPILL, and the spill was wrong:
+  a band pass draws an op crossing the band edge whole (the clip decides
+  whether, never what — the zigzag fix), and the whole blit then laid those
+  earlier cells' pixels over later cells' in a 13-45 px strip past every band
+  edge — measured 3.5-7.7k texels per latch that had been exact (the kept
+  picture equals a full paint texel for texel; the spilled strip did not).
+  The band's own difference from a full paint (2.6-10k texels inside it) is
+  the compositions it still owed (15-734 `boundary` owed at the moment of
+  judgement), which the landing repaint settles, and is the same either way.
+  `__ml.groundBracketParity(sx, sy)` scrolls the ground itself by a latch step
+  and compares all of it; gated by `scripts/verify-groundbracket.mjs`.
+  `groundDrew.blitMpx` counts the blitted texels a window (headless, a 288 px
+  latch: 0.43 Mpx against 2.12; nine cells: 0.47 against 4.24), `scissor`
+  says which way ran; Settings "ground blit" restores the whole blit for his
+  A/B. A drain that pays both bands of a diagonal latch in one frame unions
+  to most of the texture — the phone pays ~one slice a frame, so its blits
+  are one slice each. The stamp that opened its own whole-target bracket per
+  cell repaint batches into the scratch's bracket (`skipBatch`). 384 px still
+  gives 4-8 slices.
   A new scroll FLUSHES what is owed before copying the picture forward, a full
   paint drops it, and every probe that reads the texture back flushes first —
   so a slice can never paint into a swapped texture or a stale anchor.

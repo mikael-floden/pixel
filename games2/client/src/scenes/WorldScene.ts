@@ -953,6 +953,29 @@ function setCoverPasses(fast: boolean): void {
   }
 }
 
+/** THE GROUND BLIT'S SHAPE (groundEndDraw): on, a ground bracket's blit is
+ *  scissored to the rect it painted; off, Phaser's whole-target blit — the path
+ *  before 2026-09-13. Settings row "ground blit", remembered in
+ *  `ml-ground-scissor`; `?groundscissor=0` is the harness's spelling of off.
+ *  What scripts/verify-groundbracket.mjs compares. */
+function groundScissorOn(): boolean {
+  try {
+    const q = new URLSearchParams(location.search).get("groundscissor");
+    if (q === "0" || q === "1") localStorage.setItem("ml-ground-scissor", q);
+    return localStorage.getItem("ml-ground-scissor") !== "0";
+  } catch {
+    return true;
+  }
+}
+
+function setGroundScissor(on: boolean): void {
+  try {
+    localStorage.setItem("ml-ground-scissor", on ? "1" : "0");
+  } catch {
+    /* storage disabled — the setting simply does not persist */
+  }
+}
+
 /** A distinct scenery art file's measured crop: its alpha bbox and its SOURCE
  *  canvas — in source pixels whether the texture behind it is raw or packed. */
 type SceneryArtFit = { bbox: SceneryBBox | null; canvas: { w: number; h: number } };
@@ -2403,6 +2426,7 @@ export class WorldScene extends Phaser.Scene {
     this.perfLongMs = 0;
     this.perfLongTasks = [];
     this.hitchSpans = [];
+    this.groundBlitPx = 0;
     this.perfOccSum = 0;
     this.perfDlSum = 0;
     this.perfZoomSum = 0;
@@ -2693,6 +2717,8 @@ export class WorldScene extends Phaser.Scene {
       groundDrew: {
         cells: this.t3stats.cells,
         blits: this.t3stats.blits,
+        blitMpx: +(this.groundBlitPx / 1e6).toFixed(1), // texels blitted into the ground RTs this window — the bracket tax, in Mpx
+        scissor: groundScissorOn() ? 1 : 0, // the blit bounded to the painted rect (groundEndDraw), or whole
         /* FLUSHES IN THAT SAME PAINT. Read as `flushes / blits`: ~1 means every
          * blit is its own draw call and an atlas is the fix; ~0 means they batch
          * and the cost is fill or JS, and an atlas would buy nothing. This is
@@ -3668,6 +3694,11 @@ export class WorldScene extends Phaser.Scene {
   private groundDrainedThisFrame = false;
   private groundSliceQ: { x0: number; y0: number; x1: number; y1: number }[] = [];
   private groundSliceCtx: { ax: number; ay: number; mask: Map<number, number> | null; cuts: Map<number, number> | null; top: number } | null = null;
+  /** The rect the open ground bracket has painted (RT texels: the union of its
+   *  slices, or the cell clip) — groundEndDraw scissors the blit to it; null = whole. */
+  private groundBracketRect: { x0: number; y0: number; x1: number; y1: number } | null = null;
+  /** Texels blitted into the ground RTs this beacon window (`groundDrew.blitMpx`). */
+  private groundBlitPx = 0;
   private groundSliceStats = { runs: 0, slices: 0, ms: 0, flushes: 0, drains: 0 };
   /** The drain's per-frame budget in force. A dev A/B sets it to ~0 to get the
    *  OLD topology back — one rect per bracket per frame — so the merge can be
@@ -4757,6 +4788,20 @@ export class WorldScene extends Phaser.Scene {
           get: () => coverPassesFast(),
           state: () => (coverPassesFast() ? `3 (${this.coverStat.rows || COVER_ATLAS_H} rows)` : "7 (whole atlas)"),
         },
+        /* THE GROUND BLIT (groundEndDraw): a ground bracket's blit bounded to the
+         * rect it painted, or Phaser's whole-target blit before 2026-09-13 — the
+         * bisect for a report on the ground after a scroll or a cell repaint, in
+         * one tap. Next bracket. */
+        {
+          label: "ground blit",
+          act: () => {
+            const on = !groundScissorOn();
+            setGroundScissor(on);
+            this.chat.addLog("—", `ground blit: ${on ? "the painted rect only" : "WHOLE texture (the path before 2026-09-13)"}`);
+          },
+          get: () => groundScissorOn(),
+          state: () => (groundScissorOn() ? "painted rect" : "whole"),
+        },
         {
           label: "perf beacon",
           act: () => this.togglePerfBeacon(),
@@ -5647,6 +5692,150 @@ export class WorldScene extends Phaser.Scene {
           return { key, equal: diff === 0, diff, maxDelta };
         });
         return { slots: q.length, rows, atlases, equal: atlases.every((a) => a.equal) };
+      },
+      /** The ground RT painted both ways over a poisoned texture — the blit
+       *  scissored to the painted rect (the running path) and Phaser's
+       *  whole-target blit — read back whole and compared texel by texel: the
+       *  cells around the avatar through repaintTiles3Cells, and a scrolled
+       *  band through t3flushSlices. The probe scrolls the ground ITSELF by
+       *  (`sx`, `sy`) texels — the latch step redrawGround makes — so a band is
+       *  always owed (the drain pays a whole band in one headless frame, and
+       *  waiting to catch one queued caught 1 in 21). First the live contract,
+       *  `fullCmp`: the kept picture plus the band streamed the running way
+       *  against a full paint at the same anchor, whole texture, no compose
+       *  budget (what `groundHash` says of the live ground). Then over the
+       *  poison, `sliceCmp`: the band both ways, judged INSIDE its rect
+       *  (identical) and the scissored way OUTSIDE it (untouched: still the
+       *  poison) — an op crossing a band edge is drawn WHOLE by design
+       *  (t3drawOp), so the whole blit also repaints texels past the band; live
+       *  those are the kept picture, which fullCmp just proved, and dropping
+       *  them is the point. Also how many texels each way blitted. Leaves the
+       *  ground poisoned and its anchor moved until the next latch's full
+       *  paint. What scripts/verify-groundbracket.mjs gates. */
+      groundBracketParity: (sx = 288, sy = 0) => {
+        const rt0 = this.groundRT, a = this.groundAnchor, world = this.world, pp = this.perfPrevPos;
+        if (!rt0 || !a || !world || !this.maps3) return { error: "no ground texture yet" };
+        if (!this.groundScratch) return { error: "no scratch texture yet (no scroll has happened)" };
+        if (!pp) return { error: "no position (perf off?)" };
+        const gl = (this.game.renderer as { gl?: WebGLRenderingContext | WebGL2RenderingContext }).gl;
+        if (!gl) return { error: "no GL" };
+        const W = rt0.width, H = rt0.height;
+        // The LIVE texture each time: the scroll below swaps it for the scratch.
+        const read = () => {
+          const src = this.groundRT?.texture.source[0];
+          const tex = (src?.glTexture as { webGLTexture?: WebGLTexture } | null)?.webGLTexture;
+          return tex ? readTextureRect(gl, tex, 0, 0, W, H) : null;
+        };
+        type Rect = { x0: number; y0: number; x1: number; y1: number };
+        /* Texels differing between two readbacks, split by `r` (row = RT y,
+         * readTextureRect's order): `diff` inside, `diffOut` outside, and over
+         * a `poisoned` texture `poisonOut` = the FIRST readback's texels
+         * outside `r` that are no longer the poison (what a misplaced scissor
+         * would show). `equal` = inside identical and nothing unpoisoned. */
+        const compare = (p: Uint8ClampedArray | null, q: Uint8ClampedArray | null, r?: Rect, poisoned = false) => {
+          if (!p || !q || p.length !== q.length) return { equal: false, diff: -1, diffOut: -1, poisonOut: -1, maxDelta: -1, error: "readback failed" };
+          let diff = 0, diffOut = 0, poisonOut = 0, maxDelta = 0;
+          const box = { x0: W, y0: H, x1: 0, y1: 0 }; // of every differing texel, in or out
+          const n = p.length / 4;
+          for (let i = 0; i < n; i++) {
+            const o = i * 4;
+            const d = Math.max(Math.abs(p[o] - q[o]), Math.abs(p[o + 1] - q[o + 1]), Math.abs(p[o + 2] - q[o + 2]), Math.abs(p[o + 3] - q[o + 3]));
+            const x = i % W, y = (i - x) / W;
+            let inside = true;
+            if (r) {
+              inside = x >= r.x0 && x < r.x1 && y >= r.y0 && y < r.y1;
+              if (poisoned && !inside && (p[o] !== 255 || p[o + 1] !== 0 || p[o + 2] !== 255 || p[o + 3] !== 255)) poisonOut++;
+            }
+            if (!d) continue;
+            if (x < box.x0) box.x0 = x;
+            if (y < box.y0) box.y0 = y;
+            if (x >= box.x1) box.x1 = x + 1;
+            if (y >= box.y1) box.y1 = y + 1;
+            if (inside) { diff++; if (d > maxDelta) maxDelta = d; } else diffOut++;
+          }
+          return { equal: diff === 0 && poisonOut === 0, diff, diffOut, poisonOut, maxDelta, box };
+        };
+        const col = Math.floor(pp.x), row = Math.floor(pp.y);
+        const cells: number[] = [];
+        for (let r = row - 1; r <= row + 1; r++)
+          for (let c = col - 1; c <= col + 1; c++) if (c >= 0 && r >= 0 && c < world.width && r < world.height) cells.push(r * world.width + c);
+        const was = groundScissorOn();
+        const poison = () => this.groundRT?.fill(0xff00ff, 1);
+        const out: Record<string, unknown> = { cells: cells.length, w: W, h: H };
+        try {
+          const run = (scissor: boolean, paint: () => void) => {
+            setGroundScissor(scissor);
+            poison();
+            const p0 = this.groundBlitPx;
+            paint();
+            return { px: read(), blit: this.groundBlitPx - p0 };
+          };
+          // The latch step, as redrawGround makes it: from the anchor it holds, under the cut it holds.
+          const mask = this.indoorInside ? this.indoorMask : null;
+          const top = this.indoorTop;
+          const cuts = mask ? this.indoorCut : null;
+          const step = { x: Math.trunc(sx), y: Math.trunc(sy) };
+          if (a.mask !== mask || a.top !== top) out.sliceCmp = { error: "the indoor cut changed since the last paint: no scroll" };
+          else if ((!step.x && !step.y) || Math.abs(step.x) >= W || Math.abs(step.y) >= H) out.sliceCmp = { error: `no band for a step of ${step.x},${step.y}` };
+          else {
+            const ax = a.ax + step.x, ay = a.ay + step.y;
+            this.withoutComposeBudget(() => {
+              this.t3armRing(ax, ay, W, H);
+              this.scrollTiles3Ground(ax, ay, step.x, step.y, mask, cuts, top);
+              const q = this.groundSliceQ.splice(0, this.groundSliceQ.length), ctx = this.groundSliceCtx;
+              if (!q.length || !ctx) {
+                out.sliceCmp = { error: "the scroll owed no band" };
+                return;
+              }
+              const flush = () => {
+                this.groundSliceCtx = ctx;
+                this.groundSliceQ.push(...q.map((r) => ({ ...r })));
+                this.t3flushSlices();
+              };
+              const band = q.reduce((u, r) => ({ x0: Math.min(u.x0, r.x0), y0: Math.min(u.y0, r.y0), x1: Math.max(u.x1, r.x1), y1: Math.max(u.y1, r.y1) }), { ...q[0] });
+              const rt = this.groundRT!, kept = this.groundScratch!; // the scroll left the old picture in the scratch
+              const bg = this.groundFillRGB(mask);
+              // The kept picture as the scroll lays it (its own copy, repeated), then the band one way.
+              const stream = (scissor: boolean) => {
+                rt.clear();
+                this.fillGround(rt, bg);
+                rt.drawFrame(kept.texture.key, "__BASE", -step.x, -step.y);
+                setGroundScissor(scissor);
+                flush();
+                return read();
+              };
+              const scissored = stream(true), whole = stream(false);
+              rt.clear();
+              this.fillGround(rt, bg);
+              const win = this.t3groundWindow(ax, ay, 0, 0, W, H);
+              this.groundClip = null;
+              this.drawTiles3Ground(rt, ax, ay, win.u0, win.u1, win.v0, win.v1, mask, cuts, top);
+              const full = read();
+              /* The live contract of the scissor: over the REAL kept picture the
+               * two ways agree (`liveCmp`, split by the band). What each is
+               * worth against a full paint at this anchor (`fullCmp`,
+               * `fullWholeCmp`): the streaming contract, which predates the
+               * scissor — the spill the scissor drops is painted by cells the
+               * band pass skips, in an order the full paint does not share. */
+              out.liveCmp = { ...compare(scissored, whole, band), rect: band, step };
+              out.fullCmp = { ...compare(scissored, full, band), step };
+              out.fullWholeCmp = { ...compare(whole, full, band), step };
+              // What the band pass still owed when it was judged (a landing repaint settles these later).
+              out.owed = { drop: this.t3dropOwed.size, boundary: this.t3boundaryOwed.size, deck: this.t3deckOwed.size };
+              // The bracket's own contract, over the poison: the band both ways.
+              const ss = run(true, flush), sw = run(false, flush);
+              out.sliceCmp = { ...compare(ss.px, sw.px, band, true), rect: band, slices: q.length, step, blitPxScissor: ss.blit, blitPxWhole: sw.blit };
+            });
+          }
+          // The cells last: this poisons the picture the scroll above copied forward.
+          const cs = run(true, () => this.repaintTiles3Cells(cells));
+          const cw = run(false, () => this.repaintTiles3Cells(cells));
+          out.cellsCmp = { ...compare(cs.px, cw.px), blitPxScissor: cs.blit, blitPxWhole: cw.blit };
+        } finally {
+          setGroundScissor(was);
+          this.lastGround = { x: NaN, y: NaN }; // the next latch paints in full: the poison and the moved anchor go
+        }
+        return out;
       },
       // Chase-cam probe: eased zoom vs base, and how far the camera trails
       // the avatar (scene px).
@@ -18299,6 +18488,7 @@ export class WorldScene extends Phaser.Scene {
     } finally {
       this.groundClip = null;
     }
+    this.groundNoteRect(b);
     const sliceMs = performance.now() - t0;
     this.groundSliceStats.slices++;
     this.groundSliceStats.ms += sliceMs;
@@ -18324,6 +18514,58 @@ export class WorldScene extends Phaser.Scene {
     return sliceMs;
   }
 
+  /** Widen the open ground bracket's painted rect by `r` (RT texels). */
+  private groundNoteRect(r: { x0: number; y0: number; x1: number; y1: number }): void {
+    const b = this.groundBracketRect;
+    this.groundBracketRect = b
+      ? { x0: Math.min(b.x0, r.x0), y0: Math.min(b.y0, r.y0), x1: Math.max(b.x1, r.x1), y1: Math.max(b.y1, r.y1) }
+      : { x0: r.x0, y0: r.y0, x1: r.x1, y1: r.y1 };
+  }
+
+  /** END A GROUND BRACKET, BLITTING ONLY THE RECT IT PAINTED.
+   *
+   *  Phaser's endDraw copies the whole capture into the 1510x1656 target
+   *  whatever the bracket drew: 2.5 Mpx of fragments for a 384 px band or a
+   *  handful of cells, six brackets in one cell-repaint frame on his phone
+   *  (~30 Mpx, twenty screens), and his 03:53 run's `longWhy` put 66 of 69
+   *  long frames in `wait` — the compositor waiting on exactly that fill. The
+   *  capture's clear cannot be bounded here (RenderTarget.adjustViewport
+   *  disables the scissor test right before it, and a tiler's transaction
+   *  elimination makes a repeat clear nearly free anyway); the blit can: a
+   *  scissor around the rect the bracket painted, the cover atlases' cut. The
+   *  draws are untouched, and every one of them was already cropped to that
+   *  rect (groundClip, the slice rects, the copy-back frame), so the texels are
+   *  identical — `__ml.groundBracketParity`, gated by
+   *  scripts/verify-groundbracket.mjs. Target GL row = RT y, the identity
+   *  coverRaster rests on. `rect` null = whole (the full paint, the scroll). */
+  private groundEndDraw(rt: Phaser.GameObjects.RenderTexture, rect: { x0: number; y0: number; x1: number; y1: number } | null): void {
+    const dt = rt.texture as Phaser.Textures.DynamicTexture;
+    const renderer = this.game.renderer as Phaser.Renderer.WebGL.WebGLRenderer;
+    const target = dt.renderTarget;
+    if (!rect || !target || renderer.type !== Phaser.WEBGL || !groundScissorOn()) {
+      rt.endDraw();
+      this.groundBlitPx += dt.width * dt.height;
+      return;
+    }
+    const x0 = Math.max(0, Math.floor(rect.x0));
+    const y0 = Math.max(0, Math.floor(rect.y0));
+    const x1 = Math.min(dt.width, Math.ceil(rect.x1));
+    const y1 = Math.min(dt.height, Math.ceil(rect.y1));
+    const gl = renderer.gl;
+    const capture = renderer.endCapture(); // flushes the batch, unbinds; the scissor test is off here (adjustViewport)
+    if (x1 > x0 && y1 > y0) {
+      gl.enable(gl.SCISSOR_TEST);
+      gl.scissor(x0, y0, x1 - x0, y1 - y0);
+      const util = renderer.pipelines.setUtility();
+      util.blitFrame(capture, target, 1, false, false, false, dt.isSpriteTexture);
+      this.groundBlitPx += (x1 - x0) * (y1 - y0);
+    } // an empty rect painted nothing: nothing to copy
+    renderer.resetScissor();
+    renderer.resetViewport();
+    (dt as unknown as { dirty: boolean; isDrawing: boolean }).dirty = true;
+    (dt as unknown as { dirty: boolean; isDrawing: boolean }).isDrawing = false;
+  }
+
   /** DRAIN THE BAND UNDER ONE BRACKET, bounded by measured milliseconds.
    *
    *  The head rect ALWAYS paints, so this removes work rather than deferring
@@ -18340,6 +18582,7 @@ export class WorldScene extends Phaser.Scene {
     const rt = this.groundRT;
     if (!this.groundSliceQ.length || !rt || !this.maps3) return;
     rt.beginDraw();
+    this.groundBracketRect = null;
     const prev = this.groundBatchRT;
     this.groundBatchRT = rt;
     try {
@@ -18353,7 +18596,7 @@ export class WorldScene extends Phaser.Scene {
     } finally {
       this.groundBatchRT = prev;
       this.t3countBatches(rt);
-      rt.endDraw();
+      this.groundEndDraw(rt, this.groundBracketRect);
     }
     this.groundDrainedThisFrame = true;
     this.groundSliceStats.drains++;
@@ -18368,6 +18611,7 @@ export class WorldScene extends Phaser.Scene {
     // Same merge as the drain: every caller is a top-level synchronous call
     // with no bracket open, so this owns one and pays it once for the lot.
     if (rt) rt.beginDraw();
+    this.groundBracketRect = null;
     const prev = this.groundBatchRT;
     if (rt) this.groundBatchRT = rt;
     try {
@@ -18377,7 +18621,7 @@ export class WorldScene extends Phaser.Scene {
       this.groundBatchRT = prev;
       if (rt) {
         this.t3countBatches(rt);
-        rt.endDraw();
+        this.groundEndDraw(rt, this.groundBracketRect);
       }
     }
   }
@@ -18801,13 +19045,23 @@ export class WorldScene extends Phaser.Scene {
       y1: Math.min(H, y1 + TILE_PAD),
     };
     scratch.setPosition(a.ax, a.ay);
-    scratch.stamp(bgKey, undefined, x0, y0, { originX: 0, originY: 0, scaleX: x1 - x0, scaleY: y1 - y0, alpha: 1 });
     const win = this.t3groundWindow(a.ax, a.ay, cull.x0, cull.y0, cull.x1 - cull.x0, cull.y1 - cull.y0);
+    /* ONE BRACKET ON THE SCRATCH for the background stamp and the cells' paint
+     * (the stamp used to open a whole-target bracket of its own; `skipBatch`
+     * batches it into this one), blitted back over `cull` only. */
+    scratch.beginDraw();
+    this.groundBracketRect = { ...cull };
+    const prevBatch = this.groundBatchRT;
+    this.groundBatchRT = scratch;
     this.groundClip = cull;
     try {
+      scratch.stamp(bgKey, undefined, x0, y0, { originX: 0, originY: 0, scaleX: x1 - x0, scaleY: y1 - y0, alpha: 1, skipBatch: true });
       this.drawTiles3Ground(scratch, a.ax, a.ay, win.u0, win.u1, win.v0, win.v1, mask, cuts, a.top);
     } finally {
       this.groundClip = null;
+      this.groundBatchRT = prevBatch;
+      this.t3countBatches(scratch);
+      this.groundEndDraw(scratch, cull);
     }
     /* The copy back, at integer texels and scale 1 — the only sub-rect
      * arithmetic in the pass, done once on a whole-texture blit instead of per
@@ -18819,7 +19073,7 @@ export class WorldScene extends Phaser.Scene {
     src.firstFrame = "__BASE"; // an added frame must never become the default
     rt.beginDraw();
     rt.batchDrawFrame(src.key, FRAME, x0, y0, 1, 0xffffff);
-    rt.endDraw();
+    this.groundEndDraw(rt, { x0, y0, x1, y1 });
     this.groundLastMode = "cells";
     this.groundCellStats.runs++;
     this.groundCellStats.cells += cells.length;
@@ -19417,9 +19671,14 @@ export class WorldScene extends Phaser.Scene {
      * area inside it — measured ~20 ms each on his phone. A scrolled band
      * drains as 4-9 rects and used to pay that 4-9 times, one per frame, which
      * is the burst of slow frames he feels every 1.5 s. t3drainSlices now opens
-     * one bracket around the whole drain and this defers to it. */
+     * one bracket around the whole drain and this defers to it. Since
+     * 2026-09-13 the blit is the painted rect's, not the texture's
+     * (groundEndDraw): a clipped paint blits its clip, a full paint the whole. */
     const ownBracket = this.groundBatchRT !== rt;
-    if (ownBracket) rt.beginDraw();
+    if (ownBracket) {
+      rt.beginDraw();
+      this.groundBracketRect = this.groundClip ? { ...this.groundClip } : null;
+    }
     for (const [col, row] of cells) {
       const cell = cellOf(col, row);
       if (!cell) continue;
@@ -19662,7 +19921,7 @@ export class WorldScene extends Phaser.Scene {
     }
     if (ownBracket) {
       this.t3countBatches(rt);
-      rt.endDraw();
+      this.groundEndDraw(rt, this.groundClip ? this.groundBracketRect : null);
     }
     if (this.groundCacheOn && !this.groundClip) this.t3pruneCache(cells); // a band pass prunes after (scrollTiles3Ground); the ring keeps its cells
     stats.culled = this.groundCulled;
