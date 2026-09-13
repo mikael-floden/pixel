@@ -28,16 +28,26 @@ page shows him the place, and his review comes back as marked numbers.
   from git), `title`, and the `changes` (name, what, cell, optional window,
   optional `cutaway` to lift the cave lids). Changes are numbered straight
   through across pushes and a number never moves once he may have quoted it:
-  APPEND a push, never reorder or renumber.
-- **After every push that changes a world**: append the push to the log,
-  `python3 maps2/pipeline/report3.py maps2/reports/<world>.json <out_dir>`
-  (renders each change twice — the world at the push and at `before` —
-  lossless WebP, copies the minimap, writes `index.html`, parse-checks
+  APPEND a push, never reorder or renumber. The numbering runs over the WHOLE
+  log even though a page shows one push, so #22 is #22 wherever he reads it;
+  each push also carries its own `artifact` URL (the page he was linked).
+- **ONE PAGE PER PUSH, AND THE LINK NEVER CARRIES AN OLDER FIX** (maintainer
+  2026-09-13, on a page that opened with eleven earlier cards: *"the artifact
+  page you linked to for me to show the changes contains old stuff still.
+  Can't tell what's yours. NEVER POST A LINK THAT CONTAIN PREVIOUS FIXES
+  AGAIN!"*). After every push that changes a world: append the push to the
+  log, then
+  `python3 maps2/pipeline/report3.py maps2/reports/<world>.json <out_dir>
+  --push=latest` — **`--push` is not optional for a page you are about to
+  link**; without it the whole log renders, which is for reading history.
+  Publish that directory as **a NEW artifact** (a fresh `file_path`, so it
+  gets its own URL), write the URL into that push's own `artifact` field in
+  the log, and put THAT link in the reply. Never republish a page a previous
+  push already linked, and never hand him the running page.
+  (`--push` renders each change twice — the world at the push and at `before` —
+  lossless WebP, copies the minimap, writes `index.html`, and parse-checks
   nothing for you: run `node --check` on the page's script if you touched
-  report3.py), then republish with the Artifact tool at the log's `artifact`
-  URL (`url`, after a `read`) with `out_dir/index.html` and its `img/` files as
-  `files`; commit the log in the same or the next push. The link goes in the
-  reply that reports the push.
+  report3.py.) Commit the log in the same or the next push.
 - **What the page does** (report3.py owns it): newest push first; every card
   shows "after" with a pill top-right, a tap on the image flips to "before";
   "Show on map" opens the minimap in a MODAL with the pin — the world's own

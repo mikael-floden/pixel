@@ -3,7 +3,8 @@
 push to main. Remember I said after! You can still push before me approving
 the change! I just want to be able to review it afterwards.").
 
-    python3 maps2/pipeline/report3.py maps2/reports/<world>.json <out_dir>
+    python3 maps2/pipeline/report3.py maps2/reports/<world>.json <out_dir> \
+        --push=<commit|latest>       # ONE push - what a reply links
 
 The log (`maps2/change-log@1`) is the source, kept in the repo so every run
 appends its push and republishes the SAME page (`artifact` is its URL):
@@ -59,9 +60,9 @@ def _window(doc, x0, y0, x1, y1, cutaway):
     return render3.render(d, x0, y0, x1, y1, log=lambda *a: None)
 
 
-def build(spec, out):
+def build(spec, out, only=None):
     if spec.get("schema") == "maps2/change-log@1":
-        return build_log(spec, out)
+        return build_log(spec, out, only)
     world = spec.get("world", "the_game")
     wdir = os.path.join(MAPS2, "worlds3", world)
     doc = json.load(open(os.path.join(wdir, "world.json")))
@@ -172,9 +173,16 @@ SCRIPT = r"""<script>
 </script>"""
 
 
-def build_log(log, out):
-    """the running log: every push's changes rendered, numbered straight
-    through, the world of each push read from git at its commit"""
+def build_log(log, out, only=None):
+    """ONE PAGE PER PUSH (maintainer 2026-09-13: "the artifact page you linked
+    to for me to show the changes contains old stuff still. Can't tell what's
+    yours. NEVER POST A LINK THAT CONTAIN PREVIOUS FIXES AGAIN!").
+
+    `only` is the push to render - a commit prefix, or "latest" - and it is
+    what a reply links. The LOG still holds every push and the numbering still
+    runs straight through it, so #22 is #22 on whatever page it appears: the
+    numbers are what he quotes back. Without `only` the whole log renders,
+    which is for reading the history, never for a link in a reply."""
     world = log.get("world", "the_game")
     wdir = os.path.join(MAPS2, "worlds3", world)
     mm = json.load(open(os.path.join(wdir, "minimap.json")))
@@ -182,8 +190,19 @@ def build_log(log, out):
     os.makedirs(os.path.join(out, "img"), exist_ok=True)
     from PIL import Image
     Image.open(os.path.join(wdir, mm["image"])).save(os.path.join(out, "img", "minimap.webp"), lossless=True, exact=True)
+    pick = None
+    if only:
+        pick = log["pushes"][-1] if only == "latest" else next(
+            (p for p in log["pushes"]
+             if any(c.startswith(only) or only.startswith(c)
+                    for c in (x.strip() for x in p["commit"].replace("→", " ").split()))),
+            None)
+        assert pick, f"no push in the log for {only!r}"
     n, sections = 0, []
     for push in log["pushes"]:
+        if pick is not None and push is not pick:
+            n += len(push["changes"])       # the numbers never move
+            continue
         head = push["commit"].split("→")[-1].strip().split()[0]
         try:
             doc = world_at(head, world)
@@ -216,6 +235,11 @@ def build_log(log, out):
         sections.append({"date": push.get("date", ""), "commit": push.get("commit", ""),
                          "title": push.get("title", ""), "cards": cards})
     sections.reverse()
+    if pick is not None:
+        log = dict(log, subtitle=(
+            "The changes of ONE push, the one named above. Tap a title to mark "
+            "a change, copy the marks, paste them back to maps2. Coordinates "
+            "are the ones the game shows under the player."))
     page = render_page(log, sections, mm)
     open(os.path.join(out, "index.html"), "w").write(page)
     return [c for sct in sections for c in sct["cards"]]
@@ -364,6 +388,10 @@ dialog::backdrop {{ background: var(--scrim); }}
 
 
 if __name__ == "__main__":
-    spec = json.load(open(sys.argv[1]))
-    cards = build(spec, sys.argv[2])
-    print(f"{len(cards)} change(s) rendered into {sys.argv[2]}")
+    args = [a for a in sys.argv[1:] if not a.startswith("--")]
+    only = next((a.split("=", 1)[1] for a in sys.argv[1:]
+                 if a.startswith("--push=")), None)
+    spec = json.load(open(args[0]))
+    cards = build(spec, args[1], only)
+    print(f"{len(cards)} change(s) rendered into {args[1]}"
+          + (f" (push {only} only)" if only else " (the WHOLE log - not a link for a reply)"))

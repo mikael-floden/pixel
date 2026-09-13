@@ -389,8 +389,10 @@
       205
      ]
     }
-   ]
+   ],
+   "artifact": "https://claude.ai/code/artifact/2495fc84-cd00-4c8e-8240-e67bd666ed32"
   }
  ],
- "artifact_previous": "https://claude.ai/code/artifact/380e0818-32c4-4388-bd85-b73d37282f86"
+ "artifact_previous": "https://claude.ai/code/artifact/380e0818-32c4-4388-bd85-b73d37282f86",
+ "_artifact_note": "ONE PAGE PER PUSH (maintainer 2026-09-13). Each push entry carries its own `artifact` URL - that page holds THAT push's cards only, and it is the link a reply gives him. The top-level `artifact` is the running page over every push: it is history, never a link in a reply."
 }
