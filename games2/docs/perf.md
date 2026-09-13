@@ -219,7 +219,13 @@ The ground render texture (scroll, slices, cell repaints, prefetch, compose budg
   `coverRows` read 384 with one body covered, because a freed slot was popped
   by recency and a body could land three shelves up while the floor shelf
   stood empty — `coverTakeLowestFree` hands out the free slot nearest the
-  floor. Traps: the blit copies with the renderer's CURRENT blend func (NORMAL
+  floor. His 02:25 run on a1856b4ae (7/4 frames over 50 ms, p99 39.6/37.2,
+  `glFbNew` 0 both windows — the warm-up held) still read `coverRows` 512 with
+  one body: a NEW slot was always cut on the topmost shelf. The packer now
+  places it on the lowest shelf with the width and the height (only the top
+  shelf grows), and the beacon's `coverRowsMean` averages the bound rows over
+  a window's flushes — the number the next run should show near 128. Traps:
+  the blit copies with the renderer's CURRENT blend func (NORMAL
   goes back before `endDraw` or the blit erases); a shorter capture lands in
   the target's LAST rows (`blitFrame` viewports at `target.h - source.h`,
   flipped) — hence the packer grows upward from the atlas floor.

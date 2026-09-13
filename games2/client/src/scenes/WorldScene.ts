@@ -2303,6 +2303,7 @@ export class WorldScene extends Phaser.Scene {
     const litOccMean = this.perfCountN ? Math.round(this.perfLitOccSum / cn) : this.litOccluders.length;
     const monActMean = this.perfCountN ? +(this.perfMonActSum / cn).toFixed(1) : this.monstersActive;
     const flushMean = this.perfCountN ? +(this.perfFlushSum / cn).toFixed(1) : this.perfDrawCount;
+    const coverRowsMean = this.perfCoverRowsN ? Math.round(this.perfCoverRowsSum / this.perfCoverRowsN) : this.coverStat.rows;
     const sceneryImgsMean = this.perfCountN ? Math.round(this.perfSceneryImgSum / cn) : this.sceneryImgs.length;
     const moveFrac = this.perfCountN ? +(this.perfMoveFrames / cn).toFixed(2) : 0;
     const runFrac = this.perfCountN ? +(this.perfRunFrames / cn).toFixed(2) : 0;
@@ -2319,6 +2320,8 @@ export class WorldScene extends Phaser.Scene {
     this.perfLitOccSum = 0;
     this.perfMonActSum = 0;
     this.perfFlushSum = 0;
+    this.perfCoverRowsSum = 0;
+    this.perfCoverRowsN = 0;
     this.perfSceneryImgSum = 0;
     this.perfLongN = 0;
     this.perfLongMs = 0;
@@ -2438,6 +2441,7 @@ export class WorldScene extends Phaser.Scene {
         coverSlots: this.coverStat.slots,
         coverBr: this.coverStat.brackets, // draw brackets a flush: 3 = one per atlas (2026-09-13), 7 = the path before
         coverRows: this.coverStat.rows, // atlas rows the capture is bound at (128-512): what each bracket clears and blits
+        coverRowsMean, // the same, averaged over this window's flushes — the packer's report card
         texGen: this.t3texGen, // every texture the game added — a diagnostic
         /* THE ART QUEUE (artqueue.ts): waiting, decoded-and-waiting, landed
          * this window, and the biggest one frame's upload in KB — against
@@ -3767,7 +3771,8 @@ export class WorldScene extends Phaser.Scene {
   private coverO?: Phaser.Textures.DynamicTexture;
   private coverSlots: CoverSlot[] = [];
   private coverFree = new Map<string, CoverSlot[]>();
-  private coverShelf = { x: 0, y: COVER_ATLAS_H, h: 0 }; // y = the open shelf's FLOOR: slots stand up from the atlas's last row
+  /** The shelves, lowest first: `y` = a shelf's FLOOR (slots stand up from it), `h` its height, `x` its cursor. */
+  private coverShelves: { x: number; y: number; h: number }[] = [];
   private coverQueue: BodyVisual[] = [];
   private coverScratch?: Phaser.GameObjects.Image;
   private coverTick = 1;
@@ -3784,6 +3789,9 @@ export class WorldScene extends Phaser.Scene {
   private coverLast: BodyVisual[] = [];
   /** Rows the open bracket's capture is short by (COVER_ATLAS_H - rows); 0 on the whole-atlas path. */
   private coverYOff = 0;
+  /** Rows bound per flush this beacon window (the mean is `coverRowsMean`). */
+  private perfCoverRowsSum = 0;
+  private perfCoverRowsN = 0;
   // Images the last rebuild skipped (view-culled + deck-exposure-culled) —
   // reported by __ml.occCount() so the win is measurable, not asserted.
   private occCulled = 0;
@@ -9136,19 +9144,32 @@ export class WorldScene extends Phaser.Scene {
    * reads, and no frame is ever re-added. */
   private coverAllocSlot(w: number, h: number, cls: string): CoverSlot | null {
     if (!this.coverE || !this.coverC || !this.coverO) return null;
-    const s = this.coverShelf;
-    if (s.x + w > COVER_ATLAS_W) {
-      s.y -= s.h + COVER_GUTTER;
-      s.x = 0;
-      s.h = 0;
+    if (w > COVER_ATLAS_W) return null;
+    // BOTTOM-UP, LOWEST SHELF WITH ROOM: a shelf's slots share its floor `y` and
+    // stand up from it, so the first bodies covered live in the atlas's LAST
+    // rows and a flush's capture can be bound at those rows alone (coverRaster).
+    // A new slot goes on the LOWEST shelf that has the width and the height
+    // (his 02:25 run, 2026-09-13: cutting every new slot on the topmost shelf
+    // read `coverRows` 512 with one body covered); only the top shelf may still
+    // grow, so a closed shelf never reaches into the one above it.
+    const shelves = this.coverShelves;
+    let shelf: { x: number; y: number; h: number } | undefined;
+    for (let i = 0; i < shelves.length; i++) {
+      const sh = shelves[i];
+      if (sh.x + w <= COVER_ATLAS_W && (i === shelves.length - 1 || h <= sh.h)) {
+        shelf = sh;
+        break;
+      }
     }
-    // BOTTOM-UP: a shelf's slots share its floor `s.y` and stand up from it, so
-    // the first bodies covered live in the atlas's LAST rows and a flush's
-    // capture can be bound at those rows alone (coverRaster).
-    if (s.y - h < 0 || w > COVER_ATLAS_W) return null;
-    const slot: CoverSlot = { i: this.coverSlots.length, x: s.x, y: s.y - h, w, h, name: `cs${this.coverSlots.length}`, cls };
-    s.x += w + COVER_GUTTER;
-    if (h > s.h) s.h = h;
+    if (!shelf) {
+      const last = shelves[shelves.length - 1];
+      shelf = { x: 0, y: last ? last.y - last.h - COVER_GUTTER : COVER_ATLAS_H, h: 0 };
+      if (shelf.y - h < 0) return null;
+      shelves.push(shelf);
+    } else if (shelf.y - h < 0) return null;
+    const slot: CoverSlot = { i: this.coverSlots.length, x: shelf.x, y: shelf.y - h, w, h, name: `cs${this.coverSlots.length}`, cls };
+    shelf.x += w + COVER_GUTTER;
+    if (h > shelf.h) shelf.h = h;
     for (const t of [this.coverE, this.coverC, this.coverO]) t.add(slot.name, 0, slot.x, slot.y, slot.w, slot.h);
     this.coverSlots.push(slot);
     return slot;
@@ -9417,6 +9438,8 @@ export class WorldScene extends Phaser.Scene {
       this.coverYOff = 0;
       this.coverStat.brackets = 7;
       this.coverStat.rows = COVER_ATLAS_H;
+      this.perfCoverRowsSum += COVER_ATLAS_H;
+      this.perfCoverRowsN++;
 
       // E — what you can still SEE: the body, minus the terrain in front of it.
       E.clear();
@@ -9463,6 +9486,8 @@ export class WorldScene extends Phaser.Scene {
     this.coverYOff = off;
     this.coverStat.brackets = 3;
     this.coverStat.rows = rows;
+    this.perfCoverRowsSum += rows;
+    this.perfCoverRowsN++;
     const renderer = this.game.renderer as Phaser.Renderer.WebGL.WebGLRenderer;
     const begin = (dt: Phaser.Textures.DynamicTexture) => {
       dt.clear(0, off, COVER_ATLAS_W, rows); // the rows in use only (GL row = atlas y): a scissored clear
