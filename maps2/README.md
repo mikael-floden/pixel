@@ -409,6 +409,10 @@ ground NAME per cell), so a tiles publish never repoints anything here.
   proved against its `WALL_TEST_VECTORS` at import; a caller with no cell
   gets rank 0, as before. (Rank 0 everywhere drew all 74 approved grey_stone
   walls as ONE — "the mountain reads as wallpaper".)
+- `navfit.py` — the game's scenery collision stamp and nav bake, mirrored:
+  a footprint's offset inside its cell is chosen where the cells the game
+  blocks match the drawn hitbox best (`spec/WORLD3.md` → `scenery`); `--check
+  <world_dir> --game <dump>` proves the mirror against the game's own stamp.
 - `spawns.py` / `npcs.py` / `places.py` — the sidecar derivers + `--check` gates.
 - `sceneryscale.py` — the size the GAME draws scenery at.
 

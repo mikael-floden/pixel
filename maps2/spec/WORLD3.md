@@ -845,20 +845,54 @@ and dropped the rug — so centring alone took the_game from 3 carpets to one in
 every room, which is the sameness he keeps ruling out. the_game: 8 rugs in 13
 rooms, 0.25–1.52 cells off their centroids.
 
-### `scenery` — a placement is centred on its HITBOX, not its art
+### `scenery` — a placement stands where the game's NAV matches its hitbox
 
-**The hitbox centre stands in the middle of a tile** (maintainer, 2026-08-30:
-*"the game will mark that spot in the nav as a tile we must navigate around —
-so we want that ground we now have to navigate around to match the scenery
-hitbox as good as possible"*).
+**The footprint sits at the offset inside its cell where the cells the game
+blocks look most like the drawn hitbox** (maintainer 2026-09-13, beside a cart
+whose rectangle spans two cells and whose nav diamond is one: *"centering will
+not always (bigger objects) make the nav and collision look as similar as
+possible ... if we placed the scenery differently we might have been able to
+change the nav grid for a better fit"*). The 2026-08-30 rule — the hitbox
+centre on a cell centre, so *"that ground we now have to navigate around"*
+matches the hitbox — is the special case for a piece smaller than a cell.
+
+WHAT THE NAV IS (games2 `stampSceneryCollision` + `navCellOpen`): the body
+collides with the drawn hitbox itself; a cell is blocked only when no body of
+`PLAYER_RADIUS` (12 wu of 32) fits anywhere in it, sampled 4×4 then 8×8 per
+cell. So the nav is the hitbox GROWN by the body radius and cut to whole
+cells, and which cells those are depends on where the hitbox sits inside its
+cell: the cart (1.55 × 2.78 cells along the map diagonals) blocks ONE cell
+centred and FOUR on a lattice edge; an ancient tree's 14-cell² ellipse blocks
+one cell centred and twelve at its best offset. `maps2/pipeline/navfit.py`
+mirrors the stamp and the bake to the letter (`--check <world_dir> --game
+<dump>` compares it with the game's own stamp: 0 of 1,390 placements
+disagree), scores every offset of the shape's reference point on a 1/16-cell
+lattice by the SYMMETRIC DIFFERENCE between the blocked cells and the drawn
+shape, and takes the least — nearest the piece's current spot among equals,
+the cell centre whenever it is one of them. `put()` snaps a new placement
+there before the footprint law judges it; `snap_hitboxes()` moves every
+non-flush piece there (never a whole cell) and asserts every footprint is on
+its offset.
+
+Measured on the_game, both worlds stamped with the game's own code: the
+mismatch over all 1,321 footprints falls 516.6 → 480.7 cells (0.392 → 0.364
+per footprint; 88 footprints leave the cell centre, 39.7 cells gained among
+them — the cart 3.40 → 1.54, an ancient tree 5.04 → 2.48, the rock spire
+6.01 → 3.18); the nav cells 1,267 → 1,261. A piece whose hitbox does not fill
+a cell blocks NONE by the game's design (the player slides past it) and the
+fit does not fight that: 172 footprints block no cell, every one under 1.4
+cells² of hitbox (median 0.35).
 
 `x`/`y` is where the art is ANCHORED (its alpha-bbox bottom-centre), which is
 not where its footprint is. The offset between them is the piece's own
 business — its ellipse can sit well off the anchor — so the cell the game
-blocks landed wherever that offset fell. `world3grow.snap_hitboxes()` nudges
-every piece that publishes a footprint (always less than one cell) so its
-hitbox centre lands on a cell centre, which the game writes as
-`(col + 0.5, row + 0.5)`.
+blocks landed wherever that offset fell before any snapping at all.
+
+Every variation is drawn from a STABLE hash of the piece and its spot
+(`_pos_rng`, crc32): `hash()` of a str is salted per process, and until
+2026-09-13 every build re-rolled every variation and re-dressed a tenth of the
+map (137 placements and 133 states between two unchanged builds; none with
+the seed pinned) — the build is reproducible now.
 
 The centre is computed with the game's own arithmetic (client `fitSprite` +
 the overlay's `hbX/hbY`, `games2/client/src/scenery3.ts`) and the game's own
@@ -890,10 +924,10 @@ number is what a reference render must draw at — at the contract's number ever
 piece in `render3.py` was 27% small, so no render of mine showed the crowding
 the game shows.
 
-Measured on the_game with the game's own cell test: pieces whose ellipse covers
-no cell centre — and which therefore block **nothing** — fall from **550 of
-1,421 (39%) to 11**, and the centring error from median 3.0 px to **0.00**.
-The footprints got accurate, not bigger. Build-asserted every run.
+(The 2026-09-04 measurement of this — pieces covering no cell centre falling
+from 550 of 1,421 to 11 under the game's raster of that day — is superseded:
+the game stamps the body-fit rule now, and the fit above is what is
+build-asserted every run.)
 
 **A RECT BOX IS READ PER FACING — all three channels.** `shape:"rect"` means
 the footprint is a rectangle on the ground, and the wiki writes three

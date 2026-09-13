@@ -41,6 +41,7 @@ import numpy as np
 import math
 import os
 import sys
+import zlib
 
 from PIL import Image
 
@@ -77,6 +78,7 @@ TOWN_AT = (OFF[0] - 72, OFF[1] - 68)   # fallback town target; the real one
                           # derives from where the ridge ends and the valley
                           # opens
 
+import navfit
 import world3
 from sceneryscale import drawn_px_for_piece
 
@@ -550,11 +552,17 @@ class Grow:
             if flush:
                 # PIXEL-PERFECT AGAINST THE WALL: the caller has already put
                 # the footprint exactly where it wants it, so do not snap.
-                wx, wy = x + dwx, y + dwy
+                pass
             else:
-                cx, cy = math.floor(x + dwx), math.floor(y + dwy)
-                x, y = cx + 0.5 - dwx, cy + 0.5 - dwy
-                wx, wy = cx + 0.5, cy + 0.5
+                # WHERE THE NAV MATCHES THE HITBOX (maintainer 2026-09-13):
+                # the footprint goes to the offset inside its cell at which
+                # the cells the game's bake blocks look most like the drawn
+                # shape - a cell centre for a piece smaller than a cell, a
+                # corner or an edge for a bigger one. navfit.target runs the
+                # game's own stamp and bake for that; the footprint law
+                # below then judges the piece where it will stand.
+                x, y = self._nav_target(probe, x, y)
+            wx, wy = x + dwx, y + dwy
             R, HY = (hx, hy) if kind == "rect" else (hx, None)
         else:
             wx, wy = int(x) + 0.5, int(y) + 0.5
@@ -3429,39 +3437,58 @@ class Grow:
         return ((sx / self.HIT_DX + sy / self.HIT_DY) / 2,
                 (sy / self.HIT_DY - sx / self.HIT_DX) / 2)
 
+    def _nav_target(self, probe, x, y):
+        """Where the anchor goes so the footprint sits at its nav-fit offset
+        (navfit.target), nearest (x, y); (x, y) itself when the piece stamps
+        no footprint."""
+        boxes = navfit.boxes_for(probe, self._bbox, self._hit)
+        if not boxes:
+            return x, y
+        nx, ny, _fx, _fy, _m, _mc = navfit.target(probe, boxes, x, y)
+        return nx, ny
+
     def snap_hitboxes(self):
-        """THE HITBOX CENTRE STANDS IN THE MIDDLE OF A TILE (maintainer,
-        2026-08-30): "try to always place the hitbox center ... centered on the
-        top/ground of a tile ... the game will mark that spot in the nav as a
-        tile we must navigate around - so we want that ground we now have to
-        navigate around to match the scenery hitbox as good as possible."
+        """THE FOOTPRINT STANDS WHERE THE NAV MATCHES IT (maintainer
+        2026-09-13, beside a cart whose rectangle spans two cells and whose
+        nav diamond is one: "centering will not always (bigger objects) make
+        the nav and collision look as similar as possible"). The 2026-08-30
+        rule - the hitbox centre on a cell centre, so "that ground we now
+        have to navigate around" matches the hitbox - is the special case for
+        a piece smaller than a cell; navfit.py scores every offset inside the
+        cell by the game's own bake and takes the one whose blocked cells
+        look most like the drawn shape.
 
         A placement is the art's anchor, not its footprint, so the two are
         offset by however far the piece's ellipse sits from where it stands -
         and the cell the game blocks was landing wherever that offset fell.
         Every piece that publishes a footprint is nudged (less than one cell)
-        so its centre lands on a cell centre, which the game writes as
-        (col+0.5, row+0.5)."""
+        to the nearest spot at that offset."""
         self._bbox = json.load(open(os.path.join(
             REPO, "games2", "config", "scenery-bbox.json")))
         self._hit = json.load(open(os.path.join(
             REPO, "live", "tuning", "scenery_hitbox.json"))).get("overrides", {})
         moved = skipped = kept = 0
         worst = 0.0
+        gain = 0.0
         for p in self.doc["scenery"]:
             if id(p) in getattr(self, "_flush_ids", ()):
                 continue                 # placed flush against a wall
             if p.get("z") is not None:
                 skipped += 1             # hangs ON the wall: no footprint
                 continue
-            off = self._hitbox_offset(p)
-            if off is None:
+            boxes = navfit.boxes_for(p, self._bbox, self._hit)
+            if not boxes:
                 skipped += 1
                 continue
-            wx, wy = p["x"] + off[0], p["y"] + off[1]
-            cx, cy = math.floor(wx), math.floor(wy)
-            t = 0.5 + self.HITBOX_DROP / (2.0 * self.HIT_DY)
-            nx, ny = cx + t - off[0], cy + t - off[1]
+            # WHERE THE NAV MATCHES THE HITBOX (maintainer 2026-09-13, see
+            # navfit.py): the offset inside the cell at which the cells the
+            # game's bake blocks look most like the drawn shape - the cell
+            # centre for a piece smaller than a cell, a corner or an edge
+            # for a bigger one. Nearest such spot to where the piece stands,
+            # so the nudge stays under a cell.
+            nx, ny, _fx, _fy, m, mc = navfit.target(p, boxes, p["x"], p["y"])
+            rx, ry = navfit.reference(boxes)
+            cx, cy = math.floor(nx + rx), math.floor(ny + ry)
             # the nudge may not walk a piece off its own ground or into a wall
             if not (0 <= cx < NEW and 0 <= cy < NEW) or self.liquid(cx, cy) \
                     or not self.g(int(nx), int(ny)):
@@ -3471,6 +3498,7 @@ class Grow:
             worst = max(worst, d)
             if d > 1e-9:
                 moved += 1
+            gain += mc - m
             p["x"], p["y"] = round(nx, 4), round(ny, 4)
         # BUILD ASSERT: every piece we accepted really is centred. Measured
         # against the game's own collision test, pieces whose ellipse covers
@@ -3480,26 +3508,28 @@ class Grow:
         for p in self.doc["scenery"]:
             if id(p) in getattr(self, "_flush_ids", ()) or p.get("z") is not None:
                 continue
-            off = self._hitbox_offset(p)
-            if off is None:
+            boxes = navfit.boxes_for(p, self._bbox, self._hit)
+            if not boxes:
                 continue
-            wx, wy = p["x"] + off[0], p["y"] + off[1]
+            rx, ry = navfit.reference(boxes)
+            wx, wy = p["x"] + rx, p["y"] + ry
             if not (0 <= int(wx) < NEW and 0 <= int(wy) < NEW):
                 continue
             if self.liquid(int(wx), int(wy)):
                 continue
-            # 1e-3 of a cell is 0.03 screen px - the coordinates are rounded
-            # to 4 decimals in the file, and the projection amplifies that.
-            t = 0.5 + self.HITBOX_DROP / (2.0 * self.HIT_DY)
-            assert abs(wx - math.floor(wx) - t) < 1e-3 \
-                and abs(wy - math.floor(wy) - t) < 1e-3, \
-                f"{p['piece']} at {p['x']},{p['y']}: hitbox centre {wx},{wy} " \
-                "is not on a tile centre"
-        self.placed += [("hitboxes centred on a tile", moved),
+            # the piece stands at a best-fit offset of its shape: asking again
+            # from where it stands must return the same spot. 1e-3 of a cell
+            # is 0.03 screen px - the coordinates are rounded to 4 decimals
+            # in the file, and the projection amplifies that.
+            nx, ny, fx, fy, _m, _mc = navfit.target(p, boxes, p["x"], p["y"])
+            assert abs(nx - p["x"]) < 1e-3 and abs(ny - p["y"]) < 1e-3, \
+                f"{p['piece']} at {p['x']},{p['y']}: footprint at " \
+                f"{wx},{wy} is not on its nav-fit offset ({fx},{fy})"
+        self.placed += [("footprints on their nav-fit offset", moved),
                         ("no footprint published", skipped),
                         ("nudge refused (water/void)", kept)]
-        print(f"  [snap_hitboxes: {moved} centred, worst nudge "
-              f"{worst:.2f} cells]", flush=True)
+        print(f"  [snap_hitboxes: {moved} moved, worst nudge {worst:.2f} cells, "
+              f"nav/hitbox mismatch {gain:.1f} cells better than centred]", flush=True)
 
     def police_footprints(self):
         """The footprint law over EVERY piece, including the ones that never
@@ -3661,7 +3691,11 @@ class Grow:
     def _pos_rng(self, piece, x, y):
         """A stream that is the placement's own: same piece, same spot, same
         answers - and the next spot gets fresh ones."""
-        h = hash((piece, round(float(x) * 64), round(float(y) * 64))) & 0xffffffff
+        # A STABLE HASH, NOT hash(): a str's hash is salted per interpreter,
+        # so every build re-rolled every variation and re-dressed a tenth of
+        # the map (measured 2026-09-13: two unchanged builds differed in 137
+        # placements and 133 states; with PYTHONHASHSEED pinned, in none).
+        h = zlib.crc32(f"{piece}|{round(float(x) * 64)}|{round(float(y) * 64)}".encode()) & 0xffffffff
         return _rng32(h ^ 0x5CE1)
 
     def _lit_variant(self, piece, x, y, given=None):
