@@ -224,7 +224,14 @@ The ground render texture (scroll, slices, cell repaints, prefetch, compose budg
   one body: a NEW slot was always cut on the topmost shelf. The packer now
   places it on the lowest shelf with the width and the height (only the top
   shelf grows), and the beacon's `coverRowsMean` averages the bound rows over
-  a window's flushes — the number the next run should show near 128. Traps:
+  a window's flushes. His 02:40 run on 7cd328939 read it at 197/303 with
+  about one body a flush: a 160 px monster class placed on the FLOOR shelf
+  had grown it past a step, and every flush after that bound 256+ rows. The
+  floor shelf is now opened at exactly one step and takes only slots that fit
+  it (characters and 53 of 57 monster classes); taller slots go up. The
+  beacon's `coverSlotsMean` says how many bodies a flush carried, which is
+  what `coverRowsMean` is to be read against — the next run should show it
+  near 128 whenever the mean bodies are ~1. Traps:
   the blit copies with the renderer's CURRENT blend func (NORMAL
   goes back before `endDraw` or the blit erases); a shorter capture lands in
   the target's LAST rows (`blitFrame` viewports at `target.h - source.h`,

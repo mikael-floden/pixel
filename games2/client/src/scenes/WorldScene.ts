@@ -2304,6 +2304,7 @@ export class WorldScene extends Phaser.Scene {
     const monActMean = this.perfCountN ? +(this.perfMonActSum / cn).toFixed(1) : this.monstersActive;
     const flushMean = this.perfCountN ? +(this.perfFlushSum / cn).toFixed(1) : this.perfDrawCount;
     const coverRowsMean = this.perfCoverRowsN ? Math.round(this.perfCoverRowsSum / this.perfCoverRowsN) : this.coverStat.rows;
+    const coverSlotsMean = this.perfCoverRowsN ? +(this.perfCoverSlotsSum / this.perfCoverRowsN).toFixed(1) : this.coverStat.slots;
     const sceneryImgsMean = this.perfCountN ? Math.round(this.perfSceneryImgSum / cn) : this.sceneryImgs.length;
     const moveFrac = this.perfCountN ? +(this.perfMoveFrames / cn).toFixed(2) : 0;
     const runFrac = this.perfCountN ? +(this.perfRunFrames / cn).toFixed(2) : 0;
@@ -2322,6 +2323,7 @@ export class WorldScene extends Phaser.Scene {
     this.perfFlushSum = 0;
     this.perfCoverRowsSum = 0;
     this.perfCoverRowsN = 0;
+    this.perfCoverSlotsSum = 0;
     this.perfSceneryImgSum = 0;
     this.perfLongN = 0;
     this.perfLongMs = 0;
@@ -2442,6 +2444,7 @@ export class WorldScene extends Phaser.Scene {
         coverBr: this.coverStat.brackets, // draw brackets a flush: 3 = one per atlas (2026-09-13), 7 = the path before
         coverRows: this.coverStat.rows, // atlas rows the capture is bound at (128-512): what each bracket clears and blits
         coverRowsMean, // the same, averaged over this window's flushes — the packer's report card
+        coverSlotsMean, // bodies per flush, averaged the same way — what the rows mean is to be read against
         texGen: this.t3texGen, // every texture the game added — a diagnostic
         /* THE ART QUEUE (artqueue.ts): waiting, decoded-and-waiting, landed
          * this window, and the biggest one frame's upload in KB — against
@@ -3792,6 +3795,7 @@ export class WorldScene extends Phaser.Scene {
   /** Rows bound per flush this beacon window (the mean is `coverRowsMean`). */
   private perfCoverRowsSum = 0;
   private perfCoverRowsN = 0;
+  private perfCoverSlotsSum = 0; // bodies per flush this window (`coverSlotsMean`)
   // Images the last rebuild skipped (view-culled + deck-exposure-culled) —
   // reported by __ml.occCount() so the win is measurable, not asserted.
   private occCulled = 0;
@@ -9152,18 +9156,28 @@ export class WorldScene extends Phaser.Scene {
     // (his 02:25 run, 2026-09-13: cutting every new slot on the topmost shelf
     // read `coverRows` 512 with one body covered); only the top shelf may still
     // grow, so a closed shelf never reaches into the one above it.
+    // THE FLOOR SHELF IS ONE STEP TALL, FIXED. A flush's capture is bound at
+    // COVER_ROWS_STEP multiples from the floor, so one tall slot on the floor
+    // shelf (a 160 px monster; his 02:40 run: `coverRowsMean` 197/303 with about
+    // one body a flush) grew it past 128 and every flush from then on — the lone
+    // player's included — bound 256+ rows. The floor is opened at exactly one
+    // step and takes only slots that fit it (characters and 53 of 57 monster
+    // classes); taller slots go to the shelves above. Fixed, not grown: a lower
+    // shelf that grew after the one above was opened would reach into it.
     const shelves = this.coverShelves;
+    if (!shelves.length) shelves.push({ x: 0, y: COVER_ATLAS_H, h: COVER_ROWS_STEP });
     let shelf: { x: number; y: number; h: number } | undefined;
     for (let i = 0; i < shelves.length; i++) {
       const sh = shelves[i];
-      if (sh.x + w <= COVER_ATLAS_W && (i === shelves.length - 1 || h <= sh.h)) {
+      const fits = i === 0 ? h <= COVER_ROWS_STEP : i === shelves.length - 1 || h <= sh.h;
+      if (sh.x + w <= COVER_ATLAS_W && fits) {
         shelf = sh;
         break;
       }
     }
     if (!shelf) {
       const last = shelves[shelves.length - 1];
-      shelf = { x: 0, y: last ? last.y - last.h - COVER_GUTTER : COVER_ATLAS_H, h: 0 };
+      shelf = { x: 0, y: last.y - last.h - COVER_GUTTER, h: 0 };
       if (shelf.y - h < 0) return null;
       shelves.push(shelf);
     } else if (shelf.y - h < 0) return null;
@@ -9434,6 +9448,7 @@ export class WorldScene extends Phaser.Scene {
     const E = this.coverE!, C = this.coverC!, O = this.coverO!;
     this.coverStat.quads = 0;
     this.coverStat.cands = 0;
+    this.perfCoverSlotsSum += q.length;
     if (!fast) {
       this.coverYOff = 0;
       this.coverStat.brackets = 7;
