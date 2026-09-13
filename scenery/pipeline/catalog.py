@@ -220,6 +220,14 @@ def next_indices(group: dict, done: set[str], retired: set[str], want: int) -> l
     lit = sum(1 for p in done if p.split("_")[-1].isdigit()
               and int(p.split("_")[-1]) % 2 == 0)
     unlit = len(done) - lit
+    # A GROUP THAT PINS ITS LIGHTS HAS NO PARITY TO KEEP, and keeping one costs
+    # real art (2026-09-13): piece_spec reads `group["lights"]` and ignores the
+    # index there, so alternating here only scatters the ids. The chimneys
+    # commission (quota 3, LIGHTS_OFF) planned 002, 001, 004 — a gap at 003 that
+    # reads as a retired piece, and index 4 draws the SAME variety as index 1
+    # whenever the group carries three of them, because the picker strides
+    # modulo the list. A pinned group takes the next free indices in order.
+    pinned = bool((group.get("lights") or "").strip())
     out, i = [], 1
     while len(out) < want:
         want_even = lit <= unlit          # even index == LIGHTS_ON
@@ -228,7 +236,7 @@ def next_indices(group: dict, done: set[str], retired: set[str], want: int) -> l
         while cand is None:
             pid = piece_id(group, j)
             if pid not in done and pid not in retired and j not in out \
-                    and (j % 2 == 0) == want_even:
+                    and (pinned or (j % 2 == 0) == want_even):
                 cand = j
             j += 1
             if j > 10000:                 # unreachable guard

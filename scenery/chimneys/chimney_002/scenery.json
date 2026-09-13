@@ -1,0 +1,87 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-09-13T14:53:06+00:00",
+  "id": "chimney_002",
+  "group": "chimneys",
+  "type": "TOWN",
+  "rank": 174,
+  "index": 2,
+  "name": "Narrow yellow-brick stack with a twisted clay pot 002",
+  "lights": "LIGHTS_OFF",
+  "variety": "narrow yellow-brick stack with a twisted clay pot",
+  "modifier": "rain-dark and streaked",
+  "glow_concept": null,
+  "prompt": "a house CHIMNEY seen from outside, ONLY the chimney stack itself standing alone, cold and unused, no roof around it, no house, no wall, no ground, no smoke, no fire, every course and joint picked out pixel by pixel, per-pixel weathering speckle and dithered shading across the faces, fantasy RPG village architecture, small clear margin at edges, transparent background, narrow yellow-brick stack with a twisted clay pot, rain-dark and streaked, a chimney stack about chest-high on a person, completely unlit, no glow, no light sources, no self-emission",
+  "view": "low top-down",
+  "direction": "south",
+  "directions": [
+    "south"
+  ],
+  "must_be_imbplemented_with_random_hflip": true,
+  "rotations": null,
+  "size": 96,
+  "sprite": "chimneys/chimney_002/sprite.webp",
+  "placement": {
+    "declared_height_m": 1.4,
+    "character_height_px": 87,
+    "character_height_m": 1.7,
+    "note": "ONE SCENERY PIXEL IS ONE PLAYER PIXEL. world_px_height IS the art's own alpha bbox height, so scenery is placed into the world at 1:1 exactly as the avatar is (setScale(1)) and the two share one pixel grid. The CAMERA still zooms the whole scene \u2014 that is uniform and correct; what must never happen is scenery being resampled on its own, against the player.",
+    "content_box": [
+      34,
+      17,
+      62,
+      76
+    ],
+    "content_px_height": 59,
+    "world_px_height": 59,
+    "canvas_render_px": 96,
+    "world_height_m": 1.153
+  },
+  "pixellab_object_id": "f2a3b100-abde-4964-ad88-7b581d511de0",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)",
+  "states": {
+    "NOT_LIT_1": {
+      "sprite": "chimneys/chimney_002/sprite.webp",
+      "pixellab_object_id": "f2a3b100-abde-4964-ad88-7b581d511de0",
+      "generated_at": "2026-09-13T14:53:06+00:00"
+    },
+    "NOT_LIT_2": {
+      "sprite": "chimneys/chimney_002/not_lit_2/sprite.webp",
+      "pixellab_object_id": "a1ec1087-781d-4917-b014-5b9d429ff848",
+      "generated_at": "2026-09-13T14:55:48+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.6554,
+      "glow_score": 0.3299
+    },
+    "NOT_LIT_3": {
+      "sprite": "chimneys/chimney_002/not_lit_3/sprite.webp",
+      "pixellab_object_id": "698c9191-c190-4642-94e9-2d5391a1c341",
+      "generated_at": "2026-09-13T14:57:45+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.918,
+      "glow_score": 0.2643
+    },
+    "NOT_LIT_4": {
+      "sprite": "chimneys/chimney_002/not_lit_4/sprite.webp",
+      "pixellab_object_id": "45804f1f-f31b-4030-a632-7890b47ee214",
+      "generated_at": "2026-09-13T15:00:00+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.8227,
+      "glow_score": 0.171
+    },
+    "NOT_LIT_5": {
+      "sprite": "chimneys/chimney_002/not_lit_5/sprite.webp",
+      "pixellab_object_id": "cd63a76f-70ba-410c-9825-e7673b302401",
+      "generated_at": "2026-09-13T15:02:47+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.9252,
+      "glow_score": 0.1272
+    }
+  }
+}

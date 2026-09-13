@@ -69,7 +69,11 @@ from PIL import Image
 SKIP_TYPES = {"TREE", "WINDOW"}
 
 LIT = [f"LIT_{i}" for i in range(1, 5)]
-NOT_LIT = [f"NOT_LIT_{i}" for i in range(1, 5)]
+# The ladder is as long as tree_variants' (1..10); the DEFAULT plan below still
+# takes four of it. A group whose `state_plan` asks for more same-condition
+# states — chimneys, [5, 0], "3 chimney with 5 variations" 2026-09-13 — would
+# otherwise silently get four, because a slice past the end does not complain.
+NOT_LIT = [f"NOT_LIT_{i}" for i in range(1, 11)]
 
 PARALLEL = 8            # Tier 3 allows 25 concurrent; leave headroom
 COMMIT_EVERY = 25       # "Commmit often" — roughly every 4-5 finished pieces

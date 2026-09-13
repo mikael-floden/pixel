@@ -216,6 +216,53 @@ types**. Regional identity is the zoom-out goal: trees/stones variety axes
 are deep so maps2 can theme AREAS with coherent subsets — one region's trees
 are not another's.
 
+### Roof-mounted: `chimneys` (maintainer 2026-09-13, commissioned by name)
+
+"Generate a chimney in section town we can put on housed with chimney ... 3
+chimney with 5 variations / scenery (a total of 15 different chimney). They
+should be NOT_LIT." Three pieces, five NOT_LIT states each, no lit state at
+all: `lights: "LIGHTS_OFF"` pins every piece unlit and `state_plan: [5, 0]`
+pins the ladder (`state_variants.py`'s NOT_LIT rungs run to 10 so a group may
+ask for five; the 4-own/2-opposite default is unchanged).
+
+- **A ROOF-MOUNTED PIECE CARRIES ITS OWN `modifiers` AND ITS OWN
+  `scale_phrases`** — the windows lesson, and the same trap: the shared
+  `structure` pool and the default size ladder both describe a prop standing
+  on the ground ("knee-high", "with fallen leaves collected at its base"),
+  which is how a chimney ends up drawn in a garden.
+- **THE CANVAS IS THE SCALE KNOB.** `world_px_height` IS the art's own alpha
+  bbox (`rescale.py`), and the world is **51.2 px per metre** (the 87 px
+  avatar over 1.7 m), so what decides how tall a new group reads is the canvas
+  it is drawn on. Measured over the 706 shipped pieces: a 64 px canvas fills
+  0.78 of itself (≈ 0.98 m), **96 px fills 0.75 (≈ 1.40 m)**, 128 px fills
+  0.83 (≈ 2.07 m). Chimneys are 96 px, and the three landed at 1.15, 1.27 and
+  1.68 m — the fill is a median, not a promise, so measure after a pass and
+  re-roll what reads wrong rather than editing a number.
+- **The pixel-grid gate is expensive for masonry, and it is right.** It counts
+  same-colour runs exactly one pixel long, and a flat brick face honestly has
+  few: the first three rolls scored 0.426-0.565 against the 96 px threshold of
+  0.597 and were all re-rolled. The fix is detail in the ART — the description
+  asks for every course and joint picked out pixel by pixel and dithered
+  shading across the faces — never a lower bar. Budget for it: 11 rolls bought
+  3 pieces (~$0.09 a roll), so a masonry group costs ~4x the domain's usual
+  $0.16 a piece.
+- **A pinned-lights group takes its indices IN ORDER** (`catalog.next_indices`,
+  2026-09-13). Parity there carries the LIGHTS_ON/OFF promise, which a pinned
+  group does not have, and the scatter is not free: the first pass planned
+  002, 001, 004 — a gap at 003 that reads as a retired piece, and because the
+  variety picker strides modulo the list, index 4 drew the SAME design as
+  index 1. Two of his three chimneys came back one design; the group now
+  carries twelve so a re-roll cannot collide.
+- **THE GAME CANNOT YET DRAW ONE ON A ROOF** (measured 2026-09-13, raised with
+  games + maps2). A placement whose cell is under a `roof` or `cave` deck is
+  flagged `roofed` (`games2/client/src/scenery3.ts roofedCells`) and is drawn
+  ONLY while that roof is cut away — it is the mechanism that furnishes
+  interiors — and maps2's `render3` drops it from the still render entirely.
+  So a chimney placed on a house today is invisible from outside and appears
+  when you walk in. The art is finished and reviewable; putting it on a house
+  needs a placement that sits ON a deck (drawn at the deck's level, never
+  indoor furniture) from those two domains.
+
 ## What a piece is, on disk
 
 ```

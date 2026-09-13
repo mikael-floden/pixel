@@ -1,7 +1,7 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 709,
-  "target_count": 2116,
+  "scenery_count": 710,
+  "target_count": 2119,
   "scale": {
     "_comment": "ONE SCENERY PIXEL IS ONE PLAYER PIXEL. Scenery is placed into the world at its art's own pixel size, exactly as the avatar is (setScale(1)), so the two share one pixel grid. This is a RATIO between them, not a device-pixel rule \u2014 the CAMERA zoom scales the whole scene uniformly and is correct and untouched. This constant sets no render size at all; it is only what placement.world_height_m is read against, i.e. what a piece READS as beside the player. 87px is measured, not chosen: pipeline/check_native_scale.py re-measures both shipped avatars over all eight facings and fails loudly if it drifts.",
     "character_height_px": 87,
@@ -1393,7 +1393,7 @@
       "name": "Chess Table",
       "type": "INDOOR",
       "quota": 2,
-      "done": 2
+      "done": 0
     },
     {
       "rank": 173,
@@ -1402,6 +1402,14 @@
       "type": "INDOOR",
       "quota": 0,
       "done": 0
+    },
+    {
+      "rank": 174,
+      "id": "chimneys",
+      "name": "Chimney",
+      "type": "TOWN",
+      "quota": 3,
+      "done": 3
     }
   ],
   "categories": {
@@ -1429,7 +1437,7 @@
     "cauldron_camps": 2,
     "chairs_and_benches": 7,
     "charcoal_kilns": 1,
-    "chess_tables": 2,
+    "chimneys": 3,
     "cliff_features": 5,
     "cliff_fragments": 2,
     "cliff_mosses": 3,
@@ -26270,94 +26278,118 @@
       "animations": []
     },
     {
-      "id": "chess_table_006",
-      "rel": "chess_tables/chess_table_006",
-      "name": "Tavern chess set mid-game with a few captured pieces set aside 006 \u00b7 lit",
-      "category": "chess_tables",
-      "lights": "LIGHTS_ON",
-      "light": {
-        "strength": 0.05,
-        "color": "#ffb45c",
-        "radius": 1,
-        "reference": "the spawn bonfire is 1.0 (radius 7); strength 0 is no light",
-        "states": {
-          "LIGHTS_ON": {
-            "strength": 0.05,
-            "color": "#ffb45c",
-            "radius": 1
-          }
-        },
-        "kind": "none",
-        "flame": false,
-        "embers": false
-      },
-      "description": "a stout wooden games table with a chess board covering its whole top, thick legs and a heavy top, standing solidly on the floor, the chequered board fills the frame almost edge to edge, exactly eight by eight large clean squares in strongly contrasting dark and pale, the pieces few and chunky with simple unmistakable silhouettes standing well clear of one another, tavern chess set mid-game with a few captured pieces set aside, polished smooth at the edges, table-height, waist-high, self-emissive at night, softly radiating light: the pale pieces glowing softly from within with kept memory-light",
+      "id": "chimney_002",
+      "rel": "chimneys/chimney_002",
+      "name": "Narrow yellow-brick stack with a twisted clay pot 002",
+      "category": "chimneys",
+      "lights": "LIGHTS_OFF",
+      "light": null,
+      "description": "a house CHIMNEY seen from outside, ONLY the chimney stack itself standing alone, cold and unused, no roof around it, no house, no wall, no ground, no smoke, no fire, every course and joint picked out pixel by pixel, per-pixel weathering speckle and dithered shading across the faces, fantasy RPG village architecture, small clear margin at edges, transparent background, narrow yellow-brick stack with a twisted clay pot, rain-dark and streaked, a chimney stack about chest-high on a person, completely unlit, no glow, no light sources, no self-emission",
       "view": "low top-down",
-      "size": 64,
+      "size": 96,
       "placement": {
-        "world_height_m": 0.957,
-        "world_px_height": 49,
+        "declared_height_m": 1.4,
         "character_height_px": 87,
         "character_height_m": 1.7,
-        "note": "ONE SCENERY PIXEL IS ONE PLAYER PIXEL. world_px_height IS the art's own alpha bbox height, so scenery is placed into the world at 1:1 exactly as the avatar is (setScale(1)) and the two share one pixel grid. The CAMERA still zooms the whole scene \u2014 that is uniform and correct; what must never happen is scenery being resampled on its own, against the player. world_height_m is what the art reads as beside a 87px character; declared_height_m is what it was once declared to be, and a gap between them means the ART is the wrong size.",
+        "note": "ONE SCENERY PIXEL IS ONE PLAYER PIXEL. world_px_height IS the art's own alpha bbox height, so scenery is placed into the world at 1:1 exactly as the avatar is (setScale(1)) and the two share one pixel grid. The CAMERA still zooms the whole scene \u2014 that is uniform and correct; what must never happen is scenery being resampled on its own, against the player.",
         "content_box": [
-          7,
-          8,
-          57,
-          57
+          34,
+          17,
+          62,
+          76
         ],
-        "content_px_height": 49,
-        "canvas_render_px": 64,
-        "declared_height_m": 0.77
+        "content_px_height": 59,
+        "world_px_height": 59,
+        "canvas_render_px": 96,
+        "world_height_m": 1.153
       },
       "status": "complete",
-      "generated_at": "2026-08-21T22:11:21+00:00",
-      "pixellab_object_id": "baeb741f-8f49-4b6d-90d1-a4837e868535",
-      "sprite": "chess_tables/chess_table_006/sprite.webp",
-      "art_hash": "28395cd6dd1f4bfc",
-      "type": "INDOOR",
+      "generated_at": "2026-09-13T14:53:06+00:00",
+      "pixellab_object_id": "f2a3b100-abde-4964-ad88-7b581d511de0",
+      "sprite": "chimneys/chimney_002/sprite.webp",
+      "art_hash": "757c6cc33a040fae",
+      "type": "TOWN",
       "must_be_imbplemented_with_random_hflip": true,
       "collision": true,
-      "hitbox_shape": "rect",
+      "hitbox_shape": "ellipse",
       "rotations": {},
       "states": {},
       "animations": []
     },
     {
-      "id": "chess_table_009",
-      "rel": "chess_tables/chess_table_009",
-      "name": "Soulstone chess set with translucent pale pieces 009",
-      "category": "chess_tables",
+      "id": "chimney_007",
+      "rel": "chimneys/chimney_007",
+      "name": "Whitewashed plaster stack with a round terracotta chimney pot 007",
+      "category": "chimneys",
       "lights": "LIGHTS_OFF",
       "light": null,
-      "description": "a stout wooden games table with a chess board covering its whole top, thick legs and a heavy top, standing solidly on the floor, the chequered board fills the frame almost edge to edge, exactly eight by eight large clean squares in strongly contrasting dark and pale, the pieces few and chunky with simple unmistakable silhouettes standing well clear of one another, soulstone chess set with translucent pale pieces, well-worn from years of use, table-height, waist-high, completely unlit, no glow, no light sources, no self-emission",
+      "description": "a house CHIMNEY seen from outside, ONLY the chimney stack itself standing alone, cold and unused, no roof around it, no house, no wall, no ground, no smoke, no fire, every course and joint picked out pixel by pixel, per-pixel weathering speckle and dithered shading across the faces, fantasy RPG village architecture, small clear margin at edges, transparent background, whitewashed plaster stack with a round terracotta chimney pot, one course missing from the cap, a chimney stack about chest-high on a person, completely unlit, no glow, no light sources, no self-emission",
       "view": "low top-down",
-      "size": 64,
+      "size": 96,
       "placement": {
-        "world_height_m": 0.938,
-        "world_px_height": 48,
+        "declared_height_m": 1.35,
         "character_height_px": 87,
         "character_height_m": 1.7,
-        "note": "ONE SCENERY PIXEL IS ONE PLAYER PIXEL. world_px_height IS the art's own alpha bbox height, so scenery is placed into the world at 1:1 exactly as the avatar is (setScale(1)) and the two share one pixel grid. The CAMERA still zooms the whole scene \u2014 that is uniform and correct; what must never happen is scenery being resampled on its own, against the player. world_height_m is what the art reads as beside a 87px character; declared_height_m is what it was once declared to be, and a gap between them means the ART is the wrong size.",
+        "note": "ONE SCENERY PIXEL IS ONE PLAYER PIXEL. world_px_height IS the art's own alpha bbox height, so scenery is placed into the world at 1:1 exactly as the avatar is (setScale(1)) and the two share one pixel grid. The CAMERA still zooms the whole scene \u2014 that is uniform and correct; what must never happen is scenery being resampled on its own, against the player.",
         "content_box": [
-          7,
-          10,
-          58,
-          58
+          32,
+          15,
+          67,
+          80
         ],
-        "content_px_height": 48,
-        "canvas_render_px": 64,
-        "declared_height_m": 0.79
+        "content_px_height": 65,
+        "world_px_height": 65,
+        "canvas_render_px": 96,
+        "world_height_m": 1.27
       },
       "status": "complete",
-      "generated_at": "2026-08-21T22:13:42+00:00",
-      "pixellab_object_id": "780aefab-3dc0-4586-9982-e770186cd58c",
-      "sprite": "chess_tables/chess_table_009/sprite.webp",
-      "art_hash": "d0305f70484744c7",
-      "type": "INDOOR",
+      "generated_at": "2026-09-13T14:47:26+00:00",
+      "pixellab_object_id": "b4659131-3b95-4630-84e1-3cf4e2a4defa",
+      "sprite": "chimneys/chimney_007/sprite.webp",
+      "art_hash": "532e1d93a17aaab3",
+      "type": "TOWN",
       "must_be_imbplemented_with_random_hflip": true,
       "collision": true,
-      "hitbox_shape": "rect",
+      "hitbox_shape": "ellipse",
+      "rotations": {},
+      "states": {},
+      "animations": []
+    },
+    {
+      "id": "chimney_009",
+      "rel": "chimneys/chimney_009",
+      "name": "Red brick stack, corbelled cap course 009",
+      "category": "chimneys",
+      "lights": "LIGHTS_OFF",
+      "light": null,
+      "description": "a house CHIMNEY seen from outside, ONLY the chimney stack itself standing alone, cold and unused, no roof around it, no house, no wall, no ground, no smoke, no fire, every course and joint picked out pixel by pixel, per-pixel weathering speckle and dithered shading across the faces, fantasy RPG village architecture, small clear margin at edges, transparent background, red brick stack, corbelled cap course, crumbling mortar between the courses, a chimney stack about chest-high on a person, completely unlit, no glow, no light sources, no self-emission",
+      "view": "low top-down",
+      "size": 96,
+      "placement": {
+        "declared_height_m": 1.47,
+        "character_height_px": 87,
+        "character_height_m": 1.7,
+        "note": "ONE SCENERY PIXEL IS ONE PLAYER PIXEL. world_px_height IS the art's own alpha bbox height, so scenery is placed into the world at 1:1 exactly as the avatar is (setScale(1)) and the two share one pixel grid. The CAMERA still zooms the whole scene \u2014 that is uniform and correct; what must never happen is scenery being resampled on its own, against the player.",
+        "content_box": [
+          21,
+          6,
+          77,
+          92
+        ],
+        "content_px_height": 86,
+        "world_px_height": 86,
+        "canvas_render_px": 96,
+        "world_height_m": 1.68
+      },
+      "status": "complete",
+      "generated_at": "2026-09-13T14:48:29+00:00",
+      "pixellab_object_id": "2406f86e-e402-46ca-9660-cc3e89692b38",
+      "sprite": "chimneys/chimney_009/sprite.webp",
+      "art_hash": "e985aa88bafd3593",
+      "type": "TOWN",
+      "must_be_imbplemented_with_random_hflip": true,
+      "collision": true,
+      "hitbox_shape": "ellipse",
       "rotations": {},
       "states": {},
       "animations": []
