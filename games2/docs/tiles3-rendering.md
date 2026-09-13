@@ -759,3 +759,28 @@ dressing). `this.maps3` gates every terrain branch (false only for a hand-built
   deploys never stall on the game agent. Runbook: **`games2/SURFACES.md`**.
   If a DIFFERENT gate fails on an art push, that's a real art bug, not a
   surfaces edit.
+- **A wall face wears its region's least-seamed measured set, never one tile**
+  (maintainer 2026-09-13, fog off, five walls: "the insanely good looking
+  wall that used different tiles has stopped working. Now it's the same
+  everywhere"). The rule is `client/src/wallregion.ts` (a region field over
+  world position and elevation; a SET per region, a member per cell, weights
+  8/5/3/2/1) and the data is `client/src/wallsets.json`, sets of five walls
+  whose expected seam `scripts/wall-sets.py` measured by compositing every
+  ordered pair as the game stacks them. WHAT BROKE IT: the tiles agent's
+  review prunes of 09-11/12 (6a61b679c, ca9755ce5, 177b571eb, 403469edb —
+  11,359 wall files left git) deleted the walls his detail verdicts had
+  marked, the same `#top` misread the base sets got the same day, and every
+  measured set that named one of them stopped matching its pool whole: 3 of
+  182 pools kept a usable set, `grey_stone__over__grey_stone` kept 1 of its
+  11 set tiles among 22 candidates, `snow__over__dark_mud` has no candidate
+  left at all, and every mountain drew rank 0 alone (the maps2 assistant
+  measured and posted it 2026-09-12 23:11). Three things hold it now:
+  `wallsets.json` is regenerated from today's approved walls (five members,
+  then three for pools with fewer than five); a set counts with at least two
+  of its tiles present in the pool (their pairs were measured together;
+  whole sets first); and when no set clears `WALL_SET_MAX_COST` the
+  LEAST-SEAMED set is the palette, not one tile — the gate's own note said
+  the single-tile fallback was the reported defect, and today it was reported
+  a third time. `WALL_TEST_VECTORS` regenerated (`scripts/wall-vectors.mjs`);
+  render3 carries a port of this rule (maps2, 3fad4e69a) and must take the
+  two changes and the vectors. Gate: `server/test/wallregion.test.ts`.

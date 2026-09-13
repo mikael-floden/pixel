@@ -90,8 +90,7 @@ secrets; push to `main`, rebase on reject, no PRs unless asked; doc law.
   boundaries are NOT a second pass; decks draw last.
 - SLACK, NOT EXACTNESS: a full plate overlaps 17 rows; a top-face-only plate
   is the only zero-slack seam, so only liquids take it, with `TOP_FACE_MARGIN`
-  rows of their own surface. Making the geometry more exact leaves the seam
-  class alive.
+  rows of their own surface.
 - A transition covers what the plate it replaces covered; the seam (0.82) is
   ON — it is what makes a transition visible (maintainer verdict). Water lies
   flat: a liquid corner votes only at its own level (`tiles3liquid.test.ts`).
@@ -102,6 +101,8 @@ secrets; push to `main`, rebase on reject, no PRs unless asked; doc law.
   cell; a CAVE LID is ground and picks per cell, so it matches the terrain
   beside it. Both are drawn (ground pass AND occluder copy); `thickness` is
   the contract (0 = top only); `side` is the body, the doorway crops the cap.
+- A wall face wears its region's least-seamed measured set, never one tile
+  (`wallregion.ts`; `wallsets.json` regenerates from today's approved walls).
 - The fade has three dials and a switch; THE DEFAULTS ARE HIS (reach 4,
   amount 0.46, falloff 4). Cliff-foot and lid transitions default on.
 - Regions are 24-cell chunks; a cell edit is bounded by its chunk + 5x5.
@@ -110,8 +111,8 @@ secrets; push to `main`, rebase on reject, no PRs unless asked; doc law.
 - EVERYTHING STREAMED BEHIND THE LIVE WORLD goes through THE ART QUEUE
   (`client/src/artqueue.ts`, `docs/perf.md`): priority order, a BYTE budget
   per frame, no kind's strips before a monster of it exists, its fight art
-  raised when a fight starts, scenery animations last. Never the scene loader
-  for it. The queue decodes on a worker and uploads in bands (`artworker.ts`):
+  raised when a fight starts, scenery animations last. The queue decodes on a
+  worker and uploads in bands (`artworker.ts`):
   never `texImage2D` an `<img>` for streamed art, never measure a streamed
   image's pixels on the frame thread, and NEVER read a banded texture back
   from the GPU inside the frame — every one of those is a decode or a pipeline
@@ -119,7 +120,7 @@ secrets; push to `main`, rebase on reject, no PRs unless asked; doc law.
   from the worker on demand.
 - A DynamicTexture BRACKET is the GPU cost (a whole capture clear + blit): an
   erase is the object's own ERASE blend inside the pass, and the capture binds
-  the rows in use (`coverRaster`, games-perf-assistant 2026-09-13).
+  the rows in use (`coverRaster`, 2026-09-13).
 
 **Depth, occluders, scenery** (`docs/depth-sort.md`, `docs/scenery.md`)
 - ONE body pipeline: `resolveDrawDepth` + `placeBodyShadow` + `syncLitCopy`
@@ -136,8 +137,8 @@ secrets; push to `main`, rebase on reject, no PRs unless asked; doc law.
   the tests. Gate: `__ml.composeWorker({audit:true}).audit.diff` = 0.
 - The occluder set is drawn WHOLE (view cull only). Never submit a subset
   chosen per image: a shown course whose front cap is hidden paints over
-  the cap's ground (the proximity cull, rejected on his screenshot). The
-  display list is insertion-sorted.
+  the cap's ground (the proximity cull, rejected). The display list is
+  insertion-sorted.
 - Scenery is sized against the 88-px person this game draws
   (`sceneryDrawnPx`); the bbox doc is gated by `check-scenery-bbox.mjs`.
 - A hitbox is an ellipse OR a ground rect drawn in perspective — port the
