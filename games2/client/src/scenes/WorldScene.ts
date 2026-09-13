@@ -2020,7 +2020,15 @@ export class WorldScene extends Phaser.Scene {
    * collection inside a span (a negative delta) counts as nothing. Estimate,
    * not accounting — but it names the allocator. */
   private perfAlloc: Record<string, number> = {};
-  private perfMem: { usedJSHeapSize: number } | null = (performance as unknown as { memory?: { usedJSHeapSize: number } }).memory ?? null;
+  /** `performance.memory` READ FRESH ON EVERY ACCESS. A MemoryInfo holds the
+   *  values of the moment it was created, so the object captured once at
+   *  construction read the boot heap forever: `allocBy` came back {} on every
+   *  report, and the first `longWhy` run (03:38, 2026-09-13) called all 51 long
+   *  frames a collection of 117-367 MB — the boot heap against the live one.
+   *  Chrome-only; null elsewhere, and every reader already tolerates that. */
+  private get perfMem(): { usedJSHeapSize: number } | null {
+    return (performance as unknown as { memory?: { usedJSHeapSize: number } }).memory ?? null;
+  }
   private perfFrames: number[] = [];
   private perfLast = 0;
   /* THE HITCH RECORDER — the instrument the whole optimisation day lacked.
