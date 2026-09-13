@@ -130,26 +130,38 @@ test("0.5 gives HALF the lean, on both sides of a threshold — his example", ()
   assert.ok(Math.abs(diff(neRun, afterSnap) - 0.5 * diff(neRun, fullAfter)) < 1e-9, "half the lean off NE");
 });
 
-test("THE FACING FOLLOWS THE RUN: the key's octant or the neighbour it leans toward, never a third", () => {
+test("THE FACING IS THE THUMB'S OCTANT: at every dial and bearing, the sprite faces the key's octant, never the neighbour", () => {
+  // Maintainer 2026-09-13, the stick up-left and the sprite facing left:
+  // vectorToDirection quantised on 45-degree compass points, while up-left
+  // RUNS along world -x, 156.4 degrees on screen — 1.1 from the boundary the
+  // compass points put at 157.5 — so the least lean toward left faced west.
+  // Quantised on the eight run headings, every octant's lean range lies
+  // inside its own sector.
   const OCTS = ["east", "south-east", "south", "south-west", "west", "north-west", "north", "north-east"];
   let checked = 0;
   for (let oct = 0; oct < 8; oct++) {
     const ax = Math.round(Math.cos((oct * Math.PI) / 4));
     const ay = Math.round(Math.sin((oct * Math.PI) / 4));
     const snap = snapOf(ax, ay);
-    for (const lean of [0, 0.1, 0.25, 0.5, 0.75, 0.9, 1])
-      for (let off = -OCTANT_HALF_DEG; off <= OCTANT_HALF_DEG; off += 1.5) {
+    // (Strictly inside the octant: at the continuous dial's exact edge the
+    // heading IS the bisector between two runs, a tie either sprite may take.)
+    for (const lean of [0, 0.1, 0.25, 0.5, 0.75, 0.85, 0.9, 1])
+      for (let off = -OCTANT_HALF_DEG + 0.75; off <= OCTANT_HALF_DEG - 0.75; off += 1.5) {
         const v = leanHeading(ax, ay, snap + off, lean);
         const got = vectorToDirection(v.ax, v.ay);
-        const nb = OCTS[(((oct + (off >= 0 ? 1 : -1)) % 8) + 8) % 8];
-        assert.ok(got === OCTS[oct] || got === nb, `octant ${oct}, lean ${lean}, ${off.toFixed(1)}deg off faced ${got}`);
-        // And always within 22.5deg of where the body goes.
-        const faceDeg = OCTS.indexOf(got!) * 45; // +y down: SE is +45
-        assert.ok(Math.abs(diff(faceDeg, deg(v))) <= OCTANT_HALF_DEG + 1e-6, `facing ${got} is ${diff(faceDeg, deg(v)).toFixed(1)}deg off the run`);
+        assert.equal(got, OCTS[oct], `octant ${oct}, lean ${lean}, ${off.toFixed(1)}deg off faced ${got}`);
+        // And it is the run heading nearest to where the body goes (+y down,
+        // octantRunDeg's frame): the facing's octant is the closest of the eight.
+        const offs = OCTS.map((_, k) => Math.abs(diff(octantRunDeg(k), deg(v))));
+        assert.ok(offs[oct] <= Math.min(...offs) + 1e-6, `facing ${got} is ${offs[oct].toFixed(1)}deg off the run; nearest is ${Math.min(...offs).toFixed(1)}`);
         checked++;
       }
   }
   assert.ok(checked > 1500, `only ${checked} combinations swept`);
+  // His screenshot's case: the stick a few degrees toward left of up-left at
+  // the default lean walks at 157.7 degrees and faces north-west, not west.
+  const his = leanHeading(-1, -1, snapOf(-1, -1) + 3, 0.85);
+  assert.equal(vectorToDirection(his.ax, his.ay), "north-west");
   // At 0 the facing IS the key's octant, every time.
   for (let oct = 0; oct < 8; oct++) {
     const ax = Math.round(Math.cos((oct * Math.PI) / 4));

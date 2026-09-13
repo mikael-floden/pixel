@@ -113,19 +113,31 @@ export const WEATHER_NAMES = [
 export const WEATHER_COUNT = WEATHER_NAMES.length;
 
 /** Map a movement vector (screen space, +y down) to one of 8 directions. */
+/** THE FACING IS THE NEAREST OF THE EIGHT RUN HEADINGS — the iso octants the
+ *  stick's keys run along (octantRunDeg), not the 45-degree compass points of
+ *  a top-down game. A diagonal key runs along a WORLD axis, which on this
+ *  screen is 23.6 degrees off horizontal: up-left is 156.4, 1.1 degrees from
+ *  the north-west/west boundary the compass points put at 157.5, so the least
+ *  lean toward left faced the sprite west while the body ran up-left
+ *  (maintainer 2026-09-13: "the player direction is not perfectly tweaked
+ *  with the player velocity ... how I hold the thumbstick vs the player
+ *  sprite direction"). On the run headings every octant's whole lean range
+ *  (leanHeading: 128-166 degrees for up-left) lies inside its own sector, so
+ *  the sprite is the octant the thumb is in. Screen vector in, +y DOWN. */
 export function vectorToDirection(dx: number, dy: number): Direction | null {
   if (Math.abs(dx) < 1e-6 && Math.abs(dy) < 1e-6) return null;
   // Flip y so "up" is +90deg; atan2 gives degrees CCW from east.
   const angle = ((Math.atan2(-dy, dx) * 180) / Math.PI + 360) % 360;
+  const diag = (Math.atan2(ISO_DY, ISO_DX) * 180) / Math.PI; // a world axis on screen: 23.6
   const sectors: [number, Direction][] = [
     [0, "east"],
-    [45, "north-east"],
+    [diag, "north-east"],
     [90, "north"],
-    [135, "north-west"],
+    [180 - diag, "north-west"],
     [180, "west"],
-    [225, "south-west"],
+    [180 + diag, "south-west"],
     [270, "south"],
-    [315, "south-east"],
+    [360 - diag, "south-east"],
   ];
   let best = sectors[0];
   let bestDelta = 360;

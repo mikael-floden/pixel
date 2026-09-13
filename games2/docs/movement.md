@@ -485,11 +485,22 @@ Server-authoritative movement, decks, collision, steer assist, fall damage, tap/
     faced N (maintainer 2026-09-11: "almost impossible to control"). Key
     vectors are exactly (+-1, +-1) and the lock is bit-for-bit what it was
     for them; a leaned vector never is one.
-  - **THE FACING FOLLOWS THE RUN**: `stepMovement` takes it from the vector
-    (`vectorToDirection`), so it is the key's octant or, past the point where
-    the leaned run is nearer the neighbour's, the neighbour's — the sprite
-    faces within 22.5deg of where the body is going at every setting. Eight
-    animations, eight facings, a heading that breathes.
+  - **THE FACING IS THE THUMB'S OCTANT**: `stepMovement` takes it from the
+    vector (`vectorToDirection`), quantised on the eight RUN headings — the
+    iso octants the keys run along (`octantRunDeg`), not the 45-degree
+    compass points of a top-down game. A diagonal key runs along a world
+    axis, 23.6 degrees off horizontal on this screen: up-left is 156.4, 1.1
+    degrees from the north-west/west boundary the compass points put at
+    157.5, so the least lean toward left faced the sprite west while the
+    body ran up-left (maintainer 2026-09-13: "the player direction is not
+    perfectly tweaked with the player velocity ... how I hold the thumbstick
+    vs the player sprite direction"; his stick 3 degrees left of up-left at
+    the default lean walked at 157.7). On the run headings every octant's
+    whole lean range (128-166 degrees for up-left) lies inside its own
+    sector: eight animations, eight octants, the sprite is the octant the
+    thumb is in, at every dial and bearing. The same quantiser faces a
+    monster at its victim (`faceToward`), so a victim along a world axis
+    gets the diagonal sprite too.
   - **THE BEARING IS READ ADDITIVELY, off games-ui's element.** Their
     `gamepad.ts` snaps to 8 and SYNTHESIZES WASD by design ("no games-agent
     file is touched"), so the finger's angle never reaches this agent's code.
@@ -653,7 +664,8 @@ Server-authoritative movement, decks, collision, steer assist, fall damage, tap/
 - **Controls are screen-relative**: `stepMovement(..., screenInput)` rotates
   input by the projection ratio (`ISO_DX`/`ISO_DY` in `shared/`; the client's
   `MAP_GEOMETRY` imports them so they can't drift) — Up walks straight up on
-  screen; facing uses the raw screen vector. **Grid-axis lock**: an EXACT
+  screen; facing uses the raw screen vector, quantised on the eight run
+  headings (`vectorToDirection`). **Grid-axis lock**: an EXACT
   diagonal press (|ix| == |iy|) snaps the world move to the nearest tile axis
   (`screenToWorldVector`) so corridors/bridges track true; single keys stay
   screen-cardinal; a leaned stick heading is never a diagonal press (it ran
