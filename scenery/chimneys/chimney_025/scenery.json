@@ -1,0 +1,61 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-09-13T15:18:13+00:00",
+  "id": "chimney_025",
+  "group": "chimneys",
+  "type": "TOWN",
+  "rank": 174,
+  "index": 25,
+  "name": "Rough grey fieldstone stack, pale mortar 025",
+  "lights": "LIGHTS_OFF",
+  "variety": "rough grey fieldstone stack, pale mortar",
+  "modifier": "moss on the shaded side",
+  "glow_concept": null,
+  "prompt": "a house CHIMNEY seen from outside, ONLY the chimney stack itself standing alone, cold and unused, no roof around it, no house, no wall, no ground, no smoke, no fire, every course and joint picked out pixel by pixel, per-pixel weathering speckle and dithered shading across the faces, fantasy RPG village architecture, small clear margin at edges, transparent background, rough grey fieldstone stack, pale mortar, moss on the shaded side, a chimney stack about chest-high on a person, completely unlit, no glow, no light sources, no self-emission",
+  "view": "low top-down",
+  "direction": "south",
+  "directions": [
+    "south",
+    "south-east",
+    "south-west"
+  ],
+  "must_be_imbplemented_with_random_hflip": false,
+  "rotations": {
+    "south-east": "chimneys/chimney_025/rotations/south-east.webp",
+    "south-west": "chimneys/chimney_025/rotations/south-west.webp",
+    "south": "chimneys/chimney_025/sprite.webp"
+  },
+  "size": 96,
+  "sprite": "chimneys/chimney_025/sprite.webp",
+  "placement": {
+    "declared_height_m": 1.39,
+    "character_height_px": 87,
+    "character_height_m": 1.7,
+    "note": "ONE SCENERY PIXEL IS ONE PLAYER PIXEL. world_px_height IS the art's own alpha bbox height, so scenery is placed into the world at 1:1 exactly as the avatar is (setScale(1)) and the two share one pixel grid. The CAMERA still zooms the whole scene \u2014 that is uniform and correct; what must never happen is scenery being resampled on its own, against the player.",
+    "content_box": [
+      23,
+      9,
+      76,
+      88
+    ],
+    "content_px_height": 79,
+    "world_px_height": 79,
+    "canvas_render_px": 96,
+    "world_height_m": 1.544
+  },
+  "pixellab_object_id": "65c331ae-14da-4feb-9da8-c50d3f5c5d18",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)",
+  "states": {
+    "NOT_LIT_1": {
+      "sprite": "chimneys/chimney_025/sprite.webp",
+      "pixellab_object_id": "65c331ae-14da-4feb-9da8-c50d3f5c5d18",
+      "generated_at": "2026-09-13T15:18:13+00:00"
+    }
+  }
+}

@@ -49,7 +49,12 @@
     "NOT_LIT_1": {
       "sprite": "chimneys/chimney_002/sprite.webp",
       "pixellab_object_id": "f2a3b100-abde-4964-ad88-7b581d511de0",
-      "generated_at": "2026-09-13T14:53:06+00:00"
+      "generated_at": "2026-09-13T14:53:06+00:00",
+      "vent": {
+        "dx": -0.5,
+        "dy": -27.1,
+        "conf": "silhouette"
+      }
     },
     "NOT_LIT_2": {
       "sprite": "chimneys/chimney_002/not_lit_2/sprite.webp",
@@ -57,7 +62,12 @@
       "generated_at": "2026-09-13T14:55:48+00:00",
       "glow_concept": null,
       "difference_from_source": 0.6554,
-      "glow_score": 0.3299
+      "glow_score": 0.3299,
+      "vent": {
+        "dx": 0.0,
+        "dy": -24.9,
+        "conf": "measured"
+      }
     },
     "NOT_LIT_3": {
       "sprite": "chimneys/chimney_002/not_lit_3/sprite.webp",
@@ -65,7 +75,12 @@
       "generated_at": "2026-09-13T14:57:45+00:00",
       "glow_concept": null,
       "difference_from_source": 0.918,
-      "glow_score": 0.2643
+      "glow_score": 0.2643,
+      "vent": {
+        "dx": 0.5,
+        "dy": -36.5,
+        "conf": "measured"
+      }
     },
     "NOT_LIT_4": {
       "sprite": "chimneys/chimney_002/not_lit_4/sprite.webp",
@@ -73,7 +88,12 @@
       "generated_at": "2026-09-13T15:00:00+00:00",
       "glow_concept": null,
       "difference_from_source": 0.8227,
-      "glow_score": 0.171
+      "glow_score": 0.171,
+      "vent": {
+        "dx": -0.2,
+        "dy": -27.5,
+        "conf": "measured"
+      }
     },
     "NOT_LIT_5": {
       "sprite": "chimneys/chimney_002/not_lit_5/sprite.webp",
@@ -81,7 +101,19 @@
       "generated_at": "2026-09-13T15:02:47+00:00",
       "glow_concept": null,
       "difference_from_source": 0.9252,
-      "glow_score": 0.1272
+      "glow_score": 0.1272,
+      "vent": {
+        "dx": 0.5,
+        "dy": -37.0,
+        "conf": "measured"
+      }
     }
-  }
+  },
+  "vent": {
+    "dx": -0.5,
+    "dy": -27.1,
+    "conf": "silhouette"
+  },
+  "mount": "roof",
+  "fixture": "chimney"
 }
