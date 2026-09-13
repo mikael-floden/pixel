@@ -218,6 +218,17 @@ are not another's.
 
 ### Roof-mounted: `chimneys` (maintainer 2026-09-13, commissioned by name)
 
+**THE GROUP IS ITS OWN TYPE, `CHIMNEY`** (maintainer 2026-09-13: "I can't find
+a separate filter for Chimney"), for the same reason `WINDOW` is one: a fixture
+that belongs to a building is reviewed and placed on its own, not scattered
+through TOWN. This domain owns the taxonomy (`config/factory.json` `types`,
+"the type is your responsibility the very second he commits"), so minting one
+is a line here plus the group's `type` — but the WIKI's two lists are hard-coded
+against it: `wiki/build.mjs` maps any type outside its literal `TYPES` array to
+OTHER, and the Scenery page's chip row iterates a literal `OBJ_TYPES`. Until the
+wiki reads the domain's list, a NEW type shows as "Other" there with no chip of
+its own. Mint a type and post to the wiki in the same run.
+
 "Generate a chimney in section town we can put on housed with chimney ... 3
 chimney with 5 variations / scenery (a total of 15 different chimney). They
 should be NOT_LIT." Three pieces, five NOT_LIT states each, no lit state at

@@ -49,7 +49,7 @@ import viewer_build
 from pixellab_client import PixelLabClient, PixelLabError, V2_BASE
 import animate_trees as A
 
-TYPES = ("INDOOR", "TOWN")
+TYPES = ("INDOOR", "TOWN", "CHIMNEY")
 NAME = "flame"
 WANT = ("south-east", "south-west")
 ALL3 = ("south-west", "south", "south-east")

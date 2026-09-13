@@ -40,7 +40,7 @@ import viewer_build
 from pixellab_client import PixelLabClient, PixelLabError
 import animate_trees as A
 
-TYPES = ("INDOOR", "TOWN")
+TYPES = ("INDOOR", "TOWN", "CHIMNEY")
 WANT = ("south-east", "south-west")     # SOUTH is already the stored sprite
 EIGHT_DIR_MAX = 168
 PARALLEL = 12
