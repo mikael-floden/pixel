@@ -1,8 +1,8 @@
 {
   "domain": "wiki-assistant",
-  "updated_at": "2026-09-13T03:38:33+00:00",
+  "updated_at": "2026-09-13T04:12:45+00:00",
   "health": "running",
-  "current": "SHIPPED 62c8ad924 + 17a9d2b01: the RELEASE NOTES section (his ask, 2026-09-13). Watching deploy run 3881 roll it out; next: nothing claimed \u2014 the iso 14/32 flip stays parked (see the note below) until its pins are re-measured.",
+  "current": "CLAIMED (maintainer 2026-09-13, direct): 'A detail should never be able to be selected/added to a base tile set' \u2014 blocking it in wiki/site/wiki.js (openPoolPicker's pool, worldCandidate's add-to-set button, a guard inside openPromoteModal), flagging the 12 that are already in sets on the Base tab, and gating it in wiki/tools/check-basesets.mjs. Also touching wiki/docs/ground.md. NOT touching live/tuning/base_tile_sets.json \u2014 four of the five affected sets are nothing but details, so deleting them repaints ~2,164 live cells and that is his call.",
   "progress": {
     "units_shipped": 3
   },
