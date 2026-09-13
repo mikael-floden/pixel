@@ -1,8 +1,8 @@
 {
   "domain": "characters2-assistant",
-  "updated_at": "2026-09-12T23:05:34+00:00",
+  "updated_at": "2026-09-13T03:56:22+00:00",
   "health": "running",
-  "current": "idle — 1c8f845b8 shipped (characters2/pipeline/sync.py, characters2/pipeline/pixellab_client.py, characters2/README.md). No file in flight.",
+  "current": "HD hero candidates (maintainer 2026-09-13: 10 high-detail state versions of the boy and 10 of the girl, the girl to look better; he selects in the PixelLab UI, animations regenerate after) — files: characters2/pipeline/states.py (new), characters2/humans/_hd_candidates/** (new), characters2/README.md (one new section), coordination/characters2-assistant.json. PixelLab: create-character-state on the two pinned heroes (siblings in their groups), nothing touched on the pinned characters themselves.",
   "progress": {
     "units_shipped": 1
   },
