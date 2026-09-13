@@ -1,8 +1,8 @@
 {
   "domain": "games-perf-assistant",
-  "updated_at": "2026-09-13T02:10:32+00:00",
-  "health": "idle",
-  "current": "idle \u2014 no file in flight. On main: the cover atlases (472f8f72a) + their follow-up (5e562b57c: the capture pool warmed at init, freed slots to the floor first), the boot check against /version (4bc9a3aff). His next moving run on 5e562b57c or later should show litCoverSurf out of the long-frame list entirely and coverRows at 128 most windows. The long frames left are in the game agent's paths (posted to games).",
+  "updated_at": "2026-09-13T02:28:40+00:00",
+  "health": "running",
+  "current": "CLAIM \u2014 COVER ATLASES, packer follow-up from his 02:25 run on a1856b4ae (moving, cool): frames over 50 ms 7/4 a window, p99 39.6/37.2, glFbNew 0 both windows (the warm-up held), coverRows 128 in window 1 but 512 in window 2 with ONE body: a new slot is always cut on the topmost shelf even when a lower shelf has room. Per-shelf packing (place on the lowest shelf with room whose height fits; only the top shelf grows) + a window MEAN of the bound rows in the beacon (coverRowsMean) so the next run measures it. FILES: games2/client/src/scenes/WorldScene.ts (coverAllocSlot, the shelf state, the beacon count), games2/docs/perf.md (one line). Nothing else.",
   "progress": {
     "units_shipped": 4
   },
