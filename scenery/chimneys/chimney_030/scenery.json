@@ -62,18 +62,18 @@
         "south": "chimneys/chimney_030/sprite.webp"
       },
       "vent": {
-        "dx": 9.3,
-        "dy": -27.5,
+        "dx": 9.5,
+        "dy": -28.0,
         "conf": "opening",
         "rotations": {
           "south-east": {
-            "dx": -5.7,
-            "dy": -27.8,
+            "dx": -5.5,
+            "dy": -28.0,
             "conf": "opening"
           },
           "south-west": {
             "dx": -5.0,
-            "dy": -27.8,
+            "dy": -28.1,
             "conf": "opening"
           }
         }
@@ -92,19 +92,19 @@
         "south": "chimneys/chimney_030/not_lit_2/sprite.webp"
       },
       "vent": {
-        "dx": -0.5,
-        "dy": -34.3,
-        "conf": "flue_top",
+        "dx": -1.4,
+        "dy": -26.9,
+        "conf": "opening",
         "rotations": {
           "south-east": {
-            "dx": -1.5,
-            "dy": -34.3,
-            "conf": "flue_top"
+            "dx": -2.1,
+            "dy": -26.7,
+            "conf": "opening"
           },
           "south-west": {
-            "dx": 0.5,
-            "dy": -34.3,
-            "conf": "flue_top"
+            "dx": -0.5,
+            "dy": -26.8,
+            "conf": "opening"
           }
         }
       }
@@ -122,13 +122,13 @@
         "south": "chimneys/chimney_030/not_lit_3/sprite.webp"
       },
       "vent": {
-        "dx": -7.4,
-        "dy": -29.1,
+        "dx": -7.5,
+        "dy": -29.0,
         "conf": "opening",
         "rotations": {
           "south-east": {
-            "dx": 6.3,
-            "dy": -14.6,
+            "dx": 4.2,
+            "dy": -11.6,
             "conf": "opening"
           },
           "south-west": {
@@ -152,18 +152,18 @@
         "south": "chimneys/chimney_030/not_lit_4/sprite.webp"
       },
       "vent": {
-        "dx": 1.1,
-        "dy": -29.6,
+        "dx": 0.7,
+        "dy": -29.3,
         "conf": "opening",
         "rotations": {
           "south-east": {
-            "dx": 0.7,
-            "dy": -28.9,
+            "dx": 0.6,
+            "dy": -28.6,
             "conf": "opening"
           },
           "south-west": {
-            "dx": 1.0,
-            "dy": -28.6,
+            "dx": 0.9,
+            "dy": -28.7,
             "conf": "opening"
           }
         }
@@ -184,35 +184,35 @@
       "vent": {
         "dx": 1.0,
         "dy": -32.4,
-        "conf": "flue_top",
+        "conf": "silhouette",
         "rotations": {
           "south-east": {
-            "dx": -5.8,
-            "dy": -32.4,
-            "conf": "flue_top"
+            "dx": -0.4,
+            "dy": -13.0,
+            "conf": "opening"
           },
           "south-west": {
-            "dx": 7.0,
-            "dy": -32.4,
-            "conf": "flue_top"
+            "dx": 11.4,
+            "dy": -16.2,
+            "conf": "opening"
           }
         }
       }
     }
   },
   "vent": {
-    "dx": 9.3,
-    "dy": -27.5,
+    "dx": 9.5,
+    "dy": -28.0,
     "conf": "opening",
     "rotations": {
       "south-east": {
-        "dx": -5.7,
-        "dy": -27.8,
+        "dx": -5.5,
+        "dy": -28.0,
         "conf": "opening"
       },
       "south-west": {
         "dx": -5.0,
-        "dy": -27.8,
+        "dy": -28.1,
         "conf": "opening"
       }
     }

@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 715,
+  "scenery_count": 717,
   "target_count": 2124,
   "scale": {
     "_comment": "ONE SCENERY PIXEL IS ONE PLAYER PIXEL. Scenery is placed into the world at its art's own pixel size, exactly as the avatar is (setScale(1)), so the two share one pixel grid. This is a RATIO between them, not a device-pixel rule \u2014 the CAMERA zoom scales the whole scene uniformly and is correct and untouched. This constant sets no render size at all; it is only what placement.world_height_m is read against, i.e. what a piece READS as beside the player. 87px is measured, not chosen: pipeline/check_native_scale.py re-measures both shipped avatars over all eight facings and fails loudly if it drifts.",
@@ -1393,7 +1393,7 @@
       "name": "Chess Table",
       "type": "INDOOR",
       "quota": 2,
-      "done": 0
+      "done": 2
     },
     {
       "rank": 173,
@@ -1437,6 +1437,7 @@
     "cauldron_camps": 2,
     "chairs_and_benches": 7,
     "charcoal_kilns": 1,
+    "chess_tables": 2,
     "chimneys": 8,
     "cliff_features": 5,
     "cliff_fragments": 2,
@@ -26284,6 +26285,99 @@
       "animations": []
     },
     {
+      "id": "chess_table_006",
+      "rel": "chess_tables/chess_table_006",
+      "name": "Tavern chess set mid-game with a few captured pieces set aside 006 \u00b7 lit",
+      "category": "chess_tables",
+      "lights": "LIGHTS_ON",
+      "light": {
+        "strength": 0.05,
+        "color": "#ffb45c",
+        "radius": 1,
+        "reference": "the spawn bonfire is 1.0 (radius 7); strength 0 is no light",
+        "states": {
+          "LIGHTS_ON": {
+            "strength": 0.05,
+            "color": "#ffb45c",
+            "radius": 1
+          }
+        },
+        "kind": "none",
+        "flame": false,
+        "embers": false
+      },
+      "description": "a stout wooden games table with a chess board covering its whole top, thick legs and a heavy top, standing solidly on the floor, the chequered board fills the frame almost edge to edge, exactly eight by eight large clean squares in strongly contrasting dark and pale, the pieces few and chunky with simple unmistakable silhouettes standing well clear of one another, tavern chess set mid-game with a few captured pieces set aside, polished smooth at the edges, table-height, waist-high, self-emissive at night, softly radiating light: the pale pieces glowing softly from within with kept memory-light",
+      "view": "low top-down",
+      "size": 64,
+      "placement": {
+        "world_height_m": 0.957,
+        "world_px_height": 49,
+        "character_height_px": 87,
+        "character_height_m": 1.7,
+        "note": "ONE SCENERY PIXEL IS ONE PLAYER PIXEL. world_px_height IS the art's own alpha bbox height, so scenery is placed into the world at 1:1 exactly as the avatar is (setScale(1)) and the two share one pixel grid. The CAMERA still zooms the whole scene \u2014 that is uniform and correct; what must never happen is scenery being resampled on its own, against the player. world_height_m is what the art reads as beside a 87px character; declared_height_m is what it was once declared to be, and a gap between them means the ART is the wrong size.",
+        "content_box": [
+          7,
+          8,
+          57,
+          57
+        ],
+        "content_px_height": 49,
+        "canvas_render_px": 64,
+        "declared_height_m": 0.77
+      },
+      "status": "complete",
+      "generated_at": "2026-08-21T22:11:21+00:00",
+      "pixellab_object_id": "baeb741f-8f49-4b6d-90d1-a4837e868535",
+      "sprite": "chess_tables/chess_table_006/sprite.webp",
+      "art_hash": "28395cd6dd1f4bfc",
+      "type": "INDOOR",
+      "must_be_imbplemented_with_random_hflip": true,
+      "collision": true,
+      "hitbox_shape": "rect",
+      "rotations": {},
+      "states": {},
+      "animations": []
+    },
+    {
+      "id": "chess_table_009",
+      "rel": "chess_tables/chess_table_009",
+      "name": "Soulstone chess set with translucent pale pieces 009",
+      "category": "chess_tables",
+      "lights": "LIGHTS_OFF",
+      "light": null,
+      "description": "a stout wooden games table with a chess board covering its whole top, thick legs and a heavy top, standing solidly on the floor, the chequered board fills the frame almost edge to edge, exactly eight by eight large clean squares in strongly contrasting dark and pale, the pieces few and chunky with simple unmistakable silhouettes standing well clear of one another, soulstone chess set with translucent pale pieces, well-worn from years of use, table-height, waist-high, completely unlit, no glow, no light sources, no self-emission",
+      "view": "low top-down",
+      "size": 64,
+      "placement": {
+        "world_height_m": 0.938,
+        "world_px_height": 48,
+        "character_height_px": 87,
+        "character_height_m": 1.7,
+        "note": "ONE SCENERY PIXEL IS ONE PLAYER PIXEL. world_px_height IS the art's own alpha bbox height, so scenery is placed into the world at 1:1 exactly as the avatar is (setScale(1)) and the two share one pixel grid. The CAMERA still zooms the whole scene \u2014 that is uniform and correct; what must never happen is scenery being resampled on its own, against the player. world_height_m is what the art reads as beside a 87px character; declared_height_m is what it was once declared to be, and a gap between them means the ART is the wrong size.",
+        "content_box": [
+          7,
+          10,
+          58,
+          58
+        ],
+        "content_px_height": 48,
+        "canvas_render_px": 64,
+        "declared_height_m": 0.79
+      },
+      "status": "complete",
+      "generated_at": "2026-08-21T22:13:42+00:00",
+      "pixellab_object_id": "780aefab-3dc0-4586-9982-e770186cd58c",
+      "sprite": "chess_tables/chess_table_009/sprite.webp",
+      "art_hash": "d0305f70484744c7",
+      "type": "INDOOR",
+      "must_be_imbplemented_with_random_hflip": true,
+      "collision": true,
+      "hitbox_shape": "rect",
+      "rotations": {},
+      "states": {},
+      "animations": []
+    },
+    {
       "id": "chimney_002",
       "rel": "chimneys/chimney_002",
       "name": "Narrow yellow-brick stack with a twisted clay pot 002",
@@ -26318,18 +26412,18 @@
       "mount": "roof",
       "fixture": "chimney",
       "vent": {
-        "dx": -0.5,
-        "dy": -27.5,
+        "dx": 0.0,
+        "dy": -27.9,
         "conf": "opening",
         "rotations": {
           "south-east": {
-            "dx": 2.5,
-            "dy": -27.5,
+            "dx": 2.3,
+            "dy": -27.7,
             "conf": "opening"
           },
           "south-west": {
-            "dx": -2.0,
-            "dy": -27.5,
+            "dx": -1.8,
+            "dy": -27.9,
             "conf": "opening"
           }
         }
@@ -26344,18 +26438,18 @@
           "pixellab_object_id": "f2a3b100-abde-4964-ad88-7b581d511de0",
           "generated_at": "2026-09-13T14:53:06+00:00",
           "vent": {
-            "dx": -0.5,
-            "dy": -27.5,
+            "dx": 0.0,
+            "dy": -27.9,
             "conf": "opening",
             "rotations": {
               "south-east": {
-                "dx": 2.5,
-                "dy": -27.5,
+                "dx": 2.3,
+                "dy": -27.7,
                 "conf": "opening"
               },
               "south-west": {
-                "dx": -2.0,
-                "dy": -27.5,
+                "dx": -1.8,
+                "dy": -27.9,
                 "conf": "opening"
               }
             }
@@ -26375,19 +26469,19 @@
           "difference_from_source": 0.6554,
           "glow_score": 0.3299,
           "vent": {
-            "dx": 0.0,
-            "dy": -24.9,
+            "dx": 0.1,
+            "dy": -25.9,
             "conf": "opening",
             "rotations": {
               "south-east": {
-                "dx": 1.8,
-                "dy": -31.3,
-                "conf": "flue_top"
+                "dx": 0.8,
+                "dy": -26.0,
+                "conf": "opening"
               },
               "south-west": {
-                "dx": -1.5,
-                "dy": -31.4,
-                "conf": "flue_top"
+                "dx": -1.7,
+                "dy": -26.1,
+                "conf": "opening"
               }
             }
           },
@@ -26406,18 +26500,18 @@
           "difference_from_source": 0.918,
           "glow_score": 0.2643,
           "vent": {
-            "dx": 0.5,
-            "dy": -36.5,
+            "dx": 0.6,
+            "dy": -36.8,
             "conf": "opening",
             "rotations": {
               "south-east": {
-                "dx": -10.0,
-                "dy": -36.4,
+                "dx": -9.8,
+                "dy": -36.9,
                 "conf": "opening"
               },
               "south-west": {
                 "dx": 9.8,
-                "dy": -36.5,
+                "dy": -36.9,
                 "conf": "opening"
               }
             }
@@ -26437,18 +26531,18 @@
           "difference_from_source": 0.8227,
           "glow_score": 0.171,
           "vent": {
-            "dx": -0.2,
-            "dy": -27.5,
+            "dx": -0.4,
+            "dy": -27.9,
             "conf": "opening",
             "rotations": {
               "south-east": {
-                "dx": 3.3,
+                "dx": 2.9,
                 "dy": -27.9,
                 "conf": "opening"
               },
               "south-west": {
-                "dx": -2.6,
-                "dy": -27.8,
+                "dx": -2.1,
+                "dy": -27.9,
                 "conf": "opening"
               }
             }
@@ -26473,8 +26567,8 @@
             "conf": "opening",
             "rotations": {
               "south-east": {
-                "dx": 0.7,
-                "dy": -36.9,
+                "dx": 0.5,
+                "dy": -36.8,
                 "conf": "opening"
               },
               "south-west": {
@@ -26534,13 +26628,13 @@
         "conf": "opening",
         "rotations": {
           "south-east": {
-            "dx": 1.0,
-            "dy": -34.5,
+            "dx": 0.9,
+            "dy": -26.0,
             "conf": "opening"
           },
           "south-west": {
-            "dx": 0.5,
-            "dy": -34.3,
+            "dx": 1.0,
+            "dy": -26.0,
             "conf": "opening"
           }
         }
@@ -26569,13 +26663,13 @@
             "conf": "opening",
             "rotations": {
               "south-east": {
-                "dx": 1.0,
-                "dy": -34.5,
+                "dx": 0.9,
+                "dy": -26.0,
                 "conf": "opening"
               },
               "south-west": {
-                "dx": 0.5,
-                "dy": -34.3,
+                "dx": 1.0,
+                "dy": -26.0,
                 "conf": "opening"
               }
             }
@@ -26595,19 +26689,19 @@
             "south": "chimneys/chimney_004/not_lit_2/sprite.webp"
           },
           "vent": {
-            "dx": 2.6,
-            "dy": -37.4,
-            "conf": "flue_top",
+            "dx": 0.7,
+            "dy": -22.4,
+            "conf": "opening",
             "rotations": {
               "south-east": {
-                "dx": -0.0,
-                "dy": -37.3,
-                "conf": "flue_top"
+                "dx": 0.1,
+                "dy": -22.2,
+                "conf": "opening"
               },
               "south-west": {
-                "dx": -0.4,
-                "dy": -37.4,
-                "conf": "flue_top"
+                "dx": 0.7,
+                "dy": -22.6,
+                "conf": "opening"
               }
             }
           },
@@ -26626,19 +26720,19 @@
             "south": "chimneys/chimney_004/not_lit_3/sprite.webp"
           },
           "vent": {
-            "dx": -0.1,
+            "dx": 0.1,
             "dy": -27.6,
             "conf": "opening",
             "rotations": {
               "south-east": {
-                "dx": 0.0,
-                "dy": -39.4,
-                "conf": "flue_top"
+                "dx": -0.1,
+                "dy": -26.0,
+                "conf": "opening"
               },
               "south-west": {
-                "dx": 1.0,
-                "dy": -39.4,
-                "conf": "flue_top"
+                "dx": 1.3,
+                "dy": -26.0,
+                "conf": "opening"
               }
             }
           },
@@ -26657,19 +26751,19 @@
             "south": "chimneys/chimney_004/not_lit_4/sprite.webp"
           },
           "vent": {
-            "dx": 1.2,
-            "dy": -38.5,
-            "conf": "flue_top",
+            "dx": -0.5,
+            "dy": -16.9,
+            "conf": "opening",
             "rotations": {
               "south-east": {
-                "dx": 1.5,
-                "dy": -38.5,
-                "conf": "flue_top"
+                "dx": -1.6,
+                "dy": -17.6,
+                "conf": "opening"
               },
               "south-west": {
-                "dx": 0.7,
-                "dy": -38.5,
-                "conf": "flue_top"
+                "dx": -0.4,
+                "dy": -16.9,
+                "conf": "opening"
               }
             }
           },
@@ -26688,18 +26782,18 @@
             "south": "chimneys/chimney_004/not_lit_5/sprite.webp"
           },
           "vent": {
-            "dx": -0.5,
-            "dy": -18.0,
+            "dx": -2.3,
+            "dy": -19.2,
             "conf": "opening",
             "rotations": {
               "south-east": {
-                "dx": -0.7,
-                "dy": -18.1,
+                "dx": -2.2,
+                "dy": -21.0,
                 "conf": "opening"
               },
               "south-west": {
-                "dx": -0.2,
-                "dy": -18.1,
+                "dx": -1.4,
+                "dy": -21.0,
                 "conf": "opening"
               }
             }
@@ -26745,17 +26839,17 @@
       "fixture": "chimney",
       "vent": {
         "dx": 1.5,
-        "dy": -29.9,
+        "dy": -30.8,
         "conf": "opening",
         "rotations": {
           "south-east": {
-            "dx": -0.5,
-            "dy": -29.0,
+            "dx": -0.3,
+            "dy": -24.2,
             "conf": "opening"
           },
           "south-west": {
-            "dx": 1.5,
-            "dy": -29.0,
+            "dx": 1.7,
+            "dy": -24.1,
             "conf": "opening"
           }
         }
@@ -26771,17 +26865,17 @@
           "generated_at": "2026-09-13T14:47:26+00:00",
           "vent": {
             "dx": 1.5,
-            "dy": -29.9,
+            "dy": -30.8,
             "conf": "opening",
             "rotations": {
               "south-east": {
-                "dx": -0.5,
-                "dy": -29.0,
+                "dx": -0.3,
+                "dy": -24.2,
                 "conf": "opening"
               },
               "south-west": {
-                "dx": 1.5,
-                "dy": -29.0,
+                "dx": 1.7,
+                "dy": -24.1,
                 "conf": "opening"
               }
             }
@@ -26801,8 +26895,8 @@
           "difference_from_source": 0.8806,
           "glow_score": 0.4679,
           "vent": {
-            "dx": 1.2,
-            "dy": -42.0,
+            "dx": 1.0,
+            "dy": -42.1,
             "conf": "opening",
             "rotations": {
               "south-east": {
@@ -26811,7 +26905,7 @@
                 "conf": "opening"
               },
               "south-west": {
-                "dx": 2.0,
+                "dx": 1.8,
                 "dy": -42.1,
                 "conf": "opening"
               }
@@ -26833,18 +26927,18 @@
           "glow_score": 0.5409,
           "vent": {
             "dx": 0.6,
-            "dy": -23.7,
+            "dy": -26.3,
             "conf": "opening",
             "rotations": {
               "south-east": {
-                "dx": -0.5,
-                "dy": -32.4,
-                "conf": "flue_top"
+                "dx": -0.4,
+                "dy": -26.2,
+                "conf": "opening"
               },
               "south-west": {
-                "dx": 1.0,
-                "dy": -32.4,
-                "conf": "flue_top"
+                "dx": 0.8,
+                "dy": -26.2,
+                "conf": "opening"
               }
             }
           },
@@ -26864,17 +26958,17 @@
           "glow_score": 0.6558,
           "vent": {
             "dx": 1.0,
-            "dy": -31.9,
+            "dy": -32.8,
             "conf": "opening",
             "rotations": {
               "south-east": {
-                "dx": -6.0,
+                "dx": -6.1,
                 "dy": -31.0,
                 "conf": "opening"
               },
               "south-west": {
-                "dx": 5.8,
-                "dy": -31.1,
+                "dx": 6.1,
+                "dy": -26.0,
                 "conf": "opening"
               }
             }
@@ -26895,18 +26989,18 @@
           "glow_score": 0.0069,
           "vent": {
             "dx": 0.7,
-            "dy": -32.4,
-            "conf": "flue_top",
+            "dy": -28.5,
+            "conf": "opening",
             "rotations": {
               "south-east": {
-                "dx": -0.3,
-                "dy": -32.4,
-                "conf": "flue_top"
+                "dx": 0.4,
+                "dy": -28.4,
+                "conf": "opening"
               },
               "south-west": {
-                "dx": 1.5,
-                "dy": -32.4,
-                "conf": "flue_top"
+                "dx": 1.6,
+                "dy": -28.5,
+                "conf": "opening"
               }
             }
           },
@@ -26955,19 +27049,19 @@
       "mount": "roof",
       "fixture": "chimney",
       "vent": {
-        "dx": 1.2,
-        "dy": -35.8,
+        "dx": 1.0,
+        "dy": -36.5,
         "conf": "opening",
         "rotations": {
           "south-east": {
-            "dx": -5.0,
-            "dy": -39.0,
+            "dx": -4.9,
+            "dy": -31.7,
             "conf": "opening"
           },
           "south-west": {
-            "dx": 6.0,
-            "dy": -44.4,
-            "conf": "flue_top"
+            "dx": 0.2,
+            "dy": -31.4,
+            "conf": "opening"
           }
         }
       },
@@ -26981,19 +27075,19 @@
           "pixellab_object_id": "2406f86e-e402-46ca-9660-cc3e89692b38",
           "generated_at": "2026-09-13T14:48:29+00:00",
           "vent": {
-            "dx": 1.2,
-            "dy": -35.8,
+            "dx": 1.0,
+            "dy": -36.5,
             "conf": "opening",
             "rotations": {
               "south-east": {
-                "dx": -5.0,
-                "dy": -39.0,
+                "dx": -4.9,
+                "dy": -31.7,
                 "conf": "opening"
               },
               "south-west": {
-                "dx": 6.0,
-                "dy": -44.4,
-                "conf": "flue_top"
+                "dx": 0.2,
+                "dy": -31.4,
+                "conf": "opening"
               }
             }
           },
@@ -27012,18 +27106,18 @@
           "difference_from_source": 0.2969,
           "glow_score": 0.0,
           "vent": {
-            "dx": -1.2,
-            "dy": -33.0,
+            "dx": 0.5,
+            "dy": -35.0,
             "conf": "opening",
             "rotations": {
               "south-east": {
-                "dx": -6.8,
-                "dy": -38.7,
+                "dx": -6.1,
+                "dy": -31.5,
                 "conf": "opening"
               },
               "south-west": {
-                "dx": 5.8,
-                "dy": -38.4,
+                "dx": -2.0,
+                "dy": -30.9,
                 "conf": "opening"
               }
             }
@@ -27043,19 +27137,19 @@
           "difference_from_source": 0.8993,
           "glow_score": 0.0,
           "vent": {
-            "dx": -3.6,
-            "dy": -34.9,
+            "dx": 1.8,
+            "dy": -21.3,
             "conf": "opening",
             "rotations": {
               "south-east": {
-                "dx": -10.7,
-                "dy": -40.7,
+                "dx": -9.1,
+                "dy": -32.0,
                 "conf": "opening"
               },
               "south-west": {
-                "dx": 11.7,
-                "dy": -45.3,
-                "conf": "flue_top"
+                "dx": 8.0,
+                "dy": -31.1,
+                "conf": "opening"
               }
             }
           },
@@ -27074,19 +27168,19 @@
           "difference_from_source": 0.936,
           "glow_score": 0.0,
           "vent": {
-            "dx": -1.5,
-            "dy": -32.2,
+            "dx": -1.6,
+            "dy": -32.4,
             "conf": "opening",
             "rotations": {
               "south-east": {
-                "dx": -11.8,
-                "dy": -38.2,
+                "dx": -8.1,
+                "dy": -29.5,
                 "conf": "opening"
               },
               "south-west": {
-                "dx": 11.2,
-                "dy": -44.4,
-                "conf": "flue_top"
+                "dx": 4.4,
+                "dy": -28.5,
+                "conf": "opening"
               }
             }
           },
@@ -27105,19 +27199,19 @@
           "difference_from_source": 0.2534,
           "glow_score": 0.0946,
           "vent": {
-            "dx": 1.5,
-            "dy": -35.8,
+            "dx": 1.0,
+            "dy": -36.5,
             "conf": "opening",
             "rotations": {
               "south-east": {
-                "dx": -9.5,
-                "dy": -39.0,
+                "dx": -9.6,
+                "dy": -31.4,
                 "conf": "opening"
               },
               "south-west": {
-                "dx": 10.0,
-                "dy": -44.4,
-                "conf": "flue_top"
+                "dx": 4.9,
+                "dy": -30.9,
+                "conf": "opening"
               }
             }
           },
@@ -27166,18 +27260,18 @@
       "mount": "roof",
       "fixture": "chimney",
       "vent": {
-        "dx": -0.3,
+        "dx": 0.8,
         "dy": -25.0,
         "conf": "opening",
         "rotations": {
           "south-east": {
-            "dx": 3.7,
-            "dy": -32.3,
-            "conf": "flue_top"
+            "dx": 2.7,
+            "dy": -24.1,
+            "conf": "opening"
           },
           "south-west": {
-            "dx": -2.6,
-            "dy": -29.2,
+            "dx": -0.1,
+            "dy": -23.9,
             "conf": "opening"
           }
         }
@@ -27201,18 +27295,18 @@
             "south": "chimneys/chimney_022/sprite.webp"
           },
           "vent": {
-            "dx": -0.3,
+            "dx": 0.8,
             "dy": -25.0,
             "conf": "opening",
             "rotations": {
               "south-east": {
-                "dx": 3.7,
-                "dy": -32.3,
-                "conf": "flue_top"
+                "dx": 2.7,
+                "dy": -24.1,
+                "conf": "opening"
               },
               "south-west": {
-                "dx": -2.6,
-                "dy": -29.2,
+                "dx": -0.1,
+                "dy": -23.9,
                 "conf": "opening"
               }
             }
@@ -27233,17 +27327,17 @@
           },
           "vent": {
             "dx": 1.0,
-            "dy": -37.4,
-            "conf": "flue_top",
+            "dy": -30.8,
+            "conf": "opening",
             "rotations": {
               "south-east": {
-                "dx": 0.8,
-                "dy": -35.3,
-                "conf": "flue_top"
+                "dx": 0.9,
+                "dy": -27.1,
+                "conf": "opening"
               },
               "south-west": {
-                "dx": -1.6,
-                "dy": -35.3,
+                "dx": 0.7,
+                "dy": -31.9,
                 "conf": "opening"
               }
             }
@@ -27263,19 +27357,19 @@
             "south": "chimneys/chimney_022/not_lit_3/sprite.webp"
           },
           "vent": {
-            "dx": 0.4,
-            "dy": -25.1,
+            "dx": 1.2,
+            "dy": -24.9,
             "conf": "opening",
             "rotations": {
               "south-east": {
-                "dx": 4.6,
-                "dy": -29.2,
+                "dx": 1.1,
+                "dy": -24.4,
                 "conf": "opening"
               },
               "south-west": {
-                "dx": -2.0,
-                "dy": -32.4,
-                "conf": "flue_top"
+                "dx": 0.9,
+                "dy": -24.4,
+                "conf": "opening"
               }
             }
           },
@@ -27294,18 +27388,18 @@
             "south": "chimneys/chimney_022/not_lit_4/sprite.webp"
           },
           "vent": {
-            "dx": -0.2,
-            "dy": -33.4,
-            "conf": "flue_top",
+            "dx": -1.1,
+            "dy": -25.0,
+            "conf": "opening",
             "rotations": {
               "south-east": {
-                "dx": 2.7,
-                "dy": -33.3,
-                "conf": "flue_top"
+                "dx": 1.9,
+                "dy": -25.1,
+                "conf": "opening"
               },
               "south-west": {
-                "dx": -3.0,
-                "dy": -30.2,
+                "dx": -0.4,
+                "dy": -24.9,
                 "conf": "opening"
               }
             }
@@ -27325,19 +27419,19 @@
             "south": "chimneys/chimney_022/not_lit_5/sprite.webp"
           },
           "vent": {
-            "dx": 1.0,
-            "dy": -29.5,
+            "dx": 0.8,
+            "dy": -30.0,
             "conf": "opening",
             "rotations": {
               "south-east": {
-                "dx": -2.5,
-                "dy": -40.3,
-                "conf": "flue_top"
+                "dx": -1.5,
+                "dy": -29.5,
+                "conf": "opening"
               },
               "south-west": {
-                "dx": 3.5,
-                "dy": -40.3,
-                "conf": "flue_top"
+                "dx": 2.6,
+                "dy": -29.6,
+                "conf": "opening"
               }
             }
           },
@@ -27382,17 +27476,17 @@
       "fixture": "chimney",
       "vent": {
         "dx": 1.0,
-        "dy": -26.6,
+        "dy": -27.5,
         "conf": "opening",
         "rotations": {
           "south-east": {
-            "dx": 4.5,
-            "dy": -32.4,
-            "conf": "flue_top"
+            "dx": -1.4,
+            "dy": -25.1,
+            "conf": "opening"
           },
           "south-west": {
-            "dx": -2.2,
-            "dy": -28.3,
+            "dx": 3.3,
+            "dy": -25.1,
             "conf": "opening"
           }
         }
@@ -27417,17 +27511,17 @@
           },
           "vent": {
             "dx": 1.0,
-            "dy": -26.6,
+            "dy": -27.5,
             "conf": "opening",
             "rotations": {
               "south-east": {
-                "dx": 4.5,
-                "dy": -32.4,
-                "conf": "flue_top"
+                "dx": -1.4,
+                "dy": -25.1,
+                "conf": "opening"
               },
               "south-west": {
-                "dx": -2.2,
-                "dy": -28.3,
+                "dx": 3.3,
+                "dy": -25.1,
                 "conf": "opening"
               }
             }
@@ -27448,17 +27542,17 @@
           },
           "vent": {
             "dx": 1.0,
-            "dy": -27.6,
+            "dy": -28.5,
             "conf": "opening",
             "rotations": {
               "south-east": {
-                "dx": 2.7,
-                "dy": -30.7,
+                "dx": -2.3,
+                "dy": -26.5,
                 "conf": "opening"
               },
               "south-west": {
-                "dx": -1.0,
-                "dy": -29.5,
+                "dx": 4.5,
+                "dy": -26.4,
                 "conf": "opening"
               }
             }
@@ -27478,18 +27572,18 @@
             "south": "chimneys/chimney_024/not_lit_3/sprite.webp"
           },
           "vent": {
-            "dx": 0.6,
-            "dy": -27.3,
+            "dx": 1.2,
+            "dy": -27.6,
             "conf": "opening",
             "rotations": {
               "south-east": {
-                "dx": 3.5,
-                "dy": -32.4,
-                "conf": "flue_top"
+                "dx": -2.1,
+                "dy": -25.2,
+                "conf": "opening"
               },
               "south-west": {
-                "dx": -2.2,
-                "dy": -28.2,
+                "dx": 3.5,
+                "dy": -25.1,
                 "conf": "opening"
               }
             }
@@ -27509,19 +27603,19 @@
             "south": "chimneys/chimney_024/not_lit_4/sprite.webp"
           },
           "vent": {
-            "dx": 1.4,
-            "dy": -24.0,
+            "dx": 1.0,
+            "dy": -25.6,
             "conf": "opening",
             "rotations": {
               "south-east": {
-                "dx": 3.8,
-                "dy": -34.4,
-                "conf": "flue_top"
+                "dx": -1.5,
+                "dy": -23.9,
+                "conf": "opening"
               },
               "south-west": {
-                "dx": 0.0,
-                "dy": -34.3,
-                "conf": "flue_top"
+                "dx": 6.4,
+                "dy": -24.0,
+                "conf": "opening"
               }
             }
           },
@@ -27540,19 +27634,19 @@
             "south": "chimneys/chimney_024/not_lit_5/sprite.webp"
           },
           "vent": {
-            "dx": 1.1,
-            "dy": -36.5,
+            "dx": 0.4,
+            "dy": -32.1,
             "conf": "opening",
             "rotations": {
               "south-east": {
                 "dx": -0.5,
                 "dy": -42.3,
-                "conf": "flue_top"
+                "conf": "silhouette"
               },
               "south-west": {
                 "dx": 3.3,
                 "dy": -42.4,
-                "conf": "flue_top"
+                "conf": "silhouette"
               }
             }
           },
@@ -27596,18 +27690,18 @@
       "mount": "roof",
       "fixture": "chimney",
       "vent": {
-        "dx": 1.3,
-        "dy": -30.4,
+        "dx": 1.2,
+        "dy": -30.5,
         "conf": "opening",
         "rotations": {
           "south-east": {
-            "dx": 4.8,
-            "dy": -39.4,
-            "conf": "flue_top"
+            "dx": -0.1,
+            "dy": -25.5,
+            "conf": "opening"
           },
           "south-west": {
-            "dx": -3.0,
-            "dy": -34.0,
+            "dx": -3.3,
+            "dy": -25.6,
             "conf": "opening"
           }
         }
@@ -27631,18 +27725,18 @@
             "south": "chimneys/chimney_025/sprite.webp"
           },
           "vent": {
-            "dx": 1.3,
-            "dy": -30.4,
+            "dx": 1.2,
+            "dy": -30.5,
             "conf": "opening",
             "rotations": {
               "south-east": {
-                "dx": 4.8,
-                "dy": -39.4,
-                "conf": "flue_top"
+                "dx": -0.1,
+                "dy": -25.5,
+                "conf": "opening"
               },
               "south-west": {
-                "dx": -3.0,
-                "dy": -34.0,
+                "dx": -3.3,
+                "dy": -25.6,
                 "conf": "opening"
               }
             }
@@ -27662,18 +27756,18 @@
             "south": "chimneys/chimney_025/not_lit_2/sprite.webp"
           },
           "vent": {
-            "dx": 1.6,
-            "dy": -29.1,
+            "dx": 1.5,
+            "dy": -30.4,
             "conf": "opening",
             "rotations": {
               "south-east": {
-                "dx": 4.8,
-                "dy": -39.4,
-                "conf": "flue_top"
+                "dx": 0.0,
+                "dy": -25.6,
+                "conf": "opening"
               },
               "south-west": {
-                "dx": -3.0,
-                "dy": -34.0,
+                "dx": -3.4,
+                "dy": -25.5,
                 "conf": "opening"
               }
             }
@@ -27693,18 +27787,18 @@
             "south": "chimneys/chimney_025/not_lit_3/sprite.webp"
           },
           "vent": {
-            "dx": 0.9,
-            "dy": -30.5,
+            "dx": 1.5,
+            "dy": -21.6,
             "conf": "opening",
             "rotations": {
               "south-east": {
-                "dx": 4.5,
-                "dy": -39.3,
-                "conf": "flue_top"
+                "dx": -0.8,
+                "dy": -25.4,
+                "conf": "opening"
               },
               "south-west": {
-                "dx": -4.8,
-                "dy": -33.5,
+                "dx": -3.2,
+                "dy": -25.5,
                 "conf": "opening"
               }
             }
@@ -27724,18 +27818,18 @@
             "south": "chimneys/chimney_025/not_lit_4/sprite.webp"
           },
           "vent": {
-            "dx": 1.2,
-            "dy": -27.1,
+            "dx": 0.8,
+            "dy": -27.3,
             "conf": "opening",
             "rotations": {
               "south-east": {
-                "dx": 0.0,
-                "dy": -27.0,
+                "dx": -0.7,
+                "dy": -27.3,
                 "conf": "opening"
               },
               "south-west": {
-                "dx": 1.5,
-                "dy": -27.4,
+                "dx": 0.9,
+                "dy": -28.4,
                 "conf": "opening"
               }
             }
@@ -27755,18 +27849,18 @@
             "south": "chimneys/chimney_025/not_lit_5/sprite.webp"
           },
           "vent": {
-            "dx": -1.1,
-            "dy": -27.1,
+            "dx": -0.2,
+            "dy": -27.5,
             "conf": "opening",
             "rotations": {
               "south-east": {
-                "dx": 2.3,
-                "dy": -39.4,
-                "conf": "flue_top"
+                "dx": -2.0,
+                "dy": -24.4,
+                "conf": "opening"
               },
               "south-west": {
-                "dx": -3.0,
-                "dy": -33.0,
+                "dx": -0.9,
+                "dy": -24.7,
                 "conf": "opening"
               }
             }
@@ -27811,18 +27905,18 @@
       "mount": "roof",
       "fixture": "chimney",
       "vent": {
-        "dx": 9.3,
-        "dy": -27.5,
+        "dx": 9.5,
+        "dy": -28.0,
         "conf": "opening",
         "rotations": {
           "south-east": {
-            "dx": -5.7,
-            "dy": -27.8,
+            "dx": -5.5,
+            "dy": -28.0,
             "conf": "opening"
           },
           "south-west": {
             "dx": -5.0,
-            "dy": -27.8,
+            "dy": -28.1,
             "conf": "opening"
           }
         }
@@ -27846,18 +27940,18 @@
             "south": "chimneys/chimney_030/sprite.webp"
           },
           "vent": {
-            "dx": 9.3,
-            "dy": -27.5,
+            "dx": 9.5,
+            "dy": -28.0,
             "conf": "opening",
             "rotations": {
               "south-east": {
-                "dx": -5.7,
-                "dy": -27.8,
+                "dx": -5.5,
+                "dy": -28.0,
                 "conf": "opening"
               },
               "south-west": {
                 "dx": -5.0,
-                "dy": -27.8,
+                "dy": -28.1,
                 "conf": "opening"
               }
             }
@@ -27877,19 +27971,19 @@
             "south": "chimneys/chimney_030/not_lit_2/sprite.webp"
           },
           "vent": {
-            "dx": -0.5,
-            "dy": -34.3,
-            "conf": "flue_top",
+            "dx": -1.4,
+            "dy": -26.9,
+            "conf": "opening",
             "rotations": {
               "south-east": {
-                "dx": -1.5,
-                "dy": -34.3,
-                "conf": "flue_top"
+                "dx": -2.1,
+                "dy": -26.7,
+                "conf": "opening"
               },
               "south-west": {
-                "dx": 0.5,
-                "dy": -34.3,
-                "conf": "flue_top"
+                "dx": -0.5,
+                "dy": -26.8,
+                "conf": "opening"
               }
             }
           },
@@ -27908,13 +28002,13 @@
             "south": "chimneys/chimney_030/not_lit_3/sprite.webp"
           },
           "vent": {
-            "dx": -7.4,
-            "dy": -29.1,
+            "dx": -7.5,
+            "dy": -29.0,
             "conf": "opening",
             "rotations": {
               "south-east": {
-                "dx": 6.3,
-                "dy": -14.6,
+                "dx": 4.2,
+                "dy": -11.6,
                 "conf": "opening"
               },
               "south-west": {
@@ -27939,18 +28033,18 @@
             "south": "chimneys/chimney_030/not_lit_4/sprite.webp"
           },
           "vent": {
-            "dx": 1.1,
-            "dy": -29.6,
+            "dx": 0.7,
+            "dy": -29.3,
             "conf": "opening",
             "rotations": {
               "south-east": {
-                "dx": 0.7,
-                "dy": -28.9,
+                "dx": 0.6,
+                "dy": -28.6,
                 "conf": "opening"
               },
               "south-west": {
-                "dx": 1.0,
-                "dy": -28.6,
+                "dx": 0.9,
+                "dy": -28.7,
                 "conf": "opening"
               }
             }
@@ -27972,17 +28066,17 @@
           "vent": {
             "dx": 1.0,
             "dy": -32.4,
-            "conf": "flue_top",
+            "conf": "silhouette",
             "rotations": {
               "south-east": {
-                "dx": -5.8,
-                "dy": -32.4,
-                "conf": "flue_top"
+                "dx": -0.4,
+                "dy": -13.0,
+                "conf": "opening"
               },
               "south-west": {
-                "dx": 7.0,
-                "dy": -32.4,
-                "conf": "flue_top"
+                "dx": 11.4,
+                "dy": -16.2,
+                "conf": "opening"
               }
             }
           },

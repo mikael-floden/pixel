@@ -269,10 +269,10 @@ ask for five; the 4-own/2-opposite default is unchanged).
   and the hole is not where the south view puts it. `conf` says how it was
   found: `opening` (a dark hole), `flue_top` (the top of the narrow flue, for
   a pot whose mouth is drawn light rather than as a hole) or `silhouette`
-  (neither). Measured over the 40 states x 3 facings: 77 `opening`, 43
-  `flue_top`, 0 `silhouette`, every one landing on the art in the upper half.
-  **THE MAINTAINER MARKED TWO ROUNDS OF THIS BY HAND, and both corrections are
-  rules now** (2026-09-13, his red circles on the measurement against green
+  (neither). Measured over the 40 states x 3 facings: 117 `opening`, 3 `silhouette`, every
+  one landing on the art in its top 42%.
+  **THE MAINTAINER MARKED THREE ROUNDS OF THIS BY HAND, and every correction
+  is a rule now** (2026-09-13, his red circles on the measurement against green
   crosses on the truth):
   - **THE FLUE IS THE NARROW THING AT THE TOP, and the mouth is in IT.** The
     measurement had put it on the CAP beside the pot, where the socket's shadow
@@ -285,6 +285,20 @@ ask for five; the 4-own/2-opposite default is unchanged).
     width test was throwing it away: in a three-quarter view the opening's top
     row is the cap's far corner, where the silhouette is narrowest, so a 31 px
     opening measured 31/29 and read as a mortar course.
+  - **THE SMOKE STARTS IN THE MIDDLE OF THE HOLE, not at its rim.** Two things
+    were putting it on the rim. Only the DARKEST part of a big opening clears
+    the cut — the deep shadow under the far rim — while the near inner wall
+    catches light, so the winning blob is grown over a relaxed cut before its
+    centroid is taken. And the flue rule itself was misfiring: in a
+    three-quarter view EVERY box starts at its narrow far corner, so a plain
+    cap read as a "flue" and the search covered only its top sliver. A flue
+    must hold roughly ONE WIDTH down its length and then step out under it
+    (`FLUE_RATIO`, `FLUE_STEP`); a corner fans out a few pixels a row and no
+    longer qualifies.
+  A mouth must also BEGIN in the top third of the piece: a chimney capped by a
+  dark iron cowl has no surviving opening at all (the cowl is dark and reads as
+  the outline), and without that guard it anchored on a shadow a third of the
+  way down the stack. Better the honest fallback than a hole that is not one.
   The other rules that survive from the first pass: the darkness cut is a
   fraction of the piece's OWN median luma (a percentile finds a "darkest fifth"
   even where there is no hole); a blob touching transparency is the sprite's

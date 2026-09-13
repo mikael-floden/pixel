@@ -54,11 +54,15 @@ import viewer_build  # noqa: E402
 
 TOP_SHARE = 0.55    # the mouth is in the top half of the piece, never the foot
 DARK_OF_MEDIAN = 0.62  # a mouth is this much darker than the piece's median
+DARK_RELAXED = 0.85   # ...and the whole hole, once one has been found, is this dark
 MIN_ROWS = 2        # rows — a pot's mouth is a 2-row ellipse in a 3/4 view
 MAX_WIDTH_SHARE = 0.85  # a mouth is narrower than the silhouette; a course is not
 TOP_TOL = 4         # px — blobs starting this close to the highest are all 'at the top'
+CAND_TOP_SHARE = 0.35  # ...and a mouth begins within this share of the piece's height
 FLUE_WIDTH_SHARE = 0.55  # a pot/pipe is this much narrower than the stack under it
 FLUE_MIN_ROWS = 4   # ...over at least this many rows, or the piece has no flue
+FLUE_RATIO = 2.2    # ...holding roughly one width (a 3/4 corner fans out instead)
+FLUE_STEP = 1.5     # ...and the row under it steps out by this much
 EDGE_CLEAR = 2      # px of material a mouth's pixels stand back from the silhouette
 DEEP_SHARE = 0.55   # ...over this share of the blob
 MIN_BLOB = 3        # px — smaller than this is a dither speck, not an opening
@@ -127,6 +131,18 @@ def measure(img: Image.Image) -> dict | None:
             flue.append(y)
         elif flue:
             break
+    # A FLUE IS NARROW AND STAYS NARROW, THEN STEPS OUT. In a three-quarter
+    # view every box begins at its far CORNER, so the top of a plain cap is
+    # narrow too and read as a flue — the search band then covered only the
+    # cap's top sliver and the anchor sat on the rim of the hole instead of in
+    # it (maintainer's third mark, 2026-09-13). A pot holds roughly one width
+    # for its whole length and then the cap jumps out under it; a corner grows
+    # a few pixels every row. So: near-constant width, and a real step below.
+    if flue:
+        run = [widths[y] for y in flue]
+        below = widths.get(flue[-1] + 1, 0)
+        if max(run) > FLUE_RATIO * min(run) or below < FLUE_STEP * max(run):
+            flue = []
     if len(flue) >= FLUE_MIN_ROWS:
         search_lo, search_hi = flue[0], flue[-1] + 1
     else:
@@ -186,9 +202,18 @@ def measure(img: Image.Image) -> dict | None:
             inside = sum(1 for p in blob if p in deep) / len(blob)
             if inside < DEEP_SHARE:
                 continue
+        if top_row > y0 + CAND_TOP_SHARE * (y1 - y0):
+            # A MOUTH IS NEAR THE TOP OF THE PIECE, full stop. Without this a
+            # chimney capped by a dark IRON COWL — where the cap itself is dark
+            # and reads as the outline, so no real opening survives — fell
+            # through to a shadow under the cap and put the smoke a third of
+            # the way down the stack. Better to take the fallback (the top of
+            # the piece) and say so than to anchor on something that is not a
+            # hole.
+            continue
         bx = sum(p[0] for p in blob) / len(blob)
         by = sum(p[1] for p in blob) / len(blob)
-        cands.append({"top": top_row, "n": len(blob), "at": (bx, by)})
+        cands.append({"top": top_row, "n": len(blob), "at": (bx, by), "px": blob})
 
     if cands:
         # THE BIGGEST OPENING NEAR THE TOP, not simply the highest. Two rules
@@ -201,8 +226,27 @@ def measure(img: Image.Image) -> dict | None:
         top = min(c["top"] for c in cands)
         near = [c for c in cands if c["top"] <= top + TOP_TOL]
         pick = max(near, key=lambda c: c["n"])
-        return {"dx": round(pick["at"][0] - cx_frame, 1),
-                "dy": round(pick["at"][1] - cy_frame, 1), "conf": "opening"}
+        # THE SMOKE STARTS IN THE MIDDLE OF THE HOLE, not at its top rim
+        # (maintainer 2026-09-13, his third mark). Only the DARKEST part of a
+        # big opening clears the cut — the deep shadow under the far rim — while
+        # the near inner wall catches enough light to sit above it, so the
+        # centroid of the cut pixels rides high on the hole. Grow the winner
+        # over a relaxed cut, contiguous and inside the same search band, and
+        # take THAT centroid: the whole hole, middle included.
+        grown = set(pick["px"])
+        relaxed = {p for p, l in opaque.items()
+                   if l <= median * DARK_RELAXED and search_lo <= p[1] < search_hi}
+        stack = list(grown)
+        while stack:
+            cx, cy = stack.pop()
+            for nb in ((cx + 1, cy), (cx - 1, cy), (cx, cy + 1), (cx, cy - 1)):
+                if nb in relaxed and nb not in grown:
+                    grown.add(nb)
+                    stack.append(nb)
+        gx = sum(p[0] for p in grown) / len(grown)
+        gy = sum(p[1] for p in grown) / len(grown)
+        return {"dx": round(gx - cx_frame, 1), "dy": round(gy - cy_frame, 1),
+                "conf": "opening"}
     # No opening to find (a solid cap, a pot drawn in silhouette): the middle of
     # the silhouette's top rows, and SAY it is a fallback.
     # NO DARK OPENING. On a pot whose mouth is drawn LIGHT rather than as a
